@@ -14,14 +14,14 @@ class MyBB {
 	 *
 	 * @var string
 	 */
-	public $version = "1.8.0";
+	public $version = "1.8.3";
 
 	/**
 	 * The version code of MyBB we're running.
 	 *
 	 * @var integer
 	 */
-	public $version_code = 1800;
+	public $version_code = 1804;
 
 	/**
 	 * The current working directory.
@@ -219,7 +219,7 @@ class MyBB {
 		$protected = array("_GET", "_POST", "_SERVER", "_COOKIE", "_FILES", "_ENV", "GLOBALS");
 		foreach($protected as $var)
 		{
-			if(isset($_REQUEST[$var]) || isset($_FILES[$var]))
+			if(isset($_POST[$var]) || isset($_GET[$var]) || isset($_COOKIE[$var]) || isset($_FILES[$var]))
 			{
 				die("Hacking attempt");
 			}

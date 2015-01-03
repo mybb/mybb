@@ -445,6 +445,8 @@ if($mybb->input['action'] == "results")
 		{
 			$icon = $icon_cache[$message['icon']];
 			$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
+			$icon['path'] = htmlspecialchars_uni($icon['path']);
+			$icon['name'] = htmlspecialchars_uni($icon['name']);
 			eval("\$icon = \"".$templates->get("private_messagebit_icon")."\";");
 		}
 		else
@@ -2355,6 +2357,8 @@ if(!$mybb->input['action'])
 			{
 				$icon = $icon_cache[$message['icon']];
 				$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
+				$icon['path'] = htmlspecialchars_uni($icon['path']);
+				$icon['name'] = htmlspecialchars_uni($icon['name']);
 				eval("\$icon = \"".$templates->get("private_messagebit_icon")."\";");
 			}
 			else

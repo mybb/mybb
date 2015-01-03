@@ -18,7 +18,7 @@ $templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit,postbit_re
 $templatelist .= ",postbit_inlinecheck,showthread_inlinemoderation,postbit_attachments_thumbnails_thumbnail,postbit_ignored,postbit_groupimage,postbit_multiquote,showthread_search,showthread_moderationoptions_custom_tool,showthread_moderationoptions_custom,showthread_inlinemoderation_custom_tool,showthread_inlinemoderation_custom,postbit_posturl,postbit_rep_button";
 $templatelist .= ",showthread_usersbrowsing,showthread_usersbrowsing_user,showthread_poll_option_multiple,showthread_poll_option,showthread_poll,showthread_threadedbox,showthread_quickreply_options_signature,showthread_threaded_bitactive,showthread_threaded_bit,postbit_attachments_attachment_unapproved,showthread_threadnotes,showthread_threadnotes_viewnotes";
 $templatelist .= ",showthread_moderationoptions_openclose,showthread_moderationoptions_stickunstick,showthread_moderationoptions_delete,showthread_moderationoptions_threadnotes,showthread_moderationoptions_manage,showthread_moderationoptions_deletepoll,showthread_threadnoteslink,showthread_poll_results,showthread_classic_header,postbit_warn";
-$templatelist .= ",postbit_userstar,postbit_reputation_formatted_link,postbit_warninglevel_formatted,postbit_quickrestore,forumdisplay_password,forumdisplay_password_wrongpass,postbit_classic,postbit_purgespammer,showthread_inlinemoderation_approve,showthread_moderationoptions,forumdisplay_thread_icon,showthread_poll_resultbit,global_moderation_notice";
+$templatelist .= ",postbit_userstar,postbit_reputation_formatted_link,postbit_warninglevel_formatted,postbit_quickrestore,forumdisplay_password,forumdisplay_password_wrongpass,postbit_classic,postbit_purgespammer,showthread_inlinemoderation_approve,showthread_moderationoptions,forumdisplay_thread_icon,showthread_poll_resultbit,global_moderation_notice,post_captcha,post_captcha_recaptcha,post_captcha_nocaptcha,post_captcha_ayah";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -1102,6 +1102,9 @@ if($mybb->input['action'] == "thread")
 			if($similar_thread['icon'] > 0 && $icon_cache[$similar_thread['icon']])
 			{
 				$icon = $icon_cache[$similar_thread['icon']];
+				$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
+				$icon['path'] = htmlspecialchars_uni($icon['path']);
+				$icon['name'] = htmlspecialchars_uni($icon['name']);
 				eval("\$icon = \"".$templates->get("forumdisplay_thread_icon")."\";");
 			}
 			else
@@ -1243,14 +1246,27 @@ if($mybb->input['action'] == "thread")
 
 		if(is_moderator($forum['fid'], "canusecustomtools") && (!empty($forum_stats[-1]['modtools']) || !empty($forum_stats[$forum['fid']]['modtools'])))
 		{
+			$gids = explode(',', $mybb->user['additionalgroups']);
+			$gids[] = $mybb->user['usergroup'];
+			$gids = array_filter(array_unique($gids));
 			switch($db->type)
 			{
 				case "pgsql":
 				case "sqlite":
-					$query = $db->simple_select("modtools", "tid, name, type", "','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%' OR forums=''");
+					foreach($gids as $gid)
+					{
+						$gid = (int)$gid;
+						$gidswhere .= " OR ','||groups||',' LIKE '%,{$gid},%'";
+					}
+					$query = $db->simple_select("modtools", 'tid, name, type', "(','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%' OR forums='') AND (groups='' OR ','||groups||',' LIKE '%,-1,%'{$gidswhere})");
 					break;
 				default:
-					$query = $db->simple_select("modtools", "tid, name, type", "CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums=''");
+					foreach($gids as $gid)
+					{
+						$gid = (int)$gid;
+						$gidswhere .= " OR CONCAT(',',groups,',') LIKE '%,{$gid},%'";
+					}
+					$query = $db->simple_select("modtools", 'tid, name, type', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='') AND (groups='' OR CONCAT(',',groups,',') LIKE '%,-1,%'{$gidswhere})");
 					break;
 			}
 

@@ -7,7 +7,7 @@
 
 $l['template_sets'] = "Template Sets";
 $l['template_set'] = "Template Set";
-$l['templates'] = "Templates";
+$l['templates'] = "{1} Templates";
 
 $l['manage_template_sets'] = "Manage Template Sets";
 $l['manage_template_sets_desc'] = "Here you can manage template sets, view the templates using these sets, and begin customizing your board's layout.";

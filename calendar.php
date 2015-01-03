@@ -1488,6 +1488,8 @@ if($mybb->input['action'] == "event")
 		$event['userstars'] = '';
 	}
 
+	$event['usertitle'] = htmlspecialchars_uni($event['usertitle']); 
+
 	if($event['ignoretimezone'] == 0)
 	{
 		$offset = $event['timezone'];
@@ -1829,6 +1831,8 @@ if($mybb->input['action'] == "dayview")
 				}
 				$event['userstars'] = '';
 			}
+
+			$event['usertitle'] = htmlspecialchars_uni($event['usertitle']); 
 
 			if($event['ignoretimezone'] == 0)
 			{

@@ -204,25 +204,12 @@ function upload_avatar($avatar=array(), $uid=0)
 	}
 
 	// Check we have a valid extension
-	// This is attached to the attachment types allowed to be uploaded (set in the ACP)
-	$valid_extensions = array();
-	$extensions = $cache->read("attachtypes");
-
-	foreach($extensions as $ext => $type)
-	{
-		if(substr($type['mimetype'], 0, 5) == 'image')
-		{
-			$valid_extensions[$ext] = 1;
-		}
-	}
-
-	$ext = get_extension(my_strtolower($avatar['name']));
-
-	if(!isset($valid_extensions[$ext]))
-	{
-		$ret['error'] = $lang->error_avatartype;
-		return $ret;
-	}
+    	$ext = get_extension(my_strtolower($avatar['name']));
+    	if(!preg_match("#^(gif|jpg|jpeg|jpe|bmp|png)$#i", $ext))
+    	{
+        	$ret['error'] = $lang->error_avatartype;
+        	return $ret;
+    	}
 
 	if(defined('IN_ADMINCP'))
 	{

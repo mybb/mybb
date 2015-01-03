@@ -1392,7 +1392,7 @@ if($mybb->input['action'] == "new_announcement")
 		}
 
 		require_once MYBB_ROOT."inc/functions_post.php";
-		$postbit = build_postbit($announcementarray, 1);
+		$postbit = build_postbit($announcementarray, 3);
 		eval("\$preview = \"".$templates->get("previewpost")."\";");
 	}
 	else
@@ -3210,7 +3210,17 @@ if($mybb->input['action'] == "finduser")
 
 	if(isset($mybb->input['username']))
 	{
-		$where = " AND LOWER(username) LIKE '%".my_strtolower($db->escape_string_like($mybb->get_input('username')))."%'";
+		switch($db->type)
+		{
+			case 'mysql':
+			case 'mysqli':
+				$field = 'username';
+				break;
+			default:
+				$field = 'LOWER(username)';
+				break;
+		}
+		$where = " AND {$field} LIKE '%".my_strtolower($db->escape_string_like($mybb->get_input('username')))."%'";
 	}
 
 	// Sort order & direction
@@ -3689,12 +3699,12 @@ if($mybb->input['action'] == "ipsearch")
 				$ip = false;
 				if(is_array($ip_range))
 				{
-					if(strcmp($ip_range[0], $ipaddress['regip']) >= 0 && strcmp($ip_range[1], $ipaddress['regip']) <= 0)
+					if(strcmp($ip_range[0], $ipaddress['regip']) <= 0 && strcmp($ip_range[1], $ipaddress['regip']) >= 0)
 					{
 						eval("\$subject = \"".$templates->get("modcp_ipsearch_result_regip")."\";");
 						$ip = my_inet_ntop($db->unescape_binary($ipaddress['regip']));
 					}
-					elseif(strcmp($ip_range[0], $ipaddress['lastip']) >= 0 && strcmp($ip_range[1], $ipaddress['lastip']) <= 0)
+					elseif(strcmp($ip_range[0], $ipaddress['lastip']) <= 0 && strcmp($ip_range[1], $ipaddress['lastip']) >= 0)
 					{
 						eval("\$subject = \"".$templates->get("modcp_ipsearch_result_lastip")."\";");
 						$ip = my_inet_ntop($db->unescape_binary($ipaddress['lastip']));
@@ -3956,7 +3966,6 @@ if($mybb->input['action'] == "banning")
 		if($banned['reason'])
 		{
 			$banned['reason'] = htmlspecialchars_uni($parser->parse_badwords($banned['reason']));
-			$banned['reason'] = my_wordwrap($banned['reason']);
 		}
 		else
 		{
@@ -4653,7 +4662,6 @@ if(!$mybb->input['action'])
 		if($banned['reason'])
 		{
 			$banned['reason'] = htmlspecialchars_uni($parser->parse_badwords($banned['reason']));
-			$banned['reason'] = my_wordwrap($banned['reason']);
 		}
 		else
 		{

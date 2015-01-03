@@ -395,7 +395,15 @@ if($mybb->input['action'] == "add")
 	$query = $db->simple_select("settinggroups", "*", "", array('order_by' => 'disporder'));
 	while($group = $db->fetch_array($query))
 	{
-		$options[$group['gid']] = $group['title'];
+		$group_lang_var = "setting_group_{$group['name']}";
+		if($lang->$group_lang_var)
+		{
+			$options[$group['gid']] = htmlspecialchars_uni($lang->$group_lang_var);
+		}
+		else
+		{
+			$options[$group['gid']] = htmlspecialchars_uni($group['title']);
+		}
 	}
 	$form_container->output_row($lang->group." <em>*</em>", "", $form->generate_select_box("gid", $options, $mybb->input['gid'], array('id' => 'gid')), 'gid');
 	$form_container->output_row($lang->display_order, "", $form->generate_numeric_field('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
@@ -601,7 +609,15 @@ if($mybb->input['action'] == "edit")
 	$query = $db->simple_select("settinggroups", "*", "", array('order_by' => 'disporder'));
 	while($group = $db->fetch_array($query))
 	{
-		$options[$group['gid']] = $group['title'];
+		$group_lang_var = "setting_group_{$group['name']}";
+		if($lang->$group_lang_var)
+		{
+			$options[$group['gid']] = htmlspecialchars_uni($lang->$group_lang_var);
+		}
+		else
+		{
+			$options[$group['gid']] = htmlspecialchars_uni($group['title']);
+		}
 	}
 	$form_container->output_row($lang->group." <em>*</em>", "", $form->generate_select_box("gid", $options, $setting_data['gid'], array('id' => 'gid')), 'gid');
 	$form_container->output_row($lang->display_order, "", $form->generate_numeric_field('disporder', $setting_data['disporder'], array('id' => 'disporder')), 'disporder');
@@ -981,7 +997,7 @@ if($mybb->input['action'] == "change")
 		{
 			my_unsetcookie("adminsid");
 			$mybb->settings['cookieprefix'] = $mybb->input['upsetting']['cookieprefix'];
-			my_setcookie("adminsid", $admin_session['sid']);
+			my_setcookie("adminsid", $admin_session['sid'], '', true);
 		}
 
 		// Have we opted for a reCAPTCHA and not set a public/private key?
@@ -1613,8 +1629,8 @@ function print_setting_peekers()
 		'new Peeker($("#setting_mail_handler"), $("#row_setting_smtp_pass"), /smtp/, false)',
 		'new Peeker($("#setting_mail_handler"), $("#row_setting_secure_smtp"), /smtp/, false)',
 		'new Peeker($("#setting_mail_handler"), $("#row_setting_mail_parameters"), /mail/, false)',
-		'new Peeker($("#setting_captchaimage"), $("#row_setting_captchapublickey"), 2, false)',
-		'new Peeker($("#setting_captchaimage"), $("#row_setting_captchaprivatekey"), 2, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_captchapublickey"), /(2|4)/, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_captchaprivatekey"), /(2|4)/, false)',
 		'new Peeker($("#setting_captchaimage"), $("#row_setting_ayahpublisherkey"), 3, false)',
 		'new Peeker($("#setting_captchaimage"), $("#row_setting_ayahscoringkey"), 3, false)',
 		'new Peeker($(".setting_contact"), $("#row_setting_contact_guests"), /1/, true)',

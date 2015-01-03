@@ -200,8 +200,20 @@ if($mybb->input['action'] == "browse")
 			$tree['results']['result'][0] = $only_theme;
 		}
 
+		require_once MYBB_ROOT . '/inc/class_parser.php';
+		$post_parser = new postParser();
+
 		foreach($tree['results']['result'] as $result)
 		{
+			$result['thumbnail']['value'] = htmlspecialchars_uni($result['thumbnail']['value']);
+			$result['name']['value'] = htmlspecialchars_uni($result['name']['value']);
+			$result['description']['value'] = htmlspecialchars_uni($result['description']['value']);
+			$result['author']['value'] = $post_parser->parse_message($result['author']['value'], array(
+					'allow_html' => true
+				)
+			);
+			$result['download_url']['value'] = htmlspecialchars_uni(html_entity_decode($result['download_url']['value']));
+
 			$table->construct_cell("<img src=\"http://community.mybb.com/{$result['thumbnail']['value']}\" alt=\"{$lang->theme_thumbnail}\" title=\"{$lang->theme_thumbnail}\"/>", array("class" => "align_center", "width" => 100));
 			$table->construct_cell("<strong>{$result['name']['value']}</strong><br /><small>{$result['description']['value']}</small><br /><i><small>{$lang->created_by} {$result['author']['value']}</small></i>");
 			$table->construct_cell("<strong><a href=\"http://community.mybb.com/{$result['download_url']['value']}\" target=\"_blank\">{$lang->download}</a></strong>", array("class" => "align_center"));
@@ -2219,12 +2231,12 @@ if($mybb->input['action'] == "edit_stylesheet" && (!isset($mybb->input['mode']) 
 
 	$form->output_submit_wrapper($buttons);
 
-	echo '<script type="text/javascript" src="./jscripts/themes.js"></script>';
+	echo '<script type="text/javascript" src="./jscripts/themes.js?ver=1804"></script>';
 	echo '<script type="text/javascript">
 
 $(document).ready(function() {
 //<![CDATA[
-	new ThemeSelector("./index.php?module=style-themes&action=xmlhttp_stylesheet", "./index.php?module=style-themes&action=edit_stylesheet", $("#selector"), $("#stylesheet"), "'.htmlspecialchars_uni($mybb->input['file']).'", $("#selector_form"), "'.$mybb->input['tid'].'");
+	ThemeSelector.init("./index.php?module=style-themes&action=xmlhttp_stylesheet", "./index.php?module=style-themes&action=edit_stylesheet", $("#selector"), $("#stylesheet"), "'.htmlspecialchars_uni($mybb->input['file']).'", $("#selector_form"), "'.$mybb->input['tid'].'");
 	lang.saving = "'.$lang->saving.'";
 });
 //]]>
@@ -2855,7 +2867,7 @@ if($mybb->input['action'] == "add_stylesheet")
 			});</script>";
 	}
 
-	echo '<script type="text/javascript" src="./jscripts/themes.js"></script>';
+	echo '<script type="text/javascript" src="./jscripts/themes.js?ver=1804"></script>';
 	echo '<script type="text/javascript" src="./jscripts/theme_properties.js"></script>';
 	echo '<script type="text/javascript">
 $(function() {

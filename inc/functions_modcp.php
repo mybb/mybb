@@ -74,7 +74,7 @@ function fetch_forum_announcements($pid=0, $depth=1)
 	{
 		foreach($children as $forum)
 		{
-			if($forum['linkto'] || ($unviewableforums && in_array($forum['fid'], $unviewableforums)))
+			if($forum['linkto'] || (is_array($unviewableforums) && in_array($forum['fid'], $unviewableforums)))
 			{
 				continue;
 			}
@@ -82,7 +82,7 @@ function fetch_forum_announcements($pid=0, $depth=1)
 			if($forum['active'] == 0 || !is_moderator($forum['fid'], "canmanageannouncements"))
 			{
 				// Check if this forum is a parent of a moderated forum
-				if(in_array($forum['fid'], $parent_forums))
+				if(is_array($parent_forums) && in_array($forum['fid'], $parent_forums))
 				{
 					// A child is moderated, so print out this forum's title.  RECURSE!
 					$trow = alt_trow();
@@ -144,14 +144,18 @@ function send_report($report)
 {
 	global $db, $lang, $forum, $mybb, $post, $thread;
 
-	$query = $db->query("
-		SELECT DISTINCT u.username, u.email, u.receivepms, u.uid
-		FROM ".TABLE_PREFIX."moderators m
-		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=m.id)
-		WHERE m.fid IN (".$forum['parentlist'].") AND m.isgroup = '0'
-	");
+	$nummods = false;
+	if(!empty($forum['parentlist']))
+	{
+		$query = $db->query("
+			SELECT DISTINCT u.username, u.email, u.receivepms, u.uid
+			FROM ".TABLE_PREFIX."moderators m
+			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=m.id)
+			WHERE m.fid IN (".$forum['parentlist'].") AND m.isgroup = '0'
+		");
 
-	$nummods = $db->num_rows($query);
+		$nummods = $db->num_rows($query);
+	}
 
 	if(!$nummods)
 	{

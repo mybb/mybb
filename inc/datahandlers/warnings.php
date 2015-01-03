@@ -90,26 +90,6 @@ class WarningsHandler extends DataHandler
 	}
 
 	/**
-	* Validate a warning thread.
-	*
-	* @return boolean True when valid, false when invalid.
-	*/
-	function validate_thread()
-	{
-		$warning = &$this->data;
-
-		$thread = get_thread($warning['tid']);
-
-		if(!$thread['tid'])
-		{
-			$this->set_error('error_invalid_post');
-			return false;
-		}
-
-		return true;
-	}
-
-	/**
 	* Validate a warning post.
 	*
 	* @return boolean True when valid, false when invalid.
@@ -124,11 +104,6 @@ class WarningsHandler extends DataHandler
 		{
 			$this->set_error('error_invalid_post');
 			return false;
-		}
-
-		if(!isset($warning['tid']))
-		{
-			$warning['tid'] = $post['tid'];
 		}
 
 		return true;
@@ -283,7 +258,6 @@ class WarningsHandler extends DataHandler
 		if(array_key_exists('pid', $warning))
 		{
 			$this->validate_post();
-			$this->validate_thread();
 		}
 		if(array_key_exists('type', $warning))
 		{
@@ -696,7 +670,7 @@ class WarningsHandler extends DataHandler
 
 		$this->write_warning_data = array(
 			"uid" => (int)$warning['uid'],
-			"tid" => (int)$warning['tid'],
+			"tid" => (int)$warning['type'],
 			"pid" => (int)$warning['pid'],
 			"title" => $db->escape_string($warning['title']),
 			"points" => (int)$warning['points'],

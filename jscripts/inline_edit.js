@@ -1,4 +1,6 @@
 var inlineEditor = {
+	timeouts: [],
+
 	init: function()
 	{
 		$(document).ready(function()
@@ -65,19 +67,13 @@ var inlineEditor = {
 				// We may click again in the textbox and we'd be adding a new (invalid) clone - we don't want that!
 				if(!$('#tid_' + tid + '_temp').length)
 					$(this).clone().attr('id','tid_' + tid + '_temp').css('display','none').appendTo("body");
-	
-				setTimeout(inlineEditor.jeditableTimeout, 700, tid);
+
+				inlineEditor.timeouts[tid] = setTimeout(inlineEditor.jeditableTimeout, 700, tid);
 			});
 
 			$(this).bind('mouseup mouseleave', function()
 			{
-				// Clear all time outs
-				var wid = window.setTimeout(function() {}, 0);
-
-				while(wid--)
-				{
-					window.clearTimeout(wid); // will do nothing if no timeout with id is present
-				}
+				window.clearTimeout(inlineEditor.timeouts[tid]);
 			});
         });
 

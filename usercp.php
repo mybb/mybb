@@ -1644,6 +1644,8 @@ if($mybb->get_input('action') == "subscriptions")
 			{
 				$icon = $icon_cache[$thread['icon']];
 				$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
+				$icon['path'] = htmlspecialchars_uni($icon['path']);
+				$icon['name'] = htmlspecialchars_uni($icon['name']);
 				eval("\$icon = \"".$templates->get("usercp_subscriptions_thread_icon")."\";");
 			}
 			else
@@ -2542,7 +2544,17 @@ if($mybb->get_input('action') == "do_editlists")
 		// Fetch out new users
 		if(count($users) > 0)
 		{
-			$query = $db->simple_select("users", "uid,buddyrequestsauto,buddyrequestspm,language", "LOWER(username) IN ('".my_strtolower(implode("','", $users))."')");
+			switch($db->type)
+			{
+				case 'mysql':
+				case 'mysqli':
+					$field = 'username';
+					break;
+				default:
+					$field = 'LOWER(username)';
+					break;
+			}
+			$query = $db->simple_select("users", "uid,buddyrequestsauto,buddyrequestspm,language", "{$field} IN ('".my_strtolower(implode("','", $users))."')");
 			while($user = $db->fetch_array($query))
 			{
 				++$found_users;
@@ -2914,10 +2926,10 @@ if($mybb->get_input('action') == "editlists")
 				$sent_rows = '';
 				$query = $db->query("
 					SELECT r.*, u.username
-					FROM `".TABLE_PREFIX."buddyrequests` r
-					LEFT JOIN `".TABLE_PREFIX."users` u ON (u.uid=r.touid)
-					WHERE r.uid=".(int)$mybb->user['uid']."
-				");
+					FROM ".TABLE_PREFIX."buddyrequests r
+					LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=r.touid)
+					WHERE r.uid=".(int)$mybb->user['uid']);
+
 				while($request = $db->fetch_array($query))
 				{
 					$bgcolor = alt_trow();
@@ -2948,10 +2960,10 @@ if($mybb->get_input('action') == "editlists")
 	$received_rows = '';
 	$query = $db->query("
 		SELECT r.*, u.username
-		FROM `".TABLE_PREFIX."buddyrequests` r
-		LEFT JOIN `".TABLE_PREFIX."users` u ON (u.uid=r.uid)
-		WHERE r.touid=".(int)$mybb->user['uid']."
-	");
+		FROM ".TABLE_PREFIX."buddyrequests r
+		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=r.uid)
+		WHERE r.touid=".(int)$mybb->user['uid']);
+
 	while($request = $db->fetch_array($query))
 	{
 		$bgcolor = alt_trow();
@@ -2970,10 +2982,10 @@ if($mybb->get_input('action') == "editlists")
 	$sent_rows = '';
 	$query = $db->query("
 		SELECT r.*, u.username
-		FROM `".TABLE_PREFIX."buddyrequests` r
-		LEFT JOIN `".TABLE_PREFIX."users` u ON (u.uid=r.touid)
-		WHERE r.uid=".(int)$mybb->user['uid']."
-	");
+		FROM ".TABLE_PREFIX."buddyrequests r
+		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=r.touid)
+		WHERE r.uid=".(int)$mybb->user['uid']);
+
 	while($request = $db->fetch_array($query))
 	{
 		$bgcolor = alt_trow();
@@ -3885,6 +3897,8 @@ if(!$mybb->input['action'])
 						{
 							$icon = $icon_cache[$thread['icon']];
 							$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
+							$icon['path'] = htmlspecialchars_uni($icon['path']);
+							$icon['name'] = htmlspecialchars_uni($icon['name']);
 							eval("\$icon = \"".$templates->get("usercp_subscriptions_thread_icon")."\";");
 						}
 						else
@@ -4071,6 +4085,8 @@ if(!$mybb->input['action'])
 				{
 					$icon = $icon_cache[$thread['icon']];
 					$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
+					$icon['path'] = htmlspecialchars_uni($icon['path']);
+					$icon['name'] = htmlspecialchars_uni($icon['name']);
 					eval("\$icon = \"".$templates->get("usercp_subscriptions_thread_icon")."\";");
 				}
 				else

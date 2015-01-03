@@ -1991,6 +1991,7 @@ if($mybb->input['action'] == "delete")
 		$db->delete_query("posts", "fid='{$fid}' {$delquery}");
 		$db->delete_query("moderators", "fid='{$fid}' {$delquery}");
 		$db->delete_query("forumsubscriptions", "fid='{$fid}' {$delquery}");
+		$db->delete_query("forumpermissions", "fid='{$fid}' {$delquery}");
 
 		$update_stats = array(
 			'numthreads' => "-".$stats['threads'],
@@ -2592,7 +2593,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		<script type="text/javascript">
 		<!--
 		$("#username").select2({
-			placeholder: "Search for a user",
+			placeholder: "'.$lang->search_user.'",
 			minimumInputLength: 3,
 			maximumSelectionSize: 3,
 			multiple: false,
@@ -2620,6 +2621,11 @@ document.write('".str_replace("/", "\/", $field_select)."');
 					}).done(function(data) { callback(data); });
 				}
 			},
+		});
+
+		$(\'[for=username]\').click(function(){
+			$("#username").select2(\'open\');
+			return false;
 		});
 		// -->
 		</script>';

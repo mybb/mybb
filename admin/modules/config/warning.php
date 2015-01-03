@@ -55,6 +55,11 @@ if($mybb->input['action'] == "add_level")
 			$errors[] = $lang->error_invalid_warning_percentage;
 		}
 
+		if(!$mybb->input['action_type'])
+		{
+			$errors[] = $lang->error_missing_action_type;
+		}
+
 		if(!$errors)
 		{
 			// Ban
@@ -217,6 +222,11 @@ if($mybb->input['action'] == "edit_level")
 		if(!is_numeric($mybb->input['percentage']) || $mybb->input['percentage'] > 100 || $mybb->input['percentage'] < 0)
 		{
 			$errors[] = $lang->error_invalid_warning_percentage;
+		}
+
+		if(!$mybb->input['action_type'])
+		{
+			$errors[] = $lang->error_missing_action_type;
 		}
 
 		if(!$errors)

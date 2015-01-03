@@ -91,18 +91,16 @@ $(document).ready(function($) {
 					size     = 1;
 
 					if(fontSize > 9)
-						size = 1;
-					if(fontSize > 12)
 						size = 2;
-					if(fontSize > 15)
+					if(fontSize > 12)
 						size = 3;
-					if(fontSize > 17)
+					if(fontSize > 15)
 						size = 4;
-					if(fontSize > 23)
+					if(fontSize > 17)
 						size = 5;
-					if(fontSize > 31)
+					if(fontSize > 23)
 						size = 6;
-					if(fontSize > 47)
+					if(fontSize > 31)
 						size = 7;
 				}
 				else
@@ -137,6 +135,18 @@ $(document).ready(function($) {
 
 			editor.createDropDown(caller, 'fontsize-picker', content);
 		},
+		exec: function (caller) {
+			var	editor = this,
+				sizes = ['xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large'];
+
+			$.sceditor.command.get('size')._dropDown(
+				editor,
+				caller,
+				function(fontSize) {
+					editor.wysiwygEditorInsertHtml('<span data-scefontsize=' + sizes[fontSize-1] + ' style="font-size:' + sizes[fontSize-1] + '">', '</span>');
+				}
+			);
+		},
 		txtExec: function(caller) {
 			var	editor = this,
 				sizes = ['xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large'];
@@ -164,29 +174,23 @@ $(document).ready(function($) {
 			var	author = '',
 				$elm  = $(element),
 				$cite = $elm.children('cite').first();
+				$cite.html($cite.text());
 
 			if($cite.length === 1 || $elm.data('author'))
 			{
-				author = $elm.data('author') || $cite.text();
+				author = $cite.text() || $elm.data('author');
 
 				$elm.data('author', author);
 				$cite.remove();
 
 				content	= this.elementToBbcode($(element));
-				if($elm.data('pid') || $elm.data('dateline'))
-				{
-					author  = "='" + author;
-				}
-				else
-				{
-					author  = "=" + author;
-				}
+				author = '=' + author.replace(/(^\s+|\s+$)/g, '');
 
 				$elm.prepend($cite);
 			}
 
 			if($elm.data('pid'))
-				author += "' pid='" + $elm.data('pid') + "'";
+				author += " pid='" + $elm.data('pid') + "'";
 
 			if($elm.data('dateline'))
 				author += " dateline='" + $elm.data('dateline') + "'";
@@ -203,10 +207,7 @@ $(document).ready(function($) {
 				data += ' data-dateline="' + attrs.dateline + '"';
 
 			if(typeof attrs.defaultattr !== "undefined")
-			{
-				content = '<cite contenteditable="false">' + attrs.defaultattr.replace(/\s/g, '&nbsp;') + '</cite>' + content;
-				data += ' data-author="' + attrs.defaultattr + '"';
-			}
+				content = '<cite>' + attrs.defaultattr.replace(/ /g, '&nbsp;') + '</cite>' + content;
 
 			return '<blockquote' + data + '>' + content + '</blockquote>';
 		},
@@ -267,7 +268,7 @@ $(document).ready(function($) {
 	});
 
 	$.sceditor.command.set("php", {
-		_dropDown: function (editor, caller, html) {
+		_dropDown: function (editor, caller) {
 			var $content;
 
 			$content = $(
@@ -287,11 +288,7 @@ $(document).ready(function($) {
 					before = '[php]',
 					end = '[/php]';
 
-				if (html) {
-					before = before + html + end;
-					end = null;
-				}
-				else if (val) {
+				if (val) {
 					before = before + val + end;
 					end = null;
 				}
@@ -304,6 +301,10 @@ $(document).ready(function($) {
 			editor.createDropDown(caller, 'insertphp', $content);
 		},
 		exec: function (caller) {
+			if ($.trim(this.getRangeHelper().selectedRange())) {
+				this.insert('[php]', '[/php]');
+				return;
+			}
 			$.sceditor.command.get('php')._dropDown(this, caller);
 		},
 		txtExec: ['[php]', '[/php]'],
@@ -332,7 +333,7 @@ $(document).ready(function($) {
 	});
 
 	$.sceditor.command.set("code", {
-		_dropDown: function (editor, caller, html) {
+		_dropDown: function (editor, caller) {
 			var $content;
 
 			$content = $(
@@ -352,11 +353,7 @@ $(document).ready(function($) {
 					before = '[code]',
 					end = '[/code]';
 
-				if (html) {
-					before = before + html + end;
-					end = null;
-				}
-				else if (val) {
+				if (val) {
 					before = before + val + end;
 					end = null;
 				}
@@ -369,6 +366,10 @@ $(document).ready(function($) {
 			editor.createDropDown(caller, 'insertcode', $content);
 		},
 		exec: function (caller) {
+			if ($.trim(this.getRangeHelper().selectedRange())) {
+				this.insert('[code]', '[/code]');
+				return;
+			}
 			$.sceditor.command.get('code')._dropDown(this, caller);
 		},
 		txtExec: ['[code]', '[/code]'],
@@ -548,13 +549,13 @@ $(document).ready(function($) {
 
 
 	/*************************************
-	 * Remove last bits of table support *
+	 * Remove last bits of table, superscript/subscript, youtube and ltr/rtl support *
 	 *************************************/
-	$.sceditor.command.remove('table');
-	$.sceditor.plugins.bbcode.bbcode.remove('table')
-					.remove('tr')
-					.remove('th')
-					.remove('td');
+	$.sceditor.command
+	.remove('table').remove('subscript').remove('superscript').remove('youtube').remove('ltr').remove('rtl');
+	
+	$.sceditor.plugins.bbcode.bbcode
+	.remove('table').remove('tr').remove('th').remove('td').remove('sub').remove('sup').remove('youtube').remove('ltr').remove('rtl');
 
 
 

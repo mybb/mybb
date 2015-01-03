@@ -1053,6 +1053,8 @@ if(!empty($threadcache) && is_array($threadcache))
 		{
 			$icon = $icon_cache[$thread['icon']];
 			$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
+			$icon['path'] = htmlspecialchars_uni($icon['path']);
+			$icon['name'] = htmlspecialchars_uni($icon['name']);
 			eval("\$icon = \"".$templates->get("forumdisplay_thread_icon")."\";");
 		}
 		else
@@ -1334,7 +1336,7 @@ if(!empty($threadcache) && is_array($threadcache))
 						$gid = (int)$gid;
 						$gidswhere .= " OR ','||groups||',' LIKE '%,{$gid},%'";
 					}
-					$query = $db->simple_select("modtools", 'tid, name', "(','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%' OR forums='') AND (groups=''{$gidswhere}) AND type = 't'");
+					$query = $db->simple_select("modtools", 'tid, name', "(','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%' OR forums='') AND (groups='' OR ','||groups||',' LIKE '%,-1,%'{$gidswhere}) AND type = 't'");
 					break;
 				default:
 					foreach($gids as $gid)
@@ -1342,7 +1344,7 @@ if(!empty($threadcache) && is_array($threadcache))
 						$gid = (int)$gid;
 						$gidswhere .= " OR CONCAT(',',groups,',') LIKE '%,{$gid},%'";
 					}
-					$query = $db->simple_select("modtools", 'tid, name', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='') AND (groups=''{$gidswhere}) AND type = 't'");
+					$query = $db->simple_select("modtools", 'tid, name', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='') AND (groups='' OR CONCAT(',',groups,',') LIKE '%,-1,%'{$gidswhere}) AND type = 't'");
 					break;
 			}
 

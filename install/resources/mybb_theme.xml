@@ -1663,10 +1663,6 @@ div.jqi .jqibuttons button:focus {
 	outline: none;
 }
 
-.jqiwarning .jqi .jqibuttons {
-	background-color: #b95656;
-}
-
 /* sub states */
 
 div.jqi .jqiparentstate::after {
@@ -2379,7 +2375,7 @@ a.button {
 }]]></stylesheet>
 	</stylesheets>
 	<templates>
-		<template name="announcement" version="1800"><![CDATA[<html>
+		<template name="announcement" version="1804"><![CDATA[<html>
 <head>
 <title>{$lang->forum_announcement}</title>
 {$headerinclude}
@@ -2394,6 +2390,7 @@ a.button {
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder tfixed clear no_bottom_border">
 <tr>
 <td class="thead"><strong>{$lang->forum_announcement}</strong></td>
+</tr>
 <tr><td id="posts_container">
 	<div id="posts">
 	{$announcement}
@@ -3717,23 +3714,23 @@ a.button {
 		<template name="forumbit_depth1_forum_lastpost" version="1800"><![CDATA[<span class="smalltext">
 <a href="{$lastpost_link}" title="{$full_lastpost_subject}"><strong>{$lastpost_subject}</strong></a>
 <br />{$lastpost_date}<br />{$lang->by} {$lastpost_profilelink}</span>]]></template>
-		<template name="forumbit_depth2_cat" version="1800"><![CDATA[<tr>
-<td class="{$bgcolor}" align="center" valign="top" width="1"><span class="forum_status forum_{$lightbulb['folder']} ajax_mark_read" title="{$lightbulb['altonoff']}" id="mark_read_{$forum['fid']}"></span></td>
-<td class="{$bgcolor}" valign="top">
+		<template name="forumbit_depth2_cat" version="1804"><![CDATA[<tr>
+<td class="{$bgcolor}" align="center" width="1"><span class="forum_status forum_{$lightbulb['folder']} ajax_mark_read" title="{$lightbulb['altonoff']}" id="mark_read_{$forum['fid']}"></span></td>
+<td class="{$bgcolor}">
 <strong><a href="{$forum_url}">{$forum['name']}</a></strong>{$forum_viewers_text}<div class="smalltext">{$forum['description']}{$subforums}</div>
 </td>
-<td class="{$bgcolor}" valign="top" align="center" style="white-space: nowrap">{$threads}{$unapproved['unapproved_threads']}</td>
-<td class="{$bgcolor}" valign="top" align="center" style="white-space: nowrap">{$posts}{$unapproved['unapproved_posts']}</td>
-<td class="{$bgcolor}" valign="top" align="right" style="white-space: nowrap">{$lastpost}</td>
+<td class="{$bgcolor}" align="center" style="white-space: nowrap">{$threads}{$unapproved['unapproved_threads']}</td>
+<td class="{$bgcolor}" align="center" style="white-space: nowrap">{$posts}{$unapproved['unapproved_posts']}</td>
+<td class="{$bgcolor}" align="right" style="white-space: nowrap">{$lastpost}</td>
 </tr>]]></template>
-		<template name="forumbit_depth2_forum" version="1800"><![CDATA[<tr>
-<td class="{$bgcolor}" align="center" valign="top" width="1"><span class="forum_status forum_{$lightbulb['folder']} ajax_mark_read" title="{$lightbulb['altonoff']}" id="mark_read_{$forum['fid']}"></span></td>
-<td class="{$bgcolor}" valign="top">
+		<template name="forumbit_depth2_forum" version="1804"><![CDATA[<tr>
+<td class="{$bgcolor}" align="center" width="1"><span class="forum_status forum_{$lightbulb['folder']} ajax_mark_read" title="{$lightbulb['altonoff']}" id="mark_read_{$forum['fid']}"></span></td>
+<td class="{$bgcolor}">
 <strong><a href="{$forum_url}">{$forum['name']}</a></strong>{$forum_viewers_text}<div class="smalltext">{$forum['description']}{$modlist}{$subforums}</div>
 </td>
-<td class="{$bgcolor}" valign="top" align="center" style="white-space: nowrap">{$threads}{$unapproved['unapproved_threads']}</td>
-<td class="{$bgcolor}" valign="top" align="center" style="white-space: nowrap">{$posts}{$unapproved['unapproved_posts']}</td>
-<td class="{$bgcolor}" valign="top" align="right" style="white-space: nowrap">{$lastpost}</td>
+<td class="{$bgcolor}" align="center" style="white-space: nowrap">{$threads}{$unapproved['unapproved_threads']}</td>
+<td class="{$bgcolor}" align="center" style="white-space: nowrap">{$posts}{$unapproved['unapproved_posts']}</td>
+<td class="{$bgcolor}" align="right" style="white-space: nowrap">{$lastpost}</td>
 </tr>]]></template>
 		<template name="forumbit_depth2_forum_lastpost" version="1800"><![CDATA[<span class="smalltext">
 <a href="{$lastpost_link}" title="{$full_lastpost_subject}"><strong>{$lastpost_subject}</strong></a>
@@ -3749,7 +3746,7 @@ a.button {
 		<template name="forumbit_moderators_group" version="1800"><![CDATA[{$comma}{$moderator['title']}]]></template>
 		<template name="forumbit_moderators_user" version="1800"><![CDATA[{$comma}<a href="{$moderator['profilelink']}">{$moderator['username']}</a>]]></template>
 		<template name="forumbit_subforums" version="120"><![CDATA[<br />{$lang->subforums} {$sub_forums}]]></template>
-		<template name="forumdisplay" version="1800"><![CDATA[<html>
+		<template name="forumdisplay" version="1804"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$foruminfo['name']} </title>
 {$headerinclude}
@@ -3764,7 +3761,7 @@ a.button {
 </script>
 <!-- jeditable (jquery) -->
 <script src="{$mybb->asset_url}/jscripts/jeditable/jeditable.min.js"></script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_edit.js?ver=1800"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_edit.js?ver=1804"></script>
 </head>
 <body>
 {$header}
@@ -4088,11 +4085,9 @@ a.button {
 </tr>]]></template>
 		<template name="forumdisplay_usersbrowsing" version="1400"><![CDATA[<span class="smalltext">{$lang->users_browsing_forum} {$onlinemembers}{$onlinesep}{$invisonline}{$onlinesep2}{$guestsonline}</span><br />]]></template>
 		<template name="forumdisplay_usersbrowsing_user" version="1400"><![CDATA[{$comma}{$user['profilelink']}{$invisiblemark}]]></template>
-		<template name="forumjump_advanced" version="1611"><![CDATA[<form action="forumdisplay.php" method="get">
+		<template name="forumjump_advanced" version="1804"><![CDATA[<form action="forumdisplay.php" method="get">
 <span class="smalltext"><strong>{$lang->forumjump}</strong></span>
 <select name="{$name}" class="forumjump">
-<option value="-1" {$jumpsel['default']}>{$lang->forumjump_select}</option>
-<option value="-1">--------------------</option>
 <option value="-4">{$lang->forumjump_pms}</option>
 <option value="-3">{$lang->forumjump_usercp}</option>
 <option value="-5">{$lang->forumjump_wol}</option>
@@ -4103,24 +4098,21 @@ a.button {
 {$gobutton}
 </form>
 <script type="text/javascript">
-<!--
-	$(".forumjump").change(function() {
-		var option = $(".forumjump").get(0).selectedIndex.value;
+$(".forumjump").change(function() {
+	var option = $(this).val();
 
-		if(option < 0)
-		{
-			window.location=('forumdisplay.php?fid='+option)
-			return
-		}
-
-		window.location=({$forum_link})
-	})
-//-->
+	if(option < 0)
+	{
+		window.location = 'forumdisplay.php?fid='+option;
+	}
+	else
+	{
+		window.location = {$forum_link};
+	}
+});
 </script>]]></template>
 		<template name="forumjump_bit" version="120"><![CDATA[<option value="{$forum['fid']}" {$optionselected}>{$depth} {$forum['name']}</option>]]></template>
-		<template name="forumjump_special" version="120"><![CDATA[<select name="{$name}">
-<option value="index" {$jumpsel['default']}>{$lang->forumjump_select}</option>
-<option value="index">--------------------</option>
+		<template name="forumjump_special" version="1804"><![CDATA[<select name="{$name}">
 {$forumjumpbits}
 </select>]]></template>
 		<template name="global_bannedwarning" version="1400"><![CDATA[<div class="red_alert">
@@ -4176,11 +4168,12 @@ a.button {
 		<template name="header_menu_memberlist" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/memberlist.php" class="memberlist">{$lang->toplinks_memberlist}</a></li>]]></template>
 		<template name="header_menu_portal" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/portal.php" class="portal">{$lang->toplinks_portal}</a></li>]]></template>
 		<template name="header_menu_search" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/search.php" class="search">{$lang->toplinks_search}</a></li>]]></template>
-		<template name="header_quicksearch" version="1800"><![CDATA[						<form action="{$mybb->settings['bburl']}/search.php" method="post">
+		<template name="header_quicksearch" version="1804"><![CDATA[						<form action="{$mybb->settings['bburl']}/search.php" method="post">
 						<fieldset id="search">
 							<input name="keywords" type="text" class="textbox" />
 							<input value="{$lang->search_button}" type="submit" class="button" />
 							<input type="hidden" name="action" value="do_search" />
+							<input type="hidden" name="postthread" value="1" />
 						</fieldset>
 						</form>]]></template>
 		<template name="header_welcomeblock_guest" version="1800"><![CDATA[						<!-- Continuation of div(class="upper") as opened in the header template -->
@@ -4224,7 +4217,7 @@ a.button {
 				<script type="text/javascript">
 					$("#quick_login input[name='url']").val($(location).attr('href'));
 				</script>]]></template>
-		<template name="header_welcomeblock_member" version="1800"><![CDATA[<!-- Continuation of div(class="upper") as opened in the header template -->
+		<template name="header_welcomeblock_member" version="1804"><![CDATA[<!-- Continuation of div(class="upper") as opened in the header template -->
 	<span class="welcome">{$lang->welcome_back} <a href="{$mybb->settings['bburl']}/member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}" class="logout">{$lang->welcome_logout}</a></span>
 	</div>
 </div>
@@ -4236,7 +4229,7 @@ a.button {
 			{$admincplink}
 		</ul>
 		<ul class="menu user_links">
-			<li><a href="#" onclick="MyBB.popupWindow('{$mybb->settings['bburl']}/misc.php?action=buddypopup', null, true); return false;">{$lang->welcome_open_buddy_list}</a></li>
+			<li><a href="#" onclick="MyBB.popupWindow('{$mybb->settings['bburl']}/misc.php?action=buddypopup&modal=1', null, true); return false;">{$lang->welcome_open_buddy_list}</a></li>
 			<li><a href="{$mybb->settings['bburl']}/search.php?action=getnew">{$lang->welcome_newposts}</a></li>
 			<li><a href="{$mybb->settings['bburl']}/search.php?action=getdaily">{$lang->welcome_todaysposts}</a></li>
 			<li><a href="{$mybb->settings['bburl']}/private.php">{$lang->welcome_pms}</a> {$lang->welcome_pms_usage}</li>
@@ -4726,11 +4719,11 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
-		<template name="member_profile" version="1801"><![CDATA[<html>
+		<template name="member_profile" version="1804"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->profile}</title>
 {$headerinclude}
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/report.js?ver=1800"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/report.js?ver=1804"></script>
 </head>
 <body>
 {$header}
@@ -4830,7 +4823,7 @@ if(use_xmlhttprequest == "1")
 <span class="smalltext"><strong>{$lang->ban_by}:</strong> {$memban['adminuser']} &mdash; <strong>{$lang->ban_length}:</strong> {$banlength} <span class="smalltext">{$timeremaining}</span></span>
 </fieldset>
 <br />]]></template>
-		<template name="member_profile_contact_details" version="1800"><![CDATA[<br />
+		<template name="member_profile_contact_details" version="1804"><![CDATA[<br />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder tfixed">
 	<colgroup>
 	<col style="width: 30%;" />
@@ -4847,9 +4840,9 @@ if(use_xmlhttprequest == "1")
 	{$contact_fields['skype']}
 	{$contact_fields['google']}
 </table>]]></template>
-		<template name="member_profile_contact_fields_aim" version="1800"><![CDATA[<tr>
+		<template name="member_profile_contact_fields_aim" version="1804"><![CDATA[<tr>
 	<td class="{$bgcolors['aim']}"><strong>{$lang->aim_screenname}</strong></td>
-	<td class="{$bgcolors['aim']}"><a href="javascript:;" onclick="MyBB.popupWindow('/misc.php?action=imcenter&amp;imtype=aim&amp;uid={$uid}'); return false;">{$memprofile['aim']}</a></td>
+	<td class="{$bgcolors['aim']}"><a href="javascript:;" onclick="MyBB.popupWindow('/misc.php?action=imcenter&amp;imtype=aim&amp;uid={$uid}&amp;modal=1'); return false;">{$memprofile['aim']}</a></td>
 </tr>]]></template>
 		<template name="member_profile_contact_fields_google" version="1800"><![CDATA[<tr>
 	<td class="{$bgcolors['google']}"><strong>{$lang->google_id}</strong></td>
@@ -4859,13 +4852,13 @@ if(use_xmlhttprequest == "1")
 	<td class="{$bgcolors['icq']}"><strong>{$lang->icq_number}</strong></td>
 	<td class="{$bgcolors['icq']}">{$memprofile['icq']}</td>
 </tr>]]></template>
-		<template name="member_profile_contact_fields_skype" version="1800"><![CDATA[<tr>
+		<template name="member_profile_contact_fields_skype" version="1804"><![CDATA[<tr>
 	<td class="{$bgcolors['skype']}"><strong>{$lang->skype_id}</strong></td>
-	<td class="{$bgcolors['skype']}"><a href="javascript:;" onclick="MyBB.popupWindow('/misc.php?action=imcenter&amp;imtype=skype&amp;uid={$uid}'); return false;">{$memprofile['skype']}</a></td>
+	<td class="{$bgcolors['skype']}"><a href="javascript:;" onclick="MyBB.popupWindow('/misc.php?action=imcenter&amp;imtype=skype&amp;uid={$uid}&amp;modal=1'); return false;">{$memprofile['skype']}</a></td>
 </tr>]]></template>
-		<template name="member_profile_contact_fields_yahoo" version="1800"><![CDATA[<tr>
+		<template name="member_profile_contact_fields_yahoo" version="1804"><![CDATA[<tr>
 	<td class="{$bgcolors['yahoo']}"><strong>{$lang->yahoo_id}</strong></td>
-	<td class="{$bgcolors['yahoo']}"><a href="javascript:;" onclick="MyBB.popupWindow('/misc.php?action=imcenter&amp;imtype=yahoo&amp;uid={$uid}'); return false;">{$memprofile['yahoo']}</a></td>
+	<td class="{$bgcolors['yahoo']}"><a href="javascript:;" onclick="MyBB.popupWindow('/misc.php?action=imcenter&amp;imtype=yahoo&amp;uid={$uid}&amp;modal=1'); return false;">{$memprofile['yahoo']}</a></td>
 </tr>]]></template>
 		<template name="member_profile_customfields" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder tfixed">
 <colgroup>
@@ -5441,6 +5434,18 @@ if(use_xmlhttprequest == "1")
 	</tr>
 </table>
 </fieldset>]]></template>
+		<template name="member_register_regimage_nocaptcha" version="1804"><![CDATA[<br />
+<fieldset class="trow2">
+	<legend><strong>{$lang->human_verification}</strong></legend>
+	<table cellspacing="0" cellpadding="{$theme['tablespace']}">
+	<tr>
+		<td><span class="smalltext">{$lang->verification_note_nocaptcha}</span></td>
+	</tr>
+	<tr>
+		<td><script type="text/javascript" src="{$server}"></script><div class="g-recaptcha" data-sitekey="{$public_key}"></div></td>
+	</tr>
+</table>
+</fieldset>]]></template>
 		<template name="member_register_requiredfields" version="1800"><![CDATA[<br />
 <fieldset class="trow2">
 <legend><strong>{$lang->required_info}</strong></legend>
@@ -5513,7 +5518,7 @@ if(use_xmlhttprequest == "1")
 </table>
 </div>
 </div>]]></template>
-		<template name="memberlist" version="1800"><![CDATA[<html>
+		<template name="memberlist" version="1804"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->member_list}</title>
 {$headerinclude}
@@ -5657,6 +5662,11 @@ if(use_xmlhttprequest == "1")
 			}
 		},
 	});
+
+  	$('[for=username]').click(function(){
+		$("#username").select2('open');
+		return false;
+	});
 }
 // -->
 </script>
@@ -5664,7 +5674,7 @@ if(use_xmlhttprequest == "1")
 </html>]]></template>
 		<template name="memberlist_referrals" version="1800"><![CDATA[<td class="tcat" width="10%" align="center"><span class="smalltext"><a href="{$sorturl}&amp;sort=referrals&amp;order=descending"><strong>{$lang->referrals}</strong></a> {$orderarrow['referrals']}</span></td>]]></template>
 		<template name="memberlist_referrals_bit" version="1600"><![CDATA[<td class="{$alt_bg}" align="center">{$user['referrals']}</td>]]></template>
-		<template name="memberlist_search" version="1800"><![CDATA[<html>
+		<template name="memberlist_search" version="1804"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->search_member_list}</title>
 {$headerinclude}
@@ -5798,6 +5808,11 @@ if(use_xmlhttprequest == "1")
 				return {id:term, text:term};
 			}
 		},
+	});
+
+  	$('[for=username]').click(function(){
+		$("#username").select2('open');
+		return false;
 	});
 }
 // -->
@@ -6004,7 +6019,7 @@ if(use_xmlhttprequest == "1")
 </table>
 </div>
 </div>]]></template>
-		<template name="misc_imcenter_nav" version="1800"><![CDATA[{$navsep}<a href="javascript:;" onclick="MyBB.popupWindow('/misc.php?action=imcenter&amp;imtype={$imtype}&amp;uid={$uid}'); return false;">{$imtype_lang}</a>]]></template>
+		<template name="misc_imcenter_nav" version="1804"><![CDATA[{$navsep}<a href="javascript:;" onclick="MyBB.popupWindow('/misc.php?action=imcenter&amp;imtype={$imtype}&amp;uid={$uid}&amp;modal=1'); return false;">{$imtype_lang}</a>]]></template>
 		<template name="misc_imcenter_skype" version="1800"><![CDATA[<div class="modal">
 <div style="overflow-y: auto; max-height: 400px;">
 <table width="100%" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" border="0" align="center" class="tborder">
@@ -7274,7 +7289,7 @@ if(use_xmlhttprequest == "1")
 					</table>
 					{$multipage}
 					<br />]]></template>
-		<template name="modcp_ipsearch_results_information" version="1800"><![CDATA[<div class="float_right">(<a href="modcp.php?action=iplookup&ipaddress={$ipaddress}" onclick="MyBB.popupWindow('/modcp.php?action=iplookup&ipaddress={$ipaddress_url}'); return false;">{$lang->info_on_ip}</a>)</div>]]></template>
+		<template name="modcp_ipsearch_results_information" version="1804"><![CDATA[<div class="float_right">(<a href="modcp.php?action=iplookup&ipaddress={$ipaddress}" onclick="MyBB.popupWindow('/modcp.php?action=iplookup&ipaddress={$ipaddress_url}&modal=1'); return false;">{$lang->info_on_ip}</a>)</div>]]></template>
 		<template name="modcp_lastattachment" version="1800"><![CDATA[<span class="smalltext">
 <a href="{$attachment['link']}#pid{$attachment['pid']}"><strong>{$attachment['filename']}</strong></a>
 <br />{$attachment['date']}<br />{$lang->by} {$attachment['profilelink']}</span>]]></template>
@@ -8213,12 +8228,12 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
-		<template name="moderation_getip_modoptions" version="1800"><![CDATA[<tr>
+		<template name="moderation_getip_modoptions" version="1804"><![CDATA[<tr>
 <td class="trow2"><strong>{$lang->mod_options}</strong></td>
 <td class="trow2">
 	<a href="modcp.php?action=ipsearch&amp;ipaddress={$ipaddress}&amp;search_users=1">{$lang->search_ip_users}</a><br />
 	<a href="modcp.php?action=ipsearch&amp;ipaddress={$ipaddress}&amp;search_posts=1">{$lang->search_ip_posts}</a><br />
-	<a href="modcp.php?action=iplookup&ipaddress={$ipaddress}" onclick="MyBB.popupWindow('/modcp.php?action=iplookup&ipaddress={$ipaddress}'); return false;">{$lang->info_on_ip}</a>
+	<a href="modcp.php?action=iplookup&ipaddress={$ipaddress}" onclick="MyBB.popupWindow('/modcp.php?action=iplookup&ipaddress={$ipaddress}&modal=1'); return false;">{$lang->info_on_ip}</a>
 </td>
 </tr>]]></template>
 		<template name="moderation_inline_deleteposts" version="1600"><![CDATA[<html>
@@ -9391,6 +9406,19 @@ if(use_xmlhttprequest == "1")
 </table>
 </td>
 </tr>]]></template>
+		<template name="post_captcha_nocaptcha" version="1804"><![CDATA[<tr id="captcha_trow">
+<td class="trow1" valign="top"><strong>{$lang->human_verification}</strong></td>
+<td class="trow1">
+<table style="width: 300px; padding: 4px;">
+	<tr>
+		<td><span class="smalltext">{$lang->verification_note_nocaptcha}</span></td>
+	</tr>
+	<tr>
+		<td><script type="text/javascript" src="{$server}"></script><div class="g-recaptcha" data-sitekey="{$public_key}"></div></td>
+	</tr>
+</table>
+</td>
+</tr>]]></template>
 		<template name="post_prefixselect_multiple" version="1800"><![CDATA[<select name="threadprefix[]" multiple="multiple" size="5">
 <option value="any"{$any_selected}>{$lang->any_prefix}</option>
 <option value="0"{$default_selected}>{$lang->no_prefix}</option>
@@ -10552,7 +10580,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		<td class="trow1">{$lang->success_report_voted}</td>
 	</tr>
 </table>]]></template>
-		<template name="reputation" version="1800"><![CDATA[<html>
+		<template name="reputation" version="1804"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->reputation_report}</title>
 {$headerinclude}
@@ -10561,7 +10589,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 	var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 // -->
 </script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/report.js?ver=1800"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/report.js?ver=1804"></script>
 </head>
 <body>
 {$header}
@@ -11141,7 +11169,7 @@ if(use_xmlhttprequest == "1")
 <td width="5%" class="{$bgcolor}"><div class="postbit_buttons">{$emailcode}</div></td>
 <td width="5%" class="{$bgcolor}"><div class="postbit_buttons">{$pmcode}</div></td>
 </tr>]]></template>
-		<template name="showthread" version="1800"><![CDATA[<html>
+		<template name="showthread" version="1804"><![CDATA[<html>
 <head>
 <title>{$thread['subject']}</title>
 {$headerinclude}
@@ -11163,9 +11191,9 @@ if(use_xmlhttprequest == "1")
 // -->
 </script>
 <!-- jeditable (jquery) -->
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/report.js?ver=1800"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/report.js?ver=1804"></script>
 <script src="{$mybb->asset_url}/jscripts/jeditable/jeditable.min.js"></script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/thread.js?ver=1800"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/thread.js?ver=1804"></script>
 </head>
 <body>
 	{$header}
@@ -11557,8 +11585,8 @@ if(use_xmlhttprequest == "1")
 {$getmore}
 </table>
 </div>]]></template>
-		<template name="smilieinsert_getmore" version="1800"><![CDATA[<tr>
-  <td class="trow2" align="center"><span class="smalltext"><strong>[<a href="javascript:MyBB.popupWindow('/misc.php?action=smilies&popup=true&editor=MyBBEditor')">{$lang->smilieinsert_getmore}</a>]</strong></span></td>
+		<template name="smilieinsert_getmore" version="1804"><![CDATA[<tr>
+  <td class="trow2" align="center"><span class="smalltext"><strong>[<a href="javascript:MyBB.popupWindow('/misc.php?action=smilies&popup=true&editor=MyBBEditor&modal=1')">{$lang->smilieinsert_getmore}</a>]</strong></span></td>
 </tr>]]></template>
 		<template name="smilieinsert_smilie" version="1800"><![CDATA[<td style="text-align: center">{$smilie}</td>]]></template>
 		<template name="smilieinsert_smilie_empty" version="1800"><![CDATA[<td colspan="{$colspan}">&nbsp;</td>
@@ -11714,7 +11742,7 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
-		<template name="usercp_attachments" version="1400"><![CDATA[<html>
+		<template name="usercp_attachments" version="1804"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->attachments_manager}</title>
 {$headerinclude}
@@ -11735,7 +11763,7 @@ if(use_xmlhttprequest == "1")
 <td class="tcat" colspan="2" width="40%"><span class="smalltext"><strong>{$lang->attachments_attachment}</strong></span></td>
 <td class="tcat" width="40%"><span class="smalltext"><strong>{$lang->attachments_post}</strong></span></td>
 <td class="tcat" align="center" width="20%"><span class="smalltext"><strong>{$lang->date_uploaded}</strong></span></td>
-<td class="tcat" width="1"><input type="checkbox" class="checkbox checkall" /></td>
+<td class="tcat" width="1"><input type="checkbox" name="allbox" class="checkbox checkall" /></td>
 </tr>
 {$attachments}
 </table>
@@ -11908,7 +11936,7 @@ if(use_xmlhttprequest == "1")
 </body>
 </html>]]></template>
 		<template name="usercp_currentavatar" version="1800"><![CDATA[<td class="trow1" valign="top" align="center" width="1"><div class="usercp_container"><img src="{$useravatar['image']}" alt="{$mybb->user['username']}" title="{$mybb->user['username']}" {$useravatar['width_height']} /></div></td>]]></template>
-		<template name="usercp_drafts" version="1600"><![CDATA[<html>
+		<template name="usercp_drafts" version="1804"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->drafts}</title>
 {$headerinclude}
@@ -11929,7 +11957,7 @@ if(use_xmlhttprequest == "1")
 <td width="66%" class="tcat"><span class="smalltext"><strong>{$lang->draft_title}</strong></span></td>
 <td class="tcat" align="center" width="20%"><span class="smalltext"><strong>{$lang->draft_saved}</strong></span></td>
 <td class="tcat" align="center" width="20%"><span class="smalltext"><strong>{$lang->draft_options}</strong></span></td>
-<td class="tcat" align="center" width="1"><input type="checkbox" class="checkbox checkall" /></td>
+<td class="tcat" align="center" width="1"><input type="checkbox" name="allbox" class="checkbox checkall" /></td>
 </tr>
 {$drafts}
 </table>
@@ -13732,9 +13760,9 @@ if(use_xmlhttprequest == "1")
 <td class="trow1" width="20%"><strong>{$lang->username}</strong></td>
 <td class="trow1">{$mybb->user['username']} <span class="smalltext">[<strong><a href="member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}">{$lang->change_user}</a></strong>]</span></td>
 </tr>]]></template>
-		<template name="codebuttons" version="1801"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/sceditor/editor_themes/{$theme['editortheme']}" type="text/css" media="all" />
+		<template name="codebuttons" version="1804"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/sceditor/editor_themes/{$theme['editortheme']}" type="text/css" media="all" />
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/sceditor/jquery.sceditor.bbcode.min.js"></script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/bbcodes_sceditor.js"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/bbcodes_sceditor.js?ver=1804"></script>
 <script type="text/javascript">
 var partialmode = {$mybb->settings['partialmode']},
 opt_editor = {
@@ -13807,13 +13835,13 @@ $(function() {
 </html>]]></template>
 		<template name="debug_summary" version="1800"><![CDATA[<div id="debug">{$generated_in} {$debug_weight} <br />{$sql_queries} / {$server_load} / {$memory_usage}<br />[<a href="{$debuglink}" target="_blank">{$lang->debug_advanced_details}</a>]<br /></div>]]></template>
 		<template name="gobutton" version="120"><![CDATA[<input type="submit" class="button" value="{$lang->go}" />]]></template>
-		<template name="headerinclude" version="1800"><![CDATA[<link rel="alternate" type="application/rss+xml" title="{$lang->latest_threads} (RSS 2.0)" href="{$mybb->settings['bburl']}/syndication.php" />
+		<template name="headerinclude" version="1804"><![CDATA[<link rel="alternate" type="application/rss+xml" title="{$lang->latest_threads} (RSS 2.0)" href="{$mybb->settings['bburl']}/syndication.php" />
 <link rel="alternate" type="application/atom+xml" title="{$lang->latest_threads} (Atom 1.0)" href="{$mybb->settings['bburl']}/syndication.php?type=atom1.0" />
 <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.js?ver=1800"></script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.plugins.min.js?ver=1800"></script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/general.js?ver=1800"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/general.js?ver=1804"></script>
 
 {$stylesheets}
 <script type="text/javascript">
@@ -13943,5 +13971,19 @@ $(function() {
 <input type="hidden" name="fromemail" value="{$mybb->user['email']}" />]]></template>
 		<template name="task_image" version="1800"><![CDATA[<img src="{$mybb->settings['bburl']}/task.php" width="1" height="1" alt="" />]]></template>
 		<template name="smilie" version="1800"><![CDATA[<img src="{$smilie['image']}" alt="{$smilie['name']}" title="{$smilie['name']}" class="smilie smilie_{$smilie['sid']}{$extra_class}"{$onclick} />]]></template>
+		<template name="global_board_offline_modal" version="1804"><![CDATA[<div class="modal">
+	<div style="overflow-y: auto; max-height: 400px;">
+		<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<tr>
+			<td class="thead">
+				<strong>{$mybb->settings['bbname']}</strong>
+			</td>
+		</tr>
+		<tr>
+			<td class="trow1">{$lang->error_boardclosed}</td>
+		</tr>
+		</table>
+	</div>
+</div>]]></template>
 	</templates>
 </theme>

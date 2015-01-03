@@ -15,7 +15,7 @@ define("ALLOWABLE_PAGE", "register,do_register,login,do_login,logout,lostpw,do_l
 
 $nosession['avatar'] = 1;
 $templatelist = "member_register,member_register_hiddencaptcha,member_coppa_form,member_register_coppa,member_register_agreement_coppa,member_register_agreement,usercp_options_tppselect,usercp_options_pppselect,member_register_referrer,member_register_customfield,member_register_requiredfields";
-$templatelist .= ",member_resetpassword,member_loggedin_notice,member_profile_away,member_emailuser,member_register_regimage,member_register_regimage_recaptcha,member_register_regimage_ayah,post_captcha_hidden,post_captcha,post_captcha_recaptcha,post_captcha_ayah,member_profile_addremove,member_emailuser_guest";
+$templatelist .= ",member_resetpassword,member_loggedin_notice,member_profile_away,member_emailuser,member_register_regimage,member_register_regimage_recaptcha,member_register_regimage_nocaptcha,member_register_regimage_ayah,post_captcha_hidden,post_captcha,post_captcha_recaptcha,post_captcha_ayah,member_profile_addremove,member_emailuser_guest";
 $templatelist .= ",member_profile_email,member_profile_offline,member_profile_reputation,member_profile_warn,member_profile_warninglevel,member_profile_customfields_field,member_profile_customfields,member_profile_adminoptions,member_profile,member_login,member_profile_online,member_viewnotes";
 $templatelist .= ",member_profile_signature,member_profile_avatar,member_profile_groupimage,member_profile_referrals,member_profile_website,member_profile_reputation_vote,member_activate,member_resendactivation,member_lostpw,member_register_additionalfields,member_register_password,usercp_options_pppselect_option";
 $templatelist .= ",member_profile_modoptions_manageuser,member_profile_modoptions_editprofile,member_profile_modoptions_banuser,member_profile_modoptions_viewnotes,member_profile_modoptions,member_profile_modoptions_editnotes,member_profile_modoptions_purgespammer,postbit_reputation_formatted,postbit_warninglevel_formatted";
@@ -214,7 +214,12 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		try {
 			if($stop_forum_spam_checker->is_user_a_spammer($user['username'], $user['email'], get_ip()))
 			{
-				error($lang->error_stop_forum_spam_spammer);
+					error($lang->sprintf($lang->error_stop_forum_spam_spammer,
+						$stop_forum_spam_checker->getErrorText(array(
+							'stopforumspam_check_usernames',
+							'stopforumspam_check_emails',
+							'stopforumspam_check_ips'
+							))));
 			}
 		}
 		catch (Exception $e)
@@ -244,7 +249,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 	// If we have a security question, check to see if answer is correct
 	if($mybb->settings['securityquestion'])
 	{
-		$question_id = $mybb->get_input('question_id');
+		$question_id = $db->escape_string($mybb->get_input('question_id'));
 		$answer = $db->escape_string($mybb->get_input('answer'));
 
 		$query = $db->query("
@@ -1963,14 +1968,16 @@ if($mybb->input['action'] == "profile")
 	}
 	
 	$contact_fields = array();
+	$any_contact_field = false;
 	foreach(array('icq', 'aim', 'yahoo', 'skype', 'google') as $field)
 	{
 		$contact_fields[$field] = '';
-
 		$settingkey = 'allow'.$field.'field';
 
 		if(!empty($memprofile[$field]) && ($mybb->settings[$settingkey] == -1 || $mybb->settings[$settingkey] != '' && is_member($mybb->settings[$settingkey], array('usergroup' => $memprofile['usergroup'], 'additionalgroups' => $memprofile['additionalgroups']))))
 		{
+			$any_contact_field = true;
+			
 			if($field == 'icq')
 			{
 				$memprofile[$field] = (int)$memprofile[$field];
@@ -1984,13 +1991,9 @@ if($mybb->input['action'] == "profile")
 			$bgcolors[$field] = alt_trow();
 			eval('$contact_fields[\''.$field.'\'] = "'.$templates->get($tmpl).'";');
 		}
-		else
-		{
-			$memprofile[$field] = '';
-		}
 	}
 	
-	if(!empty($contact_fields) || $sendemail || $sendpm || $website)
+	if($any_contact_field || $sendemail || $sendpm || $website)
 	{
 		eval('$contact_details = "'.$templates->get("member_profile_contact_details").'";');
 	}
@@ -2536,7 +2539,6 @@ if($mybb->input['action'] == "profile")
 		if($memban['reason'])
 		{
 			$memban['reason'] = htmlspecialchars_uni($parser->parse_badwords($memban['reason']));
-			$memban['reason'] = my_wordwrap($memban['reason']);
 		}
 		else
 		{

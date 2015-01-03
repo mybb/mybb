@@ -70,7 +70,7 @@ if(function_exists('mb_internal_encoding') && !empty($lang->settings['charset'])
 // 1. Check cookies
 if(!$mybb->user['uid'] && !empty($mybb->cookies['mybbtheme']))
 {
-	$mybb->user['style'] = $mybb->cookies['mybbtheme'];
+	$mybb->user['style'] = (int)$mybb->cookies['mybbtheme'];
 }
 
 // 2. Load style
@@ -426,9 +426,9 @@ else if($mybb->input['action'] == "edit_post")
 			xmlhttp_error($lang->no_permission_edit_post);
 		}
 		// If we're past the edit time limit - don't allow editing.
-		else if($mybb->settings['edittimelimit'] != 0 && $post['dateline'] < (TIME_NOW-($mybb->settings['edittimelimit']*60)))
+		else if($mybb->usergroup['edittimelimit'] != 0 && $post['dateline'] < (TIME_NOW-($mybb->usergroup['edittimelimit']*60)))
 		{
-			$lang->edit_time_limit = $lang->sprintf($lang->edit_time_limit, $mybb->settings['edittimelimit']);
+			$lang->edit_time_limit = $lang->sprintf($lang->edit_time_limit, $mybb->usergroup['edittimelimit']);
 			xmlhttp_error($lang->edit_time_limit);
 		}
 		// User can't edit unapproved post
@@ -725,7 +725,7 @@ else if($mybb->input['action'] == "validate_captcha")
 	$query = $db->simple_select("captcha", "imagestring", "imagehash='$imagehash'");
 	if($db->num_rows($query) == 0)
 	{
-		echo $lang->captcha_valid_not_exists;
+		echo json_encode($lang->captcha_valid_not_exists);
 		exit;
 	}
 	$imagestring = $db->fetch_field($query, 'imagestring');
@@ -798,7 +798,7 @@ elseif($mybb->input['action'] == "validate_question" && $mybb->settings['securit
 	");
 	if($db->num_rows($query) == 0)
 	{
-		echo $lang->answer_valid_not_exists;
+		echo json_encode($lang->answer_valid_not_exists);
 		exit;
 	}
 	else
@@ -873,7 +873,7 @@ else if($mybb->input['action'] == "username_availability")
 
 	if(empty($username))
 	{
-		echo $lang->banned_characters_username;
+		echo json_encode($lang->banned_characters_username);
 		exit;
 	}
 
@@ -881,14 +881,14 @@ else if($mybb->input['action'] == "username_availability")
 	$banned_username = is_banned_username($username, true);
 	if($banned_username)
 	{
-		echo $lang->banned_username;
+		echo json_encode($lang->banned_username);
 		exit;
 	}
 
 	// Check for certain characters in username (<, >, &, and slashes)
 	if(strpos($username, "<") !== false || strpos($username, ">") !== false || strpos($username, "&") !== false || my_strpos($username, "\\") !== false || strpos($username, ";") !== false || !validate_utf8_string($username, false, false))
 	{
-		echo $lang->banned_characters_username;
+		echo json_encode($lang->banned_characters_username);
 		exit;
 	}
 
@@ -941,8 +941,8 @@ else if($mybb->input['action'] == "username_exists")
 	}
 	else
 	{
-		$lang->invalid_username = htmlspecialchars_uni($lang->sprintf($lang->invalid_username, htmlspecialchars_uni($username)));
-		echo $lang->invalid_username;
+		$lang->invalid_username = $lang->sprintf($lang->invalid_username, htmlspecialchars_uni($username));
+		echo json_encode($lang->invalid_username);
 		exit;
 	}
 }

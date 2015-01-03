@@ -11,7 +11,7 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'contact.php');
 
-$templatelist = "contact,post_captcha";
+$templatelist = "contact,post_captcha,post_captcha_recaptcha,post_captcha_nocaptcha,post_captcha_ayah";
 
 require_once "./global.php";
 require_once MYBB_ROOT.'inc/class_captcha.php';
@@ -41,7 +41,7 @@ if($mybb->usergroup['maxemails'] > 0)
 		$user_check = "ipaddress=".$db->escape_binary($session->packedip);
 	}
 
-	$query = $db->simple_select("maillogs", "COUNT(*) AS sent_count", "{$user_check} AND dateline >= '".(TIME_NOW - (60*60*24))."'");
+	$query = $db->simple_select("maillogs", "COUNT(mid) AS sent_count", "{$user_check} AND dateline >= ".(TIME_NOW - (60*60*24)));
 	$sent_count = $db->fetch_field($query, "sent_count");
 	if($sent_count >= $mybb->usergroup['maxemails'])
 	{
@@ -177,7 +177,10 @@ if($mybb->request_method == "post")
 		try {
 			if($stop_forum_spam_checker->is_user_a_spammer('', $mybb->input['email'], get_ip()))
 			{
-				$errors[] = $lang->error_stop_forum_spam_spammer;
+				$errors[] = $lang->sprintf($lang->error_stop_forum_spam_spammer,
+					$stop_forum_spam_checker->getErrorText(array(
+						'stopforumspam_check_emails',
+						'stopforumspam_check_ips')));
 			}
 		}
 		catch (Exception $e)
@@ -237,8 +240,14 @@ if($mybb->request_method == "post")
 			$db->insert_query("maillogs", $log_entry);
 		}
 
-		// Redirect
-		redirect('contact.php', $lang->contact_success_message);
+		if($mybb->usergroup['emailfloodtime'] > 0 || (isset($sent_count) && $sent_count + 1 >= $mybb->usergroup['maxemails']))
+		{
+			redirect('index.php', $lang->contact_success_message, '', true);
+		}
+		else
+		{
+			redirect('contact.php', $lang->contact_success_message, '', true);
+		}
 	}
 	else
 	{

@@ -25,10 +25,6 @@ $l['mod_options'] ="Moderator Options:";
 $l['close_thread'] = "<b>Close Thread</b>: prevent further posting in this thread.";
 $l['stick_thread'] = "<b>Stick Thread:</b> stick this thread to the top of the forum.";
 $l['draft_saved'] = "The new thread has successfully been saved as a draft.<br />You will now be taken to your draft listing.";
-$l['image_verification'] = "Image Verification";
-$l['verification_note'] = "Please enter the text contained within the image into the text box below it. This process is used to prevent automated posts.";
-$l['verification_subnote'] = "(case insensitive)";
-$l['invalid_captcha'] = "The image verification code that you entered was incorrect. Please enter the code exactly how it appears in the image.";
 $l['error_post_already_submitted'] = "You have already posted this thread in this forum. Please visit the forum to see your thread.";
 $l['no_prefix'] = "No Prefix";
 $l['forum_rules'] = "{1} - Rules";
@@ -46,7 +42,7 @@ $l['redirect_newthread_moderation'] = "<br />The administrator has specified tha
 $l['redirect_newthread_thread'] = "<br />You will now be taken to the new thread.";
 $l['invalidthread'] = "The specified draft does not exist or you don't have permission to view it.";
 
-$l['error_stop_forum_spam_spammer'] = 'Sorry, your username or IP address matches that of a known spammer. If you feel this is a mistake, please contact an administrator';
+$l['error_stop_forum_spam_spammer'] = 'Sorry, your {1} matches that of a known spammer. If you feel this is a mistake, please contact an administrator';
 $l['error_stop_forum_spam_fetching'] = 'Sorry, something went wrong verifying your thread against a spammer database. Most likely the database couldn\'t be accessed. Please try again later.';
 
 $l['error_suspendedposting'] = "Your posting privileges are currently suspended {1}.<br /><br />

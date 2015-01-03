@@ -8,7 +8,7 @@
  *
  */
 
-class DB_PgSQL
+class DB_PgSQL implements DB_Base
 {
 	/**
 	 * The title of this layer.

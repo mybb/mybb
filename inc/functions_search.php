@@ -608,7 +608,17 @@ function privatemessage_perform_search_mysql($search)
 		$userids = array();
 		$search['sender'] = my_strtolower($search['sender']);
 
-		$query = $db->simple_select("users", "uid", "LOWER(username) LIKE '%".$db->escape_string_like($search['sender'])."%'");
+		switch($db->type)
+		{
+			case 'mysql':
+			case 'mysqli':
+				$field = 'username';
+				break;
+			default:
+				$field = 'LOWER(username)';
+				break;
+		}
+		$query = $db->simple_select("users", "uid", "{$field} LIKE '%".$db->escape_string_like($search['sender'])."%'");
 		while($user = $db->fetch_array($query))
 		{
 			$userids[] = $user['uid'];
@@ -1040,17 +1050,28 @@ function perform_search_mysql($search)
 		$search['author'] = my_strtolower($search['author']);
 		if($search['matchusername'])
 		{
-			$query = $db->simple_select("users", "uid", "LOWER(username)='".$db->escape_string($search['author'])."'");
+			$user = get_user_by_username($search['author']);
+			$userids[] = $user['uid'];
 		}
 		else
 		{
-			$query = $db->simple_select("users", "uid", "LOWER(username) LIKE '%".$db->escape_string_like($search['author'])."%'");
+			switch($db->type)
+			{
+				case 'mysql':
+				case 'mysqli':
+					$field = 'username';
+					break;
+				default:
+					$field = 'LOWER(username)';
+					break;
+			}
+			$query = $db->simple_select("users", "uid", "{$field} LIKE '%".$db->escape_string_like($search['author'])."%'");
+			while($user = $db->fetch_array($query))
+			{
+				$userids[] = $user['uid'];
+			}
 		}
 
-		while($user = $db->fetch_array($query))
-		{
-			$userids[] = $user['uid'];
-		}
 		if(count($userids) < 1)
 		{
 			error($lang->error_nosearchresults);
@@ -1443,16 +1464,27 @@ function perform_search_mysql_ft($search)
 		$search['author'] = my_strtolower($search['author']);
 		if($search['matchusername'])
 		{
-			$query = $db->simple_select("users", "uid", "LOWER(username)='".$db->escape_string($search['author'])."'");
+			$user = get_user_by_username($search['author']);
+			$userids[] = $user['uid'];
 		}
 		else
 		{
-			$query = $db->simple_select("users", "uid", "LOWER(username) LIKE '%".$db->escape_string_like($search['author'])."%'");
-		}
+			switch($db->type)
+			{
+				case 'mysql':
+				case 'mysqli':
+					$field = 'username';
+					break;
+				default:
+					$field = 'LOWER(username)';
+					break;
+			}
+			$query = $db->simple_select("users", "uid", "{$field} LIKE '%".$db->escape_string_like($search['author'])."%'");
 
-		while($user = $db->fetch_array($query))
-		{
-			$userids[] = $user['uid'];
+			while($user = $db->fetch_array($query))
+			{
+				$userids[] = $user['uid'];
+			}
 		}
 
 		if(count($userids) < 1)

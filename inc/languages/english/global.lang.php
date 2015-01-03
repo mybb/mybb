@@ -288,7 +288,6 @@ $l['postbit_button_delete_pm'] = 'Delete';
 $l['postbit_button_purgespammer'] = "Purge Spammer";
 
 $l['forumjump'] = "Forum Jump:";
-$l['forumjump_select'] = "Please select one:";
 $l['forumjump_pms'] = "Private Messages";
 $l['forumjump_usercp'] = "User Control Panel";
 $l['forumjump_wol'] = "Who's Online";
@@ -415,8 +414,15 @@ $l['select_theme'] = "Quick Theme Select";
 
 $l['invalid_post_code'] = "Authorization code mismatch. Are you accessing this function correctly? Please go back and try again.";
 $l['invalid_captcha'] = "Please fill out the image verification code to continue. Please enter the code exactly how it appears in the image.";
+$l['invalid_nocaptcha'] = "Please solve the reCAPTCHA to verify that you're not a robot.";
 $l['invalid_captcha_verify'] = "The image verification code that you entered was incorrect. Please enter the code exactly how it appears in the image.";
+$l['image_verification'] = "Image Verification";
+$l['human_verification'] = "Human Verification";
+$l['verification_note'] = "Please enter the text contained within the image into the text box below it. This process is used to prevent automated spam bots.";
+$l['verification_note_nocaptcha'] = "Please tick the checkbox that you see below. This process is used to prevent automated spam bots.";
+$l['verification_subnote'] = "(case insensitive)";
 $l['invalid_captcha_transmit'] = "An error occurred with the image verification. Please try again.";
+$l['invalid_nocaptcha_transmit'] = "An error occurred with the human verification. Please try again.";
 $l['captcha_fetch_failure'] = 'There was an error fetching the new captcha.';
 $l['question_fetch_failure'] = 'There was an error fetching the new question.';
 $l['invalid_ayah_result'] = "The Are You a Human game was not completed. Please try again.";
@@ -549,3 +555,8 @@ $l['select2_searching'] = "Searching…";
 
 $l['stopforumspam_error_decoding'] = 'Error decoding data from StopForumSpam.com.';
 $l['stopforumspam_error_retrieving'] = 'Error retrieving data from StopForumSpam.com.';
+
+$l['sfs_error_username'] = 'username';
+$l['sfs_error_ip'] = 'IP';
+$l['sfs_error_email'] = 'email';
+$l['sfs_error_or'] = 'or';

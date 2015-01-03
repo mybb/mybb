@@ -319,13 +319,22 @@ if(!$mybb->input['action'])
 	{
 		// Just show default icons in ACP
 		$attachment_type['icon'] = str_replace("{theme}", "images", $attachment_type['icon']);
+		if(my_strpos($attachment_type['icon'], "p://") || substr($attachment_type['icon'], 0, 1) == "/")
+		{
+			$image = $attachment_type['icon'];
+		}
+		else
+		{
+			$image = "../".$attachment_type['icon'];
+		}
+
 		if(!$attachment_type['icon'] || $attachment_type['icon'] == "images/attachtypes/")
 		{
 			$attachment_type['icon'] = "&nbsp;";
 		}
 		else
 		{
-			$attachment_type['icon'] = "<img src=\"../{$attachment_type['icon']}\" title=\"{$attachment_type['name']}\" alt=\"\" />";
+			$attachment_type['icon'] = "<img src=\"{$image}\" title=\"{$attachment_type['name']}\" alt=\"\" />";
 		}
 
 		$table->construct_cell($attachment_type['icon'], array("width" => 1));

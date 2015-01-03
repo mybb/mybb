@@ -1914,6 +1914,12 @@ function my_set_array_cookie($name, $id, $value, $expires="")
  */
 function my_unserialize($data)
 {
+	// Do not unserialize objects
+	if(substr($data, 0, 1) == 'O')
+	{
+		return array();
+	}
+
 	$array = unserialize($data);
 
 	if(!is_array($array))
@@ -2063,6 +2069,10 @@ function update_stats($changes=array(), $force=false)
 	{
 		if(array_key_exists($counter, $changes))
 		{
+			if(substr($changes[$counter], 0, 2) == "+-")
+			{
+				$changes[$counter] = substr($changes[$counter], 1);
+			}
 			// Adding or subtracting from previous value?
 			if(substr($changes[$counter], 0, 1) == "+" || substr($changes[$counter], 0, 1) == "-")
 			{
@@ -2158,6 +2168,10 @@ function update_forum_counters($fid, $changes=array())
 	{
 		if(array_key_exists($counter, $changes))
 		{
+			if(substr($changes[$counter], 0, 2) == "+-")
+			{
+				$changes[$counter] = substr($changes[$counter], 1);
+			}
 			// Adding or subtracting from previous value?
 			if(substr($changes[$counter], 0, 1) == "+" || substr($changes[$counter], 0, 1) == "-")
 			{
@@ -2324,6 +2338,10 @@ function update_thread_counters($tid, $changes=array())
 	{
 		if(array_key_exists($counter, $changes))
 		{
+			if(substr($changes[$counter], 0, 2) == "+-")
+			{
+				$changes[$counter] = substr($changes[$counter], 1);
+			}
 			// Adding or subtracting from previous value?
 			if(substr($changes[$counter], 0, 1) == "+" || substr($changes[$counter], 0, 1) == "-")
 			{
@@ -2450,6 +2468,10 @@ function update_user_counters($uid, $changes=array())
 	{
 		if(array_key_exists($counter, $changes))
 		{
+			if(substr($changes[$counter], 0, 2) == "+-")
+			{
+				$changes[$counter] = substr($changes[$counter], 1);
+			}
 			// Adding or subtracting from previous value?
 			if(substr($changes[$counter], 0, 1) == "+" || substr($changes[$counter], 0, 1) == "-")
 			{
@@ -2531,10 +2553,9 @@ function delete_post($pid)
  */
 function build_forum_jump($pid="0", $selitem="", $addselect="1", $depth="", $showextras="1", $showall=false, $permissions="", $name="fid")
 {
-	global $forum_cache, $jumpfcache, $permissioncache, $mybb, $selecteddone, $forumjump, $forumjumpbits, $gobutton, $theme, $templates, $lang;
+	global $forum_cache, $jumpfcache, $permissioncache, $mybb, $forumjump, $forumjumpbits, $gobutton, $theme, $templates, $lang;
 
 	$pid = (int)$pid;
-	$jumpsel['default'] = '';
 
 	if($permissions)
 	{
@@ -2576,8 +2597,7 @@ function build_forum_jump($pid="0", $selitem="", $addselect="1", $depth="", $sho
 
 					if($selitem == $forum['fid'])
 					{
-						$optionselected = "selected=\"selected\"";
-						$selecteddone = 1;
+						$optionselected = 'selected="selected"';
 					}
 
 					$forum['name'] = htmlspecialchars_uni(strip_tags($forum['name']));
@@ -2596,16 +2616,6 @@ function build_forum_jump($pid="0", $selitem="", $addselect="1", $depth="", $sho
 
 	if($addselect)
 	{
-		if(!$selecteddone)
-		{
-			if(!$selitem)
-			{
-				$selitem = "default";
-			}
-
-			$jumpsel[$selitem] = 'selected="selected"';
-		}
-
 		if($showextras == 0)
 		{
 			$template = "special";
@@ -2616,11 +2626,11 @@ function build_forum_jump($pid="0", $selitem="", $addselect="1", $depth="", $sho
 
 			if(strpos(FORUM_URL, '.html') !== false)
 			{
-				$forum_link = "'".str_replace('{fid}', "'+this.options[this.selectedIndex].value+'", FORUM_URL)."'";
+				$forum_link = "'".str_replace('{fid}', "'+option+'", FORUM_URL)."'";
 			}
 			else
 			{
-				$forum_link = "'".str_replace('{fid}', "'+this.options[this.selectedIndex].value", FORUM_URL);
+				$forum_link = "'".str_replace('{fid}', "'+option", FORUM_URL);
 			}
 		}
 
@@ -3535,7 +3545,7 @@ function get_ip()
 {
 	global $mybb, $plugins;
 
-	$ip = $_SERVER['REMOTE_ADDR'];
+	$ip = strtolower($_SERVER['REMOTE_ADDR']);
 
 	if($mybb->settings['ip_forwarded_check'])
 	{
@@ -3543,11 +3553,11 @@ function get_ip()
 
 		if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
 		{
-			$addresses = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+			$addresses = explode(',', strtolower($_SERVER['HTTP_X_FORWARDED_FOR']));
 		}
 		elseif(isset($_SERVER['HTTP_X_REAL_IP']))
 		{
-			$addresses = explode(',', $_SERVER['HTTP_X_REAL_IP']);
+			$addresses = explode(',', strtolower($_SERVER['HTTP_X_REAL_IP']));
 		}
 
 		if(is_array($addresses))
@@ -3569,7 +3579,7 @@ function get_ip()
 	{
 		if(isset($_SERVER['HTTP_CLIENT_IP']))
 		{
-			$ip = $_SERVER['HTTP_CLIENT_IP'];
+			$ip = strtolower($_SERVER['HTTP_CLIENT_IP']);
 		}
 	}
 
@@ -4624,11 +4634,6 @@ function get_current_location($fields=false, $ignore=array())
 			}
 		}
 
-		if(strlen($location) > 150)
-		{
-			$location = substr($location, 0, 150);
-		}
-
 		return $location;
 	}
 }
@@ -4866,29 +4871,10 @@ function convert_through_utf8($str, $to=true)
 }
 
 /**
- * Replacement function for PHP's wordwrap(). This version does not break up HTML tags, URLs or unicode references.
- *
- * @param string The string to be word wrapped
- * @return string The word wraped string
+ * DEPRECATED! Please use other alternatives.
  */
 function my_wordwrap($message)
 {
-	global $mybb;
-
-	if($mybb->settings['wordwrap'] > 0)
-	{
-		$message = convert_through_utf8($message);
-
-		if(!($new_message = @preg_replace("#(((?>[^\s&/<>\"\\-\[\]])|(&\#[a-z0-9]{1,10};)){{$mybb->settings['wordwrap']}})#u", "$0&#8203;", $message)))
-		{
-			$new_message = preg_replace("#(((?>[^\s&/<>\"\\-\[\]])|(&\#[a-z0-9]{1,10};)){{$mybb->settings['wordwrap']}})#", "$0&#8203;", $message);
-		}
-
-		$new_message = convert_through_utf8($new_message, false);
-
-		return $new_message;
-	}
-
 	return $message;
 }
 
@@ -5652,16 +5638,27 @@ function get_user_by_username($username, $options=array())
 		$options['username_method'] = 0;
 	}
 
+	switch($db->type)
+	{
+		case 'mysql':
+		case 'mysqli':
+			$field = 'username';
+			break;
+		default:
+			$field = 'LOWER(username)';
+			break;
+	}
+
 	switch($options['username_method'])
 	{
 		case 1:
 			$sqlwhere = 'LOWER(email)=\''.$username.'\'';
 			break;
 		case 2:
-			$sqlwhere = 'LOWER(username)=\''.$username.'\' OR LOWER(email)=\''.$username.'\'';
+			$sqlwhere = $field.'=\''.$username.'\' OR LOWER(email)=\''.$username.'\'';
 			break;
 		default:
-			$sqlwhere = 'LOWER(username)=\''.$username.'\'';
+			$sqlwhere = $field.'=\''.$username.'\'';
 			break;
 	}
 
@@ -6383,7 +6380,7 @@ function build_timezone_select($name, $selected=0, $short=false)
 }
 
 /**
- * Fetch the contents of a remote fle.
+ * Fetch the contents of a remote file.
  *
  * @param string The URL of the remote file
  * @param array The array of post data
@@ -6408,6 +6405,7 @@ function fetch_remote_file($url, $post_data=array())
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_TIMEOUT, 10);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		if(!empty($post_body))
 		{
 			curl_setopt($ch, CURLOPT_POST, 1);
@@ -6436,7 +6434,19 @@ function fetch_remote_file($url, $post_data=array())
 		{
 			$url['path'] .= "?{$url['query']}";
 		}
-		$fp = @fsockopen($url['host'], $url['port'], $error_no, $error, 10);
+
+		$scheme = '';
+
+		if($url['scheme'] == 'https')
+		{
+			$scheme = 'ssl://';
+			if($url['port'] == 80)
+			{
+				$url['port'] = 443;
+			}
+		}
+
+		$fp = @fsockopen($scheme.$url['host'], $url['port'], $error_no, $error, 10);
 		@stream_set_timeout($fp, 10);
 		if(!$fp)
 		{

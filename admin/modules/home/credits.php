@@ -61,7 +61,7 @@ if(!$mybb->input['action'])
 			{
 				admin_redirect('index.php?module=tools-cache');
 			}
-			admin_redirect('index.php?module=home-credits&amp;fetch_new=-1');
+			admin_redirect('index.php?module=home-credits');
 		}
 
 		$parser = new XMLParser($contents);
@@ -73,14 +73,14 @@ if(!$mybb->input['action'])
 			foreach($team['member'] as $member)
 			{
 				$members[] = array(
-					'name' => $member['name']['value'],
-					'username' => $member['username']['value'],
-					'profile' => $member['profile']['value'],
-					'lead' => (bool) $member['attributes']['lead'] or false
+					'name' => htmlspecialchars_uni($member['name']['value']),
+					'username' => htmlspecialchars_uni($member['username']['value']),
+					'profile' => htmlspecialchars_uni($member['profile']['value']),
+					'lead' => (bool)$member['attributes']['lead'] or false
 				);
 			}
 			$mybbgroup[] = array(
-				'title' => $team['attributes']['title'],
+				'title' => htmlspecialchars_uni($team['attributes']['title']),
 				'members' => $members
 			);
 		}
@@ -91,10 +91,14 @@ if(!$mybb->input['action'])
 		if($mybb->get_input('fetch_new', 1) == -2)
 		{
 			$lang->load('tools_cache');
-			flash_message($lang->success_cache_reloaded, 'sucess');
+			flash_message($lang->success_cache_reloaded, 'success');
 			admin_redirect('index.php?module=tools-cache');
 		}
-		$mybb_credits = $new_mybb_credits;
+		else
+		{
+			flash_message($lang->success_credits_updated, 'success');
+			admin_redirect('index.php?module=home-credits');
+		}
 	}
 
 	if(empty($mybb_credits) || (is_array($mybb_credits) && empty($mybb_credits['credits'])))

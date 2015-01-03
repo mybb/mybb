@@ -540,7 +540,8 @@ function build_postbit($post, $post_type=0)
 			eval("\$post['editedmsg'] = \"".$templates->get("postbit_editedby")."\";");
 		}
 
-		if((is_moderator($fid, "caneditposts") || ($forumpermissions['caneditposts'] == 1 && $mybb->user['uid'] == $post['uid'] && $thread['closed'] != 1)) && $mybb->user['uid'] != 0)
+		$time = TIME_NOW;
+		if((is_moderator($fid, "caneditposts") || ($forumpermissions['caneditposts'] == 1 && $mybb->user['uid'] == $post['uid'] && $thread['closed'] != 1 && ($mybb->usergroup['edittimelimit'] == 0 || $mybb->usergroup['edittimelimit'] != 0 && $post['dateline'] > ($time-($mybb->usergroup['edittimelimit']*60))))) && $mybb->user['uid'] != 0)
 		{
 			eval("\$post['button_edit'] = \"".$templates->get("postbit_edit")."\";");
 		}
