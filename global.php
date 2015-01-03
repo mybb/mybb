@@ -941,7 +941,7 @@ if(!$mybb->user['uid'] && $mybb->settings['usereferrals'] == 1 && (isset($mybb->
 	}
 	else
 	{
-		$condition = "uid = '".$mybb->get_input('referrer', 1)."'";
+		$condition = "uid = '".$mybb->get_input('referrer', MyBB::INPUT_INT)."'";
 	}
 
 	$query = $db->simple_select('users', 'uid', $condition, array('limit' => 1));

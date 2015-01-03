@@ -718,13 +718,13 @@ if(!$mybb->input['action'])
 		// Now we fetch the results if there were 100% no errors
 		if(!$errors)
 		{
-			$mybb->input['perpage'] = $mybb->get_input('perpage', 1);
+			$mybb->input['perpage'] = $mybb->get_input('perpage', MyBB::INPUT_INT);
 			if(!$mybb->input['perpage'])
 			{
 				$mybb->input['perpage'] = 20;
 			}
 
-			$mybb->input['page'] = $mybb->get_input('page', 1);
+			$mybb->input['page'] = $mybb->get_input('page', MyBB::INPUT_INT);
 			if($mybb->input['page'])
 			{
 				$start = ($mybb->input['page'] - 1) * $mybb->input['perpage'];

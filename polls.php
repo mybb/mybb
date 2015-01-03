@@ -46,11 +46,11 @@ if(!empty($mybb->input['updateoptions']))
 if($mybb->input['action'] == "newpoll")
 {
 	// Form for new poll
-	$tid = $mybb->get_input('tid', 1);
+	$tid = $mybb->get_input('tid', MyBB::INPUT_INT);
 
 	$plugins->run_hooks("polls_newpoll_start");
 
-	$thread = get_thread($mybb->get_input('tid', 1));
+	$thread = get_thread($mybb->get_input('tid', MyBB::INPUT_INT));
 	if(!$thread)
 	{
 		error($lang->error_invalidthread);
@@ -114,27 +114,27 @@ if($mybb->input['action'] == "newpoll")
 	}
 
 	// Sanitize number of poll options
-	if($mybb->get_input('numpolloptions', 1) > 0)
+	if($mybb->get_input('numpolloptions', MyBB::INPUT_INT) > 0)
 	{
-		$mybb->input['polloptions'] = $mybb->get_input('numpolloptions', 1);
+		$mybb->input['polloptions'] = $mybb->get_input('numpolloptions', MyBB::INPUT_INT);
 	}
-	if($mybb->settings['maxpolloptions'] && $mybb->get_input('polloptions', 1) > $mybb->settings['maxpolloptions'])
+	if($mybb->settings['maxpolloptions'] && $mybb->get_input('polloptions', MyBB::INPUT_INT) > $mybb->settings['maxpolloptions'])
 	{	// Too big
 		$polloptions = $mybb->settings['maxpolloptions'];
 	}
-	elseif($mybb->get_input('polloptions', 1) < 2)
+	elseif($mybb->get_input('polloptions', MyBB::INPUT_INT) < 2)
 	{	// Too small
 		$polloptions = 2;
 	}
 	else
 	{	// Just right
-		$polloptions = $mybb->get_input('polloptions', 1);
+		$polloptions = $mybb->get_input('polloptions', MyBB::INPUT_INT);
 	}
 
 	$question = htmlspecialchars_uni($mybb->get_input('question'));
 
 	$postoptionschecked = array('public' => '', 'multiple' => '');
-	$postoptions = $mybb->get_input('postoptions', 1);
+	$postoptions = $mybb->get_input('postoptions', MyBB::INPUT_INT);
 	if(isset($postoptions['multiple']) && $postoptions['multiple'] == 1)
 	{
 		$postoptionschecked['multiple'] = 'checked="checked"';
@@ -144,7 +144,7 @@ if($mybb->input['action'] == "newpoll")
 		$postoptionschecked['public'] = 'checked="checked"';
 	}
 
-	$options = $mybb->get_input('options', 2);
+	$options = $mybb->get_input('options', MyBB::INPUT_ARRAY);
 	$optionbits = '';
 	for($i = 1; $i <= $polloptions; ++$i)
 	{
@@ -158,18 +158,18 @@ if($mybb->input['action'] == "newpoll")
 		$option = "";
 	}
 
-	if($mybb->get_input('timeout', 1) > 0)
+	if($mybb->get_input('timeout', MyBB::INPUT_INT) > 0)
 	{
-		$timeout = $mybb->get_input('timeout', 1);
+		$timeout = $mybb->get_input('timeout', MyBB::INPUT_INT);
 	}
 	else
 	{
 		$timeout = 0;
 	}
 	
-	if($mybb->get_input('maxoptions', 1) > 0 && $mybb->get_input('maxoptions', 1) < $polloptions)
+	if($mybb->get_input('maxoptions', MyBB::INPUT_INT) > 0 && $mybb->get_input('maxoptions', MyBB::INPUT_INT) < $polloptions)
 	{
-		$maxoptions = $mybb->get_input('maxoptions', 1);
+		$maxoptions = $mybb->get_input('maxoptions', MyBB::INPUT_INT);
 	}
 	else
 	{
@@ -188,7 +188,7 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 
 	$plugins->run_hooks("polls_do_newpoll_start");
 
-	$thread = get_thread($mybb->get_input('tid', 1));
+	$thread = get_thread($mybb->get_input('tid', MyBB::INPUT_INT));
 	if(!$thread)
 	{
 		error($lang->error_invalidthread);
@@ -224,13 +224,13 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 		error($lang->error_pollalready);
 	}
 
-	$polloptions = $mybb->get_input('polloptions', 1);
+	$polloptions = $mybb->get_input('polloptions', MyBB::INPUT_INT);
 	if($mybb->settings['maxpolloptions'] && $polloptions > $mybb->settings['maxpolloptions'])
 	{
 		$polloptions = $mybb->settings['maxpolloptions'];
 	}
 
-	$postoptions = $mybb->get_input('postoptions', 2);
+	$postoptions = $mybb->get_input('postoptions', MyBB::INPUT_ARRAY);
 	if(!isset($postoptions['multiple']) || $postoptions['multiple'] != '1')
 	{
 		$postoptions['multiple'] = 0;
@@ -246,7 +246,7 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 		$polloptions = "2";
 	}
 	$optioncount = "0";
-	$options = $mybb->get_input('options', 2);
+	$options = $mybb->get_input('options', MyBB::INPUT_ARRAY);
 
 	for($i = 1; $i <= $polloptions; ++$i)
 	{
@@ -295,18 +295,18 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 		}
 	}
 
-	if($mybb->get_input('timeout', 1) > 0)
+	if($mybb->get_input('timeout', MyBB::INPUT_INT) > 0)
 	{
-		$timeout = $mybb->get_input('timeout', 1);
+		$timeout = $mybb->get_input('timeout', MyBB::INPUT_INT);
 	}
 	else
 	{
 		$timeout = 0;
 	}
 
-	if($mybb->get_input('maxoptions', 1) > 0 && $mybb->get_input('maxoptions', 1) < $polloptions)
+	if($mybb->get_input('maxoptions', MyBB::INPUT_INT) > 0 && $mybb->get_input('maxoptions', MyBB::INPUT_INT) < $polloptions)
 	{
-		$maxoptions = $mybb->get_input('maxoptions', 1);
+		$maxoptions = $mybb->get_input('maxoptions', MyBB::INPUT_INT);
 	}
 	else
 	{
@@ -348,7 +348,7 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "editpoll")
 {
-	$pid = $mybb->get_input('pid', 1);
+	$pid = $mybb->get_input('pid', MyBB::INPUT_INT);
 
 	$plugins->run_hooks("polls_editpoll_start");
 
@@ -467,21 +467,21 @@ if($mybb->input['action'] == "editpoll")
 	}
 	else
 	{
-		if($mybb->settings['maxpolloptions'] && $mybb->get_input('numoptions', 1) > $mybb->settings['maxpolloptions'])
+		if($mybb->settings['maxpolloptions'] && $mybb->get_input('numoptions', MyBB::INPUT_INT) > $mybb->settings['maxpolloptions'])
 		{
 			$numoptions = $mybb->settings['maxpolloptions'];
 		}
-		elseif($mybb->get_input('numoptions', 1) < 2)
+		elseif($mybb->get_input('numoptions', MyBB::INPUT_INT) < 2)
 		{
 			$numoptions = 2;
 		}
 		else
 		{
-			$numoptions = $mybb->get_input('numoptions', 1);
+			$numoptions = $mybb->get_input('numoptions', MyBB::INPUT_INT);
 		}
 		$question = htmlspecialchars_uni($mybb->input['question']);
 
-		$postoptions = $mybb->get_input('postoptions', 2);
+		$postoptions = $mybb->get_input('postoptions', MyBB::INPUT_ARRAY);
 		if(isset($postoptions['multiple']) && $postoptions['multiple'] == 1)
 		{
 			$postoptionschecked['multiple'] = 'checked="checked"';
@@ -497,8 +497,8 @@ if($mybb->input['action'] == "editpoll")
 			$postoptionschecked['closed'] = 'checked="checked"';
 		}
 
-		$options = $mybb->get_input('options', 2);
-		$votes = $mybb->get_input('votes', 2);
+		$options = $mybb->get_input('options', MyBB::INPUT_ARRAY);
+		$votes = $mybb->get_input('votes', MyBB::INPUT_ARRAY);
 		$optionbits = '';
 		for($i = 1; $i <= $numoptions; ++$i)
 		{
@@ -523,9 +523,9 @@ if($mybb->input['action'] == "editpoll")
 			$option = "";
 		}
 
-		if($mybb->get_input('timeout', 1) > 0)
+		if($mybb->get_input('timeout', MyBB::INPUT_INT) > 0)
 		{
-			$timeout = $mybb->get_input('timeout', 1);
+			$timeout = $mybb->get_input('timeout', MyBB::INPUT_INT);
 		}
 		else
 		{
@@ -555,7 +555,7 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 
 	$plugins->run_hooks("polls_do_editpoll_start");
 
-	$query = $db->simple_select("polls", "*", "pid='".$mybb->get_input('pid', 1)."'");
+	$query = $db->simple_select("polls", "*", "pid='".$mybb->get_input('pid', MyBB::INPUT_INT)."'");
 	$poll = $db->fetch_array($query);
 
 	if(!$poll)
@@ -563,7 +563,7 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 		error($lang->error_invalidpoll);
 	}
 
-	$query = $db->simple_select("threads", "*", "poll='".$mybb->get_input('pid', 1)."'");
+	$query = $db->simple_select("threads", "*", "poll='".$mybb->get_input('pid', MyBB::INPUT_INT)."'");
 	$thread = $db->fetch_array($query);
 	if(!$thread)
 	{
@@ -593,20 +593,20 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 		error_no_permission();
 	}
 
-	if($mybb->settings['maxpolloptions'] && $mybb->get_input('numoptions', 1) > $mybb->settings['maxpolloptions'])
+	if($mybb->settings['maxpolloptions'] && $mybb->get_input('numoptions', MyBB::INPUT_INT) > $mybb->settings['maxpolloptions'])
 	{
 		$numoptions = $mybb->settings['maxpolloptions'];
 	}
-	elseif($mybb->get_input('numoptions', 1) < 2)
+	elseif($mybb->get_input('numoptions', MyBB::INPUT_INT) < 2)
 	{
 		$numoptions = 2;
 	}
 	else
 	{
-		$numoptions = $mybb->get_input('numoptions', 1);
+		$numoptions = $mybb->get_input('numoptions', MyBB::INPUT_INT);
 	}
 
-	$postoptions = $mybb->get_input('postoptions', 2);
+	$postoptions = $mybb->get_input('postoptions', MyBB::INPUT_ARRAY);
 	if(!isset($postoptions['multiple']) || $postoptions['multiple'] != '1')
 	{
 		$postoptions['multiple'] = 0;
@@ -677,18 +677,18 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 		}
 	}
 
-	if($mybb->get_input('timeout', 1) > 0)
+	if($mybb->get_input('timeout', MyBB::INPUT_INT) > 0)
 	{
-		$timeout = $mybb->get_input('timeout', 1);
+		$timeout = $mybb->get_input('timeout', MyBB::INPUT_INT);
 	}
 	else
 	{
 		$timeout = 0;
 	}
 	
-	if($mybb->get_input('maxoptions', 1) > 0 && $mybb->get_input('maxoptions', 1) < $numoptions)
+	if($mybb->get_input('maxoptions', MyBB::INPUT_INT) > 0 && $mybb->get_input('maxoptions', MyBB::INPUT_INT) < $numoptions)
 	{
-		$maxoptions = $mybb->get_input('maxoptions', 1);
+		$maxoptions = $mybb->get_input('maxoptions', MyBB::INPUT_INT);
 	}
 	else
 	{
@@ -710,7 +710,7 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 
 	$plugins->run_hooks("polls_do_editpoll_process");
 
-	$db->update_query("polls", $updatedpoll, "pid='".$mybb->get_input('pid', 1)."'");
+	$db->update_query("polls", $updatedpoll, "pid='".$mybb->get_input('pid', MyBB::INPUT_INT)."'");
 
 	$plugins->run_hooks("polls_do_editpoll_end");
 
@@ -723,7 +723,7 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "showresults")
 {
-	$query = $db->simple_select("polls", "*", "pid='".$mybb->get_input('pid', 1)."'");
+	$query = $db->simple_select("polls", "*", "pid='".$mybb->get_input('pid', MyBB::INPUT_INT)."'");
 	$poll = $db->fetch_array($query);
 
 	if(!$poll)
@@ -1053,7 +1053,7 @@ if($mybb->input['action'] == "do_undovote")
 		error_no_permission();
 	}
 
-	$query = $db->simple_select("polls", "*", "pid='".$mybb->get_input('pid', 1)."'");
+	$query = $db->simple_select("polls", "*", "pid='".$mybb->get_input('pid', MyBB::INPUT_INT)."'");
 	$poll = $db->fetch_array($query);
 
 	if(!$poll['pid'])
