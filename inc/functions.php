@@ -2180,7 +2180,7 @@ function _safe_serialize( $value )
  * @param mixed $value
  * @return string
 */
-function my_serialize( $value )
+function my_serialize($value)
 {
 	// ensure we use the byte count for strings even when strlen() is overloaded by mb_strlen()
 	if(function_exists('mb_internal_encoding') && (((int)ini_get('mbstring.func_overload')) & 2))
