@@ -48,7 +48,7 @@ if(!$mybb->input['action'])
 		$plugins->run_hooks("admin_tools_optimizedb_start_begin");
 
 		// Log admin action
-		log_admin_action(serialize($mybb->input['tables']));
+		log_admin_action(my_serialize($mybb->input['tables']));
 
 		flash_message($lang->success_tables_optimized, 'success');
 		admin_redirect("index.php?module=tools-optimizedb");

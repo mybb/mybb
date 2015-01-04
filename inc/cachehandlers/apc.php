@@ -76,7 +76,7 @@ class apcCacheHandler
 	 */
 	function put($name, $contents)
 	{
-		$status = apc_store($this->unique_id."_".$name, serialize($contents));
+		$status = apc_store($this->unique_id."_".$name, my_serialize($contents));
 		return $status;
 	}
 

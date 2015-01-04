@@ -1899,7 +1899,7 @@ function my_set_array_cookie($name, $id, $value, $expires="")
 	}
 
 	$newcookie[$id] = $value;
-	$newcookie = serialize($newcookie);
+	$newcookie = my_serialize($newcookie);
 	my_setcookie("mybb[$name]", addslashes($newcookie), $expires);
 
 	// Make sure our current viarables are up-to-date as well
@@ -1916,7 +1916,7 @@ define('MAX_SERIALIZED_ARRAY_DEPTH', 5);
 /**
  * Credits go to https://github.com/piwik
  * Safe unserialize() replacement
- * - accepts a strict subset of PHP's native serialized representation
+ * - accepts a strict subset of PHP's native my_serialized representation
  * - does not unserialize objects
  *
  * @param string $str
@@ -2123,9 +2123,9 @@ function my_unserialize($str)
 
 /**
  * Credits go to https://github.com/piwik
- * Safe serialize() replacement
- * - output a strict subset of PHP's native serialized representation
- * - does not serialize objects
+ * Safe my_serialize() replacement
+ * - output a strict subset of PHP's native my_serialized representation
+ * - does not my_serialize objects
  *
  * @param mixed $value
  * @return string
@@ -2169,7 +2169,7 @@ function _safe_serialize( $value )
 		return 'a:'.count($value).':{'.$out.'}';
 	}
 
-	// safe_serialize cannot serialize resources or objects
+	// safe_serialize cannot my_serialize resources or objects
 	return false;
 }
 
@@ -3716,10 +3716,10 @@ function log_moderator_action($data, $action="")
 		unset($data['pid']);
 	}
 
-	// Any remaining extra data - we serialize and insert in to its own column
+	// Any remaining extra data - we my_serialize and insert in to its own column
 	if(is_array($data))
 	{
-		$data = serialize($data);
+		$data = my_serialize($data);
 	}
 
 	$sql_array = array(
@@ -8090,7 +8090,7 @@ function log_spam_block($username = '', $email = '', $ip_address = '', $data = a
 		'email'     => $db->escape_string($email),
 		'ipaddress' => $db->escape_binary($ip_address),
 		'dateline'  => (int)TIME_NOW,
-		'data'      => $db->escape_string(@serialize($data)),
+		'data'      => $db->escape_string(@my_serialize($data)),
 	);
 
 	return (bool)$db->insert_query('spamlog', $insert_array);

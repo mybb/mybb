@@ -33,7 +33,7 @@ function log_admin_action()
 		"dateline" => TIME_NOW,
 		"module" => $db->escape_string($mybb->get_input('module')),
 		"action" => $db->escape_string($mybb->get_input('action')),
-		"data" => $db->escape_string(@serialize($data))
+		"data" => $db->escape_string(@my_serialize($data))
 	);
 
 	$db->insert_query("adminlog", $log_entry);
@@ -70,7 +70,7 @@ function update_admin_session($name, $value)
 
 	$admin_session['data'][$name] = $value;
 	$updated_session = array(
-		"data" => $db->escape_string(@serialize($admin_session['data']))
+		"data" => $db->escape_string(@my_serialize($admin_session['data']))
 	);
 	$db->update_query("adminsessions", $updated_session, "sid='{$admin_session['sid']}'");
 }
@@ -579,7 +579,7 @@ function change_admin_permission($tab, $page="", $default=1)
 			}
 		}
 
-		$db->update_query("adminoptions", array('permissions' => $db->escape_string(serialize($adminoption['permissions']))), "uid='{$adminoption['uid']}'");
+		$db->update_query("adminoptions", array('permissions' => $db->escape_string(my_serialize($adminoption['permissions']))), "uid='{$adminoption['uid']}'");
 	}
 }
 

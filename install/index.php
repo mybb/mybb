@@ -1758,7 +1758,7 @@ function insert_templates()
 		}
 	}
 
-	$db->update_query("themes", array("def" => 1, "properties" => $db->escape_string(serialize($properties)), "stylesheets" => $db->escape_string(serialize($stylesheets))), "tid = '{$tid}'");
+	$db->update_query("themes", array("def" => 1, "properties" => $db->escape_string(my_serialize($properties)), "stylesheets" => $db->escape_string(my_serialize($stylesheets))), "tid = '{$tid}'");
 
 	echo $lang->theme_step_imported;
 	$output->print_footer('configuration');
@@ -2108,9 +2108,9 @@ EOF;
 				"type" => $db->escape_string($view['attributes']['type']),
 				"visibility" => (int)$view['attributes']['visibility'],
 				"title" => $db->escape_string($view['title'][0]['value']),
-				"fields" => $db->escape_string(serialize($fields)),
-				"conditions" => $db->escape_string(serialize($conditions)),
-				"custom_profile_fields" => $db->escape_string(serialize($custom_profile_fields)),
+				"fields" => $db->escape_string(my_serialize($fields)),
+				"conditions" => $db->escape_string(my_serialize($conditions)),
+				"custom_profile_fields" => $db->escape_string(my_serialize($custom_profile_fields)),
 				"sortby" => $db->escape_string($view['sortby'][0]['value']),
 				"sortorder" => $db->escape_string($view['sortorder'][0]['value']),
 				"perpage" => (int)$view['perpage'][0]['value'],
@@ -2293,8 +2293,8 @@ function install_done()
 			'uid' => (int)$uid,
 			'cpstyle' => '',
 			'notes' => '',
-			'permissions' => $db->escape_string(serialize($insertmodule)),
-			'defaultviews' => $db->escape_string(serialize($defaultviews))
+			'permissions' => $db->escape_string(my_serialize($insertmodule)),
+			'defaultviews' => $db->escape_string(my_serialize($defaultviews))
 		);
 
 		$insertmodule = array();

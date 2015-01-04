@@ -541,7 +541,7 @@ if($mybb->input['action'] == "export")
 
 			if(is_array($value))
 			{
-				$value = serialize($value);
+				$value = my_serialize($value);
 			}
 
 			$value = str_replace(']]>', ']]]]><![CDATA[>', $value);
@@ -1120,7 +1120,7 @@ if($mybb->input['action'] == "edit")
 			'name' => $db->escape_string($mybb->input['name']),
 			'pid' => $mybb->get_input('pid', 1),
 			'allowedgroups' => $allowedgroups,
-			'properties' => $db->escape_string(serialize($properties))
+			'properties' => $db->escape_string(my_serialize($properties))
 		);
 
 		// perform validation
@@ -1273,7 +1273,7 @@ if($mybb->input['action'] == "edit")
 		$properties['disporder'] = $orders;
 
 		$update_array = array(
-			"properties" => $db->escape_string(serialize($properties))
+			"properties" => $db->escape_string(my_serialize($properties))
 		);
 
 		$db->update_query("themes", $update_array, "tid = '{$theme['tid']}'");
