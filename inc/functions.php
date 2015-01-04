@@ -2104,8 +2104,8 @@ function _safe_unserialize($str)
  */
 function my_unserialize($str)
 {
-	// ensure we use the byte count for strings even when strlen() is overloaded by mb_strlen()
-	if (function_exists('mb_internal_encoding') && (((int) ini_get('mbstring.func_overload')) & 2))
+	// Ensure we use the byte count for strings even when strlen() is overloaded by mb_strlen()
+	if(function_exists('mb_internal_encoding') && (((int)ini_get('mbstring.func_overload')) & 2))
 	{
 		$mbIntEnc = mb_internal_encoding();
 		mb_internal_encoding('ASCII');
@@ -2113,10 +2113,11 @@ function my_unserialize($str)
 
 	$out = _safe_unserialize($str);
 
-	if (isset($mbIntEnc))
+	if(isset($mbIntEnc))
 	{
 		mb_internal_encoding($mbIntEnc);
 	}
+	
 	return $out;
 }
 
@@ -2182,7 +2183,7 @@ function _safe_serialize( $value )
 function my_serialize( $value )
 {
 	// ensure we use the byte count for strings even when strlen() is overloaded by mb_strlen()
-	if(function_exists('mb_internal_encoding') && (((int) ini_get('mbstring.func_overload')) & 2))
+	if(function_exists('mb_internal_encoding') && (((int)ini_get('mbstring.func_overload')) & 2))
 	{
 		$mbIntEnc = mb_internal_encoding();
 		mb_internal_encoding('ASCII');
