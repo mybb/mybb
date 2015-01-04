@@ -188,7 +188,7 @@ function intro()
 	global $output, $mybb, $lang;
 
 	$output->print_header($lang->welcome, 'welcome');
-	if(strpos(strtolower($_SERVER['PHP_SELF']), "upload/") !== false)
+	if(strpos(strtolower(get_current_location()), '/upload/') !== false)
 	{
 		echo $lang->sprintf($lang->mybb_incorrect_folder);
 	}
@@ -1823,9 +1823,7 @@ EOF;
 	{
 		$bbname = 'Forums';
 		$cookiedomain = '';
-		$cookiepath = '/';
 		$websitename = 'Your Website';
-		$contactemail = '';
 
 		$protocol = "http://";
 		if((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != "off"))
@@ -1847,7 +1845,7 @@ EOF;
 
 		if(substr($cookiedomain, 0, 4) == "www.")
 		{
-			$cookiedomain = my_substr($cookiedomain, 4);
+			$cookiedomain = substr($cookiedomain, 4);
 		}
 
 		// IP addresses and hostnames are not valid
@@ -1864,34 +1862,14 @@ EOF;
 		{
 			$hostname .= ':'.$_SERVER['SERVER_PORT'];
 		}
+		
 		$websiteurl = $hostname.'/';
 
-		$currentlocation = get_current_location();
-		if($currentlocation)
-		{
-			// TODO: Change this to find the last position of /install/
-			$pos = my_strpos($currentlocation, '/install/');
-			if($pos === 0)
-			{
-				$cookiepath = "/";
-			}
-			else
-			{
-				$cookiepath = my_substr($currentlocation, 0, $pos).'/';
-			}
-		}
-
-		$currentscript = $hostname.get_current_location();
-
-		if($currentscript)
-		{
-			$bburl = my_substr($currentscript, 0, my_strpos($currentscript, '/install/'));
-		}
-
-		if($_SERVER['SERVER_ADMIN'])
-		{
-			$contactemail = $_SERVER['SERVER_ADMIN'];
-		}
+		$noinstall = substr($currentlocation, 0, strrpos(get_current_location(), '/install/'));
+		
+		$cookiepath = $noinstall.'/';
+		$bburl = $hostname.$noinstall;
+		$contactemail = $_SERVER['SERVER_ADMIN'];
 	}
 
 	echo $lang->sprintf($lang->config_step_table, $bbname, $bburl, $websitename, $websiteurl, $cookiedomain, $cookiepath, $contactemail);
