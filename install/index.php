@@ -1863,12 +1863,12 @@ EOF;
 			$hostname .= ':'.$_SERVER['SERVER_PORT'];
 		}
 		
-		$websiteurl = $hostname.'/';
-
-		$noinstall = substr($currentlocation, 0, strrpos(get_current_location(), '/install/'));
+		$currentlocation = get_current_location();
+		$noinstall = substr($currentlocation, 0, strrpos($currentlocation, '/install/'));
 		
 		$cookiepath = $noinstall.'/';
 		$bburl = $hostname.$noinstall;
+		$websiteurl = $hostname.'/';
 		$contactemail = $_SERVER['SERVER_ADMIN'];
 	}
 
