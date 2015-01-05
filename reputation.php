@@ -251,7 +251,7 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 	if(!empty($mybb->input['delete']))
 	{
 		// Only administrators, super moderators, as well as users who gave a specifc vote can delete one.
-		if($mybb->usergroup['cancp'] != 1 && $mybb->usergroup['issupermod'] != 1 && $existing_reputation['adduid'] != $mybb->user['uid'])
+		if($mybb->usergroup['issupermod'] != 1 && ($mybb->usergroup['candeletereputations'] != 1 || $existing_reputation['adduid'] != $mybb->user['uid'] || $mybb->user['uid'] == 0))
 		{
 			error_no_permission();
 		}
@@ -428,7 +428,10 @@ if($mybb->input['action'] == "add")
 		$vote_button = $lang->update_vote;
 		$comments = htmlspecialchars_uni($existing_reputation['comments']);
 
-		eval("\$delete_button = \"".$templates->get("reputation_add_delete")."\";");
+		if($mybb->usergroup['issupermod'] == 1 || ($mybb->usergroup['candeletereputations'] == 1 && $existing_reputation['adduid'] == $mybb->user['uid'] && $mybb->user['uid'] != 0))
+		{
+			eval("\$delete_button = \"".$templates->get("reputation_add_delete")."\";");
+		}
 	}
 	// Otherwise we're adding an entirely new reputation for this user.
 	else
@@ -530,7 +533,7 @@ if($mybb->input['action'] == "delete")
 	$existing_reputation = $db->fetch_array($query);
 
 	// Only administrators, super moderators, as well as users who gave a specifc vote can delete one.
-	if($mybb->usergroup['cancp'] != 1 && $mybb->usergroup['issupermod'] != 1 && $existing_reputation['adduid'] != $mybb->user['uid'])
+	if($mybb->usergroup['issupermod'] != 1 && ($mybb->usergroup['candeletereputations'] != 1 || $existing_reputation['adduid'] != $mybb->user['uid'] || $mybb->user['uid'] == 0))
 	{
 		error_no_permission();
 	}
@@ -954,7 +957,7 @@ if(!$mybb->input['action'])
 
 		// Does the current user have permission to delete this reputation? Show delete link
 		$delete_link = '';
-		if($mybb->usergroup['cancp'] == 1 || $mybb->usergroup['issupermod'] == 1 || ($mybb->usergroup['cangivereputations'] == 1 && $reputation_vote['adduid'] == $mybb->user['uid'] && $mybb->user['uid'] != 0))
+		if($mybb->usergroup['issupermod'] == 1 || ($mybb->usergroup['candeletereputations'] == 1 && $reputation_vote['adduid'] == $mybb->user['uid'] && $mybb->user['uid'] != 0))
 		{
 			eval("\$delete_link = \"".$templates->get("reputation_vote_delete")."\";");
 		}
