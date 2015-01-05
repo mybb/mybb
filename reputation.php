@@ -251,7 +251,7 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 	if(!empty($mybb->input['delete']))
 	{
 		// Only administrators, super moderators, as well as users who gave a specifc vote can delete one.
-		if(($existing_reputation['adduid'] == $mybb->user['uid'] && $mybb->usergroup['candeletereputations'] != 1 && $mybb->usergroup['issupermod'] != 1) || ($mybb->usergroup['issupermod'] != 1 && $existing_reputation['adduid'] != $mybb->user['uid']))
+		if(($existing_reputation['adduid'] == $mybb->user['uid'] && $mybb->usergroup['candeletereputations'] != 1 && $mybb->usergroup['issupermod'] != 1) || ($mybb->usergroup['issupermod'] != 1 && $existing_reputation['adduid'] != $mybb->user['uid']) || $mybb->user['uid'] == 0)
 		{
 			error_no_permission();
 		}
@@ -533,7 +533,7 @@ if($mybb->input['action'] == "delete")
 	$existing_reputation = $db->fetch_array($query);
 
 	// Only administrators, super moderators, as well as users who gave a specifc vote can delete one.
-	if(($existing_reputation['adduid'] == $mybb->user['uid'] && $mybb->usergroup['candeletereputations'] != 1 && $mybb->usergroup['issupermod'] != 1) || ($mybb->usergroup['issupermod'] != 1 && $existing_reputation['adduid'] != $mybb->user['uid']))
+	if(($existing_reputation['adduid'] == $mybb->user['uid'] && $mybb->usergroup['candeletereputations'] != 1 && $mybb->usergroup['issupermod'] != 1) || ($mybb->usergroup['issupermod'] != 1 && $existing_reputation['adduid'] != $mybb->user['uid']) || $mybb->user['uid'] == 0)
 	{
 		error_no_permission();
 	}
