@@ -45,7 +45,7 @@ if($mybb->input['action'] == "edit")
 {
 	$page->add_breadcrumb_item($lang->edit_mass_mail);
 
-	$query = $db->simple_select("massemails", "*", "mid='".$mybb->get_input('mid', 1)."'");
+	$query = $db->simple_select("massemails", "*", "mid='".$mybb->get_input('mid', MyBB::INPUT_INT)."'");
 	$email = $db->fetch_array($query);
 	if(!$email['mid'])
 	{
@@ -608,7 +608,7 @@ if($mybb->input['action'] == "send")
 
 	if($mybb->input['step'])
 	{
-		$query = $db->simple_select("massemails", "*", "status=0 and mid='".$mybb->get_input('mid', 1)."'");
+		$query = $db->simple_select("massemails", "*", "status=0 and mid='".$mybb->get_input('mid', MyBB::INPUT_INT)."'");
 		$email = $db->fetch_array($query);
 		if(!$email['mid'] && $mybb->input['step'] != 1)
 		{
@@ -1400,7 +1400,7 @@ if($mybb->input['action'] == "send")
 
 if($mybb->input['action'] == "delete")
 {
-	$query = $db->simple_select("massemails", "*", "mid='".$mybb->get_input('mid', 1)."'");
+	$query = $db->simple_select("massemails", "*", "mid='".$mybb->get_input('mid', MyBB::INPUT_INT)."'");
 	$mass_email = $db->fetch_array($query);
 
 	if(!$mass_email['mid'])
@@ -1452,7 +1452,7 @@ if($mybb->input['action'] == "delete")
 
 if($mybb->input['action'] == "preview")
 {
-	$query = $db->simple_select("massemails", "*", "mid='".$mybb->get_input('mid', 1)."'");
+	$query = $db->simple_select("massemails", "*", "mid='".$mybb->get_input('mid', MyBB::INPUT_INT)."'");
 	$mass_email = $db->fetch_array($query);
 
 	if(!$mass_email['mid'])
@@ -1493,7 +1493,7 @@ if($mybb->input['action'] == "preview")
 if($mybb->input['action'] == "resend")
 {
 	// Copy and resend an email
-	$query = $db->simple_select("massemails", "*", "mid='".$mybb->get_input('mid', 1)."'");
+	$query = $db->simple_select("massemails", "*", "mid='".$mybb->get_input('mid', MyBB::INPUT_INT)."'");
 	$mass_email = $db->fetch_array($query);
 
 	if(!$mass_email['mid'])
@@ -1539,7 +1539,7 @@ if($mybb->input['action'] == "resend")
 if($mybb->input['action'] == "cancel")
 {
 	// Cancel the delivery of a mass-email.
-	$query = $db->simple_select("massemails", "*", "mid='".$mybb->get_input('mid', 1)."'");
+	$query = $db->simple_select("massemails", "*", "mid='".$mybb->get_input('mid', MyBB::INPUT_INT)."'");
 	$mass_email = $db->fetch_array($query);
 
 	if(!$mass_email['mid'])

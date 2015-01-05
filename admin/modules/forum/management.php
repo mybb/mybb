@@ -99,7 +99,7 @@ if($mybb->input['action'] == "copy")
 				$new_forum['name'] = $db->escape_string($mybb->input['title']);
 				$new_forum['description'] = $db->escape_string($mybb->input['description']);
 				$new_forum['type'] = $db->escape_string($mybb->input['type']);
-				$new_forum['pid'] = $mybb->get_input('pid', 1);
+				$new_forum['pid'] = $mybb->get_input('pid', MyBB::INPUT_INT);
 				$new_forum['rulestitle'] = $db->escape_string($new_forum['rulestitle']);
 				$new_forum['rules'] = $db->escape_string($new_forum['rules']);
 				$new_forum['parentlist'] = '';
@@ -201,7 +201,7 @@ if($mybb->input['action'] == "copy")
 		}
 		else
 		{
-			$copy_data['pid'] = $mybb->get_input('pid', 1);
+			$copy_data['pid'] = $mybb->get_input('pid', MyBB::INPUT_INT);
 		}
 		$copy_data['disporder'] = "1";
 		$copy_data['from'] = $mybb->input['fid'];
@@ -264,7 +264,7 @@ if($mybb->input['action'] == "copy")
 
 if($mybb->input['action'] == "editmod")
 {
-	$query = $db->simple_select("moderators", "*", "mid='".$mybb->get_input('mid', 1)."'");
+	$query = $db->simple_select("moderators", "*", "mid='".$mybb->get_input('mid', MyBB::INPUT_INT)."'");
 	$mod_data = $db->fetch_array($query);
 
 	if(!$mod_data['id'])
@@ -286,7 +286,7 @@ if($mybb->input['action'] == "editmod")
 
 	if($mybb->request_method == "post")
 	{
-		$mid = $mybb->get_input('mid', 1);
+		$mid = $mybb->get_input('mid', MyBB::INPUT_INT);
 		if(!$mid)
 		{
 			flash_message($lang->error_incorrect_moderator, 'error');
@@ -295,7 +295,7 @@ if($mybb->input['action'] == "editmod")
 
 		if(!$errors)
 		{
-			$fid = $mybb->get_input('fid', 1);
+			$fid = $mybb->get_input('fid', MyBB::INPUT_INT);
 			$forum = get_forum($fid);
 			if($mod_data['isgroup'])
 			{
@@ -424,9 +424,9 @@ if($mybb->input['action'] == "editmod")
 
 if($mybb->input['action'] == "clear_permission")
 {
-	$pid = $mybb->get_input('pid', 1);
-	$fid = $mybb->get_input('fid', 1);
-	$gid = (int)$mybb->input['gid'];
+	$pid = $mybb->get_input('pid', MyBB::INPUT_INT);
+	$fid = $mybb->get_input('fid', MyBB::INPUT_INT);
+	$gid = $mybb->get_input('gid', MyBB::INPUT_INT);
 
 	// User clicked no
 	if($mybb->input['no'])
@@ -472,9 +472,9 @@ if($mybb->input['action'] == "permissions")
 
 	if($mybb->request_method == "post")
 	{
-		$pid = $mybb->get_input('pid', 1);
-		$fid = $mybb->get_input('fid', 1);
-		$gid = (int)$mybb->input['gid'];
+		$pid = $mybb->get_input('pid', MyBB::INPUT_INT);
+		$fid = $mybb->get_input('fid', MyBB::INPUT_INT);
+		$gid = $mybb->get_input('gid', MyBB::INPUT_INT);
 		$forum = get_forum($fid);
 
 		if((!$fid || !$gid) && $pid)
@@ -565,12 +565,12 @@ if($mybb->input['action'] == "permissions")
 		}
 		else
 		{
-			$query = $db->simple_select("forumpermissions", "fid", "pid='".$mybb->get_input('pid', 1)."'");
+			$query = $db->simple_select("forumpermissions", "fid", "pid='".$mybb->get_input('pid', MyBB::INPUT_INT)."'");
 			$mybb->input['fid'] = $db->fetch_field($query, "fid");
 
 			$sub_tabs['edit_permissions'] = array(
 				'title' => $lang->forum_permissions,
-				'link' => "index.php?module=forum-management&amp;action=permissions&amp;pid=".$mybb->get_input('pid', 1),
+				'link' => "index.php?module=forum-management&amp;action=permissions&amp;pid=".$mybb->get_input('pid', MyBB::INPUT_INT),
 				'description' => $lang->forum_permissions_desc
 			);
 
@@ -622,7 +622,7 @@ $(document).ready(function() {
 		}
 		else
 		{
-			$form = new Form("index.php?module=forum-management&amp;action=permissions&amp;ajax=1&amp;pid=".$mybb->get_input('pid', 1)."&amp;gid=".(int)$mybb->input['gid']."&amp;fid=".(int)$mybb->input['gid'], "post", "modal_form");
+			$form = new Form("index.php?module=forum-management&amp;action=permissions&amp;ajax=1&amp;pid=".$mybb->get_input('pid', MyBB::INPUT_INT)."&amp;gid=".$mybb->get_input('gid', MyBB::INPUT_INT)."&amp;fid=".$mybb->get_input('gid', MyBB::INPUT_INT), "post", "modal_form");
 		}
 		echo $form->generate_hidden_field("usecustom", "1");
 
@@ -639,9 +639,9 @@ $(document).ready(function() {
 		}
 		else
 		{
-			$pid = $mybb->get_input('pid', 1);
-			$gid = (int)$mybb->input['gid'];
-			$fid = $mybb->get_input('fid', 1);
+			$pid = $mybb->get_input('pid', MyBB::INPUT_INT);
+			$gid = $mybb->get_input('gid', MyBB::INPUT_INT);
+			$fid = $mybb->get_input('fid', MyBB::INPUT_INT);
 
 			if($pid)
 			{
@@ -814,7 +814,7 @@ if($mybb->input['action'] == "add")
 			$errors[] = $lang->error_missing_title;
 		}
 
-		$pid = $mybb->get_input('pid', 1);
+		$pid = $mybb->get_input('pid', MyBB::INPUT_INT);
 		$type = $mybb->input['type'];
 
 		if($pid <= 0 && $type == "f")
@@ -943,7 +943,7 @@ if($mybb->input['action'] == "add")
 		}
 		else
 		{
-			$forum_data['pid'] = $mybb->get_input('pid', 1);
+			$forum_data['pid'] = $mybb->get_input('pid', MyBB::INPUT_INT);
 		}
 		$forum_data['disporder'] = "1";
 		$forum_data['linkto'] = "";
@@ -1304,7 +1304,7 @@ if($mybb->input['action'] == "edit")
 		admin_redirect("index.php?module=forum-management");
 	}
 
-	$fid = $mybb->get_input('fid', 1);
+	$fid = $mybb->get_input('fid', MyBB::INPUT_INT);
 
 	$plugins->run_hooks("admin_forum_management_edit");
 
@@ -1315,7 +1315,7 @@ if($mybb->input['action'] == "edit")
 			$errors[] = $lang->error_missing_title;
 		}
 
-		$pid = $mybb->get_input('pid', 1);
+		$pid = $mybb->get_input('pid', MyBB::INPUT_INT);
 
 		if($pid == $mybb->input['fid'])
 		{
@@ -1948,7 +1948,7 @@ if($mybb->input['action'] == "delete")
 
 	if($mybb->request_method == "post")
 	{
-		$fid = $mybb->get_input('fid', 1);
+		$fid = $mybb->get_input('fid', MyBB::INPUT_INT);
 		$forum_info = get_forum($fid);
 
 		$query = $db->simple_select("forums", "posts,unapprovedposts,threads,unapprovedthreads", "fid='{$fid}'");
@@ -2026,7 +2026,7 @@ if(!$mybb->input['action'])
 		$mybb->input['fid'] = 0;
 	}
 
-	$fid = $mybb->get_input('fid', 1);
+	$fid = $mybb->get_input('fid', MyBB::INPUT_INT);
 	if($fid)
 	{
 		$forum = get_forum($fid);

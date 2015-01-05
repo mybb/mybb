@@ -756,7 +756,7 @@ function error($error="", $title="")
 	}
 
 	// AJAX error message?
-	if($mybb->get_input('ajax', 1))
+	if($mybb->get_input('ajax', MyBB::INPUT_INT))
 	{
 		// Send our headers.
 		@header("Content-type: application/json; charset={$lang->settings['charset']}");
@@ -802,7 +802,7 @@ function inline_error($errors, $title="", $json_data=array())
 	}
 
 	// AJAX error message?
-	if($mybb->get_input('ajax', 1))
+	if($mybb->get_input('ajax', MyBB::INPUT_INT))
 	{
 		// Send our headers.
 		@header("Content-type: application/json; charset={$lang->settings['charset']}");
@@ -848,7 +848,7 @@ function error_no_permission()
 
 	$db->update_query("sessions", $noperm_array, "sid='{$session->sid}'");
 
-	if($mybb->get_input('ajax', 1))
+	if($mybb->get_input('ajax', MyBB::INPUT_INT))
 	{
 		// Send our headers.
 		header("Content-type: application/json; charset={$lang->settings['charset']}");
@@ -909,7 +909,7 @@ function redirect($url, $message="", $title="", $force_redirect=false)
 
 	$plugins->run_hooks("redirect", $redirect_args);
 
-	if($mybb->get_input('ajax', 1))
+	if($mybb->get_input('ajax', MyBB::INPUT_INT))
 	{
 		// Send our headers.
 		//@header("Content-type: text/html; charset={$lang->settings['charset']}");
@@ -5906,16 +5906,27 @@ function get_user_by_username($username, $options=array())
 		$options['username_method'] = 0;
 	}
 
+	switch($db->type)
+	{
+		case 'mysql':
+		case 'mysqli':
+			$field = 'username';
+			break;
+		default:
+			$field = 'LOWER(username)';
+			break;
+	}
+
 	switch($options['username_method'])
 	{
 		case 1:
 			$sqlwhere = 'LOWER(email)=\''.$username.'\'';
 			break;
 		case 2:
-			$sqlwhere = 'LOWER(username)=\''.$username.'\' OR LOWER(email)=\''.$username.'\'';
+			$sqlwhere = $field.'=\''.$username.'\' OR LOWER(email)=\''.$username.'\'';
 			break;
 		default:
-			$sqlwhere = 'LOWER(username)=\''.$username.'\'';
+			$sqlwhere = $field.'=\''.$username.'\'';
 			break;
 	}
 

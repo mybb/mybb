@@ -45,7 +45,7 @@ if(!$mybb->input['action'])
 
 	$mybb_credits = $cache->read('mybb_credits');
 
-	if($mybb->get_input('fetch_new', 1) == 1 || $mybb->get_input('fetch_new', 1) == -2 || ($mybb->get_input('fetch_new', 1) != -1 && (!is_array($mybb_credits) || $mybb_credits['last_check'] <= TIME_NOW - 60*60*24*14)))
+	if($mybb->get_input('fetch_new', MyBB::INPUT_INT) == 1 || $mybb->get_input('fetch_new', MyBB::INPUT_INT) == -2 || ($mybb->get_input('fetch_new', MyBB::INPUT_INT) != -1 && (!is_array($mybb_credits) || $mybb_credits['last_check'] <= TIME_NOW - 60*60*24*14)))
 	{
 		$new_mybb_credits = array(
 			'last_check' => TIME_NOW
@@ -57,7 +57,7 @@ if(!$mybb->input['action'])
 		if(!$contents)
 		{
 			flash_message($lang->error_communication, 'error');
-			if($mybb->get_input('fetch_new', 1) == -2)
+			if($mybb->get_input('fetch_new', MyBB::INPUT_INT) == -2)
 			{
 				admin_redirect('index.php?module=tools-cache');
 			}
@@ -88,7 +88,7 @@ if(!$mybb->input['action'])
 
 		$cache->update('mybb_credits', $new_mybb_credits);
 
-		if($mybb->get_input('fetch_new', 1) == -2)
+		if($mybb->get_input('fetch_new', MyBB::INPUT_INT) == -2)
 		{
 			$lang->load('tools_cache');
 			flash_message($lang->success_cache_reloaded, 'success');

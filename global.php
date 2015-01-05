@@ -885,6 +885,11 @@ $closed_bypass = array(
 if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['canviewboardclosed'] != 1 && !in_array($current_page, $closed_bypass) && (!is_array($closed_bypass[$current_page]) || !in_array($mybb->get_input('action'), $closed_bypass[$current_page])))
 {
 	// Show error
+	if(!$mybb->settings['boardclosed_reason'])
+	{
+		$mybb->settings['boardclosed_reason'] = $lang->boardclosed_reason;
+	}
+
 	$lang->error_boardclosed .= "<blockquote>{$mybb->settings['boardclosed_reason']}</blockquote>";
 	
 	if(!$mybb->get_input('modal')) 
@@ -941,7 +946,7 @@ if(!$mybb->user['uid'] && $mybb->settings['usereferrals'] == 1 && (isset($mybb->
 	}
 	else
 	{
-		$condition = "uid = '".$mybb->get_input('referrer', 1)."'";
+		$condition = "uid = '".$mybb->get_input('referrer', MyBB::INPUT_INT)."'";
 	}
 
 	$query = $db->simple_select('users', 'uid', $condition, array('limit' => 1));

@@ -203,7 +203,7 @@ function license_agreement()
 	ob_start();
 	$output->print_header($lang->license_agreement, 'license');
 
-	if($mybb->get_input('allow_anonymous_info', 1) == 1)
+	if($mybb->get_input('allow_anonymous_info', MyBB::INPUT_INT) == 1)
 	{
 		require_once MYBB_ROOT."inc/functions_serverstats.php";
 		$build_server_stats = build_server_stats(1, '', $mybb->version_code);
@@ -1259,7 +1259,7 @@ function database_info()
 		$db = new $dbtype['class'];
 		$encodings = $db->fetch_db_charsets();
 		$encoding_select = '';
-		$mybb->input['config'] = $mybb->get_input('config', 2);
+		$mybb->input['config'] = $mybb->get_input('config', MyBB::INPUT_ARRAY);
 		if(empty($mybb->input['config'][$dbfile]['dbhost']))
 		{
 			$mybb->input['config'][$dbfile]['dbhost'] = "localhost";
@@ -1384,7 +1384,7 @@ function create_tables()
 		database_info();
 	}
 
-	$mybb->input['config'] = $mybb->get_input('config', 2);
+	$mybb->input['config'] = $mybb->get_input('config', MyBB::INPUT_ARRAY);
 	$config = $mybb->input['config'][$mybb->input['dbengine']];
 
 	if(strstr($mybb->input['dbengine'], "sqlite") !== false)

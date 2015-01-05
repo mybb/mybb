@@ -57,7 +57,7 @@ $plugins->run_hooks("calendar_start");
 // Make navigation
 add_breadcrumb($lang->nav_calendar, "calendar.php");
 
-$mybb->input['calendar'] = $mybb->get_input('calendar', 1);
+$mybb->input['calendar'] = $mybb->get_input('calendar', MyBB::INPUT_INT);
 $calendars = cache_calendars();
 
 $calendar_jump = '';
@@ -104,7 +104,7 @@ if($mybb->input['action'] == "do_addevent" && $mybb->request_method == "post")
 		"uid" => $mybb->user['uid'],
 		"name" => $mybb->get_input('name'),
 		"description" => $mybb->get_input('description'),
-		"private" => $mybb->get_input('private', 1),
+		"private" => $mybb->get_input('private', MyBB::INPUT_INT),
 		"type" => $mybb->input['type']
 	);
 
@@ -112,42 +112,42 @@ if($mybb->input['action'] == "do_addevent" && $mybb->request_method == "post")
 	if($mybb->input['type'] == "single")
 	{
 		$event['start_date'] = array(
-			"day" => $mybb->get_input('single_day', 1),
-			"month" => $mybb->get_input('single_month', 1),
-			"year" => $mybb->get_input('single_year', 1)
+			"day" => $mybb->get_input('single_day', MyBB::INPUT_INT),
+			"month" => $mybb->get_input('single_month', MyBB::INPUT_INT),
+			"year" => $mybb->get_input('single_year', MyBB::INPUT_INT)
 		);
 		$event['repeats'] = '';
 	}
 	else if($mybb->input['type'] == "ranged")
 	{
 		$event['start_date'] = array(
-			"day" => $mybb->get_input('start_day', 1),
-			"month" => $mybb->get_input('start_month', 1),
-			"year" => $mybb->get_input('start_year', 1),
+			"day" => $mybb->get_input('start_day', MyBB::INPUT_INT),
+			"month" => $mybb->get_input('start_month', MyBB::INPUT_INT),
+			"year" => $mybb->get_input('start_year', MyBB::INPUT_INT),
 			"time" => $mybb->get_input('start_time')
 		);
 		$event['end_date'] = array(
-			"day" => $mybb->get_input('end_day', 1),
-			"month" => $mybb->get_input('end_month', 1),
-			"year" => $mybb->get_input('end_year', 1),
+			"day" => $mybb->get_input('end_day', MyBB::INPUT_INT),
+			"month" => $mybb->get_input('end_month', MyBB::INPUT_INT),
+			"year" => $mybb->get_input('end_year', MyBB::INPUT_INT),
 			"time" => $mybb->get_input('end_time')
 		);
 		$event['timezone'] = $mybb->get_input('timezone');
-		$event['ignoretimezone'] =	$mybb->get_input('ignoretimezone', 1);
+		$event['ignoretimezone'] =	$mybb->get_input('ignoretimezone', MyBB::INPUT_INT);
 		$repeats = array();
 		switch($mybb->input['repeats'])
 		{
 			case 1:
 				$repeats['repeats'] = 1;
-				$repeats['days'] = $mybb->get_input('repeats_1_days', 1);
+				$repeats['days'] = $mybb->get_input('repeats_1_days', MyBB::INPUT_INT);
 				break;
 			case 2:
 				$repeats['repeats'] = 2;
 				break;
 			case 3:
 				$repeats['repeats'] = 3;
-				$repeats['weeks'] = $mybb->get_input('repeats_3_weeks', 1);
-				$mybb->input['repeats_3_days'] = $mybb->get_input('repeats_3_days', 2);
+				$repeats['weeks'] = $mybb->get_input('repeats_3_weeks', MyBB::INPUT_INT);
+				$mybb->input['repeats_3_days'] = $mybb->get_input('repeats_3_days', MyBB::INPUT_ARRAY);
 				ksort($mybb->input['repeats_3_days']);
 				$days = array();
 				foreach($mybb->input['repeats_3_days'] as $weekday => $value)
@@ -162,32 +162,32 @@ if($mybb->input['action'] == "do_addevent" && $mybb->request_method == "post")
 				break;
 			case 4:
 				$repeats['repeats'] = 4;
-				if($mybb->get_input('repeats_4_type', 1) == 1)
+				if($mybb->get_input('repeats_4_type', MyBB::INPUT_INT) == 1)
 				{
-					$repeats['day'] = $mybb->get_input('repeats_4_day', 1);
-					$repeats['months'] = $mybb->get_input('repeats_4_months', 1);
+					$repeats['day'] = $mybb->get_input('repeats_4_day', MyBB::INPUT_INT);
+					$repeats['months'] = $mybb->get_input('repeats_4_months', MyBB::INPUT_INT);
 				}
 				else
 				{
-					$repeats['months'] = $mybb->get_input('repeats_4_months2', 1);
+					$repeats['months'] = $mybb->get_input('repeats_4_months2', MyBB::INPUT_INT);
 					$repeats['occurance'] = $mybb->get_input('repeats_4_occurance');
-					$repeats['weekday'] = $mybb->get_input('repeats_4_weekday', 1);
+					$repeats['weekday'] = $mybb->get_input('repeats_4_weekday', MyBB::INPUT_INT);
 				}
 				break;
 			case 5:
 				$repeats['repeats'] = 5;
 				if($mybb->get_input('repeats_5_type', 1) == 1)
 				{
-					$repeats['day'] = $mybb->get_input('repeats_5_day', 1);
-					$repeats['month'] = $mybb->get_input('repeats_5_month', 1);
-					$repeats['years'] = $mybb->get_input('repeats_5_years', 1);
+					$repeats['day'] = $mybb->get_input('repeats_5_day', MyBB::INPUT_INT);
+					$repeats['month'] = $mybb->get_input('repeats_5_month', MyBB::INPUT_INT);
+					$repeats['years'] = $mybb->get_input('repeats_5_years', MyBB::INPUT_INT);
 				}
 				else
 				{
 					$repeats['occurance'] = $mybb->get_input('repeats_5_occurance');
-					$repeats['weekday'] = $mybb->get_input('repeats_5_weekday', 1);
-					$repeats['month'] = $mybb->get_input('repeats_5_month2', 1);
-					$repeats['years'] = $mybb->get_input('repeats_5_years', 1);
+					$repeats['weekday'] = $mybb->get_input('repeats_5_weekday', MyBB::INPUT_INT);
+					$repeats['month'] = $mybb->get_input('repeats_5_month2', MyBB::INPUT_INT);
+					$repeats['years'] = $mybb->get_input('repeats_5_years', MyBB::INPUT_INT);
 				}
 				break;
 			default:
@@ -288,16 +288,16 @@ if($mybb->input['action'] == "addevent")
 
 	if($mybb->request_method == "post")
 	{
-		$single_day = $mybb->get_input('single_day', 1);
-		$single_month[$mybb->get_input('single_month', 1)] = " selected=\"selected\"";
-		$single_year = $mybb->get_input('single_year', 1);
-		$start_day = $mybb->get_input('start_day', 1);
-		$start_month[$mybb->get_input('start_month', 1)] = " selected=\"selected\"";
-		$start_year = $mybb->get_input('start_year', 1);
+		$single_day = $mybb->get_input('single_day', MyBB::INPUT_INT);
+		$single_month[$mybb->get_input('single_month', MyBB::INPUT_INT)] = " selected=\"selected\"";
+		$single_year = $mybb->get_input('single_year', MyBB::INPUT_INT);
+		$start_day = $mybb->get_input('start_day', MyBB::INPUT_INT);
+		$start_month[$mybb->get_input('start_month', MyBB::INPUT_INT)] = " selected=\"selected\"";
+		$start_year = $mybb->get_input('start_year', MyBB::INPUT_INT);
 		$start_time = htmlspecialchars_uni($mybb->get_input('start_time'));
-		$end_day = $mybb->get_input('end_day', 1);
-		$end_month[$mybb->get_input('end_month', 1)] = " selected=\"selected\"";
-		$end_year = $mybb->get_input('end_year', 1);
+		$end_day = $mybb->get_input('end_day', MyBB::INPUT_INT);
+		$end_month[$mybb->get_input('end_month', MyBB::INPUT_INT)] = " selected=\"selected\"";
+		$end_year = $mybb->get_input('end_year', MyBB::INPUT_INT);
 		$end_time = htmlspecialchars_uni($mybb->get_input('end_time'));
 		if($mybb->get_input('type') == "single")
 		{
@@ -313,11 +313,11 @@ if($mybb->input['action'] == "addevent")
 		}
 		if(!empty($mybb->input['repeats']))
 		{
-			$repeats_sel[$mybb->get_input('repeats', 1)] = " selected=\"selected\"";
+			$repeats_sel[$mybb->get_input('repeats', MyBB::INPUT_INT)] = " selected=\"selected\"";
 		}
-		$repeats_1_days = $mybb->get_input('repeats_1_days', 1);
-		$repeats_3_weeks = $mybb->get_input('repeats_3_weeks', 1);
-		foreach($mybb->get_input('repeats_3_days', 2) as $day => $val)
+		$repeats_1_days = $mybb->get_input('repeats_1_days', MyBB::INPUT_INT);
+		$repeats_3_weeks = $mybb->get_input('repeats_3_weeks', MyBB::INPUT_INT);
+		foreach($mybb->get_input('repeats_3_days', MyBB::INPUT_ARRAY) as $day => $val)
 		{
 			if($val != 1)
 			{
@@ -327,7 +327,7 @@ if($mybb->input['action'] == "addevent")
 			$repeats_3_days[$day] = " checked=\"checked\"";
 		}
 		$repeats_4_type = array();
-		if($mybb->get_input('repeats_4_type', 1) == 1)
+		if($mybb->get_input('repeats_4_type', MyBB::INPUT_INT) == 1)
 		{
 			$repeats_4_type[1] = "checked=\"checked\"";
 			$repeats_4_type[2] = '';
@@ -337,12 +337,12 @@ if($mybb->input['action'] == "addevent")
 			$repeats_4_type[2] = "checked=\"checked\"";
 			$repeats_4_type[1] = '';
 		}
-		$repeats_4_day = $mybb->get_input('repeats_4_day', 1);
-		$repeats_4_months = $mybb->get_input('repeats_4_months', 1);
+		$repeats_4_day = $mybb->get_input('repeats_4_day', MyBB::INPUT_INT);
+		$repeats_4_months = $mybb->get_input('repeats_4_months', MyBB::INPUT_INT);
 		$repeats_4_occurance[$mybb->get_input('repeats_4_occurance')] = "selected=\"selected\"";
-		$repeats_4_weekday[$mybb->get_input('repeats_4_weekday', 1)] = "selected=\"selected\"";
-		$repeats_4_months2 = $mybb->get_input('repeats_4_months2', 1);
-		if($mybb->get_input('repeats_5_type', 1) == 1)
+		$repeats_4_weekday[$mybb->get_input('repeats_4_weekday', MyBB::INPUT_INT)] = "selected=\"selected\"";
+		$repeats_4_months2 = $mybb->get_input('repeats_4_months2', MyBB::INPUT_INT);
+		if($mybb->get_input('repeats_5_type', MyBB::INPUT_INT) == 1)
 		{
 			$repeats_5_type[1] = "checked=\"checked\"";
 		}
@@ -350,21 +350,21 @@ if($mybb->input['action'] == "addevent")
 		{
 			$repeats_5_type[2] = "checked=\"checked\"";
 		}
-		$repeats_5_day = $mybb->get_input('repeats_5_day', 1);
-		$repeats_5_month[$mybb->get_input('repeats_5_month', 1)] = "selected=\"selected\"";
-		$repeats_5_years = $mybb->get_input('repeats_5_years', 1);
+		$repeats_5_day = $mybb->get_input('repeats_5_day', MyBB::INPUT_INT);
+		$repeats_5_month[$mybb->get_input('repeats_5_month', MyBB::INPUT_INT)] = "selected=\"selected\"";
+		$repeats_5_years = $mybb->get_input('repeats_5_years', MyBB::INPUT_INT);
 		$repeats_5_occurance[$mybb->get_input('repeats_5_occurance')] = "selected=\"selected\"";
-		$repeats_5_weekday[$mybb->get_input('repeats_5_weekday', 1)] = "selected=\"selected\"";
-		$repeats_5_month2[$mybb->get_input('repeats_5_month2', 1)] = "selected=\"selected\"";
-		$repeats_5_years2 = $mybb->get_input('repeats_5_years2', 1);
+		$repeats_5_weekday[$mybb->get_input('repeats_5_weekday', MyBB::INPUT_INT)] = "selected=\"selected\"";
+		$repeats_5_month2[$mybb->get_input('repeats_5_month2', MyBB::INPUT_INT)] = "selected=\"selected\"";
+		$repeats_5_years2 = $mybb->get_input('repeats_5_years2', MyBB::INPUT_INT);
 
-		$timezone = $mybb->get_input('timezone', 1);
+		$timezone = $mybb->get_input('timezone', MyBB::INPUT_INT);
 	}
 	else
 	{
 		if(!empty($mybb->input['day']))
 		{
-			$single_day = $start_day = $end_day = $mybb->get_input('day', 1);
+			$single_day = $start_day = $end_day = $mybb->get_input('day', MyBB::INPUT_INT);
 		}
 		else
 		{
@@ -372,7 +372,7 @@ if($mybb->input['action'] == "addevent")
 		}
 		if(!empty($mybb->input['month']))
 		{
-			$month = $mybb->get_input('month', 1);
+			$month = $mybb->get_input('month', MyBB::INPUT_INT);
 		}
 		else
 		{
@@ -381,7 +381,7 @@ if($mybb->input['action'] == "addevent")
 		$single_month[$month] = $start_month[$month] = $end_month[$month] = "selected=\"selected\"";
 		if(!empty($mybb->input['year']))
 		{
-			$single_year = $start_year = $end_year = $mybb->get_input('year', 1);
+			$single_year = $start_year = $end_year = $mybb->get_input('year', MyBB::INPUT_INT);
 		}
 		else
 		{
@@ -490,7 +490,7 @@ if($mybb->input['action'] == "addevent")
 
 	$timezones = build_timezone_select("timezone", $timezone);
 
-	if($mybb->get_input('ignoretimezone', 1) == 1)
+	if($mybb->get_input('ignoretimezone', MyBB::INPUT_INT) == 1)
 	{
 		$ignore_timezone = "checked=\"checked\"";
 	}
@@ -499,7 +499,7 @@ if($mybb->input['action'] == "addevent")
 		$ignore_timezone = '';
 	}
 
-	if($mybb->get_input('private', 1) == 1)
+	if($mybb->get_input('private', MyBB::INPUT_INT) == 1)
 	{
 		$privatecheck = " checked=\"checked\"";
 	}
@@ -586,7 +586,7 @@ if($mybb->input['action'] == "do_editevent" && $mybb->request_method == "post")
 	verify_post_check($mybb->get_input('my_post_key'));
 
 	// Are we going to delete this event or just edit it?
-	if($mybb->get_input('delete', 1) == 1)
+	if($mybb->get_input('delete', MyBB::INPUT_INT) == 1)
 	{
 		$db->delete_query("events", "eid='{$event['eid']}'");
 
@@ -607,7 +607,7 @@ if($mybb->input['action'] == "do_editevent" && $mybb->request_method == "post")
 		"eid" => $event['eid'],
 		"name" => $mybb->get_input('name'),
 		"description" => $mybb->get_input('description'),
-		"private" => $mybb->get_input('private', 1),
+		"private" => $mybb->get_input('private', MyBB::INPUT_INT),
 		"type" => $mybb->input['type']
 	);
 
@@ -615,42 +615,42 @@ if($mybb->input['action'] == "do_editevent" && $mybb->request_method == "post")
 	if($mybb->input['type'] == "single")
 	{
 		$event['start_date'] = array(
-			"day" => $mybb->get_input('single_day', 1),
-			"month" => $mybb->get_input('single_month', 1),
-			"year" => $mybb->get_input('single_year', 1)
+			"day" => $mybb->get_input('single_day', MyBB::INPUT_INT),
+			"month" => $mybb->get_input('single_month', MyBB::INPUT_INT),
+			"year" => $mybb->get_input('single_year', MyBB::INPUT_INT)
 		);
 		$event['repeats'] = '';
 	}
 	else if($mybb->input['type'] == "ranged")
 	{
 		$event['start_date'] = array(
-			"day" => $mybb->get_input('start_day', 1),
-			"month" => $mybb->get_input('start_month', 1),
-			"year" => $mybb->get_input('start_year', 1),
+			"day" => $mybb->get_input('start_day', MyBB::INPUT_INT),
+			"month" => $mybb->get_input('start_month', MyBB::INPUT_INT),
+			"year" => $mybb->get_input('start_year', MyBB::INPUT_INT),
 			"time" => $mybb->get_input('start_time')
 		);
 		$event['end_date'] = array(
-			"day" => $mybb->get_input('end_day', 1),
-			"month" => $mybb->get_input('end_month', 1),
-			"year" => $mybb->get_input('end_year', 1),
+			"day" => $mybb->get_input('end_day', MyBB::INPUT_INT),
+			"month" => $mybb->get_input('end_month', MyBB::INPUT_INT),
+			"year" => $mybb->get_input('end_year', MyBB::INPUT_INT),
 			"time" => $mybb->get_input('end_time')
 		);
 		$event['timezone'] = $mybb->get_input('timezone');
-		$event['ignoretimezone'] =	$mybb->get_input('ignoretimezone', 1);
+		$event['ignoretimezone'] =	$mybb->get_input('ignoretimezone', MyBB::INPUT_INT);
 		$repeats = array();
 		switch($mybb->input['repeats'])
 		{
 			case 1:
 				$repeats['repeats'] = 1;
-				$repeats['days'] = $mybb->get_input('repeats_1_days', 1);
+				$repeats['days'] = $mybb->get_input('repeats_1_days', MyBB::INPUT_INT);
 				break;
 			case 2:
 				$repeats['repeats'] = 2;
 				break;
 			case 3:
 				$repeats['repeats'] = 3;
-				$repeats['weeks'] = $mybb->get_input('repeats_3_weeks', 1);
-				$mybb->input['repeats_3_days'] = $mybb->get_input('repeats_3_days', 2);
+				$repeats['weeks'] = $mybb->get_input('repeats_3_weeks', MyBB::INPUT_INT);
+				$mybb->input['repeats_3_days'] = $mybb->get_input('repeats_3_days', MyBB::INPUT_ARRAY);
 				ksort($mybb->input['repeats_3_days']);
 				$days = array();
 				foreach($mybb->input['repeats_3_days'] as $weekday => $value)
@@ -665,32 +665,32 @@ if($mybb->input['action'] == "do_editevent" && $mybb->request_method == "post")
 				break;
 			case 4:
 				$repeats['repeats'] = 4;
-				if($mybb->get_input('repeats_4_type', 1) == 1)
+				if($mybb->get_input('repeats_4_type', MyBB::INPUT_INT) == 1)
 				{
-					$repeats['day'] = $mybb->get_input('repeats_4_day', 1);
-					$repeats['months'] = $mybb->get_input('repeats_4_months', 1);
+					$repeats['day'] = $mybb->get_input('repeats_4_day', MyBB::INPUT_INT);
+					$repeats['months'] = $mybb->get_input('repeats_4_months', MyBB::INPUT_INT);
 				}
 				else
 				{
-					$repeats['months'] = $mybb->get_input('repeats_4_months2', 1);
+					$repeats['months'] = $mybb->get_input('repeats_4_months2', MyBB::INPUT_INT);
 					$repeats['occurance'] = $mybb->get_input('repeats_4_occurance');
-					$repeats['weekday'] = $mybb->get_input('repeats_4_weekday', 1);
+					$repeats['weekday'] = $mybb->get_input('repeats_4_weekday', MyBB::INPUT_INT);
 				}
 				break;
 			case 5:
 				$repeats['repeats'] = 5;
-				if($mybb->get_input('repeats_5_type', 1) == 1)
+				if($mybb->get_input('repeats_5_type', MyBB::INPUT_INT) == 1)
 				{
-					$repeats['day'] = $mybb->get_input('repeats_5_day', 1);
-					$repeats['month'] = $mybb->get_input('repeats_5_month', 1);
-					$repeats['years'] = $mybb->get_input('repeats_5_years', 1);
+					$repeats['day'] = $mybb->get_input('repeats_5_day', MyBB::INPUT_INT);
+					$repeats['month'] = $mybb->get_input('repeats_5_month', MyBB::INPUT_INT);
+					$repeats['years'] = $mybb->get_input('repeats_5_years', MyBB::INPUT_INT);
 				}
 				else
 				{
 					$repeats['occurance'] = $mybb->get_input('repeats_5_occurance');
-					$repeats['weekday'] = $mybb->get_input('repeats_5_weekday', 1);
-					$repeats['month'] = $mybb->get_input('repeats_5_month2', 1);
-					$repeats['years'] = $mybb->get_input('repeats_5_years', 1);
+					$repeats['weekday'] = $mybb->get_input('repeats_5_weekday', MyBB::INPUT_INT);
+					$repeats['month'] = $mybb->get_input('repeats_5_month2', MyBB::INPUT_INT);
+					$repeats['years'] = $mybb->get_input('repeats_5_years', MyBB::INPUT_INT);
 				}
 				break;
 			default:
@@ -795,16 +795,16 @@ if($mybb->input['action'] == "editevent")
 	{
 		$name = htmlspecialchars_uni($mybb->get_input('name'));
 		$description = htmlspecialchars_uni($mybb->get_input('description'));
-		$single_day = $mybb->get_input('single_day', 1);
-		$single_month[$mybb->get_input('single_month', 1)] = " selected=\"selected\"";
-		$single_year = $mybb->get_input('single_year', 1);
-		$start_day = $mybb->get_input('start_day', 1);
-		$start_month[$mybb->get_input('start_month', 1)] = " selected=\"selected\"";
-		$start_year = $mybb->get_input('start_year', 1);
+		$single_day = $mybb->get_input('single_day', MyBB::INPUT_INT);
+		$single_month[$mybb->get_input('single_month', MyBB::INPUT_INT)] = " selected=\"selected\"";
+		$single_year = $mybb->get_input('single_year', MyBB::INPUT_INT);
+		$start_day = $mybb->get_input('start_day', MyBB::INPUT_INT);
+		$start_month[$mybb->get_input('start_month', MyBB::INPUT_INT)] = " selected=\"selected\"";
+		$start_year = $mybb->get_input('start_year', MyBB::INPUT_INT);
 		$start_time = htmlspecialchars_uni($mybb->get_input('start_time'));
-		$end_day = $mybb->get_input('end_day', 1);
-		$end_month[$mybb->get_input('end_month', 1)] = " selected=\"selected\"";
-		$end_year = $mybb->get_input('end_year', 1);
+		$end_day = $mybb->get_input('end_day', MyBB::INPUT_INT);
+		$end_month[$mybb->get_input('end_month', MyBB::INPUT_INT)] = " selected=\"selected\"";
+		$end_year = $mybb->get_input('end_year', MyBB::INPUT_INT);
 		$end_time = htmlspecialchars_uni($mybb->get_input('end_time'));
 		if($mybb->get_input('type') == "single")
 		{
@@ -820,11 +820,11 @@ if($mybb->input['action'] == "editevent")
 		}
 		if(!empty($mybb->input['repeats']))
 		{
-			$repeats_sel[$mybb->get_input('repeats', 1)] = " selected=\"selected\"";
+			$repeats_sel[$mybb->get_input('repeats', MyBB::INPUT_INT)] = " selected=\"selected\"";
 		}
-		$repeats_1_days = $mybb->get_input('repeats_1_days', 1);
-		$repeats_3_weeks = $mybb->get_input('repeats_3_weeks', 1);
-		foreach($mybb->get_input('repeats_3_days', 2) as $day => $val)
+		$repeats_1_days = $mybb->get_input('repeats_1_days', MyBB::INPUT_INT);
+		$repeats_3_weeks = $mybb->get_input('repeats_3_weeks', MyBB::INPUT_INT);
+		foreach($mybb->get_input('repeats_3_days', MyBB::INPUT_ARRAY) as $day => $val)
 		{
 			if($val != 1)
 			{
@@ -834,7 +834,7 @@ if($mybb->input['action'] == "editevent")
 			$repeats_3_days[$day] = " checked=\"checked\"";
 		}
 		$repeats_4_type = array();
-		if($mybb->get_input('repeats_4_type', 1) == 1)
+		if($mybb->get_input('repeats_4_type', MyBB::INPUT_INT) == 1)
 		{
 			$repeats_4_type[1] = "checked=\"checked\"";
 			$repeats_4_type[2] = '';
@@ -844,12 +844,12 @@ if($mybb->input['action'] == "editevent")
 			$repeats_4_type[2] = "checked=\"checked\"";
 			$repeats_4_type[1] = '';
 		}
-		$repeats_4_day = $mybb->get_input('repeats_4_day', 1);
-		$repeats_4_months = $mybb->get_input('repeats_4_months', 1);
+		$repeats_4_day = $mybb->get_input('repeats_4_day', MyBB::INPUT_INT);
+		$repeats_4_months = $mybb->get_input('repeats_4_months', MyBB::INPUT_INT);
 		$repeats_4_occurance[$mybb->get_input('repeats_4_occurance')] = "selected=\"selected\"";
-		$repeats_4_weekday[$mybb->get_input('repeats_4_weekday', 1)] = "selected=\"selected\"";
-		$repeats_4_months2 = $mybb->get_input('repeats_4_months2', 1);
-		if($mybb->get_input('repeats_5_type', 1) == 1)
+		$repeats_4_weekday[$mybb->get_input('repeats_4_weekday', MyBB::INPUT_INT)] = "selected=\"selected\"";
+		$repeats_4_months2 = $mybb->get_input('repeats_4_months2', MyBB::INPUT_INT);
+		if($mybb->get_input('repeats_5_type', MyBB::INPUT_INT) == 1)
 		{
 			$repeats_5_type[1] = "checked=\"checked\"";
 		}
@@ -857,15 +857,15 @@ if($mybb->input['action'] == "editevent")
 		{
 			$repeats_5_type[2] = "checked=\"checked\"";
 		}
-		$repeats_5_day = $mybb->get_input('repeats_5_day', 1);
-		$repeats_5_month[$mybb->get_input('repeats_5_month', 1)] = "selected=\"selected\"";
-		$repeats_5_years = $mybb->get_input('repeats_5_years', 1);
+		$repeats_5_day = $mybb->get_input('repeats_5_day', MyBB::INPUT_INT);
+		$repeats_5_month[$mybb->get_input('repeats_5_month', MyBB::INPUT_INT)] = "selected=\"selected\"";
+		$repeats_5_years = $mybb->get_input('repeats_5_years', MyBB::INPUT_INT);
 		$repeats_5_occurance[$mybb->get_input('repeats_5_occurance')] = "selected=\"selected\"";
-		$repeats_5_weekday[$mybb->get_input('repeats_5_weekday', 1)] = "selected=\"selected\"";
-		$repeats_5_month2[$mybb->get_input('repeats_5_month2', 1)] = "selected=\"selected\"";
-		$repeats_5_years2 = $mybb->get_input('repeats_5_years2', 1);
+		$repeats_5_weekday[$mybb->get_input('repeats_5_weekday', MyBB::INPUT_INT)] = "selected=\"selected\"";
+		$repeats_5_month2[$mybb->get_input('repeats_5_month2', MyBB::INPUT_INT)] = "selected=\"selected\"";
+		$repeats_5_years2 = $mybb->get_input('repeats_5_years2', MyBB::INPUT_INT);
 
-		if($mybb->get_input('private', 1) == 1)
+		if($mybb->get_input('private', MyBB::INPUT_INT) == 1)
 		{
 			$privatecheck = " checked=\"checked\"";
 		}
@@ -874,7 +874,7 @@ if($mybb->input['action'] == "editevent")
 			$privatecheck = '';
 		}
 
-		if($mybb->get_input('ignoretimezone', 1) == 1)
+		if($mybb->get_input('ignoretimezone', MyBB::INPUT_INT) == 1)
 		{
 			$ignore_timezone = "checked=\"checked\"";
 		}
@@ -1215,7 +1215,7 @@ if($mybb->input['action'] == "do_move" && $mybb->request_method == "post")
 		error_no_permission();
 	}
 
-	$query = $db->simple_select("calendars", "*", "cid='".$mybb->get_input('new_calendar', 1)."'");
+	$query = $db->simple_select("calendars", "*", "cid='".$mybb->get_input('new_calendar', MyBB::INPUT_INT)."'");
 	$new_calendar = $db->fetch_array($query);
 
 	if(!$new_calendar)
@@ -1620,7 +1620,7 @@ if($mybb->input['action'] == "dayview")
 	}
 
 	// Incoming year?
-	$mybb->input['year'] = $mybb->get_input('year', 1);
+	$mybb->input['year'] = $mybb->get_input('year', MyBB::INPUT_INT);
 	if($mybb->input['year'] && $mybb->input['year'] <= my_date("Y")+5)
 	{
 		$year = $mybb->input['year'];
@@ -1631,7 +1631,7 @@ if($mybb->input['action'] == "dayview")
 	}
 
 	// Then the month
-	$mybb->input['month'] = $mybb->get_input('month', 1);
+	$mybb->input['month'] = $mybb->get_input('month', MyBB::INPUT_INT);
 	if($mybb->input['month'] >= 1 && $mybb->input['month'] <= 12)
 	{
 		$month = $mybb->input['month'];
@@ -1642,7 +1642,7 @@ if($mybb->input['action'] == "dayview")
 	}
 
 	// And day?
-	$mybb->input['day'] = $mybb->get_input('day', 1);
+	$mybb->input['day'] = $mybb->get_input('day', MyBB::INPUT_INT);
 	if($mybb->input['day'] && $mybb->input['day'] <= gmdate("t", gmmktime(0, 0, 0, $month, 1, $year)))
 	{
 		$day = $mybb->input['day'];
@@ -2237,7 +2237,7 @@ if(!$mybb->input['action'])
 	$plugins->run_hooks("calendar_main_view");
 
 	// Incoming year?
-	$mybb->input['year'] = $mybb->get_input('year', 1);
+	$mybb->input['year'] = $mybb->get_input('year', MyBB::INPUT_INT);
 	if($mybb->input['year'] && $mybb->input['year'] <= my_date("Y")+5)
 	{
 		$year = $mybb->input['year'];
@@ -2248,7 +2248,7 @@ if(!$mybb->input['action'])
 	}
 
 	// Then the month
-	$mybb->input['month'] = $mybb->get_input('month', 1);
+	$mybb->input['month'] = $mybb->get_input('month', MyBB::INPUT_INT);
 	if($mybb->input['month'] >= 1 && $mybb->input['month'] <= 12)
 	{
 		$month = $mybb->input['month'];
