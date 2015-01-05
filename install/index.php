@@ -1251,6 +1251,9 @@ function database_info()
 			$dbengines .= "<option value=\"{$dbfile}\">{$dbtype['title']}</option>";
 		}
 	}
+	
+	// Load DB interface
+	require_once MYBB_ROOT."inc/db_base.php";
 
 	$db_info = array();
 	foreach($dboptions as $dbfile => $dbtype)
