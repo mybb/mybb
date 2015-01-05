@@ -560,3 +560,5 @@ $l['sfs_error_username'] = 'username';
 $l['sfs_error_ip'] = 'IP';
 $l['sfs_error_email'] = 'email';
 $l['sfs_error_or'] = 'or';
+
+$l['boardclosed_reason'] = 'These forums are currently closed for maintenance. Please check back later';
