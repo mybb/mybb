@@ -2394,6 +2394,9 @@ function install_done()
 
 function db_connection($config)
 {
+	// Load DB interface
+	require_once MYBB_ROOT."inc/db_base.php";
+	
 	require_once MYBB_ROOT."inc/db_{$config['database']['type']}.php";
 	switch($config['database']['type'])
 	{
