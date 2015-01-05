@@ -49,7 +49,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 		error_no_permission();
 	}
 
-	$user = get_user($mybb->get_input('uid', 1));
+	$user = get_user($mybb->get_input('uid', MyBB::INPUT_INT));
 
 	if(!$user['uid'])
 	{
@@ -71,19 +71,19 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 	$plugins->run_hooks("warnings_do_warn_start");
 
 	$warning = array(
-		'uid' => $mybb->get_input('uid', 1),
+		'uid' => $mybb->get_input('uid', MyBB::INPUT_INT),
 		'notes' => $mybb->get_input('notes'),
 		'type' => $mybb->get_input('type'),
 		'custom_reason' => $mybb->get_input('custom_reason'),
-		'custom_points' => $mybb->get_input('custom_points', 1),
-		'expires' => $mybb->get_input('expires', 1),
+		'custom_points' => $mybb->get_input('custom_points', MyBB::INPUT_INT),
+		'expires' => $mybb->get_input('expires', MyBB::INPUT_INT),
 		'expires_period' => $mybb->get_input('expires_period')
 	);
 
 	// Is this warning being given for a post?
-	if($mybb->get_input('pid', 1))
+	if($mybb->get_input('pid', MyBB::INPUT_INT))
 	{
-		$warning['pid'] = $mybb->get_input('pid', 1);
+		$warning['pid'] = $mybb->get_input('pid', MyBB::INPUT_INT);
 
 		$post = get_post($warning['pid']);
 
@@ -102,7 +102,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 		$warninginfo = $warningshandler->insert_warning();
 
 		// Are we notifying the user?
-		if($mybb->get_input('send_pm', 1) == 1 && $group_permissions['canusepms'] != 0 && $mybb->settings['enablepms'] != 0)
+		if($mybb->get_input('send_pm', MyBB::INPUT_INT) == 1 && $group_permissions['canusepms'] != 0 && $mybb->settings['enablepms'] != 0)
 		{
 
 			$pm = array(
@@ -112,7 +112,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 			);
 
 			$sender_uid = $mybb->user['uid'];
-			if($mybb->settings['allowanonwarningpms'] == 1 && $mybb->get_input('pm_anonymous', 1))
+			if($mybb->settings['allowanonwarningpms'] == 1 && $mybb->get_input('pm_anonymous', MyBB::INPUT_INT))
 			{
 				$sender_uid = -1;
 			}
@@ -165,7 +165,7 @@ if($mybb->input['action'] == "warn")
 		}
 	}
 
-	$user = get_user($mybb->get_input('uid', 1));
+	$user = get_user($mybb->get_input('uid', MyBB::INPUT_INT));
 	if(!$user)
 	{
 		error($lang->error_invalid_user);
@@ -196,9 +196,9 @@ if($mybb->input['action'] == "warn")
 	$post = $existing_warnings = '';
 
 	// Giving a warning for a specific post
-	if($mybb->get_input('pid', 1))
+	if($mybb->get_input('pid', MyBB::INPUT_INT))
 	{
-		$post = get_post($mybb->get_input('pid', 1));
+		$post = get_post($mybb->get_input('pid', MyBB::INPUT_INT));
 
 		if($post)
 		{
@@ -227,7 +227,7 @@ if($mybb->input['action'] == "warn")
 			FROM ".TABLE_PREFIX."warnings w
 			LEFT JOIN ".TABLE_PREFIX."warningtypes t ON (t.tid=w.tid)
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=w.issuedby)
-			WHERE w.pid='".$mybb->get_input('pid', 1)."'
+			WHERE w.pid='".$mybb->get_input('pid', MyBB::INPUT_INT)."'
 			ORDER BY w.expired ASC, w.dateline DESC
 		");
 		$first = true;
@@ -307,9 +307,9 @@ if($mybb->input['action'] == "warn")
 	if(!empty($warn_errors))
 	{
 		$notes = htmlspecialchars_uni($mybb->get_input('notes'));
-		if($mybb->get_input('type', 1))
+		if($mybb->get_input('type', MyBB::INPUT_INT))
 		{
-			$type_checked[$mybb->get_input('type', 1)] = "checked=\"checked\"";
+			$type_checked[$mybb->get_input('type', MyBB::INPUT_INT)] = "checked=\"checked\"";
 		}
 		$pm_subject = htmlspecialchars_uni($mybb->get_input('pm_subject'));
 		$message = htmlspecialchars_uni($mybb->get_input('pm_message'));
@@ -318,11 +318,11 @@ if($mybb->input['action'] == "warn")
 			$send_pm_checked = "checked=\"checked\"";
 		}
 		$custom_reason = htmlspecialchars_uni($mybb->get_input('custom_reason'));
-		$custom_points = $mybb->get_input('custom_points', 1);
-		$expires = $mybb->get_input('expires', 1);
-		if($mybb->get_input('expires_period', 1))
+		$custom_points = $mybb->get_input('custom_points', MyBB::INPUT_INT);
+		$expires = $mybb->get_input('expires', MyBB::INPUT_INT);
+		if($mybb->get_input('expires_period', MyBB::INPUT_INT))
 		{
-			$expires_period[$mybb->get_input('expires_period', 1)] = "selected=\"selected\"";
+			$expires_period[$mybb->get_input('expires_period', MyBB::INPUT_INT)] = "selected=\"selected\"";
 		}
 	}
 	else
@@ -472,7 +472,7 @@ if($mybb->input['action'] == "warn")
 		if($mybb->settings['allowanonwarningpms'] == 1)
 		{
 			$checked = '';
-			if($mybb->get_input('pm_anonymous', 1))
+			if($mybb->get_input('pm_anonymous', MyBB::INPUT_INT))
 			{
 				$checked = ' checked="checked"';
 			}
@@ -560,7 +560,7 @@ if($mybb->input['action'] == "view")
 		LEFT JOIN ".TABLE_PREFIX."warningtypes t ON (t.tid=w.tid)
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=w.issuedby)
 		LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=w.pid)
-		WHERE w.wid='".$mybb->get_input('wid', 1)."'
+		WHERE w.wid='".$mybb->get_input('wid', MyBB::INPUT_INT)."'
 	");
 	$warning = $db->fetch_array($query);
 
@@ -692,7 +692,7 @@ if(!$mybb->input['action'])
 		error_no_permission();
 	}
 
-	$user = get_user($mybb->get_input('uid', 1));
+	$user = get_user($mybb->get_input('uid', MyBB::INPUT_INT));
 	if(!$user['uid'])
 	{
 		error($lang->error_invalid_user);
@@ -715,7 +715,7 @@ if(!$mybb->input['action'])
 
 	// Figure out if we need to display multiple pages.
 	$perpage = $mybb->settings['postsperpage'];
-	$page = $mybb->get_input('page', 1);
+	$page = $mybb->get_input('page', MyBB::INPUT_INT);
 
 	$query = $db->simple_select("warnings", "COUNT(wid) AS warning_count", "uid='{$user['uid']}'");
 	$warning_count = $db->fetch_field($query, "warning_count");

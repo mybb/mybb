@@ -33,7 +33,7 @@ $lang->load("showthread");
 if(!empty($mybb->input['pid']) && !isset($mybb->input['tid']))
 {
 	// see if we already have the post information
-	if(isset($style) && $style['pid'] == $mybb->get_input('pid', 1) && $style['tid'])
+	if(isset($style) && $style['pid'] == $mybb->get_input('pid', MyBB::INPUT_INT) && $style['tid'])
 	{
 		$mybb->input['tid'] = $style['tid'];
 		unset($style['tid']); // stop the thread caching code from being tricked
@@ -43,7 +43,7 @@ if(!empty($mybb->input['pid']) && !isset($mybb->input['tid']))
 		$options = array(
 			"limit" => 1
 		);
-		$query = $db->simple_select("posts", "tid", "pid=".$mybb->get_input('pid', 1), $options);
+		$query = $db->simple_select("posts", "tid", "pid=".$mybb->get_input('pid', MyBB::INPUT_INT), $options);
 		$post = $db->fetch_array($query);
 		
 		if(empty($post))
@@ -57,7 +57,7 @@ if(!empty($mybb->input['pid']) && !isset($mybb->input['tid']))
 }
 
 // Get the thread details from the database.
-$thread = get_thread($mybb->get_input('tid', 1));
+$thread = get_thread($mybb->get_input('tid', MyBB::INPUT_INT));
 
 if(!$thread || substr($thread['closed'], 0, 6) == "moved|")
 {
@@ -349,7 +349,7 @@ if($mybb->input['action'] == "nextoldest")
 	exit;
 }
 
-$pid = $mybb->input['pid'] = $mybb->get_input('pid', 1);
+$pid = $mybb->input['pid'] = $mybb->get_input('pid', MyBB::INPUT_INT);
 
 // Forumdisplay cache
 $forum_stats = $cache->read("forumsdisplay");
@@ -882,9 +882,9 @@ if($mybb->input['action'] == "thread")
 		// Figure out if we need to display multiple pages.
 		$page = 1;
 		$perpage = $mybb->settings['postsperpage'];
-		if($mybb->get_input('page', 1) && $mybb->get_input('page') != "last")
+		if($mybb->get_input('page', MyBB::INPUT_INT) && $mybb->get_input('page') != "last")
 		{
-			$page = $mybb->get_input('page', 1);
+			$page = $mybb->get_input('page', MyBB::INPUT_INT);
 		}
 
 		if(!empty($mybb->input['pid']))

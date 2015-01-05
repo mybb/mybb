@@ -1110,7 +1110,7 @@ if($mybb->input['action'] == "do_new_announcement")
 		$mybb->input['starttime_month'] = '01';
 	}
 
-	$startdate = gmmktime((int)$startdate[0], (int)$startdate[1], 0, (int)$mybb->input['starttime_month'], $mybb->get_input('starttime_day', 1), $mybb->get_input('starttime_year', 1));
+	$startdate = gmmktime((int)$startdate[0], (int)$startdate[1], 0, (int)$mybb->input['starttime_month'], $mybb->get_input('starttime_day', MyBB::INPUT_INT), $mybb->get_input('starttime_year', MyBB::INPUT_INT));
 	if(!checkdate((int)$mybb->input['starttime_month'], (int)$mybb->input['starttime_day'], (int)$mybb->input['starttime_year']) || $startdate < 0 || $startdate == false)
 	{
 		$errors[] = $lang->error_invalid_start_date;
@@ -1128,7 +1128,7 @@ if($mybb->input['action'] == "do_new_announcement")
 		{
 			$mybb->input['endtime_month'] = '01';
 		}
-		$enddate = gmmktime((int)$enddate[0], (int)$enddate[1], 0, (int)$mybb->input['endtime_month'], $mybb->get_input('endtime_day', 1), $mybb->get_input('endtime_year', 1));
+		$enddate = gmmktime((int)$enddate[0], (int)$enddate[1], 0, (int)$mybb->input['endtime_month'], $mybb->get_input('endtime_day', MyBB::INPUT_INT), $mybb->get_input('endtime_year', MyBB::INPUT_INT));
 		if(!checkdate((int)$mybb->input['endtime_month'], (int)$mybb->input['endtime_day'], (int)$mybb->input['endtime_year']) || $enddate < 0 || $enddate == false)
 		{
 			$errors[] = $lang->error_invalid_end_date;
@@ -1480,7 +1480,7 @@ if($mybb->input['action'] == "do_edit_announcement")
 		$mybb->input['starttime_month'] = '01';
 	}
 
-	$startdate = gmmktime((int)$startdate[0], (int)$startdate[1], 0, (int)$mybb->input['starttime_month'], $mybb->get_input('starttime_day', 1), $mybb->get_input('starttime_year', 1));
+	$startdate = gmmktime((int)$startdate[0], (int)$startdate[1], 0, (int)$mybb->input['starttime_month'], $mybb->get_input('starttime_day', MyBB::INPUT_INT), $mybb->get_input('starttime_year', MyBB::INPUT_INT));
 	if(!checkdate((int)$mybb->input['starttime_month'], (int)$mybb->input['starttime_day'], (int)$mybb->input['starttime_year']) || $startdate < 0 || $startdate == false)
 	{
 		$errors[] = $lang->error_invalid_start_date;
@@ -1498,7 +1498,7 @@ if($mybb->input['action'] == "do_edit_announcement")
 		{
 			$mybb->input['endtime_month'] = '01';
 		}
-		$enddate = gmmktime((int)$enddate[0], (int)$enddate[1], 0, (int)$mybb->input['endtime_month'], $mybb->get_input('endtime_day', 1), $mybb->get_input('endtime_year', 1));
+		$enddate = gmmktime((int)$enddate[0], (int)$enddate[1], 0, (int)$mybb->input['endtime_month'], $mybb->get_input('endtime_day', MyBB::INPUT_INT), $mybb->get_input('endtime_year', MyBB::INPUT_INT));
 		if(!checkdate((int)$mybb->input['endtime_month'], (int)$mybb->input['endtime_day'], (int)$mybb->input['endtime_year']) || $enddate < 0 || $enddate == false)
 		{
 			$errors[] = $lang->error_invalid_end_date;
@@ -4134,7 +4134,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 	// Check banned group
 	$usergroups_cache = $cache->read('usergroups');
 	$usergroup = $usergroups_cache[$mybb->get_input('usergroup', MyBB::INPUT_INT)];
-	$query = $db->simple_select("usergroups", "gid", "isbannedgroup=1 AND gid='".$mybb->get_input('usergroup', 1)."'");
+	$query = $db->simple_select("usergroups", "gid", "isbannedgroup=1 AND gid='".$mybb->get_input('usergroup', MyBB::INPUT_INT)."'");
 
 	if(empty($usergroup['gid']) || empty($usergroup['isbannedgroup']))
 	{

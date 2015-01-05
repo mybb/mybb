@@ -1482,7 +1482,7 @@ if($mybb->input['action'] == "do_folders" && $mybb->request_method == "post")
 	$highestid = 2;
 	$folders = '';
 	$donefolders = array();
-	$mybb->input['folder'] = $mybb->get_input('folder', 2);
+	$mybb->input['folder'] = $mybb->get_input('folder', MyBB::INPUT_ARRAY);
 	foreach($mybb->input['folder'] as $key => $val)
 	{
 		if(empty($donefolders[$val]) )// Probably was a check for duplicate folder names, but doesn't seem to be used now
@@ -1611,9 +1611,9 @@ if($mybb->input['action'] == "do_empty" && $mybb->request_method == "post")
 	$plugins->run_hooks("private_do_empty_start");
 
 	$emptyq = '';
-	$mybb->input['empty'] = $mybb->get_input('empty', 2);
+	$mybb->input['empty'] = $mybb->get_input('empty', MyBB::INPUT_ARRAY);
 	$keepunreadq = '';
-	if($mybb->get_input('keepunread', 1) == 1)
+	if($mybb->get_input('keepunread', MyBB::INPUT_INT) == 1)
 	{
 		$keepunreadq = " AND status!='0'";
 	}
@@ -1658,7 +1658,7 @@ if($mybb->input['action'] == "do_stuff" && $mybb->request_method == "post")
 	}
 	elseif(!empty($mybb->input['moveto']))
 	{
-		$mybb->input['check'] = $mybb->get_input('check', 2);
+		$mybb->input['check'] = $mybb->get_input('check', MyBB::INPUT_ARRAY);
 		if(!empty($mybb->input['check']))
 		{
 			foreach($mybb->input['check'] as $key => $val)
@@ -1674,7 +1674,7 @@ if($mybb->input['action'] == "do_stuff" && $mybb->request_method == "post")
 
 		if(!empty($mybb->input['fromfid']))
 		{
-			redirect("private.php?fid=".$mybb->get_input('fromfid', 1), $lang->redirect_pmsmoved);
+			redirect("private.php?fid=".$mybb->get_input('fromfid', MyBB::INPUT_INT), $lang->redirect_pmsmoved);
 		}
 		else
 		{
@@ -1683,7 +1683,7 @@ if($mybb->input['action'] == "do_stuff" && $mybb->request_method == "post")
 	}
 	elseif(!empty($mybb->input['delete']))
 	{
-		$mybb->input['check'] = $mybb->get_input('check', 2);
+		$mybb->input['check'] = $mybb->get_input('check', MyBB::INPUT_ARRAY);
 		if(!empty($mybb->input['check']))
 		{
 			$pmssql = '';
@@ -1725,7 +1725,7 @@ if($mybb->input['action'] == "do_stuff" && $mybb->request_method == "post")
 
 		if(!empty($mybb->input['fromfid']))
 		{
-			redirect("private.php?fid=".$mybb->get_input('fromfid', 1), $lang->redirect_pmsdeleted);
+			redirect("private.php?fid=".$mybb->get_input('fromfid', MyBB::INPUT_INT), $lang->redirect_pmsdeleted);
 		}
 		else
 		{
@@ -1741,10 +1741,10 @@ if($mybb->input['action'] == "delete")
 
 	$plugins->run_hooks("private_delete_start");
 
-	$query = $db->simple_select("privatemessages", "*", "pmid='".$mybb->get_input('pmid', 1)."' AND uid='".$mybb->user['uid']."' AND folder='4'", array('order_by' => 'pmid'));
+	$query = $db->simple_select("privatemessages", "*", "pmid='".$mybb->get_input('pmid', MyBB::INPUT_INT)."' AND uid='".$mybb->user['uid']."' AND folder='4'", array('order_by' => 'pmid'));
 	if($db->num_rows($query) == 1)
 	{
-		$db->delete_query("privatemessages", "pmid='".$mybb->get_input('pmid', 1)."'");
+		$db->delete_query("privatemessages", "pmid='".$mybb->get_input('pmid', MyBB::INPUT_INT)."'");
 	}
 	else
 	{
@@ -1752,7 +1752,7 @@ if($mybb->input['action'] == "delete")
 			"folder" => 4,
 			"deletetime" => TIME_NOW
 		);
-		$db->update_query("privatemessages", $sql_array, "pmid='".$mybb->get_input('pmid', 1)."' AND uid='".$mybb->user['uid']."'");
+		$db->update_query("privatemessages", $sql_array, "pmid='".$mybb->get_input('pmid', MyBB::INPUT_INT)."' AND uid='".$mybb->user['uid']."'");
 	}
 
 	// Update PM count
@@ -1812,15 +1812,15 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 		$foldersexploded[$key] = implode("**", $folderinfo);
 	}
 
-	if($mybb->get_input('pmid', 1))
+	if($mybb->get_input('pmid', MyBB::INPUT_INT))
 	{
-		$wsql = "pmid='".$mybb->get_input('pmid', 1)."' AND uid='".$mybb->user['uid']."'";
+		$wsql = "pmid='".$mybb->get_input('pmid', MyBB::INPUT_INT)."' AND uid='".$mybb->user['uid']."'";
 	}
 	else
 	{
-		if($mybb->get_input('daycut', 1) && ($mybb->get_input('dayway') != "disregard"))
+		if($mybb->get_input('daycut', MyBB::INPUT_INT) && ($mybb->get_input('dayway') != "disregard"))
 		{
-			$datecut = TIME_NOW-($mybb->get_input('daycut', 1) * 86400);
+			$datecut = TIME_NOW-($mybb->get_input('daycut', MyBB::INPUT_INT) * 86400);
 			$wsql = "pm.dateline";
 			if($mybb->get_input('dayway') == "older")
 			{
@@ -1837,7 +1837,7 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 			$wsql = "1=1";
 		}
 
-		$mybb->input['exportfolders'] = $mybb->get_input('exportfolders', 2);
+		$mybb->input['exportfolders'] = $mybb->get_input('exportfolders', MyBB::INPUT_ARRAY);
 		if(!empty($mybb->input['exportfolders']))
 		{
 			$folderlst = '';
@@ -1872,7 +1872,7 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 			error($lang->error_pmnoarchivefolders);
 		}
 
-		if($mybb->get_input('exportunread', 1) != 1)
+		if($mybb->get_input('exportunread', MyBB::INPUT_INT) != 1)
 		{
 			$wsql .= " AND pm.status!='0'";
 		}
@@ -2027,7 +2027,7 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 	$plugins->run_hooks("private_do_export_end");
 
 	eval("\$archived = \"".$templates->get("private_archive_".$mybb->input['exporttype'], 1, 0)."\";");
-	if($mybb->get_input('deletepms', 1) == 1)
+	if($mybb->get_input('deletepms', MyBB::INPUT_INT) == 1)
 	{ // delete the archived pms
 		$db->delete_query("privatemessages", "pmid IN ('0'$ids)");
 		// Update PM count
@@ -2134,7 +2134,7 @@ if(!$mybb->input['action'])
 	}
 
 	$perpage = $mybb->settings['threadsperpage'];
-	$page = $mybb->get_input('page', 1);
+	$page = $mybb->get_input('page', MyBB::INPUT_INT);
 
 	if($page > 0)
 	{

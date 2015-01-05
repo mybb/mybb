@@ -553,7 +553,7 @@ if($mybb->input['action'] == "delete")
 		// Section
 		if(isset($mybb->input['sid']))
 		{
-			$sid = $mybb->get_input('sid', 1);
+			$sid = $mybb->get_input('sid', MyBB::INPUT_INT);
 			$page->output_confirm_action("index.php?module=config-help_documents&amp;action=delete&amp;sid={$sid}", $lang->confirm_section_deletion);
 		}
 		// Document

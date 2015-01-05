@@ -235,7 +235,7 @@ function acp_recount_warning()
 	$query = $db->simple_select("users", "COUNT(uid) as num_users");
 	$num_users = $db->fetch_field($query, 'num_users');
 
-	$page = $mybb->get_input('page', 1);
+	$page = $mybb->get_input('page', MyBB::INPUT_INT);
 	$per_page = (int)$mybb->input['warning'];
 	if($per_page <= 0)
 	{
@@ -267,7 +267,7 @@ function acp_recount_private_messages()
 	$query = $db->simple_select("users", "COUNT(uid) as num_users");
 	$num_users = $db->fetch_field($query, 'num_users');
 
-	$page = $mybb->get_input('page', 1);
+	$page = $mybb->get_input('page', MyBB::INPUT_INT);
 	$per_page = (int)$mybb->input['privatemessages'];
 	if($per_page <= 0)
 	{
@@ -294,7 +294,7 @@ function acp_recount_referrals()
 	$query = $db->simple_select("users", "COUNT(uid) as num_users");
 	$num_users = $db->fetch_field($query, 'num_users');
 
-	$page = $mybb->get_input('page', 1);
+	$page = $mybb->get_input('page', MyBB::INPUT_INT);
 	$per_page = (int)$mybb->input['referral'];
 	$start = ($page-1) * $per_page;
 	$end = $start + $per_page;
@@ -322,7 +322,7 @@ function acp_recount_thread_ratings()
 	$query = $db->simple_select("threads", "COUNT(*) as num_threads");
 	$num_threads = $db->fetch_field($query, 'num_threads');
 
-	$page = $mybb->get_input('page', 1);
+	$page = $mybb->get_input('page', MyBB::INPUT_INT);
 	$per_page = (int)$mybb->input['threadrating'];
 	if($per_page <= 0)
 	{
@@ -354,7 +354,7 @@ function acp_rebuild_attachment_thumbnails()
 	$query = $db->simple_select("attachments", "COUNT(aid) as num_attachments");
 	$num_attachments = $db->fetch_field($query, 'num_attachments');
 
-	$page = $mybb->get_input('page', 1);
+	$page = $mybb->get_input('page', MyBB::INPUT_INT);
 	$per_page = (int)$mybb->input['attachmentthumbs'];
 	if($per_page <= 0)
 	{

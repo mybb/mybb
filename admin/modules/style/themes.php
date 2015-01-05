@@ -380,7 +380,7 @@ if($mybb->input['action'] == "import")
 					'no_stylesheets' => ($mybb->input['import_stylesheets'] ? 0 : 1),
 					'no_templates' => ($mybb->input['import_templates'] ? 0 : 1),
 					'version_compat' => (int)$mybb->input['version_compat'],
-					'parent' => $mybb->get_input('tid', 1),
+					'parent' => $mybb->get_input('tid', MyBB::INPUT_INT),
 					'force_name_check' => true,
 				);
 				$theme_id = import_theme_xml($contents, $options);

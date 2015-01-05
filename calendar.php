@@ -176,7 +176,7 @@ if($mybb->input['action'] == "do_addevent" && $mybb->request_method == "post")
 				break;
 			case 5:
 				$repeats['repeats'] = 5;
-				if($mybb->get_input('repeats_5_type', 1) == 1)
+				if($mybb->get_input('repeats_5_type', MyBB::INPUT_INT) == 1)
 				{
 					$repeats['day'] = $mybb->get_input('repeats_5_day', MyBB::INPUT_INT);
 					$repeats['month'] = $mybb->get_input('repeats_5_month', MyBB::INPUT_INT);

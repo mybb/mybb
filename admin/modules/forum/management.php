@@ -334,7 +334,7 @@ if($mybb->input['action'] == "editmod")
 
 			$plugins->run_hooks("admin_forum_management_editmod_commit");
 
-			$db->update_query("moderators", $update_array, "mid='".$mybb->get_input('mid', 1)."'");
+			$db->update_query("moderators", $update_array, "mid='".$mybb->get_input('mid', MyBB::INPUT_INT)."'");
 
 			$cache->update_moderators();
 
@@ -342,7 +342,7 @@ if($mybb->input['action'] == "editmod")
 			log_admin_action($fid, $forum['name'], $mid, $mod[$fieldname]);
 
 			flash_message($lang->success_moderator_updated, 'success');
-			admin_redirect("index.php?module=forum-management&fid=".$mybb->get_input('fid', 1)."#tab_moderators");
+			admin_redirect("index.php?module=forum-management&fid=".$mybb->get_input('fid', MyBB::INPUT_INT)."#tab_moderators");
 		}
 	}
 
@@ -1856,7 +1856,7 @@ if($mybb->input['action'] == "deletemod")
 {
 	$modid = (int)$mybb->input['id'];
 	$isgroup = (int)$mybb->input['isgroup'];
-	$fid = $mybb->get_input('fid', 1);
+	$fid = $mybb->get_input('fid', MyBB::INPUT_INT);
 
 	$query = $db->simple_select("moderators", "*", "id='{$modid}' AND isgroup = '{$isgroup}' AND fid='{$fid}'");
 	$mod = $db->fetch_array($query);

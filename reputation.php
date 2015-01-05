@@ -36,7 +36,7 @@ if($mybb->usergroup['canview'] != 1)
 }
 
 // If we have a specified incoming username, validate it and fetch permissions for it
-$uid = $mybb->get_input('uid', 1);
+$uid = $mybb->get_input('uid', MyBB::INPUT_INT);
 $user = get_user($uid);
 if(!$user)
 {
@@ -151,10 +151,10 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 		}
 	}
 
-	if($mybb->get_input('pid', 1))
+	if($mybb->get_input('pid', MyBB::INPUT_INT))
 	{
 		// Make sure that this post exists, and that the author of the post we're giving this reputation for corresponds with the user the rep is being given to.
-		$post = get_post($mybb->get_input('pid', 1));
+		$post = get_post($mybb->get_input('pid', MyBB::INPUT_INT));
 		if($post)
 		{
 			$thread = get_thread($post['tid']);
@@ -220,16 +220,16 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 
 	// Fetch the existing reputation for this user given by our current user if there is one.
 	// If multiple reputations is allowed, then this isn't needed
-	if($mybb->settings['multirep'] != 1 && $mybb->get_input('pid', 1) == 0)
+	if($mybb->settings['multirep'] != 1 && $mybb->get_input('pid', MyBB::INPUT_INT) == 0)
 	{
 		$query = $db->simple_select("reputation", "*", "adduid='".$mybb->user['uid']."' AND uid='{$uid}' AND pid='0'");
 		$existing_reputation = $db->fetch_array($query);
 		$rid = $existing_reputation['rid'];
 		$was_post = false;
 	}
-	if($mybb->get_input('pid', 1) != 0)
+	if($mybb->get_input('pid', MyBB::INPUT_INT) != 0)
 	{
-		$query = $db->simple_select("reputation", "*", "adduid='".$mybb->user['uid']."' AND uid='{$uid}' AND pid = '".$mybb->get_input('pid', 1)."'");
+		$query = $db->simple_select("reputation", "*", "adduid='".$mybb->user['uid']."' AND uid='{$uid}' AND pid = '".$mybb->get_input('pid', MyBB::INPUT_INT)."'");
 		$existing_reputation = $db->fetch_array($query);
 		$rid = $existing_reputation['rid'];
 		$was_post = true;
@@ -245,7 +245,7 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 	$plugins->run_hooks("reputation_do_add_start");
 
 	// Check if the reputation power they're trying to give is within their "power limit"
-	$reputation = abs($mybb->get_input('reputation', 1));
+	$reputation = abs($mybb->get_input('reputation', MyBB::INPUT_INT));
 
 	// Deleting our current reputation of this user.
 	if(!empty($mybb->input['delete']))
@@ -256,9 +256,9 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 			error_no_permission();
 		}
 
-		if($mybb->get_input('pid', 1) != 0)
+		if($mybb->get_input('pid', MyBB::INPUT_INT) != 0)
 		{
-			$db->delete_query("reputation", "uid='{$uid}' AND adduid='".$mybb->user['uid']."' AND pid = '".$mybb->get_input('pid', 1)."'");
+			$db->delete_query("reputation", "uid='{$uid}' AND adduid='".$mybb->user['uid']."' AND pid = '".$mybb->get_input('pid', MyBB::INPUT_INT)."'");
 		}
 		else
 		{
@@ -276,7 +276,7 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 	}
 
 	$mybb->input['comments'] = trim($mybb->get_input('comments')); // Trim whitespace to check for length
-	if(my_strlen($mybb->input['comments']) < $mybb->settings['minreplength'] && $mybb->get_input('pid', 1) == 0)
+	if(my_strlen($mybb->input['comments']) < $mybb->settings['minreplength'] && $mybb->get_input('pid', MyBB::INPUT_INT) == 0)
 	{
 		$message = $lang->add_no_comment;
 		if($mybb->input['nomodal'])
@@ -308,7 +308,7 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 	}
 
 	// The user is trying to give a negative reputation, but negative reps have been disabled.
-	if($mybb->get_input('reputation', 1) < 0 && $mybb->settings['negrep'] != 1)
+	if($mybb->get_input('reputation', MyBB::INPUT_INT) < 0 && $mybb->settings['negrep'] != 1)
 	{
 		$message = $lang->add_negative_disabled;
 		if($mybb->input['nomodal'])
@@ -324,7 +324,7 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 	}
 
 	// This user is trying to give a neutral reputation, but neutral reps have been disabled.
-	if($mybb->get_input('reputation', 1) == 0 && $mybb->settings['neurep'] != 1)
+	if($mybb->get_input('reputation', MyBB::INPUT_INT) == 0 && $mybb->settings['neurep'] != 1)
 	{
 		$message = $lang->add_neutral_disabled;
 		if($mybb->input['nomodal'])
@@ -340,7 +340,7 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 	}
 
 	// This user is trying to give a positive reputation, but positive reps have been disabled.
-	if($mybb->get_input('reputation', 1) > 0 && $mybb->settings['posrep'] != 1)
+	if($mybb->get_input('reputation', MyBB::INPUT_INT) > 0 && $mybb->settings['posrep'] != 1)
 	{
 		$message = $lang->add_positive_disabled;
 		if($mybb->input['nomodal'])
@@ -375,8 +375,8 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 	$reputation = array(
 		"uid" => $uid,
 		"adduid" => $mybb->user['uid'],
-		"pid" => $mybb->get_input('pid', 1),
-		"reputation" => $mybb->get_input('reputation', 1),
+		"pid" => $mybb->get_input('pid', MyBB::INPUT_INT),
+		"reputation" => $mybb->get_input('reputation', MyBB::INPUT_INT),
 		"dateline" => TIME_NOW,
 		"comments" => $db->escape_string($mybb->input['comments'])
 	);
@@ -443,7 +443,7 @@ if($mybb->input['action'] == "add")
 	}
 	$lang->user_comments = $lang->sprintf($lang->user_comments, $user['username']);
 
-	if($mybb->get_input('pid', 1))
+	if($mybb->get_input('pid', MyBB::INPUT_INT))
 	{
 		$post_rep_info = $lang->sprintf($lang->add_reputation_to_post, $user['username']);
 		$lang->user_comments = $lang->no_comment_needed;
@@ -493,7 +493,7 @@ if($mybb->input['action'] == "add")
 			}
 		}
 
-		$mybb->input['pid'] = $mybb->get_input('pid', 1);
+		$mybb->input['pid'] = $mybb->get_input('pid', MyBB::INPUT_INT);
 
 		$plugins->run_hooks("reputation_add_end");
 		eval("\$reputation_add = \"".$templates->get("reputation_add", 1, 0)."\";");
@@ -528,7 +528,7 @@ if($mybb->input['action'] == "delete")
 		SELECT r.*, u.username
 		FROM ".TABLE_PREFIX."reputation r
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=r.adduid)
-		WHERE rid = '".$mybb->get_input('rid', 1)."'
+		WHERE rid = '".$mybb->get_input('rid', MyBB::INPUT_INT)."'
 	");
 	$existing_reputation = $db->fetch_array($query);
 
@@ -539,7 +539,7 @@ if($mybb->input['action'] == "delete")
 	}
 
 	// Delete the specified reputation
-	$db->delete_query("reputation", "uid='{$uid}' AND rid='".$mybb->get_input('rid', 1)."'");
+	$db->delete_query("reputation", "uid='{$uid}' AND rid='".$mybb->get_input('rid', MyBB::INPUT_INT)."'");
 
 	// Recount the reputation of this user - keep it in sync.
 	$query = $db->simple_select("reputation", "SUM(reputation) AS reputation_count", "uid='{$uid}'");
@@ -812,9 +812,9 @@ if(!$mybb->input['action'])
 	}
 
 	// Check if we're browsing a specific page of results
-	if($mybb->get_input('page', 1) > 0)
+	if($mybb->get_input('page', MyBB::INPUT_INT) > 0)
 	{
-		$page = $mybb->get_input('page', 1);
+		$page = $mybb->get_input('page', MyBB::INPUT_INT);
 		$start = ($page-1) * $mybb->settings['repsperpage'];
 		$pages = $reputation_count / $mybb->settings['repsperpage'];
 		$pages = ceil($pages);
