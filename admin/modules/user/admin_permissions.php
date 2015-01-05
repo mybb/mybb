@@ -142,13 +142,13 @@ if($mybb->input['action'] == "edit")
 		$existing_options = $db->fetch_field($query, "existing_options");
 		if($existing_options > 0)
 		{
-			$db->update_query("adminoptions", array('permissions' => $db->escape_string(serialize($mybb->input['permissions']))), "uid = '".$mybb->get_input('uid', MyBB::INPUT_INT)."'");
+			$db->update_query("adminoptions", array('permissions' => $db->escape_string(my_serialize($mybb->input['permissions']))), "uid = '".$mybb->get_input('uid', MyBB::INPUT_INT)."'");
 		}
 		else
 		{
 			$insert_array = array(
 				"uid" => $mybb->get_input('uid', MyBB::INPUT_INT),
-				"permissions" => $db->escape_string(serialize($mybb->input['permissions'])),
+				"permissions" => $db->escape_string(my_serialize($mybb->input['permissions'])),
 				"notes" => '',
 				"defaultviews" => ''
 			);

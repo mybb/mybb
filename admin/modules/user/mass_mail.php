@@ -181,7 +181,7 @@ if($mybb->input['action'] == "edit")
 				"status" => 1,
 				"senddate" => $delivery_date,
 				"totalcount" => $num,
-				"conditions" => $db->escape_string(serialize($mybb->input['conditions'])),
+				"conditions" => $db->escape_string(my_serialize($mybb->input['conditions'])),
 				"message" => $db->escape_string($mybb->input['message']),
 				"subject" => $db->escape_string($mybb->input['subject']),
 				"htmlmessage" => $db->escape_string($mybb->input['htmlmessage']),
@@ -938,7 +938,7 @@ if($mybb->input['action'] == "send")
 			{
 				$updated_email = array(
 					"totalcount" => $num,
-					"conditions" => $db->escape_string(serialize($mybb->input['conditions']))
+					"conditions" => $db->escape_string(my_serialize($mybb->input['conditions']))
 				);
 
 				$plugins->run_hooks("admin_user_mass_email_send_define_commit");

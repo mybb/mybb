@@ -747,7 +747,7 @@ function add_upgrade_store($title, $contents)
 
 	$replace_array = array(
 		"title" => $db->escape_string($title),
-		"contents" => $db->escape_string(serialize($contents))
+		"contents" => $db->escape_string(my_serialize($contents))
 	);
 	$db->replace_query("upgrade_data", $replace_array, "title");
 }

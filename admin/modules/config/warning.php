@@ -89,7 +89,7 @@ if($mybb->input['action'] == "add_level")
 			}
 			$new_level = array(
 				"percentage" => (int)$mybb->input['percentage'],
-				"action" => serialize($action)
+				"action" => my_serialize($action)
 			);
 
 			$lid = $db->insert_query("warninglevels", $new_level);
@@ -258,7 +258,7 @@ if($mybb->input['action'] == "edit_level")
 			}
 			$updated_level = array(
 				"percentage" => (int)$mybb->input['percentage'],
-				"action" => serialize($action)
+				"action" => my_serialize($action)
 			);
 
 			$plugins->run_hooks("admin_config_warning_edit_level_commit");

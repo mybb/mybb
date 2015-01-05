@@ -287,7 +287,7 @@ switch($mybb->input['action'])
 					'tids' => $db->escape_string($mybb->input['tids']),
 					'fid' => $fid,
 					'dateline' => TIME_NOW,
-					'inputs' => $db->escape_string(serialize($mybb->input['delayedmoderation']))
+					'inputs' => $db->escape_string(my_serialize($mybb->input['delayedmoderation']))
 				));
 
 				$rundate_format = my_date('relative', $rundate, '', 2);

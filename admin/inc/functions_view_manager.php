@@ -96,9 +96,9 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 					"title" => $db->escape_string($mybb->input['title']),
 					"type" => $type,
 					"visibility" => $mybb->get_input('visibility', MyBB::INPUT_INT),
-					"fields" => $db->escape_string(serialize($mybb->input['fields'])),
-					"conditions" => $db->escape_string(serialize($mybb->input['conditions'])),
-					"custom_profile_fields" => $db->escape_string(serialize($mybb->input['profile_fields'])),
+					"fields" => $db->escape_string(my_serialize($mybb->input['fields'])),
+					"conditions" => $db->escape_string(my_serialize($mybb->input['conditions'])),
+					"custom_profile_fields" => $db->escape_string(my_serialize($mybb->input['profile_fields'])),
 					"sortby" => $db->escape_string($mybb->input['sortby']),
 					"sortorder" => $db->escape_string($mybb->input['sortorder']),
 					"perpage" => $mybb->get_input('perpage', MyBB::INPUT_INT),
@@ -285,9 +285,9 @@ document.write('".str_replace("/", "\/", $field_select)."');
 					"title" => $db->escape_string($mybb->input['title']),
 					"type" => $type,
 					"visibility" => $mybb->get_input('visibility', MyBB::INPUT_INT),
-					"fields" => $db->escape_string(serialize($mybb->input['fields'])),
-					"conditions" => $db->escape_string(serialize($mybb->input['conditions'])),
-					"custom_profile_fields" => $db->escape_string(serialize($mybb->input['profile_fields'])),
+					"fields" => $db->escape_string(my_serialize($mybb->input['fields'])),
+					"conditions" => $db->escape_string(my_serialize($mybb->input['conditions'])),
+					"custom_profile_fields" => $db->escape_string(my_serialize($mybb->input['profile_fields'])),
 					"sortby" => $db->escape_string($mybb->input['sortby']),
 					"sortorder" => $db->escape_string($mybb->input['sortorder']),
 					"perpage" => $mybb->get_input('perpage', MyBB::INPUT_INT),
@@ -515,7 +515,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 				if(!$conditions) continue;
 				if(is_array($condition))
 				{
-					$condition = serialize($condition);
+					$condition = my_serialize($condition);
 					$is_serialized = " is_serialized=\"1\"";
 				}
 				$condition = str_replace(']]>', ']]]]><![CDATA[>', $condition);
@@ -639,7 +639,7 @@ function set_default_view($type, $vid)
 		$create = true;
 	}
 	$default_views[$type] = $vid;
-	$default_views = serialize($default_views);
+	$default_views = my_serialize($default_views);
 	$updated_admin = array("defaultviews" => $db->escape_string($default_views));
 
 	if($create == true)

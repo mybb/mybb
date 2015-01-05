@@ -838,7 +838,7 @@ if($has_announcements == true)
 	}
 	else if(!empty($cookie))
 	{
-		my_setcookie("mybb[announcements]", addslashes(serialize($cookie)), -1);
+		my_setcookie("mybb[announcements]", addslashes(my_serialize($cookie)), -1);
 	}
 }
 else

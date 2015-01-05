@@ -253,7 +253,7 @@ function add_report($report, $type = 'post')
 		'reports' => 1,
 		'dateline' => TIME_NOW,
 		'lastreport' => TIME_NOW,
-		'reporters' => $db->escape_string(serialize(array($report['uid'])))
+		'reporters' => $db->escape_string(my_serialize(array($report['uid'])))
 	);
 
 	if($mybb->settings['reportmethod'] == "email" || $mybb->settings['reportmethod'] == "pms")
@@ -280,7 +280,7 @@ function update_report($report)
 	$update_array = array(
 		'reports' => ++$report['reports'],
 		'lastreport' => TIME_NOW,
-		'reporters' => $db->escape_string(serialize($report['reporters']))
+		'reporters' => $db->escape_string(my_serialize($report['reporters']))
 	);
 
 	$db->update_query("reportedcontent", $update_array, "rid = '{$report['rid']}'");
