@@ -340,20 +340,20 @@ else
 			if(!empty($plugins['active']))
 			{
 				$output->print_header();
-				$lang->plugin_warning = "<input type=\"hidden\" name=\"from\" value=\"".$mybb->get_input('from', 1)."\" />\n<input type=\"hidden\" name=\"donewarning\" value=\"true\" />\n<div class=\"error\"><strong><span style=\"color: red\">Warning:</span></strong> <p>There are still ".count($plugins['active'])." plugin(s) active. Active plugins can sometimes cause problems during an upgrade procedure or may break your forum afterward. It is <strong>strongly</strong> reccommended that you deactivate your plugins before continuing.</p></div> <br />";
+				$lang->plugin_warning = "<input type=\"hidden\" name=\"from\" value=\"".$mybb->get_input('from', MyBB::INPUT_INT)."\" />\n<input type=\"hidden\" name=\"donewarning\" value=\"true\" />\n<div class=\"error\"><strong><span style=\"color: red\">Warning:</span></strong> <p>There are still ".count($plugins['active'])." plugin(s) active. Active plugins can sometimes cause problems during an upgrade procedure or may break your forum afterward. It is <strong>strongly</strong> reccommended that you deactivate your plugins before continuing.</p></div> <br />";
 				$output->print_contents($lang->sprintf($lang->plugin_warning, $mybb->version));
 				$output->print_footer("doupgrade");
 			}
 			else
 			{
-				add_upgrade_store("startscript", $mybb->get_input('from', 1));
-				$runfunction = next_function($mybb->get_input('from', 1));
+				add_upgrade_store("startscript", $mybb->get_input('from', MyBB::INPUT_INT));
+				$runfunction = next_function($mybb->get_input('from', MyBB::INPUT_INT));
 			}
 		}
 		else
 		{
-			add_upgrade_store("startscript", $mybb->get_input('from', 1));
-			$runfunction = next_function($mybb->get_input('from', 1));
+			add_upgrade_store("startscript", $mybb->get_input('from', MyBB::INPUT_INT));
+			$runfunction = next_function($mybb->get_input('from', MyBB::INPUT_INT));
 		}
 	}
 	$currentscript = get_upgrade_store("currentscript");

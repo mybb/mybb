@@ -2160,7 +2160,7 @@ if($mybb->input['action'] == "search")
 		// Build view options from incoming search options
 		if($mybb->input['vid'])
 		{
-			$query = $db->simple_select("adminviews", "*", "vid='".$mybb->get_input('vid', 1)."'");
+			$query = $db->simple_select("adminviews", "*", "vid='".$mybb->get_input('vid', MyBB::INPUT_INT)."'");
 			$admin_view = $db->fetch_array($query);
 			// View does not exist or this view is private and does not belong to the current user
 			if(!$admin_view['vid'] || ($admin_view['visibility'] == 1 && $admin_view['uid'] != $mybb->user['uid']))
@@ -2207,7 +2207,7 @@ if($mybb->input['action'] == "search")
 			$admin_view['sortby'] = $mybb->input['sortby'];
 		}
 
-		if($mybb->get_input('perpage', 1))
+		if($mybb->get_input('perpage', MyBB::INPUT_INT))
 		{
 			$admin_view['perpage'] = $mybb->input['perpage'];
 		}
@@ -2966,7 +2966,7 @@ if(!$mybb->input['action'])
 		// Showing a specific view
 		if(isset($mybb->input['vid']))
 		{
-			$query = $db->simple_select("adminviews", "*", "vid='".$mybb->get_input('vid', 1)."'");
+			$query = $db->simple_select("adminviews", "*", "vid='".$mybb->get_input('vid', MyBB::INPUT_INT)."'");
 			$admin_view = $db->fetch_array($query);
 			// View does not exist or this view is private and does not belong to the current user
 			if(!$admin_view['vid'] || ($admin_view['visibility'] == 1 && $admin_view['uid'] != $mybb->user['uid']))
@@ -3380,7 +3380,7 @@ function build_users_view($view)
 		}
 		else
 		{
-			$mybb->input['page'] = $mybb->get_input('page', 1);
+			$mybb->input['page'] = $mybb->get_input('page', MyBB::INPUT_INT);
 		}
 
 		if($mybb->input['page'])
@@ -3565,7 +3565,7 @@ function build_users_view($view)
 	$switch_url = $view['url'];
 	if($mybb->input['page'] > 0)
 	{
-		$switch_url .= "&amp;page=".$mybb->get_input('page', 1);
+		$switch_url .= "&amp;page=".$mybb->get_input('page', MyBB::INPUT_INT);
 	}
 	if($view['view_type'] != "card")
 	{
