@@ -37,7 +37,7 @@ if(($mybb->input['action'] == "edit" && $mybb->input['uid'] == 0) || $mybb->inpu
 	);
 }
 
-$uid = $mybb->get_input('uid', 1);
+$uid = $mybb->get_input('uid', MyBB::INPUT_INT);
 
 $plugins->run_hooks("admin_user_admin_permissions_begin");
 
@@ -138,16 +138,16 @@ if($mybb->input['action'] == "edit")
 		}
 
 		// Does an options row exist for this admin already?
-		$query = $db->simple_select("adminoptions", "COUNT(uid) AS existing_options", "uid='".$mybb->get_input('uid', 1)."'");
+		$query = $db->simple_select("adminoptions", "COUNT(uid) AS existing_options", "uid='".$mybb->get_input('uid', MyBB::INPUT_INT)."'");
 		$existing_options = $db->fetch_field($query, "existing_options");
 		if($existing_options > 0)
 		{
-			$db->update_query("adminoptions", array('permissions' => $db->escape_string(my_serialize($mybb->input['permissions']))), "uid = '".$mybb->get_input('uid', 1)."'");
+			$db->update_query("adminoptions", array('permissions' => $db->escape_string(my_serialize($mybb->input['permissions']))), "uid = '".$mybb->get_input('uid', MyBB::INPUT_INT)."'");
 		}
 		else
 		{
 			$insert_array = array(
-				"uid" => $mybb->get_input('uid', 1),
+				"uid" => $mybb->get_input('uid', MyBB::INPUT_INT),
 				"permissions" => $db->escape_string(my_serialize($mybb->input['permissions'])),
 				"notes" => '',
 				"defaultviews" => ''
