@@ -2123,8 +2123,8 @@ function my_unserialize($str)
 
 /**
  * Credits go to https://github.com/piwik
- * Safe my_serialize() replacement
- * - output a strict subset of PHP's native my_serialized representation
+ * Safe serialize() replacement
+ * - output a strict subset of PHP's native serialized representation
  * - does not my_serialize objects
  *
  * @param mixed $value
