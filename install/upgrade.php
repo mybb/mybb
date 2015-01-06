@@ -626,7 +626,16 @@ function upgradedone()
 
 	// Attempt to run an update check
 	require_once MYBB_ROOT.'inc/functions_task.php';
-	run_task(12);
+	$query = $db->simple_select('tasks', 'tid', "file='versioncheck'");
+	$update_check = $db->fetch_array($query);
+	if($update_check)
+	{
+		// Load plugin system for update check
+		require_once MYBB_ROOT."inc/class_plugins.php";
+		$plugins = new pluginSystem;
+
+		run_task($update_check['tid']);
+	}
 
 	if(is_writable("./"))
 	{
