@@ -46,7 +46,7 @@ if($mybb->input['action'] == 'prune')
 			$is_today = true;
 			$mybb->input['older_than'] = 1;
 		}
-		$where = 'dateline < '.(TIME_NOW-((int)$mybb->input['older_than']*86400));
+		$where = 'dateline < '.(TIME_NOW-($mybb->get_input('older_than', MyBB::INPUT_INT)*86400));
 
 		// Searching for entries in a specific module
 		if($mybb->input['filter_username'])

@@ -185,7 +185,7 @@ if($mybb->input['action'] == "edit")
 				"message" => $db->escape_string($mybb->input['message']),
 				"subject" => $db->escape_string($mybb->input['subject']),
 				"htmlmessage" => $db->escape_string($mybb->input['htmlmessage']),
-				"format" => (int)$mybb->input['format'],
+				"format" => $mybb->get_input('format', MyBB::INPUT_INT),
 				"type" => $mybb->get_input('type', MyBB::INPUT_INT),
 				"perpage" => $mybb->get_input('perpage', MyBB::INPUT_INT)
 			);
@@ -1149,7 +1149,7 @@ if($mybb->input['action'] == "send")
 						"subject" => $db->escape_string($mybb->input['subject']),
 						"message" => $db->escape_string($mybb->input['message']),
 						"htmlmessage" => $db->escape_string($mybb->input['htmlmessage']),
-						"format" => (int)$mybb->input['format'],
+						"format" => $mybb->get_input('format', MyBB::INPUT_INT),
 						"type" => $mybb->get_input('type', MyBB::INPUT_INT),
 						"dateline" => TIME_NOW,
 						"senddate" => 0,
@@ -1171,7 +1171,7 @@ if($mybb->input['action'] == "send")
 						"subject" => $db->escape_string($mybb->input['subject']),
 						"message" => $db->escape_string($mybb->input['message']),
 						"htmlmessage" => $db->escape_string($mybb->input['htmlmessage']),
-						"format" => (int)$mybb->input['format'],
+						"format" => $mybb->get_input('format', MyBB::INPUT_INT),
 						"type" => $mybb->get_input('type', MyBB::INPUT_INT),
 						"perpage" => $mybb->get_input('perpage', MyBB::INPUT_INT)
 					);

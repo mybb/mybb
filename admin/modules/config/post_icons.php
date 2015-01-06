@@ -301,7 +301,7 @@ if($mybb->input['action'] == "add_multiple")
 
 if($mybb->input['action'] == "edit")
 {
-	$query = $db->simple_select("icons", "*", "iid='".(int)$mybb->input['iid']."'");
+	$query = $db->simple_select("icons", "*", "iid='".$mybb->get_input('iid', MyBB::INPUT_INT)."'");
 	$icon = $db->fetch_array($query);
 
 	if(!$icon['iid'])
@@ -333,7 +333,7 @@ if($mybb->input['action'] == "edit")
 
 			$plugins->run_hooks("admin_config_post_icons_edit_commit");
 
-			$db->update_query("icons", $updated_icon, "iid='".(int)$mybb->input['iid']."'");
+			$db->update_query("icons", $updated_icon, "iid='".$mybb->get_input('iid', MyBB::INPUT_INT)."'");
 
 			$cache->update_posticons();
 
@@ -384,7 +384,7 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
-	$query = $db->simple_select("icons", "*", "iid='".(int)$mybb->input['iid']."'");
+	$query = $db->simple_select("icons", "*", "iid='".$mybb->get_input('iid', MyBB::INPUT_INT)."'");
 	$icon = $db->fetch_array($query);
 
 	if(!$icon['iid'])

@@ -84,23 +84,23 @@ if($mybb->input['action'] == "add")
 			$new_profile_field = array(
 				"name" => $db->escape_string($mybb->input['name']),
 				"description" => $db->escape_string($mybb->input['description']),
-				"disporder" => (int)$mybb->input['disporder'],
+				"disporder" => $mybb->get_input('disporder', MyBB::INPUT_INT),
 				"type" => $db->escape_string($thing),
 				"regex" => $db->escape_string($mybb->input['regex']),
-				"length" => (int)$mybb->input['length'],
-				"maxlength" => (int)$mybb->input['maxlength'],
+				"length" => $mybb->get_input('length', MyBB::INPUT_INT),
+				"maxlength" => $mybb->get_input('maxlength', MyBB::INPUT_INT),
 				"required" => $db->escape_string($mybb->input['required']),
 				"registration" => $db->escape_string($mybb->input['registration']),
 				"profile" => $db->escape_string($mybb->input['profile']),
 				"viewableby" => $db->escape_string($mybb->input['viewableby']),
 				"editableby" => $db->escape_string($mybb->input['editableby']),
 				"postbit" => $db->escape_string($mybb->input['postbit']),
-				"postnum" => (int)$mybb->input['postnum'],
-				"allowhtml" => (int)$mybb->input['allowhtml'],
-				"allowmycode" => (int)$mybb->input['allowmycode'],
-				"allowsmilies" => (int)$mybb->input['allowsmilies'],
-				"allowimgcode" => (int)$mybb->input['allowimgcode'],
-				"allowvideocode" => (int)$mybb->input['allowvideocode']
+				"postnum" => $mybb->get_input('postnum', MyBB::INPUT_INT),
+				"allowhtml" => $mybb->get_input('allowhtml', MyBB::INPUT_INT),
+				"allowmycode" => $mybb->get_input('allowmycode', MyBB::INPUT_INT),
+				"allowsmilies" => $mybb->get_input('allowsmilies', MyBB::INPUT_INT),
+				"allowimgcode" => $mybb->get_input('allowimgcode', MyBB::INPUT_INT),
+				"allowvideocode" => $mybb->get_input('allowvideocode', MyBB::INPUT_INT)
 			);
 
 			$fid = $db->insert_query("profilefields", $new_profile_field);
@@ -212,7 +212,7 @@ if($mybb->input['action'] == "add")
 	$selected_values = '';
 	if($mybb->input['viewableby'] != '' && $mybb->input['viewableby'] != -1)
 	{
-		$selected_values = explode(',', (string)$mybb->input['viewableby']);
+		$selected_values = explode(',', $mybb->get_input('viewableby', MyBB::INPUT_STRING));
 
 		foreach($selected_values as &$value)
 		{
@@ -259,7 +259,7 @@ if($mybb->input['action'] == "add")
 	$selected_values = '';
 	if($mybb->input['editableby'] != '' && $mybb->input['editableby'] != -1)
 	{
-		$selected_values = explode(',', (string)$mybb->input['editableby']);
+		$selected_values = explode(',', $mybb->get_input('editableby', MyBB::INPUT_STRING));
 
 		foreach($selected_values as &$value)
 		{
@@ -405,23 +405,23 @@ if($mybb->input['action'] == "edit")
 			$updated_profile_field = array(
 				"name" => $db->escape_string($mybb->input['name']),
 				"description" => $db->escape_string($mybb->input['description']),
-				"disporder" => (int)$mybb->input['disporder'],
+				"disporder" => $mybb->get_input('disporder', MyBB::INPUT_INT),
 				"type" => $db->escape_string($type),
 				"regex" => $db->escape_string($mybb->input['regex']),
-				"length" => (int)$mybb->input['length'],
-				"maxlength" => (int)$mybb->input['maxlength'],
+				"length" => $mybb->get_input('length', MyBB::INPUT_INT),
+				"maxlength" => $mybb->get_input('maxlength', MyBB::INPUT_INT),
 				"required" => $db->escape_string($mybb->input['required']),
 				"registration" => $db->escape_string($mybb->input['registration']),
 				"profile" => $db->escape_string($mybb->input['profile']),
 				"viewableby" => $db->escape_string($mybb->input['viewableby']),
 				"editableby" => $db->escape_string($mybb->input['editableby']),
 				"postbit" => $db->escape_string($mybb->input['postbit']),
-				"postnum" => (int)$mybb->input['postnum'],
-				"allowhtml" => (int)$mybb->input['allowhtml'],
-				"allowmycode" => (int)$mybb->input['allowmycode'],
-				"allowsmilies" => (int)$mybb->input['allowsmilies'],
-				"allowimgcode" => (int)$mybb->input['allowimgcode'],
-				"allowvideocode" => (int)$mybb->input['allowvideocode']
+				"postnum" => $mybb->get_input('postnum', MyBB::INPUT_INT),
+				"allowhtml" => $mybb->get_input('allowhtml', MyBB::INPUT_INT),
+				"allowmycode" => $mybb->get_input('allowmycode', MyBB::INPUT_INT),
+				"allowsmilies" => $mybb->get_input('allowsmilies', MyBB::INPUT_INT),
+				"allowimgcode" => $mybb->get_input('allowimgcode', MyBB::INPUT_INT),
+				"allowvideocode" => $mybb->get_input('allowvideocode', MyBB::INPUT_INT)
 			);
 
 			$plugins->run_hooks("admin_config_profile_fields_edit_commit");
@@ -528,7 +528,7 @@ if($mybb->input['action'] == "edit")
 	$selected_values = '';
 	if($mybb->input['viewableby'] != '' && $mybb->input['viewableby'] != -1)
 	{
-		$selected_values = explode(',', (string)$mybb->input['viewableby']);
+		$selected_values = explode(',', $mybb->get_input('viewableby', MyBB::INPUT_STRING));
 
 		foreach($selected_values as &$value)
 		{
@@ -575,7 +575,7 @@ if($mybb->input['action'] == "edit")
 	$selected_values = '';
 	if($mybb->input['editableby'] != '' && $mybb->input['editableby'] != -1)
 	{
-		$selected_values = explode(',', (string)$mybb->input['editableby']);
+		$selected_values = explode(',', $mybb->get_input('editableby', MyBB::INPUT_STRING));
 
 		foreach($selected_values as &$value)
 		{

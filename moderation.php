@@ -259,7 +259,7 @@ switch($mybb->input['action'])
 				$errors[] = $lang->error_delayedmoderation_invalid_date_year;
 			}
 
-			$date_time = explode(' ', (string)$mybb->input['date_time']);
+			$date_time = explode(' ', $mybb->get_input('date_time', MyBB::INPUT_STRING));
 			$date_time = explode(':', (string)$date_time[0]);
 
 			if(stristr($mybb->input['date_time'], 'pm'))
@@ -271,7 +271,7 @@ switch($mybb->input['action'])
 				}
 			}
 
-			$rundate = mktime((int)$date_time[0], (int)$date_time[1], date('s', TIME_NOW), (int)$mybb->input['date_month'], (int)$mybb->input['date_day'], (int)$mybb->input['date_year']);
+			$rundate = mktime((int)$date_time[0], (int)$date_time[1], date('s', TIME_NOW), $mybb->get_input('date_month', MyBB::INPUT_INT), $mybb->get_input('date_day', MyBB::INPUT_INT), $mybb->get_input('date_year', MyBB::INPUT_INT));
 
 			if(!$errors)
 			{

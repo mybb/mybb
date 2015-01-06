@@ -2309,7 +2309,7 @@ if($mybb->input['action'] == "acceptrequest")
 	verify_post_check($mybb->get_input('my_post_key'));
 
 	// Validate request
-	$query = $db->simple_select('buddyrequests', '*', 'id='.(int)$mybb->input['id'].' AND touid='.(int)$mybb->user['uid']);
+	$query = $db->simple_select('buddyrequests', '*', 'id='.$mybb->get_input('id', MyBB::INPUT_INT).' AND touid='.(int)$mybb->user['uid']);
 	$request = $db->fetch_array($query);
 	if(empty($request))
 	{
@@ -2413,7 +2413,7 @@ elseif($mybb->input['action'] == "declinerequest")
 	verify_post_check($mybb->get_input('my_post_key'));
 	
 	// Validate request
-	$query = $db->simple_select('buddyrequests', '*', 'id='.(int)$mybb->input['id'].' AND touid='.(int)$mybb->user['uid']);
+	$query = $db->simple_select('buddyrequests', '*', 'id='.$mybb->get_input('id', MyBB::INPUT_INT).' AND touid='.(int)$mybb->user['uid']);
 	$request = $db->fetch_array($query);
 	if(empty($request))
 	{
@@ -2442,7 +2442,7 @@ elseif($mybb->input['action'] == "cancelrequest")
 	verify_post_check($mybb->get_input('my_post_key'));
 	
 	// Validate request
-	$query = $db->simple_select('buddyrequests', '*', 'id='.(int)$mybb->input['id'].' AND uid='.(int)$mybb->user['uid']);
+	$query = $db->simple_select('buddyrequests', '*', 'id='.$mybb->get_input('id', MyBB::INPUT_INT).' AND uid='.(int)$mybb->user['uid']);
 	$request = $db->fetch_array($query);
 	if(empty($request))
 	{
@@ -2720,7 +2720,7 @@ if($mybb->input['action'] == "do_editlists")
 					$user['buddylist'] = array();
 				}
 				
-				$key = array_search((int)$mybb->input['delete'], $user['buddylist']);
+				$key = array_search($mybb->get_input('delete', MyBB::INPUT_INT), $user['buddylist']);
 				unset($user['buddylist'][$key]);
 				
 				// Now we have the new list, so throw it all back together

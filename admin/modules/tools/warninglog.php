@@ -21,7 +21,7 @@ $plugins->run_hooks("admin_tools_warninglog_begin");
 // Revoke a warning
 if($mybb->input['action'] == "do_revoke" && $mybb->request_method == "post")
 {
-	$query = $db->simple_select("warnings", "*", "wid='".(int)$mybb->input['wid']."'");
+	$query = $db->simple_select("warnings", "*", "wid='".$mybb->get_input('wid', MyBB::INPUT_INT)."'");
 	$warning = $db->fetch_array($query);
 
 	if(!$warning['wid'])
@@ -92,7 +92,7 @@ if($mybb->input['action'] == "view")
 		LEFT JOIN ".TABLE_PREFIX."warningtypes t ON (t.tid=w.tid)
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=w.issuedby)
 		LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=w.pid)
-		WHERE w.wid='".(int)$mybb->input['wid']."'
+		WHERE w.wid='".$mybb->get_input('wid', MyBB::INPUT_INT)."'
 	");
 	$warning = $db->fetch_array($query);
 
