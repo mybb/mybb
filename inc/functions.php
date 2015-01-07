@@ -173,6 +173,9 @@ function run_shutdown()
 
 		if(isset($config))
 		{
+			// Load DB interface
+			require_once MYBB_ROOT."inc/db_base.php";
+
 			require_once MYBB_ROOT."inc/db_".$config['database']['type'].".php";
 			switch($config['database']['type'])
 			{

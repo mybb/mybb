@@ -59,6 +59,9 @@ $lang = new MyLanguage();
 $lang->set_path(MYBB_ROOT.'install/resources');
 $lang->load('language');
 
+// Load DB interface
+require_once MYBB_ROOT."inc/db_base.php";
+
 // Prevent any shut down functions from running
 $done_shutdown = 1;
 
