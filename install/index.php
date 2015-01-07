@@ -59,6 +59,9 @@ $lang = new MyLanguage();
 $lang->set_path(MYBB_ROOT.'install/resources');
 $lang->load('language');
 
+// Load DB interface
+require_once MYBB_ROOT."inc/db_base.php";
+
 // Prevent any shut down functions from running
 $done_shutdown = 1;
 
@@ -1251,9 +1254,6 @@ function database_info()
 			$dbengines .= "<option value=\"{$dbfile}\">{$dbtype['title']}</option>";
 		}
 	}
-	
-	// Load DB interface
-	require_once MYBB_ROOT."inc/db_base.php";
 
 	$db_info = array();
 	foreach($dboptions as $dbfile => $dbtype)
@@ -2397,9 +2397,6 @@ function install_done()
 
 function db_connection($config)
 {
-	// Load DB interface
-	require_once MYBB_ROOT."inc/db_base.php";
-	
 	require_once MYBB_ROOT."inc/db_{$config['database']['type']}.php";
 	switch($config['database']['type'])
 	{
