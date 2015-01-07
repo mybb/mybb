@@ -212,7 +212,7 @@ if($mybb->input['action'] == "add")
 	$selected_values = '';
 	if($mybb->input['viewableby'] != '' && $mybb->input['viewableby'] != -1)
 	{
-		$selected_values = explode(',', $mybb->get_input('viewableby', MyBB::INPUT_STRING));
+		$selected_values = explode(',', $mybb->get_input('viewableby'));
 
 		foreach($selected_values as &$value)
 		{
@@ -259,7 +259,7 @@ if($mybb->input['action'] == "add")
 	$selected_values = '';
 	if($mybb->input['editableby'] != '' && $mybb->input['editableby'] != -1)
 	{
-		$selected_values = explode(',', $mybb->get_input('editableby', MyBB::INPUT_STRING));
+		$selected_values = explode(',', $mybb->get_input('editableby'));
 
 		foreach($selected_values as &$value)
 		{
@@ -528,7 +528,7 @@ if($mybb->input['action'] == "edit")
 	$selected_values = '';
 	if($mybb->input['viewableby'] != '' && $mybb->input['viewableby'] != -1)
 	{
-		$selected_values = explode(',', $mybb->get_input('viewableby', MyBB::INPUT_STRING));
+		$selected_values = explode(',', $mybb->get_input('viewableby'));
 
 		foreach($selected_values as &$value)
 		{
@@ -575,7 +575,7 @@ if($mybb->input['action'] == "edit")
 	$selected_values = '';
 	if($mybb->input['editableby'] != '' && $mybb->input['editableby'] != -1)
 	{
-		$selected_values = explode(',', $mybb->get_input('editableby', MyBB::INPUT_STRING));
+		$selected_values = explode(',', $mybb->get_input('editableby'));
 
 		foreach($selected_values as &$value)
 		{
