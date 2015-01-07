@@ -84,7 +84,7 @@ function upgrade12_dbchanges()
 
 	$next_act = "12_dbchanges";
 
-	$start = (int)$mybb->input['start'];
+	$start = $mybb->get_input('start', MyBB::INPUT_INT);
 	$count = $mybb->input['count'];
 
 	foreach($to_int as $table => $columns)

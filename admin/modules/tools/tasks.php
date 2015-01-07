@@ -132,8 +132,8 @@ if($mybb->input['action'] == "add")
 				"day" => $db->escape_string($mybb->input['day']),
 				"month" => $db->escape_string(implode(',', $mybb->input['month'])),
 				"weekday" => $db->escape_string(implode(',', $mybb->input['weekday'])),
-				"enabled" => (int)$mybb->input['enabled'],
-				"logging" => (int)$mybb->input['logging']
+				"enabled" => $mybb->get_input('enabled', MyBB::INPUT_INT),
+				"logging" => $mybb->get_input('logging', MyBB::INPUT_INT)
 			);
 
 			$new_task['nextrun'] = fetch_next_run($new_task);
@@ -332,8 +332,8 @@ if($mybb->input['action'] == "edit")
 				"day" => $db->escape_string($mybb->input['day']),
 				"month" => $db->escape_string(implode(',', $mybb->input['month'])),
 				"weekday" => $db->escape_string(implode(',', $mybb->input['weekday'])),
-				"enabled" => (int)$mybb->input['enabled'],
-				"logging" => (int)$mybb->input['logging']
+				"enabled" => $mybb->get_input('enabled', MyBB::INPUT_INT),
+				"logging" => $mybb->get_input('logging', MyBB::INPUT_INT)
 			);
 
 			$updated_task['nextrun'] = fetch_next_run($updated_task);

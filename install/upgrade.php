@@ -332,8 +332,8 @@ else
 	}
 	elseif($mybb->input['action'] == "doupgrade")
 	{
-		add_upgrade_store("allow_anonymous_info", $mybb->get_input('allow_anonymous_info', 1));
-		require_once INSTALL_ROOT."resources/upgrade".$mybb->get_input('from', 1).".php";
+		add_upgrade_store("allow_anonymous_info", $mybb->get_input('allow_anonymous_info', MyBB::INPUT_INT));
+		require_once INSTALL_ROOT."resources/upgrade".$mybb->get_input('from', MyBB::INPUT_INT).".php";
 		if($db->table_exists("datacache") && $upgrade_detail['requires_deactivated_plugins'] == 1 && $mybb->get_input('donewarning') != "true")
 		{
 			$plugins = $cache->read('plugins', true);

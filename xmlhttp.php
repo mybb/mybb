@@ -201,7 +201,7 @@ if($mybb->input['action'] == "get_users")
 		exit;
 	}
 
-	if($mybb->get_input('getone', 1) == 1)
+	if($mybb->get_input('getone', MyBB::INPUT_INT) == 1)
 	{
 		$limit = 1;
 	}
@@ -255,10 +255,10 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 	}
 
 	// We're editing a thread subject.
-	if($mybb->get_input('tid', 1))
+	if($mybb->get_input('tid', MyBB::INPUT_INT))
 	{
 		// Fetch the thread.
-		$thread = get_thread($mybb->get_input('tid', 1));
+		$thread = get_thread($mybb->get_input('tid', MyBB::INPUT_INT));
 		if(!$thread)
 		{
 			xmlhttp_error($lang->thread_doesnt_exist);
@@ -387,7 +387,7 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 else if($mybb->input['action'] == "edit_post")
 {
 	// Fetch the post from the database.
-	$post = get_post($mybb->get_input('pid', 1));
+	$post = get_post($mybb->get_input('pid', MyBB::INPUT_INT));
 
 	// No result, die.
 	if(!$post)
@@ -649,7 +649,7 @@ else if($mybb->input['action'] == "get_multiquoted")
 	// Are we loading all quoted posts or only those not in the current thread?
 	if(empty($mybb->input['load_all']))
 	{
-		$from_tid = "p.tid != '".$mybb->get_input('tid', 1)."' AND ";
+		$from_tid = "p.tid != '".$mybb->get_input('tid', MyBB::INPUT_INT)."' AND ";
 	}
 	else
 	{

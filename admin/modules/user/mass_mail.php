@@ -185,9 +185,9 @@ if($mybb->input['action'] == "edit")
 				"message" => $db->escape_string($mybb->input['message']),
 				"subject" => $db->escape_string($mybb->input['subject']),
 				"htmlmessage" => $db->escape_string($mybb->input['htmlmessage']),
-				"format" => (int)$mybb->input['format'],
-				"type" => $mybb->get_input('type', 1),
-				"perpage" => $mybb->get_input('perpage', 1)
+				"format" => $mybb->get_input('format', MyBB::INPUT_INT),
+				"type" => $mybb->get_input('type', MyBB::INPUT_INT),
+				"perpage" => $mybb->get_input('perpage', MyBB::INPUT_INT)
 			);
 
 			$plugins->run_hooks("admin_user_mass_email_edit_commit");
@@ -1149,15 +1149,15 @@ if($mybb->input['action'] == "send")
 						"subject" => $db->escape_string($mybb->input['subject']),
 						"message" => $db->escape_string($mybb->input['message']),
 						"htmlmessage" => $db->escape_string($mybb->input['htmlmessage']),
-						"format" => (int)$mybb->input['format'],
-						"type" => $mybb->get_input('type', 1),
+						"format" => $mybb->get_input('format', MyBB::INPUT_INT),
+						"type" => $mybb->get_input('type', MyBB::INPUT_INT),
 						"dateline" => TIME_NOW,
 						"senddate" => 0,
 						"status" => 0,
 						"sentcount" => 0,
 						"totalcount" => 0,
 						"conditions" => "",
-						"perpage" => $mybb->get_input('perpage', 1)
+						"perpage" => $mybb->get_input('perpage', MyBB::INPUT_INT)
 					);
 
 					$mid = $db->insert_query("massemails", $new_email);
@@ -1171,9 +1171,9 @@ if($mybb->input['action'] == "send")
 						"subject" => $db->escape_string($mybb->input['subject']),
 						"message" => $db->escape_string($mybb->input['message']),
 						"htmlmessage" => $db->escape_string($mybb->input['htmlmessage']),
-						"format" => (int)$mybb->input['format'],
-						"type" => $mybb->get_input('type', 1),
-						"perpage" => $mybb->get_input('perpage', 1)
+						"format" => $mybb->get_input('format', MyBB::INPUT_INT),
+						"type" => $mybb->get_input('type', MyBB::INPUT_INT),
+						"perpage" => $mybb->get_input('perpage', MyBB::INPUT_INT)
 					);
 
 					$plugins->run_hooks("admin_user_mass_email_send_update_commit");

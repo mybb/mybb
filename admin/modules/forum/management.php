@@ -68,8 +68,8 @@ if($mybb->input['action'] == "copy")
 
 	if($mybb->request_method == "post")
 	{
-		$from = (int)$mybb->input['from'];
-		$to = (int)$mybb->input['to'];
+		$from = $mybb->get_input('from', MyBB::INPUT_INT);
+		$to = $mybb->get_input('to', MyBB::INPUT_INT);
 
 		// Find the source forum
 		$query = $db->simple_select("forums", '*', "fid='{$from}'");
@@ -307,34 +307,34 @@ if($mybb->input['action'] == "editmod")
 			}
 			$update_array = array(
 				'fid' => (int)$fid,
-				'caneditposts' => (int)$mybb->input['caneditposts'],
-				'cansoftdeleteposts' => (int)$mybb->input['cansoftdeleteposts'],
-				'canrestoreposts' => (int)$mybb->input['canrestoreposts'],
-				'candeleteposts' => (int)$mybb->input['candeleteposts'],
-				'cansoftdeletethreads' => (int)$mybb->input['cansoftdeletethreads'],
-				'canrestorethreads' => (int)$mybb->input['canrestorethreads'],
-				'candeletethreads' => (int)$mybb->input['candeletethreads'],
-				'canviewips' => (int)$mybb->input['canviewips'],
-				'canviewunapprove' => (int)$mybb->input['canviewunapprove'],
-				'canviewdeleted' => (int)$mybb->input['canviewdeleted'],
-				'canopenclosethreads' => (int)$mybb->input['canopenclosethreads'],
-				'canstickunstickthreads' => (int)$mybb->input['canstickunstickthreads'],
-				'canapproveunapprovethreads' => (int)$mybb->input['canapproveunapprovethreads'],
-				'canapproveunapproveposts' => (int)$mybb->input['canapproveunapproveposts'],
-				'canapproveunapproveattachs' => (int)$mybb->input['canapproveunapproveattachs'],
-				'canmanagethreads' => (int)$mybb->input['canmanagethreads'],
-				'canmanagepolls' => (int)$mybb->input['canmanagepolls'],
-				'canpostclosedthreads' => (int)$mybb->input['canpostclosedthreads'],
-				'canmovetononmodforum' => (int)$mybb->input['canmovetononmodforum'],
-				'canusecustomtools' => (int)$mybb->input['canusecustomtools'],
-				'canmanageannouncements' => (int)$mybb->input['canmanageannouncements'],
-				'canmanagereportedposts' => (int)$mybb->input['canmanagereportedposts'],
-				'canviewmodlog' => (int)$mybb->input['canviewmodlog']
+				'caneditposts' => $mybb->get_input('caneditposts', MyBB::INPUT_INT),
+				'cansoftdeleteposts' => $mybb->get_input('cansoftdeleteposts', MyBB::INPUT_INT),
+				'canrestoreposts' => $mybb->get_input('canrestoreposts', MyBB::INPUT_INT),
+				'candeleteposts' => $mybb->get_input('candeleteposts', MyBB::INPUT_INT),
+				'cansoftdeletethreads' => $mybb->get_input('cansoftdeletethreads', MyBB::INPUT_INT),
+				'canrestorethreads' => $mybb->get_input('canrestorethreads', MyBB::INPUT_INT),
+				'candeletethreads' => $mybb->get_input('candeletethreads', MyBB::INPUT_INT),
+				'canviewips' => $mybb->get_input('canviewips', MyBB::INPUT_INT),
+				'canviewunapprove' => $mybb->get_input('canviewunapprove', MyBB::INPUT_INT),
+				'canviewdeleted' => $mybb->get_input('canviewdeleted', MyBB::INPUT_INT),
+				'canopenclosethreads' => $mybb->get_input('canopenclosethreads', MyBB::INPUT_INT),
+				'canstickunstickthreads' => $mybb->get_input('canstickunstickthreads', MyBB::INPUT_INT),
+				'canapproveunapprovethreads' => $mybb->get_input('canapproveunapprovethreads', MyBB::INPUT_INT),
+				'canapproveunapproveposts' => $mybb->get_input('canapproveunapproveposts', MyBB::INPUT_INT),
+				'canapproveunapproveattachs' => $mybb->get_input('canapproveunapproveattachs', MyBB::INPUT_INT),
+				'canmanagethreads' => $mybb->get_input('canmanagethreads', MyBB::INPUT_INT),
+				'canmanagepolls' => $mybb->get_input('canmanagepolls', MyBB::INPUT_INT),
+				'canpostclosedthreads' => $mybb->get_input('canpostclosedthreads', MyBB::INPUT_INT),
+				'canmovetononmodforum' => $mybb->get_input('canmovetononmodforum', MyBB::INPUT_INT),
+				'canusecustomtools' => $mybb->get_input('canusecustomtools', MyBB::INPUT_INT),
+				'canmanageannouncements' => $mybb->get_input('canmanageannouncements', MyBB::INPUT_INT),
+				'canmanagereportedposts' => $mybb->get_input('canmanagereportedposts', MyBB::INPUT_INT),
+				'canviewmodlog' => $mybb->get_input('canviewmodlog', MyBB::INPUT_INT)
 			);
 
 			$plugins->run_hooks("admin_forum_management_editmod_commit");
 
-			$db->update_query("moderators", $update_array, "mid='".$mybb->get_input('mid', 1)."'");
+			$db->update_query("moderators", $update_array, "mid='".$mybb->get_input('mid', MyBB::INPUT_INT)."'");
 
 			$cache->update_moderators();
 
@@ -342,7 +342,7 @@ if($mybb->input['action'] == "editmod")
 			log_admin_action($fid, $forum['name'], $mid, $mod[$fieldname]);
 
 			flash_message($lang->success_moderator_updated, 'success');
-			admin_redirect("index.php?module=forum-management&fid=".$mybb->get_input('fid', 1)."#tab_moderators");
+			admin_redirect("index.php?module=forum-management&fid=".$mybb->get_input('fid', MyBB::INPUT_INT)."#tab_moderators");
 		}
 	}
 
@@ -521,7 +521,7 @@ if($mybb->input['action'] == "permissions")
 		if($fid && !$pid)
 		{
 			$update_array['fid'] = $fid;
-			$update_array['gid'] = (int)$mybb->input['gid'];
+			$update_array['gid'] = $mybb->get_input('gid', MyBB::INPUT_INT);
 			$db->insert_query("forumpermissions", $update_array);
 		}
 
@@ -835,27 +835,27 @@ if($mybb->input['action'] == "add")
 				"type" => $db->escape_string($type),
 				"pid" => $pid,
 				"parentlist" => '',
-				"disporder" => (int)$mybb->input['disporder'],
-				"active" => (int)$mybb->input['active'],
-				"open" => (int)$mybb->input['open'],
-				"allowhtml" => (int)$mybb->input['allowhtml'],
-				"allowmycode" => (int)$mybb->input['allowmycode'],
-				"allowsmilies" => (int)$mybb->input['allowsmilies'],
-				"allowimgcode" => (int)$mybb->input['allowimgcode'],
-				"allowvideocode" => (int)$mybb->input['allowvideocode'],
-				"allowpicons" => (int)$mybb->input['allowpicons'],
-				"allowtratings" => (int)$mybb->input['allowtratings'],
-				"usepostcounts" => (int)$mybb->input['usepostcounts'],
-				"usethreadcounts" => (int)$mybb->input['usethreadcounts'],
-				"requireprefix" => (int)$mybb->input['requireprefix'],
+				"disporder" => $mybb->get_input('disporder', MyBB::INPUT_INT),
+				"active" => $mybb->get_input('active', MyBB::INPUT_INT),
+				"open" => $mybb->get_input('open', MyBB::INPUT_INT),
+				"allowhtml" => $mybb->get_input('allowhtml', MyBB::INPUT_INT),
+				"allowmycode" => $mybb->get_input('allowmycode', MyBB::INPUT_INT),
+				"allowsmilies" => $mybb->get_input('allowsmilies', MyBB::INPUT_INT),
+				"allowimgcode" => $mybb->get_input('allowimgcode', MyBB::INPUT_INT),
+				"allowvideocode" => $mybb->get_input('allowvideocode', MyBB::INPUT_INT),
+				"allowpicons" => $mybb->get_input('allowpicons', MyBB::INPUT_INT),
+				"allowtratings" => $mybb->get_input('allowtratings', MyBB::INPUT_INT),
+				"usepostcounts" => $mybb->get_input('usepostcounts', MyBB::INPUT_INT),
+				"usethreadcounts" => $mybb->get_input('usethreadcounts', MyBB::INPUT_INT),
+				"requireprefix" => $mybb->get_input('requireprefix', MyBB::INPUT_INT),
 				"password" => $db->escape_string($mybb->input['password']),
-				"showinjump" => (int)$mybb->input['showinjump'],
-				"style" => (int)$mybb->input['style'],
-				"overridestyle" => (int)$mybb->input['overridestyle'],
-				"rulestype" => (int)$mybb->input['rulestype'],
+				"showinjump" => $mybb->get_input('showinjump', MyBB::INPUT_INT),
+				"style" => $mybb->get_input('style', MyBB::INPUT_INT),
+				"overridestyle" => $mybb->get_input('overridestyle', MyBB::INPUT_INT),
+				"rulestype" => $mybb->get_input('rulestype', MyBB::INPUT_INT),
 				"rulestitle" => $db->escape_string($mybb->input['rulestitle']),
 				"rules" => $db->escape_string($mybb->input['rules']),
-				"defaultdatecut" => (int)$mybb->input['defaultdatecut'],
+				"defaultdatecut" => $mybb->get_input('defaultdatecut', MyBB::INPUT_INT),
 				"defaultsortby" => $db->escape_string($mybb->input['defaultsortby']),
 				"defaultsortorder" => $db->escape_string($mybb->input['defaultsortorder']),
 			);
@@ -1371,27 +1371,27 @@ if($mybb->input['action'] == "edit")
 				"linkto" => $db->escape_string($mybb->input['linkto']),
 				"type" => $db->escape_string($type),
 				"pid" => $pid,
-				"disporder" => (int)$mybb->input['disporder'],
-				"active" => (int)$mybb->input['active'],
-				"open" => (int)$mybb->input['open'],
-				"allowhtml" => (int)$mybb->input['allowhtml'],
-				"allowmycode" => (int)$mybb->input['allowmycode'],
-				"allowsmilies" => (int)$mybb->input['allowsmilies'],
-				"allowimgcode" => (int)$mybb->input['allowimgcode'],
-				"allowvideocode" => (int)$mybb->input['allowvideocode'],
-				"allowpicons" => (int)$mybb->input['allowpicons'],
-				"allowtratings" => (int)$mybb->input['allowtratings'],
-				"usepostcounts" => (int)$mybb->input['usepostcounts'],
-				"usethreadcounts" => (int)$mybb->input['usethreadcounts'],
-				"requireprefix" => (int)$mybb->input['requireprefix'],
+				"disporder" => $mybb->get_input('disporder', MyBB::INPUT_INT),
+				"active" => $mybb->get_input('active', MyBB::INPUT_INT),
+				"open" => $mybb->get_input('open', MyBB::INPUT_INT),
+				"allowhtml" => $mybb->get_input('allowhtml', MyBB::INPUT_INT),
+				"allowmycode" => $mybb->get_input('allowmycode', MyBB::INPUT_INT),
+				"allowsmilies" => $mybb->get_input('allowsmilies', MyBB::INPUT_INT),
+				"allowimgcode" => $mybb->get_input('allowimgcode', MyBB::INPUT_INT),
+				"allowvideocode" => $mybb->get_input('allowvideocode', MyBB::INPUT_INT),
+				"allowpicons" => $mybb->get_input('allowpicons', MyBB::INPUT_INT),
+				"allowtratings" => $mybb->get_input('allowtratings', MyBB::INPUT_INT),
+				"usepostcounts" => $mybb->get_input('usepostcounts', MyBB::INPUT_INT),
+				"usethreadcounts" => $mybb->get_input('usethreadcounts', MyBB::INPUT_INT),
+				"requireprefix" => $mybb->get_input('requireprefix', MyBB::INPUT_INT),
 				"password" => $db->escape_string($mybb->input['password']),
-				"showinjump" => (int)$mybb->input['showinjump'],
-				"style" => (int)$mybb->input['style'],
-				"overridestyle" => (int)$mybb->input['overridestyle'],
-				"rulestype" => (int)$mybb->input['rulestype'],
+				"showinjump" => $mybb->get_input('showinjump', MyBB::INPUT_INT),
+				"style" => $mybb->get_input('style', MyBB::INPUT_INT),
+				"overridestyle" => $mybb->get_input('overridestyle', MyBB::INPUT_INT),
+				"rulestype" => $mybb->get_input('rulestype', MyBB::INPUT_INT),
 				"rulestitle" => $db->escape_string($mybb->input['rulestitle']),
 				"rules" => $db->escape_string($mybb->input['rules']),
-				"defaultdatecut" => (int)$mybb->input['defaultdatecut'],
+				"defaultdatecut" => $mybb->get_input('defaultdatecut', MyBB::INPUT_INT),
 				"defaultsortby" => $db->escape_string($mybb->input['defaultsortby']),
 				"defaultsortorder" => $db->escape_string($mybb->input['defaultsortorder']),
 			);
@@ -1854,9 +1854,9 @@ document.write('".str_replace("/", "\/", $field_select)."');
 
 if($mybb->input['action'] == "deletemod")
 {
-	$modid = (int)$mybb->input['id'];
-	$isgroup = (int)$mybb->input['isgroup'];
-	$fid = $mybb->get_input('fid', 1);
+	$modid = $mybb->get_input('id', MyBB::INPUT_INT);
+	$isgroup = $mybb->get_input('isgroup', MyBB::INPUT_INT);
+	$fid = $mybb->get_input('fid', MyBB::INPUT_INT);
 
 	$query = $db->simple_select("moderators", "*", "id='{$modid}' AND isgroup = '{$isgroup}' AND fid='{$fid}'");
 	$mod = $db->fetch_array($query);
@@ -2108,7 +2108,7 @@ if(!$mybb->input['action'])
 			if(!empty($mybb->input['usergroup']))
 			{
 				$isgroup = 1;
-				$gid = (int)$mybb->input['usergroup'];
+				$gid = $mybb->get_input('usergroup', MyBB::INPUT_INT);
 
 				if(!$groupscache[$gid])
  				{

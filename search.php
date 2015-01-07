@@ -634,7 +634,7 @@ if($mybb->input['action'] == "results")
 		{
 			error($lang->error_nosearchresults);
 		}
-		$multipage = multipage($threadcount, $perpage, $page, "search.php?action=results&amp;sid=$sid&amp;sortby=$sortby&amp;order=$order&amp;uid=".$mybb->get_input('uid', 1));
+		$multipage = multipage($threadcount, $perpage, $page, "search.php?action=results&amp;sid=$sid&amp;sortby=$sortby&amp;order=$order&amp;uid=".$mybb->get_input('uid', MyBB::INPUT_INT));
 		if($upper > $threadcount)
 		{
 			$upper = $threadcount;
@@ -1001,7 +1001,7 @@ if($mybb->input['action'] == "results")
 		{
 			error($lang->error_nosearchresults);
 		}
-		$multipage = multipage($postcount, $perpage, $page, "search.php?action=results&amp;sid=".htmlspecialchars_uni($mybb->get_input('sid'))."&amp;sortby=$sortby&amp;order=$order&amp;uid=".$mybb->get_input('uid', 1));
+		$multipage = multipage($postcount, $perpage, $page, "search.php?action=results&amp;sid=".htmlspecialchars_uni($mybb->get_input('sid'))."&amp;sortby=$sortby&amp;order=$order&amp;uid=".$mybb->get_input('uid', MyBB::INPUT_INT));
 		if($upper > $postcount)
 		{
 			$upper = $postcount;
@@ -1125,7 +1125,7 @@ elseif($mybb->input['action'] == "findguest")
 }
 elseif($mybb->input['action'] == "finduser")
 {
-	$where_sql = "uid='".$mybb->get_input('uid', 1)."'";
+	$where_sql = "uid='".$mybb->get_input('uid', MyBB::INPUT_INT)."'";
 
 	$unsearchforums = get_unsearchable_forums();
 	if($unsearchforums)
@@ -1202,7 +1202,7 @@ elseif($mybb->input['action'] == "finduser")
 }
 elseif($mybb->input['action'] == "finduserthreads")
 {
-	$where_sql = "t.uid='".$mybb->get_input('uid', 1)."'";
+	$where_sql = "t.uid='".$mybb->get_input('uid', MyBB::INPUT_INT)."'";
 
 	$unsearchforums = get_unsearchable_forums();
 	if($unsearchforums)
@@ -1253,9 +1253,9 @@ elseif($mybb->input['action'] == "getnew")
 
 	$where_sql = "t.lastpost >= '".(int)$mybb->user['lastvisit']."'";
 
-	if($mybb->get_input('fid', 1))
+	if($mybb->get_input('fid', MyBB::INPUT_INT))
 	{
-		$where_sql .= " AND t.fid='".$mybb->get_input('fid', 1)."'";
+		$where_sql .= " AND t.fid='".$mybb->get_input('fid', MyBB::INPUT_INT)."'";
 	}
 	else if($mybb->get_input('fids'))
 	{
@@ -1318,21 +1318,21 @@ elseif($mybb->input['action'] == "getnew")
 }
 elseif($mybb->input['action'] == "getdaily")
 {
-	if($mybb->get_input('days', 1) < 1)
+	if($mybb->get_input('days', MyBB::INPUT_INT) < 1)
 	{
 		$days = 1;
 	}
 	else
 	{
-		$days = $mybb->get_input('days', 1);
+		$days = $mybb->get_input('days', MyBB::INPUT_INT);
 	}
 	$datecut = TIME_NOW-(86400*$days);
 
 	$where_sql = "t.lastpost >='".$datecut."'";
 
-	if($mybb->get_input('fid', 1))
+	if($mybb->get_input('fid', MyBB::INPUT_INT))
 	{
-		$where_sql .= " AND t.fid='".$mybb->get_input('fid', 1)."'";
+		$where_sql .= " AND t.fid='".$mybb->get_input('fid', MyBB::INPUT_INT)."'";
 	}
 	else if($mybb->get_input('fids'))
 	{
@@ -1439,19 +1439,19 @@ elseif($mybb->input['action'] == "do_search" && $mybb->request_method == "post")
 	$search_data = array(
 		"keywords" => $mybb->input['keywords'],
 		"author" => $mybb->get_input('author'),
-		"postthread" => $mybb->get_input('postthread', 1),
-		"matchusername" => $mybb->get_input('matchusername', 1),
-		"postdate" => $mybb->get_input('postdate', 1),
-		"pddir" => $mybb->get_input('pddir', 1),
+		"postthread" => $mybb->get_input('postthread', MyBB::INPUT_INT),
+		"matchusername" => $mybb->get_input('matchusername', MyBB::INPUT_INT),
+		"postdate" => $mybb->get_input('postdate', MyBB::INPUT_INT),
+		"pddir" => $mybb->get_input('pddir', MyBB::INPUT_INT),
 		"forums" => $mybb->input['forums'],
-		"findthreadst" => $mybb->get_input('findthreadst', 1),
-		"numreplies" => $mybb->get_input('numreplies', 1),
-		"threadprefix" => $mybb->get_input('threadprefix', 2)
+		"findthreadst" => $mybb->get_input('findthreadst', MyBB::INPUT_INT),
+		"numreplies" => $mybb->get_input('numreplies', MyBB::INPUT_INT),
+		"threadprefix" => $mybb->get_input('threadprefix', MyBB::INPUT_ARRAY)
 	);
 
 	if(is_moderator() && !empty($mybb->input['visible']))
 	{
-		$search_data['visible'] = $mybb->get_input('visible', 1);
+		$search_data['visible'] = $mybb->get_input('visible', MyBB::INPUT_INT);
 	}
 
 	if($db->can_search == true)
@@ -1500,7 +1500,7 @@ elseif($mybb->input['action'] == "do_search" && $mybb->request_method == "post")
 else if($mybb->input['action'] == "thread")
 {
 	// Fetch thread info
-	$thread = get_thread($mybb->get_input('tid', 1));
+	$thread = get_thread($mybb->get_input('tid', MyBB::INPUT_INT));
 	if(is_moderator($fid))
 	{
 		$ismod = true;
@@ -1570,7 +1570,7 @@ else if($mybb->input['action'] == "thread")
 	$search_data = array(
 		"keywords" => $mybb->input['keywords'],
 		"postthread" => 1,
-		"tid" => $mybb->get_input('tid', 1)
+		"tid" => $mybb->get_input('tid', MyBB::INPUT_INT)
 	);
 
 	if($db->can_search == true)

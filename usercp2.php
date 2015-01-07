@@ -65,7 +65,7 @@ if($mybb->get_input('action') == "do_addsubscription" && $mybb->get_input('type'
 
 	$plugins->run_hooks("usercp2_do_addsubscription");
 
-	add_subscribed_thread($thread['tid'], $mybb->get_input('notification', 1));
+	add_subscribed_thread($thread['tid'], $mybb->get_input('notification', MyBB::INPUT_INT));
 
 	if($mybb->get_input('referrer'))
 	{
@@ -81,7 +81,7 @@ elseif($mybb->get_input('action') == "addsubscription")
 {
 	if($mybb->get_input('type') == "forum")
 	{
-		$forum = get_forum($mybb->get_input('fid', 1));
+		$forum = get_forum($mybb->get_input('fid', MyBB::INPUT_INT));
 		if(!$forum)
 		{
 			error($lang->error_invalidforum);
@@ -107,7 +107,7 @@ elseif($mybb->get_input('action') == "addsubscription")
 	}
 	else
 	{
-		$thread  = get_thread($mybb->get_input('tid', 1));
+		$thread  = get_thread($mybb->get_input('tid', MyBB::INPUT_INT));
 		if(!$thread)
 		{
 			error($lang->error_invalidthread);
@@ -174,7 +174,7 @@ elseif($mybb->get_input('action') == "removesubscription")
 {
 	if($mybb->get_input('type') == "forum")
 	{
-		$forum = get_forum($mybb->get_input('fid', 1));
+		$forum = get_forum($mybb->get_input('fid', MyBB::INPUT_INT));
 		if(!$forum)
 		{
 			error($lang->error_invalidforum);
@@ -195,7 +195,7 @@ elseif($mybb->get_input('action') == "removesubscription")
 	}
 	else
 	{
-		$thread = get_thread($mybb->get_input('tid', 1));
+		$thread = get_thread($mybb->get_input('tid', MyBB::INPUT_INT));
 		if(!$thread)
 		{
 			error($lang->error_invalidthread);

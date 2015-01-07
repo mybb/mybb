@@ -38,9 +38,9 @@ if($mybb->input['action'] == "add")
 		{
 			$new_spider = array(
 				"name" => $db->escape_string($mybb->input['name']),
-				"theme" => (int)$mybb->input['theme'],
+				"theme" => $mybb->get_input('theme', MyBB::INPUT_INT),
 				"language" => $db->escape_string($mybb->input['language']),
-				"usergroup" => (int)$mybb->input['usergroup'],
+				"usergroup" => $mybb->get_input('usergroup', MyBB::INPUT_INT),
 				"useragent" => $db->escape_string($mybb->input['useragent']),
 				"lastvisit" => 0
 			);
@@ -183,9 +183,9 @@ if($mybb->input['action'] == "edit")
 		{
 			$updated_spider = array(
 				"name" => $db->escape_string($mybb->input['name']),
-				"theme" => (int)$mybb->input['theme'],
+				"theme" => $mybb->get_input('theme', MyBB::INPUT_INT),
 				"language" => $db->escape_string($mybb->input['language']),
-				"usergroup" => (int)$mybb->input['usergroup'],
+				"usergroup" => $mybb->get_input('usergroup', MyBB::INPUT_INT),
 				"useragent" => $db->escape_string($mybb->input['useragent'])
 			);
 

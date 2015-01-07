@@ -70,7 +70,7 @@ if($mybb->input['action'] == "add")
 				"name" => $db->escape_string($mybb->input['name']),
 				"find" => $db->escape_string($mybb->input['find']),
 				"image" => $db->escape_string($mybb->input['image']),
-				"disporder" => (int)$mybb->input['disporder'],
+				"disporder" => $mybb->get_input('disporder', MyBB::INPUT_INT),
 				"showclickable" => $db->escape_string($mybb->input['showclickable'])
 			);
 
@@ -206,7 +206,7 @@ if($mybb->input['action'] == "edit")
 				"name" => $db->escape_string($mybb->input['name']),
 				"find" => $db->escape_string($mybb->input['find']),
 				"image" => $db->escape_string($mybb->input['image']),
-				"disporder" => (int)$mybb->input['disporder'],
+				"disporder" => $mybb->get_input('disporder', MyBB::INPUT_INT),
 				"showclickable" => $db->escape_string($mybb->input['showclickable'])
 			);
 

@@ -379,8 +379,8 @@ if($mybb->input['action'] == "import")
 				$options = array(
 					'no_stylesheets' => ($mybb->input['import_stylesheets'] ? 0 : 1),
 					'no_templates' => ($mybb->input['import_templates'] ? 0 : 1),
-					'version_compat' => (int)$mybb->input['version_compat'],
-					'parent' => $mybb->get_input('tid', 1),
+					'version_compat' => $mybb->get_input('version_compat', MyBB::INPUT_INT),
+					'parent' => $mybb->get_input('tid', MyBB::INPUT_INT),
 					'force_name_check' => true,
 				);
 				$theme_id = import_theme_xml($contents, $options);
@@ -1060,12 +1060,12 @@ if($mybb->input['action'] == "edit")
 	if($mybb->request_method == "post" && !$mybb->input['do'])
 	{
 		$properties = array(
-			'templateset' => (int)$mybb->input['templateset'],
+			'templateset' => $mybb->get_input('templateset', MyBB::INPUT_INT),
 			'editortheme' => $mybb->input['editortheme'],
 			'imgdir' => $mybb->input['imgdir'],
 			'logo' => $mybb->input['logo'],
-			'tablespace' => (int)$mybb->input['tablespace'],
-			'borderwidth' => (int)$mybb->input['borderwidth'],
+			'tablespace' => $mybb->get_input('tablespace', MyBB::INPUT_INT),
+			'borderwidth' => $mybb->get_input('borderwidth', MyBB::INPUT_INT),
 			'color' => $mybb->input['color']
 		);
 

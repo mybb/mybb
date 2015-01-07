@@ -53,11 +53,11 @@ if($mybb->input['action'] == "add")
 		{
 			$calendar = array(
 				"name" => $db->escape_string($mybb->input['name']),
-				"disporder" => (int)$mybb->input['disporder'],
-				"startofweek" => (int)$mybb->input['startofweek'],
-				"eventlimit" => (int)$mybb->input['eventlimit'],
-				"showbirthdays" => (int)$mybb->input['showbirthdays'],
-				"moderation" => (int)$mybb->input['moderation'],
+				"disporder" => $mybb->get_input('disporder', MyBB::INPUT_INT),
+				"startofweek" => $mybb->get_input('startofweek', MyBB::INPUT_INT),
+				"eventlimit" => $mybb->get_input('eventlimit', MyBB::INPUT_INT),
+				"showbirthdays" => $mybb->get_input('showbirthdays', MyBB::INPUT_INT),
+				"moderation" => $mybb->get_input('moderation', MyBB::INPUT_INT),
 				"allowhtml" => $db->escape_string($mybb->input['allowhtml']),
 				"allowmycode" => $db->escape_string($mybb->input['allowmycode']),
 				"allowimgcode" => $db->escape_string($mybb->input['allowimgcode']),
@@ -303,11 +303,11 @@ if($mybb->input['action'] == "edit")
 		{
 			$updated_calendar = array(
 				"name" => $db->escape_string($mybb->input['name']),
-				"disporder" => (int)$mybb->input['disporder'],
-				"startofweek" => (int)$mybb->input['startofweek'],
-				"eventlimit" => (int)$mybb->input['eventlimit'],
-				"showbirthdays" => (int)$mybb->input['showbirthdays'],
-				"moderation" => (int)$mybb->input['moderation'],
+				"disporder" => $mybb->get_input('disporder', MyBB::INPUT_INT),
+				"startofweek" => $mybb->get_input('startofweek', MyBB::INPUT_INT),
+				"eventlimit" => $mybb->get_input('eventlimit', MyBB::INPUT_INT),
+				"showbirthdays" => $mybb->get_input('showbirthdays', MyBB::INPUT_INT),
+				"moderation" => $mybb->get_input('moderation', MyBB::INPUT_INT),
 				"allowhtml" => $db->escape_string($mybb->input['allowhtml']),
 				"allowmycode" => $db->escape_string($mybb->input['allowmycode']),
 				"allowimgcode" => $db->escape_string($mybb->input['allowimgcode']),

@@ -45,7 +45,7 @@ if($mybb->input['action'] == "delete")
 
 	if(!is_array($mybb->input['aids']))
 	{
-		$mybb->input['aids'] = array((int)$mybb->input['aid']);
+		$mybb->input['aids'] = array($mybb->get_input('aid', MyBB::INPUT_INT));
 	}
 	else
 	{
