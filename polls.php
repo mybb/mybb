@@ -574,6 +574,7 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 
 	// Get forum info
 	$forum = get_forum($thread['fid']);
+	$fid = $thread['fid'];
 	if(!$forum)
 	{
 		error($lang->error_invalidforum);
