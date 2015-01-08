@@ -1122,6 +1122,7 @@ class PostDataHandler extends DataHandler
 			$args = array(
 				'this' => &$this,
 				'done_users' => &$done_users,
+				'users' => array()
 			);
 
 			while($subscribedmember = $db->fetch_array($query))
@@ -1131,9 +1132,7 @@ class PostDataHandler extends DataHandler
 					continue;
 				}
 
-				$args['subscribedmember'] = &$subscribedmember;
-
-				$plugins->run_hooks('datahandler_post_insert_subscribed_member', $args);
+				$args['users'][$subscribedmember['uid']] = (int)$subscribedmember['uid'];
 
 				$done_users[$subscribedmember['uid']] = 1;
 
@@ -1219,6 +1218,9 @@ class PostDataHandler extends DataHandler
 					send_pm($pm, -1, true);
 				}
 			}
+
+			$plugins->run_hooks('datahandler_post_insert_subscribed', $args);
+
 			// Have one or more emails been queued? Update the queue count
 			if(isset($queued_email) && $queued_email == 1)
 			{
