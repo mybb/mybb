@@ -760,7 +760,7 @@ if($mybb->settings['awactialert'] == 1 && $mybb->usergroup['cancp'] == 1)
 
 		if($admincplink)
 		{
-			$awaiting_message .= $lang->sprintf($lang->awaiting_message_link, $awaiting_message, $mybb->settings['bburl'], $admin_dir);
+			$awaiting_message .= $lang->sprintf($lang->awaiting_message_link, $mybb->settings['bburl'], $admin_dir);
 		}
 
 		eval('$awaitingusers = "'.$templates->get('global_awaiting_activation').'";');
