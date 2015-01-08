@@ -51,13 +51,7 @@ if($mybb->settings['portal'] == 0)
 
 // Fetch the current URL
 $portal_url = get_current_location();
-
-$file_name = THIS_SCRIPT;
-$file_name_real = my_strtolower(basename($portal_url));
-if($file_name_real != THIS_SCRIPT)
-{
-	$file_name = $file_name_real;
-}
+$file_name = strtok(my_strtolower(basename($portal_url)), '?');
 
 add_breadcrumb($lang->nav_portal, $file_name);
 
