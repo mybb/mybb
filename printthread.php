@@ -21,7 +21,9 @@ $parser = new postParser;
 // Load global language phrases
 $lang->load("printthread");
 
-$thread = get_thread($mybb->get_input('tid', 1));
+$plugins->run_hooks("printthread_start");
+
+$thread = get_thread($mybb->get_input('tid', MyBB::INPUT_INT));
 
 if(!$thread)
 {
@@ -92,7 +94,7 @@ if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0
 // Check if this forum is password protected and we have a valid password
 check_forum_password($forum['fid']);
 
-$page = $mybb->get_input('page', 1);
+$page = $mybb->get_input('page', MyBB::INPUT_INT);
 
 // Paginate this thread
 if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)

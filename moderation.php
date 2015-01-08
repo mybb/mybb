@@ -30,10 +30,10 @@ $lang->load("moderation");
 
 $plugins->run_hooks("moderation_start");
 
-$tid = $mybb->get_input('tid', 1);
-$pid = $mybb->get_input('pid', 1);
-$fid = $mybb->get_input('fid', 1);
-$pmid = $mybb->get_input('pmid', 1);
+$tid = $mybb->get_input('tid', MyBB::INPUT_INT);
+$pid = $mybb->get_input('pid', MyBB::INPUT_INT);
+$fid = $mybb->get_input('fid', MyBB::INPUT_INT);
+$pmid = $mybb->get_input('pmid', MyBB::INPUT_INT);
 
 if($pid)
 {
@@ -134,7 +134,7 @@ switch($mybb->input['action'])
 
 		$plugins->run_hooks('moderation_cancel_delayedmoderation');
 
-		$db->delete_query("delayedmoderation", "did='".$mybb->get_input('did', 1)."'");
+		$db->delete_query("delayedmoderation", "did='".$mybb->get_input('did', MyBB::INPUT_INT)."'");
 
 		if($tid == 0)
 		{
@@ -150,11 +150,11 @@ switch($mybb->input['action'])
 		// Verify incoming POST request
 		verify_post_check($mybb->get_input('my_post_key'));
 
-		if(!$mybb->get_input('date_day', 1))
+		if(!$mybb->get_input('date_day', MyBB::INPUT_INT))
 		{
 			$mybb->input['date_day'] = date('d', TIME_NOW);
 		}
-		if(!$mybb->get_input('date_month', 1))
+		if(!$mybb->get_input('date_month', MyBB::INPUT_INT))
 		{
 			$mybb->input['date_month'] = date('m', TIME_NOW);
 		}
@@ -172,7 +172,7 @@ switch($mybb->input['action'])
 			}
 			else
 			{
-				$fid = $mybb->get_input('fid', 1);
+				$fid = $mybb->get_input('fid', MyBB::INPUT_INT);
 				$tids = getids($fid, "forum");
 			}
 			if(count($tids) < 1)
@@ -221,7 +221,7 @@ switch($mybb->input['action'])
 			eval("\$customthreadtools .= \"".$templates->get("moderation_delayedmoderation_custommodtool")."\";");
 		}
 
-		$mybb->input['delayedmoderation'] = $mybb->get_input('delayedmoderation', 2);
+		$mybb->input['delayedmoderation'] = $mybb->get_input('delayedmoderation', MyBB::INPUT_ARRAY);
 
 		if($mybb->input['action'] == "do_delayedmoderation" && $mybb->request_method == "post")
 		{
@@ -261,7 +261,7 @@ switch($mybb->input['action'])
 				$errors[] = $lang->error_delayedmoderation_invalid_date_year;
 			}
 
-			$date_time = explode(' ', (string)$mybb->input['date_time']);
+			$date_time = explode(' ', $mybb->get_input('date_time'));
 			$date_time = explode(':', (string)$date_time[0]);
 
 			if(stristr($mybb->input['date_time'], 'pm'))
@@ -273,7 +273,7 @@ switch($mybb->input['action'])
 				}
 			}
 
-			$rundate = mktime((int)$date_time[0], (int)$date_time[1], date('s', TIME_NOW), (int)$mybb->input['date_month'], (int)$mybb->input['date_day'], (int)$mybb->input['date_year']);
+			$rundate = mktime((int)$date_time[0], (int)$date_time[1], date('s', TIME_NOW), $mybb->get_input('date_month', MyBB::INPUT_INT), $mybb->get_input('date_day', MyBB::INPUT_INT), $mybb->get_input('date_year', MyBB::INPUT_INT));
 
 			if(!$errors)
 			{
@@ -289,7 +289,7 @@ switch($mybb->input['action'])
 					'tids' => $db->escape_string($mybb->input['tids']),
 					'fid' => $fid,
 					'dateline' => TIME_NOW,
-					'inputs' => $db->escape_string(serialize($mybb->input['delayedmoderation']))
+					'inputs' => $db->escape_string(my_serialize($mybb->input['delayedmoderation']))
 				));
 
 				$plugins->run_hooks('moderation_do_delayedmoderation');
@@ -519,7 +519,7 @@ switch($mybb->input['action'])
 		}
 
 		$url = '';
-		if($mybb->get_input('tid', 1))
+		if($mybb->get_input('tid', MyBB::INPUT_INT))
 		{
 			$lang->threads = $lang->thread;
 			$threads = "<a href=\"".get_thread_link($tid)."\">{$thread['subject']}</a>";
@@ -552,7 +552,7 @@ switch($mybb->input['action'])
 		for($day = 1; $day <= 31; ++$day)
 		{
 			$selected = '';
-			if($mybb->get_input('date_day', 1) == $day)
+			if($mybb->get_input('date_day', MyBB::INPUT_INT) == $day)
 			{
 				$selected = ' selected="selected"';
 			}
@@ -563,7 +563,7 @@ switch($mybb->input['action'])
 		foreach(array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12') as $month)
 		{
 			$datemonth[$month] = '';
-			if($mybb->get_input('date_month', 1) == (int)$month)
+			if($mybb->get_input('date_month', MyBB::INPUT_INT) == (int)$month)
 			{
 				$datemonth[$month] = ' selected="selected"';
 			}
@@ -877,7 +877,7 @@ switch($mybb->input['action'])
 		// Verify incoming POST request
 		verify_post_check($mybb->get_input('my_post_key'));
 
-		$moveto = $mybb->get_input('moveto', 1);
+		$moveto = $mybb->get_input('moveto', MyBB::INPUT_INT);
 		$method = $mybb->get_input('method');
 
 		if(!is_moderator($fid, "canmanagethreads"))
@@ -908,9 +908,9 @@ switch($mybb->input['action'])
 		$plugins->run_hooks('moderation_do_move');
 
 		$expire = 0;
-		if($mybb->get_input('redirect_expire', 1) > 0)
+		if($mybb->get_input('redirect_expire', MyBB::INPUT_INT) > 0)
 		{
-			$expire = TIME_NOW + ($mybb->get_input('redirect_expire', 1) * 86400);
+			$expire = TIME_NOW + ($mybb->get_input('redirect_expire', MyBB::INPUT_INT) * 86400);
 		}
 
 		$the_thread = $tid;
@@ -1379,7 +1379,7 @@ switch($mybb->input['action'])
 
 		$plugins->run_hooks("moderation_do_split");
 
-		$mybb->input['splitpost'] = $mybb->get_input('splitpost', 2);
+		$mybb->input['splitpost'] = $mybb->get_input('splitpost', MyBB::INPUT_ARRAY);
 		if(empty($mybb->input['splitpost']))
 		{
 			error($lang->error_nosplitposts);
@@ -1399,7 +1399,7 @@ switch($mybb->input['action'])
 
 		if(!empty($mybb->input['moveto']))
 		{
-			$moveto = $mybb->get_input('moveto', 1);
+			$moveto = $mybb->get_input('moveto', MyBB::INPUT_INT);
 		}
 		else
 		{
@@ -1477,7 +1477,7 @@ switch($mybb->input['action'])
 		$inlineids = implode("|", $threads);
 		if($mybb->get_input('inlinetype') == 'search')
 		{
-			clearinline($mybb->get_input('searchid', 1), 'search');
+			clearinline($mybb->get_input('searchid', MyBB::INPUT_INT), 'search');
 		}
 		else
 		{
@@ -1508,7 +1508,7 @@ switch($mybb->input['action'])
 		log_moderator_action($modlogdata, $lang->multi_deleted_threads);
 		if($mybb->get_input('inlinetype') == 'search')
 		{
-			clearinline($mybb->get_input('searchid', 1), 'search');
+			clearinline($mybb->get_input('searchid', MyBB::INPUT_INT), 'search');
 		}
 		else
 		{
@@ -1552,7 +1552,7 @@ switch($mybb->input['action'])
 		log_moderator_action($modlogdata, $lang->multi_opened_threads);
 		if($mybb->get_input('inlinetype') == 'search')
 		{
-			clearinline($mybb->get_input('searchid', 1), 'search');
+			clearinline($mybb->get_input('searchid', MyBB::INPUT_INT), 'search');
 		}
 		else
 		{
@@ -1594,7 +1594,7 @@ switch($mybb->input['action'])
 		log_moderator_action($modlogdata, $lang->multi_closed_threads);
 		if($mybb->get_input('inlinetype') == 'search')
 		{
-			clearinline($mybb->get_input('searchid', 1), 'search');
+			clearinline($mybb->get_input('searchid', MyBB::INPUT_INT), 'search');
 		}
 		else
 		{
@@ -1636,7 +1636,7 @@ switch($mybb->input['action'])
 		log_moderator_action($modlogdata, $lang->multi_approved_threads);
 		if($mybb->get_input('inlinetype') == 'search')
 		{
-			clearinline($mybb->get_input('searchid', 1), 'search');
+			clearinline($mybb->get_input('searchid', MyBB::INPUT_INT), 'search');
 		}
 		else
 		{
@@ -1679,7 +1679,7 @@ switch($mybb->input['action'])
 		log_moderator_action($modlogdata, $lang->multi_unapproved_threads);
 		if($mybb->get_input('inlinetype') == 'search')
 		{
-			clearinline($mybb->get_input('searchid', 1), 'search');
+			clearinline($mybb->get_input('searchid', MyBB::INPUT_INT), 'search');
 		}
 		else
 		{
@@ -1722,7 +1722,7 @@ switch($mybb->input['action'])
 		log_moderator_action($modlogdata, $lang->multi_restored_threads);
 		if($mybb->get_input('inlinetype') == 'search')
 		{
-			clearinline($mybb->get_input('searchid', 1), 'search');
+			clearinline($mybb->get_input('searchid', MyBB::INPUT_INT), 'search');
 		}
 		else
 		{
@@ -1765,7 +1765,7 @@ switch($mybb->input['action'])
 		log_moderator_action($modlogdata, $lang->multi_soft_deleted_threads);
 		if($mybb->get_input('inlinetype') == 'search')
 		{
-			clearinline($mybb->get_input('searchid', 1), 'search');
+			clearinline($mybb->get_input('searchid', MyBB::INPUT_INT), 'search');
 		}
 		else
 		{
@@ -1808,7 +1808,7 @@ switch($mybb->input['action'])
 		log_moderator_action($modlogdata, $lang->multi_stuck_threads);
 		if($mybb->get_input('inlinetype') == 'search')
 		{
-			clearinline($mybb->get_input('searchid', 1), 'search');
+			clearinline($mybb->get_input('searchid', MyBB::INPUT_INT), 'search');
 		}
 		else
 		{
@@ -1850,7 +1850,7 @@ switch($mybb->input['action'])
 		log_moderator_action($modlogdata, $lang->multi_unstuck_threads);
 		if($mybb->get_input('inlinetype') == 'search')
 		{
-			clearinline($mybb->get_input('searchid', 1), 'search');
+			clearinline($mybb->get_input('searchid', MyBB::INPUT_INT), 'search');
 		}
 		else
 		{
@@ -1888,7 +1888,7 @@ switch($mybb->input['action'])
 		$inlineids = implode("|", $threads);
 		if($mybb->get_input('inlinetype') == 'search')
 		{
-			clearinline($mybb->get_input('searchid', 1), 'search');
+			clearinline($mybb->get_input('searchid', MyBB::INPUT_INT), 'search');
 		}
 		else
 		{
@@ -1906,7 +1906,7 @@ switch($mybb->input['action'])
 		// Verify incoming POST request
 		verify_post_check($mybb->get_input('my_post_key'));
 
-		$moveto = $mybb->get_input('moveto', 1);
+		$moveto = $mybb->get_input('moveto', MyBB::INPUT_INT);
 		$threadlist = explode("|", $mybb->get_input('threads'));
 		if(!is_moderator_by_tids($threadlist, 'canmanagethreads'))
 		{
@@ -1960,7 +1960,7 @@ switch($mybb->input['action'])
 		$inlineids = implode("|", $posts);
 		if($mybb->get_input('inlinetype') == 'search')
 		{
-			clearinline($mybb->get_input('searchid', 1), 'search');
+			clearinline($mybb->get_input('searchid', MyBB::INPUT_INT), 'search');
 		}
 		else
 		{
@@ -2116,7 +2116,7 @@ switch($mybb->input['action'])
 		$inlineids = implode("|", $posts);
 		if($mybb->get_input('inlinetype') == 'search')
 		{
-			clearinline($mybb->get_input('searchid', 1), 'search');
+			clearinline($mybb->get_input('searchid', MyBB::INPUT_INT), 'search');
 		}
 		else
 		{
@@ -2135,7 +2135,7 @@ switch($mybb->input['action'])
 		// Verify incoming POST request
 		verify_post_check($mybb->get_input('my_post_key'));
 
-		$mergepost = $mybb->get_input('mergepost', 2);
+		$mergepost = $mybb->get_input('mergepost', MyBB::INPUT_ARRAY);
 		if(count($mergepost) <= 1)
 		{
 			error($lang->error_nomergeposts);
@@ -2228,7 +2228,7 @@ switch($mybb->input['action'])
 		$inlineids = implode("|", $posts);
 		if($mybb->get_input('inlinetype') == 'search')
 		{
-			clearinline($mybb->get_input('searchid', 1), 'search');
+			clearinline($mybb->get_input('searchid', MyBB::INPUT_INT), 'search');
 		}
 		else
 		{
@@ -2323,7 +2323,7 @@ switch($mybb->input['action'])
 
 		if(isset($mybb->input['moveto']))
 		{
-			$moveto = $mybb->get_input('moveto', 1);
+			$moveto = $mybb->get_input('moveto', MyBB::INPUT_INT);
 		}
 		else
 		{
@@ -2416,7 +2416,7 @@ switch($mybb->input['action'])
 		$inlineids = implode("|", $posts);
 		if($mybb->get_input('inlinetype') == 'search')
 		{
-			clearinline($mybb->get_input('searchid', 1), 'search');
+			clearinline($mybb->get_input('searchid', MyBB::INPUT_INT), 'search');
 		}
 		else
 		{
@@ -2617,7 +2617,7 @@ switch($mybb->input['action'])
 		log_moderator_action($modlogdata, $lang->multi_approve_posts);
 		if($mybb->get_input('inlinetype') == 'search')
 		{
-			clearinline($mybb->get_input('searchid', 1), 'search');
+			clearinline($mybb->get_input('searchid', MyBB::INPUT_INT), 'search');
 		}
 		else
 		{
@@ -2661,7 +2661,7 @@ switch($mybb->input['action'])
 		log_moderator_action($modlogdata, $lang->multi_unapprove_posts);
 		if($mybb->get_input('inlinetype') == 'search')
 		{
-			clearinline($mybb->get_input('searchid', 1), 'search');
+			clearinline($mybb->get_input('searchid', MyBB::INPUT_INT), 'search');
 		}
 		else
 		{
@@ -2705,7 +2705,7 @@ switch($mybb->input['action'])
 		log_moderator_action($modlogdata, $lang->multi_restore_posts);
 		if($mybb->get_input('inlinetype') == 'search')
 		{
-			clearinline($mybb->get_input('searchid', 1), 'search');
+			clearinline($mybb->get_input('searchid', MyBB::INPUT_INT), 'search');
 		}
 		else
 		{
@@ -2749,7 +2749,7 @@ switch($mybb->input['action'])
 		log_moderator_action($modlogdata, $lang->multi_soft_delete_posts);
 		if($mybb->get_input('inlinetype') == 'search')
 		{
-			clearinline($mybb->get_input('searchid', 1), 'search');
+			clearinline($mybb->get_input('searchid', MyBB::INPUT_INT), 'search');
 		}
 		else
 		{
@@ -2886,7 +2886,7 @@ switch($mybb->input['action'])
 	default:
 		require_once MYBB_ROOT."inc/class_custommoderation.php";
 		$custommod = new CustomModeration;
-		$tool = $custommod->tool_info($mybb->get_input('action', 1));
+		$tool = $custommod->tool_info($mybb->get_input('action', MyBB::INPUT_INT));
 		if($tool !== false)
 		{
 			// Verify incoming POST request
@@ -2942,12 +2942,12 @@ switch($mybb->input['action'])
 					error($lang->error_movetocategory);
 				}
 
-				$custommod->execute($mybb->get_input('action', 1), $tids);
+				$custommod->execute($mybb->get_input('action', MyBB::INPUT_INT), $tids);
  				$lang->custom_tool = $lang->sprintf($lang->custom_tool, $tool['name']);
 				log_moderator_action($modlogdata, $lang->custom_tool);
 				if($mybb->get_input('inlinetype') == 'search')
 				{
-					clearinline($mybb->get_input('searchid', 1), 'search');
+					clearinline($mybb->get_input('searchid', MyBB::INPUT_INT), 'search');
 					$lang->redirect_customtool_search = $lang->sprintf($lang->redirect_customtool_search, $tool['name']);
 					$return_url = htmlspecialchars_uni($mybb->get_input('url'));
 					redirect($return_url, $lang->redirect_customtool_search);
@@ -2973,7 +2973,7 @@ switch($mybb->input['action'])
 					error($lang->error_movetocategory);
 				}
 
-				$ret = $custommod->execute($mybb->get_input('action', 1), $tid);
+				$ret = $custommod->execute($mybb->get_input('action', MyBB::INPUT_INT), $tid);
  				$lang->custom_tool = $lang->sprintf($lang->custom_tool, $tool['name']);
 				log_moderator_action($modlogdata, $lang->custom_tool);
 				if($ret == 'forum')
@@ -3020,12 +3020,12 @@ switch($mybb->input['action'])
 					$tids[] = $row['tid'];
 				}
 
-				$ret = $custommod->execute($mybb->get_input('action', 1), $tids, $pids);
+				$ret = $custommod->execute($mybb->get_input('action', MyBB::INPUT_INT), $tids, $pids);
  				$lang->custom_tool = $lang->sprintf($lang->custom_tool, $tool['name']);
 				log_moderator_action($modlogdata, $lang->custom_tool);
 				if($mybb->get_input('inlinetype') == 'search')
 				{
-					clearinline($mybb->get_input('searchid', 1), 'search');
+					clearinline($mybb->get_input('searchid', MyBB::INPUT_INT), 'search');
 					$lang->redirect_customtool_search = $lang->sprintf($lang->redirect_customtool_search, $tool['name']);
 					$return_url = htmlspecialchars_uni($mybb->get_input('url'));
 					redirect($return_url, $lang->redirect_customtool_search);

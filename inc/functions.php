@@ -173,6 +173,9 @@ function run_shutdown()
 
 		if(isset($config))
 		{
+			// Load DB interface
+			require_once MYBB_ROOT."inc/db_base.php";
+
 			require_once MYBB_ROOT."inc/db_".$config['database']['type'].".php";
 			switch($config['database']['type'])
 			{
@@ -756,7 +759,7 @@ function error($error="", $title="")
 	}
 
 	// AJAX error message?
-	if($mybb->get_input('ajax', 1))
+	if($mybb->get_input('ajax', MyBB::INPUT_INT))
 	{
 		// Send our headers.
 		@header("Content-type: application/json; charset={$lang->settings['charset']}");
@@ -802,7 +805,7 @@ function inline_error($errors, $title="", $json_data=array())
 	}
 
 	// AJAX error message?
-	if($mybb->get_input('ajax', 1))
+	if($mybb->get_input('ajax', MyBB::INPUT_INT))
 	{
 		// Send our headers.
 		@header("Content-type: application/json; charset={$lang->settings['charset']}");
@@ -848,7 +851,7 @@ function error_no_permission()
 
 	$db->update_query("sessions", $noperm_array, "sid='{$session->sid}'");
 
-	if($mybb->get_input('ajax', 1))
+	if($mybb->get_input('ajax', MyBB::INPUT_INT))
 	{
 		// Send our headers.
 		header("Content-type: application/json; charset={$lang->settings['charset']}");
@@ -909,7 +912,7 @@ function redirect($url, $message="", $title="", $force_redirect=false)
 
 	$plugins->run_hooks("redirect", $redirect_args);
 
-	if($mybb->get_input('ajax', 1))
+	if($mybb->get_input('ajax', MyBB::INPUT_INT))
 	{
 		// Send our headers.
 		//@header("Content-type: text/html; charset={$lang->settings['charset']}");
@@ -1899,35 +1902,303 @@ function my_set_array_cookie($name, $id, $value, $expires="")
 	}
 
 	$newcookie[$id] = $value;
-	$newcookie = serialize($newcookie);
+	$newcookie = my_serialize($newcookie);
 	my_setcookie("mybb[$name]", addslashes($newcookie), $expires);
 
 	// Make sure our current viarables are up-to-date as well
 	$mybb->cookies['mybb'][$name] = $newcookie;
 }
 
-/**
- * Verifies that data passed is an array
- *
- * @param array Data to unserialize
- * @return array Unserialized data array
+/*
+ * Arbitrary limits for _safe_unserialize()
  */
-function my_unserialize($data)
+define('MAX_SERIALIZED_INPUT_LENGTH', 4096);
+define('MAX_SERIALIZED_ARRAY_LENGTH', 256);
+define('MAX_SERIALIZED_ARRAY_DEPTH', 5);
+
+/**
+ * Credits go to https://github.com/piwik
+ * Safe unserialize() replacement
+ * - accepts a strict subset of PHP's native my_serialized representation
+ * - does not unserialize objects
+ *
+ * @param string $str
+ * @return mixed
+ * @throw Exception if $str is malformed or contains unsupported types (e.g., resources, objects)
+ */
+function _safe_unserialize($str)
 {
-	// Do no unserialize objects
-	if(substr($data, 0, 1) == 'O')
+	if(strlen($str) > MAX_SERIALIZED_INPUT_LENGTH)
 	{
-		return array();
+		// input exceeds MAX_SERIALIZED_INPUT_LENGTH
+		return false;
 	}
 
-	$array = unserialize($data);
-
-	if(!is_array($array))
+	if(empty($str) || !is_string($str))
 	{
-		$array = array();
+		return false;
 	}
 
-	return $array;
+	$stack = array();
+	$expected = array();
+
+	/*
+	 * states:
+	 *   0 - initial state, expecting a single value or array
+	 *   1 - terminal state
+	 *   2 - in array, expecting end of array or a key
+	 *   3 - in array, expecting value or another array
+	 */
+	$state = 0;
+	while($state != 1)
+	{
+		$type = isset($str[0]) ? $str[0] : '';
+
+		if($type == '}')
+		{
+			$str = substr($str, 1);
+		}
+		else if($type == 'N' && $str[1] == ';')
+		{
+			$value = null;
+			$str = substr($str, 2);
+		}
+		else if($type == 'b' && preg_match('/^b:([01]);/', $str, $matches))
+		{
+			$value = $matches[1] == '1' ? true : false;
+			$str = substr($str, 4);
+		}
+		else if($type == 'i' && preg_match('/^i:(-?[0-9]+);(.*)/s', $str, $matches))
+		{
+			$value = (int)$matches[1];
+			$str = $matches[2];
+		}
+		else if($type == 'd' && preg_match('/^d:(-?[0-9]+\.?[0-9]*(E[+-][0-9]+)?);(.*)/s', $str, $matches))
+		{
+			$value = (float)$matches[1];
+			$str = $matches[3];
+		}
+		else if($type == 's' && preg_match('/^s:([0-9]+):"(.*)/s', $str, $matches) && substr($matches[2], (int)$matches[1], 2) == '";')
+		{
+			$value = substr($matches[2], 0, (int)$matches[1]);
+			$str = substr($matches[2], (int)$matches[1] + 2);
+		}
+		else if($type == 'a' && preg_match('/^a:([0-9]+):{(.*)/s', $str, $matches) && $matches[1] < MAX_SERIALIZED_ARRAY_LENGTH)
+		{
+			$expectedLength = (int)$matches[1];
+			$str = $matches[2];
+		}
+		else
+		{
+			// object or unknown/malformed type
+			return false;
+		}
+
+		switch($state)
+		{
+			case 3: // in array, expecting value or another array
+				if($type == 'a')
+				{
+					if(count($stack) >= MAX_SERIALIZED_ARRAY_DEPTH)
+					{
+						// array nesting exceeds MAX_SERIALIZED_ARRAY_DEPTH
+						return false;
+					}
+
+					$stack[] = &$list;
+					$list[$key] = array();
+					$list = &$list[$key];
+					$expected[] = $expectedLength;
+					$state = 2;
+					break;
+				}
+				if($type != '}')
+				{
+					$list[$key] = $value;
+					$state = 2;
+					break;
+				}
+
+				// missing array value
+				return false;
+
+			case 2: // in array, expecting end of array or a key
+				if($type == '}')
+				{
+					if(count($list) < end($expected))
+					{
+						// array size less than expected
+						return false;
+					}
+
+					unset($list);
+					$list = &$stack[count($stack)-1];
+					array_pop($stack);
+
+					// go to terminal state if we're at the end of the root array
+					array_pop($expected);
+					if(count($expected) == 0) {
+						$state = 1;
+					}
+					break;
+				}
+				if($type == 'i' || $type == 's')
+				{
+					if(count($list) >= MAX_SERIALIZED_ARRAY_LENGTH)
+					{
+						// array size exceeds MAX_SERIALIZED_ARRAY_LENGTH
+						return false;
+					}
+					if(count($list) >= end($expected))
+					{
+						// array size exceeds expected length
+						return false;
+					}
+
+					$key = $value;
+					$state = 3;
+					break;
+				}
+
+				// illegal array index type
+				return false;
+
+			case 0: // expecting array or value
+				if($type == 'a')
+				{
+					if(count($stack) >= MAX_SERIALIZED_ARRAY_DEPTH)
+					{
+						// array nesting exceeds MAX_SERIALIZED_ARRAY_DEPTH
+						return false;
+					}
+
+					$data = array();
+					$list = &$data;
+					$expected[] = $expectedLength;
+					$state = 2;
+					break;
+				}
+				if($type != '}')
+				{
+					$data = $value;
+					$state = 1;
+					break;
+				}
+
+				// not in array
+				return false;
+		}
+	}
+
+	if(!empty($str))
+	{
+		// trailing data in input
+		return false;
+	}
+	return $data;
+}
+
+/**
+ * Credits go to https://github.com/piwik
+ * Wrapper for _safe_unserialize() that handles exceptions and multibyte encoding issue
+ *
+ * @param string $str
+ * @return mixed
+ */
+function my_unserialize($str)
+{
+	// Ensure we use the byte count for strings even when strlen() is overloaded by mb_strlen()
+	if(function_exists('mb_internal_encoding') && (((int)ini_get('mbstring.func_overload')) & 2))
+	{
+		$mbIntEnc = mb_internal_encoding();
+		mb_internal_encoding('ASCII');
+	}
+
+	$out = _safe_unserialize($str);
+
+	if(isset($mbIntEnc))
+	{
+		mb_internal_encoding($mbIntEnc);
+	}
+	
+	return $out;
+}
+
+/**
+ * Credits go to https://github.com/piwik
+ * Safe serialize() replacement
+ * - output a strict subset of PHP's native serialized representation
+ * - does not my_serialize objects
+ *
+ * @param mixed $value
+ * @return string
+ * @throw Exception if $value is malformed or contains unsupported types (e.g., resources, objects)
+ */
+function _safe_serialize( $value )
+{
+	if(is_null($value))
+	{
+		return 'N;';
+	}
+	
+	if(is_bool($value))
+	{
+		return 'b:'.(int)$value.';';
+	}
+	
+	if(is_int($value))
+	{
+		return 'i:'.$value.';';
+	}
+	
+	if(is_float($value))
+	{
+		return 'd:'.str_replace(',', '.', $value).';';
+	}
+	
+	if(is_string($value))
+	{
+		return 's:'.strlen($value).':"'.$value.'";';
+	}
+	
+	if(is_array($value))
+	{
+		$out = '';
+		foreach($value as $k => $v)
+		{
+			$out .= _safe_serialize($k) . _safe_serialize($v);
+		}
+		
+		return 'a:'.count($value).':{'.$out.'}';
+	}
+
+	// safe_serialize cannot my_serialize resources or objects
+	return false;
+}
+
+/**
+ * Credits go to https://github.com/piwik
+ * Wrapper for _safe_serialize() that handles exceptions and multibyte encoding issue
+ *
+ * @param mixed $value
+ * @return string
+*/
+function my_serialize($value)
+{
+	// ensure we use the byte count for strings even when strlen() is overloaded by mb_strlen()
+	if(function_exists('mb_internal_encoding') && (((int)ini_get('mbstring.func_overload')) & 2))
+	{
+		$mbIntEnc = mb_internal_encoding();
+		mb_internal_encoding('ASCII');
+	}
+	
+	$out = _safe_serialize($value);
+	if(isset($mbIntEnc))
+	{
+		mb_internal_encoding($mbIntEnc);
+	}
+	
+	return $out;
 }
 
 /**
@@ -3448,10 +3719,10 @@ function log_moderator_action($data, $action="")
 		unset($data['pid']);
 	}
 
-	// Any remaining extra data - we serialize and insert in to its own column
+	// Any remaining extra data - we my_serialize and insert in to its own column
 	if(is_array($data))
 	{
-		$data = serialize($data);
+		$data = my_serialize($data);
 	}
 
 	$sql_array = array(
@@ -4634,11 +4905,6 @@ function get_current_location($fields=false, $ignore=array())
 			}
 		}
 
-		if(strlen($location) > 150)
-		{
-			$location = substr($location, 0, 150);
-		}
-
 		return $location;
 	}
 }
@@ -4876,29 +5142,10 @@ function convert_through_utf8($str, $to=true)
 }
 
 /**
- * Replacement function for PHP's wordwrap(). This version does not break up HTML tags, URLs or unicode references.
- *
- * @param string The string to be word wrapped
- * @return string The word wraped string
+ * DEPRECATED! Please use other alternatives.
  */
 function my_wordwrap($message)
 {
-	global $mybb;
-
-	if($mybb->settings['wordwrap'] > 0)
-	{
-		$message = convert_through_utf8($message);
-
-		if(!($new_message = @preg_replace("#(((?>[^\s&/<>\"\\-\[\]])|(&\#[a-z0-9]{1,10};)){{$mybb->settings['wordwrap']}})#u", "$0&#8203;", $message)))
-		{
-			$new_message = preg_replace("#(((?>[^\s&/<>\"\\-\[\]])|(&\#[a-z0-9]{1,10};)){{$mybb->settings['wordwrap']}})#", "$0&#8203;", $message);
-		}
-
-		$new_message = convert_through_utf8($new_message, false);
-
-		return $new_message;
-	}
-
 	return $message;
 }
 
@@ -5662,16 +5909,27 @@ function get_user_by_username($username, $options=array())
 		$options['username_method'] = 0;
 	}
 
+	switch($db->type)
+	{
+		case 'mysql':
+		case 'mysqli':
+			$field = 'username';
+			break;
+		default:
+			$field = 'LOWER(username)';
+			break;
+	}
+
 	switch($options['username_method'])
 	{
 		case 1:
 			$sqlwhere = 'LOWER(email)=\''.$username.'\'';
 			break;
 		case 2:
-			$sqlwhere = 'LOWER(username)=\''.$username.'\' OR LOWER(email)=\''.$username.'\'';
+			$sqlwhere = $field.'=\''.$username.'\' OR LOWER(email)=\''.$username.'\'';
 			break;
 		default:
-			$sqlwhere = 'LOWER(username)=\''.$username.'\'';
+			$sqlwhere = $field.'=\''.$username.'\'';
 			break;
 	}
 
@@ -7846,7 +8104,7 @@ function log_spam_block($username = '', $email = '', $ip_address = '', $data = a
 		'email'     => $db->escape_string($email),
 		'ipaddress' => $db->escape_binary($ip_address),
 		'dateline'  => (int)TIME_NOW,
-		'data'      => $db->escape_string(@serialize($data)),
+		'data'      => $db->escape_string(@my_serialize($data)),
 	);
 
 	return (bool)$db->insert_query('spamlog', $insert_array);

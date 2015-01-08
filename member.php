@@ -96,7 +96,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		if(isset($mybb->input['regtime']))
 		{
 			// Check how long it took for this person to register
-			$timetook = TIME_NOW - $mybb->get_input('regtime', 1);
+			$timetook = TIME_NOW - $mybb->get_input('regtime', MyBB::INPUT_INT);
 
 			// See if they registered faster than normal
 			if($timetook < $mybb->settings['regtime'])
@@ -129,7 +129,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		$mybb->input['password2'] = $mybb->input['password'];
 	}
 
-	if($mybb->settings['regtype'] == "verify" || $mybb->settings['regtype'] == "admin" || $mybb->settings['regtype'] == "both" || $mybb->get_input('coppa', 1) == 1)
+	if($mybb->settings['regtype'] == "verify" || $mybb->settings['regtype'] == "admin" || $mybb->settings['regtype'] == "both" || $mybb->get_input('coppa', MyBB::INPUT_INT) == 1)
 	{
 		$usergroup = 5;
 	}
@@ -159,7 +159,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		"referrer" => $mybb->get_input('referrername'),
 		"timezone" => $mybb->get_input('timezoneoffset'),
 		"language" => $mybb->get_input('language'),
-		"profile_fields" => $mybb->get_input('profile_fields', 2),
+		"profile_fields" => $mybb->get_input('profile_fields', MyBB::INPUT_ARRAY),
 		"regip" => $session->packedip,
 		"coppa_user" => $coppauser,
 		"regcheck1" => $mybb->get_input('regcheck1'),
@@ -179,13 +179,13 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 	}
 
 	$user['options'] = array(
-		"allownotices" => $mybb->get_input('allownotices', 1),
-		"hideemail" => $mybb->get_input('hideemail', 1),
-		"subscriptionmethod" => $mybb->get_input('subscriptionmethod', 1),
-		"receivepms" => $mybb->get_input('receivepms', 1),
-		"pmnotice" => $mybb->get_input('pmnotice', 1),
-		"pmnotify" => $mybb->get_input('pmnotify', 1),
-		"invisible" => $mybb->get_input('invisible', 1),
+		"allownotices" => $mybb->get_input('allownotices', MyBB::INPUT_INT),
+		"hideemail" => $mybb->get_input('hideemail', MyBB::INPUT_INT),
+		"subscriptionmethod" => $mybb->get_input('subscriptionmethod', MyBB::INPUT_INT),
+		"receivepms" => $mybb->get_input('receivepms', MyBB::INPUT_INT),
+		"pmnotice" => $mybb->get_input('pmnotice', MyBB::INPUT_INT),
+		"pmnotify" => $mybb->get_input('pmnotify', MyBB::INPUT_INT),
+		"invisible" => $mybb->get_input('invisible', MyBB::INPUT_INT),
 		"dstcorrection" => $mybb->get_input('dstcorrection')
 	);
 
@@ -303,25 +303,25 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		$allownoticescheck = $hideemailcheck = $no_auto_subscribe_selected = $instant_email_subscribe_selected = $instant_pm_subscribe_selected = $no_subscribe_selected = '';
 		$receivepmscheck = $pmnoticecheck = $pmnotifycheck = $invisiblecheck = $dst_auto_selected = $dst_enabled_selected = $dst_disabled_selected = '';
 
-		if($mybb->get_input('allownotices', 1) == 1)
+		if($mybb->get_input('allownotices', MyBB::INPUT_INT) == 1)
 		{
 			$allownoticescheck = "checked=\"checked\"";
 		}
 
-		if($mybb->get_input('hideemail', 1) == 1)
+		if($mybb->get_input('hideemail', MyBB::INPUT_INT) == 1)
 		{
 			$hideemailcheck = "checked=\"checked\"";
 		}
 
-		if($mybb->get_input('subscriptionmethod', 1) == 1)
+		if($mybb->get_input('subscriptionmethod', MyBB::INPUT_INT) == 1)
 		{
 			$no_subscribe_selected = "selected=\"selected\"";
 		}
-		else if($mybb->get_input('subscriptionmethod', 1) == 2)
+		else if($mybb->get_input('subscriptionmethod', MyBB::INPUT_INT) == 2)
 		{
 			$instant_email_subscribe_selected = "selected=\"selected\"";
 		}
-		else if($mybb->get_input('subscriptionmethod', 1) == 3)
+		else if($mybb->get_input('subscriptionmethod', MyBB::INPUT_INT) == 3)
 		{
 			$instant_pm_subscribe_selected = "selected=\"selected\"";
 		}
@@ -330,31 +330,31 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 			$no_auto_subscribe_selected = "selected=\"selected\"";
 		}
 
-		if($mybb->get_input('receivepms', 1) == 1)
+		if($mybb->get_input('receivepms', MyBB::INPUT_INT) == 1)
 		{
 			$receivepmscheck = "checked=\"checked\"";
 		}
 
-		if($mybb->get_input('pmnotice', 1) == 1)
+		if($mybb->get_input('pmnotice', MyBB::INPUT_INT) == 1)
 		{
 			$pmnoticecheck = " checked=\"checked\"";
 		}
 
-		if($mybb->get_input('pmnotify', 1) == 1)
+		if($mybb->get_input('pmnotify', MyBB::INPUT_INT) == 1)
 		{
 			$pmnotifycheck = "checked=\"checked\"";
 		}
 
-		if($mybb->get_input('invisible', 1) == 1)
+		if($mybb->get_input('invisible', MyBB::INPUT_INT) == 1)
 		{
 			$invisiblecheck = "checked=\"checked\"";
 		}
 
-		if($mybb->get_input('dstcorrection', 1) == 2)
+		if($mybb->get_input('dstcorrection', MyBB::INPUT_INT) == 2)
 		{
 			$dst_auto_selected = "selected=\"selected\"";
 		}
-		else if($mybb->get_input('dstcorrection', 1) == 1)
+		else if($mybb->get_input('dstcorrection', MyBB::INPUT_INT) == 1)
 		{
 			$dst_enabled_selected = "selected=\"selected\"";
 		}
@@ -683,7 +683,7 @@ if($mybb->input['action'] == "register")
 	{
 		$bdaysel = $bday2blank = '';
 	}
-	$mybb->input['bday1'] = $mybb->get_input('bday1', 1);
+	$mybb->input['bday1'] = $mybb->get_input('bday1', MyBB::INPUT_INT);
 	for($day = 1; $day <= 31; ++$day)
 	{
 		$selected = '';
@@ -695,14 +695,14 @@ if($mybb->input['action'] == "register")
 		eval("\$bdaysel .= \"".$templates->get("member_register_day")."\";");
 	}
 
-	$mybb->input['bday2'] = $mybb->get_input('bday2', 1);
+	$mybb->input['bday2'] = $mybb->get_input('bday2', MyBB::INPUT_INT);
 	$bdaymonthsel = array();
 	foreach(range(1, 12) as $number)
 	{
 		$bdaymonthsel[$number] = '';
 	}
 	$bdaymonthsel[$mybb->input['bday2']] = "selected=\"selected\"";
-	$mybb->input['bday3'] = $mybb->get_input('bday3', 1);
+	$mybb->input['bday3'] = $mybb->get_input('bday3', MyBB::INPUT_INT);
 
 	if($mybb->input['bday3'] == 0)
 	{
@@ -856,12 +856,12 @@ if($mybb->input['action'] == "register")
 		{
 			$referrer = '';
 		}
-		$mybb->input['profile_fields'] = $mybb->get_input('profile_fields', 2);
+		$mybb->input['profile_fields'] = $mybb->get_input('profile_fields', MyBB::INPUT_ARRAY);
 		// Custom profile fields baby!
 		$altbg = "trow1";
 		$requiredfields = $customfields = '';
 
-		if($mybb->settings['regtype'] == "verify" || $mybb->settings['regtype'] == "admin" || $mybb->settings['regtype'] == "both" || $mybb->get_input('coppa', 1) == 1)
+		if($mybb->settings['regtype'] == "verify" || $mybb->settings['regtype'] == "admin" || $mybb->settings['regtype'] == "both" || $mybb->get_input('coppa', MyBB::INPUT_INT) == 1)
 		{
 			$usergroup = 5;
 		}
@@ -1307,7 +1307,7 @@ if($mybb->input['action'] == "activate")
 	}
 	else
 	{
-		$user = get_user($mybb->get_input('uid', 1));
+		$user = get_user($mybb->get_input('uid', MyBB::INPUT_INT));
 	}
 	if(isset($mybb->input['code']) && $user)
 	{
@@ -1570,7 +1570,7 @@ if($mybb->input['action'] == "resetpassword")
 	}
 	else
 	{
-		$user = get_user($mybb->get_input('uid', 1));
+		$user = get_user($mybb->get_input('uid', MyBB::INPUT_INT));
 	}
 	if(isset($mybb->input['code']) && $user)
 	{
@@ -1866,7 +1866,7 @@ if($mybb->input['action'] == "logout")
 
 if($mybb->input['action'] == "viewnotes")
 {
-	$uid = $mybb->get_input('uid', 1);
+	$uid = $mybb->get_input('uid', MyBB::INPUT_INT);
 	$user = get_user($uid);
 
 	// Make sure we are looking at a real user here.
@@ -1900,7 +1900,7 @@ if($mybb->input['action'] == "profile")
 		error_no_permission();
 	}
 
-	$uid = $mybb->get_input('uid', 1);
+	$uid = $mybb->get_input('uid', MyBB::INPUT_INT);
 	if($uid)
 	{
 		$memprofile = get_user($uid);
@@ -2541,7 +2541,6 @@ if($mybb->input['action'] == "profile")
 		if($memban['reason'])
 		{
 			$memban['reason'] = htmlspecialchars_uni($parser->parse_badwords($memban['reason']));
-			$memban['reason'] = my_wordwrap($memban['reason']);
 		}
 		else
 		{
@@ -2762,7 +2761,7 @@ if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 		}
 	}
 
-	$query = $db->simple_select("users", "uid, username, email, hideemail", "uid='".$mybb->get_input('uid', 1)."'");
+	$query = $db->simple_select("users", "uid, username, email, hideemail", "uid='".$mybb->get_input('uid', MyBB::INPUT_INT)."'");
 	$to_user = $db->fetch_array($query);
 
 	if(!$to_user['username'])
@@ -2929,7 +2928,7 @@ if($mybb->input['action'] == "emailuser")
 		}
 	}
 
-	$query = $db->simple_select("users", "uid, username, email, hideemail, ignorelist", "uid='".$mybb->get_input('uid', 1)."'");
+	$query = $db->simple_select("users", "uid, username, email, hideemail, ignorelist", "uid='".$mybb->get_input('uid', MyBB::INPUT_INT)."'");
 	$to_user = $db->fetch_array($query);
 
 	$lang->email_user = $lang->sprintf($lang->email_user, $to_user['username']);

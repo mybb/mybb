@@ -11,7 +11,7 @@
 		</setting>
 		<setting name="boardclosed_reason">
 			<title>Board Closed Reason</title>
-			<description><![CDATA[If your forum is closed, you can set a message here that your visitors will be able to see when they visit your forums.]]></description>
+			<description><![CDATA[If your forum is closed, you can set a message here that your visitors will be able to see when they visit your forums. You can leave this empty to use the language files.]]></description>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[textarea]]></optionscode>
 			<settingvalue><![CDATA[These forums are currently closed for maintenance. Please check back later.]]></settingvalue>
@@ -1331,18 +1331,10 @@ show=Show to all Users]]></optionscode>
 			<settingvalue><![CDATA[100]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
-		<setting name="wordwrap">
-			<title>Number of Characters before Word Wrapping Occurs</title>
-			<description><![CDATA[The maximum number of characters that can be present in a word before a space is automatically inserted. (helps preservation of the forum layout). Set to 0 to disable.]]></description>
-			<disporder>16</disporder>
-			<optionscode><![CDATA[numeric]]></optionscode>
-			<settingvalue><![CDATA[80]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
 		<setting name="maxquotedepth">
 			<title>Maximum Nested Quote Tags</title>
 			<description><![CDATA[The maximum depth level for quote tags. When quote-replying to a post, all nested quotes which exceed this threshold are automatically removed. Note that this value is only enforced when quote-replying - it is still possible to manually enter quotes to exceed this limit, and this setting will not affect posts already submitted. Set to 0 to disable.]]></description>
-			<disporder>17</disporder>
+			<disporder>16</disporder>
 			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[5]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1350,7 +1342,7 @@ show=Show to all Users]]></optionscode>
 		<setting name="polloptionlimit">
 			<title>Maximum Poll Option Length</title>
 			<description><![CDATA[The maximum length that each poll option can be. (Set to 0 to disable).]]></description>
-			<disporder>18</disporder>
+			<disporder>17</disporder>
 			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[250]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1358,7 +1350,7 @@ show=Show to all Users]]></optionscode>
 		<setting name="maxpolloptions">
 			<title>Maximum Number of Poll Options</title>
 			<description><![CDATA[The maximum number of options for polls that users can post.]]></description>
-			<disporder>19</disporder>
+			<disporder>18</disporder>
 			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1366,7 +1358,7 @@ show=Show to all Users]]></optionscode>
 		<setting name="polltimelimit">
 			<title>Poll Time Limit</title>
 			<description><![CDATA[The number of hours until regular users cannot add a poll to their own threads (if they have the permission). Enter 0 (zero) for no limit.]]></description>
-			<disporder>20</disporder>
+			<disporder>19</disporder>
 			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[12]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1374,7 +1366,7 @@ show=Show to all Users]]></optionscode>
 		<setting name="threadreview">
 			<title>Show Thread Review</title>
 			<description><![CDATA[Show recent posts when creating a new reply?]]></description>
-			<disporder>21</disporder>
+			<disporder>20</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1382,7 +1374,7 @@ show=Show to all Users]]></optionscode>
 		<setting name="alloweditreason">
 			<title>Allow Edit Reason</title>
 			<description><![CDATA[Do you want to allow users the ability to add an optional reason why they've edited their post?]]></description>
-			<disporder>22</disporder>
+			<disporder>21</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>

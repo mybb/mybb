@@ -443,7 +443,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 		$numannouncements = 10; // Default back to 10
 	}
 
-	$page = $mybb->get_input('page', 1);
+	$page = $mybb->get_input('page', MyBB::INPUT_INT);
 	$pages = $announcementcount / $numannouncements;
 	$pages = ceil($pages);
 
