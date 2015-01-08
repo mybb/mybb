@@ -132,6 +132,8 @@ switch($mybb->input['action'])
 			error_no_permission();
 		}
 
+		$plugins->run_hooks('moderation_cancel_delayedmoderation');
+
 		$db->delete_query("delayedmoderation", "did='".$mybb->get_input('did', 1)."'");
 
 		if($tid == 0)
@@ -280,7 +282,7 @@ switch($mybb->input['action'])
 					$mybb->input['tids'] = implode(',' , $mybb->input['tids']);
 				}
 
-				$db->insert_query("delayedmoderation", array(
+				$did = $db->insert_query("delayedmoderation", array(
 					'type' => $db->escape_string($mybb->input['type']),
 					'delaydateline' => (int)$rundate,
 					'uid' => $mybb->user['uid'],
@@ -289,6 +291,8 @@ switch($mybb->input['action'])
 					'dateline' => TIME_NOW,
 					'inputs' => $db->escape_string(serialize($mybb->input['delayedmoderation']))
 				));
+
+				$plugins->run_hooks('moderation_do_delayedmoderation');
 
 				$rundate_format = my_date('relative', $rundate, '', 2);
 				$lang->redirect_delayed_moderation_thread = $lang->sprintf($lang->redirect_delayed_moderation_thread, $rundate_format);
@@ -901,6 +905,8 @@ switch($mybb->input['action'])
 			error($lang->error_movetosameforum);
 		}
 
+		$plugins->run_hooks('moderation_do_move');
+
 		$expire = 0;
 		if($mybb->get_input('redirect_expire', 1) > 0)
 		{
@@ -938,6 +944,8 @@ switch($mybb->input['action'])
 		{
 			error($lang->error_nomember);
 		}
+
+		$plugins->run_hooks('moderation_viewthreadnotes');
 
 		$lang->view_notes_for = $lang->sprintf($lang->view_notes_for, $thread['subject']);
 
@@ -1149,6 +1157,8 @@ switch($mybb->input['action'])
 			eval("\$modoptions = \"".$templates->get("moderation_getip_modoptions")."\";");
 		}
 
+		$plugins->run_hooks('moderation_getip');
+
 		eval("\$getip = \"".$templates->get("moderation_getip")."\";");
 		output_page($getip);
 		break;
@@ -1187,6 +1197,8 @@ switch($mybb->input['action'])
 			$ipaddress = $pm['ipaddress'];
 			eval("\$modoptions = \"".$templates->get("moderation_getip_modoptions")."\";");
 		}
+
+		$plugins->run_hooks('moderation_getpmip');
 
 		eval("\$getpmip = \"".$templates->get("moderation_getpmip")."\";");
 		output_page($getpmip);
