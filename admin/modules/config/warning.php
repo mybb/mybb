@@ -89,7 +89,7 @@ if($mybb->input['action'] == "add_level")
 			}
 			$new_level = array(
 				"percentage" => $mybb->get_input('percentage', MyBB::INPUT_INT),
-				"action" => serialize($action)
+				"action" => my_serialize($action)
 			);
 
 			$lid = $db->insert_query("warninglevels", $new_level);
@@ -258,7 +258,7 @@ if($mybb->input['action'] == "edit_level")
 			}
 			$updated_level = array(
 				"percentage" => $mybb->get_input('percentage', MyBB::INPUT_INT),
-				"action" => serialize($action)
+				"action" => my_serialize($action)
 			);
 
 			$plugins->run_hooks("admin_config_warning_edit_level_commit");
@@ -523,7 +523,7 @@ if($mybb->input['action'] == "add_type")
 
 if($mybb->input['action'] == "edit_type")
 {
-	$query = $db->simple_select("warningtypes", "*", "tid='".$mybb->get_input('tid', 1)."'");
+	$query = $db->simple_select("warningtypes", "*", "tid='".$mybb->get_input('tid', MyBB::INPUT_INT)."'");
 	$type = $db->fetch_array($query);
 
 	// Does the warning type not exist?
@@ -619,7 +619,7 @@ if($mybb->input['action'] == "edit_type")
 
 if($mybb->input['action'] == "delete_type")
 {
-	$query = $db->simple_select("warningtypes", "*", "tid='".$mybb->get_input('tid', 1)."'");
+	$query = $db->simple_select("warningtypes", "*", "tid='".$mybb->get_input('tid', MyBB::INPUT_INT)."'");
 	$type = $db->fetch_array($query);
 
 	// Does the warning type not exist?

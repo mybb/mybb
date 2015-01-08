@@ -203,7 +203,7 @@ elseif($mybb->input['do'] == "login")
 			"ip" => $db->escape_binary(my_inet_pton(get_ip())),
 			"dateline" => TIME_NOW,
 			"lastactive" => TIME_NOW,
-			"data" => serialize(array()),
+			"data" => my_serialize(array()),
 			"useragent" => $db->escape_string($useragent),
 		);
 		$db->insert_query("adminsessions", $admin_session);

@@ -1042,7 +1042,7 @@ function upgrade12_dbchanges4()
 			}
 		}
 
-		$db->update_query("adminoptions", array('permissions' => serialize($new_permissions)), "uid = '{$adminoption['uid']}'");
+		$db->update_query("adminoptions", array('permissions' => my_serialize($new_permissions)), "uid = '{$adminoption['uid']}'");
 
 		$new_permissions = $default_permissions;
 	}
@@ -1061,7 +1061,7 @@ function upgrade12_dbchanges4()
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminoptions DROP defaultviews");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminoptions ADD defaultviews TEXT NOT NULL");
-	$db->update_query("adminoptions", array('defaultviews' => serialize(array('user' => 1))));
+	$db->update_query("adminoptions", array('defaultviews' => my_serialize(array('user' => 1))));
 
 	require_once MYBB_ROOT."inc/functions_rebuild.php";
 	rebuild_stats();
@@ -1264,8 +1264,8 @@ function upgrade12_dbchanges5()
 			"type" => $db->escape_string($view['attributes']['type']),
 			"visibility" => (int)$view['attributes']['visibility'],
 			"title" => $db->escape_string($view['title'][0]['value']),
-			"fields" => $db->escape_string(serialize($fields)),
-			"conditions" => $db->escape_string(serialize($conditions)),
+			"fields" => $db->escape_string(my_serialize($fields)),
+			"conditions" => $db->escape_string(my_serialize($conditions)),
 			"sortby" => $db->escape_string($view['sortby'][0]['value']),
 			"sortorder" => $db->escape_string($view['sortorder'][0]['value']),
 			"perpage" => (int)$view['perpage'][0]['value'],
@@ -1959,7 +1959,7 @@ function upgrade12_redothemes()
 		$stylesheets['global']['global'][] = $css_url;
 
 		// Update the theme
-		$db->update_query("themes", array("stylesheets" => $db->escape_string(serialize($stylesheets))), "tid='{$theme['tid']}'");
+		$db->update_query("themes", array("stylesheets" => $db->escape_string(my_serialize($stylesheets))), "tid='{$theme['tid']}'");
 	}
 
 	if($db->field_exists('css', "themes"))

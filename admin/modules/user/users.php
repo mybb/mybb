@@ -1772,8 +1772,8 @@ if($mybb->input['action'] == "ipaddresses")
 		$user['lastip'] = my_inet_ntop($db->unescape_binary($user['lastip']));
 		$popup = new PopupMenu("user_last", $lang->options);
 		$popup->add_item($lang->show_users_regged_with_ip,
-			"index.php?module=user-users&amp;action=search&amp;results=1&amp;conditions=".urlencode(serialize(array("regip" => $user['lastip']))));
-		$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(serialize(array("postip" => $user['lastip']))));
+			"index.php?module=user-users&amp;action=search&amp;results=1&amp;conditions=".urlencode(my_serialize(array("regip" => $user['lastip']))));
+		$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(my_serialize(array("postip" => $user['lastip']))));
 		$popup->add_item($lang->info_on_ip, "index.php?module=user-users&amp;action=iplookup&ipaddress={$user['lastip']}", "MyBB.popupWindow('index.php?module=user-users&amp;action=iplookup&ipaddress={$user['lastip']}', null, true); return false;");
 		$popup->add_item($lang->ban_ip, "index.php?module=config-banning&amp;filter={$user['lastip']}");
 		$controls = $popup->fetch();
@@ -1791,8 +1791,8 @@ if($mybb->input['action'] == "ipaddresses")
 	{
 		$user['regip'] = my_inet_ntop($db->unescape_binary($user['regip']));
 		$popup = new PopupMenu("user_reg", $lang->options);
-		$popup->add_item($lang->show_users_regged_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(serialize(array("regip" => $user['regip']))));
-		$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(serialize(array("postip" => $user['regip']))));
+		$popup->add_item($lang->show_users_regged_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(my_serialize(array("regip" => $user['regip']))));
+		$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(my_serialize(array("postip" => $user['regip']))));
 		$popup->add_item($lang->info_on_ip, "index.php?module=user-users&amp;action=iplookup&ipaddress={$user['regip']}", "MyBB.popupWindow('index.php?module=user-users&amp;action=iplookup&ipaddress={$user['regip']}', null, true); return false;");
 		$popup->add_item($lang->ban_ip, "index.php?module=config-banning&amp;filter={$user['regip']}");
 		$controls = $popup->fetch();
@@ -1809,8 +1809,8 @@ if($mybb->input['action'] == "ipaddresses")
 		++$counter;
 		$ip['ipaddress'] = my_inet_ntop($db->unescape_binary($ip['ipaddress']));
 		$popup = new PopupMenu("id_{$counter}", $lang->options);
-		$popup->add_item($lang->show_users_regged_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(serialize(array("regip" => $ip['ipaddress']))));
-		$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(serialize(array("postip" => $ip['ipaddress']))));
+		$popup->add_item($lang->show_users_regged_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(my_serialize(array("regip" => $ip['ipaddress']))));
+		$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(my_serialize(array("postip" => $ip['ipaddress']))));
 		$popup->add_item($lang->info_on_ip, "index.php?module=user-users&amp;action=iplookup&ipaddress={$ip['ipaddress']}", "MyBB.popupWindow('index.php?module=user-users&amp;action=iplookup&ipaddress={$ip['ipaddress']}', null, true); return false;");
 		$popup->add_item($lang->ban_ip, "index.php?module=config-banning&amp;filter={$ip['ipaddress']}");
 		$controls = $popup->fetch();
@@ -2160,7 +2160,7 @@ if($mybb->input['action'] == "search")
 		// Build view options from incoming search options
 		if($mybb->input['vid'])
 		{
-			$query = $db->simple_select("adminviews", "*", "vid='".$mybb->get_input('vid', 1)."'");
+			$query = $db->simple_select("adminviews", "*", "vid='".$mybb->get_input('vid', MyBB::INPUT_INT)."'");
 			$admin_view = $db->fetch_array($query);
 			// View does not exist or this view is private and does not belong to the current user
 			if(!$admin_view['vid'] || ($admin_view['visibility'] == 1 && $admin_view['uid'] != $mybb->user['uid']))
@@ -2207,7 +2207,7 @@ if($mybb->input['action'] == "search")
 			$admin_view['sortby'] = $mybb->input['sortby'];
 		}
 
-		if($mybb->get_input('perpage', 1))
+		if($mybb->get_input('perpage', MyBB::INPUT_INT))
 		{
 			$admin_view['perpage'] = $mybb->input['perpage'];
 		}
@@ -2966,7 +2966,7 @@ if(!$mybb->input['action'])
 		// Showing a specific view
 		if(isset($mybb->input['vid']))
 		{
-			$query = $db->simple_select("adminviews", "*", "vid='".$mybb->get_input('vid', 1)."'");
+			$query = $db->simple_select("adminviews", "*", "vid='".$mybb->get_input('vid', MyBB::INPUT_INT)."'");
 			$admin_view = $db->fetch_array($query);
 			// View does not exist or this view is private and does not belong to the current user
 			if(!$admin_view['vid'] || ($admin_view['visibility'] == 1 && $admin_view['uid'] != $mybb->user['uid']))
@@ -3380,7 +3380,7 @@ function build_users_view($view)
 		}
 		else
 		{
-			$mybb->input['page'] = $mybb->get_input('page', 1);
+			$mybb->input['page'] = $mybb->get_input('page', MyBB::INPUT_INT);
 		}
 
 		if($mybb->input['page'])
@@ -3565,7 +3565,7 @@ function build_users_view($view)
 	$switch_url = $view['url'];
 	if($mybb->input['page'] > 0)
 	{
-		$switch_url .= "&amp;page=".$mybb->get_input('page', 1);
+		$switch_url .= "&amp;page=".$mybb->get_input('page', MyBB::INPUT_INT);
 	}
 	if($view['view_type'] != "card")
 	{

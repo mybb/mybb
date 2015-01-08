@@ -320,7 +320,7 @@ if($mybb->input['action'] == "edit_thread_tool")
 			);
 
 			$update_tool['type'] = 't';
-			$update_tool['threadoptions'] = $db->escape_string(serialize($thread_options));
+			$update_tool['threadoptions'] = $db->escape_string(my_serialize($thread_options));
 			$update_tool['name'] = $db->escape_string($mybb->input['title']);
 			$update_tool['description'] = $db->escape_string($mybb->input['description']);
 			$update_tool['forums'] = '';
@@ -818,7 +818,7 @@ if($mybb->input['action'] == "add_thread_tool")
 			);
 
 			$new_tool['type'] = 't';
-			$new_tool['threadoptions'] = $db->escape_string(serialize($thread_options));
+			$new_tool['threadoptions'] = $db->escape_string(my_serialize($thread_options));
 			$new_tool['name'] = $db->escape_string($mybb->input['title']);
 			$new_tool['description'] = $db->escape_string($mybb->input['description']);
 			$new_tool['forums'] = '';
@@ -1327,8 +1327,8 @@ if($mybb->input['action'] == "edit_post_tool")
 			);
 
 			$update_tool['type'] = 'p';
-			$update_tool['threadoptions'] = $db->escape_string(serialize($thread_options));
-			$update_tool['postoptions'] = $db->escape_string(serialize($post_options));
+			$update_tool['threadoptions'] = $db->escape_string(my_serialize($thread_options));
+			$update_tool['postoptions'] = $db->escape_string(my_serialize($post_options));
 			$update_tool['name'] = $db->escape_string($mybb->input['title']);
 			$update_tool['description'] = $db->escape_string($mybb->input['description']);
 			$update_tool['forums'] = '';
@@ -1964,8 +1964,8 @@ if($mybb->input['action'] == "add_post_tool")
 			);
 
 			$new_tool['type'] = 'p';
-			$new_tool['threadoptions'] = $db->escape_string(serialize($thread_options));
-			$new_tool['postoptions'] = $db->escape_string(serialize($post_options));
+			$new_tool['threadoptions'] = $db->escape_string(my_serialize($thread_options));
+			$new_tool['postoptions'] = $db->escape_string(my_serialize($post_options));
 			$new_tool['name'] = $db->escape_string($mybb->input['title']);
 			$new_tool['description'] = $db->escape_string($mybb->input['description']);
 			$new_tool['forums'] = '';

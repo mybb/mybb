@@ -45,7 +45,7 @@ if($mybb->input['action'] == "add")
 		}
 		else
 		{
-			$mybb->input['disporder'] = $mybb->get_input('disporder', 1);
+			$mybb->input['disporder'] = $mybb->get_input('disporder', MyBB::INPUT_INT);
 			$query = $db->simple_select('smilies', 'sid', 'disporder=\''.$mybb->input['disporder'].'\'');
 			$duplicate_disporder = $db->fetch_field($query, 'sid');
 
@@ -146,7 +146,7 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "edit")
 {
-	$query = $db->simple_select("smilies", "*", "sid='".$mybb->get_input('sid', 1)."'");
+	$query = $db->simple_select("smilies", "*", "sid='".$mybb->get_input('sid', MyBB::INPUT_INT)."'");
 	$smilie = $db->fetch_array($query);
 
 	// Does the smilie not exist?
@@ -181,7 +181,7 @@ if($mybb->input['action'] == "edit")
 		}
 		else
 		{
-			$mybb->input['disporder'] = $mybb->get_input('disporder', 1);
+			$mybb->input['disporder'] = $mybb->get_input('disporder', MyBB::INPUT_INT);
 			$query = $db->simple_select("smilies", "sid", "disporder= '".$mybb->input['disporder']."' AND sid != '".$mybb->input['sid']."'");
 			$duplicate_disporder = $db->fetch_field($query, 'sid');
 
@@ -212,7 +212,7 @@ if($mybb->input['action'] == "edit")
 
 			$plugins->run_hooks("admin_config_smilies_edit_commit");
 
-			$db->update_query("smilies", $updated_smilie, "sid = '".$mybb->get_input('sid', 1)."'");
+			$db->update_query("smilies", $updated_smilie, "sid = '".$mybb->get_input('sid', MyBB::INPUT_INT)."'");
 
 			$cache->update_smilies();
 
@@ -270,7 +270,7 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
-	$query = $db->simple_select("smilies", "*", "sid='".$mybb->get_input('sid', 1)."'");
+	$query = $db->simple_select("smilies", "*", "sid='".$mybb->get_input('sid', MyBB::INPUT_INT)."'");
 	$smilie = $db->fetch_array($query);
 
 	// Does the smilie not exist?
@@ -697,7 +697,7 @@ if(!$mybb->input['action'])
 
 	$page->output_nav_tabs($sub_tabs, 'manage_smilies');
 
-	$pagenum = $mybb->get_input('page', 1);
+	$pagenum = $mybb->get_input('page', MyBB::INPUT_INT);
 	if($pagenum)
 	{
 		$start = ($pagenum-1) * 20;

@@ -25,7 +25,7 @@ function acp_rebuild_forum_counters()
 	$query = $db->simple_select("forums", "COUNT(*) as num_forums");
 	$num_forums = $db->fetch_field($query, 'num_forums');
 
-	$page = $mybb->get_input('page', 1);
+	$page = $mybb->get_input('page', MyBB::INPUT_INT);
 	$per_page = $mybb->get_input('forumcounters', MyBB::INPUT_INT);
 	if($per_page <= 0)
 	{
@@ -52,7 +52,7 @@ function acp_rebuild_thread_counters()
 	$query = $db->simple_select("threads", "COUNT(*) as num_threads");
 	$num_threads = $db->fetch_field($query, 'num_threads');
 
-	$page = $mybb->get_input('page', 1);
+	$page = $mybb->get_input('page', MyBB::INPUT_INT);
 	$per_page = $mybb->get_input('threadcounters', MyBB::INPUT_INT);
 	if($per_page <= 0)
 	{
@@ -77,7 +77,7 @@ function acp_rebuild_poll_counters()
 	$query = $db->simple_select("polls", "COUNT(*) as num_polls");
 	$num_polls = $db->fetch_field($query, 'num_polls');
 
-	$page = $mybb->get_input('page', 1);
+	$page = $mybb->get_input('page', MyBB::INPUT_INT);
 	$per_page = $mybb->get_input('pollcounters', MyBB::INPUT_INT);
 	if($per_page <= 0)
 	{
@@ -102,7 +102,7 @@ function acp_recount_user_posts()
 	$query = $db->simple_select("users", "COUNT(uid) as num_users");
 	$num_users = $db->fetch_field($query, 'num_users');
 
-	$page = $mybb->get_input('page', 1);
+	$page = $mybb->get_input('page', MyBB::INPUT_INT);
 	$per_page = $mybb->get_input('userposts', MyBB::INPUT_INT);
 	if($per_page <= 0)
 	{
@@ -153,7 +153,7 @@ function acp_recount_user_threads()
 	$query = $db->simple_select("users", "COUNT(uid) as num_users");
 	$num_users = $db->fetch_field($query, 'num_users');
 
-	$page = $mybb->get_input('page', 1);
+	$page = $mybb->get_input('page', MyBB::INPUT_INT);
 	$per_page = $mybb->get_input('userthreads', MyBB::INPUT_INT);
 	if($per_page <= 0)
 	{
@@ -203,7 +203,7 @@ function acp_recount_reputation()
 	$query = $db->simple_select("users", "COUNT(uid) as num_users");
 	$num_users = $db->fetch_field($query, 'num_users');
 
-	$page = $mybb->get_input('page', 1);
+	$page = $mybb->get_input('page', MyBB::INPUT_INT);
 	$per_page = $mybb->get_input('reputation', MyBB::INPUT_INT);
 	if($per_page <= 0)
 	{
@@ -426,7 +426,7 @@ if(!$mybb->input['action'])
 	{
 		require_once MYBB_ROOT."inc/functions_rebuild.php";
 
-		if(!isset($mybb->input['page']) || $mybb->get_input('page', 1) < 1)
+		if(!isset($mybb->input['page']) || $mybb->get_input('page', MyBB::INPUT_INT) < 1)
 		{
 			$mybb->input['page'] = 1;
 		}

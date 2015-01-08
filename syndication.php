@@ -35,7 +35,7 @@ if($mybb->get_input('portal') && $mybb->settings['portal'] != 0)
 }
 else
 {
-	$thread_limit = $mybb->get_input('limit', 1);
+	$thread_limit = $mybb->get_input('limit', MyBB::INPUT_INT);
 }
 
 if($thread_limit > 50)

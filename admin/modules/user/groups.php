@@ -61,6 +61,7 @@ $usergroup_permissions = array(
 	"showforumteam" => 0,
 	"usereputationsystem" => 1,
 	"cangivereputations" => 1,
+	"candeletereputations" => 1,
 	"reputationpower" => 1,
 	"maxreputationsday" => 5,
 	"maxreputationsperuser" => 5,
@@ -238,7 +239,7 @@ if($mybb->input['action'] == "join_requests")
 
 	if($mybb->input['page'] > 0)
 	{
-		$current_page = $mybb->get_input('page', 1);
+		$current_page = $mybb->get_input('page', MyBB::INPUT_INT);
 		$start = ($current_page-1)*$per_page;
 		$pages = $num_requests / $per_page;
 		$pages = ceil($pages);
@@ -809,7 +810,7 @@ if($mybb->input['action'] == "edit")
 			}
 
 			$updated_group = array(
-				"type" => $mybb->get_input('type', 1),
+				"type" => $mybb->get_input('type', MyBB::INPUT_INT),
 				"title" => $db->escape_string($mybb->input['title']),
 				"description" => $db->escape_string($mybb->input['description']),
 				"namestyle" => $db->escape_string($mybb->input['namestyle']),
@@ -867,6 +868,7 @@ if($mybb->input['action'] == "edit")
 				"showforumteam" => $mybb->get_input('showforumteam', MyBB::INPUT_INT),
 				"usereputationsystem" => $mybb->get_input('usereputationsystem', MyBB::INPUT_INT),
 				"cangivereputations" => $mybb->get_input('cangivereputations', MyBB::INPUT_INT),
+				"candeletereputations" => $mybb->get_input('candeletereputations', MyBB::INPUT_INT),
 				"reputationpower" => $mybb->get_input('reputationpower', MyBB::INPUT_INT),
 				"maxreputationsday" => $mybb->get_input('maxreputationsday', MyBB::INPUT_INT),
 				"maxreputationsperuser" => $mybb->get_input('maxreputationsperuser', MyBB::INPUT_INT),
@@ -1096,6 +1098,7 @@ if($mybb->input['action'] == "edit")
 	$reputation_options = array(
 		$form->generate_check_box("usereputationsystem", 1, $lang->show_reputations, array("checked" => $mybb->input['usereputationsystem'])),
 		$form->generate_check_box("cangivereputations", 1, $lang->can_give_reputation, array("checked" => $mybb->input['cangivereputations'])),
+		$form->generate_check_box("candeletereputations", 1, $lang->can_delete_own_reputation, array("checked" => $mybb->input['candeletereputations'])),
 		"{$lang->points_to_award_take}<br /><small class=\"input\">{$lang->points_to_award_take_desc}</small><br />".$form->generate_numeric_field('reputationpower', $mybb->input['reputationpower'], array('id' => 'reputationpower', 'class' => 'field50')),
 		"{$lang->max_reputations_perthread}<br /><small class=\"input\">{$lang->max_reputations_perthread_desc}</small><br />".$form->generate_numeric_field('maxreputationsperthread', $mybb->input['maxreputationsperthread'], array('id' => 'maxreputationsperthread', 'class' => 'field50')),
 		"{$lang->max_reputations_daily}<br /><small class=\"input\">{$lang->max_reputations_daily_desc}</small><br />".$form->generate_numeric_field('maxreputationsday', $mybb->input['maxreputationsday'], array('id' => 'maxreputationsday', 'class' => 'field50'))

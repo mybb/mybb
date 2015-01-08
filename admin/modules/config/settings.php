@@ -451,7 +451,7 @@ if($mybb->input['action'] == "add")
 // Editing a particular setting
 if($mybb->input['action'] == "edit")
 {
-	$query = $db->simple_select("settings", "*", "sid='".$mybb->get_input('sid', 1)."'");
+	$query = $db->simple_select("settings", "*", "sid='".$mybb->get_input('sid', MyBB::INPUT_INT)."'");
 	$setting = $db->fetch_array($query);
 
 	// Does the setting not exist?
@@ -667,7 +667,7 @@ if($mybb->input['action'] == "edit")
 // Delete Setting
 if($mybb->input['action'] == "delete")
 {
-	$query = $db->simple_select("settings", "*", "sid='".$mybb->get_input('sid', 1)."'");
+	$query = $db->simple_select("settings", "*", "sid='".$mybb->get_input('sid', MyBB::INPUT_INT)."'");
 	$setting = $db->fetch_array($query);
 
 	// Does the setting not exist?

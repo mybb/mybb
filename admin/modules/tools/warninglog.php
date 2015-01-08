@@ -335,9 +335,9 @@ if(!$mybb->input['action'])
 	$query = $db->query($sql);
 	$total_warnings = $db->fetch_field($query, 'count');
 	$view_page = 1;
-	if(isset($mybb->input['page']) && $mybb->get_input('page', 1) > 0)
+	if(isset($mybb->input['page']) && $mybb->get_input('page', MyBB::INPUT_INT) > 0)
 	{
-		$view_page = $mybb->get_input('page', 1);
+		$view_page = $mybb->get_input('page', MyBB::INPUT_INT);
 	}
 	$per_page = 20;
 	if(isset($mybb->input['filter']['per_page']) && (int)$mybb->input['filter']['per_page'] > 0)

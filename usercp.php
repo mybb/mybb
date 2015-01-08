@@ -187,17 +187,17 @@ if($mybb->get_input('action') == "do_profile" && $mybb->request_method == "post"
 
 	$plugins->run_hooks("usercp_do_profile_start");
 
-	if($mybb->get_input('away', 1) == 1 && $mybb->settings['allowaway'] != 0)
+	if($mybb->get_input('away', MyBB::INPUT_INT) == 1 && $mybb->settings['allowaway'] != 0)
 	{
 		$awaydate = TIME_NOW;
 		if(!empty($mybb->get_input('awayday')))
 		{
 			// If the user has indicated that they will return on a specific day, but not month or year, assume it is current month and year
-			if(!$mybb->get_input('awaymonth', 1))
+			if(!$mybb->get_input('awaymonth', MyBB::INPUT_INT))
 			{
 				$mybb->input['awaymonth'] = my_date('n', $awaydate);
 			}
-			if(!$mybb->get_input('awayyear', 1))
+			if(!$mybb->get_input('awayyear', MyBB::INPUT_INT))
 			{
 				$mybb->input['awayyear'] = my_date('Y', $awaydate);
 			}
@@ -238,9 +238,9 @@ if($mybb->get_input('action') == "do_profile" && $mybb->request_method == "post"
 	}
 
 	$bday = array(
-		"day" => $mybb->get_input('bday1', 1),
-		"month" => $mybb->get_input('bday2', 1),
-		"year" => $mybb->get_input('bday3', 1)
+		"day" => $mybb->get_input('bday1', MyBB::INPUT_INT),
+		"month" => $mybb->get_input('bday2', MyBB::INPUT_INT),
+		"year" => $mybb->get_input('bday3', MyBB::INPUT_INT)
 	);
 
 	// Set up user handler.
@@ -255,7 +255,7 @@ if($mybb->get_input('action') == "do_profile" && $mybb->request_method == "post"
 		"birthday" => $bday,
 		"birthdayprivacy" => $mybb->get_input('birthdayprivacy'),
 		"away" => $away,
-		"profile_fields" => $mybb->get_input('profile_fields', 2)
+		"profile_fields" => $mybb->get_input('profile_fields', MyBB::INPUT_ARRAY)
 	);
 	foreach(array('icq', 'aim', 'yahoo', 'skype', 'google') as $cfield)
 	{
@@ -326,9 +326,9 @@ if($mybb->get_input('action') == "profile")
 	{
 		$user = $mybb->input;
 		$bday = array();
-		$bday[0] = $mybb->get_input('bday1', 1);
-		$bday[1] = $mybb->get_input('bday2', 1);
-		$bday[2] = $mybb->get_input('bday3', 1);
+		$bday[0] = $mybb->get_input('bday1', MyBB::INPUT_INT);
+		$bday[1] = $mybb->get_input('bday2', MyBB::INPUT_INT);
+		$bday[2] = $mybb->get_input('bday3', MyBB::INPUT_INT);
 	}
 	else
 	{
@@ -453,9 +453,9 @@ if($mybb->get_input('action') == "profile")
 				$awaycheck[0] = "checked=\"checked\"";
 			}
 			$returndate = array();
-			$returndate[0] = $mybb->get_input('awayday', 1);
-			$returndate[1] = $mybb->get_input('awaymonth', 1);
-			$returndate[2] = $mybb->get_input('awayyear', 1);
+			$returndate[0] = $mybb->get_input('awayday', MyBB::INPUT_INT);
+			$returndate[1] = $mybb->get_input('awaymonth', MyBB::INPUT_INT);
+			$returndate[2] = $mybb->get_input('awayyear', MyBB::INPUT_INT);
 			$user['awayreason'] = htmlspecialchars_uni($mybb->get_input('awayreason'));
 		}
 		else
@@ -511,7 +511,7 @@ if($mybb->get_input('action') == "profile")
 	// Custom profile fields baby!
 	$altbg = "trow1";
 	$requiredfields = $customfields = '';
-	$mybb->input['profile_fields'] = $mybb->get_input('profile_fields', 2);
+	$mybb->input['profile_fields'] = $mybb->get_input('profile_fields', MyBB::INPUT_ARRAY);
 
 	$pfcache = $cache->read('profilefields');
 
@@ -792,46 +792,46 @@ if($mybb->get_input('action') == "do_options" && $mybb->request_method == "post"
 
 	$user = array(
 		"uid" => $mybb->user['uid'],
-		"style" => $mybb->get_input('style', 1),
-		"dateformat" => $mybb->get_input('dateformat', 1),
-		"timeformat" => $mybb->get_input('timeformat', 1),
+		"style" => $mybb->get_input('style', MyBB::INPUT_INT),
+		"dateformat" => $mybb->get_input('dateformat', MyBB::INPUT_INT),
+		"timeformat" => $mybb->get_input('timeformat', MyBB::INPUT_INT),
 		"timezone" => $db->escape_string($mybb->get_input('timezoneoffset')),
 		"language" => $mybb->get_input('language')
 	);
 
 	$user['options'] = array(
-		"allownotices" => $mybb->get_input('allownotices', 1),
-		"hideemail" => $mybb->get_input('hideemail', 1),
-		"subscriptionmethod" => $mybb->get_input('subscriptionmethod', 1),
-		"invisible" => $mybb->get_input('invisible', 1),
-		"dstcorrection" => $mybb->get_input('dstcorrection', 1),
+		"allownotices" => $mybb->get_input('allownotices', MyBB::INPUT_INT),
+		"hideemail" => $mybb->get_input('hideemail', MyBB::INPUT_INT),
+		"subscriptionmethod" => $mybb->get_input('subscriptionmethod', MyBB::INPUT_INT),
+		"invisible" => $mybb->get_input('invisible', MyBB::INPUT_INT),
+		"dstcorrection" => $mybb->get_input('dstcorrection', MyBB::INPUT_INT),
 		"threadmode" => $mybb->get_input('threadmode'),
-		"showimages" => $mybb->get_input('showimages', 1),
-		"showvideos" => $mybb->get_input('showvideos', 1),
-		"showsigs" => $mybb->get_input('showsigs', 1),
-		"showavatars" => $mybb->get_input('showavatars', 1),
-		"showquickreply" => $mybb->get_input('showquickreply', 1),
-		"receivepms" => $mybb->get_input('receivepms', 1),
-		"pmnotice" => $mybb->get_input('pmnotice', 1),
-		"receivefrombuddy" => $mybb->get_input('receivefrombuddy', 1),
-		"daysprune" => $mybb->get_input('daysprune', 1),
-		"showcodebuttons" => $mybb->get_input('showcodebuttons', 1),
-		"sourceeditor" => $mybb->get_input('sourceeditor', 1),
-		"pmnotify" => $mybb->get_input('pmnotify', 1),
-		"buddyrequestspm" => $mybb->get_input('buddyrequestspm', 1),
-		"buddyrequestsauto" => $mybb->get_input('buddyrequestsauto', 1),
-		"showredirect" => $mybb->get_input('showredirect', 1),
-		"classicpostbit" => $mybb->get_input('classicpostbit', 1)
+		"showimages" => $mybb->get_input('showimages', MyBB::INPUT_INT),
+		"showvideos" => $mybb->get_input('showvideos', MyBB::INPUT_INT),
+		"showsigs" => $mybb->get_input('showsigs', MyBB::INPUT_INT),
+		"showavatars" => $mybb->get_input('showavatars', MyBB::INPUT_INT),
+		"showquickreply" => $mybb->get_input('showquickreply', MyBB::INPUT_INT),
+		"receivepms" => $mybb->get_input('receivepms', MyBB::INPUT_INT),
+		"pmnotice" => $mybb->get_input('pmnotice', MyBB::INPUT_INT),
+		"receivefrombuddy" => $mybb->get_input('receivefrombuddy', MyBB::INPUT_INT),
+		"daysprune" => $mybb->get_input('daysprune', MyBB::INPUT_INT),
+		"showcodebuttons" => $mybb->get_input('showcodebuttons', MyBB::INPUT_INT),
+		"sourceeditor" => $mybb->get_input('sourceeditor', MyBB::INPUT_INT),
+		"pmnotify" => $mybb->get_input('pmnotify', MyBB::INPUT_INT),
+		"buddyrequestspm" => $mybb->get_input('buddyrequestspm', MyBB::INPUT_INT),
+		"buddyrequestsauto" => $mybb->get_input('buddyrequestsauto', MyBB::INPUT_INT),
+		"showredirect" => $mybb->get_input('showredirect', MyBB::INPUT_INT),
+		"classicpostbit" => $mybb->get_input('classicpostbit', MyBB::INPUT_INT)
 	);
 
 	if($mybb->settings['usertppoptions'])
 	{
-		$user['options']['tpp'] = $mybb->get_input('tpp', 1);
+		$user['options']['tpp'] = $mybb->get_input('tpp', MyBB::INPUT_INT);
 	}
 
 	if($mybb->settings['userpppoptions'])
 	{
-		$user['options']['ppp'] = $mybb->get_input('ppp', 1);
+		$user['options']['ppp'] = $mybb->get_input('ppp', MyBB::INPUT_INT);
 	}
 
 	$userhandler->set_data($user);
@@ -1423,7 +1423,7 @@ if($mybb->get_input('action') == "do_subscriptions")
 	}
 
 	// Clean input - only accept integers thanks!
-	$mybb->input['check'] = array_map('intval', $mybb->get_input('check', 2));
+	$mybb->input['check'] = array_map('intval', $mybb->get_input('check', MyBB::INPUT_ARRAY));
 	$tids = implode(",", $mybb->input['check']);
 
 	// Deleting these subscriptions?
@@ -1482,7 +1482,7 @@ if($mybb->get_input('action') == "subscriptions")
 	}
 
 	$perpage = $mybb->settings['threadsperpage'];
-	$page = $mybb->get_input('page', 1);
+	$page = $mybb->get_input('page', MyBB::INPUT_INT);
 	if($page > 0)
 	{
 		$start = ($page-1) * $perpage;
@@ -2309,7 +2309,7 @@ if($mybb->get_input('action') == "acceptrequest")
 	verify_post_check($mybb->get_input('my_post_key'));
 
 	// Validate request
-	$query = $db->simple_select('buddyrequests', '*', 'id='.$mybb->get_input('id', 1).' AND touid='.(int)$mybb->user['uid']);
+	$query = $db->simple_select('buddyrequests', '*', 'id='.$mybb->get_input('id', MyBB::INPUT_INT).' AND touid='.(int)$mybb->user['uid']);
 	$request = $db->fetch_array($query);
 	if(empty($request))
 	{
@@ -2413,7 +2413,7 @@ elseif($mybb->get_input('action') == "declinerequest")
 	verify_post_check($mybb->get_input('my_post_key'));
 	
 	// Validate request
-	$query = $db->simple_select('buddyrequests', '*', 'id='.$mybb->get_input('id', 1).' AND touid='.(int)$mybb->user['uid']);
+	$query = $db->simple_select('buddyrequests', '*', 'id='.$mybb->get_input('id', MyBB::INPUT_INT).' AND touid='.(int)$mybb->user['uid']);
 	$request = $db->fetch_array($query);
 	if(empty($request))
 	{
@@ -2442,7 +2442,7 @@ elseif($mybb->get_input('action') == "cancelrequest")
 	verify_post_check($mybb->get_input('my_post_key'));
 	
 	// Validate request
-	$query = $db->simple_select('buddyrequests', '*', 'id='.$mybb->get_input('id', 1).' AND uid='.(int)$mybb->user['uid']);
+	$query = $db->simple_select('buddyrequests', '*', 'id='.$mybb->get_input('id', MyBB::INPUT_INT).' AND uid='.(int)$mybb->user['uid']);
 	$request = $db->fetch_array($query);
 	if(empty($request))
 	{
@@ -2700,14 +2700,14 @@ if($mybb->get_input('action') == "do_editlists")
 	}
 
 	// Removing a user from this list
-	else if($mybb->get_input('delete', 1))
+	else if($mybb->get_input('delete', MyBB::INPUT_INT))
 	{
 		// Check if user exists on the list
-		$key = array_search($mybb->get_input('delete', 1), $existing_users);
+		$key = array_search($mybb->get_input('delete', MyBB::INPUT_INT), $existing_users);
 		if($key !== false)
 		{
 			unset($existing_users[$key]);
-			$user = get_user($mybb->get_input('delete', 1));
+			$user = get_user($mybb->get_input('delete', MyBB::INPUT_INT));
 			if(!empty($user))
 			{
 				// We want to remove us from this user's buddy list
@@ -2812,10 +2812,10 @@ if($mybb->get_input('action') == "do_editlists")
 			$message_js .= " $.jGrowl('{$error_message}');";
 		}
 
-		if($mybb->get_input('delete', 1))
+		if($mybb->get_input('delete', MyBB::INPUT_INT))
 		{
 			header("Content-type: text/javascript");
-			echo "$(\"#".$mybb->get_input('manage')."_".$mybb->get_input('delete', 1)."\").remove();\n";
+			echo "$(\"#".$mybb->get_input('manage')."_".$mybb->get_input('delete', MyBB::INPUT_INT)."\").remove();\n";
 			if($new_list == "")
 			{
 				echo "\$(\"#".$mybb->get_input('manage')."_count\").html(\"0\");\n";
@@ -3075,7 +3075,7 @@ if($mybb->get_input('action') == "do_drafts" && $mybb->request_method == "post")
 	verify_post_check($mybb->get_input('my_post_key'));
 
 	$plugins->run_hooks("usercp_do_drafts_start");
-	$mybb->input['deletedraft'] = $mybb->get_input('deletedraft', 2);
+	$mybb->input['deletedraft'] = $mybb->get_input('deletedraft', MyBB::INPUT_ARRAY);
 	if(empty($mybb->input['deletedraft']))
 	{
 		error($lang->no_drafts_selected);
@@ -3125,7 +3125,7 @@ if($mybb->get_input('action') == "usergroups")
 	$usergroups = $mybb->cache->read('usergroups');
 
 	// Changing our display group
-	if($mybb->get_input('displaygroup', 1))
+	if($mybb->get_input('displaygroup', MyBB::INPUT_INT))
 	{
 		// Verify incoming POST request
 		verify_post_check($mybb->get_input('my_post_key'));
@@ -3135,12 +3135,12 @@ if($mybb->get_input('action') == "usergroups")
 			error($lang->not_member_of_group);
 		}
 
-		$dispgroup = $usergroups[$mybb->get_input('displaygroup', 1)];
+		$dispgroup = $usergroups[$mybb->get_input('displaygroup', MyBB::INPUT_INT)];
 		if($dispgroup['candisplaygroup'] != 1)
 		{
 			error($lang->cannot_set_displaygroup);
 		}
-		$db->update_query("users", array('displaygroup' => $mybb->get_input('displaygroup', 1)), "uid='".$mybb->user['uid']."'");
+		$db->update_query("users", array('displaygroup' => $mybb->get_input('displaygroup', MyBB::INPUT_INT)), "uid='".$mybb->user['uid']."'");
 		$cache->update_moderators();
 		$plugins->run_hooks("usercp_usergroups_change_displaygroup");
 		redirect("usercp.php?action=usergroups", $lang->display_group_changed);
@@ -3148,26 +3148,26 @@ if($mybb->get_input('action') == "usergroups")
 	}
 
 	// Leaving a group
-	if($mybb->get_input('leavegroup', 1))
+	if($mybb->get_input('leavegroup', MyBB::INPUT_INT))
 	{
 		// Verify incoming POST request
 		verify_post_check($mybb->get_input('my_post_key'));
 
-		if(my_strpos($ingroups, ",".$mybb->get_input('leavegroup', 1).",") === false)
+		if(my_strpos($ingroups, ",".$mybb->get_input('leavegroup', MyBB::INPUT_INT).",") === false)
 		{
 			error($lang->not_member_of_group);
 		}
-		if($mybb->user['usergroup'] == $mybb->get_input('leavegroup', 1))
+		if($mybb->user['usergroup'] == $mybb->get_input('leavegroup', MyBB::INPUT_INT))
 		{
 			error($lang->cannot_leave_primary_group);
 		}
 
-		$usergroup = $usergroups[$mybb->get_input('leavegroup', 1)];
+		$usergroup = $usergroups[$mybb->get_input('leavegroup', MyBB::INPUT_INT)];
 		if($usergroup['type'] != 4 && $usergroup['type'] != 3 && $usergroup['type'] != 5)
 		{
 			error($lang->cannot_leave_group);
 		}
-		leave_usergroup($mybb->user['uid'], $mybb->get_input('leavegroup', 1));
+		leave_usergroup($mybb->user['uid'], $mybb->get_input('leavegroup', MyBB::INPUT_INT));
 		$plugins->run_hooks("usercp_usergroups_leave_group");
 		redirect("usercp.php?action=usergroups", $lang->left_group);
 		exit;
@@ -3188,12 +3188,12 @@ if($mybb->get_input('action') == "usergroups")
 	}
 
 	// Joining a group
-	if($mybb->get_input('joingroup', 1))
+	if($mybb->get_input('joingroup', MyBB::INPUT_INT))
 	{
 		// Verify incoming POST request
 		verify_post_check($mybb->get_input('my_post_key'));
 
-		$usergroup = $usergroups[$mybb->get_input('joingroup', 1)];
+		$usergroup = $usergroups[$mybb->get_input('joingroup', MyBB::INPUT_INT)];
 
 		if($usergroup['type'] == 5)
 		{
@@ -3205,12 +3205,12 @@ if($mybb->get_input('action') == "usergroups")
 			error($lang->cannot_join_group);
 		}
 
-		if(my_strpos($ingroups, ",".$mybb->get_input('joingroup', 1).",") !== false)
+		if(my_strpos($ingroups, ",".$mybb->get_input('joingroup', MyBB::INPUT_INT).",") !== false)
 		{
 			error($lang->already_member_of_group);
 		}
 
-		$query = $db->simple_select("joinrequests", "*", "uid='".$mybb->user['uid']."' AND gid='".$mybb->get_input('joingroup', 1)."'");
+		$query = $db->simple_select("joinrequests", "*", "uid='".$mybb->user['uid']."' AND gid='".$mybb->get_input('joingroup', MyBB::INPUT_INT)."'");
 		$joinrequest = $db->fetch_array($query);
 		if($joinrequest['rid'])
 		{
@@ -3221,7 +3221,7 @@ if($mybb->get_input('action') == "usergroups")
 			$now = TIME_NOW;
 			$joinrequest = array(
 				"uid" => $mybb->user['uid'],
-				"gid" => $mybb->get_input('joingroup', 1),
+				"gid" => $mybb->get_input('joingroup', MyBB::INPUT_INT),
 				"reason" => $db->escape_string($mybb->get_input('reason')),
 				"dateline" => TIME_NOW
 			);
@@ -3254,38 +3254,38 @@ if($mybb->get_input('action') == "usergroups")
 		}
 		elseif($usergroup['type'] == 4)
 		{
-			$joingroup = $mybb->get_input('joingroup', 1);
+			$joingroup = $mybb->get_input('joingroup', MyBB::INPUT_INT);
 			eval("\$joinpage = \"".$templates->get("usercp_usergroups_joingroup")."\";");
 			output_page($joinpage);
 			exit;
 		}
 		else
 		{
-			join_usergroup($mybb->user['uid'], $mybb->get_input('joingroup', 1));
+			join_usergroup($mybb->user['uid'], $mybb->get_input('joingroup', MyBB::INPUT_INT));
 			$plugins->run_hooks("usercp_usergroups_join_group");
 			redirect("usercp.php?action=usergroups", $lang->joined_group);
 		}
 	}
 
 	// Accepting invitation
-	if($mybb->get_input('acceptinvite', 1))
+	if($mybb->get_input('acceptinvite', MyBB::INPUT_INT))
 	{
 		// Verify incoming POST request
 		verify_post_check($mybb->get_input('my_post_key'));
 
-		$usergroup = $usergroups[$mybb->get_input('acceptinvite', 1)];
+		$usergroup = $usergroups[$mybb->get_input('acceptinvite', MyBB::INPUT_INT)];
 
-		if(my_strpos($ingroups, ",".$mybb->get_input('acceptinvite', 1).",") !== false)
+		if(my_strpos($ingroups, ",".$mybb->get_input('acceptinvite', MyBB::INPUT_INT).",") !== false)
 		{
 			error($lang->already_accepted_invite);
 		}
 
-		$query = $db->simple_select("joinrequests", "*", "uid='".$mybb->user['uid']."' AND gid='".$mybb->get_input('acceptinvite', 1)."' AND invite='1'");
+		$query = $db->simple_select("joinrequests", "*", "uid='".$mybb->user['uid']."' AND gid='".$mybb->get_input('acceptinvite', MyBB::INPUT_INT)."' AND invite='1'");
 		$joinrequest = $db->fetch_array($query);
 		if($joinrequest['rid'])
 		{
-			join_usergroup($mybb->user['uid'], $mybb->get_input('acceptinvite', 1));
-			$db->delete_query("joinrequests", "uid='{$mybb->user['uid']}' AND gid='".$mybb->get_input('acceptinvite', 1)."'");
+			join_usergroup($mybb->user['uid'], $mybb->get_input('acceptinvite', MyBB::INPUT_INT));
+			$db->delete_query("joinrequests", "uid='{$mybb->user['uid']}' AND gid='".$mybb->get_input('acceptinvite', MyBB::INPUT_INT)."'");
 			$plugins->run_hooks("usercp_usergroups_accept_invite");
 			redirect("usercp.php?action=usergroups", $lang->joined_group);
 		}
@@ -3518,7 +3518,7 @@ if($mybb->get_input('action') == "attachments")
 	}
 
 	$perpage = $mybb->settings['threadsperpage'];
-	$page = $mybb->get_input('page', 1);
+	$page = $mybb->get_input('page', MyBB::INPUT_INT);
 
 	if($page > 0)
 	{
