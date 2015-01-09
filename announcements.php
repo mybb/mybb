@@ -18,7 +18,7 @@ require_once MYBB_ROOT."inc/functions_post.php";
 // Load global language phrases
 $lang->load("announcements");
 
-$aid = $mybb->get_input('aid', MyBB::INPUT_INT);
+$aid = $mybb->get_input('aid', 1);
 
 // Get announcement fid
 $query = $db->simple_select("announcements", "fid", "aid='$aid'");

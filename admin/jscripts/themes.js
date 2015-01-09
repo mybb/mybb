@@ -3,7 +3,11 @@
  * a list
  */
 
-var ThemeSelector = {
+var ThemeSelector = (function() {
+	/**
+	 * @var shortcut
+	 */
+	var fn = encodeURIComponent;
 
 	/**
 	 * Constructor
@@ -17,56 +21,52 @@ var ThemeSelector = {
 	 * @param  number the theme id
 	 * @return void
 	 */
-	init: function(url, saveUrl, selector, styleSheet, file, selectorForm, tid) {
+	function ThemeSelector(url, saveUrl, selector, styleSheet, file, selectorForm, tid) {
 		// verify input
 		if (!url || !saveUrl || !selector || !styleSheet || !file || !selectorForm || !tid) {
 			return;
 		}
 
-		ThemeSelector.url = url;
-		ThemeSelector.saveUrl = saveUrl;
-		ThemeSelector.selector = selector;
-		ThemeSelector.selectorPrevOpt = ThemeSelector.selector.val();
-		ThemeSelector.styleSheet = styleSheet;
-		ThemeSelector.file = file;
-		ThemeSelector.selectorForm = selectorForm;
-		ThemeSelector.tid = tid;
+		this.url = url;
+		this.saveUrl = saveUrl;
+		this.selector = selector;
+		this.selectorPrevOpt = this.selector.val();
+		this.styleSheet = styleSheet;
+		this.file = file;
+		this.selectorForm = selectorForm;
+		this.tid = tid;
 
-		ThemeSelector.background = $("#css_bits\\[background\\]").val();
-		ThemeSelector.width = $("#css_bits\\[width\\]").val();
-		ThemeSelector.color = $("#css_bits\\[color\\]").val();
-		ThemeSelector.extra = $("#css_bits\\[extra\\]").val();
-		ThemeSelector.text_decoration = $("#css_bits\\[text_decoration\\]").val();
-		ThemeSelector.font_family = $("#css_bits\\[font_family\\]").val();
-		ThemeSelector.font_size = $("#css_bits\\[font_size\\]").val();
-		ThemeSelector.font_style = $("#css_bits\\[font_style\\]").val();
-		ThemeSelector.font_weight = $("#css_bits\\[font_weight\\]").val();
+		this.background = $("#css_bits\\[background\\]").val();
+		this.width = $("#css_bits\\[width\\]").val();
+		this.color = $("#css_bits\\[color\\]").val();
+		this.extra = $("#css_bits\\[extra\\]").val();
+		this.text_decoration = $("#css_bits\\[text_decoration\\]").val();
+		this.font_family = $("#css_bits\\[font_family\\]").val();
+		this.font_size = $("#css_bits\\[font_size\\]").val();
+		this.font_style = $("#css_bits\\[font_style\\]").val();
+		this.font_weight = $("#css_bits\\[font_weight\\]").val();
 
-		$("#save").on('click', function(event) { ThemeSelector.save(event, true); } );
-		$("#save_close").on('click', function(event) { ThemeSelector.saveClose(event); } );
+		$("#save").on('click', function(event) { $.proxy(this, 'save', event, true); } );
+		$("#save_close").on('click', function(event) { $.proxy(this, 'saveClose', event); } );
 		
-
-		$(window).on('beforeunload', function(event){
-			if(ThemeSelector.isChanged())
-			{
-				return ' ';
-			}
-		});
-
+		ThemeSelector.that = this; // I know this is cheating :D
+		
+		window.onbeforeunload = function(event) { saveCheck(event, false, ThemeSelector.that); }
+		window.onunload = function(event) { save(false, false); }
 		
 		
-		ThemeSelector.selector.on("change", ThemeSelector.updateSelector);
-		ThemeSelector.selectorForm.on("submit", ThemeSelector.updateSelector);
-    },
+		this.selector.on("change", $.proxy(this, 'updateSelector'));
+		this.selectorForm.on("submit", $.proxy(this, 'updateSelector'));
+    }
 
 	/**
 	 * prevents no-save warning messaging when saving
 	 *
 	 * @return void
 	 */
-	saveClose: function(e) {
-		ThemeSelector.isClosing = true;
-	},
+	function saveClose(e) {
+		this.isClosing = true;
+	}
 
 	/**
 	 * updates the stylesheet info to match the current selection, checking
@@ -75,25 +75,25 @@ var ThemeSelector = {
 	 * @param  object the event
 	 * @return void
 	 */
-	updateSelector: function(e) {
+	function updateSelector(e) {
 		var postData;
 
 		e.preventDefault()
 
-		ThemeSelector.saveCheck(e, true);
+		this.saveCheck(e, true, null);
 
-		postData = "file=" + encodeURIComponent(ThemeSelector.file) + "&tid=" + encodeURIComponent(ThemeSelector.tid) + "&selector=" + encodeURIComponent(ThemeSelector.selector.val()) + "&my_post_key=" + encodeURIComponent(my_post_key);
+		postData = "file=" + fn(this.file) + "&tid=" + fn(this.tid) + "&selector=" + fn(this.selector.val()) + "&my_post_key=" + fn(my_post_key);
 
-		ThemeSelector.selectorGoText = $("#mini_spinner").html();
-		$("#mini_spinner").html("&nbsp;<img src=\"" + ThemeSelector.miniSpinnerImage + "\" style=\"vertical-align: middle;\" alt=\"\" /> ");
+		this.selectorGoText = $("#mini_spinner").html();
+		$("#mini_spinner").html("&nbsp;<img src=\"" + this.miniSpinnerImage + "\" style=\"vertical-align: middle;\" alt=\"\" /> ");
 
 		$.ajax({
 			type: 'post',
-			url: ThemeSelector.url,
+			url: this.url,
 			data: postData,
-			complete: ThemeSelector.onComplete,
+			complete: $.proxy(this, 'onComplete'),
 		});
-	},
+	}
 
 	/**
 	 * handles the AJAX return data
@@ -101,7 +101,7 @@ var ThemeSelector = {
 	 * @param  object the request
 	 * @return true
 	 */
-	onComplete: function(request) {
+	function onComplete(request) {
 		var message, saved;
 
 		if (request.responseText.match(/<error>(.*)<\/error>/)) {
@@ -115,18 +115,18 @@ var ThemeSelector = {
 			if ($("#saved").html()) {
 				saved = $("#saved").html();
 			}
-			ThemeSelector.styleSheet.html(request.responseText);
+			this.styleSheet.html(request.responseText);
 		}
 
-		ThemeSelector.background = $("#css_bits\\[background\\]").val();
-		ThemeSelector.width = $("#css_bits\\[width\\]").val();
-		ThemeSelector.color = $("#css_bits\\[color\\]").val();
-		ThemeSelector.extra = $("#css_bits\\[extra\\]").val();
-		ThemeSelector.text_decoration = $("#css_bits\\[text_decoration\\]").val();
-		ThemeSelector.font_family = $("#css_bits\\[font_family\\]").val();
-		ThemeSelector.font_size = $("#css_bits\\[font_size\\]").val();
-		ThemeSelector.font_style = $("#css_bits\\[font_style\\]").val();
-		ThemeSelector.font_weight = $("#css_bits\\[font_weight\\]").val();
+		this.background = $("#css_bits\\[background\\]").val();
+		this.width = $("#css_bits\\[width\\]").val();
+		this.color = $("#css_bits\\[color\\]").val();
+		this.extra = $("#css_bits\\[extra\\]").val();
+		this.text_decoration = $("#css_bits\\[text_decoration\\]").val();
+		this.font_family = $("#css_bits\\[font_family\\]").val();
+		this.font_size = $("#css_bits\\[font_size\\]").val();
+		this.font_style = $("#css_bits\\[font_style\\]").val();
+		this.font_weight = $("#css_bits\\[font_weight\\]").val();
 
 		if (saved) {
 			$("#saved").html(saved);
@@ -135,24 +135,11 @@ var ThemeSelector = {
 			}, 30000);
 		}
 
-		$("#mini_spinner").html(ThemeSelector.selectorGoText);
-		ThemeSelector.selectorGoText = '';
+		$("#mini_spinner").html(this.selectorGoText);
+		this.selectorGoText = '';
 
 		return true;
-	},
-
-	isChanged: function()
-	{
-		return (ThemeSelector.background != $("#css_bits\\[background\\]").val() ||
-				ThemeSelector.width != $("#css_bits\\[width\\]").val() ||
-				ThemeSelector.color != $("#css_bits\\[color\\]").val() ||
-				ThemeSelector.extra != $("#css_bits\\[extra\\]").val() ||
-				ThemeSelector.text_decoration != $("#css_bits\\[text_decoration\\]").val() ||
-				ThemeSelector.font_family != $("#css_bits\\[font_family\\]").val() ||
-				ThemeSelector.font_size != $("#css_bits\\[font_size\\]").val() ||
-				ThemeSelector.font_style != $("#css_bits\\[font_style\\]").val() ||
-				ThemeSelector.font_weight != $("#css_bits\\[font_weight\\]").val());
-	},
+	}
 
 	/**
 	 * check if anything has changed
@@ -161,17 +148,27 @@ var ThemeSelector = {
 	 * @param  bool true if AJAX, false if not
 	 * @return true
 	 */
-	saveCheck: function(e, isAjax) {
+	function saveCheck(e, isAjax, that) {
 
+		if(that == null)
+			that = this;
 	
-		if (ThemeSelector.isClosing == true) {
+		if (that.isClosing == true) {
 			return true;
 		}
 
 		if(e != null && isAjax == true)
 			e.preventDefault();
 
-		if (ThemeSelector.isChanged()) {
+		if (that.background != $("#css_bits\\[background\\]").val() ||
+		    that.width != $("#css_bits\\[width\\]").val() ||
+			that.color != $("#css_bits\\[color\\]").val() ||
+			that.extra != $("#css_bits\\[extra\\]").val() ||
+			that.text_decoration != $("#css_bits\\[text_decoration\\]").val() ||
+			that.font_family != $("#css_bits\\[font_family\\]").val() ||
+			that.font_size != $("#css_bits\\[font_size\\]").val() ||
+			that.font_style != $("#css_bits\\[font_style\\]").val() ||
+			that.font_weight != $("#css_bits\\[font_weight\\]").val()) {
 			
 			e.preventDefault();
 			
@@ -181,17 +178,17 @@ var ThemeSelector = {
 			{
 				confirmReturn = confirm(save_changes_lang_string);
 				if (confirmReturn == true) {
-					ThemeSelector.save(false, isAjax);
+					that.save(false, isAjax);
 					$.jGrowl('Saved');
 				}
 			}
 		}
 		else if(isAjax == true)
 		{
-			ThemeSelector.selectorPrevOpt = ThemeSelector.selector.val();
+			that.selectorPrevOpt = that.selector.val();
 			return true;
 		}
-	},
+	}
 
 	/**
 	 * saves the selector info
@@ -200,7 +197,7 @@ var ThemeSelector = {
 	 * @param  bool true if AJAX, false if not
 	 * @return true
 	 */
-	save: function(e, isAjax) {
+	function save(e, isAjax) {
 		var cssBits, postData, completeMethod = 'onUnloadSaveComplete';
 
 		if (e) {
@@ -219,13 +216,13 @@ var ThemeSelector = {
 			'font_weight': $('#css_bits\\[font_weight\\]').val()
 		};
 
-		postData = "css_bits=" + encodeURIComponent(jsArrayToPhpArray(cssBits)) + "&selector=" + encodeURIComponent(ThemeSelector.selectorPrevOpt) + "&file=" + encodeURIComponent(ThemeSelector.file) + "&tid=" + encodeURIComponent(ThemeSelector.tid) + "&my_post_key=" + encodeURIComponent(my_post_key) + "&serialized=1";
+		postData = "css_bits=" + fn(jsArrayToPhpArray(cssBits)) + "&selector=" + fn(this.selectorPrevOpt) + "&file=" + fn(this.file) + "&tid=" + fn(this.tid) + "&my_post_key=" + fn(my_post_key) + "&serialized=1";
 
 		if (isAjax == true) {
 			postData += "&ajax=1";
 		}
 
-		ThemeSelector.isAjax = isAjax;
+		this.isAjax = isAjax;
 
 		if (isAjax == true) {
 			completeMethod = 'onSaveComplete';
@@ -234,12 +231,12 @@ var ThemeSelector = {
 
 		$.ajax({
 			type: 'post',
-			url: ThemeSelector.saveUrl,
+			url: this.saveUrl,
 			data: postData,
-			complete: ThemeSelector[completeMethod],
+			complete: $.proxy(this, completeMethod),
 		});
 		return !isAjax;
-	},
+	}
 
 	/**
 	 * handle errors, reset values and clean up
@@ -247,7 +244,7 @@ var ThemeSelector = {
 	 * @param  object the request
 	 * @return true
 	 */
-	onSaveComplete: function(request) {
+	function onSaveComplete(request) {
 		var message;
 
 		if (request.responseText.match(/<error>(.*)<\/error>/)) {
@@ -265,18 +262,18 @@ var ThemeSelector = {
 			}
 		}
 
-		ThemeSelector.background = $("#css_bits\\[background\\]").val();
-		ThemeSelector.width = $("#css_bits\\[width\\]").val();
-		ThemeSelector.color = $("#css_bits\\[color\\]").val();
-		ThemeSelector.extra = $("#css_bits\\[extra\\]").val();
-		ThemeSelector.text_decoration = $("#css_bits\\[text_decoration\\]").val();
-		ThemeSelector.font_family = $("#css_bits\\[font_family\\]").val();
-		ThemeSelector.font_size = $("#css_bits\\[font_size\\]").val();
-		ThemeSelector.font_style = $("#css_bits\\[font_style\\]").val();
-		ThemeSelector.font_weight = $("#css_bits\\[font_weight\\]").val();
+		this.background = $("#css_bits\\[background\\]").val();
+		this.width = $("#css_bits\\[width\\]").val();
+		this.color = $("#css_bits\\[color\\]").val();
+		this.extra = $("#css_bits\\[extra\\]").val();
+		this.text_decoration = $("#css_bits\\[text_decoration\\]").val();
+		this.font_family = $("#css_bits\\[font_family\\]").val();
+		this.font_size = $("#css_bits\\[font_size\\]").val();
+		this.font_style = $("#css_bits\\[font_style\\]").val();
+		this.font_weight = $("#css_bits\\[font_weight\\]").val();
 
 		return true;
-	},
+	}
 
 	/**
 	 * handle leaving page save
@@ -284,7 +281,7 @@ var ThemeSelector = {
 	 * @param  object the request
 	 * @return true
 	 */
-	onUnloadSaveComplete: function(request) {
+	function onUnloadSaveComplete(request) {
 		var message;
 
 		if (request.responseText.match(/<error>(.*)<\/error>/)) {
@@ -297,31 +294,42 @@ var ThemeSelector = {
 			return false;
 		}
 		return true;
-	},
+	}
 
-	url: null,
-	saveUrl: null,
-	selector: null,
-	styleSheet: null,
-	file: null,
-	selectorForm: null,
-	tid: null,
-	miniSpinnerImage: "../images/spinner.gif",
-	isAjax: false,
-	specific_count: 0,
-	selectorGoText: null,
-	selectorPrevOpt: null,
-	isClosing: false,
-	background: null,
-	width: null,
-	color: null,
-	extra: null,
-	text_decoration: null,
-	font_family: null,
-	font_size: null,
-	font_style: null,
-	font_weight: null
-};
+	ThemeSelector.prototype = {
+		url: null,
+		saveUrl: null,
+		selector: null,
+		styleSheet: null,
+		file: null,
+		selectorForm: null,
+		tid: null,
+		miniSpinnerImage: "../images/spinner.gif",
+		isAjax: false,
+		specific_count: 0,
+		selectorGoText: null,
+		selectorPrevOpt: null,
+		isClosing: false,
+		background: null,
+		width: null,
+		color: null,
+		extra: null,
+		text_decoration: null,
+		font_family: null,
+		font_size: null,
+		font_style: null,
+		font_weight: null,
+		saveClose: saveClose,
+		updateSelector: updateSelector,
+		onComplete: onComplete,
+		saveCheck: saveCheck,
+		save: save,
+		onSaveComplete: onSaveComplete,
+		onUnloadSaveComplete: onUnloadSaveComplete,
+	}
+
+	return ThemeSelector;
+})();
 
 /**
  * converts a JS object to a JSON of a PHP associative array

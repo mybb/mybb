@@ -571,7 +571,7 @@ class PMDataHandler extends DataHandler
 			'smilieoff' => $pm['options']['disablesmilies'],
 			'receipt' => (int)$pm['options']['readreceipt'],
 			'readtime' => 0,
-			'recipients' => $db->escape_string(my_serialize($recipient_list)),
+			'recipients' => $db->escape_string(serialize($recipient_list)),
 			'ipaddress' => $db->escape_binary($pm['ipaddress'])
 		);
 

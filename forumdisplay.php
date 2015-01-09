@@ -36,7 +36,7 @@ $lang->load("forumdisplay");
 
 $plugins->run_hooks("forumdisplay_start");
 
-$fid = $mybb->get_input('fid', MyBB::INPUT_INT);
+$fid = $mybb->get_input('fid', 1);
 if($fid < 0)
 {
 	switch($fid)
@@ -456,7 +456,7 @@ if(empty($mybb->input['datecut']))
 // If there was a manual date cut override, use it.
 else
 {
-	$datecut = $mybb->get_input('datecut', MyBB::INPUT_INT);
+	$datecut = $mybb->get_input('datecut', 1);
 }
 
 $datecutsel[(int)$datecut] = ' selected="selected"';
@@ -473,7 +473,7 @@ else
 }
 
 // Sort by thread prefix
-$tprefix = $mybb->get_input('prefix', MyBB::INPUT_INT);
+$tprefix = $mybb->get_input('prefix', 1);
 if($tprefix > 0)
 {
 	$prefixsql = "AND prefix = {$tprefix}";
@@ -580,7 +580,7 @@ else
 }
 
 // Are we viewing a specific page?
-$mybb->input['page'] = $mybb->get_input('page', MyBB::INPUT_INT);
+$mybb->input['page'] = $mybb->get_input('page', 1);
 if($mybb->input['page'] > 1)
 {
 	$sorturl = get_forum_link($fid, $mybb->input['page']).$string."datecut=$datecut&amp;prefix=$tprefix";
@@ -838,7 +838,7 @@ if($has_announcements == true)
 	}
 	else if(!empty($cookie))
 	{
-		my_setcookie("mybb[announcements]", addslashes(my_serialize($cookie)), -1);
+		my_setcookie("mybb[announcements]", addslashes(serialize($cookie)), -1);
 	}
 }
 else

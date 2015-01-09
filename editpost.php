@@ -32,7 +32,7 @@ if(!$mybb->user['uid'])
 }
 
 // Get post info
-$pid = $mybb->get_input('pid', MyBB::INPUT_INT);
+$pid = $mybb->get_input('pid', 1);
 
 // if we already have the post information...
 if(isset($style) && $style['pid'] == $pid && $style['type'] != 'f')
@@ -178,13 +178,13 @@ else
 // Check if this forum is password protected and we have a valid password
 check_forum_password($forum['fid']);
 
-if((empty($_POST) && empty($_FILES)) && $mybb->get_input('processed', MyBB::INPUT_INT) == '1')
+if((empty($_POST) && empty($_FILES)) && $mybb->get_input('processed', 1) == '1')
 {
 	error($lang->error_cannot_upload_php_post);
 }
 
 $attacherror = '';
-if($mybb->settings['enableattachments'] == 1 && !$mybb->get_input('attachmentaid', MyBB::INPUT_INT) && ($mybb->get_input('newattachment') || $mybb->get_input('updateattachment') || ($mybb->input['action'] == "do_editpost" && isset($mybb->input['submit']) && $_FILES['attachment'])))
+if($mybb->settings['enableattachments'] == 1 && !$mybb->get_input('attachmentaid', 1) && ($mybb->get_input('newattachment') || $mybb->get_input('updateattachment') || ($mybb->input['action'] == "do_editpost" && isset($mybb->input['submit']) && $_FILES['attachment'])))
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
@@ -213,12 +213,12 @@ if($mybb->settings['enableattachments'] == 1 && !$mybb->get_input('attachmentaid
 	}
 }
 
-if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid', MyBB::INPUT_INT) && isset($mybb->input['attachmentact']) && $mybb->input['action'] == "do_editpost" && $mybb->request_method == "post") // Lets remove/approve/unapprove the attachment
+if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid', 1) && isset($mybb->input['attachmentact']) && $mybb->input['action'] == "do_editpost" && $mybb->request_method == "post") // Lets remove/approve/unapprove the attachment
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
 
-	$mybb->input['attachmentaid'] = $mybb->get_input('attachmentaid', MyBB::INPUT_INT);
+	$mybb->input['attachmentaid'] = $mybb->get_input('attachmentaid', 1);
 	if($mybb->input['attachmentact'] == "remove")
 	{
 		remove_attachment($pid, "", $mybb->input['attachmentaid']);
@@ -248,7 +248,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 
 	$plugins->run_hooks("editpost_deletepost");
 
-	if($mybb->get_input('delete', MyBB::INPUT_INT) == 1)
+	if($mybb->get_input('delete', 1) == 1)
 	{
 		$query = $db->simple_select("posts", "pid", "tid='{$tid}'", array("limit" => 1, "order_by" => "dateline", "order_dir" => "asc"));
 		$firstcheck = $db->fetch_array($query);
@@ -375,7 +375,7 @@ if($mybb->input['action'] == "restorepost" && $mybb->request_method == "post")
 
 	$plugins->run_hooks("editpost_restorepost");
 
-	if($mybb->get_input('restore', MyBB::INPUT_INT) == 1)
+	if($mybb->get_input('restore', 1) == 1)
 	{
 		$query = $db->simple_select("posts", "pid", "tid='{$tid}'", array("limit" => 1, "order_by" => "dateline", "order_dir" => "asc"));
 		$firstcheck = $db->fetch_array($query);
@@ -462,9 +462,9 @@ if($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post")
 	// Set the post data that came from the input to the $post array.
 	$post = array(
 		"pid" => $mybb->input['pid'],
-		"prefix" => $mybb->get_input('threadprefix', MyBB::INPUT_INT),
+		"prefix" => $mybb->get_input('threadprefix', 1),
 		"subject" => $mybb->get_input('subject'),
-		"icon" => $mybb->get_input('icon', MyBB::INPUT_INT),
+		"icon" => $mybb->get_input('icon', 1),
 		"uid" => $post['uid'],
 		"username" => $post['username'],
 		"edit_uid" => $mybb->user['uid'],
@@ -472,7 +472,7 @@ if($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post")
 		"editreason" => $mybb->get_input('editreason'),
 	);
 
-	$postoptions = $mybb->get_input('postoptions', MyBB::INPUT_ARRAY);
+	$postoptions = $mybb->get_input('postoptions', 2);
 	if(!isset($postoptions['signature']))
 	{
 		$postoptions['signature'] = 0;
@@ -513,9 +513,9 @@ if($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post")
 		$db->delete_query("attachments", "filename='' OR filesize<1");
 
 		// Did the user choose to post a poll? Redirect them to the poll posting page.
-		if($mybb->get_input('postpoll', MyBB::INPUT_INT) && $forumpermissions['canpostpolls'])
+		if($mybb->get_input('postpoll', 1) && $forumpermissions['canpostpolls'])
 		{
-			$url = "polls.php?action=newpoll&tid=$tid&polloptions=".$mybb->get_input('numpolloptions', MyBB::INPUT_INT);
+			$url = "polls.php?action=newpoll&tid=$tid&polloptions=".$mybb->get_input('numpolloptions', 1);
 			$lang->redirect_postedited = $lang->redirect_postedited_poll;
 		}
 		else if($visible == 0 && $first_post && !is_moderator($fid, "canviewunapprove", $mybb->user['uid']))
@@ -643,7 +643,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		}
 		eval("\$attachbox = \"".$templates->get("post_attachments")."\";");
 	}
-	if(!$mybb->get_input('attachmentaid', MyBB::INPUT_INT) && !$mybb->get_input('newattachment') && !$mybb->get_input('updateattachment') && !isset($mybb->input['previewpost']))
+	if(!$mybb->get_input('attachmentaid', 1) && !$mybb->get_input('newattachment') && !$mybb->get_input('updateattachment') && !isset($mybb->input['previewpost']))
 	{
 		$message = $post['message'];
 		$subject = $post['subject'];
@@ -674,15 +674,15 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		// Set the post data that came from the input to the $post array.
 		$post = array(
 			"pid" => $mybb->input['pid'],
-			"prefix" => $mybb->get_input('threadprefix', MyBB::INPUT_INT),
+			"prefix" => $mybb->get_input('threadprefix', 1),
 			"subject" => $mybb->get_input('subject'),
-			"icon" => $mybb->get_input('icon', MyBB::INPUT_INT),
+			"icon" => $mybb->get_input('icon', 1),
 			"uid" => $post['uid'],
 			"edit_uid" => $mybb->user['uid'],
 			"message" => $mybb->get_input('message'),
 		);
 
-		$postoptions = $mybb->get_input('postoptions', MyBB::INPUT_ARRAY);
+		$postoptions = $mybb->get_input('postoptions', 2);
 		if(!isset($postoptions['signature']))
 		{
 			$postoptions['signature'] = 0;
@@ -720,7 +720,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 			$message = htmlspecialchars_uni($message);
 			$subject = htmlspecialchars_uni($subject);
 
-			$postoptions = $mybb->get_input('postoptions', MyBB::INPUT_ARRAY);
+			$postoptions = $mybb->get_input('postoptions', 2);
 
 			if(isset($postoptions['signature']) && $postoptions['signature'] == 1)
 			{
@@ -837,12 +837,12 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	// Generate thread prefix selector if this is the first post of the thread
 	if($thread['firstpost'] == $pid)
 	{
-		if(!$mybb->get_input('threadprefix', MyBB::INPUT_INT))
+		if(!$mybb->get_input('threadprefix', 1))
 		{
 			$mybb->input['threadprefix'] = $thread['prefix'];
 		}
 
-		$prefixselect = build_prefix_select($forum['fid'], $mybb->get_input('threadprefix', MyBB::INPUT_INT));
+		$prefixselect = build_prefix_select($forum['fid'], $mybb->get_input('threadprefix', 1));
 	}
 	else
 	{

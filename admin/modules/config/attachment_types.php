@@ -46,7 +46,7 @@ if($mybb->input['action'] == "add")
 				$mybb->input['extension'] = substr($mybb->input['extension'], 1);
 			}
 
-			$maxsize = $mybb->get_input('maxsize', MyBB::INPUT_INT);
+			$maxsize = $mybb->get_input('maxsize', 1);
 
 			if($maxsize == 0)
 			{
@@ -139,7 +139,7 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "edit")
 {
-	$query = $db->simple_select("attachtypes", "*", "atid='".$mybb->get_input('atid', MyBB::INPUT_INT)."'");
+	$query = $db->simple_select("attachtypes", "*", "atid='".$mybb->get_input('atid', 1)."'");
 	$attachment_type = $db->fetch_array($query);
 
 	if(!$attachment_type['atid'])
@@ -178,7 +178,7 @@ if($mybb->input['action'] == "edit")
 				"name" => $db->escape_string($mybb->input['name']),
 				"mimetype" => $db->escape_string($mybb->input['mimetype']),
 				"extension" => $db->escape_string($mybb->input['extension']),
-				"maxsize" => $mybb->get_input('maxsize', MyBB::INPUT_INT),
+				"maxsize" => $mybb->get_input('maxsize', 1),
 				"icon" => $db->escape_string($mybb->input['icon'])
 			);
 
@@ -259,7 +259,7 @@ if($mybb->input['action'] == "delete")
 		admin_redirect("index.php?module=config-attachment_types");
 	}
 
-	$query = $db->simple_select("attachtypes", "*", "atid='".$mybb->get_input('atid', MyBB::INPUT_INT)."'");
+	$query = $db->simple_select("attachtypes", "*", "atid='".$mybb->get_input('atid', 1)."'");
 	$attachment_type = $db->fetch_array($query);
 
 	if(!$attachment_type['atid'])

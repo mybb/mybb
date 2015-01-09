@@ -48,7 +48,7 @@ if($mybb->input['action'] == "add")
 			$errors[] = $lang->error_missing_posts;
 		}
 
-		$query = $db->simple_select("usertitles", "utid", "posts= '".$mybb->get_input('posts', MyBB::INPUT_INT)."'");
+		$query = $db->simple_select("usertitles", "utid", "posts= '".(int)$mybb->input['posts']."'");
 		if($db->num_rows($query))
 		{
 			$errors[] = $lang->error_cannot_have_same_posts;
@@ -58,8 +58,8 @@ if($mybb->input['action'] == "add")
 		{
 			$new_title = array(
 				"title" => $db->escape_string($mybb->input['title']),
-				"posts" => $mybb->get_input('posts', MyBB::INPUT_INT),
-				"stars" => $mybb->get_input('stars', MyBB::INPUT_INT),
+				"posts" => (int)$mybb->input['posts'],
+				"stars" => (int)$mybb->input['stars'],
 				"starimage" => $db->escape_string($mybb->input['starimage'])
 			);
 
@@ -114,7 +114,7 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "edit")
 {
-	$query = $db->simple_select("usertitles", "*", "utid='".$mybb->get_input('utid', MyBB::INPUT_INT)."'");
+	$query = $db->simple_select("usertitles", "*", "utid='".(int)$mybb->input['utid']."'");
 	$usertitle = $db->fetch_array($query);
 
 	if(!$usertitle['utid'])
@@ -137,7 +137,7 @@ if($mybb->input['action'] == "edit")
 			$errors[] = $lang->error_missing_posts;
 		}
 
-		$query = $db->simple_select("usertitles", "utid", "posts= '".$mybb->get_input('posts', MyBB::INPUT_INT)."' AND utid!= '".$mybb->get_input('utid', MyBB::INPUT_INT)."'");
+		$query = $db->simple_select("usertitles", "utid", "posts= '".(int)$mybb->input['posts']."' AND utid!= '".(int)$mybb->input['utid']."'");
 		if($db->num_rows($query))
 		{
 			$errors[] = $lang->error_cannot_have_same_posts;
@@ -147,8 +147,8 @@ if($mybb->input['action'] == "edit")
 		{
 			$updated_title = array(
 				"title" => $db->escape_string($mybb->input['title']),
-				"posts" => $mybb->get_input('posts', MyBB::INPUT_INT),
-				"stars" => $mybb->get_input('stars', MyBB::INPUT_INT),
+				"posts" => (int)$mybb->input['posts'],
+				"stars" => (int)$mybb->input['stars'],
 				"starimage" => $db->escape_string($mybb->input['starimage'])
 			);
 
@@ -206,7 +206,7 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
-	$query = $db->simple_select("usertitles", "*", "utid='".$mybb->get_input('utid', MyBB::INPUT_INT)."'");
+	$query = $db->simple_select("usertitles", "*", "utid='".(int)$mybb->input['utid']."'");
 	$usertitle = $db->fetch_array($query);
 
 	if(!$usertitle['utid'])

@@ -21,14 +21,14 @@ if($mybb->settings['enableattachments'] != 1)
 // Find the AID we're looking for
 if(isset($mybb->input['thumbnail']))
 {
-	$aid = $mybb->get_input('thumbnail', MyBB::INPUT_INT);
+	$aid = $mybb->get_input('thumbnail', 1);
 }
 else
 {
-	$aid = $mybb->get_input('aid', MyBB::INPUT_INT);
+	$aid = $mybb->get_input('aid', 1);
 }
 
-$pid = $mybb->get_input('pid', MyBB::INPUT_INT);
+$pid = $mybb->get_input('pid', 1);
 
 // Select attachment data from database
 if($aid)

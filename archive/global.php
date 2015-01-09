@@ -188,11 +188,6 @@ if($mybb->settings['boardclosed'] == 1)
 {
 	if($mybb->usergroup['canviewboardclosed'] != 1)
 	{
-		if(!$mybb->settings['boardclosed_reason'])
-		{
-			$mybb->settings['boardclosed_reason'] = $lang->boardclosed_reason;
-		}
-
 		$lang->error_boardclosed .= "<blockquote>".$mybb->settings['boardclosed_reason']."</blockquote>";
 		archive_error($lang->error_boardclosed);
 	}

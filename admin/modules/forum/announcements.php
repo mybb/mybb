@@ -68,7 +68,7 @@ if($mybb->input['action'] == "add")
 			$errors[] = $lang->error_missing_forum;
 		}
 
-		if(!checkdate($mybb->get_input('starttime_month', MyBB::INPUT_INT), $mybb->get_input('starttime_day', MyBB::INPUT_INT), $mybb->get_input('starttime_year', MyBB::INPUT_INT)))
+		if(!checkdate((int)$mybb->input['starttime_month'], (int)$mybb->input['starttime_day'], (int)$mybb->input['starttime_year']))
 		{
 			$errors[] = $lang->error_invalid_start_date;
 		}
@@ -97,12 +97,12 @@ if($mybb->input['action'] == "add")
 			}
 		}
 
-		$startdate = gmmktime((int)$startdate[0], (int)$startdate[1], 0, $mybb->get_input('starttime_month', MyBB::INPUT_INT), $mybb->get_input('starttime_day', MyBB::INPUT_INT), $mybb->get_input('starttime_year', MyBB::INPUT_INT));
+		$startdate = gmmktime((int)$startdate[0], (int)$startdate[1], 0, (int)$mybb->input['starttime_month'], (int)$mybb->input['starttime_day'], (int)$mybb->input['starttime_year']);
 
 		if($mybb->input['endtime_type'] != "2")
 		{
-			$enddate = gmmktime((int)$enddate[0], (int)$enddate[1], 0, $mybb->get_input('endtime_month', MyBB::INPUT_INT), $mybb->get_input('endtime_day', MyBB::INPUT_INT), $mybb->get_input('endtime_year', MyBB::INPUT_INT));
-			if(!checkdate($mybb->get_input('endtime_month', MyBB::INPUT_INT), $mybb->get_input('endtime_day', MyBB::INPUT_INT), $mybb->get_input('endtime_year', MyBB::INPUT_INT)))
+			$enddate = gmmktime((int)$enddate[0], (int)$enddate[1], 0, (int)$mybb->input['endtime_month'], (int)$mybb->input['endtime_day'], (int)$mybb->input['endtime_year']);
+			if(!checkdate((int)$mybb->input['endtime_month'], (int)$mybb->input['endtime_day'], (int)$mybb->input['endtime_year']))
 			{
 				$errors[] = $lang->error_invalid_end_date;
 			}
@@ -117,9 +117,9 @@ if($mybb->input['action'] == "add")
 			if(isset($mybb->input['preview']))
 			{
 				$parser_options = array();
-				$parser_options['allow_html'] = $mybb->get_input('allowhtml', MyBB::INPUT_INT);
-				$parser_options['allow_mycode'] = $mybb->get_input('allowmycode', MyBB::INPUT_INT);
-				$parser_options['allow_smilies'] = $mybb->get_input('allowsmilies', MyBB::INPUT_INT);
+				$parser_options['allow_html'] = (int)$mybb->input['allowhtml'];
+				$parser_options['allow_mycode'] = (int)$mybb->input['allowmycode'];
+				$parser_options['allow_smilies'] = (int)$mybb->input['allowsmilies'];
 				$parser_options['allow_imgcode'] = 1;
 				$parser_options['allow_videocode'] = 1;
 				$parser_options['me_username'] = htmlspecialchars_uni($mybb->user['username']);
@@ -242,7 +242,7 @@ if($mybb->input['action'] == "add")
 
 	if($mybb->input['starttime_day'])
 	{
-		$startday = $mybb->get_input('starttime_day', MyBB::INPUT_INT);
+		$startday = (int)$mybb->input['starttime_day'];
 	}
 	else
 	{
@@ -251,7 +251,7 @@ if($mybb->input['action'] == "add")
 
 	if($mybb->input['endtime_day'])
 	{
-		$endday = $mybb->get_input('endtime_day', MyBB::INPUT_INT);
+		$endday = (int)$mybb->input['endtime_day'];
 	}
 	else
 	{
@@ -290,7 +290,7 @@ if($mybb->input['action'] == "add")
 
 	if($mybb->input['starttime_month'])
 	{
-		$startmonth = $mybb->get_input('starttime_month', MyBB::INPUT_INT);
+		$startmonth = (int)$mybb->input['starttime_month'];
 		$startmonthsel[$startmonth] = "selected=\"selected\"";
 	}
 	else
@@ -301,7 +301,7 @@ if($mybb->input['action'] == "add")
 
 	if($mybb->input['endtime_month'])
 	{
-		$endmonth = $mybb->get_input('endtime_month', MyBB::INPUT_INT);
+		$endmonth = (int)$mybb->input['endtime_month'];
 		$endmonthsel[$endmonth] = "selected=\"selected\"";
 	}
 	else
@@ -337,7 +337,7 @@ if($mybb->input['action'] == "add")
 
 	if($mybb->input['starttime_year'])
 	{
-		$startdateyear = $mybb->get_input('starttime_year', MyBB::INPUT_INT);
+		$startdateyear = (int)$mybb->input['starttime_year'];
 	}
 	else
 	{
@@ -346,7 +346,7 @@ if($mybb->input['action'] == "add")
 
 	if($mybb->input['endtime_year'])
 	{
-		$enddateyear = $mybb->get_input('endtime_year', MyBB::INPUT_INT);
+		$enddateyear = (int)$mybb->input['endtime_year'];
 	}
 	else
 	{
@@ -449,7 +449,7 @@ if($mybb->input['action'] == "edit")
 			$errors[] = $lang->error_missing_forum;
 		}
 
-		if(!checkdate($mybb->get_input('starttime_month', MyBB::INPUT_INT), $mybb->get_input('starttime_day', MyBB::INPUT_INT), $mybb->get_input('starttime_year', MyBB::INPUT_INT)))
+		if(!checkdate((int)$mybb->input['starttime_month'], (int)$mybb->input['starttime_day'], (int)$mybb->input['starttime_year']))
 		{
 			$errors[] = $lang->error_invalid_start_date;
 		}
@@ -478,12 +478,12 @@ if($mybb->input['action'] == "edit")
 			}
 		}
 
-		$startdate = gmmktime((int)$startdate[0], (int)$startdate[1], 0, $mybb->get_input('starttime_month', MyBB::INPUT_INT), $mybb->get_input('starttime_day', MyBB::INPUT_INT), $mybb->get_input('starttime_year', MyBB::INPUT_INT));
+		$startdate = gmmktime((int)$startdate[0], (int)$startdate[1], 0, (int)$mybb->input['starttime_month'], (int)$mybb->input['starttime_day'], (int)$mybb->input['starttime_year']);
 
 		if($mybb->input['endtime_type'] != "2")
 		{
-			$enddate = gmmktime((int)$enddate[0], (int)$enddate[1], 0, $mybb->get_input('endtime_month', MyBB::INPUT_INT), $mybb->get_input('endtime_day', MyBB::INPUT_INT), $mybb->get_input('endtime_year', MyBB::INPUT_INT));
-			if(!checkdate($mybb->get_input('endtime_month', MyBB::INPUT_INT), $mybb->get_input('endtime_day', MyBB::INPUT_INT), $mybb->get_input('endtime_year', MyBB::INPUT_INT)))
+			$enddate = gmmktime((int)$enddate[0], (int)$enddate[1], 0, (int)$mybb->input['endtime_month'], (int)$mybb->input['endtime_day'], (int)$mybb->input['endtime_year']);
+			if(!checkdate((int)$mybb->input['endtime_month'], (int)$mybb->input['endtime_day'], (int)$mybb->input['endtime_year']))
 			{
 				$errors[] = $lang->error_invalid_end_date;
 			}
@@ -498,9 +498,9 @@ if($mybb->input['action'] == "edit")
 			if(isset($mybb->input['preview']))
 			{
 				$parser_options = array();
-				$parser_options['allow_html'] = $mybb->get_input('allowhtml', MyBB::INPUT_INT);
-				$parser_options['allow_mycode'] = $mybb->get_input('allowmycode', MyBB::INPUT_INT);
-				$parser_options['allow_smilies'] = $mybb->get_input('allowsmilies', MyBB::INPUT_INT);
+				$parser_options['allow_html'] = (int)$mybb->input['allowhtml'];
+				$parser_options['allow_mycode'] = (int)$mybb->input['allowmycode'];
+				$parser_options['allow_smilies'] = (int)$mybb->input['allowsmilies'];
 				$parser_options['allow_imgcode'] = 1;
 				$parser_options['allow_videocode'] = 1;
 				$parser_options['me_username'] = htmlspecialchars_uni($mybb->user['username']);
@@ -569,13 +569,9 @@ if($mybb->input['action'] == "edit")
 	$form = new Form("index.php?module=forum-announcements&amp;action=edit", "post");
 	echo $form->generate_hidden_field("aid", $mybb->input['aid']);
 
-	if($errors || isset($mybb->input['preview']))
+	if($errors)
 	{
-		// Only show errors if we have any
-		if($errors)
-		{
-			$page->output_inline_error($errors);
-		}
+		$page->output_inline_error($errors);
 
 		// Gather start and end date data
 		$startday = $mybb->input['starttime_day'];

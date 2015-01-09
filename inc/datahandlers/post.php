@@ -1118,12 +1118,22 @@ class PostDataHandler extends DataHandler
 				AND s.uid != '{$post['uid']}'
 				AND u.lastactive>'{$thread['lastpost']}'
 			");
+
+			$args = array(
+				'this' => &$this,
+				'done_users' => &$done_users,
+				'users' => array()
+			);
+
 			while($subscribedmember = $db->fetch_array($query))
 			{
 				if($done_users[$subscribedmember['uid']])
 				{
 					continue;
 				}
+
+				$args['users'][$subscribedmember['uid']] = (int)$subscribedmember['uid'];
+
 				$done_users[$subscribedmember['uid']] = 1;
 
 				$forumpermissions = forum_permissions($thread['fid'], $subscribedmember['uid']);
@@ -1208,6 +1218,9 @@ class PostDataHandler extends DataHandler
 					send_pm($pm, -1, true);
 				}
 			}
+
+			$plugins->run_hooks('datahandler_post_insert_subscribed', $args);
+
 			// Have one or more emails been queued? Update the queue count
 			if(isset($queued_email) && $queued_email == 1)
 			{

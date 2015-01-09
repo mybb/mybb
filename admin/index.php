@@ -33,23 +33,6 @@ require_once MYBB_ADMIN_DIR."inc/class_table.php";
 require_once MYBB_ADMIN_DIR."inc/functions.php";
 require_once MYBB_ROOT."inc/functions_user.php";
 
-// Set cookie path to our admin dir temporarily, i.e. so that it affects the ACP only
-if(!$mybb->settings['cookiepath'])
-{
-	$mybb->settings['cookiepath'] = "/".$config['admin_dir'].'/';
-}
-else
-{
-	if(substr($mybb->settings['cookiepath'], -1) != '/')
-	{
-		$mybb->settings['cookiepath'] .= '/'.$config['admin_dir'].'/';
-	}
-	else
-	{
-		$mybb->settings['cookiepath'] .= $config['admin_dir'].'/';
-	}
-}
-
 if(!isset($cp_language))
 {
 	if(!file_exists(MYBB_ROOT."inc/languages/".$mybb->settings['cplanguage']."/admin/home_dashboard.lang.php"))
@@ -203,7 +186,7 @@ elseif($mybb->input['do'] == "login")
 			"ip" => $db->escape_binary(my_inet_pton(get_ip())),
 			"dateline" => TIME_NOW,
 			"lastactive" => TIME_NOW,
-			"data" => my_serialize(array()),
+			"data" => serialize(array()),
 			"useragent" => $db->escape_string($useragent),
 		);
 		$db->insert_query("adminsessions", $admin_session);

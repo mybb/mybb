@@ -49,7 +49,7 @@ if($mybb->input['action'] == "disable")
 		admin_redirect("index.php?module=user-group_promotions");
 	}
 
-	$query = $db->simple_select("promotions", "*", "pid='".$mybb->get_input('pid', MyBB::INPUT_INT)."'");
+	$query = $db->simple_select("promotions", "*", "pid='".$mybb->get_input('pid', 1)."'");
 	$promotion = $db->fetch_array($query);
 
 	if(!$promotion['pid'])
@@ -95,7 +95,7 @@ if($mybb->input['action'] == "delete")
 		admin_redirect("index.php?module=user-group_promotions");
 	}
 
-	$query = $db->simple_select("promotions", "*", "pid='".$mybb->get_input('pid', MyBB::INPUT_INT)."'");
+	$query = $db->simple_select("promotions", "*", "pid='".$mybb->get_input('pid', 1)."'");
 	$promotion = $db->fetch_array($query);
 
 	if(!$promotion['pid'])
@@ -138,7 +138,7 @@ if($mybb->input['action'] == "enable")
 		admin_redirect("index.php?module=user-group_promotions");
 	}
 
-	$query = $db->simple_select("promotions", "*", "pid='".$mybb->get_input('pid', MyBB::INPUT_INT)."'");
+	$query = $db->simple_select("promotions", "*", "pid='".$mybb->get_input('pid', 1)."'");
 	$promotion = $db->fetch_array($query);
 
 	if(!$promotion['pid'])
@@ -229,31 +229,31 @@ if($mybb->input['action'] == "edit")
 			$update_promotion = array(
 				"title" => $db->escape_string($mybb->input['title']),
 				"description" => $db->escape_string($mybb->input['description']),
-				"posts" => $mybb->get_input('postcount', MyBB::INPUT_INT),
+				"posts" => (int)$mybb->input['postcount'],
 				"posttype" => $db->escape_string($mybb->input['posttype']),
-				"threads" => $mybb->get_input('threadcount', MyBB::INPUT_INT),
+				"threads" => (int)$mybb->input['threadcount'],
 				"threadtype" => $db->escape_string($mybb->input['threadtype']),
-				"registered" => $mybb->get_input('timeregistered', MyBB::INPUT_INT),
+				"registered" => (int)$mybb->input['timeregistered'],
 				"registeredtype" => $db->escape_string($mybb->input['timeregisteredtype']),
 				"online" => $db->escape_string($mybb->input['timeonline']),
 				"onlinetype" => $db->escape_string($mybb->input['timeonlinetype']),
-				"reputations" => $mybb->get_input('reputationcount', MyBB::INPUT_INT),
+				"reputations" => (int)$mybb->input['reputationcount'],
 				"reputationtype" => $db->escape_string($mybb->input['reputationtype']),
-				"referrals" => $mybb->get_input('referrals', MyBB::INPUT_INT),
+				"referrals" => (int)$mybb->input['referrals'],
 				"referralstype" => $db->escape_string($mybb->input['referralstype']),
-				"warnings" => $mybb->get_input('warnings', MyBB::INPUT_INT),
+				"warnings" => (int)$mybb->input['warnings'],
 				"warningstype" => $db->escape_string($mybb->input['warningstype']),
 				"requirements" => $db->escape_string(implode(",", $mybb->input['requirements'])),
 				"originalusergroup" => $db->escape_string($mybb->input['originalusergroup']),
-				"newusergroup" => $mybb->get_input('newusergroup', MyBB::INPUT_INT),
+				"newusergroup" => (int)$mybb->input['newusergroup'],
 				"usergrouptype" => $db->escape_string($mybb->input['usergroupchangetype']),
-				"enabled" => $mybb->get_input('enabled', MyBB::INPUT_INT),
-				"logging" => $mybb->get_input('logging', MyBB::INPUT_INT)
+				"enabled" => (int)$mybb->input['enabled'],
+				"logging" => (int)$mybb->input['logging']
 			);
 
 			$plugins->run_hooks("admin_user_group_promotions_edit_commit");
 
-			$db->update_query("promotions", $update_promotion, "pid = '".$mybb->get_input('pid', MyBB::INPUT_INT)."'");
+			$db->update_query("promotions", $update_promotion, "pid = '".$mybb->get_input('pid', 1)."'");
 
 			// Log admin action
 			log_admin_action($promotion['pid'], $mybb->input['title']);
@@ -435,26 +435,26 @@ if($mybb->input['action'] == "add")
 			$new_promotion = array(
 				"title" => $db->escape_string($mybb->input['title']),
 				"description" => $db->escape_string($mybb->input['description']),
-				"posts" => $mybb->get_input('postcount', MyBB::INPUT_INT),
+				"posts" => (int)$mybb->input['postcount'],
 				"posttype" => $db->escape_string($mybb->input['posttype']),
-				"threads" => $mybb->get_input('threadcount', MyBB::INPUT_INT),
+				"threads" => (int)$mybb->input['threadcount'],
 				"threadtype" => $db->escape_string($mybb->input['threadtype']),
-				"registered" => $mybb->get_input('timeregistered', MyBB::INPUT_INT),
+				"registered" => (int)$mybb->input['timeregistered'],
 				"registeredtype" => $db->escape_string($mybb->input['timeregisteredtype']),
-				"online" => $mybb->get_input('timeonline', MyBB::INPUT_INT),
+				"online" => (int)$mybb->input['timeonline'],
 				"onlinetype" => $db->escape_string($mybb->input['timeonlinetype']),
-				"reputations" => $mybb->get_input('reputationcount', MyBB::INPUT_INT),
+				"reputations" => (int)$mybb->input['reputationcount'],
 				"reputationtype" => $db->escape_string($mybb->input['reputationtype']),
-				"referrals" => $mybb->get_input('referrals', MyBB::INPUT_INT),
+				"referrals" => (int)$mybb->input['referrals'],
 				"referralstype" => $db->escape_string($mybb->input['referralstype']),
-				"warnings" => $mybb->get_input('warnings', MyBB::INPUT_INT),
+				"warnings" => (int)$mybb->input['warnings'],
 				"warningstype" => $db->escape_string($mybb->input['warningstype']),
 				"requirements" => $db->escape_string(implode(",", $mybb->input['requirements'])),
 				"originalusergroup" => $db->escape_string($mybb->input['originalusergroup']),
 				"usergrouptype" => $db->escape_string($mybb->input['usergroupchangetype']),
-				"newusergroup" => $mybb->get_input('newusergroup', MyBB::INPUT_INT),
-				"enabled" => $mybb->get_input('enabled', MyBB::INPUT_INT),
-				"logging" => $mybb->get_input('logging', MyBB::INPUT_INT)
+				"newusergroup" => (int)$mybb->input['newusergroup'],
+				"enabled" => (int)$mybb->input['enabled'],
+				"logging" => (int)$mybb->input['logging']
 			);
 
 			$pid = $db->insert_query("promotions", $new_promotion);
@@ -591,9 +591,9 @@ if($mybb->input['action'] == "logs")
 {
 	$plugins->run_hooks("admin_user_group_promotions_logs");
 
-	if($mybb->get_input('page', MyBB::INPUT_INT) > 1)
+	if($mybb->get_input('page', 1) > 1)
 	{
-		$mybb->input['page'] = $mybb->get_input('page', MyBB::INPUT_INT);
+		$mybb->input['page'] = $mybb->get_input('page', 1);
 		$start = ($mybb->input['page']*20)-20;
 	}
 	else

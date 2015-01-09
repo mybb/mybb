@@ -17,8 +17,8 @@ if(!defined("IN_MYBB"))
 if($mybb->input['action'] == "do_graph")
 {
 	$range = array(
-		'start' => $mybb->get_input('start', MyBB::INPUT_INT),
-		'end' => $mybb->get_input('end', MyBB::INPUT_INT)
+		'start' => (int)$mybb->input['start'],
+		'end' => (int)$mybb->input['end']
 	);
 	create_graph($mybb->input['type'], $range);
 	die;
@@ -50,8 +50,8 @@ if(!$mybb->input['action'])
 	// Do we have date range criteria?
 	if($mybb->input['from_year'])
 	{
-		$start_dateline = mktime(0, 0, 0, $mybb->get_input('from_month', MyBB::INPUT_INT), $mybb->get_input('from_day', MyBB::INPUT_INT), $mybb->get_input('from_year', MyBB::INPUT_INT));
-		$end_dateline = mktime(23, 59, 59, $mybb->get_input('to_month', MyBB::INPUT_INT), $mybb->get_input('to_day', MyBB::INPUT_INT), $mybb->get_input('to_year', MyBB::INPUT_INT));
+		$start_dateline = mktime(0, 0, 0, (int)$mybb->input['from_month'], (int)$mybb->input['from_day'], (int)$mybb->input['from_year']);
+		$end_dateline = mktime(23, 59, 59, (int)$mybb->input['to_month'], (int)$mybb->input['to_day'], (int)$mybb->input['to_year']);
 		$range = "&amp;start={$start_dateline}&amp;end={$end_dateline}";
 	}
 
@@ -71,7 +71,7 @@ if(!$mybb->input['action'])
 
 	if($mybb->input['page'] && $mybb->input['page'] > 1)
 	{
-		$mybb->input['page'] = $mybb->get_input('page', MyBB::INPUT_INT);
+		$mybb->input['page'] = $mybb->get_input('page', 1);
 		$start = ($mybb->input['page']*$per_page)-$per_page;
 	}
 	else
@@ -150,8 +150,8 @@ if(!$mybb->input['action'])
 	}
 	$table->output($lang->overall_statistics);
 
-	$url_range = "&amp;from_month=".$mybb->get_input('from_month', MyBB::INPUT_INT)."&amp;from_day=".$mybb->get_input('from_day', MyBB::INPUT_INT)."&amp;from_year=".$mybb->get_input('from_year', MyBB::INPUT_INT);
-	$url_range .= "&amp;to_month=".$mybb->get_input('to_month', MyBB::INPUT_INT)."&amp;to_day=".$mybb->get_input('to_day', MyBB::INPUT_INT)."&amp;to_year=".$mybb->get_input('to_year', MyBB::INPUT_INT);
+	$url_range = "&amp;from_month=".(int)$mybb->input['from_month']."&amp;from_day=".(int)$mybb->input['from_day']."&amp;from_year=".(int)$mybb->input['from_year'];
+	$url_range .= "&amp;to_month=".(int)$mybb->input['to_month']."&amp;to_day=".(int)$mybb->input['to_day']."&amp;to_year=".(int)$mybb->input['to_year'];
 
 	echo draw_admin_pagination($mybb->input['page'], $per_page, $total_rows, "index.php?module=tools-statistics{$url_range}&amp;page={page}");
 

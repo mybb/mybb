@@ -446,10 +446,13 @@ class session
 			$onlinedata['uid'] = 0;
 		}
 		$onlinedata['time'] = TIME_NOW;
-		
-		$onlinedata['location'] = $db->escape_string(substr(get_current_location(), 0, 150));
-		$onlinedata['useragent'] = $db->escape_string(my_substr($this->useragent, 0, 100));
-		
+		$onlinedata['location'] = $db->escape_string(get_current_location());
+		$useragent = $this->useragent;
+		if(my_strlen($useragent) > 100)
+		{
+			$useragent = my_substr($useragent, 0, 100);
+		}
+		$onlinedata['useragent'] = $db->escape_string($useragent);
 		$onlinedata['location1'] = (int)$speciallocs['1'];
 		$onlinedata['location2'] = (int)$speciallocs['2'];
 		$onlinedata['nopermission'] = 0;
@@ -497,10 +500,13 @@ class session
 		}
 		$onlinedata['time'] = TIME_NOW;
 		$onlinedata['ip'] = $db->escape_binary($this->packedip);
-		
-		$onlinedata['location'] = $db->escape_string(substr(get_current_location(), 0, 150));
-		$onlinedata['useragent'] = $db->escape_string(my_substr($this->useragent, 0, 100));
-		
+		$onlinedata['location'] = $db->escape_string(get_current_location());
+		$useragent = $this->useragent;
+		if(my_strlen($useragent) > 100)
+		{
+			$useragent = my_substr($useragent, 0, 100);
+		}
+		$onlinedata['useragent'] = $db->escape_string($useragent);
 		$onlinedata['location1'] = (int)$speciallocs['1'];
 		$onlinedata['location2'] = (int)$speciallocs['2'];
 		$onlinedata['nopermission'] = 0;
@@ -518,18 +524,18 @@ class session
 	{
 		global $mybb;
 		$array = array('1' => '', '2' => '');
-		if(preg_match("#forumdisplay.php#", $_SERVER['PHP_SELF']) && $mybb->get_input('fid', MyBB::INPUT_INT) > 0)
+		if(preg_match("#forumdisplay.php#", $_SERVER['PHP_SELF']) && $mybb->get_input('fid', 1) > 0)
 		{
-			$array[1] = $mybb->get_input('fid', MyBB::INPUT_INT);
+			$array[1] = $mybb->get_input('fid', 1);
 			$array[2] = '';
 		}
 		elseif(preg_match("#showthread.php#", $_SERVER['PHP_SELF']))
 		{
 			global $db;
 
-			if($mybb->get_input('tid', MyBB::INPUT_INT) > 0)
+			if($mybb->get_input('tid', 1) > 0)
 			{
-				$array[2] = $mybb->get_input('tid', MyBB::INPUT_INT);
+				$array[2] = $mybb->get_input('tid', 1);
 			}
 
 			// If there is no tid but a pid, trick the system into thinking there was a tid anyway.
@@ -538,7 +544,7 @@ class session
 				$options = array(
 					"limit" => 1
 				);
-				$query = $db->simple_select("posts", "tid", "pid=".$mybb->get_input('pid', MyBB::INPUT_INT), $options);
+				$query = $db->simple_select("posts", "tid", "pid=".$mybb->get_input('pid', 1), $options);
 				$post = $db->fetch_array($query);
 				$array[2] = $post['tid'];
 			}

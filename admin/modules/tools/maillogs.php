@@ -45,7 +45,7 @@ if($mybb->input['action'] == "prune" && $mybb->request_method == "post")
 		}
 	}
 
-	$plugins->run_hooks("admin_tools_mailerrors_prune_commit");
+	$plugins->run_hooks("admin_tools_maillogs_prune_commit");
 
 	// Log admin action
 	log_admin_action($num_deleted);
@@ -56,7 +56,7 @@ if($mybb->input['action'] == "prune" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "view")
 {
-	$query = $db->simple_select("maillogs", "*", "mid='".$mybb->get_input('mid', MyBB::INPUT_INT)."'");
+	$query = $db->simple_select("maillogs", "*", "mid='".$mybb->get_input('mid', 1)."'");
 	$log = $db->fetch_array($query);
 
 	if(!$log['mid'])
@@ -133,7 +133,7 @@ if(!$mybb->input['action'])
 
 	if($mybb->input['page'] && $mybb->input['page'] > 1)
 	{
-		$mybb->input['page'] = $mybb->get_input('page', MyBB::INPUT_INT);
+		$mybb->input['page'] = $mybb->get_input('page', 1);
 		$start = ($mybb->input['page']*$per_page)-$per_page;
 	}
 	else
@@ -168,11 +168,11 @@ if(!$mybb->input['action'])
 		}
 	}
 
-	$touid = $mybb->get_input('touid', MyBB::INPUT_INT);
+	$touid = (int)$mybb->input['touid'];
 	$toname = $db->escape_string($mybb->input['toname']);
 	$toemail = $db->escape_string_like($mybb->input['toemail']);
 
-	$fromuid = $mybb->get_input('fromuid', MyBB::INPUT_INT);
+	$fromuid = (int)$mybb->input['fromuid'];
 	$fromname = $db->escape_string($mybb->input['fromname']);
 	$fromemail = $db->escape_string_like($mybb->input['fromemail']);
 
@@ -196,7 +196,8 @@ if(!$mybb->input['action'])
 	}
 	else if($mybb->input['fromname'])
 	{
-		$user = get_user_by_username($mybb->input['fromname'], array('fields' => 'uid, username'));
+		$query = $db->simple_select("users", "uid, username", "LOWER(username) = '{$fromname}'");
+		$user = $db->fetch_array($query);
 		$from_filter = $user['username'];
 
 		if(!$user['uid'])

@@ -35,7 +35,7 @@ lang.theme_info_save_error = \"{$lang->theme_info_save_error}\";
 if($mybb->input['action'] == "xmlhttp_stylesheet" && $mybb->request_method == "post")
 {
 	// Fetch the theme we want to edit this stylesheet in
-	$query = $db->simple_select("themes", "*", "tid='".$mybb->get_input('tid', MyBB::INPUT_INT)."'");
+	$query = $db->simple_select("themes", "*", "tid='".$mybb->get_input('tid', 1)."'");
 	$theme = $db->fetch_array($query);
 
 	if(!$theme['tid'] || $theme['tid'] == 1)
@@ -155,7 +155,7 @@ if($mybb->input['action'] == "browse")
 
 	if($mybb->input['page'])
 	{
-		$url_page = "&page=".$mybb->get_input('page', MyBB::INPUT_INT);
+		$url_page = "&page=".$mybb->get_input('page', 1);
 	}
 	else
 	{
@@ -379,8 +379,8 @@ if($mybb->input['action'] == "import")
 				$options = array(
 					'no_stylesheets' => ($mybb->input['import_stylesheets'] ? 0 : 1),
 					'no_templates' => ($mybb->input['import_templates'] ? 0 : 1),
-					'version_compat' => $mybb->get_input('version_compat', MyBB::INPUT_INT),
-					'parent' => $mybb->get_input('tid', MyBB::INPUT_INT),
+					'version_compat' => (int)$mybb->input['version_compat'],
+					'parent' => $mybb->get_input('tid', 1),
 					'force_name_check' => true,
 				);
 				$theme_id = import_theme_xml($contents, $options);
@@ -516,7 +516,7 @@ if($mybb->input['action'] == "import")
 
 if($mybb->input['action'] == "export")
 {
-	$query = $db->simple_select("themes", "*", "tid='".$mybb->get_input('tid', MyBB::INPUT_INT)."'");
+	$query = $db->simple_select("themes", "*", "tid='".$mybb->get_input('tid', 1)."'");
 	$theme = $db->fetch_array($query);
 
 	// Does the theme not exist?
@@ -541,7 +541,7 @@ if($mybb->input['action'] == "export")
 
 			if(is_array($value))
 			{
-				$value = my_serialize($value);
+				$value = serialize($value);
 			}
 
 			$value = str_replace(']]>', ']]]]><![CDATA[>', $value);
@@ -734,7 +734,7 @@ if($mybb->input['action'] == "export")
 
 if($mybb->input['action'] == "duplicate")
 {
-	$query = $db->simple_select("themes", "*", "tid='".$mybb->get_input('tid', MyBB::INPUT_INT)."'");
+	$query = $db->simple_select("themes", "*", "tid='".$mybb->get_input('tid', 1)."'");
 	$theme = $db->fetch_array($query);
 
 	// Does the theme not exist?
@@ -948,7 +948,7 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "delete")
 {
-	$query = $db->simple_select("themes", "*", "tid='".$mybb->get_input('tid', MyBB::INPUT_INT)."'");
+	$query = $db->simple_select("themes", "*", "tid='".$mybb->get_input('tid', 1)."'");
 	$theme = $db->fetch_array($query);
 
 	// Does the theme not exist? or are we trying to delete the master?
@@ -1045,7 +1045,7 @@ if($mybb->input['action'] == "delete")
 
 if($mybb->input['action'] == "edit")
 {
-	$query = $db->simple_select("themes", "*", "tid='".$mybb->get_input('tid', MyBB::INPUT_INT)."'");
+	$query = $db->simple_select("themes", "*", "tid='".$mybb->get_input('tid', 1)."'");
 	$theme = $db->fetch_array($query);
 
 	// Does the theme not exist?
@@ -1060,12 +1060,12 @@ if($mybb->input['action'] == "edit")
 	if($mybb->request_method == "post" && !$mybb->input['do'])
 	{
 		$properties = array(
-			'templateset' => $mybb->get_input('templateset', MyBB::INPUT_INT),
+			'templateset' => (int)$mybb->input['templateset'],
 			'editortheme' => $mybb->input['editortheme'],
 			'imgdir' => $mybb->input['imgdir'],
 			'logo' => $mybb->input['logo'],
-			'tablespace' => $mybb->get_input('tablespace', MyBB::INPUT_INT),
-			'borderwidth' => $mybb->get_input('borderwidth', MyBB::INPUT_INT),
+			'tablespace' => (int)$mybb->input['tablespace'],
+			'borderwidth' => (int)$mybb->input['borderwidth'],
 			'color' => $mybb->input['color']
 		);
 
@@ -1118,9 +1118,9 @@ if($mybb->input['action'] == "edit")
 
 		$update_array = array(
 			'name' => $db->escape_string($mybb->input['name']),
-			'pid' => $mybb->get_input('pid', MyBB::INPUT_INT),
+			'pid' => $mybb->get_input('pid', 1),
 			'allowedgroups' => $allowedgroups,
-			'properties' => $db->escape_string(my_serialize($properties))
+			'properties' => $db->escape_string(serialize($properties))
 		);
 
 		// perform validation
@@ -1273,7 +1273,7 @@ if($mybb->input['action'] == "edit")
 		$properties['disporder'] = $orders;
 
 		$update_array = array(
-			"properties" => $db->escape_string(my_serialize($properties))
+			"properties" => $db->escape_string(serialize($properties))
 		);
 
 		$db->update_query("themes", $update_array, "tid = '{$theme['tid']}'");
@@ -1612,7 +1612,7 @@ if($mybb->input['action'] == "edit")
 if($mybb->input['action'] == "stylesheet_properties")
 {
 	// Fetch the theme we want to edit this stylesheet in
-	$query = $db->simple_select("themes", "*", "tid='".$mybb->get_input('tid', MyBB::INPUT_INT)."'");
+	$query = $db->simple_select("themes", "*", "tid='".$mybb->get_input('tid', 1)."'");
 	$theme = $db->fetch_array($query);
 
 	if(!$theme['tid'] || $theme['tid'] == 1)
@@ -1986,7 +1986,7 @@ EOF;
 if($mybb->input['action'] == "edit_stylesheet" && (!isset($mybb->input['mode']) || $mybb->input['mode'] == "simple"))
 {
 	// Fetch the theme we want to edit this stylesheet in
-	$query = $db->simple_select("themes", "*", "tid='".$mybb->get_input('tid', MyBB::INPUT_INT)."'");
+	$query = $db->simple_select("themes", "*", "tid='".$mybb->get_input('tid', 1)."'");
 	$theme = $db->fetch_array($query);
 
 	if(!$theme['tid'] || $theme['tid'] == 1)
@@ -2231,12 +2231,12 @@ if($mybb->input['action'] == "edit_stylesheet" && (!isset($mybb->input['mode']) 
 
 	$form->output_submit_wrapper($buttons);
 
-	echo '<script type="text/javascript" src="./jscripts/themes.js?ver=1804"></script>';
+	echo '<script type="text/javascript" src="./jscripts/themes.js"></script>';
 	echo '<script type="text/javascript">
 
 $(document).ready(function() {
 //<![CDATA[
-	ThemeSelector.init("./index.php?module=style-themes&action=xmlhttp_stylesheet", "./index.php?module=style-themes&action=edit_stylesheet", $("#selector"), $("#stylesheet"), "'.htmlspecialchars_uni($mybb->input['file']).'", $("#selector_form"), "'.$mybb->input['tid'].'");
+	new ThemeSelector("./index.php?module=style-themes&action=xmlhttp_stylesheet", "./index.php?module=style-themes&action=edit_stylesheet", $("#selector"), $("#stylesheet"), "'.htmlspecialchars_uni($mybb->input['file']).'", $("#selector_form"), "'.$mybb->input['tid'].'");
 	lang.saving = "'.$lang->saving.'";
 });
 //]]>
@@ -2250,7 +2250,7 @@ $(document).ready(function() {
 if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advanced")
 {
 	// Fetch the theme we want to edit this stylesheet in
-	$query = $db->simple_select("themes", "*", "tid='".$mybb->get_input('tid', MyBB::INPUT_INT)."'");
+	$query = $db->simple_select("themes", "*", "tid='".$mybb->get_input('tid', 1)."'");
 	$theme = $db->fetch_array($query);
 
 	if(!$theme['tid'] || $theme['tid'] == 1)
@@ -2417,7 +2417,7 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 if($mybb->input['action'] == "delete_stylesheet")
 {
 	// Fetch the theme we want to edit this stylesheet in
-	$query = $db->simple_select("themes", "*", "tid='".$mybb->get_input('tid', MyBB::INPUT_INT)."'");
+	$query = $db->simple_select("themes", "*", "tid='".$mybb->get_input('tid', 1)."'");
 	$theme = $db->fetch_array($query);
 
 	if(!$theme['tid'] || $theme['tid'] == 1)
@@ -2476,7 +2476,7 @@ if($mybb->input['action'] == "delete_stylesheet")
 if($mybb->input['action'] == "add_stylesheet")
 {
 	// Fetch the theme we want to edit this stylesheet in
-	$query = $db->simple_select("themes", "*", "tid='".$mybb->get_input('tid', MyBB::INPUT_INT)."'");
+	$query = $db->simple_select("themes", "*", "tid='".$mybb->get_input('tid', 1)."'");
 	$theme = $db->fetch_array($query);
 
 	if(!$theme['tid'] || $theme['tid'] == 1)
@@ -2570,7 +2570,7 @@ if($mybb->input['action'] == "add_stylesheet")
 			// Add Stylesheet
 			$insert_array = array(
 				'name' => $db->escape_string($mybb->input['name']),
-				'tid' => $mybb->get_input('tid', MyBB::INPUT_INT),
+				'tid' => $mybb->get_input('tid', 1),
 				'attachedto' => implode('|', array_map(array($db, "escape_string"), $attached)),
 				'stylesheet' => $db->escape_string($stylesheet),
 				'cachefile' => $db->escape_string(str_replace('/', '', $mybb->input['name'])),
@@ -2867,7 +2867,7 @@ if($mybb->input['action'] == "add_stylesheet")
 			});</script>";
 	}
 
-	echo '<script type="text/javascript" src="./jscripts/themes.js?ver=1804"></script>';
+	echo '<script type="text/javascript" src="./jscripts/themes.js"></script>';
 	echo '<script type="text/javascript" src="./jscripts/theme_properties.js"></script>';
 	echo '<script type="text/javascript">
 $(function() {
@@ -2891,7 +2891,7 @@ if($mybb->input['action'] == "set_default")
 		admin_redirect("index.php?module=style-themes");
 	}
 
-	$query = $db->simple_select("themes", "*", "tid='".$mybb->get_input('tid', MyBB::INPUT_INT)."'");
+	$query = $db->simple_select("themes", "*", "tid='".$mybb->get_input('tid', 1)."'");
 	$theme = $db->fetch_array($query);
 
 	// Does the theme not exist?
@@ -2906,7 +2906,7 @@ if($mybb->input['action'] == "set_default")
 	$cache->update('default_theme', $theme);
 
 	$db->update_query("themes", array('def' => 0));
-	$db->update_query("themes", array('def' => 1), "tid='".$mybb->get_input('tid', MyBB::INPUT_INT)."'");
+	$db->update_query("themes", array('def' => 1), "tid='".$mybb->get_input('tid', 1)."'");
 
 	$plugins->run_hooks("admin_style_themes_set_default_commit");
 
@@ -2919,7 +2919,7 @@ if($mybb->input['action'] == "set_default")
 
 if($mybb->input['action'] == "force")
 {
-	$query = $db->simple_select("themes", "*", "tid='".$mybb->get_input('tid', MyBB::INPUT_INT)."'");
+	$query = $db->simple_select("themes", "*", "tid='".$mybb->get_input('tid', 1)."'");
 	$theme = $db->fetch_array($query);
 
 	// Does the theme not exist?

@@ -417,7 +417,7 @@ class MyBB {
 					switch($type)
 					{
 						case "int":
-							$this->input[$var] = $this->get_input($var, MyBB::INPUT_INT);
+							$this->input[$var] = $this->get_input($var, 1);
 							break;
 						case "a-z":
 							$this->input[$var] = preg_replace("#[^a-z\.\-_]#i", "", $this->get_input($var));
