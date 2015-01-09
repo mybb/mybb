@@ -1375,7 +1375,7 @@ EOF;
 			$expired = nice_time($remaining, array('seconds' => false));
 
 			$color = 'inherit';
-			if($remaining <= 0 || $remaining < 3600)
+			if($remaining < 3600)
 			{
 				$color = 'red';
 			}
@@ -1546,7 +1546,7 @@ EOF;
 			$expired = nice_time($remaining, array('seconds' => false));
 
 			$color = 'inherit';
-			if($remaining <= 0 || $remaining < 3600)
+			if($remaining < 3600)
 			{
 				$color = 'red';
 			}
@@ -1590,7 +1590,7 @@ EOF;
 			$suspost_date = nice_time($remaining, array('seconds' => false));
 
 			$color = 'inherit';
-			if($remaining <= 0 || $remaining < 3600)
+			if($remaining < 3600)
 			{
 				$color = 'red';
 			}
