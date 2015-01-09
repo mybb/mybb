@@ -489,10 +489,7 @@ if(!$mybb->input['action'])
 			{
 				$time_remaining = "<span style=\"color: green;\">{$time_remaining}</span>";
 			}
-			else
-			{
-				$time_remaining = "{$time_remaining}";
-			}
+
 			$lifts_on = my_date($mybb->settings['dateformat'], $ban['lifted']);
 		}
 

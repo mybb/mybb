@@ -1371,8 +1371,24 @@ EOF;
 		else
 		{
 			// There's a limit to the suspension!
-			$expired = my_date('relative', $user['suspendsigtime'], '', 2);
-			$lang->suspend_expire_info = $lang->sprintf($lang->suspend_expire_info, $expired);
+			$remaining = $user['suspendsigtime']-TIME_NOW;
+			$expired = nice_time($remaining, array('seconds' => false));
+
+			$color = 'inherit';
+			if($remaining < 3600)
+			{
+				$color = 'red';
+			}
+			elseif($remaining < 86400)
+			{
+				$color = 'maroon';
+			}
+			elseif($remaining < 604800)
+			{
+				$color = 'green';
+			}
+
+			$lang->suspend_expire_info = $lang->sprintf($lang->suspend_expire_info, $expired, $color);
 		}
 		$user_suspend_info = '
 				<tr>
@@ -1526,8 +1542,24 @@ EOF;
 		$mybb->input['moderateposting'] = 1;
 		if($user['moderationtime'] != 0)
 		{
-			$expired = my_date('relative', $user['moderationtime'], '', 2);
-			$existing_info = $lang->sprintf($lang->moderate_length, $expired);
+			$remaining = $user['moderationtime']-TIME_NOW;
+			$expired = nice_time($remaining, array('seconds' => false));
+
+			$color = 'inherit';
+			if($remaining < 3600)
+			{
+				$color = 'red';
+			}
+			elseif($remaining < 86400)
+			{
+				$color = 'maroon';
+			}
+			elseif($remaining < 604800)
+			{
+				$color = 'green';
+			}
+
+			$existing_info = $lang->sprintf($lang->moderate_length, $expired, $color);
 		}
 		else
 		{
@@ -1554,8 +1586,24 @@ EOF;
 		}
 		else
 		{
-			$suspost_date = my_date('relative', $user['suspensiontime'], '', 2);
-			$existing_info = $lang->sprintf($lang->suspend_length, $suspost_date);
+			$remaining = $user['suspensiontime']-TIME_NOW;
+			$suspost_date = nice_time($remaining, array('seconds' => false));
+
+			$color = 'inherit';
+			if($remaining < 3600)
+			{
+				$color = 'red';
+			}
+			elseif($remaining < 86400)
+			{
+				$color = 'maroon';
+			}
+			elseif($remaining < 604800)
+			{
+				$color = 'green';
+			}
+
+			$existing_info = $lang->sprintf($lang->suspend_length, $suspost_date, $color);
 		}
 	}
 
