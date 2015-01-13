@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<theme name="MyBB Master Style" version="1800">
+<theme name="MyBB Master Style" version="1804">
 	<properties>
 		<templateset><![CDATA[1]]></templateset>
 		<imgdir><![CDATA[images]]></imgdir>
@@ -9,7 +9,7 @@
 		<editortheme><![CDATA[mybb.css]]></editortheme>
 	</properties>
 	<stylesheets>
-		<stylesheet name="global.css" version="1800" disporder="1"><![CDATA[body {
+		<stylesheet name="global.css" version="1804" disporder="1"><![CDATA[body {
 	background: #fff;
 	color: #333;
 	text-align: center;
@@ -619,26 +619,16 @@ form {
 	padding: 0;
 }
 
-form input.error {
+input.error, textarea.error, select.error {
 	border: 1px solid #f30;
 	color: #f30;
-	background: #ffffff;
-	padding: 3px;
-	outline: 0;
-	font-size: 13px;
-	font-family: Tahoma, Verdana, Arial, Sans-Serif;
 }
 
-form input.valid {
+input.valid, textarea.valid, select.valid {
 	border: 1px solid #0c0;
-	background: #ffffff;
-	padding: 3px;
-	outline: 0;
-	font-size: 13px;
-	font-family: Tahoma, Verdana, Arial, Sans-Serif;
 }
 
-form label.error {
+label.error {
 	color: #f30;
 	margin: 5px;
 	padding: 0px;
@@ -4944,7 +4934,7 @@ if(use_xmlhttprequest == "1")
 	<td class="{$bgcolor}"><strong>{$lang->homepage}</strong></td>
 	<td class="{$bgcolor}"><a href="{$memprofile['website']}" target="_blank">{$memprofile['website']}</a></td>
 </tr>]]></template>
-		<template name="member_register" version="1800"><![CDATA[<html>
+		<template name="member_register" version="1804"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->registration}</title>
 {$headerinclude}
@@ -5070,48 +5060,51 @@ if(use_xmlhttprequest == "1")
 </div>
 </form>
 <script type="text/javascript">
-<!--
-$().ready(function() {
-	// validate registration_form
+$(document).ready(function() {
 	$("#registration_form").validate({
 		rules: {
-          username: {
-            required: true,
-            minlength: {$mybb->settings['minnamelength']},
-			maxlength: {$mybb->settings['maxnamelength']},
-			remote:{
-				url: "xmlhttp.php?action=username_availability",
-				type: "post",
-              	dataType: "json",
-				data:
-				{
-					my_post_key: my_post_key
+			username: {
+				required: true,
+				minlength: {$mybb->settings['minnamelength']},
+				maxlength: {$mybb->settings['maxnamelength']},
+				remote: {
+					url: "xmlhttp.php?action=username_availability",
+					type: "post",
+					dataType: "json",
+					data:
+					{
+						my_post_key: my_post_key
+					},
 				},
 			},
-          },
-          email: {
+			email: {
 				required: true,
 				email: true,
-          },
-          email2: {
+			},
+			email2: {
 				required: true,
 				email: true,
 				equalTo: "#email"
-          },
+			},
 		},
 		messages: {
-            username: {
-              		minlength: "{$lang->js_validator_username_length}",
-              		maxlength: "{$lang->js_validator_username_length}",
-            },
-          	email: "{$lang->js_validator_invalid_email}",
+			username: {
+				minlength: "{$lang->js_validator_username_length}",
+				maxlength: "{$lang->js_validator_username_length}",
+			},
+			email: "{$lang->js_validator_invalid_email}",
 			email2: "{$lang->js_validator_email_match}",
+		},
+		errorPlacement: function(error, element) {
+			if(element.is(':checkbox') || element.is(':radio'))
+				error.insertAfter($('input[name="' + element.attr('name') + '"]').last().next('span'));
+			else
+				error.insertAfter(element);
 		}
 	});
 
-   {$validator_extra}
+	{$validator_extra}
 });
-// -->
 </script>
 {$footer}
 </body>
@@ -5284,14 +5277,14 @@ $().ready(function() {
 <tr>
 	<td colspan="2" style="display: none;" id="password_status">&nbsp;</td>
 </tr>]]></template>
-		<template name="member_register_question" version="1800"><![CDATA[<br />
+		<template name="member_register_question" version="1804"><![CDATA[<br />
 <fieldset class="trow2">
 <script type="text/javascript">
 <!--
 	lang.question_fetch_failure = "{$lang->question_fetch_failure}";
 // -->
 </script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/question.js?ver=1800"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/question.js?ver=1804"></script>
 <legend><strong>{$lang->security_question}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
 <tr>
@@ -5375,14 +5368,14 @@ if(use_xmlhttprequest == "1")
 }
 // -->
 </script>]]></template>
-		<template name="member_register_regimage" version="1800"><![CDATA[<br />
+		<template name="member_register_regimage" version="1804"><![CDATA[<br />
 <fieldset class="trow2">
 <script type="text/javascript">
 <!--
 	lang.captcha_fetch_failure = "{$lang->captcha_fetch_failure}";
 // -->
 </script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/captcha.js?ver=1800"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/captcha.js?ver=1804"></script>
 <legend><strong>{$lang->image_verification}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
 <tr>
@@ -9341,7 +9334,7 @@ if(use_xmlhttprequest == "1")
 </td>
 </tr>]]></template>
 		<template name="post_attachments_update" version="1604"><![CDATA[<input type="submit" class="button" name="updateattachment" value="{$lang->update_attachment}" tabindex="12" />]]></template>
-		<template name="post_captcha" version="1800"><![CDATA[<tr id="captcha_trow">
+		<template name="post_captcha" version="1804"><![CDATA[<tr id="captcha_trow">
 <td class="trow1" valign="top" width="350"><strong>{$lang->image_verification}</strong>
 <br/>
 <span class="smalltext">{$lang->verification_note}</span>
@@ -9352,7 +9345,7 @@ if(use_xmlhttprequest == "1")
 	lang.captcha_fetch_failure = "{$lang->captcha_fetch_failure}";
 // -->
 </script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/captcha.js?ver=1800"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/captcha.js?ver=1804"></script>
 <table style="width: 300px; padding: 4px;">
 	<tr>
 		<td style="vertical-align: middle;"><img src="{$mybb->settings['bburl']}/captcha.php?imagehash={$imagehash}" alt="{$lang->image_verification}" title="{$lang->image_verification}" id="captcha_img" /><br /><span style="color: red;" class="smalltext">{$lang->verification_subnote}</span>

@@ -750,11 +750,12 @@ else if($mybb->input['action'] == "refresh_question" && $mybb->settings['securit
 	
 	$sid = $db->escape_string($mybb->get_input('question_id'));
 	$query = $db->query("
-		SELECT q.*, s.sid
+		SELECT q.qid, s.sid
 		FROM ".TABLE_PREFIX."questionsessions s
 		LEFT JOIN ".TABLE_PREFIX."questions q ON (q.qid=s.qid)
 		WHERE q.active='1' AND s.sid='{$sid}'
 	");
+	
 	if($db->num_rows($query) == 0)
 	{
 		xmlhttp_error($lang->answer_valid_not_exists);
@@ -767,22 +768,27 @@ else if($mybb->input['action'] == "refresh_question" && $mybb->settings['securit
 	
 	require_once MYBB_ROOT."inc/functions_user.php";
 	
-	$sid = generate_question();
+	$sid = generate_question($qsession['qid']);
 	$query = $db->query("
 		SELECT q.question, s.sid
 		FROM ".TABLE_PREFIX."questionsessions s
 		LEFT JOIN ".TABLE_PREFIX."questions q ON (q.qid=s.qid)
 		WHERE q.active='1' AND s.sid='{$sid}' AND q.qid!='{$qsession['qid']}'
 	");
+	
+	$plugins->run_hooks("xmlhttp_refresh_question");
+	
 	if($db->num_rows($query) > 0)
 	{
 		$question = $db->fetch_array($query);
+		
+		echo json_encode(array("question" => htmlspecialchars_uni($question['question']), 'sid' => htmlspecialchars_uni($question['sid'])));
+		exit;
 	}
-	
-	$plugins->run_hooks("xmlhttp_refresh_question");
-
-	echo json_encode(array("question" => htmlspecialchars_uni($question['question']), 'sid' => htmlspecialchars_uni($question['sid'])));
-	exit;
+	else 
+	{
+		xmlhttp_error($lang->answer_valid_not_exists);
+	}
 }
 elseif($mybb->input['action'] == "validate_question" && $mybb->settings['securityquestion'])
 {
@@ -796,6 +802,7 @@ elseif($mybb->input['action'] == "validate_question" && $mybb->settings['securit
 		LEFT JOIN ".TABLE_PREFIX."questions q ON (q.qid=s.qid)
 		WHERE q.active='1' AND s.sid='{$sid}'
 	");
+	
 	if($db->num_rows($query) == 0)
 	{
 		echo json_encode($lang->answer_valid_not_exists);

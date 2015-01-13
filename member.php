@@ -214,7 +214,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		try {
 			if($stop_forum_spam_checker->is_user_a_spammer($user['username'], $user['email'], get_ip()))
 			{
-					error($lang->sprintf($lang->error_stop_forum_spam_spammer,
+				error($lang->sprintf($lang->error_stop_forum_spam_spammer,
 						$stop_forum_spam_checker->getErrorText(array(
 							'stopforumspam_check_usernames',
 							'stopforumspam_check_emails',
@@ -881,6 +881,7 @@ if($mybb->input['action'] == "register")
 					continue;
 				}
 
+				$code = $select = $val = $options = $expoptions = $useropts = $seloptions = '';
 				$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
 				$thing = explode("\n", $profilefield['type'], "2");
 				$type = trim($thing[0]);
@@ -923,7 +924,7 @@ if($mybb->input['action'] == "register")
 							$sel = "";
 							if($val == $seloptions[$val])
 							{
-								$sel = " selected=\"selected\"";
+								$sel = ' selected="selected"';
 							}
 
 							eval("\$select .= \"".$templates->get("usercp_profile_profilefields_select_option")."\";");
@@ -948,7 +949,7 @@ if($mybb->input['action'] == "register")
 							$sel = "";
 							if($val == $userfield)
 							{
-								$sel = " selected=\"selected\"";
+								$sel = ' selected="selected"';
 							}
 
 							eval("\$select .= \"".$templates->get("usercp_profile_profilefields_select_option")."\";");
@@ -971,7 +972,7 @@ if($mybb->input['action'] == "register")
 							$checked = "";
 							if($val == $userfield)
 							{
-								$checked = "checked=\"checked\"";
+								$checked = 'checked="checked"';
 							}
 
 							eval("\$code .= \"".$templates->get("usercp_profile_profilefields_radio")."\";");
@@ -1003,7 +1004,7 @@ if($mybb->input['action'] == "register")
 							$checked = "";
 							if($val == $seloptions[$val])
 							{
-								$checked = "checked=\"checked\"";
+								$checked = 'checked="checked"';
 							}
 
 							eval("\$code .= \"".$templates->get("usercp_profile_profilefields_checkbox")."\";");
@@ -1029,24 +1030,34 @@ if($mybb->input['action'] == "register")
 
 				if($profilefield['required'] == 1)
 				{
-					// JS validator extra
-					if($type == "checkbox" || $type == "radio")
+					// JS validator extra, choose correct selectors for everything except single select which always has value
+					if($type != 'select')
 					{
-						$id = "{$field}0";
-					}
-					else
-					{
-						$id = "fid{$profilefield['fid']}";
-					}
-					
-					$validator_extra .= "
-					$(\"#{$id}\").rules(\"add\", {
-						required: true,
-						minlength: 1,
-						messages: {
-							required: \"{$lang->js_validator_not_empty}\"
+						if($type == "textarea")
+						{
+							$inp_selector = "$('textarea[name=\"profile_fields[{$field}]\"')";					
 						}
-					});\n";
+						elseif($type == "multiselect")
+						{
+							$inp_selector = "$('select[name=\"profile_fields[{$field}][]\"')";					
+						}
+						elseif($type == "checkbox")
+						{
+							$inp_selector = "$('input[name=\"profile_fields[{$field}][]\"')";	
+						}
+						else
+						{
+							$inp_selector = "$('input[name=\"profile_fields[{$field}]\"')";
+						}
+						
+						$validator_extra .= "
+						{$inp_selector}.rules('add', {
+							required: true,
+							messages: {
+								required: '{$lang->js_validator_not_empty}'
+							}
+						});\n";
+					}
 
 					eval("\$requiredfields .= \"".$templates->get("member_register_customfield")."\";");
 				}
@@ -1054,14 +1065,6 @@ if($mybb->input['action'] == "register")
 				{
 					eval("\$customfields .= \"".$templates->get("member_register_customfield")."\";");
 				}
-
-				$code = '';
-				$select = '';
-				$val = '';
-				$options = '';
-				$expoptions = '';
-				$useropts = '';
-				$seloptions = '';
 			}
 		}
 
@@ -1105,20 +1108,22 @@ if($mybb->input['action'] == "register")
 				{
 					// JS validator extra for our default CAPTCHA
 					$validator_extra .= "
-					$(\"#imagestring\").rules(\"add\", {
+					$('#imagestring').rules('add', {
 						required: true,
 						remote:{
-							url: \"xmlhttp.php?action=validate_captcha\",
-							type: \"post\",
-							dataType: \"json\",
+							url: 'xmlhttp.php?action=validate_captcha',
+							type: 'post',
+							dataType: 'json',
 							data:
 							{
-								imagehash: $('#imagehash').val(),
+								imagehash: function () {
+									return $('#imagehash').val();
+								},
 								my_post_key: my_post_key
 							},
 						},
 						messages: {
-							remote: \"{$lang->js_validator_no_image_text}\"
+							remote: '{$lang->js_validator_no_image_text}'
 						}
 					});\n";
 				}
@@ -1152,20 +1157,22 @@ if($mybb->input['action'] == "register")
 				eval("\$questionbox = \"".$templates->get("member_register_question")."\";");
 				
 				$validator_extra .= "
-				$(\"#answer\").rules(\"add\", {
+				$('#answer').rules('add', {
 					required: true,
 					remote:{
-						url: \"xmlhttp.php?action=validate_question\",
-						type: \"post\",
-						dataType: \"json\",
+						url: 'xmlhttp.php?action=validate_question',
+						type: 'post',
+						dataType: 'json',
 						data:
 						{
-							question: $('#question_id').val(),
+							question: function () {
+								return $('#question_id').val();
+							},
 							my_post_key: my_post_key
 						},
 					},
 					messages: {
-						remote: \"{$lang->js_validator_no_security_question}\"
+						remote: '{$lang->js_validator_no_security_question}'
 					}
 				});\n";
 			}
@@ -1190,47 +1197,47 @@ if($mybb->input['action'] == "register")
 				$lang->password = $lang->complex_password = $lang->sprintf($lang->complex_password, $mybb->settings['minpasswordlength']);
 				
 				$validator_extra .= "
-				$(\"#password\").rules(\"add\", {
+				$('#password').rules('add', {
 					required: true,
 					minlength: {$mybb->settings['minpasswordlength']},
 					remote:{
-						url: \"xmlhttp.php?action=complex_password\",
-						type: \"post\",
-						dataType: \"json\",
+						url: 'xmlhttp.php?action=complex_password',
+						type: 'post',
+						dataType: 'json',
 						data:
 						{
 							my_post_key: my_post_key
 						},
 					},
 					messages: {
-						minlength: \"{$lang->js_validator_password_length}\",
-						required: \"{$lang->js_validator_password_length}\",
-						remote: \"{$lang->js_validator_no_image_text}\"
+						minlength: '{$lang->js_validator_password_length}',
+						required: '{$lang->js_validator_password_length}',
+						remote: '{$lang->js_validator_no_image_text}'
 					}
 				});\n";
 			}
 			else
 			{
 				$validator_extra .= "
-				$(\"#password\").rules(\"add\", {
+				$('#password').rules('add', {
 					required: true,
 					minlength: {$mybb->settings['minpasswordlength']},
 					messages: {
-						minlength: \"{$lang->js_validator_password_length}\",
-						required: \"{$lang->js_validator_password_length}\"
+						minlength: '{$lang->js_validator_password_length}',
+						required: '{$lang->js_validator_password_length}'
 					}
 				});\n";
 			}
 
 			$validator_extra .= "
-				$(\"#password2\").rules(\"add\", {
+				$('#password2').rules('add', {
 					required: true,
 					minlength: {$mybb->settings['minpasswordlength']},
-					equalTo: \"#password\",
+					equalTo: '#password',
 					messages: {
-						minlength: \"{$lang->js_validator_password_length}\",
-						required: \"{$lang->js_validator_password_length}\",
-						equalTo: \"{$lang->js_validator_password_matches}\"
+						minlength: '{$lang->js_validator_password_length}',
+						required: '{$lang->js_validator_password_length}',
+						equalTo: '{$lang->js_validator_password_matches}'
 					}
 				});\n";
 
