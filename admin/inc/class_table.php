@@ -36,7 +36,7 @@ class DefaultTable
 	 */
 	function construct_cell($data, $extra=array())
 	{
-		foreach(array('class', 'style', 'id') as $field)
+		foreach(array('class', 'style') as $field)
 		{
 			// Common-used fields
 			if(!isset($extra[$field]))
