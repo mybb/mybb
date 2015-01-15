@@ -141,7 +141,7 @@ if(!$mybb->input['action'])
 	// Searching for entries with a specific IP
 	if($mybb->input['ipaddress'] > 0)
 	{
-		$where .= " AND ipaddress='".$db->escape_binary(my_inet_pton($mybb->input['ipaddress']))."'";
+		$where .= " AND ipaddress=".$db->escape_binary(my_inet_pton($mybb->input['ipaddress']));
 		$additional_criteria[] = "ipaddress=".urlencode($mybb->input['ipaddress']);
 	}
 
