@@ -833,7 +833,7 @@ class DefaultForm
 
 		$built = $this->generate_select_box($name.'_day', $days, (int)$day, array('id' => $name.'_day'))." &nbsp; ";
 		$built .= $this->generate_select_box($name.'_month', $months, (int)$month, array('id' => $name.'_month'))." &nbsp; ";
-		$built .= $this->generate_numeric_field($name.'_year', (int)$year, array('id' => $name.'_year', 'style' => 'width: 100px;', 'min' => 0));
+		$built .= $this->generate_numeric_field($name.'_year', $year, array('id' => $name.'_year', 'style' => 'width: 100px;', 'min' => 0));
 		return $built;
 	}
 
