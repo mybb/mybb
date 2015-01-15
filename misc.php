@@ -192,12 +192,12 @@ elseif($mybb->input['action'] == "do_helpsearch" && $mybb->request_method == "po
 		}
 	}
 
-	if($mybb->get_input('name', 1) != 1 && $mybb->get_input('document', 1) != 1)
+	if($mybb->get_input('name', MyBB::INPUT_INT) != 1 && $mybb->get_input('document', MyBB::INPUT_INT) != 1)
 	{
 		error($lang->error_nosearchresults);
 	}
 
-	if($mybb->get_input('document', 1) == 1)
+	if($mybb->get_input('document', MyBB::INPUT_INT) == 1)
 	{
 		$resulttype = "helpdoc";
 	}
@@ -208,8 +208,8 @@ elseif($mybb->input['action'] == "do_helpsearch" && $mybb->request_method == "po
 
 	$search_data = array(
 		"keywords" => $mybb->get_input('keywords'),
-		"name" => $mybb->get_input('name', 1),
-		"document" => $mybb->get_input('document', 1),
+		"name" => $mybb->get_input('name', MyBB::INPUT_INT),
+		"document" => $mybb->get_input('document', MyBB::INPUT_INT),
 	);
 
 	if($db->can_search == true)
@@ -269,7 +269,7 @@ elseif($mybb->input['action'] == "helpresults")
 
 	// Work out pagination, which page we're at, as well as the limits.
 	$perpage = $mybb->settings['threadsperpage'];
-	$page = $mybb->get_input('page', 1);
+	$page = $mybb->get_input('page', MyBB::INPUT_INT);
 	if($page > 0)
 	{
 		$start = ($page-1) * $perpage;
@@ -364,7 +364,7 @@ elseif($mybb->input['action'] == "help")
 	$lang->load("customhelpdocs");
 	$lang->load("customhelpsections");
 
-	$hid = $mybb->get_input('hid', 1);
+	$hid = $mybb->get_input('hid', MyBB::INPUT_INT);
 	add_breadcrumb($lang->nav_helpdocs, "misc.php?action=help");
 
 	if($hid)
@@ -523,7 +523,7 @@ elseif($mybb->input['action'] == "buddypopup")
 	{
 		$buddies = $mybb->user['buddylist'];
 		$namesarray = explode(",", $buddies);
-		$mybb->input['removebuddy'] = $mybb->get_input('removebuddy', 1);
+		$mybb->input['removebuddy'] = $mybb->get_input('removebuddy', MyBB::INPUT_INT);
 		if(is_array($namesarray))
 		{
 			foreach($namesarray as $key => $buddyid)
@@ -616,7 +616,7 @@ elseif($mybb->input['action'] == "whoposted")
 	$numposts = 0;
 	$altbg = alt_trow();
 	$whoposted = '';
-	$tid = $mybb->get_input('tid', 1);
+	$tid = $mybb->get_input('tid', MyBB::INPUT_INT);
 	$thread = get_thread($tid);
 
 	// Make sure we are looking at a real thread here.
@@ -768,7 +768,7 @@ elseif($mybb->input['action'] == "imcenter")
 	{
 		error($lang->error_invalidimtype);
 	}
-	$uid = $mybb->get_input('uid', 1);
+	$uid = $mybb->get_input('uid', MyBB::INPUT_INT);
 	$user = get_user($uid);
 
 	if(!$user)
@@ -828,10 +828,10 @@ elseif($mybb->input['action'] == "syndication")
 {
 	$plugins->run_hooks("misc_syndication_start");
 
-	$fid = $mybb->get_input('fid', 1);
+	$fid = $mybb->get_input('fid', MyBB::INPUT_INT);
 	$version = $mybb->get_input('version');
-	$limit = $mybb->get_input('limit', 1);
-	$forums = $mybb->get_input('forums', 2);
+	$limit = $mybb->get_input('limit', MyBB::INPUT_INT);
+	$forums = $mybb->get_input('forums', MyBB::INPUT_ARRAY);
 	$limit = 15;
 	$feedurl = '';
 	$add = false;

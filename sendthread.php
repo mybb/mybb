@@ -11,7 +11,7 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'sendthread.php');
 
-$templatelist = "sendthread,sendthread_fromemail,sendthread_fromemail_hidden,forumdisplay_password_wrongpass,forumdisplay_password,post_captcha";
+$templatelist = "sendthread,sendthread_fromemail,sendthread_fromemail_hidden,forumdisplay_password_wrongpass,forumdisplay_password,post_captcha,post_captcha_recaptcha,post_captcha_nocaptcha,post_captcha_ayah";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -22,7 +22,7 @@ $parser = new postParser;
 $lang->load("sendthread");
 
 // Get thread info
-$tid = $mybb->get_input('tid', 1);
+$tid = $mybb->get_input('tid', MyBB::INPUT_INT);
 $thread = get_thread($tid);
 
 // Invalid thread

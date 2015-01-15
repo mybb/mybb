@@ -56,7 +56,7 @@ if($mybb->input['action'] == "prune" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "view")
 {
-	$query = $db->simple_select("mailerrors", "*", "eid='".(int)$mybb->input['eid']."'");
+	$query = $db->simple_select("mailerrors", "*", "eid='".$mybb->get_input('eid', MyBB::INPUT_INT)."'");
 	$log = $db->fetch_array($query);
 
 	if(!$log['eid'])
@@ -137,7 +137,7 @@ if(!$mybb->input['action'])
 
 	if($mybb->input['page'] && $mybb->input['page'] > 1)
 	{
-		$mybb->input['page'] = $mybb->get_input('page', 1);
+		$mybb->input['page'] = $mybb->get_input('page', MyBB::INPUT_INT);
 		$start = ($mybb->input['page']*$per_page)-$per_page;
 	}
 	else
@@ -195,9 +195,13 @@ if(!$mybb->input['action'])
 	{
 		$additional_criteria = "&amp;".implode("&amp;", $additional_criteria);
 	}
+	else
+	{
+		$additional_criteria = '';
+	}
 
 	$table = new Table;
-	$table->construct_header($form->generate_check_box("checkall", 1, '', array('class' => 'checkall')));
+	$table->construct_header($form->generate_check_box("allbox", 1, '', array('class' => 'checkall')));
 	$table->construct_header($lang->subject);
 	$table->construct_header($lang->to, array("class" => "align_center", "width" => "20%"));
 	$table->construct_header($lang->error_message, array("class" => "align_center", "width" => "30%"));

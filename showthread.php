@@ -18,7 +18,7 @@ $templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit,postbit_re
 $templatelist .= ",postbit_inlinecheck,showthread_inlinemoderation,postbit_attachments_thumbnails_thumbnail,postbit_ignored,postbit_groupimage,postbit_multiquote,showthread_search,showthread_moderationoptions_custom_tool,showthread_moderationoptions_custom,showthread_inlinemoderation_custom_tool,showthread_inlinemoderation_custom,postbit_posturl,postbit_rep_button";
 $templatelist .= ",showthread_usersbrowsing,showthread_usersbrowsing_user,showthread_poll_option_multiple,showthread_poll_option,showthread_poll,showthread_threadedbox,showthread_quickreply_options_signature,showthread_threaded_bitactive,showthread_threaded_bit,postbit_attachments_attachment_unapproved,showthread_threadnotes,showthread_threadnotes_viewnotes";
 $templatelist .= ",showthread_moderationoptions_openclose,showthread_moderationoptions_stickunstick,showthread_moderationoptions_delete,showthread_moderationoptions_threadnotes,showthread_moderationoptions_manage,showthread_moderationoptions_deletepoll,showthread_threadnoteslink,showthread_poll_results,showthread_classic_header,postbit_warn";
-$templatelist .= ",postbit_userstar,postbit_reputation_formatted_link,postbit_warninglevel_formatted,postbit_quickrestore,forumdisplay_password,forumdisplay_password_wrongpass,postbit_classic,postbit_purgespammer,showthread_inlinemoderation_approve,showthread_moderationoptions,forumdisplay_thread_icon,showthread_poll_resultbit,global_moderation_notice";
+$templatelist .= ",postbit_userstar,postbit_reputation_formatted_link,postbit_warninglevel_formatted,postbit_quickrestore,forumdisplay_password,forumdisplay_password_wrongpass,postbit_classic,postbit_purgespammer,showthread_inlinemoderation_approve,showthread_moderationoptions,forumdisplay_thread_icon,showthread_poll_resultbit,global_moderation_notice,post_captcha,post_captcha_recaptcha,post_captcha_nocaptcha,post_captcha_ayah";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -33,7 +33,7 @@ $lang->load("showthread");
 if(!empty($mybb->input['pid']) && !isset($mybb->input['tid']))
 {
 	// see if we already have the post information
-	if(isset($style) && $style['pid'] == $mybb->get_input('pid', 1) && $style['tid'])
+	if(isset($style) && $style['pid'] == $mybb->get_input('pid', MyBB::INPUT_INT) && $style['tid'])
 	{
 		$mybb->input['tid'] = $style['tid'];
 		unset($style['tid']); // stop the thread caching code from being tricked
@@ -43,7 +43,7 @@ if(!empty($mybb->input['pid']) && !isset($mybb->input['tid']))
 		$options = array(
 			"limit" => 1
 		);
-		$query = $db->simple_select("posts", "tid", "pid=".$mybb->get_input('pid', 1), $options);
+		$query = $db->simple_select("posts", "tid", "pid=".$mybb->get_input('pid', MyBB::INPUT_INT), $options);
 		$post = $db->fetch_array($query);
 		
 		if(empty($post))
@@ -57,7 +57,7 @@ if(!empty($mybb->input['pid']) && !isset($mybb->input['tid']))
 }
 
 // Get the thread details from the database.
-$thread = get_thread($mybb->get_input('tid', 1));
+$thread = get_thread($mybb->get_input('tid', MyBB::INPUT_INT));
 
 if(!$thread || substr($thread['closed'], 0, 6) == "moved|")
 {
@@ -349,7 +349,7 @@ if($mybb->input['action'] == "nextoldest")
 	exit;
 }
 
-$pid = $mybb->input['pid'] = $mybb->get_input('pid', 1);
+$pid = $mybb->input['pid'] = $mybb->get_input('pid', MyBB::INPUT_INT);
 
 // Forumdisplay cache
 $forum_stats = $cache->read("forumsdisplay");
@@ -882,9 +882,9 @@ if($mybb->input['action'] == "thread")
 		// Figure out if we need to display multiple pages.
 		$page = 1;
 		$perpage = $mybb->settings['postsperpage'];
-		if($mybb->get_input('page', 1) && $mybb->get_input('page') != "last")
+		if($mybb->get_input('page', MyBB::INPUT_INT) && $mybb->get_input('page') != "last")
 		{
-			$page = $mybb->get_input('page', 1);
+			$page = $mybb->get_input('page', MyBB::INPUT_INT);
 		}
 
 		if(!empty($mybb->input['pid']))
@@ -1102,6 +1102,9 @@ if($mybb->input['action'] == "thread")
 			if($similar_thread['icon'] > 0 && $icon_cache[$similar_thread['icon']])
 			{
 				$icon = $icon_cache[$similar_thread['icon']];
+				$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
+				$icon['path'] = htmlspecialchars_uni($icon['path']);
+				$icon['name'] = htmlspecialchars_uni($icon['name']);
 				eval("\$icon = \"".$templates->get("forumdisplay_thread_icon")."\";");
 			}
 			else
@@ -1243,14 +1246,27 @@ if($mybb->input['action'] == "thread")
 
 		if(is_moderator($forum['fid'], "canusecustomtools") && (!empty($forum_stats[-1]['modtools']) || !empty($forum_stats[$forum['fid']]['modtools'])))
 		{
+			$gids = explode(',', $mybb->user['additionalgroups']);
+			$gids[] = $mybb->user['usergroup'];
+			$gids = array_filter(array_unique($gids));
 			switch($db->type)
 			{
 				case "pgsql":
 				case "sqlite":
-					$query = $db->simple_select("modtools", "tid, name, type", "','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%' OR forums=''");
+					foreach($gids as $gid)
+					{
+						$gid = (int)$gid;
+						$gidswhere .= " OR ','||groups||',' LIKE '%,{$gid},%'";
+					}
+					$query = $db->simple_select("modtools", 'tid, name, type', "(','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%' OR forums='') AND (groups='' OR ','||groups||',' LIKE '%,-1,%'{$gidswhere})");
 					break;
 				default:
-					$query = $db->simple_select("modtools", "tid, name, type", "CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums=''");
+					foreach($gids as $gid)
+					{
+						$gid = (int)$gid;
+						$gidswhere .= " OR CONCAT(',',groups,',') LIKE '%,{$gid},%'";
+					}
+					$query = $db->simple_select("modtools", 'tid, name, type', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='') AND (groups='' OR CONCAT(',',groups,',') LIKE '%,-1,%'{$gidswhere})");
 					break;
 			}
 

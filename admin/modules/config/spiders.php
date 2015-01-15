@@ -38,9 +38,9 @@ if($mybb->input['action'] == "add")
 		{
 			$new_spider = array(
 				"name" => $db->escape_string($mybb->input['name']),
-				"theme" => (int)$mybb->input['theme'],
+				"theme" => $mybb->get_input('theme', MyBB::INPUT_INT),
 				"language" => $db->escape_string($mybb->input['language']),
-				"usergroup" => (int)$mybb->input['usergroup'],
+				"usergroup" => $mybb->get_input('usergroup', MyBB::INPUT_INT),
 				"useragent" => $db->escape_string($mybb->input['useragent']),
 				"lastvisit" => 0
 			);
@@ -114,7 +114,7 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "delete")
 {
-	$query = $db->simple_select("spiders", "*", "sid='".$mybb->get_input('sid', 1)."'");
+	$query = $db->simple_select("spiders", "*", "sid='".$mybb->get_input('sid', MyBB::INPUT_INT)."'");
 	$spider = $db->fetch_array($query);
 
 	// Does the spider not exist?
@@ -155,7 +155,7 @@ if($mybb->input['action'] == "delete")
 
 if($mybb->input['action'] == "edit")
 {
-	$query = $db->simple_select("spiders", "*", "sid='".$mybb->get_input('sid', 1)."'");
+	$query = $db->simple_select("spiders", "*", "sid='".$mybb->get_input('sid', MyBB::INPUT_INT)."'");
 	$spider = $db->fetch_array($query);
 
 	// Does the spider not exist?
@@ -183,9 +183,9 @@ if($mybb->input['action'] == "edit")
 		{
 			$updated_spider = array(
 				"name" => $db->escape_string($mybb->input['name']),
-				"theme" => (int)$mybb->input['theme'],
+				"theme" => $mybb->get_input('theme', MyBB::INPUT_INT),
 				"language" => $db->escape_string($mybb->input['language']),
-				"usergroup" => (int)$mybb->input['usergroup'],
+				"usergroup" => $mybb->get_input('usergroup', MyBB::INPUT_INT),
 				"useragent" => $db->escape_string($mybb->input['useragent'])
 			);
 

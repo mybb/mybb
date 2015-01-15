@@ -219,7 +219,7 @@ if($mybb->input['action'] == "edit")
 			}
 
 			$update_array = array(
-				'gid' => (int)$mybb->input['usergroup'],
+				'gid' => $mybb->get_input('usergroup', MyBB::INPUT_INT),
 				'dateline' => TIME_NOW,
 				'bantime' => $db->escape_string($mybb->input['bantime']),
 				'lifted' => $db->escape_string($lifted),
@@ -230,7 +230,7 @@ if($mybb->input['action'] == "edit")
 
 			// Move the user to the banned group
 			$update_array = array(
-				'usergroup' => (int)$mybb->input['usergroup'],
+				'usergroup' => $mybb->get_input('usergroup', MyBB::INPUT_INT),
 				'displaygroup' => 0,
 				'additionalgroups' => '',
 			);
@@ -376,7 +376,7 @@ if(!$mybb->input['action'])
 
 				$insert_array = array(
 					'uid' => $user['uid'],
-					'gid' => (int)$mybb->input['usergroup'],
+					'gid' => $mybb->get_input('usergroup', MyBB::INPUT_INT),
 					'oldgroup' => $user['usergroup'],
 					'oldadditionalgroups' => $user['additionalgroups'],
 					'olddisplaygroup' => $user['displaygroup'],
@@ -390,7 +390,7 @@ if(!$mybb->input['action'])
 
 				// Move the user to the banned group
 				$update_array = array(
-					'usergroup' => (int)$mybb->input['usergroup'],
+					'usergroup' => $mybb->get_input('usergroup', MyBB::INPUT_INT),
 					'displaygroup' => 0,
 					'additionalgroups' => '',
 				);
@@ -424,7 +424,7 @@ if(!$mybb->input['action'])
 
 	if($mybb->input['page'] > 0)
 	{
-		$current_page = $mybb->get_input('page', 1);
+		$current_page = $mybb->get_input('page', MyBB::INPUT_INT);
 		$start = ($current_page-1)*$per_page;
 		$pages = $ban_count / $per_page;
 		$pages = ceil($pages);
@@ -489,10 +489,7 @@ if(!$mybb->input['action'])
 			{
 				$time_remaining = "<span style=\"color: green;\">{$time_remaining}</span>";
 			}
-			else
-			{
-				$time_remaining = "{$time_remaining}";
-			}
+
 			$lifts_on = my_date($mybb->settings['dateformat'], $ban['lifted']);
 		}
 
@@ -564,7 +561,7 @@ if(!$mybb->input['action'])
 	<script type="text/javascript">
 	<!--
 	$("#username").select2({
-		placeholder: "Search for a user",
+		placeholder: "'.$lang->search_user.'",
 		minimumInputLength: 3,
 		maximumSelectionSize: 3,
 		multiple: false,
@@ -592,6 +589,11 @@ if(!$mybb->input['action'])
 				}).done(function(data) { callback(data); });
 			}
 		},
+	});
+
+  	$(\'[for=username]\').click(function(){
+		$("#username").select2(\'open\');
+		return false;
 	});
 	// -->
 	</script>';

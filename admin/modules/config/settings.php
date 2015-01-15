@@ -49,7 +49,7 @@ if($mybb->input['action'] == "addgroup")
 				"name" => $db->escape_string($mybb->input['name']),
 				"title" => $db->escape_string($mybb->input['title']),
 				"description" => $db->escape_string($mybb->input['description']),
-				"disporder" => (int)$mybb->input['disporder'],
+				"disporder" => $mybb->get_input('disporder', MyBB::INPUT_INT),
 				"isdefault" => 0
 			);
 			$gid = $db->insert_query("settinggroups", $new_setting_group);
@@ -114,7 +114,7 @@ if($mybb->input['action'] == "addgroup")
 // Edit setting group
 if($mybb->input['action'] == "editgroup")
 {
-	$query = $db->simple_select("settinggroups", "*", "gid='".(int)$mybb->input['gid']."'");
+	$query = $db->simple_select("settinggroups", "*", "gid='".$mybb->get_input('gid', MyBB::INPUT_INT)."'");
 	$group = $db->fetch_array($query);
 
 	// Does the setting not exist?
@@ -159,7 +159,7 @@ if($mybb->input['action'] == "editgroup")
 				"name" => $db->escape_string($mybb->input['name']),
 				"title" => $db->escape_string($mybb->input['title']),
 				"description" => $db->escape_string($mybb->input['description']),
-				"disporder" => (int)$mybb->input['disporder'],
+				"disporder" => $mybb->get_input('disporder', MyBB::INPUT_INT),
 			);
 
 			$plugins->run_hooks("admin_config_settings_editgroup_commit");
@@ -216,7 +216,7 @@ if($mybb->input['action'] == "editgroup")
 // Delete Setting Group
 if($mybb->input['action'] == "deletegroup")
 {
-	$query = $db->simple_select("settinggroups", "*", "gid='".(int)$mybb->input['gid']."'");
+	$query = $db->simple_select("settinggroups", "*", "gid='".$mybb->get_input('gid', MyBB::INPUT_INT)."'");
 	$group = $db->fetch_array($query);
 
 	// Does the setting group not exist?
@@ -274,7 +274,7 @@ if($mybb->input['action'] == "add")
 			$errors[] = $lang->error_missing_title;
 		}
 
-		$query = $db->simple_select("settinggroups", "gid", "gid='".(int)$mybb->input['gid']."'");
+		$query = $db->simple_select("settinggroups", "gid", "gid='".$mybb->get_input('gid', MyBB::INPUT_INT)."'");
 		$gid = $db->fetch_field($query, 'gid');
 		if(!$gid)
 		{
@@ -325,7 +325,7 @@ if($mybb->input['action'] == "add")
 
 			if($options_code == "numeric")
 			{
-				$value = (int)$mybb->input['value'];
+				$value = $mybb->get_input('value', MyBB::INPUT_INT);
 			}
 			else
 			{
@@ -338,8 +338,8 @@ if($mybb->input['action'] == "add")
 				"description" => $db->escape_string($mybb->input['description']),
 				"optionscode" => $db->escape_string($options_code),
 				"value" => $value,
-				"disporder" => (int)$mybb->input['disporder'],
-				"gid" => (int)$mybb->input['gid']
+				"disporder" => $mybb->get_input('disporder', MyBB::INPUT_INT),
+				"gid" => $mybb->get_input('gid', MyBB::INPUT_INT)
 			);
 
 			$sid = $db->insert_query("settings", $new_setting);
@@ -395,7 +395,15 @@ if($mybb->input['action'] == "add")
 	$query = $db->simple_select("settinggroups", "*", "", array('order_by' => 'disporder'));
 	while($group = $db->fetch_array($query))
 	{
-		$options[$group['gid']] = $group['title'];
+		$group_lang_var = "setting_group_{$group['name']}";
+		if($lang->$group_lang_var)
+		{
+			$options[$group['gid']] = htmlspecialchars_uni($lang->$group_lang_var);
+		}
+		else
+		{
+			$options[$group['gid']] = htmlspecialchars_uni($group['title']);
+		}
 	}
 	$form_container->output_row($lang->group." <em>*</em>", "", $form->generate_select_box("gid", $options, $mybb->input['gid'], array('id' => 'gid')), 'gid');
 	$form_container->output_row($lang->display_order, "", $form->generate_numeric_field('disporder', $mybb->input['disporder'], array('id' => 'disporder', 'min' => 0)), 'disporder');
@@ -443,7 +451,7 @@ if($mybb->input['action'] == "add")
 // Editing a particular setting
 if($mybb->input['action'] == "edit")
 {
-	$query = $db->simple_select("settings", "*", "sid='".$mybb->get_input('sid', 1)."'");
+	$query = $db->simple_select("settings", "*", "sid='".$mybb->get_input('sid', MyBB::INPUT_INT)."'");
 	$setting = $db->fetch_array($query);
 
 	// Does the setting not exist?
@@ -521,7 +529,7 @@ if($mybb->input['action'] == "edit")
 
 			if($options_code == "numeric")
 			{
-				$value = (int)$mybb->input['value'];
+				$value = $mybb->get_input('value', MyBB::INPUT_INT);
 			}
 			else
 			{
@@ -534,8 +542,8 @@ if($mybb->input['action'] == "edit")
 				"description" => $db->escape_string($mybb->input['description']),
 				"optionscode" => $db->escape_string($options_code),
 				"value" => $value,
-				"disporder" => (int)$mybb->input['disporder'],
-				"gid" => (int)$mybb->input['gid']
+				"disporder" => $mybb->get_input('disporder', MyBB::INPUT_INT),
+				"gid" => $mybb->get_input('gid', MyBB::INPUT_INT)
 			);
 
 			$plugins->run_hooks("admin_config_settings_edit_commit");
@@ -601,7 +609,15 @@ if($mybb->input['action'] == "edit")
 	$query = $db->simple_select("settinggroups", "*", "", array('order_by' => 'disporder'));
 	while($group = $db->fetch_array($query))
 	{
-		$options[$group['gid']] = $group['title'];
+		$group_lang_var = "setting_group_{$group['name']}";
+		if($lang->$group_lang_var)
+		{
+			$options[$group['gid']] = htmlspecialchars_uni($lang->$group_lang_var);
+		}
+		else
+		{
+			$options[$group['gid']] = htmlspecialchars_uni($group['title']);
+		}
 	}
 	$form_container->output_row($lang->group." <em>*</em>", "", $form->generate_select_box("gid", $options, $setting_data['gid'], array('id' => 'gid')), 'gid');
 	$form_container->output_row($lang->display_order, "", $form->generate_numeric_field('disporder', $setting_data['disporder'], array('id' => 'disporder', 'min' => 0)), 'disporder');
@@ -651,7 +667,7 @@ if($mybb->input['action'] == "edit")
 // Delete Setting
 if($mybb->input['action'] == "delete")
 {
-	$query = $db->simple_select("settings", "*", "sid='".$mybb->get_input('sid', 1)."'");
+	$query = $db->simple_select("settings", "*", "sid='".$mybb->get_input('sid', MyBB::INPUT_INT)."'");
 	$setting = $db->fetch_array($query);
 
 	// Does the setting not exist?
@@ -981,7 +997,7 @@ if($mybb->input['action'] == "change")
 		{
 			my_unsetcookie("adminsid");
 			$mybb->settings['cookieprefix'] = $mybb->input['upsetting']['cookieprefix'];
-			my_setcookie("adminsid", $admin_session['sid']);
+			my_setcookie("adminsid", $admin_session['sid'], '', true);
 		}
 
 		// Have we opted for a reCAPTCHA and not set a public/private key?
@@ -1065,7 +1081,7 @@ if($mybb->input['action'] == "change")
 	{
 		// Group listing
 		// Cache groups
-		$query = $db->simple_select("settinggroups", "*", "gid = '".(int)$mybb->input['gid']."'");
+		$query = $db->simple_select("settinggroups", "*", "gid = '".$mybb->get_input('gid', MyBB::INPUT_INT)."'");
 		$groupinfo = $db->fetch_array($query);
 		$cache_groups[$groupinfo['gid']] = $groupinfo;
 
@@ -1075,7 +1091,7 @@ if($mybb->input['action'] == "change")
 		}
 
 		// Cache settings
-		$query = $db->simple_select("settings", "*", "gid='".(int)$mybb->input['gid']."'", array('order_by' => 'disporder'));
+		$query = $db->simple_select("settings", "*", "gid='".$mybb->get_input('gid', MyBB::INPUT_INT)."'", array('order_by' => 'disporder'));
 		while($setting = $db->fetch_array($query))
 		{
 			$cache_settings[$setting['gid']][$setting['sid']] = $setting;
@@ -1613,8 +1629,8 @@ function print_setting_peekers()
 		'new Peeker($("#setting_mail_handler"), $("#row_setting_smtp_pass"), /smtp/, false)',
 		'new Peeker($("#setting_mail_handler"), $("#row_setting_secure_smtp"), /smtp/, false)',
 		'new Peeker($("#setting_mail_handler"), $("#row_setting_mail_parameters"), /mail/, false)',
-		'new Peeker($("#setting_captchaimage"), $("#row_setting_captchapublickey"), 2, false)',
-		'new Peeker($("#setting_captchaimage"), $("#row_setting_captchaprivatekey"), 2, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_captchapublickey"), /(2|4)/, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_captchaprivatekey"), /(2|4)/, false)',
 		'new Peeker($("#setting_captchaimage"), $("#row_setting_ayahpublisherkey"), 3, false)',
 		'new Peeker($("#setting_captchaimage"), $("#row_setting_ayahscoringkey"), 3, false)',
 		'new Peeker($(".setting_contact"), $("#row_setting_contact_guests"), /1/, true)',

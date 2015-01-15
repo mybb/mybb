@@ -46,7 +46,7 @@ if($mybb->input['action'] == "add")
 				$mybb->input['extension'] = substr($mybb->input['extension'], 1);
 			}
 
-			$maxsize = $mybb->get_input('maxsize', 1);
+			$maxsize = $mybb->get_input('maxsize', MyBB::INPUT_INT);
 
 			if($maxsize == 0)
 			{
@@ -139,7 +139,7 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "edit")
 {
-	$query = $db->simple_select("attachtypes", "*", "atid='".$mybb->get_input('atid', 1)."'");
+	$query = $db->simple_select("attachtypes", "*", "atid='".$mybb->get_input('atid', MyBB::INPUT_INT)."'");
 	$attachment_type = $db->fetch_array($query);
 
 	if(!$attachment_type['atid'])
@@ -178,7 +178,7 @@ if($mybb->input['action'] == "edit")
 				"name" => $db->escape_string($mybb->input['name']),
 				"mimetype" => $db->escape_string($mybb->input['mimetype']),
 				"extension" => $db->escape_string($mybb->input['extension']),
-				"maxsize" => $mybb->get_input('maxsize', 1),
+				"maxsize" => $mybb->get_input('maxsize', MyBB::INPUT_INT),
 				"icon" => $db->escape_string($mybb->input['icon'])
 			);
 
@@ -259,7 +259,7 @@ if($mybb->input['action'] == "delete")
 		admin_redirect("index.php?module=config-attachment_types");
 	}
 
-	$query = $db->simple_select("attachtypes", "*", "atid='".$mybb->get_input('atid', 1)."'");
+	$query = $db->simple_select("attachtypes", "*", "atid='".$mybb->get_input('atid', MyBB::INPUT_INT)."'");
 	$attachment_type = $db->fetch_array($query);
 
 	if(!$attachment_type['atid'])
@@ -319,13 +319,22 @@ if(!$mybb->input['action'])
 	{
 		// Just show default icons in ACP
 		$attachment_type['icon'] = str_replace("{theme}", "images", $attachment_type['icon']);
+		if(my_strpos($attachment_type['icon'], "p://") || substr($attachment_type['icon'], 0, 1) == "/")
+		{
+			$image = $attachment_type['icon'];
+		}
+		else
+		{
+			$image = "../".$attachment_type['icon'];
+		}
+
 		if(!$attachment_type['icon'] || $attachment_type['icon'] == "images/attachtypes/")
 		{
 			$attachment_type['icon'] = "&nbsp;";
 		}
 		else
 		{
-			$attachment_type['icon'] = "<img src=\"../{$attachment_type['icon']}\" title=\"{$attachment_type['name']}\" alt=\"\" />";
+			$attachment_type['icon'] = "<img src=\"{$image}\" title=\"{$attachment_type['name']}\" alt=\"\" />";
 		}
 
 		$table->construct_cell($attachment_type['icon'], array("width" => 1));

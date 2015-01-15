@@ -21,14 +21,14 @@ if($mybb->settings['enableattachments'] != 1)
 // Find the AID we're looking for
 if(isset($mybb->input['thumbnail']))
 {
-	$aid = $mybb->get_input('thumbnail', 1);
+	$aid = $mybb->get_input('thumbnail', MyBB::INPUT_INT);
 }
 else
 {
-	$aid = $mybb->get_input('aid', 1);
+	$aid = $mybb->get_input('aid', MyBB::INPUT_INT);
 }
 
-$pid = $mybb->get_input('pid', 1);
+$pid = $mybb->get_input('pid', MyBB::INPUT_INT);
 
 // Select attachment data from database
 if($aid)
@@ -100,6 +100,11 @@ $plugins->run_hooks("attachment_end");
 
 if(isset($mybb->input['thumbnail']))
 {
+	if(!file_exists($mybb->settings['uploadspath']."/".$attachment['thumbnail']))
+	{
+		error($lang->error_invalidattachment);
+	}
+
 	$ext = get_extension($attachment['thumbnail']);
 	switch($ext)
 	{
@@ -135,6 +140,11 @@ if(isset($mybb->input['thumbnail']))
 }
 else
 {
+	if(!file_exists($mybb->settings['uploadspath']."/".$attachment['attachname']))
+	{
+		error($lang->error_invalidattachment);
+	}
+
 	$ext = get_extension($attachment['filename']);
 
 	switch($attachment['filetype'])

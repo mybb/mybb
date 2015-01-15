@@ -230,7 +230,7 @@ class datacache
 		$this->cache[$name] = $contents;
 
 		// We ALWAYS keep a running copy in the db just incase we need it
-		$dbcontents = $db->escape_string(serialize($contents));
+		$dbcontents = $db->escape_string(my_serialize($contents));
 
 		$replace_array = array(
 			"title" => $db->escape_string($name),

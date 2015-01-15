@@ -5,11 +5,11 @@ MyBB is a free and open source, community-based, forum software project. Learn m
 
 ### MyBB 1.6
 
-The master branch contains the source code for MyBB 1.6. It contains the latest bug fixes for the 1.6 series and while you're free to use the code on your own forum to fix specific issues, support may not be provided on MyBB.com until it makes a release.
+The master branch contains the source code for MyBB 1.6. The development of 1.6 series has been stopped, only security fixes will be published until support is dropped.
 
 ### MyBB 1.8
 
-The feature branch contains the source code for MyBB 1.8. It contains a lot of development code, and is currently considered unstable. It is NOT recommended that you use MyBB 1.8 as a live forum but we encourage you to get involved with testing and contributing to help ease the development. MyBB 1.8 is not supported and won't be until it's stable.
+The feature branch contains the source code for MyBB 1.8. It contains the latest bug fixes for the 1.8 series and while you're free to use the code on your own forum to fix specific issues, support may not be provided on MyBB.com until it makes a release.
 
 ### Contribute
 

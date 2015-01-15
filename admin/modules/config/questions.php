@@ -41,7 +41,7 @@ if($mybb->input['action'] == "add")
 			$new_question = array(
 				"question" => $db->escape_string($mybb->input['question']),
 				"answer" => $db->escape_string($answer),
-				"active" => (int)$mybb->input['active']
+				"active" => $mybb->get_input('active', MyBB::INPUT_INT)
 			);
 			$qid = $db->insert_query("questions", $new_question);
 
@@ -98,7 +98,7 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "edit")
 {
-	$query = $db->simple_select("questions", "*", "qid='".(int)$mybb->input['qid']."'");
+	$query = $db->simple_select("questions", "*", "qid='".$mybb->get_input('qid', MyBB::INPUT_INT)."'");
 	$question = $db->fetch_array($query);
 
 	if(!$question['qid'])
@@ -128,7 +128,7 @@ if($mybb->input['action'] == "edit")
 			$updated_question = array(
 				"question" => $db->escape_string($mybb->input['question']),
 				"answer" => $db->escape_string($answer),
-				"active" => (int)$mybb->input['active']
+				"active" => $mybb->get_input('active', MyBB::INPUT_INT)
 			);
 
 			$plugins->run_hooks("admin_config_questions_edit_commit");
@@ -186,7 +186,7 @@ if($mybb->input['action'] == "delete")
 		admin_redirect("index.php?module=config-questions");
 	}
 
-	$query = $db->simple_select("questions", "*", "qid='".(int)$mybb->input['qid']."'");
+	$query = $db->simple_select("questions", "*", "qid='".$mybb->get_input('qid', MyBB::INPUT_INT)."'");
 	$question = $db->fetch_array($query);
 
 	if(!$question['qid'])
@@ -218,7 +218,7 @@ if($mybb->input['action'] == "delete")
 
 if($mybb->input['action'] == "disable")
 {
-	$query = $db->simple_select("questions", "*", "qid='".(int)$mybb->input['qid']."'");
+	$query = $db->simple_select("questions", "*", "qid='".$mybb->get_input('qid', MyBB::INPUT_INT)."'");
 	$question = $db->fetch_array($query);
 
 	if(!$question['qid'])
@@ -246,7 +246,7 @@ if($mybb->input['action'] == "disable")
 
 if($mybb->input['action'] == "enable")
 {
-	$query = $db->simple_select("questions", "*", "qid='".(int)$mybb->input['qid']."'");
+	$query = $db->simple_select("questions", "*", "qid='".$mybb->get_input('qid', MyBB::INPUT_INT)."'");
 	$question = $db->fetch_array($query);
 
 	if(!$question['qid'])

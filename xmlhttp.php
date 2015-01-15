@@ -70,7 +70,7 @@ if(function_exists('mb_internal_encoding') && !empty($lang->settings['charset'])
 // 1. Check cookies
 if(!$mybb->user['uid'] && !empty($mybb->cookies['mybbtheme']))
 {
-	$mybb->user['style'] = $mybb->cookies['mybbtheme'];
+	$mybb->user['style'] = (int)$mybb->cookies['mybbtheme'];
 }
 
 // 2. Load style
@@ -201,7 +201,7 @@ if($mybb->input['action'] == "get_users")
 		exit;
 	}
 
-	if($mybb->get_input('getone', 1) == 1)
+	if($mybb->get_input('getone', MyBB::INPUT_INT) == 1)
 	{
 		$limit = 1;
 	}
@@ -255,10 +255,10 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 	}
 
 	// We're editing a thread subject.
-	if($mybb->get_input('tid', 1))
+	if($mybb->get_input('tid', MyBB::INPUT_INT))
 	{
 		// Fetch the thread.
-		$thread = get_thread($mybb->get_input('tid', 1));
+		$thread = get_thread($mybb->get_input('tid', MyBB::INPUT_INT));
 		if(!$thread)
 		{
 			xmlhttp_error($lang->thread_doesnt_exist);
@@ -387,7 +387,7 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 else if($mybb->input['action'] == "edit_post")
 {
 	// Fetch the post from the database.
-	$post = get_post($mybb->get_input('pid', 1));
+	$post = get_post($mybb->get_input('pid', MyBB::INPUT_INT));
 
 	// No result, die.
 	if(!$post)
@@ -426,9 +426,9 @@ else if($mybb->input['action'] == "edit_post")
 			xmlhttp_error($lang->no_permission_edit_post);
 		}
 		// If we're past the edit time limit - don't allow editing.
-		else if($mybb->settings['edittimelimit'] != 0 && $post['dateline'] < (TIME_NOW-($mybb->settings['edittimelimit']*60)))
+		else if($mybb->usergroup['edittimelimit'] != 0 && $post['dateline'] < (TIME_NOW-($mybb->usergroup['edittimelimit']*60)))
 		{
-			$lang->edit_time_limit = $lang->sprintf($lang->edit_time_limit, $mybb->settings['edittimelimit']);
+			$lang->edit_time_limit = $lang->sprintf($lang->edit_time_limit, $mybb->usergroup['edittimelimit']);
 			xmlhttp_error($lang->edit_time_limit);
 		}
 		// User can't edit unapproved post
@@ -649,7 +649,7 @@ else if($mybb->input['action'] == "get_multiquoted")
 	// Are we loading all quoted posts or only those not in the current thread?
 	if(empty($mybb->input['load_all']))
 	{
-		$from_tid = "p.tid != '".$mybb->get_input('tid', 1)."' AND ";
+		$from_tid = "p.tid != '".$mybb->get_input('tid', MyBB::INPUT_INT)."' AND ";
 	}
 	else
 	{
@@ -725,7 +725,7 @@ else if($mybb->input['action'] == "validate_captcha")
 	$query = $db->simple_select("captcha", "imagestring", "imagehash='$imagehash'");
 	if($db->num_rows($query) == 0)
 	{
-		echo $lang->captcha_valid_not_exists;
+		echo json_encode($lang->captcha_valid_not_exists);
 		exit;
 	}
 	$imagestring = $db->fetch_field($query, 'imagestring');
@@ -750,11 +750,12 @@ else if($mybb->input['action'] == "refresh_question" && $mybb->settings['securit
 	
 	$sid = $db->escape_string($mybb->get_input('question_id'));
 	$query = $db->query("
-		SELECT q.*, s.sid
+		SELECT q.qid, s.sid
 		FROM ".TABLE_PREFIX."questionsessions s
 		LEFT JOIN ".TABLE_PREFIX."questions q ON (q.qid=s.qid)
 		WHERE q.active='1' AND s.sid='{$sid}'
 	");
+	
 	if($db->num_rows($query) == 0)
 	{
 		xmlhttp_error($lang->answer_valid_not_exists);
@@ -767,22 +768,27 @@ else if($mybb->input['action'] == "refresh_question" && $mybb->settings['securit
 	
 	require_once MYBB_ROOT."inc/functions_user.php";
 	
-	$sid = generate_question();
+	$sid = generate_question($qsession['qid']);
 	$query = $db->query("
 		SELECT q.question, s.sid
 		FROM ".TABLE_PREFIX."questionsessions s
 		LEFT JOIN ".TABLE_PREFIX."questions q ON (q.qid=s.qid)
 		WHERE q.active='1' AND s.sid='{$sid}' AND q.qid!='{$qsession['qid']}'
 	");
+	
+	$plugins->run_hooks("xmlhttp_refresh_question");
+	
 	if($db->num_rows($query) > 0)
 	{
 		$question = $db->fetch_array($query);
+		
+		echo json_encode(array("question" => htmlspecialchars_uni($question['question']), 'sid' => htmlspecialchars_uni($question['sid'])));
+		exit;
 	}
-	
-	$plugins->run_hooks("xmlhttp_refresh_question");
-
-	echo json_encode(array("question" => htmlspecialchars_uni($question['question']), 'sid' => htmlspecialchars_uni($question['sid'])));
-	exit;
+	else 
+	{
+		xmlhttp_error($lang->answer_valid_not_exists);
+	}
 }
 elseif($mybb->input['action'] == "validate_question" && $mybb->settings['securityquestion'])
 {
@@ -796,9 +802,10 @@ elseif($mybb->input['action'] == "validate_question" && $mybb->settings['securit
 		LEFT JOIN ".TABLE_PREFIX."questions q ON (q.qid=s.qid)
 		WHERE q.active='1' AND s.sid='{$sid}'
 	");
+	
 	if($db->num_rows($query) == 0)
 	{
-		echo $lang->answer_valid_not_exists;
+		echo json_encode($lang->answer_valid_not_exists);
 		exit;
 	}
 	else
@@ -873,7 +880,7 @@ else if($mybb->input['action'] == "username_availability")
 
 	if(empty($username))
 	{
-		echo $lang->banned_characters_username;
+		echo json_encode($lang->banned_characters_username);
 		exit;
 	}
 
@@ -881,14 +888,14 @@ else if($mybb->input['action'] == "username_availability")
 	$banned_username = is_banned_username($username, true);
 	if($banned_username)
 	{
-		echo $lang->banned_username;
+		echo json_encode($lang->banned_username);
 		exit;
 	}
 
 	// Check for certain characters in username (<, >, &, and slashes)
 	if(strpos($username, "<") !== false || strpos($username, ">") !== false || strpos($username, "&") !== false || my_strpos($username, "\\") !== false || strpos($username, ";") !== false || !validate_utf8_string($username, false, false))
 	{
-		echo $lang->banned_characters_username;
+		echo json_encode($lang->banned_characters_username);
 		exit;
 	}
 
@@ -941,8 +948,8 @@ else if($mybb->input['action'] == "username_exists")
 	}
 	else
 	{
-		$lang->invalid_username = htmlspecialchars_uni($lang->sprintf($lang->invalid_username, htmlspecialchars_uni($username)));
-		echo $lang->invalid_username;
+		$lang->invalid_username = $lang->sprintf($lang->invalid_username, htmlspecialchars_uni($username));
+		echo json_encode($lang->invalid_username);
 		exit;
 	}
 }

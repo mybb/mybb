@@ -8,7 +8,7 @@
  *
  */
 
-class DB_MySQLi
+class DB_MySQLi implements DB_Base
 {
 	/**
 	 * The title of this layer.

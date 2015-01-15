@@ -46,7 +46,7 @@ if($mybb->input['action'] == 'prune')
 			$is_today = true;
 			$mybb->input['older_than'] = 1;
 		}
-		$where = 'dateline < '.(TIME_NOW-((int)$mybb->input['older_than']*86400));
+		$where = 'dateline < '.(TIME_NOW-($mybb->get_input('older_than', MyBB::INPUT_INT)*86400));
 
 		// Searching for entries in a specific module
 		if($mybb->input['filter_username'])
@@ -114,7 +114,7 @@ if(!$mybb->input['action'])
 
 	$page->output_nav_tabs($sub_tabs, 'spam_logs');
 	
-	$perpage = $mybb->get_input('perpage', 1);
+	$perpage = $mybb->get_input('perpage', MyBB::INPUT_INT);
 	if(!$perpage)
 	{
 		$perpage = 20;
@@ -172,7 +172,7 @@ if(!$mybb->input['action'])
 	// Figure out if we need to display multiple pages.
 	if($mybb->input['page'] != "last")
 	{
-		$pagecnt = $mybb->get_input('page', 1);
+		$pagecnt = $mybb->get_input('page', MyBB::INPUT_INT);
 	}
 
 	$logcount = (int)$rescount;

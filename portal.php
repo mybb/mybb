@@ -51,8 +51,9 @@ if($mybb->settings['portal'] == 0)
 
 // Fetch the current URL
 $portal_url = get_current_location();
+$file_name = strtok(my_strtolower(basename($portal_url)), '?');
 
-add_breadcrumb($lang->nav_portal, "portal.php");
+add_breadcrumb($lang->nav_portal, $file_name);
 
 $plugins->run_hooks("portal_start");
 
@@ -443,7 +444,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 		$numannouncements = 10; // Default back to 10
 	}
 
-	$page = $mybb->get_input('page', 1);
+	$page = $mybb->get_input('page', MyBB::INPUT_INT);
 	$pages = $announcementcount / $numannouncements;
 	$pages = ceil($pages);
 
@@ -462,7 +463,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 		$page = 1;
 	}
 
-	$multipage = multipage($announcementcount, $numannouncements, $page, 'portal.php');
+	$multipage = multipage($announcementcount, $numannouncements, $page, $file_name);
 
 	$pids = '';
 	$tids = '';
@@ -538,9 +539,12 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 			$announcement['forumlink'] = get_forum_link($announcement['fid']);
 			$announcement['forumname'] = $forum_cache[$announcement['fid']]['name'];
 
+			$announcement['username'] = htmlspecialchars_uni($announcement['username']);
+			$announcement['threadusername'] = htmlspecialchars_uni($announcement['threadusername']);
+
 			if($announcement['uid'] == 0)
 			{
-				$profilelink = htmlspecialchars_uni($announcement['threadusername']);
+				$profilelink = $announcement['threadusername'];
 			}
 			else
 			{
@@ -556,6 +560,8 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 			{
 				$icon = $icon_cache[$announcement['icon']];
 				$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
+				$icon['path'] = htmlspecialchars_uni($icon['path']);
+				$icon['name'] = htmlspecialchars_uni($icon['name']);
 				eval("\$icon = \"".$templates->get("portal_announcement_icon")."\";");
 			}
 			else

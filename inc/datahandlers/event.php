@@ -504,7 +504,7 @@ class EventDataHandler extends DataHandler
 
 		if(isset($event['repeats']))
 		{
-			$this->event_insert_data['repeats'] = $db->escape_string(serialize($event['repeats']));
+			$this->event_insert_data['repeats'] = $db->escape_string(my_serialize($event['repeats']));
 		}
 		else
 		{
@@ -587,7 +587,7 @@ class EventDataHandler extends DataHandler
 		{
 			if(!empty($event['repeats']))
 			{
-				$event['repeats'] = serialize($event['repeats']);
+				$event['repeats'] = my_serialize($event['repeats']);
 			}
 			$this->event_update_data['repeats'] = $db->escape_string($event['repeats']);
 		}

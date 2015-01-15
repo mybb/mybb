@@ -43,8 +43,8 @@ function task_versioncheck($task)
 	$parser = new XMLParser($contents);
 	$tree = $parser->get_tree();
 
-	$latest_code = $tree['mybb']['version_code']['value'];
-	$latest_version = "<strong>".$tree['mybb']['latest_version']['value']."</strong> (".$latest_code.")";
+	$latest_code = (int)$tree['mybb']['version_code']['value'];
+	$latest_version = "<strong>".htmlspecialchars_uni($tree['mybb']['latest_version']['value'])."</strong> (".$latest_code.")";
 	if($latest_code > $mybb->version_code)
 	{
 		$latest_version = "<span style=\"color: #C00;\">".$latest_version."</span>";
@@ -65,20 +65,32 @@ function task_versioncheck($task)
 
 	$updated_cache['news'] = array();
 
+	require_once MYBB_ROOT . '/inc/class_parser.php';
+	$post_parser = new postParser();
+
 	if($feed_parser->error == '')
 	{
 		foreach($feed_parser->items as $item)
 		{
-			if(isset($updated_cache['news'][2]))
+			if (isset($updated_cache['news'][2]))
 			{
 				break;
 			}
 
+			$description = $item['description'];
+
+			$description = $post_parser->parse_message($description, array(
+					'allow_html' => true,
+				)
+			);
+
+			$description = preg_replace('#<img(.*)/>#', '', $description);
+
 			$updated_cache['news'][] = array(
-				'title' => $item['title'],
-				'description' => preg_replace('#<img(.*)/>#', '', $item['description']),
-				'link' => $item['link'],
-				'author' => $item['author'],
+				'title' => htmlspecialchars_uni($item['title']),
+				'description' => $description,
+				'link' => htmlspecialchars_uni($item['link']),
+				'author' => htmlspecialchars_uni($item['author']),
 				'dateline' => $item['date_timestamp']
 			);
 		}

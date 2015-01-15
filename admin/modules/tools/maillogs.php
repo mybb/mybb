@@ -56,7 +56,7 @@ if($mybb->input['action'] == "prune" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "view")
 {
-	$query = $db->simple_select("maillogs", "*", "mid='".$mybb->get_input('mid', 1)."'");
+	$query = $db->simple_select("maillogs", "*", "mid='".$mybb->get_input('mid', MyBB::INPUT_INT)."'");
 	$log = $db->fetch_array($query);
 
 	if(!$log['mid'])
@@ -133,7 +133,7 @@ if(!$mybb->input['action'])
 
 	if($mybb->input['page'] && $mybb->input['page'] > 1)
 	{
-		$mybb->input['page'] = $mybb->get_input('page', 1);
+		$mybb->input['page'] = $mybb->get_input('page', MyBB::INPUT_INT);
 		$start = ($mybb->input['page']*$per_page)-$per_page;
 	}
 	else
@@ -168,11 +168,11 @@ if(!$mybb->input['action'])
 		}
 	}
 
-	$touid = (int)$mybb->input['touid'];
+	$touid = $mybb->get_input('touid', MyBB::INPUT_INT);
 	$toname = $db->escape_string($mybb->input['toname']);
 	$toemail = $db->escape_string_like($mybb->input['toemail']);
 
-	$fromuid = (int)$mybb->input['fromuid'];
+	$fromuid = $mybb->get_input('fromuid', MyBB::INPUT_INT);
 	$fromname = $db->escape_string($mybb->input['fromname']);
 	$fromemail = $db->escape_string_like($mybb->input['fromemail']);
 
@@ -196,8 +196,7 @@ if(!$mybb->input['action'])
 	}
 	else if($mybb->input['fromname'])
 	{
-		$query = $db->simple_select("users", "uid, username", "LOWER(username) = '{$fromname}'");
-		$user = $db->fetch_array($query);
+		$user = get_user_by_username($mybb->input['fromname'], array('fields' => 'uid, username'));
 		$from_filter = $user['username'];
 
 		if(!$user['uid'])
@@ -270,7 +269,7 @@ if(!$mybb->input['action'])
 	$form = new Form("index.php?module=tools-maillogs&amp;action=prune", "post");
 
 	$table = new Table;
-	$table->construct_header($form->generate_check_box("checkall", 1, '', array('class' => 'checkall')));
+	$table->construct_header($form->generate_check_box("allbox", 1, '', array('class' => 'checkall')));
 	$table->construct_header($lang->subject, array("colspan" => 2));
 	$table->construct_header($lang->from, array("class" => "align_center", "width" => "20%"));
 	$table->construct_header($lang->to, array("class" => "align_center", "width" => "20%"));

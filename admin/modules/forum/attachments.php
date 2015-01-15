@@ -45,7 +45,7 @@ if($mybb->input['action'] == "delete")
 
 	if(!is_array($mybb->input['aids']))
 	{
-		$mybb->input['aids'] = array((int)$mybb->input['aid']);
+		$mybb->input['aids'] = array($mybb->get_input('aid', MyBB::INPUT_INT));
 	}
 	else
 	{
@@ -456,17 +456,17 @@ if($mybb->input['action'] == "orphans")
 		}
 		if(is_array($missing_attachment_files) && count($missing_attachment_files) > 0)
 		{
-			$missing_attachment_files = serialize($missing_attachment_files);
+			$missing_attachment_files = my_serialize($missing_attachment_files);
 			echo $form->generate_hidden_field("missing_attachment_files", $missing_attachment_files);
 		}
 		if(is_array($missing_threads) && count($missing_threads) > 0)
 		{
-			$missing_threads = serialize($missing_threads);
+			$missing_threads = my_serialize($missing_threads);
 			echo $form->generate_hidden_field("missing_threads", $missing_threads);
 		}
 		if(is_array($incomplete_attachments) && count($incomplete_attachments) > 0)
 		{
-			$incomplete_attachments = serialize($incomplete_attachments);
+			$incomplete_attachments = my_serialize($incomplete_attachments);
 			echo $form->generate_hidden_field("incomplete_attachments", $incomplete_attachments);
 		}
 		$form->end();
@@ -586,7 +586,7 @@ if($mybb->input['action'] == "orphans")
 		// Scan complete
 		if(is_array($bad_attachments) && count($bad_attachments) > 0)
 		{
-			$bad_attachments = serialize($bad_attachments);
+			$bad_attachments = my_serialize($bad_attachments);
 			echo $form->generate_hidden_field("bad_attachments", $bad_attachments);
 		}
 		$form->end();
@@ -718,13 +718,13 @@ if(!$mybb->input['action'])
 		// Now we fetch the results if there were 100% no errors
 		if(!$errors)
 		{
-			$mybb->input['perpage'] = $mybb->get_input('perpage', 1);
+			$mybb->input['perpage'] = $mybb->get_input('perpage', MyBB::INPUT_INT);
 			if(!$mybb->input['perpage'])
 			{
 				$mybb->input['perpage'] = 20;
 			}
 
-			$mybb->input['page'] = $mybb->get_input('page', 1);
+			$mybb->input['page'] = $mybb->get_input('page', MyBB::INPUT_INT);
 			if($mybb->input['page'])
 			{
 				$start = ($mybb->input['page'] - 1) * $mybb->input['perpage'];

@@ -26,11 +26,7 @@ $min_angle = -30;
 $max_angle = 30;
 
 $mybb->input['imagehash'] = $mybb->get_input('imagehash');
-if($mybb->input['imagehash'] == "test")
-{
-	$imagestring = "MyBB";
-}
-elseif($mybb->input['imagehash'])
+if($mybb->input['imagehash'])
 {
 	$query = $db->simple_select("captcha", "*", "imagehash='".$db->escape_string($mybb->get_input('imagehash'))."' AND used=0", array("limit" => 1));
 	$regimage = $db->fetch_array($query);

@@ -122,7 +122,7 @@ else
 	$order_check[$mybb->input['order']] = " checked=\"checked\"";
 
 	// Incoming results per page?
-	$mybb->input['perpage'] = $mybb->get_input('perpage', 1);
+	$mybb->input['perpage'] = $mybb->get_input('perpage', MyBB::INPUT_INT);
 	if($mybb->input['perpage'] > 0 && $mybb->input['perpage'] <= 500)
 	{
 		$per_page = $mybb->input['perpage'];
@@ -267,7 +267,7 @@ else
 	$query = $db->simple_select("users u", "COUNT(*) AS users", "{$search_query}");
 	$num_users = $db->fetch_field($query, "users");
 
-	$page = $mybb->get_input('page', 1);
+	$page = $mybb->get_input('page', MyBB::INPUT_INT);
 	if($page && $page > 0)
 	{
 		$start = ($page - 1) * $per_page;

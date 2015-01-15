@@ -34,7 +34,7 @@ if(!$mybb->input['action'])
 			"permissions" => $db->escape_string($adminopts['permissions']),
 			"defaultviews" => $db->escape_string($adminopts['defaultviews']),
 			"uid" => $mybb->user['uid'],
-			"codepress" => (int)$mybb->input['codepress'], // It's actually CodeMirror but for compatibility purposes lets leave it codepress
+			"codepress" => $mybb->get_input('codepress', MyBB::INPUT_INT), // It's actually CodeMirror but for compatibility purposes lets leave it codepress
 		);
 
 		$db->replace_query("adminoptions", $sqlarray, "uid");
@@ -73,7 +73,7 @@ if(!$mybb->input['action'])
 	ksort($folders);
 	$setting_code = $form->generate_select_box("cpstyle", $folders, $admin_options['cpstyle']);
 
-	$languages = $lang->get_languages(1);
+	$languages = array_merge(array('' => $lang->use_default), $lang->get_languages(1));
 	$language_code = $form->generate_select_box("cplanguage", $languages, $admin_options['cplanguage']);
 
 	$table = new Table;

@@ -2234,8 +2234,8 @@ function upgrade30_updatetheme()
 	}
 
 	$update_array = array(
-		"properties" => $db->escape_string(serialize($properties)),
-		"stylesheets" => $db->escape_string(serialize($stylesheets))
+		"properties" => $db->escape_string(my_serialize($properties)),
+		"stylesheets" => $db->escape_string(my_serialize($stylesheets))
 	);
 
 	$db->update_query("themes", $update_array, "tid = '1'");
@@ -2291,7 +2291,7 @@ function upgrade30_updatetheme()
 			}
 		}
 
-		$db->update_query("themes", array("properties" => $db->escape_string(serialize($properties))), "tid='{$theme['tid']}'");
+		$db->update_query("themes", array("properties" => $db->escape_string(my_serialize($properties))), "tid='{$theme['tid']}'");
 	}
 
 	$contents .= "done.</p>";
@@ -2366,8 +2366,8 @@ function upgrade30_updatetheme()
 			}
 	
 			$update_array = array(
-				"properties" => $db->escape_string(serialize($properties)),
-				"stylesheets" => $db->escape_string(serialize($stylesheets))
+				"properties" => $db->escape_string(my_serialize($properties)),
+				"stylesheets" => $db->escape_string(my_serialize($stylesheets))
 			);
 	
 			$db->update_query("themes", $update_array, "tid = '2'");

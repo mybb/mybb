@@ -476,7 +476,7 @@ if($mybb->input['action'] == "edit")
 
 			$return_month = (int)substr($mybb->input['away_month'], 0, 2);
 			$return_day = (int)substr($mybb->input['away_day'], 0, 2);
-			$return_year = min((int)$mybb->input['away_year'], 9999);
+			$return_year = min($mybb->get_input('away_year', MyBB::INPUT_INT), 9999);
 
 			// Check if return date is after the away date.
 			$returntimestamp = gmmktime(0, 0, 0, $return_month, $return_day, $return_year);
@@ -522,8 +522,8 @@ if($mybb->input['action'] == "edit")
 			),
 			"style" => $mybb->input['style'],
 			"signature" => $mybb->input['signature'],
-			"dateformat" => (int)$mybb->input['dateformat'],
-			"timeformat" => (int)$mybb->input['timeformat'],
+			"dateformat" => $mybb->get_input('dateformat', MyBB::INPUT_INT),
+			"timeformat" => $mybb->get_input('timeformat', MyBB::INPUT_INT),
 			"language" => $mybb->input['language'],
 			"usernotes" => $mybb->input['usernotes'],
 			"away" => array(
@@ -572,12 +572,12 @@ if($mybb->input['action'] == "edit")
 
 		if($mybb->settings['usertppoptions'])
 		{
-			$updated_user['options']['tpp'] = (int)$mybb->input['tpp'];
+			$updated_user['options']['tpp'] = $mybb->get_input('tpp', MyBB::INPUT_INT);
 		}
 
 		if($mybb->settings['userpppoptions'])
 		{
-			$updated_user['options']['ppp'] = (int)$mybb->input['ppp'];
+			$updated_user['options']['ppp'] = $mybb->get_input('ppp', MyBB::INPUT_INT);
 		}
 
 		// Set the data of the user in the datahandler.
@@ -868,7 +868,7 @@ if($mybb->input['action'] == "edit")
 	{
 		$mybb->input['bday'][0] = $mybb->input['bday1'];
 		$mybb->input['bday'][1] = $mybb->input['bday2'];
-		$mybb->input['bday'][2] = (int)$mybb->input['bday3'];
+		$mybb->input['bday'][2] = $mybb->get_input('bday3', MyBB::INPUT_INT);
 	}
 	else
 	{
@@ -882,7 +882,7 @@ if($mybb->input['action'] == "edit")
 
 	if($mybb->input['away_day'] || $mybb->input['away_month'] || $mybb->input['away_year'])
 	{
-		$mybb->input['away_year'] = (int)$mybb->input['away_year'];
+		$mybb->input['away_year'] = $mybb->get_input('away_year', MyBB::INPUT_INT);
 	}
 	else
 	{
@@ -1371,8 +1371,24 @@ EOF;
 		else
 		{
 			// There's a limit to the suspension!
-			$expired = my_date('relative', $user['suspendsigtime']);
-			$lang->suspend_expire_info = $lang->sprintf($lang->suspend_expire_info, $expired);
+			$remaining = $user['suspendsigtime']-TIME_NOW;
+			$expired = nice_time($remaining, array('seconds' => false));
+
+			$color = 'inherit';
+			if($remaining < 3600)
+			{
+				$color = 'red';
+			}
+			elseif($remaining < 86400)
+			{
+				$color = 'maroon';
+			}
+			elseif($remaining < 604800)
+			{
+				$color = 'green';
+			}
+
+			$lang->suspend_expire_info = $lang->sprintf($lang->suspend_expire_info, $expired, $color);
 		}
 		$user_suspend_info = '
 				<tr>
@@ -1526,8 +1542,24 @@ EOF;
 		$mybb->input['moderateposting'] = 1;
 		if($user['moderationtime'] != 0)
 		{
-			$expired = my_date('relative', $user['moderationtime']);
-			$existing_info = $lang->sprintf($lang->moderate_length, $expired);
+			$remaining = $user['moderationtime']-TIME_NOW;
+			$expired = nice_time($remaining, array('seconds' => false));
+
+			$color = 'inherit';
+			if($remaining < 3600)
+			{
+				$color = 'red';
+			}
+			elseif($remaining < 86400)
+			{
+				$color = 'maroon';
+			}
+			elseif($remaining < 604800)
+			{
+				$color = 'green';
+			}
+
+			$existing_info = $lang->sprintf($lang->moderate_length, $expired, $color);
 		}
 		else
 		{
@@ -1554,8 +1586,24 @@ EOF;
 		}
 		else
 		{
-			$suspost_date = my_date('relative', $user['suspensiontime']);
-			$existing_info = $lang->sprintf($lang->suspend_length, $suspost_date);
+			$remaining = $user['suspensiontime']-TIME_NOW;
+			$suspost_date = nice_time($remaining, array('seconds' => false));
+
+			$color = 'inherit';
+			if($remaining < 3600)
+			{
+				$color = 'red';
+			}
+			elseif($remaining < 86400)
+			{
+				$color = 'maroon';
+			}
+			elseif($remaining < 604800)
+			{
+				$color = 'green';
+			}
+
+			$existing_info = $lang->sprintf($lang->suspend_length, $suspost_date, $color);
 		}
 	}
 
@@ -1772,8 +1820,8 @@ if($mybb->input['action'] == "ipaddresses")
 		$user['lastip'] = my_inet_ntop($db->unescape_binary($user['lastip']));
 		$popup = new PopupMenu("user_last", $lang->options);
 		$popup->add_item($lang->show_users_regged_with_ip,
-			"index.php?module=user-users&amp;action=search&amp;results=1&amp;conditions=".urlencode(serialize(array("regip" => $user['lastip']))));
-		$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(serialize(array("postip" => $user['lastip']))));
+			"index.php?module=user-users&amp;action=search&amp;results=1&amp;conditions=".urlencode(my_serialize(array("regip" => $user['lastip']))));
+		$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(my_serialize(array("postip" => $user['lastip']))));
 		$popup->add_item($lang->info_on_ip, "index.php?module=user-users&amp;action=iplookup&ipaddress={$user['lastip']}", "MyBB.popupWindow('index.php?module=user-users&amp;action=iplookup&ipaddress={$user['lastip']}', null, true); return false;");
 		$popup->add_item($lang->ban_ip, "index.php?module=config-banning&amp;filter={$user['lastip']}");
 		$controls = $popup->fetch();
@@ -1791,8 +1839,8 @@ if($mybb->input['action'] == "ipaddresses")
 	{
 		$user['regip'] = my_inet_ntop($db->unescape_binary($user['regip']));
 		$popup = new PopupMenu("user_reg", $lang->options);
-		$popup->add_item($lang->show_users_regged_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(serialize(array("regip" => $user['regip']))));
-		$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(serialize(array("postip" => $user['regip']))));
+		$popup->add_item($lang->show_users_regged_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(my_serialize(array("regip" => $user['regip']))));
+		$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(my_serialize(array("postip" => $user['regip']))));
 		$popup->add_item($lang->info_on_ip, "index.php?module=user-users&amp;action=iplookup&ipaddress={$user['regip']}", "MyBB.popupWindow('index.php?module=user-users&amp;action=iplookup&ipaddress={$user['regip']}', null, true); return false;");
 		$popup->add_item($lang->ban_ip, "index.php?module=config-banning&amp;filter={$user['regip']}");
 		$controls = $popup->fetch();
@@ -1809,8 +1857,8 @@ if($mybb->input['action'] == "ipaddresses")
 		++$counter;
 		$ip['ipaddress'] = my_inet_ntop($db->unescape_binary($ip['ipaddress']));
 		$popup = new PopupMenu("id_{$counter}", $lang->options);
-		$popup->add_item($lang->show_users_regged_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(serialize(array("regip" => $ip['ipaddress']))));
-		$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(serialize(array("postip" => $ip['ipaddress']))));
+		$popup->add_item($lang->show_users_regged_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(my_serialize(array("regip" => $ip['ipaddress']))));
+		$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(my_serialize(array("postip" => $ip['ipaddress']))));
 		$popup->add_item($lang->info_on_ip, "index.php?module=user-users&amp;action=iplookup&ipaddress={$ip['ipaddress']}", "MyBB.popupWindow('index.php?module=user-users&amp;action=iplookup&ipaddress={$ip['ipaddress']}', null, true); return false;");
 		$popup->add_item($lang->ban_ip, "index.php?module=config-banning&amp;filter={$ip['ipaddress']}");
 		$controls = $popup->fetch();
@@ -2160,7 +2208,7 @@ if($mybb->input['action'] == "search")
 		// Build view options from incoming search options
 		if($mybb->input['vid'])
 		{
-			$query = $db->simple_select("adminviews", "*", "vid='".$mybb->get_input('vid', 1)."'");
+			$query = $db->simple_select("adminviews", "*", "vid='".$mybb->get_input('vid', MyBB::INPUT_INT)."'");
 			$admin_view = $db->fetch_array($query);
 			// View does not exist or this view is private and does not belong to the current user
 			if(!$admin_view['vid'] || ($admin_view['visibility'] == 1 && $admin_view['uid'] != $mybb->user['uid']))
@@ -2207,7 +2255,7 @@ if($mybb->input['action'] == "search")
 			$admin_view['sortby'] = $mybb->input['sortby'];
 		}
 
-		if($mybb->get_input('perpage', 1))
+		if($mybb->get_input('perpage', MyBB::INPUT_INT))
 		{
 			$admin_view['perpage'] = $mybb->input['perpage'];
 		}
@@ -2500,7 +2548,7 @@ if($mybb->input['action'] == "inline_edit")
 							// Not currently banned - insert the ban
 							$insert_array = array(
 								'uid' => $user['uid'],
-								'gid' => (int)$mybb->input['usergroup'],
+								'gid' => $mybb->get_input('usergroup', MyBB::INPUT_INT),
 								'oldgroup' => $user['usergroup'],
 								'oldadditionalgroups' => $user['additionalgroups'],
 								'olddisplaygroup' => $user['displaygroup'],
@@ -2617,9 +2665,9 @@ if($mybb->input['action'] == "inline_edit")
 						$errors[] = $lang->multi_selected_dates;
 					}
 
-					$day = (int)$mybb->input['day'];
-					$month = (int)$mybb->input['month'];
-					$year = (int)$mybb->input['year'];
+					$day = $mybb->get_input('day', MyBB::INPUT_INT);
+					$month = $mybb->get_input('month', MyBB::INPUT_INT);
+					$year = $mybb->get_input('year', MyBB::INPUT_INT);
 
 					// Selected a date - check if the date the user entered is valid
 					if($mybb->input['day'] || $mybb->input['month'] || $mybb->input['year'])
@@ -2632,7 +2680,7 @@ if($mybb->input['action'] == "inline_edit")
 
 						// Check the month
 						$months = get_bdays($year);
-						if($day > $months[$month]-1)
+						if($day > $months[$month-1])
 						{
 							$errors[] = $lang->incorrect_date;
 						}
@@ -2858,9 +2906,9 @@ if($mybb->input['action'] == "inline_edit")
 
 					// Create an update array
 					$update_array = array(
-						"usergroup" => (int)$mybb->input['usergroup'],
+						"usergroup" => $mybb->get_input('usergroup', MyBB::INPUT_INT),
 						"additionalgroups" => $additionalgroups,
-						"displaygroup" => (int)$mybb->input['displaygroup']
+						"displaygroup" => $mybb->get_input('displaygroup', MyBB::INPUT_INT)
 					);
 
 					// Do the usergroup update for all those selected
@@ -2966,7 +3014,7 @@ if(!$mybb->input['action'])
 		// Showing a specific view
 		if(isset($mybb->input['vid']))
 		{
-			$query = $db->simple_select("adminviews", "*", "vid='".$mybb->get_input('vid', 1)."'");
+			$query = $db->simple_select("adminviews", "*", "vid='".$mybb->get_input('vid', MyBB::INPUT_INT)."'");
 			$admin_view = $db->fetch_array($query);
 			// View does not exist or this view is private and does not belong to the current user
 			if(!$admin_view['vid'] || ($admin_view['visibility'] == 1 && $admin_view['uid'] != $mybb->user['uid']))
@@ -3380,7 +3428,7 @@ function build_users_view($view)
 		}
 		else
 		{
-			$mybb->input['page'] = $mybb->get_input('page', 1);
+			$mybb->input['page'] = $mybb->get_input('page', MyBB::INPUT_INT);
 		}
 
 		if($mybb->input['page'])
@@ -3565,7 +3613,7 @@ function build_users_view($view)
 	$switch_url = $view['url'];
 	if($mybb->input['page'] > 0)
 	{
-		$switch_url .= "&amp;page=".$mybb->get_input('page', 1);
+		$switch_url .= "&amp;page=".$mybb->get_input('page', MyBB::INPUT_INT);
 	}
 	if($view['view_type'] != "card")
 	{

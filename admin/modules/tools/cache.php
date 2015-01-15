@@ -39,7 +39,7 @@ if($mybb->input['action'] == 'view')
 
 		$cacheitem = array(
 			'title'	=> 'settings',
-			'cache'	=> serialize($cachedsettings)
+			'cache'	=> my_serialize($cachedsettings)
 		);
 	}
 	else
@@ -264,7 +264,7 @@ if(!$mybb->input['action'])
 	}
 
 	$table->construct_cell("<strong><a href=\"index.php?module=tools-cache&amp;action=view&amp;title=settings\">settings</a></strong>");
-	$table->construct_cell(get_friendly_size(strlen(serialize($cachedsettings))), array("class" => "align_center"));
+	$table->construct_cell(get_friendly_size(strlen(my_serialize($cachedsettings))), array("class" => "align_center"));
 	$table->construct_cell("<a href=\"index.php?module=tools-cache&amp;action=reload&amp;title=settings&amp;my_post_key={$mybb->post_code}\">".$lang->reload_cache."</a>", array("class" => "align_center"));
 
 	$table->construct_row();
