@@ -4041,12 +4041,7 @@ function get_attachment_icon($ext)
  */
 function get_unviewable_forums($only_readable_threads=false)
 {
-	global $forum_cache, $permissioncache, $mybb, $unviewable, $templates, $forumpass;
-
-	if(!isset($permissions))
-	{
-		$permissions = $mybb->usergroup;
-	}
+	global $forum_cache, $permissioncache, $mybb;
 
 	if(!is_array($forum_cache))
 	{
@@ -4058,8 +4053,7 @@ function get_unviewable_forums($only_readable_threads=false)
 		$permissioncache = forum_permissions();
 	}
 
-	$unviewableforums = '';
-	$password_forums = array();
+	$password_forums = $unviewable = array();
 	foreach($forum_cache as $fid => $forum)
 	{
 		if($permissioncache[$forum['fid']])
@@ -4097,19 +4091,13 @@ function get_unviewable_forums($only_readable_threads=false)
 
 		if($perms['canview'] == 0 || $pwverified == 0 || ($only_readable_threads == true && $perms['canviewthreads'] == 0))
 		{
-			if($unviewableforums)
-			{
-				$unviewableforums .= ",";
-			}
-
-			$unviewableforums .= "'".$forum['fid']."'";
+			$unviewable[] = (int)$forum['fid'];
 		}
 	}
-
-	if(isset($unviewableforums))
-	{
-		return $unviewableforums;
-	}
+	
+	$unviewableforums = implode(',', $unviewable);
+	
+	return $unviewableforums;
 }
 
 /**
@@ -6082,7 +6070,7 @@ function get_post($pid)
  */
 function get_inactive_forums()
 {
-	global $forum_cache, $cache, $inactiveforums;
+	global $forum_cache, $cache;
 
 	if(!$forum_cache)
 	{
@@ -6095,16 +6083,17 @@ function get_inactive_forums()
 	{
 		if($forum['active'] == 0)
 		{
-			$inactive[] = $fid;
+			$inactive[] = (int)$fid;
 			foreach($forum_cache as $fid1 => $forum1)
 			{
 				if(my_strpos(",".$forum1['parentlist'].",", ",".$fid.",") !== false && !in_array($fid1, $inactive))
 				{
-					$inactive[] = $fid1;
+					$inactive[] = (int)$fid1;
 				}
 			}
 		}
 	}
+	
 	$inactiveforums = implode(",", $inactive);
 
 	return $inactiveforums;
