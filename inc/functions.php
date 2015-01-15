@@ -1384,6 +1384,7 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 
 	$current_permissions = array();
 	$only_view_own_threads = 1;
+	$only_reply_own_threads = 1;
 
 	foreach($groups as $gid)
 	{
@@ -1427,6 +1428,11 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 			{
 				$only_view_own_threads = 0;
 			}
+
+			if($level_permissions["canpostreplys"] && empty($level_permissions["canonlyreplyownthreads"]))
+			{
+				$only_reply_own_threads = 0;
+			}
 		}
 	}
 
@@ -1434,6 +1440,12 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 	if($only_view_own_threads == 0)
 	{
 		$current_permissions["canonlyviewownthreads"] = 0;
+	}
+
+	// Figure out if we can reply more than our own threads
+	if($only_reply_own_threads == 0)
+	{
+		$current_permissions["canonlyreplyownthreads"] = 0;
 	}
 
 	if(count($current_permissions) == 0)
