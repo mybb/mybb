@@ -623,7 +623,7 @@ class DB_MySQL
 	}
 
 	/**
-	 * Lists all functions in the database.
+	 * Lists all tables in the database.
 	 *
 	 * @param string The database name.
 	 * @param string Prefix of the table (optional)

@@ -1198,7 +1198,7 @@ function user_permissions($uid=0)
 }
 
 /**
- * Fetch the usergroup permissions for a specic group or series of groups combined
+ * Fetch the usergroup permissions for a specific group or series of groups combined
  *
  * @param mixed A list of groups (Can be a single integer, or a list of groups separated by a comma)
  * @return array Array of permissions generated for the groups
@@ -1214,11 +1214,12 @@ function usergroup_permissions($gid=0)
 
 	$groups = explode(",", $gid);
 
-
 	if(count($groups) == 1)
 	{
 		return $groupscache[$gid];
 	}
+	
+	$usergroup = array();
 
 	foreach($groups as $gid)
 	{
