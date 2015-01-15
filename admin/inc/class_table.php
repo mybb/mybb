@@ -36,15 +36,6 @@ class DefaultTable
 	 */
 	function construct_cell($data, $extra=array())
 	{
-		foreach(array('class', 'style') as $field)
-		{
-			// Common-used fields
-			if(!isset($extra[$field]))
-			{
-				$extra[$field] = '';
-			}
-		}
-
 		$this->_cells[] = array("data" => $data, "extra" => $extra);
 	}
 
@@ -58,7 +49,7 @@ class DefaultTable
 		$i = 1;
 		$cells = '';
 
-		foreach(array('class', 'style', 'id', 'rowspan', 'width') as $field)
+		foreach(array('class', 'style', 'rowspan', 'width') as $field)
 		{
 			// Common-used fields
 			if(!isset($extra[$field]))
@@ -258,7 +249,7 @@ class DefaultTable
 		foreach($this->_rows as $key => $table_row)
 		{
 			$table .= "\t\t<tr";
-			if($table_row['extra']['id'])
+			if(isset($table_row['extra']['id']))
 			{
 				$table .= " id=\"{$table_row['extra']['id']}\"";
 			}
