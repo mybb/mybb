@@ -48,7 +48,9 @@ function upgrade32_dbchanges()
 
 	// delete forumpermissions belonging to a deleted forum
 	$db->delete_query("forumpermissions", "fid NOT IN(SELECT fid FROM {$db->table_prefix}forums)");
-	
+
+	$db->update_query("settings", array('optionscode' => 'select\r\n0=No CAPTCHA\r\n1=MyBB Default CAPTCHA\r\n2=reCAPTCHA\r\n3=Are You a Human\r\n4=NoCAPTCHA reCAPTCHA'), "name='captchaimage'");
+
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("32_done");
 }
