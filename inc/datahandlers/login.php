@@ -237,7 +237,10 @@ class LoginDataHandler extends DataHandler
 
 		$plugins->run_hooks('datahandler_login_validate_start', $this);
 
-		$this->verify_attempts($mybb->settings['captchaimage']);
+		if(!defined(‘IN_ADMINCP’))
+		{
+			$this->verify_attempts($mybb->settings['captchaimage']);
+		}
 
 		if(array_key_exists('username', $user))
 		{
