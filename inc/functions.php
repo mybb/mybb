@@ -7012,6 +7012,13 @@ function fetch_ip_range($ipaddress)
 		else
 		{
 			// IPv4
+			$ip_bits = count(explode('.', $ipaddress));
+			if($ip_bits < 4)
+			{
+				// Support for 127.0.*
+				$replacement = str_repeat('.*', 4-$ip_bits);
+				$ipaddress = substr_replace($ipaddress, $replacement, strrpos($ipaddress, '*')+1, 0);
+			}
 			$upper = str_replace('*', '255', $ipaddress);
 			$lower = str_replace('*', '0', $ipaddress);
 		}
