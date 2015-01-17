@@ -36,15 +36,6 @@ class DefaultTable
 	 */
 	function construct_cell($data, $extra=array())
 	{
-		foreach(array('class', 'style', 'id') as $field)
-		{
-			// Common-used fields
-			if(!isset($extra[$field]))
-			{
-				$extra[$field] = '';
-			}
-		}
-
 		$this->_cells[] = array("data" => $data, "extra" => $extra);
 	}
 
@@ -58,19 +49,16 @@ class DefaultTable
 		$i = 1;
 		$cells = '';
 
-		foreach(array('class', 'style', 'id', 'rowspan', 'width') as $field)
-		{
-			// Common-used fields
-			if(!isset($extra[$field]))
-			{
-				$extra[$field] = '';
-			}
-		}
-
 		// We construct individual cells here
 		foreach($this->_cells as $key => $cell)
 		{
 			$cells .= "\t\t\t<td";
+			
+			if(!isset($cell['extra']['class']))
+			{
+				$cell['extra']['class'] = '';
+			}
+
 			if($key == 0)
 			{
 				$cell['extra']['class'] .= " first";
@@ -85,7 +73,7 @@ class DefaultTable
 				$i = 0;
 			}
 			$i++;
-			if(isset($cell['extra']['class']))
+			if($cell['extra']['class'])
 			{
 				$cells .= " class=\"".trim($cell['extra']['class'])."\"";
 			}
@@ -258,10 +246,16 @@ class DefaultTable
 		foreach($this->_rows as $key => $table_row)
 		{
 			$table .= "\t\t<tr";
-			if($table_row['extra']['id'])
+			if(isset($table_row['extra']['id']))
 			{
 				$table .= " id=\"{$table_row['extra']['id']}\"";
 			}
+
+			if(!isset($table_row['extra']['class']))
+			{
+				$table_row['extra']['class'] = '';
+			}
+
 			if($key == 0)
 			{
 				$table_row['extra']['class'] .= " first";
