@@ -1721,6 +1721,8 @@ if($mybb->input['action'] == "delete")
 			admin_redirect("index.php?module=user-users");
 		}
 
+		$cache->update_awaitingactivation();
+
 		$plugins->run_hooks("admin_user_users_delete_commit_end");
 
 		log_admin_action($user['uid'], $user['username']);
@@ -2094,6 +2096,8 @@ if($mybb->input['action'] == "merge")
 			}
 
 			$plugins->run_hooks("admin_user_users_merge_commit");
+
+			$cache->update_awaitingactivation();
 
 			// Log admin action
 			log_admin_action($source_user['uid'], $source_user['username'], $destination_user['uid'], $destination_user['username']);
@@ -2648,6 +2652,9 @@ if($mybb->input['action'] == "inline_edit")
 						log_admin_action($to_be_deleted);
 
 						$lang->users_deleted = $lang->sprintf($lang->users_deleted, $to_be_deleted);
+
+						$cache->update_awaitingactivation();
+
 						flash_message($lang->users_deleted, 'success');
 						admin_redirect("index.php?module=user-users".$vid_url);
 					}
