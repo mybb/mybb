@@ -48,7 +48,7 @@ function task_userpruning($task)
 		$usergroups = $db->escape_string(implode(',', $in_usergroups));
 
 		$query = $db->simple_select('users', 'uid', "regdate<={$regdate} AND postnum<={$prunepostcount} AND usergroup IN({$usergroups})");
-		while($uid = (int)$db->fetch_field($query, 'uid'))
+		while($uid = $db->fetch_field($query, 'uid'))
 		{
 			$users[$uid] = $uid;
 		}
