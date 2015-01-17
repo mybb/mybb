@@ -12402,8 +12402,8 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
-		<template name="usercp_forumsubscriptions_forum" version="1800"><![CDATA[<tr>
-<td class="trow1" align="center" valign="top" width="1"><img src="{$theme['imgdir']}/{$folder}.png" valign="top" /></td>
+		<template name="usercp_forumsubscriptions_forum" version="1805"><![CDATA[<tr>
+<td class="trow1" align="center" valign="top" width="1"><span class="forum_status forum_{$lightbulb['folder']}" title="{$lightbulb['altonoff']}"></span></td>
 <td class="trow1" valign="top">
 <strong><a href="{$forum_url}">{$forum['name']}</a></strong><br /><span class="smalltext"><a href="usercp2.php?action=removesubscription&amp;type=forum&amp;fid={$forum['fid']}&amp;my_post_key={$mybb->post_code}">{$lang->unsubscribe}</a> | <a href="newthread.php?fid={$forum['fid']}">{$lang->new_thread}</a></span></td>
 <td class="trow2" valign="top" style="white-space: nowrap; text-align: center;">{$posts}</td>
