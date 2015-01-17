@@ -23,7 +23,7 @@ function task_userpruning($task)
 		$in_usergroups = array();
 		$users = array();
 
-		$usergroups = $cache->read("usergroups");
+		$usergroups = $cache->read('usergroups');
 		foreach($usergroups as $gid => $usergroup)
 		{
 			// Exclude admin, moderators, super moderators, banned
@@ -43,8 +43,8 @@ function task_userpruning($task)
 
 		$prunepostcount = (int)$mybb->settings['prunepostcount'];
 
-		$regdate = TIME_NOW-((int)$mybb->settings['dayspruneregistered']*24*60*60);
-		$query = $db->simple_select("users", "uid", "regdate <= ".(int)$regdate." AND postnum <= ".$prunepostcount" AND usergroup IN(".$db->escape_string(implode(',', $in_usergroups)).")");
+		$regdate = (int)(TIME_NOW-((int)$mybb->settings['dayspruneregistered']*24*60*60));
+		$query = $db->simple_select('users', 'uid', "regdate<={$regdate} AND postnum<={$prunepostcount} AND usergroup IN({$db->escape_string(implode(',', $in_usergroups))})");
 		while($uid = (int)$db->fetch_field($query, 'uid'))
 		{
 			$users[$uid] = $uid;
@@ -55,7 +55,7 @@ function task_userpruning($task)
 			$query = $db->simple_select('posts', 'uid, COUNT(pid) as posts', "uid IN ('".implode("','", $users)."')", array('group_by' => 'uid'));
 			while($user = $db->fetch_array($query))
 			{
-				if($user['posts'] > $prunepostcount)
+				if($user['posts'] >= $prunepostcount)
 				{
 					unset($users[$user['uid']]);
 				}
