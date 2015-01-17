@@ -49,19 +49,16 @@ class DefaultTable
 		$i = 1;
 		$cells = '';
 
-		foreach(array('class', 'style', 'rowspan', 'width') as $field)
-		{
-			// Common-used fields
-			if(!isset($extra[$field]))
-			{
-				$extra[$field] = '';
-			}
-		}
-
 		// We construct individual cells here
 		foreach($this->_cells as $key => $cell)
 		{
 			$cells .= "\t\t\t<td";
+			
+			if(!isset($cell['extra']['class']))
+			{
+				$cell['extra']['class'] = '';
+			}
+
 			if($key == 0)
 			{
 				$cell['extra']['class'] .= " first";
@@ -76,7 +73,7 @@ class DefaultTable
 				$i = 0;
 			}
 			$i++;
-			if(isset($cell['extra']['class']))
+			if($cell['extra']['class'])
 			{
 				$cells .= " class=\"".trim($cell['extra']['class'])."\"";
 			}
@@ -253,6 +250,12 @@ class DefaultTable
 			{
 				$table .= " id=\"{$table_row['extra']['id']}\"";
 			}
+
+			if(!isset($table_row['extra']['class']))
+			{
+				$table_row['extra']['class'] = '';
+			}
+
 			if($key == 0)
 			{
 				$table_row['extra']['class'] .= " first";
