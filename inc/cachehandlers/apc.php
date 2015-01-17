@@ -61,7 +61,7 @@ class apcCacheHandler
 		if(apc_exists($this->unique_id."_".$name))
 		{
 			$data = apc_fetch($this->unique_id."_".$name);
-			return my_unserialize($data);
+			return unserialize($data);
 		}
 
 		return false;
@@ -76,7 +76,7 @@ class apcCacheHandler
 	 */
 	function put($name, $contents)
 	{
-		$status = apc_store($this->unique_id."_".$name, my_serialize($contents));
+		$status = apc_store($this->unique_id."_".$name, serialize($contents));
 		return $status;
 	}
 

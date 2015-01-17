@@ -66,7 +66,7 @@ class eacceleratorCacheHandler
 			return false;
 		}
 
-		return my_unserialize($data);
+		return unserialize($data);
 	}
 
 	/**
@@ -79,7 +79,7 @@ class eacceleratorCacheHandler
 	function put($name, $contents)
 	{
 		eaccelerator_lock($this->unique_id."_".$name);
-		$status = eaccelerator_put($this->unique_id."_".$name, my_serialize($contents));
+		$status = eaccelerator_put($this->unique_id."_".$name, serialize($contents));
 		eaccelerator_unlock($this->unique_id."_".$name);
 		return $status;
 	}
