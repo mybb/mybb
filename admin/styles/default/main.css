@@ -320,6 +320,7 @@ table.general tr:last-child td:last-child {
 .tfixed {
 	table-layout: fixed;
 	word-wrap: break-word;
+	width: 100%;
 }
 
 /* Page Footer */
