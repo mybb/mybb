@@ -723,7 +723,7 @@ if($mybb->settings['awactialert'] == 1 && $mybb->usergroup['cancp'] == 1)
 {
 	$awaitingusers = $cache->read('awaitingactivation');
 
-	if(isset($awaitingusers['time']) && (int)$awaitingusers['time'] < TIME_NOW + 86400)
+	if(isset($awaitingusers['time']) && $awaitingusers['time'] < TIME_NOW + 86400)
 	{
 		$cache->update_awaitingactivation();
 		$awaitingusers = $cache->read('awaitingactivation');
