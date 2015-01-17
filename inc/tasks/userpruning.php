@@ -44,7 +44,10 @@ function task_userpruning($task)
 		$prunepostcount = (int)$mybb->settings['prunepostcount'];
 
 		$regdate = TIME_NOW-((int)$mybb->settings['dayspruneregistered']*24*60*60);
-		$query = $db->simple_select('users', 'uid', "regdate<={$regdate} AND postnum<={$prunepostcount} AND usergroup IN({$db->escape_string(implode(',', $in_usergroups))})");
+
+		$usergroups = $db->escape_string(implode(',', $in_usergroups));
+
+		$query = $db->simple_select('users', 'uid', "regdate<={$regdate} AND postnum<={$prunepostcount} AND usergroup IN({$usergroups})");
 		while($uid = (int)$db->fetch_field($query, 'uid'))
 		{
 			$users[$uid] = $uid;
@@ -67,7 +70,7 @@ function task_userpruning($task)
 	if($mybb->settings['pruneunactived'] == 1)
 	{
 		$regdate = TIME_NOW-((int)$mybb->settings['dayspruneunactivated']*24*60*60);
-		$query = $db->simple_select("users", "uid", "regdate <= ".(int)$regdate." AND usergroup='5'");
+		$query = $db->simple_select("users", "uid", "regdate<={$regdate} AND usergroup='5'");
 		while($user = $db->fetch_array($query))
 		{
 			$users[$user['uid']] = $user['uid'];
