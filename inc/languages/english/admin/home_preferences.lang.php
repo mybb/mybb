@@ -22,3 +22,5 @@ $l['use_codemirror_desc'] = "This preference allows you to turn off Code Mirror 
 
 $l['success_preferences_updated'] = "The preferences have been successfully updated.";
 
+$l['use_2fa_desc'] = "Two-Factor Authentication is a method to secure your admin account. After you've enabled it you'll see a QR Code below which you need to scan with an app like Google Authenticator or Authy. Those apps will generate a token which you need to enter on every acp login.";
+$l['my2fa_qr'] = "Two-Factor Authentication Code";

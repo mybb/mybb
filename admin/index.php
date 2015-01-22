@@ -497,6 +497,38 @@ if(!isset($mybb->user['uid']) || $logged_out == true)
 	}
 }
 
+// Time to check for Two-Factor Authentication
+// First: are we trying to verify a code?
+if($mybb->input['do'] == "do_2fa" && $mybb->request_method == "post")
+{
+	require_once MYBB_ROOT."inc/3rdparty/mybb2fa/GoogleAuthenticator.php";
+	$auth = new PHPGangsta_GoogleAuthenticator;
+
+	$test = $auth->verifyCode($admin_options['2fasecret'], $mybb->input['code']);
+
+	if($test === true)
+	{
+		// Correct code -> session authenticated
+		$db->update_query("adminsessions", array("authenticated" => 1), "sid='".$db->escape_string($mybb->cookies['adminsid'])."'");
+		$admin_session['authenticated'] = 1;
+		// post would result in an authorization code mismatch error
+		$mybb->request_method = "get";
+	}
+	else
+	{
+		// Wrong code -> close session (aka logout) and show a login page. Using a custom one to include our error message
+		$db->delete_query("adminsessions", "sid='".$db->escape_string($mybb->cookies['adminsid'])."'");
+		my_unsetcookie('adminsid');
+		$page->show_login($lang->my2fa_failed, "error");
+	}
+}
+
+// Show our 2FA page
+if(!empty($admin_options['2fasecret']) && $admin_session['authenticated'] != 1)
+{
+	$page->show_2fa();
+}
+
 $page->add_breadcrumb_item($lang->home, "index.php");
 
 // Begin dealing with the modules

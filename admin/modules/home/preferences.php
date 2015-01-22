@@ -20,12 +20,23 @@ $plugins->run_hooks("admin_home_preferences_begin");
 
 if(!$mybb->input['action'])
 {
+	require_once MYBB_ROOT."inc/3rdparty/mybb2fa/GoogleAuthenticator.php";
+	$auth = new PHPGangsta_GoogleAuthenticator;
+
 	$plugins->run_hooks("admin_home_preferences_start");
 
 	if($mybb->request_method == "post")
 	{
 		$query = $db->simple_select("adminoptions", "permissions, defaultviews", "uid='{$mybb->user['uid']}'");
 		$adminopts = $db->fetch_array($query);
+
+		$secret = "";
+		if($mybb->input['2fa'])
+		{
+			$secret = $auth->createSecret();
+			// We don't want to close this session now
+			$db->update_query("adminsessions", array("authenticated" => 1), "sid='".$db->escape_strnig($mybb->cookies['adminsig'])."'");
+		}
 
 		$sqlarray = array(
 			"notes" => $db->escape_string($mybb->input['notes']),
@@ -35,6 +46,7 @@ if(!$mybb->input['action'])
 			"defaultviews" => $db->escape_string($adminopts['defaultviews']),
 			"uid" => $mybb->user['uid'],
 			"codepress" => $mybb->get_input('codepress', MyBB::INPUT_INT), // It's actually CodeMirror but for compatibility purposes lets leave it codepress
+			"2fasecret" => $secret,
 		);
 
 		$db->replace_query("adminoptions", $sqlarray, "uid");
@@ -55,7 +67,7 @@ if(!$mybb->input['action'])
 
 	$page->output_nav_tabs($sub_tabs, 'preferences');
 
-	$query = $db->simple_select("adminoptions", "notes, cpstyle, cplanguage, codepress", "uid='".$mybb->user['uid']."'", array('limit' => 1));
+	$query = $db->simple_select("adminoptions", "notes, cpstyle, cplanguage, codepress, 2fasecret", "uid='".$mybb->user['uid']."'", array('limit' => 1));
 	$admin_options = $db->fetch_array($query);
 
 	$form = new Form("index.php?module=home-preferences", "post");
@@ -87,6 +99,16 @@ if(!$mybb->input['action'])
 
 	$table->construct_cell("<strong>{$lang->codemirror}</strong><br /><small>{$lang->use_codemirror_desc}</small><br /><br />".$form->generate_on_off_radio('codepress', $admin_options['codepress']));
 	$table->construct_row();
+
+	$table->construct_cell("<strong>{$lang->my2fa}</strong><br /><small>{$lang->use_2fa_desc}</small><br /><br />".$form->generate_on_off_radio('2fa', (int)!empty($admin_options['2fasecret'])));
+	$table->construct_row();
+
+	if(!empty($admin_options['2fasecret']))
+	{
+		$qr = $auth->getQRCodeGoogleUrl($mybb->user['username']."@".str_replace(" ", "", $mybb->settings['bbname']), $admin_options['2fasecret']);
+		$table->construct_cell("<strong>{$lang->my2fa_qr}</strong><br /><img src=\"{$qr}\"");
+		$table->construct_row();
+	}
 
 	$table->output($lang->preferences);
 

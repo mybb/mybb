@@ -358,3 +358,7 @@ $l['comma'] = ", ";
 // then use this to define how much larger you want the gap to be (in px)
 // $l['login_field_width'] = "0";
 
+$l['my2fa'] = "Two-Factor Authentication";
+$l['my2fa_failed'] = "The code was incorrect, you're logged out now";
+$l['my2fa_code'] = "Please enter the authentication code";
+$l['my2fa_label'] = "Authentication code:";
