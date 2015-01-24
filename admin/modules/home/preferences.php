@@ -27,15 +27,27 @@ if(!$mybb->input['action'])
 
 	if($mybb->request_method == "post")
 	{
-		$query = $db->simple_select("adminoptions", "permissions, defaultviews", "uid='{$mybb->user['uid']}'");
+		$query = $db->simple_select("adminoptions", "permissions, defaultviews, 2fasecret", "uid='{$mybb->user['uid']}'");
 		$adminopts = $db->fetch_array($query);
 
-		$secret = "";
-		if($mybb->input['2fa'])
+		$secret = $adminopts['2fasecret'];
+		// Was the option changed? empty = disabled so ==
+		if($mybb->input['2fa'] == empty($secret))
 		{
-			$secret = $auth->createSecret();
-			// We don't want to close this session now
-			$db->update_query("adminsessions", array("authenticated" => 1), "sid='".$db->escape_strnig($mybb->cookies['adminsig'])."'");
+			// 2FA was enabled -> create secret and log
+			if($mybb->input['2fa'])
+			{
+				$secret = $auth->createSecret();
+				// We don't want to close this session now
+				$db->update_query("adminsessions", array("authenticated" => 1), "sid='".$db->escape_string($mybb->cookies['adminsig'])."'");
+				log_admin_action("enabled");
+			}
+			// 2FA was disabled -> clear secret
+			else
+			{
+				$secret = "";
+				log_admin_action("disabled");
+			}
 		}
 
 		$sqlarray = array(
