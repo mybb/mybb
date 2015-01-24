@@ -33,16 +33,40 @@ function upgrade32_dbchanges()
 		$db->drop_column("usergroups", "candeletereputations");
 	}
 
+	if($db->field_exists('2fasecret', 'adminoptions'))
+	{
+		$db->drop_column("adminoptions", "2fasecret");
+	}
+
+	if($db->field_exists('recovery_codes', 'adminoptions'))
+	{
+		$db->drop_column("adminoptions", "recovery_codes");
+	}
+
+	if($db->field_exists('authenticated', 'adminsessions'))
+	{
+		$db->drop_column("adminsessions", "authenticated");
+	}
+
 	switch($db->type)
 	{
 		case "pgsql":
 			$db->add_column("usergroups", "candeletereputations", "smallint NOT NULL default '0' AFTER cangivereputations");
+			$db->add_column("adminoptions", "2fasecret", "varchar(16) NOT NULL default ''");
+			$db->add_column("adminoptions", "recovery_codes", "varchar(177) NOT NULL default ''");
+			$db->add_column("adminsessions", "authenticated", "smallint NOT NULL default '0'");
 			break;
 		case "sqlite":
 			$db->add_column("usergroups", "candeletereputations", "tinyint(1) NOT NULL default '0'");
+			$db->add_column("adminoptions", "2fasecret", "varchar(16) NOT NULL default ''");
+			$db->add_column("adminoptions", "recovery_codes", "varchar(177) NOT NULL default ''");
+			$db->add_column("adminsessions", "authenticated", "tinyint(1) NOT NULL default '0'");
 			break;
 		default:
 			$db->add_column("usergroups", "candeletereputations", "tinyint(1) NOT NULL default '0' AFTER cangivereputations");
+			$db->add_column("adminoptions", "2fasecret", "varchar(16) NOT NULL default ''");
+			$db->add_column("adminoptions", "recovery_codes", "varchar(177) NOT NULL default ''");
+			$db->add_column("adminsessions", "authenticated", "tinyint(1) NOT NULL default '0'");
 			break;
 	}
 
