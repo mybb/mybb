@@ -24,3 +24,6 @@ $l['success_preferences_updated'] = "The preferences have been successfully upda
 
 $l['use_2fa_desc'] = "Two-Factor Authentication is a method to secure your admin account. After you've enabled it you'll see a QR Code below which you need to scan with an app like Google Authenticator or Authy. Those apps will generate a token which you need to enter on every acp login.";
 $l['my2fa_qr'] = "Two-Factor Authentication Code";
+$l['recovery_codes_desc'] = "View your <a href=\"index.php?module=home-preferences&amp;action=recovery_codes\">recovery codes</a>.";
+$l['recovery_codes'] = "Recovery Codes";
+$l['recovery_codes_warning'] = "<b>Note:</b> the codes will be regenerated on every page visit and can be only used once.";

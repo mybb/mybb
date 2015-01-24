@@ -18,6 +18,30 @@ $page->add_breadcrumb_item($lang->preferences_and_personal_notes, "index.php?mod
 
 $plugins->run_hooks("admin_home_preferences_begin");
 
+if($mybb->input['action'] == "recovery_codes")
+{
+	$page->add_breadcrumb_item($lang->recovery_codes, "index.php?module=home-preferences&action=recovery_codes");
+
+	// First: regenerate the codes
+	$codes = generate_recovery_codes();
+	$db->update_query("adminoptions", array("recovery_codes" => $db->escape_string(my_serialize($codes))), "uid='{$mybb->user['uid']}'");
+
+	// And now display them
+	$page->output_header($lang->recovery_codes);
+
+	$table = new Table;
+	$table->construct_header($lang->recovery_codes);
+
+	$table->construct_cell($lang->recovery_codes_warning);
+	$table->construct_row();
+
+	$table->construct_cell(implode("<br />", $codes));
+	$table->construct_row();
+
+	$table->output($lang->recovery_codes);
+
+	$page->output_footer();
+}
 if(!$mybb->input['action'])
 {
 	require_once MYBB_ROOT."inc/3rdparty/mybb2fa/GoogleAuthenticator.php";
@@ -27,7 +51,7 @@ if(!$mybb->input['action'])
 
 	if($mybb->request_method == "post")
 	{
-		$query = $db->simple_select("adminoptions", "permissions, defaultviews, 2fasecret", "uid='{$mybb->user['uid']}'");
+		$query = $db->simple_select("adminoptions", "permissions, defaultviews, 2fasecret, recovery_codes", "uid='{$mybb->user['uid']}'");
 		$adminopts = $db->fetch_array($query);
 
 		$secret = $adminopts['2fasecret'];
@@ -46,6 +70,7 @@ if(!$mybb->input['action'])
 			else
 			{
 				$secret = "";
+				$adminopts['recovery_codes'] = "";
 				log_admin_action("disabled");
 			}
 		}
@@ -58,7 +83,8 @@ if(!$mybb->input['action'])
 			"defaultviews" => $db->escape_string($adminopts['defaultviews']),
 			"uid" => $mybb->user['uid'],
 			"codepress" => $mybb->get_input('codepress', MyBB::INPUT_INT), // It's actually CodeMirror but for compatibility purposes lets leave it codepress
-			"2fasecret" => $secret,
+			"2fasecret" => $db->escape_string($secret),
+			"recovery_codes" => $db->escape_string($adminopts['recovery_codes']),
 		);
 
 		$db->replace_query("adminoptions", $sqlarray, "uid");
@@ -112,6 +138,12 @@ if(!$mybb->input['action'])
 	$table->construct_cell("<strong>{$lang->codemirror}</strong><br /><small>{$lang->use_codemirror_desc}</small><br /><br />".$form->generate_on_off_radio('codepress', $admin_options['codepress']));
 	$table->construct_row();
 
+	// If 2FA is enabled we need to display a link to the recovery codes page
+	if(!empty($admin_options['2fasecret']))
+	{
+		$lang->use_2fa_desc .= "<br />".$lang->recovery_codes_desc." ".$lang->recovery_codes_warning;
+	}
+
 	$table->construct_cell("<strong>{$lang->my2fa}</strong><br /><small>{$lang->use_2fa_desc}</small><br /><br />".$form->generate_on_off_radio('2fa', (int)!empty($admin_options['2fasecret'])));
 	$table->construct_row();
 
@@ -139,3 +171,10 @@ if(!$mybb->input['action'])
 	$page->output_footer();
 }
 
+function generate_recovery_codes()
+{
+	$t = array();
+	for($i = 0; $i<10; $i++)
+		$t[] = random_str(6);
+	return $t;
+}
