@@ -400,7 +400,7 @@ function my_date($format, $stamp="", $offset="", $ty=1, $adodb=false)
 	if($format == 'relative')
 	{
 		// Relative formats both date and time
-		if($ty != 2 && (TIME_NOW - $stamp) < 3600)
+		if($ty != 2 && abs(TIME_NOW - $stamp) < 3600)
 		{
 			$diff = TIME_NOW - $stamp;
 			$relative = array('prefix' => '', 'minute' => 0, 'plural' => $lang->rel_minutes_plural, 'suffix' => $lang->rel_ago);
@@ -428,7 +428,7 @@ function my_date($format, $stamp="", $offset="", $ty=1, $adodb=false)
 
 			$date = $lang->sprintf($lang->rel_time, $relative['prefix'], $relative['minute'], $relative['plural'], $relative['suffix']);
 		}
-		elseif($ty != 2 && (TIME_NOW - $stamp) >= 3600 && (TIME_NOW - $stamp) < 43200)
+		elseif($ty != 2 && abs(TIME_NOW - $stamp) < 43200)
 		{
 			$diff = TIME_NOW - $stamp;
 			$relative = array('prefix' => '', 'hour' => 0, 'plural' => $lang->rel_hours_plural, 'suffix' => $lang->rel_ago);
