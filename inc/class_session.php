@@ -32,7 +32,7 @@ class session
 		$this->useragent = $_SERVER['HTTP_USER_AGENT'];
 
 		// Attempt to find a session id in the cookies.
-		if(isset($mybb->cookies['sid']))
+		if(isset($mybb->cookies['sid']) && !defined('IN_UPGRADE'))
 		{
 			$sid = $db->escape_string($mybb->cookies['sid']);
 			// Load the session
@@ -159,7 +159,7 @@ class session
 		$mybb->user['pms_total'] = $mybb->user['totalpms'];
 		$mybb->user['pms_unread'] = $mybb->user['unreadpms'];
 
-		if($mybb->user['lastip'] != $this->packedip && array_key_exists('lastip', $mybb->user))
+		if($mybb->user['lastip'] != $this->packedip && array_key_exists('lastip', $mybb->user) && !defined('IN_UPGRADE'))
 		{
 			$lastip_add = ", lastip=".$db->escape_binary($this->packedip);
 		}
@@ -279,7 +279,7 @@ class session
 		}
 
 		// Update or create the session.
-		if(!defined("NO_ONLINE"))
+		if(!defined("NO_ONLINE") && !defined('IN_UPGRADE'))
 		{
 			if(!empty($this->sid))
 			{
@@ -349,7 +349,7 @@ class session
 		$mybb->usergroup = array_merge($mybb->usergroup, $mydisplaygroup);
 
 		// Update the online data.
-		if(!defined("NO_ONLINE"))
+		if(!defined("NO_ONLINE") && !defined('IN_UPGRADE'))
 		{
 			if(!empty($this->sid))
 			{
@@ -417,7 +417,7 @@ class session
 		}
 
 		// Update the online data.
-		if(!defined("NO_ONLINE"))
+		if(!defined("NO_ONLINE") && !defined('IN_UPGRADE'))
 		{
 			$this->sid = "bot=".$spider_id;
 			$this->create_session();
