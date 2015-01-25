@@ -50,6 +50,7 @@ function upgrade32_dbchanges()
 	$db->delete_query("forumpermissions", "fid NOT IN(SELECT fid FROM {$db->table_prefix}forums)");
 
 	$db->update_query("settings", array('optionscode' => 'select\r\n0=No CAPTCHA\r\n1=MyBB Default CAPTCHA\r\n2=reCAPTCHA\r\n3=Are You a Human\r\n4=NoCAPTCHA reCAPTCHA'), "name='captchaimage'");
+	$db->update_query("settings", array('title' => 'Enable Soft Delete for Users', 'description' => 'If enabled, posts and threads deleted by users will be hidden and can be restored by moderators. Otherwise, these posts and threads will be deleted permanently.'), "name='soft_delete'");
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("32_done");

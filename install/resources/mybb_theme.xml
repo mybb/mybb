@@ -11343,6 +11343,8 @@ if(use_xmlhttprequest == "1")
 <option value="removeredirects">{$lang->remove_redirects}</option>
 <option value="removesubscriptions">{$lang->remove_subscriptions}</option>]]></template>
 		<template name="showthread_moderationoptions_openclose" version="1800"><![CDATA[<option value="openclosethread">{$lang->open_close_thread}</option>]]></template>
+		<template name="showthread_moderationoptions_restore" version="1804"><![CDATA[<option value="restorethread">{$lang->restore_thread}</option>]]></template>
+		<template name="showthread_moderationoptions_softdelete" version="1804"><![CDATA[<option value="softdeletethread">{$lang->soft_delete_thread}</option>]]></template>
 		<template name="showthread_moderationoptions_standard" version="1800"><![CDATA[<optgroup label="{$lang->standard_mod_tools}">
 {$threadnotes}
 {$openclosethread}
