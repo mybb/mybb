@@ -6815,13 +6815,18 @@ function is_super_admin($uid)
  * Originates from frostschutz's PluginLibrary
  * github.com/frostschutz
  *
- * @param mixed A selection of groups to check
+ * @param mixed A selection of groups to check or -1 for any group
  * @param mixed User to check selection against
- * @return mixed Array of groups this user belongs to
+ * @return array Array of groups specified in the first param to which the user belongs
  */
 function is_member($groups, $user = false)
 {
 	global $mybb;
+	
+	if(empty($groups))
+	{
+		return array();
+	}	
 
 	if($user == false)
 	{
@@ -6838,13 +6843,20 @@ function is_member($groups, $user = false)
 
 	if(!is_array($groups))
 	{
-		if(is_string($groups))
+		if((int)$groups == -1)
 		{
-			$groups = explode(',', $groups);
+			return $memberships;
 		}
 		else
 		{
-			$groups = (array)$groups;
+			if(is_string($groups))
+			{
+				$groups = explode(',', $groups);
+			}
+			else
+			{
+				$groups = (array)$groups;
+			}
 		}
 	}
 

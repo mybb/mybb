@@ -876,7 +876,7 @@ if($mybb->input['action'] == "register")
 		{
 			foreach($pfcache as $profilefield)
 			{
-				if($profilefield['required'] != 1 && $profilefield['registration'] != 1 || $profilefield['editableby'] == '' || $profilefield['editableby'] && $profilefield['editableby'] != -1 && !is_member($profilefield['editableby'], array('usergroup' => $mybb->user['usergroup'], 'additionalgroups' => $usergroup)))
+				if($profilefield['required'] != 1 && $profilefield['registration'] != 1 || !is_member($profilefield['editableby'], array('usergroup' => $mybb->user['usergroup'], 'additionalgroups' => $usergroup)))
 				{
 					continue;
 				}
@@ -1955,7 +1955,7 @@ if($mybb->input['action'] == "profile")
 
 	$website = $sendemail = $sendpm = $contact_details = '';
 	
-	if($memprofile['website'] && $mybb->settings['hidewebsite'] != -1 && !is_member($mybb->settings['hidewebsite']) && $memperms['canchangewebsite'] == 1)
+	if($memprofile['website'] && !is_member($mybb->settings['hidewebsite']) && $memperms['canchangewebsite'] == 1)
 	{
 		$memprofile['website'] = htmlspecialchars_uni($memprofile['website']);
 		$bgcolor = alt_trow();
@@ -1981,7 +1981,7 @@ if($mybb->input['action'] == "profile")
 		$contact_fields[$field] = '';
 		$settingkey = 'allow'.$field.'field';
 
-		if(!empty($memprofile[$field]) && ($mybb->settings[$settingkey] == -1 || $mybb->settings[$settingkey] != '' && is_member($mybb->settings[$settingkey], array('usergroup' => $memprofile['usergroup'], 'additionalgroups' => $memprofile['additionalgroups']))))
+		if(!empty($memprofile[$field]) && is_member($mybb->settings[$settingkey], array('usergroup' => $memprofile['usergroup'], 'additionalgroups' => $memprofile['additionalgroups'])))
 		{
 			$any_contact_field = true;
 			
@@ -2006,7 +2006,7 @@ if($mybb->input['action'] == "profile")
 	}
 
 	$signature = '';
-	if($memprofile['signature'] && ($memprofile['suspendsignature'] == 0 || $memprofile['suspendsigtime'] < TIME_NOW) && $mybb->settings['hidesignatures'] != -1 && !is_member($mybb->settings['hidesignatures']) && $memperms['canusesig'] && $memperms['canusesigxposts'] <= $memprofile['postnum'])
+	if($memprofile['signature'] && ($memprofile['suspendsignature'] == 0 || $memprofile['suspendsigtime'] < TIME_NOW) && !is_member($mybb->settings['hidesignatures']) && $memperms['canusesig'] && $memperms['canusesigxposts'] <= $memprofile['postnum'])
 	{
 		$sig_parser = array(
 			"allow_html" => $mybb->settings['sightml'],
@@ -2455,7 +2455,7 @@ if($mybb->input['action'] == "profile")
 	{
 		foreach($pfcache as $customfield)
 		{
-			if($mybb->usergroup['cancp'] != 1 && $mybb->usergroup['issupermod'] != 1 && $mybb->usergroup['canmodcp'] != 1 && ($customfield['viewableby'] == '' || ($customfield['viewableby'] != -1 && !is_member($customfield['viewableby']))))
+			if($mybb->usergroup['cancp'] != 1 && $mybb->usergroup['issupermod'] != 1 && $mybb->usergroup['canmodcp'] != 1 && !is_member($customfield['viewableby']))
 			{
 				continue;
 			}
