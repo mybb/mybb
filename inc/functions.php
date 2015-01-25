@@ -344,7 +344,7 @@ function my_date($format, $stamp="", $offset="", $ty=1, $adodb=false)
 		if(isset($mybb->user['uid']) && $mybb->user['uid'] != 0 && array_key_exists("timezone", $mybb->user))
 		{
 			$offset = $mybb->user['timezone'];
-			$dstcorrection = $mybb->user['dst'];
+			$dstcorrection = $mybb->user['dstcorrection'];
 		}
 		elseif(defined("IN_ADMINCP"))
 		{
@@ -357,8 +357,8 @@ function my_date($format, $stamp="", $offset="", $ty=1, $adodb=false)
 			$dstcorrection = $mybb->settings['dstcorrection'];
 		}
 
-		// If DST correction is enabled, add an additional hour to the timezone.
-		if($dstcorrection == 1)
+		// If DST correction is enabled and the date falls into DST, add an additional hour to the timezone.
+		if($dstcorrection == 1 || ($dstcorrection == 2 && date('I', $stamp) == 1))
 		{
 			++$offset;
 			if(my_substr($offset, 0, 1) != "-")
