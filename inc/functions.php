@@ -6540,11 +6540,16 @@ function is_super_admin($uid)
  *
  * @param mixed A selection of groups to check or -1 for any group
  * @param mixed User to check selection against
- * @return mixed Array of groups this user belongs to
+ * @return array Array of groups specified in the first param to which the user belongs
  */
 function is_member($groups, $user = false)
 {
 	global $mybb;
+	
+	if(empty($groups))
+	{
+		return array();
+	}	
 
 	if($user == false)
 	{
