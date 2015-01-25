@@ -782,9 +782,9 @@ elseif($mybb->input['action'] == "imcenter")
 	}
 
 	$settingkey = 'allow'.$mybb->input['imtype'].'field';
-	if(!($mybb->settings[$settingkey] == -1 || $mybb->settings[$settingkey] != '' && is_member($mybb->settings[$settingkey], $user)))
+	if(!is_member($mybb->settings[$settingkey], $user))
 	{
-		error($lang->error_invaliduser);
+		error_no_permission();
 	}
 
 	// Build IM navigation bar
