@@ -82,6 +82,8 @@ if($mybb->input['action'] == "edit")
 	$html_personalisation = substr($html_personalisation, 0, -2)."');\n// --></script>\n";
 	$text_personalisation = substr($text_personalisation, 0, -2)."');\n// --></script>\n";
 
+	$localized_time_offset = $mybb->user['timezone']*3600 + $mybb->user['dst']*3600;
+	
 	// All done here
 	if($mybb->request_method == "post")
 	{
@@ -93,7 +95,7 @@ if($mybb->input['action'] == "edit")
 		// Delivering in the future
 		else
 		{
-			if(strstr($mybb->input['deliverytime_time'], "pm"))
+			if(stristr($mybb->input['deliverytime_time'], "pm"))
 			{
 				$mybb->input['deliveryhour'] += 12;
 			}
@@ -104,7 +106,7 @@ if($mybb->input['action'] == "edit")
 			$exploded = explode(' ', $exploded[1]);
 			$mybb->input['deliveryminute'] = (int)$exploded[0];
 
-			$delivery_date = gmmktime($mybb->input['deliveryhour'], $mybb->input['deliveryminute'], 0, $mybb->input['endtime_month'], $mybb->input['endtime_day'], $mybb->input['endtime_year']) + $mybb->user['timezone']*3600;
+			$delivery_date = gmmktime($mybb->input['deliveryhour'], $mybb->input['deliveryminute'], 0, $mybb->input['endtime_month'], $mybb->input['endtime_day'], $mybb->input['endtime_year']) - $localized_time_offset;
 			if($delivery_date <= TIME_NOW)
 			{
 				$errors[] = $lang->error_only_in_future;
@@ -222,15 +224,15 @@ if($mybb->input['action'] == "edit")
 			}
 			else
 			{
+				// correct date by timezone and dst
+				$offset = 
 				$input['delivery_type'] = "future";
-				$time = date("d-n-Y-h-i-a", $email['senddate']);
+				$time = gmdate("d-n-Y", $email['senddate'] + $localized_time_offset);
 				$time = explode('-', $time);
-				$input['deliveryhour'] = (int)$time[3];
-				$input['deliveryminute'] = (int)$time[4];
 				$input['deliverymonth'] = (int)$time[1];
 				$input['deliveryday'] = (int)$time[0];
 				$input['deliveryyear'] = (int)$time[2];
-				$input['deliverymeridiem'] = $time[5];
+				$input['endtime_time'] = gmdate($mybb->settings['timeformat'], $email['senddate'] + $localized_time_offset);
 				$delivery_type_checked['future'] = " checked=\"checked\"";
 			}
 		}
@@ -240,37 +242,15 @@ if($mybb->input['action'] == "edit")
 			$delivery_type_checked['now'] = " checked=\"checked\"";
 		}
 	}
-
-	if($input['deliveryhour'])
+	
+	if(!$input['endtime_time'])
 	{
-		$input['endtime_time'] = (int)$input['deliveryhour'].":";
-	}
-	else
-	{
-		$input['endtime_time'] = "12:";
-	}
-
-	if($input['deliveryminute'])
-	{
-		$input['endtime_time'] .= (int)$input['deliveryminute']." ";
-	}
-	else
-	{
-		$input['endtime_time'] .= "00 ";
-	}
-
-	if($input['deliverymeridiem'])
-	{
-		$input['endtime_time'] .= $input['deliverymeridiem'];
-	}
-	else
-	{
-		$input['endtime_time'] .= "am";
+		$input['endtime_time'] = gmdate($mybb->settings['timeformat'], TIME_NOW + $localized_time_offset);
 	}
 
 	if(!$input['deliveryyear'])
 	{
-		$enddateyear = gmdate('Y', TIME_NOW);
+		$enddateyear = gmdate('Y', TIME_NOW + $localized_time_offset);
 	}
 	else
 	{
@@ -279,7 +259,7 @@ if($mybb->input['action'] == "edit")
 
 	if(!$input['deliverymonth'])
 	{
-		$input['enddatemonth'] = gmdate('n', TIME_NOW);
+		$input['enddatemonth'] = gmdate('n', TIME_NOW + $localized_time_offset);
 	}
 	else
 	{
@@ -288,7 +268,7 @@ if($mybb->input['action'] == "edit")
 
 	if(!$input['deliveryday'])
 	{
-		$input['enddateday'] = gmdate('j', TIME_NOW);
+		$input['enddateday'] = gmdate('j', TIME_NOW + $localized_time_offset);
 	}
 	else
 	{
@@ -634,6 +614,8 @@ if($mybb->input['action'] == "send")
 	$text_personalisation = substr($text_personalisation, 0, -2)."');\n// --></script>\n";
 
 	$plugins->run_hooks("admin_user_mass_email_send_start");
+	
+	$localized_time_offset = $mybb->user['timezone']*3600 + $mybb->user['dst']*3600;
 
 	if($mybb->input['step'] == 4)
 	{
@@ -648,7 +630,7 @@ if($mybb->input['action'] == "send")
 			// Delivering in the future
 			else
 			{
-				if(strstr($mybb->input['deliverytime_time'], "pm"))
+				if(stristr($mybb->input['deliverytime_time'], "pm"))
 				{
 					$mybb->input['deliveryhour'] += 12;
 				}
@@ -659,7 +641,7 @@ if($mybb->input['action'] == "send")
 				$exploded = explode(' ', $exploded[1]);
 				$mybb->input['deliveryminute'] = (int)$exploded[0];
 
-				$delivery_date = gmmktime($mybb->input['deliveryhour'], $mybb->input['deliveryminute'], 0, $mybb->input['endtime_month'], $mybb->input['endtime_day'], $mybb->input['endtime_year']) + $mybb->user['timezone']*3600;
+				$delivery_date = gmmktime($mybb->input['deliveryhour'], $mybb->input['deliveryminute'], 0, $mybb->input['endtime_month'], $mybb->input['endtime_day'], $mybb->input['endtime_year'])- $localized_time_offset;
 				if($delivery_date <= TIME_NOW)
 				{
 					$errors[] = $lang->error_only_in_future;
@@ -707,14 +689,12 @@ if($mybb->input['action'] == "send")
 				else
 				{
 					$input['delivery_type'] = "future";
-					$time = date("d-n-Y-h-i-a", $email['senddate']);
+					$time = gmdate("d-n-Y", $email['senddate'] + $localized_time_offset);
 					$time = explode('-', $time);
-					$input['deliveryhour'] = (int)$time[3];
-					$input['deliveryminute'] = (int)$time[4];
 					$input['deliverymonth'] = (int)$time[1];
 					$input['deliveryday'] = (int)$time[0];
 					$input['deliveryyear'] = (int)$time[2];
-					$input['deliverymeridiem'] = $time[5];
+					$input['endtime_time'] = gmdate($mybb->settings['timeformat'], $email['senddate'] + $localized_time_offset);
 					$delivery_type_checked['future'] = " checked=\"checked\"";
 				}
 			}
@@ -766,36 +746,14 @@ if($mybb->input['action'] == "send")
 
 		$table->output("{$lang->send_mass_mail}: {$lang->step_four} - {$lang->review_message}");
 
-		if($input['deliveryhour'])
+		if(!$input['endtime_time'])
 		{
-			$input['endtime_time'] = (int)$input['deliveryhour'].":";
-		}
-		else
-		{
-			$input['endtime_time'] = "12:";
-		}
-
-		if($input['deliveryminute'])
-		{
-			$input['endtime_time'] .= (int)$input['deliveryminute']." ";
-		}
-		else
-		{
-			$input['endtime_time'] .= "00 ";
-		}
-
-		if($input['deliverymeridiem'])
-		{
-			$input['endtime_time'] .= $input['deliverymeridiem'];
-		}
-		else
-		{
-			$input['endtime_time'] .= "am";
+			$input['endtime_time'] = gmdate($mybb->settings['timeformat'], TIME_NOW + $localized_time_offset);
 		}
 
 		if(!$input['deliveryyear'])
 		{
-			$enddateyear = gmdate('Y', TIME_NOW);
+			$enddateyear = gmdate('Y', TIME_NOW + $localized_time_offset);
 		}
 		else
 		{
@@ -804,7 +762,7 @@ if($mybb->input['action'] == "send")
 
 		if(!$input['deliverymonth'])
 		{
-			$input['enddatemonth'] = gmdate('n', TIME_NOW);
+			$input['enddatemonth'] = gmdate('n', TIME_NOW + $localized_time_offset);
 		}
 		else
 		{
@@ -813,7 +771,7 @@ if($mybb->input['action'] == "send")
 
 		if(!$input['deliveryday'])
 		{
-			$input['enddateday'] = gmdate('j', TIME_NOW);
+			$input['enddateday'] = gmdate('j', TIME_NOW + $localized_time_offset);
 		}
 		else
 		{

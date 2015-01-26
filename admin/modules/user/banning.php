@@ -285,7 +285,7 @@ if($mybb->input['action'] == "edit")
 	{
 		if($time != '---')
 		{
-			$friendly_time = my_date("D, jS M Y @ g:ia", ban_date2timestamp($time));
+			$friendly_time = my_date("D, jS M Y @ {$mybb->settings['timeformat']}", ban_date2timestamp($time));
 			$period = "{$period} ({$friendly_time})";
 		}
 		$length_list[$time] = $period;
@@ -545,7 +545,7 @@ if(!$mybb->input['action'])
 	{
 		if($time != "---")
 		{
-			$friendly_time = my_date("D, jS M Y @ g:ia", ban_date2timestamp($time));
+			$friendly_time = my_date("D, jS M Y @ {$mybb->settings['timeformat']}", ban_date2timestamp($time));
 			$period = "{$period} ({$friendly_time})";
 		}
 		$length_list[$time] = $period;
