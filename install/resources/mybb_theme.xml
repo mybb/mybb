@@ -9560,7 +9560,7 @@ if(use_xmlhttprequest == "1")
 		<template name="postbit_find" version="1800"><![CDATA[<a href="search.php?action=finduser&amp;uid={$post['uid']}" title="{$lang->postbit_find}" class="postbit_find"><span>{$lang->postbit_button_find}</span></a>]]></template>
 		<template name="postbit_forward_pm" version="1800"><![CDATA[<a href="private.php?action=send&amp;pmid={$id}&amp;do=forward" title="{$lang->forward_title}" class="postbit_forward_pm"><span>{$lang->postbit_button_forward}</span></a>]]></template>
 		<template name="postbit_purgespammer" version="1800"><![CDATA[<a href="moderation.php?action=purgespammer&amp;uid={$post['uid']}" title="{$lang->postbit_purgespammer}" class="postbit_purgespammer"><span>{$lang->postbit_button_purgespammer}</span></a>]]></template>
-		<template name="postbit_gotopost" version="1400"><![CDATA[<a href="{$url}" class="quick_jump">&nbsp;</a>]]></template>
+		<template name="postbit_gotopost" version="1804"><![CDATA[ <a href="{$url}" class="quick_jump"></a>]]></template>
 		<template name="postbit_groupimage" version="120"><![CDATA[<img src="{$usergroup['image']}" alt="{$usergroup['title']}" title="{$usergroup['title']}" />]]></template>
 		<template name="postbit_icon" version="1800"><![CDATA[<img src="{$icon['path']}" alt="{$icon['name']}" title="{$icon['name']}" style="vertical-align: middle;" />&nbsp;]]></template>
 		<template name="postbit_ignored" version="1800"><![CDATA[<div class="ignored_post" id="ignored_post_{$post['pid']}">
