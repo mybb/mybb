@@ -1369,6 +1369,7 @@ a.button.report_user_button span {
 	padding-left: 13px; /* amount of padding needed for image to fully show */
 	margin-top: -3px;
 	border: none;
+	text-decoration: none !important;
 }
 
 .pollbar {
