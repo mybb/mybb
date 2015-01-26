@@ -63,7 +63,7 @@ if(!$mybb->input['action'])
 			{
 				$secret = $auth->createSecret();
 				// We don't want to close this session now
-				$db->update_query("adminsessions", array("authenticated" => 1), "sid='".$db->escape_string($mybb->cookies['adminsig'])."'");
+				$db->update_query("adminsessions", array("authenticated" => 1), "sid='".$db->escape_string($mybb->cookies['adminsid'])."'");
 				log_admin_action("enabled");
 			}
 			// 2FA was disabled -> clear secret

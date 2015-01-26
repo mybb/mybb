@@ -504,7 +504,7 @@ if($mybb->input['do'] == "do_2fa" && $mybb->request_method == "post")
 	// Test whether it's a recovery code
 	$recovery = false;
 	$codes = my_unserialize($admin_options['recovery_codes']);
-	if(in_array($mybb->input['code'], $codes))
+	if(in_array($mybb->get_input('code'), $codes))
 	{
 		$recovery = true;
 		$ncodes = array_diff($codes, array($mybb->input['code'])); // Removes our current code from the codes array
@@ -515,7 +515,7 @@ if($mybb->input['do'] == "do_2fa" && $mybb->request_method == "post")
 	require_once MYBB_ROOT."inc/3rdparty/mybb2fa/GoogleAuthenticator.php";
 	$auth = new PHPGangsta_GoogleAuthenticator;
 
-	$test = $auth->verifyCode($admin_options['2fasecret'], $mybb->input['code']);
+	$test = $auth->verifyCode($admin_options['2fasecret'], $mybb->get_input('code'));
 
 	// Either the code was okay or it was a recovery code
 	if($test === true || $recovery === true)
@@ -534,7 +534,7 @@ if($mybb->input['do'] == "do_2fa" && $mybb->request_method == "post")
 		$page->show_login($lang->my2fa_failed, "error");
 	}
 }
-//echo "<pre>";var_dump($mybb->input); echo "</pre>";
+
 // Show our 2FA page
 if(!empty($admin_options['2fasecret']) && $admin_session['authenticated'] != 1)
 {
