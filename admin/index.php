@@ -504,7 +504,7 @@ if($mybb->input['do'] == "do_2fa" && $mybb->request_method == "post")
 	// Test whether it's a recovery code
 	$recovery = false;
 	$codes = my_unserialize($admin_options['recovery_codes']);
-	if(in_array($mybb->get_input('code'), $codes))
+	if(!empty($codes) && in_array($mybb->get_input('code'), $codes))
 	{
 		$recovery = true;
 		$ncodes = array_diff($codes, array($mybb->input['code'])); // Removes our current code from the codes array
