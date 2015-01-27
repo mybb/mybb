@@ -1446,13 +1446,13 @@ class UserDataHandler extends DataHandler
 
 		$plugins->run_hooks('datahandler_user_delete_start', $this);
 
-		$this->delete_uids = '\''.implode('\',\'', $this->delete_uids).'\'';
+		$this->delete_uids = implode(',', $this->delete_uids);
 		
 		$this->delete_content();
 
 		// Delete the user
-		$query = $db->delete_query('users', 'uid IN('.$this->delete_uids.')');
-		$this->deleted_users = (int)$db->affected_rows($query);
+		$query = $db->delete_query('users', "uid IN({$this->delete_uids})");
+		$this->deleted_users = $db->affected_rows($query);
 
 		// Are we removing the posts/threads of a user?
 		if((int)$prunecontent == 1)
@@ -1462,8 +1462,8 @@ class UserDataHandler extends DataHandler
 		else
 		{
 			// We're just updating the UID
-			$db->update_query('posts', array('uid' => 0), 'uid IN('.$this->delete_uids.')');
-			$db->update_query('threads', array('uid' => 0), 'uid IN('.$this->delete_uids.')');
+			$db->update_query('posts', array('uid' => 0), "uid IN({$this->delete_uids})");
+			$db->update_query('threads', array('uid' => 0), "uid IN({$this->delete_uids})");
 		}
 
 		// Update thread ratings
@@ -1482,17 +1482,17 @@ class UserDataHandler extends DataHandler
 			$db->update_query("threads", $update_thread, "tid='{$rating['tid']}'");
 		}
 
-		$db->delete_query('threadratings', 'uid IN('.$this->delete_uids.')');
+		$db->delete_query('threadratings', "uid IN({$this->delete_uids})");
 
 		// Update forums & threads if user is the lastposter
-		$db->update_query('forums', array('lastposteruid' => 0), 'lastposteruid IN('.$this->delete_uids.')');
-		$db->update_query('threads', array('lastposteruid' => 0), 'lastposteruid IN('.$this->delete_uids.')');
+		$db->update_query('forums', array('lastposteruid' => 0), "lastposteruid IN({$this->delete_uids})");
+		$db->update_query('threads', array('lastposteruid' => 0), "lastposteruid IN({$this->delete_uids})");
 
 		$cache->update_banned();
 		$cache->update_moderators();
 
 		// Update forum stats
-		update_stats(array('numusers' => '-'.(int)$this->deleted_users));
+		update_stats(array('numusers' => '-'.$this->deleted_users));
 
 		$this->return_values = array(
 			"deleted_users" => $this->deleted_users
@@ -1530,36 +1530,35 @@ class UserDataHandler extends DataHandler
 				}
 			}
 		
-			$this->delete_uids = '\''.implode('\',\'', $this->delete_uids).'\'';
+			$this->delete_uids = implode(',', $this->delete_uids);
 		}
 
 		$plugins->run_hooks('datahandler_user_delete_content', $this);
 
-		$db->delete_query('userfields', 'ufid IN('.$this->delete_uids.')');
-		$db->delete_query('privatemessages', 'uid IN('.$this->delete_uids.')');
-		$db->delete_query('events', 'uid IN('.$this->delete_uids.')');
-		$db->delete_query('moderators', 'id IN('.$this->delete_uids.') AND isgroup=\'0\'');
-		$db->delete_query('forumsubscriptions', 'uid IN('.$this->delete_uids.')');
-		$db->delete_query('threadsubscriptions', 'uid IN('.$this->delete_uids.')');
-		$db->delete_query('sessions', 'uid IN('.$this->delete_uids.')');
-		$db->delete_query('banned', 'uid IN('.$this->delete_uids.')');
-		$db->delete_query('joinrequests', 'uid IN('.$this->delete_uids.')');
-		$db->delete_query('awaitingactivation', 'uid IN('.$this->delete_uids.')');
-		$db->delete_query('warnings', 'uid IN('.$this->delete_uids.')');
-		$db->delete_query('reputation', 'uid IN('.$this->delete_uids.') OR adduid IN('.$this->delete_uids.')');
-		$db->delete_query('posts', 'uid IN('.$this->delete_uids.') AND visible=\'-2\'');
-		$db->delete_query('threads', 'uid IN('.$this->delete_uids.') AND visible=\'-2\'');
-		$db->delete_query('moderators', 'id IN('.$this->delete_uids.') AND isgroup=\'0\'');
+		$db->delete_query('userfields', "ufid IN({$this->delete_uids})");
+		$db->delete_query('privatemessages', "uid IN({$this->delete_uids})");
+		$db->delete_query('events', "uid IN({$this->delete_uids})");
+		$db->delete_query('moderators', "id IN({$this->delete_uids}) AND isgroup = 0");
+		$db->delete_query('forumsubscriptions', "uid IN({$this->delete_uids})");
+		$db->delete_query('threadsubscriptions', "uid IN({$this->delete_uids})");
+		$db->delete_query('sessions', "uid IN({$this->delete_uids})");
+		$db->delete_query('banned', "uid IN({$this->delete_uids})");
+		$db->delete_query('joinrequests', "uid IN({$this->delete_uids})");
+		$db->delete_query('awaitingactivation', "uid IN({$this->delete_uids})");
+		$db->delete_query('warnings', "uid IN({$this->delete_uids})");
+		$db->delete_query('reputation', "uid IN({$this->delete_uids}) OR adduid IN({$this->delete_uids})");
+		$db->delete_query('posts', "uid IN({$this->delete_uids}) AND visible = -2");
+		$db->delete_query('threads', "uid IN({$this->delete_uids}) AND visible = -2");
 
 		// Delete reports made to the profile or reputation of the deleted users (i.e. made by them)
-		$db->delete_query('reportedcontent', 'type=\'reputation\' AND id3 IN('.$this->delete_uids.') OR type=\'reputation\' AND id2 IN('.$this->delete_uids.')');
-		$db->delete_query('reportedcontent', 'type=\'profile\' AND id IN('.$this->delete_uids.')');
+		$db->delete_query('reportedcontent', "type='reputation' AND id3 IN({$this->delete_uids}) OR type='reputation' AND id2 IN({$this->delete_uids})");
+		$db->delete_query('reportedcontent', "type='profile' AND id IN({$this->delete_uids})");
 
 		// Update the reports made by the deleted users by setting the uid to 0
-		$db->update_query('reportedcontent', array('uid' => 0), 'uid IN('.$this->delete_uids.')');
+		$db->update_query('reportedcontent', array('uid' => 0), "uid IN({$this->delete_uids})");
 
 		// Remove any of the user(s) uploaded avatars
-		$query = $db->simple_select('users', 'avatar', 'uid IN ('.$this->delete_uids.') AND avatartype=\'upload\'');
+		$query = $db->simple_select('users', 'avatar', "uid IN({$this->delete_uids}) AND avatartype='upload'");
 		while($avatar = $db->fetch_field($query, 'avatar'))
 		{
 			$avatar = substr($avatar, 2, -20);
@@ -1590,7 +1589,7 @@ class UserDataHandler extends DataHandler
 				}
 			}
 
-			$this->delete_uids = '\''.implode('\',\'', $this->delete_uids).'\'';
+			$this->delete_uids = implode(',', $this->delete_uids);
 		}
 
 		require_once MYBB_ROOT.'inc/class_moderation.php';
@@ -1599,7 +1598,7 @@ class UserDataHandler extends DataHandler
 		$plugins->run_hooks('datahandler_user_delete_posts', $this);
 
 		// Threads
-		$query = $db->simple_select('threads', 'tid', 'uid IN('.$this->delete_uids.')');
+		$query = $db->simple_select('threads', 'tid', "uid IN({$this->delete_uids})");
 		while($tid = $db->fetch_field($query, 'tid'))
 		{
 			$moderation->delete_thread($tid);
@@ -1607,7 +1606,7 @@ class UserDataHandler extends DataHandler
 
 		// Posts
 		$pids = array();
-		$query = $db->simple_select('posts', 'pid', 'uid IN('.$this->delete_uids.')');
+		$query = $db->simple_select('posts', 'pid', "uid IN({$this->delete_uids})");
 		while($pid = $db->fetch_field($query, 'pid'))
 		{
 			$moderation->delete_post($pid);
@@ -1617,12 +1616,12 @@ class UserDataHandler extends DataHandler
 		// Delete Reports made to users's posts/threads
 		if(!empty($pids))
 		{
-			$db->delete_query('reportedcontent', 'type=\'posts\' AND id IN('.implode(',', $pids).')');
+			$db->delete_query('reportedcontent', "type='posts' AND id IN({$this->delete_uids})");
 		}
 	}
 
 	/**
-	 * Provides a method to clear an users profile (note that this doesn't delete the custom profilefields)
+	 * Provides a method to clear an users profile
 	 *
 	 * @param array Array of user ids, false if they're already set (eg when using the delete_user function)
 	 * @param int The new usergroup if the users should be moved (additional usergroups are always removed)
@@ -1645,7 +1644,7 @@ class UserDataHandler extends DataHandler
 				}
 			}
 
-			$this->delete_uids = '\''.implode('\',\'', $this->delete_uids).'\'';
+			$this->delete_uids = implode(',', $this->delete_uids);
 		}
 
 		$update = array(
@@ -1664,17 +1663,18 @@ class UserDataHandler extends DataHandler
 			"additionalgroups" => "",
 			"displaygroup" => 0,
 			"signature" => "",
-			"avatar" => ""
+			"avatar" => "",
+			'avatardimensions' => ''
 		);
 
 		if($gid > 0)
 		{
 			$update["usergroup"] = (int)$gid;
-
 		}
 
 		$plugins->run_hooks('datahandler_user_clear_profile', $this);
 
-		$db->update_query("users", $update, 'uid IN('.$this->delete_uids.')');
+		$db->update_query("users", $update, "uid IN({$this->delete_uids})");
+		$db->delete_query('userfields', "ufid IN({$this->delete_uids})");
 	}
 }
