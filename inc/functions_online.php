@@ -578,13 +578,16 @@ function build_friendly_wol_location($user_activity)
 	$unviewableforums = get_unviewable_forums();
 	$inactiveforums = get_inactive_forums();
 	$fidnot = '';
+	$unviewablefids = $inactivefids = array();
 	if($unviewableforums)
 	{
 		$fidnot = " AND fid NOT IN ($unviewableforums)";
+		$unviewablefids = explode(',', $unviewableforums);
 	}
 	if($inactiveforums)
 	{
 		$fidnot .= " AND fid NOT IN ($inactiveforums)";
+		$inactivefids = explode(',', $inactiveforums);
 	}
 
 	// Fetch any users
@@ -686,14 +689,11 @@ function build_friendly_wol_location($user_activity)
 	// Fetch any forums
 	if(!is_array($forums) && count($fid_list) > 0)
 	{
-		if($fidnot)
-		{
-			$fidnot = explode(',', str_replace('\'', '', (string)$unviewableforums).$inactiveforums);
-		}
+		$fidnot = array_merge($unviewablefids, $inactivefids);
 
 		foreach($forum_cache as $fid => $forum)
 		{
-			if(in_array($fid, $fid_list) && (!$fidnot || is_array($fidnot) && !in_array($fid, $fidnot)))
+			if(in_array($fid, $fid_list) && !in_array($fid, $fidnot))
 			{
 				$forums[$fid] = $forum['name'];
 				$forums_linkto[$fid] = $forum['linkto'];

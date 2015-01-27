@@ -108,7 +108,7 @@ elseif($mybb->input['action'] == "clearpass")
 			error($lang->invalid_post_code);
 		}
 
-		my_unsetcookie("forumpass[".$mybb->input['fid']."]");
+		my_unsetcookie("forumpass[".$mybb->get_input('fid', MyBB::INPUT_INT)."]");
 		redirect("index.php", $lang->redirect_forumpasscleared);
 	}
 }
@@ -839,15 +839,12 @@ elseif($mybb->input['action'] == "syndication")
 	add_breadcrumb($lang->nav_syndication);
 	$unviewable = get_unviewable_forums();
 	$inactiveforums = get_inactive_forums();
+	$unexp1 = explode(',', $unviewable);
+	$unexp2 = explode(',', $inactiveforums);
+	$unexp = array_merge($unexp1, $unexp2);
+	
 	if(is_array($forums))
 	{
-		$unexp = explode(",", str_replace("'", '', $unviewable));
-		foreach($unexp as $fid)
-		{
-			$unview[$fid] = true;
-		}
-
-		$unexp = explode(",", $inactiveforums);
 		foreach($unexp as $fid)
 		{
 			$unview[$fid] = true;
@@ -941,25 +938,31 @@ elseif($mybb->input['action'] == "clearcookies")
 
 	$plugins->run_hooks("misc_clearcookies");
 
-	$remove_cookies = array('mybb', 'mybbuser', 'mybb[password]', 'mybb[lastvisit]', 'mybb[lastactive]', 'collapsed', 'mybb[forumread]', 'mybb[threadsread]', 'mybbadmin');
+	$remove_cookies = array('mybbuser', 'mybb[announcements]', 'mybb[lastvisit]', 'mybb[lastactive]', 'collapsed', 'mybb[forumread]', 'mybb[threadsread]', 'mybbadmin',
+							'mybblang', 'mybbtheme', 'multiquote', 'mybb[readallforums]', 'coppauser', 'coppadob', 'mybb[referrer]');
 
 	foreach($remove_cookies as $name)
 	{
-		@my_setcookie($name, '', TIME_NOW-1, $mybb->settings['cookiepath'], $mybb->settings['cookiedomain']);
+		my_unsetcookie($name);
 	}
 	redirect("index.php", $lang->redirect_cookiescleared);
 }
 
-function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="", $permissions="")
+/**
+ * Build a list of forums for RSS multiselect.
+ *
+ * @param int Parent forum ID.
+ * @param unknown_type ???
+ * @param boolean Whether to add selected attribute or not.
+ * @param string HTML for the depth of the forum.
+ * @return string HTML of the list of forums for CSS.
+ */
+function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="")
 {
-	global $db, $forumcache, $permissioncache, $mybb, $forumlist, $forumlistbits, $flist, $lang, $unviewable, $inactiveforums, $templates;
-	static $unviewableforums;
+	global $db, $forumcache, $permissioncache, $mybb, $forumlist, $forumlistbits, $flist, $lang, $unexp, $templates;
 
 	$pid = (int)$pid;
-	if(!$permissions)
-	{
-		$permissions = $mybb->usergroup;
-	}
+	$forumlist = '';
 
 	if(!is_array($forumcache))
 	{
@@ -976,12 +979,6 @@ function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="", $
 		$permissioncache = forum_permissions();
 	}
 
-	if(!$unviewableforums)
-	{
-		// Save our unviewable forums in an array
-		$unviewableforums = explode(",", str_replace("'", '', $unviewable.','.$inactiveforums));
-	}
-
 	if(is_array($forumcache[$pid]))
 	{
 		foreach($forumcache[$pid] as $key => $main)
@@ -991,17 +988,14 @@ function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="", $
 				$perms = $permissioncache[$forum['fid']];
 				if($perms['canview'] == 1 || $mybb->settings['hideprivateforums'] == 0)
 				{
+					$optionselected = '';
 					if(isset($flist[$forum['fid']]))
 					{
-						$optionselected = "selected=\"selected\"";
+						$optionselected = 'selected="selected"';
 						$selecteddone = "1";
 					}
-					else
-					{
-						$optionselected = '';
-					}
 
-					if($forum['password'] == '' && !in_array($forum['fid'], $unviewableforums) || $forum['password'] && isset($mybb->cookies['forumpass'][$forum['fid']]) && $mybb->cookies['forumpass'][$forum['fid']] == md5($mybb->user['uid'].$forum['password']))
+					if($forum['password'] == '' && !in_array($forum['fid'], $unexp) || $forum['password'] && isset($mybb->cookies['forumpass'][$forum['fid']]) && $mybb->cookies['forumpass'][$forum['fid']] == md5($mybb->user['uid'].$forum['password']))
 					{
 						$forumlistbits .= "<option value=\"{$forum['fid']}\" $optionselected>$depth {$forum['name']}</option>\n";
 					}
@@ -1009,21 +1003,19 @@ function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="", $
 					if(!empty($forumcache[$forum['fid']]))
 					{
 						$newdepth = $depth."&nbsp;&nbsp;&nbsp;&nbsp;";
-						$forumlistbits .= makesyndicateforums($forum['fid'], $selitem, 0, $newdepth, $perms);
+						$forumlistbits .= makesyndicateforums($forum['fid'], '', 0, $newdepth);
 					}
 				}
 			}
 		}
 	}
+	
 	if($addselect)
 	{
+		$addsel = '';
 		if(empty($selecteddone))
 		{
-			$addsel = " selected=\"selected\"";
-		}
-		else
-		{
-			$addsel = '';
+			$addsel = ' selected="selected"';
 		}
 
 		eval("\$forumlist = \"".$templates->get("misc_syndication_forumlist")."\";");

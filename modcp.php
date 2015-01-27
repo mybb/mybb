@@ -3656,13 +3656,9 @@ if($mybb->input['action'] == "ipsearch")
 		$results = '';
 		if(isset($mybb->input['search_users']) && $user_results && $start <= $user_results)
 		{
-			$query = $db->query("
-				SELECT username, uid, regip, lastip
-				FROM ".TABLE_PREFIX."users
-				WHERE {$user_ip_sql}
-				ORDER BY regdate DESC
-				LIMIT {$start}, {$perpage}
-			");
+			$query = $db->simple_select('users', 'username, uid, regip, lastip', $user_ip_sql,
+					array('order_by' => 'regdate', 'order_dir' => 'DESC', 'limit_start' => $start, 'limit' => $perpage));
+			
 			while($ipaddress = $db->fetch_array($query))
 			{
 				$result = false;
@@ -3715,13 +3711,10 @@ if($mybb->input['action'] == "ipsearch")
 		if(isset($mybb->input['search_posts']) && $post_results && (!isset($mybb->input['search_users']) || (isset($mybb->input['search_users']) && $post_limit > 0)))
 		{
 			$ipaddresses = $tids = $uids = array();
-			$query = $db->query("
-				SELECT username AS postusername, uid, subject, pid, tid, ipaddress
-				FROM ".TABLE_PREFIX."posts
-				WHERE {$post_ip_sql} AND visible >= -1
-				ORDER BY dateline DESC
-				LIMIT {$post_start}, {$post_limit}
-			");
+			
+			$query = $db->simple_select('posts', 'username AS postusername, uid, subject, pid, tid, ipaddress', "$post_ip_sql AND visible >= -1",
+					array('order_by' => 'dateline', 'order_dir' => 'DESC', 'limit_start' => $post_start, 'limit' => $post_limit));
+
 			while($ipaddress = $db->fetch_array($query))
 			{
 				$tids[$ipaddress['tid']] = $ipaddress['pid'];

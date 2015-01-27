@@ -2841,11 +2841,6 @@ function build_forum_jump($pid="0", $selitem="", $addselect="1", $depth="", $sho
 
 	$pid = (int)$pid;
 
-	if($permissions)
-	{
-		$permissions = $mybb->usergroup;
-	}
-
 	if(!is_array($jumpfcache))
 	{
 		if(!is_array($forum_cache))
