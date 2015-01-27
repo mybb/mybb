@@ -56,26 +56,21 @@ $membersperday = my_number_format(round(($stats['numusers'] / $days), 2));
 // Get forum permissions
 $unviewableforums = get_unviewable_forums(true);
 $inactiveforums = get_inactive_forums();
-$fidnot = '1=1 AND ';
-$unviewableforumsarray = array();
+$unviewablefids = $inactivefids = array();
+$fidnot = '';
+
 if($unviewableforums)
 {
-	$fidnot .= "fid NOT IN ($unviewableforums) AND ";
-	$unviewableforumsfids = explode(',', str_replace("'", '', $unviewableforums));
-	foreach($unviewableforumsfids as $fid)
-	{
-		$unviewableforumsarray[] = (int)$fid;
-	}
+	$fidnot .= "AND fid NOT IN $unviewableforums";
+	$unviewablefids = explode(',', $unviewableforums);
 }
 if($inactiveforums)
 {
-	$fidnot .= "fid NOT IN ($inactiveforums) AND ";
-	$unviewableforumsfids = explode(',', $inactiveforums);
-	foreach($unviewableforumsfids as $fid)
-	{
-		$unviewableforumsarray[] = (int)$fid;
-	}
+	$fidnot .= "AND fid NOT IN $inactiveforums";
+	$inactivefids = explode(',', $inactiveforums);
 }
+
+$unviewableforumsarray = array_merge($unviewablefids, $inactivefids);
 
 // Most replied-to threads
 $most_replied = $cache->read("most_replied_threads");
@@ -142,7 +137,10 @@ if(!$statistics || TIME_NOW-$interval > $statistics['time'] || $mybb->settings['
 }
 
 // Top forum
-if(!isset($statistics['top_forum']['posts']))
+$query = $db->simple_select('forums', 'fid, name, threads, posts', "type='f'$fidnot", array('order_by' => 'posts', 'order_dir' => 'DESC', 'limit' => 1));
+$forum = $db->fetch_array($query);
+
+if(empty($forum['fid']))
 {
 	$topforum = $lang->none;
 	$topforumposts = $lang->no;
@@ -150,11 +148,10 @@ if(!isset($statistics['top_forum']['posts']))
 }
 else
 {
-	$forum = $forum_cache[(int)$statistics['top_forum']['fid']];
-
-	$topforum = "<a href=\"".get_forum_link($forum['fid'])."\">{$forum['name']}</a>";
-	$topforumposts = (int)$statistics['top_forum']['posts'];
-	$topforumthreads = (int)$statistics['top_forum']['threads'];
+	$forum['name'] = htmlspecialchars_uni(strip_tags($forum['name']));
+	$topforum = '<a href="'.get_forum_link($forum['fid'])."\">{$forum['name']}</a>";
+	$topforumposts = $forum['posts'];
+	$topforumthreads = $forum['threads'];
 }
 
 // Top referrer defined for the templates even if we don't use it

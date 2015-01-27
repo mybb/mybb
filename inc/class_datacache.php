@@ -660,9 +660,6 @@ class datacache
 	{
 		global $db;
 
-		$query = $db->simple_select('forums', 'fid, threads, posts', $fidnot.'type=\'f\'', array('order_by' => 'posts', 'order_dir' => 'DESC', 'limit' => 1));
-		$forum = $db->fetch_array($query);
-
 		$query = $db->simple_select('users', 'uid, username, referrals', 'referrals>0', array('order_by' => 'referrals', 'order_dir' => 'DESC', 'limit' => 1));
 		$topreferrer = $db->fetch_array($query);
 
@@ -678,7 +675,7 @@ class datacache
 		}
 
 		$query = $db->query('
-			SELECT u.uid, u.username, COUNT(*) AS poststoday
+			SELECT u.uid, u.username, COUNT(pid) AS poststoday
 			FROM '.TABLE_PREFIX.'posts p
 			LEFT JOIN '.TABLE_PREFIX.'users u ON (p.uid=u.uid)
 			WHERE p.dateline>'.$timesearch.'
@@ -687,15 +684,14 @@ class datacache
 		');
 		$topposter = $db->fetch_array($query);
 
-		$query = $db->simple_select('users', 'COUNT(*) AS posters', 'postnum>0');
+		$query = $db->simple_select('users', 'COUNT(uid) AS posters', 'postnum>0');
 		$posters = $db->fetch_field($query, 'posters');
 
 		$statistics = array(
 			'time' => TIME_NOW,
-			'top_forum' => (array)$forum,
 			'top_referrer' => (array)$topreferrer,
 			'top_poster' => (array)$topposter,
-			'posters' => (int)$posters,
+			'posters' => $posters,
 		);
 
 		$this->update('statistics', $statistics);

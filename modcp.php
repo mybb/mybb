@@ -176,8 +176,9 @@ if($mybb->usergroup['issupermod'] != 1)
 // Retrieve a list of unviewable forums
 $unviewableforums = get_unviewable_forums();
 $inactiveforums = get_inactive_forums();
+$unviewablefids1 = $unviewablefids2 = array();
 
-if($unviewableforums && !is_super_admin($mybb->user['uid']))
+if($unviewableforums)
 {
 	$flist .= " AND fid NOT IN ({$unviewableforums})";
 	$tflist .= " AND t.fid NOT IN ({$unviewableforums})";
