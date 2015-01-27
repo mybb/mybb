@@ -1040,13 +1040,8 @@ if($mybb->input['action'] == "do_new_announcement")
 		error_no_permission();
 	}
 
-<<<<<<< HEAD
 	$announcement_fid = $mybb->get_input('fid', MyBB::INPUT_INT);
-	if(($mybb->usergroup['issupermod'] != 1 && $announcement_fid == -1) || ($announcement_fid != -1 && !is_moderator($announcement_fid, "canmanageannouncements")) || ($unviewableforums && in_array($announcement['fid'], $unviewableforums)))
-=======
-	$announcement_fid = $mybb->get_input('fid', 1);
 	if(($mybb->usergroup['issupermod'] != 1 && $announcement_fid == -1) || ($announcement_fid != -1 && !is_moderator($announcement_fid, "canmanageannouncements")) || ($unviewableforums && in_array($announcement_fid, $unviewableforums)))
->>>>>>> Fix #1669 and #1670 - announcements no permission error and wrong $unviewablefids
 	{
 		error_no_permission();
 	}
