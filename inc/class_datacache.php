@@ -659,8 +659,22 @@ class datacache
 	function update_statistics()
 	{
 		global $db;
+		
+		$unviewableforums = get_unviewable_forums();
+		$inactiveforums = get_inactive_forums();
+		$fidnot = '';
+		
+		if($unviewableforums)
+		{
+			$fidnot = " AND fid NOT IN({$unviewableforums})";
+		}
+		
+		if($inactiveforums)
+		{
+			$fidnot .= " AND fid NOT IN({$inactiveforums})";
+		}
 
-		$query = $db->simple_select('forums', 'fid, threads, posts', $fidnot.'type=\'f\'', array('order_by' => 'posts', 'order_dir' => 'DESC', 'limit' => 1));
+		$query = $db->simple_select('forums', 'fid, threads, posts', "type='f'{$fidnot}", array('order_by' => 'posts', 'order_dir' => 'DESC', 'limit' => 1));
 		$forum = $db->fetch_array($query);
 
 		$query = $db->simple_select('users', 'uid, username, referrals', 'referrals>0', array('order_by' => 'referrals', 'order_dir' => 'DESC', 'limit' => 1));

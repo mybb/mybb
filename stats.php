@@ -56,11 +56,9 @@ $membersperday = my_number_format(round(($stats['numusers'] / $days), 2));
 // Get forum permissions
 $unviewableforums = get_unviewable_forums(true);
 $inactiveforums = get_inactive_forums();
-$fidnot = '1=1 AND ';
 $unviewableforumsarray = array();
 if($unviewableforums)
 {
-	$fidnot .= "fid NOT IN ($unviewableforums) AND ";
 	$unviewableforumsfids = explode(',', str_replace("'", '', $unviewableforums));
 	foreach($unviewableforumsfids as $fid)
 	{
@@ -69,7 +67,6 @@ if($unviewableforums)
 }
 if($inactiveforums)
 {
-	$fidnot .= "fid NOT IN ($inactiveforums) AND ";
 	$unviewableforumsfids = explode(',', $inactiveforums);
 	foreach($unviewableforumsfids as $fid)
 	{
