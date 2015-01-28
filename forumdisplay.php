@@ -603,7 +603,7 @@ if(isset($fpermissions['canonlyviewownthreads']) && $fpermissions['canonlyviewow
 if($fpermissions['canviewthreads'] != 0)
 {
 	// How many posts are there?
-	if($datecut > 0 || isset($fpermissions['canonlyviewownthreads']) && $fpermissions['canonlyviewownthreads'] == 1)
+	if(($datecut > 0 && $datecut != 9999) || isset($fpermissions['canonlyviewownthreads']) && $fpermissions['canonlyviewownthreads'] == 1)
 	{
 		$query = $db->simple_select("threads", "COUNT(tid) AS threads", "fid = '$fid' $useronly $visibleonly $datecutsql $prefixsql");
 		$threadcount = $db->fetch_field($query, "threads");
@@ -692,7 +692,7 @@ if($mybb->input['sortby'] || $mybb->input['order'] || $mybb->input['datecut'] ||
 		$and = "&";
 	}
 
-	if($datecut > 0)
+	if($datecut > 0 && $datecut != 9999)
 	{
 		$page_url .= "{$q}{$and}datecut={$datecut}";
 		$q = '';
