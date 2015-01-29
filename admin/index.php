@@ -514,7 +514,7 @@ if($mybb->input['do'] == "do_2fa" && $mybb->request_method == "post")
 	}
 
 	// Validate the code
-	require_once MYBB_ROOT."inc/3rdparty/mybb2fa/GoogleAuthenticator.php";
+	require_once MYBB_ROOT."inc/3rdparty/2fa/GoogleAuthenticator.php";
 	$auth = new PHPGangsta_GoogleAuthenticator;
 
 	$test = $auth->verifyCode($admin_options['2fasecret'], $mybb->get_input('code'));

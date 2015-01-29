@@ -44,7 +44,7 @@ if($mybb->input['action'] == "recovery_codes")
 }
 if(!$mybb->input['action'])
 {
-	require_once MYBB_ROOT."inc/3rdparty/mybb2fa/GoogleAuthenticator.php";
+	require_once MYBB_ROOT."inc/3rdparty/2fa/GoogleAuthenticator.php";
 	$auth = new PHPGangsta_GoogleAuthenticator;
 
 	$plugins->run_hooks("admin_home_preferences_start");
