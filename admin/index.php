@@ -16,6 +16,8 @@ define("ADMIN_IP_SEGMENTS", 0);
 
 require_once dirname(dirname(__FILE__))."/inc/init.php";
 
+$shutdown_queries = $shutdown_functions = array();
+
 send_page_headers();
 
 if(!isset($config['admin_dir']) || !file_exists(MYBB_ROOT.$config['admin_dir']."/inc/class_page.php"))

@@ -894,7 +894,7 @@ class DefaultFormContainer
 	/**
 	 * Initialise the new form container.
 	 *
-	 * @param string The title of the forum container
+	 * @param string The title of the form container
 	 * @param string An additional class to apply if we have one.
 	 */
 	function __construct($title='', $extra_class='')
@@ -1051,4 +1051,3 @@ class DefaultFormContainer
 		}
 	}
 }
-

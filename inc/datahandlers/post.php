@@ -390,11 +390,7 @@ class PostDataHandler extends DataHandler
 		}
 
 		// Check to see if this person is in a usergroup that is excluded
-		if($mybb->settings['postmergeuignore'] == -1)
-		{
-			return true;
-		}
-		elseif($mybb->settings['postmergeuignore'] != '' && is_member($mybb->settings['postmergeuignore'], $post['uid']))
+		if(is_member($mybb->settings['postmergeuignore'], $post['uid']))
 		{
 			return true;
 		}

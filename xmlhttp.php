@@ -28,7 +28,7 @@ define('THIS_SCRIPT', 'xmlhttp.php');
 // Load MyBB core files
 require_once dirname(__FILE__)."/inc/init.php";
 
-$shutdown_queries = array();
+$shutdown_queries = $shutdown_functions = array();
 
 // Load some of the stock caches we'll be using.
 $groupscache = $cache->read("usergroups");

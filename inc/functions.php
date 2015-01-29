@@ -400,7 +400,7 @@ function my_date($format, $stamp="", $offset="", $ty=1, $adodb=false)
 	if($format == 'relative')
 	{
 		// Relative formats both date and time
-		if($ty != 2 && (TIME_NOW - $stamp) < 3600)
+		if($ty != 2 && abs(TIME_NOW - $stamp) < 3600)
 		{
 			$diff = TIME_NOW - $stamp;
 			$relative = array('prefix' => '', 'minute' => 0, 'plural' => $lang->rel_minutes_plural, 'suffix' => $lang->rel_ago);
@@ -428,7 +428,7 @@ function my_date($format, $stamp="", $offset="", $ty=1, $adodb=false)
 
 			$date = $lang->sprintf($lang->rel_time, $relative['prefix'], $relative['minute'], $relative['plural'], $relative['suffix']);
 		}
-		elseif($ty != 2 && (TIME_NOW - $stamp) >= 3600 && (TIME_NOW - $stamp) < 43200)
+		elseif($ty != 2 && abs(TIME_NOW - $stamp) < 43200)
 		{
 			$diff = TIME_NOW - $stamp;
 			$relative = array('prefix' => '', 'hour' => 0, 'plural' => $lang->rel_hours_plural, 'suffix' => $lang->rel_ago);
@@ -1201,7 +1201,7 @@ function user_permissions($uid=0)
 }
 
 /**
- * Fetch the usergroup permissions for a specic group or series of groups combined
+ * Fetch the usergroup permissions for a specific group or series of groups combined
  *
  * @param mixed A list of groups (Can be a single integer, or a list of groups separated by a comma)
  * @return array Array of permissions generated for the groups
@@ -1217,11 +1217,12 @@ function usergroup_permissions($gid=0)
 
 	$groups = explode(",", $gid);
 
-
 	if(count($groups) == 1)
 	{
 		return $groupscache[$gid];
 	}
+	
+	$usergroup = array();
 
 	foreach($groups as $gid)
 	{
@@ -6545,7 +6546,7 @@ function is_banned_ip($ip_address, $update_lastuse=false)
 		$ip_range = fetch_ip_range($banned_ip['filter']);
 		if(is_array($ip_range))
 		{
-			if(strcmp($ip_range[0], $ip_address) >= 0 && strcmp($ip_range[1], $ip_address) <= 0)
+			if(strcmp($ip_range[0], $ip_address) <= 0 && strcmp($ip_range[1], $ip_address) >= 0)
 			{
 				$banned = true;
 			}
@@ -6815,13 +6816,18 @@ function is_super_admin($uid)
  * Originates from frostschutz's PluginLibrary
  * github.com/frostschutz
  *
- * @param mixed A selection of groups to check
+ * @param mixed A selection of groups to check or -1 for any group
  * @param mixed User to check selection against
- * @return mixed Array of groups this user belongs to
+ * @return array Array of groups specified in the first param to which the user belongs
  */
 function is_member($groups, $user = false)
 {
 	global $mybb;
+	
+	if(empty($groups))
+	{
+		return array();
+	}	
 
 	if($user == false)
 	{
@@ -6838,13 +6844,20 @@ function is_member($groups, $user = false)
 
 	if(!is_array($groups))
 	{
-		if(is_string($groups))
+		if((int)$groups == -1)
 		{
-			$groups = explode(',', $groups);
+			return $memberships;
 		}
 		else
 		{
-			$groups = (array)$groups;
+			if(is_string($groups))
+			{
+				$groups = explode(',', $groups);
+			}
+			else
+			{
+				$groups = (array)$groups;
+			}
 		}
 	}
 
@@ -7283,6 +7296,13 @@ function fetch_ip_range($ipaddress)
 		else
 		{
 			// IPv4
+			$ip_bits = count(explode('.', $ipaddress));
+			if($ip_bits < 4)
+			{
+				// Support for 127.0.*
+				$replacement = str_repeat('.*', 4-$ip_bits);
+				$ipaddress = substr_replace($ipaddress, $replacement, strrpos($ipaddress, '*')+1, 0);
+			}
 			$upper = str_replace('*', '255', $ipaddress);
 			$lower = str_replace('*', '0', $ipaddress);
 		}

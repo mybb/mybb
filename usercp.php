@@ -265,7 +265,7 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 			continue;
 		}
 
-		if($mybb->settings[$csetting] != -1 && !is_member($mybb->settings[$csetting]))
+		if(!is_member($mybb->settings[$csetting]))
 		{
 			continue;
 		}
@@ -420,7 +420,7 @@ if($mybb->input['action'] == "profile")
 			continue;
 		}
 
-		if($mybb->settings[$csetting] != -1 && !is_member($mybb->settings[$csetting]))
+		if(!is_member($mybb->settings[$csetting]))
 		{
 			continue;
 		}
@@ -519,13 +519,7 @@ if($mybb->input['action'] == "profile")
 	{
 		foreach($pfcache as $profilefield)
 		{
-			if(empty($profilefield['editableby']) || ($profilefield['editableby'] != -1 && !is_member($profilefield['editableby'])))
-			{
-				continue;
-			}
-
-			// Does this field have a minimum post count?
-			if($profilefield['postnum'] && $profilefield['postnum'] > $mybb->user['postnum'])
+			if(!is_member($profilefield['editableby']) || ($profilefield['postnum'] && $profilefield['postnum'] > $mybb->user['postnum']))
 			{
 				continue;
 			}

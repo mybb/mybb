@@ -21,6 +21,8 @@ require_once MYBB_ROOT."inc/class_session.php";
 require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 
+$shutdown_queries = $shutdown_functions = array();
+
 $groupscache = $cache->read("usergroups");
 if(!is_array($groupscache))
 {
