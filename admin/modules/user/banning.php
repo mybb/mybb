@@ -557,7 +557,7 @@ if(!$mybb->input['action'])
 	// Autocompletion for usernames
 	echo '
 	<link rel="stylesheet" href="../jscripts/select2/select2.css">
-	<script type="text/javascript" src="../jscripts/select2/select2.min.js"></script>
+	<script type="text/javascript" src="../jscripts/select2/select2.min.js?ver=1804"></script>
 	<script type="text/javascript">
 	<!--
 	$("#username").select2({
