@@ -4830,30 +4830,40 @@ function leave_usergroup($uid, $leavegroup)
  *
  * @param boolean True to return as "hidden" fields
  * @param array Array of fields to ignore if first argument is true
+ * @param boolean True to skip all inputs and return only the file path part of the URL
  * @return string The current URL being accessed
  */
-function get_current_location($fields=false, $ignore=array())
+function get_current_location($fields=false, $ignore=array(), $quick=false)
 {
 	if(defined("MYBB_LOCATION"))
 	{
 		return MYBB_LOCATION;
 	}
 
-	if(!empty($_SERVER['PATH_INFO']))
+	if(!empty($_SERVER['SCRIPT_NAME']))
 	{
-		$location = htmlspecialchars_uni($_SERVER['PATH_INFO']);
+		$location = htmlspecialchars_uni($_SERVER['SCRIPT_NAME']);
 	}
-	elseif(!empty($_ENV['PATH_INFO']))
+	elseif(!empty($_SERVER['PHP_SELF']))
 	{
-		$location = htmlspecialchars_uni($_ENV['PATH_INFO']);
+		$location = htmlspecialchars_uni($_SERVER['PHP_SELF']);
 	}
 	elseif(!empty($_ENV['PHP_SELF']))
 	{
 		$location = htmlspecialchars_uni($_ENV['PHP_SELF']);
 	}
+	elseif(!empty($_SERVER['PATH_INFO']))
+	{
+		$location = htmlspecialchars_uni($_SERVER['PATH_INFO']);
+	}
 	else
 	{
-		$location = htmlspecialchars_uni($_SERVER['PHP_SELF']);
+		$location = htmlspecialchars_uni($_ENV['PATH_INFO']);
+	}
+	
+	if($quick)
+	{
+		return $location;
 	}
 
 	if($fields == true)
