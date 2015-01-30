@@ -22,7 +22,7 @@ send_page_headers();
 
 if(!isset($config['admin_dir']) || !file_exists(MYBB_ROOT.$config['admin_dir']."/inc/class_page.php"))
 {
-	$config['admin_dir'] = "admin";
+	$config['admin_dir'] = basename(dirname(__FILE__));
 }
 
 define('MYBB_ADMIN_DIR', MYBB_ROOT.$config['admin_dir'].'/');
@@ -36,21 +36,8 @@ require_once MYBB_ADMIN_DIR."inc/functions.php";
 require_once MYBB_ROOT."inc/functions_user.php";
 
 // Set cookie path to our admin dir temporarily, i.e. so that it affects the ACP only
-if(!$mybb->settings['cookiepath'])
-{
-	$mybb->settings['cookiepath'] = "/".$config['admin_dir'].'/';
-}
-else
-{
-	if(substr($mybb->settings['cookiepath'], -1) != '/')
-	{
-		$mybb->settings['cookiepath'] .= '/'.$config['admin_dir'].'/';
-	}
-	else
-	{
-		$mybb->settings['cookiepath'] .= $config['admin_dir'].'/';
-	}
-}
+$loc = get_current_location('', '', true);
+$mybb->settings['cookiepath'] = substr($loc, 0, strrpos($loc, "/{$config['admin_dir']}/"))."/{$config['admin_dir']}/";
 
 if(!isset($cp_language))
 {
