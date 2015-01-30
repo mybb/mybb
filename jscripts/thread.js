@@ -191,6 +191,7 @@ var Thread = {
 				{
 					id = $(this).attr('id');
 					pid = id.replace( /[^\d.]/g, '');
+					pid = id.replace(/\n/gi, "<br>\n");
 					return {
 						editreason: $("#quickedit_" + pid + "_editreason").val()
 					}
@@ -199,6 +200,7 @@ var Thread = {
 				{
 					id = $(this).attr('id');
 					pid = id.replace( /[^\d.]/g, '');
+					pid = id.replace(/\n/gi, "<br>\n");
 					
 					var json = $.parseJSON(values);
 					if(typeof json == 'object')
