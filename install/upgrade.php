@@ -169,7 +169,7 @@ else
 		}
 
 		my_unsetcookie("mybbuser");
-		my_unsetcookie("sid");
+
 		if($mybb->user['uid'])
 		{
 			$time = TIME_NOW;
@@ -178,7 +178,6 @@ else
 				"lastvisit" => $time,
 			);
 			$db->update_query("users", $lastvisit, "uid='".$mybb->user['uid']."'");
-			$db->delete_query("sessions", "sid='".$session->sid."'");
 		}
 		header("Location: upgrade.php");
 	}
@@ -208,19 +207,7 @@ else
 			}
 		}
 
-		$db->delete_query("sessions", "ip='".$db->escape_string($session->ipaddress)."' AND sid != '".$session->sid."'");
-
-		$newsession = array(
-			"uid" => $user['uid']
-		);
-
-		$db->update_query("sessions", $newsession, "sid='".$session->sid."'");
-
-		// Temporarily set the cookie remember option for the login cookies
-		$mybb->user['remember'] = $user['remember'];
-
 		my_setcookie("mybbuser", $user['uid']."_".$user['loginkey'], null, true);
-		my_setcookie("sid", $session->sid, -1, true);
 
 		header("Location: ./upgrade.php");
 	}

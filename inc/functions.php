@@ -1201,7 +1201,7 @@ function user_permissions($uid=0)
 }
 
 /**
- * Fetch the usergroup permissions for a specic group or series of groups combined
+ * Fetch the usergroup permissions for a specific group or series of groups combined
  *
  * @param mixed A list of groups (Can be a single integer, or a list of groups separated by a comma)
  * @return array Array of permissions generated for the groups
@@ -1217,11 +1217,12 @@ function usergroup_permissions($gid=0)
 
 	$groups = explode(",", $gid);
 
-
 	if(count($groups) == 1)
 	{
 		return $groupscache[$gid];
 	}
+	
+	$usergroup = array();
 
 	foreach($groups as $gid)
 	{
@@ -4829,30 +4830,40 @@ function leave_usergroup($uid, $leavegroup)
  *
  * @param boolean True to return as "hidden" fields
  * @param array Array of fields to ignore if first argument is true
+ * @param boolean True to skip all inputs and return only the file path part of the URL
  * @return string The current URL being accessed
  */
-function get_current_location($fields=false, $ignore=array())
+function get_current_location($fields=false, $ignore=array(), $quick=false)
 {
 	if(defined("MYBB_LOCATION"))
 	{
 		return MYBB_LOCATION;
 	}
 
-	if(!empty($_SERVER['PATH_INFO']))
+	if(!empty($_SERVER['SCRIPT_NAME']))
 	{
-		$location = htmlspecialchars_uni($_SERVER['PATH_INFO']);
+		$location = htmlspecialchars_uni($_SERVER['SCRIPT_NAME']);
 	}
-	elseif(!empty($_ENV['PATH_INFO']))
+	elseif(!empty($_SERVER['PHP_SELF']))
 	{
-		$location = htmlspecialchars_uni($_ENV['PATH_INFO']);
+		$location = htmlspecialchars_uni($_SERVER['PHP_SELF']);
 	}
 	elseif(!empty($_ENV['PHP_SELF']))
 	{
 		$location = htmlspecialchars_uni($_ENV['PHP_SELF']);
 	}
+	elseif(!empty($_SERVER['PATH_INFO']))
+	{
+		$location = htmlspecialchars_uni($_SERVER['PATH_INFO']);
+	}
 	else
 	{
-		$location = htmlspecialchars_uni($_SERVER['PHP_SELF']);
+		$location = htmlspecialchars_uni($_ENV['PATH_INFO']);
+	}
+	
+	if($quick)
+	{
+		return $location;
 	}
 
 	if($fields == true)
@@ -6815,13 +6826,18 @@ function is_super_admin($uid)
  * Originates from frostschutz's PluginLibrary
  * github.com/frostschutz
  *
- * @param mixed A selection of groups to check
+ * @param mixed A selection of groups to check or -1 for any group
  * @param mixed User to check selection against
- * @return mixed Array of groups this user belongs to
+ * @return array Array of groups specified in the first param to which the user belongs
  */
 function is_member($groups, $user = false)
 {
 	global $mybb;
+	
+	if(empty($groups))
+	{
+		return array();
+	}	
 
 	if($user == false)
 	{
@@ -6838,13 +6854,20 @@ function is_member($groups, $user = false)
 
 	if(!is_array($groups))
 	{
-		if(is_string($groups))
+		if((int)$groups == -1)
 		{
-			$groups = explode(',', $groups);
+			return $memberships;
 		}
 		else
 		{
-			$groups = (array)$groups;
+			if(is_string($groups))
+			{
+				$groups = explode(',', $groups);
+			}
+			else
+			{
+				$groups = (array)$groups;
+			}
 		}
 	}
 

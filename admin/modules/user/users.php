@@ -2130,7 +2130,7 @@ if($mybb->input['action'] == "merge")
 	// Autocompletion for usernames
 	echo '
 	<link rel="stylesheet" href="../jscripts/select2/select2.css">
-	<script type="text/javascript" src="../jscripts/select2/select2.min.js"></script>
+	<script type="text/javascript" src="../jscripts/select2/select2.min.js?ver=1804"></script>
 	<script type="text/javascript">
 	<!--
 	$("#source_username").select2({
@@ -4131,7 +4131,7 @@ function user_search_conditions($input=array(), &$form)
 	// Autocompletion for usernames
 	echo '
 <link rel="stylesheet" href="../jscripts/select2/select2.css">
-<script type="text/javascript" src="../jscripts/select2/select2.min.js"></script>
+<script type="text/javascript" src="../jscripts/select2/select2.min.js?ver=1804"></script>
 <script type="text/javascript">
 <!--
 $("#username").select2({

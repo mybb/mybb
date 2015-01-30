@@ -507,7 +507,7 @@ class UserDataHandler extends DataHandler
 					$profilefield['editableby'] = -1;
 				}
 
-				if(empty($profilefield['editableby']) || ($profilefield['editableby'] != -1 && !is_member($profilefield['editableby'], array('usergroup' => $user['usergroup'], 'additionalgroups' => $user['additionalgroups']))))
+				if(!is_member($profilefield['editableby'], array('usergroup' => $user['usergroup'], 'additionalgroups' => $user['additionalgroups'])))
 				{
 					continue;
 				}

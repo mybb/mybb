@@ -115,7 +115,7 @@ class DefaultPage
 		echo "	<link rel=\"stylesheet\" href=\"jscripts/jqueryui/css/redmond/jquery-ui.min.css\" />\n";
 		echo "	<link rel=\"stylesheet\" href=\"jscripts/jqueryui/css/redmond/jquery-ui.structure.min.css\" />\n";
 		echo "	<link rel=\"stylesheet\" href=\"jscripts/jqueryui/css/redmond/jquery-ui.theme.min.css\" />\n";
-		echo "	<script src=\"jscripts/jqueryui/js/jquery-ui.min.js\"></script>\n";
+		echo "	<script src=\"jscripts/jqueryui/js/jquery-ui.min.js?ver=1804\"></script>\n";
 
 		// Stop JS elements showing while page is loading (JS supported browsers only)
 		echo "  <style type=\"text/css\">.popup_button { display: none; } </style>\n";

@@ -4348,7 +4348,7 @@ $(".forumjump").change(function() {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="managegroup_adduser" version="1800"><![CDATA[<br />
+		<template name="managegroup_adduser" version="1804"><![CDATA[<br />
 <form method="post" action="managegroup.php">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="do_add" />
@@ -4363,7 +4363,7 @@ $(".forumjump").change(function() {
 </tr>
 </table>
 <link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css">
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1804"></script>
 <script type="text/javascript">
 <!--
 if(use_xmlhttprequest == "1")
@@ -4403,7 +4403,7 @@ if(use_xmlhttprequest == "1")
 <br />
 <div align="center"><input type="submit" class="button" value="{$lang->add_member_submit}" /></div>
 </form>]]></template>
-		<template name="managegroup_inviteuser" version="1800"><![CDATA[<br />
+		<template name="managegroup_inviteuser" version="1804"><![CDATA[<br />
 <form method="post" action="managegroup.php">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="do_invite" />
@@ -4418,7 +4418,7 @@ if(use_xmlhttprequest == "1")
 </tr>
 </table>
 <link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css">
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1804"></script>
 <script type="text/javascript">
 <!--
 if(use_xmlhttprequest == "1")
@@ -4938,7 +4938,7 @@ if(use_xmlhttprequest == "1")
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->registration}</title>
 {$headerinclude}
-<script src="{$mybb->asset_url}/jscripts/validate/jquery.validate.min.js"></script>
+<script src="{$mybb->asset_url}/jscripts/validate/jquery.validate.min.js?ver=1804"></script>
 </head>
 <body>
 {$header}
@@ -5317,7 +5317,7 @@ $(document).ready(function() {
 		// -->
 		</script>
 		]]></template>
-		<template name="member_register_referrer" version="1800"><![CDATA[<br />
+		<template name="member_register_referrer" version="1804"><![CDATA[<br />
 <fieldset class="trow2">
 <legend><strong>{$lang->referrer}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
@@ -5331,7 +5331,7 @@ $(document).ready(function() {
 </tr></table>
 </fieldset>
 <link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css">
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1804"></script>
 <script type="text/javascript">
 <!--
 if(use_xmlhttprequest == "1")
@@ -5613,7 +5613,7 @@ if(use_xmlhttprequest == "1")
 </form>
 {$footer}
 <link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css">
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1804"></script>
 <script type="text/javascript">
 <!--
 if(use_xmlhttprequest == "1")
@@ -5760,7 +5760,7 @@ if(use_xmlhttprequest == "1")
 </form>
 {$footer}
 <link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css">
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1804"></script>
 <script type="text/javascript">
 <!--
 if(use_xmlhttprequest == "1")
@@ -6606,7 +6606,7 @@ if(use_xmlhttprequest == "1")
 		<template name="modcp_banning_nobanned" version="1400"><![CDATA[<tr>
 	<td class="trow1" align="center" colspan="4">{$lang->no_banned}</td>
 </tr>]]></template>
-		<template name="modcp_banuser" version="1800"><![CDATA[<html>
+		<template name="modcp_banuser" version="1804"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->ban_user}</title>
 {$headerinclude}
@@ -6650,7 +6650,7 @@ if(use_xmlhttprequest == "1")
 	</table>
 	{$footer}
 <link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css">
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1804"></script>
 <script type="text/javascript">
 <!--
 if(use_xmlhttprequest == "1")
@@ -7086,7 +7086,7 @@ if(use_xmlhttprequest == "1")
 		<template name="modcp_editprofile_suspensions_info" version="1600"><![CDATA[<tr>
 	<td colspan="2" class="smalltext"><em>{$suspension_info}</em></td>
 </tr>]]></template>
-		<template name="modcp_finduser" version="1800"><![CDATA[<html>
+		<template name="modcp_finduser" version="1804"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->find_users}</title>
 {$headerinclude}
@@ -7149,7 +7149,7 @@ if(use_xmlhttprequest == "1")
 	</form>
 {$footer}
 <link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css" />
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1804"></script>
 <script type="text/javascript">
 <!--
 if(use_xmlhttprequest == "1")
@@ -7792,7 +7792,7 @@ if(use_xmlhttprequest == "1")
 		<template name="modcp_nobanned" version="1613"><![CDATA[<tr>
 		<td class="trow1" align="center" colspan="4">{$lang->no_bans_ending}</td>
 </tr>]]></template>
-		<template name="modcp_warninglogs" version="1800"><![CDATA[<html>
+		<template name="modcp_warninglogs" version="1804"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->warning_logs}</title>
 {$headerinclude}
@@ -7869,7 +7869,7 @@ if(use_xmlhttprequest == "1")
 	</table>
 	{$footer}
 <link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css">
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1804"></script>
 <script type="text/javascript">
 <!--
 if(use_xmlhttprequest == "1")
@@ -9560,7 +9560,7 @@ if(use_xmlhttprequest == "1")
 		<template name="postbit_find" version="1800"><![CDATA[<a href="search.php?action=finduser&amp;uid={$post['uid']}" title="{$lang->postbit_find}" class="postbit_find"><span>{$lang->postbit_button_find}</span></a>]]></template>
 		<template name="postbit_forward_pm" version="1800"><![CDATA[<a href="private.php?action=send&amp;pmid={$id}&amp;do=forward" title="{$lang->forward_title}" class="postbit_forward_pm"><span>{$lang->postbit_button_forward}</span></a>]]></template>
 		<template name="postbit_purgespammer" version="1800"><![CDATA[<a href="moderation.php?action=purgespammer&amp;uid={$post['uid']}" title="{$lang->postbit_purgespammer}" class="postbit_purgespammer"><span>{$lang->postbit_button_purgespammer}</span></a>]]></template>
-		<template name="postbit_gotopost" version="1400"><![CDATA[<a href="{$url}" class="quick_jump">&nbsp;</a>]]></template>
+		<template name="postbit_gotopost" version="1804"><![CDATA[ <a href="{$url}" class="quick_jump"></a>]]></template>
 		<template name="postbit_groupimage" version="120"><![CDATA[<img src="{$usergroup['image']}" alt="{$usergroup['title']}" title="{$usergroup['title']}" />]]></template>
 		<template name="postbit_icon" version="1800"><![CDATA[<img src="{$icon['path']}" alt="{$icon['name']}" title="{$icon['name']}" style="vertical-align: middle;" />&nbsp;]]></template>
 		<template name="postbit_ignored" version="1800"><![CDATA[<div class="ignored_post" id="ignored_post_{$post['pid']}">
@@ -10316,8 +10316,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </script>
 </body>
 </html>]]></template>
-		<template name="private_send_autocomplete" version="1800"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css">
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
+		<template name="private_send_autocomplete" version="1804"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css">
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1804"></script>
 <script type="text/javascript">
 <!--
 if(use_xmlhttprequest == "1")
@@ -10768,7 +10768,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 			<a href="javascript:Report.reportReputation({$reputation_vote['rid']});" class="postbit_report"><span>{$lang->report_vote}</span></a>
 		</div>]]>
 		</template>
-		<template name="search" version="1800"><![CDATA[<html>
+		<template name="search" version="1804"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->search}</title>
 {$headerinclude}
@@ -10849,7 +10849,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </form>
 {$footer}
 <link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css">
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1804"></script>
 <script type="text/javascript">
 <!--
 if(use_xmlhttprequest == "1")
@@ -12006,7 +12006,7 @@ if(use_xmlhttprequest == "1")
 		{$lang->no_requests}
 	</td>
 </tr>]]></template>
-		<template name="usercp_editlists" version="1800"><![CDATA[<html>
+		<template name="usercp_editlists" version="1804"><![CDATA[<html>
 <head>
 	<title>{$mybb->settings['bbname']} - {$lang->edit_lists}</title>
 	{$headerinclude}
@@ -12020,7 +12020,7 @@ if(use_xmlhttprequest == "1")
 	</script>
 
   <link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css">
-	<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
+	<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1804"></script>
 
 </head>
 <body>
@@ -13834,8 +13834,8 @@ $(function() {
 <link rel="alternate" type="application/atom+xml" title="{$lang->latest_threads} (Atom 1.0)" href="{$mybb->settings['bburl']}/syndication.php?type=atom1.0" />
 <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.js?ver=1800"></script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.plugins.min.js?ver=1800"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.js?ver=1804"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.plugins.min.js?ver=1804"></script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/general.js?ver=1804"></script>
 
 {$stylesheets}
