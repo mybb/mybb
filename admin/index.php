@@ -155,7 +155,7 @@ elseif($mybb->input['do'] == "login")
 		'password' => $mybb->input['password']
 	));
 
-	if($loginhandler->verify_username() !== false && $loginhandler->verify_password() !== false)
+	if($loginhandler->validate_login() == true)
 	{
 		$mybb->user = get_user($loginhandler->login_data['uid']);
 	}
