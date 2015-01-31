@@ -1171,9 +1171,8 @@ switch($mybb->input['action'])
 			$hostname = $lang->resolve_fail;
 		}
 
-		$user = get_user($pm['uid']);
-
-		$username = build_profile_link($user['username'], $pm['uid']);
+		$name = $db->fetch_field($db->simple_select('users', 'username', "uid = {$pm['fromid']}"), 'username');
+		$username = build_profile_link($name, $pm['fromid']);
 
 		// Moderator options
 		$modoptions = "";
