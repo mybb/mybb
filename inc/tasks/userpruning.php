@@ -55,7 +55,7 @@ function task_userpruning($task)
 
 		if($users && $mybb->settings['prunepostcountall'])
 		{
-			$query = $db->simple_select('posts', 'uid, COUNT(pid) as posts', "uid IN ('".implode("','", $users)."')", array('group_by' => 'uid'));
+			$query = $db->simple_select('posts', 'uid, COUNT(pid) as posts', "uid IN ('".implode("','", $users)."') AND visible>0", array('group_by' => 'uid'));
 			while($user = $db->fetch_array($query))
 			{
 				if($user['posts'] >= $prunepostcount)
