@@ -1114,12 +1114,23 @@ class PostDataHandler extends DataHandler
 				AND s.uid != '{$post['uid']}'
 				AND u.lastactive>'{$thread['lastpost']}'
 			");
+
+			$args = array(
+				'this' => &$this,
+				'done_users' => &$done_users,
+			);
+
 			while($subscribedmember = $db->fetch_array($query))
 			{
 				if($done_users[$subscribedmember['uid']])
 				{
 					continue;
 				}
+
+				$args['subscribedmember'] = &$subscribedmember;
+
+				$plugins->run_hooks('datahandler_post_insert_subscribed_member', $args);
+
 				$done_users[$subscribedmember['uid']] = 1;
 
 				$forumpermissions = forum_permissions($thread['fid'], $subscribedmember['uid']);
