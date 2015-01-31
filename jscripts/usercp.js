@@ -5,12 +5,12 @@ var UserCP = {
 
 	openBuddySelect: function(field)
 	{
-		if(!$("#"+field))
+		if(!$("#"+field).length)
 		{
 			return false;
 		}
 		this.buddy_field = '#'+field;
-		if($("#buddyselect_container").length > 0)
+		if($("#buddyselect_container").length)
 		{
 			UserCP.buddySelectLoaded();
 			return false;
@@ -48,13 +48,13 @@ var UserCP = {
 			} catch (e) {
 				if(request.responseText)
 				{
-					if(buddyselect_container.length > 0)
+					if(buddyselect_container.length)
 					{
 						buddyselect_container.remove();
 					}
 					var container = $("<div />");
 					container.attr("id", "buddyselect_container");
-					container.css("display", "none");
+					container.hide();
 					container.html(request.responseText);
 					$("body").append(container);
 				}
@@ -96,7 +96,7 @@ var UserCP = {
 		var buddyselect_buddies_uid = $("#buddyselect_buddies_"+uid);
 		var buddyselect_buddies = $("#buddyselect_buddies");
 		// Buddy already in list - remove
-		if(buddyselect_buddies_uid.length > 0)
+		if(buddyselect_buddies_uid.length)
 		{
 			buddyselect_buddies_uid.remove();
 			var buddies = buddyselect_buddies.text();
@@ -127,7 +127,7 @@ var UserCP = {
 		{
 			var buddies = $("#buddyselect_buddies").text();
 			existing_buddies = $(this.buddy_field).select2("data");
-			if(existing_buddies.length > 0)
+			if(existing_buddies.length)
 			{
 				// We already have stuff in our text box we must merge it with the new array we're going to create from the selected buddies
 				// We don't need to care about having dupes because Select2 treats items by ID and we two items have the same ID, there are no dupes because only one exists

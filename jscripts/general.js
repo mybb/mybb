@@ -27,7 +27,7 @@ var MyBB = {
 
 		// Initialise "initial focus" field if we have one
 		var initialfocus = $(".initial_focus");
-		if(initialfocus.length > 0)
+		if(initialfocus.length)
 		{
 			initialfocus.focus();
 		}
@@ -224,7 +224,7 @@ var MyBB = {
 	markForumRead: function(event)
 	{
 		var element = $(event);
-		if(!element)
+		if(!element.length)
 		{
 			return false;
 		}
@@ -249,15 +249,16 @@ var MyBB = {
 	{
 		if(request == 1)
 		{
-			if($("#mark_read_"+fid).hasClass('subforum_minion'))
+			var markreadfid = $("#mark_read_"+fid);
+			if(markreadfid.hasClass('subforum_minion'))
 			{
-				$("#mark_read_"+fid).removeClass('subforum_minion').addClass('subforum_minioff');
+				markreadfid.removeClass('subforum_minion').addClass('subforum_minioff');
 			}
 			else
 			{
-				$("#mark_read_"+fid).removeClass('forum_on').addClass('forum_off');
+				markreadfid.removeClass('forum_on').addClass('forum_off');
 			}
-			$("#mark_read_"+fid).css("cursor", "default").attr("title", lang.no_new_posts);
+			markreadfid.css("cursor", "default").attr("title", lang.no_new_posts);
 		}
 	},
 
@@ -283,7 +284,7 @@ var MyBB = {
 	changeLanguage: function()
 	{
 		form = $("#lang_select");
-		if(!form)
+		if(!form.length)
 		{
 			return false;
 		}
@@ -293,7 +294,7 @@ var MyBB = {
 	changeTheme: function()
 	{
 		form = $("#theme_select");
-		if(!form)
+		if(!form.length)
 		{
 			return false;
 		}
