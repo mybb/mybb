@@ -3987,7 +3987,7 @@ function format_time_duration($time)
  */
 function get_attachment_icon($ext)
 {
-	global $cache, $attachtypes, $theme, $templates, $lang;
+	global $cache, $attachtypes, $theme, $templates, $lang, $mybb;
 
 	if(!$attachtypes)
 	{
