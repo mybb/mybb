@@ -61,12 +61,12 @@ $fidnot = '';
 
 if($unviewableforums)
 {
-	$fidnot .= "AND fid NOT IN $unviewableforums";
+	$fidnot .= "AND fid NOT IN ($unviewableforums)";
 	$unviewablefids = explode(',', $unviewableforums);
 }
 if($inactiveforums)
 {
-	$fidnot .= "AND fid NOT IN $inactiveforums";
+	$fidnot .= "AND fid NOT IN ($inactiveforums)";
 	$inactivefids = explode(',', $inactiveforums);
 }
 
