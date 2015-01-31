@@ -521,7 +521,8 @@ class postParser
 			{
 				$smilie['find'] = explode("\n", $smilie['find']);
 				$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
-				$smilie['image'] = $mybb->get_asset_url($smilie['image']);
+				$smilie['image'] = htmlspecialchars_uni($mybb->get_asset_url($smilie['image']));
+				$smilie['name'] = htmlspecialchars_uni($smilie['name']);
 
 				foreach($smilie['find'] as $s)
 				{
