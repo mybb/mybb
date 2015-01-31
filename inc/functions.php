@@ -3211,9 +3211,10 @@ function build_mycode_inserter($bind="message", $smilies = true)
 						// Only show the first text to replace in the box
 						$smilie['find'] = $finds[0];
 
-						$find = htmlspecialchars_uni($smilie['find']);
+						$find = addslashes(htmlspecialchars_uni($smilie['find']));
 						$image = $mybb->get_asset_url($smilie['image']);
-						$image = htmlspecialchars_uni($image);
+						$image = addslashes(htmlspecialchars_uni($image));
+
 						if($i < $mybb->settings['smilieinsertertot'])
 						{
 							$dropdownsmilies .= '"'.$find.'": "'.$image.'",';
@@ -3225,7 +3226,7 @@ function build_mycode_inserter($bind="message", $smilies = true)
 
 						for($j = 1; $j < $finds_count; ++$j)
 						{
-							$find = htmlspecialchars_uni($finds[$j]);
+							$find = addslashes(htmlspecialchars_uni($finds[$j]));
 							$hiddensmilies .= '"'.$find.'": "'.$image.'",';
 						}
 						++$i;
@@ -3366,9 +3367,9 @@ function build_clickable_smilies()
 					$temp = explode("\n", $smilie['find']); // assign to temporary variable for php 5.3 compatibility
 					$smilie['find'] = $temp[0];
 
-					$find = htmlspecialchars_uni($smilie['find']);
+					$find = addslashes(htmlspecialchars_uni($smilie['find']));
 
-					$onclick = ' onclick="MyBBEditor.insertText(\' '.$smilie['find'].' \');"';
+					$onclick = " onclick=\"MyBBEditor.insertText(' {$find} ');\"";
 					$extra_class = ' smilie_pointer';
 					eval('$smilie = "'.$templates->get('smilie', 1, 0).'";');
 					eval("\$smilies .= \"".$templates->get("smilieinsert_smilie")."\";");
