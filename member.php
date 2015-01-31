@@ -1891,6 +1891,8 @@ if($mybb->input['action'] == "viewnotes")
 
 	$user['usernotes'] = nl2br(htmlspecialchars_uni($user['usernotes']));
 
+	$plugins->run_hooks('member_viewnotes');
+
 	eval("\$viewnotes = \"".$templates->get("member_viewnotes", 1, 0)."\";");
 	echo $viewnotes;
 	exit;

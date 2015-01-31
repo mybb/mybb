@@ -45,7 +45,7 @@ if($mybb->input['action'] == "prune" && $mybb->request_method == "post")
 		}
 	}
 
-	$plugins->run_hooks("admin_tools_mailerrors_prune_commit");
+	$plugins->run_hooks("admin_tools_maillogs_prune_commit");
 
 	// Log admin action
 	log_admin_action($num_deleted);
