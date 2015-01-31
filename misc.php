@@ -713,14 +713,18 @@ elseif($mybb->input['action'] == "smilies")
 			$extra_class = ' smilie_pointer';
 			foreach($smilies_cache as $smilie)
 			{
+				$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
+				$smilie['image'] = htmlspecialchars_uni($mybb->get_asset_url($smilie['image']));
+				$smilie['name'] = htmlspecialchars_uni($smilie['name']);				
+				
 				// Only show the first text to replace in the box
 				$temp = explode("\n", $smilie['find']); // use temporary variable for php 5.3 compatibility
 				$smilie['find'] = $temp[0];
 
 				$smilie['find'] = htmlspecialchars_uni($smilie['find']);
-				$smilie_insert = addslashes($smilie['find']);
+				$smilie_insert = str_replace(array('\\', "'"), array('\\\\', "\'"), $smilie['find']);
 
-				$onclick = " onclick=\"MyBBEditor.insertText(' {$smilie_insert} ');\"";
+				$onclick = " onclick=\"MyBBEditor.insertText(' $smilie_insert ');\"";
 				eval('$smilie_image = "'.$templates->get('smilie', 1, 0).'";');
 				eval("\$smilies .= \"".$templates->get("misc_smilies_popup_smilie")."\";");
 				if($e == 2)
@@ -752,6 +756,10 @@ elseif($mybb->input['action'] == "smilies")
 			$extra_class = $onclick = '';
 			foreach($smilies_cache as $smilie)
 			{
+				$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
+				$smilie['image'] = htmlspecialchars_uni($mybb->get_asset_url($smilie['image']));
+				$smilie['name'] = htmlspecialchars_uni($smilie['name']);				
+				
 				$smilie['find'] = nl2br(htmlspecialchars_uni($smilie['find']));
 				eval('$smilie_image = "'.$templates->get('smilie').'";');
 				eval("\$smilies .= \"".$templates->get("misc_smilies_smilie")."\";");
