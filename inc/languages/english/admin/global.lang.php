@@ -362,3 +362,4 @@ $l['my2fa'] = "Two-Factor Authentication";
 $l['my2fa_failed'] = "The code was incorrect, you're logged out now";
 $l['my2fa_code'] = "Please enter the authentication code";
 $l['my2fa_label'] = "Authentication code:";
+$l['my2fa_no_codes'] = "Note: you've used all of your recovery codes. Please visit the <a href=\"index.php?module=home-preferences&action=recovery_codes\">recovery codes page</a> to generate a new set.";

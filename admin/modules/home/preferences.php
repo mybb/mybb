@@ -174,7 +174,13 @@ if(!$mybb->input['action'])
 function generate_recovery_codes()
 {
 	$t = array();
-	for($i = 0; $i<10; $i++)
-		$t[] = random_str(6);
+	while(count($t) < 10)
+	{
+		$g = random_str(6);
+		if(!in_array($g, $t))
+		{
+			$t[] = $g;
+		}
+	}
 	return $t;
 }

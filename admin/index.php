@@ -511,6 +511,11 @@ if($mybb->input['do'] == "do_2fa" && $mybb->request_method == "post")
 		$recovery = true;
 		$ncodes = array_diff($codes, array($mybb->input['code'])); // Removes our current code from the codes array
 		$db->update_query("adminoptions", array("recovery_codes" => $db->escape_string(my_serialize($ncodes))), "uid='{$mybb->user['uid']}'");
+
+		if(count($ncodes) == 0)
+		{
+			flash_message($lang->my2fa_no_codes, "error");
+		}
 	}
 
 	// Validate the code
