@@ -1766,7 +1766,7 @@ function get_post_icons()
 	foreach($posticons as $dbicon)
 	{
 		$dbicon['path'] = str_replace("{theme}", $theme['imgdir'], $dbicon['path']);
-		$dbicon['path'] = htmlspecialchars_uni($dbicon['path']);
+		$dbicon['path'] = htmlspecialchars_uni($mybb->get_asset_url($dbicon['path']));
 		$dbicon['name'] = htmlspecialchars_uni($dbicon['name']);
 
 		if($icon == $dbicon['iid'])
@@ -3211,9 +3211,9 @@ function build_mycode_inserter($bind="message", $smilies = true)
 						// Only show the first text to replace in the box
 						$smilie['find'] = $finds[0];
 
-						$find = addslashes(htmlspecialchars_uni($smilie['find']));
-						$image = $mybb->get_asset_url($smilie['image']);
-						$image = addslashes(htmlspecialchars_uni($image));
+						$find = str_replace(array('\\', '"'), array('\\\\', '\"'), htmlspecialchars_uni($smilie['find']));
+						$image = htmlspecialchars_uni($mybb->get_asset_url($smilie['image']));
+						$image = str_replace(array('\\', '"'), array('\\\\', '\"'), $image);
 
 						if($i < $mybb->settings['smilieinsertertot'])
 						{
@@ -3226,7 +3226,7 @@ function build_mycode_inserter($bind="message", $smilies = true)
 
 						for($j = 1; $j < $finds_count; ++$j)
 						{
-							$find = addslashes(htmlspecialchars_uni($finds[$j]));
+							$find = str_replace(array('\\', '"'), array('\\\\', '\"'), htmlspecialchars_uni($finds[$j]));
 							$hiddensmilies .= '"'.$find.'": "'.$image.'",';
 						}
 						++$i;
@@ -3362,14 +3362,18 @@ function build_clickable_smilies()
 					{
 						$smilies .=  "<tr>\n";
 					}
-
+					
+					$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
+					$smilie['image'] = htmlspecialchars_uni($mybb->get_asset_url($smilie['image']));
+					$smilie['name'] = htmlspecialchars_uni($smilie['name']);
+					
 					// Only show the first text to replace in the box
 					$temp = explode("\n", $smilie['find']); // assign to temporary variable for php 5.3 compatibility
 					$smilie['find'] = $temp[0];
 
-					$find = addslashes(htmlspecialchars_uni($smilie['find']));
+					$find = str_replace(array('\\', "'"), array('\\\\', "\'"), htmlspecialchars_uni($smilie['find']));
 
-					$onclick = " onclick=\"MyBBEditor.insertText(' {$find} ');\"";
+					$onclick = " onclick=\"MyBBEditor.insertText(' $find ');\"";
 					$extra_class = ' smilie_pointer';
 					eval('$smilie = "'.$templates->get('smilie', 1, 0).'";');
 					eval("\$smilies .= \"".$templates->get("smilieinsert_smilie")."\";");
@@ -4006,12 +4010,14 @@ function get_attachment_icon($ext)
 		{
 			global $change_dir;
 			$icon = $change_dir."/".str_replace("{theme}", $theme['imgdir'], $attachtypes[$ext]['icon']);
+			$icon = $mybb->get_asset_url($icon);
 		}
 		else
 		{
 			$icon = str_replace("{theme}", $theme['imgdir'], $attachtypes[$ext]['icon']);
+			$icon = $mybb->get_asset_url($icon);
 		}
-
+		
 		$name = htmlspecialchars_uni($attachtypes[$ext]['name']);
 	}
 	else
@@ -4030,6 +4036,7 @@ function get_attachment_icon($ext)
 		$name = $lang->unknown;
 	}
 
+	$icon = htmlspecialchars_uni($icon);
 	eval("\$attachment_icon = \"".$templates->get("attachment_icon")."\";");
 	return $attachment_icon;
 }

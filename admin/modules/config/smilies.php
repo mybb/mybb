@@ -81,7 +81,7 @@ if($mybb->input['action'] == "add")
 			$cache->update_smilies();
 
 			// Log admin action
-			log_admin_action($sid, $mybb->input['name']);
+			log_admin_action($sid, htmlspecialchars_uni($mybb->input['name']));
 
 			flash_message($lang->success_smilie_added, 'success');
 			admin_redirect("index.php?module=config-smilies");
@@ -217,7 +217,7 @@ if($mybb->input['action'] == "edit")
 			$cache->update_smilies();
 
 			// Log admin action
-			log_admin_action($smilie['sid'], $mybb->input['name']);
+			log_admin_action($smilie['sid'], htmlspecialchars_uni($mybb->input['name']));
 
 			flash_message($lang->success_smilie_updated, 'success');
 			admin_redirect("index.php?module=config-smilies");
@@ -298,7 +298,7 @@ if($mybb->input['action'] == "delete")
 		$cache->update_smilies();
 
 		// Log admin action
-		log_admin_action($smilie['sid'], $smilie['name']);
+		log_admin_action($smilie['sid'], htmlspecialchars_uni($smilie['name']));
 
 		flash_message($lang->success_smilie_updated, 'success');
 		admin_redirect("index.php?module=config-smilies");
@@ -644,6 +644,7 @@ if($mybb->input['action'] == "mass_edit")
 		}
 
 		$smilie['find'] = htmlspecialchars_uni($smilie['find']);
+		$smilie['name'] = htmlspecialchars_uni($smilie['name']);
 
 		$form_container->output_cell("<img src=\"{$image}\" alt=\"\" />", array("class" => "align_center", "width" => 1));
 		$form_container->output_cell($form->generate_text_box("name[{$smilie['sid']}]", $smilie['name'], array('id' => 'name', 'style' => 'width: 98%')));
