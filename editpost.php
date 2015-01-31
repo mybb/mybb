@@ -114,13 +114,13 @@ if(!$mybb->input['action'] || isset($mybb->input['previewpost']))
 
 if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 {
-	if(!is_moderator($fid, "candeleteposts") && !is_moderator($fid, "cansoftdeleteposts"))
+	if(!is_moderator($fid, "candeleteposts") && !is_moderator($fid, "cansoftdeleteposts") && $pid != $thread['firstpost'] || !is_moderator($fid, "candeletethreads") && !is_moderator($fid, "cansoftdeletethreads") && $pid == $thread['firstpost'])
 	{
 		if($thread['closed'] == 1)
 		{
 			error($lang->redirect_threadclosed);
 		}
-		if($forumpermissions['candeleteposts'] == 0)
+		if($forumpermissions['candeleteposts'] == 0 && $pid != $thread['firstpost'] || $forumpermissions['candeletethreads'] == 0 && $pid == $thread['firstpost'])
 		{
 			error_no_permission();
 		}
@@ -141,7 +141,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 }
 elseif($mybb->input['action'] == "restorepost" && $mybb->request_method == "post")
 {
-	if(!is_moderator($fid, "canrestoreposts") || $post['visible'] != -1)
+	if(!is_moderator($fid, "canrestoreposts") && $pid != $thread['firstpost'] || !is_moderator($fid, "canrestorethreads") && $pid == $thread['firstpost'] || $post['visible'] != -1)
 	{
 		error_no_permission();
 	}
