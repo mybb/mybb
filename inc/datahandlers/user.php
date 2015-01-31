@@ -1616,7 +1616,7 @@ class UserDataHandler extends DataHandler
 		// Delete Reports made to users's posts/threads
 		if(!empty($pids))
 		{
-			$db->delete_query('reportedcontent', "type='posts' AND id IN({$this->delete_uids})");
+			$db->delete_query('reportedcontent', "type='posts' AND id IN(".implode(',', $pids).")");
 		}
 	}
 
