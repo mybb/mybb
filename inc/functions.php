@@ -2831,7 +2831,7 @@ function delete_post($pid)
  * @param int The current depth of forums we're at
  * @param int Whether or not to show extra items such as User CP, Forum home
  * @param boolean Ignore the showinjump setting and show all forums (for moderation pages)
- * @param array Array of permissions
+ * @param unknown_type deprecated
  * @param string The name of the forum jump
  * @return string Forum jump items
  */
@@ -4086,7 +4086,7 @@ function get_unviewable_forums($only_readable_threads=false)
 
 		if($perms['canview'] == 0 || $pwverified == 0 || ($only_readable_threads == true && $perms['canviewthreads'] == 0))
 		{
-			$unviewable[] = (int)$forum['fid'];
+			$unviewable[] = $forum['fid'];
 		}
 	}
 	
@@ -6078,12 +6078,12 @@ function get_inactive_forums()
 	{
 		if($forum['active'] == 0)
 		{
-			$inactive[] = (int)$fid;
+			$inactive[] = $fid;
 			foreach($forum_cache as $fid1 => $forum1)
 			{
 				if(my_strpos(",".$forum1['parentlist'].",", ",".$fid.",") !== false && !in_array($fid1, $inactive))
 				{
-					$inactive[] = (int)$fid1;
+					$inactive[] = $fid1;
 				}
 			}
 		}

@@ -207,7 +207,7 @@ if(!$mybb->input['action'])
 	$table->construct_header($lang->error_message, array("class" => "align_center", "width" => "30%"));
 	$table->construct_header($lang->date_sent, array("class" => "align_center", "width" => "20%"));
 	
-	$query = $db>simple_select('mailerrors', '*', "1=1 $additional_sql_criteria", array('order_by' => 'dateline', 'order_dir' => 'DESC', 'limit_start' => $start, 'limit' => $per_page));
+	$query = $db->simple_select('mailerrors', '*', "1=1 $additional_sql_criteria", array('order_by' => 'dateline', 'order_dir' => 'DESC', 'limit_start' => $start, 'limit' => $per_page));
 	
 	while($log = $db->fetch_array($query))
 	{

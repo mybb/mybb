@@ -952,7 +952,7 @@ elseif($mybb->input['action'] == "clearcookies")
  * Build a list of forums for RSS multiselect.
  *
  * @param int Parent forum ID.
- * @param unknown_type ???
+ * @param unknown_type deprecated
  * @param boolean Whether to add selected attribute or not.
  * @param string HTML for the depth of the forum.
  * @return string HTML of the list of forums for CSS.
