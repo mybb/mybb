@@ -1925,7 +1925,7 @@ function my_set_array_cookie($name, $id, $value, $expires="")
 /*
  * Arbitrary limits for _safe_unserialize()
  */
-define('MAX_SERIALIZED_INPUT_LENGTH', 4096);
+define('MAX_SERIALIZED_INPUT_LENGTH', 10240);
 define('MAX_SERIALIZED_ARRAY_LENGTH', 256);
 define('MAX_SERIALIZED_ARRAY_DEPTH', 5);
 
