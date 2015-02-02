@@ -70,7 +70,7 @@ var Peeker = (function() {
 		}
 		
 		$(this.domain).each(function() {
-			$(this).find('input, textarea').each(function() {
+			$(this).find('input, textarea, select').each(function() {
 				$(this).trigger('change');
 			});
 		});
