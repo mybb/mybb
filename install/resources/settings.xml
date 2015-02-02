@@ -189,26 +189,10 @@ email=Sent via Email]]></optionscode>
 			<settingvalue><![CDATA[db]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
-		<setting name="statslimit">
-			<title>Stats Limit</title>
-			<description><![CDATA[The number of threads to show on the stats page for most replies and most views.]]></description>
-			<disporder>8</disporder>
-			<optionscode><![CDATA[numeric]]></optionscode>
-			<settingvalue><![CDATA[15]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-		<setting name="statstopreferrer">
-			<title>Show Top Referrer on Statistics Page</title>
-			<description><![CDATA[Do you want to show the top referrer on the stats.php page. This adds an additional query.]]></description>
-			<disporder>9</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[1]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
 		<setting name="decpoint">
 			<title>Decimal Point</title>
 			<description><![CDATA[The decimal point you use in your region.]]></description>
-			<disporder>10</disporder>
+			<disporder>8</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[.]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -216,7 +200,7 @@ email=Sent via Email]]></optionscode>
 		<setting name="thousandssep">
 			<title>Thousands Numeric Separator</title>
 			<description><![CDATA[The punctuation you want to use. For example, a setting of ',' with the number 1200 will give you 1,200.]]></description>
-			<disporder>11</disporder>
+			<disporder>9</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[,]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -224,7 +208,7 @@ email=Sent via Email]]></optionscode>
 		<setting name="showlanguageselect">
 			<title>Show Language Selector in Footer</title>
 			<description><![CDATA[Set to no if you do not want to show the language selection area in the footer of all pages in the board. If you only have one language installed this setting will be ignored.]]></description>
-			<disporder>12</disporder>
+			<disporder>10</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -232,7 +216,7 @@ email=Sent via Email]]></optionscode>
 		<setting name="showthemeselect">
 			<title>Show Theme Selector in Footer</title>
 			<description><![CDATA[Set to no if you do not want to show the theme selection area in the footer of all pages in the board.]]></description>
-			<disporder>13</disporder>
+			<disporder>11</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -240,7 +224,7 @@ email=Sent via Email]]></optionscode>
 		<setting name="maxmultipagelinks">
 			<title>Maximum Page Links in Pagination</title>
 			<description><![CDATA[Here you can set the number of next and previous page links to show in the pagination for threads or forums with more than one page of results.]]></description>
-			<disporder>14</disporder>
+			<disporder>12</disporder>
 			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[5]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -248,7 +232,7 @@ email=Sent via Email]]></optionscode>
 		<setting name="jumptopagemultipage">
 			<title>Show Jump To Page form in Pagination</title>
 			<description><![CDATA[Do you want to show a "jump to page" form in pagination if number of pages exceeds "Maximum Page Links in Pagination"?]]></description>
-			<disporder>15</disporder>
+			<disporder>13</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -256,49 +240,33 @@ email=Sent via Email]]></optionscode>
 		<setting name="no_plugins">
 			<title>Disable All Plugins</title>
 			<description><![CDATA[Setting this to yes will disable all plugins without deactivating or uninstalling them. This is equivalent of manually defining NO_PLUGINS at the top of ./inc/init.php.]]></description>
-			<disporder>16</disporder>
+			<disporder>14</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-		<setting name="soft_delete">
-			<title>Enable Soft Delete</title>
-			<description><![CDATA[If enabled, it allows you to restore posts and threads deleted by users. Otherwise, these posts and threads will be deleted permanently.]]></description>
-			<disporder>17</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[1]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-		<setting name="helpsearch">
-			<title>Enable Help Documents Search</title>
-			<description><![CDATA[If enabled it will allow users to search through the help documents.]]></description>
-			<disporder>18</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
 		<setting name="deleteinvites">
 			<title>Expire Old Group Invites</title>
 			<description><![CDATA[The number of days until any pending invites to user groups expire. Set to 0 to disable.]]></description>
-			<disporder>19</disporder>
+			<disporder>15</disporder>
 			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[180]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
-		<setting name="hidewebsite">
-			<title>Hide Websites To Groups</title>
-			<description><![CDATA[Select the usergroups you wish to hide websites from.]]></description>
-			<disporder>20</disporder>
-			<optionscode><![CDATA[groupselect]]></optionscode>
-			<settingvalue><![CDATA[]]></settingvalue>
+		<setting name="redirects">
+			<title>Friendly Redirection Pages</title>
+			<description><![CDATA[This will enable friendly redirection pages instead of bumping the user directly to the page.]]></description>
+			<disporder>16</disporder>
+			<optionscode><![CDATA[onoff]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
-		<setting name="hidesignatures">
-			<title>Hide Signatures To Groups</title>
-			<description><![CDATA[Select the usergroups you wish to hide signatures from.]]></description>
-			<disporder>21</disporder>
-			<optionscode><![CDATA[groupselect]]></optionscode>
-			<settingvalue><![CDATA[]]></settingvalue>
+		<setting name="enableforumjump">
+			<title>Enable Forum Jump Menu?</title>
+			<description><![CDATA[The forum jump menu is shown on the forum and thread view pages. It can add significant load to your forums if you have a large amount of forums. Set to 'No' to disable it.]]></description>
+			<disporder>17</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
 	</settinggroup>
@@ -346,18 +314,10 @@ no=Disabled]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
-		<setting name="redirects">
-			<title>Friendly Redirection Pages</title>
-			<description><![CDATA[This will enable friendly redirection pages instead of bumping the user directly to the page.]]></description>
-			<disporder>6</disporder>
-			<optionscode><![CDATA[onoff]]></optionscode>
-			<settingvalue><![CDATA[1]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
 		<setting name="load">
 			<title>*NIX Load Limiting</title>
 			<description><![CDATA[Limit the maximum server load before MyBB rejects people. 0 for none. Recommended limit is 5.0.]]></description>
-			<disporder>7</disporder>
+			<disporder>6</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -365,7 +325,7 @@ no=Disabled]]></optionscode>
 		<setting name="tplhtmlcomments">
 			<title>Output template start/end comments?</title>
 			<description><![CDATA[This will enable or disable the output of template start/end comments in the HTML.]]></description>
-			<disporder>8</disporder>
+			<disporder>7</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -373,7 +333,7 @@ no=Disabled]]></optionscode>
 		<setting name="use_xmlhttprequest">
 			<title>Enable XMLHttp request features?</title>
 			<description><![CDATA[This will enable or disable the XMLHttp request features.]]></description>
-			<disporder>9</disporder>
+			<disporder>8</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -381,7 +341,7 @@ no=Disabled]]></optionscode>
 		<setting name="extraadmininfo">
 			<title>Advanced Stats / Debug information</title>
 			<description><![CDATA[Shows Server load, generation time, memory usage, etc on the bottom of all pages in the root folder. Please note that only administrators see this information.]]></description>
-			<disporder>10</disporder>
+			<disporder>9</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -389,7 +349,7 @@ no=Disabled]]></optionscode>
 		<setting name="uploadspath">
 			<title>Uploads Path</title>
 			<description><![CDATA[The path used for all board uploads. It <b>must be chmod 777</b> (on *nix servers).]]></description>
-			<disporder>11</disporder>
+			<disporder>10</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[./uploads]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -397,7 +357,7 @@ no=Disabled]]></optionscode>
 		<setting name="useerrorhandling">
 			<title>Use Error Handling</title>
 			<description><![CDATA[If you do not wish to use the integrated error handling for MyBB, you may turn this option off. However, it is recommended that it stay on]]></description>
-			<disporder>12</disporder>
+			<disporder>11</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -405,7 +365,7 @@ no=Disabled]]></optionscode>
 		<setting name="errorlogmedium">
 			<title>Error Logging Medium</title>
 			<description><![CDATA[The type of the error handling to use.]]></description>
-			<disporder>13</disporder>
+			<disporder>12</disporder>
 			<optionscode><![CDATA[select
 none=Neither
 log=Log errors
@@ -418,7 +378,7 @@ both=Log and email errors
 		<setting name="errortypemedium">
 			<title>Error Type Medium</title>
 			<description><![CDATA[The type of errors to show. It is recommended you hide errors and warnings on a production forum and log them instead.]]></description>
-			<disporder>14</disporder>
+			<disporder>13</disporder>
 			<optionscode><![CDATA[select
 warning=Warnings
 error=Errors
@@ -431,23 +391,15 @@ none=Hide Errors and Warnings
 		<setting name="errorloglocation">
 			<title>Error Logging Location</title>
 			<description><![CDATA[The location of the log to send errors to, if specified.]]></description>
-			<disporder>15</disporder>
+			<disporder>14</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[./error.log]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-		<setting name="enableforumjump">
-			<title>Enable Forum Jump Menu?</title>
-			<description><![CDATA[The forum jump menu is shown on the forum and thread view pages. It can add significant load to your forums if you have a large amount of forums. Set to 'No' to disable it.]]></description>
-			<disporder>16</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
 		<setting name="ip_forwarded_check">
 			<title>Scrutinize User's IP address?</title>
 			<description><![CDATA[Do you want to check a user's IP address for HTTP_X_FORWARDED_FOR or HTTP_X_REAL_IP headers? If you're unsure, set this to no.]]></description>
-			<disporder>17</disporder>
+			<disporder>15</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -455,7 +407,7 @@ none=Hide Errors and Warnings
 		<setting name="minifycss">
 			<title>Minify Stylesheets?</title>
 			<description><![CDATA[Do you want to minify stylesheets? Choosing yes can save bandwidth and overall provide faster page loads.]]></description>
-			<disporder>18</disporder>
+			<disporder>16</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -464,7 +416,7 @@ none=Hide Errors and Warnings
 		<setting name="usecdn">
 			<title>Use a CDN?</title>
 			<description><![CDATA[You can utilise a CDN (Content Delivery Network) to offload the loading of static files such as Stylesheets, JavaScript and Images. Do you wish to enable this functionality?]]></description>
-			<disporder>19</disporder>
+			<disporder>17</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -473,7 +425,7 @@ none=Hide Errors and Warnings
 		<setting name="cdnurl">
 			<title>URL to use for static files</title>
 			<description><![CDATA[If you have enabled the CDN option above, please enter the base URL to serve static content from. This should be a valid URL without a trailing slash.]]></description>
-			<disporder>20</disporder>
+			<disporder>18</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -482,7 +434,7 @@ none=Hide Errors and Warnings
 		<setting name="cdnpath">
 			<title>Path to store static files</title>
 			<description><![CDATA[If you have enabled the CDN option above, please optionally enter a full path to store static files. This is only useful for "Push" type CDNs or local sub-domain setups. This path should not have a trailing slash.]]></description>
-			<disporder>21</disporder>
+			<disporder>19</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -932,7 +884,7 @@ both=Email Verification & Administrator Activation]]></optionscode>
 		</setting>
 		<setting name="betweenregstime">
 			<title>Time Between Registrations</title>
-			<description><![CDATA[The amount of time (in hours) to disallow registrations for users who have already registered an account under the same ip address.]]></description>
+			<description><![CDATA[The amount of time (in hours) to disallow registrations for users who have already registered an account under the same ip address. 0 to disable.]]></description>
 			<disporder>10</disporder>
 			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[24]]></settingvalue>
@@ -1018,7 +970,7 @@ disabled=Disable this feature]]></optionscode>
 		</setting>
 		<setting name="failedlogincount">
 			<title>Number of times to allow failed logins</title>
-			<description><![CDATA[The number of times to allow someone to attempt to login. 0 to disable]]></description>
+			<description><![CDATA[The number of times to allow someone to attempt to login. 0 to disable.]]></description>
 			<disporder>20</disporder>
 			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
@@ -1114,10 +1066,26 @@ disabled=Disable this feature]]></optionscode>
 			<settingvalue><![CDATA[255]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="hidesignatures">
+			<title>Hide Signatures To Groups</title>
+			<description><![CDATA[Select the usergroups you wish to hide signatures from.]]></description>
+			<disporder>8</disporder>
+			<optionscode><![CDATA[groupselect]]></optionscode>
+			<settingvalue><![CDATA[]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>		
+		<setting name="hidewebsite">
+			<title>Hide Websites To Groups</title>
+			<description><![CDATA[Select the usergroups you wish to hide websites from.]]></description>
+			<disporder>9</disporder>
+			<optionscode><![CDATA[groupselect]]></optionscode>
+			<settingvalue><![CDATA[]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 		<setting name="useravatar">
 			<title>Default User Avatar</title>
 			<description><![CDATA[If the user does not set a custom avatar this image will be used instead.]]></description>
-			<disporder>8</disporder>
+			<disporder>10</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[images/default_avatar.png]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1125,7 +1093,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="useravatardims">
 			<title>Default Avatar Dimensions</title>
 			<description><![CDATA[The dimensions of the default avatar; width by height (e.g. 40|40).]]></description>
-			<disporder>9</disporder>
+			<disporder>11</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[100|100]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1140,7 +1108,7 @@ disabled=Disable this feature]]></optionscode>
 <li><strong>R</strong>: may contain such things as harsh profanity, intense violence, nudity or hard drug use</li>
 <li><strong>X</strong>: may contain hardcore sexual imagery or extremely disturbing violence</li>
 </ul>]]></description>
-			<disporder>10</disporder>
+			<disporder>12</disporder>
 			<optionscode><![CDATA[select
 g=G
 pg=PG
@@ -1152,7 +1120,7 @@ x=X]]></optionscode>
 		<setting name="maxavatardims">
 			<title>Maximum Avatar Dimensions</title>
 			<description><![CDATA[The maximum dimensions that an avatar can be, in the format of width<b>x</b>height. If this is left blank then there will be no dimension restriction.]]></description>
-			<disporder>11</disporder>
+			<disporder>13</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[100x100]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1160,7 +1128,7 @@ x=X]]></optionscode>
 		<setting name="avatarsize">
 			<title>Max Uploaded Avatar Size</title>
 			<description><![CDATA[Maximum file size (in kilobytes) of uploaded avatars.]]></description>
-			<disporder>12</disporder>
+			<disporder>14</disporder>
 			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[25]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1168,7 +1136,7 @@ x=X]]></optionscode>
 		<setting name="avatarresizing">
 			<title>Avatar Resizing Mode</title>
 			<description><![CDATA[If you wish to automatically resize all large avatars, provide users the option of resizing their avatar, or not resize avatars at all you can change this setting.]]></description>
-			<disporder>13</disporder>
+			<disporder>15</disporder>
 			<optionscode><![CDATA[select
 auto=Automatically resize large avatars
 user=Give users the choice of resizing large avatars
@@ -1179,7 +1147,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="avataruploadpath">
 			<title>Avatar Upload Path</title>
 			<description><![CDATA[This is the path where custom avatars will be uploaded to. This directory <b>must be chmod 777</b> (writable) for uploads to work.]]></description>
-			<disporder>14</disporder>
+			<disporder>16</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[./uploads/avatars]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1187,7 +1155,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="customtitlemaxlength">
 			<title>Custom User Title Maximum Length</title>
 			<description><![CDATA[Maximum length a user can enter for the custom user title.]]></description>
-			<disporder>15</disporder>
+			<disporder>17</disporder>
 			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[40]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1195,7 +1163,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="allowaway">
 			<title>Allow Away Statuses?</title>
 			<description><![CDATA[Should users be allowed to set their status to 'Away' with a custom reason & return date?]]></description>
-			<disporder>16</disporder>
+			<disporder>18</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1203,7 +1171,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="allowbuddyonly">
 			<title>Allow Buddy-Only Messaging?</title>
 			<description><![CDATA[Allow users to send private messages only to people on their buddy list?]]></description>
-			<disporder>17</disporder>
+			<disporder>19</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1383,6 +1351,14 @@ show=Show to all Users]]></optionscode>
 			<title>Allow Edit Reason</title>
 			<description><![CDATA[Do you want to allow users the ability to add an optional reason why they've edited their post?]]></description>
 			<disporder>21</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="soft_delete">
+			<title>Enable Soft Delete</title>
+			<description><![CDATA[If enabled, it allows you to restore posts and threads deleted by users. Otherwise, these posts and threads will be deleted permanently.]]></description>
+			<disporder>22</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1868,7 +1844,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<isdefault>1</isdefault>
 		</setting>
 	</settinggroup>
-	<settinggroup name="search" title="Search System" description="The various settings in this group allow you to make changes to the built in search mechanism for threads and posts in MyBB." disporder="21" isdefault="1">
+	<settinggroup name="search" title="Search System" description="The various settings in this group allow you to make changes to the built in search mechanism for threads, posts and help documents in MyBB." disporder="21" isdefault="1">
 		<setting name="searchtype">
 			<title>Search Type</title>
 			<description><![CDATA[Please select the type of search system you wish to use. You can either chose between "Standard", or "Full Text" (depending on your database). Fulltext searching is more powerful than the standard MyBB searching and quicker too.]]></description>
@@ -1900,6 +1876,14 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<disporder>4</disporder>
 			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="helpsearch">
+			<title>Enable Help Documents Search</title>
+			<description><![CDATA[If enabled it will allow users to search through the help documents.]]></description>
+			<disporder>5</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
 	</settinggroup>
@@ -2430,6 +2414,22 @@ delete=Delete]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
+		</setting>
+		<setting name="statslimit">
+			<title>Stats Limit</title>
+			<description><![CDATA[The number of threads to show on the stats page for most replies and most views.]]></description>
+			<disporder>3</disporder>
+			<optionscode><![CDATA[numeric]]></optionscode>
+			<settingvalue><![CDATA[15]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="statstopreferrer">
+			<title>Show Top Referrer on Statistics Page</title>
+			<description><![CDATA[Do you want to show the top referrer on the stats.php page. This adds an additional query.]]></description>
+			<disporder>4</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 		</setting>
 	</settinggroup>
 </settings>
