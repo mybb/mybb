@@ -1664,7 +1664,8 @@ class UserDataHandler extends DataHandler
 			"displaygroup" => 0,
 			"signature" => "",
 			"avatar" => "",
-			'avatardimensions' => ''
+			'avatardimensions' => '',
+			'avatartype' => ''
 		);
 
 		if($gid > 0)
