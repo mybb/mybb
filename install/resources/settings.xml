@@ -2425,7 +2425,7 @@ delete=Delete]]></optionscode>
 		</setting>
 		<setting name="statstopreferrer">
 			<title>Show Top Referrer on Statistics Page</title>
-			<description><![CDATA[Do you want to show the top referrer on the stats.php page. This adds an additional query.]]></description>
+			<description><![CDATA[Do you want to show the top referrer on the stats.php page? This adds an additional query.]]></description>
 			<disporder>4</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
