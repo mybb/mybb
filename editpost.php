@@ -289,7 +289,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 				if($mybb->input['ajax'] == 1)
 				{
 					header("Content-type: application/json; charset={$lang->settings['charset']}");
-					if($mybb->settings['soft_delete'] == 1 && is_moderator($fid))
+					if(is_moderator($fid, "canviewdeleted"))
 					{
 						echo json_encode(array("data" => '1'));
 					}
@@ -344,7 +344,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 				if($mybb->input['ajax'] == 1)
 				{
 					header("Content-type: application/json; charset={$lang->settings['charset']}");
-					if($mybb->settings['soft_delete'] == 1 && is_moderator($fid))
+					if(is_moderator($fid, "canviewdeleted"))
 					{
 						echo json_encode(array("data" => '1'));
 					}
