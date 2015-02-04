@@ -1,10 +1,11 @@
 /**
  * Peeker controls the visibility of an element based on the value of an input
  *
- * @example
- *
- * var peeker = new Peeker($('#myController'), $('#myDomain'), /1/, false);
- * var peeker = new Peeker($('.myControllerNode'), $('#myDomain'), /1/, true);
+ * Examples:
+ * new Peeker($('#myController'), $('#myDomain'), 1, false);
+ * new Peeker($('.myControllerNode'), $('#myDomain, #myDomain2'), 1, true);
+ * new Peeker($('#myController'), $('#nestedPeeker'), /works/, false);
+ * new Peeker($('#nestedPeeker'), $('#nestedPeekerChild'), /\d+/, false);
  */
 
 var Peeker = (function() {
@@ -37,9 +38,6 @@ var Peeker = (function() {
 			// attach event handlers to the inputs in the node list
 			this.controller.each(function(i, el) {
 				el = $(el);
-				if (el.attr('id') == null) {
-					return;
-				}
 				el.on('change', fn);
 				el.click(fn);
 			});
@@ -59,7 +57,7 @@ var Peeker = (function() {
 
 		if (this.isNodelist) {
 			this.controller.each(function(i, el) {
-				if (el.checked &&
+				if ($(el).is(':visible') && el.checked &&
 				    el.value.match(regex)) {
 					show = true;
 					return false;
@@ -68,8 +66,14 @@ var Peeker = (function() {
 			this.domain[show ? 'show' : 'hide']();
 		} else {
 			type = this.controller.val() || '';
-			this.domain[(type.match(regex)) ? 'show' : 'hide']();
+			this.domain[(type.match(regex) && this.controller.is(':visible')) ? 'show' : 'hide']();
 		}
+		
+		$(this.domain).each(function() {
+			$(this).find('input, textarea, select').each(function() {
+				$(this).trigger('change');
+			});
+		});
 	}
 
 	Peeker.prototype = {
@@ -88,7 +92,7 @@ var Peeker = (function() {
  * @param string ID of the row
  */
 function add_star(id) {
-	if (!$('#' + id)) {
+	if (!$('#' + id).length) {
 		return;
 	}
 
