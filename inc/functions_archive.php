@@ -266,4 +266,3 @@ function check_forum_password_archive($fid, $pid=0)
 		}
 	}
 }
-?>

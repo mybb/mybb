@@ -867,6 +867,7 @@ EOF;
 				{
 					if($smilie['showclickable'] != 0)
 					{
+						$smilie['image'] = str_replace("{theme}", "images", $smilie['image']);
 						$smiliecache[$smilie['find']] = $smilie['image'];
 					}
 				}
@@ -887,8 +888,8 @@ EOF;
 					$finds_count = count($finds);
 					
 					// Only show the first text to replace in the box
-					$find = htmlspecialchars_uni($finds[0]);
-					$image = htmlspecialchars_uni($image);
+					$find = str_replace(array('\\', '"'), array('\\\\', '\"'), htmlspecialchars_uni($finds[0]));
+					$image = str_replace(array('\\', '"'), array('\\\\', '\"'), htmlspecialchars_uni($image));
 					if(substr($image, 0, 4) != "http")
 					{
 						$image = $mybb->settings['bburl']."/".$image;
@@ -904,7 +905,7 @@ EOF;
 
 					for($j = 1; $j < $finds_count; ++$j)
 					{
-						$find = htmlspecialchars_uni($finds[$j]);
+						$find = str_replace(array('\\', '"'), array('\\\\', '\"'), htmlspecialchars_uni($finds[$j]));
 						$hiddensmilies .= '"'.$find.'": "'.$image.'",';
 					}
 					++$i;

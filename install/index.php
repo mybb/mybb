@@ -2431,4 +2431,3 @@ function write_settings()
 		fclose($file);
 	}
 }
-?>

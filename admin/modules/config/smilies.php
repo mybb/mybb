@@ -81,7 +81,7 @@ if($mybb->input['action'] == "add")
 			$cache->update_smilies();
 
 			// Log admin action
-			log_admin_action($sid, $mybb->input['name']);
+			log_admin_action($sid, htmlspecialchars_uni($mybb->input['name']));
 
 			flash_message($lang->success_smilie_added, 'success');
 			admin_redirect("index.php?module=config-smilies");
@@ -217,7 +217,7 @@ if($mybb->input['action'] == "edit")
 			$cache->update_smilies();
 
 			// Log admin action
-			log_admin_action($smilie['sid'], $mybb->input['name']);
+			log_admin_action($smilie['sid'], htmlspecialchars_uni($mybb->input['name']));
 
 			flash_message($lang->success_smilie_updated, 'success');
 			admin_redirect("index.php?module=config-smilies");
@@ -298,7 +298,7 @@ if($mybb->input['action'] == "delete")
 		$cache->update_smilies();
 
 		// Log admin action
-		log_admin_action($smilie['sid'], $smilie['name']);
+		log_admin_action($smilie['sid'], htmlspecialchars_uni($smilie['name']));
 
 		flash_message($lang->success_smilie_updated, 'success');
 		admin_redirect("index.php?module=config-smilies");
@@ -643,7 +643,8 @@ if($mybb->input['action'] == "mass_edit")
 			$image = "../".$smilie['image'];
 		}
 
-		$smilie['find'] = implode(', ', explode("\n", $smilie['find']));
+		$smilie['find'] = htmlspecialchars_uni($smilie['find']);
+		$smilie['name'] = htmlspecialchars_uni($smilie['name']);
 
 		$form_container->output_cell("<img src=\"{$image}\" alt=\"\" />", array("class" => "align_center", "width" => 1));
 		$form_container->output_cell($form->generate_text_box("name[{$smilie['sid']}]", $smilie['name'], array('id' => 'name', 'style' => 'width: 98%')));
@@ -729,11 +730,9 @@ if(!$mybb->input['action'])
 			$image = "../".$smilie['image'];
 		}
 
-		$smilie['find'] = str_replace("\n", ", ", $smilie['find']);
-
 		$table->construct_cell("<img src=\"{$image}\" alt=\"\" class=\"smilie smilie_{$smilie['sid']}\" />", array("class" => "align_center"));
 		$table->construct_cell(htmlspecialchars_uni($smilie['name']));
-		$table->construct_cell(htmlspecialchars_uni($smilie['find']));
+		$table->construct_cell(nl2br(htmlspecialchars_uni($smilie['find'])));
 
 		$table->construct_cell("<a href=\"index.php?module=config-smilies&amp;action=edit&amp;sid={$smilie['sid']}\">{$lang->edit}</a>", array("class" => "align_center"));
 		$table->construct_cell("<a href=\"index.php?module=config-smilies&amp;action=delete&amp;sid={$smilie['sid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_smilie_deletion}')\">{$lang->delete}</a>", array("class" => "align_center"));
