@@ -502,6 +502,8 @@ if($mybb->input['action'] == "reports")
 			}
 		}
 
+		$plugins->run_hooks('modcp_reports_intermediate');
+
 		// Now that we have all of the information needed, display the reports
 		foreach($reportcache as $report)
 		{

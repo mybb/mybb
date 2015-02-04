@@ -434,7 +434,7 @@ if($mybb->input['action'] == "clear_permission")
 		admin_redirect("index.php?module=forum-management&fid={$fid}");
 	}
 
-	$plugins->run_hooks("admin_forum_management_deletemod");
+	$plugins->run_hooks("admin_forum_management_clear_permission");
 
 	if($mybb->request_method == "post")
 	{
@@ -454,6 +454,8 @@ if($mybb->input['action'] == "clear_permission")
 		{
 			$db->delete_query("forumpermissions", "gid='{$gid}' AND fid='{$fid}'");
 		}
+
+		$plugins->run_hooks('admin_forum_management_clear_permission_commit');
 
 		$cache->update_forumpermissions();
 
