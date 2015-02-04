@@ -2831,7 +2831,7 @@ function delete_post($pid)
  * @param int The current depth of forums we're at
  * @param int Whether or not to show extra items such as User CP, Forum home
  * @param boolean Ignore the showinjump setting and show all forums (for moderation pages)
- * @param array Array of permissions
+ * @param unknown_type deprecated
  * @param string The name of the forum jump
  * @return string Forum jump items
  */
@@ -2840,11 +2840,6 @@ function build_forum_jump($pid="0", $selitem="", $addselect="1", $depth="", $sho
 	global $forum_cache, $jumpfcache, $permissioncache, $mybb, $forumjump, $forumjumpbits, $gobutton, $theme, $templates, $lang;
 
 	$pid = (int)$pid;
-
-	if($permissions)
-	{
-		$permissions = $mybb->usergroup;
-	}
 
 	if(!is_array($jumpfcache))
 	{
@@ -4049,12 +4044,7 @@ function get_attachment_icon($ext)
  */
 function get_unviewable_forums($only_readable_threads=false)
 {
-	global $forum_cache, $permissioncache, $mybb, $unviewable, $templates, $forumpass;
-
-	if(!isset($permissions))
-	{
-		$permissions = $mybb->usergroup;
-	}
+	global $forum_cache, $permissioncache, $mybb;
 
 	if(!is_array($forum_cache))
 	{
@@ -4066,8 +4056,7 @@ function get_unviewable_forums($only_readable_threads=false)
 		$permissioncache = forum_permissions();
 	}
 
-	$unviewableforums = '';
-	$password_forums = array();
+	$password_forums = $unviewable = array();
 	foreach($forum_cache as $fid => $forum)
 	{
 		if($permissioncache[$forum['fid']])
@@ -4105,19 +4094,13 @@ function get_unviewable_forums($only_readable_threads=false)
 
 		if($perms['canview'] == 0 || $pwverified == 0 || ($only_readable_threads == true && $perms['canviewthreads'] == 0))
 		{
-			if($unviewableforums)
-			{
-				$unviewableforums .= ",";
-			}
-
-			$unviewableforums .= "'".$forum['fid']."'";
+			$unviewable[] = $forum['fid'];
 		}
 	}
-
-	if(isset($unviewableforums))
-	{
-		return $unviewableforums;
-	}
+	
+	$unviewableforums = implode(',', $unviewable);
+	
+	return $unviewableforums;
 }
 
 /**
@@ -6100,7 +6083,7 @@ function get_post($pid)
  */
 function get_inactive_forums()
 {
-	global $forum_cache, $cache, $inactiveforums;
+	global $forum_cache, $cache;
 
 	if(!$forum_cache)
 	{
@@ -6123,6 +6106,7 @@ function get_inactive_forums()
 			}
 		}
 	}
+	
 	$inactiveforums = implode(",", $inactive);
 
 	return $inactiveforums;

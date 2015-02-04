@@ -51,14 +51,14 @@ if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] 
 	$mybb->settings['threadsperpage'] = 20;
 }
 
-$errors = '';
+$tflist = $flist = $tflist_queue_threads = $flist_queue_threads = $tflist_queue_posts = $flist_queue_posts = $tflist_queue_attach =
+$flist_queue_attach = $wflist_reports = $tflist_reports = $flist_reports = $tflist_modlog = $flist_modlog = $errors = '';
 // SQL for fetching items only related to forums this user moderates
 $moderated_forums = array();
 if($mybb->usergroup['issupermod'] != 1)
 {
 	$query = $db->simple_select("moderators", "*", "(id='{$mybb->user['uid']}' AND isgroup = '0') OR (id='{$mybb->user['usergroup']}' AND isgroup = '1')");
 
-	$flist = $flist_queue_threads = $flist_queue_posts = $flist_queue_attach = $flist_reports = $flist_modlog = null;
 	$numannouncements = $nummodqueuethreads = $nummodqueueposts = $nummodqueueattach = $numreportedposts = $nummodlogs = 0;
 	while($forum = $db->fetch_array($query))
 	{
@@ -172,26 +172,18 @@ if($mybb->usergroup['issupermod'] != 1)
 		$flist = " AND fid IN (0{$flist})";
 	}
 }
-else
-{
-	$flist = $tflist = '';
-}
 
 // Retrieve a list of unviewable forums
 $unviewableforums = get_unviewable_forums();
 $inactiveforums = get_inactive_forums();
+$unviewablefids1 = $unviewablefids2 = array();
 
-if($unviewableforums && !is_super_admin($mybb->user['uid']))
+if($unviewableforums)
 {
 	$flist .= " AND fid NOT IN ({$unviewableforums})";
 	$tflist .= " AND t.fid NOT IN ({$unviewableforums})";
 
-	$unviewablefids = explode(',', $unviewableforums);
-	foreach($unviewablefids as $key => $fid)
-	{
-		$unviewablefids[$key] = (int)$fid;
-	}
-	unset($fid);
+	$unviewablefids1 = explode(',', $unviewableforums);
 }
 
 if($inactiveforums)
@@ -199,15 +191,10 @@ if($inactiveforums)
 	$flist .= " AND fid NOT IN ({$inactiveforums})";
 	$tflist .= " AND t.fid NOT IN ({$inactiveforums})";
 
-	$unviewablefids = explode(',', $inactiveforums);
-	foreach($unviewablefids as &$fid)
-	{
-		$fid = (int)$fid;
-	}
-	unset($fid);
+	$unviewablefids2 = explode(',', $inactiveforums);
 }
 
-$unviewableforums = $unviewablefids;
+$unviewableforums = array_merge($unviewablefids1, $unviewablefids2);
 
 if(!isset($collapsedimg['modcpforums']))
 {
@@ -1056,7 +1043,7 @@ if($mybb->input['action'] == "do_new_announcement")
 	}
 
 	$announcement_fid = $mybb->get_input('fid', MyBB::INPUT_INT);
-	if(($mybb->usergroup['issupermod'] != 1 && $announcement_fid == -1) || ($announcement_fid != -1 && !is_moderator($announcement_fid, "canmanageannouncements")) || ($unviewableforums && in_array($announcement['fid'], $unviewableforums)))
+	if(($mybb->usergroup['issupermod'] != 1 && $announcement_fid == -1) || ($announcement_fid != -1 && !is_moderator($announcement_fid, "canmanageannouncements")) || ($unviewableforums && in_array($announcement_fid, $unviewableforums)))
 	{
 		error_no_permission();
 	}
@@ -1217,7 +1204,7 @@ if($mybb->input['action'] == "new_announcement")
 
 	$announcement_fid = $mybb->get_input('fid', MyBB::INPUT_INT);
 
-	if(($mybb->usergroup['issupermod'] != 1 && $announcement_fid == -1) || ($announcement_fid != -1 && !is_moderator($announcement_fid, "canmanageannouncements")) || ($unviewableforums && in_array($announcement['fid'], $unviewableforums)))
+	if(($mybb->usergroup['issupermod'] != 1 && $announcement_fid == -1) || ($announcement_fid != -1 && !is_moderator($announcement_fid, "canmanageannouncements")) || ($unviewableforums && in_array($announcement_fid, $unviewableforums)))
 	{
 		error_no_permission();
 	}
@@ -2856,6 +2843,7 @@ if($mybb->input['action'] == "editprofile")
 	{
 		foreach($pfcache as $profilefield)
 		{
+			$userfield = $code = $select = $val = $options = $expoptions = $useropts = $seloptions = '';
 			$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
 			$profilefield['description'] = htmlspecialchars_uni($profilefield['description']);
 			$thing = explode("\n", $profilefield['type'], "2");
@@ -2864,28 +2852,18 @@ if($mybb->input['action'] == "editprofile")
 			{
 				$options = $thing[1];
 			}
-			else
-			{
-				$options = '';
-			}
 			$field = "fid{$profilefield['fid']}";
-			$select = '';
 			if($errors)
 			{
 				if(isset($mybb->input['profile_fields'][$field]))
 				{
 					$userfield = $mybb->input['profile_fields'][$field];
 				}
-				else
-				{
-					$userfield = '';
-				}
 			}
 			else
 			{
 				$userfield = $user_fields[$field];
 			}
-			$code = '';
 			if($type == "multiselect")
 			{
 				if($errors)
@@ -3027,13 +3005,6 @@ if($mybb->input['action'] == "editprofile")
 				eval("\$customfields .= \"".$templates->get("usercp_profile_customfield")."\";");
 			}
 			$altbg = alt_trow();
-			$code = "";
-			$select = "";
-			$val = "";
-			$options = "";
-			$expoptions = "";
-			$useropts = "";
-			$seloptions = "";
 		}
 	}
 	if($customfields)
@@ -3285,7 +3256,7 @@ if($mybb->input['action'] == "finduser")
 	$page_url = 'modcp.php?action=finduser';
 	foreach(array('username', 'sortby', 'order') as $field)
 	{
-		$mybb->input[$field] = htmlspecialchars_uni($mybb->get_input($field));
+		$mybb->input[$field] = urlencode($mybb->get_input($field));
 		if(!empty($mybb->input[$field]))
 		{
 			$page_url .= "&amp;{$field}=".$mybb->input[$field];
@@ -3620,11 +3591,7 @@ if($mybb->input['action'] == "ipsearch")
 
 			if($user_ip_sql)
 			{
-				$query = $db->query("
-					SELECT COUNT(uid) AS count
-					FROM ".TABLE_PREFIX."users
-					WHERE {$user_ip_sql}
-				");
+				$query = $db->simple_select('users', 'COUNT(uid) AS count', $user_ip_sql);
 
 				$user_results = $db->fetch_field($query, "count");
 			}
@@ -3678,7 +3645,7 @@ if($mybb->input['action'] == "ipsearch")
 		{
 			if(!empty($mybb->input[$input]))
 			{
-				$page_url .= "&amp;{$input}=".htmlspecialchars_uni($mybb->input[$input]);
+				$page_url .= "&amp;{$input}=".urlencode($mybb->input[$input]);
 			}
 		}
 		$multipage = multipage($total_results, $perpage, $page, $page_url);
@@ -3687,13 +3654,9 @@ if($mybb->input['action'] == "ipsearch")
 		$results = '';
 		if(isset($mybb->input['search_users']) && $user_results && $start <= $user_results)
 		{
-			$query = $db->query("
-				SELECT username, uid, regip, lastip
-				FROM ".TABLE_PREFIX."users
-				WHERE {$user_ip_sql}
-				ORDER BY regdate DESC
-				LIMIT {$start}, {$perpage}
-			");
+			$query = $db->simple_select('users', 'username, uid, regip, lastip', $user_ip_sql,
+					array('order_by' => 'regdate', 'order_dir' => 'DESC', 'limit_start' => $start, 'limit' => $perpage));
+			
 			while($ipaddress = $db->fetch_array($query))
 			{
 				$result = false;
@@ -3746,13 +3709,10 @@ if($mybb->input['action'] == "ipsearch")
 		if(isset($mybb->input['search_posts']) && $post_results && (!isset($mybb->input['search_users']) || (isset($mybb->input['search_users']) && $post_limit > 0)))
 		{
 			$ipaddresses = $tids = $uids = array();
-			$query = $db->query("
-				SELECT username AS postusername, uid, subject, pid, tid, ipaddress
-				FROM ".TABLE_PREFIX."posts
-				WHERE {$post_ip_sql} AND visible >= -1
-				ORDER BY dateline DESC
-				LIMIT {$post_start}, {$post_limit}
-			");
+			
+			$query = $db->simple_select('posts', 'username AS postusername, uid, subject, pid, tid, ipaddress', "$post_ip_sql AND visible >= -1",
+					array('order_by' => 'dateline', 'order_dir' => 'DESC', 'limit_start' => $post_start, 'limit' => $post_limit));
+
 			while($ipaddress = $db->fetch_array($query))
 			{
 				$tids[$ipaddress['tid']] = $ipaddress['pid'];

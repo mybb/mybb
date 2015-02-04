@@ -67,13 +67,9 @@ if($fid)
 	$permissions = forum_permissions($fid);
 }
 
-if($pmid && $pmid > 0)
+if($pmid > 0)
 {
-	$query = $db->query("
-		SELECT *
-		FROM ".TABLE_PREFIX."privatemessages
-		WHERE pmid='{$pmid}'
-	");
+	$query = $db->simple_select('privatemessages', 'uid, subject, ipaddress', "pmid = $pmid");
 
 	$pm = $db->fetch_array($query);
 
@@ -723,7 +719,7 @@ switch($mybb->input['action'])
 
 		$plugins->run_hooks("moderation_deletepoll");
 
-		$query = $db->simple_select("polls", "*", "tid='$tid'");
+		$query = $db->simple_select("polls", "pid", "tid='$tid'");
 		$poll = $db->fetch_array($query);
 		if(!$poll)
 		{
@@ -751,7 +747,7 @@ switch($mybb->input['action'])
 				error_no_permission();
 			}
 		}
-		$query = $db->simple_select("polls", "*", "tid='$tid'");
+		$query = $db->simple_select("polls", "pid", "tid = $tid");
 		$poll = $db->fetch_array($query);
 		if(!$poll)
 		{
@@ -1185,10 +1181,8 @@ switch($mybb->input['action'])
 			$hostname = $lang->resolve_fail;
 		}
 
-		$user = get_user($pm['uid']);
-		$pm['username'] = $user['username'];
-
-		$username = build_profile_link($pm['username'], $pm['uid']);
+		$name = $db->fetch_field($db->simple_select('users', 'username', "uid = {$pm['fromid']}"), 'username');
+		$username = build_profile_link($name, $pm['fromid']);
 
 		// Moderator options
 		$modoptions = "";
@@ -2019,7 +2013,7 @@ switch($mybb->input['action'])
 		// Otherwise we're just deleting from showthread.php
 		else
 		{
-			$query = $db->simple_select("posts", "*", "tid='$tid'");
+			$query = $db->simple_select("posts", "pid", "tid = $tid");
 			$numposts = $db->num_rows($query);
 			if(!$numposts)
 			{
@@ -2477,7 +2471,7 @@ switch($mybb->input['action'])
 
 		if(!empty($parameters['pid']) && empty($parameters['tid']))
 		{
-			$query = $db->simple_select("posts", "*", "pid='".(int)$parameters['pid']."'");
+			$query = $db->simple_select("posts", "tid", "pid='".(int)$parameters['pid']."'");
 			$post = $db->fetch_array($query);
 			$newtid = $post['tid'];
 		}
@@ -2822,7 +2816,7 @@ switch($mybb->input['action'])
 				foreach(array($user['regip'], $user['lastip']) as $ip)
 				{
 					$ip = my_inet_ntop($db->unescape_binary($ip));
-					$query = $db->simple_select("banfilters", "*", "type = '1' AND filter = '".$db->escape_string($ip)."'");
+					$query = $db->simple_select("banfilters", "type", "type = 1 AND filter = '".$db->escape_string($ip)."'");
 					if($db->num_rows($query) == 0)
 					{
 						$insert = array(
@@ -3120,7 +3114,7 @@ function getallids($id, $type)
 	}
 	else if($type == 'search')
 	{
-		$query = $db->simple_select("searchlog", "*", "sid='".$db->escape_string($id)."' AND uid='{$mybb->user['uid']}'", 1);
+		$query = $db->simple_select("searchlog", "resulttype, posts, threads", "sid='".$db->escape_string($id)."' AND uid='{$mybb->user['uid']}'", 1);
 		$searchlog = $db->fetch_array($query);
 		if($searchlog['resulttype'] == 'posts')
 		{
