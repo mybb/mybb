@@ -1079,7 +1079,7 @@ function perform_search_mysql($search)
 			$subject_lookin = " AND {$tfield} LIKE '%{$keywords}%'";
 			if($search['postthread'] == 1)
 			{
-				$message_lookin = " AND{$pfield} LIKE '%{$keywords}%'";
+				$message_lookin = " AND {$pfield} LIKE '%{$keywords}%'";
 			}
 		}
 	}
