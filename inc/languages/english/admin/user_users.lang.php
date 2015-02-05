@@ -236,7 +236,7 @@ $l['suspend_sig_box'] = "Suspend this user's signature";
 $l['suspend_sig_perm'] = "<small>Suspended permanently.</small>";
 $l['suspend_sig_info'] = "If a signature is suspended, the user can't edit it and it won't be shown on their profile or in their posts";
 $l['suspend_sig_extend'] = "<small>Enter a new time below to change, or untick this option to remove this suspension.</small>";
-$l['suspend_expire_info'] = "<small>Expires {1}</small>";
+$l['suspend_expire_info'] = "<small>Remaining: <span style=\"color: {2};\">{1}</span></small>";
 $l['suspend_never_expire'] = "<small>{1}'s suspension will never expire (permanently suspended).</small>";
 $l['suspend_sig_error'] = "You entered an incorrect time to suspend this user's signature for. Please enter a correct time.";
 
@@ -244,13 +244,13 @@ $l['moderate_posts'] = "Moderate Posts";
 $l['moderate_posts_info'] = "Moderate new posts made by {1}.";
 $l['moderate_for'] = "Moderate for:";
 $l['moderated_perm'] = "<p><small>Moderated permanently.<br />Enter a new time below to change or untick this option to remove this moderation.</small></p>";
-$l['moderate_length'] = "<p><small>Moderated until {1}.<br />Enter a new time below to change or untick this option to remove this moderation.</small></p>";
+$l['moderate_length'] = "<p><small>Remaining Moderation: <span style=\"color: {2};\">{1}</span>.<br />Enter a new time below to change or untick this option to remove this moderation.</small></p>";
 
 $l['suspend_posts'] = "Suspend Posts";
 $l['suspend_posts_info'] = "Suspend {1} from making new posts.";
 $l['suspend_for'] = "Suspend for:";
 $l['suspended_perm'] = "<p><small>Suspended permanently.<br />Enter a new time below to change or untick this option to remove this suspension.</small></p>";
-$l['suspend_length'] = "<p><small>Suspended until {1}.<br />Enter a new time below to change or untick this option to remove this suspension.</small></p>";
+$l['suspend_length'] = "<p><small>Remaining Suspension: <span style=\"color: {2};\">{1}</span>.<br />Enter a new time below to change or untick this option to remove this suspension.</small></p>";
 
 $l['suspendsignature_error'] = "You selected to suspend this user's signature, but didn't enter a valid time period. Please enter a valid time to continue or untick the option to cancel.";
 $l['moderateposting_error'] = "You selected to moderate this user's posts, but didn't enter a valid time period. Please enter a valid time to continue or untick the option to cancel.";

@@ -343,7 +343,7 @@ function build_postbit($post, $post_type=0)
 			eval("\$post['button_rep'] = \"".$templates->get("postbit_rep_button")."\";");
 		}
 
-		if($post['website'] != "" && $mybb->settings['hidewebsite'] != -1 && !is_member($mybb->settings['hidewebsite']) && $usergroup['canchangewebsite'] == 1)
+		if($post['website'] != "" && !is_member($mybb->settings['hidewebsite']) && $usergroup['canchangewebsite'] == 1)
 		{
 			$post['website'] = htmlspecialchars_uni($post['website']);
 			eval("\$post['button_www'] = \"".$templates->get("postbit_www")."\";");
@@ -560,52 +560,52 @@ function build_postbit($post, $post_type=0)
 			}
 		}
 
-		$postbit_qdelete = '';
+		$postbit_qdelete = $postbit_qrestore = '';
 		if($mybb->user['uid'] != 0)
 		{
-			if((is_moderator($fid, "candeleteposts") || $can_delete_post == 1) && $postcounter != 1)
+			if((is_moderator($fid, "candeleteposts") || is_moderator($fid, "cansoftdeleteposts") || $can_delete_post == 1) && $postcounter != 1)
 			{
 				$postbit_qdelete = $lang->postbit_qdelete_post;
-				$display = "";
+				$display = '';
 				if($post['visible'] == -1)
 				{
 					$display = "none";
 				}
 				eval("\$post['button_quickdelete'] = \"".$templates->get("postbit_quickdelete")."\";");
-
-				// Restore Post
-				if(is_moderator($fid, "canrestoreposts"))
-				{
-					$display = "none";
-					if($post['visible'] == -1)
-					{
-						$display = "";
-					}
-					$postbit_qrestore = $lang->postbit_qrestore_post;
-					eval("\$post['button_quickrestore'] = \"".$templates->get("postbit_quickrestore")."\";");
-				}
 			}
-			else if((is_moderator($fid, "candeletethreads") || $can_delete_thread == 1) && $postcounter == 1)
+			else if((is_moderator($fid, "candeletethreads") || is_moderator($fid, "cansoftdeletethreads") || $can_delete_thread == 1) && $postcounter == 1)
 			{
 				$postbit_qdelete = $lang->postbit_qdelete_thread;
-				$display = "";
+				$display = '';
 				if($post['visible'] == -1)
 				{
 					$display = "none";
 				}
-				$postbit_qrestore = $lang->postbit_qrestore_thread;
 				eval("\$post['button_quickdelete'] = \"".$templates->get("postbit_quickdelete")."\";");
+			}
 
-				// Restore Post
-				if(is_moderator($fid, "canrestoreposts"))
+			// Restore Post
+			if(is_moderator($fid, "canrestoreposts") && $postcounter != 1)
+			{
+				$display = "none";
+				if($post['visible'] == -1)
 				{
-					$display = "none";
-					if($post['visible'] == -1)
-					{
-						$display = "";
-					}
-					eval("\$post['button_quickrestore'] = \"".$templates->get("postbit_quickrestore")."\";");
+					$display = '';
 				}
+				$postbit_qrestore = $lang->postbit_qrestore_post;
+				eval("\$post['button_quickrestore'] = \"".$templates->get("postbit_quickrestore")."\";");
+			}
+
+			// Restore Thread
+			else if(is_moderator($fid, "canrestorethreads") && $postcounter == 1)
+			{
+				$display = "none";
+				if($post['visible'] == -1)
+				{
+					$display = "";
+				}
+				$postbit_qrestore = $lang->postbit_qrestore_thread;
+				eval("\$post['button_quickrestore'] = \"".$templates->get("postbit_quickrestore")."\";");
 			}
 		}
 
@@ -721,7 +721,9 @@ function build_postbit($post, $post_type=0)
 		get_post_attachments($id, $post);
 	}
 
-	if(isset($post['includesig']) && $post['includesig'] != 0 && $post['username'] && $post['signature'] != "" && ($mybb->user['uid'] == 0 || $mybb->user['showsigs'] != 0) && ($post['suspendsignature'] == 0 || $post['suspendsignature'] == 1 && $post['suspendsigtime'] != 0 && $post['suspendsigtime'] < TIME_NOW) && $usergroup['canusesig'] == 1 && ($usergroup['canusesigxposts'] == 0 || $usergroup['canusesigxposts'] > 0 && $postnum > $usergroup['canusesigxposts']) && $mybb->settings['hidesignatures'] != -1 && !is_member($mybb->settings['hidesignatures']))
+	if(isset($post['includesig']) && $post['includesig'] != 0 && $post['username'] && $post['signature'] != "" && ($mybb->user['uid'] == 0 || $mybb->user['showsigs'] != 0)
+	&& ($post['suspendsignature'] == 0 || $post['suspendsignature'] == 1 && $post['suspendsigtime'] != 0 && $post['suspendsigtime'] < TIME_NOW) && $usergroup['canusesig'] == 1
+	&& ($usergroup['canusesigxposts'] == 0 || $usergroup['canusesigxposts'] > 0 && $postnum > $usergroup['canusesigxposts']) && !is_member($mybb->settings['hidesignatures']))
 	{
 		$sig_parser = array(
 			"allow_html" => $mybb->settings['sightml'],

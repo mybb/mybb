@@ -16,7 +16,7 @@ if(!defined("IN_MYBB"))
 
 $page->add_breadcrumb_item($lang->template_sets, "index.php?module=style-templates");
 
-$sid = $mybb->get_input('sid', 1);
+$sid = $mybb->get_input('sid', MyBB::INPUT_INT);
 
 $expand_str = "";
 $expand_str2 = "";
@@ -42,7 +42,7 @@ if($mybb->input['action'] == "add_set" || $mybb->input['action'] == "add_templat
 		'link' => "index.php?module=style-templates&amp;action=add_set".$expand_str
 	);
 
-	if($mybb->get_input('sid', 1) != -1)
+	if($mybb->get_input('sid', MyBB::INPUT_INT) != -1)
 	{
 		$sub_tabs['add_template_group'] = array(
 			'title' => $lang->add_template_group,
@@ -86,7 +86,7 @@ else if(($sid && !$mybb->input['action']) || $mybb->input['action'] == "edit_set
 		'description' => $lang->add_template_desc
 	);
 
-	if($mybb->get_input('sid', 1) != -1)
+	if($mybb->get_input('sid', MyBB::INPUT_INT) != -1)
 	{
 		$sub_tabs['add_template_group'] = array(
 			'title' => $lang->add_template_group,
@@ -255,16 +255,20 @@ if($mybb->input['action'] == "add_template")
 	{
 		$page->extra_header .= '
 <link href="./jscripts/codemirror/lib/codemirror.css" rel="stylesheet">
-<link href="./jscripts/codemirror/theme/mybb.css" rel="stylesheet">
+<link href="./jscripts/codemirror/theme/mybb.css?ver=1804" rel="stylesheet">
 <script src="./jscripts/codemirror/lib/codemirror.js"></script>
 <script src="./jscripts/codemirror/mode/xml/xml.js"></script>
 <script src="./jscripts/codemirror/mode/javascript/javascript.js"></script>
 <script src="./jscripts/codemirror/mode/css/css.js"></script>
 <script src="./jscripts/codemirror/mode/htmlmixed/htmlmixed.js"></script>
-<link href="./jscripts/codemirror/addon/dialog/dialog-mybb.css" rel="stylesheet" >
+<link href="./jscripts/codemirror/addon/dialog/dialog-mybb.css" rel="stylesheet">
 <script src="./jscripts/codemirror/addon/dialog/dialog.js"></script>
 <script src="./jscripts/codemirror/addon/search/searchcursor.js"></script>
 <script src="./jscripts/codemirror/addon/search/search.js"></script>
+<script src="./jscripts/codemirror/addon/fold/foldcode.js"></script>
+<script src="./jscripts/codemirror/addon/fold/xml-fold.js"></script>
+<script src="./jscripts/codemirror/addon/fold/foldgutter.js"></script>
+<link href="./jscripts/codemirror/addon/fold/foldgutter.css" rel="stylesheet">
 ';
 	}
 
@@ -288,7 +292,7 @@ if($mybb->input['action'] == "add_template")
 
 	$form = new Form("index.php?module=style-templates&amp;action=add_template{$expand_str}", "post", "add_template");
 
-	$form_container = new FormContainer($lang->add_template);
+	$form_container = new FormContainer($lang->add_template, 'tfixed');
 	$form_container->output_row($lang->template_name, $lang->template_name_desc, $form->generate_text_box('title', $template['title'], array('id' => 'title')), 'title');
 	$form_container->output_row($lang->template_set, $lang->template_set_desc, $form->generate_select_box('sid', $template_sets, $sid), 'sid');
 	$form_container->output_row("", "", $form->generate_text_area('template', $template['template'], array('id' => 'template', 'class' => '', 'style' => 'width: 100%; height: 500px;')), 'template');
@@ -303,15 +307,19 @@ if($mybb->input['action'] == "add_template")
 
 	if($admin_options['codepress'] != 0)
 	{
-		echo "<script type=\"text/javascript\">
-			var editor = CodeMirror.fromTextArea(document.getElementById(\"template\"), {
+		echo '<script type="text/javascript">
+			var editor = CodeMirror.fromTextArea(document.getElementById("template"), {
 				lineNumbers: true,
 				lineWrapping: true,
-				mode: \"text/html\",
-				tabMode: \"indent\",
-				theme: \"mybb\"
+				foldGutter: true,
+				gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+				viewportMargin: Infinity,
+				indentWithTabs: true,
+				indentUnit: 4,
+				mode: "text/html",
+				theme: "mybb"
 			});
-		</script>";
+		</script>';
 	}
 
 	$page->output_footer();
@@ -321,7 +329,7 @@ if($mybb->input['action'] == "add_template_group")
 {
 	$plugins->run_hooks("admin_style_templates_add_template_group");
 
-	if($mybb->get_input('sid', 1) == -1)
+	if($mybb->get_input('sid', MyBB::INPUT_INT) == -1)
 	{
 		admin_redirect("index.php?module=style-templates&amp;sid={$sid}".$expand_str2);
 	}
@@ -583,11 +591,11 @@ if($mybb->input['action'] == "edit_template")
 			{
 				if($mybb->input['from'] == "diff_report")
 				{
-					admin_redirect("index.php?module=style-templates&action=edit_template&title=".urlencode($mybb->input['title'])."&sid=".$mybb->get_input('sid', 1).$expand_str2."&amp;from=diff_report");
+					admin_redirect("index.php?module=style-templates&action=edit_template&title=".urlencode($mybb->input['title'])."&sid=".$mybb->get_input('sid', MyBB::INPUT_INT).$expand_str2."&amp;from=diff_report");
 				}
 				else
 				{
-					admin_redirect("index.php?module=style-templates&action=edit_template&title=".urlencode($mybb->input['title'])."&sid=".$mybb->get_input('sid', 1).$expand_str2);
+					admin_redirect("index.php?module=style-templates&action=edit_template&title=".urlencode($mybb->input['title'])."&sid=".$mybb->get_input('sid', MyBB::INPUT_INT).$expand_str2);
 				}
 			}
 			else
@@ -598,7 +606,7 @@ if($mybb->input['action'] == "edit_template")
 				}
 				else
 				{
-					admin_redirect("index.php?module=style-templates&sid=".$mybb->get_input('sid', 1).$expand_str2."#group_{$group}");
+					admin_redirect("index.php?module=style-templates&sid=".$mybb->get_input('sid', MyBB::INPUT_INT).$expand_str2."#group_{$group}");
 				}
 			}
 		}
@@ -619,16 +627,20 @@ if($mybb->input['action'] == "edit_template")
 	{
 		$page->extra_header .= '
 <link href="./jscripts/codemirror/lib/codemirror.css" rel="stylesheet">
-<link href="./jscripts/codemirror/theme/mybb.css" rel="stylesheet">
+<link href="./jscripts/codemirror/theme/mybb.css?ver=1804" rel="stylesheet">
 <script src="./jscripts/codemirror/lib/codemirror.js"></script>
 <script src="./jscripts/codemirror/mode/xml/xml.js"></script>
 <script src="./jscripts/codemirror/mode/javascript/javascript.js"></script>
 <script src="./jscripts/codemirror/mode/css/css.js"></script>
 <script src="./jscripts/codemirror/mode/htmlmixed/htmlmixed.js"></script>
-<link href="./jscripts/codemirror/addon/dialog/dialog-mybb.css" rel="stylesheet" >
+<link href="./jscripts/codemirror/addon/dialog/dialog-mybb.css" rel="stylesheet">
 <script src="./jscripts/codemirror/addon/dialog/dialog.js"></script>
 <script src="./jscripts/codemirror/addon/search/searchcursor.js"></script>
 <script src="./jscripts/codemirror/addon/search/search.js"></script>
+<script src="./jscripts/codemirror/addon/fold/foldcode.js"></script>
+<script src="./jscripts/codemirror/addon/fold/xml-fold.js"></script>
+<script src="./jscripts/codemirror/addon/fold/foldgutter.js"></script>
+<link href="./jscripts/codemirror/addon/fold/foldgutter.css" rel="stylesheet">
 ';
 	}
 
@@ -685,7 +697,7 @@ if($mybb->input['action'] == "edit_template")
 		echo $form->generate_hidden_field('from', "diff_report");
 	}
 
-	$form_container = new FormContainer($lang->edit_template_breadcrumb.$template['title']);
+	$form_container = new FormContainer($lang->edit_template_breadcrumb.$template['title'], 'tfixed');
 	$form_container->output_row($lang->template_name, $lang->template_name_desc, $form->generate_text_box('title', $template['title'], array('id' => 'title')), 'title');
 
 	// Force users to save the default template to a specific set, rather than the "global" templates - where they can delete it
@@ -708,15 +720,19 @@ if($mybb->input['action'] == "edit_template")
 
 	if($admin_options['codepress'] != 0)
 	{
-		echo "<script type=\"text/javascript\">
-			var editor = CodeMirror.fromTextArea(document.getElementById(\"template\"), {
+		echo '<script type="text/javascript">
+			var editor = CodeMirror.fromTextArea(document.getElementById("template"), {
 				lineNumbers: true,
 				lineWrapping: true,
-				mode: \"text/html\",
-				tabMode: \"indent\",
-				theme: \"mybb\"
+				foldGutter: true,
+				gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+				viewportMargin: Infinity,
+				indentWithTabs: true,
+				indentUnit: 4,
+				mode: "text/html",
+				theme: "mybb"
 			});
-		</script>";
+		</script>';
 	}
 
 	$page->output_footer();
@@ -724,7 +740,7 @@ if($mybb->input['action'] == "edit_template")
 
 if($mybb->input['action'] == "edit_template_group")
 {
-	$query = $db->simple_select("templategroups", "*", "gid = '".(int)$mybb->input['gid']."'");
+	$query = $db->simple_select("templategroups", "*", "gid = '".$mybb->get_input('gid', MyBB::INPUT_INT)."'");
 
 	if(!$db->num_rows($query))
 	{
@@ -1151,16 +1167,20 @@ if($mybb->input['action'] == "search_replace")
 	{
 		$page->extra_header .= '
 <link href="./jscripts/codemirror/lib/codemirror.css" rel="stylesheet">
-<link href="./jscripts/codemirror/theme/mybb.css" rel="stylesheet">
+<link href="./jscripts/codemirror/theme/mybb.css?ver=1804" rel="stylesheet">
 <script src="./jscripts/codemirror/lib/codemirror.js"></script>
 <script src="./jscripts/codemirror/mode/xml/xml.js"></script>
 <script src="./jscripts/codemirror/mode/javascript/javascript.js"></script>
 <script src="./jscripts/codemirror/mode/css/css.js"></script>
 <script src="./jscripts/codemirror/mode/htmlmixed/htmlmixed.js"></script>
-<link href="./jscripts/codemirror/addon/dialog/dialog-mybb.css" rel="stylesheet" >
+<link href="./jscripts/codemirror/addon/dialog/dialog-mybb.css" rel="stylesheet">
 <script src="./jscripts/codemirror/addon/dialog/dialog.js"></script>
 <script src="./jscripts/codemirror/addon/search/searchcursor.js"></script>
 <script src="./jscripts/codemirror/addon/search/search.js"></script>
+<script src="./jscripts/codemirror/addon/fold/foldcode.js"></script>
+<script src="./jscripts/codemirror/addon/fold/xml-fold.js"></script>
+<script src="./jscripts/codemirror/addon/fold/foldgutter.js"></script>
+<link href="./jscripts/codemirror/addon/fold/foldgutter.css" rel="stylesheet">
 ';
 	}
 
@@ -1173,7 +1193,7 @@ if($mybb->input['action'] == "search_replace")
 	$form = new Form("index.php?module=style-templates&amp;action=search_replace", "post", "do_template");
 	echo $form->generate_hidden_field('type', "templates");
 
-	$form_container = new FormContainer($lang->search_replace);
+	$form_container = new FormContainer($lang->search_replace, 'tfixed');
 	$form_container->output_row($lang->search_for, "", $form->generate_text_area('find', $mybb->input['find'], array('id' => 'find', 'class' => '', 'style' => 'width: 100%; height: 200px;')));
 
 	$form_container->output_row($lang->replace_with, "", $form->generate_text_area('replace', $mybb->input['replace'], array('id' => 'replace', 'class' => '', 'style' => 'width: 100%; height: 200px;')));
@@ -1207,23 +1227,31 @@ if($mybb->input['action'] == "search_replace")
 
 	if($admin_options['codepress'] != 0)
 	{
-		echo "<script type=\"text/javascript\">
-			var editor1 = CodeMirror.fromTextArea(document.getElementById(\"find\"), {
+		echo '<script type="text/javascript">
+			var editor1 = CodeMirror.fromTextArea(document.getElementById("find"), {
 				lineNumbers: true,
 				lineWrapping: true,
-				mode: \"text/html\",
-				tabMode: \"indent\",
-				theme: \"mybb\"
+				foldGutter: true,
+				gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+				viewportMargin: Infinity,
+				indentWithTabs: true,
+				indentUnit: 4,
+				mode: "text/html",
+				theme: "mybb"
 			});
 
-			var editor2 = CodeMirror.fromTextArea(document.getElementById(\"replace\"), {
+			var editor2 = CodeMirror.fromTextArea(document.getElementById("replace"), {
 				lineNumbers: true,
 				lineWrapping: true,
-				mode: \"text/html\",
-				tabMode: \"indent\",
-				theme: \"mybb\"
+				foldGutter: true,
+				gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+				viewportMargin: Infinity,
+				indentWithTabs: true,
+				indentUnit: 4,
+				mode: "text/html",
+				theme: "mybb"
 			});
-		</script>";
+		</script>';
 	}
 
 	$page->output_footer();
@@ -1332,7 +1360,7 @@ LEGEND;
 
 if($mybb->input['action'] == "delete_template_group")
 {
-	$gid = (int)$mybb->input['gid'];
+	$gid = $mybb->get_input('gid', MyBB::INPUT_INT);
 	$query = $db->simple_select("templategroups", "*", "gid='{$gid}'");
 
 	if(!$db->num_rows($query))
@@ -1498,30 +1526,30 @@ if($mybb->input['action'] == "diff_report")
 
 	$sub_tabs['diff_report'] = array(
 		'title' => $lang->diff_report,
-		'link' => "index.php?module=style-templates&amp;action=diff_report&amp;title=".$db->escape_string($mybb->input['title'])."&amp;from=".$mybb->input['from']."sid1=".(int)$mybb->input['sid1']."&amp;sid2=".(int)$mybb->input['sid2'],
+		'link' => "index.php?module=style-templates&amp;action=diff_report&amp;title=".$db->escape_string($mybb->input['title'])."&amp;from=".$mybb->input['from']."sid1=".$mybb->get_input('sid1', MyBB::INPUT_INT)."&amp;sid2=".$mybb->get_input('sid2', MyBB::INPUT_INT),
 		'description' => $lang->diff_report_desc
 	);
 
 	$plugins->run_hooks("admin_style_templates_diff_report");
 
-	$query = $db->simple_select("templates", "*", "title='".$db->escape_string($mybb->input['title'])."' AND sid='".(int)$mybb->input['sid1']."'");
+	$query = $db->simple_select("templates", "*", "title='".$db->escape_string($mybb->input['title'])."' AND sid='".$mybb->get_input('sid1', MyBB::INPUT_INT)."'");
 	$template1 = $db->fetch_array($query);
 
-	$query = $db->simple_select("templates", "*", "title='".$db->escape_string($mybb->input['title'])."' AND sid='".(int)$mybb->input['sid2']."'");
+	$query = $db->simple_select("templates", "*", "title='".$db->escape_string($mybb->input['title'])."' AND sid='".$mybb->get_input('sid2', MyBB::INPUT_INT)."'");
 	$template2 = $db->fetch_array($query);
 
 	if($mybb->input['sid2'] == -2)
 	{
 		$sub_tabs['full_edit'] = array(
 			'title' => $lang->full_edit,
-			'link' => "index.php?module=style-templates&action=edit_template&title=".urlencode($template1['title'])."&sid=".(int)$mybb->input['sid1']."&amp;from=diff_report",
+			'link' => "index.php?module=style-templates&action=edit_template&title=".urlencode($template1['title'])."&sid=".$mybb->get_input('sid1', MyBB::INPUT_INT)."&amp;from=diff_report",
 		);
 	}
 
 	if($template1['template'] == $template2['template'])
 	{
 		flash_message($lang->templates_the_same, 'error');
-		admin_redirect("index.php?module=style-templates&sid=".(int)$mybb->input['sid2'].$expand_str);
+		admin_redirect("index.php?module=style-templates&sid=".$mybb->get_input('sid2', MyBB::INPUT_INT).$expand_str);
 	}
 
 	$template1['template'] = explode("\n", $template1['template']);
@@ -1546,7 +1574,7 @@ if($mybb->input['action'] == "diff_report")
 		$page->add_breadcrumb_item($lang->find_updated, "index.php?module=style-templates&amp;action=find_updated");
 	}
 
-	$page->add_breadcrumb_item($lang->diff_report.": ".$template1['title'], "index.php?module=style-templates&amp;action=diff_report&amp;title=".$db->escape_string($mybb->input['title'])."&amp;from=".$mybb->input['from']."&amp;sid1=".(int)$mybb->input['sid1']."&amp;sid2=".(int)$mybb->input['sid2']);
+	$page->add_breadcrumb_item($lang->diff_report.": ".$template1['title'], "index.php?module=style-templates&amp;action=diff_report&amp;title=".$db->escape_string($mybb->input['title'])."&amp;from=".$mybb->input['from']."&amp;sid1=".$mybb->get_input('sid1', MyBB::INPUT_INT)."&amp;sid2=".$mybb->get_input('sid2', MyBB::INPUT_INT));
 
 	$page->output_header($lang->template_sets);
 
@@ -1577,7 +1605,7 @@ if($mybb->input['action'] == "revert")
 		SELECT t.*, s.title as set_title
 		FROM ".TABLE_PREFIX."templates t
 		LEFT JOIN ".TABLE_PREFIX."templatesets s ON(s.sid=t.sid)
-		WHERE t.title='".$db->escape_string($mybb->input['title'])."' AND t.sid > 0 AND t.sid = '".$mybb->get_input('sid', 1)."'
+		WHERE t.title='".$db->escape_string($mybb->input['title'])."' AND t.sid > 0 AND t.sid = '".$mybb->get_input('sid', MyBB::INPUT_INT)."'
 	");
 	$template = $db->fetch_array($query);
 
@@ -1712,7 +1740,7 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 	);
 
 	// Load the list of templates
-	$query = $db->simple_select("templates", "*", "sid='".$mybb->get_input('sid', 1)."' OR sid='-2'", array('order_by' => 'sid DESC, title', 'order_dir' => 'ASC'));
+	$query = $db->simple_select("templates", "*", "sid='".$mybb->get_input('sid', MyBB::INPUT_INT)."' OR sid='-2'", array('order_by' => 'sid DESC, title', 'order_dir' => 'ASC'));
 	while($template = $db->fetch_array($query))
 	{
 		$exploded = explode("_", $template['title'], 2);

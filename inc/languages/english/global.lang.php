@@ -538,6 +538,7 @@ $l['moderation_user_posts'] = "Please note that new posts you make must be appro
 $l['moderation_forum_thread'] = "Please note that new threads in this forum must be approved by a moderator before becoming visible.";
 $l['moderation_forum_edits'] = "Please note that edited posts in this forum must be approved by a moderator before becoming visible.";
 $l['moderation_forum_edits_quick'] = "Please note that edited posts in this forum must be approved by a moderator before becoming visible.";
+$l['awaiting_message_link'] = " <a href=\"{1}/{2}/index.php?module=user-users&amp;action=search&amp;results=1&amp;conditions=a%3A1%3A%7Bs%3A9%3A%22usergroup%22%3Bs%3A1%3A%225%22%3B%7D\">Go to the ACP</a>.";
 $l['awaiting_message_single'] = "There is 1 account awaiting activation. Please go to your ACP to activate the user.";
 $l['awaiting_message_plural'] = "There are {1} accounts awaiting activation. Please go to your ACP to activate the users.";
 
@@ -560,3 +561,5 @@ $l['sfs_error_username'] = 'username';
 $l['sfs_error_ip'] = 'IP';
 $l['sfs_error_email'] = 'email';
 $l['sfs_error_or'] = 'or';
+
+$l['boardclosed_reason'] = 'These forums are currently closed for maintenance. Please check back later';

@@ -60,6 +60,9 @@ if($config['database']['type'] == 'sqlite3' || $config['database']['type'] == 's
 	$config['database']['type'] = 'sqlite';
 }
 
+// Load DB interface
+require_once MYBB_ROOT."inc/db_base.php";
+
 require_once MYBB_ROOT."inc/db_{$config['database']['type']}.php";
 switch($config['database']['type'])
 {
@@ -142,7 +145,7 @@ $mybb->session = &$session;
 $grouppermignore = array("gid", "type", "title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
 $groupzerogreater = array("pmquota", "maxpmrecipients", "maxreputationsday", "attachquota", "maxemails", "maxwarningsday", "maxposts", "edittimelimit", "canusesigxposts", "maxreputationsperthread");
 $displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
-$fpermfields = array("canview", "candlattachments", "canpostthreads", "canpostreplys", "canpostattachments", "canratethreads", "caneditposts", "candeleteposts", "candeletethreads", "caneditattachments", "canpostpolls", "canvotepolls", "cansearch");
+$fpermfields = array('canview', 'canviewthreads', 'candlattachments', 'canpostthreads', 'canpostreplys', 'canpostattachments', 'canratethreads', 'caneditposts', 'candeleteposts', 'candeletethreads', 'caneditattachments', 'canpostpolls', 'canvotepolls', 'cansearch', 'modposts', 'modthreads', 'modattachments', 'mod_edit_posts');
 
 // Include the installation resources
 require_once INSTALL_ROOT."resources/output.php";
@@ -166,7 +169,7 @@ else
 		}
 
 		my_unsetcookie("mybbuser");
-		my_unsetcookie("sid");
+
 		if($mybb->user['uid'])
 		{
 			$time = TIME_NOW;
@@ -175,7 +178,6 @@ else
 				"lastvisit" => $time,
 			);
 			$db->update_query("users", $lastvisit, "uid='".$mybb->user['uid']."'");
-			$db->delete_query("sessions", "sid='".$session->sid."'");
 		}
 		header("Location: upgrade.php");
 	}
@@ -205,19 +207,7 @@ else
 			}
 		}
 
-		$db->delete_query("sessions", "ip='".$db->escape_string($session->ipaddress)."' AND sid != '".$session->sid."'");
-
-		$newsession = array(
-			"uid" => $user['uid']
-		);
-
-		$db->update_query("sessions", $newsession, "sid='".$session->sid."'");
-
-		// Temporarily set the cookie remember option for the login cookies
-		$mybb->user['remember'] = $user['remember'];
-
 		my_setcookie("mybbuser", $user['uid']."_".$user['loginkey'], null, true);
-		my_setcookie("sid", $session->sid, -1, true);
 
 		header("Location: ./upgrade.php");
 	}
@@ -332,28 +322,28 @@ else
 	}
 	elseif($mybb->input['action'] == "doupgrade")
 	{
-		add_upgrade_store("allow_anonymous_info", $mybb->get_input('allow_anonymous_info', 1));
-		require_once INSTALL_ROOT."resources/upgrade".$mybb->get_input('from', 1).".php";
+		add_upgrade_store("allow_anonymous_info", $mybb->get_input('allow_anonymous_info', MyBB::INPUT_INT));
+		require_once INSTALL_ROOT."resources/upgrade".$mybb->get_input('from', MyBB::INPUT_INT).".php";
 		if($db->table_exists("datacache") && $upgrade_detail['requires_deactivated_plugins'] == 1 && $mybb->get_input('donewarning') != "true")
 		{
 			$plugins = $cache->read('plugins', true);
 			if(!empty($plugins['active']))
 			{
 				$output->print_header();
-				$lang->plugin_warning = "<input type=\"hidden\" name=\"from\" value=\"".$mybb->get_input('from', 1)."\" />\n<input type=\"hidden\" name=\"donewarning\" value=\"true\" />\n<div class=\"error\"><strong><span style=\"color: red\">Warning:</span></strong> <p>There are still ".count($plugins['active'])." plugin(s) active. Active plugins can sometimes cause problems during an upgrade procedure or may break your forum afterward. It is <strong>strongly</strong> reccommended that you deactivate your plugins before continuing.</p></div> <br />";
+				$lang->plugin_warning = "<input type=\"hidden\" name=\"from\" value=\"".$mybb->get_input('from', MyBB::INPUT_INT)."\" />\n<input type=\"hidden\" name=\"donewarning\" value=\"true\" />\n<div class=\"error\"><strong><span style=\"color: red\">Warning:</span></strong> <p>There are still ".count($plugins['active'])." plugin(s) active. Active plugins can sometimes cause problems during an upgrade procedure or may break your forum afterward. It is <strong>strongly</strong> reccommended that you deactivate your plugins before continuing.</p></div> <br />";
 				$output->print_contents($lang->sprintf($lang->plugin_warning, $mybb->version));
 				$output->print_footer("doupgrade");
 			}
 			else
 			{
-				add_upgrade_store("startscript", $mybb->get_input('from', 1));
-				$runfunction = next_function($mybb->get_input('from', 1));
+				add_upgrade_store("startscript", $mybb->get_input('from', MyBB::INPUT_INT));
+				$runfunction = next_function($mybb->get_input('from', MyBB::INPUT_INT));
 			}
 		}
 		else
 		{
-			add_upgrade_store("startscript", $mybb->get_input('from', 1));
-			$runfunction = next_function($mybb->get_input('from', 1));
+			add_upgrade_store("startscript", $mybb->get_input('from', MyBB::INPUT_INT));
+			$runfunction = next_function($mybb->get_input('from', MyBB::INPUT_INT));
 		}
 	}
 	$currentscript = get_upgrade_store("currentscript");
@@ -626,7 +616,16 @@ function upgradedone()
 
 	// Attempt to run an update check
 	require_once MYBB_ROOT.'inc/functions_task.php';
-	run_task(12);
+	$query = $db->simple_select('tasks', 'tid', "file='versioncheck'");
+	$update_check = $db->fetch_array($query);
+	if($update_check)
+	{
+		// Load plugin system for update check
+		require_once MYBB_ROOT."inc/class_plugins.php";
+		$plugins = new pluginSystem;
+
+		run_task($update_check['tid']);
+	}
 
 	if(is_writable("./"))
 	{
@@ -747,7 +746,7 @@ function add_upgrade_store($title, $contents)
 
 	$replace_array = array(
 		"title" => $db->escape_string($title),
-		"contents" => $db->escape_string(serialize($contents))
+		"contents" => $db->escape_string(my_serialize($contents))
 	);
 	$db->replace_query("upgrade_data", $replace_array, "title");
 }
@@ -1091,4 +1090,3 @@ function write_settings()
 		fclose($file);
 	}
 }
-?>

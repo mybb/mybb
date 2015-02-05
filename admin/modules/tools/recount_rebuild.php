@@ -25,8 +25,8 @@ function acp_rebuild_forum_counters()
 	$query = $db->simple_select("forums", "COUNT(*) as num_forums");
 	$num_forums = $db->fetch_field($query, 'num_forums');
 
-	$page = $mybb->get_input('page', 1);
-	$per_page = (int)$mybb->input['forumcounters'];
+	$page = $mybb->get_input('page', MyBB::INPUT_INT);
+	$per_page = $mybb->get_input('forumcounters', MyBB::INPUT_INT);
 	if($per_page <= 0)
 	{
 		$per_page = 50;
@@ -52,8 +52,8 @@ function acp_rebuild_thread_counters()
 	$query = $db->simple_select("threads", "COUNT(*) as num_threads");
 	$num_threads = $db->fetch_field($query, 'num_threads');
 
-	$page = $mybb->get_input('page', 1);
-	$per_page = (int)$mybb->input['threadcounters'];
+	$page = $mybb->get_input('page', MyBB::INPUT_INT);
+	$per_page = $mybb->get_input('threadcounters', MyBB::INPUT_INT);
 	if($per_page <= 0)
 	{
 		$per_page = 500;
@@ -77,8 +77,8 @@ function acp_rebuild_poll_counters()
 	$query = $db->simple_select("polls", "COUNT(*) as num_polls");
 	$num_polls = $db->fetch_field($query, 'num_polls');
 
-	$page = $mybb->get_input('page', 1);
-	$per_page = (int)$mybb->input['pollcounters'];
+	$page = $mybb->get_input('page', MyBB::INPUT_INT);
+	$per_page = $mybb->get_input('pollcounters', MyBB::INPUT_INT);
 	if($per_page <= 0)
 	{
 		$per_page = 500;
@@ -102,8 +102,8 @@ function acp_recount_user_posts()
 	$query = $db->simple_select("users", "COUNT(uid) as num_users");
 	$num_users = $db->fetch_field($query, 'num_users');
 
-	$page = $mybb->get_input('page', 1);
-	$per_page = (int)$mybb->input['userposts'];
+	$page = $mybb->get_input('page', MyBB::INPUT_INT);
+	$per_page = $mybb->get_input('userposts', MyBB::INPUT_INT);
 	if($per_page <= 0)
 	{
 		$per_page = 500;
@@ -153,8 +153,8 @@ function acp_recount_user_threads()
 	$query = $db->simple_select("users", "COUNT(uid) as num_users");
 	$num_users = $db->fetch_field($query, 'num_users');
 
-	$page = $mybb->get_input('page', 1);
-	$per_page = (int)$mybb->input['userthreads'];
+	$page = $mybb->get_input('page', MyBB::INPUT_INT);
+	$per_page = $mybb->get_input('userthreads', MyBB::INPUT_INT);
 	if($per_page <= 0)
 	{
 		$per_page = 500;
@@ -203,8 +203,8 @@ function acp_recount_reputation()
 	$query = $db->simple_select("users", "COUNT(uid) as num_users");
 	$num_users = $db->fetch_field($query, 'num_users');
 
-	$page = $mybb->get_input('page', 1);
-	$per_page = (int)$mybb->input['reputation'];
+	$page = $mybb->get_input('page', MyBB::INPUT_INT);
+	$per_page = $mybb->get_input('reputation', MyBB::INPUT_INT);
 	if($per_page <= 0)
 	{
 		$per_page = 500;
@@ -235,8 +235,8 @@ function acp_recount_warning()
 	$query = $db->simple_select("users", "COUNT(uid) as num_users");
 	$num_users = $db->fetch_field($query, 'num_users');
 
-	$page = $mybb->get_input('page', 1);
-	$per_page = (int)$mybb->input['warning'];
+	$page = $mybb->get_input('page', MyBB::INPUT_INT);
+	$per_page = $mybb->get_input('warning', MyBB::INPUT_INT);
 	if($per_page <= 0)
 	{
 		$per_page = 500;
@@ -267,8 +267,8 @@ function acp_recount_private_messages()
 	$query = $db->simple_select("users", "COUNT(uid) as num_users");
 	$num_users = $db->fetch_field($query, 'num_users');
 
-	$page = $mybb->get_input('page', 1);
-	$per_page = (int)$mybb->input['privatemessages'];
+	$page = $mybb->get_input('page', MyBB::INPUT_INT);
+	$per_page = $mybb->get_input('privatemessages', MyBB::INPUT_INT);
 	if($per_page <= 0)
 	{
 		$per_page = 500;
@@ -294,8 +294,8 @@ function acp_recount_referrals()
 	$query = $db->simple_select("users", "COUNT(uid) as num_users");
 	$num_users = $db->fetch_field($query, 'num_users');
 
-	$page = $mybb->get_input('page', 1);
-	$per_page = (int)$mybb->input['referral'];
+	$page = $mybb->get_input('page', MyBB::INPUT_INT);
+	$per_page = $mybb->get_input('referral', MyBB::INPUT_INT);
 	$start = ($page-1) * $per_page;
 	$end = $start + $per_page;
 
@@ -322,8 +322,8 @@ function acp_recount_thread_ratings()
 	$query = $db->simple_select("threads", "COUNT(*) as num_threads");
 	$num_threads = $db->fetch_field($query, 'num_threads');
 
-	$page = $mybb->get_input('page', 1);
-	$per_page = (int)$mybb->input['threadrating'];
+	$page = $mybb->get_input('page', MyBB::INPUT_INT);
+	$per_page = $mybb->get_input('threadrating', MyBB::INPUT_INT);
 	if($per_page <= 0)
 	{
 		$per_page = 500;
@@ -354,8 +354,8 @@ function acp_rebuild_attachment_thumbnails()
 	$query = $db->simple_select("attachments", "COUNT(aid) as num_attachments");
 	$num_attachments = $db->fetch_field($query, 'num_attachments');
 
-	$page = $mybb->get_input('page', 1);
-	$per_page = (int)$mybb->input['attachmentthumbs'];
+	$page = $mybb->get_input('page', MyBB::INPUT_INT);
+	$per_page = $mybb->get_input('attachmentthumbs', MyBB::INPUT_INT);
 	if($per_page <= 0)
 	{
 		$per_page = 20;
@@ -426,7 +426,7 @@ if(!$mybb->input['action'])
 	{
 		require_once MYBB_ROOT."inc/functions_rebuild.php";
 
-		if(!isset($mybb->input['page']) || $mybb->get_input('page', 1) < 1)
+		if(!isset($mybb->input['page']) || $mybb->get_input('page', MyBB::INPUT_INT) < 1)
 		{
 			$mybb->input['page'] = 1;
 		}
@@ -440,7 +440,7 @@ if(!$mybb->input['action'])
 				// Log admin action
 				log_admin_action("forum");
 			}
-			if(!(int)$mybb->input['forumcounters'])
+			if(!$mybb->get_input('forumcounters', MyBB::INPUT_INT))
 			{
 				$mybb->input['forumcounters'] = 50;
 			}
@@ -456,7 +456,7 @@ if(!$mybb->input['action'])
 				// Log admin action
 				log_admin_action("thread");
 			}
-			if(!(int)$mybb->input['threadcounters'])
+			if(!$mybb->get_input('threadcounters', MyBB::INPUT_INT))
 			{
 				$mybb->input['threadcounters'] = 500;
 			}
@@ -472,7 +472,7 @@ if(!$mybb->input['action'])
 				// Log admin action
 				log_admin_action("userposts");
 			}
-			if(!(int)$mybb->input['userposts'])
+			if(!$mybb->get_input('userposts', MyBB::INPUT_INT))
 			{
 				$mybb->input['userposts'] = 500;
 			}
@@ -488,7 +488,7 @@ if(!$mybb->input['action'])
 				// Log admin action
 				log_admin_action("userthreads");
 			}
-			if(!(int)$mybb->input['userthreads'])
+			if(!$mybb->get_input('userthreads', MyBB::INPUT_INT))
 			{
 				$mybb->input['userthreads'] = 500;
 			}
@@ -505,7 +505,7 @@ if(!$mybb->input['action'])
 				log_admin_action("attachmentthumbs");
 			}
 
-			if(!(int)$mybb->input['attachmentthumbs'])
+			if(!$mybb->get_input('attachmentthumbs', MyBB::INPUT_INT))
 			{
 				$mybb->input['attachmentthumbs'] = 500;
 			}
@@ -522,7 +522,7 @@ if(!$mybb->input['action'])
 				log_admin_action("reputation");
 			}
 
-			if(!(int)$mybb->input['reputation'])
+			if(!$mybb->get_input('reputation', MyBB::INPUT_INT))
 			{
 				$mybb->input['reputation'] = 500;
 			}
@@ -539,7 +539,7 @@ if(!$mybb->input['action'])
 				log_admin_action("warning");
 			}
 
-			if(!(int)$mybb->input['warning'])
+			if(!$mybb->get_input('warning', MyBB::INPUT_INT))
 			{
 				$mybb->input['warning'] = 500;
 			}
@@ -556,7 +556,7 @@ if(!$mybb->input['action'])
 				log_admin_action("privatemessages");
 			}
 
-			if(!(int)$mybb->input['privatemessages'])
+			if(!$mybb->get_input('privatemessages', MyBB::INPUT_INT))
 			{
 				$mybb->input['privatemessages'] = 500;
 			}
@@ -573,7 +573,7 @@ if(!$mybb->input['action'])
 				log_admin_action("referral");
 			}
 
-			if(!(int)$mybb->input['referral'])
+			if(!$mybb->get_input('referral', MyBB::INPUT_INT))
 			{
 				$mybb->input['referral'] = 500;
 			}
@@ -590,7 +590,7 @@ if(!$mybb->input['action'])
 				log_admin_action("threadrating");
 			}
 
-			if(!(int)$mybb->input['threadrating'])
+			if(!$mybb->get_input('threadrating', MyBB::INPUT_INT))
 			{
 				$mybb->input['threadrating'] = 500;
 			}
@@ -607,7 +607,7 @@ if(!$mybb->input['action'])
 				log_admin_action("poll");
 			}
 
-			if(!(int)$mybb->input['pollcounters'])
+			if(!$mybb->get_input('pollcounters', MyBB::INPUT_INT))
 			{
 				$mybb->input['pollcounters'] = 500;
 			}
@@ -646,32 +646,32 @@ if(!$mybb->input['action'])
 	$form_container->output_row_header("&nbsp;");
 
 	$form_container->output_cell("<label>{$lang->rebuild_forum_counters}</label><div class=\"description\">{$lang->rebuild_forum_counters_desc}</div>");
-	$form_container->output_cell($form->generate_numeric_field("forumcounters", 50, array('style' => 'width: 150px;')));
+	$form_container->output_cell($form->generate_numeric_field("forumcounters", 50, array('style' => 'width: 150px;', 'min' => 0)));
 	$form_container->output_cell($form->generate_submit_button($lang->go, array("name" => "do_rebuildforumcounters")));
 	$form_container->construct_row();
 
 	$form_container->output_cell("<label>{$lang->rebuild_thread_counters}</label><div class=\"description\">{$lang->rebuild_thread_counters_desc}</div>");
-	$form_container->output_cell($form->generate_numeric_field("threadcounters", 500, array('style' => 'width: 150px;')));
+	$form_container->output_cell($form->generate_numeric_field("threadcounters", 500, array('style' => 'width: 150px;', 'min' => 0)));
 	$form_container->output_cell($form->generate_submit_button($lang->go, array("name" => "do_rebuildthreadcounters")));
 	$form_container->construct_row();
 
 	$form_container->output_cell("<label>{$lang->rebuild_poll_counters}</label><div class=\"description\">{$lang->rebuild_poll_counters_desc}</div>");
-	$form_container->output_cell($form->generate_numeric_field("pollcounters", 500, array('style' => 'width: 150px;')));
+	$form_container->output_cell($form->generate_numeric_field("pollcounters", 500, array('style' => 'width: 150px;', 'min' => 0)));
 	$form_container->output_cell($form->generate_submit_button($lang->go, array("name" => "do_rebuildpollcounters")));
 	$form_container->construct_row();
 
 	$form_container->output_cell("<label>{$lang->recount_user_posts}</label><div class=\"description\">{$lang->recount_user_posts_desc}</div>");
-	$form_container->output_cell($form->generate_numeric_field("userposts", 500, array('style' => 'width: 150px;')));
+	$form_container->output_cell($form->generate_numeric_field("userposts", 500, array('style' => 'width: 150px;', 'min' => 0)));
 	$form_container->output_cell($form->generate_submit_button($lang->go, array("name" => "do_recountuserposts")));
 	$form_container->construct_row();
 
 	$form_container->output_cell("<label>{$lang->recount_user_threads}</label><div class=\"description\">{$lang->recount_user_threads_desc}</div>");
-	$form_container->output_cell($form->generate_numeric_field("userthreads", 500, array('style' => 'width: 150px;')));
+	$form_container->output_cell($form->generate_numeric_field("userthreads", 500, array('style' => 'width: 150px;', 'min' => 0)));
 	$form_container->output_cell($form->generate_submit_button($lang->go, array("name" => "do_recountuserthreads")));
 	$form_container->construct_row();
 
 	$form_container->output_cell("<label>{$lang->rebuild_attachment_thumbs}</label><div class=\"description\">{$lang->rebuild_attachment_thumbs_desc}</div>");
-	$form_container->output_cell($form->generate_numeric_field("attachmentthumbs", 20, array('style' => 'width: 150px;')));
+	$form_container->output_cell($form->generate_numeric_field("attachmentthumbs", 20, array('style' => 'width: 150px;', 'min' => 0)));
 	$form_container->output_cell($form->generate_submit_button($lang->go, array("name" => "do_rebuildattachmentthumbs")));
 	$form_container->construct_row();
 
@@ -681,27 +681,27 @@ if(!$mybb->input['action'])
 	$form_container->construct_row();
 
 	$form_container->output_cell("<label>{$lang->recount_reputation}</label><div class=\"description\">{$lang->recount_reputation_desc}</div>");
-	$form_container->output_cell($form->generate_numeric_field("reputation", 500, array('style' => 'width: 150px;')));
+	$form_container->output_cell($form->generate_numeric_field("reputation", 500, array('style' => 'width: 150px;', 'min' => 0)));
 	$form_container->output_cell($form->generate_submit_button($lang->go, array("name" => "do_recountreputation")));
 	$form_container->construct_row();
 
 	$form_container->output_cell("<label>{$lang->recount_warning}</label><div class=\"description\">{$lang->recount_warning_desc}</div>");
-	$form_container->output_cell($form->generate_numeric_field("warning", 500, array('style' => 'width: 150px;')));
+	$form_container->output_cell($form->generate_numeric_field("warning", 500, array('style' => 'width: 150px;', 'min' => 0)));
 	$form_container->output_cell($form->generate_submit_button($lang->go, array("name" => "do_recountwarning")));
 	$form_container->construct_row();
 
 	$form_container->output_cell("<label>{$lang->recount_private_messages}</label><div class=\"description\">{$lang->recount_private_messages_desc}</div>");
-	$form_container->output_cell($form->generate_numeric_field("privatemessages", 500, array('style' => 'width: 150px;')));
+	$form_container->output_cell($form->generate_numeric_field("privatemessages", 500, array('style' => 'width: 150px;', 'min' => 0)));
 	$form_container->output_cell($form->generate_submit_button($lang->go, array("name" => "do_recountprivatemessages")));
 	$form_container->construct_row();
 
 	$form_container->output_cell("<label>{$lang->recount_referrals}</label><div class=\"description\">{$lang->recount_referrals_desc}</div>");
-	$form_container->output_cell($form->generate_numeric_field("referral", 500, array('style' => 'width: 150px;')));
+	$form_container->output_cell($form->generate_numeric_field("referral", 500, array('style' => 'width: 150px;', 'min' => 0)));
 	$form_container->output_cell($form->generate_submit_button($lang->go, array("name" => "do_recountreferral")));
 	$form_container->construct_row();
 
 	$form_container->output_cell("<label>{$lang->recount_thread_ratings}</label><div class=\"description\">{$lang->recount_thread_ratings_desc}</div>");
-	$form_container->output_cell($form->generate_numeric_field("threadrating", 500, array('style' => 'width: 150px;')));
+	$form_container->output_cell($form->generate_numeric_field("threadrating", 500, array('style' => 'width: 150px;', 'min' => 0)));
 	$form_container->output_cell($form->generate_submit_button($lang->go, array("name" => "do_recountthreadrating")));
 	$form_container->construct_row();
 

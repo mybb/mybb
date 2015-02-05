@@ -17,7 +17,7 @@ if(!$working_dir)
 // Load main MyBB core file which begins all of the magic
 require_once $working_dir.'/inc/init.php';
 
-$shutdown_queries = array();
+$shutdown_queries = $shutdown_functions = array();
 
 // Read the usergroups cache as well as the moderators cache
 $groupscache = $cache->read('usergroups');
@@ -415,6 +415,7 @@ else
 $templatelist .= "headerinclude,header,footer,gobutton,htmldoctype,header_welcomeblock_member,header_welcomeblock_guest,header_welcomeblock_member_admin,global_pm_alert,global_unreadreports,error,footer_languageselect_option,footer_contactus";
 $templatelist .= ",global_pending_joinrequests,global_awaiting_activation,nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active,footer_languageselect,footer_themeselect,header_welcomeblock_member_moderator,redirect,header_menu_calendar,nav_dropdown,footer_themeselector,task_image";
 $templatelist .= ",global_boardclosed_warning,global_bannedwarning,error_inline,error_nopermission_loggedin,error_nopermission,debug_summary,header_quicksearch,header_menu_search,header_menu_portal,header_menu_memberlist,usercp_themeselector_option,smilie,global_board_offline_modal";
+$templatelist .= ",video_dailymotion_embed,video_facebook_embed,video_liveleak_embed,video_metacafe_embed,video_myspacetv_embed,video_veoh_embed,video_vimeo_embed,video_yahoo_embed,video_youtube_embed";
 $templates->cache($db->escape_string($templatelist));
 
 // Set the current date and time now
@@ -719,9 +720,15 @@ if(isset($mybb->user['pmnotice']) && $mybb->user['pmnotice'] == 2 && $mybb->user
 	eval('$pm_notice = "'.$templates->get('global_pm_alert').'";');
 }
 
-if($mybb->usergroup['cancp'] == 1)
+if($mybb->settings['awactialert'] == 1 && $mybb->usergroup['cancp'] == 1)
 {
 	$awaitingusers = $cache->read('awaitingactivation');
+
+	if(isset($awaitingusers['time']) && $awaitingusers['time'] < TIME_NOW + 86400)
+	{
+		$cache->update_awaitingactivation();
+		$awaitingusers = $cache->read('awaitingactivation');
+	}
 
 	if(!empty($awaitingusers['users']))
 	{
@@ -751,6 +758,12 @@ if($mybb->usergroup['cancp'] == 1)
 		{
 			$awaiting_message = $lang->sprintf($lang->awaiting_message_plural, $awaitingusers);
 		}
+
+		if($admincplink)
+		{
+			$awaiting_message .= $lang->sprintf($lang->awaiting_message_link, $mybb->settings['bburl'], $admin_dir);
+		}
+
 		eval('$awaitingusers = "'.$templates->get('global_awaiting_activation').'";');
 	}
 	else
@@ -885,8 +898,13 @@ $closed_bypass = array(
 if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['canviewboardclosed'] != 1 && !in_array($current_page, $closed_bypass) && (!is_array($closed_bypass[$current_page]) || !in_array($mybb->get_input('action'), $closed_bypass[$current_page])))
 {
 	// Show error
+	if(!$mybb->settings['boardclosed_reason'])
+	{
+		$mybb->settings['boardclosed_reason'] = $lang->boardclosed_reason;
+	}
+
 	$lang->error_boardclosed .= "<blockquote>{$mybb->settings['boardclosed_reason']}</blockquote>";
-	
+
 	if(!$mybb->get_input('modal')) 
 	{
 		error($lang->error_boardclosed);
@@ -941,7 +959,7 @@ if(!$mybb->user['uid'] && $mybb->settings['usereferrals'] == 1 && (isset($mybb->
 	}
 	else
 	{
-		$condition = "uid = '".$mybb->get_input('referrer', 1)."'";
+		$condition = "uid = '".$mybb->get_input('referrer', MyBB::INPUT_INT)."'";
 	}
 
 	$query = $db->simple_select('users', 'uid', $condition, array('limit' => 1));

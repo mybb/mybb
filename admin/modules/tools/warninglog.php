@@ -21,7 +21,7 @@ $plugins->run_hooks("admin_tools_warninglog_begin");
 // Revoke a warning
 if($mybb->input['action'] == "do_revoke" && $mybb->request_method == "post")
 {
-	$query = $db->simple_select("warnings", "*", "wid='".(int)$mybb->input['wid']."'");
+	$query = $db->simple_select("warnings", "*", "wid='".$mybb->get_input('wid', MyBB::INPUT_INT)."'");
 	$warning = $db->fetch_array($query);
 
 	if(!$warning['wid'])
@@ -92,7 +92,7 @@ if($mybb->input['action'] == "view")
 		LEFT JOIN ".TABLE_PREFIX."warningtypes t ON (t.tid=w.tid)
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=w.issuedby)
 		LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=w.pid)
-		WHERE w.wid='".(int)$mybb->input['wid']."'
+		WHERE w.wid='".$mybb->get_input('wid', MyBB::INPUT_INT)."'
 	");
 	$warning = $db->fetch_array($query);
 
@@ -335,9 +335,9 @@ if(!$mybb->input['action'])
 	$query = $db->query($sql);
 	$total_warnings = $db->fetch_field($query, 'count');
 	$view_page = 1;
-	if(isset($mybb->input['page']) && $mybb->get_input('page', 1) > 0)
+	if(isset($mybb->input['page']) && $mybb->get_input('page', MyBB::INPUT_INT) > 0)
 	{
-		$view_page = $mybb->get_input('page', 1);
+		$view_page = $mybb->get_input('page', MyBB::INPUT_INT);
 	}
 	$per_page = 20;
 	if(isset($mybb->input['filter']['per_page']) && (int)$mybb->input['filter']['per_page'] > 0)
@@ -469,7 +469,7 @@ if(!$mybb->input['action'])
 	$form_container->output_row($lang->filter_issued_by, "", $form->generate_text_box('filter[mod_username]', $mybb->input['filter']['mod_username'], array('id' => 'filter_mod_username')), 'filter_mod_username');
 	$form_container->output_row($lang->filter_reason, "", $form->generate_text_box('filter[reason]', $mybb->input['filter']['reason'], array('id' => 'filter_reason')), 'filter_reason');
 	$form_container->output_row($lang->sort_by, "", $form->generate_select_box('filter[sortby]', $sort_by, $mybb->input['filter']['sortby'], array('id' => 'filter_sortby'))." {$lang->in} ".$form->generate_select_box('filter[order]', $order_array, $order, array('id' => 'filter_order'))." {$lang->order}", 'filter_order');
-	$form_container->output_row($lang->results_per_page, "", $form->generate_numeric_field('filter[per_page]', $per_page, array('id' => 'filter_per_page')), 'filter_per_page');
+	$form_container->output_row($lang->results_per_page, "", $form->generate_numeric_field('filter[per_page]', $per_page, array('id' => 'filter_per_page', 'min' => 1)), 'filter_per_page');
 
 	$form_container->end();
 	$buttons[] = $form->generate_submit_button($lang->filter_warning_logs);

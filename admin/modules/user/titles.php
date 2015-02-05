@@ -48,7 +48,7 @@ if($mybb->input['action'] == "add")
 			$errors[] = $lang->error_missing_posts;
 		}
 
-		$query = $db->simple_select("usertitles", "utid", "posts= '".(int)$mybb->input['posts']."'");
+		$query = $db->simple_select("usertitles", "utid", "posts= '".$mybb->get_input('posts', MyBB::INPUT_INT)."'");
 		if($db->num_rows($query))
 		{
 			$errors[] = $lang->error_cannot_have_same_posts;
@@ -58,8 +58,8 @@ if($mybb->input['action'] == "add")
 		{
 			$new_title = array(
 				"title" => $db->escape_string($mybb->input['title']),
-				"posts" => (int)$mybb->input['posts'],
-				"stars" => (int)$mybb->input['stars'],
+				"posts" => $mybb->get_input('posts', MyBB::INPUT_INT),
+				"stars" => $mybb->get_input('stars', MyBB::INPUT_INT),
 				"starimage" => $db->escape_string($mybb->input['starimage'])
 			);
 
@@ -99,8 +99,8 @@ if($mybb->input['action'] == "add")
 
 	$form_container = new FormContainer($lang->add_new_user_title);
 	$form_container->output_row($lang->title_to_assign."<em>*</em>", $lang->title_to_assign_desc, $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
-	$form_container->output_row($lang->minimum_posts, $lang->minimum_posts_desc, $form->generate_numeric_field('posts', $mybb->input['posts'], array('id' => 'posts')), 'posts');
-	$form_container->output_row($lang->number_of_stars, $lang->number_of_stars_desc, $form->generate_numeric_field('stars', $mybb->input['stars'], array('id' => 'stars')), 'stars');
+	$form_container->output_row($lang->minimum_posts, $lang->minimum_posts_desc, $form->generate_numeric_field('posts', $mybb->input['posts'], array('id' => 'posts', 'min' => 0)), 'posts');
+	$form_container->output_row($lang->number_of_stars, $lang->number_of_stars_desc, $form->generate_numeric_field('stars', $mybb->input['stars'], array('id' => 'stars', 'min' => 0)), 'stars');
 	$form_container->output_row($lang->star_image, $lang->star_image_desc, $form->generate_text_box('starimage', $mybb->input['starimage'], array('id' => 'starimage')), 'starimage');
 	$form_container->end();
 
@@ -114,7 +114,7 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "edit")
 {
-	$query = $db->simple_select("usertitles", "*", "utid='".(int)$mybb->input['utid']."'");
+	$query = $db->simple_select("usertitles", "*", "utid='".$mybb->get_input('utid', MyBB::INPUT_INT)."'");
 	$usertitle = $db->fetch_array($query);
 
 	if(!$usertitle['utid'])
@@ -137,7 +137,7 @@ if($mybb->input['action'] == "edit")
 			$errors[] = $lang->error_missing_posts;
 		}
 
-		$query = $db->simple_select("usertitles", "utid", "posts= '".(int)$mybb->input['posts']."' AND utid!= '".(int)$mybb->input['utid']."'");
+		$query = $db->simple_select("usertitles", "utid", "posts= '".$mybb->get_input('posts', MyBB::INPUT_INT)."' AND utid!= '".$mybb->get_input('utid', MyBB::INPUT_INT)."'");
 		if($db->num_rows($query))
 		{
 			$errors[] = $lang->error_cannot_have_same_posts;
@@ -147,8 +147,8 @@ if($mybb->input['action'] == "edit")
 		{
 			$updated_title = array(
 				"title" => $db->escape_string($mybb->input['title']),
-				"posts" => (int)$mybb->input['posts'],
-				"stars" => (int)$mybb->input['stars'],
+				"posts" => $mybb->get_input('posts', MyBB::INPUT_INT),
+				"stars" => $mybb->get_input('stars', MyBB::INPUT_INT),
 				"starimage" => $db->escape_string($mybb->input['starimage'])
 			);
 
@@ -190,8 +190,8 @@ if($mybb->input['action'] == "edit")
 
 	$form_container = new FormContainer($lang->edit_user_title);
 	$form_container->output_row($lang->title_to_assign."<em>*</em>", $lang->title_to_assign_desc, $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
-	$form_container->output_row($lang->minimum_posts, $lang->minimum_posts_desc, $form->generate_numeric_field('posts', $mybb->input['posts'], array('id' => 'posts')), 'posts');
-	$form_container->output_row($lang->number_of_stars, $lang->number_of_stars_desc, $form->generate_numeric_field('stars', $mybb->input['stars'], array('id' => 'stars')), 'stars');
+	$form_container->output_row($lang->minimum_posts, $lang->minimum_posts_desc, $form->generate_numeric_field('posts', $mybb->input['posts'], array('id' => 'posts', 'min' => 0)), 'posts');
+	$form_container->output_row($lang->number_of_stars, $lang->number_of_stars_desc, $form->generate_numeric_field('stars', $mybb->input['stars'], array('id' => 'stars', 'min' => 0)), 'stars');
 	$form_container->output_row($lang->star_image, $lang->star_image_desc, $form->generate_text_box('starimage', $mybb->input['starimage'], array('id' => 'starimage')), 'starimage');
 	$form_container->end();
 
@@ -206,7 +206,7 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
-	$query = $db->simple_select("usertitles", "*", "utid='".(int)$mybb->input['utid']."'");
+	$query = $db->simple_select("usertitles", "*", "utid='".$mybb->get_input('utid', MyBB::INPUT_INT)."'");
 	$usertitle = $db->fetch_array($query);
 
 	if(!$usertitle['utid'])

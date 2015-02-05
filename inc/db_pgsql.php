@@ -8,7 +8,7 @@
  *
  */
 
-class DB_PgSQL
+class DB_PgSQL implements DB_Base
 {
 	/**
 	 * The title of this layer.
@@ -601,7 +601,7 @@ class DB_PgSQL
 	}
 
 	/**
-	 * Lists all functions in the database.
+	 * Lists all tables in the database.
 	 *
 	 * @param string The database name.
 	 * @param string Prefix of the table (optional)

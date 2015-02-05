@@ -16,11 +16,13 @@ define("ADMIN_IP_SEGMENTS", 0);
 
 require_once dirname(dirname(__FILE__))."/inc/init.php";
 
+$shutdown_queries = $shutdown_functions = array();
+
 send_page_headers();
 
 if(!isset($config['admin_dir']) || !file_exists(MYBB_ROOT.$config['admin_dir']."/inc/class_page.php"))
 {
-	$config['admin_dir'] = "admin";
+	$config['admin_dir'] = basename(dirname(__FILE__));
 }
 
 define('MYBB_ADMIN_DIR', MYBB_ROOT.$config['admin_dir'].'/');
@@ -32,6 +34,10 @@ require_once MYBB_ADMIN_DIR."inc/class_form.php";
 require_once MYBB_ADMIN_DIR."inc/class_table.php";
 require_once MYBB_ADMIN_DIR."inc/functions.php";
 require_once MYBB_ROOT."inc/functions_user.php";
+
+// Set cookie path to our admin dir temporarily, i.e. so that it affects the ACP only
+$loc = get_current_location('', '', true);
+$mybb->settings['cookiepath'] = substr($loc, 0, strrpos($loc, "/{$config['admin_dir']}/"))."/{$config['admin_dir']}/";
 
 if(!isset($cp_language))
 {
@@ -149,7 +155,7 @@ elseif($mybb->input['do'] == "login")
 		'password' => $mybb->input['password']
 	));
 
-	if($loginhandler->verify_username() !== false && $loginhandler->verify_password() !== false)
+	if($loginhandler->validate_login() == true)
 	{
 		$mybb->user = get_user($loginhandler->login_data['uid']);
 	}
@@ -186,7 +192,7 @@ elseif($mybb->input['do'] == "login")
 			"ip" => $db->escape_binary(my_inet_pton(get_ip())),
 			"dateline" => TIME_NOW,
 			"lastactive" => TIME_NOW,
-			"data" => serialize(array()),
+			"data" => my_serialize(array()),
 			"useragent" => $db->escape_string($useragent),
 		);
 		$db->insert_query("adminsessions", $admin_session);

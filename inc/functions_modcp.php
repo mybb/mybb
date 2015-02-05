@@ -144,14 +144,18 @@ function send_report($report)
 {
 	global $db, $lang, $forum, $mybb, $post, $thread;
 
-	$query = $db->query("
-		SELECT DISTINCT u.username, u.email, u.receivepms, u.uid
-		FROM ".TABLE_PREFIX."moderators m
-		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=m.id)
-		WHERE m.fid IN (".$forum['parentlist'].") AND m.isgroup = '0'
-	");
+	$nummods = false;
+	if(!empty($forum['parentlist']))
+	{
+		$query = $db->query("
+			SELECT DISTINCT u.username, u.email, u.receivepms, u.uid
+			FROM ".TABLE_PREFIX."moderators m
+			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=m.id)
+			WHERE m.fid IN (".$forum['parentlist'].") AND m.isgroup = '0'
+		");
 
-	$nummods = $db->num_rows($query);
+		$nummods = $db->num_rows($query);
+	}
 
 	if(!$nummods)
 	{
@@ -249,7 +253,7 @@ function add_report($report, $type = 'post')
 		'reports' => 1,
 		'dateline' => TIME_NOW,
 		'lastreport' => TIME_NOW,
-		'reporters' => $db->escape_string(serialize(array($report['uid'])))
+		'reporters' => $db->escape_string(my_serialize(array($report['uid'])))
 	);
 
 	if($mybb->settings['reportmethod'] == "email" || $mybb->settings['reportmethod'] == "pms")
@@ -276,7 +280,7 @@ function update_report($report)
 	$update_array = array(
 		'reports' => ++$report['reports'],
 		'lastreport' => TIME_NOW,
-		'reporters' => $db->escape_string(serialize($report['reporters']))
+		'reporters' => $db->escape_string(my_serialize($report['reporters']))
 	);
 
 	$db->update_query("reportedcontent", $update_array, "rid = '{$report['rid']}'");

@@ -173,6 +173,9 @@ function run_shutdown()
 
 		if(isset($config))
 		{
+			// Load DB interface
+			require_once MYBB_ROOT."inc/db_base.php";
+
 			require_once MYBB_ROOT."inc/db_".$config['database']['type'].".php";
 			switch($config['database']['type'])
 			{
@@ -397,7 +400,7 @@ function my_date($format, $stamp="", $offset="", $ty=1, $adodb=false)
 	if($format == 'relative')
 	{
 		// Relative formats both date and time
-		if($ty != 2 && (TIME_NOW - $stamp) < 3600)
+		if($ty != 2 && abs(TIME_NOW - $stamp) < 3600)
 		{
 			$diff = TIME_NOW - $stamp;
 			$relative = array('prefix' => '', 'minute' => 0, 'plural' => $lang->rel_minutes_plural, 'suffix' => $lang->rel_ago);
@@ -425,7 +428,7 @@ function my_date($format, $stamp="", $offset="", $ty=1, $adodb=false)
 
 			$date = $lang->sprintf($lang->rel_time, $relative['prefix'], $relative['minute'], $relative['plural'], $relative['suffix']);
 		}
-		elseif($ty != 2 && (TIME_NOW - $stamp) >= 3600 && (TIME_NOW - $stamp) < 43200)
+		elseif($ty != 2 && abs(TIME_NOW - $stamp) < 43200)
 		{
 			$diff = TIME_NOW - $stamp;
 			$relative = array('prefix' => '', 'hour' => 0, 'plural' => $lang->rel_hours_plural, 'suffix' => $lang->rel_ago);
@@ -756,7 +759,7 @@ function error($error="", $title="")
 	}
 
 	// AJAX error message?
-	if($mybb->get_input('ajax', 1))
+	if($mybb->get_input('ajax', MyBB::INPUT_INT))
 	{
 		// Send our headers.
 		@header("Content-type: application/json; charset={$lang->settings['charset']}");
@@ -802,7 +805,7 @@ function inline_error($errors, $title="", $json_data=array())
 	}
 
 	// AJAX error message?
-	if($mybb->get_input('ajax', 1))
+	if($mybb->get_input('ajax', MyBB::INPUT_INT))
 	{
 		// Send our headers.
 		@header("Content-type: application/json; charset={$lang->settings['charset']}");
@@ -848,7 +851,7 @@ function error_no_permission()
 
 	$db->update_query("sessions", $noperm_array, "sid='{$session->sid}'");
 
-	if($mybb->get_input('ajax', 1))
+	if($mybb->get_input('ajax', MyBB::INPUT_INT))
 	{
 		// Send our headers.
 		header("Content-type: application/json; charset={$lang->settings['charset']}");
@@ -909,7 +912,7 @@ function redirect($url, $message="", $title="", $force_redirect=false)
 
 	$plugins->run_hooks("redirect", $redirect_args);
 
-	if($mybb->get_input('ajax', 1))
+	if($mybb->get_input('ajax', MyBB::INPUT_INT))
 	{
 		// Send our headers.
 		//@header("Content-type: text/html; charset={$lang->settings['charset']}");
@@ -1198,7 +1201,7 @@ function user_permissions($uid=0)
 }
 
 /**
- * Fetch the usergroup permissions for a specic group or series of groups combined
+ * Fetch the usergroup permissions for a specific group or series of groups combined
  *
  * @param mixed A list of groups (Can be a single integer, or a list of groups separated by a comma)
  * @return array Array of permissions generated for the groups
@@ -1214,11 +1217,12 @@ function usergroup_permissions($gid=0)
 
 	$groups = explode(",", $gid);
 
-
 	if(count($groups) == 1)
 	{
 		return $groupscache[$gid];
 	}
+	
+	$usergroup = array();
 
 	foreach($groups as $gid)
 	{
@@ -1381,6 +1385,7 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 
 	$current_permissions = array();
 	$only_view_own_threads = 1;
+	$only_reply_own_threads = 1;
 
 	foreach($groups as $gid)
 	{
@@ -1424,6 +1429,11 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 			{
 				$only_view_own_threads = 0;
 			}
+
+			if($level_permissions["canpostreplys"] && empty($level_permissions["canonlyreplyownthreads"]))
+			{
+				$only_reply_own_threads = 0;
+			}
 		}
 	}
 
@@ -1431,6 +1441,12 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 	if($only_view_own_threads == 0)
 	{
 		$current_permissions["canonlyviewownthreads"] = 0;
+	}
+
+	// Figure out if we can reply more than our own threads
+	if($only_reply_own_threads == 0)
+	{
+		$current_permissions["canonlyreplyownthreads"] = 0;
 	}
 
 	if(count($current_permissions) == 0)
@@ -1750,7 +1766,7 @@ function get_post_icons()
 	foreach($posticons as $dbicon)
 	{
 		$dbicon['path'] = str_replace("{theme}", $theme['imgdir'], $dbicon['path']);
-		$dbicon['path'] = htmlspecialchars_uni($dbicon['path']);
+		$dbicon['path'] = htmlspecialchars_uni($mybb->get_asset_url($dbicon['path']));
 		$dbicon['name'] = htmlspecialchars_uni($dbicon['name']);
 
 		if($icon == $dbicon['iid'])
@@ -1899,35 +1915,303 @@ function my_set_array_cookie($name, $id, $value, $expires="")
 	}
 
 	$newcookie[$id] = $value;
-	$newcookie = serialize($newcookie);
+	$newcookie = my_serialize($newcookie);
 	my_setcookie("mybb[$name]", addslashes($newcookie), $expires);
 
 	// Make sure our current viarables are up-to-date as well
 	$mybb->cookies['mybb'][$name] = $newcookie;
 }
 
-/**
- * Verifies that data passed is an array
- *
- * @param array Data to unserialize
- * @return array Unserialized data array
+/*
+ * Arbitrary limits for _safe_unserialize()
  */
-function my_unserialize($data)
+define('MAX_SERIALIZED_INPUT_LENGTH', 10240);
+define('MAX_SERIALIZED_ARRAY_LENGTH', 256);
+define('MAX_SERIALIZED_ARRAY_DEPTH', 5);
+
+/**
+ * Credits go to https://github.com/piwik
+ * Safe unserialize() replacement
+ * - accepts a strict subset of PHP's native my_serialized representation
+ * - does not unserialize objects
+ *
+ * @param string $str
+ * @return mixed
+ * @throw Exception if $str is malformed or contains unsupported types (e.g., resources, objects)
+ */
+function _safe_unserialize($str)
 {
-	// Do no unserialize objects
-	if(substr($data, 0, 1) == 'O')
+	if(strlen($str) > MAX_SERIALIZED_INPUT_LENGTH)
 	{
-		return array();
+		// input exceeds MAX_SERIALIZED_INPUT_LENGTH
+		return false;
 	}
 
-	$array = unserialize($data);
-
-	if(!is_array($array))
+	if(empty($str) || !is_string($str))
 	{
-		$array = array();
+		return false;
 	}
 
-	return $array;
+	$stack = array();
+	$expected = array();
+
+	/*
+	 * states:
+	 *   0 - initial state, expecting a single value or array
+	 *   1 - terminal state
+	 *   2 - in array, expecting end of array or a key
+	 *   3 - in array, expecting value or another array
+	 */
+	$state = 0;
+	while($state != 1)
+	{
+		$type = isset($str[0]) ? $str[0] : '';
+
+		if($type == '}')
+		{
+			$str = substr($str, 1);
+		}
+		else if($type == 'N' && $str[1] == ';')
+		{
+			$value = null;
+			$str = substr($str, 2);
+		}
+		else if($type == 'b' && preg_match('/^b:([01]);/', $str, $matches))
+		{
+			$value = $matches[1] == '1' ? true : false;
+			$str = substr($str, 4);
+		}
+		else if($type == 'i' && preg_match('/^i:(-?[0-9]+);(.*)/s', $str, $matches))
+		{
+			$value = (int)$matches[1];
+			$str = $matches[2];
+		}
+		else if($type == 'd' && preg_match('/^d:(-?[0-9]+\.?[0-9]*(E[+-][0-9]+)?);(.*)/s', $str, $matches))
+		{
+			$value = (float)$matches[1];
+			$str = $matches[3];
+		}
+		else if($type == 's' && preg_match('/^s:([0-9]+):"(.*)/s', $str, $matches) && substr($matches[2], (int)$matches[1], 2) == '";')
+		{
+			$value = substr($matches[2], 0, (int)$matches[1]);
+			$str = substr($matches[2], (int)$matches[1] + 2);
+		}
+		else if($type == 'a' && preg_match('/^a:([0-9]+):{(.*)/s', $str, $matches) && $matches[1] < MAX_SERIALIZED_ARRAY_LENGTH)
+		{
+			$expectedLength = (int)$matches[1];
+			$str = $matches[2];
+		}
+		else
+		{
+			// object or unknown/malformed type
+			return false;
+		}
+
+		switch($state)
+		{
+			case 3: // in array, expecting value or another array
+				if($type == 'a')
+				{
+					if(count($stack) >= MAX_SERIALIZED_ARRAY_DEPTH)
+					{
+						// array nesting exceeds MAX_SERIALIZED_ARRAY_DEPTH
+						return false;
+					}
+
+					$stack[] = &$list;
+					$list[$key] = array();
+					$list = &$list[$key];
+					$expected[] = $expectedLength;
+					$state = 2;
+					break;
+				}
+				if($type != '}')
+				{
+					$list[$key] = $value;
+					$state = 2;
+					break;
+				}
+
+				// missing array value
+				return false;
+
+			case 2: // in array, expecting end of array or a key
+				if($type == '}')
+				{
+					if(count($list) < end($expected))
+					{
+						// array size less than expected
+						return false;
+					}
+
+					unset($list);
+					$list = &$stack[count($stack)-1];
+					array_pop($stack);
+
+					// go to terminal state if we're at the end of the root array
+					array_pop($expected);
+					if(count($expected) == 0) {
+						$state = 1;
+					}
+					break;
+				}
+				if($type == 'i' || $type == 's')
+				{
+					if(count($list) >= MAX_SERIALIZED_ARRAY_LENGTH)
+					{
+						// array size exceeds MAX_SERIALIZED_ARRAY_LENGTH
+						return false;
+					}
+					if(count($list) >= end($expected))
+					{
+						// array size exceeds expected length
+						return false;
+					}
+
+					$key = $value;
+					$state = 3;
+					break;
+				}
+
+				// illegal array index type
+				return false;
+
+			case 0: // expecting array or value
+				if($type == 'a')
+				{
+					if(count($stack) >= MAX_SERIALIZED_ARRAY_DEPTH)
+					{
+						// array nesting exceeds MAX_SERIALIZED_ARRAY_DEPTH
+						return false;
+					}
+
+					$data = array();
+					$list = &$data;
+					$expected[] = $expectedLength;
+					$state = 2;
+					break;
+				}
+				if($type != '}')
+				{
+					$data = $value;
+					$state = 1;
+					break;
+				}
+
+				// not in array
+				return false;
+		}
+	}
+
+	if(!empty($str))
+	{
+		// trailing data in input
+		return false;
+	}
+	return $data;
+}
+
+/**
+ * Credits go to https://github.com/piwik
+ * Wrapper for _safe_unserialize() that handles exceptions and multibyte encoding issue
+ *
+ * @param string $str
+ * @return mixed
+ */
+function my_unserialize($str)
+{
+	// Ensure we use the byte count for strings even when strlen() is overloaded by mb_strlen()
+	if(function_exists('mb_internal_encoding') && (((int)ini_get('mbstring.func_overload')) & 2))
+	{
+		$mbIntEnc = mb_internal_encoding();
+		mb_internal_encoding('ASCII');
+	}
+
+	$out = _safe_unserialize($str);
+
+	if(isset($mbIntEnc))
+	{
+		mb_internal_encoding($mbIntEnc);
+	}
+	
+	return $out;
+}
+
+/**
+ * Credits go to https://github.com/piwik
+ * Safe serialize() replacement
+ * - output a strict subset of PHP's native serialized representation
+ * - does not my_serialize objects
+ *
+ * @param mixed $value
+ * @return string
+ * @throw Exception if $value is malformed or contains unsupported types (e.g., resources, objects)
+ */
+function _safe_serialize( $value )
+{
+	if(is_null($value))
+	{
+		return 'N;';
+	}
+	
+	if(is_bool($value))
+	{
+		return 'b:'.(int)$value.';';
+	}
+	
+	if(is_int($value))
+	{
+		return 'i:'.$value.';';
+	}
+	
+	if(is_float($value))
+	{
+		return 'd:'.str_replace(',', '.', $value).';';
+	}
+	
+	if(is_string($value))
+	{
+		return 's:'.strlen($value).':"'.$value.'";';
+	}
+	
+	if(is_array($value))
+	{
+		$out = '';
+		foreach($value as $k => $v)
+		{
+			$out .= _safe_serialize($k) . _safe_serialize($v);
+		}
+		
+		return 'a:'.count($value).':{'.$out.'}';
+	}
+
+	// safe_serialize cannot my_serialize resources or objects
+	return false;
+}
+
+/**
+ * Credits go to https://github.com/piwik
+ * Wrapper for _safe_serialize() that handles exceptions and multibyte encoding issue
+ *
+ * @param mixed $value
+ * @return string
+*/
+function my_serialize($value)
+{
+	// ensure we use the byte count for strings even when strlen() is overloaded by mb_strlen()
+	if(function_exists('mb_internal_encoding') && (((int)ini_get('mbstring.func_overload')) & 2))
+	{
+		$mbIntEnc = mb_internal_encoding();
+		mb_internal_encoding('ASCII');
+	}
+	
+	$out = _safe_serialize($value);
+	if(isset($mbIntEnc))
+	{
+		mb_internal_encoding($mbIntEnc);
+	}
+	
+	return $out;
 }
 
 /**
@@ -2547,7 +2831,7 @@ function delete_post($pid)
  * @param int The current depth of forums we're at
  * @param int Whether or not to show extra items such as User CP, Forum home
  * @param boolean Ignore the showinjump setting and show all forums (for moderation pages)
- * @param array Array of permissions
+ * @param unknown_type deprecated
  * @param string The name of the forum jump
  * @return string Forum jump items
  */
@@ -2556,11 +2840,6 @@ function build_forum_jump($pid="0", $selitem="", $addselect="1", $depth="", $sho
 	global $forum_cache, $jumpfcache, $permissioncache, $mybb, $forumjump, $forumjumpbits, $gobutton, $theme, $templates, $lang;
 
 	$pid = (int)$pid;
-
-	if($permissions)
-	{
-		$permissions = $mybb->usergroup;
-	}
 
 	if(!is_array($jumpfcache))
 	{
@@ -2927,9 +3206,10 @@ function build_mycode_inserter($bind="message", $smilies = true)
 						// Only show the first text to replace in the box
 						$smilie['find'] = $finds[0];
 
-						$find = htmlspecialchars_uni($smilie['find']);
-						$image = $mybb->get_asset_url($smilie['image']);
-						$image = htmlspecialchars_uni($image);
+						$find = str_replace(array('\\', '"'), array('\\\\', '\"'), htmlspecialchars_uni($smilie['find']));
+						$image = htmlspecialchars_uni($mybb->get_asset_url($smilie['image']));
+						$image = str_replace(array('\\', '"'), array('\\\\', '\"'), $image);
+
 						if($i < $mybb->settings['smilieinsertertot'])
 						{
 							$dropdownsmilies .= '"'.$find.'": "'.$image.'",';
@@ -2941,7 +3221,7 @@ function build_mycode_inserter($bind="message", $smilies = true)
 
 						for($j = 1; $j < $finds_count; ++$j)
 						{
-							$find = htmlspecialchars_uni($finds[$j]);
+							$find = str_replace(array('\\', '"'), array('\\\\', '\"'), htmlspecialchars_uni($finds[$j]));
 							$hiddensmilies .= '"'.$find.'": "'.$image.'",';
 						}
 						++$i;
@@ -3077,14 +3357,18 @@ function build_clickable_smilies()
 					{
 						$smilies .=  "<tr>\n";
 					}
-
+					
+					$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
+					$smilie['image'] = htmlspecialchars_uni($mybb->get_asset_url($smilie['image']));
+					$smilie['name'] = htmlspecialchars_uni($smilie['name']);
+					
 					// Only show the first text to replace in the box
 					$temp = explode("\n", $smilie['find']); // assign to temporary variable for php 5.3 compatibility
 					$smilie['find'] = $temp[0];
 
-					$find = htmlspecialchars_uni($smilie['find']);
+					$find = str_replace(array('\\', "'"), array('\\\\', "\'"), htmlspecialchars_uni($smilie['find']));
 
-					$onclick = ' onclick="MyBBEditor.insertText(\' '.$smilie['find'].' \');"';
+					$onclick = " onclick=\"MyBBEditor.insertText(' $find ');\"";
 					$extra_class = ' smilie_pointer';
 					eval('$smilie = "'.$templates->get('smilie', 1, 0).'";');
 					eval("\$smilies .= \"".$templates->get("smilieinsert_smilie")."\";");
@@ -3448,10 +3732,10 @@ function log_moderator_action($data, $action="")
 		unset($data['pid']);
 	}
 
-	// Any remaining extra data - we serialize and insert in to its own column
+	// Any remaining extra data - we my_serialize and insert in to its own column
 	if(is_array($data))
 	{
-		$data = serialize($data);
+		$data = my_serialize($data);
 	}
 
 	$sql_array = array(
@@ -3698,7 +3982,7 @@ function format_time_duration($time)
  */
 function get_attachment_icon($ext)
 {
-	global $cache, $attachtypes, $theme, $templates, $lang;
+	global $cache, $attachtypes, $theme, $templates, $lang, $mybb;
 
 	if(!$attachtypes)
 	{
@@ -3721,12 +4005,14 @@ function get_attachment_icon($ext)
 		{
 			global $change_dir;
 			$icon = $change_dir."/".str_replace("{theme}", $theme['imgdir'], $attachtypes[$ext]['icon']);
+			$icon = $mybb->get_asset_url($icon);
 		}
 		else
 		{
 			$icon = str_replace("{theme}", $theme['imgdir'], $attachtypes[$ext]['icon']);
+			$icon = $mybb->get_asset_url($icon);
 		}
-
+		
 		$name = htmlspecialchars_uni($attachtypes[$ext]['name']);
 	}
 	else
@@ -3745,6 +4031,7 @@ function get_attachment_icon($ext)
 		$name = $lang->unknown;
 	}
 
+	$icon = htmlspecialchars_uni($icon);
 	eval("\$attachment_icon = \"".$templates->get("attachment_icon")."\";");
 	return $attachment_icon;
 }
@@ -3757,12 +4044,7 @@ function get_attachment_icon($ext)
  */
 function get_unviewable_forums($only_readable_threads=false)
 {
-	global $forum_cache, $permissioncache, $mybb, $unviewable, $templates, $forumpass;
-
-	if(!isset($permissions))
-	{
-		$permissions = $mybb->usergroup;
-	}
+	global $forum_cache, $permissioncache, $mybb;
 
 	if(!is_array($forum_cache))
 	{
@@ -3774,8 +4056,7 @@ function get_unviewable_forums($only_readable_threads=false)
 		$permissioncache = forum_permissions();
 	}
 
-	$unviewableforums = '';
-	$password_forums = array();
+	$password_forums = $unviewable = array();
 	foreach($forum_cache as $fid => $forum)
 	{
 		if($permissioncache[$forum['fid']])
@@ -3813,19 +4094,13 @@ function get_unviewable_forums($only_readable_threads=false)
 
 		if($perms['canview'] == 0 || $pwverified == 0 || ($only_readable_threads == true && $perms['canviewthreads'] == 0))
 		{
-			if($unviewableforums)
-			{
-				$unviewableforums .= ",";
-			}
-
-			$unviewableforums .= "'".$forum['fid']."'";
+			$unviewable[] = $forum['fid'];
 		}
 	}
-
-	if(isset($unviewableforums))
-	{
-		return $unviewableforums;
-	}
+	
+	$unviewableforums = implode(',', $unviewable);
+	
+	return $unviewableforums;
 }
 
 /**
@@ -4546,30 +4821,40 @@ function leave_usergroup($uid, $leavegroup)
  *
  * @param boolean True to return as "hidden" fields
  * @param array Array of fields to ignore if first argument is true
+ * @param boolean True to skip all inputs and return only the file path part of the URL
  * @return string The current URL being accessed
  */
-function get_current_location($fields=false, $ignore=array())
+function get_current_location($fields=false, $ignore=array(), $quick=false)
 {
 	if(defined("MYBB_LOCATION"))
 	{
 		return MYBB_LOCATION;
 	}
 
-	if(!empty($_SERVER['PATH_INFO']))
+	if(!empty($_SERVER['SCRIPT_NAME']))
 	{
-		$location = htmlspecialchars_uni($_SERVER['PATH_INFO']);
+		$location = htmlspecialchars_uni($_SERVER['SCRIPT_NAME']);
 	}
-	elseif(!empty($_ENV['PATH_INFO']))
+	elseif(!empty($_SERVER['PHP_SELF']))
 	{
-		$location = htmlspecialchars_uni($_ENV['PATH_INFO']);
+		$location = htmlspecialchars_uni($_SERVER['PHP_SELF']);
 	}
 	elseif(!empty($_ENV['PHP_SELF']))
 	{
 		$location = htmlspecialchars_uni($_ENV['PHP_SELF']);
 	}
+	elseif(!empty($_SERVER['PATH_INFO']))
+	{
+		$location = htmlspecialchars_uni($_SERVER['PATH_INFO']);
+	}
 	else
 	{
-		$location = htmlspecialchars_uni($_SERVER['PHP_SELF']);
+		$location = htmlspecialchars_uni($_ENV['PATH_INFO']);
+	}
+	
+	if($quick)
+	{
+		return $location;
 	}
 
 	if($fields == true)
@@ -4632,11 +4917,6 @@ function get_current_location($fields=false, $ignore=array())
 				}
 				$location .= implode("&amp;", $addloc);
 			}
-		}
-
-		if(strlen($location) > 150)
-		{
-			$location = substr($location, 0, 150);
 		}
 
 		return $location;
@@ -4876,29 +5156,10 @@ function convert_through_utf8($str, $to=true)
 }
 
 /**
- * Replacement function for PHP's wordwrap(). This version does not break up HTML tags, URLs or unicode references.
- *
- * @param string The string to be word wrapped
- * @return string The word wraped string
+ * DEPRECATED! Please use other alternatives.
  */
 function my_wordwrap($message)
 {
-	global $mybb;
-
-	if($mybb->settings['wordwrap'] > 0)
-	{
-		$message = convert_through_utf8($message);
-
-		if(!($new_message = @preg_replace("#(((?>[^\s&/<>\"\\-\[\]])|(&\#[a-z0-9]{1,10};)){{$mybb->settings['wordwrap']}})#u", "$0&#8203;", $message)))
-		{
-			$new_message = preg_replace("#(((?>[^\s&/<>\"\\-\[\]])|(&\#[a-z0-9]{1,10};)){{$mybb->settings['wordwrap']}})#", "$0&#8203;", $message);
-		}
-
-		$new_message = convert_through_utf8($new_message, false);
-
-		return $new_message;
-	}
-
 	return $message;
 }
 
@@ -5824,7 +6085,7 @@ function get_post($pid)
  */
 function get_inactive_forums()
 {
-	global $forum_cache, $cache, $inactiveforums;
+	global $forum_cache, $cache;
 
 	if(!$forum_cache)
 	{
@@ -5847,6 +6108,7 @@ function get_inactive_forums()
 			}
 		}
 	}
+	
 	$inactiveforums = implode(",", $inactive);
 
 	return $inactiveforums;
@@ -6288,7 +6550,7 @@ function is_banned_ip($ip_address, $update_lastuse=false)
 		$ip_range = fetch_ip_range($banned_ip['filter']);
 		if(is_array($ip_range))
 		{
-			if(strcmp($ip_range[0], $ip_address) >= 0 && strcmp($ip_range[1], $ip_address) <= 0)
+			if(strcmp($ip_range[0], $ip_address) <= 0 && strcmp($ip_range[1], $ip_address) >= 0)
 			{
 				$banned = true;
 			}
@@ -6558,13 +6820,18 @@ function is_super_admin($uid)
  * Originates from frostschutz's PluginLibrary
  * github.com/frostschutz
  *
- * @param mixed A selection of groups to check
+ * @param mixed A selection of groups to check or -1 for any group
  * @param mixed User to check selection against
- * @return mixed Array of groups this user belongs to
+ * @return array Array of groups specified in the first param to which the user belongs
  */
 function is_member($groups, $user = false)
 {
 	global $mybb;
+	
+	if(empty($groups))
+	{
+		return array();
+	}	
 
 	if($user == false)
 	{
@@ -6581,13 +6848,20 @@ function is_member($groups, $user = false)
 
 	if(!is_array($groups))
 	{
-		if(is_string($groups))
+		if((int)$groups == -1)
 		{
-			$groups = explode(',', $groups);
+			return $memberships;
 		}
 		else
 		{
-			$groups = (array)$groups;
+			if(is_string($groups))
+			{
+				$groups = explode(',', $groups);
+			}
+			else
+			{
+				$groups = (array)$groups;
+			}
 		}
 	}
 
@@ -7026,6 +7300,13 @@ function fetch_ip_range($ipaddress)
 		else
 		{
 			// IPv4
+			$ip_bits = count(explode('.', $ipaddress));
+			if($ip_bits < 4)
+			{
+				// Support for 127.0.*
+				$replacement = str_repeat('.*', 4-$ip_bits);
+				$ipaddress = substr_replace($ipaddress, $replacement, strrpos($ipaddress, '*')+1, 0);
+			}
 			$upper = str_replace('*', '255', $ipaddress);
 			$lower = str_replace('*', '0', $ipaddress);
 		}
@@ -7859,7 +8140,7 @@ function log_spam_block($username = '', $email = '', $ip_address = '', $data = a
 		'email'     => $db->escape_string($email),
 		'ipaddress' => $db->escape_binary($ip_address),
 		'dateline'  => (int)TIME_NOW,
-		'data'      => $db->escape_string(@serialize($data)),
+		'data'      => $db->escape_string(@my_serialize($data)),
 	);
 
 	return (bool)$db->insert_query('spamlog', $insert_array);

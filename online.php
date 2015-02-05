@@ -51,9 +51,9 @@ if($mybb->get_input('action') == "today")
 	// Add pagination
 	$perpage = $mybb->settings['threadsperpage'];
 
-	if($mybb->get_input('page', 1) > 0)
+	if($mybb->get_input('page', MyBB::INPUT_INT) > 0)
 	{
-		$page = $mybb->get_input('page', 1);
+		$page = $mybb->get_input('page', MyBB::INPUT_INT);
 		$start = ($page-1) * $perpage;
 		$pages = ceil($todaycount / $perpage);
 		if($page > $pages)
@@ -182,9 +182,9 @@ else
 	// How many pages are there?
 	$perpage = $mybb->settings['threadsperpage'];
 
-	if($mybb->get_input('page', 1) > 0)
+	if($mybb->get_input('page', MyBB::INPUT_INT) > 0)
 	{
-		$page = $mybb->get_input('page', 1);
+		$page = $mybb->get_input('page', MyBB::INPUT_INT);
 		$start = ($page-1) * $perpage;
 		$pages = ceil($online_count / $perpage);
 		if($page > $pages)

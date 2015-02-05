@@ -11,14 +11,15 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'showthread.php');
 
-$templatelist = "showthread,postbit,postbit_author_user,postbit_author_guest,showthread_newthread,showthread_newreply,showthread_newreply_closed,postbit_avatar,postbit_find,postbit_pm,postbit_www,postbit_email,postbit_edit,postbit_quote,postbit_report,postbit_signature,postbit_online,postbit_offline,postbit_away,postbit_gotopost,showthread_ratethread";
-$templatelist .= ",multipage,multipage_breadcrumb,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,showthread_inlinemoderation_softdelete,showthread_inlinemoderation_restore,showthread_inlinemoderation_delete,showthread_inlinemoderation_manage";
-$templatelist .= ",postbit_editedby,showthread_similarthreads,showthread_similarthreads_bit,postbit_iplogged_show,postbit_iplogged_hiden,postbit_profilefield,showthread_quickreply,showthread_add_poll,showthread_send_thread,showthread_poll_editpoll,showthread_poll_undovote,showthread_moderationoptions_standard,postbit_editedby_editreason,postbit_warninglevel";
-$templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit,postbit_reputation,postbit_quickdelete,postbit_attachments,postbit_attachments_attachment,postbit_attachments_thumbnails,postbit_attachments_images_image,postbit_attachments_images,showthread_inlinemoderation_standard,showthread_quickreply_options_stick,showthread_quickreply_options_close";
-$templatelist .= ",postbit_inlinecheck,showthread_inlinemoderation,postbit_attachments_thumbnails_thumbnail,postbit_ignored,postbit_groupimage,postbit_multiquote,showthread_search,showthread_moderationoptions_custom_tool,showthread_moderationoptions_custom,showthread_inlinemoderation_custom_tool,showthread_inlinemoderation_custom,postbit_posturl,postbit_rep_button";
-$templatelist .= ",showthread_usersbrowsing,showthread_usersbrowsing_user,showthread_poll_option_multiple,showthread_poll_option,showthread_poll,showthread_threadedbox,showthread_quickreply_options_signature,showthread_threaded_bitactive,showthread_threaded_bit,postbit_attachments_attachment_unapproved,showthread_threadnotes,showthread_threadnotes_viewnotes";
+$templatelist = "showthread,postbit,postbit_author_user,postbit_author_guest,showthread_newthread,showthread_newreply,showthread_newreply_closed,postbit_avatar,postbit_find,postbit_pm,postbit_www,postbit_email,postbit_edit,postbit_quote,postbit_report,postbit_signature,postbit_online,postbit_offline,postbit_away,showthread_ratethread";
+$templatelist .= ",multipage,multipage_breadcrumb,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,showthread_inlinemoderation_softdelete,showthread_inlinemoderation_restore,showthread_inlinemoderation_delete,postbit_posturl,postbit_icon";
+$templatelist .= ",postbit_editedby,showthread_similarthreads,showthread_similarthreads_bit,postbit_iplogged_show,postbit_iplogged_hiden,postbit_profilefield,showthread_quickreply,showthread_add_poll,showthread_send_thread,showthread_poll_editpoll,showthread_poll_undovote,showthread_moderationoptions_standard,postbit_editedby_editreason";
+$templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit,postbit_reputation,postbit_quickdelete,postbit_attachments,postbit_attachments_attachment,postbit_attachments_thumbnails,postbit_attachments_images_image,postbit_attachments_images,showthread_quickreply_options_stick,showthread_quickreply_options_close,attachment_icon";
+$templatelist .= ",postbit_inlinecheck,showthread_inlinemoderation,postbit_attachments_thumbnails_thumbnail,postbit_ignored,postbit_groupimage,postbit_multiquote,showthread_search,showthread_moderationoptions_custom_tool,showthread_moderationoptions_custom,showthread_inlinemoderation_custom_tool,showthread_inlinemoderation_custom";
+$templatelist .= ",showthread_usersbrowsing,showthread_usersbrowsing_user,showthread_poll_option_multiple,showthread_poll_option,showthread_poll,showthread_quickreply_options_signature,showthread_threaded_bitactive,showthread_threaded_bit,postbit_attachments_attachment_unapproved,showthread_threadnotes,showthread_threadnotes_viewnotes";
 $templatelist .= ",showthread_moderationoptions_openclose,showthread_moderationoptions_stickunstick,showthread_moderationoptions_delete,showthread_moderationoptions_threadnotes,showthread_moderationoptions_manage,showthread_moderationoptions_deletepoll,showthread_threadnoteslink,showthread_poll_results,showthread_classic_header,postbit_warn";
-$templatelist .= ",postbit_userstar,postbit_reputation_formatted_link,postbit_warninglevel_formatted,postbit_quickrestore,forumdisplay_password,forumdisplay_password_wrongpass,postbit_classic,postbit_purgespammer,showthread_inlinemoderation_approve,showthread_moderationoptions,forumdisplay_thread_icon,showthread_poll_resultbit,global_moderation_notice,post_captcha,post_captcha_recaptcha,post_captcha_nocaptcha,post_captcha_ayah";
+$templatelist .= ",postbit_userstar,postbit_reputation_formatted_link,postbit_warninglevel_formatted,postbit_quickrestore,forumdisplay_password,forumdisplay_password_wrongpass,postbit_classic,postbit_purgespammer,showthread_inlinemoderation_approve,forumdisplay_thread_icon,showthread_poll_resultbit,postbit_warninglevel,postbit_gotopost";
+$templatelist .= ",showthread_moderationoptions_softdelete,showthread_moderationoptions_restore,post_captcha,post_captcha_recaptcha,post_captcha_nocaptcha,post_captcha_ayah,showthread_moderationoptions,showthread_inlinemoderation_standard,showthread_threadedbox,postbit_rep_button,showthread_inlinemoderation_manage,global_moderation_notice";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -33,7 +34,7 @@ $lang->load("showthread");
 if(!empty($mybb->input['pid']) && !isset($mybb->input['tid']))
 {
 	// see if we already have the post information
-	if(isset($style) && $style['pid'] == $mybb->get_input('pid', 1) && $style['tid'])
+	if(isset($style) && $style['pid'] == $mybb->get_input('pid', MyBB::INPUT_INT) && $style['tid'])
 	{
 		$mybb->input['tid'] = $style['tid'];
 		unset($style['tid']); // stop the thread caching code from being tricked
@@ -43,7 +44,7 @@ if(!empty($mybb->input['pid']) && !isset($mybb->input['tid']))
 		$options = array(
 			"limit" => 1
 		);
-		$query = $db->simple_select("posts", "tid", "pid=".$mybb->get_input('pid', 1), $options);
+		$query = $db->simple_select("posts", "tid", "pid=".$mybb->get_input('pid', MyBB::INPUT_INT), $options);
 		$post = $db->fetch_array($query);
 		
 		if(empty($post))
@@ -57,7 +58,7 @@ if(!empty($mybb->input['pid']) && !isset($mybb->input['tid']))
 }
 
 // Get the thread details from the database.
-$thread = get_thread($mybb->get_input('tid', 1));
+$thread = get_thread($mybb->get_input('tid', MyBB::INPUT_INT));
 
 if(!$thread || substr($thread['closed'], 0, 6) == "moved|")
 {
@@ -349,7 +350,7 @@ if($mybb->input['action'] == "nextoldest")
 	exit;
 }
 
-$pid = $mybb->input['pid'] = $mybb->get_input('pid', 1);
+$pid = $mybb->input['pid'] = $mybb->get_input('pid', MyBB::INPUT_INT);
 
 // Forumdisplay cache
 $forum_stats = $cache->read("forumsdisplay");
@@ -882,9 +883,9 @@ if($mybb->input['action'] == "thread")
 		// Figure out if we need to display multiple pages.
 		$page = 1;
 		$perpage = $mybb->settings['postsperpage'];
-		if($mybb->get_input('page', 1) && $mybb->get_input('page') != "last")
+		if($mybb->get_input('page', MyBB::INPUT_INT) && $mybb->get_input('page') != "last")
 		{
-			$page = $mybb->get_input('page', 1);
+			$page = $mybb->get_input('page', MyBB::INPUT_INT);
 		}
 
 		if(!empty($mybb->input['pid']))
@@ -1373,16 +1374,13 @@ if($mybb->input['action'] == "thread")
 			}
 		}
 
-		if(is_moderator($forum['fid'], "cansoftdeletethreads"))
+		if(is_moderator($forum['fid'], "cansoftdeletethreads") && $thread['visible'] != -1)
 		{
-			if($thread['visible'] == -1)
-			{
-				$softdeletethread = "<option value=\"restorethread\">".$lang->restore_thread."</option>";
-			}
-			else
-			{
-				$softdeletethread = "<option value=\"softdeletethread\">".$lang->soft_delete_thread."</option>";
-			}
+			eval("\$softdeletethread = \"".$templates->get("showthread_moderationoptions_softdelete")."\";");
+		}
+		elseif(is_moderator($forum['fid'], "canrestorethreads") && $thread['visible'] == -1)
+		{
+			eval("\$softdeletethread = \"".$templates->get("showthread_moderationoptions_restore")."\";");
 		}
 
 		if(!empty($openclosethread) || !empty($stickunstickthread) || !empty($deletethread) || !empty($managethread) || !empty($adminpolloptions) || !empty($approveunapprovethread) || !empty($softdeletethread))

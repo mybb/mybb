@@ -56,7 +56,7 @@ if($mybb->input['action'] == "prune" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "view")
 {
-	$query = $db->simple_select("mailerrors", "*", "eid='".(int)$mybb->input['eid']."'");
+	$query = $db->simple_select("mailerrors", "*", "eid='".$mybb->get_input('eid', MyBB::INPUT_INT)."'");
 	$log = $db->fetch_array($query);
 
 	if(!$log['eid'])
@@ -137,7 +137,7 @@ if(!$mybb->input['action'])
 
 	if($mybb->input['page'] && $mybb->input['page'] > 1)
 	{
-		$mybb->input['page'] = $mybb->get_input('page', 1);
+		$mybb->input['page'] = $mybb->get_input('page', MyBB::INPUT_INT);
 		$start = ($mybb->input['page']*$per_page)-$per_page;
 	}
 	else
@@ -206,14 +206,9 @@ if(!$mybb->input['action'])
 	$table->construct_header($lang->to, array("class" => "align_center", "width" => "20%"));
 	$table->construct_header($lang->error_message, array("class" => "align_center", "width" => "30%"));
 	$table->construct_header($lang->date_sent, array("class" => "align_center", "width" => "20%"));
-
-	$query = $db->query("
-		SELECT *
-		FROM ".TABLE_PREFIX."mailerrors
-		WHERE 1=1 {$additional_sql_criteria}
-		ORDER BY dateline DESC
-		LIMIT {$start}, {$per_page}
-	");
+	
+	$query = $db->simple_select('mailerrors', '*', "1=1 $additional_sql_criteria", array('order_by' => 'dateline', 'order_dir' => 'DESC', 'limit_start' => $start, 'limit' => $per_page));
+	
 	while($log = $db->fetch_array($query))
 	{
 		$log['subject'] = htmlspecialchars_uni($log['subject']);
@@ -266,4 +261,3 @@ if(!$mybb->input['action'])
 
 	$page->output_footer();
 }
-?>

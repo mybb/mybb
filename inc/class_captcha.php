@@ -102,9 +102,17 @@ class captcha
 
 	function __construct($build = false, $template = "")
 	{
-		global $mybb;
+		global $mybb, $plugins;
 
 		$this->type = $mybb->settings['captchaimage'];
+
+		$args = array(
+			'this' => &$this,
+			'build' => &$build,
+			'template' => &$template,
+		);
+
+		$plugins->run_hooks('captcha_build_start', $args);
 
 		// Prepare the build template
 		if($template)
@@ -176,7 +184,7 @@ class captcha
 			}
 		}
 
-		// Plugin hook
+		$plugins->run_hooks('captcha_build_end', $args);
 	}
 
 	function build_captcha($return = false)
@@ -275,9 +283,9 @@ class captcha
 
 	function validate_captcha()
 	{
-		global $db, $lang, $mybb, $session;
+		global $db, $lang, $mybb, $session, $plugins;
 
-		// Plugin hook
+		$plugins->run_hooks('captcha_validate_start', $this);
 
 		if($this->type == 1)
 		{
@@ -414,7 +422,7 @@ class captcha
 			}
 		}
 
-		// Plugin hook
+		$plugins->run_hooks('captcha_validate_end', $this);
 
 		if(count($this->errors) > 0)
 		{
@@ -428,7 +436,7 @@ class captcha
 
 	function invalidate_captcha()
 	{
-		global $db, $mybb;
+		global $db, $mybb, $plugins;
 
 		if($this->type == 1)
 		{
@@ -441,7 +449,7 @@ class captcha
 		}
 		// Not necessary for reCAPTCHA or Are You a Human
 
-		// Plugin hook
+		$plugins->run_hooks('captcha_invalidate_end', $this);
 	}
 
 	/**

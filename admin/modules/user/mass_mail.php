@@ -45,7 +45,7 @@ if($mybb->input['action'] == "edit")
 {
 	$page->add_breadcrumb_item($lang->edit_mass_mail);
 
-	$query = $db->simple_select("massemails", "*", "mid='".$mybb->get_input('mid', 1)."'");
+	$query = $db->simple_select("massemails", "*", "mid='".$mybb->get_input('mid', MyBB::INPUT_INT)."'");
 	$email = $db->fetch_array($query);
 	if(!$email['mid'])
 	{
@@ -181,13 +181,13 @@ if($mybb->input['action'] == "edit")
 				"status" => 1,
 				"senddate" => $delivery_date,
 				"totalcount" => $num,
-				"conditions" => $db->escape_string(serialize($mybb->input['conditions'])),
+				"conditions" => $db->escape_string(my_serialize($mybb->input['conditions'])),
 				"message" => $db->escape_string($mybb->input['message']),
 				"subject" => $db->escape_string($mybb->input['subject']),
 				"htmlmessage" => $db->escape_string($mybb->input['htmlmessage']),
-				"format" => (int)$mybb->input['format'],
-				"type" => $mybb->get_input('type', 1),
-				"perpage" => $mybb->get_input('perpage', 1)
+				"format" => $mybb->get_input('format', MyBB::INPUT_INT),
+				"type" => $mybb->get_input('type', MyBB::INPUT_INT),
+				"perpage" => $mybb->get_input('perpage', MyBB::INPUT_INT)
 			);
 
 			$plugins->run_hooks("admin_user_mass_email_edit_commit");
@@ -413,7 +413,7 @@ if($mybb->input['action'] == "edit")
 		</script>";
 	$form_container->output_row("{$lang->delivery_date}: <em>*</em>", $lang->delivery_date_desc, $actions);
 
-	$form_container->output_row("{$lang->per_page}: <em>*</em>", $lang->per_page_desc, $form->generate_numeric_field('perpage', $input['perpage'], array('id' => 'perpage')), 'perpage');
+	$form_container->output_row("{$lang->per_page}: <em>*</em>", $lang->per_page_desc, $form->generate_numeric_field('perpage', $input['perpage'], array('id' => 'perpage', 'min' => 1)), 'perpage');
 
 	$format_options = array(
 		0 => $lang->plain_text_only,
@@ -575,7 +575,7 @@ if($mybb->input['action'] == "edit")
 		"is_exactly" => $lang->is_exactly,
 		"less_than" => $lang->less_than
 	);
-	$form_container->output_row($lang->post_count_is, "", $form->generate_select_box('conditions[postnum_dir]', $greater_options, $input['conditions']['postnum_dir'], array('id' => 'postnum_dir'))." ".$form->generate_numeric_field('conditions[postnum]', $input['conditions']['postnum'], array('id' => 'postnum')), 'postnum');
+	$form_container->output_row($lang->post_count_is, "", $form->generate_select_box('conditions[postnum_dir]', $greater_options, $input['conditions']['postnum_dir'], array('id' => 'postnum_dir'))." ".$form->generate_numeric_field('conditions[postnum]', $input['conditions']['postnum'], array('id' => 'postnum', 'min' => 0)), 'postnum');
 
 	$more_options = array(
 		"more_than" => $lang->more_than,
@@ -589,9 +589,9 @@ if($mybb->input['action'] == "edit")
 		"months" => $lang->months,
 		"years" => $lang->years
 	);
-	$form_container->output_row($lang->user_registered, "", $form->generate_select_box('conditions[regdate_dir]', $more_options, $input['conditions']['regdate_dir'], array('id' => 'regdate_dir'))." ".$form->generate_numeric_field('conditions[regdate]', $input['conditions']['regdate'], array('id' => 'regdate'))." ".$form->generate_select_box('conditions[regdate_date]', $date_options, $input['conditions']['regdate_date'], array('id' => 'regdate_date'))." {$lang->ago}", 'regdate');
+	$form_container->output_row($lang->user_registered, "", $form->generate_select_box('conditions[regdate_dir]', $more_options, $input['conditions']['regdate_dir'], array('id' => 'regdate_dir'))." ".$form->generate_numeric_field('conditions[regdate]', $input['conditions']['regdate'], array('id' => 'regdate', 'min' => 0))." ".$form->generate_select_box('conditions[regdate_date]', $date_options, $input['conditions']['regdate_date'], array('id' => 'regdate_date'))." {$lang->ago}", 'regdate');
 
-	$form_container->output_row($lang->user_last_active, "", $form->generate_select_box('conditions[lastactive_dir]', $more_options, $input['conditions']['lastactive_dir'], array('id' => 'lastactive_dir'))." ".$form->generate_numeric_field('conditions[lastactive]', $input['conditions']['lastactive'], array('id' => 'lastactive'))." ".$form->generate_select_box('conditions[lastactive_date]', $date_options, $input['conditions']['lastactive_date'], array('id' => 'lastactive_date'))." {$lang->ago}", 'lastactive');
+	$form_container->output_row($lang->user_last_active, "", $form->generate_select_box('conditions[lastactive_dir]', $more_options, $input['conditions']['lastactive_dir'], array('id' => 'lastactive_dir'))." ".$form->generate_numeric_field('conditions[lastactive]', $input['conditions']['lastactive'], array('id' => 'lastactive', 'min' => 0))." ".$form->generate_select_box('conditions[lastactive_date]', $date_options, $input['conditions']['lastactive_date'], array('id' => 'lastactive_date'))." {$lang->ago}", 'lastactive');
 
 	$form_container->end();
 
@@ -608,7 +608,7 @@ if($mybb->input['action'] == "send")
 
 	if($mybb->input['step'])
 	{
-		$query = $db->simple_select("massemails", "*", "status=0 and mid='".$mybb->get_input('mid', 1)."'");
+		$query = $db->simple_select("massemails", "*", "status=0 and mid='".$mybb->get_input('mid', MyBB::INPUT_INT)."'");
 		$email = $db->fetch_array($query);
 		if(!$email['mid'] && $mybb->input['step'] != 1)
 		{
@@ -938,7 +938,7 @@ if($mybb->input['action'] == "send")
 			{
 				$updated_email = array(
 					"totalcount" => $num,
-					"conditions" => $db->escape_string(serialize($mybb->input['conditions']))
+					"conditions" => $db->escape_string(my_serialize($mybb->input['conditions']))
 				);
 
 				$plugins->run_hooks("admin_user_mass_email_send_define_commit");
@@ -1010,7 +1010,7 @@ if($mybb->input['action'] == "send")
 			"is_exactly" => $lang->is_exactly,
 			"less_than" => $lang->less_than
 		);
-		$form_container->output_row($lang->post_count_is, "", $form->generate_select_box('conditions[postnum_dir]', $greater_options, $input['conditions']['postnum_dir'], array('id' => 'postnum_dir'))." ".$form->generate_numeric_field('conditions[postnum]', $input['conditions']['postnum'], array('id' => 'postnum')), 'postnum');
+		$form_container->output_row($lang->post_count_is, "", $form->generate_select_box('conditions[postnum_dir]', $greater_options, $input['conditions']['postnum_dir'], array('id' => 'postnum_dir'))." ".$form->generate_numeric_field('conditions[postnum]', $input['conditions']['postnum'], array('id' => 'postnum', 'min' => 0)), 'postnum');
 
 		$more_options = array(
 			"more_than" => $lang->more_than,
@@ -1024,9 +1024,9 @@ if($mybb->input['action'] == "send")
 			"months" => $lang->months,
 			"years" => $lang->years
 		);
-		$form_container->output_row($lang->user_registered, "", $form->generate_select_box('conditions[regdate_dir]', $more_options, $input['conditions']['regdate_dir'], array('id' => 'regdate_dir'))." ".$form->generate_numeric_field('conditions[regdate]', $input['conditions']['regdate'], array('id' => 'regdate'))." ".$form->generate_select_box('conditions[regdate_date]', $date_options, $input['conditions']['regdate_date'], array('id' => 'regdate_date'))." {$lang->ago}", 'regdate');
+		$form_container->output_row($lang->user_registered, "", $form->generate_select_box('conditions[regdate_dir]', $more_options, $input['conditions']['regdate_dir'], array('id' => 'regdate_dir'))." ".$form->generate_numeric_field('conditions[regdate]', $input['conditions']['regdate'], array('id' => 'regdate', 'min' => 0))." ".$form->generate_select_box('conditions[regdate_date]', $date_options, $input['conditions']['regdate_date'], array('id' => 'regdate_date'))." {$lang->ago}", 'regdate');
 
-		$form_container->output_row($lang->user_last_active, "", $form->generate_select_box('conditions[lastactive_dir]', $more_options, $input['conditions']['lastactive_dir'], array('id' => 'lastactive_dir'))." ".$form->generate_numeric_field('conditions[lastactive]', $input['conditions']['lastactive'], array('id' => 'lastactive'))." ".$form->generate_select_box('conditions[lastactive_date]', $date_options, $input['conditions']['lastactive_date'], array('id' => 'lastactive_date'))." {$lang->ago}", 'lastactive');
+		$form_container->output_row($lang->user_last_active, "", $form->generate_select_box('conditions[lastactive_dir]', $more_options, $input['conditions']['lastactive_dir'], array('id' => 'lastactive_dir'))." ".$form->generate_numeric_field('conditions[lastactive]', $input['conditions']['lastactive'], array('id' => 'lastactive', 'min' => 0))." ".$form->generate_select_box('conditions[lastactive_date]', $date_options, $input['conditions']['lastactive_date'], array('id' => 'lastactive_date'))." {$lang->ago}", 'lastactive');
 
 		$form_container->end();
 
@@ -1149,15 +1149,15 @@ if($mybb->input['action'] == "send")
 						"subject" => $db->escape_string($mybb->input['subject']),
 						"message" => $db->escape_string($mybb->input['message']),
 						"htmlmessage" => $db->escape_string($mybb->input['htmlmessage']),
-						"format" => (int)$mybb->input['format'],
-						"type" => $mybb->get_input('type', 1),
+						"format" => $mybb->get_input('format', MyBB::INPUT_INT),
+						"type" => $mybb->get_input('type', MyBB::INPUT_INT),
 						"dateline" => TIME_NOW,
 						"senddate" => 0,
 						"status" => 0,
 						"sentcount" => 0,
 						"totalcount" => 0,
 						"conditions" => "",
-						"perpage" => $mybb->get_input('perpage', 1)
+						"perpage" => $mybb->get_input('perpage', MyBB::INPUT_INT)
 					);
 
 					$mid = $db->insert_query("massemails", $new_email);
@@ -1171,9 +1171,9 @@ if($mybb->input['action'] == "send")
 						"subject" => $db->escape_string($mybb->input['subject']),
 						"message" => $db->escape_string($mybb->input['message']),
 						"htmlmessage" => $db->escape_string($mybb->input['htmlmessage']),
-						"format" => (int)$mybb->input['format'],
-						"type" => $mybb->get_input('type', 1),
-						"perpage" => $mybb->get_input('perpage', 1)
+						"format" => $mybb->get_input('format', MyBB::INPUT_INT),
+						"type" => $mybb->get_input('type', MyBB::INPUT_INT),
+						"perpage" => $mybb->get_input('perpage', MyBB::INPUT_INT)
 					);
 
 					$plugins->run_hooks("admin_user_mass_email_send_update_commit");
@@ -1254,7 +1254,7 @@ if($mybb->input['action'] == "send")
 
 		$form_container->output_row("{$lang->message_format}:", "", $form->generate_select_box('format', $format_options, $input['format'], array('id' => 'format')), 'format', null, array("id" => "format_container"));
 
-		$form_container->output_row("{$lang->per_page}: <em>*</em>", $lang->per_page_desc, $form->generate_numeric_field('perpage', $input['perpage'], array('id' => 'perpage')), 'perpage');
+		$form_container->output_row("{$lang->per_page}: <em>*</em>", $lang->per_page_desc, $form->generate_numeric_field('perpage', $input['perpage'], array('id' => 'perpage', 'min' => 1)), 'perpage');
 
 		$form_container->end();
 
@@ -1400,7 +1400,7 @@ if($mybb->input['action'] == "send")
 
 if($mybb->input['action'] == "delete")
 {
-	$query = $db->simple_select("massemails", "*", "mid='".$mybb->get_input('mid', 1)."'");
+	$query = $db->simple_select("massemails", "*", "mid='".$mybb->get_input('mid', MyBB::INPUT_INT)."'");
 	$mass_email = $db->fetch_array($query);
 
 	if(!$mass_email['mid'])
@@ -1452,7 +1452,7 @@ if($mybb->input['action'] == "delete")
 
 if($mybb->input['action'] == "preview")
 {
-	$query = $db->simple_select("massemails", "*", "mid='".$mybb->get_input('mid', 1)."'");
+	$query = $db->simple_select("massemails", "*", "mid='".$mybb->get_input('mid', MyBB::INPUT_INT)."'");
 	$mass_email = $db->fetch_array($query);
 
 	if(!$mass_email['mid'])
@@ -1493,7 +1493,7 @@ if($mybb->input['action'] == "preview")
 if($mybb->input['action'] == "resend")
 {
 	// Copy and resend an email
-	$query = $db->simple_select("massemails", "*", "mid='".$mybb->get_input('mid', 1)."'");
+	$query = $db->simple_select("massemails", "*", "mid='".$mybb->get_input('mid', MyBB::INPUT_INT)."'");
 	$mass_email = $db->fetch_array($query);
 
 	if(!$mass_email['mid'])
@@ -1539,7 +1539,7 @@ if($mybb->input['action'] == "resend")
 if($mybb->input['action'] == "cancel")
 {
 	// Cancel the delivery of a mass-email.
-	$query = $db->simple_select("massemails", "*", "mid='".$mybb->get_input('mid', 1)."'");
+	$query = $db->simple_select("massemails", "*", "mid='".$mybb->get_input('mid', MyBB::INPUT_INT)."'");
 	$mass_email = $db->fetch_array($query);
 
 	if(!$mass_email['mid'])

@@ -49,7 +49,7 @@ if($mybb->input['action'] == "addgroup")
 				"name" => $db->escape_string($mybb->input['name']),
 				"title" => $db->escape_string($mybb->input['title']),
 				"description" => $db->escape_string($mybb->input['description']),
-				"disporder" => (int)$mybb->input['disporder'],
+				"disporder" => $mybb->get_input('disporder', MyBB::INPUT_INT),
 				"isdefault" => 0
 			);
 			$gid = $db->insert_query("settinggroups", $new_setting_group);
@@ -100,7 +100,7 @@ if($mybb->input['action'] == "addgroup")
 	$form_container = new FormContainer($lang->add_new_setting_group);
 	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
 	$form_container->output_row($lang->description, "", $form->generate_text_area('description', $mybb->input['description'], array('id' => 'description')), 'description');
-	$form_container->output_row($lang->display_order, "", $form->generate_numeric_field('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
+	$form_container->output_row($lang->display_order, "", $form->generate_numeric_field('disporder', $mybb->input['disporder'], array('id' => 'disporder', 'min' => 0)), 'disporder');
 	$form_container->output_row($lang->name." <em>*</em>", $lang->group_name_desc, $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
 	$form_container->end();
 
@@ -114,7 +114,7 @@ if($mybb->input['action'] == "addgroup")
 // Edit setting group
 if($mybb->input['action'] == "editgroup")
 {
-	$query = $db->simple_select("settinggroups", "*", "gid='".(int)$mybb->input['gid']."'");
+	$query = $db->simple_select("settinggroups", "*", "gid='".$mybb->get_input('gid', MyBB::INPUT_INT)."'");
 	$group = $db->fetch_array($query);
 
 	// Does the setting not exist?
@@ -159,7 +159,7 @@ if($mybb->input['action'] == "editgroup")
 				"name" => $db->escape_string($mybb->input['name']),
 				"title" => $db->escape_string($mybb->input['title']),
 				"description" => $db->escape_string($mybb->input['description']),
-				"disporder" => (int)$mybb->input['disporder'],
+				"disporder" => $mybb->get_input('disporder', MyBB::INPUT_INT),
 			);
 
 			$plugins->run_hooks("admin_config_settings_editgroup_commit");
@@ -202,7 +202,7 @@ if($mybb->input['action'] == "editgroup")
 	$form_container = new FormContainer($lang->edit_setting_group);
 	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $group_data['title'], array('id' => 'title')), 'title');
 	$form_container->output_row($lang->description, "", $form->generate_text_area('description', $group_data['description'], array('id' => 'description')), 'description');
-	$form_container->output_row($lang->display_order, "", $form->generate_numeric_field('disporder', $group_data['disporder'], array('id' => 'disporder')), 'disporder');
+	$form_container->output_row($lang->display_order, "", $form->generate_numeric_field('disporder', $group_data['disporder'], array('id' => 'disporder', 'min' => 0)), 'disporder');
 	$form_container->output_row($lang->name." <em>*</em>", $lang->group_name_desc, $form->generate_text_box('name', $group_data['name'], array('id' => 'name')), 'name');
 	$form_container->end();
 
@@ -216,7 +216,7 @@ if($mybb->input['action'] == "editgroup")
 // Delete Setting Group
 if($mybb->input['action'] == "deletegroup")
 {
-	$query = $db->simple_select("settinggroups", "*", "gid='".(int)$mybb->input['gid']."'");
+	$query = $db->simple_select("settinggroups", "*", "gid='".$mybb->get_input('gid', MyBB::INPUT_INT)."'");
 	$group = $db->fetch_array($query);
 
 	// Does the setting group not exist?
@@ -274,7 +274,7 @@ if($mybb->input['action'] == "add")
 			$errors[] = $lang->error_missing_title;
 		}
 
-		$query = $db->simple_select("settinggroups", "gid", "gid='".(int)$mybb->input['gid']."'");
+		$query = $db->simple_select("settinggroups", "gid", "gid='".$mybb->get_input('gid', MyBB::INPUT_INT)."'");
 		$gid = $db->fetch_field($query, 'gid');
 		if(!$gid)
 		{
@@ -325,7 +325,7 @@ if($mybb->input['action'] == "add")
 
 			if($options_code == "numeric")
 			{
-				$value = (int)$mybb->input['value'];
+				$value = $mybb->get_input('value', MyBB::INPUT_INT);
 			}
 			else
 			{
@@ -338,8 +338,8 @@ if($mybb->input['action'] == "add")
 				"description" => $db->escape_string($mybb->input['description']),
 				"optionscode" => $db->escape_string($options_code),
 				"value" => $value,
-				"disporder" => (int)$mybb->input['disporder'],
-				"gid" => (int)$mybb->input['gid']
+				"disporder" => $mybb->get_input('disporder', MyBB::INPUT_INT),
+				"gid" => $mybb->get_input('gid', MyBB::INPUT_INT)
 			);
 
 			$sid = $db->insert_query("settings", $new_setting);
@@ -406,7 +406,7 @@ if($mybb->input['action'] == "add")
 		}
 	}
 	$form_container->output_row($lang->group." <em>*</em>", "", $form->generate_select_box("gid", $options, $mybb->input['gid'], array('id' => 'gid')), 'gid');
-	$form_container->output_row($lang->display_order, "", $form->generate_numeric_field('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
+	$form_container->output_row($lang->display_order, "", $form->generate_numeric_field('disporder', $mybb->input['disporder'], array('id' => 'disporder', 'min' => 0)), 'disporder');
 
 	$form_container->output_row($lang->name." <em>*</em>", $lang->name_desc, $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
 
@@ -436,7 +436,7 @@ if($mybb->input['action'] == "add")
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 
-	echo '<script type="text/javascript" src="./jscripts/peeker.js"></script>
+	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1804"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
 			var peeker = new Peeker($("#type"), $("#row_extra"), /select|radio|checkbox|php/, false);
@@ -451,7 +451,7 @@ if($mybb->input['action'] == "add")
 // Editing a particular setting
 if($mybb->input['action'] == "edit")
 {
-	$query = $db->simple_select("settings", "*", "sid='".$mybb->get_input('sid', 1)."'");
+	$query = $db->simple_select("settings", "*", "sid='".$mybb->get_input('sid', MyBB::INPUT_INT)."'");
 	$setting = $db->fetch_array($query);
 
 	// Does the setting not exist?
@@ -529,7 +529,7 @@ if($mybb->input['action'] == "edit")
 
 			if($options_code == "numeric")
 			{
-				$value = (int)$mybb->input['value'];
+				$value = $mybb->get_input('value', MyBB::INPUT_INT);
 			}
 			else
 			{
@@ -542,8 +542,8 @@ if($mybb->input['action'] == "edit")
 				"description" => $db->escape_string($mybb->input['description']),
 				"optionscode" => $db->escape_string($options_code),
 				"value" => $value,
-				"disporder" => (int)$mybb->input['disporder'],
-				"gid" => (int)$mybb->input['gid']
+				"disporder" => $mybb->get_input('disporder', MyBB::INPUT_INT),
+				"gid" => $mybb->get_input('gid', MyBB::INPUT_INT)
 			);
 
 			$plugins->run_hooks("admin_config_settings_edit_commit");
@@ -620,7 +620,7 @@ if($mybb->input['action'] == "edit")
 		}
 	}
 	$form_container->output_row($lang->group." <em>*</em>", "", $form->generate_select_box("gid", $options, $setting_data['gid'], array('id' => 'gid')), 'gid');
-	$form_container->output_row($lang->display_order, "", $form->generate_numeric_field('disporder', $setting_data['disporder'], array('id' => 'disporder')), 'disporder');
+	$form_container->output_row($lang->display_order, "", $form->generate_numeric_field('disporder', $setting_data['disporder'], array('id' => 'disporder', 'min' => 0)), 'disporder');
 	$form_container->end();
 
 	$form_container = new FormContainer($lang->setting_configuration, 1);
@@ -652,7 +652,7 @@ if($mybb->input['action'] == "edit")
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 
-	echo '<script type="text/javascript" src="./jscripts/peeker.js"></script>
+	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1804"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
 			var peeker = new Peeker($("#type"), $("#row_extra"), /select|radio|checkbox|php/, false);
@@ -667,7 +667,7 @@ if($mybb->input['action'] == "edit")
 // Delete Setting
 if($mybb->input['action'] == "delete")
 {
-	$query = $db->simple_select("settings", "*", "sid='".$mybb->get_input('sid', 1)."'");
+	$query = $db->simple_select("settings", "*", "sid='".$mybb->get_input('sid', MyBB::INPUT_INT)."'");
 	$setting = $db->fetch_array($query);
 
 	// Does the setting not exist?
@@ -808,7 +808,7 @@ if($mybb->input['action'] == "manage")
 			$group_title = htmlspecialchars_uni($group['title']);
 		}
 		$table->construct_cell("<strong>{$group_title}</strong>", array('id' => "group{$group['gid']}"));
-		$table->construct_cell($form->generate_numeric_field("group_disporder[{$group['gid']}]", $group['disporder'], array('style' => 'width: 80%; font-weight: bold', 'class' => 'align_center')));
+		$table->construct_cell($form->generate_numeric_field("group_disporder[{$group['gid']}]", $group['disporder'], array('style' => 'width: 80%; font-weight: bold', 'class' => 'align_center', 'min' => 0)));
 		// Only show options if not a default setting group
 		if($group['isdefault'] != 1)
 		{
@@ -838,7 +838,7 @@ if($mybb->input['action'] == "manage")
 					$setting_title = htmlspecialchars_uni($setting['title']);
 				}
 				$table->construct_cell($setting_title, array('style' => 'padding-left: 40px;'));
-				$table->construct_cell($form->generate_numeric_field("setting_disporder[{$setting['sid']}]", $setting['disporder'], array('style' => 'width: 80%', 'class' => 'align_center')));
+				$table->construct_cell($form->generate_numeric_field("setting_disporder[{$setting['sid']}]", $setting['disporder'], array('style' => 'width: 80%', 'class' => 'align_center', 'min' => 0)));
 				// Only show options if not a default setting group or is a custom setting
 				if($group['isdefault'] != 1 || $setting['isdefault'] != 1)
 				{
@@ -1081,7 +1081,7 @@ if($mybb->input['action'] == "change")
 	{
 		// Group listing
 		// Cache groups
-		$query = $db->simple_select("settinggroups", "*", "gid = '".(int)$mybb->input['gid']."'");
+		$query = $db->simple_select("settinggroups", "*", "gid = '".$mybb->get_input('gid', MyBB::INPUT_INT)."'");
 		$groupinfo = $db->fetch_array($query);
 		$cache_groups[$groupinfo['gid']] = $groupinfo;
 
@@ -1091,7 +1091,7 @@ if($mybb->input['action'] == "change")
 		}
 
 		// Cache settings
-		$query = $db->simple_select("settings", "*", "gid='".(int)$mybb->input['gid']."'", array('order_by' => 'disporder'));
+		$query = $db->simple_select("settings", "*", "gid='".$mybb->get_input('gid', MyBB::INPUT_INT)."'", array('order_by' => 'disporder'));
 		while($setting = $db->fetch_array($query))
 		{
 			$cache_settings[$setting['gid']][$setting['sid']] = $setting;
@@ -1593,64 +1593,56 @@ function print_setting_peekers()
 	global $plugins;
 
 	$peekers = array(
-		'new Peeker($(".setting_boardclosed"), $("#row_setting_boardclosed_reason"), /1/, true)',
-		'new Peeker($(".setting_gzipoutput"), $("#row_setting_gziplevel"), /1/, true)',
-		'new Peeker($(".setting_useerrorhandling"), $("#row_setting_errorlogmedium"), /1/, true)',
-		'new Peeker($(".setting_useerrorhandling"), $("#row_setting_errortypemedium"), /1/, true)',
-		'new Peeker($(".setting_useerrorhandling"), $("#row_setting_errorloglocation"), /1/, true)',
+		'new Peeker($(".setting_boardclosed"), $("#row_setting_boardclosed_reason"), 1, true)',
+		'new Peeker($(".setting_gzipoutput"), $("#row_setting_gziplevel"), 1, true)',
+		'new Peeker($(".setting_useerrorhandling"), $("#row_setting_errorlogmedium, #row_setting_errortypemedium, #row_setting_errorloglocation"), 1, true)',
 		'new Peeker($("#setting_subforumsindex"), $("#row_setting_subforumsstatusicons"), /[^0+|]/, false)',
-		'new Peeker($(".setting_showsimilarthreads"), $("#row_setting_similarityrating"), /1/, true)',
-		'new Peeker($(".setting_showsimilarthreads"), $("#row_setting_similarlimit"), /1/, true)',
-		'new Peeker($(".setting_disableregs"), $("#row_setting_regtype"), /0/, true)',
-		'new Peeker($(".setting_hiddencaptchaimage"), $("#row_setting_hiddencaptchaimagefield"), /1/, true)',
-		'new Peeker($("#setting_failedlogincount"), $("#row_setting_failedlogintime"), /[^0+|]/, false)',
-		'new Peeker($("#setting_failedlogincount"), $("#row_setting_failedlogintext"), /[^0+|]/, false)',
-		'new Peeker($(".setting_postfloodcheck"), $("#row_setting_postfloodsecs"), /1/, true)',
-		'new Peeker($("#setting_postmergemins"), $("#row_setting_postmergefignore"), /[^0+|]/, false)',
-		'new Peeker($("#setting_postmergemins"), $("#row_setting_postmergeuignore"), /[^0+|]/, false)',
-		'new Peeker($("#setting_postmergemins"), $("#row_setting_postmergesep"), /[^0+|][\d*]/, false)',
-		'new Peeker($(".setting_enablememberlist"), $("#row_setting_membersperpage"), /1/, true)',
-		'new Peeker($(".setting_enablememberlist"), $("#row_setting_default_memberlist_sortby"), /1/, true)',
-		'new Peeker($(".setting_enablememberlist"), $("#row_setting_default_memberlist_order"), /1/, true)',
-		'new Peeker($(".setting_enablereputation"), $("#row_setting_repsperpage"), /1/, true)',
-		'new Peeker($(".setting_enablewarningsystem"), $("#row_setting_allowcustomwarnings"), /1/, true)',
-		'new Peeker($(".setting_enablewarningsystem"), $("#row_setting_canviewownwarning"), /1/, true)',
-		'new Peeker($(".setting_enablewarningsystem"), $("#row_setting_maxwarningpoints"), /1/, true)',
-		'new Peeker($(".setting_enablepms"), $("#row_setting_pmsallowhtml"), /1/, true)',
-		'new Peeker($(".setting_enablepms"), $("#row_setting_pmsallowmycode"), /1/, true)',
-		'new Peeker($(".setting_enablepms"), $("#row_setting_pmsallowsmilies"), /1/, true)',
-		'new Peeker($(".setting_enablepms"), $("#row_setting_pmsallowimgcode"), /1/, true)',
-		'new Peeker($(".setting_enablepms"), $("#row_setting_pmsallowvideocode"), /1/, true)',
-		'new Peeker($(".setting_smilieinserter"), $("#row_setting_smilieinsertertot"), /1/, true)',
-		'new Peeker($(".setting_smilieinserter"), $("#row_setting_smilieinsertercols"), /1/, true)',
-		'new Peeker($("#setting_mail_handler"), $("#row_setting_smtp_host"), /smtp/, false)',
-		'new Peeker($("#setting_mail_handler"), $("#row_setting_smtp_port"), /smtp/, false)',
-		'new Peeker($("#setting_mail_handler"), $("#row_setting_smtp_user"), /smtp/, false)',
-		'new Peeker($("#setting_mail_handler"), $("#row_setting_smtp_pass"), /smtp/, false)',
-		'new Peeker($("#setting_mail_handler"), $("#row_setting_secure_smtp"), /smtp/, false)',
-		'new Peeker($("#setting_mail_handler"), $("#row_setting_mail_parameters"), /mail/, false)',
-		'new Peeker($("#setting_captchaimage"), $("#row_setting_captchapublickey"), /(2|4)/, false)',
-		'new Peeker($("#setting_captchaimage"), $("#row_setting_captchaprivatekey"), /(2|4)/, false)',
-		'new Peeker($("#setting_captchaimage"), $("#row_setting_ayahpublisherkey"), 3, false)',
-		'new Peeker($("#setting_captchaimage"), $("#row_setting_ayahscoringkey"), 3, false)',
-		'new Peeker($(".setting_contact"), $("#row_setting_contact_guests"), /1/, true)',
-		'new Peeker($(".setting_contact"), $("#row_setting_contact_badwords"), /1/, true)',
-		'new Peeker($(".setting_contact"), $("#row_setting_contact_maxsubjectlength"), /1/, true)',
-		'new Peeker($(".setting_contact"), $("#row_setting_contact_minmessagelength"), /1/, true)',
-		'new Peeker($(".setting_contact"), $("#row_setting_contact_maxmessagelength"), /1/, true)',
+		'new Peeker($(".setting_showsimilarthreads"), $("#row_setting_similarityrating, #row_setting_similarlimit"), 1, true)',
+		'new Peeker($(".setting_disableregs"), $("#row_setting_regtype, #row_setting_securityquestion, #row_setting_regtime, #row_setting_allowmultipleemails, #row_setting_hiddencaptchaimage, #row_setting_betweenregstime"), 0, true)',
+		'new Peeker($(".setting_hiddencaptchaimage"), $("#row_setting_hiddencaptchaimagefield"), 1, true)',
+		'new Peeker($("#setting_failedlogincount"), $("#row_setting_failedlogintime, #row_setting_failedlogintext"), /[^0+|]/, false)',
+		'new Peeker($(".setting_postfloodcheck"), $("#row_setting_postfloodsecs"), 1, true)',
+		'new Peeker($("#setting_postmergemins"), $("#row_setting_postmergefignore, #row_setting_postmergeuignore, #row_setting_postmergesep"), /[^0+|]/, false)',
+		'new Peeker($(".setting_enablememberlist"), $("#row_setting_membersperpage, #row_setting_default_memberlist_sortby, #row_setting_default_memberlist_order, #row_setting_memberlistmaxavatarsize"), 1, true)',
+		'new Peeker($(".setting_enablereputation"), $("#row_setting_repsperpage, #row_setting_posrep, #row_setting_neurep, #row_setting_negrep, #row_setting_postrep, #row_setting_multirep, #row_setting_maxreplength, #row_setting_minreplength"), 1, true)',
+		'new Peeker($(".setting_enablewarningsystem"), $("#row_setting_allowcustomwarnings, #row_setting_canviewownwarning, #row_setting_maxwarningpoints, #row_setting_allowanonwarningpms"), 1, true)',
+		'new Peeker($(".setting_enablepms"), $("#row_setting_pmsallowhtml, #row_setting_pmsallowmycode, #row_setting_pmsallowsmilies, #row_setting_pmsallowimgcode, #row_setting_pmsallowvideocode, #row_setting_pmquickreply, #row_setting_pmfloodsecs, #row_setting_showpmip, #row_setting_maxpmquotedepth"), 1, true)',
+		'new Peeker($(".setting_smilieinserter"), $("#row_setting_smilieinsertertot, #row_setting_smilieinsertercols"), 1, true)',
+		'new Peeker($("#setting_mail_handler"), $("#row_setting_smtp_host, #row_setting_smtp_port, #row_setting_smtp_user, #row_setting_smtp_pass, #row_setting_secure_smtp"), "smtp", false)',
+		'new Peeker($("#setting_mail_handler"), $("#row_setting_mail_parameters"), "mail", false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_captchapublickey, #row_setting_captchaprivatekey"), /(2|4)/, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_ayahpublisherkey, #row_setting_ayahscoringkey"), 3, false)',
+		'new Peeker($(".setting_contact"), $("#row_setting_contact_guests, #row_setting_contact_badwords, #row_setting_contact_maxsubjectlength, #row_setting_contact_minmessagelength, #row_setting_contact_maxmessagelength"), 1, true)',
+		'new Peeker($(".setting_enablepruning"), $("#row_setting_enableprunebyposts, #row_setting_pruneunactived, #row_setting_prunethreads"), 1, true)',
+		'new Peeker($(".setting_enableprunebyposts"), $("#row_setting_prunepostcount, #row_setting_dayspruneregistered"), 1, true)',
+		'new Peeker($(".setting_pruneunactived"), $("#row_setting_dayspruneunactivated"), 1, true)',
+		'new Peeker($(".setting_statsenabled"), $("#row_setting_statscachetime, #row_setting_statslimit, #row_setting_statstopreferrer"), 1, true)',
+		'new Peeker($(".setting_purgespammergroups_forums_groups_check"), $("#row_setting_purgespammerpostlimit, #row_setting_purgespammerbandelete, #row_setting_purgespammerapikey"), /^(?!none)/, true)',
+		'new Peeker($(".setting_purgespammerbandelete"),$("#row_setting_purgespammerbangroup, #row_setting_purgespammerbanreason"), "ban", true)',
+		'new Peeker($("#setting_maxloginattempts"), $("#row_setting_loginattemptstimeout"), /[^0+|]/, false)',
+		'new Peeker($(".setting_bbcodeinserter"), $("#row_setting_partialmode, #row_setting_smilieinserter"), 1, true)',
+		'new Peeker($(".setting_portal"), $("#row_setting_portal_announcementsfid, #row_setting_portal_showwelcome, #row_setting_portal_showpms, #row_setting_portal_showstats, #row_setting_portal_showwol, #row_setting_portal_showsearch, #row_setting_portal_showdiscussions"), 1, true)',
+		'new Peeker($(".setting_portal_announcementsfid_forums_groups_check"), $("#row_setting_portal_numannouncements"), /^(?!none)/, true)',
+		'new Peeker($(".setting_portal_showdiscussions"), $("#row_setting_portal_showdiscussionsnum, #row_setting_portal_excludediscussion"), 1, true)',
+		'new Peeker($(".setting_enableattachments"), $("#row_setting_maxattachments, #row_setting_attachthumbnails"), 1, true)',
+		'new Peeker($(".setting_attachthumbnails"), $("#row_setting_attachthumbh, #row_setting_attachthumbw"), "yes", true)',
+		'new Peeker($(".setting_showbirthdays"), $("#row_setting_showbirthdayspostlimit"), 1, true)',
+		'new Peeker($("#setting_betweenregstime"), $("#row_setting_maxregsbetweentime"), /[^0+|]/, false)',
+		'new Peeker($(".setting_usecdn"), $("#row_setting_cdnurl, #row_setting_cdnpath"), 1, true)',
+		'new Peeker($("#setting_errorlogmedium"), $("#row_setting_errortypemedium"), /^(log|email|both)/, false)',
+		'new Peeker($("#setting_errorlogmedium"), $("#row_setting_errorloglocation"), /^(log|both)/, false)',
+		'new Peeker($(".setting_sigmycode"), $("#row_setting_sigcountmycode, #row_setting_sigimgcode"), 1, true)',
+		'new Peeker($(".setting_pmsallowmycode"), $("#row_setting_pmsallowimgcode, #row_setting_pmsallowvideocode"), 1, true)'
 	);
 
 	$peekers = $plugins->run_hooks("admin_settings_print_peekers", $peekers);
 
 	$setting_peekers = implode("\n			", $peekers);
 
-	echo '<script type="text/javascript" src="./jscripts/peeker.js"></script>
+	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1804"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
-			loadPeekers();
-		});
-		function loadPeekers() {
 			' . $setting_peekers . '
-		}
+		});
 	</script>';
 }

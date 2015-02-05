@@ -32,7 +32,7 @@ class session
 		$this->useragent = $_SERVER['HTTP_USER_AGENT'];
 
 		// Attempt to find a session id in the cookies.
-		if(isset($mybb->cookies['sid']))
+		if(isset($mybb->cookies['sid']) && !defined('IN_UPGRADE'))
 		{
 			$sid = $db->escape_string($mybb->cookies['sid']);
 			// Load the session
@@ -159,7 +159,7 @@ class session
 		$mybb->user['pms_total'] = $mybb->user['totalpms'];
 		$mybb->user['pms_unread'] = $mybb->user['unreadpms'];
 
-		if($mybb->user['lastip'] != $this->packedip && array_key_exists('lastip', $mybb->user))
+		if($mybb->user['lastip'] != $this->packedip && array_key_exists('lastip', $mybb->user) && !defined('IN_UPGRADE'))
 		{
 			$lastip_add = ", lastip=".$db->escape_binary($this->packedip);
 		}
@@ -279,7 +279,7 @@ class session
 		}
 
 		// Update or create the session.
-		if(!defined("NO_ONLINE"))
+		if(!defined("NO_ONLINE") && !defined('IN_UPGRADE'))
 		{
 			if(!empty($this->sid))
 			{
@@ -349,7 +349,7 @@ class session
 		$mybb->usergroup = array_merge($mybb->usergroup, $mydisplaygroup);
 
 		// Update the online data.
-		if(!defined("NO_ONLINE"))
+		if(!defined("NO_ONLINE") && !defined('IN_UPGRADE'))
 		{
 			if(!empty($this->sid))
 			{
@@ -417,7 +417,7 @@ class session
 		}
 
 		// Update the online data.
-		if(!defined("NO_ONLINE"))
+		if(!defined("NO_ONLINE") && !defined('IN_UPGRADE'))
 		{
 			$this->sid = "bot=".$spider_id;
 			$this->create_session();
@@ -446,13 +446,10 @@ class session
 			$onlinedata['uid'] = 0;
 		}
 		$onlinedata['time'] = TIME_NOW;
-		$onlinedata['location'] = $db->escape_string(get_current_location());
-		$useragent = $this->useragent;
-		if(my_strlen($useragent) > 100)
-		{
-			$useragent = my_substr($useragent, 0, 100);
-		}
-		$onlinedata['useragent'] = $db->escape_string($useragent);
+		
+		$onlinedata['location'] = $db->escape_string(substr(get_current_location(), 0, 150));
+		$onlinedata['useragent'] = $db->escape_string(my_substr($this->useragent, 0, 100));
+		
 		$onlinedata['location1'] = (int)$speciallocs['1'];
 		$onlinedata['location2'] = (int)$speciallocs['2'];
 		$onlinedata['nopermission'] = 0;
@@ -500,13 +497,10 @@ class session
 		}
 		$onlinedata['time'] = TIME_NOW;
 		$onlinedata['ip'] = $db->escape_binary($this->packedip);
-		$onlinedata['location'] = $db->escape_string(get_current_location());
-		$useragent = $this->useragent;
-		if(my_strlen($useragent) > 100)
-		{
-			$useragent = my_substr($useragent, 0, 100);
-		}
-		$onlinedata['useragent'] = $db->escape_string($useragent);
+		
+		$onlinedata['location'] = $db->escape_string(substr(get_current_location(), 0, 150));
+		$onlinedata['useragent'] = $db->escape_string(my_substr($this->useragent, 0, 100));
+		
 		$onlinedata['location1'] = (int)$speciallocs['1'];
 		$onlinedata['location2'] = (int)$speciallocs['2'];
 		$onlinedata['nopermission'] = 0;
@@ -524,18 +518,18 @@ class session
 	{
 		global $mybb;
 		$array = array('1' => '', '2' => '');
-		if(preg_match("#forumdisplay.php#", $_SERVER['PHP_SELF']) && $mybb->get_input('fid', 1) > 0)
+		if(preg_match("#forumdisplay.php#", $_SERVER['PHP_SELF']) && $mybb->get_input('fid', MyBB::INPUT_INT) > 0)
 		{
-			$array[1] = $mybb->get_input('fid', 1);
+			$array[1] = $mybb->get_input('fid', MyBB::INPUT_INT);
 			$array[2] = '';
 		}
 		elseif(preg_match("#showthread.php#", $_SERVER['PHP_SELF']))
 		{
 			global $db;
 
-			if($mybb->get_input('tid', 1) > 0)
+			if($mybb->get_input('tid', MyBB::INPUT_INT) > 0)
 			{
-				$array[2] = $mybb->get_input('tid', 1);
+				$array[2] = $mybb->get_input('tid', MyBB::INPUT_INT);
 			}
 
 			// If there is no tid but a pid, trick the system into thinking there was a tid anyway.
@@ -544,7 +538,7 @@ class session
 				$options = array(
 					"limit" => 1
 				);
-				$query = $db->simple_select("posts", "tid", "pid=".$mybb->get_input('pid', 1), $options);
+				$query = $db->simple_select("posts", "tid", "pid=".$mybb->get_input('pid', MyBB::INPUT_INT), $options);
 				$post = $db->fetch_array($query);
 				$array[2] = $post['tid'];
 			}

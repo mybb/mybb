@@ -22,7 +22,7 @@ $parser = new postParser;
 $lang->load("sendthread");
 
 // Get thread info
-$tid = $mybb->get_input('tid', 1);
+$tid = $mybb->get_input('tid', MyBB::INPUT_INT);
 $thread = get_thread($tid);
 
 // Invalid thread

@@ -229,8 +229,6 @@ class postParser
 			$message = preg_replace("#(&nbsp;)+(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr)[^>]*>)#i", "$2", $message);
 		}
 
-		$message = my_wordwrap($message);
-
 		$message = $plugins->run_hooks("parse_message_end", $message);
 
 		return $message;
@@ -523,7 +521,8 @@ class postParser
 			{
 				$smilie['find'] = explode("\n", $smilie['find']);
 				$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
-				$smilie['image'] = $mybb->get_asset_url($smilie['image']);
+				$smilie['image'] = htmlspecialchars_uni($mybb->get_asset_url($smilie['image']));
+				$smilie['name'] = htmlspecialchars_uni($smilie['name']);
 
 				foreach($smilie['find'] as $s)
 				{
@@ -1041,6 +1040,12 @@ class postParser
 		{
 			$url = "http://".$url;
 		}
+
+		if(!empty($this->options['allow_html']))
+		{
+			$url = $this->parse_html($url);
+		}
+
 		$fullurl = $url;
 
 		if(!$name)
@@ -1052,7 +1057,9 @@ class postParser
 		{
 			if(my_strlen($url) > 55)
 			{
+				$name = htmlspecialchars_decode($name);
 				$name = my_substr($url, 0, 40)."...".my_substr($url, -10);
+				$name = htmlspecialchars_uni($name);
 			}
 		}
 
@@ -1113,6 +1120,12 @@ class postParser
 		$url = trim($url);
 		$url = str_replace("\n", "", $url);
 		$url = str_replace("\r", "", $url);
+
+		if(!empty($this->options['allow_html']))
+		{
+			$url = $this->parse_html($url);
+		}
+
 		if($align == "right")
 		{
 			$css_align = " style=\"float: right;\"";
@@ -1121,10 +1134,12 @@ class postParser
 		{
 			$css_align = " style=\"float: left;\"";
 		}
-		$alt = htmlspecialchars_uni(basename($url));
+		$alt = basename($url);
 		if(my_strlen($alt) > 55)
 		{
+			$alt = htmlspecialchars_decode($alt);
 			$alt = my_substr($alt, 0, 40)."...".my_substr($alt, -10);
+			$alt = htmlspecialchars_uni($alt);
 		}
 		$alt = $lang->sprintf($lang->posted_image, $alt);
 		if($dimensions[0] > 0 && $dimensions[1] > 0)

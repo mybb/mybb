@@ -220,7 +220,7 @@ function import_theme_xml($xml, $options=array())
 	else
 	{
 		$db->delete_query("themestylesheets", "tid='{$options['tid']}'");
-		$db->update_query("themes", array("properties" => $db->escape_string(serialize($properties))), "tid='{$options['tid']}'");
+		$db->update_query("themes", array("properties" => $db->escape_string(my_serialize($properties))), "tid='{$options['tid']}'");
 		$theme_id = $options['tid'];
 	}
 
@@ -327,7 +327,7 @@ function import_theme_xml($xml, $options=array())
 		}
 		// Now we have our list of built stylesheets, save them
 		$updated_theme = array(
-			"stylesheets" => $db->escape_string(serialize($theme_stylesheets))
+			"stylesheets" => $db->escape_string(my_serialize($theme_stylesheets))
 		);
 
 		if(is_array($properties['disporder']))
@@ -344,7 +344,7 @@ function import_theme_xml($xml, $options=array())
 			}
 
 			$properties['disporder'] = $orders;
-			$updated_theme['properties'] = $db->escape_string(serialize($properties));
+			$updated_theme['properties'] = $db->escape_string(my_serialize($properties));
 		}
 
 		$db->update_query("themes", $updated_theme, "tid='{$theme_id}'");
@@ -634,9 +634,9 @@ function build_new_theme($name, $properties=null, $parent=1)
 	}
 	if(!empty($stylesheets))
 	{
-		$updated_theme['stylesheets'] = $db->escape_string(serialize($stylesheets));
+		$updated_theme['stylesheets'] = $db->escape_string(my_serialize($stylesheets));
 	}
-	$updated_theme['properties'] = $db->escape_string(serialize($properties));
+	$updated_theme['properties'] = $db->escape_string(my_serialize($properties));
 
 	if(count($updated_theme) > 0)
 	{
@@ -1021,7 +1021,7 @@ function update_theme_stylesheet_list($tid, $theme = false, $update_disporders =
 
 	// Now we have our list of built stylesheets, save them
 	$updated_theme = array(
-		"stylesheets" => $db->escape_string(serialize($theme_stylesheets))
+		"stylesheets" => $db->escape_string(my_serialize($theme_stylesheets))
 	);
 
 	// Do we have a theme present? If so, update the stylesheet display orders
@@ -1072,7 +1072,7 @@ function update_theme_stylesheet_list($tid, $theme = false, $update_disporders =
 
 		asort($orders);
 		$properties['disporder'] = $orders;
-		$updated_theme['properties'] = $db->escape_string(serialize($properties));
+		$updated_theme['properties'] = $db->escape_string(my_serialize($properties));
 	}
 
 	$db->update_query("themes", $updated_theme, "tid = '{$tid}'");

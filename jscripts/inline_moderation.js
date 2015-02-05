@@ -9,7 +9,7 @@ var inlineModeration = {
 		inlineModeration.cookieName = 'inlinemod_'+inlineType+inlineId;
 		var inputs = $('input');
 
-		if(!inputs)
+		if(!inputs.length)
 		{
 			return false;
 		}
@@ -38,16 +38,16 @@ var inlineModeration = {
 						var post = element.parents('.post_content');
 						var thread = element.parents('.inline_row');
 						var fieldset = element.parents('fieldset');
-						if(post.length > 0)
+						if(post.length)
 						{
 							post.addClass('trow_selected');
 						}
-						else if(thread.length > 0)
+						else if(thread.length)
 						{
 							thread.addClass('trow_selected');
 						}
 						
-						if(fieldset.length > 0)
+						if(fieldset.length)
 						{
 							fieldset.addClass('inline_selected');
 						}
@@ -58,11 +58,11 @@ var inlineModeration = {
 						element.prop('checked', false);
 						var post = element.parents('.post_content');
 						var thread = element.parents('.inline_row');
-						if(post.length > 0)
+						if(post.length)
 						{
 							post.removeClass('trow_selected');
 						}
-						else if(thread.length > 0)
+						else if(thread.length)
 						{
 							thread.removeClass('trow_selected');
 						}
@@ -133,11 +133,11 @@ var inlineModeration = {
 			}
 			var post = element.parents('.post_content');
 			var thread = element.parents('.inline_row');
-			if(post.length > 0)
+			if(post.length)
 			{
 				post.addClass('trow_selected');
 			}
-			else if(thread.length > 0)
+			else if(thread.length)
 			{
 				thread.addClass('trow_selected');
 			}
@@ -164,11 +164,11 @@ var inlineModeration = {
 			}
 			var post = element.parents('.post_content');
 			var thread = element.parents('.inline_row');
-			if(post.length > 0)
+			if(post.length)
 			{
 				post.removeClass('trow_selected');
 			}
-			else if(thread.length > 0)
+			else if(thread.length)
 			{
 				thread.removeClass('trow_selected');
 			}
@@ -181,21 +181,12 @@ var inlineModeration = {
 
 	clearChecked: function()
 	{
-		var selectRow = $('#selectAllrow');
-		if(selectRow)
-		{
-			selectRow.hide();
-		}
-
-		var allSelectedRow = $('#allSelectedrow');
-		if(allSelectedRow)
-		{
-			allSelectedRow.hide();
-		}
+		$('#selectAllrow').hide();
+		$('#allSelectedrow').hide();
 
 		var inputs = $('input');
 
-		if(!inputs)
+		if(!inputs.length)
 		{
 			return false;
 		}
@@ -229,7 +220,7 @@ var inlineModeration = {
 		inputs = $('input');
 		master = $(master);
 
-		if(!inputs)
+		if(!inputs.length)
 		{
 			return false;
 		}
@@ -251,7 +242,7 @@ var inlineModeration = {
 				var post = element.parents('.post_content');
 				var fieldset = element.parents('fieldset');
 				var thread = element.parents('.inline_row');
-				if(post.length > 0)
+				if(post.length)
 				{
 					if(master.prop('checked') == true)
 					{
@@ -262,7 +253,7 @@ var inlineModeration = {
 						post.removeClass('trow_selected');
 					}
 				}
-				else if(thread.length > 0)
+				else if(thread.length)
 				{
 					if(master.prop('checked') == true)
 					{
@@ -274,7 +265,7 @@ var inlineModeration = {
 					}
 				}
 				
-				if(fieldset.length > 0)
+				if(fieldset.length)
 				{
 					if(master.prop('checked') == true)
 					{
@@ -319,7 +310,7 @@ var inlineModeration = {
 		if(count < all_text)
 		{
 			var selectRow = $('#selectAllrow');
-			if(selectRow)
+			if(selectRow.length)
 			{
 				if(master.prop('checked') == true)
 				{
@@ -334,19 +325,11 @@ var inlineModeration = {
 
 		if(inlineIds.indexOf('ALL') == -1 || removedIds.length != 0)
 		{
-			var allSelectedRow = $('#allSelectedrow');
-			if(allSelectedRow)
-			{
-				allSelectedRow.hide();
-			}
+			$('#allSelectedrow').hide();
 		}
 		else if(inlineIds.indexOf('ALL') != -1 && removedIds.length == 0)
 		{
-			var allSelectedRow = $('#allSelectedrow');
-			if(allSelectedRow)
-			{
-				allSelectedRow.show();
-			}
+			$('#allSelectedrow').show();
 		}
 	},
 
@@ -354,17 +337,8 @@ var inlineModeration = {
 	{
 		inlineModeration.updateCookies(new Array('ALL'), new Array());
 
-		var selectRow = $('#selectAllrow');
-		if(selectRow)
-		{
-			selectRow.hide();
-		}
-
-		var allSelectedRow = $('#allSelectedrow');
-		if(allSelectedRow)
-		{
-			allSelectedRow.show();
-		}
+		$('#selectAllrow').hide();
+		$('#allSelectedrow').show();
 	},
 
 	getCookie: function(name)

@@ -59,6 +59,9 @@ $lang = new MyLanguage();
 $lang->set_path(MYBB_ROOT.'install/resources');
 $lang->load('language');
 
+// Load DB interface
+require_once MYBB_ROOT."inc/db_base.php";
+
 // Prevent any shut down functions from running
 $done_shutdown = 1;
 
@@ -66,7 +69,7 @@ $done_shutdown = 1;
 $grouppermignore = array('gid', 'type', 'title', 'description', 'namestyle', 'usertitle', 'stars', 'starimage', 'image');
 $groupzerogreater = array('pmquota', 'maxpmrecipients', 'maxreputationsday', 'attachquota', 'maxemails', 'maxwarningsday', 'maxposts', 'edittimelimit', 'canusesigxposts', 'maxreputationsperthread');
 $displaygroupfields = array('title', 'description', 'namestyle', 'usertitle', 'stars', 'starimage', 'image');
-$fpermfields = array('canview', 'candlattachments', 'canpostthreads', 'canpostreplys', 'canpostattachments', 'canratethreads', 'caneditposts', 'candeleteposts', 'candeletethreads', 'caneditattachments', 'canpostpolls', 'canvotepolls', 'cansearch');
+$fpermfields = array('canview', 'canviewthreads', 'candlattachments', 'canpostthreads', 'canpostreplys', 'canpostattachments', 'canratethreads', 'caneditposts', 'candeleteposts', 'candeletethreads', 'caneditattachments', 'canpostpolls', 'canvotepolls', 'cansearch', 'modposts', 'modthreads', 'modattachments', 'mod_edit_posts');
 
 // Include the installation resources
 require_once INSTALL_ROOT.'resources/output.php';
@@ -188,7 +191,7 @@ function intro()
 	global $output, $mybb, $lang;
 
 	$output->print_header($lang->welcome, 'welcome');
-	if(strpos(strtolower($_SERVER['PHP_SELF']), "upload/") !== false)
+	if(strpos(strtolower(get_current_location('', '', true)), '/upload/') !== false)
 	{
 		echo $lang->sprintf($lang->mybb_incorrect_folder);
 	}
@@ -203,7 +206,7 @@ function license_agreement()
 	ob_start();
 	$output->print_header($lang->license_agreement, 'license');
 
-	if($mybb->get_input('allow_anonymous_info', 1) == 1)
+	if($mybb->get_input('allow_anonymous_info', MyBB::INPUT_INT) == 1)
 	{
 		require_once MYBB_ROOT."inc/functions_serverstats.php";
 		$build_server_stats = build_server_stats(1, '', $mybb->version_code);
@@ -1259,7 +1262,7 @@ function database_info()
 		$db = new $dbtype['class'];
 		$encodings = $db->fetch_db_charsets();
 		$encoding_select = '';
-		$mybb->input['config'] = $mybb->get_input('config', 2);
+		$mybb->input['config'] = $mybb->get_input('config', MyBB::INPUT_ARRAY);
 		if(empty($mybb->input['config'][$dbfile]['dbhost']))
 		{
 			$mybb->input['config'][$dbfile]['dbhost'] = "localhost";
@@ -1384,7 +1387,7 @@ function create_tables()
 		database_info();
 	}
 
-	$mybb->input['config'] = $mybb->get_input('config', 2);
+	$mybb->input['config'] = $mybb->get_input('config', MyBB::INPUT_ARRAY);
 	$config = $mybb->input['config'][$mybb->input['dbengine']];
 
 	if(strstr($mybb->input['dbengine'], "sqlite") !== false)
@@ -1758,7 +1761,7 @@ function insert_templates()
 		}
 	}
 
-	$db->update_query("themes", array("def" => 1, "properties" => $db->escape_string(serialize($properties)), "stylesheets" => $db->escape_string(serialize($stylesheets))), "tid = '{$tid}'");
+	$db->update_query("themes", array("def" => 1, "properties" => $db->escape_string(my_serialize($properties)), "stylesheets" => $db->escape_string(my_serialize($stylesheets))), "tid = '{$tid}'");
 
 	echo $lang->theme_step_imported;
 	$output->print_footer('configuration');
@@ -1823,9 +1826,7 @@ EOF;
 	{
 		$bbname = 'Forums';
 		$cookiedomain = '';
-		$cookiepath = '/';
 		$websitename = 'Your Website';
-		$contactemail = '';
 
 		$protocol = "http://";
 		if((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != "off"))
@@ -1845,9 +1846,9 @@ EOF;
 			$cookiedomain = $_SERVER['SERVER_NAME'];
 		}
 
-		if(substr($cookiedomain, 0, 4) == "www.")
+		if(my_substr($cookiedomain, 0, 4) == "www.")
 		{
-			$cookiedomain = my_substr($cookiedomain, 4);
+			$cookiedomain = substr($cookiedomain, 4);
 		}
 
 		// IP addresses and hostnames are not valid
@@ -1864,34 +1865,14 @@ EOF;
 		{
 			$hostname .= ':'.$_SERVER['SERVER_PORT'];
 		}
+		
+		$currentlocation = get_current_location('', '', true);
+		$noinstall = substr($currentlocation, 0, strrpos($currentlocation, '/install/'));
+		
+		$cookiepath = $noinstall.'/';
+		$bburl = $hostname.$noinstall;
 		$websiteurl = $hostname.'/';
-
-		$currentlocation = get_current_location();
-		if($currentlocation)
-		{
-			// TODO: Change this to find the last position of /install/
-			$pos = my_strpos($currentlocation, '/install/');
-			if($pos === 0)
-			{
-				$cookiepath = "/";
-			}
-			else
-			{
-				$cookiepath = my_substr($currentlocation, 0, $pos).'/';
-			}
-		}
-
-		$currentscript = $hostname.get_current_location();
-
-		if($currentscript)
-		{
-			$bburl = my_substr($currentscript, 0, my_strpos($currentscript, '/install/'));
-		}
-
-		if($_SERVER['SERVER_ADMIN'])
-		{
-			$contactemail = $_SERVER['SERVER_ADMIN'];
-		}
+		$contactemail = $_SERVER['SERVER_ADMIN'];
 	}
 
 	echo $lang->sprintf($lang->config_step_table, $bbname, $bburl, $websitename, $websiteurl, $cookiedomain, $cookiepath, $contactemail);
@@ -2108,9 +2089,9 @@ EOF;
 				"type" => $db->escape_string($view['attributes']['type']),
 				"visibility" => (int)$view['attributes']['visibility'],
 				"title" => $db->escape_string($view['title'][0]['value']),
-				"fields" => $db->escape_string(serialize($fields)),
-				"conditions" => $db->escape_string(serialize($conditions)),
-				"custom_profile_fields" => $db->escape_string(serialize($custom_profile_fields)),
+				"fields" => $db->escape_string(my_serialize($fields)),
+				"conditions" => $db->escape_string(my_serialize($conditions)),
+				"custom_profile_fields" => $db->escape_string(my_serialize($custom_profile_fields)),
 				"sortby" => $db->escape_string($view['sortby'][0]['value']),
 				"sortorder" => $db->escape_string($view['sortorder'][0]['value']),
 				"perpage" => (int)$view['perpage'][0]['value'],
@@ -2293,8 +2274,8 @@ function install_done()
 			'uid' => (int)$uid,
 			'cpstyle' => '',
 			'notes' => '',
-			'permissions' => $db->escape_string(serialize($insertmodule)),
-			'defaultviews' => $db->escape_string(serialize($defaultviews))
+			'permissions' => $db->escape_string(my_serialize($insertmodule)),
+			'defaultviews' => $db->escape_string(my_serialize($defaultviews))
 		);
 
 		$insertmodule = array();
@@ -2450,4 +2431,3 @@ function write_settings()
 		fclose($file);
 	}
 }
-?>

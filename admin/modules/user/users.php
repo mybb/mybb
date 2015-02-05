@@ -476,7 +476,7 @@ if($mybb->input['action'] == "edit")
 
 			$return_month = (int)substr($mybb->input['away_month'], 0, 2);
 			$return_day = (int)substr($mybb->input['away_day'], 0, 2);
-			$return_year = min((int)$mybb->input['away_year'], 9999);
+			$return_year = min($mybb->get_input('away_year', MyBB::INPUT_INT), 9999);
 
 			// Check if return date is after the away date.
 			$returntimestamp = gmmktime(0, 0, 0, $return_month, $return_day, $return_year);
@@ -522,8 +522,8 @@ if($mybb->input['action'] == "edit")
 			),
 			"style" => $mybb->input['style'],
 			"signature" => $mybb->input['signature'],
-			"dateformat" => (int)$mybb->input['dateformat'],
-			"timeformat" => (int)$mybb->input['timeformat'],
+			"dateformat" => $mybb->get_input('dateformat', MyBB::INPUT_INT),
+			"timeformat" => $mybb->get_input('timeformat', MyBB::INPUT_INT),
 			"language" => $mybb->input['language'],
 			"usernotes" => $mybb->input['usernotes'],
 			"away" => array(
@@ -572,12 +572,12 @@ if($mybb->input['action'] == "edit")
 
 		if($mybb->settings['usertppoptions'])
 		{
-			$updated_user['options']['tpp'] = (int)$mybb->input['tpp'];
+			$updated_user['options']['tpp'] = $mybb->get_input('tpp', MyBB::INPUT_INT);
 		}
 
 		if($mybb->settings['userpppoptions'])
 		{
-			$updated_user['options']['ppp'] = (int)$mybb->input['ppp'];
+			$updated_user['options']['ppp'] = $mybb->get_input('ppp', MyBB::INPUT_INT);
 		}
 
 		// Set the data of the user in the datahandler.
@@ -868,7 +868,7 @@ if($mybb->input['action'] == "edit")
 	{
 		$mybb->input['bday'][0] = $mybb->input['bday1'];
 		$mybb->input['bday'][1] = $mybb->input['bday2'];
-		$mybb->input['bday'][2] = (int)$mybb->input['bday3'];
+		$mybb->input['bday'][2] = $mybb->get_input('bday3', MyBB::INPUT_INT);
 	}
 	else
 	{
@@ -882,7 +882,7 @@ if($mybb->input['action'] == "edit")
 
 	if($mybb->input['away_day'] || $mybb->input['away_month'] || $mybb->input['away_year'])
 	{
-		$mybb->input['away_year'] = (int)$mybb->input['away_year'];
+		$mybb->input['away_year'] = $mybb->get_input('away_year', MyBB::INPUT_INT);
 	}
 	else
 	{
@@ -1118,8 +1118,8 @@ EOF;
 	$form_container->output_row($lang->primary_user_group." <em>*</em>", "", $form->generate_select_box('usergroup', $options, $mybb->input['usergroup'], array('id' => 'usergroup')), 'usergroup');
 	$form_container->output_row($lang->additional_user_groups, $lang->additional_user_groups_desc, $form->generate_select_box('additionalgroups[]', $options, $mybb->input['additionalgroups'], array('id' => 'additionalgroups', 'multiple' => true, 'size' => 5)), 'additionalgroups');
 	$form_container->output_row($lang->display_user_group." <em>*</em>", "", $form->generate_select_box('displaygroup', $display_group_options, $mybb->input['displaygroup'], array('id' => 'displaygroup')), 'displaygroup');
-	$form_container->output_row($lang->post_count." <em>*</em>", "", $form->generate_numeric_field('postnum', $mybb->input['postnum'], array('id' => 'postnum')), 'postnum');
-	$form_container->output_row($lang->thread_count." <em>*</em>", "", $form->generate_numeric_field('threadnum', $mybb->input['threadnum'], array('id' => 'threadnum')), 'threadnum');
+	$form_container->output_row($lang->post_count." <em>*</em>", "", $form->generate_numeric_field('postnum', $mybb->input['postnum'], array('id' => 'postnum', 'min' => 0)), 'postnum');
+	$form_container->output_row($lang->thread_count." <em>*</em>", "", $form->generate_numeric_field('threadnum', $mybb->input['threadnum'], array('id' => 'threadnum', 'min' => 0)), 'threadnum');
 
 	// Output custom profile fields - required
 	if(!isset($profile_fields['required']))
@@ -1133,7 +1133,7 @@ EOF;
 	$form_container = new FormContainer($lang->optional_profile_info.": {$user['username']}");
 	$form_container->output_row($lang->custom_user_title, $lang->custom_user_title_desc, $form->generate_text_box('usertitle', $mybb->input['usertitle'], array('id' => 'usertitle')), 'usertitle');
 	$form_container->output_row($lang->website, "", $form->generate_text_box('website', $mybb->input['website'], array('id' => 'website')), 'website');
-	$form_container->output_row($lang->icq_number, "", $form->generate_numeric_field('icq', $mybb->input['icq'], array('id' => 'icq')), 'icq');
+	$form_container->output_row($lang->icq_number, "", $form->generate_numeric_field('icq', $mybb->input['icq'], array('id' => 'icq', 'min' => 0)), 'icq');
 	$form_container->output_row($lang->aim_handle, "", $form->generate_text_box('aim', $mybb->input['aim'], array('id' => 'aim')), 'aim');
 	$form_container->output_row($lang->yahoo_messanger_handle, "", $form->generate_text_box('yahoo', $mybb->input['yahoo'], array('id' => 'yahoo')), 'yahoo');
 	$form_container->output_row($lang->skype_handle, "", $form->generate_text_box('skype', $mybb->input['skype'], array('id' => 'skype')), 'skype');
@@ -1164,7 +1164,7 @@ EOF;
 
 	$birthday_row = $form->generate_select_box('bday1', $birthday_days, $mybb->input['bday'][0], array('id' => 'bday_day'));
 	$birthday_row .= ' '.$form->generate_select_box('bday2', $birthday_months, $mybb->input['bday'][1], array('id' => 'bday_month'));
-	$birthday_row .= ' '.$form->generate_numeric_field('bday3', $mybb->input['bday'][2], array('id' => 'bday_year', 'style' => 'width: 3em;'));
+	$birthday_row .= ' '.$form->generate_numeric_field('bday3', $mybb->input['bday'][2], array('id' => 'bday_year', 'style' => 'width: 4em;', 'min' => 0));
 
 	$form_container->output_row($lang->birthday, "", $birthday_row, 'birthday');
 
@@ -1188,7 +1188,7 @@ EOF;
 		//Return date (we can use the arrays from birthday)
 		$return_row = $form->generate_select_box('away_day', $birthday_days, $mybb->input['away_day'], array('id' => 'away_day'));
 		$return_row .= ' '.$form->generate_select_box('away_month', $birthday_months, $mybb->input['away_month'], array('id' => 'away_month'));
-		$return_row .= ' '.$form->generate_numeric_field('away_year', $mybb->input['away_year'], array('id' => 'away_year', 'style' => 'width: 3em;'));
+		$return_row .= ' '.$form->generate_numeric_field('away_year', $mybb->input['away_year'], array('id' => 'away_year', 'style' => 'width: 4em;', 'min' => 0));
 
 		$form_container->output_row($lang->return_date, $lang->return_date_desc, $return_row, 'away_date');
 
@@ -1371,8 +1371,24 @@ EOF;
 		else
 		{
 			// There's a limit to the suspension!
-			$expired = my_date('relative', $user['suspendsigtime'], '', 2);
-			$lang->suspend_expire_info = $lang->sprintf($lang->suspend_expire_info, $expired);
+			$remaining = $user['suspendsigtime']-TIME_NOW;
+			$expired = nice_time($remaining, array('seconds' => false));
+
+			$color = 'inherit';
+			if($remaining < 3600)
+			{
+				$color = 'red';
+			}
+			elseif($remaining < 86400)
+			{
+				$color = 'maroon';
+			}
+			elseif($remaining < 604800)
+			{
+				$color = 'green';
+			}
+
+			$lang->suspend_expire_info = $lang->sprintf($lang->suspend_expire_info, $expired, $color);
 		}
 		$user_suspend_info = '
 				<tr>
@@ -1410,7 +1426,7 @@ EOF;
 			<table cellpadding="4">'.$user_suspend_info.'
 				<tr>
 					<td width="30%"><small>'.$lang->expire_length.'</small></td>
-					<td>'.$form->generate_numeric_field('action_time', $mybb->input['action_time'], array('style' => 'width: 2em;')).' '.$form->generate_select_box('action_period', $periods, $mybb->input['action_period']).'</td>
+					<td>'.$form->generate_numeric_field('action_time', $mybb->input['action_time'], array('style' => 'width: 3em;', 'min' => 0)).' '.$form->generate_select_box('action_period', $periods, $mybb->input['action_period']).'</td>
 				</tr>
 			</table>
 		</dd>
@@ -1526,8 +1542,24 @@ EOF;
 		$mybb->input['moderateposting'] = 1;
 		if($user['moderationtime'] != 0)
 		{
-			$expired = my_date('relative', $user['moderationtime'], '', 2);
-			$existing_info = $lang->sprintf($lang->moderate_length, $expired);
+			$remaining = $user['moderationtime']-TIME_NOW;
+			$expired = nice_time($remaining, array('seconds' => false));
+
+			$color = 'inherit';
+			if($remaining < 3600)
+			{
+				$color = 'red';
+			}
+			elseif($remaining < 86400)
+			{
+				$color = 'maroon';
+			}
+			elseif($remaining < 604800)
+			{
+				$color = 'green';
+			}
+
+			$existing_info = $lang->sprintf($lang->moderate_length, $expired, $color);
 		}
 		else
 		{
@@ -1535,7 +1567,7 @@ EOF;
 		}
 	}
 
-	$modpost_div = '<div id="modpost">'.$existing_info.''.$lang->moderate_for.' '.$form->generate_numeric_field("modpost_time", $mybb->input['modpost_time'], array('style' => 'width: 2em;')).' '.$modpost_options.'</div>';
+	$modpost_div = '<div id="modpost">'.$existing_info.''.$lang->moderate_for.' '.$form->generate_numeric_field("modpost_time", $mybb->input['modpost_time'], array('style' => 'width: 3em;', 'min' => 0)).' '.$modpost_options.'</div>';
 	$lang->moderate_posts_info = $lang->sprintf($lang->moderate_posts_info, $user['username']);
 	$form_container->output_row($form->generate_check_box("moderateposting", 1, $lang->moderate_posts, array("id" => "moderateposting", "onclick" => "toggleBox('modpost');", "checked" => $mybb->input['moderateposting'])), $lang->moderate_posts_info, $modpost_div);
 
@@ -1554,12 +1586,28 @@ EOF;
 		}
 		else
 		{
-			$suspost_date = my_date('relative', $user['suspensiontime'], '', 2);
-			$existing_info = $lang->sprintf($lang->suspend_length, $suspost_date);
+			$remaining = $user['suspensiontime']-TIME_NOW;
+			$suspost_date = nice_time($remaining, array('seconds' => false));
+
+			$color = 'inherit';
+			if($remaining < 3600)
+			{
+				$color = 'red';
+			}
+			elseif($remaining < 86400)
+			{
+				$color = 'maroon';
+			}
+			elseif($remaining < 604800)
+			{
+				$color = 'green';
+			}
+
+			$existing_info = $lang->sprintf($lang->suspend_length, $suspost_date, $color);
 		}
 	}
 
-	$suspost_div = '<div id="suspost">'.$existing_info.''.$lang->suspend_for.' '.$form->generate_numeric_field("suspost_time", $mybb->input['suspost_time'], array('style' => 'width: 2em;')).' '.$suspost_options.'</div>';
+	$suspost_div = '<div id="suspost">'.$existing_info.''.$lang->suspend_for.' '.$form->generate_numeric_field("suspost_time", $mybb->input['suspost_time'], array('style' => 'width: 3em;', 'min' => 0)).' '.$suspost_options.'</div>';
 	$lang->suspend_posts_info = $lang->sprintf($lang->suspend_posts_info, $user['username']);
 	$form_container->output_row($form->generate_check_box("suspendposting", 1, $lang->suspend_posts, array("id" => "suspendposting", "onclick" => "toggleBox('suspost');", "checked" => $mybb->input['suspendposting'])), $lang->suspend_posts_info, $suspost_div);
 
@@ -1673,6 +1721,8 @@ if($mybb->input['action'] == "delete")
 			admin_redirect("index.php?module=user-users");
 		}
 
+		$cache->update_awaitingactivation();
+
 		$plugins->run_hooks("admin_user_users_delete_commit_end");
 
 		log_admin_action($user['uid'], $user['username']);
@@ -1772,8 +1822,8 @@ if($mybb->input['action'] == "ipaddresses")
 		$user['lastip'] = my_inet_ntop($db->unescape_binary($user['lastip']));
 		$popup = new PopupMenu("user_last", $lang->options);
 		$popup->add_item($lang->show_users_regged_with_ip,
-			"index.php?module=user-users&amp;action=search&amp;results=1&amp;conditions=".urlencode(serialize(array("regip" => $user['lastip']))));
-		$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(serialize(array("postip" => $user['lastip']))));
+			"index.php?module=user-users&amp;action=search&amp;results=1&amp;conditions=".urlencode(my_serialize(array("regip" => $user['lastip']))));
+		$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(my_serialize(array("postip" => $user['lastip']))));
 		$popup->add_item($lang->info_on_ip, "index.php?module=user-users&amp;action=iplookup&ipaddress={$user['lastip']}", "MyBB.popupWindow('index.php?module=user-users&amp;action=iplookup&ipaddress={$user['lastip']}', null, true); return false;");
 		$popup->add_item($lang->ban_ip, "index.php?module=config-banning&amp;filter={$user['lastip']}");
 		$controls = $popup->fetch();
@@ -1791,8 +1841,8 @@ if($mybb->input['action'] == "ipaddresses")
 	{
 		$user['regip'] = my_inet_ntop($db->unescape_binary($user['regip']));
 		$popup = new PopupMenu("user_reg", $lang->options);
-		$popup->add_item($lang->show_users_regged_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(serialize(array("regip" => $user['regip']))));
-		$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(serialize(array("postip" => $user['regip']))));
+		$popup->add_item($lang->show_users_regged_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(my_serialize(array("regip" => $user['regip']))));
+		$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(my_serialize(array("postip" => $user['regip']))));
 		$popup->add_item($lang->info_on_ip, "index.php?module=user-users&amp;action=iplookup&ipaddress={$user['regip']}", "MyBB.popupWindow('index.php?module=user-users&amp;action=iplookup&ipaddress={$user['regip']}', null, true); return false;");
 		$popup->add_item($lang->ban_ip, "index.php?module=config-banning&amp;filter={$user['regip']}");
 		$controls = $popup->fetch();
@@ -1809,8 +1859,8 @@ if($mybb->input['action'] == "ipaddresses")
 		++$counter;
 		$ip['ipaddress'] = my_inet_ntop($db->unescape_binary($ip['ipaddress']));
 		$popup = new PopupMenu("id_{$counter}", $lang->options);
-		$popup->add_item($lang->show_users_regged_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(serialize(array("regip" => $ip['ipaddress']))));
-		$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(serialize(array("postip" => $ip['ipaddress']))));
+		$popup->add_item($lang->show_users_regged_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(my_serialize(array("regip" => $ip['ipaddress']))));
+		$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(my_serialize(array("postip" => $ip['ipaddress']))));
 		$popup->add_item($lang->info_on_ip, "index.php?module=user-users&amp;action=iplookup&ipaddress={$ip['ipaddress']}", "MyBB.popupWindow('index.php?module=user-users&amp;action=iplookup&ipaddress={$ip['ipaddress']}', null, true); return false;");
 		$popup->add_item($lang->ban_ip, "index.php?module=config-banning&amp;filter={$ip['ipaddress']}");
 		$controls = $popup->fetch();
@@ -2047,6 +2097,8 @@ if($mybb->input['action'] == "merge")
 
 			$plugins->run_hooks("admin_user_users_merge_commit");
 
+			$cache->update_awaitingactivation();
+
 			// Log admin action
 			log_admin_action($source_user['uid'], $source_user['username'], $destination_user['uid'], $destination_user['username']);
 
@@ -2078,7 +2130,7 @@ if($mybb->input['action'] == "merge")
 	// Autocompletion for usernames
 	echo '
 	<link rel="stylesheet" href="../jscripts/select2/select2.css">
-	<script type="text/javascript" src="../jscripts/select2/select2.min.js"></script>
+	<script type="text/javascript" src="../jscripts/select2/select2.min.js?ver=1804"></script>
 	<script type="text/javascript">
 	<!--
 	$("#source_username").select2({
@@ -2160,7 +2212,7 @@ if($mybb->input['action'] == "search")
 		// Build view options from incoming search options
 		if($mybb->input['vid'])
 		{
-			$query = $db->simple_select("adminviews", "*", "vid='".$mybb->get_input('vid', 1)."'");
+			$query = $db->simple_select("adminviews", "*", "vid='".$mybb->get_input('vid', MyBB::INPUT_INT)."'");
 			$admin_view = $db->fetch_array($query);
 			// View does not exist or this view is private and does not belong to the current user
 			if(!$admin_view['vid'] || ($admin_view['visibility'] == 1 && $admin_view['uid'] != $mybb->user['uid']))
@@ -2207,7 +2259,7 @@ if($mybb->input['action'] == "search")
 			$admin_view['sortby'] = $mybb->input['sortby'];
 		}
 
-		if($mybb->get_input('perpage', 1))
+		if($mybb->get_input('perpage', MyBB::INPUT_INT))
 		{
 			$admin_view['perpage'] = $mybb->input['perpage'];
 		}
@@ -2280,7 +2332,7 @@ if($mybb->input['action'] == "search")
 		"desc" => $lang->descending
 	);
 	$form_container->output_row($lang->sort_results_by, "", $form->generate_select_box('sortby', $sort_options, $mybb->input['sortby'], array('id' => 'sortby'))." {$lang->in} ".$form->generate_select_box('order', $sort_directions, $mybb->input['order'], array('id' => 'order')), 'sortby');
-	$form_container->output_row($lang->results_per_page, "", $form->generate_numeric_field('perpage', $mybb->input['perpage'], array('id' => 'perpage')), 'perpage');
+	$form_container->output_row($lang->results_per_page, "", $form->generate_numeric_field('perpage', $mybb->input['perpage'], array('id' => 'perpage', 'min' => 1)), 'perpage');
 	$form_container->output_row($lang->display_results_as, "", $form->generate_radio_button('displayas', 'table', $lang->table, array('checked' => ($mybb->input['displayas'] != "card" ? true : false)))."<br />".$form->generate_radio_button('displayas', 'card', $lang->business_card, array('checked' => ($mybb->input['displayas'] == "card" ? true : false))));
 	$form_container->end();
 
@@ -2500,7 +2552,7 @@ if($mybb->input['action'] == "inline_edit")
 							// Not currently banned - insert the ban
 							$insert_array = array(
 								'uid' => $user['uid'],
-								'gid' => (int)$mybb->input['usergroup'],
+								'gid' => $mybb->get_input('usergroup', MyBB::INPUT_INT),
 								'oldgroup' => $user['usergroup'],
 								'oldadditionalgroups' => $user['additionalgroups'],
 								'olddisplaygroup' => $user['displaygroup'],
@@ -2600,6 +2652,9 @@ if($mybb->input['action'] == "inline_edit")
 						log_admin_action($to_be_deleted);
 
 						$lang->users_deleted = $lang->sprintf($lang->users_deleted, $to_be_deleted);
+
+						$cache->update_awaitingactivation();
+
 						flash_message($lang->users_deleted, 'success');
 						admin_redirect("index.php?module=user-users".$vid_url);
 					}
@@ -2617,9 +2672,9 @@ if($mybb->input['action'] == "inline_edit")
 						$errors[] = $lang->multi_selected_dates;
 					}
 
-					$day = (int)$mybb->input['day'];
-					$month = (int)$mybb->input['month'];
-					$year = (int)$mybb->input['year'];
+					$day = $mybb->get_input('day', MyBB::INPUT_INT);
+					$month = $mybb->get_input('month', MyBB::INPUT_INT);
+					$year = $mybb->get_input('year', MyBB::INPUT_INT);
 
 					// Selected a date - check if the date the user entered is valid
 					if($mybb->input['day'] || $mybb->input['month'] || $mybb->input['year'])
@@ -2632,7 +2687,7 @@ if($mybb->input['action'] == "inline_edit")
 
 						// Check the month
 						$months = get_bdays($year);
-						if($day > $months[$month]-1)
+						if($day > $months[$month-1])
 						{
 							$errors[] = $lang->incorrect_date;
 						}
@@ -2813,7 +2868,7 @@ if($mybb->input['action'] == "inline_edit")
 				}
 				$date_box = $form->generate_select_box('day', $day_options, $mybb->input['day']);
 				$month_box = $form->generate_select_box('month', $month_options, $mybb->input['month']);
-				$year_box = $form->generate_numeric_field('year', $mybb->input['year'], array('id' => 'year', 'style' => 'width: 50px;'));
+				$year_box = $form->generate_numeric_field('year', $mybb->input['year'], array('id' => 'year', 'style' => 'width: 50px;', 'min' => 0));
 
 				$prune_select = $date_box.$month_box.$year_box;
 				$form_container->output_row($lang->manual_date, "", $prune_select, 'date');
@@ -2858,9 +2913,9 @@ if($mybb->input['action'] == "inline_edit")
 
 					// Create an update array
 					$update_array = array(
-						"usergroup" => (int)$mybb->input['usergroup'],
+						"usergroup" => $mybb->get_input('usergroup', MyBB::INPUT_INT),
 						"additionalgroups" => $additionalgroups,
-						"displaygroup" => (int)$mybb->input['displaygroup']
+						"displaygroup" => $mybb->get_input('displaygroup', MyBB::INPUT_INT)
 					);
 
 					// Do the usergroup update for all those selected
@@ -2966,7 +3021,7 @@ if(!$mybb->input['action'])
 		// Showing a specific view
 		if(isset($mybb->input['vid']))
 		{
-			$query = $db->simple_select("adminviews", "*", "vid='".$mybb->get_input('vid', 1)."'");
+			$query = $db->simple_select("adminviews", "*", "vid='".$mybb->get_input('vid', MyBB::INPUT_INT)."'");
 			$admin_view = $db->fetch_array($query);
 			// View does not exist or this view is private and does not belong to the current user
 			if(!$admin_view['vid'] || ($admin_view['visibility'] == 1 && $admin_view['uid'] != $mybb->user['uid']))
@@ -3380,7 +3435,7 @@ function build_users_view($view)
 		}
 		else
 		{
-			$mybb->input['page'] = $mybb->get_input('page', 1);
+			$mybb->input['page'] = $mybb->get_input('page', MyBB::INPUT_INT);
 		}
 
 		if($mybb->input['page'])
@@ -3565,7 +3620,7 @@ function build_users_view($view)
 	$switch_url = $view['url'];
 	if($mybb->input['page'] > 0)
 	{
-		$switch_url .= "&amp;page=".$mybb->get_input('page', 1);
+		$switch_url .= "&amp;page=".$mybb->get_input('page', MyBB::INPUT_INT);
 	}
 	if($view['view_type'] != "card")
 	{
@@ -4027,7 +4082,7 @@ function user_search_conditions($input=array(), &$form)
 	$form_container->output_row($lang->is_member_of_groups, $lang->additional_user_groups_desc, $form->generate_select_box('conditions[usergroup][]', $options, $input['conditions']['usergroup'], array('id' => 'usergroups', 'multiple' => true, 'size' => 5)), 'usergroups');
 
 	$form_container->output_row($lang->website_contains, "", $form->generate_text_box('conditions[website]', $input['conditions']['website'], array('id' => 'website'))." {$lang->or} ".$form->generate_check_box('conditions[website_blank]', 1, $lang->is_not_blank, array('id' => 'website_blank', 'checked' => $input['conditions']['website_blank'])), 'website');
-	$form_container->output_row($lang->icq_number_contains, "", $form->generate_numeric_field('conditions[icq]', $input['conditions']['icq'], array('id' => 'icq'))." {$lang->or} ".$form->generate_check_box('conditions[icq_blank]', 1, $lang->is_not_blank, array('id' => 'icq_blank', 'checked' => $input['conditions']['icq_blank'])), 'icq');
+	$form_container->output_row($lang->icq_number_contains, "", $form->generate_text_box('conditions[icq]', $input['conditions']['icq'], array('id' => 'icq'))." {$lang->or} ".$form->generate_check_box('conditions[icq_blank]', 1, $lang->is_not_blank, array('id' => 'icq_blank', 'checked' => $input['conditions']['icq_blank'])), 'icq');
 	$form_container->output_row($lang->aim_handle_contains, "", $form->generate_text_box('conditions[aim]', $input['conditions']['aim'], array('id' => 'aim'))." {$lang->or} ".$form->generate_check_box('conditions[aim_blank]', 1, $lang->is_not_blank, array('id' => 'aim_blank', 'checked' => $input['conditions']['aim_blank'])), 'aim');
 	$form_container->output_row($lang->yahoo_contains, "", $form->generate_text_box('conditions[yahoo]', $input['conditions']['yahoo'], array('id' => 'yahoo'))." {$lang->or} ".$form->generate_check_box('conditions[yahoo_blank]', 1, $lang->is_not_blank, array('id' => 'yahoo_blank', 'checked' => $input['conditions']['yahoo_blank'])), 'yahoo');
 	$form_container->output_row($lang->skype_contains, "", $form->generate_text_box('conditions[skype]', $input['conditions']['skype'], array('id' => 'skype'))." {$lang->or} ".$form->generate_check_box('conditions[skype_blank]', 1, $lang->is_not_blank, array('id' => 'skype_blank', 'checked' => $input['conditions']['skype_blank'])), 'skype');
@@ -4039,8 +4094,8 @@ function user_search_conditions($input=array(), &$form)
 		"is_exactly" => $lang->is_exactly,
 		"less_than" => $lang->less_than
 	);
-	$form_container->output_row($lang->post_count_is, "", $form->generate_select_box('conditions[postnum_dir]', $greater_options, $input['conditions']['postnum_dir'], array('id' => 'numposts_dir'))." ".$form->generate_numeric_field('conditions[postnum]', $input['conditions']['postnum'], array('id' => 'numposts')), 'numposts');
-	$form_container->output_row($lang->thread_count_is, "", $form->generate_select_box('conditions[threadnum_dir]', $greater_options, $input['conditions']['threadnum_dir'], array('id' => 'numthreads_dir'))." ".$form->generate_numeric_field('conditions[threadnum]', $input['conditions']['threadnum'], array('id' => 'numthreads')), 'numthreads');
+	$form_container->output_row($lang->post_count_is, "", $form->generate_select_box('conditions[postnum_dir]', $greater_options, $input['conditions']['postnum_dir'], array('id' => 'numposts_dir'))." ".$form->generate_text_box('conditions[postnum]', $input['conditions']['postnum'], array('id' => 'numposts')), 'numposts');
+	$form_container->output_row($lang->thread_count_is, "", $form->generate_select_box('conditions[threadnum_dir]', $greater_options, $input['conditions']['threadnum_dir'], array('id' => 'numthreads_dir'))." ".$form->generate_text_box('conditions[threadnum]', $input['conditions']['threadnum'], array('id' => 'numthreads')), 'numthreads');
 
 	$form_container->output_row($lang->reg_in_x_days, '', $form->generate_text_box('conditions[regdate]', $input['conditions']['regdate'], array('id' => 'regdate')).' '.$lang->days, 'regdate');
 	$form_container->output_row($lang->reg_ip_matches, $lang->wildcard, $form->generate_text_box('conditions[regip]', $input['conditions']['regip'], array('id' => 'regip')), 'regip');
@@ -4076,7 +4131,7 @@ function user_search_conditions($input=array(), &$form)
 	// Autocompletion for usernames
 	echo '
 <link rel="stylesheet" href="../jscripts/select2/select2.css">
-<script type="text/javascript" src="../jscripts/select2/select2.min.js"></script>
+<script type="text/javascript" src="../jscripts/select2/select2.min.js?ver=1804"></script>
 <script type="text/javascript">
 <!--
 $("#username").select2({

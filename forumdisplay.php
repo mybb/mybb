@@ -36,7 +36,7 @@ $lang->load("forumdisplay");
 
 $plugins->run_hooks("forumdisplay_start");
 
-$fid = $mybb->get_input('fid', 1);
+$fid = $mybb->get_input('fid', MyBB::INPUT_INT);
 if($fid < 0)
 {
 	switch($fid)
@@ -456,7 +456,7 @@ if(empty($mybb->input['datecut']))
 // If there was a manual date cut override, use it.
 else
 {
-	$datecut = $mybb->get_input('datecut', 1);
+	$datecut = $mybb->get_input('datecut', MyBB::INPUT_INT);
 }
 
 $datecutsel[(int)$datecut] = ' selected="selected"';
@@ -473,7 +473,7 @@ else
 }
 
 // Sort by thread prefix
-$tprefix = $mybb->get_input('prefix', 1);
+$tprefix = $mybb->get_input('prefix', MyBB::INPUT_INT);
 if($tprefix > 0)
 {
 	$prefixsql = "AND prefix = {$tprefix}";
@@ -580,7 +580,7 @@ else
 }
 
 // Are we viewing a specific page?
-$mybb->input['page'] = $mybb->get_input('page', 1);
+$mybb->input['page'] = $mybb->get_input('page', MyBB::INPUT_INT);
 if($mybb->input['page'] > 1)
 {
 	$sorturl = get_forum_link($fid, $mybb->input['page']).$string."datecut=$datecut&amp;prefix=$tprefix";
@@ -603,7 +603,7 @@ if(isset($fpermissions['canonlyviewownthreads']) && $fpermissions['canonlyviewow
 if($fpermissions['canviewthreads'] != 0)
 {
 	// How many posts are there?
-	if($datecut > 0 || isset($fpermissions['canonlyviewownthreads']) && $fpermissions['canonlyviewownthreads'] == 1)
+	if(($datecut > 0 && $datecut != 9999) || isset($fpermissions['canonlyviewownthreads']) && $fpermissions['canonlyviewownthreads'] == 1)
 	{
 		$query = $db->simple_select("threads", "COUNT(tid) AS threads", "fid = '$fid' $useronly $visibleonly $datecutsql $prefixsql");
 		$threadcount = $db->fetch_field($query, "threads");
@@ -692,7 +692,7 @@ if($mybb->input['sortby'] || $mybb->input['order'] || $mybb->input['datecut'] ||
 		$and = "&";
 	}
 
-	if($datecut > 0)
+	if($datecut > 0 && $datecut != 9999)
 	{
 		$page_url .= "{$q}{$and}datecut={$datecut}";
 		$q = '';
@@ -838,7 +838,7 @@ if($has_announcements == true)
 	}
 	else if(!empty($cookie))
 	{
-		my_setcookie("mybb[announcements]", addslashes(serialize($cookie)), -1);
+		my_setcookie("mybb[announcements]", addslashes(my_serialize($cookie)), -1);
 	}
 }
 else
