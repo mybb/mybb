@@ -5928,22 +5928,24 @@ function get_user_by_username($username, $options=array())
 		case 'mysql':
 		case 'mysqli':
 			$field = 'username';
+			$efield = 'email';
 			break;
 		default:
 			$field = 'LOWER(username)';
+			$efield = 'LOWER(email)';
 			break;
 	}
 
 	switch($options['username_method'])
 	{
 		case 1:
-			$sqlwhere = 'LOWER(email)=\''.$username.'\'';
+			$sqlwhere = "{$efield}='{$username}'";
 			break;
 		case 2:
-			$sqlwhere = $field.'=\''.$username.'\' OR LOWER(email)=\''.$username.'\'';
+			$sqlwhere = "{$field}='{$username}' OR {$efield}='{$username}'";
 			break;
 		default:
-			$sqlwhere = $field.'=\''.$username.'\'';
+			$sqlwhere = "{$field}='{$username}'";
 			break;
 	}
 
