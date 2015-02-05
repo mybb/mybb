@@ -285,7 +285,18 @@ class captcha
 			$imagehash = $db->escape_string($mybb->input['imagehash']);
 			$imagestring = $db->escape_string(my_strtolower($mybb->input['imagestring']));
 
-			$query = $db->simple_select("captcha", "*", "imagehash = '{$imagehash}' AND LOWER(imagestring) = '{$imagestring}'");
+			switch($db->type)
+			{
+				case 'mysql':
+				case 'mysqli':
+					$field = 'imagestring';
+					break;
+				default:
+					$field = 'LOWER(imagestring)';
+					break;
+			}
+
+			$query = $db->simple_select("captcha", "*", "imagehash = '{$imagehash}' AND {$field} = '{$imagestring}'");
 			$imgcheck = $db->fetch_array($query);
 
 			if(!$imgcheck)

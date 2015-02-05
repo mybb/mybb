@@ -173,7 +173,6 @@ if(!$mybb->input['action'])
 	$toemail = $db->escape_string_like($mybb->input['toemail']);
 
 	$fromuid = (int)$mybb->input['fromuid'];
-	$fromname = $db->escape_string($mybb->input['fromname']);
 	$fromemail = $db->escape_string_like($mybb->input['fromemail']);
 
 	$subject = $db->escape_string_like($mybb->input['subject']);
