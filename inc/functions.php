@@ -7862,7 +7862,7 @@ function log_spam_block($username = '', $email = '', $ip_address = '', $data = a
  */
 function copy_file_to_cdn($file_path = '', &$uploaded_path = null)
 {
-	global $mybb, $plugins, $real_file_path, $file_dir_path, $file_name;
+	global $mybb, $plugins;
 
 	$success = false;
 
