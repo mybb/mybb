@@ -680,7 +680,12 @@ function delete_uploaded_file($path = '')
 		$deleted = $deleted && @unlink($cdn_path);
 	}
 
-	$plugins->run_hooks('delete_uploaded_file');
+	$hook_params = array(
+		'path' => &$path,
+		'deleted' => &$deleted,
+	);
+
+	$plugins->run_hooks('delete_uploaded_file', $hook_params);
 
 	return $deleted;
 }
@@ -709,7 +714,12 @@ function delete_upload_directory($path = '')
 		$deleted = $deleted && @rmdir($cdn_path);
 	}
 
-	$plugins->run_hooks('delete_upload_directory');
+	$hook_params = array(
+		'path' => &$path,
+		'deleted' => &$deleted,
+	);
+
+	$plugins->run_hooks('delete_upload_directory', $hook_params);
 
 	return $deleted;
 }

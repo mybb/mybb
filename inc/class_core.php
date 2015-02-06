@@ -487,8 +487,6 @@ class MyBB {
 	 */
 	public function get_asset_url($path = '', $use_cdn = true)
 	{
-		global $plugins;
-
 		$path = (string) $path;
 		$path = ltrim($path, '/');
 
@@ -499,7 +497,6 @@ class MyBB {
 				$path = substr($path, 2);
 			}
 
-			$base_path = '';
 			if($use_cdn && $this->settings['usecdn'] && !empty($this->settings['cdnurl']))
 			{
 				$base_path = rtrim($this->settings['cdnurl'], '/');
@@ -520,8 +517,6 @@ class MyBB {
 		{
 			$url = $path;
 		}
-
-		$plugins->run_hooks('get_asset_url_end', $url);
 
 		return $url;
 	}

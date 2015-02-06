@@ -7908,7 +7908,15 @@ function copy_file_to_cdn($file_path = '', &$uploaded_path = null)
 			}
 		}
 
-		$plugins->run_hooks('copy_file_to_cdn_end', $success);
+		$hook_args = array(
+			'file_path' => &$file_path,
+			'real_file_path' => &$real_file_path,
+			'file_name' => &$file_name,
+			'uploaded_path' => &$uploaded_path,
+			'success' => &$success,
+		);
+
+		$plugins->run_hooks('copy_file_to_cdn_end', $hook_args);
 	}
 
 	return $success;
