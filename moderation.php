@@ -2846,7 +2846,7 @@ switch($mybb->input['action'])
 			// Submit the user to stop forum spam
 			if(!empty($mybb->settings['purgespammerapikey']))
 			{
-				$sfs = @fetch_remote_file("http://stopforumspam.com/add.php?username=" . urlencode($user['username']) . "&ip_addr=" . urlencode($user['lastip']) . "&email=" . urlencode($user['email']) . "&api_key=" . urlencode($mybb->settings['purgespammerapikey']));
+				$sfs = @fetch_remote_file("http://stopforumspam.com/add.php?username=" . urlencode($user['username']) . "&ip_addr=" . urlencode(my_inet_ntop($db->unescape_binary($user['lastip']))) . "&email=" . urlencode($user['email']) . "&api_key=" . urlencode($mybb->settings['purgespammerapikey']));
 			}
 
 			log_moderator_action(array('uid' => $uid, 'username' => $user['username']), $lang->purgespammer_modlog);
