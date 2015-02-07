@@ -1509,7 +1509,7 @@ class UserDataHandler extends DataHandler
 	}
 
 	/**
-	 * Provides a method to delete an users content
+	 * Provides a method to delete users' content
 	 *
 	 * @param array Array of user ids, false if they're already set (eg when using the delete_user function)
 	 */
@@ -1536,17 +1536,24 @@ class UserDataHandler extends DataHandler
 		$plugins->run_hooks('datahandler_user_delete_content', $this);
 
 		$db->delete_query('userfields', "ufid IN({$this->delete_uids})");
-		$db->delete_query('privatemessages', "uid IN({$this->delete_uids})");
+		$db->delete_query('privatemessages', "uid IN({$this->delete_uids}) OR fromid IN({$this->delete_uids})");
 		$db->delete_query('events', "uid IN({$this->delete_uids})");
 		$db->delete_query('moderators', "id IN({$this->delete_uids}) AND isgroup = 0");
 		$db->delete_query('forumsubscriptions', "uid IN({$this->delete_uids})");
 		$db->delete_query('threadsubscriptions', "uid IN({$this->delete_uids})");
+		$db->delete_query('forumsread', "uid IN({$this->delete_uids})");
+		$db->delete_query('threadsread', "uid IN({$this->delete_uids})");
+		$db->delete_query('adminviews', "uid IN({$this->delete_uids})");
+		$db->delete_query('adminoptions', "uid IN({$this->delete_uids})");
+		$db->delete_query('adminsessions', "uid IN({$this->delete_uids})");
 		$db->delete_query('sessions', "uid IN({$this->delete_uids})");
 		$db->delete_query('banned', "uid IN({$this->delete_uids})");
 		$db->delete_query('joinrequests', "uid IN({$this->delete_uids})");
+		$db->delete_query('groupleaders', "uid IN({$this->delete_uids})");
 		$db->delete_query('awaitingactivation', "uid IN({$this->delete_uids})");
 		$db->delete_query('warnings', "uid IN({$this->delete_uids})");
 		$db->delete_query('reputation', "uid IN({$this->delete_uids}) OR adduid IN({$this->delete_uids})");
+		$db->delete_query('buddyrequests', "uid IN({$this->delete_uids}) OR touid IN({$this->delete_uids})");
 		$db->delete_query('posts', "uid IN({$this->delete_uids}) AND visible = -2");
 		$db->delete_query('threads', "uid IN({$this->delete_uids}) AND visible = -2");
 
