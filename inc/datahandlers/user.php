@@ -1536,7 +1536,7 @@ class UserDataHandler extends DataHandler
 		$plugins->run_hooks('datahandler_user_delete_content', $this);
 
 		$db->delete_query('userfields', "ufid IN({$this->delete_uids})");
-		$db->delete_query('privatemessages', "uid IN({$this->delete_uids}) OR fromid IN({$this->delete_uids})");
+		$db->delete_query('privatemessages', "uid IN({$this->delete_uids})");
 		$db->delete_query('events', "uid IN({$this->delete_uids})");
 		$db->delete_query('moderators', "id IN({$this->delete_uids}) AND isgroup = 0");
 		$db->delete_query('forumsubscriptions', "uid IN({$this->delete_uids})");
