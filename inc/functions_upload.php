@@ -267,6 +267,8 @@ function upload_avatar($avatar=array(), $uid=0)
 				}
 				else
 				{
+					// Copy scaled image to CDN
+					copy_file_to_cdn($avatarpath . '/' . $thumbnail['filename']);
 					// Reset filesize
 					$avatar['size'] = filesize($avatarpath."/".$filename);
 					// Reset dimensions
