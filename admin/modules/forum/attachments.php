@@ -668,20 +668,16 @@ if(!$mybb->input['action'])
 		}
 
 		// LESS THAN or GREATER THAN
-		if($mybb->input['dateuploaded'] && $mybb->request_method == "post")
-		{
-			$mybb->input['dateuploaded'] = TIME_NOW-$mybb->input['dateuploaded']*60*60*24;
-		}
-		if($mybb->input['filesize'] && $mybb->request_method == "post")
-		{
-			$mybb->input['filesize'] *= 1024;
-		}
+		$direction_fields = array(
+			"dateuploaded" => $mybb->input['dateuploaded'] && $mybb->request_method == "post" ? TIME_NOW-$mybb->input['dateuploaded']*60*60*24 : false,
+			"filesize"     => $mybb->input['filesize']     && $mybb->request_method == "post" ? $mybb->input['filesize']*1024 : false,
+			"downloads"    => $mybb->input['downloads'],
+		);
 
-		$direction_fields = array("dateuploaded", "filesize", "downloads");
-		foreach($direction_fields as $search_field)
+		foreach($direction_fields as $field_name => $field_content)
 		{
-			$direction_field = $search_field."_dir";
-			if($mybb->input[$search_field] && $mybb->input[$direction_field])
+			$direction_field = $field_name."_dir";
+			if($mybb->input[$field_name] && $mybb->input[$direction_field])
 			{
 				switch($mybb->input[$direction_field])
 				{
@@ -694,7 +690,7 @@ if(!$mybb->input['action'])
 					default:
 						$direction = "=";
 				}
-				$search_sql .= " AND a.{$search_field}{$direction}'".$db->escape_string($mybb->input[$search_field])."'";
+				$search_sql .= " AND a.{$field_name}{$direction}'".$db->escape_string($field_content)."'";
 			}
 		}
 		if(!$errors)
