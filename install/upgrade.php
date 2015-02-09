@@ -596,7 +596,7 @@ function buildcaches()
 
 function upgradedone()
 {
-	global $db, $output, $mybb, $lang, $config;
+	global $db, $output, $mybb, $lang, $config, $plugins;
 
 	ob_start();
 	$output->print_header("Upgrade Complete");
