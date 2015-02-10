@@ -669,10 +669,17 @@ if(!$mybb->input['action'])
 
 		// LESS THAN or GREATER THAN
 		$direction_fields = array(
-			"dateuploaded" => $mybb->input['dateuploaded'] && $mybb->request_method == "post" ? TIME_NOW-$mybb->input['dateuploaded']*60*60*24 : false,
-			"filesize"     => $mybb->input['filesize']     && $mybb->request_method == "post" ? $mybb->input['filesize']*1024 : false,
-			"downloads"    => $mybb->input['downloads'],
+			"dateuploaded" => $mybb->get_input('dateuploaded', 1),
+			"filesize"     => $mybb->get_input('filesize', 1),
+			"downloads"    => $mybb->get_input('downloads', 1),
 		);
+
+		if ($mybb->input['dateuploaded'] && $mybb->request_method == "post") {
+			$direction_fields['dateuploaded'] = TIME_NOW-$direction_fields['dateuploaded']*60*60*24;
+		}
+		if ($mybb->input['filesize'] && $mybb->request_method == "post") {
+			$direction_fields['filesize'] = $direction_fields['filesize']*102;
+		}
 
 		foreach($direction_fields as $field_name => $field_content)
 		{
@@ -690,7 +697,7 @@ if(!$mybb->input['action'])
 					default:
 						$direction = "=";
 				}
-				$search_sql .= " AND a.{$field_name}{$direction}'".$db->escape_string($field_content)."'";
+				$search_sql .= " AND a.{$field_name}{$direction}'".$field_content."'";
 			}
 		}
 		if(!$errors)
