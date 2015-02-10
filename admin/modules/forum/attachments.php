@@ -680,7 +680,7 @@ if(!$mybb->input['action'])
 		}
 		if($mybb->input['filesize'] && $mybb->request_method == "post")
 		{
-			$direction_fields['filesize'] = $direction_fields['filesize']*102;
+			$direction_fields['filesize'] *= 1024;
 		}
 
 		foreach($direction_fields as $field_name => $field_content)
