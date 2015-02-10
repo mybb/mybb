@@ -671,13 +671,15 @@ if(!$mybb->input['action'])
 		$direction_fields = array(
 			"dateuploaded" => $mybb->get_input('dateuploaded', 1),
 			"filesize"     => $mybb->get_input('filesize', 1),
-			"downloads"    => $mybb->get_input('downloads', 1),
+			"downloads"    => $mybb->get_input('downloads', 1)
 		);
 
-		if ($mybb->input['dateuploaded'] && $mybb->request_method == "post") {
+		if($mybb->input['dateuploaded'] && $mybb->request_method == "post")
+		{
 			$direction_fields['dateuploaded'] = TIME_NOW-$direction_fields['dateuploaded']*60*60*24;
 		}
-		if ($mybb->input['filesize'] && $mybb->request_method == "post") {
+		if($mybb->input['filesize'] && $mybb->request_method == "post")
+		{
 			$direction_fields['filesize'] = $direction_fields['filesize']*102;
 		}
 
