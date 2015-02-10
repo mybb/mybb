@@ -669,9 +669,9 @@ if(!$mybb->input['action'])
 
 		// LESS THAN or GREATER THAN
 		$direction_fields = array(
-			"dateuploaded" => $mybb->get_input('dateuploaded', 1),
-			"filesize"     => $mybb->get_input('filesize', 1),
-			"downloads"    => $mybb->get_input('downloads', 1)
+			"dateuploaded" => $mybb->get_input('dateuploaded', MyBB::INPUT_INT),
+			"filesize"     => $mybb->get_input('filesize', MyBB::INPUT_INT),
+			"downloads"    => $mybb->get_input('downloads', MyBB::INPUT_INT)
 		);
 
 		if($mybb->input['dateuploaded'] && $mybb->request_method == "post")
