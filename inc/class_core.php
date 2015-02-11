@@ -497,7 +497,6 @@ class MyBB {
 				$path = substr($path, 2);
 			}
 
-			$base_path = '';
 			if($use_cdn && $this->settings['usecdn'] && !empty($this->settings['cdnurl']))
 			{
 				$base_path = rtrim($this->settings['cdnurl'], '/');

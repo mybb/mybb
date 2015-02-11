@@ -8145,3 +8145,74 @@ function log_spam_block($username = '', $email = '', $ip_address = '', $data = a
 
 	return (bool)$db->insert_query('spamlog', $insert_array);
 }
+
+/**
+ * Copy a file to the CDN.
+ *
+ * @param string $file_path     The path to the file to upload to the CDN.
+ *
+ * @param string $uploaded_path The path the file was uploaded to, reference parameter for when this may be needed.
+ *
+ * @return bool Whether the file was copied successfully.
+ */
+function copy_file_to_cdn($file_path = '', &$uploaded_path = null)
+{
+	global $mybb, $plugins;
+
+	$success = false;
+
+	$file_path = (string) $file_path;
+
+	$real_file_path = realpath($file_path);
+
+	$file_dir_path = dirname($real_file_path);
+	$file_dir_path = str_replace(MYBB_ROOT, '', $file_dir_path);
+	$file_dir_path = ltrim($file_dir_path, './\\');
+
+	$file_name = basename($real_file_path);
+
+	if(file_exists($file_path))
+	{
+		if ($mybb->settings['usecdn'] && !empty($mybb->settings['cdnpath']))
+		{
+			$cdn_path = rtrim($mybb->settings['cdnpath'], '/\\');
+
+			if(substr($file_dir_path, 0, my_strlen(MYBB_ROOT)) == MYBB_ROOT)
+			{
+				$file_dir_path = str_replace(MYBB_ROOT, '', $file_dir_path);
+			}
+
+			$cdn_upload_path = $cdn_path . DIRECTORY_SEPARATOR . $file_dir_path;
+
+			if(!($dir_exists = is_dir($cdn_upload_path)))
+			{
+				$dir_exists = @mkdir($cdn_upload_path, 0777, true);
+			}
+
+			if($dir_exists)
+			{
+				if(($cdn_upload_path = realpath($cdn_upload_path)) !== false)
+				{
+					$success = @copy($file_path, $cdn_upload_path . DIRECTORY_SEPARATOR . $file_name);
+
+					if($success)
+					{
+						$uploaded_path = $cdn_upload_path;
+					}
+				}
+			}
+		}
+
+		$hook_args = array(
+			'file_path' => &$file_path,
+			'real_file_path' => &$real_file_path,
+			'file_name' => &$file_name,
+			'uploaded_path' => &$uploaded_path,
+			'success' => &$success,
+		);
+
+		$plugins->run_hooks('copy_file_to_cdn_end', $hook_args);
+	}
+
+	return $success;
+}
