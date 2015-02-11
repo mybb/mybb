@@ -114,13 +114,13 @@ if(!$mybb->input['action'] || isset($mybb->input['previewpost']))
 
 if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 {
-	if(!is_moderator($fid, "candeleteposts"))
+	if(!is_moderator($fid, "candeleteposts") && !is_moderator($fid, "cansoftdeleteposts") && $pid != $thread['firstpost'] || !is_moderator($fid, "candeletethreads") && !is_moderator($fid, "cansoftdeletethreads") && $pid == $thread['firstpost'])
 	{
 		if($thread['closed'] == 1)
 		{
 			error($lang->redirect_threadclosed);
 		}
-		if($forumpermissions['candeleteposts'] == 0)
+		if($forumpermissions['candeleteposts'] == 0 && $pid != $thread['firstpost'] || $forumpermissions['candeletethreads'] == 0 && $pid == $thread['firstpost'])
 		{
 			error_no_permission();
 		}
@@ -141,7 +141,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 }
 elseif($mybb->input['action'] == "restorepost" && $mybb->request_method == "post")
 {
-	if(!is_moderator($fid) || $post['visible'] != -1 || $mybb->settings['soft_delete'] == 0)
+	if(!is_moderator($fid, "canrestoreposts") && $pid != $thread['firstpost'] || !is_moderator($fid, "canrestorethreads") && $pid == $thread['firstpost'] || $post['visible'] != -1)
 	{
 		error_no_permission();
 	}
@@ -267,12 +267,12 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 		$modlogdata['tid'] = $tid;
 		if($firstpost)
 		{
-			if($forumpermissions['candeletethreads'] == 1 || is_moderator($fid, "candeletethreads"))
+			if($forumpermissions['candeletethreads'] == 1 || is_moderator($fid, "candeletethreads") || is_moderator($fid, "cansoftdeletethreads"))
 			{
 				require_once MYBB_ROOT."inc/class_moderation.php";
 				$moderation = new Moderation;
 
-				if($mybb->settings['soft_delete'] == 1)
+				if($mybb->settings['soft_delete'] == 1 || is_moderator($fid, "cansoftdeletethreads"))
 				{
 					$modlogdata['pid'] = $pid;
 
@@ -285,11 +285,11 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 					mark_reports($tid, "thread");
 					log_moderator_action($modlogdata, $lang->thread_deleted);
 				}
-				
+
 				if($mybb->input['ajax'] == 1)
 				{
 					header("Content-type: application/json; charset={$lang->settings['charset']}");
-					if($mybb->settings['soft_delete'] == 1 && is_moderator($fid))
+					if(is_moderator($fid, "canviewdeleted"))
 					{
 						echo json_encode(array("data" => '1'));
 					}
@@ -310,13 +310,13 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 		}
 		else
 		{
-			if($forumpermissions['candeleteposts'] == 1 || is_moderator($fid, "candeleteposts"))
+			if($forumpermissions['candeleteposts'] == 1 || is_moderator($fid, "candeleteposts") || is_moderator($fid, "cansoftdeleteposts"))
 			{
 				// Select the first post before this
 				require_once MYBB_ROOT."inc/class_moderation.php";
 				$moderation = new Moderation;
 
-				if($mybb->settings['soft_delete'] == 1)
+				if($mybb->settings['soft_delete'] == 1 || is_moderator($fid, "cansoftdeleteposts"))
 				{
 					$modlogdata['pid'] = $pid;
 
@@ -340,11 +340,11 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 				{
 					$redirect = get_thread_link($tid);
 				}
-				
+
 				if($mybb->input['ajax'] == 1)
 				{
 					header("Content-type: application/json; charset={$lang->settings['charset']}");
-					if($mybb->settings['soft_delete'] == 1 && is_moderator($fid))
+					if(is_moderator($fid, "canviewdeleted"))
 					{
 						echo json_encode(array("data" => '1'));
 					}
@@ -395,7 +395,7 @@ if($mybb->input['action'] == "restorepost" && $mybb->request_method == "post")
 		$modlogdata['pid'] = $pid;
 		if($firstpost)
 		{
-			if(is_moderator($fid))
+			if(is_moderator($fid, "canrestorethreads"))
 			{
 				require_once MYBB_ROOT."inc/class_moderation.php";
 				$moderation = new Moderation;
@@ -418,7 +418,7 @@ if($mybb->input['action'] == "restorepost" && $mybb->request_method == "post")
 		}
 		else
 		{
-			if(is_moderator($fid))
+			if(is_moderator($fid, "canrestoreposts"))
 			{
 				// Select the first post before this
 				require_once MYBB_ROOT."inc/class_moderation.php";

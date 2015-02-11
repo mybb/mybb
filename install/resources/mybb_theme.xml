@@ -1774,8 +1774,7 @@ div.jqi .jqisubstate .jqibuttons button {
 }
 
 /** Impromptu End */
-]]>
-		</stylesheet>
+]]></stylesheet>
 		<stylesheet name="usercp.css" attachedto="usercp.php|usercp2.php|private.php" version="1800" disporder="2"><![CDATA[.usercp_nav_item {
 	display: block;
 	padding: 1px 0 1px 23px;
@@ -2369,10 +2368,8 @@ a.button {
 <head>
 <title>{$lang->forum_announcement}</title>
 {$headerinclude}
-  <script type="text/javascript">
-<!--
-	var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm}";
-// -->
+<script type="text/javascript">
+var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm}";
 </script>
 </head>
 <body>
@@ -3782,7 +3779,7 @@ a.button {
 {$modann}
 </tr>]]></template>
 		<template name="forumdisplay_announcements_announcement_modbit" version="1800"><![CDATA[<td align="center" class="{$bgcolor} forumdisplay_announcement">-</td>]]></template>
-		<template name="forumdisplay_inlinemoderation" version="1800"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1800"></script>
+		<template name="forumdisplay_inlinemoderation" version="1804"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1804"></script>
 		<form action="moderation.php" method="post">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="fid" value="{$fid}" />
@@ -4054,9 +4051,9 @@ a.button {
 {$prefixselect_prefix}
 </select>]]></template>
 		<template name="forumdisplay_threadlist_prefixes_prefix" version="1800"><![CDATA[<option value="{$prefix['pid']}"{$selected}>{$lang->prefix} {$prefix['prefix']}</option>]]></template>
-		<template name="forumdisplay_threadlist_rating" version="1800"><![CDATA[	<td class="tcat" align="center" width="80">
+		<template name="forumdisplay_threadlist_rating" version="1804"><![CDATA[	<td class="tcat" align="center" width="80">
 		<span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=rating&amp;order=desc">{$lang->rating}</a> {$orderarrow['rating']}</strong></span>
-		<script type="text/javascript" src="{$mybb->asset_url}/jscripts/rating.js?ver=1800"></script>
+		<script type="text/javascript" src="{$mybb->asset_url}/jscripts/rating.js?ver=1804"></script>
 		<script type="text/javascript">
 		<!--
 			lang.stars = new Array();
@@ -4166,8 +4163,8 @@ $(".forumjump").change(function() {
 							<input type="hidden" name="postthread" value="1" />
 						</fieldset>
 						</form>]]></template>
-		<template name="header_welcomeblock_guest" version="1800"><![CDATA[						<!-- Continuation of div(class="upper") as opened in the header template -->
-						<span class="welcome">{$lang->welcome_guest} <a href="{$mybb->settings['bburl']}/member.php?action=login" onclick="$('#quick_login').modal({ fadeDuration: 250, keepelement: true }); return false;" class="login">{$lang->welcome_login}</a> <a href="{$mybb->settings['bburl']}/member.php?action=register" class="register">{$lang->welcome_register}</a></span>
+		<template name="header_welcomeblock_guest" version="1804"><![CDATA[						<!-- Continuation of div(class="upper") as opened in the header template -->
+						<span class="welcome">{$lang->welcome_guest} <a href="{$mybb->settings['bburl']}/member.php?action=login" onclick="$('#quick_login').modal({ fadeDuration: 250, keepelement: true, zIndex: (typeof modal_zindex !== 'undefined' ? modal_zindex : 9999) }); return false;" class="login">{$lang->welcome_login}</a> <a href="{$mybb->settings['bburl']}/member.php?action=register" class="register">{$lang->welcome_register}</a></span>
 					</div>
 				</div>
 				<div class="modal" id="quick_login" style="display: none;">
@@ -4348,7 +4345,7 @@ $(".forumjump").change(function() {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="managegroup_adduser" version="1800"><![CDATA[<br />
+		<template name="managegroup_adduser" version="1804"><![CDATA[<br />
 <form method="post" action="managegroup.php">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="do_add" />
@@ -4363,7 +4360,7 @@ $(".forumjump").change(function() {
 </tr>
 </table>
 <link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css">
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1804"></script>
 <script type="text/javascript">
 <!--
 if(use_xmlhttprequest == "1")
@@ -4403,7 +4400,7 @@ if(use_xmlhttprequest == "1")
 <br />
 <div align="center"><input type="submit" class="button" value="{$lang->add_member_submit}" /></div>
 </form>]]></template>
-		<template name="managegroup_inviteuser" version="1800"><![CDATA[<br />
+		<template name="managegroup_inviteuser" version="1804"><![CDATA[<br />
 <form method="post" action="managegroup.php">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="do_invite" />
@@ -4418,7 +4415,7 @@ if(use_xmlhttprequest == "1")
 </tr>
 </table>
 <link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css">
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1804"></script>
 <script type="text/javascript">
 <!--
 if(use_xmlhttprequest == "1")
@@ -4938,7 +4935,7 @@ if(use_xmlhttprequest == "1")
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->registration}</title>
 {$headerinclude}
-<script src="{$mybb->asset_url}/jscripts/validate/jquery.validate.min.js"></script>
+<script src="{$mybb->asset_url}/jscripts/validate/jquery.validate.min.js?ver=1804"></script>
 </head>
 <body>
 {$header}
@@ -5317,7 +5314,7 @@ $(document).ready(function() {
 		// -->
 		</script>
 		]]></template>
-		<template name="member_register_referrer" version="1800"><![CDATA[<br />
+		<template name="member_register_referrer" version="1804"><![CDATA[<br />
 <fieldset class="trow2">
 <legend><strong>{$lang->referrer}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
@@ -5331,7 +5328,7 @@ $(document).ready(function() {
 </tr></table>
 </fieldset>
 <link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css">
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1804"></script>
 <script type="text/javascript">
 <!--
 if(use_xmlhttprequest == "1")
@@ -5613,7 +5610,7 @@ if(use_xmlhttprequest == "1")
 </form>
 {$footer}
 <link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css">
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1804"></script>
 <script type="text/javascript">
 <!--
 if(use_xmlhttprequest == "1")
@@ -5760,7 +5757,7 @@ if(use_xmlhttprequest == "1")
 </form>
 {$footer}
 <link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css">
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1804"></script>
 <script type="text/javascript">
 <!--
 if(use_xmlhttprequest == "1")
@@ -6112,8 +6109,8 @@ if(use_xmlhttprequest == "1")
 		<template name="misc_smilies_popup_smilie" version="1800"><![CDATA[<td class="{$class}" align="center">{$smilie_image}</a></td>
 <td class="{$class}">{$smilie['find']}</td>]]></template>
 		<template name="misc_smilies_popup_empty" version="1800"><![CDATA[<td colspan="2" class="{$class}">&nbsp;</td>]]></template>
-		<template name="misc_smilies_smilie" version="1800"><![CDATA[<tr>
-<td class="{$class}" align="center">{$smilie_image}</td>
+		<template name="misc_smilies_smilie" version="1804"><![CDATA[<tr>
+<td class="{$class}" style="width: 1px; text-align: center;">{$smilie_image}</td>
 <td class="{$class}">{$smilie['name']}</td>
 <td class="{$class}">{$smilie['find']}</td>
 </tr>]]></template>
@@ -6606,7 +6603,7 @@ if(use_xmlhttprequest == "1")
 		<template name="modcp_banning_nobanned" version="1400"><![CDATA[<tr>
 	<td class="trow1" align="center" colspan="4">{$lang->no_banned}</td>
 </tr>]]></template>
-		<template name="modcp_banuser" version="1800"><![CDATA[<html>
+		<template name="modcp_banuser" version="1804"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->ban_user}</title>
 {$headerinclude}
@@ -6650,7 +6647,7 @@ if(use_xmlhttprequest == "1")
 	</table>
 	{$footer}
 <link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css">
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1804"></script>
 <script type="text/javascript">
 <!--
 if(use_xmlhttprequest == "1")
@@ -7086,7 +7083,7 @@ if(use_xmlhttprequest == "1")
 		<template name="modcp_editprofile_suspensions_info" version="1600"><![CDATA[<tr>
 	<td colspan="2" class="smalltext"><em>{$suspension_info}</em></td>
 </tr>]]></template>
-		<template name="modcp_finduser" version="1800"><![CDATA[<html>
+		<template name="modcp_finduser" version="1804"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->find_users}</title>
 {$headerinclude}
@@ -7149,7 +7146,7 @@ if(use_xmlhttprequest == "1")
 	</form>
 {$footer}
 <link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css" />
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1804"></script>
 <script type="text/javascript">
 <!--
 if(use_xmlhttprequest == "1")
@@ -7792,7 +7789,7 @@ if(use_xmlhttprequest == "1")
 		<template name="modcp_nobanned" version="1613"><![CDATA[<tr>
 		<td class="trow1" align="center" colspan="4">{$lang->no_bans_ending}</td>
 </tr>]]></template>
-		<template name="modcp_warninglogs" version="1800"><![CDATA[<html>
+		<template name="modcp_warninglogs" version="1804"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->warning_logs}</title>
 {$headerinclude}
@@ -7869,7 +7866,7 @@ if(use_xmlhttprequest == "1")
 	</table>
 	{$footer}
 <link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css">
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1804"></script>
 <script type="text/javascript">
 <!--
 if(use_xmlhttprequest == "1")
@@ -10218,11 +10215,11 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<template name="private_search_results_nomessages" version="1600"><![CDATA[<tr>
 <td colspan="7" class="trow1">{$lang->nomessages}</td>
 </tr>]]></template>
-		<template name="private_send" version="1800"><![CDATA[<html>
+		<template name="private_send" version="1804"><![CDATA[<html>
 <head>
 <title>{$lang->compose_pm}</title>
 {$headerinclude}
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/usercp.js?ver=1800"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/usercp.js?ver=1804"></script>
 </head>
 <body>
 {$header}
@@ -10316,8 +10313,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </script>
 </body>
 </html>]]></template>
-		<template name="private_send_autocomplete" version="1800"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css">
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
+		<template name="private_send_autocomplete" version="1804"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css">
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1804"></script>
 <script type="text/javascript">
 <!--
 if(use_xmlhttprequest == "1")
@@ -10768,7 +10765,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 			<a href="javascript:Report.reportReputation({$reputation_vote['rid']});" class="postbit_report"><span>{$lang->report_vote}</span></a>
 		</div>]]>
 		</template>
-		<template name="search" version="1800"><![CDATA[<html>
+		<template name="search" version="1804"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->search}</title>
 {$headerinclude}
@@ -10849,7 +10846,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </form>
 {$footer}
 <link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css">
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1804"></script>
 <script type="text/javascript">
 <!--
 if(use_xmlhttprequest == "1")
@@ -10956,7 +10953,7 @@ if(use_xmlhttprequest == "1")
 </body>
 </html>]]></template>
 		<template name="search_results_posts_inlinecheck" version="120"><![CDATA[<td class="{$bgcolor}" align="center" style="white-space: nowrap"><input type="checkbox" class="checkbox" name="inlinemod_{$post['pid']}" id="inlinemod_{$post['pid']}" value="1" style="vertical-align: middle;" {$inlinecheck}  /></td>]]></template>
-		<template name="search_results_posts_inlinemoderation" version="1800"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1800"></script>
+		<template name="search_results_posts_inlinemoderation" version="1804"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1804"></script>
 <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="tid" value="0" />
@@ -11046,7 +11043,7 @@ if(use_xmlhttprequest == "1")
 		</body>
 		</html>]]></template>
 		<template name="search_results_threads_inlinecheck" version="120"><![CDATA[<td class="{$bgcolor}" align="center" style="white-space: nowrap"><input type="checkbox" class="checkbox" name="inlinemod_{$thread['tid']}" id="inlinemod_{$thread['tid']}" value="1" style="vertical-align: middle;" {$inlinecheck}  /></td>]]></template>
-		<template name="search_results_threads_inlinemoderation" version="1800"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1800"></script>
+		<template name="search_results_threads_inlinemoderation" version="1804"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1804"></script>
 		<form action="moderation.php" method="post">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="fid" value="0" />
@@ -11273,7 +11270,7 @@ if(use_xmlhttprequest == "1")
 			<td class="tcat"><span class="smalltext"><strong>{$lang->message}</strong></span></td>
 		</tr>
 		]]></template>
-		<template name="showthread_inlinemoderation" version="1800"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1800"></script>
+		<template name="showthread_inlinemoderation" version="1804"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1804"></script>
 <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="tid" value="{$tid}" />
@@ -11343,6 +11340,8 @@ if(use_xmlhttprequest == "1")
 <option value="removeredirects">{$lang->remove_redirects}</option>
 <option value="removesubscriptions">{$lang->remove_subscriptions}</option>]]></template>
 		<template name="showthread_moderationoptions_openclose" version="1800"><![CDATA[<option value="openclosethread">{$lang->open_close_thread}</option>]]></template>
+		<template name="showthread_moderationoptions_restore" version="1804"><![CDATA[<option value="restorethread">{$lang->restore_thread}</option>]]></template>
+		<template name="showthread_moderationoptions_softdelete" version="1804"><![CDATA[<option value="softdeletethread">{$lang->soft_delete_thread}</option>]]></template>
 		<template name="showthread_moderationoptions_standard" version="1800"><![CDATA[<optgroup label="{$lang->standard_mod_tools}">
 {$threadnotes}
 {$openclosethread}
@@ -11476,13 +11475,13 @@ if(use_xmlhttprequest == "1")
 		<template name="showthread_quickreply_options_close" version="1800"><![CDATA[<br /><label><input type="checkbox" class="checkbox" name="modoptions[closethread]" value="1"{$closelinkch} />&nbsp;<strong>{$lang->close_thread}</strong></label>]]></template>
 		<template name="showthread_quickreply_options_signature" version="1800"><![CDATA[<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="1" {$postoptionschecked['signature']} />&nbsp;<strong>{$lang->signature}</strong></label><br />]]></template>
 		<template name="showthread_quickreply_options_stick" version="1800"><![CDATA[<br /><label><input type="checkbox" class="checkbox" name="modoptions[stickthread]" value="1"{$stickch} />&nbsp;<strong>{$lang->stick_thread}</strong></label>]]></template>
-		<template name="showthread_ratethread" version="1800"><![CDATA[<div style="margin-top: 6px; padding-right: 10px;" class="float_right">
+		<template name="showthread_ratethread" version="1804"><![CDATA[<div style="margin-top: 6px; padding-right: 10px;" class="float_right">
 		<script type="text/javascript">
 		<!--
 			lang.ratings_update_error = "{$lang->ratings_update_error}";
 		// -->
 		</script>
-		<script type="text/javascript" src="{$mybb->asset_url}/jscripts/rating.js?ver=1800"></script>
+		<script type="text/javascript" src="{$mybb->asset_url}/jscripts/rating.js?ver=1804"></script>
 		<strong class="float_left" style="padding-right: 10px;">{$lang->thread_rating}</strong>
 		<div class="inline_rating">
 			<ul class="star_rating{$not_rated}" id="rating_thread_{$thread['tid']}">
@@ -12004,11 +12003,11 @@ if(use_xmlhttprequest == "1")
 		{$lang->no_requests}
 	</td>
 </tr>]]></template>
-		<template name="usercp_editlists" version="1800"><![CDATA[<html>
+		<template name="usercp_editlists" version="1804"><![CDATA[<html>
 <head>
 	<title>{$mybb->settings['bbname']} - {$lang->edit_lists}</title>
 	{$headerinclude}
-	<script type="text/javascript" src="{$mybb->asset_url}/jscripts/usercp.js"></script>
+	<script type="text/javascript" src="{$mybb->asset_url}/jscripts/usercp.js?ver=1804"></script>
 	<script type="text/javascript">
 		lang.remove_buddy = '{$lang->confirm_remove_buddy}';
 		lang.remove_ignored = '{$lang->confirm_remove_ignored}';
@@ -12018,7 +12017,7 @@ if(use_xmlhttprequest == "1")
 	</script>
 
   <link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css">
-	<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
+	<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1804"></script>
 
 </head>
 <body>
@@ -13756,10 +13755,11 @@ if(use_xmlhttprequest == "1")
 		<template name="codebuttons" version="1804"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/sceditor/editor_themes/{$theme['editortheme']}" type="text/css" media="all" />
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/sceditor/jquery.sceditor.bbcode.min.js"></script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/bbcodes_sceditor.js?ver=1804"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/sceditor/editor_plugins/undo.js?ver=1804"></script>
 <script type="text/javascript">
 var partialmode = {$mybb->settings['partialmode']},
 opt_editor = {
-	plugins: "bbcode",
+	plugins: "bbcode,undo",
 	style: "{$mybb->asset_url}/jscripts/sceditor/textarea_styles/jquery.sceditor.{$theme['editortheme']}",
 	rtl: {$lang->settings['rtl']},
 	locale: "mybblang",
@@ -13832,13 +13832,12 @@ $(function() {
 <link rel="alternate" type="application/atom+xml" title="{$lang->latest_threads} (Atom 1.0)" href="{$mybb->settings['bburl']}/syndication.php?type=atom1.0" />
 <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.js?ver=1800"></script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.plugins.min.js?ver=1800"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.js?ver=1804"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.plugins.min.js?ver=1804"></script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/general.js?ver=1804"></script>
 
 {$stylesheets}
 <script type="text/javascript">
-<!--
 	lang.unknown_error = "{$lang->unknown_error}";
 
 	lang.select2_match = "{$lang->select2_match}";
@@ -13869,7 +13868,7 @@ $(function() {
 	var MyBBEditor = null;
 	var spinner_image = "{$theme['imgdir']}/spinner.gif";
 	var spinner = "<img src='" + spinner_image +"' alt='' />";
-// -->
+	var modal_zindex = 9999;
 </script>]]></template>
 		<template name="htmldoctype" version="120"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">]]></template>
 		<template name="loginbox" version="1609"><![CDATA[<tr>

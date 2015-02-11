@@ -57,7 +57,7 @@ add_breadcrumb($lang->nav_portal, $file_name);
 
 $plugins->run_hooks("portal_start");
 
-
+$tunviewwhere = $unviewwhere = '';
 // get forums user cannot view
 $unviewable = get_unviewable_forums(true);
 if($unviewable)
@@ -65,21 +65,13 @@ if($unviewable)
 	$unviewwhere = " AND fid NOT IN ($unviewable)";
 	$tunviewwhere = " AND t.fid NOT IN ($unviewable)";
 }
-else
-{
-	$unviewwhere = '';
-}
 
 // get inactive forums
 $inactive = get_inactive_forums();
 if($inactive)
 {
-	$inactivewhere = " AND fid NOT IN ($inactive)";
-	$tinactivewhere = " AND t.fid NOT IN ($inactive)";
-}
-else
-{
-	$inactivewhere = '';
+	$unviewwhere .= " AND fid NOT IN ($inactive)";
+	$tunviewwhere .= " AND t.fid NOT IN ($inactive)";
 }
 
 $welcome = '';
@@ -89,12 +81,12 @@ if($mybb->settings['portal_showwelcome'] != 0)
 	if($mybb->user['uid'] != 0)
 	{
 		// Get number of new posts, threads, announcements
-		$query = $db->simple_select("posts", "COUNT(pid) AS newposts", "visible=1 AND dateline>'".$mybb->user['lastvisit']."'{$unviewwhere}{$inactivewhere}");
+		$query = $db->simple_select("posts", "COUNT(pid) AS newposts", "visible=1 AND dateline>'".$mybb->user['lastvisit']."'{$unviewwhere}");
 		$newposts = $db->fetch_field($query, "newposts");
 		if($newposts)
 		{
 			// If there aren't any new posts, there is no point in wasting two more queries
-			$query = $db->simple_select("threads", "COUNT(tid) AS newthreads", "visible=1 AND dateline>'".$mybb->user['lastvisit']."'{$unviewwhere}{$inactivewhere}");
+			$query = $db->simple_select("threads", "COUNT(tid) AS newthreads", "visible=1 AND dateline>'".$mybb->user['lastvisit']."'{$unviewwhere}");
 			$newthreads = $db->fetch_field($query, "newthreads");
 
 			$newann = 0;
@@ -355,7 +347,7 @@ if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_sho
 		SELECT t.tid, t.fid, t.uid, t.lastpost, t.lastposteruid, t.lastposter, t.subject, t.replies, t.views, u.username
 		FROM ".TABLE_PREFIX."threads t
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)
-		WHERE 1=1 {$excludeforums}{$tunviewwhere}{$tinactivewhere} AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
+		WHERE 1=1 {$excludeforums}{$tunviewwhere} AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
 		ORDER BY t.lastpost DESC
 		LIMIT 0, ".$mybb->settings['portal_showdiscussionsnum']
 	);
@@ -364,7 +356,7 @@ if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_sho
 		$forumpermissions[$thread['fid']] = forum_permissions($thread['fid']);
 
 		// Make sure we can view this thread
-		if($forumpermissions[$thread['fid']]['canview'] == 0 || $forumpermissions[$thread['fid']]['canviewthreads'] == 0 || (isset($forumpermissions[$thread['fid']]['canonlyviewownthreads']) && $forumpermissions[$thread['fid']]['canonlyviewownthreads'] == 1 && $thread['uid'] != $mybb->user['uid']))
+		if(isset($forumpermissions[$thread['fid']]['canonlyviewownthreads']) && $forumpermissions[$thread['fid']]['canonlyviewownthreads'] == 1 && $thread['uid'] != $mybb->user['uid'])
 		{
 			continue;
 		}
@@ -422,7 +414,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 
 			$announcementsfids = implode(',', $fid_array);
 
-			$annfidswhere = " AND t.fid IN (".$announcementsfids.")";
+			$annfidswhere = " AND t.fid IN ($announcementsfids)";
 		}
 	}
 
@@ -520,14 +512,14 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 			SELECT t.*, t.username AS threadusername, u.username, u.avatar, u.avatardimensions
 			FROM ".TABLE_PREFIX."threads t
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
-			WHERE t.tid IN (0{$tids}){$annfidswhere} AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
+			WHERE t.tid IN (0{$tids}){$annfidswhere}{$tunviewwhere} AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
 			ORDER BY t.dateline DESC
 			LIMIT 0, {$numannouncements}"
 		);
 		while($announcement = $db->fetch_array($query))
 		{
 			// Make sure we can view this announcement
-			if($forumpermissions[$announcement['fid']]['canview'] == 0 || $forumpermissions[$announcement['fid']]['canviewthreads'] == 0 || (isset($forumpermissions[$announcement['fid']]['canonlyviewownthreads']) && $forumpermissions[$announcement['fid']]['canonlyviewownthreads'] == 1 && $announcement['uid'] != $mybb->user['uid']))
+			if(isset($forumpermissions[$announcement['fid']]['canonlyviewownthreads']) && $forumpermissions[$announcement['fid']]['canonlyviewownthreads'] == 1 && $announcement['uid'] != $mybb->user['uid'])
 			{
 				continue;
 			}

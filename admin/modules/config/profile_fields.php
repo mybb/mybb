@@ -318,12 +318,12 @@ if($mybb->input['action'] == "add")
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 
-	echo '<script type="text/javascript" src="./jscripts/peeker.js"></script>
+	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1804"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
-				var maxlength_peeker = new Peeker($("#fieldtype"), $("#row_maxlength, #row_regex, #row_parser_options"), /text|textarea/, false);
-				var fieldlength_peeker = new Peeker($("#fieldtype"), $("#row_fieldlength"), /select|multiselect/, false);
-				var options_peeker = new Peeker($("#fieldtype"), $("#row_options"), /select|radio|checkbox/, false);
+				new Peeker($("#fieldtype"), $("#row_maxlength, #row_regex, #row_parser_options"), /text|textarea/, false);
+				new Peeker($("#fieldtype"), $("#row_fieldlength"), /select|multiselect/, false);
+				new Peeker($("#fieldtype"), $("#row_options"), /select|radio|checkbox/, false);
 				// Add a star to the extra row since the "extra" is required if the box is shown
 				add_star("row_maxlength");
 				add_star("row_fieldlength");
@@ -634,12 +634,12 @@ if($mybb->input['action'] == "edit")
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 
-	echo '<script type="text/javascript" src="./jscripts/peeker.js"></script>
+	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1804"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
-				var maxlength_peeker = new Peeker($("#fieldtype"), $("#row_maxlength, #row_regex, #row_parser_options"), /text|textarea/);
-				var fieldlength_peeker = new Peeker($("#fieldtype"), $("#row_fieldlength"), /select|multiselect/);
-				var options_peeker = new Peeker($("#fieldtype"), $("#row_options"), /select|radio|checkbox/);
+				new Peeker($("#fieldtype"), $("#row_maxlength, #row_regex, #row_parser_options"), /text|textarea/);
+				new Peeker($("#fieldtype"), $("#row_fieldlength"), /select|multiselect/);
+				new Peeker($("#fieldtype"), $("#row_options"), /select|radio|checkbox/);
 				// Add a star to the extra row since the "extra" is required if the box is shown
 				add_star("row_maxlength");
 				add_star("row_fieldlength");

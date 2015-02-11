@@ -434,6 +434,20 @@ function privatemessage_perform_search_mysql($search)
 	{
 		// Complex search
 		$keywords = " {$keywords} ";
+
+		switch($db->type)
+		{
+			case 'mysql':
+			case 'mysqli':
+				$sfield = 'subject';
+				$mfield = 'message';
+				break;
+			default:
+				$sfield = 'LOWER(subject)';
+				$mfield = 'LOWER(message)';
+				break;
+		}
+
 		if(preg_match("#\s(and|or)\s#", $keywords))
 		{
 			$string = "AND";
@@ -503,14 +517,15 @@ function privatemessage_perform_search_mysql($search)
 								$lang->error_minsearchlength = $lang->sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
 								error($lang->error_minsearchlength);
 							}
+
 							// Add terms to search query
 							if($search['subject'] == 1)
 							{
-								$subject_lookin .= " $boolean LOWER(subject) LIKE '%{$word}%'";
+								$subject_lookin .= " $boolean {$sfield} LIKE '%{$word}%'";
 							}
 							if($search['message'] == 1)
 							{
-								$message_lookin .= " $boolean LOWER(message) LIKE '%{$word}%'";
+								$message_lookin .= " $boolean {$mfield} LIKE '%{$word}%'";
 							}
 							$boolean = 'AND';
 						}
@@ -526,10 +541,10 @@ function privatemessage_perform_search_mysql($search)
 						error($lang->error_minsearchlength);
 					}
 					// Add phrase to search query
-					$subject_lookin .= " $boolean LOWER(subject) LIKE '%{$phrase}%'";
+					$subject_lookin .= " $boolean {$sfield} LIKE '%{$phrase}%'";
 					if($search['message'] == 1)
 					{
-						$message_lookin .= " $boolean LOWER(message) LIKE '%{$phrase}%'";
+						$message_lookin .= " $boolean {$mfield} LIKE '%{$phrase}%'";
 					}
 					$boolean = 'AND';
 				}
@@ -586,18 +601,18 @@ function privatemessage_perform_search_mysql($search)
 			// If we're looking in both, then find matches in either the subject or the message
 			if($search['subject'] == 1 && $search['message'] == 1)
 			{
-				$searchsql .= " AND (LOWER(subject) LIKE '%{$keywords}%' OR LOWER(message) LIKE '%{$keywords}%')";
+				$searchsql .= " AND ({$sfield} LIKE '%{$keywords}%' OR {$mfield} LIKE '%{$keywords}%')";
 			}
 			else
 			{
 				if($search['subject'] == 1)
 				{
-					$searchsql .= " AND LOWER(subject) LIKE '%{$keywords}%'";
+					$searchsql .= " AND {$sfield} LIKE '%{$keywords}%'";
 				}
 
 				if($search['message'] == 1)
 				{
-					$searchsql .= " AND LOWER(message) LIKE '%{$keywords}%'";
+					$searchsql .= " AND {$mfield} LIKE '%{$keywords}%'";
 				}
 			}
 		}
@@ -728,6 +743,19 @@ function helpdocument_perform_search_mysql($search)
 
 	if($keywords)
 	{
+		switch($db->type)
+		{
+			case 'mysql':
+			case 'mysqli':
+				$nfield = 'name';
+				$dfield = 'document';
+				break;
+			default:
+				$nfield = 'LOWER(name)';
+				$dfield = 'LOWER(document)';
+				break;
+		}
+
 		// Complex search
 		$keywords = " {$keywords} ";
 		if(preg_match("#\s(and|or)\s#", $keywords))
@@ -801,11 +829,11 @@ function helpdocument_perform_search_mysql($search)
 							// Add terms to search query
 							if($search['name'] == 1)
 							{
-								$name_lookin .= " $boolean LOWER(name) LIKE '%{$word}%'";
+								$name_lookin .= " $boolean {$nfield} LIKE '%{$word}%'";
 							}
 							if($search['document'] == 1)
 							{
-								$document_lookin .= " $boolean LOWER(document) LIKE '%{$word}%'";
+								$document_lookin .= " $boolean {$dfield} LIKE '%{$word}%'";
 							}
 						}
 					}
@@ -820,10 +848,10 @@ function helpdocument_perform_search_mysql($search)
 						error($lang->error_minsearchlength);
 					}
 					// Add phrase to search query
-					$name_lookin .= " $boolean LOWER(name) LIKE '%{$phrase}%'";
+					$name_lookin .= " $boolean {$nfield} LIKE '%{$phrase}%'";
 					if($search['document'] == 1)
 					{
-						$document_lookin .= " $boolean LOWER(document) LIKE '%{$phrase}%'";
+						$document_lookin .= " $boolean {$dfield} LIKE '%{$phrase}%'";
 					}
 				}
 
@@ -879,18 +907,18 @@ function helpdocument_perform_search_mysql($search)
 			// If we're looking in both, then find matches in either the name or the document
 			if($search['name'] == 1 && $search['document'] == 1)
 			{
-				$searchsql .= " AND (LOWER(name) LIKE '%{$keywords}%' OR LOWER(document) LIKE '%{$keywords}%')";
+				$searchsql .= " AND ({$nfield} LIKE '%{$keywords}%' OR {$dfield} LIKE '%{$keywords}%')";
 			}
 			else
 			{
 				if($search['name'] == 1)
 				{
-					$searchsql .= " AND LOWER(name) LIKE '%{$keywords}%'";
+					$searchsql .= " AND {$nfield} LIKE '%{$keywords}%'";
 				}
 
 				if($search['document'] == 1)
 				{
-					$searchsql .= " AND LOWER(document) LIKE '%{$keywords}%'";
+					$searchsql .= " AND {$dfield} LIKE '%{$keywords}%'";
 				}
 			}
 		}
@@ -939,6 +967,19 @@ function perform_search_mysql($search)
 	$subject_lookin = $message_lookin = '';
 	if($keywords)
 	{
+		switch($db->type)
+		{
+			case 'mysql':
+			case 'mysqli':
+				$tfield = 't.subject';
+				$pfield = 'p.message';
+				break;
+			default:
+				$tfield = 'LOWER(t.subject)';
+				$pfield = 'LOWER(p.message)';
+				break;
+		}
+
 		// Complex search
 		$keywords = " {$keywords} ";
 		if(preg_match("#\s(and|or)\s#", $keywords))
@@ -988,10 +1029,10 @@ function perform_search_mysql($search)
 								error($lang->error_minsearchlength);
 							}
 							// Add terms to search query
-							$subject_lookin .= " $boolean LOWER(t.subject) LIKE '%{$word}%'";
+							$subject_lookin .= " $boolean {$tfield} LIKE '%{$word}%'";
 							if($search['postthread'] == 1)
 							{
-								$message_lookin .= " $boolean LOWER(p.message) LIKE '%{$word}%'";
+								$message_lookin .= " $boolean {$pfield} LIKE '%{$word}%'";
 							}
 							$boolean = 'AND';
 						}
@@ -1007,10 +1048,10 @@ function perform_search_mysql($search)
 						error($lang->error_minsearchlength);
 					}
 					// Add phrase to search query
-					$subject_lookin .= " $boolean LOWER(t.subject) LIKE '%{$phrase}%'";
+					$subject_lookin .= " $boolean {$tfield} LIKE '%{$phrase}%'";
 					if($search['postthread'] == 1)
 					{
-						$message_lookin .= " $boolean LOWER(p.message) LIKE '%{$phrase}%'";
+						$message_lookin .= " $boolean {$pfield} LIKE '%{$phrase}%'";
 					}
 					$boolean = 'AND';
 				}
@@ -1035,10 +1076,10 @@ function perform_search_mysql($search)
 				$lang->error_minsearchlength = $lang->sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
 				error($lang->error_minsearchlength);
 			}
-			$subject_lookin = " AND LOWER(t.subject) LIKE '%{$keywords}%'";
+			$subject_lookin = " AND {$tfield} LIKE '%{$keywords}%'";
 			if($search['postthread'] == 1)
 			{
-				$message_lookin = " AND LOWER(p.message) LIKE '%{$keywords}%'";
+				$message_lookin = " AND {$pfield} LIKE '%{$keywords}%'";
 			}
 		}
 	}

@@ -67,13 +67,9 @@ if($fid)
 	$permissions = forum_permissions($fid);
 }
 
-if($pmid && $pmid > 0)
+if($pmid > 0)
 {
-	$query = $db->query("
-		SELECT *
-		FROM ".TABLE_PREFIX."privatemessages
-		WHERE pmid='{$pmid}'
-	");
+	$query = $db->simple_select('privatemessages', 'uid, subject, ipaddress', "pmid = $pmid");
 
 	$pm = $db->fetch_array($query);
 
@@ -131,6 +127,8 @@ switch($mybb->input['action'])
 		{
 			error_no_permission();
 		}
+
+		$plugins->run_hooks('moderation_cancel_delayedmoderation');
 
 		$db->delete_query("delayedmoderation", "did='".$mybb->get_input('did', MyBB::INPUT_INT)."'");
 
@@ -280,7 +278,7 @@ switch($mybb->input['action'])
 					$mybb->input['tids'] = implode(',' , $mybb->input['tids']);
 				}
 
-				$db->insert_query("delayedmoderation", array(
+				$did = $db->insert_query("delayedmoderation", array(
 					'type' => $db->escape_string($mybb->input['type']),
 					'delaydateline' => (int)$rundate,
 					'uid' => $mybb->user['uid'],
@@ -289,6 +287,8 @@ switch($mybb->input['action'])
 					'dateline' => TIME_NOW,
 					'inputs' => $db->escape_string(my_serialize($mybb->input['delayedmoderation']))
 				));
+
+				$plugins->run_hooks('moderation_do_delayedmoderation');
 
 				$rundate_format = my_date('relative', $rundate, '', 2);
 				$lang->redirect_delayed_moderation_thread = $lang->sprintf($lang->redirect_delayed_moderation_thread, $rundate_format);
@@ -719,7 +719,7 @@ switch($mybb->input['action'])
 
 		$plugins->run_hooks("moderation_deletepoll");
 
-		$query = $db->simple_select("polls", "*", "tid='$tid'");
+		$query = $db->simple_select("polls", "pid", "tid='$tid'");
 		$poll = $db->fetch_array($query);
 		if(!$poll)
 		{
@@ -747,7 +747,7 @@ switch($mybb->input['action'])
 				error_no_permission();
 			}
 		}
-		$query = $db->simple_select("polls", "*", "tid='$tid'");
+		$query = $db->simple_select("polls", "pid", "tid = $tid");
 		$poll = $db->fetch_array($query);
 		if(!$poll)
 		{
@@ -901,6 +901,8 @@ switch($mybb->input['action'])
 			error($lang->error_movetosameforum);
 		}
 
+		$plugins->run_hooks('moderation_do_move');
+
 		$expire = 0;
 		if($mybb->get_input('redirect_expire', MyBB::INPUT_INT) > 0)
 		{
@@ -938,6 +940,8 @@ switch($mybb->input['action'])
 		{
 			error($lang->error_nomember);
 		}
+
+		$plugins->run_hooks('moderation_viewthreadnotes');
 
 		$lang->view_notes_for = $lang->sprintf($lang->view_notes_for, $thread['subject']);
 
@@ -1149,6 +1153,8 @@ switch($mybb->input['action'])
 			eval("\$modoptions = \"".$templates->get("moderation_getip_modoptions")."\";");
 		}
 
+		$plugins->run_hooks('moderation_getip');
+
 		eval("\$getip = \"".$templates->get("moderation_getip")."\";");
 		output_page($getip);
 		break;
@@ -1175,10 +1181,8 @@ switch($mybb->input['action'])
 			$hostname = $lang->resolve_fail;
 		}
 
-		$user = get_user($pm['uid']);
-		$pm['username'] = $user['username'];
-
-		$username = build_profile_link($pm['username'], $pm['uid']);
+		$name = $db->fetch_field($db->simple_select('users', 'username', "uid = {$pm['fromid']}"), 'username');
+		$username = build_profile_link($name, $pm['fromid']);
 
 		// Moderator options
 		$modoptions = "";
@@ -1187,6 +1191,8 @@ switch($mybb->input['action'])
 			$ipaddress = $pm['ipaddress'];
 			eval("\$modoptions = \"".$templates->get("moderation_getip_modoptions")."\";");
 		}
+
+		$plugins->run_hooks('moderation_getpmip');
 
 		eval("\$getpmip = \"".$templates->get("moderation_getpmip")."\";");
 		output_page($getpmip);
@@ -2007,7 +2013,7 @@ switch($mybb->input['action'])
 		// Otherwise we're just deleting from showthread.php
 		else
 		{
-			$query = $db->simple_select("posts", "*", "tid='$tid'");
+			$query = $db->simple_select("posts", "pid", "tid = $tid");
 			$numposts = $db->num_rows($query);
 			if(!$numposts)
 			{
@@ -2465,7 +2471,7 @@ switch($mybb->input['action'])
 
 		if(!empty($parameters['pid']) && empty($parameters['tid']))
 		{
-			$query = $db->simple_select("posts", "*", "pid='".(int)$parameters['pid']."'");
+			$query = $db->simple_select("posts", "tid", "pid='".(int)$parameters['pid']."'");
 			$post = $db->fetch_array($query);
 			$newtid = $post['tid'];
 		}
@@ -2810,7 +2816,7 @@ switch($mybb->input['action'])
 				foreach(array($user['regip'], $user['lastip']) as $ip)
 				{
 					$ip = my_inet_ntop($db->unescape_binary($ip));
-					$query = $db->simple_select("banfilters", "*", "type = '1' AND filter = '".$db->escape_string($ip)."'");
+					$query = $db->simple_select("banfilters", "type", "type = 1 AND filter = '".$db->escape_string($ip)."'");
 					if($db->num_rows($query) == 0)
 					{
 						$insert = array(
@@ -2840,7 +2846,7 @@ switch($mybb->input['action'])
 			// Submit the user to stop forum spam
 			if(!empty($mybb->settings['purgespammerapikey']))
 			{
-				$sfs = @fetch_remote_file("http://stopforumspam.com/add.php?username=" . urlencode($user['username']) . "&ip_addr=" . urlencode($user['lastip']) . "&email=" . urlencode($user['email']) . "&api_key=" . urlencode($mybb->settings['purgespammerapikey']));
+				$sfs = @fetch_remote_file("http://stopforumspam.com/add.php?username=" . urlencode($user['username']) . "&ip_addr=" . urlencode(my_inet_ntop($db->unescape_binary($user['lastip']))) . "&email=" . urlencode($user['email']) . "&api_key=" . urlencode($mybb->settings['purgespammerapikey']));
 			}
 
 			log_moderator_action(array('uid' => $uid, 'username' => $user['username']), $lang->purgespammer_modlog);
@@ -3108,7 +3114,7 @@ function getallids($id, $type)
 	}
 	else if($type == 'search')
 	{
-		$query = $db->simple_select("searchlog", "*", "sid='".$db->escape_string($id)."' AND uid='{$mybb->user['uid']}'", 1);
+		$query = $db->simple_select("searchlog", "resulttype, posts, threads", "sid='".$db->escape_string($id)."' AND uid='{$mybb->user['uid']}'", 1);
 		$searchlog = $db->fetch_array($query);
 		if($searchlog['resulttype'] == 'posts')
 		{

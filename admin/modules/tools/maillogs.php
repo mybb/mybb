@@ -45,7 +45,7 @@ if($mybb->input['action'] == "prune" && $mybb->request_method == "post")
 		}
 	}
 
-	$plugins->run_hooks("admin_tools_mailerrors_prune_commit");
+	$plugins->run_hooks("admin_tools_maillogs_prune_commit");
 
 	// Log admin action
 	log_admin_action($num_deleted);
@@ -173,7 +173,6 @@ if(!$mybb->input['action'])
 	$toemail = $db->escape_string_like($mybb->input['toemail']);
 
 	$fromuid = $mybb->get_input('fromuid', MyBB::INPUT_INT);
-	$fromname = $db->escape_string($mybb->input['fromname']);
 	$fromemail = $db->escape_string_like($mybb->input['fromemail']);
 
 	$subject = $db->escape_string_like($mybb->input['subject']);
@@ -449,4 +448,3 @@ if(!$mybb->input['action'])
 
 	$page->output_footer();
 }
-?>

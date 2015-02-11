@@ -191,7 +191,7 @@ function intro()
 	global $output, $mybb, $lang;
 
 	$output->print_header($lang->welcome, 'welcome');
-	if(strpos(strtolower(get_current_location()), '/upload/') !== false)
+	if(strpos(strtolower(get_current_location('', '', true)), '/upload/') !== false)
 	{
 		echo $lang->sprintf($lang->mybb_incorrect_folder);
 	}
@@ -1846,7 +1846,7 @@ EOF;
 			$cookiedomain = $_SERVER['SERVER_NAME'];
 		}
 
-		if(substr($cookiedomain, 0, 4) == "www.")
+		if(my_substr($cookiedomain, 0, 4) == "www.")
 		{
 			$cookiedomain = substr($cookiedomain, 4);
 		}
@@ -1866,7 +1866,7 @@ EOF;
 			$hostname .= ':'.$_SERVER['SERVER_PORT'];
 		}
 		
-		$currentlocation = get_current_location();
+		$currentlocation = get_current_location('', '', true);
 		$noinstall = substr($currentlocation, 0, strrpos($currentlocation, '/install/'));
 		
 		$cookiepath = $noinstall.'/';
@@ -2431,4 +2431,3 @@ function write_settings()
 		fclose($file);
 	}
 }
-?>

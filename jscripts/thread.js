@@ -20,14 +20,14 @@ var Thread = {
 
 			$.each(post_ids, function(key, value) {
 				var mquote_a = $("#multiquote_"+value).closest('a');
-				if(mquote_a)
+				if(mquote_a.length)
 				{
 					mquote_a.removeClass('postbit_multiquote').addClass('postbit_multiquote_on');
 				}
 			});
 
 			var mquote_quick = $('#quickreply_multiquote');
-			if(mquote_quick)
+			if(mquote_quick.length)
 			{
 				mquote_quick.show();
 			}
@@ -68,9 +68,9 @@ var Thread = {
 		}
 		
 		var mquote_quick = $('#quickreply_multiquote');
-		if(mquote_quick)
+		if(mquote_quick.length)
 		{
-			if(new_post_ids.length > 0)
+			if(new_post_ids.length)
 			{
 				mquote_quick.show();
 			}
@@ -157,7 +157,7 @@ var Thread = {
 
 			$.each(post_ids, function(key, post_id) {
 				var mquote_a = $("#multiquote_"+post_id).closest('a');
-				if(mquote_a)
+				if(mquote_a.length)
 				{
 					mquote_a.removeClass('postbit_multiquote_on').addClass('postbit_multiquote');
 				}
@@ -168,7 +168,7 @@ var Thread = {
 
 	quickEdit: function(el)
 	{
-		if(!el) el = '.post_body';
+		if(!el.length) el = '.post_body';
 
 		$(el).each(function()
 		{
@@ -262,7 +262,7 @@ var Thread = {
 
 		$('.quick_edit_button').each(function()
 		{
-			$(this).bind("click", function(e)
+			$(this).on("click", function(e)
 			{
 				e.preventDefault();
 
@@ -293,7 +293,7 @@ var Thread = {
 
 	initQuickReply: function()
 	{
-		if($('#quick_reply_form') && use_xmlhttprequest == 1)
+		if($('#quick_reply_form').length && use_xmlhttprequest == 1)
 		{
 			// Bind closing event to our popup menu
 			$('#quick_reply_submit').bind('click', function(e) {
@@ -355,7 +355,7 @@ var Thread = {
 			}
 		}
 
-		if($('#captcha_trow'))
+		if($('#captcha_trow').length)
 		{
 			cap = json.data.match(/^<captcha>([0-9a-zA-Z]+)(\|([0-9a-zA-Z]+)|)<\/captcha>/);
 			if(cap)
@@ -366,7 +366,7 @@ var Thread = {
 				{
 					Recaptcha.reload();
 				}
-				else if($("#captcha_img"))
+				else if($("#captcha_img").length)
 				{
 					if(cap[1])
 					{
@@ -412,7 +412,7 @@ var Thread = {
 			$('#quick_reply_form')[0].reset();
 
 			var lastpid = $('#lastpid');
-			if(lastpid)
+			if(lastpid.length)
 			{
 				lastpid.val(pid);
 			}

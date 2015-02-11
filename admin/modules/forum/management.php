@@ -434,7 +434,7 @@ if($mybb->input['action'] == "clear_permission")
 		admin_redirect("index.php?module=forum-management&fid={$fid}");
 	}
 
-	$plugins->run_hooks("admin_forum_management_deletemod");
+	$plugins->run_hooks("admin_forum_management_clear_permission");
 
 	if($mybb->request_method == "post")
 	{
@@ -454,6 +454,8 @@ if($mybb->input['action'] == "clear_permission")
 		{
 			$db->delete_query("forumpermissions", "gid='{$gid}' AND fid='{$fid}'");
 		}
+
+		$plugins->run_hooks('admin_forum_management_clear_permission_commit');
 
 		$cache->update_forumpermissions();
 
@@ -2589,7 +2591,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		// Autocompletion for usernames
 		echo '
 		<link rel="stylesheet" href="../jscripts/select2/select2.css">
-		<script type="text/javascript" src="../jscripts/select2/select2.min.js"></script>
+		<script type="text/javascript" src="../jscripts/select2/select2.min.js?ver=1804"></script>
 		<script type="text/javascript">
 		<!--
 		$("#username").select2({

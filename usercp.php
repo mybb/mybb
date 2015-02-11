@@ -1553,12 +1553,7 @@ if($mybb->input['action'] == "subscriptions")
 		if($mybb->user['uid'] == 0)
 		{
 			// Build a forum cache.
-			$query = $db->query("
-				SELECT fid
-				FROM ".TABLE_PREFIX."forums
-				WHERE active != 0
-				ORDER BY pid, disporder
-			");
+			$query = $db->simple_select('forums', 'fid', 'active != 0', array('order_by' => 'pid, disporder'));
 
 			$forumsread = my_unserialize($mybb->cookies['mybb']['forumread']);
 		}
@@ -3961,11 +3956,11 @@ if(!$mybb->input['action'])
 	$inactiveforums = get_inactive_forums();
 	if($unviewable_forums)
 	{
-		$f_perm_sql = " AND t.fid NOT IN (".$unviewable_forums.")";
+		$f_perm_sql = " AND t.fid NOT IN ($unviewable_forums)";
 	}
 	if($inactiveforums)
 	{
-		$f_perm_sql .= " AND t.fid NOT IN (".$inactiveforums.")";
+		$f_perm_sql .= " AND t.fid NOT IN ($inactiveforums)";
 	}
 
 	$visible = " AND t.visible != 0";
