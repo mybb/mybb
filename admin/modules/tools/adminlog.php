@@ -418,6 +418,9 @@ function get_admin_log_action($logitem)
 			$lang_string .= $logitem['data'][0];
 			break;
 		// == HOME ==
+		case 'admin_log_home_preferences_': // 2FA
+			$lang_string .= $logitem['data'][0]; // either "enabled" or "disabled"
+			break;
 		// == STYLE ==
 		case 'admin_log_style_templates_delete_template': // deleting templates
 			// global template set

@@ -197,7 +197,15 @@ elseif($mybb->input['do'] == "login")
 		);
 		$db->insert_query("adminsessions", $admin_session);
 		$admin_session['data'] = array();
-		$db->update_query("adminoptions", array("loginattempts" => 0, "loginlockoutexpiry" => 0), "uid='".(int)$mybb->user['uid']."'");
+
+		// Only reset the loginattempts when we're really logged in and the user doesn't need to enter a 2fa code
+		$query = $db->simple_select("adminoptions", "2fasecret", "uid='{$mybb->user['uid']}'");
+		$admin_options = $db->fetch_array($query);
+		if(empty($admin_options['2fasecret']))
+		{
+			$db->update_query("adminoptions", array("loginattempts" => 0, "loginlockoutexpiry" => 0), "uid='{$mybb->user['uid']}'");
+		}
+
 		my_setcookie("adminsid", $sid, '', true);
 		my_setcookie('acploginattempts', 0);
 		$post_verify = false;
@@ -484,6 +492,100 @@ if(!isset($mybb->user['uid']) || $logged_out == true)
 		}
 		$page->show_login($login_message, "error");
 	}
+}
+
+// Time to check for Two-Factor Authentication
+// First: are we trying to verify a code?
+if($mybb->input['do'] == "do_2fa" && $mybb->request_method == "post")
+{
+	// Test whether it's a recovery code
+	$recovery = false;
+	$codes = my_unserialize($admin_options['recovery_codes']);
+	if(!empty($codes) && in_array($mybb->get_input('code'), $codes))
+	{
+		$recovery = true;
+		$ncodes = array_diff($codes, array($mybb->input['code'])); // Removes our current code from the codes array
+		$db->update_query("adminoptions", array("recovery_codes" => $db->escape_string(my_serialize($ncodes))), "uid='{$mybb->user['uid']}'");
+
+		if(count($ncodes) == 0)
+		{
+			flash_message($lang->my2fa_no_codes, "error");
+		}
+	}
+
+	// Validate the code
+	require_once MYBB_ROOT."inc/3rdparty/2fa/GoogleAuthenticator.php";
+	$auth = new PHPGangsta_GoogleAuthenticator;
+
+	$test = $auth->verifyCode($admin_options['2fasecret'], $mybb->get_input('code'));
+
+	// Either the code was okay or it was a recovery code
+	if($test === true || $recovery === true)
+	{
+		// Correct code -> session authenticated
+		$db->update_query("adminsessions", array("authenticated" => 1), "sid='".$db->escape_string($mybb->cookies['adminsid'])."'");
+		$admin_session['authenticated'] = 1;
+		$db->update_query("adminoptions", array("loginattempts" => 0, "loginlockoutexpiry" => 0), "uid='{$mybb->user['uid']}'");
+		my_setcookie('acploginattempts', 0);
+		// post would result in an authorization code mismatch error
+		$mybb->request_method = "get";
+	}
+	else
+	{
+		// Wrong code -> close session (aka logout)
+		$db->delete_query("adminsessions", "sid='".$db->escape_string($mybb->cookies['adminsid'])."'");
+		my_unsetcookie('adminsid');
+
+		// Now test whether we need to lock this guy completly
+		$db->update_query("adminoptions", array("loginattempts" => "loginattempts+1"), "uid='{$mybb->user['uid']}'", '', true);
+
+		$loginattempts = login_attempt_check_acp($mybb->user['uid'], true);
+
+		// Have we attempted too many times?
+		if($loginattempts['loginattempts'] > 0)
+		{
+			// Have we set an expiry yet?
+			if($loginattempts['loginlockoutexpiry'] == 0)
+			{
+				$db->update_query("adminoptions", array("loginlockoutexpiry" => TIME_NOW+((int)$mybb->settings['loginattemptstimeout']*60)), "uid='{$mybb->user['uid']}'");
+ 			}
+
+			// Did we hit lockout for the first time? Send the unlock email to the administrator
+			if($loginattempts['loginattempts'] == $mybb->settings['maxloginattempts'])
+			{
+				$db->delete_query("awaitingactivation", "uid='{$mybb->user['uid']}' AND type='l'");
+				$lockout_array = array(
+					"uid" => $mybb->user['uid'],
+					"dateline" => TIME_NOW,
+					"code" => random_str(),
+					"type" => "l"
+				);
+				$db->insert_query("awaitingactivation", $lockout_array);
+
+				$subject = $lang->sprintf($lang->locked_out_subject, $mybb->settings['bbname']);
+				$message = $lang->sprintf($lang->locked_out_message, htmlspecialchars_uni($mybb->user['username']), $mybb->settings['bbname'], $mybb->settings['maxloginattempts'], $mybb->settings['bburl'], $mybb->config['admin_dir'], $lockout_array['code'], $lockout_array['uid']);
+				my_mail($mybb->user['email'], $subject, $message);
+			}
+
+			log_admin_action(array(
+					'type' => 'admin_locked_out',
+					'uid' => $mybb->user['uid'],
+					'username' => $mybb->user['username'],
+				)
+			);
+
+			$page->show_lockedout();
+		}
+
+		// Still here? Show a custom login page
+		$page->show_login($lang->my2fa_failed, "error");
+	}
+}
+
+// Show our 2FA page
+if(!empty($admin_options['2fasecret']) && $admin_session['authenticated'] != 1)
+{
+	$page->show_2fa();
 }
 
 $page->add_breadcrumb_item($lang->home, "index.php");

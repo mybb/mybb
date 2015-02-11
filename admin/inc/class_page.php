@@ -505,6 +505,69 @@ EOF;
 		exit;
 	}
 
+	function show_2fa()
+	{
+		global $lang, $cp_style, $mybb;
+
+		$mybb2fa_page = <<<EOF
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head profile="http://gmpg.org/xfn/1">
+<title>{$lang->my2fa}</title>
+<meta name="author" content="MyBB Group" />
+<meta name="copyright" content="Copyright {$copy_year} MyBB Group." />
+<link rel="stylesheet" href="./styles/{$cp_style}/login.css" type="text/css" />
+<script type="text/javascript" src="../jscripts/jquery.js"></script>
+<script type="text/javascript" src="../jscripts/general.js"></script>
+<script type="text/javascript" src="./jscripts/admincp.js"></script>
+<script type="text/javascript">
+//<![CDATA[
+	loading_text = '{$lang->loading_text}';
+//]]>
+</script>
+</head>
+<body>
+<div id="container">
+	<div id="header">
+		<div id="logo">
+			<h1><a href="../" title="{$lang->return_to_forum}"><span class="invisible">{$lang->mybb_acp}</span></a></h1>
+		</div>
+	</div>
+	<div id="content">
+		<h2>{$lang->my2fa}</h2>
+EOF;
+		// Make query string nice and pretty so that user can go to his/her preferred destination
+		$query_string = '';
+		if($_SERVER['QUERY_STRING'])
+		{
+			$query_string = '?'.preg_replace('#adminsid=(.{32})#i', '', $_SERVER['QUERY_STRING']);
+			$query_string = preg_replace('#my_post_key=(.{32})#i', '', $query_string);
+			$query_string = str_replace('action=logout', '', $query_string);
+			$query_string = preg_replace('#&+#', '&', $query_string);
+			$query_string = str_replace('?&', '?', $query_string);
+			$query_string = htmlspecialchars_uni($query_string);
+		}
+		$mybb2fa_page .= <<<EOF
+		<p>{$lang->my2fa_code}</p>
+		<form method="post" action="index.php{$query_string}">
+		<div class="form_container">
+			<div class="label"><label for="code">{$lang->my2fa_label}</label></div>
+			<div class="field"><input type="text" name="code" id="code" class="text_input initial_focus" /></div>
+		</div>
+		<p class="submit">
+			<input type="submit" value="{$lang->login}" />
+			<input type="hidden" name="do" value="do_2fa" />
+		</p>
+		</form>
+	</div>
+</div>
+</body>
+</html>
+EOF;
+		echo $mybb2fa_page;
+		exit;
+	}
+
 	/**
 	 * Generate the lockout page
 	 *
