@@ -28,6 +28,7 @@ function upgrade32_dbchanges()
 	my_unsetcookie('adminsid');
 	my_unsetcookie('acploginattempts');
 	my_unsetcookie('acp_view');
+	my_unsetcookie('inlinemod_useracp');
 
 	$output->print_header("Updating Database");
 	echo "<p>Performing necessary upgrade queries...</p>";
