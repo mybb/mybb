@@ -8161,7 +8161,7 @@ function copy_file_to_cdn($file_path = '', &$uploaded_path = null)
 
 	$success = false;
 
-	$file_path = (string) $file_path;
+	$file_path = (string)$file_path;
 
 	$real_file_path = realpath($file_path);
 
@@ -8193,7 +8193,7 @@ function copy_file_to_cdn($file_path = '', &$uploaded_path = null)
 			{
 				if(($cdn_upload_path = realpath($cdn_upload_path)) !== false)
 				{
-					$success = @copy($file_path, $cdn_upload_path . DIRECTORY_SEPARATOR . $file_name);
+					$success = @copy($file_path, $cdn_upload_path.DIRECTORY_SEPARATOR.$file_name);
 
 					if($success)
 					{
@@ -8203,15 +8203,18 @@ function copy_file_to_cdn($file_path = '', &$uploaded_path = null)
 			}
 		}
 
-		$hook_args = array(
-			'file_path' => &$file_path,
-			'real_file_path' => &$real_file_path,
-			'file_name' => &$file_name,
-			'uploaded_path' => &$uploaded_path,
-			'success' => &$success,
-		);
+		if(is_object($plugins))
+		{
+			$hook_args = array(
+				'file_path' => &$file_path,
+				'real_file_path' => &$real_file_path,
+				'file_name' => &$file_name,
+				'uploaded_path' => &$uploaded_path,
+				'success' => &$success,
+			);
 
-		$plugins->run_hooks('copy_file_to_cdn_end', $hook_args);
+			$plugins->run_hooks('copy_file_to_cdn_end', $hook_args);
+		}
 	}
 
 	return $success;
