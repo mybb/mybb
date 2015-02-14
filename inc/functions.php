@@ -8173,7 +8173,7 @@ function copy_file_to_cdn($file_path = '', &$uploaded_path = null)
 
 	if(file_exists($file_path))
 	{
-		if ($mybb->settings['usecdn'] && !empty($mybb->settings['cdnpath']))
+		if($mybb->settings['usecdn'] && !empty($mybb->settings['cdnpath']))
 		{
 			$cdn_path = rtrim($mybb->settings['cdnpath'], '/\\');
 
