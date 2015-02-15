@@ -1574,7 +1574,7 @@ if($mybb->input['action'] == "diff_report")
 		$page->add_breadcrumb_item($lang->find_updated, "index.php?module=style-templates&amp;action=find_updated");
 	}
 
-	$page->add_breadcrumb_item($lang->diff_report.": ".$template1['title'], "index.php?module=style-templates&amp;action=diff_report&amp;title=".$db->escape_string($mybb->input['title'])."&amp;from=".htmlspecialchars_uni($mybb->input['from'])."&amp;sid1=".$mybb->get_input('sid1', MyBB::INPUT_INT)."&amp;sid2=".$mybb->get_input('sid2', MyBB::INPUT_INT));
+	$page->add_breadcrumb_item($lang->diff_report.": ".htmlspecialchars_uni($template1['title']), "index.php?module=style-templates&amp;action=diff_report&amp;title=".$db->escape_string($mybb->input['title'])."&amp;from=".htmlspecialchars_uni($mybb->input['from'])."&amp;sid1=".$mybb->get_input('sid1', MyBB::INPUT_INT)."&amp;sid2=".$mybb->get_input('sid2', MyBB::INPUT_INT));
 
 	$page->output_header($lang->template_sets);
 
