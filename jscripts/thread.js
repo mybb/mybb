@@ -168,7 +168,7 @@ var Thread = {
 
 	quickEdit: function(el)
 	{
-		if(el === undefined || !el.length) el = '.post_body';
+		if(typeof el === 'undefined' || !el.length) el = '.post_body';
 
 		$(el).each(function()
 		{
