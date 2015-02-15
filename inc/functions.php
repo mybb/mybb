@@ -4012,7 +4012,6 @@ function get_attachment_icon($ext)
 			$icon = str_replace("{theme}", $theme['imgdir'], $attachtypes[$ext]['icon']);
 			$icon = $mybb->get_asset_url($icon);
 		}
-		$icon = htmlspecialchars_uni($icon);
 
 		$name = htmlspecialchars_uni($attachtypes[$ext]['name']);
 	}
