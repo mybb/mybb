@@ -48,7 +48,7 @@ if($mybb->input['action'] == "add")
 			$cache->update_posticons();
 
 			// Log admin action
-			log_admin_action($iid, $mybb->input['name']);
+			log_admin_action($iid, htmlspecialchars_uni($mybb->input['name']));
 
 			flash_message($lang->success_post_icon_added, 'success');
 			admin_redirect('index.php?module=config-post_icons');
@@ -338,7 +338,7 @@ if($mybb->input['action'] == "edit")
 			$cache->update_posticons();
 
 			// Log admin action
-			log_admin_action($icon['iid'], $mybb->input['name']);
+			log_admin_action($icon['iid'], htmlspecialchars_uni($mybb->input['name']));
 
 			flash_message($lang->success_post_icon_updated, 'success');
 			admin_redirect('index.php?module=config-post_icons');
@@ -410,7 +410,7 @@ if($mybb->input['action'] == "delete")
 		$cache->update_posticons();
 
 		// Log admin action
-		log_admin_action($icon['iid'], $icon['name']);
+		log_admin_action($icon['iid'], htmlspecialchars_uni($icon['name']));
 
 		flash_message($lang->success_post_icon_deleted, 'success');
 		admin_redirect("index.php?module=config-post_icons");
@@ -474,7 +474,7 @@ if(!$mybb->input['action'])
 			$image = "../".$icon['path'];
 		}
 
-		$table->construct_cell("<img src=\"{$image}\" alt=\"\" />", array("class" => "align_center"));
+		$table->construct_cell("<img src=\"".htmlspecialchars_uni($image)."\" alt=\"\" />", array("class" => "align_center"));
 		$table->construct_cell(htmlspecialchars_uni($icon['name']));
 
 		$table->construct_cell("<a href=\"index.php?module=config-post_icons&amp;action=edit&amp;iid={$icon['iid']}\">{$lang->edit}</a>", array("class" => "align_center"));

@@ -141,6 +141,20 @@ if($mybb->input['action'] == "unlock")
 }
 elseif($mybb->input['do'] == "login")
 {
+	// We have an adminsid cookie?
+	if(isset($mybb->cookies['adminsid']))
+	{
+		// Check admin session
+		$query = $db->simple_select("adminsessions", "sid", "sid='".$db->escape_string($mybb->cookies['adminsid'])."'");
+		$admin_session = $db->fetch_field($query, 'sid');
+
+		// Session found: redirect to index
+		if($admin_session)
+		{
+			admin_redirect("index.php");
+		}
+	}
+
 	require_once MYBB_ROOT."inc/datahandlers/login.php";
 	$loginhandler = new LoginDataHandler("get");
 

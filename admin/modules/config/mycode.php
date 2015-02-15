@@ -128,7 +128,7 @@ if($mybb->input['action'] == "add")
 			$cache->update_mycode();
 
 			// Log admin action
-			log_admin_action($cid, $mybb->input['title']);
+			log_admin_action($cid, htmlspecialchars_uni($mybb->input['title']));
 
 			flash_message($lang->success_added_mycode, 'success');
 			admin_redirect('index.php?module=config-mycode');
@@ -255,7 +255,7 @@ if($mybb->input['action'] == "edit")
 			$cache->update_mycode();
 
 			// Log admin action
-			log_admin_action($mycode['cid'], $mybb->input['title']);
+			log_admin_action($mycode['cid'], htmlspecialchars_uni($mybb->input['title']));
 
 			flash_message($lang->success_updated_mycode, 'success');
 			admin_redirect('index.php?module=config-mycode');
@@ -354,7 +354,7 @@ if($mybb->input['action'] == "delete")
 		$cache->update_mycode();
 
 		// Log admin action
-		log_admin_action($mycode['cid'], $mycode['title']);
+		log_admin_action($mycode['cid'], htmlspecialchars_uni($mycode['title']));
 
 		flash_message($lang->success_deleted_mycode, 'success');
 		admin_redirect("index.php?module=config-mycode");
@@ -404,10 +404,10 @@ if(!$mybb->input['action'])
 
 		if($mycode['description'])
 		{
-			$mycode['description'] = "<small>{$mycode['description']}</small>";
+			$mycode['description'] = "<small>".htmlspecialchars_uni($mycode['description'])."</small>";
 		}
 
-		$table->construct_cell("<div>{$icon}<strong><a href=\"index.php?module=config-mycode&amp;action=edit&amp;cid={$mycode['cid']}\">{$mycode['title']}</a></strong><br />{$mycode['description']}</div>");
+		$table->construct_cell("<div>{$icon}<strong><a href=\"index.php?module=config-mycode&amp;action=edit&amp;cid={$mycode['cid']}\">".htmlspecialchars_uni($mycode['title'])."</a></strong><br />{$mycode['description']}</div>");
 
 		$popup = new PopupMenu("mycode_{$mycode['cid']}", $lang->options);
 		$popup->add_item($lang->edit_mycode, "index.php?module=config-mycode&amp;action=edit&amp;cid={$mycode['cid']}");

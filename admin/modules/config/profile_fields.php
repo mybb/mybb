@@ -431,7 +431,7 @@ if($mybb->input['action'] == "edit")
 			$cache->update_profilefields();
 
 			// Log admin action
-			log_admin_action($profile_field['fid'], $mybb->input['name']);
+			log_admin_action($profile_field['fid'], htmlspecialchars_uni($mybb->input['name']));
 
 			flash_message($lang->success_profile_field_saved, 'success');
 			admin_redirect("index.php?module=config-profile_fields");
@@ -681,7 +681,7 @@ if($mybb->input['action'] == "delete")
 		$cache->update_profilefields();
 
 		// Log admin action
-		log_admin_action($profile_field['fid'], $profile_field['name']);
+		log_admin_action($profile_field['fid'], htmlspecialchars_uni($profile_field['name']));
 
 		flash_message($lang->success_profile_field_deleted, 'success');
 		admin_redirect("index.php?module=config-profile_fields");

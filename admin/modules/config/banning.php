@@ -54,7 +54,7 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 		}
 
 		// Log admin action
-		log_admin_action($fid, $mybb->input['filter'], $mybb->input['type']);
+		log_admin_action($fid, htmlspecialchars_uni($mybb->input['filter']), (int)$mybb->input['type']);
 
 		if($mybb->input['type'] == 1)
 		{
@@ -131,7 +131,7 @@ if($mybb->input['action'] == "delete")
 		$plugins->run_hooks("admin_config_banning_delete_commit");
 
 		// Log admin action
-		log_admin_action($filter['fid'], $filter['filter'], $filter['type']);
+		log_admin_action($filter['fid'], htmlspecialchars_uni($filter['filter']), (int)$filter['type']);
 
 		// Banned IP? Rebuild banned IP cache
 		if($filter['type'] == 1)

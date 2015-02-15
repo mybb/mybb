@@ -25,7 +25,7 @@ if(!isset($groupscache[$gid]))
 	error($lang->invalid_group);
 }
 $usergroup = $groupscache[$gid];
-$lang->nav_group_management = $lang->sprintf($lang->nav_group_management, $usergroup['title']);
+$lang->nav_group_management = $lang->sprintf($lang->nav_group_management, htmlspecialchars_uni($usergroup['title']));
 add_breadcrumb($lang->nav_group_memberships, "usercp.php?action=usergroups");
 add_breadcrumb($lang->nav_group_management, "managegroup.php?gid=$gid");
 
@@ -219,7 +219,7 @@ elseif($mybb->input['action'] == "joinrequests")
 	{
 		error($lang->no_requests);
 	}
-	$lang->join_requests = $lang->sprintf($lang->join_requests_title,htmlspecialchars_uni($usergroup['title']));
+	$lang->join_requests = $lang->sprintf($lang->join_requests_title, htmlspecialchars_uni($usergroup['title']));
 
 	$plugins->run_hooks("managegroup_joinrequests_end");
 
@@ -258,9 +258,9 @@ else
 {
 	$plugins->run_hooks("managegroup_start");
 
-	$lang->members_of = $lang->sprintf($lang->members_of, $usergroup['title']);
-	$lang->add_member = $lang->sprintf($lang->add_member, $usergroup['title']);
-	$lang->invite_member = $lang->sprintf($lang->invite_member, $usergroup['title']);
+	$lang->members_of = $lang->sprintf($lang->members_of, htmlspecialchars_uni($usergroup['title']));
+	$lang->add_member = $lang->sprintf($lang->add_member, htmlspecialchars_uni($usergroup['title']));
+	$lang->invite_member = $lang->sprintf($lang->invite_member, htmlspecialchars_uni($usergroup['title']));
 	$joinrequests = '';
 	if($usergroup['type'] == 5)
 	{

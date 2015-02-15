@@ -568,7 +568,7 @@ elseif($mybb->input['action'] == "buddypopup")
 				$last_active = $lang->sprintf($lang->last_active, $lang->never);
 			}
 
-			$buddy['avatar'] = format_avatar(htmlspecialchars_uni($buddy['avatar']), $buddy['avatardimensions'], '44x44');
+			$buddy['avatar'] = format_avatar($buddy['avatar'], $buddy['avatardimensions'], '44x44');
 
 			if($buddy['lastactive'] > $timecut && ($buddy['invisible'] == 0 || $mybb->user['usergroup'] == 4) && $buddy['lastvisit'] != $buddy['lastactive'])
 			{

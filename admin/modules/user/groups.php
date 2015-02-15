@@ -199,13 +199,13 @@ if($mybb->input['action'] == "join_requests")
 				join_usergroup($uid, $group['gid']);
 			}
 			// Log admin action
-			log_admin_action("approve", $group['title'], $group['gid']);
+			log_admin_action("approve", htmlspecialchars_uni($group['title']), $group['gid']);
 			$message = $lang->success_selected_requests_approved;
 		}
 		else
 		{
 			// Log admin action
-			log_admin_action("deny", $group['title'], $group['gid']);
+			log_admin_action("deny", htmlspecialchars_uni($group['title']), $group['gid']);
 			$message = $lang->success_selected_requests_denied;
 		}
 
@@ -220,8 +220,8 @@ if($mybb->input['action'] == "join_requests")
 		admin_redirect("index.php?module=user-groups&action=join_requests&gid={$group['gid']}");
 	}
 
-	$page->add_breadcrumb_item($lang->join_requests_for." {$group['title']}");
-	$page->output_header($lang->join_requests_for." {$group['title']}");
+	$page->add_breadcrumb_item($lang->join_requests_for.' '.htmlspecialchars_uni($group['title']));
+	$page->output_header($lang->join_requests_for.' '.htmlspecialchars_uni($group['title']));
 
 	$sub_tabs = array();
 	$sub_tabs['join_requests'] = array(
@@ -301,7 +301,7 @@ if($mybb->input['action'] == "join_requests")
 		$table->construct_row();
 	}
 
-	$table->output($lang->join_requests_for." {$group['title']}");
+	$table->output($lang->join_requests_for.' '.htmlspecialchars_uni($group['title']));
 	echo $pagination;
 
 	$buttons[] = $form->generate_submit_button($lang->approve_selected_requests, array('name' => 'approve'));
@@ -358,7 +358,7 @@ if($mybb->input['action'] == "add_leader" && $mybb->request_method == "post")
 		$cache->update_groupleaders();
 
 		// Log admin action
-		log_admin_action($user['uid'], $mybb->input['username'], $group['gid'], $group['title']);
+		log_admin_action($user['uid'], $mybb->input['username'], $group['gid'], htmlspecialchars_uni($group['title']));
 
 		flash_message("{$user['username']} ".$lang->success_user_made_leader, 'success');
 		admin_redirect("index.php?module=user-groups&action=leaders&gid={$group['gid']}");
@@ -384,8 +384,8 @@ if($mybb->input['action'] == "leaders")
 
 	$plugins->run_hooks("admin_user_groups_leaders");
 
-	$page->add_breadcrumb_item($lang->group_leaders_for." {$group['title']}");
-	$page->output_header($lang->group_leaders_for." {$group['title']}");
+	$page->add_breadcrumb_item($lang->group_leaders_for.' '.htmlspecialchars_uni($group['title']));
+	$page->output_header($lang->group_leaders_for.' '.htmlspecialchars_uni($group['title']));
 
 	$sub_tabs = array();
 	$sub_tabs['group_leaders'] = array(
@@ -455,7 +455,7 @@ if($mybb->input['action'] == "leaders")
 		$table->construct_row();
 	}
 
-	$table->output($lang->group_leaders_for." {$group['title']}");
+	$table->output($lang->group_leaders_for.' '.htmlspecialchars_uni($group['title']));
 
 	$form = new Form("index.php?module=user-groups&amp;action=add_leader&amp;gid={$group['gid']}", "post");
 
@@ -473,7 +473,7 @@ if($mybb->input['action'] == "leaders")
 		);
 	}
 
-	$form_container = new FormContainer($lang->add_group_leader." {$group['title']}");
+	$form_container = new FormContainer($lang->add_group_leader.' '.htmlspecialchars_uni($group['title']));
 	$form_container->output_row($lang->username." <em>*</em>", "", $form->generate_text_box('username', $mybb->input['username'], array('id' => 'username')), 'username');
 	$form_container->output_row($lang->can_manage_group_members, $lang->can_manage_group_members_desc, $form->generate_yes_no_radio('canmanagemembers', $mybb->input['canmanagemembers']));
 	$form_container->output_row($lang->can_manage_group_join_requests, $lang->can_manage_group_join_requests_desc, $form->generate_yes_no_radio('canmanagerequests', $mybb->input['canmanagerequests']));
@@ -525,7 +525,7 @@ if($mybb->input['action'] == "delete_leader")
 		$cache->update_groupleaders();
 
 		// Log admin action
-		log_admin_action($leader['lid'], $leader['username'], $group['gid'], $group['title']);
+		log_admin_action($leader['lid'], $leader['username'], $group['gid'], htmlspecialchars_uni($group['title']));
 
 		flash_message($lang->success_group_leader_deleted, 'success');
 		admin_redirect("index.php?module=user-groups&action=leaders&gid={$group['gid']}");
@@ -572,7 +572,7 @@ if($mybb->input['action'] == "edit_leader")
 		$cache->update_groupleaders();
 
 		// Log admin action
-		log_admin_action($leader['lid'], $leader['username'], $group['gid'], $group['title']);
+		log_admin_action($leader['lid'], $leader['username'], $group['gid'], htmlspecialchars_uni($group['title']));
 
 		flash_message($lang->success_group_leader_updated, 'success');
 		admin_redirect("index.php?module=user-groups&action=leaders&gid={$group['gid']}");
@@ -583,7 +583,7 @@ if($mybb->input['action'] == "edit_leader")
 		$mybb->input = array_merge($mybb->input, $leader);
 	}
 
-	$page->add_breadcrumb_item($lang->group_leaders_for." {$group['title']}", "index.php?module=user-groups&action=leaders&gid={$group['gid']}");
+	$page->add_breadcrumb_item($lang->group_leaders_for.' '.htmlspecialchars_uni($group['title']), "index.php?module=user-groups&action=leaders&gid={$group['gid']}");
 	$page->add_breadcrumb_item($lang->edit_leader." {$leader['username']}");
 
 	$page->output_header($lang->edit_group_leader);
@@ -692,7 +692,7 @@ if($mybb->input['action'] == "add")
 			$cache->update_forumpermissions();
 
 			// Log admin action
-			log_admin_action($gid, $mybb->input['title']);
+			log_admin_action($gid, htmlspecialchars_uni($mybb->input['title']));
 
 			flash_message($lang->success_group_created, 'success');
 			admin_redirect("index.php?module=user-groups&action=edit&gid={$gid}");
@@ -727,7 +727,7 @@ if($mybb->input['action'] == "add")
 	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
 	while($usergroup = $db->fetch_array($query))
 	{
-		$options[$usergroup['gid']] = $usergroup['title'];
+		$options[$usergroup['gid']] = htmlspecialchars_uni($usergroup['title']);
 	}
 	$form_container->output_row($lang->copy_permissions_from, $lang->copy_permissions_from_desc, $form->generate_select_box('copyfrom', $options, $mybb->input['copyfrom'], array('id' => 'copyfrom')), 'copyfrom');
 
@@ -912,7 +912,7 @@ if($mybb->input['action'] == "edit")
 			$cache->update_forumpermissions();
 
 			// Log admin action
-			log_admin_action($usergroup['gid'], $mybb->input['title']);
+			log_admin_action($usergroup['gid'], htmlspecialchars_uni($mybb->input['title']));
 
 			flash_message($lang->success_group_updated, 'success');
 			admin_redirect("index.php?module=user-groups");
@@ -1254,7 +1254,7 @@ if($mybb->input['action'] == "delete")
 		$cache->update_forumpermissions();
 
 		// Log admin action
-		log_admin_action($usergroup['gid'], $usergroup['title']);
+		log_admin_action($usergroup['gid'], htmlspecialchars_uni($usergroup['title']));
 
 		flash_message($lang->success_group_deleted, 'success');
 		admin_redirect("index.php?module=user-groups");
@@ -1413,7 +1413,7 @@ if(!$mybb->input['action'])
 			$join_requests = " <small><a href=\"index.php?module=user-groups&amp;action=join_requests&amp;gid={$usergroup['gid']}\"><span style=\"color: red;\">({$joinrequests[$usergroup['gid']]} {$lang->outstanding_join_request})</span></a></small>";
 		}
 
-		$form_container->output_cell("<div class=\"float_right\">{$icon}</div><div><strong><a href=\"index.php?module=user-groups&amp;action=edit&amp;gid={$usergroup['gid']}\">{$usergroup['title']}</a></strong>{$join_requests}<br /><small>{$usergroup['description']}{$leaders_list}</small></div>");
+		$form_container->output_cell("<div class=\"float_right\">{$icon}</div><div><strong><a href=\"index.php?module=user-groups&amp;action=edit&amp;gid={$usergroup['gid']}\">".htmlspecialchars_uni($usergroup['title'])."</a></strong>{$join_requests}<br /><small>".htmlspecialchars_uni($usergroup['description'])."{$leaders_list}</small></div>");
 
 		if(!$primaryusers[$usergroup['gid']])
 		{

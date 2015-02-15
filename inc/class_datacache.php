@@ -790,12 +790,7 @@ class datacache
 		$query = $db->simple_select('users', 'COUNT(uid) AS awaitingusers', 'usergroup=\'5\'');
 		$awaitingusers = (int)$db->fetch_field($query, 'awaitingusers');
 
-		$data = array(
-			'users'	=> $awaitingusers,
-			'time'	=> TIME_NOW,
-		);
-
-		$this->update('awaitingactivation', $data);
+		$this->update('awaitingactivation', array('users' => $awaitingusers));
 	}
 
 	/**
@@ -848,7 +843,7 @@ class datacache
 		$forums = array();
 
 		// Things we don't want to cache
-		$exclude = array("unapprovedthreads", "unapprovedposts", "threads", "posts", "lastpost", "lastposter", "lastposttid", "lastposteruid", "lastpostsubject", "deletedthreads", "deletedposts");
+		$exclude = array("unapprovedthreads", "unapprovedposts", "threads", "posts", "lastpost", "lastposter", "lastposttid", "deletedthreads", "deletedposts");
 
 		$query = $db->simple_select("forums", "*", "", array('order_by' => 'pid,disporder'));
 		while($forum = $db->fetch_array($query))

@@ -725,7 +725,7 @@ if($mybb->input['action'] == "profile")
 		}
 		else
 		{
-			$defaulttitle = $mybb->usergroup['usertitle'];
+			$defaulttitle = htmlspecialchars_uni($mybb->usergroup['usertitle']);
 		}
 
 		$newtitle = '';
@@ -2244,7 +2244,7 @@ if($mybb->input['action'] == "avatar")
 		$avatarurl = htmlspecialchars_uni($mybb->user['avatar']);
 	}
 
-	$useravatar = format_avatar(htmlspecialchars_uni($mybb->user['avatar']), $mybb->user['avatardimensions'], '100x100');
+	$useravatar = format_avatar($mybb->user['avatar'], $mybb->user['avatardimensions'], '100x100');
 	eval("\$currentavatar = \"".$templates->get("usercp_avatar_current")."\";");
 
 	if($mybb->settings['maxavatardims'] != "")
@@ -3166,7 +3166,7 @@ if($mybb->input['action'] == "usergroups")
 
 	// List of usergroup leaders
 	$query = $db->query("
-		SELECT g.*, u.username, u.displaygroup, u.usergroup
+		SELECT g.*, u.username, u.displaygroup, u.usergroup, u.email, u.language
 		FROM ".TABLE_PREFIX."groupleaders g
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=g.uid)
 		ORDER BY u.username ASC
@@ -3217,20 +3217,15 @@ if($mybb->input['action'] == "usergroups")
 
 			$db->insert_query("joinrequests", $joinrequest);
 
-			foreach($groupleaders as $key => $groupleader)
+			foreach($groupleaders[$usergroup['gid']] as $leader)
 			{
-				foreach($groupleader as $leader)
-				{
-					$leader_user = get_user($leader['uid']);
+				// Load language
+				$lang->set_language($leader['language']);
+				$lang->load("messages");
 					
-					// Load language
-					$lang->set_language($leader_user['language']);
-					$lang->load("messages");
-					
-					$subject = $lang->sprintf($lang->emailsubject_newjoinrequest, $mybb->settings['bbname']);
-					$message = $lang->sprintf($lang->email_groupleader_joinrequest, $leader_user['username'], $mybb->user['username'], $usergroups[$leader['gid']]['title'], $mybb->settings['bbname'], $mybb->get_input('reason'), $mybb->settings['bburl'], $leader['gid']);
-					my_mail($leader_user['email'], $subject, $message);
-				}
+				$subject = $lang->sprintf($lang->emailsubject_newjoinrequest, $mybb->settings['bbname']);
+				$message = $lang->sprintf($lang->email_groupleader_joinrequest, $leader['username'], $mybb->user['username'], $usergroup['title'], $mybb->settings['bbname'], $mybb->get_input('reason'), $mybb->settings['bburl'], $leader['gid']);
+				my_mail($leader['email'], $subject, $message);
 			}
 
 			// Load language
@@ -3318,6 +3313,7 @@ if($mybb->input['action'] == "usergroups")
 	{
 		$memberlistlink = $moderaterequestslink = '';
 		eval("\$memberlistlink = \"".$templates->get("usercp_usergroups_leader_usergroup_memberlist")."\";");
+		$usergroup['title'] = htmlspecialchars_uni($usergroup['title']);
 		if($usergroup['type'] != 4)
 		{
 			$usergroup['joinrequests'] = '--';
@@ -3339,6 +3335,9 @@ if($mybb->input['action'] == "usergroups")
 	// Fetch the list of groups the member is in
 	// Do the primary group first
 	$usergroup = $usergroups[$mybb->user['usergroup']];
+	$usergroup['title'] = htmlspecialchars_uni($usergroup['title']);
+	$usergroup['usertitle'] = htmlspecialchars_uni($usergroup['usertitle']);
+	$usergroup['description'] = htmlspecialchars_uni($usergroup['description']);
 	eval("\$leavelink = \"".$templates->get("usercp_usergroups_memberof_usergroup_leaveprimary")."\";");
 	$trow = alt_trow();
 	if($usergroup['candisplaygroup'] == 1 && $usergroup['gid'] == $mybb->user['displaygroup'])
@@ -3377,8 +3376,11 @@ if($mybb->input['action'] == "usergroups")
 			}
 
 			$description = '';
+			$usergroup['title'] = htmlspecialchars_uni($usergroup['title']);
+			$usergroup['usertitle'] = htmlspecialchars_uni($usergroup['usertitle']);
 			if($usergroup['description'])
 			{
+				$usergroup['description'] = htmlspecialchars_uni($usergroup['description']);
 				eval("\$description = \"".$templates->get("usercp_usergroups_memberof_usergroup_description")."\";");
 			}
 			$trow = alt_trow();
@@ -3420,8 +3422,10 @@ if($mybb->input['action'] == "usergroups")
 		$trow = alt_trow();
 
 		$description = '';
+		$usergroup['title'] = htmlspecialchars_uni($usergroup['title']);
 		if($usergroup['description'])
 		{
+			$usergroup['description'] = htmlspecialchars_uni($usergroup['description']);
 			eval("\$description = \"".$templates->get("usercp_usergroups_joinable_usergroup_description")."\";");
 		}
 
@@ -3666,10 +3670,10 @@ if(!$mybb->input['action'])
 	$lang->posts_day = $lang->sprintf($lang->posts_day, my_number_format($perday), $percent);
 	$regdate = my_date('relative', $mybb->user['regdate']);
 
-	$useravatar = format_avatar(htmlspecialchars_uni($mybb->user['avatar']), $mybb->user['avatardimensions'], '100x100');
+	$useravatar = format_avatar($mybb->user['avatar'], $mybb->user['avatardimensions'], '100x100');
 	eval("\$avatar = \"".$templates->get("usercp_currentavatar")."\";");
 
-	$usergroup = $groupscache[$mybb->user['usergroup']]['title'];
+	$usergroup = htmlspecialchars_uni($groupscache[$mybb->user['usergroup']]['title']);
 	if($mybb->user['usergroup'] == 5 && $mybb->settings['regtype'] != "admin")
 	{
 		eval("\$usergroup .= \"".$templates->get("usercp_resendactivation")."\";");

@@ -3045,7 +3045,7 @@ function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
 	}
 
 	$avatars[$avatar] = array(
-		'image' => $mybb->get_asset_url($avatar),
+		'image' => htmlspecialchars_uni($mybb->get_asset_url($avatar)),
 		'width_height' => $avatar_width_height
 	);
 
@@ -4012,7 +4012,9 @@ function get_attachment_icon($ext)
 			$icon = str_replace("{theme}", $theme['imgdir'], $attachtypes[$ext]['icon']);
 			$icon = $mybb->get_asset_url($icon);
 		}
-		
+		}
+		$icon = htmlspecialchars_uni($icon);
+
 		$name = htmlspecialchars_uni($attachtypes[$ext]['name']);
 	}
 	else

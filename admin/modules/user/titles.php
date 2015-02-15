@@ -70,7 +70,7 @@ if($mybb->input['action'] == "add")
 			$cache->update_usertitles();
 
 			// Log admin action
-			log_admin_action($utid, $mybb->input['title'], $mybb->input['posts']);
+			log_admin_action($utid, htmlspecialchars_uni($mybb->input['title']), $mybb->input['posts']);
 
 			flash_message($lang->success_user_title_created, 'success');
 			admin_redirect("index.php?module=user-titles");
@@ -159,7 +159,7 @@ if($mybb->input['action'] == "edit")
 			$cache->update_usertitles();
 
 			// Log admin action
-			log_admin_action($usertitle['utid'], $mybb->input['title'], $mybb->input['posts']);
+			log_admin_action($usertitle['utid'], htmlspecialchars_uni($mybb->input['title']), $mybb->input['posts']);
 
 			flash_message($lang->success_user_title_updated, 'success');
 			admin_redirect("index.php?module=user-titles");
@@ -171,7 +171,7 @@ if($mybb->input['action'] == "edit")
 
 	$sub_tabs['edit_title'] = array(
 		'title' => $lang->edit_user_title,
-		'link' => "index.php?module=user-titles&amp;action=edit&amp;utid=".$mybb->input['utid'],
+		'link' => "index.php?module=user-titles&amp;action=edit&amp;utid=".$usertitle['utid'],
 		'description' => $lang->edit_user_title_desc
 	);
 
@@ -232,7 +232,7 @@ if($mybb->input['action'] == "delete")
 		$cache->update_usertitles();
 		
 		// Log admin action
-		log_admin_action($usertitle['utid'], $usertitle['title'], $usertitle['posts']);
+		log_admin_action($usertitle['utid'], htmlspecialchars_uni($usertitle['title']), $usertitle['posts']);
 
 		flash_message($lang->success_user_title_deleted, 'success');
 		admin_redirect("index.php?module=user-titles");

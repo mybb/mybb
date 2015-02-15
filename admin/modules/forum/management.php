@@ -236,7 +236,7 @@ if($mybb->input['action'] == "copy")
 	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
 	while($usergroup = $db->fetch_array($query))
 	{
-		$usergroups[$usergroup['gid']] = $usergroup['title'];
+		$usergroups[$usergroup['gid']] = htmlspecialchars_uni($usergroup['title']);
 	}
 
 	$form_container = new FormContainer($lang->copy_forum);
@@ -2559,7 +2559,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 
 		foreach($usergroups as $group)
 		{
-			$modgroups[$group['gid']] = $lang->usergroup." ".$group['gid'].": ".$group['title'];
+			$modgroups[$group['gid']] = $lang->usergroup." ".$group['gid'].": ".htmlspecialchars_uni($group['title']);
 		}
 
 		if(!isset($mybb->input['usergroup']))

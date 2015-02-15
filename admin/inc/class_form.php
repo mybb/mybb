@@ -596,7 +596,7 @@ class DefaultForm
 				}
 			}
 
-			$select .= "<option value=\"{$group['gid']}\"{$selected_add}>".htmlspecialchars_uni(strip_tags($group['title']))."</option>";
+			$select .= "<option value=\"{$group['gid']}\"{$selected_add}>".htmlspecialchars_uni($group['title'])."</option>";
 		}
 
 		$select .= "</select>";

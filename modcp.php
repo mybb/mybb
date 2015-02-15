@@ -2714,7 +2714,7 @@ if($mybb->input['action'] == "editprofile")
 
 	if(!empty($display_group['usertitle']))
 	{
-		$defaulttitle = $display_group['usertitle'];
+		$defaulttitle = htmlspecialchars_uni($display_group['usertitle']);
 	}
 	else
 	{
@@ -2845,6 +2845,7 @@ if($mybb->input['action'] == "editprofile")
 		{
 			$userfield = $code = $select = $val = $options = $expoptions = $useropts = $seloptions = '';
 			$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
+			$profilefield['name'] = htmlspecialchars_uni($profilefield['name']);
 			$profilefield['description'] = htmlspecialchars_uni($profilefield['description']);
 			$thing = explode("\n", $profilefield['type'], "2");
 			$type = $thing[0];
@@ -3294,7 +3295,7 @@ if($mybb->input['action'] == "finduser")
 			$lastdate = my_date('relative', $user['lastvisit']);
 		}
 
-		$usergroup = $usergroups_cache[$user['usergroup']]['title'];
+		$usergroup = htmlspecialchars_uni($usergroups_cache[$user['usergroup']]['title']);
 		eval("\$users .= \"".$templates->get("modcp_finduser_user")."\";");
 	}
 

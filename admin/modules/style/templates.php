@@ -798,14 +798,14 @@ if($mybb->input['action'] == "edit_template_group")
 
 				$db->update_query('templategroups', $update_array, "gid = '{$template_group['gid']}'");
 
-				log_admin_action($template_group['gid'], $title);
+				log_admin_action($template_group['gid'], htmlspecialchars_uni($title));
 				flash_message($lang->success_template_group_saved, 'success');
 				admin_redirect("index.php?module=style-templates&amp;sid={$sid}");
 			}
 		}
 	}
 
-	$lang->editing_template_group = $lang->sprintf($lang->editing_template_group, $template_group['title']);
+	$lang->editing_template_group = $lang->sprintf($lang->editing_template_group, htmlspecialchars_uni($template_group['title']));
 
 	$page->add_breadcrumb_item($template_sets[$sid], "index.php?module=style-templates&amp;sid={$sid}{$expand_str}");
 	$page->add_breadcrumb_item($lang->editing_template_group, "index.php?module=style-templates&amp;sid={$sid}");
@@ -1387,7 +1387,7 @@ if($mybb->input['action'] == "delete_template_group")
 		$plugins->run_hooks("admin_style_template_group_delete_commit");
 
 		// Log admin action
-		log_admin_action($template_group['gid'], $template_group['title']);
+		log_admin_action($template_group['gid'], htmlspecialchars_uni($template_group['title']));
 
 		flash_message($lang->success_template_group_deleted, 'success');
 		admin_redirect("index.php?module=style-templates&amp;sid={$sid}");
@@ -1526,7 +1526,7 @@ if($mybb->input['action'] == "diff_report")
 
 	$sub_tabs['diff_report'] = array(
 		'title' => $lang->diff_report,
-		'link' => "index.php?module=style-templates&amp;action=diff_report&amp;title=".$db->escape_string($mybb->input['title'])."&amp;from=".$mybb->input['from']."sid1=".$mybb->get_input('sid1', MyBB::INPUT_INT)."&amp;sid2=".$mybb->get_input('sid2', MyBB::INPUT_INT),
+		'link' => "index.php?module=style-templates&amp;action=diff_report&amp;title=".$db->escape_string($mybb->input['title'])."&amp;from=".htmlspecialchars_uni($mybb->input['from'])."sid1=".$mybb->get_input('sid1', MyBB::INPUT_INT)."&amp;sid2=".$mybb->get_input('sid2', MyBB::INPUT_INT),
 		'description' => $lang->diff_report_desc
 	);
 
@@ -1574,7 +1574,7 @@ if($mybb->input['action'] == "diff_report")
 		$page->add_breadcrumb_item($lang->find_updated, "index.php?module=style-templates&amp;action=find_updated");
 	}
 
-	$page->add_breadcrumb_item($lang->diff_report.": ".$template1['title'], "index.php?module=style-templates&amp;action=diff_report&amp;title=".$db->escape_string($mybb->input['title'])."&amp;from=".$mybb->input['from']."&amp;sid1=".$mybb->get_input('sid1', MyBB::INPUT_INT)."&amp;sid2=".$mybb->get_input('sid2', MyBB::INPUT_INT));
+	$page->add_breadcrumb_item($lang->diff_report.": ".$template1['title'], "index.php?module=style-templates&amp;action=diff_report&amp;title=".$db->escape_string($mybb->input['title'])."&amp;from=".htmlspecialchars_uni($mybb->input['from'])."&amp;sid1=".$mybb->get_input('sid1', MyBB::INPUT_INT)."&amp;sid2=".$mybb->get_input('sid2', MyBB::INPUT_INT));
 
 	$page->output_header($lang->template_sets);
 
@@ -1714,7 +1714,7 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 	$template_groups = array();
 	while($templategroup = $db->fetch_array($query))
 	{
-		$templategroup['title'] = $lang->sprintf($lang->templates, $lang->parse($templategroup['title']));
+		$templategroup['title'] = $lang->sprintf($lang->templates, htmlspecialchars_uni($lang->parse($templategroup['title'])));
 		if($mybb->input['expand'] == 'all')
 		{
 			$expand_array[] = $templategroup['gid'];

@@ -561,7 +561,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 				$icon = "&nbsp;";
 			}
 
-			$useravatar = format_avatar(htmlspecialchars_uni($announcement['avatar']), $announcement['avatardimensions']);
+			$useravatar = format_avatar($announcement['avatar'], $announcement['avatardimensions']);
 			eval("\$avatar = \"".$templates->get("portal_announcement_avatar")."\";");
 
 			$anndate = my_date('relative', $announcement['dateline']);
