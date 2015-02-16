@@ -69,7 +69,7 @@ if($fid)
 
 if($pmid > 0)
 {
-	$query = $db->simple_select('privatemessages', 'uid, subject, ipaddress', "pmid = $pmid");
+	$query = $db->simple_select('privatemessages', 'uid, subject, ipaddress, fromid', "pmid = $pmid");
 
 	$pm = $db->fetch_array($query);
 
