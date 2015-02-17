@@ -86,6 +86,7 @@ function upgrade33_dbchanges2()
 		// PostgreSQL and SQLite do not support unsigned ints
 		case "sqlite":
 			$db->modify_column("usergroups", "type", "tinyint(1) NOT NULL default '2'");
+			$db->modify_column("users", "loginattempts", "smallint(2) NOT NULL default '1'");
 			break;
 		case "mysql":
 		case "mysqli":
@@ -106,6 +107,7 @@ function upgrade33_dbchanges2()
 			$db->modify_column("users", "totalpms", "int(10) unsigned NOT NULL default '0'");
 			$db->modify_column("users", "unreadpms", "int(10) unsigned NOT NULL default '0'");
 			$db->modify_column("users", "warningpoints", "int(3) unsigned NOT NULL default '0'");
+			$db->modify_column("users", "loginattempts", "smallint(2) unsigned NOT NULL default '1'");
 			$db->modify_column("usertitles", "stars", "smallint(4) unsigned NOT NULL default '0'");
 			$db->modify_column("warninglevels", "percentage", "smallint(3) unsigned NOT NULL default '0'");
 			break;
