@@ -41,7 +41,7 @@ class dbpdoEngine {
 	{
 		try
 		{
-    		$this->db = new PDO($dsn, $username, $password, $driver_options);
+			$this->db = new PDO($dsn, $username, $password, $driver_options);
 		}
 		catch(PDOException $exception)
 		{
@@ -236,4 +236,3 @@ class dbpdoEngine {
 		return $attribute;
 	}
 }
-
