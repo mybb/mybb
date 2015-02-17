@@ -31,8 +31,16 @@ function upgrade33_dbchanges()
 	switch($db->type)
 	{
 		// PostgreSQL and SQLite do not support unsigned ints
+		case "pgsql":
+			$db->modify_column("buddyrequests", "uid", "int", "set", "'0'");
+			$db->modify_column("buddyrequests", "touid", "int", "set", "'0'");
+			$db->modify_column("buddyrequests", "date", "int", "set", "'0'");
+			break;
 		case "sqlite":
-			$db->modify_column("threadratings", "rating", "tinyint NOT NULL default '0'");
+			$db->modify_column("threadratings", "rating", "tinyint(1) NOT NULL default '0'");
+			$db->modify_column("buddyrequests", "uid", "int NOT NULL default '0'");
+			$db->modify_column("buddyrequests", "touid", "int NOT NULL default '0'");
+			$db->modify_column("buddyrequests", "date", "int NOT NULL default '0'");
 			break;
 		default:
 			$db->modify_column("adminviews", "perpage", "smallint(4) unsigned NOT NULL default '0'");
@@ -77,10 +85,11 @@ function upgrade33_dbchanges2()
 	{
 		// PostgreSQL and SQLite do not support unsigned ints
 		case "sqlite":
-			$db->modify_column("usergroups", "type", "tinyint NOT NULL default '2'");
+			$db->modify_column("usergroups", "type", "tinyint(1) NOT NULL default '2'");
 			break;
-		default:
-			$db->modify_column("usergroups", "type", "tinyint(2) unsigned NOT NULL default '2'");
+		case "mysql":
+		case "mysqli":
+			$db->modify_column("usergroups", "type", "tinyint(1) unsigned NOT NULL default '2'");
 			$db->modify_column("usergroups", "stars", "smallint(4) unsigned NOT NULL default '0'");
 			$db->modify_column("usergroups", "pmquota", "int(3) unsigned NOT NULL default '0'");
 			$db->modify_column("usergroups", "maxpmrecipients", "int(4) unsigned NOT NULL default '5'");

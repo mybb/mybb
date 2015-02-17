@@ -940,7 +940,7 @@ $tables[] = "CREATE TABLE mybb_userfields (
 
 $tables[] = "CREATE TABLE mybb_usergroups (
   gid smallint unsigned NOT NULL auto_increment,
-  type tinyint(2) unsigned NOT NULL default '2',
+  type tinyint(1) unsigned NOT NULL default '2',
   title varchar(120) NOT NULL default '',
   description text NOT NULL,
   namestyle varchar(200) NOT NULL default '{username}',
