@@ -293,23 +293,15 @@ class PMDataHandler extends DataHandler
 			// - sender is an administrator
 			if(($this->admin_override != true && $sender_permissions['cancp'] != 1) && $sender_permissions['canoverridepm'] != 1)
 			{
-				if(!empty($user['ignorelist']))
+				if(!empty($user['ignorelist']) && my_strpos(','.$user['ignorelist'].',', ','.$pm['fromid'].',') !== false)
 				{
-					$ignorelist = explode(',', $user['ignorelist']);
-					if(!empty($ignorelist) && in_array($pm['fromid'], $ignorelist))
-					{
-						$this->set_error('recipient_is_ignoring', array($user['username']));
-					}
+					$this->set_error('recipient_is_ignoring', array($user['username']));
 				}
 
 				// Is the recipient only allowing private messages from their buddy list?
-				if($mybb->settings['allowbuddyonly'] == 1 && $user['receivefrombuddy'] == 1 && !empty($user['buddylist']))
+				if($mybb->settings['allowbuddyonly'] == 1 && $user['receivefrombuddy'] == 1 && !empty($user['buddylist']) && my_strpos(','.$user['buddylist'].',', ','.$pm['fromid'].',') === false)
 				{
-					$buddylist = explode(',', $user['buddylist']);
-					if(!empty($buddylist) && in_array($pm['fromid'], $buddylist))
-					{
-						$this->set_error('recipient_has_buddy_only', array(htmlspecialchars_uni($user['username'])));
-					}
+					$this->set_error('recipient_has_buddy_only', array(htmlspecialchars_uni($user['username'])));
 				}
 
 				// Can the recipient actually receive private messages based on their permissions or user setting?
