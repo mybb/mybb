@@ -4953,12 +4953,7 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 
 	if(!is_array($tcache))
 	{
-		$query = $db->simple_select("themes", "name, pid, tid, allowedgroups", "pid != '0'", array('order_by' => 'pid, name'));
-
-		while($theme = $db->fetch_array($query))
-		{
-			$tcache[$theme['pid']][$theme['tid']] = $theme;
-		}
+		cache_themes();
 	}
 
 	if(is_array($tcache[$tid]))
@@ -4973,24 +4968,8 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 		foreach($tcache[$tid] as $theme)
 		{
 			$sel = "";
-			// Make theme allowed groups into array
-			$is_allowed = false;
-			if($theme['allowedgroups'] != "all")
-			{
-				$allowed_groups = explode(",", $theme['allowedgroups']);
-				// See if groups user is in is allowed
-				foreach($allowed_groups as $agid)
-				{
-					if(in_array($agid, $in_groups))
-					{
-						$is_allowed = true;
-						break;
-					}
-				}
-			}
-
 			// Show theme if allowed, or if override is on
-			if($is_allowed || $theme['allowedgroups'] == "all" || $usergroup_override == true)
+			if(is_member($theme['allowedgroups']) || $theme['allowedgroups'] == "all" || $usergroup_override == true)
 			{
 				if($theme['tid'] == $selected)
 				{
@@ -5030,6 +5009,62 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 	{
 		return false;
 	}
+}
+
+/**
+ * Load the forum cache in to memory
+ *
+ * @param boolean True to force a reload of the cache
+ */
+function cache_themes()
+{
+	global $tcache, $db;
+
+	$query = $db->simple_select('themes', 'tid, name, pid, def, allowedgroups', "pid!='0'", array('order_by' => 'pid, name'));
+
+	while($theme = $db->fetch_array($query))
+	{
+		$tcache[$theme['pid']][$theme['tid']] = $theme;
+	}
+
+	return false;
+}
+
+/**
+ * Get the theme data of a theme id.
+ *
+ * @param int The theme id of the theme.
+ * @return array The theme data
+ */
+function get_theme($tid)
+{
+	global $tcache;
+
+	if(!is_array($tcache))
+	{
+		cache_themes();
+	}
+
+	$s_theme = false;
+
+	foreach($tcache as $themes)
+	{
+		foreach($themes as $theme)
+		{
+			if($tid == $theme['tid'])
+			{
+				$s_theme = $theme;
+				break;
+			}
+		}
+
+		if($s_theme)
+		{
+			break;
+		}
+	}
+
+	return $s_theme;
 }
 
 /**

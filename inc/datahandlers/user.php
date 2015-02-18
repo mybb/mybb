@@ -848,7 +848,7 @@ class UserDataHandler extends DataHandler
 	}
 
 	/**
-	 * Verifies if a langage is valid for this user or not.
+	 * Verifies if a language is valid for this user or not.
 	 *
 	 * @return boolean True when valid, false when invalid.
 	 */
@@ -864,6 +864,31 @@ class UserDataHandler extends DataHandler
 			$this->set_error("invalid_language");
 			return false;
 		}
+		return true;
+	}
+
+	/**
+	 * Verifies if a style is valid for this user or not.
+	 *
+	 * @return boolean True when valid, false when invalid.
+	 */
+	function verify_style()
+	{
+		global $lang;
+
+		$tid = &$this->data['style'];
+
+		if($tid != 0 && !defined('IN_ADMINCP'))
+		{
+			$theme = get_theme($tid);
+
+			if(!is_member($theme['allowedgroups']) && $theme['allowedgroups'] != 'all')
+			{
+				$this->set_error('invalid_style');
+				return false;
+			}
+		}
+
 		return true;
 	}
 
@@ -990,6 +1015,10 @@ class UserDataHandler extends DataHandler
 		if(array_key_exists('birthdayprivacy', $user))
 		{
 			$this->verify_birthday_privacy();
+		}
+		if($this->method == "insert" || array_key_exists('style', $user))
+		{
+			$this->verify_style();
 		}
 
 		$plugins->run_hooks("datahandler_user_validate", $this);
