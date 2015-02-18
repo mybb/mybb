@@ -235,7 +235,7 @@ if($mybb->input['action'] == "edit")
 				"threadtype" => $db->escape_string($mybb->input['threadtype']),
 				"registered" => $mybb->get_input('timeregistered', MyBB::INPUT_INT),
 				"registeredtype" => $db->escape_string($mybb->input['timeregisteredtype']),
-				"online" => $db->escape_string($mybb->input['timeonline']),
+				"online" => $mybb->get_input('timeonline', MyBB::INPUT_INT),
 				"onlinetype" => $db->escape_string($mybb->input['timeonlinetype']),
 				"reputations" => $mybb->get_input('reputationcount', MyBB::INPUT_INT),
 				"reputationtype" => $db->escape_string($mybb->input['reputationtype']),

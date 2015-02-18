@@ -71,7 +71,7 @@ if($mybb->input['action'] == "add")
 				"find" => $db->escape_string($mybb->input['find']),
 				"image" => $db->escape_string($mybb->input['image']),
 				"disporder" => $mybb->get_input('disporder', MyBB::INPUT_INT),
-				"showclickable" => $db->escape_string($mybb->input['showclickable'])
+				"showclickable" => $mybb->get_input('showclickable', MyBB::INPUT_INT)
 			);
 
 			$sid = $db->insert_query("smilies", $new_smilie);
@@ -207,7 +207,7 @@ if($mybb->input['action'] == "edit")
 				"find" => $db->escape_string($mybb->input['find']),
 				"image" => $db->escape_string($mybb->input['image']),
 				"disporder" => $mybb->get_input('disporder', MyBB::INPUT_INT),
-				"showclickable" => $db->escape_string($mybb->input['showclickable'])
+				"showclickable" => $mybb->get_input('showclickable', MyBB::INPUT_INT)
 			);
 
 			$plugins->run_hooks("admin_config_smilies_edit_commit");
