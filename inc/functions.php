@@ -5156,7 +5156,7 @@ function convert_through_utf8($str, $to=true)
 }
 
 /**
- * DEPRECATED! Please use other alternatives.
+ * @deprecated deprecated since version 1.8.4 Please use other alternatives.
  */
 function my_wordwrap($message)
 {

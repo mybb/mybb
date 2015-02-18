@@ -123,7 +123,7 @@ function validate_password_from_uid($uid, $password, $user = array())
 }
 
 /**
- * DEPRECATED! Please use other alternatives.
+ * @deprecated deprecated since version 1.8.5 Please use other alternatives.
  */
 function update_password($uid, $password, $salt="")
 {
