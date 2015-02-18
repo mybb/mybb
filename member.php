@@ -1579,6 +1579,7 @@ if($mybb->input['action'] == "resetpassword")
 	{
 		$user = get_user($mybb->get_input('uid', MyBB::INPUT_INT));
 	}
+
 	if(isset($mybb->input['code']) && $user)
 	{
 		$query = $db->simple_select("awaitingactivation", "*", "uid='".$user['uid']."' AND type='p'");
@@ -1599,8 +1600,29 @@ if($mybb->input['action'] == "resetpassword")
 			$password_length = 8;
 		}
 
-		$password = random_str($password_length);
-		$logindetails = update_password($user['uid'], md5($password), $user['salt']);
+		// Set up user handler.
+		require_once 'inc/datahandlers/user.php';
+		$userhandler = new UserDataHandler('update');
+
+		$userhandler->set_data(array(
+			'uid'		=> $user['uid'],
+			'username'	=> $user['username'],
+			'email'		=> $user['email'],
+			'password'	=> random_str($password_length)
+		));
+
+		if(!$userhandler->validate_user())
+		{
+			error($lang->error_unknownerror);
+		}
+
+		$userhandler->update_user();
+
+		$logindetails = array(
+			'salt'		=> $userhandler->data['salt'],
+			'password'	=> $userhandler->data['saltedpw'],
+			'loginkey'	=> $userhandler->data['loginkey'],
+		);
 
 		$email = $user['email'];
 

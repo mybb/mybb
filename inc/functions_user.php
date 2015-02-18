@@ -123,12 +123,7 @@ function validate_password_from_uid($uid, $password, $user = array())
 }
 
 /**
- * Updates a user's password.
- *
- * @param int The user's id.
- * @param string The md5()'ed password.
- * @param string (Optional) The salt of the user.
- * @return array The new password.
+ * DEPRECATED! Please use other alternatives.
  */
 function update_password($uid, $password, $salt="")
 {

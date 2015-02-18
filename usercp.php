@@ -830,7 +830,6 @@ if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 
 	$userhandler->set_data($user);
 
-
 	if(!$userhandler->validate_user())
 	{
 		$errors = $userhandler->get_friendly_errors();
