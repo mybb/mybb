@@ -100,7 +100,7 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 					}
 
 					// Properly format the username and assign the template.
-					$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
+					$user['username'] = format_name(htmlspecialchars_uni($user['username']), $user['usergroup'], $user['displaygroup']);
 					$user['profilelink'] = build_profile_link($user['username'], $user['uid']);
 					eval('$onlinemembers .= "'.$templates->get('index_whosonline_memberbit', 1, 0).'";');
 					$comma = $lang->comma;
@@ -241,7 +241,7 @@ if($mybb->settings['showbirthdays'] != 0)
 					$age = ' ('.($year - $bday['2']).')';
 				}
 
-				$bdayuser['username'] = format_name($bdayuser['username'], $bdayuser['usergroup'], $bdayuser['displaygroup']);
+				$bdayuser['username'] = format_name(htmlspecialchars_uni($bdayuser['username']), $bdayuser['usergroup'], $bdayuser['displaygroup']);
 				$bdayuser['profilelink'] = build_profile_link($bdayuser['username'], $bdayuser['uid']);
 				eval('$bdays .= "'.$templates->get('index_birthdays_birthday', 1, 0).'";');
 				++$bdaycount;

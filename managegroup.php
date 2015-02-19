@@ -212,6 +212,7 @@ elseif($mybb->input['action'] == "joinrequests")
 		$user['reason'] = htmlspecialchars_uni($user['reason']);
 		$altbg = alt_trow();
 		$regdate = my_date($mybb->settings['dateformat'], $user['regdate']);
+		$user['username'] = htmlspecialchars_uni($user['username']);
 		$user['profilelink'] = build_profile_link($user['username'], $user['uid']);
 		eval("\$users .= \"".$templates->get("managegroup_joinrequests_request")."\";");
 	}
@@ -306,7 +307,8 @@ else
 		$leader_count = $db->num_rows($query);
 		while($leader = $db->fetch_array($query))
 		{
-			$leader_name = format_name(htmlspecialchars_uni($leader['username']), $leader['usergroup'], $leader['displaygroup']);
+			$leader['username'] = htmlspecialchars_uni($leader['username']);
+			$leader_name = format_name($leader['username'], $leader['usergroup'], $leader['displaygroup']);
 			$leader_profile_link = build_profile_link($leader_name, $leader['uid']);
 
 			// Get commas...
@@ -375,7 +377,7 @@ else
 		}
 		$query1 = $db->simple_select("groupleaders", "uid", "uid='{$user['uid']}' AND gid='{$gid}'");
 		$isleader = $db->fetch_array($query1);
-		$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
+		$user['username'] = format_name(htmlspecialchars_uni($user['username']), $user['usergroup'], $user['displaygroup']);
 		$user['profilelink'] = build_profile_link($user['username'], $user['uid']);
 		if($isleader['uid'])
 		{

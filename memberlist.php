@@ -312,7 +312,7 @@ else
 
 		$alt_bg = alt_trow();
 
-		$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
+		$user['username'] = format_name(htmlspecialchars_uni($user['username']), $user['usergroup'], $user['displaygroup']);
 
 		$user['profilelink'] = build_profile_link($user['username'], $user['uid']);
 

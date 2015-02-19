@@ -249,6 +249,7 @@ if($mybb->input['action'] == "warn")
 			$first = false;
 
 			$post_link = "";
+			$warning['username'] = htmlspecialchars_uni($warning['username']);
 			$issuedby = build_profile_link($warning['username'], $warning['issuedby']);
 			$date_issued = my_date('relative', $warning['dateline']);
 			if($warning['type_title'])
@@ -304,6 +305,7 @@ if($mybb->input['action'] == "warn")
 	$send_pm_checked = '';
 
 	// Coming here from failed do_warn?
+	$user['username'] = htmlspecialchars_uni($user['username']);
 	if(!empty($warn_errors))
 	{
 		$notes = htmlspecialchars_uni($mybb->get_input('notes'));
@@ -574,6 +576,7 @@ if($mybb->input['action'] == "view")
 	{
 		$user['username'] = $lang->guest;
 	}
+	$user['username'] = htmlspecialchars_uni($user['username']);
 
 	$group_permissions = user_permissions($user['uid']);
 	if($group_permissions['canreceivewarnings'] != 1)
@@ -611,6 +614,7 @@ if($mybb->input['action'] == "view")
 		eval("\$warning_info = \"".$templates->get("warnings_view_user")."\";");
 	}
 
+	$warning['username'] = htmlspecialchars_uni($warning['username']);
 	$issuedby = build_profile_link($warning['username'], $warning['issuedby']);
 	$notes = nl2br(htmlspecialchars_uni($warning['notes']));
 
@@ -673,6 +677,7 @@ if($mybb->input['action'] == "view")
 		{
 			$revoked_user['username'] = $lang->guest;
 		}
+		$revoked_user['username'] = htmlspecialchars_uni($revoked_user['username']);
 		$revoked_by = build_profile_link($revoked_user['username'], $revoked_user['uid']);
 		$revoke_reason = nl2br(htmlspecialchars_uni($warning['revokereason']));
 		eval("\$revoke = \"".$templates->get("warnings_view_revoked")."\";");
@@ -704,6 +709,7 @@ if(!$mybb->input['action'])
 		error($lang->error_cant_warn_group);
 	}
 
+	$user['username'] = htmlspecialchars_uni($user['username']);
 	$lang->nav_profile = $lang->sprintf($lang->nav_profile, $user['username']);
 	add_breadcrumb($lang->nav_profile, get_profile_link($user['uid']));
 	add_breadcrumb($lang->nav_warning_log);
@@ -792,6 +798,7 @@ if(!$mybb->input['action'])
 			$warning['post_subject'] = htmlspecialchars_uni($warning['post_subject']);
 			$post_link = "<br /><small>{$lang->warning_for_post} <a href=\"".get_post_link($warning['pid'])."#pid{$warning['pid']}\">{$warning['post_subject']}</a></small>";
 		}
+		$warning['username'] = htmlspecialchars_uni($warning['username']);
 		$issuedby = build_profile_link($warning['username'], $warning['issuedby']);
 		$date_issued = my_date('relative', $warning['dateline']);
 		if($warning['type_title'])
