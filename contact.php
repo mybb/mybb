@@ -211,7 +211,7 @@ if($mybb->request_method == "post")
 		$user = $lang->na;
 		if($mybb->user['uid'])
 		{
-			$user = $mybb->user['username'].' - '.$mybb->settings['bburl'].'/'.get_profile_link($mybb->user['uid']);
+			$user = htmlspecialchars_uni($mybb->user['username']).' - '.$mybb->settings['bburl'].'/'.get_profile_link($mybb->user['uid']);
 		}
 
 		$subject = $lang->sprintf($lang->email_contact_subject, $mybb->input['subject']);

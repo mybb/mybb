@@ -148,7 +148,7 @@ function home_action_handler($action)
 					$class = "";
 				}
 				$ip_address = my_inet_ntop($db->unescape_binary($user['ip']));
-				$online_users .= "<li title=\"{$lang->ipaddress} {$ip_address}\"{$class}>".build_profile_link($user['username'].' ('.$ip_address.')', $user['uid'], "_blank")."</li>";
+				$online_users .= "<li title=\"{$lang->ipaddress} {$ip_address}\"{$class}>".build_profile_link(htmlspecialchars_uni($user['username']).' ('.$ip_address.')', $user['uid'], "_blank")."</li>";
 				$done_users["{$user['uid']}.{$user['ip']}"] = 1;
 			}
 		}

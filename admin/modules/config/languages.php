@@ -241,6 +241,8 @@ if($mybb->input['action'] == "quick_phrases")
 					// We need info about edited language files to generate credits for our file
 					require MYBB_ROOT."inc/languages/".$editlang.".php";
 
+					$username = htmlspecialchars_uni($mybb->user['username']);
+
 					// Lets make nice credits header in language file
 					$lang_file_credits  = "<?php\n/**\n";
 					$lang_file_credits .= " * MyBB Copyright 2014 MyBB Group, All Rights Reserved\n *\n";
@@ -254,7 +256,7 @@ if($mybb->input['action'] == "quick_phrases")
 					$lang_file_credits .= "// Author of the language pack : ".preg_replace("#<\?|\?>#i", " ", $langinfo['author'])."\n";
 					$lang_file_credits .= "// Language pack translators website : ".preg_replace("#<\?|\?>#i", " ", $langinfo['website'])."\n";
 					$lang_file_credits .= "// Compatible version of MyBB : ".preg_replace("#<\?|\?>#i", " ", $langinfo['version'])."\n";
-					$lang_file_credits .= "// Last edited in MyBB Editor by : ".preg_replace("#<\?|\?>#i", " ", $mybb->user['username'])."\n";
+					$lang_file_credits .= "// Last edited in MyBB Editor by : ".preg_replace("#<\?|\?>#i", " ", $username)."\n";
 					$lang_file_credits .= "// Last edited date : ".gmdate("r")."\n";
 					$lang_file_credits .= "// ".str_repeat('-',80)."\n\n";
 
@@ -448,6 +450,8 @@ if($mybb->input['action'] == "edit")
 				// We need info about edited language files to generate credits for our file
 				require MYBB_ROOT."inc/languages/".$editlang.".php";
 
+				$username = htmlspecialchars_uni($mybb->user['username']);
+
 				// Lets make nice credits header in language file
 				$lang_file_credits  = "<?php\n/**\n";
 				$lang_file_credits .= " * MyBB Copyright 2014 MyBB Group, All Rights Reserved\n *\n";
@@ -461,7 +465,7 @@ if($mybb->input['action'] == "edit")
 				$lang_file_credits .= "// Author of the language pack : ".preg_replace("#<\?|\?>#i", " ", $langinfo['author'])."\n";
 				$lang_file_credits .= "// Language pack translators website : ".preg_replace("#<\?|\?>#i", " ", $langinfo['website'])."\n";
 				$lang_file_credits .= "// Compatible version of MyBB : ".preg_replace("#<\?|\?>#i", " ", $langinfo['version'])."\n";
-				$lang_file_credits .= "// Last edited in MyBB Editor by : ".preg_replace("#<\?|\?>#i", " ", $mybb->user['username'])."\n";
+				$lang_file_credits .= "// Last edited in MyBB Editor by : ".preg_replace("#<\?|\?>#i", " ", $username)."\n";
 				$lang_file_credits .= "// Last edited date : ".gmdate("r")."\n";
 				$lang_file_credits .= "// ".str_repeat('-',80)."\n\n";
 
