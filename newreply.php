@@ -1372,6 +1372,8 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 				$parser_options['allow_videocode'] = 0;
 			}
 
+			$post['username'] = htmlspecialchars_uni($post['username']);
+
 			if($post['visible'] != 1)
 			{
 				$altbg = "trow_shaded";

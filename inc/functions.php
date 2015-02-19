@@ -861,7 +861,7 @@ function error_no_permission()
 
 	if($mybb->user['uid'])
 	{
-		$lang->error_nopermission_user_username = $lang->sprintf($lang->error_nopermission_user_username, $mybb->user['username']);
+		$lang->error_nopermission_user_username = $lang->sprintf($lang->error_nopermission_user_username, htmlspecialchars_uni($mybb->user['username']));
 		eval("\$errorpage = \"".$templates->get("error_nopermission_loggedin")."\";");
 	}
 	else
@@ -2402,7 +2402,7 @@ function update_stats($changes=array(), $force=false)
 		$query = $db->simple_select("users", "uid, username", "", array('order_by' => 'regdate', 'order_dir' => 'DESC', 'limit' => 1));
 		$lastmember = $db->fetch_array($query);
 		$new_stats['lastuid'] = $lastmember['uid'];
-		$new_stats['lastusername'] = $lastmember['username'];
+		$new_stats['lastusername'] = $lastmember['username'] = htmlspecialchars_uni($lastmember['username']);
 	}
 
 	if(!empty($new_stats))
@@ -5636,6 +5636,7 @@ function unichr($c)
  */
 function get_event_poster($event)
 {
+	$event['username'] = htmlspecialchars_uni($event['username']);
 	$event['username'] = format_name($event['username'], $event['usergroup'], $event['displaygroup']);
 	$event_poster = build_profile_link($event['username'], $event['author']);
 	return $event_poster;

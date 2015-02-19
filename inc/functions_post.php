@@ -127,6 +127,9 @@ function build_postbit($post, $post_type=0)
 			break;
 	}
 
+	$post['username'] = htmlspecialchars_uni($post['username']);
+	$post['userusername'] = htmlspecialchars_uni($post['userusername']);
+
 	if(!$postcounter)
 	{ // Used to show the # of the post
 		if($page > 1)
@@ -730,7 +733,7 @@ function build_postbit($post, $post_type=0)
 			"allow_mycode" => $mybb->settings['sigmycode'],
 			"allow_smilies" => $mybb->settings['sigsmilies'],
 			"allow_imgcode" => $mybb->settings['sigimgcode'],
-			"me_username" => $post['username'],
+			"me_username" => $parser_options['me_username'],
 			"filter_badwords" => 1
 		);
 

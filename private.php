@@ -400,6 +400,7 @@ if($mybb->input['action'] == "results")
 				{
 					$profilelink = get_profile_link($uid);
 					$user = $cached_users[$uid];
+					$user['username'] = htmlspecialchars_uni($user['username']);
 					$username = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 					eval("\$to_users .= \"".$templates->get("private_multiple_recipients_user")."\";");
 				}
@@ -410,6 +411,7 @@ if($mybb->input['action'] == "results")
 					{
 						$profilelink = get_profile_link($uid);
 						$user = $cached_users[$uid];
+						$user['username'] = htmlspecialchars_uni($user['username']);
 						$username = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 						eval("\$bcc_users .= \"".$templates->get("private_multiple_recipients_user")."\";");
 					}
@@ -1073,7 +1075,7 @@ if($mybb->input['action'] == "read")
 		eval("\$action_time = \"".$templates->get("private_read_action")."\";");
 	}
 
-	$pm['userusername'] = $pm['username'];
+	$pm['userusername'] = $pm['username'] = htmlspecialchars_uni($pm['username']);
 	$pm['subject'] = htmlspecialchars_uni($parser->parse_badwords($pm['subject']));
 
 	if($pm['fromid'] == 0)
@@ -1114,6 +1116,7 @@ if($mybb->input['action'] == "read")
 	while($recipient = $db->fetch_array($query))
 	{
 		// User is a BCC recipient
+		$recipient['username'] = htmlspecialchars_uni($recipient['username']);
 		if($show_bcc && in_array($recipient['uid'], $pm['recipients']['bcc']))
 		{
 			$bcc_recipients[] = build_profile_link($recipient['username'], $recipient['uid']);
@@ -1800,7 +1803,7 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 
 	$plugins->run_hooks("private_do_export_start");
 
-	$lang->private_messages_for = $lang->sprintf($lang->private_messages_for, $mybb->user['username']);
+	$lang->private_messages_for = $lang->sprintf($lang->private_messages_for, htmlspecialchars_uni($mybb->user['username']));
 	$exdate = my_date($mybb->settings['dateformat'], TIME_NOW, 0, 0);
 	$extime = my_date($mybb->settings['timeformat'], TIME_NOW, 0, 0);
 	$lang->exported_date = $lang->sprintf($lang->exported_date, $exdate, $extime);
@@ -2291,6 +2294,7 @@ if(!$mybb->input['action'])
 					{
 						$profilelink = get_profile_link($uid);
 						$user = $cached_users[$uid];
+						$user['username'] = htmlspecialchars_uni($user['username']);
 						$username = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 						if(!$user['username'])
 						{
@@ -2305,6 +2309,7 @@ if(!$mybb->input['action'])
 						{
 							$profilelink = get_profile_link($uid);
 							$user = $cached_users[$uid];
+							$user['username'] = htmlspecialchars_uni($user['username']);
 							$username = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 							if(!$user['username'])
 							{
