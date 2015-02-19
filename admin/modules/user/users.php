@@ -567,6 +567,8 @@ if($mybb->input['action'] == "edit")
 			"showcodebuttons" => $mybb->input['showcodebuttons'],
 			"sourceeditor" => $mybb->input['sourceeditor'],
 			"pmnotify" => $mybb->input['pmnotify'],
+			"buddyrequestspm" => $mybb->input['buddyrequestspm'],
+			"buddyrequestsauto" => $mybb->input['buddyrequestsauto'],
 			"showredirect" => $mybb->input['showredirect']
 		);
 
@@ -1222,6 +1224,8 @@ EOF;
 		$form->generate_check_box("receivefrombuddy", 1, $lang->recieve_pms_from_buddy, array("checked" => $mybb->input['receivefrombuddy'])),
 		$form->generate_check_box("pmnotice", 1, $lang->alert_new_pms, array("checked" => $mybb->input['pmnotice'])),
 		$form->generate_check_box("pmnotify", 1, $lang->email_notify_new_pms, array("checked" => $mybb->input['pmnotify'])),
+		$form->generate_check_box("buddyrequestspm", 1, $lang->buddy_requests_pm, array("checked" => $mybb->input['buddyrequestspm'])),
+		$form->generate_check_box("buddyrequestsauto", 1, $lang->buddy_requests_auto, array("checked" => $mybb->input['buddyrequestsauto'])),
 		"<label for=\"subscriptionmethod\">{$lang->default_thread_subscription_mode}:</label><br />".$form->generate_select_box("subscriptionmethod", array($lang->do_not_subscribe, $lang->no_email_notification, $lang->instant_email_notification), $mybb->input['subscriptionmethod'], array('id' => 'subscriptionmethod'))
 	);
 	$form_container->output_row($lang->messaging_and_notification, "", "<div class=\"user_settings_bit\">".implode("</div><div class=\"user_settings_bit\">", $messaging_options)."</div>");
