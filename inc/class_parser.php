@@ -1342,7 +1342,8 @@ class postParser
 		switch($video)
 		{
 			case "dailymotion":
-				list($id, ) = split("_", $path[2], 1); // http://www.dailymotion.com/video/fds123_title-goes-here
+				$id = explode('_', $path[2]);
+				$id = $id[0]; // http://www.dailymotion.com/video/fds123_title-goes-here
 				break;
 			case "metacafe":
 				$id = $path[2]; // http://www.metacafe.com/watch/fds123/title_goes_here/
