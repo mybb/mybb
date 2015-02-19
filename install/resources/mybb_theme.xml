@@ -9724,7 +9724,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 </body>
 </html>]]></template>
-		<template name="private_advanced_search" version="1800"><![CDATA[<html>
+		<template name="private_advanced_search" version="1805"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->advanced_private_message_search}</title>
 {$headerinclude}
@@ -9802,6 +9802,44 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </table>
 </form>
 {$footer}
+<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css" />
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
+<script type="text/javascript">
+<!--
+if(use_xmlhttprequest == "1")
+{
+	MyBB.select2();
+	$("#sender").select2({
+		placeholder: "{$lang->find_users}",
+		minimumInputLength: 3,
+		maximumSelectionSize: 3,
+		multiple: false,
+		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+			url: "xmlhttp.php?action=get_users",
+			dataType: 'json',
+			data: function (term, page) {
+				return {
+					query: term, // search term
+				};
+			},
+			results: function (data, page) { // parse the results into the format expected by Select2.
+				// since we are using custom formatting functions we do not need to alter remote JSON data
+				return {results: data};
+			}
+		},
+		initSelection: function(element, callback) {
+			var value = $(element).val();
+			if (value !== "") {
+				callback({
+					id: value,
+					text: value
+				});
+			}
+		}
+	});
+}
+// -->
+</script>
 </body>
 </html>]]></template>
 		<template name="private_advanced_search_folders" version="1800"><![CDATA[<select multiple="multiple" name="folder[]" id="folder">

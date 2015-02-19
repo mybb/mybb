@@ -478,9 +478,48 @@ if($mybb->input['action'] == "leaders")
 	$form_container->output_row($lang->can_manage_group_members, $lang->can_manage_group_members_desc, $form->generate_yes_no_radio('canmanagemembers', $mybb->input['canmanagemembers']));
 	$form_container->output_row($lang->can_manage_group_join_requests, $lang->can_manage_group_join_requests_desc, $form->generate_yes_no_radio('canmanagerequests', $mybb->input['canmanagerequests']));
 	$form_container->output_row($lang->can_invite_group_members, $lang->can_invite_group_members_desc, $form->generate_yes_no_radio('caninvitemembers', $mybb->input['caninvitemembers']));
-	$buttons[] = $form->generate_submit_button($lang->save_group_leader);
-
 	$form_container->end();
+
+	// Autocompletion for usernames
+	echo '
+	<link rel="stylesheet" href="../jscripts/select2/select2.css">
+	<script type="text/javascript" src="../jscripts/select2/select2.min.js?ver=1804"></script>
+	<script type="text/javascript">
+	<!--
+	$("#username").select2({
+		placeholder: "Search for a user",
+		minimumInputLength: 3,
+		maximumSelectionSize: 3,
+		multiple: false,
+		ajax: { // instead of writing the function to execute the request we use Select2\'s convenient helper
+			url: "../xmlhttp.php?action=get_users",
+			dataType: \'json\',
+			data: function (term, page) {
+				return {
+					query: term // search term
+				};
+			},
+			results: function (data, page) { // parse the results into the format expected by Select2.
+				// since we are using custom formatting functions we do not need to alter remote JSON data
+				return {results: data};
+			}
+		},
+		initSelection: function(element, callback) {
+			var query = $(element).val();
+			if (query !== "") {
+				$.ajax("../xmlhttp.php?action=get_users&getone=1", {
+					data: {
+						query: query
+					},
+					dataType: "json"
+				}).done(function(data) { callback(data); });
+			}
+		}
+	});
+	// -->
+	</script>';
+
+	$buttons[] = $form->generate_submit_button($lang->save_group_leader);
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 
