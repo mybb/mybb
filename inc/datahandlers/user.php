@@ -1088,7 +1088,7 @@ class UserDataHandler extends DataHandler
 			"sourceeditor" => (int)$user['options']['sourceeditor'],
 			"away" => (int)$user['away']['away'],
 			"awaydate" => (int)$user['away']['date'],
-			"returndate" => (int)$user['away']['returndate'],
+			"returndate" => $user['away']['returndate'],
 			"awayreason" => $db->escape_string($user['away']['awayreason']),
 			"notepad" => $db->escape_string($user['notepad']),
 			"referrer" => (int)$user['referrer_uid'],
