@@ -1053,7 +1053,7 @@ class postParser
 
 		if($name == $url && !empty($this->options['shorten_urls']))
 		{
-			$name = htmlspecialchars_decode($url);
+			$name = htmlspecialchars_decode($name);
 			if(my_strlen($name) > 55)
 			{
 				$name = my_substr($name , 0, 40).'...'.my_substr($name , -10);
