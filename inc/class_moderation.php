@@ -2926,13 +2926,12 @@ class Moderation
 	 * @param int Forum ID
 	 * @return boolean true
 	 */
-	function toggle_thread_softdelete($tids, $fid)
+	function toggle_thread_softdelete($tids)
 	{
 		global $db;
 
 		// Make sure we only have valid values
 		$tids = array_map('intval', $tids);
-		$fid = (int)$fid;
 
 		$tid_list = implode(',', $tids);
 		$query = $db->simple_select("threads", 'tid, visible', "tid IN ($tid_list)");
@@ -2949,11 +2948,11 @@ class Moderation
 		}
 		if(is_array($delete))
 		{
-			$this->soft_delete_threads($delete, $fid);
+			$this->soft_delete_threads($delete);
 		}
 		if(is_array($restore))
 		{
-			$this->restore_threads($restore, $fid);
+			$this->restore_threads($restore);
 		}
 		return true;
 	}
