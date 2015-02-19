@@ -4953,7 +4953,12 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 
 	if(!is_array($tcache))
 	{
-		cache_themes();
+		$query = $db->simple_select('themes', 'tid, name, pid, def, allowedgroups', "pid!='0'", array('order_by' => 'pid, name'));
+
+		while($theme = $db->fetch_array($query))
+		{
+			$tcache[$theme['pid']][$theme['tid']] = $theme;
+		}
 	}
 
 	if(is_array($tcache[$tid]))
@@ -4986,7 +4991,7 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 
 				if(array_key_exists($theme['tid'], $tcache))
 				{
-					build_theme_select($name, $selected, $theme['tid'], $depthit, $usergroup_override, $footer);
+					build_theme_select($name, $selected, $theme['tid'], $depthit, $usergroup_override, $footer, $count_override);
 				}
 			}
 		}
@@ -5012,25 +5017,6 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 }
 
 /**
- * Load the forum cache in to memory
- *
- * @param boolean True to force a reload of the cache
- */
-function cache_themes()
-{
-	global $tcache, $db;
-
-	$query = $db->simple_select('themes', 'tid, name, pid, def, allowedgroups', "pid!='0'", array('order_by' => 'pid, name'));
-
-	while($theme = $db->fetch_array($query))
-	{
-		$tcache[$theme['pid']][$theme['tid']] = $theme;
-	}
-
-	return false;
-}
-
-/**
  * Get the theme data of a theme id.
  *
  * @param int The theme id of the theme.
@@ -5038,11 +5024,16 @@ function cache_themes()
  */
 function get_theme($tid)
 {
-	global $tcache;
+	global $tcache, $db;
 
 	if(!is_array($tcache))
 	{
-		cache_themes();
+		$query = $db->simple_select('themes', 'tid, name, pid, def, allowedgroups', "pid!='0'", array('order_by' => 'pid, name'));
+
+		while($theme = $db->fetch_array($query))
+		{
+			$tcache[$theme['pid']][$theme['tid']] = $theme;
+		}
 	}
 
 	$s_theme = false;

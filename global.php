@@ -111,21 +111,36 @@ $style = array();
 // The user used our new quick theme changer
 if(isset($mybb->input['theme']) && verify_post_check($mybb->get_input('my_post_key'), true))
 {
-	$mybb->user['style'] = $mybb->get_input('theme');
-	// If user is logged in, update their theme selection with the new one
-	if($mybb->user['uid'])
-	{
-		if(isset($mybb->cookies['mybbtheme']))
-		{
-			my_unsetcookie('mybbtheme');
-		}
+	// Set up user handler.
+	require_once MYBB_ROOT.'inc/datahandlers/user.php';
+	$userhandler = new UserDataHandler('update');
 
-		$db->update_query('users', array('style' => (int)$mybb->user['style']), "uid = '{$mybb->user['uid']}'");
-	}
-	// Guest = cookie
-	else
+	$user = array(
+		'uid'	=> $mybb->user['uid'],
+		'style'	=> $mybb->get_input('theme', MyBB::INPUT_INT)
+	);
+
+	$userhandler->set_data($user);
+
+	if($userhandler->validate_user())
 	{
-		my_setcookie('mybbtheme', $mybb->get_input('theme'));
+		$userhandler->update_user();
+
+		$mybb->user['style'] = $user['theme'];
+
+		// If user is logged in, update their theme selection with the new one
+		if($mybb->user['uid'])
+		{
+			if(isset($mybb->cookies['mybbtheme']))
+			{
+				my_unsetcookie('mybbtheme');
+			}
+		}
+		// Guest = cookie
+		else
+		{
+			my_setcookie('mybbtheme', $mybb->get_input('theme'));
+		}
 	}
 }
 // Cookied theme!
