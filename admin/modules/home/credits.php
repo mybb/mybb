@@ -138,9 +138,7 @@ if(!$mybb->input['action'])
 				}
 				else
 				{
-					$username = htmlspecialchars_uni($mybb_credits['credits'][$team]['members'][$i]['username']);
-					$name = htmlspecialchars_uni($mybb_credits['credits'][$team]['members'][$i]['name']);
-					$table->construct_cell("<a href=\"{$mybb_credits['credits'][$team]['members'][$i]['profile']}\" title=\"{$username}\" target=\"_blank\">{$name}</a>");
+					$table->construct_cell("<a href=\"{$mybb_credits['credits'][$team]['members'][$i]['profile']}\" title=\"{$mybb_credits['credits'][$team]['members'][$i]['username']}\" target=\"_blank\">{$mybb_credits['credits'][$team]['members'][$i]['name']}</a>");
 				}
 			}
 			$table->construct_row();

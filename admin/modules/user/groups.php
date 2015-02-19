@@ -283,7 +283,7 @@ if($mybb->input['action'] == "join_requests")
 	while($request = $db->fetch_array($query))
 	{
 		$table->construct_cell($form->generate_check_box("users[]", $request['uid'], ""));
-		$table->construct_cell("<strong>".build_profile_link($request['username'], $request['uid'], "_blank")."</strong>");
+		$table->construct_cell("<strong>".build_profile_link(htmlspecialchars_uni($request['username']), $request['uid'], "_blank")."</strong>");
 		$table->construct_cell(htmlspecialchars_uni($request['reason']));
 		$table->construct_cell(my_date('relative', $request['dateline']), array('class' => 'align_center'));
 
@@ -360,7 +360,8 @@ if($mybb->input['action'] == "add_leader" && $mybb->request_method == "post")
 		// Log admin action
 		log_admin_action($user['uid'], $mybb->input['username'], $group['gid'], htmlspecialchars_uni($group['title']));
 
-		flash_message("{$user['username']} ".$lang->success_user_made_leader, 'success');
+		$username = htmlspecialchars_uni($user['username']);
+		flash_message("{$username} ".$lang->success_user_made_leader, 'success');
 		admin_redirect("index.php?module=user-groups&action=leaders&gid={$group['gid']}");
 	}
 	else
@@ -474,7 +475,7 @@ if($mybb->input['action'] == "leaders")
 	}
 
 	$form_container = new FormContainer($lang->add_group_leader.' '.htmlspecialchars_uni($group['title']));
-	$form_container->output_row($lang->username." <em>*</em>", "", $form->generate_text_box('username', $mybb->input['username'], array('id' => 'username')), 'username');
+	$form_container->output_row($lang->username." <em>*</em>", "", $form->generate_text_box('username', htmlspecialchars_uni($mybb->get_input('username')), array('id' => 'username')), 'username');
 	$form_container->output_row($lang->can_manage_group_members, $lang->can_manage_group_members_desc, $form->generate_yes_no_radio('canmanagemembers', $mybb->input['canmanagemembers']));
 	$form_container->output_row($lang->can_manage_group_join_requests, $lang->can_manage_group_join_requests_desc, $form->generate_yes_no_radio('canmanagerequests', $mybb->input['canmanagerequests']));
 	$form_container->output_row($lang->can_invite_group_members, $lang->can_invite_group_members_desc, $form->generate_yes_no_radio('caninvitemembers', $mybb->input['caninvitemembers']));
@@ -584,7 +585,8 @@ if($mybb->input['action'] == "edit_leader")
 	}
 
 	$page->add_breadcrumb_item($lang->group_leaders_for.' '.htmlspecialchars_uni($group['title']), "index.php?module=user-groups&action=leaders&gid={$group['gid']}");
-	$page->add_breadcrumb_item($lang->edit_leader." {$leader['username']}");
+	$username = htmlspecialchars_uni($leader['username']);
+	$page->add_breadcrumb_item($lang->edit_leader." {$username}");
 
 	$page->output_header($lang->edit_group_leader);
 
@@ -1376,7 +1378,7 @@ if(!$mybb->input['action'])
 	");
 	while($leader = $db->fetch_array($query))
 	{
-		$leaders[$leader['gid']][] = build_profile_link($leader['username'], $leader['uid'], "_blank");
+		$leaders[$leader['gid']][] = build_profile_link(htmlspecialchars_uni($leader['username']), $leader['uid'], "_blank");
 	}
 
 	$form_container = new FormContainer($lang->user_groups);

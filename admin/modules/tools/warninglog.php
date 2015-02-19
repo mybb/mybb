@@ -110,7 +110,7 @@ if($mybb->input['action'] == "view")
 
 	$page->output_header($lang->warning_details);
 
-	$user_link = build_profile_link($user['username'], $user['uid'], "_blank");
+	$user_link = build_profile_link(htmlspecialchars_uni($user['username']), $user['uid'], "_blank");
 
 	if(is_array($warn_errors))
 	{
@@ -142,7 +142,7 @@ if($mybb->input['action'] == "view")
 		$table->construct_row();
 	}
 
-	$issuedby = build_profile_link($warning['username'], $warning['issuedby'], "_blank");
+	$issuedby = build_profile_link(htmlspecialchars_uni($warning['username']), $warning['issuedby'], "_blank");
 	$notes = nl2br(htmlspecialchars_uni($warning['notes']));
 
 	$date_issued = my_date('relative', $warning['dateline']);
@@ -215,7 +215,7 @@ if($mybb->input['action'] == "view")
 	{
 		$date_revoked = my_date('relative', $warning['daterevoked']);
 		$revoked_user = get_user($warning['revokedby']);
-		$revoked_by = build_profile_link($revoked_user['username'], $revoked_user['uid'], "_blank");
+		$revoked_by = build_profile_link(htmlspecialchars_uni($revoked_user['username']), $revoked_user['uid'], "_blank");
 		$revoke_reason = nl2br(htmlspecialchars_uni($warning['revokereason']));
 
 		$revoke_table = new Table;
@@ -391,7 +391,7 @@ if(!$mybb->input['action'])
 		}
 
 		$trow = alt_trow();
-		$username = format_name($row['username'], $row['usergroup'], $row['displaygroup']);
+		$username = format_name(htmlspecialchars_uni($row['username']), $row['usergroup'], $row['displaygroup']);
 		if(!$row['uid'])
 		{
 			$username_link = $username;
@@ -465,7 +465,7 @@ if(!$mybb->input['action'])
 
 	$form = new Form("index.php?module=tools-warninglog", "post");
 	$form_container = new FormContainer($lang->filter_warning_logs);
-	$form_container->output_row($lang->filter_warned_user, "", $form->generate_text_box('filter[username]', $mybb->input['filter']['username'], array('id' => 'filter_username')), 'filter_username');
+	$form_container->output_row($lang->filter_warned_user, "", $form->generate_text_box('filter[username]', htmlspecialchars_uni($mybb->input['filter']['username']), array('id' => 'filter_username')), 'filter_username');
 	$form_container->output_row($lang->filter_issued_by, "", $form->generate_text_box('filter[mod_username]', $mybb->input['filter']['mod_username'], array('id' => 'filter_mod_username')), 'filter_mod_username');
 	$form_container->output_row($lang->filter_reason, "", $form->generate_text_box('filter[reason]', $mybb->input['filter']['reason'], array('id' => 'filter_reason')), 'filter_reason');
 	$form_container->output_row($lang->sort_by, "", $form->generate_select_box('filter[sortby]', $sort_by, $mybb->input['filter']['sortby'], array('id' => 'filter_sortby'))." {$lang->in} ".$form->generate_select_box('filter[order]', $order_array, $order, array('id' => 'filter_order'))." {$lang->order}", 'filter_order');

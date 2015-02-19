@@ -2585,7 +2585,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		echo $form->generate_hidden_field("fid", $mybb->input['fid']);
 		echo $form->generate_hidden_field("add", "moderators");
 		$form_container = new FormContainer($lang->add_user_as_moderator);
-		$form_container->output_row($lang->username." <em>*</em>", $lang->moderator_username_desc, $form->generate_text_box('username', $mybb->input['username'], array('id' => 'username')), 'username');
+		$form_container->output_row($lang->username." <em>*</em>", $lang->moderator_username_desc, $form->generate_text_box('username', htmlspecialchars_uni($mybb->get_input('username')), array('id' => 'username')), 'username');
 		$form_container->end();
 
 		// Autocompletion for usernames

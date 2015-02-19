@@ -430,7 +430,7 @@ if(!$mybb->input['action'])
 	{
 		$from_type = "email";
 	}
-	$form_container->output_row($lang->from, "", $form->generate_select_box('from_type', $user_email, $from_type)." ".$form->generate_text_box('from_value', $from_filter, array('id' => 'from_value')), 'from_value');
+	$form_container->output_row($lang->from, "", $form->generate_select_box('from_type', $user_email, $from_type)." ".$form->generate_text_box('from_value', htmlspecialchars_uni($from_filter), array('id' => 'from_value')), 'from_value');
 	if($to_username)
 	{
 		$to_type = "user";
@@ -439,7 +439,7 @@ if(!$mybb->input['action'])
 	{
 		$to_type = "email";
 	}
-	$form_container->output_row($lang->to, "", $form->generate_select_box('to_type', $user_email, $to_type)." ".$form->generate_text_box('to_value', $to_filter, array('id' => 'to_value')), 'to_value');
+	$form_container->output_row($lang->to, "", $form->generate_select_box('to_type', $user_email, $to_type)." ".$form->generate_text_box('to_value', htmlspecialchars_uni($to_filter), array('id' => 'to_value')), 'to_value');
 	$form_container->end();
 	$buttons = array();
 	$buttons[] = $form->generate_submit_button($lang->filter_user_email_log);
