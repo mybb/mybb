@@ -333,37 +333,41 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 		}
 	}
 
-	// Set up posthandler.
-	require_once MYBB_ROOT."inc/datahandlers/post.php";
-	$posthandler = new PostDataHandler("update");
-	$posthandler->action = "post";
-
-	// Set the post data that came from the input to the $post array.
-	$updatepost = array(
-		"pid" => $post['pid'],
-		"tid" => $thread['tid'],
-		"subject" => $subject,
-		"edit_uid" => $mybb->user['uid']
-	);
-	$posthandler->set_data($updatepost);
-
-	// Now let the post handler do all the hard work.
-	if(!$posthandler->validate_post())
+	// Only edit subject if subject has actually been changed
+	if($thread['subject'] != $subject)
 	{
-		$post_errors = $posthandler->get_friendly_errors();
-		xmlhttp_error($post_errors);
-	}
-	// No errors were found, we can call the update method.
-	else
-	{
-		$posthandler->update_post();
-		if($ismod == true)
+		// Set up posthandler.
+		require_once MYBB_ROOT."inc/datahandlers/post.php";
+		$posthandler = new PostDataHandler("update");
+		$posthandler->action = "post";
+
+		// Set the post data that came from the input to the $post array.
+		$updatepost = array(
+			"pid" => $post['pid'],
+			"tid" => $thread['tid'],
+			"subject" => $subject,
+			"edit_uid" => $mybb->user['uid']
+		);
+		$posthandler->set_data($updatepost);
+
+		// Now let the post handler do all the hard work.
+		if(!$posthandler->validate_post())
 		{
-			$modlogdata = array(
-				"tid" => $thread['tid'],
-				"fid" => $forum['fid']
-			);
-			log_moderator_action($modlogdata, $lang->edited_post);
+			$post_errors = $posthandler->get_friendly_errors();
+			xmlhttp_error($post_errors);
+		}
+		// No errors were found, we can call the update method.
+		else
+		{
+			$posthandler->update_post();
+			if($ismod == true)
+			{
+				$modlogdata = array(
+					"tid" => $thread['tid'],
+					"fid" => $forum['fid']
+				);
+				log_moderator_action($modlogdata, $lang->edited_post);
+			}
 		}
 	}
 
