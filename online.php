@@ -81,8 +81,7 @@ if($mybb->get_input('action') == "today")
 
 		if($online['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $online['uid'] == $mybb->user['uid'])
 		{
-			$username = $online['username'];
-			$username = format_name($username, $online['usergroup'], $online['displaygroup']);
+			$username = format_name(htmlspecialchars_uni($online['username']), $online['usergroup'], $online['displaygroup']);
 			$online['profilelink'] = build_profile_link($username, $online['uid']);
 			$onlinetime = my_date($mybb->settings['timeformat'], $online['lastactive']);
 

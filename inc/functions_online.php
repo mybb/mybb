@@ -599,12 +599,12 @@ function build_friendly_wol_location($user_activity)
 			$query = $db->simple_select("users", "uid,username", "uid IN ($uid_sql)");
 			while($user = $db->fetch_array($query))
 			{
-				$usernames[$user['uid']] = $user['username'];
+				$usernames[$user['uid']] = htmlspecialchars_uni($user['username']);
 			}
 		}
 		else
 		{
-			$usernames[$mybb->user['uid']] = $mybb->user['username'];
+			$usernames[$mybb->user['uid']] = htmlspecialchars_uni($mybb->user['username']);
 		}
 	}
 
@@ -1140,7 +1140,7 @@ function build_wol_row($user)
 				$invisible_mark = '';
 			}
 
-			$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
+			$user['username'] = format_name(htmlspecialchars_uni($user['username']), $user['usergroup'], $user['displaygroup']);
 			$online_name = build_profile_link($user['username'], $user['uid']).$invisible_mark;
 		}
 	}

@@ -94,6 +94,7 @@ if(!$thread['username'])
 {
 	$thread['username'] = $lang->guest;
 }
+$thread['username'] = htmlspecialchars_uni($thread['username']);
 
 // Is the currently logged in user a moderator of this forum?
 if(is_moderator($fid))
@@ -1114,11 +1115,11 @@ if($mybb->input['action'] == "thread")
 			}
 			if(!$similar_thread['username'])
 			{
-				$similar_thread['username'] = $similar_thread['threadusername'];
-				$similar_thread['profilelink'] = $similar_thread['threadusername'];
+				$similar_thread['username'] = $similar_thread['profilelink'] = htmlspecialchars_uni($similar_thread['threadusername']);
 			}
 			else
 			{
+				$similar_thread['username'] = htmlspecialchars_uni($similar_thread['username']);
 				$similar_thread['profilelink'] = build_profile_link($similar_thread['username'], $similar_thread['uid']);
 			}
 
@@ -1472,7 +1473,7 @@ if($mybb->input['action'] == "thread")
 				if($user['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])
 				{
 					$user['profilelink'] = get_profile_link($user['uid']);
-					$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
+					$user['username'] = format_name(htmlspecialchars_uni($user['threadusername']), $user['usergroup'], $user['displaygroup']);
 					$user['reading'] = my_date($mybb->settings['timeformat'], $user['time']);
 
 					eval("\$onlinemembers .= \"".$templates->get("showthread_usersbrowsing_user", 1, 0)."\";");
@@ -1552,6 +1553,7 @@ function buildtree($replyto="0", $indent="0")
 				$post['subject'] = "[".$lang->no_subject."]";
 			}
 
+			$post['username'] = htmlspecialchars_uni($post['username']);
 			$post['profilelink'] = build_profile_link($post['username'], $post['uid']);
 
 			if($mybb->input['pid'] == $post['pid'])

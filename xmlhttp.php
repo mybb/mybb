@@ -541,6 +541,8 @@ else if($mybb->input['action'] == "edit_post")
 			"filter_badwords" => 1
 		);
 
+		$post['username'] = htmlspecialchars_uni($post['username']);
+
 		if($post['smilieoff'] == 1)
 		{
 			$parser_options['allow_smilies'] = 0;
@@ -578,6 +580,7 @@ else if($mybb->input['action'] == "edit_post")
 		{
 			$post['editdate'] = my_date('relative', TIME_NOW);
 			$post['editnote'] = $lang->sprintf($lang->postbit_edited, $post['editdate']);
+			$mybb->user['username'] = htmlspecialchars_uni($mybb->user['username']);
 			$post['editedprofilelink'] = build_profile_link($mybb->user['username'], $mybb->user['uid']);
 			$post['editreason'] = trim($editreason);
 			$editreason = "";
@@ -973,6 +976,7 @@ else if($mybb->input['action'] == "get_buddyselect")
 		$offline = array();
 		while($buddy = $db->fetch_array($query))
 		{
+			$buddy['username'] = htmlspecialchars_uni($buddy['username']);
 			$buddy_name = format_name($buddy['username'], $buddy['usergroup'], $buddy['displaygroup']);
 			$profile_link = build_profile_link($buddy_name, $buddy['uid'], '_blank');
 			if($buddy['lastactive'] > $timecut && ($buddy['invisible'] == 0 || $mybb->user['usergroup'] == 4) && $buddy['lastvisit'] != $buddy['lastactive'])

@@ -788,7 +788,7 @@ if($mybb->input['action'] == "showresults")
 		}
 		else
 		{
-			$voters[$voter['voteoption']][$voter['uid']] = $voter['username'];
+			$voters[$voter['voteoption']][$voter['uid']] = htmlspecialchars_uni($voter['username']);
 		}
 	}
 

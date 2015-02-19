@@ -403,6 +403,7 @@ if($mybb->input['action'] == "results")
 			{
 				$thread['username'] = $thread['userusername'];
 			}
+			$thread['username'] = htmlspecialchars_uni($thread['username']);
 			$thread['profilelink'] = build_profile_link($thread['username'], $thread['uid']);
 
 			// If this thread has a prefix, insert a space between prefix and subject
@@ -815,6 +816,7 @@ if($mybb->input['action'] == "results")
 			{
 				$post['username'] = $post['userusername'];
 			}
+			$post['username'] = htmlspecialchars_uni($post['username']);
 			$post['profilelink'] = build_profile_link($post['username'], $post['uid']);
 			$post['subject'] = $parser->parse_badwords($post['subject']);
 			$post['thread_subject'] = $parser->parse_badwords($post['thread_subject']);
