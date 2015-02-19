@@ -393,7 +393,7 @@ if($mybb->input['action'] == "add")
 	}
 
 	$form_container = new FormContainer($lang->required_profile_info);
-	$form_container->output_row($lang->username." <em>*</em>", "", $form->generate_text_box('username', $mybb->input['username'], array('id' => 'username')), 'username');
+	$form_container->output_row($lang->username." <em>*</em>", "", $form->generate_text_box('username', htmlspecialchars_uni($mybb->get_input('username')), array('id' => 'username')), 'username');
 	$form_container->output_row($lang->password." <em>*</em>", "", $form->generate_password_box('password', $mybb->input['password'], array('id' => 'password', 'autocomplete' => 'off')), 'password');
 	$form_container->output_row($lang->confirm_password." <em>*</em>", "", $form->generate_password_box('confirm_password', $mybb->input['confirm_password'], array('id' => 'confirm_new_password')), 'confirm_new_password');
 	$form_container->output_row($lang->email_address." <em>*</em>", "", $form->generate_text_box('email', $mybb->input['email'], array('id' => 'email')), 'email');
@@ -1087,7 +1087,8 @@ EOF;
 	$table->construct_cell("<strong>{$lang->last_known_ip}:</strong> ".my_inet_ntop($db->unescape_binary($user['lastip'])));
 	$table->construct_row();
 
-	$table->output("{$lang->user_overview}: {$user['username']}");
+	$username = htmlspecialchars_uni($user['username']);
+	$table->output("{$lang->user_overview}: {$username}");
 	echo "</div>\n";
 
 	//
@@ -1095,8 +1096,8 @@ EOF;
 	//
 	echo "<div id=\"tab_profile\">\n";
 
-	$form_container = new FormContainer($lang->required_profile_info.": {$user['username']}");
-	$form_container->output_row($lang->username." <em>*</em>", "", $form->generate_text_box('username', $mybb->input['username'], array('id' => 'username')), 'username');
+	$form_container = new FormContainer($lang->required_profile_info.": ".htmlspecialchars_uni($user['username']));
+	$form_container->output_row($lang->username." <em>*</em>", "", $form->generate_text_box('username', htmlspecialchars_uni($mybb->get_input['username']), array('id' => 'username')), 'username');
 	$form_container->output_row($lang->new_password, $lang->new_password_desc, $form->generate_password_box('new_password', $mybb->input['new_password'], array('id' => 'new_password', 'autocomplete' => 'off')), 'new_password');
 	$form_container->output_row($lang->confirm_new_password, $lang->new_password_desc, $form->generate_password_box('confirm_new_password', $mybb->input['confirm_new_password'], array('id' => 'confirm_new_password')), 'confirm_new_password');
 	$form_container->output_row($lang->email_address." <em>*</em>", "", $form->generate_text_box('email', $mybb->input['email'], array('id' => 'email')), 'email');
@@ -1130,7 +1131,7 @@ EOF;
 
 	$form_container->end();
 
-	$form_container = new FormContainer($lang->optional_profile_info.": {$user['username']}");
+	$form_container = new FormContainer($lang->optional_profile_info.': '.htmlspecialchars_uni($user['username']));
 	$form_container->output_row($lang->custom_user_title, $lang->custom_user_title_desc, $form->generate_text_box('usertitle', $mybb->input['usertitle'], array('id' => 'usertitle')), 'usertitle');
 	$form_container->output_row($lang->website, "", $form->generate_text_box('website', $mybb->input['website'], array('id' => 'website')), 'website');
 	$form_container->output_row($lang->icq_number, "", $form->generate_numeric_field('icq', $mybb->input['icq'], array('id' => 'icq', 'min' => 0)), 'icq');
@@ -1176,7 +1177,7 @@ EOF;
 
 	if($mybb->settings['allowaway'] != 0)
 	{
-		$form_container = new FormContainer($lang->away_information.": {$user['username']}");
+		$form_container = new FormContainer($lang->away_information.': '.htmlspecialchars_uni($user['username']));
 		$awaycheck = array(false, true);
 		if($mybb->input['away'] == 1)
 		{
@@ -1204,7 +1205,7 @@ EOF;
 	// Plugin hook note - we should add hooks in above each output_row for the below so users can add their own options to each group :>
 
 	echo "<div id=\"tab_settings\">\n";
-	$form_container = new FormContainer($lang->account_settings.": {$user['username']}");
+	$form_container = new FormContainer($lang->account_settings.': '.htmlspecialchars_uni($user['username']));
 	$login_options = array(
 		$form->generate_check_box("invisible", 1, $lang->hide_from_whos_online, array("checked" => $mybb->input['invisible'])),
 	);
@@ -1346,7 +1347,7 @@ EOF;
 		$sig_imgcode = $lang->on;
 	}
 	echo "<div id=\"tab_signature\">\n";
-	$form_container = new FormContainer("{$lang->signature}: {$user['username']}");
+	$form_container = new FormContainer($lang->signature': '.htmlspecialchars_uni($user['username']));
 	$form_container->output_row($lang->signature, $lang->sprintf($lang->signature_desc, $sig_mycode, $sig_smilies, $sig_imgcode, $sig_html), $signature_editor, 'signature');
 
 	$periods = array(
@@ -1499,7 +1500,7 @@ EOF;
 	$table->construct_cell($lang->avatar_desc."{$remove_avatar}<br /><small>{$max_size}</small>");
 	$table->construct_row();
 
-	$table->output($lang->avatar.": {$user['username']}");
+	$table->output($lang->avatar.': '.htmlspecialchars_uni($user['username']));
 
 	// Custom avatar
 	if($mybb->settings['avatarresizing'] == "auto")
@@ -1528,7 +1529,7 @@ EOF;
 	);
 
 	echo "<div id=\"tab_modoptions\">\n";
-	$form_container = new FormContainer($lang->mod_options.": {$user['username']}");
+	$form_container = new FormContainer($lang->mod_options.': '.htmlspecialchars_uni($user['username']));
 	$form_container->output_row($lang->user_notes, '', $form->generate_text_area('usernotes', $mybb->input['usernotes'], array('id' => 'usernotes')), 'usernotes');
 
 	// Mod posts
@@ -1568,7 +1569,7 @@ EOF;
 	}
 
 	$modpost_div = '<div id="modpost">'.$existing_info.''.$lang->moderate_for.' '.$form->generate_numeric_field("modpost_time", $mybb->input['modpost_time'], array('style' => 'width: 3em;', 'min' => 0)).' '.$modpost_options.'</div>';
-	$lang->moderate_posts_info = $lang->sprintf($lang->moderate_posts_info, $user['username']);
+	$lang->moderate_posts_info = $lang->sprintf($lang->moderate_posts_info, htmlspecialchars_uni($user['username']));
 	$form_container->output_row($form->generate_check_box("moderateposting", 1, $lang->moderate_posts, array("id" => "moderateposting", "onclick" => "toggleBox('modpost');", "checked" => $mybb->input['moderateposting'])), $lang->moderate_posts_info, $modpost_div);
 
 	// Suspend posts
@@ -1608,7 +1609,7 @@ EOF;
 	}
 
 	$suspost_div = '<div id="suspost">'.$existing_info.''.$lang->suspend_for.' '.$form->generate_numeric_field("suspost_time", $mybb->input['suspost_time'], array('style' => 'width: 3em;', 'min' => 0)).' '.$suspost_options.'</div>';
-	$lang->suspend_posts_info = $lang->sprintf($lang->suspend_posts_info, $user['username']);
+	$lang->suspend_posts_info = $lang->sprintf($lang->suspend_posts_info, htmlspecialchars_uni($user['username']));
 	$form_container->output_row($form->generate_check_box("suspendposting", 1, $lang->suspend_posts, array("id" => "suspendposting", "onclick" => "toggleBox('suspost');", "checked" => $mybb->input['suspendposting'])), $lang->suspend_posts_info, $suspost_div);
 
 
@@ -1870,7 +1871,7 @@ if($mybb->input['action'] == "ipaddresses")
 		$table->construct_row();
 	}
 
-	$table->output($lang->ip_address_for." {$user['username']}");
+	$table->output($lang->ip_address_for.' '.htmlspecialchars_uni($user['username']));
 
 	$page->output_footer();
 }
@@ -2103,7 +2104,9 @@ if($mybb->input['action'] == "merge")
 			log_admin_action($source_user['uid'], $source_user['username'], $destination_user['uid'], $destination_user['username']);
 
 			// Redirect!
-			flash_message("<strong>{$source_user['username']}</strong> {$lang->success_merged} {$destination_user['username']}", "success");
+			$username = htmlspecialchars_uni($source_user['username']);
+			$destination_username = htmlspecialchars_uni($destination_user['username']);
+			flash_message("<strong>{$username}</strong> {$lang->success_merged} {$destination_username}", "success");
 			admin_redirect("index.php?module=user-users");
 			exit;
 		}
@@ -3130,6 +3133,7 @@ function build_users_view($view)
 	if(isset($mybb->input['username']))
 	{
 		$view['conditions']['username'] = $mybb->input['username'];
+		$view['url'] .= "&amp;username=".urlencode(htmlspecialchars_uni($mybb->input['username']));
 	}
 	if($view['vid'])
 	{
@@ -3147,11 +3151,6 @@ function build_users_view($view)
 			$mybb->input['search_id'] = $search_id;
 		}
 		$view['url'] .= "&amp;search_id=".htmlspecialchars_uni($mybb->input['search_id']);
-	}
-
-	if(isset($mybb->input['username']))
-	{
-		$view['url'] .= "&amp;username=".urlencode(htmlspecialchars_uni($mybb->input['username']));
 	}
 
 	if(!isset($admin_session['data']['last_users_view']) || $admin_session['data']['last_users_view'] != str_replace("&amp;", "&", $view['url']))
@@ -3494,6 +3493,7 @@ function build_users_view($view)
 		while($user = $db->fetch_array($query))
 		{
 			$comma = $groups_list = '';
+			$user['username'] = htmlspecialchars_uni($user['username']);
 			$user['view']['username'] = "<a href=\"index.php?module=user-users&amp;action=edit&amp;uid={$user['uid']}\">".format_name($user['username'], $user['usergroup'], $user['displaygroup'])."</a>";
 			$user['view']['usergroup'] = htmlspecialchars_uni($usergroups[$user['usergroup']]['title']);
 			if($user['additionalgroups'])
@@ -3548,7 +3548,7 @@ function build_users_view($view)
 			$popup->add_item($lang->delete_user, "index.php?module=user-users&amp;action=delete&amp;uid={$user['uid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->user_deletion_confirmation}')");
 			$popup->add_item($lang->show_referred_users, "index.php?module=user-users&amp;action=referrers&amp;uid={$user['uid']}");
 			$popup->add_item($lang->show_ip_addresses, "index.php?module=user-users&amp;action=ipaddresses&amp;uid={$user['uid']}");
-			$popup->add_item($lang->show_attachments, "index.php?module=forum-attachments&amp;results=1&amp;username=".urlencode(htmlspecialchars_uni($user['username'])));
+			$popup->add_item($lang->show_attachments, "index.php?module=forum-attachments&amp;results=1&amp;username=".urlencode($user['username']));
 			$user['view']['controls'] = $popup->fetch();
 
 			// Fetch the reputation for this user
@@ -3666,7 +3666,7 @@ function build_users_view($view)
 		$default_class = "search_default";
 		$value = $lang->search_for_user;
 	}
-	$built_view .= $search->generate_text_box('username', $value, array('id' => 'search_keywords', 'class' => "{$default_class} field150 field_small"))."\n";
+	$built_view .= $search->generate_text_box('username', htmlspecialchars_uni($value), array('id' => 'search_keywords', 'class' => "{$default_class} field150 field_small"))."\n";
 	$built_view .= "<input type=\"submit\" class=\"search_button\" value=\"{$lang->search}\" />\n";
 	if($view['popup'])
 	{
@@ -3827,6 +3827,7 @@ function build_user_view_card($user, $view, &$i)
 
 	// And build the final card
 	$card = "<fieldset id=\"uid_{$user['uid']}\" style=\"width: 47%; float: {$float};\">\n";
+	$user['view']['username'] = htmlspecialchars_uni($user['view']['username']);
 	$card .= "<legend><input type=\"checkbox\" class=\"checkbox\" name=\"inlinemod_{$user['uid']}\" id=\"inlinemod_{$user['uid']}\" value=\"1\" onclick=\"$('#uid_{$user['uid']}').toggleClass('inline_selected');\" /> {$user['view']['username']}</legend>\n";
 	if($avatar)
 	{
@@ -4071,7 +4072,7 @@ function user_search_conditions($input=array(), &$form)
 	}
 
 	$form_container = new FormContainer($lang->find_users_where);
-	$form_container->output_row($lang->username_contains, "", $form->generate_text_box('conditions[username]', $input['conditions']['username'], array('id' => 'username')), 'username');
+	$form_container->output_row($lang->username_contains, "", $form->generate_text_box('conditions[username]', htmlspecialchars_uni($input['conditions']['username']), array('id' => 'username')), 'username');
 	$form_container->output_row($lang->email_address_contains, "", $form->generate_text_box('conditions[email]', $input['conditions']['email'], array('id' => 'email')), 'email');
 
 	$options = array();

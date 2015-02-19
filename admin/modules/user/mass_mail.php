@@ -557,7 +557,7 @@ if($mybb->input['action'] == "edit")
 
 	$form_container = new FormContainer("{$lang->edit_mass_mail}: {$lang->define_the_recipients}");
 
-	$form_container->output_row($lang->username_contains, "", $form->generate_text_box('conditions[username]', $input['conditions']['username'], array('id' => 'username')), 'username');
+	$form_container->output_row($lang->username_contains, "", $form->generate_text_box('conditions[username]', htmlspecialchars_uni($input['conditions']['username']), array('id' => 'username')), 'username');
 	$form_container->output_row($lang->email_addr_contains, "", $form->generate_text_box('conditions[email]', $input['conditions']['email'], array('id' => 'email')), 'email');
 
 	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
@@ -993,7 +993,7 @@ if($mybb->input['action'] == "send")
 
 		$form_container = new FormContainer("{$lang->send_mass_mail}: {$lang->step_three} - {$lang->define_the_recipients}");
 
-		$form_container->output_row($lang->username_contains, "", $form->generate_text_box('conditions[username]', $input['conditions']['username'], array('id' => 'username')), 'username');
+		$form_container->output_row($lang->username_contains, "", $form->generate_text_box('conditions[username]', htmlspecialchars_uni($input['conditions']['username']), array('id' => 'username')), 'username');
 		$form_container->output_row($lang->email_addr_contains, "", $form->generate_text_box('conditions[email]', $input['conditions']['email'], array('id' => 'email')), 'email');
 
 		$options = array();
