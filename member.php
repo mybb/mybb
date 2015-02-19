@@ -385,7 +385,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 
 		if(isset($mybb->cookies['coppauser']))
 		{
-			$lang->redirect_registered_coppa_activate = $lang->sprintf($lang->redirect_registered_coppa_activate, $mybb->settings['bbname'], $user_info['username']);
+			$lang->redirect_registered_coppa_activate = $lang->sprintf($lang->redirect_registered_coppa_activate, $mybb->settings['bbname'], htmlspecialchars_uni($user_info['username']));
 			my_unsetcookie("coppauser");
 			my_unsetcookie("coppadob");
 			$plugins->run_hooks("member_do_register_end");
@@ -420,7 +420,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 			}
 			my_mail($user_info['email'], $emailsubject, $emailmessage);
 
-			$lang->redirect_registered_activation = $lang->sprintf($lang->redirect_registered_activation, $mybb->settings['bbname'], $user_info['username']);
+			$lang->redirect_registered_activation = $lang->sprintf($lang->redirect_registered_activation, $mybb->settings['bbname'], htmlspecialchars_uni($user_info['username']));
 
 			$plugins->run_hooks("member_do_register_end");
 
@@ -532,7 +532,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 				}
 			}
 
-			$lang->redirect_registered_admin_activate = $lang->sprintf($lang->redirect_registered_admin_activate, $mybb->settings['bbname'], $user_info['username']);
+			$lang->redirect_registered_admin_activate = $lang->sprintf($lang->redirect_registered_admin_activate, $mybb->settings['bbname'], htmlspecialchars_uni($user_info['username']));
 
 			$plugins->run_hooks("member_do_register_end");
 
@@ -646,7 +646,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 			}
 			my_mail($user_info['email'], $emailsubject, $emailmessage);
 
-			$lang->redirect_registered_activation = $lang->sprintf($lang->redirect_registered_activation, $mybb->settings['bbname'], $user_info['username']);
+			$lang->redirect_registered_activation = $lang->sprintf($lang->redirect_registered_activation, $mybb->settings['bbname'], htmlspecialchars_uni($user_info['username']));
 
 			$plugins->run_hooks("member_do_register_end");
 
@@ -654,7 +654,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		}
 		else
 		{
-			$lang->redirect_registered = $lang->sprintf($lang->redirect_registered, $mybb->settings['bbname'], $user_info['username']);
+			$lang->redirect_registered = $lang->sprintf($lang->redirect_registered, $mybb->settings['bbname'], htmlspecialchars_uni($user_info['username']));
 
 			$plugins->run_hooks("member_do_register_end");
 
@@ -822,12 +822,14 @@ if($mybb->input['action'] == "register")
 			{
 				$query = $db->simple_select("users", "uid,username", "uid='".(int)$mybb->cookies['mybb']['referrer']."'");
 				$ref = $db->fetch_array($query);
+				$ref['username'] = htmlspecialchars_uni($ref['username']);
 				$referrername = $ref['username'];
 			}
 			elseif(isset($referrer))
 			{
 				$query = $db->simple_select("users", "username", "uid='".(int)$referrer['uid']."'");
 				$ref = $db->fetch_array($query);
+				$ref['username'] = htmlspecialchars_uni($ref['username']);
 				$referrername = $ref['username'];
 			}
 			elseif(!empty($referrername))
@@ -1379,6 +1381,7 @@ if($mybb->input['action'] == "activate")
 		{
 			$user['username'] = '';
 		}
+		$user['username'] = htmlspecialchars_uni($user['username']);
 
 		eval("\$activate = \"".$templates->get("member_activate")."\";");
 		output_page($activate);
@@ -1640,6 +1643,7 @@ if($mybb->input['action'] == "resetpassword")
 		{
 			$user['username'] = '';
 		}
+		$user['username'] = htmlspecialchars_uni($user['username']);
 
 		eval("\$activate = \"".$templates->get("member_resetpassword")."\";");
 		output_page($activate);
@@ -1746,6 +1750,7 @@ if($mybb->input['action'] == "login")
 	$member_loggedin_notice = "";
 	if($mybb->user['uid'] != 0)
 	{
+		$mybb->user['username'] = htmlspecialchars_uni($mybb->user['username']);
 		$lang->already_logged_in = $lang->sprintf($lang->already_logged_in, build_profile_link($mybb->user['username'], $mybb->user['uid']));
 		eval("\$member_loggedin_notice = \"".$templates->get("member_loggedin_notice")."\";");
 	}
@@ -1887,6 +1892,7 @@ if($mybb->input['action'] == "viewnotes")
 		error_no_permission();
 	}
 
+	$user['username'] = htmlspecialchars_uni($user['username']);
 	$lang->view_notes_for = $lang->sprintf($lang->view_notes_for, $user['username']);
 
 	$user['usernotes'] = nl2br(htmlspecialchars_uni($user['usernotes']));
@@ -1928,6 +1934,8 @@ if($mybb->input['action'] == "profile")
 
 	$uid = $memprofile['uid'];
 
+	$me_username = $memprofile['username'];
+	$memprofile['username'] = htmlspecialchars_uni($memprofile['username']);
 	$lang->profile = $lang->sprintf($lang->profile, $memprofile['username']);
 
 	// Get member's permissions
@@ -2015,7 +2023,7 @@ if($mybb->input['action'] == "profile")
 			"allow_mycode" => $mybb->settings['sigmycode'],
 			"allow_smilies" => $mybb->settings['sigsmilies'],
 			"allow_imgcode" => $mybb->settings['sigimgcode'],
-			"me_username" => $memprofile['username'],
+			"me_username" => $me_username,
 			"filter_badwords" => 1
 		);
 
@@ -2938,6 +2946,7 @@ if($mybb->input['action'] == "emailuser")
 	$query = $db->simple_select("users", "uid, username, email, hideemail, ignorelist", "uid='".$mybb->get_input('uid', MyBB::INPUT_INT)."'");
 	$to_user = $db->fetch_array($query);
 
+	$to_user['username'] = htmlspecialchars_uni($to_user['username']);
 	$lang->email_user = $lang->sprintf($lang->email_user, $to_user['username']);
 
 	if(!$to_user['uid'])
