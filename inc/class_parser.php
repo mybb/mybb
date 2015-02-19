@@ -1046,8 +1046,6 @@ class postParser
 			$url = $this->parse_html($url);
 		}
 
-		$fullurl = $url;
-
 		if(!$name)
 		{
 			$name = $url;
@@ -1055,12 +1053,12 @@ class postParser
 
 		if($name == $url && !empty($this->options['shorten_urls']))
 		{
-			if(my_strlen($url) > 55)
+			$name = htmlspecialchars_decode($url);
+			if(my_strlen($name) > 55)
 			{
-				$name = htmlspecialchars_decode($name);
-				$name = my_substr($url, 0, 40)."...".my_substr($url, -10);
-				$name = htmlspecialchars_uni($name);
+				$name = my_substr($name , 0, 40).'...'.my_substr($name , -10);
 			}
+			$name = htmlspecialchars_uni($name);
 		}
 
 		$nofollow = '';
@@ -1071,10 +1069,10 @@ class postParser
 
 		// Fix some entities in URLs
 		$entities = array('$' => '%24', '&#36;' => '%24', '^' => '%5E', '`' => '%60', '[' => '%5B', ']' => '%5D', '{' => '%7B', '}' => '%7D', '"' => '%22', '<' => '%3C', '>' => '%3E', ' ' => '%20');
-		$fullurl = str_replace(array_keys($entities), array_values($entities), $fullurl);
+		$url = str_replace(array_keys($entities), array_values($entities), $url);
 
 		$name = preg_replace("#&amp;\#([0-9]+);#si", "&#$1;", $name); // Fix & but allow unicode
-		$link = "<a href=\"$fullurl\" target=\"_blank\"{$nofollow}>$name</a>";
+		$link = "<a href=\"$url\" target=\"_blank\"{$nofollow}>$name</a>";
 		return $link;
 	}
 
