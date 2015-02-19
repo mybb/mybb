@@ -4953,7 +4953,7 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 
 	if(!is_array($tcache))
 	{
-		$query = $db->simple_select('themes', 'tid, name, pid, def, allowedgroups', "pid!='0'", array('order_by' => 'pid, name'));
+		$query = $db->simple_select('themes', 'tid, name, pid, allowedgroups', "pid!='0'", array('order_by' => 'pid, name'));
 
 		while($theme = $db->fetch_array($query))
 		{
@@ -5028,7 +5028,7 @@ function get_theme($tid)
 
 	if(!is_array($tcache))
 	{
-		$query = $db->simple_select('themes', 'tid, name, pid, def, allowedgroups', "pid!='0'", array('order_by' => 'pid, name'));
+		$query = $db->simple_select('themes', 'tid, name, pid, allowedgroups', "pid!='0'", array('order_by' => 'pid, name'));
 
 		while($theme = $db->fetch_array($query))
 		{
