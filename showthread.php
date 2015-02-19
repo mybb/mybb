@@ -44,10 +44,10 @@ if(!empty($mybb->input['pid']) && !isset($mybb->input['tid']))
 		$options = array(
 			"limit" => 1
 		);
-		$query = $db->simple_select("posts", "tid", "pid=".$mybb->get_input('pid', MyBB::INPUT_INT), $options);
+		$query = $db->simple_select("posts", "tid, visible", "pid=".$mybb->get_input('pid', MyBB::INPUT_INT), $options);
 		$post = $db->fetch_array($query);
-		
-		if(empty($post))
+
+		if(empty($post) || ($post['visible'] == 0 && !is_moderator($fid, 'canviewunapprove')) || ($post['visible'] == -1 && !is_moderator($fid, 'canviewdeleted')))
 		{
 			// post does not exist --> show corresponding error
 			error($lang->error_invalidpost);
