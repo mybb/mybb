@@ -923,6 +923,12 @@ if($mybb->input['action'] == "change")
 			$forum_group_select[] = $name;
 		}
 
+		// Administrator is changing the login method.
+		if($mybb->settings['username_method'] == 1 || $mybb->settings['username_method'] == 2 || $mybb->input['upsetting']['username_method'] == 1 || $mybb->input['upsetting']['username_method'] == 2)
+		{
+			$mybb->input['upsetting']['allowmultipleemails'] = 0;
+		}
+
 		if(is_array($mybb->input['upsetting']))
 		{
 			foreach($mybb->input['upsetting'] as $name => $value)
@@ -972,12 +978,6 @@ if($mybb->input['action'] == "change")
 			{
 				$db->create_fulltext_index("threads", "subject");
 			}
-		}
-
-		// Administrator is changing the login method.
-		if($mybb->settings['username_method'] != $mybb->input['upsetting']['username_method'] && $mybb->input['upsetting']['username_method'] == 1 || $mybb->input['upsetting']['username_method'] == 2)
-		{
-			$db->update_query('settings', array('value' => 0), "name='allowmultipleemails'");
 		}
 
 		// If the delayedthreadviews setting was changed, enable or disable the tasks for it.
