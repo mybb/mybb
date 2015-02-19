@@ -1102,7 +1102,13 @@ class PostDataHandler extends DataHandler
 			$done_users = array();
 
 			$subject = $parser->parse_badwords($thread['subject']);
-			$excerpt = $parser->text_parse_message($post['message'], array('me_username' => $post['username'], 'filter_badwords' => 1, 'safe_html' => 1));
+			
+			$parser_options = array(
+				'me_username'		=> $post['username'],
+				'filter_badwords'	=> 1
+			);
+
+			$excerpt = $parser->text_parse_message($post['message'], $parser_options);
 			$excerpt = my_substr($excerpt, 0, $mybb->settings['subscribeexcerpt']).$lang->emailbit_viewthread;
 
 			// Fetch any users subscribed to this thread receiving instant notification and queue up their subscription notices
