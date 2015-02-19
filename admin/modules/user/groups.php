@@ -487,7 +487,7 @@ if($mybb->input['action'] == "leaders")
 	<script type="text/javascript">
 	<!--
 	$("#username").select2({
-		placeholder: "Search for a user",
+		placeholder: "'.$lang->search_for_a_user.'",
 		minimumInputLength: 3,
 		maximumSelectionSize: 3,
 		multiple: false,

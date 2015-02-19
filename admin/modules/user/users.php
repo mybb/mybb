@@ -2134,7 +2134,7 @@ if($mybb->input['action'] == "merge")
 	<script type="text/javascript">
 	<!--
 	$("#source_username").select2({
-		placeholder: "Search for a user",
+		placeholder: "'.$lang->search_for_a_user.'",
 		minimumInputLength: 3,
 		maximumSelectionSize: 3,
 		multiple: false,
@@ -2164,7 +2164,7 @@ if($mybb->input['action'] == "merge")
 		}
 	});
 	$("#destination_username").select2({
-		placeholder: "Search for a user",
+		placeholder: "'.$lang->search_for_a_user.'",
 		minimumInputLength: 3,
 		maximumSelectionSize: 3,
 		multiple: false,
@@ -4137,7 +4137,7 @@ function user_search_conditions($input=array(), &$form)
 <script type="text/javascript">
 <!--
 $("#username").select2({
-	placeholder: "Search for a user",
+	placeholder: "'.$lang->search_for_a_user.'",
 	minimumInputLength: 3,
 	maximumSelectionSize: 3,
 	multiple: false,
