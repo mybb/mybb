@@ -974,6 +974,12 @@ if($mybb->input['action'] == "change")
 			}
 		}
 
+		// Administrator is changing the login method.
+		if($mybb->settings['username_method'] != $mybb->input['upsetting']['username_method'] && $mybb->input['upsetting']['username_method'] == 1 || $mybb->input['upsetting']['username_method'] == 2)
+		{
+			$db->update_query('settings', array('value' => 0), "name='allowmultipleemails'");
+		}
+
 		// If the delayedthreadviews setting was changed, enable or disable the tasks for it.
 		if(isset($mybb->input['upsetting']['delayedthreadviews']) && $mybb->settings['delayedthreadviews'] != $mybb->input['upsetting']['delayedthreadviews'])
 		{
