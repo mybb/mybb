@@ -110,7 +110,7 @@ var ThemeSelector = {
 			if (!message[1]) {
 				message[1] = lang.unknown_error;
 			}
-			$.jGrowl(lang.theme_info_fetch_error + '\n\n' + message[1]);
+			$.jGrowl(lang.theme_info_fetch_error + '\n\n' + message[1], {theme:'jgrowl_error'});
 		} else if(request.responseText) {
 			if ($("#saved").html()) {
 				saved = $("#saved").html();
@@ -182,7 +182,7 @@ var ThemeSelector = {
 				confirmReturn = confirm(save_changes_lang_string);
 				if (confirmReturn == true) {
 					ThemeSelector.save(false, isAjax);
-					$.jGrowl('Saved');
+					$.jGrowl('Saved', {theme:'jgrowl_success'});
 				}
 			}
 		}
@@ -229,7 +229,7 @@ var ThemeSelector = {
 
 		if (isAjax == true) {
 			completeMethod = 'onSaveComplete';
-			$.jGrowl(lang.saving);
+			$.jGrowl(lang.saving, {theme:'jgrowl_process'});
 		}
 
 		$.ajax({
@@ -256,7 +256,7 @@ var ThemeSelector = {
 			if (!message[1]) {
 				message[1] = lang.unkown_error;
 			}
-			$.jGrowl(lang.theme_info_save_error + '\n\n' + message[1]);
+			$.jGrowl(lang.theme_info_save_error + '\n\n' + message[1], {theme:'jgrowl_error'});
 			return false;
 		} else if(request.responseText) {
 			$("#saved").html(" (" + lang.saved + " @ "+ Date() + ")");
@@ -293,7 +293,7 @@ var ThemeSelector = {
 			if (!message[1]) {
 				message[1] = lang.unkown_error;
 			}
-			$.jGrowl(lang.theme_info_save_error + '\n\n' + message[1]);
+			$.jGrowl(lang.theme_info_save_error + '\n\n' + message[1], {theme:'jgrowl_error'});
 			return false;
 		}
 		return true;

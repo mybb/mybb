@@ -2793,12 +2793,12 @@ if($mybb->input['action'] == "do_editlists")
 		$message_js = '';
 		if($message)
 		{
-			$message_js = "$.jGrowl('{$message}');";
+			$message_js = "$.jGrowl('{$message}', {theme:'jgrowl_success'});";
 		}
 
 		if($error_message)
 		{
-			$message_js .= " $.jGrowl('{$error_message}');";
+			$message_js .= " $.jGrowl('{$error_message}', {theme:'jgrowl_error'});";
 		}
 
 		if($mybb->get_input('delete', MyBB::INPUT_INT))

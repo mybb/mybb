@@ -3461,11 +3461,11 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 			{$days}]]></template>
 		<template name="calendar_year" version="1800"><![CDATA[<option value="{$year}" {$selected}>{$year}</option>]]></template>
 		<template name="calendar_year_sel" version="1800"><![CDATA[<option value="{$year_sel}">{$year_sel}</option>]]></template>
-		<template name="editpost" version="1800"><![CDATA[<html>
+		<template name="editpost" version="1805"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_post}</title>
 {$headerinclude}
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/post.js?ver=1800"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/post.js?ver=1805"></script>
 </head>
 <body>
 {$header}
@@ -3733,7 +3733,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 		<template name="forumbit_moderators_group" version="1800"><![CDATA[{$comma}{$moderator['title']}]]></template>
 		<template name="forumbit_moderators_user" version="1800"><![CDATA[{$comma}<a href="{$moderator['profilelink']}">{$moderator['username']}</a>]]></template>
 		<template name="forumbit_subforums" version="120"><![CDATA[<br />{$lang->subforums} {$sub_forums}]]></template>
-		<template name="forumdisplay" version="1804"><![CDATA[<html>
+		<template name="forumdisplay" version="1805"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$foruminfo['name']} </title>
 {$headerinclude}
@@ -3748,7 +3748,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 </script>
 <!-- jeditable (jquery) -->
 <script src="{$mybb->asset_url}/jscripts/jeditable/jeditable.min.js"></script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_edit.js?ver=1804"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_edit.js?ver=1805"></script>
 </head>
 <body>
 {$header}
@@ -4051,9 +4051,9 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 {$prefixselect_prefix}
 </select>]]></template>
 		<template name="forumdisplay_threadlist_prefixes_prefix" version="1800"><![CDATA[<option value="{$prefix['pid']}"{$selected}>{$lang->prefix} {$prefix['prefix']}</option>]]></template>
-		<template name="forumdisplay_threadlist_rating" version="1804"><![CDATA[	<td class="tcat" align="center" width="80">
+		<template name="forumdisplay_threadlist_rating" version="1805"><![CDATA[	<td class="tcat" align="center" width="80">
 		<span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=rating&amp;order=desc">{$lang->rating}</a> {$orderarrow['rating']}</strong></span>
-		<script type="text/javascript" src="{$mybb->asset_url}/jscripts/rating.js?ver=1804"></script>
+		<script type="text/javascript" src="{$mybb->asset_url}/jscripts/rating.js?ver=1805"></script>
 		<script type="text/javascript">
 		<!--
 			lang.stars = new Array();
@@ -5274,14 +5274,14 @@ $(document).ready(function() {
 <tr>
 	<td colspan="2" style="display: none;" id="password_status">&nbsp;</td>
 </tr>]]></template>
-		<template name="member_register_question" version="1804"><![CDATA[<br />
+		<template name="member_register_question" version="1805"><![CDATA[<br />
 <fieldset class="trow2">
 <script type="text/javascript">
 <!--
 	lang.question_fetch_failure = "{$lang->question_fetch_failure}";
 // -->
 </script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/question.js?ver=1804"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/question.js?ver=1805"></script>
 <legend><strong>{$lang->security_question}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
 <tr>
@@ -5365,14 +5365,14 @@ if(use_xmlhttprequest == "1")
 }
 // -->
 </script>]]></template>
-		<template name="member_register_regimage" version="1804"><![CDATA[<br />
+		<template name="member_register_regimage" version="1805"><![CDATA[<br />
 <fieldset class="trow2">
 <script type="text/javascript">
 <!--
 	lang.captcha_fetch_failure = "{$lang->captcha_fetch_failure}";
 // -->
 </script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/captcha.js?ver=1804"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/captcha.js?ver=1805"></script>
 <legend><strong>{$lang->image_verification}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
 <tr>
@@ -8685,11 +8685,11 @@ if(use_xmlhttprequest == "1")
 		<template name="nav_dropdown" version="1800"><![CDATA[ <img src="{$theme['imgdir']}/arrow_down.png" alt="v" title="" class="pagination_breadcrumb_link" id="breadcrumb_multipage" />{$multipage}]]></template>
 		<template name="nav_sep" version="1800"><![CDATA[&rsaquo;]]></template>
 		<template name="nav_sep_active" version="1800"><![CDATA[<br /><img src="{$theme['imgdir']}/nav_bit.png" alt="" />]]></template>
-		<template name="newreply" version="1800"><![CDATA[<html>
+		<template name="newreply" version="1805"><![CDATA[<html>
 <head>
 <title>{$lang->post_reply_to}</title>
 {$headerinclude}
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/post.js?ver=1800"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/post.js?ver=1805"></script>
 </head>
 <body>
 {$header}
@@ -8784,11 +8784,11 @@ if(use_xmlhttprequest == "1")
 {$reviewmessage}
 </td>
 </tr>]]></template>
-		<template name="newthread" version="1800"><![CDATA[<html>
+		<template name="newthread" version="1805"><![CDATA[<html>
 <head>
 <title>{$lang->newthread_in}</title>
 {$headerinclude}
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/post.js?ver=1800"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/post.js?ver=1805"></script>
 </head>
 <body>
 {$header}
@@ -9331,7 +9331,7 @@ if(use_xmlhttprequest == "1")
 </td>
 </tr>]]></template>
 		<template name="post_attachments_update" version="1604"><![CDATA[<input type="submit" class="button" name="updateattachment" value="{$lang->update_attachment}" tabindex="12" />]]></template>
-		<template name="post_captcha" version="1804"><![CDATA[<tr id="captcha_trow">
+		<template name="post_captcha" version="1805"><![CDATA[<tr id="captcha_trow">
 <td class="trow1" valign="top" width="350"><strong>{$lang->image_verification}</strong>
 <br/>
 <span class="smalltext">{$lang->verification_note}</span>
@@ -9342,7 +9342,7 @@ if(use_xmlhttprequest == "1")
 	lang.captcha_fetch_failure = "{$lang->captcha_fetch_failure}";
 // -->
 </script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/captcha.js?ver=1804"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/captcha.js?ver=1805"></script>
 <table style="width: 300px; padding: 4px;">
 	<tr>
 		<td style="vertical-align: middle;"><img src="{$mybb->settings['bburl']}/captcha.php?imagehash={$imagehash}" alt="{$lang->image_verification}" title="{$lang->image_verification}" id="captcha_img" /><br /><span style="color: red;" class="smalltext">{$lang->verification_subnote}</span>
@@ -10215,11 +10215,11 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<template name="private_search_results_nomessages" version="1600"><![CDATA[<tr>
 <td colspan="7" class="trow1">{$lang->nomessages}</td>
 </tr>]]></template>
-		<template name="private_send" version="1804"><![CDATA[<html>
+		<template name="private_send" version="1805"><![CDATA[<html>
 <head>
 <title>{$lang->compose_pm}</title>
 {$headerinclude}
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/usercp.js?ver=1804"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/usercp.js?ver=1805"></script>
 </head>
 <body>
 {$header}
@@ -11159,7 +11159,7 @@ if(use_xmlhttprequest == "1")
 <td width="5%" class="{$bgcolor}"><div class="postbit_buttons">{$emailcode}</div></td>
 <td width="5%" class="{$bgcolor}"><div class="postbit_buttons">{$pmcode}</div></td>
 </tr>]]></template>
-		<template name="showthread" version="1804"><![CDATA[<html>
+		<template name="showthread" version="1805"><![CDATA[<html>
 <head>
 <title>{$thread['subject']}</title>
 {$headerinclude}
@@ -11183,7 +11183,7 @@ if(use_xmlhttprequest == "1")
 <!-- jeditable (jquery) -->
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/report.js?ver=1804"></script>
 <script src="{$mybb->asset_url}/jscripts/jeditable/jeditable.min.js"></script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/thread.js?ver=1804"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/thread.js?ver=1805"></script>
 </head>
 <body>
 	{$header}
@@ -11475,13 +11475,13 @@ if(use_xmlhttprequest == "1")
 		<template name="showthread_quickreply_options_close" version="1800"><![CDATA[<br /><label><input type="checkbox" class="checkbox" name="modoptions[closethread]" value="1"{$closelinkch} />&nbsp;<strong>{$lang->close_thread}</strong></label>]]></template>
 		<template name="showthread_quickreply_options_signature" version="1800"><![CDATA[<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="1" {$postoptionschecked['signature']} />&nbsp;<strong>{$lang->signature}</strong></label><br />]]></template>
 		<template name="showthread_quickreply_options_stick" version="1800"><![CDATA[<br /><label><input type="checkbox" class="checkbox" name="modoptions[stickthread]" value="1"{$stickch} />&nbsp;<strong>{$lang->stick_thread}</strong></label>]]></template>
-		<template name="showthread_ratethread" version="1804"><![CDATA[<div style="margin-top: 6px; padding-right: 10px;" class="float_right">
+		<template name="showthread_ratethread" version="1805"><![CDATA[<div style="margin-top: 6px; padding-right: 10px;" class="float_right">
 		<script type="text/javascript">
 		<!--
 			lang.ratings_update_error = "{$lang->ratings_update_error}";
 		// -->
 		</script>
-		<script type="text/javascript" src="{$mybb->asset_url}/jscripts/rating.js?ver=1804"></script>
+		<script type="text/javascript" src="{$mybb->asset_url}/jscripts/rating.js?ver=1805"></script>
 		<strong class="float_left" style="padding-right: 10px;">{$lang->thread_rating}</strong>
 		<div class="inline_rating">
 			<ul class="star_rating{$not_rated}" id="rating_thread_{$thread['tid']}">
@@ -12003,11 +12003,11 @@ if(use_xmlhttprequest == "1")
 		{$lang->no_requests}
 	</td>
 </tr>]]></template>
-		<template name="usercp_editlists" version="1804"><![CDATA[<html>
+		<template name="usercp_editlists" version="1805"><![CDATA[<html>
 <head>
 	<title>{$mybb->settings['bbname']} - {$lang->edit_lists}</title>
 	{$headerinclude}
-	<script type="text/javascript" src="{$mybb->asset_url}/jscripts/usercp.js?ver=1804"></script>
+	<script type="text/javascript" src="{$mybb->asset_url}/jscripts/usercp.js?ver=1805"></script>
 	<script type="text/javascript">
 		lang.remove_buddy = '{$lang->confirm_remove_buddy}';
 		lang.remove_ignored = '{$lang->confirm_remove_ignored}';
