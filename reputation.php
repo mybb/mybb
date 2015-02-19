@@ -864,17 +864,51 @@ if(!$mybb->input['action'])
 
 	if(!empty($post_cache))
 	{
-		$sql = implode(',', $post_cache);
+		$pids = implode(',', $post_cache);
+
+		$sql = array("p.pid IN ({$pids})");
+
+		// get forums user cannot view
+		$unviewable = get_unviewable_forums(true);
+		if($unviewable)
+		{
+			$sql[] = "p.fid NOT IN ({$unviewable})";
+		}
+
+		// get inactive forums
+		$inactive = get_inactive_forums();
+		if($inactive)
+		{
+			$sql[] = "p.fid NOT IN ({$inactive})";
+		}
+
+		if(!$mybb->user['ismoderator'])
+		{
+			$sql[] = "p.visible='1'";
+			$sql[] = "t.visible='1'";
+		}
+
+		$sql = implode(' AND ', $sql);
 
 		$query = $db->query("
-			SELECT p.pid, p.uid, p.message, t.tid, t.subject
+			SELECT p.pid, p.uid, p.fid, p.visible, p.message, t.tid, t.subject, t.visible AS thread_visible
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-			WHERE p.pid IN ({$sql})
+			WHERE {$sql}
 		");
 
 		while($post = $db->fetch_array($query))
 		{
+			if(($post['visible'] == 0 || $post['thread_visible'] == 0) && !is_moderator($post['fid'], 'canviewunapprove'))
+			{
+				continue;
+			}
+
+			if(($post['visible'] == -1 || $post['thread_visible'] == -1) && !is_moderator($post['fid'], 'canviewdeleted'))
+			{
+				continue;
+			}
+
 			$post_reputation[$post['pid']] = $post;
 		}
 	}
@@ -936,21 +970,16 @@ if(!$mybb->input['action'])
 		$last_updated = $lang->sprintf($lang->last_updated, $last_updated_date);
 
 		// Is this rating specific to a post?
-		$postrep_given = '';
+		$postrep_given = $lang->sprintf($lang->postrep_given_nolink, $user['username']);
 		if($reputation_vote['pid'])
 		{
+			$post = $post_reputation[$reputation_vote['pid']];
+
+			$thread_link = get_thread_link($post['tid']);
+			$subject = htmlspecialchars_uni($post['subject']);
+
+			$thread_link = $lang->sprintf($lang->postrep_given_thread, $thread_link, $subject);
 			$link = get_post_link($reputation_vote['pid'])."#pid{$reputation_vote['pid']}";
-
-			$thread_link = '';
-			if(isset($post_reputation[$reputation_vote['pid']]))
-			{
-				$post = $post_reputation[$reputation_vote['pid']];
-
-				$thread_link = get_thread_link($post['tid']);
-				$subject = htmlspecialchars_uni($post['subject']);
-
-				$thread_link = $lang->sprintf($lang->postrep_given_thread, $thread_link, $subject);
-			}
 
 			$postrep_given = $lang->sprintf($lang->postrep_given, $link, $user['username'], $thread_link);
 		}
