@@ -2923,7 +2923,6 @@ class Moderation
 	 * Toggle thread visibility (deleted/restored)
 	 *
 	 * @param array Thread IDs
-	 * @param int Forum ID
 	 * @return boolean true
 	 */
 	function toggle_thread_softdelete($tids)
