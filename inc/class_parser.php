@@ -1124,6 +1124,7 @@ class postParser
 			$url = $this->parse_html($url);
 		}
 
+		$css_align = '';
 		if($align == "right")
 		{
 			$css_align = " style=\"float: right;\"";
@@ -1133,14 +1134,16 @@ class postParser
 			$css_align = " style=\"float: left;\"";
 		}
 		$alt = basename($url);
+
+		$alt = htmlspecialchars_decode($alt);
 		if(my_strlen($alt) > 55)
 		{
-			$alt = htmlspecialchars_decode($alt);
-			$alt = my_substr($alt, 0, 40)."...".my_substr($alt, -10);
-			$alt = htmlspecialchars_uni($alt);
+			$alt = my_substr($alt, 0, 40).'...'.my_substr($alt, -10);
 		}
+		$alt = htmlspecialchars_uni($alt);
+
 		$alt = $lang->sprintf($lang->posted_image, $alt);
-		if($dimensions[0] > 0 && $dimensions[1] > 0)
+		if(isset($dimensions[0]) && $dimensions[0] > 0 && isset($dimensions[1]) && $dimensions[1] > 0)
 		{
 			return "<img src=\"{$url}\" width=\"{$dimensions[0]}\" height=\"{$dimensions[1]}\" border=\"0\" alt=\"{$alt}\"{$css_align} />";
 		}
