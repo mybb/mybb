@@ -361,39 +361,39 @@ if(my_substr($theme['imgdir'], 0, 7) == 'http://' || my_substr($theme['imgdir'],
 }
 else
 {
-    $img_directory = $theme['imgdir'];
+	$img_directory = $theme['imgdir'];
 
-    if($mybb->settings['usecdn'] && !empty($mybb->settings['cdnpath']))
-    {
-        $img_directory = rtrim($mybb->settings['cdnpath'], '/') . '/' . ltrim($theme['imgdir'], '/');
-    }
+	if($mybb->settings['usecdn'] && !empty($mybb->settings['cdnpath']))
+	{
+		$img_directory = rtrim($mybb->settings['cdnpath'], '/') . '/' . ltrim($theme['imgdir'], '/');
+	}
 
-    if(!@is_dir($img_directory))
-    {
-        $theme['imgdir'] = 'images';
-    }
+	if(!@is_dir($img_directory))
+	{
+		$theme['imgdir'] = 'images';
+	}
 
-    // If a language directory for the current language exists within the theme - we use it
-    if(!empty($mybb->user['language']) && is_dir($img_directory.'/'.$mybb->user['language']))
-    {
-        $theme['imglangdir'] = $theme['imgdir'].'/'.$mybb->user['language'];
-    }
-    else
-    {
-        // Check if a custom language directory exists for this theme
-        if(is_dir($img_directory.'/'.$mybb->settings['bblanguage']))
-        {
-            $theme['imglangdir'] = $theme['imgdir'].'/'.$mybb->settings['bblanguage'];
-        }
-        // Otherwise, the image language directory is the same as the language directory for the theme
-        else
-        {
-            $theme['imglangdir'] = $theme['imgdir'];
-        }
-    }
+	// If a language directory for the current language exists within the theme - we use it
+	if(!empty($mybb->user['language']) && is_dir($img_directory.'/'.$mybb->user['language']))
+	{
+		$theme['imglangdir'] = $theme['imgdir'].'/'.$mybb->user['language'];
+	}
+	else
+	{
+		// Check if a custom language directory exists for this theme
+		if(is_dir($img_directory.'/'.$mybb->settings['bblanguage']))
+		{
+			$theme['imglangdir'] = $theme['imgdir'].'/'.$mybb->settings['bblanguage'];
+		}
+		// Otherwise, the image language directory is the same as the language directory for the theme
+		else
+		{
+			$theme['imglangdir'] = $theme['imgdir'];
+		}
+	}
 
-    $theme['imgdir'] = $mybb->get_asset_url($theme['imgdir']);
-    $theme['imglangdir'] = $mybb->get_asset_url($theme['imglangdir']);
+	$theme['imgdir'] = $mybb->get_asset_url($theme['imgdir']);
+	$theme['imglangdir'] = $mybb->get_asset_url($theme['imglangdir']);
 }
 
 // Theme logo - is it a relative URL to the forum root? Append bburl
@@ -875,13 +875,13 @@ $archive_url = build_archive_link();
 if(is_banned_ip($session->ipaddress, true))
 {
 	if($mybb->user['uid'])
-    {
+	{
 		$db->delete_query('sessions', "ip = ".$db->escape_binary($session->packedip)." OR uid='{$mybb->user['uid']}'");
-    }
-    else
-    {
+	}
+	else
+	{
 		$db->delete_query('sessions', "ip = ".$db->escape_binary($session->packedip));
-    }
+	}
 	error($lang->error_banned);
 }
 
