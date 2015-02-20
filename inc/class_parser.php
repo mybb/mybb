@@ -1046,8 +1046,6 @@ class postParser
 			$url = $this->parse_html($url);
 		}
 
-		$fullurl = $url;
-
 		if(!$name)
 		{
 			$name = $url;
@@ -1055,12 +1053,12 @@ class postParser
 
 		if($name == $url && !empty($this->options['shorten_urls']))
 		{
-			if(my_strlen($url) > 55)
+			$name = htmlspecialchars_decode($name);
+			if(my_strlen($name) > 55)
 			{
-				$name = htmlspecialchars_decode($name);
-				$name = my_substr($url, 0, 40)."...".my_substr($url, -10);
-				$name = htmlspecialchars_uni($name);
+				$name = my_substr($name , 0, 40).'...'.my_substr($name , -10);
 			}
+			$name = htmlspecialchars_uni($name);
 		}
 
 		$nofollow = '';
@@ -1071,10 +1069,10 @@ class postParser
 
 		// Fix some entities in URLs
 		$entities = array('$' => '%24', '&#36;' => '%24', '^' => '%5E', '`' => '%60', '[' => '%5B', ']' => '%5D', '{' => '%7B', '}' => '%7D', '"' => '%22', '<' => '%3C', '>' => '%3E', ' ' => '%20');
-		$fullurl = str_replace(array_keys($entities), array_values($entities), $fullurl);
+		$url = str_replace(array_keys($entities), array_values($entities), $url);
 
 		$name = preg_replace("#&amp;\#([0-9]+);#si", "&#$1;", $name); // Fix & but allow unicode
-		$link = "<a href=\"$fullurl\" target=\"_blank\"{$nofollow}>$name</a>";
+		$link = "<a href=\"$url\" target=\"_blank\"{$nofollow}>$name</a>";
 		return $link;
 	}
 
@@ -1126,6 +1124,7 @@ class postParser
 			$url = $this->parse_html($url);
 		}
 
+		$css_align = '';
 		if($align == "right")
 		{
 			$css_align = " style=\"float: right;\"";
@@ -1135,14 +1134,16 @@ class postParser
 			$css_align = " style=\"float: left;\"";
 		}
 		$alt = basename($url);
+
+		$alt = htmlspecialchars_decode($alt);
 		if(my_strlen($alt) > 55)
 		{
-			$alt = htmlspecialchars_decode($alt);
-			$alt = my_substr($alt, 0, 40)."...".my_substr($alt, -10);
-			$alt = htmlspecialchars_uni($alt);
+			$alt = my_substr($alt, 0, 40).'...'.my_substr($alt, -10);
 		}
+		$alt = htmlspecialchars_uni($alt);
+
 		$alt = $lang->sprintf($lang->posted_image, $alt);
-		if($dimensions[0] > 0 && $dimensions[1] > 0)
+		if(isset($dimensions[0]) && $dimensions[0] > 0 && isset($dimensions[1]) && $dimensions[1] > 0)
 		{
 			return "<img src=\"{$url}\" width=\"{$dimensions[0]}\" height=\"{$dimensions[1]}\" border=\"0\" alt=\"{$alt}\"{$css_align} />";
 		}
