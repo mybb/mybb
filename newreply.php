@@ -1252,7 +1252,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			{
 				$post_captcha->build_captcha();
 			}
-			elseif($post_captcha->type == 2)
+			elseif($post_captcha->type == 2 || $post_captcha->type == 4)
 			{
 				$post_captcha->build_recaptcha();
 			}
