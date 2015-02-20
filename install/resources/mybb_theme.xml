@@ -9485,7 +9485,7 @@ if(use_xmlhttprequest == "1")
 		<template name="postbit_attachments_images" version="120"><![CDATA[<span class="smalltext"><strong>{$lang->postbit_attachments_images}</strong></span><br />
 {$post['imagelist']}
 <br />]]></template>
-		<template name="postbit_attachments_images_image" version="1805"><![CDATA[<img src="attachment.php?aid={$attachment['aid']}" class="attachment" alt="" title="{$lang->postbit_attachment_filename} {$attachment['filename']}&#13{$lang->postbit_attachment_size} {$attachment['filesize']} / {$attachdate}" />&nbsp;&nbsp;&nbsp;]]></template>
+		<template name="postbit_attachments_images_image" version="1805"><![CDATA[<img src="attachment.php?aid={$attachment['aid']}" class="attachment" alt="" title="{$lang->postbit_attachment_filename} {$attachment['filename']}&#13{$lang->postbit_attachment_size} {$attachment['filesize']}&#13{$attachdate}" />&nbsp;&nbsp;&nbsp;]]></template>
 		<template name="postbit_attachments_thumbnails" version="120"><![CDATA[<span class="smalltext"><strong>{$lang->postbit_attachments_thumbnails}</strong></span><br />
 {$post['thumblist']}
 <br />]]></template>
