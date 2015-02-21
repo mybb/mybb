@@ -164,15 +164,15 @@ class CustomModeration extends Moderation
 				$this->toggle_post_visibility($pids);
 			}
 
-			if($post_options['softdelete'] == 'softdelete') // Soft delete posts
+			if($post_options['softdeleteposts'] == 'softdelete') // Soft delete posts
 			{
 				$this->soft_delete_posts($pids);
 			}
-			elseif($post_options['softdelete'] == 'restore') // Restore posts
+			elseif($post_options['softdeleteposts'] == 'restore') // Restore posts
 			{
 				$this->restore_posts($pids);
 			}
-			elseif($post_options['softdelete'] == 'toggle') // Toggle post visibility
+			elseif($post_options['softdeleteposts'] == 'toggle') // Toggle post visibility
 			{
 				$this->toggle_post_softdelete($pids);
 			}
@@ -336,15 +336,15 @@ class CustomModeration extends Moderation
 				$this->toggle_thread_visibility($tids, $thread['fid']);
 			}
 
-			if($thread_options['softdelete'] == 'softdelete') // Soft delete thread
+			if($thread_options['softdeletethread'] == 'softdelete') // Soft delete thread
 			{
 				$this->soft_delete_threads($tids);
 			}
-			elseif($thread_options['softdelete'] == 'restore') // Restore thread
+			elseif($thread_options['softdeletethread'] == 'restore') // Restore thread
 			{
 				$this->restore_threads($tids);
 			}
-			elseif($thread_options['softdelete'] == 'toggle') // Toggle thread visibility
+			elseif($thread_options['softdeletethread'] == 'toggle') // Toggle thread visibility
 			{
 				$this->toggle_thread_softdelete($tids);
 			}
