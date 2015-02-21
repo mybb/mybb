@@ -186,9 +186,25 @@ else
 $lang->load("global");
 $lang->load("xmlhttp");
 
-$plugins->run_hooks("xmlhttp");
+$closed_bypass = array("refresh_captcha", "validate_captcha");
 
 $mybb->input['action'] = $mybb->get_input('action');
+
+$plugins->run_hooks("xmlhttp");
+
+// If the board is closed, the user is not an administrator and they're not trying to login, show the board closed message
+if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['canviewboardclosed'] != 1 && !in_array($mybb->input['action'], $closed_bypass))
+{
+	// Show error
+	if(!$mybb->settings['boardclosed_reason'])
+	{
+		$mybb->settings['boardclosed_reason'] = $lang->boardclosed_reason;
+	}
+
+	$lang->error_boardclosed .= "<br /><em>{$mybb->settings['boardclosed_reason']}</em>";
+
+	xmlhttp_error($lang->error_boardclosed);
+}
 
 // Fetch a list of usernames beginning with a certain string (used for auto completion)
 if($mybb->input['action'] == "get_users")
@@ -1030,4 +1046,3 @@ function xmlhttp_error($message)
 
 	exit;
 }
-
