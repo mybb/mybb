@@ -338,15 +338,15 @@ class CustomModeration extends Moderation
 
 			if($thread_options['softdelete'] == 'softdelete') // Soft delete thread
 			{
-				$this->soft_delete_threads($tids, $thread['fid']);
+				$this->soft_delete_threads($tids);
 			}
 			elseif($thread_options['softdelete'] == 'restore') // Restore thread
 			{
-				$this->restore_threads($tids, $thread['fid']);
+				$this->restore_threads($tids);
 			}
 			elseif($thread_options['softdelete'] == 'toggle') // Toggle thread visibility
 			{
-				$this->toggle_thread_softdelete($tids, $thread['fid']);
+				$this->toggle_thread_softdelete($tids);
 			}
 
 			if($thread_options['openthread'] == 'open') // Open thread
