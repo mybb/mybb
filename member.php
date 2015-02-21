@@ -1782,7 +1782,7 @@ if($mybb->input['action'] == "login")
 				$captcha = $login_captcha->build_hidden_captcha();
 			}
 		}
-		elseif($login_captcha->type == 2)
+		elseif($login_captcha->type == 2 || $login_captcha->type == 4)
 		{
 			$login_captcha->build_recaptcha();
 		}
