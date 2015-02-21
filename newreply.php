@@ -1266,7 +1266,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 				$captcha = $post_captcha->html;
 			}
 		}
-		else if($correct && $post_captcha->type == 2)
+		else if($correct && ($post_captcha->type == 2 || $post_captcha->type == 4))
 		{
 			$post_captcha->build_recaptcha();
 
