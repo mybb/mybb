@@ -649,7 +649,9 @@ class UserDataHandler extends DataHandler
 		$this->verify_yesno_option($options, 'showquickreply', 1);
 		$this->verify_yesno_option($options, 'showredirect', 1);
 		$this->verify_yesno_option($options, 'showcodebuttons', 1);
-		$this->verify_yesno_option($options, 'sourceeditor', 1);
+		$this->verify_yesno_option($options, 'sourceeditor', 0);
+		$this->verify_yesno_option($options, 'buddyrequestspm', 1);
+		$this->verify_yesno_option($options, 'buddyrequestsauto', 0);
 
 		if($mybb->settings['postlayout'] == 'classic')
 		{
@@ -1086,6 +1088,8 @@ class UserDataHandler extends DataHandler
 			"language" => $db->escape_string($user['language']),
 			"showcodebuttons" => $user['options']['showcodebuttons'],
 			"sourceeditor" => $user['options']['sourceeditor'],
+			"buddyrequestspm" => $user['options']['buddyrequestspm'],
+			"buddyrequestsauto" => $user['options']['buddyrequestsauto'],
 			"away" => $user['away']['away'],
 			"awaydate" => $user['away']['date'],
 			"returndate" => $user['away']['returndate'],

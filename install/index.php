@@ -2215,6 +2215,8 @@ function install_done()
 		'receivepms' => 1,
 		'pmnotice' => 1,
 		'pmnotify' => 1,
+		'buddyrequestspm' => 1,
+		'buddyrequestsauto' => 0,
 		'showimages' => 1,
 		'showvideos' => 1,
 		'showsigs' => 1,
