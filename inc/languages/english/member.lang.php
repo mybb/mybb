@@ -73,6 +73,7 @@ $l['away_no_reason'] = "Not specified.";
 $l['ban_note'] = "This forum account is currently banned.";
 $l['ban_by'] = "Banned By";
 $l['ban_length'] = "Ban Length";
+$l['ban_remaining'] = "remaining";
 
 $l['users_additional_info'] = "Additional Info About {1}";
 $l['email'] = "Email:";

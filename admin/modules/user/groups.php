@@ -358,7 +358,7 @@ if($mybb->input['action'] == "add_leader" && $mybb->request_method == "post")
 		$cache->update_groupleaders();
 
 		// Log admin action
-		log_admin_action($user['uid'], $mybb->input['username'], $group['gid'], htmlspecialchars_uni($group['title']));
+		log_admin_action($user['uid'], $user['username'], $group['gid'], htmlspecialchars_uni($group['title']));
 
 		flash_message("{$user['username']} ".$lang->success_user_made_leader, 'success');
 		admin_redirect("index.php?module=user-groups&action=leaders&gid={$group['gid']}");
@@ -525,7 +525,7 @@ if($mybb->input['action'] == "delete_leader")
 		$cache->update_groupleaders();
 
 		// Log admin action
-		log_admin_action($leader['lid'], $leader['username'], $group['gid'], htmlspecialchars_uni($group['title']));
+		log_admin_action($leader['uid'], $leader['username'], $group['gid'], htmlspecialchars_uni($group['title']));
 
 		flash_message($lang->success_group_leader_deleted, 'success');
 		admin_redirect("index.php?module=user-groups&action=leaders&gid={$group['gid']}");
@@ -572,7 +572,7 @@ if($mybb->input['action'] == "edit_leader")
 		$cache->update_groupleaders();
 
 		// Log admin action
-		log_admin_action($leader['lid'], $leader['username'], $group['gid'], htmlspecialchars_uni($group['title']));
+		log_admin_action($leader['uid'], $leader['username'], $group['gid'], htmlspecialchars_uni($group['title']));
 
 		flash_message($lang->success_group_leader_updated, 'success');
 		admin_redirect("index.php?module=user-groups&action=leaders&gid={$group['gid']}");
