@@ -171,7 +171,7 @@ function task_delayedmoderation($task)
 						continue;
 					}
 
-					if($mergetid == $delayedmoderation['tid'])
+					if($mergetid == $delayedmoderation['tids'])
 					{
 						// sanity check
 						continue;
@@ -183,7 +183,7 @@ function task_delayedmoderation($task)
 					}
 					else
 					{
-						$query = $db->simple_select("thread", "subject", "tid='{$delayedmoderation['tids']}'");
+						$query = $db->simple_select("threads", "subject", "tid='{$delayedmoderation['tids']}'");
 						$subject = $db->fetch_field($query, "subject");
 					}
 
