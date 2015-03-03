@@ -27,7 +27,7 @@ $tables[] = "CREATE TABLE mybb_adminoptions (
 	defaultviews TEXT NOT NULL,
 	loginattempts smallint unsigned NOT NULL default '0',
 	loginlockoutexpiry int unsigned NOT NULL default '0'
-	2fasecret varchar(16) NOT NULL default '',
+	authsecret varchar(16) NOT NULL default '',
 	recovery_codes varchar(177) NOT NULL default '',
  );";
 

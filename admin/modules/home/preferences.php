@@ -51,10 +51,10 @@ if(!$mybb->input['action'])
 
 	if($mybb->request_method == "post")
 	{
-		$query = $db->simple_select("adminoptions", "permissions, defaultviews, 2fasecret, recovery_codes", "uid='{$mybb->user['uid']}'");
+		$query = $db->simple_select("adminoptions", "permissions, defaultviews, authsecret, recovery_codes", "uid='{$mybb->user['uid']}'");
 		$adminopts = $db->fetch_array($query);
 
-		$secret = $adminopts['2fasecret'];
+		$secret = $adminopts['authsecret'];
 		// Was the option changed? empty = disabled so ==
 		if($mybb->input['2fa'] == empty($secret))
 		{
@@ -83,7 +83,7 @@ if(!$mybb->input['action'])
 			"defaultviews" => $db->escape_string($adminopts['defaultviews']),
 			"uid" => $mybb->user['uid'],
 			"codepress" => $mybb->get_input('codepress', MyBB::INPUT_INT), // It's actually CodeMirror but for compatibility purposes lets leave it codepress
-			"2fasecret" => $db->escape_string($secret),
+			"authsecret" => $db->escape_string($secret),
 			"recovery_codes" => $db->escape_string($adminopts['recovery_codes']),
 		);
 
@@ -105,7 +105,7 @@ if(!$mybb->input['action'])
 
 	$page->output_nav_tabs($sub_tabs, 'preferences');
 
-	$query = $db->simple_select("adminoptions", "notes, cpstyle, cplanguage, codepress, 2fasecret", "uid='".$mybb->user['uid']."'", array('limit' => 1));
+	$query = $db->simple_select("adminoptions", "notes, cpstyle, cplanguage, codepress, authsecret", "uid='".$mybb->user['uid']."'", array('limit' => 1));
 	$admin_options = $db->fetch_array($query);
 
 	$form = new Form("index.php?module=home-preferences", "post");
@@ -139,17 +139,17 @@ if(!$mybb->input['action'])
 	$table->construct_row();
 
 	// If 2FA is enabled we need to display a link to the recovery codes page
-	if(!empty($admin_options['2fasecret']))
+	if(!empty($admin_options['authsecret']))
 	{
 		$lang->use_2fa_desc .= "<br />".$lang->recovery_codes_desc." ".$lang->recovery_codes_warning;
 	}
 
-	$table->construct_cell("<strong>{$lang->my2fa}</strong><br /><small>{$lang->use_2fa_desc}</small><br /><br />".$form->generate_on_off_radio('2fa', (int)!empty($admin_options['2fasecret'])));
+	$table->construct_cell("<strong>{$lang->my2fa}</strong><br /><small>{$lang->use_2fa_desc}</small><br /><br />".$form->generate_on_off_radio('2fa', (int)!empty($admin_options['authsecret'])));
 	$table->construct_row();
 
-	if(!empty($admin_options['2fasecret']))
+	if(!empty($admin_options['authsecret']))
 	{
-		$qr = $auth->getQRCodeGoogleUrl($mybb->user['username']."@".str_replace(" ", "", $mybb->settings['bbname']), $admin_options['2fasecret']);
+		$qr = $auth->getQRCodeGoogleUrl($mybb->user['username']."@".str_replace(" ", "", $mybb->settings['bbname']), $admin_options['authsecret']);
 		$table->construct_cell("<strong>{$lang->my2fa_qr}</strong><br /><img src=\"{$qr}\"");
 		$table->construct_row();
 	}
