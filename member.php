@@ -1611,9 +1611,15 @@ if($mybb->input['action'] == "resetpassword")
 			'password'	=> random_str($password_length)
 		));
 
-		if(!$userhandler->validate_user())
+		if(!$userhandler->verify_password())
 		{
-			error($lang->error_unknownerror);
+            $errors = $userhandler->get_friendly_errors();
+            if(!empty($errors[0]))
+            {
+                error($errors[0]);
+            }
+
+            error($lang->error_unknownerror);
 		}
 
 		$userhandler->update_user();
