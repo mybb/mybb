@@ -146,8 +146,8 @@ if($mybb->request_method == "post")
 		}
 	}
 
-	// Should we have a CAPTCHA? Perhaps yes...
-	if($mybb->settings['captchaimage'])
+	// Should we have a CAPTCHA? Perhaps yes, but only for guests like in other pages...
+	if($mybb->settings['captchaimage'] && !$mybb->user['uid'])
 	{
 		$captcha = new captcha;
 
@@ -261,7 +261,9 @@ if(empty($errors))
 }
 
 // Generate CAPTCHA?
-if($mybb->settings['captchaimage'])
+$captcha = '';
+
+if($mybb->settings['captchaimage'] && !$mybb->user['uid'])
 {
 	$post_captcha = new captcha(true, "post_captcha");
 
@@ -269,10 +271,6 @@ if($mybb->settings['captchaimage'])
 	{
 		$captcha = $post_captcha->html;
 	}
-}
-else
-{
-	$captcha = '';
 }
 
 $mybb->input['subject'] = htmlspecialchars_uni($mybb->input['subject']);
