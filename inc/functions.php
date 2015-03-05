@@ -3775,6 +3775,8 @@ function get_reputation($reputation, $uid=0)
 	{
 		$reputation_class = "reputation_neutral";
 	}
+	
+	$reputation = my_number_format($reputation);
 
 	if($uid != 0)
 	{

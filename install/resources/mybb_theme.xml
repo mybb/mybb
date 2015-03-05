@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<theme name="MyBB Master Style" version="1804">
+<theme name="MyBB Master Style" version="1805">
 	<properties>
 		<templateset><![CDATA[1]]></templateset>
 		<imgdir><![CDATA[images]]></imgdir>
@@ -10570,7 +10570,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		<td class="trow1">{$lang->success_report_voted}</td>
 	</tr>
 </table>]]></template>
-		<template name="reputation" version="1804"><![CDATA[<html>
+		<template name="reputation" version="1805"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->reputation_report}</title>
 {$headerinclude}
@@ -10600,7 +10600,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 				<span class="smalltext">
 					({$usertitle})<br />
 					<br />
-					<strong>{$lang->total_reputation}:</strong> <span class="repbox {$total_class}">{$user['reputation']}</span><br /><br />
+					<strong>{$lang->total_reputation}:</strong> <span class="repbox {$total_class}">{$rep_total}</span><br /><br />
 					<strong>{$lang->reputation_members} {$rep_members}</strong><br />
 					<strong>{$lang->reputation_posts} {$rep_posts}</strong>
 				</span>
@@ -10615,27 +10615,27 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 						</tr>
 						<tr>
 							<td style="text-align: right;"><span class="smalltext">{$lang->last_week}</span></td>
-							<td style="text-align: center;"><span class="smalltext">{$positive_week}</span></td>
-							<td style="text-align: center;"><span class="smalltext">{$neutral_week}</span></td>
-							<td style="text-align: center;"><span class="smalltext">{$negative_week}</span></td>
+							<td style="text-align: center;"><span class="smalltext">{$f_positive_week}</span></td>
+							<td style="text-align: center;"><span class="smalltext">{$f_neutral_week}</span></td>
+							<td style="text-align: center;"><span class="smalltext">{$f_negative_week}</span></td>
 						</tr>
 						<tr>
 							<td style="text-align: right;"><span class="smalltext">{$lang->last_month}</span></td>
-							<td style="text-align: center;"><span class="smalltext">{$positive_month}</span></td>
-							<td style="text-align: center;"><span class="smalltext">{$neutral_month}</span></td>
-							<td style="text-align: center;"><span class="smalltext">{$negative_month}</span></td>
+							<td style="text-align: center;"><span class="smalltext">{$f_positive_month}</span></td>
+							<td style="text-align: center;"><span class="smalltext">{$f_neutral_month}</span></td>
+							<td style="text-align: center;"><span class="smalltext">{$f_negative_month}</span></td>
 						</tr>
 						<tr>
 							<td style="text-align: right;"><span class="smalltext">{$lang->last_6months}</span></td>
-							<td style="text-align: center;"><span class="smalltext">{$positive_6months}</span></td>
-							<td style="text-align: center;"><span class="smalltext">{$neutral_6months}</span></td>
-							<td style="text-align: center;"><span class="smalltext">{$negative_6months}</span></td>
+							<td style="text-align: center;"><span class="smalltext">{$f_positive_6months}</span></td>
+							<td style="text-align: center;"><span class="smalltext">{$f_neutral_6months}</span></td>
+							<td style="text-align: center;"><span class="smalltext">{$f_negative_6months}</span></td>
 						</tr>
 						<tr>
 							<td style="text-align: right;"><span class="smalltext">{$lang->all_time}</span></td>
-							<td style="text-align: center;"><span class="smalltext">{$positive_count}</span></td>
-							<td style="text-align: center;"><span class="smalltext">{$neutral_count}</span></td>
-							<td style="text-align: center;"><span class="smalltext">{$negative_count}</span></td>
+							<td style="text-align: center;"><span class="smalltext">{$f_positive_count}</span></td>
+							<td style="text-align: center;"><span class="smalltext">{$f_neutral_count}</span></td>
+							<td style="text-align: center;"><span class="smalltext">{$f_negative_count}</span></td>
 						</tr>
 					</table>
 			</td>
