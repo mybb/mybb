@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<theme name="MyBB Master Style" version="1804">
+<theme name="MyBB Master Style" version="1805">
 	<properties>
 		<templateset><![CDATA[1]]></templateset>
 		<imgdir><![CDATA[images]]></imgdir>
@@ -12977,7 +12977,8 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
-	<template name="usercp_profile_contact_fields" version="1800"><![CDATA[<fieldset class="trow2">
+	<template name="usercp_profile_contact_fields" version="1805"><![CDATA[<br />
+<fieldset class="trow2">
 <legend><strong>{$lang->additional_contact_details}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
 	{$contact_fields['icq']}
@@ -13061,7 +13062,7 @@ if(use_xmlhttprequest == "1")
 <tr>
 <td>{$code}</td>
 </tr>]]></template>
-		<template name="usercp_profile_customtitle" version="1800"><![CDATA[<fieldset class="trow2">
+		<template name="usercp_profile_customtitle" version="1805"><![CDATA[<fieldset class="trow2">
 <legend><strong>{$lang->custom_usertitle}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
 <tr>
@@ -13082,8 +13083,7 @@ if(use_xmlhttprequest == "1")
 </tr>
 {$reverttitle}
 </table>
-</fieldset>
-<br />]]></template>
+</fieldset>]]></template>
 		<template name="usercp_profile_customtitle_currentcustom" version="1800"><![CDATA[<tr>
 <td><span class="smalltext">{$lang->current_custom_usertitle}</span></td>
 </tr>

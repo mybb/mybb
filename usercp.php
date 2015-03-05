@@ -26,7 +26,7 @@ $templatelist .= ",usercp_options_tppselect_option,usercp_options_pppselect_opti
 $templatelist .= ",usercp_editlists_no_buddies,usercp_editlists_no_ignored,usercp_editlists_no_requests,usercp_editlists_received_requests,usercp_editlists_sent_requests,usercp_drafts_draft_thread,usercp_drafts_draft_forum";
 $templatelist .= ",usercp_usergroups_leader_usergroup_memberlist,usercp_usergroups_leader_usergroup_moderaterequests,usercp_usergroups_memberof_usergroup_leaveprimary,usercp_usergroups_memberof_usergroup_display,usercp_email";
 $templatelist .= ",usercp_usergroups_memberof_usergroup_leaveleader,usercp_usergroups_memberof_usergroup_leaveother,usercp_usergroups_memberof_usergroup_leave,usercp_usergroups_joinable_usergroup_description,usercp_options_time_format";
-$templatelist .= ",usercp_editlists_sent_request,usercp_editlists_received_request,usercp_drafts_none,usercp_usergroups_memberof_usergroup_setdisplay,usercp_usergroups_memberof_usergroup_description,usercp_editlists_user,usercp_profile_day,usercp_profile_contact_fields,usercp_profile_contact_fields_field, usercp_profile_website";
+$templatelist .= ",usercp_editlists_sent_request,usercp_editlists_received_request,usercp_drafts_none,usercp_usergroups_memberof_usergroup_setdisplay,usercp_usergroups_memberof_usergroup_description,usercp_editlists_user,usercp_profile_day,usercp_profile_contact_fields,usercp_profile_contact_fields_field,usercp_profile_website";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -411,6 +411,8 @@ if($mybb->input['action'] == "profile")
 
 	$contact_fields = array();
 	$contactfields = '';
+	$cfieldsshow = false;
+	
 	foreach(array('icq', 'aim', 'yahoo', 'skype', 'google') as $cfield)
 	{
 		$contact_fields[$cfield] = '';
@@ -434,7 +436,7 @@ if($mybb->input['action'] == "profile")
 		eval('$contact_fields[$cfield] = "'.$templates->get('usercp_profile_contact_fields_field').'";');
 	}
 
-	if(!empty($cfieldsshow))
+	if($cfieldsshow)
 	{
 		eval('$contactfields = "'.$templates->get('usercp_profile_contact_fields').'";');
 	}
