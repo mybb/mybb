@@ -106,6 +106,7 @@ function task_delayedmoderation($task)
 					}
 					break;
 				case "merge":
+					// $delayedmoderation['tids'] should be a single tid
 					if(count($tids) != 1)
 					{
 						continue;
