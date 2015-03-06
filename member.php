@@ -1616,7 +1616,7 @@ if($mybb->input['action'] == "resetpassword")
 			$errors = $userhandler->get_friendly_errors();
 			if(!empty($errors[0]))
 			{
-			error($errors[0]);
+				error($errors[0]);
 			}
 
 			error($lang->error_unknownerror);
