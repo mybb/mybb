@@ -25,14 +25,14 @@ function find_replace_templatesets($title, $find, $replace, $autocreate=1, $sid=
 
 	$return = false;
 
-    $sqlwhere = '>\'0\'';
+	$sqlwhere = ">'0'";
 
 	$template_sets = array(-2, -1);
 
 	// Select all global with that title if not working on a specific template set
 	if($sid !== false)
 	{
-        $sqlwhere = '=\''.(int)$sid.'\'';
+		$sqlwhere = '=\''.(int)$sid.'\'';
 
 		$query = $db->simple_select("templates", "tid, template", "title = '".$db->escape_string($title)."' AND sid='-1'");
 		while($template = $db->fetch_array($query))
