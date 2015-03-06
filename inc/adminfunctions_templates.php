@@ -46,7 +46,7 @@ function find_replace_templatesets($title, $find, $replace, $autocreate=1, $sid=
 				continue;
 			}
 
-			// The template is a custom template.  Replace as normal.
+			// The template is a custom template. Replace as normal.
 			$updated_template = array(
 				"template" => $db->escape_string($new_template)
 			);
