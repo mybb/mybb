@@ -1613,13 +1613,13 @@ if($mybb->input['action'] == "resetpassword")
 
 		if(!$userhandler->verify_password())
 		{
-            $errors = $userhandler->get_friendly_errors();
-            if(!empty($errors[0]))
-            {
-                error($errors[0]);
-            }
+			$errors = $userhandler->get_friendly_errors();
+			if(!empty($errors[0]))
+			{
+			error($errors[0]);
+			}
 
-            error($lang->error_unknownerror);
+			error($lang->error_unknownerror);
 		}
 
 		$userhandler->update_user();
