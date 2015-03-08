@@ -122,7 +122,7 @@ if(isset($mybb->input['theme']) && verify_post_check($mybb->get_input('my_post_k
 
 	$userhandler->set_data($user);
 
-	if($userhandler->validate_user())
+	if($userhandler->verify_style())
 	{
 		$userhandler->update_user();
 

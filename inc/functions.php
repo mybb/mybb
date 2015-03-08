@@ -5045,13 +5045,8 @@ function get_theme($tid)
 			if($tid == $theme['tid'])
 			{
 				$s_theme = $theme;
-				break;
+				break 2;
 			}
-		}
-
-		if($s_theme)
-		{
-			break;
 		}
 	}
 
