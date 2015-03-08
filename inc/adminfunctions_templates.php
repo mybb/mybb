@@ -30,7 +30,7 @@ function find_replace_templatesets($title, $find, $replace, $autocreate=1, $sid=
 	// Select all templates with that title (including global) if not working on a specific template set
 	$sqlwhere = '>0 OR sid=-1';
 
-	// Otherwise select just that specific set
+	// Otherwise select just templates from that specific set
 	if($sid !== false)
 	{
 		$sid = (int)$sid;
