@@ -891,7 +891,11 @@ if($mybb->input['action'] == "thread")
 		if(!empty($mybb->input['pid']))
 		{
 			$post = get_post($mybb->input['pid']);
-			if($post)
+			if(empty($post) || ($post['visible'] == 0 && !is_moderator($fid, 'canviewunapprove')) || ($post['visible'] == -1 && !is_moderator($fid, 'canviewdeleted')))
+			{
+				$footer .= '<script type="text/javascript">$(document).ready(function() { $.jGrowl(\''.$lang->error_invalidpost.'\', {theme: \'jgrowl_error\'}); });</script>';
+			}
+			else
 			{
 				$query = $db->query("
 					SELECT COUNT(p.dateline) AS count FROM ".TABLE_PREFIX."posts p
