@@ -120,7 +120,7 @@ if(is_moderator($fid))
 }
 else
 {
-	$ismod = false;	$ismod = false;
+	$ismod = false;
 	$visibleonly = " AND visible=1";
 	$visibleonly2 = "AND p.visible=1 AND t.visible=1";
 }
