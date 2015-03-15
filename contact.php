@@ -29,6 +29,15 @@ if($mybb->settings['contact'] != 1 || (!$mybb->user['uid'] && $mybb->settings['c
 	error_no_permission();
 }
 
+if($mybb->settings['contactemail'])
+{
+	$contactemail = $mybb->settings['contactemail'];
+}
+else
+{
+	$contactemail = $mybb->settings['adminemail'];
+}
+
 // Check group limits
 if($mybb->usergroup['maxemails'] > 0)
 {
@@ -218,7 +227,7 @@ if($mybb->request_method == "post")
 		$message = $lang->sprintf($lang->email_contact, $mybb->input['email'], $user, $session->ipaddress, $mybb->input['message']);
 
 		// Email the administrator
-		my_mail($mybb->settings['adminemail'], $subject, $message, $mybb->input['email']);
+		my_mail($contactemail, $subject, $message, $mybb->input['email']);
 
 		$plugins->run_hooks('contact_do_end');
 
@@ -232,7 +241,7 @@ if($mybb->request_method == "post")
 				"fromuid" => $mybb->user['uid'],
 				"fromemail" => $db->escape_string($mybb->input['email']),
 				"touid" => 0,
-				"toemail" => $db->escape_string($mybb->settings['adminemail']),
+				"toemail" => $db->escape_string($contactemail),
 				"tid" => 0,
 				"ipaddress" => $db->escape_binary($session->packedip),
 				"type" => 3
