@@ -67,10 +67,18 @@
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="contactemail">
+			<title>Contact Email</title>
+			<description><![CDATA[The email address that messages sent via the contact form (contact.php) will be sent to. Leave blank to use the admin email address instead.]]></description>
+			<disporder>7</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 		<setting name="contactlink">
 			<title>Contact Us Link</title>
 			<description><![CDATA[This will be used for the Contact Us link on the bottom of all the forum pages. Can either be an email address (using mailto:email@website.com) or a hyperlink.]]></description>
-			<disporder>7</disporder>
+			<disporder>8</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -78,7 +86,7 @@
 		<setting name="cookiedomain">
 			<title>Cookie Domain</title>
 			<description><![CDATA[The domain which cookies should be set to. This can remain blank. It should also start with a . so it covers all subdomains.]]></description>
-			<disporder>8</disporder>
+			<disporder>9</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -86,7 +94,7 @@
 		<setting name="cookiepath">
 			<title>Cookie Path</title>
 			<description><![CDATA[The path which cookies are set to. We recommend setting this to the full directory path to your forums with a trailing slash.]]></description>
-			<disporder>9</disporder>
+			<disporder>10</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[/]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -94,7 +102,7 @@
 		<setting name="cookieprefix">
 			<title>Cookie Prefix</title>
 			<description><![CDATA[A prefix to append to all cookies set by MyBB. This is useful if you wish to install multiple copies of MyBB on the one domain or have other software installed which conflicts with the names of the cookies in MyBB. If not specified, no prefix will be used.]]></description>
-			<disporder>10</disporder>
+			<disporder>11</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -102,7 +110,7 @@
 		<setting name="showvernum">
 			<title>Show Version Numbers</title>
 			<description><![CDATA[Allows you to turn off the public display of version numbers in MyBB.]]></description>
-			<disporder>11</disporder>
+			<disporder>12</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -110,7 +118,7 @@
 		<setting name="mailingaddress">
 			<title>Mailing Address</title>
 			<description><![CDATA[If you have a mailing address, enter it here. This is shown on the COPPA compliance form.]]></description>
-			<disporder>12</disporder>
+			<disporder>13</disporder>
 			<optionscode><![CDATA[textarea]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -118,7 +126,7 @@
 		<setting name="faxno">
 			<title>Contact Fax No</title>
 			<description><![CDATA[If you have a fax number, enter it here. This is shown on the COPPA compliance form.]]></description>
-			<disporder>13</disporder>
+			<disporder>14</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
