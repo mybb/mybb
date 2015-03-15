@@ -121,6 +121,8 @@ if(is_moderator($fid))
 else
 {
 	$ismod = false;
+	$visibleonly = " AND visible=1";
+	$visibleonly2 = "AND p.visible=1 AND t.visible=1";
 }
 
 // Make sure we are looking at a real thread here.
