@@ -3995,25 +3995,36 @@ function get_attachment_icon($ext)
 
 	if($attachtypes[$ext]['icon'])
 	{
-		if(defined("IN_ADMINCP"))
+		static $attach_icons_schemes = array();
+		if(!isset($attach_icons_schemes[$ext]))
 		{
-			$icon = str_replace("{theme}", "", $attachtypes[$ext]['icon']);
-			if(my_substr($icon, 0, 1) != "/" && my_substr($icon, 0, 7) != "http://")
+			$attach_icons_schemes[$ext] = parse_url($attachtypes[$ext]['icon']);
+			if(!empty($attach_icons_schemes[$ext]['scheme']))
 			{
-				$icon = "../".$icon;
+				$attach_icons_schemes[$ext] = $attachtypes[$ext]['icon'];
+			}
+			elseif(defined("IN_ADMINCP"))
+			{
+				$attach_icons_schemes[$ext] = str_replace("{theme}", "", $attachtypes[$ext]['icon']);
+				if(my_substr($attach_icons_schemes[$ext], 0, 1) != "/")
+				{
+					$attach_icons_schemes[$ext] = "../".$attach_icons_schemes[$ext];
+				}
+			}
+			elseif(defined("IN_PORTAL"))
+			{
+				global $change_dir;
+				$attach_icons_schemes[$ext] = $change_dir."/".str_replace("{theme}", $theme['imgdir'], $attachtypes[$ext]['icon']);
+				$attach_icons_schemes[$ext] = $mybb->get_asset_url($attach_icons_schemes[$ext]);
+			}
+			else
+			{
+				$attach_icons_schemes[$ext] = str_replace("{theme}", $theme['imgdir'], $attachtypes[$ext]['icon']);
+				$attach_icons_schemes[$ext] = $mybb->get_asset_url($attach_icons_schemes[$ext]);
 			}
 		}
-		elseif(defined("IN_PORTAL"))
-		{
-			global $change_dir;
-			$icon = $change_dir."/".str_replace("{theme}", $theme['imgdir'], $attachtypes[$ext]['icon']);
-			$icon = $mybb->get_asset_url($icon);
-		}
-		else
-		{
-			$icon = str_replace("{theme}", $theme['imgdir'], $attachtypes[$ext]['icon']);
-			$icon = $mybb->get_asset_url($icon);
-		}
+
+		$icon = $attach_icons_schemes[$ext];
 
 		$name = htmlspecialchars_uni($attachtypes[$ext]['name']);
 	}
@@ -4030,6 +4041,7 @@ function get_attachment_icon($ext)
 		}
 
 		$icon = "{$theme['imgdir']}/attachtypes/unknown.png";
+
 		$name = $lang->unknown;
 	}
 
