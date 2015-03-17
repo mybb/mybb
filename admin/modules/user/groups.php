@@ -1283,6 +1283,8 @@ if($mybb->input['action'] == "delete")
 		}
 
 		$db->delete_query("forumpermissions", "gid='{$usergroup['gid']}'");
+		$db->delete_query("calendarpermissions", "gid='{$usergroup['gid']}'");
+		$db->delete_query("joinrequests", "gid='{$usergroup['gid']}'");
 		$db->delete_query("moderators", "id='{$usergroup['gid']}' AND isgroup='1'");
 		$db->delete_query("groupleaders", "gid='{$usergroup['gid']}'");
 		$db->delete_query("usergroups", "gid='{$usergroup['gid']}'");
