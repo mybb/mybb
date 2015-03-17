@@ -124,9 +124,7 @@ if(isset($mybb->input['theme']) && verify_post_check($mybb->get_input('my_post_k
 
 	if($userhandler->verify_style())
 	{
-		$userhandler->update_user();
-
-		$mybb->user['style'] = $user['theme'];
+		$mybb->user['style'] = $user['style'];
 
 		// If user is logged in, update their theme selection with the new one
 		if($mybb->user['uid'])
@@ -135,6 +133,8 @@ if(isset($mybb->input['theme']) && verify_post_check($mybb->get_input('my_post_k
 			{
 				my_unsetcookie('mybbtheme');
 			}
+
+			$userhandler->update_user();
 		}
 		// Guest = cookie
 		else
