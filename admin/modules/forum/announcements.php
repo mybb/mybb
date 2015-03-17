@@ -162,9 +162,9 @@ if($mybb->input['action'] == "add")
 					"message" => $db->escape_string($mybb->input['message']),
 					"startdate" => $startdate,
 					"enddate" => $enddate,
-					"allowhtml" => $db->escape_string($mybb->input['allowhtml']),
-					"allowmycode" => $db->escape_string($mybb->input['allowmycode']),
-					"allowsmilies" => $db->escape_string($mybb->input['allowsmilies']),
+					"allowhtml" => $mybb->get_input('allowhtml', MyBB::INPUT_INT),
+					"allowmycode" => $mybb->get_input('allowmycode', MyBB::INPUT_INT),
+					"allowsmilies" => $mybb->get_input('allowsmilies', MyBB::INPUT_INT)
 				);
 
 				$aid = $db->insert_query("announcements", $insert_announcement);
@@ -543,9 +543,9 @@ if($mybb->input['action'] == "edit")
 					"message" => $db->escape_string($mybb->input['message']),
 					"startdate" => $startdate,
 					"enddate" => $enddate,
-					"allowhtml" => $db->escape_string($mybb->input['allowhtml']),
-					"allowmycode" => $db->escape_string($mybb->input['allowmycode']),
-					"allowsmilies" => $db->escape_string($mybb->input['allowsmilies']),
+					"allowhtml" => $mybb->get_input('allowhtml', MyBB::INPUT_INT),
+					"allowmycode" => $mybb->get_input('allowmycode', MyBB::INPUT_INT),
+					"allowsmilies" => $mybb->get_input('allowsmilies', MyBB::INPUT_INT)
 				);
 
 				$plugins->run_hooks("admin_forum_announcements_edit_commit");
