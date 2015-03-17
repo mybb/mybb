@@ -82,6 +82,7 @@ a:active {
 	background-image: url(images/headerlinks_sprite.png);
 	background-repeat: no-repeat;
 	display: inline-block;
+	line-height: 16px;
 }
 
 #logo ul.top_links {
