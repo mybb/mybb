@@ -263,8 +263,25 @@ $(document).ready(function($) {
 		allowsEmpty: true,
 		isInline: false,
 		allowedChildren: ['#', '#newline'],
-		format: '[php]{0}[/php]',
-		html: '<code class="phpcodeblock">{0}</code>'
+		format: function (element, content) {
+			var	desc = '',
+				$elm  = $(element);
+
+			if($elm.data('desc')) {
+				desc = '=' + $elm.data('desc');
+			}
+
+			return '[php' + desc + ']' + content + '[/php]';
+		},
+		html: function(token, attrs, content) {
+			var codeattr = '';
+
+			if (attrs.defaultattr) {
+				codeattr += ' data-desc="' + attrs.defaultattr + '"';
+			}
+
+			return '<code class="phpcodeblock" ' + codeattr + '>' + content + '</code>';
+		}		
 	});
 
 	$.sceditor.command.set("php", {
@@ -324,12 +341,28 @@ $(document).ready(function($) {
 		isInline: false,
 		allowedChildren: ['#', '#newline'],
 		format: function (element, content) {
-			if ($(element[0]).hasClass('phpcodeblock')) {
-				return '[php]' + content + '[/php]';
+			var	desc = '',
+				$elm  = $(element);
+
+			if($elm.data('desc')) {
+				desc = '=' + $elm.data('desc');
 			}
-			return '[code]' + content + '[/code]';
+
+			if ($(element[0]).hasClass('phpcodeblock')) {
+				return '[php' + desc + ']' + content + '[/php]';
+			}
+
+			return '[code' + desc + ']' + content + '[/code]';
 		},
-		html: '<code>{0}</code>'
+		html: function(token, attrs, content) {
+			var codeattr = '';
+
+			if (attrs.defaultattr) {
+				codeattr += ' data-desc="' + attrs.defaultattr + '"';
+			}
+
+			return '<code' + codeattr + '>' + content + '</code>';
+		}
 	});
 
 	$.sceditor.command.set("code", {
