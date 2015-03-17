@@ -1259,8 +1259,17 @@ if($mybb->input['action'] == "delete")
 
 	if($mybb->request_method == "post")
 	{
-		// Move any users back to the registered group
-		$updated_users = array("usergroup" => 2);
+		if($usergroup['isbannedgroup'] == 1)
+		{
+			// If banned group, move users to default banned group
+			$updated_users = array("usergroup" => 7);
+		}
+		else
+		{
+			// Move any users back to the registered group
+			$updated_users = array("usergroup" => 2);
+		}
+
 		$db->update_query("users", $updated_users, "usergroup='{$usergroup['gid']}'");
 
 		$updated_users = array("displaygroup" => "usergroup");
@@ -1282,6 +1291,10 @@ if($mybb->input['action'] == "delete")
 			leave_usergroup($user['uid'], $usergroup['gid']);
 		}
 
+		$db->update_query("banned", array("gid" => 7), "gid='{$usergroup['gid']}'");
+		$db->update_query("banned", array("oldgroup" => 2), "oldgroup='{$usergroup['gid']}'");
+		$db->update_query("banned", array("olddisplaygroup" => "oldgroup"), "olddisplaygroup='{$usergroup['gid']}'", "", true); // No quotes = displaygroup=usergroup
+
 		$db->delete_query("forumpermissions", "gid='{$usergroup['gid']}'");
 		$db->delete_query("calendarpermissions", "gid='{$usergroup['gid']}'");
 		$db->delete_query("joinrequests", "gid='{$usergroup['gid']}'");
@@ -1295,6 +1308,7 @@ if($mybb->input['action'] == "delete")
 		$cache->update_moderators();
 		$cache->update_usergroups();
 		$cache->update_forumpermissions();
+		$cache->update_banned();
 
 		// Log admin action
 		log_admin_action($usergroup['gid'], htmlspecialchars_uni($usergroup['title']));
