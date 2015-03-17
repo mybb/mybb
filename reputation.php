@@ -12,7 +12,7 @@ define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'reputation.php');
 
 $templatelist = "reputation_addlink,reputation_no_votes,reputation,reputation_vote,multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,reputation_vote_delete";
-$templatelist .= ",reputation_add_delete,reputation_add_neutral,reputation_add_positive,reputation_add_negative,reputation_add_error,reputation_add_error_nomodal,reputation_add,reputation_added,reputation_deleted,reputation_vote_report";
+$templatelist .= ",reputation_add_delete,reputation_add_neutral,reputation_add_positive,reputation_add_negative,reputation_add_error,reputation_add_error_nomodal,reputation_add,reputation_added,reputation_deleted,reputation_vote_report,postbit_reputation_formatted_link";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/class_parser.php";
@@ -897,6 +897,8 @@ if(!$mybb->input['action'])
 			WHERE {$sql}
 		");
 
+		$forumpermissions = array();
+
 		while($post = $db->fetch_array($query))
 		{
 			if(($post['visible'] == 0 || $post['thread_visible'] == 0) && !is_moderator($post['fid'], 'canviewunapprove'))
@@ -905,6 +907,17 @@ if(!$mybb->input['action'])
 			}
 
 			if(($post['visible'] == -1 || $post['thread_visible'] == -1) && !is_moderator($post['fid'], 'canviewdeleted'))
+			{
+				continue;
+			}
+
+			if(!isset($forumpermissions[$post['fid']]))
+			{
+				$forumpermissions[$post['fid']] = forum_permissions($post['fid']);
+			}
+
+			// Make sure we can view this post
+			if(isset($forumpermissions[$post['fid']]['canonlyviewownthreads']) && $forumpermissions[$post['fid']]['canonlyviewownthreads'] == 1 && $post['uid'] != $mybb->user['uid'])
 			{
 				continue;
 			}
@@ -970,18 +983,20 @@ if(!$mybb->input['action'])
 		$last_updated = $lang->sprintf($lang->last_updated, $last_updated_date);
 
 		// Is this rating specific to a post?
-		$postrep_given = $lang->sprintf($lang->postrep_given_nolink, $user['username']);
+		$postrep_given = '';
 		if($reputation_vote['pid'])
 		{
-			$post = $post_reputation[$reputation_vote['pid']];
+			$postrep_given = $lang->sprintf($lang->postrep_given_nolink, $user['username']);
+			if(isset($post_reputation[$reputation_vote['pid']]))
+			{
+				$thread_link = get_thread_link($post_reputation[$reputation_vote['pid']]['tid']);
+				$subject = htmlspecialchars_uni($parser->parse_badwords($post_reputation[$reputation_vote['pid']]['subject']));
 
-			$thread_link = get_thread_link($post['tid']);
-			$subject = htmlspecialchars_uni($post['subject']);
+				$thread_link = $lang->sprintf($lang->postrep_given_thread, $thread_link, $subject);
+				$link = get_post_link($reputation_vote['pid'])."#pid{$reputation_vote['pid']}";
 
-			$thread_link = $lang->sprintf($lang->postrep_given_thread, $thread_link, $subject);
-			$link = get_post_link($reputation_vote['pid'])."#pid{$reputation_vote['pid']}";
-
-			$postrep_given = $lang->sprintf($lang->postrep_given, $link, $user['username'], $thread_link);
+				$postrep_given = $lang->sprintf($lang->postrep_given, $link, $user['username'], $thread_link);
+			}
 		}
 
 		// Does the current user have permission to delete this reputation? Show delete link
