@@ -1282,6 +1282,8 @@ if($mybb->input['action'] == "delete")
 			leave_usergroup($user['uid'], $usergroup['gid']);
 		}
 
+		$db->delete_query("forumpermissions", "gid='{$usergroup['gid']}'");
+		$db->delete_query("moderators", "id='{$usergroup['gid']}' AND isgroup='1'");
 		$db->delete_query("groupleaders", "gid='{$usergroup['gid']}'");
 		$db->delete_query("usergroups", "gid='{$usergroup['gid']}'");
 
