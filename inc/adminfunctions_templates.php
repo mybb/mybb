@@ -29,12 +29,13 @@ function find_replace_templatesets($title, $find, $replace, $autocreate=1, $sid=
 	
 	// Select all templates with that title (including global) if not working on a specific template set
 	$sqlwhere = '>0 OR sid=-1';
+	$sqlwhere2 = '>0';
 
 	// Otherwise select just templates from that specific set
 	if($sid !== false)
 	{
 		$sid = (int)$sid;
-		$sqlwhere = "=$sid";
+		$sqlwhere2 = $sqlwhere = "=$sid";
 	}
 
 	// Select all other modified templates with that title
@@ -71,9 +72,7 @@ function find_replace_templatesets($title, $find, $replace, $autocreate=1, $sid=
 		if($master_template['new_template'] != $master_template['template'])
 		{
 			// Update the rest of our template sets that are currently inheriting this template from our master set
-			$sqlwhere = str_replace(' OR sid=-1', '', $sqlwhere);
-			$template_sets = array_unique($template_sets);
-			$query = $db->simple_select("templatesets", "sid", "sid NOT IN (".implode(',', $template_sets).") AND sid{$sqlwhere}");
+			$query = $db->simple_select("templatesets", "sid", "sid NOT IN (".implode(',', $template_sets).") AND sid{$sqlwhere2}");
 			while($template = $db->fetch_array($query))
 			{
 				$insert_template = array(
