@@ -1185,7 +1185,7 @@ input.search_button {
 }
 
 .jGrowl .jGrowl-notification, .jGrowl .jGrowl-closer {
-	background-color: 		#000;
+	background-color: 		transparent;
 	opacity: 				.85;
 	-ms-filter: 			"progid:DXImageTransform.Microsoft.Alpha(Opacity=85)"; 
 	filter: 				progid:DXImageTransform.Microsoft.Alpha(Opacity=85); 
@@ -1198,7 +1198,9 @@ input.search_button {
 	font-size: 				1em;
 	text-align: 			left;
 	display: 				none;
-	border-radius:			5px;
+    -moz-border-radius:     7px;
+    -webkit-border-radius:  7px;
+    border-radius:          7px;
 }
 
 .jGrowl .jGrowl-notification {
@@ -1230,6 +1232,24 @@ input.search_button {
 	font-size:				.9em;
 	font-weight: 			bold;
 	text-align: 			center;
+}
+
+.jGrowl .jGrowl-notification.jgrowl_success {
+    background: #76EE00;
+    border: 1px solid #458B00;
+    color: #333;
+}
+
+.jGrowl .jGrowl-notification.jgrowl_error {
+    background: #FBE3E4;
+    border: 1px solid #A5161A;
+    color: #333;
+}
+
+.jGrowl .jGrowl-notification.jgrowl_process {
+    background: #FFF6BF;
+    border: 1px solid #FFD324;
+    color: #333;
 }
 
 /** Hide jGrowl when printing **/
