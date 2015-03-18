@@ -8360,7 +8360,7 @@ if(use_xmlhttprequest == "1")
 {$loginbox}
 <tr>
 <td class="trow2"><strong>{$lang->new_subject}</strong></td>
-<td class="trow2"><input type="text" class="textbox" name="newsubject" value="{$lang->split_thread_subject} {$subject}" size="50" /></td>
+<td class="trow2"><input type="text" class="textbox" name="newsubject" value="{$lang->split_thread_subject} {$thread['subject']}" size="50" /></td>
 </tr>
 <tr>
 <td class="trow1"><strong>{$lang->new_forum}</strong></td>
