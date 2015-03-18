@@ -1463,6 +1463,7 @@ class UserDataHandler extends DataHandler
 		else
 		{
 			// We're just updating the UID
+			$db->update_query('pollvotes', array('uid' => 0), "uid IN({$this->delete_uids})");
 			$db->update_query('posts', array('uid' => 0), "uid IN({$this->delete_uids})");
 			$db->update_query('threads', array('uid' => 0), "uid IN({$this->delete_uids})");
 			$db->update_query('attachments', array('uid' => 0), "uid IN({$this->delete_uids})");
