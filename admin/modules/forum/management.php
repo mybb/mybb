@@ -1989,8 +1989,21 @@ if($mybb->input['action'] == "delete")
 				$db->delete_query("forums", "CONCAT(',',parentlist,',') LIKE '%,$fid,%'");
 		}
 
-		$db->delete_query("threads", "fid='{$fid}' {$delquery}");
-		$db->delete_query("posts", "fid='{$fid}' {$delquery}");
+		require_once MYBB_ROOT.'inc/class_moderation.php';
+		$moderation = new Moderation();
+
+		$query = $db->simple_select("threads", "tid", "fid='{$fid}' {$delquery}");
+		while($tid = $db->fetch_field($query, 'tid'))
+		{
+			$moderation->delete_thread($tid);
+		}
+
+		$query = $db->simple_select('posts', 'pid', "fid='{$fid}' {$delquery}");
+		while($pid = $db->fetch_field($query, 'pid'))
+		{
+			$moderation->delete_post($pid);
+		}
+
 		$db->delete_query("moderators", "fid='{$fid}' {$delquery}");
 		$db->delete_query("forumsubscriptions", "fid='{$fid}' {$delquery}");
 		$db->delete_query("forumpermissions", "fid='{$fid}' {$delquery}");

@@ -99,7 +99,7 @@ $l['no_forums'] = "There are no forums found.";
 $l['no_moderators'] = "There are no moderators found.";
 
 $l['success_forum_disporder_updated'] = "The forum display orders have been updated successfully.";
-$l['success_forum_deleted'] = "The selected forum has been deleted successfully.";
+$l['success_forum_deleted'] = 'The selected forum has been deleted successfully. Ideally you should now run the <a href="/index.php?module=tools-recount_rebuild">Recount & Rebuild</a> tools.';
 $l['success_moderator_deleted'] = "The selected moderator has been deleted successfully.<br />Please remember that this hasn't changed this user's group permission, they may still have moderation powers.";
 $l['success_forum_permissions_updated'] = "The forum permissions have been updated successfully.";
 $l['success_forum_updated'] = "The forum settings have been updated successfully.";
