@@ -1470,6 +1470,7 @@ class UserDataHandler extends DataHandler
 			$db->update_query('announcements', array('uid' => 0), "uid IN({$this->delete_uids})");
 		}
 
+		$db->update_query('privatemessages', array('fromid' => 0), "fromid IN({$this->delete_uids})");
 		$db->update_query('users', array('referrer' => 0), "referrer IN({$this->delete_uids})");
 
 		// Update thread ratings
@@ -1542,6 +1543,7 @@ class UserDataHandler extends DataHandler
 
 		$db->delete_query('userfields', "ufid IN({$this->delete_uids})");
 		$db->delete_query('privatemessages', "uid IN({$this->delete_uids})");
+		//$db->delete_query('privatemessages', "tuid IN({$this->delete_uids})");
 		$db->delete_query('events', "uid IN({$this->delete_uids})");
 		$db->delete_query('moderators', "id IN({$this->delete_uids}) AND isgroup = 0");
 		$db->delete_query('forumsubscriptions', "uid IN({$this->delete_uids})");
