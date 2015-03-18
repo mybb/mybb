@@ -1458,6 +1458,7 @@ class UserDataHandler extends DataHandler
 		if((int)$prunecontent == 1)
 		{
 			$this->delete_posts();
+			$db->delete_query('announcements', "uid IN({$this->delete_uids})");
 		}
 		else
 		{
