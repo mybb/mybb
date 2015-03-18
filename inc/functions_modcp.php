@@ -140,9 +140,9 @@ function fetch_forum_announcements($pid=0, $depth=1)
  * @param array Array of reported content
  * @return bool True if PM sent
  */
-function send_report($report)
+function send_report($report, $report_type='post')
 {
-	global $db, $lang, $forum, $mybb, $post, $thread;
+	global $db, $lang, $forum, $mybb, $post, $thread, $reputation, $user;
 
 	$nummods = false;
 	if(!empty($forum['parentlist']))
@@ -181,11 +181,36 @@ function send_report($report)
 		}
 	}
 
+	$lang_string_subject = "emailsubject_report{$report_type}";
+	$lang_string_message = "email_report{$report_type}";
+
+	if(!$lang_string_subject || !$lang_string_message)
+	{
+		return false;
+	}
+
+	switch($report_type)
+	{
+		case 'post':
+			$sprintf_subject = $post['subject'];
+			$sprintf_url = str_replace('&amp;', '&', get_post_link($post['pid'], $thread['tid'])."#pid".$post['pid']);
+			break;
+		case 'profile':
+			$sprintf_subject = $user['username'];
+			$sprintf_url = str_replace('&amp;', '&', get_profile_link($user['uid']));
+			break;
+		case 'reputation':
+			$from_user = get_user($reputation['adduid']);
+			$sprintf_subject = $from_user['username'];
+			$sprintf_url = "reputation.php?uid={$reputation['uid']}#rid{$reputation['rid']}";
+			break;
+	}
+
+	$emailsubject = $lang->sprintf($lang->$lang_string_subject, $mybb->settings['bbname']);
+	$emailmessage = $lang->sprintf($lang->$lang_string_message, $mybb->user['username'], $mybb->settings['bbname'], $sprintf_subject, $mybb->settings['bburl'], $sprintf_url, $report['reason']);
+
 	while($mod = $db->fetch_array($query))
 	{
-		$emailsubject = $lang->sprintf($lang->emailsubject_reportpost, $mybb->settings['bbname']);
-		$emailmessage = $lang->sprintf($lang->email_reportpost, $mybb->user['username'], $mybb->settings['bbname'], $post['subject'], $mybb->settings['bburl'], str_replace('&amp;', '&', get_post_link($post['pid'], $thread['tid'])."#pid".$post['pid']), $thread['subject'], $report['reason']);
-
 		if($mybb->settings['reportmethod'] == "pms" && $mod['receivepms'] != 0 && $mybb->settings['enablepms'] != 0)
 		{
 			$pm_recipients[] = $mod['uid'];
@@ -198,9 +223,6 @@ function send_report($report)
 
 	if(count($pm_recipients) > 0)
 	{
-		$emailsubject = $lang->sprintf($lang->emailsubject_reportpost, $mybb->settings['bbname']);
-		$emailmessage = $lang->sprintf($lang->email_reportpost, $mybb->user['username'], $mybb->settings['bbname'], $post['subject'], $mybb->settings['bburl'], str_replace('&amp;', '&', get_post_link($post['pid'], $thread['tid'])."#pid".$post['pid']), $thread['subject'], $report['reason']);
-
 		require_once MYBB_ROOT."inc/datahandlers/pm.php";
 		$pmhandler = new PMDataHandler();
 
@@ -228,7 +250,7 @@ function send_report($report)
 		return $pminfo;
 	}
 
-	return false;
+	return true;
 }
 
 /**
@@ -258,7 +280,7 @@ function add_report($report, $type = 'post')
 
 	if($mybb->settings['reportmethod'] == "email" || $mybb->settings['reportmethod'] == "pms")
 	{
-		return send_report($report);
+		return send_report($report, $type);
 	}
 
 	$rid = $db->insert_query("reportedcontent", $insert_array);
