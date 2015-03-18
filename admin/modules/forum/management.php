@@ -2007,6 +2007,7 @@ if($mybb->input['action'] == "delete")
 		$db->delete_query("moderators", "fid='{$fid}' {$delquery}");
 		$db->delete_query("forumsubscriptions", "fid='{$fid}' {$delquery}");
 		$db->delete_query("forumpermissions", "fid='{$fid}' {$delquery}");
+		$db->delete_query('announcements', "fid='{$fid}' {$delquery}");
 
 		$update_stats = array(
 			'numthreads' => "-".$stats['threads'],
@@ -2021,6 +2022,7 @@ if($mybb->input['action'] == "delete")
 		$cache->update_forums();
 		$cache->update_moderators();
 		$cache->update_forumpermissions();
+		$cache->update_forumsdisplay();
 
 		// Log admin action
 		log_admin_action($forum_info['fid'], $forum_info['name']);
