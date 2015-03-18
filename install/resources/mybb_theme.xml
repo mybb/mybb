@@ -11056,6 +11056,8 @@ if(use_xmlhttprequest == "1")
 		<option value="multiopenthreads">{$lang->open_threads}</option>
 		<option value="multistickthreads">{$lang->stick_threads}</option>
 		<option value="multiunstickthreads">{$lang->unstick_threads}</option>
+		<option value="multisoftdeletethreads">{$lang->soft_delete_threads}</option>
+		<option value="multirestorethreads">{$lang->restore_threads}</option>
 		<option value="multideletethreads">{$lang->delete_threads}</option>
 		<option value="multimovethreads">{$lang->move_threads}</option>
 		<option value="multiapprovethreads">{$lang->approve_threads}</option>
