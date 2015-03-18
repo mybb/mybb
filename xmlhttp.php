@@ -112,7 +112,7 @@ $theme = @array_merge($theme, my_unserialize($theme['properties']));
 
 // Set the appropriate image language directory for this theme.
 // Are we linking to a remote theme server?
-if(my_substr($theme['imgdir'], 0, 7) == 'http://' || my_substr($theme['imgdir'], 0, 8) == 'https://')
+if(filter_var($theme['imgdir'], FILTER_VALIDATE_URL))
 {
 	// If a language directory for the current language exists within the theme - we use it
 	if(!empty($mybb->user['language']))

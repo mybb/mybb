@@ -979,7 +979,7 @@ EOF;
 				"height" => 120
 			);
 		}
-		if(my_substr($user['avatar'], 0, 7) !== 'http://' && my_substr($user['avatar'], 0, 8) !== 'https://')
+		if(!filter_var($user['avatar'], FILTER_VALIDATE_URL))
 		{
 			$user['avatar'] = "../{$user['avatar']}\n";
 		}
@@ -1468,7 +1468,7 @@ EOF;
 	{
 		$current_avatar_msg = "<br /><strong>{$lang->user_current_using_uploaded_avatar}</strong>";
 	}
-	elseif($user['avatartype'] == "remote" || my_strpos(my_strtolower($user['avatar']), "http://") !== false)
+	elseif($user['avatartype'] == "remote" || filter_var($user['avatar'], FILTER_VALIDATE_URL))
 	{
 		$current_avatar_msg = "<br /><strong>{$lang->user_current_using_remote_avatar}</strong>";
 		$avatar_url = $user['avatar'];
@@ -3571,7 +3571,7 @@ function build_users_view($view)
 				$user['view']['warninglevel'] = get_colored_warning_level($warning_level);
 			}
 
-			if($user['avatar'] && my_substr($user['avatar'], 0, 7) !== 'http://' && my_substr($user['avatar'], 0, 8) !== 'https://')
+			if(!filter_var($user['avatar'], FILTER_VALIDATE_URL))
 			{
 				$user['avatar'] = "../{$user['avatar']}";
 			}

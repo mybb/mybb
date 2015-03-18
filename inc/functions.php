@@ -962,7 +962,7 @@ function redirect($url, $message="", $title="", $force_redirect=false)
 
 		run_shutdown();
 
-		if(my_substr($url, 0, 7) !== 'http://' && my_substr($url, 0, 8) !== 'https://' && my_substr($url, 0, 1) !== '/')
+		if(!!filter_var($url, FILTER_VALIDATE_URL))
 		{
 			header("Location: {$mybb->settings['bburl']}/{$url}");
 		}
@@ -3996,7 +3996,7 @@ function get_attachment_icon($ext)
 		if(defined("IN_ADMINCP"))
 		{
 			$icon = str_replace("{theme}", "", $attachtypes[$ext]['icon']);
-			if(my_substr($icon, 0, 1) != "/" && my_substr($icon, 0, 7) != "http://")
+			if(!filter_var($icon, FILTER_VALIDATE_URL))
 			{
 				$icon = "../".$icon;
 			}

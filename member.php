@@ -1957,7 +1957,7 @@ if($mybb->input['action'] == "profile")
 
 	$website = $sendemail = $sendpm = $contact_details = '';
 	
-	if($memprofile['website'] && !is_member($mybb->settings['hidewebsite']) && $memperms['canchangewebsite'] == 1)
+	if(filter_var($memprofile['website'], FILTER_VALIDATE_URL) && !is_member($mybb->settings['hidewebsite']) && $memperms['canchangewebsite'] == 1)
 	{
 		$memprofile['website'] = htmlspecialchars_uni($memprofile['website']);
 		$bgcolor = alt_trow();
