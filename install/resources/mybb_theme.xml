@@ -8360,7 +8360,7 @@ if(use_xmlhttprequest == "1")
 {$loginbox}
 <tr>
 <td class="trow2"><strong>{$lang->new_subject}</strong></td>
-<td class="trow2"><input type="text" class="textbox" name="newsubject" value="{$lang->split_thread_subject} {$thread['subject']}" size="50" /></td>
+<td class="trow2"><input type="text" class="textbox" name="newsubject" value="{$lang->split_thread_subject} {$subject}" size="50" /></td>
 </tr>
 <tr>
 <td class="trow1"><strong>{$lang->new_forum}</strong></td>
@@ -10965,6 +10965,9 @@ if(use_xmlhttprequest == "1")
 	<option value="multisoftdeleteposts">{$lang->inline_soft_delete_posts}</option>
 	<option value="multirestoreposts">{$lang->inline_restore_posts}</option>
 	<option value="multideleteposts">{$lang->inline_delete_posts}</option>
+	<option value="multimergeposts">{$lang->inline_merge_posts}</option>
+	<option value="multisplitposts">{$lang->inline_split_posts}</option>
+	<option value="multimoveposts">{$lang->inline_move_posts}</option>
 	<option value="multiapproveposts">{$lang->inline_approve_posts}</option>
 	<option value="multiunapproveposts">{$lang->inline_unapprove_posts}</option>
 </optgroup>
