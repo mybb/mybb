@@ -319,7 +319,7 @@ if(!$mybb->input['action'])
 	{
 		// Just show default icons in ACP
 		$attachment_type['icon'] = htmlspecialchars_uni(str_replace("{theme}", "images", $attachment_type['icon']));
-		if(my_strpos($attachment_type['icon'], "p://") || substr($attachment_type['icon'], 0, 1) == "/")
+		if(filter_var($attachment_type['icon'], FILTER_VALIDATE_URL))
 		{
 			$image = $attachment_type['icon'];
 		}

@@ -465,7 +465,7 @@ if(!$mybb->input['action'])
 	while($icon = $db->fetch_array($query))
 	{
 		$icon['path'] = str_replace("{theme}", "images", $icon['path']);
-		if(my_strpos($icon['path'], "p://") || substr($icon['path'], 0, 1) == "/")
+		if(filter_var($icon['path'], FILTER_VALIDATE_URL))
 		{
 			$image = $icon['path'];
 		}
