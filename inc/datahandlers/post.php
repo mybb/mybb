@@ -873,7 +873,7 @@ class PostDataHandler extends DataHandler
 				// Close the thread.
 				if($modoptions['closethread'] == 1 && $thread['closed'] != 1)
 				{
-					$modoptions_update['closed'] = $closed = 1;
+					$modoptions_update['closed'] = $closed = 0;
 					log_moderator_action($modlogdata, $lang->thread_closed);
 				}
 
