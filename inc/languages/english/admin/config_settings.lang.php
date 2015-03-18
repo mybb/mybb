@@ -88,6 +88,7 @@ $l['success_setting_added'] = "The setting has been created successfully.";
 $l['success_setting_updated'] = "The setting has been updated successfully.";
 $l['success_setting_deleted'] = "The selected setting has been deleted successfully.";
 $l['success_settings_updated'] = "The settings have been updated successfully.";
+$l['success_settings_updated_username_method'] = '<div class="smalltext" style="font-weight: normal;">Please note that the <b>Allowed Login Methods</b> setting was not updated due to multiple users using the same e-mail account at this time.</div>';
 $l['success_display_orders_updated'] = "The setting display orders have been updated successfully.";
 $l['success_setting_group_added'] = "The setting group has been created successfully.";
 $l['success_setting_group_updated'] = "The setting group has been updated successfully.";
