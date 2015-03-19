@@ -184,30 +184,32 @@ function send_report($report, $report_type='post')
 	$lang_string_subject = "emailsubject_report{$report_type}";
 	$lang_string_message = "email_report{$report_type}";
 
-	if(!$lang_string_subject || !$lang_string_message)
+	if(empty($lang->$lang_string_subject) || empty($lang->$lang_string_message))
 	{
 		return false;
 	}
 
+	global $send_report_subject, $send_report_url;
+
 	switch($report_type)
 	{
 		case 'post':
-			$sprintf_subject = $post['subject'];
-			$sprintf_url = str_replace('&amp;', '&', get_post_link($post['pid'], $thread['tid'])."#pid".$post['pid']);
+			$send_report_subject = $post['subject'];
+			$send_report_url = str_replace('&amp;', '&', get_post_link($post['pid'], $thread['tid'])."#pid".$post['pid']);
 			break;
 		case 'profile':
-			$sprintf_subject = $user['username'];
-			$sprintf_url = str_replace('&amp;', '&', get_profile_link($user['uid']));
+			$send_report_subject = $user['username'];
+			$send_report_url = str_replace('&amp;', '&', get_profile_link($user['uid']));
 			break;
 		case 'reputation':
 			$from_user = get_user($reputation['adduid']);
-			$sprintf_subject = $from_user['username'];
-			$sprintf_url = "reputation.php?uid={$reputation['uid']}#rid{$reputation['rid']}";
+			$send_report_subject = $from_user['username'];
+			$send_report_url = "reputation.php?uid={$reputation['uid']}#rid{$reputation['rid']}";
 			break;
 	}
 
 	$emailsubject = $lang->sprintf($lang->$lang_string_subject, $mybb->settings['bbname']);
-	$emailmessage = $lang->sprintf($lang->$lang_string_message, $mybb->user['username'], $mybb->settings['bbname'], $sprintf_subject, $mybb->settings['bburl'], $sprintf_url, $report['reason']);
+	$emailmessage = $lang->sprintf($lang->$lang_string_message, $mybb->user['username'], $mybb->settings['bbname'], $send_report_subject, $mybb->settings['bburl'], $send_report_url, $report['reason']);
 
 	while($mod = $db->fetch_array($query))
 	{
