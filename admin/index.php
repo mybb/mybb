@@ -213,9 +213,9 @@ elseif($mybb->input['do'] == "login")
 		$admin_session['data'] = array();
 
 		// Only reset the loginattempts when we're really logged in and the user doesn't need to enter a 2fa code
-		$query = $db->simple_select("adminoptions", "2fasecret", "uid='{$mybb->user['uid']}'");
+		$query = $db->simple_select("adminoptions", "authsecret", "uid='{$mybb->user['uid']}'");
 		$admin_options = $db->fetch_array($query);
-		if(empty($admin_options['2fasecret']))
+		if(empty($admin_options['authsecret']))
 		{
 			$db->update_query("adminoptions", array("loginattempts" => 0, "loginlockoutexpiry" => 0), "uid='{$mybb->user['uid']}'");
 		}
@@ -531,7 +531,7 @@ if($mybb->input['do'] == "do_2fa" && $mybb->request_method == "post")
 	require_once MYBB_ROOT."inc/3rdparty/2fa/GoogleAuthenticator.php";
 	$auth = new PHPGangsta_GoogleAuthenticator;
 
-	$test = $auth->verifyCode($admin_options['2fasecret'], $mybb->get_input('code'));
+	$test = $auth->verifyCode($admin_options['authsecret'], $mybb->get_input('code'));
 
 	// Either the code was okay or it was a recovery code
 	if($test === true || $recovery === true)
@@ -597,7 +597,7 @@ if($mybb->input['do'] == "do_2fa" && $mybb->request_method == "post")
 }
 
 // Show our 2FA page
-if(!empty($admin_options['2fasecret']) && $admin_session['authenticated'] != 1)
+if(!empty($admin_options['authsecret']) && $admin_session['authenticated'] != 1)
 {
 	$page->show_2fa();
 }
