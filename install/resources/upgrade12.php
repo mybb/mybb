@@ -1063,8 +1063,13 @@ function upgrade12_dbchanges4()
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminoptions ADD defaultviews TEXT NOT NULL");
 	$db->update_query("adminoptions", array('defaultviews' => my_serialize(array('user' => 1))));
 
-	require_once MYBB_ROOT."inc/functions_rebuild.php";
-	rebuild_stats();
+	$query = $db->simple_select("forums", "SUM(threads) AS numthreads, SUM(posts) AS numposts, SUM(unapprovedthreads) AS numunapprovedthreads, SUM(unapprovedposts) AS numunapprovedposts");
+	$stats = $db->fetch_array($query);
+
+	$query = $db->simple_select("users", "COUNT(uid) AS users");
+	$stats['numusers'] = $db->fetch_field($query, 'users');
+
+	update_stats($stats, true);
 
 	$contents = "Done</p>";
 	$contents .= "<p>Click next to continue with the upgrade process.</p>";

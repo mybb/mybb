@@ -531,8 +531,6 @@ function upgrade5_lastposts()
 	}
 	else
 	{
-		require_once MYBB_ROOT."inc/functions_rebuild.php";
-
 		$query = $db->simple_select("threads", "COUNT(*) as num_threads", "closed NOT LIKE 'moved|%'");
 		$num_threads = $db->fetch_field($query, 'num_threads');
 		$tpp = (int)$_POST['tpp'];
@@ -548,7 +546,28 @@ function upgrade5_lastposts()
 
 		while($thread = $db->fetch_array($query))
 		{
-			rebuild_thread_counters($thread['tid']);
+			$recount_thread = get_thread($thread['tid']);
+			$count = array();
+
+			$query = $db->simple_select("posts", "COUNT(pid) AS replies", "tid='{$thread['tid']}' AND pid!='{$recount_thread['firstpost']}' AND visible='1'");
+			$count['replies'] = $db->fetch_field($query, "replies");
+
+			// Unapproved posts
+			$query = $db->simple_select("posts", "COUNT(pid) AS unapprovedposts", "tid='{$thread['tid']}' AND pid != '{$recount_thread['firstpost']}' AND visible='0'");
+			$count['unapprovedposts'] = $db->fetch_field($query, "unapprovedposts");
+
+			// Attachment count
+			$query = $db->query("
+					SELECT COUNT(aid) AS attachment_count
+					FROM ".TABLE_PREFIX."attachments a
+					LEFT JOIN ".TABLE_PREFIX."posts p ON (a.pid=p.pid)
+					WHERE p.tid='{$thread['tid']}' AND a.visible=1
+			");
+			$count['attachmentcount'] = $db->fetch_field($query, "attachment_count");
+
+			$db->update_query("threads", $count, "tid='{$thread['tid']}'");
+			update_thread_data($thread['tid']);
+
 			if($thread['firstpost'] == 0)
 			{
 				update_first_post($thread['tid']);
