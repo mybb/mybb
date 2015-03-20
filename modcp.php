@@ -2891,7 +2891,7 @@ if($mybb->input['action'] == "editprofile")
 						$val = str_replace("\n", "\\n", $val);
 
 						$sel = "";
-						if($val == $seloptions[$val])
+						if(isset($seloptions[$val]) && $val == $seloptions[$val])
 						{
 							$sel = " selected=\"selected\"";
 						}
@@ -2971,7 +2971,7 @@ if($mybb->input['action'] == "editprofile")
 					foreach($expoptions as $key => $val)
 					{
 						$checked = "";
-						if($val == $seloptions[$val])
+						if(isset($seloptions[$val]) && $val == $seloptions[$val])
 						{
 							$checked = " checked=\"checked\"";
 						}
