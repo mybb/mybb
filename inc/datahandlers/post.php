@@ -130,14 +130,14 @@ class PostDataHandler extends DataHandler
 		}
 		// if the uid is 0 verify the username
 		else if($post['uid'] == 0 && $post['username'] != $lang->guest)
-		{	
+		{
 			// Set up user handler
 			require_once MYBB_ROOT."inc/datahandlers/user.php";
 			$userhandler = new UserDataHandler();
-			
+
 			$data_array = array('username' => $post['username']);
 			$userhandler->set_data($data_array);
-			
+
 			if(!$userhandler->verify_username())
 			{
 				// invalid username
@@ -868,64 +868,50 @@ class PostDataHandler extends DataHandler
 				$modlogdata['fid'] = $thread['fid'];
 				$modlogdata['tid'] = $thread['tid'];
 
-				$newstick = $newclosed = '';
-
 				if(!isset($modoptions['closethread']))
 				{
-					$modoptions['closethread'] = 0;
+					$modoptions['closethread'] = $closed;
 				}
+
+				$modoptions_update = array();
 
 				// Close the thread.
 				if($modoptions['closethread'] == 1 && $thread['closed'] != 1)
 				{
-					$newclosed = "closed=1";
+					$modoptions_update['closed'] = $closed = 0;
 					log_moderator_action($modlogdata, $lang->thread_closed);
-					$closed = 1;
 				}
 
 				// Open the thread.
 				if($modoptions['closethread'] != 1 && $thread['closed'] == 1)
 				{
-					$newclosed = "closed=0";
+					$modoptions_update['closed'] = $closed = 1;
 					log_moderator_action($modlogdata, $lang->thread_opened);
-					$closed = 0;
 				}
 
 				if(!isset($modoptions['stickthread']))
 				{
-					$modoptions['stickthread'] = 0;
+					$modoptions['stickthread'] = $thread['sticky'];
 				}
 
 				// Stick the thread.
 				if($modoptions['stickthread'] == 1 && $thread['sticky'] != 1)
 				{
-					$newstick = "sticky='1'";
+					$modoptions_update['sticky'] = 1;
 					log_moderator_action($modlogdata, $lang->thread_stuck);
 				}
 
 				// Unstick the thread.
 				if($modoptions['stickthread'] != 1 && $thread['sticky'])
 				{
-					$newstick = "sticky='0'";
+					$modoptions_update['sticky'] = 0;
 					log_moderator_action($modlogdata, $lang->thread_unstuck);
 				}
 
 				// Execute moderation options.
-				if($newstick && $newclosed)
+				if($modoptions_update)
 				{
-					$sep = ",";
-				}
-				else
-				{
-					$sep = '';
-				}
-				if($newstick || $newclosed)
-				{
-					$db->write_query("
-						UPDATE ".TABLE_PREFIX."threads
-						SET {$newclosed}{$sep}{$newstick}
-						WHERE tid='{$thread['tid']}'
-					");
+					$db->update_query('threads', $modoptions_update, "tid='{$thread['tid']}'");
 				}
 			}
 
@@ -1533,38 +1519,26 @@ class PostDataHandler extends DataHandler
 					$modlogdata['tid'] = $thread['tid'];
 				}
 
-				$newclosed = $newstick = '';
+				$modoptions_update = array();
 
 				// Close the thread.
-				if(isset($modoptions['closethread']) && $modoptions['closethread'] == 1)
+				if(!empty($modoptions['closethread']))
 				{
-					$newclosed = "closed=1";
+					$modoptions_update['closed'] = 1;
 					log_moderator_action($modlogdata, $lang->thread_closed);
 				}
 
 				// Stick the thread.
-				if(isset($modoptions['stickthread']) && $modoptions['stickthread'] == 1)
+				if(!empty($modoptions['stickthread']))
 				{
-					$newstick = "sticky='1'";
+					$modoptions_update['sticky'] = 1;
 					log_moderator_action($modlogdata, $lang->thread_stuck);
 				}
 
 				// Execute moderation options.
-				if($newstick && $newclosed)
+				if($modoptions_update)
 				{
-					$sep = ",";
-				}
-				else
-				{
-					$sep = '';
-				}
-				if($newstick || $newclosed)
-				{
-					$db->write_query("
-						UPDATE ".TABLE_PREFIX."threads
-						SET $newclosed$sep$newstick
-						WHERE tid='{$this->tid}'
-					");
+					$db->update_query('threads', $modoptions_update, "tid='{$this->tid}'");
 				}
 			}
 			if($visible == 1)
