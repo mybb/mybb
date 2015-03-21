@@ -876,13 +876,13 @@ class UserDataHandler extends DataHandler
 	{
 		global $lang;
 
-		$tid = &$this->data['style'];
+		$user = &$this->data;
 
-		if($tid != 0 && !defined('IN_ADMINCP'))
+		if($user['style'] && !defined('IN_ADMINCP'))
 		{
-			$theme = get_theme($tid);
+			$theme = get_theme($user['style']);
 
-			if(!is_member($theme['allowedgroups']) && $theme['allowedgroups'] != 'all')
+			if(empty($theme) || !is_member($theme['allowedgroups'], array('usergroup' => $user['usergroup'], 'additionalgroups' => $user['additionalgroups'])) && $theme['allowedgroups'] != 'all')
 			{
 				$this->set_error('invalid_style');
 				return false;
