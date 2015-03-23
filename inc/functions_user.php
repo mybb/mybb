@@ -574,6 +574,7 @@ function get_usertitle($uid="")
 			if($title['posts'] <= $user['postnum'])
 			{
 				$usertitle = $title;
+				break;
 			}
 		}
 
