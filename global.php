@@ -117,7 +117,9 @@ if(isset($mybb->input['theme']) && verify_post_check($mybb->get_input('my_post_k
 
 	$user = array(
 		'uid'	=> $mybb->user['uid'],
-		'style'	=> $mybb->get_input('theme', MyBB::INPUT_INT)
+		'style'	=> $mybb->get_input('theme', MyBB::INPUT_INT),
+		'usergroup'	=> $mybb->user['usergroup'],
+		'additionalgroups'	=> $mybb->user['additionalgroups']
 	);
 
 	$userhandler->set_data($user);
@@ -139,7 +141,7 @@ if(isset($mybb->input['theme']) && verify_post_check($mybb->get_input('my_post_k
 		// Guest = cookie
 		else
 		{
-			my_setcookie('mybbtheme', $mybb->get_input('theme'));
+			my_setcookie('mybbtheme', $user['style']);
 		}
 	}
 }
