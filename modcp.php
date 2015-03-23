@@ -2723,9 +2723,10 @@ if($mybb->input['action'] == "editprofile")
 
 		foreach($usertitles as $title)
 		{
-			if($title['posts'] <= $mybb->user['postnum'])
+			if($title['posts'] <= $user['postnum'])
 			{
 				$defaulttitle = $title['title'];
+				break;
 			}
 		}
 	}

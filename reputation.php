@@ -611,6 +611,7 @@ if(!$mybb->input['action'])
 			if($title['posts'] <= $user['postnum'])
 			{
 				$usertitle = $title['title'];
+				break;
 			}
 		}
 		unset($usertitles, $title);
