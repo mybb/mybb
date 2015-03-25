@@ -394,7 +394,7 @@ class datacache
 	<td><span style=\"font-family: Courier; font-size: 14px;\">({$mybb->config['cache_store']}) [{$hit_status}] ".htmlspecialchars_uni($cache_key)."</span></td>
 </tr>
 <tr>
-<td bgcolor=\"#ffffff\">Call Time: ".format_time_duration($qtime)."</td>
+	<td bgcolor=\"#ffffff\">Call Time: ".format_time_duration($qtime)."</td>
 </tr>
 </table>
 <br />\n";
