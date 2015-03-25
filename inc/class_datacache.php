@@ -386,18 +386,18 @@ class datacache
 		$cache_method = $cache_data[0];
 		$cache_key = $cache_data[1];
 
-		$this->cache_debug .= "<table style=\"background-color: #666;\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n".
-			"<tr>\n".
-			"<td style=\"background-color: #ccc;\">{$debug_extra}<div><strong>#".$this->call_count." - ".ucfirst($cache_method)." Call</strong></div></td>\n".
-			"</tr>\n".
-			"<tr style=\"background-color: #fefefe;\">\n".
-			"<td><span style=\"font-family: Courier; font-size: 14px;\">(".$mybb->config['cache_store'].") [".$hit_status."] ".htmlspecialchars_uni($cache_key)."</span></td>\n".
-			"</tr>\n".
-			"<tr>\n".
-			"<td bgcolor=\"#ffffff\">Call Time: ".format_time_duration($qtime)."</td>\n".
-			"</tr>\n".
-			"</table>\n".
-			"<br />\n";
+		$this->cache_debug .= "<table style=\"background-color: #666;\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">
+<tr>
+	<td style=\"background-color: #ccc;\">{$debug_extra}<div><strong>#{$this->call_count} - ".ucfirst($cache_method)." Call</strong></div></td>
+</tr>
+<tr style=\"background-color: #fefefe;\">
+	<td><span style=\"font-family: Courier; font-size: 14px;\">({$mybb->config['cache_store']}) [{$hit_status}] ".htmlspecialchars_uni($cache_key)."</span></td>
+</tr>
+<tr>
+<td bgcolor=\"#ffffff\">Call Time: ".format_time_duration($qtime)."</td>
+</tr>
+</table>
+<br />\n";
 
 		$this->calllist[$this->call_count]['key'] = $string;
 		$this->calllist[$this->call_count]['time'] = $qtime;
@@ -691,7 +691,7 @@ class datacache
 			'time' => TIME_NOW,
 			'top_referrer' => (array)$topreferrer,
 			'top_poster' => (array)$topposter,
-			'posters' => $posters,
+			'posters' => $posters
 		);
 
 		$this->update('statistics', $statistics);
@@ -792,7 +792,7 @@ class datacache
 
 		$data = array(
 			'users'	=> $awaitingusers,
-			'time'	=> TIME_NOW,
+			'time'	=> TIME_NOW 
 		);
 
 		$this->update('awaitingactivation', $data);
@@ -1120,7 +1120,7 @@ class datacache
 
 		$birthdays = array();
 
-		// Get today, yesturday, and tomorrow's time (for different timezones)
+		// Get today, yesterday, and tomorrow's time (for different timezones)
 		$bdaytime = TIME_NOW;
 		$bdaydate = my_date("j-n", $bdaytime, '', 0);
 		$bdaydatetomorrow = my_date("j-n", ($bdaytime+86400), '', 0);
