@@ -15,6 +15,7 @@ $l['postdata_subject_too_long'] = 'The subject is too long. Please enter a subje
 $l['postdata_banned_username'] = 'The username you entered may not be registered. Please enter a different username.';
 $l['postdata_bad_characters_username'] = 'The username you entered contains bad characters. Please enter a different username.';
 $l['postdata_invalid_username_length'] = 'The username you entered is of invalid length. Please enter a username between {1} and {2} characters.';
+$l['postdata_username_exists'] = 'The username you entered already exists. Please enter a different username.';
 $l['postdata_post_flooding'] = 'You are trying to post a message too quickly after posting a previous message. Please wait {1} more seconds.';
 $l['postdata_post_flooding_one_second'] = 'You are trying to post a message too quickly after posting a previous message. Please wait 1 more second.';
 $l['postdata_too_many_images'] = 'The message you entered contained {1} images, while only {2} images per message are allowed. Please lower the image count in your message to meet the limit.';

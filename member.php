@@ -922,7 +922,7 @@ if($mybb->input['action'] == "register")
 							$val = str_replace("\n", "\\n", $val);
 
 							$sel = "";
-							if($val == $seloptions[$val])
+							if(isset($seloptions[$val]) && $val == $seloptions[$val])
 							{
 								$sel = ' selected="selected"';
 							}
@@ -1002,7 +1002,7 @@ if($mybb->input['action'] == "register")
 						foreach($expoptions as $key => $val)
 						{
 							$checked = "";
-							if($val == $seloptions[$val])
+							if(isset($seloptions[$val]) && $val == $seloptions[$val])
 							{
 								$checked = 'checked="checked"';
 							}
@@ -1782,7 +1782,7 @@ if($mybb->input['action'] == "login")
 				$captcha = $login_captcha->build_hidden_captcha();
 			}
 		}
-		elseif($login_captcha->type == 2)
+		elseif($login_captcha->type == 2 || $login_captcha->type == 4)
 		{
 			$login_captcha->build_recaptcha();
 		}

@@ -14,7 +14,8 @@
  * @param string The name of the template
  * @param string The regular expression to match in the template
  * @param string The replacement string
- * @param int Set to 1 to automatically create templates which do not exist for that set (based off master) - Defaults to 1
+ * @param int Set to 1 to automatically create templates which do not exist for that set (based off master) - defaults to 1
+ * @param mixed Template SID to modify, false for every SID > 0
  * @param int The maximum possible replacements for the regular expression
  * @return boolean true if updated one or more templates, false if not.
  */
@@ -25,14 +26,15 @@ function find_replace_templatesets($title, $find, $replace, $autocreate=1, $sid=
 
 	$return = false;
 
-    $sqlwhere = '>\'0\'';
+	$sqlwhere = '>0';
 
 	$template_sets = array(-2, -1);
 
 	// Select all global with that title if not working on a specific template set
 	if($sid !== false)
 	{
-        $sqlwhere = '=\''.(int)$sid.'\'';
+		$sid = (int)$sid;
+		$sqlwhere = "=$sid";
 
 		$query = $db->simple_select("templates", "tid, template", "title = '".$db->escape_string($title)."' AND sid='-1'");
 		while($template = $db->fetch_array($query))
@@ -44,7 +46,7 @@ function find_replace_templatesets($title, $find, $replace, $autocreate=1, $sid=
 				continue;
 			}
 
-			// The template is a custom template.  Replace as normal.
+			// The template is a custom template. Replace as normal.
 			$updated_template = array(
 				"template" => $db->escape_string($new_template)
 			);

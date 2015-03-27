@@ -358,7 +358,7 @@ if($mybb->input['action'] == "add_leader" && $mybb->request_method == "post")
 		$cache->update_groupleaders();
 
 		// Log admin action
-		log_admin_action($user['uid'], $mybb->input['username'], $group['gid'], htmlspecialchars_uni($group['title']));
+		log_admin_action($user['uid'], $user['username'], $group['gid'], htmlspecialchars_uni($group['title']));
 
 		flash_message("{$user['username']} ".$lang->success_user_made_leader, 'success');
 		admin_redirect("index.php?module=user-groups&action=leaders&gid={$group['gid']}");
@@ -478,9 +478,48 @@ if($mybb->input['action'] == "leaders")
 	$form_container->output_row($lang->can_manage_group_members, $lang->can_manage_group_members_desc, $form->generate_yes_no_radio('canmanagemembers', $mybb->input['canmanagemembers']));
 	$form_container->output_row($lang->can_manage_group_join_requests, $lang->can_manage_group_join_requests_desc, $form->generate_yes_no_radio('canmanagerequests', $mybb->input['canmanagerequests']));
 	$form_container->output_row($lang->can_invite_group_members, $lang->can_invite_group_members_desc, $form->generate_yes_no_radio('caninvitemembers', $mybb->input['caninvitemembers']));
-	$buttons[] = $form->generate_submit_button($lang->save_group_leader);
-
 	$form_container->end();
+
+	// Autocompletion for usernames
+	echo '
+	<link rel="stylesheet" href="../jscripts/select2/select2.css">
+	<script type="text/javascript" src="../jscripts/select2/select2.min.js?ver=1804"></script>
+	<script type="text/javascript">
+	<!--
+	$("#username").select2({
+		placeholder: "'.$lang->search_for_a_user.'",
+		minimumInputLength: 3,
+		maximumSelectionSize: 3,
+		multiple: false,
+		ajax: { // instead of writing the function to execute the request we use Select2\'s convenient helper
+			url: "../xmlhttp.php?action=get_users",
+			dataType: \'json\',
+			data: function (term, page) {
+				return {
+					query: term // search term
+				};
+			},
+			results: function (data, page) { // parse the results into the format expected by Select2.
+				// since we are using custom formatting functions we do not need to alter remote JSON data
+				return {results: data};
+			}
+		},
+		initSelection: function(element, callback) {
+			var query = $(element).val();
+			if (query !== "") {
+				$.ajax("../xmlhttp.php?action=get_users&getone=1", {
+					data: {
+						query: query
+					},
+					dataType: "json"
+				}).done(function(data) { callback(data); });
+			}
+		}
+	});
+	// -->
+	</script>';
+
+	$buttons[] = $form->generate_submit_button($lang->save_group_leader);
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 
@@ -525,7 +564,7 @@ if($mybb->input['action'] == "delete_leader")
 		$cache->update_groupleaders();
 
 		// Log admin action
-		log_admin_action($leader['lid'], $leader['username'], $group['gid'], htmlspecialchars_uni($group['title']));
+		log_admin_action($leader['uid'], $leader['username'], $group['gid'], htmlspecialchars_uni($group['title']));
 
 		flash_message($lang->success_group_leader_deleted, 'success');
 		admin_redirect("index.php?module=user-groups&action=leaders&gid={$group['gid']}");
@@ -572,7 +611,7 @@ if($mybb->input['action'] == "edit_leader")
 		$cache->update_groupleaders();
 
 		// Log admin action
-		log_admin_action($leader['lid'], $leader['username'], $group['gid'], htmlspecialchars_uni($group['title']));
+		log_admin_action($leader['uid'], $leader['username'], $group['gid'], htmlspecialchars_uni($group['title']));
 
 		flash_message($lang->success_group_leader_updated, 'success');
 		admin_redirect("index.php?module=user-groups&action=leaders&gid={$group['gid']}");
@@ -1220,8 +1259,17 @@ if($mybb->input['action'] == "delete")
 
 	if($mybb->request_method == "post")
 	{
-		// Move any users back to the registered group
-		$updated_users = array("usergroup" => 2);
+		if($usergroup['isbannedgroup'] == 1)
+		{
+			// If banned group, move users to default banned group
+			$updated_users = array("usergroup" => 7);
+		}
+		else
+		{
+			// Move any users back to the registered group
+			$updated_users = array("usergroup" => 2);
+		}
+
 		$db->update_query("users", $updated_users, "usergroup='{$usergroup['gid']}'");
 
 		$updated_users = array("displaygroup" => "usergroup");
@@ -1243,6 +1291,14 @@ if($mybb->input['action'] == "delete")
 			leave_usergroup($user['uid'], $usergroup['gid']);
 		}
 
+		$db->update_query("banned", array("gid" => 7), "gid='{$usergroup['gid']}'");
+		$db->update_query("banned", array("oldgroup" => 2), "oldgroup='{$usergroup['gid']}'");
+		$db->update_query("banned", array("olddisplaygroup" => "oldgroup"), "olddisplaygroup='{$usergroup['gid']}'", "", true); // No quotes = displaygroup=usergroup
+
+		$db->delete_query("forumpermissions", "gid='{$usergroup['gid']}'");
+		$db->delete_query("calendarpermissions", "gid='{$usergroup['gid']}'");
+		$db->delete_query("joinrequests", "gid='{$usergroup['gid']}'");
+		$db->delete_query("moderators", "id='{$usergroup['gid']}' AND isgroup='1'");
 		$db->delete_query("groupleaders", "gid='{$usergroup['gid']}'");
 		$db->delete_query("usergroups", "gid='{$usergroup['gid']}'");
 
@@ -1252,6 +1308,7 @@ if($mybb->input['action'] == "delete")
 		$cache->update_moderators();
 		$cache->update_usergroups();
 		$cache->update_forumpermissions();
+		$cache->update_banned();
 
 		// Log admin action
 		log_admin_action($usergroup['gid'], htmlspecialchars_uni($usergroup['title']));

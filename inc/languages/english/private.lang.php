@@ -141,6 +141,7 @@ $l['advanced_search'] = "Advanced Search";
 $l['search_pms'] = "Search PMs";
 $l['advanced_private_message_search'] = "Advanced Private Message Search";
 $l['search_criteria'] = "Search Criteria";
+$l['find_users'] = "Search for a user";
 $l['keywords'] = "Keywords";
 $l['search_in_subject'] = "Search in Subject";
 $l['search_in_message'] = "Search in Message";

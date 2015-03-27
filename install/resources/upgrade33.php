@@ -25,6 +25,26 @@ function upgrade33_dbchanges()
 	global $db, $output;
 
 	$output->print_header("Updating Database");
+	echo "<p>Renaming column...</p>";
+	flush();
+
+	if($db->field_exists('2fasecret', 'adminoptions'))
+	{
+		$db->rename_column('adminoptions', '2fasecret', 'authsecret', "varchar(16) NOT NULL default ''");
+	}
+
+	global $footer_extra;
+	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+
+	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
+	$output->print_footer("33_dbchanges2");
+}
+
+function upgrade33_dbchanges2()
+{
+	global $db, $output;
+
+	$output->print_header("Updating Database");
 	echo "<p>Performing necessary optimization queries...</p>";
 	flush();
 
@@ -70,10 +90,10 @@ function upgrade33_dbchanges()
 	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("33_dbchanges2");
+	$output->print_footer("33_dbchanges3");
 }
 
-function upgrade33_dbchanges2()
+function upgrade33_dbchanges3()
 {
 	global $db, $output;
 

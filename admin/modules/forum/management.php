@@ -2595,7 +2595,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		<script type="text/javascript">
 		<!--
 		$("#username").select2({
-			placeholder: "'.$lang->search_user.'",
+			placeholder: "'.$lang->search_for_a_user.'",
 			minimumInputLength: 3,
 			maximumSelectionSize: 3,
 			multiple: false,

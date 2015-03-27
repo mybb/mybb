@@ -1614,7 +1614,7 @@ function print_setting_peekers()
 		'new Peeker($("#setting_captchaimage"), $("#row_setting_ayahpublisherkey, #row_setting_ayahscoringkey"), 3, false)',
 		'new Peeker($(".setting_contact"), $("#row_setting_contact_guests, #row_setting_contact_badwords, #row_setting_contact_maxsubjectlength, #row_setting_contact_minmessagelength, #row_setting_contact_maxmessagelength"), 1, true)',
 		'new Peeker($(".setting_enablepruning"), $("#row_setting_enableprunebyposts, #row_setting_pruneunactived, #row_setting_prunethreads"), 1, true)',
-		'new Peeker($(".setting_enableprunebyposts"), $("#row_setting_prunepostcount, #row_setting_dayspruneregistered"), 1, true)',
+		'new Peeker($(".setting_enableprunebyposts"), $("#row_setting_prunepostcount, #row_setting_dayspruneregistered, #row_setting_prunepostcountall"), 1, true)',
 		'new Peeker($(".setting_pruneunactived"), $("#row_setting_dayspruneunactivated"), 1, true)',
 		'new Peeker($(".setting_statsenabled"), $("#row_setting_statscachetime, #row_setting_statslimit, #row_setting_statstopreferrer"), 1, true)',
 		'new Peeker($(".setting_purgespammergroups_forums_groups_check"), $("#row_setting_purgespammerpostlimit, #row_setting_purgespammerbandelete, #row_setting_purgespammerapikey"), /^(?!none)/, true)',

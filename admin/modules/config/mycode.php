@@ -117,7 +117,7 @@ if($mybb->input['action'] == "add")
 				'description' => $db->escape_string($mybb->input['description']),
 				'regex' => $db->escape_string(str_replace("\x0", "", $mybb->input['regex'])),
 				'replacement' => $db->escape_string($mybb->input['replacement']),
-				'active' => $db->escape_string($mybb->input['active']),
+				'active' => $mybb->get_input('active', MyBB::INPUT_INT),
 				'parseorder' => $mybb->get_input('parseorder', MyBB::INPUT_INT)
 			);
 
@@ -244,7 +244,7 @@ if($mybb->input['action'] == "edit")
 				'description' => $db->escape_string($mybb->input['description']),
 				'regex' => $db->escape_string(str_replace("\x0", "", $mybb->input['regex'])),
 				'replacement' => $db->escape_string($mybb->input['replacement']),
-				'active' => $db->escape_string($mybb->input['active']),
+				'active' => $mybb->get_input('active', MyBB::INPUT_INT),
 				'parseorder' => $mybb->get_input('parseorder', MyBB::INPUT_INT)
 			);
 

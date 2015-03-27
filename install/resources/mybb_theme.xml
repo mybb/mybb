@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<theme name="MyBB Master Style" version="1804">
+<theme name="MyBB Master Style" version="1805">
 	<properties>
 		<templateset><![CDATA[1]]></templateset>
 		<imgdir><![CDATA[images]]></imgdir>
@@ -82,6 +82,7 @@ a:active {
 	background-image: url(images/headerlinks_sprite.png);
 	background-repeat: no-repeat;
 	display: inline-block;
+	line-height: 16px;
 }
 
 #logo ul.top_links {
@@ -9485,11 +9486,11 @@ if(use_xmlhttprequest == "1")
 		<template name="postbit_attachments_images" version="120"><![CDATA[<span class="smalltext"><strong>{$lang->postbit_attachments_images}</strong></span><br />
 {$post['imagelist']}
 <br />]]></template>
-		<template name="postbit_attachments_images_image" version="1800"><![CDATA[<img src="attachment.php?aid={$attachment['aid']}" class="attachment" alt="" title="{$attachdate}" />&nbsp;&nbsp;&nbsp;]]></template>
+		<template name="postbit_attachments_images_image" version="1805"><![CDATA[<img src="attachment.php?aid={$attachment['aid']}" class="attachment" alt="" title="{$lang->postbit_attachment_filename} {$attachment['filename']}&#13;{$lang->postbit_attachment_size} {$attachment['filesize']}&#13;{$attachdate}" />&nbsp;&nbsp;&nbsp;]]></template>
 		<template name="postbit_attachments_thumbnails" version="120"><![CDATA[<span class="smalltext"><strong>{$lang->postbit_attachments_thumbnails}</strong></span><br />
 {$post['thumblist']}
 <br />]]></template>
-		<template name="postbit_attachments_thumbnails_thumbnail" version="1800"><![CDATA[<a href="attachment.php?aid={$attachment['aid']}" target="_blank"><img src="attachment.php?thumbnail={$attachment['aid']}" class="attachment" alt="" title="{$attachdate}" /></a>&nbsp;&nbsp;&nbsp;]]></template>
+		<template name="postbit_attachments_thumbnails_thumbnail" version="1805"><![CDATA[<a href="attachment.php?aid={$attachment['aid']}" target="_blank"><img src="attachment.php?thumbnail={$attachment['aid']}" class="attachment" alt="" title="{$lang->postbit_attachment_filename} {$attachment['filename']}&#13;{$lang->postbit_attachment_size} {$attachment['filesize']}&#13;{$attachdate}" /></a>&nbsp;&nbsp;&nbsp;]]></template>
 		<template name="postbit_author_guest" version="120"><![CDATA[&nbsp;]]></template>
 		<template name="postbit_author_user" version="1800"><![CDATA[
 	{$lang->postbit_posts} {$post['postnum']}<br />
@@ -9724,7 +9725,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 </body>
 </html>]]></template>
-		<template name="private_advanced_search" version="1800"><![CDATA[<html>
+		<template name="private_advanced_search" version="1805"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->advanced_private_message_search}</title>
 {$headerinclude}
@@ -9802,6 +9803,44 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </table>
 </form>
 {$footer}
+<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css" />
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
+<script type="text/javascript">
+<!--
+if(use_xmlhttprequest == "1")
+{
+	MyBB.select2();
+	$("#sender").select2({
+		placeholder: "{$lang->find_users}",
+		minimumInputLength: 3,
+		maximumSelectionSize: 3,
+		multiple: false,
+		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+			url: "xmlhttp.php?action=get_users",
+			dataType: 'json',
+			data: function (term, page) {
+				return {
+					query: term, // search term
+				};
+			},
+			results: function (data, page) { // parse the results into the format expected by Select2.
+				// since we are using custom formatting functions we do not need to alter remote JSON data
+				return {results: data};
+			}
+		},
+		initSelection: function(element, callback) {
+			var value = $(element).val();
+			if (value !== "") {
+				callback({
+					id: value,
+					text: value
+				});
+			}
+		}
+	});
+}
+// -->
+</script>
 </body>
 </html>]]></template>
 		<template name="private_advanced_search_folders" version="1800"><![CDATA[<select multiple="multiple" name="folder[]" id="folder">
@@ -10401,7 +10440,7 @@ if(use_xmlhttprequest == "1")
 		<template name="private_send_buddyselect" version="1800"><![CDATA[<script type="text/javascript"><!--
 document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBuddySelect(\'{$buddy_select}\');"><img src="{$theme['imgdir']}/buddies.png" alt="" style="vertical-align: middle;" alt="" title="{$lang->select_from_buddies}" /> {$lang->select_from_buddies}</a></span>');
 // --></script>]]></template>
-		<template name="private_send_tracking" version="1610"><![CDATA[<br /><label><input type="checkbox" class="checkbox" name="options[readreceipt]" value="1" tabindex="8" {$optionschecked['readreceipt']} />{$lang->options_read_receipt}</label>]]></template>
+		<template name="private_send_tracking" version="1805"><![CDATA[<br /><label><input type="checkbox" class="checkbox" name="options[readreceipt]" value="1" tabindex="8" {$optionschecked['readreceipt']} /> {$lang->options_read_receipt}</label>]]></template>
 		<template name="private_tracking" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->pm_tracking}</title>
@@ -10570,7 +10609,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		<td class="trow1">{$lang->success_report_voted}</td>
 	</tr>
 </table>]]></template>
-		<template name="reputation" version="1804"><![CDATA[<html>
+		<template name="reputation" version="1805"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->reputation_report}</title>
 {$headerinclude}
@@ -10600,7 +10639,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 				<span class="smalltext">
 					({$usertitle})<br />
 					<br />
-					<strong>{$lang->total_reputation}:</strong> <span class="repbox {$total_class}">{$user['reputation']}</span><br /><br />
+					<strong>{$lang->total_reputation}:</strong> <span class="repbox {$total_class}">{$rep_total}</span><br /><br />
 					<strong>{$lang->reputation_members} {$rep_members}</strong><br />
 					<strong>{$lang->reputation_posts} {$rep_posts}</strong>
 				</span>
@@ -10615,27 +10654,27 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 						</tr>
 						<tr>
 							<td style="text-align: right;"><span class="smalltext">{$lang->last_week}</span></td>
-							<td style="text-align: center;"><span class="smalltext">{$positive_week}</span></td>
-							<td style="text-align: center;"><span class="smalltext">{$neutral_week}</span></td>
-							<td style="text-align: center;"><span class="smalltext">{$negative_week}</span></td>
+							<td style="text-align: center;"><span class="smalltext">{$f_positive_week}</span></td>
+							<td style="text-align: center;"><span class="smalltext">{$f_neutral_week}</span></td>
+							<td style="text-align: center;"><span class="smalltext">{$f_negative_week}</span></td>
 						</tr>
 						<tr>
 							<td style="text-align: right;"><span class="smalltext">{$lang->last_month}</span></td>
-							<td style="text-align: center;"><span class="smalltext">{$positive_month}</span></td>
-							<td style="text-align: center;"><span class="smalltext">{$neutral_month}</span></td>
-							<td style="text-align: center;"><span class="smalltext">{$negative_month}</span></td>
+							<td style="text-align: center;"><span class="smalltext">{$f_positive_month}</span></td>
+							<td style="text-align: center;"><span class="smalltext">{$f_neutral_month}</span></td>
+							<td style="text-align: center;"><span class="smalltext">{$f_negative_month}</span></td>
 						</tr>
 						<tr>
 							<td style="text-align: right;"><span class="smalltext">{$lang->last_6months}</span></td>
-							<td style="text-align: center;"><span class="smalltext">{$positive_6months}</span></td>
-							<td style="text-align: center;"><span class="smalltext">{$neutral_6months}</span></td>
-							<td style="text-align: center;"><span class="smalltext">{$negative_6months}</span></td>
+							<td style="text-align: center;"><span class="smalltext">{$f_positive_6months}</span></td>
+							<td style="text-align: center;"><span class="smalltext">{$f_neutral_6months}</span></td>
+							<td style="text-align: center;"><span class="smalltext">{$f_negative_6months}</span></td>
 						</tr>
 						<tr>
 							<td style="text-align: right;"><span class="smalltext">{$lang->all_time}</span></td>
-							<td style="text-align: center;"><span class="smalltext">{$positive_count}</span></td>
-							<td style="text-align: center;"><span class="smalltext">{$neutral_count}</span></td>
-							<td style="text-align: center;"><span class="smalltext">{$negative_count}</span></td>
+							<td style="text-align: center;"><span class="smalltext">{$f_positive_count}</span></td>
+							<td style="text-align: center;"><span class="smalltext">{$f_neutral_count}</span></td>
+							<td style="text-align: center;"><span class="smalltext">{$f_negative_count}</span></td>
 						</tr>
 					</table>
 			</td>
@@ -12977,7 +13016,8 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
-	<template name="usercp_profile_contact_fields" version="1800"><![CDATA[<fieldset class="trow2">
+	<template name="usercp_profile_contact_fields" version="1805"><![CDATA[<br />
+<fieldset class="trow2">
 <legend><strong>{$lang->additional_contact_details}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
 	{$contact_fields['icq']}
@@ -13061,7 +13101,7 @@ if(use_xmlhttprequest == "1")
 <tr>
 <td>{$code}</td>
 </tr>]]></template>
-		<template name="usercp_profile_customtitle" version="1800"><![CDATA[<fieldset class="trow2">
+		<template name="usercp_profile_customtitle" version="1805"><![CDATA[<fieldset class="trow2">
 <legend><strong>{$lang->custom_usertitle}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
 <tr>
@@ -13082,8 +13122,7 @@ if(use_xmlhttprequest == "1")
 </tr>
 {$reverttitle}
 </table>
-</fieldset>
-<br />]]></template>
+</fieldset>]]></template>
 		<template name="usercp_profile_customtitle_currentcustom" version="1800"><![CDATA[<tr>
 <td><span class="smalltext">{$lang->current_custom_usertitle}</span></td>
 </tr>
@@ -13752,10 +13791,10 @@ if(use_xmlhttprequest == "1")
 <td class="trow1" width="20%"><strong>{$lang->username}</strong></td>
 <td class="trow1">{$mybb->user['username']} <span class="smalltext">[<strong><a href="member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}">{$lang->change_user}</a></strong>]</span></td>
 </tr>]]></template>
-		<template name="codebuttons" version="1804"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/sceditor/editor_themes/{$theme['editortheme']}" type="text/css" media="all" />
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/sceditor/jquery.sceditor.bbcode.min.js"></script>
+		<template name="codebuttons" version="1805"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/sceditor/editor_themes/{$theme['editortheme']}" type="text/css" media="all" />
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/sceditor/jquery.sceditor.bbcode.min.js?ver=1805"></script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/bbcodes_sceditor.js?ver=1804"></script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/sceditor/editor_plugins/undo.js?ver=1804"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/sceditor/editor_plugins/undo.js?ver=1805"></script>
 <script type="text/javascript">
 var partialmode = {$mybb->settings['partialmode']},
 opt_editor = {

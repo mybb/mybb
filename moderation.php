@@ -69,7 +69,7 @@ if($fid)
 
 if($pmid > 0)
 {
-	$query = $db->simple_select('privatemessages', 'uid, subject, ipaddress', "pmid = $pmid");
+	$query = $db->simple_select('privatemessages', 'uid, subject, ipaddress, fromid', "pmid = $pmid");
 
 	$pm = $db->fetch_array($query);
 
@@ -825,7 +825,7 @@ switch($mybb->input['action'])
 		$lang->thread_restored = $lang->sprintf($lang->thread_restored, $thread['subject']);
 		log_moderator_action($modlogdata, $lang->thread_restored);
 
-		$moderation->restore_threads($tid, $fid);
+		$moderation->restore_threads($tid);
 
 		moderation_redirect(get_thread_link($thread['tid']), $lang->redirect_threadrestored);
 		break;
@@ -1711,7 +1711,7 @@ switch($mybb->input['action'])
 			error($lang->error_inline_nothreadsselected);
 		}
 
-		$moderation->restore_threads($threads, $fid);
+		$moderation->restore_threads($threads);
 
 		log_moderator_action($modlogdata, $lang->multi_restored_threads);
 		if($mybb->get_input('inlinetype') == 'search')
@@ -1754,7 +1754,7 @@ switch($mybb->input['action'])
 			error($lang->error_inline_nothreadsselected);
 		}
 
-		$moderation->soft_delete_threads($threads, $fid);
+		$moderation->soft_delete_threads($threads);
 
 		log_moderator_action($modlogdata, $lang->multi_soft_deleted_threads);
 		if($mybb->get_input('inlinetype') == 'search')

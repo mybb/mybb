@@ -359,7 +359,8 @@ if($mybb->input['action'] == "results")
 		// Fetch dot icons if enabled
 		if($mybb->settings['dotfolders'] != 0 && $mybb->user['uid'] && $thread_cache)
 		{
-			$query = $db->simple_select("posts", "DISTINCT tid,uid", "uid='".$mybb->user['uid']."' AND tid IN(".$thread_ids.")");
+			$p_unapproved_where = str_replace('t.', '', $unapproved_where);
+			$query = $db->simple_select("posts", "DISTINCT tid,uid", "uid='{$mybb->user['uid']}' AND tid IN({$thread_ids}) AND {$p_unapproved_where}");
 			while($thread = $db->fetch_array($query))
 			{
 				$thread_cache[$thread['tid']]['dot_icon'] = 1;
@@ -782,7 +783,7 @@ if($mybb->input['action'] == "results")
 		$dot_icon = array();
 		if($mybb->settings['dotfolders'] != 0 && $mybb->user['uid'] != 0)
 		{
-			$query = $db->simple_select("posts", "DISTINCT tid,uid", "uid='".$mybb->user['uid']."' AND tid IN(".$db->escape_string($tids).")");
+			$query = $db->simple_select("posts", "DISTINCT tid,uid", "uid='{$mybb->user['uid']}' AND tid IN({$db->escape_string($tids)}) AND {$p_unapproved_where}");
 			while($post = $db->fetch_array($query))
 			{
 				$dot_icon[$post['tid']] = true;
@@ -1627,4 +1628,5 @@ else
 	eval("\$search = \"".$templates->get("search")."\";");
 	output_page($search);
 }
+
 
