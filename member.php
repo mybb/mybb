@@ -1035,19 +1035,19 @@ if($mybb->input['action'] == "register")
 					{
 						if($type == "textarea")
 						{
-							$inp_selector = "$('textarea[name=\"profile_fields[{$field}]\"')";					
+							$inp_selector = "$('textarea[name=\"profile_fields[{$field}]\"]')";					
 						}
 						elseif($type == "multiselect")
 						{
-							$inp_selector = "$('select[name=\"profile_fields[{$field}][]\"')";					
+							$inp_selector = "$('select[name=\"profile_fields[{$field}][]\"]')";					
 						}
 						elseif($type == "checkbox")
 						{
-							$inp_selector = "$('input[name=\"profile_fields[{$field}][]\"')";	
+							$inp_selector = "$('input[name=\"profile_fields[{$field}][]\"]')";	
 						}
 						else
 						{
-							$inp_selector = "$('input[name=\"profile_fields[{$field}]\"')";
+							$inp_selector = "$('input[name=\"profile_fields[{$field}]\"]')";
 						}
 						
 						$validator_extra .= "
@@ -1066,16 +1066,18 @@ if($mybb->input['action'] == "register")
 					eval("\$customfields .= \"".$templates->get("member_register_customfield")."\";");
 				}
 			}
+			
+			if($requiredfields)
+			{
+				eval("\$requiredfields = \"".$templates->get("member_register_requiredfields")."\";");
+			}
+
+			if($customfields)
+			{
+				eval("\$customfields = \"".$templates->get("member_register_additionalfields")."\";");
+			}
 		}
 
-		if(!empty($requiredfields))
-		{
-			eval("\$requiredfields = \"".$templates->get("member_register_requiredfields")."\";");
-		}
-		if(!empty($customfields))
-		{
-			eval("\$customfields = \"".$templates->get("member_register_additionalfields")."\";");
-		}
 		if(!isset($fromreg))
 		{
 			$allownoticescheck = "checked=\"checked\"";
