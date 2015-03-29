@@ -228,8 +228,9 @@ class WarningsHandler extends DataHandler
 			}
 
 			$warning['points'] = $this->warning_type['points'];
-
-			$warning['title'] = $warning['expires'] = '';
+			$warning['title'] = '';
+			$warning['expires'] = 0;
+			
 			if($this->warning_type['expirationtime'])
 			{
 				$warning['expires'] = TIME_NOW+$this->warning_type['expirationtime'];
@@ -452,11 +453,11 @@ class WarningsHandler extends DataHandler
 							}
 
 							$new_ban = array(
-								"uid" => (int)$user['uid'],
-								"gid" => $db->escape_string($action['usergroup']),
-								"oldgroup" => $db->escape_string($user['usergroup']),
-								"oldadditionalgroups" => $db->escape_string($user['additionalgroups']),
-								"olddisplaygroup" => $db->escape_string($user['displaygroup']),
+								"uid" => $user['uid'],
+								"gid" => $action['usergroup'],
+								"oldgroup" => $user['usergroup'],
+								"oldadditionalgroups" => $user['additionalgroups'],
+								"olddisplaygroup" => $user['displaygroup'],
 								"admin" => $mybb->user['uid'],
 								"dateline" => TIME_NOW,
 								"bantime" => $db->escape_string($bantime),
@@ -468,9 +469,9 @@ class WarningsHandler extends DataHandler
 							{
 								$db->delete_query("banned", "uid='{$user['uid']}' AND gid='{$action['usergroup']}'");
 								// Override new ban details with old group info
-								$new_ban['oldgroup'] = $db->escape_string($existing_ban['oldgroup']);
-								$new_ban['oldadditionalgroups'] = $db->escape_string($existing_ban['oldadditionalgroups']);
-								$new_ban['olddisplaygroup'] = $db->escape_string($existing_ban['olddisplaygroup']);
+								$new_ban['oldgroup'] = $existing_ban['oldgroup'];
+								$new_ban['oldadditionalgroups'] = $existing_ban['oldadditionalgroups'];
+								$new_ban['olddisplaygroup'] = $existing_ban['olddisplaygroup'];
 							}
 
 							$period = $lang->expiration_never;
@@ -487,7 +488,8 @@ class WarningsHandler extends DataHandler
 
 							$db->insert_query("banned", $new_ban);
 							$this->updated_user['usergroup'] = $action['usergroup'];
-							$this->updated_user['additionalgroups'] = $this->updated_user['displaygroup'] = "";
+							$this->updated_user['additionalgroups'] = '';
+							$this->updated_user['displaygroup'] = 0;
 						}
 						break;
 					// Suspend posting privileges
@@ -675,8 +677,8 @@ class WarningsHandler extends DataHandler
 			"title" => $db->escape_string($warning['title']),
 			"points" => (int)$warning['points'],
 			"dateline" => TIME_NOW,
-			"issuedby" => (int)$mybb->user['uid'],
-			"expires" => $db->escape_string($warning['expires']),
+			"issuedby" => $mybb->user['uid'],
+			"expires" => (int)$warning['expires'],
 			"expired" => 0,
 			"revokereason" => '',
 			"notes" => $db->escape_string($warning['notes'])
