@@ -1116,8 +1116,11 @@ function upgrade30_dbchanges6()
 		$groups[] = "'{$group['gid']}'";
 	}
 
-	$usergroups = implode(',', $groups);
-	$db->update_query('usergroups', array('canbereported' => 1), "gid IN ({$usergroups})");
+	if(!empty($groups))
+	{
+		$usergroups = implode(',', $groups);
+		$db->update_query('usergroups', array('canbereported' => 1), "gid IN ({$usergroups})");
+	}
 
 	$db->update_query('usergroups', array('canviewboardclosed' => 1), 'cancp = 1');
 
