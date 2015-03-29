@@ -790,7 +790,9 @@ if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 		"dateformat" => $mybb->get_input('dateformat', MyBB::INPUT_INT),
 		"timeformat" => $mybb->get_input('timeformat', MyBB::INPUT_INT),
 		"timezone" => $db->escape_string($mybb->get_input('timezoneoffset')),
-		"language" => $mybb->get_input('language')
+		"language" => $mybb->get_input('language'),
+		'usergroup'	=> $mybb->user['usergroup'],
+		'additionalgroups'	=> $mybb->user['additionalgroups']
 	);
 
 	$user['options'] = array(
