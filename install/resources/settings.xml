@@ -2424,7 +2424,7 @@ delete=Delete]]></optionscode>
 		</setting>
 		<setting name="statscachetime">
 			<title>Statistics Cache Time</title>
-			<description><![CDATA[Insert the interval of time to refresh the statistics page cache in hours. 0 to disable caching.]]></description>
+			<description><![CDATA[Insert the interval of time to refresh the statistics page cache (in hours). 0 to disable caching.]]></description>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>

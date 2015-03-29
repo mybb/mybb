@@ -124,13 +124,15 @@ if(!empty($most_viewed))
 
 $statistics = $cache->read('statistics');
 $mybb->settings['statscachetime'] = (int)$mybb->settings['statscachetime'];
+
 if($mybb->settings['statscachetime'] < 1)
 {
 	$mybb->settings['statscachetime'] = 0;
 }
-$interval = (int)$mybb->settings['statscachetime']*60860;
 
-if(!$statistics || TIME_NOW-$interval > $statistics['time'] || $mybb->settings['statscachetime'] == 0)
+$interval = $mybb->settings['statscachetime']*3600;
+
+if(!$statistics || $interval == 0 || TIME_NOW - $interval > $statistics['time'])
 {
 	$cache->update_statistics();
 	$statistics = $cache->read('statistics');
