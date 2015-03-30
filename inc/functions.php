@@ -3011,9 +3011,16 @@ function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
 		$dimensions = $mybb->settings['useravatardims'];
 	}
 
-	if(isset($avatars[$avatar]))
+	// An empty key wouldn't work so we need to add a fall back
+	$key = $dimensions;
+	if(empty($key))
 	{
-		return $avatars[$avatar];
+		$key = 'default';
+	}
+
+	if(isset($avatars[$avatar][$key]))
+	{
+		return $avatars[$avatar][$key];
 	}
 
 	if(!$max_dimensions)
@@ -3044,12 +3051,12 @@ function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
 		}
 	}
 
-	$avatars[$avatar] = array(
+	$avatars[$avatar][$key] = array(
 		'image' => htmlspecialchars_uni($mybb->get_asset_url($avatar)),
 		'width_height' => $avatar_width_height
 	);
 
-	return $avatars[$avatar];
+	return $avatars[$avatar][$key];
 }
 
 /**
