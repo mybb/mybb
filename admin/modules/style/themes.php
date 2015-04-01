@@ -766,7 +766,7 @@ if($mybb->input['action'] == "duplicate")
 		if(!$errors)
 		{
 			$properties = my_unserialize($theme['properties']);
-			$sid = $properties['sid'];
+			$sid = $properties['templateset'];
 			$nprops = null;
 			if($mybb->input['duplicate_templates'])
 			{
