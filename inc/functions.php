@@ -3011,14 +3011,26 @@ function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
 		$dimensions = $mybb->settings['useravatardims'];
 	}
 
-	if(isset($avatars[$avatar]))
-	{
-		return $avatars[$avatar];
-	}
-
 	if(!$max_dimensions)
 	{
 		$max_dimensions = $mybb->settings['maxavatardims'];
+	}
+
+	// An empty key wouldn't work so we need to add a fall back
+	$key = $dimensions;
+	if(empty($key))
+	{
+		$key = 'default';
+	}
+	$key2 = $max_dimensions;
+	if(empty($key2))
+	{
+		$key2 = 'default';
+	}
+
+	if(isset($avatars[$avatar][$key][$key2]))
+	{
+		return $avatars[$avatar][$key][$key2];
 	}
 
 	$avatar_width_height = '';
@@ -3031,7 +3043,7 @@ function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
 		{
 			list($max_width, $max_height) = explode('x', $max_dimensions);
 
-			if($dimensions[0] > $max_width || $dimensions[1] > $max_height)
+			if(!empty($max_dimensions) && ($dimensions[0] > $max_width || $dimensions[1] > $max_height))
 			{
 				require_once MYBB_ROOT."inc/functions_image.php";
 				$scaled_dimensions = scale_image($dimensions[0], $dimensions[1], $max_width, $max_height);
@@ -3044,12 +3056,12 @@ function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
 		}
 	}
 
-	$avatars[$avatar] = array(
+	$avatars[$avatar][$key][$key2] = array(
 		'image' => htmlspecialchars_uni($mybb->get_asset_url($avatar)),
 		'width_height' => $avatar_width_height
 	);
 
-	return $avatars[$avatar];
+	return $avatars[$avatar][$key][$key2];
 }
 
 /**
