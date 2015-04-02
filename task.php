@@ -32,7 +32,7 @@ require_once MYBB_ROOT."inc/functions_task.php";
 
 // Are tasks set to run via cron instead & are we accessing this file via the CLI?
 // php task.php [tid]
-if(PHP_SAPI == "cli")
+if (is_cli()) {
 {
 	// Passing a specific task ID
 	if($_SERVER['argc'] == 2)
@@ -70,4 +70,15 @@ else
 	{
 		run_task();
 	}
+}
+
+/**
+ * Checks if it's a cli call or not
+ * @return boolean
+ */
+function is_cli() {
+    return (
+        !array_key_exists('SERVER_SOFTWARE', $_SERVER)
+        && (PHP_SAPI === 'cli' || !array_key_exists('REMOTE_ADDR', $_SERVER))
+    );
 }

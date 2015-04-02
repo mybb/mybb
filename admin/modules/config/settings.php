@@ -1327,6 +1327,16 @@ if($mybb->input['action'] == "change")
 					checkAction('{$element_id}');
 				</script>";
 			}
+			else if($type[0] == "forumalone")
+			{
+				$selected_value = (int)$setting['value']; // No need to check if empty, int will give 0
+				$setting_code = $form->generate_forum_select('select['.$setting['name'].'][]', $selected_value, array('id' => $element_id, 'size' => 5));
+			}
+			else if($type[0] == "groupalone")
+			{
+				$selected_value = (int)$setting['value']; // No need to check if empty, int will give 0
+				$setting_code = $form->generate_group_select('select['.$setting['name'].'][]', $selected_value, array('id' => $element_id, 'size' => 5));
+			}
 			else
 			{
 				for($i=0; $i < count($type); $i++)
