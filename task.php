@@ -7,32 +7,25 @@
  * License: http://www.mybb.com/about/license
  *
  */
-
 ignore_user_abort(true);
 @set_time_limit(0);
-
 define("IN_MYBB", 1);
 define("NO_ONLINE", 1);
 define("IN_TASK", 1);
 define('THIS_SCRIPT', 'task.php');
-
 require_once dirname(__FILE__)."/inc/init.php";
-
 // Load language
 $lang->set_language($mybb->settings['bblanguage']);
 $lang->load("global");
 $lang->load("messages");
-
 if(function_exists('mb_internal_encoding') && !empty($lang->settings['charset']))
 {
 	@mb_internal_encoding($lang->settings['charset']);
 }
-
 require_once MYBB_ROOT."inc/functions_task.php";
-
 // Are tasks set to run via cron instead & are we accessing this file via the CLI?
 // php task.php [tid]
-if (is_cli()) {
+if(PHP_SAPI == "cli")
 {
 	// Passing a specific task ID
 	if($_SERVER['argc'] == 2)
@@ -40,7 +33,6 @@ if (is_cli()) {
 		$query = $db->simple_select("tasks", "tid", "tid='".(int)$_SERVER['argv'][1]."'");
 		$tid = $db->fetch_field($query, "tid");
 	}
-
 	if($tid)
 	{
 		run_task($tid);
@@ -60,7 +52,6 @@ else
 	header("Cache-Control: no-cache, must-revalidate");
 	header("Pragma: no-cache");
 	echo base64_decode("R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==");
-
 	// If the use shutdown functionality is turned off, run any shutdown related items now.
 	if($mybb->use_shutdown == true)
 	{
@@ -70,15 +61,4 @@ else
 	{
 		run_task();
 	}
-}
-
-/**
- * Checks if it's a cli call or not
- * @return boolean
- */
-function is_cli() {
-    return (
-        !array_key_exists('SERVER_SOFTWARE', $_SERVER)
-        && (PHP_SAPI === 'cli' || !array_key_exists('REMOTE_ADDR', $_SERVER))
-    );
 }
