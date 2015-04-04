@@ -641,6 +641,8 @@ if($mybb->input['action'] == "edit")
 		"adminlanguage" => $lang->adminlanguage,
 		"cpstyle" => $lang->cpstyle,
 		//"php" => $lang->php // Internal Use Only
+		"forumalone" => $lang->forumalone,
+		"groupalone" => $lang->groupalone
 	);
 
 	$form_container->output_row($lang->type." <em>*</em>", "", $form->generate_select_box("type", $setting_types, $setting_data['type'], array('id' => 'type')), 'type');
@@ -1330,12 +1332,12 @@ if($mybb->input['action'] == "change")
 			else if($type[0] == "forumalone")
 			{
 				$selected_value = (int)$setting['value']; // No need to check if empty, int will give 0
-				$setting_code = $form->generate_forum_select('select['.$setting['name'].'][]', $selected_value, array('id' => $element_id, 'size' => 5));
+				$setting_code = $form->generate_forum_select($element_name, $selected_value, array('id' => $element_id));
 			}
 			else if($type[0] == "groupalone")
 			{
 				$selected_value = (int)$setting['value']; // No need to check if empty, int will give 0
-				$setting_code = $form->generate_group_select('select['.$setting['name'].'][]', $selected_value, array('id' => $element_id, 'size' => 5));
+				$setting_code = $form->generate_group_select($element_name, $selected_value, array('id' => $element_id));
 			}
 			else
 			{
