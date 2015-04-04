@@ -38,6 +38,8 @@ $l['group_selection_box'] = "Group Selection Box";
 $l['adminlanguage'] = "Administration Language Selection Box";
 $l['cpstyle'] = "Control Panel Style Selection Box";
 $l['php'] = "Evaluated PHP";
+$l['forumalone'] = "Single Forum Selection Box";
+$l['groupalone'] = "Single Group Selection Box";
 $l['type'] = "Type";
 $l['extra'] = "Extra";
 $l['extra_desc'] = "If this setting is a select, radio or check box enter a key paired (key=Item) list of items to show. Separate items with a new line. If PHP, enter the PHP to be evaluated.";
