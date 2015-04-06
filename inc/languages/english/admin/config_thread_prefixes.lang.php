@@ -12,7 +12,7 @@ $l['add_new_thread_prefix'] = "Add New Thread Prefix";
 $l['add_new_thread_prefix_desc'] = "Here you can add a new thread prefix and define where it is available, as well as which usergroups can use it.";
 
 $l['edit_prefix'] = "Edit Prefix";
-$l['edit_prefix_desc'] = "Here you can edit a thread prefix and change how it is display, where it is available and which usergroups can use it.";
+$l['edit_prefix_desc'] = "Here you can edit a thread prefix and change how it is displayed, where it is available and which usergroups can use it.";
 $l['edit_thread_prefix'] = "Edit Thread Prefix";
 $l['delete_thread_prefix'] = "Delete Thread Prefix";
 
