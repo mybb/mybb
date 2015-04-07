@@ -493,6 +493,7 @@ class UserDataHandler extends DataHandler
 		// Loop through profile fields checking if they exist or not and are filled in.
 		$userfields = array();
 		$comma = '';
+		$checks_required = empty($this->data['profile_fields_editable']);
 
 		// Fetch all profile fields first.
 		$pfcache = $cache->read('profilefields');
@@ -502,18 +503,13 @@ class UserDataHandler extends DataHandler
 			// Then loop through the profile fields.
 			foreach($pfcache as $profilefield)
 			{
-				if(isset($this->data['profile_fields_editable']) || isset($this->data['registration']) && ($profilefield['required'] == 1 || $profilefield['registration'] == 1))
-				{
-					$profilefield['editableby'] = -1;
-				}
-
-				if(!is_member($profilefield['editableby'], array('usergroup' => $user['usergroup'], 'additionalgroups' => $user['additionalgroups'])))
+				if($checks_required && !is_member($profilefield['editableby'], array('usergroup' => $user['usergroup'], 'additionalgroups' => $user['additionalgroups'])))
 				{
 					continue;
 				}
 
 				// Does this field have a minimum post count?
-				if(!isset($this->data['profile_fields_editable']) && !empty($profilefield['postnum']) && $profilefield['postnum'] > $user['postnum'])
+				if($checks_required && !empty($profilefield['postnum']) && $profilefield['postnum'] > $user['postnum'])
 				{
 					continue;
 				}
@@ -531,12 +527,12 @@ class UserDataHandler extends DataHandler
 				// If the profile field is required, but not filled in, present error.
 				if($type != "multiselect" && $type != "checkbox")
 				{
-					if(trim($profile_fields[$field]) == "" && $profilefield['required'] == 1 && !defined('IN_ADMINCP') && THIS_SCRIPT != "modcp.php")
+					if($checks_required && $profilefield['required'] == 1 && trim($profile_fields[$field]) == "")
 					{
 						$this->set_error('missing_required_profile_field', array($profilefield['name']));
 					}
 				}
-				elseif(($type == "multiselect" || $type == "checkbox") && $profile_fields[$field] == "" && $profilefield['required'] == 1 && !defined('IN_ADMINCP') && THIS_SCRIPT != "modcp.php")
+				elseif($checks_required && ($type == "multiselect" || $type == "checkbox") && $profilefield['required'] == 1 && $profile_fields[$field] == "")
 				{
 					$this->set_error('missing_required_profile_field', array($profilefield['name']));
 				}
@@ -549,7 +545,7 @@ class UserDataHandler extends DataHandler
 					$expoptions = array_map('trim', $expoptions);
 					foreach($profile_fields[$field] as $value)
 					{
-						if(!in_array(htmlspecialchars_uni($value), $expoptions))
+						if($checks_required && !in_array(htmlspecialchars_uni($value), $expoptions))
 						{
 							$this->set_error('bad_profile_field_values', array($profilefield['name']));
 						}
@@ -564,7 +560,7 @@ class UserDataHandler extends DataHandler
 				{
 					$expoptions = explode("\n", $thing[1]);
 					$expoptions = array_map('trim', $expoptions);
-					if(!in_array(htmlspecialchars_uni($profile_fields[$field]), $expoptions) && trim($profile_fields[$field]) != "")
+					if($checks_required && !in_array(htmlspecialchars_uni($profile_fields[$field]), $expoptions) && trim($profile_fields[$field]) != "")
 					{
 						$this->set_error('bad_profile_field_values', array($profilefield['name']));
 					}
@@ -572,13 +568,13 @@ class UserDataHandler extends DataHandler
 				}
 				else
 				{
-					if($profilefield['maxlength'] > 0 && my_strlen($profile_fields[$field]) > $profilefield['maxlength'])
+					if($checks_required && $profilefield['maxlength'] > 0 && my_strlen($profile_fields[$field]) > $profilefield['maxlength'])
 					{
 						$this->set_error('max_limit_reached', array($profilefield['name'], $profilefield['maxlength']));
 					}
 					
 					// Check regex only when the field is filled or required
-					if(!empty($profilefield['regex']) && ($profile_fields[$field] || $profilefield['required']) && !preg_match("#".$profilefield['regex']."#i", $profile_fields[$field]))
+					if($checks_required && !empty($profilefield['regex']) && ($profile_fields[$field] || $profilefield['required']) && !preg_match("#".$profilefield['regex']."#i", $profile_fields[$field]))
 					{
 						$this->set_error('bad_profile_field_value', array($profilefield['name']));
 					}
