@@ -2452,14 +2452,14 @@ if($mybb->input['action'] == "profile")
 	$query = $db->simple_select("userfields", "*", "ufid = '{$uid}'");
 	$userfields = $db->fetch_array($query);
 
-	// If this user is an Administrator or a Moderator then we wish to show all profile fields
 	$pfcache = $cache->read('profilefields');
 
 	if(is_array($pfcache))
 	{
 		foreach($pfcache as $customfield)
 		{
-			if($mybb->usergroup['cancp'] != 1 && $mybb->usergroup['issupermod'] != 1 && $mybb->usergroup['canmodcp'] != 1 && !is_member($customfield['viewableby']))
+			if(!$customfield['profile'] || !is_member($customfield['viewableby']) ||
+			!is_member($customfield['editableby'], array('usergroup' => $memprofile['usergroup'], 'additionalgroups' => $memprofile['additionalgroups'])) || $memprofile['postnum'] < $customfield['postnum'])
 			{
 				continue;
 			}

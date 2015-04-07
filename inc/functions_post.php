@@ -401,64 +401,81 @@ function build_postbit($post, $post_type=0)
 		}
 
 		// Display profile fields on posts - only if field is filled in
-		if(is_array($profile_fields))
+		if($post_type == 0)
 		{
-			foreach($profile_fields as $field)
+			if(!isset($profile_fields))
 			{
-				$fieldfid = "fid{$field['fid']}";
-				if(!empty($post[$fieldfid]))
+				$profile_fields = $cache->read('profilefields');
+			}
+			
+			if(is_array($profile_fields))
+			{
+				foreach($profile_fields as $field)
 				{
-					$post['fieldvalue'] = '';
-					$post['fieldname'] = htmlspecialchars_uni($field['name']);
-
-					$thing = explode("\n", $field['type'], "2");
-					$type = trim($thing[0]);
-					$useropts = explode("\n", $post[$fieldfid]);
-
-					if(is_array($useropts) && ($type == "multiselect" || $type == "checkbox"))
+					if(!$field['postbit'] || !is_member($field['viewableby']) ||
+					!is_member($field['editableby'], array('usergroup' => $post['usergroup'], 'additionalgroups' => $post['additionalgroups'])) || $post['postnum'] < $field['postnum'])
 					{
-						foreach($useropts as $val)
-						{
-							if($val != '')
-							{
-								eval("\$post['fieldvalue_option'] .= \"".$templates->get("postbit_profilefield_multiselect_value")."\";");
-							}
-						}
-						if($post['fieldvalue_option'] != '')
-						{
-							eval("\$post['fieldvalue'] .= \"".$templates->get("postbit_profilefield_multiselect")."\";");
-						}
+						continue;
 					}
-					else
+					
+					$fieldfid = "fid{$field['fid']}";
+					if(!empty($post[$fieldfid]))
 					{
-						$field_parser_options = array(
-							"allow_html" => $field['allowhtml'],
-							"allow_mycode" => $field['allowmycode'],
-							"allow_smilies" => $field['allowsmilies'],
-							"allow_imgcode" => $field['allowimgcode'],
-							"allow_videocode" => $field['allowvideocode'],
-							#"nofollow_on" => 1,
-							"filter_badwords" => 1
-						);
+						$post['fieldvalue'] = '';
 
-						if($customfield['type'] == "textarea")
+						$thing = explode("\n", $field['type'], "2");
+						$type = trim($thing[0]);
+						$useropts = explode("\n", $post[$fieldfid]);
+
+						if(is_array($useropts) && ($type == "multiselect" || $type == "checkbox"))
 						{
-							$field_parser_options['me_username'] = $post['username'];
+							foreach($useropts as $val)
+							{
+								if($val != '')
+								{
+									eval("\$post['fieldvalue_option'] .= \"".$templates->get("postbit_profilefield_multiselect_value")."\";");
+								}
+							}
+							if($post['fieldvalue_option'] != '')
+							{
+								eval("\$post['fieldvalue'] .= \"".$templates->get("postbit_profilefield_multiselect")."\";");
+							}
 						}
 						else
 						{
-							$field_parser_options['nl2br'] = 0;
+							$field_parser_options = array(
+								"allow_html" => $field['allowhtml'],
+								"allow_mycode" => $field['allowmycode'],
+								"allow_smilies" => $field['allowsmilies'],
+								"allow_imgcode" => $field['allowimgcode'],
+								"allow_videocode" => $field['allowvideocode'],
+								#"nofollow_on" => 1,
+								"filter_badwords" => 1
+							);
+
+							if($customfield['type'] == "textarea")
+							{
+								$field_parser_options['me_username'] = $post['username'];
+							}
+							else
+							{
+								$field_parser_options['nl2br'] = 0;
+							}
+
+							if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
+							{
+								$field_parser_options['allow_imgcode'] = 0;
+							}
+
+							$post['fieldvalue'] = $parser->parse_message($post[$fieldfid], $field_parser_options);
 						}
 
-						if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
+						if($post['fieldvalue'])
 						{
-							$field_parser_options['allow_imgcode'] = 0;
+							$post['fieldname'] = htmlspecialchars_uni($field['name']);
+							eval("\$post['profilefield'] .= \"".$templates->get("postbit_profilefield")."\";");
 						}
-
-						$post['fieldvalue'] = $parser->parse_message($post[$fieldfid], $field_parser_options);
 					}
-
-					eval("\$post['profilefield'] .= \"".$templates->get("postbit_profilefield")."\";");
 				}
 			}
 		}
