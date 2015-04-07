@@ -643,9 +643,6 @@ if($mybb->input['action'] == "mass_edit")
 			$image = "../".$smilie['image'];
 		}
 
-		$smilie['find'] = htmlspecialchars_uni($smilie['find']);
-		$smilie['name'] = htmlspecialchars_uni($smilie['name']);
-
 		$form_container->output_cell("<img src=\"{$image}\" alt=\"\" />", array("class" => "align_center", "width" => 1));
 		$form_container->output_cell($form->generate_text_box("name[{$smilie['sid']}]", $smilie['name'], array('id' => 'name', 'style' => 'width: 98%')));
 		$form_container->output_cell($form->generate_text_area("find[{$smilie['sid']}]", $smilie['find'], array('id' => 'find', 'style' => 'width: 95%')));
