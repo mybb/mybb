@@ -418,9 +418,9 @@ if($mybb->input['action'] == "add")
 		"onoff" => $lang->onoff,
 		"select" => $lang->select,
 		"forumselect" => $lang->forum_selection_box,
-		"forumalone" => $lang->forumalone,
+		"forumselectsingle" => $lang->forumselectsingle,
 		"groupselect" => $lang->group_selection_box,
-		"groupalone" => $lang->groupalone,
+		"groupselectsingle" => $lang->groupselectsingle,
 		"radio" => $lang->radio,
 		"checkbox" => $lang->checkbox,
 		"language" => $lang->language_selection_box,
@@ -636,9 +636,9 @@ if($mybb->input['action'] == "edit")
 		"onoff" => $lang->onoff,
 		"select" => $lang->select,
 		"forumselect" => $lang->forum_selection_box,
-		"forumalone" => $lang->forumalone,
+		"forumselectsingle" => $lang->forumselectsingle,
 		"groupselect" => $lang->group_selection_box,
-		"groupalone" => $lang->groupalone
+		"groupselectsingle" => $lang->groupselectsingle
 		"radio" => $lang->radio,
 		"checkbox" => $lang->checkbox,
 		"language" => $lang->language_selection_box,
@@ -1283,7 +1283,7 @@ if($mybb->input['action'] == "change")
 					checkAction('{$element_id}');
 				</script>";
 			}
-			else if($type[0] == "forumalone")
+			else if($type[0] == "forumselectsingle")
 			{
 				$selected_value = (int)$setting['value']; // No need to check if empty, int will give 0
 				$setting_code = $form->generate_forum_select($element_name, $selected_value, array('id' => $element_id, 'main_option' => $lang->none));
@@ -1336,7 +1336,7 @@ if($mybb->input['action'] == "change")
 					checkAction('{$element_id}');
 				</script>";
 			}
-			else if($type[0] == "groupalone")
+			else if($type[0] == "groupselectsingle")
 			{
 				$selected_value = (int)$setting['value']; // No need to check if empty, int will give 0
 				$setting_code = $form->generate_group_select($element_name, $selected_value, array('id' => $element_id, 'main_option' => $lang->none));
