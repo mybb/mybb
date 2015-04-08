@@ -439,7 +439,7 @@ if($mybb->input['action'] == "add")
 	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1804"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
-			var peeker = new Peeker($("#type"), $("#row_extra"), /select|radio|checkbox|php/, false);
+			new Peeker($("#type"), $("#row_extra"), /^(select|radio|checkbox|php)$/, false);
 		});
 		// Add a star to the extra row since the "extra" is required if the box is shown
 		add_star("row_extra");
@@ -655,7 +655,7 @@ if($mybb->input['action'] == "edit")
 	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1804"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
-			var peeker = new Peeker($("#type"), $("#row_extra"), /select|radio|checkbox|php/, false);
+			new Peeker($("#type"), $("#row_extra"), /^(select|radio|checkbox|php)$/, false);
 		});
 		// Add a star to the extra row since the "extra" is required if the box is shown
 		add_star("row_extra");
