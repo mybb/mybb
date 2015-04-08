@@ -425,7 +425,7 @@ if($mybb->input['action'] == "add")
 		"checkbox" => $lang->checkbox,
 		"language" => $lang->language_selection_box,
 		"adminlanguage" => $lang->adminlanguage,
-		"cpstyle" => $lang->cpstyle,
+		"cpstyle" => $lang->cpstyle
 		//"php" => $lang->php // Internal Use Only
 	);
 
@@ -638,12 +638,12 @@ if($mybb->input['action'] == "edit")
 		"forumselect" => $lang->forum_selection_box,
 		"forumselectsingle" => $lang->forumselectsingle,
 		"groupselect" => $lang->group_selection_box,
-		"groupselectsingle" => $lang->groupselectsingle
+		"groupselectsingle" => $lang->groupselectsingle,
 		"radio" => $lang->radio,
 		"checkbox" => $lang->checkbox,
 		"language" => $lang->language_selection_box,
 		"adminlanguage" => $lang->adminlanguage,
-		"cpstyle" => $lang->cpstyle,
+		"cpstyle" => $lang->cpstyle
 		//"php" => $lang->php // Internal Use Only
 	);
 
