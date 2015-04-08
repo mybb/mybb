@@ -418,7 +418,9 @@ if($mybb->input['action'] == "add")
 		"onoff" => $lang->onoff,
 		"select" => $lang->select,
 		"forumselect" => $lang->forum_selection_box,
+		"forumalone" => $lang->forumalone,
 		"groupselect" => $lang->group_selection_box,
+		"groupalone" => $lang->groupalone,
 		"radio" => $lang->radio,
 		"checkbox" => $lang->checkbox,
 		"language" => $lang->language_selection_box,
@@ -634,15 +636,15 @@ if($mybb->input['action'] == "edit")
 		"onoff" => $lang->onoff,
 		"select" => $lang->select,
 		"forumselect" => $lang->forum_selection_box,
+		"forumalone" => $lang->forumalone,
 		"groupselect" => $lang->group_selection_box,
+		"groupalone" => $lang->groupalone
 		"radio" => $lang->radio,
 		"checkbox" => $lang->checkbox,
 		"language" => $lang->language_selection_box,
 		"adminlanguage" => $lang->adminlanguage,
 		"cpstyle" => $lang->cpstyle,
 		//"php" => $lang->php // Internal Use Only
-		"forumalone" => $lang->forumalone,
-		"groupalone" => $lang->groupalone
 	);
 
 	$form_container->output_row($lang->type." <em>*</em>", "", $form->generate_select_box("type", $setting_types, $setting_data['type'], array('id' => 'type')), 'type');
