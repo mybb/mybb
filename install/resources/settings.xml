@@ -2249,7 +2249,7 @@ delete=Delete]]></optionscode>
 			<title>Ban Usergroup</title>
 			<description><![CDATA[Enter the ID of the usergroup (not the name) to put users into when they get banned. Defaults to 7, the default Banned usergroup. The above setting must be set to 'Ban' for this to take effect.]]></description>
 			<disporder>4</disporder>
-			<optionscode><![CDATA[numeric]]></optionscode>
+			<optionscode><![CDATA[groupselectsingle]]></optionscode>
 			<settingvalue><![CDATA[7]]></settingvalue>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
