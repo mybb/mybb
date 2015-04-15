@@ -1191,7 +1191,7 @@ if($mybb->input['action'] == "change")
                                     $opt = trim($optionsexp);
                                     if (in_array($opt[0], array('min', 'max', 'step')))
                                     {
-                                        $field_options[$opt[0]] = intval($opt[1]);
+                                        $field_options[$opt[0]] = int()$opt[1];
                                     }
                                 }
                             }
