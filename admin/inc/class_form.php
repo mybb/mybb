@@ -588,6 +588,12 @@ class DefaultForm
 		foreach($groups_cache as $group)
 		{
 			$selected_add = "";
+			
+			if(!is_array($selected))
+			{
+				$selected = array($selected);
+			}
+			
 			if(is_array($selected))
 			{
 				if(in_array($group['gid'], $selected))
