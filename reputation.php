@@ -827,12 +827,19 @@ if(!$mybb->input['action'])
 		$neu_rep_info = $lang->neu_rep_disabled;
 	}
 
+	$perpage = $mybb->settings['repsperpage'];
+	if(!$perpage)
+	{
+		$perpage = 15;
+	}
+
 	// Check if we're browsing a specific page of results
 	if($mybb->get_input('page', MyBB::INPUT_INT) > 0)
 	{
 		$page = $mybb->get_input('page', MyBB::INPUT_INT);
-		$start = ($page-1) * $mybb->settings['repsperpage'];
 		$pages = $reputation_count / $mybb->settings['repsperpage'];
+		$start = ($page-1) * $perpage;
+		$pages = $reputation_count / $perpage;
 		$pages = ceil($pages);
 		if($page > $pages)
 		{
@@ -851,7 +858,7 @@ if(!$mybb->input['action'])
 	// Build out multipage navigation
 	if($reputation_count > 0)
 	{
-		$multipage = multipage($reputation_count, $mybb->settings['repsperpage'], $page, "reputation.php?uid={$user['uid']}".$s_url);
+		$multipage = multipage($reputation_count, $perpage, $page, "reputation.php?uid={$user['uid']}".$s_url);
 	}
 
 	// Fetch the reputations which will be displayed on this page
@@ -861,7 +868,7 @@ if(!$mybb->input['action'])
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=r.adduid)
 		WHERE r.uid='{$user['uid']}' $conditions
 		ORDER BY $order
-		LIMIT $start, {$mybb->settings['repsperpage']}
+		LIMIT $start, {$perpage}
 	");
 
 	// Gather a list of items that have post reputation
