@@ -341,7 +341,13 @@ else
 	{
 		error($lang->group_no_members);
 	}*/
+	
 	$perpage = $mybb->settings['membersperpage'];
+	if(!$perpage)
+	{
+		$perpage = 20;
+	}
+	
 	$page = $mybb->get_input('page', MyBB::INPUT_INT);
 	if($page && $page > 0)
 	{
