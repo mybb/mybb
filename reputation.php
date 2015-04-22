@@ -827,8 +827,8 @@ if(!$mybb->input['action'])
 		$neu_rep_info = $lang->neu_rep_disabled;
 	}
 
-	$perpage = $mybb->settings['repsperpage'];
-	if(!$perpage)
+	$perpage = (int)$mybb->settings['repsperpage'];
+	if($perpage < 1)
 	{
 		$perpage = 15;
 	}
