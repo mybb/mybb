@@ -363,6 +363,11 @@ class WarningsHandler extends DataHandler
 	{
 		global $db, $mybb, $lang;
 
+		if (!$mybb->settings['maxwarningpoints'])
+		{
+			$mybb->settings['maxwarningpoints'] = 10;
+		}
+
 		$warning = &$this->data;
 
 		$user = get_user($warning['uid']);

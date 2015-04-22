@@ -374,6 +374,11 @@ function build_postbit($post, $post_type=0)
 		// Showing the warning level? (only show if not announcement)
 		if($post_type != 3 && $mybb->settings['enablewarningsystem'] != 0 && $usergroup['canreceivewarnings'] != 0 && ($mybb->usergroup['canwarnusers'] != 0 || ($mybb->user['uid'] == $post['uid'] && $mybb->settings['canviewownwarning'] != 0)))
 		{
+			if (!$mybb->settings['maxwarningpoints'])
+			{
+				$mybb->settings['maxwarningpoints'] = 10;
+			}
+
 			$warning_level = round($post['warningpoints']/$mybb->settings['maxwarningpoints']*100);
 			if($warning_level > 100)
 			{

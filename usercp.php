@@ -3691,6 +3691,10 @@ if(!$mybb->input['action'])
 	$latest_warnings = '';
 	if($mybb->settings['enablewarningsystem'] != 0 && $mybb->settings['canviewownwarning'] != 0)
 	{
+		if (!$mybb->settings['maxwarningpoints'])
+		{
+			$mybb->settings['maxwarningpoints'] = 10;
+		}
 		$warning_level = round($mybb->user['warningpoints']/$mybb->settings['maxwarningpoints']*100);
 		if($warning_level > 100)
 		{

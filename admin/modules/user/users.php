@@ -1053,6 +1053,11 @@ EOF;
 
 	if($mybb->settings['enablewarningsystem'] != 0 && $user_permissions['canreceivewarnings'] != 0)
 	{
+		if (!$mybb->settings['maxwarningpoints'])
+		{
+			$mybb->settings['maxwarningpoints'] = 10;
+		}
+
 		$warning_level = round($user['warningpoints']/$mybb->settings['maxwarningpoints']*100);
 		if($warning_level > 100)
 		{
@@ -3567,6 +3572,11 @@ function build_users_view($view)
 
 			if($mybb->settings['enablewarningsystem'] != 0 && $usergroups[$user['usergroup']]['canreceivewarnings'] != 0)
 			{
+				if (!$mybb->settings['maxwarningpoints'])
+				{
+					$mybb->settings['maxwarningpoints'] = 10;
+				}
+
 				$warning_level = round($user['warningpoints']/$mybb->settings['maxwarningpoints']*100);
 				if($warning_level > 100)
 				{
