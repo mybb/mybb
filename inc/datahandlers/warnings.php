@@ -363,7 +363,7 @@ class WarningsHandler extends DataHandler
 	{
 		global $db, $mybb, $lang;
 
-		if (!$mybb->settings['maxwarningpoints'])
+		if(!$mybb->settings['maxwarningpoints'])
 		{
 			$mybb->settings['maxwarningpoints'] = 10;
 		}

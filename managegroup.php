@@ -337,10 +337,6 @@ else
 	}
 
 	$numusers = $db->num_rows($query);
-	/*if(!$numusers && !$numrequests)
-	{
-		error($lang->group_no_members);
-	}*/
 	
 	$perpage = $mybb->settings['membersperpage'];
 	if(!$perpage)
