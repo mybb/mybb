@@ -341,7 +341,7 @@ if($mybb->input['action'] == "warn")
 
 	$user_link = build_profile_link($user['username'], $user['uid']);
 
-	if(!$mybb->settings['maxwarningpoints'])
+	if($mybb->settings['maxwarningpoints'] < 1)
 	{
 		$mybb->settings['maxwarningpoints'] = 10;
 	}
@@ -743,7 +743,7 @@ if(!$mybb->input['action'])
 
 	$multipage = multipage($warning_count, $perpage, $page, "warnings.php?uid={$user['uid']}");
 
-	if(!$mybb->settings['maxwarningpoints'])
+	if($mybb->settings['maxwarningpoints'] < 1)
 	{
 		$mybb->settings['maxwarningpoints'] = 10;
 	}

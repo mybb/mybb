@@ -338,8 +338,8 @@ else
 
 	$numusers = $db->num_rows($query);
 	
-	$perpage = $mybb->settings['membersperpage'];
-	if(!$perpage)
+	$perpage = (int)$mybb->settings['membersperpage'];
+	if($perpage < 1)
 	{
 		$perpage = 20;
 	}

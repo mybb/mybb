@@ -2428,7 +2428,7 @@ if($mybb->input['action'] == "profile")
 	{
 		$bg_color = alt_trow();
 
-		if(!$mybb->settings['maxwarningpoints'])
+		if($mybb->settings['maxwarningpoints'] < 1)
 		{
 			$mybb->settings['maxwarningpoints'] = 10;
 		}
