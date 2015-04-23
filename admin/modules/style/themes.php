@@ -1171,6 +1171,7 @@ if($mybb->input['action'] == "edit")
 			$plugins->run_hooks("admin_style_themes_edit_commit");
 
 			$db->update_query("themes", $update_array, "tid='{$theme['tid']}'");
+			update_theme_stylesheet_list($theme['tid']);
 
 			if($theme['def'] == 1)
 			{
