@@ -1457,7 +1457,7 @@ if(!$mybb->input['action'])
 		$leaders_list = '';
 		if(isset($leaders[$usergroup['gid']]))
 		{
-			$leaders_list = "<br />{$lang->group_leaders}: ".implode(", ", $leaders[$usergroup['gid']]);
+			$leaders_list = "<br />{$lang->group_leaders}: ".implode($lang->comma, $leaders[$usergroup['gid']]);
 		}
 
 		$join_requests = '';

@@ -269,7 +269,7 @@ class PMDataHandler extends DataHandler
 		// If we have one or more invalid recipients and we're not saving a draft, error
 		if(count($invalid_recipients) > 0)
 		{
-			$invalid_recipients = implode(", ", array_map("htmlspecialchars_uni", $invalid_recipients));
+			$invalid_recipients = implode($lang->comma, array_map("htmlspecialchars_uni", $invalid_recipients));
 			$this->set_error("invalid_recipients", array($invalid_recipients));
 			return false;
 		}
