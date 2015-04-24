@@ -5294,7 +5294,6 @@ function format_bdays($display, $bm, $bd, $by, $wd)
 	// This needs to be in this specific order
 	$find = array(
 		'm',
-		'n',
 		'd',
 		'D',
 		'y',
@@ -5308,7 +5307,6 @@ function format_bdays($display, $bm, $bd, $by, $wd)
 
 	$html = array(
 		'&#109;',
-		'&#110;',
 		'&#99;',
 		'&#68;',
 		'&#121;',
@@ -5325,7 +5323,6 @@ function format_bdays($display, $bm, $bd, $by, $wd)
 
 	$replace = array(
 		sprintf('%02s', $bm),
-		$bm,
 		sprintf('%02s', $bd),
 		($wd == 2 ? my_substr($bdays[$wd], 0, 4) : ($wd == 4 ? my_substr($bdays[$wd], 0, 5) : my_substr($bdays[$wd], 0, 3))),
 		my_substr($by, 2),
