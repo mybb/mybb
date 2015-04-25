@@ -935,7 +935,7 @@ if($mybb->input['action'] == "change")
 				// All checkboxes deselected = no $mybb->input['upsetting'] for them, we need to initialize it manually then, but only on pages where the setting is shown
 				if(empty($mybb->input['upsetting'][$multisetting['name']]) && isset($mybb->input["isvisible_{$multisetting['name']}"]))
 				{
-					$mybb->input['upsetting'][$multisetting['name']] = '';
+					$mybb->input['upsetting'][$multisetting['name']] = array();
 				}
 			}
 			else
