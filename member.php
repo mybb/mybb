@@ -2427,6 +2427,12 @@ if($mybb->input['action'] == "profile")
 	if($mybb->settings['enablewarningsystem'] != 0 && $memperms['canreceivewarnings'] != 0 && ($mybb->usergroup['canwarnusers'] != 0 || ($mybb->user['uid'] == $memprofile['uid'] && $mybb->settings['canviewownwarning'] != 0)))
 	{
 		$bg_color = alt_trow();
+
+		if($mybb->settings['maxwarningpoints'] < 1)
+		{
+			$mybb->settings['maxwarningpoints'] = 10;
+		}
+
 		$warning_level = round($memprofile['warningpoints']/$mybb->settings['maxwarningpoints']*100);
 
 		if($warning_level > 100)

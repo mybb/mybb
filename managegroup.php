@@ -337,11 +337,13 @@ else
 	}
 
 	$numusers = $db->num_rows($query);
-	/*if(!$numusers && !$numrequests)
+	
+	$perpage = (int)$mybb->settings['membersperpage'];
+	if($perpage < 1)
 	{
-		error($lang->group_no_members);
-	}*/
-	$perpage = $mybb->settings['membersperpage'];
+		$perpage = 20;
+	}
+	
 	$page = $mybb->get_input('page', MyBB::INPUT_INT);
 	if($page && $page > 0)
 	{
