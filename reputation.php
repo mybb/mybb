@@ -837,7 +837,6 @@ if(!$mybb->input['action'])
 	if($mybb->get_input('page', MyBB::INPUT_INT) > 0)
 	{
 		$page = $mybb->get_input('page', MyBB::INPUT_INT);
-		$pages = $reputation_count / $mybb->settings['repsperpage'];
 		$start = ($page-1) * $perpage;
 		$pages = $reputation_count / $perpage;
 		$pages = ceil($pages);
