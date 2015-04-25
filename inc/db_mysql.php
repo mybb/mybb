@@ -633,11 +633,18 @@ class DB_MySQL implements DB_Base
 	{
 		if($prefix)
 		{
-			$query = $this->query("SHOW TABLES FROM `$database` LIKE '".$this->escape_string($prefix)."%'");
+			$query = $this->query("
+				SELECT `TABLE_NAME` FROM INFORMATION_SCHEMA.TABLES 
+				WHERE `TABLE_SCHEMA` = '$database' AND `TABLE_TYPE` = 'BASE TABLE' 
+				AND `TABLE_NAME` LIKE '".$this->escape_string($prefix)."%'
+			");
 		}
 		else
 		{
-			$query = $this->query("SHOW TABLES FROM `$database`");
+			$query = $this->query("
+				SELECT `TABLE_NAME` FROM INFORMATION_SCHEMA.TABLES 
+				WHERE `TABLE_SCHEMA` = '$database' AND `TABLE_TYPE` = 'BASE TABLE'
+			");
 		}
 
 		$tables = array();
@@ -659,8 +666,9 @@ class DB_MySQL implements DB_Base
 	{
 		// Execute on master server to ensure if we've just created a table that we get the correct result
 		$query = $this->write_query("
-			SHOW TABLES
-			LIKE '{$this->table_prefix}$table'
+			SELECT `TABLE_NAME` FROM INFORMATION_SCHEMA.TABLES 
+			WHERE `TABLE_TYPE` = 'BASE TABLE' 
+			AND `TABLE_NAME` LIKE '{$this->table_prefix}$table'
 		");
 		$exists = $this->num_rows($query);
 		if($exists > 0)
