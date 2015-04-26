@@ -1183,19 +1183,19 @@ if($mybb->input['action'] == "change")
 			else if($type[0] == "numeric")
 			{
 				$field_options = array('id' => $element_id);
-                            if (count($type)>1)
-                            {
-                                for($i=1; $i < count($type); $i++)
-                                {
-                                    $optionsexp = explode("=", $type[$i]);
-                                    $opt = trim($optionsexp);
-                                    if (in_array($opt[0], array('min', 'max', 'step')))
-                                    {
-                                        $field_options[$opt[0]] = (int)$opt[1];
-                                    }
-                                }
-                            }
-                            $setting_code = $form->generate_numeric_field($element_name, $setting['value'], $field_options);
+				if (count($type)>1)
+				{
+					for($i=1; $i < count($type); $i++)
+					{
+						$optionsexp = explode("=", $type[$i]);
+						$opt = trim($optionsexp);
+						if (in_array($opt[0], array('min', 'max', 'step')))
+						{
+							$field_options[$opt[0]] = (int)$opt[1];
+						}
+					}
+				}
+				$setting_code = $form->generate_numeric_field($element_name, $setting['value'], $field_options);
 			}
 			else if($type[0] == "textarea")
 			{
