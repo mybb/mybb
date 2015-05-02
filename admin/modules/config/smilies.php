@@ -550,6 +550,15 @@ if($mybb->input['action'] == "mass_edit")
 			}
 			else
 			{
+				$mybb->input['find'][$sid] = str_replace("\r\n", "\n", $mybb->input['find'][$sid]);
+				$mybb->input['find'][$sid] = str_replace("\r", "\n", $mybb->input['find'][$sid]);
+				$mybb->input['find'][$sid] = explode("\n", $mybb->input['find'][$sid]);
+				foreach(array_merge(array_keys($mybb->input['find'][$sid], ""), array_keys($mybb->input['find'][$sid], " ")) as $key)
+				{
+					unset($mybb->input['find'][$sid][$key]);
+				}
+				$mybb->input['find'][$sid] = implode("\n", $mybb->input['find'][$sid]);				
+				
 				$smilie = array(
 					"name" => $db->escape_string($mybb->input['name'][$sid]),
 					"find" => $db->escape_string($mybb->input['find'][$sid]),
