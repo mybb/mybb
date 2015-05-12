@@ -432,6 +432,7 @@ $(document).ready(function($) {
 	 **************************/
 	$.sceditor.plugins.bbcode.bbcode.set('video', {
 		allowsEmpty: true,
+		allowedChildren: ['#', '#newline'],
 		tags: {
 			iframe: {
 				'data-mybb-vt': null
@@ -607,4 +608,19 @@ $(document).ready(function($) {
 				}
 			});
 	}
+
+
+
+	/****************
+	 * Fix url code *
+	 ****************/
+	$.sceditor.plugins.bbcode.bbcode.set('url', {
+			html: function(token, attrs, content) {
+
+				if(!attrs.defaultattr)
+					attrs.defaultattr = content;
+
+				return '<a href="' + $.sceditor.escapeUriScheme($.sceditor.escapeEntities(attrs.defaultattr)) + '">' + content + '</a>';
+			}
+	});
 });

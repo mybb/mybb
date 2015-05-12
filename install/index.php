@@ -69,7 +69,7 @@ $done_shutdown = 1;
 $grouppermignore = array('gid', 'type', 'title', 'description', 'namestyle', 'usertitle', 'stars', 'starimage', 'image');
 $groupzerogreater = array('pmquota', 'maxpmrecipients', 'maxreputationsday', 'attachquota', 'maxemails', 'maxwarningsday', 'maxposts', 'edittimelimit', 'canusesigxposts', 'maxreputationsperthread');
 $displaygroupfields = array('title', 'description', 'namestyle', 'usertitle', 'stars', 'starimage', 'image');
-$fpermfields = array('canview', 'candlattachments', 'canpostthreads', 'canpostreplys', 'canpostattachments', 'canratethreads', 'caneditposts', 'candeleteposts', 'candeletethreads', 'caneditattachments', 'canpostpolls', 'canvotepolls', 'cansearch');
+$fpermfields = array('canview', 'canviewthreads', 'candlattachments', 'canpostthreads', 'canpostreplys', 'canpostattachments', 'canratethreads', 'caneditposts', 'candeleteposts', 'candeletethreads', 'caneditattachments', 'canpostpolls', 'canvotepolls', 'cansearch', 'modposts', 'modthreads', 'modattachments', 'mod_edit_posts');
 
 // Include the installation resources
 require_once INSTALL_ROOT.'resources/output.php';
@@ -191,7 +191,7 @@ function intro()
 	global $output, $mybb, $lang;
 
 	$output->print_header($lang->welcome, 'welcome');
-	if(strpos(strtolower($_SERVER['PHP_SELF']), "upload/") !== false)
+	if(strpos(strtolower(get_current_location('', '', true)), '/upload/') !== false)
 	{
 		echo $lang->sprintf($lang->mybb_incorrect_folder);
 	}
@@ -1826,9 +1826,7 @@ EOF;
 	{
 		$bbname = 'Forums';
 		$cookiedomain = '';
-		$cookiepath = '/';
 		$websitename = 'Your Website';
-		$contactemail = '';
 
 		$protocol = "http://";
 		if((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != "off"))
@@ -1848,9 +1846,9 @@ EOF;
 			$cookiedomain = $_SERVER['SERVER_NAME'];
 		}
 
-		if(substr($cookiedomain, 0, 4) == "www.")
+		if(my_substr($cookiedomain, 0, 4) == "www.")
 		{
-			$cookiedomain = my_substr($cookiedomain, 4);
+			$cookiedomain = substr($cookiedomain, 4);
 		}
 
 		// IP addresses and hostnames are not valid
@@ -1867,34 +1865,14 @@ EOF;
 		{
 			$hostname .= ':'.$_SERVER['SERVER_PORT'];
 		}
+		
+		$currentlocation = get_current_location('', '', true);
+		$noinstall = substr($currentlocation, 0, strrpos($currentlocation, '/install/'));
+		
+		$cookiepath = $noinstall.'/';
+		$bburl = $hostname.$noinstall;
 		$websiteurl = $hostname.'/';
-
-		$currentlocation = get_current_location();
-		if($currentlocation)
-		{
-			// TODO: Change this to find the last position of /install/
-			$pos = my_strpos($currentlocation, '/install/');
-			if($pos === 0)
-			{
-				$cookiepath = "/";
-			}
-			else
-			{
-				$cookiepath = my_substr($currentlocation, 0, $pos).'/';
-			}
-		}
-
-		$currentscript = $hostname.get_current_location();
-
-		if($currentscript)
-		{
-			$bburl = my_substr($currentscript, 0, my_strpos($currentscript, '/install/'));
-		}
-
-		if($_SERVER['SERVER_ADMIN'])
-		{
-			$contactemail = $_SERVER['SERVER_ADMIN'];
-		}
+		$contactemail = $_SERVER['SERVER_ADMIN'];
 	}
 
 	echo $lang->sprintf($lang->config_step_table, $bbname, $bburl, $websitename, $websiteurl, $cookiedomain, $cookiepath, $contactemail);
@@ -2237,6 +2215,8 @@ function install_done()
 		'receivepms' => 1,
 		'pmnotice' => 1,
 		'pmnotify' => 1,
+		'buddyrequestspm' => 1,
+		'buddyrequestsauto' => 0,
 		'showimages' => 1,
 		'showvideos' => 1,
 		'showsigs' => 1,
@@ -2453,4 +2433,3 @@ function write_settings()
 		fclose($file);
 	}
 }
-?>

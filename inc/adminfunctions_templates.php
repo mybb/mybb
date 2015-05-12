@@ -14,7 +14,8 @@
  * @param string The name of the template
  * @param string The regular expression to match in the template
  * @param string The replacement string
- * @param int Set to 1 to automatically create templates which do not exist for that set (based off master) - Defaults to 1
+ * @param int Set to 1 to automatically create templates which do not exist for that set (based off master) - defaults to 1
+ * @param mixed Template SID to modify, false for every SID > 0
  * @param int The maximum possible replacements for the regular expression
  * @return boolean true if updated one or more templates, false if not.
  */
@@ -23,33 +24,18 @@ function find_replace_templatesets($title, $find, $replace, $autocreate=1, $sid=
 {
 	global $db, $mybb;
 
-	$return = false;
+	$return = false;	
+	$template_sets = array(-2, -1);	
+	
+	// Select all templates with that title (including global) if not working on a specific template set
+	$sqlwhere = '>0 OR sid=-1';
+	$sqlwhere2 = '>0';
 
-    $sqlwhere = '>\'0\'';
-
-	$template_sets = array(-2, -1);
-
-	// Select all global with that title if not working on a specific template set
+	// Otherwise select just templates from that specific set
 	if($sid !== false)
 	{
-        $sqlwhere = '=\''.(int)$sid.'\'';
-
-		$query = $db->simple_select("templates", "tid, template", "title = '".$db->escape_string($title)."' AND sid='-1'");
-		while($template = $db->fetch_array($query))
-		{
-			// Update the template if there is a replacement term or a change
-			$new_template = preg_replace($find, $replace, $template['template'], $limit);
-			if($new_template == $template['template'])
-			{
-				continue;
-			}
-
-			// The template is a custom template.  Replace as normal.
-			$updated_template = array(
-				"template" => $db->escape_string($new_template)
-			);
-			$db->update_query("templates", $updated_template, "tid='{$template['tid']}'");
-		}
+		$sid = (int)$sid;
+		$sqlwhere2 = $sqlwhere = "=$sid";
 	}
 
 	// Select all other modified templates with that title
@@ -86,7 +72,7 @@ function find_replace_templatesets($title, $find, $replace, $autocreate=1, $sid=
 		if($master_template['new_template'] != $master_template['template'])
 		{
 			// Update the rest of our template sets that are currently inheriting this template from our master set
-			$query = $db->simple_select("templatesets", "sid", "sid NOT IN (".implode(',', $template_sets).") AND sid{$sqlwhere}");
+			$query = $db->simple_select("templatesets", "sid", "sid NOT IN (".implode(',', $template_sets).") AND sid{$sqlwhere2}");
 			while($template = $db->fetch_array($query))
 			{
 				$insert_template = array(

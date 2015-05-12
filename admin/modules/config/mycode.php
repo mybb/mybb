@@ -117,7 +117,7 @@ if($mybb->input['action'] == "add")
 				'description' => $db->escape_string($mybb->input['description']),
 				'regex' => $db->escape_string(str_replace("\x0", "", $mybb->input['regex'])),
 				'replacement' => $db->escape_string($mybb->input['replacement']),
-				'active' => $db->escape_string($mybb->input['active']),
+				'active' => $mybb->get_input('active', MyBB::INPUT_INT),
 				'parseorder' => $mybb->get_input('parseorder', MyBB::INPUT_INT)
 			);
 
@@ -128,7 +128,7 @@ if($mybb->input['action'] == "add")
 			$cache->update_mycode();
 
 			// Log admin action
-			log_admin_action($cid, $mybb->input['title']);
+			log_admin_action($cid, htmlspecialchars_uni($mybb->input['title']));
 
 			flash_message($lang->success_added_mycode, 'success');
 			admin_redirect('index.php?module=config-mycode');
@@ -173,7 +173,7 @@ if($mybb->input['action'] == "add")
 	$form_container->output_row($lang->regular_expression." <em>*</em>", $lang->regular_expression_desc.'<br /><strong>'.$lang->example.'</strong> \[b\](.*?)\[/b\]', $form->generate_text_area('regex', $mybb->input['regex'], array('id' => 'regex')), 'regex');
 	$form_container->output_row($lang->replacement." <em>*</em>", $lang->replacement_desc.'<br /><strong>'.$lang->example.'</strong> &lt;strong&gt;$1&lt;/strong&gt;', $form->generate_text_area('replacement', $mybb->input['replacement'], array('id' => 'replacement')), 'replacement');
 	$form_container->output_row($lang->enabled." <em>*</em>", '', $form->generate_yes_no_radio('active', $mybb->input['active']));
-	$form_container->output_row($lang->parse_order, $lang->parse_order_desc, $form->generate_numeric_field('parseorder', $mybb->input['parseorder'], array('id' => 'parseorder')), 'parseorder');
+	$form_container->output_row($lang->parse_order, $lang->parse_order_desc, $form->generate_numeric_field('parseorder', $mybb->input['parseorder'], array('id' => 'parseorder', 'min' => 0)), 'parseorder');
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_mycode);
@@ -244,7 +244,7 @@ if($mybb->input['action'] == "edit")
 				'description' => $db->escape_string($mybb->input['description']),
 				'regex' => $db->escape_string(str_replace("\x0", "", $mybb->input['regex'])),
 				'replacement' => $db->escape_string($mybb->input['replacement']),
-				'active' => $db->escape_string($mybb->input['active']),
+				'active' => $mybb->get_input('active', MyBB::INPUT_INT),
 				'parseorder' => $mybb->get_input('parseorder', MyBB::INPUT_INT)
 			);
 
@@ -255,7 +255,7 @@ if($mybb->input['action'] == "edit")
 			$cache->update_mycode();
 
 			// Log admin action
-			log_admin_action($mycode['cid'], $mybb->input['title']);
+			log_admin_action($mycode['cid'], htmlspecialchars_uni($mybb->input['title']));
 
 			flash_message($lang->success_updated_mycode, 'success');
 			admin_redirect('index.php?module=config-mycode');
@@ -296,7 +296,7 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->regular_expression." <em>*</em>", $lang->regular_expression_desc.'<br /><strong>'.$lang->example.'</strong> \[b\](.*?)\[/b\]', $form->generate_text_area('regex', $mybb->input['regex'], array('id' => 'regex')), 'regex');
 	$form_container->output_row($lang->replacement." <em>*</em>", $lang->replacement_desc.'<br /><strong>'.$lang->example.'</strong> &lt;strong&gt;$1&lt;/strong&gt;', $form->generate_text_area('replacement', $mybb->input['replacement'], array('id' => 'replacement')), 'replacement');
 	$form_container->output_row($lang->enabled." <em>*</em>", '', $form->generate_yes_no_radio('active', $mybb->input['active']));
-	$form_container->output_row($lang->parse_order, $lang->parse_order_desc, $form->generate_numeric_field('parseorder', $mybb->input['parseorder'], array('id' => 'parseorder')), 'parseorder');
+	$form_container->output_row($lang->parse_order, $lang->parse_order_desc, $form->generate_numeric_field('parseorder', $mybb->input['parseorder'], array('id' => 'parseorder', 'min' => 0)), 'parseorder');
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_mycode);
@@ -354,7 +354,7 @@ if($mybb->input['action'] == "delete")
 		$cache->update_mycode();
 
 		// Log admin action
-		log_admin_action($mycode['cid'], $mycode['title']);
+		log_admin_action($mycode['cid'], htmlspecialchars_uni($mycode['title']));
 
 		flash_message($lang->success_deleted_mycode, 'success');
 		admin_redirect("index.php?module=config-mycode");
@@ -404,10 +404,10 @@ if(!$mybb->input['action'])
 
 		if($mycode['description'])
 		{
-			$mycode['description'] = "<small>{$mycode['description']}</small>";
+			$mycode['description'] = "<small>".htmlspecialchars_uni($mycode['description'])."</small>";
 		}
 
-		$table->construct_cell("<div>{$icon}<strong><a href=\"index.php?module=config-mycode&amp;action=edit&amp;cid={$mycode['cid']}\">{$mycode['title']}</a></strong><br />{$mycode['description']}</div>");
+		$table->construct_cell("<div>{$icon}<strong><a href=\"index.php?module=config-mycode&amp;action=edit&amp;cid={$mycode['cid']}\">".htmlspecialchars_uni($mycode['title'])."</a></strong><br />{$mycode['description']}</div>");
 
 		$popup = new PopupMenu("mycode_{$mycode['cid']}", $lang->options);
 		$popup->add_item($lang->edit_mycode, "index.php?module=config-mycode&amp;action=edit&amp;cid={$mycode['cid']}");

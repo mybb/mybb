@@ -620,7 +620,7 @@ class DB_MySQLi implements DB_Base
 	}
 
 	/**
-	 * Lists all functions in the database.
+	 * Lists all tables in the database.
 	 *
 	 * @param string The database name.
 	 * @param string Prefix of the table (optional)

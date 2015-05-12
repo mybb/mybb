@@ -1,12 +1,11 @@
 var question = {
 	refresh: function()
 	{
-		var question_id = $("#question_id").attr("value");
+		var question_id = $('#question_id').val();
 
 		$.ajax(
 		{
 			url: 'xmlhttp.php?action=refresh_question&question_id='+question_id,
-			async: true,
 			method: 'get',
 			dataType: 'json',
 	        complete: function (request)
@@ -28,24 +27,13 @@ var question = {
 				$.jGrowl(lang.question_fetch_failure + ' ' + message);
 			});
 		}
-		else if(json.question)
+		else if(json.question && json.sid)
 		{
 			$("#question").text(json.question);
-		}
-		
-		if(json.sid)
-		{
 			$("#question_id").val(json.sid);
 		}
-		
-		var answer_status = $("#answer_status");
 
-		answer_status.removeClass("validation_success")
-						  .removeClass("validation_error")
-						  .removeClass("validation_loading")
-						  .html("");
-						  
-		$('#answer').addClass('textbox');
-		$('#answer').val('');
+		$('#answer').removeClass('error valid').val('').removeAttr('aria-invalid').removeData('previousValue')
+					.next('label').remove();
 	}
 };

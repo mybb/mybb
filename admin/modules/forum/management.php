@@ -236,7 +236,7 @@ if($mybb->input['action'] == "copy")
 	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
 	while($usergroup = $db->fetch_array($query))
 	{
-		$usergroups[$usergroup['gid']] = $usergroup['title'];
+		$usergroups[$usergroup['gid']] = htmlspecialchars_uni($usergroup['title']);
 	}
 
 	$form_container = new FormContainer($lang->copy_forum);
@@ -434,7 +434,7 @@ if($mybb->input['action'] == "clear_permission")
 		admin_redirect("index.php?module=forum-management&fid={$fid}");
 	}
 
-	$plugins->run_hooks("admin_forum_management_deletemod");
+	$plugins->run_hooks("admin_forum_management_clear_permission");
 
 	if($mybb->request_method == "post")
 	{
@@ -454,6 +454,8 @@ if($mybb->input['action'] == "clear_permission")
 		{
 			$db->delete_query("forumpermissions", "gid='{$gid}' AND fid='{$fid}'");
 		}
+
+		$plugins->run_hooks('admin_forum_management_clear_permission_commit');
 
 		$cache->update_forumpermissions();
 
@@ -998,7 +1000,7 @@ if($mybb->input['action'] == "add")
 	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $forum_data['title'], array('id' => 'title')), 'title');
 	$form_container->output_row($lang->description, "", $form->generate_text_area('description', $forum_data['description'], array('id' => 'description')), 'description');
 	$form_container->output_row($lang->parent_forum." <em>*</em>", $lang->parent_forum_desc, $form->generate_forum_select('pid', $forum_data['pid'], array('id' => 'pid', 'main_option' => $lang->none)), 'pid');
-	$form_container->output_row($lang->display_order, "", $form->generate_numeric_field('disporder', $forum_data['disporder'], array('id' => 'disporder')), 'disporder');
+	$form_container->output_row($lang->display_order, "", $form->generate_numeric_field('disporder', $forum_data['disporder'], array('id' => 'disporder', 'min' => 0)), 'disporder');
 	$form_container->end();
 
 	echo "<div id=\"additional_options_link\"><strong><a href=\"#\" onclick=\"$('#additional_options_link').toggle(); $('#additional_options').fadeToggle('fast'); return false;\">{$lang->show_additional_options}</a></strong><br /><br /></div>";
@@ -1323,14 +1325,11 @@ if($mybb->input['action'] == "edit")
 		}
 		else
 		{
-			$query = $db->simple_select("forums", "*", "pid='{$mybb->input['fid']}'");
-			while($child = $db->fetch_array($query))
+			$query = $db->simple_select('forums', 'parentlist', "fid='{$pid}'");
+			$parents = explode(',', $db->fetch_field($query, 'parentlist'));
+			if(in_array($mybb->input['fid'], $parents))
 			{
-				if($child['fid'] == $pid)
-				{
-					$errors[] = $lang->error_forum_parent_child;
-					break;
-				}
+				$errors[] = $lang->error_forum_parent_child;
 			}
 		}
 
@@ -1540,7 +1539,7 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $forum_data['title'], array('id' => 'title')), 'title');
 	$form_container->output_row($lang->description, "", $form->generate_text_area('description', $forum_data['description'], array('id' => 'description')), 'description');
 	$form_container->output_row($lang->parent_forum." <em>*</em>", $lang->parent_forum_desc, $form->generate_forum_select('pid', $forum_data['pid'], array('id' => 'pid', 'main_option' => $lang->none)), 'pid');
-	$form_container->output_row($lang->display_order, "", $form->generate_numeric_field('disporder', $forum_data['disporder'], array('id' => 'disporder')), 'disporder');
+	$form_container->output_row($lang->display_order, "", $form->generate_numeric_field('disporder', $forum_data['disporder'], array('id' => 'disporder', 'min' => 0)), 'disporder');
 	$form_container->end();
 
 	$form_container = new FormContainer($lang->additional_forum_options);
@@ -2557,7 +2556,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 
 		foreach($usergroups as $group)
 		{
-			$modgroups[$group['gid']] = $lang->usergroup." ".$group['gid'].": ".$group['title'];
+			$modgroups[$group['gid']] = $lang->usergroup." ".$group['gid'].": ".htmlspecialchars_uni($group['title']);
 		}
 
 		if(!isset($mybb->input['usergroup']))
@@ -2589,11 +2588,11 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		// Autocompletion for usernames
 		echo '
 		<link rel="stylesheet" href="../jscripts/select2/select2.css">
-		<script type="text/javascript" src="../jscripts/select2/select2.min.js"></script>
+		<script type="text/javascript" src="../jscripts/select2/select2.min.js?ver=1804"></script>
 		<script type="text/javascript">
 		<!--
 		$("#username").select2({
-			placeholder: "'.$lang->search_user.'",
+			placeholder: "'.$lang->search_for_a_user.'",
 			minimumInputLength: 3,
 			maximumSelectionSize: 3,
 			multiple: false,

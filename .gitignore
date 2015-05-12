@@ -34,3 +34,6 @@ error.log
 ehthumbs.db
 Thumbs.db
 *~
+
+# Generic git files
+*.orig

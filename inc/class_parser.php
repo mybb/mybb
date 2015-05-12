@@ -521,7 +521,8 @@ class postParser
 			{
 				$smilie['find'] = explode("\n", $smilie['find']);
 				$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
-				$smilie['image'] = $mybb->get_asset_url($smilie['image']);
+				$smilie['image'] = htmlspecialchars_uni($mybb->get_asset_url($smilie['image']));
+				$smilie['name'] = htmlspecialchars_uni($smilie['name']);
 
 				foreach($smilie['find'] as $s)
 				{
@@ -1039,7 +1040,11 @@ class postParser
 		{
 			$url = "http://".$url;
 		}
-		$fullurl = $url;
+
+		if(!empty($this->options['allow_html']))
+		{
+			$url = $this->parse_html($url);
+		}
 
 		if(!$name)
 		{
@@ -1048,10 +1053,12 @@ class postParser
 
 		if($name == $url && !empty($this->options['shorten_urls']))
 		{
-			if(my_strlen($url) > 55)
+			$name = htmlspecialchars_decode($name);
+			if(my_strlen($name) > 55)
 			{
-				$name = my_substr($url, 0, 40)."...".my_substr($url, -10);
+				$name = my_substr($name , 0, 40).'...'.my_substr($name , -10);
 			}
+			$name = htmlspecialchars_uni($name);
 		}
 
 		$nofollow = '';
@@ -1062,10 +1069,10 @@ class postParser
 
 		// Fix some entities in URLs
 		$entities = array('$' => '%24', '&#36;' => '%24', '^' => '%5E', '`' => '%60', '[' => '%5B', ']' => '%5D', '{' => '%7B', '}' => '%7D', '"' => '%22', '<' => '%3C', '>' => '%3E', ' ' => '%20');
-		$fullurl = str_replace(array_keys($entities), array_values($entities), $fullurl);
+		$url = str_replace(array_keys($entities), array_values($entities), $url);
 
 		$name = preg_replace("#&amp;\#([0-9]+);#si", "&#$1;", $name); // Fix & but allow unicode
-		$link = "<a href=\"$fullurl\" target=\"_blank\"{$nofollow}>$name</a>";
+		$link = "<a href=\"$url\" target=\"_blank\"{$nofollow}>$name</a>";
 		return $link;
 	}
 
@@ -1111,6 +1118,13 @@ class postParser
 		$url = trim($url);
 		$url = str_replace("\n", "", $url);
 		$url = str_replace("\r", "", $url);
+
+		if(!empty($this->options['allow_html']))
+		{
+			$url = $this->parse_html($url);
+		}
+
+		$css_align = '';
 		if($align == "right")
 		{
 			$css_align = " style=\"float: right;\"";
@@ -1119,13 +1133,17 @@ class postParser
 		{
 			$css_align = " style=\"float: left;\"";
 		}
-		$alt = htmlspecialchars_uni(basename($url));
+		$alt = basename($url);
+
+		$alt = htmlspecialchars_decode($alt);
 		if(my_strlen($alt) > 55)
 		{
-			$alt = my_substr($alt, 0, 40)."...".my_substr($alt, -10);
+			$alt = my_substr($alt, 0, 40).'...'.my_substr($alt, -10);
 		}
+		$alt = htmlspecialchars_uni($alt);
+
 		$alt = $lang->sprintf($lang->posted_image, $alt);
-		if($dimensions[0] > 0 && $dimensions[1] > 0)
+		if(isset($dimensions[0]) && $dimensions[0] > 0 && isset($dimensions[1]) && $dimensions[1] > 0)
 		{
 			return "<img src=\"{$url}\" width=\"{$dimensions[0]}\" height=\"{$dimensions[1]}\" border=\"0\" alt=\"{$alt}\"{$css_align} />";
 		}
@@ -1325,7 +1343,7 @@ class postParser
 		switch($video)
 		{
 			case "dailymotion":
-				list($id, ) = split("_", $path[2], 1); // http://www.dailymotion.com/video/fds123_title-goes-here
+				list($id) = explode('_', $path[2], 2); // http://www.dailymotion.com/video/fds123_title-goes-here
 				break;
 			case "metacafe":
 				$id = $path[2]; // http://www.metacafe.com/watch/fds123/title_goes_here/

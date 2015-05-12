@@ -596,7 +596,7 @@ class DefaultForm
 				}
 			}
 
-			$select .= "<option value=\"{$group['gid']}\"{$selected_add}>".htmlspecialchars_uni(strip_tags($group['title']))."</option>";
+			$select .= "<option value=\"{$group['gid']}\"{$selected_add}>".htmlspecialchars_uni($group['title'])."</option>";
 		}
 
 		$select .= "</select>";
@@ -833,7 +833,7 @@ class DefaultForm
 
 		$built = $this->generate_select_box($name.'_day', $days, (int)$day, array('id' => $name.'_day'))." &nbsp; ";
 		$built .= $this->generate_select_box($name.'_month', $months, (int)$month, array('id' => $name.'_month'))." &nbsp; ";
-		$built .= $this->generate_text_box($name.'_year', (int)$year, array('id' => $name.'_year', 'style' => 'width: 100px;'));
+		$built .= $this->generate_numeric_field($name.'_year', $year, array('id' => $name.'_year', 'style' => 'width: 100px;', 'min' => 0));
 		return $built;
 	}
 
@@ -894,7 +894,7 @@ class DefaultFormContainer
 	/**
 	 * Initialise the new form container.
 	 *
-	 * @param string The title of the forum container
+	 * @param string The title of the form container
 	 * @param string An additional class to apply if we have one.
 	 */
 	function __construct($title='', $extra_class='')
@@ -1051,4 +1051,3 @@ class DefaultFormContainer
 		}
 	}
 }
-

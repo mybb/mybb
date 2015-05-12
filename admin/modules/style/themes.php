@@ -766,7 +766,7 @@ if($mybb->input['action'] == "duplicate")
 		if(!$errors)
 		{
 			$properties = my_unserialize($theme['properties']);
-			$sid = $properties['sid'];
+			$sid = $properties['templateset'];
 			$nprops = null;
 			if($mybb->input['duplicate_templates'])
 			{
@@ -1171,6 +1171,7 @@ if($mybb->input['action'] == "edit")
 			$plugins->run_hooks("admin_style_themes_edit_commit");
 
 			$db->update_query("themes", $update_array, "tid='{$theme['tid']}'");
+			update_theme_stylesheet_list($theme['tid']);
 
 			if($theme['def'] == 1)
 			{
@@ -1504,7 +1505,7 @@ if($mybb->input['action'] == "edit")
 		}
 
 		$table->construct_cell("<strong><a href=\"index.php?module=style-themes&amp;action=edit_stylesheet&amp;file=".htmlspecialchars_uni($filename)."&amp;tid={$theme['tid']}\">{$filename}</a></strong>{$inherited}<br />{$attached_to}");
-		$table->construct_cell($form->generate_numeric_field("disporder[{$theme_stylesheets[$filename]['sid']}]", $properties['disporder'][$filename], array('style' => 'width: 80%; text-align: center;')), array("class" => "align_center"));
+		$table->construct_cell($form->generate_numeric_field("disporder[{$theme_stylesheets[$filename]['sid']}]", $properties['disporder'][$filename], array('style' => 'width: 80%; text-align: center;', 'min' => 0)), array("class" => "align_center"));
 		$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 		$table->construct_row();
 	}
@@ -1566,8 +1567,8 @@ if($mybb->input['action'] == "edit")
 
 	$form_container->output_row($lang->img_directory, $lang->img_directory_desc, $form->generate_text_box('imgdir', $properties['imgdir'], array('id' => 'imgdir')), 'imgdir');
 	$form_container->output_row($lang->logo, $lang->logo_desc, $form->generate_text_box('logo', $properties['logo'], array('id' => 'boardlogo')), 'logo');
-	$form_container->output_row($lang->table_spacing, $lang->table_spacing_desc, $form->generate_numeric_field('tablespace', $properties['tablespace'], array('id' => 'tablespace')), 'tablespace');
-	$form_container->output_row($lang->inner_border, $lang->inner_border_desc, $form->generate_numeric_field('borderwidth', $properties['borderwidth'], array('id' => 'borderwidth')), 'borderwidth');
+	$form_container->output_row($lang->table_spacing, $lang->table_spacing_desc, $form->generate_numeric_field('tablespace', $properties['tablespace'], array('id' => 'tablespace', 'min' => 0)), 'tablespace');
+	$form_container->output_row($lang->inner_border, $lang->inner_border_desc, $form->generate_numeric_field('borderwidth', $properties['borderwidth'], array('id' => 'borderwidth', 'min' => 0)), 'borderwidth');
 
 	$form_container->end();
 
@@ -2331,7 +2332,7 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 	{
 		$page->extra_header .= '
 <link href="./jscripts/codemirror/lib/codemirror.css" rel="stylesheet">
-<link href="./jscripts/codemirror/theme/mybb.css" rel="stylesheet">
+<link href="./jscripts/codemirror/theme/mybb.css?ver=1804" rel="stylesheet">
 <link href="./jscripts/codemirror/addon/dialog/dialog-mybb.css" rel="stylesheet">
 <script src="./jscripts/codemirror/lib/codemirror.js"></script>
 <script src="./jscripts/codemirror/mode/css/css.js"></script>
@@ -2391,7 +2392,7 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 	$table = new Table;
 	$table->construct_cell($form->generate_text_area('stylesheet', $stylesheet['stylesheet'], array('id' => 'stylesheet', 'style' => 'width: 99%;', 'class' => '', 'rows' => '30')));
 	$table->construct_row();
-	$table->output("{$lang->full_stylesheet_for} ".htmlspecialchars_uni($stylesheet['name']));
+	$table->output($lang->full_stylesheet_for.' '.htmlspecialchars_uni($stylesheet['name']), 1, 'tfixed');
 
 	$buttons[] = $form->generate_submit_button($lang->save_changes, array('id' => 'save', 'name' => 'save'));
 	$buttons[] = $form->generate_submit_button($lang->save_changes_and_close, array('id' => 'save_close', 'name' => 'save_close'));
@@ -2402,13 +2403,16 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 
 	if($admin_options['codepress'] != 0)
 	{
-		echo "<script type=\"text/javascript\">
-			var editor = CodeMirror.fromTextArea(document.getElementById(\"stylesheet\"), {
+		echo '<script type="text/javascript">
+			var editor = CodeMirror.fromTextArea(document.getElementById("stylesheet"), {
 				lineNumbers: true,
-				tabMode: \"indent\",
-				theme: \"mybb\",
-				lineWrapping: true
-			});</script>";
+				lineWrapping: true,
+				viewportMargin: Infinity,
+				indentWithTabs: true,
+				indentUnit: 4,
+				mode: "text/css",
+				theme: "mybb"
+			});</script>';
 	}
 
 	$page->output_footer();
@@ -2601,7 +2605,7 @@ if($mybb->input['action'] == "add_stylesheet")
 	{
 		$page->extra_header .= '
 <link href="./jscripts/codemirror/lib/codemirror.css" rel="stylesheet">
-<link href="./jscripts/codemirror/theme/mybb.css" rel="stylesheet">
+<link href="./jscripts/codemirror/theme/mybb.css?ver=1804" rel="stylesheet">
 <link href="./jscripts/codemirror/addon/dialog/dialog-mybb.css" rel="stylesheet">
 <script src="./jscripts/codemirror/lib/codemirror.js"></script>
 <script src="./jscripts/codemirror/mode/css/css.js"></script>
@@ -2824,7 +2828,7 @@ if($mybb->input['action'] == "add_stylesheet")
 
 	echo $form->generate_hidden_field("sid", $stylesheet['sid'])."<br />\n";
 
-	$form_container = new FormContainer("{$lang->add_stylesheet_to} ".htmlspecialchars_uni($theme['name']));
+	$form_container = new FormContainer($lang->add_stylesheet_to.' '.htmlspecialchars_uni($theme['name']), 'tfixed');
 	$form_container->output_row($lang->file_name, $lang->file_name_desc, $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name', 'style' => 'width: 200px;')), 'name');
 
 	$form_container->output_row($lang->attached_to, $lang->attached_to_desc, $actions);
@@ -2858,13 +2862,16 @@ if($mybb->input['action'] == "add_stylesheet")
 
 	if($admin_options['codepress'] != 0)
 	{
-		echo "<script type=\"text/javascript\">
-			var editor = CodeMirror.fromTextArea(document.getElementById(\"stylesheet\"), {
+		echo '<script type="text/javascript">
+			var editor = CodeMirror.fromTextArea(document.getElementById("stylesheet"), {
 				lineNumbers: true,
-				tabMode: \"indent\",
-				theme: \"mybb\",
-				lineWrapping: true
-			});</script>";
+				lineWrapping: true,
+				viewportMargin: Infinity,
+				indentWithTabs: true,
+				indentUnit: 4,
+				mode: "text/css",
+				theme: "mybb"
+			});</script>';
 	}
 
 	echo '<script type="text/javascript" src="./jscripts/themes.js?ver=1804"></script>';

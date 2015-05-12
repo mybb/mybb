@@ -441,27 +441,8 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 	@fwrite($fp_min, $stylesheet_min);
 	@fclose($fp_min);
 
-	if($mybb->settings['usecdn'] && !empty($mybb->settings['cdnpath']))
-	{
-		$cdn_path         = rtrim($mybb->settings['cdnpath'], '/\\');
-		$cache_themes_dir = $cdn_path . '/' . $theme_directory;
-
-		$copy_to_cdn = true;
-
-		if(!is_dir($cache_themes_dir))
-		{
-			if(!@mkdir($cache_themes_dir))
-			{
-				$copy_to_cdn = false;
-			}
-		}
-
-		if($copy_to_cdn)
-		{
-			@copy(MYBB_ROOT . "{$theme_directory}/{$filename}", "{$cache_themes_dir}/{$filename}");
-			@copy(MYBB_ROOT . "{$theme_directory}/{$filename_min}", "{$cache_themes_dir}/{$filename_min}");
-		}
-	}
+	copy_file_to_cdn(MYBB_ROOT . "{$theme_directory}/{$filename}");
+	copy_file_to_cdn(MYBB_ROOT . "{$theme_directory}/{$filename_min}");
 
 	return "{$theme_directory}/{$filename}";
 }
@@ -922,7 +903,7 @@ function copy_stylesheet_to_theme($stylesheet, $tid)
 
 function update_theme_stylesheet_list($tid, $theme = false, $update_disporders = true)
 {
-	global $db, $cache;
+	global $mybb, $db, $cache, $plugins;
 
 	$stylesheets = array();
 
@@ -983,6 +964,11 @@ function update_theme_stylesheet_list($tid, $theme = false, $update_disporders =
 					break;
 				}
 			}
+		}
+		
+		if(is_object($plugins))
+		{
+			$plugins->run_hooks('update_theme_stylesheet_list_set_css_url', $css_url);
 		}
 
 		$attachedto = $stylesheet['attachedto'];

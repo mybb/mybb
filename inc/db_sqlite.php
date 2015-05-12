@@ -287,9 +287,9 @@ class DB_SQLite implements DB_Base
 	 * @param constant The type of array to return.
 	 * @return array The array of results.
 	 */
-	function fetch_array($query, $resulttype=0)
+	function fetch_array($query, $resulttype=PDO::FETCH_BOTH)
 	{
-		$array = $this->db->fetch_array($query);
+		$array = $this->db->fetch_array($query, $resulttype);
 		return $array;
 	}
 
@@ -471,7 +471,7 @@ class DB_SQLite implements DB_Base
 	}
 
 	/**
-	 * Lists all functions in the database.
+	 * Lists all tables in the database.
 	 *
 	 * @param string The database name.
 	 * @param string Prefix of the table (optional)

@@ -125,7 +125,7 @@ if($mybb->input['action'] == 'add_prefix')
 			$plugins->run_hooks('admin_config_thread_prefixes_add_prefix_commit');
 
 			// Log admin action
-			log_admin_action($pid, $mybb->input['prefix']);
+			log_admin_action($pid, htmlspecialchars_uni($mybb->input['prefix']));
 			$cache->update_threadprefixes();
 
 			flash_message($lang->success_thread_prefix_created, 'success');
@@ -327,7 +327,7 @@ if($mybb->input['action'] == 'edit_prefix')
 			$db->update_query('threadprefixes', $update_prefix, "pid='{$mybb->input['pid']}'");
 
 			// Log admin action
-			log_admin_action($mybb->input['pid'], $mybb->input['prefix']);
+			log_admin_action($mybb->input['pid'], htmlspecialchars_uni($mybb->input['prefix']));
 			$cache->update_threadprefixes();
 
 			flash_message($lang->success_thread_prefix_updated, 'success');
@@ -489,7 +489,7 @@ if($mybb->input['action'] == 'delete_prefix')
 		$db->update_query('threads', $update_threads, "prefix='{$prefix['pid']}'");
 
 		// Log admin action
-		log_admin_action($prefix['pid'], $prefix['prefix']);
+		log_admin_action($prefix['pid'], htmlspecialchars_uni($prefix['prefix']));
 		$cache->update_threadprefixes();
 
 		flash_message($lang->success_thread_prefix_deleted, 'success');

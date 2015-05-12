@@ -234,7 +234,7 @@ function save_quick_perms($fid)
 	$field_list = $db->show_fields_from("forumpermissions");
 	foreach($field_list as $field)
 	{
-		if(strpos($field['Field'], 'can') !== false)
+		if(strpos($field['Field'], 'can') !== false || strpos($field['Field'], 'mod') !== false)
 		{
 			$permission_fields[$field['Field']] = 1;
 		}

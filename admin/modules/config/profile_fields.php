@@ -89,12 +89,12 @@ if($mybb->input['action'] == "add")
 				"regex" => $db->escape_string($mybb->input['regex']),
 				"length" => $mybb->get_input('length', MyBB::INPUT_INT),
 				"maxlength" => $mybb->get_input('maxlength', MyBB::INPUT_INT),
-				"required" => $db->escape_string($mybb->input['required']),
-				"registration" => $db->escape_string($mybb->input['registration']),
-				"profile" => $db->escape_string($mybb->input['profile']),
+				"required" => $mybb->get_input('required', MyBB::INPUT_INT),
+				"registration" => $mybb->get_input('registration', MyBB::INPUT_INT),
+				"profile" => $mybb->get_input('profile', MyBB::INPUT_INT),
 				"viewableby" => $db->escape_string($mybb->input['viewableby']),
 				"editableby" => $db->escape_string($mybb->input['editableby']),
-				"postbit" => $db->escape_string($mybb->input['postbit']),
+				"postbit" => $mybb->get_input('postbit', MyBB::INPUT_INT),
 				"postnum" => $mybb->get_input('postnum', MyBB::INPUT_INT),
 				"allowhtml" => $mybb->get_input('allowhtml', MyBB::INPUT_INT),
 				"allowmycode" => $mybb->get_input('allowmycode', MyBB::INPUT_INT),
@@ -199,11 +199,11 @@ if($mybb->input['action'] == "add")
 	);
 	$form_container->output_row($lang->field_type." <em>*</em>", $lang->field_type_desc, $form->generate_select_box('fieldtype', $select_list, $mybb->input['fieldtype'], array('id' => 'fieldtype')), 'fieldtype');
 	$form_container->output_row($lang->field_regex, $lang->field_regex_desc, $form->generate_text_box('regex', $mybb->input['regex'], array('id' => 'regex')), 'regex', array(), array('id' => 'row_regex'));
-	$form_container->output_row($lang->maximum_length, $lang->maximum_length_desc, $form->generate_numeric_field('maxlength', $mybb->input['maxlength'], array('id' => 'maxlength')), 'maxlength', array(), array('id' => 'row_maxlength'));
-	$form_container->output_row($lang->field_length, $lang->field_length_desc, $form->generate_numeric_field('length', $mybb->input['length'], array('id' => 'length')), 'length', array(), array('id' => 'row_fieldlength'));
+	$form_container->output_row($lang->maximum_length, $lang->maximum_length_desc, $form->generate_numeric_field('maxlength', $mybb->input['maxlength'], array('id' => 'maxlength', 'min' => 0)), 'maxlength', array(), array('id' => 'row_maxlength'));
+	$form_container->output_row($lang->field_length, $lang->field_length_desc, $form->generate_numeric_field('length', $mybb->input['length'], array('id' => 'length', 'min' => 0)), 'length', array(), array('id' => 'row_fieldlength'));
 	$form_container->output_row($lang->selectable_options, $lang->selectable_options_desc, $form->generate_text_area('options', $mybb->input['options'], array('id' => 'options')), 'options', array(), array('id' => 'row_options'));
-	$form_container->output_row($lang->min_posts_enabled, $lang->min_posts_enabled_desc, $form->generate_numeric_field('postnum', $mybb->input['postnum'], array('id' => 'postnum')), 'postnum');
-	$form_container->output_row($lang->display_order." <em>*</em>", $lang->display_order_desc, $form->generate_numeric_field('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
+	$form_container->output_row($lang->min_posts_enabled, $lang->min_posts_enabled_desc, $form->generate_numeric_field('postnum', $mybb->input['postnum'], array('id' => 'postnum', 'min' => 0)), 'postnum');
+	$form_container->output_row($lang->display_order." <em>*</em>", $lang->display_order_desc, $form->generate_numeric_field('disporder', $mybb->input['disporder'], array('id' => 'disporder', 'min' => 0)), 'disporder');
 	$form_container->output_row($lang->required." <em>*</em>", $lang->required_desc, $form->generate_yes_no_radio('required', $mybb->input['required']));
 	$form_container->output_row($lang->show_on_registration." <em>*</em>", $lang->show_on_registration_desc, $form->generate_yes_no_radio('registration', $mybb->input['registration']));
 	$form_container->output_row($lang->display_on_profile." <em>*</em>", $lang->display_on_profile_desc, $form->generate_yes_no_radio('profile', $mybb->input['profile']));
@@ -318,12 +318,12 @@ if($mybb->input['action'] == "add")
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 
-	echo '<script type="text/javascript" src="./jscripts/peeker.js"></script>
+	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1804"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
-				var maxlength_peeker = new Peeker($("#fieldtype"), $("#row_maxlength, #row_regex, #row_parser_options"), /text|textarea/, false);
-				var fieldlength_peeker = new Peeker($("#fieldtype"), $("#row_fieldlength"), /select|multiselect/, false);
-				var options_peeker = new Peeker($("#fieldtype"), $("#row_options"), /select|radio|checkbox/, false);
+				new Peeker($("#fieldtype"), $("#row_maxlength, #row_regex, #row_parser_options"), /text|textarea/, false);
+				new Peeker($("#fieldtype"), $("#row_fieldlength"), /select|multiselect/, false);
+				new Peeker($("#fieldtype"), $("#row_options"), /select|radio|checkbox/, false);
 				// Add a star to the extra row since the "extra" is required if the box is shown
 				add_star("row_maxlength");
 				add_star("row_fieldlength");
@@ -410,12 +410,12 @@ if($mybb->input['action'] == "edit")
 				"regex" => $db->escape_string($mybb->input['regex']),
 				"length" => $mybb->get_input('length', MyBB::INPUT_INT),
 				"maxlength" => $mybb->get_input('maxlength', MyBB::INPUT_INT),
-				"required" => $db->escape_string($mybb->input['required']),
-				"registration" => $db->escape_string($mybb->input['registration']),
-				"profile" => $db->escape_string($mybb->input['profile']),
+				"required" => $mybb->get_input('required', MyBB::INPUT_INT),
+				"registration" => $mybb->get_input('registration', MyBB::INPUT_INT),
+				"profile" => $mybb->get_input('profile', MyBB::INPUT_INT),
 				"viewableby" => $db->escape_string($mybb->input['viewableby']),
 				"editableby" => $db->escape_string($mybb->input['editableby']),
-				"postbit" => $db->escape_string($mybb->input['postbit']),
+				"postbit" => $mybb->get_input('postbit', MyBB::INPUT_INT),
 				"postnum" => $mybb->get_input('postnum', MyBB::INPUT_INT),
 				"allowhtml" => $mybb->get_input('allowhtml', MyBB::INPUT_INT),
 				"allowmycode" => $mybb->get_input('allowmycode', MyBB::INPUT_INT),
@@ -431,7 +431,7 @@ if($mybb->input['action'] == "edit")
 			$cache->update_profilefields();
 
 			// Log admin action
-			log_admin_action($profile_field['fid'], $mybb->input['name']);
+			log_admin_action($profile_field['fid'], htmlspecialchars_uni($mybb->input['name']));
 
 			flash_message($lang->success_profile_field_saved, 'success');
 			admin_redirect("index.php?module=config-profile_fields");
@@ -515,11 +515,11 @@ if($mybb->input['action'] == "edit")
 	);
 	$form_container->output_row($lang->field_type." <em>*</em>", $lang->field_type_desc, $form->generate_select_box('fieldtype', $select_list, $mybb->input['fieldtype'], array('id' => 'fieldtype')), 'fieldtype');
 	$form_container->output_row($lang->field_regex, $lang->field_regex_desc, $form->generate_text_box('regex', $mybb->input['regex'], array('id' => 'regex')), 'regex', array(), array('id' => 'row_regex'));
-	$form_container->output_row($lang->maximum_length, $lang->maximum_length_desc, $form->generate_numeric_field('maxlength', $mybb->input['maxlength'], array('id' => 'maxlength')), 'maxlength', array(), array('id' => 'row_maxlength'));
-	$form_container->output_row($lang->field_length, $lang->field_length_desc, $form->generate_numeric_field('length', $mybb->input['length'], array('id' => 'length')), 'length', array(), array('id' => 'row_fieldlength'));
+	$form_container->output_row($lang->maximum_length, $lang->maximum_length_desc, $form->generate_numeric_field('maxlength', $mybb->input['maxlength'], array('id' => 'maxlength', 'min' => 0)), 'maxlength', array(), array('id' => 'row_maxlength'));
+	$form_container->output_row($lang->field_length, $lang->field_length_desc, $form->generate_numeric_field('length', $mybb->input['length'], array('id' => 'length', 'min' => 0)), 'length', array(), array('id' => 'row_fieldlength'));
 	$form_container->output_row($lang->selectable_options, $lang->selectable_options_desc, $form->generate_text_area('options', $mybb->input['options'], array('id' => 'options')), 'options', array(), array('id' => 'row_options'));
-	$form_container->output_row($lang->min_posts_enabled, $lang->min_posts_enabled_desc, $form->generate_numeric_field('postnum', $mybb->input['postnum'], array('id' => 'postnum')), 'postnum');
-	$form_container->output_row($lang->display_order." <em>*</em>", $lang->display_order_desc, $form->generate_numeric_field('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
+	$form_container->output_row($lang->min_posts_enabled, $lang->min_posts_enabled_desc, $form->generate_numeric_field('postnum', $mybb->input['postnum'], array('id' => 'postnum', 'min' => 0)), 'postnum');
+	$form_container->output_row($lang->display_order." <em>*</em>", $lang->display_order_desc, $form->generate_numeric_field('disporder', $mybb->input['disporder'], array('id' => 'disporder', 'min' => 0)), 'disporder');
 	$form_container->output_row($lang->required." <em>*</em>", $lang->required_desc, $form->generate_yes_no_radio('required', $mybb->input['required']));
 	$form_container->output_row($lang->show_on_registration." <em>*</em>", $lang->show_on_registration_desc, $form->generate_yes_no_radio('registration', $mybb->input['registration']));
 	$form_container->output_row($lang->display_on_profile." <em>*</em>", $lang->display_on_profile_desc, $form->generate_yes_no_radio('profile', $mybb->input['profile']));
@@ -634,12 +634,12 @@ if($mybb->input['action'] == "edit")
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 
-	echo '<script type="text/javascript" src="./jscripts/peeker.js"></script>
+	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1804"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
-				var maxlength_peeker = new Peeker($("#fieldtype"), $("#row_maxlength, #row_regex, #row_parser_options"), /text|textarea/);
-				var fieldlength_peeker = new Peeker($("#fieldtype"), $("#row_fieldlength"), /select|multiselect/);
-				var options_peeker = new Peeker($("#fieldtype"), $("#row_options"), /select|radio|checkbox/);
+				new Peeker($("#fieldtype"), $("#row_maxlength, #row_regex, #row_parser_options"), /text|textarea/);
+				new Peeker($("#fieldtype"), $("#row_fieldlength"), /select|multiselect/);
+				new Peeker($("#fieldtype"), $("#row_options"), /select|radio|checkbox/);
 				// Add a star to the extra row since the "extra" is required if the box is shown
 				add_star("row_maxlength");
 				add_star("row_fieldlength");
@@ -681,7 +681,7 @@ if($mybb->input['action'] == "delete")
 		$cache->update_profilefields();
 
 		// Log admin action
-		log_admin_action($profile_field['fid'], $profile_field['name']);
+		log_admin_action($profile_field['fid'], htmlspecialchars_uni($profile_field['name']));
 
 		flash_message($lang->success_profile_field_deleted, 'success');
 		admin_redirect("index.php?module=config-profile_fields");

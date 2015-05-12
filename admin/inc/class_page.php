@@ -97,7 +97,7 @@ class DefaultPage
 		echo "	<title>".$title."</title>\n";
 		echo "	<meta name=\"author\" content=\"MyBB Group\" />\n";
 		echo "	<meta name=\"copyright\" content=\"Copyright ".COPY_YEAR." MyBB Group.\" />\n";
-		echo "	<link rel=\"stylesheet\" href=\"styles/".$this->style."/main.css\" type=\"text/css\" />\n";
+		echo "	<link rel=\"stylesheet\" href=\"styles/".$this->style."/main.css?ver=1804\" type=\"text/css\" />\n";
 		echo "	<link rel=\"stylesheet\" href=\"styles/".$this->style."/modal.css\" type=\"text/css\" />\n";
 
 		// Load stylesheet for this module if it has one
@@ -115,7 +115,7 @@ class DefaultPage
 		echo "	<link rel=\"stylesheet\" href=\"jscripts/jqueryui/css/redmond/jquery-ui.min.css\" />\n";
 		echo "	<link rel=\"stylesheet\" href=\"jscripts/jqueryui/css/redmond/jquery-ui.structure.min.css\" />\n";
 		echo "	<link rel=\"stylesheet\" href=\"jscripts/jqueryui/css/redmond/jquery-ui.theme.min.css\" />\n";
-		echo "	<script src=\"jscripts/jqueryui/js/jquery-ui.min.js\"></script>\n";
+		echo "	<script src=\"jscripts/jqueryui/js/jquery-ui.min.js?ver=1804\"></script>\n";
 
 		// Stop JS elements showing while page is loading (JS supported browsers only)
 		echo "  <style type=\"text/css\">.popup_button { display: none; } </style>\n";
@@ -505,6 +505,69 @@ EOF;
 		exit;
 	}
 
+	function show_2fa()
+	{
+		global $lang, $cp_style, $mybb;
+
+		$mybb2fa_page = <<<EOF
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head profile="http://gmpg.org/xfn/1">
+<title>{$lang->my2fa}</title>
+<meta name="author" content="MyBB Group" />
+<meta name="copyright" content="Copyright {$copy_year} MyBB Group." />
+<link rel="stylesheet" href="./styles/{$cp_style}/login.css" type="text/css" />
+<script type="text/javascript" src="../jscripts/jquery.js"></script>
+<script type="text/javascript" src="../jscripts/general.js"></script>
+<script type="text/javascript" src="./jscripts/admincp.js"></script>
+<script type="text/javascript">
+//<![CDATA[
+	loading_text = '{$lang->loading_text}';
+//]]>
+</script>
+</head>
+<body>
+<div id="container">
+	<div id="header">
+		<div id="logo">
+			<h1><a href="../" title="{$lang->return_to_forum}"><span class="invisible">{$lang->mybb_acp}</span></a></h1>
+		</div>
+	</div>
+	<div id="content">
+		<h2>{$lang->my2fa}</h2>
+EOF;
+		// Make query string nice and pretty so that user can go to his/her preferred destination
+		$query_string = '';
+		if($_SERVER['QUERY_STRING'])
+		{
+			$query_string = '?'.preg_replace('#adminsid=(.{32})#i', '', $_SERVER['QUERY_STRING']);
+			$query_string = preg_replace('#my_post_key=(.{32})#i', '', $query_string);
+			$query_string = str_replace('action=logout', '', $query_string);
+			$query_string = preg_replace('#&+#', '&', $query_string);
+			$query_string = str_replace('?&', '?', $query_string);
+			$query_string = htmlspecialchars_uni($query_string);
+		}
+		$mybb2fa_page .= <<<EOF
+		<p>{$lang->my2fa_code}</p>
+		<form method="post" action="index.php{$query_string}">
+		<div class="form_container">
+			<div class="label"><label for="code">{$lang->my2fa_label}</label></div>
+			<div class="field"><input type="text" name="code" id="code" class="text_input initial_focus" /></div>
+		</div>
+		<p class="submit">
+			<input type="submit" value="{$lang->login}" />
+			<input type="hidden" name="do" value="do_2fa" />
+		</p>
+		</form>
+	</div>
+</div>
+</body>
+</html>
+EOF;
+		echo $mybb2fa_page;
+		exit;
+	}
+
 	/**
 	 * Generate the lockout page
 	 *
@@ -867,6 +930,7 @@ EOF;
 				{
 					if($smilie['showclickable'] != 0)
 					{
+						$smilie['image'] = str_replace("{theme}", "images", $smilie['image']);
 						$smiliecache[$smilie['find']] = $smilie['image'];
 					}
 				}
@@ -887,8 +951,8 @@ EOF;
 					$finds_count = count($finds);
 					
 					// Only show the first text to replace in the box
-					$find = htmlspecialchars_uni($finds[0]);
-					$image = htmlspecialchars_uni($image);
+					$find = str_replace(array('\\', '"'), array('\\\\', '\"'), htmlspecialchars_uni($finds[0]));
+					$image = str_replace(array('\\', '"'), array('\\\\', '\"'), htmlspecialchars_uni($image));
 					if(substr($image, 0, 4) != "http")
 					{
 						$image = $mybb->settings['bburl']."/".$image;
@@ -904,7 +968,7 @@ EOF;
 
 					for($j = 1; $j < $finds_count; ++$j)
 					{
-						$find = htmlspecialchars_uni($finds[$j]);
+						$find = str_replace(array('\\', '"'), array('\\\\', '\"'), htmlspecialchars_uni($finds[$j]));
 						$hiddensmilies .= '"'.$find.'": "'.$image.'",';
 					}
 					++$i;
@@ -975,7 +1039,7 @@ EOF;
 <script type="text/javascript">
 var partialmode = {$mybb->settings['partialmode']},
 opt_editor = {
-	plugins: "bbcode",
+	plugins: "bbcode,undo",
 	style: "../jscripts/sceditor/textarea_styles/jquery.sceditor.mybb.css",
 	rtl: {$lang->settings['rtl']},
 	locale: "mybblang",

@@ -400,7 +400,7 @@ function my_date($format, $stamp="", $offset="", $ty=1, $adodb=false)
 	if($format == 'relative')
 	{
 		// Relative formats both date and time
-		if($ty != 2 && (TIME_NOW - $stamp) < 3600)
+		if($ty != 2 && abs(TIME_NOW - $stamp) < 3600)
 		{
 			$diff = TIME_NOW - $stamp;
 			$relative = array('prefix' => '', 'minute' => 0, 'plural' => $lang->rel_minutes_plural, 'suffix' => $lang->rel_ago);
@@ -428,7 +428,7 @@ function my_date($format, $stamp="", $offset="", $ty=1, $adodb=false)
 
 			$date = $lang->sprintf($lang->rel_time, $relative['prefix'], $relative['minute'], $relative['plural'], $relative['suffix']);
 		}
-		elseif($ty != 2 && (TIME_NOW - $stamp) >= 3600 && (TIME_NOW - $stamp) < 43200)
+		elseif($ty != 2 && abs(TIME_NOW - $stamp) < 43200)
 		{
 			$diff = TIME_NOW - $stamp;
 			$relative = array('prefix' => '', 'hour' => 0, 'plural' => $lang->rel_hours_plural, 'suffix' => $lang->rel_ago);
@@ -1201,7 +1201,7 @@ function user_permissions($uid=0)
 }
 
 /**
- * Fetch the usergroup permissions for a specic group or series of groups combined
+ * Fetch the usergroup permissions for a specific group or series of groups combined
  *
  * @param mixed A list of groups (Can be a single integer, or a list of groups separated by a comma)
  * @return array Array of permissions generated for the groups
@@ -1217,11 +1217,12 @@ function usergroup_permissions($gid=0)
 
 	$groups = explode(",", $gid);
 
-
 	if(count($groups) == 1)
 	{
 		return $groupscache[$gid];
 	}
+	
+	$usergroup = array();
 
 	foreach($groups as $gid)
 	{
@@ -1384,6 +1385,7 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 
 	$current_permissions = array();
 	$only_view_own_threads = 1;
+	$only_reply_own_threads = 1;
 
 	foreach($groups as $gid)
 	{
@@ -1427,6 +1429,11 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 			{
 				$only_view_own_threads = 0;
 			}
+
+			if($level_permissions["canpostreplys"] && empty($level_permissions["canonlyreplyownthreads"]))
+			{
+				$only_reply_own_threads = 0;
+			}
 		}
 	}
 
@@ -1434,6 +1441,12 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 	if($only_view_own_threads == 0)
 	{
 		$current_permissions["canonlyviewownthreads"] = 0;
+	}
+
+	// Figure out if we can reply more than our own threads
+	if($only_reply_own_threads == 0)
+	{
+		$current_permissions["canonlyreplyownthreads"] = 0;
 	}
 
 	if(count($current_permissions) == 0)
@@ -1753,7 +1766,7 @@ function get_post_icons()
 	foreach($posticons as $dbicon)
 	{
 		$dbicon['path'] = str_replace("{theme}", $theme['imgdir'], $dbicon['path']);
-		$dbicon['path'] = htmlspecialchars_uni($dbicon['path']);
+		$dbicon['path'] = htmlspecialchars_uni($mybb->get_asset_url($dbicon['path']));
 		$dbicon['name'] = htmlspecialchars_uni($dbicon['name']);
 
 		if($icon == $dbicon['iid'])
@@ -1912,7 +1925,7 @@ function my_set_array_cookie($name, $id, $value, $expires="")
 /*
  * Arbitrary limits for _safe_unserialize()
  */
-define('MAX_SERIALIZED_INPUT_LENGTH', 4096);
+define('MAX_SERIALIZED_INPUT_LENGTH', 10240);
 define('MAX_SERIALIZED_ARRAY_LENGTH', 256);
 define('MAX_SERIALIZED_ARRAY_DEPTH', 5);
 
@@ -2818,7 +2831,7 @@ function delete_post($pid)
  * @param int The current depth of forums we're at
  * @param int Whether or not to show extra items such as User CP, Forum home
  * @param boolean Ignore the showinjump setting and show all forums (for moderation pages)
- * @param array Array of permissions
+ * @param unknown_type deprecated
  * @param string The name of the forum jump
  * @return string Forum jump items
  */
@@ -2827,11 +2840,6 @@ function build_forum_jump($pid="0", $selitem="", $addselect="1", $depth="", $sho
 	global $forum_cache, $jumpfcache, $permissioncache, $mybb, $forumjump, $forumjumpbits, $gobutton, $theme, $templates, $lang;
 
 	$pid = (int)$pid;
-
-	if($permissions)
-	{
-		$permissions = $mybb->usergroup;
-	}
 
 	if(!is_array($jumpfcache))
 	{
@@ -3003,14 +3011,26 @@ function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
 		$dimensions = $mybb->settings['useravatardims'];
 	}
 
-	if(isset($avatars[$avatar]))
-	{
-		return $avatars[$avatar];
-	}
-
 	if(!$max_dimensions)
 	{
 		$max_dimensions = $mybb->settings['maxavatardims'];
+	}
+
+	// An empty key wouldn't work so we need to add a fall back
+	$key = $dimensions;
+	if(empty($key))
+	{
+		$key = 'default';
+	}
+	$key2 = $max_dimensions;
+	if(empty($key2))
+	{
+		$key2 = 'default';
+	}
+
+	if(isset($avatars[$avatar][$key][$key2]))
+	{
+		return $avatars[$avatar][$key][$key2];
 	}
 
 	$avatar_width_height = '';
@@ -3023,7 +3043,7 @@ function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
 		{
 			list($max_width, $max_height) = explode('x', $max_dimensions);
 
-			if($dimensions[0] > $max_width || $dimensions[1] > $max_height)
+			if(!empty($max_dimensions) && ($dimensions[0] > $max_width || $dimensions[1] > $max_height))
 			{
 				require_once MYBB_ROOT."inc/functions_image.php";
 				$scaled_dimensions = scale_image($dimensions[0], $dimensions[1], $max_width, $max_height);
@@ -3036,12 +3056,12 @@ function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
 		}
 	}
 
-	$avatars[$avatar] = array(
-		'image' => $mybb->get_asset_url($avatar),
+	$avatars[$avatar][$key][$key2] = array(
+		'image' => htmlspecialchars_uni($mybb->get_asset_url($avatar)),
 		'width_height' => $avatar_width_height
 	);
 
-	return $avatars[$avatar];
+	return $avatars[$avatar][$key][$key2];
 }
 
 /**
@@ -3198,9 +3218,10 @@ function build_mycode_inserter($bind="message", $smilies = true)
 						// Only show the first text to replace in the box
 						$smilie['find'] = $finds[0];
 
-						$find = htmlspecialchars_uni($smilie['find']);
-						$image = $mybb->get_asset_url($smilie['image']);
-						$image = htmlspecialchars_uni($image);
+						$find = str_replace(array('\\', '"'), array('\\\\', '\"'), htmlspecialchars_uni($smilie['find']));
+						$image = htmlspecialchars_uni($mybb->get_asset_url($smilie['image']));
+						$image = str_replace(array('\\', '"'), array('\\\\', '\"'), $image);
+
 						if($i < $mybb->settings['smilieinsertertot'])
 						{
 							$dropdownsmilies .= '"'.$find.'": "'.$image.'",';
@@ -3212,7 +3233,7 @@ function build_mycode_inserter($bind="message", $smilies = true)
 
 						for($j = 1; $j < $finds_count; ++$j)
 						{
-							$find = htmlspecialchars_uni($finds[$j]);
+							$find = str_replace(array('\\', '"'), array('\\\\', '\"'), htmlspecialchars_uni($finds[$j]));
 							$hiddensmilies .= '"'.$find.'": "'.$image.'",';
 						}
 						++$i;
@@ -3348,14 +3369,18 @@ function build_clickable_smilies()
 					{
 						$smilies .=  "<tr>\n";
 					}
-
+					
+					$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
+					$smilie['image'] = htmlspecialchars_uni($mybb->get_asset_url($smilie['image']));
+					$smilie['name'] = htmlspecialchars_uni($smilie['name']);
+					
 					// Only show the first text to replace in the box
 					$temp = explode("\n", $smilie['find']); // assign to temporary variable for php 5.3 compatibility
 					$smilie['find'] = $temp[0];
 
-					$find = htmlspecialchars_uni($smilie['find']);
+					$find = str_replace(array('\\', "'"), array('\\\\', "\'"), htmlspecialchars_uni($smilie['find']));
 
-					$onclick = ' onclick="MyBBEditor.insertText(\' '.$smilie['find'].' \');"';
+					$onclick = " onclick=\"MyBBEditor.insertText(' $find ');\"";
 					$extra_class = ' smilie_pointer';
 					eval('$smilie = "'.$templates->get('smilie', 1, 0).'";');
 					eval("\$smilies .= \"".$templates->get("smilieinsert_smilie")."\";");
@@ -3762,6 +3787,8 @@ function get_reputation($reputation, $uid=0)
 	{
 		$reputation_class = "reputation_neutral";
 	}
+	
+	$reputation = my_number_format($reputation);
 
 	if($uid != 0)
 	{
@@ -3969,7 +3996,7 @@ function format_time_duration($time)
  */
 function get_attachment_icon($ext)
 {
-	global $cache, $attachtypes, $theme, $templates, $lang;
+	global $cache, $attachtypes, $theme, $templates, $lang, $mybb;
 
 	if(!$attachtypes)
 	{
@@ -3980,23 +4007,36 @@ function get_attachment_icon($ext)
 
 	if($attachtypes[$ext]['icon'])
 	{
-		if(defined("IN_ADMINCP"))
+		static $attach_icons_schemes = array();
+		if(!isset($attach_icons_schemes[$ext]))
 		{
-			$icon = str_replace("{theme}", "", $attachtypes[$ext]['icon']);
-			if(my_substr($icon, 0, 1) != "/" && my_substr($icon, 0, 7) != "http://")
+			$attach_icons_schemes[$ext] = parse_url($attachtypes[$ext]['icon']);
+			if(!empty($attach_icons_schemes[$ext]['scheme']))
 			{
-				$icon = "../".$icon;
+				$attach_icons_schemes[$ext] = $attachtypes[$ext]['icon'];
+			}
+			elseif(defined("IN_ADMINCP"))
+			{
+				$attach_icons_schemes[$ext] = str_replace("{theme}", "", $attachtypes[$ext]['icon']);
+				if(my_substr($attach_icons_schemes[$ext], 0, 1) != "/")
+				{
+					$attach_icons_schemes[$ext] = "../".$attach_icons_schemes[$ext];
+				}
+			}
+			elseif(defined("IN_PORTAL"))
+			{
+				global $change_dir;
+				$attach_icons_schemes[$ext] = $change_dir."/".str_replace("{theme}", $theme['imgdir'], $attachtypes[$ext]['icon']);
+				$attach_icons_schemes[$ext] = $mybb->get_asset_url($attach_icons_schemes[$ext]);
+			}
+			else
+			{
+				$attach_icons_schemes[$ext] = str_replace("{theme}", $theme['imgdir'], $attachtypes[$ext]['icon']);
+				$attach_icons_schemes[$ext] = $mybb->get_asset_url($attach_icons_schemes[$ext]);
 			}
 		}
-		elseif(defined("IN_PORTAL"))
-		{
-			global $change_dir;
-			$icon = $change_dir."/".str_replace("{theme}", $theme['imgdir'], $attachtypes[$ext]['icon']);
-		}
-		else
-		{
-			$icon = str_replace("{theme}", $theme['imgdir'], $attachtypes[$ext]['icon']);
-		}
+
+		$icon = $attach_icons_schemes[$ext];
 
 		$name = htmlspecialchars_uni($attachtypes[$ext]['name']);
 	}
@@ -4013,9 +4053,11 @@ function get_attachment_icon($ext)
 		}
 
 		$icon = "{$theme['imgdir']}/attachtypes/unknown.png";
+
 		$name = $lang->unknown;
 	}
 
+	$icon = htmlspecialchars_uni($icon);
 	eval("\$attachment_icon = \"".$templates->get("attachment_icon")."\";");
 	return $attachment_icon;
 }
@@ -4028,12 +4070,7 @@ function get_attachment_icon($ext)
  */
 function get_unviewable_forums($only_readable_threads=false)
 {
-	global $forum_cache, $permissioncache, $mybb, $unviewable, $templates, $forumpass;
-
-	if(!isset($permissions))
-	{
-		$permissions = $mybb->usergroup;
-	}
+	global $forum_cache, $permissioncache, $mybb;
 
 	if(!is_array($forum_cache))
 	{
@@ -4045,8 +4082,7 @@ function get_unviewable_forums($only_readable_threads=false)
 		$permissioncache = forum_permissions();
 	}
 
-	$unviewableforums = '';
-	$password_forums = array();
+	$password_forums = $unviewable = array();
 	foreach($forum_cache as $fid => $forum)
 	{
 		if($permissioncache[$forum['fid']])
@@ -4084,19 +4120,13 @@ function get_unviewable_forums($only_readable_threads=false)
 
 		if($perms['canview'] == 0 || $pwverified == 0 || ($only_readable_threads == true && $perms['canviewthreads'] == 0))
 		{
-			if($unviewableforums)
-			{
-				$unviewableforums .= ",";
-			}
-
-			$unviewableforums .= "'".$forum['fid']."'";
+			$unviewable[] = $forum['fid'];
 		}
 	}
-
-	if(isset($unviewableforums))
-	{
-		return $unviewableforums;
-	}
+	
+	$unviewableforums = implode(',', $unviewable);
+	
+	return $unviewableforums;
 }
 
 /**
@@ -4817,30 +4847,40 @@ function leave_usergroup($uid, $leavegroup)
  *
  * @param boolean True to return as "hidden" fields
  * @param array Array of fields to ignore if first argument is true
+ * @param boolean True to skip all inputs and return only the file path part of the URL
  * @return string The current URL being accessed
  */
-function get_current_location($fields=false, $ignore=array())
+function get_current_location($fields=false, $ignore=array(), $quick=false)
 {
 	if(defined("MYBB_LOCATION"))
 	{
 		return MYBB_LOCATION;
 	}
 
-	if(!empty($_SERVER['PATH_INFO']))
+	if(!empty($_SERVER['SCRIPT_NAME']))
 	{
-		$location = htmlspecialchars_uni($_SERVER['PATH_INFO']);
+		$location = htmlspecialchars_uni($_SERVER['SCRIPT_NAME']);
 	}
-	elseif(!empty($_ENV['PATH_INFO']))
+	elseif(!empty($_SERVER['PHP_SELF']))
 	{
-		$location = htmlspecialchars_uni($_ENV['PATH_INFO']);
+		$location = htmlspecialchars_uni($_SERVER['PHP_SELF']);
 	}
 	elseif(!empty($_ENV['PHP_SELF']))
 	{
 		$location = htmlspecialchars_uni($_ENV['PHP_SELF']);
 	}
+	elseif(!empty($_SERVER['PATH_INFO']))
+	{
+		$location = htmlspecialchars_uni($_SERVER['PATH_INFO']);
+	}
 	else
 	{
-		$location = htmlspecialchars_uni($_SERVER['PHP_SELF']);
+		$location = htmlspecialchars_uni($_ENV['PATH_INFO']);
+	}
+	
+	if($quick)
+	{
+		return $location;
 	}
 
 	if($fields == true)
@@ -5914,22 +5954,24 @@ function get_user_by_username($username, $options=array())
 		case 'mysql':
 		case 'mysqli':
 			$field = 'username';
+			$efield = 'email';
 			break;
 		default:
 			$field = 'LOWER(username)';
+			$efield = 'LOWER(email)';
 			break;
 	}
 
 	switch($options['username_method'])
 	{
 		case 1:
-			$sqlwhere = 'LOWER(email)=\''.$username.'\'';
+			$sqlwhere = "{$efield}='{$username}'";
 			break;
 		case 2:
-			$sqlwhere = $field.'=\''.$username.'\' OR LOWER(email)=\''.$username.'\'';
+			$sqlwhere = "{$field}='{$username}' OR {$efield}='{$username}'";
 			break;
 		default:
-			$sqlwhere = $field.'=\''.$username.'\'';
+			$sqlwhere = "{$field}='{$username}'";
 			break;
 	}
 
@@ -6069,7 +6111,7 @@ function get_post($pid)
  */
 function get_inactive_forums()
 {
-	global $forum_cache, $cache, $inactiveforums;
+	global $forum_cache, $cache;
 
 	if(!$forum_cache)
 	{
@@ -6092,6 +6134,7 @@ function get_inactive_forums()
 			}
 		}
 	}
+	
 	$inactiveforums = implode(",", $inactive);
 
 	return $inactiveforums;
@@ -6533,7 +6576,7 @@ function is_banned_ip($ip_address, $update_lastuse=false)
 		$ip_range = fetch_ip_range($banned_ip['filter']);
 		if(is_array($ip_range))
 		{
-			if(strcmp($ip_range[0], $ip_address) >= 0 && strcmp($ip_range[1], $ip_address) <= 0)
+			if(strcmp($ip_range[0], $ip_address) <= 0 && strcmp($ip_range[1], $ip_address) >= 0)
 			{
 				$banned = true;
 			}
@@ -6803,13 +6846,18 @@ function is_super_admin($uid)
  * Originates from frostschutz's PluginLibrary
  * github.com/frostschutz
  *
- * @param mixed A selection of groups to check
+ * @param mixed A selection of groups to check or -1 for any group
  * @param mixed User to check selection against
- * @return mixed Array of groups this user belongs to
+ * @return array Array of groups specified in the first param to which the user belongs
  */
 function is_member($groups, $user = false)
 {
 	global $mybb;
+	
+	if(empty($groups))
+	{
+		return array();
+	}	
 
 	if($user == false)
 	{
@@ -6826,13 +6874,20 @@ function is_member($groups, $user = false)
 
 	if(!is_array($groups))
 	{
-		if(is_string($groups))
+		if((int)$groups == -1)
 		{
-			$groups = explode(',', $groups);
+			return $memberships;
 		}
 		else
 		{
-			$groups = (array)$groups;
+			if(is_string($groups))
+			{
+				$groups = explode(',', $groups);
+			}
+			else
+			{
+				$groups = (array)$groups;
+			}
 		}
 	}
 
@@ -7271,6 +7326,13 @@ function fetch_ip_range($ipaddress)
 		else
 		{
 			// IPv4
+			$ip_bits = count(explode('.', $ipaddress));
+			if($ip_bits < 4)
+			{
+				// Support for 127.0.*
+				$replacement = str_repeat('.*', 4-$ip_bits);
+				$ipaddress = substr_replace($ipaddress, $replacement, strrpos($ipaddress, '*')+1, 0);
+			}
 			$upper = str_replace('*', '255', $ipaddress);
 			$lower = str_replace('*', '0', $ipaddress);
 		}
@@ -8108,4 +8170,78 @@ function log_spam_block($username = '', $email = '', $ip_address = '', $data = a
 	);
 
 	return (bool)$db->insert_query('spamlog', $insert_array);
+}
+
+/**
+ * Copy a file to the CDN.
+ *
+ * @param string $file_path     The path to the file to upload to the CDN.
+ *
+ * @param string $uploaded_path The path the file was uploaded to, reference parameter for when this may be needed.
+ *
+ * @return bool Whether the file was copied successfully.
+ */
+function copy_file_to_cdn($file_path = '', &$uploaded_path = null)
+{
+	global $mybb, $plugins;
+
+	$success = false;
+
+	$file_path = (string)$file_path;
+
+	$real_file_path = realpath($file_path);
+
+	$file_dir_path = dirname($real_file_path);
+	$file_dir_path = str_replace(MYBB_ROOT, '', $file_dir_path);
+	$file_dir_path = ltrim($file_dir_path, './\\');
+
+	$file_name = basename($real_file_path);
+
+	if(file_exists($file_path))
+	{
+		if($mybb->settings['usecdn'] && !empty($mybb->settings['cdnpath']))
+		{
+			$cdn_path = rtrim($mybb->settings['cdnpath'], '/\\');
+
+			if(substr($file_dir_path, 0, my_strlen(MYBB_ROOT)) == MYBB_ROOT)
+			{
+				$file_dir_path = str_replace(MYBB_ROOT, '', $file_dir_path);
+			}
+
+			$cdn_upload_path = $cdn_path . DIRECTORY_SEPARATOR . $file_dir_path;
+
+			if(!($dir_exists = is_dir($cdn_upload_path)))
+			{
+				$dir_exists = @mkdir($cdn_upload_path, 0777, true);
+			}
+
+			if($dir_exists)
+			{
+				if(($cdn_upload_path = realpath($cdn_upload_path)) !== false)
+				{
+					$success = @copy($file_path, $cdn_upload_path.DIRECTORY_SEPARATOR.$file_name);
+
+					if($success)
+					{
+						$uploaded_path = $cdn_upload_path;
+					}
+				}
+			}
+		}
+
+		if(is_object($plugins))
+		{
+			$hook_args = array(
+				'file_path' => &$file_path,
+				'real_file_path' => &$real_file_path,
+				'file_name' => &$file_name,
+				'uploaded_path' => &$uploaded_path,
+				'success' => &$success,
+			);
+
+			$plugins->run_hooks('copy_file_to_cdn_end', $hook_args);
+		}
+	}
+
+	return $success;
 }

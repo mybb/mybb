@@ -403,8 +403,8 @@ if($mybb->input['action'] == "add")
 	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
 	while($usergroup = $db->fetch_array($query))
 	{
-		$options[$usergroup['gid']] = $usergroup['title'];
-		$display_group_options[$usergroup['gid']] = $usergroup['title'];
+		$options[$usergroup['gid']] = htmlspecialchars_uni($usergroup['title']);
+		$display_group_options[$usergroup['gid']] = htmlspecialchars_uni($usergroup['title']);
 	}
 
 	$form_container->output_row($lang->primary_user_group." <em>*</em>", "", $form->generate_select_box('usergroup', $options, $mybb->input['usergroup'], array('id' => 'usergroup')), 'usergroup');
@@ -567,6 +567,8 @@ if($mybb->input['action'] == "edit")
 			"showcodebuttons" => $mybb->input['showcodebuttons'],
 			"sourceeditor" => $mybb->input['sourceeditor'],
 			"pmnotify" => $mybb->input['pmnotify'],
+			"buddyrequestspm" => $mybb->input['buddyrequestspm'],
+			"buddyrequestsauto" => $mybb->input['buddyrequestsauto'],
 			"showredirect" => $mybb->input['showredirect']
 		);
 
@@ -652,7 +654,6 @@ if($mybb->input['action'] == "edit")
 				else
 				{
 					$mybb->input['avatar_url'] = preg_replace("#script:#i", "", $mybb->input['avatar_url']);
-					$mybb->input['avatar_url'] = htmlspecialchars($mybb->input['avatar_url']);
 					$ext = get_extension($mybb->input['avatar_url']);
 
 					// Copy the avatar to the local server (work around remote URL access disabled for getimagesize)
@@ -917,8 +918,9 @@ if($mybb->input['action'] == "edit")
 	$page->extra_header .= <<<EOF
 
 	<link rel="stylesheet" href="../jscripts/sceditor/editor_themes/mybb.css" type="text/css" media="all" />
-	<script type="text/javascript" src="../jscripts/sceditor/jquery.sceditor.bbcode.min.js"></script>
-	<script type="text/javascript" src="../jscripts/bbcodes_sceditor.js"></script>
+	<script type="text/javascript" src="../jscripts/sceditor/jquery.sceditor.bbcode.min.js?ver=1805"></script>
+	<script type="text/javascript" src="../jscripts/bbcodes_sceditor.js?ver=1804"></script>
+	<script type="text/javascript" src="../jscripts/sceditor/editor_plugins/undo.js?ver=1805"></script>
 EOF;
 	$page->output_header($lang->edit_user);
 
@@ -1051,6 +1053,11 @@ EOF;
 
 	if($mybb->settings['enablewarningsystem'] != 0 && $user_permissions['canreceivewarnings'] != 0)
 	{
+		if($mybb->settings['maxwarningpoints'] < 1)
+		{
+			$mybb->settings['maxwarningpoints'] = 10;
+		}
+
 		$warning_level = round($user['warningpoints']/$mybb->settings['maxwarningpoints']*100);
 		if($warning_level > 100)
 		{
@@ -1106,8 +1113,8 @@ EOF;
 	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
 	while($usergroup = $db->fetch_array($query))
 	{
-		$options[$usergroup['gid']] = $usergroup['title'];
-		$display_group_options[$usergroup['gid']] = $usergroup['title'];
+		$options[$usergroup['gid']] = htmlspecialchars_uni($usergroup['title']);
+		$display_group_options[$usergroup['gid']] = htmlspecialchars_uni($usergroup['title']);
 	}
 
 	if(!is_array($mybb->input['additionalgroups']))
@@ -1118,8 +1125,8 @@ EOF;
 	$form_container->output_row($lang->primary_user_group." <em>*</em>", "", $form->generate_select_box('usergroup', $options, $mybb->input['usergroup'], array('id' => 'usergroup')), 'usergroup');
 	$form_container->output_row($lang->additional_user_groups, $lang->additional_user_groups_desc, $form->generate_select_box('additionalgroups[]', $options, $mybb->input['additionalgroups'], array('id' => 'additionalgroups', 'multiple' => true, 'size' => 5)), 'additionalgroups');
 	$form_container->output_row($lang->display_user_group." <em>*</em>", "", $form->generate_select_box('displaygroup', $display_group_options, $mybb->input['displaygroup'], array('id' => 'displaygroup')), 'displaygroup');
-	$form_container->output_row($lang->post_count." <em>*</em>", "", $form->generate_numeric_field('postnum', $mybb->input['postnum'], array('id' => 'postnum')), 'postnum');
-	$form_container->output_row($lang->thread_count." <em>*</em>", "", $form->generate_numeric_field('threadnum', $mybb->input['threadnum'], array('id' => 'threadnum')), 'threadnum');
+	$form_container->output_row($lang->post_count." <em>*</em>", "", $form->generate_numeric_field('postnum', $mybb->input['postnum'], array('id' => 'postnum', 'min' => 0)), 'postnum');
+	$form_container->output_row($lang->thread_count." <em>*</em>", "", $form->generate_numeric_field('threadnum', $mybb->input['threadnum'], array('id' => 'threadnum', 'min' => 0)), 'threadnum');
 
 	// Output custom profile fields - required
 	if(!isset($profile_fields['required']))
@@ -1133,7 +1140,7 @@ EOF;
 	$form_container = new FormContainer($lang->optional_profile_info.": {$user['username']}");
 	$form_container->output_row($lang->custom_user_title, $lang->custom_user_title_desc, $form->generate_text_box('usertitle', $mybb->input['usertitle'], array('id' => 'usertitle')), 'usertitle');
 	$form_container->output_row($lang->website, "", $form->generate_text_box('website', $mybb->input['website'], array('id' => 'website')), 'website');
-	$form_container->output_row($lang->icq_number, "", $form->generate_numeric_field('icq', $mybb->input['icq'], array('id' => 'icq')), 'icq');
+	$form_container->output_row($lang->icq_number, "", $form->generate_numeric_field('icq', $mybb->input['icq'], array('id' => 'icq', 'min' => 0)), 'icq');
 	$form_container->output_row($lang->aim_handle, "", $form->generate_text_box('aim', $mybb->input['aim'], array('id' => 'aim')), 'aim');
 	$form_container->output_row($lang->yahoo_messanger_handle, "", $form->generate_text_box('yahoo', $mybb->input['yahoo'], array('id' => 'yahoo')), 'yahoo');
 	$form_container->output_row($lang->skype_handle, "", $form->generate_text_box('skype', $mybb->input['skype'], array('id' => 'skype')), 'skype');
@@ -1164,7 +1171,7 @@ EOF;
 
 	$birthday_row = $form->generate_select_box('bday1', $birthday_days, $mybb->input['bday'][0], array('id' => 'bday_day'));
 	$birthday_row .= ' '.$form->generate_select_box('bday2', $birthday_months, $mybb->input['bday'][1], array('id' => 'bday_month'));
-	$birthday_row .= ' '.$form->generate_numeric_field('bday3', $mybb->input['bday'][2], array('id' => 'bday_year', 'style' => 'width: 3em;'));
+	$birthday_row .= ' '.$form->generate_numeric_field('bday3', $mybb->input['bday'][2], array('id' => 'bday_year', 'style' => 'width: 4em;', 'min' => 0));
 
 	$form_container->output_row($lang->birthday, "", $birthday_row, 'birthday');
 
@@ -1188,7 +1195,7 @@ EOF;
 		//Return date (we can use the arrays from birthday)
 		$return_row = $form->generate_select_box('away_day', $birthday_days, $mybb->input['away_day'], array('id' => 'away_day'));
 		$return_row .= ' '.$form->generate_select_box('away_month', $birthday_months, $mybb->input['away_month'], array('id' => 'away_month'));
-		$return_row .= ' '.$form->generate_numeric_field('away_year', $mybb->input['away_year'], array('id' => 'away_year', 'style' => 'width: 3em;'));
+		$return_row .= ' '.$form->generate_numeric_field('away_year', $mybb->input['away_year'], array('id' => 'away_year', 'style' => 'width: 4em;', 'min' => 0));
 
 		$form_container->output_row($lang->return_date, $lang->return_date_desc, $return_row, 'away_date');
 
@@ -1222,6 +1229,8 @@ EOF;
 		$form->generate_check_box("receivefrombuddy", 1, $lang->recieve_pms_from_buddy, array("checked" => $mybb->input['receivefrombuddy'])),
 		$form->generate_check_box("pmnotice", 1, $lang->alert_new_pms, array("checked" => $mybb->input['pmnotice'])),
 		$form->generate_check_box("pmnotify", 1, $lang->email_notify_new_pms, array("checked" => $mybb->input['pmnotify'])),
+		$form->generate_check_box("buddyrequestspm", 1, $lang->buddy_requests_pm, array("checked" => $mybb->input['buddyrequestspm'])),
+		$form->generate_check_box("buddyrequestsauto", 1, $lang->buddy_requests_auto, array("checked" => $mybb->input['buddyrequestsauto'])),
 		"<label for=\"subscriptionmethod\">{$lang->default_thread_subscription_mode}:</label><br />".$form->generate_select_box("subscriptionmethod", array($lang->do_not_subscribe, $lang->no_email_notification, $lang->instant_email_notification), $mybb->input['subscriptionmethod'], array('id' => 'subscriptionmethod'))
 	);
 	$form_container->output_row($lang->messaging_and_notification, "", "<div class=\"user_settings_bit\">".implode("</div><div class=\"user_settings_bit\">", $messaging_options)."</div>");
@@ -1371,8 +1380,24 @@ EOF;
 		else
 		{
 			// There's a limit to the suspension!
-			$expired = my_date('relative', $user['suspendsigtime'], '', 2);
-			$lang->suspend_expire_info = $lang->sprintf($lang->suspend_expire_info, $expired);
+			$remaining = $user['suspendsigtime']-TIME_NOW;
+			$expired = nice_time($remaining, array('seconds' => false));
+
+			$color = 'inherit';
+			if($remaining < 3600)
+			{
+				$color = 'red';
+			}
+			elseif($remaining < 86400)
+			{
+				$color = 'maroon';
+			}
+			elseif($remaining < 604800)
+			{
+				$color = 'green';
+			}
+
+			$lang->suspend_expire_info = $lang->sprintf($lang->suspend_expire_info, $expired, $color);
 		}
 		$user_suspend_info = '
 				<tr>
@@ -1410,7 +1435,7 @@ EOF;
 			<table cellpadding="4">'.$user_suspend_info.'
 				<tr>
 					<td width="30%"><small>'.$lang->expire_length.'</small></td>
-					<td>'.$form->generate_numeric_field('action_time', $mybb->input['action_time'], array('style' => 'width: 2em;')).' '.$form->generate_select_box('action_period', $periods, $mybb->input['action_period']).'</td>
+					<td>'.$form->generate_numeric_field('action_time', $mybb->input['action_time'], array('style' => 'width: 3em;', 'min' => 0)).' '.$form->generate_select_box('action_period', $periods, $mybb->input['action_period']).'</td>
 				</tr>
 			</table>
 		</dd>
@@ -1460,7 +1485,7 @@ EOF;
 
 	if($errors)
 	{
-		$avatar_url = $mybb->input['avatar_url'];
+		$avatar_url = htmlspecialchars_uni($mybb->input['avatar_url']);
 	}
 
 	if($mybb->settings['maxavatardims'] != "")
@@ -1526,8 +1551,24 @@ EOF;
 		$mybb->input['moderateposting'] = 1;
 		if($user['moderationtime'] != 0)
 		{
-			$expired = my_date('relative', $user['moderationtime'], '', 2);
-			$existing_info = $lang->sprintf($lang->moderate_length, $expired);
+			$remaining = $user['moderationtime']-TIME_NOW;
+			$expired = nice_time($remaining, array('seconds' => false));
+
+			$color = 'inherit';
+			if($remaining < 3600)
+			{
+				$color = 'red';
+			}
+			elseif($remaining < 86400)
+			{
+				$color = 'maroon';
+			}
+			elseif($remaining < 604800)
+			{
+				$color = 'green';
+			}
+
+			$existing_info = $lang->sprintf($lang->moderate_length, $expired, $color);
 		}
 		else
 		{
@@ -1535,7 +1576,7 @@ EOF;
 		}
 	}
 
-	$modpost_div = '<div id="modpost">'.$existing_info.''.$lang->moderate_for.' '.$form->generate_numeric_field("modpost_time", $mybb->input['modpost_time'], array('style' => 'width: 2em;')).' '.$modpost_options.'</div>';
+	$modpost_div = '<div id="modpost">'.$existing_info.''.$lang->moderate_for.' '.$form->generate_numeric_field("modpost_time", $mybb->input['modpost_time'], array('style' => 'width: 3em;', 'min' => 0)).' '.$modpost_options.'</div>';
 	$lang->moderate_posts_info = $lang->sprintf($lang->moderate_posts_info, $user['username']);
 	$form_container->output_row($form->generate_check_box("moderateposting", 1, $lang->moderate_posts, array("id" => "moderateposting", "onclick" => "toggleBox('modpost');", "checked" => $mybb->input['moderateposting'])), $lang->moderate_posts_info, $modpost_div);
 
@@ -1554,12 +1595,28 @@ EOF;
 		}
 		else
 		{
-			$suspost_date = my_date('relative', $user['suspensiontime'], '', 2);
-			$existing_info = $lang->sprintf($lang->suspend_length, $suspost_date);
+			$remaining = $user['suspensiontime']-TIME_NOW;
+			$suspost_date = nice_time($remaining, array('seconds' => false));
+
+			$color = 'inherit';
+			if($remaining < 3600)
+			{
+				$color = 'red';
+			}
+			elseif($remaining < 86400)
+			{
+				$color = 'maroon';
+			}
+			elseif($remaining < 604800)
+			{
+				$color = 'green';
+			}
+
+			$existing_info = $lang->sprintf($lang->suspend_length, $suspost_date, $color);
 		}
 	}
 
-	$suspost_div = '<div id="suspost">'.$existing_info.''.$lang->suspend_for.' '.$form->generate_numeric_field("suspost_time", $mybb->input['suspost_time'], array('style' => 'width: 2em;')).' '.$suspost_options.'</div>';
+	$suspost_div = '<div id="suspost">'.$existing_info.''.$lang->suspend_for.' '.$form->generate_numeric_field("suspost_time", $mybb->input['suspost_time'], array('style' => 'width: 3em;', 'min' => 0)).' '.$suspost_options.'</div>';
 	$lang->suspend_posts_info = $lang->sprintf($lang->suspend_posts_info, $user['username']);
 	$form_container->output_row($form->generate_check_box("suspendposting", 1, $lang->suspend_posts, array("id" => "suspendposting", "onclick" => "toggleBox('suspost');", "checked" => $mybb->input['suspendposting'])), $lang->suspend_posts_info, $suspost_div);
 
@@ -1672,6 +1729,8 @@ if($mybb->input['action'] == "delete")
 			flash_message($lang->error_cannot_delete_user, 'error');
 			admin_redirect("index.php?module=user-users");
 		}
+
+		$cache->update_awaitingactivation();
 
 		$plugins->run_hooks("admin_user_users_delete_commit_end");
 
@@ -2047,6 +2106,8 @@ if($mybb->input['action'] == "merge")
 
 			$plugins->run_hooks("admin_user_users_merge_commit");
 
+			$cache->update_awaitingactivation();
+
 			// Log admin action
 			log_admin_action($source_user['uid'], $source_user['username'], $destination_user['uid'], $destination_user['username']);
 
@@ -2078,11 +2139,11 @@ if($mybb->input['action'] == "merge")
 	// Autocompletion for usernames
 	echo '
 	<link rel="stylesheet" href="../jscripts/select2/select2.css">
-	<script type="text/javascript" src="../jscripts/select2/select2.min.js"></script>
+	<script type="text/javascript" src="../jscripts/select2/select2.min.js?ver=1804"></script>
 	<script type="text/javascript">
 	<!--
 	$("#source_username").select2({
-		placeholder: "Search for a user",
+		placeholder: "'.$lang->search_for_a_user.'",
 		minimumInputLength: 3,
 		maximumSelectionSize: 3,
 		multiple: false,
@@ -2112,7 +2173,7 @@ if($mybb->input['action'] == "merge")
 		}
 	});
 	$("#destination_username").select2({
-		placeholder: "Search for a user",
+		placeholder: "'.$lang->search_for_a_user.'",
 		minimumInputLength: 3,
 		maximumSelectionSize: 3,
 		multiple: false,
@@ -2280,7 +2341,7 @@ if($mybb->input['action'] == "search")
 		"desc" => $lang->descending
 	);
 	$form_container->output_row($lang->sort_results_by, "", $form->generate_select_box('sortby', $sort_options, $mybb->input['sortby'], array('id' => 'sortby'))." {$lang->in} ".$form->generate_select_box('order', $sort_directions, $mybb->input['order'], array('id' => 'order')), 'sortby');
-	$form_container->output_row($lang->results_per_page, "", $form->generate_numeric_field('perpage', $mybb->input['perpage'], array('id' => 'perpage')), 'perpage');
+	$form_container->output_row($lang->results_per_page, "", $form->generate_numeric_field('perpage', $mybb->input['perpage'], array('id' => 'perpage', 'min' => 1)), 'perpage');
 	$form_container->output_row($lang->display_results_as, "", $form->generate_radio_button('displayas', 'table', $lang->table, array('checked' => ($mybb->input['displayas'] != "card" ? true : false)))."<br />".$form->generate_radio_button('displayas', 'card', $lang->business_card, array('checked' => ($mybb->input['displayas'] == "card" ? true : false))));
 	$form_container->end();
 
@@ -2600,6 +2661,9 @@ if($mybb->input['action'] == "inline_edit")
 						log_admin_action($to_be_deleted);
 
 						$lang->users_deleted = $lang->sprintf($lang->users_deleted, $to_be_deleted);
+
+						$cache->update_awaitingactivation();
+
 						flash_message($lang->users_deleted, 'success');
 						admin_redirect("index.php?module=user-users".$vid_url);
 					}
@@ -2813,7 +2877,7 @@ if($mybb->input['action'] == "inline_edit")
 				}
 				$date_box = $form->generate_select_box('day', $day_options, $mybb->input['day']);
 				$month_box = $form->generate_select_box('month', $month_options, $mybb->input['month']);
-				$year_box = $form->generate_numeric_field('year', $mybb->input['year'], array('id' => 'year', 'style' => 'width: 50px;'));
+				$year_box = $form->generate_numeric_field('year', $mybb->input['year'], array('id' => 'year', 'style' => 'width: 50px;', 'min' => 0));
 
 				$prune_select = $date_box.$month_box.$year_box;
 				$form_container->output_row($lang->manual_date, "", $prune_select, 'date');
@@ -2923,8 +2987,8 @@ if($mybb->input['action'] == "inline_edit")
 				$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
 				while($usergroup = $db->fetch_array($query))
 				{
-					$options[$usergroup['gid']] = $usergroup['title'];
-					$display_group_options[$usergroup['gid']] = $usergroup['title'];
+					$options[$usergroup['gid']] = htmlspecialchars_uni($usergroup['title']);
+					$display_group_options[$usergroup['gid']] = htmlspecialchars_uni($usergroup['title']);
 				}
 
 				if(!is_array($mybb->input['additionalgroups']))
@@ -3440,14 +3504,14 @@ function build_users_view($view)
 		{
 			$comma = $groups_list = '';
 			$user['view']['username'] = "<a href=\"index.php?module=user-users&amp;action=edit&amp;uid={$user['uid']}\">".format_name($user['username'], $user['usergroup'], $user['displaygroup'])."</a>";
-			$user['view']['usergroup'] = $usergroups[$user['usergroup']]['title'];
+			$user['view']['usergroup'] = htmlspecialchars_uni($usergroups[$user['usergroup']]['title']);
 			if($user['additionalgroups'])
 			{
 				$additional_groups = explode(",", $user['additionalgroups']);
 
 				foreach($additional_groups as $group)
 				{
-					$groups_list .= "{$comma}{$usergroups[$group]['title']}";
+					$groups_list .= $comma.htmlspecialchars_uni($usergroups[$group]['title']);
 					$comma = $lang->comma;
 				}
 			}
@@ -3508,6 +3572,11 @@ function build_users_view($view)
 
 			if($mybb->settings['enablewarningsystem'] != 0 && $usergroups[$user['usergroup']]['canreceivewarnings'] != 0)
 			{
+				if($mybb->settings['maxwarningpoints'] < 1)
+				{
+					$mybb->settings['maxwarningpoints'] = 10;
+				}
+
 				$warning_level = round($user['warningpoints']/$mybb->settings['maxwarningpoints']*100);
 				if($warning_level > 100)
 				{
@@ -3857,6 +3926,8 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 	}
 	foreach($fields as $profile_field)
 	{
+		$profile_field['name'] = htmlspecialchars_uni($profile_field['name']);
+		$profile_field['description'] = htmlspecialchars_uni($profile_field['description']);
 		$profile_field['type'] = htmlspecialchars_uni($profile_field['type']);
 		list($type, $options) = explode("\n", $profile_field['type'], 2);
 		$type = trim($type);
@@ -4021,13 +4092,13 @@ function user_search_conditions($input=array(), &$form)
 	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
 	while($usergroup = $db->fetch_array($query))
 	{
-		$options[$usergroup['gid']] = $usergroup['title'];
+		$options[$usergroup['gid']] = htmlspecialchars_uni($usergroup['title']);
 	}
 
 	$form_container->output_row($lang->is_member_of_groups, $lang->additional_user_groups_desc, $form->generate_select_box('conditions[usergroup][]', $options, $input['conditions']['usergroup'], array('id' => 'usergroups', 'multiple' => true, 'size' => 5)), 'usergroups');
 
 	$form_container->output_row($lang->website_contains, "", $form->generate_text_box('conditions[website]', $input['conditions']['website'], array('id' => 'website'))." {$lang->or} ".$form->generate_check_box('conditions[website_blank]', 1, $lang->is_not_blank, array('id' => 'website_blank', 'checked' => $input['conditions']['website_blank'])), 'website');
-	$form_container->output_row($lang->icq_number_contains, "", $form->generate_numeric_field('conditions[icq]', $input['conditions']['icq'], array('id' => 'icq'))." {$lang->or} ".$form->generate_check_box('conditions[icq_blank]', 1, $lang->is_not_blank, array('id' => 'icq_blank', 'checked' => $input['conditions']['icq_blank'])), 'icq');
+	$form_container->output_row($lang->icq_number_contains, "", $form->generate_text_box('conditions[icq]', $input['conditions']['icq'], array('id' => 'icq'))." {$lang->or} ".$form->generate_check_box('conditions[icq_blank]', 1, $lang->is_not_blank, array('id' => 'icq_blank', 'checked' => $input['conditions']['icq_blank'])), 'icq');
 	$form_container->output_row($lang->aim_handle_contains, "", $form->generate_text_box('conditions[aim]', $input['conditions']['aim'], array('id' => 'aim'))." {$lang->or} ".$form->generate_check_box('conditions[aim_blank]', 1, $lang->is_not_blank, array('id' => 'aim_blank', 'checked' => $input['conditions']['aim_blank'])), 'aim');
 	$form_container->output_row($lang->yahoo_contains, "", $form->generate_text_box('conditions[yahoo]', $input['conditions']['yahoo'], array('id' => 'yahoo'))." {$lang->or} ".$form->generate_check_box('conditions[yahoo_blank]', 1, $lang->is_not_blank, array('id' => 'yahoo_blank', 'checked' => $input['conditions']['yahoo_blank'])), 'yahoo');
 	$form_container->output_row($lang->skype_contains, "", $form->generate_text_box('conditions[skype]', $input['conditions']['skype'], array('id' => 'skype'))." {$lang->or} ".$form->generate_check_box('conditions[skype_blank]', 1, $lang->is_not_blank, array('id' => 'skype_blank', 'checked' => $input['conditions']['skype_blank'])), 'skype');
@@ -4039,8 +4110,8 @@ function user_search_conditions($input=array(), &$form)
 		"is_exactly" => $lang->is_exactly,
 		"less_than" => $lang->less_than
 	);
-	$form_container->output_row($lang->post_count_is, "", $form->generate_select_box('conditions[postnum_dir]', $greater_options, $input['conditions']['postnum_dir'], array('id' => 'numposts_dir'))." ".$form->generate_numeric_field('conditions[postnum]', $input['conditions']['postnum'], array('id' => 'numposts')), 'numposts');
-	$form_container->output_row($lang->thread_count_is, "", $form->generate_select_box('conditions[threadnum_dir]', $greater_options, $input['conditions']['threadnum_dir'], array('id' => 'numthreads_dir'))." ".$form->generate_numeric_field('conditions[threadnum]', $input['conditions']['threadnum'], array('id' => 'numthreads')), 'numthreads');
+	$form_container->output_row($lang->post_count_is, "", $form->generate_select_box('conditions[postnum_dir]', $greater_options, $input['conditions']['postnum_dir'], array('id' => 'numposts_dir'))." ".$form->generate_text_box('conditions[postnum]', $input['conditions']['postnum'], array('id' => 'numposts')), 'numposts');
+	$form_container->output_row($lang->thread_count_is, "", $form->generate_select_box('conditions[threadnum_dir]', $greater_options, $input['conditions']['threadnum_dir'], array('id' => 'numthreads_dir'))." ".$form->generate_text_box('conditions[threadnum]', $input['conditions']['threadnum'], array('id' => 'numthreads')), 'numthreads');
 
 	$form_container->output_row($lang->reg_in_x_days, '', $form->generate_text_box('conditions[regdate]', $input['conditions']['regdate'], array('id' => 'regdate')).' '.$lang->days, 'regdate');
 	$form_container->output_row($lang->reg_ip_matches, $lang->wildcard, $form->generate_text_box('conditions[regip]', $input['conditions']['regip'], array('id' => 'regip')), 'regip');
@@ -4076,11 +4147,11 @@ function user_search_conditions($input=array(), &$form)
 	// Autocompletion for usernames
 	echo '
 <link rel="stylesheet" href="../jscripts/select2/select2.css">
-<script type="text/javascript" src="../jscripts/select2/select2.min.js"></script>
+<script type="text/javascript" src="../jscripts/select2/select2.min.js?ver=1804"></script>
 <script type="text/javascript">
 <!--
 $("#username").select2({
-	placeholder: "Search for a user",
+	placeholder: "'.$lang->search_for_a_user.'",
 	minimumInputLength: 3,
 	maximumSelectionSize: 3,
 	multiple: false,

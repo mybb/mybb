@@ -668,20 +668,25 @@ if(!$mybb->input['action'])
 		}
 
 		// LESS THAN or GREATER THAN
+		$direction_fields = array(
+			"dateuploaded" => $mybb->get_input('dateuploaded', MyBB::INPUT_INT),
+			"filesize"     => $mybb->get_input('filesize', MyBB::INPUT_INT),
+			"downloads"    => $mybb->get_input('downloads', MyBB::INPUT_INT)
+		);
+
 		if($mybb->input['dateuploaded'] && $mybb->request_method == "post")
 		{
-			$mybb->input['dateuploaded'] = TIME_NOW-$mybb->input['dateuploaded']*60*60*24;
+			$direction_fields['dateuploaded'] = TIME_NOW-$direction_fields['dateuploaded']*60*60*24;
 		}
 		if($mybb->input['filesize'] && $mybb->request_method == "post")
 		{
-			$mybb->input['filesize'] *= 1024;
+			$direction_fields['filesize'] *= 1024;
 		}
 
-		$direction_fields = array("dateuploaded", "filesize", "downloads");
-		foreach($direction_fields as $search_field)
+		foreach($direction_fields as $field_name => $field_content)
 		{
-			$direction_field = $search_field."_dir";
-			if($mybb->input[$search_field] && $mybb->input[$direction_field])
+			$direction_field = $field_name."_dir";
+			if($mybb->input[$field_name] && $mybb->input[$direction_field])
 			{
 				switch($mybb->input[$direction_field])
 				{
@@ -694,7 +699,7 @@ if(!$mybb->input['action'])
 					default:
 						$direction = "=";
 				}
-				$search_sql .= " AND a.{$search_field}{$direction}'".$db->escape_string($mybb->input[$search_field])."'";
+				$search_sql .= " AND a.{$field_name}{$direction}'".$field_content."'";
 			}
 		}
 		if(!$errors)
@@ -848,9 +853,9 @@ if(!$mybb->input['action'])
 		"less_than" => $lang->less_than
 	);
 
-	$form_container->output_row($lang->date_posted_is, "", $form->generate_select_box('dateuploaded_dir', $more_options, $mybb->input['dateuploaded_dir'], array('id' => 'dateuploaded_dir'))." ".$form->generate_numeric_field('dateuploaded', $mybb->input['dateuploaded'], array('id' => 'dateuploaded'))." {$lang->days_ago}", 'dateuploaded');
-	$form_container->output_row($lang->file_size_is, "", $form->generate_select_box('filesize_dir', $greater_options, $mybb->input['filesize_dir'], array('id' => 'filesize_dir'))." ".$form->generate_numeric_field('filesize', $mybb->input['filesize'], array('id' => 'filesize'))." {$lang->kb}", 'dateuploaded');
-	$form_container->output_row($lang->download_count_is, "", $form->generate_select_box('downloads_dir', $greater_options, $mybb->input['downloads_dir'], array('id' => 'downloads_dir'))." ".$form->generate_numeric_field('downloads', $mybb->input['downloads'], array('id' => 'downloads'))."", 'dateuploaded');
+	$form_container->output_row($lang->date_posted_is, "", $form->generate_select_box('dateuploaded_dir', $more_options, $mybb->input['dateuploaded_dir'], array('id' => 'dateuploaded_dir'))." ".$form->generate_numeric_field('dateuploaded', $mybb->input['dateuploaded'], array('id' => 'dateuploaded', 'min' => 0))." {$lang->days_ago}", 'dateuploaded');
+	$form_container->output_row($lang->file_size_is, "", $form->generate_select_box('filesize_dir', $greater_options, $mybb->input['filesize_dir'], array('id' => 'filesize_dir'))." ".$form->generate_numeric_field('filesize', $mybb->input['filesize'], array('id' => 'filesize', 'min' => 0))." {$lang->kb}", 'dateuploaded');
+	$form_container->output_row($lang->download_count_is, "", $form->generate_select_box('downloads_dir', $greater_options, $mybb->input['downloads_dir'], array('id' => 'downloads_dir'))." ".$form->generate_numeric_field('downloads', $mybb->input['downloads'], array('id' => 'downloads', 'min' => 0))."", 'dateuploaded');
 	$form_container->end();
 
 	$form_container = new FormContainer($lang->display_options);
@@ -866,7 +871,7 @@ if(!$mybb->input['action'])
 		"desc" => $lang->desc
 	);
 	$form_container->output_row($lang->sort_results_by, "", $form->generate_select_box('sortby', $sort_options, $mybb->input['sortby'], array('id' => 'sortby'))." {$lang->in} ".$form->generate_select_box('order', $sort_directions, $mybb->input['order'], array('id' => 'order')), 'sortby');
-	$form_container->output_row($lang->results_per_page, "", $form->generate_numeric_field('perpage', $mybb->input['perpage'], array('id' => 'perpage')), 'perpage');
+	$form_container->output_row($lang->results_per_page, "", $form->generate_numeric_field('perpage', $mybb->input['perpage'], array('id' => 'perpage', 'min' => 1)), 'perpage');
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->button_find_attachments);

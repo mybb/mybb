@@ -125,7 +125,7 @@ if($mybb->input['action'] == 'prune')
 	{
 		$mybb->input['older_than'] = '30';
 	}
-	$form_container->output_row($lang->date_range, "", $lang->older_than.$form->generate_numeric_field('older_than', $mybb->input['older_than'], array('id' => 'older_than', 'style' => 'width: 30px'))." {$lang->days}", 'older_than');
+	$form_container->output_row($lang->date_range, "", $lang->older_than.$form->generate_numeric_field('older_than', $mybb->input['older_than'], array('id' => 'older_than', 'style' => 'width: 50px', 'min' => 0))." {$lang->days}", 'older_than');
 	$form_container->end();
 	$buttons[] = $form->generate_submit_button($lang->prune_administrator_logs);
 	$form->output_submit_wrapper($buttons);
@@ -313,7 +313,7 @@ if(!$mybb->input['action'])
 	$form_container->output_row($lang->module, "", $form->generate_select_box('filter_module', $module_options, $mybb->input['filter_module'], array('id' => 'filter_module')), 'filter_module');
 	$form_container->output_row($lang->administrator, "", $form->generate_select_box('uid', $user_options, $mybb->input['uid'], array('id' => 'uid')), 'uid');
 	$form_container->output_row($lang->sort_by, "", $form->generate_select_box('sortby', $sort_by, $mybb->input['sortby'], array('id' => 'sortby'))." {$lang->in} ".$form->generate_select_box('order', $order_array, $order, array('id' => 'order'))." {$lang->order}", 'order');
-	$form_container->output_row($lang->results_per_page, "", $form->generate_numeric_field('perpage', $perpage, array('id' => 'perpage')), 'perpage');
+	$form_container->output_row($lang->results_per_page, "", $form->generate_numeric_field('perpage', $perpage, array('id' => 'perpage', 'min' => 1)), 'perpage');
 
 	$form_container->end();
 	$buttons[] = $form->generate_submit_button($lang->filter_administrator_logs);
@@ -418,6 +418,9 @@ function get_admin_log_action($logitem)
 			$lang_string .= $logitem['data'][0];
 			break;
 		// == HOME ==
+		case 'admin_log_home_preferences_': // 2FA
+			$lang_string .= $logitem['data'][0]; // either "enabled" or "disabled"
+			break;
 		// == STYLE ==
 		case 'admin_log_style_templates_delete_template': // deleting templates
 			// global template set

@@ -26,7 +26,7 @@ $templatelist .= ",usercp_options_tppselect_option,usercp_options_pppselect_opti
 $templatelist .= ",usercp_editlists_no_buddies,usercp_editlists_no_ignored,usercp_editlists_no_requests,usercp_editlists_received_requests,usercp_editlists_sent_requests,usercp_drafts_draft_thread,usercp_drafts_draft_forum";
 $templatelist .= ",usercp_usergroups_leader_usergroup_memberlist,usercp_usergroups_leader_usergroup_moderaterequests,usercp_usergroups_memberof_usergroup_leaveprimary,usercp_usergroups_memberof_usergroup_display,usercp_email";
 $templatelist .= ",usercp_usergroups_memberof_usergroup_leaveleader,usercp_usergroups_memberof_usergroup_leaveother,usercp_usergroups_memberof_usergroup_leave,usercp_usergroups_joinable_usergroup_description,usercp_options_time_format";
-$templatelist .= ",usercp_editlists_sent_request,usercp_editlists_received_request,usercp_drafts_none,usercp_usergroups_memberof_usergroup_setdisplay,usercp_usergroups_memberof_usergroup_description,usercp_editlists_user,usercp_profile_day,usercp_profile_contact_fields,usercp_profile_contact_fields_field, usercp_profile_website";
+$templatelist .= ",usercp_editlists_sent_request,usercp_editlists_received_request,usercp_drafts_none,usercp_usergroups_memberof_usergroup_setdisplay,usercp_usergroups_memberof_usergroup_description,usercp_editlists_user,usercp_profile_day,usercp_profile_contact_fields,usercp_profile_contact_fields_field,usercp_profile_website";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -265,7 +265,7 @@ if($mybb->get_input('action') == "do_profile" && $mybb->request_method == "post"
 			continue;
 		}
 
-		if($mybb->settings[$csetting] != -1 && !is_member($mybb->settings[$csetting]))
+		if(!is_member($mybb->settings[$csetting]))
 		{
 			continue;
 		}
@@ -411,6 +411,8 @@ if($mybb->get_input('action') == "profile")
 
 	$contact_fields = array();
 	$contactfields = '';
+	$cfieldsshow = false;
+	
 	foreach(array('icq', 'aim', 'yahoo', 'skype', 'google') as $cfield)
 	{
 		$contact_fields[$cfield] = '';
@@ -420,7 +422,7 @@ if($mybb->get_input('action') == "profile")
 			continue;
 		}
 
-		if($mybb->settings[$csetting] != -1 && !is_member($mybb->settings[$csetting]))
+		if(!is_member($mybb->settings[$csetting]))
 		{
 			continue;
 		}
@@ -434,7 +436,7 @@ if($mybb->get_input('action') == "profile")
 		eval('$contact_fields[$cfield] = "'.$templates->get('usercp_profile_contact_fields_field').'";');
 	}
 
-	if(!empty($cfieldsshow))
+	if($cfieldsshow)
 	{
 		eval('$contactfields = "'.$templates->get('usercp_profile_contact_fields').'";');
 	}
@@ -519,13 +521,7 @@ if($mybb->get_input('action') == "profile")
 	{
 		foreach($pfcache as $profilefield)
 		{
-			if(empty($profilefield['editableby']) || ($profilefield['editableby'] != -1 && !is_member($profilefield['editableby'])))
-			{
-				continue;
-			}
-
-			// Does this field have a minimum post count?
-			if($profilefield['postnum'] && $profilefield['postnum'] > $mybb->user['postnum'])
+			if(!is_member($profilefield['editableby']) || ($profilefield['postnum'] && $profilefield['postnum'] > $mybb->user['postnum']))
 			{
 				continue;
 			}
@@ -584,7 +580,7 @@ if($mybb->get_input('action') == "profile")
 						$val = str_replace("\n", "\\n", $val);
 
 						$sel = "";
-						if($val == $seloptions[$val])
+						if(isset($seloptions[$val]) && $val == $seloptions[$val])
 						{
 							$sel = " selected=\"selected\"";
 						}
@@ -664,7 +660,7 @@ if($mybb->get_input('action') == "profile")
 					foreach($expoptions as $key => $val)
 					{
 						$checked = "";
-						if($val == $seloptions[$val])
+						if(isset($seloptions[$val]) && $val == $seloptions[$val])
 						{
 							$checked = " checked=\"checked\"";
 						}
@@ -731,7 +727,7 @@ if($mybb->get_input('action') == "profile")
 		}
 		else
 		{
-			$defaulttitle = $mybb->usergroup['usertitle'];
+			$defaulttitle = htmlspecialchars_uni($mybb->usergroup['usertitle']);
 		}
 
 		$newtitle = '';
@@ -1559,12 +1555,7 @@ if($mybb->get_input('action') == "subscriptions")
 		if($mybb->user['uid'] == 0)
 		{
 			// Build a forum cache.
-			$query = $db->query("
-				SELECT fid
-				FROM ".TABLE_PREFIX."forums
-				WHERE active != 0
-				ORDER BY pid, disporder
-			");
+			$query = $db->simple_select('forums', 'fid', 'active != 0', array('order_by' => 'pid, disporder'));
 
 			$forumsread = my_unserialize($mybb->cookies['mybb']['forumread']);
 		}
@@ -2255,7 +2246,7 @@ if($mybb->get_input('action') == "avatar")
 		$avatarurl = htmlspecialchars_uni($mybb->user['avatar']);
 	}
 
-	$useravatar = format_avatar(htmlspecialchars_uni($mybb->user['avatar']), $mybb->user['avatardimensions'], '100x100');
+	$useravatar = format_avatar($mybb->user['avatar'], $mybb->user['avatardimensions'], '100x100');
 	eval("\$currentavatar = \"".$templates->get("usercp_avatar_current")."\";");
 
 	if($mybb->settings['maxavatardims'] != "")
@@ -3177,7 +3168,7 @@ if($mybb->get_input('action') == "usergroups")
 
 	// List of usergroup leaders
 	$query = $db->query("
-		SELECT g.*, u.username, u.displaygroup, u.usergroup
+		SELECT g.*, u.username, u.displaygroup, u.usergroup, u.email, u.language
 		FROM ".TABLE_PREFIX."groupleaders g
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=g.uid)
 		ORDER BY u.username ASC
@@ -3228,20 +3219,15 @@ if($mybb->get_input('action') == "usergroups")
 
 			$db->insert_query("joinrequests", $joinrequest);
 
-			foreach($groupleaders as $key => $groupleader)
+			foreach($groupleaders[$usergroup['gid']] as $leader)
 			{
-				foreach($groupleader as $leader)
-				{
-					$leader_user = get_user($leader['uid']);
+				// Load language
+				$lang->set_language($leader['language']);
+				$lang->load("messages");
 					
-					// Load language
-					$lang->set_language($leader_user['language']);
-					$lang->load("messages");
-					
-					$subject = $lang->sprintf($lang->emailsubject_newjoinrequest, $mybb->settings['bbname']);
-					$message = $lang->sprintf($lang->email_groupleader_joinrequest, $leader_user['username'], $mybb->user['username'], $usergroups[$leader['gid']]['title'], $mybb->settings['bbname'], $mybb->get_input('reason'), $mybb->settings['bburl'], $leader['gid']);
-					my_mail($leader_user['email'], $subject, $message);
-				}
+				$subject = $lang->sprintf($lang->emailsubject_newjoinrequest, $mybb->settings['bbname']);
+				$message = $lang->sprintf($lang->email_groupleader_joinrequest, $leader['username'], $mybb->user['username'], $usergroup['title'], $mybb->settings['bbname'], $mybb->get_input('reason'), $mybb->settings['bburl'], $leader['gid']);
+				my_mail($leader['email'], $subject, $message);
 			}
 
 			// Load language
@@ -3329,6 +3315,7 @@ if($mybb->get_input('action') == "usergroups")
 	{
 		$memberlistlink = $moderaterequestslink = '';
 		eval("\$memberlistlink = \"".$templates->get("usercp_usergroups_leader_usergroup_memberlist")."\";");
+		$usergroup['title'] = htmlspecialchars_uni($usergroup['title']);
 		if($usergroup['type'] != 4)
 		{
 			$usergroup['joinrequests'] = '--';
@@ -3350,6 +3337,9 @@ if($mybb->get_input('action') == "usergroups")
 	// Fetch the list of groups the member is in
 	// Do the primary group first
 	$usergroup = $usergroups[$mybb->user['usergroup']];
+	$usergroup['title'] = htmlspecialchars_uni($usergroup['title']);
+	$usergroup['usertitle'] = htmlspecialchars_uni($usergroup['usertitle']);
+	$usergroup['description'] = htmlspecialchars_uni($usergroup['description']);
 	eval("\$leavelink = \"".$templates->get("usercp_usergroups_memberof_usergroup_leaveprimary")."\";");
 	$trow = alt_trow();
 	if($usergroup['candisplaygroup'] == 1 && $usergroup['gid'] == $mybb->user['displaygroup'])
@@ -3388,8 +3378,11 @@ if($mybb->get_input('action') == "usergroups")
 			}
 
 			$description = '';
+			$usergroup['title'] = htmlspecialchars_uni($usergroup['title']);
+			$usergroup['usertitle'] = htmlspecialchars_uni($usergroup['usertitle']);
 			if($usergroup['description'])
 			{
+				$usergroup['description'] = htmlspecialchars_uni($usergroup['description']);
 				eval("\$description = \"".$templates->get("usercp_usergroups_memberof_usergroup_description")."\";");
 			}
 			$trow = alt_trow();
@@ -3431,8 +3424,10 @@ if($mybb->get_input('action') == "usergroups")
 		$trow = alt_trow();
 
 		$description = '';
+		$usergroup['title'] = htmlspecialchars_uni($usergroup['title']);
 		if($usergroup['description'])
 		{
+			$usergroup['description'] = htmlspecialchars_uni($usergroup['description']);
 			eval("\$description = \"".$templates->get("usercp_usergroups_joinable_usergroup_description")."\";");
 		}
 
@@ -3677,10 +3672,10 @@ if(!$mybb->input['action'])
 	$lang->posts_day = $lang->sprintf($lang->posts_day, my_number_format($perday), $percent);
 	$regdate = my_date('relative', $mybb->user['regdate']);
 
-	$useravatar = format_avatar(htmlspecialchars_uni($mybb->user['avatar']), $mybb->user['avatardimensions'], '100x100');
+	$useravatar = format_avatar($mybb->user['avatar'], $mybb->user['avatardimensions'], '100x100');
 	eval("\$avatar = \"".$templates->get("usercp_currentavatar")."\";");
 
-	$usergroup = $groupscache[$mybb->user['usergroup']]['title'];
+	$usergroup = htmlspecialchars_uni($groupscache[$mybb->user['usergroup']]['title']);
 	if($mybb->user['usergroup'] == 5 && $mybb->settings['regtype'] != "admin")
 	{
 		eval("\$usergroup .= \"".$templates->get("usercp_resendactivation")."\";");
@@ -3696,6 +3691,10 @@ if(!$mybb->input['action'])
 	$latest_warnings = '';
 	if($mybb->settings['enablewarningsystem'] != 0 && $mybb->settings['canviewownwarning'] != 0)
 	{
+		if($mybb->settings['maxwarningpoints'] < 1)
+		{
+			$mybb->settings['maxwarningpoints'] = 10;
+		}
 		$warning_level = round($mybb->user['warningpoints']/$mybb->settings['maxwarningpoints']*100);
 		if($warning_level > 100)
 		{
@@ -3967,11 +3966,11 @@ if(!$mybb->input['action'])
 	$inactiveforums = get_inactive_forums();
 	if($unviewable_forums)
 	{
-		$f_perm_sql = " AND t.fid NOT IN (".$unviewable_forums.")";
+		$f_perm_sql = " AND t.fid NOT IN ($unviewable_forums)";
 	}
 	if($inactiveforums)
 	{
-		$f_perm_sql .= " AND t.fid NOT IN (".$inactiveforums.")";
+		$f_perm_sql .= " AND t.fid NOT IN ($inactiveforums)";
 	}
 
 	$visible = " AND t.visible != 0";

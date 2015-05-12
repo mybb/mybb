@@ -574,6 +574,7 @@ function get_usertitle($uid="")
 			if($title['posts'] <= $user['postnum'])
 			{
 				$usertitle = $title;
+				break;
 			}
 		}
 
@@ -666,9 +667,10 @@ function get_pm_folder_name($fid, $name="")
 /**
  * Generates a security question for registration.
  *
+ * @param int Optional ID of the old question.
  * @return string The question session id.
  */
-function generate_question()
+function generate_question($old_qid=0)
 {
 	global $db;
 
@@ -680,8 +682,13 @@ function generate_question()
 	{
 		$order_by = 'RAND()';
 	}
+	
+	if($old_qid)
+	{
+		$excl_old = ' AND qid != '.(int)$old_qid;
+	}
 
-	$query = $db->simple_select('questions', 'qid, shown', 'active=1', array('limit' => 1, 'order_by' => $order_by));
+	$query = $db->simple_select('questions', 'qid, shown', "active=1{$excl_old}", array('limit' => 1, 'order_by' => $order_by));
 	$question = $db->fetch_array($query);
 
 	if(!$db->num_rows($query))

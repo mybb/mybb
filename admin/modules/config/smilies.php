@@ -71,7 +71,7 @@ if($mybb->input['action'] == "add")
 				"find" => $db->escape_string($mybb->input['find']),
 				"image" => $db->escape_string($mybb->input['image']),
 				"disporder" => $mybb->get_input('disporder', MyBB::INPUT_INT),
-				"showclickable" => $db->escape_string($mybb->input['showclickable'])
+				"showclickable" => $mybb->get_input('showclickable', MyBB::INPUT_INT)
 			);
 
 			$sid = $db->insert_query("smilies", $new_smilie);
@@ -81,7 +81,7 @@ if($mybb->input['action'] == "add")
 			$cache->update_smilies();
 
 			// Log admin action
-			log_admin_action($sid, $mybb->input['name']);
+			log_admin_action($sid, htmlspecialchars_uni($mybb->input['name']));
 
 			flash_message($lang->success_smilie_added, 'success');
 			admin_redirect("index.php?module=config-smilies");
@@ -132,7 +132,7 @@ if($mybb->input['action'] == "add")
 	$form_container->output_row($lang->name." <em>*</em>", "", $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
 	$form_container->output_row($lang->text_replace." <em>*</em>", $lang->text_replace_desc, $form->generate_text_area('find', $mybb->input['find'], array('id' => 'find')), 'find');
 	$form_container->output_row($lang->image_path." <em>*</em>", $lang->image_path_desc, $form->generate_text_box('image', $mybb->input['image'], array('id' => 'image')), 'image');
-	$form_container->output_row($lang->display_order." <em>*</em>", $lang->display_order_desc, $form->generate_numeric_field('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
+	$form_container->output_row($lang->display_order." <em>*</em>", $lang->display_order_desc, $form->generate_numeric_field('disporder', $mybb->input['disporder'], array('id' => 'disporder', 'min' => 0)), 'disporder');
 	$form_container->output_row($lang->show_clickable." <em>*</em>", $lang->show_clickable_desc, $form->generate_yes_no_radio('showclickable', $mybb->input['showclickable']));
 	$form_container->end();
 
@@ -207,7 +207,7 @@ if($mybb->input['action'] == "edit")
 				"find" => $db->escape_string($mybb->input['find']),
 				"image" => $db->escape_string($mybb->input['image']),
 				"disporder" => $mybb->get_input('disporder', MyBB::INPUT_INT),
-				"showclickable" => $db->escape_string($mybb->input['showclickable'])
+				"showclickable" => $mybb->get_input('showclickable', MyBB::INPUT_INT)
 			);
 
 			$plugins->run_hooks("admin_config_smilies_edit_commit");
@@ -217,7 +217,7 @@ if($mybb->input['action'] == "edit")
 			$cache->update_smilies();
 
 			// Log admin action
-			log_admin_action($smilie['sid'], $mybb->input['name']);
+			log_admin_action($smilie['sid'], htmlspecialchars_uni($mybb->input['name']));
 
 			flash_message($lang->success_smilie_updated, 'success');
 			admin_redirect("index.php?module=config-smilies");
@@ -255,7 +255,7 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->name." <em>*</em>", "", $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
 	$form_container->output_row($lang->text_replace." <em>*</em>", $lang->text_replace_desc, $form->generate_text_area('find', $mybb->input['find'], array('id' => 'find')), 'find');
 	$form_container->output_row($lang->image_path." <em>*</em>", $lang->image_path_desc, $form->generate_text_box('image', $mybb->input['image'], array('id' => 'image')), 'image');
-	$form_container->output_row($lang->display_order." <em>*</em>", $lang->display_order_desc, $form->generate_numeric_field('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
+	$form_container->output_row($lang->display_order." <em>*</em>", $lang->display_order_desc, $form->generate_numeric_field('disporder', $mybb->input['disporder'], array('id' => 'disporder', 'min' => 0)), 'disporder');
 	$form_container->output_row($lang->show_clickable." <em>*</em>", $lang->show_clickable_desc, $form->generate_yes_no_radio('showclickable', $mybb->input['showclickable']));
 	$form_container->end();
 
@@ -298,7 +298,7 @@ if($mybb->input['action'] == "delete")
 		$cache->update_smilies();
 
 		// Log admin action
-		log_admin_action($smilie['sid'], $smilie['name']);
+		log_admin_action($smilie['sid'], htmlspecialchars_uni($smilie['name']));
 
 		flash_message($lang->success_smilie_updated, 'success');
 		admin_redirect("index.php?module=config-smilies");
@@ -550,6 +550,15 @@ if($mybb->input['action'] == "mass_edit")
 			}
 			else
 			{
+				$mybb->input['find'][$sid] = str_replace("\r\n", "\n", $mybb->input['find'][$sid]);
+				$mybb->input['find'][$sid] = str_replace("\r", "\n", $mybb->input['find'][$sid]);
+				$mybb->input['find'][$sid] = explode("\n", $mybb->input['find'][$sid]);
+				foreach(array_merge(array_keys($mybb->input['find'][$sid], ""), array_keys($mybb->input['find'][$sid], " ")) as $key)
+				{
+					unset($mybb->input['find'][$sid][$key]);
+				}
+				$mybb->input['find'][$sid] = implode("\n", $mybb->input['find'][$sid]);				
+				
 				$smilie = array(
 					"name" => $db->escape_string($mybb->input['name'][$sid]),
 					"find" => $db->escape_string($mybb->input['find'][$sid]),
@@ -643,12 +652,10 @@ if($mybb->input['action'] == "mass_edit")
 			$image = "../".$smilie['image'];
 		}
 
-		$smilie['find'] = implode(', ', explode("\n", $smilie['find']));
-
 		$form_container->output_cell("<img src=\"{$image}\" alt=\"\" />", array("class" => "align_center", "width" => 1));
 		$form_container->output_cell($form->generate_text_box("name[{$smilie['sid']}]", $smilie['name'], array('id' => 'name', 'style' => 'width: 98%')));
 		$form_container->output_cell($form->generate_text_area("find[{$smilie['sid']}]", $smilie['find'], array('id' => 'find', 'style' => 'width: 95%')));
-		$form_container->output_cell($form->generate_numeric_field("disporder[{$smilie['sid']}]", $smilie['disporder'], array('id' => 'disporder', 'style' => 'width: 80%')));
+		$form_container->output_cell($form->generate_numeric_field("disporder[{$smilie['sid']}]", $smilie['disporder'], array('id' => 'disporder', 'style' => 'width: 80%', 'min' => 0)));
 		$form_container->output_cell($form->generate_yes_no_radio("showclickable[{$smilie['sid']}]", $smilie['showclickable']), array("class" => "align_center"));
 		$form_container->output_cell($form->generate_check_box("delete[{$smilie['sid']}]", 1, $mybb->input['delete']), array("class" => "align_center"));
 		$form_container->construct_row();
@@ -729,11 +736,9 @@ if(!$mybb->input['action'])
 			$image = "../".$smilie['image'];
 		}
 
-		$smilie['find'] = str_replace("\n", ", ", $smilie['find']);
-
 		$table->construct_cell("<img src=\"{$image}\" alt=\"\" class=\"smilie smilie_{$smilie['sid']}\" />", array("class" => "align_center"));
 		$table->construct_cell(htmlspecialchars_uni($smilie['name']));
-		$table->construct_cell(htmlspecialchars_uni($smilie['find']));
+		$table->construct_cell(nl2br(htmlspecialchars_uni($smilie['find'])));
 
 		$table->construct_cell("<a href=\"index.php?module=config-smilies&amp;action=edit&amp;sid={$smilie['sid']}\">{$lang->edit}</a>", array("class" => "align_center"));
 		$table->construct_cell("<a href=\"index.php?module=config-smilies&amp;action=delete&amp;sid={$smilie['sid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_smilie_deletion}')\">{$lang->delete}</a>", array("class" => "align_center"));

@@ -20,14 +20,14 @@ var Thread = {
 
 			$.each(post_ids, function(key, value) {
 				var mquote_a = $("#multiquote_"+value).closest('a');
-				if(mquote_a)
+				if(mquote_a.length)
 				{
 					mquote_a.removeClass('postbit_multiquote').addClass('postbit_multiquote_on');
 				}
 			});
 
 			var mquote_quick = $('#quickreply_multiquote');
-			if(mquote_quick)
+			if(mquote_quick.length)
 			{
 				mquote_quick.show();
 			}
@@ -68,9 +68,9 @@ var Thread = {
 		}
 		
 		var mquote_quick = $('#quickreply_multiquote');
-		if(mquote_quick)
+		if(mquote_quick.length)
 		{
-			if(new_post_ids.length > 0)
+			if(new_post_ids.length)
 			{
 				mquote_quick.show();
 			}
@@ -157,7 +157,7 @@ var Thread = {
 
 			$.each(post_ids, function(key, post_id) {
 				var mquote_a = $("#multiquote_"+post_id).closest('a');
-				if(mquote_a)
+				if(mquote_a.length)
 				{
 					mquote_a.removeClass('postbit_multiquote_on').addClass('postbit_multiquote');
 				}
@@ -168,7 +168,7 @@ var Thread = {
 
 	quickEdit: function(el)
 	{
-		if(!el) el = '.post_body';
+		if(typeof el === 'undefined' || !el.length) el = '.post_body';
 
 		$(el).each(function()
 		{
@@ -262,7 +262,7 @@ var Thread = {
 
 		$('.quick_edit_button').each(function()
 		{
-			$(this).bind("click", function(e)
+			$(this).on("click", function(e)
 			{
 				e.preventDefault();
 
@@ -273,7 +273,7 @@ var Thread = {
 				// Create a copy of the post
 				if($('#pid_' + pid + '_temp').length == 0)
 				{
-					$('#pid_' + pid).clone().attr('id','pid_' + pid + '_temp').css('display','none').appendTo("body");
+					$('#pid_' + pid).clone().attr('id','pid_' + pid + '_temp').appendTo("body").hide();
 				}
 
 				// Trigger the edit event
@@ -293,7 +293,7 @@ var Thread = {
 
 	initQuickReply: function()
 	{
-		if($('#quick_reply_form') && use_xmlhttprequest == 1)
+		if($('#quick_reply_form').length && use_xmlhttprequest == 1)
 		{
 			// Bind closing event to our popup menu
 			$('#quick_reply_submit').bind('click', function(e) {
@@ -355,7 +355,7 @@ var Thread = {
 			}
 		}
 
-		if($('#captcha_trow'))
+		if($('#captcha_trow').length)
 		{
 			cap = json.data.match(/^<captcha>([0-9a-zA-Z]+)(\|([0-9a-zA-Z]+)|)<\/captcha>/);
 			if(cap)
@@ -366,7 +366,7 @@ var Thread = {
 				{
 					Recaptcha.reload();
 				}
-				else if($("#captcha_img"))
+				else if($("#captcha_img").length)
 				{
 					if(cap[1])
 					{
@@ -376,13 +376,13 @@ var Thread = {
 						{
 							$('#imagestring').attr('type', 'hidden').val(cap[3]);
 							// hide the captcha
-							$('#captcha_trow').css('display', 'none');
+							$('#captcha_trow').hide();
 						}
 						else
 						{
 							$('#captcha_img').attr('src', "captcha.php?action=regimage&imagehash="+imghash);
 							$('#imagestring').attr('type', 'text').val('');
-							$('#captcha_trow').css('display', '');
+							$('#captcha_trow').show();
 						}
 					}
 				}
@@ -404,18 +404,15 @@ var Thread = {
 				
 			Thread.quickEdit("#pid_" + pid);
 
-			/*if(MyBB.browser == "ie" || MyBB.browser == "opera" || MyBB.browser == "safari" || MyBB.browser == "chrome")
-			{*/
-				// Eval javascript
-				$(json.data).filter("script").each(function(e) {
-					eval($(this).text());
-				});
-			//}
+			// Eval javascript
+			$(json.data).filter("script").each(function(e) {
+				eval($(this).text());
+			});
 
 			$('#quick_reply_form')[0].reset();
 
 			var lastpid = $('#lastpid');
-			if(lastpid)
+			if(lastpid.length)
 			{
 				lastpid.val(pid);
 			}
@@ -467,7 +464,7 @@ var Thread = {
 								if(json.data == 1)
 								{
 									// Change CSS class of div 'post_[pid]'
-									$("#post_"+pid).addClass("unapproved_post").addClass("deleted_post");
+									$("#post_"+pid).addClass("unapproved_post deleted_post");
 
 									$("#quick_delete_" + pid).hide();
 									$("#quick_restore_" + pid).show();
@@ -540,7 +537,7 @@ var Thread = {
 							else if(json.hasOwnProperty("data"))
 							{
 								// Change CSS class of div 'post_[pid]'
-								$("#post_"+pid).removeClass("unapproved_post").removeClass("deleted_post");
+								$("#post_"+pid).removeClass("unapproved_post deleted_post");
 
 								$("#quick_delete_" + pid).show();
 								$("#quick_restore_" + pid).hide();

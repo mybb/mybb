@@ -403,7 +403,7 @@ else
 		}
 
 		// Show avatar
-		$useravatar = format_avatar(htmlspecialchars_uni($user['avatar']), $user['avatardimensions'], my_strtolower($mybb->settings['memberlistmaxavatarsize']));
+		$useravatar = format_avatar($user['avatar'], $user['avatardimensions'], my_strtolower($mybb->settings['memberlistmaxavatarsize']));
 		eval("\$user['avatar'] = \"".$templates->get("memberlist_user_avatar")."\";");
 
 		if($user['invisible'] == 1 && $mybb->usergroup['canviewwolinvis'] != 1 && $user['uid'] != $mybb->user['uid'])

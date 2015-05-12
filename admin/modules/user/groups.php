@@ -199,13 +199,13 @@ if($mybb->input['action'] == "join_requests")
 				join_usergroup($uid, $group['gid']);
 			}
 			// Log admin action
-			log_admin_action("approve", $group['title'], $group['gid']);
+			log_admin_action("approve", htmlspecialchars_uni($group['title']), $group['gid']);
 			$message = $lang->success_selected_requests_approved;
 		}
 		else
 		{
 			// Log admin action
-			log_admin_action("deny", $group['title'], $group['gid']);
+			log_admin_action("deny", htmlspecialchars_uni($group['title']), $group['gid']);
 			$message = $lang->success_selected_requests_denied;
 		}
 
@@ -220,8 +220,8 @@ if($mybb->input['action'] == "join_requests")
 		admin_redirect("index.php?module=user-groups&action=join_requests&gid={$group['gid']}");
 	}
 
-	$page->add_breadcrumb_item($lang->join_requests_for." {$group['title']}");
-	$page->output_header($lang->join_requests_for." {$group['title']}");
+	$page->add_breadcrumb_item($lang->join_requests_for.' '.htmlspecialchars_uni($group['title']));
+	$page->output_header($lang->join_requests_for.' '.htmlspecialchars_uni($group['title']));
 
 	$sub_tabs = array();
 	$sub_tabs['join_requests'] = array(
@@ -301,7 +301,7 @@ if($mybb->input['action'] == "join_requests")
 		$table->construct_row();
 	}
 
-	$table->output($lang->join_requests_for." {$group['title']}");
+	$table->output($lang->join_requests_for.' '.htmlspecialchars_uni($group['title']));
 	echo $pagination;
 
 	$buttons[] = $form->generate_submit_button($lang->approve_selected_requests, array('name' => 'approve'));
@@ -358,7 +358,7 @@ if($mybb->input['action'] == "add_leader" && $mybb->request_method == "post")
 		$cache->update_groupleaders();
 
 		// Log admin action
-		log_admin_action($user['uid'], $mybb->input['username'], $group['gid'], $group['title']);
+		log_admin_action($user['uid'], $user['username'], $group['gid'], htmlspecialchars_uni($group['title']));
 
 		flash_message("{$user['username']} ".$lang->success_user_made_leader, 'success');
 		admin_redirect("index.php?module=user-groups&action=leaders&gid={$group['gid']}");
@@ -384,8 +384,8 @@ if($mybb->input['action'] == "leaders")
 
 	$plugins->run_hooks("admin_user_groups_leaders");
 
-	$page->add_breadcrumb_item($lang->group_leaders_for." {$group['title']}");
-	$page->output_header($lang->group_leaders_for." {$group['title']}");
+	$page->add_breadcrumb_item($lang->group_leaders_for.' '.htmlspecialchars_uni($group['title']));
+	$page->output_header($lang->group_leaders_for.' '.htmlspecialchars_uni($group['title']));
 
 	$sub_tabs = array();
 	$sub_tabs['group_leaders'] = array(
@@ -455,7 +455,7 @@ if($mybb->input['action'] == "leaders")
 		$table->construct_row();
 	}
 
-	$table->output($lang->group_leaders_for." {$group['title']}");
+	$table->output($lang->group_leaders_for.' '.htmlspecialchars_uni($group['title']));
 
 	$form = new Form("index.php?module=user-groups&amp;action=add_leader&amp;gid={$group['gid']}", "post");
 
@@ -473,14 +473,53 @@ if($mybb->input['action'] == "leaders")
 		);
 	}
 
-	$form_container = new FormContainer($lang->add_group_leader." {$group['title']}");
+	$form_container = new FormContainer($lang->add_group_leader.' '.htmlspecialchars_uni($group['title']));
 	$form_container->output_row($lang->username." <em>*</em>", "", $form->generate_text_box('username', $mybb->input['username'], array('id' => 'username')), 'username');
 	$form_container->output_row($lang->can_manage_group_members, $lang->can_manage_group_members_desc, $form->generate_yes_no_radio('canmanagemembers', $mybb->input['canmanagemembers']));
 	$form_container->output_row($lang->can_manage_group_join_requests, $lang->can_manage_group_join_requests_desc, $form->generate_yes_no_radio('canmanagerequests', $mybb->input['canmanagerequests']));
 	$form_container->output_row($lang->can_invite_group_members, $lang->can_invite_group_members_desc, $form->generate_yes_no_radio('caninvitemembers', $mybb->input['caninvitemembers']));
-	$buttons[] = $form->generate_submit_button($lang->save_group_leader);
-
 	$form_container->end();
+
+	// Autocompletion for usernames
+	echo '
+	<link rel="stylesheet" href="../jscripts/select2/select2.css">
+	<script type="text/javascript" src="../jscripts/select2/select2.min.js?ver=1804"></script>
+	<script type="text/javascript">
+	<!--
+	$("#username").select2({
+		placeholder: "'.$lang->search_for_a_user.'",
+		minimumInputLength: 3,
+		maximumSelectionSize: 3,
+		multiple: false,
+		ajax: { // instead of writing the function to execute the request we use Select2\'s convenient helper
+			url: "../xmlhttp.php?action=get_users",
+			dataType: \'json\',
+			data: function (term, page) {
+				return {
+					query: term // search term
+				};
+			},
+			results: function (data, page) { // parse the results into the format expected by Select2.
+				// since we are using custom formatting functions we do not need to alter remote JSON data
+				return {results: data};
+			}
+		},
+		initSelection: function(element, callback) {
+			var query = $(element).val();
+			if (query !== "") {
+				$.ajax("../xmlhttp.php?action=get_users&getone=1", {
+					data: {
+						query: query
+					},
+					dataType: "json"
+				}).done(function(data) { callback(data); });
+			}
+		}
+	});
+	// -->
+	</script>';
+
+	$buttons[] = $form->generate_submit_button($lang->save_group_leader);
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 
@@ -525,7 +564,7 @@ if($mybb->input['action'] == "delete_leader")
 		$cache->update_groupleaders();
 
 		// Log admin action
-		log_admin_action($leader['lid'], $leader['username'], $group['gid'], $group['title']);
+		log_admin_action($leader['uid'], $leader['username'], $group['gid'], htmlspecialchars_uni($group['title']));
 
 		flash_message($lang->success_group_leader_deleted, 'success');
 		admin_redirect("index.php?module=user-groups&action=leaders&gid={$group['gid']}");
@@ -572,7 +611,7 @@ if($mybb->input['action'] == "edit_leader")
 		$cache->update_groupleaders();
 
 		// Log admin action
-		log_admin_action($leader['lid'], $leader['username'], $group['gid'], $group['title']);
+		log_admin_action($leader['uid'], $leader['username'], $group['gid'], htmlspecialchars_uni($group['title']));
 
 		flash_message($lang->success_group_leader_updated, 'success');
 		admin_redirect("index.php?module=user-groups&action=leaders&gid={$group['gid']}");
@@ -583,7 +622,7 @@ if($mybb->input['action'] == "edit_leader")
 		$mybb->input = array_merge($mybb->input, $leader);
 	}
 
-	$page->add_breadcrumb_item($lang->group_leaders_for." {$group['title']}", "index.php?module=user-groups&action=leaders&gid={$group['gid']}");
+	$page->add_breadcrumb_item($lang->group_leaders_for.' '.htmlspecialchars_uni($group['title']), "index.php?module=user-groups&action=leaders&gid={$group['gid']}");
 	$page->add_breadcrumb_item($lang->edit_leader." {$leader['username']}");
 
 	$page->output_header($lang->edit_group_leader);
@@ -692,7 +731,7 @@ if($mybb->input['action'] == "add")
 			$cache->update_forumpermissions();
 
 			// Log admin action
-			log_admin_action($gid, $mybb->input['title']);
+			log_admin_action($gid, htmlspecialchars_uni($mybb->input['title']));
 
 			flash_message($lang->success_group_created, 'success');
 			admin_redirect("index.php?module=user-groups&action=edit&gid={$gid}");
@@ -727,7 +766,7 @@ if($mybb->input['action'] == "add")
 	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
 	while($usergroup = $db->fetch_array($query))
 	{
-		$options[$usergroup['gid']] = $usergroup['title'];
+		$options[$usergroup['gid']] = htmlspecialchars_uni($usergroup['title']);
 	}
 	$form_container->output_row($lang->copy_permissions_from, $lang->copy_permissions_from_desc, $form->generate_select_box('copyfrom', $options, $mybb->input['copyfrom'], array('id' => 'copyfrom')), 'copyfrom');
 
@@ -912,7 +951,7 @@ if($mybb->input['action'] == "edit")
 			$cache->update_forumpermissions();
 
 			// Log admin action
-			log_admin_action($usergroup['gid'], $mybb->input['title']);
+			log_admin_action($usergroup['gid'], htmlspecialchars_uni($mybb->input['title']));
 
 			flash_message($lang->success_group_updated, 'success');
 			admin_redirect("index.php?module=user-groups");
@@ -982,7 +1021,7 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->username_style, $lang->username_style_desc, $form->generate_text_box('namestyle', $mybb->input['namestyle'], array('id' => 'namestyle')), 'namestyle');
 	$form_container->output_row($lang->user_title, $lang->user_title_desc, $form->generate_text_box('usertitle', $mybb->input['usertitle'], array('id' => 'usertitle')), 'usertitle');
 
-	$stars = "<table cellpadding=\"3\"><tr><td>".$form->generate_numeric_field('stars', $mybb->input['stars'], array('class' => 'field50', 'id' => 'stars'))."</td><td>".$form->generate_text_box('starimage', $mybb->input['starimage'], array('id' => 'starimage'))."</td></tr>";
+	$stars = "<table cellpadding=\"3\"><tr><td>".$form->generate_numeric_field('stars', $mybb->input['stars'], array('class' => 'field50', 'id' => 'stars', 'min' => 0))."</td><td>".$form->generate_text_box('starimage', $mybb->input['starimage'], array('id' => 'starimage'))."</td></tr>";
 	$stars .= "<tr><td><small>{$lang->stars}</small></td><td><small>{$lang->star_image}</small></td></tr></table>";
 	$form_container->output_row($lang->user_stars, $lang->user_stars_desc, $stars, "stars");
 
@@ -1039,7 +1078,7 @@ if($mybb->input['action'] == "edit")
 		$form->generate_check_box("canpostthreads", 1, $lang->can_post_threads, array("checked" => $mybb->input['canpostthreads'])),
 		$form->generate_check_box("canpostreplys", 1, $lang->can_post_replies, array("checked" => $mybb->input['canpostreplys'])),
 		$form->generate_check_box("canratethreads", 1, $lang->can_rate_threads, array("checked" => $mybb->input['canratethreads'])),
-		"{$lang->max_posts_per_day}<br /><small class=\"input\">{$lang->max_posts_per_day_desc}</small><br />".$form->generate_numeric_field('maxposts', $mybb->input['maxposts'], array('id' => 'maxposts', 'class' => 'field50'))
+		"{$lang->max_posts_per_day}<br /><small class=\"input\">{$lang->max_posts_per_day_desc}</small><br />".$form->generate_numeric_field('maxposts', $mybb->input['maxposts'], array('id' => 'maxposts', 'class' => 'field50', 'min' => 0))
 	);
 	$form_container->output_row($lang->posting_rating_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $posting_options)."</div>");
 
@@ -1060,7 +1099,7 @@ if($mybb->input['action'] == "edit")
 
 	$attachment_options = array(
 		$form->generate_check_box("canpostattachments", 1, $lang->can_post_attachments, array("checked" => $mybb->input['canpostattachments'])),
-		"{$lang->attach_quota}<br /><small class=\"input\">{$lang->attach_quota_desc}</small><br />".$form->generate_numeric_field('attachquota', $mybb->input['attachquota'], array('id' => 'attachquota', 'class' => 'field50')). "KB"
+		"{$lang->attach_quota}<br /><small class=\"input\">{$lang->attach_quota_desc}</small><br />".$form->generate_numeric_field('attachquota', $mybb->input['attachquota'], array('id' => 'attachquota', 'class' => 'field50', 'min' => 0)). "KB"
 	);
 	$form_container->output_row($lang->attachment_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $attachment_options)."</div>");
 
@@ -1069,7 +1108,7 @@ if($mybb->input['action'] == "edit")
 		$form->generate_check_box("candeleteposts", 1, $lang->can_delete_posts, array("checked" => $mybb->input['candeleteposts'])),
 		$form->generate_check_box("candeletethreads", 1, $lang->can_delete_threads, array("checked" => $mybb->input['candeletethreads'])),
 		$form->generate_check_box("caneditattachments", 1, $lang->can_edit_attachments, array("checked" => $mybb->input['caneditattachments'])),
-		"{$lang->edit_time_limit}<br /><small class=\"input\">{$lang->edit_time_limit_desc}</small><br />".$form->generate_numeric_field('edittimelimit', $mybb->input['edittimelimit'], array('id' => 'edittimelimit', 'class' => 'field50'))
+		"{$lang->edit_time_limit}<br /><small class=\"input\">{$lang->edit_time_limit_desc}</small><br />".$form->generate_numeric_field('edittimelimit', $mybb->input['edittimelimit'], array('id' => 'edittimelimit', 'class' => 'field50', 'min' => 0))
 	);
 	$form_container->output_row($lang->editing_deleting_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $editing_options)."</div>");
 
@@ -1091,7 +1130,7 @@ if($mybb->input['action'] == "edit")
 		$form->generate_check_box("canusesig", 1, $lang->can_use_signature, array("checked" => $mybb->input['canusesig'])),
 		$form->generate_check_box("signofollow", 1, $lang->uses_no_follow, array("checked" => $mybb->input['signofollow'])),
 		$form->generate_check_box("canchangewebsite", 1, $lang->can_change_website, array("checked" => $mybb->input['canchangewebsite'])),
-		"{$lang->required_posts}<br /><small class=\"input\">{$lang->required_posts_desc}</small><br />".$form->generate_numeric_field('canusesigxposts', $mybb->input['canusesigxposts'], array('id' => 'canusesigxposts', 'class' => 'field50'))
+		"{$lang->required_posts}<br /><small class=\"input\">{$lang->required_posts_desc}</small><br />".$form->generate_numeric_field('canusesigxposts', $mybb->input['canusesigxposts'], array('id' => 'canusesigxposts', 'class' => 'field50', 'min' => 0))
 	);
 	$form_container->output_row($lang->account_management, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $account_options)."</div>");
 
@@ -1099,9 +1138,9 @@ if($mybb->input['action'] == "edit")
 		$form->generate_check_box("usereputationsystem", 1, $lang->show_reputations, array("checked" => $mybb->input['usereputationsystem'])),
 		$form->generate_check_box("cangivereputations", 1, $lang->can_give_reputation, array("checked" => $mybb->input['cangivereputations'])),
 		$form->generate_check_box("candeletereputations", 1, $lang->can_delete_own_reputation, array("checked" => $mybb->input['candeletereputations'])),
-		"{$lang->points_to_award_take}<br /><small class=\"input\">{$lang->points_to_award_take_desc}</small><br />".$form->generate_numeric_field('reputationpower', $mybb->input['reputationpower'], array('id' => 'reputationpower', 'class' => 'field50')),
-		"{$lang->max_reputations_perthread}<br /><small class=\"input\">{$lang->max_reputations_perthread_desc}</small><br />".$form->generate_numeric_field('maxreputationsperthread', $mybb->input['maxreputationsperthread'], array('id' => 'maxreputationsperthread', 'class' => 'field50')),
-		"{$lang->max_reputations_daily}<br /><small class=\"input\">{$lang->max_reputations_daily_desc}</small><br />".$form->generate_numeric_field('maxreputationsday', $mybb->input['maxreputationsday'], array('id' => 'maxreputationsday', 'class' => 'field50'))
+		"{$lang->points_to_award_take}<br /><small class=\"input\">{$lang->points_to_award_take_desc}</small><br />".$form->generate_numeric_field('reputationpower', $mybb->input['reputationpower'], array('id' => 'reputationpower', 'class' => 'field50', 'min' => 0)),
+		"{$lang->max_reputations_perthread}<br /><small class=\"input\">{$lang->max_reputations_perthread_desc}</small><br />".$form->generate_numeric_field('maxreputationsperthread', $mybb->input['maxreputationsperthread'], array('id' => 'maxreputationsperthread', 'class' => 'field50', 'min' => 0)),
+		"{$lang->max_reputations_daily}<br /><small class=\"input\">{$lang->max_reputations_daily_desc}</small><br />".$form->generate_numeric_field('maxreputationsday', $mybb->input['maxreputationsday'], array('id' => 'maxreputationsday', 'class' => 'field50', 'min' => 0))
 	);
 	$form_container->output_row($lang->reputation_system, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $reputation_options)."</div>");
 
@@ -1118,8 +1157,8 @@ if($mybb->input['action'] == "edit")
 		$form->generate_check_box("canoverridepm", 1, $lang->can_override_pms, array("checked" => $mybb->input['canoverridepm'])),
 		$form->generate_check_box("cantrackpms", 1, $lang->can_track_pms, array("checked" => $mybb->input['cantrackpms'])),
 		$form->generate_check_box("candenypmreceipts", 1, $lang->can_deny_reciept, array("checked" => $mybb->input['candenypmreceipts'])),
-		"{$lang->message_quota}<br /><small>{$lang->message_quota_desc}</small><br />".$form->generate_numeric_field('pmquota', $mybb->input['pmquota'], array('id' => 'pmquota', 'class' => 'field50')),
-		"{$lang->max_recipients}<br /><small>{$lang->max_recipients_desc}</small><br />".$form->generate_numeric_field('maxpmrecipients', $mybb->input['maxpmrecipients'], array('id' => 'maxpmrecipients', 'class' => 'field50'))
+		"{$lang->message_quota}<br /><small>{$lang->message_quota_desc}</small><br />".$form->generate_numeric_field('pmquota', $mybb->input['pmquota'], array('id' => 'pmquota', 'class' => 'field50', 'min' => 0)),
+		"{$lang->max_recipients}<br /><small>{$lang->max_recipients_desc}</small><br />".$form->generate_numeric_field('maxpmrecipients', $mybb->input['maxpmrecipients'], array('id' => 'maxpmrecipients', 'class' => 'field50', 'min' => 0))
 	);
 	$form_container->output_row($lang->private_messaging, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $pm_options)."</div>");
 
@@ -1152,8 +1191,8 @@ if($mybb->input['action'] == "edit")
 		$form->generate_check_box("showinbirthdaylist", 1, $lang->show_in_birthday_list, array("checked" => $mybb->input['showinbirthdaylist'])),
 		$form->generate_check_box("cansendemail", 1, $lang->can_email_users, array("checked" => $mybb->input['cansendemail'])),
 		$form->generate_check_box("cansendemailoverride", 1, $lang->can_email_users_override, array("checked" => $mybb->input['cansendemailoverride'])),
-		"{$lang->max_emails_per_day}<br /><small class=\"input\">{$lang->max_emails_per_day_desc}</small><br />".$form->generate_numeric_field('maxemails', $mybb->input['maxemails'], array('id' => 'maxemails', 'class' => 'field50')),
-		"{$lang->email_flood_time}<br /><small class=\"input\">{$lang->email_flood_time_desc}</small><br />".$form->generate_numeric_field('emailfloodtime', $mybb->input['emailfloodtime'], array('id' => 'emailfloodtime', 'class' => 'field50'))
+		"{$lang->max_emails_per_day}<br /><small class=\"input\">{$lang->max_emails_per_day_desc}</small><br />".$form->generate_numeric_field('maxemails', $mybb->input['maxemails'], array('id' => 'maxemails', 'class' => 'field50', 'min' => 0)),
+		"{$lang->email_flood_time}<br /><small class=\"input\">{$lang->email_flood_time_desc}</small><br />".$form->generate_numeric_field('emailfloodtime', $mybb->input['emailfloodtime'], array('id' => 'emailfloodtime', 'class' => 'field50', 'min' => 0))
 	);
 	$form_container->output_row($lang->misc, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $misc_options)."</div>");
 
@@ -1220,8 +1259,17 @@ if($mybb->input['action'] == "delete")
 
 	if($mybb->request_method == "post")
 	{
-		// Move any users back to the registered group
-		$updated_users = array("usergroup" => 2);
+		if($usergroup['isbannedgroup'] == 1)
+		{
+			// If banned group, move users to default banned group
+			$updated_users = array("usergroup" => 7);
+		}
+		else
+		{
+			// Move any users back to the registered group
+			$updated_users = array("usergroup" => 2);
+		}
+
 		$db->update_query("users", $updated_users, "usergroup='{$usergroup['gid']}'");
 
 		$updated_users = array("displaygroup" => "usergroup");
@@ -1243,6 +1291,14 @@ if($mybb->input['action'] == "delete")
 			leave_usergroup($user['uid'], $usergroup['gid']);
 		}
 
+		$db->update_query("banned", array("gid" => 7), "gid='{$usergroup['gid']}'");
+		$db->update_query("banned", array("oldgroup" => 2), "oldgroup='{$usergroup['gid']}'");
+		$db->update_query("banned", array("olddisplaygroup" => "oldgroup"), "olddisplaygroup='{$usergroup['gid']}'", "", true); // No quotes = displaygroup=usergroup
+
+		$db->delete_query("forumpermissions", "gid='{$usergroup['gid']}'");
+		$db->delete_query("calendarpermissions", "gid='{$usergroup['gid']}'");
+		$db->delete_query("joinrequests", "gid='{$usergroup['gid']}'");
+		$db->delete_query("moderators", "id='{$usergroup['gid']}' AND isgroup='1'");
 		$db->delete_query("groupleaders", "gid='{$usergroup['gid']}'");
 		$db->delete_query("usergroups", "gid='{$usergroup['gid']}'");
 
@@ -1252,9 +1308,10 @@ if($mybb->input['action'] == "delete")
 		$cache->update_moderators();
 		$cache->update_usergroups();
 		$cache->update_forumpermissions();
+		$cache->update_banned();
 
 		// Log admin action
-		log_admin_action($usergroup['gid'], $usergroup['title']);
+		log_admin_action($usergroup['gid'], htmlspecialchars_uni($usergroup['title']));
 
 		flash_message($lang->success_group_deleted, 'success');
 		admin_redirect("index.php?module=user-groups");
@@ -1400,7 +1457,7 @@ if(!$mybb->input['action'])
 		$leaders_list = '';
 		if(isset($leaders[$usergroup['gid']]))
 		{
-			$leaders_list = "<br />{$lang->group_leaders}: ".implode(", ", $leaders[$usergroup['gid']]);
+			$leaders_list = "<br />{$lang->group_leaders}: ".implode($lang->comma, $leaders[$usergroup['gid']]);
 		}
 
 		$join_requests = '';
@@ -1413,7 +1470,7 @@ if(!$mybb->input['action'])
 			$join_requests = " <small><a href=\"index.php?module=user-groups&amp;action=join_requests&amp;gid={$usergroup['gid']}\"><span style=\"color: red;\">({$joinrequests[$usergroup['gid']]} {$lang->outstanding_join_request})</span></a></small>";
 		}
 
-		$form_container->output_cell("<div class=\"float_right\">{$icon}</div><div><strong><a href=\"index.php?module=user-groups&amp;action=edit&amp;gid={$usergroup['gid']}\">{$usergroup['title']}</a></strong>{$join_requests}<br /><small>{$usergroup['description']}{$leaders_list}</small></div>");
+		$form_container->output_cell("<div class=\"float_right\">{$icon}</div><div><strong><a href=\"index.php?module=user-groups&amp;action=edit&amp;gid={$usergroup['gid']}\">".htmlspecialchars_uni($usergroup['title'])."</a></strong>{$join_requests}<br /><small>".htmlspecialchars_uni($usergroup['description'])."{$leaders_list}</small></div>");
 
 		if(!$primaryusers[$usergroup['gid']])
 		{

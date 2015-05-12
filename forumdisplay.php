@@ -603,7 +603,7 @@ if(isset($fpermissions['canonlyviewownthreads']) && $fpermissions['canonlyviewow
 if($fpermissions['canviewthreads'] != 0)
 {
 	// How many posts are there?
-	if($datecut > 0 || isset($fpermissions['canonlyviewownthreads']) && $fpermissions['canonlyviewownthreads'] == 1)
+	if(($datecut > 0 && $datecut != 9999) || isset($fpermissions['canonlyviewownthreads']) && $fpermissions['canonlyviewownthreads'] == 1)
 	{
 		$query = $db->simple_select("threads", "COUNT(tid) AS threads", "fid = '$fid' $useronly $visibleonly $datecutsql $prefixsql");
 		$threadcount = $db->fetch_field($query, "threads");
@@ -692,7 +692,7 @@ if($mybb->input['sortby'] || $mybb->input['order'] || $mybb->input['datecut'] ||
 		$and = "&";
 	}
 
-	if($datecut > 0)
+	if($datecut > 0 && $datecut != 9999)
 	{
 		$page_url .= "{$q}{$and}datecut={$datecut}";
 		$q = '';
@@ -927,7 +927,7 @@ if(!empty($tids))
 // Check participation by the current user in any of these threads - for 'dot' folder icons
 if($mybb->settings['dotfolders'] != 0 && $mybb->user['uid'] && !empty($threadcache))
 {
-	$query = $db->simple_select("posts", "tid,uid", "uid='{$mybb->user['uid']}' AND tid IN ({$tids}) {$visibleonly}");
+	$query = $db->simple_select("posts", "DISTINCT tid,uid", "uid='{$mybb->user['uid']}' AND tid IN ({$tids}) {$visibleonly}");
 	while($post = $db->fetch_array($query))
 	{
 		if(!empty($moved_threads[$post['tid']]))

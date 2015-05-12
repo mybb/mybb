@@ -15,7 +15,7 @@ $templatelist = "newthread,previewpost,loginbox,changeuserbox,newthread_postpoll
 $templatelist .= ",newthread_disablesmilies,newreply_modoptions,post_attachments_new,post_attachments,post_savedraftbutton,post_subscription_method,post_attachments_attachment_remove,posticons_icon,postbit_warninglevel_formatted";
 $templatelist .= ",forumdisplay_rules,forumdisplay_rules_link,post_attachments_attachment_postinsert,post_attachments_attachment,post_attachments_add,newthread_options_signature,post_prefixselect_prefix,post_prefixselect_single";
 $templatelist .= ",member_register_regimage,member_register_regimage_recaptcha,member_register_regimage_ayah,post_captcha_hidden,post_captcha,post_captcha_recaptcha,post_captcha_nocaptcha,post_captcha_ayah,postbit_groupimage,postbit_online,postbit_away";
-$templatelist .= ",postbit_avatar,postbit_find,postbit_pm,postbit_rep_button,postbit_www,postbit_email,postbit_reputation,postbit_warn,postbit_warninglevel,postbit_author_user,postbit_author_guest,postbit_offline";
+$templatelist .= ",postbit_avatar,postbit_find,postbit_pm,postbit_rep_button,postbit_www,postbit_email,postbit_reputation,postbit_warn,postbit_warninglevel,postbit_author_user,postbit_author_guest,postbit_offline,postbit_icon,postbit_userstar";
 $templatelist .= ",postbit_signature,postbit_classic,postbit,postbit_attachments_thumbnails_thumbnail,postbit_attachments_images_image,postbit_attachments_attachment,postbit_attachments_attachment_unapproved,post_attachments_update";
 $templatelist .= ",postbit_attachments_thumbnails,postbit_attachments_images,postbit_attachments,postbit_gotopost,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,attachment_icon,postbit_reputation_formatted_link,global_moderation_notice";
 
@@ -252,29 +252,17 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 	// If this isn't a logged in user, then we need to do some special validation.
 	if($mybb->user['uid'] == 0)
 	{
-		$username = htmlspecialchars_uni($mybb->get_input('username'));
-
-		// Check if username exists.
-		if(username_exists($mybb->get_input('username')))
+		// If they didn't specify a username then give them "Guest"
+		if(!$mybb->get_input('username'))
 		{
-			// If it does throw back "username is taken"
-			error($lang->error_usernametaken);
+			$username = $lang->guest;
 		}
-		// This username does not exist.
+		// Otherwise use the name they specified.
 		else
 		{
-			// If they didn't specify a username then give them "Guest"
-			if(!$mybb->get_input('username'))
-			{
-				$username = $lang->guest;
-			}
-			// Otherwise use the name they specified.
-			else
-			{
-				$username = htmlspecialchars_uni($mybb->get_input('username'));
-			}
-			$uid = 0;
+			$username = $mybb->get_input('username');
 		}
+		$uid = 0;
 
 		if(!$mybb->user['uid'] && $mybb->settings['stopforumspam_on_newthread'])
 		{
@@ -734,27 +722,17 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		// If this isn't a logged in user, then we need to do some special validation.
 		if($mybb->user['uid'] == 0)
 		{
-			// Check if username exists.
-			if(username_exists($mybb->get_input('username')))
+			// If they didn't specify a username then give them "Guest"
+			if(!$mybb->get_input('username'))
 			{
-				// If it does throw back "username is taken"
-				error($lang->error_usernametaken);
+				$username = $lang->guest;
 			}
-			// This username does not exist.
+			// Otherwise use the name they specified.
 			else
 			{
-				// If they didn't specify a username then give them "Guest"
-				if(!$mybb->get_input('username'))
-				{
-					$username = $lang->guest;
-				}
-				// Otherwise use the name they specified.
-				else
-				{
-					$username = htmlspecialchars_uni($mybb->get_input('username'));
-				}
-				$uid = 0;
+				$username = $mybb->get_input('username');
 			}
+			$uid = 0;
 		}
 		// This user is logged in.
 		else
@@ -1045,7 +1023,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			{
 				$post_captcha->build_captcha();
 			}
-			elseif($post_captcha->type == 2)
+			elseif($post_captcha->type == 2 || $post_captcha->type == 4)
 			{
 				$post_captcha->build_recaptcha();
 			}
@@ -1059,7 +1037,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 				$captcha = $post_captcha->html;
 			}
 		}
-		else if($correct && $post_captcha->type == 2)
+		else if($correct && ($post_captcha->type == 2 || $post_captcha->type == 4))
 		{
 			$post_captcha->build_recaptcha();
 

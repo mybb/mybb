@@ -14,7 +14,7 @@ class MyBB {
 	 *
 	 * @var string
 	 */
-	public $version = "1.8.3";
+	public $version = "1.8.4";
 
 	/**
 	 * The version code of MyBB we're running.
@@ -497,7 +497,6 @@ class MyBB {
 				$path = substr($path, 2);
 			}
 
-			$base_path = '';
 			if($use_cdn && $this->settings['usecdn'] && !empty($this->settings['cdnurl']))
 			{
 				$base_path = rtrim($this->settings['cdnurl'], '/');

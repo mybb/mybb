@@ -296,19 +296,19 @@ if($mybb->input['action'] == "edit_thread_tool")
 		if(!$errors)
 		{
 			$thread_options = array(
-				'confirmation' => $mybb->input['confirmation'],
-				'deletethread' => $mybb->input['deletethread'],
-				'mergethreads' => $mybb->input['mergethreads'],
-				'deletepoll' => $mybb->input['deletepoll'],
-				'removeredirects' => $mybb->input['removeredirects'],
-				'removesubscriptions' => $mybb->input['removesubscriptions'],
-				'recountrebuild' => $mybb->input['recountrebuild'],
+				'confirmation' => $mybb->get_input('confirmation', MyBB::INPUT_INT),
+				'deletethread' => $mybb->get_input('deletethread', MyBB::INPUT_INT),
+				'mergethreads' => $mybb->get_input('mergethreads', MyBB::INPUT_INT),
+				'deletepoll' => $mybb->get_input('deletepoll', MyBB::INPUT_INT),
+				'removeredirects' => $mybb->get_input('removeredirects', MyBB::INPUT_INT),
+				'removesubscriptions' => $mybb->get_input('removesubscriptions', MyBB::INPUT_INT),
+				'recountrebuild' => $mybb->get_input('recountrebuild', MyBB::INPUT_INT),
 				'approvethread' => $mybb->input['approvethread'],
 				'softdeletethread' => $mybb->input['softdeletethread'],
 				'openthread' => $mybb->input['openthread'],
 				'stickthread' => $mybb->input['stickthread'],
 				'movethread' => $mybb->get_input('move_1_forum', MyBB::INPUT_INT),
-				'movethreadredirect' => $mybb->input['move_2_redirect'],
+				'movethreadredirect' => $mybb->get_input('move_2_redirect', MyBB::INPUT_INT),
 				'movethreadredirectexpire' => $mybb->get_input('move_3_redirecttime', MyBB::INPUT_INT),
 				'copythread' => $mybb->get_input('copy_1_forum', MyBB::INPUT_INT),
 				'newsubject' => $mybb->input['newsubject'],
@@ -579,7 +579,7 @@ if($mybb->input['action'] == "edit_thread_tool")
 				</tr>
 				<tr>
 					<td><small>{$lang->delete_redirect_after}</small></td>
-					<td>".$form->generate_numeric_field('move_3_redirecttime', $mybb->input['move_3_redirecttime'], array('style' => 'width: 2em;'))." {$lang->days}</td>
+					<td>".$form->generate_numeric_field('move_3_redirecttime', $mybb->input['move_3_redirecttime'], array('style' => 'width: 3em;', 'min' => 0))." {$lang->days}</td>
 				</tr>
 			</table>
 		</dd>
@@ -794,19 +794,19 @@ if($mybb->input['action'] == "add_thread_tool")
 		if(!$errors)
 		{
 			$thread_options = array(
-				'confirmation' => $mybb->input['confirmation'],
-				'deletethread' => $mybb->input['deletethread'],
-				'mergethreads' => $mybb->input['mergethreads'],
-				'deletepoll' => $mybb->input['deletepoll'],
-				'removeredirects' => $mybb->input['removeredirects'],
-				'removesubscriptions' => $mybb->input['removesubscriptions'],
-				'recountrebuild' => $mybb->input['recountrebuild'],
+				'confirmation' => $mybb->get_input('confirmation', MyBB::INPUT_INT),
+				'deletethread' => $mybb->get_input('deletethread', MyBB::INPUT_INT),
+				'mergethreads' => $mybb->get_input('mergethreads', MyBB::INPUT_INT),
+				'deletepoll' => $mybb->get_input('deletepoll', MyBB::INPUT_INT),
+				'removeredirects' => $mybb->get_input('removeredirects', MyBB::INPUT_INT),
+				'removesubscriptions' => $mybb->get_input('removesubscriptions', MyBB::INPUT_INT),
+				'recountrebuild' => $mybb->get_input('recountrebuild', MyBB::INPUT_INT),
 				'approvethread' => $mybb->input['approvethread'],
 				'softdeletethread' => $mybb->input['softdeletethread'],
 				'openthread' => $mybb->input['openthread'],
 				'stickthread' => $mybb->input['stickthread'],
 				'movethread' => $mybb->get_input('move_1_forum', MyBB::INPUT_INT),
-				'movethreadredirect' => $mybb->input['move_2_redirect'],
+				'movethreadredirect' => $mybb->get_input('move_2_redirect', MyBB::INPUT_INT),
 				'movethreadredirectexpire' => $mybb->get_input('move_3_redirecttime', MyBB::INPUT_INT),
 				'copythread' => $mybb->get_input('copy_1_forum', MyBB::INPUT_INT),
 				'newsubject' => $mybb->input['newsubject'],
@@ -1053,7 +1053,7 @@ if($mybb->input['action'] == "add_thread_tool")
 				</tr>
 				<tr>
 					<td><small>{$lang->delete_redirect_after}</small></td>
-					<td>".$form->generate_numeric_field('move_3_redirecttime', $mybb->input['move_3_redirecttime'], array('style' => 'width: 2em;'))." {$lang->days}</td>
+					<td>".$form->generate_numeric_field('move_3_redirecttime', $mybb->input['move_3_redirecttime'], array('style' => 'width: 3em;', 'min' => 0))." {$lang->days}</td>
 				</tr>
 			</table>
 		</dd>
@@ -1288,14 +1288,14 @@ if($mybb->input['action'] == "edit_post_tool")
 		if(!$errors)
 		{
 			$thread_options = array(
-				'confirmation' => $mybb->input['confirmation'],
-				'deletethread' => $mybb->input['deletethread'],
+				'confirmation' => $mybb->get_input('confirmation', MyBB::INPUT_INT),
+				'deletethread' => $mybb->get_input('deletethread', MyBB::INPUT_INT),
 				'softdeletethread' => $mybb->input['softdeletethread'],
 				'approvethread' => $mybb->input['approvethread'],
 				'openthread' => $mybb->input['openthread'],
 				'stickthread' => $mybb->input['stickthread'],
 				'movethread' => $mybb->get_input('move_1_forum', MyBB::INPUT_INT),
-				'movethreadredirect' => $mybb->input['move_2_redirect'],
+				'movethreadredirect' => $mybb->get_input('move_2_redirect', MyBB::INPUT_INT),
 				'movethreadredirectexpire' => $mybb->get_input('move_3_redirecttime', MyBB::INPUT_INT),
 				'copythread' => $mybb->get_input('copy_1_forum', MyBB::INPUT_INT),
 				'newsubject' => $mybb->input['newsubject'],
@@ -1312,9 +1312,9 @@ if($mybb->input['action'] == "edit_post_tool")
 			}
 
 			$post_options = array(
-				'deleteposts' => $mybb->input['deleteposts'],
+				'deleteposts' => $mybb->get_input('deleteposts', MyBB::INPUT_INT),
 				'softdeleteposts' => $mybb->input['softdeleteposts'],
-				'mergeposts' => $mybb->input['mergeposts'],
+				'mergeposts' =>$mybb->get_input('mergeposts', MyBB::INPUT_INT),
 				'approveposts' => $mybb->input['approveposts'],
 				'splitposts' => $mybb->get_input('splitposts', MyBB::INPUT_INT),
 				'splitpostsclose' => $mybb->input['splitpostsclose'],
@@ -1676,7 +1676,7 @@ if($mybb->input['action'] == "edit_post_tool")
 				</tr>
 				<tr>
 					<td><small>{$lang->delete_redirect_after}</small></td>
-					<td>".$form->generate_numeric_field('move_3_redirecttime', $mybb->input['move_3_redirecttime'], array('style' => 'width: 2em;'))." {$lang->days}</td>
+					<td>".$form->generate_numeric_field('move_3_redirecttime', $mybb->input['move_3_redirecttime'], array('style' => 'width: 3em;', 'min' => 0))." {$lang->days}</td>
 				</tr>
 			</table>
 		</dd>
@@ -1925,14 +1925,14 @@ if($mybb->input['action'] == "add_post_tool")
 		if(!$errors)
 		{
 			$thread_options = array(
-				'confirmation' => $mybb->input['confirmation'],
-				'deletethread' => $mybb->input['deletethread'],
+				'confirmation' => $mybb->get_input('confirmation', MyBB::INPUT_INT),
+				'deletethread' => $mybb->get_input('deletethread', MyBB::INPUT_INT),
 				'softdeletethread' => $mybb->input['softdeletethread'],
 				'approvethread' => $mybb->input['approvethread'],
 				'openthread' => $mybb->input['openthread'],
 				'stickthread' => $mybb->input['stickthread'],
 				'movethread' => $mybb->get_input('move_1_forum', MyBB::INPUT_INT),
-				'movethreadredirect' => $mybb->input['move_2_redirect'],
+				'movethreadredirect' => $mybb->get_input('move_2_redirect', MyBB::INPUT_INT),
 				'movethreadredirectexpire' => $mybb->get_input('move_3_redirecttime', MyBB::INPUT_INT),
 				'copythread' => $mybb->get_input('copy_1_forum', MyBB::INPUT_INT),
 				'newsubject' => $mybb->input['newsubject'],
@@ -1949,9 +1949,9 @@ if($mybb->input['action'] == "add_post_tool")
 			}
 
 			$post_options = array(
-				'deleteposts' => $mybb->input['deleteposts'],
+				'deleteposts' => $mybb->get_input('deleteposts', MyBB::INPUT_INT),
 				'softdeleteposts' => $mybb->input['softdeleteposts'],
-				'mergeposts' => $mybb->input['mergeposts'],
+				'mergeposts' => $mybb->get_input('mergeposts', MyBB::INPUT_INT),
 				'approveposts' => $mybb->input['approveposts'],
 				'splitposts' => $mybb->get_input('splitposts', MyBB::INPUT_INT),
 				'splitpostsclose' => $mybb->input['splitpostsclose'],
@@ -2245,7 +2245,7 @@ if($mybb->input['action'] == "add_post_tool")
 				</tr>
 				<tr>
 					<td><small>{$lang->delete_redirect_after}</small></td>
-					<td>".$form->generate_numeric_field('move_3_redirecttime', $mybb->input['move_3_redirecttime'], array('style' => 'width: 2em;'))." {$lang->days}</td>
+					<td>".$form->generate_numeric_field('move_3_redirecttime', $mybb->input['move_3_redirecttime'], array('style' => 'width: 3em;', 'min' => 0))." {$lang->days}</td>
 				</tr>
 			</table>
 		</dd>

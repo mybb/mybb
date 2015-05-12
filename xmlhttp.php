@@ -28,7 +28,7 @@ define('THIS_SCRIPT', 'xmlhttp.php');
 // Load MyBB core files
 require_once dirname(__FILE__)."/inc/init.php";
 
-$shutdown_queries = array();
+$shutdown_queries = $shutdown_functions = array();
 
 // Load some of the stock caches we'll be using.
 $groupscache = $cache->read("usergroups");
@@ -186,9 +186,25 @@ else
 $lang->load("global");
 $lang->load("xmlhttp");
 
-$plugins->run_hooks("xmlhttp");
+$closed_bypass = array("refresh_captcha", "validate_captcha");
 
 $mybb->input['action'] = $mybb->get_input('action');
+
+$plugins->run_hooks("xmlhttp");
+
+// If the board is closed, the user is not an administrator and they're not trying to login, show the board closed message
+if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['canviewboardclosed'] != 1 && !in_array($mybb->input['action'], $closed_bypass))
+{
+	// Show error
+	if(!$mybb->settings['boardclosed_reason'])
+	{
+		$mybb->settings['boardclosed_reason'] = $lang->boardclosed_reason;
+	}
+
+	$lang->error_boardclosed .= "<br /><em>{$mybb->settings['boardclosed_reason']}</em>";
+
+	xmlhttp_error($lang->error_boardclosed);
+}
 
 // Fetch a list of usernames beginning with a certain string (used for auto completion)
 if($mybb->input['action'] == "get_users")
@@ -333,37 +349,41 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 		}
 	}
 
-	// Set up posthandler.
-	require_once MYBB_ROOT."inc/datahandlers/post.php";
-	$posthandler = new PostDataHandler("update");
-	$posthandler->action = "post";
-
-	// Set the post data that came from the input to the $post array.
-	$updatepost = array(
-		"pid" => $post['pid'],
-		"tid" => $thread['tid'],
-		"subject" => $subject,
-		"edit_uid" => $mybb->user['uid']
-	);
-	$posthandler->set_data($updatepost);
-
-	// Now let the post handler do all the hard work.
-	if(!$posthandler->validate_post())
+	// Only edit subject if subject has actually been changed
+	if($thread['subject'] != $subject)
 	{
-		$post_errors = $posthandler->get_friendly_errors();
-		xmlhttp_error($post_errors);
-	}
-	// No errors were found, we can call the update method.
-	else
-	{
-		$posthandler->update_post();
-		if($ismod == true)
+		// Set up posthandler.
+		require_once MYBB_ROOT."inc/datahandlers/post.php";
+		$posthandler = new PostDataHandler("update");
+		$posthandler->action = "post";
+
+		// Set the post data that came from the input to the $post array.
+		$updatepost = array(
+			"pid" => $post['pid'],
+			"tid" => $thread['tid'],
+			"subject" => $subject,
+			"edit_uid" => $mybb->user['uid']
+		);
+		$posthandler->set_data($updatepost);
+
+		// Now let the post handler do all the hard work.
+		if(!$posthandler->validate_post())
 		{
-			$modlogdata = array(
-				"tid" => $thread['tid'],
-				"fid" => $forum['fid']
-			);
-			log_moderator_action($modlogdata, $lang->edited_post);
+			$post_errors = $posthandler->get_friendly_errors();
+			xmlhttp_error($post_errors);
+		}
+		// No errors were found, we can call the update method.
+		else
+		{
+			$posthandler->update_post();
+			if($ismod == true)
+			{
+				$modlogdata = array(
+					"tid" => $thread['tid'],
+					"fid" => $forum['fid']
+				);
+				log_moderator_action($modlogdata, $lang->edited_post);
+			}
 		}
 	}
 
@@ -750,11 +770,12 @@ else if($mybb->input['action'] == "refresh_question" && $mybb->settings['securit
 	
 	$sid = $db->escape_string($mybb->get_input('question_id'));
 	$query = $db->query("
-		SELECT q.*, s.sid
+		SELECT q.qid, s.sid
 		FROM ".TABLE_PREFIX."questionsessions s
 		LEFT JOIN ".TABLE_PREFIX."questions q ON (q.qid=s.qid)
 		WHERE q.active='1' AND s.sid='{$sid}'
 	");
+	
 	if($db->num_rows($query) == 0)
 	{
 		xmlhttp_error($lang->answer_valid_not_exists);
@@ -767,22 +788,27 @@ else if($mybb->input['action'] == "refresh_question" && $mybb->settings['securit
 	
 	require_once MYBB_ROOT."inc/functions_user.php";
 	
-	$sid = generate_question();
+	$sid = generate_question($qsession['qid']);
 	$query = $db->query("
 		SELECT q.question, s.sid
 		FROM ".TABLE_PREFIX."questionsessions s
 		LEFT JOIN ".TABLE_PREFIX."questions q ON (q.qid=s.qid)
 		WHERE q.active='1' AND s.sid='{$sid}' AND q.qid!='{$qsession['qid']}'
 	");
+	
+	$plugins->run_hooks("xmlhttp_refresh_question");
+	
 	if($db->num_rows($query) > 0)
 	{
 		$question = $db->fetch_array($query);
+		
+		echo json_encode(array("question" => htmlspecialchars_uni($question['question']), 'sid' => htmlspecialchars_uni($question['sid'])));
+		exit;
 	}
-	
-	$plugins->run_hooks("xmlhttp_refresh_question");
-
-	echo json_encode(array("question" => htmlspecialchars_uni($question['question']), 'sid' => htmlspecialchars_uni($question['sid'])));
-	exit;
+	else 
+	{
+		xmlhttp_error($lang->answer_valid_not_exists);
+	}
 }
 elseif($mybb->input['action'] == "validate_question" && $mybb->settings['securityquestion'])
 {
@@ -796,6 +822,7 @@ elseif($mybb->input['action'] == "validate_question" && $mybb->settings['securit
 		LEFT JOIN ".TABLE_PREFIX."questions q ON (q.qid=s.qid)
 		WHERE q.active='1' AND s.sid='{$sid}'
 	");
+	
 	if($db->num_rows($query) == 0)
 	{
 		echo json_encode($lang->answer_valid_not_exists);
@@ -1023,4 +1050,3 @@ function xmlhttp_error($message)
 
 	exit;
 }
-

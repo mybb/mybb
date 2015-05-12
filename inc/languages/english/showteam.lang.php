@@ -15,6 +15,7 @@ $l['pm'] = "PM";
 $l['mod_forums'] = "Forum(s)";
 $l['online'] = "Online";
 $l['offline'] = "Offline";
+$l['away'] = "Away";
 
 $l['group_leaders'] = "Leader(s)";
 $l['group_members'] = "Member(s)";

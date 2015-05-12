@@ -70,7 +70,7 @@ if($mybb->input['action'] == "add")
 			$cache->update_usertitles();
 
 			// Log admin action
-			log_admin_action($utid, $mybb->input['title'], $mybb->input['posts']);
+			log_admin_action($utid, htmlspecialchars_uni($mybb->input['title']), $mybb->input['posts']);
 
 			flash_message($lang->success_user_title_created, 'success');
 			admin_redirect("index.php?module=user-titles");
@@ -99,8 +99,8 @@ if($mybb->input['action'] == "add")
 
 	$form_container = new FormContainer($lang->add_new_user_title);
 	$form_container->output_row($lang->title_to_assign."<em>*</em>", $lang->title_to_assign_desc, $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
-	$form_container->output_row($lang->minimum_posts, $lang->minimum_posts_desc, $form->generate_numeric_field('posts', $mybb->input['posts'], array('id' => 'posts')), 'posts');
-	$form_container->output_row($lang->number_of_stars, $lang->number_of_stars_desc, $form->generate_numeric_field('stars', $mybb->input['stars'], array('id' => 'stars')), 'stars');
+	$form_container->output_row($lang->minimum_posts, $lang->minimum_posts_desc, $form->generate_numeric_field('posts', $mybb->input['posts'], array('id' => 'posts', 'min' => 0)), 'posts');
+	$form_container->output_row($lang->number_of_stars, $lang->number_of_stars_desc, $form->generate_numeric_field('stars', $mybb->input['stars'], array('id' => 'stars', 'min' => 0)), 'stars');
 	$form_container->output_row($lang->star_image, $lang->star_image_desc, $form->generate_text_box('starimage', $mybb->input['starimage'], array('id' => 'starimage')), 'starimage');
 	$form_container->end();
 
@@ -159,7 +159,7 @@ if($mybb->input['action'] == "edit")
 			$cache->update_usertitles();
 
 			// Log admin action
-			log_admin_action($usertitle['utid'], $mybb->input['title'], $mybb->input['posts']);
+			log_admin_action($usertitle['utid'], htmlspecialchars_uni($mybb->input['title']), $mybb->input['posts']);
 
 			flash_message($lang->success_user_title_updated, 'success');
 			admin_redirect("index.php?module=user-titles");
@@ -171,7 +171,7 @@ if($mybb->input['action'] == "edit")
 
 	$sub_tabs['edit_title'] = array(
 		'title' => $lang->edit_user_title,
-		'link' => "index.php?module=user-titles&amp;action=edit&amp;utid=".$mybb->input['utid'],
+		'link' => "index.php?module=user-titles&amp;action=edit&amp;utid=".$usertitle['utid'],
 		'description' => $lang->edit_user_title_desc
 	);
 
@@ -190,8 +190,8 @@ if($mybb->input['action'] == "edit")
 
 	$form_container = new FormContainer($lang->edit_user_title);
 	$form_container->output_row($lang->title_to_assign."<em>*</em>", $lang->title_to_assign_desc, $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
-	$form_container->output_row($lang->minimum_posts, $lang->minimum_posts_desc, $form->generate_numeric_field('posts', $mybb->input['posts'], array('id' => 'posts')), 'posts');
-	$form_container->output_row($lang->number_of_stars, $lang->number_of_stars_desc, $form->generate_numeric_field('stars', $mybb->input['stars'], array('id' => 'stars')), 'stars');
+	$form_container->output_row($lang->minimum_posts, $lang->minimum_posts_desc, $form->generate_numeric_field('posts', $mybb->input['posts'], array('id' => 'posts', 'min' => 0)), 'posts');
+	$form_container->output_row($lang->number_of_stars, $lang->number_of_stars_desc, $form->generate_numeric_field('stars', $mybb->input['stars'], array('id' => 'stars', 'min' => 0)), 'stars');
 	$form_container->output_row($lang->star_image, $lang->star_image_desc, $form->generate_text_box('starimage', $mybb->input['starimage'], array('id' => 'starimage')), 'starimage');
 	$form_container->end();
 
@@ -232,7 +232,7 @@ if($mybb->input['action'] == "delete")
 		$cache->update_usertitles();
 		
 		// Log admin action
-		log_admin_action($usertitle['utid'], $usertitle['title'], $usertitle['posts']);
+		log_admin_action($usertitle['utid'], htmlspecialchars_uni($usertitle['title']), $usertitle['posts']);
 
 		flash_message($lang->success_user_title_deleted, 'success');
 		admin_redirect("index.php?module=user-titles");

@@ -30,6 +30,8 @@ if(!$thread)
 	error($lang->error_invalidthread);
 }
 
+$plugins->run_hooks("printthread_start");
+
 $thread['threadprefix'] = $thread['displaystyle'] = '';
 if($thread['prefix'])
 {

@@ -13,9 +13,9 @@ define('THIS_SCRIPT', 'newreply.php');
 
 $templatelist = "newreply,previewpost,loginbox,changeuserbox,posticons,newreply_threadreview,newreply_threadreview_post,forumdisplay_rules_link,newreply_multiquote_external,post_attachments_add,post_subscription_method,postbit_warninglevel_formatted";
 $templatelist .= ",smilieinsert,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,codebuttons,post_attachments_new,post_attachments,post_savedraftbutton,newreply_modoptions,newreply_threadreview_more,newreply_disablesmilies,postbit_online";
-$templatelist .= ",postbit_www,postbit_email,postbit_reputation,postbit_warninglevel,postbit_author_user,postbit_edit,postbit_quickdelete,postbit_inlinecheck,postbit_posturl,postbit_quote,postbit_multiquote,postbit_report,postbit_ignored,postbit";
+$templatelist .= ",postbit_www,postbit_email,postbit_reputation,postbit_warninglevel,postbit_author_user,postbit_edit,postbit_quickdelete,postbit_inlinecheck,postbit_posturl,postbit_quote,postbit_multiquote,postbit_report,postbit_ignored,postbit,postbit_userstar";
 $templatelist .= ",post_attachments_attachment_postinsert,post_attachments_attachment_remove,post_attachments_attachment_unapproved,post_attachments_attachment,postbit_attachments_attachment,postbit_attachments,newreply_options_signature,postbit_find";
-$templatelist .= ",member_register_regimage,member_register_regimage_recaptcha,member_register_regimage_ayah,post_captcha_hidden,post_captcha,post_captcha_recaptcha,post_captcha_nocaptcha,post_captcha_ayah,postbit_groupimage,postbit_away,postbit_offline,postbit_avatar";
+$templatelist .= ",member_register_regimage,member_register_regimage_recaptcha,member_register_regimage_ayah,post_captcha_hidden,post_captcha,post_captcha_recaptcha,post_captcha_nocaptcha,post_captcha_ayah,postbit_groupimage,postbit_away,postbit_offline,postbit_avatar,postbit_icon";
 $templatelist .= ",postbit_rep_button,postbit_warn,postbit_author_guest,postbit_signature,postbit_classic,postbit_attachments_thumbnails_thumbnailpostbit_attachments_images_image,postbit_attachments_attachment_unapproved,postbit_pm,post_attachments_update";
 $templatelist .= ",postbit_attachments_thumbnails,postbit_attachments_images,postbit_gotopost,forumdisplay_password_wrongpass,forumdisplay_password,posticons_icon,attachment_icon,postbit_reputation_formatted_link,newreply_disablesmilies_hidden,forumdisplay_rules,global_moderation_notice";
 
@@ -310,27 +310,18 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 	// If this isn't a logged in user, then we need to do some special validation.
 	if($mybb->user['uid'] == 0)
 	{
-		// Check if username exists.
-		if(username_exists($mybb->get_input('username')))
+		// If they didn't specify a username then give them "Guest"
+		if(!$mybb->get_input('username'))
 		{
-			// If it does throw back "username is taken"
-			error($lang->error_usernametaken);
+			$username = $lang->guest;
 		}
-		// This username does not exist.
+		// Otherwise use the name they specified.
 		else
 		{
-			// If they didn't specify a username then give them "Guest"
-			if(!$mybb->get_input('username'))
-			{
-				$username = $lang->guest;
-			}
-			// Otherwise use the name they specified.
-			else
-			{
-				$username = htmlspecialchars_uni($mybb->get_input('username'));
-			}
-			$uid = 0;
+			$username = $mybb->get_input('username');
 		}
+		$uid = 0;
+	
 
 		if($mybb->settings['stopforumspam_on_newreply'])
 		{
@@ -977,27 +968,17 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		// If this isn't a logged in user, then we need to do some special validation.
 		if($mybb->user['uid'] == 0)
 		{
-			// Check if username exists.
-			if(username_exists($mybb->get_input('username')))
+			// If they didn't specify a username then give them "Guest"
+			if(!$mybb->get_input('username'))
 			{
-				// If it does throw back "username is taken"
-				error($lang->error_usernametaken);
+				$username = $lang->guest;
 			}
-			// This username does not exist.
+			// Otherwise use the name they specified.
 			else
 			{
-				// If they didn't specify a username then give them "Guest"
-				if(!$mybb->get_input('username'))
-				{
-					$username = $lang->guest;
-				}
-				// Otherwise use the name they specified.
-				else
-				{
-					$username = htmlspecialchars_uni($mybb->get_input('username'));
-				}
-				$uid = 0;
+				$username = $mybb->get_input('username');
 			}
+			$uid = 0;
 		}
 		// This user is logged in.
 		else
@@ -1252,7 +1233,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			{
 				$post_captcha->build_captcha();
 			}
-			elseif($post_captcha->type == 2)
+			elseif($post_captcha->type == 2 || $post_captcha->type == 4)
 			{
 				$post_captcha->build_recaptcha();
 			}
@@ -1266,7 +1247,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 				$captcha = $post_captcha->html;
 			}
 		}
-		else if($correct && $post_captcha->type == 2)
+		else if($correct && ($post_captcha->type == 2 || $post_captcha->type == 4))
 		{
 			$post_captcha->build_recaptcha();
 

@@ -66,7 +66,7 @@ if($mybb->input['action'] == "add")
 			$plugins->run_hooks("admin_config_attachment_types_add_commit");
 
 			// Log admin action
-			log_admin_action($atid, $mybb->input['extension']);
+			log_admin_action($atid, htmlspecialchars_uni($mybb->input['extension']));
 
 			$cache->update_attachtypes();
 
@@ -124,7 +124,7 @@ if($mybb->input['action'] == "add")
 	$form_container->output_row($lang->name, $lang->name_desc, $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
 	$form_container->output_row($lang->file_extension." <em>*</em>", $lang->file_extension_desc, $form->generate_text_box('extension', $mybb->input['extension'], array('id' => 'extension')), 'extension');
 	$form_container->output_row($lang->mime_type." <em>*</em>", $lang->mime_type_desc, $form->generate_text_box('mimetype', $mybb->input['mimetype'], array('id' => 'mimetype')), 'mimetype');
-	$form_container->output_row($lang->maximum_file_size, $lang->maximum_file_size_desc.$limit_string, $form->generate_numeric_field('maxsize', $mybb->input['maxsize'], array('id' => 'maxsize')), 'maxsize');
+	$form_container->output_row($lang->maximum_file_size, $lang->maximum_file_size_desc.$limit_string, $form->generate_numeric_field('maxsize', $mybb->input['maxsize'], array('id' => 'maxsize', 'min' => 0)), 'maxsize');
 	$form_container->output_row($lang->attachment_icon, $lang->attachment_icon_desc, $form->generate_text_box('icon', $mybb->input['icon'], array('id' => 'icon')), 'icon');
 
 	$form_container->end();
@@ -187,7 +187,7 @@ if($mybb->input['action'] == "edit")
 			$db->update_query("attachtypes", $updated_type, "atid='{$attachment_type['atid']}'");
 
 			// Log admin action
-			log_admin_action($attachment_type['atid'], $mybb->input['extension']);
+			log_admin_action($attachment_type['atid'], htmlspecialchars_uni($mybb->input['extension']));
 
 			$cache->update_attachtypes();
 
@@ -239,7 +239,7 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->name, $lang->name_desc, $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
 	$form_container->output_row($lang->file_extension." <em>*</em>", $lang->file_extension_desc, $form->generate_text_box('extension', $mybb->input['extension'], array('id' => 'extension')), 'extension');
 	$form_container->output_row($lang->mime_type." <em>*</em>", $lang->mime_type_desc, $form->generate_text_box('mimetype', $mybb->input['mimetype'], array('id' => 'mimetype')), 'mimetype');
-	$form_container->output_row($lang->maximum_file_size, $lang->maximum_file_size_desc.$limit_string, $form->generate_numeric_field('maxsize', $mybb->input['maxsize'], array('id' => 'maxsize')), 'maxsize');
+	$form_container->output_row($lang->maximum_file_size, $lang->maximum_file_size_desc.$limit_string, $form->generate_numeric_field('maxsize', $mybb->input['maxsize'], array('id' => 'maxsize', 'min' => 0)), 'maxsize');
 	$form_container->output_row($lang->attachment_icon, $lang->attachment_icon_desc, $form->generate_text_box('icon', $mybb->input['icon'], array('id' => 'icon')), 'icon');
 
 	$form_container->end();
@@ -279,7 +279,7 @@ if($mybb->input['action'] == "delete")
 		$cache->update_attachtypes();
 
 		// Log admin action
-		log_admin_action($attachment_type['atid'], $attachment_type['extension']);
+		log_admin_action($attachment_type['atid'], htmlspecialchars_uni($attachment_type['extension']));
 
 		flash_message($lang->success_attachment_type_deleted, 'success');
 		admin_redirect("index.php?module=config-attachment_types");
@@ -318,7 +318,7 @@ if(!$mybb->input['action'])
 	while($attachment_type = $db->fetch_array($query))
 	{
 		// Just show default icons in ACP
-		$attachment_type['icon'] = str_replace("{theme}", "images", $attachment_type['icon']);
+		$attachment_type['icon'] = htmlspecialchars_uni(str_replace("{theme}", "images", $attachment_type['icon']));
 		if(my_strpos($attachment_type['icon'], "p://") || substr($attachment_type['icon'], 0, 1) == "/")
 		{
 			$image = $attachment_type['icon'];
@@ -334,12 +334,13 @@ if(!$mybb->input['action'])
 		}
 		else
 		{
+			$attachment_type['name'] = htmlspecialchars_uni($attachment_type['name']);
 			$attachment_type['icon'] = "<img src=\"{$image}\" title=\"{$attachment_type['name']}\" alt=\"\" />";
 		}
 
 		$table->construct_cell($attachment_type['icon'], array("width" => 1));
 		$table->construct_cell("<strong>.{$attachment_type['extension']}</strong>");
-		$table->construct_cell($attachment_type['mimetype']);
+		$table->construct_cell(htmlspecialchars_uni($attachment_type['mimetype']));
 		$table->construct_cell(get_friendly_size(($attachment_type['maxsize']*1024)), array("class" => "align_center"));
 		$table->construct_cell("<a href=\"index.php?module=config-attachment_types&amp;action=edit&amp;atid={$attachment_type['atid']}\">{$lang->edit}</a>", array("class" => "align_center"));
 		$table->construct_cell("<a href=\"index.php?module=config-attachment_types&amp;action=delete&amp;atid={$attachment_type['atid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_attachment_type_deletion}')\">{$lang->delete}</a>", array("class" => "align_center"));

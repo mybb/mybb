@@ -269,7 +269,7 @@ class PMDataHandler extends DataHandler
 		// If we have one or more invalid recipients and we're not saving a draft, error
 		if(count($invalid_recipients) > 0)
 		{
-			$invalid_recipients = implode(", ", array_map("htmlspecialchars_uni", $invalid_recipients));
+			$invalid_recipients = implode($lang->comma, array_map("htmlspecialchars_uni", $invalid_recipients));
 			$this->set_error("invalid_recipients", array($invalid_recipients));
 			return false;
 		}
@@ -293,20 +293,15 @@ class PMDataHandler extends DataHandler
 			// - sender is an administrator
 			if(($this->admin_override != true && $sender_permissions['cancp'] != 1) && $sender_permissions['canoverridepm'] != 1)
 			{
-				$ignorelist = explode(",", $user['ignorelist']);
-				if(!empty($ignorelist) && in_array($pm['fromid'], $ignorelist))
+				if(!empty($user['ignorelist']) && strpos(','.$user['ignorelist'].',', ','.$pm['fromid'].',') !== false)
 				{
-					$this->set_error("recipient_is_ignoring", array($user['username']));
+					$this->set_error('recipient_is_ignoring', array($user['username']));
 				}
 
 				// Is the recipient only allowing private messages from their buddy list?
-				if($mybb->settings['allowbuddyonly'] == 1 && $user['receivefrombuddy'] == 1)
+				if($mybb->settings['allowbuddyonly'] == 1 && $user['receivefrombuddy'] == 1 && !empty($user['buddylist']) && strpos(','.$user['buddylist'].',', ','.$pm['fromid'].',') === false)
 				{
-					$buddylist = explode(",", $user['buddylist']);
-					if(!empty($buddylist) && !in_array($pm['fromid'], $buddylist))
-					{
-						$this->set_error("recipient_has_buddy_only", array(htmlspecialchars_uni($user['username'])));
-					}
+					$this->set_error('recipient_has_buddy_only', array(htmlspecialchars_uni($user['username'])));
 				}
 
 				// Can the recipient actually receive private messages based on their permissions or user setting?
@@ -657,7 +652,13 @@ class PMDataHandler extends DataHandler
 
 				require_once MYBB_ROOT.'inc/class_parser.php';
 				$parser = new Postparser;
-				$pm['message'] = $parser->text_parse_message($pm['message'], array('me_username' => $pm['sender']['username'], 'filter_badwords' => 1, 'safe_html' => 1));
+			
+				$parser_options = array(
+					'me_username'		=> $pm['sender']['username'],
+					'filter_badwords'	=> 1
+				);
+
+				$pm['message'] = $parser->text_parse_message($pm['message'], $parser_options);
 
 				$emailmessage = $lang->sprintf($emailmessage, $recipient['username'], $pm['sender']['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $pm['message']);
 				$emailsubject = $lang->sprintf($emailsubject, $mybb->settings['bbname'], $pm['subject']);

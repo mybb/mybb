@@ -145,7 +145,7 @@ $mybb->session = &$session;
 $grouppermignore = array("gid", "type", "title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
 $groupzerogreater = array("pmquota", "maxpmrecipients", "maxreputationsday", "attachquota", "maxemails", "maxwarningsday", "maxposts", "edittimelimit", "canusesigxposts", "maxreputationsperthread");
 $displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
-$fpermfields = array("canview", "candlattachments", "canpostthreads", "canpostreplys", "canpostattachments", "canratethreads", "caneditposts", "candeleteposts", "candeletethreads", "caneditattachments", "canpostpolls", "canvotepolls", "cansearch");
+$fpermfields = array('canview', 'canviewthreads', 'candlattachments', 'canpostthreads', 'canpostreplys', 'canpostattachments', 'canratethreads', 'caneditposts', 'candeleteposts', 'candeletethreads', 'caneditattachments', 'canpostpolls', 'canvotepolls', 'cansearch', 'modposts', 'modthreads', 'modattachments', 'mod_edit_posts');
 
 // Include the installation resources
 require_once INSTALL_ROOT."resources/output.php";
@@ -169,7 +169,7 @@ else
 		}
 
 		my_unsetcookie("mybbuser");
-		my_unsetcookie("sid");
+
 		if($mybb->user['uid'])
 		{
 			$time = TIME_NOW;
@@ -178,7 +178,6 @@ else
 				"lastvisit" => $time,
 			);
 			$db->update_query("users", $lastvisit, "uid='".$mybb->user['uid']."'");
-			$db->delete_query("sessions", "sid='".$session->sid."'");
 		}
 		header("Location: upgrade.php");
 	}
@@ -208,19 +207,7 @@ else
 			}
 		}
 
-		$db->delete_query("sessions", "ip='".$db->escape_string($session->ipaddress)."' AND sid != '".$session->sid."'");
-
-		$newsession = array(
-			"uid" => $user['uid']
-		);
-
-		$db->update_query("sessions", $newsession, "sid='".$session->sid."'");
-
-		// Temporarily set the cookie remember option for the login cookies
-		$mybb->user['remember'] = $user['remember'];
-
 		my_setcookie("mybbuser", $user['uid']."_".$user['loginkey'], null, true);
-		my_setcookie("sid", $session->sid, -1, true);
 
 		header("Location: ./upgrade.php");
 	}
@@ -609,7 +596,7 @@ function buildcaches()
 
 function upgradedone()
 {
-	global $db, $output, $mybb, $lang, $config;
+	global $db, $output, $mybb, $lang, $config, $plugins;
 
 	ob_start();
 	$output->print_header("Upgrade Complete");
@@ -1103,4 +1090,3 @@ function write_settings()
 		fclose($file);
 	}
 }
-?>
