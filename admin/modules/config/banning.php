@@ -54,7 +54,7 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 		}
 
 		// Log admin action
-		log_admin_action($fid, htmlspecialchars_uni($mybb->input['filter']), (int)$mybb->input['type']);
+		log_admin_action($fid, htmlspecialchars_uni($mybb->input['filter']), $mybb->get_input('type', 1));
 
 		if($mybb->input['type'] == 1)
 		{
