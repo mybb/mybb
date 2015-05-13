@@ -257,7 +257,7 @@ switch($mybb->input['action'])
 				$errors[] = $lang->error_delayedmoderation_invalid_date_year;
 			}
 
-			$date_time = explode(' ', $mybb->get_input('date_time', MyBB::INPUT_STRING));
+			$date_time = explode(' ', $mybb->get_input('date_time'));
 			$date_time = explode(':', (string)$date_time[0]);
 
 			if(stristr($mybb->input['date_time'], 'pm'))
