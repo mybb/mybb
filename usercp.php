@@ -2903,7 +2903,7 @@ if($mybb->get_input('action') == "editlists")
 	}
 
 	// If an AJAX request from buddy management, echo out whatever the new list is.
-	if($mybb->request_method == "post" && $mybb->get_input('ajax', 1) == 1)
+	if($mybb->request_method == "post" && $mybb->get_input('ajax', MyBB::INPUT_INT) == 1)
 	{
 		if($mybb->get_input('manage') == "ignored")
 		{
