@@ -865,8 +865,7 @@ if($mybb->input['action'] == "add_thread_tool")
 
 			if($mybb->get_input('threadprefix', MyBB::INPUT_INT) >= 0)
 			{
-				$thread_options['threadprefix'] = $mybb
-                    ->get_input('threadprefix', MyBB::INPUT_INT);
+				$thread_options['threadprefix'] = $mybb->get_input('threadprefix', MyBB::INPUT_INT);
 			}
 
 			$tid = $db->insert_query("modtools", $new_tool);
