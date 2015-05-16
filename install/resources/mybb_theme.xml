@@ -6183,7 +6183,7 @@ if(use_xmlhttprequest == "1")
 <td class="{$altbg}">{$profile_link}</a></td>
 <td class="{$altbg}">{$poster['posts']}</td>
 </tr>]]></template>
-		<template name="modcp" version="1800"><![CDATA[<html>
+		<template name="modcp" version="1805"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->modcp}</title>
 {$headerinclude}
@@ -6217,8 +6217,8 @@ if(use_xmlhttprequest == "1")
 <td class="thead" align="center" colspan="1"><strong>{$lang->moderator_notes}</strong></td>
 </tr>
 <tr>
-<td class="tcat"><span class="smalltext"><strong>{$lang->notes_public_all}</strong></span>
-</td>
+<td class="tcat"><span class="smalltext"><strong>{$lang->notes_public_all}</strong></span></td>
+</tr>
 <tr>
 <td class="trow1"><textarea name="modnotes" style="width: 99%; height: 200px;" rows="5" cols="45">{$modnotes}</textarea></td>
 </tr>
