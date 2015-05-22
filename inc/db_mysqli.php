@@ -1275,7 +1275,7 @@ class DB_MySQLi implements DB_Base
 			}
 			else
 			{
-				$values .= $comma."`".$column."`='".$value."'";
+				$values .= $comma."`".$column."`=".$this->quote_val("'", $value);
 			}
 
 			$comma = ',';

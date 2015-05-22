@@ -1085,7 +1085,7 @@ class DB_SQLite implements DB_Base
 			}
 			else
 			{
-				$values .= $comma."'".$value."'";
+				$values .= $comma.$this->quote_val("'", $value);
 			}
 
 			$comma = ',';

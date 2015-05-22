@@ -1292,7 +1292,7 @@ class DB_MySQL implements DB_Base
 			}
 			else
 			{
-				$values .= $comma."`".$column."`='".$value."'";
+				$values .= $comma."`".$column."`=".$this->quote_val("'", $value);
 			}
 
 			$comma = ',';
