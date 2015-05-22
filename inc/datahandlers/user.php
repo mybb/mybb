@@ -177,7 +177,7 @@ class UserDataHandler extends DataHandler
 		}
 
 		// Has the user tried to use their email address or username as a password?
-		if($user['email'] == $user['password'] || $user['username'] == $user['password'])
+		if($user['email'] === $user['password'] || $user['username'] === $user['password'])
 		{
 			$this->set_error('bad_password_security');
 			return false;
@@ -196,7 +196,7 @@ class UserDataHandler extends DataHandler
 		}
 
 		// If we have a "password2" check if they both match
-		if(isset($user['password2']) && $user['password'] != $user['password2'])
+		if(isset($user['password2']) && $user['password'] !== $user['password2'])
 		{
 			$this->set_error("passwords_dont_match");
 			return false;
