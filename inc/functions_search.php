@@ -125,7 +125,7 @@ function get_unsearchable_forums($pid="0", $first=1)
 		$pwverified = 1;
 		if($forum['password'] != '')
 		{
-			if($mybb->cookies['forumpass'][$forum['fid']] != md5($mybb->user['uid'].$forum['password']))
+			if($mybb->cookies['forumpass'][$forum['fid']] !== md5($mybb->user['uid'].$forum['password']))
 			{
 				$pwverified = 0;
 			}
