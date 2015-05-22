@@ -178,7 +178,7 @@ class LoginDataHandler extends DataHandler
 
 		$plugins->run_hooks('datahandler_login_verify_password_end', $args);
 
-		if($salted_password != $this->login_data['password'])
+		if($salted_password !== $this->login_data['password'])
 		{
 			$this->invalid_combination(true);
 			return false;
