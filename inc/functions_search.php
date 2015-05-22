@@ -207,7 +207,7 @@ function get_password_protected_forums($fids=array())
 			continue;
 		}
 
-		if(md5($mybb->user['uid'].$forum_cache[$fid]['password']) != $mybb->cookies['forumpass'][$fid])
+		if(md5($mybb->user['uid'].$forum_cache[$fid]['password']) !== $mybb->cookies['forumpass'][$fid])
 		{
 			$pass_fids[] = $fid;
 			$child_list = get_child_list($fid);
