@@ -1504,7 +1504,7 @@ function check_forum_password($fid, $pid=0)
 		$password = $forum_cache[$fid]['password'];
 		if(isset($mybb->input['pwverify']) && $pid == 0)
 		{
-			if($password == $mybb->get_input('pwverify'))
+			if($password === $mybb->get_input('pwverify'))
 			{
 				my_setcookie("forumpass[$fid]", md5($mybb->user['uid'].$mybb->get_input('pwverify')), null, true);
 				$showform = false;
