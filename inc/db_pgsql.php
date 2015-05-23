@@ -760,7 +760,7 @@ class DB_PgSQL implements DB_Base
 			}
 			else
 			{
-				$quoted_value = $this->quote_val("'", $value);
+				$quoted_value = $this->quote_val($value);
 
 				$array[$field] = "{$quoted_value}";
 			}
@@ -814,7 +814,7 @@ class DB_PgSQL implements DB_Base
 				}
 				else
 				{
-					$quoted_value = $this->quote_val("'", $value);
+					$quoted_value = $this->quote_val($value);
 
 					$values[$field] = "{$quoted_value}";
 				}
@@ -866,7 +866,7 @@ class DB_PgSQL implements DB_Base
 			}
 			else
 			{
-				$quoted_value = $this->quote_val($quote, $value);
+				$quoted_value = $this->quote_val($value, $quote);
 
 				$query .= $comma.$field."={$quoted_value}";
 			}
@@ -882,7 +882,7 @@ class DB_PgSQL implements DB_Base
 		");
 	}
 
-	private function quote_val($quote, $value)
+	private function quote_val($value, $quote="'")
 	{
 		if(is_int($value))
 		{
@@ -1319,7 +1319,7 @@ class DB_PgSQL implements DB_Base
 				}
 				else
 				{
-					$quoted_val = $this->quote_val("'", $replacements[$field]);
+					$quoted_val = $this->quote_val($replacements[$field]);
 					$search_bit[] = "{$field} = ".$quoted_val;
 				}
 			}
@@ -1353,7 +1353,7 @@ class DB_PgSQL implements DB_Base
 			}
 			else
 			{
-				$quoted_val = $this->quote_val("'", $replacements[$main_field]);
+				$quoted_val = $this->quote_val($replacements[$main_field]);
 				return $this->update_query($table, $replacements, "{$main_field}=".$quoted_val);
 			}
 		}

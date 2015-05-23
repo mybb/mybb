@@ -645,7 +645,7 @@ class DB_SQLite implements DB_Base
 			}
 			else
 			{
-				$quoted_value = $this->quote_val("'", $value);
+				$quoted_value = $this->quote_val($value);
 
 				$array[$field] = "{$quoted_value}";
 			}
@@ -697,7 +697,7 @@ class DB_SQLite implements DB_Base
 				}
 				else
 				{
-					$quoted_value = $this->quote_val("'", $value);
+					$quoted_value = $this->quote_val($value);
 
 					$values[$field] = "{$quoted_value}";
 				}
@@ -755,7 +755,7 @@ class DB_SQLite implements DB_Base
 			}
 			else
 			{
-				$quoted_value = $this->quote_val($quote, $value);
+				$quoted_value = $this->quote_val($value, $quote);
 
 				$query .= $comma.$field."={$quoted_value}";
 			}
@@ -772,7 +772,7 @@ class DB_SQLite implements DB_Base
 		return $query;
 	}
 
-	private function quote_val($quote, $value)
+	private function quote_val($value, $quote="'")
 	{
 		if(is_int($value))
 		{
@@ -1085,7 +1085,7 @@ class DB_SQLite implements DB_Base
 			}
 			else
 			{
-				$values .= $comma.$this->quote_val("'", $value);
+				$values .= $comma.$this->quote_val($value);
 			}
 
 			$comma = ',';
