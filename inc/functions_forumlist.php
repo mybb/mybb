@@ -132,7 +132,7 @@ function build_forumbits($pid=0, $depth=1)
 				);
 			}
 
-			if($forum['password'] != '' && $mybb->cookies['forumpass'][$forum['fid']] != md5($mybb->user['uid'].$forum['password']))
+			if($forum['password'] != '' && $mybb->cookies['forumpass'][$forum['fid']] !== md5($mybb->user['uid'].$forum['password']))
 			{
 			    $hideinfo = true;
 			    $showlockicon = 1;
