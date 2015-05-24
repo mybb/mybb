@@ -788,9 +788,7 @@ class DB_MySQL implements DB_Base
 			}
 			else
 			{
-				$quoted_value = $this->quote_val($value);
-
-				$array[$field] = "{$quoted_value}";
+				$array[$field] = $this->quote_val($value);
 			}
 		}
 
@@ -839,8 +837,7 @@ class DB_MySQL implements DB_Base
 				}
 				else
 				{
-					$quoted_value = $this->quote_val($value);
-					$values[$field] = "{$quoted_value}";
+					$values[$field] = $this->quote_val($value);
 				}
 			}
 			$insert_rows[] = "(".implode(",", $values).")";

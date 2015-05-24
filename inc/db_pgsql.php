@@ -760,9 +760,7 @@ class DB_PgSQL implements DB_Base
 			}
 			else
 			{
-				$quoted_value = $this->quote_val($value);
-
-				$array[$field] = "{$quoted_value}";
+				$array[$field] = $this->quote_val($value);
 			}
 		}
 
@@ -814,9 +812,7 @@ class DB_PgSQL implements DB_Base
 				}
 				else
 				{
-					$quoted_value = $this->quote_val($value);
-
-					$values[$field] = "{$quoted_value}";
+					$values[$field] = $this->quote_val($value);
 				}
 			}
 			$insert_rows[] = "(".implode(",", $values).")";
@@ -1319,8 +1315,7 @@ class DB_PgSQL implements DB_Base
 				}
 				else
 				{
-					$quoted_val = $this->quote_val($replacements[$field]);
-					$search_bit[] = "{$field} = ".$quoted_val;
+					$search_bit[] = "{$field} = ".$this->quote_val($replacements[$field]);
 				}
 			}
 
@@ -1353,8 +1348,7 @@ class DB_PgSQL implements DB_Base
 			}
 			else
 			{
-				$quoted_val = $this->quote_val($replacements[$main_field]);
-				return $this->update_query($table, $replacements, "{$main_field}=".$quoted_val);
+				return $this->update_query($table, $replacements, "{$main_field}=".$this->quote_val($replacements[$main_field]));
 			}
 		}
 		else
