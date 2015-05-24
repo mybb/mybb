@@ -1051,7 +1051,7 @@ class postParser
 			$name = $url;
 		}
 
-		if($name == $url && !empty($this->options['shorten_urls']))
+		if($name == $url && (!isset($this->options['shorten_urls']) || !empty($this->options['shorten_urls'])))
 		{
 			$name = htmlspecialchars_decode($name);
 			if(my_strlen($name) > 55)
