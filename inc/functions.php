@@ -3180,9 +3180,12 @@ function build_mycode_inserter($bind="message", $smilies = true)
 			// Smilies
 			$emoticon = "";
 			$emoticons_enabled = "false";
-			if($smilies && $mybb->settings['smilieinserter'] != 0 && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
+			if($smilies)
 			{
-				$emoticon = ",emoticon";
+				if($mybb->settings['smilieinserter'] && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
+				{
+					$emoticon = ",emoticon";
+				}
 				$emoticons_enabled = "true";
 
 				if(!$smiliecache)
@@ -3193,11 +3196,8 @@ function build_mycode_inserter($bind="message", $smilies = true)
 					}
 					foreach($smilie_cache as $smilie)
 					{
-						if($smilie['showclickable'] != 0)
-						{
-							$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
-							$smiliecache[$smilie['sid']] = $smilie;
-						}
+						$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
+						$smiliecache[$smilie['sid']] = $smilie;
 					}
 				}
 
@@ -3222,9 +3222,14 @@ function build_mycode_inserter($bind="message", $smilies = true)
 						$image = htmlspecialchars_uni($mybb->get_asset_url($smilie['image']));
 						$image = str_replace(array('\\', '"'), array('\\\\', '\"'), $image);
 
-						if($i < $mybb->settings['smilieinsertertot'])
+						if(!$mybb->settings['smilieinserter'] || !$mybb->settings['smilieinsertercols'] || !$mybb->settings['smilieinsertertot'] || !$smilie['showclickable'])
+						{
+							$hiddensmilies .= '"'.$find.'": "'.$image.'",';							
+						}
+						elseif($i < $mybb->settings['smilieinsertertot'])
 						{
 							$dropdownsmilies .= '"'.$find.'": "'.$image.'",';
+							++$i;
 						}
 						else
 						{
@@ -3236,7 +3241,6 @@ function build_mycode_inserter($bind="message", $smilies = true)
 							$find = str_replace(array('\\', '"'), array('\\\\', '\"'), htmlspecialchars_uni($finds[$j]));
 							$hiddensmilies .= '"'.$find.'": "'.$image.'",';
 						}
-						++$i;
 					}
 				}
 			}

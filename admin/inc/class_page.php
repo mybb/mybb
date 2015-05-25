@@ -910,10 +910,14 @@ EOF;
 		// Smilies
 		$emoticon = "";
 		$emoticons_enabled = "false";
-		if($smilies && $mybb->settings['smilieinserter'] != 0 && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
+		if($smilies)
 		{
-			$emoticon = ",emoticon";
+			if($mybb->settings['smilieinserter'] && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
+			{			
+				$emoticon = ",emoticon";
+			}
 			$emoticons_enabled = "true";
+			
 			if(!$smiliecount)
 			{
 				$smilie_cache = $cache->read("smilies");
@@ -928,11 +932,8 @@ EOF;
 				}
 				foreach($smilie_cache as $smilie)
 				{
-					if($smilie['showclickable'] != 0)
-					{
-						$smilie['image'] = str_replace("{theme}", "images", $smilie['image']);
-						$smiliecache[$smilie['find']] = $smilie['image'];
-					}
+					$smilie['image'] = str_replace("{theme}", "images", $smilie['image']);
+					$smiliecache[$smilie['sid']] = $smilie;
 				}
 			}
 
@@ -945,21 +946,27 @@ EOF;
 				$dropdownsmilies = $moresmilies = $hiddensmilies = "";
 				$i = 0;
 
-				foreach($smiliecache as $find => $image)
+				foreach($smiliecache as $smilie)
 				{
-					$finds = explode("\n", $find);
+					$finds = explode("\n", $smilie['find']);
 					$finds_count = count($finds);
 					
 					// Only show the first text to replace in the box
 					$find = str_replace(array('\\', '"'), array('\\\\', '\"'), htmlspecialchars_uni($finds[0]));
-					$image = str_replace(array('\\', '"'), array('\\\\', '\"'), htmlspecialchars_uni($image));
+					$image = str_replace(array('\\', '"'), array('\\\\', '\"'), htmlspecialchars_uni($smilie['image']));
 					if(substr($image, 0, 4) != "http")
 					{
 						$image = $mybb->settings['bburl']."/".$image;
 					}
-					if($i < $mybb->settings['smilieinsertertot'])
+
+					if(!$mybb->settings['smilieinserter'] || !$mybb->settings['smilieinsertercols'] || !$mybb->settings['smilieinsertertot'] || !$smilie['showclickable'])
+					{
+						$hiddensmilies .= '"'.$find.'": "'.$image.'",';							
+					}
+					elseif($i < $mybb->settings['smilieinsertertot'])
 					{
 						$dropdownsmilies .= '"'.$find.'": "'.$image.'",';
+						++$i;
 					}
 					else
 					{
@@ -971,7 +978,6 @@ EOF;
 						$find = str_replace(array('\\', '"'), array('\\\\', '\"'), htmlspecialchars_uni($finds[$j]));
 						$hiddensmilies .= '"'.$find.'": "'.$image.'",';
 					}
-					++$i;
 				}
 			}
 		}
