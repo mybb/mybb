@@ -24,6 +24,10 @@ function upgrade33_dbchanges()
 {
 	global $db, $output;
 
+	$output->print_header("Updating Database");
+	echo "<p>Performing necessary upgrade queries...</p>";
+	flush();
+
 	if($db->field_exists('2fasecret', 'adminoptions'))
 	{
 		$db->rename_column('adminoptions', '2fasecret', 'authsecret', "varchar(16) NOT NULL default ''");
