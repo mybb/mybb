@@ -161,7 +161,54 @@ elseif($mybb->input['do'] == "login")
 	// Validate PIN first
 	if(!empty($config['secret_pin']) && (empty($mybb->input['pin']) || $mybb->input['pin'] != $config['secret_pin']))
 	{
-		$default_page->show_login($lang->error_invalid_secret_pin, "error");
+		$login_user = get_user_by_username($mybb->input['username'], array('fields' => array('email', 'username')));
+
+		if($login_user['uid'] > 0)
+		{
+			$db->update_query("adminoptions", array("loginattempts" => "loginattempts+1"), "uid='".(int)$login_user['uid']."'", '', true);
+		}
+
+		$loginattempts = login_attempt_check_acp($login_user['uid'], true);
+
+		// Have we attempted too many times?
+		if($loginattempts['loginattempts'] > 0)
+		{
+			// Have we set an expiry yet?
+			if($loginattempts['loginlockoutexpiry'] == 0)
+			{
+				$db->update_query("adminoptions", array("loginlockoutexpiry" => TIME_NOW+((int)$mybb->settings['loginattemptstimeout']*60)), "uid='".(int)$login_user['uid']."'");
+			}
+
+			// Did we hit lockout for the first time? Send the unlock email to the administrator
+			if($loginattempts['loginattempts'] == $mybb->settings['maxloginattempts'])
+			{
+				$db->delete_query("awaitingactivation", "uid='".(int)$login_user['uid']."' AND type='l'");
+				$lockout_array = array(
+					"uid" => $login_user['uid'],
+					"dateline" => TIME_NOW,
+					"code" => random_str(),
+					"type" => "l"
+				);
+				$db->insert_query("awaitingactivation", $lockout_array);
+
+				$subject = $lang->sprintf($lang->locked_out_subject, $mybb->settings['bbname']);
+				$message = $lang->sprintf($lang->locked_out_message, htmlspecialchars_uni($mybb->input['username']), $mybb->settings['bbname'], $mybb->settings['maxloginattempts'], $mybb->settings['bburl'], $mybb->config['admin_dir'], $lockout_array['code'], $lockout_array['uid']);
+				my_mail($login_user['email'], $subject, $message);
+			}
+
+			log_admin_action(array(
+					'type' => 'admin_locked_out',
+					'uid' => (int)$login_user['uid'],
+					'username' => $login_user['username'],
+				)
+			);
+
+			$default_page->show_lockedout();
+		}
+		else
+		{
+			$default_page->show_login($lang->error_invalid_secret_pin, "error");
+		}
 	}
 
 	$loginhandler->set_data(array(

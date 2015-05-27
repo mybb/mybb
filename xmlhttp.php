@@ -469,13 +469,10 @@ else if($mybb->input['action'] == "edit_post")
 	if($mybb->get_input('do') == "get_post")
 	{
 		// Send our headers.
-		//header("Content-type: text/xml; charset={$charset}");
-		header("Content-type: text/html; charset={$charset}");
-
-		//$post['message'] = htmlspecialchars_uni($post['message']);
+		header("Content-type: application/json; charset={$charset}");
 
 		// Send the contents of the post.
-		echo $post['message'];
+		echo json_encode($post['message']);
 		exit;
 	}
 	else if($mybb->get_input('do') == "update_post")
@@ -890,7 +887,7 @@ else if($mybb->input['action'] == "username_availability")
 	$username = $mybb->get_input('username');
 
 	// Fix bad characters
-	$username = trim($username);
+	$username = trim_blank_chrs($username);
 	$username = str_replace(array(unichr(160), unichr(173), unichr(0xCA), dec_to_utf8(8238), dec_to_utf8(8237), dec_to_utf8(8203)), array(" ", "-", "", "", "", ""), $username);
 
 	// Remove multiple spaces from the username
@@ -913,7 +910,7 @@ else if($mybb->input['action'] == "username_availability")
 	}
 
 	// Check for certain characters in username (<, >, &, and slashes)
-	if(strpos($username, "<") !== false || strpos($username, ">") !== false || strpos($username, "&") !== false || my_strpos($username, "\\") !== false || strpos($username, ";") !== false || !validate_utf8_string($username, false, false))
+	if(strpos($username, "<") !== false || strpos($username, ">") !== false || strpos($username, "&") !== false || my_strpos($username, "\\") !== false || strpos($username, ";") !== false || strpos($username, ",") !== false || !validate_utf8_string($username, false, false))
 	{
 		echo json_encode($lang->banned_characters_username);
 		exit;

@@ -112,7 +112,7 @@ if($mybb->input['action'] == "add")
 			$cache->update_profilefields();
 
 			// Log admin action
-			log_admin_action($fid, $mybb->input['name']);
+			log_admin_action($fid, htmlspecialchars_uni($mybb->input['name']));
 
 			flash_message($lang->success_profile_field_added, 'success');
 			admin_redirect("index.php?module=config-profile_fields");

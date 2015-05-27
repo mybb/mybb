@@ -4643,8 +4643,6 @@ if(use_xmlhttprequest == "1")
 <td width="40%" class="trow1"><strong>{$lang->your_email}</strong><br /><span class="smalltext">{$lang->email_note}</span></td>
 <td width="60%" class="trow1"><input type="text" class="textbox" size="50" name="fromemail"  value="{$fromemail}" /></td>
 </tr>]]></template>
-		<template name="member_emailuser_hidden" version="1800"><![CDATA[<input type="hidden" name="fromname" value="{$mybb->user['username']}" />
-<input type="hidden" name="fromemail" value="{$mybb->user['email']}" />]]></template>
 		<template name="member_loggedin_notice" version="1800"><![CDATA[<fieldset class="align_right smalltext">{$lang->already_logged_in}</fieldset>
 <br />]]></template>
 		<template name="member_login" version="1611"><![CDATA[<html>
@@ -13998,8 +13996,6 @@ $(function() {
 <td width="40%" class="trow1"><strong>{$lang->your_email}</strong><br /><span class="smalltext">{$lang->email_note}</span></td>
 <td width="60%" class="trow1"><input type="text" class="textbox" size="50" name="fromemail" value="{$fromemail}" /></td>
 </tr>]]></template>
-		<template name="sendthread_fromemail_hidden" version="1800"><![CDATA[<input type="hidden" name="fromname" value="{$mybb->user['username']}" />
-<input type="hidden" name="fromemail" value="{$mybb->user['email']}" />]]></template>
 		<template name="task_image" version="1800"><![CDATA[<img src="{$mybb->settings['bburl']}/task.php" width="1" height="1" alt="" />]]></template>
 		<template name="smilie" version="1800"><![CDATA[<img src="{$smilie['image']}" alt="{$smilie['name']}" title="{$smilie['name']}" class="smilie smilie_{$smilie['sid']}{$extra_class}"{$onclick} />]]></template>
 		<template name="global_board_offline_modal" version="1804"><![CDATA[<div class="modal">

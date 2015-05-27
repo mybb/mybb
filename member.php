@@ -21,7 +21,7 @@ $templatelist .= ",member_profile_signature,member_profile_avatar,member_profile
 $templatelist .= ",member_profile_modoptions_manageuser,member_profile_modoptions_editprofile,member_profile_modoptions_banuser,member_profile_modoptions_viewnotes,member_profile_modoptions,member_profile_modoptions_editnotes,member_profile_modoptions_purgespammer,postbit_reputation_formatted,postbit_warninglevel_formatted";
 $templatelist .= ",usercp_profile_profilefields_select_option,usercp_profile_profilefields_multiselect,usercp_profile_profilefields_select,usercp_profile_profilefields_textarea,usercp_profile_profilefields_radio,usercp_profile_profilefields_checkbox,usercp_profile_profilefields_text,usercp_options_tppselect_option";
 $templatelist .= ",member_register_question,member_register_question_refresh,usercp_options_timezone,usercp_options_timezone_option,usercp_options_language_option,member_register_language,member_profile_userstar,member_profile_customfields_field_multi_item,member_profile_customfields_field_multi,member_register_day";
-$templatelist .= ",member_profile_contact_fields_aim,member_profile_contact_fields_google,member_profile_contact_fields_icq,member_profile_contact_fields_skype,member_profile_contact_fields_yahoo,member_profile_pm,member_profile_contact_details,member_emailuser_hidden,member_profile_banned";
+$templatelist .= ",member_profile_contact_fields_aim,member_profile_contact_fields_google,member_profile_contact_fields_icq,member_profile_contact_fields_skype,member_profile_contact_fields_yahoo,member_profile_pm,member_profile_contact_details,member_profile_banned";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -1583,10 +1583,10 @@ if($mybb->input['action'] == "resetpassword")
 	}
 	if(isset($mybb->input['code']) && $user)
 	{
-		$query = $db->simple_select("awaitingactivation", "*", "uid='".$user['uid']."' AND type='p'");
-		$activation = $db->fetch_array($query);
+		$query = $db->simple_select("awaitingactivation", "code", "uid='".$user['uid']."' AND type='p'");
+		$activationcode = $db->fetch_field($query, 'code');
 		$now = TIME_NOW;
-		if($activation['code'] != $mybb->get_input('code'))
+		if(!$activationcode || $activationcode != $mybb->get_input('code'))
 		{
 			error($lang->error_badlostpwcode);
 		}
@@ -2791,6 +2791,12 @@ if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 
 	$errors = array();
 
+	if($mybb->user['uid'])
+	{
+		$mybb->input['fromemail'] = $mybb->user['email'];
+		$mybb->input['fromname'] = $mybb->user['username'];
+	}
+
 	if(!validate_email_format($mybb->input['fromemail']))
 	{
 		$errors[] = $lang->error_invalidfromemail;
@@ -3000,10 +3006,6 @@ if($mybb->input['action'] == "emailuser")
 	if($mybb->user['uid'] == 0)
 	{
 		eval("\$from_email = \"".$templates->get("member_emailuser_guest")."\";");
-	}
-	else
-	{
-		eval("\$from_email = \"".$templates->get("member_emailuser_hidden")."\";");
 	}
 
 	$plugins->run_hooks("member_emailuser_end");
