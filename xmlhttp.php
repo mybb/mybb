@@ -650,7 +650,7 @@ else if($mybb->input['action'] == "username_availability")
 	$username = $mybb->input['value'];
 
 	// Fix bad characters
-	$username = trim($username);
+	$username = trim_blank_chrs($username);
 	$username = str_replace(array(unichr(160), unichr(173), unichr(0xCA), dec_to_utf8(8238), dec_to_utf8(8237), dec_to_utf8(8203)), array(" ", "-", "", "", "", ""), $username);
 
 	// Remove multiple spaces from the username
@@ -673,7 +673,7 @@ else if($mybb->input['action'] == "username_availability")
 	}
 
 	// Check for certain characters in username (<, >, &, and slashes)
-	if(strpos($username, "<") !== false || strpos($username, ">") !== false || strpos($username, "&") !== false || my_strpos($username, "\\") !== false || strpos($username, ";") !== false || !validate_utf8_string($username, false, false))
+	if(strpos($username, "<") !== false || strpos($username, ">") !== false || strpos($username, "&") !== false || my_strpos($username, "\\") !== false || strpos($username, ";") !== false|| strpos($username, ",") !== false || !validate_utf8_string($username, false, false))
 	{
 		echo "<fail>{$lang->banned_characters_username}</fail>";
 		exit;

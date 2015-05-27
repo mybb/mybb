@@ -1220,7 +1220,7 @@ if($mybb->input['action'] == "diff_report")
 
 	$sub_tabs['diff_report'] = array(
 		'title' => $lang->diff_report,
-		'link' => "index.php?module=style-templates&amp;action=diff_report&amp;title=".$db->escape_string($mybb->input['title'])."&amp;from=".$mybb->input['from']."sid1=".intval($mybb->input['sid1'])."&amp;sid2=".intval($mybb->input['sid2']),
+		'link' => "index.php?module=style-templates&amp;action=diff_report&amp;title=".$db->escape_string($mybb->input['title'])."&amp;from=".htmlspecialchars_uni($mybb->input['from'])."sid1=".intval($mybb->input['sid1'])."&amp;sid2=".intval($mybb->input['sid2']),
 		'description' => $lang->diff_report_desc
 	);
 
@@ -1268,7 +1268,7 @@ if($mybb->input['action'] == "diff_report")
 		$page->add_breadcrumb_item($lang->find_updated, "index.php?module=style-templates&amp;action=find_updated");
 	}
 
-	$page->add_breadcrumb_item($lang->diff_report.": ".$template1['title'], "index.php?module=style-templates&amp;action=diff_report&amp;title=".$db->escape_string($mybb->input['title'])."&amp;from=".$mybb->input['from']."&amp;sid1=".intval($mybb->input['sid1'])."&amp;sid2=".intval($mybb->input['sid2']));
+	$page->add_breadcrumb_item($lang->diff_report.": ".htmlspecialchars_uni($template1['title']), "index.php?module=style-templates&amp;action=diff_report&amp;title=".$db->escape_string($mybb->input['title'])."&amp;from=".htmlspecialchars_uni($mybb->input['from'])."&amp;sid1=".intval($mybb->input['sid1'])."&amp;sid2=".intval($mybb->input['sid2']));
 
 	$page->output_header($lang->template_sets);
 
@@ -1406,7 +1406,7 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 	$query = $db->simple_select("templategroups", "*");
 	while($templategroup = $db->fetch_array($query))
 	{
-		$templategroup['title'] = $lang->parse($templategroup['title'])." ".$lang->templates;
+		$templategroup['title'] = htmlspecialchars_uni($lang->parse($templategroup['title']))." ".$lang->templates;
 		if($mybb->input['expand'] == 'all')
 		{
 			$expand_array[] = $templategroup['gid'];

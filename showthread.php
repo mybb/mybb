@@ -72,7 +72,7 @@ if($thread['prefix'] != 0)
 
 	if($threadprefix['prefix'])
 	{
-		$thread['threadprefix'] = $threadprefix['prefix'].'&nbsp;';
+		$thread['threadprefix'] = htmlspecialchars_uni($threadprefix['prefix']).'&nbsp;';
 		$thread['displayprefix'] = $threadprefix['displaystyle'].'&nbsp;';
 	}
 }

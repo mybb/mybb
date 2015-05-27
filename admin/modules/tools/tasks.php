@@ -144,7 +144,7 @@ if($mybb->input['action'] == "add")
 			$plugins->run_hooks("admin_tools_tasks_add_commit");
 
 			// Log admin action
-			log_admin_action($tid, $mybb->input['title']);
+			log_admin_action($tid, htmlspecialchars_uni($mybb->input['title']));
 
 			flash_message($lang->success_task_created, 'success');
 			admin_redirect("index.php?module=tools-tasks");
@@ -343,7 +343,7 @@ if($mybb->input['action'] == "edit")
 			$plugins->run_hooks("admin_tools_tasks_edit_commit");
 
 			// Log admin action
-			log_admin_action($task['tid'], $mybb->input['title']);
+			log_admin_action($task['tid'], htmlspecialchars_uni($mybb->input['title']));
 
 			flash_message($lang->success_task_updated, 'success');
 			
@@ -477,7 +477,7 @@ if($mybb->input['action'] == "delete")
 		$plugins->run_hooks("admin_tools_tasks_delete_commit");
 
 		// Log admin action
-		log_admin_action($task['tid'], $task['title']);
+		log_admin_action($task['tid'], htmlspecialchars_uni($task['title']));
 
 		flash_message($lang->success_task_deleted, 'success');
 		admin_redirect("index.php?module=tools-tasks");
@@ -534,7 +534,7 @@ if($mybb->input['action'] == "enable" || $mybb->input['action'] == "disable")
 				$plugins->run_hooks("admin_tools_tasks_enable_commit");
 				
 				// Log admin action
-				log_admin_action($task['tid'], $task['title'], $mybb->input['action']);
+				log_admin_action($task['tid'], htmlspecialchars_uni($task['title']), $mybb->input['action']);
 				
 				flash_message($lang->success_task_enabled, 'success');
 				admin_redirect("index.php?module=tools-tasks");
@@ -553,7 +553,7 @@ if($mybb->input['action'] == "enable" || $mybb->input['action'] == "disable")
 			$plugins->run_hooks("admin_tools_tasks_enable_commit");
 			
 			// Log admin action
-			log_admin_action($task['tid'], $task['title'], $mybb->input['action']);
+			log_admin_action($task['tid'], htmlspecialchars_uni($task['title']), $mybb->input['action']);
 			
 			flash_message($lang->success_task_enabled, 'success');
 			admin_redirect("index.php?module=tools-tasks");
@@ -567,7 +567,7 @@ if($mybb->input['action'] == "enable" || $mybb->input['action'] == "disable")
 		$plugins->run_hooks("admin_tools_tasks_disable_commit");
 		
 		// Log admin action
-		log_admin_action($task['tid'], $task['title'], $mybb->input['action']);
+		log_admin_action($task['tid'], htmlspecialchars_uni($task['title']), $mybb->input['action']);
 		
 		flash_message($lang->success_task_disabled, 'success');
 		admin_redirect("index.php?module=tools-tasks");
@@ -601,7 +601,7 @@ if($mybb->input['action'] == "run")
 	$plugins->run_hooks("admin_tools_tasks_run_commit");
 
 	// Log admin action
-	log_admin_action($task['tid'], $task['title']);
+	log_admin_action($task['tid'], htmlspecialchars_uni($task['title']));
 
 	flash_message($lang->success_task_run, 'success');
 	admin_redirect("index.php?module=tools-tasks");

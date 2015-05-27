@@ -546,8 +546,8 @@ if($mybb->input['action'] == "add")
 	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
 	while($usergroup = $db->fetch_array($query))
 	{
-		$options[$usergroup['gid']] = $usergroup['title'];
-		$display_group_options[$usergroup['gid']] = $usergroup['title'];
+		$options[$usergroup['gid']] = htmlspecialchars_uni($usergroup['title']);
+		$display_group_options[$usergroup['gid']] = htmlspecialchars_uni($usergroup['title']);
 	}
 
 	$form_container->output_row($lang->primary_user_group." <em>*</em>", "", $form->generate_select_box('usergroup', $options, $mybb->input['usergroup'], array('id' => 'usergroup')), 'usergroup');
@@ -730,7 +730,6 @@ if($mybb->input['action'] == "edit")
 			else if($mybb->input['avatar_url'] && $mybb->input['avatar_url'] != $user['avatar'])
 			{
 				$mybb->input['avatar_url'] = preg_replace("#script:#i", "", $mybb->input['avatar_url']);
-				$mybb->input['avatar_url'] = htmlspecialchars_uni($mybb->input['avatar_url']);
 				$ext = get_extension($mybb->input['avatar_url']);
 
 				// Copy the avatar to the local server (work around remote URL access disabled for getimagesize)
@@ -1143,8 +1142,8 @@ if($mybb->input['action'] == "edit")
 	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
 	while($usergroup = $db->fetch_array($query))
 	{
-		$options[$usergroup['gid']] = $usergroup['title'];
-		$display_group_options[$usergroup['gid']] = $usergroup['title'];
+		$options[$usergroup['gid']] = htmlspecialchars_uni($usergroup['title']);
+		$display_group_options[$usergroup['gid']] = htmlspecialchars_uni($usergroup['title']);
 	}
 
 	if(!is_array($mybb->input['additionalgroups']))
@@ -1472,7 +1471,7 @@ if($mybb->input['action'] == "edit")
 
 	if($errors)
 	{
-		$avatar_url = $mybb->input['avatar_url'];
+		$avatar_url = htmlspecialchars_uni($mybb->input['avatar_url']);
 	}
 
 	if($mybb->settings['maxavatardims'] != "")
@@ -2968,8 +2967,8 @@ if($mybb->input['action'] == "inline_edit")
 				$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
 				while($usergroup = $db->fetch_array($query))
 				{
-					$options[$usergroup['gid']] = $usergroup['title'];
-					$display_group_options[$usergroup['gid']] = $usergroup['title'];
+					$options[$usergroup['gid']] = htmlspecialchars_uni($usergroup['title']);
+					$display_group_options[$usergroup['gid']] = htmlspecialchars_uni($usergroup['title']);
 				}
 
 				if(!is_array($mybb->input['additionalgroups']))
@@ -3499,14 +3498,14 @@ function build_users_view($view)
 		{
 			$comma = $groups_list = '';
 			$user['view']['username'] = "<a href=\"index.php?module=user-users&amp;action=edit&amp;uid={$user['uid']}\">".format_name($user['username'], $user['usergroup'], $user['displaygroup'])."</a>";
-			$user['view']['usergroup'] = $usergroups[$user['usergroup']]['title'];
+			$user['view']['usergroup'] = htmlspecialchars_uni($usergroups[$user['usergroup']]['title']);
 			if($user['additionalgroups'])
 			{
 				$additional_groups = explode(",", $user['additionalgroups']);
 
 				foreach($additional_groups as $group)
 				{
-					$groups_list .= "{$comma}{$usergroups[$group]['title']}";
+					$groups_list .= $comma.htmlspecialchars_uni($usergroups[$group]['title']);
 					$comma = $lang->comma;
 				}
 			}
@@ -3896,6 +3895,8 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 	}
 	foreach($fields as $profile_field)
 	{
+		$profile_field['name'] = htmlspecialchars_uni($profile_field['name']);
+		$profile_field['description'] = htmlspecialchars_uni($profile_field['description']);
 		$profile_field['type'] = htmlspecialchars_uni($profile_field['type']);
 		list($type, $options) = explode("\n", $profile_field['type'], 2);
 		$type = trim($type);
@@ -4057,7 +4058,7 @@ function user_search_conditions($input=array(), &$form)
 	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
 	while($usergroup = $db->fetch_array($query))
 	{
-		$options[$usergroup['gid']] = $usergroup['title'];
+		$options[$usergroup['gid']] = htmlspecialchars_uni($usergroup['title']);
 	}
 
 	$form_container->output_row($lang->is_member_of_groups, $lang->additional_user_groups_desc, $form->generate_select_box('conditions[usergroup][]', $options, $input['conditions']['usergroup'], array('id' => 'usergroups', 'multiple' => true, 'size' => 5)), 'usergroups');

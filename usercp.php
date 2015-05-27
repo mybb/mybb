@@ -613,14 +613,14 @@ if($mybb->input['action'] == "profile")
 			{
 				if($title['posts'] <= $mybb->user['postnum'])
 				{
-					$defaulttitle = $title['title'];
+					$defaulttitle = htmlspecialchars_uni($title['title']);
 					break;
 				}
 			}
 		}
 		else
 		{
-			$defaulttitle = $mybb->usergroup['usertitle'];
+			$defaulttitle = htmlspecialchars_uni($mybb->usergroup['usertitle']);
 		}
 
 		if(trim($user['usertitle']) == '')
@@ -2720,6 +2720,7 @@ if($mybb->input['action'] == "usergroups")
 	{
 		$memberlistlink = $moderaterequestslink = '';
 		$memberlistlink = " [<a href=\"managegroup.php?gid=".$usergroup['gid']."\">".$lang->view_members."</a>]";
+		$usergroup['title'] = htmlspecialchars_uni($usergroup['title']);
 		if($usergroup['type'] != 4)
 		{
 			$usergroup['joinrequests'] = '--';
@@ -2741,6 +2742,9 @@ if($mybb->input['action'] == "usergroups")
 	// Do the primary group first
 	$query = $db->simple_select("usergroups", "*", "gid='".$mybb->user['usergroup']."'");
 	$usergroup = $db->fetch_array($query);
+	$usergroup['title'] = htmlspecialchars_uni($usergroup['title']);
+	$usergroup['usertitle'] = htmlspecialchars_uni($usergroup['usertitle']);
+	$usergroup['description'] = htmlspecialchars_uni($usergroup['description']);
 	$leavelink = "<div style=\"text-align:center;\"><span class=\"smalltext\">{$lang->usergroup_leave_primary}</span></div>";
 	$trow = alt_trow();
 	if($usergroup['candisplaygroup'] == 1 && $usergroup['gid'] == $mybb->user['displaygroup'])
@@ -2777,8 +2781,11 @@ if($mybb->input['action'] == "usergroups")
 			{
 				$leavelink = "<div style=\"text-align: center;\"><a href=\"usercp.php?action=usergroups&amp;leavegroup=".$usergroup['gid']."&amp;my_post_key={$mybb->post_code}\">".$lang->usergroup_leave."</a></div>";
 			}
+			$usergroup['title'] = htmlspecialchars_uni($usergroup['title']);
+			$usergroup['usertitle'] = htmlspecialchars_uni($usergroup['usertitle']);
 			if($usergroup['description'])
 			{
+				$usergroup['description'] = htmlspecialchars_uni($usergroup['description']);
 				$description = "<br /><span class=\"smalltext\">".$usergroup['description']."</span>";
 			}
 			else
@@ -2822,8 +2829,10 @@ if($mybb->input['action'] == "usergroups")
 	while($usergroup = $db->fetch_array($query))
 	{
 		$trow = alt_trow();
+		$usergroup['title'] = htmlspecialchars_uni($usergroup['title']);
 		if($usergroup['description'])
 		{
+			$usergroup['description'] = htmlspecialchars_uni($usergroup['description']);
 			$description = "<br /><span class=\"smallfont\">".$usergroup['description']."</span>";
 		}
 		else
@@ -3053,7 +3062,7 @@ if(!$mybb->input['action'])
 	}
 
 	$lang->posts_day = $lang->sprintf($lang->posts_day, my_number_format($perday), $percent);
-	$usergroup = $groupscache[$mybb->user['usergroup']]['title'];
+	$usergroup = htmlspecialchars_uni($groupscache[$mybb->user['usergroup']]['title']);
 
 	$colspan = 1;
 	if($mybb->user['avatar'])

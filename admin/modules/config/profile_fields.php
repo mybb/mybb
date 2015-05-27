@@ -73,7 +73,7 @@ if($mybb->input['action'] == "add")
 			$plugins->run_hooks("admin_config_profile_fields_add_commit");
 
 			// Log admin action
-			log_admin_action($fid, $mybb->input['name']);
+			log_admin_action($fid, htmlspecialchars_uni($mybb->input['name']));
 					
 			flash_message($lang->success_profile_field_added, 'success');
 			admin_redirect("index.php?module=config-profile_fields");
@@ -209,7 +209,7 @@ if($mybb->input['action'] == "edit")
 			$plugins->run_hooks("admin_config_profile_fields_edit_commit");
 			
 			// Log admin action
-			log_admin_action($profile_field['fid'], $mybb->input['name']);
+			log_admin_action($profile_field['fid'], htmlspecialchars_uni($mybb->input['name']));
 
 			flash_message($lang->success_profile_field_saved, 'success');
 			admin_redirect("index.php?module=config-profile_fields");
@@ -316,7 +316,7 @@ if($mybb->input['action'] == "delete")
 		$plugins->run_hooks("admin_config_profile_fields_delete_commit");
 
 		// Log admin action
-		log_admin_action($profile_field['fid'], $profile_field['name']);
+		log_admin_action($profile_field['fid'], htmlspecialchars_uni($profile_field['name']));
 
 		flash_message($lang->success_profile_field_deleted, 'success');
 		admin_redirect("index.php?module=config-profile_fields");
