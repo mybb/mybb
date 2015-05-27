@@ -754,7 +754,7 @@ if($mybb->input['action'] == "results")
 
 			if($onlyusfids)
 			{
-				$permsql .= " OR ((fid IN(".implode(',', $onlyusfids).") AND uid!={$mybb->user['uid']})";
+				$permsql .= " OR (fid IN(".implode(',', $onlyusfids).") AND uid!={$mybb->user['uid']})";
 			}
 			$unsearchforums = get_unsearchable_forums();
 			if($unsearchforums)
