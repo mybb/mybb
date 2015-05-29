@@ -542,8 +542,6 @@ if($mybb->input['action'] == "addevent")
 		eval("\$calendar_select .= \"".$templates->get("calendar_addevent_calendarselect_hidden")."\";");
 	}
 
-	$event_errors = '';
-
 	$plugins->run_hooks("calendar_addevent_end");
 
 	eval("\$addevent = \"".$templates->get("calendar_addevent")."\";");
