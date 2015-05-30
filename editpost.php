@@ -877,7 +877,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		$numpolloptions = $mybb->get_input('numpolloptions', MyBB::INPUT_INT);
 		$postpollchecked = '';
 		
-		if(!$numpolloptions)
+		if($numpolloptions < 1)
 		{
 			$numpolloptions = 2;
 		}
