@@ -8054,8 +8054,6 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 		return false;
 	}
 
-	$lang->load('messages');
-
 	require_once MYBB_ROOT."inc/datahandlers/pm.php";
 
 	$pmhandler = new PMDataHandler();
