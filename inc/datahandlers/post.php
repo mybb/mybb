@@ -106,6 +106,13 @@ class PostDataHandler extends DataHandler
 	public $return_values = array();
 
 	/**
+	 * Is this the first post of a thread when editing
+	 *
+	 * @var boolean
+	 */
+	public $first_post = false;
+
+	/**
 	 * Verifies the author of a post and fetches the username if necessary.
 	 *
 	 * @return boolean True if the author information is valid, false if invalid.
@@ -175,34 +182,10 @@ class PostDataHandler extends DataHandler
 		$subject = &$post['subject'];
 		$subject = trim_blank_chrs($subject);
 
-		// Are we editing an existing thread or post?
 		if($this->method == "update" && $post['pid'])
 		{
-			if(empty($post['tid']))
-			{
-				$query = $db->simple_select("posts", "tid", "pid='".(int)$post['pid']."'");
-				$post['tid'] = $db->fetch_field($query, "tid");
-			}
-			// Here we determine if we're editing the first post of a thread or not.
-			$options = array(
-				"limit" => 1,
-				"limit_start" => 0,
-				"order_by" => "dateline",
-				"order_dir" => "asc"
-			);
-			$query = $db->simple_select("posts", "pid", "tid='".$post['tid']."'", $options);
-			$first_check = $db->fetch_array($query);
-			if($first_check['pid'] == $post['pid'])
-			{
-				$first_post = true;
-			}
-			else
-			{
-				$first_post = false;
-			}
-
 			// If this is the first post there needs to be a subject, else make it the default one.
-			if(my_strlen($subject) == 0 && $first_post)
+			if(my_strlen($subject) == 0 && $this->first_post)
 			{
 				$this->set_error("firstpost_no_subject");
 				return false;
@@ -751,6 +734,29 @@ class PostDataHandler extends DataHandler
 			$this->verify_post_flooding();
 		}
 
+		// Are we editing an existing thread or post?
+		if($this->method == "update")
+		{
+			if(empty($post['tid']))
+			{
+				$query = $db->simple_select("posts", "tid", "pid='".(int)$post['pid']."'");
+				$post['tid'] = $db->fetch_field($query, "tid");
+			}
+			// Here we determine if we're editing the first post of a thread or not.
+			$options = array(
+				"limit" => 1,
+				"limit_start" => 0,
+				"order_by" => "dateline",
+				"order_dir" => "asc"
+			);
+			$query = $db->simple_select("posts", "pid", "tid='".$post['tid']."'", $options);
+			$first_check = $db->fetch_array($query);
+			if($first_check['pid'] == $post['pid'])
+			{
+				$this->first_post = true;
+			}
+		}
+
 		// Verify all post assets.
 
 		if($this->method == "insert" || array_key_exists('uid', $post))
@@ -788,6 +794,11 @@ class PostDataHandler extends DataHandler
 		if($this->method == "insert" || array_key_exists('options', $post))
 		{
 			$this->verify_options();
+		}
+
+		if($this->method == "update" && $this->first_post)
+		{
+			$this->verify_prefix();
 		}
 
 		$plugins->run_hooks("datahandler_post_validate_post", $this);
@@ -1743,24 +1754,6 @@ class PostDataHandler extends DataHandler
 		$forum = get_forum($post['fid']);
 		$forumpermissions = forum_permissions($post['fid'], $post['uid']);
 
-		// Check if this is the first post in a thread.
-		$options = array(
-			"order_by" => "dateline",
-			"order_dir" => "asc",
-			"limit_start" => 0,
-			"limit" => 1
-		);
-		$query = $db->simple_select("posts", "pid", "tid='".(int)$post['tid']."'", $options);
-		$first_post_check = $db->fetch_array($query);
-		if($first_post_check['pid'] == $post['pid'])
-		{
-			$first_post = true;
-		}
-		else
-		{
-			$first_post = false;
-		}
-
 		// Decide on the visibility of this post.
 		$ismod = is_moderator($post['fid'], "", $post['uid']);
 
@@ -1786,7 +1779,7 @@ class PostDataHandler extends DataHandler
 		}
 
 		// Update the thread details that might have been changed first.
-		if($first_post)
+		if($this->first_post)
 		{
 			$this->tid = $post['tid'];
 
@@ -1887,7 +1880,7 @@ class PostDataHandler extends DataHandler
 		// Return the thread's first post id and whether or not it is visible.
 		$this->return_values = array(
 			'visible' => $visible,
-			'first_post' => $first_post
+			'first_post' => $this->first_post
 		);
 
 		$plugins->run_hooks("datahandler_post_update_end", $this);
