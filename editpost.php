@@ -666,7 +666,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	$postoptions_subscriptionmethod_dont = $postoptions_subscriptionmethod_none = $postoptions_subscriptionmethod_email = $postoptions_subscriptionmethod_pm = '';
 	$postoptionschecked = array('signature' => '', 'disablesmilies' => '');
 
-	if(isset($mybb->input['previewpost']) || $post_errors)
+	if(!empty($mybb->input['previewpost']) || $post_errors)
 	{
 		// Set up posthandler.
 		require_once MYBB_ROOT."inc/datahandlers/post.php";
@@ -753,7 +753,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		}
 	}
 
-	if(isset($mybb->input['previewpost']))
+	if(!empty($mybb->input['previewpost']))
 	{
 		if(!$post['uid'])
 		{
