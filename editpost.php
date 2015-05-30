@@ -874,8 +874,19 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	if($firstcheck['pid'] == $pid && $forumpermissions['canpostpolls'] != 0 && $thread['poll'] < 1 && (is_moderator($fid, "canmanagepolls") || $thread['dateline'] > ($time-($mybb->settings['polltimelimit']*60*60)) || $mybb->settings['polltimelimit'] == 0))
 	{
 		$lang->max_options = $lang->sprintf($lang->max_options, $mybb->settings['maxpolloptions']);
-		$numpolloptions = "2";
+		$numpolloptions = $mybb->get_input('numpolloptions', MyBB::INPUT_INT);
 		$postpollchecked = '';
+		
+		if($numpolloptions < 1)
+		{
+			$numpolloptions = 2;
+		}
+		
+		if($mybb->get_input('postpoll', MyBB::INPUT_INT) == 1)
+		{
+			$postpollchecked = 'checked="checked"';
+		}
+		
 		eval("\$pollbox = \"".$templates->get("newthread_postpoll")."\";");
 	}
 	else
