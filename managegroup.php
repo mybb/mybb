@@ -312,7 +312,7 @@ else
 			$leader_name = format_name(htmlspecialchars_uni($leader['username']), $leader['usergroup'], $leader['displaygroup']);
 			$leader_profile_link = build_profile_link($leader_name, $leader['uid']);
 
-			$leaders_array[$leader['uid']];
+			$leaders_array[] = $leader['uid'];
 
 			// Get commas...
 			if($loop != $leader_count)
