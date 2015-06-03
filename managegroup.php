@@ -380,10 +380,10 @@ else
 		{
 			$email = '';
 		}
-		$isleader = in_array($user['uid'], $leaders_array);
+
 		$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 		$user['profilelink'] = build_profile_link($user['username'], $user['uid']);
-		if($isleader)
+		if(in_array($user['uid'], $leaders_array))
 		{
 			$leader = $lang->leader;
 		}
