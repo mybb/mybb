@@ -3569,7 +3569,69 @@ if($mybb->input['action'] == "ipsearch")
 
 			if($post_ip_sql)
 			{
-				$query = $db->simple_select('posts', 'COUNT(pid) AS count', "$post_ip_sql AND visible >= -1");
+				$where_sql = '';
+				$unviewablefids = array();
+				$onlyusfids = array();
+
+				// Check group permissions if we can't view posts not started by us
+				$group_permissions = forum_permissions();
+				foreach($group_permissions as $fid => $forumpermissions)
+				{
+					if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0)
+					{
+						$unviewablefids[] = $fid;
+					}
+					if(isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] == 1)
+					{
+						$onlyusfids[] = $fid;
+					}
+				}
+
+				if(!empty($unviewablefids))
+				{
+					$where_sql .= " AND fid NOT IN(".implode(',', $unviewablefids).")";
+				}
+				if(!empty($onlyusfids))
+				{
+					$where_sql .= "AND ((fid IN(".implode(',', $onlyusfids).") AND uid='{$mybb->user['uid']}') OR fid NOT IN(".implode(',', $onlyusfids)."))";
+				}
+
+				// Moderators can view unapproved/deleted posts
+				if($mybb->usergroup['issupermod'] != 1)
+				{
+					$unapprove_forums = array();
+					$deleted_forums = array();
+					$visible_sql = ' AND visible > 0';
+					$query = $db->simple_select("moderators", "fid, canviewunapprove, canviewdeleted", "(id='{$mybb->user['uid']}' AND isgroup='0') OR (id='{$mybb->user['usergroup']}' AND isgroup='1')");
+					while($moderator = $db->fetch_array($query))
+					{
+						if($moderator['canviewunapprove'] == 1)
+						{
+							$unapprove_forums[] = $moderator['fid'];
+						}
+
+						if($moderator['canviewdeleted'] == 1)
+						{
+							$deleted_forums[] = $moderator['fid'];
+						}
+					}
+
+					if(!empty($unapprove_forums))
+					{
+						$visible_sql .= " OR (visible = 0 AND fid IN(".implode(',', $unapprove_forums)."))";
+					}
+					if(!empty($deleted_forums))
+					{
+						$visible_sql .= " OR (visible = -1 AND fid IN(".implode(',', $deleted_forums)."))";
+					}
+				}
+				else
+				{
+					// Super moderators (and admins)
+					$visible_sql = " AND visible >= -1";
+				}
+
+				$query = $db->simple_select('posts', 'COUNT(pid) AS count', "{$post_ip_sql}{$where_sql}{$visible_sql}");
 				$post_results = $db->fetch_field($query, "count");
 			}
 		}
@@ -3712,7 +3774,7 @@ if($mybb->input['action'] == "ipsearch")
 		{
 			$ipaddresses = $tids = $uids = array();
 			
-			$query = $db->simple_select('posts', 'username AS postusername, uid, subject, pid, tid, ipaddress', "$post_ip_sql AND visible >= -1",
+			$query = $db->simple_select('posts', 'username AS postusername, uid, subject, pid, tid, ipaddress', "{$post_ip_sql}{$where_sql}{$visible_sql}",
 					array('order_by' => 'dateline', 'order_dir' => 'DESC', 'limit_start' => $post_start, 'limit' => $post_limit));
 
 			while($ipaddress = $db->fetch_array($query))
