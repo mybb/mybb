@@ -3570,30 +3570,17 @@ if($mybb->input['action'] == "ipsearch")
 			if($post_ip_sql)
 			{
 				$where_sql = '';
-				$unviewablefids = array();
-				$onlyusfids = array();
 
-				// Check group permissions if we can't view posts not started by us
-				$group_permissions = forum_permissions();
-				foreach($group_permissions as $fid => $forumpermissions)
+				$unviewable_forums = get_unviewable_forums(true);
+
+				if($unviewable_forums)
 				{
-					if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0)
-					{
-						$unviewablefids[] = $fid;
-					}
-					if(isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] == 1)
-					{
-						$onlyusfids[] = $fid;
-					}
+					$where_sql .= " AND fid NOT IN ({$unviewable_forums})";
 				}
 
-				if(!empty($unviewablefids))
+				if($inactiveforums)
 				{
-					$where_sql .= " AND fid NOT IN(".implode(',', $unviewablefids).")";
-				}
-				if(!empty($onlyusfids))
-				{
-					$where_sql .= "AND ((fid IN(".implode(',', $onlyusfids).") AND uid='{$mybb->user['uid']}') OR fid NOT IN(".implode(',', $onlyusfids)."))";
+					$where_sql .= " AND fid NOT IN ({$inactiveforums})";
 				}
 
 				// Moderators can view unapproved/deleted posts
