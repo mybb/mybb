@@ -255,21 +255,32 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 			$options[$i] = '';
 		}
 
-		if(trim($options[$i]) != "")
-		{
-			$optioncount++;
-		}
-
-		if(my_strlen($options[$i]) > $mybb->settings['polloptionlimit'] && $mybb->settings['polloptionlimit'] != 0)
+		if($mybb->settings['polloptionlimit'] != 0 && my_strlen($options[$i]) > $mybb->settings['polloptionlimit'])
 		{
 			$lengtherror = 1;
 			break;
+		}
+
+		if(strpos($options[$i], '||~|~||') !== false)
+		{
+			$sequenceerror = 1;
+			break;
+		}
+		
+		if(trim($options[$i]) != "")
+		{
+			$optioncount++;
 		}
 	}
 
 	if(isset($lengtherror))
 	{
 		error($lang->error_polloptiontoolong);
+	}
+	
+	if(isset($sequenceerror))
+	{
+		error($lang->error_polloptionsequence);
 	}
 	
 	$mybb->input['question'] = $mybb->get_input('question');
@@ -631,21 +642,33 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 		{
 			$options[$i] = '';
 		}
-		if(trim($options[$i]) != '')
-		{
-			$optioncount++;
-		}
 
-		if(my_strlen($options[$i]) > $mybb->settings['polloptionlimit'] && $mybb->settings['polloptionlimit'] != 0)
+		if($mybb->settings['polloptionlimit'] != 0 && my_strlen($options[$i]) > $mybb->settings['polloptionlimit'])
 		{
 			$lengtherror = 1;
 			break;
+		}
+
+		if(strpos($options[$i], '||~|~||') !== false)
+		{
+			$sequenceerror = 1;
+			break;
+		}
+		
+		if(trim($options[$i]) != "")
+		{
+			$optioncount++;
 		}
 	}
 
 	if(isset($lengtherror))
 	{
 		error($lang->error_polloptiontoolong);
+	}
+	
+	if(isset($sequenceerror))
+	{
+		error($lang->error_polloptionsequence);
 	}
 
 	$mybb->input['question'] = $mybb->get_input('question');
