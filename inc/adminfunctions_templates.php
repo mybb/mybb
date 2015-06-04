@@ -40,6 +40,7 @@ function find_replace_templatesets($title, $find, $replace, $autocreate=1, $sid=
 
 	// Select all other modified templates with that title
 	$query = $db->simple_select("templates", "tid, sid, template", "title = '".$db->escape_string($title)."' AND sid{$sqlwhere}");
+	$query = $db->simple_select("templates", "tid, sid, template", "title = '".$db->escape_string($title)."' AND (sid{$sqlwhere})");
 	while($template = $db->fetch_array($query))
 	{
 		// Keep track of which templates sets have a modified version of this template already
