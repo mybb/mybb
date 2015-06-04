@@ -426,7 +426,7 @@ if($mybb->input['action'] == "edit")
 
 			$plugins->run_hooks("admin_config_profile_fields_edit_commit");
 
-			$db->update_query("profilefields", $updated_profile_field, "fid = '".$mybb->get_input('fid', MyBB::INPUT_INT)."'");
+			$db->update_query("profilefields", $updated_profile_field, "fid='{$profile_field['fid']}'");
 
 			$cache->update_profilefields();
 
@@ -443,7 +443,7 @@ if($mybb->input['action'] == "edit")
 
 	$sub_tabs['edit_profile_field'] = array(
 		'title' => $lang->edit_profile_field,
-		'link' => "index.php?module=config-profile_fields&amp;action=edit&amp;fid=".$mybb->get_input('fid', MyBB::INPUT_INT),
+		'link' => "index.php?module=config-profile_fields&amp;action=edit&amp;fid={$profile_field['fid']}",
 		'description' => $lang->edit_profile_field_desc
 	);
 

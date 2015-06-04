@@ -317,7 +317,7 @@ if($mybb->input['action'] == "edit")
 
 			$plugins->run_hooks("admin_config_calendars_edit_commit");
 
-			$db->update_query("calendars", $updated_calendar, "cid = '".$mybb->get_input('cid', MyBB::INPUT_INT)."'");
+			$db->update_query("calendars", $updated_calendar, "cid='{$calendar['cid']}'");
 
 			// Log admin action
 			log_admin_action($calendar['cid'], $mybb->input['name']);

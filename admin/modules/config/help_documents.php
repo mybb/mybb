@@ -317,7 +317,7 @@ if($mybb->input['action'] == "edit")
 
 		$sub_tabs['edit_help_section'] = array(
 			'title'	=> $lang->edit_section,
-			'link'	=> "index.php?module=config-help_documents&amp;action=edit&amp;sid=".$mybb->get_input('sid', MyBB::INPUT_INT),
+			'link'	=> "index.php?module=config-help_documents&amp;action=edit&amp;sid=".$section['sid'],
 			'description' => $lang->edit_section_desc
 		);
 
@@ -339,10 +339,10 @@ if($mybb->input['action'] == "edit")
 
 		$form = new Form("index.php?module=config-help_documents&amp;action=edit", "post", "edit");
 
-		echo $form->generate_hidden_field("sid", $mybb->input['sid']);
+		echo $form->generate_hidden_field("sid", $section['sid']);
 		echo $form->generate_hidden_field("usetranslation", $mybb->input['usetranslation']);
 
-		$form_container = new FormContainer($lang->edit_section." ({$lang->id} ".$mybb->get_input('sid', MyBB::INPUT_INT).")");
+		$form_container = new FormContainer($lang->edit_section." ({$lang->id} ".$section['sid'].")");
 		$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
 		$form_container->output_row($lang->short_description." <em>*</em>", "", $form->generate_text_box('description', $mybb->input['description'], array('id' => 'description')), 'description');
 		$form_container->output_row($lang->display_order, "", $form->generate_numeric_field('disporder', $mybb->input['disporder'], array('id' => 'disporder', 'min' => 0)), 'disporder');
@@ -425,7 +425,7 @@ if($mybb->input['action'] == "edit")
 
 		$sub_tabs['edit_help_document'] = array(
 			'title'	=> $lang->edit_document,
-			'link'	=> "index.php?module=config-help_documents&amp;action=edit&amp;hid=".$mybb->get_input('hid', MyBB::INPUT_INT),
+			'link'	=> "index.php?module=config-help_documents&amp;action=edit&amp;hid=".$hid,
 			'description' => $lang->edit_document_desc
 		);
 
@@ -451,10 +451,10 @@ if($mybb->input['action'] == "edit")
 
 		$form = new Form("index.php?module=config-help_documents&amp;action=edit", "post", "edit");
 
-		echo $form->generate_hidden_field("hid", $mybb->input['hid']);
+		echo $form->generate_hidden_field("hid", $doc['hid']);
 		echo $form->generate_hidden_field("usetranslation", $mybb->input['usetranslation']);
 
-		$form_container = new FormContainer($lang->edit_document." ({$lang->id} ".$mybb->get_input('hid', MyBB::INPUT_INT).")");
+		$form_container = new FormContainer($lang->edit_document." ({$lang->id} ".$doc['hid'].")");
 
 		$sections = array();
 		$query = $db->simple_select("helpsections", "sid, name");
@@ -509,8 +509,8 @@ if($mybb->input['action'] == "delete")
 			}
 
 			// Delete section and its documents
-			$db->delete_query("helpsections", "sid = '{$sid}'", 1);
-			$db->delete_query("helpdocs", "sid = '{$sid}'");
+			$db->delete_query("helpsections", "sid = '{$section['sid']}'", 1);
+			$db->delete_query("helpdocs", "sid = '{$section['sid']}'");
 
 			$plugins->run_hooks("admin_config_help_documents_delete_section_commit");
 
@@ -536,7 +536,7 @@ if($mybb->input['action'] == "delete")
 				admin_redirect("index.php?module=config-help_documents");
 			}
 
-			$db->delete_query("helpdocs", "hid = '{$hid}'", 1);
+			$db->delete_query("helpdocs", "hid = '{$doc['hid']}'", 1);
 
 			$plugins->run_hooks("admin_config_help_documents_delete_page_commit");
 

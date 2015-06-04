@@ -333,7 +333,7 @@ if($mybb->input['action'] == "edit")
 
 			$plugins->run_hooks("admin_config_post_icons_edit_commit");
 
-			$db->update_query("icons", $updated_icon, "iid='".$mybb->get_input('iid', MyBB::INPUT_INT)."'");
+			$db->update_query("icons", $updated_icon, "iid='{$icon['iid']}'");
 
 			$cache->update_posticons();
 
