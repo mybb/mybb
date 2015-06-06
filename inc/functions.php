@@ -5252,6 +5252,7 @@ function get_bdays($in)
 }
 
 /**
+ * DEPRECATED! Please use mktime()!
  * Formats a birthday appropriately
  *
  * @param string The PHP date format string
