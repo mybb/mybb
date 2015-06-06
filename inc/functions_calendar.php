@@ -43,19 +43,20 @@ function build_mini_calendar($calendar, $month, $year, &$events_cache)
 	$prev_month = get_prev_month($month, $year);
 
 	$month_start_weekday = gmdate("w", gmmktime(0, 0, 0, $month, $calendar['startofweek']+1, $year));
+
+	$prev_month_days = gmdate("t", gmmktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
 	if($month_start_weekday != $weekdays[0] || $calendar['startofweek'] != 0)
 	{
-		$day = gmdate("t", gmmktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
+		$prev_days = $day = gmdate("t", gmmktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
 		$day -= array_search(($month_start_weekday), $weekdays);
 		$day += $calendar['startofweek']+1;
+		if($day > $prev_month_days+1)
+		{
+			// Go one week back
+			$day -= 7;
+		}
 		$calendar_month = $prev_month['month'];
 		$calendar_year = $prev_month['year'];
-
-		if($day > 31 && $calendar['startofweek'] == 1 && $prev_month_days == 30)
-		{
-			// We need to fix it for these days
-			$day = 25;
-		}
 	}
 	else
 	{
@@ -63,8 +64,6 @@ function build_mini_calendar($calendar, $month, $year, &$events_cache)
 		$calendar_month = $month;
 		$calendar_year = $year;
 	}
-
-	$prev_month_days = gmdate("t", gmmktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
 
 	// So now we fetch events for this month
 	$start_timestamp = gmmktime(0, 0, 0, $calendar_month, $day, $year);
