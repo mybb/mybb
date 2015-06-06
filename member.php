@@ -2183,17 +2183,10 @@ if($mybb->input['action'] == "profile")
 			{
 				$lang->membdayage = $lang->sprintf($lang->membdayage, get_age($memprofile['birthday']));
 
-				if($membday[2] >= 1970)
-				{
-					$w_day = date("l", mktime(0, 0, 0, $membday[1], $membday[0], $membday[2]));
-					$membday = format_bdays($mybb->settings['dateformat'], $membday[1], $membday[0], $membday[2], $w_day);
-				}
-				else
-				{
-					$bdayformat = fix_mktime($mybb->settings['dateformat'], $membday[2]);
-					$membday = mktime(0, 0, 0, $membday[1], $membday[0], $membday[2]);
-					$membday = date($bdayformat, $membday);
-				}
+				$bdayformat = fix_mktime($mybb->settings['dateformat'], $membday[2]);
+				$membday = mktime(0, 0, 0, $membday[1], $membday[0], $membday[2]);
+				$membday = date($bdayformat, $membday);
+
 				$membdayage = $lang->membdayage;
 			}
 			elseif($membday[2])
