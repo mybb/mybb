@@ -415,7 +415,7 @@ else
 $templatelist .= "headerinclude,header,footer,gobutton,htmldoctype,header_welcomeblock_member,header_welcomeblock_guest,header_welcomeblock_member_admin,global_pm_alert,global_unreadreports,error,footer_languageselect_option,footer_contactus";
 $templatelist .= ",global_pending_joinrequests,global_awaiting_activation,nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active,footer_languageselect,footer_themeselect,header_welcomeblock_member_moderator,redirect,header_menu_calendar,nav_dropdown,footer_themeselector,task_image";
 $templatelist .= ",global_boardclosed_warning,global_bannedwarning,error_inline,error_nopermission_loggedin,error_nopermission,debug_summary,header_quicksearch,header_menu_search,header_menu_portal,header_menu_memberlist,usercp_themeselector_option,smilie,global_board_offline_modal";
-$templatelist .= ",video_dailymotion_embed,video_facebook_embed,video_liveleak_embed,video_metacafe_embed,video_myspacetv_embed,video_veoh_embed,video_vimeo_embed,video_yahoo_embed,video_youtube_embed";
+$templatelist .= ",video_dailymotion_embed,video_facebook_embed,video_liveleak_embed,video_metacafe_embed,video_myspacetv_embed,video_veoh_embed,video_vimeo_embed,video_yahoo_embed,video_youtube_embed,global_dst_detection";
 $templates->cache($db->escape_string($templatelist));
 
 // Set the current date and time now
@@ -859,8 +859,10 @@ if(($mybb->settings['contactlink'] == "contact.php" && $mybb->settings['contact'
 $auto_dst_detection = '';
 if($mybb->user['uid'] > 0 && $mybb->user['dstcorrection'] == 2)
 {
-	$auto_dst_detection = "<script type=\"text/javascript\">if(MyBB) { $([document, window]).bind(\"load\", function() { MyBB.detectDSTChange('".($mybb->user['timezone']+$mybb->user['dst'])."'); }); }</script>\n";
+	$timezone = $mybb->user['timezone'] + $mybb->user['dst'];
+	eval('$auto_dst_detection = "'.$templates->get('global_dst_detection').'";');
 }
+
 eval('$footer = "'.$templates->get('footer').'";');
 
 // Add our main parts to the navigation

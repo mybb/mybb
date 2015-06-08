@@ -4111,6 +4111,7 @@ $(".forumjump").change(function() {
 </div>
 <br />]]></template>
 		<template name="global_boardclosed_warning" version="1600"><![CDATA[<div class="red_alert"><strong>{$lang->bbclosed_warning}</strong></div>]]></template>
+		<template name="global_dst_detection" version="1806"><![CDATA[<script type="text/javascript">if(MyBB) { $([document, window]).bind("load", function() { MyBB.detectDSTChange('{$timezone}'); }); }</script>]]></template>
 		<template name="global_pending_joinrequests" version="1600"><![CDATA[<div class="red_alert"><a href="{$mybb->settings['bburl']}/usercp.php?action=usergroups">{$lang->pending_joinrequests}</a></div>]]></template>
 		<template name="global_pm_alert" version="1800"><![CDATA[<div class="pm_alert" id="pm_notice">
 	<div class="float_right"><a href="{$mybb->settings['bburl']}/private.php?action=dismiss_notice&amp;my_post_key={$mybb->post_code}" title="{$lang->dismiss_notice}" onclick="return MyBB.dismissPMNotice('{$mybb->settings['bburl']}/')"><img src="{$theme['imgdir']}/dismiss_notice.png" alt="{$lang->dismiss_notice}" title="{$lang->dismiss_notice}" /></a></div>
