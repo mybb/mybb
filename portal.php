@@ -31,9 +31,10 @@ if(!@chdir($forumdir) && !empty($forumdir))
 	}
 }
 
-$templatelist = "portal,portal_welcome_membertext,portal_stats,portal_search,portal_whosonline_memberbit,portal_whosonline,portal_latestthreads_thread,portal_latestthreads,portal_announcement_numcomments_no,portal_announcement,portal_welcome";
-$templatelist .= ",portal_welcome_guesttext,postbit_attachments_thumbnails_thumbnail,postbit_attachments_images_image,postbit_attachments_attachment,postbit_attachments_thumbnails,postbit_attachments_images,postbit_attachments,portal_pms";
-$templatelist .= ",multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,portal_announcement_send_item,portal_announcement_icon,portal_announcement_avatar,portal_announcement_numcomments";
+$templatelist = "portal,portal_welcome_membertext,portal_stats,portal_search,portal_whosonline_memberbit,portal_whosonline,portal_latestthreads_thread,portal_latestthreads,portal_announcement_numcomments_no";
+$templatelist .= ",postbit_attachments_thumbnails_thumbnail,postbit_attachments_images_image,postbit_attachments_attachment,postbit_attachments_thumbnails,postbit_attachments_images,postbit_attachments";
+$templatelist .= ",multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,portal_announcement_send_item";
+$templatelist .= ",portal_stats_nobody,portal_announcement_avatar,portal_announcement_numcomments,portal_announcement_icon,portal_pms,portal_welcome,portal_announcement,portal_welcome_guesttext";
 
 require_once $change_dir."/global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -198,7 +199,7 @@ if($mybb->settings['portal_showstats'] != 0)
 	$stats['numusers'] = my_number_format($stats['numusers']);
 	if(!$stats['lastusername'])
 	{
-		$newestmember = "<strong>" . $lang->nobody . "</strong>";
+		eval("\$newestmember = \"".$templates->get("portal_stats_nobody")."\";");
 	}
 	else
 	{

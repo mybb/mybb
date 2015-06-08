@@ -9265,6 +9265,7 @@ if(use_xmlhttprequest == "1")
 </tr>
 </table>
 <br />]]></template>
+		<template name="portal_stats_nobody" version="1806"><![CDATA[<strong>{$lang->nobody}</strong>]]></template>
 		<template name="portal_welcome" version="120"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead"><strong>{$lang->welcome}</strong></td>
