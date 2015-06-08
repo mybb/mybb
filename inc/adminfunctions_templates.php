@@ -39,7 +39,7 @@ function find_replace_templatesets($title, $find, $replace, $autocreate=1, $sid=
 	}
 
 	// Select all other modified templates with that title
-	$query = $db->simple_select("templates", "tid, sid, template", "title = '".$db->escape_string($title)."' AND sid{$sqlwhere}");
+	$query = $db->simple_select("templates", "tid, sid, template", "title = '".$db->escape_string($title)."' AND (sid{$sqlwhere})");
 	while($template = $db->fetch_array($query))
 	{
 		// Keep track of which templates sets have a modified version of this template already
@@ -72,7 +72,7 @@ function find_replace_templatesets($title, $find, $replace, $autocreate=1, $sid=
 		if($master_template['new_template'] != $master_template['template'])
 		{
 			// Update the rest of our template sets that are currently inheriting this template from our master set
-			$query = $db->simple_select("templatesets", "sid", "sid NOT IN (".implode(',', $template_sets).") AND sid{$sqlwhere2}");
+			$query = $db->simple_select("templatesets", "sid", "sid NOT IN (".implode(',', $template_sets).") AND (sid{$sqlwhere2})");
 			while($template = $db->fetch_array($query))
 			{
 				$insert_template = array(
