@@ -8891,6 +8891,7 @@ if(use_xmlhttprequest == "1")
 	{$footer}
 </body>
 </html>]]></template>
+		<template name="online_refresh" version="1806"><![CDATA[<meta http-equiv="refresh" content="{$refresh_time};URL=online.php{$refresh_string}" />]]></template>
 		<template name="online_row" version="1400"><![CDATA[<tr>
 <td class="trow1">{$online_name}{$user_ip}</td>
 <td align="center" class="trow2">{$online_time}</td>
