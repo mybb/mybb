@@ -9664,6 +9664,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<template name="printthread_multipage" version="1800"><![CDATA[<div class="multipage">{$lang->pages} <strong>{$lang->archive_pages}</strong> {$mppage}</div>]]></template>
 		<template name="printthread_multipage_page" version="1800"><![CDATA[<a href="{$url}&amp;page={$page}">{$page}</a>]]></template>
 		<template name="printthread_multipage_page_current" version="1800"><![CDATA[<strong>{$page}</strong>]]></template>
+		<template name="printthread_nav" version="1806"><![CDATA[+{$depth} {$lang->forum} {$forumnav['name']} (<i>{$mybb->settings['bburl']}/{$forumnav['link']}</i>)<br />]]></template>
 		<template name="printthread_post" version="1800"><![CDATA[<strong>{$postrow['subject']}</strong> - {$postrow['profilelink']} -  <strong>{$postrow['date']}</strong>
 <br />
 <br />

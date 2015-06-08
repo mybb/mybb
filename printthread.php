@@ -11,7 +11,7 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'printthread.php');
 
-$templatelist = "printthread,printthread_post,forumdisplay_password_wrongpass,forumdisplay_password,printthread_multipage,printthread_multipage_page,printthread_multipage_page_current";
+$templatelist = "printthread,printthread_post,printthread_nav,forumdisplay_password_wrongpass,forumdisplay_password,printthread_multipage,printthread_multipage_page,printthread_multipage_page_current";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -193,7 +193,7 @@ output_page($printable);
 
 function makeprintablenav($pid="0", $depth="--")
 {
-	global $mybb, $db, $pforumcache, $fid, $forum, $lang;
+	global $mybb, $db, $pforumcache, $fid, $forum, $lang, $templates;
 	if(!is_array($pforumcache))
 	{
 		$parlist = build_parent_list($fid, "fid", "OR", $forum['parentlist']);
@@ -209,7 +209,8 @@ function makeprintablenav($pid="0", $depth="--")
 	{
 		foreach($pforumcache[$pid] as $key => $forumnav)
 		{
-			$forums .= "+".$depth." $lang->forum {$forumnav['name']} (<i>".$mybb->settings['bburl']."/".get_forum_link($forumnav['fid'])."</i>)<br />\n";
+			$forumnav['link'] = get_forum_link($forumnav['fid']);
+			eval("\$forums .= \"".$templates->get("printthread_nav")."\";");
 			if(!empty($pforumcache[$forumnav['fid']]))
 			{
 				$newdepth = $depth."-";
