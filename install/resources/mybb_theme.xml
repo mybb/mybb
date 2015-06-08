@@ -903,6 +903,10 @@ blockquote cite span.highlight {
 	color: #AE5700;
 }
 
+.imminent_banned {
+	color: #880000;
+}
+
 .high_banned {
 	color: #FF0000;
 }
@@ -6619,6 +6623,7 @@ if(use_xmlhttprequest == "1")
 		<template name="modcp_banning_nobanned" version="1400"><![CDATA[<tr>
 	<td class="trow1" align="center" colspan="4">{$lang->no_banned}</td>
 </tr>]]></template>
+		<template name="modcp_banning_remaining" version="1806"><![CDATA[<span class="{$banned_class}">({$ban_remaining})</span>]]></template>
 		<template name="modcp_banuser" version="1804"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->ban_user}</title>
