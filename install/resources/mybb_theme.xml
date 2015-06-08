@@ -3359,6 +3359,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 					</div>
 				</td>]]></template>
 		<template name="calendar_weekrow_day_birthdays" version="1800"><![CDATA[<div style="margin-bottom: 4px;"><a href="{$calendar['link']}" class="smalltext">{$bday_count} {$birthday_lang}</a></div>]]></template>
+		<template name="calendar_weekrow_day_events" version="1806"><![CDATA[<div style="margin-bottom: 4px;"><a href="{$calendar['link']}" class="smalltext">{$total_events} {$event_lang}</a></div>]]></template>
 		<template name="calendar_weekrow_day_external" version="1400"><![CDATA[				<td class="calendar_daybit_external">
 					<div class="float_right smalltext"><a href="{$day_link}">{$day}</a></div>
 					<div>

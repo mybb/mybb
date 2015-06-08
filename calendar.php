@@ -15,7 +15,7 @@ $templatelist = "calendar_weekdayheader,calendar_weekrow_day,calendar_weekrow,ca
 $templatelist .= ",calendar_weekview_day,calendar_weekview_day_event,calendar_mini_weekdayheader,calendar_mini_weekrow_day,calendar_mini_weekrow,calendar_mini,calendar_weekview_month,calendar_weekview";
 $templatelist .= ",calendar_event_editbutton,calendar_event_modoptions,calendar_dayview_event,calendar_dayview,codebuttons,smilieinsert,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty";
 $templatelist .= ",calendar_jump,calendar_jump_option,calendar_editevent,calendar_dayview_birthdays_bday,calendar_dayview_birthdays,calendar_dayview_noevents,calendar_addeventlink,calendar_addevent_calendarselect_hidden";
-$templatelist .= ",calendar_weekrow_day_birthdays,calendar_weekview_day_birthdays,calendar_year_sel,calendar_event_userstar,calendar_addevent_calendarselect,calendar_eventbit,calendar_event";
+$templatelist .= ",calendar_weekrow_day_birthdays,calendar_weekview_day_birthdays,calendar_year_sel,calendar_event_userstar,calendar_addevent_calendarselect,calendar_eventbit,calendar_event,calendar_weekrow_day_events";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_calendar.php";
@@ -2383,9 +2383,8 @@ if(!$mybb->input['action'])
 				break;
 			}
 
-			$day_events = '';
-
 			// Any events on this specific day?
+			$day_events = $event_lang = '';
 			if(is_array($events_cache) && array_key_exists("{$day}-{$calendar_month}-{$calendar_year}", $events_cache))
 			{
 				$total_events = count($events_cache["$day-$calendar_month-$calendar_year"]);
@@ -2393,12 +2392,15 @@ if(!$mybb->input['action'])
 				{
 					if($total_events > 1)
 					{
-						$day_events = "<div style=\"margin-bottom: 4px;\"><a href=\"".get_calendar_link($calendar['cid'], $calendar_year, $calendar_month, $day)."\" class=\"smalltext\">{$total_events} {$lang->events}</a></div>\n";
+						$event_lang = $lang->events;
 					}
 					else
 					{
-						$day_events = "<div style=\"margin-bottom: 4px;\"><a href=\"".get_calendar_link($calendar['cid'], $calendar_year, $calendar_month, $day)."\" class=\"smalltext\">1 {$lang->event}</a></div>\n";
+						$event_lang = $lang->event;
 					}
+
+					$calendar['link'] = get_calendar_link($calendar['cid'], $calendar_year, $calendar_month, $day);
+					eval("\$day_events = \"".$templates->get("calendar_weekrow_day_events")."\";");
 				}
 				else
 				{
