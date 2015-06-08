@@ -11,7 +11,8 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'stats.php');
 
-$templatelist = "stats,stats_thread";
+$templatelist = "stats,stats_thread,stats_topforum";
+
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 require_once MYBB_ROOT."inc/class_parser.php";
@@ -151,7 +152,8 @@ if(empty($forum['fid']))
 else
 {
 	$forum['name'] = htmlspecialchars_uni(strip_tags($forum['name']));
-	$topforum = '<a href="'.get_forum_link($forum['fid'])."\">{$forum['name']}</a>";
+	$forum['link'] = get_forum_link($forum['fid']);
+	eval("\$topforum = \"".$templates->get("stats_topforum")."\";");
 	$topforumposts = $forum['posts'];
 	$topforumthreads = $forum['threads'];
 }

@@ -11694,6 +11694,7 @@ if(use_xmlhttprequest == "1")
 </body>
 </html>]]></template>
 		<template name="stats_thread" version="1800"><![CDATA[<a href="{$thread['threadlink']}"><strong>{$thread['subject']}</strong></a> ({$numberbit} {$numbertype})<br />]]></template>
+		<template name="stats_topforum" version="1806"><![CDATA[<a href="{$forum['link']}">{$forum['name']}</a>]]></template>
 		<template name="usercp" version="1600"><![CDATA[<html>
 <head>
 <title>{$lang->user_cp}</title>
