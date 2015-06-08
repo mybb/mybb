@@ -8759,6 +8759,7 @@ if(use_xmlhttprequest == "1")
 		<template name="newreply_disablesmilies" version="120"><![CDATA[<br />
 <label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="1" tabindex="9"{$postoptionschecked['disablesmilies']} /> {$lang->options_disablesmilies}</label>]]></template>
 		<template name="newreply_disablesmilies_hidden" version="1800"><![CDATA[<input type="hidden" name="postoptions[disablesmilies]" value="no" />]]></template>
+		<template name="newreply_draftinput" version="1806"><![CDATA[<input type="hidden" name="pid" value="{$pid}" />]]></template>
 		<template name="newreply_modoptions" version="1400"><![CDATA[<tr>
 <td class="trow2" valign="top"><strong>{$lang->mod_options}</strong></td>
 <td class="trow2"><span class="smalltext">

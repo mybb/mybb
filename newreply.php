@@ -11,13 +11,13 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'newreply.php');
 
-$templatelist = "newreply,previewpost,loginbox,changeuserbox,posticons,newreply_threadreview,newreply_threadreview_post,forumdisplay_rules_link,newreply_multiquote_external,post_attachments_add,post_subscription_method,postbit_warninglevel_formatted";
-$templatelist .= ",smilieinsert,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,codebuttons,post_attachments_new,post_attachments,post_savedraftbutton,newreply_modoptions,newreply_threadreview_more,newreply_disablesmilies,postbit_online";
+$templatelist = "newreply,previewpost,loginbox,changeuserbox,posticons,newreply_threadreview,newreply_threadreview_post,forumdisplay_rules_link,newreply_multiquote_external,post_attachments_add,post_subscription_method,postbit_warninglevel_formatted,global_moderation_notice";
+$templatelist .= ",smilieinsert,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,codebuttons,post_attachments_new,post_attachments,post_savedraftbutton,newreply_modoptions,newreply_threadreview_more,newreply_disablesmilies,postbit_online,postbit_icon";
 $templatelist .= ",postbit_www,postbit_email,postbit_reputation,postbit_warninglevel,postbit_author_user,postbit_edit,postbit_quickdelete,postbit_inlinecheck,postbit_posturl,postbit_quote,postbit_multiquote,postbit_report,postbit_ignored,postbit,postbit_userstar";
-$templatelist .= ",post_attachments_attachment_postinsert,post_attachments_attachment_remove,post_attachments_attachment_unapproved,post_attachments_attachment,postbit_attachments_attachment,postbit_attachments,newreply_options_signature,postbit_find";
-$templatelist .= ",member_register_regimage,member_register_regimage_recaptcha,member_register_regimage_ayah,post_captcha_hidden,post_captcha,post_captcha_recaptcha,post_captcha_nocaptcha,post_captcha_ayah,postbit_groupimage,postbit_away,postbit_offline,postbit_avatar,postbit_icon";
+$templatelist .= ",post_attachments_attachment_postinsert,post_attachments_attachment_remove,post_attachments_attachment_unapproved,post_attachments_attachment,postbit_attachments_attachment,postbit_attachments,newreply_options_signature,postbit_find,newreply_draftinput";
+$templatelist .= ",member_register_regimage,member_register_regimage_recaptcha,member_register_regimage_ayah,post_captcha_hidden,post_captcha,post_captcha_recaptcha,post_captcha_nocaptcha,post_captcha_ayah,postbit_groupimage,postbit_away,postbit_offline,postbit_avatar";
 $templatelist .= ",postbit_rep_button,postbit_warn,postbit_author_guest,postbit_signature,postbit_classic,postbit_attachments_thumbnails_thumbnailpostbit_attachments_images_image,postbit_attachments_attachment_unapproved,postbit_pm,post_attachments_update";
-$templatelist .= ",postbit_attachments_thumbnails,postbit_attachments_images,postbit_gotopost,forumdisplay_password_wrongpass,forumdisplay_password,posticons_icon,attachment_icon,postbit_reputation_formatted_link,newreply_disablesmilies_hidden,forumdisplay_rules,global_moderation_notice";
+$templatelist .= ",postbit_attachments_thumbnails,postbit_attachments_images,postbit_gotopost,forumdisplay_password_wrongpass,forumdisplay_password,posticons_icon,attachment_icon,postbit_reputation_formatted_link,newreply_disablesmilies_hidden,forumdisplay_rules";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -56,7 +56,7 @@ if(($mybb->input['action'] == "editdraft" || $mybb->input['action'] == "do_newre
 	}
 	$pid = $post['pid'];
 	$tid = $post['tid'];
-	$editdraftpid = "<input type=\"hidden\" name=\"pid\" value=\"$pid\" />";
+	eval("\$editdraftpid = \"".$templates->get("newreply_draftinput")."\";");
 }
 
 // Set up $thread and $forum for later use.
@@ -264,7 +264,7 @@ if($mybb->settings['enableattachments'] == 1 && !$mybb->get_input('attachmentaid
 
 	if(!$mybb->get_input('submit'))
 	{
-		$editdraftpid = "<input type=\"hidden\" name=\"pid\" value=\"$pid\" />";
+		eval("\$editdraftpid = \"".$templates->get("newreply_draftinput")."\";");
 		$mybb->input['action'] = "newreply";
 	}
 }
@@ -279,7 +279,7 @@ if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid'
 	remove_attachment($pid, $mybb->get_input('posthash'), $mybb->get_input('attachmentaid', MyBB::INPUT_INT));
 	if(!$mybb->get_input('submit'))
 	{
-		$editdraftpid = "<input type=\"hidden\" name=\"pid\" value=\"$pid\" />";
+		eval("\$editdraftpid = \"".$templates->get("newreply_draftinput")."\";");
 		$mybb->input['action'] = "newreply";
 	}
 }
