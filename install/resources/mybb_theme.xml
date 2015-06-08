@@ -6165,6 +6165,7 @@ if(use_xmlhttprequest == "1")
 <option value="all">----------------------</option>
 {$forumlistbits}
 </select>]]></template>
+		<template name="misc_syndication_forumlist_forum" version="1806"><![CDATA[<option value="{$forum['fid']}" {$optionselected}>{$depth} {$forum['name']}</option>]]></template>
 		<template name="misc_whoposted" version="1800"><![CDATA[<div class="modal">
 	<div style="overflow-y: auto; max-height: 400px;">
 <table width="100%" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" border="0" align="center" class="tborder">

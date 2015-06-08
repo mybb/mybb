@@ -14,7 +14,8 @@ define('THIS_SCRIPT', 'misc.php');
 
 $templatelist = "misc_rules_forum,misc_help_helpdoc,misc_whoposted_poster,misc_whoposted,misc_smilies_popup_smilie,misc_smilies_popup,misc_smilies_popup_empty,misc_syndication_feedurl,misc_syndication";
 $templatelist .= ",misc_buddypopup,misc_buddypopup_user,misc_buddypopup_user_none,misc_buddypopup_user_online,misc_buddypopup_user_offline,misc_buddypopup_user_sendpm,misc_help_search,misc_syndication_forumlist";
-$templatelist .= ",misc_smilies,misc_smilies_smilie,misc_help_section_bit,misc_help_section,misc_help,forumdisplay_password_wrongpass,forumdisplay_password,misc_helpresults,misc_helpresults_bit,misc_helpresults_noresults,multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start";
+$templatelist .= ",misc_smilies,misc_smilies_smilie,misc_help_section_bit,misc_help_section,misc_help,forumdisplay_password_wrongpass,forumdisplay_password,misc_helpresults,misc_helpresults_bit,misc_helpresults_noresults";
+$templatelist .= ",multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,misc_syndication_forumlist_forum";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -1006,7 +1007,7 @@ function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="")
 
 					if($forum['password'] == '' && !in_array($forum['fid'], $unexp) || $forum['password'] && isset($mybb->cookies['forumpass'][$forum['fid']]) && $mybb->cookies['forumpass'][$forum['fid']] === md5($mybb->user['uid'].$forum['password']))
 					{
-						$forumlistbits .= "<option value=\"{$forum['fid']}\" $optionselected>$depth {$forum['name']}</option>\n";
+						eval("\$forumlistbits .= \"".$templates->get("misc_syndication_forumlist_forum")."\";");
 					}
 
 					if(!empty($forumcache[$forum['fid']]))
