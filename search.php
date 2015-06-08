@@ -13,10 +13,11 @@ define("IGNORE_CLEAN_VARS", "sid");
 define('THIS_SCRIPT', 'search.php');
 
 $templatelist = "search,forumdisplay_thread_gotounread,search_results_threads_thread,search_results_threads,search_results_posts,search_results_posts_post,search_results_icon,search_forumlist_forum,search_forumlist";
-$templatelist .= ",multipage,multipage_breadcrumb,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,forumdisplay_thread_multipage_more,forumdisplay_thread_multipage_page,forumdisplay_thread_multipage";
+$templatelist .= ",multipage,multipage_breadcrumb,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start";
 $templatelist .= ",search_results_posts_inlinecheck,search_results_posts_nocheck,search_results_threads_inlinecheck,search_results_threads_nocheck,search_results_inlinemodcol,search_results_posts_inlinemoderation_custom_tool";
-$templatelist .= ",search_results_posts_inlinemoderation_custom,search_results_posts_inlinemoderation,search_results_threads_inlinemoderation_custom_tool,search_results_threads_inlinemoderation_custom,search_results_threads_inlinemoderation,search_orderarrow,search_moderator_options";
-$templatelist .= ",forumdisplay_thread_attachment_count,search_threads_inlinemoderation_selectall,search_posts_inlinemoderation_selectall,post_prefixselect_prefix,post_prefixselect_multiple";
+$templatelist .= ",search_results_posts_inlinemoderation_custom,search_results_posts_inlinemoderation,search_results_threads_inlinemoderation_custom_tool,search_results_threads_inlinemoderation_custom,search_results_threads_inlinemoderation";
+$templatelist .= ",forumdisplay_thread_attachment_count,search_threads_inlinemoderation_selectall,search_posts_inlinemoderation_selectall,post_prefixselect_prefix,post_prefixselect_multiple,search_orderarrow";
+$templatelist .= ",search_results_posts_forumlink,search_results_threads_forumlink,forumdisplay_thread_multipage_more,forumdisplay_thread_multipage_page,forumdisplay_thread_multipage,search_moderator_options";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -568,13 +569,12 @@ if($mybb->input['action'] == "results")
 			$thread['replies'] = my_number_format($thread['replies']);
 			$thread['views'] = my_number_format($thread['views']);
 
+			$thread['forumlink'] = '';
 			if($forumcache[$thread['fid']])
 			{
-				$thread['forumlink'] = "<a href=\"".get_forum_link($thread['fid'])."\">".$forumcache[$thread['fid']]['name']."</a>";
-			}
-			else
-			{
-				$thread['forumlink'] = "";
+				$thread['forumlink_link'] = get_forum_link($thread['fid']);
+				$thread['forumlink_name'] = $forumcache[$thread['fid']]['name'];
+				eval("\$thread['forumlink'] = \"".$templates->get("search_results_threads_forumlink")."\";");
 			}
 
 			// If this user is the author of the thread and it is not closed or they are a moderator, they can edit
@@ -861,14 +861,14 @@ if($mybb->input['action'] == "results")
 				$icon = "&nbsp;";
 			}
 
+			$post['forumlink'] = '';
 			if(!empty($forumcache[$thread['fid']]))
 			{
-				$post['forumlink'] = "<a href=\"".get_forum_link($post['fid'])."\">".$forumcache[$post['fid']]['name']."</a>";
+				$post['forumlink_link'] = get_forum_link($post['fid']);
+				$post['forumlink_name'] = $forumcache[$post['fid']]['name'];
+				eval("\$post['forumlink'] = \"".$templates->get("search_results_posts_forumlink")."\";");
 			}
-			else
-			{
-				$post['forumlink'] = "";
-			}
+
 			// Determine the folder
 			$folder = '';
 			$folder_label = '';
@@ -959,13 +959,12 @@ if($mybb->input['action'] == "results")
 			$post['thread_replies'] = my_number_format($post['thread_replies']);
 			$post['thread_views'] = my_number_format($post['thread_views']);
 
+			$post['forumlink'] = '';
 			if($forumcache[$post['fid']])
 			{
-				$post['forumlink'] = "<a href=\"".get_forum_link($post['fid'])."\">".$forumcache[$post['fid']]['name']."</a>";
-			}
-			else
-			{
-				$post['forumlink'] = "";
+				$post['forumlink_link'] = get_forum_link($post['fid']);
+				$post['forumlink_name'] = $forumcache[$post['fid']]['name'];
+				eval("\$post['forumlink'] = \"".$templates->get("search_results_posts_forumlink")."\";");
 			}
 
 			if(!$post['subject'])

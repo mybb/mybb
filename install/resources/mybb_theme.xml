@@ -10996,6 +10996,7 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
+		<template name="search_results_posts_forumlink" version="1806"><![CDATA[<a href="{$post['forumlink_link']}">{$post['forumlink_name']}</a>]]></template>
 		<template name="search_results_posts_inlinecheck" version="120"><![CDATA[<td class="{$bgcolor}" align="center" style="white-space: nowrap"><input type="checkbox" class="checkbox" name="inlinemod_{$post['pid']}" id="inlinemod_{$post['pid']}" value="1" style="vertical-align: middle;" {$inlinecheck}  /></td>]]></template>
 		<template name="search_results_posts_inlinemoderation" version="1804"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1804"></script>
 <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;">
@@ -11086,6 +11087,7 @@ if(use_xmlhttprequest == "1")
 		{$footer}
 		</body>
 		</html>]]></template>
+		<template name="search_results_threads_forumlink" version="1806"><![CDATA[<a href="{$thread['forumlink_link']}">{$thread['forumlink_name']}</a>]]></template>
 		<template name="search_results_threads_inlinecheck" version="120"><![CDATA[<td class="{$bgcolor}" align="center" style="white-space: nowrap"><input type="checkbox" class="checkbox" name="inlinemod_{$thread['tid']}" id="inlinemod_{$thread['tid']}" value="1" style="vertical-align: middle;" {$inlinecheck}  /></td>]]></template>
 		<template name="search_results_threads_inlinemoderation" version="1804"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1804"></script>
 		<form action="moderation.php" method="post">
