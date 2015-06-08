@@ -3314,6 +3314,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 		<template name="calendar_mini_weekrow_day" version="1400"><![CDATA[				<td class="{$day_class}" valign="middle" align="center">
 					{$day_link}
 				</td>]]></template>
+		<template name="calendar_mini_weekrow_day_link" version="1806"><![CDATA[<a href="{$calendar['link']}">{$day}</a>]]></template>
 		<template name="calendar_move" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->calendar} - {$lang->move_event}</title>

@@ -153,7 +153,8 @@ function build_mini_calendar($calendar, $month, $year, &$events_cache)
 			}
 			if($link_to_day)
 			{
-				$day_link = "<a href=\"".get_calendar_link($calendar['cid'], $calendar_year, $calendar_month, $day)."\">{$day}</a>";
+				$calendar['link'] = get_calendar_link($calendar['cid'], $calendar_year, $calendar_month, $day);
+				eval("\$day_link = \"".$templates->get("calendar_mini_weekrow_day_link")."\";");
 			}
 			else
 			{
