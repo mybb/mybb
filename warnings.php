@@ -11,9 +11,9 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'warnings.php');
 
-$templatelist = "warnings,warnings_warn_post,warnings_active_header,warnings_expired_header,warnings_warning,warnings_warn_existing,warnings_warn_type,warnings_warn_custom,warnings_warn_pm";
-$templatelist .= ",warnings_view_post,warnings_view_user,warnings_view_revoke,warnings_view_revoked,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,smilieinsert,warnings_warn_type_result";
-$templatelist .= ",multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,warnings_no_warnings,codebuttons,warnings_warn,warnings_view,warnings_warn_pm_anonymous";
+$templatelist = "warnings,warnings_warn_post,warnings_active_header,warnings_expired_header,warnings_warning,warnings_warn_existing,warnings_warn_type,warnings_warn_custom,warnings_warn_pm,warnings_warn_pm_anonymous,warnings_view";
+$templatelist .= ",warnings_view_post,warnings_view_user,warnings_view_revoke,warnings_view_revoked,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,smilieinsert,warnings_warn_type_result,warnings_postlink";
+$templatelist .= ",multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,warnings_no_warnings,codebuttons,warnings_warn";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_warnings.php";
@@ -795,13 +795,15 @@ if(!$mybb->input['action'])
 		}
 		$last_expired = $warning['expired'];
 
-		$post_link = "";
+		$post_link = '';
 		if($warning['post_subject'])
 		{
 			$warning['post_subject'] = $parser->parse_badwords($warning['post_subject']);
 			$warning['post_subject'] = htmlspecialchars_uni($warning['post_subject']);
-			$post_link = "<br /><small>{$lang->warning_for_post} <a href=\"".get_post_link($warning['pid'])."#pid{$warning['pid']}\">{$warning['post_subject']}</a></small>";
+			$warning['post_link'] = get_post_link($warning['pid']);
+			eval("\$post_link = \"".$templates->get("warnings_postlink")."\";");
 		}
+
 		$issuedby = build_profile_link($warning['username'], $warning['issuedby']);
 		$date_issued = my_date('relative', $warning['dateline']);
 		if($warning['type_title'])

@@ -13466,6 +13466,7 @@ if(use_xmlhttprequest == "1")
 		<template name="warnings_no_warnings" version="1400"><![CDATA[			<tr>
 				<td class="trow1" colspan="5" align="center">{$lang->no_warnings}</td>
 			</tr>]]></template>
+		<template name="warnings_postlink" version="1806"><![CDATA[<br /><small>{$lang->warning_for_post} <a href="{$warning['post_link']}#pid{$warning['pid']}">{$warning['post_subject']}</a></small>]]></template>
 		<template name="warnings_view" version="1800"><![CDATA[<html>
 <head>
 	<title>{$mybb->settings['bbname']} - {$lang->warning_log}</title>
