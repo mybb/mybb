@@ -14,8 +14,8 @@
  * @param string The name of the template
  * @param string The regular expression to match in the template
  * @param string The replacement string
- * @param int Set to 1 to automatically create templates which do not exist for that set (based off master) - defaults to 1
- * @param mixed Template SID to modify, false for every SID > 0
+ * @param int Set to 1 to automatically create templates which do not exist for sets with SID > 0 (based off master) - defaults to 1
+ * @param mixed Template SID to modify, false for every SID > 0 and SID = -1
  * @param int The maximum possible replacements for the regular expression
  * @return boolean true if updated one or more templates, false if not.
  */
