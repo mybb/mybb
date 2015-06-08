@@ -9,7 +9,7 @@
 		<editortheme><![CDATA[mybb.css]]></editortheme>
 	</properties>
 	<stylesheets>
-		<stylesheet name="global.css" version="1804" disporder="1"><![CDATA[body {
+		<stylesheet name="global.css" version="1806" disporder="1"><![CDATA[body {
 	background: #fff;
 	color: #333;
 	text-align: center;
@@ -639,7 +639,7 @@ label.error {
 }
 
 form #message {
-    width: 500px;
+	width: 500px;
 }
 
 .editor {
@@ -887,7 +887,7 @@ blockquote cite span.highlight {
 .red_alert a:link,
 .red_alert a:visited,
 .red_alert a:hover,
-.red_alert  a:active  {
+.red_alert a:active {
 	color: #A5161A;
 }
 
@@ -901,6 +901,18 @@ blockquote cite span.highlight {
 
 .low_warning {
 	color: #AE5700;
+}
+
+.high_banned {
+	color: #FF0000;
+}
+
+.moderate_banned {
+	color: #FF6600;
+}
+
+.low_banned {
+	color: #008000;
 }
 
 .online {
@@ -2283,19 +2295,19 @@ tr td.trow_shaded:last-child {
 .thead_left {
 	-moz-border-radius-topright: 0;
 	-webkit-border-top-right-radius: 0;
-    border-top-right-radius: 0;
+	border-top-right-radius: 0;
 }
 
 .thead_right {
 	-moz-border-radius-topleft: 0;
 	-webkit-border-top-left-radius: 0;
-    border-top-left-radius: 0;
+	border-top-left-radius: 0;
 }
 
 .tcat_menu {
 	-moz-border-radius: 0 !important;
 	-webkit-border-radius: 0 !important;
-  	border-radius: 0 !important;
+	border-radius: 0 !important;
 }
 
 .tborder tbody:nth-last-child(2) .tcat_collapse_collapsed {
@@ -4812,6 +4824,7 @@ if(use_xmlhttprequest == "1")
 <span class="smalltext"><strong>{$lang->ban_by}:</strong> {$memban['adminuser']} &mdash; <strong>{$lang->ban_length}:</strong> {$banlength} <span class="smalltext">{$timeremaining}</span></span>
 </fieldset>
 <br />]]></template>
+		<template name="member_profile_banned_remaining" version="1806"><![CDATA[<span class="{$banned_class}">({$timeremaining} {$lang->ban_remaining})</span>]]></template>
 		<template name="member_profile_contact_details" version="1804"><![CDATA[<br />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder tfixed">
 	<colgroup>

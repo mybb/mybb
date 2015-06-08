@@ -14,14 +14,15 @@ define('THIS_SCRIPT', 'member.php');
 define("ALLOWABLE_PAGE", "register,do_register,login,do_login,logout,lostpw,do_lostpw,activate,resendactivation,do_resendactivation,resetpassword,viewnotes");
 
 $nosession['avatar'] = 1;
-$templatelist = "member_register,member_register_hiddencaptcha,member_coppa_form,member_register_coppa,member_register_agreement_coppa,member_register_agreement,usercp_options_tppselect,usercp_options_pppselect,member_register_referrer,member_register_customfield,member_register_requiredfields";
-$templatelist .= ",member_resetpassword,member_loggedin_notice,member_profile_away,member_emailuser,member_register_regimage,member_register_regimage_recaptcha,member_register_regimage_nocaptcha,member_register_regimage_ayah,post_captcha_hidden,post_captcha,post_captcha_recaptcha,post_captcha_ayah,member_profile_addremove,member_emailuser_guest";
-$templatelist .= ",member_profile_email,member_profile_offline,member_profile_reputation,member_profile_warn,member_profile_warninglevel,member_profile_customfields_field,member_profile_customfields,member_profile_adminoptions,member_profile,member_login,member_profile_online,member_viewnotes";
-$templatelist .= ",member_profile_signature,member_profile_avatar,member_profile_groupimage,member_profile_referrals,member_profile_website,member_profile_reputation_vote,member_activate,member_resendactivation,member_lostpw,member_register_additionalfields,member_register_password,usercp_options_pppselect_option";
-$templatelist .= ",member_profile_modoptions_manageuser,member_profile_modoptions_editprofile,member_profile_modoptions_banuser,member_profile_modoptions_viewnotes,member_profile_modoptions,member_profile_modoptions_editnotes,member_profile_modoptions_purgespammer,postbit_reputation_formatted,postbit_warninglevel_formatted";
-$templatelist .= ",usercp_profile_profilefields_select_option,usercp_profile_profilefields_multiselect,usercp_profile_profilefields_select,usercp_profile_profilefields_textarea,usercp_profile_profilefields_radio,usercp_profile_profilefields_checkbox,usercp_profile_profilefields_text,usercp_options_tppselect_option";
-$templatelist .= ",member_register_question,member_register_question_refresh,usercp_options_timezone,usercp_options_timezone_option,usercp_options_language_option,member_register_language,member_profile_userstar,member_profile_customfields_field_multi_item,member_profile_customfields_field_multi,member_register_day";
-$templatelist .= ",member_profile_contact_fields_aim,member_profile_contact_fields_google,member_profile_contact_fields_icq,member_profile_contact_fields_skype,member_profile_contact_fields_yahoo,member_profile_pm,member_profile_contact_details,member_profile_banned";
+$templatelist = "member_register,member_register_hiddencaptcha,member_coppa_form,member_register_coppa,member_register_agreement_coppa,member_register_agreement,usercp_options_tppselect,usercp_options_pppselect,member_register_customfield,member_register_requiredfields";
+$templatelist .= ",member_resetpassword,member_loggedin_notice,member_profile_away,member_register_regimage,member_register_regimage_recaptcha,member_register_regimage_nocaptcha,member_register_regimage_ayah,post_captcha_hidden,post_captcha,post_captcha_recaptcha,post_captcha_ayah";
+$templatelist .= ",member_profile_email,member_profile_offline,member_profile_reputation,member_profile_warn,member_profile_warninglevel,member_profile_customfields_field,member_profile_customfields,member_profile_adminoptions,member_profile,member_login,member_profile_online";
+$templatelist .= ",member_profile_signature,member_profile_avatar,member_profile_groupimage,member_profile_referrals,member_profile_website,member_profile_reputation_vote,member_activate,member_resendactivation,member_lostpw,member_register_additionalfields,usercp_options_pppselect_option";
+$templatelist .= ",member_profile_modoptions_manageuser,member_profile_modoptions_editprofile,member_profile_modoptions_banuser,member_profile_modoptions_viewnotes,member_profile_modoptions,member_profile_modoptions_editnotes,member_profile_modoptions_purgespammer,postbit_reputation_formatted";
+$templatelist .= ",usercp_profile_profilefields_select_option,usercp_profile_profilefields_multiselect,usercp_profile_profilefields_select,usercp_profile_profilefields_textarea,usercp_profile_profilefields_radio,usercp_profile_profilefields_checkbox,usercp_profile_profilefields_text";
+$templatelist .= ",member_register_question,member_register_question_refresh,usercp_options_timezone,usercp_options_timezone_option,usercp_options_language_option,member_register_language,member_profile_customfields_field_multi_item,member_profile_customfields_field_multi";
+$templatelist .= ",member_profile_contact_fields_aim,member_profile_contact_fields_google,member_profile_contact_fields_icq,member_profile_contact_fields_skype,member_profile_contact_fields_yahoo,member_profile_pm,member_profile_contact_details,member_profile_banned,member_viewnotes";
+$templatelist .= ",member_profile_banned_remaining,member_profile_addremove,member_emailuser_guest,member_register_day,usercp_options_tppselect_option,postbit_warninglevel_formatted,member_register_password,member_profile_userstar,member_emailuser,member_register_referrer";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -2570,22 +2571,25 @@ if($mybb->input['action'] == "profile")
 
 			$timeremaining = nice_time($remaining, array('short' => 1, 'seconds' => false))."";
 
+			$banned_class = '';
 			if($remaining < 3600)
 			{
-				$timeremaining = "<span style=\"color: red;\">({$timeremaining} {$lang->ban_remaining})</span>";
+				$banned_class = "high_banned";
 			}
 			else if($remaining < 86400)
 			{
-				$timeremaining = "<span style=\"color: maroon;\">({$timeremaining} {$lang->ban_remaining})</span>";
+				$banned_class = "moderate_banned";
 			}
 			else if($remaining < 604800)
 			{
-				$timeremaining = "<span style=\"color: green;\">({$timeremaining} {$lang->ban_remaining})</span>";
+				$banned_class = "low_banned";
 			}
 			else
 			{
-				$timeremaining = "({$timeremaining} {$lang->ban_remaining})";
+				$banned_class = "normal_banned";
 			}
+
+			eval('$timeremaining = "'.$templates->get('member_profile_banned_remaining').'";');
 		}
 
 		$memban['adminuser'] = build_profile_link($memban['adminuser'], $memban['admin']);
