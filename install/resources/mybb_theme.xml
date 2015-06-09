@@ -1798,6 +1798,7 @@ div.jqi .jqisubstate .jqibuttons button {
 	background-image: url(images/usercp_sprite.png);
 	background-repeat: no-repeat;
 }
+
 .usercp_nav_composepm {
 	background-position: 0 0;
 }
@@ -7949,6 +7950,13 @@ if(use_xmlhttprequest == "1")
 <td class="{$trow}">{$info}</td>
 <td class="{$trow}" align="center"><a href="moderation.php?action=cancel_delayedmoderation&amp;tid={$tid}&amp;fid={$fid}&amp;did={$delayedmod['did']}&amp;my_post_key={$mybb->post_code}">{$lang->cancel}</a></td>
 </tr>]]></template>
+		<template name="moderation_delayedmodaction_notes_forum" version="1806"><![CDATA[<strong>{$lang->forum}</strong> <a href="{$delayedmod['link']}">{$delayedmod['fname']}</a><br />]]></template>
+		<template name="moderation_delayedmodaction_notes_merge" version="1806"><![CDATA[<strong>{$lang->new_subject}</strong> {$delayedmod['subject']}<br />
+<strong>{$lang->thread_to_merge_with}</strong> <a href="{$delayedmod['threadurl']}">{$delayedmod['threadurl']}</a><br />]]></template>
+		<template name="moderation_delayedmodaction_notes_new_forum" version="1806"><![CDATA[<strong>{$lang->new_forum}</strong> <a href="{$delayedmod['link']}">{$delayedmod['name']}</a><br />]]></template>
+		<template name="moderation_delayedmodaction_notes_redirect" version="1806"><![CDATA[<strong>{$lang->leave_redirect_for}</strong> {$redirect_expire_bit}<br />]]></template>
+		<template name="moderation_delayedmodaction_notes_thread_multiple" version="1806"><![CDATA[<strong>{$lang->thread}</strong> {$lang->multiple_threads}<br />]]></template>
+		<template name="moderation_delayedmodaction_notes_thread_single" version="1806"><![CDATA[<strong>{$lang->thread}</strong> <a href="{$delayed_thread['link']}">{$delayed_thread['subject']}</a><br />]]></template>
 		<template name="moderation_delayedmoderation" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->delayed_moderation}</title>
@@ -8102,6 +8110,7 @@ if(use_xmlhttprequest == "1")
 <label><input type="radio" class="radio" name="delayedmoderation[method]" value="move" {$method_selected['move']} />{$lang->method_move}</label><br />
 <label><input type="radio" class="radio" name="delayedmoderation[method]" value="redirect" {$method_selected['redirect']} />{$lang->method_move_redirect}</label> <input type="text" class="textbox" name="delayedmoderation[redirect_expire]" value="{$mybb->input['redirect_expire']}" size="3" /> {$lang->redirect_expire_note}<br />
 <label><input type="radio" class="radio" name="delayedmoderation[method]" value="copy" {$method_selected['copy']} />{$lang->method_copy}</label><br />]]></template>
+		<template name="moderation_delayedmoderation_thread" version="1806"><![CDATA[<a href="{$thread['link']}">{$thread['subject']}</a>]]></template>
 		<template name="moderation_confirmation" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->confirm_execute_tool}</title>
