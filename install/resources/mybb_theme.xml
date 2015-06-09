@@ -8657,6 +8657,10 @@ if(use_xmlhttprequest == "1")
 <td class="{$trow}" align="center">{$modaction['action']}</td>
 <td class="{$trow}">{$info}</td>
 </tr>]]></template>
+		<template name="moderation_threadnotes_modaction_error" version="1800"><![CDATA[<tr><td class="trow1" colspan="4">{$lang->no_mod_options}</td></tr>]]></template>
+		<template name="moderation_threadnotes_modaction_forum" version="1806"><![CDATA[<strong>{$lang->forum}</strong> <a href="{$modaction['forumlink']}">{$modaction['fname']}</a><br />]]></template>
+		<template name="moderation_threadnotes_modaction_post" version="1806"><![CDATA[<strong>{$lang->post}</strong> <a href="{$modaction['postlink']}#pid{$modaction['pid']}">{$modaction['psubject']}</a>]]></template>
+		<template name="moderation_threadnotes_modaction_thread" version="1806"><![CDATA[<strong>{$lang->thread}</strong> <a href="{$modaction['threadlink']}">{$modaction['tsubject']}</a><br />]]></template>
 		<template name="moderation_viewthreadnotes" version="1800"><![CDATA[<div class="modal">
 <div style="overflow-y: auto; max-height: 400px;">
 <table width="100%" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" border="0" align="center" class="tborder">
@@ -8669,7 +8673,6 @@ if(use_xmlhttprequest == "1")
 </table>
 </div>
 </div>]]></template>
-		<template name="moderation_threadnotes_modaction_error" version="1800"><![CDATA[<tr><td class="trow1" colspan="4">{$lang->no_mod_options}</td></tr>]]></template>
 		<template name="multipage" version="1800"><![CDATA[<div class="pagination">
 <span class="pages">{$lang->multipage_pages}</span>
 {$prevpage}{$start}{$mppage}{$end}{$nextpage}{$jumptopage}
