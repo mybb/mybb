@@ -1792,7 +1792,7 @@ div.jqi .jqisubstate .jqibuttons button {
 
 /** Impromptu End */
 ]]></stylesheet>
-		<stylesheet name="usercp.css" attachedto="usercp.php|usercp2.php|private.php" version="1800" disporder="2"><![CDATA[.usercp_nav_item {
+		<stylesheet name="usercp.css" attachedto="usercp.php|usercp2.php|private.php" version="1806" disporder="2"><![CDATA[.usercp_nav_item {
 	display: block;
 	padding: 1px 0 1px 23px;
 	background-image: url(images/usercp_sprite.png);
@@ -1939,6 +1939,10 @@ div.jqi .jqisubstate .jqibuttons button {
 .pmspace_text {
 	padding: 1px 5px;
 	display: inline-block;
+}
+
+.new_pm {
+	font-weight: bold;
 }]]></stylesheet>
 		<stylesheet name="modcp.css" attachedto="modcp.php" version="1800" disporder="3"><![CDATA[.modcp_nav_item {
 	display: block;
@@ -10094,13 +10098,13 @@ if(use_xmlhttprequest == "1")
 	<strong>{$lang->reached_warning}</strong><br />
 	{$lang->reached_warning2}
 </div>]]></template>
-		<template name="private_messagebit" version="1800"><![CDATA[<tr>
-<td align="center" class="trow1" width="1%"><img src="{$theme['imgdir']}/{$msgfolder}" alt="{$msgalt}" title="{$msgalt}" /></td>
-<td align="center" class="trow2" width="1%">{$icon}</td>
-<td class="trow1" width="35%">{$msgprefix}<a href="private.php?action=read&amp;pmid={$message['pmid']}">{$message['subject']}</a>{$msgsuffix}{$denyreceipt}</td>
-<td align="center" class="trow2">{$tofromusername}</td>
-<td class="trow1" align="right" style="white-space: nowrap"><span class="smalltext">{$senddate}</span></td>
-<td class="trow2" align="center"><input type="checkbox" class="checkbox" name="check[{$message['pmid']}]" value="1" /></td>
+		<template name="private_messagebit" version="1806"><![CDATA[<tr>
+	<td align="center" class="trow1" width="1%"><img src="{$theme['imgdir']}/{$msgstatus}.png" alt="{$msgalt}" title="{$msgalt}" /></td>
+	<td align="center" class="trow2" width="1%">{$icon}</td>
+	<td class="trow1" width="35%"><a class="{$msgstatus}" href="private.php?action=read&amp;pmid={$message['pmid']}">{$message['subject']}</a>{$denyreceipt}</td>
+	<td align="center" class="trow2">{$tofromusername}</td>
+	<td class="trow1" align="right" style="white-space: nowrap"><span class="smalltext">{$senddate}</span></td>
+	<td class="trow2" align="center"><input type="checkbox" class="checkbox" name="check[{$message['pmid']}]" value="1" /></td>
 </tr>]]></template>
 		<template name="private_messagebit_denyreceipt" version="120"><![CDATA[ <span class="smalltext"><a href="private.php?action=read&amp;pmid={$message['pmid']}&amp;denyreceipt=1">{$lang->deny_receipt}</a></span>]]></template>
 		<template name="private_messagebit_icon" version="1800"><![CDATA[<img src="{$icon['path']}" alt="{$icon['name']}" title="{$icon['name']}" align="center" valign="middle" />]]></template>
@@ -10212,15 +10216,15 @@ if(use_xmlhttprequest == "1")
 		<template name="private_read_to" version="1400"><![CDATA[<br />
 {$lang->to} {$to_recipients}
 {$bcc}]]></template>
-		<template name="private_search_messagebit" version="1600"><![CDATA[<tr>
-<td align="center" class="trow1" width="1%"><img src="{$theme['imgdir']}/{$msgfolder}" alt="{$msgalt}" title="{$msgalt}" /></td>
-<td align="center" class="trow2" width="1%">{$icon}</td>
-<td class="trow1" width="35%">{$msgprefix}<a href="private.php?action=read&amp;pmid={$message['pmid']}">{$message['subject']}</a>{$msgsuffix}{$denyreceipt}
-<br />{$message['message']}</td>
-<td align="center" class="trow2">{$tofromusername}</td>
-<td align="center" class="trow1"><a href="private.php?fid={$message['folder']}">{$foldername}</a></td>
-<td class="trow2" align="center" style="white-space: nowrap"><span class="smalltext">{$senddate}</span></td>
-<td class="trow1" align="center"><input type="checkbox" class="checkbox" name="check[{$message['pmid']}]" value="1" /></td>
+		<template name="private_search_messagebit" version="1806"><![CDATA[<tr>
+	<td align="center" class="trow1" width="1%"><img src="{$theme['imgdir']}/{$msgstatus}.png" alt="{$msgalt}" title="{$msgalt}" /></td>
+	<td align="center" class="trow2" width="1%">{$icon}</td>
+	<td class="trow1" width="35%"><a class="{$msgstatus}" href="private.php?action=read&amp;pmid={$message['pmid']}">{$message['subject']}</a>{$denyreceipt}
+	<br />{$message['message']}</td>
+	<td align="center" class="trow2">{$tofromusername}</td>
+	<td align="center" class="trow1"><a href="private.php?fid={$message['folder']}">{$foldername}</a></td>
+	<td class="trow2" align="center" style="white-space: nowrap"><span class="smalltext">{$senddate}</span></td>
+	<td class="trow1" align="center"><input type="checkbox" class="checkbox" name="check[{$message['pmid']}]" value="1" /></td>
 </tr>]]></template>
 		<template name="private_search_results" version="1600"><![CDATA[<html>
 <head>

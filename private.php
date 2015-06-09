@@ -360,29 +360,27 @@ if($mybb->input['action'] == "results")
 	");
 	while($message = $db->fetch_array($query))
 	{
-		$msgalt = $msgsuffix = $msgprefix = '';
+		$msgalt = $msgstatus = '';
 
 		// Determine Folder Icon
 		if($message['status'] == 0)
 		{
-			$msgfolder = 'new_pm.png';
+			$msgstatus = 'new_pm';
 			$msgalt = $lang->new_pm;
-			$msgprefix = "<strong>";
-			$msgsuffix = "</strong>";
 		}
-		elseif($message['status'] == 1)
+		else if($message['status'] == 1)
 		{
-			$msgfolder = 'old_pm.png';
+			$msgstatus = 'old_pm';
 			$msgalt = $lang->old_pm;
 		}
-		elseif($message['status'] == 3)
+		else if($message['status'] == 3)
 		{
-			$msgfolder = 're_pm.png';
+			$msgstatus = 're_pm';
 			$msgalt = $lang->reply_pm;
 		}
 		else if($message['status'] == 4)
 		{
-			$msgfolder = 'fw_pm.png';
+			$msgstatus = 'fw_pm';
 			$msgalt = $lang->fwd_pm;
 		}
 
@@ -2255,28 +2253,27 @@ if(!$mybb->input['action'])
 	{
 		while($message = $db->fetch_array($query))
 		{
-			$msgalt = $msgsuffix = $msgprefix = '';
+			$msgalt = $msgstatus = '';
+
 			// Determine Folder Icon
 			if($message['status'] == 0)
 			{
-				$msgfolder = 'new_pm.png';
+				$msgstatus = 'new_pm';
 				$msgalt = $lang->new_pm;
-				$msgprefix = "<strong>";
-				$msgsuffix = "</strong>";
 			}
-			elseif($message['status'] == 1)
+			else if($message['status'] == 1)
 			{
-				$msgfolder = 'old_pm.png';
+				$msgstatus = 'old_pm';
 				$msgalt = $lang->old_pm;
 			}
-			elseif($message['status'] == 3)
+			else if($message['status'] == 3)
 			{
-				$msgfolder = 're_pm.png';
+				$msgstatus = 're_pm';
 				$msgalt = $lang->reply_pm;
 			}
-			elseif($message['status'] == 4)
+			else if($message['status'] == 4)
 			{
-				$msgfolder = 'fw_pm.png';
+				$msgstatus = 'fw_pm';
 				$msgalt = $lang->fwd_pm;
 			}
 
