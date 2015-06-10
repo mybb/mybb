@@ -11665,9 +11665,9 @@ if(use_xmlhttprequest == "1")
 		<template name="smilieinsert_getmore" version="1804"><![CDATA[<tr>
   <td class="trow2" align="center"><span class="smalltext"><strong>[<a href="javascript:MyBB.popupWindow('/misc.php?action=smilies&popup=true&editor=MyBBEditor&modal=1')">{$lang->smilieinsert_getmore}</a>]</strong></span></td>
 </tr>]]></template>
+		<template name="smilieinsert_row" version="1806"><![CDATA[<tr>{$smilie_icons}</tr>]]></template>
+		<template name="smilieinsert_row_empty" version="1806"><![CDATA[<tr>{$smilie_icons}<td colspan="{$colspan}">&nbsp;</td></tr>]]></template>
 		<template name="smilieinsert_smilie" version="1800"><![CDATA[<td style="text-align: center">{$smilie}</td>]]></template>
-		<template name="smilieinsert_smilie_empty" version="1800"><![CDATA[<td colspan="{$colspan}">&nbsp;</td>
-</tr>]]></template>
 		<template name="stats" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->board_stats}</title>
