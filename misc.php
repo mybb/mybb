@@ -12,7 +12,7 @@ define("IN_MYBB", 1);
 define("IGNORE_CLEAN_VARS", "sid");
 define('THIS_SCRIPT', 'misc.php');
 
-$templatelist = "misc_rules_forum,misc_help_helpdoc,misc_whoposted_poster,misc_whoposted,misc_smilies_popup_smilie,misc_smilies_popup,misc_smilies_popup_empty,misc_syndication_feedurl,misc_syndication";
+$templatelist = "misc_rules_forum,misc_help_helpdoc,misc_whoposted_poster,misc_whoposted,misc_smilies_popup_smilie,misc_smilies_popup,misc_smilies_popup_empty,,misc_smilies_popup_rowmisc_syndication_feedurl,misc_syndication";
 $templatelist .= ",misc_buddypopup,misc_buddypopup_user,misc_buddypopup_user_none,misc_buddypopup_user_online,misc_buddypopup_user_offline,misc_buddypopup_user_sendpm,misc_help_search,misc_syndication_forumlist";
 $templatelist .= ",misc_smilies,misc_smilies_smilie,misc_help_section_bit,misc_help_section,misc_help,forumdisplay_password_wrongpass,forumdisplay_password,misc_helpresults,misc_helpresults_bit,misc_helpresults_noresults";
 $templatelist .= ",multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,misc_syndication_forumlist_forum";
@@ -706,8 +706,8 @@ elseif($mybb->input['action'] == "smilies")
 	{ // make small popup list of smilies
 		$editor = preg_replace('#([^a-zA-Z0-9_-]+)#', '', $mybb->get_input('editor'));
 		$e = 1;
-		$class = "trow1";
-		$smilies = "<tr>";
+		$smile_icons = '';
+		$class = alt_trow(1);
 		$smilies_cache = $cache->read("smilies");
 		if(is_array($smilies_cache))
 		{
@@ -727,10 +727,11 @@ elseif($mybb->input['action'] == "smilies")
 
 				$onclick = " onclick=\"MyBBEditor.insertText(' $smilie_insert ');\"";
 				eval('$smilie_image = "'.$templates->get('smilie', 1, 0).'";');
-				eval("\$smilies .= \"".$templates->get("misc_smilies_popup_smilie")."\";");
+				eval("\$smile_icons .= \"".$templates->get("misc_smilies_popup_smilie")."\";");
 				if($e == 2)
 				{
-					$smilies .= "</tr><tr>";
+					eval("\$smilies .= \"".$templates->get("misc_smilies_popup_row")."\";");
+					$smile_icons = '';
 					$e = 1;
 					$class = alt_trow();
 				}
