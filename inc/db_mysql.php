@@ -1407,7 +1407,7 @@ class DB_MySQL implements DB_Base
 	/**
 	 * Fetch a list of database character sets this DBMS supports
 	 *
-	 * @return array Array of supported character sets with array key being the name, array value being display name. False if unsupported
+	 * @return array|bool Array of supported character sets with array key being the name, array value being display name. False if unsupported
 	 */
 	function fetch_db_charsets()
 	{
@@ -1460,7 +1460,7 @@ class DB_MySQL implements DB_Base
 	 * Fetch a database collation for a particular database character set
 	 *
 	 * @param string  $charset The database character set
-	 * @return string The matching database collation, false if unsupported
+	 * @return string|bool The matching database collation, false if unsupported
 	 */
 	function fetch_charset_collation($charset)
 	{
