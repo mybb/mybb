@@ -11,7 +11,7 @@
 /**
  * Execute a scheduled task.
  *
- * @param int The task ID. If none specified, the next task due to be ran is executed
+ * @param int $tid The task ID. If none specified, the next task due to be ran is executed
  * @return boolean True if successful, false on failure
  */
 function run_task($tid=0)
@@ -90,8 +90,8 @@ function run_task($tid=0)
 /**
  * Adds information to the scheduled task log.
  *
- * @param int The task array to create the log entry for
- * @param string The message to log
+ * @param int $task The task array to create the log entry for
+ * @param string $message The message to log
  */
 function add_task_log($task, $message)
 {
@@ -113,7 +113,7 @@ function add_task_log($task, $message)
 /**
  * Generate the next run time for a particular task.
  *
- * @param array The task array as fetched from the database.
+ * @param array $task The task array as fetched from the database.
  * @return int The next run time as a UNIX timestamp
  */
 function fetch_next_run($task)
@@ -320,9 +320,9 @@ function fetch_next_run($task)
 /**
  * Builds the next run time bit for a particular item (day, hour, month etc). Used by fetch_next_run().
  *
- * @param string A string containing the run timse for this particular item
- * @param int The current value (be it current day etc)
- * @return int The new or found value
+ * @param string $data A string containing the run times for this particular item
+ * @param int $bit The current value (be it current day etc)
+ * @return int|bool The new or found value or boolean if nothing is found
  */
 function build_next_run_bit($data, $bit)
 {
@@ -341,7 +341,7 @@ function build_next_run_bit($data, $bit)
 /**
  * Fetches the fist run bit for a particular item (day, hour, month etc). Used by fetch_next_run().
  *
- * @param string A string containing the run times for this particular item
+ * @param string $data A string containing the run times for this particular item
  * @return int The first run time
  */
 function fetch_first_run_time($data)
@@ -354,8 +354,8 @@ function fetch_first_run_time($data)
 /**
  * Checks if a specific run time exists for a particular item (day, hour, month etc). Used by fetch_next_run().
  *
- * @param string A string containing the run times for this particular item
- * @param int The bit we're checking for
+ * @param string $data A string containing the run times for this particular item
+ * @param int $bit The bit we're checking for
  * @return boolean True if it exists, false if it does not
  */
 function run_time_exists($data, $bit)

@@ -11,8 +11,8 @@
 /**
  * Build a post bit
  *
- * @param array The post data
- * @param int The type of post bit we're building (1 = preview, 2 = pm, 3 = announcement, else = post)
+ * @param array $post The post data
+ * @param int $post_type The type of post bit we're building (1 = preview, 2 = pm, 3 = announcement, else = post)
  * @return string The built post bit
  */
 function build_postbit($post, $post_type=0)
@@ -815,8 +815,8 @@ function build_postbit($post, $post_type=0)
  * Fetch the attachments for a specific post and parse inline [attachment=id] code.
  * Note: assumes you have $attachcache, an array of attachments set up.
  *
- * @param int The ID of the item.
- * @param array The post or item passed by reference.
+ * @param int $id The ID of the item.
+ * @param array $post The post or item passed by reference.
  */
 function get_post_attachments($id, &$post)
 {
