@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<theme name="MyBB Master Style" version="1805">
+<theme name="MyBB Master Style" version="1806">
 	<properties>
 		<templateset><![CDATA[1]]></templateset>
 		<imgdir><![CDATA[images]]></imgdir>
@@ -8714,6 +8714,8 @@ if(use_xmlhttprequest == "1")
 		<template name="multipage_page_link_current" version="1600"><![CDATA[ <a href="{$page_url}" class="pagination_current">{$i}</a>]]></template>
 		<template name="multipage_prevpage" version="1400"><![CDATA[<a href="{$page_url}" class="pagination_previous">&laquo; {$lang->previous}</a>]]></template>
 		<template name="multipage_start" version="1600"><![CDATA[<a href="{$page_url}" class="pagination_first">1</a> {$lang->multipage_link_start}]]></template>
+		<template name="mycode_code" version="1806"><![CDATA[<div class="codeblock"><div class="title">{$lang->code}</div><div class="body" dir="ltr"><code>{$code}</code></div></div><br />]]></template>
+		<template name="mycode_php" version="1806"><![CDATA[<div class="codeblock phpcodeblock"><div class="title">{$lang->php_code}</div><div class="body">{$code}</div></div><br />]]></template>
 		<template name="nav" version="120"><![CDATA[
 <div class="navigation">
 {$nav}{$activesep}{$activebit}

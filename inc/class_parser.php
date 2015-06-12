@@ -896,7 +896,7 @@ class postParser
 	*/
 	function mycode_parse_code($code, $text_only=false)
 	{
-		global $lang;
+		global $lang, $templates;
 
 		if($text_only == true)
 		{
@@ -919,7 +919,8 @@ class postParser
 		$code = str_replace("\t", '&nbsp;&nbsp;&nbsp;&nbsp;', $code);
 		$code = str_replace("  ", '&nbsp;&nbsp;', $code);
 
-		return "<div class=\"codeblock\">\n<div class=\"title\">".$lang->code."\n</div><div class=\"body\" dir=\"ltr\"><code>".$code."</code></div></div>\n";
+		eval("\$mycode_code = \"".$templates->get("mycode_code", 1, 0)."\";");
+		return $mycode_code;
 	}
 
 	/**
@@ -943,7 +944,7 @@ class postParser
 	*/
 	function mycode_parse_php($str, $bare_return = false, $text_only = false)
 	{
-		global $lang;
+		global $lang, $templates;
 
 		if($text_only == true)
 		{
@@ -1013,7 +1014,8 @@ class postParser
 		}
 
 		// Send back the code all nice and pretty
-		return "<div class=\"codeblock phpcodeblock\"><div class=\"title\">$lang->php_code\n</div><div class=\"body\">".$code."</div></div>\n";
+		eval("\$mycode_php = \"".$templates->get("mycode_php", 1, 0)."\";");
+		return $mycode_php;
 	}
 
 	/**
