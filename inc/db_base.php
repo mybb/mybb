@@ -53,7 +53,7 @@ interface DB_Base
 	 *
 	 * @return array The array of results.
 	 */
-	function fetch_array($query, $resulttype=MYSQL_ASSOC);
+	function fetch_array($query, $resulttype=1);
 
 	/**
 	 * Return a specific field from a query.

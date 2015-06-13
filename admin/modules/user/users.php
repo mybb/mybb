@@ -567,6 +567,8 @@ if($mybb->input['action'] == "edit")
 			"showcodebuttons" => $mybb->input['showcodebuttons'],
 			"sourceeditor" => $mybb->input['sourceeditor'],
 			"pmnotify" => $mybb->input['pmnotify'],
+			"buddyrequestspm" => $mybb->input['buddyrequestspm'],
+			"buddyrequestsauto" => $mybb->input['buddyrequestsauto'],
 			"showredirect" => $mybb->input['showredirect']
 		);
 
@@ -916,9 +918,9 @@ if($mybb->input['action'] == "edit")
 	$page->extra_header .= <<<EOF
 
 	<link rel="stylesheet" href="../jscripts/sceditor/editor_themes/mybb.css" type="text/css" media="all" />
-	<script type="text/javascript" src="../jscripts/sceditor/jquery.sceditor.bbcode.min.js"></script>
+	<script type="text/javascript" src="../jscripts/sceditor/jquery.sceditor.bbcode.min.js?ver=1805"></script>
 	<script type="text/javascript" src="../jscripts/bbcodes_sceditor.js?ver=1804"></script>
-	<script type="text/javascript" src="../jscripts/sceditor/editor_plugins/undo.js?ver=1804"></script>
+	<script type="text/javascript" src="../jscripts/sceditor/editor_plugins/undo.js?ver=1805"></script>
 EOF;
 	$page->output_header($lang->edit_user);
 
@@ -1051,6 +1053,11 @@ EOF;
 
 	if($mybb->settings['enablewarningsystem'] != 0 && $user_permissions['canreceivewarnings'] != 0)
 	{
+		if($mybb->settings['maxwarningpoints'] < 1)
+		{
+			$mybb->settings['maxwarningpoints'] = 10;
+		}
+
 		$warning_level = round($user['warningpoints']/$mybb->settings['maxwarningpoints']*100);
 		if($warning_level > 100)
 		{
@@ -1222,6 +1229,8 @@ EOF;
 		$form->generate_check_box("receivefrombuddy", 1, $lang->recieve_pms_from_buddy, array("checked" => $mybb->input['receivefrombuddy'])),
 		$form->generate_check_box("pmnotice", 1, $lang->alert_new_pms, array("checked" => $mybb->input['pmnotice'])),
 		$form->generate_check_box("pmnotify", 1, $lang->email_notify_new_pms, array("checked" => $mybb->input['pmnotify'])),
+		$form->generate_check_box("buddyrequestspm", 1, $lang->buddy_requests_pm, array("checked" => $mybb->input['buddyrequestspm'])),
+		$form->generate_check_box("buddyrequestsauto", 1, $lang->buddy_requests_auto, array("checked" => $mybb->input['buddyrequestsauto'])),
 		"<label for=\"subscriptionmethod\">{$lang->default_thread_subscription_mode}:</label><br />".$form->generate_select_box("subscriptionmethod", array($lang->do_not_subscribe, $lang->no_email_notification, $lang->instant_email_notification), $mybb->input['subscriptionmethod'], array('id' => 'subscriptionmethod'))
 	);
 	$form_container->output_row($lang->messaging_and_notification, "", "<div class=\"user_settings_bit\">".implode("</div><div class=\"user_settings_bit\">", $messaging_options)."</div>");
@@ -2134,7 +2143,7 @@ if($mybb->input['action'] == "merge")
 	<script type="text/javascript">
 	<!--
 	$("#source_username").select2({
-		placeholder: "Search for a user",
+		placeholder: "'.$lang->search_for_a_user.'",
 		minimumInputLength: 3,
 		maximumSelectionSize: 3,
 		multiple: false,
@@ -2164,7 +2173,7 @@ if($mybb->input['action'] == "merge")
 		}
 	});
 	$("#destination_username").select2({
-		placeholder: "Search for a user",
+		placeholder: "'.$lang->search_for_a_user.'",
 		minimumInputLength: 3,
 		maximumSelectionSize: 3,
 		multiple: false,
@@ -3563,6 +3572,11 @@ function build_users_view($view)
 
 			if($mybb->settings['enablewarningsystem'] != 0 && $usergroups[$user['usergroup']]['canreceivewarnings'] != 0)
 			{
+				if($mybb->settings['maxwarningpoints'] < 1)
+				{
+					$mybb->settings['maxwarningpoints'] = 10;
+				}
+
 				$warning_level = round($user['warningpoints']/$mybb->settings['maxwarningpoints']*100);
 				if($warning_level > 100)
 				{
@@ -4137,7 +4151,7 @@ function user_search_conditions($input=array(), &$form)
 <script type="text/javascript">
 <!--
 $("#username").select2({
-	placeholder: "Search for a user",
+	placeholder: "'.$lang->search_for_a_user.'",
 	minimumInputLength: 3,
 	maximumSelectionSize: 3,
 	multiple: false,

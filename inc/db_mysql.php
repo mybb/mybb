@@ -788,7 +788,7 @@ class DB_MySQL implements DB_Base
 			}
 			else
 			{
-				$array[$field] = "'{$value}'";
+				$array[$field] = $this->quote_val($value);
 			}
 		}
 
@@ -837,7 +837,7 @@ class DB_MySQL implements DB_Base
 				}
 				else
 				{
-					$values[$field] = "'{$value}'";
+					$values[$field] = $this->quote_val($value);
 				}
 			}
 			$insert_rows[] = "(".implode(",", $values).")";
@@ -892,14 +892,9 @@ class DB_MySQL implements DB_Base
 			}
 			else
 			{
-				if(is_numeric($value))
-				{
-					$query .= $comma."`".$field."`={$value}";
-				}
-				else
-				{
-					$query .= $comma."`".$field."`={$quote}{$value}{$quote}";
-				}
+				$quoted_val = $this->quote_val($value, $quote);
+
+				$query .= $comma."`".$field."`={$quoted_val}";
 			}
 			$comma = ', ';
 		}
@@ -918,6 +913,20 @@ class DB_MySQL implements DB_Base
 			UPDATE {$this->table_prefix}$table
 			SET $query
 		");
+	}
+
+	private function quote_val($value, $quote="'")
+	{
+		if(is_int($value))
+		{
+			$quoted = $value;
+		}
+		else
+		{
+			$quoted = $quote . $value . $quote;
+		}
+
+		return $quoted;
 	}
 
 	/**
@@ -1280,7 +1289,7 @@ class DB_MySQL implements DB_Base
 			}
 			else
 			{
-				$values .= $comma."`".$column."`='".$value."'";
+				$values .= $comma."`".$column."`=".$this->quote_val($value);
 			}
 
 			$comma = ',';

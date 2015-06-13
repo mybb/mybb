@@ -24,21 +24,13 @@ function upgrade33_dbchanges()
 {
 	global $db, $output;
 
-	$query = $db->simple_select('settings', 'value', "name='username_method'");
-	while($setting = $db->fetch_array($query))
+	$output->print_header("Updating Database");
+	echo "<p>Performing necessary upgrade queries...</p>";
+	flush();
+
+	if($db->field_exists('2fasecret', 'adminoptions'))
 	{
-		if($setting['value'] == 1 || $setting['value'] == 2)
-		{
-			$query = $db->simple_select('users', 'email, COUNT(email) AS duplicates', "email!=''", array('group_by' => 'email HAVING duplicates>1'));
-			if($db->num_rows($query))
-			{
-				$db->update_query('settings', array('value' => 0), "name='username_method'");
-			}
-			else
-			{
-				$db->update_query('settings', array('value' => 0), "name='allowmultipleemails'");
-			}
-		}
+		$db->rename_column('adminoptions', '2fasecret', 'authsecret', "varchar(16) NOT NULL default ''");
 	}
 	
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
