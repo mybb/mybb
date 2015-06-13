@@ -1514,8 +1514,8 @@ a.button.report_user_button span {
 }
 
 .jGrowl .jGrowl-notification.jgrowl_success {
-	background: #76EE00;
-	border: 1px solid #458B00;
+	background: #71C671;
+	border: 1px solid #228B22;
 	color: #333;
 }
 
@@ -1525,7 +1525,7 @@ a.button.report_user_button span {
 	color: #333;
 }
 
-.jGrowl .jGrowl-notification.jgrowl_process {
+.jGrowl .jGrowl-notification.jgrowl_process, .jGrowl .jGrowl-closer {
 	background: #FFF6BF;
 	border: 1px solid #FFD324;
 	color: #333;
