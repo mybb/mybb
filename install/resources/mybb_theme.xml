@@ -10360,7 +10360,7 @@ if(use_xmlhttprequest == "1")
 	$("#to").select2({
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 3,
-		maximumSelectionSize: 3,
+		maximumSelectionSize: {$mybb->usergroup['maxpmrecipients']},
 		multiple: true,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
@@ -10398,7 +10398,7 @@ if(use_xmlhttprequest == "1")
   $("#bcc").select2({
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 3,
-		maximumSelectionSize: 3,
+		maximumSelectionSize: {$mybb->usergroup['maxpmrecipients']},
 		multiple: true,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
