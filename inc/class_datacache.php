@@ -474,7 +474,7 @@ class datacache
 
 		$types = array();
 
-		$query = $db->simple_select("attachtypes", "*");
+		$query = $db->simple_select('attachtypes', '*', 'enabled=1');
 		while($type = $db->fetch_array($query))
 		{
 			$type['extension'] = my_strtolower($type['extension']);

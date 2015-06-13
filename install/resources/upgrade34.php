@@ -28,6 +28,22 @@ function upgrade34_dbchanges()
 	echo "<p>Performing necessary upgrade queries...</p>";
 	flush();
 
+	if($db->field_exists('enabled', 'attachtypes'))
+	{
+		$db->drop_column('attachtypes', 'enabled');
+	}
+	if($db->field_exists('groups', 'attachtypes'))
+	{
+		$db->drop_column('attachtypes', 'groups');
+	}
+	if($db->field_exists('forums', 'attachtypes'))
+	{
+		$db->drop_column('attachtypes', 'forums');
+	}
+	if($db->field_exists('avatarfile', 'attachtypes'))
+	{
+		$db->drop_column('attachtypes', 'avatarfile');
+	}
 
 	switch($db->type)
 	{
@@ -45,8 +61,8 @@ function upgrade34_dbchanges()
 			break;
 	}
 
-	$db->update_uqery('attachtypes', array('groups' => -1));
-	$db->update_uqery('attachtypes', array('forums' => -1));
+	$db->update_query('attachtypes', array('groups' => -1));
+	$db->update_query('attachtypes', array('forums' => -1));
 	
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("34_done");
