@@ -71,7 +71,7 @@ if($mybb->input['action'] == "add")
 				"find" => $db->escape_string($mybb->input['find']),
 				"image" => $db->escape_string($mybb->input['image']),
 				"disporder" => $mybb->get_input('disporder', MyBB::INPUT_INT),
-				"showclickable" => $db->escape_string($mybb->input['showclickable'])
+				"showclickable" => $mybb->get_input('showclickable', MyBB::INPUT_INT)
 			);
 
 			$sid = $db->insert_query("smilies", $new_smilie);
@@ -207,7 +207,7 @@ if($mybb->input['action'] == "edit")
 				"find" => $db->escape_string($mybb->input['find']),
 				"image" => $db->escape_string($mybb->input['image']),
 				"disporder" => $mybb->get_input('disporder', MyBB::INPUT_INT),
-				"showclickable" => $db->escape_string($mybb->input['showclickable'])
+				"showclickable" => $mybb->get_input('showclickable', MyBB::INPUT_INT)
 			);
 
 			$plugins->run_hooks("admin_config_smilies_edit_commit");
@@ -550,6 +550,15 @@ if($mybb->input['action'] == "mass_edit")
 			}
 			else
 			{
+				$mybb->input['find'][$sid] = str_replace("\r\n", "\n", $mybb->input['find'][$sid]);
+				$mybb->input['find'][$sid] = str_replace("\r", "\n", $mybb->input['find'][$sid]);
+				$mybb->input['find'][$sid] = explode("\n", $mybb->input['find'][$sid]);
+				foreach(array_merge(array_keys($mybb->input['find'][$sid], ""), array_keys($mybb->input['find'][$sid], " ")) as $key)
+				{
+					unset($mybb->input['find'][$sid][$key]);
+				}
+				$mybb->input['find'][$sid] = implode("\n", $mybb->input['find'][$sid]);				
+				
 				$smilie = array(
 					"name" => $db->escape_string($mybb->input['name'][$sid]),
 					"find" => $db->escape_string($mybb->input['find'][$sid]),
@@ -642,9 +651,6 @@ if($mybb->input['action'] == "mass_edit")
 		{
 			$image = "../".$smilie['image'];
 		}
-
-		$smilie['find'] = htmlspecialchars_uni($smilie['find']);
-		$smilie['name'] = htmlspecialchars_uni($smilie['name']);
 
 		$form_container->output_cell("<img src=\"{$image}\" alt=\"\" />", array("class" => "align_center", "width" => 1));
 		$form_container->output_cell($form->generate_text_box("name[{$smilie['sid']}]", $smilie['name'], array('id' => 'name', 'style' => 'width: 98%')));

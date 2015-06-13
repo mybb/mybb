@@ -77,20 +77,36 @@ class dbpdoEngine {
 	 * @param resource The query resource.
 	 * @return array The array of results.
 	 */
-	function fetch_array($query)
+	function fetch_array($query, $resulttype=PDO::FETCH_BOTH)
 	{
 		if(!is_object($query))
 		{
 			return;
 		}
 
+		switch($resulttype)
+		{
+			case PDO::FETCH_ASSOC:
+			case PDO::FETCH_BOUND:
+			case PDO::FETCH_CLASS:
+			case PDO::FETCH_INTO:
+			case PDO::FETCH_LAZY:
+			case PDO::FETCH_NAMED:
+			case PDO::FETCH_NUM:
+			case PDO::FETCH_OBJ:
+				break;
+			default:
+				$resulttype = PDO::FETCH_BOTH;
+				break;
+		}
+
 		if($this->seek_array[$query->guid])
 		{
-			$array = $query->fetch(PDO::FETCH_BOTH, $this->seek[$query->guid]['offset'], $this->seek[$query->guid]['row']);
+			$array = $query->fetch($resulttype, $this->seek[$query->guid]['offset'], $this->seek[$query->guid]['row']);
 		}
 		else
 		{
-			$array = $query->fetch(PDO::FETCH_BOTH);
+			$array = $query->fetch($resulttype);
 		}
 
 		return $array;

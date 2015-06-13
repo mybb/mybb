@@ -320,10 +320,6 @@ function build_postbit($post, $post_type=0)
 			$useravatar = format_avatar($post['avatar'], $post['avatardimensions'], $mybb->settings['postmaxavatarsize']);
 			eval("\$post['useravatar'] = \"".$templates->get("postbit_avatar")."\";");
 		}
-		else
-		{
-			$post['useravatar'] = '';
-		}
 
 		eval("\$post['button_find'] = \"".$templates->get("postbit_find")."\";");
 
@@ -374,6 +370,11 @@ function build_postbit($post, $post_type=0)
 		// Showing the warning level? (only show if not announcement)
 		if($post_type != 3 && $mybb->settings['enablewarningsystem'] != 0 && $usergroup['canreceivewarnings'] != 0 && ($mybb->usergroup['canwarnusers'] != 0 || ($mybb->user['uid'] == $post['uid'] && $mybb->settings['canviewownwarning'] != 0)))
 		{
+			if($mybb->settings['maxwarningpoints'] < 1)
+			{
+				$mybb->settings['maxwarningpoints'] = 10;
+			}
+
 			$warning_level = round($post['warningpoints']/$mybb->settings['maxwarningpoints']*100);
 			if($warning_level > 100)
 			{

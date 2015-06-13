@@ -56,7 +56,7 @@ function make_searchable_forums($pid="0", $selitem='', $addselect="1", $depth=''
 					}
 					if($forum['password'] != '')
 					{
-						if($mybb->cookies['forumpass'][$forum['fid']] == md5($mybb->user['uid'].$forum['password']))
+						if($mybb->cookies['forumpass'][$forum['fid']] === md5($mybb->user['uid'].$forum['password']))
 						{
 							$pwverified = 1;
 						}
@@ -125,7 +125,7 @@ function get_unsearchable_forums($pid="0", $first=1)
 		$pwverified = 1;
 		if($forum['password'] != '')
 		{
-			if($mybb->cookies['forumpass'][$forum['fid']] != md5($mybb->user['uid'].$forum['password']))
+			if($mybb->cookies['forumpass'][$forum['fid']] !== md5($mybb->user['uid'].$forum['password']))
 			{
 				$pwverified = 0;
 			}
@@ -207,7 +207,7 @@ function get_password_protected_forums($fids=array())
 			continue;
 		}
 
-		if(md5($mybb->user['uid'].$forum_cache[$fid]['password']) != $mybb->cookies['forumpass'][$fid])
+		if(md5($mybb->user['uid'].$forum_cache[$fid]['password']) !== $mybb->cookies['forumpass'][$fid])
 		{
 			$pass_fids[] = $fid;
 			$child_list = get_child_list($fid);

@@ -585,15 +585,20 @@ class DefaultForm
 		$select .= ">\n";
 
 		$groups_cache = $cache->read('usergroups');
+		
+		if(!is_array($selected))
+		{
+			$selected = array($selected);
+		}
+			
 		foreach($groups_cache as $group)
 		{
 			$selected_add = "";
-			if(is_array($selected))
+			
+			
+			if(in_array($group['gid'], $selected))
 			{
-				if(in_array($group['gid'], $selected))
-				{
-					$selected_add = " selected=\"selected\"";
-				}
+				$selected_add = " selected=\"selected\"";
 			}
 
 			$select .= "<option value=\"{$group['gid']}\"{$selected_add}>".htmlspecialchars_uni($group['title'])."</option>";

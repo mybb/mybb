@@ -11,7 +11,7 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'sendthread.php');
 
-$templatelist = "sendthread,sendthread_fromemail,sendthread_fromemail_hidden,forumdisplay_password_wrongpass,forumdisplay_password,post_captcha,post_captcha_recaptcha,post_captcha_nocaptcha,post_captcha_ayah";
+$templatelist = "sendthread,sendthread_fromemail,forumdisplay_password_wrongpass,forumdisplay_password,post_captcha,post_captcha_recaptcha,post_captcha_nocaptcha,post_captcha_ayah";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -154,6 +154,12 @@ if($mybb->input['action'] == "do_sendtofriend" && $mybb->request_method == "post
 		$errors[] = $lang->error_invalidemail;
 	}
 
+	if($mybb->user['uid'])
+	{
+		$mybb->input['fromemail'] = $mybb->user['email'];
+		$mybb->input['fromname'] = $mybb->user['username'];
+	}
+
 	if(!validate_email_format($mybb->input['fromemail']))
 	{
 		$errors[] = $lang->error_invalidfromemail;
@@ -279,10 +285,6 @@ if(!$mybb->input['action'])
 	if($mybb->user['uid'] == 0)
 	{
 		eval("\$from_email = \"".$templates->get("sendthread_fromemail")."\";");
-	}
-	else
-	{
-		eval("\$from_email = \"".$templates->get("sendthread_fromemail_hidden")."\";");
 	}
 
 	$plugins->run_hooks("sendthread_end");
