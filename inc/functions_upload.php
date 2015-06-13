@@ -288,16 +288,21 @@ function upload_avatar($avatar=array(), $uid=0)
 		}
 	}
 
-	// Next check the file size
-	if($avatar['size'] > ($mybb->settings['avatarsize']*1024) && $mybb->settings['avatarsize'] > 0)
+	// Check a list of known MIME types to establish what kind of avatar we're uploading
+	$attachtypes = (array)$cache->read('attachtypes');
+
+	$allowed_mime_types = array();
+	foreach($attachtypes as $attachtype)
 	{
-		delete_uploaded_file($avatarpath."/".$filename);
-		$ret['error'] = $lang->error_uploadsize;
-		return $ret;
+		if(defined('IN_ADMINCP') || is_member($attachtype['groups']) && $attachtype['avatarfile'])
+		{
+			$allowed_mime_types[$attachtype['mimetype']] = $attachtype['maxsize'];
+		}
 	}
 
-	// Check a list of known MIME types to establish what kind of avatar we're uploading
-	switch(my_strtolower($avatar['type']))
+	$avatar['type'] = my_strtolower($avatar['type']);
+
+	switch($avatar['type'])
 	{
 		case "image/gif":
 			$img_type =  1;
@@ -318,12 +323,21 @@ function upload_avatar($avatar=array(), $uid=0)
 	}
 
 	// Check if the uploaded file type matches the correct image type (returned by getimagesize)
-	if($img_dimensions[2] != $img_type || $img_type == 0)
+	if(empty($allowed_mime_types[$avatar['type']]) || $img_dimensions[2] != $img_type || $img_type == 0)
 	{
 		$ret['error'] = $lang->error_uploadfailed;
 		delete_uploaded_file($avatarpath."/".$filename);
 		return $ret;
 	}
+
+	// Next check the file size
+	if(($avatar['size'] > ($mybb->settings['avatarsize']*1024) && $mybb->settings['avatarsize'] > 0) || $avatar['size'] > $allowed_mime_types[$avatar['type']] && !($mybb->settings['avatarsize'] > 0))
+	{
+		delete_uploaded_file($avatarpath."/".$filename);
+		$ret['error'] = $lang->error_uploadsize;
+		return $ret;
+	}
+
 	// Everything is okay so lets delete old avatars for this user
 	remove_avatars($uid, $filename);
 
