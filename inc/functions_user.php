@@ -112,7 +112,7 @@ function validate_password_from_uid($uid, $password, $user = array())
 		);
 		$db->update_query("users", $sql_array, "uid = ".$user['uid']);
 	}
-	if(salt_password(md5($password), $user['salt']) == $user['password'])
+	if(salt_password(md5($password), $user['salt']) === $user['password'])
 	{
 		return $user;
 	}
@@ -574,6 +574,7 @@ function get_usertitle($uid="")
 			if($title['posts'] <= $user['postnum'])
 			{
 				$usertitle = $title;
+				break;
 			}
 		}
 

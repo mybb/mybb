@@ -21,7 +21,7 @@ $templatelist .= ",member_profile_signature,member_profile_avatar,member_profile
 $templatelist .= ",member_profile_modoptions_manageuser,member_profile_modoptions_editprofile,member_profile_modoptions_banuser,member_profile_modoptions_viewnotes,member_profile_modoptions,member_profile_modoptions_editnotes,member_profile_modoptions_purgespammer,postbit_reputation_formatted,postbit_warninglevel_formatted";
 $templatelist .= ",usercp_profile_profilefields_select_option,usercp_profile_profilefields_multiselect,usercp_profile_profilefields_select,usercp_profile_profilefields_textarea,usercp_profile_profilefields_radio,usercp_profile_profilefields_checkbox,usercp_profile_profilefields_text,usercp_options_tppselect_option";
 $templatelist .= ",member_register_question,member_register_question_refresh,usercp_options_timezone,usercp_options_timezone_option,usercp_options_language_option,member_register_language,member_profile_userstar,member_profile_customfields_field_multi_item,member_profile_customfields_field_multi,member_register_day";
-$templatelist .= ",member_profile_contact_fields_aim,member_profile_contact_fields_google,member_profile_contact_fields_icq,member_profile_contact_fields_skype,member_profile_contact_fields_yahoo,member_profile_pm,member_profile_contact_details,member_emailuser_hidden,member_profile_banned";
+$templatelist .= ",member_profile_contact_fields_aim,member_profile_contact_fields_google,member_profile_contact_fields_icq,member_profile_contact_fields_skype,member_profile_contact_fields_yahoo,member_profile_pm,member_profile_contact_details,member_profile_banned";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -924,7 +924,7 @@ if($mybb->input['action'] == "register")
 							$val = str_replace("\n", "\\n", $val);
 
 							$sel = "";
-							if($val == $seloptions[$val])
+							if(isset($seloptions[$val]) && $val == $seloptions[$val])
 							{
 								$sel = ' selected="selected"';
 							}
@@ -1004,7 +1004,7 @@ if($mybb->input['action'] == "register")
 						foreach($expoptions as $key => $val)
 						{
 							$checked = "";
-							if($val == $seloptions[$val])
+							if(isset($seloptions[$val]) && $val == $seloptions[$val])
 							{
 								$checked = 'checked="checked"';
 							}
@@ -1037,19 +1037,19 @@ if($mybb->input['action'] == "register")
 					{
 						if($type == "textarea")
 						{
-							$inp_selector = "$('textarea[name=\"profile_fields[{$field}]\"')";					
+							$inp_selector = "$('textarea[name=\"profile_fields[{$field}]\"]')";					
 						}
 						elseif($type == "multiselect")
 						{
-							$inp_selector = "$('select[name=\"profile_fields[{$field}][]\"')";					
+							$inp_selector = "$('select[name=\"profile_fields[{$field}][]\"]')";					
 						}
 						elseif($type == "checkbox")
 						{
-							$inp_selector = "$('input[name=\"profile_fields[{$field}][]\"')";	
+							$inp_selector = "$('input[name=\"profile_fields[{$field}][]\"]')";	
 						}
 						else
 						{
-							$inp_selector = "$('input[name=\"profile_fields[{$field}]\"')";
+							$inp_selector = "$('input[name=\"profile_fields[{$field}]\"]')";
 						}
 						
 						$validator_extra .= "
@@ -1068,16 +1068,18 @@ if($mybb->input['action'] == "register")
 					eval("\$customfields .= \"".$templates->get("member_register_customfield")."\";");
 				}
 			}
+			
+			if($requiredfields)
+			{
+				eval("\$requiredfields = \"".$templates->get("member_register_requiredfields")."\";");
+			}
+
+			if($customfields)
+			{
+				eval("\$customfields = \"".$templates->get("member_register_additionalfields")."\";");
+			}
 		}
 
-		if(!empty($requiredfields))
-		{
-			eval("\$requiredfields = \"".$templates->get("member_register_requiredfields")."\";");
-		}
-		if(!empty($customfields))
-		{
-			eval("\$customfields = \"".$templates->get("member_register_additionalfields")."\";");
-		}
 		if(!isset($fromreg))
 		{
 			$allownoticescheck = "checked=\"checked\"";
@@ -1584,10 +1586,10 @@ if($mybb->input['action'] == "resetpassword")
 	}
 	if(isset($mybb->input['code']) && $user)
 	{
-		$query = $db->simple_select("awaitingactivation", "*", "uid='".$user['uid']."' AND type='p'");
-		$activation = $db->fetch_array($query);
+		$query = $db->simple_select("awaitingactivation", "code", "uid='".$user['uid']."' AND type='p'");
+		$activationcode = $db->fetch_field($query, 'code');
 		$now = TIME_NOW;
-		if($activation['code'] != $mybb->get_input('code'))
+		if(!$activationcode || $activationcode != $mybb->get_input('code'))
 		{
 			error($lang->error_badlostpwcode);
 		}
@@ -1787,7 +1789,7 @@ if($mybb->input['action'] == "login")
 				$captcha = $login_captcha->build_hidden_captcha();
 			}
 		}
-		elseif($login_captcha->type == 2)
+		elseif($login_captcha->type == 2 || $login_captcha->type == 4)
 		{
 			$login_captcha->build_recaptcha();
 		}
@@ -2189,17 +2191,10 @@ if($mybb->input['action'] == "profile")
 			{
 				$lang->membdayage = $lang->sprintf($lang->membdayage, get_age($memprofile['birthday']));
 
-				if($membday[2] >= 1970)
-				{
-					$w_day = date("l", mktime(0, 0, 0, $membday[1], $membday[0], $membday[2]));
-					$membday = format_bdays($mybb->settings['dateformat'], $membday[1], $membday[0], $membday[2], $w_day);
-				}
-				else
-				{
-					$bdayformat = fix_mktime($mybb->settings['dateformat'], $membday[2]);
-					$membday = mktime(0, 0, 0, $membday[1], $membday[0], $membday[2]);
-					$membday = date($bdayformat, $membday);
-				}
+				$bdayformat = fix_mktime($mybb->settings['dateformat'], $membday[2]);
+				$membday = mktime(0, 0, 0, $membday[1], $membday[0], $membday[2]);
+				$membday = date($bdayformat, $membday);
+
 				$membdayage = $lang->membdayage;
 			}
 			elseif($membday[2])
@@ -2433,6 +2428,12 @@ if($mybb->input['action'] == "profile")
 	if($mybb->settings['enablewarningsystem'] != 0 && $memperms['canreceivewarnings'] != 0 && ($mybb->usergroup['canwarnusers'] != 0 || ($mybb->user['uid'] == $memprofile['uid'] && $mybb->settings['canviewownwarning'] != 0)))
 	{
 		$bg_color = alt_trow();
+
+		if($mybb->settings['maxwarningpoints'] < 1)
+		{
+			$mybb->settings['maxwarningpoints'] = 10;
+		}
+
 		$warning_level = round($memprofile['warningpoints']/$mybb->settings['maxwarningpoints']*100);
 
 		if($warning_level > 100)
@@ -2791,6 +2792,12 @@ if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 
 	$errors = array();
 
+	if($mybb->user['uid'])
+	{
+		$mybb->input['fromemail'] = $mybb->user['email'];
+		$mybb->input['fromname'] = $mybb->user['username'];
+	}
+
 	if(!validate_email_format($mybb->input['fromemail']))
 	{
 		$errors[] = $lang->error_invalidfromemail;
@@ -3001,10 +3008,6 @@ if($mybb->input['action'] == "emailuser")
 	if($mybb->user['uid'] == 0)
 	{
 		eval("\$from_email = \"".$templates->get("member_emailuser_guest")."\";");
-	}
-	else
-	{
-		eval("\$from_email = \"".$templates->get("member_emailuser_hidden")."\";");
 	}
 
 	$plugins->run_hooks("member_emailuser_end");

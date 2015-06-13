@@ -48,6 +48,7 @@
 				<permission name="modlog">0</permission>
 				<permission name="recount_rebuild">0</permission>
 				<permission name="php_info">1</permission>
+				<permission name="spamlog">0</permission>
 				<permission name="maillogs">0</permission>
 				<permission name="mailerrors">0</permission>
 				<permission name="warninglog">0</permission>
@@ -114,6 +115,7 @@
 				<permission name="modlog">1</permission>
 				<permission name="recount_rebuild">1</permission>
 				<permission name="php_info">1</permission>
+				<permission name="spamlog">1</permission>
 				<permission name="maillogs">1</permission>
 				<permission name="mailerrors">1</permission>
 				<permission name="warninglog">1</permission>
@@ -180,6 +182,7 @@
 				<permission name="php_info">1</permission>
 				<permission name="adminlog">1</permission>
 				<permission name="modlog">1</permission>
+				<permission name="spamlog">1</permission>
 				<permission name="maillogs">1</permission>
 				<permission name="mailerrors">1</permission>
 				<permission name="warninglog">1</permission>

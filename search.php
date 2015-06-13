@@ -359,7 +359,8 @@ if($mybb->input['action'] == "results")
 		// Fetch dot icons if enabled
 		if($mybb->settings['dotfolders'] != 0 && $mybb->user['uid'] && $thread_cache)
 		{
-			$query = $db->simple_select("posts", "DISTINCT tid,uid", "uid='".$mybb->user['uid']."' AND tid IN(".$thread_ids.")");
+			$p_unapproved_where = str_replace('t.', '', $unapproved_where);
+			$query = $db->simple_select("posts", "DISTINCT tid,uid", "uid='{$mybb->user['uid']}' AND tid IN({$thread_ids}) AND {$p_unapproved_where}");
 			while($thread = $db->fetch_array($query))
 			{
 				$thread_cache[$thread['tid']]['dot_icon'] = 1;
@@ -740,8 +741,35 @@ if($mybb->input['action'] == "results")
 		{
 			$temp_pids = array();
 
+			$group_permissions = forum_permissions();
+			$permsql = '';
+			$onlyusfids = array();
+
+			foreach($group_permissions as $fid => $forum_permissions)
+			{
+				if(!empty($forum_permissions['canonlyviewownthreads']))
+				{
+					$onlyusfids[] = $fid;
+				}
+			}
+
+			if($onlyusfids)
+			{
+				$permsql .= " OR (fid IN(".implode(',', $onlyusfids).") AND uid!={$mybb->user['uid']})";
+			}
+			$unsearchforums = get_unsearchable_forums();
+			if($unsearchforums)
+			{
+				$permsql .= " OR fid IN ($unsearchforums)";
+			}
+			$inactiveforums = get_inactive_forums();
+			if($inactiveforums)
+			{
+				$permsql .= " OR fid IN ($inactiveforums)";
+			}
+
 			// Check the thread records as well. If we don't have permissions, remove them from the listing.
-			$query = $db->simple_select("threads", "tid", "tid IN(".$db->escape_string(implode(',', $pids)).") AND ({$t_unapproved_where} OR closed LIKE 'moved|%')");
+			$query = $db->simple_select("threads", "tid", "tid IN(".$db->escape_string(implode(',', $pids)).") AND ({$t_unapproved_where}{$permsql} OR closed LIKE 'moved|%')");
 			while($thread = $db->fetch_array($query))
 			{
 				if(array_key_exists($thread['tid'], $tids) != false)
@@ -783,7 +811,7 @@ if($mybb->input['action'] == "results")
 		$dot_icon = array();
 		if($mybb->settings['dotfolders'] != 0 && $mybb->user['uid'] != 0)
 		{
-			$query = $db->simple_select("posts", "DISTINCT tid,uid", "uid='".$mybb->user['uid']."' AND tid IN(".$db->escape_string($tids).")");
+			$query = $db->simple_select("posts", "DISTINCT tid,uid", "uid='{$mybb->user['uid']}' AND tid IN({$db->escape_string($tids)}) AND {$p_unapproved_where}");
 			while($post = $db->fetch_array($query))
 			{
 				$dot_icon[$post['tid']] = true;
@@ -1629,4 +1657,5 @@ else
 	eval("\$search = \"".$templates->get("search")."\";");
 	output_page($search);
 }
+
 

@@ -141,6 +141,7 @@ $l['advanced_search'] = "Advanced Search";
 $l['search_pms'] = "Search PMs";
 $l['advanced_private_message_search'] = "Advanced Private Message Search";
 $l['search_criteria'] = "Search Criteria";
+$l['find_users'] = "Search for a user";
 $l['keywords'] = "Keywords";
 $l['search_in_subject'] = "Search in Subject";
 $l['search_in_message'] = "Search in Message";
@@ -170,7 +171,7 @@ $l['error_pmrecipientreachedquota'] = "You cannot send a private message to {1} 
 $l['error_recipientpmturnedoff'] = "{1} has chosen not to receive private messages or may not be allowed to do so. Therefore you may not send your private message to this user.";
 $l['error_pmsturnedoff'] = "You currently have private messages disabled in your profile.<br />To be able to use the private messaging system this setting must be enabled.";
 $l['error_recipientignoring'] = "We are sorry but we cannot process your private message to {1}. You do not have permission to perform this action.";
-$l['error_pm_already_submitted'] = "You have already submitted the same private message to the same recipient within the last 5 minutes.";
+$l['error_pm_already_submitted'] = "You have already submitted the same private message to the same recipient within the last 5 hours.";
 $l['error_nopms'] = "You must have one or more private messages in order to access this function.";
 
 $l['error_minsearchlength'] = "One or more of your search terms were shorter than the minimum length. The minimum search term length is {1} characters.<br /><br />If you're trying to search for an entire phrase, enclose it within double quotes. For example \"The quick brown fox jumps over the lazy dog\".";

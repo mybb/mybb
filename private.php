@@ -1143,7 +1143,7 @@ if($mybb->input['action'] == "read")
 
 	if(count($to_recipients) > 0)
 	{
-		$to_recipients = implode(", ", $to_recipients);
+		$to_recipients = implode($lang->comma, $to_recipients);
 	}
 	else
 	{

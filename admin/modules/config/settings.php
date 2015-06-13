@@ -418,12 +418,14 @@ if($mybb->input['action'] == "add")
 		"onoff" => $lang->onoff,
 		"select" => $lang->select,
 		"forumselect" => $lang->forum_selection_box,
+		"forumselectsingle" => $lang->forum_selection_single,
 		"groupselect" => $lang->group_selection_box,
+		"groupselectsingle" => $lang->group_selection_single,
 		"radio" => $lang->radio,
 		"checkbox" => $lang->checkbox,
 		"language" => $lang->language_selection_box,
 		"adminlanguage" => $lang->adminlanguage,
-		"cpstyle" => $lang->cpstyle,
+		"cpstyle" => $lang->cpstyle
 		//"php" => $lang->php // Internal Use Only
 	);
 
@@ -634,12 +636,14 @@ if($mybb->input['action'] == "edit")
 		"onoff" => $lang->onoff,
 		"select" => $lang->select,
 		"forumselect" => $lang->forum_selection_box,
+		"forumselectsingle" => $lang->forum_selection_single,
 		"groupselect" => $lang->group_selection_box,
+		"groupselectsingle" => $lang->group_selection_single,
 		"radio" => $lang->radio,
 		"checkbox" => $lang->checkbox,
 		"language" => $lang->language_selection_box,
 		"adminlanguage" => $lang->adminlanguage,
-		"cpstyle" => $lang->cpstyle,
+		"cpstyle" => $lang->cpstyle
 		//"php" => $lang->php // Internal Use Only
 	);
 
@@ -1279,6 +1283,11 @@ if($mybb->input['action'] == "change")
 					checkAction('{$element_id}');
 				</script>";
 			}
+			else if($type[0] == "forumselectsingle")
+			{
+				$selected_value = (int)$setting['value']; // No need to check if empty, int will give 0
+				$setting_code = $form->generate_forum_select($element_name, $selected_value, array('id' => $element_id, 'main_option' => $lang->none));
+			}
 			else if($type[0] == "groupselect")
 			{
 				$selected_values = '';
@@ -1326,6 +1335,11 @@ if($mybb->input['action'] == "change")
 				<script type=\"text/javascript\">
 					checkAction('{$element_id}');
 				</script>";
+			}
+			else if($type[0] == "groupselectsingle")
+			{
+				$selected_value = (int)$setting['value']; // No need to check if empty, int will give 0
+				$setting_code = $form->generate_group_select($element_name, $selected_value, array('id' => $element_id, 'main_option' => $lang->none));
 			}
 			else
 			{
