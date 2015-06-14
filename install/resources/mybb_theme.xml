@@ -4132,6 +4132,7 @@ $(".forumjump").change(function() {
 {$lang->banned_warning3}: {$banlift}<br />
 </div>
 <br />]]></template>
+		<template name="global_boardclosed_reason" version="1806"><![CDATA[<blockquote>{$mybb->settings['boardclosed_reason']}</blockquote>]]></template>
 		<template name="global_boardclosed_warning" version="1600"><![CDATA[<div class="red_alert"><strong>{$lang->bbclosed_warning}</strong></div>]]></template>
 		<template name="global_dst_detection" version="1806"><![CDATA[<script type="text/javascript">if(MyBB) { $([document, window]).bind("load", function() { MyBB.detectDSTChange('{$timezone}'); }); }</script>]]></template>
 		<template name="global_pending_joinrequests" version="1600"><![CDATA[<div class="red_alert"><a href="{$mybb->settings['bburl']}/usercp.php?action=usergroups">{$lang->pending_joinrequests}</a></div>]]></template>
