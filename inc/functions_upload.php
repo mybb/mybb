@@ -400,8 +400,17 @@ function upload_attachment($attachment, $update_attachment=false)
 		return $ret;
 	}
 
-    $attachtypes = $cache->read('attachtypes');
+    $attachtypes = (array)$cache->read('attachtypes');
     $attachment = $plugins->run_hooks("upload_attachment_start", $attachment);
+
+	$allowed_mime_types = array();
+	foreach($attachtypes as $ext => $attachtype)
+	{
+		if(!is_member($attachtype['groups']) || ($attachtype['forums'] != -1 && strpos(','.$attachtype['forums'].',', ','.$forum['fid'].',') === false))
+		{
+			unset($attachtypes[$ext]);
+		}
+	}
 
     $ext = get_extension($attachment['name']);
     // Check if we have a valid extension

@@ -83,6 +83,15 @@ if($pid || $attachment['uid'] != $mybb->user['uid'])
 	{
 		error($lang->error_invalidattachment);
 	}
+
+	$attachtypes = (array)$cache->read('attachtypes');
+	$ext = get_extension($attachment['filename']);
+	$attachtype = $attachtypes[$ext];
+
+	if(!$attachtype['enabled'] || !is_member($attachtype['groups']) || ($attachtype['forums'] != -1 && strpos(','.$attachtype['forums'].',', ','.$fid.',') === false))
+	{
+		error($lang->error_invalidattachment);
+	}
 }
 
 if(!isset($mybb->input['thumbnail'])) // Only increment the download count if this is not a thumbnail
