@@ -2962,8 +2962,8 @@ function random_str($length=8)
  * Formats a username based on their display group
  *
  * @param string $username The username
- * @param int $usergroup The usergroup for the user (if not specified, will be fetched)
- * @param int $displaygroup The display group for the user (if not specified, will be fetched)
+ * @param int $usergroup The usergroup for the user
+ * @param int $displaygroup The display group for the user
  * @return string The formatted username
  */
 function format_name($username, $usergroup, $displaygroup=0)
