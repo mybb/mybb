@@ -619,8 +619,6 @@ class PostDataHandler extends DataHandler
 	{
 		$prefix = &$this->data['prefix'];
 
-		$prefix_cache = build_prefixes();
-
 		// If a valid prefix isn't supplied, don't assign one.
 		if(empty($prefix))
 		{
@@ -628,6 +626,8 @@ class PostDataHandler extends DataHandler
 		}
 		else
 		{
+			$prefix_cache = build_prefixes($prefix);
+
 			if(empty($prefix_cache))
 			{
 				$this->set_error('invalid_prefix');
@@ -681,6 +681,8 @@ class PostDataHandler extends DataHandler
 			{
 				$user = get_user($this->data['uid']);
 			}
+
+			$prefix_cache = build_prefixes();
 
 			if(!empty($prefix_cache))
 			{
