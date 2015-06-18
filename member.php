@@ -527,7 +527,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 				// Reset language
 				if(isset($reset_lang))
 				{
-					$lang->set_language($mybb->user['language']);
+					$lang->set_language($mybb->settings['bblanguage']);
 					$lang->load("member");
 				}
 			}
@@ -615,7 +615,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 				// Reset language
 				if(isset($reset_lang))
 				{
-					$lang->set_language($mybb->user['language']);
+					$lang->set_language($mybb->settings['bblanguage']);
 					$lang->load("member");
 				}
 			}
