@@ -77,7 +77,7 @@ function upgrade3_dbchanges()
 
 function upgrade3_convertattachments()
 {
-	global $db, $output;
+	global $db, $output, $settings;
 
 	$output->print_header("Attachment Conversion to Files");
 
