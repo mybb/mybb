@@ -148,7 +148,6 @@ if($mybb->input['action'] == "add")
 				break;
 			default:
 				$mybb->input['viewableby'] = '';
-				break;
 		}
 
 		switch($mybb->input['editableby'])
@@ -161,7 +160,6 @@ if($mybb->input['action'] == "add")
 				break;
 			default:
 				$mybb->input['editableby'] = '';
-				break;
 		}
 
 		$page->output_inline_error($errors);
@@ -178,12 +176,12 @@ if($mybb->input['action'] == "add")
 
 	if(empty($mybb->input['viewableby']))
 	{
-		$mybb->input['viewableby'] = '';
+		$mybb->input['viewableby'] = -1;
 	}
 
 	if(empty($mybb->input['editableby']))
 	{
-		$mybb->input['editableby'] = '';
+		$mybb->input['editableby'] = -1;
 	}
 
 	$form_container = new FormContainer($lang->add_new_profile_field);
@@ -465,7 +463,6 @@ if($mybb->input['action'] == "edit")
 				break;
 			default:
 				$mybb->input['viewableby'] = '';
-				break;
 		}
 
 		switch($mybb->input['editableby'])
@@ -478,7 +475,6 @@ if($mybb->input['action'] == "edit")
 				break;
 			default:
 				$mybb->input['editableby'] = '';
-				break;
 		}
 
 		$page->output_inline_error($errors);

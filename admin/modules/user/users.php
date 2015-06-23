@@ -340,7 +340,7 @@ if($mybb->input['action'] == "add")
 			"additionalgroups" => $additionalgroups,
 			"displaygroup" => $mybb->input['displaygroup'],
 			"profile_fields" => $mybb->input['profile_fields'],
-			"profile_fields_editable" => true,
+			"profile_fields_editable" => true
 		);
 
 		// Set the data of the user in the datahandler.
