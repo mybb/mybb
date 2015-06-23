@@ -320,10 +320,6 @@ function build_postbit($post, $post_type=0)
 			$useravatar = format_avatar($post['avatar'], $post['avatardimensions'], $mybb->settings['postmaxavatarsize']);
 			eval("\$post['useravatar'] = \"".$templates->get("postbit_avatar")."\";");
 		}
-		else
-		{
-			$post['useravatar'] = '';
-		}
 
 		eval("\$post['button_find'] = \"".$templates->get("postbit_find")."\";");
 
