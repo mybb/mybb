@@ -383,6 +383,9 @@ else
 	}
 }
 
+/**
+ * Do the upgrade changes
+ */
 function upgradethemes()
 {
 	global $output, $db, $system_upgrade_detail, $lang, $mybb;
@@ -533,6 +536,9 @@ function upgradethemes()
 	$output->print_footer("rebuildsettings");
 }
 
+/**
+ * Update the settings
+ */
 function buildsettings()
 {
 	global $db, $output, $system_upgrade_detail, $lang;
@@ -551,6 +557,9 @@ function buildsettings()
 	$output->print_footer("buildcaches");
 }
 
+/**
+ * Rebuild caches
+ */
 function buildcaches()
 {
 	global $db, $output, $cache, $lang, $mybb;
@@ -594,6 +603,9 @@ function buildcaches()
 	$output->print_footer("finished");
 }
 
+/**
+ * Called as latest function. Send statistics, create lock file etc
+ */
 function upgradedone()
 {
 	global $db, $output, $mybb, $lang, $config, $plugins;
@@ -666,6 +678,9 @@ function upgradedone()
 	$output->print_footer();
 }
 
+/**
+ * Show the finish page
+ */
 function whatsnext()
 {
 	global $output, $db, $system_upgrade_detail, $lang;
@@ -682,6 +697,14 @@ function whatsnext()
 	}
 }
 
+/**
+ * Determine the nect function we need to call
+ *
+ * @param int $from
+ * @param string $func
+ *
+ * @return string
+ */
 function next_function($from, $func="dbchanges")
 {
 	global $oldvers, $system_upgrade_detail, $currentscript, $cache;
@@ -712,6 +735,9 @@ function next_function($from, $func="dbchanges")
 	return $function;
 }
 
+/**
+ * @param string $module
+ */
 function load_module($module)
 {
 	global $system_upgrade_detail, $currentscript, $upgrade_detail;
@@ -731,6 +757,13 @@ function load_module($module)
 	}
 }
 
+/**
+ * Get a value from our upgrade data cache
+ *
+ * @param string $title
+ *
+ * @return mixed
+ */
 function get_upgrade_store($title)
 {
 	global $db;
@@ -740,6 +773,10 @@ function get_upgrade_store($title)
 	return my_unserialize($data['contents']);
 }
 
+/**
+ * @param string $title
+ * @param mixed $contents
+ */
 function add_upgrade_store($title, $contents)
 {
 	global $db;
@@ -751,6 +788,11 @@ function add_upgrade_store($title, $contents)
 	$db->replace_query("upgrade_data", $replace_array, "title");
 }
 
+/**
+ * @param int $redo 2 means that all setting tables will be dropped and recreated
+ *
+ * @return array
+ */
 function sync_settings($redo=0)
 {
 	global $db;
@@ -951,6 +993,11 @@ function sync_settings($redo=0)
 	return array($groupcount, $settingcount);
 }
 
+/**
+ * @param int $redo 2 means that the tasks table will be dropped and recreated
+ *
+ * @return int
+ */
 function sync_tasks($redo=0)
 {
 	global $db;
@@ -1073,6 +1120,9 @@ function sync_tasks($redo=0)
 	return $taskcount;
 }
 
+/**
+ * Write our settings to the settings file
+ */
 function write_settings()
 {
 	global $db;
