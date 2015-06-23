@@ -3599,7 +3599,7 @@ function build_prefix_select($fid, $selected_pid=0, $multiple=0)
  *
  *  @param int $fid The forum ID (integer ID)
  *  @param int $selected_pid The selected prefix ID (integer ID)
- *	@return string The thread prefix selection menu
+ *  @return string The thread prefix selection menu
  */
 function build_forum_prefix_select($fid, $selected_pid=0)
 {
