@@ -3610,7 +3610,8 @@ function build_forum_prefix_select($fid, $selected_pid=0)
 	$prefix_cache = build_prefixes(0);
 	if(empty($prefix_cache))
 	{
-		return ''; // We've got no prefixes to show
+		// We've got no prefixes to show
+		return '';
 	}
 
 	// Go through each of our prefixes and decide which ones we can use
