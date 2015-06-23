@@ -3047,7 +3047,14 @@ switch($mybb->input['action'])
 		break;
 }
 
-// Some little handy functions for our inline moderation
+/**
+ * Some little handy functions for our inline moderation
+ *
+ * @param int $id
+ * @param string $type
+ *
+ * @return array
+ */
 function getids($id, $type)
 {
 	global $mybb;
@@ -3079,6 +3086,12 @@ function getids($id, $type)
 	return $newids;
 }
 
+/**
+ * @param int $id
+ * @param string $type
+ *
+ * @return array
+ */
 function getallids($id, $type)
 {
 	global $db, $mybb;
@@ -3140,16 +3153,24 @@ function getallids($id, $type)
 	return $ids;
 }
 
+/**
+ * @param int $id
+ * @param string $type
+ */
 function clearinline($id, $type)
 {
 	my_unsetcookie("inlinemod_".$type.$id);
-	my_unsetcookie("inlinemod_".$type.$id."_removed");
+	my_unsetcookie("inlinemod_{$type}{$id}_removed");
 }
 
+/**
+ * @param int $id
+ * @param string $type
+ */
 function extendinline($id, $type)
 {
-	my_setcookie("inlinemod_$type$id", '', TIME_NOW+3600);
-	my_setcookie("inlinemod_$type$id_removed", '', TIME_NOW+3600);
+	my_setcookie("inlinemod_{$type}{$id}", '', TIME_NOW+3600);
+	my_setcookie("inlinemod_{$type}{$id}_removed", '', TIME_NOW+3600);
 }
 
 /**
@@ -3158,9 +3179,9 @@ function extendinline($id, $type)
  * Note: If no posts are specified, this function will return true.  It is the
  * responsibility of the calling script to error-check this case if necessary.
  *
- * @param array Array of post IDs
- * @param string Permission to check
- * @returns bool True if moderator of all; false otherwise
+ * @param array $posts Array of post IDs
+ * @param string $permission Permission to check
+ * @return bool True if moderator of all; false otherwise
  */
 function is_moderator_by_pids($posts, $permission='')
 {
@@ -3202,9 +3223,9 @@ function is_moderator_by_pids($posts, $permission='')
  * Note: If no threads are specified, this function will return true.  It is the
  * responsibility of the calling script to error-check this case if necessary.
  *
- * @param array Array of thread IDs
- * @param string Permission to check
- * @returns bool True if moderator of all; false otherwise
+ * @param array $threads Array of thread IDs
+ * @param string $permission Permission to check
+ * @return bool True if moderator of all; false otherwise
  */
 function is_moderator_by_tids($threads, $permission='')
 {
@@ -3242,9 +3263,9 @@ function is_moderator_by_tids($threads, $permission='')
 
 /**
  * Special redirect that takes a return URL into account
- * @param string URL
- * @param string Message
- * @param string Title
+ * @param string $url URL
+ * @param string $message Message
+ * @param string $title Title
  */
 function moderation_redirect($url, $message="", $title="")
 {
