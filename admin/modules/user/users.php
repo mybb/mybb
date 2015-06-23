@@ -3102,6 +3102,11 @@ if(!$mybb->input['action'])
 	$page->output_footer();
 }
 
+/**
+ * @param array $view
+ *
+ * @return string
+ */
 function build_users_view($view)
 {
 	global $mybb, $db, $cache, $lang, $user_view_fields, $page;
@@ -3779,6 +3784,13 @@ function build_users_view($view)
 	return $built_view;
 }
 
+/**
+ * @param array $user
+ * @param array $view
+ * @param int $i
+ *
+ * @return string
+ */
 function build_user_view_card($user, $view, &$i)
 {
 	global $user_view_fields;
@@ -3859,6 +3871,11 @@ function build_user_view_card($user, $view, &$i)
 
 }
 
+/**
+ * @param array $user
+ * @param array $view
+ * @param DefaultTable $table
+ */
 function build_user_view_table($user, $view, &$table)
 {
 	global $user_view_fields;
@@ -3896,6 +3913,13 @@ function build_user_view_table($user, $view, &$table)
 	$table->construct_row();
 }
 
+/**
+ * @param array $user
+ * @param int $max_width
+ * @param int $max_height
+ *
+ * @return array
+ */
 function fetch_scaled_avatar($user, $max_width=80, $max_height=80)
 {
 	$scaled_dimensions = array(
@@ -3916,6 +3940,13 @@ function fetch_scaled_avatar($user, $max_width=80, $max_height=80)
 	return array("width" => $scaled_dimensions['width'], "height" => $scaled_dimensions['height']);
 }
 
+/**
+ * @param array $fields
+ * @param array $values
+ * @param DefaultFormContainer $form_container
+ * @param DefaultForm $form
+ * @param bool $search
+ */
 function output_custom_profile_fields($fields, $values, &$form_container, &$form, $search=false)
 {
 	global $lang;
@@ -4060,6 +4091,10 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 	}
 }
 
+/**
+ * @param array $input
+ * @param DefaultForm $form
+ */
 function user_search_conditions($input=array(), &$form)
 {
 	global $mybb, $db, $lang;

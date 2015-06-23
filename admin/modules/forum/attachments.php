@@ -227,6 +227,11 @@ if($mybb->input['action'] == "delete_orphans" && $mybb->request_method == "post"
 	// Deleting specific attachments from uploads directory
 	if(is_array($mybb->input['orphaned_files']))
 	{
+		/**
+		 * @param string $string
+		 *
+		 * @return string
+		 */
 		function clean_filename($string)
 		{
 			return str_replace(array(".."), "", $string);
@@ -484,6 +489,9 @@ if($mybb->input['action'] == "orphans")
 	{
 		$plugins->run_hooks("admin_forum_attachments_orphans_step1");
 
+		/**
+		 * @param string $dir
+		 */
 		function scan_attachments_directory($dir="")
 		{
 			global $db, $mybb, $bad_attachments, $attachments_to_check;
@@ -881,9 +889,14 @@ if(!$mybb->input['action'])
 	$page->output_footer();
 }
 
+/**
+ * @param array $attachment
+ * @param DefaultTable $table
+ * @param bool $use_form
+ */
 function build_attachment_row($attachment, &$table, $use_form=false)
 {
-	global $mybb, $form;
+	global $mybb, $form, $lang;
 	$attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
 
 	// Here we do a bit of detection, we want to automatically check for removal any missing attachments and any not assigned to a post uploaded > 24hours ago

@@ -428,6 +428,13 @@ if(!$mybb->input['action'])
 	$page->output_footer();
 }
 
+/**
+ * @param string $regex
+ * @param string $replacement
+ * @param string $test
+ *
+ * @return array
+ */
 function test_regex($regex, $replacement, $test)
 {
 	$array = array();
