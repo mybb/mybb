@@ -7718,7 +7718,7 @@ function my_rand($min=null, $max=null, $force_seed=false)
 		mt_srand(secure_seed_rng());
 		$seeded = true;
 
-		$obfuscator = abs((int) secure_seed_rng());
+		$obfuscator = abs((int)secure_seed_rng());
 
 		// Ensure that $obfuscator is <= mt_getrandmax() for 64 bit systems.
 		if($obfuscator > mt_getrandmax())
