@@ -7817,7 +7817,7 @@ function trim_blank_chrs($string, $charlist="")
 	while(++$i);
 	$string = strrev($string);
 
-	if(!empty($charlist))
+	if($charlist)
 	{
 		$string = trim($string, $charlist);
 	}

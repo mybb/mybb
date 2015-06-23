@@ -710,7 +710,7 @@ class DB_MySQL implements DB_Base
 	function shutdown_query($query, $name="")
 	{
 		global $shutdown_queries;
-		if(!empty($name))
+		if($name)
 		{
 			$shutdown_queries[$name] = $query;
 		}
