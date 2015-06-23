@@ -130,10 +130,10 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		$password_length = (int)$mybb->settings['minpasswordlength'];
 		if($password_length < 8)
 		{
-			$password_length = min(8, $mybb->settings['maxpasswordlength']);
+			$password_length = min(8, (int)$mybb->settings['maxpasswordlength']);
 		}
 
-		$mybb->input['password'] = random_str($password_length);
+		$mybb->input['password'] = random_str($password_length, true);
 		$mybb->input['password2'] = $mybb->input['password'];
 	}
 
