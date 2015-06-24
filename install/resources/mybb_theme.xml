@@ -9351,7 +9351,7 @@ if(use_xmlhttprequest == "1")
 </td>
 </tr>]]></template>
 		<template name="post_attachments_update" version="1604"><![CDATA[<input type="submit" class="button" name="updateattachment" value="{$lang->update_attachment}" tabindex="12" />]]></template>
-		<template name="post_captcha" version="1805"><![CDATA[<tr id="captcha_trow">
+		<template name="post_captcha" version="1806"><![CDATA[<tr id="captcha_trow">
 <td class="trow1" valign="top" width="350"><strong>{$lang->image_verification}</strong>
 <br/>
 <span class="smalltext">{$lang->verification_note}</span>

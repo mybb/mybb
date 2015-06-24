@@ -2231,7 +2231,7 @@ if($mybb->input['action'] == "edit_stylesheet" && (!isset($mybb->input['mode']) 
 
 	$form->output_submit_wrapper($buttons);
 
-	echo '<script type="text/javascript" src="./jscripts/themes.js?ver=1805"></script>';
+	echo '<script type="text/javascript" src="./jscripts/themes.js?ver=1806"></script>';
 	echo '<script type="text/javascript">
 
 $(document).ready(function() {
