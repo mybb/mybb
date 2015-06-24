@@ -698,7 +698,7 @@ function whatsnext()
 }
 
 /**
- * Determine the nect function we need to call
+ * Determine the next function we need to call
  *
  * @param int $from
  * @param string $func

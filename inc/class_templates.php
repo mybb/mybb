@@ -127,7 +127,7 @@ class templates
 	 * Prepare a template for rendering to a variable.
 	 *
 	 * @param string $template The name of the template to get.
-	 * @param boolean $eslahes True if template contents must be escaped, false if not.
+	 * @param boolean $eslashes True if template contents must be escaped, false if not.
 	 * @param boolean $htmlcomments True to output HTML comments, false to not output.
 	 * @return string The eval()-ready PHP code for rendering the template
 	 */

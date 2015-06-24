@@ -1799,7 +1799,7 @@ function get_post_icons()
  * @param string $name The cookie identifier.
  * @param string $value The cookie value.
  * @param int|string $expires The timestamp of the expiry date.
- * @param boolean $httponly True if setting a HttpOnly cookie (supported by IE, Opera 9, Konqueror)
+ * @param boolean $httponly True if setting a HttpOnly cookie (supported by the majority of web browsers)
  */
 function my_setcookie($name, $value="", $expires="", $httponly=false)
 {
