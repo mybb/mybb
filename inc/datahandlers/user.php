@@ -878,11 +878,11 @@ class UserDataHandler extends DataHandler
 
 		$user = &$this->data;
 
-		if($user['style'] && !defined('IN_ADMINCP'))
+		if($user['style'])
 		{
 			$theme = get_theme($user['style']);
 
-			if(empty($theme) || !is_member($theme['allowedgroups'], array('usergroup' => $user['usergroup'], 'additionalgroups' => $user['additionalgroups'])) && $theme['allowedgroups'] != 'all')
+			if(empty($theme) || !is_member($theme['allowedgroups'], $user) && $theme['allowedgroups'] != 'all')
 			{
 				$this->set_error('invalid_style');
 				return false;

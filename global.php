@@ -250,7 +250,7 @@ if($loadstyle != "def='1'")
 	{
 		if($load_from_user == 1)
 		{
-			$db->update_query('users', array('style' => 0), "style = '{$mybb->user['style']}'");
+			$db->update_query('users', array('style' => 0), "style='{$mybb->user['style']}' AND uid='{$mybb->user['uid']}'");
 		}
 
 		if(isset($mybb->cookies['mybbtheme']))
@@ -269,7 +269,7 @@ if($loadstyle == "def='1'")
 		$cache->update_default_theme();
 	}
 
-	$theme = $cache->read('default_theme', true);
+	$theme = $cache->read('default_theme');
 
 	$load_from_forum = $load_from_user = 0;
 }

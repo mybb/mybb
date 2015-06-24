@@ -107,7 +107,7 @@ if($loadstyle == "def='1'")
 		$cache->update_default_theme();
 	}
 
-	$theme = $cache->read('default_theme', true);
+	$theme = $cache->read('default_theme');
 }
 
 // No theme was found - we attempt to load the master or any other theme
