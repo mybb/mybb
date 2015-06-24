@@ -550,7 +550,7 @@ if($mybb->input['action'] == "edit")
 
 			$plugins->run_hooks("admin_config_settings_edit_commit");
 
-			$db->update_query("settings", $updated_setting, "sid='{$mybb->input['sid']}'");
+			$db->update_query("settings", $updated_setting, "sid='{$setting['sid']}'");
 			rebuild_settings();
 
 			// Log admin action
