@@ -94,18 +94,20 @@ class MailHandler
 	/**
 	 * Selects between AdminEmail and ReturnEmail, dependant on if ReturnEmail is filled.
 	 */
-	function from_select()
+	function get_from_email()
 	{
 		global $mybb;
 		
-		if($mybb->settings['returnemail'])
+		if(trim($mybb->settings['returnemail']))
 		{
-			return "returnemail";
+			$email = $mybb->settings['returnemail'];
 		}
 		else
 		{
-			return "adminemail";
+			$email = $mybb->settings['adminemail'];
 		}
+		
+		return $email;
 	}
 
 	/**
@@ -139,12 +141,12 @@ class MailHandler
 
 			if($mybb->settings['mail_handler'] == 'smtp')
 			{
-				$this->from = $mybb->settings[$this->from_select()];
+				$this->from = $this->get_from_email();
 			}
 			else
 			{
 				$this->from = '"'.$this->utf8_encode($mybb->settings['bbname']).'"';
-				$this->from .= " <".$mybb->settings[$this->from_select()].">";
+				$this->from .= " <".$this->get_from_email().">";
 			}
 		}
 
@@ -155,7 +157,7 @@ class MailHandler
 		else
 		{
 			$this->return_email = "";
-			$this->return_email = $mybb->settings[$this->from_select()];
+			$this->return_email = $this->get_from_email();
 		}
 
 		$this->set_to($to);
@@ -238,7 +240,7 @@ class MailHandler
 		$this->to = $this->cleanup($to);
 	}
 
-	/**
+	/**a
 	 * Sets the plain headers, text/plain
 	 */
 	function set_plain_headers()
