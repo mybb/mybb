@@ -2337,7 +2337,7 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 <script src="./jscripts/codemirror/mode/css/css.js"></script>
 <script src="./jscripts/codemirror/addon/dialog/dialog.js"></script>
 <script src="./jscripts/codemirror/addon/search/searchcursor.js"></script>
-<script src="./jscripts/codemirror/addon/search/search.js?ver=1805"></script>
+<script src="./jscripts/codemirror/addon/search/search.js?ver=1806"></script>
 ';
 	}
 
@@ -2610,7 +2610,7 @@ if($mybb->input['action'] == "add_stylesheet")
 <script src="./jscripts/codemirror/mode/css/css.js"></script>
 <script src="./jscripts/codemirror/addon/dialog/dialog.js"></script>
 <script src="./jscripts/codemirror/addon/search/searchcursor.js"></script>
-<script src="./jscripts/codemirror/addon/search/search.js?ver=1805"></script>
+<script src="./jscripts/codemirror/addon/search/search.js?ver=1806"></script>
 ';
 	}
 
@@ -2873,7 +2873,7 @@ if($mybb->input['action'] == "add_stylesheet")
 			});</script>';
 	}
 
-	echo '<script type="text/javascript" src="./jscripts/themes.js?ver=1805"></script>';
+	echo '<script type="text/javascript" src="./jscripts/themes.js?ver=1806"></script>';
 	echo '<script type="text/javascript" src="./jscripts/theme_properties.js"></script>';
 	echo '<script type="text/javascript">
 $(function() {
