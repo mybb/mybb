@@ -23,11 +23,11 @@ $plugins->run_hooks("admin_tools_tasks_begin");
 /**
  * Validates a string or array of values
  *
- * @param mixed Comma-separated list or array of values
- * @param int Minimum value
- * @param int Maximum value
- * @param string Set "string" to return in a comma-separated list, or "array" to return in an array
- * @return mixed String or array of valid values OR false if string/array is invalid
+ * @param string|array $value Comma-separated list or array of values
+ * @param int $min Minimum value
+ * @param int $max Maximum value
+ * @param string $return_type Set "string" to return in a comma-separated list, or "array" to return in an array
+ * @return string|array String or array of valid values OR false if string/array is invalid
  */
 function check_time_values($value, $min, $max, $return_type)
 {

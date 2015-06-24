@@ -27,7 +27,7 @@ function rebuild_stats()
 /**
  * Completely rebuild the counters for a particular forum (useful if they become out of sync)
  *
- * @param int The forum ID
+ * @param int $fid The forum ID
  */
 function rebuild_forum_counters($fid)
 {
@@ -57,7 +57,7 @@ function rebuild_forum_counters($fid)
 /**
  * Completely rebuild the counters for a particular thread (useful if they become out of sync)
  *
- * @param int The thread ID
+ * @param int $tid The thread ID
  */
 function rebuild_thread_counters($tid)
 {
@@ -93,7 +93,7 @@ function rebuild_thread_counters($tid)
 /**
  * Completely rebuild poll counters for a particular poll (useful if they become out of sync)
  *
- * @param int The poll ID
+ * @param int $pid The poll ID
  */
 function rebuild_poll_counters($pid)
 {
@@ -110,7 +110,7 @@ function rebuild_poll_counters($pid)
 	}
 
 	$voteslist = '';
-	$numvotes = '';
+	$numvotes = 0;
 	for($i = 1; $i <= $poll['numoptions']; ++$i)
 	{
 		if(trim($voteslist != ''))

@@ -50,6 +50,8 @@ class EventDataHandler extends DataHandler
 
 	/**
 	 * Event ID currently being manipulated by the datahandlers.
+	 *
+	 * @var int
 	 */
 	public $eid = 0;
 
@@ -243,6 +245,11 @@ class EventDataHandler extends DataHandler
 		return true;
 	}
 
+	/**
+	 * @param string $time
+	 *
+	 * @return array|bool
+	 */
 	function verify_time($time)
 	{
 		preg_match('#^(0?[1-9]|1[012])\s?([:\.]?)\s?([0-5][0-9])?(\s?[ap]m)|([01][0-9]|2[0-3])\s?([:\.])\s?([0-5][0-9])$#i', $time, $matches);
@@ -275,9 +282,11 @@ class EventDataHandler extends DataHandler
 		return array("hour" => $hour, "min" => $min);
 	}
 
+	/**
+	 * @return bool
+	 */
 	function verify_repeats()
 	{
-		global $mybb;
 		$event = &$this->data;
 
 		if(!is_array($event['repeats']) || !$event['repeats']['repeats'])
@@ -390,7 +399,7 @@ class EventDataHandler extends DataHandler
 	/**
 	 * Validate an event.
 	 *
-	 * @param array The event data array.
+	 * @return bool
 	 */
 	function validate_event()
 	{
@@ -435,7 +444,6 @@ class EventDataHandler extends DataHandler
 	/**
 	 * Insert an event into the database.
 	 *
-	 * @param array The array of event data.
 	 * @return array Array of new event details, eid and private.
 	 */
 	function insert_event()
@@ -530,7 +538,7 @@ class EventDataHandler extends DataHandler
 	/**
 	 * Updates an event that is already in the database.
 	 *
-	 * @param array The event data array.
+	 * @return array
 	 */
 	function update_event()
 	{

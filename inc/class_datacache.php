@@ -20,7 +20,7 @@ class datacache
 	/**
 	 * The current cache handler we're using
 	 *
-	 * @var object
+	 * @var apcCacheHandler|diskCacheHandler|eacceleratorCacheHandler|memcacheCacheHandler|memcachedCacheHandler|xcacheCacheHandler
 	 */
 	public $handler = null;
 
@@ -125,9 +125,9 @@ class datacache
 	/**
 	 * Read cache from files or db.
 	 *
-	 * @param string The cache component to read.
-	 * @param boolean If true, cannot be overwritten during script execution.
-	 * @return unknown
+	 * @param string $name The cache component to read.
+	 * @param boolean $hard If true, cannot be overwritten during script execution.
+	 * @return mixed
 	 */
 	function read($name, $hard=false)
 	{
@@ -220,8 +220,8 @@ class datacache
 	/**
 	 * Update cache contents.
 	 *
-	 * @param string The cache content identifier.
-	 * @param string The cache content.
+	 * @param string $name The cache content identifier.
+	 * @param string $contents The cache content.
 	 */
 	function update($name, $contents)
 	{
@@ -261,8 +261,8 @@ class datacache
 	 * Originally from frostschutz's PluginLibrary
 	 * github.com/frostschutz
 	 *
-	 * @param string Cache name or title
-	 * @param boolean To delete a cache starting with name_
+	 * @param string $name Cache name or title
+	 * @param boolean $greedy To delete a cache starting with name_
 	 */
 	 function delete($name, $greedy = false)
 	 {
@@ -359,9 +359,9 @@ class datacache
 	/**
 	 * Debug a cache call to a non-database cache handler
 	 *
-	 * @param string The cache key
-	 * @param string The time it took to perform the call.
-	 * @param boolean Hit or miss status
+	 * @param string $string The cache key
+	 * @param string $qtime The time it took to perform the call.
+	 * @param boolean $hit Hit or miss status
 	 */
 	function debug_call($string, $qtime, $hit)
 	{
@@ -406,7 +406,7 @@ class datacache
 	/**
 	 * Select the size of the cache
 	 *
-	 * @param string The name of the cache
+	 * @param string $name The name of the cache
 	 * @return integer the size of the cache
 	 */
 	function size_of($name='')
@@ -563,7 +563,7 @@ class datacache
 	/**
 	 * Update the forum permissions cache.
 	 *
-	 * @return false When failed, returns false.
+	 * @return bool When failed, returns false.
 	 */
 	function update_forumpermissions()
 	{
@@ -603,14 +603,16 @@ class datacache
 
 		$this->build_forum_permissions();
 		$this->update("forumpermissions", $this->built_forum_permissions);
+
+		return true;
 	}
 
 	/**
 	 * Build the forum permissions array
 	 *
 	 * @access private
-	 * @param array An optional permissions array.
-	 * @param int An optional permission id.
+	 * @param array $permissions An optional permissions array.
+	 * @param int $pid An optional permission id.
 	 */
 	private function build_forum_permissions($permissions=array(), $pid=0)
 	{
@@ -700,6 +702,7 @@ class datacache
 	/**
 	 * Update the moderators cache.
 	 *
+	 * @return bool Returns false on failure
 	 */
 	function update_moderators()
 	{
@@ -777,6 +780,8 @@ class datacache
 		$this->build_moderators();
 
 		$this->update("moderators", $this->built_moderators);
+
+		return true;
 	}
 
 	/**
@@ -802,8 +807,8 @@ class datacache
 	 * Build the moderators array
 	 *
 	 * @access private
-	 * @param array An optional moderators array (moderators of the parent forum for example).
-	 * @param int An optional parent ID.
+	 * @param array $moderators An optional moderators array (moderators of the parent forum for example).
+	 * @param int $pid An optional parent ID.
 	 */
 	private function build_moderators($moderators=array(), $pid=0)
 	{
@@ -947,6 +952,8 @@ class datacache
 	/**
 	 * Update the mailqueue cache
 	 *
+	 * @param int $last_run
+	 * @param int $lock_time
 	 */
 	function update_mailqueue($last_run=0, $lock_time=0)
 	{

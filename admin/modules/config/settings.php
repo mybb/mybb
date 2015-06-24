@@ -1602,6 +1602,9 @@ $(document).ready(function(){
 	$page->output_footer();
 }
 
+/**
+ * Print all the peekers for all of the default settings
+ */
 function print_setting_peekers()
 {
 	global $plugins;

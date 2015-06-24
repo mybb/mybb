@@ -11,12 +11,12 @@
 /**
  * Find and replace a string in a particular template through every template set.
  *
- * @param string The name of the template
- * @param string The regular expression to match in the template
- * @param string The replacement string
- * @param int Set to 1 to automatically create templates which do not exist for sets with SID > 0 (based off master) - defaults to 1
- * @param mixed Template SID to modify, false for every SID > 0 and SID = -1
- * @param int The maximum possible replacements for the regular expression
+ * @param string $title The name of the template
+ * @param string $find The regular expression to match in the template
+ * @param string $replace The replacement string
+ * @param int $autocreate Set to 1 to automatically create templates which do not exist for sets with SID > 0 (based off master) - defaults to 1
+ * @param mixed $sid Template SID to modify, false for every SID > 0 and SID = -1
+ * @param int $limit The maximum possible replacements for the regular expression
  * @return boolean true if updated one or more templates, false if not.
  */
 
@@ -24,8 +24,8 @@ function find_replace_templatesets($title, $find, $replace, $autocreate=1, $sid=
 {
 	global $db, $mybb;
 
-	$return = false;	
-	$template_sets = array(-2, -1);	
+	$return = false;
+	$template_sets = array(-2, -1);
 	
 	// Select all templates with that title (including global) if not working on a specific template set
 	$sqlwhere = '>0 OR sid=-1';

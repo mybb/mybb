@@ -171,6 +171,11 @@ if(!$mybb->input['action'])
 	$page->output_footer();
 }
 
+/**
+ * Generate 10 random recovery codes, each with a length of 6 and without duplicates
+ *
+ * @return array
+ */
 function generate_recovery_codes()
 {
 	$t = array();

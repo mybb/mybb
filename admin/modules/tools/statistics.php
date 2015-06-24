@@ -158,6 +158,11 @@ if(!$mybb->input['action'])
 	$page->output_footer();
 }
 
+/**
+ * @param int $number
+ *
+ * @return string
+ */
 function generate_growth_string($number)
 {
 	global $lang, $cp_style;
@@ -186,6 +191,10 @@ function generate_growth_string($number)
 	return $growth_string;
 }
 
+/**
+ * @param string $type users, threads, posts
+ * @param array $range
+ */
 function create_graph($type, $range=null)
 {
 	global $db;

@@ -588,6 +588,9 @@ if(!$mybb->input['action'])
 	$page->output_footer();
 }
 
+/**
+ * @return array
+ */
 function get_plugins_list()
 {
 	// Get a list of the plugin files which exist in the plugins directory
@@ -609,6 +612,9 @@ function get_plugins_list()
 	return $plugins_list;
 }
 
+/**
+ * @param array $plugin_list
+ */
 function build_plugin_list($plugin_list)
 {
 	global $lang, $mybb, $plugins, $table;

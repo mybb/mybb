@@ -63,9 +63,19 @@ class UserDataHandler extends DataHandler
 	public $return_values = array();
 
 	/**
+	 * @var array
+	 */
+	var $delete_uids = array();
+
+	/**
+	 * @var int
+	 */
+	var $deleted_users = 0;
+
+	/**
 	 * Verifies if a username is valid or invalid.
 	 *
-	 * @param boolean True when valid, false when invalid.
+	 * @return boolean True when valid, false when invalid.
 	 */
 	function verify_username()
 	{
@@ -115,7 +125,7 @@ class UserDataHandler extends DataHandler
 	/**
 	 * Verifies if a usertitle is valid or invalid.
 	 *
-	 * @param boolean True when valid, false when invalid.
+	 * @return boolean True when valid, false when invalid.
 	 */
 	function verify_usertitle()
 	{
@@ -224,7 +234,6 @@ class UserDataHandler extends DataHandler
 	*/
 	function verify_usergroup()
 	{
-		$user = &$this->data;
 		return true;
 	}
 	/**
@@ -491,8 +500,6 @@ class UserDataHandler extends DataHandler
 		$profile_fields = &$this->data['profile_fields'];
 
 		// Loop through profile fields checking if they exist or not and are filled in.
-		$userfields = array();
-		$comma = '';
 
 		// Fetch all profile fields first.
 		$pfcache = $cache->read('profilefields');
@@ -1010,6 +1017,8 @@ class UserDataHandler extends DataHandler
 
 	/**
 	* Inserts a user into the database.
+	*
+	* @return array
 	*/
 	function insert_user()
 	{
@@ -1175,6 +1184,8 @@ class UserDataHandler extends DataHandler
 
 	/**
 	* Updates a user in the database.
+	*
+	* @return bool
 	*/
 	function update_user()
 	{
@@ -1423,9 +1434,9 @@ class UserDataHandler extends DataHandler
 	/**
 	 * Provides a method to completely delete a user.
 	 *
-	 * @param array Array of user information
-	 * @param integer Whether if delete threads/posts or not
-	 * @return boolean True when successful, false if fails
+	 * @param array $delete_uids Array of user information
+	 * @param integer $prunecontent Whether if delete threads/posts or not
+	 * @return array
 	 */
 	function delete_user($delete_uids, $prunecontent=0)
 	{
@@ -1515,11 +1526,11 @@ class UserDataHandler extends DataHandler
 	/**
 	 * Provides a method to delete users' content
 	 *
-	 * @param array Array of user ids, false if they're already set (eg when using the delete_user function)
+	 * @param array|bool $delete_uids Array of user ids, false if they're already set (eg when using the delete_user function)
 	 */
 	function delete_content($delete_uids=false)
 	{
-		global $db, $plugins;
+		global $db, $plugins, $mybb;
 
 		if($delete_uids != false)
 		{
@@ -1581,11 +1592,11 @@ class UserDataHandler extends DataHandler
 	/**
 	 * Provides a method to delete an users posts and threads
 	 *
-	 * @param array Array of user ids, false if they're already set (eg when using the delete_user function)
+	 * @param array|bool $delete_uids Array of user ids, false if they're already set (eg when using the delete_user function)
 	 */
 	function delete_posts($delete_uids=false)
 	{
-		global $db, $plugins;
+		global $db, $plugins, $mybb;
 
 		if($delete_uids != false)
 		{
@@ -1634,12 +1645,12 @@ class UserDataHandler extends DataHandler
 	/**
 	 * Provides a method to clear an users profile
 	 *
-	 * @param array Array of user ids, false if they're already set (eg when using the delete_user function)
-	 * @param int The new usergroup if the users should be moved (additional usergroups are always removed)
+	 * @param array|bool $delete_uids Array of user ids, false if they're already set (eg when using the delete_user function)
+	 * @param int $gid The new usergroup if the users should be moved (additional usergroups are always removed)
 	 */
 	function clear_profile($delete_uids=false, $gid=0)
 	{
-		global $db, $plugins;
+		global $db, $plugins, $mybb;
 
 		// delete_uids isn't a nice name, but it's used as the functions above use the same
 		if($delete_uids != false)
