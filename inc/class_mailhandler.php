@@ -240,7 +240,7 @@ class MailHandler
 		$this->to = $this->cleanup($to);
 	}
 
-	/**a
+	/**
 	 * Sets the plain headers, text/plain
 	 */
 	function set_plain_headers()
