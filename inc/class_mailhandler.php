@@ -93,6 +93,8 @@ class MailHandler
 
 	/**
 	 * Selects between AdminEmail and ReturnEmail, dependant on if ReturnEmail is filled.
+	 * 
+	 * @return string
 	 */
 	function get_from_email()
 	{
