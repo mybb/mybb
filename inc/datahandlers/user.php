@@ -1473,13 +1473,20 @@ class UserDataHandler extends DataHandler
 		if((int)$prunecontent == 1)
 		{
 			$this->delete_posts();
+			$db->delete_query('announcements', "uid IN({$this->delete_uids})");
 		}
 		else
 		{
 			// We're just updating the UID
+			$db->update_query('pollvotes', array('uid' => 0), "uid IN({$this->delete_uids})");
 			$db->update_query('posts', array('uid' => 0), "uid IN({$this->delete_uids})");
 			$db->update_query('threads', array('uid' => 0), "uid IN({$this->delete_uids})");
+			$db->update_query('attachments', array('uid' => 0), "uid IN({$this->delete_uids})");
+			$db->update_query('announcements', array('uid' => 0), "uid IN({$this->delete_uids})");
 		}
+
+		$db->update_query('privatemessages', array('fromid' => 0), "fromid IN({$this->delete_uids})");
+		$db->update_query('users', array('referrer' => 0), "referrer IN({$this->delete_uids})");
 
 		// Update thread ratings
 		$query = $db->query("
@@ -1503,22 +1510,21 @@ class UserDataHandler extends DataHandler
 		$db->update_query('forums', array('lastposteruid' => 0), "lastposteruid IN({$this->delete_uids})");
 		$db->update_query('threads', array('lastposteruid' => 0), "lastposteruid IN({$this->delete_uids})");
 
-		$cache->update_banned();
-		$cache->update_moderators();
-
 		// Update forum stats
 		update_stats(array('numusers' => '-'.$this->deleted_users));
 
 		$this->return_values = array(
 			"deleted_users" => $this->deleted_users
 		);
-		
-		// Update reports cache
-		$cache->update_reportedcontent();
-
-		$cache->update_awaitingactivation();
 
 		$plugins->run_hooks("datahandler_user_delete_end", $this);
+
+		// Update  cache
+		$cache->update_banned();
+		$cache->update_moderators();
+		$cache->update_forumsdisplay();
+		$cache->update_reportedcontent();
+		$cache->update_awaitingactivation();
 
 		return $this->return_values;
 	}
@@ -1586,7 +1592,6 @@ class UserDataHandler extends DataHandler
 			$avatar = substr($avatar, 2, -20);
 			@unlink(MYBB_ROOT.$avatar);
 		}
-
 	}
 
 	/**
