@@ -561,12 +561,15 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 	$plugins->run_hooks("private_send_do_send");
 
 	// Attempt to see if this PM is a duplicate or not
+	$to = array_map("trim", explode(",", $mybb->get_input('to')));
+	$to_escaped = implode("','", array_map(array($db, 'escape_string'), array_map('my_strtolower', $to)));
 	$time_cutoff = TIME_NOW - (5 * 60 * 60);
 	$query = $db->query("
 		SELECT pm.pmid
 		FROM ".TABLE_PREFIX."privatemessages pm
 		LEFT JOIN ".TABLE_PREFIX."users u ON(u.uid=pm.toid)
-		WHERE LOWER(u.username)='".$db->escape_string(my_strtolower($mybb->get_input('to')))."' AND pm.dateline > {$time_cutoff} AND pm.fromid='{$mybb->user['uid']}' AND pm.subject='".$db->escape_string($mybb->get_input('subject'))."' AND pm.message='".$db->escape_string($mybb->get_input('message'))."' AND pm.folder!='3'
+		WHERE LOWER(u.username) IN ('{$to_escaped}') AND pm.dateline > {$time_cutoff} AND pm.fromid='{$mybb->user['uid']}' AND pm.subject='".$db->escape_string($mybb->get_input('subject'))."' AND pm.message='".$db->escape_string($mybb->get_input('message'))."' AND pm.folder!='3'
+		LIMIT 0, 1
 	");
 	$duplicate_check = $db->fetch_field($query, "pmid");
 	if($duplicate_check)
@@ -588,8 +591,7 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 	);
 
 	// Split up any recipients we have
-	$pm['to'] = explode(",", $mybb->get_input('to'));
-	$pm['to'] = array_map("trim", $pm['to']);
+	$pm['to'] = $to;
 	if(!empty($mybb->input['bcc']))
 	{
 		$pm['bcc'] = explode(",", $mybb->get_input('bcc'));
