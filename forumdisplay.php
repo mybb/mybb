@@ -927,7 +927,7 @@ if(!empty($tids))
 // Check participation by the current user in any of these threads - for 'dot' folder icons
 if($mybb->settings['dotfolders'] != 0 && $mybb->user['uid'] && !empty($threadcache))
 {
-	$query = $db->simple_select("posts", "tid,uid", "uid='{$mybb->user['uid']}' AND tid IN ({$tids}) {$visibleonly}");
+	$query = $db->simple_select("posts", "DISTINCT tid,uid", "uid='{$mybb->user['uid']}' AND tid IN ({$tids}) {$visibleonly}");
 	while($post = $db->fetch_array($query))
 	{
 		if(!empty($moved_threads[$post['tid']]))

@@ -14,6 +14,9 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
+/**
+ * @return bool true
+ */
 function user_meta()
 {
 	global $page, $lang, $plugins;
@@ -33,6 +36,11 @@ function user_meta()
 	return true;
 }
 
+/**
+ * @param string $action
+ *
+ * @return string
+ */
 function user_action_handler($action)
 {
 	global $page, $lang, $plugins;
@@ -63,6 +71,9 @@ function user_action_handler($action)
 	}
 }
 
+/**
+ * @return array
+ */
 function user_admin_permissions()
 {
 	global $lang, $plugins;

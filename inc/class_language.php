@@ -42,7 +42,7 @@ class MyLanguage
 	/**
 	 * Set the path for the language folder.
 	 *
-	 * @param string The path to the language folder.
+	 * @param string $path The path to the language folder.
 	 */
 	function set_path($path)
 	{
@@ -52,7 +52,7 @@ class MyLanguage
 	/**
 	 * Check if a specific language exists.
 	 *
-	 * @param string The language to check for.
+	 * @param string $language The language to check for.
 	 * @return boolean True when exists, false when does not exist.
 	 */
 	function language_exists($language)
@@ -71,8 +71,8 @@ class MyLanguage
 	/**
 	 * Set the language for an area.
 	 *
-	 * @param string The language to use.
-	 * @param string The area to set the language for.
+	 * @param string $language The language to use.
+	 * @param string $area The area to set the language for.
 	 */
 	function set_language($language="english", $area="user")
 	{
@@ -125,9 +125,9 @@ class MyLanguage
 	/**
 	 * Load the language variables for a section.
 	 *
-	 * @param string The section name.
-	 * @param boolean Is this a datahandler?
-	 * @param boolean supress the error if the file doesn't exist?
+	 * @param string $section The section name.
+	 * @param boolean $isdatahandler Is this a datahandler?
+	 * @param boolean $supress_error supress the error if the file doesn't exist?
 	 */
 	function load($section, $isdatahandler=false, $supress_error=false)
 	{
@@ -173,6 +173,11 @@ class MyLanguage
 		}
 	}
 
+	/**
+	 * @param string $string
+	 *
+	 * @return string
+	 */
 	function sprintf($string)
 	{
 		$arg_list = func_get_args();
@@ -189,10 +194,10 @@ class MyLanguage
 	/**
 	 * Get the language variables for a section.
 	 *
-	 * @param boolean Admin variables when true, user when false.
+	 * @param boolean $admin Admin variables when true, user when false.
 	 * @return array The language variables.
 	 */
-	function get_languages($admin=0)
+	function get_languages($admin=false)
 	{
 		$dir = @opendir($this->path);
 		while($lang = readdir($dir))
@@ -215,7 +220,7 @@ class MyLanguage
 	/**
 	 * Parse contents for language variables.
 	 *
-	 * @param string The contents to parse.
+	 * @param string $contents The contents to parse.
 	 * @return string The parsed contents.
 	 */
 	function parse($contents)
@@ -227,7 +232,7 @@ class MyLanguage
 	/**
 	 * Replace content with language variable.
 	 *
-	 * @param array Matches.
+	 * @param array $matches Matches.
 	 * @return string Language variable.
 	 */
 	function parse_replace($matches)

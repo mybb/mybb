@@ -1325,14 +1325,11 @@ if($mybb->input['action'] == "edit")
 		}
 		else
 		{
-			$query = $db->simple_select("forums", "*", "pid='{$mybb->input['fid']}'");
-			while($child = $db->fetch_array($query))
+			$query = $db->simple_select('forums', 'parentlist', "fid='{$pid}'");
+			$parents = explode(',', $db->fetch_field($query, 'parentlist'));
+			if(in_array($mybb->input['fid'], $parents))
 			{
-				if($child['fid'] == $pid)
-				{
-					$errors[] = $lang->error_forum_parent_child;
-					break;
-				}
+				$errors[] = $lang->error_forum_parent_child;
 			}
 		}
 
@@ -2595,7 +2592,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		<script type="text/javascript">
 		<!--
 		$("#username").select2({
-			placeholder: "'.$lang->search_user.'",
+			placeholder: "'.$lang->search_for_a_user.'",
 			minimumInputLength: 3,
 			maximumSelectionSize: 3,
 			multiple: false,
@@ -2645,7 +2642,9 @@ document.write('".str_replace("/", "\/", $field_select)."');
 }
 
 /**
- *
+ * @param DefaultFormContainer $form_container
+ * @param int $pid
+ * @param int $depth
  */
 function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
 {
@@ -2776,6 +2775,12 @@ function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
 	}
 }
 
+/**
+ * @param int $gid
+ * @param int $fid
+ *
+ * @return string
+ */
 function retrieve_single_permissions_row($gid, $fid)
 {
 	global $mybb, $lang, $cache, $db;

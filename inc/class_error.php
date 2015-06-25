@@ -136,10 +136,10 @@ class errorHandler {
 	/**
 	 * Parses a error for processing.
 	 *
-	 * @param string The error type (i.e. E_ERROR, E_FATAL)
-	 * @param string The error message
-	 * @param string The error file
-	 * @param integer The error line
+	 * @param string $type The error type (i.e. E_ERROR, E_FATAL)
+	 * @param string $message The error message
+	 * @param string $file The error file
+	 * @param integer $line The error line
 	 * @return boolean True if parsing was a success, otherwise assume a error
 	 */
 	function error($type, $message, $file=null, $line=0)
@@ -174,6 +174,7 @@ class errorHandler {
 
 			require_once MYBB_ROOT."inc/functions_task.php";
 
+			$filestr = '';
 			if($file)
 			{
 				$filestr = " - Line: $line - File: $file";
@@ -237,7 +238,7 @@ class errorHandler {
 	/**
 	 * Returns all the warnings
 	 *
-	 * @return string The warnings
+	 * @return string|bool The warnings or false if no warnings exist
 	 */
 	function show_warnings()
 	{
@@ -275,6 +276,7 @@ class errorHandler {
 			$template_exists = true;
 		}
 
+		$warning = '';
 		if($template_exists == true)
 		{
 			eval("\$warning = \"".$templates->get("php_warnings")."\";");
@@ -287,8 +289,8 @@ class errorHandler {
 	 * Triggers a user created error
 	 * Example: $error_handler->trigger("Some Warning", E_USER_ERROR);
 	 *
-	 * @param string Message
-	 * @param string Type
+	 * @param string $message Message
+	 * @param string|int $type Type
 	 */
 	function trigger($message="", $type=E_USER_ERROR)
 	{
@@ -312,10 +314,10 @@ class errorHandler {
 	/**
 	 * Logs the error in the specified error log file.
 	 *
-	 * @param string Warning type
-	 * @param string Warning message
-	 * @param string Warning file
-	 * @param integer Warning line
+	 * @param string $type Warning type
+	 * @param string $message Warning message
+	 * @param string $file Warning file
+	 * @param integer $line Warning line
 	 */
 	function log_error($type, $message, $file, $line)
 	{
@@ -351,10 +353,11 @@ class errorHandler {
 	/**
 	 * Emails the error in the specified error log file.
 	 *
-	 * @param string Warning type
-	 * @param string Warning message
-	 * @param string Warning file
-	 * @param integer Warning line
+	 * @param string $type Warning type
+	 * @param string $message Warning message
+	 * @param string $file Warning file
+	 * @param integer $line Warning line
+	 * @return bool returns false if no admin email is set
 	 */
 	function email_error($type, $message, $file, $line)
 	{
@@ -373,11 +376,19 @@ class errorHandler {
 		$message = "Your copy of MyBB running on {$mybb->settings['bbname']} ({$mybb->settings['bburl']}) has experienced an error. Details of the error include:\n---\nType: $type\nFile: $file (Line no. $line)\nMessage\n$message";
 
 		@my_mail($mybb->settings['adminemail'], "MyBB error on {$mybb->settings['bbname']}", $message, $mybb->settings['adminemail']);
+
+		return true;
 	}
 
+	/**
+	 * @param string $type
+	 * @param string $message
+	 * @param string $file
+	 * @param int $line
+	 */
 	function output_error($type, $message, $file, $line)
 	{
-		global $mybb, $parser;
+		global $mybb, $parser, $lang;
 
 		if(!$mybb->settings['bbname'])
 		{
@@ -579,6 +590,7 @@ EOF;
 	 */
 	function generate_backtrace()
 	{
+		$backtrace = '';
 		if(function_exists("debug_backtrace"))
 		{
 			$trace = debug_backtrace();

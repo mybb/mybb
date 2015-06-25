@@ -11,8 +11,8 @@
 /**
  * Mark a particular thread as read for the current user.
  *
- * @param int The thread ID
- * @param int The forum ID of the thread
+ * @param int $tid The thread ID
+ * @param int $fid The forum ID of the thread
  */
 function mark_thread_read($tid, $fid)
 {
@@ -51,7 +51,7 @@ function mark_thread_read($tid, $fid)
 /**
  * Fetches the number of unread threads for the current user in a particular forum.
  *
- * @param string The forums (CSV list)
+ * @param string $fid The forums (CSV list)
  * @return int The number of unread threads
  */
 function fetch_unread_count($fid)
@@ -142,7 +142,7 @@ function fetch_unread_count($fid)
 /**
  * Mark a particular forum as read.
  *
- * @param int The forum ID
+ * @param int $fid The forum ID
  */
 function mark_forum_read($fid)
 {

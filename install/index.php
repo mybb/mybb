@@ -186,6 +186,9 @@ else
 	}
 }
 
+/**
+ * Welcome page
+ */
 function intro()
 {
 	global $output, $mybb, $lang;
@@ -199,6 +202,9 @@ function intro()
 	$output->print_footer('license');
 }
 
+/**
+ * Show the license agreement
+ */
 function license_agreement()
 {
 	global $output, $lang, $mybb;
@@ -1013,6 +1019,9 @@ EOF;
 	$output->print_footer('requirements_check');
 }
 
+/**
+ * Check our requirements
+ */
 function requirements_check()
 {
 	global $output, $mybb, $dboptions, $lang;
@@ -1198,6 +1207,9 @@ function requirements_check()
 	}
 }
 
+/**
+ * Which database do we use?
+ */
 function database_info()
 {
 	global $output, $dbinfo, $errors, $mybb, $dboptions, $lang;
@@ -1376,6 +1388,9 @@ function database_info()
 	$output->print_footer('create_tables');
 }
 
+/**
+ * Create our tables
+ */
 function create_tables()
 {
 	global $output, $dbinfo, $errors, $mybb, $dboptions, $lang;
@@ -1613,6 +1628,9 @@ function create_tables()
 	$output->print_footer('populate_tables');
 }
 
+/**
+ * Insert our default data
+ */
 function populate_tables()
 {
 	global $output, $lang;
@@ -1657,6 +1675,9 @@ function populate_tables()
 	$output->print_footer('templates');
 }
 
+/**
+ * Install our theme
+ */
 function insert_templates()
 {
 	global $mybb, $output, $cache, $db, $lang;
@@ -1767,6 +1788,9 @@ function insert_templates()
 	$output->print_footer('configuration');
 }
 
+/**
+ * Default configuration
+ */
 function configure()
 {
 	global $output, $mybb, $errors, $lang;
@@ -1879,6 +1903,9 @@ EOF;
 	$output->print_footer('adminuser');
 }
 
+/**
+ * How do we want to name the admin user?
+ */
 function create_admin_user()
 {
 	global $output, $mybb, $errors, $db, $lang;
@@ -2110,6 +2137,9 @@ EOF;
 	$output->print_footer('final');
 }
 
+/**
+ * Installation is finished
+ */
 function install_done()
 {
 	global $output, $db, $mybb, $errors, $cache, $lang;
@@ -2215,6 +2245,8 @@ function install_done()
 		'receivepms' => 1,
 		'pmnotice' => 1,
 		'pmnotify' => 1,
+		'buddyrequestspm' => 1,
+		'buddyrequestsauto' => 0,
 		'showimages' => 1,
 		'showvideos' => 1,
 		'showsigs' => 1,
@@ -2373,6 +2405,11 @@ function install_done()
 	$output->print_footer('');
 }
 
+/**
+ * @param array $config
+ *
+ * @return DB_MySQL|DB_MySQLi|DB_PgSQL|DB_SQLite
+ */
 function db_connection($config)
 {
 	require_once MYBB_ROOT."inc/db_{$config['database']['type']}.php";
@@ -2401,6 +2438,11 @@ function db_connection($config)
 	return $db;
 }
 
+/**
+ * @param array $array
+ *
+ * @return string
+ */
 function error_list($array)
 {
 	$string = "<ul>\n";
@@ -2412,6 +2454,9 @@ function error_list($array)
 	return $string;
 }
 
+/**
+ * Write our settings to the settings file
+ */
 function write_settings()
 {
 	global $db;

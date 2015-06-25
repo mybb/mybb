@@ -53,6 +53,8 @@ class PostDataHandler extends DataHandler
 	 * post = New post
 	 * thread = New thread
 	 * edit = Editing a thread or post
+	 *
+	 * @var string
 	 */
 	public $action;
 
@@ -106,13 +108,20 @@ class PostDataHandler extends DataHandler
 	public $return_values = array();
 
 	/**
+	 * Is this the first post of a thread when editing
+	 *
+	 * @var boolean
+	 */
+	public $first_post = false;
+
+	/**
 	 * Verifies the author of a post and fetches the username if necessary.
 	 *
 	 * @return boolean True if the author information is valid, false if invalid.
 	 */
 	function verify_author()
 	{
-		global $mybb;
+		global $mybb, $lang;
 
 		$post = &$this->data;
 
@@ -130,17 +139,24 @@ class PostDataHandler extends DataHandler
 		}
 		// if the uid is 0 verify the username
 		else if($post['uid'] == 0 && $post['username'] != $lang->guest)
-		{	
+		{
 			// Set up user handler
 			require_once MYBB_ROOT."inc/datahandlers/user.php";
 			$userhandler = new UserDataHandler();
-			
+
 			$data_array = array('username' => $post['username']);
 			$userhandler->set_data($data_array);
-			
+
 			if(!$userhandler->verify_username())
 			{
 				// invalid username
+				$this->errors = array_merge($this->errors, $userhandler->get_errors());
+				return false;
+			}
+			
+			if($userhandler->verify_username_exists())
+			{
+				// username is in use
 				$this->errors = array_merge($this->errors, $userhandler->get_errors());
 				return false;
 			}
@@ -152,15 +168,12 @@ class PostDataHandler extends DataHandler
 			$post['username'] = "Guest";
 		}
 
-		// Sanitize the username
-		$post['username'] = htmlspecialchars_uni($post['username']);
 		return true;
 	}
 
 	/**
 	 * Verifies a post subject.
 	 *
-	 * @param string True if the subject is valid, false if invalid.
 	 * @return boolean True when valid, false when not valid.
 	 */
 	function verify_subject()
@@ -170,34 +183,10 @@ class PostDataHandler extends DataHandler
 		$subject = &$post['subject'];
 		$subject = trim_blank_chrs($subject);
 
-		// Are we editing an existing thread or post?
 		if($this->method == "update" && $post['pid'])
 		{
-			if(empty($post['tid']))
-			{
-				$query = $db->simple_select("posts", "tid", "pid='".(int)$post['pid']."'");
-				$post['tid'] = $db->fetch_field($query, "tid");
-			}
-			// Here we determine if we're editing the first post of a thread or not.
-			$options = array(
-				"limit" => 1,
-				"limit_start" => 0,
-				"order_by" => "dateline",
-				"order_dir" => "asc"
-			);
-			$query = $db->simple_select("posts", "pid", "tid='".$post['tid']."'", $options);
-			$first_check = $db->fetch_array($query);
-			if($first_check['pid'] == $post['pid'])
-			{
-				$first_post = true;
-			}
-			else
-			{
-				$first_post = false;
-			}
-
 			// If this is the first post there needs to be a subject, else make it the default one.
-			if(my_strlen($subject) == 0 && $first_post)
+			if(my_strlen($subject) == 0 && $this->first_post)
 			{
 				$this->set_error("firstpost_no_subject");
 				return false;
@@ -254,7 +243,7 @@ class PostDataHandler extends DataHandler
 	/**
 	 * Verifies a post message.
 	 *
-	 * @param string The message content.
+	 * @return bool
 	 */
 	function verify_message()
 	{
@@ -326,7 +315,7 @@ class PostDataHandler extends DataHandler
 	/**
 	* Verify that the user is not flooding the system.
 	*
-	* @return boolean True
+	* @return boolean
 	*/
 	function verify_post_flooding()
 	{
@@ -365,6 +354,11 @@ class PostDataHandler extends DataHandler
 		return true;
 	}
 
+	/**
+	 * @param bool $simple_mode
+	 *
+	 * @return array|bool
+	 */
 	function verify_post_merge($simple_mode=false)
 	{
 		global $mybb, $db, $session;
@@ -503,6 +497,8 @@ class PostDataHandler extends DataHandler
 				return false;
 			}
 		}
+
+		return true;
 	}
 
 	/**
@@ -531,6 +527,8 @@ class PostDataHandler extends DataHandler
 				return false;
 			}
 		}
+
+		return true;
 	}
 
 	/**
@@ -620,8 +618,6 @@ class PostDataHandler extends DataHandler
 	function verify_prefix()
 	{
 		$prefix = &$this->data['prefix'];
-
-		$prefix_cache = build_prefixes();
 
 		// If a valid prefix isn't supplied, don't assign one.
 		if(empty($prefix))
@@ -746,6 +742,29 @@ class PostDataHandler extends DataHandler
 			$this->verify_post_flooding();
 		}
 
+		// Are we editing an existing thread or post?
+		if($this->method == "update")
+		{
+			if(empty($post['tid']))
+			{
+				$query = $db->simple_select("posts", "tid", "pid='".(int)$post['pid']."'");
+				$post['tid'] = $db->fetch_field($query, "tid");
+			}
+			// Here we determine if we're editing the first post of a thread or not.
+			$options = array(
+				"limit" => 1,
+				"limit_start" => 0,
+				"order_by" => "dateline",
+				"order_dir" => "asc"
+			);
+			$query = $db->simple_select("posts", "pid", "tid='".$post['tid']."'", $options);
+			$first_check = $db->fetch_array($query);
+			if($first_check['pid'] == $post['pid'])
+			{
+				$this->first_post = true;
+			}
+		}
+
 		// Verify all post assets.
 
 		if($this->method == "insert" || array_key_exists('uid', $post))
@@ -783,6 +802,11 @@ class PostDataHandler extends DataHandler
 		if($this->method == "insert" || array_key_exists('options', $post))
 		{
 			$this->verify_options();
+		}
+
+		if($this->method == "update" && $this->first_post)
+		{
+			$this->verify_prefix();
 		}
 
 		$plugins->run_hooks("datahandler_post_validate_post", $this);
@@ -863,64 +887,50 @@ class PostDataHandler extends DataHandler
 				$modlogdata['fid'] = $thread['fid'];
 				$modlogdata['tid'] = $thread['tid'];
 
-				$newstick = $newclosed = '';
-
 				if(!isset($modoptions['closethread']))
 				{
-					$modoptions['closethread'] = 0;
+					$modoptions['closethread'] = $closed;
 				}
+
+				$modoptions_update = array();
 
 				// Close the thread.
 				if($modoptions['closethread'] == 1 && $thread['closed'] != 1)
 				{
-					$newclosed = "closed=1";
+					$modoptions_update['closed'] = $closed = 0;
 					log_moderator_action($modlogdata, $lang->thread_closed);
-					$closed = 1;
 				}
 
 				// Open the thread.
 				if($modoptions['closethread'] != 1 && $thread['closed'] == 1)
 				{
-					$newclosed = "closed=0";
+					$modoptions_update['closed'] = $closed = 1;
 					log_moderator_action($modlogdata, $lang->thread_opened);
-					$closed = 0;
 				}
 
 				if(!isset($modoptions['stickthread']))
 				{
-					$modoptions['stickthread'] = 0;
+					$modoptions['stickthread'] = $thread['sticky'];
 				}
 
 				// Stick the thread.
 				if($modoptions['stickthread'] == 1 && $thread['sticky'] != 1)
 				{
-					$newstick = "sticky='1'";
+					$modoptions_update['sticky'] = 1;
 					log_moderator_action($modlogdata, $lang->thread_stuck);
 				}
 
 				// Unstick the thread.
 				if($modoptions['stickthread'] != 1 && $thread['sticky'])
 				{
-					$newstick = "sticky='0'";
+					$modoptions_update['sticky'] = 0;
 					log_moderator_action($modlogdata, $lang->thread_unstuck);
 				}
 
 				// Execute moderation options.
-				if($newstick && $newclosed)
+				if($modoptions_update)
 				{
-					$sep = ",";
-				}
-				else
-				{
-					$sep = '';
-				}
-				if($newstick || $newclosed)
-				{
-					$db->write_query("
-						UPDATE ".TABLE_PREFIX."threads
-						SET {$newclosed}{$sep}{$newstick}
-						WHERE tid='{$thread['tid']}'
-					");
+					$db->update_query('threads', $modoptions_update, "tid='{$thread['tid']}'");
 				}
 			}
 
@@ -978,7 +988,7 @@ class PostDataHandler extends DataHandler
 				);
 				$update_query['edituid'] = (int)$post['uid'];
 				$update_query['edittime'] = TIME_NOW;
-				$query = $db->update_query("posts", $update_query, "pid='".$double_post['pid']."'");
+				$db->update_query("posts", $update_query, "pid='".$double_post['pid']."'");
 
 				if($draft_check)
 				{
@@ -1102,7 +1112,13 @@ class PostDataHandler extends DataHandler
 			$done_users = array();
 
 			$subject = $parser->parse_badwords($thread['subject']);
-			$excerpt = $parser->text_parse_message($post['message'], array('me_username' => $post['username'], 'filter_badwords' => 1, 'safe_html' => 1));
+			
+			$parser_options = array(
+				'me_username'		=> $post['username'],
+				'filter_badwords'	=> 1
+			);
+
+			$excerpt = $parser->text_parse_message($post['message'], $parser_options);
 			$excerpt = my_substr($excerpt, 0, $mybb->settings['subscribeexcerpt']).$lang->emailbit_viewthread;
 
 			// Fetch any users subscribed to this thread receiving instant notification and queue up their subscription notices
@@ -1522,38 +1538,26 @@ class PostDataHandler extends DataHandler
 					$modlogdata['tid'] = $thread['tid'];
 				}
 
-				$newclosed = $newstick = '';
+				$modoptions_update = array();
 
 				// Close the thread.
-				if(isset($modoptions['closethread']) && $modoptions['closethread'] == 1)
+				if(!empty($modoptions['closethread']))
 				{
-					$newclosed = "closed=1";
+					$modoptions_update['closed'] = 1;
 					log_moderator_action($modlogdata, $lang->thread_closed);
 				}
 
 				// Stick the thread.
-				if(isset($modoptions['stickthread']) && $modoptions['stickthread'] == 1)
+				if(!empty($modoptions['stickthread']))
 				{
-					$newstick = "sticky='1'";
+					$modoptions_update['sticky'] = 1;
 					log_moderator_action($modlogdata, $lang->thread_stuck);
 				}
 
 				// Execute moderation options.
-				if($newstick && $newclosed)
+				if($modoptions_update)
 				{
-					$sep = ",";
-				}
-				else
-				{
-					$sep = '';
-				}
-				if($newstick || $newclosed)
-				{
-					$db->write_query("
-						UPDATE ".TABLE_PREFIX."threads
-						SET $newclosed$sep$newstick
-						WHERE tid='{$this->tid}'
-					");
+					$db->update_query('threads', $modoptions_update, "tid='{$this->tid}'");
 				}
 			}
 			if($visible == 1)
@@ -1732,6 +1736,7 @@ class PostDataHandler extends DataHandler
 	/**
 	 * Updates a post that is already in the database.
 	 *
+	 * @return array
 	 */
 	function update_post()
 	{
@@ -1758,24 +1763,6 @@ class PostDataHandler extends DataHandler
 		$forum = get_forum($post['fid']);
 		$forumpermissions = forum_permissions($post['fid'], $post['uid']);
 
-		// Check if this is the first post in a thread.
-		$options = array(
-			"order_by" => "dateline",
-			"order_dir" => "asc",
-			"limit_start" => 0,
-			"limit" => 1
-		);
-		$query = $db->simple_select("posts", "pid", "tid='".(int)$post['tid']."'", $options);
-		$first_post_check = $db->fetch_array($query);
-		if($first_post_check['pid'] == $post['pid'])
-		{
-			$first_post = true;
-		}
-		else
-		{
-			$first_post = false;
-		}
-
 		// Decide on the visibility of this post.
 		$ismod = is_moderator($post['fid'], "", $post['uid']);
 
@@ -1801,7 +1788,7 @@ class PostDataHandler extends DataHandler
 		}
 
 		// Update the thread details that might have been changed first.
-		if($first_post)
+		if($this->first_post)
 		{
 			$this->tid = $post['tid'];
 
@@ -1902,7 +1889,7 @@ class PostDataHandler extends DataHandler
 		// Return the thread's first post id and whether or not it is visible.
 		$this->return_values = array(
 			'visible' => $visible,
-			'first_post' => $first_post
+			'first_post' => $this->first_post
 		);
 
 		$plugins->run_hooks("datahandler_post_update_end", $this);

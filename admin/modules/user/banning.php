@@ -99,7 +99,7 @@ if($mybb->input['action'] == "prune")
 		$cache->update_reportedcontent();
 
 		// Log admin action
-		log_admin_action($mybb->input['uid'], $user['username']);
+		log_admin_action($user['uid'], $user['username']);
 
 		flash_message($lang->success_pruned, 'success');
 		admin_redirect("index.php?module=user-banning");
@@ -154,7 +154,7 @@ if($mybb->input['action'] == "lift")
 		$cache->update_moderators();
 
 		// Log admin action
-		log_admin_action($mybb->input['uid'], $user['username']);
+		log_admin_action($ban['uid'], $user['username']);
 
 		flash_message($lang->success_ban_lifted, 'success');
 		admin_redirect("index.php?module=user-banning");
@@ -241,7 +241,7 @@ if($mybb->input['action'] == "edit")
 			$cache->update_banned();
 
 			// Log admin action
-			log_admin_action($mybb->input['uid'], $user['username']);
+			log_admin_action($ban['uid'], $user['username']);
 
 			flash_message($lang->success_ban_updated, 'success');
 			admin_redirect("index.php?module=user-banning");

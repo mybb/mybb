@@ -960,13 +960,13 @@ elseif($mybb->input['action'] == "clearcookies")
 /**
  * Build a list of forums for RSS multiselect.
  *
- * @param int Parent forum ID.
- * @param unknown_type deprecated
- * @param boolean Whether to add selected attribute or not.
- * @param string HTML for the depth of the forum.
+ * @param int $pid Parent forum ID.
+ * @param string $selitem deprecated
+ * @param boolean $addselect Whether to add selected attribute or not.
+ * @param string $depth HTML for the depth of the forum.
  * @return string HTML of the list of forums for CSS.
  */
-function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="")
+function makesyndicateforums($pid=0, $selitem="", $addselect=true, $depth="")
 {
 	global $db, $forumcache, $permissioncache, $mybb, $forumlist, $forumlistbits, $flist, $lang, $unexp, $templates;
 
@@ -1004,7 +1004,7 @@ function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="")
 						$selecteddone = "1";
 					}
 
-					if($forum['password'] == '' && !in_array($forum['fid'], $unexp) || $forum['password'] && isset($mybb->cookies['forumpass'][$forum['fid']]) && $mybb->cookies['forumpass'][$forum['fid']] == md5($mybb->user['uid'].$forum['password']))
+					if($forum['password'] == '' && !in_array($forum['fid'], $unexp) || $forum['password'] && isset($mybb->cookies['forumpass'][$forum['fid']]) && $mybb->cookies['forumpass'][$forum['fid']] === md5($mybb->user['uid'].$forum['password']))
 					{
 						$forumlistbits .= "<option value=\"{$forum['fid']}\" $optionselected>$depth {$forum['name']}</option>\n";
 					}

@@ -11,11 +11,11 @@
 /**
  * Builds the "view management" interface allowing administrators to edit their custom designed "views"
  *
- * @param string The base URL to this instance of the view manager
- * @param string The internal type identifier for this view
- * @param array Array of fields this view supports
- * @param array Array of possible sort options this view supports if any
- * @param string Optional callback function which generates list of "conditions" for this view
+ * @param string $base_url The base URL to this instance of the view manager
+ * @param string $type The internal type identifier for this view
+ * @param array $fields Array of fields this view supports
+ * @param array $sort_options Array of possible sort options this view supports if any
+ * @param string $conditions_callback Optional callback function which generates list of "conditions" for this view
  */
 function view_manager($base_url, $type, $fields, $sort_options=array(), $conditions_callback="")
 {
@@ -655,6 +655,11 @@ function set_default_view($type, $vid)
 	}
 }
 
+/**
+ * @param string $type
+ *
+ * @return bool|array
+ */
 function fetch_default_view($type)
 {
 	global $mybb, $db;

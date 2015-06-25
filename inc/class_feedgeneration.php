@@ -41,7 +41,7 @@ class FeedGenerator
 	/**
 	 * Set the type of feed to be used.
 	 *
-	 * @param string The feed type.
+	 * @param string $feed_format The feed type.
 	 */
 	function set_feed_format($feed_format)
 	{
@@ -58,7 +58,7 @@ class FeedGenerator
 	/**
 	 * Sets the channel information for the RSS feed.
 	 *
-	 * @param array The channel information
+	 * @param array $channel The channel information
 	 */
 	function set_channel($channel)
 	{
@@ -68,7 +68,7 @@ class FeedGenerator
 	/**
 	 * Adds an item to the RSS feed.
 	 *
-	 * @param array The item.
+	 * @param array $item The item.
 	 */
 	function add_item($item)
 	{
@@ -183,7 +183,7 @@ class FeedGenerator
 	/**
 	 * Sanitize content suitable for RSS feeds.
 	 *
-	 * @param  string The string we wish to sanitize.
+	 * @param  string $string The string we wish to sanitize.
 	 * @return string The cleaned string.
 	 */
 	function sanitize_content($content)
