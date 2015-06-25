@@ -164,6 +164,7 @@ if($mybb->input['action'] == "add")
 
 	if(empty($mybb->input['groups']))
 	{
+		$mybb->input['groups'] = '';
 	}
 
 	if(empty($mybb->input['forums']))
