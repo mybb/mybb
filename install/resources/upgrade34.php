@@ -55,14 +55,16 @@ function upgrade34_dbchanges()
 			break;
 		default:
 			$db->add_column('attachtypes', 'enabled', "tinyint(1) NOT NULL default '1'");
-			$db->add_column('attachtypes', 'groups', "TEXT NOT NULL");
-			$db->add_column('attachtypes', 'forums', "TEXT NOT NULL");
+			$db->add_column('attachtypes', 'groups', "text NOT NULL");
+			$db->add_column('attachtypes', 'forums', "text NOT NULL");
 			$db->add_column('attachtypes', 'avatarfile', "tinyint(1) NOT NULL default '0'");
+
+			$db->update_query('attachtypes', array('groups' => -1));
+			$db->update_query('attachtypes', array('forums' => -1));
 			break;
 	}
 
-	$db->update_query('attachtypes', array('groups' => -1));
-	$db->update_query('attachtypes', array('forums' => -1));
+	$db->update_query('attachtypes', array('avatarfile' => 1), "mimetype IN ('image/gif','image/jpeg','image/x-jpg','image/x-jpeg','image/pjpeg','image/jpg','image/png','image/x-png')");
 	
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("34_done");
