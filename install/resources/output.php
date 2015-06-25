@@ -10,12 +10,33 @@
 
 class installerOutput {
 
+	/**
+	 * @var bool
+	 */
 	public $doneheader;
+	/**
+	 * @var bool
+	 */
 	public $openedform;
+	/**
+	 * @var string
+	 */
 	public $script = "index.php";
+	/**
+	 * @var array
+	 */
 	public $steps = array();
+	/**
+	 * @var string
+	 */
 	public $title = "MyBB Installation Wizard";
 
+	/**
+	 * @param string $title
+	 * @param string $image
+	 * @param int    $form
+	 * @param int    $error
+	 */
 	function print_header($title="Welcome", $image="welcome", $form=1, $error=0)
 	{
 		global $mybb, $lang;
@@ -99,11 +120,17 @@ END;
 		}
 	}
 
+	/**
+	 * @param string $contents
+	 */
 	function print_contents($contents)
 	{
 		echo $contents;
 	}
 
+	/**
+	 * @param string $message
+	 */
 	function print_error($message)
 	{
 		global $lang;
@@ -118,6 +145,9 @@ END;
 		$this->print_footer();
 	}
 
+	/**
+	 * @param string $nextact
+	 */
 	function print_footer($nextact="")
 	{
 		global $lang, $footer_extra;

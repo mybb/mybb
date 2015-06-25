@@ -11,8 +11,8 @@
 /**
  * Build a post bit
  *
- * @param array The post data
- * @param int The type of post bit we're building (1 = preview, 2 = pm, 3 = announcement, else = post)
+ * @param array $post The post data
+ * @param int $post_type The type of post bit we're building (1 = preview, 2 = pm, 3 = announcement, else = post)
  * @return string The built post bit
  */
 function build_postbit($post, $post_type=0)
@@ -320,10 +320,6 @@ function build_postbit($post, $post_type=0)
 			$useravatar = format_avatar($post['avatar'], $post['avatardimensions'], $mybb->settings['postmaxavatarsize']);
 			eval("\$post['useravatar'] = \"".$templates->get("postbit_avatar")."\";");
 		}
-		else
-		{
-			$post['useravatar'] = '';
-		}
 
 		eval("\$post['button_find'] = \"".$templates->get("postbit_find")."\";");
 
@@ -374,6 +370,11 @@ function build_postbit($post, $post_type=0)
 		// Showing the warning level? (only show if not announcement)
 		if($post_type != 3 && $mybb->settings['enablewarningsystem'] != 0 && $usergroup['canreceivewarnings'] != 0 && ($mybb->usergroup['canwarnusers'] != 0 || ($mybb->user['uid'] == $post['uid'] && $mybb->settings['canviewownwarning'] != 0)))
 		{
+			if($mybb->settings['maxwarningpoints'] < 1)
+			{
+				$mybb->settings['maxwarningpoints'] = 10;
+			}
+
 			$warning_level = round($post['warningpoints']/$mybb->settings['maxwarningpoints']*100);
 			if($warning_level > 100)
 			{
@@ -810,8 +811,8 @@ function build_postbit($post, $post_type=0)
  * Fetch the attachments for a specific post and parse inline [attachment=id] code.
  * Note: assumes you have $attachcache, an array of attachments set up.
  *
- * @param int The ID of the item.
- * @param array The post or item passed by reference.
+ * @param int $id The ID of the item.
+ * @param array $post The post or item passed by reference.
  */
 function get_post_attachments($id, &$post)
 {

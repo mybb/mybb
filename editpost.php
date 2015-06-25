@@ -666,7 +666,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	$postoptions_subscriptionmethod_dont = $postoptions_subscriptionmethod_none = $postoptions_subscriptionmethod_email = $postoptions_subscriptionmethod_pm = '';
 	$postoptionschecked = array('signature' => '', 'disablesmilies' => '');
 
-	if(isset($mybb->input['previewpost']) || $post_errors)
+	if(!empty($mybb->input['previewpost']) || $post_errors)
 	{
 		// Set up posthandler.
 		require_once MYBB_ROOT."inc/datahandlers/post.php";
@@ -753,7 +753,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		}
 	}
 
-	if(isset($mybb->input['previewpost']))
+	if(!empty($mybb->input['previewpost']))
 	{
 		if(!$post['uid'])
 		{
@@ -874,8 +874,19 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	if($firstcheck['pid'] == $pid && $forumpermissions['canpostpolls'] != 0 && $thread['poll'] < 1 && (is_moderator($fid, "canmanagepolls") || $thread['dateline'] > ($time-($mybb->settings['polltimelimit']*60*60)) || $mybb->settings['polltimelimit'] == 0))
 	{
 		$lang->max_options = $lang->sprintf($lang->max_options, $mybb->settings['maxpolloptions']);
-		$numpolloptions = "2";
+		$numpolloptions = $mybb->get_input('numpolloptions', MyBB::INPUT_INT);
 		$postpollchecked = '';
+		
+		if($numpolloptions < 1)
+		{
+			$numpolloptions = 2;
+		}
+		
+		if($mybb->get_input('postpoll', MyBB::INPUT_INT) == 1)
+		{
+			$postpollchecked = 'checked="checked"';
+		}
+		
 		eval("\$pollbox = \"".$templates->get("newthread_postpoll")."\";");
 	}
 	else

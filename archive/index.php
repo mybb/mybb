@@ -456,7 +456,7 @@ $plugins->run_hooks("archive_end");
 /**
 * Gets a list of forums and possibly subforums.
 *
-* @param int The parent forum to get the childforums for.
+* @param int $pid The parent forum to get the childforums for.
 * @return array Array of information regarding the child forums of this parent forum
 */
 function build_archive_forumbits($pid=0)

@@ -58,11 +58,11 @@ if($mybb->input['action'] == "add")
 				"eventlimit" => $mybb->get_input('eventlimit', MyBB::INPUT_INT),
 				"showbirthdays" => $mybb->get_input('showbirthdays', MyBB::INPUT_INT),
 				"moderation" => $mybb->get_input('moderation', MyBB::INPUT_INT),
-				"allowhtml" => $db->escape_string($mybb->input['allowhtml']),
-				"allowmycode" => $db->escape_string($mybb->input['allowmycode']),
-				"allowimgcode" => $db->escape_string($mybb->input['allowimgcode']),
-				"allowvideocode" => $db->escape_string($mybb->input['allowvideocode']),
-				"allowsmilies" => $db->escape_string($mybb->input['allowsmilies'])
+				"allowhtml" => $mybb->get_input('allowhtml', MyBB::INPUT_INT),
+				"allowmycode" => $mybb->get_input('allowmycode', MyBB::INPUT_INT),
+				"allowimgcode" => $mybb->get_input('allowimgcode', MyBB::INPUT_INT),
+				"allowvideocode" => $mybb->get_input('allowvideocode', MyBB::INPUT_INT),
+				"allowsmilies" => $mybb->get_input('allowsmilies', MyBB::INPUT_INT)
 			);
 
 			$plugins->run_hooks("admin_config_calendars_add_commit_start");
@@ -308,16 +308,16 @@ if($mybb->input['action'] == "edit")
 				"eventlimit" => $mybb->get_input('eventlimit', MyBB::INPUT_INT),
 				"showbirthdays" => $mybb->get_input('showbirthdays', MyBB::INPUT_INT),
 				"moderation" => $mybb->get_input('moderation', MyBB::INPUT_INT),
-				"allowhtml" => $db->escape_string($mybb->input['allowhtml']),
-				"allowmycode" => $db->escape_string($mybb->input['allowmycode']),
-				"allowimgcode" => $db->escape_string($mybb->input['allowimgcode']),
-				"allowvideocode" => $db->escape_string($mybb->input['allowvideocode']),
-				"allowsmilies" => $db->escape_string($mybb->input['allowsmilies'])
+				"allowhtml" => $mybb->get_input('allowhtml', MyBB::INPUT_INT),
+				"allowmycode" => $mybb->get_input('allowmycode', MyBB::INPUT_INT),
+				"allowimgcode" => $mybb->get_input('allowimgcode', MyBB::INPUT_INT),
+				"allowvideocode" => $mybb->get_input('allowvideocode', MyBB::INPUT_INT),
+				"allowsmilies" => $mybb->get_input('allowsmilies', MyBB::INPUT_INT)
 			);
 
 			$plugins->run_hooks("admin_config_calendars_edit_commit");
 
-			$db->update_query("calendars", $updated_calendar, "cid = '".$mybb->get_input('cid', MyBB::INPUT_INT)."'");
+			$db->update_query("calendars", $updated_calendar, "cid='{$calendar['cid']}'");
 
 			// Log admin action
 			log_admin_action($calendar['cid'], $mybb->input['name']);
@@ -483,4 +483,3 @@ if(!$mybb->input['action'])
 
 	$page->output_footer();
 }
-

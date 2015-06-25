@@ -44,10 +44,10 @@ if(!empty($mybb->input['pid']) && !isset($mybb->input['tid']))
 		$options = array(
 			"limit" => 1
 		);
-		$query = $db->simple_select("posts", "tid", "pid=".$mybb->get_input('pid', MyBB::INPUT_INT), $options);
+		$query = $db->simple_select("posts", "fid,tid,visible", "pid=".$mybb->get_input('pid', MyBB::INPUT_INT), $options);
 		$post = $db->fetch_array($query);
-		
-		if(empty($post))
+
+		if(empty($post) || ($post['visible'] == 0 && !is_moderator($post['fid'], 'canviewunapprove')) || ($post['visible'] == -1 && !is_moderator($post['fid'], 'canviewdeleted')))
 		{
 			// post does not exist --> show corresponding error
 			error($lang->error_invalidpost);
@@ -121,6 +121,8 @@ if(is_moderator($fid))
 else
 {
 	$ismod = false;
+	$visibleonly = " AND visible=1";
+	$visibleonly2 = "AND p.visible=1 AND t.visible=1";
 }
 
 // Make sure we are looking at a real thread here.
@@ -891,7 +893,11 @@ if($mybb->input['action'] == "thread")
 		if(!empty($mybb->input['pid']))
 		{
 			$post = get_post($mybb->input['pid']);
-			if($post)
+			if(empty($post) || ($post['visible'] == 0 && !is_moderator($post['fid'], 'canviewunapprove')) || ($post['visible'] == -1 && !is_moderator($post['fid'], 'canviewdeleted')))
+			{
+				$footer .= '<script type="text/javascript">$(document).ready(function() { $.jGrowl(\''.$lang->error_invalidpost.'\', {theme: \'jgrowl_error\'}); });</script>';
+			}
+			else
 			{
 				$query = $db->query("
 					SELECT COUNT(p.dateline) AS count FROM ".TABLE_PREFIX."posts p
@@ -1522,24 +1528,18 @@ if($mybb->input['action'] == "thread")
 /**
  * Build a navigation tree for threaded display.
  *
- * @param unknown_type $replyto
- * @param unknown_type $indent
- * @return unknown
+ * @param int $replyto
+ * @param int $indent
+ * @return string
  */
-function buildtree($replyto="0", $indent="0")
+function buildtree($replyto=0, $indent=0)
 {
-	global $tree, $mybb, $theme, $mybb, $pid, $tid, $templates, $parser;
+	global $tree, $mybb, $theme, $mybb, $pid, $tid, $templates, $parser, $lang;
 
-	if($indent)
-	{
-		$indentsize = 13 * $indent;
-	}
-	else
-	{
-		$indentsize = 0;
-	}
+	$indentsize = 13 * $indent;
 
 	++$indent;
+	$posts = '';
 	if(is_array($tree[$replyto]))
 	{
 		foreach($tree[$replyto] as $key => $post)

@@ -11,7 +11,7 @@
 /**
  * Outputs a page directly to the browser, parsing anything which needs to be parsed.
  *
- * @param string The contents of the page.
+ * @param string $contents The contents of the page.
  */
 function output_page($contents)
 {
@@ -101,8 +101,8 @@ function output_page($contents)
 /**
  * Adds a function or class to the list of code to run on shutdown.
  *
- * @param mixed The name of the function.
- * @param mixed An array of arguments for the function
+ * @param string|array $name The name of the function.
+ * @param mixed $arguments Either an array of arguments for the function or one argument
  * @return boolean True if function exists, otherwise false.
  */
 function add_shutdown($name, $arguments=array())
@@ -242,7 +242,7 @@ function run_shutdown()
 /**
  * Sends a specified amount of messages from the mail queue
  *
- * @param int The number of messages to send (Defaults to 10)
+ * @param int $count The number of messages to send (Defaults to 10)
  */
 function send_mail_queue($count=10)
 {
@@ -280,7 +280,7 @@ function send_mail_queue($count=10)
 /**
  * Parses the contents of a page before outputting it.
  *
- * @param string The contents of the page.
+ * @param string $contents The contents of the page.
  * @return string The parsed page.
  */
 function parse_page($contents)
@@ -322,14 +322,14 @@ function parse_page($contents)
 /**
  * Turn a unix timestamp in to a "friendly" date/time format for the user.
  *
- * @param string A date format according to PHP's date structure.
- * @param int The unix timestamp the date should be generated for.
- * @param int The offset in hours that should be applied to times. (timezones)
- * @param int Whether or not to use today/yesterday formatting.
- * @param boolean Whether or not to use the adodb time class for < 1970 or > 2038 times
+ * @param string $format A date format according to PHP's date structure.
+ * @param int $stamp The unix timestamp the date should be generated for.
+ * @param int $offset The offset in hours that should be applied to times. (timezones)
+ * @param int $ty Whether or not to use today/yesterday formatting.
+ * @param boolean $adodb Whether or not to use the adodb time class for < 1970 or > 2038 times
  * @return string The formatted timestamp.
  */
-function my_date($format, $stamp="", $offset="", $ty=1, $adodb=false)
+function my_date($format, $stamp=0, $offset=0, $ty=1, $adodb=false)
 {
 	global $mybb, $lang, $mybbadmin, $plugins;
 
@@ -512,15 +512,17 @@ function my_date($format, $stamp="", $offset="", $ty=1, $adodb=false)
 /**
  * Sends an email using PHP's mail function, formatting it appropriately.
  *
- * @param string Address the email should be addressed to.
- * @param string The subject of the email being sent.
- * @param string The message being sent.
- * @param string The from address of the email, if blank, the board name will be used.
- * @param string The chracter set being used to send this email.
- * @param boolean Do we wish to keep the connection to the mail server alive to send more than one message (SMTP only)
- * @param string The format of the email to be sent (text or html). text is default
- * @param string The text message of the email if being sent in html format, for email clients that don't support html
- * @param string The email address to return to. Defaults to admin return email address.
+ * @param string $to Address the email should be addressed to.
+ * @param string $subject The subject of the email being sent.
+ * @param string $message The message being sent.
+ * @param string $from The from address of the email, if blank, the board name will be used.
+ * @param string $charset The chracter set being used to send this email.
+ * @param string $headers
+ * @param boolean $keep_alive Do we wish to keep the connection to the mail server alive to send more than one message (SMTP only)
+ * @param string $format The format of the email to be sent (text or html). text is default
+ * @param string $message_text The text message of the email if being sent in html format, for email clients that don't support html
+ * @param string $return_email The email address to return to. Defaults to admin return email address.
+ * @return bool
  */
 function my_mail($to, $subject, $message, $from="", $charset="", $headers="", $keep_alive=false, $format="text", $message_text="", $return_email="")
 {
@@ -589,8 +591,9 @@ function generate_post_check()
 /**
  * Verifies a POST check code is valid, if not shows an error (silently returns false on silent parameter)
  *
- * @param string The incoming POST check code
- * @param boolean Silent mode or not (silent mode will not show the error to the user but returns false)
+ * @param string $code The incoming POST check code
+ * @param boolean $silent Silent mode or not (silent mode will not show the error to the user but returns false)
+ * @return bool
  */
 function verify_post_check($code, $silent=false)
 {
@@ -622,7 +625,7 @@ function verify_post_check($code, $silent=false)
 /**
  * Return a parent list for the specified forum.
  *
- * @param int The forum id to get the parent list for.
+ * @param int $fid The forum id to get the parent list for.
  * @return string The comma-separated parent list.
  */
 function get_parent_list($fid)
@@ -648,10 +651,10 @@ function get_parent_list($fid)
 /**
  * Build a parent list of a specific forum, suitable for querying
  *
- * @param int The forum ID
- * @param string The column name to add to the query
- * @param string The joiner for each forum for querying (OR | AND | etc)
- * @param string The parent list of the forum - if you have it
+ * @param int $fid The forum ID
+ * @param string $column The column name to add to the query
+ * @param string $joiner The joiner for each forum for querying (OR | AND | etc)
+ * @param string $parentlist The parent list of the forum - if you have it
  * @return string The query string generated
  */
 function build_parent_list($fid, $column="fid", $joiner="OR", $parentlist="")
@@ -679,7 +682,8 @@ function build_parent_list($fid, $column="fid", $joiner="OR", $parentlist="")
 /**
  * Load the forum cache in to memory
  *
- * @param boolean True to force a reload of the cache
+ * @param boolean $force True to force a reload of the cache
+ * @return array The forum cache
  */
 function cache_forums($force=false)
 {
@@ -706,8 +710,8 @@ function cache_forums($force=false)
 /**
  * Generate an array of all child and descendant forums for a specific forum.
  *
- * @param int The forum ID
- * @param return Array of descendants
+ * @param int $fid The forum ID
+ * @return Array of descendants
  */
 function get_child_list($fid)
 {
@@ -727,7 +731,7 @@ function get_child_list($fid)
 	}
 	if(!is_array($forums_by_parent[$fid]))
 	{
-		return;
+		return $forums;
 	}
 
 	foreach($forums_by_parent[$fid] as $forum)
@@ -745,8 +749,8 @@ function get_child_list($fid)
 /**
  * Produce a friendly error message page
  *
- * @param string The error message to be shown
- * @param string The title of the message shown in the title of the page and the error table
+ * @param string $error The error message to be shown
+ * @param string $title The title of the message shown in the title of the page and the error table
  */
 function error($error="", $title="")
 {
@@ -785,9 +789,9 @@ function error($error="", $title="")
 /**
  * Produce an error message for displaying inline on a page
  *
- * @param array Array of errors to be shown
- * @param string The title of the error message
- * @param string JSON data to be encoded (we may want to send more data; e.g. newreply.php uses this for CAPTCHA)
+ * @param array $errors Array of errors to be shown
+ * @param string $title The title of the error message
+ * @param array $json_data JSON data to be encoded (we may want to send more data; e.g. newreply.php uses this for CAPTCHA)
  * @return string The inline error HTML
  */
 function inline_error($errors, $title="", $json_data=array())
@@ -899,10 +903,10 @@ function error_no_permission()
 /**
  * Redirect the user to a given URL with a given message
  *
- * @param string The URL to redirect the user to
- * @param string The redirection message to be shown
- * @param string The title of the redirection page
- * @param boolean Force the redirect page regardless of settings
+ * @param string $url The URL to redirect the user to
+ * @param string $message The redirection message to be shown
+ * @param string $title The title of the redirection page
+ * @param boolean $force_redirect Force the redirect page regardless of settings
  */
 function redirect($url, $message="", $title="", $force_redirect=false)
 {
@@ -978,11 +982,11 @@ function redirect($url, $message="", $title="", $force_redirect=false)
 /**
  * Generate a listing of page - pagination
  *
- * @param int The number of items
- * @param int The number of items to be shown per page
- * @param int The current page number
- * @param string The URL to have page numbers tacked on to (If {page} is specified, the value will be replaced with the page #)
- * @param boolean Whether or not the multipage is being shown in the navigation breadcrumb
+ * @param int $count The number of items
+ * @param int $perpage The number of items to be shown per page
+ * @param int $page The current page number
+ * @param string $url The URL to have page numbers tacked on to (If {page} is specified, the value will be replaced with the page #)
+ * @param boolean $breadcrumb Whether or not the multipage is being shown in the navigation breadcrumb
  * @return string The generated pagination
  */
 function multipage($count, $perpage, $page, $url, $breadcrumb=false)
@@ -991,7 +995,7 @@ function multipage($count, $perpage, $page, $url, $breadcrumb=false)
 
 	if($count <= $perpage)
 	{
-		return;
+		return '';
 	}
 
 	$url = str_replace("&amp;", "&", $url);
@@ -1115,8 +1119,9 @@ function multipage($count, $perpage, $page, $url, $breadcrumb=false)
 /**
  * Generate a page URL for use by the multipage function
  *
- * @param string The URL being passed
- * @param int The page number
+ * @param string $url The URL being passed
+ * @param int $page The page number
+ * @return string
  */
 function fetch_page_url($url, $page)
 {
@@ -1157,7 +1162,7 @@ function fetch_page_url($url, $page)
 /**
  * Fetch the permissions for a specific user
  *
- * @param int The user ID
+ * @param int $uid The user ID
  * @return array Array of user permissions for the specified user
  */
 function user_permissions($uid=0)
@@ -1203,7 +1208,7 @@ function user_permissions($uid=0)
 /**
  * Fetch the usergroup permissions for a specific group or series of groups combined
  *
- * @param mixed A list of groups (Can be a single integer, or a list of groups separated by a comma)
+ * @param int|string $gid A list of groups (Can be a single integer, or a list of groups separated by a comma)
  * @return array Array of permissions generated for the groups
  */
 function usergroup_permissions($gid=0)
@@ -1265,7 +1270,7 @@ function usergroup_permissions($gid=0)
 /**
  * Fetch the display group properties for a specific display group
  *
- * @param int The group ID to fetch the display properties for
+ * @param int $gid The group ID to fetch the display properties for
  * @return array Array of display properties for the group
  */
 function usergroup_displaygroup($gid)
@@ -1291,9 +1296,9 @@ function usergroup_displaygroup($gid)
 /**
  * Build the forum permissions for a specific forum, user or group
  *
- * @param int The forum ID to build permissions for (0 builds for all forums)
- * @param int The user to build the permissions for (0 will select the uid automatically)
- * @param int The group of the user to build permissions for (0 will fetch it)
+ * @param int $fid The forum ID to build permissions for (0 builds for all forums)
+ * @param int $uid The user to build the permissions for (0 will select the uid automatically)
+ * @param int $gid The group of the user to build permissions for (0 will fetch it)
  * @return array Forum permissions for the specific forum or forums
  */
 function forum_permissions($fid=0, $uid=0, $gid=0)
@@ -1367,9 +1372,9 @@ function forum_permissions($fid=0, $uid=0, $gid=0)
  * Fetches the permissions for a specific forum/group applying the inheritance scheme.
  * Called by forum_permissions()
  *
- * @param int The forum ID
- * @param string A comma separated list of usergroups
- * @param array Group permissions
+ * @param int $fid The forum ID
+ * @param string $gid A comma separated list of usergroups
+ * @param array $groupperms Group permissions
  * @return array Permissions for this forum
 */
 function fetch_forum_permissions($fid, $gid, $groupperms)
@@ -1459,8 +1464,9 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 /**
  * Check the password given on a certain forum for validity
  *
- * @param int The forum ID
- * @param boolean The Parent ID
+ * @param int $fid The forum ID
+ * @param int $pid The Parent ID
+ * @return bool
  */
 function check_forum_password($fid, $pid=0)
 {
@@ -1504,7 +1510,7 @@ function check_forum_password($fid, $pid=0)
 		$password = $forum_cache[$fid]['password'];
 		if(isset($mybb->input['pwverify']) && $pid == 0)
 		{
-			if($password == $mybb->get_input('pwverify'))
+			if($password === $mybb->get_input('pwverify'))
 			{
 				my_setcookie("forumpass[$fid]", md5($mybb->user['uid'].$mybb->get_input('pwverify')), null, true);
 				$showform = false;
@@ -1517,7 +1523,7 @@ function check_forum_password($fid, $pid=0)
 		}
 		else
 		{
-			if(!$mybb->cookies['forumpass'][$fid] || ($mybb->cookies['forumpass'][$fid] && md5($mybb->user['uid'].$password) != $mybb->cookies['forumpass'][$fid]))
+			if(!$mybb->cookies['forumpass'][$fid] || ($mybb->cookies['forumpass'][$fid] && md5($mybb->user['uid'].$password) !== $mybb->cookies['forumpass'][$fid]))
 			{
 				$showform = true;
 			}
@@ -1551,12 +1557,12 @@ function check_forum_password($fid, $pid=0)
 /**
  * Return the permissions for a moderator in a specific forum
  *
- * @param fid The forum ID
- * @param uid The user ID to fetch permissions for (0 assumes current logged in user)
- * @param string The parent list for the forum (if blank, will be fetched)
+ * @param int $fid The forum ID
+ * @param int $uid The user ID to fetch permissions for (0 assumes current logged in user)
+ * @param string $parentslist The parent list for the forum (if blank, will be fetched)
  * @return array Array of moderator permissions for the specific forum
  */
-function get_moderator_permissions($fid, $uid="0", $parentslist="")
+function get_moderator_permissions($fid, $uid=0, $parentslist="")
 {
 	global $mybb, $cache, $db;
 	static $modpermscache;
@@ -1660,12 +1666,12 @@ function get_moderator_permissions($fid, $uid="0", $parentslist="")
 /**
  * Checks if a moderator has permissions to perform an action in a specific forum
  *
- * @param int The forum ID (0 assumes global)
- * @param string The action tyring to be performed. (blank assumes any action at all)
- * @param int The user ID (0 assumes current user)
+ * @param int $fid The forum ID (0 assumes global)
+ * @param string $action The action tyring to be performed. (blank assumes any action at all)
+ * @param int $uid The user ID (0 assumes current user)
  * @return bool Returns true if the user has permission, false if they do not
  */
-function is_moderator($fid="0", $action="", $uid="0")
+function is_moderator($fid=0, $action="", $uid=0)
 {
 	global $mybb, $cache;
 
@@ -1790,10 +1796,10 @@ function get_post_icons()
 /**
  * MyBB setcookie() wrapper.
  *
- * @param string The cookie identifier.
- * @param string The cookie value.
- * @param int The timestamp of the expiry date.
- * @param boolean True if setting a HttpOnly cookie (supported by IE, Opera 9, Konqueror)
+ * @param string $name The cookie identifier.
+ * @param string $value The cookie value.
+ * @param int|string $expires The timestamp of the expiry date.
+ * @param boolean $httponly True if setting a HttpOnly cookie (supported by the majority of web browsers)
  */
 function my_setcookie($name, $value="", $expires="", $httponly=false)
 {
@@ -1852,7 +1858,7 @@ function my_setcookie($name, $value="", $expires="", $httponly=false)
 /**
  * Unset a cookie set by MyBB.
  *
- * @param string The cookie identifier.
+ * @param string $name The cookie identifier.
  */
 function my_unsetcookie($name)
 {
@@ -1867,8 +1873,8 @@ function my_unsetcookie($name)
 /**
  * Get the contents from a serialised cookie array.
  *
- * @param string The cookie identifier.
- * @param int The cookie content id.
+ * @param string $name The cookie identifier.
+ * @param int $id The cookie content id.
  * @return array|boolean The cookie id's content array or false when non-existent.
  */
 function my_get_array_cookie($name, $id)
@@ -1895,10 +1901,10 @@ function my_get_array_cookie($name, $id)
 /**
  * Set a serialised cookie array.
  *
- * @param string The cookie identifier.
- * @param int The cookie content id.
- * @param string The value to set the cookie to.
- * @param int The timestamp of the expiry date.
+ * @param string $name The cookie identifier.
+ * @param int $id The cookie content id.
+ * @param string $value The value to set the cookie to.
+ * @param int|string $expires The timestamp of the expiry date.
  */
 function my_set_array_cookie($name, $id, $value, $expires="")
 {
@@ -2303,8 +2309,8 @@ function get_memory_usage()
 /**
  * Updates the forum statistics with specific values (or addition/subtraction of the previous value)
  *
- * @param array Array of items being updated (numthreads,numposts,numusers,numunapprovedthreads,numunapprovedposts,numdeletedposts,numdeletedthreads)
- * @param boolean Force stats update?
+ * @param array $changes Array of items being updated (numthreads,numposts,numusers,numunapprovedthreads,numunapprovedposts,numdeletedposts,numdeletedthreads)
+ * @param boolean $force Force stats update?
  */
 function update_stats($changes=array(), $force=false)
 {
@@ -2433,8 +2439,8 @@ function update_stats($changes=array(), $force=false)
 /**
  * Updates the forum counters with a specific value (or addition/subtraction of the previous value)
  *
- * @param int The forum ID
- * @param array Array of items being updated (threads, posts, unapprovedthreads, unapprovedposts, deletedposts, deletedthreads) and their value (ex, 1, +1, -1)
+ * @param int $fid The forum ID
+ * @param array $changes Array of items being updated (threads, posts, unapprovedthreads, unapprovedposts, deletedposts, deletedthreads) and their value (ex, 1, +1, -1)
  */
 function update_forum_counters($fid, $changes=array())
 {
@@ -2572,7 +2578,7 @@ function update_forum_counters($fid, $changes=array())
 /**
  * Update the last post information for a specific forum
  *
- * @param int The forum ID
+ * @param int $fid The forum ID
  */
 function update_forum_lastpost($fid)
 {
@@ -2602,8 +2608,8 @@ function update_forum_lastpost($fid)
 /**
  * Updates the thread counters with a specific value (or addition/subtraction of the previous value)
  *
- * @param int The thread ID
- * @param array Array of items being updated (replies, unapprovedposts, deletedposts, attachmentcount) and their value (ex, 1, +1, -1)
+ * @param int $tid The thread ID
+ * @param array $changes Array of items being updated (replies, unapprovedposts, deletedposts, attachmentcount) and their value (ex, 1, +1, -1)
  */
 function update_thread_counters($tid, $changes=array())
 {
@@ -2659,7 +2665,7 @@ function update_thread_counters($tid, $changes=array())
 /**
  * Update the first post and lastpost data for a specific thread
  *
- * @param int The thread ID
+ * @param int $tid The thread ID
  */
 function update_thread_data($tid)
 {
@@ -2670,7 +2676,7 @@ function update_thread_data($tid)
 	// If this is a moved thread marker, don't update it - we need it to stay as it is
 	if(strpos($thread['closed'], 'moved|') !== false)
 	{
-		return false;
+		return;
 	}
 
 	$query = $db->query("
@@ -2732,8 +2738,8 @@ function update_thread_data($tid)
 /**
  * Updates the user counters with a specific value (or addition/subtraction of the previous value)
  *
- * @param int The user ID
- * @param array Array of items being updated (postnum, threadnum) and their value (ex, 1, +1, -1)
+ * @param int $uid The user ID
+ * @param array $changes Array of items being updated (postnum, threadnum) and their value (ex, 1, +1, -1)
  */
 function update_user_counters($uid, $changes=array())
 {
@@ -2789,7 +2795,8 @@ function update_user_counters($uid, $changes=array())
 /**
  * Deletes a thread from the database
  *
- * @param int The thread ID
+ * @param int $tid The thread ID
+ * @return bool
  */
 function delete_thread($tid)
 {
@@ -2807,7 +2814,8 @@ function delete_thread($tid)
 /**
  * Deletes a post from the database
  *
- * @param int The thread ID
+ * @param int $pid The thread ID
+ * @return bool
  */
 function delete_post($pid)
 {
@@ -2825,17 +2833,17 @@ function delete_post($pid)
 /**
  * Builds a forum jump menu
  *
- * @param int The parent forum to start with
- * @param int The selected item ID
- * @param int If we need to add select boxes to this cal or not
- * @param int The current depth of forums we're at
- * @param int Whether or not to show extra items such as User CP, Forum home
- * @param boolean Ignore the showinjump setting and show all forums (for moderation pages)
- * @param unknown_type deprecated
- * @param string The name of the forum jump
+ * @param int $pid The parent forum to start with
+ * @param int $selitem The selected item ID
+ * @param int $addselect If we need to add select boxes to this cal or not
+ * @param string $depth The current depth of forums we're at
+ * @param int $showextras Whether or not to show extra items such as User CP, Forum home
+ * @param boolean $showall Ignore the showinjump setting and show all forums (for moderation pages)
+ * @param mixed $permissions deprecated
+ * @param string $name The name of the forum jump
  * @return string Forum jump items
  */
-function build_forum_jump($pid="0", $selitem="", $addselect="1", $depth="", $showextras="1", $showall=false, $permissions="", $name="fid")
+function build_forum_jump($pid=0, $selitem=0, $addselect=1, $depth="", $showextras=1, $showall=false, $permissions="", $name="fid")
 {
 	global $forum_cache, $jumpfcache, $permissioncache, $mybb, $forumjump, $forumjumpbits, $gobutton, $theme, $templates, $lang;
 
@@ -2922,7 +2930,7 @@ function build_forum_jump($pid="0", $selitem="", $addselect="1", $depth="", $sho
 /**
  * Returns the extension of a file.
  *
- * @param string The filename.
+ * @param string $file The filename.
  * @return string The extension of the file.
  */
 function get_extension($file)
@@ -2933,10 +2941,10 @@ function get_extension($file)
 /**
  * Generates a random string.
  *
- * @param int The length of the string to generate.
+ * @param int $length The length of the string to generate.
  * @return string The random string.
  */
-function random_str($length="8")
+function random_str($length=8)
 {
 	$set = array("a","A","b","B","c","C","d","D","e","E","f","F","g","G","h","H","i","I","j","J","k","K","l","L","m","M","n","N","o","O","p","P","q","Q","r","R","s","S","t","T","u","U","v","V","w","W","x","X","y","Y","z","Z","1","2","3","4","5","6","7","8","9");
 	$str = '';
@@ -2953,12 +2961,12 @@ function random_str($length="8")
 /**
  * Formats a username based on their display group
  *
- * @param string The username
- * @param int The usergroup for the user (if not specified, will be fetched)
- * @param int The display group for the user (if not specified, will be fetched)
+ * @param string $username The username
+ * @param int $usergroup The usergroup for the user
+ * @param int $displaygroup The display group for the user
  * @return string The formatted username
  */
-function format_name($username, $usergroup, $displaygroup="")
+function format_name($username, $usergroup, $displaygroup=0)
 {
 	global $groupscache, $cache;
 
@@ -2989,9 +2997,9 @@ function format_name($username, $usergroup, $displaygroup="")
 /**
  * Formats an avatar to a certain dimension
  *
- * @param string The avatar file name
- * @param string Dimensions of the avatar, width x height (e.g. 44|44)
- * @param string The maximum dimensions of the formatted avatar
+ * @param string $avatar The avatar file name
+ * @param string $dimensions Dimensions of the avatar, width x height (e.g. 44|44)
+ * @param string $max_dimensions The maximum dimensions of the formatted avatar
  * @return array Information for the formatted avatar
  */
 function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
@@ -3011,14 +3019,26 @@ function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
 		$dimensions = $mybb->settings['useravatardims'];
 	}
 
-	if(isset($avatars[$avatar]))
-	{
-		return $avatars[$avatar];
-	}
-
 	if(!$max_dimensions)
 	{
 		$max_dimensions = $mybb->settings['maxavatardims'];
+	}
+
+	// An empty key wouldn't work so we need to add a fall back
+	$key = $dimensions;
+	if(empty($key))
+	{
+		$key = 'default';
+	}
+	$key2 = $max_dimensions;
+	if(empty($key2))
+	{
+		$key2 = 'default';
+	}
+
+	if(isset($avatars[$avatar][$key][$key2]))
+	{
+		return $avatars[$avatar][$key][$key2];
 	}
 
 	$avatar_width_height = '';
@@ -3031,7 +3051,7 @@ function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
 		{
 			list($max_width, $max_height) = explode('x', $max_dimensions);
 
-			if($dimensions[0] > $max_width || $dimensions[1] > $max_height)
+			if(!empty($max_dimensions) && ($dimensions[0] > $max_width || $dimensions[1] > $max_height))
 			{
 				require_once MYBB_ROOT."inc/functions_image.php";
 				$scaled_dimensions = scale_image($dimensions[0], $dimensions[1], $max_width, $max_height);
@@ -3044,12 +3064,12 @@ function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
 		}
 	}
 
-	$avatars[$avatar] = array(
+	$avatars[$avatar][$key][$key2] = array(
 		'image' => htmlspecialchars_uni($mybb->get_asset_url($avatar)),
 		'width_height' => $avatar_width_height
 	);
 
-	return $avatars[$avatar];
+	return $avatars[$avatar][$key][$key2];
 }
 
 /**
@@ -3407,7 +3427,7 @@ function build_clickable_smilies()
 /**
  * Builds thread prefixes and returns a selected prefix (or all)
  *
- *  @param int The prefix ID (0 to return all)
+ *  @param int $pid The prefix ID (0 to return all)
  *  @return array The thread prefix's values (or all thread prefixes)
  */
 function build_prefixes($pid=0)
@@ -3459,9 +3479,9 @@ function build_prefixes($pid=0)
 /**
  * Build the thread prefix selection menu
  *
- *  @param mixed The forum ID (integer ID or string all)
- *  @param mixed The selected prefix ID (integer ID or string any)
- *  @param int Allow multiple prefix selection
+ *  @param int|string $fid The forum ID (integer ID or string all)
+ *  @param int|string $selected_pid The selected prefix ID (integer ID or string any)
+ *  @param int $multiple Allow multiple prefix selection
  *  @return string The thread prefix selection menu
  */
 function build_prefix_select($fid, $selected_pid=0, $multiple=0)
@@ -3575,8 +3595,8 @@ function build_prefix_select($fid, $selected_pid=0, $multiple=0)
 /**
  * Build the thread prefix selection menu for a forum
  *
- *  @param mixed The forum ID (integer ID)
- *  @param mixed The selected prefix ID (integer ID)
+ *  @param int $fid The forum ID (integer ID)
+ *  @param int $selected_pid The selected prefix ID (integer ID)
  */
 function build_forum_prefix_select($fid, $selected_pid=0)
 {
@@ -3652,8 +3672,8 @@ function build_forum_prefix_select($fid, $selected_pid=0)
 /**
  * Gzip encodes text to a specified level
  *
- * @param string The string to encode
- * @param int The level (1-9) to encode at
+ * @param string $contents The string to encode
+ * @param int $level The level (1-9) to encode at
  * @return string The encoded string
  */
 function gzip_encode($contents, $level=1)
@@ -3704,8 +3724,8 @@ function gzip_encode($contents, $level=1)
 /**
  * Log the actions of a moderator.
  *
- * @param array The data of the moderator's action.
- * @param string The message to enter for the action the moderator performed.
+ * @param array $data The data of the moderator's action.
+ * @param string $action The message to enter for the action the moderator performed.
  */
 function log_moderator_action($data, $action="")
 {
@@ -3754,8 +3774,8 @@ function log_moderator_action($data, $action="")
 /**
  * Get the formatted reputation for a user.
  *
- * @param int The reputation value
- * @param int The user ID (if not specified, the generated reputation will not be a link)
+ * @param int $reputation The reputation value
+ * @param int $uid The user ID (if not specified, the generated reputation will not be a link)
  * @return string The formatted repuation
  */
 function get_reputation($reputation, $uid=0)
@@ -3775,6 +3795,8 @@ function get_reputation($reputation, $uid=0)
 	{
 		$reputation_class = "reputation_neutral";
 	}
+	
+	$reputation = my_number_format($reputation);
 
 	if($uid != 0)
 	{
@@ -3791,7 +3813,7 @@ function get_reputation($reputation, $uid=0)
 /**
  * Fetch a color coded version of a warning level (based on it's percentage)
  *
- * @param int The warning level (percentage of 100)
+ * @param int $level The warning level (percentage of 100)
  * @return string Formatted warning level
  */
 function get_colored_warning_level($level)
@@ -3879,7 +3901,7 @@ function get_ip()
 /**
  * Fetch the friendly size (GB, MB, KB, B) for a specified file size.
  *
- * @param int The size in bytes
+ * @param int $size The size in bytes
  * @return string The friendly file size
  */
 function get_friendly_size($size)
@@ -3946,7 +3968,7 @@ function get_friendly_size($size)
 /**
  * Format a decimal number in to microseconds, milliseconds, or seconds.
  *
- * @param int The time in microseconds
+ * @param int $time The time in microseconds
  * @return string The friendly time duration
  */
 function format_time_duration($time)
@@ -3977,7 +3999,7 @@ function format_time_duration($time)
 /**
  * Get the attachment icon for a specific file extension
  *
- * @param string The file extension
+ * @param string $ext The file extension
  * @return string The attachment icon
  */
 function get_attachment_icon($ext)
@@ -3993,25 +4015,36 @@ function get_attachment_icon($ext)
 
 	if($attachtypes[$ext]['icon'])
 	{
-		if(defined("IN_ADMINCP"))
+		static $attach_icons_schemes = array();
+		if(!isset($attach_icons_schemes[$ext]))
 		{
-			$icon = str_replace("{theme}", "", $attachtypes[$ext]['icon']);
-			if(my_substr($icon, 0, 1) != "/" && my_substr($icon, 0, 7) != "http://")
+			$attach_icons_schemes[$ext] = parse_url($attachtypes[$ext]['icon']);
+			if(!empty($attach_icons_schemes[$ext]['scheme']))
 			{
-				$icon = "../".$icon;
+				$attach_icons_schemes[$ext] = $attachtypes[$ext]['icon'];
+			}
+			elseif(defined("IN_ADMINCP"))
+			{
+				$attach_icons_schemes[$ext] = str_replace("{theme}", "", $attachtypes[$ext]['icon']);
+				if(my_substr($attach_icons_schemes[$ext], 0, 1) != "/")
+				{
+					$attach_icons_schemes[$ext] = "../".$attach_icons_schemes[$ext];
+				}
+			}
+			elseif(defined("IN_PORTAL"))
+			{
+				global $change_dir;
+				$attach_icons_schemes[$ext] = $change_dir."/".str_replace("{theme}", $theme['imgdir'], $attachtypes[$ext]['icon']);
+				$attach_icons_schemes[$ext] = $mybb->get_asset_url($attach_icons_schemes[$ext]);
+			}
+			else
+			{
+				$attach_icons_schemes[$ext] = str_replace("{theme}", $theme['imgdir'], $attachtypes[$ext]['icon']);
+				$attach_icons_schemes[$ext] = $mybb->get_asset_url($attach_icons_schemes[$ext]);
 			}
 		}
-		elseif(defined("IN_PORTAL"))
-		{
-			global $change_dir;
-			$icon = $change_dir."/".str_replace("{theme}", $theme['imgdir'], $attachtypes[$ext]['icon']);
-			$icon = $mybb->get_asset_url($icon);
-		}
-		else
-		{
-			$icon = str_replace("{theme}", $theme['imgdir'], $attachtypes[$ext]['icon']);
-			$icon = $mybb->get_asset_url($icon);
-		}
+
+		$icon = $attach_icons_schemes[$ext];
 
 		$name = htmlspecialchars_uni($attachtypes[$ext]['name']);
 	}
@@ -4028,6 +4061,7 @@ function get_attachment_icon($ext)
 		}
 
 		$icon = "{$theme['imgdir']}/attachtypes/unknown.png";
+
 		$name = $lang->unknown;
 	}
 
@@ -4039,7 +4073,7 @@ function get_attachment_icon($ext)
 /**
  * Get a list of the unviewable forums for the current user
  *
- * @param boolean Set to true to only fetch those forums for which users can actually read a thread in.
+ * @param boolean $only_readable_threads Set to true to only fetch those forums for which users can actually read a thread in.
  * @return string Comma separated values list of the forum IDs which the user cannot view
  */
 function get_unviewable_forums($only_readable_threads=false)
@@ -4072,7 +4106,7 @@ function get_unviewable_forums($only_readable_threads=false)
 
 		if($forum['password'] != "")
 		{
-			if($mybb->cookies['forumpass'][$forum['fid']] != md5($mybb->user['uid'].$forum['password']))
+			if($mybb->cookies['forumpass'][$forum['fid']] !== md5($mybb->user['uid'].$forum['password']))
 			{
 				$pwverified = 0;
 			}
@@ -4085,7 +4119,7 @@ function get_unviewable_forums($only_readable_threads=false)
 			$parents = explode(",", $forum['parentlist']);
 			foreach($parents as $parent)
 			{
-				if(isset($password_forums[$parent]) && $mybb->cookies['forumpass'][$parent] != md5($mybb->user['uid'].$password_forums[$parent]))
+				if(isset($password_forums[$parent]) && $mybb->cookies['forumpass'][$parent] !== md5($mybb->user['uid'].$password_forums[$parent]))
 				{
 					$pwverified = 0;
 				}
@@ -4106,8 +4140,8 @@ function get_unviewable_forums($only_readable_threads=false)
 /**
  * Fixes mktime for dates earlier than 1970
  *
- * @param string The date format to use
- * @param int The year of the date
+ * @param string $format The date format to use
+ * @param int $year The year of the date
  * @return string The correct date format
  */
 function fix_mktime($format, $year)
@@ -4123,7 +4157,7 @@ function fix_mktime($format, $year)
 /**
  * Build the breadcrumb navigation trail from the specified items
  *
- * @return The formatted breadcrumb navigation trail
+ * @return string The formatted breadcrumb navigation trail
  */
 function build_breadcrumb()
 {
@@ -4195,8 +4229,8 @@ function build_breadcrumb()
 /**
  * Add a breadcrumb menu item to the list.
  *
- * @param string The name of the item to add
- * @param string The URL of the item to add
+ * @param string $name The name of the item to add
+ * @param string $url The URL of the item to add
  */
 function add_breadcrumb($name, $url="")
 {
@@ -4210,8 +4244,9 @@ function add_breadcrumb($name, $url="")
 /**
  * Build the forum breadcrumb nagiation (the navigation to a specific forum including all parent forums)
  *
- * @param int The forum ID to build the navigation for
- * @param array The multipage drop down array of information
+ * @param int $fid The forum ID to build the navigation for
+ * @param array $multipage The multipage drop down array of information
+ * @return int Returns 1 in every case. Kept for compatibility
  */
 function build_forum_breadcrumb($fid, $multipage=array())
 {
@@ -4296,11 +4331,11 @@ function reset_breadcrumb()
 /**
  * Builds a URL to an archive mode page
  *
- * @param string The type of page (thread|announcement|forum)
- * @param int The ID of the item
+ * @param string $type The type of page (thread|announcement|forum)
+ * @param int $id The ID of the item
  * @return string The URL
  */
-function build_archive_link($type="", $id="")
+function build_archive_link($type="", $id=0)
 {
 	global $mybb;
 
@@ -4498,8 +4533,8 @@ function send_page_headers()
 /**
  * Mark specific reported posts of a certain type as dealt with
  *
- * @param mixed An array or int of the ID numbers you're marking as dealt with
- * @param string The type of item the above IDs are for - post, posts, thread, threads, forum, all
+ * @param array|int $id An array or int of the ID numbers you're marking as dealt with
+ * @param string $type The type of item the above IDs are for - post, posts, thread, threads, forum, all
  */
 function mark_reports($id, $type="post")
 {
@@ -4545,8 +4580,8 @@ function mark_reports($id, $type="post")
 /**
  * Fetch a friendly x days, y months etc date stamp from a timestamp
  *
- * @param int The timestamp
- * @param array Array of options
+ * @param int $stamp The timestamp
+ * @param array $options Array of options
  * @return string The friendly formatted timestamp
  */
 function nice_time($stamp, $options=array())
@@ -4690,7 +4725,7 @@ function nice_time($stamp, $options=array())
 /**
  * Select an alternating row colour based on the previous call to this function
  *
- * @param int 1 to reset the row to trow1.
+ * @param int $reset 1 to reset the row to trow1.
  * @return string trow1 or trow2 depending on the previous call
  */
 function alt_trow($reset=0)
@@ -4714,8 +4749,9 @@ function alt_trow($reset=0)
 /**
  * Add a user to a specific additional user group.
  *
- * @param int The user ID
- * @param int The user group ID to join
+ * @param int $uid The user ID
+ * @param int $joingroup The user group ID to join
+ * @return bool
  */
 function join_usergroup($uid, $joingroup)
 {
@@ -4766,8 +4802,8 @@ function join_usergroup($uid, $joingroup)
 /**
  * Remove a user from a specific additional user group
  *
- * @param int The user ID
- * @param int The user group ID
+ * @param int $uid The user ID
+ * @param int $leavegroup The user group ID
  */
 function leave_usergroup($uid, $leavegroup)
 {
@@ -4819,9 +4855,9 @@ function leave_usergroup($uid, $leavegroup)
 /**
  * Get the current location taking in to account different web serves and systems
  *
- * @param boolean True to return as "hidden" fields
- * @param array Array of fields to ignore if first argument is true
- * @param boolean True to skip all inputs and return only the file path part of the URL
+ * @param boolean $fields True to return as "hidden" fields
+ * @param array $ignore Array of fields to ignore if first argument is true
+ * @param boolean $quick True to skip all inputs and return only the file path part of the URL
  * @return string The current URL being accessed
  */
 function get_current_location($fields=false, $ignore=array(), $quick=false)
@@ -4926,16 +4962,16 @@ function get_current_location($fields=false, $ignore=array(), $quick=false)
 /**
  * Build a theme selection menu
  *
- * @param string The name of the menu
- * @param int The ID of the selected theme
- * @param int The ID of the parent theme to select from
- * @param int The current selection depth
- * @param boolean Whether or not to override usergroup permissions (true to override)
- * @param boolean Whether or not theme select is in the footer (true if it is)
- * @param boolean Whether or not to override output based on theme count (true to override)
+ * @param string $name The name of the menu
+ * @param int $selected The ID of the selected theme
+ * @param int $tid The ID of the parent theme to select from
+ * @param string $depth The current selection depth
+ * @param boolean $usergroup_override Whether or not to override usergroup permissions (true to override)
+ * @param boolean $footer Whether or not theme select is in the footer (true if it is)
+ * @param boolean $count_override Whether or not to override output based on theme count (true to override)
  * @return string The theme selection list
  */
-function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_override=false, $footer=false, $count_override=false)
+function build_theme_select($name, $selected=-1, $tid=0, $depth="", $usergroup_override=false, $footer=false, $count_override=false)
 {
 	global $db, $themeselect, $tcache, $lang, $mybb, $limit, $templates, $num_themes, $themeselect_option;
 
@@ -5035,7 +5071,7 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 /**
  * Custom function for htmlspecialchars which takes in to account unicode
  *
- * @param string The string to format
+ * @param string $message The string to format
  * @return string The string with htmlspecialchars applied
  */
 function htmlspecialchars_uni($message)
@@ -5050,7 +5086,7 @@ function htmlspecialchars_uni($message)
 /**
  * Custom function for formatting numbers.
  *
- * @param int The number to format.
+ * @param int $number The number to format.
  * @return int The formatted number.
  */
 function my_number_format($number)
@@ -5086,8 +5122,8 @@ function my_number_format($number)
 /**
  * Converts a string of text to or from UTF-8.
  *
- * @param string The string of text to convert
- * @param boolean Whether or not the string is being converted to or from UTF-8 (true if converting to)
+ * @param string $str The string of text to convert
+ * @param boolean $to Whether or not the string is being converted to or from UTF-8 (true if converting to)
  * @return string The converted string
  */
 function convert_through_utf8($str, $to=true)
@@ -5156,7 +5192,12 @@ function convert_through_utf8($str, $to=true)
 }
 
 /**
- * @deprecated deprecated since version 1.8.4 Please use other alternatives.
+ * DEPRECATED! Please use other alternatives.
+ *
+ * @deprecated
+ * @param string $message
+ *
+ * @return string
  */
 function my_wordwrap($message)
 {
@@ -5166,9 +5207,9 @@ function my_wordwrap($message)
 /**
  * Workaround for date limitation in PHP to establish the day of a birthday (Provided by meme)
  *
- * @param int The month of the birthday
- * @param int The day of the birthday
- * @param int The year of the bithday
+ * @param int $month The month of the birthday
+ * @param int $day The day of the birthday
+ * @param int $year The year of the bithday
  * @return int The numeric day of the week for the birthday
  */
 function get_weekday($month, $day, $year)
@@ -5204,7 +5245,7 @@ function get_weekday($month, $day, $year)
 /**
  * Workaround for date limitation in PHP to establish the day of a birthday (Provided by meme)
  *
- * @param int The year.
+ * @param int $in The year.
  * @return array The number of days in each month of that year
  */
 function get_bdays($in)
@@ -5226,13 +5267,15 @@ function get_bdays($in)
 }
 
 /**
+ * DEPRECATED! Please use mktime()!
  * Formats a birthday appropriately
  *
- * @param string The PHP date format string
- * @param int The month of the birthday
- * @param int The day of the birthday
- * @param int The year of the birthday
- * @param int The weekday of the birthday
+ * @deprecated
+ * @param string $display The PHP date format string
+ * @param int $bm The month of the birthday
+ * @param int $bd The day of the birthday
+ * @param int $by The year of the birthday
+ * @param int $wd The weekday of the birthday
  * @return string The formatted birthday
  */
 function format_bdays($display, $bm, $bd, $by, $wd)
@@ -5268,6 +5311,7 @@ function format_bdays($display, $bm, $bd, $by, $wd)
 	// This needs to be in this specific order
 	$find = array(
 		'm',
+		'n',
 		'd',
 		'D',
 		'y',
@@ -5281,6 +5325,7 @@ function format_bdays($display, $bm, $bd, $by, $wd)
 
 	$html = array(
 		'&#109;',
+		'&#110;',
 		'&#99;',
 		'&#68;',
 		'&#121;',
@@ -5297,6 +5342,7 @@ function format_bdays($display, $bm, $bd, $by, $wd)
 
 	$replace = array(
 		sprintf('%02s', $bm),
+		$bm,
 		sprintf('%02s', $bd),
 		($wd == 2 ? my_substr($bdays[$wd], 0, 4) : ($wd == 4 ? my_substr($bdays[$wd], 0, 5) : my_substr($bdays[$wd], 0, 3))),
 		my_substr($by, 2),
@@ -5322,8 +5368,8 @@ function format_bdays($display, $bm, $bd, $by, $wd)
 /**
  * Returns the age of a user with specified birthday.
  *
- * @param string The birthday of a user.
- * @return float The age of a user with that birthday.
+ * @param string $birthday The birthday of a user.
+ * @return int The age of a user with that birthday.
  */
 function get_age($birthday)
 {
@@ -5347,7 +5393,7 @@ function get_age($birthday)
 /**
  * Updates the first posts in a thread.
  *
- * @param int The thread id for which to update the first post id.
+ * @param int $tid The thread id for which to update the first post id.
  */
 function update_first_post($tid)
 {
@@ -5381,7 +5427,7 @@ function update_first_post($tid)
 /**
  * Updates the last posts in a thread.
  *
- * @param int The thread id for which to update the last post id.
+ * @param int $tid The thread id for which to update the last post id.
  */
 function update_last_post($tid)
 {
@@ -5432,7 +5478,7 @@ function update_last_post($tid)
 /**
  * Checks for the length of a string, mb strings accounted for
  *
- * @param string The string to check the length of.
+ * @param string $string The string to check the length of.
  * @return int The length of the string.
  */
 function my_strlen($string)
@@ -5467,13 +5513,13 @@ function my_strlen($string)
 /**
  * Cuts a string at a specified point, mb strings accounted for
  *
- * @param string The string to cut.
- * @param int Where to cut
- * @param int (optional) How much to cut
- * @param bool (optional) Properly handle HTML entities?
- * @return int The cut part of the string.
+ * @param string $string The string to cut.
+ * @param int $start Where to cut
+ * @param int $length (optional) How much to cut
+ * @param bool $handle_entities (optional) Properly handle HTML entities?
+ * @return string The cut part of the string.
  */
-function my_substr($string, $start, $length="", $handle_entities = false)
+function my_substr($string, $start, $length=null, $handle_entities = false)
 {
 	if($handle_entities)
 	{
@@ -5481,7 +5527,7 @@ function my_substr($string, $start, $length="", $handle_entities = false)
 	}
 	if(function_exists("mb_substr"))
 	{
-		if($length != "")
+		if($length != null)
 		{
 			$cut_string = mb_substr($string, $start, $length);
 		}
@@ -5492,7 +5538,7 @@ function my_substr($string, $start, $length="", $handle_entities = false)
 	}
 	else
 	{
-		if($length != "")
+		if($length != null)
 		{
 			$cut_string = substr($string, $start, $length);
 		}
@@ -5512,8 +5558,8 @@ function my_substr($string, $start, $length="", $handle_entities = false)
 /**
  * Lowers the case of a string, mb strings accounted for
  *
- * @param string The string to lower.
- * @return int The lowered string.
+ * @param string $string The string to lower.
+ * @return string The lowered string.
  */
 function my_strtolower($string)
 {
@@ -5532,10 +5578,10 @@ function my_strtolower($string)
 /**
  * Finds a needle in a haystack and returns it position, mb strings accounted for
  *
- * @param string String to look in (haystack)
- * @param string What to look for (needle)
- * @param int (optional) How much to offset
- * @return int false on needle not found, integer position if found
+ * @param string $haystack String to look in (haystack)
+ * @param string $needle What to look for (needle)
+ * @param int $offset (optional) How much to offset
+ * @return int|bool false on needle not found, integer position if found
  */
 function my_strpos($haystack, $needle, $offset=0)
 {
@@ -5559,8 +5605,8 @@ function my_strpos($haystack, $needle, $offset=0)
 /**
  * Ups the case of a string, mb strings accounted for
  *
- * @param string The string to up.
- * @return int The uped string.
+ * @param string $string The string to up.
+ * @return string The uped string.
  */
 function my_strtoupper($string)
 {
@@ -5579,8 +5625,8 @@ function my_strtoupper($string)
 /**
  * Returns any html entities to their original character
  *
- * @param string The string to un-htmlentitize.
- * @return int The un-htmlentitied' string.
+ * @param string $string The string to un-htmlentitize.
+ * @return string The un-htmlentitied' string.
  */
 function unhtmlentities($string)
 {
@@ -5598,8 +5644,8 @@ function unhtmlentities($string)
 /**
  * Returns any ascii to it's character (utf-8 safe).
  *
- * @param string The ascii to characterize.
- * @return int The characterized ascii.
+ * @param int $c The ascii to characterize.
+ * @return string|bool The characterized ascii. False on failure
  */
 function unichr($c)
 {
@@ -5631,7 +5677,7 @@ function unichr($c)
 /**
  * Get the event poster.
  *
- * @param array The event data array.
+ * @param array $event The event data array.
  * @return string The link to the event poster.
  */
 function get_event_poster($event)
@@ -5644,7 +5690,7 @@ function get_event_poster($event)
 /**
  * Get the event date.
  *
- * @param array The event data array.
+ * @param array $event The event data array.
  * @return string The event date.
  */
 function get_event_date($event)
@@ -5661,7 +5707,7 @@ function get_event_date($event)
 /**
  * Get the profile link.
  *
- * @param int The user id of the profile.
+ * @param int $uid The user id of the profile.
  * @return string The url to the profile.
  */
 function get_profile_link($uid=0)
@@ -5673,7 +5719,7 @@ function get_profile_link($uid=0)
 /**
  * Get the announcement link.
  *
- * @param int The announement id of the announcement.
+ * @param int $aid The announement id of the announcement.
  * @return string The url to the announcement.
  */
 function get_announcement_link($aid=0)
@@ -5685,10 +5731,10 @@ function get_announcement_link($aid=0)
 /**
  * Build the profile link.
  *
- * @param string The Username of the profile.
- * @param int The user id of the profile.
- * @param string The target frame
- * @param string Any onclick javascript.
+ * @param string $username The Username of the profile.
+ * @param int $uid The user id of the profile.
+ * @param string $target The target frame
+ * @param string $onclick Any onclick javascript.
  * @return string The complete profile link.
  */
 function build_profile_link($username="", $uid=0, $target="", $onclick="")
@@ -5725,8 +5771,8 @@ function build_profile_link($username="", $uid=0, $target="", $onclick="")
 /**
  * Build the forum link.
  *
- * @param int The forum id of the forum.
- * @param int (Optional) The page number of the forum.
+ * @param int $fid The forum id of the forum.
+ * @param int $page (Optional) The page number of the forum.
  * @return string The url to the forum.
  */
 function get_forum_link($fid, $page=0)
@@ -5747,9 +5793,9 @@ function get_forum_link($fid, $page=0)
 /**
  * Build the thread link.
  *
- * @param int The thread id of the thread.
- * @param int (Optional) The page number of the thread.
- * @param string (Optional) The action we're performing (ex, lastpost, newpost, etc)
+ * @param int $tid The thread id of the thread.
+ * @param int $page (Optional) The page number of the thread.
+ * @param string $action (Optional) The action we're performing (ex, lastpost, newpost, etc)
  * @return string The url to the thread.
  */
 function get_thread_link($tid, $page=0, $action='')
@@ -5788,8 +5834,8 @@ function get_thread_link($tid, $page=0, $action='')
 /**
  * Build the post link.
  *
- * @param int The post ID of the post
- * @param int The thread id of the post.
+ * @param int $pid The post ID of the post
+ * @param int $tid The thread id of the post.
  * @return string The url to the post.
  */
 function get_post_link($pid, $tid=0)
@@ -5810,7 +5856,7 @@ function get_post_link($pid, $tid=0)
 /**
  * Build the event link.
  *
- * @param int The event ID of the event
+ * @param int $eid The event ID of the event
  * @return string The URL of the event
  */
 function get_event_link($eid)
@@ -5822,10 +5868,10 @@ function get_event_link($eid)
 /**
  * Build the link to a specified date on the calendar
  *
- * @param int The ID of the calendar
- * @param int The year
- * @param int The month
- * @param int The day (optional)
+ * @param int $calendar The ID of the calendar
+ * @param int $year The year
+ * @param int $month The month
+ * @param int $day The day (optional)
  * @return string The URL of the calendar
  */
 function get_calendar_link($calendar, $year=0, $month=0, $day=0)
@@ -5859,9 +5905,8 @@ function get_calendar_link($calendar, $year=0, $month=0, $day=0)
 /**
  * Build the link to a specified week on the calendar
  *
- * @param int The ID of the calendar
- * @param int The year
- * @param int The week
+ * @param int $calendar The ID of the calendar
+ * @param int $week The week
  * @return string The URL of the calendar
  */
 function get_calendar_week_link($calendar, $week)
@@ -5878,7 +5923,7 @@ function get_calendar_week_link($calendar, $week)
 /**
  * Get the user data of an user id.
  *
- * @param int The user id of the user.
+ * @param int $uid The user id of the user.
  * @return array The users data
  */
 function get_user($uid)
@@ -5909,7 +5954,8 @@ function get_user($uid)
 /**
  * Get the user data of an user username.
  *
- * @param string The user username of the user.
+ * @param string $username The user username of the user.
+ * @param array $options
  * @return array The users data
  */
 function get_user_by_username($username, $options=array())
@@ -5968,9 +6014,9 @@ function get_user_by_username($username, $options=array())
 /**
  * Get the forum of a specific forum id.
  *
- * @param int The forum id of the forum.
- * @param int (Optional) If set to 1, will override the active forum status
- * @return array The database row of a forum.
+ * @param int $fid The forum id of the forum.
+ * @param int $active_override (Optional) If set to 1, will override the active forum status
+ * @return array|bool The database row of a forum. False on failure
  */
 function get_forum($fid, $active_override=0)
 {
@@ -6008,9 +6054,9 @@ function get_forum($fid, $active_override=0)
 /**
  * Get the thread of a thread id.
  *
- * @param int The thread id of the thread.
- * @param boolean Whether or not to recache the thread.
- * @return string The database row of the thread.
+ * @param int $tid The thread id of the thread.
+ * @param boolean $recache Whether or not to recache the thread.
+ * @return array|bool The database row of the thread. False on failure
  */
 function get_thread($tid, $recache = false)
 {
@@ -6044,10 +6090,8 @@ function get_thread($tid, $recache = false)
 /**
  * Get the post of a post id.
  *
- * @param int The post id of the post.
- * @param boolean Whether or not to recache the post.
- * @param array An array of fields to gather from the database
- * @return string The database row of the post.
+ * @param int $pid The post id of the post.
+ * @return array|bool The database row of the post. False on failure
  */
 function get_post($pid)
 {
@@ -6117,8 +6161,8 @@ function get_inactive_forums()
 /**
  * Checks to make sure a user has not tried to login more times than permitted
  *
- * @param bool (Optional) Stop execution if it finds an error with the login. Default is True
- * @return bool Number of logins when success, false if failed.
+ * @param bool $fatal (Optional) Stop execution if it finds an error with the login. Default is True
+ * @return bool|int Number of logins when success, false if failed.
  */
 function login_attempt_check($fatal = true)
 {
@@ -6211,7 +6255,7 @@ function login_attempt_check($fatal = true)
 /**
  * Validates the format of an email address.
  *
- * @param string The string to check.
+ * @param string $email The string to check.
  * @return boolean True when valid, false when invalid.
  */
 function validate_email_format($email)
@@ -6227,11 +6271,11 @@ function validate_email_format($email)
 /**
  * Checks to see if the email is already in use by another
  *
- * @param string The email to check.
- * @param string User ID of the user (updating only)
+ * @param string $email The email to check.
+ * @param int $uid User ID of the user (updating only)
  * @return boolean True when in use, false when not.
  */
-function email_already_in_use($email, $uid="")
+function email_already_in_use($email, $uid=0)
 {
 	global $db;
 
@@ -6292,7 +6336,7 @@ function rebuild_settings()
 /**
  * Build a PREG compatible array of search highlight terms to replace in posts.
  *
- * @param string Incoming terms to highlight
+ * @param string $terms Incoming terms to highlight
  * @return array PREG compatible array of terms
  */
 function build_highlight_array($terms)
@@ -6407,7 +6451,8 @@ function build_highlight_array($terms)
  * Converts a decimal reference of a character to its UTF-8 equivalent
  * (Code by Anne van Kesteren, http://annevankesteren.nl/2005/05/character-references)
  *
- * @param string Decimal value of a character reference
+ * @param int $src Decimal value of a character reference
+ * @return string|bool
  */
 function dec_to_utf8($src)
 {
@@ -6451,8 +6496,8 @@ function dec_to_utf8($src)
 /**
  * Checks if a username has been disallowed for registration/use.
  *
- * @param string The username
- * @param boolean True if the 'last used' dateline should be updated if a match is found.
+ * @param string $username The username
+ * @param boolean $update_lastuse True if the 'last used' dateline should be updated if a match is found.
  * @return boolean True if banned, false if not banned
  */
 function is_banned_username($username, $update_lastuse=false)
@@ -6480,8 +6525,8 @@ function is_banned_username($username, $update_lastuse=false)
 /**
  * Check if a specific email address has been banned.
  *
- * @param string The email address.
- * @param boolean True if the 'last used' dateline should be updated if a match is found.
+ * @param string $email The email address.
+ * @param boolean $update_lastuse True if the 'last used' dateline should be updated if a match is found.
  * @return boolean True if banned, false if not banned
  */
 function is_banned_email($email, $update_lastuse=false)
@@ -6523,8 +6568,8 @@ function is_banned_email($email, $update_lastuse=false)
 /**
  * Checks if a specific IP address has been banned.
  *
- * @param string The IP address.
- * @param boolean True if the 'last used' dateline should be updated if a match is found.
+ * @param string $ip_address The IP address.
+ * @param boolean $update_lastuse True if the 'last used' dateline should be updated if a match is found.
  * @return boolean True if banned, false if not banned.
  */
 function is_banned_ip($ip_address, $update_lastuse=false)
@@ -6577,9 +6622,10 @@ function is_banned_ip($ip_address, $update_lastuse=false)
 /**
  * Build a time zone selection list.
  *
- * @param string The name of the select
- * @param int The selected time zone (defaults to GMT)
- * @param boolean True to generate a "short" list with just timezone and current time
+ * @param string $name The name of the select
+ * @param int $selected The selected time zone (defaults to GMT)
+ * @param boolean $short True to generate a "short" list with just timezone and current time
+ * @return string
  */
 function build_timezone_select($name, $selected=0, $short=false)
 {
@@ -6670,9 +6716,9 @@ function build_timezone_select($name, $selected=0, $short=false)
 /**
  * Fetch the contents of a remote file.
  *
- * @param string The URL of the remote file
- * @param array The array of post data
- * @return string The remote file contents.
+ * @param string $url The URL of the remote file
+ * @param array $post_data The array of post data
+ * @return string|bool The remote file contents. False on failure
  */
 function fetch_remote_file($url, $post_data=array())
 {
@@ -6792,7 +6838,7 @@ function fetch_remote_file($url, $post_data=array())
 /**
  * Checks if a particular user is a super administrator.
  *
- * @param int The user ID to check against the list of super admins
+ * @param int $uid The user ID to check against the list of super admins
  * @return boolean True if a super admin, false if not
  */
 function is_super_admin($uid)
@@ -6820,8 +6866,8 @@ function is_super_admin($uid)
  * Originates from frostschutz's PluginLibrary
  * github.com/frostschutz
  *
- * @param mixed A selection of groups to check or -1 for any group
- * @param mixed User to check selection against
+ * @param array|int|string A selection of groups (as array or comma seperated) to check or -1 for any group
+ * @param bool|array|int False assumes the current user. Otherwise an user array or an id can be passed
  * @return array Array of groups specified in the first param to which the user belongs
  */
 function is_member($groups, $user = false)
@@ -6831,7 +6877,7 @@ function is_member($groups, $user = false)
 	if(empty($groups))
 	{
 		return array();
-	}	
+	}
 
 	if($user == false)
 	{
@@ -6874,9 +6920,9 @@ function is_member($groups, $user = false)
  * Split a string based on the specified delimeter, ignoring said delimeter in escaped strings.
  * Ex: the "quick brown fox" jumped, could return 1 => the, 2 => quick brown fox, 3 => jumped
  *
- * @param string The delimeter to split by
- * @param string The string to split
- * @param string The escape character or string if we have one.
+ * @param string $delimeter The delimeter to split by
+ * @param string $string The string to split
+ * @param string $escape The escape character or string if we have one.
  * @return array Array of split string
  */
 function escaped_explode($delimeter, $string, $escape="")
@@ -6935,8 +6981,9 @@ function escaped_explode($delimeter, $string, $escape="")
  * DEPRECATED! Please use IPv6 compatible fetch_ip_range!
  * Fetch an IPv4 long formatted range for searching IPv4 IP addresses.
  *
- * @param string The IP address to convert to a range based LONG
- * @rturn mixed If a full IP address is provided, the ip2long equivalent, otherwise an array of the upper & lower extremities of the IP
+ * @deprecated
+ * @param string $ip The IP address to convert to a range based LONG
+ * @return string|array If a full IP address is provided, the ip2long equivalent, otherwise an array of the upper & lower extremities of the IP
  */
 function fetch_longipv4_range($ip)
 {
@@ -7021,8 +7068,8 @@ function fetch_ban_times()
 /**
  * Format a ban length in to a UNIX timestamp.
  *
- * @param string The ban length string
- * @param int The optional UNIX timestamp, if 0, current time is used.
+ * @param string $date The ban length string
+ * @param int $stamp The optional UNIX timestamp, if 0, current time is used.
  * @return int The UNIX timestamp when the ban will be lifted
  */
 function ban_date2timestamp($date, $stamp=0)
@@ -7043,6 +7090,7 @@ function ban_date2timestamp($date, $stamp=0)
 /**
  * Expire old warnings in the database.
  *
+ * @return bool
  */
 function expire_warnings()
 {
@@ -7060,8 +7108,9 @@ function expire_warnings()
 /**
  * Custom chmod function to fix problems with hosts who's server configurations screw up umasks
  *
- * @param string The file to chmod
- * @param string The mode to chmod(i.e. 0666)
+ * @param string $file The file to chmod
+ * @param string $mode The mode to chmod(i.e. 0666)
+ * @return bool
  */
 function my_chmod($file, $mode)
 {
@@ -7082,8 +7131,9 @@ function my_chmod($file, $mode)
 /**
  * Custom rmdir function to loop through an entire directory and delete all files/folders within
  *
- * @param string The path to the directory
- * @param array Any files you wish to ignore (optional)
+ * @param string $path The path to the directory
+ * @param array $ignore Any files you wish to ignore (optional)
+ * @return bool
  */
 function my_rmdir_recursive($path, $ignore=array())
 {
@@ -7123,7 +7173,7 @@ function my_rmdir_recursive($path, $ignore=array())
 /**
  * Counts the number of subforums in a array([pid][disporder][fid]) starting from the pid
  *
- * @param array The array of forums
+ * @param array $array The array of forums
  * @return integer The number of sub forums
  */
 function subforums_count($array)
@@ -7142,7 +7192,8 @@ function subforums_count($array)
  * Fix for PHP's ip2long to guarantee a 32-bit signed integer value is produced (this is aimed
  * at 64-bit versions of PHP)
  *
- * @param string The IP to convert
+ * @deprecated
+ * @param string $ip The IP to convert
  * @return integer IP in 32-bit signed format
  */
 function my_ip2long($ip)
@@ -7171,7 +7222,8 @@ function my_ip2long($ip)
  * DEPRECATED! Please use IPv6 compatible my_inet_ntop!
  * As above, fix for PHP's long2ip on 64-bit versions
  *
- * @param integer The IP to convert (will accept 64-bit IPs as well)
+ * @deprecated
+ * @param integer $long The IP to convert (will accept 64-bit IPs as well)
  * @return string IP in IPv4 format
  */
 function my_long2ip($long)
@@ -7188,7 +7240,7 @@ function my_long2ip($long)
 /**
  * Converts a human readable IP address to its packed in_addr representation
  *
- * @param string The IP to convert
+ * @param string $ip The IP to convert
  * @return string IP in 32bit or 128bit binary format
  */
 function my_inet_pton($ip)
@@ -7241,7 +7293,7 @@ function my_inet_pton($ip)
 /**
  * Converts a packed internet address to a human readable representation
  *
- * @param string IP in 32bit or 128bit binary format
+ * @param string $ip IP in 32bit or 128bit binary format
  * @return string IP in human readable format
  */
 function my_inet_ntop($ip)
@@ -7283,8 +7335,8 @@ function my_inet_ntop($ip)
 /**
  * Fetch an binary formatted range for searching IPv4 and IPv6 IP addresses.
  *
- * @param string The IP address to convert to a range
- * @rturn mixed If a full IP address is provided, the in_addr representation, otherwise an array of the upper & lower extremities of the IP
+ * @param string $ipaddress The IP address to convert to a range
+ * @return string|array|bool If a full IP address is provided, the in_addr representation, otherwise an array of the upper & lower extremities of the IP. False on failure
  */
 function fetch_ip_range($ipaddress)
 {
@@ -7426,8 +7478,8 @@ function get_execution_time()
 /**
  * Processes a checksum list on MyBB files and returns a result set
  *
- * @param array The array of checksums and their corresponding files
- * @param int The count of files
+ * @param string $path The base path
+ * @param int $count The count of files
  * @return array The bad files
  */
 function verify_files($path=MYBB_ROOT, $count=0)
@@ -7522,7 +7574,7 @@ function verify_files($path=MYBB_ROOT, $count=0)
 /**
  * Returns a signed value equal to an integer
  *
- * @param int The integer
+ * @param int $int The integer
  * @return string The signed equivalent
  */
 function signed($int)
@@ -7540,7 +7592,7 @@ function signed($int)
 /**
  * Returns a securely generated seed for PHP's RNG (Random Number Generator)
  *
- * @param int Length of the seed bytes (8 is default. Provides good cryptographic variance)
+ * @param int $count Length of the seed bytes (8 is default. Provides good cryptographic variance)
  * @return int An integer equivalent of a secure hexadecimal seed
  */
 function secure_seed_rng($count=8)
@@ -7620,9 +7672,9 @@ function secure_seed_rng($count=8)
 /**
  * Wrapper function for mt_rand. Automatically seeds using a secure seed once.
  *
- * @param int Optional lowest value to be returned (default: 0)
- * @param int Optional highest value to be returned (default: mt_getrandmax())
- * @param boolean True forces it to reseed the RNG first
+ * @param int $min Optional lowest value to be returned (default: 0)
+ * @param int $max Optional highest value to be returned (default: mt_getrandmax())
+ * @param boolean $force_seed True forces it to reseed the RNG first
  * @return int An integer equivalent of a secure hexadecimal seed
  */
 function my_rand($min=null, $max=null, $force_seed=false)
@@ -7664,61 +7716,51 @@ function my_rand($min=null, $max=null, $force_seed=false)
 }
 
 /**
- * More robust version of PHP's trim() function. It includes a list of UTF-16 blank characters
+ * More robust version of PHP's trim() function. It includes a list of UTF-8 blank characters
  * from http://kb.mozillazine.org/Network.IDN.blacklist_chars
  *
- * @param string The string to trim from
- * @param string Optional. The stripped characters can also be specified using the charlist parameter
+ * @param string $string The string to trim from
+ * @param string $charlist Optional. The stripped characters can also be specified using the charlist parameter
  * @return string The trimmed string
  */
-function trim_blank_chrs($string, $charlist=false)
+function trim_blank_chrs($string, $charlist="")
 {
 	$hex_chrs = array(
-		0x20 => 1,
-		0x09 => 1,
-		0x0A => 1,
-		0x0D => 1,
-		0x0B => 1,
-		0xAD => 1,
-		0xA0 => 1,
-		0xAD => 1,
-		0xBF => 1,
-		0x81 => 1,
-		0x8D => 1,
-		0x90 => 1,
-		0x9D => 1,
-		0xCC => array(0xB7 => 1, 0xB8 => 1), // \x{0337} or \x{0338}
-		0xE1 => array(0x85 => array(0x9F => 1, 0xA0 => 1)), // \x{115F} or \x{1160}
-		0xE2 => array(0x80 => array(0x80 => 1, 0x81 => 1, 0x82 => 1, 0x83 => 1, 0x84 => 1, 0x85 => 1, 0x86 => 1, 0x87 => 1, 0x88 => 1, 0x89 => 1, 0x8A => 1, 0x8B => 1, // \x{2000} to \x{200B}
-									0xA8 => 1, 0xA9 => 1, 0xAA => 1, 0xAB => 1, 0xAC => 1, 0xAD => 1, 0xAE => 1, 0xAF => 1), // \x{2028} to \x{202F}
-					  0x81 => array(0x9F => 1)), // \x{205F}
+		0x09 => 1, // \x{0009}
+		0x0A => 1, // \x{000A}
+		0x0B => 1, // \x{000B}
+		0x0D => 1, // \x{000D}
+		0x20 => 1, // \x{0020}
+		0xC2 => array(0x81 => 1, 0x8D => 1, 0x90 => 1, 0x9D => 1, 0xA0 => 1, 0xAD => 1), // \x{0081}, \x{008D}, \x{0090}, \x{009D}, \x{00A0}, \x{00AD}
+		0xCC => array(0xB7 => 1, 0xB8 => 1), // \x{0337}, \x{0338}
+		0xE1 => array(0x85 => array(0x9F => 1, 0xA0 => 1), 0x9A => array(0x80 => 1), 0xA0 => array(0x8E => 1)), // \x{115F}, \x{1160}, \x{1680}, \x{180E}
+		0xE2 => array(0x80 => array(0x80 => 1, 0x81 => 1, 0x82 => 1, 0x83 => 1, 0x84 => 1, 0x85 => 1, 0x86 => 1, 0x87 => 1, 0x88 => 1, 0x89 => 1, 0x8A => 1, 0x8B => 1, 0x8C => 1, 0x8D => 1, 0x8E => 1, 0x8F => 1, // \x{2000} - \x{200F}
+			0xA8 => 1, 0xA9 => 1, 0xAA => 1, 0xAB => 1, 0xAC => 1, 0xAD => 1, 0xAE => 1, 0xAF => 1), // \x{2028} - \x{202F}
+			0x81 => array(0x9F => 1)), // \x{205F}
 		0xE3 => array(0x80 => array(0x80 => 1), // \x{3000}
-					  0x85 => array(0xA4 => 1)), // \x{3164}
+			0x85 => array(0xA4 => 1)), // \x{3164}
 		0xEF => array(0xBB => array(0xBF => 1), // \x{FEFF}
-					  0xBE => array(0xA0 => 1), // \x{FFA0}
-					  0xBF => array(0xB9 => 1, 0xBA => 1, 0xBB => 1)), // \x{FFF9} to \x{FFFB}
+			0xBE => array(0xA0 => 1), // \x{FFA0}
+			0xBF => array(0xB9 => 1, 0xBA => 1, 0xBB => 1)), // \x{FFF9} - \x{FFFB}
 	);
 
 	$hex_chrs_rev = array(
-		0x20 => 1,
-		0x09 => 1,
-		0x0A => 1,
-		0x0D => 1,
-		0x0B => 1,
-		0xA0 => array(0xC2 => 1),
-		0xAD => array(0xC2 => 1),
-		0xBF => array(0xC2 => 1),
-		0x81 => array(0xC2 => 1),
-		0x8D => array(0xC2 => 1),
-		0x90 => array(0xC2 => 1),
-		0x9D => array(0xC2 => 1),
+		0x09 => 1, // \x{0009}
+		0x0A => 1, // \x{000A}
+		0x0B => 1, // \x{000B}
+		0x0D => 1, // \x{000D}
+		0x20 => 1, // \x{0020}
+		0x81 => array(0xC2 => 1, 0x80 => array(0xE2 => 1)), // \x{0081}, \x{2001}
+		0x8D => array(0xC2 => 1, 0x80 => array(0xE2 => 1)), // \x{008D}, \x{200D}
+		0x90 => array(0xC2 => 1), // \x{0090}
+		0x9D => array(0xC2 => 1), // \x{009D}
+		0xA0 => array(0xC2 => 1, 0x85 => array(0xE1 => 1), 0x81 => array(0xE2 => 1), 0xBE => array(0xEF => 1)), // \x{00A0}, \x{1160}, \x{2060}, \x{FFA0}
+		0xAD => array(0xC2 => 1, 0x80 => array(0xE2 => 1)), // \x{00AD}, \x{202D}
 		0xB8 => array(0xCC => 1), // \x{0338}
 		0xB7 => array(0xCC => 1), // \x{0337}
-		0xA0 => array(0x85 => array(0xE1 => 1)), // \x{1160}
-		0x9F => array(0x85 => array(0xE1 => 1), // \x{115F}
-					  0x81 => array(0xE2 => 1)), // \x{205F}
-		0x80 => array(0x80 => array(0xE3 => 1, 0xE2 => 1)), // \x{3000}, \x{2000}
-		0x81 => array(0x80 => array(0xE2 => 1)), // \x{2001}
+		0x9F => array(0x85 => array(0xE1 => 1), 0x81 => array(0xE2 => 1)), // \x{115F}, \x{205F}
+		0x80 => array(0x9A => array(0xE1 => 1), 0x80 => array(0xE2 => 1, 0xE3 => 1)), // \x{1680}, \x{2000}, \x{3000}
+		0x8E => array(0xA0 => array(0xE1 => 1), 0x80 => array(0xE2 => 1)), // \x{180E}, \x{200E}
 		0x82 => array(0x80 => array(0xE2 => 1)), // \x{2002}
 		0x83 => array(0x80 => array(0xE2 => 1)), // \x{2003}
 		0x84 => array(0x80 => array(0xE2 => 1)), // \x{2004}
@@ -7729,17 +7771,17 @@ function trim_blank_chrs($string, $charlist=false)
 		0x89 => array(0x80 => array(0xE2 => 1)), // \x{2009}
 		0x8A => array(0x80 => array(0xE2 => 1)), // \x{200A}
 		0x8B => array(0x80 => array(0xE2 => 1)), // \x{200B}
+		0x8C => array(0x80 => array(0xE2 => 1)), // \x{200C}
+		0x8F => array(0x80 => array(0xE2 => 1)), // \x{200F}
 		0xA8 => array(0x80 => array(0xE2 => 1)), // \x{2028}
 		0xA9 => array(0x80 => array(0xE2 => 1)), // \x{2029}
 		0xAA => array(0x80 => array(0xE2 => 1)), // \x{202A}
 		0xAB => array(0x80 => array(0xE2 => 1)), // \x{202B}
 		0xAC => array(0x80 => array(0xE2 => 1)), // \x{202C}
-		0xAD => array(0x80 => array(0xE2 => 1)), // \x{202D}
 		0xAE => array(0x80 => array(0xE2 => 1)), // \x{202E}
 		0xAF => array(0x80 => array(0xE2 => 1)), // \x{202F}
 		0xA4 => array(0x85 => array(0xE3 => 1)), // \x{3164}
 		0xBF => array(0xBB => array(0xEF => 1)), // \x{FEFF}
-		0xA0 => array(0xBE => array(0xEF => 1)), // \x{FFA0}
 		0xB9 => array(0xBF => array(0xEF => 1)), // \x{FFF9}
 		0xBA => array(0xBF => array(0xEF => 1)), // \x{FFFA}
 		0xBB => array(0xBF => array(0xEF => 1)), // \x{FFFB}
@@ -7748,7 +7790,7 @@ function trim_blank_chrs($string, $charlist=false)
 	// Start from the beginning and work our way in
 	do
 	{
-		// Check to see if we have matched a first character in our utf-16 array
+		// Check to see if we have matched a first character in our utf-8 array
 		$offset = match_sequence($string, $hex_chrs);
 		if(!$offset)
 		{
@@ -7763,7 +7805,7 @@ function trim_blank_chrs($string, $charlist=false)
 	$string = strrev($string);
 	do
 	{
-		// Check to see if we have matched a first character in our utf-16 array
+		// Check to see if we have matched a first character in our utf-8 array
 		$offset = match_sequence($string, $hex_chrs_rev);
 		if(!$offset)
 		{
@@ -7775,7 +7817,7 @@ function trim_blank_chrs($string, $charlist=false)
 	while(++$i);
 	$string = strrev($string);
 
-	if($charlist !== false)
+	if($charlist)
 	{
 		$string = trim($string, $charlist);
 	}
@@ -7790,10 +7832,10 @@ function trim_blank_chrs($string, $charlist=false)
 /**
  * Match a sequence
  *
- * @param string The string to match from
- * @param array The array to match from
- * @param int Number in the string
- * @param int Number of matches
+ * @param string $string The string to match from
+ * @param array $array The array to match from
+ * @param int $i Number in the string
+ * @param int $n Number of matches
  * @return int The number matched
  */
 function match_sequence($string, $array, $i=0, $n=0)
@@ -7860,10 +7902,10 @@ function gd_version()
 /*
  * Validates an UTF-8 string.
  *
- * @param string The string to be checked
- * @param boolean Allow 4 byte UTF-8 characters?
- * @param boolean Return the cleaned string?
- * @return string/boolean Cleaned string or boolean
+ * @param string $input The string to be checked
+ * @param boolean $allow_mb4 Allow 4 byte UTF-8 characters?
+ * @param boolean $return Return the cleaned string?
+ * @return string|boolean Cleaned string or boolean
  */
 function validate_utf8_string($input, $allow_mb4=true, $return=true)
 {
@@ -7977,9 +8019,9 @@ function validate_utf8_string($input, $allow_mb4=true, $return=true)
 /**
  * Send a Private Message to a user.
  *
- * @param array Array containing: 'subject', 'message', 'touid' and 'receivepms' (the latter should reflect the value found in the users table: receivepms and receivefrombuddy)
- * @param int Sender UID (0 if you want to use $mybb->user['uid'] or -1 to use MyBB Engine)
- * @param bool Whether or not do override user defined options for receiving PMs
+ * @param array $pm Array containing: 'subject', 'message', 'touid' and 'receivepms' (the latter should reflect the value found in the users table: receivepms and receivefrombuddy)
+ * @param int $fromid Sender UID (0 if you want to use $mybb->user['uid'] or -1 to use MyBB Engine)
+ * @param bool $admin_override Whether or not do override user defined options for receiving PMs
  * @return bool True if PM sent
  */
 function send_pm($pm, $fromid = 0, $admin_override=false)

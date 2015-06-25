@@ -485,7 +485,7 @@ if(!$mybb->input['action'])
 				}
 			}
 		}
-		$usergroup_list = implode(", ", $usergroup_list);
+		$usergroup_list = implode($lang->comma, $usergroup_list);
 
 		$table->construct_cell("<div class=\"float_right\"><img src=\"styles/{$page->style}/images/icons/{$perm_type}.png\" title=\"{$lang->perms_type_user}\" alt=\"{$perm_type}\" /></div><div><strong><a href=\"index.php?module=user-admin_permissions&amp;action=edit&amp;uid={$admin['uid']}\" title=\"{$lang->edit_user}\">{$admin['username']}</a></strong><br /><small>{$usergroup_list}</small></div>");
 

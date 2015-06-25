@@ -11,7 +11,7 @@
 /**
  * Check if the current user has permission to perform a ModCP action on another user
  *
- * @param int The user ID to perform the action on.
+ * @param int $uid The user ID to perform the action on.
  * @return boolean True if the user has necessary permissions
  */
 function modcp_can_manage_user($uid)
@@ -36,8 +36,8 @@ function modcp_can_manage_user($uid)
 /**
  * Fetch forums the moderator can manage announcements to
  *
- * @param int (Optional) The parent forum ID
- * @param int (Optional) The depth from parent forum the moderator can manage to
+ * @param int $pid (Optional) The parent forum ID
+ * @param int $depth (Optional) The depth from parent forum the moderator can manage to
  */
 function fetch_forum_announcements($pid=0, $depth=1)
 {
@@ -137,12 +137,12 @@ function fetch_forum_announcements($pid=0, $depth=1)
 /**
  * Send reported content to moderators
  *
- * @param array Array of reported content
- * @return bool True if PM sent
+ * @param array $report Array of reported content
+ * @return bool|array PM Information or false
  */
 function send_report($report)
 {
-	global $db, $lang, $forum, $mybb, $post, $thread;
+	global $db, $lang, $forum, $mybb, $post, $thread, $session;
 
 	$nummods = false;
 	if(!empty($forum['parentlist']))
@@ -234,8 +234,8 @@ function send_report($report)
 /**
  * Add a report
  *
- * @param array Array of reported content
- * @param string Type of content being reported
+ * @param array $report Array of reported content
+ * @param string $type Type of content being reported
  * @return int Report ID
  */
 function add_report($report, $type = 'post')
@@ -270,8 +270,8 @@ function add_report($report, $type = 'post')
 /**
  * Update an existing report
  *
- * @param array Array of reported content
- * @return bool
+ * @param array $report Array of reported content
+ * @return bool true
  */
 function update_report($report)
 {

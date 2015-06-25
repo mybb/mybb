@@ -14,14 +14,14 @@ class MyBB {
 	 *
 	 * @var string
 	 */
-	public $version = "1.8.4";
+	public $version = "1.8.5";
 
 	/**
 	 * The version code of MyBB we're running.
 	 *
 	 * @var integer
 	 */
-	public $version_code = 1804;
+	public $version_code = 1805;
 
 	/**
 	 * The current working directory.
@@ -68,7 +68,7 @@ class MyBB {
 	/**
 	 * Whether or not magic quotes are enabled.
 	 *
-	 * @var unknown_type
+	 * @var int
 	 */
 	public $magicquotes = 0;
 
@@ -89,7 +89,7 @@ class MyBB {
 	/**
 	 * The request method that called this page.
 	 *
-	 * @var string.
+	 * @var string
 	 */
 	public $request_method = "";
 
@@ -139,16 +139,22 @@ class MyBB {
 
 	/**
 	 * Using built in shutdown functionality provided by register_shutdown_function for < PHP 5?
+	 *
+	 * @var bool
 	 */
 	public $use_shutdown = true;
 
 	/**
 	 * Debug mode?
+	 *
+	 * @var bool
 	 */
 	public $debug_mode = false;
 
 	/**
 	 * Binary database fields need to be handled differently
+	 *
+	 * @var array
 	 */
 	public $binary_fields = array(
 		'adminlog' => array('ipaddress' => true),
@@ -210,8 +216,6 @@ class MyBB {
 
 	/**
 	 * Constructor of class.
-	 *
-	 * @return MyBB
 	 */
 	function __construct()
 	{
@@ -308,7 +312,7 @@ class MyBB {
 	/**
 	 * Parses the incoming variables.
 	 *
-	 * @param array The array of incoming variables.
+	 * @param array $array The array of incoming variables.
 	 */
 	function parse_incoming($array)
 	{
@@ -360,7 +364,7 @@ class MyBB {
 	/**
 	 * Strips slashes out of a given array.
 	 *
-	 * @param array The array to strip.
+	 * @param array $array The array to strip.
 	 */
 	function strip_slashes_array(&$array)
 	{
@@ -380,7 +384,7 @@ class MyBB {
 	/**
 	 * Unsets globals from a specific array.
 	 *
-	 * @param array The array to unset from.
+	 * @param array $array The array to unset from.
 	 */
 	function unset_globals($array)
 	{
@@ -438,7 +442,7 @@ class MyBB {
 	 * @param string $name Variable name ($mybb->input)
 	 * @param int $type The type of the variable to get. Should be one of MyBB::INPUT_INT, MyBB::INPUT_ARRAY or MyBB::INPUT_STRING.
 	 *
-	 * @return mixed Checked data
+	 * @return int|float|array|string Checked data. Type depending on $type
 	 */
 	function get_input($name, $type = MyBB::INPUT_STRING)
 	{
@@ -524,7 +528,7 @@ class MyBB {
 	/**
 	 * Triggers a generic error.
 	 *
-	 * @param string The error code.
+	 * @param string $code The error code.
 	 */
 	function trigger_generic_error($code)
 	{
