@@ -132,17 +132,23 @@ class MailHandler
 
 		$this->message = '';
 		$this->headers = $headers;
-
-		$this->from = "";
-
-		if($mybb->settings['mail_handler'] == 'smtp')
+		
+		if($from)
 		{
-			$this->from = $this->get_from_email();
+			$this->from = $from;
 		}
 		else
 		{
-			$this->from = '"'.$this->utf8_encode($mybb->settings['bbname']).'"';
-			$this->from .= " <".$this->get_from_email().">";
+			$this->from = "";
+			if($mybb->settings['mail_handler'] == 'smtp')
+			{
+				$this->from = $this->get_from_email();
+			}
+			else
+			{
+				$this->from = '"'.$this->utf8_encode($mybb->settings['bbname']).'"';
+				$this->from .= " <".$this->get_from_email().">";
+			}
 		}
 
 		if($return_email)
