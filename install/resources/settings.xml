@@ -960,7 +960,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="username_method">
 			<title>Allowed Login Methods</title>
 			<description><![CDATA[The login methods you wish to allow for the username field. Username only, Email only, or allow both.<br />
-<strong>Note:</strong> This will only work for the account that registered the e-mail first if the "Allow emails to be registered multiple times?" setting was set to "Yes" before changing this.]]></description>
+<strong>Note:</strong> This will only work if there are no duplicate accounts using the same e-mail address.]]></description>
 			<disporder>18</disporder>
 			<optionscode><![CDATA[select
 0=Username Only

@@ -22,22 +22,22 @@ $upgrade_detail = array(
 
 function upgrade34_dbchanges()
 {
-	global $db, $output;
+	global $db, $output, $mybb;
 
-	$query = $db->simple_select('settings', 'value', "name='username_method'");
-	while($setting = $db->fetch_array($query))
+	$output->print_header("Updating Database");
+	echo "<p>Performing necessary upgrade queries...</p>";
+	flush();
+
+	if($mybb->settings['value'] == 1 || $mybb->settings['value'] == 2)
 	{
-		if($setting['value'] == 1 || $setting['value'] == 2)
+		$query = $db->simple_select('users', 'email, COUNT(email) AS duplicates', "email!=''", array('group_by' => 'email HAVING duplicates>1'));
+		if($db->num_rows($query))
 		{
-			$query = $db->simple_select('users', 'email, COUNT(email) AS duplicates', "email!=''", array('group_by' => 'email HAVING duplicates>1'));
-			if($db->num_rows($query))
-			{
-				$db->update_query('settings', array('value' => 0), "name='username_method'");
-			}
-			else
-			{
-				$db->update_query('settings', array('value' => 0), "name='allowmultipleemails'");
-			}
+			$db->update_query('settings', array('value' => 0), "name='username_method'");
+		}
+		else
+		{
+			$db->update_query('settings', array('value' => 0), "name='allowmultipleemails'");
 		}
 	}
 
