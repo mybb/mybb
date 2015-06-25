@@ -1053,6 +1053,7 @@ opt_editor = {
 	rtl: {$lang->settings['rtl']},
 	locale: "mybblang",
 	enablePasteFiltering: true,
+	autoUpdate: true,
 	emoticonsEnabled: {$emoticons_enabled},
 	emoticons: {
 		// Emoticons to be included in the dropdown
