@@ -125,7 +125,14 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 
 	if($mybb->settings['regtype'] == "randompass")
 	{
-		$mybb->input['password'] = random_str();
+
+		$password_length = (int)$mybb->settings['minpasswordlength'];
+		if($password_length < 8)
+		{
+			$password_length = min(8, (int)$mybb->settings['maxpasswordlength']);
+		}
+
+		$mybb->input['password'] = random_str($password_length, $mybb->settings['requirecomplexpasswords']);
 		$mybb->input['password2'] = $mybb->input['password'];
 	}
 

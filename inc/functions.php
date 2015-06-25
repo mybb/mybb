@@ -2942,20 +2942,38 @@ function get_extension($file)
  * Generates a random string.
  *
  * @param int $length The length of the string to generate.
+ * @param bool $complex Whether to return complex string. Defaults to false
  * @return string The random string.
  */
-function random_str($length=8)
+function random_str($length=8, $complex=false)
 {
-	$set = array("a","A","b","B","c","C","d","D","e","E","f","F","g","G","h","H","i","I","j","J","k","K","l","L","m","M","n","N","o","O","p","P","q","Q","r","R","s","S","t","T","u","U","v","V","w","W","x","X","y","Y","z","Z","1","2","3","4","5","6","7","8","9");
-	$str = '';
+	$set = array_merge(range(0, 9), range('A', 'Z'), range('a', 'z'));
+	$str = array();
 
-	for($i = 1; $i <= $length; ++$i)
+	// Complex strings have always at least 3 characters, even if $length < 3
+	if($complex == true)
 	{
-		$ch = my_rand(0, count($set)-1);
-		$str .= $set[$ch];
+		// At least one number
+		$str[] = $set[my_rand(0, 9)];
+
+		// At least one big letter
+		$str[] = $set[my_rand(10, 35)];
+
+		// At least one small letter
+		$str[] = $set[my_rand(36, 61)];
+
+		$length -= 3;
 	}
 
-	return $str;
+	for($i = 0; $i < $length; ++$i)
+	{
+		$str[] = $set[my_rand(0, 61)];
+	}
+	
+	// Make sure they're in random order and convert them to a string
+	shuffle($str);
+
+	return implode($str);
 }
 
 /**
