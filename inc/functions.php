@@ -6638,17 +6638,13 @@ function is_banned_ip($ip_address, $update_lastuse=false)
 }
 
 /**
- * Build a time zone selection list.
+ * Returns an array of supported timezones
  *
- * @param string $name The name of the select
- * @param int $selected The selected time zone (defaults to GMT)
- * @param boolean $short True to generate a "short" list with just timezone and current time
- * @return string
+ * @return string[] Key is timezone offset, Value the language description
  */
-function build_timezone_select($name, $selected=0, $short=false)
+function get_supported_timezones()
 {
-	global $mybb, $lang, $templates;
-
+	global $lang;
 	$timezones = array(
 		"-12" => $lang->timezone_gmt_minus_1200,
 		"-11" => $lang->timezone_gmt_minus_1100,
@@ -6690,6 +6686,22 @@ function build_timezone_select($name, $selected=0, $short=false)
 		"13" => $lang->timezone_gmt_1300,
 		"14" => $lang->timezone_gmt_1400
 	);
+	return $timezones;
+}
+
+/**
+ * Build a time zone selection list.
+ *
+ * @param string $name The name of the select
+ * @param int $selected The selected time zone (defaults to GMT)
+ * @param boolean $short True to generate a "short" list with just timezone and current time
+ * @return string
+ */
+function build_timezone_select($name, $selected=0, $short=false)
+{
+	global $mybb, $lang, $templates;
+
+	$timezones = get_supported_timezones();
 
 	$selected = str_replace("+", "", $selected);
 	foreach($timezones as $timezone => $label)

@@ -895,6 +895,27 @@ class UserDataHandler extends DataHandler
 	}
 
 	/**
+	 * Verifies if the user timezone is valid. 
+	 * If the timezone is invalid, the board default is used.
+	 *
+	 * @return boolean True when timezone was valid, false otherwise
+	 */
+	function verify_timezone()
+	{
+		$user = &$this->data;
+
+		$timezones = get_supported_timezones();
+
+		if(!array_key_exists($user['timezone'], $timezones))
+		{
+			$user['timezone'] = $mybb->settings['timezoneoffset'];
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
 	* Validate all user assets.
 	*
 	* @return boolean True when valid, false when invalid.
@@ -991,6 +1012,10 @@ class UserDataHandler extends DataHandler
 		if($this->method == "insert" || array_key_exists('language', $user))
 		{
 			$this->verify_language();
+		}
+		if($this->method == "insert" || array_key_exists('timezone', $user))
+		{
+			$this->verify_timezone();
 		}
 		if($this->method == "insert" && array_key_exists('regcheck1', $user) && array_key_exists('regcheck2', $user))
 		{
