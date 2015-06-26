@@ -80,6 +80,7 @@ function home_action_handler($action)
 				unset($sub_menu[$id]);
 			}
 		}
+		
 		$sub_menu = $plugins->run_hooks("admin_home_menu_quick_access", $sub_menu);
 
 		$sidebar = new SidebarItem($lang->quick_access);
