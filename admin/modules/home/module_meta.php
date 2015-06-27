@@ -81,12 +81,15 @@ function home_action_handler($action)
 			}
 		}
 		
-		$sub_menu = $plugins->run_hooks("admin_home_menu_quick_access", $sub_menu);
+		if(!empty($sub_menu))
+		{
+			$sub_menu = $plugins->run_hooks("admin_home_menu_quick_access", $sub_menu);
 
-		$sidebar = new SidebarItem($lang->quick_access);
-		$sidebar->add_menu_items($sub_menu, $page->active_action);
+			$sidebar = new SidebarItem($lang->quick_access);
+			$sidebar->add_menu_items($sub_menu, $page->active_action);
 
-		$page->sidebar .= $sidebar->get_markup();
+			$page->sidebar .= $sidebar->get_markup();
+		}
 
 		// Online Administrators in the last 30 minutes
 		$timecut = TIME_NOW-60*30;
