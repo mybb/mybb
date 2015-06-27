@@ -1112,6 +1112,7 @@ if($mybb->input['action'] == "read")
 
 	// Fetch recipient names from the database
 	$bcc_recipients = $to_recipients = array();
+	$bcc_form_val = $to_recipients = array();
 	$query = $db->simple_select('users', 'uid, username', "uid IN ({$uid_sql})");
 	while($recipient = $db->fetch_array($query))
 	{
@@ -1119,11 +1120,13 @@ if($mybb->input['action'] == "read")
 		if($show_bcc && in_array($recipient['uid'], $pm['recipients']['bcc']))
 		{
 			$bcc_recipients[] = build_profile_link($recipient['username'], $recipient['uid']);
+			$bcc_form_val[] = $recipient['username'];
 		}
 		// User is a normal recipient
 		else if(in_array($recipient['uid'], $pm['recipients']['to']))
 		{
 			$to_recipients[] = build_profile_link($recipient['username'], $recipient['uid']);
+			$bcc_form_val[] = $recipient['username'];
 		}
 	}
 
@@ -1131,6 +1134,7 @@ if($mybb->input['action'] == "read")
 	if(count($bcc_recipients) > 0)
 	{
 		$bcc_recipients = implode(', ', $bcc_recipients);
+		$bcc_form_val = implode(', ', $bcc_form_val);
 		eval("\$bcc = \"".$templates->get("private_read_bcc")."\";");
 	}
 
