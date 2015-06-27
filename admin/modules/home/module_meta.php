@@ -66,7 +66,7 @@ function home_action_handler($action)
 	{
 		// Quick Access
 		$sub_menu = array();
-		$sub_menu['10'] = array("id" => "add_forum", "title" => $lang->add_new_forum, "link" => "index.php?module=forum-management&action=add", "module" => "config", "action" => "management");
+		$sub_menu['10'] = array("id" => "add_forum", "title" => $lang->add_new_forum, "link" => "index.php?module=forum-management&action=add", "module" => "forum", "action" => "management");
 		$sub_menu['20'] = array("id" => "search", "title" => $lang->search_for_users, "link" => "index.php?module=user-users&action=search", "module" => "user", "action" => "users");
 		$sub_menu['30'] = array("id" => "themes", "title" => $lang->themes, "link" => "index.php?module=style-themes", "module" => "style", "action" => "themes");
 		$sub_menu['40'] = array("id" => "templates", "title" => $lang->templates, "link" => "index.php?module=style-templates", "module" => "style", "action" => "templates");
@@ -85,7 +85,6 @@ function home_action_handler($action)
 		
 		if(!empty($sub_menu))
 		{
-
 			$sidebar = new SidebarItem($lang->quick_access);
 			$sidebar->add_menu_items($sub_menu, $page->active_action);
 			$page->sidebar .= $sidebar->get_markup();
