@@ -87,9 +87,9 @@ function home_action_handler($action)
 
 			$sidebar = new SidebarItem($lang->quick_access);
 			$sidebar->add_menu_items($sub_menu, $page->active_action);
-
-			$page->sidebar .= $sidebar->get_markup();
 		}
+
+		$page->sidebar .= $sidebar->get_markup();
 
 		// Online Administrators in the last 30 minutes
 		$timecut = TIME_NOW-60*30;
