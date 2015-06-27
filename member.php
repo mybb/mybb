@@ -895,6 +895,8 @@ if($mybb->input['action'] == "register")
 				$options = $thing[1];
 				$select = '';
 				$field = "fid{$profilefield['fid']}";
+				$profilefield['description'] = htmlspecialchars_uni($profilefield['description']);
+				$profilefield['name'] = htmlspecialchars_uni($profilefield['name']);
 				if($errors && isset($mybb->input['profile_fields'][$field]))
 				{
 					$userfield = $mybb->input['profile_fields'][$field];
