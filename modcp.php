@@ -3596,7 +3596,7 @@ if($mybb->input['action'] == "ipsearch")
 
 				if(!empty($onlyusfids))
 				{
-					$where_sql .= "AND ((t.fid IN(".implode(',', $onlyusfids).") AND t.uid='{$mybb->user['uid']}') OR t.fid NOT IN(".implode(',', $onlyusfids)."))";
+					$where_sql .= " AND ((t.fid IN(".implode(',', $onlyusfids).") AND t.uid='{$mybb->user['uid']}') OR t.fid NOT IN(".implode(',', $onlyusfids)."))";
 				}
 
 				// Moderators can view unapproved/deleted posts
@@ -3604,7 +3604,7 @@ if($mybb->input['action'] == "ipsearch")
 				{
 					$unapprove_forums = array();
 					$deleted_forums = array();
-					$visible_sql = ' AND p.visible > 0 AND t.visible > 0';
+					$visible_sql = " AND (p.visible = 1 AND t.visible = 1)";
 					$query = $db->simple_select("moderators", "fid, canviewunapprove, canviewdeleted", "(id='{$mybb->user['uid']}' AND isgroup='0') OR (id='{$mybb->user['usergroup']}' AND isgroup='1')");
 					while($moderator = $db->fetch_array($query))
 					{
@@ -3621,11 +3621,11 @@ if($mybb->input['action'] == "ipsearch")
 
 					if(!empty($unapprove_forums))
 					{
-						$visible_sql .= " OR (p.visible = 0 AND p.fid IN(".implode(',', $unapprove_forums)."))";
+						$visible_sql .= " OR (p.visible = 0 AND p.fid IN(".implode(',', $unapprove_forums).")) OR (t.visible = 0 AND t.fid IN(".implode(',', $unapprove_forums)."))";
 					}
 					if(!empty($deleted_forums))
 					{
-						$visible_sql .= " OR (p.visible = -1 AND p.fid IN(".implode(',', $deleted_forums)."))";
+						$visible_sql .= " OR (p.visible = -1 AND p.fid IN(".implode(',', $deleted_forums).")) OR (t.visible = -1 AND t.fid IN(".implode(',', $deleted_forums)."))";
 					}
 				}
 				else
