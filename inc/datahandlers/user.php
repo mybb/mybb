@@ -526,6 +526,7 @@ class UserDataHandler extends DataHandler
 				}
 
 				$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
+				$profilefield['name'] = htmlspecialchars_uni($profilefield['name']);
 				$thing = explode("\n", $profilefield['type'], "2");
 				$type = trim($thing[0]);
 				$field = "fid{$profilefield['fid']}";
