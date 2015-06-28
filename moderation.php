@@ -2738,7 +2738,6 @@ switch($mybb->input['action'])
 		}
 
 		$moderation->soft_delete_posts($pids);
-		mark_reports($pids, "posts");
 		log_moderator_action($modlogdata, $lang->multi_soft_delete_posts);
 
 

@@ -3716,6 +3716,9 @@ class Moderation
 		// Soft delete redirects, too
 		$redirect_tids = array();
 		$query = $db->simple_select('threads', 'tid', "closed IN ({$tid_moved_list})");
+
+		mark_reports($tids, "threads");
+		
 		while($redirect_tid = $db->fetch_field($query, 'tid'))
 		{
 			$redirect_tids[] = $redirect_tid;
