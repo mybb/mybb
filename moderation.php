@@ -2740,7 +2740,6 @@ switch($mybb->input['action'])
 		$moderation->soft_delete_posts($pids);
 		log_moderator_action($modlogdata, $lang->multi_soft_delete_posts);
 
-
 		if($mybb->get_input('inlinetype') == 'search')
 		{
 			clearinline($mybb->get_input('searchid', MyBB::INPUT_INT), 'search');

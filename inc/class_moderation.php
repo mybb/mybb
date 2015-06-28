@@ -3273,6 +3273,7 @@ class Moderation
 		{
 			$where = "pid IN (".implode(',', $pids).")";
 			$db->update_query("posts", $update, $where);
+			mark_reports($pids, "posts");
 		}
 
 		$plugins->run_hooks("class_moderation_soft_delete_posts", $pids);
