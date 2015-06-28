@@ -10103,11 +10103,11 @@ if(use_xmlhttprequest == "1")
   </span>
   {$lang->pmspaceused}
 </span>]]></template>
-		<template name="private_quickreply" version="1800"><![CDATA[<br />
+		<template name="private_quickreply" version="1806"><![CDATA[<br />
 <form action="private.php" method="post" name="input">
 	<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 	<input type="hidden" name="to" value="{$to}" />
-	<input type="hidden" name="bcc" value="{$bcc}" />
+	<input type="hidden" name="bcc" value="{$bcc_form_val}" />
 	<input type="hidden" name="subject" value="Re: {$subject}" />
 	<input type="hidden" name="action" value="do_send" />
 	<input type="hidden" name="pmid" value="{$pmid}" />
