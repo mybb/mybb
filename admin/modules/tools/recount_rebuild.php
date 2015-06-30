@@ -405,7 +405,7 @@ function acp_rebuild_attachment_thumbnails()
 		if($ext == "gif" || $ext == "png" || $ext == "jpg" || $ext == "jpeg" || $ext == "jpe")
 		{
 			$thumbname = str_replace(".attach", "_thumb.$ext", $attachment['attachname']);
-			$thumbnail = generate_thumbnail(MYBB_ROOT."uploads/".$attachment['attachname'], MYBB_ROOT."uploads/", $thumbname, $mybb->settings['attachthumbh'], $mybb->settings['attachthumbw']);
+			$thumbnail = generate_thumbnail(MYBB_ROOT.$mybb->settings['uploadspath']."/".$attachment['attachname'], MYBB_ROOT.$mybb->settings['uploadspath'], $thumbname, $mybb->settings['attachthumbh'], $mybb->settings['attachthumbw']);
 			if($thumbnail['code'] == 4)
 			{
 				$thumbnail['filename'] = "SMALL";
