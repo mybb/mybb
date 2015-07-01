@@ -104,7 +104,7 @@ var MyBB = {
 						{
 							name: "action",
 							type: "hidden",
-							value: "do_editevent"
+							value: "do_deleteevent"
 						})
 					);
 
