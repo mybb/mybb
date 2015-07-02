@@ -138,6 +138,7 @@ function fetch_forum_announcements($pid=0, $depth=1)
  * Send reported content to moderators
  *
  * @param array $report Array of reported content
+ * @param string $report_type Type of content being reported
  * @return bool|array PM Information or false
  */
 function send_report($report, $report_type='post')
