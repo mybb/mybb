@@ -240,9 +240,9 @@ elseif($mybb->input['do'] == "login")
 		$sid = md5(uniqid(microtime(true), true));
 
 		$useragent = $_SERVER['HTTP_USER_AGENT'];
-		if(my_strlen($useragent) > 100)
+		if(my_strlen($useragent) > 200)
 		{
-			$useragent = my_substr($useragent, 0, 100);
+			$useragent = my_substr($useragent, 0, 200);
 		}
 
 		// Create a new admin session for this user
