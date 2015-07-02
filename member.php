@@ -1599,7 +1599,7 @@ if($mybb->input['action'] == "resetpassword")
 
 		if($password_length < 8)
 		{
-			$password_length = 8;
+			$password_length = min(8, (int)$mybb->settings['maxpasswordlength']);
 		}
 
 		// Set up user handler.
@@ -1610,7 +1610,7 @@ if($mybb->input['action'] == "resetpassword")
 			'uid'		=> $user['uid'],
 			'username'	=> $user['username'],
 			'email'		=> $user['email'],
-			'password'	=> random_str($password_length)
+			'password'	=> random_str($password_length, $mybb->settings['requirecomplexpasswords'])
 		));
 
 		if(!$userhandler->verify_password())
