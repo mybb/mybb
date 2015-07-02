@@ -934,12 +934,13 @@ if($mybb->input['action'] == "change")
 			if($db->num_rows($query))
 			{
 				$mybb->input['upsetting']['username_method'] = 0;
+				$lang->success_settings_updated .= $lang->success_settings_updated_username_method;
 			}
 			else
 			{
 				$mybb->input['upsetting']['allowmultipleemails'] = 0;
+				$lang->success_settings_updated .= $lang->success_settings_updated_allowmultipleemails;
 			}
-			$lang->success_settings_updated .= $lang->success_settings_updated_username_method;
 		}
 
 		if(is_array($mybb->input['upsetting']))
