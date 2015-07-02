@@ -5020,7 +5020,7 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
  * Get the theme data of a theme id.
  *
  * @param int $tid The theme id of the theme.
- * @return boolean False if no valid theme, array With the theme data otherwise
+ * @return boolean|array False if no valid theme, Array with the theme data otherwise
  */
 function get_theme($tid)
 {
