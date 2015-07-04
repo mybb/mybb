@@ -861,7 +861,8 @@ class postParser
 				$span = "<span>{$date}</span>";
 			}
 
-			return "<blockquote><cite>{$span}{$username} {$lang->wrote}{$linkback}</cite>{$message}</blockquote>\n";
+			eval("\$mycode_quote = \"".$templates->get("mycode_quote_post", 1, 0)."\";");
+			return $mycode_quote;
 		}
 	}
 
