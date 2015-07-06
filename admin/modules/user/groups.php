@@ -351,6 +351,12 @@ if($mybb->input['action'] == "add_leader" && $mybb->request_method == "post")
 			"caninvitemembers" => $mybb->get_input('caninvitemembers', MyBB::INPUT_INT)
 		);
 
+		$makeleadermember = $mybb->get_input('makeleadermember', MyBB::INPUT_INT);
+		if($makeleadermember == 1)
+		{
+			join_usergroup($user['uid'], $group['gid']);
+		}
+
 		$plugins->run_hooks("admin_user_groups_add_leader_commit");
 
 		$db->insert_query("groupleaders", $new_leader);
@@ -468,7 +474,8 @@ if($mybb->input['action'] == "leaders")
 		$mybb->input = array_merge($mybb->input, array(
 				"canmanagemembers" => 1,
 				"canmanagerequests" => 1,
-				"caninvitemembers" => 1
+				"caninvitemembers" => 1,
+				"makeleadermember" => 1
 			)
 		);
 	}
@@ -478,6 +485,7 @@ if($mybb->input['action'] == "leaders")
 	$form_container->output_row($lang->can_manage_group_members, $lang->can_manage_group_members_desc, $form->generate_yes_no_radio('canmanagemembers', $mybb->input['canmanagemembers']));
 	$form_container->output_row($lang->can_manage_group_join_requests, $lang->can_manage_group_join_requests_desc, $form->generate_yes_no_radio('canmanagerequests', $mybb->input['canmanagerequests']));
 	$form_container->output_row($lang->can_invite_group_members, $lang->can_invite_group_members_desc, $form->generate_yes_no_radio('caninvitemembers', $mybb->input['caninvitemembers']));
+	$form_container->output_row($lang->make_leader_member, $lang->make_leader_member_desc, $form->generate_yes_no_radio('makeleadermember', $mybb->input['makeleadermember']));
 	$form_container->end();
 
 	// Autocompletion for usernames
