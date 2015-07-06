@@ -28,10 +28,13 @@ function upgrade34_dbchanges()
 	echo "<p>Performing necessary upgrade queries...</p>";
 	flush();
 
-	if($db->type != 'pgsql') {
+	if($db->type != 'pgsql')
+	{
 		$db->modify_column('adminsessions', 'useragent', "varchar(200) NOT NULL default ''");
 		$db->modify_column('sessions', 'useragent', "varchar(200) NOT NULL default ''");
-	} else {
+	}
+	else
+	{
 		$db->modify_column('adminsessions', 'useragent', "varchar(200)", "set", "");
 		$db->modify_column('sessions', 'useragent', "varchar(200)", "set", "");
 	}
