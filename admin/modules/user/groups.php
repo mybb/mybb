@@ -475,7 +475,7 @@ if($mybb->input['action'] == "leaders")
 				"canmanagemembers" => 1,
 				"canmanagerequests" => 1,
 				"caninvitemembers" => 1,
-				"makeleadermember" => 1
+				"makeleadermember" => 0
 			)
 		);
 	}
@@ -485,7 +485,7 @@ if($mybb->input['action'] == "leaders")
 	$form_container->output_row($lang->can_manage_group_members, $lang->can_manage_group_members_desc, $form->generate_yes_no_radio('canmanagemembers', $mybb->input['canmanagemembers']));
 	$form_container->output_row($lang->can_manage_group_join_requests, $lang->can_manage_group_join_requests_desc, $form->generate_yes_no_radio('canmanagerequests', $mybb->input['canmanagerequests']));
 	$form_container->output_row($lang->can_invite_group_members, $lang->can_invite_group_members_desc, $form->generate_yes_no_radio('caninvitemembers', $mybb->input['caninvitemembers']));
-	$form_container->output_row($lang->make_leader_member, $lang->make_leader_member_desc, $form->generate_yes_no_radio('makeleadermember', $mybb->input['makeleadermember']));
+	$form_container->output_row($lang->make_user_member, $lang->make_user_member_desc, $form->generate_yes_no_radio('makeleadermember', $mybb->input['makeleadermember']));
 	$form_container->end();
 
 	// Autocompletion for usernames
