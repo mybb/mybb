@@ -1606,22 +1606,14 @@ if($mybb->input['action'] == "resetpassword")
 		require_once 'inc/datahandlers/user.php';
 		$userhandler = new UserDataHandler('update');
 
-		$userhandler->set_data(array(
-			'uid'		=> $user['uid'],
-			'username'	=> $user['username'],
-			'email'		=> $user['email'],
-			'password'	=> random_str($password_length, $mybb->settings['requirecomplexpasswords'])
-		));
-
-		if(!$userhandler->verify_password())
+		while(!$userhandler->verify_password())
 		{
-			$errors = $userhandler->get_friendly_errors();
-			if(!empty($errors[0]))
-			{
-				error($errors[0]);
-			}
-
-			error($lang->error_unknownerror);
+			$userhandler->set_data(array(
+				'uid'		=> $user['uid'],
+				'username'	=> $user['username'],
+				'email'		=> $user['email'],
+				'password'	=> random_str($password_length, $mybb->settings['requirecomplexpasswords'])
+			));
 		}
 
 		$userhandler->update_user();
