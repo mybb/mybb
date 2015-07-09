@@ -1603,7 +1603,7 @@ if($mybb->input['action'] == "resetpassword")
 		}
 
 		// Set up user handler.
-		require_once 'inc/datahandlers/user.php';
+		require_once MYBB_ROOT.'inc/datahandlers/user.php';
 		$userhandler = new UserDataHandler('update');
 
 		while(!$userhandler->verify_password())
