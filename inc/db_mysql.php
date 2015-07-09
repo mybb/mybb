@@ -1429,7 +1429,7 @@ class DB_MySQL implements DB_Base
 			'cp850' => 'DOS West European',
 			'hp8' => 'HP West European',
 			'koi8r' => 'KOI8-R Relcom Russian',
-			'latin1' => 'cp1252 West European',
+			'latin1' => 'ISO 8859-1 Latin 1',
 			'latin2' => 'ISO 8859-2 Central European',
 			'swe7' => '7bit Swedish',
 			'ascii' => 'US ASCII',
