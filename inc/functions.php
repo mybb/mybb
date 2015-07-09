@@ -5007,7 +5007,7 @@ function build_theme_select($name, $selected=-1, $tid=0, $depth="", $usergroup_o
 
 	if(!is_array($tcache))
 	{
-		$query = $db->simple_select("themes", "name, pid, tid, allowedgroups", "pid != '0'", array('order_by' => 'pid, name'));
+		$query = $db->simple_select('themes', 'tid, name, pid, allowedgroups', "pid!='0'");
 
 		while($theme = $db->fetch_array($query))
 		{
@@ -5027,24 +5027,8 @@ function build_theme_select($name, $selected=-1, $tid=0, $depth="", $usergroup_o
 		foreach($tcache[$tid] as $theme)
 		{
 			$sel = "";
-			// Make theme allowed groups into array
-			$is_allowed = false;
-			if($theme['allowedgroups'] != "all")
-			{
-				$allowed_groups = explode(",", $theme['allowedgroups']);
-				// See if groups user is in is allowed
-				foreach($allowed_groups as $agid)
-				{
-					if(in_array($agid, $in_groups))
-					{
-						$is_allowed = true;
-						break;
-					}
-				}
-			}
-
 			// Show theme if allowed, or if override is on
-			if($is_allowed || $theme['allowedgroups'] == "all" || $usergroup_override == true)
+			if(is_member($theme['allowedgroups']) || $theme['allowedgroups'] == "all" || $usergroup_override == true)
 			{
 				if($theme['tid'] == $selected)
 				{
@@ -5061,7 +5045,7 @@ function build_theme_select($name, $selected=-1, $tid=0, $depth="", $usergroup_o
 
 				if(array_key_exists($theme['tid'], $tcache))
 				{
-					build_theme_select($name, $selected, $theme['tid'], $depthit, $usergroup_override, $footer);
+					build_theme_select($name, $selected, $theme['tid'], $depthit, $usergroup_override, $footer, $count_override);
 				}
 			}
 		}
@@ -5084,6 +5068,43 @@ function build_theme_select($name, $selected=-1, $tid=0, $depth="", $usergroup_o
 	{
 		return false;
 	}
+}
+
+/**
+ * Get the theme data of a theme id.
+ *
+ * @param int $tid The theme id of the theme.
+ * @return boolean|array False if no valid theme, Array with the theme data otherwise
+ */
+function get_theme($tid)
+{
+	global $tcache, $db;
+
+	if(!is_array($tcache))
+	{
+		$query = $db->simple_select('themes', 'tid, name, pid, allowedgroups', "pid!='0'");
+
+		while($theme = $db->fetch_array($query))
+		{
+			$tcache[$theme['pid']][$theme['tid']] = $theme;
+		}
+	}
+
+	$s_theme = false;
+
+	foreach($tcache as $themes)
+	{
+		foreach($themes as $theme)
+		{
+			if($tid == $theme['tid'])
+			{
+				$s_theme = $theme;
+				break 2;
+			}
+		}
+	}
+
+	return $s_theme;
 }
 
 /**
