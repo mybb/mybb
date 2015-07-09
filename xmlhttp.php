@@ -84,18 +84,30 @@ else
 }
 
 // Load basic theme information that we could be needing.
+if($loadstyle != "def='1'")
+{
+	$query = $db->simple_select('themes', 'name, tid, properties, allowedgroups', $loadstyle, array('limit' => 1));
+	$theme = $db->fetch_array($query);
+
+	if(isset($theme['tid']) && !is_member($theme['allowedgroups']) && $theme['allowedgroups'] != 'all')
+	{
+		if(isset($mybb->cookies['mybbtheme']))
+		{
+			my_unsetcookie('mybbtheme');
+		}
+
+		$loadstyle = "def='1'";
+	}
+}
+
 if($loadstyle == "def='1'")
 {
 	if(!$cache->read('default_theme'))
 	{
 		$cache->update_default_theme();
 	}
+
 	$theme = $cache->read('default_theme');
-}
-else
-{
-	$query = $db->simple_select("themes", "name, tid, properties", $loadstyle);
-	$theme = $db->fetch_array($query);
 }
 
 // No theme was found - we attempt to load the master or any other theme
@@ -162,7 +174,7 @@ else
 		// Otherwise, the image language directory is the same as the language directory for the theme
 		else
 		{
-		$theme['imglangdir'] = $theme['imgdir'];
+			$theme['imglangdir'] = $theme['imgdir'];
 		}
 	}
 
@@ -764,7 +776,7 @@ else if($mybb->input['action'] == "validate_captcha")
 else if($mybb->input['action'] == "refresh_question" && $mybb->settings['securityquestion'])
 {
 	header("Content-type: application/json; charset={$charset}");
-	
+
 	$sid = $db->escape_string($mybb->get_input('question_id'));
 	$query = $db->query("
 		SELECT q.qid, s.sid
@@ -772,19 +784,19 @@ else if($mybb->input['action'] == "refresh_question" && $mybb->settings['securit
 		LEFT JOIN ".TABLE_PREFIX."questions q ON (q.qid=s.qid)
 		WHERE q.active='1' AND s.sid='{$sid}'
 	");
-	
+
 	if($db->num_rows($query) == 0)
 	{
 		xmlhttp_error($lang->answer_valid_not_exists);
 	}
-	
+
 	$qsession = $db->fetch_array($query);
-	
+
 	// Delete previous question session
 	$db->delete_query("questionsessions", "sid='$sid'");
-	
+
 	require_once MYBB_ROOT."inc/functions_user.php";
-	
+
 	$sid = generate_question($qsession['qid']);
 	$query = $db->query("
 		SELECT q.question, s.sid
@@ -792,17 +804,17 @@ else if($mybb->input['action'] == "refresh_question" && $mybb->settings['securit
 		LEFT JOIN ".TABLE_PREFIX."questions q ON (q.qid=s.qid)
 		WHERE q.active='1' AND s.sid='{$sid}' AND q.qid!='{$qsession['qid']}'
 	");
-	
+
 	$plugins->run_hooks("xmlhttp_refresh_question");
-	
+
 	if($db->num_rows($query) > 0)
 	{
 		$question = $db->fetch_array($query);
-		
+
 		echo json_encode(array("question" => htmlspecialchars_uni($question['question']), 'sid' => htmlspecialchars_uni($question['sid'])));
 		exit;
 	}
-	else 
+	else
 	{
 		xmlhttp_error($lang->answer_valid_not_exists);
 	}
@@ -812,14 +824,14 @@ elseif($mybb->input['action'] == "validate_question" && $mybb->settings['securit
 	header("Content-type: application/json; charset={$charset}");
 	$sid = $db->escape_string($mybb->get_input('question'));
 	$answer = $db->escape_string($mybb->get_input('answer'));
-	
+
 	$query = $db->query("
 		SELECT q.*, s.sid
 		FROM ".TABLE_PREFIX."questionsessions s
 		LEFT JOIN ".TABLE_PREFIX."questions q ON (q.qid=s.qid)
 		WHERE q.active='1' AND s.sid='{$sid}'
 	");
-	
+
 	if($db->num_rows($query) == 0)
 	{
 		echo json_encode($lang->answer_valid_not_exists);
@@ -838,7 +850,7 @@ elseif($mybb->input['action'] == "validate_question" && $mybb->settings['securit
 				$validated = 1;
 			}
 		}
-		
+
 		$plugins->run_hooks("xmlhttp_validate_question");
 
 		if($validated != 1)

@@ -2874,7 +2874,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 <td class="trow1">{$lang->no_events}</td>
 </tr>
 </table>]]></template>
-		<template name="calendar_editevent" version="1800"><![CDATA[<html>
+		<template name="calendar_editevent" version="1806"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->calendar} - {$lang->edit_event}</title>
 {$headerinclude}
@@ -2894,7 +2894,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 			<td class="trow1"><input type="submit" class="button" name="submit" value="{$lang->delete_now}" tabindex="10" /></td>
 		</tr>
 	</table>
-	<input type="hidden" name="action" value="do_editevent" />
+	<input type="hidden" name="action" value="do_deleteevent" />
 	<input type="hidden" name="eid" value="{$event['eid']}" />
 </form>
 <br />
@@ -13871,13 +13871,13 @@ $(function() {
 </html>]]></template>
 		<template name="debug_summary" version="1800"><![CDATA[<div id="debug">{$generated_in} {$debug_weight} <br />{$sql_queries} / {$server_load} / {$memory_usage}<br />[<a href="{$debuglink}" target="_blank">{$lang->debug_advanced_details}</a>]<br /></div>]]></template>
 		<template name="gobutton" version="120"><![CDATA[<input type="submit" class="button" value="{$lang->go}" />]]></template>
-		<template name="headerinclude" version="1804"><![CDATA[<link rel="alternate" type="application/rss+xml" title="{$lang->latest_threads} (RSS 2.0)" href="{$mybb->settings['bburl']}/syndication.php" />
+		<template name="headerinclude" version="1806"><![CDATA[<link rel="alternate" type="application/rss+xml" title="{$lang->latest_threads} (RSS 2.0)" href="{$mybb->settings['bburl']}/syndication.php" />
 <link rel="alternate" type="application/atom+xml" title="{$lang->latest_threads} (Atom 1.0)" href="{$mybb->settings['bburl']}/syndication.php?type=atom1.0" />
 <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.js?ver=1804"></script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.plugins.min.js?ver=1804"></script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/general.js?ver=1804"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/general.js?ver=1806"></script>
 
 {$stylesheets}
 <script type="text/javascript">
