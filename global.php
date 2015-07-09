@@ -111,21 +111,38 @@ $style = array();
 // The user used our new quick theme changer
 if(isset($mybb->input['theme']) && verify_post_check($mybb->get_input('my_post_key'), true))
 {
-	$mybb->user['style'] = $mybb->get_input('theme');
-	// If user is logged in, update their theme selection with the new one
-	if($mybb->user['uid'])
-	{
-		if(isset($mybb->cookies['mybbtheme']))
-		{
-			my_unsetcookie('mybbtheme');
-		}
+	// Set up user handler.
+	require_once MYBB_ROOT.'inc/datahandlers/user.php';
+	$userhandler = new UserDataHandler('update');
 
-		$db->update_query('users', array('style' => (int)$mybb->user['style']), "uid = '{$mybb->user['uid']}'");
-	}
-	// Guest = cookie
-	else
+	$user = array(
+		'uid'	=> $mybb->user['uid'],
+		'style'	=> $mybb->get_input('theme', MyBB::INPUT_INT),
+		'usergroup'	=> $mybb->user['usergroup'],
+		'additionalgroups'	=> $mybb->user['additionalgroups']
+	);
+
+	$userhandler->set_data($user);
+
+	if($userhandler->verify_style())
 	{
-		my_setcookie('mybbtheme', $mybb->get_input('theme'));
+		$mybb->user['style'] = $user['style'];
+
+		// If user is logged in, update their theme selection with the new one
+		if($mybb->user['uid'])
+		{
+			if(isset($mybb->cookies['mybbtheme']))
+			{
+				my_unsetcookie('mybbtheme');
+			}
+
+			$userhandler->update_user();
+		}
+		// Guest = cookie
+		else
+		{
+			my_setcookie('mybbtheme', $user['style']);
+		}
 	}
 }
 // Cookied theme!
@@ -224,18 +241,37 @@ if(empty($loadstyle))
 }
 
 // Fetch the theme to load from the cache
+if($loadstyle != "def='1'")
+{
+	$query = $db->simple_select('themes', 'name, tid, properties, stylesheets, allowedgroups', $loadstyle, array('limit' => 1));
+	$theme = $db->fetch_array($query);
+
+	if(isset($theme['tid']) && !$load_from_forum && !is_member($theme['allowedgroups']) && $theme['allowedgroups'] != 'all')
+	{
+		if($load_from_user == 1)
+		{
+			$db->update_query('users', array('style' => 0), "style='{$mybb->user['style']}' AND uid='{$mybb->user['uid']}'");
+		}
+
+		if(isset($mybb->cookies['mybbtheme']))
+		{
+			my_unsetcookie('mybbtheme');
+		}
+
+		$loadstyle = "def='1'";
+	}
+}
+
 if($loadstyle == "def='1'")
 {
 	if(!$cache->read('default_theme'))
 	{
 		$cache->update_default_theme();
 	}
+
 	$theme = $cache->read('default_theme');
-}
-else
-{
-	$query = $db->simple_select('themes', 'name, tid, properties, stylesheets', $loadstyle, array('limit' => 1));
-	$theme = $db->fetch_array($query);
+
+	$load_from_forum = $load_from_user = 0;
 }
 
 // No theme was found - we attempt to load the master or any other theme
@@ -589,7 +625,7 @@ if($mybb->usergroup['cancp'] == 1 || ($mybb->user['ismoderator'] && $mybb->userg
 	{
 		$can_access_moderationqueue = false;
 	}
-	
+
 	if($can_access_moderationqueue || ($mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanagereportedcontent'] == 1))
 	{
 		// Read the reported content cache
@@ -747,7 +783,7 @@ if($mybb->settings['awactialert'] == 1 && $mybb->usergroup['cancp'] == 1)
 	{
 		$awaitingusers = my_number_format($awaitingusers);
 	}
-	
+
 	if($awaitingusers > 0)
 	{
 		if($awaitingusers == 1)
@@ -905,7 +941,7 @@ if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['canviewboardclosed']
 
 	$lang->error_boardclosed .= "<blockquote>{$mybb->settings['boardclosed_reason']}</blockquote>";
 
-	if(!$mybb->get_input('modal')) 
+	if(!$mybb->get_input('modal'))
 	{
 		error($lang->error_boardclosed);
 	}
