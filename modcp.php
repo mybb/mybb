@@ -1574,7 +1574,7 @@ if($mybb->input['action'] == "edit_announcement")
 	add_breadcrumb($lang->edit_announcement, "modcp.php?action=edit_announcements&amp;aid={$aid}");
 
 	// Get announcement
-	if(!isset($announcement))
+	if(!isset($announcement) || $mybb->request_method != 'post')
 	{
 		$query = $db->simple_select("announcements", "*", "aid='{$aid}'");
 		$announcement = $db->fetch_array($query);
