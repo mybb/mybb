@@ -2668,7 +2668,7 @@ if($mybb->input['action'] == "editprofile")
 		error_no_permission();
 	}
 
-	if(!filter_var($user['website'], FILTER_VALIDATE_URL))
+	if(!my_validate_url($user['website']))
 	{
 		$user['website'] = '';
 	}

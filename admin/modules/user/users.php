@@ -981,7 +981,7 @@ EOF;
 				"height" => 120
 			);
 		}
-		if(!filter_var($user['avatar'], FILTER_VALIDATE_URL))
+		if(!my_validate_url($user['avatar']))
 		{
 			$user['avatar'] = "../{$user['avatar']}\n";
 		}
@@ -1477,7 +1477,7 @@ EOF;
 	{
 		$current_avatar_msg = "<br /><strong>{$lang->user_current_using_uploaded_avatar}</strong>";
 	}
-	elseif($user['avatartype'] == "remote" || filter_var($user['avatar'], FILTER_VALIDATE_URL))
+	elseif($user['avatartype'] == "remote" || my_validate_url($user['avatar']))
 	{
 		$current_avatar_msg = "<br /><strong>{$lang->user_current_using_remote_avatar}</strong>";
 		$avatar_url = $user['avatar'];
@@ -3585,7 +3585,7 @@ function build_users_view($view)
 				$user['view']['warninglevel'] = get_colored_warning_level($warning_level);
 			}
 
-			if(!filter_var($user['avatar'], FILTER_VALIDATE_URL))
+			if(!my_validate_url($user['avatar']))
 			{
 				$user['avatar'] = "../{$user['avatar']}";
 			}

@@ -294,7 +294,7 @@ class UserDataHandler extends DataHandler
 	{
 		$website = &$this->data['website'];
 
-		if($website && !filter_var($website, FILTER_VALIDATE_URL))
+		if(!empty($website) && !my_validate_url($website))
 		{
 			$this->set_error('invalid_website');
 			return false;

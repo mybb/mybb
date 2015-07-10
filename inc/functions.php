@@ -962,7 +962,7 @@ function redirect($url, $message="", $title="", $force_redirect=false)
 
 		run_shutdown();
 
-		if(!!filter_var($url, FILTER_VALIDATE_URL))
+		if(!my_validate_url($url))
 		{
 			header("Location: {$mybb->settings['bburl']}/{$url}");
 		}
@@ -8239,3 +8239,21 @@ function copy_file_to_cdn($file_path = '', &$uploaded_path = null)
 
 	return $success;
 }
+
+/**
+ * Validate an url
+ *
+ * @param string $url The url to validate.
+ *
+ * @return bool Whether this is a valid url.
+ */
+function my_validate_url($url)
+{
+	if(preg_match('^(?:(?:https?|ftp)://)(?:\S+(?::\S*)?@|\d{1,3}(?:\.\d{1,3}){3}|(?:(?:[a-z\d\x{00a1}-\x{ffff}]+-?)*[a-z\d\x{00a1}-\x{ffff}]+)(?:\.(?:[a-z\d\x{00a1}-\x{ffff}]+-?)*[a-z\d\x{00a1}-\x{ffff}]+)*(?:\.[a-z\x{00a1}-\x{ffff}]{2,6}))(?::\d+)?(?:[^\s]*)?$', $url))
+	{
+		return true;
+	}
+
+	return false;
+}
+

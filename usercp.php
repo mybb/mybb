@@ -382,7 +382,7 @@ if($mybb->input['action'] == "profile")
 		$ageselected = " selected=\"selected\"";
 	}
 
-	if(!filter_var($user['website'], FILTER_VALIDATE_URL))
+	if(!my_validate_url($user['website']))
 	{
 		$user['website'] = '';
 	}
@@ -2240,7 +2240,7 @@ if($mybb->input['action'] == "avatar")
 	{
 		$avatarmsg = "<br /><strong>".$lang->already_uploaded_avatar."</strong>";
 	}
-	elseif($mybb->user['avatartype'] == "remote" || filter_var($mybb->user['avatar'], FILTER_VALIDATE_URL))
+	elseif($mybb->user['avatartype'] == "remote" || my_validate_url($mybb->user['avatar']))
 	{
 		$avatarmsg = "<br /><strong>".$lang->using_remote_avatar."</strong>";
 		$avatarurl = htmlspecialchars_uni($mybb->user['avatar']);

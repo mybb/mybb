@@ -643,7 +643,7 @@ if($mybb->input['action'] == "mass_edit")
 	while($smilie = $db->fetch_array($query))
 	{
 		$smilie['image'] = str_replace("{theme}", "images", $smilie['image']);
-		if(filter_var($smilie['image'], FILTER_VALIDATE_URL))
+		if(my_validate_url($smilie['image']))
 		{
 			$image = $smilie['image'];
 		}
@@ -726,7 +726,7 @@ if(!$mybb->input['action'])
 	while($smilie = $db->fetch_array($query))
 	{
 		$smilie['image'] = str_replace("{theme}", "images", $smilie['image']);
-		if(filter_var($smilie['image'], FILTER_VALIDATE_URL))
+		if(my_validate_url($smilie['image']))
 		{
 			$image = $smilie['image'];
 		}
