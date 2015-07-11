@@ -604,13 +604,17 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 			if($visible == 1)
 			{
 				// Set post counter
+				$postcounter = $thread['replies'] + 1;
 				if($ismod == true)
 				{
-					$postcounter = $thread['replies'] + $thread['unapprovedposts'] + 1;
-				}
-				else
-				{
-					$postcounter = $thread['replies'] + 1;
+					if(is_moderator($fid, "canviewunapprove"))
+					{
+						$postcounter += $thread['unapprovedposts'];
+					}
+					if(is_moderator($fid, "canviewdeleted"))
+					{
+						$postcounter += $thread['deletedposts'];
+					}
 				}
 
 				// Was there a new post since we hit the quick reply button?
