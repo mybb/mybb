@@ -179,16 +179,6 @@ if(!is_moderator($fid, "canpostclosedthreads"))
 	}
 }
 
-// Is the currently logged in user a moderator of this forum?
-if(is_moderator($fid))
-{
-	$ismod = true;
-}
-else
-{
-	$ismod = false;
-}
-
 // No weird actions allowed, show new reply form if no regular action.
 if($mybb->input['action'] != "do_newreply" && $mybb->input['action'] != "editdraft")
 {
@@ -605,16 +595,14 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 			{
 				// Set post counter
 				$postcounter = $thread['replies'] + 1;
-				if($ismod == true)
+
+				if(is_moderator($fid, "canviewunapprove"))
 				{
-					if(is_moderator($fid, "canviewunapprove"))
-					{
-						$postcounter += $thread['unapprovedposts'];
-					}
-					if(is_moderator($fid, "canviewdeleted"))
-					{
-						$postcounter += $thread['deletedposts'];
-					}
+					$postcounter += $thread['unapprovedposts'];
+				}
+				if(is_moderator($fid, "canviewdeleted"))
+				{
+					$postcounter += $thread['deletedposts'];
 				}
 
 				// Was there a new post since we hit the quick reply button?
