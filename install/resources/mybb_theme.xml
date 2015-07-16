@@ -11850,13 +11850,15 @@ if(use_xmlhttprequest == "1")
 		<template name="usercp_attachments_none" version="120"><![CDATA[<tr>
 <td class="trow1" align="center" colspan="5">{$lang->no_attachments}</td>
 </tr>]]></template>
-		<template name="usercp_avatar" version="1800"><![CDATA[<html>
+		<template name="usercp_avatar" version="1806"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->change_avatar}</title>
 {$headerinclude}
 </head>
 <body>
 {$header}
+<form enctype="multipart/form-data" action="usercp.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table width="100%" border="0" align="center">
 <tr>
 	{$usercpnav}
@@ -11879,8 +11881,6 @@ if(use_xmlhttprequest == "1")
 			<tr>
 				<td class="tcat" colspan="2"><strong>{$lang->custom_avatar}</strong></td>
 			</tr>
-			<form enctype="multipart/form-data" action="usercp.php" method="post">
-			<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 			{$avatarupload}
 			<tr>
 				<td class="trow2" width="40%">
