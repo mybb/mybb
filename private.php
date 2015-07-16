@@ -2064,6 +2064,7 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 	}
 	else
 	{
+		echo "\xEF\xBB\xBF"; // UTF-8 BOM
 		echo $archived;
 	}
 }

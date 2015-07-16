@@ -7135,7 +7135,7 @@ function ban_date2timestamp($date, $stamp=0)
 	$n[1] += $d[0];
 	$n[2] += $d[1];
 	$n[3] += $d[2];
-	return mktime(date("G"), date("i"), 0, $n[2], $n[1], $n[3]);
+	return mktime(date("G", $stamp), date("i", $stamp), 0, $n[2], $n[1], $n[3]);
 }
 
 /**
