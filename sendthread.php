@@ -198,21 +198,12 @@ if($mybb->input['action'] == "do_sendtofriend" && $mybb->request_method == "post
 	// No errors detected
 	if(count($errors) == 0)
 	{
-		if($mybb->settings['mail_handler'] == 'smtp')
-		{
-			$from = $mybb->input['fromemail'];
-		}
-		else
-		{
-			$from = "{$mybb->input['fromname']} <{$mybb->input['fromemail']}>";
-		}
-
 		$threadlink = get_thread_link($thread['tid']);
 
 		$message = $lang->sprintf($lang->email_sendtofriend, $mybb->input['fromname'], $mybb->settings['bbname'], $mybb->settings['bburl']."/".$threadlink, $mybb->input['message']);
 
 		// Send the actual message
-		my_mail($mybb->input['email'], $mybb->input['subject'], $message, $from, "", "", false, "text", "", $mybb->input['fromemail']);
+		my_mail($mybb->input['email'], $mybb->input['subject'], $message, "", "", "", false, "text", "", $mybb->input['fromemail']);
 
 		if($mybb->settings['mail_logging'] > 0)
 		{
