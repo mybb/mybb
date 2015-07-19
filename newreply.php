@@ -982,6 +982,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		// Set up posthandler.
 		require_once MYBB_ROOT."inc/datahandlers/post.php";
 		$posthandler = new PostDataHandler("insert");
+		$posthandler->action = "post";
 
 		// Set the post data that came from the input to the $post array.
 		$post = array(
