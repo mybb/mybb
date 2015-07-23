@@ -1352,14 +1352,7 @@ class postParser
 				$title = htmlspecialchars_uni($path[3]);
 				break;
 			case "myspacetv":
-				if($path[1] == 'video')
-				{
-					$id = $path[4]; // http://www.myspace.com/video/fds/fds/123
-				}
-				else
-				{
-					$id = $path[4]; // http://www.myspace.com/fds/video/fds/123
-				}
+				$id = $path[4]; // http://www.myspace.com/video/fds/fds/123
 				break;
 			case "facebook":
 				if(isset($input['v']))
