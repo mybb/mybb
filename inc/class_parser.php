@@ -1352,10 +1352,24 @@ class postParser
 				$title = htmlspecialchars_uni($path[3]);
 				break;
 			case "myspacetv":
-				$id = $path[4]; // http://www.myspace.com/video/fds/fds/123
+				if($path[1] == 'video')
+				{
+					$id = $path[4]; // http://www.myspace.com/video/fds/fds/123
+				}
+				else
+				{
+					$id = $path[4]; // http://www.myspace.com/fds/video/fds/123
+				}
 				break;
 			case "facebook":
-				$id = $input['v']; // http://www.facebook.com/video/video.php?v=123
+				if(isset($input['v']))
+				{
+					$id = $input['v']; // http://www.facebook.com/video/video.php?v=123
+				}
+				else
+				{
+					$id = $path[4]; // https://www.facebook.com/fds/videos/vb.123/123/
+				}
 				break;
 			case "veoh":
 				$id = $path[2]; // http://www.veoh.com/watch/123
@@ -1364,7 +1378,14 @@ class postParser
 				$id = $input['i']; // http://www.liveleak.com/view?i=123
 				break;
 			case "yahoo":
-				$id = $path[1]; // http://xy.screen.yahoo.com/fds-123.html
+				if(isset($path[2]))
+				{
+					$id = $path[2]; // http://xy.screen.yahoo.com/fds/fds-123.html
+				}
+				else
+				{
+					$id = $path[1]; // http://xy.screen.yahoo.com/fds-123.html
+				}
 				// Support for localized portals
 				$domain = explode('.', $parsed_url['host']);
 				if($domain[0] != 'screen' && preg_match('#^([a-z-]+)$#', $domain[0]))
@@ -1377,7 +1398,14 @@ class postParser
 				}
 				break;
 			case "vimeo":
-				$id = $path[1]; // http://vimeo.com/fds123
+				if(isset($path[3]))
+				{
+					$id = $path[3]; // http://vimeo.com/fds/fds/fds123
+				}
+				else
+				{
+					$id = $path[1]; // http://vimeo.com/fds123
+				}
 				break;
 			case "youtube":
 				if($fragments[0])
