@@ -87,7 +87,7 @@ class StopForumSpamChecker
 		$is_spammer = false;
 		$confidence = 0;
 
-		if(filter_var($email, FILTER_VALIDATE_EMAIL) && filter_var($ip_address, FILTER_VALIDATE_IP)) // Calls to the API with invalid email/ip formats cause issues
+		if(filter_var($email, FILTER_VALIDATE_EMAIL) && filter_var($ip_address, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) // Calls to the API with invalid email/ip formats cause issues
 		{
 			$username_encoded = urlencode($username);
 			$email_encoded    = urlencode($email);
