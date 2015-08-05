@@ -504,6 +504,13 @@
 
 			// Setup popup menu
 			var offset = el.offset();
+			
+			var el_parent = el.get(0).parentNode;
+			var popup_parent = popup_menu.get(0).parentNode;
+			if (el_parent === popup_parent)
+			{
+			  offset = el.position();
+			}
 			offset.top += el.outerHeight();
 
 			// We only adjust if it goes out of the page (?)
