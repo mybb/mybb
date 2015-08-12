@@ -65,7 +65,7 @@ require_once MYBB_ROOT."inc/db_base.php";
 // Prevent any shut down functions from running
 $done_shutdown = 1;
 
-// Include the necessary contants for installation
+// Include the necessary constants for installation
 $grouppermignore = array('gid', 'type', 'title', 'description', 'namestyle', 'usertitle', 'stars', 'starimage', 'image');
 $groupzerogreater = array('pmquota', 'maxpmrecipients', 'maxreputationsday', 'attachquota', 'maxemails', 'maxwarningsday', 'maxposts', 'edittimelimit', 'canusesigxposts', 'maxreputationsperthread');
 $displaygroupfields = array('title', 'description', 'namestyle', 'usertitle', 'stars', 'starimage', 'image');
