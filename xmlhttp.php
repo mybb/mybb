@@ -528,6 +528,13 @@ else if($mybb->input['action'] == "edit_post")
 			"editreason" => $editreason,
 			"edit_uid" => $mybb->user['uid']
 		);
+
+		// If this is the first post set the prefix. If a forum requires a prefix the quick edit would throw an error otherwise
+		if($post['pid'] == $thread['firstpost'])
+		{
+			$updatepost['prefix'] = $thread['prefix'];
+		}
+
 		$posthandler->set_data($updatepost);
 
 		// Now let the post handler do all the hard work.
