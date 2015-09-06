@@ -788,7 +788,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 					// If this post was the post for which a quote button was clicked, set the subject
 					if($replyto == $quoted_post['pid'])
 					{
-						$subject = preg_replace('#RE:\s?#i', '', $quoted_post['subject']);
+						$subject = preg_replace('#^RE:\s?#i', '', $quoted_post['subject']);
 						// Subject too long? Shorten it to avoid error message
 						if(my_strlen($subject) > 85)
 						{
