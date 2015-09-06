@@ -324,12 +324,12 @@ function parse_page($contents)
  *
  * @param string $format A date format according to PHP's date structure.
  * @param int $stamp The unix timestamp the date should be generated for.
- * @param int $offset The offset in hours that should be applied to times. (timezones)
+ * @param int|string $offset The offset in hours that should be applied to times. (timezones) Or an empty string to determine that automatically
  * @param int $ty Whether or not to use today/yesterday formatting.
  * @param boolean $adodb Whether or not to use the adodb time class for < 1970 or > 2038 times
  * @return string The formatted timestamp.
  */
-function my_date($format, $stamp=0, $offset=0, $ty=1, $adodb=false)
+function my_date($format, $stamp=0, $offset="", $ty=1, $adodb=false)
 {
 	global $mybb, $lang, $mybbadmin, $plugins;
 
