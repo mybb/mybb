@@ -1329,10 +1329,12 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 /**
  * Check the password given on a certain forum for validity
  *
- * @param int The forum ID
- * @param boolean The Parent ID
+ * @param int $fid The forum ID
+ * @param int $pid The Parent ID
+ * @param bool $return
+ * @return bool
  */
-function check_forum_password($fid, $pid=0)
+function check_forum_password($fid, $pid=0, $return=false)
 {
 	global $mybb, $header, $footer, $headerinclude, $theme, $templates, $lang, $forum_cache;
 
@@ -1397,6 +1399,11 @@ function check_forum_password($fid, $pid=0)
 	else
 	{
 		$showform = false;
+	}
+
+	if($return)
+	{
+		return $showform;
 	}
 
 	if($showform)

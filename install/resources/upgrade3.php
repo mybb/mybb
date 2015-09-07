@@ -88,12 +88,12 @@ function upgrade3_convertattachments()
 	}
 	else
 	{
-		$app = $_POST['attachmentspage'];
+		$app = (int)$_POST['attachmentspage'];
 	}
 
 	if($_POST['attachmentstart'])
 	{
-		$startat = $_POST['attachmentstart'];
+		$startat = (int)$_POST['attachmentstart'];
 		$upper = $startat+$app;
 		$lower = $startat;
 	}
@@ -228,12 +228,12 @@ function upgrade3_convertavatars()
 	}
 	else
 	{
-		$app = $_POST['userspage'];
+		$app = (int)$_POST['userspage'];
 	}
 
 	if($_POST['avatarstart'])
 	{
-		$startat = $_POST['avatarstart'];
+		$startat = (int)$_POST['avatarstart'];
 		$upper = $startat+$app;
 		$lower = $startat;
 	}

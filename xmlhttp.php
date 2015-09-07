@@ -344,6 +344,12 @@ else if($mybb->input['action'] == "edit_post")
 		xmlhttp_error($lang->thread_doesnt_exist);
 	}
 
+	// Check if this forum is password protected and we have a valid password
+	if(check_forum_password($forum['fid'], 0, true))
+	{
+		xmlhttp_error($lang->wrong_forum_password);
+	}
+
 	// Fetch forum permissions.
 	$forumpermissions = forum_permissions($forum['fid']);
 
@@ -370,12 +376,6 @@ else if($mybb->input['action'] == "edit_post")
 		if($post['visible'] == 0)
 		{
 			xmlhttp_error($lang->post_moderation);
-		}
-
-		// Forum is closed - no editing allowed
-		if($forum['open'] == 0)
-		{
-			xmlhttp_error($lang->no_permission_edit_post);
 		}
 	}
 	if($mybb->input['do'] == "get_post")

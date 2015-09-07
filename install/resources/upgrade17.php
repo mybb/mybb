@@ -480,12 +480,12 @@ function upgrade17_dbchanges6()
 	}
 	else
 	{
-		$ipp = $_POST['ipspage'];
+		$ipp = (int)$_POST['ipspage'];
 	}
 
 	if($_POST['ipstart'])
 	{
-		$startat = $_POST['ipstart'];
+		$startat = (int)$_POST['ipstart'];
 		$upper = $startat+$ipp;
 		$lower = $startat;
 	}
@@ -548,12 +548,12 @@ function upgrade17_dbchanges7()
 	}
 	else
 	{
-		$ipp = $_POST['ipspage'];
+		$ipp = (int)$_POST['ipspage'];
 	}
 
 	if($_POST['ipstart'])
 	{
-		$startat = $_POST['ipstart'];
+		$startat = (int)$_POST['ipstart'];
 		$upper = $startat+$ipp;
 		$lower = $startat;
 	}

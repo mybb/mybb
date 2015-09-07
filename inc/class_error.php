@@ -513,8 +513,8 @@ class errorHandler {
 			@header('Status: 503 Service Temporarily Unavailable');
 			@header('Retry-After: 1800'); 
 			@header("Content-type: text/html; charset={$charset}");
-			$_SERVER['PHP_SELF'] = htmlspecialchars_uni($_SERVER['PHP_SELF']);
-			
+			$file_name = basename(__FILE__);
+
 			echo <<<EOF
 	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
@@ -527,7 +527,7 @@ class errorHandler {
 		a:visited {	color: #026CB1;	text-decoration: none; }
 		a:hover, a:active {	color: #000; text-decoration: underline; }
 		#container { width: 600px; padding: 20px; background: #fff;	border: 1px solid #e4e4e4; margin: 100px auto; text-align: left; }
-		h1 { margin: 0; background: url({$_SERVER['PHP_SELF']}?action=mybb_logo) no-repeat;	height: 82px; width: 248px; }
+		h1 { margin: 0; background: url({$file_name}?action=mybb_logo) no-repeat;	height: 82px; width: 248px; }
 		#content { border: 1px solid #B60101; background: #fff; }
 		h2 { font-size: 12px; padding: 4px; background: #B60101; color: #fff; margin: 0; }
 		.invisible { display: none; }
