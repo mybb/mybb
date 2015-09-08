@@ -813,8 +813,7 @@ $tables[] = "CREATE TABLE mybb_threadsubscriptions (
 	uid int NOT NULL default '0',
 	tid int NOT NULL default '0',
 	notification tinyint(1) NOT NULL default '0',
-	dateline int unsigned NOT NULL default '0',
-	subscriptionkey varchar(32) NOT NULL default ''
+	dateline int unsigned NOT NULL default '0'
 );";
 
 $tables[] = "CREATE TABLE mybb_userfields (

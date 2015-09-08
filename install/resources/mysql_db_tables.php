@@ -924,7 +924,6 @@ $tables[] = "CREATE TABLE mybb_threadsubscriptions (
   tid int unsigned NOT NULL default '0',
   notification tinyint(1) NOT NULL default '0',
   dateline int unsigned NOT NULL default '0',
-  subscriptionkey varchar(32) NOT NULL default '',
   KEY uid (uid),
   KEY tid (tid, notification),
   PRIMARY KEY (sid)
