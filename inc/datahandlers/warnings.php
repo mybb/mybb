@@ -281,7 +281,8 @@ class WarningsHandler extends DataHandler
 	/**
 	* Gets a valid warning from the DB engine.
 	*
-	* @return mixed array when valid, boolean false when invalid.
+	* @param int $wid
+	* @return array|bool array when valid, boolean false when invalid.
 	*/
 	function get($wid)
 	{

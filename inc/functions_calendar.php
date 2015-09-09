@@ -11,10 +11,10 @@
 /**
  * Build a mini calendar for a specific month
  *
- * @param array The calendar array for the calendar
- * @param int The month of the year
- * @param int The year
- * @param array Optional events cache for this calendar
+ * @param array $calendar The calendar array for the calendar
+ * @param int $month The month of the year
+ * @param int $year The year
+ * @param array $events_cache Optional events cache for this calendar
  * @return string The built mini calendar
  */
 function build_mini_calendar($calendar, $month, $year, &$events_cache)
@@ -43,19 +43,20 @@ function build_mini_calendar($calendar, $month, $year, &$events_cache)
 	$prev_month = get_prev_month($month, $year);
 
 	$month_start_weekday = gmdate("w", gmmktime(0, 0, 0, $month, $calendar['startofweek']+1, $year));
+
+	$prev_month_days = gmdate("t", gmmktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
 	if($month_start_weekday != $weekdays[0] || $calendar['startofweek'] != 0)
 	{
-		$day = gmdate("t", gmmktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
+		$prev_days = $day = gmdate("t", gmmktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
 		$day -= array_search(($month_start_weekday), $weekdays);
 		$day += $calendar['startofweek']+1;
+		if($day > $prev_month_days+1)
+		{
+			// Go one week back
+			$day -= 7;
+		}
 		$calendar_month = $prev_month['month'];
 		$calendar_year = $prev_month['year'];
-
-		if($day > 31 && $calendar['startofweek'] == 1 && $prev_month_days == 30)
-		{
-			// We need to fix it for these days
-			$day = 25;
-		}
 	}
 	else
 	{
@@ -63,8 +64,6 @@ function build_mini_calendar($calendar, $month, $year, &$events_cache)
 		$calendar_month = $month;
 		$calendar_year = $year;
 	}
-
-	$prev_month_days = gmdate("t", gmmktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
 
 	// So now we fetch events for this month
 	$start_timestamp = gmmktime(0, 0, 0, $calendar_month, $day, $year);
@@ -199,7 +198,7 @@ function cache_calendars()
 /**
  * Fetch the calendar permissions for the current user for one or more calendars
  *
- * @param int Optional calendar ID. If none specified, permissions for all calendars are returned
+ * @param int $cid Optional calendar ID. If none specified, permissions for all calendars are returned
  * @return array Array of permissions
  */
 function get_calendar_permissions($cid=0)
@@ -287,10 +286,10 @@ function get_calendar_permissions($cid=0)
 /**
  * Fetch the calendar permissions
  *
- * @param int Calendar ID
- * @param mixed User group ID
- * @return array Array of permissions for this calendar and group
- * @return array Array of current permissions
+ * @param int $cid Calendar ID
+ * @param string $gid User group ID, comma seperated
+ * @param array Array of permissions for this calendar and group
+ * @return array|void Array of current permissions or nothing if an error occured
  */
 function fetch_calendar_permissions($cid, $gid, $calendar_permissions)
 {
@@ -329,7 +328,7 @@ function fetch_calendar_permissions($cid, $gid, $calendar_permissions)
 /**
  * Build a calendar select list to jump between calendars
  *
- * @param int The selected calendar ID
+ * @param int $selected The selected calendar ID
  * @return string The calendar select
  */
 function build_calendar_jump($selected=0)
@@ -370,8 +369,8 @@ function build_calendar_jump($selected=0)
 /**
  * Fetch the next calendar month from a specified month/year
  *
- * @param int The month
- * @param int The year
+ * @param int $month The month
+ * @param int $year The year
  * @return array Array of the next month and next year
  */
 function get_next_month($month, $year)
@@ -395,8 +394,8 @@ function get_next_month($month, $year)
 /**
  * Fetch the previous calendar month from a specified month/year
  *
- * @param int The month
- * @param int The year
+ * @param int $month The month
+ * @param int $year The year
  * @return array Array of the previous month and previous year
  */
 function get_prev_month($month, $year)
@@ -420,11 +419,11 @@ function get_prev_month($month, $year)
 /**
  * Fetch the events for a specific calendar and date range
  *
- * @param int The calendar ID
- * @param int Start time stamp
- * @param int End time stmap
- * @param int 1 to fetch unapproved events too
- * @param int The user ID to fetch private events for (0 fetches none)
+ * @param int $calendar The calendar ID
+ * @param int $start Start time stamp
+ * @param int $end End time stmap
+ * @param int $unapproved 1 to fetch unapproved events too
+ * @param int $private The user ID to fetch private events for (0 fetches none)
  * @return array Array of events
  */
 function get_events($calendar, $start, $end, $unapproved=0, $private=1)
@@ -541,11 +540,11 @@ function get_events($calendar, $start, $end, $unapproved=0, $private=1)
 /**
  * Fetch the birthdays for one or more months or a specific day
  *
- * @param mixed Integer of the month or array of months
- * @param int Day of the specific month (if only one month specified above)
+ * @param int|array $months Integer of the month or array of months
+ * @param int $day Day of the specific month (if only one month specified above)
  * @return array Array of birthdays
  */
-function get_birthdays($months, $day="")
+function get_birthdays($months, $day=0)
 {
 	global $db;
 
@@ -609,7 +608,7 @@ function get_birthdays($months, $day="")
 /**
  * Fetch an ordered list of weekdays depended on a specified starting day
  *
- * @param int The weekday we want to start the week with
+ * @param int $week_start The weekday we want to start the week with
  * @return array Ordered list of weekdays dependant on start of week
  */
 function fetch_weekday_structure($week_start)
@@ -644,8 +643,8 @@ function fetch_weekday_structure($week_start)
 /**
  * Fetch a weekday name based on a number
  *
- * @param int The weekday number
- * @param boolean True to fetch the short name ('S'), false to fetch full name
+ * @param int $weekday The weekday number
+ * @param boolean $short True to fetch the short name ('S'), false to fetch full name
  * @return string The weekday name
  */
 function fetch_weekday_name($weekday, $short=false)
@@ -696,10 +695,10 @@ function fetch_weekday_name($weekday, $short=false)
 /**
  * Fetches the next occurance for a repeating event.
  *
- * @param array The event array
- * @param array The range of start/end timestamps
- * @param int The last occurance of this event
- * @param boolean True if this is our first iteration of this function (Does some special optimised calculations on false)
+ * @param array $event The event array
+ * @param array $range The range of start/end timestamps
+ * @param int $last_occurance The last occurance of this event
+ * @param boolean $first True if this is our first iteration of this function (Does some special optimised calculations on false)
  * @return int The next occurance timestamp
  */
 function fetch_next_occurance($event, $range, $last_occurance, $first=false)
@@ -922,7 +921,7 @@ function fetch_next_occurance($event, $range, $last_occurance, $first=false)
 /**
  * Fetch a friendly repetition value for a specific event (Repeats every x months etc)
  *
- * @param array The array of the event
+ * @param array $event The array of the event
  * @return string The friendly repetition string
  */
 function fetch_friendly_repetition($event)
@@ -1070,9 +1069,9 @@ function fetch_friendly_repetition($event)
 /**
  * Fetch a timestamp for "the first/second etc weekday" for a month.
  *
- * @param array The repetition array from the event
- * @param int The month of the year
- * @param int The year
+ * @param array $repeats The repetition array from the event
+ * @param int $month The month of the year
+ * @param int $year The year
  * @return int The UNIX timestamp
  */
 function fetch_weekday_monthly_repetition($repeats, $month, $year)

@@ -53,6 +53,8 @@ class PostDataHandler extends DataHandler
 	 * post = New post
 	 * thread = New thread
 	 * edit = Editing a thread or post
+	 *
+	 * @var string
 	 */
 	public $action;
 
@@ -119,7 +121,7 @@ class PostDataHandler extends DataHandler
 	 */
 	function verify_author()
 	{
-		global $mybb;
+		global $mybb, $lang;
 
 		$post = &$this->data;
 
@@ -172,7 +174,6 @@ class PostDataHandler extends DataHandler
 	/**
 	 * Verifies a post subject.
 	 *
-	 * @param string True if the subject is valid, false if invalid.
 	 * @return boolean True when valid, false when not valid.
 	 */
 	function verify_subject()
@@ -242,7 +243,7 @@ class PostDataHandler extends DataHandler
 	/**
 	 * Verifies a post message.
 	 *
-	 * @param string The message content.
+	 * @return bool
 	 */
 	function verify_message()
 	{
@@ -314,7 +315,7 @@ class PostDataHandler extends DataHandler
 	/**
 	* Verify that the user is not flooding the system.
 	*
-	* @return boolean True
+	* @return boolean
 	*/
 	function verify_post_flooding()
 	{
@@ -353,6 +354,11 @@ class PostDataHandler extends DataHandler
 		return true;
 	}
 
+	/**
+	 * @param bool $simple_mode
+	 *
+	 * @return array|bool
+	 */
 	function verify_post_merge($simple_mode=false)
 	{
 		global $mybb, $db, $session;
@@ -491,6 +497,8 @@ class PostDataHandler extends DataHandler
 				return false;
 			}
 		}
+
+		return true;
 	}
 
 	/**
@@ -519,6 +527,8 @@ class PostDataHandler extends DataHandler
 				return false;
 			}
 		}
+
+		return true;
 	}
 
 	/**
@@ -608,8 +618,6 @@ class PostDataHandler extends DataHandler
 	function verify_prefix()
 	{
 		$prefix = &$this->data['prefix'];
-
-		$prefix_cache = build_prefixes();
 
 		// If a valid prefix isn't supplied, don't assign one.
 		if(empty($prefix))
@@ -980,7 +988,7 @@ class PostDataHandler extends DataHandler
 				);
 				$update_query['edituid'] = (int)$post['uid'];
 				$update_query['edittime'] = TIME_NOW;
-				$query = $db->update_query("posts", $update_query, "pid='".$double_post['pid']."'");
+				$db->update_query("posts", $update_query, "pid='".$double_post['pid']."'");
 
 				if($draft_check)
 				{
@@ -1728,6 +1736,7 @@ class PostDataHandler extends DataHandler
 	/**
 	 * Updates a post that is already in the database.
 	 *
+	 * @return array
 	 */
 	function update_post()
 	{

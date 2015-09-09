@@ -14,7 +14,12 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-// Allows us to refresh cache to prevent over flowing
+/**
+ * Allows us to refresh cache to prevent over flowing
+ *
+ * @param resource $fp
+ * @param string $contents
+ */
 function clear_overflow($fp, &$contents)
 {
 	global $mybb;

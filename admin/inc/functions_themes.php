@@ -468,6 +468,11 @@ function minify_stylesheet($stylesheet)
 	return $stylesheet;
 }
 
+/**
+ * @param array $stylesheet
+ *
+ * @return bool
+ */
 function resync_stylesheet($stylesheet)
 {
 	global $db;
@@ -505,6 +510,11 @@ function resync_stylesheet($stylesheet)
 	return false;
 }
 
+/**
+ * @param string $url
+ *
+ * @return string
+ */
 function fix_css_urls($url)
 {
 	if(!preg_match("#^([a-z0-9]+\:|/)#i", $url) && strpos($url, "../../../") === false)
@@ -517,6 +527,11 @@ function fix_css_urls($url)
 	}
 }
 
+/**
+ * @param string $url
+ *
+ * @return string
+ */
 function unfix_css_urls($url)
 {
 	return str_replace("../../../", "", $url);
@@ -686,7 +701,13 @@ function css_to_array($css)
 	return $parsed_css;
 }
 
-function get_selectors_as_options($css, $selected_item="")
+/**
+ * @param array|string $css
+ * @param int $selected_item
+ *
+ * @return string
+ */
+function get_selectors_as_options($css, $selected_item=null)
 {
 	$select = "";
 
@@ -722,6 +743,12 @@ function get_selectors_as_options($css, $selected_item="")
 	return $select;
 }
 
+/**
+ * @param array $a
+ * @param array $b
+ *
+ * @return int
+ */
 function css_selectors_sort_cmp($a, $b)
 {
 	if(!$a['name'])
@@ -736,6 +763,12 @@ function css_selectors_sort_cmp($a, $b)
 	return strcmp($a['name'], $b['name']);
 }
 
+/**
+ * @param array|string $css
+ * @param string $id
+ *
+ * @return array|bool
+ */
 function get_css_properties($css, $id)
 {
 	if(!is_array($css))
@@ -880,6 +913,12 @@ function insert_into_css($new_css, $selector="", $css="", $class_id="")
 	return $css;
 }
 
+/**
+ * @param array $stylesheet
+ * @param int $tid
+ *
+ * @return bool|int
+ */
 function copy_stylesheet_to_theme($stylesheet, $tid)
 {
 	global $db;
@@ -901,6 +940,13 @@ function copy_stylesheet_to_theme($stylesheet, $tid)
 	return $sid;
 }
 
+/**
+ * @param int $tid
+ * @param bool|array $theme
+ * @param bool $update_disporders
+ *
+ * @return bool
+ */
 function update_theme_stylesheet_list($tid, $theme = false, $update_disporders = true)
 {
 	global $mybb, $db, $cache, $plugins;
@@ -1077,6 +1123,11 @@ function update_theme_stylesheet_list($tid, $theme = false, $update_disporders =
 	return true;
 }
 
+/**
+ * @param int $tid
+ *
+ * @return array|bool
+ */
 function make_parent_theme_list($tid)
 {
 	static $themes_by_parent;
@@ -1120,6 +1171,11 @@ function make_parent_theme_list($tid)
 	return $themes;
 }
 
+/**
+ * @param int $tid
+ *
+ * @return array|null
+ */
 function make_child_theme_list($tid)
 {
 	static $themes_by_child;
@@ -1160,6 +1216,9 @@ function make_child_theme_list($tid)
 	return $themes;
 }
 
+/**
+ * @return array
+ */
 function cache_themes()
 {
 	global $db, $theme_cache;
@@ -1189,6 +1248,10 @@ function cache_themes()
 	return $theme_cache;
 }
 
+/**
+ * @param int $parent
+ * @param int $depth
+ */
 function build_theme_list($parent=0, $depth=0)
 {
 	global $mybb, $db, $table, $lang, $page; // Global $table is bad, but it will have to do for now
@@ -1273,7 +1336,15 @@ function build_theme_list($parent=0, $depth=0)
 	}
 }
 
-// returns an array which can be sent to generate_select_box()
+/**
+ * returns an array which can be sent to generate_select_box()
+ *
+ * @param int $ignoretid
+ * @param int  $parent
+ * @param int  $depth
+ *
+ * @return null|string
+ */
 function build_theme_array($ignoretid = null, $parent=0, $depth=0)
 {
 	global $list;
@@ -1318,6 +1389,11 @@ function build_theme_array($ignoretid = null, $parent=0, $depth=0)
 	}
 }
 
+/**
+ * @param array $theme
+ *
+ * @return array|bool
+ */
 function fetch_theme_stylesheets($theme)
 {
 	// Fetch list of all of the stylesheets for this theme
@@ -1374,6 +1450,11 @@ function fetch_theme_stylesheets($theme)
 	return $stylesheets;
 }
 
+/**
+ * @param string $css
+ *
+ * @return string
+ */
 function upgrade_css_120_to_140($css)
 {
 	// Update our CSS to the new stuff in 1.4

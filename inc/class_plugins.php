@@ -106,8 +106,8 @@ class pluginSystem
 	 * Run the hooks that have plugins.
 	 *
 	 * @param string $hook      The name of the hook that is run.
-	 * @param string $arguments The argument for the hook that is run. The passed value MUST be a variable
-	 * @return string The arguments for the hook.
+	 * @param mixed $arguments The argument for the hook that is run. The passed value MUST be a variable
+	 * @return mixed The arguments for the hook.
 	 */
 	function run_hooks($hook, &$arguments="")
 	{

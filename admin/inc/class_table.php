@@ -31,8 +31,8 @@ class DefaultTable
 	/**
 	 * Construct an individual cell for this table.
 	 *
-	 * @param string The HTML content for this cell.
-	 * @param array Array of extra information about this cell (class, id, colspan, rowspan, width)
+	 * @param string $data The HTML content for this cell.
+	 * @param array $extra Array of extra information about this cell (class, id, colspan, rowspan, width)
 	 */
 	function construct_cell($data, $extra=array())
 	{
@@ -42,7 +42,7 @@ class DefaultTable
 	/**
 	 * Construct a row from the earlier defined constructed cells for the table.
 	 *
-	 * @param array Array of extra information about this row (class, id)
+	 * @param array $extra Array of extra information about this row (class, id)
 	 */
 	function construct_row($extra = array())
 	{
@@ -111,8 +111,8 @@ class DefaultTable
 	/**
 	 * return the cells of a row for the table based row.
 	 *
-	 * @param string The id of the row you want to give it.
-	 * @param boolean Whether or not to return or echo the resultant contents.
+	 * @param string $row_id The id of the row you want to give it.
+	 * @param boolean $return Whether or not to return or echo the resultant contents.
 	 * @return string The output of the row cells (optional).
 	 */
 	function output_row_cells($row_id, $return=false)
@@ -142,8 +142,8 @@ class DefaultTable
 	/**
 	 * Construct a header cell for this table.
 	 *
-	 * @param string The HTML content for this header cell.
-	 * @param array Array of extra information for this header cell (class, style, colspan, width)
+	 * @param string $data The HTML content for this header cell.
+	 * @param array $extra Array of extra information for this header cell (class, style, colspan, width)
 	 */
 	function construct_header($data, $extra=array())
 	{
@@ -153,10 +153,10 @@ class DefaultTable
 	/**
 	 * Output this table to the browser.
 	 *
-	 * @param string The heading for this table.
-	 * @param int The border width for this table.
-	 * @param string The class for this table.
-	 * @param boolean Whether or not to return or echo the resultant contents.
+	 * @param string $heading The heading for this table.
+	 * @param int $border The border width for this table.
+	 * @param string $class The class for this table.
+	 * @param boolean $return Whether or not to return or echo the resultant contents.
 	 * @return string The output of the row cells (optional).
 	 */
 	function output($heading="", $border=1, $class="general", $return=false)
@@ -174,10 +174,10 @@ class DefaultTable
 	/**
 	 * Fetch the built HTML for this table.
 	 *
-	 * @param string The heading for this table.
-	 * @param int The border width for this table.
-	 * @param string The class for this table.
-	 * @param string The id for this table.
+	 * @param string $heading The heading for this table.
+	 * @param int $border The border width for this table.
+	 * @param string $class The class for this table.
+	 * @param string $table_id The id for this table.
 	 * @return string The built HTML.
 	 */
 	function construct_html($heading="", $border=1, $class=null, $table_id="")
