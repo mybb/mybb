@@ -125,7 +125,14 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 
 	if($mybb->settings['regtype'] == "randompass")
 	{
-		$mybb->input['password'] = random_str();
+
+		$password_length = (int)$mybb->settings['minpasswordlength'];
+		if($password_length < 8)
+		{
+			$password_length = min(8, (int)$mybb->settings['maxpasswordlength']);
+		}
+
+		$mybb->input['password'] = random_str($password_length, $mybb->settings['requirecomplexpasswords']);
 		$mybb->input['password2'] = $mybb->input['password'];
 	}
 
@@ -888,6 +895,8 @@ if($mybb->input['action'] == "register")
 				$options = $thing[1];
 				$select = '';
 				$field = "fid{$profilefield['fid']}";
+				$profilefield['description'] = htmlspecialchars_uni($profilefield['description']);
+				$profilefield['name'] = htmlspecialchars_uni($profilefield['name']);
 				if($errors && isset($mybb->input['profile_fields'][$field]))
 				{
 					$userfield = $mybb->input['profile_fields'][$field];
@@ -2183,17 +2192,10 @@ if($mybb->input['action'] == "profile")
 			{
 				$lang->membdayage = $lang->sprintf($lang->membdayage, get_age($memprofile['birthday']));
 
-				if($membday[2] >= 1970)
-				{
-					$w_day = date("l", mktime(0, 0, 0, $membday[1], $membday[0], $membday[2]));
-					$membday = format_bdays($mybb->settings['dateformat'], $membday[1], $membday[0], $membday[2], $w_day);
-				}
-				else
-				{
-					$bdayformat = fix_mktime($mybb->settings['dateformat'], $membday[2]);
-					$membday = mktime(0, 0, 0, $membday[1], $membday[0], $membday[2]);
-					$membday = date($bdayformat, $membday);
-				}
+				$bdayformat = fix_mktime($mybb->settings['dateformat'], $membday[2]);
+				$membday = mktime(0, 0, 0, $membday[1], $membday[0], $membday[2]);
+				$membday = date($bdayformat, $membday);
+
 				$membdayage = $lang->membdayage;
 			}
 			elseif($membday[2])

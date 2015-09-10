@@ -2642,7 +2642,9 @@ document.write('".str_replace("/", "\/", $field_select)."');
 }
 
 /**
- *
+ * @param DefaultFormContainer $form_container
+ * @param int $pid
+ * @param int $depth
  */
 function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
 {
@@ -2773,6 +2775,12 @@ function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
 	}
 }
 
+/**
+ * @param int $gid
+ * @param int $fid
+ *
+ * @return string
+ */
 function retrieve_single_permissions_row($gid, $fid)
 {
 	global $mybb, $lang, $cache, $db;

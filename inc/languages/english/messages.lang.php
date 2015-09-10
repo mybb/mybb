@@ -90,6 +90,8 @@ $l['emailsubject_randompassword'] = "Your Password for {1}";
 $l['emailsubject_activateaccount'] = "Account Activation at {1}";
 $l['emailsubject_forumsubscription'] = "New Thread in {1}";
 $l['emailsubject_reportpost'] = "Reported post at {1}";
+$l['emailsubject_reportprofile'] = "Reported user at {1}";
+$l['emailsubject_reportreputation'] = "Reported reputation at {1}";
 $l['emailsubject_reachedpmquota'] = "Private Messaging Quota Reached at {1}";
 $l['emailsubject_changeemail'] = "Change of Email at {1}";
 $l['emailsubject_newpm'] = "New Private Message at {1} - {2}";
@@ -147,18 +149,41 @@ Activation Code: {5}
 Thank you,
 {2} Staff";
 
-
-$l['email_reportpost'] = "{1} from {2} has reported this post:
+$l['email_reportpost'] = "{1} from {2} has reported the following post:
 
 {3}
 {4}/{5}
 
 The reason this user gave for reporting this post:
-{7}
+{6}
 
 This message has been sent to all moderators of this forum, or all administrators and super moderators if there are no moderators.
 
 Please check this post out as soon as possible.";
+
+$l['email_reportprofile'] = "{1} from {2} has reported the following user:
+
+{3}
+{4}/{5}
+
+The reason this user gave for reporting this user:
+{6}
+
+This message has been sent to all moderators of this forum, or all administrators and super moderators if there are no moderators.
+
+Please check this user out as soon as possible.";
+
+$l['email_reportreputation'] = "{1} from {2} has reported the following reputation:
+
+{3}
+{4}/{5}
+
+The reason this user gave for reporting this reputation:
+{6}
+
+This message has been sent to all moderators of this forum, or all administrators and super moderators if there are no moderators.
+
+Please check this reputation out as soon as possible.";
 
 $l['email_passwordreset'] = "{1},
 

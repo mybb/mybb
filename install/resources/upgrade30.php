@@ -9,7 +9,7 @@
  */
 
 /**
- * Upgrade Script: 1.6.14, 1.6.15 or 1.6.16
+ * Upgrade Script: 1.6.14, 1.6.15, 1.6.16, 1.6.17 or 1.6.18
  */
 
 $upgrade_detail = array(
@@ -1249,12 +1249,12 @@ function upgrade30_threadcount()
 	}
 	else
 	{
-		$threads = $_POST['theadspage'];
+		$threads = (int)$_POST['theadspage'];
 	}
 
 	if($_POST['threadstart'])
 	{
-		$startat = $_POST['threadstart'];
+		$startat = (int)$_POST['threadstart'];
 		$upper = $startat+$threads;
 		$lower = $startat;
 	}
@@ -1804,12 +1804,12 @@ function upgrade30_dbchanges_ip()
 			}
 			else
 			{
-				$ipp = $_POST['ipspage'];
+				$ipp = (int)$_POST['ipspage'];
 			}
 
 			if($_POST['ipstart'])
 			{
-				$startat = $_POST['ipstart'];
+				$startat = (int)$_POST['ipstart'];
 				$upper = $startat+$ipp-1;
 				$lower = $startat;
 			}

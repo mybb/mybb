@@ -13,14 +13,14 @@ class dbpdoEngine {
 	/**
 	 * The database class to store PDO objects
 	 *
-	 * @var object
+	 * @var PDO
 	 */
 	public $db;
 
 	/**
 	 * The last query resource that ran
 	 *
-	 * @var object
+	 * @var PDOStatement
 	 */
 	public $last_query = "";
 
@@ -31,11 +31,10 @@ class dbpdoEngine {
 	/**
 	 * Connect to the database.
 	 *
-	 * @param string The database DSN.
-	 * @param string The database username. (depends on DSN)
-	 * @param string The database user's password. (depends on DSN)
-	 * @param array The databases driver options (optional)
-	 * @return boolean True on success
+	 * @param string $dsn The database DSN.
+	 * @param string $username The database username. (depends on DSN)
+	 * @param string $password The database user's password. (depends on DSN)
+	 * @param array $driver_options The databases driver options (optional)
 	 */
 	function __construct($dsn, $username="", $password="", $driver_options=array())
 	{
@@ -49,15 +48,13 @@ class dbpdoEngine {
 		}
 
 		$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-		return true;
 	}
 
 	/**
 	 * Query the database.
 	 *
-	 * @param string The query SQL.
-	 * @return resource The query data.
+	 * @param string $string The query SQL.
+	 * @return PDOStatement The query data.
 	 */
 	function query($string)
 	{
@@ -74,16 +71,12 @@ class dbpdoEngine {
 	/**
 	 * Return a result array for a query.
 	 *
-	 * @param resource The query resource.
+	 * @param PDOStatement $query The query resource.
+	 * @param int $resulttype One of PDO's constants: FETCH_ASSOC, FETCH_BOUND, FETCH_CLASS, FETCH_INTO, FETCH_LAZY, FETCH_NAMED, FETCH_NUM, FETCH_OBJ or FETCH_BOTH
 	 * @return array The array of results.
 	 */
 	function fetch_array($query, $resulttype=PDO::FETCH_BOTH)
 	{
-		if(!is_object($query))
-		{
-			return;
-		}
-
 		switch($resulttype)
 		{
 			case PDO::FETCH_ASSOC:
@@ -102,7 +95,7 @@ class dbpdoEngine {
 
 		if($this->seek_array[$query->guid])
 		{
-			$array = $query->fetch($resulttype, $this->seek[$query->guid]['offset'], $this->seek[$query->guid]['row']);
+			$array = $query->fetch($resulttype, $this->seek_array[$query->guid]['offset'], $this->seek_array[$query->guid]['row']);
 		}
 		else
 		{
@@ -115,33 +108,23 @@ class dbpdoEngine {
 	/**
 	 * Moves internal row pointer to the next row
 	 *
-	 * @param resource The query resource.
-	 * @param int The pointer to move the row to.
+	 * @param PDOStatement $query The query resource.
+	 * @param int $row The pointer to move the row to.
 	 */
 	function seek($query, $row)
 	{
-		if(!is_object($query))
-		{
-			return;
-		}
-
 		$this->seek_array[$query->guid] = array('offset' => PDO::FETCH_ORI_ABS, 'row' => $row);
 	}
 
 	/**
 	 * Return the number of rows resulting from a query.
 	 *
-	 * @param resource The query resource.
+	 * @param PDOStatement $query The query resource.
 	 * @return int The number of rows in the result.
 	 */
 	function num_rows($query)
 	{
-		if(!is_object($query))
-		{
-			return;
-		}
-
-		if(is_numeric(stripos($query->queryString, 'SELECT')))
+		if(stripos($query->queryString, 'SELECT') !== false)
 		{
 			$query = $this->db->query($query->queryString);
 			$result = $query->fetchAll();
@@ -156,7 +139,7 @@ class dbpdoEngine {
 	/**
 	 * Return the last id number of inserted data.
 	 *
-	 * @param string The name of the insert id to check. (Optional)
+	 * @param string $name The name of the insert id to check. (Optional)
 	 * @return int The id number.
 	 */
 	function insert_id($name="")
@@ -167,14 +150,14 @@ class dbpdoEngine {
 	/**
 	 * Return an error number.
 	 *
-	 * @param resource The query resource.
+	 * @param PDOStatement $query The query resource.
 	 * @return int The error number of the current error.
 	 */
 	function error_number($query)
 	{
-		if(!is_object($query) || !method_exists($query, "errorCode"))
+		if(!method_exists($query, "errorCode"))
 		{
-			return;
+			return 0;
 		}
 
 		$errorcode = $query->errorCode();
@@ -185,12 +168,12 @@ class dbpdoEngine {
 	/**
 	 * Return an error string.
 	 *
-	 * @param resource The query resource.
-	 * @return int The error string of the current error.
+	 * @param PDOStatement $query The query resource.
+	 * @return array The error string of the current error.
 	 */
 	function error_string($query)
 	{
-		if(!is_object($query) || !method_exists($query, "errorInfo"))
+		if(!method_exists($query, "errorInfo"))
 		{
 			return $this->db->errorInfo();
 		}
@@ -198,18 +181,9 @@ class dbpdoEngine {
 	}
 
 	/**
-	 * Roll back the last query.
-	 *
-	 * @return boolean true on success, false otherwise.
-	 */
-	function roll_back()
-	{
-		//return $this->db->rollBack();
-	}
-
-	/**
 	 * Returns the number of affected rows in a query.
 	 *
+	 * @param PDOStatement $query
 	 * @return int The number of affected rows.
 	 */
 	function affected_rows($query)
@@ -220,7 +194,7 @@ class dbpdoEngine {
 	/**
 	 * Return the number of fields.
 	 *
-	 * @param resource The query resource.
+	 * @param PDOStatement $query The query resource.
 	 * @return int The number of fields.
 	 */
 	function num_fields($query)
@@ -228,6 +202,12 @@ class dbpdoEngine {
 		return $query->columnCount();
 	}
 
+	/**
+	 * Escape a string according to the pdo escape format.
+	 *
+	 * @param string $string The string to be escaped.
+	 * @return string The escaped string.
+	 */
 	function escape_string($string)
 	{
 		$string = $this->db->quote($string);
@@ -242,7 +222,7 @@ class dbpdoEngine {
 	/**
 	 * Return a selected attribute
 	 *
-	 * @param constant The attribute to check.
+	 * @param string $attribute The attribute to check.
 	 * @return string The value of the attribute.
 	 */
 	function get_attribute($attribute)
