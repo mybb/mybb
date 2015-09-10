@@ -850,7 +850,7 @@ if(!$mybb->input['action'])
 		++$errors;
 	}
 
-	if(is_writable('.'.$mybb->settings['uploadspath']))
+	if(is_writable(MYBB_ROOT.$mybb->settings['uploadspath']))
 	{
 		$message_upload = "<span style=\"color: green;\">{$lang->writable}</span>";
 	}
@@ -860,7 +860,7 @@ if(!$mybb->input['action'])
 		++$errors;
 	}
 
-	if(is_writable('../'.$mybb->settings['avataruploadpath']))
+	if(is_writable(MYBB_ROOT.$mybb->settings['avataruploadpath']))
 	{
 		$message_avatar = "<span style=\"color: green;\">{$lang->writable}</span>";
 	}
