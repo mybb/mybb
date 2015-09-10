@@ -786,9 +786,9 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 				if($quoted_post['tid'] == $tid || $load_all == 1)
 				{
 					// If this post was the post for which a quote button was clicked, set the subject
-					if($pid == $quoted_post['pid'])
+					if($replyto == $quoted_post['pid'])
 					{
-						$subject = preg_replace('#RE:\s?#i', '', $quoted_post['subject']);
+						$subject = preg_replace('#^RE:\s?#i', '', $quoted_post['subject']);
 						// Subject too long? Shorten it to avoid error message
 						if(my_strlen($subject) > 85)
 						{
@@ -950,6 +950,12 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		else
 		{
 			$subject = $thread['subject'];
+			// Subject too long? Shorten it to avoid error message
+			if(my_strlen($subject) > 85)
+			{
+				$subject = my_substr($subject, 0, 82).'...';
+			}
+			$subject = "RE: ".$subject;
 		}
 	}
 
@@ -982,6 +988,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		// Set up posthandler.
 		require_once MYBB_ROOT."inc/datahandlers/post.php";
 		$posthandler = new PostDataHandler("insert");
+		$posthandler->action = "post";
 
 		// Set the post data that came from the input to the $post array.
 		$post = array(
@@ -1094,17 +1101,6 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	}
 
 	$subject = htmlspecialchars_uni($parser->parse_badwords($subject));
-
-	if(!$pid && !isset($mybb->input['previewpost']))
-	{
-		$subject = $thread['subject'];
-		// Subject too long? Shorten it to avoid error message
-		if(my_strlen($subject) > 85)
-		{
-			$subject = my_substr($subject, 0, 82).'...';
-		}
-		$subject = "RE: ".$subject;
-	}
 
 	$posthash = htmlspecialchars_uni($mybb->get_input('posthash'));
 

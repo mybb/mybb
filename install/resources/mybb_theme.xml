@@ -9,7 +9,7 @@
 		<editortheme><![CDATA[mybb.css]]></editortheme>
 	</properties>
 	<stylesheets>
-		<stylesheet name="global.css" version="1804" disporder="1"><![CDATA[body {
+		<stylesheet name="global.css" version="1806" disporder="1"><![CDATA[body {
 	background: #fff;
 	color: #333;
 	text-align: center;
@@ -1423,93 +1423,103 @@ a.button.report_user_button span {
 
 /** jGrowl Styling **/
 .jGrowl {
-	z-index: 9999;
-	color: #fff;
-	font-size: 12px;
-	position: fixed;
+  z-index: 9999;
+  color: #ffffff;
+  font-size: 12px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  position: fixed;
 }
-
 .jGrowl.top-left {
-	left: 0px;
-	top: 0px;
+  left: 0px;
+  top: 0px;
 }
-
 .jGrowl.top-right {
-	right: 0px;
-	top: 0px;
+  right: 0px;
+  top: 0px;
 }
-
 .jGrowl.bottom-left {
-	left: 0px;
-	bottom:	0px;
+  left: 0px;
+  bottom: 0px;
 }
-
 .jGrowl.bottom-right {
-	right: 0px;
-	bottom: 0px;
+  right: 0px;
+  bottom: 0px;
 }
-
 .jGrowl.center {
-	top: 0px;
-	width: 50%;
-	left: 25%;
+  top: 0px;
+  width: 50%;
+  left: 25%;
 }
 
 /** Cross Browser Styling **/
 
-.center .jGrowl-notification,
-.center .jGrowl-closer {
-	margin-left: auto;
-	margin-right: auto;
+.jGrowl.center .jGrowl-notification,
+.jGrowl.center .jGrowl-closer {
+  margin-left: auto;
+  margin-right: auto;
 }
-
-.jGrowl .jGrowl-notification,
-.jGrowl .jGrowl-closer {
-	background-color: #000;
-	opacity: .85;
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=85)";
-	filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=85);
-	zoom: 1;
-	width: 235px;
-	padding: 10px;
-	margin-top: 5px;
-	margin-bottom: 5px;
-	font-family: Tahoma, Arial, Helvetica, sans-serif;
-	font-size: 1em;
-	text-align: left;
-	display: none;
-	border-radius: 5px;
+.jGrowl-notification {
+  background-color: #000000;
+  opacity: 0.9;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=(0.9*100));
+  -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=(0.9*100));
+  zoom: 1;
+  width: 250px;
+  padding: 10px;
+  margin: 10px;
+  text-align: left;
+  display: none;
+  border-radius: 5px;
+  word-break: break-all;
+  min-height: 40px;
 }
-
-.jGrowl .jGrowl-notification {
-	min-height: 40px;
+.jGrowl-notification .ui-state-highlight,
+.jGrowl-notification .ui-widget-content .ui-state-highlight,
+.jGrowl-notification .ui-widget-header .ui-state-highlight {
+  border: 1px solid #000;
+  background: #000;
+  color: #fff;
 }
-
-.jGrowl .jGrowl-notification,
-.jGrowl .jGrowl-closer {
-	margin: 10px;
+.jGrowl-notification .jGrowl-header {
+  font-weight: bold;
+  font-size: .85em;
 }
-
-.jGrowl .jGrowl-notification .jGrowl-header {
-	font-weight: bold;
-	font-size: .85em;
+.jGrowl-notification .jGrowl-close {
+  background-color: transparent;
+  color: inherit;
+  border: none;
+  z-index: 99;
+  float: right;
+  font-weight: bold;
+  font-size: 1em;
+  cursor: pointer;
 }
-
-.jGrowl .jGrowl-notification .jGrowl-close {
-	z-index: 99;
-	float: right;
-	font-weight: bold;
-	font-size: 1em;
-	cursor: pointer;
+.jGrowl-closer {
+  background-color: #000000;
+  opacity: 0.9;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=(0.9*100));
+  -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=(0.9*100));
+  zoom: 1;
+  width: 250px;
+  padding: 10px;
+  margin: 10px;
+  text-align: left;
+  display: none;
+  border-radius: 5px;
+  word-break: break-all;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  cursor: pointer;
+  font-size: .9em;
+  font-weight: bold;
+  text-align: center;
 }
-
-.jGrowl .jGrowl-closer {
-	padding-top: 4px;
-	padding-bottom: 4px;
-	cursor: pointer;
-	font-size: .9em;
-	font-weight: bold;
-	text-align: center;
+.jGrowl-closer .ui-state-highlight,
+.jGrowl-closer .ui-widget-content .ui-state-highlight,
+.jGrowl-closer .ui-widget-header .ui-state-highlight {
+  border: 1px solid #000;
+  background: #000;
+  color: #fff;
 }
 
 /** Hide jGrowl when printing **/
@@ -1572,108 +1582,110 @@ a.button.report_user_button span {
 
 /** Impromptu Start **/
 
-/*! jQuery-Impromptu - v5.2.4 - 2014-05-26
+/*! jQuery-Impromptu - v6.2.1 - 2015-05-10
 * http://trentrichardson.com/Impromptu
-* Copyright (c) 2014 Trent Richardson; Licensed MIT */
+* Copyright (c) 2015 Trent Richardson; Licensed MIT */
 
-.jqifade {
-	position: absolute;
-	background-color: #777777;
+.jqifade{
+	position: absolute; 
+	background-color: #777777; 
 }
-
-div.jqi {
-	width: 400px;
+iframe.jqifade{
+	display:block;
+	z-index:-1;
+}
+div.jqi{ 
+	width: 400px; 
 	max-width:90%;
-	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
-	position: absolute;
-	background-color: #ffffff;
-	font-size: 11px;
-	text-align: left;
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; 
+	position: absolute; 
+	background-color: #ffffff; 
+	font-size: 11px; 
+	text-align: left; 
 	border: solid 1px #eeeeee;
 	border-radius: 6px;
 	-moz-border-radius: 6px;
 	-webkit-border-radius: 6px;
 	padding: 7px;
 }
-
-div.jqi .jqiclose {
-	position: absolute;
-	top: 4px; right: -2px;
-	width: 18px;
-	cursor: default;
-	color: #bbbbbb;
-	font-weight: bold;
+div.jqi .jqicontainer{ 
 }
-
-div.jqi .jqistate {
+div.jqi .jqiclose{ 
+	position: absolute;
+	top: 4px; right: -2px; 
+	width: 18px; 
+	cursor: default; 
+	color: #bbbbbb; 
+	font-weight: bold; 
+}
+div.jqi .jqistate{
 	background-color: #fff;
 }
-
-div.jqi .jqititle {
+div.jqi .jqititle{
 	padding: 5px 10px;
-	font-size: 16px;
-	line-height: 20px;
+	font-size: 16px; 
+	line-height: 20px; 
 	border-bottom: solid 1px #eeeeee;
 }
-
-div.jqi .jqimessage {
-	padding: 10px;
-	line-height: 20px;
-	color: #444444;
+div.jqi .jqimessage{ 
+	padding: 10px; 
+	line-height: 20px; 
+	color: #444444; 
+	overflow: auto;
 }
-
-div.jqi .jqibuttons {
-	text-align: right;
+div.jqi .jqibuttonshide{
+	display: none;
+} 
+div.jqi .jqibuttons{ 
+	text-align: right; 
 	margin: 0 -7px -7px -7px;
-	border-top: solid 1px #e4e4e4;
+	border-top: solid 1px #e4e4e4; 
 	background-color: #f4f4f4;
 	border-radius: 0 0 6px 6px;
 	-moz-border-radius: 0 0 6px 6px;
 	-webkit-border-radius: 0 0 6px 6px;
 }
-
-div.jqi .jqibuttons button {
+div.jqi .jqibuttons button{ 
 	margin: 0;
-	padding: 6px 20px;
+	padding: 15px 20px;
 	background-color: transparent;
-	font-weight: normal;
+	font-weight: normal; 
 	border: none;
-	border-left: solid 1px #e4e4e4;
-	color: #777;
-	font-weight: bold;
-	font-size: 12px;
+	border-left: solid 1px #e4e4e4; 
+	color: #777; 
+	font-weight: bold; 
+	font-size: 12px; 
 }
-
-div.jqi .jqibuttons button.jqidefaultbutton {
+div.jqi .jqibuttons button.jqidefaultbutton{
 	color: #489afe;
 }
-
 div.jqi .jqibuttons button:hover,
-div.jqi .jqibuttons button:focus {
+div.jqi .jqibuttons button:focus{
 	color: #287ade;
 	outline: none;
 }
+div.jqi .jqibuttons button[disabled]{
+	color: #aaa;
+}
+.jqiwarning .jqi .jqibuttons{ 
+	background-color: #b95656;
+}
 
 /* sub states */
-
-div.jqi .jqiparentstate::after {
+div.jqi .jqiparentstate::after{ 
 	background-color: #777;
 	opacity: 0.6;
 	filter: alpha(opacity=60);
 	content: '';
 	position: absolute;
-	top: 0;
-	left: 0;
-	bottom: 0;
-	right: 0;
+	top:0;left:0;bottom:0;right:0;
 	border-radius: 6px;
 	-moz-border-radius: 6px;
 	-webkit-border-radius: 6px;
 }
-
-div.jqi .jqisubstate {
+div.jqi .jqisubstate{
 	position: absolute;
-	top: 0;
+	top:0;
 	left: 20%;
 	width: 60%;
 	padding: 7px;
@@ -1683,96 +1695,28 @@ div.jqi .jqisubstate {
 	-moz-border-radius: 0 0 6px 6px;
 	-webkit-border-radius: 0 0 6px 6px;
 }
-
-div.jqi .jqisubstate .jqibuttons button {
+div.jqi .jqisubstate .jqibuttons button{
 	padding: 10px 18px;
 }
 
 /* arrows for tooltips/tours */
+.jqi .jqiarrow{ position: absolute; height: 0; width:0; line-height: 0; font-size: 0; border: solid 10px transparent;}
 
-.jqi .jqiarrow {
-	position: absolute;
-	height: 0; width: 0;
-	line-height: 0;
-	font-size: 0;
-	border: solid 10px transparent;
-}
+.jqi .jqiarrowtl{ left: 10px; top: -20px; border-bottom-color: #ffffff; }
+.jqi .jqiarrowtc{ left: 50%; top: -20px; border-bottom-color: #ffffff; margin-left: -10px; }
+.jqi .jqiarrowtr{ right: 10px; top: -20px; border-bottom-color: #ffffff; }
 
-.jqi .jqiarrowtl {
-	left: 10px;
-	top: -20px;
-	border-bottom-color: #ffffff;
-}
+.jqi .jqiarrowbl{ left: 10px; bottom: -20px; border-top-color: #ffffff; }
+.jqi .jqiarrowbc{ left: 50%; bottom: -20px; border-top-color: #ffffff; margin-left: -10px; }
+.jqi .jqiarrowbr{ right: 10px; bottom: -20px; border-top-color: #ffffff; }
 
-.jqi .jqiarrowtc {
-	left: 50%;
-	top: -20px;
-	border-bottom-color: #ffffff;
-	margin-left: -10px;
-}
+.jqi .jqiarrowlt{ left: -20px; top: 10px; border-right-color: #ffffff; }
+.jqi .jqiarrowlm{ left: -20px; top: 50%; border-right-color: #ffffff; margin-top: -10px; }
+.jqi .jqiarrowlb{ left: -20px; bottom: 10px; border-right-color: #ffffff; }
 
-.jqi .jqiarrowtr {
-	right: 10px;
-	top: -20px;
-	border-bottom-color: #ffffff;
-}
-
-.jqi .jqiarrowbl {
-	left: 10px;
-	bottom: -20px;
-	border-top-color: #ffffff;
-}
-
-.jqi .jqiarrowbc {
-	left: 50%;
-	bottom: -20px;
-	border-top-color: #ffffff;
-	margin-left: -10px;
-}
-
-.jqi .jqiarrowbr {
-	right: 10px;
-	bottom: -20px;
-	border-top-color: #ffffff;
-}
-
-.jqi .jqiarrowlt {
-	left: -20px;
-	top: 10px;
-	border-right-color: #ffffff;
-}
-
-.jqi .jqiarrowlm {
-	left: -20px;
-	top: 50%;
-	border-right-color: #ffffff;
-	margin-top: -10px;
-}
-
-.jqi .jqiarrowlb {
-	left: -20px;
-	bottom: 10px;
-	border-right-color: #ffffff;
-}
-
-.jqi .jqiarrowrt {
-	right: -20px;
-	top: 10px;
-	border-left-color: #ffffff;
-}
-
-.jqi .jqiarrowrm {
-	right: -20px;
-	top: 50%;
-	border-left-color: #ffffff;
-	margin-top: -10px;
-}
-
-.jqi .jqiarrowrb {
-	right: -20px;
-	bottom: 10px;
-	border-left-color: #ffffff;
-}
+.jqi .jqiarrowrt{ right: -20px; top: 10px; border-left-color: #ffffff; }
+.jqi .jqiarrowrm{ right: -20px; top: 50%; border-left-color: #ffffff; margin-top: -10px; }
+.jqi .jqiarrowrb{ right: -20px; bottom: 10px; border-left-color: #ffffff; }
 
 /** Impromptu End */
 ]]></stylesheet>
@@ -4346,7 +4290,7 @@ $(".forumjump").change(function() {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="managegroup_adduser" version="1804"><![CDATA[<br />
+		<template name="managegroup_adduser" version="1806"><![CDATA[<br />
 <form method="post" action="managegroup.php">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="do_add" />
@@ -4360,8 +4304,8 @@ $(".forumjump").change(function() {
   <td class="trow1"><input type="text" id="username" class="textbox" name="username" size="40" maxlength="{$mybb->settings['maxnamelength']}" style="width: 210px" /></td>
 </tr>
 </table>
-<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css">
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1804"></script>
+<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1806">
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1806"></script>
 <script type="text/javascript">
 <!--
 if(use_xmlhttprequest == "1")
@@ -4401,7 +4345,7 @@ if(use_xmlhttprequest == "1")
 <br />
 <div align="center"><input type="submit" class="button" value="{$lang->add_member_submit}" /></div>
 </form>]]></template>
-		<template name="managegroup_inviteuser" version="1804"><![CDATA[<br />
+		<template name="managegroup_inviteuser" version="1806"><![CDATA[<br />
 <form method="post" action="managegroup.php">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="do_invite" />
@@ -4415,8 +4359,8 @@ if(use_xmlhttprequest == "1")
   <td class="trow1"><input type="text" id="inviteusername" class="textbox" name="inviteusername" size="40" maxlength="{$mybb->settings['maxnamelength']}" style="width: 210px" /></td>
 </tr>
 </table>
-<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css">
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1804"></script>
+<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1806">
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1806"></script>
 <script type="text/javascript">
 <!--
 if(use_xmlhttprequest == "1")
@@ -5313,7 +5257,7 @@ $(document).ready(function() {
 		// -->
 		</script>
 		]]></template>
-		<template name="member_register_referrer" version="1804"><![CDATA[<br />
+		<template name="member_register_referrer" version="1806"><![CDATA[<br />
 <fieldset class="trow2">
 <legend><strong>{$lang->referrer}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
@@ -5326,8 +5270,8 @@ $(document).ready(function() {
 </td>
 </tr></table>
 </fieldset>
-<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css">
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1804"></script>
+<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1806">
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1806"></script>
 <script type="text/javascript">
 <!--
 if(use_xmlhttprequest == "1")
@@ -5507,7 +5451,7 @@ if(use_xmlhttprequest == "1")
 </table>
 </div>
 </div>]]></template>
-		<template name="memberlist" version="1804"><![CDATA[<html>
+		<template name="memberlist" version="1806"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->member_list}</title>
 {$headerinclude}
@@ -5608,8 +5552,8 @@ if(use_xmlhttprequest == "1")
 <div align="center"><br /><input type="submit" class="button" name="submit" value="{$lang->search}" /></div>
 </form>
 {$footer}
-<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css">
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1804"></script>
+<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1806">
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1806"></script>
 <script type="text/javascript">
 <!--
 if(use_xmlhttprequest == "1")
@@ -5663,7 +5607,7 @@ if(use_xmlhttprequest == "1")
 </html>]]></template>
 		<template name="memberlist_referrals" version="1800"><![CDATA[<td class="tcat" width="10%" align="center"><span class="smalltext"><a href="{$sorturl}&amp;sort=referrals&amp;order=descending"><strong>{$lang->referrals}</strong></a> {$orderarrow['referrals']}</span></td>]]></template>
 		<template name="memberlist_referrals_bit" version="1600"><![CDATA[<td class="{$alt_bg}" align="center">{$user['referrals']}</td>]]></template>
-		<template name="memberlist_search" version="1804"><![CDATA[<html>
+		<template name="memberlist_search" version="1806"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->search_member_list}</title>
 {$headerinclude}
@@ -5755,8 +5699,8 @@ if(use_xmlhttprequest == "1")
 <div align="center"><br /><input type="submit" class="button" name="submit" value="{$lang->search}" /></div>
 </form>
 {$footer}
-<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css">
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1804"></script>
+<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1806">
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1806"></script>
 <script type="text/javascript">
 <!--
 if(use_xmlhttprequest == "1")
@@ -6602,7 +6546,7 @@ if(use_xmlhttprequest == "1")
 		<template name="modcp_banning_nobanned" version="1400"><![CDATA[<tr>
 	<td class="trow1" align="center" colspan="4">{$lang->no_banned}</td>
 </tr>]]></template>
-		<template name="modcp_banuser" version="1804"><![CDATA[<html>
+		<template name="modcp_banuser" version="1806"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->ban_user}</title>
 {$headerinclude}
@@ -6645,8 +6589,8 @@ if(use_xmlhttprequest == "1")
 		</tr>
 	</table>
 	{$footer}
-<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css">
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1804"></script>
+<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1806">
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1806"></script>
 <script type="text/javascript">
 <!--
 if(use_xmlhttprequest == "1")
@@ -7082,7 +7026,7 @@ if(use_xmlhttprequest == "1")
 		<template name="modcp_editprofile_suspensions_info" version="1600"><![CDATA[<tr>
 	<td colspan="2" class="smalltext"><em>{$suspension_info}</em></td>
 </tr>]]></template>
-		<template name="modcp_finduser" version="1804"><![CDATA[<html>
+		<template name="modcp_finduser" version="1806"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->find_users}</title>
 {$headerinclude}
@@ -7144,8 +7088,8 @@ if(use_xmlhttprequest == "1")
 		</table>
 	</form>
 {$footer}
-<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css" />
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1804"></script>
+<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1806" />
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1806"></script>
 <script type="text/javascript">
 <!--
 if(use_xmlhttprequest == "1")
@@ -7788,7 +7732,7 @@ if(use_xmlhttprequest == "1")
 		<template name="modcp_nobanned" version="1613"><![CDATA[<tr>
 		<td class="trow1" align="center" colspan="4">{$lang->no_bans_ending}</td>
 </tr>]]></template>
-		<template name="modcp_warninglogs" version="1804"><![CDATA[<html>
+		<template name="modcp_warninglogs" version="1806"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->warning_logs}</title>
 {$headerinclude}
@@ -7864,8 +7808,8 @@ if(use_xmlhttprequest == "1")
 		</tr>
 	</table>
 	{$footer}
-<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css">
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1804"></script>
+<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1806">
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1806"></script>
 <script type="text/javascript">
 <!--
 if(use_xmlhttprequest == "1")
@@ -9723,7 +9667,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 </body>
 </html>]]></template>
-		<template name="private_advanced_search" version="1805"><![CDATA[<html>
+		<template name="private_advanced_search" version="1806"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->advanced_private_message_search}</title>
 {$headerinclude}
@@ -9801,8 +9745,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </table>
 </form>
 {$footer}
-<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css" />
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
+<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1806" />
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1806"></script>
 <script type="text/javascript">
 <!--
 if(use_xmlhttprequest == "1")
@@ -10350,8 +10294,8 @@ if(use_xmlhttprequest == "1")
 </script>
 </body>
 </html>]]></template>
-		<template name="private_send_autocomplete" version="1804"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css">
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1804"></script>
+		<template name="private_send_autocomplete" version="1806"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1806">
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1806"></script>
 <script type="text/javascript">
 <!--
 if(use_xmlhttprequest == "1")
@@ -10802,7 +10746,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 			<a href="javascript:Report.reportReputation({$reputation_vote['rid']});" class="postbit_report"><span>{$lang->report_vote}</span></a>
 		</div>]]>
 		</template>
-		<template name="search" version="1804"><![CDATA[<html>
+		<template name="search" version="1806"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->search}</title>
 {$headerinclude}
@@ -10882,8 +10826,8 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <div align="center"><br /><input type="submit" class="button" name="submit" value="{$lang->search}" /></div>
 </form>
 {$footer}
-<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css">
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1804"></script>
+<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1806">
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1806"></script>
 <script type="text/javascript">
 <!--
 if(use_xmlhttprequest == "1")
@@ -11850,13 +11794,15 @@ if(use_xmlhttprequest == "1")
 		<template name="usercp_attachments_none" version="120"><![CDATA[<tr>
 <td class="trow1" align="center" colspan="5">{$lang->no_attachments}</td>
 </tr>]]></template>
-		<template name="usercp_avatar" version="1800"><![CDATA[<html>
+		<template name="usercp_avatar" version="1806"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->change_avatar}</title>
 {$headerinclude}
 </head>
 <body>
 {$header}
+<form enctype="multipart/form-data" action="usercp.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table width="100%" border="0" align="center">
 <tr>
 	{$usercpnav}
@@ -11879,8 +11825,6 @@ if(use_xmlhttprequest == "1")
 			<tr>
 				<td class="tcat" colspan="2"><strong>{$lang->custom_avatar}</strong></td>
 			</tr>
-			<form enctype="multipart/form-data" action="usercp.php" method="post">
-			<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 			{$avatarupload}
 			<tr>
 				<td class="trow2" width="40%">
@@ -12045,7 +11989,7 @@ if(use_xmlhttprequest == "1")
 		{$lang->no_requests}
 	</td>
 </tr>]]></template>
-		<template name="usercp_editlists" version="1804"><![CDATA[<html>
+		<template name="usercp_editlists" version="1806"><![CDATA[<html>
 <head>
 	<title>{$mybb->settings['bbname']} - {$lang->edit_lists}</title>
 	{$headerinclude}
@@ -12058,8 +12002,8 @@ if(use_xmlhttprequest == "1")
       	lang.buddylist_error = '{$lang->buddylist_error}';
 	</script>
 
-  <link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css">
-	<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1804"></script>
+  <link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1806">
+	<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1806"></script>
 
 </head>
 <body>
@@ -13875,8 +13819,8 @@ $(function() {
 <link rel="alternate" type="application/atom+xml" title="{$lang->latest_threads} (Atom 1.0)" href="{$mybb->settings['bburl']}/syndication.php?type=atom1.0" />
 <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.js?ver=1804"></script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.plugins.min.js?ver=1804"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.js?ver=1806"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.plugins.min.js?ver=1806"></script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/general.js?ver=1806"></script>
 
 {$stylesheets}

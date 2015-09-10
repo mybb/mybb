@@ -28,7 +28,7 @@ function upgrade33_dbchanges()
 	echo "<p>Performing necessary upgrade queries...</p>";
 	flush();
 
-	if($db->field_exists('2fasecret', 'adminoptions'))
+	if($db->field_exists('2fasecret', 'adminoptions') && !$db->field_exists('authsecret', 'adminoptions'))
 	{
 		$db->rename_column('adminoptions', '2fasecret', 'authsecret', "varchar(16) NOT NULL default ''");
 	}

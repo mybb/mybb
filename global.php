@@ -124,7 +124,8 @@ if(isset($mybb->input['theme']) && verify_post_check($mybb->get_input('my_post_k
 
 	$userhandler->set_data($user);
 
-	if($userhandler->verify_style())
+	// validate_user verifies the style if it is set in the data array.
+	if($userhandler->validate_user())
 	{
 		$mybb->user['style'] = $user['style'];
 
