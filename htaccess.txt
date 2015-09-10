@@ -59,3 +59,9 @@ Options -MultiViews +FollowSymlinks -Indexes
 <IfModule mod_deflate.c>
 	AddOutputFilterByType DEFLATE application/javascript text/css text/html text/xml
 </IfModule>
+
+# Note: You are able to choose a different name in the Admin CP. If you've done that you need to change it here too
+<Files "error.log">
+	Order Deny,Allow
+	Deny from all
+</Files>

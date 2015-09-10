@@ -966,21 +966,12 @@ class DefaultFormContainer
 			$row = "<label{$for}>{$title}</label>";
 		}
 
-		if(isset($options['id']))
-		{
-			$options['id'] = " id=\"{$options['id']}\"";
-		}
-		else
-		{
-			$options['id'] = '';
-		}
-
 		if($description != '')
 		{
 			$row .= "\n<div class=\"description\">{$description}</div>\n";
 		}
 
-		$row .= "<div class=\"form_row\"{$options['id']}>{$content}</div>\n";
+		$row .= "<div class=\"form_row\">{$content}</div>\n";
 
 		$this->_container->construct_cell($row, $options);
 

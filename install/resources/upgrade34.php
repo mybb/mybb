@@ -20,25 +20,4 @@ $upgrade_detail = array(
 
 @set_time_limit(0);
 
-function upgrade34_dbchanges()
-{
-	global $db, $output;
-
-	$output->print_header("Updating Database");
-	echo "<p>Performing necessary upgrade queries...</p>";
-	flush();
-
-	if($db->type != 'pgsql')
-	{
-		$db->modify_column('adminsessions', 'useragent', "varchar(200) NOT NULL default ''");
-		$db->modify_column('sessions', 'useragent', "varchar(200) NOT NULL default ''");
-	}
-	else
-	{
-		$db->modify_column('adminsessions', 'useragent', "varchar(200)", "set", "");
-		$db->modify_column('sessions', 'useragent', "varchar(200)", "set", "");
-	}
-
-	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("33_done");
-}
+/* Nothing to do for 1.8.5 */

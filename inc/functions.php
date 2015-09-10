@@ -324,12 +324,12 @@ function parse_page($contents)
  *
  * @param string $format A date format according to PHP's date structure.
  * @param int $stamp The unix timestamp the date should be generated for.
- * @param int $offset The offset in hours that should be applied to times. (timezones)
+ * @param int|string $offset The offset in hours that should be applied to times. (timezones) Or an empty string to determine that automatically
  * @param int $ty Whether or not to use today/yesterday formatting.
  * @param boolean $adodb Whether or not to use the adodb time class for < 1970 or > 2038 times
  * @return string The formatted timestamp.
  */
-function my_date($format, $stamp=0, $offset=0, $ty=1, $adodb=false)
+function my_date($format, $stamp=0, $offset="", $ty=1, $adodb=false)
 {
 	global $mybb, $lang, $mybbadmin, $plugins;
 
@@ -1466,9 +1466,10 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
  *
  * @param int $fid The forum ID
  * @param int $pid The Parent ID
+ * @param bool $return
  * @return bool
  */
-function check_forum_password($fid, $pid=0)
+function check_forum_password($fid, $pid=0, $return=false)
 {
 	global $mybb, $header, $footer, $headerinclude, $theme, $templates, $lang, $forum_cache;
 
@@ -1536,6 +1537,11 @@ function check_forum_password($fid, $pid=0)
 	else
 	{
 		$showform = false;
+	}
+
+	if($return)
+	{
+		return $showform;
 	}
 
 	if($showform)
@@ -3206,9 +3212,12 @@ function build_mycode_inserter($bind="message", $smilies = true)
 			// Smilies
 			$emoticon = "";
 			$emoticons_enabled = "false";
-			if($smilies && $mybb->settings['smilieinserter'] != 0 && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
+			if($smilies)
 			{
-				$emoticon = ",emoticon";
+				if($mybb->settings['smilieinserter'] && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
+				{
+					$emoticon = ",emoticon";
+				}
 				$emoticons_enabled = "true";
 
 				if(!$smiliecache)
@@ -3219,11 +3228,8 @@ function build_mycode_inserter($bind="message", $smilies = true)
 					}
 					foreach($smilie_cache as $smilie)
 					{
-						if($smilie['showclickable'] != 0)
-						{
-							$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
-							$smiliecache[$smilie['sid']] = $smilie;
-						}
+						$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
+						$smiliecache[$smilie['sid']] = $smilie;
 					}
 				}
 
@@ -3248,9 +3254,14 @@ function build_mycode_inserter($bind="message", $smilies = true)
 						$image = htmlspecialchars_uni($mybb->get_asset_url($smilie['image']));
 						$image = str_replace(array('\\', '"'), array('\\\\', '\"'), $image);
 
-						if($i < $mybb->settings['smilieinsertertot'])
+						if(!$mybb->settings['smilieinserter'] || !$mybb->settings['smilieinsertercols'] || !$mybb->settings['smilieinsertertot'] || !$smilie['showclickable'])
+						{
+							$hiddensmilies .= '"'.$find.'": "'.$image.'",';							
+						}
+						elseif($i < $mybb->settings['smilieinsertertot'])
 						{
 							$dropdownsmilies .= '"'.$find.'": "'.$image.'",';
+							++$i;
 						}
 						else
 						{
@@ -3262,7 +3273,6 @@ function build_mycode_inserter($bind="message", $smilies = true)
 							$find = str_replace(array('\\', '"'), array('\\\\', '\"'), htmlspecialchars_uni($finds[$j]));
 							$hiddensmilies .= '"'.$find.'": "'.$image.'",';
 						}
-						++$i;
 					}
 				}
 			}

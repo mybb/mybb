@@ -439,6 +439,12 @@ else if($mybb->input['action'] == "edit_post")
 		xmlhttp_error($lang->thread_doesnt_exist);
 	}
 
+	// Check if this forum is password protected and we have a valid password
+	if(check_forum_password($forum['fid'], 0, true))
+	{
+		xmlhttp_error($lang->wrong_forum_password);
+	}
+
 	// Fetch forum permissions.
 	$forumpermissions = forum_permissions($forum['fid']);
 
@@ -467,12 +473,6 @@ else if($mybb->input['action'] == "edit_post")
 		if($post['visible'] == 0)
 		{
 			xmlhttp_error($lang->post_moderation);
-		}
-
-		// Forum is closed - no editing allowed
-		if($forum['open'] == 0)
-		{
-			xmlhttp_error($lang->no_permission_edit_post);
 		}
 	}
 
@@ -528,6 +528,13 @@ else if($mybb->input['action'] == "edit_post")
 			"editreason" => $editreason,
 			"edit_uid" => $mybb->user['uid']
 		);
+
+		// If this is the first post set the prefix. If a forum requires a prefix the quick edit would throw an error otherwise
+		if($post['pid'] == $thread['firstpost'])
+		{
+			$updatepost['prefix'] = $thread['prefix'];
+		}
+
 		$posthandler->set_data($updatepost);
 
 		// Now let the post handler do all the hard work.

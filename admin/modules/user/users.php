@@ -3357,7 +3357,7 @@ function build_users_view($view)
 				}
 				else
 				{
-					$userfield_sql .= ' AND '.$db->escape_string($column)." LIKE '%".$db->escape_string($input)."%'";
+					$userfield_sql .= ' AND '.$db->escape_string($column)." LIKE '%".$db->escape_string_like($input)."%'";
 				}
 			}
 		}

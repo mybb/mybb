@@ -9,7 +9,7 @@
  */
 
 /**
- * Upgrade Script: 1.8.4
+ * Upgrade Script: 1.8.6
  */
 
 $upgrade_detail = array(
@@ -20,7 +20,7 @@ $upgrade_detail = array(
 
 @set_time_limit(0);
 
-function upgrade33_dbchanges()
+function upgrade35_dbchanges()
 {
 	global $db, $output;
 
@@ -28,11 +28,17 @@ function upgrade33_dbchanges()
 	echo "<p>Performing necessary upgrade queries...</p>";
 	flush();
 
-	if($db->field_exists('2fasecret', 'adminoptions') && !$db->field_exists('authsecret', 'adminoptions'))
+	if($db->type != 'pgsql')
 	{
-		$db->rename_column('adminoptions', '2fasecret', 'authsecret', "varchar(16) NOT NULL default ''");
+		$db->modify_column('adminsessions', 'useragent', "varchar(200) NOT NULL default ''");
+		$db->modify_column('sessions', 'useragent', "varchar(200) NOT NULL default ''");
 	}
-	
+	else
+	{
+		$db->modify_column('adminsessions', 'useragent', "varchar(200)", "set", "");
+		$db->modify_column('sessions', 'useragent', "varchar(200)", "set", "");
+	}
+
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("33_done");
+	$output->print_footer("35_done");
 }

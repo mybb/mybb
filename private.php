@@ -1135,6 +1135,10 @@ if($mybb->input['action'] == "read")
 		$bcc_form_val = implode(',', $bcc_form_val);
 		eval("\$bcc = \"".$templates->get("private_read_bcc")."\";");
 	}
+	else
+	{
+		$bcc_form_val = '';
+	}
 
 	$replyall = false;
 	if(count($to_recipients) > 1)
