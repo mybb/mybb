@@ -2148,8 +2148,7 @@ if($mybb->input['action'] == "merge")
 	<!--
 	$("#source_username").select2({
 		placeholder: "'.$lang->search_for_a_user.'",
-		minimumInputLength: 3,
-		maximumSelectionSize: 3,
+		minimumInputLength: 1,
 		multiple: false,
 		ajax: { // instead of writing the function to execute the request we use Select2\'s convenient helper
 			url: "../xmlhttp.php?action=get_users",
@@ -2178,8 +2177,7 @@ if($mybb->input['action'] == "merge")
 	});
 	$("#destination_username").select2({
 		placeholder: "'.$lang->search_for_a_user.'",
-		minimumInputLength: 3,
-		maximumSelectionSize: 3,
+		minimumInputLength: 1,
 		multiple: false,
 		ajax: { // instead of writing the function to execute the request we use Select2\'s convenient helper
 			url: "../xmlhttp.php?action=get_users",
@@ -4191,8 +4189,7 @@ function user_search_conditions($input=array(), &$form)
 <!--
 $("#username").select2({
 	placeholder: "'.$lang->search_for_a_user.'",
-	minimumInputLength: 3,
-	maximumSelectionSize: 3,
+	minimumInputLength: 1,
 	multiple: false,
 	ajax: { // instead of writing the function to execute the request we use Select2\'s convenient helper
 		url: "../xmlhttp.php?action=get_users",
