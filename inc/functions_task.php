@@ -58,6 +58,19 @@ function run_task($tid=0)
 		{
 			add_task_log($task, $lang->missing_task);
 		}
+
+		// If task file does not exist, disable task and inform the administrator
+		$updated_task = array(
+			"enabled" => 0,
+			"locked" => 0
+		);
+		$db->update_query("tasks", $updated_task, "tid='{$task['tid']}'");
+
+		$subject = $lang->sprintf($lang->email_broken_task_subject, $mybb->settings['bbname']);
+		$message = $lang->sprintf($lang->email_broken_task, $mybb->settings['bbname'], $mybb->settings['bburl'], $task['title']);
+
+		my_mail($mybb->settings['adminemail'], $subject, $message, $mybb->settings['adminemail']);
+
 		$cache->update_tasks();
 		return false;
 	}
