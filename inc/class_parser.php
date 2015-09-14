@@ -1359,9 +1359,13 @@ class postParser
 				{
 					$id = $input['v']; // http://www.facebook.com/video/video.php?v=123
 				}
-				else
+				elseif(substr($path[3], 0, 3) == 'vb.')
 				{
 					$id = $path[4]; // https://www.facebook.com/fds/videos/vb.123/123/
+				}
+				else
+				{
+					$id = $path[3]; // https://www.facebook.com/fds/videos/123/
 				}
 				break;
 			case "veoh":
