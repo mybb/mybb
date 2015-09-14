@@ -494,3 +494,10 @@ If you would not like to receive any more notifications of replies to this threa
 [url]{5}/usercp2.php?action=removesubscription&tid={7}&key={8}&my_post_key={9}[/url]
 
 ------------------------------------------";
+
+$l['email_broken_task_subject'] = "MyBB task error on {1}";
+$l['email_broken_task'] = "Your copy of MyBB running on {1} ({2}) has experienced an error with the task system.
+
+The task file for {3} is missing.
+
+This task has been disabled until issue is resolved.";
