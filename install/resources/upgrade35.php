@@ -142,13 +142,8 @@ function upgrade35_dbchanges3()
 			$db->modify_column("usertitles", "stars", "smallint(4) unsigned NOT NULL default '0'");
 			$db->modify_column("warninglevels", "percentage", "smallint(3) unsigned NOT NULL default '0'");
 			break;
->>>>>>> upstream/feature
 	}
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("35_done");
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> upstream/feature
