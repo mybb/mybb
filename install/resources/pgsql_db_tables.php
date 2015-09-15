@@ -148,9 +148,9 @@ $tables[] = "CREATE TABLE mybb_banned (
 
 $tables[] = "CREATE TABLE mybb_buddyrequests (
  id serial,
- uid int NOT NULL,
- touid int NOT NULL,
- date int NOT NULL,
+ uid int NOT NULL default '0',
+ touid int NOT NULL default '0',
+ date int NOT NULL default '0',
  PRIMARY KEY (id)
 );";
 
