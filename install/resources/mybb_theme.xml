@@ -4313,7 +4313,7 @@ if(use_xmlhttprequest == "1")
 	MyBB.select2();
 	$("#username").select2({
 		placeholder: "{$lang->search_user}",
-		minimumInputLength: 1,
+		minimumInputLength: 2,
 		multiple: false,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
@@ -4367,7 +4367,7 @@ if(use_xmlhttprequest == "1")
 	MyBB.select2();
 	$("#inviteusername").select2({
 		placeholder: "{$lang->search_user}",
-		minimumInputLength: 1,
+		minimumInputLength: 2,
 		multiple: false,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
@@ -5277,7 +5277,7 @@ if(use_xmlhttprequest == "1")
 	MyBB.select2();
 	$("#referrer").select2({
 		placeholder: "{$lang->search_user}",
-		minimumInputLength: 1,
+		minimumInputLength: 2,
 		multiple: false,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
@@ -5558,7 +5558,7 @@ if(use_xmlhttprequest == "1")
 	MyBB.select2();
 	$("#username").select2({
 		placeholder: "{$lang->search_user}",
-		minimumInputLength: 1,
+		minimumInputLength: 2,
 		multiple: false,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
@@ -5704,7 +5704,7 @@ if(use_xmlhttprequest == "1")
 	MyBB.select2();
 	$("#username").select2({
 		placeholder: "{$lang->search_user}",
-		minimumInputLength: 1,
+		minimumInputLength: 2,
 		multiple: false,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
@@ -6593,7 +6593,7 @@ if(use_xmlhttprequest == "1")
 	MyBB.select2();
 	$("#username").select2({
 		placeholder: "{$lang->search_user}",
-		minimumInputLength: 1,
+		minimumInputLength: 2,
 		multiple: false,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
@@ -7091,7 +7091,7 @@ if(use_xmlhttprequest == "1")
 	MyBB.select2();
 	$("#username").select2({
 		placeholder: "{$lang->find_users}",
-		minimumInputLength: 1,
+		minimumInputLength: 2,
 		multiple: false,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
@@ -7810,7 +7810,7 @@ if(use_xmlhttprequest == "1")
 	MyBB.select2();
 	$("#username").select2({
 		placeholder: "{$lang->search_user}",
-		minimumInputLength: 1,
+		minimumInputLength: 2,
 		multiple: false,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
@@ -9746,7 +9746,7 @@ if(use_xmlhttprequest == "1")
 	MyBB.select2();
 	$("#sender").select2({
 		placeholder: "{$lang->search_user}",
-		minimumInputLength: 1,
+		minimumInputLength: 2,
 		multiple: false,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
@@ -10294,7 +10294,7 @@ if(use_xmlhttprequest == "1")
 	MyBB.select2();
 	$("#to").select2({
 		placeholder: "{$lang->search_user}",
-		minimumInputLength: 1,
+		minimumInputLength: 2,
 		maximumSelectionSize: {$mybb->usergroup['maxpmrecipients']},
 		multiple: true,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
@@ -10332,7 +10332,7 @@ if(use_xmlhttprequest == "1")
 
   $("#bcc").select2({
 		placeholder: "{$lang->search_user}",
-		minimumInputLength: 1,
+		minimumInputLength: 2,
 		maximumSelectionSize: {$mybb->usergroup['maxpmrecipients']},
 		multiple: true,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
@@ -10826,7 +10826,7 @@ if(use_xmlhttprequest == "1")
 	MyBB.select2();
 	$("#author").select2({
 		placeholder: "{$lang->search_user}",
-		minimumInputLength: 1,
+		minimumInputLength: 2,
 		multiple: false,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
@@ -12025,7 +12025,7 @@ if(use_xmlhttprequest == "1")
 									MyBB.select2();
 									$("#buddy_add_username").select2({
 										placeholder: "{$lang->search_user}",
-										minimumInputLength: 1,
+										minimumInputLength: 2,
 										maximumSelectionSize: 5,
 										multiple: true,
 										ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
@@ -12097,7 +12097,7 @@ if(use_xmlhttprequest == "1")
 									MyBB.select2();
 									$("#ignored_add_username").select2({
 										placeholder: "{$lang->search_user}",
-										minimumInputLength: 1,
+										minimumInputLength: 2,
 										maximumSelectionSize: 5,
 										multiple: true,
 										ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
