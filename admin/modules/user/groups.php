@@ -496,7 +496,7 @@ if($mybb->input['action'] == "leaders")
 	<!--
 	$("#username").select2({
 		placeholder: "'.$lang->search_for_a_user.'",
-		minimumInputLength: 1,
+		minimumInputLength: 2,
 		multiple: false,
 		ajax: { // instead of writing the function to execute the request we use Select2\'s convenient helper
 			url: "../xmlhttp.php?action=get_users",
