@@ -25,6 +25,32 @@ function upgrade35_dbchanges()
 	global $db, $output;
 
 	$output->print_header("Updating Database");
+	echo "<p>Performing necessary upgrade queries...</p>";
+	flush();
+
+	if($db->type != 'pgsql')
+	{
+		$db->modify_column('adminsessions', 'useragent', "varchar(200) NOT NULL default ''");
+		$db->modify_column('sessions', 'useragent', "varchar(200) NOT NULL default ''");
+	}
+	else
+	{
+		$db->modify_column('adminsessions', 'useragent', "varchar(200)", "set", "''");
+		$db->modify_column('sessions', 'useragent', "varchar(200)", "set", "''");
+	}
+
+	global $footer_extra;
+	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+
+	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
+	$output->print_footer("35_dbchanges2");
+}
+
+function upgrade35_dbchanges2()
+{
+	global $db, $output;
+
+	$output->print_header("Updating Database");
 	echo "<p>Performing necessary optimization queries...</p>";
 	flush();
 
@@ -70,10 +96,10 @@ function upgrade35_dbchanges()
 	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("35_dbchanges2");
+	$output->print_footer("35_dbchanges3");
 }
 
-function upgrade35_dbchanges2()
+function upgrade35_dbchanges3()
 {
 	global $db, $output;
 

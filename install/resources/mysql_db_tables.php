@@ -42,7 +42,7 @@ $tables[] = "CREATE TABLE mybb_adminsessions (
   dateline int unsigned NOT NULL default '0',
   lastactive int unsigned NOT NULL default '0',
   data TEXT NOT NULL,
-  useragent varchar(100) NOT NULL default '',
+  useragent varchar(200) NOT NULL default '',
   authenticated tinyint(1) NOT NULL default '0'
 ) ENGINE=MyISAM;";
 
@@ -702,7 +702,7 @@ $tables[] = "CREATE TABLE mybb_sessions (
   ip varbinary(16) NOT NULL default '',
   time int unsigned NOT NULL default '0',
   location varchar(150) NOT NULL default '',
-  useragent varchar(100) NOT NULL default '',
+  useragent varchar(200) NOT NULL default '',
   anonymous tinyint(1) NOT NULL default '0',
   nopermission tinyint(1) NOT NULL default '0',
   location1 int(10) unsigned NOT NULL default '0',
