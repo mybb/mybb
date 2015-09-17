@@ -362,7 +362,7 @@ class WarningsHandler extends DataHandler
 	*/
 	function update_user($method='insert')
 	{
-		global $db, $mybb, $lang;
+		global $db, $mybb, $lang, $groupscache;
 
 		if($mybb->settings['maxwarningpoints'] < 1)
 		{
