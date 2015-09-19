@@ -641,7 +641,7 @@ class DB_MySQLi implements DB_Base
 	{
 		if($prefix)
 		{
-			if (version_compare($this->get_version(), '5.0.2', '>='))
+			if(version_compare($this->get_version(), '5.0.2', '>='))
 			{
 				$query = $this->query("SHOW FULL TABLES FROM `$database` WHERE table_type = 'BASE TABLE' AND `Tables_in_$database` LIKE '".$this->escape_string($prefix)."%'");
 			}
@@ -652,7 +652,7 @@ class DB_MySQLi implements DB_Base
 		}
 		else
 		{
-			if (version_compare($this->get_version(), '5.0.2', '>='))
+			if(version_compare($this->get_version(), '5.0.2', '>='))
 			{
 				$query = $this->query("SHOW FULL TABLES FROM `$database` WHERE table_type = 'BASE TABLE'");
 			}
@@ -680,7 +680,7 @@ class DB_MySQLi implements DB_Base
 	function table_exists($table)
 	{
 		// Execute on master server to ensure if we've just created a table that we get the correct result
-		if (version_compare($this->get_version(), '5.0.2', '>='))
+		if(version_compare($this->get_version(), '5.0.2', '>='))
 		{
 			$query = $this->query("SHOW FULL TABLES FROM `".$this->database."` WHERE table_type = 'BASE TABLE' AND `Tables_in_".$this->database."` = '{$this->table_prefix}$table'");
 		}
