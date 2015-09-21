@@ -74,13 +74,6 @@ class DB_MySQLi implements DB_Base
 	public $current_link;
 
 	/**
-	 * The database name.
-	 *
-	 * @var string
-	 */
-	public $database;
-
-	/**
 	 * Explanation of a query.
 	 *
 	 * @var string
@@ -280,8 +273,6 @@ class DB_MySQLi implements DB_Base
 	 */
 	function select_db($database)
 	{
-		$this->database = $database;
-
 		$master_success = @mysqli_select_db($this->read_link, $database) or $this->error("[READ] Unable to select database", $this->read_link);
 		if($this->write_link)
 		{
@@ -641,25 +632,18 @@ class DB_MySQLi implements DB_Base
 	{
 		if($prefix)
 		{
-			if(version_compare($this->get_version(), '5.0.2', '>='))
-			{
-				$query = $this->query("SHOW FULL TABLES FROM `$database` WHERE table_type = 'BASE TABLE' AND `Tables_in_$database` LIKE '".$this->escape_string($prefix)."%'");
-			}
-			else
-			{
-				$query = $this->query("SHOW TABLES FROM `$database` LIKE '".$this->escape_string($prefix)."%'");
-			}
+			$query = $this->query("
+				SELECT `TABLE_NAME` FROM INFORMATION_SCHEMA.TABLES 
+				WHERE `TABLE_SCHEMA` = '$database' AND `TABLE_TYPE` = 'BASE TABLE' 
+				AND `TABLE_NAME` LIKE '".$this->escape_string($prefix)."%'
+			");
 		}
 		else
 		{
-			if(version_compare($this->get_version(), '5.0.2', '>='))
-			{
-				$query = $this->query("SHOW FULL TABLES FROM `$database` WHERE table_type = 'BASE TABLE'");
-			}
-			else
-			{
-				$query = $this->query("SHOW TABLES FROM `$database`");
-			}
+			$query = $this->query("
+				SELECT `TABLE_NAME` FROM INFORMATION_SCHEMA.TABLES 
+				WHERE `TABLE_SCHEMA` = '$database' AND `TABLE_TYPE` = 'BASE TABLE'
+			");
 		}
 
 		$tables = array();
@@ -667,7 +651,6 @@ class DB_MySQLi implements DB_Base
 		{
 			$tables[] = $table;
 		}
-
 		return $tables;
 	}
 
@@ -680,16 +663,13 @@ class DB_MySQLi implements DB_Base
 	function table_exists($table)
 	{
 		// Execute on master server to ensure if we've just created a table that we get the correct result
-		if(version_compare($this->get_version(), '5.0.2', '>='))
-		{
-			$query = $this->query("SHOW FULL TABLES FROM `".$this->database."` WHERE table_type = 'BASE TABLE' AND `Tables_in_".$this->database."` = '{$this->table_prefix}$table'");
-		}
-		else
-		{
-			$query = $this->query("SHOW TABLES LIKE '{$this->table_prefix}$table'");
-		}
-
+		$query = $this->write_query("
+			SELECT `TABLE_NAME` FROM INFORMATION_SCHEMA.TABLES 
+			WHERE `TABLE_TYPE` = 'BASE TABLE' 
+			AND `TABLE_NAME` LIKE '{$this->table_prefix}$table'
+		");
 		$exists = $this->num_rows($query);
+
 		if($exists > 0)
 		{
 			return true;
