@@ -3777,6 +3777,9 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 <option value="multiunstickthreads">{$lang->unstick_threads}</option>]]></template>
 		<template name="forumdisplay_moderatedby" version="1600"><![CDATA[<span class="smalltext">{$lang->moderated_by} <strong>{$moderators}</strong></span><br />]]></template>
 		<template name="forumdisplay_newthread" version="1800"><![CDATA[<a href="newthread.php?fid={$fid}" class="button new_thread_button"><span>{$lang->post_thread}</span></a>]]></template>
+		<template name="forumdisplay_nopermission" version="1807"><![CDATA[<tr>
+<td colspan="{$colspan}" class="trow1">{$lang->nopermission}</td>
+</tr>]]></template>
 		<template name="forumdisplay_nothreads" version="120"><![CDATA[<tr>
 <td colspan="{$colspan}" class="trow1">{$lang->nothreads}</td>
 </tr>]]></template>
