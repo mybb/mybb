@@ -2432,9 +2432,9 @@ function update_stats($changes=array(), $force=false)
 	// Update stats row for today in the database
 	$todays_stats = array(
 		"dateline" => mktime(0, 0, 0, date("m"), date("j"), date("Y")),
-		"numusers" => $stats['numusers'],
-		"numthreads" => $stats['numthreads'],
-		"numposts" => $stats['numposts']
+		"numusers" => (int)$stats['numusers'],
+		"numthreads" => (int)$stats['numthreads'],
+		"numposts" => (int)$stats['numposts']
 	);
 	$db->replace_query("stats", $todays_stats, "dateline");
 
