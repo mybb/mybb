@@ -3221,7 +3221,7 @@ if($mybb->input['action'] == "usergroups")
 
 			$db->insert_query("joinrequests", $joinrequest);
 
-			if(in_array($usergroup['gid'], $groupleaders))
+			if(array_key_exists($usergroup['gid'], $groupleaders))
 			{
 				foreach($groupleaders[$usergroup['gid']] as $leader)
 				{
