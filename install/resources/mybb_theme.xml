@@ -10970,8 +10970,8 @@ if(use_xmlhttprequest == "1")
 		<template name="search_results_posts_inlinemoderation_custom" version="120"><![CDATA[<optgroup label="{$lang->custom_mod_tools}">{$customposttools}</optgroup>]]></template>
 		<template name="search_results_posts_inlinemoderation_custom_tool" version="120"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
 		<template name="search_results_posts_nocheck" version="120"><![CDATA[<td class="{$bgcolor}" align="center" style="white-space: nowrap">&nbsp;</td>]]></template>
-		<template name="search_results_posts_post" version="1800"><![CDATA[<tr class="inline_row">
-	<td align="center" class="{$bgcolor}" width="2%"><span class="thread_status {$folder}">&nbsp;</span></td>
+		<template name="search_results_posts_post" version="1807"><![CDATA[<tr class="inline_row">
+	<td align="center" class="{$bgcolor}" width="2%"><span class="thread_status {$folder}" title="{$folder_label}">&nbsp;</span></td>
 	<td align="center" class="{$bgcolor}" width="2%">{$icon}</td>
 	<td class="{$bgcolor}">
 		<span class="smalltext">
