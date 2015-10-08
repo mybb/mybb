@@ -639,10 +639,10 @@ var lang = {
 	{
 		$.modal.defaults.keepelement = false;
 
-		$.modal.prototype.oldCloseFuntion = $.modal.prototype.close;
+		$.modal.prototype.oldCloseFunction = $.modal.prototype.close;
 		$.modal.prototype.close = function()
 		{
-			this.oldCloseFuntion();
+			this.oldCloseFunction();
 
 			// Deletes the element (multi-modal feature: e.g. when you click on multiple report buttons, you will want to see different content for each)
 			if(!this.options.keepelement)
