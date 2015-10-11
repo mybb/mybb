@@ -9254,7 +9254,7 @@ if(use_xmlhttprequest == "1")
 {$attachments}
 </table>]]></template>
 		<template name="post_attachments_add" version="1614"><![CDATA[<input type="submit" class="button" name="newattachment" value="{$lang->add_attachment}" tabindex="13" />]]></template>
-		<template name="post_attachments_attachment" version="1604"><![CDATA[<tr>
+		<template name="post_attachments_attachment" version="1807"><![CDATA[<tr>
 <td class="trow2" width="1" align="center">{$attachment['icon']}</td>
 <td class="trow2" width="60%" style="white-space: nowrap">{$attachment['filename']} ({$attachment['size']})</td>
 <td class="trow2" style="white-space: nowrap; text-align: center;">{$attach_mod_options} {$attach_rem_options} {$postinsert}</td>
@@ -9268,7 +9268,7 @@ if(use_xmlhttprequest == "1")
 <td class="trow_shaded" style="white-space: nowrap"><em><a href="attachment.php?aid={$attachment['aid']}" target="_blank">{$attachment['filename']}</a> ({$attachment['size']})</em></td>
 <td class="trow_shaded" style="white-space: nowrap; text-align: center;">{$attach_mod_options} <input type="submit" class="button" name="rem" value="{$lang->remove_attachment}" onclick="return Post.removeAttachment({$attachment['aid']});" /> {$postinsert}</td>
 </tr>]]></template>
-		<template name="post_attachments_new" version="1800"><![CDATA[<tr>
+		<template name="post_attachments_new" version="1807"><![CDATA[<tr>
 <td class="trow1" width="1"><img src="{$theme['imgdir']}/paperclip.png" alt="" /></td>
 <td class="trow1" style="white-space: nowrap"><strong>{$lang->new_attachment}</strong> <input type="file" name="attachment" size="30" class="fileupload" /></td>
 <td class="trow1" style="white-space: nowrap" align="center">{$attach_update_options} {$attach_add_options}</td>
