@@ -306,7 +306,7 @@ class postParser
 			$callback_mycode['url_complex']['regex'] = "#\[url=([a-z]+?://)([^\r\n\"<]+?)\](.+?)\[/url\]#si";
 			$callback_mycode['url_complex']['replacement'] = array($this, 'mycode_parse_url_callback1');
 
-			$callback_mycode['url_complex2']['regex'] = "#\[url=([^\r\n\"<&\(\)]+?)\](.+?)\[/url\]#si";
+			$callback_mycode['url_complex2']['regex'] = "#\[url=([^\r\n\"<]+?)\](.+?)\[/url\]#si";
 			$callback_mycode['url_complex2']['replacement'] = array($this, 'mycode_parse_url_callback2');
 
 			++$callback_count;
