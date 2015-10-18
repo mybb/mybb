@@ -628,7 +628,7 @@ elseif($mybb->input['action'] == "whoposted")
 	if(is_moderator($thread['fid'], "canviewunapprove"))
 	{
 		$ismod = true;
-		$show_posts = "(p.visible = '1' OR p.visible = '0')";
+		$show_posts = "(p.visible >= -1)";
 	}
 	else
 	{
