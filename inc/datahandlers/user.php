@@ -1517,7 +1517,17 @@ class UserDataHandler extends DataHandler
 		$plugins->run_hooks('datahandler_user_delete_start', $this);
 
 		$this->delete_uids = implode(',', $this->delete_uids);
-		
+
+		if(empty($this->delete_uids))
+		{
+			$this->deleted_users = 0;
+			$this->return_values = array(
+				"deleted_users" => $this->deleted_users
+			);
+
+			return $this->return_values;
+		}
+
 		$this->delete_content();
 
 		// Delete the user
