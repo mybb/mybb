@@ -2172,7 +2172,7 @@ ul.thread_tools li.poll {
 .thread_status.newlockfolder {
 	background-position: 0 -320px;
 }]]></stylesheet>
-	<stylesheet name="css3.css" version="1800" disporder="7"><![CDATA[tr td.trow1:first-child,
+	<stylesheet name="css3.css" version="1807" disporder="7"><![CDATA[tr td.trow1:first-child,
 tr td.trow2:first-child,
 tr td.trow_shaded:first-child {
 	border-left: 0;
@@ -2194,13 +2194,13 @@ tr td.trow_shaded:last-child {
 	border-bottom: 0;
 }
 
-.tborder tbody tr:last-child td:first-child {
+.tborder:first-child tbody tr:last-child td:first-child {
 	-moz-border-radius-bottomleft: 6px;
 	-webkit-border-bottom-left-radius: 6px;
 	border-bottom-left-radius: 6px;
 }
 
-.tborder tbody tr:last-child td:last-child {
+.tborder:first-child tbody tr:last-child td:last-child {
 	-moz-border-radius-bottomright: 6px;
 	-webkit-border-bottom-right-radius: 6px;
 	border-bottom-right-radius: 6px;
