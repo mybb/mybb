@@ -625,22 +625,32 @@ elseif($mybb->input['action'] == "whoposted")
 		error($lang->error_invalidthread);
 	}
 
-	if(is_moderator($thread['fid'], "canviewunapprove"))
-	{
-		$ismod = true;
-		$show_posts = "(p.visible >= -1)";
-	}
-	else
-	{
-		$ismod = false;
-		$show_posts = "p.visible = '1'";
-	}
-
 	// Make sure we are looking at a real thread here.
-	if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
+	if(($thread['visible'] == -1 && !is_moderator($thread['fid'], "canviewdeleted")) || ($thread['visible'] == 0 && !is_moderator($thread['fid'], "canviewunapprove")) || $thread['visible'] > 1)
 	{
 		error($lang->error_invalidthread);
 	}
+
+	if(is_moderator($thread['fid'], "canviewdeleted") || is_moderator($thread['fid'], "canviewunapprove"))
+	{
+		if(is_moderator($thread['fid'], "canviewunapprove") && !is_moderator($thread['fid'], "canviewdeleted"))
+		{
+			$show_posts = "p.visible IN (0,1)";
+		}
+		elseif(is_moderator($thread['fid'], "canviewdeleted") && !is_moderator($thread['fid'], "canviewunapprove"))
+		{
+			$show_posts = "p.visible IN (-1,1)";
+		}
+		else
+		{
+			$show_posts = "p.visible IN (-1,0,1)";
+		}
+	}
+	else
+	{
+		$show_posts = "p.visible = 1";
+	}
+
 	// Does the thread belong to a valid forum?
 	$forum = get_forum($thread['fid']);
 	if(!$forum || $forum['type'] != "f")
