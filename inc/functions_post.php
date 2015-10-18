@@ -321,6 +321,7 @@ function build_postbit($post, $post_type=0)
 			eval("\$post['useravatar'] = \"".$templates->get("postbit_avatar")."\";");
 		}
 
+		$post['button_find'] = '';
 		if($mybb->usergroup['cansearch'] == 1)
 		{
 			eval("\$post['button_find'] = \"".$templates->get("postbit_find")."\";");
