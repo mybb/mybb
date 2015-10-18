@@ -3221,15 +3221,18 @@ if($mybb->input['action'] == "usergroups")
 
 			$db->insert_query("joinrequests", $joinrequest);
 
-			foreach($groupleaders[$usergroup['gid']] as $leader)
+			if(array_key_exists($usergroup['gid'], $groupleaders))
 			{
-				// Load language
-				$lang->set_language($leader['language']);
-				$lang->load("messages");
-					
-				$subject = $lang->sprintf($lang->emailsubject_newjoinrequest, $mybb->settings['bbname']);
-				$message = $lang->sprintf($lang->email_groupleader_joinrequest, $leader['username'], $mybb->user['username'], $usergroup['title'], $mybb->settings['bbname'], $mybb->get_input('reason'), $mybb->settings['bburl'], $leader['gid']);
-				my_mail($leader['email'], $subject, $message);
+				foreach($groupleaders[$usergroup['gid']] as $leader)
+				{
+					// Load language
+					$lang->set_language($leader['language']);
+					$lang->load("messages");
+						
+					$subject = $lang->sprintf($lang->emailsubject_newjoinrequest, $mybb->settings['bbname']);
+					$message = $lang->sprintf($lang->email_groupleader_joinrequest, $leader['username'], $mybb->user['username'], $usergroup['title'], $mybb->settings['bbname'], $mybb->get_input('reason'), $mybb->settings['bburl'], $leader['gid']);
+					my_mail($leader['email'], $subject, $message);
+				}
 			}
 
 			// Load language

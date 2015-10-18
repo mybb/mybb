@@ -321,7 +321,11 @@ function build_postbit($post, $post_type=0)
 			eval("\$post['useravatar'] = \"".$templates->get("postbit_avatar")."\";");
 		}
 
-		eval("\$post['button_find'] = \"".$templates->get("postbit_find")."\";");
+		$post['button_find'] = '';
+		if($mybb->usergroup['cansearch'] == 1)
+		{
+			eval("\$post['button_find'] = \"".$templates->get("postbit_find")."\";");
+		}
 
 		if($mybb->settings['enablepms'] == 1 && $post['receivepms'] != 0 && $mybb->usergroup['cansendpms'] == 1 && my_strpos(",".$post['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
 		{

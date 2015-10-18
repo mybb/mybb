@@ -524,7 +524,6 @@ if($mybb->input['action'] == "edit")
 			"signature" => $mybb->input['signature'],
 			"dateformat" => $mybb->get_input('dateformat', MyBB::INPUT_INT),
 			"timeformat" => $mybb->get_input('timeformat', MyBB::INPUT_INT),
-			"language" => $mybb->input['language'],
 			"usernotes" => $mybb->input['usernotes'],
 			"away" => array(
 				"away" => $mybb->input['away'],
@@ -830,6 +829,11 @@ if($mybb->input['action'] == "edit")
 				}
 
 				$plugins->run_hooks("admin_user_users_edit_commit");
+
+				if($user['usergroup'] == 5 && $mybb->input['usergroup'] != 5)
+				{
+					$cache->update_awaitingactivation();
+				}
 
 				// Log admin action
 				log_admin_action($user['uid'], $mybb->input['username']);

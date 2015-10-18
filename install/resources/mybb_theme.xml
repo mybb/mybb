@@ -4682,7 +4682,7 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
-		<template name="member_profile" version="1804"><![CDATA[<html>
+		<template name="member_profile" version="1807"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->profile}</title>
 {$headerinclude}
@@ -4729,11 +4729,11 @@ if(use_xmlhttprequest == "1")
 				</tr>
 				<tr>
 					<td class="trow1"><strong>{$lang->total_posts}</strong></td>
-					<td class="trow1">{$memprofile['postnum']} ({$lang->ppd_percent_total})<br /><span class="smalltext">(<a href="search.php?action=finduser&amp;uid={$uid}">{$lang->find_posts}</a>)</span></td>
+					<td class="trow1">{$memprofile['postnum']} ({$lang->ppd_percent_total}){$findposts}</td>
 				</tr>
 				<tr>
 					<td class="trow2"><strong>{$lang->total_threads}</strong></td>
-					<td class="trow2">{$memprofile['threadnum']} ({$lang->tpd_percent_total})<br /><span class="smalltext">(<a href="search.php?action=finduserthreads&amp;uid={$uid}">{$lang->find_threads}</a>)</span></td>
+					<td class="trow2">{$memprofile['threadnum']} ({$lang->tpd_percent_total}){$findthreads}</td>
 				</tr>
 				<tr>
 					<td class="trow1"><strong>{$lang->timeonline}</strong></td>
@@ -4846,6 +4846,8 @@ if(use_xmlhttprequest == "1")
 <td class="{$bgcolor}"><strong>{$lang->email}</strong></td>
 <td class="{$bgcolor}"><a href="member.php?action=emailuser&amp;uid={$memprofile['uid']}">{$lang->send_user_email}</a></td>
 </tr>]]></template>
+		<template name="member_profile_findposts" version="1807"><![CDATA[<br /><span class="smalltext">(<a href="search.php?action=finduser&amp;uid={$uid}">{$lang->find_posts}</a>)</span>]]></template>
+		<template name="member_profile_findthreads" version="1807"><![CDATA[<br /><span class="smalltext">(<a href="search.php?action=finduserthreads&amp;uid={$uid}">{$lang->find_threads}</a>)</span>]]></template>
 		<template name="member_profile_groupimage" version="120"><![CDATA[<img src="{$displaygroup['image']}" alt="{$usertitle}" title="{$usertitle}" /><br />]]></template>
 		<template name="member_profile_modoptions" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%" class="tborder">
 <tr>
@@ -9309,9 +9311,9 @@ if(use_xmlhttprequest == "1")
 {$attachments}
 </table>]]></template>
 		<template name="post_attachments_add" version="1614"><![CDATA[<input type="submit" class="button" name="newattachment" value="{$lang->add_attachment}" tabindex="13" />]]></template>
-		<template name="post_attachments_attachment" version="1604"><![CDATA[<tr>
+		<template name="post_attachments_attachment" version="1807"><![CDATA[<tr>
 <td class="trow2" width="1" align="center">{$attachment['icon']}</td>
-<td class="trow2" width="75%" style="white-space: nowrap">{$attachment['filename']} ({$attachment['size']})</td>
+<td class="trow2" width="60%" style="white-space: nowrap">{$attachment['filename']} ({$attachment['size']})</td>
 <td class="trow2" style="white-space: nowrap; text-align: center;">{$attach_mod_options} {$attach_rem_options} {$postinsert}</td>
 </tr>]]></template>
 		<template name="post_attachments_attachment_mod_approve" version="120"><![CDATA[<input type="submit" class="button" name="approveattach" value="{$lang->approve_attachment}" onclick="return Post.attachmentAction({$attachment['aid']},'approve');" />]]></template>
@@ -9323,10 +9325,10 @@ if(use_xmlhttprequest == "1")
 <td class="trow_shaded" style="white-space: nowrap"><em><a href="attachment.php?aid={$attachment['aid']}" target="_blank">{$attachment['filename']}</a> ({$attachment['size']})</em></td>
 <td class="trow_shaded" style="white-space: nowrap; text-align: center;">{$attach_mod_options} <input type="submit" class="button" name="rem" value="{$lang->remove_attachment}" onclick="return Post.removeAttachment({$attachment['aid']});" /> {$postinsert}</td>
 </tr>]]></template>
-		<template name="post_attachments_new" version="1800"><![CDATA[<tr>
+		<template name="post_attachments_new" version="1807"><![CDATA[<tr>
 <td class="trow1" width="1"><img src="{$theme['imgdir']}/paperclip.png" alt="" /></td>
-<td class="trow1" style="white-space: nowrap"><strong>{$lang->new_attachment}</strong> <input type="file" name="attachment" size="30" class="fileupload" /></td><td class="trow1" align="center">{$attach_update_options} {$attach_add_options}
-</td>
+<td class="trow1" style="white-space: nowrap"><strong>{$lang->new_attachment}</strong> <input type="file" name="attachment" size="30" class="fileupload" /></td>
+<td class="trow1" style="white-space: nowrap" align="center">{$attach_update_options} {$attach_add_options}</td>
 </tr>]]></template>
 		<template name="post_attachments_update" version="1604"><![CDATA[<input type="submit" class="button" name="updateattachment" value="{$lang->update_attachment}" tabindex="12" />]]></template>
 		<template name="post_captcha" version="1804"><![CDATA[<tr id="captcha_trow">
@@ -11027,8 +11029,8 @@ if(use_xmlhttprequest == "1")
 		<template name="search_results_posts_inlinemoderation_custom" version="120"><![CDATA[<optgroup label="{$lang->custom_mod_tools}">{$customposttools}</optgroup>]]></template>
 		<template name="search_results_posts_inlinemoderation_custom_tool" version="120"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
 		<template name="search_results_posts_nocheck" version="120"><![CDATA[<td class="{$bgcolor}" align="center" style="white-space: nowrap">&nbsp;</td>]]></template>
-		<template name="search_results_posts_post" version="1800"><![CDATA[<tr class="inline_row">
-	<td align="center" class="{$bgcolor}" width="2%"><span class="thread_status {$folder}">&nbsp;</span></td>
+		<template name="search_results_posts_post" version="1807"><![CDATA[<tr class="inline_row">
+	<td align="center" class="{$bgcolor}" width="2%"><span class="thread_status {$folder}" title="{$folder_label}">&nbsp;</span></td>
 	<td align="center" class="{$bgcolor}" width="2%">{$icon}</td>
 	<td class="{$bgcolor}">
 		<span class="smalltext">
@@ -13412,15 +13414,15 @@ if(use_xmlhttprequest == "1")
 				<td class="{$alt_bg}" align="center">{$issuedby}</td>
 	</tr>]]></template>
 		<template name="usercp_warnings_warning_post" version="1800"><![CDATA[<br /><small>{$lang->warning_for_post} <a href="{$warning['postlink']}">{$warning['post_subject']}</a></small>]]></template>
-		<template name="video_metacafe_embed" version="1600"><![CDATA[<embed src="http://www.metacafe.com/fplayer/{$id}/{$title}.swf" width="400" height="345" wmode="transparent" allowFullScreen="true" allowScriptAccess="always" name="Metacafe_{$id}" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash"></embed>]]></template>
-		<template name="video_dailymotion_embed" version="1610"><![CDATA[<iframe frameborder="0" width="480" height="270" src="http://www.dailymotion.com/embed/video/{$id}"></iframe>]]></template>
+		<template name="video_metacafe_embed" version="1807"><![CDATA[<iframe src="http://www.metacafe.com/embed/{$id}/" width="440" height="248" allowFullScreen frameborder=0></iframe>]]></template>
+		<template name="video_dailymotion_embed" version="1807"><![CDATA[<iframe frameborder="0" width="480" height="270" src="//www.dailymotion.com/embed/video/{$id}" allowfullscreen></iframe>]]></template>
 		<template name="video_facebook_embed" version="1800"><![CDATA[<iframe src="https://www.facebook.com/video/embed?video_id={$id}" width="625" height="350" frameborder="0"></iframe>]]></template>
 		<template name="video_liveleak_embed" version="1800"><![CDATA[<iframe width="500" height="300" src="http://www.liveleak.com/ll_embed?i={$id}" frameborder="0" allowfullscreen></iframe>]]></template>
-		<template name="video_myspacetv_embed" version="1600"><![CDATA[<object width="425px" height="360px"><param name="allowFullScreen" value="true"/><param name="wmode" value="transparent"/><param name="movie" value="http://mediaservices.myspace.com/services/media/embed.aspx/m={$id},t=1,mt=video"/><embed src="http://mediaservices.myspace.com/services/media/embed.aspx/m={$id},t=1,mt=video" width="425" height="360" allowFullScreen="true" type="application/x-shockwave-flash" wmode="transparent"></embed></object>]]></template>
-		<template name="video_youtube_embed" version="1610"><![CDATA[<iframe width="560" height="315" src="http://www.youtube.com/embed/{$id}" frameborder="0" allowfullscreen></iframe>]]></template>
+		<template name="video_myspacetv_embed" version="1807"><![CDATA[<iframe width="480" height="270" src="//media.myspace.com/play/video/{$id}" frameborder="0" allowtransparency="true" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>]]></template>
+		<template name="video_youtube_embed" version="1807"><![CDATA[<iframe width="560" height="315" src="//www.youtube.com/embed/{$id}" frameborder="0" allowfullscreen></iframe>]]></template>
 		<template name="video_veoh_embed" version="1800"><![CDATA[<object width="410" height="341" id="veohFlashPlayer" name="veohFlashPlayer"><param name="movie" value="http://www.veoh.com/swf/webplayer/WebPlayer.swf?version=AFrontend.5.7.0.1446&permalinkId={$id}&player=videodetailsembedded&videoAutoPlay=0&id=anonymous"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.veoh.com/swf/webplayer/WebPlayer.swf?version=AFrontend.5.7.0.1446&permalinkId={$id}&player=videodetailsembedded&videoAutoPlay=0&id=anonymous" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="410" height="341" id="veohFlashPlayerEmbed" name="veohFlashPlayerEmbed"></embed></object>]]></template>
-		<template name="video_vimeo_embed" version="1610"><![CDATA[<iframe src="http://player.vimeo.com/video/{$id}" width="500" height="281" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>]]></template>
-		<template name="video_yahoo_embed" version="1610"><![CDATA[<iframe width="624" height="351" scrolling="no" frameborder="0" src="http://{$local}screen.yahoo.com/{$id}?format=embed"></iframe>]]></template>
+		<template name="video_vimeo_embed" version="1807"><![CDATA[<iframe src="//player.vimeo.com/video/{$id}" width="500" height="375" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>]]></template>
+		<template name="video_yahoo_embed" version="1807"><![CDATA[<iframe width="640" height="360" scrolling="no" frameborder="0" src="//{$local}screen.yahoo.com/{$id}?format=embed" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true" allowtransparency="true"></iframe>]]></template>
 		<template name="warnings" version="1400"><![CDATA[<html>
 <head>
 	<title>{$mybb->settings['bbname']} - {$lang->warning_log}</title>
@@ -13877,13 +13879,13 @@ $(function() {
 </html>]]></template>
 		<template name="debug_summary" version="1800"><![CDATA[<div id="debug">{$generated_in} {$debug_weight} <br />{$sql_queries} / {$server_load} / {$memory_usage}<br />[<a href="{$debuglink}" target="_blank">{$lang->debug_advanced_details}</a>]<br /></div>]]></template>
 		<template name="gobutton" version="120"><![CDATA[<input type="submit" class="button" value="{$lang->go}" />]]></template>
-		<template name="headerinclude" version="1806"><![CDATA[<link rel="alternate" type="application/rss+xml" title="{$lang->latest_threads} (RSS 2.0)" href="{$mybb->settings['bburl']}/syndication.php" />
+		<template name="headerinclude" version="1807"><![CDATA[<link rel="alternate" type="application/rss+xml" title="{$lang->latest_threads} (RSS 2.0)" href="{$mybb->settings['bburl']}/syndication.php" />
 <link rel="alternate" type="application/atom+xml" title="{$lang->latest_threads} (Atom 1.0)" href="{$mybb->settings['bburl']}/syndication.php?type=atom1.0" />
 <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.js?ver=1806"></script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.plugins.min.js?ver=1806"></script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/general.js?ver=1806"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/general.js?ver=1807"></script>
 
 {$stylesheets}
 <script type="text/javascript">

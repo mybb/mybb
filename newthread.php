@@ -468,6 +468,16 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 			$force_redirect = true;
 		}
 
+		// The thread is being made in a forum the user cannot see threads in, send them back to the forum.
+		else if($visible == 1 && $forumpermissions['canviewthreads'] != 1)
+		{
+			$lang->redirect_newthread .= $lang->redirect_newthread_unviewable;
+			$url = get_forum_link($fid);
+
+			// User must see permission notice, regardless of redirect settings
+			$force_redirect = true;
+		}
+
 		// This is just a normal thread - send them to it.
 		else
 		{

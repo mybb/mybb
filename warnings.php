@@ -346,6 +346,11 @@ if($mybb->input['action'] == "warn")
 		$mybb->settings['maxwarningpoints'] = 10;
 	}
 
+	if(!is_array($groupscache))
+	{
+		$groupscache = $cache->read("usergroups");
+	}
+
 	$current_level = round($user['warningpoints']/$mybb->settings['maxwarningpoints']*100);
 
 	// Fetch warning levels
