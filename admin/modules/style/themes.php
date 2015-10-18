@@ -1010,6 +1010,9 @@ if($mybb->input['action'] == "delete")
 		while($cachefile = $db->fetch_array($query))
 		{
 			@unlink(MYBB_ROOT."cache/themes/theme{$theme['tid']}/{$cachefile['cachefile']}");
+
+			$filename_min = str_replace('.css', '.min.css', $cachefile['cachefile']);
+			@unlink(MYBB_ROOT."cache/themes/theme{$theme['tid']}/{$filename_min}");
 		}
 		@unlink(MYBB_ROOT."cache/themes/theme{$theme['tid']}/index.html");
 
@@ -1744,6 +1747,9 @@ if($mybb->input['action'] == "stylesheet_properties")
 					$db->update_query("themestylesheets", array('cachefile' => "css.php?stylesheet={$stylesheet['sid']}"), "sid='{$stylesheet['sid']}'", 1);
 				}
 				@unlink(MYBB_ROOT."cache/themes/theme{$theme['tid']}/{$stylesheet['cachefile']}");
+
+				$filename_min = str_replace('.css', '.min.css', $stylesheet['cachefile']);
+				@unlink(MYBB_ROOT."cache/themes/theme{$theme['tid']}/{$filename_min}");
 			}
 
 			// Update the CSS file list for this theme
@@ -2459,6 +2465,9 @@ if($mybb->input['action'] == "delete_stylesheet")
 	{
 		$db->delete_query("themestylesheets", "sid='{$stylesheet['sid']}'", 1);
 		@unlink(MYBB_ROOT."cache/themes/theme{$theme['tid']}/{$stylesheet['cachefile']}");
+
+		$filename_min = str_replace('.css', '.min.css', $stylesheet['cachefile']);
+		@unlink(MYBB_ROOT."cache/themes/theme{$theme['tid']}/{$filename_min}");
 
 		// Update the CSS file list for this theme
 		update_theme_stylesheet_list($theme['tid'], $theme, true);
