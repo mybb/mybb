@@ -2432,9 +2432,9 @@ function update_stats($changes=array(), $force=false)
 	// Update stats row for today in the database
 	$todays_stats = array(
 		"dateline" => mktime(0, 0, 0, date("m"), date("j"), date("Y")),
-		"numusers" => $stats['numusers'],
-		"numthreads" => $stats['numthreads'],
-		"numposts" => $stats['numposts']
+		"numusers" => (int)$stats['numusers'],
+		"numthreads" => (int)$stats['numthreads'],
+		"numposts" => (int)$stats['numposts']
 	);
 	$db->replace_query("stats", $todays_stats, "dateline");
 
@@ -3367,11 +3367,8 @@ function build_clickable_smilies()
 			}
 			foreach($smilie_cache as $smilie)
 			{
-				if($smilie['showclickable'] != 0)
-				{
-					$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
-					$smiliecache[$smilie['sid']] = $smilie;
-				}
+				$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
+				$smiliecache[$smilie['sid']] = $smilie;
 			}
 		}
 
@@ -3399,7 +3396,7 @@ function build_clickable_smilies()
 			$extra_class = '';
 			foreach($smiliecache as $smilie)
 			{
-				if($i < $mybb->settings['smilieinsertertot'])
+				if($i < $mybb->settings['smilieinsertertot'] && $smilie['showclickable'] != 0)
 				{
 					if($counter == 0)
 					{
