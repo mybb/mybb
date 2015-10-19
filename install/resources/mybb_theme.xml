@@ -2190,17 +2190,17 @@ tr td.trow_shaded:last-child {
 	border-radius: 7px;
 }
 
-.tborder tbody tr:last-child td {
+.tborder tbody tr:last-child > td {
 	border-bottom: 0;
 }
 
-.tborder:first-child tbody tr:last-child td:first-child {
+.tborder tbody tr:last-child > td:first-child {
 	-moz-border-radius-bottomleft: 6px;
 	-webkit-border-bottom-left-radius: 6px;
 	border-bottom-left-radius: 6px;
 }
 
-.tborder:first-child tbody tr:last-child td:last-child {
+.tborder tbody tr:last-child > td:last-child {
 	-moz-border-radius-bottomright: 6px;
 	-webkit-border-bottom-right-radius: 6px;
 	border-bottom-right-radius: 6px;
