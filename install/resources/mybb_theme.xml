@@ -8873,7 +8873,7 @@ if(use_xmlhttprequest == "1")
 <td class="trow1"><span class="smalltext">{$this->warnings}</span><br /></td>
 </tr>
 </table><br /><br />]]></template>
-		<template name="polls_editpoll" version="1800"><![CDATA[<html>
+		<template name="polls_editpoll" version="1807"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_poll}</title>
 {$headerinclude}
@@ -8890,6 +8890,7 @@ if(use_xmlhttprequest == "1")
 <td class="trow1" style="white-space: nowrap"><input type="checkbox" class="checkbox" name="delete" value="1" tabindex="9" /><strong>{$lang->delete_q}</strong></td>
 <td class="trow1" width="100%">{$lang->delete_note}<br /><span class="smalltext">{$lang->delete_note2}</span></td>
 <td class="trow1" style="white-space: nowrap"><input type="submit" class="button" name="submit" value="{$lang->delete_poll}" tabindex="10" /></td>
+</tr>
 </table>
 <input type="hidden" name="action" value="do_deletepoll" />
 <input type="hidden" name="tid" value="{$tid}" />
