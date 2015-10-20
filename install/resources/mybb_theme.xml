@@ -4255,7 +4255,7 @@ $(".forumjump").change(function() {
 <td class="trow1"><span class="smalltext">{$lang->online_note}<br />{$onlinemembers}</span></td>
 </tr>]]></template>
 		<template name="index_whosonline_memberbit" version="1400"><![CDATA[{$comma}{$user['profilelink']}{$invisiblemark}]]></template>
-		<template name="managegroup" version="1800"><![CDATA[<html>
+		<template name="managegroup" version="1807"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->members_of}</title>
 {$headerinclude}
@@ -4282,6 +4282,7 @@ $(".forumjump").change(function() {
 </tr>
 {$users}
 </table>
+{$multipage}
 <br />
 <div align="center">{$remove_users}</div>
 </form>
