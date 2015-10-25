@@ -516,7 +516,7 @@ class errorHandler {
 			@header('Status: 503 Service Temporarily Unavailable');
 			@header('Retry-After: 1800');
 			@header("Content-type: text/html; charset={$charset}");
-			$file_name = basename(__FILE__);
+			$file_name = htmlspecialchars_uni(basename($_SERVER['SCRIPT_FILENAME']));
 
 			echo <<<EOF
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
