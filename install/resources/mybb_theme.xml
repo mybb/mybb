@@ -3678,7 +3678,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 		<template name="forumbit_moderators_group" version="1800"><![CDATA[{$comma}{$moderator['title']}]]></template>
 		<template name="forumbit_moderators_user" version="1800"><![CDATA[{$comma}<a href="{$moderator['profilelink']}">{$moderator['username']}</a>]]></template>
 		<template name="forumbit_subforums" version="120"><![CDATA[<br />{$lang->subforums} {$sub_forums}]]></template>
-		<template name="forumdisplay" version="1804"><![CDATA[<html>
+		<template name="forumdisplay" version="1807"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$foruminfo['name']} </title>
 {$headerinclude}
@@ -3692,7 +3692,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 // -->
 </script>
 <!-- jeditable (jquery) -->
-<script src="{$mybb->asset_url}/jscripts/jeditable/jeditable.min.js"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/jeditable/jeditable.min.js"></script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_edit.js?ver=1804"></script>
 </head>
 <body>
@@ -4876,11 +4876,11 @@ if(use_xmlhttprequest == "1")
 	<td class="{$bgcolor}"><strong>{$lang->homepage}</strong></td>
 	<td class="{$bgcolor}"><a href="{$memprofile['website']}" target="_blank">{$memprofile['website']}</a></td>
 </tr>]]></template>
-		<template name="member_register" version="1804"><![CDATA[<html>
+		<template name="member_register" version="1807"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->registration}</title>
 {$headerinclude}
-<script src="{$mybb->asset_url}/jscripts/validate/jquery.validate.min.js?ver=1804"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/validate/jquery.validate.min.js?ver=1804"></script>
 </head>
 <body>
 {$header}
