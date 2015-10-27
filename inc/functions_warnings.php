@@ -13,7 +13,7 @@
  * @param array $max_expiration_times Return variable. The maximum expiration time
  * @param array $check_levels Return variable. Whether those "levels" were checked
  */
-function find_warnlevels_to_check(&$query, &$max_expiration_times, &$check_levels)
+function find_warnlevels_to_check($query, &$max_expiration_times, &$check_levels)
 {
 	global $db;
 
