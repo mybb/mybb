@@ -77,7 +77,8 @@ if(!$forum)
 
 // Make navigation
 build_forum_breadcrumb($fid);
-$thread['subject'] = htmlspecialchars_uni($thread['subject']);
+$thread_subject = $thread['subject'];
+$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 add_breadcrumb($thread['subject'], get_thread_link($thread['tid']));
 add_breadcrumb($lang->nav_newreply);
 
@@ -950,7 +951,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		}
 		else
 		{
-			$subject = $thread['subject'];
+			$subject = $thread_subject;
 			// Subject too long? Shorten it to avoid error message
 			if(my_strlen($subject) > 85)
 			{

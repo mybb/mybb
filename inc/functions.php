@@ -3367,11 +3367,8 @@ function build_clickable_smilies()
 			}
 			foreach($smilie_cache as $smilie)
 			{
-				if($smilie['showclickable'] != 0)
-				{
-					$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
-					$smiliecache[$smilie['sid']] = $smilie;
-				}
+				$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
+				$smiliecache[$smilie['sid']] = $smilie;
 			}
 		}
 
@@ -3399,7 +3396,7 @@ function build_clickable_smilies()
 			$extra_class = '';
 			foreach($smiliecache as $smilie)
 			{
-				if($i < $mybb->settings['smilieinsertertot'])
+				if($i < $mybb->settings['smilieinsertertot'] && $smilie['showclickable'] != 0)
 				{
 					$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
 					$smilie['image'] = htmlspecialchars_uni($mybb->get_asset_url($smilie['image']));
