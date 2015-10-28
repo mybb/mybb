@@ -822,14 +822,6 @@ blockquote cite span.highlight {
 	font-size: 13px;
 }
 
-.mycode_me {
-	color: #FF0000;
-}
-
-.mycode_slap {
-	color: #FF0000;
-}
-
 .smilie {
 	vertical-align: middle;
 }

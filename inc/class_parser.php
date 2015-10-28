@@ -161,8 +161,8 @@ class postParser
 		{
 			global $lang;
 
-			$message = preg_replace('#(>|^|\r|\n)/me ([^\r\n<]*)#i', "\\1<span class=\"mycode_me\">* {$this->options['me_username']} \\2</span>", $message);
-			$message = preg_replace('#(>|^|\r|\n)/slap ([^\r\n<]*)#i', "\\1<span class=\"mycode_slap\">* {$this->options['me_username']} {$lang->slaps} \\2 {$lang->with_trout}</span>", $message);
+			$message = preg_replace('#(>|^|\r|\n)/me ([^\r\n<]*)#i', "\\1<span style=\"color: red;\" class=\"mycode_me\">* {$this->options['me_username']} \\2</span>", $message);
+			$message = preg_replace('#(>|^|\r|\n)/slap ([^\r\n<]*)#i', "\\1<span style=\"color: red;\" class=\"mycode_slap\">* {$this->options['me_username']} {$lang->slaps} \\2 {$lang->with_trout}</span>", $message);
 		}
 
 		// If we can, parse smilies
