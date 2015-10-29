@@ -1641,11 +1641,10 @@ class UserDataHandler extends DataHandler
 		$db->update_query('reportedcontent', array('uid' => 0), "uid IN({$this->delete_uids})");
 
 		// Remove any of the user(s) uploaded avatars
-		$query = $db->simple_select('users', 'avatar', "uid IN({$this->delete_uids}) AND avatartype='upload'");
-		while($avatar = $db->fetch_field($query, 'avatar'))
+		require_once MYBB_ROOT.'inc/functions_upload.php';
+		foreach($this->delete_uids as $uid)
 		{
-			$avatar = substr($avatar, 2, -20);
-			@unlink(MYBB_ROOT.$avatar);
+			remove_avatars($uid);
 		}
 	}
 
@@ -1751,5 +1750,12 @@ class UserDataHandler extends DataHandler
 
 		$db->update_query("users", $update, "uid IN({$this->delete_uids})");
 		$db->delete_query('userfields', "ufid IN({$this->delete_uids})");
+
+		// Remove any of the user(s) uploaded avatars
+		require_once MYBB_ROOT.'inc/functions_upload.php';
+		foreach($this->delete_uids as $uid)
+		{
+			remove_avatars($uid);
+		}
 	}
 }
