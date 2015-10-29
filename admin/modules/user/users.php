@@ -3983,7 +3983,7 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 				$selected_options = array();
 				foreach($user_options as $val)
 				{
-					$selected_options[$val] = $val;
+					$selected_options[$val] = htmlspecialchars_uni($val);
 				}
 
 				$select_options = explode("\n", $options);
@@ -4023,11 +4023,11 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 				}
 				if($search == true)
 				{
-					$code = $form->generate_select_box("profile_fields[{$field_name}][{$field_name}]", $options, $values[$field_name], array('id' => "profile_field_{$field_name}", 'size' => $profile_field['length']));
+					$code = $form->generate_select_box("profile_fields[{$field_name}][{$field_name}]", $options, htmlspecialchars_uni($values[$field_name]), array('id' => "profile_field_{$field_name}", 'size' => $profile_field['length']));
 				}
 				else
 				{
-					$code = $form->generate_select_box("profile_fields[{$field_name}]", $options, $values[$field_name], array('id' => "profile_field_{$field_name}", 'size' => $profile_field['length']));
+					$code = $form->generate_select_box("profile_fields[{$field_name}]", $options, htmlspecialchars_uni($values[$field_name]), array('id' => "profile_field_{$field_name}", 'size' => $profile_field['length']));
 				}
 				break;
 			case "radio":
