@@ -1642,7 +1642,7 @@ class UserDataHandler extends DataHandler
 
 		// Remove any of the user(s) uploaded avatars
 		require_once MYBB_ROOT.'inc/functions_upload.php';
-		foreach($this->delete_uids as $uid)
+		foreach(explode(',', $this->delete_uids) as $uid)
 		{
 			remove_avatars($uid);
 		}
@@ -1753,7 +1753,7 @@ class UserDataHandler extends DataHandler
 
 		// Remove any of the user(s) uploaded avatars
 		require_once MYBB_ROOT.'inc/functions_upload.php';
-		foreach($this->delete_uids as $uid)
+		foreach(explode(',', $this->delete_uids) as $uid)
 		{
 			remove_avatars($uid);
 		}
