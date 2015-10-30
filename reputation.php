@@ -161,7 +161,7 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 			$forum = get_forum($thread['fid']);
 			$forumpermissions = forum_permissions($forum['fid']);
 			// Post doesn't belong to that user or isn't visible
-			if($uid != $post['uid'] || ($post['visible'] == 0 && !is_moderator($fid, "canviewunapprove")) || $post['visible'] < 0)
+			if($uid != $post['uid'] || $post['visible'] < 0)
 			{
 				$mybb->input['pid'] = 0;
 			}
