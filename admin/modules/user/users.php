@@ -3963,7 +3963,6 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 	{
 		$profile_field['name'] = htmlspecialchars_uni($profile_field['name']);
 		$profile_field['description'] = htmlspecialchars_uni($profile_field['description']);
-		$profile_field['type'] = htmlspecialchars_uni($profile_field['type']);
 		list($type, $options) = explode("\n", $profile_field['type'], 2);
 		$type = trim($type);
 		$field_name = "fid{$profile_field['fid']}";
@@ -3995,7 +3994,7 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 
 				foreach($select_options as $val)
 				{
-					$val = trim($val);
+					$val = htmlspecialchars_uni(trim($val));
 					$options[$val] = $val;
 				}
 				if(!$profile_field['length'])
@@ -4014,7 +4013,7 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 				$options = array();
 				foreach($select_options as $val)
 				{
-					$val = trim($val);
+					$val = htmlspecialchars_uni(trim($val));
 					$options[$val] = $val;
 				}
 				if(!$profile_field['length'])
@@ -4041,7 +4040,7 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 				foreach($radio_options as $val)
 				{
 					$val = trim($val);
-					$code .= $form->generate_radio_button("profile_fields[{$field_name}]", $val, $val, array('id' => "profile_field_{$field_name}", 'checked' => ($val == $values[$field_name] ? true : false)))."<br />";
+					$code .= $form->generate_radio_button("profile_fields[{$field_name}]", $val, htmlspecialchars_uni($val), array('id' => "profile_field_{$field_name}", 'checked' => ($val == $values[$field_name] ? true : false)))."<br />";
 				}
 				break;
 			case "checkbox":
@@ -4067,7 +4066,7 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 				foreach($select_options as $val)
 				{
 					$val = trim($val);
-					$code .= $form->generate_check_box("profile_fields[{$field_name}][]", $val, $val, array('id' => "profile_field_{$field_name}", 'checked' => ($val == $selected_options[$val] ? true : false)))."<br />";
+					$code .= $form->generate_check_box("profile_fields[{$field_name}][]", $val, htmlspecialchars_uni($val), array('id' => "profile_field_{$field_name}", 'checked' => ($val == $selected_options[$val] ? true : false)))."<br />";
 				}
 				break;
 			case "textarea":
