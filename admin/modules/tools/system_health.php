@@ -345,7 +345,7 @@ if($mybb->input['action'] == "utf8_conversion")
 				$convert_to_binary .= $comma.$names.preg_replace('/'.$type.'/i', $types[$type], $column['Type']).' '.$attributes;
 				$convert_to_utf8 .= "{$comma}{$names}{$column['Type']} CHARACTER SET {$character_set} COLLATE {$collation} {$attributes}";
 
-				$comma = $lang->comma;
+				$comma = ',';
 			}
 		}
 
