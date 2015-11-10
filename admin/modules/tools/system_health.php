@@ -850,7 +850,12 @@ if(!$mybb->input['action'])
 		++$errors;
 	}
 
-	if(is_writable('.'.$mybb->settings['uploadspath']))
+	$uploadspath = $mybb->settings['uploadspath'];
+	if(my_substr($uploadspath, 0, 1) == '.')
+	{
+		$uploadspath = MYBB_ROOT . $mybb->settings['uploadspath'];
+	}
+	if(is_writable($uploadspath))
 	{
 		$message_upload = "<span style=\"color: green;\">{$lang->writable}</span>";
 	}
@@ -860,7 +865,12 @@ if(!$mybb->input['action'])
 		++$errors;
 	}
 
-	if(is_writable('../'.$mybb->settings['avataruploadpath']))
+	$avataruploadpath = $mybb->settings['avataruploadpath'];
+	if(my_substr($avataruploadpath, 0, 1) == '.')
+	{
+		$avataruploadpath = MYBB_ROOT . $mybb->settings['avataruploadpath'];
+	}
+	if(is_writable($avataruploadpath))
 	{
 		$message_avatar = "<span style=\"color: green;\">{$lang->writable}</span>";
 	}
