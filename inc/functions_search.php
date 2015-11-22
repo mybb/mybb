@@ -229,12 +229,14 @@ function get_password_protected_forums($fids=array())
  */
 function clean_keywords($keywords)
 {
+	global $db;
+
 	$keywords = my_strtolower($keywords);
-	$keywords = str_replace("%", "\\%", $keywords);
+	$keywords = $db->escape_string_like($keywords);
 	$keywords = preg_replace("#\*{2,}#s", "*", $keywords);
 	$keywords = str_replace("*", "%", $keywords);
-	$keywords = preg_replace("#([\[\]\|\.\,:'])#s", " ", $keywords);
 	$keywords = preg_replace("#\s+#s", " ", $keywords);
+	$keywords = str_replace('\\"', '"', $keywords);
 
 	// Search for "and" or "or" and remove if it's at the beginning
 	$keywords = trim($keywords);
