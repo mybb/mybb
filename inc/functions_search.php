@@ -1092,7 +1092,10 @@ function perform_search_mysql($search)
 		if($search['matchusername'])
 		{
 			$user = get_user_by_username($search['author']);
-			$userids[] = $user['uid'];
+			if($user)
+			{
+				$userids[] = $user['uid'];
+			}
 		}
 		else
 		{
@@ -1506,7 +1509,10 @@ function perform_search_mysql_ft($search)
 		if($search['matchusername'])
 		{
 			$user = get_user_by_username($search['author']);
-			$userids[] = $user['uid'];
+			if($user)
+			{
+				$userids[] = $user['uid'];
+			}
 		}
 		else
 		{
