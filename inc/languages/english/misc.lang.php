@@ -88,7 +88,12 @@ $l['redirect_markforumsread'] = "All the forums have been marked as read.";
 $l['redirect_forumpasscleared'] = "The stored password for this forum has been cleared.";
 $l['redirect_cookiescleared'] = "All cookies have been cleared.";
 
-$l['error_invalidimtype'] = "This user does not have this type of instant messenger account specified in their profile.";
+$l['error_invalidforum'] = "Invalid forum";
 $l['error_invalidhelpdoc'] = "The specified help document does not appear to exist.";
+$l['error_invalidimtype'] = "This user does not have this type of instant messenger account specified in their profile.";
+$l['error_invalidsearch'] = "An invalid search was specified.  Please go back and try again.";
+$l['error_no_search_support'] = "This database engine does not support searching.";
+$l['error_searchflooding'] = "Sorry, but you can only perform one search every {1} seconds. Please wait another {2} seconds before attempting to search again.";
+$l['error_searchflooding_1'] = "Sorry, but you can only perform one search every {1} seconds. Please wait another 1 second before attempting to search again.";
 
 $l['dst_settings_updated'] = "Your daylight saving time settings have automatically been adjusted.<br /><br />You will now be taken back to the forum index.";
