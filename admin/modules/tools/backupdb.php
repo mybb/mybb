@@ -77,7 +77,13 @@ if($mybb->input['action'] == "dlbackup")
 		header('Content-disposition: attachment; filename='.$file);
 		header("Content-type: ".$ext);
 		header("Content-length: ".filesize(MYBB_ADMIN_DIR.'backups/'.$file));
-		echo file_get_contents(MYBB_ADMIN_DIR.'backups/'.$file);
+
+		$handle = fopen(MYBB_ADMIN_DIR.'backups/'.$file, 'rb');
+		while(!feof($handle))
+		{
+			echo fread($handle, 8192);
+		}
+		fclose($handle);
 	}
 	else
 	{
