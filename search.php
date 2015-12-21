@@ -237,7 +237,7 @@ if($mybb->input['action'] == "results")
 		$threadcount = 0;
 
 		// Moderators can view unapproved threads
-		$query = $db->simple_select("moderators", "fid", "(id='{$mybb->user['uid']}' AND isgroup='0') OR (id='{$mybb->user['usergroup']}' AND isgroup='1')");
+		$query = $db->simple_select("moderators", "fid, canviewunapprove, canviewdeleted", "(id='{$mybb->user['uid']}' AND isgroup='0') OR (id='{$mybb->user['usergroup']}' AND isgroup='1')");
 		if($mybb->usergroup['issupermod'] == 1)
 		{
 			// Super moderators (and admins)
@@ -246,12 +246,30 @@ if($mybb->input['action'] == "results")
 		elseif($db->num_rows($query))
 		{
 			// Normal moderators
-			$moderated_forums = '0';
-			while($forum = $db->fetch_array($query))
+			$unapprove_forums = array();
+			$deleted_forums = array();
+			$unapproved_where = 't.visible = 1';
+			while($moderator = $db->fetch_array($query))
 			{
-				$moderated_forums .= ','.$forum['fid'];
+				if($moderator['canviewunapprove'] == 1)
+				{
+					$unapprove_forums[] = $moderator['fid'];
+				}
+
+				if($moderator['canviewdeleted'] == 1)
+				{
+					$deleted_forums[] = $moderator['fid'];
+				}
 			}
-			$unapproved_where = "(t.visible>0 OR (t.visible IN (-1,0) AND t.fid IN ({$moderated_forums})))";
+
+			if(!empty($unapprove_forums))
+			{
+				$unapproved_where .= " OR (t.visible = 0 AND t.fid IN(".implode(',', $unapprove_forums)."))";
+			}
+			if(!empty($deleted_forums))
+			{
+				$unapproved_where .= " OR (t.visible = -1 AND t.fid IN(".implode(',', $deleted_forums)."))";
+			}
 		}
 		else
 		{
@@ -523,6 +541,11 @@ if($mybb->input['action'] == "results")
 			{
 				$thread['posts'] += $thread['unapprovedposts'];
 			}
+			if(is_moderator($thread['fid'], "canviewdeleted"))
+			{
+				$thread['posts'] += $thread['deletedposts'];
+			}
+
 			if($thread['posts'] > $mybb->settings['postsperpage'])
 			{
 				$thread['pages'] = $thread['posts'] / $mybb->settings['postsperpage'];
@@ -688,30 +711,45 @@ if($mybb->input['action'] == "results")
 		$postcount = 0;
 
 		// Moderators can view unapproved threads
-		$query = $db->simple_select("moderators", "fid", "(id='{$mybb->user['uid']}' AND isgroup='0') OR (id='{$mybb->user['usergroup']}' AND isgroup='1')");
+		$query = $db->simple_select("moderators", "fid, canviewunapprove, canviewdeleted", "(id='{$mybb->user['uid']}' AND isgroup='0') OR (id='{$mybb->user['usergroup']}' AND isgroup='1')");
 		if($mybb->usergroup['issupermod'] == 1)
 		{
 			// Super moderators (and admins)
-			$p_unapproved_where = "visible >= -1";
-			$t_unapproved_where = "visible < -1";
+			$unapproved_where = "visible >= -1";
 		}
 		elseif($db->num_rows($query))
 		{
 			// Normal moderators
-			$moderated_forums = '0';
-			while($forum = $db->fetch_array($query))
+			$unapprove_forums = array();
+			$deleted_forums = array();
+			$unapproved_where = 'visible = 1';
+
+			while($moderator = $db->fetch_array($query))
 			{
-				$moderated_forums .= ','.$forum['fid'];
-				$test_moderated_forums[$forum['fid']] = $forum['fid'];
+				if($moderator['canviewunapprove'] == 1)
+				{
+					$unapprove_forums[] = $moderator['fid'];
+				}
+
+				if($moderator['canviewdeleted'] == 1)
+				{
+					$deleted_forums[] = $moderator['fid'];
+				}
 			}
-			$p_unapproved_where = "(visible>0 OR (visible IN (-1,0) AND fid IN ({$moderated_forums})))";
-			$t_unapproved_where = "(visible<0 AND (visible <1 OR fid NOT IN ({$moderated_forums})))";
+
+			if(!empty($unapprove_forums))
+			{
+				$unapproved_where .= " OR (visible = 0 AND fid IN(".implode(',', $unapprove_forums)."))";
+			}
+			if(!empty($deleted_forums))
+			{
+				$unapproved_where .= " OR (visible = -1 AND fid IN(".implode(',', $deleted_forums)."))";
+			}
 		}
 		else
 		{
 			// Normal users
-			$p_unapproved_where = 'visible=1';
-			$t_unapproved_where = 'visible < 1';
+			$unapproved_where = 'visible = 1';
 		}
 
 		$post_cache_options = array();
@@ -729,7 +767,7 @@ if($mybb->input['action'] == "results")
 		$tids = array();
 		$pids = array();
 		// Make sure the posts we're viewing we have permission to view.
-		$query = $db->simple_select("posts", "pid, tid", "pid IN(".$db->escape_string($search['posts']).") AND {$p_unapproved_where}", $post_cache_options);
+		$query = $db->simple_select("posts", "pid, tid", "pid IN(".$db->escape_string($search['posts']).") AND {$unapproved_where}", $post_cache_options);
 		while($post = $db->fetch_array($query))
 		{
 			$pids[$post['pid']] = $post['tid'];
@@ -768,7 +806,7 @@ if($mybb->input['action'] == "results")
 			}
 
 			// Check the thread records as well. If we don't have permissions, remove them from the listing.
-			$query = $db->simple_select("threads", "tid", "tid IN(".$db->escape_string(implode(',', $pids)).") AND ({$t_unapproved_where}{$permsql} OR closed LIKE 'moved|%')");
+			$query = $db->simple_select("threads", "tid", "tid IN(".$db->escape_string(implode(',', $pids)).") AND ({$unapproved_where}{$permsql} OR closed LIKE 'moved|%')");
 			while($thread = $db->fetch_array($query))
 			{
 				if(array_key_exists($thread['tid'], $tids) != false)
@@ -810,7 +848,7 @@ if($mybb->input['action'] == "results")
 		$dot_icon = array();
 		if($mybb->settings['dotfolders'] != 0 && $mybb->user['uid'] != 0)
 		{
-			$query = $db->simple_select("posts", "DISTINCT tid,uid", "uid='{$mybb->user['uid']}' AND tid IN({$db->escape_string($tids)}) AND {$p_unapproved_where}");
+			$query = $db->simple_select("posts", "DISTINCT tid,uid", "uid='{$mybb->user['uid']}' AND tid IN({$db->escape_string($tids)}) AND {$unapproved_where}");
 			while($post = $db->fetch_array($query))
 			{
 				$dot_icon[$post['tid']] = true;
@@ -1536,7 +1574,7 @@ else if($mybb->input['action'] == "thread")
 	{
 		$ismod = false;
 	}
-	if(!$thread || ($thread['visible'] != 1 && $ismod == false && ($thread['visible'] != -1 || $mybb->settings['soft_delete'] != 1 || $mybb->settings['soft_delete_show_own'] != 1 || !$mybb->user['uid'] || $mybb->user['uid'] != $thread['uid'])) || ($thread['visible'] > 1 && $ismod == true))
+	if(!$thread || ($thread['visible'] != 1 && $ismod == false && ($thread['visible'] != -1 || $mybb->settings['soft_delete'] != 1 || !$mybb->user['uid'] || $mybb->user['uid'] != $thread['uid'])) || ($thread['visible'] > 1 && $ismod == true))
 	{
 		error($lang->error_invalidthread);
 	}

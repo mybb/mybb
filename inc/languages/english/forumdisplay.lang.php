@@ -8,6 +8,7 @@
 $l['post_thread'] = "Post Thread";
 $l['moderated_by'] = "Moderated By:";
 $l['nothreads'] = "Sorry, but there are currently no threads in this forum with the specified date and time limiting options.";
+$l['nopermission'] = "Sorry, but you do not have permission to view threads in this forum.";
 $l['search_forum'] = "Search this Forum:";
 $l['thread'] = "Thread";
 $l['author'] = "Author";

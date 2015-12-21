@@ -3800,6 +3800,9 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 <option value="multiunstickthreads">{$lang->unstick_threads}</option>]]></template>
 		<template name="forumdisplay_moderatedby" version="1600"><![CDATA[<span class="smalltext">{$lang->moderated_by} <strong>{$moderators}</strong></span><br />]]></template>
 		<template name="forumdisplay_newthread" version="1800"><![CDATA[<a href="newthread.php?fid={$fid}" class="button new_thread_button"><span>{$lang->post_thread}</span></a>]]></template>
+		<template name="forumdisplay_nopermission" version="1807"><![CDATA[<tr>
+<td colspan="{$colspan}" class="trow1">{$lang->nopermission}</td>
+</tr>]]></template>
 		<template name="forumdisplay_nothreads" version="120"><![CDATA[<tr>
 <td colspan="{$colspan}" class="trow1">{$lang->nothreads}</td>
 </tr>]]></template>
@@ -4316,7 +4319,7 @@ $(".forumjump").change(function() {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="managegroup_adduser" version="1806"><![CDATA[<br />
+		<template name="managegroup_adduser" version="1807"><![CDATA[<br />
 <form method="post" action="managegroup.php">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="do_add" />
@@ -4339,8 +4342,7 @@ if(use_xmlhttprequest == "1")
 	MyBB.select2();
 	$("#username").select2({
 		placeholder: "{$lang->search_user}",
-		minimumInputLength: 3,
-		maximumSelectionSize: 3,
+		minimumInputLength: 2,
 		multiple: false,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
@@ -4371,7 +4373,7 @@ if(use_xmlhttprequest == "1")
 <br />
 <div align="center"><input type="submit" class="button" value="{$lang->add_member_submit}" /></div>
 </form>]]></template>
-		<template name="managegroup_inviteuser" version="1806"><![CDATA[<br />
+		<template name="managegroup_inviteuser" version="1807"><![CDATA[<br />
 <form method="post" action="managegroup.php">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="do_invite" />
@@ -4394,8 +4396,7 @@ if(use_xmlhttprequest == "1")
 	MyBB.select2();
 	$("#inviteusername").select2({
 		placeholder: "{$lang->search_user}",
-		minimumInputLength: 3,
-		maximumSelectionSize: 3,
+		minimumInputLength: 2,
 		multiple: false,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
@@ -5286,7 +5287,7 @@ $(document).ready(function() {
 		// -->
 		</script>
 		]]></template>
-		<template name="member_register_referrer" version="1806"><![CDATA[<br />
+		<template name="member_register_referrer" version="1807"><![CDATA[<br />
 <fieldset class="trow2">
 <legend><strong>{$lang->referrer}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
@@ -5308,8 +5309,7 @@ if(use_xmlhttprequest == "1")
 	MyBB.select2();
 	$("#referrer").select2({
 		placeholder: "{$lang->search_user}",
-		minimumInputLength: 3,
-		maximumSelectionSize: 3,
+		minimumInputLength: 2,
 		multiple: false,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
@@ -5480,7 +5480,7 @@ if(use_xmlhttprequest == "1")
 </table>
 </div>
 </div>]]></template>
-		<template name="memberlist" version="1806"><![CDATA[<html>
+		<template name="memberlist" version="1807"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->member_list}</title>
 {$headerinclude}
@@ -5590,8 +5590,7 @@ if(use_xmlhttprequest == "1")
 	MyBB.select2();
 	$("#username").select2({
 		placeholder: "{$lang->search_user}",
-		minimumInputLength: 3,
-		maximumSelectionSize: 3,
+		minimumInputLength: 2,
 		multiple: false,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
@@ -5636,7 +5635,7 @@ if(use_xmlhttprequest == "1")
 </html>]]></template>
 		<template name="memberlist_referrals" version="1800"><![CDATA[<td class="tcat" width="10%" align="center"><span class="smalltext"><a href="{$sorturl}&amp;sort=referrals&amp;order=descending"><strong>{$lang->referrals}</strong></a> {$orderarrow['referrals']}</span></td>]]></template>
 		<template name="memberlist_referrals_bit" version="1600"><![CDATA[<td class="{$alt_bg}" align="center">{$user['referrals']}</td>]]></template>
-		<template name="memberlist_search" version="1806"><![CDATA[<html>
+		<template name="memberlist_search" version="1807"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->search_member_list}</title>
 {$headerinclude}
@@ -5737,8 +5736,7 @@ if(use_xmlhttprequest == "1")
 	MyBB.select2();
 	$("#username").select2({
 		placeholder: "{$lang->search_user}",
-		minimumInputLength: 3,
-		maximumSelectionSize: 3,
+		minimumInputLength: 2,
 		multiple: false,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
@@ -6149,8 +6147,8 @@ if(use_xmlhttprequest == "1")
 </table>
 </div>
 </div>]]></template>
-		<template name="misc_whoposted_poster" version="120"><![CDATA[<tr>
-<td class="{$altbg}">{$profile_link}</a></td>
+		<template name="misc_whoposted_poster" version="1807"><![CDATA[<tr>
+<td class="{$altbg}">{$profile_link}</td>
 <td class="{$altbg}">{$poster['posts']}</td>
 </tr>]]></template>
 		<template name="modcp" version="1805"><![CDATA[<html>
@@ -6575,7 +6573,7 @@ if(use_xmlhttprequest == "1")
 	<td class="trow1" align="center" colspan="4">{$lang->no_banned}</td>
 </tr>]]></template>
 		<template name="modcp_banning_remaining" version="1807"><![CDATA[<span class="{$banned_class}">({$ban_remaining})</span>]]></template>
-		<template name="modcp_banuser" version="1806"><![CDATA[<html>
+		<template name="modcp_banuser" version="1807"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->ban_user}</title>
 {$headerinclude}
@@ -6627,8 +6625,7 @@ if(use_xmlhttprequest == "1")
 	MyBB.select2();
 	$("#username").select2({
 		placeholder: "{$lang->search_user}",
-		minimumInputLength: 3,
-		maximumSelectionSize: 3,
+		minimumInputLength: 2,
 		multiple: false,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
@@ -7055,7 +7052,7 @@ if(use_xmlhttprequest == "1")
 		<template name="modcp_editprofile_suspensions_info" version="1600"><![CDATA[<tr>
 	<td colspan="2" class="smalltext"><em>{$suspension_info}</em></td>
 </tr>]]></template>
-		<template name="modcp_finduser" version="1806"><![CDATA[<html>
+		<template name="modcp_finduser" version="1807"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->find_users}</title>
 {$headerinclude}
@@ -7126,8 +7123,7 @@ if(use_xmlhttprequest == "1")
 	MyBB.select2();
 	$("#username").select2({
 		placeholder: "{$lang->find_users}",
-		minimumInputLength: 3,
-		maximumSelectionSize: 3,
+		minimumInputLength: 2,
 		multiple: false,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
@@ -7761,7 +7757,7 @@ if(use_xmlhttprequest == "1")
 		<template name="modcp_nobanned" version="1613"><![CDATA[<tr>
 		<td class="trow1" align="center" colspan="4">{$lang->no_bans_ending}</td>
 </tr>]]></template>
-		<template name="modcp_warninglogs" version="1806"><![CDATA[<html>
+		<template name="modcp_warninglogs" version="1807"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->warning_logs}</title>
 {$headerinclude}
@@ -7846,8 +7842,7 @@ if(use_xmlhttprequest == "1")
 	MyBB.select2();
 	$("#username").select2({
 		placeholder: "{$lang->search_user}",
-		minimumInputLength: 3,
-		maximumSelectionSize: 3,
+		minimumInputLength: 2,
 		multiple: false,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
@@ -9716,7 +9711,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 </body>
 </html>]]></template>
-		<template name="private_advanced_search" version="1806"><![CDATA[<html>
+		<template name="private_advanced_search" version="1807"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->advanced_private_message_search}</title>
 {$headerinclude}
@@ -9802,9 +9797,8 @@ if(use_xmlhttprequest == "1")
 {
 	MyBB.select2();
 	$("#sender").select2({
-		placeholder: "{$lang->find_users}",
-		minimumInputLength: 3,
-		maximumSelectionSize: 3,
+		placeholder: "{$lang->search_user}",
+		minimumInputLength: 2,
 		multiple: false,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
@@ -10343,7 +10337,7 @@ if(use_xmlhttprequest == "1")
 </script>
 </body>
 </html>]]></template>
-		<template name="private_send_autocomplete" version="1806"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1806">
+		<template name="private_send_autocomplete" version="1807"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1806">
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1806"></script>
 <script type="text/javascript">
 <!--
@@ -10352,8 +10346,8 @@ if(use_xmlhttprequest == "1")
 	MyBB.select2();
 	$("#to").select2({
 		placeholder: "{$lang->search_user}",
-		minimumInputLength: 3,
-		maximumSelectionSize: 3,
+		minimumInputLength: 2,
+		maximumSelectionSize: {$mybb->usergroup['maxpmrecipients']},
 		multiple: true,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
@@ -10390,8 +10384,8 @@ if(use_xmlhttprequest == "1")
 
   $("#bcc").select2({
 		placeholder: "{$lang->search_user}",
-		minimumInputLength: 3,
-		maximumSelectionSize: 3,
+		minimumInputLength: 2,
+		maximumSelectionSize: {$mybb->usergroup['maxpmrecipients']},
 		multiple: true,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
@@ -10507,7 +10501,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		<template name="private_tracking_unreadmessage_stop" version="1800"><![CDATA[<tr>
 <td class="tfoot" align="right" colspan="5"><strong><input type="submit" class="button" name="stoptrackingunread" value="{$lang->stop_tracking}" /> / <input type="submit" class="button" name="cancel" value="{$lang->delete}" /> {$lang->selected_messages}</strong></td>
 </tr>]]></template>
-		<template name="report" version="1800"><![CDATA[<div class="modal">
+		<template name="report" version="1807"><![CDATA[<div class="modal">
   <div style="overflow-y: auto; max-height: 400px;" class="modal_{$id}">
   <form action="report.php" method="post" class="reportData_{$id}" onsubmit="javascript: return Report.submitReport({$id});">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
@@ -10517,7 +10511,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <input type="hidden" name="no_modal" value="1" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-	<td class="thead" colspan="2"><strong>{$report_title}</strong>
+	<td class="thead" colspan="2"><strong>{$report_title}</strong></td>
 </tr>
 <tr>
 	<td class="tcat" colspan="2">{$lang->report_to_mod}</td>
@@ -10556,9 +10550,9 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		<template name="report_error" version="1800"><![CDATA[<tr>
 	<td colspan="2" class="trow1">{$error}</td>
 </tr>]]></template>
-		<template name="report_error_nomodal" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<template name="report_error_nomodal" version="1807"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-	<td class="thead" colspan="2"><strong>{$report_title}</strong>
+	<td class="thead" colspan="2"><strong>{$report_title}</strong></td>
 </tr>
 <tr>
 	<td class="tcat" colspan="2">{$lang->report_to_mod}</td>
@@ -10795,7 +10789,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 			<a href="javascript:Report.reportReputation({$reputation_vote['rid']});" class="postbit_report"><span>{$lang->report_vote}</span></a>
 		</div>]]>
 		</template>
-		<template name="search" version="1806"><![CDATA[<html>
+		<template name="search" version="1807"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->search}</title>
 {$headerinclude}
@@ -10884,8 +10878,7 @@ if(use_xmlhttprequest == "1")
 	MyBB.select2();
 	$("#author").select2({
 		placeholder: "{$lang->search_user}",
-		minimumInputLength: 3,
-		maximumSelectionSize: 3,
+		minimumInputLength: 2,
 		multiple: false,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
@@ -12043,7 +12036,7 @@ if(use_xmlhttprequest == "1")
 		{$lang->no_requests}
 	</td>
 </tr>]]></template>
-		<template name="usercp_editlists" version="1806"><![CDATA[<html>
+		<template name="usercp_editlists" version="1807"><![CDATA[<html>
 <head>
 	<title>{$mybb->settings['bbname']} - {$lang->edit_lists}</title>
 	{$headerinclude}
@@ -12089,8 +12082,8 @@ if(use_xmlhttprequest == "1")
 									MyBB.select2();
 									$("#buddy_add_username").select2({
 										placeholder: "{$lang->search_user}",
-										minimumInputLength: 3,
-										maximumSelectionSize: 3,
+										minimumInputLength: 2,
+										maximumSelectionSize: 5,
 										multiple: true,
 										ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 											url: "xmlhttp.php?action=get_users",
@@ -12161,8 +12154,8 @@ if(use_xmlhttprequest == "1")
 									MyBB.select2();
 									$("#ignored_add_username").select2({
 										placeholder: "{$lang->search_user}",
-										minimumInputLength: 3,
-										maximumSelectionSize: 3,
+										minimumInputLength: 2,
+										maximumSelectionSize: 5,
 										multiple: true,
 										ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 											url: "xmlhttp.php?action=get_users",
@@ -13880,6 +13873,7 @@ $(function() {
 
 {$stylesheets}
 <script type="text/javascript">
+<!--
 	lang.unknown_error = "{$lang->unknown_error}";
 
 	lang.select2_match = "{$lang->select2_match}";
@@ -13911,6 +13905,7 @@ $(function() {
 	var spinner_image = "{$theme['imgdir']}/spinner.gif";
 	var spinner = "<img src='" + spinner_image +"' alt='' />";
 	var modal_zindex = 9999;
+// -->
 </script>]]></template>
 		<template name="htmldoctype" version="120"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">]]></template>
 		<template name="loginbox" version="1609"><![CDATA[<tr>
