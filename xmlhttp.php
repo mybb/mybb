@@ -223,8 +223,8 @@ if($mybb->input['action'] == "get_users")
 {
 	$mybb->input['query'] = ltrim($mybb->get_input('query'));
 
-	// If the string is less than 3 characters, quit.
-	if(my_strlen($mybb->input['query']) < 3)
+	// If the string is less than 2 characters, quit.
+	if(my_strlen($mybb->input['query']) < 2)
 	{
 		exit;
 	}
