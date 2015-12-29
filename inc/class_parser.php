@@ -91,8 +91,8 @@ class postParser
 	/**
 	 * Parses a message with the specified options.
 	 *
-	 * @param string The message to be parsed.
-	 * @param array Array of yes/no options - allow_html,filter_badwords,allow_mycode,allow_smilies,nl2br,me_username,filter_cdata.
+	 * @param string $message The message to be parsed.
+	 * @param array $options Array of yes/no options - allow_html,filter_badwords,allow_mycode,allow_smilies,nl2br,me_username,filter_cdata.
 	 * @return string The parsed message.
 	 */
 	function parse_message($message, $options=array())
@@ -130,31 +130,31 @@ class postParser
 			$message = $this->parse_cdata($message);
 		}
 
-		if(empty($this->options['allow_html']))
-		{
-			$message = $this->parse_html($message);
-		}
-		else
-		{
-			while(preg_match("#<s(cript|tyle)(.*)>(.*)</s(cript|tyle)(.*)>#is", $message))
-			{
-				$message = preg_replace("#<s(cript|tyle)(.*)>(.*)</s(cript|tyle)(.*)>#is", "&lt;s$1$2&gt;$3&lt;/s$4$5&gt;", $message);
-			}
-
-			$find = array('<?php', '<!--', '-->', '?>', "<br />\n", "<br>\n");
-			$replace = array('&lt;?php', '&lt;!--', '--&gt;', '?&gt;', "\n", "\n");
-			$message = str_replace($find, $replace, $message);
-		}
-
 		// If MyCode needs to be replaced, first filter out [code] and [php] tags.
 		if(!empty($this->options['allow_mycode']) && $mybb->settings['allowcodemycode'] == 1)
 		{
+			// This code is reserved and could break codes
+			$message = str_replace("<mybb-code>\n", "<mybb_code>\n", $message);
+
 			preg_match_all("#\[(code|php)\](.*?)\[/\\1\](\r\n?|\n?)#si", $message, $code_matches, PREG_SET_ORDER);
 			$message = preg_replace("#\[(code|php)\](.*?)\[/\\1\](\r\n?|\n?)#si", "<mybb-code>\n", $message);
 		}
 
-		// Always fix bad Javascript in the message.
-		$message = $this->fix_javascript($message);
+		if(empty($this->options['allow_html']))
+		{
+			$message = $this->parse_html($message);
+			$message = str_replace("&lt;mybb-code&gt;\n", "<mybb-code>\n", $message);
+		}
+		else
+		{
+			// Replace base, meta,script and style tags in our post - these are > dangerous <
+			$message = preg_replace('#<(/?)(base|meta|script|style)([^>]*)>#i', '&lt;$1$2$3&gt;', $message);
+			$message = $this->fix_javascript($message);
+
+			$find = array("<br />\n", "<br>\n");
+			$replace = array("\n", "\n");
+			$message = str_replace($find, $replace, $message);
+		}
 
 		// Replace "me" code and slaps if we have a username
 		if(!empty($this->options['me_username']) && $mybb->settings['allowmemycode'] == 1)
@@ -193,14 +193,11 @@ class postParser
 			{
 				foreach($code_matches as $text)
 				{
-					// Fix up HTML inside the code tags so it is clean
-					if(!empty($this->options['allow_html']))
-					{
-						$text[2] = $this->parse_html($text[2]);
-					}
-
 					if(my_strtolower($text[1]) == "code")
 					{
+						// Fix up HTML inside the code tags so it is clean
+						$text[2] = $this->parse_html($text[2]);
+
 						$code = $this->mycode_parse_code($text[2]);
 					}
 					elseif(my_strtolower($text[1]) == "php")
@@ -210,15 +207,6 @@ class postParser
 					$message = preg_replace("#\<mybb-code>\n?#", $code, $message, 1);
 				}
 			}
-		}
-
-		// Replace meta and base tags in our post - these are > dangerous <
-		if(!empty($this->options['allow_html']))
-		{
-			$message = preg_replace_callback("#<((m[^a])|(b[^diloru>])|(s[^aemptu>]))(\s*[^>]*)>#si", create_function(
-				'$matches',
-				'return htmlspecialchars_uni($matches[0]);'
-			), $message);
 		}
 
 		if(!isset($this->options['nl2br']) || $this->options['nl2br'] != 0)
@@ -237,7 +225,7 @@ class postParser
 	/**
 	 * Converts HTML in a message to their specific entities whilst allowing unicode characters.
 	 *
-	 * @param string The message to be parsed.
+	 * @param string $message The message to be parsed.
 	 * @return string The formatted message.
 	 */
 	function parse_html($message)
@@ -306,7 +294,7 @@ class postParser
 			$callback_mycode['url_complex']['regex'] = "#\[url=([a-z]+?://)([^\r\n\"<]+?)\](.+?)\[/url\]#si";
 			$callback_mycode['url_complex']['replacement'] = array($this, 'mycode_parse_url_callback1');
 
-			$callback_mycode['url_complex2']['regex'] = "#\[url=([^\r\n\"<&\(\)]+?)\](.+?)\[/url\]#si";
+			$callback_mycode['url_complex2']['regex'] = "#\[url=([^\r\n\"<]+?)\](.+?)\[/url\]#si";
 			$callback_mycode['url_complex2']['replacement'] = array($this, 'mycode_parse_url_callback2');
 
 			++$callback_count;
@@ -405,8 +393,8 @@ class postParser
 	/**
 	 * Parses MyCode tags in a specific message with the specified options.
 	 *
-	 * @param string The message to be parsed.
-	 * @param array Array of options in yes/no format. Options are allow_imgcode.
+	 * @param string $message The message to be parsed.
+	 * @param array $options Array of options in yes/no format. Options are allow_imgcode.
 	 * @return string The parsed message.
 	 */
 	function parse_mycode($message, $options=array())
@@ -546,9 +534,8 @@ class postParser
 	/**
 	 * Parses smilie code in the specified message.
 	 *
-	 * @param string The message being parsed.
-	 * @param string Base URL for the image tags created by smilies.
-	 * @param string Yes/No if HTML is allowed in the post
+	 * @param string $message $message The message being parsed.
+	 * @param int $allow_html not used
 	 * @return string The parsed message.
 	 */
 	function parse_smilies($message, $allow_html=0)
@@ -604,8 +591,8 @@ class postParser
 	/**
 	 * Parses a list of filtered/badwords in the specified message.
 	 *
-	 * @param string The message to be parsed.
-	 * @param array Array of parser options in yes/no format.
+	 * @param string $message The message to be parsed.
+	 * @param array $options Array of parser options in yes/no format.
 	 * @return string The parsed message.
 	 */
 	function parse_badwords($message, $options=array())
@@ -651,7 +638,7 @@ class postParser
 	/**
 	 * Resolves nested CDATA tags in the specified message.
 	 *
-	 * @param string The message to be parsed.
+	 * @param string $message The message to be parsed.
 	 * @return string The parsed message.
 	 */
 	function parse_cdata($message)
@@ -671,27 +658,11 @@ class postParser
 	{
 		$js_array = array(
 			"#(&\#(0*)106;?|&\#(0*)74;?|&\#x(0*)4a;?|&\#x(0*)6a;?|j)((&\#(0*)97;?|&\#(0*)65;?|a)(&\#(0*)118;?|&\#(0*)86;?|v)(&\#(0*)97;?|&\#(0*)65;?|a)(\s)?(&\#(0*)115;?|&\#(0*)83;?|s)(&\#(0*)99;?|&\#(0*)67;?|c)(&\#(0*)114;?|&\#(0*)82;?|r)(&\#(0*)105;?|&\#(0*)73;?|i)(&\#112;?|&\#(0*)80;?|p)(&\#(0*)116;?|&\#(0*)84;?|t)(&\#(0*)58;?|\:))#i",
-			"#(o)(nmouseover\s?=)#i",
-			"#(o)(nmouseout\s?=)#i",
-			"#(o)(nmousedown\s?=)#i",
-			"#(o)(nmousemove\s?=)#i",
-			"#(o)(nmouseup\s?=)#i",
-			"#(o)(nclick\s?=)#i",
-			"#(o)(ndblclick\s?=)#i",
-			"#(o)(nload\s?=)#i",
-			"#(o)(nsubmit\s?=)#i",
-			"#(o)(nblur\s?=)#i",
-			"#(o)(nchange\s?=)#i",
-			"#(o)(nfocus\s?=)#i",
-			"#(o)(nselect\s?=)#i",
-			"#(o)(nunload\s?=)#i",
-			"#(o)(nkeypress\s?=)#i",
-			"#(o)(nerror\s?=)#i",
-			"#(o)(nreset\s?=)#i",
-			"#(o)(nabort\s?=)#i"
+			"#(on)([a-z]+\s?=)#i",
 		);
 
-		$message = preg_replace($js_array, "$1<strong></strong>$2$6", $message);
+		// Add invisible white space
+		$message = preg_replace($js_array, "$1\xE2\x80\x8C$2$6", $message);
 
 		return $message;
 	}
@@ -699,8 +670,8 @@ class postParser
 	/**
 	* Handles fontsize.
 	*
-	* @param string The original size.
-	* @param string The text within a size tag.
+	* @param int $size The original size.
+	* @param string $text The text within a size tag.
 	* @return string The parsed text.
 	*/
 	function mycode_handle_size($size, $text)
@@ -720,7 +691,7 @@ class postParser
 	/**
 	* Handles fontsize.
 	*
-	* @param array Matches.
+	* @param array $matches Matches.
 	* @return string The parsed text.
 	*/
 	function mycode_handle_size_callback($matches)
@@ -731,8 +702,8 @@ class postParser
 	/**
 	* Parses quote MyCode.
 	*
-	* @param string The message to be parsed
-	* @param boolean Are we formatting as text?
+	* @param string $message The message to be parsed
+	* @param boolean $text_only Are we formatting as text?
 	* @return string The parsed message.
 	*/
 	function mycode_parse_quotes($message, $text_only=false)
@@ -786,9 +757,9 @@ class postParser
 	/**
 	* Parses quotes with post id and/or dateline.
 	*
-	* @param string The message to be parsed
-	* @param string The username to be parsed
-	* @param boolean Are we formatting as text?
+	* @param string $message The message to be parsed
+	* @param string $username The username to be parsed
+	* @param boolean $text_only Are we formatting as text?
 	* @return string The parsed message.
 	*/
 	function mycode_parse_post_quotes($message, $username, $text_only=false)
@@ -868,7 +839,7 @@ class postParser
 	/**
 	* Parses quotes with post id and/or dateline.
 	*
-	* @param array Matches.
+	* @param array $matches Matches.
 	* @return string The parsed message.
 	*/
 	function mycode_parse_post_quotes_callback1($matches)
@@ -879,7 +850,7 @@ class postParser
 	/**
 	* Parses quotes with post id and/or dateline.
 	*
-	* @param array Matches.
+	* @param array $matches Matches.
 	* @return string The parsed message.
 	*/
 	function mycode_parse_post_quotes_callback2($matches)
@@ -890,8 +861,8 @@ class postParser
 	/**
 	* Parses code MyCode.
 	*
-	* @param string The message to be parsed
-	* @param boolean Are we formatting as text?
+	* @param string $code The message to be parsed
+	* @param boolean $text_only Are we formatting as text?
 	* @return string The parsed message.
 	*/
 	function mycode_parse_code($code, $text_only=false)
@@ -925,7 +896,7 @@ class postParser
 	/**
 	* Parses code MyCode.
 	*
-	* @param array Matches.
+	* @param array $matches Matches.
 	* @return string The parsed message.
 	*/
 	function mycode_parse_code_callback($matches)
@@ -936,9 +907,9 @@ class postParser
 	/**
 	* Parses PHP code MyCode.
 	*
-	* @param string The message to be parsed
-	* @param boolean Whether or not it should return it as pre-wrapped in a div or not.
-	* @param boolean Are we formatting as text?
+	* @param string $str The message to be parsed
+	* @param boolean $bare_return Whether or not it should return it as pre-wrapped in a div or not.
+	* @param boolean $text_only Are we formatting as text?
 	* @return string The parsed message.
 	*/
 	function mycode_parse_php($str, $bare_return = false, $text_only = false)
@@ -960,10 +931,6 @@ class postParser
 		{
 			return;
 		}
-
-		$str = str_replace('&amp;', '&', $str);
-		$str = str_replace('&lt;', '<', $str);
-		$str = str_replace('&gt;', '>', $str);
 
 		// See if open and close tags are provided.
 		$added_open_tag = false;
@@ -1019,7 +986,7 @@ class postParser
 	/**
 	* Parses PHP code MyCode.
 	*
-	* @param array Matches.
+	* @param array $matches Matches.
 	* @return string The parsed message.
 	*/
 	function mycode_parse_php_callback($matches)
@@ -1030,8 +997,8 @@ class postParser
 	/**
 	* Parses URL MyCode.
 	*
-	* @param string The URL to link to.
-	* @param string The name of the link.
+	* @param string $url The URL to link to.
+	* @param string $name The name of the link.
 	* @return string The built-up link.
 	*/
 	function mycode_parse_url($url, $name="")
@@ -1046,21 +1013,19 @@ class postParser
 			$url = $this->parse_html($url);
 		}
 
-		$fullurl = $url;
-
 		if(!$name)
 		{
 			$name = $url;
 		}
 
-		if($name == $url && !empty($this->options['shorten_urls']))
+		if($name == $url && (!isset($this->options['shorten_urls']) || !empty($this->options['shorten_urls'])))
 		{
-			if(my_strlen($url) > 55)
+			$name = htmlspecialchars_decode($name);
+			if(my_strlen($name) > 55)
 			{
-				$name = htmlspecialchars_decode($name);
-				$name = my_substr($url, 0, 40)."...".my_substr($url, -10);
-				$name = htmlspecialchars_uni($name);
+				$name = my_substr($name , 0, 40).'...'.my_substr($name , -10);
 			}
+			$name = htmlspecialchars_uni($name);
 		}
 
 		$nofollow = '';
@@ -1071,17 +1036,17 @@ class postParser
 
 		// Fix some entities in URLs
 		$entities = array('$' => '%24', '&#36;' => '%24', '^' => '%5E', '`' => '%60', '[' => '%5B', ']' => '%5D', '{' => '%7B', '}' => '%7D', '"' => '%22', '<' => '%3C', '>' => '%3E', ' ' => '%20');
-		$fullurl = str_replace(array_keys($entities), array_values($entities), $fullurl);
+		$url = str_replace(array_keys($entities), array_values($entities), $url);
 
 		$name = preg_replace("#&amp;\#([0-9]+);#si", "&#$1;", $name); // Fix & but allow unicode
-		$link = "<a href=\"$fullurl\" target=\"_blank\"{$nofollow}>$name</a>";
+		$link = "<a href=\"$url\" target=\"_blank\"{$nofollow}>$name</a>";
 		return $link;
 	}
 
 	/**
 	* Parses URL MyCode.
 	*
-	* @param array Matches.
+	* @param array $matches Matches.
 	* @return string The built-up link.
 	*/
 	function mycode_parse_url_callback1($matches)
@@ -1096,7 +1061,7 @@ class postParser
 	/**
 	* Parses URL MyCode.
 	*
-	* @param array Matches.
+	* @param array $matches Matches.
 	* @return string The built-up link.
 	*/
 	function mycode_parse_url_callback2($matches)
@@ -1111,8 +1076,10 @@ class postParser
 	/**
 	 * Parses IMG MyCode.
 	 *
-	 * @param string The URL to the image
-	 * @param array Optional array of dimensions
+	 * @param string $url The URL to the image
+	 * @param array $dimensions Optional array of dimensions
+	 * @param string $align
+	 * @return string
 	 */
 	function mycode_parse_img($url, $dimensions=array(), $align='')
 	{
@@ -1126,6 +1093,7 @@ class postParser
 			$url = $this->parse_html($url);
 		}
 
+		$css_align = '';
 		if($align == "right")
 		{
 			$css_align = " style=\"float: right;\"";
@@ -1135,14 +1103,16 @@ class postParser
 			$css_align = " style=\"float: left;\"";
 		}
 		$alt = basename($url);
+
+		$alt = htmlspecialchars_decode($alt);
 		if(my_strlen($alt) > 55)
 		{
-			$alt = htmlspecialchars_decode($alt);
-			$alt = my_substr($alt, 0, 40)."...".my_substr($alt, -10);
-			$alt = htmlspecialchars_uni($alt);
+			$alt = my_substr($alt, 0, 40).'...'.my_substr($alt, -10);
 		}
+		$alt = htmlspecialchars_uni($alt);
+
 		$alt = $lang->sprintf($lang->posted_image, $alt);
-		if($dimensions[0] > 0 && $dimensions[1] > 0)
+		if(isset($dimensions[0]) && $dimensions[0] > 0 && isset($dimensions[1]) && $dimensions[1] > 0)
 		{
 			return "<img src=\"{$url}\" width=\"{$dimensions[0]}\" height=\"{$dimensions[1]}\" border=\"0\" alt=\"{$alt}\"{$css_align} />";
 		}
@@ -1155,7 +1125,7 @@ class postParser
 	/**
 	 * Parses IMG MyCode.
 	 *
-	 * @param array Matches.
+	 * @param array $matches Matches.
 	 * @return string Image code.
 	 */
 	function mycode_parse_img_callback1($matches)
@@ -1166,7 +1136,7 @@ class postParser
 	/**
 	 * Parses IMG MyCode.
 	 *
-	 * @param array Matches.
+	 * @param array $matches Matches.
 	 * @return string Image code.
 	 */
 	function mycode_parse_img_callback2($matches)
@@ -1177,7 +1147,7 @@ class postParser
 	/**
 	 * Parses IMG MyCode.
 	 *
-	 * @param array Matches.
+	 * @param array $matches Matches.
 	 * @return string Image code.
 	 */
 	function mycode_parse_img_callback3($matches)
@@ -1188,7 +1158,7 @@ class postParser
 	/**
 	 * Parses IMG MyCode.
 	 *
-	 * @param array Matches.
+	 * @param array $matches Matches.
 	 * @return string Image code.
 	 */
 	function mycode_parse_img_callback4($matches)
@@ -1199,7 +1169,8 @@ class postParser
 	/**
 	 * Parses IMG MyCode disabled.
 	 *
-	 * @param string The URL to the image
+	 * @param string $url The URL to the image
+	 * @return string
 	 */
 	function mycode_parse_img_disabled($url)
 	{
@@ -1216,7 +1187,7 @@ class postParser
 	/**
 	 * Parses IMG MyCode disabled.
 	 *
-	 * @param array Matches.
+	 * @param array $matches Matches.
 	 * @return string Image code.
 	 */
 	function mycode_parse_img_disabled_callback1($matches)
@@ -1227,7 +1198,7 @@ class postParser
 	/**
 	 * Parses IMG MyCode disabled.
 	 *
-	 * @param array Matches.
+	 * @param array $matches Matches.
 	 * @return string Image code.
 	 */
 	function mycode_parse_img_disabled_callback2($matches)
@@ -1238,7 +1209,7 @@ class postParser
 	/**
 	 * Parses IMG MyCode disabled.
 	 *
-	 * @param array Matches.
+	 * @param array $matches Matches.
 	 * @return string Image code.
 	 */
 	function mycode_parse_img_disabled_callback3($matches)
@@ -1249,7 +1220,7 @@ class postParser
 	/**
 	 * Parses IMG MyCode disabled.
 	 *
-	 * @param array Matches.
+	 * @param array $matches Matches.
 	 * @return string Image code.
 	 */
 	function mycode_parse_img_disabled_callback4($matches)
@@ -1260,8 +1231,8 @@ class postParser
 	/**
 	* Parses email MyCode.
 	*
-	* @param string The email address to link to.
-	* @param string The name for the link.
+	* @param string $email The email address to link to.
+	* @param string $name The name for the link.
 	* @return string The built-up email link.
 	*/
 	function mycode_parse_email($email, $name="")
@@ -1287,7 +1258,7 @@ class postParser
 	/**
 	* Parses email MyCode.
 	*
-	* @param array Matches
+	* @param array $matches Matches
 	* @return string The built-up email link.
 	*/
 	function mycode_parse_email_callback($matches)
@@ -1302,8 +1273,8 @@ class postParser
 	/**
 	* Parses video MyCode.
 	*
-	* @param string The video provider.
-	* @param string The video to link to.
+	* @param string $video The video provider.
+	* @param string $url The video to link to.
 	* @return string The built-up video code.
 	*/
 	function mycode_parse_video($video, $url)
@@ -1342,7 +1313,7 @@ class postParser
 		switch($video)
 		{
 			case "dailymotion":
-				list($id, ) = split("_", $path[2], 1); // http://www.dailymotion.com/video/fds123_title-goes-here
+				list($id) = explode('_', $path[2], 2); // http://www.dailymotion.com/video/fds123_title-goes-here
 				break;
 			case "metacafe":
 				$id = $path[2]; // http://www.metacafe.com/watch/fds123/title_goes_here/
@@ -1352,7 +1323,18 @@ class postParser
 				$id = $path[4]; // http://www.myspace.com/video/fds/fds/123
 				break;
 			case "facebook":
-				$id = $input['v']; // http://www.facebook.com/video/video.php?v=123
+				if(isset($input['v']))
+				{
+					$id = $input['v']; // http://www.facebook.com/video/video.php?v=123
+				}
+				elseif(substr($path[3], 0, 3) == 'vb.')
+				{
+					$id = $path[4]; // https://www.facebook.com/fds/videos/vb.123/123/
+				}
+				else
+				{
+					$id = $path[3]; // https://www.facebook.com/fds/videos/123/
+				}
 				break;
 			case "veoh":
 				$id = $path[2]; // http://www.veoh.com/watch/123
@@ -1361,7 +1343,14 @@ class postParser
 				$id = $input['i']; // http://www.liveleak.com/view?i=123
 				break;
 			case "yahoo":
-				$id = $path[1]; // http://xy.screen.yahoo.com/fds-123.html
+				if(isset($path[2]))
+				{
+					$id = $path[2]; // http://xy.screen.yahoo.com/fds/fds-123.html
+				}
+				else
+				{
+					$id = $path[1]; // http://xy.screen.yahoo.com/fds-123.html
+				}
 				// Support for localized portals
 				$domain = explode('.', $parsed_url['host']);
 				if($domain[0] != 'screen' && preg_match('#^([a-z-]+)$#', $domain[0]))
@@ -1374,7 +1363,14 @@ class postParser
 				}
 				break;
 			case "vimeo":
-				$id = $path[1]; // http://vimeo.com/fds123
+				if(isset($path[3]))
+				{
+					$id = $path[3]; // http://vimeo.com/fds/fds/fds123
+				}
+				else
+				{
+					$id = $path[1]; // http://vimeo.com/fds123
+				}
 				break;
 			case "youtube":
 				if($fragments[0])
@@ -1409,7 +1405,7 @@ class postParser
 	/**
 	* Parses video MyCode.
 	*
-	* @param array Matches.
+	* @param array $matches Matches.
 	* @return string The built-up video code.
 	*/
 	function mycode_parse_video_callback($matches)
@@ -1420,7 +1416,8 @@ class postParser
 	/**
 	 * Parses video MyCode disabled.
 	 *
-	 * @param string The URL to the video
+	 * @param string $url The URL to the video
+	 * @return string
 	 */
 	function mycode_parse_video_disabled($url)
 	{
@@ -1437,7 +1434,7 @@ class postParser
 	/**
 	* Parses video MyCode disabled.
 	*
-	* @param array Matches.
+	* @param array $matches Matches.
 	* @return string The built-up video code.
 	*/
 	function mycode_parse_video_disabled_callback($matches)
@@ -1448,7 +1445,7 @@ class postParser
 	/**
 	* Parses URLs automatically.
 	*
-	* @param string The message to be parsed
+	* @param string $message The message to be parsed
 	* @return string The parsed message.
 	*/
 	function mycode_auto_url($message)
@@ -1465,7 +1462,7 @@ class postParser
 	/**
 	* Parses URLs automatically.
 	*
-	* @param array Matches
+	* @param array $matches Matches
 	* @return string The parsed message.
 	*/
 	function mycode_auto_url_callback($matches)
@@ -1506,8 +1503,8 @@ class postParser
 	/**
 	* Parses list MyCode.
 	*
-	* @param string The message to be parsed
-	* @param string The list type
+	* @param string $message The message to be parsed
+	* @param string $type The list type
 	* @return string The parsed message.
 	*/
 	function mycode_parse_list($message, $type="")
@@ -1518,7 +1515,7 @@ class postParser
 			$message = "[*]{$message}";
 		}
 
-		$message = preg_replace("#\s*\[\*\]\s*#", "</li>\n<li>", $message);
+		$message = preg_replace("#[^\S\n\r]*\[\*\]\s*#", "</li>\n<li>", $message);
 		$message .= "</li>";
 
 		if($type)
@@ -1536,7 +1533,7 @@ class postParser
 	/**
 	* Parses list MyCode.
 	*
-	* @param array Matches
+	* @param array $matches Matches
 	* @return string The parsed message.
 	*/
 	function mycode_parse_list_callback($matches)
@@ -1547,7 +1544,7 @@ class postParser
 	/**
 	* Prepares list MyCode by finding the matching list tags.
 	*
-	* @param array Matches
+	* @param array $matches Matches
 	* @return string Temporary replacements.
 	*/
 	function mycode_prepare_list($matches)
@@ -1584,7 +1581,7 @@ class postParser
 	/**
 	 * Strips smilies from a string
 	 *
-	 * @param string The message for smilies to be stripped from
+	 * @param string $message The message for smilies to be stripped from
 	 * @return string The message with smilies stripped
 	 */
 	function strip_smilies($message)
@@ -1603,8 +1600,8 @@ class postParser
 	/**
 	 * Highlights a string
 	 *
-	 * @param string The message to be highligted
-	 * @param string The highlight keywords
+	 * @param string $message The message to be highligted
+	 * @param string $highlight The highlight keywords
 	 * @return string The message with highlight bbcodes
 	 */
 	function highlight_message($message, $highlight)
@@ -1625,7 +1622,8 @@ class postParser
 	/**
 	 * Parses message to plain text equivalents of MyCode.
 	 *
-	 * @param string The message to be parsed
+	 * @param string $message The message to be parsed
+	 * @param array $options
 	 * @return string The parsed message.
 	 */
 	function text_parse_message($message, $options=array())

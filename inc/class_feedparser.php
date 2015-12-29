@@ -34,7 +34,7 @@ class FeedParser
 	/**
 	 * Parses a feed with the specified filename (or URL)
 	 *
-	 * @param string The path or URL of the feed
+	 * @param string $feed The path or URL of the feed
 	 * @return boolean True if parsing was a success, false if failure
 	 */
 	function parse_feed($feed)
@@ -90,12 +90,14 @@ class FeedParser
 			$this->error = "unknown_feed_type";
 			return false;
 		}
+
+		return true;
 	}
 
 	/**
 	 * Parses an XML structure in the format of an RSS feed
 	 *
-	 * @param array PHP XML parser structure
+	 * @param array $feed_contents PHP XML parser structure
 	 * @return boolean true
 	 */
 	function parse_rss($feed_contents)
@@ -196,7 +198,7 @@ class FeedParser
 	/**
 	 * Convert all array keys within an array to lowercase
 	 *
-	 * @param array The array to be converted
+	 * @param array $array The array to be converted
 	 * @return array The converted array
 	 */
 	function keys_to_lowercase($array)
@@ -220,7 +222,7 @@ class FeedParser
 	/**
 	 * Converts an RSS date stamp in to a unix timestamp
 	 *
-	 * @param string The RSS date
+	 * @param string $date The RSS date
 	 * @return integer The unix timestamp (if successful), 0 if unsuccessful
 	 */
 	function get_rss_timestamp($date)

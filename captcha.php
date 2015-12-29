@@ -127,7 +127,7 @@ imagedestroy($im);
 /**
  * Draws a random number of lines on the image.
  *
- * @param resource The image.
+ * @param resource $im The image.
  */
 function draw_lines(&$im)
 {
@@ -148,7 +148,7 @@ function draw_lines(&$im)
 /**
  * Draws a random number of circles on the image.
  *
- * @param resource The image.
+ * @param resource $im The image.
  */
 function draw_circles(&$im)
 {
@@ -169,7 +169,7 @@ function draw_circles(&$im)
 /**
  * Draws a random number of dots on the image.
  *
- * @param resource The image.
+ * @param resource $im The image.
  */
 function draw_dots(&$im)
 {
@@ -186,7 +186,7 @@ function draw_dots(&$im)
 /**
  * Draws a random number of squares on the image.
  *
- * @param resource The image.
+ * @param resource $im The image.
  */
 function draw_squares(&$im)
 {
@@ -208,8 +208,10 @@ function draw_squares(&$im)
 /**
  * Writes text to the image.
  *
- * @param resource The image.
- * @param string The string to be written
+ * @param resource $im The image.
+ * @param string $string The string to be written
+ *
+ * @return bool False if string is empty, true otherwise
  */
 function draw_string(&$im, $string)
 {
@@ -304,5 +306,6 @@ function draw_string(&$im, $string)
 			imagedestroy($temp_im);
 		}
 	}
+	return true;
 }
 

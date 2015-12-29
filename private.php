@@ -561,12 +561,15 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 	$plugins->run_hooks("private_send_do_send");
 
 	// Attempt to see if this PM is a duplicate or not
+	$to = array_map("trim", explode(",", $mybb->get_input('to')));
+	$to_escaped = implode("','", array_map(array($db, 'escape_string'), array_map('my_strtolower', $to)));
 	$time_cutoff = TIME_NOW - (5 * 60 * 60);
 	$query = $db->query("
 		SELECT pm.pmid
 		FROM ".TABLE_PREFIX."privatemessages pm
 		LEFT JOIN ".TABLE_PREFIX."users u ON(u.uid=pm.toid)
-		WHERE LOWER(u.username)='".$db->escape_string(my_strtolower($mybb->get_input('to')))."' AND pm.dateline > {$time_cutoff} AND pm.fromid='{$mybb->user['uid']}' AND pm.subject='".$db->escape_string($mybb->get_input('subject'))."' AND pm.message='".$db->escape_string($mybb->get_input('message'))."' AND pm.folder!='3'
+		WHERE LOWER(u.username) IN ('{$to_escaped}') AND pm.dateline > {$time_cutoff} AND pm.fromid='{$mybb->user['uid']}' AND pm.subject='".$db->escape_string($mybb->get_input('subject'))."' AND pm.message='".$db->escape_string($mybb->get_input('message'))."' AND pm.folder!='3'
+		LIMIT 0, 1
 	");
 	$duplicate_check = $db->fetch_field($query, "pmid");
 	if($duplicate_check)
@@ -588,8 +591,7 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 	);
 
 	// Split up any recipients we have
-	$pm['to'] = explode(",", $mybb->get_input('to'));
-	$pm['to'] = array_map("trim", $pm['to']);
+	$pm['to'] = $to;
 	if(!empty($mybb->input['bcc']))
 	{
 		$pm['bcc'] = explode(",", $mybb->get_input('bcc'));
@@ -1109,7 +1111,7 @@ if($mybb->input['action'] == "read")
 	}
 
 	// Fetch recipient names from the database
-	$bcc_recipients = $to_recipients = array();
+	$bcc_recipients = $to_recipients = $bcc_form_val = array();
 	$query = $db->simple_select('users', 'uid, username', "uid IN ({$uid_sql})");
 	while($recipient = $db->fetch_array($query))
 	{
@@ -1117,6 +1119,7 @@ if($mybb->input['action'] == "read")
 		if($show_bcc && in_array($recipient['uid'], $pm['recipients']['bcc']))
 		{
 			$bcc_recipients[] = build_profile_link($recipient['username'], $recipient['uid']);
+			$bcc_form_val[] = $recipient['username'];
 		}
 		// User is a normal recipient
 		else if(in_array($recipient['uid'], $pm['recipients']['to']))
@@ -1129,7 +1132,12 @@ if($mybb->input['action'] == "read")
 	if(count($bcc_recipients) > 0)
 	{
 		$bcc_recipients = implode(', ', $bcc_recipients);
+		$bcc_form_val = implode(',', $bcc_form_val);
 		eval("\$bcc = \"".$templates->get("private_read_bcc")."\";");
+	}
+	else
+	{
+		$bcc_form_val = '';
 	}
 
 	$replyall = false;
@@ -1140,7 +1148,7 @@ if($mybb->input['action'] == "read")
 
 	if(count($to_recipients) > 0)
 	{
-		$to_recipients = implode(", ", $to_recipients);
+		$to_recipients = implode($lang->comma, $to_recipients);
 	}
 	else
 	{
@@ -2060,6 +2068,7 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 	}
 	else
 	{
+		echo "\xEF\xBB\xBF"; // UTF-8 BOM
 		echo $archived;
 	}
 }

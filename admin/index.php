@@ -50,6 +50,7 @@ if(!isset($cp_language))
 
 // Load global language phrases
 $lang->load("global");
+$lang->load("messages", true);
 
 if(function_exists('mb_internal_encoding') && !empty($lang->settings['charset']))
 {
@@ -161,7 +162,54 @@ elseif($mybb->input['do'] == "login")
 	// Validate PIN first
 	if(!empty($config['secret_pin']) && (empty($mybb->input['pin']) || $mybb->input['pin'] != $config['secret_pin']))
 	{
-		$default_page->show_login($lang->error_invalid_secret_pin, "error");
+		$login_user = get_user_by_username($mybb->input['username'], array('fields' => array('email', 'username')));
+
+		if($login_user['uid'] > 0)
+		{
+			$db->update_query("adminoptions", array("loginattempts" => "loginattempts+1"), "uid='".(int)$login_user['uid']."'", '', true);
+		}
+
+		$loginattempts = login_attempt_check_acp($login_user['uid'], true);
+
+		// Have we attempted too many times?
+		if($loginattempts['loginattempts'] > 0)
+		{
+			// Have we set an expiry yet?
+			if($loginattempts['loginlockoutexpiry'] == 0)
+			{
+				$db->update_query("adminoptions", array("loginlockoutexpiry" => TIME_NOW+((int)$mybb->settings['loginattemptstimeout']*60)), "uid='".(int)$login_user['uid']."'");
+			}
+
+			// Did we hit lockout for the first time? Send the unlock email to the administrator
+			if($loginattempts['loginattempts'] == $mybb->settings['maxloginattempts'])
+			{
+				$db->delete_query("awaitingactivation", "uid='".(int)$login_user['uid']."' AND type='l'");
+				$lockout_array = array(
+					"uid" => $login_user['uid'],
+					"dateline" => TIME_NOW,
+					"code" => random_str(),
+					"type" => "l"
+				);
+				$db->insert_query("awaitingactivation", $lockout_array);
+
+				$subject = $lang->sprintf($lang->locked_out_subject, $mybb->settings['bbname']);
+				$message = $lang->sprintf($lang->locked_out_message, htmlspecialchars_uni($mybb->input['username']), $mybb->settings['bbname'], $mybb->settings['maxloginattempts'], $mybb->settings['bburl'], $mybb->config['admin_dir'], $lockout_array['code'], $lockout_array['uid']);
+				my_mail($login_user['email'], $subject, $message);
+			}
+
+			log_admin_action(array(
+					'type' => 'admin_locked_out',
+					'uid' => (int)$login_user['uid'],
+					'username' => $login_user['username'],
+				)
+			);
+
+			$default_page->show_lockedout();
+		}
+		else
+		{
+			$default_page->show_login($lang->error_invalid_secret_pin, "error");
+		}
 	}
 
 	$loginhandler->set_data(array(
@@ -193,9 +241,9 @@ elseif($mybb->input['do'] == "login")
 		$sid = md5(uniqid(microtime(true), true));
 
 		$useragent = $_SERVER['HTTP_USER_AGENT'];
-		if(my_strlen($useragent) > 100)
+		if(my_strlen($useragent) > 200)
 		{
-			$useragent = my_substr($useragent, 0, 100);
+			$useragent = my_substr($useragent, 0, 200);
 		}
 
 		// Create a new admin session for this user
@@ -213,9 +261,9 @@ elseif($mybb->input['do'] == "login")
 		$admin_session['data'] = array();
 
 		// Only reset the loginattempts when we're really logged in and the user doesn't need to enter a 2fa code
-		$query = $db->simple_select("adminoptions", "2fasecret", "uid='{$mybb->user['uid']}'");
+		$query = $db->simple_select("adminoptions", "authsecret", "uid='{$mybb->user['uid']}'");
 		$admin_options = $db->fetch_array($query);
-		if(empty($admin_options['2fasecret']))
+		if(empty($admin_options['authsecret']))
 		{
 			$db->update_query("adminoptions", array("loginattempts" => 0, "loginlockoutexpiry" => 0), "uid='{$mybb->user['uid']}'");
 		}
@@ -425,6 +473,7 @@ if(!empty($mybb->user['uid']))
 		$cp_language = $admin_options['cplanguage'];
 		$lang->set_language($cp_language, "admin");
 		$lang->load("global"); // Reload global language vars
+		$lang->load("messages", true);
 	}
 
 	if(!empty($admin_options['cpstyle']) && file_exists(MYBB_ADMIN_DIR."/styles/{$admin_options['cpstyle']}/main.css"))
@@ -531,7 +580,7 @@ if($mybb->input['do'] == "do_2fa" && $mybb->request_method == "post")
 	require_once MYBB_ROOT."inc/3rdparty/2fa/GoogleAuthenticator.php";
 	$auth = new PHPGangsta_GoogleAuthenticator;
 
-	$test = $auth->verifyCode($admin_options['2fasecret'], $mybb->get_input('code'));
+	$test = $auth->verifyCode($admin_options['authsecret'], $mybb->get_input('code'));
 
 	// Either the code was okay or it was a recovery code
 	if($test === true || $recovery === true)
@@ -597,7 +646,7 @@ if($mybb->input['do'] == "do_2fa" && $mybb->request_method == "post")
 }
 
 // Show our 2FA page
-if(!empty($admin_options['2fasecret']) && $admin_session['authenticated'] != 1)
+if(!empty($admin_options['authsecret']) && $admin_session['authenticated'] != 1)
 {
 	$page->show_2fa();
 }

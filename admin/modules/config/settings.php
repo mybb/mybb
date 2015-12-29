@@ -418,12 +418,14 @@ if($mybb->input['action'] == "add")
 		"onoff" => $lang->onoff,
 		"select" => $lang->select,
 		"forumselect" => $lang->forum_selection_box,
+		"forumselectsingle" => $lang->forum_selection_single,
 		"groupselect" => $lang->group_selection_box,
+		"groupselectsingle" => $lang->group_selection_single,
 		"radio" => $lang->radio,
 		"checkbox" => $lang->checkbox,
 		"language" => $lang->language_selection_box,
 		"adminlanguage" => $lang->adminlanguage,
-		"cpstyle" => $lang->cpstyle,
+		"cpstyle" => $lang->cpstyle
 		//"php" => $lang->php // Internal Use Only
 	);
 
@@ -439,7 +441,7 @@ if($mybb->input['action'] == "add")
 	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1804"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
-			var peeker = new Peeker($("#type"), $("#row_extra"), /select|radio|checkbox|php/, false);
+			new Peeker($("#type"), $("#row_extra"), /^(select|radio|checkbox|php)$/, false);
 		});
 		// Add a star to the extra row since the "extra" is required if the box is shown
 		add_star("row_extra");
@@ -548,7 +550,7 @@ if($mybb->input['action'] == "edit")
 
 			$plugins->run_hooks("admin_config_settings_edit_commit");
 
-			$db->update_query("settings", $updated_setting, "sid='{$mybb->input['sid']}'");
+			$db->update_query("settings", $updated_setting, "sid='{$setting['sid']}'");
 			rebuild_settings();
 
 			// Log admin action
@@ -634,12 +636,14 @@ if($mybb->input['action'] == "edit")
 		"onoff" => $lang->onoff,
 		"select" => $lang->select,
 		"forumselect" => $lang->forum_selection_box,
+		"forumselectsingle" => $lang->forum_selection_single,
 		"groupselect" => $lang->group_selection_box,
+		"groupselectsingle" => $lang->group_selection_single,
 		"radio" => $lang->radio,
 		"checkbox" => $lang->checkbox,
 		"language" => $lang->language_selection_box,
 		"adminlanguage" => $lang->adminlanguage,
-		"cpstyle" => $lang->cpstyle,
+		"cpstyle" => $lang->cpstyle
 		//"php" => $lang->php // Internal Use Only
 	);
 
@@ -655,7 +659,7 @@ if($mybb->input['action'] == "edit")
 	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1804"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
-			var peeker = new Peeker($("#type"), $("#row_extra"), /select|radio|checkbox|php/, false);
+			new Peeker($("#type"), $("#row_extra"), /^(select|radio|checkbox|php)$/, false);
 		});
 		// Add a star to the extra row since the "extra" is required if the box is shown
 		add_star("row_extra");
@@ -889,6 +893,9 @@ if($mybb->input['action'] == "change")
 				'email',
 				'email2',
 				'imagestring',
+				'imagehash',
+				'answer',
+				'question_id',
 				'allownotices',
 				'hideemail',
 				'receivepms',
@@ -901,6 +908,10 @@ if($mybb->input['action'] == "change")
 				'language',
 				'step',
 				'action',
+				'agree',
+				'regtime',
+				'regcheck1',
+				'regcheck2',
 				'regsubmit'
 			);
 
@@ -914,20 +925,34 @@ if($mybb->input['action'] == "change")
 			}
 		}
 
-		// Get settings which optionscode is a forum/group select
+		// Get settings which optionscode is a forum/group select or checkbox
 		// We cannot rely on user input to decide this
-		$forum_group_select = array();
-		$query = $db->simple_select('settings', 'name', 'optionscode IN (\'forumselect\', \'groupselect\')');
-		while($name = $db->fetch_field($query, 'name'))
+		$checkbox_settings = $forum_group_select = array();
+		$query = $db->simple_select('settings', 'name, optionscode', "optionscode IN('forumselect', 'groupselect') OR optionscode LIKE 'checkbox%'");
+		
+		while($multisetting = $db->fetch_array($query))
 		{
-			$forum_group_select[] = $name;
+			if(substr($multisetting['optionscode'], 0, 8) == 'checkbox')
+			{
+				$checkbox_settings[] = $multisetting['name'];
+				
+				// All checkboxes deselected = no $mybb->input['upsetting'] for them, we need to initialize it manually then, but only on pages where the setting is shown
+				if(empty($mybb->input['upsetting'][$multisetting['name']]) && isset($mybb->input["isvisible_{$multisetting['name']}"]))
+				{
+					$mybb->input['upsetting'][$multisetting['name']] = array();
+				}
+			}
+			else
+			{
+				$forum_group_select[] = $multisetting['name'];
+			}
 		}
 
 		if(is_array($mybb->input['upsetting']))
 		{
 			foreach($mybb->input['upsetting'] as $name => $value)
 			{
-				if(!empty($forum_group_select) && in_array($name, $forum_group_select))
+				if($forum_group_select && in_array($name, $forum_group_select))
 				{
 					if($value == 'all')
 					{
@@ -943,7 +968,7 @@ if($mybb->input['action'] == "change")
 							}
 							unset($val);
 
-							$value = implode(',', (array)$mybb->input['select'][$name]);
+							$value = implode(',', $mybb->input['select'][$name]);
 						}
 						else
 						{
@@ -955,9 +980,17 @@ if($mybb->input['action'] == "change")
 						$value = '';
 					}
 				}
-
-				$value = $db->escape_string($value);
-				$db->update_query("settings", array('value' => $value), "name='".$db->escape_string($name)."'");
+				elseif($checkbox_settings && in_array($name, $checkbox_settings))
+				{
+					$value = '';
+					
+					if(is_array($mybb->input['upsetting'][$name]))
+					{
+						$value = implode(',', $mybb->input['upsetting'][$name]);
+					}
+				}
+				
+				$db->update_query("settings", array('value' => $db->escape_string($value)), "name='".$db->escape_string($name)."'");
 			}
 		}
 
@@ -1279,6 +1312,11 @@ if($mybb->input['action'] == "change")
 					checkAction('{$element_id}');
 				</script>";
 			}
+			else if($type[0] == "forumselectsingle")
+			{
+				$selected_value = (int)$setting['value']; // No need to check if empty, int will give 0
+				$setting_code = $form->generate_forum_select($element_name, $selected_value, array('id' => $element_id, 'main_option' => $lang->none));
+			}
 			else if($type[0] == "groupselect")
 			{
 				$selected_values = '';
@@ -1327,9 +1365,21 @@ if($mybb->input['action'] == "change")
 					checkAction('{$element_id}');
 				</script>";
 			}
+			else if($type[0] == "groupselectsingle")
+			{
+				$selected_value = (int)$setting['value']; // No need to check if empty, int will give 0
+				$setting_code = $form->generate_group_select($element_name, $selected_value, array('id' => $element_id, 'main_option' => $lang->none));
+			}
 			else
 			{
-				for($i=0; $i < count($type); $i++)
+				$typecount = count($type);
+				
+				if($type[0] == 'checkbox')
+				{
+					$multivalue = explode(',', $setting['value']);
+				}
+				
+				for($i = 0; $i < $typecount; $i++)
 				{
 					$optionsexp = explode("=", $type[$i]);
 					if(!isset($optionsexp[1]))
@@ -1359,16 +1409,17 @@ if($mybb->input['action'] == "change")
 					}
 					else if($type[0] == "checkbox")
 					{
-						if($setting['value'] == $optionsexp[0])
+						if(in_array($optionsexp[0], $multivalue))
 						{
-							$option_list[$i] = $form->generate_check_box($element_name, $optionsexp[0], htmlspecialchars_uni($optionsexp[1]), array('id' => $element_id.'_'.$i, "checked" => 1, 'class' => $element_id));
+							$option_list[$i] = $form->generate_check_box("{$element_name}[]", $optionsexp[0], htmlspecialchars_uni($optionsexp[1]), array('id' => $element_id.'_'.$i, "checked" => 1, 'class' => $element_id));
 						}
 						else
 						{
-							$option_list[$i] = $form->generate_check_box($element_name, $optionsexp[0], htmlspecialchars_uni($optionsexp[1]), array('id' => $element_id.'_'.$i, 'class' => $element_id));
+							$option_list[$i] = $form->generate_check_box("{$element_name}[]", $optionsexp[0], htmlspecialchars_uni($optionsexp[1]), array('id' => $element_id.'_'.$i, 'class' => $element_id));
 						}
 					}
 				}
+				
 				if($type[0] == "select")
 				{
 					$setting_code = $form->generate_select_box($element_name, $option_list, $setting['value'], array('id' => $element_id));
@@ -1376,9 +1427,15 @@ if($mybb->input['action'] == "change")
 				else
 				{
 					$setting_code = implode("<br />", $option_list);
+					
+					if($type[0] == 'checkbox')
+					{
+						$setting_code .= $form->generate_hidden_field("isvisible_{$setting['name']}", 1);
+					}
 				}
 				$option_list = array();
 			}
+			
 			// Do we have a custom language variable for this title or description?
 			$title_lang = "setting_".$setting['name'];
 			$desc_lang = $title_lang."_desc";
@@ -1588,6 +1645,9 @@ $(document).ready(function(){
 	$page->output_footer();
 }
 
+/**
+ * Print all the peekers for all of the default settings
+ */
 function print_setting_peekers()
 {
 	global $plugins;

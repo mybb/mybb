@@ -8,7 +8,12 @@
  *
  */
 
-function find_warnlevels_to_check(&$query, &$max_expiration_times, &$check_levels)
+/**
+ * @param resource|PDOStatement|mysqli_result $query The query to be run. Needs to select the "action" column of the "warninglevels" table
+ * @param array $max_expiration_times Return variable. The maximum expiration time
+ * @param array $check_levels Return variable. Whether those "levels" were checked
+ */
+function find_warnlevels_to_check($query, &$max_expiration_times, &$check_levels)
 {
 	global $db;
 
@@ -53,7 +58,7 @@ function find_warnlevels_to_check(&$query, &$max_expiration_times, &$check_level
 /**
  * Returns a friendly expiration time of a suspension/warning
  *
- * @param int The time period of the suspension/warning
+ * @param int $time The time period of the suspension/warning
  * @return array An array of the time/period remaining
  */
 function fetch_friendly_expiration($time)
@@ -83,8 +88,8 @@ function fetch_friendly_expiration($time)
 /**
  * Figures out the length of a suspension/warning
  *
- * @param int The amount of time to calculate the length of suspension/warning
- * @param string The period of time to calculate the length of suspension/warning
+ * @param int $time The amount of time to calculate the length of suspension/warning
+ * @param string $period The period of time to calculate the length of suspension/warning
  * @return int Length of the suspension/warning (in seconds)
  */
 function fetch_time_length($time, $period)

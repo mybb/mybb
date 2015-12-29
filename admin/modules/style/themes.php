@@ -766,7 +766,7 @@ if($mybb->input['action'] == "duplicate")
 		if(!$errors)
 		{
 			$properties = my_unserialize($theme['properties']);
-			$sid = $properties['sid'];
+			$sid = $properties['templateset'];
 			$nprops = null;
 			if($mybb->input['duplicate_templates'])
 			{
@@ -1010,6 +1010,9 @@ if($mybb->input['action'] == "delete")
 		while($cachefile = $db->fetch_array($query))
 		{
 			@unlink(MYBB_ROOT."cache/themes/theme{$theme['tid']}/{$cachefile['cachefile']}");
+
+			$filename_min = str_replace('.css', '.min.css', $cachefile['cachefile']);
+			@unlink(MYBB_ROOT."cache/themes/theme{$theme['tid']}/{$filename_min}");
 		}
 		@unlink(MYBB_ROOT."cache/themes/theme{$theme['tid']}/index.html");
 
@@ -1171,6 +1174,7 @@ if($mybb->input['action'] == "edit")
 			$plugins->run_hooks("admin_style_themes_edit_commit");
 
 			$db->update_query("themes", $update_array, "tid='{$theme['tid']}'");
+			update_theme_stylesheet_list($theme['tid']);
 
 			if($theme['def'] == 1)
 			{
@@ -1743,6 +1747,9 @@ if($mybb->input['action'] == "stylesheet_properties")
 					$db->update_query("themestylesheets", array('cachefile' => "css.php?stylesheet={$stylesheet['sid']}"), "sid='{$stylesheet['sid']}'", 1);
 				}
 				@unlink(MYBB_ROOT."cache/themes/theme{$theme['tid']}/{$stylesheet['cachefile']}");
+
+				$filename_min = str_replace('.css', '.min.css', $stylesheet['cachefile']);
+				@unlink(MYBB_ROOT."cache/themes/theme{$theme['tid']}/{$filename_min}");
 			}
 
 			// Update the CSS file list for this theme
@@ -2458,6 +2465,9 @@ if($mybb->input['action'] == "delete_stylesheet")
 	{
 		$db->delete_query("themestylesheets", "sid='{$stylesheet['sid']}'", 1);
 		@unlink(MYBB_ROOT."cache/themes/theme{$theme['tid']}/{$stylesheet['cachefile']}");
+
+		$filename_min = str_replace('.css', '.min.css', $stylesheet['cachefile']);
+		@unlink(MYBB_ROOT."cache/themes/theme{$theme['tid']}/{$filename_min}");
 
 		// Update the CSS file list for this theme
 		update_theme_stylesheet_list($theme['tid'], $theme, true);

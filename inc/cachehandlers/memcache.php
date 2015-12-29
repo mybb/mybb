@@ -15,14 +15,21 @@ class memcacheCacheHandler
 {
 	/**
 	 * The memcache server resource
+	 *
+	 * @var Memcache
 	 */
 	public $memcache;
 
 	/**
 	 * Unique identifier representing this copy of MyBB
+	 *
+	 * @var string
 	 */
 	public $unique_id;
 
+	/**
+	 * @param bool $silent
+	 */
 	function memcacheCacheHandler($silent=false)
 	{
 		global $mybb;
@@ -90,11 +97,10 @@ class memcacheCacheHandler
 	/**
 	 * Retrieve an item from the cache.
 	 *
-	 * @param string The name of the cache
-	 * @param boolean True if we should do a hard refresh
+	 * @param string $name The name of the cache
+	 * @param boolean $hard_refresh True if we should do a hard refresh
 	 * @return mixed Cache data if successful, false if failure
 	 */
-
 	function fetch($name, $hard_refresh=false)
 	{
 		$data = $this->memcache->get($this->unique_id."_".$name);
@@ -112,8 +118,8 @@ class memcacheCacheHandler
 	/**
 	 * Write an item to the cache.
 	 *
-	 * @param string The name of the cache
-	 * @param mixed The data to write to the cache item
+	 * @param string $name The name of the cache
+	 * @param mixed $contents The data to write to the cache item
 	 * @return boolean True on success, false on failure
 	 */
 	function put($name, $contents)
@@ -124,7 +130,7 @@ class memcacheCacheHandler
 	/**
 	 * Delete a cache
 	 *
-	 * @param string The name of the cache
+	 * @param string $name The name of the cache
 	 * @return boolean True on success, false on failure
 	 */
 	function delete($name)
@@ -140,6 +146,11 @@ class memcacheCacheHandler
 		@$this->memcache->close();
 	}
 
+	/**
+	 * @param string $name
+	 *
+	 * @return string
+	 */
 	function size_of($name)
 	{
 		global $lang;

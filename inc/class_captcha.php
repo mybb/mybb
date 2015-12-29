@@ -62,13 +62,6 @@ class captcha
 	public $server = '';
 
 	/**
-	 * CAPTCHA Secure Server URL
-	 *
-	 * @var string
-	 */
-	public $secure_server = '';
-
-	/**
 	 * CAPTCHA Verify Server
 	 *
 	 * @var string
@@ -100,6 +93,10 @@ class captcha
 	 */
 	public $errors = array();
 
+	/**
+	 * @param bool   $build
+	 * @param string $template
+	 */
 	function __construct($build = false, $template = "")
 	{
 		global $mybb, $plugins;
@@ -150,8 +147,7 @@ class captcha
 		else if($this->type == 2 && $mybb->settings['captchapublickey'] && $mybb->settings['captchaprivatekey'])
 		{
 			// We want to use reCAPTCHA, set the server options
-			$this->server = "http://www.google.com/recaptcha/api";
-			$this->secure_server = "https://www.google.com/recaptcha/api";
+			$this->server = "//www.google.com/recaptcha/api";
 			$this->verify_server = "www.google.com";
 
 			if($build == true)
@@ -162,8 +158,7 @@ class captcha
 		else if($this->type == 4 && $mybb->settings['captchapublickey'] && $mybb->settings['captchaprivatekey'])
 		{
 			// We want to use reCAPTCHA, set the server options
-			$this->server = "http://www.google.com/recaptcha/api.js";
-			$this->secure_server = "https://www.google.com/recaptcha/api.js";
+			$this->server = "//www.google.com/recaptcha/api.js";
 			$this->verify_server = "https://www.google.com/recaptcha/api/siteverify";
 
 			if($build == true)
@@ -176,7 +171,7 @@ class captcha
 			if(!function_exists("imagecreatefrompng"))
 			{
 				// We want to use the default CAPTCHA, but it's not installed
-				return false;
+				return;
 			}
 			else if($build == true)
 			{
@@ -187,6 +182,9 @@ class captcha
 		$plugins->run_hooks('captcha_build_end', $args);
 	}
 
+	/**
+	 * @param bool $return Not used
+	 */
 	function build_captcha($return = false)
 	{
 		global $db, $lang, $templates, $theme, $mybb;
@@ -214,12 +212,6 @@ class captcha
 		$server = $this->server;
 		$public_key = $mybb->settings['captchapublickey'];
 
-		if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off')
-		{
-			// Use secure server if HTTPS
-			$server = $this->secure_server;
-		}
-
 		eval("\$this->html = \"".$templates->get($this->captcha_template, 1, 0)."\";");
 		//eval("\$this->html = \"".$templates->get("member_register_regimage_recaptcha")."\";");
 	}
@@ -245,6 +237,9 @@ class captcha
 		}
 	}
 
+	/**
+	 * @return string
+	 */
 	function build_hidden_captcha()
 	{
 		global $db, $mybb, $templates;
@@ -274,13 +269,16 @@ class captcha
 		else if($this->type == 3)
 		{
 			// Are You a Human can't be built as a hidden captcha
-			continue;
+			return '';
 		}
 
 		eval("\$this->html = \"".$templates->get("post_captcha_hidden")."\";");
 		return $this->html;
 	}
 
+	/**
+	 * @return bool
+	 */
 	function validate_captcha()
 	{
 		global $db, $lang, $mybb, $session, $plugins;
@@ -454,6 +452,9 @@ class captcha
 
 	/**
 	 * Add an error to the error array.
+	 *
+	 * @param string $error
+	 * @param string $data
 	 */
 	function set_error($error, $data='')
 	{
@@ -467,12 +468,13 @@ class captcha
 	 * Returns the error(s) that occurred when handling data
 	 * in a format that MyBB can handle.
 	 *
-	 * @return An array of errors in a MyBB format.
+	 * @return array An array of errors in a MyBB format.
 	 */
 	function get_errors()
 	{
 		global $lang;
 
+		$errors = array();
 		foreach($this->errors as $error)
 		{
 			$lang_string = $error['error_code'];
@@ -514,6 +516,11 @@ class captcha
 		return $errors;
 	}
 
+	/**
+	 * @param array $data
+	 *
+	 * @return string
+	 */
 	private function _qsencode($data)
 	{
 		$req = '';

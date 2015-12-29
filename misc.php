@@ -625,22 +625,32 @@ elseif($mybb->input['action'] == "whoposted")
 		error($lang->error_invalidthread);
 	}
 
-	if(is_moderator($thread['fid'], "canviewunapprove"))
-	{
-		$ismod = true;
-		$show_posts = "(p.visible = '1' OR p.visible = '0')";
-	}
-	else
-	{
-		$ismod = false;
-		$show_posts = "p.visible = '1'";
-	}
-
 	// Make sure we are looking at a real thread here.
-	if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
+	if(($thread['visible'] == -1 && !is_moderator($thread['fid'], "canviewdeleted")) || ($thread['visible'] == 0 && !is_moderator($thread['fid'], "canviewunapprove")) || $thread['visible'] > 1)
 	{
 		error($lang->error_invalidthread);
 	}
+
+	if(is_moderator($thread['fid'], "canviewdeleted") || is_moderator($thread['fid'], "canviewunapprove"))
+	{
+		if(is_moderator($thread['fid'], "canviewunapprove") && !is_moderator($thread['fid'], "canviewdeleted"))
+		{
+			$show_posts = "p.visible IN (0,1)";
+		}
+		elseif(is_moderator($thread['fid'], "canviewdeleted") && !is_moderator($thread['fid'], "canviewunapprove"))
+		{
+			$show_posts = "p.visible IN (-1,1)";
+		}
+		else
+		{
+			$show_posts = "p.visible IN (-1,0,1)";
+		}
+	}
+	else
+	{
+		$show_posts = "p.visible = 1";
+	}
+
 	// Does the thread belong to a valid forum?
 	$forum = get_forum($thread['fid']);
 	if(!$forum || $forum['type'] != "f")
@@ -960,13 +970,13 @@ elseif($mybb->input['action'] == "clearcookies")
 /**
  * Build a list of forums for RSS multiselect.
  *
- * @param int Parent forum ID.
- * @param unknown_type deprecated
- * @param boolean Whether to add selected attribute or not.
- * @param string HTML for the depth of the forum.
+ * @param int $pid Parent forum ID.
+ * @param string $selitem deprecated
+ * @param boolean $addselect Whether to add selected attribute or not.
+ * @param string $depth HTML for the depth of the forum.
  * @return string HTML of the list of forums for CSS.
  */
-function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="")
+function makesyndicateforums($pid=0, $selitem="", $addselect=true, $depth="")
 {
 	global $db, $forumcache, $permissioncache, $mybb, $forumlist, $forumlistbits, $flist, $lang, $unexp, $templates;
 
@@ -1004,7 +1014,7 @@ function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="")
 						$selecteddone = "1";
 					}
 
-					if($forum['password'] == '' && !in_array($forum['fid'], $unexp) || $forum['password'] && isset($mybb->cookies['forumpass'][$forum['fid']]) && $mybb->cookies['forumpass'][$forum['fid']] == md5($mybb->user['uid'].$forum['password']))
+					if($forum['password'] == '' && !in_array($forum['fid'], $unexp) || $forum['password'] && isset($mybb->cookies['forumpass'][$forum['fid']]) && $mybb->cookies['forumpass'][$forum['fid']] === md5($mybb->user['uid'].$forum['password']))
 					{
 						$forumlistbits .= "<option value=\"{$forum['fid']}\" $optionselected>$depth {$forum['name']}</option>\n";
 					}

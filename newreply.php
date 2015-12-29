@@ -76,7 +76,8 @@ if(!$forum)
 
 // Make navigation
 build_forum_breadcrumb($fid);
-$thread['subject'] = htmlspecialchars_uni($thread['subject']);
+$thread_subject = $thread['subject'];
+$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 add_breadcrumb($thread['subject'], get_thread_link($thread['tid']));
 add_breadcrumb($lang->nav_newreply);
 
@@ -177,16 +178,6 @@ if(!is_moderator($fid, "canpostclosedthreads"))
 	{
 		error($lang->redirect_threadclosed);
 	}
-}
-
-// Is the currently logged in user a moderator of this forum?
-if(is_moderator($fid))
-{
-	$ismod = true;
-}
-else
-{
-	$ismod = false;
 }
 
 // No weird actions allowed, show new reply form if no regular action.
@@ -310,27 +301,18 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 	// If this isn't a logged in user, then we need to do some special validation.
 	if($mybb->user['uid'] == 0)
 	{
-		// Check if username exists.
-		if(username_exists($mybb->get_input('username')))
+		// If they didn't specify a username then give them "Guest"
+		if(!$mybb->get_input('username'))
 		{
-			// If it does throw back "username is taken"
-			error($lang->error_usernametaken);
+			$username = $lang->guest;
 		}
-		// This username does not exist.
+		// Otherwise use the name they specified.
 		else
 		{
-			// If they didn't specify a username then give them "Guest"
-			if(!$mybb->get_input('username'))
-			{
-				$username = $lang->guest;
-			}
-			// Otherwise use the name they specified.
-			else
-			{
-				$username = htmlspecialchars_uni($mybb->get_input('username'));
-			}
-			$uid = 0;
+			$username = $mybb->get_input('username');
 		}
+		$uid = 0;
+	
 
 		if($mybb->settings['stopforumspam_on_newreply'])
 		{
@@ -613,13 +595,15 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 			if($visible == 1)
 			{
 				// Set post counter
-				if($ismod == true)
+				$postcounter = $thread['replies'] + 1;
+
+				if(is_moderator($fid, "canviewunapprove"))
 				{
-					$postcounter = $thread['replies'] + $thread['unapprovedposts'] + 1;
+					$postcounter += $thread['unapprovedposts'];
 				}
-				else
+				if(is_moderator($fid, "canviewdeleted"))
 				{
-					$postcounter = $thread['replies'] + 1;
+					$postcounter += $thread['deletedposts'];
 				}
 
 				// Was there a new post since we hit the quick reply button?
@@ -803,9 +787,9 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 				if($quoted_post['tid'] == $tid || $load_all == 1)
 				{
 					// If this post was the post for which a quote button was clicked, set the subject
-					if($pid == $quoted_post['pid'])
+					if($replyto == $quoted_post['pid'])
 					{
-						$subject = preg_replace('#RE:\s?#i', '', $quoted_post['subject']);
+						$subject = preg_replace('#^RE:\s?#i', '', $quoted_post['subject']);
 						// Subject too long? Shorten it to avoid error message
 						if(my_strlen($subject) > 85)
 						{
@@ -966,7 +950,13 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		}
 		else
 		{
-			$subject = $thread['subject'];
+			$subject = $thread_subject;
+			// Subject too long? Shorten it to avoid error message
+			if(my_strlen($subject) > 85)
+			{
+				$subject = my_substr($subject, 0, 82).'...';
+			}
+			$subject = "RE: ".$subject;
 		}
 	}
 
@@ -977,27 +967,17 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		// If this isn't a logged in user, then we need to do some special validation.
 		if($mybb->user['uid'] == 0)
 		{
-			// Check if username exists.
-			if(username_exists($mybb->get_input('username')))
+			// If they didn't specify a username then give them "Guest"
+			if(!$mybb->get_input('username'))
 			{
-				// If it does throw back "username is taken"
-				error($lang->error_usernametaken);
+				$username = $lang->guest;
 			}
-			// This username does not exist.
+			// Otherwise use the name they specified.
 			else
 			{
-				// If they didn't specify a username then give them "Guest"
-				if(!$mybb->get_input('username'))
-				{
-					$username = $lang->guest;
-				}
-				// Otherwise use the name they specified.
-				else
-				{
-					$username = htmlspecialchars_uni($mybb->get_input('username'));
-				}
-				$uid = 0;
+				$username = $mybb->get_input('username');
 			}
+			$uid = 0;
 		}
 		// This user is logged in.
 		else
@@ -1009,6 +989,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		// Set up posthandler.
 		require_once MYBB_ROOT."inc/datahandlers/post.php";
 		$posthandler = new PostDataHandler("insert");
+		$posthandler->action = "post";
 
 		// Set the post data that came from the input to the $post array.
 		$post = array(
@@ -1121,17 +1102,6 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	}
 
 	$subject = htmlspecialchars_uni($parser->parse_badwords($subject));
-
-	if(!$pid && !isset($mybb->input['previewpost']))
-	{
-		$subject = $thread['subject'];
-		// Subject too long? Shorten it to avoid error message
-		if(my_strlen($subject) > 85)
-		{
-			$subject = my_substr($subject, 0, 82).'...';
-		}
-		$subject = "RE: ".$subject;
-	}
 
 	$posthash = htmlspecialchars_uni($mybb->get_input('posthash'));
 
@@ -1252,7 +1222,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			{
 				$post_captcha->build_captcha();
 			}
-			elseif($post_captcha->type == 2)
+			elseif($post_captcha->type == 2 || $post_captcha->type == 4)
 			{
 				$post_captcha->build_recaptcha();
 			}
@@ -1266,7 +1236,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 				$captcha = $post_captcha->html;
 			}
 		}
-		else if($correct && $post_captcha->type == 2)
+		else if($correct && ($post_captcha->type == 2 || $post_captcha->type == 4))
 		{
 			$post_captcha->build_recaptcha();
 

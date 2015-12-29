@@ -14,6 +14,9 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
+/**
+ * @return bool true
+ */
 function home_meta()
 {
 	global $page, $lang, $plugins;
@@ -30,6 +33,11 @@ function home_meta()
 	return true;
 }
 
+/**
+ * @param string $action
+ *
+ * @return string
+ */
 function home_action_handler($action)
 {
 	global $page, $db, $lang, $plugins;
@@ -58,19 +66,29 @@ function home_action_handler($action)
 	{
 		// Quick Access
 		$sub_menu = array();
-		$sub_menu['10'] = array("id" => "add_forum", "title" => $lang->add_new_forum, "link" => "index.php?module=forum-management&action=add");
-		$sub_menu['20'] = array("id" => "search", "title" => $lang->search_for_users, "link" => "index.php?module=user-users&action=search");
-		$sub_menu['30'] = array("id" => "themes", "title" => $lang->themes, "link" => "index.php?module=style-themes");
-		$sub_menu['40'] = array("id" => "templates", "title" => $lang->templates, "link" => "index.php?module=style-templates");
-		$sub_menu['50'] = array("id" => "plugins", "title" => $lang->plugins, "link" => "index.php?module=config-plugins");
-		$sub_menu['60'] = array("id" => "backupdb", "title" => $lang->database_backups, "link" => "index.php?module=tools-backupdb");
+		$sub_menu['10'] = array("id" => "add_forum", "title" => $lang->add_new_forum, "link" => "index.php?module=forum-management&action=add", "module" => "forum", "action" => "management");
+		$sub_menu['20'] = array("id" => "search", "title" => $lang->search_for_users, "link" => "index.php?module=user-users&action=search", "module" => "user", "action" => "users");
+		$sub_menu['30'] = array("id" => "themes", "title" => $lang->themes, "link" => "index.php?module=style-themes", "module" => "style", "action" => "themes");
+		$sub_menu['40'] = array("id" => "templates", "title" => $lang->templates, "link" => "index.php?module=style-templates", "module" => "style", "action" => "templates");
+		$sub_menu['50'] = array("id" => "plugins", "title" => $lang->plugins, "link" => "index.php?module=config-plugins", "module" => "config", "action" => "plugins");
+		$sub_menu['60'] = array("id" => "backupdb", "title" => $lang->database_backups, "link" => "index.php?module=tools-backupdb", "module" => "tools", "action" => "backupdb");
 
+		foreach($sub_menu as $id => $sub)
+		{
+			if(!check_admin_permissions(array("module" => $sub['module'], "action" => $sub['action']), false))
+			{
+				unset($sub_menu[$id]);
+			}
+		}
+		
 		$sub_menu = $plugins->run_hooks("admin_home_menu_quick_access", $sub_menu);
-
-		$sidebar = new SidebarItem($lang->quick_access);
-		$sidebar->add_menu_items($sub_menu, $page->active_action);
-
-		$page->sidebar .= $sidebar->get_markup();
+		
+		if(!empty($sub_menu))
+		{
+			$sidebar = new SidebarItem($lang->quick_access);
+			$sidebar->add_menu_items($sub_menu, $page->active_action);
+			$page->sidebar .= $sidebar->get_markup();
+		}
 
 		// Online Administrators in the last 30 minutes
 		$timecut = TIME_NOW-60*30;

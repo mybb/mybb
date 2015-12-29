@@ -542,12 +542,67 @@ if($mybb->input['action'] == "addevent")
 		eval("\$calendar_select .= \"".$templates->get("calendar_addevent_calendarselect_hidden")."\";");
 	}
 
-	$event_errors = '';
+	if(!isset($event_errors))
+	{
+		$event_errors = '';
+	}
 
 	$plugins->run_hooks("calendar_addevent_end");
 
 	eval("\$addevent = \"".$templates->get("calendar_addevent")."\";");
 	output_page($addevent);
+}
+
+// Delete an event
+if($mybb->input['action'] == "do_deleteevent" && $mybb->request_method == "post")
+{
+	$query = $db->simple_select("events", "*", "eid='{$mybb->input['eid']}'");
+	$event = $db->fetch_array($query);
+
+	if(!$event)
+	{
+		error($lang->error_invalidevent);
+	}
+
+	$query = $db->simple_select("calendars", "*", "cid='{$event['cid']}'");
+	$calendar = $db->fetch_array($query);
+
+	// Invalid calendar?
+	if(!$calendar)
+	{
+		error($lang->invalid_calendar);
+	}
+
+	// Do we have permission to view this calendar or post events?
+	$calendar_permissions = get_calendar_permissions($calendar['cid']);
+	if($calendar_permissions['canviewcalendar'] != 1 || $calendar_permissions['canaddevents'] != 1)
+	{
+		error_no_permission();
+	}
+
+	if(($event['uid'] != $mybb->user['uid'] || $mybb->user['uid'] == 0) && $calendar_permissions['canmoderateevents'] != 1)
+	{
+		error_no_permission();
+	}
+
+	// Verify incoming POST request
+	verify_post_check($mybb->get_input('my_post_key'));
+
+	$plugins->run_hooks("calendar_do_deleteevent_start");
+
+	// Is the checkbox set?
+	if($mybb->get_input('delete', MyBB::INPUT_INT) == 1)
+	{
+		$db->delete_query("events", "eid='{$event['eid']}'");
+		$plugins->run_hooks("calendar_do_deleteevent_end");
+
+		// Redirect back to the main calendar view.
+		redirect("calendar.php", $lang->redirect_eventdeleted);
+	}
+	else
+	{
+		error($lang->delete_no_checkbox);
+	}
 }
 
 // Edit an event
@@ -584,15 +639,6 @@ if($mybb->input['action'] == "do_editevent" && $mybb->request_method == "post")
 
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
-
-	// Are we going to delete this event or just edit it?
-	if($mybb->get_input('delete', MyBB::INPUT_INT) == 1)
-	{
-		$db->delete_query("events", "eid='{$event['eid']}'");
-
-		// Redirect back to the main calendar view.
-		redirect("calendar.php", $lang->redirect_eventdeleted);
-	}
 
 	$plugins->run_hooks("calendar_do_editevent_start");
 

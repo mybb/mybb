@@ -33,7 +33,7 @@ $tables[] = "CREATE TABLE mybb_adminoptions (
   defaultviews text NOT NULL,
   loginattempts smallint NOT NULL default '0',
   loginlockoutexpiry int NOT NULL default '0',
-  2fasecret varchar(16) NOT NULL default '',
+  authsecret varchar(16) NOT NULL default '',
   recovery_codes varchar(177) NOT NULL default '',
   UNIQUE (uid)
 );";
@@ -46,7 +46,7 @@ $tables[] = "CREATE TABLE mybb_adminsessions (
 	dateline int NOT NULL default '0',
 	lastactive int NOT NULL default '0',
 	data text NOT NULL default '',
-	useragent varchar(100) NOT NULL default '',
+	useragent varchar(200) NOT NULL default '',
 	authenticated smallint NOT NULL default '0'
 );";
 
@@ -148,9 +148,9 @@ $tables[] = "CREATE TABLE mybb_banned (
 
 $tables[] = "CREATE TABLE mybb_buddyrequests (
  id serial,
- uid int NOT NULL,
- touid int NOT NULL,
- date int NOT NULL,
+ uid int NOT NULL default '0',
+ touid int NOT NULL default '0',
+ date int NOT NULL default '0',
  PRIMARY KEY (id)
 );";
 
@@ -672,7 +672,7 @@ $tables[] = "CREATE TABLE mybb_sessions (
   ip bytea NOT NULL default '',
   time int NOT NULL default '0',
   location varchar(150) NOT NULL default '',
-  useragent varchar(100) NOT NULL default '',
+  useragent varchar(200) NOT NULL default '',
   anonymous smallint NOT NULL default '0',
   nopermission smallint NOT NULL default '0',
   location1 int NOT NULL default '0',

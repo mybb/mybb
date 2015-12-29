@@ -18,6 +18,9 @@ $page->add_breadcrumb_item($lang->recount_rebuild, "index.php?module=tools-recou
 
 $plugins->run_hooks("admin_tools_recount_rebuild");
 
+/**
+ * Rebuild forum counters
+ */
 function acp_rebuild_forum_counters()
 {
 	global $db, $mybb, $lang;
@@ -45,6 +48,9 @@ function acp_rebuild_forum_counters()
 	check_proceed($num_forums, $end, ++$page, $per_page, "forumcounters", "do_rebuildforumcounters", $lang->success_rebuilt_forum_counters);
 }
 
+/**
+ * Rebuild thread counters
+ */
 function acp_rebuild_thread_counters()
 {
 	global $db, $mybb, $lang;
@@ -70,6 +76,9 @@ function acp_rebuild_thread_counters()
 	check_proceed($num_threads, $end, ++$page, $per_page, "threadcounters", "do_rebuildthreadcounters", $lang->success_rebuilt_thread_counters);
 }
 
+/**
+ * Rebuild poll counters
+ */
 function acp_rebuild_poll_counters()
 {
 	global $db, $mybb, $lang;
@@ -95,6 +104,9 @@ function acp_rebuild_poll_counters()
 	check_proceed($num_polls, $end, ++$page, $per_page, "pollcounters", "do_rebuildpollcounters", $lang->success_rebuilt_poll_counters);
 }
 
+/**
+ * Recount user posts
+ */
 function acp_recount_user_posts()
 {
 	global $db, $mybb, $lang;
@@ -146,6 +158,9 @@ function acp_recount_user_posts()
 	check_proceed($num_users, $end, ++$page, $per_page, "userposts", "do_recountuserposts", $lang->success_rebuilt_user_post_counters);
 }
 
+/**
+ * Recount user threads
+ */
 function acp_recount_user_threads()
 {
 	global $db, $mybb, $lang;
@@ -196,6 +211,9 @@ function acp_recount_user_threads()
 	check_proceed($num_users, $end, ++$page, $per_page, "userthreads", "do_recountuserthreads", $lang->success_rebuilt_user_thread_counters);
 }
 
+/**
+ * Recount reputation values
+ */
 function acp_recount_reputation()
 {
 	global $db, $mybb, $lang;
@@ -228,6 +246,9 @@ function acp_recount_reputation()
 	check_proceed($num_users, $end, ++$page, $per_page, "reputation", "do_recountreputation", $lang->success_rebuilt_reputation);
 }
 
+/**
+ * Recount warnings for users
+ */
 function acp_recount_warning()
 {
 	global $db, $mybb, $lang;
@@ -260,6 +281,9 @@ function acp_recount_warning()
 	check_proceed($num_users, $end, ++$page, $per_page, "warning", "do_recountwarning", $lang->success_rebuilt_warning);
 }
 
+/**
+ * Recount private messages (total and unread) for users
+ */
 function acp_recount_private_messages()
 {
 	global $db, $mybb, $lang;
@@ -287,6 +311,9 @@ function acp_recount_private_messages()
 	check_proceed($num_users, $end, ++$page, $per_page, "privatemessages", "do_recountprivatemessages", $lang->success_rebuilt_private_messages);
 }
 
+/**
+ * Recount referrals for users
+ */
 function acp_recount_referrals()
 {
 	global $db, $mybb, $lang;
@@ -315,6 +342,9 @@ function acp_recount_referrals()
 	check_proceed($num_users, $end, ++$page, $per_page, "referral", "do_recountreferral", $lang->success_rebuilt_referral);
 }
 
+/**
+ * Recount thread ratings
+ */
 function acp_recount_thread_ratings()
 {
 	global $db, $mybb, $lang;
@@ -347,6 +377,9 @@ function acp_recount_thread_ratings()
 	check_proceed($num_threads, $end, ++$page, $per_page, "threadrating", "do_recountthreadrating", $lang->success_rebuilt_thread_ratings);
 }
 
+/**
+ * Rebuild thumbnails for attachments
+ */
 function acp_rebuild_attachment_thumbnails()
 {
 	global $db, $mybb, $lang;
@@ -363,6 +396,12 @@ function acp_rebuild_attachment_thumbnails()
 	$start = ($page-1) * $per_page;
 	$end = $start + $per_page;
 
+	$uploadspath = $mybb->settings['uploadspath'];
+	if(my_substr($uploadspath, 0, 1) == '.')
+	{
+		$uploadspath = MYBB_ROOT . $mybb->settings['uploadspath'];
+	}
+
 	require_once MYBB_ROOT."inc/functions_image.php";
 
 	$query = $db->simple_select("attachments", "*", '', array('order_by' => 'aid', 'order_dir' => 'asc', 'limit_start' => $start, 'limit' => $per_page));
@@ -372,7 +411,7 @@ function acp_rebuild_attachment_thumbnails()
 		if($ext == "gif" || $ext == "png" || $ext == "jpg" || $ext == "jpeg" || $ext == "jpe")
 		{
 			$thumbname = str_replace(".attach", "_thumb.$ext", $attachment['attachname']);
-			$thumbnail = generate_thumbnail(MYBB_ROOT."uploads/".$attachment['attachname'], MYBB_ROOT."uploads/", $thumbname, $mybb->settings['attachthumbh'], $mybb->settings['attachthumbw']);
+			$thumbnail = generate_thumbnail($uploadspath."/".$attachment['attachname'], $uploadspath, $thumbname, $mybb->settings['attachthumbh'], $mybb->settings['attachthumbw']);
 			if($thumbnail['code'] == 4)
 			{
 				$thumbnail['filename'] = "SMALL";
@@ -384,9 +423,18 @@ function acp_rebuild_attachment_thumbnails()
 	check_proceed($num_attachments, $end, ++$page, $per_page, "attachmentthumbs", "do_rebuildattachmentthumbs", $lang->success_rebuilt_attachment_thumbnails);
 }
 
+/**
+ * @param int $current
+ * @param int $finish
+ * @param int $next_page
+ * @param int $per_page
+ * @param string $name
+ * @param string $name2
+ * @param string $message
+ */
 function check_proceed($current, $finish, $next_page, $per_page, $name, $name2, $message)
 {
-	global $page, $lang, $plugins;
+	global $page, $lang;
 
 	if($finish >= $current)
 	{

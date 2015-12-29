@@ -10,11 +10,29 @@
 
 class session
 {
+	/**
+	 * @var int
+	 */
 	public $sid = 0;
+	/**
+	 * @var int
+	 */
 	public $uid = 0;
+	/**
+	 * @var string
+	 */
 	public $ipaddress = '';
+	/**
+	 * @var string
+	 */
 	public $packedip = '';
+	/**
+	 * @var string
+	 */
 	public $useragent = '';
+	/**
+	 * @var bool
+	 */
 	public $is_spider = false;
 
 	/**
@@ -87,12 +105,13 @@ class session
 	/**
 	 * Load a user via the user credentials.
 	 *
-	 * @param int The user id.
-	 * @param string The user's loginkey.
+	 * @param int $uid The user id.
+	 * @param string $loginkey The user's loginkey.
+	 * @return bool
 	 */
 	function load_user($uid, $loginkey='')
 	{
-		global $mybb, $db, $time, $lang, $mybbgroups, $session, $cache;
+		global $mybb, $db, $time, $lang, $mybbgroups, $cache;
 
 		// Read the banned cache
 		$bannedcache = $cache->read("banned");
@@ -365,7 +384,7 @@ class session
 	/**
 	 * Load a search engine spider.
 	 *
-	 * @param int The ID of the search engine spider
+	 * @param int $spider_id The ID of the search engine spider
 	 */
 	function load_spider($spider_id)
 	{
@@ -428,10 +447,10 @@ class session
 	/**
 	 * Update a user session.
 	 *
-	 * @param int The session id.
-	 * @param int The user id.
+	 * @param int $sid The session id.
+	 * @param int $uid The user id.
 	 */
-	function update_session($sid, $uid='')
+	function update_session($sid, $uid=0)
 	{
 		global $db;
 
@@ -448,7 +467,7 @@ class session
 		$onlinedata['time'] = TIME_NOW;
 		
 		$onlinedata['location'] = $db->escape_string(substr(get_current_location(), 0, 150));
-		$onlinedata['useragent'] = $db->escape_string(my_substr($this->useragent, 0, 100));
+		$onlinedata['useragent'] = $db->escape_string(my_substr($this->useragent, 0, 200));
 		
 		$onlinedata['location1'] = (int)$speciallocs['1'];
 		$onlinedata['location2'] = (int)$speciallocs['2'];
@@ -461,7 +480,7 @@ class session
 	/**
 	 * Create a new session.
 	 *
-	 * @param int The user id to bind the session to.
+	 * @param int $uid The user id to bind the session to.
 	 */
 	function create_session($uid=0)
 	{
@@ -499,7 +518,7 @@ class session
 		$onlinedata['ip'] = $db->escape_binary($this->packedip);
 		
 		$onlinedata['location'] = $db->escape_string(substr(get_current_location(), 0, 150));
-		$onlinedata['useragent'] = $db->escape_string(my_substr($this->useragent, 0, 100));
+		$onlinedata['useragent'] = $db->escape_string(my_substr($this->useragent, 0, 200));
 		
 		$onlinedata['location1'] = (int)$speciallocs['1'];
 		$onlinedata['location2'] = (int)$speciallocs['2'];

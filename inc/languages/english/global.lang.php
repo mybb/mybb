@@ -231,6 +231,7 @@ $l['postbit_group'] = "Group:";
 $l['postbit_joined'] = "Joined:";
 $l['postbit_status'] = "Status:";
 $l['postbit_attachments'] = "Attached Files";
+$l['postbit_attachment_filename'] = "Filename:";
 $l['postbit_attachment_size'] = "Size:";
 $l['postbit_attachment_downloads'] = "Downloads:";
 $l['postbit_attachments_images'] = "Image(s)";
@@ -306,6 +307,8 @@ $l['unread_report'] = "Moderator Notice: There is 1 unread report.";
 $l['unread_reports'] = "Moderator Notice: There are {1} unread reports.";
 $l['pending_joinrequest'] = "Group Leader Notice: You have 1 pending group membership join request.";
 $l['pending_joinrequests'] = "Group Leader Notice: You have {1} pending group membership join requests.";
+
+$l['search_user'] = "Search for a user";
 
 $l['year'] = "Year";
 $l['year_short'] = "y";

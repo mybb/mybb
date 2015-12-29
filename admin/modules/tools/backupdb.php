@@ -14,7 +14,12 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-// Allows us to refresh cache to prevent over flowing
+/**
+ * Allows us to refresh cache to prevent over flowing
+ *
+ * @param resource $fp
+ * @param string $contents
+ */
 function clear_overflow($fp, &$contents)
 {
 	global $mybb;
@@ -72,7 +77,13 @@ if($mybb->input['action'] == "dlbackup")
 		header('Content-disposition: attachment; filename='.$file);
 		header("Content-type: ".$ext);
 		header("Content-length: ".filesize(MYBB_ADMIN_DIR.'backups/'.$file));
-		echo file_get_contents(MYBB_ADMIN_DIR.'backups/'.$file);
+
+		$handle = fopen(MYBB_ADMIN_DIR.'backups/'.$file, 'rb');
+		while(!feof($handle))
+		{
+			echo fread($handle, 8192);
+		}
+		fclose($handle);
 	}
 	else
 	{
