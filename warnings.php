@@ -173,12 +173,12 @@ if($mybb->input['action'] == "warn")
 
 	if($user['uid'] == $mybb->user['uid'])
 	{
-		error($lang->cannot_warn_self);
+		error($lang->warnings_error_cannot_warn_self);
 	}
 
 	if($user['warningpoints'] >= $mybb->settings['maxwarningpoints'])
 	{
-		error($lang->user_reached_max_warning);
+		error($lang->warnings_error_user_reached_max_warning);
 	}
 
 	$group_permissions = user_permissions($user['uid']);
