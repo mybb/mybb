@@ -7648,185 +7648,129 @@ function signed($int)
 }
 
 /**
- * Returns a securely generated seed
+ * Returns a securely generated seed for PHP's RNG (Random Number Generator)
  *
- * @return string A secure binary seed
+ * @param int $count Length of the seed bytes (8 is default. Provides good cryptographic variance)
+ * @return int An integer equivalent of a secure hexadecimal seed
  */
-function secure_binary_seed_rng($bytes)
+function secure_seed_rng($count=8)
 {
-	$output = null;
-
-	if(version_compare(PHP_VERSION, '7.0', '>='))
+	$output = '';
+	// DIRECTORY_SEPARATOR checks if running windows
+	if(DIRECTORY_SEPARATOR != '\\')
 	{
-		try
+		// Unix/Linux
+		// Use OpenSSL when available
+		if(function_exists('openssl_random_pseudo_bytes'))
 		{
-			$output = random_bytes($bytes);
-		} catch (Exception $e) {
+			$output = openssl_random_pseudo_bytes($count);
 		}
-	}
-
-	if(strlen($output) < $bytes)
-	{
-		if(@is_readable('/dev/urandom') && ($handle = @fopen('/dev/urandom', 'rb')))
+		// Try mcrypt
+		elseif(function_exists('mcrypt_create_iv'))
 		{
-			$output = @fread($handle, $bytes);
+			$output = mcrypt_create_iv($count, MCRYPT_DEV_URANDOM);
+		}
+		// Try /dev/urandom
+		elseif(@is_readable('/dev/urandom') && ($handle = @fopen('/dev/urandom', 'rb')))
+		{
+			$output = @fread($handle, $count);
 			@fclose($handle);
 		}
 	}
 	else
 	{
-		return $output;
-	}
-
-	if(strlen($output) < $bytes)
-	{
-		if(function_exists('mcrypt_create_iv'))
+		// Windows
+		// Use OpenSSL when available
+		// PHP <5.3.4 had a bug which makes that function unusable on Windows
+		if(function_exists('openssl_random_pseudo_bytes') && version_compare(PHP_VERSION, '5.3.4', '>='))
 		{
-			if (DIRECTORY_SEPARATOR == '/')
-			{
-				$source = MCRYPT_DEV_URANDOM;
-			}
-			else
-			{
-				$source = MCRYPT_RAND;
-			}
-
-			$output = mcrypt_create_iv($bytes, MCRYPT_DEV_URANDOM);
+			$output = openssl_random_pseudo_bytes($count);
 		}
-	}
-	else
-	{
-		return $output;
-	}
-
-	if(strlen($output) < $bytes)
-	{
-		if(function_exists('openssl_random_pseudo_bytes'))
+		// Try mcrypt
+		elseif(function_exists('mcrypt_create_iv'))
 		{
-			if ((DIRECTORY_SEPARATOR == '/') || version_compare(PHP_VERSION, '5.3.4', '>='))
-			{
-				$output = openssl_random_pseudo_bytes($bytes, $crypto_strong);
-				if ($crypto_strong == false)
-				{
-					$output = null;
-				}
-			}
+			$output = mcrypt_create_iv($count, MCRYPT_RAND);
 		}
-	}
-	else
-	{
-		return $output;
-	}
-
-	if(strlen($output) < $bytes)
-	{
-		if(class_exists('COM'))
+		// Try Windows CAPICOM before using our own generator
+		elseif(class_exists('COM'))
 		{
 			try
 			{
 				$CAPI_Util = new COM('CAPICOM.Utilities.1');
 				if(is_callable(array($CAPI_Util, 'GetRandom')))
 				{
-					$output = $CAPI_Util->GetRandom($bytes, 0);
+					$output = $CAPI_Util->GetRandom($count, 0);
 				}
 			} catch (Exception $e) {
 			}
 		}
 	}
-	else
-	{
-		return $output;
-	}
 
-	if(strlen($output) < $bytes)
+	// Didn't work? Do we still not have enough bytes? Use our own (less secure) rng generator
+	if(strlen($output) < $count)
 	{
+		$output = '';
+
 		// Close to what PHP basically uses internally to seed, but not quite.
 		$unique_state = microtime().@getmypid();
 
-		$rounds = ceil($bytes / 16);
-
-		for($i = 0; $i < $rounds; $i++)
+		for($i = 0; $i < $count; $i += 16)
 		{
 			$unique_state = md5(microtime().$unique_state);
-			$output .= md5($unique_state);
-		}
-
-		$output = substr($output, 0, ($bytes * 2));
-
-		$output = pack('H*', $output);
-
-		return $output;
-	}
-	else
-	{
-		return $output;
-	}
-}
-
-/**
- * Returns a securely generated seed integer
- *
- * @return int An integer equivalent of a secure hexadecimal seed
- */
-function secure_seed_rng()
-{
-	$bytes = PHP_INT_SIZE;
-
-	$output = secure_binary_seed_rng($bytes);
-
-	// convert binary data to a decimal number
-	if ($bytes == 4)
-	{
-		$elements = unpack('i', $output);
-		$output = abs($elements[1]);
-	}
-	else
-	{
-		$elements = unpack('N2', $output);
-		$output = abs($elements[1] << 32 | $elements[2]);
-
-		if($output > PHP_INT_MAX)
-		{
-			$output = 0;
+			$output .= pack('H*', md5($unique_state));
 		}
 	}
+
+	// /dev/urandom and openssl will always be twice as long as $count. base64_encode will roughly take up 33% more space but crc32 will put it to 32 characters
+	$output = hexdec(substr(dechex(crc32(base64_encode($output))), 0, $count));
 
 	return $output;
 }
 
 /**
- * Generates a cryptographically secure random number.
+ * Wrapper function for mt_rand. Automatically seeds using a secure seed once.
  *
  * @param int $min Optional lowest value to be returned (default: 0)
- * @param int $max Optional highest value to be returned (default: PHP_INT_MAX)
+ * @param int $max Optional highest value to be returned (default: mt_getrandmax())
+ * @param boolean $force_seed True forces it to reseed the RNG first
+ * @return int An integer equivalent of a secure hexadecimal seed
  */
-function my_rand($min=0, $max=PHP_INT_MAX)
+function my_rand($min=null, $max=null, $force_seed=false)
 {
-	// backward compatibility
-	if($min === null || $max === null || $max < $min)
-	{
-		$min = 0;
-		$max = PHP_INT_MAX;
-	}
+	static $seeded = false;
+	static $obfuscator = 0;
 
-	if(version_compare(PHP_VERSION, '7.0', '>='))
+	if($seeded == false || $force_seed == true)
 	{
-		try
-		{
-			$result = random_int($min, $max);
-		} catch (Exception $e) {
-		}
+		mt_srand(secure_seed_rng());
+		$seeded = true;
 
-		if(isset($result))
+		$obfuscator = abs((int) secure_seed_rng());
+
+		// Ensure that $obfuscator is <= mt_getrandmax() for 64 bit systems.
+		if($obfuscator > mt_getrandmax())
 		{
-			return $result;
+			$obfuscator -= mt_getrandmax();
 		}
 	}
 
-	$seed = secure_seed_rng();
-
-	$distance = $max - $min;
-	return $min + floor($distance * ($seed / PHP_INT_MAX) );
+	if($min !== null && $max !== null)
+	{
+		$distance = $max - $min;
+		if($distance > 0)
+		{
+			return $min + (int)((float)($distance + 1) * (float)(mt_rand() ^ $obfuscator) / (mt_getrandmax() + 1));
+		}
+		else
+		{
+			return mt_rand($min, $max);
+		}
+	}
+	else
+	{
+		$val = mt_rand() ^ $obfuscator;
+		return $val;
+	}
 }
 
 /**
