@@ -392,7 +392,7 @@ We have received a request on {2} to change your email address (see details belo
 Old Email Address: {3}
 New Email Address: {4}
 
-This change has been automatically processed. If you did not request this change, please get it touch with an Administrator.
+This change has been automatically processed. If you did not request this change, please get in touch with an Administrator.
 
 Thank you,
 {2} Staff

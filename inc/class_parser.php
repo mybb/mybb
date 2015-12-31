@@ -130,31 +130,31 @@ class postParser
 			$message = $this->parse_cdata($message);
 		}
 
-		if(empty($this->options['allow_html']))
-		{
-			$message = $this->parse_html($message);
-		}
-		else
-		{
-			while(preg_match("#<s(cript|tyle)(.*)>(.*)</s(cript|tyle)(.*)>#is", $message))
-			{
-				$message = preg_replace("#<s(cript|tyle)(.*)>(.*)</s(cript|tyle)(.*)>#is", "&lt;s$1$2&gt;$3&lt;/s$4$5&gt;", $message);
-			}
-
-			$find = array('<?php', '<!--', '-->', '?>', "<br />\n", "<br>\n");
-			$replace = array('&lt;?php', '&lt;!--', '--&gt;', '?&gt;', "\n", "\n");
-			$message = str_replace($find, $replace, $message);
-		}
-
 		// If MyCode needs to be replaced, first filter out [code] and [php] tags.
 		if(!empty($this->options['allow_mycode']) && $mybb->settings['allowcodemycode'] == 1)
 		{
+			// This code is reserved and could break codes
+			$message = str_replace("<mybb-code>\n", "<mybb_code>\n", $message);
+
 			preg_match_all("#\[(code|php)\](.*?)\[/\\1\](\r\n?|\n?)#si", $message, $code_matches, PREG_SET_ORDER);
 			$message = preg_replace("#\[(code|php)\](.*?)\[/\\1\](\r\n?|\n?)#si", "<mybb-code>\n", $message);
 		}
 
-		// Always fix bad Javascript in the message.
-		$message = $this->fix_javascript($message);
+		if(empty($this->options['allow_html']))
+		{
+			$message = $this->parse_html($message);
+			$message = str_replace("&lt;mybb-code&gt;\n", "<mybb-code>\n", $message);
+		}
+		else
+		{
+			// Replace base, meta,script and style tags in our post - these are > dangerous <
+			$message = preg_replace('#<(/?)(base|meta|script|style)([^>]*)>#i', '&lt;$1$2$3&gt;', $message);
+			$message = $this->fix_javascript($message);
+
+			$find = array("<br />\n", "<br>\n");
+			$replace = array("\n", "\n");
+			$message = str_replace($find, $replace, $message);
+		}
 
 		// Replace "me" code and slaps if we have a username
 		if(!empty($this->options['me_username']) && $mybb->settings['allowmemycode'] == 1)
@@ -193,14 +193,11 @@ class postParser
 			{
 				foreach($code_matches as $text)
 				{
-					// Fix up HTML inside the code tags so it is clean
-					if(!empty($this->options['allow_html']))
-					{
-						$text[2] = $this->parse_html($text[2]);
-					}
-
 					if(my_strtolower($text[1]) == "code")
 					{
+						// Fix up HTML inside the code tags so it is clean
+						$text[2] = $this->parse_html($text[2]);
+
 						$code = $this->mycode_parse_code($text[2]);
 					}
 					elseif(my_strtolower($text[1]) == "php")
@@ -210,15 +207,6 @@ class postParser
 					$message = preg_replace("#\<mybb-code>\n?#", $code, $message, 1);
 				}
 			}
-		}
-
-		// Replace meta and base tags in our post - these are > dangerous <
-		if(!empty($this->options['allow_html']))
-		{
-			$message = preg_replace_callback("#<((m[^a])|(b[^diloru>])|(s[^aemptu>]))(\s*[^>]*)>#si", create_function(
-				'$matches',
-				'return htmlspecialchars_uni($matches[0]);'
-			), $message);
 		}
 
 		if(!isset($this->options['nl2br']) || $this->options['nl2br'] != 0)
@@ -663,34 +651,18 @@ class postParser
 	/**
  	 * Attempts to move any javascript references in the specified message.
 	 *
-	 * @param string $message The message to be parsed.
+	 * @param string The message to be parsed.
 	 * @return string The parsed message.
 	 */
 	function fix_javascript($message)
 	{
 		$js_array = array(
 			"#(&\#(0*)106;?|&\#(0*)74;?|&\#x(0*)4a;?|&\#x(0*)6a;?|j)((&\#(0*)97;?|&\#(0*)65;?|a)(&\#(0*)118;?|&\#(0*)86;?|v)(&\#(0*)97;?|&\#(0*)65;?|a)(\s)?(&\#(0*)115;?|&\#(0*)83;?|s)(&\#(0*)99;?|&\#(0*)67;?|c)(&\#(0*)114;?|&\#(0*)82;?|r)(&\#(0*)105;?|&\#(0*)73;?|i)(&\#112;?|&\#(0*)80;?|p)(&\#(0*)116;?|&\#(0*)84;?|t)(&\#(0*)58;?|\:))#i",
-			"#(o)(nmouseover\s?=)#i",
-			"#(o)(nmouseout\s?=)#i",
-			"#(o)(nmousedown\s?=)#i",
-			"#(o)(nmousemove\s?=)#i",
-			"#(o)(nmouseup\s?=)#i",
-			"#(o)(nclick\s?=)#i",
-			"#(o)(ndblclick\s?=)#i",
-			"#(o)(nload\s?=)#i",
-			"#(o)(nsubmit\s?=)#i",
-			"#(o)(nblur\s?=)#i",
-			"#(o)(nchange\s?=)#i",
-			"#(o)(nfocus\s?=)#i",
-			"#(o)(nselect\s?=)#i",
-			"#(o)(nunload\s?=)#i",
-			"#(o)(nkeypress\s?=)#i",
-			"#(o)(nerror\s?=)#i",
-			"#(o)(nreset\s?=)#i",
-			"#(o)(nabort\s?=)#i"
+			"#(on)([a-z]+\s?=)#i",
 		);
 
-		$message = preg_replace($js_array, "$1<strong></strong>$2$6", $message);
+		// Add invisible white space
+		$message = preg_replace($js_array, "$1\xE2\x80\x8C$2$6", $message);
 
 		return $message;
 	}
@@ -959,10 +931,6 @@ class postParser
 		{
 			return;
 		}
-
-		$str = str_replace('&amp;', '&', $str);
-		$str = str_replace('&lt;', '<', $str);
-		$str = str_replace('&gt;', '>', $str);
 
 		// See if open and close tags are provided.
 		$added_open_tag = false;

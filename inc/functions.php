@@ -8109,20 +8109,22 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 
 		foreach(array('subject', 'message') as $key)
 		{
-			$lang_string = $pm[$key];
 			if(is_array($pm[$key]))
 			{
+				$lang_string = $lang->{$pm[$key][0]};
 				$num_args = count($pm[$key]);
 
 				for($i = 1; $i < $num_args; $i++)
 				{
-					$lang->{$pm[$key][0]} = str_replace('{'.$i.'}', $pm[$key][$i], $lang->{$pm[$key][0]});
+					$lang_string = str_replace('{'.$i.'}', $pm[$key][$i], $lang_string);
 				}
-
-				$lang_string = $pm[$key][0];
+			}
+			else
+			{
+				$lang_string = $lang->{$pm[$key]};
 			}
 
-			$pm[$key] = $lang->{$lang_string};
+			$pm[$key] = $lang_string;
 		}
 
 		if(isset($revert))

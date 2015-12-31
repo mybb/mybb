@@ -18,7 +18,7 @@ $templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit,forumdispl
 $templatelist .= ",forumdisplay_usersbrowsing_user,forumdisplay_usersbrowsing,forumdisplay_inlinemoderation,forumdisplay_thread_modbit,forumdisplay_inlinemoderation_col,forumdisplay_inlinemoderation_selectall,forumdisplay_threadlist_clearpass,forumdisplay_thread_rating_moved";
 $templatelist .= ",forumdisplay_announcements_announcement,forumdisplay_announcements,forumdisplay_threads_sep,forumbit_depth3_statusicon,forumbit_depth3,forumdisplay_sticky_sep,forumdisplay_thread_attachment_count,forumdisplay_rssdiscovery,forumdisplay_announcement_rating,forumbit_moderators_group";
 $templatelist .= ",forumdisplay_inlinemoderation_openclose,forumdisplay_inlinemoderation_stickunstick,forumdisplay_inlinemoderation_softdelete,forumdisplay_inlinemoderation_restore,forumdisplay_inlinemoderation_delete,forumdisplay_inlinemoderation_manage,forumdisplay_inlinemoderation_approveunapprove";
-$templatelist .= ",forumbit_depth2_forum_unapproved_posts,forumbit_depth2_forum_unapproved_threads,forumbit_moderators_user,forumdisplay_inlinemoderation_standard,forumdisplay_threadlist_prefixes_prefix,forumdisplay_threadlist_prefixes";
+$templatelist .= ",forumbit_depth2_forum_unapproved_posts,forumbit_depth2_forum_unapproved_threads,forumbit_moderators_user,forumdisplay_inlinemoderation_standard,forumdisplay_threadlist_prefixes_prefix,forumdisplay_threadlist_prefixes,forumdisplay_nopermission";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -1438,7 +1438,12 @@ $inline_edit_js = $clearstoredpass = '';
 // Is this a real forum with threads?
 if($foruminfo['type'] != "c")
 {
-	if(!$threadcount)
+	if($fpermissions['canviewthreads'] != 1)
+	{
+		eval("\$threads = \"".$templates->get("forumdisplay_nopermission")."\";");
+	}
+
+	if(!$threadcount && $fpermissions['canviewthreads'] == 1)
 	{
 		eval("\$threads = \"".$templates->get("forumdisplay_nothreads")."\";");
 	}

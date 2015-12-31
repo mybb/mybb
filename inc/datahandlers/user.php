@@ -1517,7 +1517,17 @@ class UserDataHandler extends DataHandler
 		$plugins->run_hooks('datahandler_user_delete_start', $this);
 
 		$this->delete_uids = implode(',', $this->delete_uids);
-		
+
+		if(empty($this->delete_uids))
+		{
+			$this->deleted_users = 0;
+			$this->return_values = array(
+				"deleted_users" => $this->deleted_users
+			);
+
+			return $this->return_values;
+		}
+
 		$this->delete_content();
 
 		// Delete the user
@@ -1611,6 +1621,11 @@ class UserDataHandler extends DataHandler
 
 		$plugins->run_hooks('datahandler_user_delete_content', $this);
 
+		if(empty($this->delete_uids))
+		{
+			return;
+		}
+
 		$db->delete_query('userfields', "ufid IN({$this->delete_uids})");
 		$db->delete_query('privatemessages', "uid IN({$this->delete_uids})");
 		$db->delete_query('events', "uid IN({$this->delete_uids})");
@@ -1641,11 +1656,10 @@ class UserDataHandler extends DataHandler
 		$db->update_query('reportedcontent', array('uid' => 0), "uid IN({$this->delete_uids})");
 
 		// Remove any of the user(s) uploaded avatars
-		$query = $db->simple_select('users', 'avatar', "uid IN({$this->delete_uids}) AND avatartype='upload'");
-		while($avatar = $db->fetch_field($query, 'avatar'))
+		require_once MYBB_ROOT.'inc/functions_upload.php';
+		foreach(explode(',', $this->delete_uids) as $uid)
 		{
-			$avatar = substr($avatar, 2, -20);
-			@unlink(MYBB_ROOT.$avatar);
+			remove_avatars($uid);
 		}
 	}
 
@@ -1678,6 +1692,11 @@ class UserDataHandler extends DataHandler
 		$moderation = new Moderation();
 
 		$plugins->run_hooks('datahandler_user_delete_posts', $this);
+
+		if(empty($this->delete_uids))
+		{
+			return;
+		}
 
 		// Threads
 		$query = $db->simple_select('threads', 'tid', "uid IN({$this->delete_uids})");
@@ -1749,7 +1768,19 @@ class UserDataHandler extends DataHandler
 
 		$plugins->run_hooks('datahandler_user_clear_profile', $this);
 
+		if(empty($this->delete_uids))
+		{
+			return;
+		}
+
 		$db->update_query("users", $update, "uid IN({$this->delete_uids})");
 		$db->delete_query('userfields', "ufid IN({$this->delete_uids})");
+
+		// Remove any of the user(s) uploaded avatars
+		require_once MYBB_ROOT.'inc/functions_upload.php';
+		foreach(explode(',', $this->delete_uids) as $uid)
+		{
+			remove_avatars($uid);
+		}
 	}
 }

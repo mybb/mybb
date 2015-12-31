@@ -398,118 +398,121 @@ if(!$mybb->input['action'])
 		$usergroups[$usergroup['gid']] = $usergroup;
 	}
 
-	// Get users whose primary or secondary usergroup has ACP access
-	$comma = $primary_group_list = $secondary_group_list = '';
-	foreach($usergroups as $gid => $group_info)
+	if(!empty($usergroups))
 	{
-		$primary_group_list .= $comma.$gid;
-		switch($db->type)
+		// Get users whose primary or secondary usergroup has ACP access
+		$comma = $primary_group_list = $secondary_group_list = '';
+		foreach($usergroups as $gid => $group_info)
 		{
-			case "pgsql":
-			case "sqlite":
-				$secondary_group_list .= " OR ','|| u.additionalgroups||',' LIKE '%,{$gid},%'";
-				break;
-			default:
-				$secondary_group_list .= " OR CONCAT(',', u.additionalgroups,',') LIKE '%,{$gid},%'";
-		}
-
-		$comma = ',';
-	}
-
-	$group_list = implode(',', array_keys($usergroups));
-	$secondary_groups = ','.$group_list.',';
-
-	// Get usergroups with ACP access
-	$query = $db->query("
-		SELECT g.title, g.cancp, a.permissions, g.gid
-		FROM ".TABLE_PREFIX."usergroups g
-		LEFT JOIN ".TABLE_PREFIX."adminoptions a ON (a.uid = -g.gid)
-		WHERE g.cancp = 1
-		ORDER BY g.title ASC
-	");
-	while($group = $db->fetch_array($query))
-	{
-		$group_permissions[$group['gid']] = $group['permissions'];
-	}
-
-	$query = $db->query("
-		SELECT u.uid, u.username, u.lastactive, u.usergroup, u.additionalgroups, a.permissions
-		FROM ".TABLE_PREFIX."users u
-		LEFT JOIN ".TABLE_PREFIX."adminoptions a ON (a.uid=u.uid)
-		WHERE u.usergroup IN ({$primary_group_list}) {$secondary_group_list}
-		ORDER BY u.username ASC
-	");
-	while($admin = $db->fetch_array($query))
-	{
-		if($admin['permissions'] != "")
-		{
-			$perm_type = "user";
-		}
-		else
-		{
-			$groups = explode(",", $admin['additionalgroups'].",".$admin['usergroup']);
-			foreach($groups as $group)
+			$primary_group_list .= $comma.$gid;
+			switch($db->type)
 			{
-				if($group == "") continue;
-				if($group_permissions[$group] != "")
-				{
-					$perm_type = "group";
+				case "pgsql":
+				case "sqlite":
+					$secondary_group_list .= " OR ','|| u.additionalgroups||',' LIKE '%,{$gid},%'";
 					break;
-				}
+				default:
+					$secondary_group_list .= " OR CONCAT(',', u.additionalgroups,',') LIKE '%,{$gid},%'";
 			}
 
-			if(!$group_permissions)
-			{
-				$perm_type = "default";
-			}
+			$comma = ',';
 		}
 
-		$usergroup_list = array();
+		$group_list = implode(',', array_keys($usergroups));
+		$secondary_groups = ','.$group_list.',';
 
-		// Build a list of group memberships that have access to the Admin CP
-		// Primary usergroup?
-		if($usergroups[$admin['usergroup']]['cancp'] == 1)
+		// Get usergroups with ACP access
+		$query = $db->query("
+			SELECT g.title, g.cancp, a.permissions, g.gid
+			FROM ".TABLE_PREFIX."usergroups g
+			LEFT JOIN ".TABLE_PREFIX."adminoptions a ON (a.uid = -g.gid)
+			WHERE g.cancp = 1
+			ORDER BY g.title ASC
+		");
+		while($group = $db->fetch_array($query))
 		{
-			$usergroup_list[] = "<i>".$usergroups[$admin['usergroup']]['title']."</i>";
+			$group_permissions[$group['gid']] = $group['permissions'];
 		}
 
-		// Secondary usergroups?
-		$additional_groups = explode(',', $admin['additionalgroups']);
-		if(is_array($additional_groups))
-		{
-			foreach($additional_groups as $gid)
-			{
-				if($usergroups[$gid]['cancp'] == 1)
-				{
-					$usergroup_list[] = $usergroups[$gid]['title'];
-				}
-			}
-		}
-		$usergroup_list = implode($lang->comma, $usergroup_list);
-
-		$table->construct_cell("<div class=\"float_right\"><img src=\"styles/{$page->style}/images/icons/{$perm_type}.png\" title=\"{$lang->perms_type_user}\" alt=\"{$perm_type}\" /></div><div><strong><a href=\"index.php?module=user-admin_permissions&amp;action=edit&amp;uid={$admin['uid']}\" title=\"{$lang->edit_user}\">{$admin['username']}</a></strong><br /><small>{$usergroup_list}</small></div>");
-
-		$table->construct_cell(my_date('relative', $admin['lastactive']), array("class" => "align_center"));
-
-		$popup = new PopupMenu("adminperm_{$admin['uid']}", $lang->options);
-		if(!is_super_admin($admin['uid']))
+		$query = $db->query("
+			SELECT u.uid, u.username, u.lastactive, u.usergroup, u.additionalgroups, a.permissions
+			FROM ".TABLE_PREFIX."users u
+			LEFT JOIN ".TABLE_PREFIX."adminoptions a ON (a.uid=u.uid)
+			WHERE u.usergroup IN ({$primary_group_list}) {$secondary_group_list}
+			ORDER BY u.username ASC
+		");
+		while($admin = $db->fetch_array($query))
 		{
 			if($admin['permissions'] != "")
 			{
-				$popup->add_item($lang->edit_permissions, "index.php?module=user-admin_permissions&amp;action=edit&amp;uid={$admin['uid']}");
-				$popup->add_item($lang->revoke_permissions, "index.php?module=user-admin_permissions&amp;action=delete&amp;uid={$admin['uid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_perms_deletion2}')");
+				$perm_type = "user";
 			}
 			else
 			{
-				$popup->add_item($lang->set_permissions, "index.php?module=user-admin_permissions&amp;action=edit&amp;uid={$admin['uid']}");
+				$groups = explode(",", $admin['additionalgroups'].",".$admin['usergroup']);
+				foreach($groups as $group)
+				{
+					if($group == "") continue;
+					if($group_permissions[$group] != "")
+					{
+						$perm_type = "group";
+						break;
+					}
+				}
+
+				if(!$group_permissions)
+				{
+					$perm_type = "default";
+				}
 			}
+
+			$usergroup_list = array();
+
+			// Build a list of group memberships that have access to the Admin CP
+			// Primary usergroup?
+			if($usergroups[$admin['usergroup']]['cancp'] == 1)
+			{
+				$usergroup_list[] = "<i>".$usergroups[$admin['usergroup']]['title']."</i>";
+			}
+
+			// Secondary usergroups?
+			$additional_groups = explode(',', $admin['additionalgroups']);
+			if(is_array($additional_groups))
+			{
+				foreach($additional_groups as $gid)
+				{
+					if($usergroups[$gid]['cancp'] == 1)
+					{
+						$usergroup_list[] = $usergroups[$gid]['title'];
+					}
+				}
+			}
+			$usergroup_list = implode($lang->comma, $usergroup_list);
+
+			$table->construct_cell("<div class=\"float_right\"><img src=\"styles/{$page->style}/images/icons/{$perm_type}.png\" title=\"{$lang->perms_type_user}\" alt=\"{$perm_type}\" /></div><div><strong><a href=\"index.php?module=user-admin_permissions&amp;action=edit&amp;uid={$admin['uid']}\" title=\"{$lang->edit_user}\">{$admin['username']}</a></strong><br /><small>{$usergroup_list}</small></div>");
+
+			$table->construct_cell(my_date('relative', $admin['lastactive']), array("class" => "align_center"));
+
+			$popup = new PopupMenu("adminperm_{$admin['uid']}", $lang->options);
+			if(!is_super_admin($admin['uid']))
+			{
+				if($admin['permissions'] != "")
+				{
+					$popup->add_item($lang->edit_permissions, "index.php?module=user-admin_permissions&amp;action=edit&amp;uid={$admin['uid']}");
+					$popup->add_item($lang->revoke_permissions, "index.php?module=user-admin_permissions&amp;action=delete&amp;uid={$admin['uid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_perms_deletion2}')");
+				}
+				else
+				{
+					$popup->add_item($lang->set_permissions, "index.php?module=user-admin_permissions&amp;action=edit&amp;uid={$admin['uid']}");
+				}
+			}
+			$popup->add_item($lang->view_log, "index.php?module=tools-adminlog&amp;uid={$admin['uid']}");
+			$table->construct_cell($popup->fetch(), array("class" => "align_center"));
+			$table->construct_row();
 		}
-		$popup->add_item($lang->view_log, "index.php?module=tools-adminlog&amp;uid={$admin['uid']}");
-		$table->construct_cell($popup->fetch(), array("class" => "align_center"));
-		$table->construct_row();
 	}
 
-	if($table->num_rows() == 0)
+	if(empty($usergroups) || $table->num_rows() == 0)
 	{
 		$table->construct_cell($lang->no_user_perms, array("colspan" => "3"));
 		$table->construct_row();
