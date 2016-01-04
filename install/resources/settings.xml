@@ -1068,7 +1068,7 @@ disabled=Disable this feature]]></optionscode>
 		</setting>
 		<setting name="siglength">
 			<title>Length limit in Signatures</title>
-			<description><![CDATA[The maximum number of characters a user can place in a signature.]]></description>
+			<description><![CDATA[The maximum number of characters a user can place in a signature. Set to 0 to disable the limitation.]]></description>
 			<disporder>7</disporder>
 			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[255]]></settingvalue>
@@ -1162,7 +1162,7 @@ disabled=Disable this feature]]></optionscode>
 		</setting>
 		<setting name="customtitlemaxlength">
 			<title>Custom User Title Maximum Length</title>
-			<description><![CDATA[Maximum length a user can enter for the custom user title.]]></description>
+			<description><![CDATA[Maximum length a user can enter for the custom user title. Set to 0 to disable the limitation.]]></description>
 			<disporder>17</disporder>
 			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[40]]></settingvalue>
