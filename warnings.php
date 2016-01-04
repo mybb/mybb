@@ -161,7 +161,7 @@ if($mybb->input['action'] == "warn")
 		$given_today = $db->fetch_field($query, "given_today");
 		if($given_today >= $mybb->usergroup['maxwarningsday'])
 		{
-			error($lang->sprintf($lang->reached_max_warnings_day, $mybb->usergroup['maxwarningsday']));
+			error($lang->sprintf($lang->warnings_reached_max_warnings_day, $mybb->usergroup['maxwarningsday']));
 		}
 	}
 
@@ -207,7 +207,7 @@ if($mybb->input['action'] == "warn")
 
 		if(!$post || !$thread)
 		{
-			error($lang->error_invalid_post);
+			error($lang->warnings_error_invalid_post);
 		}
 
 		$forum_permissions = forum_permissions($thread['fid']);
