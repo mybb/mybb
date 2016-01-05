@@ -247,7 +247,7 @@ email=Sent via Email]]></optionscode>
 		</setting>
 		<setting name="no_plugins">
 			<title>Disable All Plugins</title>
-			<description><![CDATA[Setting this to yes will disable all plugins without deactivating or uninstalling them. This is equivalent of manually defining NO_PLUGINS at the top of ./inc/init.php.]]></description>
+			<description><![CDATA[Setting this to 'YES' will disable all plugins without deactivating or uninstalling them. This is equivalent of manually defining NO_PLUGINS at the top of ./inc/init.php.]]></description>
 			<disporder>14</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
@@ -414,7 +414,7 @@ none=Hide Errors and Warnings
 		</setting>
 		<setting name="minifycss">
 			<title>Minify Stylesheets?</title>
-			<description><![CDATA[Do you want to minify stylesheets? Choosing yes can save bandwidth and overall provide faster page loads.]]></description>
+			<description><![CDATA[Do you want to minify stylesheets? Choosing 'YES' can save bandwidth and overall provide faster page loads.]]></description>
 			<disporder>16</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
@@ -689,7 +689,7 @@ none=Hide Errors and Warnings
 		</setting>
 		<setting name="readparentforums">
 			<title>Attempt to Mark Parent Forums as Read</title>
-			<description><![CDATA[When set to yes, this setting will attempt to mark the parent forums of a sub-forum as read if there are no more unread posts. Please note that this setting can lead to a decrease in performance and multiple database queries and therefore must be treated as experimental. See the <a href="http://docs.mybb.com/165.html">MyBB Docs</a> for more information regarding this change.]]></description>
+			<description><![CDATA[When set to 'YES', this setting will attempt to mark the parent forums of a sub-forum as read if there are no more unread posts. Please note that this setting can lead to a decrease in performance and multiple database queries and therefore must be treated as experimental. See the <a href="http://docs.mybb.com/165.html">MyBB Docs</a> for more information regarding this change.]]></description>
 			<disporder>9</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
@@ -741,7 +741,7 @@ classic=Display posts using the classic layout]]></optionscode>
 		</setting>
 		<setting name="threadusenetstyle">
 			<title>Usenet Style Thread View</title>
-			<description><![CDATA[Selecting yes will cause posts to look similar to how posts look in USENET. No will cause posts to look the modern way.]]></description>
+			<description><![CDATA[Selecting 'YES' will cause posts to look similar to how posts look in USENET. No will cause posts to look the modern way.]]></description>
 			<disporder>6</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
@@ -844,7 +844,7 @@ both=Email Verification & Administrator Activation]]></optionscode>
 		</setting>
 		<setting name="forcelogin">
 			<title>Force Users to Login</title>
-			<description><![CDATA[Setting this to yes will force guests to login or register in order to access the board.]]></description>
+			<description><![CDATA[Setting this to 'YES' will force guests to login or register in order to access the board.]]></description>
 			<disporder>4</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
@@ -908,7 +908,7 @@ both=Email Verification & Administrator Activation]]></optionscode>
 		</setting>
 		<setting name="allowmultipleemails">
 			<title><![CDATA[Allow emails to be registered multiple times?]]></title>
-			<description><![CDATA[Select yes if you wish to allow users to sign up with the same email more than once otherwise select no.]]></description>
+			<description><![CDATA[Select 'YES' if you wish to allow users to sign up with the same email more than once otherwise select no.]]></description>
 			<disporder>12</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
@@ -1558,7 +1558,7 @@ descending=Descending]]></optionscode>
 		</setting>
 		<setting name="canviewownwarning">
 			<title>Can Users View Own Warnings?</title>
-			<description><![CDATA[Set to yes to allow users to view recent warnings in their User CP and show their warning level to them in their profile.]]></description>
+			<description><![CDATA[Set to 'YES' to allow users to view recent warnings in their User CP and show their warning level to them in their profile.]]></description>
 			<disporder>3</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -1600,7 +1600,7 @@ descending=Descending]]></optionscode>
 		</setting>
 		<setting name="pmsallowhtml">
 			<title>Allow HTML</title>
-			<description><![CDATA[Selecting yes will allow HTML to be used in private messages.]]></description>
+			<description><![CDATA[Selecting 'YES' will allow HTML to be used in private messages.]]></description>
 			<disporder>3</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
@@ -1608,7 +1608,7 @@ descending=Descending]]></optionscode>
 		</setting>
 		<setting name="pmsallowmycode">
 			<title>Allow MyCode</title>
-			<description><![CDATA[Selecting yes will allow MyCode to be used in private messages.]]></description>
+			<description><![CDATA[Selecting 'YES' will allow MyCode to be used in private messages.]]></description>
 			<disporder>4</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -1616,7 +1616,7 @@ descending=Descending]]></optionscode>
 		</setting>
 		<setting name="pmsallowsmilies">
 			<title>Allow Smilies</title>
-			<description><![CDATA[Selecting yes will allow Smilies to be used in private messages.]]></description>
+			<description><![CDATA[Selecting 'YES' will allow Smilies to be used in private messages.]]></description>
 			<disporder>5</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -1624,7 +1624,7 @@ descending=Descending]]></optionscode>
 		</setting>
 		<setting name="pmsallowimgcode">
 			<title>Allow [img] Code</title>
-			<description><![CDATA[Selecting yes will allow [img] Code to be used in private messages.]]></description>
+			<description><![CDATA[Selecting 'YES' will allow [img] Code to be used in private messages.]]></description>
 			<disporder>6</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -1632,7 +1632,7 @@ descending=Descending]]></optionscode>
 		</setting>
 		<setting name="pmsallowvideocode">
 			<title>Allow [video] Code</title>
-			<description><![CDATA[Selecting yes will allow [video] Code to be used in private messages.]]></description>
+			<description><![CDATA[Selecting 'YES' will allow [video] Code to be used in private messages.]]></description>
 			<disporder>7</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -1648,7 +1648,7 @@ descending=Descending]]></optionscode>
 		</setting>
 		<setting name="showpmip">
 			<title>Show Private Message IP Addresses</title>
-			<description><![CDATA[Do you wish to show ip addresses of users who send private messages, and who you want to show ip addresses to?]]></description>
+			<description><![CDATA[Do you wish to show IP addresses of users who send private messages, and who you want to show IP addresses to?]]></description>
 			<disporder>9</disporder>
 			<optionscode><![CDATA[radio
 no=Do not show IP
@@ -1731,7 +1731,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		</setting>
 		<setting name="prunepostcountall">
 			<title>Count all posts?</title>
-			<description><![CDATA[If set to yes, posts from forums which don't increase users' post count will also be considered while pruning.]]></description>
+			<description><![CDATA[If set to 'YES', posts from forums which don't increase users' post count will also be considered while pruning.]]></description>
 			<disporder>4</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
@@ -1946,7 +1946,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		</setting>
 		<setting name="allowbasicmycode">
 			<title>Allow Basic MyCodes</title>
-			<description><![CDATA[Setting this to YES allows users to use the basic MyCodes, such as Bold, Italic, Underline, Strike-through and HR.]]></description>
+			<description><![CDATA[Setting this to 'YES' allows users to use the basic MyCodes, such as Bold, Italic, Underline, Strike-through and HR.]]></description>
 			<disporder>6</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -1954,7 +1954,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		</setting>
 		<setting name="allowcolormycode">
 			<title>Allow Color MyCode</title>
-			<description><![CDATA[Setting this to YES allows users to use the Color MyCode.]]></description>
+			<description><![CDATA[Setting this to 'YES' allows users to use the Color MyCode.]]></description>
 			<disporder>7</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -1962,7 +1962,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		</setting>
 		<setting name="allowsizemycode">
 			<title>Allow Size MyCode</title>
-			<description><![CDATA[Setting this to YES allows users to use the Size MyCode.]]></description>
+			<description><![CDATA[Setting this to 'YES' allows users to use the Size MyCode.]]></description>
 			<disporder>8</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -1970,7 +1970,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		</setting>
 		<setting name="allowfontmycode">
 			<title>Allow Font MyCode</title>
-			<description><![CDATA[Setting this to YES allows users to use the Font MyCode.]]></description>
+			<description><![CDATA[Setting this to 'YES' allows users to use the Font MyCode.]]></description>
 			<disporder>9</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -1978,7 +1978,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		</setting>
 		<setting name="allowlinkmycode">
 			<title>Allow Link MyCode</title>
-			<description><![CDATA[Setting this to YES allows users to use the URL MyCode.]]></description>
+			<description><![CDATA[Setting this to 'YES' allows users to use the URL MyCode.]]></description>
 			<disporder>10</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -1986,7 +1986,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		</setting>
 		<setting name="allowemailmycode">
 			<title>Allow Email MyCode</title>
-			<description><![CDATA[Setting this to YES allows users to use the Email MyCode.]]></description>
+			<description><![CDATA[Setting this to 'YES' allows users to use the Email MyCode.]]></description>
 			<disporder>11</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -1994,7 +1994,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		</setting>
 		<setting name="allowalignmycode">
 			<title>Allow Alignment MyCode</title>
-			<description><![CDATA[Setting this to YES allows users to use the Align MyCode.]]></description>
+			<description><![CDATA[Setting this to 'YES' allows users to use the Align MyCode.]]></description>
 			<disporder>12</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -2002,7 +2002,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		</setting>
 		<setting name="allowlistmycode">
 			<title>Allow List MyCode</title>
-			<description><![CDATA[Setting this to YES allows users to use the List MyCode.]]></description>
+			<description><![CDATA[Setting this to 'YES' allows users to use the List MyCode.]]></description>
 			<disporder>13</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -2010,7 +2010,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		</setting>
 		<setting name="allowcodemycode">
 			<title>Allow Code MyCodes</title>
-			<description><![CDATA[Setting this to YES allows users to use the Code and PHP MyCodes.]]></description>
+			<description><![CDATA[Setting this to 'YES' allows users to use the Code and PHP MyCodes.]]></description>
 			<disporder>14</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -2018,7 +2018,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		</setting>
 		<setting name="allowsymbolmycode">
 			<title>Allow Symbol MyCodes</title>
-			<description><![CDATA[Setting this to YES allows users to use the (tm), (c) and (r) MyCodes.]]></description>
+			<description><![CDATA[Setting this to 'YES' allows users to use the (tm), (c) and (r) MyCodes.]]></description>
 			<disporder>15</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -2026,7 +2026,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		</setting>
 		<setting name="allowmemycode">
 			<title>Allow Me MyCodes</title>
-			<description><![CDATA[Setting this to YES allows users to use the /me and /slap MyCodes.]]></description>
+			<description><![CDATA[Setting this to 'YES' allows users to use the /me and /slap MyCodes.]]></description>
 			<disporder>16</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -2034,7 +2034,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		</setting>
 		<setting name="guestimages">
 			<title>Parse [img] MyCode To Guests</title>
-			<description><![CDATA[Setting this to YES will parse posted images to guests. If no, a link will be shown instead.]]></description>
+			<description><![CDATA[Setting this to 'YES' will parse posted images to guests. If no, a link will be shown instead.]]></description>
 			<disporder>17</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -2042,7 +2042,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		</setting>
 		<setting name="guestvideos">
 			<title>Parse [video] MyCode To Guests</title>
-			<description><![CDATA[Setting this to YES will parse posted videos to guests. If no, a link will be shown instead.]]></description>
+			<description><![CDATA[Setting this to 'YES' will parse posted videos to guests. If no, a link will be shown instead.]]></description>
 			<disporder>18</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -2168,7 +2168,7 @@ smtp=SMTP mail]]></optionscode>
 	<settinggroup name="contactsettings" title="Contact Settings" description="The various options to change the behaviour of the contact page (contact.php)." disporder="25" isdefault="1">
 		<setting name="contact">
 			<title>Enable Contact Page</title>
-			<description><![CDATA[Setting this to yes will allow access to the contact page.]]></description>
+			<description><![CDATA[Setting this to 'YES' will allow access to the contact page.]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -2176,7 +2176,7 @@ smtp=SMTP mail]]></optionscode>
 		</setting>
 		<setting name="contact_guests">
 			<title>Disable Contact Page to Guests</title>
-			<description><![CDATA[Setting this to yes will disallow access to the contact page for guests.]]></description>
+			<description><![CDATA[Setting this to 'YES' will disallow access to the contact page for guests.]]></description>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
@@ -2184,7 +2184,7 @@ smtp=SMTP mail]]></optionscode>
 		</setting>
 		<setting name="contact_badwords">
 			<title>Enable Word Filter on Contact Page</title>
-			<description><![CDATA[Setting this to yes will will send the subject and message fields through the word filter before sending.]]></description>
+			<description><![CDATA[Setting this to 'YES' will will send the subject and message fields through the word filter before sending.]]></description>
 			<disporder>3</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
