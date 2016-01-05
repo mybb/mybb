@@ -231,7 +231,7 @@ email=Sent via Email]]></optionscode>
 		</setting>
 		<setting name="maxmultipagelinks">
 			<title>Maximum Page Links in Pagination</title>
-			<description><![CDATA[Here you can set the number of next and previous page links to show in the pagination for threads or forums with more than one page of results.]]></description>
+			<description><![CDATA[Here you can set the number of next and previous page links to show in the pagination for threads or forums with more than one page of results. Set to 0 to disable the limitation.]]></description>
 			<disporder>12</disporder>
 			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[5]]></settingvalue>
@@ -625,7 +625,7 @@ none=Hide Errors and Warnings
 	<settinggroup name="forumdisplay" title="Forum Display Options" description="This section allows you to manage the various settings used on the forum display (forumdisplay.php) of your boards such as enabling and disabling different features." disporder="7" isdefault="1">
 		<setting name="threadsperpage">
 			<title>Threads Per Page</title>
-			<description><![CDATA[The number of threads to display per page on the forum display]]></description>
+			<description><![CDATA[The number of threads to display per page on the forum display.]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[20]]></settingvalue>
@@ -892,7 +892,7 @@ both=Email Verification & Administrator Activation]]></optionscode>
 		</setting>
 		<setting name="betweenregstime">
 			<title>Time Between Registrations</title>
-			<description><![CDATA[The amount of time (in hours) to disallow registrations for users who have already registered an account under the same ip address. 0 to disable.]]></description>
+			<description><![CDATA[The amount of time (in hours) to disallow registrations for users who have already registered an account under the same IP address. Set to 0 to disable.]]></description>
 			<disporder>10</disporder>
 			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[24]]></settingvalue>
@@ -970,7 +970,7 @@ disabled=Disable this feature]]></optionscode>
 		</setting>
 		<setting name="failedcaptchalogincount">
 			<title>Number of failed logins before verification required</title>
-			<description><![CDATA[The number of times to allow someone to attempt to login before required to enter a CAPTCHA verification. 0 to disable]]></description>
+			<description><![CDATA[The number of times to allow someone to attempt to login before required to enter a CAPTCHA verification. Set to 0 to disable.]]></description>
 			<disporder>19</disporder>
 			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[3]]></settingvalue>
@@ -978,7 +978,7 @@ disabled=Disable this feature]]></optionscode>
 		</setting>
 		<setting name="failedlogincount">
 			<title>Number of times to allow failed logins</title>
-			<description><![CDATA[The number of times to allow someone to attempt to login. 0 to disable.]]></description>
+			<description><![CDATA[The number of times to allow someone to attempt to login. Set to 0 to disable.]]></description>
 			<disporder>20</disporder>
 			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
@@ -1135,7 +1135,7 @@ x=X]]></optionscode>
 		</setting>
 		<setting name="avatarsize">
 			<title>Max Uploaded Avatar Size</title>
-			<description><![CDATA[Maximum file size (in kilobytes) of uploaded avatars.]]></description>
+			<description><![CDATA[Maximum file size (in kilobytes) of uploaded avatars. Set to 0 to disable the limitation.]]></description>
 			<disporder>14</disporder>
 			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[25]]></settingvalue>
@@ -1325,7 +1325,7 @@ show=Show to all Users]]></optionscode>
 		</setting>
 		<setting name="polloptionlimit">
 			<title>Maximum Poll Option Length</title>
-			<description><![CDATA[The maximum length that each poll option can be. (Set to 0 to disable).]]></description>
+			<description><![CDATA[The maximum length that each poll option can be. Set to 0 to disable.]]></description>
 			<disporder>17</disporder>
 			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[250]]></settingvalue>
@@ -1333,7 +1333,7 @@ show=Show to all Users]]></optionscode>
 		</setting>
 		<setting name="maxpolloptions">
 			<title>Maximum Number of Poll Options</title>
-			<description><![CDATA[The maximum number of options for polls that users can post.]]></description>
+			<description><![CDATA[The maximum number of options for polls that users can post. Enter 0 (zero) for no limit.]]></description>
 			<disporder>18</disporder>
 			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
@@ -1375,7 +1375,7 @@ show=Show to all Users]]></optionscode>
 	<settinggroup name="attachments" title="Attachments" description="Various options related to the attachment system can be managed and set here." disporder="12" isdefault="1">
 		<setting name="enableattachments">
 			<title>Enable Attachment Functionality</title>
-			<description><![CDATA[If you wish to disable attachments on your board, set this option to no.]]></description>
+			<description><![CDATA[If you wish to disable attachments on your board, set this option to NO.]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -1383,7 +1383,7 @@ show=Show to all Users]]></optionscode>
 		</setting>
 		<setting name="maxattachments">
 			<title>Maximum Attachments Per Post</title>
-			<description><![CDATA[The maximum number of attachments a user is allowed to upload per post.]]></description>
+			<description><![CDATA[The maximum number of attachments a user is allowed to upload per post. Set to 0 to disable.]]></description>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[5]]></settingvalue>
@@ -1516,7 +1516,7 @@ descending=Descending]]></optionscode>
 		</setting>
 		<setting name="repsperpage">
 			<title>Reputation Comments Per Page</title>
-			<description><![CDATA[Here you can enter the number of reputation comments to show per page on the reputation system]]></description>
+			<description><![CDATA[Here you can enter the number of reputation comments to show per page on the reputation system.]]></description>
 			<disporder>7</disporder>
 			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[15]]></settingvalue>
@@ -1640,7 +1640,7 @@ descending=Descending]]></optionscode>
 		</setting>
 		<setting name="pmfloodsecs">
 			<title>Private Message Flood Time</title>
-			<description><![CDATA[Set the time (in seconds) users have to wait between sending messages, to be in effect; set to 0 to disable.]]></description>
+			<description><![CDATA[Set the time (in seconds) users have to wait between sending messages, to be in effect. Set to 0 to disable.]]></description>
 			<disporder>8</disporder>
 			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[60]]></settingvalue>
@@ -1906,7 +1906,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 	<settinggroup name="clickablecode" title="Clickable Smilies and BB Code" description="This section allows you to change how the clickable smilies inserter appears and control the default MyCodes." disporder="22" isdefault="1">
 		<setting name="bbcodeinserter">
 			<title>Clickable MyCode Editor</title>
-			<description><![CDATA[Set this option to On to show the clickable code buttons editor on posting pages. Switching this off will also disable the Smilies Inserter.]]></description>
+			<description><![CDATA[Set this option to 'ON' to show the clickable code buttons editor on posting pages. Switching this 'OFF' will also disable the Smilies Inserter.]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -1914,7 +1914,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		</setting>
 		<setting name="partialmode">
 			<title>Clickable MyCode Editor in Partial Mode</title>
-			<description><![CDATA[Editor will be in partial mode if this option is set to 'yes'. Several MyCodes, such as [quote] and [img], will be inserted into it as plain text tags.]]></description>
+			<description><![CDATA[Editor will be in partial mode if this option is set to 'YES'. Several MyCodes, such as [quote] and [img], will be inserted into it as plain text tags.]]></description>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
@@ -1922,7 +1922,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		</setting>
 		<setting name="smilieinserter">
 			<title>Clickable Smilies Inserter</title>
-			<description><![CDATA[Clickable smilies will appear on the posting pages if this option is set to 'on'.]]></description>
+			<description><![CDATA[Clickable smilies will appear on the posting pages if this option is set to 'ON'.]]></description>
 			<disporder>3</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -1946,7 +1946,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		</setting>
 		<setting name="allowbasicmycode">
 			<title>Allow Basic MyCodes</title>
-			<description><![CDATA[Setting this to yes allows users to use the basic MyCodes, such as Bold, Italic, Underline, Strike-through and HR.]]></description>
+			<description><![CDATA[Setting this to YES allows users to use the basic MyCodes, such as Bold, Italic, Underline, Strike-through and HR.]]></description>
 			<disporder>6</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -1954,7 +1954,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		</setting>
 		<setting name="allowcolormycode">
 			<title>Allow Color MyCode</title>
-			<description><![CDATA[Setting this to yes allows users to use the Color MyCode.]]></description>
+			<description><![CDATA[Setting this to YES allows users to use the Color MyCode.]]></description>
 			<disporder>7</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -1962,7 +1962,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		</setting>
 		<setting name="allowsizemycode">
 			<title>Allow Size MyCode</title>
-			<description><![CDATA[Setting this to yes allows users to use the Size MyCode]]></description>
+			<description><![CDATA[Setting this to YES allows users to use the Size MyCode.]]></description>
 			<disporder>8</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -1970,7 +1970,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		</setting>
 		<setting name="allowfontmycode">
 			<title>Allow Font MyCode</title>
-			<description><![CDATA[Setting this to yes allows users to use the Font MyCode.]]></description>
+			<description><![CDATA[Setting this to YES allows users to use the Font MyCode.]]></description>
 			<disporder>9</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -1978,7 +1978,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		</setting>
 		<setting name="allowlinkmycode">
 			<title>Allow Link MyCode</title>
-			<description><![CDATA[Setting this to yes allows users to use the URL MyCode.]]></description>
+			<description><![CDATA[Setting this to YES allows users to use the URL MyCode.]]></description>
 			<disporder>10</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -1986,7 +1986,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		</setting>
 		<setting name="allowemailmycode">
 			<title>Allow Email MyCode</title>
-			<description><![CDATA[Setting this to yes allows users to use the Email MyCode.]]></description>
+			<description><![CDATA[Setting this to YES allows users to use the Email MyCode.]]></description>
 			<disporder>11</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -1994,7 +1994,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		</setting>
 		<setting name="allowalignmycode">
 			<title>Allow Alignment MyCode</title>
-			<description><![CDATA[Setting this to yes allows users to use the Align MyCode.]]></description>
+			<description><![CDATA[Setting this to YES allows users to use the Align MyCode.]]></description>
 			<disporder>12</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -2002,7 +2002,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		</setting>
 		<setting name="allowlistmycode">
 			<title>Allow List MyCode</title>
-			<description><![CDATA[Setting this to yes allows users to use the List MyCode.]]></description>
+			<description><![CDATA[Setting this to YES allows users to use the List MyCode.]]></description>
 			<disporder>13</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -2010,7 +2010,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		</setting>
 		<setting name="allowcodemycode">
 			<title>Allow Code MyCodes</title>
-			<description><![CDATA[Setting this to yes allows users to use the Code and PHP MyCodes.]]></description>
+			<description><![CDATA[Setting this to YES allows users to use the Code and PHP MyCodes.]]></description>
 			<disporder>14</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -2018,7 +2018,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		</setting>
 		<setting name="allowsymbolmycode">
 			<title>Allow Symbol MyCodes</title>
-			<description><![CDATA[Setting this to yes allows users to use the (tm), (c) and (r) MyCodes.]]></description>
+			<description><![CDATA[Setting this to YES allows users to use the (tm), (c) and (r) MyCodes.]]></description>
 			<disporder>15</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -2026,7 +2026,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		</setting>
 		<setting name="allowmemycode">
 			<title>Allow Me MyCodes</title>
-			<description><![CDATA[Setting this to yes allows users to use the /me and /slap MyCodes.]]></description>
+			<description><![CDATA[Setting this to YES allows users to use the /me and /slap MyCodes.]]></description>
 			<disporder>16</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -2034,7 +2034,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		</setting>
 		<setting name="guestimages">
 			<title>Parse [img] MyCode To Guests</title>
-			<description><![CDATA[Setting this to yes will parse posted images to guests. If no, a link will be shown instead.]]></description>
+			<description><![CDATA[Setting this to YES will parse posted images to guests. If no, a link will be shown instead.]]></description>
 			<disporder>17</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -2042,7 +2042,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		</setting>
 		<setting name="guestvideos">
 			<title>Parse [video] MyCode To Guests</title>
-			<description><![CDATA[Setting this to yes will parse posted videos to guests. If no, a link will be shown instead.]]></description>
+			<description><![CDATA[Setting this to YES will parse posted videos to guests. If no, a link will be shown instead.]]></description>
 			<disporder>18</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -2076,7 +2076,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		</setting>
 		<setting name="loginattemptstimeout">
 			<title>Login Attempts Timeout</title>
-			<description><![CDATA[If the person trying to login reaches the max number of attempts, how long should they have to wait before being able to login again? (Set in minutes)]]></description>
+			<description><![CDATA[If the person trying to login reaches the max number of attempts, how long should they have to wait before being able to login again (in minutes)? Set to 0 to disable.]]></description>
 			<disporder>4</disporder>
 			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[15]]></settingvalue>
@@ -2424,7 +2424,7 @@ delete=Delete]]></optionscode>
 		</setting>
 		<setting name="statscachetime">
 			<title>Statistics Cache Time</title>
-			<description><![CDATA[Insert the interval of time to refresh the statistics page cache (in hours). 0 to disable caching.]]></description>
+			<description><![CDATA[Insert the interval of time to refresh the statistics page cache (in hours). Set to 0 to disable caching.]]></description>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
@@ -2433,7 +2433,7 @@ delete=Delete]]></optionscode>
 		</setting>
 		<setting name="statslimit">
 			<title>Stats Limit</title>
-			<description><![CDATA[The number of threads to show on the stats page for most replies and most views.]]></description>
+			<description><![CDATA[The number of threads to show on the stats page for most replies and most views. Set to 0 to disable.]]></description>
 			<disporder>3</disporder>
 			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[15]]></settingvalue>
