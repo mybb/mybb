@@ -84,7 +84,7 @@ if($forum['allowtratings'] == 0)
 {
 	error_no_permission();
 }
-$mybb->input['rating'] = $mybb->get_input('rating', 1);
+$mybb->input['rating'] = $mybb->get_input('rating', MyBB::INPUT_INT);
 if($mybb->input['rating'] < 1 || $mybb->input['rating'] > 5)
 {
 	error($lang->error_invalidrating);

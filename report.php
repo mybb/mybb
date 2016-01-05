@@ -31,7 +31,7 @@ $error = $report_type_db = '';
 
 if(!empty($mybb->input['type']))
 {
-	$report_type = $mybb->get_input('type');
+	$report_type = htmlspecialchars_uni($mybb->get_input('type'));
 }
 
 $report_title = $lang->report_content;
@@ -51,7 +51,7 @@ if($report_type == 'post')
 	}
 
 	// Do we have a valid post?
-	$post = get_post($mybb->get_input('pid', 1));
+	$post = get_post($mybb->get_input('pid', MyBB::INPUT_INT));
 
 	if(!$post)
 	{
@@ -82,7 +82,7 @@ if($report_type == 'post')
 }
 else if($report_type == 'profile')
 {
-	$user = get_user($mybb->get_input('pid', 1));
+	$user = get_user($mybb->get_input('pid', MyBB::INPUT_INT));
 
 	if(!isset($user['uid']))
 	{
@@ -108,7 +108,7 @@ else if($report_type == 'profile')
 else if($report_type == 'reputation')
 {
 	// Any member can report a reputation comment but let's make sure it exists first
-	$query = $db->simple_select("reputation", "*", "rid = '".$mybb->get_input('pid', 1)."'");
+	$query = $db->simple_select("reputation", "*", "rid = '".$mybb->get_input('pid', MyBB::INPUT_INT)."'");
 
 	if(!$db->num_rows($query))
 	{

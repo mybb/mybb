@@ -18,7 +18,7 @@ $templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit,forumdispl
 $templatelist .= ",forumdisplay_usersbrowsing_user,forumdisplay_usersbrowsing,forumdisplay_inlinemoderation,forumdisplay_thread_modbit,forumdisplay_inlinemoderation_col,forumdisplay_inlinemoderation_selectall,forumdisplay_threadlist_clearpass,forumdisplay_thread_rating_moved";
 $templatelist .= ",forumdisplay_announcements_announcement,forumdisplay_announcements,forumdisplay_threads_sep,forumbit_depth3_statusicon,forumbit_depth3,forumdisplay_sticky_sep,forumdisplay_thread_attachment_count,forumdisplay_rssdiscovery,forumdisplay_announcement_rating,forumbit_moderators_group";
 $templatelist .= ",forumdisplay_inlinemoderation_openclose,forumdisplay_inlinemoderation_stickunstick,forumdisplay_inlinemoderation_softdelete,forumdisplay_inlinemoderation_restore,forumdisplay_inlinemoderation_delete,forumdisplay_inlinemoderation_manage,forumdisplay_inlinemoderation_approveunapprove";
-$templatelist .= ",forumbit_depth2_forum_unapproved_posts,forumbit_depth2_forum_unapproved_threads,forumbit_moderators_user,forumdisplay_inlinemoderation_standard,forumdisplay_threadlist_prefixes_prefix,forumdisplay_threadlist_prefixes";
+$templatelist .= ",forumbit_depth2_forum_unapproved_posts,forumbit_depth2_forum_unapproved_threads,forumbit_moderators_user,forumdisplay_inlinemoderation_standard,forumdisplay_threadlist_prefixes_prefix,forumdisplay_threadlist_prefixes,forumdisplay_nopermission";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -36,7 +36,7 @@ $lang->load("forumdisplay");
 
 $plugins->run_hooks("forumdisplay_start");
 
-$fid = $mybb->get_input('fid', 1);
+$fid = $mybb->get_input('fid', MyBB::INPUT_INT);
 if($fid < 0)
 {
 	switch($fid)
@@ -456,7 +456,7 @@ if(empty($mybb->input['datecut']))
 // If there was a manual date cut override, use it.
 else
 {
-	$datecut = $mybb->get_input('datecut', 1);
+	$datecut = $mybb->get_input('datecut', MyBB::INPUT_INT);
 }
 
 $datecutsel[(int)$datecut] = ' selected="selected"';
@@ -473,7 +473,7 @@ else
 }
 
 // Sort by thread prefix
-$tprefix = $mybb->get_input('prefix', 1);
+$tprefix = $mybb->get_input('prefix', MyBB::INPUT_INT);
 if($tprefix > 0)
 {
 	$prefixsql = "AND prefix = {$tprefix}";
@@ -580,7 +580,7 @@ else
 }
 
 // Are we viewing a specific page?
-$mybb->input['page'] = $mybb->get_input('page', 1);
+$mybb->input['page'] = $mybb->get_input('page', MyBB::INPUT_INT);
 if($mybb->input['page'] > 1)
 {
 	$sorturl = get_forum_link($fid, $mybb->input['page']).$string."datecut=$datecut&amp;prefix=$tprefix";
@@ -603,7 +603,7 @@ if(isset($fpermissions['canonlyviewownthreads']) && $fpermissions['canonlyviewow
 if($fpermissions['canviewthreads'] != 0)
 {
 	// How many posts are there?
-	if($datecut > 0 || isset($fpermissions['canonlyviewownthreads']) && $fpermissions['canonlyviewownthreads'] == 1)
+	if(($datecut > 0 && $datecut != 9999) || isset($fpermissions['canonlyviewownthreads']) && $fpermissions['canonlyviewownthreads'] == 1)
 	{
 		$query = $db->simple_select("threads", "COUNT(tid) AS threads", "fid = '$fid' $useronly $visibleonly $datecutsql $prefixsql");
 		$threadcount = $db->fetch_field($query, "threads");
@@ -692,7 +692,7 @@ if($mybb->input['sortby'] || $mybb->input['order'] || $mybb->input['datecut'] ||
 		$and = "&";
 	}
 
-	if($datecut > 0)
+	if($datecut > 0 && $datecut != 9999)
 	{
 		$page_url .= "{$q}{$and}datecut={$datecut}";
 		$q = '';
@@ -838,7 +838,7 @@ if($has_announcements == true)
 	}
 	else if(!empty($cookie))
 	{
-		my_setcookie("mybb[announcements]", addslashes(serialize($cookie)), -1);
+		my_setcookie("mybb[announcements]", addslashes(my_serialize($cookie)), -1);
 	}
 }
 else
@@ -927,7 +927,7 @@ if(!empty($tids))
 // Check participation by the current user in any of these threads - for 'dot' folder icons
 if($mybb->settings['dotfolders'] != 0 && $mybb->user['uid'] && !empty($threadcache))
 {
-	$query = $db->simple_select("posts", "tid,uid", "uid='{$mybb->user['uid']}' AND tid IN ({$tids}) {$visibleonly}");
+	$query = $db->simple_select("posts", "DISTINCT tid,uid", "uid='{$mybb->user['uid']}' AND tid IN ({$tids}) {$visibleonly}");
 	while($post = $db->fetch_array($query))
 	{
 		if(!empty($moved_threads[$post['tid']]))
@@ -1053,6 +1053,8 @@ if(!empty($threadcache) && is_array($threadcache))
 		{
 			$icon = $icon_cache[$thread['icon']];
 			$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
+			$icon['path'] = htmlspecialchars_uni($icon['path']);
+			$icon['name'] = htmlspecialchars_uni($icon['name']);
 			eval("\$icon = \"".$templates->get("forumdisplay_thread_icon")."\";");
 		}
 		else
@@ -1436,7 +1438,12 @@ $inline_edit_js = $clearstoredpass = '';
 // Is this a real forum with threads?
 if($foruminfo['type'] != "c")
 {
-	if(!$threadcount)
+	if($fpermissions['canviewthreads'] != 1)
+	{
+		eval("\$threads = \"".$templates->get("forumdisplay_nopermission")."\";");
+	}
+
+	if(!$threadcount && $fpermissions['canviewthreads'] == 1)
 	{
 		eval("\$threads = \"".$templates->get("forumdisplay_nothreads")."\";");
 	}

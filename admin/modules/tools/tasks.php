@@ -23,11 +23,11 @@ $plugins->run_hooks("admin_tools_tasks_begin");
 /**
  * Validates a string or array of values
  *
- * @param mixed Comma-separated list or array of values
- * @param int Minimum value
- * @param int Maximum value
- * @param string Set "string" to return in a comma-separated list, or "array" to return in an array
- * @return mixed String or array of valid values OR false if string/array is invalid
+ * @param string|array $value Comma-separated list or array of values
+ * @param int $min Minimum value
+ * @param int $max Maximum value
+ * @param string $return_type Set "string" to return in a comma-separated list, or "array" to return in an array
+ * @return string|array String or array of valid values OR false if string/array is invalid
  */
 function check_time_values($value, $min, $max, $return_type)
 {
@@ -132,8 +132,8 @@ if($mybb->input['action'] == "add")
 				"day" => $db->escape_string($mybb->input['day']),
 				"month" => $db->escape_string(implode(',', $mybb->input['month'])),
 				"weekday" => $db->escape_string(implode(',', $mybb->input['weekday'])),
-				"enabled" => (int)$mybb->input['enabled'],
-				"logging" => (int)$mybb->input['logging']
+				"enabled" => $mybb->get_input('enabled', MyBB::INPUT_INT),
+				"logging" => $mybb->get_input('logging', MyBB::INPUT_INT)
 			);
 
 			$new_task['nextrun'] = fetch_next_run($new_task);
@@ -144,7 +144,7 @@ if($mybb->input['action'] == "add")
 			$cache->update_tasks();
 
 			// Log admin action
-			log_admin_action($tid, $mybb->input['title']);
+			log_admin_action($tid, htmlspecialchars_uni($mybb->input['title']));
 
 			flash_message($lang->success_task_created, 'success');
 			admin_redirect("index.php?module=tools-tasks");
@@ -247,7 +247,7 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "edit")
 {
-	$query = $db->simple_select("tasks", "*", "tid='".$mybb->get_input('tid', 1)."'");
+	$query = $db->simple_select("tasks", "*", "tid='".$mybb->get_input('tid', MyBB::INPUT_INT)."'");
 	$task = $db->fetch_array($query);
 
 	// Does the task not exist?
@@ -332,8 +332,8 @@ if($mybb->input['action'] == "edit")
 				"day" => $db->escape_string($mybb->input['day']),
 				"month" => $db->escape_string(implode(',', $mybb->input['month'])),
 				"weekday" => $db->escape_string(implode(',', $mybb->input['weekday'])),
-				"enabled" => (int)$mybb->input['enabled'],
-				"logging" => (int)$mybb->input['logging']
+				"enabled" => $mybb->get_input('enabled', MyBB::INPUT_INT),
+				"logging" => $mybb->get_input('logging', MyBB::INPUT_INT)
 			);
 
 			$updated_task['nextrun'] = fetch_next_run($updated_task);
@@ -345,7 +345,7 @@ if($mybb->input['action'] == "edit")
 			$cache->update_tasks();
 
 			// Log admin action
-			log_admin_action($task['tid'], $mybb->input['title']);
+			log_admin_action($task['tid'], htmlspecialchars_uni($mybb->input['title']));
 
 			flash_message($lang->success_task_updated, 'success');
 
@@ -449,7 +449,7 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
-	$query = $db->simple_select("tasks", "*", "tid='".$mybb->get_input('tid', 1)."'");
+	$query = $db->simple_select("tasks", "*", "tid='".$mybb->get_input('tid', MyBB::INPUT_INT)."'");
 	$task = $db->fetch_array($query);
 
 	// Does the task not exist?
@@ -480,7 +480,7 @@ if($mybb->input['action'] == "delete")
 		$cache->update_tasks();
 
 		// Log admin action
-		log_admin_action($task['tid'], $task['title']);
+		log_admin_action($task['tid'], htmlspecialchars_uni($task['title']));
 
 		flash_message($lang->success_task_deleted, 'success');
 		admin_redirect("index.php?module=tools-tasks");
@@ -499,7 +499,7 @@ if($mybb->input['action'] == "enable" || $mybb->input['action'] == "disable")
 		admin_redirect("index.php?module=tools-tasks");
 	}
 
-	$query = $db->simple_select("tasks", "*", "tid='".$mybb->get_input('tid', 1)."'");
+	$query = $db->simple_select("tasks", "*", "tid='".$mybb->get_input('tid', MyBB::INPUT_INT)."'");
 	$task = $db->fetch_array($query);
 
 	// Does the task not exist?
@@ -538,7 +538,7 @@ if($mybb->input['action'] == "enable" || $mybb->input['action'] == "disable")
 				$cache->update_tasks();
 
 				// Log admin action
-				log_admin_action($task['tid'], $task['title'], $mybb->input['action']);
+				log_admin_action($task['tid'], htmlspecialchars_uni($task['title']), $mybb->input['action']);
 
 				flash_message($lang->success_task_enabled, 'success');
 				admin_redirect("index.php?module=tools-tasks");
@@ -558,7 +558,7 @@ if($mybb->input['action'] == "enable" || $mybb->input['action'] == "disable")
 			$cache->update_tasks();
 
 			// Log admin action
-			log_admin_action($task['tid'], $task['title'], $mybb->input['action']);
+			log_admin_action($task['tid'], htmlspecialchars_uni($task['title']), $mybb->input['action']);
 
 			flash_message($lang->success_task_enabled, 'success');
 			admin_redirect("index.php?module=tools-tasks");
@@ -573,7 +573,7 @@ if($mybb->input['action'] == "enable" || $mybb->input['action'] == "disable")
 		$cache->update_tasks();
 
 		// Log admin action
-		log_admin_action($task['tid'], $task['title'], $mybb->input['action']);
+		log_admin_action($task['tid'], htmlspecialchars_uni($task['title']), htmlspecialchars_uni($mybb->input['action']));
 
 		flash_message($lang->success_task_disabled, 'success');
 		admin_redirect("index.php?module=tools-tasks");
@@ -593,7 +593,7 @@ if($mybb->input['action'] == "run")
 
 	$plugins->run_hooks("admin_tools_tasks_run");
 
-	$query = $db->simple_select("tasks", "*", "tid='".$mybb->get_input('tid', 1)."'");
+	$query = $db->simple_select("tasks", "*", "tid='".$mybb->get_input('tid', MyBB::INPUT_INT)."'");
 	$task = $db->fetch_array($query);
 
 	// Does the task not exist?
@@ -608,7 +608,7 @@ if($mybb->input['action'] == "run")
 	$plugins->run_hooks("admin_tools_tasks_run_commit");
 
 	// Log admin action
-	log_admin_action($task['tid'], $task['title']);
+	log_admin_action($task['tid'], htmlspecialchars_uni($task['title']));
 
 	flash_message($lang->success_task_run, 'success');
 	admin_redirect("index.php?module=tools-tasks");
@@ -652,7 +652,7 @@ if($mybb->input['action'] == "logs")
 
 	if($mybb->input['page'] > 0)
 	{
-		$current_page = $mybb->get_input('page', 1);
+		$current_page = $mybb->get_input('page', MyBB::INPUT_INT);
 		$start = ($current_page-1)*$per_page;
 		$pages = $log_count / $per_page;
 		$pages = ceil($pages);

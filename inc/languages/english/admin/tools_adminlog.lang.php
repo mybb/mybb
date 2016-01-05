@@ -162,6 +162,9 @@ $l['admin_log_forum_moderation_queue_threads'] = "Moderated unapproved threads";
 $l['admin_log_forum_moderation_queue_posts'] = "Moderated unapproved posts";
 $l['admin_log_forum_moderation_queue_attachments'] = "Moderated unapproved attachments";
 
+$l['admin_log_home_preferences_enabled'] = "Enabled Two-Factor Authentication";
+$l['admin_log_home_preferences_disabled'] = "Disabled Two-Factor Authentication";
+
 $l['admin_log_style_templates_delete_set'] = "Deleted template set #{1} ({2})";
 $l['admin_log_style_templates_delete_template'] = "Deleted template #{1} ({2}) from template set #{3} ({4})";
 $l['admin_log_style_templates_delete_template_global'] = "Deleted template #{1} ({2}) from the global template set";

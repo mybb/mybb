@@ -30,11 +30,18 @@ function upgrade26_dbchanges()
 	$db->update_query("helpdocs", array('usetranslation' => 1));
 	$db->update_query("helpsections", array('usetranslation' => 1));
 
-	$db->modify_column("polls", "numvotes", "text NOT NULL");
+	if($db->type == 'pgsql')
+	{
+		$db->modify_column("polls", "numvotes", "text", "set");
+	}
+	else
+	{
+		$db->modify_column("polls", "numvotes", "text NOT NULL");
+	}
 
 	if($db->field_exists('failedlogin', 'users'))
 	{
-		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP failedlogin;");
+		$db->drop_column("users", "failedlogin");
 	}
 
 	// We don't need the posthash after the post is inserted into the database

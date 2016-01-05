@@ -26,11 +26,7 @@ $min_angle = -30;
 $max_angle = 30;
 
 $mybb->input['imagehash'] = $mybb->get_input('imagehash');
-if($mybb->input['imagehash'] == "test")
-{
-	$imagestring = "MyBB";
-}
-elseif($mybb->input['imagehash'])
+if($mybb->input['imagehash'])
 {
 	$query = $db->simple_select("captcha", "*", "imagehash='".$db->escape_string($mybb->get_input('imagehash'))."' AND used=0", array("limit" => 1));
 	$regimage = $db->fetch_array($query);
@@ -131,7 +127,7 @@ imagedestroy($im);
 /**
  * Draws a random number of lines on the image.
  *
- * @param resource The image.
+ * @param resource $im The image.
  */
 function draw_lines(&$im)
 {
@@ -152,7 +148,7 @@ function draw_lines(&$im)
 /**
  * Draws a random number of circles on the image.
  *
- * @param resource The image.
+ * @param resource $im The image.
  */
 function draw_circles(&$im)
 {
@@ -173,7 +169,7 @@ function draw_circles(&$im)
 /**
  * Draws a random number of dots on the image.
  *
- * @param resource The image.
+ * @param resource $im The image.
  */
 function draw_dots(&$im)
 {
@@ -190,7 +186,7 @@ function draw_dots(&$im)
 /**
  * Draws a random number of squares on the image.
  *
- * @param resource The image.
+ * @param resource $im The image.
  */
 function draw_squares(&$im)
 {
@@ -212,8 +208,10 @@ function draw_squares(&$im)
 /**
  * Writes text to the image.
  *
- * @param resource The image.
- * @param string The string to be written
+ * @param resource $im The image.
+ * @param string $string The string to be written
+ *
+ * @return bool False if string is empty, true otherwise
  */
 function draw_string(&$im, $string)
 {
@@ -308,5 +306,6 @@ function draw_string(&$im, $string)
 			imagedestroy($temp_im);
 		}
 	}
+	return true;
 }
 

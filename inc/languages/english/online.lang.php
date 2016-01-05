@@ -37,7 +37,7 @@ $l['viewing_whoposted'] = "Viewing Who Posted";
 $l['viewing_whoposted2'] = "Viewing Who Posted in Thread <a href=\"{1}\">{2}</a>";
 $l['marking_read'] = "<a href=\"misc.php?action=markread&amp;my_post_key={1}\">Marking Forums as Read</a>";
 $l['viewing_helpdocs'] = "Viewing <a href=\"misc.php?action=help\">Help Documents</a>";
-$l['viewing_buddylist'] = "Viewing <a href=\"misc.php?action=buddypopup\">Buddy List</a>";
+$l['viewing_buddylist'] = 'Viewing <a href="#" onclick="MyBB.popupWindow(\'/misc.php?action=buddypopup&amp;modal=1\'); return false;">Buddy List</a>';
 $l['viewing_smilies'] = "Viewing <a href=\"misc.php?action=smilies\">Smilie List</a>";
 $l['viewing_syndication'] = "Viewing <a href=\"misc.php?action=syndication\">RSS Syndication</a> Page";
 $l['replying_thread'] = "Replying to Thread";
@@ -66,8 +66,7 @@ $l['updating_options'] = "<a href=\"usercp.php?action=options\">Updating Options
 $l['editing_signature'] = "<a href=\"usercp.php?action=editsig\">Editing Signature</a>";
 $l['changing_avatar'] = "<a href=\"usercp.php?action=avatar\">Changing Avatar</a>";
 $l['viewing_subscriptions'] = "Viewing <a href=\"usercp.php?action=subscriptions\">Thread Subscriptions</a>";
-$l['viewing_favorites'] = "Viewing <a href=\"usercp.php?action=favorites\">Favorite Threads</a>";
-$l['editing_pad'] = "Editing <a href=\"usercp.php?action=notepad\">Personal Pad</a>";
+$l['editing_pad'] = 'Editing <a href="usercp.php">Personal Pad</a>';
 $l['editing_password'] = "Editing <a href=\"usercp.php?action=password\">Password</a>";
 $l['user_cp'] = "Viewing <a href=\"usercp.php\">User Control Panel</a>";
 $l['viewing_portal'] = "Viewing <a href=\"portal.php\">Portal</a> Page";

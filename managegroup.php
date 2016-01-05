@@ -19,13 +19,13 @@ require_once "./global.php";
 // Load language files
 $lang->load("managegroup");
 
-$gid = $mybb->get_input('gid', 1);
+$gid = $mybb->get_input('gid', MyBB::INPUT_INT);
 if(!isset($groupscache[$gid]))
 {
 	error($lang->invalid_group);
 }
 $usergroup = $groupscache[$gid];
-$lang->nav_group_management = $lang->sprintf($lang->nav_group_management, $usergroup['title']);
+$lang->nav_group_management = $lang->sprintf($lang->nav_group_management, htmlspecialchars_uni($usergroup['title']));
 add_breadcrumb($lang->nav_group_memberships, "usercp.php?action=usergroups");
 add_breadcrumb($lang->nav_group_management, "managegroup.php?gid=$gid");
 
@@ -169,10 +169,10 @@ elseif($mybb->input['action'] == "do_joinrequests" && $mybb->request_method == "
 	$plugins->run_hooks("managegroup_do_joinrequests_start");
 
 	$uidin = null;
-	if(is_array($mybb->get_input('request', 2)))
+	if(is_array($mybb->get_input('request', MyBB::INPUT_ARRAY)))
 	{
 		$uidin = array();
-		foreach($mybb->get_input('request', 2) as $uid => $what)
+		foreach($mybb->get_input('request', MyBB::INPUT_ARRAY) as $uid => $what)
 		{
 			if($what == "accept")
 			{
@@ -219,7 +219,7 @@ elseif($mybb->input['action'] == "joinrequests")
 	{
 		error($lang->no_requests);
 	}
-	$lang->join_requests = $lang->sprintf($lang->join_requests_title,htmlspecialchars_uni($usergroup['title']));
+	$lang->join_requests = $lang->sprintf($lang->join_requests_title, htmlspecialchars_uni($usergroup['title']));
 
 	$plugins->run_hooks("managegroup_joinrequests_end");
 
@@ -238,9 +238,9 @@ elseif($mybb->input['action'] == "do_manageusers" && $mybb->request_method == "p
 
 	$plugins->run_hooks("managegroup_do_manageusers_start");
 
-	if(is_array($mybb->get_input('removeuser', 2)))
+	if(is_array($mybb->get_input('removeuser', MyBB::INPUT_ARRAY)))
 	{
-		foreach($mybb->get_input('removeuser', 2) as $uid)
+		foreach($mybb->get_input('removeuser', MyBB::INPUT_ARRAY) as $uid)
 		{
 			leave_usergroup($uid, $gid);
 		}
@@ -258,9 +258,9 @@ else
 {
 	$plugins->run_hooks("managegroup_start");
 
-	$lang->members_of = $lang->sprintf($lang->members_of, $usergroup['title']);
-	$lang->add_member = $lang->sprintf($lang->add_member, $usergroup['title']);
-	$lang->invite_member = $lang->sprintf($lang->invite_member, $usergroup['title']);
+	$lang->members_of = $lang->sprintf($lang->members_of, htmlspecialchars_uni($usergroup['title']));
+	$lang->add_member = $lang->sprintf($lang->add_member, htmlspecialchars_uni($usergroup['title']));
+	$lang->invite_member = $lang->sprintf($lang->invite_member, htmlspecialchars_uni($usergroup['title']));
 	$joinrequests = '';
 	if($usergroup['type'] == 5)
 	{
@@ -299,6 +299,9 @@ else
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=g.uid)
 		WHERE g.gid = '{$gid}'
 	");
+
+	$leaders_array = array();
+
 	if($db->num_rows($query))
 	{
 		$loop = 1;
@@ -308,6 +311,8 @@ else
 		{
 			$leader_name = format_name(htmlspecialchars_uni($leader['username']), $leader['usergroup'], $leader['displaygroup']);
 			$leader_profile_link = build_profile_link($leader_name, $leader['uid']);
+
+			$leaders_array[] = $leader['uid'];
 
 			// Get commas...
 			if($loop != $leader_count)
@@ -337,15 +342,17 @@ else
 	}
 
 	$numusers = $db->num_rows($query);
-	/*if(!$numusers && !$numrequests)
+
+	$perpage = (int)$mybb->settings['membersperpage'];
+	if($perpage < 1)
 	{
-		error($lang->group_no_members);
-	}*/
-	$perpage = $mybb->settings['membersperpage'];
-	$page = $mybb->get_input('page', 1);
+		$perpage = 20;
+	}
+
+	$page = $mybb->get_input('page', MyBB::INPUT_INT);
 	if($page && $page > 0)
 	{
-		$start = ($page-1) *$perpage;
+		$start = ($page-1) * $perpage;
 	}
 	else
 	{
@@ -353,6 +360,17 @@ else
 		$page = 1;
 	}
 	$multipage = multipage($numusers, $perpage, $page, "managegroup.php?gid=".$gid);
+
+	switch($db->type)
+	{
+		case "pgsql":
+		case "sqlite":
+			$query = $db->simple_select("users", "*", "','||additionalgroups||',' LIKE '%,{$gid},%' OR usergroup='{$gid}'", array('order_by' => 'username', 'limit' => $perpage, 'limit_start' => $start));
+			break;
+		default:
+			$query = $db->simple_select("users", "*", "CONCAT(',',additionalgroups,',') LIKE '%,{$gid},%' OR usergroup='{$gid}'", array('order_by' => 'username', 'limit' => $perpage, 'limit_start' => $start));
+	}
+
 	$users = "";
 	while($user = $db->fetch_array($query))
 	{
@@ -373,11 +391,10 @@ else
 		{
 			$email = '';
 		}
-		$query1 = $db->simple_select("groupleaders", "uid", "uid='{$user['uid']}' AND gid='{$gid}'");
-		$isleader = $db->fetch_array($query1);
+
 		$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 		$user['profilelink'] = build_profile_link($user['username'], $user['uid']);
-		if($isleader['uid'])
+		if(in_array($user['uid'], $leaders_array))
 		{
 			$leader = $lang->leader;
 		}

@@ -56,7 +56,7 @@ if($mybb->input['action'] == "prune" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "view")
 {
-	$query = $db->simple_select("mailerrors", "*", "eid='".(int)$mybb->input['eid']."'");
+	$query = $db->simple_select("mailerrors", "*", "eid='".$mybb->get_input('eid', MyBB::INPUT_INT)."'");
 	$log = $db->fetch_array($query);
 
 	if(!$log['eid'])
@@ -137,7 +137,7 @@ if(!$mybb->input['action'])
 
 	if($mybb->input['page'] && $mybb->input['page'] > 1)
 	{
-		$mybb->input['page'] = $mybb->get_input('page', 1);
+		$mybb->input['page'] = $mybb->get_input('page', MyBB::INPUT_INT);
 		$start = ($mybb->input['page']*$per_page)-$per_page;
 	}
 	else
@@ -166,28 +166,28 @@ if(!$mybb->input['action'])
 	if($mybb->input['subject'])
 	{
 		$additional_sql_criteria .= " AND subject LIKE '%".$db->escape_string_like($mybb->input['subject'])."%'";
-		$additional_criteria[] = "subject='".htmlspecialchars_uni($mybb->input['subject'])."'";
+		$additional_criteria[] = "subject=".htmlspecialchars_uni($mybb->input['subject']);
 		$form->generate_hidden_field("subject", $mybb->input['subject']);
 	}
 
 	if($mybb->input['fromaddress'])
 	{
 		$additional_sql_criteria .= " AND fromaddress LIKE '%".$db->escape_string_like($mybb->input['fromaddress'])."%'";
-		$additional_criteria[] = "fromaddress='".urlencode($mybb->input['fromaddress'])."'";
+		$additional_criteria[] = "fromaddress=".urlencode($mybb->input['fromaddress']);
 		$form->generate_hidden_field("fromaddress", $mybb->input['fromaddress']);
 	}
 
 	if($mybb->input['toaddress'])
 	{
 		$additional_sql_criteria .= " AND toaddress LIKE '%".$db->escape_string_like($mybb->input['toaddress'])."%'";
-		$additional_criteria[] = "toaddress='".urlencode($mybb->input['toaddress'])."'";
+		$additional_criteria[] = "toaddress=".urlencode($mybb->input['toaddress']);
 		$form->generate_hidden_field("toaddress", $mybb->input['toaddress']);
 	}
 
 	if($mybb->input['error'])
 	{
 		$additional_sql_criteria .= " AND error LIKE '%".$db->escape_string_like($mybb->input['error'])."%'";
-		$additional_criteria[] = "error='".urlencode($mybb->input['error'])."'";
+		$additional_criteria[] = "error=".urlencode($mybb->input['error']);
 		$form->generate_hidden_field("error", $mybb->input['error']);
 	}
 
@@ -195,21 +195,20 @@ if(!$mybb->input['action'])
 	{
 		$additional_criteria = "&amp;".implode("&amp;", $additional_criteria);
 	}
+	else
+	{
+		$additional_criteria = '';
+	}
 
 	$table = new Table;
-	$table->construct_header($form->generate_check_box("checkall", 1, '', array('class' => 'checkall')));
+	$table->construct_header($form->generate_check_box("allbox", 1, '', array('class' => 'checkall')));
 	$table->construct_header($lang->subject);
 	$table->construct_header($lang->to, array("class" => "align_center", "width" => "20%"));
 	$table->construct_header($lang->error_message, array("class" => "align_center", "width" => "30%"));
 	$table->construct_header($lang->date_sent, array("class" => "align_center", "width" => "20%"));
-
-	$query = $db->query("
-		SELECT *
-		FROM ".TABLE_PREFIX."mailerrors
-		WHERE 1=1 {$additional_sql_criteria}
-		ORDER BY dateline DESC
-		LIMIT {$start}, {$per_page}
-	");
+	
+	$query = $db->simple_select('mailerrors', '*', "1=1 $additional_sql_criteria", array('order_by' => 'dateline', 'order_dir' => 'DESC', 'limit_start' => $start, 'limit' => $per_page));
+	
 	while($log = $db->fetch_array($query))
 	{
 		$log['subject'] = htmlspecialchars_uni($log['subject']);
@@ -262,4 +261,3 @@ if(!$mybb->input['action'])
 
 	$page->output_footer();
 }
-?>

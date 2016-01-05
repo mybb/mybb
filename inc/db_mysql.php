@@ -8,7 +8,7 @@
  *
  */
 
-class DB_MySQL
+class DB_MySQL implements DB_Base
 {
 	/**
 	 * The title of this layer.
@@ -72,6 +72,13 @@ class DB_MySQL
 	 * @var resource
 	 */
 	public $current_link;
+
+	/**
+	 * The database name.
+	 *
+	 * @var string
+	 */
+	public $database;
 
 	/**
 	 * Explanation of a query.
@@ -140,7 +147,7 @@ class DB_MySQL
 	/**
 	 * Connect to the database server.
 	 *
-	 * @param array Array of DBMS connection details.
+	 * @param array $config Array of DBMS connection details.
 	 * @return resource The DB connection resource. Returns false on fail or -1 on a db connect failure.
 	 */
 	function connect($config)
@@ -254,12 +261,12 @@ class DB_MySQL
 	/**
 	 * Selects the database to use.
 	 *
-	 * @param string The database name.
+	 * @param string $database The database name.
 	 * @return boolean True when successfully connected, false if not.
 	 */
 	function select_db($database)
 	{
-		global $mybb;
+		$this->database = $database;
 
 		$this->current_link = &$this->read_link;
 		$read_success = @mysql_select_db($database, $this->read_link) or $this->error("[READ] Unable to select database", $this->read_link);
@@ -302,14 +309,14 @@ class DB_MySQL
 	/**
 	 * Query the database.
 	 *
-	 * @param string The query SQL.
-	 * @param integer 1 if hide errors, 0 if not.
-	 * @param integer 1 if executes on master database, 0 if not.
+	 * @param string $string The query SQL.
+	 * @param integer $hide_errors 1 if hide errors, 0 if not.
+	 * @param integer $write_query 1 if executes on master database, 0 if not.
 	 * @return resource The query data.
 	 */
 	function query($string, $hide_errors=0, $write_query=0)
 	{
-		global $pagestarttime, $db, $mybb;
+		global $mybb;
 
 		get_execution_time();
 
@@ -355,8 +362,8 @@ class DB_MySQL
 	/**
 	 * Execute a write query on the master database
 	 *
-	 * @param string The query SQL.
-	 * @param boolean 1 if hide errors, 0 if not.
+	 * @param string $query The query SQL.
+	 * @param boolean|int $hide_errors 1 if hide errors, 0 if not.
 	 * @return resource The query data.
 	 */
 	function write_query($query, $hide_errors=0)
@@ -367,8 +374,8 @@ class DB_MySQL
 	/**
 	 * Explain a query on the database.
 	 *
-	 * @param string The query SQL.
-	 * @param string The time it took to perform the query.
+	 * @param string $string The query SQL.
+	 * @param string $qtime The time it took to perform the query.
 	 */
 	function explain_query($string, $qtime)
 	{
@@ -444,8 +451,8 @@ class DB_MySQL
 	/**
 	 * Return a result array for a query.
 	 *
-	 * @param resource The query ID.
-	 * @param constant The type of array to return.
+	 * @param resource $query The query ID.
+	 * @param int $resulttype The type of array to return. Either MYSQL_NUM, MYSQL_BOTH or MYSQL_ASSOC
 	 * @return array The array of results.
 	 */
 	function fetch_array($query, $resulttype=MYSQL_ASSOC)
@@ -468,9 +475,10 @@ class DB_MySQL
 	/**
 	 * Return a specific field from a query.
 	 *
-	 * @param resource The query ID.
-	 * @param string The name of the field to return.
-	 * @param int The number of the row to fetch it from.
+	 * @param resource $query The query ID.
+	 * @param string $field The name of the field to return.
+	 * @param int|bool $row The number of the row to fetch it from.
+	 * @return mixed
 	 */
 	function fetch_field($query, $field, $row=false)
 	{
@@ -488,8 +496,9 @@ class DB_MySQL
 	/**
 	 * Moves internal row pointer to the next row
 	 *
-	 * @param resource The query ID.
-	 * @param int The pointer to move the row to.
+	 * @param resource $query The query ID.
+	 * @param int $row The pointer to move the row to.
+	 * @return bool
 	 */
 	function data_seek($query, $row)
 	{
@@ -499,7 +508,7 @@ class DB_MySQL
 	/**
 	 * Return the number of rows resulting from a query.
 	 *
-	 * @param resource The query ID.
+	 * @param resource $query The query ID.
 	 * @return int The number of rows in the result.
 	 */
 	function num_rows($query)
@@ -567,7 +576,8 @@ class DB_MySQL
 	/**
 	 * Output a database error.
 	 *
-	 * @param string The string to present as an error.
+	 * @param string $string The string to present as an error.
+	 * @return bool Returns false if error reporting is disabled, otherwise true
 	 */
 	function error($string="")
 	{
@@ -594,6 +604,8 @@ class DB_MySQL
 			{
 				trigger_error("<strong>[SQL] [".$this->error_number()."] ".$this->error_string()."</strong><br />{$string}", E_USER_ERROR);
 			}
+
+			return true;
 		}
 		else
 		{
@@ -614,7 +626,7 @@ class DB_MySQL
 	/**
 	 * Return the number of fields.
 	 *
-	 * @param resource The query ID.
+	 * @param resource $query The query ID.
 	 * @return int The number of fields.
 	 */
 	function num_fields($query)
@@ -623,21 +635,35 @@ class DB_MySQL
 	}
 
 	/**
-	 * Lists all functions in the database.
+	 * Lists all tables in the database.
 	 *
-	 * @param string The database name.
-	 * @param string Prefix of the table (optional)
+	 * @param string $database The database name.
+	 * @param string $prefix Prefix of the table (optional)
 	 * @return array The table list.
 	 */
 	function list_tables($database, $prefix='')
 	{
 		if($prefix)
 		{
-			$query = $this->query("SHOW TABLES FROM `$database` LIKE '".$this->escape_string($prefix)."%'");
+			if(version_compare($this->get_version(), '5.0.2', '>='))
+			{
+				$query = $this->query("SHOW FULL TABLES FROM `$database` WHERE table_type = 'BASE TABLE' AND `Tables_in_$database` LIKE '".$this->escape_string($prefix)."%'");
+			}
+			else
+			{
+				$query = $this->query("SHOW TABLES FROM `$database` LIKE '".$this->escape_string($prefix)."%'");
+			}
 		}
 		else
 		{
-			$query = $this->query("SHOW TABLES FROM `$database`");
+			if(version_compare($this->get_version(), '5.0.2', '>='))
+			{
+				$query = $this->query("SHOW FULL TABLES FROM `$database` WHERE table_type = 'BASE TABLE'");
+			}
+			else
+			{
+				$query = $this->query("SHOW TABLES FROM `$database`");
+			}
 		}
 
 		$tables = array();
@@ -652,16 +678,21 @@ class DB_MySQL
 	/**
 	 * Check if a table exists in a database.
 	 *
-	 * @param string The table name.
+	 * @param string $table The table name.
 	 * @return boolean True when exists, false if not.
 	 */
 	function table_exists($table)
 	{
 		// Execute on master server to ensure if we've just created a table that we get the correct result
-		$query = $this->write_query("
-			SHOW TABLES
-			LIKE '{$this->table_prefix}$table'
-		");
+		if(version_compare($this->get_version(), '5.0.2', '>='))
+		{
+			$query = $this->query("SHOW FULL TABLES FROM `".$this->database."` WHERE table_type = 'BASE TABLE' AND `Tables_in_".$this->database."` = '{$this->table_prefix}$table'");
+		}
+		else
+		{
+			$query = $this->query("SHOW TABLES LIKE '{$this->table_prefix}$table'");
+		}
+
 		$exists = $this->num_rows($query);
 		if($exists > 0)
 		{
@@ -676,8 +707,8 @@ class DB_MySQL
 	/**
 	 * Check if a field exists in a database.
 	 *
-	 * @param string The field name.
-	 * @param string The table name.
+	 * @param string $field The field name.
+	 * @param string $table The table name.
 	 * @return boolean True when exists, false if not.
 	 */
 	function field_exists($field, $table)
@@ -701,10 +732,10 @@ class DB_MySQL
 	/**
 	 * Add a shutdown query.
 	 *
-	 * @param resource The query data.
-	 * @param string An optional name for the query.
+	 * @param resource $query The query data.
+	 * @param string $name An optional name for the query.
 	 */
-	function shutdown_query($query, $name=0)
+	function shutdown_query($query, $name="")
 	{
 		global $shutdown_queries;
 		if($name)
@@ -719,10 +750,10 @@ class DB_MySQL
 	/**
 	 * Performs a simple select query.
 	 *
-	 * @param string The table name to be queried.
-	 * @param string Comma delimetered list of fields to be selected.
-	 * @param string SQL formatted list of conditions to be matched.
-	 * @param array List of options: group by, order by, order direction, limit, limit start.
+	 * @param string $table The table name to be queried.
+	 * @param string $fields Comma delimetered list of fields to be selected.
+	 * @param string $conditions SQL formatted list of conditions to be matched.
+	 * @param array $options List of options: group by, order by, order direction, limit, limit start.
 	 * @return resource The query data.
 	 */
 	function simple_select($table, $fields="*", $conditions="", $options=array())
@@ -762,8 +793,8 @@ class DB_MySQL
 	/**
 	 * Build an insert query from an array.
 	 *
-	 * @param string The table name to perform the query on.
-	 * @param array An array of fields and their values.
+	 * @param string $table The table name to perform the query on.
+	 * @param array $array An array of fields and their values.
 	 * @return int The insert ID if available
 	 */
 	function insert_query($table, $array)
@@ -788,7 +819,7 @@ class DB_MySQL
 			}
 			else
 			{
-				$array[$field] = "'{$value}'";
+				$array[$field] = $this->quote_val($value);
 			}
 		}
 
@@ -805,9 +836,9 @@ class DB_MySQL
 	/**
 	 * Build one query for multiple inserts from a multidimensional array.
 	 *
-	 * @param string The table name to perform the query on.
-	 * @param array An array of inserts.
-	 * @return int The insert ID if available
+	 * @param string $table The table name to perform the query on.
+	 * @param array $array An array of inserts.
+	 * @return void
 	 */
 	function insert_query_multiple($table, $array)
 	{
@@ -815,8 +846,9 @@ class DB_MySQL
 
 		if(!is_array($array))
 		{
-			return false;
+			return;
 		}
+
 		// Field names
 		$fields = array_keys($array[0]);
 		$fields = "`".implode("`,`", $fields)."`";
@@ -837,7 +869,7 @@ class DB_MySQL
 				}
 				else
 				{
-					$values[$field] = "'{$value}'";
+					$values[$field] = $this->quote_val($value);
 				}
 			}
 			$insert_rows[] = "(".implode(",", $values).")";
@@ -854,11 +886,11 @@ class DB_MySQL
 	/**
 	 * Build an update query from an array.
 	 *
-	 * @param string The table name to perform the query on.
-	 * @param array An array of fields and their values.
-	 * @param string An optional where clause for the query.
-	 * @param string An optional limit clause for the query.
-	 * @param boolean An option to quote incoming values of the array.
+	 * @param string $table The table name to perform the query on.
+	 * @param array $array An array of fields and their values.
+	 * @param string $where An optional where clause for the query.
+	 * @param string $limit An optional limit clause for the query.
+	 * @param boolean $no_quote An option to quote incoming values of the array.
 	 * @return resource The query data.
 	 */
 	function update_query($table, $array, $where="", $limit="", $no_quote=false)
@@ -892,14 +924,9 @@ class DB_MySQL
 			}
 			else
 			{
-				if(is_numeric($value))
-				{
-					$query .= $comma."`".$field."`={$value}";
-				}
-				else
-				{
-					$query .= $comma."`".$field."`={$quote}{$value}{$quote}";
-				}
+				$quoted_val = $this->quote_val($value, $quote);
+
+				$query .= $comma."`".$field."`={$quoted_val}";
 			}
 			$comma = ', ';
 		}
@@ -921,11 +948,31 @@ class DB_MySQL
 	}
 
 	/**
+	 * @param int|string $value
+	 * @param string $quote
+	 *
+	 * @return int|string
+	 */
+	private function quote_val($value, $quote="'")
+	{
+		if(is_int($value))
+		{
+			$quoted = $value;
+		}
+		else
+		{
+			$quoted = $quote . $value . $quote;
+		}
+
+		return $quoted;
+	}
+
+	/**
 	 * Build a delete query.
 	 *
-	 * @param string The table name to perform the query on.
-	 * @param string An optional where clause for the query.
-	 * @param string An optional limit clause for the query.
+	 * @param string $table The table name to perform the query on.
+	 * @param string $where An optional where clause for the query.
+	 * @param string $limit An optional limit clause for the query.
 	 * @return resource The query data.
 	 */
 	function delete_query($table, $where="", $limit="")
@@ -951,7 +998,7 @@ class DB_MySQL
 	/**
 	 * Escape a string according to the MySQL escape format.
 	 *
-	 * @param string The string to be escaped.
+	 * @param string $string The string to be escaped.
 	 * @return string The escaped string.
 	 */
 	function escape_string($string)
@@ -979,7 +1026,7 @@ class DB_MySQL
 	/**
 	 * Frees the resources of a MySQLi query.
 	 *
-	 * @param object The query to destroy.
+	 * @param resource $query The query to destroy.
 	 * @return boolean Returns true on success, false on faliure
 	 */
 	function free_result($query)
@@ -990,7 +1037,7 @@ class DB_MySQL
 	/**
 	 * Escape a string used within a like command.
 	 *
-	 * @param string The string to be escaped.
+	 * @param string $string The string to be escaped.
 	 * @return string The escaped string.
 	 */
 	function escape_string_like($string)
@@ -1029,7 +1076,7 @@ class DB_MySQL
 	/**
 	 * Optimizes a specific table.
 	 *
-	 * @param string The name of the table to be optimized.
+	 * @param string $table The name of the table to be optimized.
 	 */
 	function optimize_table($table)
 	{
@@ -1039,7 +1086,7 @@ class DB_MySQL
 	/**
 	 * Analyzes a specific table.
 	 *
-	 * @param string The name of the table to be analyzed.
+	 * @param string $table The name of the table to be analyzed.
 	 */
 	function analyze_table($table)
 	{
@@ -1049,7 +1096,7 @@ class DB_MySQL
 	/**
 	 * Show the "create table" command for a specific table.
 	 *
-	 * @param string The name of the table.
+	 * @param string $table The name of the table.
 	 * @return string The MySQL command to create the specified table.
 	 */
 	function show_create_table($table)
@@ -1062,12 +1109,13 @@ class DB_MySQL
 	/**
 	 * Show the "show fields from" command for a specific table.
 	 *
-	 * @param string The name of the table.
-	 * @return string Field info for that table
+	 * @param string $table The name of the table.
+	 * @return array Field info for that table
 	 */
 	function show_fields_from($table)
 	{
 		$query = $this->write_query("SHOW FIELDS FROM {$this->table_prefix}{$table}");
+		$field_info = array();
 		while($field = $this->fetch_array($query))
 		{
 			$field_info[] = $field;
@@ -1078,8 +1126,8 @@ class DB_MySQL
 	/**
 	 * Returns whether or not the table contains a fulltext index.
 	 *
-	 * @param string The name of the table.
-	 * @param string Optionally specify the name of the index.
+	 * @param string $table The name of the table.
+	 * @param string $index Optionally specify the name of the index.
 	 * @return boolean True or false if the table has a fulltext index or not.
 	 */
 	function is_fulltext($table, $index="")
@@ -1106,7 +1154,7 @@ class DB_MySQL
 	/**
 	 * Returns whether or not this database engine supports fulltext indexing.
 	 *
-	 * @param string The table to be checked.
+	 * @param string $table The table to be checked.
 	 * @return boolean True or false if supported or not.
 	 */
 
@@ -1137,8 +1185,9 @@ class DB_MySQL
 	/**
 	 * Checks to see if an index exists on a specified table
 	 *
-	 * @param string The name of the table.
-	 * @param string The name of the index.
+	 * @param string $table The name of the table.
+	 * @param string $index The name of the index.
+	 * @return bool Whether or not the index exists in that table
 	 */
 	function index_exists($table, $index)
 	{
@@ -1164,7 +1213,7 @@ class DB_MySQL
 	/**
 	 * Returns whether or not this database engine supports boolean fulltext matching.
 	 *
-	 * @param string The table to be checked.
+	 * @param string $table The table to be checked.
 	 * @return boolean True or false if supported or not.
 	 */
 	function supports_fulltext_boolean($table)
@@ -1181,9 +1230,9 @@ class DB_MySQL
 	/**
 	 * Creates a fulltext index on the specified column in the specified table with optional index name.
 	 *
-	 * @param string The name of the table.
-	 * @param string Name of the column to be indexed.
-	 * @param string The index name, optional.
+	 * @param string $table The name of the table.
+	 * @param string $column Name of the column to be indexed.
+	 * @param string $name The index name, optional.
 	 */
 	function create_fulltext_index($table, $column, $name="")
 	{
@@ -1196,8 +1245,8 @@ class DB_MySQL
 	/**
 	 * Drop an index with the specified name from the specified table
 	 *
-	 * @param string The name of the table.
-	 * @param string The name of the index.
+	 * @param string $table The name of the table.
+	 * @param string $name The name of the index.
 	 */
 	function drop_index($table, $name)
 	{
@@ -1210,8 +1259,9 @@ class DB_MySQL
 	/**
 	 * Drop an table with the specified table
 	 *
-	 * @param boolean hard drop - no checking
-	 * @param boolean use table prefix
+	 * @param string $table The table to drop
+	 * @param boolean $hard hard drop - no checking
+	 * @param boolean $table_prefix use table prefix
 	 */
 	function drop_table($table, $hard=false, $table_prefix=true)
 	{
@@ -1237,9 +1287,10 @@ class DB_MySQL
 	/**
 	 * Renames a table
 	 *
-	 * @param string The old table name
-	 * @param string the new table name
-	 * @param boolean use table prefix
+	 * @param string $old_table The old table name
+	 * @param string $new_table the new table name
+	 * @param boolean $table_prefix use table prefix
+	 * @return resource
 	 */
 	function rename_table($old_table, $new_table, $table_prefix=true)
 	{
@@ -1258,8 +1309,9 @@ class DB_MySQL
 	/**
 	 * Replace contents of table with values
 	 *
-	 * @param string The table
-	 * @param array The replacements
+	 * @param string $table The table
+	 * @param array $replacements The replacements
+	 * @return resource|bool
 	 */
 	function replace_query($table, $replacements=array())
 	{
@@ -1280,7 +1332,7 @@ class DB_MySQL
 			}
 			else
 			{
-				$values .= $comma."`".$column."`='".$value."'";
+				$values .= $comma."`".$column."`=".$this->quote_val($value);
 			}
 
 			$comma = ',';
@@ -1297,8 +1349,9 @@ class DB_MySQL
 	/**
 	 * Drops a column
 	 *
-	 * @param string The table
-	 * @param string The column name
+	 * @param string $table The table
+	 * @param string $column The column name
+	 * @return resource
 	 */
 	function drop_column($table, $column)
 	{
@@ -1308,9 +1361,10 @@ class DB_MySQL
 	/**
 	 * Adds a column
 	 *
-	 * @param string The table
-	 * @param string The column name
-	 * @param string the new column definition
+	 * @param string $table The table
+	 * @param string $column The column name
+	 * @param string $definition the new column definition
+	 * @return resource
 	 */
 	function add_column($table, $column, $definition)
 	{
@@ -1320,9 +1374,10 @@ class DB_MySQL
 	/**
 	 * Modifies a column
 	 *
-	 * @param string The table
-	 * @param string The column name
-	 * @param string the new column definition
+	 * @param string $table The table
+	 * @param string $column The column name
+	 * @param string $new_definition the new column definition
+	 * @return resource
 	 */
 	function modify_column($table, $column, $new_definition)
 	{
@@ -1332,10 +1387,11 @@ class DB_MySQL
 	/**
 	 * Renames a column
 	 *
-	 * @param string The table
-	 * @param string The old column name
-	 * @param string the new column name
-	 * @param string the new column definition
+	 * @param string $table The table
+	 * @param string $old_column The old column name
+	 * @param string $new_column the new column name
+	 * @param string $new_definition the new column definition
+	 * @return resource
 	 */
 	function rename_column($table, $old_column, $new_column, $new_definition)
 	{
@@ -1345,7 +1401,7 @@ class DB_MySQL
 	/**
 	 * Sets the table prefix used by the simple select, insert, update and delete functions
 	 *
-	 * @param string The new table prefix
+	 * @param string $prefix The new table prefix
 	 */
 	function set_table_prefix($prefix)
 	{
@@ -1355,7 +1411,7 @@ class DB_MySQL
 	/**
 	 * Fetched the total size of all mysql tables or a specific table
 	 *
-	 * @param string The table (optional)
+	 * @param string $table The table (optional)
 	 * @return integer the total size of all mysql tables or a specific table
 	 */
 	function fetch_size($table='')
@@ -1379,7 +1435,7 @@ class DB_MySQL
 	/**
 	 * Fetch a list of database character sets this DBMS supports
 	 *
-	 * @return array Array of supported character sets with array key being the name, array value being display name. False if unsupported
+	 * @return array|bool Array of supported character sets with array key being the name, array value being display name. False if unsupported
 	 */
 	function fetch_db_charsets()
 	{
@@ -1393,7 +1449,7 @@ class DB_MySQL
 			'cp850' => 'DOS West European',
 			'hp8' => 'HP West European',
 			'koi8r' => 'KOI8-R Relcom Russian',
-			'latin1' => 'cp1252 West European',
+			'latin1' => 'ISO 8859-1 Latin 1',
 			'latin2' => 'ISO 8859-2 Central European',
 			'swe7' => '7bit Swedish',
 			'ascii' => 'US ASCII',
@@ -1431,8 +1487,8 @@ class DB_MySQL
 	/**
 	 * Fetch a database collation for a particular database character set
 	 *
-	 * @param string The database character set
-	 * @return string The matching database collation, false if unsupported
+	 * @param string  $charset The database character set
+	 * @return string|bool The matching database collation, false if unsupported
 	 */
 	function fetch_charset_collation($charset)
 	{
@@ -1515,7 +1571,7 @@ class DB_MySQL
 	/**
 	 * Binary database fields require special attention.
 	 *
-	 * @param string Binary value
+	 * @param string $string Binary value
 	 * @return string Encoded binary value
 	 */
 	function escape_binary($string)
@@ -1526,7 +1582,7 @@ class DB_MySQL
 	/**
 	 * Unescape binary data.
 	 *
-	 * @param string Binary value
+	 * @param string $string Binary value
 	 * @return string Encoded binary value
 	 */
 	function unescape_binary($string)

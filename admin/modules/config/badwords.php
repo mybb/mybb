@@ -81,7 +81,7 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "delete")
 {
-	$query = $db->simple_select("badwords", "*", "bid='".$mybb->get_input('bid', 1)."'");
+	$query = $db->simple_select("badwords", "*", "bid='".$mybb->get_input('bid', MyBB::INPUT_INT)."'");
 	$badword = $db->fetch_array($query);
 
 	// Does the bad word not exist?
@@ -122,7 +122,7 @@ if($mybb->input['action'] == "delete")
 
 if($mybb->input['action'] == "edit")
 {
-	$query = $db->simple_select("badwords", "*", "bid='".$mybb->get_input('bid', 1)."'");
+	$query = $db->simple_select("badwords", "*", "bid='".$mybb->get_input('bid', MyBB::INPUT_INT)."'");
 	$badword = $db->fetch_array($query);
 
 	// Does the bad word not exist?

@@ -475,7 +475,7 @@ if($mybb->input['action'] == "edit")
 				$plugins->run_hooks("admin_config_languages_edit_commit");
 
 				// Log admin action
-				log_admin_action($editlang, $editfile, (int)$mybb->input['inadmin']);
+				log_admin_action($editlang, $editfile, $mybb->get_input('inadmin', MyBB::INPUT_INT));
 
 				flash_message($lang->success_langfile_updated, 'success');
 				admin_redirect("index.php?module=config-languages&action=edit&lang={$editlang}&editwith={$editwith}");
@@ -529,10 +529,10 @@ if($mybb->input['action'] == "edit")
 		$page->output_nav_tabs($sub_tabs, "edit_language_variables");
 
 		$form = new Form("index.php?module=config-languages&amp;action=edit", "post", "edit");
-		echo $form->generate_hidden_field("file", $file);
+		echo $form->generate_hidden_field("file", htmlspecialchars_uni($file));
 		echo $form->generate_hidden_field("lang", $editlang);
 		echo $form->generate_hidden_field("editwith", $editwith);
-		echo $form->generate_hidden_field("inadmin", (int)$mybb->input['inadmin']);
+		echo $form->generate_hidden_field("inadmin", $mybb->get_input('inadmin', MyBB::INPUT_INT));
 		if($errors)
 		{
 			$page->output_inline_error($errors);
@@ -546,7 +546,7 @@ if($mybb->input['action'] == "edit")
 			$page->output_alert($lang->alert_note_cannot_write);
 		}
 
-		$form_container = new FormContainer($file);
+		$form_container = new FormContainer(htmlspecialchars_uni($file));
 		if($editwithfile && $withvars)
 		{
 			// Editing with another file

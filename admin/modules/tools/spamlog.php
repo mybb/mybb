@@ -46,7 +46,7 @@ if($mybb->input['action'] == 'prune')
 			$is_today = true;
 			$mybb->input['older_than'] = 1;
 		}
-		$where = 'dateline < '.(TIME_NOW-((int)$mybb->input['older_than']*86400));
+		$where = 'dateline < '.(TIME_NOW-($mybb->get_input('older_than', MyBB::INPUT_INT)*86400));
 
 		// Searching for entries in a specific module
 		if($mybb->input['filter_username'])
@@ -97,7 +97,7 @@ if($mybb->input['action'] == 'prune')
 	{
 		$mybb->input['older_than'] = '30';
 	}
-	$form_container->output_row($lang->date_range, "", $lang->older_than.$form->generate_numeric_field('older_than', $mybb->input['older_than'], array('id' => 'older_than', 'style' => 'width: 30px'))." {$lang->days}", 'older_than');
+	$form_container->output_row($lang->date_range, "", $lang->older_than.$form->generate_numeric_field('older_than', $mybb->input['older_than'], array('id' => 'older_than', 'style' => 'width: 50px', 'min' => 0))." {$lang->days}", 'older_than');
 	$form_container->end();
 	$buttons[] = $form->generate_submit_button($lang->prune_spam_logs);
 	$form->output_submit_wrapper($buttons);
@@ -114,46 +114,60 @@ if(!$mybb->input['action'])
 
 	$page->output_nav_tabs($sub_tabs, 'spam_logs');
 	
-	$perpage = $mybb->get_input('perpage', 1);
+	$perpage = $mybb->get_input('perpage', MyBB::INPUT_INT);
 	if(!$perpage)
 	{
 		$perpage = 20;
 	}
 
-	$where = 'WHERE 1=1';
+	$where = '1=1';
+
+	$additional_criteria = array();
 
 	// Searching for entries witha  specific username
 	if($mybb->input['username'])
 	{
-		$where .= " AND l.username='".$db->escape_string($mybb->input['username'])."'";
+		$where .= " AND username='".$db->escape_string($mybb->input['username'])."'";
+		$additional_criteria[] = "username=".urlencode($mybb->input['username']);
 	}
 
 	// Searching for entries with a specific email
-	if($mybb->input['email'] > 0)
+	if($mybb->input['email'])
 	{
-		$where .= " AND l.email='".$db->escape_string($mybb->input['email'])."'";
+		$where .= " AND email='".$db->escape_string($mybb->input['email'])."'";
+		$additional_criteria[] = "email=".urlencode($mybb->input['email']);
 	}
 	
 	// Searching for entries with a specific IP
-	if($mybb->input['email'] > 0)
+	if($mybb->input['ipaddress'] > 0)
 	{
-		$where .= " AND l.ipaddress='".$db->escape_binary(my_inet_pton($mybb->input['ipaddress']))."'";
+		$where .= " AND ipaddress=".$db->escape_binary(my_inet_pton($mybb->input['ipaddress']));
+		$additional_criteria[] = "ipaddress=".urlencode($mybb->input['ipaddress']);
+	}
+
+	if($additional_criteria)
+	{
+		$additional_criteria = "&amp;".implode("&amp;", $additional_criteria);
+	}
+	else
+	{
+		$additional_criteria = '';
 	}
 
 	// Order?
 	switch($mybb->input['sortby'])
 	{
 		case "username":
-			$sortby = "l.username";
+			$sortby = "username";
 			break;
 		case "email":
-			$sortby = "l.email";
+			$sortby = "email";
 			break;
 		case "ipaddress":
-			$sortby = "l.ipaddress";
+			$sortby = "ipaddress";
 			break;
 		default:
-			$sortby = "l.dateline";
+			$sortby = "dateline";
 	}
 	$order = $mybb->input['order'];
 	if($order != "asc")
@@ -161,18 +175,13 @@ if(!$mybb->input['action'])
 		$order = "desc";
 	}
 
-	// Pagination stuff
-	$sql           = "
-		SELECT COUNT(sid) as count
-		FROM ".TABLE_PREFIX."spamlog
-		{$where};
-	";
+	$query = $db->simple_select("spamlog", "COUNT(sid) AS count", $where);
 	$rescount = $db->fetch_field($query, "count");
 
 	// Figure out if we need to display multiple pages.
 	if($mybb->input['page'] != "last")
 	{
-		$pagecnt = $mybb->get_input('page', 1);
+		$pagecnt = $mybb->get_input('page', MyBB::INPUT_INT);
 	}
 
 	$logcount = (int)$rescount;
@@ -198,18 +207,6 @@ if(!$mybb->input['action'])
 		$start = 0;
 		$pagecnt = 1;
 	}
-	
-	// Build the base URL for pagination links
-	$url = 'index.php?module=tools-spamlog';
-
-	// The actual query
-	$sql   = "
-		SELECT * FROM ".TABLE_PREFIX."spamlog l {$where}
-		ORDER BY {$sortby} {$order}
-		LIMIT {$start}, {$perpage}
-	";
-	$query = $db->query($sql);
-
 
 	$table = new Table;
 	$table->construct_header($lang->spam_username, array('width' => '20%'));
@@ -218,6 +215,7 @@ if(!$mybb->input['action'])
 	$table->construct_header($lang->spam_date, array("class" => "align_center", 'width' => '20%'));
 	$table->construct_header($lang->spam_confidence, array("class" => "align_center", 'width' => '20%'));
 
+	$query = $db->simple_select("spamlog", "*", $where, array('order_by' => $sortby, 'order_dir' => $order, 'limit_start' => $start, 'limit' => $perpage));
 	while($row = $db->fetch_array($query))
 	{
 		$username   = htmlspecialchars_uni($row['username']);
@@ -259,9 +257,9 @@ if(!$mybb->input['action'])
 	// Do we need to construct the pagination?
 	if($rescount > $perpage)
 	{
-		echo draw_admin_pagination($pagecnt, $perpage, $rescount, "index.php?module=tools-modlog&amp;perpage=$perpage&amp;uid={$mybb->input['uid']}&amp;fid={$mybb->input['fid']}&amp;sortby={$mybb->input['sortby']}&amp;order={$order}")."<br />";
+		echo draw_admin_pagination($pagecnt, $perpage, $rescount, "index.php?module=tools-spamlog&amp;perpage={$perpage}{$additional_criteria}&amp;sortby={$mybb->input['sortby']}&amp;order={$order}")."<br />";
 	}
-	
+
 	// Fetch filter options
 	$sortbysel[$mybb->input['sortby']] = "selected=\"selected\"";
 	$ordersel[$mybb->input['order']] = "selected=\"selected\"";
@@ -284,14 +282,12 @@ if(!$mybb->input['action'])
 	$form_container->output_row($lang->spam_email, "", $form->generate_text_box('email', $mybb->input['email'], array('id' => 'email')), 'email');
 	$form_container->output_row($lang->spam_ip, "", $form->generate_text_box('ipaddress', $mybb->input['ipaddress'], array('id' => 'ipaddress')), 'ipaddress');
 	$form_container->output_row($lang->sort_by, "", $form->generate_select_box('sortby', $sort_by, $mybb->input['sortby'], array('id' => 'sortby'))." {$lang->in} ".$form->generate_select_box('order', $order_array, $order, array('id' => 'order'))." {$lang->order}", 'order');
-	$form_container->output_row($lang->results_per_page, "", $form->generate_numeric_field('perpage', $perpage, array('id' => 'perpage')), 'perpage');
+	$form_container->output_row($lang->results_per_page, "", $form->generate_numeric_field('perpage', $perpage, array('id' => 'perpage', 'min' => 1)), 'perpage');
 
 	$form_container->end();
 	$buttons[] = $form->generate_submit_button($lang->filter_spam_logs);
 	$form->output_submit_wrapper($buttons);
 	$form->end();
-
-	$page->output_footer();
 
 	$page->output_footer();
 }

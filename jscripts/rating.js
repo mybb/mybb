@@ -34,11 +34,12 @@ var Rating = {
 
 	build_forumdisplay: function(tid, options)
 	{
-		if(!$("#rating_thread_"+tid))
+		var list = $("#rating_thread_"+tid);
+		if(!list.length)
 		{
 			return;
 		}
-		var list = $("#rating_thread_"+tid);
+		
 		list.addClass("star_rating")
 			.addClass(options.extra_class);
 

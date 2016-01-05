@@ -27,7 +27,7 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 		$errors[] = $lang->error_missing_ban_input;
 	}
 
-	$query = $db->simple_select("banfilters", "fid", "filter = '".$db->escape_string($mybb->input['filter'])."' AND type = '".$mybb->get_input('type', 1)."'");
+	$query = $db->simple_select("banfilters", "fid", "filter = '".$db->escape_string($mybb->input['filter'])."' AND type = '".$mybb->get_input('type', MyBB::INPUT_INT)."'");
 	if($db->num_rows($query))
 	{
 		$errors[] = $lang->error_filter_already_banned;
@@ -37,7 +37,7 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 	{
 		$new_filter = array(
 			"filter" => $db->escape_string($mybb->input['filter']),
-			"type" => $mybb->get_input('type', 1),
+			"type" => $mybb->get_input('type', MyBB::INPUT_INT),
 			"dateline" => TIME_NOW
 		);
 		$fid = $db->insert_query("banfilters", $new_filter);
@@ -54,7 +54,7 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 		}
 
 		// Log admin action
-		log_admin_action($fid, $mybb->input['filter'], $mybb->input['type']);
+		log_admin_action($fid, htmlspecialchars_uni($mybb->input['filter']), (int)$mybb->input['type']);
 
 		if($mybb->input['type'] == 1)
 		{
@@ -92,7 +92,7 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "delete")
 {
-	$query = $db->simple_select("banfilters", "*", "fid='".$mybb->get_input('fid', 1)."'");
+	$query = $db->simple_select("banfilters", "*", "fid='".$mybb->get_input('fid', MyBB::INPUT_INT)."'");
 	$filter = $db->fetch_array($query);
 
 	// Does the filter not exist?
@@ -131,7 +131,7 @@ if($mybb->input['action'] == "delete")
 		$plugins->run_hooks("admin_config_banning_delete_commit");
 
 		// Log admin action
-		log_admin_action($filter['fid'], $filter['filter'], $filter['type']);
+		log_admin_action($filter['fid'], htmlspecialchars_uni($filter['filter']), (int)$filter['type']);
 
 		// Banned IP? Rebuild banned IP cache
 		if($filter['type'] == 1)

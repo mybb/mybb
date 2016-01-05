@@ -84,7 +84,7 @@ function upgrade12_dbchanges()
 
 	$next_act = "12_dbchanges";
 
-	$start = (int)$mybb->input['start'];
+	$start = $mybb->get_input('start', MyBB::INPUT_INT);
 	$count = $mybb->input['count'];
 
 	foreach($to_int as $table => $columns)
@@ -1042,7 +1042,7 @@ function upgrade12_dbchanges4()
 			}
 		}
 
-		$db->update_query("adminoptions", array('permissions' => serialize($new_permissions)), "uid = '{$adminoption['uid']}'");
+		$db->update_query("adminoptions", array('permissions' => my_serialize($new_permissions)), "uid = '{$adminoption['uid']}'");
 
 		$new_permissions = $default_permissions;
 	}
@@ -1061,10 +1061,15 @@ function upgrade12_dbchanges4()
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminoptions DROP defaultviews");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminoptions ADD defaultviews TEXT NOT NULL");
-	$db->update_query("adminoptions", array('defaultviews' => serialize(array('user' => 1))));
+	$db->update_query("adminoptions", array('defaultviews' => my_serialize(array('user' => 1))));
 
-	require_once MYBB_ROOT."inc/functions_rebuild.php";
-	rebuild_stats();
+	$query = $db->simple_select("forums", "SUM(threads) AS numthreads, SUM(posts) AS numposts, SUM(unapprovedthreads) AS numunapprovedthreads, SUM(unapprovedposts) AS numunapprovedposts");
+	$stats = $db->fetch_array($query);
+
+	$query = $db->simple_select("users", "COUNT(uid) AS users");
+	$stats['numusers'] = $db->fetch_field($query, 'users');
+
+	update_stats($stats, true);
 
 	$contents = "Done</p>";
 	$contents .= "<p>Click next to continue with the upgrade process.</p>";
@@ -1264,8 +1269,8 @@ function upgrade12_dbchanges5()
 			"type" => $db->escape_string($view['attributes']['type']),
 			"visibility" => (int)$view['attributes']['visibility'],
 			"title" => $db->escape_string($view['title'][0]['value']),
-			"fields" => $db->escape_string(serialize($fields)),
-			"conditions" => $db->escape_string(serialize($conditions)),
+			"fields" => $db->escape_string(my_serialize($fields)),
+			"conditions" => $db->escape_string(my_serialize($conditions)),
 			"sortby" => $db->escape_string($view['sortby'][0]['value']),
 			"sortorder" => $db->escape_string($view['sortorder'][0]['value']),
 			"perpage" => (int)$view['perpage'][0]['value'],
@@ -1460,12 +1465,12 @@ function upgrade12_dbchanges6()
 	}
 	else
 	{
-		$ipp = $_POST['ipspage'];
+		$ipp = (int)$_POST['ipspage'];
 	}
 
 	if($_POST['ipstart'])
 	{
-		$startat = $_POST['ipstart'];
+		$startat = (int)$_POST['ipstart'];
 		$upper = $startat+$ipp;
 		$lower = $startat;
 	}
@@ -1532,12 +1537,12 @@ function upgrade12_dbchanges7()
 	}
 	else
 	{
-		$ipp = $_POST['ipspage'];
+		$ipp = (int)$_POST['ipspage'];
 	}
 
 	if($_POST['ipstart'])
 	{
-		$startat = $_POST['ipstart'];
+		$startat = (int)$_POST['ipstart'];
 		$upper = $startat+$ipp;
 		$lower = $startat;
 	}
@@ -1616,12 +1621,12 @@ function upgrade12_dbchanges8()
 	}
 	else
 	{
-		$epp = $_POST['eventspage'];
+		$epp = (int)$_POST['eventspage'];
 	}
 
 	if($_POST['eventstart'])
 	{
-		$startat = $_POST['eventstart'];
+		$startat = (int)$_POST['eventstart'];
 		$upper = $startat+$epp;
 		$lower = $startat;
 	}
@@ -1959,7 +1964,7 @@ function upgrade12_redothemes()
 		$stylesheets['global']['global'][] = $css_url;
 
 		// Update the theme
-		$db->update_query("themes", array("stylesheets" => $db->escape_string(serialize($stylesheets))), "tid='{$theme['tid']}'");
+		$db->update_query("themes", array("stylesheets" => $db->escape_string(my_serialize($stylesheets))), "tid='{$theme['tid']}'");
 	}
 
 	if($db->field_exists('css', "themes"))

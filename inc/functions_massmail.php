@@ -11,7 +11,7 @@
 /**
  * Build the mass email SQL query for the specified conditions.
  *
- * @param array Array of conditions to match users against.
+ * @param array $conditions Array of conditions to match users against.
  * @return string The generated search SQL
  */
 function build_mass_mail_query($conditions)
@@ -111,6 +111,7 @@ function build_mass_mail_query($conditions)
 
 		$conditions['usergroup'] = array_map('intval', $conditions['usergroup']);
 
+		$additional_sql = '';
 		foreach($conditions['usergroup'] as $usergroup)
 		{
 			switch($db->type)
@@ -132,7 +133,7 @@ function build_mass_mail_query($conditions)
 /**
  * Create a text based version of a HTML mass email.
  *
- * @param string The HTML version.
+ * @param string $message The HTML version.
  * @return string The generated text based version.
  */
 function create_text_message($message)
@@ -168,14 +169,14 @@ function create_text_message($message)
 /**
  * Generates friendly links for a text based version of a mass email from the HTML version.
  *
- * @param string The HTML version.
+ * @param string $message_html The HTML version.
  * @return string The version with the friendly links and all <a> tags stripped.
  */
 function make_pretty_links($message_html)
 {
 	do
 	{
-		$start = stripos($message_html, "<a", $offset);
+		$start = stripos($message_html, "<a");
 		if($start === false)
 		{
 			break;

@@ -90,26 +90,6 @@ class WarningsHandler extends DataHandler
 	}
 
 	/**
-	* Validate a warning thread.
-	*
-	* @return boolean True when valid, false when invalid.
-	*/
-	function validate_thread()
-	{
-		$warning = &$this->data;
-
-		$thread = get_thread($warning['tid']);
-
-		if(!$thread['tid'])
-		{
-			$this->set_error('error_invalid_post');
-			return false;
-		}
-
-		return true;
-	}
-
-	/**
 	* Validate a warning post.
 	*
 	* @return boolean True when valid, false when invalid.
@@ -124,11 +104,6 @@ class WarningsHandler extends DataHandler
 		{
 			$this->set_error('error_invalid_post');
 			return false;
-		}
-
-		if(!isset($warning['tid']))
-		{
-			$warning['tid'] = $post['tid'];
 		}
 
 		return true;
@@ -253,8 +228,9 @@ class WarningsHandler extends DataHandler
 			}
 
 			$warning['points'] = $this->warning_type['points'];
-
-			$warning['title'] = $warning['expires'] = '';
+			$warning['title'] = '';
+			$warning['expires'] = 0;
+			
 			if($this->warning_type['expirationtime'])
 			{
 				$warning['expires'] = TIME_NOW+$this->warning_type['expirationtime'];
@@ -283,7 +259,6 @@ class WarningsHandler extends DataHandler
 		if(array_key_exists('pid', $warning))
 		{
 			$this->validate_post();
-			$this->validate_thread();
 		}
 		if(array_key_exists('type', $warning))
 		{
@@ -306,7 +281,8 @@ class WarningsHandler extends DataHandler
 	/**
 	* Gets a valid warning from the DB engine.
 	*
-	* @return mixed array when valid, boolean false when invalid.
+	* @param int $wid
+	* @return array|bool array when valid, boolean false when invalid.
 	*/
 	function get($wid)
 	{
@@ -386,7 +362,17 @@ class WarningsHandler extends DataHandler
 	*/
 	function update_user($method='insert')
 	{
-		global $db, $mybb, $lang;
+		global $db, $mybb, $lang, $cache, $groupscache;
+
+		if($mybb->settings['maxwarningpoints'] < 1)
+		{
+			$mybb->settings['maxwarningpoints'] = 10;
+		}
+
+		if(!is_array($groupscache))
+		{
+			$groupscache = $cache->read("usergroups");
+		}
 
 		$warning = &$this->data;
 
@@ -478,11 +464,11 @@ class WarningsHandler extends DataHandler
 							}
 
 							$new_ban = array(
-								"uid" => (int)$user['uid'],
-								"gid" => $db->escape_string($action['usergroup']),
-								"oldgroup" => $db->escape_string($user['usergroup']),
-								"oldadditionalgroups" => $db->escape_string($user['additionalgroups']),
-								"olddisplaygroup" => $db->escape_string($user['displaygroup']),
+								"uid" => $user['uid'],
+								"gid" => $action['usergroup'],
+								"oldgroup" => $user['usergroup'],
+								"oldadditionalgroups" => $user['additionalgroups'],
+								"olddisplaygroup" => $user['displaygroup'],
 								"admin" => $mybb->user['uid'],
 								"dateline" => TIME_NOW,
 								"bantime" => $db->escape_string($bantime),
@@ -494,9 +480,9 @@ class WarningsHandler extends DataHandler
 							{
 								$db->delete_query("banned", "uid='{$user['uid']}' AND gid='{$action['usergroup']}'");
 								// Override new ban details with old group info
-								$new_ban['oldgroup'] = $db->escape_string($existing_ban['oldgroup']);
-								$new_ban['oldadditionalgroups'] = $db->escape_string($existing_ban['oldadditionalgroups']);
-								$new_ban['olddisplaygroup'] = $db->escape_string($existing_ban['olddisplaygroup']);
+								$new_ban['oldgroup'] = $existing_ban['oldgroup'];
+								$new_ban['oldadditionalgroups'] = $existing_ban['oldadditionalgroups'];
+								$new_ban['olddisplaygroup'] = $existing_ban['olddisplaygroup'];
 							}
 
 							$period = $lang->expiration_never;
@@ -513,7 +499,8 @@ class WarningsHandler extends DataHandler
 
 							$db->insert_query("banned", $new_ban);
 							$this->updated_user['usergroup'] = $action['usergroup'];
-							$this->updated_user['additionalgroups'] = $this->updated_user['displaygroup'] = "";
+							$this->updated_user['additionalgroups'] = '';
+							$this->updated_user['displaygroup'] = 0;
 						}
 						break;
 					// Suspend posting privileges
@@ -696,13 +683,13 @@ class WarningsHandler extends DataHandler
 
 		$this->write_warning_data = array(
 			"uid" => (int)$warning['uid'],
-			"tid" => (int)$warning['tid'],
+			"tid" => (int)$warning['type'],
 			"pid" => (int)$warning['pid'],
 			"title" => $db->escape_string($warning['title']),
 			"points" => (int)$warning['points'],
 			"dateline" => TIME_NOW,
-			"issuedby" => (int)$mybb->user['uid'],
-			"expires" => $db->escape_string($warning['expires']),
+			"issuedby" => $mybb->user['uid'],
+			"expires" => (int)$warning['expires'],
 			"expired" => 0,
 			"revokereason" => '',
 			"notes" => $db->escape_string($warning['notes'])

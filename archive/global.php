@@ -21,6 +21,8 @@ require_once MYBB_ROOT."inc/class_session.php";
 require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 
+$shutdown_queries = $shutdown_functions = array();
+
 $groupscache = $cache->read("usergroups");
 if(!is_array($groupscache))
 {
@@ -188,6 +190,11 @@ if($mybb->settings['boardclosed'] == 1)
 {
 	if($mybb->usergroup['canviewboardclosed'] != 1)
 	{
+		if(!$mybb->settings['boardclosed_reason'])
+		{
+			$mybb->settings['boardclosed_reason'] = $lang->boardclosed_reason;
+		}
+
 		$lang->error_boardclosed .= "<blockquote>".$mybb->settings['boardclosed_reason']."</blockquote>";
 		archive_error($lang->error_boardclosed);
 	}

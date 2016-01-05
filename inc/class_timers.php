@@ -104,6 +104,7 @@ class timer {
 			$this->formatted = $this->format($totaltime);
 			return $this->formatted;
 		}
+		return '';
 	}
 
 	/**
@@ -122,8 +123,8 @@ class timer {
 	/**
 	 * Formats the timer time in a pretty way.
 	 *
-	 * @param string The time string.
-	 * @return The formatted time string.
+	 * @param string $string The time string.
+	 * @return string The formatted time string.
 	 */
 	function format($string)
 	{

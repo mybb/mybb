@@ -66,7 +66,7 @@ var inlineEditor = {
 				
 				// We may click again in the textbox and we'd be adding a new (invalid) clone - we don't want that!
 				if(!$('#tid_' + tid + '_temp').length)
-					$(this).clone().attr('id','tid_' + tid + '_temp').css('display','none').appendTo("body");
+					$(this).clone().attr('id','tid_' + tid + '_temp').hide().appendTo("body");
 
 				inlineEditor.timeouts[tid] = setTimeout(inlineEditor.jeditableTimeout, 700, tid);
 			});

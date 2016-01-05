@@ -8,6 +8,14 @@
  *
  */
 
+/**
+ * @param int    $is_install
+ * @param string $prev_version
+ * @param string $current_version
+ * @param string $charset
+ *
+ * @return array
+ */
 function build_server_stats($is_install=1, $prev_version='', $current_version='', $charset='')
 {
 	$info = array();
@@ -278,7 +286,7 @@ function build_server_stats($is_install=1, $prev_version='', $current_version=''
 	{
 		$return['info_sent_success'] = true;
 	}
-	$return['info_image'] = "<img src='{$server_stats_url}&amp;img=1' />";
+	$return['info_image'] = "<img src='".$server_stats_url."&amp;img=1' />";
 	$return['info_get_string'] = $string;
 
 	return $return;

@@ -403,8 +403,8 @@ if($mybb->input['action'] == "add")
 	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
 	while($usergroup = $db->fetch_array($query))
 	{
-		$options[$usergroup['gid']] = $usergroup['title'];
-		$display_group_options[$usergroup['gid']] = $usergroup['title'];
+		$options[$usergroup['gid']] = htmlspecialchars_uni($usergroup['title']);
+		$display_group_options[$usergroup['gid']] = htmlspecialchars_uni($usergroup['title']);
 	}
 
 	$form_container->output_row($lang->primary_user_group." <em>*</em>", "", $form->generate_select_box('usergroup', $options, $mybb->input['usergroup'], array('id' => 'usergroup')), 'usergroup');
@@ -476,7 +476,7 @@ if($mybb->input['action'] == "edit")
 
 			$return_month = (int)substr($mybb->input['away_month'], 0, 2);
 			$return_day = (int)substr($mybb->input['away_day'], 0, 2);
-			$return_year = min((int)$mybb->input['away_year'], 9999);
+			$return_year = min($mybb->get_input('away_year', MyBB::INPUT_INT), 9999);
 
 			// Check if return date is after the away date.
 			$returntimestamp = gmmktime(0, 0, 0, $return_month, $return_day, $return_year);
@@ -522,9 +522,8 @@ if($mybb->input['action'] == "edit")
 			),
 			"style" => $mybb->input['style'],
 			"signature" => $mybb->input['signature'],
-			"dateformat" => (int)$mybb->input['dateformat'],
-			"timeformat" => (int)$mybb->input['timeformat'],
-			"language" => $mybb->input['language'],
+			"dateformat" => $mybb->get_input('dateformat', MyBB::INPUT_INT),
+			"timeformat" => $mybb->get_input('timeformat', MyBB::INPUT_INT),
 			"usernotes" => $mybb->input['usernotes'],
 			"away" => array(
 				"away" => $mybb->input['away'],
@@ -567,17 +566,19 @@ if($mybb->input['action'] == "edit")
 			"showcodebuttons" => $mybb->input['showcodebuttons'],
 			"sourceeditor" => $mybb->input['sourceeditor'],
 			"pmnotify" => $mybb->input['pmnotify'],
+			"buddyrequestspm" => $mybb->input['buddyrequestspm'],
+			"buddyrequestsauto" => $mybb->input['buddyrequestsauto'],
 			"showredirect" => $mybb->input['showredirect']
 		);
 
 		if($mybb->settings['usertppoptions'])
 		{
-			$updated_user['options']['tpp'] = (int)$mybb->input['tpp'];
+			$updated_user['options']['tpp'] = $mybb->get_input('tpp', MyBB::INPUT_INT);
 		}
 
 		if($mybb->settings['userpppoptions'])
 		{
-			$updated_user['options']['ppp'] = (int)$mybb->input['ppp'];
+			$updated_user['options']['ppp'] = $mybb->get_input('ppp', MyBB::INPUT_INT);
 		}
 
 		// Set the data of the user in the datahandler.
@@ -652,7 +653,6 @@ if($mybb->input['action'] == "edit")
 				else
 				{
 					$mybb->input['avatar_url'] = preg_replace("#script:#i", "", $mybb->input['avatar_url']);
-					$mybb->input['avatar_url'] = htmlspecialchars($mybb->input['avatar_url']);
 					$ext = get_extension($mybb->input['avatar_url']);
 
 					// Copy the avatar to the local server (work around remote URL access disabled for getimagesize)
@@ -830,6 +830,11 @@ if($mybb->input['action'] == "edit")
 
 				$plugins->run_hooks("admin_user_users_edit_commit");
 
+				if($user['usergroup'] == 5 && $mybb->input['usergroup'] != 5)
+				{
+					$cache->update_awaitingactivation();
+				}
+
 				// Log admin action
 				log_admin_action($user['uid'], $mybb->input['username']);
 
@@ -868,7 +873,7 @@ if($mybb->input['action'] == "edit")
 	{
 		$mybb->input['bday'][0] = $mybb->input['bday1'];
 		$mybb->input['bday'][1] = $mybb->input['bday2'];
-		$mybb->input['bday'][2] = (int)$mybb->input['bday3'];
+		$mybb->input['bday'][2] = $mybb->get_input('bday3', MyBB::INPUT_INT);
 	}
 	else
 	{
@@ -882,7 +887,7 @@ if($mybb->input['action'] == "edit")
 
 	if($mybb->input['away_day'] || $mybb->input['away_month'] || $mybb->input['away_year'])
 	{
-		$mybb->input['away_year'] = (int)$mybb->input['away_year'];
+		$mybb->input['away_year'] = $mybb->get_input('away_year', MyBB::INPUT_INT);
 	}
 	else
 	{
@@ -917,8 +922,9 @@ if($mybb->input['action'] == "edit")
 	$page->extra_header .= <<<EOF
 
 	<link rel="stylesheet" href="../jscripts/sceditor/editor_themes/mybb.css" type="text/css" media="all" />
-	<script type="text/javascript" src="../jscripts/sceditor/jquery.sceditor.bbcode.min.js"></script>
-	<script type="text/javascript" src="../jscripts/bbcodes_sceditor.js"></script>
+	<script type="text/javascript" src="../jscripts/sceditor/jquery.sceditor.bbcode.min.js?ver=1805"></script>
+	<script type="text/javascript" src="../jscripts/bbcodes_sceditor.js?ver=1804"></script>
+	<script type="text/javascript" src="../jscripts/sceditor/editor_plugins/undo.js?ver=1805"></script>
 EOF;
 	$page->output_header($lang->edit_user);
 
@@ -1051,6 +1057,11 @@ EOF;
 
 	if($mybb->settings['enablewarningsystem'] != 0 && $user_permissions['canreceivewarnings'] != 0)
 	{
+		if($mybb->settings['maxwarningpoints'] < 1)
+		{
+			$mybb->settings['maxwarningpoints'] = 10;
+		}
+
 		$warning_level = round($user['warningpoints']/$mybb->settings['maxwarningpoints']*100);
 		if($warning_level > 100)
 		{
@@ -1106,8 +1117,8 @@ EOF;
 	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
 	while($usergroup = $db->fetch_array($query))
 	{
-		$options[$usergroup['gid']] = $usergroup['title'];
-		$display_group_options[$usergroup['gid']] = $usergroup['title'];
+		$options[$usergroup['gid']] = htmlspecialchars_uni($usergroup['title']);
+		$display_group_options[$usergroup['gid']] = htmlspecialchars_uni($usergroup['title']);
 	}
 
 	if(!is_array($mybb->input['additionalgroups']))
@@ -1118,8 +1129,8 @@ EOF;
 	$form_container->output_row($lang->primary_user_group." <em>*</em>", "", $form->generate_select_box('usergroup', $options, $mybb->input['usergroup'], array('id' => 'usergroup')), 'usergroup');
 	$form_container->output_row($lang->additional_user_groups, $lang->additional_user_groups_desc, $form->generate_select_box('additionalgroups[]', $options, $mybb->input['additionalgroups'], array('id' => 'additionalgroups', 'multiple' => true, 'size' => 5)), 'additionalgroups');
 	$form_container->output_row($lang->display_user_group." <em>*</em>", "", $form->generate_select_box('displaygroup', $display_group_options, $mybb->input['displaygroup'], array('id' => 'displaygroup')), 'displaygroup');
-	$form_container->output_row($lang->post_count." <em>*</em>", "", $form->generate_numeric_field('postnum', $mybb->input['postnum'], array('id' => 'postnum')), 'postnum');
-	$form_container->output_row($lang->thread_count." <em>*</em>", "", $form->generate_numeric_field('threadnum', $mybb->input['threadnum'], array('id' => 'threadnum')), 'threadnum');
+	$form_container->output_row($lang->post_count." <em>*</em>", "", $form->generate_numeric_field('postnum', $mybb->input['postnum'], array('id' => 'postnum', 'min' => 0)), 'postnum');
+	$form_container->output_row($lang->thread_count." <em>*</em>", "", $form->generate_numeric_field('threadnum', $mybb->input['threadnum'], array('id' => 'threadnum', 'min' => 0)), 'threadnum');
 
 	// Output custom profile fields - required
 	if(!isset($profile_fields['required']))
@@ -1133,7 +1144,7 @@ EOF;
 	$form_container = new FormContainer($lang->optional_profile_info.": {$user['username']}");
 	$form_container->output_row($lang->custom_user_title, $lang->custom_user_title_desc, $form->generate_text_box('usertitle', $mybb->input['usertitle'], array('id' => 'usertitle')), 'usertitle');
 	$form_container->output_row($lang->website, "", $form->generate_text_box('website', $mybb->input['website'], array('id' => 'website')), 'website');
-	$form_container->output_row($lang->icq_number, "", $form->generate_numeric_field('icq', $mybb->input['icq'], array('id' => 'icq')), 'icq');
+	$form_container->output_row($lang->icq_number, "", $form->generate_numeric_field('icq', $mybb->input['icq'], array('id' => 'icq', 'min' => 0)), 'icq');
 	$form_container->output_row($lang->aim_handle, "", $form->generate_text_box('aim', $mybb->input['aim'], array('id' => 'aim')), 'aim');
 	$form_container->output_row($lang->yahoo_messanger_handle, "", $form->generate_text_box('yahoo', $mybb->input['yahoo'], array('id' => 'yahoo')), 'yahoo');
 	$form_container->output_row($lang->skype_handle, "", $form->generate_text_box('skype', $mybb->input['skype'], array('id' => 'skype')), 'skype');
@@ -1164,7 +1175,7 @@ EOF;
 
 	$birthday_row = $form->generate_select_box('bday1', $birthday_days, $mybb->input['bday'][0], array('id' => 'bday_day'));
 	$birthday_row .= ' '.$form->generate_select_box('bday2', $birthday_months, $mybb->input['bday'][1], array('id' => 'bday_month'));
-	$birthday_row .= ' '.$form->generate_numeric_field('bday3', $mybb->input['bday'][2], array('id' => 'bday_year', 'style' => 'width: 3em;'));
+	$birthday_row .= ' '.$form->generate_numeric_field('bday3', $mybb->input['bday'][2], array('id' => 'bday_year', 'style' => 'width: 4em;', 'min' => 0));
 
 	$form_container->output_row($lang->birthday, "", $birthday_row, 'birthday');
 
@@ -1188,7 +1199,7 @@ EOF;
 		//Return date (we can use the arrays from birthday)
 		$return_row = $form->generate_select_box('away_day', $birthday_days, $mybb->input['away_day'], array('id' => 'away_day'));
 		$return_row .= ' '.$form->generate_select_box('away_month', $birthday_months, $mybb->input['away_month'], array('id' => 'away_month'));
-		$return_row .= ' '.$form->generate_numeric_field('away_year', $mybb->input['away_year'], array('id' => 'away_year', 'style' => 'width: 3em;'));
+		$return_row .= ' '.$form->generate_numeric_field('away_year', $mybb->input['away_year'], array('id' => 'away_year', 'style' => 'width: 4em;', 'min' => 0));
 
 		$form_container->output_row($lang->return_date, $lang->return_date_desc, $return_row, 'away_date');
 
@@ -1222,6 +1233,8 @@ EOF;
 		$form->generate_check_box("receivefrombuddy", 1, $lang->recieve_pms_from_buddy, array("checked" => $mybb->input['receivefrombuddy'])),
 		$form->generate_check_box("pmnotice", 1, $lang->alert_new_pms, array("checked" => $mybb->input['pmnotice'])),
 		$form->generate_check_box("pmnotify", 1, $lang->email_notify_new_pms, array("checked" => $mybb->input['pmnotify'])),
+		$form->generate_check_box("buddyrequestspm", 1, $lang->buddy_requests_pm, array("checked" => $mybb->input['buddyrequestspm'])),
+		$form->generate_check_box("buddyrequestsauto", 1, $lang->buddy_requests_auto, array("checked" => $mybb->input['buddyrequestsauto'])),
 		"<label for=\"subscriptionmethod\">{$lang->default_thread_subscription_mode}:</label><br />".$form->generate_select_box("subscriptionmethod", array($lang->do_not_subscribe, $lang->no_email_notification, $lang->instant_email_notification), $mybb->input['subscriptionmethod'], array('id' => 'subscriptionmethod'))
 	);
 	$form_container->output_row($lang->messaging_and_notification, "", "<div class=\"user_settings_bit\">".implode("</div><div class=\"user_settings_bit\">", $messaging_options)."</div>");
@@ -1371,8 +1384,24 @@ EOF;
 		else
 		{
 			// There's a limit to the suspension!
-			$expired = my_date('relative', $user['suspendsigtime'], '', 2);
-			$lang->suspend_expire_info = $lang->sprintf($lang->suspend_expire_info, $expired);
+			$remaining = $user['suspendsigtime']-TIME_NOW;
+			$expired = nice_time($remaining, array('seconds' => false));
+
+			$color = 'inherit';
+			if($remaining < 3600)
+			{
+				$color = 'red';
+			}
+			elseif($remaining < 86400)
+			{
+				$color = 'maroon';
+			}
+			elseif($remaining < 604800)
+			{
+				$color = 'green';
+			}
+
+			$lang->suspend_expire_info = $lang->sprintf($lang->suspend_expire_info, $expired, $color);
 		}
 		$user_suspend_info = '
 				<tr>
@@ -1410,7 +1439,7 @@ EOF;
 			<table cellpadding="4">'.$user_suspend_info.'
 				<tr>
 					<td width="30%"><small>'.$lang->expire_length.'</small></td>
-					<td>'.$form->generate_numeric_field('action_time', $mybb->input['action_time'], array('style' => 'width: 2em;')).' '.$form->generate_select_box('action_period', $periods, $mybb->input['action_period']).'</td>
+					<td>'.$form->generate_numeric_field('action_time', $mybb->input['action_time'], array('style' => 'width: 3em;', 'min' => 0)).' '.$form->generate_select_box('action_period', $periods, $mybb->input['action_period']).'</td>
 				</tr>
 			</table>
 		</dd>
@@ -1460,7 +1489,7 @@ EOF;
 
 	if($errors)
 	{
-		$avatar_url = $mybb->input['avatar_url'];
+		$avatar_url = htmlspecialchars_uni($mybb->input['avatar_url']);
 	}
 
 	if($mybb->settings['maxavatardims'] != "")
@@ -1526,8 +1555,24 @@ EOF;
 		$mybb->input['moderateposting'] = 1;
 		if($user['moderationtime'] != 0)
 		{
-			$expired = my_date('relative', $user['moderationtime'], '', 2);
-			$existing_info = $lang->sprintf($lang->moderate_length, $expired);
+			$remaining = $user['moderationtime']-TIME_NOW;
+			$expired = nice_time($remaining, array('seconds' => false));
+
+			$color = 'inherit';
+			if($remaining < 3600)
+			{
+				$color = 'red';
+			}
+			elseif($remaining < 86400)
+			{
+				$color = 'maroon';
+			}
+			elseif($remaining < 604800)
+			{
+				$color = 'green';
+			}
+
+			$existing_info = $lang->sprintf($lang->moderate_length, $expired, $color);
 		}
 		else
 		{
@@ -1535,7 +1580,7 @@ EOF;
 		}
 	}
 
-	$modpost_div = '<div id="modpost">'.$existing_info.''.$lang->moderate_for.' '.$form->generate_numeric_field("modpost_time", $mybb->input['modpost_time'], array('style' => 'width: 2em;')).' '.$modpost_options.'</div>';
+	$modpost_div = '<div id="modpost">'.$existing_info.''.$lang->moderate_for.' '.$form->generate_numeric_field("modpost_time", $mybb->input['modpost_time'], array('style' => 'width: 3em;', 'min' => 0)).' '.$modpost_options.'</div>';
 	$lang->moderate_posts_info = $lang->sprintf($lang->moderate_posts_info, $user['username']);
 	$form_container->output_row($form->generate_check_box("moderateposting", 1, $lang->moderate_posts, array("id" => "moderateposting", "onclick" => "toggleBox('modpost');", "checked" => $mybb->input['moderateposting'])), $lang->moderate_posts_info, $modpost_div);
 
@@ -1554,12 +1599,28 @@ EOF;
 		}
 		else
 		{
-			$suspost_date = my_date('relative', $user['suspensiontime'], '', 2);
-			$existing_info = $lang->sprintf($lang->suspend_length, $suspost_date);
+			$remaining = $user['suspensiontime']-TIME_NOW;
+			$suspost_date = nice_time($remaining, array('seconds' => false));
+
+			$color = 'inherit';
+			if($remaining < 3600)
+			{
+				$color = 'red';
+			}
+			elseif($remaining < 86400)
+			{
+				$color = 'maroon';
+			}
+			elseif($remaining < 604800)
+			{
+				$color = 'green';
+			}
+
+			$existing_info = $lang->sprintf($lang->suspend_length, $suspost_date, $color);
 		}
 	}
 
-	$suspost_div = '<div id="suspost">'.$existing_info.''.$lang->suspend_for.' '.$form->generate_numeric_field("suspost_time", $mybb->input['suspost_time'], array('style' => 'width: 2em;')).' '.$suspost_options.'</div>';
+	$suspost_div = '<div id="suspost">'.$existing_info.''.$lang->suspend_for.' '.$form->generate_numeric_field("suspost_time", $mybb->input['suspost_time'], array('style' => 'width: 3em;', 'min' => 0)).' '.$suspost_options.'</div>';
 	$lang->suspend_posts_info = $lang->sprintf($lang->suspend_posts_info, $user['username']);
 	$form_container->output_row($form->generate_check_box("suspendposting", 1, $lang->suspend_posts, array("id" => "suspendposting", "onclick" => "toggleBox('suspost');", "checked" => $mybb->input['suspendposting'])), $lang->suspend_posts_info, $suspost_div);
 
@@ -1673,6 +1734,8 @@ if($mybb->input['action'] == "delete")
 			admin_redirect("index.php?module=user-users");
 		}
 
+		$cache->update_awaitingactivation();
+
 		$plugins->run_hooks("admin_user_users_delete_commit_end");
 
 		log_admin_action($user['uid'], $user['username']);
@@ -1772,8 +1835,8 @@ if($mybb->input['action'] == "ipaddresses")
 		$user['lastip'] = my_inet_ntop($db->unescape_binary($user['lastip']));
 		$popup = new PopupMenu("user_last", $lang->options);
 		$popup->add_item($lang->show_users_regged_with_ip,
-			"index.php?module=user-users&amp;action=search&amp;results=1&amp;conditions=".urlencode(serialize(array("regip" => $user['lastip']))));
-		$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(serialize(array("postip" => $user['lastip']))));
+			"index.php?module=user-users&amp;action=search&amp;results=1&amp;conditions=".urlencode(my_serialize(array("regip" => $user['lastip']))));
+		$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(my_serialize(array("postip" => $user['lastip']))));
 		$popup->add_item($lang->info_on_ip, "index.php?module=user-users&amp;action=iplookup&ipaddress={$user['lastip']}", "MyBB.popupWindow('index.php?module=user-users&amp;action=iplookup&ipaddress={$user['lastip']}', null, true); return false;");
 		$popup->add_item($lang->ban_ip, "index.php?module=config-banning&amp;filter={$user['lastip']}");
 		$controls = $popup->fetch();
@@ -1791,8 +1854,8 @@ if($mybb->input['action'] == "ipaddresses")
 	{
 		$user['regip'] = my_inet_ntop($db->unescape_binary($user['regip']));
 		$popup = new PopupMenu("user_reg", $lang->options);
-		$popup->add_item($lang->show_users_regged_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(serialize(array("regip" => $user['regip']))));
-		$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(serialize(array("postip" => $user['regip']))));
+		$popup->add_item($lang->show_users_regged_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(my_serialize(array("regip" => $user['regip']))));
+		$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(my_serialize(array("postip" => $user['regip']))));
 		$popup->add_item($lang->info_on_ip, "index.php?module=user-users&amp;action=iplookup&ipaddress={$user['regip']}", "MyBB.popupWindow('index.php?module=user-users&amp;action=iplookup&ipaddress={$user['regip']}', null, true); return false;");
 		$popup->add_item($lang->ban_ip, "index.php?module=config-banning&amp;filter={$user['regip']}");
 		$controls = $popup->fetch();
@@ -1809,8 +1872,8 @@ if($mybb->input['action'] == "ipaddresses")
 		++$counter;
 		$ip['ipaddress'] = my_inet_ntop($db->unescape_binary($ip['ipaddress']));
 		$popup = new PopupMenu("id_{$counter}", $lang->options);
-		$popup->add_item($lang->show_users_regged_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(serialize(array("regip" => $ip['ipaddress']))));
-		$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(serialize(array("postip" => $ip['ipaddress']))));
+		$popup->add_item($lang->show_users_regged_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(my_serialize(array("regip" => $ip['ipaddress']))));
+		$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(my_serialize(array("postip" => $ip['ipaddress']))));
 		$popup->add_item($lang->info_on_ip, "index.php?module=user-users&amp;action=iplookup&ipaddress={$ip['ipaddress']}", "MyBB.popupWindow('index.php?module=user-users&amp;action=iplookup&ipaddress={$ip['ipaddress']}', null, true); return false;");
 		$popup->add_item($lang->ban_ip, "index.php?module=config-banning&amp;filter={$ip['ipaddress']}");
 		$controls = $popup->fetch();
@@ -2047,6 +2110,8 @@ if($mybb->input['action'] == "merge")
 
 			$plugins->run_hooks("admin_user_users_merge_commit");
 
+			$cache->update_awaitingactivation();
+
 			// Log admin action
 			log_admin_action($source_user['uid'], $source_user['username'], $destination_user['uid'], $destination_user['username']);
 
@@ -2078,13 +2143,12 @@ if($mybb->input['action'] == "merge")
 	// Autocompletion for usernames
 	echo '
 	<link rel="stylesheet" href="../jscripts/select2/select2.css">
-	<script type="text/javascript" src="../jscripts/select2/select2.min.js"></script>
+	<script type="text/javascript" src="../jscripts/select2/select2.min.js?ver=1804"></script>
 	<script type="text/javascript">
 	<!--
 	$("#source_username").select2({
-		placeholder: "Search for a user",
-		minimumInputLength: 3,
-		maximumSelectionSize: 3,
+		placeholder: "'.$lang->search_for_a_user.'",
+		minimumInputLength: 2,
 		multiple: false,
 		ajax: { // instead of writing the function to execute the request we use Select2\'s convenient helper
 			url: "../xmlhttp.php?action=get_users",
@@ -2112,9 +2176,8 @@ if($mybb->input['action'] == "merge")
 		}
 	});
 	$("#destination_username").select2({
-		placeholder: "Search for a user",
-		minimumInputLength: 3,
-		maximumSelectionSize: 3,
+		placeholder: "'.$lang->search_for_a_user.'",
+		minimumInputLength: 2,
 		multiple: false,
 		ajax: { // instead of writing the function to execute the request we use Select2\'s convenient helper
 			url: "../xmlhttp.php?action=get_users",
@@ -2160,7 +2223,7 @@ if($mybb->input['action'] == "search")
 		// Build view options from incoming search options
 		if($mybb->input['vid'])
 		{
-			$query = $db->simple_select("adminviews", "*", "vid='".$mybb->get_input('vid', 1)."'");
+			$query = $db->simple_select("adminviews", "*", "vid='".$mybb->get_input('vid', MyBB::INPUT_INT)."'");
 			$admin_view = $db->fetch_array($query);
 			// View does not exist or this view is private and does not belong to the current user
 			if(!$admin_view['vid'] || ($admin_view['visibility'] == 1 && $admin_view['uid'] != $mybb->user['uid']))
@@ -2207,7 +2270,7 @@ if($mybb->input['action'] == "search")
 			$admin_view['sortby'] = $mybb->input['sortby'];
 		}
 
-		if($mybb->get_input('perpage', 1))
+		if($mybb->get_input('perpage', MyBB::INPUT_INT))
 		{
 			$admin_view['perpage'] = $mybb->input['perpage'];
 		}
@@ -2280,7 +2343,7 @@ if($mybb->input['action'] == "search")
 		"desc" => $lang->descending
 	);
 	$form_container->output_row($lang->sort_results_by, "", $form->generate_select_box('sortby', $sort_options, $mybb->input['sortby'], array('id' => 'sortby'))." {$lang->in} ".$form->generate_select_box('order', $sort_directions, $mybb->input['order'], array('id' => 'order')), 'sortby');
-	$form_container->output_row($lang->results_per_page, "", $form->generate_numeric_field('perpage', $mybb->input['perpage'], array('id' => 'perpage')), 'perpage');
+	$form_container->output_row($lang->results_per_page, "", $form->generate_numeric_field('perpage', $mybb->input['perpage'], array('id' => 'perpage', 'min' => 1)), 'perpage');
 	$form_container->output_row($lang->display_results_as, "", $form->generate_radio_button('displayas', 'table', $lang->table, array('checked' => ($mybb->input['displayas'] != "card" ? true : false)))."<br />".$form->generate_radio_button('displayas', 'card', $lang->business_card, array('checked' => ($mybb->input['displayas'] == "card" ? true : false))));
 	$form_container->end();
 
@@ -2322,628 +2385,612 @@ if($mybb->input['action'] == "inline_edit")
 		}
 	}
 
-	// If there isn't anything to select, then output an error
+	// Verify incoming POST request
+	if(!verify_post_check($mybb->input['my_post_key']))
+	{
+		flash_message($lang->invalid_post_verify_key2, 'error');
+		admin_redirect("index.php?module=user-user");
+	}
+	$sub_tabs['manage_users'] = array(
+		"title" => $lang->manage_users,
+		"link" => "./",
+		"description" => $lang->manage_users_desc
+	);
+	$page->add_breadcrumb_item($lang->manage_users);
+
 	if(!is_array($selected))
 	{
-		if($mybb->input['inline_action'] != "multilift" && $mybb->request_method != "post")
-		{
-			$errors[] = $lang->error_inline_no_users_selected;
-		}
+		// Not selected any users, show error
+		flash_message($lang->error_inline_no_users_selected, 'error');
+		admin_redirect("index.php?module=user-users".$vid_url);
 	}
 
-	if($errors)
+	switch($mybb->input['inline_action'])
 	{
-		// Don't show views, but show the user list if there's errors
-		$inline = true;
-		$mybb->input['action'] = '';
-	}
-	else
-	{
-		// Let's continue!
-		// Verify incoming POST request
-		if(!verify_post_check($mybb->input['my_post_key']))
-		{
-			flash_message($lang->invalid_post_verify_key2, 'error');
-			admin_redirect("index.php?module=user-user");
-		}
-		$sub_tabs['manage_users'] = array(
-			"title" => $lang->manage_users,
-			"link" => "./",
-			"description" => $lang->manage_users_desc
-		);
-		$page->add_breadcrumb_item($lang->manage_users);
-
-		if(!is_array($selected))
-		{
-			// Not selected any users, show error
-			flash_message($lang->error_inline_no_users_selected, 'error');
-			admin_redirect("index.php?module=user-users".$vid_url);
-		}
-
-		switch($mybb->input['inline_action'])
-		{
-			case 'multiactivate':
-				// Run through the activating users, so that users already registered (but have been selected) aren't affected
-				if(is_array($selected))
+		case 'multiactivate':
+			// Run through the activating users, so that users already registered (but have been selected) aren't affected
+			if(is_array($selected))
+			{
+				$sql_array = implode(",", $selected);
+				$query = $db->simple_select("users", "uid", "usergroup = '5' AND uid IN (".$sql_array.")");
+				while($user = $db->fetch_array($query))
 				{
-					$sql_array = implode(",", $selected);
-					$query = $db->simple_select("users", "uid", "usergroup = '5' AND uid IN (".$sql_array.")");
-					while($user = $db->fetch_array($query))
-					{
-						$to_update[] = $user['uid'];
-					}
+					$to_update[] = $user['uid'];
+				}
+			}
+
+			if(is_array($to_update))
+			{
+				$sql_array = implode(",", $to_update);
+				$db->write_query("UPDATE ".TABLE_PREFIX."users SET usergroup = '2' WHERE uid IN (".$sql_array.")");
+
+				$cache->update_awaitingactivation();
+
+				// Action complete, grab stats and show success message - redirect user
+				$to_update_count = count($to_update);
+				$lang->inline_activated = $lang->sprintf($lang->inline_activated, my_number_format($to_update_count));
+
+				if($to_update_count != count($selected))
+				{
+					// The update count is different to how many we selected!
+					$not_updated_count = count($selected) - $to_update_count;
+					$lang->inline_activated_more = $lang->sprintf($lang->inline_activated_more, my_number_format($not_updated_count));
+					$lang->inline_activated = $lang->inline_activated."<br />".$lang->inline_activated_more; // Add these stats to the message
 				}
 
-				if(is_array($to_update))
+				$mybb->input['action'] = "inline_activated"; // Force a change to the action so we can add it to the adminlog
+				log_admin_action($to_update_count); // Add to adminlog
+				my_unsetcookie("inlinemod_useracp"); // Unset the cookie, so that the users aren't still selected when we're redirected
+
+				flash_message($lang->inline_activated, 'success');
+				admin_redirect("index.php?module=user-users".$vid_url);
+			}
+			else
+			{
+				// Nothing was updated, show an error
+				flash_message($lang->inline_activated_failed, 'error');
+				admin_redirect("index.php?module=user-users".$vid_url);
+			}
+			break;
+		case 'multilift':
+			// Get the users that are banned, and check that they have been selected
+			if($mybb->input['no'])
+			{
+				admin_redirect("index.php?module=user-users".$vid_url); // User clicked on 'No'
+			}
+
+			if($mybb->request_method == "post")
+			{
+				$sql_array = implode(",", $selected);
+				$query = $db->simple_select("banned", "*", "uid IN (".$sql_array.")");
+				$to_be_unbanned = $db->num_rows($query);
+				while($ban = $db->fetch_array($query))
 				{
-					$sql_array = implode(",", $to_update);
-					$db->write_query("UPDATE ".TABLE_PREFIX."users SET usergroup = '2' WHERE uid IN (".$sql_array.")");
+					$updated_group = array(
+						"usergroup" => $ban['oldgroup'],
+						"additionalgroups" => $ban['oldadditionalgroups'],
+						"displaygroup" => $ban['olddisplaygroup']
+					);
+					$db->update_query("users", $updated_group, "uid = '".$ban['uid']."'");
+					$db->delete_query("banned", "uid = '".$ban['uid']."'");
+				}
+
+				$cache->update_banned();
+				$cache->update_moderators();
+
+				$mybb->input['action'] = "inline_lift";
+				log_admin_action($to_be_unbanned);
+				my_unsetcookie("inlinemod_useracp");
+
+				$lang->success_ban_lifted = $lang->sprintf($lang->success_ban_lifted, my_number_format($to_be_unbanned));
+				flash_message($lang->success_ban_lifted, 'success');
+				admin_redirect("index.php?module=user-users".$vid_url);
+			}
+			else
+			{
+				$page->output_confirm_action("index.php?module=user-users&amp;action=inline_edit&amp;inline_action=multilift", $lang->confirm_multilift);
+			}
+
+			break;
+		case 'multiban':
+			if($mybb->input['processed'] == 1)
+			{
+				// We've posted ban information!
+				// Build an array of users to ban, =D
+				$sql_array = implode(",", $selected);
+				// Build a cache array for this users that have been banned already
+				$query = $db->simple_select("banned", "uid", "uid IN (".$sql_array.")");
+				while($user = $db->fetch_array($query))
+				{
+					$bannedcache[] = "u_".$user['uid'];
+				}
+
+				// Collect the users
+				$query = $db->simple_select("users", "uid, username, usergroup, additionalgroups, displaygroup", "uid IN (".$sql_array.")");
+
+				if($mybb->input['bantime'] == '---')
+				{
+					$lifted = 0;
+				}
+				else
+				{
+					$lifted = ban_date2timestamp($mybb->input['bantime']);
+				}
+
+				$reason = my_substr($mybb->input['reason'], 0, 255);
+
+				$banned_count = 0;
+				while($user = $db->fetch_array($query))
+				{
+					if($user['uid'] == $mybb->user['uid'] || is_super_admin($user['uid']))
+					{
+						// We remove ourselves and Super Admins from the mix
+						continue;
+					}
+
+					if(is_array($bannedcache) && in_array("u_".$user['uid'], $bannedcache))
+					{
+						// User already has a ban, update it!
+						$update_array = array(
+							"admin" => (int)$mybb->user['uid'],
+							"dateline" => TIME_NOW,
+							"bantime" => $db->escape_string($mybb->input['bantime']),
+							"lifted" => $db->escape_string($lifted),
+							"reason" => $db->escape_string($reason)
+						);
+						$db->update_query("banned", $update_array, "uid = '".$user['uid']."'");
+					}
+					else
+					{
+						// Not currently banned - insert the ban
+						$insert_array = array(
+							'uid' => $user['uid'],
+							'gid' => $mybb->get_input('usergroup', MyBB::INPUT_INT),
+							'oldgroup' => $user['usergroup'],
+							'oldadditionalgroups' => $user['additionalgroups'],
+							'olddisplaygroup' => $user['displaygroup'],
+							'admin' => (int)$mybb->user['uid'],
+							'dateline' => TIME_NOW,
+							'bantime' => $db->escape_string($mybb->input['bantime']),
+							'lifted' => $db->escape_string($lifted),
+							'reason' => $db->escape_string($reason)
+						);
+						$db->insert_query('banned', $insert_array);
+					}
+
+					// Moved the user to the 'Banned' Group
+					$update_array = array(
+						'usergroup' => 7,
+						'displaygroup' => 0,
+						'additionalgroups' => '',
+					);
+					$db->update_query('users', $update_array, "uid = '{$user['uid']}'");
+
+					$db->delete_query("forumsubscriptions", "uid = '{$user['uid']}'");
+					$db->delete_query("threadsubscriptions", "uid = '{$user['uid']}'");
+
+					$cache->update_banned();
+					++$banned_count;
+				}
+				$mybb->input['action'] = "inline_banned";
+				log_admin_action($banned_count, $lifted);
+				my_unsetcookie("inlinemod_useracp"); // Remove the cookie of selected users as we've finished with them
+
+				$lang->users_banned = $lang->sprintf($lang->users_banned, $banned_count);
+				flash_message($lang->users_banned, 'success');
+				admin_redirect("index.php?module=user-users".$vid_url);
+			}
+
+			$page->output_header($lang->manage_users);
+			$page->output_nav_tabs($sub_tabs, 'manage_users');
+
+			// Provide the user with a warning of what they're about to do
+			$table = new Table;
+			$lang->mass_ban_info = $lang->sprintf($lang->mass_ban_info, count($selected));
+			$table->construct_cell($lang->mass_ban_info);
+			$table->construct_row();
+			$table->output($lang->important);
+
+			// If there's any errors, display inline
+			if($errors)
+			{
+				$page->output_inline_error($errors);
+			}
+
+			$form = new Form("index.php?module=user-users", "post");
+			echo $form->generate_hidden_field('action', 'inline_edit');
+			echo $form->generate_hidden_field('inline_action', 'multiban');
+			echo $form->generate_hidden_field('processed', '1');
+
+			$form_container = new FormContainer('<div class="float_right"><a href="index.php?module=user-users&amp;action=inline_edit&amp;inline_action=multilift&amp;my_post_key='.$mybb->post_code.'">'.$lang->lift_bans.'</a></div>'.$lang->mass_ban);
+			$form_container->output_row($lang->ban_reason, "", $form->generate_text_area('reason', $mybb->input['reason'], array('id' => 'reason', 'maxlength' => '255')), 'reason');
+			$ban_times = fetch_ban_times();
+			foreach($ban_times as $time => $period)
+			{
+				if($time != '---')
+				{
+					$friendly_time = my_date("D, jS M Y @ g:ia", ban_date2timestamp($time));
+					$period = "{$period} ({$friendly_time})";
+				}
+				$length_list[$time] = $period;
+			}
+			$form_container->output_row($lang->ban_time, "", $form->generate_select_box('bantime', $length_list, $mybb->input['bantime'], array('id' => 'bantime')), 'bantime');
+			$form_container->end();
+
+			$buttons[] = $form->generate_submit_button($lang->ban_users);
+			$form->output_submit_wrapper($buttons);
+			$form->end();
+			$page->output_footer();
+			break;
+		case 'multidelete':
+			if($mybb->input['no'])
+			{
+				admin_redirect("index.php?module=user-users".$vid_url); // User clicked on 'No
+			}
+			else
+			{
+				if($mybb->input['processed'] == 1)
+				{
+					// Set up user handler.
+					require_once MYBB_ROOT.'inc/datahandlers/user.php';
+					$userhandler = new UserDataHandler('delete');
+
+					// Delete users
+					$deleted = $userhandler->delete_user($selected);
+					$to_be_deleted = $deleted['deleted_users']; // Get the correct number of deleted users
+
+					// Update forum stats, remove the cookie and redirect the user
+					my_unsetcookie("inlinemod_useracp");
+					$mybb->input['action'] = "inline_delete";
+					log_admin_action($to_be_deleted);
+
+					$lang->users_deleted = $lang->sprintf($lang->users_deleted, $to_be_deleted);
 
 					$cache->update_awaitingactivation();
 
-					// Action complete, grab stats and show success message - redirect user
-					$to_update_count = count($to_update);
-					$lang->inline_activated = $lang->sprintf($lang->inline_activated, my_number_format($to_update_count));
-
-					if($to_update_count != count($selected))
-					{
-						// The update count is different to how many we selected!
-						$not_updated_count = count($selected) - $to_update_count;
-						$lang->inline_activated_more = $lang->sprintf($lang->inline_activated_more, my_number_format($not_updated_count));
-						$lang->inline_activated = $lang->inline_activated."<br />".$lang->inline_activated_more; // Add these stats to the message
-					}
-
-					$mybb->input['action'] = "inline_activated"; // Force a change to the action so we can add it to the adminlog
-					log_admin_action($to_update_count); // Add to adminlog
-					my_unsetcookie("inlinemod_useracp"); // Unset the cookie, so that the users aren't still selected when we're redirected
-
-					flash_message($lang->inline_activated, 'success');
-					admin_redirect("index.php?module=user-users".$vid_url);
-				}
-				else
-				{
-					// Nothing was updated, show an error
-					flash_message($lang->inline_activated_failed, 'error');
-					admin_redirect("index.php?module=user-users".$vid_url);
-				}
-				break;
-			case 'multilift':
-				// Get the users that are banned, and check that they have been selected
-				if($mybb->input['no'])
-				{
-					admin_redirect("index.php?module=user-users".$vid_url); // User clicked on 'No'
-				}
-
-				if($mybb->request_method == "post")
-				{
-					$sql_array = implode(",", $selected);
-					$query = $db->simple_select("banned", "*", "uid IN (".$sql_array.")");
-					$to_be_unbanned = $db->num_rows($query);
-					while($ban = $db->fetch_array($query))
-					{
-						$updated_group = array(
-							"usergroup" => $ban['oldgroup'],
-							"additionalgroups" => $ban['oldadditionalgroups'],
-							"displaygroup" => $ban['olddisplaygroup']
-						);
-						$db->update_query("users", $updated_group, "uid = '".$ban['uid']."'");
-						$db->delete_query("banned", "uid = '".$ban['uid']."'");
-					}
-
-					$cache->update_banned();
-					$cache->update_moderators();
-
-					$mybb->input['action'] = "inline_lift";
-					log_admin_action($to_be_unbanned);
-					my_unsetcookie("inlinemod_useracp");
-
-					$lang->success_ban_lifted = $lang->sprintf($lang->success_ban_lifted, my_number_format($to_be_unbanned));
-					flash_message($lang->success_ban_lifted, 'success');
-					admin_redirect("index.php?module=user-users".$vid_url);
-				}
-				else
-				{
-					$page->output_confirm_action("index.php?module=user-users&amp;action=inline_edit&amp;inline_action=multilift", $lang->confirm_multilift);
-				}
-
-				break;
-			case 'multiban':
-				if($mybb->input['processed'] == 1)
-				{
-					// We've posted ban information!
-					// Build an array of users to ban, =D
-					$sql_array = implode(",", $selected);
-					// Build a cache array for this users that have been banned already
-					$query = $db->simple_select("banned", "uid", "uid IN (".$sql_array.")");
-					while($user = $db->fetch_array($query))
-					{
-						$bannedcache[] = "u_".$user['uid'];
-					}
-
-					// Collect the users
-					$query = $db->simple_select("users", "uid, username, usergroup, additionalgroups, displaygroup", "uid IN (".$sql_array.")");
-
-					if($mybb->input['bantime'] == '---')
-					{
-						$lifted = 0;
-					}
-					else
-					{
-						$lifted = ban_date2timestamp($mybb->input['bantime']);
-					}
-
-					$reason = my_substr($mybb->input['reason'], 0, 255);
-
-					$banned_count = 0;
-					while($user = $db->fetch_array($query))
-					{
-						if($user['uid'] == $mybb->user['uid'] || is_super_admin($user['uid']))
-						{
-							// We remove ourselves and Super Admins from the mix
-							continue;
-						}
-
-						if(is_array($bannedcache) && in_array("u_".$user['uid'], $bannedcache))
-						{
-							// User already has a ban, update it!
-							$update_array = array(
-								"admin" => (int)$mybb->user['uid'],
-								"dateline" => TIME_NOW,
-								"bantime" => $db->escape_string($mybb->input['bantime']),
-								"lifted" => $db->escape_string($lifted),
-								"reason" => $db->escape_string($reason)
-							);
-							$db->update_query("banned", $update_array, "uid = '".$user['uid']."'");
-						}
-						else
-						{
-							// Not currently banned - insert the ban
-							$insert_array = array(
-								'uid' => $user['uid'],
-								'gid' => (int)$mybb->input['usergroup'],
-								'oldgroup' => $user['usergroup'],
-								'oldadditionalgroups' => $user['additionalgroups'],
-								'olddisplaygroup' => $user['displaygroup'],
-								'admin' => (int)$mybb->user['uid'],
-								'dateline' => TIME_NOW,
-								'bantime' => $db->escape_string($mybb->input['bantime']),
-								'lifted' => $db->escape_string($lifted),
-								'reason' => $db->escape_string($reason)
-							);
-							$db->insert_query('banned', $insert_array);
-						}
-
-						// Moved the user to the 'Banned' Group
-						$update_array = array(
-							'usergroup' => 7,
-							'displaygroup' => 0,
-							'additionalgroups' => '',
-						);
-						$db->update_query('users', $update_array, "uid = '{$user['uid']}'");
-
-						$db->delete_query("forumsubscriptions", "uid = '{$user['uid']}'");
-						$db->delete_query("threadsubscriptions", "uid = '{$user['uid']}'");
-
-						$cache->update_banned();
-						++$banned_count;
-					}
-					$mybb->input['action'] = "inline_banned";
-					log_admin_action($banned_count, $lifted);
-					my_unsetcookie("inlinemod_useracp"); // Remove the cookie of selected users as we've finished with them
-
-					$lang->users_banned = $lang->sprintf($lang->users_banned, $banned_count);
-					flash_message($lang->users_banned, 'success');
+					flash_message($lang->users_deleted, 'success');
 					admin_redirect("index.php?module=user-users".$vid_url);
 				}
 
-				$page->output_header($lang->manage_users);
-				$page->output_nav_tabs($sub_tabs, 'manage_users');
-
-				// Provide the user with a warning of what they're about to do
-				$table = new Table;
-				$lang->mass_ban_info = $lang->sprintf($lang->mass_ban_info, count($selected));
-				$table->construct_cell($lang->mass_ban_info);
-				$table->construct_row();
-				$table->output($lang->important);
-
-				// If there's any errors, display inline
-				if($errors)
+				$to_be_deleted = count($selected);
+				$lang->confirm_multidelete = $lang->sprintf($lang->confirm_multidelete, my_number_format($to_be_deleted));
+				$page->output_confirm_action("index.php?module=user-users&amp;action=inline_edit&amp;inline_action=multidelete&amp;my_post_key={$mybb->post_code}&amp;processed=1", $lang->confirm_multidelete);
+			}
+			break;
+		case 'multiprune':
+			if($mybb->input['processed'] == 1)
+			{
+				if(($mybb->input['day'] || $mybb->input['month'] || $mybb->input['year']) && $mybb->input['set'])
 				{
-					$page->output_inline_error($errors);
+					$errors[] = $lang->multi_selected_dates;
 				}
 
-				$form = new Form("index.php?module=user-users", "post");
-				echo $form->generate_hidden_field('action', 'inline_edit');
-				echo $form->generate_hidden_field('inline_action', 'multiban');
-				echo $form->generate_hidden_field('processed', '1');
+				$day = $mybb->get_input('day', MyBB::INPUT_INT);
+				$month = $mybb->get_input('month', MyBB::INPUT_INT);
+				$year = $mybb->get_input('year', MyBB::INPUT_INT);
 
-				$form_container = new FormContainer('<div class="float_right"><a href="index.php?module=user-users&amp;action=inline_edit&amp;inline_action=multilift&amp;my_post_key='.$mybb->post_code.'">'.$lang->lift_bans.'</a></div>'.$lang->mass_ban);
-				$form_container->output_row($lang->ban_reason, "", $form->generate_text_area('reason', $mybb->input['reason'], array('id' => 'reason', 'maxlength' => '255')), 'reason');
-				$ban_times = fetch_ban_times();
-				foreach($ban_times as $time => $period)
+				// Selected a date - check if the date the user entered is valid
+				if($mybb->input['day'] || $mybb->input['month'] || $mybb->input['year'])
 				{
-					if($time != '---')
+					// Is the date sort of valid?
+					if($day < 1 || $day > 31 || $month < 1 || $month > 12 || ($month == 2 && $day > 29))
 					{
-						$friendly_time = my_date("D, jS M Y @ g:ia", ban_date2timestamp($time));
-						$period = "{$period} ({$friendly_time})";
-					}
-					$length_list[$time] = $period;
-				}
-				$form_container->output_row($lang->ban_time, "", $form->generate_select_box('bantime', $length_list, $mybb->input['bantime'], array('id' => 'bantime')), 'bantime');
-				$form_container->end();
-
-				$buttons[] = $form->generate_submit_button($lang->ban_users);
-				$form->output_submit_wrapper($buttons);
-				$form->end();
-				$page->output_footer();
-				break;
-			case 'multidelete':
-				if($mybb->input['no'])
-				{
-					admin_redirect("index.php?module=user-users".$vid_url); // User clicked on 'No
-				}
-				else
-				{
-					if($mybb->input['processed'] == 1)
-					{
-						// Set up user handler.
-						require_once MYBB_ROOT.'inc/datahandlers/user.php';
-						$userhandler = new UserDataHandler('delete');
-
-						// Delete users
-						$deleted = $userhandler->delete_user($selected);
-						$to_be_deleted = $deleted['deleted_users']; // Get the correct number of deleted users
-
-						// Update forum stats, remove the cookie and redirect the user
-						my_unsetcookie("inlinemod_useracp");
-						$mybb->input['action'] = "inline_delete";
-						log_admin_action($to_be_deleted);
-
-						$lang->users_deleted = $lang->sprintf($lang->users_deleted, $to_be_deleted);
-						flash_message($lang->users_deleted, 'success');
-						admin_redirect("index.php?module=user-users".$vid_url);
+						$errors[] = $lang->incorrect_date;
 					}
 
-					$to_be_deleted = count($selected);
-					$lang->confirm_multidelete = $lang->sprintf($lang->confirm_multidelete, my_number_format($to_be_deleted));
-					$page->output_confirm_action("index.php?module=user-users&amp;action=inline_edit&amp;inline_action=multidelete&amp;my_post_key={$mybb->post_code}&amp;processed=1", $lang->confirm_multidelete);
-				}
-				break;
-			case 'multiprune':
-				if($mybb->input['processed'] == 1)
-				{
-					if(($mybb->input['day'] || $mybb->input['month'] || $mybb->input['year']) && $mybb->input['set'])
+					// Check the month
+					$months = get_bdays($year);
+					if($day > $months[$month-1])
 					{
-						$errors[] = $lang->multi_selected_dates;
+						$errors[] = $lang->incorrect_date;
 					}
 
-					$day = (int)$mybb->input['day'];
-					$month = (int)$mybb->input['month'];
-					$year = (int)$mybb->input['year'];
-
-					// Selected a date - check if the date the user entered is valid
-					if($mybb->input['day'] || $mybb->input['month'] || $mybb->input['year'])
+					// Check the year
+					if($year != 0 && ($year < (date("Y")-100)) || $year > date("Y"))
 					{
-						// Is the date sort of valid?
-						if($day < 1 || $day > 31 || $month < 1 || $month > 12 || ($month == 2 && $day > 29))
-						{
-							$errors[] = $lang->incorrect_date;
-						}
-
-						// Check the month
-						$months = get_bdays($year);
-						if($day > $months[$month]-1)
-						{
-							$errors[] = $lang->incorrect_date;
-						}
-
-						// Check the year
-						if($year != 0 && ($year < (date("Y")-100)) || $year > date("Y"))
-						{
-							$errors[] = $lang->incorrect_date;
-						}
-
-						if(!$errors)
-						{
-							// No errors, so let's continue and set the date to delete from
-							$date = mktime(date('H'), date('i'), date('s'), $month, $day, $year); // Generate a unix time stamp
-						}
-					}
-					elseif($mybb->input['set'] > 0)
-					{
-						// Set options
-						// For this purpose, 1 month = 31 days
-						$base_time = 24 * 60 * 60;
-
-						switch($mybb->input['set'])
-						{
-							case '1':
-								$threshold = $base_time * 31; // 1 month = 31 days, in the standard terms
-								break;
-							case '2':
-								$threshold = $base_time * 93; // 3 months = 31 days * 3
-								break;
-							case '3':
-								$threshold = $base_time * 183; // 6 months = 365 days / 2
-								break;
-							case '4':
-								$threshold = $base_time * 365; // 1 year = 365 days
-								break;
-							case '5':
-								$threshold = $base_time * 548; // 18 months = 365 + 183
-								break;
-							case '6':
-								$threshold = $base_time * 730; // 2 years = 365 * 2
-								break;
-						}
-
-						if(!$threshold)
-						{
-							// An option was entered that isn't in the dropdown box
-							$errors[] = $lang->no_set_option;
-						}
-						else
-						{
-							$date = TIME_NOW - $threshold;
-						}
-					}
-					else
-					{
-						$errors[] = $lang->no_prune_option;
+						$errors[] = $lang->incorrect_date;
 					}
 
 					if(!$errors)
 					{
-						$sql_array = implode(",", $selected);
-						$prune_array = array();
-						$query = $db->simple_select("users", "uid", "uid IN (".$sql_array.")");
-						while($user = $db->fetch_array($query))
+						// No errors, so let's continue and set the date to delete from
+						$date = mktime(date('H'), date('i'), date('s'), $month, $day, $year); // Generate a unix time stamp
+					}
+				}
+				elseif($mybb->input['set'] > 0)
+				{
+					// Set options
+					// For this purpose, 1 month = 31 days
+					$base_time = 24 * 60 * 60;
+
+					switch($mybb->input['set'])
+					{
+						case '1':
+							$threshold = $base_time * 31; // 1 month = 31 days, in the standard terms
+							break;
+						case '2':
+							$threshold = $base_time * 93; // 3 months = 31 days * 3
+							break;
+						case '3':
+							$threshold = $base_time * 183; // 6 months = 365 days / 2
+							break;
+						case '4':
+							$threshold = $base_time * 365; // 1 year = 365 days
+							break;
+						case '5':
+							$threshold = $base_time * 548; // 18 months = 365 + 183
+							break;
+						case '6':
+							$threshold = $base_time * 730; // 2 years = 365 * 2
+							break;
+					}
+
+					if(!$threshold)
+					{
+						// An option was entered that isn't in the dropdown box
+						$errors[] = $lang->no_set_option;
+					}
+					else
+					{
+						$date = TIME_NOW - $threshold;
+					}
+				}
+				else
+				{
+					$errors[] = $lang->no_prune_option;
+				}
+
+				if(!$errors)
+				{
+					$sql_array = implode(",", $selected);
+					$prune_array = array();
+					$query = $db->simple_select("users", "uid", "uid IN (".$sql_array.")");
+					while($user = $db->fetch_array($query))
+					{
+						// Protect Super Admins
+						if(is_super_admin($user['uid']) && !is_super_admin($mybb->user['uid']))
 						{
-							// Protect Super Admins
-							if(is_super_admin($user['uid']) && !is_super_admin($mybb->user['uid']))
+							continue;
+						}
+
+						$return_array = delete_user_posts($user['uid'], $date); // Delete user posts, and grab a list of threads to delete
+						if($return_array && is_array($return_array))
+						{
+							$prune_array = array_merge_recursive($prune_array, $return_array);
+						}
+					}
+
+					// No posts were found for the user, return error
+					if(!is_array($prune_array) || count($prune_array) == 0)
+					{
+						flash_message($lang->prune_fail, 'error');
+						admin_redirect("index.php?module=user-users".$vid_url);
+					}
+
+					// Require the rebuild functions
+					require_once MYBB_ROOT.'/inc/functions.php';
+					require_once MYBB_ROOT.'/inc/functions_rebuild.php';
+
+					// We've finished deleting user's posts, so let's delete the threads
+					if(is_array($prune_array['to_delete']) && count($prune_array['to_delete']) > 0)
+					{
+						foreach($prune_array['to_delete'] as $tid)
+						{
+							$db->delete_query("threads", "tid='$tid'");
+							$db->delete_query("threads", "closed='moved|$tid'");
+							$db->delete_query("threadsubscriptions", "tid='$tid'");
+							$db->delete_query("polls", "tid='$tid'");
+							$db->delete_query("threadsread", "tid='$tid'");
+							$db->delete_query("threadratings", "tid='$tid'");
+						}
+					}
+
+					// After deleting threads, rebuild the thread counters for the affected threads
+					if(is_array($prune_array['thread_update']) && count($prune_array['thread_update']) > 0)
+					{
+						$sql_array = implode(",", $prune_array['thread_update']);
+						$query = $db->simple_select("threads", "tid", "tid IN (".$sql_array.")", array('order_by' => 'tid', 'order_dir' => 'asc'));
+						while($thread = $db->fetch_array($query))
+						{
+							rebuild_thread_counters($thread['tid']);
+						}
+					}
+
+					// After updating thread counters, update the affected forum counters
+					if(is_array($prune_array['forum_update']) && count($prune_array['forum_update']) > 0)
+					{
+						$sql_array = implode(",", $prune_array['forum_update']);
+						$query = $db->simple_select("forums", "fid", "fid IN (".$sql_array.")", array('order_by' => 'fid', 'order_dir' => 'asc'));
+						while($forum = $db->fetch_array($query))
+						{
+							// Because we have a recursive array merge, check to see if there isn't a duplicated forum to update
+							if($looped_forum == $forum['fid'])
 							{
 								continue;
 							}
-
-							$return_array = delete_user_posts($user['uid'], $date); // Delete user posts, and grab a list of threads to delete
-							if($return_array && is_array($return_array))
-							{
-								$prune_array = array_merge_recursive($prune_array, $return_array);
-							}
+							$looped_forum = $forum['fid'];
+							rebuild_forum_counters($forum['fid']);
 						}
-
-						// No posts were found for the user, return error
-						if(!is_array($prune_array) || count($prune_array) == 0)
-						{
-							flash_message($lang->prune_fail, 'error');
-							admin_redirect("index.php?module=user-users".$vid_url);
-						}
-
-						// Require the rebuild functions
-						require_once MYBB_ROOT.'/inc/functions.php';
-						require_once MYBB_ROOT.'/inc/functions_rebuild.php';
-
-						// We've finished deleting user's posts, so let's delete the threads
-						if(is_array($prune_array['to_delete']) && count($prune_array['to_delete']) > 0)
-						{
-							foreach($prune_array['to_delete'] as $tid)
-							{
-								$db->delete_query("threads", "tid='$tid'");
-								$db->delete_query("threads", "closed='moved|$tid'");
-								$db->delete_query("threadsubscriptions", "tid='$tid'");
-								$db->delete_query("polls", "tid='$tid'");
-								$db->delete_query("threadsread", "tid='$tid'");
-								$db->delete_query("threadratings", "tid='$tid'");
-							}
-						}
-
-						// After deleting threads, rebuild the thread counters for the affected threads
-						if(is_array($prune_array['thread_update']) && count($prune_array['thread_update']) > 0)
-						{
-							$sql_array = implode(",", $prune_array['thread_update']);
-							$query = $db->simple_select("threads", "tid", "tid IN (".$sql_array.")", array('order_by' => 'tid', 'order_dir' => 'asc'));
-							while($thread = $db->fetch_array($query))
-							{
-								rebuild_thread_counters($thread['tid']);
-							}
-						}
-
-						// After updating thread counters, update the affected forum counters
-						if(is_array($prune_array['forum_update']) && count($prune_array['forum_update']) > 0)
-						{
-							$sql_array = implode(",", $prune_array['forum_update']);
-							$query = $db->simple_select("forums", "fid", "fid IN (".$sql_array.")", array('order_by' => 'fid', 'order_dir' => 'asc'));
-							while($forum = $db->fetch_array($query))
-							{
-								// Because we have a recursive array merge, check to see if there isn't a duplicated forum to update
-								if($looped_forum == $forum['fid'])
-								{
-									continue;
-								}
-								$looped_forum = $forum['fid'];
-								rebuild_forum_counters($forum['fid']);
-							}
-						}
-
-						//log_admin_action();
-						my_unsetcookie("inlinemod_useracp"); // We've got our users, remove the cookie
-						flash_message($lang->prune_complete, 'success');
-						admin_redirect("index.php?module=user-users".$vid_url);
 					}
+
+					//log_admin_action();
+					my_unsetcookie("inlinemod_useracp"); // We've got our users, remove the cookie
+					flash_message($lang->prune_complete, 'success');
+					admin_redirect("index.php?module=user-users".$vid_url);
 				}
+			}
 
-				$page->output_header($lang->manage_users);
-				$page->output_nav_tabs($sub_tabs, 'manage_users');
+			$page->output_header($lang->manage_users);
+			$page->output_nav_tabs($sub_tabs, 'manage_users');
 
-				// Display a table warning
-				$table = new Table;
-				$lang->mass_prune_info = $lang->sprintf($lang->mass_prune_info, count($selected));
-				$table->construct_cell($lang->mass_prune_info);
-				$table->construct_row();
-				$table->output($lang->important);
+			// Display a table warning
+			$table = new Table;
+			$lang->mass_prune_info = $lang->sprintf($lang->mass_prune_info, count($selected));
+			$table->construct_cell($lang->mass_prune_info);
+			$table->construct_row();
+			$table->output($lang->important);
 
-				if($errors)
+			if($errors)
+			{
+				$page->output_inline_error($errors);
+			}
+
+			// Display the prune options
+			$form = new Form("index.php?module=user-users", "post");
+			echo $form->generate_hidden_field('action', 'inline_edit');
+			echo $form->generate_hidden_field('inline_action', 'multiprune');
+			echo $form->generate_hidden_field('processed', '1');
+
+			$form_container = new FormContainer($lang->mass_prune_posts);
+
+			// Generate a list of days (1 - 31)
+			$day_options = array();
+			$day_options[] = "&nbsp;";
+			for($i = 1; $i <= 31; ++$i)
+			{
+				$day_options[] = $i;
+			}
+
+			// Generate a list of months (1 - 12)
+			$month_options = array();
+			$month_options[] = "&nbsp;";
+			for($i = 1; $i <= 12; ++$i)
+			{
+				$string = "month_{$i}";
+				$month_options[] = $lang->$string;
+			}
+			$date_box = $form->generate_select_box('day', $day_options, $mybb->input['day']);
+			$month_box = $form->generate_select_box('month', $month_options, $mybb->input['month']);
+			$year_box = $form->generate_numeric_field('year', $mybb->input['year'], array('id' => 'year', 'style' => 'width: 50px;', 'min' => 0));
+
+			$prune_select = $date_box.$month_box.$year_box;
+			$form_container->output_row($lang->manual_date, "", $prune_select, 'date');
+
+			// Generate the set date box
+			$set_options = array();
+			$set_options[] = $lang->set_an_option;
+			for($i = 1; $i <= 6; ++$i)
+			{
+				$string = "option_{$i}";
+				$set_options[] = $lang->$string;
+			}
+
+			$form_container->output_row($lang->relative_date, "", $lang->delete_posts." ".$form->generate_select_box('set', $set_options, $mybb->input['set']), 'set');
+			$form_container->end();
+
+			$buttons[] = $form->generate_submit_button($lang->prune_posts);
+			$form->output_submit_wrapper($buttons);
+			$form->end();
+			$page->output_footer();
+			break;
+		case 'multiusergroup':
+			if($mybb->input['processed'] == 1)
+			{
+				// Determine additional usergroups
+				if(is_array($mybb->input['additionalgroups']))
 				{
-					$page->output_inline_error($errors);
-				}
-
-				// Display the prune options
-				$form = new Form("index.php?module=user-users", "post");
-				echo $form->generate_hidden_field('action', 'inline_edit');
-				echo $form->generate_hidden_field('inline_action', 'multiprune');
-				echo $form->generate_hidden_field('processed', '1');
-
-				$form_container = new FormContainer($lang->mass_prune_posts);
-
-				// Generate a list of days (1 - 31)
-				$day_options = array();
-				$day_options[] = "&nbsp;";
-				for($i = 1; $i <= 31; ++$i)
-				{
-					$day_options[] = $i;
-				}
-
-				// Generate a list of months (1 - 12)
-				$month_options = array();
-				$month_options[] = "&nbsp;";
-				for($i = 1; $i <= 12; ++$i)
-				{
-					$string = "month_{$i}";
-					$month_options[] = $lang->$string;
-				}
-				$date_box = $form->generate_select_box('day', $day_options, $mybb->input['day']);
-				$month_box = $form->generate_select_box('month', $month_options, $mybb->input['month']);
-				$year_box = $form->generate_numeric_field('year', $mybb->input['year'], array('id' => 'year', 'style' => 'width: 50px;'));
-
-				$prune_select = $date_box.$month_box.$year_box;
-				$form_container->output_row($lang->manual_date, "", $prune_select, 'date');
-
-				// Generate the set date box
-				$set_options = array();
-				$set_options[] = $lang->set_an_option;
-				for($i = 1; $i <= 6; ++$i)
-				{
-					$string = "option_{$i}";
-					$set_options[] = $lang->$string;
-				}
-
-				$form_container->output_row($lang->relative_date, "", $lang->delete_posts." ".$form->generate_select_box('set', $set_options, $mybb->input['set']), 'set');
-				$form_container->end();
-
-				$buttons[] = $form->generate_submit_button($lang->prune_posts);
-				$form->output_submit_wrapper($buttons);
-				$form->end();
-				$page->output_footer();
-				break;
-			case 'multiusergroup':
-				if($mybb->input['processed'] == 1)
-				{
-					// Determine additional usergroups
-					if(is_array($mybb->input['additionalgroups']))
+					foreach($mybb->input['additionalgroups'] as $key => $gid)
 					{
-						foreach($mybb->input['additionalgroups'] as $key => $gid)
+						if($gid == $mybb->input['usergroup'])
 						{
-							if($gid == $mybb->input['usergroup'])
-							{
-								unset($mybb->input['additionalgroups'][$key]);
-							}
-						}
-
-						$additionalgroups = implode(",", array_map('intval', $mybb->input['additionalgroups']));
-					}
-					else
-					{
-						$additionalgroups = '';
-					}
-
-					// Create an update array
-					$update_array = array(
-						"usergroup" => (int)$mybb->input['usergroup'],
-						"additionalgroups" => $additionalgroups,
-						"displaygroup" => (int)$mybb->input['displaygroup']
-					);
-
-					// Do the usergroup update for all those selected
-					// If the a selected user is a super admin, don't update that user
-					foreach($selected as $user)
-					{
-						if(!is_super_admin($user))
-						{
-							$users_to_update[] = $user;
+							unset($mybb->input['additionalgroups'][$key]);
 						}
 					}
 
-					$to_update_count = count($users_to_update);
-					if($to_update_count > 0 && is_array($users_to_update))
+					$additionalgroups = implode(",", array_map('intval', $mybb->input['additionalgroups']));
+				}
+				else
+				{
+					$additionalgroups = '';
+				}
+
+				// Create an update array
+				$update_array = array(
+					"usergroup" => $mybb->get_input('usergroup', MyBB::INPUT_INT),
+					"additionalgroups" => $additionalgroups,
+					"displaygroup" => $mybb->get_input('displaygroup', MyBB::INPUT_INT)
+				);
+
+				// Do the usergroup update for all those selected
+				// If the a selected user is a super admin, don't update that user
+				foreach($selected as $user)
+				{
+					if(!is_super_admin($user))
 					{
-						// Update the users in the database
-						$sql = implode(",", $users_to_update);
-						$db->update_query("users", $update_array, "uid IN (".$sql.")");
-
-						// Redirect the admin...
-						$mybb->input['action'] = "inline_usergroup";
-						log_admin_action($to_update_count);
-						my_unsetcookie("inlinemod_useracp");
-						flash_message($lang->success_mass_usergroups, 'success');
-						admin_redirect("index.php?module=user-users".$vid_url);
-					}
-					else
-					{
-						// They tried to edit super admins! Uh-oh!
-						$errors[] = $lang->no_usergroup_changed;
+						$users_to_update[] = $user;
 					}
 				}
 
-				$page->output_header($lang->manage_users);
-				$page->output_nav_tabs($sub_tabs, 'manage_users');
-
-				// Display a table warning
-				$table = new Table;
-				$lang->usergroup_info = $lang->sprintf($lang->usergroup_info, count($selected));
-				$table->construct_cell($lang->usergroup_info);
-				$table->construct_row();
-				$table->output($lang->important);
-
-				if($errors)
+				$to_update_count = count($users_to_update);
+				if($to_update_count > 0 && is_array($users_to_update))
 				{
-					$page->output_inline_error($errors);
+					// Update the users in the database
+					$sql = implode(",", $users_to_update);
+					$db->update_query("users", $update_array, "uid IN (".$sql.")");
+
+					// Redirect the admin...
+					$mybb->input['action'] = "inline_usergroup";
+					log_admin_action($to_update_count);
+					my_unsetcookie("inlinemod_useracp");
+					flash_message($lang->success_mass_usergroups, 'success');
+					admin_redirect("index.php?module=user-users".$vid_url);
 				}
-
-				// Display the usergroup options
-				$form = new Form("index.php?module=user-users", "post");
-				echo $form->generate_hidden_field('action', 'inline_edit');
-				echo $form->generate_hidden_field('inline_action', 'multiusergroup');
-				echo $form->generate_hidden_field('processed', '1');
-
-				$form_container = new FormContainer($lang->mass_usergroups);
-
-				// Usergroups
-				$display_group_options[0] = $lang->use_primary_user_group;
-				$options = array();
-				$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
-				while($usergroup = $db->fetch_array($query))
+				else
 				{
-					$options[$usergroup['gid']] = $usergroup['title'];
-					$display_group_options[$usergroup['gid']] = $usergroup['title'];
+					// They tried to edit super admins! Uh-oh!
+					$errors[] = $lang->no_usergroup_changed;
 				}
+			}
 
-				if(!is_array($mybb->input['additionalgroups']))
-				{
-					$mybb->input['additionalgroups'] = explode(',', $mybb->input['additionalgroups']);
-				}
+			$page->output_header($lang->manage_users);
+			$page->output_nav_tabs($sub_tabs, 'manage_users');
 
-				$form_container->output_row($lang->primary_user_group, "", $form->generate_select_box('usergroup', $options, $mybb->input['usergroup'], array('id' => 'usergroup')), 'usergroup');
-				$form_container->output_row($lang->additional_user_groups, $lang->additional_user_groups_desc, $form->generate_select_box('additionalgroups[]', $options, $mybb->input['additionalgroups'], array('id' => 'additionalgroups', 'multiple' => true, 'size' => 5)), 'additionalgroups');
-				$form_container->output_row($lang->display_user_group, "", $form->generate_select_box('displaygroup', $display_group_options, $mybb->input['displaygroup'], array('id' => 'displaygroup')), 'displaygroup');
+			// Display a table warning
+			$table = new Table;
+			$lang->usergroup_info = $lang->sprintf($lang->usergroup_info, count($selected));
+			$table->construct_cell($lang->usergroup_info);
+			$table->construct_row();
+			$table->output($lang->important);
 
-				$form_container->end();
+			if($errors)
+			{
+				$page->output_inline_error($errors);
+			}
 
-				$buttons[] = $form->generate_submit_button($lang->alter_usergroups);
-				$form->output_submit_wrapper($buttons);
-				$form->end();
-				$page->output_footer();
-				break;
-		}
+			// Display the usergroup options
+			$form = new Form("index.php?module=user-users", "post");
+			echo $form->generate_hidden_field('action', 'inline_edit');
+			echo $form->generate_hidden_field('inline_action', 'multiusergroup');
+			echo $form->generate_hidden_field('processed', '1');
+
+			$form_container = new FormContainer($lang->mass_usergroups);
+
+			// Usergroups
+			$display_group_options[0] = $lang->use_primary_user_group;
+			$options = array();
+			$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
+			while($usergroup = $db->fetch_array($query))
+			{
+				$options[$usergroup['gid']] = htmlspecialchars_uni($usergroup['title']);
+				$display_group_options[$usergroup['gid']] = htmlspecialchars_uni($usergroup['title']);
+			}
+
+			if(!is_array($mybb->input['additionalgroups']))
+			{
+				$mybb->input['additionalgroups'] = explode(',', $mybb->input['additionalgroups']);
+			}
+
+			$form_container->output_row($lang->primary_user_group, "", $form->generate_select_box('usergroup', $options, $mybb->input['usergroup'], array('id' => 'usergroup')), 'usergroup');
+			$form_container->output_row($lang->additional_user_groups, $lang->additional_user_groups_desc, $form->generate_select_box('additionalgroups[]', $options, $mybb->input['additionalgroups'], array('id' => 'additionalgroups', 'multiple' => true, 'size' => 5)), 'additionalgroups');
+			$form_container->output_row($lang->display_user_group, "", $form->generate_select_box('displaygroup', $display_group_options, $mybb->input['displaygroup'], array('id' => 'displaygroup')), 'displaygroup');
+
+			$form_container->end();
+
+			$buttons[] = $form->generate_submit_button($lang->alter_usergroups);
+			$form->output_submit_wrapper($buttons);
+			$form->end();
+			$page->output_footer();
+			break;
 	}
 }
 
@@ -2966,7 +3013,7 @@ if(!$mybb->input['action'])
 		// Showing a specific view
 		if(isset($mybb->input['vid']))
 		{
-			$query = $db->simple_select("adminviews", "*", "vid='".$mybb->get_input('vid', 1)."'");
+			$query = $db->simple_select("adminviews", "*", "vid='".$mybb->get_input('vid', MyBB::INPUT_INT)."'");
 			$admin_view = $db->fetch_array($query);
 			// View does not exist or this view is private and does not belong to the current user
 			if(!$admin_view['vid'] || ($admin_view['visibility'] == 1 && $admin_view['uid'] != $mybb->user['uid']))
@@ -3038,6 +3085,11 @@ if(!$mybb->input['action'])
 	$page->output_footer();
 }
 
+/**
+ * @param array $view
+ *
+ * @return string
+ */
 function build_users_view($view)
 {
 	global $mybb, $db, $cache, $lang, $user_view_fields, $page;
@@ -3288,7 +3340,7 @@ function build_users_view($view)
 				}
 				else
 				{
-					$userfield_sql .= ' AND '.$db->escape_string($column)." LIKE '%".$db->escape_string($input)."%'";
+					$userfield_sql .= ' AND '.$db->escape_string($column)." LIKE '%".$db->escape_string_like($input)."%'";
 				}
 			}
 		}
@@ -3380,7 +3432,7 @@ function build_users_view($view)
 		}
 		else
 		{
-			$mybb->input['page'] = $mybb->get_input('page', 1);
+			$mybb->input['page'] = $mybb->get_input('page', MyBB::INPUT_INT);
 		}
 
 		if($mybb->input['page'])
@@ -3440,14 +3492,14 @@ function build_users_view($view)
 		{
 			$comma = $groups_list = '';
 			$user['view']['username'] = "<a href=\"index.php?module=user-users&amp;action=edit&amp;uid={$user['uid']}\">".format_name($user['username'], $user['usergroup'], $user['displaygroup'])."</a>";
-			$user['view']['usergroup'] = $usergroups[$user['usergroup']]['title'];
+			$user['view']['usergroup'] = htmlspecialchars_uni($usergroups[$user['usergroup']]['title']);
 			if($user['additionalgroups'])
 			{
 				$additional_groups = explode(",", $user['additionalgroups']);
 
 				foreach($additional_groups as $group)
 				{
-					$groups_list .= "{$comma}{$usergroups[$group]['title']}";
+					$groups_list .= $comma.htmlspecialchars_uni($usergroups[$group]['title']);
 					$comma = $lang->comma;
 				}
 			}
@@ -3508,6 +3560,11 @@ function build_users_view($view)
 
 			if($mybb->settings['enablewarningsystem'] != 0 && $usergroups[$user['usergroup']]['canreceivewarnings'] != 0)
 			{
+				if($mybb->settings['maxwarningpoints'] < 1)
+				{
+					$mybb->settings['maxwarningpoints'] = 10;
+				}
+
 				$warning_level = round($user['warningpoints']/$mybb->settings['maxwarningpoints']*100);
 				if($warning_level > 100)
 				{
@@ -3565,7 +3622,7 @@ function build_users_view($view)
 	$switch_url = $view['url'];
 	if($mybb->input['page'] > 0)
 	{
-		$switch_url .= "&amp;page=".$mybb->get_input('page', 1);
+		$switch_url .= "&amp;page=".$mybb->get_input('page', MyBB::INPUT_INT);
 	}
 	if($view['view_type'] != "card")
 	{
@@ -3710,6 +3767,13 @@ function build_users_view($view)
 	return $built_view;
 }
 
+/**
+ * @param array $user
+ * @param array $view
+ * @param int $i
+ *
+ * @return string
+ */
 function build_user_view_card($user, $view, &$i)
 {
 	global $user_view_fields;
@@ -3790,6 +3854,11 @@ function build_user_view_card($user, $view, &$i)
 
 }
 
+/**
+ * @param array $user
+ * @param array $view
+ * @param DefaultTable $table
+ */
 function build_user_view_table($user, $view, &$table)
 {
 	global $user_view_fields;
@@ -3827,6 +3896,13 @@ function build_user_view_table($user, $view, &$table)
 	$table->construct_row();
 }
 
+/**
+ * @param array $user
+ * @param int $max_width
+ * @param int $max_height
+ *
+ * @return array
+ */
 function fetch_scaled_avatar($user, $max_width=80, $max_height=80)
 {
 	$scaled_dimensions = array(
@@ -3847,6 +3923,13 @@ function fetch_scaled_avatar($user, $max_width=80, $max_height=80)
 	return array("width" => $scaled_dimensions['width'], "height" => $scaled_dimensions['height']);
 }
 
+/**
+ * @param array $fields
+ * @param array $values
+ * @param DefaultFormContainer $form_container
+ * @param DefaultForm $form
+ * @param bool $search
+ */
 function output_custom_profile_fields($fields, $values, &$form_container, &$form, $search=false)
 {
 	global $lang;
@@ -3857,7 +3940,8 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 	}
 	foreach($fields as $profile_field)
 	{
-		$profile_field['type'] = htmlspecialchars_uni($profile_field['type']);
+		$profile_field['name'] = htmlspecialchars_uni($profile_field['name']);
+		$profile_field['description'] = htmlspecialchars_uni($profile_field['description']);
 		list($type, $options) = explode("\n", $profile_field['type'], 2);
 		$type = trim($type);
 		$field_name = "fid{$profile_field['fid']}";
@@ -3877,7 +3961,7 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 				$selected_options = array();
 				foreach($user_options as $val)
 				{
-					$selected_options[$val] = $val;
+					$selected_options[$val] = htmlspecialchars_uni($val);
 				}
 
 				$select_options = explode("\n", $options);
@@ -3889,7 +3973,7 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 
 				foreach($select_options as $val)
 				{
-					$val = trim($val);
+					$val = htmlspecialchars_uni(trim($val));
 					$options[$val] = $val;
 				}
 				if(!$profile_field['length'])
@@ -3908,7 +3992,7 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 				$options = array();
 				foreach($select_options as $val)
 				{
-					$val = trim($val);
+					$val = htmlspecialchars_uni(trim($val));
 					$options[$val] = $val;
 				}
 				if(!$profile_field['length'])
@@ -3917,11 +4001,11 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 				}
 				if($search == true)
 				{
-					$code = $form->generate_select_box("profile_fields[{$field_name}][{$field_name}]", $options, $values[$field_name], array('id' => "profile_field_{$field_name}", 'size' => $profile_field['length']));
+					$code = $form->generate_select_box("profile_fields[{$field_name}][{$field_name}]", $options, htmlspecialchars_uni($values[$field_name]), array('id' => "profile_field_{$field_name}", 'size' => $profile_field['length']));
 				}
 				else
 				{
-					$code = $form->generate_select_box("profile_fields[{$field_name}]", $options, $values[$field_name], array('id' => "profile_field_{$field_name}", 'size' => $profile_field['length']));
+					$code = $form->generate_select_box("profile_fields[{$field_name}]", $options, htmlspecialchars_uni($values[$field_name]), array('id' => "profile_field_{$field_name}", 'size' => $profile_field['length']));
 				}
 				break;
 			case "radio":
@@ -3935,7 +4019,7 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 				foreach($radio_options as $val)
 				{
 					$val = trim($val);
-					$code .= $form->generate_radio_button("profile_fields[{$field_name}]", $val, $val, array('id' => "profile_field_{$field_name}", 'checked' => ($val == $values[$field_name] ? true : false)))."<br />";
+					$code .= $form->generate_radio_button("profile_fields[{$field_name}]", $val, htmlspecialchars_uni($val), array('id' => "profile_field_{$field_name}", 'checked' => ($val == $values[$field_name] ? true : false)))."<br />";
 				}
 				break;
 			case "checkbox":
@@ -3961,7 +4045,7 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 				foreach($select_options as $val)
 				{
 					$val = trim($val);
-					$code .= $form->generate_check_box("profile_fields[{$field_name}][]", $val, $val, array('id' => "profile_field_{$field_name}", 'checked' => ($val == $selected_options[$val] ? true : false)))."<br />";
+					$code .= $form->generate_check_box("profile_fields[{$field_name}][]", $val, htmlspecialchars_uni($val), array('id' => "profile_field_{$field_name}", 'checked' => ($val == $selected_options[$val] ? true : false)))."<br />";
 				}
 				break;
 			case "textarea":
@@ -3989,6 +4073,10 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 	}
 }
 
+/**
+ * @param array $input
+ * @param DefaultForm $form
+ */
 function user_search_conditions($input=array(), &$form)
 {
 	global $mybb, $db, $lang;
@@ -4021,13 +4109,13 @@ function user_search_conditions($input=array(), &$form)
 	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
 	while($usergroup = $db->fetch_array($query))
 	{
-		$options[$usergroup['gid']] = $usergroup['title'];
+		$options[$usergroup['gid']] = htmlspecialchars_uni($usergroup['title']);
 	}
 
 	$form_container->output_row($lang->is_member_of_groups, $lang->additional_user_groups_desc, $form->generate_select_box('conditions[usergroup][]', $options, $input['conditions']['usergroup'], array('id' => 'usergroups', 'multiple' => true, 'size' => 5)), 'usergroups');
 
 	$form_container->output_row($lang->website_contains, "", $form->generate_text_box('conditions[website]', $input['conditions']['website'], array('id' => 'website'))." {$lang->or} ".$form->generate_check_box('conditions[website_blank]', 1, $lang->is_not_blank, array('id' => 'website_blank', 'checked' => $input['conditions']['website_blank'])), 'website');
-	$form_container->output_row($lang->icq_number_contains, "", $form->generate_numeric_field('conditions[icq]', $input['conditions']['icq'], array('id' => 'icq'))." {$lang->or} ".$form->generate_check_box('conditions[icq_blank]', 1, $lang->is_not_blank, array('id' => 'icq_blank', 'checked' => $input['conditions']['icq_blank'])), 'icq');
+	$form_container->output_row($lang->icq_number_contains, "", $form->generate_text_box('conditions[icq]', $input['conditions']['icq'], array('id' => 'icq'))." {$lang->or} ".$form->generate_check_box('conditions[icq_blank]', 1, $lang->is_not_blank, array('id' => 'icq_blank', 'checked' => $input['conditions']['icq_blank'])), 'icq');
 	$form_container->output_row($lang->aim_handle_contains, "", $form->generate_text_box('conditions[aim]', $input['conditions']['aim'], array('id' => 'aim'))." {$lang->or} ".$form->generate_check_box('conditions[aim_blank]', 1, $lang->is_not_blank, array('id' => 'aim_blank', 'checked' => $input['conditions']['aim_blank'])), 'aim');
 	$form_container->output_row($lang->yahoo_contains, "", $form->generate_text_box('conditions[yahoo]', $input['conditions']['yahoo'], array('id' => 'yahoo'))." {$lang->or} ".$form->generate_check_box('conditions[yahoo_blank]', 1, $lang->is_not_blank, array('id' => 'yahoo_blank', 'checked' => $input['conditions']['yahoo_blank'])), 'yahoo');
 	$form_container->output_row($lang->skype_contains, "", $form->generate_text_box('conditions[skype]', $input['conditions']['skype'], array('id' => 'skype'))." {$lang->or} ".$form->generate_check_box('conditions[skype_blank]', 1, $lang->is_not_blank, array('id' => 'skype_blank', 'checked' => $input['conditions']['skype_blank'])), 'skype');
@@ -4039,8 +4127,8 @@ function user_search_conditions($input=array(), &$form)
 		"is_exactly" => $lang->is_exactly,
 		"less_than" => $lang->less_than
 	);
-	$form_container->output_row($lang->post_count_is, "", $form->generate_select_box('conditions[postnum_dir]', $greater_options, $input['conditions']['postnum_dir'], array('id' => 'numposts_dir'))." ".$form->generate_numeric_field('conditions[postnum]', $input['conditions']['postnum'], array('id' => 'numposts')), 'numposts');
-	$form_container->output_row($lang->thread_count_is, "", $form->generate_select_box('conditions[threadnum_dir]', $greater_options, $input['conditions']['threadnum_dir'], array('id' => 'numthreads_dir'))." ".$form->generate_numeric_field('conditions[threadnum]', $input['conditions']['threadnum'], array('id' => 'numthreads')), 'numthreads');
+	$form_container->output_row($lang->post_count_is, "", $form->generate_select_box('conditions[postnum_dir]', $greater_options, $input['conditions']['postnum_dir'], array('id' => 'numposts_dir'))." ".$form->generate_text_box('conditions[postnum]', $input['conditions']['postnum'], array('id' => 'numposts')), 'numposts');
+	$form_container->output_row($lang->thread_count_is, "", $form->generate_select_box('conditions[threadnum_dir]', $greater_options, $input['conditions']['threadnum_dir'], array('id' => 'numthreads_dir'))." ".$form->generate_text_box('conditions[threadnum]', $input['conditions']['threadnum'], array('id' => 'numthreads')), 'numthreads');
 
 	$form_container->output_row($lang->reg_in_x_days, '', $form->generate_text_box('conditions[regdate]', $input['conditions']['regdate'], array('id' => 'regdate')).' '.$lang->days, 'regdate');
 	$form_container->output_row($lang->reg_ip_matches, $lang->wildcard, $form->generate_text_box('conditions[regip]', $input['conditions']['regip'], array('id' => 'regip')), 'regip');
@@ -4076,13 +4164,12 @@ function user_search_conditions($input=array(), &$form)
 	// Autocompletion for usernames
 	echo '
 <link rel="stylesheet" href="../jscripts/select2/select2.css">
-<script type="text/javascript" src="../jscripts/select2/select2.min.js"></script>
+<script type="text/javascript" src="../jscripts/select2/select2.min.js?ver=1804"></script>
 <script type="text/javascript">
 <!--
 $("#username").select2({
-	placeholder: "Search for a user",
-	minimumInputLength: 3,
-	maximumSelectionSize: 3,
+	placeholder: "'.$lang->search_for_a_user.'",
+	minimumInputLength: 2,
 	multiple: false,
 	ajax: { // instead of writing the function to execute the request we use Select2\'s convenient helper
 		url: "../xmlhttp.php?action=get_users",

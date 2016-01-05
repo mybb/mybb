@@ -41,12 +41,24 @@ class LoginDataHandler extends DataHandler
 	 */
 	public $login_data = array();
 
+	/**
+	 * @var bool
+	 */
 	public $captcha_verified = true;
-	
+
+	/**
+	 * @var bool|captcha
+	 */
 	private $captcha = false;
 
+	/**
+	 * @var int
+	 */
 	public $username_method = null;
 
+	/**
+	 * @param int $check_captcha
+	 */
 	function verify_attempts($check_captcha = 0)
 	{
 		global $db, $mybb;
@@ -67,6 +79,9 @@ class LoginDataHandler extends DataHandler
 		}
 	}
 
+	/**
+	 * @return bool
+	 */
 	function verify_captcha()
 	{
 		global $db, $mybb;
@@ -106,6 +121,9 @@ class LoginDataHandler extends DataHandler
 		}
 	}
 
+	/**
+	 * @return bool
+	 */
 	function verify_username()
 	{
 		$this->get_login_data();
@@ -115,11 +133,18 @@ class LoginDataHandler extends DataHandler
 			$this->invalid_combination();
 			return false;
 		}
+
+		return true;
 	}
 
+	/**
+	 * @param bool $strict
+	 *
+	 * @return bool
+	 */
 	function verify_password($strict = true)
 	{
-		global $db, $mybb;
+		global $db, $mybb, $plugins;
 
 		$this->get_login_data();
 
@@ -129,6 +154,13 @@ class LoginDataHandler extends DataHandler
 			$this->invalid_combination();
 			return false;
 		}
+
+		$args = array(
+			'this' => &$this,
+			'strict' => &$strict,
+		);
+
+		$plugins->run_hooks('datahandler_login_verify_password_start', $args);
 
 		$user = &$this->data;
 
@@ -169,13 +201,20 @@ class LoginDataHandler extends DataHandler
 
 		$salted_password = md5(md5($this->login_data['salt']).$password);
 
-		if($salted_password != $this->login_data['password'])
+		$plugins->run_hooks('datahandler_login_verify_password_end', $args);
+
+		if($salted_password !== $this->login_data['password'])
 		{
 			$this->invalid_combination(true);
 			return false;
 		}
+
+		return true;
 	}
 
+	/**
+	 * @param bool $show_login_attempts
+	 */
 	function invalid_combination($show_login_attempts = false)
 	{
 		global $db, $lang, $mybb;
@@ -229,6 +268,9 @@ class LoginDataHandler extends DataHandler
 		$this->login_data = get_user_by_username($user['username'], $options);
 	}
 
+	/**
+	 * @return bool
+	 */
 	function validate_login()
 	{
 		global $plugins, $mybb;
@@ -237,7 +279,10 @@ class LoginDataHandler extends DataHandler
 
 		$plugins->run_hooks('datahandler_login_validate_start', $this);
 
-		$this->verify_attempts($mybb->settings['captchaimage']);
+		if(!defined('IN_ADMINCP'))
+		{
+			$this->verify_attempts($mybb->settings['captchaimage']);
+		}
 
 		if(array_key_exists('username', $user))
 		{
@@ -260,6 +305,9 @@ class LoginDataHandler extends DataHandler
 		return true;
 	}
 
+	/**
+	 * @return bool true
+	 */
 	function complete_login()
 	{
 		global $plugins, $db, $mybb, $session;

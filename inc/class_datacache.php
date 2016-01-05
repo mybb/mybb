@@ -20,7 +20,7 @@ class datacache
 	/**
 	 * The current cache handler we're using
 	 *
-	 * @var object
+	 * @var apcCacheHandler|diskCacheHandler|eacceleratorCacheHandler|memcacheCacheHandler|memcachedCacheHandler|xcacheCacheHandler
 	 */
 	public $handler = null;
 
@@ -117,7 +117,7 @@ class datacache
 			$query = $db->simple_select("datacache", "title,cache");
 			while($data = $db->fetch_array($query))
 			{
-				$this->cache[$data['title']] = my_unserialize($data['cache']);
+				$this->cache[$data['title']] = unserialize($data['cache']);
 			}
 		}
 	}
@@ -125,9 +125,9 @@ class datacache
 	/**
 	 * Read cache from files or db.
 	 *
-	 * @param string The cache component to read.
-	 * @param boolean If true, cannot be overwritten during script execution.
-	 * @return unknown
+	 * @param string $name The cache component to read.
+	 * @param boolean $hard If true, cannot be overwritten during script execution.
+	 * @return mixed
 	 */
 	function read($name, $hard=false)
 	{
@@ -171,7 +171,7 @@ class datacache
 				// Fetch from database
 				$query = $db->simple_select("datacache", "title,cache", "title='".$db->escape_string($name)."'");
 				$cache_data = $db->fetch_array($query);
-				$data = my_unserialize($cache_data['cache']);
+				$data = unserialize($cache_data['cache']);
 
 				// Update cache for handler
 				get_execution_time();
@@ -200,7 +200,7 @@ class datacache
 			}
 			else
 			{
-				$data = my_unserialize($cache_data['cache']);
+				$data = unserialize($cache_data['cache']);
 			}
 		}
 
@@ -220,8 +220,8 @@ class datacache
 	/**
 	 * Update cache contents.
 	 *
-	 * @param string The cache content identifier.
-	 * @param string The cache content.
+	 * @param string $name The cache content identifier.
+	 * @param string $contents The cache content.
 	 */
 	function update($name, $contents)
 	{
@@ -261,8 +261,8 @@ class datacache
 	 * Originally from frostschutz's PluginLibrary
 	 * github.com/frostschutz
 	 *
-	 * @param string Cache name or title
-	 * @param boolean To delete a cache starting with name_
+	 * @param string $name Cache name or title
+	 * @param boolean $greedy To delete a cache starting with name_
 	 */
 	 function delete($name, $greedy = false)
 	 {
@@ -359,9 +359,9 @@ class datacache
 	/**
 	 * Debug a cache call to a non-database cache handler
 	 *
-	 * @param string The cache key
-	 * @param string The time it took to perform the call.
-	 * @param boolean Hit or miss status
+	 * @param string $string The cache key
+	 * @param string $qtime The time it took to perform the call.
+	 * @param boolean $hit Hit or miss status
 	 */
 	function debug_call($string, $qtime, $hit)
 	{
@@ -386,18 +386,18 @@ class datacache
 		$cache_method = $cache_data[0];
 		$cache_key = $cache_data[1];
 
-		$this->cache_debug .= "<table style=\"background-color: #666;\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n".
-			"<tr>\n".
-			"<td style=\"background-color: #ccc;\">{$debug_extra}<div><strong>#".$this->call_count." - ".ucfirst($cache_method)." Call</strong></div></td>\n".
-			"</tr>\n".
-			"<tr style=\"background-color: #fefefe;\">\n".
-			"<td><span style=\"font-family: Courier; font-size: 14px;\">(".$mybb->config['cache_store'].") [".$hit_status."] ".htmlspecialchars_uni($cache_key)."</span></td>\n".
-			"</tr>\n".
-			"<tr>\n".
-			"<td bgcolor=\"#ffffff\">Call Time: ".format_time_duration($qtime)."</td>\n".
-			"</tr>\n".
-			"</table>\n".
-			"<br />\n";
+		$this->cache_debug = "<table style=\"background-color: #666;\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">
+<tr>
+	<td style=\"background-color: #ccc;\">{$debug_extra}<div><strong>#{$this->call_count} - ".ucfirst($cache_method)." Call</strong></div></td>
+</tr>
+<tr style=\"background-color: #fefefe;\">
+	<td><span style=\"font-family: Courier; font-size: 14px;\">({$mybb->config['cache_store']}) [{$hit_status}] ".htmlspecialchars_uni($cache_key)."</span></td>
+</tr>
+<tr>
+	<td bgcolor=\"#ffffff\">Call Time: ".format_time_duration($qtime)."</td>
+</tr>
+</table>
+<br />\n";
 
 		$this->calllist[$this->call_count]['key'] = $string;
 		$this->calllist[$this->call_count]['time'] = $qtime;
@@ -406,7 +406,7 @@ class datacache
 	/**
 	 * Select the size of the cache
 	 *
-	 * @param string The name of the cache
+	 * @param string $name The name of the cache
 	 * @return integer the size of the cache
 	 */
 	function size_of($name='')
@@ -563,7 +563,7 @@ class datacache
 	/**
 	 * Update the forum permissions cache.
 	 *
-	 * @return false When failed, returns false.
+	 * @return bool When failed, returns false.
 	 */
 	function update_forumpermissions()
 	{
@@ -603,14 +603,16 @@ class datacache
 
 		$this->build_forum_permissions();
 		$this->update("forumpermissions", $this->built_forum_permissions);
+
+		return true;
 	}
 
 	/**
 	 * Build the forum permissions array
 	 *
 	 * @access private
-	 * @param array An optional permissions array.
-	 * @param int An optional permission id.
+	 * @param array $permissions An optional permissions array.
+	 * @param int $pid An optional permission id.
 	 */
 	private function build_forum_permissions($permissions=array(), $pid=0)
 	{
@@ -660,9 +662,6 @@ class datacache
 	{
 		global $db;
 
-		$query = $db->simple_select('forums', 'fid, threads, posts', $fidnot.'type=\'f\'', array('order_by' => 'posts', 'order_dir' => 'DESC', 'limit' => 1));
-		$forum = $db->fetch_array($query);
-
 		$query = $db->simple_select('users', 'uid, username, referrals', 'referrals>0', array('order_by' => 'referrals', 'order_dir' => 'DESC', 'limit' => 1));
 		$topreferrer = $db->fetch_array($query);
 
@@ -678,7 +677,7 @@ class datacache
 		}
 
 		$query = $db->query('
-			SELECT u.uid, u.username, COUNT(*) AS poststoday
+			SELECT u.uid, u.username, COUNT(pid) AS poststoday
 			FROM '.TABLE_PREFIX.'posts p
 			LEFT JOIN '.TABLE_PREFIX.'users u ON (p.uid=u.uid)
 			WHERE p.dateline>'.$timesearch.'
@@ -687,15 +686,14 @@ class datacache
 		');
 		$topposter = $db->fetch_array($query);
 
-		$query = $db->simple_select('users', 'COUNT(*) AS posters', 'postnum>0');
+		$query = $db->simple_select('users', 'COUNT(uid) AS posters', 'postnum>0');
 		$posters = $db->fetch_field($query, 'posters');
 
 		$statistics = array(
 			'time' => TIME_NOW,
-			'top_forum' => (array)$forum,
 			'top_referrer' => (array)$topreferrer,
 			'top_poster' => (array)$topposter,
-			'posters' => (int)$posters,
+			'posters' => $posters
 		);
 
 		$this->update('statistics', $statistics);
@@ -704,6 +702,7 @@ class datacache
 	/**
 	 * Update the moderators cache.
 	 *
+	 * @return bool Returns false on failure
 	 */
 	function update_moderators()
 	{
@@ -781,6 +780,8 @@ class datacache
 		$this->build_moderators();
 
 		$this->update("moderators", $this->built_moderators);
+
+		return true;
 	}
 
 	/**
@@ -794,15 +795,20 @@ class datacache
 		$query = $db->simple_select('users', 'COUNT(uid) AS awaitingusers', 'usergroup=\'5\'');
 		$awaitingusers = (int)$db->fetch_field($query, 'awaitingusers');
 
-		$this->update('awaitingactivation', array('users' => $awaitingusers));
+		$data = array(
+			'users'	=> $awaitingusers,
+			'time'	=> TIME_NOW 
+		);
+
+		$this->update('awaitingactivation', $data);
 	}
 
 	/**
 	 * Build the moderators array
 	 *
 	 * @access private
-	 * @param array An optional moderators array (moderators of the parent forum for example).
-	 * @param int An optional parent ID.
+	 * @param array $moderators An optional moderators array (moderators of the parent forum for example).
+	 * @param int $pid An optional parent ID.
 	 */
 	private function build_moderators($moderators=array(), $pid=0)
 	{
@@ -847,7 +853,7 @@ class datacache
 		$forums = array();
 
 		// Things we don't want to cache
-		$exclude = array("unapprovedthreads", "unapprovedposts", "threads", "posts", "lastpost", "lastposter", "lastposttid", "deletedthreads", "deletedposts");
+		$exclude = array("unapprovedthreads", "unapprovedposts", "threads", "posts", "lastpost", "lastposter", "lastposttid", "lastposteruid", "lastpostsubject", "deletedthreads", "deletedposts");
 
 		$query = $db->simple_select("forums", "*", "", array('order_by' => 'pid,disporder'));
 		while($forum = $db->fetch_array($query))
@@ -946,6 +952,8 @@ class datacache
 	/**
 	 * Update the mailqueue cache
 	 *
+	 * @param int $last_run
+	 * @param int $lock_time
 	 */
 	function update_mailqueue($last_run=0, $lock_time=0)
 	{
@@ -1119,7 +1127,7 @@ class datacache
 
 		$birthdays = array();
 
-		// Get today, yesturday, and tomorrow's time (for different timezones)
+		// Get today, yesterday, and tomorrow's time (for different timezones)
 		$bdaytime = TIME_NOW;
 		$bdaydate = my_date("j-n", $bdaytime, '', 0);
 		$bdaydatetomorrow = my_date("j-n", ($bdaytime+86400), '', 0);
@@ -1250,7 +1258,7 @@ class datacache
 		global $db;
 
 		$query = $db->simple_select("datacache", "title,cache", "title='mostonline'");
-		$this->update("mostonline", my_unserialize($db->fetch_field($query, "cache")));
+		$this->update("mostonline", unserialize($db->fetch_field($query, "cache")));
 	}
 
 	function reload_plugins()
@@ -1258,7 +1266,7 @@ class datacache
 		global $db;
 
 		$query = $db->simple_select("datacache", "title,cache", "title='plugins'");
-		$this->update("plugins", my_unserialize($db->fetch_field($query, "cache")));
+		$this->update("plugins", unserialize($db->fetch_field($query, "cache")));
 	}
 
 	function reload_last_backup()
@@ -1266,7 +1274,7 @@ class datacache
 		global $db;
 
 		$query = $db->simple_select("datacache", "title,cache", "title='last_backup'");
-		$this->update("last_backup", my_unserialize($db->fetch_field($query, "cache")));
+		$this->update("last_backup", unserialize($db->fetch_field($query, "cache")));
 	}
 
 	function reload_internal_settings()
@@ -1274,7 +1282,7 @@ class datacache
 		global $db;
 
 		$query = $db->simple_select("datacache", "title,cache", "title='internal_settings'");
-		$this->update("internal_settings", my_unserialize($db->fetch_field($query, "cache")));
+		$this->update("internal_settings", unserialize($db->fetch_field($query, "cache")));
 	}
 
 	function reload_version_history()
@@ -1282,7 +1290,7 @@ class datacache
 		global $db;
 
 		$query = $db->simple_select("datacache", "title,cache", "title='version_history'");
-		$this->update("version_history", my_unserialize($db->fetch_field($query, "cache")));
+		$this->update("version_history", unserialize($db->fetch_field($query, "cache")));
 	}
 
 	function reload_modnotes()
@@ -1290,7 +1298,7 @@ class datacache
 		global $db;
 
 		$query = $db->simple_select("datacache", "title,cache", "title='modnotes'");
-		$this->update("modnotes", my_unserialize($db->fetch_field($query, "cache")));
+		$this->update("modnotes", unserialize($db->fetch_field($query, "cache")));
 	}
 
 	function reload_adminnotes()
@@ -1298,7 +1306,7 @@ class datacache
 		global $db;
 
 		$query = $db->simple_select("datacache", "title,cache", "title='adminnotes'");
-		$this->update("adminnotes", my_unserialize($db->fetch_field($query, "cache")));
+		$this->update("adminnotes", unserialize($db->fetch_field($query, "cache")));
 	}
 
 	function reload_mybb_credits()

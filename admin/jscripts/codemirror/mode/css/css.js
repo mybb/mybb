@@ -182,7 +182,7 @@ CodeMirror.defineMode("css", function(config, parserConfig) {
         override = "string-2";
         return "maybeprop";
       } else if (allowNested) {
-        override = stream.match(/^\s*:/, false) ? "property" : "tag";
+        override = stream.match(/^\s*:(?:\s|$)/, false) ? "property" : "tag";
         return "block";
       } else {
         override += " error";
@@ -461,13 +461,13 @@ CodeMirror.defineMode("css", function(config, parserConfig) {
     "glyph-orientation-vertical", "text-anchor", "writing-mode"
   ], propertyKeywords = keySet(propertyKeywords_);
 
-  var nonStandardPropertyKeywords = [
+  var nonStandardPropertyKeywords_ = [
     "scrollbar-arrow-color", "scrollbar-base-color", "scrollbar-dark-shadow-color",
     "scrollbar-face-color", "scrollbar-highlight-color", "scrollbar-shadow-color",
     "scrollbar-3d-light-color", "scrollbar-track-color", "shape-inside",
     "searchfield-cancel-button", "searchfield-decoration", "searchfield-results-button",
     "searchfield-results-decoration", "zoom"
-  ], nonStandardPropertyKeywords = keySet(nonStandardPropertyKeywords);
+  ], nonStandardPropertyKeywords = keySet(nonStandardPropertyKeywords_);
 
   var colorKeywords_ = [
     "aliceblue", "antiquewhite", "aqua", "aquamarine", "azure", "beige",
@@ -525,14 +525,14 @@ CodeMirror.defineMode("css", function(config, parserConfig) {
     "ethiopic-halehame-sid-et", "ethiopic-halehame-so-et",
     "ethiopic-halehame-ti-er", "ethiopic-halehame-ti-et",
     "ethiopic-halehame-tig", "ew-resize", "expanded", "extra-condensed",
-    "extra-expanded", "fantasy", "fast", "fill", "fixed", "flat", "footnotes",
+    "extra-expanded", "fantasy", "fast", "fill", "fixed", "flat", "flex", "footnotes",
     "forwards", "from", "geometricPrecision", "georgian", "graytext", "groove",
     "gujarati", "gurmukhi", "hand", "hangul", "hangul-consonant", "hebrew",
     "help", "hidden", "hide", "higher", "highlight", "highlighttext",
     "hiragana", "hiragana-iroha", "horizontal", "hsl", "hsla", "icon", "ignore",
     "inactiveborder", "inactivecaption", "inactivecaptiontext", "infinite",
     "infobackground", "infotext", "inherit", "initial", "inline", "inline-axis",
-    "inline-block", "inline-table", "inset", "inside", "intrinsic", "invert",
+    "inline-block", "inline-flex", "inline-table", "inset", "inside", "intrinsic", "invert",
     "italic", "justify", "kannada", "katakana", "katakana-iroha", "keep-all", "khmer",
     "landscape", "lao", "large", "larger", "left", "level", "lighter",
     "line-through", "linear", "lines", "list-item", "listbox", "listitem",
@@ -589,7 +589,7 @@ CodeMirror.defineMode("css", function(config, parserConfig) {
   ], fontProperties = keySet(fontProperties_);
 
   var allWords = mediaTypes_.concat(mediaFeatures_).concat(propertyKeywords_)
-    .concat(nonStandardPropertyKeywords).concat(colorKeywords_).concat(valueKeywords_);
+    .concat(nonStandardPropertyKeywords_).concat(colorKeywords_).concat(valueKeywords_);
   CodeMirror.registerHelper("hintWords", "css", allWords);
 
   function tokenCComment(stream, state) {

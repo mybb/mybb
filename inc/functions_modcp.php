@@ -11,7 +11,7 @@
 /**
  * Check if the current user has permission to perform a ModCP action on another user
  *
- * @param int The user ID to perform the action on.
+ * @param int $uid The user ID to perform the action on.
  * @return boolean True if the user has necessary permissions
  */
 function modcp_can_manage_user($uid)
@@ -36,8 +36,8 @@ function modcp_can_manage_user($uid)
 /**
  * Fetch forums the moderator can manage announcements to
  *
- * @param int (Optional) The parent forum ID
- * @param int (Optional) The depth from parent forum the moderator can manage to
+ * @param int $pid (Optional) The parent forum ID
+ * @param int $depth (Optional) The depth from parent forum the moderator can manage to
  */
 function fetch_forum_announcements($pid=0, $depth=1)
 {
@@ -137,21 +137,26 @@ function fetch_forum_announcements($pid=0, $depth=1)
 /**
  * Send reported content to moderators
  *
- * @param array Array of reported content
- * @return bool True if PM sent
+ * @param array $report Array of reported content
+ * @param string $report_type Type of content being reported
+ * @return bool|array PM Information or false
  */
-function send_report($report)
+function send_report($report, $report_type='post')
 {
-	global $db, $lang, $forum, $mybb, $post, $thread;
+	global $db, $lang, $forum, $mybb, $post, $thread, $reputation, $user;
 
-	$query = $db->query("
-		SELECT DISTINCT u.username, u.email, u.receivepms, u.uid
-		FROM ".TABLE_PREFIX."moderators m
-		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=m.id)
-		WHERE m.fid IN (".$forum['parentlist'].") AND m.isgroup = '0'
-	");
+	$nummods = false;
+	if(!empty($forum['parentlist']))
+	{
+		$query = $db->query("
+			SELECT DISTINCT u.username, u.email, u.receivepms, u.uid
+			FROM ".TABLE_PREFIX."moderators m
+			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=m.id)
+			WHERE m.fid IN (".$forum['parentlist'].") AND m.isgroup = '0'
+		");
 
-	$nummods = $db->num_rows($query);
+		$nummods = $db->num_rows($query);
+	}
 
 	if(!$nummods)
 	{
@@ -177,11 +182,38 @@ function send_report($report)
 		}
 	}
 
+	$lang_string_subject = "emailsubject_report{$report_type}";
+	$lang_string_message = "email_report{$report_type}";
+
+	if(empty($lang->$lang_string_subject) || empty($lang->$lang_string_message))
+	{
+		return false;
+	}
+
+	global $send_report_subject, $send_report_url;
+
+	switch($report_type)
+	{
+		case 'post':
+			$send_report_subject = $post['subject'];
+			$send_report_url = str_replace('&amp;', '&', get_post_link($post['pid'], $thread['tid'])."#pid".$post['pid']);
+			break;
+		case 'profile':
+			$send_report_subject = $user['username'];
+			$send_report_url = str_replace('&amp;', '&', get_profile_link($user['uid']));
+			break;
+		case 'reputation':
+			$from_user = get_user($reputation['adduid']);
+			$send_report_subject = $from_user['username'];
+			$send_report_url = "reputation.php?uid={$reputation['uid']}#rid{$reputation['rid']}";
+			break;
+	}
+
+	$emailsubject = $lang->sprintf($lang->$lang_string_subject, $mybb->settings['bbname']);
+	$emailmessage = $lang->sprintf($lang->$lang_string_message, $mybb->user['username'], $mybb->settings['bbname'], $send_report_subject, $mybb->settings['bburl'], $send_report_url, $report['reason']);
+
 	while($mod = $db->fetch_array($query))
 	{
-		$emailsubject = $lang->sprintf($lang->emailsubject_reportpost, $mybb->settings['bbname']);
-		$emailmessage = $lang->sprintf($lang->email_reportpost, $mybb->user['username'], $mybb->settings['bbname'], $post['subject'], $mybb->settings['bburl'], str_replace('&amp;', '&', get_post_link($post['pid'], $thread['tid'])."#pid".$post['pid']), $thread['subject'], $report['reason']);
-
 		if($mybb->settings['reportmethod'] == "pms" && $mod['receivepms'] != 0 && $mybb->settings['enablepms'] != 0)
 		{
 			$pm_recipients[] = $mod['uid'];
@@ -194,9 +226,6 @@ function send_report($report)
 
 	if(count($pm_recipients) > 0)
 	{
-		$emailsubject = $lang->sprintf($lang->emailsubject_reportpost, $mybb->settings['bbname']);
-		$emailmessage = $lang->sprintf($lang->email_reportpost, $mybb->user['username'], $mybb->settings['bbname'], $post['subject'], $mybb->settings['bburl'], str_replace('&amp;', '&', get_post_link($post['pid'], $thread['tid'])."#pid".$post['pid']), $thread['subject'], $report['reason']);
-
 		require_once MYBB_ROOT."inc/datahandlers/pm.php";
 		$pmhandler = new PMDataHandler();
 
@@ -206,7 +235,7 @@ function send_report($report)
 			"icon" => 0,
 			"fromid" => $mybb->user['uid'],
 			"toid" => $pm_recipients,
-			"ipaddress" => $session->packedip
+			"ipaddress" => $mybb->session->packedip
 		);
 
 		$pmhandler->admin_override = true;
@@ -230,8 +259,8 @@ function send_report($report)
 /**
  * Add a report
  *
- * @param array Array of reported content
- * @param string Type of content being reported
+ * @param array $report Array of reported content
+ * @param string $type Type of content being reported
  * @return int Report ID
  */
 function add_report($report, $type = 'post')
@@ -249,12 +278,12 @@ function add_report($report, $type = 'post')
 		'reports' => 1,
 		'dateline' => TIME_NOW,
 		'lastreport' => TIME_NOW,
-		'reporters' => $db->escape_string(serialize(array($report['uid'])))
+		'reporters' => $db->escape_string(my_serialize(array($report['uid'])))
 	);
 
 	if($mybb->settings['reportmethod'] == "email" || $mybb->settings['reportmethod'] == "pms")
 	{
-		return send_report($report);
+		return send_report($report, $type);
 	}
 
 	$rid = $db->insert_query("reportedcontent", $insert_array);
@@ -266,8 +295,8 @@ function add_report($report, $type = 'post')
 /**
  * Update an existing report
  *
- * @param array Array of reported content
- * @return bool
+ * @param array $report Array of reported content
+ * @return bool true
  */
 function update_report($report)
 {
@@ -276,7 +305,7 @@ function update_report($report)
 	$update_array = array(
 		'reports' => ++$report['reports'],
 		'lastreport' => TIME_NOW,
-		'reporters' => $db->escape_string(serialize($report['reporters']))
+		'reporters' => $db->escape_string(my_serialize($report['reporters']))
 	);
 
 	$db->update_query("reportedcontent", $update_array, "rid = '{$report['rid']}'");

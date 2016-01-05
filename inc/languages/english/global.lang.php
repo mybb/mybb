@@ -231,6 +231,7 @@ $l['postbit_group'] = "Group:";
 $l['postbit_joined'] = "Joined:";
 $l['postbit_status'] = "Status:";
 $l['postbit_attachments'] = "Attached Files";
+$l['postbit_attachment_filename'] = "Filename:";
 $l['postbit_attachment_size'] = "Size:";
 $l['postbit_attachment_downloads'] = "Downloads:";
 $l['postbit_attachments_images'] = "Image(s)";
@@ -288,7 +289,6 @@ $l['postbit_button_delete_pm'] = 'Delete';
 $l['postbit_button_purgespammer'] = "Purge Spammer";
 
 $l['forumjump'] = "Forum Jump:";
-$l['forumjump_select'] = "Please select one:";
 $l['forumjump_pms'] = "Private Messages";
 $l['forumjump_usercp'] = "User Control Panel";
 $l['forumjump_wol'] = "Who's Online";
@@ -307,6 +307,8 @@ $l['unread_report'] = "Moderator Notice: There is 1 unread report.";
 $l['unread_reports'] = "Moderator Notice: There are {1} unread reports.";
 $l['pending_joinrequest'] = "Group Leader Notice: You have 1 pending group membership join request.";
 $l['pending_joinrequests'] = "Group Leader Notice: You have {1} pending group membership join requests.";
+
+$l['search_user'] = "Search for a user";
 
 $l['year'] = "Year";
 $l['year_short'] = "y";
@@ -415,8 +417,15 @@ $l['select_theme'] = "Quick Theme Select";
 
 $l['invalid_post_code'] = "Authorization code mismatch. Are you accessing this function correctly? Please go back and try again.";
 $l['invalid_captcha'] = "Please fill out the image verification code to continue. Please enter the code exactly how it appears in the image.";
+$l['invalid_nocaptcha'] = "Please solve the reCAPTCHA to verify that you're not a robot.";
 $l['invalid_captcha_verify'] = "The image verification code that you entered was incorrect. Please enter the code exactly how it appears in the image.";
+$l['image_verification'] = "Image Verification";
+$l['human_verification'] = "Human Verification";
+$l['verification_note'] = "Please enter the text contained within the image into the text box below it. This process is used to prevent automated spam bots.";
+$l['verification_note_nocaptcha'] = "Please tick the checkbox that you see below. This process is used to prevent automated spam bots.";
+$l['verification_subnote'] = "(case insensitive)";
 $l['invalid_captcha_transmit'] = "An error occurred with the image verification. Please try again.";
+$l['invalid_nocaptcha_transmit'] = "An error occurred with the human verification. Please try again.";
 $l['captcha_fetch_failure'] = 'There was an error fetching the new captcha.';
 $l['question_fetch_failure'] = 'There was an error fetching the new question.';
 $l['invalid_ayah_result'] = "The Are You a Human game was not completed. Please try again.";
@@ -532,6 +541,7 @@ $l['moderation_user_posts'] = "Please note that new posts you make must be appro
 $l['moderation_forum_thread'] = "Please note that new threads in this forum must be approved by a moderator before becoming visible.";
 $l['moderation_forum_edits'] = "Please note that edited posts in this forum must be approved by a moderator before becoming visible.";
 $l['moderation_forum_edits_quick'] = "Please note that edited posts in this forum must be approved by a moderator before becoming visible.";
+$l['awaiting_message_link'] = " <a href=\"{1}/{2}/index.php?module=user-users&amp;action=search&amp;results=1&amp;conditions=a%3A1%3A%7Bs%3A9%3A%22usergroup%22%3Bs%3A1%3A%225%22%3B%7D\">Go to the ACP</a>.";
 $l['awaiting_message_single'] = "There is 1 account awaiting activation. Please go to your ACP to activate the user.";
 $l['awaiting_message_plural'] = "There are {1} accounts awaiting activation. Please go to your ACP to activate the users.";
 
@@ -554,3 +564,5 @@ $l['sfs_error_username'] = 'username';
 $l['sfs_error_ip'] = 'IP';
 $l['sfs_error_email'] = 'email';
 $l['sfs_error_or'] = 'or';
+
+$l['boardclosed_reason'] = 'These forums are currently closed for maintenance. Please check back later';

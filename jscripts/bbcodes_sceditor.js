@@ -174,6 +174,7 @@ $(document).ready(function($) {
 			var	author = '',
 				$elm  = $(element),
 				$cite = $elm.children('cite').first();
+				$cite.html($cite.text());
 
 			if($cite.length === 1 || $elm.data('author'))
 			{
@@ -431,6 +432,7 @@ $(document).ready(function($) {
 	 **************************/
 	$.sceditor.plugins.bbcode.bbcode.set('video', {
 		allowsEmpty: true,
+		allowedChildren: ['#', '#newline'],
 		tags: {
 			iframe: {
 				'data-mybb-vt': null
@@ -548,13 +550,13 @@ $(document).ready(function($) {
 
 
 	/*************************************
-	 * Remove last bits of table and superscript/subscript support *
+	 * Remove last bits of table, superscript/subscript, youtube and ltr/rtl support *
 	 *************************************/
 	$.sceditor.command
-	.remove('table').remove('subscript').remove('superscript');
+	.remove('table').remove('subscript').remove('superscript').remove('youtube').remove('ltr').remove('rtl');
 	
 	$.sceditor.plugins.bbcode.bbcode
-	.remove('table').remove('tr').remove('th').remove('td').remove('sub').remove('sup');
+	.remove('table').remove('tr').remove('th').remove('td').remove('sub').remove('sup').remove('youtube').remove('ltr').remove('rtl');
 
 
 
@@ -606,4 +608,19 @@ $(document).ready(function($) {
 				}
 			});
 	}
+
+
+
+	/****************
+	 * Fix url code *
+	 ****************/
+	$.sceditor.plugins.bbcode.bbcode.set('url', {
+			html: function(token, attrs, content) {
+
+				if(!attrs.defaultattr)
+					attrs.defaultattr = content;
+
+				return '<a href="' + $.sceditor.escapeUriScheme($.sceditor.escapeEntities(attrs.defaultattr)) + '">' + content + '</a>';
+			}
+	});
 });

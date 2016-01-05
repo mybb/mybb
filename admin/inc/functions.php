@@ -33,7 +33,7 @@ function log_admin_action()
 		"dateline" => TIME_NOW,
 		"module" => $db->escape_string($mybb->get_input('module')),
 		"action" => $db->escape_string($mybb->get_input('action')),
-		"data" => $db->escape_string(@serialize($data))
+		"data" => $db->escape_string(@my_serialize($data))
 	);
 
 	$db->insert_query("adminlog", $log_entry);
@@ -42,7 +42,7 @@ function log_admin_action()
 /**
  * Redirects the current user to a specified URL.
  *
- * @param string The URL to redirect to
+ * @param string $url The URL to redirect to
  */
 function admin_redirect($url)
 {
@@ -61,8 +61,8 @@ function admin_redirect($url)
 /**
  * Updates an administration session data array.
  *
- * @param string The name of the item in the data session to update
- * @param mixed The value
+ * @param string $name The name of the item in the data session to update
+ * @param mixed $value The value
  */
 function update_admin_session($name, $value)
 {
@@ -70,7 +70,7 @@ function update_admin_session($name, $value)
 
 	$admin_session['data'][$name] = $value;
 	$updated_session = array(
-		"data" => $db->escape_string(@serialize($admin_session['data']))
+		"data" => $db->escape_string(@my_serialize($admin_session['data']))
 	);
 	$db->update_query("adminsessions", $updated_session, "sid='{$admin_session['sid']}'");
 }
@@ -78,8 +78,8 @@ function update_admin_session($name, $value)
 /**
  * Saves a "flash message" for the current user to be shown on their next page visit.
  *
- * @param string The message to show
- * @param string The type of message to be shown (success|error)
+ * @param string $message The message to show
+ * @param string $type The type of message to be shown (success|error)
  */
 function flash_message($message, $type='')
 {
@@ -90,10 +90,10 @@ function flash_message($message, $type='')
 /**
  * Draw pagination for pages in the Admin CP.
  *
- * @param int The current page we're on
- * @param int The number of items per page
- * @param int The total number of items in this collection
- * @param string The URL for pagination of this collection
+ * @param int $page The current page we're on
+ * @param int $per_page The number of items per page
+ * @param int $total_items The total number of items in this collection
+ * @param string $url The URL for pagination of this collection
  * @return string The built pagination
  */
 function draw_admin_pagination($page, $per_page, $total_items, $url)
@@ -102,7 +102,7 @@ function draw_admin_pagination($page, $per_page, $total_items, $url)
 
 	if($total_items <= $per_page)
 	{
-		return;
+		return '';
 	}
 
 	$pages = ceil($total_items / $per_page);
@@ -186,8 +186,8 @@ function draw_admin_pagination($page, $per_page, $total_items, $url)
 /**
  * Builds a CSV parent list for a particular forum.
  *
- * @param int The forum ID
- * @param string Optional separator - defaults to comma for CSV list
+ * @param int $fid The forum ID
+ * @param string $navsep Optional separator - defaults to comma for CSV list
  * @return string The built parent list
  */
 function make_parent_list($fid, $navsep=",")
@@ -225,6 +225,9 @@ function make_parent_list($fid, $navsep=",")
 	return $navigation;
 }
 
+/**
+ * @param int $fid
+ */
 function save_quick_perms($fid)
 {
 	global $db, $inherit, $canview, $canpostthreads, $canpostreplies, $canpostpolls, $canpostattachments, $cache;
@@ -234,7 +237,7 @@ function save_quick_perms($fid)
 	$field_list = $db->show_fields_from("forumpermissions");
 	foreach($field_list as $field)
 	{
-		if(strpos($field['Field'], 'can') !== false)
+		if(strpos($field['Field'], 'can') !== false || strpos($field['Field'], 'mod') !== false)
 		{
 			$permission_fields[$field['Field']] = 1;
 		}
@@ -336,7 +339,9 @@ function save_quick_perms($fid)
 /**
  * Checks if a particular user has the necessary permissions to access a particular page.
  *
- * @param array Array containing module and action to check for
+ * @param array $action Array containing module and action to check for
+ * @param bool $error
+ * @return bool
  */
 function check_admin_permissions($action, $error = true)
 {
@@ -375,11 +380,11 @@ function check_admin_permissions($action, $error = true)
 /**
  * Fetches the list of administrator permissions for a particular user or group
  *
- * @param int The user ID to fetch permissions for
- * @param int The (optional) group ID to fetch permissions for
+ * @param int $get_uid The user ID to fetch permissions for
+ * @param int $get_gid The (optional) group ID to fetch permissions for
  * @return array Array of permissions for specified user or group
  */
-function get_admin_permissions($get_uid="", $get_gid="")
+function get_admin_permissions($get_uid=0, $get_gid=0)
 {
 	global $db, $mybb;
 
@@ -389,7 +394,7 @@ function get_admin_permissions($get_uid="", $get_gid="")
 
 	$gid_array = array();
 
-	if($uid === "")
+	if($uid === 0)
 	{
 		$uid = $mybb->user['uid'];
 	}
@@ -507,7 +512,7 @@ function get_admin_permissions($get_uid="", $get_gid="")
 /**
  * Fetch the iconv/mb encoding for a particular MySQL encoding
  *
- * @param string The MySQL encoding
+ * @param string $mysql_encoding The MySQL encoding
  * @return string The iconv/mb encoding
  */
 function fetch_iconv_encoding($mysql_encoding)
@@ -529,9 +534,9 @@ function fetch_iconv_encoding($mysql_encoding)
 /**
  * Adds/Updates a Page/Tab to the permissions array in the adminoptions table
  *
- * @param string The name of the tab that is being affected
- * @param string The name of the page being affected (optional - if not specified, will affect everything under the specified tab)
- * @param integer Default permissions for the page (1 for allowed - 0 for disallowed - -1 to remove)
+ * @param string $tab The name of the tab that is being affected
+ * @param string $page The name of the page being affected (optional - if not specified, will affect everything under the specified tab)
+ * @param integer $default Default permissions for the page (1 for allowed - 0 for disallowed - -1 to remove)
  */
 function change_admin_permission($tab, $page="", $default=1)
 {
@@ -579,15 +584,15 @@ function change_admin_permission($tab, $page="", $default=1)
 			}
 		}
 
-		$db->update_query("adminoptions", array('permissions' => $db->escape_string(serialize($adminoption['permissions']))), "uid='{$adminoption['uid']}'");
+		$db->update_query("adminoptions", array('permissions' => $db->escape_string(my_serialize($adminoption['permissions']))), "uid='{$adminoption['uid']}'");
 	}
 }
 
 /**
  * Checks if we have had too many attempts at logging into the ACP
  *
- * @param integer The uid of the admin to check
- * @param boolean Return an array of the number of attempts and expiry time? (default false)
+ * @param integer $uid The uid of the admin to check
+ * @param boolean $return_num Return an array of the number of attempts and expiry time? (default false)
  * @return mixed Return an array if the second parameter is true, boolean otherwise.
  */
 function login_attempt_check_acp($uid=0, $return_num=false)
@@ -633,7 +638,7 @@ function login_attempt_check_acp($uid=0, $return_num=false)
 /**
  * Checks whether the administrator is on a mobile device
  *
- * @param string The useragent to be checked
+ * @param string $useragent The useragent to be checked
  * @return boolean A true/false depending on if the administrator is on a mobile
  */
 function is_mobile($useragent)
@@ -644,7 +649,7 @@ function is_mobile($useragent)
 /**
  * Checks whether there are any 'security' issues in templates via complex syntax
  *
- * @param string The template to be scanned
+ * @param string $template The template to be scanned
  * @return boolean A true/false depending on if an issue was detected
  */
 function check_template($template)
@@ -674,8 +679,8 @@ function check_template($template)
 /**
  * Provides a function to entirely delete a user's posts, and find the threads attached to them
  *
- * @param integer The uid of the user
- * @param int A UNIX timestamp to delete posts that are older
+ * @param integer $uid The uid of the user
+ * @param int $date A UNIX timestamp to delete posts that are older
  * @return array An array of threads to delete, threads/forums to recount
  */
 function delete_user_posts($uid, $date)

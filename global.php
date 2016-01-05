@@ -17,7 +17,7 @@ if(!$working_dir)
 // Load main MyBB core file which begins all of the magic
 require_once $working_dir.'/inc/init.php';
 
-$shutdown_queries = array();
+$shutdown_queries = $shutdown_functions = array();
 
 // Read the usergroups cache as well as the moderators cache
 $groupscache = $cache->read('usergroups');
@@ -111,27 +111,45 @@ $style = array();
 // The user used our new quick theme changer
 if(isset($mybb->input['theme']) && verify_post_check($mybb->get_input('my_post_key'), true))
 {
-	$mybb->user['style'] = $mybb->get_input('theme');
-	// If user is logged in, update their theme selection with the new one
-	if($mybb->user['uid'])
-	{
-		if(isset($mybb->cookies['mybbtheme']))
-		{
-			my_unsetcookie('mybbtheme');
-		}
+	// Set up user handler.
+	require_once MYBB_ROOT.'inc/datahandlers/user.php';
+	$userhandler = new UserDataHandler('update');
 
-		$db->update_query('users', array('style' => (int)$mybb->user['style']), "uid = '{$mybb->user['uid']}'");
-	}
-	// Guest = cookie
-	else
+	$user = array(
+		'uid'	=> $mybb->user['uid'],
+		'style'	=> $mybb->get_input('theme', MyBB::INPUT_INT),
+		'usergroup'	=> $mybb->user['usergroup'],
+		'additionalgroups'	=> $mybb->user['additionalgroups']
+	);
+
+	$userhandler->set_data($user);
+
+	// validate_user verifies the style if it is set in the data array.
+	if($userhandler->validate_user())
 	{
-		my_setcookie('mybbtheme', $mybb->get_input('theme'));
+		$mybb->user['style'] = $user['style'];
+
+		// If user is logged in, update their theme selection with the new one
+		if($mybb->user['uid'])
+		{
+			if(isset($mybb->cookies['mybbtheme']))
+			{
+				my_unsetcookie('mybbtheme');
+			}
+
+			$userhandler->update_user();
+		}
+		// Guest = cookie
+		else
+		{
+			my_setcookie('mybbtheme', $user['style']);
+		}
 	}
 }
 // Cookied theme!
 else if(!$mybb->user['uid'] && !empty($mybb->cookies['mybbtheme']))
 {
-	$mybb->user['style'] = $mybb->cookies['mybbtheme'];
+	$mybb->user['style'] = (int)$mybb->cookies['mybbtheme'];
 }
 
 // This user has a custom theme set in their profile
@@ -224,18 +242,37 @@ if(empty($loadstyle))
 }
 
 // Fetch the theme to load from the cache
+if($loadstyle != "def='1'")
+{
+	$query = $db->simple_select('themes', 'name, tid, properties, stylesheets, allowedgroups', $loadstyle, array('limit' => 1));
+	$theme = $db->fetch_array($query);
+
+	if(isset($theme['tid']) && !$load_from_forum && !is_member($theme['allowedgroups']) && $theme['allowedgroups'] != 'all')
+	{
+		if($load_from_user == 1)
+		{
+			$db->update_query('users', array('style' => 0), "style='{$mybb->user['style']}' AND uid='{$mybb->user['uid']}'");
+		}
+
+		if(isset($mybb->cookies['mybbtheme']))
+		{
+			my_unsetcookie('mybbtheme');
+		}
+
+		$loadstyle = "def='1'";
+	}
+}
+
 if($loadstyle == "def='1'")
 {
 	if(!$cache->read('default_theme'))
 	{
 		$cache->update_default_theme();
 	}
+
 	$theme = $cache->read('default_theme');
-}
-else
-{
-	$query = $db->simple_select('themes', 'name, tid, properties, stylesheets', $loadstyle, array('limit' => 1));
-	$theme = $db->fetch_array($query);
+
+	$load_from_forum = $load_from_user = 0;
 }
 
 // No theme was found - we attempt to load the master or any other theme
@@ -361,39 +398,39 @@ if(my_substr($theme['imgdir'], 0, 7) == 'http://' || my_substr($theme['imgdir'],
 }
 else
 {
-    $img_directory = $theme['imgdir'];
+	$img_directory = $theme['imgdir'];
 
-    if($mybb->settings['usecdn'] && !empty($mybb->settings['cdnpath']))
-    {
-        $img_directory = rtrim($mybb->settings['cdnpath'], '/') . '/' . ltrim($theme['imgdir'], '/');
-    }
+	if($mybb->settings['usecdn'] && !empty($mybb->settings['cdnpath']))
+	{
+		$img_directory = rtrim($mybb->settings['cdnpath'], '/') . '/' . ltrim($theme['imgdir'], '/');
+	}
 
-    if(!@is_dir($img_directory))
-    {
-        $theme['imgdir'] = 'images';
-    }
+	if(!@is_dir($img_directory))
+	{
+		$theme['imgdir'] = 'images';
+	}
 
-    // If a language directory for the current language exists within the theme - we use it
-    if(!empty($mybb->user['language']) && is_dir($img_directory.'/'.$mybb->user['language']))
-    {
-        $theme['imglangdir'] = $theme['imgdir'].'/'.$mybb->user['language'];
-    }
-    else
-    {
-        // Check if a custom language directory exists for this theme
-        if(is_dir($img_directory.'/'.$mybb->settings['bblanguage']))
-        {
-            $theme['imglangdir'] = $theme['imgdir'].'/'.$mybb->settings['bblanguage'];
-        }
-        // Otherwise, the image language directory is the same as the language directory for the theme
-        else
-        {
-            $theme['imglangdir'] = $theme['imgdir'];
-        }
-    }
+	// If a language directory for the current language exists within the theme - we use it
+	if(!empty($mybb->user['language']) && is_dir($img_directory.'/'.$mybb->user['language']))
+	{
+		$theme['imglangdir'] = $theme['imgdir'].'/'.$mybb->user['language'];
+	}
+	else
+	{
+		// Check if a custom language directory exists for this theme
+		if(is_dir($img_directory.'/'.$mybb->settings['bblanguage']))
+		{
+			$theme['imglangdir'] = $theme['imgdir'].'/'.$mybb->settings['bblanguage'];
+		}
+		// Otherwise, the image language directory is the same as the language directory for the theme
+		else
+		{
+			$theme['imglangdir'] = $theme['imgdir'];
+		}
+	}
 
-    $theme['imgdir'] = $mybb->get_asset_url($theme['imgdir']);
-    $theme['imglangdir'] = $mybb->get_asset_url($theme['imglangdir']);
+	$theme['imgdir'] = $mybb->get_asset_url($theme['imgdir']);
+	$theme['imglangdir'] = $mybb->get_asset_url($theme['imglangdir']);
 }
 
 // Theme logo - is it a relative URL to the forum root? Append bburl
@@ -415,6 +452,7 @@ else
 $templatelist .= "headerinclude,header,footer,gobutton,htmldoctype,header_welcomeblock_member,header_welcomeblock_guest,header_welcomeblock_member_admin,global_pm_alert,global_unreadreports,error,footer_languageselect_option,footer_contactus";
 $templatelist .= ",global_pending_joinrequests,global_awaiting_activation,nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active,footer_languageselect,footer_themeselect,header_welcomeblock_member_moderator,redirect,header_menu_calendar,nav_dropdown,footer_themeselector,task_image";
 $templatelist .= ",global_boardclosed_warning,global_bannedwarning,error_inline,error_nopermission_loggedin,error_nopermission,debug_summary,header_quicksearch,header_menu_search,header_menu_portal,header_menu_memberlist,usercp_themeselector_option,smilie,global_board_offline_modal";
+$templatelist .= ",video_dailymotion_embed,video_facebook_embed,video_liveleak_embed,video_metacafe_embed,video_myspacetv_embed,video_veoh_embed,video_vimeo_embed,video_yahoo_embed,video_youtube_embed";
 $templates->cache($db->escape_string($templatelist));
 
 // Set the current date and time now
@@ -588,7 +626,7 @@ if($mybb->usergroup['cancp'] == 1 || ($mybb->user['ismoderator'] && $mybb->userg
 	{
 		$can_access_moderationqueue = false;
 	}
-	
+
 	if($can_access_moderationqueue || ($mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanagereportedcontent'] == 1))
 	{
 		// Read the reported content cache
@@ -719,9 +757,15 @@ if(isset($mybb->user['pmnotice']) && $mybb->user['pmnotice'] == 2 && $mybb->user
 	eval('$pm_notice = "'.$templates->get('global_pm_alert').'";');
 }
 
-if($mybb->usergroup['cancp'] == 1)
+if($mybb->settings['awactialert'] == 1 && $mybb->usergroup['cancp'] == 1)
 {
 	$awaitingusers = $cache->read('awaitingactivation');
+
+	if(isset($awaitingusers['time']) && $awaitingusers['time'] + 86400 < TIME_NOW)
+	{
+		$cache->update_awaitingactivation();
+		$awaitingusers = $cache->read('awaitingactivation');
+	}
 
 	if(!empty($awaitingusers['users']))
 	{
@@ -740,7 +784,7 @@ if($mybb->usergroup['cancp'] == 1)
 	{
 		$awaitingusers = my_number_format($awaitingusers);
 	}
-	
+
 	if($awaitingusers > 0)
 	{
 		if($awaitingusers == 1)
@@ -751,6 +795,12 @@ if($mybb->usergroup['cancp'] == 1)
 		{
 			$awaiting_message = $lang->sprintf($lang->awaiting_message_plural, $awaitingusers);
 		}
+
+		if($admincplink)
+		{
+			$awaiting_message .= $lang->sprintf($lang->awaiting_message_link, $mybb->settings['bburl'], $admin_dir);
+		}
+
 		eval('$awaitingusers = "'.$templates->get('global_awaiting_activation').'";');
 	}
 	else
@@ -862,13 +912,13 @@ $archive_url = build_archive_link();
 if(is_banned_ip($session->ipaddress, true))
 {
 	if($mybb->user['uid'])
-    {
+	{
 		$db->delete_query('sessions', "ip = ".$db->escape_binary($session->packedip)." OR uid='{$mybb->user['uid']}'");
-    }
-    else
-    {
+	}
+	else
+	{
 		$db->delete_query('sessions', "ip = ".$db->escape_binary($session->packedip));
-    }
+	}
 	error($lang->error_banned);
 }
 
@@ -885,9 +935,14 @@ $closed_bypass = array(
 if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['canviewboardclosed'] != 1 && !in_array($current_page, $closed_bypass) && (!is_array($closed_bypass[$current_page]) || !in_array($mybb->get_input('action'), $closed_bypass[$current_page])))
 {
 	// Show error
+	if(!$mybb->settings['boardclosed_reason'])
+	{
+		$mybb->settings['boardclosed_reason'] = $lang->boardclosed_reason;
+	}
+
 	$lang->error_boardclosed .= "<blockquote>{$mybb->settings['boardclosed_reason']}</blockquote>";
-	
-	if(!$mybb->get_input('modal')) 
+
+	if(!$mybb->get_input('modal'))
 	{
 		error($lang->error_boardclosed);
 	}
@@ -941,7 +996,7 @@ if(!$mybb->user['uid'] && $mybb->settings['usereferrals'] == 1 && (isset($mybb->
 	}
 	else
 	{
-		$condition = "uid = '".$mybb->get_input('referrer', 1)."'";
+		$condition = "uid = '".$mybb->get_input('referrer', MyBB::INPUT_INT)."'";
 	}
 
 	$query = $db->simple_select('users', 'uid', $condition, array('limit' => 1));

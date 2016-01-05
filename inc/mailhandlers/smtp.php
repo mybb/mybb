@@ -101,20 +101,6 @@ class SmtpMail extends MailHandler
 	public $host = '';
 
 	/**
-	 * The last received response from the SMTP server.
-	 *
-	 * @var string
-	 */
-	public $data = '';
-
-	/**
-	 * The last received response code from the SMTP server.
-	 *
-	 * @var string
-	 */
-	public $code = 0;
-
-	/**
 	 * The last received error message from the SMTP server.
 	 *
 	 * @var string
@@ -202,7 +188,7 @@ class SmtpMail extends MailHandler
 	/**
 	 * Sends the email.
 	 *
-	 * @return true/false whether or not the email got sent or not.
+	 * @return bool whether or not the email got sent or not.
 	 */
 	function send()
 	{
@@ -359,7 +345,7 @@ class SmtpMail extends MailHandler
 	/**
 	 * Authenticate against the SMTP server.
 	 *
-	 * @param string A list of authentication methods supported by the server
+	 * @param string $auth_methods A list of authentication methods supported by the server
 	 * @return boolean True on success
 	 */
 	function auth($auth_methods)
@@ -460,8 +446,8 @@ class SmtpMail extends MailHandler
 	/**
 	 * Send data through to the SMTP server.
 	 *
-	 * @param string The data to be sent
-	 * @param int The response code expected back from the server (if we have one)
+	 * @param string $data The data to be sent
+	 * @param int|bool $status_num The response code expected back from the server (if we have one)
 	 * @return boolean True on success
 	 */
 	function send_data($data, $status_num = false)
@@ -497,8 +483,8 @@ class SmtpMail extends MailHandler
 	/**
 	 * Checks if the received status code matches the one we expect.
 	 *
-	 * @param int The status code we expected back from the server
-	 * @param boolean True if it matches
+	 * @param int $status_num The status code we expected back from the server
+	 * @return string|bool
 	 */
 	function check_status($status_num)
 	{
@@ -543,7 +529,7 @@ class SmtpMail extends MailHandler
 	/**
 	 * Set the last error message response from the SMTP server
 	 *
-	 * @param string The error message response
+	 * @param string $error The error message response
 	 */
 	function set_error($error)
 	{

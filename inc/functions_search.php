@@ -11,13 +11,13 @@
 /**
  * Build a select box list of forums the current user has permission to search
  *
- * @param int The parent forum ID to start at
- * @param int The selected forum ID
- * @param int Add select boxes at this call or not
- * @param int The current depth
+ * @param int $pid The parent forum ID to start at
+ * @param int $selitem The selected forum ID
+ * @param int $addselect Add select boxes at this call or not
+ * @param string $depth The current depth
  * @return string The forum select boxes
  */
-function make_searchable_forums($pid="0", $selitem='', $addselect="1", $depth='')
+function make_searchable_forums($pid=0, $selitem=0, $addselect=1, $depth='')
 {
 	global $db, $pforumcache, $permissioncache, $mybb, $selecteddone, $forumlist, $forumlistbits, $theme, $templates, $lang, $forumpass;
 	$pid = (int)$pid;
@@ -56,7 +56,7 @@ function make_searchable_forums($pid="0", $selitem='', $addselect="1", $depth=''
 					}
 					if($forum['password'] != '')
 					{
-						if($mybb->cookies['forumpass'][$forum['fid']] == md5($mybb->user['uid'].$forum['password']))
+						if($mybb->cookies['forumpass'][$forum['fid']] === md5($mybb->user['uid'].$forum['password']))
 						{
 							$pwverified = 1;
 						}
@@ -88,11 +88,11 @@ function make_searchable_forums($pid="0", $selitem='', $addselect="1", $depth=''
 /**
  * Build a comma separated list of the forums this user cannot search
  *
- * @param int The parent ID to build from
- * @param int First rotation or not (leave at default)
- * @return return a CSV list of forums the user cannot search
+ * @param int $pid The parent ID to build from
+ * @param int $first First rotation or not (leave at default)
+ * @return string return a CSV list of forums the user cannot search
  */
-function get_unsearchable_forums($pid="0", $first=1)
+function get_unsearchable_forums($pid=0, $first=1)
 {
 	global $db, $forum_cache, $permissioncache, $mybb, $unsearchableforums, $unsearchable, $templates, $forumpass;
 
@@ -125,7 +125,7 @@ function get_unsearchable_forums($pid="0", $first=1)
 		$pwverified = 1;
 		if($forum['password'] != '')
 		{
-			if($mybb->cookies['forumpass'][$forum['fid']] != md5($mybb->user['uid'].$forum['password']))
+			if($mybb->cookies['forumpass'][$forum['fid']] !== md5($mybb->user['uid'].$forum['password']))
 			{
 				$pwverified = 0;
 			}
@@ -173,8 +173,8 @@ function get_unsearchable_forums($pid="0", $first=1)
 /**
  * Build a array list of the forums this user cannot search due to password protection
  *
- * @param int the fids to check (leave null to check all forums)
- * @return return a array list of password protected forums the user cannot search
+ * @param array $fids the fids to check (leave blank to check all forums)
+ * @return array return a array list of password protected forums the user cannot search
  */
 function get_password_protected_forums($fids=array())
 {
@@ -207,7 +207,7 @@ function get_password_protected_forums($fids=array())
 			continue;
 		}
 
-		if(md5($mybb->user['uid'].$forum_cache[$fid]['password']) != $mybb->cookies['forumpass'][$fid])
+		if(md5($mybb->user['uid'].$forum_cache[$fid]['password']) !== $mybb->cookies['forumpass'][$fid])
 		{
 			$pass_fids[] = $fid;
 			$child_list = get_child_list($fid);
@@ -224,17 +224,19 @@ function get_password_protected_forums($fids=array())
 /**
  * Clean search keywords and make them safe for querying
  *
- * @param string The keywords to be cleaned
+ * @param string $keywords The keywords to be cleaned
  * @return string The cleaned keywords
  */
 function clean_keywords($keywords)
 {
+	global $db;
+
 	$keywords = my_strtolower($keywords);
-	$keywords = str_replace("%", "\\%", $keywords);
+	$keywords = $db->escape_string_like($keywords);
 	$keywords = preg_replace("#\*{2,}#s", "*", $keywords);
 	$keywords = str_replace("*", "%", $keywords);
-	$keywords = preg_replace("#([\[\]\|\.\,:'])#s", " ", $keywords);
 	$keywords = preg_replace("#\s+#s", " ", $keywords);
+	$keywords = str_replace('\\"', '"', $keywords);
 
 	// Search for "and" or "or" and remove if it's at the beginning
 	$keywords = trim($keywords);
@@ -254,8 +256,8 @@ function clean_keywords($keywords)
 /**
  * Clean search keywords for fulltext searching, making them safe for querying
  *
- * @param string The keywords to be cleaned
- * @return string The cleaned keywords
+ * @param string $keywords The keywords to be cleaned
+ * @return string|bool The cleaned keywords or false on failure
  */
 function clean_keywords_ft($keywords)
 {
@@ -408,7 +410,7 @@ function clean_keywords_ft($keywords)
 /**
  * Perform a thread and post search under MySQL or MySQLi
  *
- * @param array Array of search data
+ * @param array $search Array of search data
  * @return array Array of search data with results mixed in
  */
 function privatemessage_perform_search_mysql($search)
@@ -434,6 +436,20 @@ function privatemessage_perform_search_mysql($search)
 	{
 		// Complex search
 		$keywords = " {$keywords} ";
+
+		switch($db->type)
+		{
+			case 'mysql':
+			case 'mysqli':
+				$sfield = 'subject';
+				$mfield = 'message';
+				break;
+			default:
+				$sfield = 'LOWER(subject)';
+				$mfield = 'LOWER(message)';
+				break;
+		}
+
 		if(preg_match("#\s(and|or)\s#", $keywords))
 		{
 			$string = "AND";
@@ -503,14 +519,15 @@ function privatemessage_perform_search_mysql($search)
 								$lang->error_minsearchlength = $lang->sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
 								error($lang->error_minsearchlength);
 							}
+
 							// Add terms to search query
 							if($search['subject'] == 1)
 							{
-								$subject_lookin .= " $boolean LOWER(subject) LIKE '%{$word}%'";
+								$subject_lookin .= " $boolean {$sfield} LIKE '%{$word}%'";
 							}
 							if($search['message'] == 1)
 							{
-								$message_lookin .= " $boolean LOWER(message) LIKE '%{$word}%'";
+								$message_lookin .= " $boolean {$mfield} LIKE '%{$word}%'";
 							}
 							$boolean = 'AND';
 						}
@@ -526,10 +543,10 @@ function privatemessage_perform_search_mysql($search)
 						error($lang->error_minsearchlength);
 					}
 					// Add phrase to search query
-					$subject_lookin .= " $boolean LOWER(subject) LIKE '%{$phrase}%'";
+					$subject_lookin .= " $boolean {$sfield} LIKE '%{$phrase}%'";
 					if($search['message'] == 1)
 					{
-						$message_lookin .= " $boolean LOWER(message) LIKE '%{$phrase}%'";
+						$message_lookin .= " $boolean {$mfield} LIKE '%{$phrase}%'";
 					}
 					$boolean = 'AND';
 				}
@@ -586,18 +603,18 @@ function privatemessage_perform_search_mysql($search)
 			// If we're looking in both, then find matches in either the subject or the message
 			if($search['subject'] == 1 && $search['message'] == 1)
 			{
-				$searchsql .= " AND (LOWER(subject) LIKE '%{$keywords}%' OR LOWER(message) LIKE '%{$keywords}%')";
+				$searchsql .= " AND ({$sfield} LIKE '%{$keywords}%' OR {$mfield} LIKE '%{$keywords}%')";
 			}
 			else
 			{
 				if($search['subject'] == 1)
 				{
-					$searchsql .= " AND LOWER(subject) LIKE '%{$keywords}%'";
+					$searchsql .= " AND {$sfield} LIKE '%{$keywords}%'";
 				}
 
 				if($search['message'] == 1)
 				{
-					$searchsql .= " AND LOWER(message) LIKE '%{$keywords}%'";
+					$searchsql .= " AND {$mfield} LIKE '%{$keywords}%'";
 				}
 			}
 		}
@@ -608,7 +625,17 @@ function privatemessage_perform_search_mysql($search)
 		$userids = array();
 		$search['sender'] = my_strtolower($search['sender']);
 
-		$query = $db->simple_select("users", "uid", "LOWER(username) LIKE '%".$db->escape_string_like($search['sender'])."%'");
+		switch($db->type)
+		{
+			case 'mysql':
+			case 'mysqli':
+				$field = 'username';
+				break;
+			default:
+				$field = 'LOWER(username)';
+				break;
+		}
+		$query = $db->simple_select("users", "uid", "{$field} LIKE '%".$db->escape_string_like($search['sender'])."%'");
 		while($user = $db->fetch_array($query))
 		{
 			$userids[] = $user['uid'];
@@ -694,7 +721,7 @@ function privatemessage_perform_search_mysql($search)
 /**
  * Perform a help document search under MySQL or MySQLi
  *
- * @param array Array of search data
+ * @param array $search Array of search data
  * @return array Array of search data with results mixed in
  */
 function helpdocument_perform_search_mysql($search)
@@ -718,6 +745,19 @@ function helpdocument_perform_search_mysql($search)
 
 	if($keywords)
 	{
+		switch($db->type)
+		{
+			case 'mysql':
+			case 'mysqli':
+				$nfield = 'name';
+				$dfield = 'document';
+				break;
+			default:
+				$nfield = 'LOWER(name)';
+				$dfield = 'LOWER(document)';
+				break;
+		}
+
 		// Complex search
 		$keywords = " {$keywords} ";
 		if(preg_match("#\s(and|or)\s#", $keywords))
@@ -791,11 +831,11 @@ function helpdocument_perform_search_mysql($search)
 							// Add terms to search query
 							if($search['name'] == 1)
 							{
-								$name_lookin .= " $boolean LOWER(name) LIKE '%{$word}%'";
+								$name_lookin .= " $boolean {$nfield} LIKE '%{$word}%'";
 							}
 							if($search['document'] == 1)
 							{
-								$document_lookin .= " $boolean LOWER(document) LIKE '%{$word}%'";
+								$document_lookin .= " $boolean {$dfield} LIKE '%{$word}%'";
 							}
 						}
 					}
@@ -810,10 +850,10 @@ function helpdocument_perform_search_mysql($search)
 						error($lang->error_minsearchlength);
 					}
 					// Add phrase to search query
-					$name_lookin .= " $boolean LOWER(name) LIKE '%{$phrase}%'";
+					$name_lookin .= " $boolean {$nfield} LIKE '%{$phrase}%'";
 					if($search['document'] == 1)
 					{
-						$document_lookin .= " $boolean LOWER(document) LIKE '%{$phrase}%'";
+						$document_lookin .= " $boolean {$dfield} LIKE '%{$phrase}%'";
 					}
 				}
 
@@ -869,18 +909,18 @@ function helpdocument_perform_search_mysql($search)
 			// If we're looking in both, then find matches in either the name or the document
 			if($search['name'] == 1 && $search['document'] == 1)
 			{
-				$searchsql .= " AND (LOWER(name) LIKE '%{$keywords}%' OR LOWER(document) LIKE '%{$keywords}%')";
+				$searchsql .= " AND ({$nfield} LIKE '%{$keywords}%' OR {$dfield} LIKE '%{$keywords}%')";
 			}
 			else
 			{
 				if($search['name'] == 1)
 				{
-					$searchsql .= " AND LOWER(name) LIKE '%{$keywords}%'";
+					$searchsql .= " AND {$nfield} LIKE '%{$keywords}%'";
 				}
 
 				if($search['document'] == 1)
 				{
-					$searchsql .= " AND LOWER(document) LIKE '%{$keywords}%'";
+					$searchsql .= " AND {$dfield} LIKE '%{$keywords}%'";
 				}
 			}
 		}
@@ -908,7 +948,7 @@ function helpdocument_perform_search_mysql($search)
 /**
  * Perform a thread and post search under MySQL or MySQLi
  *
- * @param array Array of search data
+ * @param array $search Array of search data
  * @return array Array of search data with results mixed in
  */
 function perform_search_mysql($search)
@@ -929,6 +969,19 @@ function perform_search_mysql($search)
 	$subject_lookin = $message_lookin = '';
 	if($keywords)
 	{
+		switch($db->type)
+		{
+			case 'mysql':
+			case 'mysqli':
+				$tfield = 't.subject';
+				$pfield = 'p.message';
+				break;
+			default:
+				$tfield = 'LOWER(t.subject)';
+				$pfield = 'LOWER(p.message)';
+				break;
+		}
+
 		// Complex search
 		$keywords = " {$keywords} ";
 		if(preg_match("#\s(and|or)\s#", $keywords))
@@ -978,10 +1031,10 @@ function perform_search_mysql($search)
 								error($lang->error_minsearchlength);
 							}
 							// Add terms to search query
-							$subject_lookin .= " $boolean LOWER(t.subject) LIKE '%{$word}%'";
+							$subject_lookin .= " $boolean {$tfield} LIKE '%{$word}%'";
 							if($search['postthread'] == 1)
 							{
-								$message_lookin .= " $boolean LOWER(p.message) LIKE '%{$word}%'";
+								$message_lookin .= " $boolean {$pfield} LIKE '%{$word}%'";
 							}
 							$boolean = 'AND';
 						}
@@ -997,10 +1050,10 @@ function perform_search_mysql($search)
 						error($lang->error_minsearchlength);
 					}
 					// Add phrase to search query
-					$subject_lookin .= " $boolean LOWER(t.subject) LIKE '%{$phrase}%'";
+					$subject_lookin .= " $boolean {$tfield} LIKE '%{$phrase}%'";
 					if($search['postthread'] == 1)
 					{
-						$message_lookin .= " $boolean LOWER(p.message) LIKE '%{$phrase}%'";
+						$message_lookin .= " $boolean {$pfield} LIKE '%{$phrase}%'";
 					}
 					$boolean = 'AND';
 				}
@@ -1025,10 +1078,10 @@ function perform_search_mysql($search)
 				$lang->error_minsearchlength = $lang->sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
 				error($lang->error_minsearchlength);
 			}
-			$subject_lookin = " AND LOWER(t.subject) LIKE '%{$keywords}%'";
+			$subject_lookin = " AND {$tfield} LIKE '%{$keywords}%'";
 			if($search['postthread'] == 1)
 			{
-				$message_lookin = " AND LOWER(p.message) LIKE '%{$keywords}%'";
+				$message_lookin = " AND {$pfield} LIKE '%{$keywords}%'";
 			}
 		}
 	}
@@ -1040,17 +1093,31 @@ function perform_search_mysql($search)
 		$search['author'] = my_strtolower($search['author']);
 		if($search['matchusername'])
 		{
-			$query = $db->simple_select("users", "uid", "LOWER(username)='".$db->escape_string($search['author'])."'");
+			$user = get_user_by_username($search['author']);
+			if($user)
+			{
+				$userids[] = $user['uid'];
+			}
 		}
 		else
 		{
-			$query = $db->simple_select("users", "uid", "LOWER(username) LIKE '%".$db->escape_string_like($search['author'])."%'");
+			switch($db->type)
+			{
+				case 'mysql':
+				case 'mysqli':
+					$field = 'username';
+					break;
+				default:
+					$field = 'LOWER(username)';
+					break;
+			}
+			$query = $db->simple_select("users", "uid", "{$field} LIKE '%".$db->escape_string_like($search['author'])."%'");
+			while($user = $db->fetch_array($query))
+			{
+				$userids[] = $user['uid'];
+			}
 		}
 
-		while($user = $db->fetch_array($query))
-		{
-			$userids[] = $user['uid'];
-		}
 		if(count($userids) < 1)
 		{
 			error($lang->error_nosearchresults);
@@ -1358,7 +1425,7 @@ function perform_search_mysql($search)
 /**
  * Perform a thread and post search under MySQL or MySQLi using boolean fulltext capabilities
  *
- * @param array Array of search data
+ * @param array $search Array of search data
  * @return array Array of search data with results mixed in
  */
 function perform_search_mysql_ft($search)
@@ -1443,16 +1510,30 @@ function perform_search_mysql_ft($search)
 		$search['author'] = my_strtolower($search['author']);
 		if($search['matchusername'])
 		{
-			$query = $db->simple_select("users", "uid", "LOWER(username)='".$db->escape_string($search['author'])."'");
+			$user = get_user_by_username($search['author']);
+			if($user)
+			{
+				$userids[] = $user['uid'];
+			}
 		}
 		else
 		{
-			$query = $db->simple_select("users", "uid", "LOWER(username) LIKE '%".$db->escape_string_like($search['author'])."%'");
-		}
+			switch($db->type)
+			{
+				case 'mysql':
+				case 'mysqli':
+					$field = 'username';
+					break;
+				default:
+					$field = 'LOWER(username)';
+					break;
+			}
+			$query = $db->simple_select("users", "uid", "{$field} LIKE '%".$db->escape_string_like($search['author'])."%'");
 
-		while($user = $db->fetch_array($query))
-		{
-			$userids[] = $user['uid'];
+			while($user = $db->fetch_array($query))
+			{
+				$userids[] = $user['uid'];
+			}
 		}
 
 		if(count($userids) < 1)

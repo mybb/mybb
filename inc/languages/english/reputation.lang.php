@@ -73,6 +73,7 @@ $l['sort_updated'] = "Sort by: Last Updated";
 $l['sort_username'] = "Sort by: Username";
 $l['last_updated'] = "Last updated {1}";
 $l['postrep_given'] = "Rating given for <a href=\"{1}\">{2}'s post</a> {3}<br />";
+$l['postrep_given_nolink'] = "Rating given for {1}'s post<br />";
 $l['postrep_given_thread'] = "in <a href=\"{1}\">{2}</a>";
 $l['no_reputation_votes'] = "This user currently does not have any reputation ratings with the specified criteria below.";
 $l['delete_reputation_confirm'] = "Are you sure you wish to delete this reputation Rating?";

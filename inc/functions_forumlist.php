@@ -11,8 +11,8 @@
 /**
 * Build a list of forum bits.
 *
-* @param int The parent forum to fetch the child forums for (0 assumes all)
-* @param int The depth to return forums with.
+* @param int $pid The parent forum to fetch the child forums for (0 assumes all)
+* @param int $depth The depth to return forums with.
 * @return array Array of information regarding the child forums of this parent forum
 */
 function build_forumbits($pid=0, $depth=1)
@@ -132,7 +132,7 @@ function build_forumbits($pid=0, $depth=1)
 				);
 			}
 
-			if($forum['password'] != '' && $mybb->cookies['forumpass'][$forum['fid']] != md5($mybb->user['uid'].$forum['password']))
+			if($forum['password'] != '' && $mybb->cookies['forumpass'][$forum['fid']] !== md5($mybb->user['uid'].$forum['password']))
 			{
 			    $hideinfo = true;
 			    $showlockicon = 1;
@@ -458,9 +458,9 @@ function build_forumbits($pid=0, $depth=1)
 /**
  * Fetch the status indicator for a forum based on its last post and the read date
  *
- * @param array Array of information about the forum
- * @param array Array of information about the lastpost date
- * @param int Whether or not this forum is locked or not
+ * @param array $forum Array of information about the forum
+ * @param array $lastpost Array of information about the lastpost date
+ * @param int $locked Whether or not this forum is locked or not
  * @return array Array of the folder image to be shown and the alt text
  */
 function get_forum_lightbulb($forum, $lastpost, $locked=0)
@@ -538,7 +538,7 @@ function get_forum_lightbulb($forum, $lastpost, $locked=0)
 /**
  * Fetch the number of unapproved posts, formatted, from a forum
  *
- * @param array Array of information about the forum
+ * @param array $forum Array of information about the forum
  * @return array Array containing formatted string for posts and string for threads
  */
 function get_forum_unapproved($forum)

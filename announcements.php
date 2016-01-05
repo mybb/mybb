@@ -11,14 +11,14 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'announcements.php');
 
-$templatelist = "announcement,postbit_groupimage,postbit_reputation,postbit_avatar,postbit_online,postbit_offline,postbit_away,postbit_find,postbit_pm,postbit_email,postbit_www,postbit_author_user,announcement_edit,announcement_quickdelete,postbit,postbit_classic,postbit_rep_button,postbit_author_guest,forumdisplay_password_wrongpass,forumdisplay_password";
+$templatelist = "announcement,postbit_groupimage,postbit_reputation,postbit_avatar,postbit_online,postbit_offline,postbit_away,postbit_find,postbit_pm,postbit_email,postbit_www,postbit_author_user,announcement_edit,announcement_quickdelete,postbit,postbit_classic,postbit_author_guest,postbit_userstar,forumdisplay_password_wrongpass,forumdisplay_password";
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 
 // Load global language phrases
 $lang->load("announcements");
 
-$aid = $mybb->get_input('aid', 1);
+$aid = $mybb->get_input('aid', MyBB::INPUT_INT);
 
 // Get announcement fid
 $query = $db->simple_select("announcements", "fid", "aid='$aid'");

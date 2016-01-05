@@ -67,7 +67,7 @@ if($mybb->input['action'] == "add_level")
 			{
 				$action = array(
 					"type" => 1,
-					"usergroup" => (int)$mybb->input['action_1_usergroup'],
+					"usergroup" => $mybb->get_input('action_1_usergroup', MyBB::INPUT_INT),
 					"length" => fetch_time_length($mybb->input['action_1_time'], $mybb->input['action_1_period'])
 				);
 			}
@@ -88,8 +88,8 @@ if($mybb->input['action'] == "add_level")
 				);
 			}
 			$new_level = array(
-				"percentage" => (int)$mybb->input['percentage'],
-				"action" => serialize($action)
+				"percentage" => $mybb->get_input('percentage', MyBB::INPUT_INT),
+				"action" => my_serialize($action)
 			);
 
 			$lid = $db->insert_query("warninglevels", $new_level);
@@ -118,7 +118,7 @@ if($mybb->input['action'] == "add_level")
 	}
 
 	$form_container = new FormContainer($lang->add_warning_level);
-	$form_container->output_row($lang->warning_points_percentage, $lang->warning_points_percentage_desc, $form->generate_numeric_field('percentage', $mybb->input['percentage'], array('id' => 'percentage')), 'percentage');
+	$form_container->output_row($lang->warning_points_percentage, $lang->warning_points_percentage_desc, $form->generate_numeric_field('percentage', $mybb->input['percentage'], array('id' => 'percentage', 'min' => 0, 'max' => 100)), 'percentage');
 
 	$query = $db->simple_select("usergroups", "*", "isbannedgroup=1");
 	while($group = $db->fetch_array($query))
@@ -166,7 +166,7 @@ if($mybb->input['action'] == "add_level")
 				</tr>
 				<tr>
 					<td><small>{$lang->ban_length}</small></td>
-					<td>".$form->generate_numeric_field('action_1_time', $mybb->input['action_1_time'], array('style' => 'width: 2em;'))." ".$form->generate_select_box('action_1_period', $periods, $mybb->input['action_1_period'])."</td>
+					<td>".$form->generate_numeric_field('action_1_time', $mybb->input['action_1_time'], array('style' => 'width: 3em;', 'min' => 0))." ".$form->generate_select_box('action_1_period', $periods, $mybb->input['action_1_period'])."</td>
 				</tr>
 			</table>
 		</dd>
@@ -175,7 +175,7 @@ if($mybb->input['action'] == "add_level")
 			<table cellpadding=\"4\">
 				<tr>
 					<td><small>{$lang->suspension_length}</small></td>
-					<td>".$form->generate_numeric_field('action_2_time', $mybb->input['action_2_time'], array('style' => 'width: 2em;'))." ".$form->generate_select_box('action_2_period', $periods, $mybb->input['action_2_period'])."</td>
+					<td>".$form->generate_numeric_field('action_2_time', $mybb->input['action_2_time'], array('style' => 'width: 3em;', 'min' => 0))." ".$form->generate_select_box('action_2_period', $periods, $mybb->input['action_2_period'])."</td>
 				</tr>
 			</table>
 		</dd>
@@ -184,7 +184,7 @@ if($mybb->input['action'] == "add_level")
 			<table cellpadding=\"4\">
 				<tr>
 					<td><small>{$lang->moderation_length}</small></td>
-					<td>".$form->generate_numeric_field('action_3_time', $mybb->input['action_3_time'], array('style' => 'width: 2em;'))." ".$form->generate_select_box('action_3_period', $periods, $mybb->input['action_3_period'])."</td>
+					<td>".$form->generate_numeric_field('action_3_time', $mybb->input['action_3_time'], array('style' => 'width: 3em;', 'min' => 0))." ".$form->generate_select_box('action_3_period', $periods, $mybb->input['action_3_period'])."</td>
 				</tr>
 			</table>
 		</dd>
@@ -205,7 +205,7 @@ if($mybb->input['action'] == "add_level")
 
 if($mybb->input['action'] == "edit_level")
 {
-	$query = $db->simple_select("warninglevels", "*", "lid='".(int)$mybb->input['lid']."'");
+	$query = $db->simple_select("warninglevels", "*", "lid='".$mybb->get_input('lid', MyBB::INPUT_INT)."'");
 	$level = $db->fetch_array($query);
 
 	// Does the warning level not exist?
@@ -236,7 +236,7 @@ if($mybb->input['action'] == "edit_level")
 			{
 				$action = array(
 					"type" => 1,
-					"usergroup" => (int)$mybb->input['action_1_usergroup'],
+					"usergroup" => $mybb->get_input('action_1_usergroup', MyBB::INPUT_INT),
 					"length" => fetch_time_length($mybb->input['action_1_time'], $mybb->input['action_1_period'])
 				);
 			}
@@ -257,8 +257,8 @@ if($mybb->input['action'] == "edit_level")
 				);
 			}
 			$updated_level = array(
-				"percentage" => (int)$mybb->input['percentage'],
-				"action" => serialize($action)
+				"percentage" => $mybb->get_input('percentage', MyBB::INPUT_INT),
+				"action" => my_serialize($action)
 			);
 
 			$plugins->run_hooks("admin_config_warning_edit_level_commit");
@@ -319,7 +319,7 @@ if($mybb->input['action'] == "edit_level")
 	}
 
 	$form_container = new FormContainer($lang->edit_warning_level);
-	$form_container->output_row($lang->warning_points_percentage, $lang->warning_points_percentage_desc, $form->generate_numeric_field('percentage', $mybb->input['percentage'], array('id' => 'percentage')), 'percentage');
+	$form_container->output_row($lang->warning_points_percentage, $lang->warning_points_percentage_desc, $form->generate_numeric_field('percentage', $mybb->input['percentage'], array('id' => 'percentage', 'min' => 0, 'max' => 100)), 'percentage');
 
 	$query = $db->simple_select("usergroups", "*", "isbannedgroup=1");
 	while($group = $db->fetch_array($query))
@@ -367,7 +367,7 @@ if($mybb->input['action'] == "edit_level")
 				</tr>
 				<tr>
 					<td><small>{$lang->ban_length}</small></td>
-					<td>".$form->generate_numeric_field('action_1_time', $mybb->input['action_1_time'], array('style' => 'width: 2em;'))." ".$form->generate_select_box('action_1_period', $periods, $mybb->input['action_1_period'])."</td>
+					<td>".$form->generate_numeric_field('action_1_time', $mybb->input['action_1_time'], array('style' => 'width: 3em;', 'min' => 0))." ".$form->generate_select_box('action_1_period', $periods, $mybb->input['action_1_period'])."</td>
 				</tr>
 			</table>
 		</dd>
@@ -376,7 +376,7 @@ if($mybb->input['action'] == "edit_level")
 			<table cellpadding=\"4\">
 				<tr>
 					<td><small>{$lang->suspension_length}</small></td>
-					<td>".$form->generate_numeric_field('action_2_time', $mybb->input['action_2_time'], array('style' => 'width: 2em;'))." ".$form->generate_select_box('action_2_period', $periods, $mybb->input['action_2_period'])."</td>
+					<td>".$form->generate_numeric_field('action_2_time', $mybb->input['action_2_time'], array('style' => 'width: 3em;', 'min' => 0))." ".$form->generate_select_box('action_2_period', $periods, $mybb->input['action_2_period'])."</td>
 				</tr>
 			</table>
 		</dd>
@@ -385,7 +385,7 @@ if($mybb->input['action'] == "edit_level")
 			<table cellpadding=\"4\">
 				<tr>
 					<td><small>{$lang->moderation_length}</small></td>
-					<td>".$form->generate_numeric_field('action_3_time', $mybb->input['action_3_time'], array('style' => 'width: 2em;'))." ".$form->generate_select_box('action_3_period', $periods, $mybb->input['action_3_period'])."</td>
+					<td>".$form->generate_numeric_field('action_3_time', $mybb->input['action_3_time'], array('style' => 'width: 3em;', 'min' => 0))." ".$form->generate_select_box('action_3_period', $periods, $mybb->input['action_3_period'])."</td>
 				</tr>
 			</table>
 		</dd>
@@ -406,7 +406,7 @@ if($mybb->input['action'] == "edit_level")
 
 if($mybb->input['action'] == "delete_level")
 {
-	$query = $db->simple_select("warninglevels", "*", "lid='".(int)$mybb->input['lid']."'");
+	$query = $db->simple_select("warninglevels", "*", "lid='".$mybb->get_input('lid', MyBB::INPUT_INT)."'");
 	$level = $db->fetch_array($query);
 
 	// Does the warning level not exist?
@@ -463,7 +463,7 @@ if($mybb->input['action'] == "add_type")
 		{
 			$new_type = array(
 				"title" => $db->escape_string($mybb->input['title']),
-				"points" => (int)$mybb->input['points'],
+				"points" => $mybb->get_input('points', MyBB::INPUT_INT),
 				"expirationtime" =>  fetch_time_length($mybb->input['expire_time'], $mybb->input['expire_period'])
 			);
 
@@ -502,7 +502,7 @@ if($mybb->input['action'] == "add_type")
 
 	$form_container = new FormContainer($lang->add_warning_type);
 	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
-	$form_container->output_row($lang->points_to_add." <em>*</em>", $lang->points_to_add_desc, $form->generate_numeric_field('points', $mybb->input['points'], array('id' => 'points')), 'points');
+	$form_container->output_row($lang->points_to_add." <em>*</em>", $lang->points_to_add_desc, $form->generate_numeric_field('points', $mybb->input['points'], array('id' => 'points', 'min' => 0, 'max' => $mybb->settings['maxwarningpoints'])), 'points');
 	$expiration_periods = array(
 		"hours" => $lang->expiration_hours,
 		"days" => $lang->expiration_days,
@@ -510,7 +510,7 @@ if($mybb->input['action'] == "add_type")
 		"months" => $lang->expiration_months,
 		"never" => $lang->expiration_never
 	);
-	$form_container->output_row($lang->warning_expiry, $lang->warning_expiry_desc, $form->generate_numeric_field('expire_time', $mybb->input['expire_time'], array('id' => 'expire_time'))." ".$form->generate_select_box('expire_period', $expiration_periods, $mybb->input['expire_period'], array('id' => 'expire_period')), 'expire_time');
+	$form_container->output_row($lang->warning_expiry, $lang->warning_expiry_desc, $form->generate_numeric_field('expire_time', $mybb->input['expire_time'], array('id' => 'expire_time', 'min' => 0))." ".$form->generate_select_box('expire_period', $expiration_periods, $mybb->input['expire_period'], array('id' => 'expire_period')), 'expire_time');
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_warning_type);
@@ -523,7 +523,7 @@ if($mybb->input['action'] == "add_type")
 
 if($mybb->input['action'] == "edit_type")
 {
-	$query = $db->simple_select("warningtypes", "*", "tid='".$mybb->get_input('tid', 1)."'");
+	$query = $db->simple_select("warningtypes", "*", "tid='".$mybb->get_input('tid', MyBB::INPUT_INT)."'");
 	$type = $db->fetch_array($query);
 
 	// Does the warning type not exist?
@@ -551,7 +551,7 @@ if($mybb->input['action'] == "edit_type")
 		{
 			$updated_type = array(
 				"title" => $db->escape_string($mybb->input['title']),
-				"points" => (int)$mybb->input['points'],
+				"points" => $mybb->get_input('points', MyBB::INPUT_INT),
 				"expirationtime" =>  fetch_time_length($mybb->input['expire_time'], $mybb->input['expire_period'])
 			);
 
@@ -598,7 +598,7 @@ if($mybb->input['action'] == "edit_type")
 
 	$form_container = new FormContainer($lang->edit_warning_type);
 	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
-	$form_container->output_row($lang->points_to_add." <em>*</em>", $lang->points_to_add_desc, $form->generate_numeric_field('points', $mybb->input['points'], array('id' => 'points')), 'points');
+	$form_container->output_row($lang->points_to_add." <em>*</em>", $lang->points_to_add_desc, $form->generate_numeric_field('points', $mybb->input['points'], array('id' => 'points', 'min' => 0, 'max' => $mybb->settings['maxwarningpoints'])), 'points');
 	$expiration_periods = array(
 		"hours" => $lang->expiration_hours,
 		"days" => $lang->expiration_days,
@@ -606,7 +606,7 @@ if($mybb->input['action'] == "edit_type")
 		"months" => $lang->expiration_months,
 		"never" => $lang->expiration_never
 	);
-	$form_container->output_row($lang->warning_expiry, $lang->warning_expiry_desc, $form->generate_numeric_field('expire_time', $mybb->input['expire_time'], array('id' => 'expire_time'))." ".$form->generate_select_box('expire_period', $expiration_periods, $mybb->input['expire_period'], array('id' => 'expire_period')), 'expire_time');
+	$form_container->output_row($lang->warning_expiry, $lang->warning_expiry_desc, $form->generate_numeric_field('expire_time', $mybb->input['expire_time'], array('id' => 'expire_time', 'min' => 0))." ".$form->generate_select_box('expire_period', $expiration_periods, $mybb->input['expire_period'], array('id' => 'expire_period')), 'expire_time');
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_warning_type);
@@ -619,7 +619,7 @@ if($mybb->input['action'] == "edit_type")
 
 if($mybb->input['action'] == "delete_type")
 {
-	$query = $db->simple_select("warningtypes", "*", "tid='".$mybb->get_input('tid', 1)."'");
+	$query = $db->simple_select("warningtypes", "*", "tid='".$mybb->get_input('tid', MyBB::INPUT_INT)."'");
 	$type = $db->fetch_array($query);
 
 	// Does the warning type not exist?

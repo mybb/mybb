@@ -220,7 +220,7 @@ function import_theme_xml($xml, $options=array())
 	else
 	{
 		$db->delete_query("themestylesheets", "tid='{$options['tid']}'");
-		$db->update_query("themes", array("properties" => $db->escape_string(serialize($properties))), "tid='{$options['tid']}'");
+		$db->update_query("themes", array("properties" => $db->escape_string(my_serialize($properties))), "tid='{$options['tid']}'");
 		$theme_id = $options['tid'];
 	}
 
@@ -327,7 +327,7 @@ function import_theme_xml($xml, $options=array())
 		}
 		// Now we have our list of built stylesheets, save them
 		$updated_theme = array(
-			"stylesheets" => $db->escape_string(serialize($theme_stylesheets))
+			"stylesheets" => $db->escape_string(my_serialize($theme_stylesheets))
 		);
 
 		if(is_array($properties['disporder']))
@@ -344,7 +344,7 @@ function import_theme_xml($xml, $options=array())
 			}
 
 			$properties['disporder'] = $orders;
-			$updated_theme['properties'] = $db->escape_string(serialize($properties));
+			$updated_theme['properties'] = $db->escape_string(my_serialize($properties));
 		}
 
 		$db->update_query("themes", $updated_theme, "tid='{$theme_id}'");
@@ -441,27 +441,8 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 	@fwrite($fp_min, $stylesheet_min);
 	@fclose($fp_min);
 
-	if($mybb->settings['usecdn'] && !empty($mybb->settings['cdnpath']))
-	{
-		$cdn_path         = rtrim($mybb->settings['cdnpath'], '/\\');
-		$cache_themes_dir = $cdn_path . '/' . $theme_directory;
-
-		$copy_to_cdn = true;
-
-		if(!is_dir($cache_themes_dir))
-		{
-			if(!@mkdir($cache_themes_dir))
-			{
-				$copy_to_cdn = false;
-			}
-		}
-
-		if($copy_to_cdn)
-		{
-			@copy(MYBB_ROOT . "{$theme_directory}/{$filename}", "{$cache_themes_dir}/{$filename}");
-			@copy(MYBB_ROOT . "{$theme_directory}/{$filename_min}", "{$cache_themes_dir}/{$filename_min}");
-		}
-	}
+	copy_file_to_cdn(MYBB_ROOT . "{$theme_directory}/{$filename}");
+	copy_file_to_cdn(MYBB_ROOT . "{$theme_directory}/{$filename_min}");
 
 	return "{$theme_directory}/{$filename}";
 }
@@ -487,6 +468,11 @@ function minify_stylesheet($stylesheet)
 	return $stylesheet;
 }
 
+/**
+ * @param array $stylesheet
+ *
+ * @return bool
+ */
 function resync_stylesheet($stylesheet)
 {
 	global $db;
@@ -524,6 +510,11 @@ function resync_stylesheet($stylesheet)
 	return false;
 }
 
+/**
+ * @param string $url
+ *
+ * @return string
+ */
 function fix_css_urls($url)
 {
 	if(!preg_match("#^([a-z0-9]+\:|/)#i", $url) && strpos($url, "../../../") === false)
@@ -536,6 +527,11 @@ function fix_css_urls($url)
 	}
 }
 
+/**
+ * @param string $url
+ *
+ * @return string
+ */
 function unfix_css_urls($url)
 {
 	return str_replace("../../../", "", $url);
@@ -634,9 +630,9 @@ function build_new_theme($name, $properties=null, $parent=1)
 	}
 	if(!empty($stylesheets))
 	{
-		$updated_theme['stylesheets'] = $db->escape_string(serialize($stylesheets));
+		$updated_theme['stylesheets'] = $db->escape_string(my_serialize($stylesheets));
 	}
-	$updated_theme['properties'] = $db->escape_string(serialize($properties));
+	$updated_theme['properties'] = $db->escape_string(my_serialize($properties));
 
 	if(count($updated_theme) > 0)
 	{
@@ -705,7 +701,13 @@ function css_to_array($css)
 	return $parsed_css;
 }
 
-function get_selectors_as_options($css, $selected_item="")
+/**
+ * @param array|string $css
+ * @param int $selected_item
+ *
+ * @return string
+ */
+function get_selectors_as_options($css, $selected_item=null)
 {
 	$select = "";
 
@@ -741,6 +743,12 @@ function get_selectors_as_options($css, $selected_item="")
 	return $select;
 }
 
+/**
+ * @param array $a
+ * @param array $b
+ *
+ * @return int
+ */
 function css_selectors_sort_cmp($a, $b)
 {
 	if(!$a['name'])
@@ -755,6 +763,12 @@ function css_selectors_sort_cmp($a, $b)
 	return strcmp($a['name'], $b['name']);
 }
 
+/**
+ * @param array|string $css
+ * @param string $id
+ *
+ * @return array|bool
+ */
 function get_css_properties($css, $id)
 {
 	if(!is_array($css))
@@ -899,6 +913,12 @@ function insert_into_css($new_css, $selector="", $css="", $class_id="")
 	return $css;
 }
 
+/**
+ * @param array $stylesheet
+ * @param int $tid
+ *
+ * @return bool|int
+ */
 function copy_stylesheet_to_theme($stylesheet, $tid)
 {
 	global $db;
@@ -920,9 +940,16 @@ function copy_stylesheet_to_theme($stylesheet, $tid)
 	return $sid;
 }
 
+/**
+ * @param int $tid
+ * @param bool|array $theme
+ * @param bool $update_disporders
+ *
+ * @return bool
+ */
 function update_theme_stylesheet_list($tid, $theme = false, $update_disporders = true)
 {
-	global $db, $cache;
+	global $mybb, $db, $cache, $plugins;
 
 	$stylesheets = array();
 
@@ -984,6 +1011,11 @@ function update_theme_stylesheet_list($tid, $theme = false, $update_disporders =
 				}
 			}
 		}
+		
+		if(is_object($plugins))
+		{
+			$plugins->run_hooks('update_theme_stylesheet_list_set_css_url', $css_url);
+		}
 
 		$attachedto = $stylesheet['attachedto'];
 		if(!$attachedto)
@@ -1021,7 +1053,7 @@ function update_theme_stylesheet_list($tid, $theme = false, $update_disporders =
 
 	// Now we have our list of built stylesheets, save them
 	$updated_theme = array(
-		"stylesheets" => $db->escape_string(serialize($theme_stylesheets))
+		"stylesheets" => $db->escape_string(my_serialize($theme_stylesheets))
 	);
 
 	// Do we have a theme present? If so, update the stylesheet display orders
@@ -1072,7 +1104,7 @@ function update_theme_stylesheet_list($tid, $theme = false, $update_disporders =
 
 		asort($orders);
 		$properties['disporder'] = $orders;
-		$updated_theme['properties'] = $db->escape_string(serialize($properties));
+		$updated_theme['properties'] = $db->escape_string(my_serialize($properties));
 	}
 
 	$db->update_query("themes", $updated_theme, "tid = '{$tid}'");
@@ -1091,6 +1123,11 @@ function update_theme_stylesheet_list($tid, $theme = false, $update_disporders =
 	return true;
 }
 
+/**
+ * @param int $tid
+ *
+ * @return array|bool
+ */
 function make_parent_theme_list($tid)
 {
 	static $themes_by_parent;
@@ -1134,6 +1171,11 @@ function make_parent_theme_list($tid)
 	return $themes;
 }
 
+/**
+ * @param int $tid
+ *
+ * @return array|null
+ */
 function make_child_theme_list($tid)
 {
 	static $themes_by_child;
@@ -1174,6 +1216,9 @@ function make_child_theme_list($tid)
 	return $themes;
 }
 
+/**
+ * @return array
+ */
 function cache_themes()
 {
 	global $db, $theme_cache;
@@ -1203,6 +1248,10 @@ function cache_themes()
 	return $theme_cache;
 }
 
+/**
+ * @param int $parent
+ * @param int $depth
+ */
 function build_theme_list($parent=0, $depth=0)
 {
 	global $mybb, $db, $table, $lang, $page; // Global $table is bad, but it will have to do for now
@@ -1287,7 +1336,15 @@ function build_theme_list($parent=0, $depth=0)
 	}
 }
 
-// returns an array which can be sent to generate_select_box()
+/**
+ * returns an array which can be sent to generate_select_box()
+ *
+ * @param int $ignoretid
+ * @param int  $parent
+ * @param int  $depth
+ *
+ * @return null|string
+ */
 function build_theme_array($ignoretid = null, $parent=0, $depth=0)
 {
 	global $list;
@@ -1332,6 +1389,11 @@ function build_theme_array($ignoretid = null, $parent=0, $depth=0)
 	}
 }
 
+/**
+ * @param array $theme
+ *
+ * @return array|bool
+ */
 function fetch_theme_stylesheets($theme)
 {
 	// Fetch list of all of the stylesheets for this theme
@@ -1388,6 +1450,11 @@ function fetch_theme_stylesheets($theme)
 	return $stylesheets;
 }
 
+/**
+ * @param string $css
+ *
+ * @return string
+ */
 function upgrade_css_120_to_140($css)
 {
 	// Update our CSS to the new stuff in 1.4

@@ -23,12 +23,14 @@ $lang->load("printthread");
 
 $plugins->run_hooks("printthread_start");
 
-$thread = get_thread($mybb->get_input('tid', 1));
+$thread = get_thread($mybb->get_input('tid', MyBB::INPUT_INT));
 
 if(!$thread)
 {
 	error($lang->error_invalidthread);
 }
+
+$plugins->run_hooks("printthread_start");
 
 $thread['threadprefix'] = $thread['displaystyle'] = '';
 if($thread['prefix'])
@@ -92,7 +94,7 @@ if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0
 // Check if this forum is password protected and we have a valid password
 check_forum_password($forum['fid']);
 
-$page = $mybb->get_input('page', 1);
+$page = $mybb->get_input('page', MyBB::INPUT_INT);
 
 // Paginate this thread
 if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
@@ -189,7 +191,13 @@ $plugins->run_hooks("printthread_end");
 eval("\$printable = \"".$templates->get("printthread")."\";");
 output_page($printable);
 
-function makeprintablenav($pid="0", $depth="--")
+/**
+ * @param int $pid
+ * @param string $depth
+ *
+ * @return string
+ */
+function makeprintablenav($pid=0, $depth="--")
 {
 	global $mybb, $db, $pforumcache, $fid, $forum, $lang;
 	if(!is_array($pforumcache))
@@ -221,10 +229,12 @@ function makeprintablenav($pid="0", $depth="--")
 /**
  * Output multipage navigation.
  *
- * @param int The total number of items.
- * @param int The items per page.
- * @param int The current page.
- * @param string The URL base.
+ * @param int $count The total number of items.
+ * @param int $perpage The items per page.
+ * @param int $current_page The current page.
+ * @param string $url The URL base.
+ *
+ * @return string
 */
 function printthread_multipage($count, $perpage, $current_page, $url)
 {

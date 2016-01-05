@@ -45,7 +45,7 @@ if($mybb->input['action'] == "delete")
 
 	if(!is_array($mybb->input['aids']))
 	{
-		$mybb->input['aids'] = array((int)$mybb->input['aid']);
+		$mybb->input['aids'] = array($mybb->get_input('aid', MyBB::INPUT_INT));
 	}
 	else
 	{
@@ -227,6 +227,11 @@ if($mybb->input['action'] == "delete_orphans" && $mybb->request_method == "post"
 	// Deleting specific attachments from uploads directory
 	if(is_array($mybb->input['orphaned_files']))
 	{
+		/**
+		 * @param string $string
+		 *
+		 * @return string
+		 */
 		function clean_filename($string)
 		{
 			return str_replace(array(".."), "", $string);
@@ -456,17 +461,17 @@ if($mybb->input['action'] == "orphans")
 		}
 		if(is_array($missing_attachment_files) && count($missing_attachment_files) > 0)
 		{
-			$missing_attachment_files = serialize($missing_attachment_files);
+			$missing_attachment_files = my_serialize($missing_attachment_files);
 			echo $form->generate_hidden_field("missing_attachment_files", $missing_attachment_files);
 		}
 		if(is_array($missing_threads) && count($missing_threads) > 0)
 		{
-			$missing_threads = serialize($missing_threads);
+			$missing_threads = my_serialize($missing_threads);
 			echo $form->generate_hidden_field("missing_threads", $missing_threads);
 		}
 		if(is_array($incomplete_attachments) && count($incomplete_attachments) > 0)
 		{
-			$incomplete_attachments = serialize($incomplete_attachments);
+			$incomplete_attachments = my_serialize($incomplete_attachments);
 			echo $form->generate_hidden_field("incomplete_attachments", $incomplete_attachments);
 		}
 		$form->end();
@@ -484,6 +489,9 @@ if($mybb->input['action'] == "orphans")
 	{
 		$plugins->run_hooks("admin_forum_attachments_orphans_step1");
 
+		/**
+		 * @param string $dir
+		 */
 		function scan_attachments_directory($dir="")
 		{
 			global $db, $mybb, $bad_attachments, $attachments_to_check;
@@ -586,7 +594,7 @@ if($mybb->input['action'] == "orphans")
 		// Scan complete
 		if(is_array($bad_attachments) && count($bad_attachments) > 0)
 		{
-			$bad_attachments = serialize($bad_attachments);
+			$bad_attachments = my_serialize($bad_attachments);
 			echo $form->generate_hidden_field("bad_attachments", $bad_attachments);
 		}
 		$form->end();
@@ -668,20 +676,25 @@ if(!$mybb->input['action'])
 		}
 
 		// LESS THAN or GREATER THAN
+		$direction_fields = array(
+			"dateuploaded" => $mybb->get_input('dateuploaded', MyBB::INPUT_INT),
+			"filesize"     => $mybb->get_input('filesize', MyBB::INPUT_INT),
+			"downloads"    => $mybb->get_input('downloads', MyBB::INPUT_INT)
+		);
+
 		if($mybb->input['dateuploaded'] && $mybb->request_method == "post")
 		{
-			$mybb->input['dateuploaded'] = TIME_NOW-$mybb->input['dateuploaded']*60*60*24;
+			$direction_fields['dateuploaded'] = TIME_NOW-$direction_fields['dateuploaded']*60*60*24;
 		}
 		if($mybb->input['filesize'] && $mybb->request_method == "post")
 		{
-			$mybb->input['filesize'] *= 1024;
+			$direction_fields['filesize'] *= 1024;
 		}
 
-		$direction_fields = array("dateuploaded", "filesize", "downloads");
-		foreach($direction_fields as $search_field)
+		foreach($direction_fields as $field_name => $field_content)
 		{
-			$direction_field = $search_field."_dir";
-			if($mybb->input[$search_field] && $mybb->input[$direction_field])
+			$direction_field = $field_name."_dir";
+			if($mybb->input[$field_name] && $mybb->input[$direction_field])
 			{
 				switch($mybb->input[$direction_field])
 				{
@@ -694,7 +707,7 @@ if(!$mybb->input['action'])
 					default:
 						$direction = "=";
 				}
-				$search_sql .= " AND a.{$search_field}{$direction}'".$db->escape_string($mybb->input[$search_field])."'";
+				$search_sql .= " AND a.{$field_name}{$direction}'".$field_content."'";
 			}
 		}
 		if(!$errors)
@@ -718,13 +731,13 @@ if(!$mybb->input['action'])
 		// Now we fetch the results if there were 100% no errors
 		if(!$errors)
 		{
-			$mybb->input['perpage'] = $mybb->get_input('perpage', 1);
+			$mybb->input['perpage'] = $mybb->get_input('perpage', MyBB::INPUT_INT);
 			if(!$mybb->input['perpage'])
 			{
 				$mybb->input['perpage'] = 20;
 			}
 
-			$mybb->input['page'] = $mybb->get_input('page', 1);
+			$mybb->input['page'] = $mybb->get_input('page', MyBB::INPUT_INT);
 			if($mybb->input['page'])
 			{
 				$start = ($mybb->input['page'] - 1) * $mybb->input['perpage'];
@@ -848,9 +861,9 @@ if(!$mybb->input['action'])
 		"less_than" => $lang->less_than
 	);
 
-	$form_container->output_row($lang->date_posted_is, "", $form->generate_select_box('dateuploaded_dir', $more_options, $mybb->input['dateuploaded_dir'], array('id' => 'dateuploaded_dir'))." ".$form->generate_numeric_field('dateuploaded', $mybb->input['dateuploaded'], array('id' => 'dateuploaded'))." {$lang->days_ago}", 'dateuploaded');
-	$form_container->output_row($lang->file_size_is, "", $form->generate_select_box('filesize_dir', $greater_options, $mybb->input['filesize_dir'], array('id' => 'filesize_dir'))." ".$form->generate_numeric_field('filesize', $mybb->input['filesize'], array('id' => 'filesize'))." {$lang->kb}", 'dateuploaded');
-	$form_container->output_row($lang->download_count_is, "", $form->generate_select_box('downloads_dir', $greater_options, $mybb->input['downloads_dir'], array('id' => 'downloads_dir'))." ".$form->generate_numeric_field('downloads', $mybb->input['downloads'], array('id' => 'downloads'))."", 'dateuploaded');
+	$form_container->output_row($lang->date_posted_is, "", $form->generate_select_box('dateuploaded_dir', $more_options, $mybb->input['dateuploaded_dir'], array('id' => 'dateuploaded_dir'))." ".$form->generate_numeric_field('dateuploaded', $mybb->input['dateuploaded'], array('id' => 'dateuploaded', 'min' => 0))." {$lang->days_ago}", 'dateuploaded');
+	$form_container->output_row($lang->file_size_is, "", $form->generate_select_box('filesize_dir', $greater_options, $mybb->input['filesize_dir'], array('id' => 'filesize_dir'))." ".$form->generate_numeric_field('filesize', $mybb->input['filesize'], array('id' => 'filesize', 'min' => 0))." {$lang->kb}", 'dateuploaded');
+	$form_container->output_row($lang->download_count_is, "", $form->generate_select_box('downloads_dir', $greater_options, $mybb->input['downloads_dir'], array('id' => 'downloads_dir'))." ".$form->generate_numeric_field('downloads', $mybb->input['downloads'], array('id' => 'downloads', 'min' => 0))."", 'dateuploaded');
 	$form_container->end();
 
 	$form_container = new FormContainer($lang->display_options);
@@ -866,7 +879,7 @@ if(!$mybb->input['action'])
 		"desc" => $lang->desc
 	);
 	$form_container->output_row($lang->sort_results_by, "", $form->generate_select_box('sortby', $sort_options, $mybb->input['sortby'], array('id' => 'sortby'))." {$lang->in} ".$form->generate_select_box('order', $sort_directions, $mybb->input['order'], array('id' => 'order')), 'sortby');
-	$form_container->output_row($lang->results_per_page, "", $form->generate_numeric_field('perpage', $mybb->input['perpage'], array('id' => 'perpage')), 'perpage');
+	$form_container->output_row($lang->results_per_page, "", $form->generate_numeric_field('perpage', $mybb->input['perpage'], array('id' => 'perpage', 'min' => 1)), 'perpage');
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->button_find_attachments);
@@ -876,9 +889,14 @@ if(!$mybb->input['action'])
 	$page->output_footer();
 }
 
+/**
+ * @param array $attachment
+ * @param DefaultTable $table
+ * @param bool $use_form
+ */
 function build_attachment_row($attachment, &$table, $use_form=false)
 {
-	global $mybb, $form;
+	global $mybb, $form, $lang;
 	$attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
 
 	// Here we do a bit of detection, we want to automatically check for removal any missing attachments and any not assigned to a post uploaded > 24hours ago
