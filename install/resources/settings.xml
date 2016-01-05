@@ -215,7 +215,7 @@ email=Sent via Email]]></optionscode>
 		</setting>
 		<setting name="showlanguageselect">
 			<title>Show Language Selector in Footer</title>
-			<description><![CDATA[Set to no if you do not want to show the language selection area in the footer of all pages in the board. If you only have one language installed this setting will be ignored.]]></description>
+			<description><![CDATA[Set to 'NO' if you do not want to show the language selection area in the footer of all pages in the board. If you only have one language installed this setting will be ignored.]]></description>
 			<disporder>10</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -223,7 +223,7 @@ email=Sent via Email]]></optionscode>
 		</setting>
 		<setting name="showthemeselect">
 			<title>Show Theme Selector in Footer</title>
-			<description><![CDATA[Set to no if you do not want to show the theme selection area in the footer of all pages in the board.]]></description>
+			<description><![CDATA[Set to 'NO' if you do not want to show the theme selection area in the footer of all pages in the board.]]></description>
 			<disporder>11</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -271,7 +271,7 @@ email=Sent via Email]]></optionscode>
 		</setting>
 		<setting name="enableforumjump">
 			<title>Enable Forum Jump Menu?</title>
-			<description><![CDATA[The forum jump menu is shown on the forum and thread view pages. It can add significant load to your forums if you have a large amount of forums. Set to 'No' to disable it.]]></description>
+			<description><![CDATA[The forum jump menu is shown on the forum and thread view pages. It can add significant load to your forums if you have a large amount of forums. Set to 'NO' to disable it.]]></description>
 			<disporder>17</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -406,7 +406,7 @@ none=Hide Errors and Warnings
 		</setting>
 		<setting name="ip_forwarded_check">
 			<title>Scrutinize User's IP address?</title>
-			<description><![CDATA[Do you want to check a user's IP address for HTTP_X_FORWARDED_FOR or HTTP_X_REAL_IP headers? If you're unsure, set this to no.]]></description>
+			<description><![CDATA[Do you want to check a user's IP address for HTTP_X_FORWARDED_FOR or HTTP_X_REAL_IP headers? If you're unsure, set this to 'NO'.]]></description>
 			<disporder>15</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
@@ -741,7 +741,7 @@ classic=Display posts using the classic layout]]></optionscode>
 		</setting>
 		<setting name="threadusenetstyle">
 			<title>Usenet Style Thread View</title>
-			<description><![CDATA[Selecting 'YES' will cause posts to look similar to how posts look in USENET. No will cause posts to look the modern way.]]></description>
+			<description><![CDATA[Selecting 'YES' will cause posts to look similar to how posts look in USENET. 'NO' will cause posts to look the modern way.]]></description>
 			<disporder>6</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
@@ -908,7 +908,7 @@ both=Email Verification & Administrator Activation]]></optionscode>
 		</setting>
 		<setting name="allowmultipleemails">
 			<title><![CDATA[Allow emails to be registered multiple times?]]></title>
-			<description><![CDATA[Select 'YES' if you wish to allow users to sign up with the same email more than once otherwise select no.]]></description>
+			<description><![CDATA[Select 'YES' if you wish to allow users to sign up with the same email more than once otherwise select 'NO'.]]></description>
 			<disporder>12</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
@@ -1375,7 +1375,7 @@ show=Show to all Users]]></optionscode>
 	<settinggroup name="attachments" title="Attachments" description="Various options related to the attachment system can be managed and set here." disporder="12" isdefault="1">
 		<setting name="enableattachments">
 			<title>Enable Attachment Functionality</title>
-			<description><![CDATA[If you wish to disable attachments on your board, set this option to NO.]]></description>
+			<description><![CDATA[If you wish to disable attachments on your board, set this option to 'NO'.]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -1420,7 +1420,7 @@ download=As Download Link]]></optionscode>
 	<settinggroup name="memberlist" title="Member List" description="This section allows you to control various aspects of the board member listing (memberlist.php), such as how many members to show per page, and which features to enable or disable." disporder="13" isdefault="1">
 		<setting name="enablememberlist">
 			<title>Enable Member List Functionality</title>
-			<description><![CDATA[If you wish to disable the member list on your board, set this option to no.]]></description>
+			<description><![CDATA[If you wish to disable the member list on your board, set this option to 'NO'.]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -1468,7 +1468,7 @@ descending=Descending]]></optionscode>
 	<settinggroup name="reputation" title="Reputation" description="The reputation system allows your users to rate others and leave a comment on the user. This section has settings to disable and change other aspects of the reputation page (reputation.php)." disporder="14" isdefault="1">
 		<setting name="enablereputation">
 			<title>Enable Reputation Functionality</title>
-			<description><![CDATA[If you wish to disable the reputation system on your board, set this option to no.]]></description>
+			<description><![CDATA[If you wish to disable the reputation system on your board, set this option to 'NO'.]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -1542,7 +1542,7 @@ descending=Descending]]></optionscode>
 	<settinggroup name="warning" title="Warning System Settings" description="The warning system allows forum staff to warn users for rule violations. Here you can manage the settings that control the warning system (warnings.php)." disporder="15" isdefault="1">
 		<setting name="enablewarningsystem">
 			<title>Enable Warning System?</title>
-			<description><![CDATA[Set to no to completely disable the warning system.]]></description>
+			<description><![CDATA[Set to 'NO' to completely disable the warning system.]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -1584,7 +1584,7 @@ descending=Descending]]></optionscode>
 	<settinggroup name="privatemessaging" title="Private Messaging" description="Various options with relation to the MyBB Private Messaging system (private.php) can be managed and set here." disporder="16" isdefault="1">
 		<setting name="enablepms">
 			<title>Enable Private Messaging Functionality</title>
-			<description><![CDATA[If you wish to disable the private messaging system on your board, set this option to no.]]></description>
+			<description><![CDATA[If you wish to disable the private messaging system on your board, set this option to 'NO'.]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -1669,7 +1669,7 @@ show=Show to all Users]]></optionscode>
 	<settinggroup name="calendar" title="Calendar" description="The board calendar allows the public and private listing of events and members' birthdays. This section allows you to control and manage the settings for the Calendar (calendar.php)." disporder="17" isdefault="1">
 		<setting name="enablecalendar">
 			<title>Enable Calendar Functionality</title>
-			<description><![CDATA[If you wish to disable the calendar on your board, set this option to no.]]></description>
+			<description><![CDATA[If you wish to disable the calendar on your board, set this option to 'NO'.]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -1773,7 +1773,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 	<settinggroup name="portal" title="Portal Settings" description="The portal page compiles several different pieces of information about your forum, including latest posts, who's online, forum stats, announcements, and more. This section has settings to control the aspects of the portal page (portal.php)." disporder="20" isdefault="1">
 		<setting name="portal">
 			<title>Enable Portal</title>
-			<description><![CDATA[If you wish to disable the portal on your board, set this option to no.]]></description>
+			<description><![CDATA[If you wish to disable the portal on your board, set this option to 'NO'.]]></description>
   			<disporder>1</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -2034,7 +2034,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		</setting>
 		<setting name="guestimages">
 			<title>Parse [img] MyCode To Guests</title>
-			<description><![CDATA[Setting this to 'YES' will parse posted images to guests. If no, a link will be shown instead.]]></description>
+			<description><![CDATA[Setting this to 'YES' will parse posted images to guests. If 'NO', a link will be shown instead.]]></description>
 			<disporder>17</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -2042,7 +2042,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		</setting>
 		<setting name="guestvideos">
 			<title>Parse [video] MyCode To Guests</title>
-			<description><![CDATA[Setting this to 'YES' will parse posted videos to guests. If no, a link will be shown instead.]]></description>
+			<description><![CDATA[Setting this to 'YES' will parse posted videos to guests. If 'NO', a link will be shown instead.]]></description>
 			<disporder>18</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -2415,7 +2415,7 @@ delete=Delete]]></optionscode>
 	<settinggroup name="statspage" title="Statistics Page" description="This section allows you to change the settings of the statistics page." disporder="28" isdefault="1">
 		<setting name="statsenabled">
 			<title>Enable Statistics Pages</title>
-			<description><![CDATA[If you wish to disable the statistics page on your board, set this option to no.]]></description>
+			<description><![CDATA[If you wish to disable the statistics page on your board, set this option to 'NO'.]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
