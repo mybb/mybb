@@ -7773,24 +7773,24 @@ function secure_seed_rng()
 {
 	$bytes = PHP_INT_SIZE;
 
-	$output = secure_binary_seed_rng($bytes);
-
-	// convert binary data to a decimal number
-	if ($bytes == 4)
+	do
 	{
-		$elements = unpack('i', $output);
-		$output = abs($elements[1]);
-	}
-	else
-	{
-		$elements = unpack('N2', $output);
-		$output = abs($elements[1] << 32 | $elements[2]);
 
-		if($output > PHP_INT_MAX)
+		$output = secure_binary_seed_rng($bytes);
+
+		// convert binary data to a decimal number
+		if ($bytes == 4)
 		{
-			$output = 0;
+			$elements = unpack('i', $output);
+			$output = abs($elements[1]);
 		}
-	}
+		else
+		{
+			$elements = unpack('N2', $output);
+			$output = abs($elements[1] << 32 | $elements[2]);
+		}
+
+	} while($output > PHP_INT_MAX);
 
 	return $output;
 }
