@@ -11,7 +11,7 @@
 /**
  * Xcache Cache Handler
  */
-class xcacheCacheHandler
+class xcacheCacheHandler implements CacheHandlerInterface
 {
 	/**
 	 * Unique identifier representing this copy of MyBB
@@ -20,10 +20,7 @@ class xcacheCacheHandler
 	 */
 	public $unique_id;
 
-	/**
-	 * @param bool $silent ignored
-	 */
-	function xcacheCacheHandler($silent=false)
+	function __construct()
 	{
 		global $mybb;
 
@@ -56,10 +53,9 @@ class xcacheCacheHandler
 	 * Retrieve an item from the cache.
 	 *
 	 * @param string $name The name of the cache
-	 * @param boolean $hard_refresh True if we should do a hard refresh
 	 * @return mixed Cache data if successful, false if failure
 	 */
-	function fetch($name, $hard_refresh=false)
+	function fetch($name)
 	{
 		if(!xcache_isset($this->unique_id."_".$name))
 		{
