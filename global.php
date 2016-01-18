@@ -326,7 +326,7 @@ foreach($stylesheet_scripts as $stylesheet_script)
 }
 unset($actions);
 
-if(!empty($theme_stylesheets))
+if(!empty($theme_stylesheets) && is_array($theme['disporder']))
 {
 	foreach($theme['disporder'] as $style_name => $order)
 	{
@@ -589,7 +589,7 @@ if($mybb->usergroup['cancp'] == 1 || ($mybb->user['ismoderator'] && $mybb->userg
 	{
 		$can_access_moderationqueue = false;
 	}
-	
+
 	if($can_access_moderationqueue || ($mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanagereportedcontent'] == 1))
 	{
 		// Read the reported content cache
@@ -747,7 +747,7 @@ if($mybb->settings['awactialert'] == 1 && $mybb->usergroup['cancp'] == 1)
 	{
 		$awaitingusers = my_number_format($awaitingusers);
 	}
-	
+
 	if($awaitingusers > 0)
 	{
 		if($awaitingusers == 1)
@@ -905,7 +905,7 @@ if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['canviewboardclosed']
 
 	$lang->error_boardclosed .= "<blockquote>{$mybb->settings['boardclosed_reason']}</blockquote>";
 
-	if(!$mybb->get_input('modal')) 
+	if(!$mybb->get_input('modal'))
 	{
 		error($lang->error_boardclosed);
 	}
