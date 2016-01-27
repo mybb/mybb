@@ -166,7 +166,7 @@ if($mybb->input['action'] == "results")
 	$sorturl = "search.php?action=results&amp;sid={$sid}";
 	$thread_url = "";
 	$post_url = "";
-	
+
 	$orderarrow = array('replies' => '', 'views' => '', 'subject' => '', 'forum' => '', 'starter' => '', 'lastpost' => '', 'dateline' => '');
 
 	eval("\$orderarrow['$sortby'] = \"".$templates->get("search_orderarrow")."\";");
@@ -1502,14 +1502,8 @@ else if($mybb->input['action'] == "thread")
 {
 	// Fetch thread info
 	$thread = get_thread($mybb->get_input('tid', MyBB::INPUT_INT));
-	if(is_moderator($fid))
-	{
-		$ismod = true;
-	}
-	else
-	{
-		$ismod = false;
-	}
+	$ismod = is_moderator($thread['fid']);
+
 	if(!$thread || ($thread['visible'] != 1 && $ismod == false && ($thread['visible'] != -1 || $mybb->settings['soft_delete'] != 1 || $mybb->settings['soft_delete_show_own'] != 1 || !$mybb->user['uid'] || $mybb->user['uid'] != $thread['uid'])) || ($thread['visible'] > 1 && $ismod == true))
 	{
 		error($lang->error_invalidthread);
