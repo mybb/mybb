@@ -140,6 +140,11 @@ if(isset($mybb->input['thumbnail']))
 }
 else
 {
+	if($mybb->usergroup["candlattachments"] == 0)
+	{
+		error_no_permission();
+	}
+	
 	if(!file_exists($mybb->settings['uploadspath']."/".$attachment['attachname']))
 	{
 		error($lang->error_invalidattachment);
