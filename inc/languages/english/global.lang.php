@@ -308,6 +308,8 @@ $l['unread_reports'] = "Moderator Notice: There are {1} unread reports.";
 $l['pending_joinrequest'] = "Group Leader Notice: You have 1 pending group membership join request.";
 $l['pending_joinrequests'] = "Group Leader Notice: You have {1} pending group membership join requests.";
 
+$l['search_user'] = "Search for a user";
+
 $l['year'] = "Year";
 $l['year_short'] = "y";
 $l['years'] = "Years";
