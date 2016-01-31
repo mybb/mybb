@@ -50,6 +50,7 @@ if(!isset($cp_language))
 
 // Load global language phrases
 $lang->load("global");
+$lang->load("messages", true);
 
 if(function_exists('mb_internal_encoding') && !empty($lang->settings['charset']))
 {
@@ -240,9 +241,9 @@ elseif($mybb->input['do'] == "login")
 		$sid = md5(uniqid(microtime(true), true));
 
 		$useragent = $_SERVER['HTTP_USER_AGENT'];
-		if(my_strlen($useragent) > 100)
+		if(my_strlen($useragent) > 200)
 		{
-			$useragent = my_substr($useragent, 0, 100);
+			$useragent = my_substr($useragent, 0, 200);
 		}
 
 		// Create a new admin session for this user
@@ -472,6 +473,7 @@ if(!empty($mybb->user['uid']))
 		$cp_language = $admin_options['cplanguage'];
 		$lang->set_language($cp_language, "admin");
 		$lang->load("global"); // Reload global language vars
+		$lang->load("messages", true);
 	}
 
 	if(!empty($admin_options['cpstyle']) && file_exists(MYBB_ADMIN_DIR."/styles/{$admin_options['cpstyle']}/main.css"))

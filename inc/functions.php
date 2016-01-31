@@ -324,12 +324,12 @@ function parse_page($contents)
  *
  * @param string $format A date format according to PHP's date structure.
  * @param int $stamp The unix timestamp the date should be generated for.
- * @param int $offset The offset in hours that should be applied to times. (timezones)
+ * @param int|string $offset The offset in hours that should be applied to times. (timezones) Or an empty string to determine that automatically
  * @param int $ty Whether or not to use today/yesterday formatting.
  * @param boolean $adodb Whether or not to use the adodb time class for < 1970 or > 2038 times
  * @return string The formatted timestamp.
  */
-function my_date($format, $stamp=0, $offset=0, $ty=1, $adodb=false)
+function my_date($format, $stamp=0, $offset="", $ty=1, $adodb=false)
 {
 	global $mybb, $lang, $mybbadmin, $plugins;
 
@@ -1466,9 +1466,10 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
  *
  * @param int $fid The forum ID
  * @param int $pid The Parent ID
+ * @param bool $return
  * @return bool
  */
-function check_forum_password($fid, $pid=0)
+function check_forum_password($fid, $pid=0, $return=false)
 {
 	global $mybb, $header, $footer, $headerinclude, $theme, $templates, $lang, $forum_cache;
 
@@ -1536,6 +1537,11 @@ function check_forum_password($fid, $pid=0)
 	else
 	{
 		$showform = false;
+	}
+
+	if($return)
+	{
+		return $showform;
 	}
 
 	if($showform)
@@ -2426,9 +2432,9 @@ function update_stats($changes=array(), $force=false)
 	// Update stats row for today in the database
 	$todays_stats = array(
 		"dateline" => mktime(0, 0, 0, date("m"), date("j"), date("Y")),
-		"numusers" => $stats['numusers'],
-		"numthreads" => $stats['numthreads'],
-		"numposts" => $stats['numposts']
+		"numusers" => (int)$stats['numusers'],
+		"numthreads" => (int)$stats['numthreads'],
+		"numposts" => (int)$stats['numposts']
 	);
 	$db->replace_query("stats", $todays_stats, "dateline");
 
@@ -3206,9 +3212,12 @@ function build_mycode_inserter($bind="message", $smilies = true)
 			// Smilies
 			$emoticon = "";
 			$emoticons_enabled = "false";
-			if($smilies && $mybb->settings['smilieinserter'] != 0 && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
+			if($smilies)
 			{
-				$emoticon = ",emoticon";
+				if($mybb->settings['smilieinserter'] && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
+				{
+					$emoticon = ",emoticon";
+				}
 				$emoticons_enabled = "true";
 
 				if(!$smiliecache)
@@ -3219,11 +3228,8 @@ function build_mycode_inserter($bind="message", $smilies = true)
 					}
 					foreach($smilie_cache as $smilie)
 					{
-						if($smilie['showclickable'] != 0)
-						{
-							$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
-							$smiliecache[$smilie['sid']] = $smilie;
-						}
+						$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
+						$smiliecache[$smilie['sid']] = $smilie;
 					}
 				}
 
@@ -3248,9 +3254,14 @@ function build_mycode_inserter($bind="message", $smilies = true)
 						$image = htmlspecialchars_uni($mybb->get_asset_url($smilie['image']));
 						$image = str_replace(array('\\', '"'), array('\\\\', '\"'), $image);
 
-						if($i < $mybb->settings['smilieinsertertot'])
+						if(!$mybb->settings['smilieinserter'] || !$mybb->settings['smilieinsertercols'] || !$mybb->settings['smilieinsertertot'] || !$smilie['showclickable'])
+						{
+							$hiddensmilies .= '"'.$find.'": "'.$image.'",';							
+						}
+						elseif($i < $mybb->settings['smilieinsertertot'])
 						{
 							$dropdownsmilies .= '"'.$find.'": "'.$image.'",';
+							++$i;
 						}
 						else
 						{
@@ -3262,7 +3273,6 @@ function build_mycode_inserter($bind="message", $smilies = true)
 							$find = str_replace(array('\\', '"'), array('\\\\', '\"'), htmlspecialchars_uni($finds[$j]));
 							$hiddensmilies .= '"'.$find.'": "'.$image.'",';
 						}
-						++$i;
 					}
 				}
 			}
@@ -3357,11 +3367,8 @@ function build_clickable_smilies()
 			}
 			foreach($smilie_cache as $smilie)
 			{
-				if($smilie['showclickable'] != 0)
-				{
-					$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
-					$smiliecache[$smilie['sid']] = $smilie;
-				}
+				$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
+				$smiliecache[$smilie['sid']] = $smilie;
 			}
 		}
 
@@ -3389,7 +3396,7 @@ function build_clickable_smilies()
 			$extra_class = '';
 			foreach($smiliecache as $smilie)
 			{
-				if($i < $mybb->settings['smilieinsertertot'])
+				if($i < $mybb->settings['smilieinsertertot'] && $smilie['showclickable'] != 0)
 				{
 					if($counter == 0)
 					{
@@ -5007,7 +5014,7 @@ function build_theme_select($name, $selected=-1, $tid=0, $depth="", $usergroup_o
 
 	if(!is_array($tcache))
 	{
-		$query = $db->simple_select("themes", "name, pid, tid, allowedgroups", "pid != '0'", array('order_by' => 'pid, name'));
+		$query = $db->simple_select('themes', 'tid, name, pid, allowedgroups', "pid!='0'");
 
 		while($theme = $db->fetch_array($query))
 		{
@@ -5027,24 +5034,8 @@ function build_theme_select($name, $selected=-1, $tid=0, $depth="", $usergroup_o
 		foreach($tcache[$tid] as $theme)
 		{
 			$sel = "";
-			// Make theme allowed groups into array
-			$is_allowed = false;
-			if($theme['allowedgroups'] != "all")
-			{
-				$allowed_groups = explode(",", $theme['allowedgroups']);
-				// See if groups user is in is allowed
-				foreach($allowed_groups as $agid)
-				{
-					if(in_array($agid, $in_groups))
-					{
-						$is_allowed = true;
-						break;
-					}
-				}
-			}
-
 			// Show theme if allowed, or if override is on
-			if($is_allowed || $theme['allowedgroups'] == "all" || $usergroup_override == true)
+			if(is_member($theme['allowedgroups']) || $theme['allowedgroups'] == "all" || $usergroup_override == true)
 			{
 				if($theme['tid'] == $selected)
 				{
@@ -5061,7 +5052,7 @@ function build_theme_select($name, $selected=-1, $tid=0, $depth="", $usergroup_o
 
 				if(array_key_exists($theme['tid'], $tcache))
 				{
-					build_theme_select($name, $selected, $theme['tid'], $depthit, $usergroup_override, $footer);
+					build_theme_select($name, $selected, $theme['tid'], $depthit, $usergroup_override, $footer, $count_override);
 				}
 			}
 		}
@@ -5084,6 +5075,43 @@ function build_theme_select($name, $selected=-1, $tid=0, $depth="", $usergroup_o
 	{
 		return false;
 	}
+}
+
+/**
+ * Get the theme data of a theme id.
+ *
+ * @param int $tid The theme id of the theme.
+ * @return boolean|array False if no valid theme, Array with the theme data otherwise
+ */
+function get_theme($tid)
+{
+	global $tcache, $db;
+
+	if(!is_array($tcache))
+	{
+		$query = $db->simple_select('themes', 'tid, name, pid, allowedgroups', "pid!='0'");
+
+		while($theme = $db->fetch_array($query))
+		{
+			$tcache[$theme['pid']][$theme['tid']] = $theme;
+		}
+	}
+
+	$s_theme = false;
+
+	foreach($tcache as $themes)
+	{
+		foreach($themes as $theme)
+		{
+			if($tid == $theme['tid'])
+			{
+				$s_theme = $theme;
+				break 2;
+			}
+		}
+	}
+
+	return $s_theme;
 }
 
 /**
@@ -6769,7 +6797,8 @@ function fetch_remote_file($url, $post_data=array())
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_TIMEOUT, 10);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
 		if(!empty($post_body))
 		{
 			curl_setopt($ch, CURLOPT_POST, 1);
@@ -7114,7 +7143,7 @@ function ban_date2timestamp($date, $stamp=0)
 	$n[1] += $d[0];
 	$n[2] += $d[1];
 	$n[3] += $d[2];
-	return mktime(date("G"), date("i"), 0, $n[2], $n[1], $n[3]);
+	return mktime(date("G", $stamp), date("i", $stamp), 0, $n[2], $n[1], $n[3]);
 }
 
 /**
@@ -8081,20 +8110,22 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 
 		foreach(array('subject', 'message') as $key)
 		{
-			$lang_string = $pm[$key];
 			if(is_array($pm[$key]))
 			{
+				$lang_string = $lang->{$pm[$key][0]};
 				$num_args = count($pm[$key]);
 
 				for($i = 1; $i < $num_args; $i++)
 				{
-					$lang->{$pm[$key][0]} = str_replace('{'.$i.'}', $pm[$key][$i], $lang->{$pm[$key][0]});
+					$lang_string = str_replace('{'.$i.'}', $pm[$key][$i], $lang_string);
 				}
-
-				$lang_string = $pm[$key][0];
+			}
+			else
+			{
+				$lang_string = $lang->{$pm[$key]};
 			}
 
-			$pm[$key] = $lang->{$lang_string};
+			$pm[$key] = $lang_string;
 		}
 
 		if(isset($revert))
@@ -8109,8 +8140,6 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 	{
 		return false;
 	}
-
-	$lang->load('messages');
 
 	require_once MYBB_ROOT."inc/datahandlers/pm.php";
 

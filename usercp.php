@@ -792,7 +792,9 @@ if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 		"dateformat" => $mybb->get_input('dateformat', MyBB::INPUT_INT),
 		"timeformat" => $mybb->get_input('timeformat', MyBB::INPUT_INT),
 		"timezone" => $db->escape_string($mybb->get_input('timezoneoffset')),
-		"language" => $mybb->get_input('language')
+		"language" => $mybb->get_input('language'),
+		'usergroup'	=> $mybb->user['usergroup'],
+		'additionalgroups'	=> $mybb->user['additionalgroups']
 	);
 
 	$user['options'] = array(
@@ -2149,7 +2151,7 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 			$s = "?s={$maxheight}&r={$rating}&d=mm";
 
 			$updated_avatar = array(
-				"avatar" => "http://www.gravatar.com/avatar/{$email}{$s}.jpg",
+				"avatar" => "https://www.gravatar.com/avatar/{$email}{$s}",
 				"avatardimensions" => "{$maxheight}|{$maxheight}",
 				"avatartype" => "gravatar"
 			);
@@ -3219,15 +3221,18 @@ if($mybb->input['action'] == "usergroups")
 
 			$db->insert_query("joinrequests", $joinrequest);
 
-			foreach($groupleaders[$usergroup['gid']] as $leader)
+			if(array_key_exists($usergroup['gid'], $groupleaders))
 			{
-				// Load language
-				$lang->set_language($leader['language']);
-				$lang->load("messages");
-					
-				$subject = $lang->sprintf($lang->emailsubject_newjoinrequest, $mybb->settings['bbname']);
-				$message = $lang->sprintf($lang->email_groupleader_joinrequest, $leader['username'], $mybb->user['username'], $usergroup['title'], $mybb->settings['bbname'], $mybb->get_input('reason'), $mybb->settings['bburl'], $leader['gid']);
-				my_mail($leader['email'], $subject, $message);
+				foreach($groupleaders[$usergroup['gid']] as $leader)
+				{
+					// Load language
+					$lang->set_language($leader['language']);
+					$lang->load("messages");
+						
+					$subject = $lang->sprintf($lang->emailsubject_newjoinrequest, $mybb->settings['bbname']);
+					$message = $lang->sprintf($lang->email_groupleader_joinrequest, $leader['username'], $mybb->user['username'], $usergroup['title'], $mybb->settings['bbname'], $mybb->get_input('reason'), $mybb->settings['bburl'], $leader['gid']);
+					my_mail($leader['email'], $subject, $message);
+				}
 			}
 
 			// Load language

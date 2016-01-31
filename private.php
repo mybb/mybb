@@ -51,13 +51,6 @@ if(!$mybb->user['pmfolders'])
 	$db->update_query("users", $sql_array, "uid = ".$mybb->user['uid']);
 }
 
-// On a random occassion, recount the user's pms just to make sure everything is in sync.
-$rand = my_rand(0, 9);
-if($rand == 5)
-{
-	update_pm_count();
-}
-
 $mybb->input['fid'] = $mybb->get_input('fid', MyBB::INPUT_INT);
 
 $folder_id = $folder_name = '';
@@ -1111,7 +1104,7 @@ if($mybb->input['action'] == "read")
 	}
 
 	// Fetch recipient names from the database
-	$bcc_recipients = $to_recipients = array();
+	$bcc_recipients = $to_recipients = $bcc_form_val = array();
 	$query = $db->simple_select('users', 'uid, username', "uid IN ({$uid_sql})");
 	while($recipient = $db->fetch_array($query))
 	{
@@ -1119,6 +1112,7 @@ if($mybb->input['action'] == "read")
 		if($show_bcc && in_array($recipient['uid'], $pm['recipients']['bcc']))
 		{
 			$bcc_recipients[] = build_profile_link($recipient['username'], $recipient['uid']);
+			$bcc_form_val[] = $recipient['username'];
 		}
 		// User is a normal recipient
 		else if(in_array($recipient['uid'], $pm['recipients']['to']))
@@ -1131,7 +1125,12 @@ if($mybb->input['action'] == "read")
 	if(count($bcc_recipients) > 0)
 	{
 		$bcc_recipients = implode(', ', $bcc_recipients);
+		$bcc_form_val = implode(',', $bcc_form_val);
 		eval("\$bcc = \"".$templates->get("private_read_bcc")."\";");
+	}
+	else
+	{
+		$bcc_form_val = '';
 	}
 
 	$replyall = false;
@@ -2062,6 +2061,7 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 	}
 	else
 	{
+		echo "\xEF\xBB\xBF"; // UTF-8 BOM
 		echo $archived;
 	}
 }

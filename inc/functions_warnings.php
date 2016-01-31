@@ -9,11 +9,11 @@
  */
 
 /**
- * @param resource|PDOStatement|mysqli_result $query
- * @param array $max_expiration_times Will be overwritten
- * @param array $check_levels Will be overwritten
+ * @param resource|PDOStatement|mysqli_result $query The query to be run. Needs to select the "action" column of the "warninglevels" table
+ * @param array $max_expiration_times Return variable. The maximum expiration time
+ * @param array $check_levels Return variable. Whether those "levels" were checked
  */
-function find_warnlevels_to_check(&$query, &$max_expiration_times, &$check_levels)
+function find_warnlevels_to_check($query, &$max_expiration_times, &$check_levels)
 {
 	global $db;
 

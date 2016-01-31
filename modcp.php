@@ -1574,7 +1574,7 @@ if($mybb->input['action'] == "edit_announcement")
 	add_breadcrumb($lang->edit_announcement, "modcp.php?action=edit_announcements&amp;aid={$aid}");
 
 	// Get announcement
-	if(!isset($announcement))
+	if(!isset($announcement) || $mybb->request_method != 'post')
 	{
 		$query = $db->simple_select("announcements", "*", "aid='{$aid}'");
 		$announcement = $db->fetch_array($query);
@@ -3557,11 +3557,11 @@ if($mybb->input['action'] == "ipsearch")
 			{
 				if(!is_array($ip_range))
 				{
-					$post_ip_sql = "ipaddress=".$db->escape_binary($ip_range);
+					$post_ip_sql = "p.ipaddress=".$db->escape_binary($ip_range);
 				}
 				else
 				{
-					$post_ip_sql = "ipaddress BETWEEN ".$db->escape_binary($ip_range[0])." AND ".$db->escape_binary($ip_range[1]);
+					$post_ip_sql = "p.ipaddress BETWEEN ".$db->escape_binary($ip_range[0])." AND ".$db->escape_binary($ip_range[1]);
 				}
 			}
 
@@ -3569,7 +3569,77 @@ if($mybb->input['action'] == "ipsearch")
 
 			if($post_ip_sql)
 			{
-				$query = $db->simple_select('posts', 'COUNT(pid) AS count', "$post_ip_sql AND visible >= -1");
+				$where_sql = '';
+
+				$unviewable_forums = get_unviewable_forums(true);
+
+				if($unviewable_forums)
+				{
+					$where_sql .= " AND p.fid NOT IN ({$unviewable_forums})";
+				}
+
+				if($inactiveforums)
+				{
+					$where_sql .= " AND p.fid NOT IN ({$inactiveforums})";
+				}
+
+				// Check group permissions if we can't view threads not started by us
+				$onlyusfids = array();
+				$group_permissions = forum_permissions();
+				foreach($group_permissions as $fid => $forumpermissions)
+				{
+					if(isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] == 1)
+					{
+						$onlyusfids[] = $fid;
+					}
+				}
+
+				if(!empty($onlyusfids))
+				{
+					$where_sql .= " AND ((t.fid IN(".implode(',', $onlyusfids).") AND t.uid='{$mybb->user['uid']}') OR t.fid NOT IN(".implode(',', $onlyusfids)."))";
+				}
+
+				// Moderators can view unapproved/deleted posts
+				if($mybb->usergroup['issupermod'] != 1)
+				{
+					$unapprove_forums = array();
+					$deleted_forums = array();
+					$visible_sql = " AND (p.visible = 1 AND t.visible = 1)";
+					$query = $db->simple_select("moderators", "fid, canviewunapprove, canviewdeleted", "(id='{$mybb->user['uid']}' AND isgroup='0') OR (id='{$mybb->user['usergroup']}' AND isgroup='1')");
+					while($moderator = $db->fetch_array($query))
+					{
+						if($moderator['canviewunapprove'] == 1)
+						{
+							$unapprove_forums[] = $moderator['fid'];
+						}
+
+						if($moderator['canviewdeleted'] == 1)
+						{
+							$deleted_forums[] = $moderator['fid'];
+						}
+					}
+
+					if(!empty($unapprove_forums))
+					{
+						$visible_sql .= " OR (p.visible = 0 AND p.fid IN(".implode(',', $unapprove_forums).")) OR (t.visible = 0 AND t.fid IN(".implode(',', $unapprove_forums)."))";
+					}
+					if(!empty($deleted_forums))
+					{
+						$visible_sql .= " OR (p.visible = -1 AND p.fid IN(".implode(',', $deleted_forums).")) OR (t.visible = -1 AND t.fid IN(".implode(',', $deleted_forums)."))";
+					}
+				}
+				else
+				{
+					// Super moderators (and admins)
+					$visible_sql = " AND p.visible >= -1";
+				}
+
+				$query = $db->query("
+					SELECT COUNT(p.pid) AS count
+					FROM ".TABLE_PREFIX."posts p
+					LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid = p.tid)
+					WHERE {$post_ip_sql}{$where_sql}{$visible_sql}
+				");
 				$post_results = $db->fetch_field($query, "count");
 			}
 		}
@@ -3711,10 +3781,15 @@ if($mybb->input['action'] == "ipsearch")
 		if(isset($mybb->input['search_posts']) && $post_results && (!isset($mybb->input['search_users']) || (isset($mybb->input['search_users']) && $post_limit > 0)))
 		{
 			$ipaddresses = $tids = $uids = array();
-			
-			$query = $db->simple_select('posts', 'username AS postusername, uid, subject, pid, tid, ipaddress', "$post_ip_sql AND visible >= -1",
-					array('order_by' => 'dateline', 'order_dir' => 'DESC', 'limit_start' => $post_start, 'limit' => $post_limit));
 
+			$query = $db->query("
+				SELECT p.username AS postusername, p.uid, p.subject, p.pid, p.tid, p.ipaddress
+				FROM ".TABLE_PREFIX."posts p
+				LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid = p.tid)
+				WHERE {$post_ip_sql}{$where_sql}{$visible_sql}
+				ORDER BY p.dateline desc
+				LIMIT {$post_start}, {$post_limit}
+			");
 			while($ipaddress = $db->fetch_array($query))
 			{
 				$tids[$ipaddress['tid']] = $ipaddress['pid'];

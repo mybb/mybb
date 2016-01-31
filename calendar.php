@@ -553,6 +553,58 @@ if($mybb->input['action'] == "addevent")
 	output_page($addevent);
 }
 
+// Delete an event
+if($mybb->input['action'] == "do_deleteevent" && $mybb->request_method == "post")
+{
+	$query = $db->simple_select("events", "*", "eid='{$mybb->input['eid']}'");
+	$event = $db->fetch_array($query);
+
+	if(!$event)
+	{
+		error($lang->error_invalidevent);
+	}
+
+	$query = $db->simple_select("calendars", "*", "cid='{$event['cid']}'");
+	$calendar = $db->fetch_array($query);
+
+	// Invalid calendar?
+	if(!$calendar)
+	{
+		error($lang->invalid_calendar);
+	}
+
+	// Do we have permission to view this calendar or post events?
+	$calendar_permissions = get_calendar_permissions($calendar['cid']);
+	if($calendar_permissions['canviewcalendar'] != 1 || $calendar_permissions['canaddevents'] != 1)
+	{
+		error_no_permission();
+	}
+
+	if(($event['uid'] != $mybb->user['uid'] || $mybb->user['uid'] == 0) && $calendar_permissions['canmoderateevents'] != 1)
+	{
+		error_no_permission();
+	}
+
+	// Verify incoming POST request
+	verify_post_check($mybb->get_input('my_post_key'));
+
+	$plugins->run_hooks("calendar_do_deleteevent_start");
+
+	// Is the checkbox set?
+	if($mybb->get_input('delete', MyBB::INPUT_INT) == 1)
+	{
+		$db->delete_query("events", "eid='{$event['eid']}'");
+		$plugins->run_hooks("calendar_do_deleteevent_end");
+
+		// Redirect back to the main calendar view.
+		redirect("calendar.php", $lang->redirect_eventdeleted);
+	}
+	else
+	{
+		error($lang->delete_no_checkbox);
+	}
+}
+
 // Edit an event
 if($mybb->input['action'] == "do_editevent" && $mybb->request_method == "post")
 {
@@ -587,15 +639,6 @@ if($mybb->input['action'] == "do_editevent" && $mybb->request_method == "post")
 
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
-
-	// Are we going to delete this event or just edit it?
-	if($mybb->get_input('delete', MyBB::INPUT_INT) == 1)
-	{
-		$db->delete_query("events", "eid='{$event['eid']}'");
-
-		// Redirect back to the main calendar view.
-		redirect("calendar.php", $lang->redirect_eventdeleted);
-	}
 
 	$plugins->run_hooks("calendar_do_editevent_start");
 
@@ -1420,27 +1463,22 @@ if($mybb->input['action'] == "event")
 	{
 		$event['profilelink'] = build_profile_link(format_name($event['username'], $event['usergroup'], $event['displaygroup']), $event['uid']);
 
-		$hascustomtitle = 0;
 		if(trim($event['usertitle']) != "")
 		{
-			$hascustomtitle = 1;
+			// Do nothing, no need for an extra variable..
 		}
-
-		if($user_usergroup['usertitle'] != "" && !$hascustomtitle)
+		elseif($user_usergroup['usertitle'] != "")
 		{
 			$event['usertitle'] = $user_usergroup['usertitle'];
 		}
 		elseif(is_array($titles_cache) && !$user_usergroup['usertitle'])
 		{
 			reset($titles_cache);
-			foreach($titles_cache as $key => $title)
+			foreach($titles_cache as $title)
 			{
-				if($event['postnum'] >= $key)
+				if($event['postnum'] >= $title['posts'])
 				{
-					if(!$hascustomtitle)
-					{
-						$event['usertitle'] = $title['title'];
-					}
+					$event['usertitle'] = $title['title'];
 					$event['stars'] = $title['stars'];
 					$event['starimage'] = $title['starimage'];
 					break;
@@ -1491,7 +1529,7 @@ if($mybb->input['action'] == "event")
 		$event['userstars'] = '';
 	}
 
-	$event['usertitle'] = htmlspecialchars_uni($event['usertitle']); 
+	$event['usertitle'] = htmlspecialchars_uni($event['usertitle']);
 
 	if($event['ignoretimezone'] == 0)
 	{
@@ -1764,27 +1802,22 @@ if($mybb->input['action'] == "dayview")
 			{
 				$event['profilelink'] = build_profile_link(format_name($event['username'], $event['usergroup'], $event['displaygroup']), $event['uid']);
 
-				$hascustomtitle = 0;
 				if(trim($event['usertitle']) != "")
 				{
-					$hascustomtitle = 1;
+					// Do nothing, no need for an extra variable..
 				}
-
-				if($user_usergroup['usertitle'] != "" && !$hascustomtitle)
+				elseif($user_usergroup['usertitle'] != "")
 				{
 					$event['usertitle'] = $user_usergroup['usertitle'];
 				}
 				elseif(is_array($titles_cache) && !$user_usergroup['usertitle'])
 				{
 					reset($titles_cache);
-					foreach($titles_cache as $key => $title)
+					foreach($titles_cache as $title)
 					{
-						if($event['postnum'] >= $key)
+						if($event['postnum'] >= $title['posts'])
 						{
-							if(!$hascustomtitle)
-							{
-								$event['usertitle'] = $title['title'];
-							}
+							$event['usertitle'] = $title['title'];
 							$event['stars'] = $title['stars'];
 							$event['starimage'] = $title['starimage'];
 							break;
@@ -1835,7 +1868,7 @@ if($mybb->input['action'] == "dayview")
 				$event['userstars'] = '';
 			}
 
-			$event['usertitle'] = htmlspecialchars_uni($event['usertitle']); 
+			$event['usertitle'] = htmlspecialchars_uni($event['usertitle']);
 
 			if($event['ignoretimezone'] == 0)
 			{
