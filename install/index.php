@@ -1772,9 +1772,9 @@ function configure()
 	global $output, $mybb, $errors, $lang;
 
 	$output->print_header($lang->board_config, 'config');
-
+	
 	echo <<<EOF
-		<script type="text/javascript">
+		<script type="text/javascript">	
 		function warnUser(inp, warn)
 		{
 			var parenttr = $('#'+inp.id).closest('tr');
@@ -1793,19 +1793,19 @@ function configure()
 				}
 			}
 		}
-
+			
 		function revertSetting(defval, inpid)
 		{
-			$(inpid).val(defval);
+			$(inpid).val(defval);			
 			var parenttr = $(inpid).closest('tr');
 			parenttr.next('.setting_peeker').remove();
 			if(parenttr.is(':last-child'))
 			{
 				parenttr.addClass('last');
-			}
+			}			
 		}
 		</script>
-
+		
 EOF;
 
 	// If board configuration errors
@@ -1865,25 +1865,25 @@ EOF;
 		{
 			$port = ":{$_SERVER['SERVER_PORT']}";
 			$pos = strrpos($cookiedomain, $port);
-
+			
 			if($pos !== false)
 			{
 				$cookiedomain = substr($cookiedomain, 0, $pos);
 			}
-
-			if($_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443 && !preg_match("#:[0-9]#i", $hostname))
+			
+			if($_SERVER['SERVER_PORT'] != 80 && !preg_match("#:[0-9]#i", $hostname))
 			{
 				$hostname .= $port;
 			}
 		}
-
+		
 		$currentlocation = get_current_location('', '', true);
 		$noinstall = substr($currentlocation, 0, strrpos($currentlocation, '/install/'));
-
+		
 		$cookiepath = $noinstall.'/';
 		$bburl = $hostname.$noinstall;
 		$websiteurl = $hostname.'/';
-
+		
 		if(isset($_SERVER['SERVER_ADMIN']) && filter_var($_SERVER['SERVER_ADMIN'], FILTER_VALIDATE_EMAIL))
 		{
 			$contactemail = $_SERVER['SERVER_ADMIN'];
@@ -1916,9 +1916,9 @@ function create_admin_user()
 		}
 	}
 	$output->print_header($lang->create_admin, 'admin');
-
+	
 	echo <<<EOF
-		<script type="text/javascript">
+		<script type="text/javascript">	
 		function comparePass()
 		{
 			var parenttr = $('#adminpass2').closest('tr');
@@ -1934,7 +1934,7 @@ function create_admin_user()
 			}
 		}
 		</script>
-
+		
 EOF;
 
 	if(is_array($errors))
