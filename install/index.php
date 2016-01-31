@@ -1835,12 +1835,12 @@ EOF;
 		}
 
 		// Attempt auto-detection
-		if($_SERVER['HTTP_HOST'])
+		if(!empty($_SERVER['HTTP_HOST']))
 		{
 			$hostname = $protocol.$_SERVER['HTTP_HOST'];
 			$cookiedomain = $_SERVER['HTTP_HOST'];
 		}
-		elseif($_SERVER['SERVER_NAME'])
+		elseif(!empty($_SERVER['SERVER_NAME']))
 		{
 			$hostname = $protocol.$_SERVER['SERVER_NAME'];
 			$cookiedomain = $_SERVER['SERVER_NAME'];
@@ -1861,7 +1861,7 @@ EOF;
 			$cookiedomain = ".{$cookiedomain}";
 		}
 
-		if($_SERVER['SERVER_PORT'])
+		if(!empty($_SERVER['SERVER_PORT']))
 		{
 			$port = ":{$_SERVER['SERVER_PORT']}";
 			$pos = strrpos($cookiedomain, $port);
@@ -1884,7 +1884,7 @@ EOF;
 		$bburl = $hostname.$noinstall;
 		$websiteurl = $hostname.'/';
 		
-		if(filter_var($_SERVER['SERVER_ADMIN'], FILTER_VALIDATE_EMAIL))
+		if(isset($_SERVER['SERVER_ADMIN']) && filter_var($_SERVER['SERVER_ADMIN'], FILTER_VALIDATE_EMAIL))
 		{
 			$contactemail = $_SERVER['SERVER_ADMIN'];
 		}
