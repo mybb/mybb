@@ -645,7 +645,7 @@ if($mybb->input['action'] == "edit")
 					$maxheight = (int)$maxwidth;
 
 					$extra_user_updates = array(
-						"avatar" => "http://www.gravatar.com/avatar/{$email}{$s}",
+						"avatar" => "https://www.gravatar.com/avatar/{$email}{$s}",
 						"avatardimensions" => "{$maxheight}|{$maxheight}",
 						"avatartype" => "gravatar"
 					);
