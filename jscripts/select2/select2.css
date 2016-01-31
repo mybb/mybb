@@ -73,6 +73,7 @@ html[dir="rtl"] .select2-container .select2-choice {
     margin-right: 42px;
 }
 
+/* MyBB modification start - Search container width */
 .select2-container .select2-choice > .select2-chosen {
     margin-right: 26px;
     display: block;
@@ -85,6 +86,7 @@ html[dir="rtl"] .select2-container .select2-choice {
     width: auto;
     min-width: 120px;
 }
+/* MyBB modification end */
 
 html[dir="rtl"] .select2-container .select2-choice > .select2-chosen {
     margin-left: 26px;
