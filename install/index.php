@@ -1861,9 +1861,20 @@ EOF;
 			$cookiedomain = ".{$cookiedomain}";
 		}
 
-		if($_SERVER['SERVER_PORT'] && $_SERVER['SERVER_PORT'] != 80 && !preg_match("#:[0-9]#i", $hostname))
+		if($_SERVER['SERVER_PORT'])
 		{
-			$hostname .= ':'.$_SERVER['SERVER_PORT'];
+			$port = ":{$_SERVER['SERVER_PORT']}";
+			$pos = strrpos($cookiedomain, $port);
+			
+			if($pos !== false)
+			{
+				$cookiedomain = substr($cookiedomain, 0, $pos);
+			}
+			
+			if($_SERVER['SERVER_PORT'] != 80 && !preg_match("#:[0-9]#i", $hostname))
+			{
+				$hostname .= $port;
+			}
 		}
 		
 		$currentlocation = get_current_location('', '', true);
@@ -1872,7 +1883,11 @@ EOF;
 		$cookiepath = $noinstall.'/';
 		$bburl = $hostname.$noinstall;
 		$websiteurl = $hostname.'/';
-		$contactemail = $_SERVER['SERVER_ADMIN'];
+		
+		if(filter_var($_SERVER['SERVER_ADMIN'], FILTER_VALIDATE_EMAIL))
+		{
+			$contactemail = $_SERVER['SERVER_ADMIN'];
+		}
 	}
 
 	echo $lang->sprintf($lang->config_step_table, $bbname, $bburl, $websitename, $websiteurl, $cookiedomain, $cookiepath, $contactemail);
