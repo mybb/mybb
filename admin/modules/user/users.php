@@ -2413,14 +2413,11 @@ if($mybb->input['action'] == "inline_edit")
 			{
 				$sql_array = implode(",", $selected);
 				$query = $db->simple_select("users", "uid, username, email", "usergroup = '5' AND uid IN (".$sql_array.")");
-				$counter = 0;
 				$user_mail_data = array();
 				while($user = $db->fetch_array($query))
 				{
 					$to_update[] = $user['uid'];
-					$user_mail_data[$counter]['username'] = $user['username'];
-					$user_mail_data[$counter]['email'] = $user['email'];
-					$counter++;
+					$user_mail_data[] = array('username' => $user['username'], 'email' => $user['email']);
 				}
 			}
 
@@ -2432,10 +2429,10 @@ if($mybb->input['action'] == "inline_edit")
 				$cache->update_awaitingactivation();
 
 				// send activation mail
-				for($i = 0; $i < $counter; $i++)
+				foreach ($user_mail_data as $mail_data)
 				{
-					$message = $lang->sprintf($lang->email_adminactivateaccount, $user_mail_data[$i]['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
-					my_mail($user_mail_data[$i]['email'], $lang->sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']), $message);
+					$message = $lang->sprintf($lang->email_adminactivateaccount, $mail_data['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
+					my_mail($mail_data['email'], $lang->sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']), $message);
 				}
 
 				// Action complete, grab stats and show success message - redirect user
