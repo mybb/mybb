@@ -1472,6 +1472,7 @@ class PostDataHandler extends DataHandler
 				"dateline" => (int)$thread['dateline'],
 				"lastpost" => (int)$thread['dateline'],
 				"lastposter" => $db->escape_string($thread['username']),
+				"lastposteruid" => $thread['uid'],
 				"views" => 0,
 				"replies" => 0,
 				"visible" => $visible,
