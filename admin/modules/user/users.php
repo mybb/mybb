@@ -2429,7 +2429,7 @@ if($mybb->input['action'] == "inline_edit")
 				$cache->update_awaitingactivation();
 
 				// send activation mail
-				foreach ($user_mail_data as $mail_data)
+				foreach($user_mail_data as $mail_data)
 				{
 					$message = $lang->sprintf($lang->email_adminactivateaccount, $mail_data['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
 					my_mail($mail_data['email'], $lang->sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']), $message);
