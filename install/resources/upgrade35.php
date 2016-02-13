@@ -28,6 +28,11 @@ function upgrade35_dbchanges()
 	echo "<p>Performing necessary upgrade queries...</p>";
 	flush();
 
+	if($db->field_exists('subscriptionkey', 'threadsubscriptions'))
+	{
+		$db->drop_column("threadsubscriptions", "subscriptionkey");
+	}
+
 	if($db->type != 'pgsql')
 	{
 		$db->modify_column('adminsessions', 'useragent', "varchar(200) NOT NULL default ''");
