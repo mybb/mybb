@@ -626,6 +626,12 @@ class PostDataHandler extends DataHandler
 		}
 		else
 		{
+			if(!empty($this->data['tid']))
+			{
+				// Fetch the thread
+				$thread = get_thread($this->data['tid']);
+			}
+
 			$prefix_cache = build_prefixes($prefix);
 
 			if(empty($prefix_cache))
@@ -645,7 +651,7 @@ class PostDataHandler extends DataHandler
 					$user = get_user($this->data['uid']);
 				}
 
-				if(!is_member($prefix_cache['groups'], array('usergroup' => $user['usergroup'], 'additionalgroups' => $user['additionalgroups'])))
+				if(!is_member($prefix_cache['groups'], array('usergroup' => $user['usergroup'], 'additionalgroups' => $user['additionalgroups'])) && (empty($this->data['tid']) || $prefix != $thread['prefix']))
 				{
 					$this->set_error('invalid_prefix');
 					return false;
@@ -656,7 +662,7 @@ class PostDataHandler extends DataHandler
 				// Decide whether this prefix can be used in our forum
 				$forums = explode(",", $prefix_cache['forums']);
 
-				if(!in_array($this->data['fid'], $forums))
+				if(!in_array($this->data['fid'], $forums) && (empty($this->data['tid']) || $prefix != $thread['prefix']))
 				{
 					$this->set_error('invalid_prefix');
 					return false;
@@ -1123,7 +1129,7 @@ class PostDataHandler extends DataHandler
 
 			// Fetch any users subscribed to this thread receiving instant notification and queue up their subscription notices
 			$query = $db->query("
-				SELECT u.username, u.email, u.uid, u.language, u.loginkey, u.salt, u.regdate, s.subscriptionkey, s.notification
+				SELECT u.username, u.email, u.uid, u.language, u.loginkey, u.salt, u.regdate, s.notification
 				FROM ".TABLE_PREFIX."threadsubscriptions s
 				LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=s.uid)
 				WHERE (s.notification='1' OR s.notification='2') AND s.tid='{$post['tid']}'
@@ -1205,7 +1211,7 @@ class PostDataHandler extends DataHandler
 					$emailsubject = $lang->sprintf($emailsubject, $subject);
 
 					$post_code = md5($subscribedmember['loginkey'].$subscribedmember['salt'].$subscribedmember['regdate']);
-					$emailmessage = $lang->sprintf($emailmessage, $subscribedmember['username'], $post['username'], $mybb->settings['bbname'], $subject, $excerpt, $mybb->settings['bburl'], str_replace("&amp;", "&", get_thread_link($thread['tid'], 0, "newpost")), $thread['tid'], $subscribedmember['subscriptionkey'], $post_code);
+					$emailmessage = $lang->sprintf($emailmessage, $subscribedmember['username'], $post['username'], $mybb->settings['bbname'], $subject, $excerpt, $mybb->settings['bburl'], str_replace("&amp;", "&", get_thread_link($thread['tid'], 0, "newpost")), $thread['tid'], $post_code);
 					$new_email = array(
 						"mailto" => $db->escape_string($subscribedmember['email']),
 						"mailfrom" => '',
@@ -1222,7 +1228,7 @@ class PostDataHandler extends DataHandler
 					$post_code = md5($subscribedmember['loginkey'].$subscribedmember['salt'].$subscribedmember['regdate']);
 					$pm = array(
 						'subject' => array('pmsubject_subscription', $subject),
-						'message' => array('pm_subscription', $subscribedmember['username'], $post['username'], $subject, $excerpt, $mybb->settings['bburl'], str_replace("&amp;", "&", get_thread_link($thread['tid'], 0, "newpost")), $thread['tid'], $subscribedmember['subscriptionkey'], $post_code),
+						'message' => array('pm_subscription', $subscribedmember['username'], $post['username'], $subject, $excerpt, $mybb->settings['bburl'], str_replace("&amp;", "&", get_thread_link($thread['tid'], 0, "newpost")), $thread['tid'], $post_code),
 						'touid' => $subscribedmember['uid'],
 						'language' => $subscribedmember['language'],
 						'language_file' => 'messages'
@@ -1472,6 +1478,7 @@ class PostDataHandler extends DataHandler
 				"dateline" => (int)$thread['dateline'],
 				"lastpost" => (int)$thread['dateline'],
 				"lastposter" => $db->escape_string($thread['username']),
+				"lastposteruid" => $thread['uid'],
 				"views" => 0,
 				"replies" => 0,
 				"visible" => $visible,

@@ -265,7 +265,7 @@ function build_postbit($post, $post_type=0)
 				}
 			}
 		}
-		
+
 		$post['usertitle'] = htmlspecialchars_uni($post['usertitle']);
 
 		if($usergroup['stars'])
@@ -333,7 +333,7 @@ function build_postbit($post, $post_type=0)
 		}
 
 		$post['button_rep'] = '';
-		if($post_type != 3 && $mybb->settings['enablereputation'] == 1 && $mybb->settings['postrep'] == 1 && $mybb->usergroup['cangivereputations'] == 1 && $usergroup['usereputationsystem'] == 1 && ($mybb->settings['posrep'] || $mybb->settings['neurep'] || $mybb->settings['negrep']) && $post['uid'] != $mybb->user['uid'] && $post['visible'] == 1)
+		if($post_type != 3 && $mybb->settings['enablereputation'] == 1 && $mybb->settings['postrep'] == 1 && $mybb->usergroup['cangivereputations'] == 1 && $usergroup['usereputationsystem'] == 1 && ($mybb->settings['posrep'] || $mybb->settings['neurep'] || $mybb->settings['negrep']) && $post['uid'] != $mybb->user['uid'] && (!isset($post['visible']) || $post['visible'] == 1) && (!isset($thread['visible']) || $thread['visible'] == 1))
 		{
 			if(!$post['pid'])
 			{
@@ -482,7 +482,7 @@ function build_postbit($post, $post_type=0)
 		{
 			$post['usertitle'] = $lang->guest;
 		}
-		
+
 		$post['usertitle'] = htmlspecialchars_uni($post['usertitle']);
 
 		$usergroup['title'] = $lang->na;
@@ -529,6 +529,11 @@ function build_postbit($post, $post_type=0)
 	$post['editedmsg'] = '';
 	if(!$post_type)
 	{
+		if(!isset($forumpermissions))
+		{
+			$forumpermissions = forum_permissions($fid);
+		}
+		
 		// Figure out if we need to show an "edited by" message
 		if($post['edituid'] != 0 && $post['edittime'] != 0 && $post['editusername'] != "" && (($mybb->settings['showeditedby'] != 0 && $usergroup['cancp'] == 0) || ($mybb->settings['showeditedbyadmin'] != 0 && $usergroup['cancp'] == 1)))
 		{
@@ -612,6 +617,11 @@ function build_postbit($post, $post_type=0)
 				$postbit_qrestore = $lang->postbit_qrestore_thread;
 				eval("\$post['button_quickrestore'] = \"".$templates->get("postbit_quickrestore")."\";");
 			}
+		}
+
+		if(!isset($ismod))
+		{
+			$ismod = is_moderator($fid);
 		}
 
 		// Inline moderation stuff
@@ -788,6 +798,19 @@ function build_postbit($post, $post_type=0)
 		default: // Regular post
 			$post = $plugins->run_hooks("postbit", $post);
 
+			if(!isset($ignored_users))
+			{
+				$ignored_users = array();
+				if($mybb->user['uid'] > 0 && $mybb->user['ignorelist'] != "")
+				{
+					$ignore_list = explode(',', $mybb->user['ignorelist']);
+					foreach($ignore_list as $uid)
+					{
+						$ignored_users[$uid] = 1;
+					}
+				}
+			}
+
 			// Is this author on the ignore list of the current user? Hide this post
 			if(is_array($ignored_users) && $post['uid'] != 0 && isset($ignored_users[$post['uid']]) && $ignored_users[$post['uid']] == 1)
 			{
@@ -825,6 +848,11 @@ function get_post_attachments($id, &$post)
 	$validationcount = 0;
 	$tcount = 0;
 	$post['attachmentlist'] = $post['thumblist'] = $post['imagelist'] = '';
+	if(!isset($forumpermissions))
+	{
+		$forumpermissions = forum_permissions($post['fid']);
+	}
+	
 	if(isset($attachcache[$id]) && is_array($attachcache[$id]))
 	{ // This post has 1 or more attachments
 		foreach($attachcache[$id] as $aid => $attachment)

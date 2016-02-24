@@ -3507,9 +3507,10 @@ function build_prefixes($pid=0)
  *  @param int|string $fid The forum ID (integer ID or string all)
  *  @param int|string $selected_pid The selected prefix ID (integer ID or string any)
  *  @param int $multiple Allow multiple prefix selection
+ *  @param int $previous_pid The previously selected prefix ID
  *  @return string The thread prefix selection menu
  */
-function build_prefix_select($fid, $selected_pid=0, $multiple=0)
+function build_prefix_select($fid, $selected_pid=0, $multiple=0, $previous_pid=0)
 {
 	global $cache, $db, $lang, $mybb, $templates;
 
@@ -3544,14 +3545,14 @@ function build_prefix_select($fid, $selected_pid=0, $multiple=0)
 			// Decide whether this prefix can be used in our forum
 			$forums = explode(",", $prefix['forums']);
 
-			if(!in_array($fid, $forums))
+			if(!in_array($fid, $forums) && $prefix['pid'] != $previous_pid)
 			{
 				// This prefix is not in our forum list
 				continue;
 			}
 		}
 
-		if($prefix['groups'] != "-1")
+		if($prefix['groups'] != "-1" && $prefix['pid'] != $previous_pid)
 		{
 			$prefix_groups = explode(",", $prefix['groups']);
 
@@ -6797,7 +6798,8 @@ function fetch_remote_file($url, $post_data=array())
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_TIMEOUT, 10);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
 		if(!empty($post_body))
 		{
 			curl_setopt($ch, CURLOPT_POST, 1);
