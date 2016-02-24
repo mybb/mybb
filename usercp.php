@@ -2151,7 +2151,7 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 			$s = "?s={$maxheight}&r={$rating}&d=mm";
 
 			$updated_avatar = array(
-				"avatar" => "http://www.gravatar.com/avatar/{$email}{$s}.jpg",
+				"avatar" => "https://www.gravatar.com/avatar/{$email}{$s}",
 				"avatardimensions" => "{$maxheight}|{$maxheight}",
 				"avatartype" => "gravatar"
 			);

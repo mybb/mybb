@@ -312,7 +312,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 			$username = $mybb->get_input('username');
 		}
 		$uid = 0;
-	
+
 
 		if($mybb->settings['stopforumspam_on_newreply'])
 		{
@@ -616,7 +616,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 						redirect(get_thread_link($tid, 0, "lastpost"));
 					}
 				}
-				
+
 				if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
 				{
 					$mybb->settings['postsperpage'] = 20;
@@ -681,7 +681,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 				$data .= $post;
 
 				// Build a new posthash incase the user wishes to quick reply again
-			    $new_posthash = md5($mybb->user['uid'].random_str());
+				$new_posthash = md5($mybb->user['uid'].random_str());
 				$data .= "<script type=\"text/javascript\">\n";
 				$data .= "var hash = document.getElementById('posthash'); if(hash) { hash.value = '{$new_posthash}'; }\n";
 				$data .= "if(typeof(inlineModeration) != 'undefined') {
@@ -1015,7 +1015,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		// Now let the post handler do all the hard work.
 		$valid_post = $posthandler->verify_message();
 		$valid_subject = $posthandler->verify_subject();
-		
+
 		// guest post --> verify author
 		if($post['uid'] == 0)
 		{
@@ -1218,7 +1218,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 
 		if(!$correct)
 		{
- 			if($post_captcha->type == 1)
+			if($post_captcha->type == 1)
 			{
 				$post_captcha->build_captcha();
 			}
@@ -1274,7 +1274,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		}
 		$query = $db->simple_select("posts", "COUNT(pid) AS post_count", "tid='{$tid}' AND {$visibility}");
 		$numposts = $db->fetch_field($query, "post_count");
-		
+
 		if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
 		{
 			$mybb->settings['postsperpage'] = 20;
