@@ -1834,7 +1834,7 @@ class UserDataHandler extends DataHandler
 			}
 		}
 
-		if (count($this->get_errors()) > 0)
+		if(count($this->get_errors()) > 0)
 		{
 			return false;
 		}
