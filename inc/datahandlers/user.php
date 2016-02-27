@@ -921,7 +921,7 @@ class UserDataHandler extends DataHandler
 	}
 
 	/**
-	 * Verifies if the user timezone is valid. 
+	 * Verifies if the user timezone is valid.
 	 * If the timezone is invalid, the board default is used.
 	 *
 	 * @return boolean True when timezone was valid, false otherwise
@@ -1606,7 +1606,7 @@ class UserDataHandler extends DataHandler
 		if($delete_uids != false)
 		{
 			$this->delete_uids = array_map('intval', (array)$delete_uids);
-		
+
 			foreach($this->delete_uids as $key => $uid)
 			{
 				if(!$uid || is_super_admin($uid) || $uid == $mybb->user['uid'])
@@ -1615,7 +1615,7 @@ class UserDataHandler extends DataHandler
 					unset($this->delete_uids[$key]);
 				}
 			}
-		
+
 			$this->delete_uids = implode(',', $this->delete_uids);
 		}
 
@@ -1782,5 +1782,62 @@ class UserDataHandler extends DataHandler
 		{
 			remove_avatars($uid);
 		}
+	}
+
+	public function verify_signature()
+	{
+		global $mybb, $parser;
+
+		$parser_options = array(
+			'allow_html' => $mybb->settings['sightml'],
+			'filter_badwords' => 1,
+			'allow_mycode' => $mybb->settings['sigmycode'],
+			'allow_smilies' => $mybb->settings['sigsmilies'],
+			'allow_imgcode' => $mybb->settings['sigimgcode'],
+			"filter_badwords" => 1
+		);
+
+		if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0)
+		{
+			$parser_options['allow_imgcode'] = 0;
+		}
+
+		$parsed_sig = $parser->parse_message($mybb->get_input('signature'), $parser_options);
+
+		if((($mybb->settings['sigimgcode'] == 0 && $mybb->settings['sigsmilies'] != 1) &&
+			substr_count($parsed_sig, "<img") > 0) ||
+			(($mybb->settings['sigimgcode'] == 1 || $mybb->settings['sigsmilies'] == 1) &&
+			substr_count($parsed_sig, "<img") > $mybb->settings['maxsigimages'])
+		)
+		{
+			$imgsallowed = ($mybb->settings['sigimgcode'] == 1 ? $mybb->settings['maxsigimages'] : 0);
+			$this->set_error('too_many_sig_images2', array($imgsallowed));
+			$mybb->input['preview'] = 1;
+		}
+
+		$parsed_sig = ($mybb->settings['sigcountmycode'] == 0 ? $parser->text_parse_message($mybb->get_input('signature')) : $mybb->get_input('signature'));
+
+		$parsed_sig = preg_replace("#\s#", "", $parsed_sig);
+		$sig_length = my_strlen($parsed_sig);
+
+		if($sig_length > $mybb->settings['siglength'])
+		{
+			$this->set_error('sig_too_long', array($mybb->settings['siglength']));
+
+			if($sig_length - $mybb->settings['siglength'] > 1)
+			{
+				$this->set_error('sig_remove_chars_plural', array($sig_length-$mybb->settings['siglength']));
+			}
+			else
+			{
+				$this->set_error('sig_remove_chars_singular');
+			}
+		}
+
+		if (count($this->get_errors()) > 0)
+		{
+			return false;
+		}
+		return true;
 	}
 }
