@@ -1055,6 +1055,10 @@ class UserDataHandler extends DataHandler
 		{
 			$this->verify_style();
 		}
+		if($this->method == "insert" || array_key_exists('signature', $user))
+		{
+			$this->verify_signature();
+		}
 
 		$plugins->run_hooks("datahandler_user_validate", $this);
 
@@ -1788,6 +1792,12 @@ class UserDataHandler extends DataHandler
 	{
 		global $mybb, $parser;
 
+		if(!isset($parser))
+		{
+			require_once MYBB_ROOT."inc/class_parser.php";
+			$parser = new postParser;
+		}
+
 		$parser_options = array(
 			'allow_html' => $mybb->settings['sightml'],
 			'filter_badwords' => 1,
@@ -1796,11 +1806,6 @@ class UserDataHandler extends DataHandler
 			'allow_imgcode' => $mybb->settings['sigimgcode'],
 			"filter_badwords" => 1
 		);
-
-		if($this->data['showimages'] != 1 && $this->data['uid'] != 0)
-		{
-			$parser_options['allow_imgcode'] = 0;
-		}
 
 		$parsed_sig = $parser->parse_message($this->data['signature'], $parser_options);
 
@@ -1812,10 +1817,16 @@ class UserDataHandler extends DataHandler
 		{
 			$imgsallowed = ($mybb->settings['sigimgcode'] == 1 ? $mybb->settings['maxsigimages'] : 0);
 			$this->set_error('too_many_sig_images2', array($imgsallowed));
-			$mybb->input['preview'] = 1;
 		}
 
-		$parsed_sig = ($mybb->settings['sigcountmycode'] == 0 ? $parser->text_parse_message($this->data['signature']) : $this->data['signature']);
+		if ($mybb->settings['sigcountmycode'] == 0)
+		{
+			$parsed_sig = $parser->text_parse_message($this->data['signature']);
+		}
+		else
+		{
+			$parsed_sig = $this->data['signature'];
+		}
 
 		$parsed_sig = preg_replace("#\s#", "", $parsed_sig);
 		$sig_length = my_strlen($parsed_sig);

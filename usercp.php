@@ -59,16 +59,15 @@ if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
 {
 	require_once MYBB_ROOT."inc/datahandlers/user.php";
 	$userhandler = new UserDataHandler();
-	
+
 	$data = array(
 		'uid' => $mybb->user['uid'],
-		'showimages' => $mybb->user['showimages'],
 		'signature' => $mybb->get_input('signature'),
 	);
 
 	$userhandler->set_data($data);
 
-	if (!$userhandler->verify_signature())
+	if(!$userhandler->verify_signature())
 	{
 		$error = inline_error($userhandler->get_friendly_errors());
 		$mybb->input['action'] = "editsig";
@@ -1956,11 +1955,6 @@ if($mybb->input['action'] == "editsig")
 			"me_username" => $mybb->user['username'],
 			"filter_badwords" => 1
 		);
-
-		if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0)
-		{
-			$sig_parser['allow_imgcode'] = 0;
-		}
 
 		$sigpreview = $parser->parse_message($sig, $sig_parser);
 		eval("\$signature = \"".$templates->get($template)."\";");
