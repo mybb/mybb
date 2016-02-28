@@ -1797,12 +1797,12 @@ class UserDataHandler extends DataHandler
 			"filter_badwords" => 1
 		);
 
-		if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0)
+		if($this->data['showimages'] != 1 && $this->data['uid'] != 0)
 		{
 			$parser_options['allow_imgcode'] = 0;
 		}
 
-		$parsed_sig = $parser->parse_message($mybb->get_input('signature'), $parser_options);
+		$parsed_sig = $parser->parse_message($this->data['signature'], $parser_options);
 
 		if((($mybb->settings['sigimgcode'] == 0 && $mybb->settings['sigsmilies'] != 1) &&
 			substr_count($parsed_sig, "<img") > 0) ||
@@ -1815,7 +1815,7 @@ class UserDataHandler extends DataHandler
 			$mybb->input['preview'] = 1;
 		}
 
-		$parsed_sig = ($mybb->settings['sigcountmycode'] == 0 ? $parser->text_parse_message($mybb->get_input('signature')) : $mybb->get_input('signature'));
+		$parsed_sig = ($mybb->settings['sigcountmycode'] == 0 ? $parser->text_parse_message($this->data['signature']) : $this->data['signature']);
 
 		$parsed_sig = preg_replace("#\s#", "", $parsed_sig);
 		$sig_length = my_strlen($parsed_sig);

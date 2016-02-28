@@ -59,8 +59,15 @@ if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
 {
 	require_once MYBB_ROOT."inc/datahandlers/user.php";
 	$userhandler = new UserDataHandler();
-	$data = array('signature' => $mybb->get_input('signature'));
+	
+	$data = array(
+		'uid' => $mybb->user['uid'],
+		'showimages' => $mybb->user['showimages'],
+		'signature' => $mybb->get_input('signature'),
+	);
+
 	$userhandler->set_data($data);
+
 	if (!$userhandler->verify_signature())
 	{
 		$error = inline_error($userhandler->get_friendly_errors());
