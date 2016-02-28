@@ -1956,6 +1956,11 @@ if($mybb->input['action'] == "editsig")
 			"filter_badwords" => 1
 		);
 
+		if($mybb->user['showimages'] != 1)
+		{
+			$sig_parser['allow_imgcode'] = 0;
+		}
+
 		$sigpreview = $parser->parse_message($sig, $sig_parser);
 		eval("\$signature = \"".$templates->get($template)."\";");
 	}

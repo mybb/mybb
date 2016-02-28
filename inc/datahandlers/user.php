@@ -1819,7 +1819,7 @@ class UserDataHandler extends DataHandler
 			$this->set_error('too_many_sig_images2', array($imgsallowed));
 		}
 
-		if ($mybb->settings['sigcountmycode'] == 0)
+		if($mybb->settings['sigcountmycode'] == 0)
 		{
 			$parsed_sig = $parser->text_parse_message($this->data['signature']);
 		}
