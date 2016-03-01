@@ -149,7 +149,6 @@
 0=No CAPTCHA
 1=MyBB Default CAPTCHA
 2=reCAPTCHA
-3=Are You a Human
 4=NoCAPTCHA reCAPTCHA]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -166,22 +165,6 @@
 			<title><![CDATA[reCAPTCHA Private Key]]></title>
 			<description><![CDATA[Your reCAPTCHA private key.]]></description>
 			<disporder>4</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
-			<settingvalue><![CDATA[]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-		<setting name="ayahpublisherkey">
-			<title><![CDATA[Are You a Human Publisher Key]]></title>
-			<description><![CDATA[Your Are You a Human publisher key.]]></description>
-			<disporder>5</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
-			<settingvalue><![CDATA[]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-		<setting name="ayahscoringkey">
-			<title><![CDATA[Are You a Human Scoring Key]]></title>
-			<description><![CDATA[Your Are You a Human scoring key.]]></description>
-			<disporder>6</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
