@@ -1815,7 +1815,13 @@ class UserDataHandler extends DataHandler
 			substr_count($parsed_sig, "<img") > $mybb->settings['maxsigimages'])
 		)
 		{
-			$imgsallowed = ($mybb->settings['sigimgcode'] == 1 ? $mybb->settings['maxsigimages'] : 0);
+			$imgsallowed = 0;
+			
+			if($mybb->settings['sigimgcode'] == 1)
+			{
+				$imgsallowed = $mybb->settings['maxsigimages'];
+			}
+
 			$this->set_error('too_many_sig_images2', array($imgsallowed));
 		}
 
