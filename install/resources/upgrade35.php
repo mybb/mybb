@@ -44,6 +44,11 @@ function upgrade35_dbchanges()
 		$db->modify_column('sessions', 'useragent', "varchar(200)", "set", "''");
 	}
 
+	// Remove "Are You a Human" captcha
+	$db->update_query('settings', array('value' => 1), "name='captchaimage' AND value=3");
+	$db->delete_query('settings', "name IN ('ayahpublisherkey', 'ayahscoringkey')");
+	$db->delete_query('templates', "title IN ('member_register_regimage_ayah', 'post_captcha_ayah')");
+
 	global $footer_extra;
 	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
 
