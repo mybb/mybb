@@ -3502,7 +3502,7 @@ function build_prefixes($pid=0)
 }
 
 /**
- * Build the thread prefix selection menu
+ * Build the thread prefix selection menu for the current user
  *
  *  @param int|string $fid The forum ID (integer ID or string all)
  *  @param int|string $selected_pid The selected prefix ID (integer ID or string any)
@@ -3522,18 +3522,8 @@ function build_prefix_select($fid, $selected_pid=0, $multiple=0, $previous_pid=0
 	$prefix_cache = build_prefixes(0);
 	if(empty($prefix_cache))
 	{
-		return false; // We've got no prefixes to show
-	}
-
-	$groups = array($mybb->user['usergroup']);
-	if($mybb->user['additionalgroups'])
-	{
-		$exp = explode(",", $mybb->user['additionalgroups']);
-
-		foreach($exp as $group)
-		{
-			$groups[] = $group;
-		}
+		// We've got no prefixes to show
+		return '';
 	}
 
 	// Go through each of our prefixes and decide which ones we can use
@@ -3552,29 +3542,16 @@ function build_prefix_select($fid, $selected_pid=0, $multiple=0, $previous_pid=0
 			}
 		}
 
-		if($prefix['groups'] != "-1" && $prefix['pid'] != $previous_pid)
+		if(is_member($prefix['groups']))
 		{
-			$prefix_groups = explode(",", $prefix['groups']);
-
-			foreach($groups as $group)
-			{
-				if(in_array($group, $prefix_groups) && !isset($prefixes[$prefix['pid']]))
-				{
-					// Our group can use this prefix!
-					$prefixes[$prefix['pid']] = $prefix;
-				}
-			}
-		}
-		else
-		{
-			// This prefix is for anybody to use...
+			// The current user can use this prefix
 			$prefixes[$prefix['pid']] = $prefix;
 		}
 	}
 
 	if(empty($prefixes))
 	{
-		return false;
+		return '';
 	}
 
 	$prefixselect = $prefixselect_prefix = '';
@@ -3619,10 +3596,11 @@ function build_prefix_select($fid, $selected_pid=0, $multiple=0, $previous_pid=0
 }
 
 /**
- * Build the thread prefix selection menu for a forum
+ * Build the thread prefix selection menu for a forum without group permission checks
  *
  *  @param int $fid The forum ID (integer ID)
  *  @param int $selected_pid The selected prefix ID (integer ID)
+ *  @return string The thread prefix selection menu
  */
 function build_forum_prefix_select($fid, $selected_pid=0)
 {
@@ -3633,7 +3611,8 @@ function build_forum_prefix_select($fid, $selected_pid=0)
 	$prefix_cache = build_prefixes(0);
 	if(empty($prefix_cache))
 	{
-		return false; // We've got no prefixes to show
+		// We've got no prefixes to show
+		return '';
 	}
 
 	// Go through each of our prefixes and decide which ones we can use
@@ -3660,7 +3639,7 @@ function build_forum_prefix_select($fid, $selected_pid=0)
 
 	if(empty($prefixes))
 	{
-		return false;
+		return '';
 	}
 
 	$default_selected = array();
@@ -4835,14 +4814,7 @@ function leave_usergroup($uid, $leavegroup)
 {
 	global $db, $mybb, $cache;
 
-	if($uid == $mybb->user['uid'])
-	{
-		$user = $mybb->user;
-	}
-	else
-	{
-		$user = get_user($uid);
-	}
+	$user = get_user($uid);
 
 	$groupslist = $comma = '';
 	$usergroups = $user['additionalgroups'].",";
