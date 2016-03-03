@@ -3542,7 +3542,7 @@ function build_prefix_select($fid, $selected_pid=0, $multiple=0, $previous_pid=0
 			}
 		}
 
-		if(is_member($prefix['groups']))
+		if(is_member($prefix['groups']) || $prefix['pid'] == $previous_pid)
 		{
 			// The current user can use this prefix
 			$prefixes[$prefix['pid']] = $prefix;
