@@ -6749,7 +6749,7 @@ function build_timezone_select($name, $selected=0, $short=false)
  *
  * @param string $url The URL of the remote file
  * @param array $post_data The array of post data
- 8 @param int $max_redirects Number of maximum redirects
+ * @param int $max_redirects Number of maximum redirects
  * @return string|bool The remote file contents. False on failure
  */
 function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
