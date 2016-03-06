@@ -6749,9 +6749,10 @@ function build_timezone_select($name, $selected=0, $short=false)
  *
  * @param string $url The URL of the remote file
  * @param array $post_data The array of post data
+ 8 @param int $max_redirects Number of maximum redirects
  * @return string|bool The remote file contents. False on failure
  */
-function fetch_remote_file($url, $post_data=array())
+function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 {
 	$post_body = '';
 	if(!empty($post_data))
@@ -6765,19 +6766,56 @@ function fetch_remote_file($url, $post_data=array())
 
 	if(function_exists("curl_init"))
 	{
+		$can_followlocation = @ini_get('open_basedir') == null && (!@ini_get('safe_mode') || @ini_get('safe_mode') == 'Off');
+
+		$request_header = $max_redirects != 0 && !$can_followlocation;
+
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_HEADER, $request_header);
 		curl_setopt($ch, CURLOPT_TIMEOUT, 10);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+
+		if($max_redirects != 0 && $can_followlocation)
+		{
+			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+			curl_setopt($ch, CURLOPT_MAXREDIRS, $max_redirects);
+		}
+
 		if(!empty($post_body))
 		{
 			curl_setopt($ch, CURLOPT_POST, 1);
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $post_body);
 		}
-		$data = curl_exec($ch);
+
+		$response = curl_exec($ch);
+
+		if($request_header)
+		{
+			$header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
+			$header = substr($data, 0, $header_size);
+			$body = substr($response, $header_size);
+
+			if(in_array(curl_getinfo($ch, CURLINFO_HTTP_CODE), array(301, 302)))
+			{
+				preg_match('/Location:(.*?)\n/', $header, $matches);
+
+				if ($matches)
+				{
+					$data = fetch_remote_file(trim(array_pop($matches)), $post_data, --$max_redirects);
+				}
+			}
+			else
+			{
+				$data = $body;
+			}
+		}
+		else
+		{
+			$data = $response;
+		}
+
 		curl_close($ch);
 		return $data;
 	}
@@ -6788,15 +6826,15 @@ function fetch_remote_file($url, $post_data=array())
 		{
 			return false;
 		}
-		if(!$url['port'])
+		if(!isset($url['port']))
 		{
 			$url['port'] = 80;
 		}
-		if(!$url['path'])
+		if(!isset($url['path']))
 		{
 			$url['path'] = "/";
 		}
-		if($url['query'])
+		if(isset($url['query']))
 		{
 			$url['path'] .= "?{$url['query']}";
 		}
@@ -6849,13 +6887,36 @@ function fetch_remote_file($url, $post_data=array())
 		{
 			return false;
 		}
+
+		$data = null;
+
 		while(!feof($fp))
 		{
 			$data .= fgets($fp, 12800);
 		}
 		fclose($fp);
+
 		$data = explode("\r\n\r\n", $data, 2);
-		return $data[1];
+
+		$header = $data[0];
+		$status_line = current(explode("\n\n", $header, 1));
+		$body = $data[1];
+
+		if($max_redirects != 0 && (strstr($status_line, ' 301 ') || strstr($status_line, ' 302 ')))
+		{
+			preg_match('/Location:(.*?)\n/', $header, $matches);
+
+			if ($matches)
+			{
+				$data = fetch_remote_file(trim(array_pop($matches)), $post_data, --$max_redirects);
+			}
+		}
+		else
+		{
+			$data = $body;
+		}
+
+		return $data;
 	}
 	else if(empty($post_data))
 	{
