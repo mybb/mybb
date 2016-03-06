@@ -809,7 +809,7 @@ if($mybb->input['action'] == "results")
 			$query = $db->simple_select("threads", "tid", "tid IN(".$db->escape_string(implode(',', $pids)).") AND ({$unapproved_where}{$permsql} OR closed LIKE 'moved|%')");
 			while($thread = $db->fetch_array($query))
 			{
-				if(array_key_exists($thread['tid'], $tids) != false)
+				if(array_key_exists($thread['tid'], $tids) != true)
 				{
 					$temp_pids = $tids[$thread['tid']];
 					foreach($temp_pids as $pid)
