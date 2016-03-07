@@ -759,7 +759,7 @@ if($mybb->input['action'] == "edit")
 
 				if($mybb->input[$option['action']])
 				{
-					if((int)$mybb->input[$option['time']] == 0 && $mybb->input[$option['period']] != "never" && $user[$option['update_field']] != 1)
+					if($mybb->get_input($option['time'], MyBB::INPUT_INT) == 0 && $mybb->input[$option['period']] != "never" && $user[$option['update_field']] != 1)
 					{
 						// User has selected a type of ban, but not entered a valid time frame
 						$string = $option['action']."_error";
@@ -768,7 +768,7 @@ if($mybb->input['action'] == "edit")
 
 					if(!is_array($errors))
 					{
-						$suspend_length = fetch_time_length((int)$mybb->input[$option['time']], $mybb->input[$option['period']]);
+						$suspend_length = fetch_time_length($mybb->get_input($option['time'], MyBB::INPUT_INT), $mybb->input[$option['period']]);
 
 						if($user[$option['update_field']] == 1 && ($mybb->input[$option['time']] || $mybb->input[$option['period']] == "never"))
 						{

@@ -217,7 +217,7 @@ else
 			}
 			if($cfield == 'icq')
 			{
-				$search_query .= " AND u.{$cfield} LIKE '%".(int)$mybb->input[$cfield]."%'";
+				$search_query .= " AND u.{$cfield} LIKE '%".$mybb->get_input($cfield, MyBB::INPUT_INT)."%'";
 			}
 			else
 			{
