@@ -6768,7 +6768,7 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 
 	if(function_exists("curl_init"))
 	{
-		$can_followlocation = @ini_get('open_basedir') == null && !$mybb->safemode;
+		$can_followlocation = @ini_get('open_basedir') === '' && !$mybb->safemode;
 
 		$request_header = $max_redirects != 0 && !$can_followlocation;
 
