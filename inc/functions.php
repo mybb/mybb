@@ -6754,6 +6754,8 @@ function build_timezone_select($name, $selected=0, $short=false)
  */
 function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 {
+	global $mybb;
+
 	$post_body = '';
 	if(!empty($post_data))
 	{
@@ -6766,7 +6768,7 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 
 	if(function_exists("curl_init"))
 	{
-		$can_followlocation = @ini_get('open_basedir') == null && (!@ini_get('safe_mode') || @ini_get('safe_mode') == 'Off');
+		$can_followlocation = @ini_get('open_basedir') == null && !$mybb->safemode;
 
 		$request_header = $max_redirects != 0 && !$can_followlocation;
 
@@ -6793,8 +6795,8 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 
 		if($request_header)
 		{
-			$header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
-			$header = substr($data, 0, $header_size);
+			$header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+			$header = substr($response, 0, $header_size);
 			$body = substr($response, $header_size);
 
 			if(in_array(curl_getinfo($ch, CURLINFO_HTTP_CODE), array(301, 302)))
