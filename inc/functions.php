@@ -6803,7 +6803,7 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 			{
 				preg_match('/Location:(.*?)\n/', $header, $matches);
 
-				if ($matches)
+				if($matches)
 				{
 					$data = fetch_remote_file(trim(array_pop($matches)), $post_data, --$max_redirects);
 				}
@@ -6908,7 +6908,7 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 		{
 			preg_match('/Location:(.*?)\n/', $header, $matches);
 
-			if ($matches)
+			if($matches)
 			{
 				$data = fetch_remote_file(trim(array_pop($matches)), $post_data, --$max_redirects);
 			}
