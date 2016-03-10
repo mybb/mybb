@@ -149,6 +149,40 @@ function upgrade35_dbchanges3()
 			break;
 	}
 
+	global $footer_extra;
+	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+
+	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
+	$output->print_footer("35_dbchanges4");
+}
+
+function upgrade35_dbchanges4()
+{
+	global $mybb, $output;
+
+	$output->print_header("Adding index files");
+	echo "<p>Adding index files to attachment directories...</p>";
+	flush();
+
+	$dir = @opendir('../'.$mybb->settings['uploadspath']);
+	if($dir)
+	{
+		while(($file = @readdir($dir)) !== false)
+		{
+			$filename = "../{$mybb->settings['uploadspath']}/{$file}";
+			$indexfile = "{$filename}/index.html";
+
+			if(preg_match('#^[0-9]{6}$#', $file) && @is_dir($filename) && @is_writable($filename) && !file_exists($indexfile))
+			{
+				$index = @fopen($indexfile, 'w');
+				@fwrite($index, "<html>\n<head>\n<title></title>\n</head>\n<body>\n&nbsp;\n</body>\n</html>");
+				@fclose($index);
+			}
+		}
+
+		@closedir($dir);
+	}
+
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("35_done");
 }

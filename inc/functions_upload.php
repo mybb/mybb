@@ -473,6 +473,12 @@ function upload_attachment($attachment, $update_attachment=false)
 			{
 				$month_dir = '';
 			}
+			else
+			{
+				$index = @fopen($mybb->settings['uploadspath']."/".$month_dir."/index.html", 'w');
+				@fwrite($index, "<html>\n<head>\n<title></title>\n</head>\n<body>\n&nbsp;\n</body>\n</html>");
+				@fclose($index);
+			}
 		}
 	}
 

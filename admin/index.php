@@ -20,6 +20,8 @@ $shutdown_queries = $shutdown_functions = array();
 
 send_page_headers();
 
+header('X-Frame-Options: SAMEORIGIN');
+
 if(!isset($config['admin_dir']) || !file_exists(MYBB_ROOT.$config['admin_dir']."/inc/class_page.php"))
 {
 	$config['admin_dir'] = basename(dirname(__FILE__));
@@ -238,7 +240,7 @@ elseif($mybb->input['do'] == "login")
 
 		$db->delete_query("adminsessions", "uid='{$mybb->user['uid']}'");
 
-		$sid = md5(uniqid(microtime(true), true));
+		$sid = md5(random_str(50));
 
 		$useragent = $_SERVER['HTTP_USER_AGENT'];
 		if(my_strlen($useragent) > 200)

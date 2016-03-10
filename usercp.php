@@ -3678,6 +3678,7 @@ if(!$mybb->input['action'])
 	$regdate = my_date('relative', $mybb->user['regdate']);
 
 	$useravatar = format_avatar($mybb->user['avatar'], $mybb->user['avatardimensions'], '100x100');
+	$avatar_username = htmlspecialchars_uni($mybb->user['username']);
 	eval("\$avatar = \"".$templates->get("usercp_currentavatar")."\";");
 
 	$usergroup = htmlspecialchars_uni($groupscache[$mybb->user['usergroup']]['title']);

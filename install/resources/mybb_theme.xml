@@ -11888,7 +11888,7 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
-		<template name="usercp_currentavatar" version="1800"><![CDATA[<td class="trow1" valign="top" align="center" width="1"><div class="usercp_container"><img src="{$useravatar['image']}" alt="{$mybb->user['username']}" title="{$mybb->user['username']}" {$useravatar['width_height']} /></div></td>]]></template>
+		<template name="usercp_currentavatar" version="1807"><![CDATA[<td class="trow1" valign="top" align="center" width="1"><div class="usercp_container"><img src="{$useravatar['image']}" alt="{$avatar_username}" title="{$avatar_username}" {$useravatar['width_height']} /></div></td>]]></template>
 		<template name="usercp_drafts" version="1804"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->drafts}</title>

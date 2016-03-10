@@ -763,13 +763,38 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			{
 				$inactiveforums = "AND t.fid NOT IN ({$inactiveforums})";
 			}
-			if(is_moderator($fid))
+
+			// Check group permissions if we can't view threads not started by us
+			$group_permissions = forum_permissions();
+			$onlyusfids = array();
+			$onlyusforums = '';
+			foreach($group_permissions as $fid => $forum_permissions)
 			{
-				$visible_where = "AND p.visible != 2";
+				if(isset($forum_permissions['canonlyviewownthreads']) && $forum_permissions['canonlyviewownthreads'] == 1)
+				{
+					$onlyusfids[] = $fid;
+				}
+			}
+			if(!empty($onlyusfids))
+			{
+				$onlyusforums = "AND ((t.fid IN(".implode(',', $onlyusfids).") AND t.uid='{$mybb->user['uid']}') OR t.fid NOT IN(".implode(',', $onlyusfids)."))";
+			}
+
+			if(is_moderator($fid, 'canviewunapprove') && is_moderator($fid, 'canviewdeleted'))
+			{
+				$visible_where = "AND p.visible IN (-1,0,1)";
+			}
+			elseif(is_moderator($fid, 'canviewunapprove') && !is_moderator($fid, 'canviewdeleted'))
+			{
+				$visible_where = "AND p.visible IN (0,1)";
+			}
+			elseif(!is_moderator($fid, 'canviewunapprove') && is_moderator($fid, 'canviewdeleted'))
+			{
+				$visible_where = "AND p.visible IN (-1,1)";
 			}
 			else
 			{
-				$visible_where = "AND p.visible > 0";
+				$visible_where = "AND p.visible=1";
 			}
 
 			require_once MYBB_ROOT."inc/functions_posting.php";
@@ -778,7 +803,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 				FROM ".TABLE_PREFIX."posts p
 				LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 				LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-				WHERE p.pid IN ({$quoted_posts}) {$unviewable_forums} {$inactiveforums} {$visible_where}
+				WHERE p.pid IN ({$quoted_posts}) {$unviewable_forums} {$inactiveforums} {$onlyusforums} {$visible_where}
 			");
 			$load_all = $mybb->get_input('load_all_quotes', MyBB::INPUT_INT);
 			while($quoted_post = $db->fetch_array($query))
