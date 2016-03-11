@@ -7728,7 +7728,7 @@ function secure_binary_seed_rng($bytes)
 				$source = MCRYPT_RAND;
 			}
 
-			$output = mcrypt_create_iv($bytes, $source);
+			$output = @mcrypt_create_iv($bytes, $source);
 		}
 	}
 	else
