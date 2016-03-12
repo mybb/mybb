@@ -1654,10 +1654,6 @@ if($mybb->input['action'] == "subscriptions")
 					$forum_read = $read_cutoff;
 				}
 			}
-			else
-			{
-				$forum_read = $forumsread[$thread['fid']];
-			}
 
 			$cutoff = 0;
 			if($mybb->settings['threadreadcut'] > 0 && $thread['lastpost'] > $forum_read)
