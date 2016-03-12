@@ -313,6 +313,11 @@ function upload_avatar($avatar=array(), $uid=0)
 		case "image/x-png":
 			$img_type = 3;
 			break;
+		case "image/bmp":
+		case "image/x-bmp":
+		case "image/x-bitmap":
+			$img_type = 6;
+			break;
 		default:
 			$img_type = 0;
 	}
