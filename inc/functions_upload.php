@@ -315,7 +315,7 @@ function upload_avatar($avatar=array(), $uid=0)
 			break;
 		case "image/bmp":
 		case "image/x-bmp":
-		case "image/x-bitmap":
+		case "image/x-windows-bmp":
 			$img_type = 6;
 			break;
 		default:
