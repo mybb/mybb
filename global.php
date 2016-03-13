@@ -452,7 +452,7 @@ else
 $templatelist .= "headerinclude,header,footer,gobutton,htmldoctype,header_welcomeblock_member,header_welcomeblock_guest,header_welcomeblock_member_admin,global_pm_alert,global_unreadreports,error,footer_languageselect_option,footer_contactus";
 $templatelist .= ",global_pending_joinrequests,global_awaiting_activation,nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active,footer_languageselect,footer_themeselect,header_welcomeblock_member_moderator,redirect,header_menu_calendar,nav_dropdown,footer_themeselector,task_image";
 $templatelist .= ",global_boardclosed_warning,global_bannedwarning,error_inline,error_nopermission_loggedin,error_nopermission,debug_summary,header_quicksearch,header_menu_search,header_menu_portal,header_menu_memberlist,usercp_themeselector_option,smilie,global_board_offline_modal";
-$templatelist .= ",video_dailymotion_embed,video_facebook_embed,video_liveleak_embed,video_metacafe_embed,video_myspacetv_embed,video_veoh_embed,video_vimeo_embed,video_yahoo_embed,video_youtube_embed,global_no_permission_model";
+$templatelist .= ",video_dailymotion_embed,video_facebook_embed,video_liveleak_embed,video_metacafe_embed,video_myspacetv_embed,video_veoh_embed,video_vimeo_embed,video_yahoo_embed,video_youtube_embed,global_no_permission_modal";
 $templates->cache($db->escape_string($templatelist));
 
 // Set the current date and time now
@@ -1025,7 +1025,7 @@ if($mybb->usergroup['canview'] != 1)
 				}
 				else
 				{
-					eval('$output = "'.$templates->get('global_no_permission_model', 1, 0).'";');
+					eval('$output = "'.$templates->get('global_no_permission_modal', 1, 0).'";');
 					echo($output);
 					exit;
 				}
@@ -1041,7 +1041,7 @@ if($mybb->usergroup['canview'] != 1)
 			}
 			else
 			{
-				eval('$output = "'.$templates->get('global_no_permission_model', 1, 0).'";');
+				eval('$output = "'.$templates->get('global_no_permission_modal', 1, 0).'";');
 				echo($output);
 				exit;
 			}
@@ -1055,7 +1055,7 @@ if($mybb->usergroup['canview'] != 1)
 		}
 		else
 		{
-			eval('$output = "'.$templates->get('global_no_permission_model', 1, 0).'";');
+			eval('$output = "'.$templates->get('global_no_permission_modal', 1, 0).'";');
 			echo($output);
 			exit;
 		}
