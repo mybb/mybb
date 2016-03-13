@@ -1226,7 +1226,7 @@ function usergroup_permissions($gid=0)
 	{
 		return $groupscache[$gid];
 	}
-	
+
 	$usergroup = array();
 
 	foreach($groups as $gid)
@@ -2145,7 +2145,7 @@ function my_unserialize($str)
 	{
 		mb_internal_encoding($mbIntEnc);
 	}
-	
+
 	return $out;
 }
 
@@ -2165,27 +2165,27 @@ function _safe_serialize( $value )
 	{
 		return 'N;';
 	}
-	
+
 	if(is_bool($value))
 	{
 		return 'b:'.(int)$value.';';
 	}
-	
+
 	if(is_int($value))
 	{
 		return 'i:'.$value.';';
 	}
-	
+
 	if(is_float($value))
 	{
 		return 'd:'.str_replace(',', '.', $value).';';
 	}
-	
+
 	if(is_string($value))
 	{
 		return 's:'.strlen($value).':"'.$value.'";';
 	}
-	
+
 	if(is_array($value))
 	{
 		$out = '';
@@ -2193,7 +2193,7 @@ function _safe_serialize( $value )
 		{
 			$out .= _safe_serialize($k) . _safe_serialize($v);
 		}
-		
+
 		return 'a:'.count($value).':{'.$out.'}';
 	}
 
@@ -2216,13 +2216,13 @@ function my_serialize($value)
 		$mbIntEnc = mb_internal_encoding();
 		mb_internal_encoding('ASCII');
 	}
-	
+
 	$out = _safe_serialize($value);
 	if(isset($mbIntEnc))
 	{
 		mb_internal_encoding($mbIntEnc);
 	}
-	
+
 	return $out;
 }
 
@@ -2975,7 +2975,7 @@ function random_str($length=8, $complex=false)
 	{
 		$str[] = $set[my_rand(0, 61)];
 	}
-	
+
 	// Make sure they're in random order and convert them to a string
 	shuffle($str);
 
@@ -3039,7 +3039,12 @@ function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
 	if(!$avatar)
 	{
 		// Default avatar
-		$avatar = $mybb->settings['useravatar'];
+		if(defined('IN_ADMINCP'))
+		{
+			$theme['imgdir'] = '../images';
+		}
+
+		$avatar = str_replace('{theme}', $theme['imgdir'], $mybb->settings['useravatar']);
 		$dimensions = $mybb->settings['useravatardims'];
 	}
 
@@ -3256,7 +3261,7 @@ function build_mycode_inserter($bind="message", $smilies = true)
 
 						if(!$mybb->settings['smilieinserter'] || !$mybb->settings['smilieinsertercols'] || !$mybb->settings['smilieinsertertot'] || !$smilie['showclickable'])
 						{
-							$hiddensmilies .= '"'.$find.'": "'.$image.'",';							
+							$hiddensmilies .= '"'.$find.'": "'.$image.'",';
 						}
 						elseif($i < $mybb->settings['smilieinsertertot'])
 						{
@@ -3402,11 +3407,11 @@ function build_clickable_smilies()
 					{
 						$smilies .=  "<tr>\n";
 					}
-					
+
 					$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
 					$smilie['image'] = htmlspecialchars_uni($mybb->get_asset_url($smilie['image']));
 					$smilie['name'] = htmlspecialchars_uni($smilie['name']);
-					
+
 					// Only show the first text to replace in the box
 					$temp = explode("\n", $smilie['find']); // assign to temporary variable for php 5.3 compatibility
 					$smilie['find'] = $temp[0];
@@ -3664,7 +3669,7 @@ function build_forum_prefix_select($fid, $selected_pid=0)
 
 	$default_selected = array();
 	$selected_pid = (int)$selected_pid;
-	
+
 	if($selected_pid == 0)
 	{
 		$default_selected['all'] = ' selected="selected"';
@@ -3820,7 +3825,7 @@ function get_reputation($reputation, $uid=0)
 	{
 		$reputation_class = "reputation_neutral";
 	}
-	
+
 	$reputation = my_number_format($reputation);
 
 	if($uid != 0)
@@ -4156,9 +4161,9 @@ function get_unviewable_forums($only_readable_threads=false)
 			$unviewable[] = $forum['fid'];
 		}
 	}
-	
+
 	$unviewableforums = implode(',', $unviewable);
-	
+
 	return $unviewableforums;
 }
 
@@ -4912,7 +4917,7 @@ function get_current_location($fields=false, $ignore=array(), $quick=false)
 	{
 		$location = htmlspecialchars_uni($_ENV['PATH_INFO']);
 	}
-	
+
 	if($quick)
 	{
 		return $location;
@@ -6198,7 +6203,7 @@ function get_inactive_forums()
 			}
 		}
 	}
-	
+
 	$inactiveforums = implode(",", $inactive);
 
 	return $inactiveforums;
@@ -6932,7 +6937,7 @@ function is_super_admin($uid)
 function is_member($groups, $user = false)
 {
 	global $mybb;
-	
+
 	if(empty($groups))
 	{
 		return array();
