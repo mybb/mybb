@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<settings version="1800" exported="1178692706">
+<settings version="1808" exported="1178692706">
 	<settinggroup name="onlineoffline" title="Board Online / Offline" description="These settings allow you to globally turn your forums online or offline, and allow you to specify a reason for turning them off." disporder="1" isdefault="1">
 		<setting name="boardclosed">
 			<title>Board Closed</title>
@@ -1066,7 +1066,7 @@ disabled=Disable this feature]]></optionscode>
 			<optionscode><![CDATA[groupselect]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
-		</setting>		
+		</setting>
 		<setting name="hidewebsite">
 			<title>Hide Websites To Groups</title>
 			<description><![CDATA[Select the usergroups you wish to hide websites from.]]></description>
@@ -1077,7 +1077,7 @@ disabled=Disable this feature]]></optionscode>
 		</setting>
 		<setting name="useravatar">
 			<title>Default User Avatar</title>
-			<description><![CDATA[If the user does not set a custom avatar this image will be used instead.]]></description>
+			<description><![CDATA[If the user does not set a custom avatar this image will be used instead. You can use use <strong>{theme}</strong> to represent the image directory of each theme.]]></description>
 			<disporder>10</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[images/default_avatar.png]]></settingvalue>
@@ -1759,7 +1759,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		<setting name="portal">
 			<title>Enable Portal</title>
 			<description><![CDATA[If you wish to disable the portal on your board, set this option to no.]]></description>
-  			<disporder>1</disporder>
+			<disporder>1</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
