@@ -1147,6 +1147,7 @@ if($mybb->input['action'] == "edit")
 		$form->generate_check_box("candeletereputations", 1, $lang->can_delete_own_reputation, array("checked" => $mybb->input['candeletereputations'])),
 		"{$lang->points_to_award_take}<br /><small class=\"input\">{$lang->points_to_award_take_desc}</small><br />".$form->generate_numeric_field('reputationpower', $mybb->input['reputationpower'], array('id' => 'reputationpower', 'class' => 'field50', 'min' => 0)),
 		"{$lang->max_reputations_perthread}<br /><small class=\"input\">{$lang->max_reputations_perthread_desc}</small><br />".$form->generate_numeric_field('maxreputationsperthread', $mybb->input['maxreputationsperthread'], array('id' => 'maxreputationsperthread', 'class' => 'field50', 'min' => 0)),
+		"{$lang->max_reputations_peruser}<br /><small class=\"input\">{$lang->max_reputations_peruser_desc}</small><br />".$form->generate_numeric_field('maxreputationsperuser', $mybb->input['maxreputationsperuser'], array('id' => 'maxreputationsperuser', 'class' => 'field50', 'min' => 0)),
 		"{$lang->max_reputations_daily}<br /><small class=\"input\">{$lang->max_reputations_daily_desc}</small><br />".$form->generate_numeric_field('maxreputationsday', $mybb->input['maxreputationsday'], array('id' => 'maxreputationsday', 'class' => 'field50', 'min' => 0))
 	);
 	$form_container->output_row($lang->reputation_system, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $reputation_options)."</div>");
