@@ -132,7 +132,7 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 	if($mybb->usergroup['maxreputationsperuser'] != 0 && ($mybb->input['action'] != "do_add" || ($mybb->input['action'] == "do_add" && empty($mybb->input['delete']))))
 	{
 		$timesearch = TIME_NOW - (60 * 60 * 24);
-		$query = $db->simple_select("reputation", "*", "uid='".$uid."' AND dateline>'$timesearch'");
+		$query = $db->simple_select("reputation", "*", "uid='".$uid."' AND adduid='".$mybb->user['uid']."' AND dateline>'$timesearch'");
 		$numtoday = $db->num_rows($query);
 
 		if($numtoday >= $mybb->usergroup['maxreputationsperuser'])
