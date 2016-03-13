@@ -1553,7 +1553,8 @@ if($mybb->input['action'] == "subscriptions")
 	if(!empty($subscriptions))
 	{
 		$tids = implode(",", array_keys($subscriptions));
-
+		$readforums = array();
+		
 		// Build a forum cache.
 		$query = $db->query("
 			SELECT f.fid, fr.dateline AS lastread
@@ -1562,6 +1563,7 @@ if($mybb->input['action'] == "subscriptions")
 			WHERE f.active != 0
 			ORDER BY pid, disporder
 		");
+		
 		while($forum = $db->fetch_array($query))
 		{
 			$readforums[$forum['fid']] = $forum['lastread'];
@@ -3972,6 +3974,7 @@ if(!$mybb->input['action'])
 	if(!empty($threadcache))
 	{
 		$tids = implode(",", array_keys($threadcache));
+		$readforums = array();
 
 		// Read Forums
 		$query = $db->query("
@@ -3981,6 +3984,7 @@ if(!$mybb->input['action'])
 			WHERE f.active != 0
 			ORDER BY pid, disporder
 		");
+		
 		while($forum = $db->fetch_array($query))
 		{
 			$readforums[$forum['fid']] = $forum['lastread'];
