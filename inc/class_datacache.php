@@ -896,25 +896,10 @@ class datacache
 		$query = $db->simple_select("reportedcontent", "dateline", "reportstatus='0'", array('order_by' => 'dateline', 'order_dir' => 'DESC'));
 		$latest = $db->fetch_array($query);
 
-		$reasons = array();
-
-		if(!empty($mybb->settings['reportreasons']))
-		{
-			$options = $mybb->settings['reportreasons'];
-			$options = explode("\n", $options);
-
-			foreach($options as $option)
-			{
-				$option = explode("=", $option);
-				$reasons[$option[0]] = $option[1];
-			}
-		}
-
 		$reports = array(
 			"unread" => $num['unreadcount'],
 			"total" => $total['reportcount'],
-			"lastdateline" => $latest['dateline'],
-			"reasons" => $reasons
+			"lastdateline" => $latest['dateline']
 		);
 
 		$this->update("reportedcontent", $reports);
