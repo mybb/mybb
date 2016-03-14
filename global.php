@@ -1035,7 +1035,7 @@ if($mybb->usergroup['canview'] != 1)
 		$notallowed = true;
 	}
 
-	if($notallowed = true)
+	if($notallowed == true)
 	{
 		if(!$mybb->get_input('modal'))
 		{
