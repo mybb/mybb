@@ -39,6 +39,9 @@ require_once MYBB_ROOT."inc/functions_user.php";
 $loc = get_current_location('', '', true);
 $mybb->settings['cookiepath'] = substr($loc, 0, strrpos($loc, "/{$config['admin_dir']}/"))."/{$config['admin_dir']}/";
 
+// Fix avatar setting since it's used outside of format_avatar() in ACP...
+$mybb->settings['useravatar'] = str_replace('{theme}', 'images', $mybb->settings['useravatar']);
+
 if(!isset($cp_language))
 {
 	if(!file_exists(MYBB_ROOT."inc/languages/".$mybb->settings['cplanguage']."/admin/home_dashboard.lang.php"))
