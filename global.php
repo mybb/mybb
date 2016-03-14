@@ -1009,6 +1009,7 @@ if(!$mybb->user['uid'] && $mybb->settings['usereferrals'] == 1 && (isset($mybb->
 }
 
 $output = '';
+$notallowed = false;
 if($mybb->usergroup['canview'] != 1)
 {
 	// Check pages allowable even when not allowed to view board
@@ -1019,35 +1020,22 @@ if($mybb->usergroup['canview'] != 1)
 			$allowable_actions = explode(',', ALLOWABLE_PAGE);
 			if(!in_array($mybb->get_input('action'), $allowable_actions))
 			{
-				if(!$mybb->get_input('modal'))
-				{
-					error_no_permission();
-				}
-				else
-				{
-					eval('$output = "'.$templates->get('global_no_permission_modal', 1, 0).'";');
-					echo($output);
-					exit;
-				}
+				$notallowed = true;
 			}
 
 			unset($allowable_actions);
 		}
 		else if(ALLOWABLE_PAGE !== 1)
 		{
-			if(!$mybb->get_input('modal'))
-			{
-				error_no_permission();
-			}
-			else
-			{
-				eval('$output = "'.$templates->get('global_no_permission_modal', 1, 0).'";');
-				echo($output);
-				exit;
-			}
+			$notallowed = true;
 		}
 	}
 	else
+	{
+		$notallowed = true;
+	}
+
+	if($notallowed = true)
 	{
 		if(!$mybb->get_input('modal'))
 		{
