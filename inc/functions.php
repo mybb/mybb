@@ -3035,7 +3035,7 @@ function format_name($username, $usergroup, $displaygroup=0)
  */
 function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
 {
-	global $mybb;
+	global $mybb, $theme;
 	static $avatars;
 
 	if(!isset($avatars))
