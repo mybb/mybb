@@ -11,15 +11,14 @@
 /**
  * Disk Cache Handler
  */
-class diskCacheHandler
+class diskCacheHandler implements CacheHandlerInterface
 {
 	/**
 	 * Connect and initialize this handler.
 	 *
-	 * @param bool $silent ignored
 	 * @return boolean True if successful, false on failure
 	 */
-	function connect($silent=false)
+	function connect()
 	{
 		if(!@is_writable(MYBB_ROOT."cache"))
 		{
@@ -33,24 +32,16 @@ class diskCacheHandler
 	 * Retrieve an item from the cache.
 	 *
 	 * @param string $name The name of the cache
-	 * @param boolean $hard_refresh True if we should do a hard refresh
 	 * @return mixed Cache data if successful, false if failure
 	 */
-	function fetch($name, $hard_refresh=false)
+	function fetch($name)
 	{
 		if(!@file_exists(MYBB_ROOT."/cache/{$name}.php"))
 		{
 			return false;
 		}
 
-		if(!isset($this->cache[$name]) || $hard_refresh == true)
-		{
-			@include(MYBB_ROOT."/cache/{$name}.php");
-		}
-		else
-		{
-			@include_once(MYBB_ROOT."/cache/{$name}.php");
-		}
+		@include(MYBB_ROOT."/cache/{$name}.php");
 
 		// Return data
 		return $$name;

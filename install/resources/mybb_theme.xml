@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<theme name="MyBB Master Style" version="1805">
+<theme name="MyBB Master Style" version="1807">
 	<properties>
 		<templateset><![CDATA[1]]></templateset>
 		<imgdir><![CDATA[images]]></imgdir>
@@ -3724,7 +3724,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 {$modann}
 </tr>]]></template>
 		<template name="forumdisplay_announcements_announcement_modbit" version="1800"><![CDATA[<td align="center" class="{$bgcolor} forumdisplay_announcement">-</td>]]></template>
-		<template name="forumdisplay_inlinemoderation" version="1804"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1804"></script>
+		<template name="forumdisplay_inlinemoderation" version="1807"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1807"></script>
 		<form action="moderation.php" method="post">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="fid" value="{$fid}" />
@@ -4057,6 +4057,20 @@ $(".forumjump").change(function() {
 </div>
 <br />]]></template>
 		<template name="global_boardclosed_warning" version="1600"><![CDATA[<div class="red_alert"><strong>{$lang->bbclosed_warning}</strong></div>]]></template>
+		<template name="global_no_permission_modal" version="1808"><![CDATA[<div class="modal">
+	<div style="overflow-y: auto; max-height: 400px;">
+		<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<tr>
+			<td class="thead">
+				<strong>{$mybb->settings['bbname']}</strong>
+			</td>
+		</tr>
+		<tr>
+			<td class="trow1">{$lang->error_nopermission_user_ajax}</td>
+		</tr>
+		</table>
+	</div>
+</div>]]></template>
 		<template name="global_pending_joinrequests" version="1600"><![CDATA[<div class="red_alert"><a href="{$mybb->settings['bburl']}/usercp.php?action=usergroups">{$lang->pending_joinrequests}</a></div>]]></template>
 		<template name="global_pm_alert" version="1800"><![CDATA[<div class="pm_alert" id="pm_notice">
 	<div class="float_right"><a href="{$mybb->settings['bburl']}/private.php?action=dismiss_notice&amp;my_post_key={$mybb->post_code}" title="{$lang->dismiss_notice}" onclick="return MyBB.dismissPMNotice('{$mybb->settings['bburl']}/')"><img src="{$theme['imgdir']}/dismiss_notice.png" alt="{$lang->dismiss_notice}" title="{$lang->dismiss_notice}" /></a></div>
@@ -4308,7 +4322,7 @@ $(".forumjump").change(function() {
   <td class="trow1"><input type="text" id="username" class="textbox" name="username" size="40" maxlength="{$mybb->settings['maxnamelength']}" style="width: 210px" /></td>
 </tr>
 </table>
-<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1806">
+<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1807">
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1806"></script>
 <script type="text/javascript">
 <!--
@@ -4362,7 +4376,7 @@ if(use_xmlhttprequest == "1")
   <td class="trow1"><input type="text" id="inviteusername" class="textbox" name="inviteusername" size="40" maxlength="{$mybb->settings['maxnamelength']}" style="width: 210px" /></td>
 </tr>
 </table>
-<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1806">
+<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1807">
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1806"></script>
 <script type="text/javascript">
 <!--
@@ -5274,7 +5288,7 @@ $(document).ready(function() {
 </td>
 </tr></table>
 </fieldset>
-<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1806">
+<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1807">
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1806"></script>
 <script type="text/javascript">
 <!--
@@ -5340,15 +5354,6 @@ if(use_xmlhttprequest == "1")
 <tr>
 	<td id="imagestring_status"  style="display: none;" colspan="2">&nbsp;</td>
 </tr>
-</table>
-</fieldset>]]></template>
-		<template name="member_register_regimage_ayah" version="1800"><![CDATA[<br />
-<fieldset class="trow2">
-  <legend><strong>{$lang->image_verification}</strong></legend>
-	<table cellspacing="0" cellpadding="{$theme['tablespace']}">
-	<tr>
-		<td>{$output}</td>
-	</tr>
 </table>
 </fieldset>]]></template>
 		<template name="member_register_regimage_recaptcha" version="1605"><![CDATA[<br />
@@ -5555,7 +5560,7 @@ if(use_xmlhttprequest == "1")
 <div align="center"><br /><input type="submit" class="button" name="submit" value="{$lang->search}" /></div>
 </form>
 {$footer}
-<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1806">
+<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1807">
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1806"></script>
 <script type="text/javascript">
 <!--
@@ -5701,7 +5706,7 @@ if(use_xmlhttprequest == "1")
 <div align="center"><br /><input type="submit" class="button" name="submit" value="{$lang->search}" /></div>
 </form>
 {$footer}
-<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1806">
+<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1807">
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1806"></script>
 <script type="text/javascript">
 <!--
@@ -6587,7 +6592,7 @@ if(use_xmlhttprequest == "1")
 		</tr>
 	</table>
 	{$footer}
-<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1806">
+<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1807">
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1806"></script>
 <script type="text/javascript">
 <!--
@@ -7085,7 +7090,7 @@ if(use_xmlhttprequest == "1")
 		</table>
 	</form>
 {$footer}
-<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1806" />
+<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1807" />
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1806"></script>
 <script type="text/javascript">
 <!--
@@ -7804,7 +7809,7 @@ if(use_xmlhttprequest == "1")
 		</tr>
 	</table>
 	{$footer}
-<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1806">
+<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1807">
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1806"></script>
 <script type="text/javascript">
 <!--
@@ -9303,16 +9308,6 @@ if(use_xmlhttprequest == "1")
 </table>
 </td>
 </tr>]]></template>
-		<template name="post_captcha_ayah" version="1800"><![CDATA[<tr id="captcha_trow">
-<td class="trow1" valign="top"><strong>{$lang->image_verification}</strong></td>
-<td class="trow1">
-	<table cellspacing="0" cellpadding="{$theme['tablespace']}">
-		<tr>
-            <td>{$output}</td>
-		</tr>
-	</table>
-</td>
-</tr>]]></template>
 		<template name="post_captcha_hidden" version="1605"><![CDATA[<input type="hidden" name="{$hash}" value="{$field['hash']}" />
 <input type="hidden" name="{$string}" value="{$field['string']}" />]]></template>
 		<template name="post_captcha_recaptcha" version="1605"><![CDATA[<tr id="captcha_trow">
@@ -9741,7 +9736,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </table>
 </form>
 {$footer}
-<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1806" />
+<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1807" />
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1806"></script>
 <script type="text/javascript">
 <!--
@@ -10289,7 +10284,7 @@ if(use_xmlhttprequest == "1")
 </script>
 </body>
 </html>]]></template>
-		<template name="private_send_autocomplete" version="1807"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1806">
+		<template name="private_send_autocomplete" version="1807"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1807">
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1806"></script>
 <script type="text/javascript">
 <!--
@@ -10821,7 +10816,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <div align="center"><br /><input type="submit" class="button" name="submit" value="{$lang->search}" /></div>
 </form>
 {$footer}
-<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1806">
+<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1807">
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1806"></script>
 <script type="text/javascript">
 <!--
@@ -10928,7 +10923,7 @@ if(use_xmlhttprequest == "1")
 </body>
 </html>]]></template>
 		<template name="search_results_posts_inlinecheck" version="120"><![CDATA[<td class="{$bgcolor}" align="center" style="white-space: nowrap"><input type="checkbox" class="checkbox" name="inlinemod_{$post['pid']}" id="inlinemod_{$post['pid']}" value="1" style="vertical-align: middle;" {$inlinecheck}  /></td>]]></template>
-		<template name="search_results_posts_inlinemoderation" version="1806"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1804"></script>
+		<template name="search_results_posts_inlinemoderation" version="1807"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1807"></script>
 <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="tid" value="0" />
@@ -11021,7 +11016,7 @@ if(use_xmlhttprequest == "1")
 		</body>
 		</html>]]></template>
 		<template name="search_results_threads_inlinecheck" version="120"><![CDATA[<td class="{$bgcolor}" align="center" style="white-space: nowrap"><input type="checkbox" class="checkbox" name="inlinemod_{$thread['tid']}" id="inlinemod_{$thread['tid']}" value="1" style="vertical-align: middle;" {$inlinecheck}  /></td>]]></template>
-		<template name="search_results_threads_inlinemoderation" version="1806"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1804"></script>
+		<template name="search_results_threads_inlinemoderation" version="1807"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1807"></script>
 		<form action="moderation.php" method="post">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="fid" value="0" />
@@ -11250,7 +11245,7 @@ if(use_xmlhttprequest == "1")
 			<td class="tcat"><span class="smalltext"><strong>{$lang->message}</strong></span></td>
 		</tr>
 		]]></template>
-		<template name="showthread_inlinemoderation" version="1804"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1804"></script>
+		<template name="showthread_inlinemoderation" version="1807"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1807"></script>
 <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="tid" value="{$tid}" />
@@ -11907,7 +11902,7 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
-		<template name="usercp_currentavatar" version="1800"><![CDATA[<td class="trow1" valign="top" align="center" width="1"><div class="usercp_container"><img src="{$useravatar['image']}" alt="{$mybb->user['username']}" title="{$mybb->user['username']}" {$useravatar['width_height']} /></div></td>]]></template>
+		<template name="usercp_currentavatar" version="1807"><![CDATA[<td class="trow1" valign="top" align="center" width="1"><div class="usercp_container"><img src="{$useravatar['image']}" alt="{$avatar_username}" title="{$avatar_username}" {$useravatar['width_height']} /></div></td>]]></template>
 		<template name="usercp_drafts" version="1804"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->drafts}</title>
@@ -11996,7 +11991,7 @@ if(use_xmlhttprequest == "1")
       	lang.buddylist_error = '{$lang->buddylist_error}';
 	</script>
 
-  <link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1806">
+  <link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1807">
 	<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1806"></script>
 
 </head>
@@ -12203,8 +12198,8 @@ if(use_xmlhttprequest == "1")
 						</tbody>
 					</table>
 		]]></template>
-		<template name="usercp_editlists_user" version="1800"><![CDATA[<li class="float_left" id="{$type}_{$user['uid']}" style="width: 33%; list-style: none; margin-bottom: 4px;">
-	<a href="usercp.php?action=do_editlists&amp;my_post_key={$mybb->post_code}&amp;manage={$type}&amp;delete={$user['uid']}" onclick="return UserCP.removeBuddy('{$type}', {$user['uid']});" title="{$lang->remove_from_list}"><img src="{$theme['imgdir']}/buddy_delete.png" title="[{$lang->delete}]"  alt="{$lang->remove_from_list}" style="vertical-align: middle;" /></a>
+		<template name="usercp_editlists_user" version="1807"><![CDATA[<li class="float_left" id="{$type}_{$user['uid']}" style="width: 33%; list-style: none; margin-bottom: 4px;">
+	<a href="usercp.php?action=do_editlists&amp;my_post_key={$mybb->post_code}&amp;manage={$type}&amp;delete={$user['uid']}" onclick="return UserCP.removeBuddy('{$type}', {$user['uid']});" title="{$lang->remove_from_list}"><img src="{$theme['imgdir']}/buddy_delete.png" title="{$lang->remove_from_list}"  alt="{$lang->remove_from_list}" style="vertical-align: middle;" /></a>
 	<img src="{$theme['imgdir']}/buddy_{$status}.png" title="{$lang->$status}" alt="" style="vertical-align: middle;" />
 	{$profile_link}
 </li>]]></template>
