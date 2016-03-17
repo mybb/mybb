@@ -878,6 +878,7 @@ $tables[] = "CREATE TABLE mybb_threadsubscriptions (
   tid int NOT NULL default '0',
   notification smallint NOT NULL default '0',
   dateline int NOT NULL default '0',
+  subscriptionkey varchar(32) NOT NULL default '',
   PRIMARY KEY (sid)
 );";
 

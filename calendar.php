@@ -1463,22 +1463,27 @@ if($mybb->input['action'] == "event")
 	{
 		$event['profilelink'] = build_profile_link(format_name($event['username'], $event['usergroup'], $event['displaygroup']), $event['uid']);
 
+		$hascustomtitle = 0;
 		if(trim($event['usertitle']) != "")
 		{
-			// Do nothing, no need for an extra variable..
+			$hascustomtitle = 1;
 		}
-		elseif($user_usergroup['usertitle'] != "")
+
+		if($user_usergroup['usertitle'] != "" && !$hascustomtitle)
 		{
 			$event['usertitle'] = $user_usergroup['usertitle'];
 		}
 		elseif(is_array($titles_cache) && !$user_usergroup['usertitle'])
 		{
 			reset($titles_cache);
-			foreach($titles_cache as $title)
+			foreach($titles_cache as $key => $title)
 			{
-				if($event['postnum'] >= $title['posts'])
+				if($event['postnum'] >= $key)
 				{
-					$event['usertitle'] = $title['title'];
+					if(!$hascustomtitle)
+					{
+						$event['usertitle'] = $title['title'];
+					}
 					$event['stars'] = $title['stars'];
 					$event['starimage'] = $title['starimage'];
 					break;
@@ -1529,7 +1534,7 @@ if($mybb->input['action'] == "event")
 		$event['userstars'] = '';
 	}
 
-	$event['usertitle'] = htmlspecialchars_uni($event['usertitle']);
+	$event['usertitle'] = htmlspecialchars_uni($event['usertitle']); 
 
 	if($event['ignoretimezone'] == 0)
 	{
@@ -1802,22 +1807,27 @@ if($mybb->input['action'] == "dayview")
 			{
 				$event['profilelink'] = build_profile_link(format_name($event['username'], $event['usergroup'], $event['displaygroup']), $event['uid']);
 
+				$hascustomtitle = 0;
 				if(trim($event['usertitle']) != "")
 				{
-					// Do nothing, no need for an extra variable..
+					$hascustomtitle = 1;
 				}
-				elseif($user_usergroup['usertitle'] != "")
+
+				if($user_usergroup['usertitle'] != "" && !$hascustomtitle)
 				{
 					$event['usertitle'] = $user_usergroup['usertitle'];
 				}
 				elseif(is_array($titles_cache) && !$user_usergroup['usertitle'])
 				{
 					reset($titles_cache);
-					foreach($titles_cache as $title)
+					foreach($titles_cache as $key => $title)
 					{
-						if($event['postnum'] >= $title['posts'])
+						if($event['postnum'] >= $key)
 						{
-							$event['usertitle'] = $title['title'];
+							if(!$hascustomtitle)
+							{
+								$event['usertitle'] = $title['title'];
+							}
 							$event['stars'] = $title['stars'];
 							$event['starimage'] = $title['starimage'];
 							break;
@@ -1868,7 +1878,7 @@ if($mybb->input['action'] == "dayview")
 				$event['userstars'] = '';
 			}
 
-			$event['usertitle'] = htmlspecialchars_uni($event['usertitle']);
+			$event['usertitle'] = htmlspecialchars_uni($event['usertitle']); 
 
 			if($event['ignoretimezone'] == 0)
 			{

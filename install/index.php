@@ -1796,9 +1796,9 @@ function configure()
 	global $output, $mybb, $errors, $lang;
 
 	$output->print_header($lang->board_config, 'config');
-
+	
 	echo <<<EOF
-		<script type="text/javascript">
+		<script type="text/javascript">	
 		function warnUser(inp, warn)
 		{
 			var parenttr = $('#'+inp.id).closest('tr');
@@ -1817,19 +1817,19 @@ function configure()
 				}
 			}
 		}
-
+			
 		function revertSetting(defval, inpid)
 		{
-			$(inpid).val(defval);
+			$(inpid).val(defval);			
 			var parenttr = $(inpid).closest('tr');
 			parenttr.next('.setting_peeker').remove();
 			if(parenttr.is(':last-child'))
 			{
 				parenttr.addClass('last');
-			}
+			}			
 		}
 		</script>
-
+		
 EOF;
 
 	// If board configuration errors
@@ -1859,12 +1859,12 @@ EOF;
 		}
 
 		// Attempt auto-detection
-		if(!empty($_SERVER['HTTP_HOST']))
+		if($_SERVER['HTTP_HOST'])
 		{
 			$hostname = $protocol.$_SERVER['HTTP_HOST'];
 			$cookiedomain = $_SERVER['HTTP_HOST'];
 		}
-		elseif(!empty($_SERVER['SERVER_NAME']))
+		elseif($_SERVER['SERVER_NAME'])
 		{
 			$hostname = $protocol.$_SERVER['SERVER_NAME'];
 			$cookiedomain = $_SERVER['SERVER_NAME'];
@@ -1885,33 +1885,18 @@ EOF;
 			$cookiedomain = ".{$cookiedomain}";
 		}
 
-		if(!empty($_SERVER['SERVER_PORT']))
+		if($_SERVER['SERVER_PORT'] && $_SERVER['SERVER_PORT'] != 80 && !preg_match("#:[0-9]#i", $hostname))
 		{
-			$port = ":{$_SERVER['SERVER_PORT']}";
-			$pos = strrpos($cookiedomain, $port);
-
-			if($pos !== false)
-			{
-				$cookiedomain = substr($cookiedomain, 0, $pos);
-			}
-
-			if($_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443 && !preg_match("#:[0-9]#i", $hostname))
-			{
-				$hostname .= $port;
-			}
+			$hostname .= ':'.$_SERVER['SERVER_PORT'];
 		}
-
+		
 		$currentlocation = get_current_location('', '', true);
 		$noinstall = substr($currentlocation, 0, strrpos($currentlocation, '/install/'));
-
+		
 		$cookiepath = $noinstall.'/';
 		$bburl = $hostname.$noinstall;
 		$websiteurl = $hostname.'/';
-
-		if(isset($_SERVER['SERVER_ADMIN']) && filter_var($_SERVER['SERVER_ADMIN'], FILTER_VALIDATE_EMAIL))
-		{
-			$contactemail = $_SERVER['SERVER_ADMIN'];
-		}
+		$contactemail = $_SERVER['SERVER_ADMIN'];
 	}
 
 	echo $lang->sprintf($lang->config_step_table, $bbname, $bburl, $websitename, $websiteurl, $cookiedomain, $cookiepath, $contactemail);
@@ -1943,9 +1928,9 @@ function create_admin_user()
 		}
 	}
 	$output->print_header($lang->create_admin, 'admin');
-
+	
 	echo <<<EOF
-		<script type="text/javascript">
+		<script type="text/javascript">	
 		function comparePass()
 		{
 			var parenttr = $('#adminpass2').closest('tr');
@@ -1961,7 +1946,7 @@ function create_admin_user()
 			}
 		}
 		</script>
-
+		
 EOF;
 
 	if(is_array($errors))

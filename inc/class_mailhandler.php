@@ -153,6 +153,7 @@ class MailHandler
 		}
 		else
 		{
+			$this->from = "";
 			if($mybb->settings['mail_handler'] == 'smtp')
 			{
 				$this->from = $this->get_from_email();

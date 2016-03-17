@@ -268,7 +268,9 @@ function add_subscribed_thread($tid, $notification=1, $uid=0)
 			'uid' => (int)$uid,
 			'tid' => (int)$tid,
 			'notification' => (int)$notification,
-			'dateline' => TIME_NOW
+			'dateline' => TIME_NOW,
+			'subscriptionkey' => md5(TIME_NOW.$uid.$tid)
+
 		);
 		$db->insert_query("threadsubscriptions", $insert_array);
 	}

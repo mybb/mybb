@@ -83,10 +83,6 @@ html[dir="rtl"] .select2-container .select2-choice {
     text-overflow: ellipsis;
     float: none;
     width: auto;
-    
-    /* MyBB modification start - Search container min-width */
-    min-width: 120px;
-    /* MyBB modification end */
 }
 
 html[dir="rtl"] .select2-container .select2-choice > .select2-chosen {

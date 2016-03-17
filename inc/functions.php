@@ -3502,15 +3502,14 @@ function build_prefixes($pid=0)
 }
 
 /**
- * Build the thread prefix selection menu for the current user
+ * Build the thread prefix selection menu
  *
  *  @param int|string $fid The forum ID (integer ID or string all)
  *  @param int|string $selected_pid The selected prefix ID (integer ID or string any)
  *  @param int $multiple Allow multiple prefix selection
- *  @param int $previous_pid The previously selected prefix ID
  *  @return string The thread prefix selection menu
  */
-function build_prefix_select($fid, $selected_pid=0, $multiple=0, $previous_pid=0)
+function build_prefix_select($fid, $selected_pid=0, $multiple=0)
 {
 	global $cache, $db, $lang, $mybb, $templates;
 
@@ -3522,8 +3521,18 @@ function build_prefix_select($fid, $selected_pid=0, $multiple=0, $previous_pid=0
 	$prefix_cache = build_prefixes(0);
 	if(empty($prefix_cache))
 	{
-		// We've got no prefixes to show
-		return '';
+		return false; // We've got no prefixes to show
+	}
+
+	$groups = array($mybb->user['usergroup']);
+	if($mybb->user['additionalgroups'])
+	{
+		$exp = explode(",", $mybb->user['additionalgroups']);
+
+		foreach($exp as $group)
+		{
+			$groups[] = $group;
+		}
 	}
 
 	// Go through each of our prefixes and decide which ones we can use
@@ -3535,23 +3544,36 @@ function build_prefix_select($fid, $selected_pid=0, $multiple=0, $previous_pid=0
 			// Decide whether this prefix can be used in our forum
 			$forums = explode(",", $prefix['forums']);
 
-			if(!in_array($fid, $forums) && $prefix['pid'] != $previous_pid)
+			if(!in_array($fid, $forums))
 			{
 				// This prefix is not in our forum list
 				continue;
 			}
 		}
 
-		if(is_member($prefix['groups']) || $prefix['pid'] == $previous_pid)
+		if($prefix['groups'] != "-1")
 		{
-			// The current user can use this prefix
+			$prefix_groups = explode(",", $prefix['groups']);
+
+			foreach($groups as $group)
+			{
+				if(in_array($group, $prefix_groups) && !isset($prefixes[$prefix['pid']]))
+				{
+					// Our group can use this prefix!
+					$prefixes[$prefix['pid']] = $prefix;
+				}
+			}
+		}
+		else
+		{
+			// This prefix is for anybody to use...
 			$prefixes[$prefix['pid']] = $prefix;
 		}
 	}
 
 	if(empty($prefixes))
 	{
-		return '';
+		return false;
 	}
 
 	$prefixselect = $prefixselect_prefix = '';
@@ -3596,11 +3618,10 @@ function build_prefix_select($fid, $selected_pid=0, $multiple=0, $previous_pid=0
 }
 
 /**
- * Build the thread prefix selection menu for a forum without group permission checks
+ * Build the thread prefix selection menu for a forum
  *
  *  @param int $fid The forum ID (integer ID)
  *  @param int $selected_pid The selected prefix ID (integer ID)
- *  @return string The thread prefix selection menu
  */
 function build_forum_prefix_select($fid, $selected_pid=0)
 {
@@ -3611,8 +3632,7 @@ function build_forum_prefix_select($fid, $selected_pid=0)
 	$prefix_cache = build_prefixes(0);
 	if(empty($prefix_cache))
 	{
-		// We've got no prefixes to show
-		return '';
+		return false; // We've got no prefixes to show
 	}
 
 	// Go through each of our prefixes and decide which ones we can use
@@ -3639,7 +3659,7 @@ function build_forum_prefix_select($fid, $selected_pid=0)
 
 	if(empty($prefixes))
 	{
-		return '';
+		return false;
 	}
 
 	$default_selected = array();
@@ -4814,7 +4834,14 @@ function leave_usergroup($uid, $leavegroup)
 {
 	global $db, $mybb, $cache;
 
-	$user = get_user($uid);
+	if($uid == $mybb->user['uid'])
+	{
+		$user = $mybb->user;
+	}
+	else
+	{
+		$user = get_user($uid);
+	}
 
 	$groupslist = $comma = '';
 	$usergroups = $user['additionalgroups'].",";
@@ -6749,13 +6776,10 @@ function build_timezone_select($name, $selected=0, $short=false)
  *
  * @param string $url The URL of the remote file
  * @param array $post_data The array of post data
- * @param int $max_redirects Number of maximum redirects
  * @return string|bool The remote file contents. False on failure
  */
-function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
+function fetch_remote_file($url, $post_data=array())
 {
-	global $mybb;
-
 	$post_body = '';
 	if(!empty($post_data))
 	{
@@ -6768,56 +6792,18 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 
 	if(function_exists("curl_init"))
 	{
-		$can_followlocation = @ini_get('open_basedir') === '' && !$mybb->safemode;
-
-		$request_header = $max_redirects != 0 && !$can_followlocation;
-
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_HEADER, $request_header);
+		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_TIMEOUT, 10);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-
-		if($max_redirects != 0 && $can_followlocation)
-		{
-			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-			curl_setopt($ch, CURLOPT_MAXREDIRS, $max_redirects);
-		}
-
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		if(!empty($post_body))
 		{
 			curl_setopt($ch, CURLOPT_POST, 1);
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $post_body);
 		}
-
-		$response = curl_exec($ch);
-
-		if($request_header)
-		{
-			$header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
-			$header = substr($response, 0, $header_size);
-			$body = substr($response, $header_size);
-
-			if(in_array(curl_getinfo($ch, CURLINFO_HTTP_CODE), array(301, 302)))
-			{
-				preg_match('/Location:(.*?)(?:\n|$)/', $header, $matches);
-
-				if($matches)
-				{
-					$data = fetch_remote_file(trim(array_pop($matches)), $post_data, --$max_redirects);
-				}
-			}
-			else
-			{
-				$data = $body;
-			}
-		}
-		else
-		{
-			$data = $response;
-		}
-
+		$data = curl_exec($ch);
 		curl_close($ch);
 		return $data;
 	}
@@ -6828,15 +6814,15 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 		{
 			return false;
 		}
-		if(!isset($url['port']))
+		if(!$url['port'])
 		{
 			$url['port'] = 80;
 		}
-		if(!isset($url['path']))
+		if(!$url['path'])
 		{
 			$url['path'] = "/";
 		}
-		if(isset($url['query']))
+		if($url['query'])
 		{
 			$url['path'] .= "?{$url['query']}";
 		}
@@ -6889,36 +6875,13 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 		{
 			return false;
 		}
-
-		$data = null;
-
 		while(!feof($fp))
 		{
 			$data .= fgets($fp, 12800);
 		}
 		fclose($fp);
-
 		$data = explode("\r\n\r\n", $data, 2);
-
-		$header = $data[0];
-		$status_line = current(explode("\n\n", $header, 1));
-		$body = $data[1];
-
-		if($max_redirects != 0 && (strstr($status_line, ' 301 ') || strstr($status_line, ' 302 ')))
-		{
-			preg_match('/Location:(.*?)(?:\n|$)/', $header, $matches);
-
-			if($matches)
-			{
-				$data = fetch_remote_file(trim(array_pop($matches)), $post_data, --$max_redirects);
-			}
-		}
-		else
-		{
-			$data = $body;
-		}
-
-		return $data;
+		return $data[1];
 	}
 	else if(empty($post_data))
 	{
@@ -7685,186 +7648,129 @@ function signed($int)
 }
 
 /**
- * Returns a securely generated seed
+ * Returns a securely generated seed for PHP's RNG (Random Number Generator)
  *
- * @return string A secure binary seed
+ * @param int $count Length of the seed bytes (8 is default. Provides good cryptographic variance)
+ * @return int An integer equivalent of a secure hexadecimal seed
  */
-function secure_binary_seed_rng($bytes)
+function secure_seed_rng($count=8)
 {
-	$output = null;
-
-	if(version_compare(PHP_VERSION, '7.0', '>='))
+	$output = '';
+	// DIRECTORY_SEPARATOR checks if running windows
+	if(DIRECTORY_SEPARATOR != '\\')
 	{
-		try
+		// Unix/Linux
+		// Use OpenSSL when available
+		if(function_exists('openssl_random_pseudo_bytes'))
 		{
-			$output = random_bytes($bytes);
-		} catch (Exception $e) {
+			$output = openssl_random_pseudo_bytes($count);
 		}
-	}
-
-	if(strlen($output) < $bytes)
-	{
-		if(@is_readable('/dev/urandom') && ($handle = @fopen('/dev/urandom', 'rb')))
+		// Try mcrypt
+		elseif(function_exists('mcrypt_create_iv'))
 		{
-			$output = @fread($handle, $bytes);
+			$output = mcrypt_create_iv($count, MCRYPT_DEV_URANDOM);
+		}
+		// Try /dev/urandom
+		elseif(@is_readable('/dev/urandom') && ($handle = @fopen('/dev/urandom', 'rb')))
+		{
+			$output = @fread($handle, $count);
 			@fclose($handle);
 		}
 	}
 	else
 	{
-		return $output;
-	}
-
-	if(strlen($output) < $bytes)
-	{
-		if(function_exists('mcrypt_create_iv'))
+		// Windows
+		// Use OpenSSL when available
+		// PHP <5.3.4 had a bug which makes that function unusable on Windows
+		if(function_exists('openssl_random_pseudo_bytes') && version_compare(PHP_VERSION, '5.3.4', '>='))
 		{
-			if (DIRECTORY_SEPARATOR == '/')
-			{
-				$source = MCRYPT_DEV_URANDOM;
-			}
-			else
-			{
-				$source = MCRYPT_RAND;
-			}
-
-			$output = @mcrypt_create_iv($bytes, $source);
+			$output = openssl_random_pseudo_bytes($count);
 		}
-	}
-	else
-	{
-		return $output;
-	}
-
-	if(strlen($output) < $bytes)
-	{
-		if(function_exists('openssl_random_pseudo_bytes'))
+		// Try mcrypt
+		elseif(function_exists('mcrypt_create_iv'))
 		{
-			// PHP <5.3.4 had a bug which makes that function unusable on Windows
-			if ((DIRECTORY_SEPARATOR == '/') || version_compare(PHP_VERSION, '5.3.4', '>='))
-			{
-				$output = openssl_random_pseudo_bytes($bytes, $crypto_strong);
-				if ($crypto_strong == false)
-				{
-					$output = null;
-				}
-			}
+			$output = mcrypt_create_iv($count, MCRYPT_RAND);
 		}
-	}
-	else
-	{
-		return $output;
-	}
-
-	if(strlen($output) < $bytes)
-	{
-		if(class_exists('COM'))
+		// Try Windows CAPICOM before using our own generator
+		elseif(class_exists('COM'))
 		{
 			try
 			{
 				$CAPI_Util = new COM('CAPICOM.Utilities.1');
 				if(is_callable(array($CAPI_Util, 'GetRandom')))
 				{
-					$output = $CAPI_Util->GetRandom($bytes, 0);
+					$output = $CAPI_Util->GetRandom($count, 0);
 				}
 			} catch (Exception $e) {
 			}
 		}
 	}
-	else
-	{
-		return $output;
-	}
 
-	if(strlen($output) < $bytes)
+	// Didn't work? Do we still not have enough bytes? Use our own (less secure) rng generator
+	if(strlen($output) < $count)
 	{
+		$output = '';
+
 		// Close to what PHP basically uses internally to seed, but not quite.
 		$unique_state = microtime().@getmypid();
 
-		$rounds = ceil($bytes / 16);
-
-		for($i = 0; $i < $rounds; $i++)
+		for($i = 0; $i < $count; $i += 16)
 		{
 			$unique_state = md5(microtime().$unique_state);
-			$output .= md5($unique_state);
+			$output .= pack('H*', md5($unique_state));
 		}
-
-		$output = substr($output, 0, ($bytes * 2));
-
-		$output = pack('H*', $output);
-
-		return $output;
 	}
-	else
-	{
-		return $output;
-	}
-}
 
-/**
- * Returns a securely generated seed integer
- *
- * @return int An integer equivalent of a secure hexadecimal seed
- */
-function secure_seed_rng()
-{
-	$bytes = PHP_INT_SIZE;
-
-	do
-	{
-
-		$output = secure_binary_seed_rng($bytes);
-
-		// convert binary data to a decimal number
-		if ($bytes == 4)
-		{
-			$elements = unpack('i', $output);
-			$output = abs($elements[1]);
-		}
-		else
-		{
-			$elements = unpack('N2', $output);
-			$output = abs($elements[1] << 32 | $elements[2]);
-		}
-
-	} while($output > PHP_INT_MAX);
+	// /dev/urandom and openssl will always be twice as long as $count. base64_encode will roughly take up 33% more space but crc32 will put it to 32 characters
+	$output = hexdec(substr(dechex(crc32(base64_encode($output))), 0, $count));
 
 	return $output;
 }
 
 /**
- * Generates a cryptographically secure random number.
+ * Wrapper function for mt_rand. Automatically seeds using a secure seed once.
  *
  * @param int $min Optional lowest value to be returned (default: 0)
- * @param int $max Optional highest value to be returned (default: PHP_INT_MAX)
+ * @param int $max Optional highest value to be returned (default: mt_getrandmax())
+ * @param boolean $force_seed True forces it to reseed the RNG first
+ * @return int An integer equivalent of a secure hexadecimal seed
  */
-function my_rand($min=0, $max=PHP_INT_MAX)
+function my_rand($min=null, $max=null, $force_seed=false)
 {
-	// backward compatibility
-	if($min === null || $max === null || $max < $min)
-	{
-		$min = 0;
-		$max = PHP_INT_MAX;
-	}
+	static $seeded = false;
+	static $obfuscator = 0;
 
-	if(version_compare(PHP_VERSION, '7.0', '>='))
+	if($seeded == false || $force_seed == true)
 	{
-		try
-		{
-			$result = random_int($min, $max);
-		} catch (Exception $e) {
-		}
+		mt_srand(secure_seed_rng());
+		$seeded = true;
 
-		if(isset($result))
+		$obfuscator = abs((int) secure_seed_rng());
+
+		// Ensure that $obfuscator is <= mt_getrandmax() for 64 bit systems.
+		if($obfuscator > mt_getrandmax())
 		{
-			return $result;
+			$obfuscator -= mt_getrandmax();
 		}
 	}
 
-	$seed = secure_seed_rng();
-
-	$distance = $max - $min;
-	return $min + floor($distance * ($seed / PHP_INT_MAX) );
+	if($min !== null && $max !== null)
+	{
+		$distance = $max - $min;
+		if($distance > 0)
+		{
+			return $min + (int)((float)($distance + 1) * (float)(mt_rand() ^ $obfuscator) / (mt_getrandmax() + 1));
+		}
+		else
+		{
+			return mt_rand($min, $max);
+		}
+	}
+	else
+	{
+		$val = mt_rand() ^ $obfuscator;
+		return $val;
+	}
 }
 
 /**

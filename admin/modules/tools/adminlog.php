@@ -42,13 +42,12 @@ if($mybb->input['action'] == 'prune')
 	if($mybb->request_method == 'post')
 	{
 		$is_today = false;
-		$mybb->input['older_than'] = $mybb->get_input('older_than', MyBB::INPUT_INT);
 		if($mybb->input['older_than'] <= 0)
 		{
 			$is_today = true;
 			$mybb->input['older_than'] = 1;
 		}
-		$where = 'dateline < '.(TIME_NOW-($mybb->input['older_than']*86400));
+		$where = 'dateline < '.(TIME_NOW-($mybb->get_input('older_than', MyBB::INPUT_INT)*86400));
 
 		// Searching for entries by a particular user
 		if($mybb->input['uid'])
