@@ -787,7 +787,7 @@ class datacache
 
 		$data = array(
 			'users'	=> $awaitingusers,
-			'time'	=> TIME_NOW 
+			'time'	=> TIME_NOW
 		);
 
 		$this->update('awaitingactivation', $data);
