@@ -655,7 +655,7 @@ function is_mobile($useragent)
 function check_template($template)
 {
 	// Check to see if our database password is in the template
-	if(preg_match('#\$config\[(([\'|"]database[\'|"])|([^\'"].*?))\]\[(([\'|"](database|hostname|password|table_prefix|username)[\'|"])|([^\'"].*?))\]#i', $template)) 
+	if(preg_match("#database'?\\s*\]\\s*\[\\s*'?password#", $template))
 	{
 		return true;
 	}

@@ -51,6 +51,13 @@ if(!$mybb->user['pmfolders'])
 	$db->update_query("users", $sql_array, "uid = ".$mybb->user['uid']);
 }
 
+// On a random occassion, recount the user's pms just to make sure everything is in sync.
+$rand = my_rand(0, 9);
+if($rand == 5)
+{
+	update_pm_count();
+}
+
 $mybb->input['fid'] = $mybb->get_input('fid', MyBB::INPUT_INT);
 
 $folder_id = $folder_name = '';

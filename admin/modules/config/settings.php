@@ -937,16 +937,11 @@ if($mybb->input['action'] == "change")
 			$lang->success_settings_updated .= $lang->success_settings_updated_captchaimage;
 		}
 
-		// Get settings which optionscode is a forum/group select, checkbox or numeric
+		// Get settings which optionscode is a forum/group select or checkbox
 		// We cannot rely on user input to decide this
 		$checkbox_settings = $forum_group_select = array();
-<<<<<<< a00f5498b2b0ed9e7326fe1789c36e2f339feda8
-		$query = $db->simple_select('settings', 'name, optionscode', "optionscode IN('forumselect', 'groupselect', 'numeric') OR optionscode LIKE 'checkbox%'");
-		
-=======
 		$query = $db->simple_select('settings', 'name, optionscode', "optionscode IN('forumselect', 'groupselect') OR optionscode LIKE 'checkbox%'");
 
->>>>>>> Actual fixes
 		while($multisetting = $db->fetch_array($query))
 		{
 			if(substr($multisetting['optionscode'], 0, 8) == 'checkbox')
@@ -957,13 +952,6 @@ if($mybb->input['action'] == "change")
 				if(empty($mybb->input['upsetting'][$multisetting['name']]) && isset($mybb->input["isvisible_{$multisetting['name']}"]))
 				{
 					$mybb->input['upsetting'][$multisetting['name']] = array();
-				}
-			}
-			elseif($multisetting['optionscode'] == 'numeric')
-			{
-				if(isset($mybb->input['upsetting'][$multisetting['name']]))
-				{
-					$mybb->input['upsetting'][$multisetting['name']] = (int)$mybb->input['upsetting'][$multisetting['name']];
 				}
 			}
 			else
@@ -1682,6 +1670,7 @@ function print_setting_peekers()
 		'new Peeker($("#setting_mail_handler"), $("#row_setting_smtp_host, #row_setting_smtp_port, #row_setting_smtp_user, #row_setting_smtp_pass, #row_setting_secure_smtp"), "smtp", false)',
 		'new Peeker($("#setting_mail_handler"), $("#row_setting_mail_parameters"), "mail", false)',
 		'new Peeker($("#setting_captchaimage"), $("#row_setting_captchapublickey, #row_setting_captchaprivatekey"), /(2|4)/, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_ayahpublisherkey, #row_setting_ayahscoringkey"), 3, false)',
 		'new Peeker($(".setting_contact"), $("#row_setting_contact_guests, #row_setting_contact_badwords, #row_setting_contact_maxsubjectlength, #row_setting_contact_minmessagelength, #row_setting_contact_maxmessagelength"), 1, true)',
 		'new Peeker($(".setting_enablepruning"), $("#row_setting_enableprunebyposts, #row_setting_pruneunactived, #row_setting_prunethreads"), 1, true)',
 		'new Peeker($(".setting_enableprunebyposts"), $("#row_setting_prunepostcount, #row_setting_dayspruneregistered, #row_setting_prunepostcountall"), 1, true)',

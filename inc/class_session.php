@@ -512,7 +512,7 @@ class session
 		}
 		else
 		{
-			$onlinedata['sid'] = md5(random_str(50));
+			$onlinedata['sid'] = md5(uniqid(microtime(true), true));
 		}
 		$onlinedata['time'] = TIME_NOW;
 		$onlinedata['ip'] = $db->escape_binary($this->packedip);

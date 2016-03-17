@@ -28,11 +28,6 @@ function upgrade35_dbchanges()
 	echo "<p>Performing necessary upgrade queries...</p>";
 	flush();
 
-	if($db->field_exists('subscriptionkey', 'threadsubscriptions'))
-	{
-		$db->drop_column("threadsubscriptions", "subscriptionkey");
-	}
-
 	if($db->type != 'pgsql')
 	{
 		$db->modify_column('adminsessions', 'useragent', "varchar(200) NOT NULL default ''");
@@ -43,11 +38,6 @@ function upgrade35_dbchanges()
 		$db->modify_column('adminsessions', 'useragent', "varchar(200)", "set", "''");
 		$db->modify_column('sessions', 'useragent', "varchar(200)", "set", "''");
 	}
-
-	// Remove "Are You a Human" captcha
-	$db->update_query('settings', array('value' => 1), "name='captchaimage' AND value=3");
-	$db->delete_query('settings', "name IN ('ayahpublisherkey', 'ayahscoringkey')");
-	$db->delete_query('templates', "title IN ('member_register_regimage_ayah', 'post_captcha_ayah')");
 
 	global $footer_extra;
 	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
@@ -147,40 +137,6 @@ function upgrade35_dbchanges3()
 			$db->modify_column("usertitles", "stars", "smallint(4) unsigned NOT NULL default '0'");
 			$db->modify_column("warninglevels", "percentage", "smallint(3) unsigned NOT NULL default '0'");
 			break;
-	}
-
-	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
-
-	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("35_dbchanges4");
-}
-
-function upgrade35_dbchanges4()
-{
-	global $mybb, $output;
-
-	$output->print_header("Adding index files");
-	echo "<p>Adding index files to attachment directories...</p>";
-	flush();
-
-	$dir = @opendir('../'.$mybb->settings['uploadspath']);
-	if($dir)
-	{
-		while(($file = @readdir($dir)) !== false)
-		{
-			$filename = "../{$mybb->settings['uploadspath']}/{$file}";
-			$indexfile = "{$filename}/index.html";
-
-			if(preg_match('#^[0-9]{6}$#', $file) && @is_dir($filename) && @is_writable($filename) && !file_exists($indexfile))
-			{
-				$index = @fopen($indexfile, 'w');
-				@fwrite($index, "<html>\n<head>\n<title></title>\n</head>\n<body>\n&nbsp;\n</body>\n</html>");
-				@fclose($index);
-			}
-		}
-
-		@closedir($dir);
 	}
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");

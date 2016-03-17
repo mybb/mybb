@@ -49,7 +49,14 @@ $fid = $thread['fid'];
 $tid = $thread['tid'];
 
 // Is the currently logged in user a moderator of this forum?
-$ismod = is_moderator($fid);
+if(is_moderator($fid))
+{
+	$ismod = true;
+}
+else
+{
+	$ismod = false;
+}
 
 // Make sure we are looking at a real thread here.
 if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
@@ -126,18 +133,18 @@ $thread['threadlink'] = get_thread_link($tid);
 $postrows = '';
 if(is_moderator($forum['fid'], "canviewunapprove"))
 {
-	$visible = "AND (p.visible='0' OR p.visible='1')";
+    $visible = "AND (p.visible='0' OR p.visible='1')";
 }
 else
 {
-	$visible = "AND p.visible='1'";
+    $visible = "AND p.visible='1'";
 }
 $query = $db->query("
-	SELECT u.*, u.username AS userusername, p.*
-	FROM ".TABLE_PREFIX."posts p
-	LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-	WHERE p.tid='$tid' {$visible}
-	ORDER BY p.dateline
+    SELECT u.*, u.username AS userusername, p.*
+    FROM ".TABLE_PREFIX."posts p
+    LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
+    WHERE p.tid='$tid' {$visible}
+    ORDER BY p.dateline
 	LIMIT {$start}, {$perpage}
 ");
 while($postrow = $db->fetch_array($query))

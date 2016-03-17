@@ -614,7 +614,7 @@ if($mybb->input['action'] == "export")
 		{
 			if(strpos($filename, 'css.php?stylesheet=') !== false)
 			{
-				$style['sid'] = (int)str_replace('css.php?stylesheet=', '', $filename);
+				$style['sid'] = (integer)str_replace('css.php?stylesheet=', '', $filename);
 				$filename = $theme_stylesheets[$style['sid']];
 			}
 			else
@@ -756,7 +756,7 @@ if($mybb->input['action'] == "duplicate")
 		{
 			$query = $db->simple_select("themes", "COUNT(tid) as numthemes", "name = '".$db->escape_string($mybb->get_input('name'))."'");
 			$numthemes = $db->fetch_field($query, 'numthemes');
-
+			
 			if($numthemes)
 			{
 				$errors[] = $lang->error_theme_already_exists;
@@ -1095,13 +1095,9 @@ if($mybb->input['action'] == "edit")
 		}
 
 		$theme_properties = my_unserialize($theme['properties']);
-		if(is_array($theme_properties['disporder']))
+		if($theme_properties['disporder'])
 		{
 			$properties['disporder'] = $theme_properties['disporder'];
-		}
-		else
-		{
-			$errors[] = $lang->error_no_display_order;
 		}
 
 		$allowedgroups = array();
@@ -1346,7 +1342,7 @@ if($mybb->input['action'] == "edit")
 		{
 			if(strpos($filename, 'css.php?stylesheet=') !== false)
 			{
-				$style['sid'] = (int)str_replace('css.php?stylesheet=', '', $filename);
+				$style['sid'] = (integer)str_replace('css.php?stylesheet=', '', $filename);
 				$filename = $theme_stylesheets[$style['sid']];
 			}
 
@@ -1363,7 +1359,7 @@ if($mybb->input['action'] == "edit")
 	{
 		if(strpos($filename, 'css.php?stylesheet=') !== false)
 		{
-			$style['sid'] = (int)str_replace('css.php?stylesheet=', '', $filename);
+			$style['sid'] = (integer)str_replace('css.php?stylesheet=', '', $filename);
 			$filename = $theme_stylesheets[$style['sid']];
 		}
 		else

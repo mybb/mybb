@@ -20,9 +20,16 @@ class datacache
 	/**
 	 * The current cache handler we're using
 	 *
-	 * @var CacheHandlerInterface
+	 * @var apcCacheHandler|diskCacheHandler|eacceleratorCacheHandler|memcacheCacheHandler|memcachedCacheHandler|xcacheCacheHandler
 	 */
 	public $handler = null;
+
+	/**
+	 * Whether or not to exit the script if we cannot load the specified extension
+	 *
+	 * @var boolean
+	 */
+	var $silent = false;
 
 	/**
 	 * A count of the number of calls.
@@ -60,47 +67,48 @@ class datacache
 	{
 		global $db, $mybb;
 
-		require_once MYBB_ROOT."/inc/cachehandlers/interface.php";
-
 		switch($mybb->config['cache_store'])
 		{
 			// Disk cache
 			case "files":
 				require_once MYBB_ROOT."/inc/cachehandlers/disk.php";
-				$this->handler = new diskCacheHandler();
+				$this->handler = new diskCacheHandler($this->silent);
 				break;
 			// Memcache cache
 			case "memcache":
 				require_once MYBB_ROOT."/inc/cachehandlers/memcache.php";
-				$this->handler = new memcacheCacheHandler();
+				$this->handler = new memcacheCacheHandler($this->silent);
 				break;
 			// Memcached cache
 			case "memcached":
 				require_once MYBB_ROOT."/inc/cachehandlers/memcached.php";
-				$this->handler = new memcachedCacheHandler();
+				$this->handler = new memcachedCacheHandler($this->silent);
 				break;
 			// eAccelerator cache
 			case "eaccelerator":
 				require_once MYBB_ROOT."/inc/cachehandlers/eaccelerator.php";
-				$this->handler = new eacceleratorCacheHandler();
+				$this->handler = new eacceleratorCacheHandler($this->silent);
 				break;
 			// Xcache cache
 			case "xcache":
 				require_once MYBB_ROOT."/inc/cachehandlers/xcache.php";
-				$this->handler = new xcacheCacheHandler();
+				$this->handler = new xcacheCacheHandler($this->silent);
 				break;
 			// APC cache
 			case "apc":
 				require_once MYBB_ROOT."/inc/cachehandlers/apc.php";
-				$this->handler = new apcCacheHandler();
+				$this->handler = new apcCacheHandler($this->silent);
 				break;
 		}
 
-		if($this->handler instanceof CacheHandlerInterface)
+		if(is_object($this->handler))
 		{
-			if(!$this->handler->connect())
+			if(method_exists($this->handler, "connect"))
 			{
-				$this->handler = null;
+				if(!$this->handler->connect())
+				{
+					$this->handler = null;
+				}
 			}
 		}
 		else
@@ -132,12 +140,12 @@ class datacache
 		}
 		// If we're not hard refreshing, and this cache doesn't exist, return false
 		// It would have been loaded pre-global if it did exist anyway...
-		else if($hard == false && !($this->handler instanceof CacheHandlerInterface))
+		else if($hard == false && !is_object($this->handler))
 		{
 			return false;
 		}
 
-		if($this->handler instanceof CacheHandlerInterface)
+		if(is_object($this->handler))
 		{
 			get_execution_time();
 
@@ -231,7 +239,7 @@ class datacache
 		$db->replace_query("datacache", $replace_array, "", false);
 
 		// Do we have a cache handler we're using?
-		if($this->handler instanceof CacheHandlerInterface)
+		if(is_object($this->handler))
 		{
 			get_execution_time();
 
@@ -265,7 +273,7 @@ class datacache
 		$where = "title = '{$dbname}'";
 
 		// Delete on-demand or handler cache
-		if($this->handler instanceof CacheHandlerInterface)
+		if($this->handler)
 		{
 			get_execution_time();
 
@@ -306,7 +314,7 @@ class datacache
 
 			$where .= " OR title LIKE '{$ldbname}=_%' ESCAPE '='";
 
-			if($this->handler instanceof CacheHandlerInterface)
+			if($this->handler)
 			{
 				$query = $db->simple_select("datacache", "title", $where);
 
@@ -405,7 +413,7 @@ class datacache
 	{
 		global $db;
 
-		if($this->handler instanceof CacheHandlerInterface)
+		if(is_object($this->handler))
 		{
 			$size = $this->handler->size_of($name);
 			if(!$size)
@@ -640,6 +648,8 @@ class datacache
 	 */
 	function update_stats()
 	{
+		global $db;
+
 		require_once MYBB_ROOT."inc/functions_rebuild.php";
 		rebuild_stats();
 	}
@@ -887,6 +897,7 @@ class datacache
 	{
 		global $db, $mybb;
 
+		$reports = array();
 		$query = $db->simple_select("reportedcontent", "COUNT(rid) AS unreadcount", "reportstatus='0'");
 		$num = $db->fetch_array($query);
 

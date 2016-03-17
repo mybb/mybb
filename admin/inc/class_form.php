@@ -130,16 +130,7 @@ class DefaultForm
 	 */
 	function generate_numeric_field($name, $value=0, $options=array())
 	{
-		if(is_numeric($value))
-		{
-			$value = (float)$value;
-		}
-		else
-		{
-			$value = '';
-		}
-
-		$input = "<input type=\"number\" name=\"{$name}\" value=\"{$value}\"";
+		$input = "<input type=\"number\" name=\"".$name."\" value=\"".(int)$value."\"";
 		if(isset($options['min']))
 		{
 			$input .= " min=\"".$options['min']."\"";

@@ -57,7 +57,14 @@ if($mybb->input['action'] == "newpoll")
 	}
 
 	// Is the currently logged in user a moderator of this forum?
-	$ismod = is_moderator($thread['fid']);
+	if(is_moderator($thread['fid']))
+	{
+		$ismod = true;
+	}
+	else
+	{
+		$ismod = false;
+	}
 
 	// Make sure we are looking at a real thread here.
 	if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
@@ -159,7 +166,7 @@ if($mybb->input['action'] == "newpoll")
 	{
 		$timeout = 0;
 	}
-
+	
 	if($mybb->get_input('maxoptions', MyBB::INPUT_INT) > 0 && $mybb->get_input('maxoptions', MyBB::INPUT_INT) < $polloptions)
 	{
 		$maxoptions = $mybb->get_input('maxoptions', MyBB::INPUT_INT);
@@ -270,7 +277,7 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 	{
 		error($lang->error_polloptiontoolong);
 	}
-
+	
 	if(isset($sequenceerror))
 	{
 		error($lang->error_polloptionsequence);
@@ -316,7 +323,7 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 	{
 		$maxoptions = 0;
 	}
-
+	
 	$newpoll = array(
 		"tid" => $thread['tid'],
 		"question" => $db->escape_string($mybb->input['question']),
@@ -459,7 +466,7 @@ if($mybb->input['action'] == "editpoll")
 		{
 			$timeout = $poll['timeout'];
 		}
-
+		
 		if(!$poll['maxoptions'])
 		{
 			$maxoptions = 0;
@@ -535,7 +542,7 @@ if($mybb->input['action'] == "editpoll")
 		{
 			$timeout = 0;
 		}
-
+		
 		if(!$poll['maxoptions'])
 		{
 			$maxoptions = 0;
@@ -702,7 +709,7 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 	{
 		$timeout = 0;
 	}
-
+	
 	if($mybb->get_input('maxoptions', MyBB::INPUT_INT) > 0 && $mybb->get_input('maxoptions', MyBB::INPUT_INT) < $numoptions)
 	{
 		$maxoptions = $mybb->get_input('maxoptions', MyBB::INPUT_INT);
@@ -995,7 +1002,7 @@ if($mybb->input['action'] == "vote" && $mybb->request_method == "post")
 		if(is_array($option))
 		{
 			$total_options = 0;
-
+		
 			foreach($option as $voteoption => $vote)
 			{
 				if($vote == 1 && isset($votesarray[$voteoption-1]))
@@ -1010,7 +1017,7 @@ if($mybb->input['action'] == "vote" && $mybb->request_method == "post")
 					$total_options++;
 				}
 			}
-
+			
 			if($total_options > $poll['maxoptions'] && $poll['maxoptions'] != 0)
 			{
 				error($lang->sprintf($lang->error_maxpolloptions, $poll['maxoptions']));

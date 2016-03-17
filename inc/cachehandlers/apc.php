@@ -11,7 +11,7 @@
 /**
  * APC Cache Handler
  */
-class apcCacheHandler implements CacheHandlerInterface
+class apcCacheHandler
 {
 	/**
 	 * Unique identifier representing this copy of MyBB
@@ -20,7 +20,10 @@ class apcCacheHandler implements CacheHandlerInterface
 	 */
 	public $unique_id;
 
-	function __construct()
+	/**
+	 * @param bool $silent ignored
+	 */
+	function __construct($silent=false)
 	{
 		global $mybb;
 
@@ -53,9 +56,10 @@ class apcCacheHandler implements CacheHandlerInterface
 	 * Connect and initialize this handler.
 	 *
 	 * @param string $name
+	 * @param bool $hard_refresh ignored
 	 * @return boolean True if successful, false on failure
 	 */
-	function fetch($name)
+	function fetch($name, $hard_refresh=false)
 	{
 		if(apc_exists($this->unique_id."_".$name))
 		{

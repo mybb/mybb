@@ -115,7 +115,7 @@ class postParser
 
 		$message = $plugins->run_hooks("parse_message_start", $message);
 
-		// Get rid of carriage returns for they are the workings of the devil
+		// Get rid of cartridge returns for they are the workings of the devil
 		$message = str_replace("\r", "", $message);
 
 		// Filter bad words if requested.

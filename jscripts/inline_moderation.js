@@ -35,7 +35,7 @@ var inlineModeration = {
 					if(inlineIds.indexOf(id) != -1 || (inlineIds.indexOf('ALL') != -1 && removedIds.indexOf(id) == -1))
 					{
 						element.prop('checked', true);
-						var post = element.parents('.post');
+						var post = element.parents('.post_content');
 						var thread = element.parents('.inline_row');
 						var fieldset = element.parents('fieldset');
 						if(post.length)
@@ -56,7 +56,7 @@ var inlineModeration = {
 					else
 					{
 						element.prop('checked', false);
-						var post = element.parents('.post');
+						var post = element.parents('.post_content');
 						var thread = element.parents('.inline_row');
 						if(post.length)
 						{
@@ -131,7 +131,7 @@ var inlineModeration = {
 					}
 				}
 			}
-			var post = element.parents('.post');
+			var post = element.parents('.post_content');
 			var thread = element.parents('.inline_row');
 			if(post.length)
 			{
@@ -162,7 +162,7 @@ var inlineModeration = {
 					allSelectedRow.hide();
 				}
 			}
-			var post = element.parents('.post');
+			var post = element.parents('.post_content');
 			var thread = element.parents('.inline_row');
 			if(post.length)
 			{
@@ -239,7 +239,7 @@ var inlineModeration = {
 				var changed = (element.prop('checked') != master.prop('checked'));
 				element.prop('checked', master.prop('checked'));
 
-				var post = element.parents('.post');
+				var post = element.parents('.post_content');
 				var fieldset = element.parents('fieldset');
 				var thread = element.parents('.inline_row');
 				if(post.length)

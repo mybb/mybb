@@ -77,7 +77,7 @@ function task_dailycleanup($task)
 
 	if(!empty($user_update))
 	{
-		foreach($user_update as $uid => $data)
+		foreach($user_update as $uid)
 		{
 			update_pm_count($uid);
 		}

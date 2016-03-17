@@ -13,7 +13,7 @@ The feature branch contains the source code for MyBB 1.8. It contains the latest
 
 ### Contribute
 
-Please see: http://community.mybb.com/announcement-25.html for information on how to contribute to either MyBB 1.8 or MyBB 2.0.
+Please see: http://community.mybb.com/announcement-25.html for information on how to contribute to either MyBB 1.6 or MyBB 1.8.
 
 ### Community and Support
 Visit the [MyBB Community Forums](http://community.mybb.com) or [Documentation](http://docs.mybb.com) for support.
