@@ -165,7 +165,7 @@ function send_report($report, $report_type='post')
 		case "pgsql":
 		case "sqlite":
 			$query = $db->query("
-				SELECT u.username, u.email, u.receivepms, u.uid
+				SELECT DISTINCT u.username, u.email, u.receivepms, u.uid
 				FROM {$db->table_prefix}users u
 				{$modsjoin}
 				LEFT JOIN {$db->table_prefix}usergroups g ON (',' || u.additionalgroups || ',' LIKE '%,' || g.gid || ',%' OR g.gid = u.usergroup)
@@ -174,7 +174,7 @@ function send_report($report, $report_type='post')
 			break;
 		default:
 			$query = $db->query("
-				SELECT u.username, u.email, u.receivepms, u.uid
+				SELECT DISTINCT u.username, u.email, u.receivepms, u.uid
 				FROM {$db->table_prefix}users u
 				{$modsjoin}
 				LEFT JOIN {$db->table_prefix}usergroups g ON (CONCAT(',', u.additionalgroups, ',') LIKE CONCAT('%,', g.gid, ',%') OR g.gid = u.usergroup)
