@@ -180,7 +180,7 @@ function send_report($report, $report_type='post')
 				LEFT JOIN {$db->table_prefix}usergroups g ON (CONCAT(',', u.additionalgroups, ',') LIKE CONCAT('%,', g.gid, ',%') OR g.gid = u.usergroup)
 				WHERE {$modswhere}g.cancp = 1 OR g.issupermod = 1
 			");
-		}
+	}
 
 	$lang_string_subject = "emailsubject_report{$report_type}";
 	$lang_string_message = "email_report{$report_type}";
