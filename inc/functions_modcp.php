@@ -145,42 +145,42 @@ function send_report($report, $report_type='post')
 {
 	global $db, $lang, $forum, $mybb, $post, $thread, $reputation, $user;
 
-	$nummods = false;
+	$modsjoin = $modswhere = '';
 	if(!empty($forum['parentlist']))
 	{
-		$query = $db->query("
-			SELECT DISTINCT u.username, u.email, u.receivepms, u.uid
-			FROM ".TABLE_PREFIX."moderators m
-			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=m.id)
-			WHERE m.fid IN (".$forum['parentlist'].") AND m.isgroup = '0'
-		");
+		$modswhere = "m.fid IN ({$forum['parentlist']}) OR ";
 
-		$nummods = $db->num_rows($query);
-	}
-
-	if(!$nummods)
-	{
-		unset($query);
-		switch($db->type)
+		if($db->type == 'pgsql' || $db->type == 'sqlite')
 		{
-			case "pgsql":
-			case "sqlite":
-				$query = $db->query("
-					SELECT u.username, u.email, u.receivepms, u.uid
-					FROM ".TABLE_PREFIX."users u
-					LEFT JOIN ".TABLE_PREFIX."usergroups g ON (((','|| u.additionalgroups|| ',' LIKE '%,'|| g.gid|| ',%') OR u.usergroup = g.gid))
-					WHERE (g.cancp=1 OR g.issupermod=1)
-				");
-				break;
-			default:
-				$query = $db->query("
-					SELECT u.username, u.email, u.receivepms, u.uid
-					FROM ".TABLE_PREFIX."users u
-					LEFT JOIN ".TABLE_PREFIX."usergroups g ON (((CONCAT(',', u.additionalgroups, ',') LIKE CONCAT('%,', g.gid, ',%')) OR u.usergroup = g.gid))
-					WHERE (g.cancp=1 OR g.issupermod=1)
-				");
+			$modsjoin = "LEFT JOIN {$db->table_prefix}moderators m ON (m.id = u.uid AND m.isgroup = 0) OR ((m.id = u.usergroup OR ',' || u.additionalgroups || ',' LIKE '%,' || m.id || ',%') AND m.isgroup = 1)";
+		}
+		else
+		{
+			$modsjoin = "LEFT JOIN {$db->table_prefix}moderators m ON (m.id = u.uid AND m.isgroup = 0) OR ((m.id = u.usergroup OR CONCAT(',', u.additionalgroups, ',') LIKE CONCAT('%,', m.id, ',%')) AND m.isgroup = 1)";
 		}
 	}
+
+	switch($db->type)
+	{
+		case "pgsql":
+		case "sqlite":
+			$query = $db->query("
+				SELECT u.username, u.email, u.receivepms, u.uid
+				FROM {$db->table_prefix}users u
+				{$modsjoin}
+				LEFT JOIN {$db->table_prefix}usergroups g ON (',' || u.additionalgroups || ',' LIKE '%,' || g.gid || ',%' OR g.gid = u.usergroup)
+				WHERE {$modswhere}g.cancp = 1 OR g.issupermod = 1
+			");
+			break;
+		default:
+			$query = $db->query("
+				SELECT u.username, u.email, u.receivepms, u.uid
+				FROM {$db->table_prefix}users u
+				{$modsjoin}
+				LEFT JOIN {$db->table_prefix}usergroups g ON (CONCAT(',', u.additionalgroups, ',') LIKE CONCAT('%,', g.gid, ',%') OR g.gid = u.usergroup)
+				WHERE {$modswhere}g.cancp = 1 OR g.issupermod = 1
+			");
+		}
 
 	$lang_string_subject = "emailsubject_report{$report_type}";
 	$lang_string_message = "email_report{$report_type}";
