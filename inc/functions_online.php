@@ -229,6 +229,8 @@ function fetch_wol_activity($location, $nopermission=false)
 			if(!isset($parameters['action']))
 			{
 				$parameters['action'] = 0;
+				$user_activity['activity'] = "modcp";
+				break;
 			}
 
 			$accepted_parameters = array("modlogs", "announcements", "finduser", "warninglogs", "ipsearch");
