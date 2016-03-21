@@ -768,26 +768,6 @@ EOF;
 	}
 
 	/**
-	 * Switch between two different alternating background colours.
-	 *
-	 * @return string
-	 */
-	function get_alt_bg()
-	{
-		static $alt_bg;
-		if($alt_bg == "alt1")
-		{
-			$alt_bg = "alt2";
-			return "alt1";
-		}
-		else
-		{
-			$alt_bg = "alt1";
-			return $alt_bg;
-		}
-	}
-
-	/**
 	 * Output a Javascript based tab control on to the page.
 	 *
 	 * @param array $tabs Array of tabs in name => title format. Name should correspond to the name of a DIV containing the tab content.

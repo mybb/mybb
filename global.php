@@ -363,7 +363,7 @@ foreach($stylesheet_scripts as $stylesheet_script)
 }
 unset($actions);
 
-if(!empty($theme_stylesheets))
+if(!empty($theme_stylesheets) && is_array($theme['disporder']))
 {
 	foreach($theme['disporder'] as $style_name => $order)
 	{
@@ -450,10 +450,10 @@ else
 }
 
 $templatelist .= "headerinclude,header,footer,gobutton,htmldoctype,header_welcomeblock_member,header_welcomeblock_guest,header_welcomeblock_member_admin,global_pm_alert,global_unreadreports,footer_languageselect_option,footer_contactus";
-$templatelist .= ",global_pending_joinrequests,global_awaiting_activation,nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active,footer_languageselect,footer_themeselect,header_welcomeblock_member_moderator,redirect,header_menu_calendar,error";
+$templatelist .= ",global_pending_joinrequests,global_awaiting_activation,nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active,footer_languageselect,footer_themeselect,header_welcomeblock_member_moderator,redirect,header_menu_calendar,error,nav_dropdown";
 $templatelist .= ",global_boardclosed_warning,global_bannedwarning,error_inline,error_nopermission_loggedin,error_nopermission,debug_summary,header_quicksearch,header_menu_search,header_menu_portal,header_menu_memberlist,global_boardclosed_reason";
-$templatelist .= ",video_dailymotion_embed,video_facebook_embed,video_liveleak_embed,video_metacafe_embed,video_myspacetv_embed,video_veoh_embed,video_vimeo_embed,video_yahoo_embed,video_youtube_embed,global_dst_detection,mycode_quote_post";
-$templatelist .= ",smilieinsert_row,smilieinsert_row_empty,smilieinsert,smilieinsert_getmore,smilieinsert_smilie,smilie,global_board_offline_modal,footer_themeselector,task_image,usercp_themeselector_option,nav_dropdown,mycode_code,mycode_php";
+$templatelist .= ",video_dailymotion_embed,video_facebook_embed,video_liveleak_embed,video_metacafe_embed,video_myspacetv_embed,video_veoh_embed,video_vimeo_embed,video_yahoo_embed,video_youtube_embed,global_dst_detection,global_no_permission_modal";
+$templatelist .= ",smilieinsert_row,smilieinsert_row_empty,smilieinsert,smilieinsert_getmore,smilieinsert_smilie,smilie,global_board_offline_modal,footer_themeselector,task_image,usercp_themeselector_option,mycode_code,mycode_php,mycode_quote_post";
 $templates->cache($db->escape_string($templatelist));
 
 // Set the current date and time now
@@ -1012,6 +1012,8 @@ if(!$mybb->user['uid'] && $mybb->settings['usereferrals'] == 1 && (isset($mybb->
 	}
 }
 
+$output = '';
+$notallowed = false;
 if($mybb->usergroup['canview'] != 1)
 {
 	// Check pages allowable even when not allowed to view board
@@ -1022,19 +1024,33 @@ if($mybb->usergroup['canview'] != 1)
 			$allowable_actions = explode(',', ALLOWABLE_PAGE);
 			if(!in_array($mybb->get_input('action'), $allowable_actions))
 			{
-				error_no_permission();
+				$notallowed = true;
 			}
 
 			unset($allowable_actions);
 		}
 		else if(ALLOWABLE_PAGE !== 1)
 		{
-			error_no_permission();
+			$notallowed = true;
 		}
 	}
 	else
 	{
-		error_no_permission();
+		$notallowed = true;
+	}
+
+	if($notallowed == true)
+	{
+		if(!$mybb->get_input('modal'))
+		{
+			error_no_permission();
+		}
+		else
+		{
+			eval('$output = "'.$templates->get('global_no_permission_modal', 1, 0).'";');
+			echo($output);
+			exit;
+		}
 	}
 }
 

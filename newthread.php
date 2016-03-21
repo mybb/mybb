@@ -14,10 +14,10 @@ define('THIS_SCRIPT', 'newthread.php');
 $templatelist = "newthread,previewpost,loginbox,changeuserbox,newthread_postpoll,posticons,codebuttons,postbit,post_attachments_attachment_unapproved,newthread_disablesmilies_hidden,postbit_icon";
 $templatelist .= ",newthread_disablesmilies,post_attachments_new,post_attachments,post_savedraftbutton,post_subscription_method,post_attachments_attachment_remove,postbit_warninglevel_formatted";
 $templatelist .= ",forumdisplay_rules,forumdisplay_rules_link,post_attachments_attachment_postinsert,post_attachments_attachment,newthread_options_signature,post_prefixselect_prefix,post_prefixselect_single";
-$templatelist .= ",member_register_regimage,member_register_regimage_recaptcha,member_register_regimage_ayah,post_captcha_hidden,post_captcha,post_captcha_recaptcha,post_captcha_nocaptcha,post_captcha_ayah";
-$templatelist .= ",postbit_avatar,postbit_find,postbit_pm,postbit_rep_button,postbit_www,postbit_email,postbit_reputation,postbit_warn,postbit_warninglevel,postbit_author_user,postbit_author_guest,postbit_gotopost";
+$templatelist .= ",member_register_regimage,member_register_regimage_recaptcha,post_captcha_hidden,post_captcha,post_captcha_recaptcha,post_captcha_nocaptcha,postbit_gotopost,posticons_icon";
+$templatelist .= ",postbit_avatar,postbit_find,postbit_pm,postbit_rep_button,postbit_www,postbit_email,postbit_reputation,postbit_warn,postbit_warninglevel,postbit_author_user,postbit_author_guest";
 $templatelist .= ",postbit_signature,postbit_classic,postbit_attachments_thumbnails_thumbnail,postbit_attachments_images_image,postbit_attachments_attachment,postbit_attachments_attachment_unapproved";
-$templatelist .= ",postbit_attachments_thumbnails,postbit_attachments_images,postbit_attachments,postbit_reputation_formatted_link,post_attachments_update,postbit_offline,newreply_modoptions,posticons_icon";
+$templatelist .= ",postbit_attachments_thumbnails,postbit_attachments_images,postbit_attachments,postbit_reputation_formatted_link,post_attachments_update,postbit_offline,newreply_modoptions";
 $templatelist .= ",newthread_draftinput,global_moderation_notice,postbit_online,postbit_away,attachment_icon,postbit_userstar,newthread_multiquote_external,postbit_groupimage,post_attachments_add";
 
 require_once "./global.php";
@@ -1038,10 +1038,6 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			{
 				$post_captcha->build_recaptcha();
 			}
-			elseif($post_captcha->type == 3)
-			{
-				$post_captcha->build_ayah();
-			}
 
 			if($post_captcha->html)
 			{
@@ -1051,15 +1047,6 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		else if($correct && ($post_captcha->type == 2 || $post_captcha->type == 4))
 		{
 			$post_captcha->build_recaptcha();
-
-			if($post_captcha->html)
-			{
-				$captcha = $post_captcha->html;
-			}
-		}
-		else if($correct && $post_captcha->type == 3)
-		{
-			$post_captcha->build_ayah();
 
 			if($post_captcha->html)
 			{

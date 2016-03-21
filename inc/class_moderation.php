@@ -1223,12 +1223,12 @@ class Moderation
 							'pid' => $pid,
 							'uid' => $attachment['uid'],
 							'filename' => $db->escape_string($attachment['filename']),
-							'filetype' => $attachment['filetype'],
+							'filetype' => $db->escape_string($attachment['filetype']),
 							'filesize' => $attachment['filesize'],
-							'attachname' => $attachment['attachname'],
+							'attachname' => $db->escape_string($attachment['attachname']),
 							'downloads' => $attachment['downloads'],
 							'visible' => $attachment['visible'],
-							'thumbnail' => $attachment['thumbnail']
+							'thumbnail' => $db->escape_string($attachment['thumbnail'])
 						);
 						$new_aid = $db->insert_query("attachments", $attachment_array);
 

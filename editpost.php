@@ -845,7 +845,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 			$mybb->input['threadprefix'] = $thread['prefix'];
 		}
 
-		$prefixselect = build_prefix_select($forum['fid'], $mybb->get_input('threadprefix', MyBB::INPUT_INT));
+		$prefixselect = build_prefix_select($forum['fid'], $mybb->get_input('threadprefix', MyBB::INPUT_INT), 0, $thread['prefix']);
 	}
 	else
 	{

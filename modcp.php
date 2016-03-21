@@ -2209,6 +2209,7 @@ if($mybb->input['action'] == "modqueue")
 		{
 			$altbg = alt_trow();
 			$post['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($post['threadsubject']));
+			$post['subject'] = htmlspecialchars_uni($parser->parse_badwords($post['subject']));
 			$post['threadlink'] = get_thread_link($post['tid']);
 			$post['postlink'] = get_post_link($post['pid'], $post['tid']);
 			$forum_link = get_forum_link($post['fid']);
@@ -3018,6 +3019,7 @@ if($mybb->input['action'] == "editprofile")
 	$lang->edit_profile = $lang->sprintf($lang->edit_profile, $user['username']);
 	$profile_link = build_profile_link(format_name($user['username'], $user['usergroup'], $user['displaygroup']), $user['uid']);
 
+	$user['signature'] = htmlspecialchars_uni($user['signature']);
 	$codebuttons = build_mycode_inserter("signature");
 
 	// Do we mark the suspend signature box?
