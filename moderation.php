@@ -448,16 +448,9 @@ switch($mybb->input['action'])
 			'approveunapprovethread' => $lang->approve_unapprove_thread
 		);
 
-		switch($db->type)
-		{
-			case "pgsql":
-			case "sqlite":
-				$query = $db->simple_select("modtools", 'tid, name', "(','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%' OR forums='') AND type = 't'");
-				break;
-			default:
-				$query = $db->simple_select("modtools", 'tid, name', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='') AND type = 't'");
-		}
-		while($tool = $db->fetch_array($query))
+		$forum_stats = $cache->read("forumsdisplay");
+
+		if(is_moderator($fid, 'canusecustomtools') && (!empty($forum_stats[-1]['modtools']) || !empty($forum_stats[$fid]['modtools'])))
 		{
 			$actions['modtool_'.$tool['tid']] = $tool['name'];
 		}

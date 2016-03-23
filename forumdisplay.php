@@ -1158,12 +1158,12 @@ if($foruminfo['type'] != "c")
 
 	// Populate Forumsort
 	$forumsort = '';
-	
+
 	if($threadcount > 0)
 	{
 		eval("\$forumsort = \"".$templates->get("forumdisplay_forumsort")."\";");
 	}
-	
+
 	$plugins->run_hooks("forumdisplay_threadlist");
 }
 

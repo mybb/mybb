@@ -617,19 +617,39 @@ if($mybb->input['action'] == "results")
 			$lang->select_all = $lang->sprintf($lang->select_all, (int)$results['threadcount']);
 
 			$results['customthreadtools'] = [];
-			switch($db->type)
-			{
-				case "pgsql":
-				case "sqlite":
-					$query = $db->simple_select("modtools", "tid, name", "type='t' AND (','||forums||',' LIKE '%,-1,%' OR forums='')");
-					break;
-				default:
-					$query = $db->simple_select("modtools", "tid, name", "type='t' AND (CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='')");
-			}
+			$forum_stats = $cache->read("forumsdisplay");
 
-			while($tool = $db->fetch_array($query))
+			if(is_moderator(0, 'canusecustomtools') && !empty($forum_stats[-1]['modtools']))
 			{
-				$results['customthreadtools'][] = $tool;
+				$gids = explode(',', $mybb->user['additionalgroups']);
+				$gids[] = $mybb->user['usergroup'];
+				$gids = array_filter(array_unique($gids));
+				$gidswhere = '';
+
+				switch($db->type)
+				{
+					case "pgsql":
+					case "sqlite":
+						foreach($gids as $gid)
+						{
+							$gid = (int)$gid;
+							$gidswhere .= " OR ',' || groups || ',' LIKE '%,{$gid},%'";
+						}
+						break;
+					default:
+						foreach($gids as $gid)
+						{
+							$gid = (int)$gid;
+							$gidswhere .= " OR CONCAT(',', groups, ',') LIKE '%,{$gid},%'";
+						}
+				}
+
+				$query = $db->simple_select("modtools", "tid, name", "type = 't' AND (forums = '-1' OR forums = '') AND (groups = '' OR groups = '-1'{$gidswhere})");
+
+				while($tool = $db->fetch_array($query))
+				{
+					$results['customthreadtools'][] = $tool;
+				}
 			}
 
 			// Build inline moderation dropdown
@@ -974,24 +994,44 @@ if($mybb->input['action'] == "results")
 			$lang->all_selected = $lang->sprintf($lang->all_selected, (int)$results['postcount']);
 
 			$results['customposttools'] = [];
-			switch($db->type)
-			{
-				case "pgsql":
-				case "sqlite":
-					$query = $db->simple_select("modtools", "tid, name, type", "type='p' AND (','||forums||',' LIKE '%,-1,%' OR forums='')");
-					break;
-				default:
-					$query = $db->simple_select("modtools", "tid, name, type", "type='p' AND (CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='')");
-			}
+			$results['show_custom_tools'] = false;
+			$forum_stats = $cache->read("forumsdisplay");
 
-			while($tool = $db->fetch_array($query))
+			if(is_moderator(0, 'canusecustomtools') && !empty($forum_stats[-1]['modtools']))
 			{
-				$results['customposttools'][] = $tool;
+				$gids = explode(',', $mybb->user['additionalgroups']);
+				$gids[] = $mybb->user['usergroup'];
+				$gids = array_filter(array_unique($gids));
+				$gidswhere = '';
+
+				switch($db->type)
+				{
+					case "pgsql":
+					case "sqlite":
+						foreach($gids as $gid)
+						{
+							$gid = (int)$gid;
+							$gidswhere .= " OR ',' || groups || ',' LIKE '%,{$gid},%'";
+						}
+						break;
+					default:
+						foreach($gids as $gid)
+						{
+							$gid = (int)$gid;
+							$gidswhere .= " OR CONCAT(',', groups, ',') LIKE '%,{$gid},%'";
+						}
+				}
+
+				$query = $db->simple_select("modtools", "tid, name", "type = 'p' AND (forums = '-1' OR forums = '') AND (groups = '' OR groups = '-1'{$gidswhere})");
+
+				while($tool = $db->fetch_array($query))
+				{
+					$results['customposttools'][] = $tool;
+				}
 			}
 
 			// Build inline moderation dropdown
-			$results['show_custom_tools'] = false;
-			if(!empty($results['customposttools']))
+			if($results['customposttools'])
 			{
 				$results['show_custom_tools'] = true;
 			}
