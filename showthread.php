@@ -1213,6 +1213,7 @@ if($mybb->input['action'] == "thread")
 			$gids[] = $mybb->user['usergroup'];
 			$gids = array_filter(array_unique($gids));
 			$gidswhere = '';
+
 			switch($db->type)
 			{
 				case "pgsql":
