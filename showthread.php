@@ -52,7 +52,7 @@ if(!empty($mybb->input['pid']) && !isset($mybb->input['tid']))
 			// post does not exist --> show corresponding error
 			error($lang->error_invalidpost);
 		}
-		
+
 		$mybb->input['tid'] = $post['tid'];
 	}
 }
@@ -849,25 +849,25 @@ if($mybb->input['action'] == "thread")
 
 		// Build the threaded post display tree.
 		$query = $db->query("
-            SELECT p.username, p.uid, p.pid, p.replyto, p.subject, p.dateline
-            FROM ".TABLE_PREFIX."posts p
-            WHERE p.tid='$tid'
-            $visible
-            ORDER BY p.dateline
-        ");
-        while($post = $db->fetch_array($query))
-        {
-            if(!$postsdone[$post['pid']])
-            {
-                if($post['pid'] == $mybb->input['pid'] || ($isfirst && !$mybb->input['pid']))
-                {
+			SELECT p.username, p.uid, p.pid, p.replyto, p.subject, p.dateline
+			FROM ".TABLE_PREFIX."posts p
+			WHERE p.tid='$tid'
+			$visible
+			ORDER BY p.dateline
+		");
+		while($post = $db->fetch_array($query))
+		{
+			if(!$postsdone[$post['pid']])
+			{
+				if($post['pid'] == $mybb->input['pid'] || ($isfirst && !$mybb->input['pid']))
+				{
 					$postcounter = count($postsdone);
-                    $isfirst = 0;
-                }
-                $tree[$post['replyto']][$post['pid']] = $post;
-                $postsdone[$post['pid']] = 1;
-            }
-        }
+					$isfirst = 0;
+				}
+				$tree[$post['replyto']][$post['pid']] = $post;
+				$postsdone[$post['pid']] = 1;
+			}
+		}
 
 		$threadedbits = buildtree();
 		$posts = build_postbit($showpost);
@@ -959,14 +959,14 @@ if($mybb->input['action'] == "thread")
 		$upper = $start+$perpage;
 
 		// Work out if we have terms to highlight
-        $highlight = "";
-        $threadmode = "";
-        if($mybb->seo_support == true)
-        {
-            if($mybb->get_input('highlight'))
-            {
-                $highlight = "?highlight=".urlencode($mybb->get_input('highlight'));
-            }
+		$highlight = "";
+		$threadmode = "";
+		if($mybb->seo_support == true)
+		{
+			if($mybb->get_input('highlight'))
+			{
+				$highlight = "?highlight=".urlencode($mybb->get_input('highlight'));
+			}
 
 			if($defaultmode != "linear")
 			{
@@ -979,9 +979,9 @@ if($mybb->input['action'] == "thread")
 	                $threadmode = "?mode=linear";
 	            }
 			}
-        }
-        else
-        {
+		}
+		else
+		{
 			if(!empty($mybb->input['highlight']))
 			{
 				if(is_array($mybb->input['highlight']))
@@ -997,13 +997,13 @@ if($mybb->input['action'] == "thread")
 				}
 			}
 
-            if($defaultmode != "linear")
-            {
-                $threadmode = "&amp;mode=linear";
-            }
-        }
+			if($defaultmode != "linear")
+			{
+				$threadmode = "&amp;mode=linear";
+			}
+		}
 
-        $multipage = multipage($postcount, $perpage, $page, str_replace("{tid}", $tid, THREAD_URL_PAGED.$highlight.$threadmode));
+		$multipage = multipage($postcount, $perpage, $page, str_replace("{tid}", $tid, THREAD_URL_PAGED.$highlight.$threadmode));
 
 		// Lets get the pids of the posts on this page.
 		$pids = "";
@@ -1218,7 +1218,7 @@ if($mybb->input['action'] == "thread")
 				$moderation_text = $lang->moderation_forum_posts;
 				eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
 			}
-			
+
 			if($mybb->user['moderateposts'] == 1)
 			{
 				$moderation_text = $lang->moderation_user_posts;
@@ -1256,6 +1256,8 @@ if($mybb->input['action'] == "thread")
 			$gids = explode(',', $mybb->user['additionalgroups']);
 			$gids[] = $mybb->user['usergroup'];
 			$gids = array_filter(array_unique($gids));
+			$gidswhere = '';
+
 			switch($db->type)
 			{
 				case "pgsql":
@@ -1263,17 +1265,17 @@ if($mybb->input['action'] == "thread")
 					foreach($gids as $gid)
 					{
 						$gid = (int)$gid;
-						$gidswhere .= " OR ','||groups||',' LIKE '%,{$gid},%'";
+						$gidswhere .= " OR ',' || groups || ',' LIKE '%,{$gid},%'";
 					}
-					$query = $db->simple_select("modtools", 'tid, name, type', "(','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%' OR forums='') AND (groups='' OR ','||groups||',' LIKE '%,-1,%'{$gidswhere})");
+					$query = $db->simple_select("modtools", 'tid, name, type', "(',' ||forums|| ',' LIKE '%,$fid,%' OR forums = '-1' OR forums = '') AND (groups = '' OR groups = '-1'{$gidswhere})");
 					break;
 				default:
 					foreach($gids as $gid)
 					{
 						$gid = (int)$gid;
-						$gidswhere .= " OR CONCAT(',',groups,',') LIKE '%,{$gid},%'";
+						$gidswhere .= " OR CONCAT(',', groups, ',') LIKE '%,{$gid},%'";
 					}
-					$query = $db->simple_select("modtools", 'tid, name, type', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='') AND (groups='' OR CONCAT(',',groups,',') LIKE '%,-1,%'{$gidswhere})");
+					$query = $db->simple_select("modtools", 'tid, name, type', "(CONCAT(',', forums, ',') LIKE '%,$fid,%' OR forums = '-1' OR forums = '') AND (groups = '' OR groups = '-1'{$gidswhere})");
 					break;
 			}
 
@@ -1509,7 +1511,7 @@ if($mybb->input['action'] == "thread")
 		{
 			$onlinesep = $lang->comma;
 		}
-		
+
 		$onlinesep2 = '';
 		if($invisonline != '' && $guestcount || $onlinemembers && $guestcount)
 		{

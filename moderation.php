@@ -378,18 +378,39 @@ switch($mybb->input['action'])
 			'approveunapprovethread' => $lang->approve_unapprove_thread
 		);
 
-		switch($db->type)
+		$forum_stats = $cache->read("forumsdisplay");
+
+		if(is_moderator($fid, 'canusecustomtools') && (!empty($forum_stats[-1]['modtools']) || !empty($forum_stats[$fid]['modtools'])))
 		{
-			case "pgsql":
-			case "sqlite":
-				$query = $db->simple_select("modtools", 'tid, name', "(','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%' OR forums='') AND type = 't'");
-				break;
-			default:
-				$query = $db->simple_select("modtools", 'tid, name', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='') AND type = 't'");
-		}
-		while($tool = $db->fetch_array($query))
-		{
-			$actions['modtool_'.$tool['tid']] = htmlspecialchars_uni($tool['name']);
+			$gids = explode(',', $mybb->user['additionalgroups']);
+			$gids[] = $mybb->user['usergroup'];
+			$gids = array_filter(array_unique($gids));
+			$gidswhere = '';
+
+			switch($db->type)
+			{
+				case "pgsql":
+				case "sqlite":
+					foreach($gids as $gid)
+					{
+						$gid = (int)$gid;
+						$gidswhere .= " OR ',' || groups || ',' LIKE '%,{$gid},%'";
+					}
+					$query = $db->simple_select("modtools", 'tid, name', "(',' || forums || ',' LIKE '%,$fid,%' OR forums = '-1' OR forums = '') AND (groups = '' OR groups = '-1'{$gidswhere}) AND type = 't'");
+					break;
+				default:
+					foreach($gids as $gid)
+					{
+						$gid = (int)$gid;
+						$gidswhere .= " OR CONCAT(',', groups, ',') LIKE '%,{$gid},%'";
+					}
+					$query = $db->simple_select("modtools", 'tid, name', "(CONCAT(',', forums, ',') LIKE '%,$fid,%' OR forums = '-1' OR forums = '') AND (groups = '' OR groups = '-1'{$gidswhere}) AND type = 't'");
+			}
+
+			while($tool = $db->fetch_array($query))
+			{
+				$actions['modtool_'.$tool['tid']] = htmlspecialchars_uni($tool['name']);
+			}
 		}
 
 		$delayedmods = '';
@@ -564,7 +585,7 @@ switch($mybb->input['action'])
 				$datemonth[$month] = ' selected="selected"';
 			}
 		}
-		
+
 
 		eval('$datemonth = "'.$templates->get('moderation_delayedmoderation_date_month').'";');
 
@@ -2784,7 +2805,7 @@ switch($mybb->input['action'])
 				// First delete everything
 				$userhandler->delete_content($uid);
 				$userhandler->delete_posts($uid);
-				
+
 				// Next ban him (or update the banned reason, shouldn't happen)
 				$query = $db->simple_select("banned", "uid", "uid = '{$uid}'");
 				if($db->num_rows($query) > 0)
@@ -2871,7 +2892,7 @@ switch($mybb->input['action'])
 			}
 			else
 			{
-				$lang->purgespammer_purge_desc = $lang->sprintf($lang->purgespammer_purge_desc, $lang->purgespammer_delete);				
+				$lang->purgespammer_purge_desc = $lang->sprintf($lang->purgespammer_purge_desc, $lang->purgespammer_delete);
 			}
 			eval("\$purgespammer = \"".$templates->get('moderation_purgespammer')."\";");
 			output_page($purgespammer);
@@ -2937,7 +2958,7 @@ switch($mybb->input['action'])
 				}
 
 				$custommod->execute($mybb->get_input('action', MyBB::INPUT_INT), $tids);
- 				$lang->custom_tool = $lang->sprintf($lang->custom_tool, $tool['name']);
+				$lang->custom_tool = $lang->sprintf($lang->custom_tool, $tool['name']);
 				log_moderator_action($modlogdata, $lang->custom_tool);
 				if($mybb->get_input('inlinetype') == 'search')
 				{
@@ -2968,7 +2989,7 @@ switch($mybb->input['action'])
 				}
 
 				$ret = $custommod->execute($mybb->get_input('action', MyBB::INPUT_INT), $tid);
- 				$lang->custom_tool = $lang->sprintf($lang->custom_tool, $tool['name']);
+				$lang->custom_tool = $lang->sprintf($lang->custom_tool, $tool['name']);
 				log_moderator_action($modlogdata, $lang->custom_tool);
 				if($ret == 'forum')
 				{
@@ -3015,7 +3036,7 @@ switch($mybb->input['action'])
 				}
 
 				$ret = $custommod->execute($mybb->get_input('action', MyBB::INPUT_INT), $tids, $pids);
- 				$lang->custom_tool = $lang->sprintf($lang->custom_tool, $tool['name']);
+				$lang->custom_tool = $lang->sprintf($lang->custom_tool, $tool['name']);
 				log_moderator_action($modlogdata, $lang->custom_tool);
 				if($mybb->get_input('inlinetype') == 'search')
 				{
