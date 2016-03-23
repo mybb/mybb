@@ -1716,7 +1716,7 @@ function is_moderator($fid=0, $action="", $uid=0)
 			{
 				foreach($modcache as $modusers)
 				{
-					if(isset($modusers['users'][$uid]) && $modusers['users'][$uid]['mid'])
+					if(isset($modusers['users'][$uid]) && $modusers['users'][$uid]['mid'] && (!$action || !empty($modusers['users'][$uid][$action])))
 					{
 						return true;
 					}
@@ -1725,7 +1725,7 @@ function is_moderator($fid=0, $action="", $uid=0)
 
 					foreach($groups as $group)
 					{
-						if(trim($group) != '' && isset($modusers['usergroups'][$group]))
+						if(trim($group) != '' && isset($modusers['usergroups'][$group]) && (!$action || !empty($modusers['usergroups'][$group][$action])))
 						{
 							return true;
 						}
