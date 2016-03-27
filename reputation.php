@@ -104,53 +104,6 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 		$mybb->input['pid'] = 0;
 	}
 
-	// Check if this user has reached their "maximum reputations per day" quota
-	if($mybb->usergroup['maxreputationsday'] != 0 && ($mybb->input['action'] != "do_add" || ($mybb->input['action'] == "do_add" && empty($mybb->input['delete']))))
-	{
-		$timesearch = TIME_NOW - (60 * 60 * 24);
-		$query = $db->simple_select("reputation", "*", "adduid='".$mybb->user['uid']."' AND dateline>'$timesearch'");
-		$numtoday = $db->num_rows($query);
-
-		// Reached the quota - error.
-		if($numtoday >= $mybb->usergroup['maxreputationsday'])
-		{
-			$message = $lang->add_maxperday;
-			if($mybb->input['nomodal'])
-			{
-				eval("\$error = \"".$templates->get("reputation_add_error_nomodal", 1, 0)."\";");
-			}
-			else
-			{
-				eval("\$error = \"".$templates->get("reputation_add_error", 1, 0)."\";");
-			}
-			echo $error;
-			exit;
-		}
-	}
-
-	// Is the user giving too much reputation to another?
-	if($mybb->usergroup['maxreputationsperuser'] != 0 && ($mybb->input['action'] != "do_add" || ($mybb->input['action'] == "do_add" && empty($mybb->input['delete']))))
-	{
-		$timesearch = TIME_NOW - (60 * 60 * 24);
-		$query = $db->simple_select("reputation", "*", "uid='".$uid."' AND adduid='".$mybb->user['uid']."' AND dateline>'$timesearch'");
-		$numtoday = $db->num_rows($query);
-
-		if($numtoday >= $mybb->usergroup['maxreputationsperuser'])
-		{
-			$message = $lang->add_maxperuser;
-			if($mybb->input['nomodal'])
-			{
-				eval("\$error = \"".$templates->get("reputation_add_error_nomodal", 1, 0)."\";");
-			}
-			else
-			{
-				eval("\$error = \"".$templates->get("reputation_add_error", 1, 0)."\";");
-			}
-			echo $error;
-			exit;
-		}
-	}
-
 	if($mybb->get_input('pid', MyBB::INPUT_INT))
 	{
 		// Make sure that this post exists, and that the author of the post we're giving this reputation for corresponds with the user the rep is being given to.
@@ -160,54 +113,29 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 			$thread = get_thread($post['tid']);
 			$forum = get_forum($thread['fid']);
 			$forumpermissions = forum_permissions($forum['fid']);
+
 			// Post doesn't belong to that user or isn't visible
 			if($uid != $post['uid'] || $post['visible'] != 1)
 			{
 				$mybb->input['pid'] = 0;
 			}
+
 			// Thread isn't visible
 			elseif($thread['visible'] != 1)
 			{
 				$mybb->input['pid'] = 0;
 			}
+
 			// Current user can't see the forum
 			elseif($forumpermissions['canview'] == 0 || $forumpermissions['canpostreplys'] == 0 || $mybb->user['suspendposting'] == 1)
 			{
 				$mybb->input['pid'] = 0;
 			}
+
 			// Current user can't see that thread
 			elseif(isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] == 1 && $thread['uid'] != $mybb->user['uid'])
 			{
 				$mybb->input['pid'] = 0;
-			}
-			else
-			// We have the correct post, but has the user given too much reputation to another in the same thread?
-			if($mybb->usergroup['maxreputationsperthread'] != 0 && ($mybb->input['action'] != "do_add" || ($mybb->input['action'] == "do_add" && empty($mybb->input['delete']))))
-			{
-				$timesearch = TIME_NOW - (60 * 60 * 24);
-				$query = $db->query("
-					SELECT COUNT(p.pid) AS posts
-					FROM ".TABLE_PREFIX."reputation r
-					LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid = r.pid)
-					WHERE r.uid = '{$uid}' AND r.adduid = '{$mybb->user['uid']}' AND p.tid = '{$post['tid']}' AND r.dateline > '{$timesearch}'
-				");
-
-				$numtoday = $db->fetch_field($query, 'posts');
-
-				if($numtoday >= $mybb->usergroup['maxreputationsperthread'])
-				{
-					$message = $lang->add_maxperthread;
-					if($mybb->input['nomodal'])
-					{
-						eval("\$error = \"".$templates->get("reputation_add_error_nomodal", 1, 0)."\";");
-					}
-					else
-					{
-						eval("\$error = \"".$templates->get("reputation_add_error", 1, 0)."\";");
-					}
-					echo $error;
-					exit;
-				}
 			}
 		}
 		else
@@ -233,6 +161,71 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 		$existing_reputation = $db->fetch_array($query);
 		$rid = $existing_reputation['rid'];
 		$was_post = true;
+	}
+
+	if($rid == 0 && ($mybb->input['action'] != "do_add" || ($mybb->input['action'] == "do_add" && empty($mybb->input['delete']))))
+	{
+		$message = '';
+
+		// Check if this user has reached their "maximum reputations per day" quota
+		if($mybb->usergroup['maxreputationsday'] != 0)
+		{
+			$timesearch = TIME_NOW - (60 * 60 * 24);
+			$query = $db->simple_select("reputation", "*", "adduid='{$mybb->user['uid']}' AND dateline>'$timesearch'");
+			$numtoday = $db->num_rows($query);
+
+			// Reached the quota - error.
+			if($numtoday >= $mybb->usergroup['maxreputationsday'])
+			{
+				$message = $lang->add_maxperday;
+			}
+		}
+
+		// Is the user giving too much reputation to another?
+		if(!$message && $mybb->usergroup['maxreputationsperuser'] != 0)
+		{
+			$timesearch = TIME_NOW - (60 * 60 * 24);
+			$query = $db->simple_select("reputation", "*", "uid='{$uid}' AND adduid='{$mybb->user['uid']}' AND dateline>'$timesearch'");
+			$numtoday = $db->num_rows($query);
+
+			if($numtoday >= $mybb->usergroup['maxreputationsperuser'])
+			{
+				$message = $lang->add_maxperuser;
+			}
+		}
+
+		// We have the correct post, but has the user given too much reputation to another in the same thread?
+		if(!$message && $was_post && $mybb->usergroup['maxreputationsperthread'] != 0)
+		{
+			$timesearch = TIME_NOW - (60 * 60 * 24);
+			$query = $db->query("
+				SELECT COUNT(p.pid) AS posts
+				FROM ".TABLE_PREFIX."reputation r
+				LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid = r.pid)
+				WHERE r.uid = '{$uid}' AND r.adduid = '{$mybb->user['uid']}' AND p.tid = '{$post['tid']}' AND r.dateline > '{$timesearch}'
+			");
+
+			$numtoday = $db->fetch_field($query, 'posts');
+
+			if($numtoday >= $mybb->usergroup['maxreputationsperthread'])
+			{
+				$message = $lang->add_maxperthread;
+			}
+		}
+
+		if($message)
+		{
+			if($mybb->input['nomodal'])
+			{
+				eval('$error = "'.$templates->get("reputation_add_error_nomodal", 1, 0).'";');
+			}
+			else
+			{
+				eval('$error = "'.$templates->get("reputation_add_error", 1, 0).'";');
+			}
+			echo $error;
+			exit;
+		}
 	}
 }
 
