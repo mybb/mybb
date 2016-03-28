@@ -500,6 +500,7 @@ none=Hide Errors and Warnings
 <option value=\"+6.5\" ".($setting['value'] == 6.5?"selected=\"selected\"":"").">GMT +6:30 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 6.5).")</option>
 <option value=\"+7\" ".($setting['value'] == 7?"selected=\"selected\"":"").">GMT +7:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 7).")</option>
 <option value=\"+8\" ".($setting['value'] == 8?"selected=\"selected\"":"").">GMT +8:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 8).")</option>
+<option value=\"+8.5\" ".($setting['value'] == 8.5?"selected=\"selected\"":"").">GMT +8:30 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 8.5).")</option>
 <option value=\"+9\" ".($setting['value'] == 9?"selected=\"selected\"":"").">GMT +9:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 9).")</option>
 <option value=\"+9.5\" ".($setting['value'] == 9.5?"selected=\"selected\"":"").">GMT +9:30 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 9.5).")</option>
 <option value=\"+10\" ".($setting['value'] == 10?"selected=\"selected\"":"").">GMT +10:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 10).")</option>
