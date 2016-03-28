@@ -6677,6 +6677,7 @@ function get_supported_timezones()
 		"7" => $lang->timezone_gmt_700,
 		"8" => $lang->timezone_gmt_800,
 		"8.5" => $lang->timezone_gmt_850,
+		"8.75" => $lang->timezone_gmt_875,
 		"9" => $lang->timezone_gmt_900,
 		"9.5" => $lang->timezone_gmt_950,
 		"10" => $lang->timezone_gmt_1000,
