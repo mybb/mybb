@@ -627,7 +627,7 @@ if($mybb->usergroup['cancp'] == 1 || ($mybb->user['ismoderator'] && $mybb->userg
 		$can_access_moderationqueue = false;
 	}
 
-	if($can_access_moderationqueue || ($mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanagereportedcontent'] == 1) && $mybb->settings['reportmethod'] == "db")
+	if($mybb->settings['reportmethod'] == "db" && $can_access_moderationqueue || ($mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanagereportedcontent'] == 1))
 	{
 		// Read the reported content cache
 		$reported = $cache->read('reportedcontent');
