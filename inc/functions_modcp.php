@@ -283,7 +283,7 @@ function add_report($report, $type = 'post')
 
 	if($mybb->settings['reportmethod'] == "email" || $mybb->settings['reportmethod'] == "pms")
 	{
-		send_report($report, $type);
+		return send_report($report, $type);
 	}
 
 	$rid = $db->insert_query("reportedcontent", $insert_array);
