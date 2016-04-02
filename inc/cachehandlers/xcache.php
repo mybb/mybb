@@ -102,7 +102,7 @@ class xcacheCacheHandler implements CacheHandlerInterface
 	 *
 	 * @return string
 	 */
-	function size_of($name)
+	function size_of($name='')
 	{
 		global $lang;
 

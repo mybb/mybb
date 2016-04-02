@@ -705,14 +705,7 @@ class PostDataHandler extends DataHandler
 						}
 					}
 
-					if($required['groups'] != "-1")
-					{
-						if(!is_member($required['groups'], array('usergroup' => $user['usergroup'], 'additionalgroups' => $user['additionalgroups'])))
-						{
-							$num_prefixes = true;
-						}
-					}
-					else
+					if(is_member($required['groups'], array('usergroup' => $user['usergroup'], 'additionalgroups' => $user['additionalgroups'])))
 					{
 						$num_prefixes = true;
 					}

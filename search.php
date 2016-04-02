@@ -247,7 +247,7 @@ if($mybb->input['action'] == "results")
 			// Normal moderators
 			$unapprove_forums = array();
 			$deleted_forums = array();
-			$unapproved_where = 't.visible = 1';
+			$unapproved_where = '(t.visible = 1';
 			while($moderator = $db->fetch_array($query))
 			{
 				if($moderator['canviewunapprove'] == 1)
@@ -269,6 +269,7 @@ if($mybb->input['action'] == "results")
 			{
 				$unapproved_where .= " OR (t.visible = -1 AND t.fid IN(".implode(',', $deleted_forums)."))";
 			}
+			$unapproved_where .= ')';
 		}
 		else
 		{
@@ -722,7 +723,7 @@ if($mybb->input['action'] == "results")
 			// Normal moderators
 			$unapprove_forums = array();
 			$deleted_forums = array();
-			$unapproved_where = 'visible = 1';
+			$unapproved_where = '(visible = 1';
 
 			while($moderator = $db->fetch_array($query))
 			{
@@ -745,6 +746,7 @@ if($mybb->input['action'] == "results")
 			{
 				$unapproved_where .= " OR (visible = -1 AND fid IN(".implode(',', $deleted_forums)."))";
 			}
+			$unapproved_where .= ')';
 		}
 		else
 		{
@@ -809,7 +811,7 @@ if($mybb->input['action'] == "results")
 			$query = $db->simple_select("threads", "tid", "tid IN(".$db->escape_string(implode(',', $pids)).") AND ({$unapproved_where}{$permsql} OR closed LIKE 'moved|%')");
 			while($thread = $db->fetch_array($query))
 			{
-				if(array_key_exists($thread['tid'], $tids) != false)
+				if(array_key_exists($thread['tid'], $tids) != true)
 				{
 					$temp_pids = $tids[$thread['tid']];
 					foreach($temp_pids as $pid)

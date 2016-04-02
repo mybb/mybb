@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<theme name="MyBB Master Style" version="1805">
+<theme name="MyBB Master Style" version="1807">
 	<properties>
 		<templateset><![CDATA[1]]></templateset>
 		<imgdir><![CDATA[images]]></imgdir>
@@ -4057,6 +4057,20 @@ $(".forumjump").change(function() {
 </div>
 <br />]]></template>
 		<template name="global_boardclosed_warning" version="1600"><![CDATA[<div class="red_alert"><strong>{$lang->bbclosed_warning}</strong></div>]]></template>
+		<template name="global_no_permission_modal" version="1808"><![CDATA[<div class="modal">
+	<div style="overflow-y: auto; max-height: 400px;">
+		<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<tr>
+			<td class="thead">
+				<strong>{$mybb->settings['bbname']}</strong>
+			</td>
+		</tr>
+		<tr>
+			<td class="trow1">{$lang->error_nopermission_user_ajax}</td>
+		</tr>
+		</table>
+	</div>
+</div>]]></template>
 		<template name="global_pending_joinrequests" version="1600"><![CDATA[<div class="red_alert"><a href="{$mybb->settings['bburl']}/usercp.php?action=usergroups">{$lang->pending_joinrequests}</a></div>]]></template>
 		<template name="global_pm_alert" version="1800"><![CDATA[<div class="pm_alert" id="pm_notice">
 	<div class="float_right"><a href="{$mybb->settings['bburl']}/private.php?action=dismiss_notice&amp;my_post_key={$mybb->post_code}" title="{$lang->dismiss_notice}" onclick="return MyBB.dismissPMNotice('{$mybb->settings['bburl']}/')"><img src="{$theme['imgdir']}/dismiss_notice.png" alt="{$lang->dismiss_notice}" title="{$lang->dismiss_notice}" /></a></div>
@@ -5342,15 +5356,6 @@ if(use_xmlhttprequest == "1")
 </tr>
 </table>
 </fieldset>]]></template>
-		<template name="member_register_regimage_ayah" version="1800"><![CDATA[<br />
-<fieldset class="trow2">
-  <legend><strong>{$lang->image_verification}</strong></legend>
-	<table cellspacing="0" cellpadding="{$theme['tablespace']}">
-	<tr>
-		<td>{$output}</td>
-	</tr>
-</table>
-</fieldset>]]></template>
 		<template name="member_register_regimage_recaptcha" version="1605"><![CDATA[<br />
 <script type="text/javascript">
 <!--
@@ -5454,7 +5459,7 @@ if(use_xmlhttprequest == "1")
 </table>
 </div>
 </div>]]></template>
-		<template name="memberlist" version="1807"><![CDATA[<html>
+		<template name="memberlist" version="1808"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->member_list}</title>
 {$headerinclude}
@@ -5464,7 +5469,7 @@ if(use_xmlhttprequest == "1")
 {$multipage}
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-<td class="thead" colspan="7">
+<td class="thead" colspan="{$colspan}">
 	<div class="float_right">
 		<a href="memberlist.php?username_match=begins&amp;username={$lang->a}" style="padding: 5px;">{$lang->a}</a>
 		<a href="memberlist.php?username_match=begins&amp;username={$lang->b}" style="padding: 5px;">{$lang->b}</a>
@@ -9303,16 +9308,6 @@ if(use_xmlhttprequest == "1")
 </table>
 </td>
 </tr>]]></template>
-		<template name="post_captcha_ayah" version="1800"><![CDATA[<tr id="captcha_trow">
-<td class="trow1" valign="top"><strong>{$lang->image_verification}</strong></td>
-<td class="trow1">
-	<table cellspacing="0" cellpadding="{$theme['tablespace']}">
-		<tr>
-            <td>{$output}</td>
-		</tr>
-	</table>
-</td>
-</tr>]]></template>
 		<template name="post_captcha_hidden" version="1605"><![CDATA[<input type="hidden" name="{$hash}" value="{$field['hash']}" />
 <input type="hidden" name="{$string}" value="{$field['string']}" />]]></template>
 		<template name="post_captcha_recaptcha" version="1605"><![CDATA[<tr id="captcha_trow">
@@ -11907,7 +11902,7 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
-		<template name="usercp_currentavatar" version="1800"><![CDATA[<td class="trow1" valign="top" align="center" width="1"><div class="usercp_container"><img src="{$useravatar['image']}" alt="{$mybb->user['username']}" title="{$mybb->user['username']}" {$useravatar['width_height']} /></div></td>]]></template>
+		<template name="usercp_currentavatar" version="1807"><![CDATA[<td class="trow1" valign="top" align="center" width="1"><div class="usercp_container"><img src="{$useravatar['image']}" alt="{$avatar_username}" title="{$avatar_username}" {$useravatar['width_height']} /></div></td>]]></template>
 		<template name="usercp_drafts" version="1804"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->drafts}</title>
