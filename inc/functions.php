@@ -3101,10 +3101,12 @@ function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
  *
  * @param string $bind The ID of the textarea to bind to. Defaults to "message".
  * @param bool $smilies Whether to include smilies. Defaults to true.
+ * @param bool $images Whether to include images. Defaults to true.
+ * @param bool $videos Whether to include videos. Defaults to true.
  *
  * @return string The MyCode inserter
  */
-function build_mycode_inserter($bind="message", $smilies = true)
+function build_mycode_inserter($bind="message", $smilies = true, $images = true, $videos = true)
 {
 	global $db, $mybb, $theme, $templates, $lang, $plugins, $smiliecache, $cache;
 
@@ -3205,14 +3207,14 @@ function build_mycode_inserter($bind="message", $smilies = true)
 		if(defined("IN_ADMINCP"))
 		{
 			global $page;
-			$codeinsert = $page->build_codebuttons_editor($bind, $editor_language, $smilies);
+			$codeinsert = $page->build_codebuttons_editor($bind, $editor_language, $smilies, $images, $videos);
 		}
 		else
 		{
 			// Smilies
 			$emoticon = "";
 			$emoticons_enabled = "false";
-			if($smilies)
+			if($smilies == true)
 			{
 				if($mybb->settings['smilieinserter'] && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
 				{
@@ -3277,7 +3279,7 @@ function build_mycode_inserter($bind="message", $smilies = true)
 				}
 			}
 
-			$basic1 = $basic2 = $align = $font = $size = $color = $removeformat = $email = $link = $list = $code = $sourcemode = "";
+			$basic1 = $basic2 = $align = $font = $size = $color = $removeformat = $image = $email = $link = $video = $list = $code = $sourcemode = "";
 
 			if($mybb->settings['allowbasicmycode'] == 1)
 			{
