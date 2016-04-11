@@ -54,7 +54,7 @@ $session = new session;
 $session->init();
 $mybb->session = &$session;
 
-$mybb->user['ismoderator'] = is_moderator('', '', $mybb->user['uid']);
+$mybb->user['ismoderator'] = is_moderator(0, '', $mybb->user['uid']);
 
 // Set our POST validation code here
 $mybb->post_code = generate_post_check();
