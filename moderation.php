@@ -81,16 +81,6 @@ if($pmid > 0)
 
 // Get some navigation if we need it
 $mybb->input['action'] = $mybb->get_input('action');
-switch($mybb->input['action'])
-{
-	case "reports":
-		add_breadcrumb($lang->reported_posts);
-		break;
-	case "allreports":
-		add_breadcrumb($lang->all_reported_posts);
-		break;
-
-}
 
 if(isset($thread))
 {
