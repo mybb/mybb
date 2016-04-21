@@ -123,7 +123,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 				$warningshandler->friendly_action .= $lang->redirect_warned_pmerror;
 			}
 		}
-	
+
 		$plugins->run_hooks("warnings_do_warn_end");
 
 		$lang->redirect_warned = $lang->sprintf($lang->redirect_warned, htmlspecialchars_uni($user['username']), $warningshandler->new_warning_level, $warningshandler->friendly_action);
@@ -298,7 +298,7 @@ if($mybb->input['action'] == "warn")
 	}
 
 	$plugins->run_hooks("warnings_warn_start");
-	
+
 	$type_checked = array('custom' => '');
 	$expires_period = array('hours' => '', 'days' => '', 'weeks' => '', 'months' => '', 'never' => '');
 	$send_pm_checked = '';
@@ -471,7 +471,7 @@ if($mybb->input['action'] == "warn")
 
 		if($mybb->settings['bbcodeinserter'] != 0 && $mybb->settings['pmsallowmycode'] != 0 && $mybb->user['showcodebuttons'] != 0)
 		{
-			$codebuttons = build_mycode_inserter("message", $mybb->settings['pmsallowsmilies']);
+			$codebuttons = build_mycode_inserter("message", $mybb->settings['pmsallowsmilies'], $mybb->settings['pmsallowimgcode'], $mybb->settings['pmsallowvideocode']);
 			if($mybb->settings['pmsallowsmilies'] != 0)
 			{
 				$smilieinserter = build_clickable_smilies();

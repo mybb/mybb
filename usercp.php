@@ -279,7 +279,7 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 			$user[$cfield] = $mybb->get_input($cfield);
 		}
 	}
-	
+
 	if($mybb->usergroup['canchangewebsite'] == 1)
 	{
 		$user['website'] = $mybb->get_input('website');
@@ -412,7 +412,7 @@ if($mybb->input['action'] == "profile")
 	$contact_fields = array();
 	$contactfields = '';
 	$cfieldsshow = false;
-	
+
 	foreach(array('icq', 'aim', 'yahoo', 'skype', 'google') as $cfield)
 	{
 		$contact_fields[$cfield] = '';
@@ -743,7 +743,7 @@ if($mybb->input['action'] == "profile")
 				$user['usertitle'] = $mybb->user['usertitle'];
 			}
 		}
-		
+
 		$user['usertitle'] = htmlspecialchars_uni($user['usertitle']);
 
 		$currentcustom = $reverttitle = '';
@@ -756,7 +756,7 @@ if($mybb->input['action'] == "profile")
 				eval("\$reverttitle = \"".$templates->get("usercp_profile_customtitle_reverttitle")."\";");
 			}
 		}
-		
+
 		eval("\$customtitle = \"".$templates->get("usercp_profile_customtitle")."\";");
 	}
 	else
@@ -768,7 +768,7 @@ if($mybb->input['action'] == "profile")
 	{
 		eval("\$website = \"".$templates->get("usercp_profile_website")."\";");
 	}
-	
+
 	$plugins->run_hooks("usercp_profile_end");
 
 	eval("\$editprofile = \"".$templates->get("usercp_profile")."\";");
@@ -1051,7 +1051,7 @@ if($mybb->input['action'] == "options")
 	{
 		$pmnotifycheck = '';
 	}
-	
+
 	if(isset($user['buddyrequestspm']) && $user['buddyrequestspm'] != 0)
 	{
 		$buddyrequestspmcheck = "checked=\"checked\"";
@@ -1554,7 +1554,7 @@ if($mybb->input['action'] == "subscriptions")
 	{
 		$tids = implode(",", array_keys($subscriptions));
 		$readforums = array();
-		
+
 		// Build a forum cache.
 		$query = $db->query("
 			SELECT f.fid, fr.dateline AS lastread
@@ -1563,7 +1563,7 @@ if($mybb->input['action'] == "subscriptions")
 			WHERE f.active != 0
 			ORDER BY pid, disporder
 		");
-		
+
 		while($forum = $db->fetch_array($query))
 		{
 			$readforums[$forum['fid']] = $forum['lastread'];
@@ -2018,7 +2018,7 @@ if($mybb->input['action'] == "editsig")
 
 		if($mybb->settings['bbcodeinserter'] != 0 || $mybb->user['showcodebuttons'] != 0)
 		{
-			$codebuttons = build_mycode_inserter("signature");
+			$codebuttons = build_mycode_inserter("signature", $mybb->settings['sigsmilies'], $mybb->settings['sigimgcode'], false);
 		}
 
 		$plugins->run_hooks("usercp_editsig_end");
@@ -2264,9 +2264,9 @@ if($mybb->input['action'] == "acceptrequest")
 	{
 		error($lang->invalid_request);
 	}
-	
+
 	$plugins->run_hooks("usercp_acceptrequest_start");
-	
+
 	$user = get_user($request['uid']);
 	if(!empty($user))
 	{
@@ -2279,9 +2279,9 @@ if($mybb->input['action'] == "acceptrequest")
 		{
 			$user['buddylist'] = array();
 		}
-		
+
 		$user['buddylist'][] = (int)$mybb->user['uid'];
-		
+
 		// Now we have the new list, so throw it all back together
 		$new_list = implode(",", $user['buddylist']);
 
@@ -2297,12 +2297,12 @@ if($mybb->input['action'] == "acceptrequest")
 		{
 			$new_list = my_substr($new_list, 0, my_strlen($new_list)-2);
 		}
-		
+
 		$user['buddylist'] = $db->escape_string($new_list);
-		
+
 		$db->update_query("users", array('buddylist' => $user['buddylist']), "uid='".(int)$user['uid']."'");
-		
-		
+
+
 		// We want to add the user to our buddy list
 		if($mybb->user['buddylist'] != '')
 		{
@@ -2312,9 +2312,9 @@ if($mybb->input['action'] == "acceptrequest")
 		{
 			$mybb->user['buddylist'] = array();
 		}
-		
+
 		$mybb->user['buddylist'][] = (int)$request['uid'];
-		
+
 		// Now we have the new list, so throw it all back together
 		$new_list = implode(",", $mybb->user['buddylist']);
 
@@ -2330,11 +2330,11 @@ if($mybb->input['action'] == "acceptrequest")
 		{
 			$new_list = my_substr($new_list, 0, my_strlen($new_list)-2);
 		}
-		
+
 		$mybb->user['buddylist'] = $db->escape_string($new_list);
-		
+
 		$db->update_query("users", array('buddylist' => $mybb->user['buddylist']), "uid='".(int)$mybb->user['uid']."'");
-	
+
 		$pm = array(
 			'subject' => 'buddyrequest_accepted_request',
 			'message' => 'buddyrequest_accepted_request_message',
@@ -2342,18 +2342,18 @@ if($mybb->input['action'] == "acceptrequest")
 			'language' => $user['language'],
 			'language_file' => 'usercp'
 		);
-	
+
 		send_pm($pm, $mybb->user['uid'], true);
-		
+
 		$db->delete_query('buddyrequests', 'id='.(int)$request['id']);
 	}
 	else
 	{
 		error($lang->user_doesnt_exist);
 	}
-	
+
 	$plugins->run_hooks("usercp_acceptrequest_end");
-	
+
 	redirect("usercp.php?action=editlists", $lang->buddyrequest_accepted);
 }
 
@@ -2361,7 +2361,7 @@ elseif($mybb->input['action'] == "declinerequest")
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
-	
+
 	// Validate request
 	$query = $db->simple_select('buddyrequests', '*', 'id='.$mybb->get_input('id', MyBB::INPUT_INT).' AND touid='.(int)$mybb->user['uid']);
 	$request = $db->fetch_array($query);
@@ -2369,9 +2369,9 @@ elseif($mybb->input['action'] == "declinerequest")
 	{
 		error($lang->invalid_request);
 	}
-	
+
 	$plugins->run_hooks("usercp_declinerequest_start");
-	
+
 	$user = get_user($request['uid']);
 	if(!empty($user))
 	{
@@ -2383,7 +2383,7 @@ elseif($mybb->input['action'] == "declinerequest")
 	}
 
 	$plugins->run_hooks("usercp_declinerequest_end");
-	
+
 	redirect("usercp.php?action=editlists", $lang->buddyrequest_declined);
 }
 
@@ -2391,7 +2391,7 @@ elseif($mybb->input['action'] == "cancelrequest")
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
-	
+
 	// Validate request
 	$query = $db->simple_select('buddyrequests', '*', 'id='.$mybb->get_input('id', MyBB::INPUT_INT).' AND uid='.(int)$mybb->user['uid']);
 	$request = $db->fetch_array($query);
@@ -2399,13 +2399,13 @@ elseif($mybb->input['action'] == "cancelrequest")
 	{
 		error($lang->invalid_request);
 	}
-	
+
 	$plugins->run_hooks("usercp_cancelrequest_start");
-	
+
 	$db->delete_query('buddyrequests', 'id='.(int)$request['id']);
 
 	$plugins->run_hooks("usercp_cancelrequest_end");
-	
+
 	redirect("usercp.php?action=editlists", $lang->buddyrequest_cancelled);
 }
 
@@ -2473,7 +2473,7 @@ if($mybb->input['action'] == "do_editlists")
 			}
 			$users[$key] = $db->escape_string($username);
 		}
-		
+
 		// Get the requests we have sent that are still pending
 		$query = $db->simple_select('buddyrequests', 'touid', 'uid='.(int)$mybb->user['uid']);
 		$requests = array();
@@ -2481,7 +2481,7 @@ if($mybb->input['action'] == "do_editlists")
 		{
 			$requests[$req['touid']] = true;
 		}
-		
+
 		// Get the requests we have received that are still pending
 		$query = $db->simple_select('buddyrequests', 'uid', 'touid='.(int)$mybb->user['uid']);
 		$requests_rec = array();
@@ -2489,7 +2489,7 @@ if($mybb->input['action'] == "do_editlists")
 		{
 			$requests_rec[$req['uid']] = true;
 		}
-		
+
 		$sent = false;
 
 		// Fetch out new users
@@ -2544,11 +2544,11 @@ if($mybb->input['action'] == "do_editlists")
 					{
 						$error_message = $lang->users_already_sent_request_alt;
 					}
-					
+
 					array_pop($users); // To maintain a proper count when we call count($users)
 					continue;
 				}
-				
+
 				if(isset($requests_rec[$user['uid']]))
 				{
 					if($mybb->get_input('manage') != "ignored")
@@ -2559,7 +2559,7 @@ if($mybb->input['action'] == "do_editlists")
 					{
 						$error_message = $lang->users_already_rec_request_alt;
 					}
-					
+
 					array_pop($users); // To maintain a proper count when we call count($users)
 					continue;
 				}
@@ -2568,7 +2568,7 @@ if($mybb->input['action'] == "do_editlists")
 				if($user['buddyrequestsauto'] == 1 && $mybb->get_input('manage') != "ignored")
 				{
 					$existing_users[] = $user['uid'];
-	
+
 					$pm = array(
 						'subject' => 'buddyrequest_new_buddy',
 						'message' => 'buddyrequest_new_buddy_message',
@@ -2577,14 +2577,14 @@ if($mybb->input['action'] == "do_editlists")
 						'language' => $user['language'],
 						'language_file' => 'usercp'
 					);
-					
+
 					send_pm($pm);
 				}
 				elseif($user['buddyrequestsauto'] != 1 && $mybb->get_input('manage') != "ignored")
 				{
 					// Send request
 					$id = $db->insert_query('buddyrequests', array('uid' => (int)$mybb->user['uid'], 'touid' => (int)$user['uid'], 'date' => TIME_NOW));
-	
+
 					$pm = array(
 						'subject' => 'buddyrequest_received',
 						'message' => 'buddyrequest_received_message',
@@ -2593,9 +2593,9 @@ if($mybb->input['action'] == "do_editlists")
 						'language' => $user['language'],
 						'language_file' => 'usercp'
 					);
-					
+
 					send_pm($pm);
-					
+
 					$sent = true;
 				}
 				elseif($mybb->get_input('manage') == "ignored")
@@ -2642,7 +2642,7 @@ if($mybb->input['action'] == "do_editlists")
 		if(count($existing_users) == 0)
 		{
 			$message = "";
-			
+
 			if($sent === true)
 			{
 				$message = $lang->buddyrequests_sent_success;
@@ -2670,10 +2670,10 @@ if($mybb->input['action'] == "do_editlists")
 				{
 					$user['buddylist'] = array();
 				}
-				
+
 				$key = array_search($mybb->get_input('delete', MyBB::INPUT_INT), $user['buddylist']);
 				unset($user['buddylist'][$key]);
-				
+
 				// Now we have the new list, so throw it all back together
 				$new_list = implode(",", $user['buddylist']);
 
@@ -2689,12 +2689,12 @@ if($mybb->input['action'] == "do_editlists")
 				{
 					$new_list = my_substr($new_list, 0, my_strlen($new_list)-2);
 				}
-				
+
 				$user['buddylist'] = $db->escape_string($new_list);
-				
+
 				$db->update_query("users", array('buddylist' => $user['buddylist']), "uid='".(int)$user['uid']."'");
 			}
-			
+
 			if($mybb->get_input('manage') == "ignored")
 			{
 				$message = $lang->removed_from_ignore_list;
@@ -2888,14 +2888,14 @@ if($mybb->input['action'] == "editlists")
 					$request['date'] = my_date($mybb->settings['dateformat'], $request['date'])." ".my_date($mybb->settings['timeformat'], $request['date']);
 					eval("\$sent_rows .= \"".$templates->get("usercp_editlists_sent_request", 1, 0)."\";");
 				}
-				
+
 				if($sent_rows == '')
 				{
 					eval("\$sent_rows = \"".$templates->get("usercp_editlists_no_requests", 1, 0)."\";");
 				}
-				
+
 				eval("\$sent_requests = \"".$templates->get("usercp_editlists_sent_requests", 1, 0)."\";");
-			
+
 				echo $sentrequests;
 				echo $sent_requests."<script type=\"text/javascript\">{$message_js}</script>";
 			}
@@ -2907,7 +2907,7 @@ if($mybb->input['action'] == "editlists")
 		}
 		exit;
 	}
-	
+
 	$received_rows = '';
 	$query = $db->query("
 		SELECT r.*, u.username
@@ -2922,14 +2922,14 @@ if($mybb->input['action'] == "editlists")
 		$request['date'] = my_date($mybb->settings['dateformat'], $request['date'])." ".my_date($mybb->settings['timeformat'], $request['date']);
 		eval("\$received_rows .= \"".$templates->get("usercp_editlists_received_request")."\";");
 	}
-	
+
 	if($received_rows == '')
 	{
 		eval("\$received_rows = \"".$templates->get("usercp_editlists_no_requests")."\";");
 	}
-	
+
 	eval("\$received_requests = \"".$templates->get("usercp_editlists_received_requests")."\";");
-	
+
 	$sent_rows = '';
 	$query = $db->query("
 		SELECT r.*, u.username
@@ -2944,14 +2944,14 @@ if($mybb->input['action'] == "editlists")
 		$request['date'] = my_date($mybb->settings['dateformat'], $request['date'])." ".my_date($mybb->settings['timeformat'], $request['date']);
 		eval("\$sent_rows .= \"".$templates->get("usercp_editlists_sent_request")."\";");
 	}
-	
+
 	if($sent_rows == '')
 	{
 		eval("\$sent_rows = \"".$templates->get("usercp_editlists_no_requests")."\";");
 	}
-	
+
 	eval("\$sent_requests = \"".$templates->get("usercp_editlists_sent_requests")."\";");
-	
+
 	$plugins->run_hooks("usercp_editlists_end");
 
 	eval("\$listpage = \"".$templates->get("usercp_editlists")."\";");
@@ -3186,7 +3186,7 @@ if($mybb->input['action'] == "usergroups")
 					// Load language
 					$lang->set_language($leader['language']);
 					$lang->load("messages");
-						
+
 					$subject = $lang->sprintf($lang->emailsubject_newjoinrequest, $mybb->settings['bbname']);
 					$message = $lang->sprintf($lang->email_groupleader_joinrequest, $leader['username'], $mybb->user['username'], $usergroup['title'], $mybb->settings['bbname'], $mybb->get_input('reason'), $mybb->settings['bburl'], $leader['gid']);
 					my_mail($leader['email'], $subject, $message);
@@ -3196,7 +3196,7 @@ if($mybb->input['action'] == "usergroups")
 			// Load language
 			$lang->set_language($mybb->user['language']);
 			$lang->load("messages");
-			
+
 			$plugins->run_hooks("usercp_usergroups_join_group_request");
 			redirect("usercp.php?action=usergroups", $lang->group_join_requestsent);
 			exit;
@@ -3984,7 +3984,7 @@ if(!$mybb->input['action'])
 			WHERE f.active != 0
 			ORDER BY pid, disporder
 		");
-		
+
 		while($forum = $db->fetch_array($query))
 		{
 			$readforums[$forum['fid']] = $forum['lastread'];

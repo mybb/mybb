@@ -1226,7 +1226,7 @@ function usergroup_permissions($gid=0)
 	{
 		return $groupscache[$gid];
 	}
-	
+
 	$usergroup = array();
 
 	foreach($groups as $gid)
@@ -2145,7 +2145,7 @@ function my_unserialize($str)
 	{
 		mb_internal_encoding($mbIntEnc);
 	}
-	
+
 	return $out;
 }
 
@@ -2165,27 +2165,27 @@ function _safe_serialize( $value )
 	{
 		return 'N;';
 	}
-	
+
 	if(is_bool($value))
 	{
 		return 'b:'.(int)$value.';';
 	}
-	
+
 	if(is_int($value))
 	{
 		return 'i:'.$value.';';
 	}
-	
+
 	if(is_float($value))
 	{
 		return 'd:'.str_replace(',', '.', $value).';';
 	}
-	
+
 	if(is_string($value))
 	{
 		return 's:'.strlen($value).':"'.$value.'";';
 	}
-	
+
 	if(is_array($value))
 	{
 		$out = '';
@@ -2193,7 +2193,7 @@ function _safe_serialize( $value )
 		{
 			$out .= _safe_serialize($k) . _safe_serialize($v);
 		}
-		
+
 		return 'a:'.count($value).':{'.$out.'}';
 	}
 
@@ -2216,13 +2216,13 @@ function my_serialize($value)
 		$mbIntEnc = mb_internal_encoding();
 		mb_internal_encoding('ASCII');
 	}
-	
+
 	$out = _safe_serialize($value);
 	if(isset($mbIntEnc))
 	{
 		mb_internal_encoding($mbIntEnc);
 	}
-	
+
 	return $out;
 }
 
@@ -2975,7 +2975,7 @@ function random_str($length=8, $complex=false)
 	{
 		$str[] = $set[my_rand(0, 61)];
 	}
-	
+
 	// Make sure they're in random order and convert them to a string
 	shuffle($str);
 
@@ -3103,15 +3103,23 @@ function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
  * @param bool $smilies Whether to include smilies. Defaults to true.
  * @param bool $images Whether to include images. Defaults to true.
  * @param bool $videos Whether to include videos. Defaults to true.
+ * @param string $editor Name of the editor instance JS object. Defaults to MyBBEditor.
  *
  * @return string The MyCode inserter
  */
-function build_mycode_inserter($bind="message", $smilies = true, $images = true, $videos = true)
+function build_mycode_inserter($bind="message", $smilies=true, $images=true, $videos=true, $editor='MyBBEditor')
 {
 	global $db, $mybb, $theme, $templates, $lang, $plugins, $smiliecache, $cache;
 
 	if($mybb->settings['bbcodeinserter'] != 0)
 	{
+		$editor = preg_replace('#([^a-zA-Z0-9_]+)#', '', $editor);
+		
+		if(!trim($editor))
+		{
+			$editor = 'MyBBEditor';
+		}
+		
 		$editor_lang_strings = array(
 			"editor_bold" => "Bold",
 			"editor_italic" => "Italic",
@@ -3207,18 +3215,18 @@ function build_mycode_inserter($bind="message", $smilies = true, $images = true,
 		if(defined("IN_ADMINCP"))
 		{
 			global $page;
-			$codeinsert = $page->build_codebuttons_editor($bind, $editor_language, $smilies, $images, $videos);
+			$codeinsert = $page->build_codebuttons_editor($bind, $editor_language, $smilies, $images, $videos, $editor);
 		}
 		else
 		{
 			// Smilies
-			$emoticon = "";
+			$emoticons_toolbar = '';
 			$emoticons_enabled = "false";
 			if($smilies == true)
 			{
 				if($mybb->settings['smilieinserter'] && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
 				{
-					$emoticon = ",emoticon";
+					$emoticons_toolbar = 'emoticon';
 				}
 				$emoticons_enabled = "true";
 
@@ -3258,7 +3266,7 @@ function build_mycode_inserter($bind="message", $smilies = true, $images = true,
 
 						if(!$mybb->settings['smilieinserter'] || !$mybb->settings['smilieinsertercols'] || !$mybb->settings['smilieinsertertot'] || !$smilie['showclickable'])
 						{
-							$hiddensmilies .= '"'.$find.'": "'.$image.'",';							
+							$hiddensmilies .= '"'.$find.'": "'.$image.'",';
 						}
 						elseif($i < $mybb->settings['smilieinsertertot'])
 						{
@@ -3279,62 +3287,101 @@ function build_mycode_inserter($bind="message", $smilies = true, $images = true,
 				}
 			}
 
-			$basic1 = $basic2 = $align = $font = $size = $color = $removeformat = $image = $email = $link = $video = $list = $code = $sourcemode = "";
+			$sourcemode = '';
+			$bars = $basic2 = $font = $multimedia = $blocks = array();
 
 			if($mybb->settings['allowbasicmycode'] == 1)
 			{
-				$basic1 = "bold,italic,underline,strike|";
-				$basic2 = "horizontalrule,";
+				$bars['basic'] = 'bold,italic,underline,strike';
+				$basic2[] = 'horizontalrule';
 			}
 
 			if($mybb->settings['allowalignmycode'] == 1)
 			{
-				$align = "left,center,right,justify|";
+				$bars['align'] = 'left,center,right,justify';
 			}
 
 			if($mybb->settings['allowfontmycode'] == 1)
 			{
-				$font = "font,";
+				$font[] = 'font';
 			}
 
 			if($mybb->settings['allowsizemycode'] == 1)
 			{
-				$size = "size,";
+				$font[] = 'size';
 			}
 
 			if($mybb->settings['allowcolormycode'] == 1)
 			{
-				$color = "color,";
+				$font[] = 'color';
 			}
 
 			if($mybb->settings['allowfontmycode'] == 1 || $mybb->settings['allowsizemycode'] == 1 || $mybb->settings['allowcolormycode'] == 1)
 			{
-				$removeformat = "removeformat|";
+				$font[] = 'removeformat';
+			}
+
+			if($font)
+			{
+				$bars['font'] = implode(',', $font);
 			}
 
 			if($mybb->settings['allowemailmycode'] == 1)
 			{
-				$email = "email,";
+				$basic2[] = 'email';
 			}
 
 			if($mybb->settings['allowlinkmycode'] == 1)
 			{
-				$link = "link,unlink";
+				$basic2[] = 'link,unlink';
+			}
+
+			if($basic2)
+			{
+				$bars['basic2'] = implode(',', $basic2);
+			}
+
+			if($images == true)
+			{
+				$multimedia[] = 'image';
+			}
+
+			if($videos == true)
+			{
+				$multimedia[] = 'video';
+			}
+
+			if($emoticons_toolbar == 'emoticon')
+			{
+				$multimedia[] = $emoticons_toolbar;
+			}
+
+			if($multimedia)
+			{
+				$bars['multimedia'] = implode(',', $multimedia);
 			}
 
 			if($mybb->settings['allowlistmycode'] == 1)
 			{
-				$list = "bulletlist,orderedlist|";
+				$bars['list'] = 'bulletlist,orderedlist';
 			}
 
 			if($mybb->settings['allowcodemycode'] == 1)
 			{
-				$code = "code,php,";
+				$blocks[] = 'code,php';
 			}
+
+			$blocks[] = 'quote';
+			$bars['blocks'] = implode(',', $blocks);
+			$bars['other'] = 'maximize,source';
+
+			$bars = $plugins->run_hooks('mycode_add_codebuttons_toolbar', $bars);
+
+			$toolbar = implode('|', $bars);
 
 			if($mybb->user['sourceeditor'] == 1)
 			{
-				$sourcemode = "MyBBEditor.sourceMode(true);";
+				$sourcemode = "{$editor}.sourceMode(true);";
 			}
 
 			eval("\$codeinsert = \"".$templates->get("codebuttons")."\";");
@@ -3347,14 +3394,23 @@ function build_mycode_inserter($bind="message", $smilies = true, $images = true,
 /**
  * Build the javascript clickable smilie inserter
  *
+ * @param string $editor Name of the editor instance JS object where smilies should be inserted. Defaults to MyBBEditor.
+ *
  * @return string The clickable smilies list
  */
-function build_clickable_smilies()
+function build_clickable_smilies($editor='MyBBEditor')
 {
 	global $cache, $smiliecache, $theme, $templates, $lang, $mybb, $smiliecount;
 
 	if($mybb->settings['smilieinserter'] != 0 && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
 	{
+		$editor = preg_replace('#([^a-zA-Z0-9_]+)#', '', $editor);
+		
+		if(!trim($editor))
+		{
+			$editor = 'MyBBEditor';
+		}
+		
 		if(!$smiliecount)
 		{
 			$smilie_cache = $cache->read("smilies");
@@ -3404,18 +3460,18 @@ function build_clickable_smilies()
 					{
 						$smilies .=  "<tr>\n";
 					}
-					
+
 					$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
 					$smilie['image'] = htmlspecialchars_uni($mybb->get_asset_url($smilie['image']));
 					$smilie['name'] = htmlspecialchars_uni($smilie['name']);
-					
+
 					// Only show the first text to replace in the box
 					$temp = explode("\n", $smilie['find']); // assign to temporary variable for php 5.3 compatibility
 					$smilie['find'] = $temp[0];
 
 					$find = str_replace(array('\\', "'"), array('\\\\', "\'"), htmlspecialchars_uni($smilie['find']));
 
-					$onclick = " onclick=\"MyBBEditor.insertText(' $find ');\"";
+					$onclick = " onclick=\"{$editor}.insertText(' $find ');\"";
 					$extra_class = ' smilie_pointer';
 					eval('$smilie = "'.$templates->get('smilie', 1, 0).'";');
 					eval("\$smilies .= \"".$templates->get("smilieinsert_smilie")."\";");
@@ -3646,7 +3702,7 @@ function build_forum_prefix_select($fid, $selected_pid=0)
 
 	$default_selected = array();
 	$selected_pid = (int)$selected_pid;
-	
+
 	if($selected_pid == 0)
 	{
 		$default_selected['all'] = ' selected="selected"';
@@ -3802,7 +3858,7 @@ function get_reputation($reputation, $uid=0)
 	{
 		$reputation_class = "reputation_neutral";
 	}
-	
+
 	$reputation = my_number_format($reputation);
 
 	if($uid != 0)
@@ -4138,9 +4194,9 @@ function get_unviewable_forums($only_readable_threads=false)
 			$unviewable[] = $forum['fid'];
 		}
 	}
-	
+
 	$unviewableforums = implode(',', $unviewable);
-	
+
 	return $unviewableforums;
 }
 
@@ -4887,7 +4943,7 @@ function get_current_location($fields=false, $ignore=array(), $quick=false)
 	{
 		$location = htmlspecialchars_uni($_ENV['PATH_INFO']);
 	}
-	
+
 	if($quick)
 	{
 		return $location;
@@ -6173,7 +6229,7 @@ function get_inactive_forums()
 			}
 		}
 	}
-	
+
 	$inactiveforums = implode(",", $inactive);
 
 	return $inactiveforums;
@@ -6970,7 +7026,7 @@ function is_super_admin($uid)
 function is_member($groups, $user = false)
 {
 	global $mybb;
-	
+
 	if(empty($groups))
 	{
 		return array();

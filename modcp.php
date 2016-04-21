@@ -3019,7 +3019,7 @@ if($mybb->input['action'] == "editprofile")
 	$profile_link = build_profile_link(format_name($user['username'], $user['usergroup'], $user['displaygroup']), $user['uid']);
 
 	$user['signature'] = htmlspecialchars_uni($user['signature']);
-	$codebuttons = build_mycode_inserter("signature");
+	$codebuttons = build_mycode_inserter("signature", $mybb->settings['sigsmilies'], $mybb->settings['sigimgcode'], false);
 
 	// Do we mark the suspend signature box?
 	if($user['suspendsignature'] || ($mybb->get_input('suspendsignature', MyBB::INPUT_INT) && !empty($errors)))
@@ -3730,7 +3730,7 @@ if($mybb->input['action'] == "ipsearch")
 		{
 			$query = $db->simple_select('users', 'username, uid, regip, lastip', $user_ip_sql,
 					array('order_by' => 'regdate', 'order_dir' => 'DESC', 'limit_start' => $start, 'limit' => $perpage));
-			
+
 			while($ipaddress = $db->fetch_array($query))
 			{
 				$result = false;

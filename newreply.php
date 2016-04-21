@@ -146,7 +146,7 @@ check_forum_password($forum['fid']);
 
 if($mybb->settings['bbcodeinserter'] != 0 && $forum['allowmycode'] != 0 && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0))
 {
-	$codebuttons = build_mycode_inserter("message", $forum['allowsmilies']);
+	$codebuttons = build_mycode_inserter("message", $forum['allowsmilies'], $forum['allowimgcode'], $forum['allowvideocode']);
 	if($forum['allowsmilies'] != 0)
 	{
 		$smilieinserter = build_clickable_smilies();
