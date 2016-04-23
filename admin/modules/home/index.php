@@ -260,12 +260,13 @@ elseif(!$mybb->input['action'])
 	$query = $db->simple_select("posts", "COUNT(*) AS newposts", "dateline > '$timecut' AND visible='1'");
 	$newposts = my_number_format($db->fetch_field($query, "newposts"));
 
-	// If report medium is MCP...
-	{
-		// Get the number of reported post
-		$query = $db->simple_select("reportedcontent", "COUNT(*) AS reported_posts", "type = 'post' OR type = ''");
-		$reported_posts = my_number_format($db->fetch_field($query, "reported_posts"));
+	// Get the number of reported post
+	$query = $db->simple_select("reportedcontent", "COUNT(*) AS reported_posts", "type = 'post' OR type = ''");
+	$reported_posts = my_number_format($db->fetch_field($query, "reported_posts"));
 
+	// If report medium is MCP...
+	if($mybb->settings['reportmethod'] == "db")
+	{
 		// Get the number of reported posts that haven't been marked as read yet
 		$query = $db->simple_select("reportedcontent", "COUNT(*) AS new_reported_posts", "reportstatus='0' AND (type = 'post' OR type = '')");
 		$new_reported_posts = my_number_format($db->fetch_field($query, "new_reported_posts"));
@@ -321,7 +322,7 @@ elseif(!$mybb->input['action'])
 	}
 	else
 	{
-		$table->construct_cell("<strong>{$posts}</strong> {$lang->posts}<br /><strong>{$newposts}</strong> {$lang->new_today}<br /><a href=\"index.php?module=forum-moderation_queue&amp;type=posts\"><strong>{$unapproved_posts}</strong> {$lang->unapproved}</a>", array('width' => '25%'));
+		$table->construct_cell("<strong>{$posts}</strong> {$lang->posts}<br /><strong>{$newposts}</strong> {$lang->new_today}<br /><a href=\"index.php?module=forum-moderation_queue&amp;type=posts\"><strong>{$unapproved_posts}</strong> {$lang->unapproved}</a><br /><strong>{$reported_posts}</strong> {$lang->reported_posts}", array('width' => '25%'));
 	}
 	$table->construct_row();
 
