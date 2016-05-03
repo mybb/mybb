@@ -51,7 +51,7 @@ class PhpMail extends MailHandler
 			@ini_set("sendmail_from", $mybb->settings['adminemail']);
 		}
 
-		$dir = "/{$config['admin_dir']}/";
+		$dir = "/{$mybb->config['admin_dir']}/";
 		$pos = strrpos($_SERVER['PHP_SELF'], $dir);
 		if(defined('IN_ADMINCP') && $pos !== false)
 		{
