@@ -308,3 +308,4 @@ function draw_string(&$im, $string)
 	}
 	return true;
 }
+
