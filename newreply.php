@@ -15,7 +15,7 @@ $templatelist = "newreply,previewpost,loginbox,changeuserbox,posticons,newreply_
 $templatelist .= ",smilieinsert,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,codebuttons,post_attachments_new,post_attachments,post_savedraftbutton,newreply_modoptions,newreply_threadreview_more,newreply_disablesmilies,postbit_online";
 $templatelist .= ",postbit_www,postbit_email,postbit_reputation,postbit_warninglevel,postbit_author_user,postbit_edit,postbit_quickdelete,postbit_inlinecheck,postbit_posturl,postbit_quote,postbit_multiquote,postbit_report,postbit_ignored,postbit,postbit_userstar";
 $templatelist .= ",post_attachments_attachment_postinsert,post_attachments_attachment_remove,post_attachments_attachment_unapproved,post_attachments_attachment,postbit_attachments_attachment,postbit_attachments,newreply_options_signature,postbit_find";
-$templatelist .= ",member_register_regimage,member_register_regimage_recaptcha,member_register_regimage_ayah,post_captcha_hidden,post_captcha,post_captcha_recaptcha,post_captcha_nocaptcha,post_captcha_ayah,postbit_groupimage,postbit_away,postbit_offline,postbit_avatar,postbit_icon";
+$templatelist .= ",member_register_regimage,member_register_regimage_recaptcha,post_captcha_hidden,post_captcha,post_captcha_recaptcha,post_captcha_nocaptcha,postbit_groupimage,postbit_away,postbit_offline,postbit_avatar,postbit_icon";
 $templatelist .= ",postbit_rep_button,postbit_warn,postbit_author_guest,postbit_signature,postbit_classic,postbit_attachments_thumbnails_thumbnailpostbit_attachments_images_image,postbit_attachments_attachment_unapproved,postbit_pm,post_attachments_update";
 $templatelist .= ",postbit_attachments_thumbnails,postbit_attachments_images,postbit_gotopost,forumdisplay_password_wrongpass,forumdisplay_password,posticons_icon,attachment_icon,postbit_reputation_formatted_link,newreply_disablesmilies_hidden,forumdisplay_rules,global_moderation_notice";
 
@@ -76,7 +76,8 @@ if(!$forum)
 
 // Make navigation
 build_forum_breadcrumb($fid);
-$thread['subject'] = htmlspecialchars_uni($thread['subject']);
+$thread_subject = $thread['subject'];
+$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 add_breadcrumb($thread['subject'], get_thread_link($thread['tid']));
 add_breadcrumb($lang->nav_newreply);
 
@@ -177,16 +178,6 @@ if(!is_moderator($fid, "canpostclosedthreads"))
 	{
 		error($lang->redirect_threadclosed);
 	}
-}
-
-// Is the currently logged in user a moderator of this forum?
-if(is_moderator($fid))
-{
-	$ismod = true;
-}
-else
-{
-	$ismod = false;
 }
 
 // No weird actions allowed, show new reply form if no regular action.
@@ -321,7 +312,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 			$username = $mybb->get_input('username');
 		}
 		$uid = 0;
-	
+
 
 		if($mybb->settings['stopforumspam_on_newreply'])
 		{
@@ -604,13 +595,15 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 			if($visible == 1)
 			{
 				// Set post counter
-				if($ismod == true)
+				$postcounter = $thread['replies'] + 1;
+
+				if(is_moderator($fid, "canviewunapprove"))
 				{
-					$postcounter = $thread['replies'] + $thread['unapprovedposts'] + 1;
+					$postcounter += $thread['unapprovedposts'];
 				}
-				else
+				if(is_moderator($fid, "canviewdeleted"))
 				{
-					$postcounter = $thread['replies'] + 1;
+					$postcounter += $thread['deletedposts'];
 				}
 
 				// Was there a new post since we hit the quick reply button?
@@ -623,7 +616,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 						redirect(get_thread_link($tid, 0, "lastpost"));
 					}
 				}
-				
+
 				if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
 				{
 					$mybb->settings['postsperpage'] = 20;
@@ -688,7 +681,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 				$data .= $post;
 
 				// Build a new posthash incase the user wishes to quick reply again
-			    $new_posthash = md5($mybb->user['uid'].random_str());
+				$new_posthash = md5($mybb->user['uid'].random_str());
 				$data .= "<script type=\"text/javascript\">\n";
 				$data .= "var hash = document.getElementById('posthash'); if(hash) { hash.value = '{$new_posthash}'; }\n";
 				$data .= "if(typeof(inlineModeration) != 'undefined') {
@@ -770,13 +763,38 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			{
 				$inactiveforums = "AND t.fid NOT IN ({$inactiveforums})";
 			}
-			if(is_moderator($fid))
+
+			// Check group permissions if we can't view threads not started by us
+			$group_permissions = forum_permissions();
+			$onlyusfids = array();
+			$onlyusforums = '';
+			foreach($group_permissions as $fid => $forum_permissions)
 			{
-				$visible_where = "AND p.visible != 2";
+				if(isset($forum_permissions['canonlyviewownthreads']) && $forum_permissions['canonlyviewownthreads'] == 1)
+				{
+					$onlyusfids[] = $fid;
+				}
+			}
+			if(!empty($onlyusfids))
+			{
+				$onlyusforums = "AND ((t.fid IN(".implode(',', $onlyusfids).") AND t.uid='{$mybb->user['uid']}') OR t.fid NOT IN(".implode(',', $onlyusfids)."))";
+			}
+
+			if(is_moderator($fid, 'canviewunapprove') && is_moderator($fid, 'canviewdeleted'))
+			{
+				$visible_where = "AND p.visible IN (-1,0,1)";
+			}
+			elseif(is_moderator($fid, 'canviewunapprove') && !is_moderator($fid, 'canviewdeleted'))
+			{
+				$visible_where = "AND p.visible IN (0,1)";
+			}
+			elseif(!is_moderator($fid, 'canviewunapprove') && is_moderator($fid, 'canviewdeleted'))
+			{
+				$visible_where = "AND p.visible IN (-1,1)";
 			}
 			else
 			{
-				$visible_where = "AND p.visible > 0";
+				$visible_where = "AND p.visible=1";
 			}
 
 			require_once MYBB_ROOT."inc/functions_posting.php";
@@ -785,7 +803,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 				FROM ".TABLE_PREFIX."posts p
 				LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 				LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-				WHERE p.pid IN ({$quoted_posts}) {$unviewable_forums} {$inactiveforums} {$visible_where}
+				WHERE p.pid IN ({$quoted_posts}) {$unviewable_forums} {$inactiveforums} {$onlyusforums} {$visible_where}
 			");
 			$load_all = $mybb->get_input('load_all_quotes', MyBB::INPUT_INT);
 			while($quoted_post = $db->fetch_array($query))
@@ -794,9 +812,9 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 				if($quoted_post['tid'] == $tid || $load_all == 1)
 				{
 					// If this post was the post for which a quote button was clicked, set the subject
-					if($pid == $quoted_post['pid'])
+					if($replyto == $quoted_post['pid'])
 					{
-						$subject = preg_replace('#RE:\s?#i', '', $quoted_post['subject']);
+						$subject = preg_replace('#^RE:\s?#i', '', $quoted_post['subject']);
 						// Subject too long? Shorten it to avoid error message
 						if(my_strlen($subject) > 85)
 						{
@@ -957,7 +975,13 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		}
 		else
 		{
-			$subject = $thread['subject'];
+			$subject = $thread_subject;
+			// Subject too long? Shorten it to avoid error message
+			if(my_strlen($subject) > 85)
+			{
+				$subject = my_substr($subject, 0, 82).'...';
+			}
+			$subject = "RE: ".$subject;
 		}
 	}
 
@@ -990,6 +1014,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		// Set up posthandler.
 		require_once MYBB_ROOT."inc/datahandlers/post.php";
 		$posthandler = new PostDataHandler("insert");
+		$posthandler->action = "post";
 
 		// Set the post data that came from the input to the $post array.
 		$post = array(
@@ -1015,7 +1040,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		// Now let the post handler do all the hard work.
 		$valid_post = $posthandler->verify_message();
 		$valid_subject = $posthandler->verify_subject();
-		
+
 		// guest post --> verify author
 		if($post['uid'] == 0)
 		{
@@ -1102,17 +1127,6 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	}
 
 	$subject = htmlspecialchars_uni($parser->parse_badwords($subject));
-
-	if(!$pid && !isset($mybb->input['previewpost']))
-	{
-		$subject = $thread['subject'];
-		// Subject too long? Shorten it to avoid error message
-		if(my_strlen($subject) > 85)
-		{
-			$subject = my_substr($subject, 0, 82).'...';
-		}
-		$subject = "RE: ".$subject;
-	}
 
 	$posthash = htmlspecialchars_uni($mybb->get_input('posthash'));
 
@@ -1229,17 +1243,13 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 
 		if(!$correct)
 		{
- 			if($post_captcha->type == 1)
+			if($post_captcha->type == 1)
 			{
 				$post_captcha->build_captcha();
 			}
 			elseif($post_captcha->type == 2 || $post_captcha->type == 4)
 			{
 				$post_captcha->build_recaptcha();
-			}
-			elseif($post_captcha->type == 3)
-			{
-				$post_captcha->build_ayah();
 			}
 
 			if($post_captcha->html)
@@ -1250,15 +1260,6 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		else if($correct && ($post_captcha->type == 2 || $post_captcha->type == 4))
 		{
 			$post_captcha->build_recaptcha();
-
-			if($post_captcha->html)
-			{
-				$captcha = $post_captcha->html;
-			}
-		}
-		else if($correct && $post_captcha->type == 3)
-		{
-			$post_captcha->build_ayah();
 
 			if($post_captcha->html)
 			{
@@ -1285,7 +1286,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		}
 		$query = $db->simple_select("posts", "COUNT(pid) AS post_count", "tid='{$tid}' AND {$visibility}");
 		$numposts = $db->fetch_field($query, "post_count");
-		
+
 		if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
 		{
 			$mybb->settings['postsperpage'] = 20;

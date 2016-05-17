@@ -561,9 +561,8 @@ if(!$mybb->input['action'])
 	<script type="text/javascript">
 	<!--
 	$("#username").select2({
-		placeholder: "'.$lang->search_user.'",
-		minimumInputLength: 3,
-		maximumSelectionSize: 3,
+		placeholder: "'.$lang->search_for_a_user.'",
+		minimumInputLength: 2,
 		multiple: false,
 		ajax: { // instead of writing the function to execute the request we use Select2\'s convenient helper
 			url: "../xmlhttp.php?action=get_users",
@@ -599,7 +598,7 @@ if(!$mybb->input['action'])
 	</script>';
 
 	$buttons[] = $form->generate_submit_button($lang->ban_user);
-	$buttons[] = $form->generate_submit_button($lang->search_user, array('name' => 'search'));
+	$buttons[] = $form->generate_submit_button($lang->search_for_a_user, array('name' => 'search'));
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 

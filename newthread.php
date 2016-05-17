@@ -14,7 +14,7 @@ define('THIS_SCRIPT', 'newthread.php');
 $templatelist = "newthread,previewpost,loginbox,changeuserbox,newthread_postpoll,posticons,codebuttons,smilieinsert,newthread_multiquote_external,post_attachments_attachment_unapproved,newthread_disablesmilies_hidden";
 $templatelist .= ",newthread_disablesmilies,newreply_modoptions,post_attachments_new,post_attachments,post_savedraftbutton,post_subscription_method,post_attachments_attachment_remove,posticons_icon,postbit_warninglevel_formatted";
 $templatelist .= ",forumdisplay_rules,forumdisplay_rules_link,post_attachments_attachment_postinsert,post_attachments_attachment,post_attachments_add,newthread_options_signature,post_prefixselect_prefix,post_prefixselect_single";
-$templatelist .= ",member_register_regimage,member_register_regimage_recaptcha,member_register_regimage_ayah,post_captcha_hidden,post_captcha,post_captcha_recaptcha,post_captcha_nocaptcha,post_captcha_ayah,postbit_groupimage,postbit_online,postbit_away";
+$templatelist .= ",member_register_regimage,member_register_regimage_recaptcha,post_captcha_hidden,post_captcha,post_captcha_recaptcha,post_captcha_nocaptcha,postbit_groupimage,postbit_online,postbit_away";
 $templatelist .= ",postbit_avatar,postbit_find,postbit_pm,postbit_rep_button,postbit_www,postbit_email,postbit_reputation,postbit_warn,postbit_warninglevel,postbit_author_user,postbit_author_guest,postbit_offline,postbit_icon,postbit_userstar";
 $templatelist .= ",postbit_signature,postbit_classic,postbit,postbit_attachments_thumbnails_thumbnail,postbit_attachments_images_image,postbit_attachments_attachment,postbit_attachments_attachment_unapproved,post_attachments_update";
 $templatelist .= ",postbit_attachments_thumbnails,postbit_attachments_images,postbit_attachments,postbit_gotopost,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,attachment_icon,postbit_reputation_formatted_link,global_moderation_notice";
@@ -464,6 +464,16 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 			$url = get_forum_link($fid);
 
 			// User must see moderation notice, regardless of redirect settings
+			$force_redirect = true;
+		}
+
+		// The thread is being made in a forum the user cannot see threads in, send them back to the forum.
+		else if($visible == 1 && $forumpermissions['canviewthreads'] != 1)
+		{
+			$lang->redirect_newthread .= $lang->redirect_newthread_unviewable;
+			$url = get_forum_link($fid);
+
+			// User must see permission notice, regardless of redirect settings
 			$force_redirect = true;
 		}
 
@@ -1027,10 +1037,6 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			{
 				$post_captcha->build_recaptcha();
 			}
-			elseif($post_captcha->type == 3)
-			{
-				$post_captcha->build_ayah();
-			}
 
 			if($post_captcha->html)
 			{
@@ -1040,15 +1046,6 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		else if($correct && ($post_captcha->type == 2 || $post_captcha->type == 4))
 		{
 			$post_captcha->build_recaptcha();
-
-			if($post_captcha->html)
-			{
-				$captcha = $post_captcha->html;
-			}
-		}
-		else if($correct && $post_captcha->type == 3)
-		{
-			$post_captcha->build_ayah();
 
 			if($post_captcha->html)
 			{

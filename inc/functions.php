@@ -324,12 +324,12 @@ function parse_page($contents)
  *
  * @param string $format A date format according to PHP's date structure.
  * @param int $stamp The unix timestamp the date should be generated for.
- * @param int $offset The offset in hours that should be applied to times. (timezones)
+ * @param int|string $offset The offset in hours that should be applied to times. (timezones) Or an empty string to determine that automatically
  * @param int $ty Whether or not to use today/yesterday formatting.
  * @param boolean $adodb Whether or not to use the adodb time class for < 1970 or > 2038 times
  * @return string The formatted timestamp.
  */
-function my_date($format, $stamp=0, $offset=0, $ty=1, $adodb=false)
+function my_date($format, $stamp=0, $offset="", $ty=1, $adodb=false)
 {
 	global $mybb, $lang, $mybbadmin, $plugins;
 
@@ -1466,9 +1466,10 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
  *
  * @param int $fid The forum ID
  * @param int $pid The Parent ID
+ * @param bool $return
  * @return bool
  */
-function check_forum_password($fid, $pid=0)
+function check_forum_password($fid, $pid=0, $return=false)
 {
 	global $mybb, $header, $footer, $headerinclude, $theme, $templates, $lang, $forum_cache;
 
@@ -1536,6 +1537,11 @@ function check_forum_password($fid, $pid=0)
 	else
 	{
 		$showform = false;
+	}
+
+	if($return)
+	{
+		return $showform;
 	}
 
 	if($showform)
@@ -2426,9 +2432,9 @@ function update_stats($changes=array(), $force=false)
 	// Update stats row for today in the database
 	$todays_stats = array(
 		"dateline" => mktime(0, 0, 0, date("m"), date("j"), date("Y")),
-		"numusers" => $stats['numusers'],
-		"numthreads" => $stats['numthreads'],
-		"numposts" => $stats['numposts']
+		"numusers" => (int)$stats['numusers'],
+		"numthreads" => (int)$stats['numthreads'],
+		"numposts" => (int)$stats['numposts']
 	);
 	$db->replace_query("stats", $todays_stats, "dateline");
 
@@ -2942,20 +2948,38 @@ function get_extension($file)
  * Generates a random string.
  *
  * @param int $length The length of the string to generate.
+ * @param bool $complex Whether to return complex string. Defaults to false
  * @return string The random string.
  */
-function random_str($length=8)
+function random_str($length=8, $complex=false)
 {
-	$set = array("a","A","b","B","c","C","d","D","e","E","f","F","g","G","h","H","i","I","j","J","k","K","l","L","m","M","n","N","o","O","p","P","q","Q","r","R","s","S","t","T","u","U","v","V","w","W","x","X","y","Y","z","Z","1","2","3","4","5","6","7","8","9");
-	$str = '';
+	$set = array_merge(range(0, 9), range('A', 'Z'), range('a', 'z'));
+	$str = array();
 
-	for($i = 1; $i <= $length; ++$i)
+	// Complex strings have always at least 3 characters, even if $length < 3
+	if($complex == true)
 	{
-		$ch = my_rand(0, count($set)-1);
-		$str .= $set[$ch];
+		// At least one number
+		$str[] = $set[my_rand(0, 9)];
+
+		// At least one big letter
+		$str[] = $set[my_rand(10, 35)];
+
+		// At least one small letter
+		$str[] = $set[my_rand(36, 61)];
+
+		$length -= 3;
 	}
 
-	return $str;
+	for($i = 0; $i < $length; ++$i)
+	{
+		$str[] = $set[my_rand(0, 61)];
+	}
+	
+	// Make sure they're in random order and convert them to a string
+	shuffle($str);
+
+	return implode($str);
 }
 
 /**
@@ -3188,9 +3212,12 @@ function build_mycode_inserter($bind="message", $smilies = true)
 			// Smilies
 			$emoticon = "";
 			$emoticons_enabled = "false";
-			if($smilies && $mybb->settings['smilieinserter'] != 0 && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
+			if($smilies)
 			{
-				$emoticon = ",emoticon";
+				if($mybb->settings['smilieinserter'] && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
+				{
+					$emoticon = ",emoticon";
+				}
 				$emoticons_enabled = "true";
 
 				if(!$smiliecache)
@@ -3201,11 +3228,8 @@ function build_mycode_inserter($bind="message", $smilies = true)
 					}
 					foreach($smilie_cache as $smilie)
 					{
-						if($smilie['showclickable'] != 0)
-						{
-							$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
-							$smiliecache[$smilie['sid']] = $smilie;
-						}
+						$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
+						$smiliecache[$smilie['sid']] = $smilie;
 					}
 				}
 
@@ -3230,9 +3254,14 @@ function build_mycode_inserter($bind="message", $smilies = true)
 						$image = htmlspecialchars_uni($mybb->get_asset_url($smilie['image']));
 						$image = str_replace(array('\\', '"'), array('\\\\', '\"'), $image);
 
-						if($i < $mybb->settings['smilieinsertertot'])
+						if(!$mybb->settings['smilieinserter'] || !$mybb->settings['smilieinsertercols'] || !$mybb->settings['smilieinsertertot'] || !$smilie['showclickable'])
+						{
+							$hiddensmilies .= '"'.$find.'": "'.$image.'",';							
+						}
+						elseif($i < $mybb->settings['smilieinsertertot'])
 						{
 							$dropdownsmilies .= '"'.$find.'": "'.$image.'",';
+							++$i;
 						}
 						else
 						{
@@ -3244,7 +3273,6 @@ function build_mycode_inserter($bind="message", $smilies = true)
 							$find = str_replace(array('\\', '"'), array('\\\\', '\"'), htmlspecialchars_uni($finds[$j]));
 							$hiddensmilies .= '"'.$find.'": "'.$image.'",';
 						}
-						++$i;
 					}
 				}
 			}
@@ -3339,11 +3367,8 @@ function build_clickable_smilies()
 			}
 			foreach($smilie_cache as $smilie)
 			{
-				if($smilie['showclickable'] != 0)
-				{
-					$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
-					$smiliecache[$smilie['sid']] = $smilie;
-				}
+				$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
+				$smiliecache[$smilie['sid']] = $smilie;
 			}
 		}
 
@@ -3371,7 +3396,7 @@ function build_clickable_smilies()
 			$extra_class = '';
 			foreach($smiliecache as $smilie)
 			{
-				if($i < $mybb->settings['smilieinsertertot'])
+				if($i < $mybb->settings['smilieinsertertot'] && $smilie['showclickable'] != 0)
 				{
 					if($counter == 0)
 					{
@@ -3477,14 +3502,15 @@ function build_prefixes($pid=0)
 }
 
 /**
- * Build the thread prefix selection menu
+ * Build the thread prefix selection menu for the current user
  *
  *  @param int|string $fid The forum ID (integer ID or string all)
  *  @param int|string $selected_pid The selected prefix ID (integer ID or string any)
  *  @param int $multiple Allow multiple prefix selection
+ *  @param int $previous_pid The previously selected prefix ID
  *  @return string The thread prefix selection menu
  */
-function build_prefix_select($fid, $selected_pid=0, $multiple=0)
+function build_prefix_select($fid, $selected_pid=0, $multiple=0, $previous_pid=0)
 {
 	global $cache, $db, $lang, $mybb, $templates;
 
@@ -3496,18 +3522,8 @@ function build_prefix_select($fid, $selected_pid=0, $multiple=0)
 	$prefix_cache = build_prefixes(0);
 	if(empty($prefix_cache))
 	{
-		return false; // We've got no prefixes to show
-	}
-
-	$groups = array($mybb->user['usergroup']);
-	if($mybb->user['additionalgroups'])
-	{
-		$exp = explode(",", $mybb->user['additionalgroups']);
-
-		foreach($exp as $group)
-		{
-			$groups[] = $group;
-		}
+		// We've got no prefixes to show
+		return '';
 	}
 
 	// Go through each of our prefixes and decide which ones we can use
@@ -3519,36 +3535,23 @@ function build_prefix_select($fid, $selected_pid=0, $multiple=0)
 			// Decide whether this prefix can be used in our forum
 			$forums = explode(",", $prefix['forums']);
 
-			if(!in_array($fid, $forums))
+			if(!in_array($fid, $forums) && $prefix['pid'] != $previous_pid)
 			{
 				// This prefix is not in our forum list
 				continue;
 			}
 		}
 
-		if($prefix['groups'] != "-1")
+		if(is_member($prefix['groups']) || $prefix['pid'] == $previous_pid)
 		{
-			$prefix_groups = explode(",", $prefix['groups']);
-
-			foreach($groups as $group)
-			{
-				if(in_array($group, $prefix_groups) && !isset($prefixes[$prefix['pid']]))
-				{
-					// Our group can use this prefix!
-					$prefixes[$prefix['pid']] = $prefix;
-				}
-			}
-		}
-		else
-		{
-			// This prefix is for anybody to use...
+			// The current user can use this prefix
 			$prefixes[$prefix['pid']] = $prefix;
 		}
 	}
 
 	if(empty($prefixes))
 	{
-		return false;
+		return '';
 	}
 
 	$prefixselect = $prefixselect_prefix = '';
@@ -3593,10 +3596,11 @@ function build_prefix_select($fid, $selected_pid=0, $multiple=0)
 }
 
 /**
- * Build the thread prefix selection menu for a forum
+ * Build the thread prefix selection menu for a forum without group permission checks
  *
  *  @param int $fid The forum ID (integer ID)
  *  @param int $selected_pid The selected prefix ID (integer ID)
+ *  @return string The thread prefix selection menu
  */
 function build_forum_prefix_select($fid, $selected_pid=0)
 {
@@ -3607,7 +3611,8 @@ function build_forum_prefix_select($fid, $selected_pid=0)
 	$prefix_cache = build_prefixes(0);
 	if(empty($prefix_cache))
 	{
-		return false; // We've got no prefixes to show
+		// We've got no prefixes to show
+		return '';
 	}
 
 	// Go through each of our prefixes and decide which ones we can use
@@ -3634,7 +3639,7 @@ function build_forum_prefix_select($fid, $selected_pid=0)
 
 	if(empty($prefixes))
 	{
-		return false;
+		return '';
 	}
 
 	$default_selected = array();
@@ -4809,14 +4814,7 @@ function leave_usergroup($uid, $leavegroup)
 {
 	global $db, $mybb, $cache;
 
-	if($uid == $mybb->user['uid'])
-	{
-		$user = $mybb->user;
-	}
-	else
-	{
-		$user = get_user($uid);
-	}
+	$user = get_user($uid);
 
 	$groupslist = $comma = '';
 	$usergroups = $user['additionalgroups'].",";
@@ -4989,7 +4987,7 @@ function build_theme_select($name, $selected=-1, $tid=0, $depth="", $usergroup_o
 
 	if(!is_array($tcache))
 	{
-		$query = $db->simple_select("themes", "name, pid, tid, allowedgroups", "pid != '0'", array('order_by' => 'pid, name'));
+		$query = $db->simple_select('themes', 'tid, name, pid, allowedgroups', "pid!='0'");
 
 		while($theme = $db->fetch_array($query))
 		{
@@ -5009,24 +5007,8 @@ function build_theme_select($name, $selected=-1, $tid=0, $depth="", $usergroup_o
 		foreach($tcache[$tid] as $theme)
 		{
 			$sel = "";
-			// Make theme allowed groups into array
-			$is_allowed = false;
-			if($theme['allowedgroups'] != "all")
-			{
-				$allowed_groups = explode(",", $theme['allowedgroups']);
-				// See if groups user is in is allowed
-				foreach($allowed_groups as $agid)
-				{
-					if(in_array($agid, $in_groups))
-					{
-						$is_allowed = true;
-						break;
-					}
-				}
-			}
-
 			// Show theme if allowed, or if override is on
-			if($is_allowed || $theme['allowedgroups'] == "all" || $usergroup_override == true)
+			if(is_member($theme['allowedgroups']) || $theme['allowedgroups'] == "all" || $usergroup_override == true)
 			{
 				if($theme['tid'] == $selected)
 				{
@@ -5043,7 +5025,7 @@ function build_theme_select($name, $selected=-1, $tid=0, $depth="", $usergroup_o
 
 				if(array_key_exists($theme['tid'], $tcache))
 				{
-					build_theme_select($name, $selected, $theme['tid'], $depthit, $usergroup_override, $footer);
+					build_theme_select($name, $selected, $theme['tid'], $depthit, $usergroup_override, $footer, $count_override);
 				}
 			}
 		}
@@ -5066,6 +5048,43 @@ function build_theme_select($name, $selected=-1, $tid=0, $depth="", $usergroup_o
 	{
 		return false;
 	}
+}
+
+/**
+ * Get the theme data of a theme id.
+ *
+ * @param int $tid The theme id of the theme.
+ * @return boolean|array False if no valid theme, Array with the theme data otherwise
+ */
+function get_theme($tid)
+{
+	global $tcache, $db;
+
+	if(!is_array($tcache))
+	{
+		$query = $db->simple_select('themes', 'tid, name, pid, allowedgroups', "pid!='0'");
+
+		while($theme = $db->fetch_array($query))
+		{
+			$tcache[$theme['pid']][$theme['tid']] = $theme;
+		}
+	}
+
+	$s_theme = false;
+
+	foreach($tcache as $themes)
+	{
+		foreach($themes as $theme)
+		{
+			if($tid == $theme['tid'])
+			{
+				$s_theme = $theme;
+				break 2;
+			}
+		}
+	}
+
+	return $s_theme;
 }
 
 /**
@@ -6621,17 +6640,13 @@ function is_banned_ip($ip_address, $update_lastuse=false)
 }
 
 /**
- * Build a time zone selection list.
+ * Returns an array of supported timezones
  *
- * @param string $name The name of the select
- * @param int $selected The selected time zone (defaults to GMT)
- * @param boolean $short True to generate a "short" list with just timezone and current time
- * @return string
+ * @return string[] Key is timezone offset, Value the language description
  */
-function build_timezone_select($name, $selected=0, $short=false)
+function get_supported_timezones()
 {
-	global $mybb, $lang, $templates;
-
+	global $lang;
 	$timezones = array(
 		"-12" => $lang->timezone_gmt_minus_1200,
 		"-11" => $lang->timezone_gmt_minus_1100,
@@ -6662,6 +6677,8 @@ function build_timezone_select($name, $selected=0, $short=false)
 		"6.5" => $lang->timezone_gmt_650,
 		"7" => $lang->timezone_gmt_700,
 		"8" => $lang->timezone_gmt_800,
+		"8.5" => $lang->timezone_gmt_850,
+		"8.75" => $lang->timezone_gmt_875,
 		"9" => $lang->timezone_gmt_900,
 		"9.5" => $lang->timezone_gmt_950,
 		"10" => $lang->timezone_gmt_1000,
@@ -6673,6 +6690,22 @@ function build_timezone_select($name, $selected=0, $short=false)
 		"13" => $lang->timezone_gmt_1300,
 		"14" => $lang->timezone_gmt_1400
 	);
+	return $timezones;
+}
+
+/**
+ * Build a time zone selection list.
+ *
+ * @param string $name The name of the select
+ * @param int $selected The selected time zone (defaults to GMT)
+ * @param boolean $short True to generate a "short" list with just timezone and current time
+ * @return string
+ */
+function build_timezone_select($name, $selected=0, $short=false)
+{
+	global $mybb, $lang, $templates;
+
+	$timezones = get_supported_timezones();
 
 	$selected = str_replace("+", "", $selected);
 	foreach($timezones as $timezone => $label)
@@ -6719,10 +6752,13 @@ function build_timezone_select($name, $selected=0, $short=false)
  *
  * @param string $url The URL of the remote file
  * @param array $post_data The array of post data
+ * @param int $max_redirects Number of maximum redirects
  * @return string|bool The remote file contents. False on failure
  */
-function fetch_remote_file($url, $post_data=array())
+function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 {
+	global $mybb;
+
 	$post_body = '';
 	if(!empty($post_data))
 	{
@@ -6735,18 +6771,56 @@ function fetch_remote_file($url, $post_data=array())
 
 	if(function_exists("curl_init"))
 	{
+		$can_followlocation = @ini_get('open_basedir') === '' && !$mybb->safemode;
+
+		$request_header = $max_redirects != 0 && !$can_followlocation;
+
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_HEADER, $request_header);
 		curl_setopt($ch, CURLOPT_TIMEOUT, 10);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+
+		if($max_redirects != 0 && $can_followlocation)
+		{
+			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+			curl_setopt($ch, CURLOPT_MAXREDIRS, $max_redirects);
+		}
+
 		if(!empty($post_body))
 		{
 			curl_setopt($ch, CURLOPT_POST, 1);
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $post_body);
 		}
-		$data = curl_exec($ch);
+
+		$response = curl_exec($ch);
+
+		if($request_header)
+		{
+			$header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+			$header = substr($response, 0, $header_size);
+			$body = substr($response, $header_size);
+
+			if(in_array(curl_getinfo($ch, CURLINFO_HTTP_CODE), array(301, 302)))
+			{
+				preg_match('/Location:(.*?)(?:\n|$)/', $header, $matches);
+
+				if($matches)
+				{
+					$data = fetch_remote_file(trim(array_pop($matches)), $post_data, --$max_redirects);
+				}
+			}
+			else
+			{
+				$data = $body;
+			}
+		}
+		else
+		{
+			$data = $response;
+		}
+
 		curl_close($ch);
 		return $data;
 	}
@@ -6757,15 +6831,15 @@ function fetch_remote_file($url, $post_data=array())
 		{
 			return false;
 		}
-		if(!$url['port'])
+		if(!isset($url['port']))
 		{
 			$url['port'] = 80;
 		}
-		if(!$url['path'])
+		if(!isset($url['path']))
 		{
 			$url['path'] = "/";
 		}
-		if($url['query'])
+		if(isset($url['query']))
 		{
 			$url['path'] .= "?{$url['query']}";
 		}
@@ -6818,13 +6892,36 @@ function fetch_remote_file($url, $post_data=array())
 		{
 			return false;
 		}
+
+		$data = null;
+
 		while(!feof($fp))
 		{
 			$data .= fgets($fp, 12800);
 		}
 		fclose($fp);
+
 		$data = explode("\r\n\r\n", $data, 2);
-		return $data[1];
+
+		$header = $data[0];
+		$status_line = current(explode("\n\n", $header, 1));
+		$body = $data[1];
+
+		if($max_redirects != 0 && (strstr($status_line, ' 301 ') || strstr($status_line, ' 302 ')))
+		{
+			preg_match('/Location:(.*?)(?:\n|$)/', $header, $matches);
+
+			if($matches)
+			{
+				$data = fetch_remote_file(trim(array_pop($matches)), $post_data, --$max_redirects);
+			}
+		}
+		else
+		{
+			$data = $body;
+		}
+
+		return $data;
 	}
 	else if(empty($post_data))
 	{
@@ -7085,7 +7182,7 @@ function ban_date2timestamp($date, $stamp=0)
 	$n[1] += $d[0];
 	$n[2] += $d[1];
 	$n[3] += $d[2];
-	return mktime(date("G"), date("i"), 0, $n[2], $n[1], $n[3]);
+	return mktime(date("G", $stamp), date("i", $stamp), 0, $n[2], $n[1], $n[3]);
 }
 
 /**
@@ -7591,129 +7688,186 @@ function signed($int)
 }
 
 /**
- * Returns a securely generated seed for PHP's RNG (Random Number Generator)
+ * Returns a securely generated seed
  *
- * @param int $count Length of the seed bytes (8 is default. Provides good cryptographic variance)
- * @return int An integer equivalent of a secure hexadecimal seed
+ * @return string A secure binary seed
  */
-function secure_seed_rng($count=8)
+function secure_binary_seed_rng($bytes)
 {
-	$output = '';
-	// DIRECTORY_SEPARATOR checks if running windows
-	if(DIRECTORY_SEPARATOR != '\\')
+	$output = null;
+
+	if(version_compare(PHP_VERSION, '7.0', '>='))
 	{
-		// Unix/Linux
-		// Use OpenSSL when available
-		if(function_exists('openssl_random_pseudo_bytes'))
+		try
 		{
-			$output = openssl_random_pseudo_bytes($count);
+			$output = random_bytes($bytes);
+		} catch (Exception $e) {
 		}
-		// Try mcrypt
-		elseif(function_exists('mcrypt_create_iv'))
+	}
+
+	if(strlen($output) < $bytes)
+	{
+		if(@is_readable('/dev/urandom') && ($handle = @fopen('/dev/urandom', 'rb')))
 		{
-			$output = mcrypt_create_iv($count, MCRYPT_DEV_URANDOM);
-		}
-		// Try /dev/urandom
-		elseif(@is_readable('/dev/urandom') && ($handle = @fopen('/dev/urandom', 'rb')))
-		{
-			$output = @fread($handle, $count);
+			$output = @fread($handle, $bytes);
 			@fclose($handle);
 		}
 	}
 	else
 	{
-		// Windows
-		// Use OpenSSL when available
-		// PHP <5.3.4 had a bug which makes that function unusable on Windows
-		if(function_exists('openssl_random_pseudo_bytes') && version_compare(PHP_VERSION, '5.3.4', '>='))
+		return $output;
+	}
+
+	if(strlen($output) < $bytes)
+	{
+		if(function_exists('mcrypt_create_iv'))
 		{
-			$output = openssl_random_pseudo_bytes($count);
+			if (DIRECTORY_SEPARATOR == '/')
+			{
+				$source = MCRYPT_DEV_URANDOM;
+			}
+			else
+			{
+				$source = MCRYPT_RAND;
+			}
+
+			$output = @mcrypt_create_iv($bytes, $source);
 		}
-		// Try mcrypt
-		elseif(function_exists('mcrypt_create_iv'))
+	}
+	else
+	{
+		return $output;
+	}
+
+	if(strlen($output) < $bytes)
+	{
+		if(function_exists('openssl_random_pseudo_bytes'))
 		{
-			$output = mcrypt_create_iv($count, MCRYPT_RAND);
+			// PHP <5.3.4 had a bug which makes that function unusable on Windows
+			if ((DIRECTORY_SEPARATOR == '/') || version_compare(PHP_VERSION, '5.3.4', '>='))
+			{
+				$output = openssl_random_pseudo_bytes($bytes, $crypto_strong);
+				if ($crypto_strong == false)
+				{
+					$output = null;
+				}
+			}
 		}
-		// Try Windows CAPICOM before using our own generator
-		elseif(class_exists('COM'))
+	}
+	else
+	{
+		return $output;
+	}
+
+	if(strlen($output) < $bytes)
+	{
+		if(class_exists('COM'))
 		{
 			try
 			{
 				$CAPI_Util = new COM('CAPICOM.Utilities.1');
 				if(is_callable(array($CAPI_Util, 'GetRandom')))
 				{
-					$output = $CAPI_Util->GetRandom($count, 0);
+					$output = $CAPI_Util->GetRandom($bytes, 0);
 				}
 			} catch (Exception $e) {
 			}
 		}
 	}
-
-	// Didn't work? Do we still not have enough bytes? Use our own (less secure) rng generator
-	if(strlen($output) < $count)
+	else
 	{
-		$output = '';
+		return $output;
+	}
 
+	if(strlen($output) < $bytes)
+	{
 		// Close to what PHP basically uses internally to seed, but not quite.
 		$unique_state = microtime().@getmypid();
 
-		for($i = 0; $i < $count; $i += 16)
+		$rounds = ceil($bytes / 16);
+
+		for($i = 0; $i < $rounds; $i++)
 		{
 			$unique_state = md5(microtime().$unique_state);
-			$output .= pack('H*', md5($unique_state));
+			$output .= md5($unique_state);
 		}
-	}
 
-	// /dev/urandom and openssl will always be twice as long as $count. base64_encode will roughly take up 33% more space but crc32 will put it to 32 characters
-	$output = hexdec(substr(dechex(crc32(base64_encode($output))), 0, $count));
+		$output = substr($output, 0, ($bytes * 2));
+
+		$output = pack('H*', $output);
+
+		return $output;
+	}
+	else
+	{
+		return $output;
+	}
+}
+
+/**
+ * Returns a securely generated seed integer
+ *
+ * @return int An integer equivalent of a secure hexadecimal seed
+ */
+function secure_seed_rng()
+{
+	$bytes = PHP_INT_SIZE;
+
+	do
+	{
+
+		$output = secure_binary_seed_rng($bytes);
+
+		// convert binary data to a decimal number
+		if ($bytes == 4)
+		{
+			$elements = unpack('i', $output);
+			$output = abs($elements[1]);
+		}
+		else
+		{
+			$elements = unpack('N2', $output);
+			$output = abs($elements[1] << 32 | $elements[2]);
+		}
+
+	} while($output > PHP_INT_MAX);
 
 	return $output;
 }
 
 /**
- * Wrapper function for mt_rand. Automatically seeds using a secure seed once.
+ * Generates a cryptographically secure random number.
  *
  * @param int $min Optional lowest value to be returned (default: 0)
- * @param int $max Optional highest value to be returned (default: mt_getrandmax())
- * @param boolean $force_seed True forces it to reseed the RNG first
- * @return int An integer equivalent of a secure hexadecimal seed
+ * @param int $max Optional highest value to be returned (default: PHP_INT_MAX)
  */
-function my_rand($min=null, $max=null, $force_seed=false)
+function my_rand($min=0, $max=PHP_INT_MAX)
 {
-	static $seeded = false;
-	static $obfuscator = 0;
-
-	if($seeded == false || $force_seed == true)
+	// backward compatibility
+	if($min === null || $max === null || $max < $min)
 	{
-		mt_srand(secure_seed_rng());
-		$seeded = true;
+		$min = 0;
+		$max = PHP_INT_MAX;
+	}
 
-		$obfuscator = abs((int) secure_seed_rng());
-
-		// Ensure that $obfuscator is <= mt_getrandmax() for 64 bit systems.
-		if($obfuscator > mt_getrandmax())
+	if(version_compare(PHP_VERSION, '7.0', '>='))
+	{
+		try
 		{
-			$obfuscator -= mt_getrandmax();
+			$result = random_int($min, $max);
+		} catch (Exception $e) {
+		}
+
+		if(isset($result))
+		{
+			return $result;
 		}
 	}
 
-	if($min !== null && $max !== null)
-	{
-		$distance = $max - $min;
-		if($distance > 0)
-		{
-			return $min + (int)((float)($distance + 1) * (float)(mt_rand() ^ $obfuscator) / (mt_getrandmax() + 1));
-		}
-		else
-		{
-			return mt_rand($min, $max);
-		}
-	}
-	else
-	{
-		$val = mt_rand() ^ $obfuscator;
-		return $val;
-	}
+	$seed = secure_seed_rng();
+
+	$distance = $max - $min;
+	return $min + floor($distance * ($seed / PHP_INT_MAX) );
 }
 
 /**
@@ -8052,20 +8206,22 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 
 		foreach(array('subject', 'message') as $key)
 		{
-			$lang_string = $pm[$key];
 			if(is_array($pm[$key]))
 			{
+				$lang_string = $lang->{$pm[$key][0]};
 				$num_args = count($pm[$key]);
 
 				for($i = 1; $i < $num_args; $i++)
 				{
-					$lang->{$pm[$key][0]} = str_replace('{'.$i.'}', $pm[$key][$i], $lang->{$pm[$key][0]});
+					$lang_string = str_replace('{'.$i.'}', $pm[$key][$i], $lang_string);
 				}
-
-				$lang_string = $pm[$key][0];
+			}
+			else
+			{
+				$lang_string = $lang->{$pm[$key]};
 			}
 
-			$pm[$key] = $lang->{$lang_string};
+			$pm[$key] = $lang_string;
 		}
 
 		if(isset($revert))
@@ -8080,8 +8236,6 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 	{
 		return false;
 	}
-
-	$lang->load('messages');
 
 	require_once MYBB_ROOT."inc/datahandlers/pm.php";
 

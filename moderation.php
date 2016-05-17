@@ -471,7 +471,7 @@ switch($mybb->input['action'])
 			if(strpos($delayedmod['tids'], ',') === false)
 			{
 				$delayed_thread = get_thread($delayedmod['tids']);
-				$info .= "<strong>{$lang->thread}</strong> <a href=\"".get_thread_link($delayedmod['tids'])."\">".htmlspecialchars_uni($delayed_thread['subject'])."</a><br />";
+				$info .= "<strong>{$lang->thread}</strong> <a href=\"".get_thread_link($delayedmod['tids'])."\">".htmlspecialchars_uni($parser->parse_badwords($delayed_thread['subject']))."</a><br />";
 			}
 			else
 			{
@@ -985,7 +985,7 @@ switch($mybb->input['action'])
 				$info = '';
 				if($modaction['tsubject'])
 				{
-					$info .= "<strong>$lang->thread</strong> <a href=\"".get_thread_link($modaction['tid'])."\">".htmlspecialchars_uni($modaction['tsubject'])."</a><br />";
+					$info .= "<strong>$lang->thread</strong> <a href=\"".get_thread_link($modaction['tid'])."\">".htmlspecialchars_uni($parser->parse_badwords($modaction['tsubject']))."</a><br />";
 				}
 				if($modaction['fname'])
 				{
@@ -993,7 +993,7 @@ switch($mybb->input['action'])
 				}
 				if($modaction['psubject'])
 				{
-					$info .= "<strong>$lang->post</strong> <a href=\"".get_post_link($modaction['pid'])."#pid".$modaction['pid']."\">".htmlspecialchars_uni($modaction['psubject'])."</a>";
+					$info .= "<strong>$lang->post</strong> <a href=\"".get_post_link($modaction['pid'])."#pid".$modaction['pid']."\">".htmlspecialchars_uni($parser->parse_badwords($modaction['psubject']))."</a>";
 				}
 
 				eval("\$modactions .= \"".$templates->get("moderation_threadnotes_modaction")."\";");
@@ -2714,7 +2714,6 @@ switch($mybb->input['action'])
 
 	// Soft delete posts - Inline moderation
 	case "multisoftdeleteposts":
-
 		// Verify incoming POST request
 		verify_post_check($mybb->get_input('my_post_key'));
 
@@ -2743,8 +2742,8 @@ switch($mybb->input['action'])
 		}
 
 		$moderation->soft_delete_posts($pids);
-
 		log_moderator_action($modlogdata, $lang->multi_soft_delete_posts);
+
 		if($mybb->get_input('inlinetype') == 'search')
 		{
 			clearinline($mybb->get_input('searchid', MyBB::INPUT_INT), 'search');

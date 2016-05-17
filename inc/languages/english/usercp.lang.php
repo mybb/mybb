@@ -25,7 +25,8 @@ $l['nav_addsubscription'] = "Add Subscription";
 $l['resend_activation'] = "Resend Activation Email";
 $l['away_notice_away'] = "You have been marked away since {1}";
 $l['away_notice'] = "This option will allow you to select whether you are away or not.";
-$l['already_uploaded_avatar'] = "You are currently using an uploaded avatar. If you upload another one, your old one will be deleted.";
+$l['already_uploaded_avatar'] = "You are currently using an uploaded image. If you choose to use another one, your old avatar image will be deleted from the server.";
+$l['using_remote_avatar'] = "You are currently using an image from a remote site. If you choose to use another one, your old avatar URL will be emptied.";
 $l['na_deleted'] = "N/A - Been Deleted";
 $l['user_cp'] = "User Control Panel";
 $l['user_cp_welcome'] = "This is your user control panel. You can access your profile, subscriptions, and private messaging all from here.<br />The main page has information on your account.";
@@ -390,7 +391,6 @@ $l['icon_no_new'] = "No new posts.";
 $l['icon_new'] = "New posts.";
 $l['icon_hot'] = " Hot thread.";
 $l['icon_lock'] = " Locked thread.";
-$l['search_user'] = "Search for a user";
 
 $l['buddylist_error'] = 'There was an error fetching the buddy list. ';
 

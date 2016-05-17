@@ -101,20 +101,6 @@ class SmtpMail extends MailHandler
 	public $host = '';
 
 	/**
-	 * The last received response from the SMTP server.
-	 *
-	 * @var string
-	 */
-	public $data = '';
-
-	/**
-	 * The last received response code from the SMTP server.
-	 *
-	 * @var string
-	 */
-	public $code = 0;
-
-	/**
 	 * The last received error message from the SMTP server.
 	 *
 	 * @var string

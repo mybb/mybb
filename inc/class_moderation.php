@@ -1223,12 +1223,12 @@ class Moderation
 							'pid' => $pid,
 							'uid' => $attachment['uid'],
 							'filename' => $db->escape_string($attachment['filename']),
-							'filetype' => $attachment['filetype'],
+							'filetype' => $db->escape_string($attachment['filetype']),
 							'filesize' => $attachment['filesize'],
-							'attachname' => $attachment['attachname'],
+							'attachname' => $db->escape_string($attachment['attachname']),
 							'downloads' => $attachment['downloads'],
 							'visible' => $attachment['visible'],
-							'thumbnail' => $attachment['thumbnail']
+							'thumbnail' => $db->escape_string($attachment['thumbnail'])
 						);
 						$new_aid = $db->insert_query("attachments", $attachment_array);
 
@@ -3273,6 +3273,7 @@ class Moderation
 		{
 			$where = "pid IN (".implode(',', $pids).")";
 			$db->update_query("posts", $update, $where);
+			mark_reports($pids, "posts");
 		}
 
 		$plugins->run_hooks("class_moderation_soft_delete_posts", $pids);
@@ -3716,6 +3717,9 @@ class Moderation
 		// Soft delete redirects, too
 		$redirect_tids = array();
 		$query = $db->simple_select('threads', 'tid', "closed IN ({$tid_moved_list})");
+
+		mark_reports($tids, "threads");
+		
 		while($redirect_tid = $db->fetch_field($query, 'tid'))
 		{
 			$redirect_tids[] = $redirect_tid;

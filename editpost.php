@@ -21,6 +21,8 @@ $templatelist .= ",postbit_warninglevel_formatted,postbit_reputation_formatted_l
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 require_once MYBB_ROOT."inc/functions_upload.php";
+require_once MYBB_ROOT."inc/class_parser.php";
+$parser = new postParser;
 
 // Load global language phrases
 $lang->load("editpost");
@@ -60,7 +62,7 @@ if(!$thread)
 	error($lang->error_invalidthread);
 }
 
-$thread['subject'] = htmlspecialchars_uni($thread['subject']);
+$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 
 // Get forum info
 $fid = $post['fid'];
@@ -844,7 +846,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 			$mybb->input['threadprefix'] = $thread['prefix'];
 		}
 
-		$prefixselect = build_prefix_select($forum['fid'], $mybb->get_input('threadprefix', MyBB::INPUT_INT));
+		$prefixselect = build_prefix_select($forum['fid'], $mybb->get_input('threadprefix', MyBB::INPUT_INT), 0, $thread['prefix']);
 	}
 	else
 	{

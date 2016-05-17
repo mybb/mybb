@@ -42,12 +42,6 @@ if($mybb->user['uid'] == 0 || $mybb->usergroup['canusercp'] == 0)
 	error_no_permission();
 }
 
-if(!$mybb->user['pmfolders'])
-{
-	$mybb->user['pmfolders'] = "1**".$lang->folder_inbox."$%%$2**".$lang->folder_sent_items."$%%$3**".$lang->folder_drafts."$%%$4**".$lang->folder_trash;
-	$db->update_query("users", array('pmfolders' => $mybb->user['pmfolders']), "uid='".$mybb->user['uid']."'");
-}
-
 $errors = '';
 
 $mybb->input['action'] = $mybb->get_input('action');
@@ -792,7 +786,9 @@ if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 		"dateformat" => $mybb->get_input('dateformat', MyBB::INPUT_INT),
 		"timeformat" => $mybb->get_input('timeformat', MyBB::INPUT_INT),
 		"timezone" => $db->escape_string($mybb->get_input('timezoneoffset')),
-		"language" => $mybb->get_input('language')
+		"language" => $mybb->get_input('language'),
+		'usergroup'	=> $mybb->user['usergroup'],
+		'additionalgroups'	=> $mybb->user['additionalgroups']
 	);
 
 	$user['options'] = array(
@@ -1551,34 +1547,19 @@ if($mybb->input['action'] == "subscriptions")
 	if(!empty($subscriptions))
 	{
 		$tids = implode(",", array_keys($subscriptions));
-
-		if($mybb->user['uid'] == 0)
-		{
-			// Build a forum cache.
-			$query = $db->simple_select('forums', 'fid', 'active != 0', array('order_by' => 'pid, disporder'));
-
-			$forumsread = my_unserialize($mybb->cookies['mybb']['forumread']);
-		}
-		else
-		{
-			// Build a forum cache.
-			$query = $db->query("
-				SELECT f.fid, fr.dateline AS lastread
-				FROM ".TABLE_PREFIX."forums f
-				LEFT JOIN ".TABLE_PREFIX."forumsread fr ON (fr.fid=f.fid AND fr.uid='{$mybb->user['uid']}')
-				WHERE f.active != 0
-				ORDER BY pid, disporder
-			");
-		}
+		$readforums = array();
+		
+		// Build a forum cache.
+		$query = $db->query("
+			SELECT f.fid, fr.dateline AS lastread
+			FROM ".TABLE_PREFIX."forums f
+			LEFT JOIN ".TABLE_PREFIX."forumsread fr ON (fr.fid=f.fid AND fr.uid='{$mybb->user['uid']}')
+			WHERE f.active != 0
+			ORDER BY pid, disporder
+		");
+		
 		while($forum = $db->fetch_array($query))
 		{
-			if($mybb->user['uid'] == 0)
-			{
-				if($forumsread[$forum['fid']])
-				{
-					$forum['lastread'] = $forumsread[$forum['fid']];
-				}
-			}
 			$readforums[$forum['fid']] = $forum['lastread'];
 		}
 
@@ -1659,7 +1640,7 @@ if($mybb->input['action'] == "subscriptions")
 			$donenew = 0;
 			$lastread = 0;
 
-			if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'])
+			if($mybb->settings['threadreadcut'] > 0)
 			{
 				$forum_read = $readforums[$thread['fid']];
 
@@ -1668,10 +1649,6 @@ if($mybb->input['action'] == "subscriptions")
 				{
 					$forum_read = $read_cutoff;
 				}
-			}
-			else
-			{
-				$forum_read = $forumsread[$thread['fid']];
 			}
 
 			$cutoff = 0;
@@ -1792,42 +1769,17 @@ if($mybb->input['action'] == "forumsubscriptions")
 {
 	$plugins->run_hooks("usercp_forumsubscriptions_start");
 
-	if($mybb->user['uid'] == 0)
-	{
-		// Build a forum cache.
-		$query = $db->query("
-			SELECT fid
-			FROM ".TABLE_PREFIX."forums
-			WHERE active != 0
-			ORDER BY pid, disporder
-		");
-
-		if(isset($mybb->cookies['mybb']['forumread']))
-		{
-			$forumsread = my_unserialize($mybb->cookies['mybb']['forumread']);
-		}
-	}
-	else
-	{
-		// Build a forum cache.
-		$query = $db->query("
-			SELECT f.fid, fr.dateline AS lastread
-			FROM ".TABLE_PREFIX."forums f
-			LEFT JOIN ".TABLE_PREFIX."forumsread fr ON (fr.fid=f.fid AND fr.uid='{$mybb->user['uid']}')
-			WHERE f.active != 0
-			ORDER BY pid, disporder
-		");
-	}
+	// Build a forum cache.
+	$query = $db->query("
+		SELECT f.fid, fr.dateline AS lastread
+		FROM ".TABLE_PREFIX."forums f
+		LEFT JOIN ".TABLE_PREFIX."forumsread fr ON (fr.fid=f.fid AND fr.uid='{$mybb->user['uid']}')
+		WHERE f.active != 0
+		ORDER BY pid, disporder
+	");
 	$readforums = array();
 	while($forum = $db->fetch_array($query))
 	{
-		if($mybb->user['uid'] == 0)
-		{
-			if($forumsread[$forum['fid']])
-			{
-				$forum['lastread'] = $forumsread[$forum['fid']];
-			}
-		}
 		$readforums[$forum['fid']] = $forum['lastread'];
 	}
 
@@ -2149,7 +2101,7 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 			$s = "?s={$maxheight}&r={$rating}&d=mm";
 
 			$updated_avatar = array(
-				"avatar" => "http://www.gravatar.com/avatar/{$email}{$s}.jpg",
+				"avatar" => "https://www.gravatar.com/avatar/{$email}{$s}",
 				"avatardimensions" => "{$maxheight}|{$maxheight}",
 				"avatartype" => "gravatar"
 			);
@@ -2398,6 +2350,7 @@ if($mybb->input['action'] == "acceptrequest")
 	
 	redirect("usercp.php?action=editlists", $lang->buddyrequest_accepted);
 }
+
 elseif($mybb->input['action'] == "declinerequest")
 {
 	// Verify incoming POST request
@@ -2427,6 +2380,7 @@ elseif($mybb->input['action'] == "declinerequest")
 	
 	redirect("usercp.php?action=editlists", $lang->buddyrequest_declined);
 }
+
 elseif($mybb->input['action'] == "cancelrequest")
 {
 	// Verify incoming POST request
@@ -3222,15 +3176,18 @@ if($mybb->input['action'] == "usergroups")
 
 			$db->insert_query("joinrequests", $joinrequest);
 
-			foreach($groupleaders[$usergroup['gid']] as $leader)
+			if(array_key_exists($usergroup['gid'], $groupleaders))
 			{
-				// Load language
-				$lang->set_language($leader['language']);
-				$lang->load("messages");
-					
-				$subject = $lang->sprintf($lang->emailsubject_newjoinrequest, $mybb->settings['bbname']);
-				$message = $lang->sprintf($lang->email_groupleader_joinrequest, $leader['username'], $mybb->user['username'], $usergroup['title'], $mybb->settings['bbname'], $mybb->get_input('reason'), $mybb->settings['bburl'], $leader['gid']);
-				my_mail($leader['email'], $subject, $message);
+				foreach($groupleaders[$usergroup['gid']] as $leader)
+				{
+					// Load language
+					$lang->set_language($leader['language']);
+					$lang->load("messages");
+						
+					$subject = $lang->sprintf($lang->emailsubject_newjoinrequest, $mybb->settings['bbname']);
+					$message = $lang->sprintf($lang->email_groupleader_joinrequest, $leader['username'], $mybb->user['username'], $usergroup['title'], $mybb->settings['bbname'], $mybb->get_input('reason'), $mybb->settings['bburl'], $leader['gid']);
+					my_mail($leader['email'], $subject, $message);
+				}
 			}
 
 			// Load language
@@ -3310,7 +3267,7 @@ if($mybb->input['action'] == "usergroups")
 				LEFT JOIN ".TABLE_PREFIX."users u ON(((CONCAT(',', u.additionalgroups, ',') LIKE CONCAT('%,', g.gid, ',%')) OR u.usergroup = g.gid))
 				LEFT JOIN ".TABLE_PREFIX."joinrequests j ON(j.gid=g.gid AND j.uid != 0)
 				WHERE l.uid='".$mybb->user['uid']."'
-				GROUP BY l.gid
+				GROUP BY g.gid, g.title, g.type, l.canmanagerequests, l.canmanagemembers, l.caninvitemembers
 			");
 	}
 
@@ -3676,6 +3633,7 @@ if(!$mybb->input['action'])
 	$regdate = my_date('relative', $mybb->user['regdate']);
 
 	$useravatar = format_avatar($mybb->user['avatar'], $mybb->user['avatardimensions'], '100x100');
+	$avatar_username = htmlspecialchars_uni($mybb->user['username']);
 	eval("\$avatar = \"".$templates->get("usercp_currentavatar")."\";");
 
 	$usergroup = htmlspecialchars_uni($groupscache[$mybb->user['usergroup']]['title']);
@@ -4015,6 +3973,7 @@ if(!$mybb->input['action'])
 	if(!empty($threadcache))
 	{
 		$tids = implode(",", array_keys($threadcache));
+		$readforums = array();
 
 		// Read Forums
 		$query = $db->query("
@@ -4024,6 +3983,7 @@ if(!$mybb->input['action'])
 			WHERE f.active != 0
 			ORDER BY pid, disporder
 		");
+		
 		while($forum = $db->fetch_array($query))
 		{
 			$readforums[$forum['fid']] = $forum['lastread'];

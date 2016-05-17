@@ -11,7 +11,7 @@
 /**
  * eAccelerator Cache Handler
  */
-class eacceleratorCacheHandler
+class eacceleratorCacheHandler implements CacheHandlerInterface
 {
 	/**
 	 * Unique identifier representing this copy of MyBB
@@ -20,10 +20,7 @@ class eacceleratorCacheHandler
 	 */
 	public $unique_id;
 
-	/**
-	 * @param bool $silent ignored
-	 */
-	function eacceleratorCacheHandler($silent=false)
+	function __construct()
 	{
 		global $mybb;
 
@@ -56,10 +53,9 @@ class eacceleratorCacheHandler
 	 * Retrieve an item from the cache.
 	 *
 	 * @param string $name The name of the cache
-	 * @param boolean $hard_refresh True if we should do a hard refresh
 	 * @return mixed Cache data if successful, false if failure
 	 */
-	function fetch($name, $hard_refresh=false)
+	function fetch($name)
 	{
 		$data = eaccelerator_get($this->unique_id."_".$name);
 		if($data === false)
@@ -111,7 +107,7 @@ class eacceleratorCacheHandler
 	 *
 	 * @return string
 	 */
-	function size_of($name)
+	function size_of($name='')
 	{
 		global $lang;
 

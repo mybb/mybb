@@ -526,6 +526,7 @@ class UserDataHandler extends DataHandler
 				}
 
 				$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
+				$profilefield['name'] = htmlspecialchars_uni($profilefield['name']);
 				$thing = explode("\n", $profilefield['type'], "2");
 				$type = trim($thing[0]);
 				$field = "fid{$profilefield['fid']}";
@@ -857,7 +858,7 @@ class UserDataHandler extends DataHandler
 	}
 
 	/**
-	 * Verifies if a langage is valid for this user or not.
+	 * Verifies if a language is valid for this user or not.
 	 *
 	 * @return boolean True when valid, false when invalid.
 	 */
@@ -877,6 +878,31 @@ class UserDataHandler extends DataHandler
 	}
 
 	/**
+	 * Verifies if a style is valid for this user or not.
+	 *
+	 * @return boolean True when valid, false when invalid.
+	 */
+	function verify_style()
+	{
+		global $lang;
+
+		$user = &$this->data;
+
+		if($user['style'])
+		{
+			$theme = get_theme($user['style']);
+
+			if(empty($theme) || !is_member($theme['allowedgroups'], $user) && $theme['allowedgroups'] != 'all')
+			{
+				$this->set_error('invalid_style');
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
 	 * Verifies if this is coming from a spam bot or not
 	 *
 	 * @return boolean True when valid, false when invalid.
@@ -891,6 +917,27 @@ class UserDataHandler extends DataHandler
 			$this->set_error("invalid_checkfield");
 			return false;
 		}
+		return true;
+	}
+
+	/**
+	 * Verifies if the user timezone is valid. 
+	 * If the timezone is invalid, the board default is used.
+	 *
+	 * @return boolean True when timezone was valid, false otherwise
+	 */
+	function verify_timezone()
+	{
+		$user = &$this->data;
+
+		$timezones = get_supported_timezones();
+
+		if(!array_key_exists($user['timezone'], $timezones))
+		{
+			$user['timezone'] = $mybb->settings['timezoneoffset'];
+			return false;
+		}
+
 		return true;
 	}
 
@@ -992,6 +1039,10 @@ class UserDataHandler extends DataHandler
 		{
 			$this->verify_language();
 		}
+		if($this->method == "insert" || array_key_exists('timezone', $user))
+		{
+			$this->verify_timezone();
+		}
 		if($this->method == "insert" && array_key_exists('regcheck1', $user) && array_key_exists('regcheck2', $user))
 		{
 			$this->verify_checkfields();
@@ -999,6 +1050,10 @@ class UserDataHandler extends DataHandler
 		if(array_key_exists('birthdayprivacy', $user))
 		{
 			$this->verify_birthday_privacy();
+		}
+		if($this->method == "insert" || array_key_exists('style', $user))
+		{
+			$this->verify_style();
 		}
 
 		$plugins->run_hooks("datahandler_user_validate", $this);
@@ -1462,7 +1517,17 @@ class UserDataHandler extends DataHandler
 		$plugins->run_hooks('datahandler_user_delete_start', $this);
 
 		$this->delete_uids = implode(',', $this->delete_uids);
-		
+
+		if(empty($this->delete_uids))
+		{
+			$this->deleted_users = 0;
+			$this->return_values = array(
+				"deleted_users" => $this->deleted_users
+			);
+
+			return $this->return_values;
+		}
+
 		$this->delete_content();
 
 		// Delete the user
@@ -1473,13 +1538,20 @@ class UserDataHandler extends DataHandler
 		if((int)$prunecontent == 1)
 		{
 			$this->delete_posts();
+			$db->delete_query('announcements', "uid IN({$this->delete_uids})");
 		}
 		else
 		{
 			// We're just updating the UID
+			$db->update_query('pollvotes', array('uid' => 0), "uid IN({$this->delete_uids})");
 			$db->update_query('posts', array('uid' => 0), "uid IN({$this->delete_uids})");
 			$db->update_query('threads', array('uid' => 0), "uid IN({$this->delete_uids})");
+			$db->update_query('attachments', array('uid' => 0), "uid IN({$this->delete_uids})");
+			$db->update_query('announcements', array('uid' => 0), "uid IN({$this->delete_uids})");
 		}
+
+		$db->update_query('privatemessages', array('fromid' => 0), "fromid IN({$this->delete_uids})");
+		$db->update_query('users', array('referrer' => 0), "referrer IN({$this->delete_uids})");
 
 		// Update thread ratings
 		$query = $db->query("
@@ -1503,22 +1575,21 @@ class UserDataHandler extends DataHandler
 		$db->update_query('forums', array('lastposteruid' => 0), "lastposteruid IN({$this->delete_uids})");
 		$db->update_query('threads', array('lastposteruid' => 0), "lastposteruid IN({$this->delete_uids})");
 
-		$cache->update_banned();
-		$cache->update_moderators();
-
 		// Update forum stats
 		update_stats(array('numusers' => '-'.$this->deleted_users));
 
 		$this->return_values = array(
 			"deleted_users" => $this->deleted_users
 		);
-		
-		// Update reports cache
-		$cache->update_reportedcontent();
-
-		$cache->update_awaitingactivation();
 
 		$plugins->run_hooks("datahandler_user_delete_end", $this);
+
+		// Update  cache
+		$cache->update_banned();
+		$cache->update_moderators();
+		$cache->update_forumsdisplay();
+		$cache->update_reportedcontent();
+		$cache->update_awaitingactivation();
 
 		return $this->return_values;
 	}
@@ -1550,6 +1621,11 @@ class UserDataHandler extends DataHandler
 
 		$plugins->run_hooks('datahandler_user_delete_content', $this);
 
+		if(empty($this->delete_uids))
+		{
+			return;
+		}
+
 		$db->delete_query('userfields', "ufid IN({$this->delete_uids})");
 		$db->delete_query('privatemessages', "uid IN({$this->delete_uids})");
 		$db->delete_query('events', "uid IN({$this->delete_uids})");
@@ -1580,13 +1656,11 @@ class UserDataHandler extends DataHandler
 		$db->update_query('reportedcontent', array('uid' => 0), "uid IN({$this->delete_uids})");
 
 		// Remove any of the user(s) uploaded avatars
-		$query = $db->simple_select('users', 'avatar', "uid IN({$this->delete_uids}) AND avatartype='upload'");
-		while($avatar = $db->fetch_field($query, 'avatar'))
+		require_once MYBB_ROOT.'inc/functions_upload.php';
+		foreach(explode(',', $this->delete_uids) as $uid)
 		{
-			$avatar = substr($avatar, 2, -20);
-			@unlink(MYBB_ROOT.$avatar);
+			remove_avatars($uid);
 		}
-
 	}
 
 	/**
@@ -1619,6 +1693,11 @@ class UserDataHandler extends DataHandler
 
 		$plugins->run_hooks('datahandler_user_delete_posts', $this);
 
+		if(empty($this->delete_uids))
+		{
+			return;
+		}
+
 		// Threads
 		$query = $db->simple_select('threads', 'tid', "uid IN({$this->delete_uids})");
 		while($tid = $db->fetch_field($query, 'tid'))
@@ -1627,18 +1706,10 @@ class UserDataHandler extends DataHandler
 		}
 
 		// Posts
-		$pids = array();
 		$query = $db->simple_select('posts', 'pid', "uid IN({$this->delete_uids})");
 		while($pid = $db->fetch_field($query, 'pid'))
 		{
 			$moderation->delete_post($pid);
-			$pids[] = (int)$pid;
-		}
-
-		// Delete Reports made to users's posts/threads
-		if(!empty($pids))
-		{
-			$db->delete_query('reportedcontent', "type='posts' AND id IN(".implode(',', $pids).")");
 		}
 	}
 
@@ -1697,7 +1768,19 @@ class UserDataHandler extends DataHandler
 
 		$plugins->run_hooks('datahandler_user_clear_profile', $this);
 
+		if(empty($this->delete_uids))
+		{
+			return;
+		}
+
 		$db->update_query("users", $update, "uid IN({$this->delete_uids})");
 		$db->delete_query('userfields', "ufid IN({$this->delete_uids})");
+
+		// Remove any of the user(s) uploaded avatars
+		require_once MYBB_ROOT.'inc/functions_upload.php';
+		foreach(explode(',', $this->delete_uids) as $uid)
+		{
+			remove_avatars($uid);
+		}
 	}
 }
