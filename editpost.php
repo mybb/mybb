@@ -21,6 +21,8 @@ $templatelist .= ",postbit_warninglevel_formatted,postbit_reputation_formatted_l
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 require_once MYBB_ROOT."inc/functions_upload.php";
+require_once MYBB_ROOT."inc/class_parser.php";
+$parser = new postParser;
 
 // Load global language phrases
 $lang->load("editpost");
@@ -60,7 +62,7 @@ if(!$thread)
 	error($lang->error_invalidthread);
 }
 
-$thread['subject'] = htmlspecialchars_uni($thread['subject']);
+$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 
 // Get forum info
 $fid = $post['fid'];

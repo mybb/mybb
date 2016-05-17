@@ -513,7 +513,7 @@ if($mybb->input['action'] == "reports")
 					$report_data['content'] = $lang->sprintf($lang->report_info_post, $post, $user);
 
 					$thread_link = get_thread_link($postcache[$report['id']]['tid']);
-					$thread_subject = htmlspecialchars_uni($postcache[$report['id']]['subject']);
+					$thread_subject = htmlspecialchars_uni($parser->parse_badwords($postcache[$report['id']]['subject']));
 					$report_data['content'] .= $lang->sprintf($lang->report_info_post_thread, $thread_link, $thread_subject);
 
 					break;
@@ -700,7 +700,7 @@ if($mybb->input['action'] == "allreports")
 				$report_data['content'] = $lang->sprintf($lang->report_info_post, $post, $user);
 
 				$thread_link = get_thread_link($report['id2']);
-				$thread_subject = htmlspecialchars_uni($report['threadsubject']);
+				$thread_subject = htmlspecialchars_uni($parser->parse_badwords($report['threadsubject']));
 				$report_data['content'] .= $lang->sprintf($lang->report_info_post_thread, $thread_link, $thread_subject);
 			}
 			else if($report['type'] == 'profile')
@@ -895,7 +895,7 @@ if($mybb->input['action'] == "modlogs")
 
 		if($logitem['tsubject'])
 		{
-			$logitem['tsubject'] = htmlspecialchars_uni($logitem['tsubject']);
+			$logitem['tsubject'] = htmlspecialchars_uni($parser->parse_badwords($logitem['tsubject']));
 			$logitem['thread'] = get_thread_link($logitem['tid']);
 			eval("\$information .= \"".$templates->get("modcp_modlogs_result_thread")."\";");
 		}
@@ -906,7 +906,7 @@ if($mybb->input['action'] == "modlogs")
 		}
 		if($logitem['psubject'])
 		{
-			$logitem['psubject'] = htmlspecialchars_uni($logitem['psubject']);
+			$logitem['psubject'] = htmlspecialchars_uni($parser->parse_badwords($logitem['psubject']));
 			$logitem['post'] = get_post_link($logitem['pid']);
 			eval("\$information .= \"".$templates->get("modcp_modlogs_result_post")."\";");
 		}
@@ -921,7 +921,7 @@ if($mybb->input['action'] == "modlogs")
 			}
 			if(!empty($data['aid']))
 			{
-				$data['subject'] = htmlspecialchars_uni($data['subject']);
+				$data['subject'] = htmlspecialchars_uni($parser->parse_badwords($data['subject']));
 				$data['announcement'] = get_announcement_link($data['aid']);
 				eval("\$information .= \"".$templates->get("modcp_modlogs_result_announcement")."\";");
 			}
@@ -1015,7 +1015,7 @@ if($mybb->input['action'] == "delete_announcement")
 	$query = $db->simple_select("announcements", "aid, subject, fid", "aid='{$aid}'");
 
 	$announcement = $db->fetch_array($query);
-	$announcement['subject'] = htmlspecialchars_uni($announcement['subject']);
+	$announcement['subject'] = htmlspecialchars_uni($parser->parse_badwords($announcement['subject']));
 
 	if(!$announcement)
 	{
@@ -1841,7 +1841,7 @@ if($mybb->input['action'] == "announcements")
 					eval("\$icon = \"".$templates->get("modcp_announcements_announcement_active")."\";");
 				}
 
-				$subject = htmlspecialchars_uni($announcement['subject']);
+				$subject = htmlspecialchars_uni($parser->parse_badwords($announcement['subject']));
 
 				eval("\$announcements_global .= \"".$templates->get("modcp_announcements_announcement_global")."\";");
 			}
@@ -2341,9 +2341,9 @@ if($mybb->input['action'] == "modqueue")
 
 			$attachdate = my_date('relative', $attachment['dateuploaded']);
 
-			$attachment['postsubject'] = htmlspecialchars_uni($attachment['postsubject']);
+			$attachment['postsubject'] = htmlspecialchars_uni($parser->parse_badwords($attachment['postsubject']));
 			$attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
-			$attachment['threadsubject'] = htmlspecialchars_uni($attachment['threadsubject']);
+			$attachment['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($attachment['threadsubject']));
 			$attachment['filesize'] = get_friendly_size($attachment['filesize']);
 
 			$link = get_post_link($attachment['pid'], $attachment['tid']) . "#pid{$attachment['pid']}";
@@ -3826,7 +3826,7 @@ if($mybb->input['action'] == "ipsearch")
 					}
 
 					$ipaddress['postlink'] = get_post_link($ipaddress['pid'], $ipaddress['tid']);
-					$ipaddress['subject'] = htmlspecialchars_uni($ipaddress['subject']);
+					$ipaddress['subject'] = htmlspecialchars_uni($parser->parse_badwords($ipaddress['subject']));
 					$ipaddress['profilelink'] = build_profile_link($ipaddress['username'], $ipaddress['uid']);
 
 					eval("\$subject = \"".$templates->get("modcp_ipsearch_result_post")."\";");
@@ -4622,7 +4622,7 @@ if(!$mybb->input['action'])
 
 			if($logitem['tsubject'])
 			{
-				$logitem['tsubject'] = htmlspecialchars_uni($logitem['tsubject']);
+				$logitem['tsubject'] = htmlspecialchars_uni($parser->parse_badwords($logitem['tsubject']));
 				$logitem['thread'] = get_thread_link($logitem['tid']);
 				eval("\$information .= \"".$templates->get("modcp_modlogs_result_thread")."\";");
 			}
@@ -4633,7 +4633,7 @@ if(!$mybb->input['action'])
 			}
 			if($logitem['psubject'])
 			{
-				$logitem['psubject'] = htmlspecialchars_uni($logitem['psubject']);
+				$logitem['psubject'] = htmlspecialchars_uni($parser->parse_badwords($logitem['psubject']));
 				$logitem['post'] = get_post_link($logitem['pid']);
 				eval("\$information .= \"".$templates->get("modcp_modlogs_result_post")."\";");
 			}
@@ -4648,7 +4648,7 @@ if(!$mybb->input['action'])
 				}
 				if($data['aid'])
 				{
-					$data['subject'] = htmlspecialchars_uni($data['subject']);
+					$data['subject'] = htmlspecialchars_uni($parser->parse_badwords($data['subject']));
 					$data['announcement'] = get_announcement_link($data['aid']);
 					eval("\$information .= \"".$templates->get("modcp_modlogs_result_announcement")."\";");
 				}
