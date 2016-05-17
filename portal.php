@@ -74,6 +74,8 @@ if($inactive)
 	$tunviewwhere .= " AND t.fid NOT IN ($inactive)";
 }
 
+$mybb->user['username'] = htmlspecialchars_uni($mybb->user['username']);
+
 $welcome = '';
 // If user is known, welcome them
 if($mybb->settings['portal_showwelcome'] != 0)
@@ -283,7 +285,7 @@ if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] !
 
 				if(($user['invisible'] == 1 && ($mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])) || $user['invisible'] != 1)
 				{
-					$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
+					$user['username'] = format_name(htmlspecialchars_uni($user['username']), $user['usergroup'], $user['displaygroup']);
 					$user['profilelink'] = get_profile_link($user['uid']);
 					eval("\$onlinemembers .= \"".$templates->get("portal_whosonline_memberbit", 1, 0)."\";");
 					$comma = $lang->comma;

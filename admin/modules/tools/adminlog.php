@@ -101,7 +101,7 @@ if($mybb->input['action'] == 'prune')
 	");
 	while($user = $db->fetch_array($query))
 	{
-		$user_options[$user['uid']] = $user['username'];
+		$user_options[$user['uid']] = htmlspecialchars_uni($user['username']);
 	}
 
 	$module_options = array();
@@ -237,6 +237,7 @@ if(!$mybb->input['action'])
 	{
 		$information = '';
 		$trow = alt_trow();
+		$logitem['username'] = htmlspecialchars_uni($logitem['username']);
 		$username = format_name($logitem['username'], $logitem['usergroup'], $logitem['displaygroup']);
 
 		$logitem['data'] = my_unserialize($logitem['data']);
@@ -282,7 +283,7 @@ if(!$mybb->input['action'])
 	");
 	while($user = $db->fetch_array($query))
 	{
-		$user_options[$user['uid']] = $user['username'];
+		$user_options[$user['uid']] = htmlspecialchars_uni($user['username']);
 	}
 
 	$module_options = array();

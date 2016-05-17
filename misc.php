@@ -550,6 +550,7 @@ elseif($mybb->input['action'] == "buddypopup")
 
 		while($buddy = $db->fetch_array($query))
 		{
+			$buddy['username'] = htmlspecialchars_uni($buddy['username']);
 			$buddy_name = format_name($buddy['username'], $buddy['usergroup'], $buddy['displaygroup']);
 			$profile_link = build_profile_link($buddy_name, $buddy['uid'], '_blank', 'if(window.opener) { window.opener.location = this.href; return false; }');
 
@@ -682,6 +683,8 @@ elseif($mybb->input['action'] == "whoposted")
 		{
 			$poster['username'] = $poster['postusername'];
 		}
+		$poster['username'] = htmlspecialchars_uni($poster['username']);
+		$poster['postusername'] = htmlspecialchars_uni($poster['postusername']);
 		$poster_name = format_name($poster['username'], $poster['usergroup'], $poster['displaygroup']);
 		if($poster['uid'])
 		{
@@ -822,6 +825,8 @@ elseif($mybb->input['action'] == "imcenter")
 	$user['skype'] = htmlspecialchars_uni($user['skype']);
 	$user['yahoo'] = htmlspecialchars_uni($user['yahoo']);
 	$user['aim'] = htmlspecialchars_uni($user['aim']);
+
+	$user['username'] = htmlspecialchars_uni($user['username']);
 
 	$lang->chat_on_skype = $lang->sprintf($lang->chat_on_skype, $user['username']);
 	$lang->call_on_skype = $lang->sprintf($lang->call_on_skype, $user['username']);
