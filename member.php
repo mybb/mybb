@@ -1614,6 +1614,9 @@ if($mybb->input['action'] == "resetpassword")
 				'email'		=> $user['email'],
 				'password'	=> random_str($password_length, $mybb->settings['requirecomplexpasswords'])
 			));
+
+			$userhandler->set_validated(true);
+			$userhandler->errors = array();
 		}
 
 		$userhandler->update_user();
@@ -1624,6 +1627,7 @@ if($mybb->input['action'] == "resetpassword")
 			'loginkey'	=> $userhandler->data['loginkey'],
 		);
 
+		$password = &$logindetails['password'];
 		$email = $user['email'];
 
 		$plugins->run_hooks("member_resetpassword_process");
