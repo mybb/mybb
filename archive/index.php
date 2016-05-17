@@ -55,7 +55,7 @@ switch($action)
 
 		$announcement['message'] = $parser->parse_message($announcement['message'], $parser_options);
 
-		$profile_link = build_profile_link($announcement['username'], $announcement['uid']);
+		$profile_link = build_profile_link(htmlspecialchars_uni($announcement['username']), $announcement['uid']);
 
 		// Build the navigation
 		add_breadcrumb($announcement['subject']);
@@ -216,7 +216,7 @@ switch($action)
 			{
 				$post['username'] = $post['userusername'];
 			}
-			$post['username'] = build_profile_link($post['username'], $post['uid']);
+			$post['username'] = build_profile_link(htmlspecialchars_uni($post['username']), $post['uid']);
 
 			$plugins->run_hooks("archive_thread_post");
 

@@ -149,13 +149,6 @@ $query = $db->query("
 ");
 while($postrow = $db->fetch_array($query))
 {
-	if($postrow['userusername'])
-	{
-		$postrow['username'] = $postrow['userusername'];
-	}
-	$postrow['subject'] = htmlspecialchars_uni($parser->parse_badwords($postrow['subject']));
-	$postrow['date'] = my_date($mybb->settings['dateformat'], $postrow['dateline'], null, 0);
-	$postrow['profilelink'] = build_profile_link($postrow['username'], $postrow['uid']);
 	$parser_options = array(
 		"allow_html" => $forum['allowhtml'],
 		"allow_mycode" => $forum['allowmycode'],
@@ -180,6 +173,15 @@ while($postrow = $db->fetch_array($query))
 	{
 		$parser_options['allow_videocode'] = 0;
 	}
+
+	if($postrow['userusername'])
+	{
+		$postrow['username'] = $postrow['userusername'];
+	}
+	$postrow['username'] = htmlspecialchars_uni($postrow['username']);
+	$postrow['subject'] = htmlspecialchars_uni($parser->parse_badwords($postrow['subject']));
+	$postrow['date'] = my_date($mybb->settings['dateformat'], $postrow['dateline'], null, 0);
+	$postrow['profilelink'] = build_profile_link($postrow['username'], $postrow['uid']);
 
 	$postrow['message'] = $parser->parse_message($postrow['message'], $parser_options);
 	$plugins->run_hooks("printthread_post");

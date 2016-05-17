@@ -422,6 +422,7 @@ if($mybb->input['action'] == "add")
 	$plugins->run_hooks("reputation_add_start");
 
 	// If we have an existing reputation for this user, the user can modify or delete it.
+	$user['username'] = htmlspecialchars_uni($user['username']);
 	if(!empty($existing_reputation['uid']))
 	{
 		$vote_title = $lang->sprintf($lang->update_reputation_vote, $user['username']);
@@ -578,6 +579,7 @@ if(!$mybb->input['action'])
 		error($lang->reputations_disabled_group);
 	}
 
+	$user['username'] = htmlspecialchars_uni($user['username']);
 	$lang->nav_profile = $lang->sprintf($lang->nav_profile, $user['username']);
 	$lang->reputation_report = $lang->sprintf($lang->reputation_report, $user['username']);
 
@@ -968,7 +970,7 @@ if(!$mybb->input['action'])
 		}
 		else
 		{
-			$reputation_vote['username'] = format_name($reputation_vote['username'], $reputation_vote['user_usergroup'], $reputation_vote['user_displaygroup']);
+			$reputation_vote['username'] = format_name(htmlspecialchars_uni($reputation_vote['username']), $reputation_vote['user_usergroup'], $reputation_vote['user_displaygroup']);
 			$reputation_vote['username'] = build_profile_link($reputation_vote['username'], $reputation_vote['uid']);
 			$reputation_vote['user_reputation'] = "({$reputation_vote['user_reputation']})";
 		}
@@ -1003,6 +1005,8 @@ if(!$mybb->input['action'])
 		// Format the date this reputation was last modified
 		$last_updated_date = my_date('relative', $reputation_vote['dateline']);
 		$last_updated = $lang->sprintf($lang->last_updated, $last_updated_date);
+
+		$user['username'] = htmlspecialchars_uni($user['username']);
 
 		// Is this rating specific to a post?
 		$postrep_given = '';
