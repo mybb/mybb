@@ -14,7 +14,7 @@ interface DB_Base
 	 * Connect to the database server.
 	 *
 	 * @param array $config Array of DBMS connection details.
-	 * @return resource The DB connection resource. Returns false on fail or -1 on a db connect failure.
+	 * @return resource|PDOStatement|mysqli_result The DB connection resource. Returns false on fail or -1 on a db connect failure.
 	 */
 	function connect($config);
 
@@ -22,9 +22,9 @@ interface DB_Base
 	 * Query the database.
 	 *
 	 * @param string $string The query SQL.
-	 * @param integer $hide_errors 1 if hide errors, 0 if not.
+	 * @param integer|bool $hide_errors 1 if hide errors, 0 if not.
 	 * @param integer 1 $write_query if executes on master database, 0 if not.
-	 * @return resource The query data.
+	 * @return resource|PDOStatement|mysqli_result The query data.
 	 */
 	function query($string, $hide_errors=0, $write_query=0);
 
@@ -33,7 +33,7 @@ interface DB_Base
 	 *
 	 * @param string $query The query SQL.
 	 * @param boolean|int $hide_errors 1 if hide errors, 0 if not.
-	 * @return resource The query data.
+	 * @return resource|PDOStatement|mysqli_result The query data.
 	 */
 	function write_query($query, $hide_errors=0);
 
@@ -48,8 +48,8 @@ interface DB_Base
 	/**
 	 * Return a result array for a query.
 	 *
-	 * @param resource	   $query	   The query ID.
-	 * @param int $resulttype The type of array to return.
+	 * @param resource|PDOStatement|mysqli_result $query The query ID.
+	 * @param int $resulttype The type of array to return. Specified with the different constants for the type using
 	 *
 	 * @return array The array of results.
 	 */
@@ -58,7 +58,7 @@ interface DB_Base
 	/**
 	 * Return a specific field from a query.
 	 *
-	 * @param resource $query The query ID.
+	 * @param resource|PDOStatement|mysqli_result $query The query ID.
 	 * @param string $field The name of the field to return.
 	 * @param int|boolean $row The number of the row to fetch it from.
 	 */
@@ -67,7 +67,7 @@ interface DB_Base
 	/**
 	 * Moves internal row pointer to the next row
 	 *
-	 * @param resource $query The query ID.
+	 * @param resource|PDOStatement|mysqli_result $query The query ID.
 	 * @param int $row The pointer to move the row to.
 	 */
 	function data_seek($query, $row);
@@ -75,7 +75,7 @@ interface DB_Base
 	/**
 	 * Return the number of rows resulting from a query.
 	 *
-	 * @param resource $query The query ID.
+	 * @param resource|PDOStatement|mysqli_result $query The query ID.
 	 * @return int The number of rows in the result.
 	 */
 	function num_rows($query);
@@ -124,7 +124,7 @@ interface DB_Base
 	/**
 	 * Return the number of fields.
 	 *
-	 * @param resource $query The query ID.
+	 * @param resource|PDOStatement|mysqli_result $query The query ID.
 	 * @return int The number of fields.
 	 */
 	function num_fields($query);
@@ -158,10 +158,10 @@ interface DB_Base
 	/**
 	 * Add a shutdown query.
 	 *
-	 * @param resource $query The query data.
-	 * @param string|int $name An optional name for the query.
+	 * @param resource|PDOStatement|mysqli_result $query The query data.
+	 * @param string $name An optional name for the query.
 	 */
-	function shutdown_query($query, $name=0);
+	function shutdown_query($query, $name='');
 
 	/**
 	 * Performs a simple select query.
@@ -170,7 +170,7 @@ interface DB_Base
 	 * @param string $fields Comma delimited list of fields to be selected.
 	 * @param string $conditions SQL formatted list of conditions to be matched.
 	 * @param array $options List of options: group by, order by, order direction, limit, limit start.
-	 * @return resource The query data.
+	 * @return resource|PDOStatement|mysqli_result The query data.
 	 */
 	function simple_select($table, $fields="*", $conditions="", $options=array());
 
@@ -188,7 +188,7 @@ interface DB_Base
 	 *
 	 * @param string $table The table name to perform the query on.
 	 * @param array $array An array of inserts.
-	 * @return int The insert ID if available
+	 * @return void
 	 */
 	function insert_query_multiple($table, $array);
 
@@ -200,7 +200,7 @@ interface DB_Base
 	 * @param string $where An optional where clause for the query.
 	 * @param string $limit An optional limit clause for the query.
 	 * @param boolean $no_quote An option to quote incoming values of the array.
-	 * @return resource The query data.
+	 * @return resource|PDOStatement|mysqli_result The query data.
 	 */
 	function update_query($table, $array, $where="", $limit="", $no_quote=false);
 
@@ -210,7 +210,7 @@ interface DB_Base
 	 * @param string $table The table name to perform the query on.
 	 * @param string $where An optional where clause for the query.
 	 * @param string $limit An optional limit clause for the query.
-	 * @return resource The query data.
+	 * @return resource|PDOStatement|mysqli_result The query data.
 	 */
 	function delete_query($table, $where="", $limit="");
 
@@ -223,9 +223,9 @@ interface DB_Base
 	function escape_string($string);
 
 	/**
-	 * Frees the resources of a MySQLi query.
+	 * Frees the resources of a query.
 	 *
-	 * @param object $query The query to destroy.
+	 * @param resource|PDOStatement|mysqli_result $query The query to destroy.
 	 * @return boolean Returns true on success, false on faliure
 	 */
 	function free_result($query);
@@ -263,7 +263,7 @@ interface DB_Base
 	 * Show the "create table" command for a specific table.
 	 *
 	 * @param string $table The name of the table.
-	 * @return string The MySQL command to create the specified table.
+	 * @return string The SQL command to create the specified table.
 	 */
 	function show_create_table($table);
 
@@ -271,7 +271,7 @@ interface DB_Base
 	 * Show the "show fields from" command for a specific table.
 	 *
 	 * @param string $table The name of the table.
-	 * @return string Field info for that table
+	 * @return array Field info for that table
 	 */
 	function show_fields_from($table);
 
@@ -405,7 +405,7 @@ interface DB_Base
 	/**
 	 * Fetch a list of database character sets this DBMS supports
 	 *
-	 * @return array Array of supported character sets with array key being the name, array value being display name. False if unsupported
+	 * @return array|bool Array of supported character sets with array key being the name, array value being display name. False if unsupported
 	 */
 	function fetch_db_charsets();
 
@@ -413,7 +413,7 @@ interface DB_Base
 	 * Fetch a database collation for a particular database character set
 	 *
 	 * @param string $charset The database character set
-	 * @return string The matching database collation, false if unsupported
+	 * @return string|bool The matching database collation, false if unsupported
 	 */
 	function fetch_charset_collation($charset);
 

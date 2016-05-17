@@ -326,7 +326,7 @@ if(!$mybb->input['action'])
 
 /**
  * Returns language-friendly string describing $logitem
- * @param array The log item (one row from mybb_adminlogs)
+ * @param array $logitem The log item (one row from mybb_adminlogs)
  * @return string The description
  */
 function get_admin_log_action($logitem)

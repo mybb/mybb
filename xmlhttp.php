@@ -1022,7 +1022,7 @@ else if($mybb->input['action'] == "get_buddyselect")
 /**
  * Spits an XML Http based error message back to the browser
  *
- * @param string The message to send back.
+ * @param string $message The message to send back.
  */
 function xmlhttp_error($message)
 {

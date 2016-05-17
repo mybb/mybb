@@ -50,6 +50,8 @@ class PMDataHandler extends DataHandler
 
 	/**
 	 * PM ID currently being manipulated by the datahandlers.
+	 *
+	 * @var int
 	 */
 	public $pmid = 0;
 
@@ -384,7 +386,7 @@ class PMDataHandler extends DataHandler
 	/**
 	* Verify that the user is not flooding the system.
 	*
-	* @return boolean True
+	* @return boolean
 	*/
 	function verify_pm_flooding()
 	{

@@ -1726,6 +1726,12 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 		$template_groups[$templategroup['prefix']] = $templategroup;
 	}
 
+	/**
+	 * @param array $a
+	 * @param array $b
+	 *
+	 * @return int
+	 */
 	function sort_template_groups($a, $b)
 	{
 		return strcasecmp($a['title'], $b['title']);

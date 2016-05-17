@@ -1529,24 +1529,18 @@ if($mybb->input['action'] == "thread")
 /**
  * Build a navigation tree for threaded display.
  *
- * @param unknown_type $replyto
- * @param unknown_type $indent
- * @return unknown
+ * @param int $replyto
+ * @param int $indent
+ * @return string
  */
-function buildtree($replyto="0", $indent="0")
+function buildtree($replyto=0, $indent=0)
 {
-	global $tree, $mybb, $theme, $mybb, $pid, $tid, $templates, $parser;
+	global $tree, $mybb, $theme, $mybb, $pid, $tid, $templates, $parser, $lang;
 
-	if($indent)
-	{
-		$indentsize = 13 * $indent;
-	}
-	else
-	{
-		$indentsize = 0;
-	}
+	$indentsize = 13 * $indent;
 
 	++$indent;
+	$posts = '';
 	if(is_array($tree[$replyto]))
 	{
 		foreach($tree[$replyto] as $key => $post)

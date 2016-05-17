@@ -881,6 +881,11 @@ if(!$mybb->input['action'])
 	$page->output_footer();
 }
 
+/**
+ * @param DefaultTable $table
+ * @param int $pid
+ * @param int $depth
+ */
 function fetch_forum_announcements(&$table, $pid=0, $depth=1)
 {
 	global $mybb, $db, $lang, $announcements, $page;

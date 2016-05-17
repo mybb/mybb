@@ -153,7 +153,7 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Connect to the database server.
 	 *
-	 * @param array Array of DBMS connection details.
+	 * @param array $config Array of DBMS connection details.
 	 * @return resource The DB connection resource. Returns false on failure
 	 */
 	function connect($config)
@@ -279,14 +279,14 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Query the database.
 	 *
-	 * @param string The query SQL.
-	 * @param boolean 1 if hide errors, 0 if not.
-	 * @param integer 1 if executes on slave database, 0 if not.
+	 * @param string $string The query SQL.
+	 * @param boolean|int $hide_errors 1 if hide errors, 0 if not.
+	 * @param integer $write_query 1 if executes on slave database, 0 if not.
 	 * @return resource The query data.
 	 */
 	function query($string, $hide_errors=0, $write_query=0)
 	{
-		global $pagestarttime, $db, $mybb;
+		global $mybb;
 
 		$string = preg_replace("#LIMIT (\s*)([0-9]+),(\s*)([0-9]+)$#im", "LIMIT $4 OFFSET $2", trim($string));
 
@@ -339,8 +339,8 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Execute a write query on the slave database
 	 *
-	 * @param string The query SQL.
-	 * @param boolean 1 if hide errors, 0 if not.
+	 * @param string $query The query SQL.
+	 * @param boolean|int $hide_errors 1 if hide errors, 0 if not.
 	 * @return resource The query data.
 	 */
 	function write_query($query, $hide_errors=0)
@@ -351,8 +351,8 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Explain a query on the database.
 	 *
-	 * @param string The query SQL.
-	 * @param string The time it took to perform the query.
+	 * @param string $string The query SQL.
+	 * @param string $qtime The time it took to perform the query.
 	 */
 	function explain_query($string, $qtime)
 	{
@@ -407,9 +407,9 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Return a result array for a query.
 	 *
-	 * @param resource The query ID.
-	 * @param constant The type of array to return.
-	 * @return array The array of results.
+	 * @param resource $query The query ID.
+	 * @param int $resulttype The type of array to return. Either PGSQL_NUM, PGSQL_BOTH or PGSQL_ASSOC
+	 * @return array The array of results. Note that all fields are returned as string: http://php.net/manual/en/function.pg-fetch-array.php
 	 */
 	function fetch_array($query, $resulttype=PGSQL_ASSOC)
 	{
@@ -431,9 +431,10 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Return a specific field from a query.
 	 *
-	 * @param resource The query ID.
-	 * @param string The name of the field to return.
-	 * @param int The number of the row to fetch it from.
+	 * @param resource $query The query ID.
+	 * @param string $field The name of the field to return.
+	 * @param int|bool The number of the row to fetch it from.
+	 * @return string|bool|null As per http://php.net/manual/en/function.pg-fetch-result.php
 	 */
 	function fetch_field($query, $field, $row=false)
 	{
@@ -451,8 +452,9 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Moves internal row pointer to the next row
 	 *
-	 * @param resource The query ID.
-	 * @param int The pointer to move the row to.
+	 * @param resource $query The query ID.
+	 * @param int $row The pointer to move the row to.
+	 * @return bool
 	 */
 	function data_seek($query, $row)
 	{
@@ -462,7 +464,7 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Return the number of rows resulting from a query.
 	 *
-	 * @param resource The query ID.
+	 * @param resource $query The query ID.
 	 * @return int The number of rows in the result.
 	 */
 	function num_rows($query)
@@ -489,7 +491,7 @@ class DB_PgSQL implements DB_Base
 		// Do we not have a primary field?
 		if(!$field)
 		{
-			return;
+			return 0;
 		}
 
 		$id = $this->write_query("SELECT currval(pg_get_serial_sequence('{$table}', '{$field}')) AS last_value");
@@ -512,11 +514,12 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Return an error number.
 	 *
+	 * @param resource $query
 	 * @return int The error number of the current error.
 	 */
-	function error_number($query="")
+	function error_number($query=null)
 	{
-		if(!$query || !function_exists("pg_result_error_field"))
+		if($query != null || !function_exists("pg_result_error_field"))
 		{
 			return 0;
 		}
@@ -527,11 +530,12 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Return an error string.
 	 *
+	 * @param resource $query
 	 * @return string The explanation for the current error.
 	 */
-	function error_string($query="")
+	function error_string($query=null)
 	{
-		if($query)
+		if($query != null)
 		{
 			return pg_result_error($query);
 		}
@@ -549,9 +553,10 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Output a database error.
 	 *
-	 * @param string The string to present as an error.
+	 * @param string $string The string to present as an error.
+	 * @param resource $query
 	 */
-	function error($string="", $query="")
+	function error($string="", $query=null)
 	{
 		if($this->error_reporting)
 		{
@@ -592,7 +597,7 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Return the number of fields.
 	 *
-	 * @param resource The query ID.
+	 * @param resource $query The query ID.
 	 * @return int The number of fields.
 	 */
 	function num_fields($query)
@@ -603,8 +608,8 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Lists all tables in the database.
 	 *
-	 * @param string The database name.
-	 * @param string Prefix of the table (optional)
+	 * @param string $database The database name.
+	 * @param string $prefix Prefix of the table (optional)
 	 * @return array The table list.
 	 */
 	function list_tables($database, $prefix='')
@@ -630,7 +635,7 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Check if a table exists in a database.
 	 *
-	 * @param string The table name.
+	 * @param string $table The table name.
 	 * @return boolean True when exists, false if not.
 	 */
 	function table_exists($table)
@@ -653,8 +658,8 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Check if a field exists in a database.
 	 *
-	 * @param string The field name.
-	 * @param string The table name.
+	 * @param string $field The field name.
+	 * @param string $table The table name.
 	 * @return boolean True when exists, false if not.
 	 */
 	function field_exists($field, $table)
@@ -676,10 +681,10 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Add a shutdown query.
 	 *
-	 * @param resource The query data.
-	 * @param string An optional name for the query.
+	 * @param resource $query The query data.
+	 * @param string $name An optional name for the query.
 	 */
-	function shutdown_query($query, $name=0)
+	function shutdown_query($query, $name="")
 	{
 		global $shutdown_queries;
 		if($name)
@@ -695,10 +700,10 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Performs a simple select query.
 	 *
-	 * @param string The table name to be queried.
-	 * @param string Comma delimetered list of fields to be selected.
-	 * @param string SQL formatted list of conditions to be matched.
-	 * @param array List of options: group by, order by, order direction, limit, limit start.
+	 * @param string $table The table name to be queried.
+	 * @param string $fields Comma delimetered list of fields to be selected.
+	 * @param string $conditions SQL formatted list of conditions to be matched.
+	 * @param array $options List of options: group by, order by, order direction, limit, limit start.
 	 * @return resource The query data.
 	 */
 	function simple_select($table, $fields="*", $conditions="", $options=array())
@@ -738,10 +743,10 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Build an insert query from an array.
 	 *
-	 * @param string The table name to perform the query on.
-	 * @param array An array of fields and their values.
-	 * @param boolean Whether or not to return an insert id. True by default
-	 * @return int The insert ID if available
+	 * @param string $table The table name to perform the query on.
+	 * @param array $array An array of fields and their values.
+	 * @param boolean $insert_id Whether or not to return an insert id. True by default
+	 * @return int|bool The insert ID if available. False on failure and true if $insert_id is false
 	 */
 	function insert_query($table, $array, $insert_id=true)
 	{
@@ -785,9 +790,9 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Build one query for multiple inserts from a multidimensional array.
 	 *
-	 * @param string The table name to perform the query on.
-	 * @param array An array of inserts.
-	 * @return int The insert ID if available
+	 * @param string $table The table name to perform the query on.
+	 * @param array $array An array of inserts.
+	 * @return void
 	 */
 	function insert_query_multiple($table, $array)
 	{
@@ -795,7 +800,7 @@ class DB_PgSQL implements DB_Base
 
 		if(!is_array($array))
 		{
-			return false;
+			return;
 		}
 		// Field names
 		$fields = array_keys($array[0]);
@@ -829,11 +834,11 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Build an update query from an array.
 	 *
-	 * @param string The table name to perform the query on.
-	 * @param array An array of fields and their values.
-	 * @param string An optional where clause for the query.
-	 * @param string An optional limit clause for the query.
-	 * @param boolean An option to quote incoming values of the array.
+	 * @param string $table The table name to perform the query on.
+	 * @param array $array An array of fields and their values.
+	 * @param string $where An optional where clause for the query.
+	 * @param string $limit An optional limit clause for the query.
+	 * @param boolean $no_quote An option to quote incoming values of the array.
 	 * @return resource The query data.
 	 */
 	function update_query($table, $array, $where="", $limit="", $no_quote=false)
@@ -878,6 +883,12 @@ class DB_PgSQL implements DB_Base
 		");
 	}
 
+	/**
+	 * @param int|string $value
+	 * @param string $quote
+	 *
+	 * @return int|string
+	 */
 	private function quote_val($value, $quote="'")
 	{
 		if(is_int($value))
@@ -895,9 +906,9 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Build a delete query.
 	 *
-	 * @param string The table name to perform the query on.
-	 * @param string An optional where clause for the query.
-	 * @param string An optional limit clause for the query.
+	 * @param string $table The table name to perform the query on.
+	 * @param string $where An optional where clause for the query.
+	 * @param string $limit An optional limit clause for the query.
 	 * @return resource The query data.
 	 */
 	function delete_query($table, $where="", $limit="")
@@ -918,7 +929,7 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Escape a string according to the pg escape format.
 	 *
-	 * @param string The string to be escaped.
+	 * @param string $string The string to be escaped.
 	 * @return string The escaped string.
 	 */
 	function escape_string($string)
@@ -935,10 +946,10 @@ class DB_PgSQL implements DB_Base
 	}
 
 	/**
-	 * Frees the resources of a MySQLi query.
+	 * Frees the resources of a PgSQL query.
 	 *
-	 * @param object The query to destroy.
-	 * @return boolean Returns true on success, false on faliure
+	 * @param resource $query The query to destroy.
+	 * @return boolean Returns true on success, false on failure
 	 */
 	function free_result($query)
 	{
@@ -948,7 +959,7 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Escape a string used within a like command.
 	 *
-	 * @param string The string to be escaped.
+	 * @param string $string The string to be escaped.
 	 * @return string The escaped string.
 	 */
 	function escape_string_like($string)
@@ -978,7 +989,7 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Optimizes a specific table.
 	 *
-	 * @param string The name of the table to be optimized.
+	 * @param string $table The name of the table to be optimized.
 	 */
 	function optimize_table($table)
 	{
@@ -988,7 +999,7 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Analyzes a specific table.
 	 *
-	 * @param string The name of the table to be analyzed.
+	 * @param string $table The name of the table to be analyzed.
 	 */
 	function analyze_table($table)
 	{
@@ -998,7 +1009,7 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Show the "create table" command for a specific table.
 	 *
-	 * @param string The name of the table.
+	 * @param string $table The name of the table.
 	 * @return string The pg command to create the specified table.
 	 */
 	function show_create_table($table)
@@ -1081,6 +1092,7 @@ class DB_PgSQL implements DB_Base
 		");
 
 		$primary_key = array();
+		$primary_key_name = '';
 
 		// We do this in two steps. It makes placing the comma easier
 		while($row = $this->fetch_array($query))
@@ -1106,8 +1118,8 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Show the "show fields from" command for a specific table.
 	 *
-	 * @param string The name of the table.
-	 * @return string Field info for that table
+	 * @param string $table The name of the table.
+	 * @return array Field info for that table
 	 */
 	function show_fields_from($table)
 	{
@@ -1119,6 +1131,7 @@ class DB_PgSQL implements DB_Base
 			FROM information_schema.columns
 			WHERE table_name = '{$this->table_prefix}{$table}'
 		");
+		$field_info = array();
 		while($field = $this->fetch_array($query))
 		{
 			if($field['field'] == $primary_key)
@@ -1135,8 +1148,8 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Returns whether or not the table contains a fulltext index.
 	 *
-	 * @param string The name of the table.
-	 * @param string Optionally specify the name of the index.
+	 * @param string $table The name of the table.
+	 * @param string $index Optionally specify the name of the index.
 	 * @return boolean True or false if the table has a fulltext index or not.
 	 */
 	function is_fulltext($table, $index="")
@@ -1147,7 +1160,7 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Returns whether or not this database engine supports fulltext indexing.
 	 *
-	 * @param string The table to be checked.
+	 * @param string $table The table to be checked.
 	 * @return boolean True or false if supported or not.
 	 */
 
@@ -1159,7 +1172,7 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Returns whether or not this database engine supports boolean fulltext matching.
 	 *
-	 * @param string The table to be checked.
+	 * @param string $table The table to be checked.
 	 * @return boolean True or false if supported or not.
 	 */
 	function supports_fulltext_boolean($table)
@@ -1170,9 +1183,10 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Creates a fulltext index on the specified column in the specified table with optional index name.
 	 *
-	 * @param string The name of the table.
-	 * @param string Name of the column to be indexed.
-	 * @param string The index name, optional.
+	 * @param string $table The name of the table.
+	 * @param string $column Name of the column to be indexed.
+	 * @param string $name The index name, optional.
+	 * @return bool
 	 */
 	function create_fulltext_index($table, $column, $name="")
 	{
@@ -1182,8 +1196,8 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Drop an index with the specified name from the specified table
 	 *
-	 * @param string The name of the table.
-	 * @param string The name of the index.
+	 * @param string $table The name of the table.
+	 * @param string $name The name of the index.
 	 */
 	function drop_index($table, $name)
 	{
@@ -1196,8 +1210,9 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Checks to see if an index exists on a specified table
 	 *
-	 * @param string The name of the table.
-	 * @param string The name of the index.
+	 * @param string $table The name of the table.
+	 * @param string $index The name of the index.
+	 * @return bool Returns whether index exists
 	 */
 	function index_exists($table, $index)
 	{
@@ -1222,9 +1237,9 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Drop an table with the specified table
 	 *
-	 * @param string The name of the table.
-	 * @param boolean hard drop - no checking
-	 * @param boolean use table prefix
+	 * @param string $table The name of the table.
+	 * @param boolean $hard hard drop - no checking
+	 * @param boolean $table_prefix use table prefix
 	 */
 	function drop_table($table, $hard=false, $table_prefix=true)
 	{
@@ -1262,9 +1277,10 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Renames a table
 	 *
-	 * @param string The old table name
-	 * @param string the new table name
-	 * @param boolean use table prefix
+	 * @param string $old_table The old table name
+	 * @param string $new_table the new table name
+	 * @param boolean $table_prefix use table prefix
+	 * @return resource
 	 */
 	function rename_table($old_table, $new_table, $table_prefix=true)
 	{
@@ -1283,10 +1299,11 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Replace contents of table with values
 	 *
-	 * @param string The table
-	 * @param array The replacements
-	 * @param mixed The default field(s)
-	 * @param boolean Whether or not to return an insert id. True by default
+	 * @param string $table The table
+	 * @param array $replacements The replacements
+	 * @param string|array $default_field The default field(s)
+	 * @param boolean $insert_id Whether or not to return an insert id. True by default
+	 * @return int|resource|bool Returns either the insert id (if a new row is inserted and $insert_id is true), a boolean (if $insert_id is wrong) or the query resource (if a row is updated)
 	 */
 	function replace_query($table, $replacements=array(), $default_field="", $insert_id=true)
 	{
@@ -1303,10 +1320,9 @@ class DB_PgSQL implements DB_Base
 		}
 
 		$update = false;
+		$search_bit = array();
 		if(is_array($main_field) && !empty($main_field))
 		{
-			$search_bit = array();
-			$string = '';
 			foreach($main_field as $field)
 			{
 				if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
@@ -1357,10 +1373,16 @@ class DB_PgSQL implements DB_Base
 		}
 	}
 
+	/**
+	 * @param string $table
+	 * @param string $append
+	 *
+	 * @return string
+	 */
 	function build_fields_string($table, $append="")
 	{
 		$fields = $this->show_fields_from($table);
-		$comma = '';
+		$comma = $fieldstring = '';
 
 		foreach($fields as $key => $field)
 		{
@@ -1374,8 +1396,9 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Drops a column
 	 *
-	 * @param string The table
-	 * @param string The column name
+	 * @param string $table The table
+	 * @param string $column The column name
+	 * @return resource
 	 */
 	function drop_column($table, $column)
 	{
@@ -1385,9 +1408,10 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Adds a column
 	 *
-	 * @param string The table
-	 * @param string The column name
-	 * @param string the new column definition
+	 * @param string $table The table
+	 * @param string $column The column name
+	 * @param string $definition the new column definition
+	 * @return resource
 	 */
 	function add_column($table, $column, $definition)
 	{
@@ -1397,11 +1421,12 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Modifies a column
 	 *
-	 * @param string The table
-	 * @param string The column name
-	 * @param string the new column definition
-	 * @param boolean Whether to drop or set a column
-	 * @param boolean The new default value (if one is to be set)
+	 * @param string $table The table
+	 * @param string $column The column name
+	 * @param string $new_definition the new column definition
+	 * @param boolean $new_not_null Whether to drop or set a column
+	 * @param boolean $new_default_value The new default value (if one is to be set)
+	 * @return bool Returns true if all queries are executed successfully or false if one of them failed
 	 */
 	function modify_column($table, $column, $new_definition, $new_not_null=false, $new_default_value=false)
 	{
@@ -1439,12 +1464,13 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Renames a column
 	 *
-	 * @param string The table
-	 * @param string The old column name
-	 * @param string the new column name
-	 * @param string the new column definition
-	 * @param boolean Whether to drop or set a column
-	 * @param boolean The new default value (if one is to be set)
+	 * @param string $table The table
+	 * @param string $old_column The old column name
+	 * @param string $new_column the new column name
+	 * @param string $new_definition the new column definition
+	 * @param boolean $new_not_null Whether to drop or set a column
+	 * @param boolean $new_default_value The new default value (if one is to be set)
+	 * @return bool Returns true if all queries are executed successfully
 	 */
 	function rename_column($table, $old_column, $new_column, $new_definition, $new_not_null=false, $new_default_value=false)
 	{
@@ -1456,7 +1482,7 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Sets the table prefix used by the simple select, insert, update and delete functions
 	 *
-	 * @param string The new table prefix
+	 * @param string $prefix The new table prefix
 	 */
 	function set_table_prefix($prefix)
 	{
@@ -1466,7 +1492,7 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Fetched the total size of all mysql tables or a specific table
 	 *
-	 * @param string The table (optional)
+	 * @param string $table The table (optional)
 	 * @return integer the total size of all mysql tables or a specific table
 	 */
 	function fetch_size($table='')
@@ -1490,7 +1516,7 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Fetch a list of database character sets this DBMS supports
 	 *
-	 * @return array Array of supported character sets with array key being the name, array value being display name. False if unsupported
+	 * @return array|bool Array of supported character sets with array key being the name, array value being display name. False if unsupported
 	 */
 	function fetch_db_charsets()
 	{
@@ -1500,8 +1526,8 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Fetch a database collation for a particular database character set
 	 *
-	 * @param string The database character set
-	 * @return string The matching database collation, false if unsupported
+	 * @param string $charset The database character set
+	 * @return string|bool The matching database collation, false if unsupported
 	 */
 	function fetch_charset_collation($charset)
 	{
@@ -1531,7 +1557,7 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Binary database fields require special attention.
 	 *
-	 * @param string Binary value
+	 * @param string $string Binary value
 	 * @return string Encoded binary value
 	 */
 	function escape_binary($string)
@@ -1542,7 +1568,7 @@ class DB_PgSQL implements DB_Base
 	/**
 	 * Unescape binary data.
 	 *
-	 * @param string Binary value
+	 * @param string $string Binary value
 	 * @return string Encoded binary value
 	 */
 	function unescape_binary($string)

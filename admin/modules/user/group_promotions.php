@@ -68,7 +68,7 @@ if($mybb->input['action'] == "disable")
 
 		$plugins->run_hooks("admin_user_group_promotions_disable_commit");
 
-		$db->update_query("promotions", $update_promotion, "pid = '{$mybb->input['pid']}'");
+		$db->update_query("promotions", $update_promotion, "pid = '{$promotion['pid']}'");
 
 		// Log admin action
 		log_admin_action($promotion['pid'], $promotion['title']);
@@ -108,7 +108,7 @@ if($mybb->input['action'] == "delete")
 
 	if($mybb->request_method == "post")
 	{
-		$db->delete_query("promotions", "pid = '{$mybb->input['pid']}'");
+		$db->delete_query("promotions", "pid = '{$promotion['pid']}'");
 
 		$plugins->run_hooks("admin_user_group_promotions_delete_commit");
 
@@ -155,7 +155,7 @@ if($mybb->input['action'] == "enable")
 
 	$plugins->run_hooks("admin_user_group_promotions_enable_commit");
 
-	$db->update_query("promotions", $update_promotion, "pid = '{$mybb->input['pid']}'");
+	$db->update_query("promotions", $update_promotion, "pid = '{$promotion['pid']}'");
 
 	// Log admin action
 	log_admin_action($promotion['pid'], $promotion['title']);
@@ -253,7 +253,7 @@ if($mybb->input['action'] == "edit")
 
 			$plugins->run_hooks("admin_user_group_promotions_edit_commit");
 
-			$db->update_query("promotions", $update_promotion, "pid = '".$mybb->get_input('pid', MyBB::INPUT_INT)."'");
+			$db->update_query("promotions", $update_promotion, "pid = '{$promotion['pid']}'");
 
 			// Log admin action
 			log_admin_action($promotion['pid'], $mybb->input['title']);
@@ -275,7 +275,7 @@ if($mybb->input['action'] == "edit")
 
 	$page->output_nav_tabs($sub_tabs, 'edit_promotion');
 	$form = new Form("index.php?module=user-group_promotions&amp;action=edit", "post", "edit");
-	echo $form->generate_hidden_field("pid", $mybb->input['pid']);
+	echo $form->generate_hidden_field("pid", $promotion['pid']);
 	if($errors)
 	{
 		$page->output_inline_error($errors);
