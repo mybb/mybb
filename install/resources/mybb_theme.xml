@@ -1256,7 +1256,7 @@ div.error ul {
 }
 
 .postbit_buttons .popup_wrap .popup_menu {
-	margin-top: -2px; // Pull dropdown up
+	margin-top: -2px; /* Pull dropdown up */
 }
 
 .postbit_buttons a.postbit_find span {
