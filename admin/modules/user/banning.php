@@ -316,7 +316,7 @@ if(!$mybb->input['action'])
 		$user = get_user_by_username($mybb->input['username'], $options);
 		
 		// Are we searching a user?
-		if(isset($mybb->input['search']) && $mybb->get_input('search') != '')
+		if(isset($mybb->input['search']))
 		{
 			$where_sql = 'uid=\''.(int)$user['uid'].'\'';
 			$where_sql_full = 'WHERE b.uid=\''.(int)$user['uid'].'\'';
