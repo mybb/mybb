@@ -925,10 +925,10 @@ if($mybb->input['action'] == "change")
 			}
 		}
 
-		// Get settings which optionscode is a forum/group select or checkbox
+		// Get settings which optionscode is a forum/group select, checkbox or numeric
 		// We cannot rely on user input to decide this
 		$checkbox_settings = $forum_group_select = array();
-		$query = $db->simple_select('settings', 'name, optionscode', "optionscode IN('forumselect', 'groupselect') OR optionscode LIKE 'checkbox%'");
+		$query = $db->simple_select('settings', 'name, optionscode', "optionscode IN('forumselect', 'groupselect', 'numeric') OR optionscode LIKE 'checkbox%'");
 		
 		while($multisetting = $db->fetch_array($query))
 		{
@@ -940,6 +940,13 @@ if($mybb->input['action'] == "change")
 				if(empty($mybb->input['upsetting'][$multisetting['name']]) && isset($mybb->input["isvisible_{$multisetting['name']}"]))
 				{
 					$mybb->input['upsetting'][$multisetting['name']] = array();
+				}
+			}
+			elseif($multisetting['optionscode'] == 'numeric')
+			{
+				if(isset($mybb->input['upsetting'][$multisetting['name']]))
+				{
+					$mybb->input['upsetting'][$multisetting['name']] = (int)$mybb->input['upsetting'][$multisetting['name']];
 				}
 			}
 			else

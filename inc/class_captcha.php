@@ -51,7 +51,7 @@ class captcha
 	 *
 	 * @var string
 	 */
-	 public $captch_template = '';
+	 public $captcha_template = '';
 
 	/**
 	 * CAPTCHA Server URL

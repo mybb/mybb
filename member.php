@@ -1384,7 +1384,7 @@ if($mybb->input['action'] == "activate")
 	{
 		$plugins->run_hooks("member_activate_form");
 
-		$code = $mybb->get_input('code');
+		$code = htmlspecialchars_uni($mybb->get_input('code'));
 
 		if(!isset($user['username']))
 		{
@@ -1728,7 +1728,7 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 
 		$mybb->input['url'] = $mybb->get_input('url');
 
-		if(!empty($mybb->input['url']) && my_strpos(basename($mybb->input['url']), 'member.php') === false)
+		if(!empty($mybb->input['url']) && my_strpos(basename($mybb->input['url']), 'member.php') === false && !preg_match('#^javascript:#i', $mybb->input['url']))
 		{
 			if((my_strpos(basename($mybb->input['url']), 'newthread.php') !== false || my_strpos(basename($mybb->input['url']), 'newreply.php') !== false) && my_strpos($mybb->input['url'], '&processed=1') !== false)
 			{

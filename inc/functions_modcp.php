@@ -41,7 +41,7 @@ function modcp_can_manage_user($uid)
  */
 function fetch_forum_announcements($pid=0, $depth=1)
 {
-	global $mybb, $db, $lang, $theme, $announcements, $templates, $announcements_forum, $moderated_forums, $unviewableforums;
+	global $mybb, $db, $lang, $theme, $announcements, $templates, $announcements_forum, $moderated_forums, $unviewableforums, $parser;
 	static $forums_by_parent, $forum_cache, $parent_forums;
 
 	if(!is_array($forum_cache))
@@ -118,7 +118,7 @@ function fetch_forum_announcements($pid=0, $depth=1)
 							eval("\$icon = \"".$templates->get("modcp_announcements_announcement_active")."\";");
 						}
 
-						$subject = htmlspecialchars_uni($announcement['subject']);
+						$subject = htmlspecialchars_uni($parser->parse_badwords($announcement['subject']));
 
 						eval("\$announcements_forum .= \"".$templates->get("modcp_announcements_announcement")."\";");
 					}
@@ -283,7 +283,7 @@ function add_report($report, $type = 'post')
 
 	if($mybb->settings['reportmethod'] == "email" || $mybb->settings['reportmethod'] == "pms")
 	{
-		return send_report($report, $type);
+		send_report($report, $type);
 	}
 
 	$rid = $db->insert_query("reportedcontent", $insert_array);
