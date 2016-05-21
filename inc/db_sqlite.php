@@ -347,7 +347,7 @@ class DB_SQLite implements DB_Base
 	{
 		$result = true;
 
-		foreach ($this->query_objects as $query)
+		foreach($this->query_objects as $query)
 		{
 			if (!$query->closeCursor())
 			{
