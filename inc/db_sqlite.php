@@ -349,7 +349,7 @@ class DB_SQLite implements DB_Base
 
 		foreach($this->query_objects as $query)
 		{
-			if (!$query->closeCursor())
+			if(!$query->closeCursor())
 			{
 				$result = false;
 			}
