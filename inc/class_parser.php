@@ -87,6 +87,14 @@ class postParser
 	 * @var int
 	 */
 	public $list_count;
+	
+	/**
+	 * Whether or not should a <br /> with clear: both be added at the end of the parsed message
+	 *
+	 * @access public
+	 * @var boolean
+	 */
+	public $clear_needed = false;
 
 	/**
 	 * Parses a message with the specified options.
@@ -215,6 +223,11 @@ class postParser
 			// Fix up new lines and block level elements
 			$message = preg_replace("#(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr)[^>]*>)\s*<br />#i", "$1", $message);
 			$message = preg_replace("#(&nbsp;)+(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr)[^>]*>)#i", "$2", $message);
+		}
+		
+		if($this->clear_needed)
+		{
+			$message .= '<br class="clear" />';
 		}
 
 		$message = $plugins->run_hooks("parse_message_end", $message);
@@ -1096,14 +1109,19 @@ class postParser
 		$css_align = '';
 		if($align == "right")
 		{
-			$css_align = " style=\"float: right;\"";
+			$css_align = ' style="float: right;"';
 		}
 		else if($align == "left")
 		{
-			$css_align = " style=\"float: left;\"";
+			$css_align = ' style="float: left;"';
 		}
+		
+		if($align)
+		{
+			$this->clear_needed = true;
+		}
+		
 		$alt = basename($url);
-
 		$alt = htmlspecialchars_decode($alt);
 		if(my_strlen($alt) > 55)
 		{
