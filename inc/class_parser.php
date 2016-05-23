@@ -87,7 +87,7 @@ class postParser
 	 * @var int
 	 */
 	public $list_count;
-	
+
 	/**
 	 * Whether or not should a <br /> with clear: both be added at the end of the parsed message
 	 *
@@ -106,6 +106,8 @@ class postParser
 	function parse_message($message, $options=array())
 	{
 		global $plugins, $mybb;
+
+		$this->clear_needed = false;
 
 		// Set base URL for parsing smilies
 		$this->base_url = $mybb->settings['bburl'];
@@ -224,7 +226,7 @@ class postParser
 			$message = preg_replace("#(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr)[^>]*>)\s*<br />#i", "$1", $message);
 			$message = preg_replace("#(&nbsp;)+(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr)[^>]*>)#i", "$2", $message);
 		}
-		
+
 		if($this->clear_needed)
 		{
 			$message .= '<br class="clear" />';
@@ -662,7 +664,7 @@ class postParser
 	}
 
 	/**
- 	 * Attempts to move any javascript references in the specified message.
+	 * Attempts to move any javascript references in the specified message.
 	 *
 	 * @param string The message to be parsed.
 	 * @return string The parsed message.
@@ -827,7 +829,7 @@ class postParser
 		{
 			$username = my_substr($username, 0, my_strlen($username)-1);
 		}
-		
+
 		if(!empty($this->options['allow_html']))
 		{
 			$username = htmlspecialchars_uni($username);
@@ -1115,12 +1117,12 @@ class postParser
 		{
 			$css_align = ' style="float: left;"';
 		}
-		
+
 		if($align)
 		{
 			$this->clear_needed = true;
 		}
-		
+
 		$alt = basename($url);
 		$alt = htmlspecialchars_decode($alt);
 		if(my_strlen($alt) > 55)
