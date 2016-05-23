@@ -656,6 +656,21 @@ form #message {
 	background: #f5f5f5;
 }
 
+.popup_wrap {
+	display: inline-block;
+	position: relative;
+}
+
+.popup_wrap .popup_menu {
+	position: absolute;
+	top: 100%;
+	left: 0;
+}
+
+.popup_wrap .popup_menu_open {
+	display: block !important;
+}
+
 .popup_menu {
 	background: #fff;
 	border: 1px solid #ccc;
@@ -733,6 +748,12 @@ hr {
 
 .clear {
 	clear: both;
+}
+
+.clearfix:after {
+    content:" ";
+    display:block;
+    clear:both;
 }
 
 .float_left {
@@ -1201,13 +1222,16 @@ div.error ul {
 	background: #f5f5f5;
 	border-bottom: 1px solid #ccc;
 	padding: 5px;
-	overflow: hidden;
 }
 
 .postbit_buttons > a:link,
 .postbit_buttons > a:hover,
 .postbit_buttons > a:visited,
-.postbit_buttons > a:active {
+.postbit_buttons > a:active,
+.postbit_buttons .postbit_button:link,
+.postbit_buttons .postbit_button:hover,
+.postbit_buttons .postbit_button:visited,
+.postbit_buttons .postbit_button:active{
 	display: inline-block;
 	padding: 2px 5px;
 	margin: 2px;
@@ -1217,16 +1241,22 @@ div.error ul {
 	color: #555;
 }
 
-.postbit_buttons > a:hover {
+.postbit_buttons > a:hover,
+.postbit_buttons .postbit_button:hover{
 	border-color: #bbb;
 }
 
-.postbit_buttons a span {
+.postbit_buttons a span,
+.postbit_buttons .postbit_button span {
 	padding-left: 20px;
 	display: inline-block;
 	height: 16px;
 	background-image: url(images/buttons_sprite.png);
 	background-repeat: no-repeat;
+}
+
+.postbit_buttons .popup_wrap .popup_menu {
+	margin-top: -2px; /* Pull dropdown up */
 }
 
 .postbit_buttons a.postbit_find span {
@@ -2266,6 +2296,7 @@ fieldset,
 .red_alert,
 .popup_menu,
 .postbit_buttons > a,
+.postbit_buttons .postbit_button,
 a.button {
 	-moz-border-radius: 6px;
 	-webkit-border-radius: 6px;
@@ -2337,8 +2368,8 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 </script>
 </body>
 </html>]]></template>
-		<template name="announcement_edit" version="1800"><![CDATA[<a href="modcp.php?action=edit_announcement&amp;aid={$post['aid']}" title="{$lang->announcement_edit}" class="postbit_edit"><span>{$lang->postbit_button_edit}</span></a>]]></template>
-		<template name="announcement_quickdelete" version="1800"><![CDATA[<a href="modcp.php?action=delete_announcement&amp;aid={$post['aid']}&amp;my_post_key={$mybb->post_code}" onclick="MyBB.deleteAnnouncement(this); return false;" class="postbit_qdelete"><span>{$lang->postbit_button_qdelete}</span></a>]]></template>
+		<template name="announcement_edit" version="1800"><![CDATA[<a href="modcp.php?action=edit_announcement&amp;aid={$post['aid']}" title="{$lang->announcement_edit}" class="postbit_button postbit_edit"><span>{$lang->postbit_button_edit}</span></a>]]></template>
+		<template name="announcement_quickdelete" version="1800"><![CDATA[<a href="modcp.php?action=delete_announcement&amp;aid={$post['aid']}&amp;my_post_key={$mybb->post_code}" onclick="MyBB.deleteAnnouncement(this); return false;" class="postbit_button postbit_qdelete"><span>{$lang->postbit_button_qdelete}</span></a>]]></template>
 		<template name="calendar" version="1800"><![CDATA[<html>
 <head>
 	<title>{$mybb->settings['bbname']} - {$lang->calendar}</title>
@@ -3211,8 +3242,8 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 </body>
 </html>]]></template>
 		<template name="calendar_event_editbutton" version="1800"><![CDATA[<div style="text-align: right; vertical-align: bottom;" class="postbit_buttons">
-	<a href="calendar.php?action=editevent&amp;eid={$event['eid']}" class="postbit_edit"><span>{$lang->postbit_button_edit}</span></a>
-	<a href="javascript:MyBB.deleteEvent({$event['eid']});" class="postbit_qdelete"><span>{$lang->postbit_button_qdelete}</span></a>
+	<a href="calendar.php?action=editevent&amp;eid={$event['eid']}" class="postbit_button postbit_edit"><span>{$lang->postbit_button_edit}</span></a>
+	<a href="javascript:MyBB.deleteEvent({$event['eid']});" class="postbit_button postbit_qdelete"><span>{$lang->postbit_button_qdelete}</span></a>
 </div>]]></template>
 		<template name="calendar_event_modoptions" version="1604"><![CDATA[				<form method="post" action="calendar.php">
 					<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
@@ -9397,7 +9428,7 @@ if(use_xmlhttprequest == "1")
 		{$post['iplogged']}
 	</div>
 </div>
-<div class="post_controls">
+<div class="post_controls clearfix">
 	<div class="postbit_buttons author_buttons float_left">
 		{$post['button_email']}{$post['button_pm']}{$post['button_www']}{$post['button_find']}{$post['button_rep']}
 	</div>
@@ -9465,7 +9496,7 @@ if(use_xmlhttprequest == "1")
 		{$post['iplogged']}
 	</div>
 </div>
-<div class="post_controls">
+<div class="post_controls clearfix">
 	<div class="postbit_buttons author_buttons float_left">
 		{$post['button_email']}{$post['button_pm']}{$post['button_www']}{$post['button_find']}{$post['button_rep']}
 	</div>
@@ -9474,9 +9505,9 @@ if(use_xmlhttprequest == "1")
 	</div>
 </div>
 </div>]]></template>
-		<template name="postbit_delete_pm" version="1800"><![CDATA[<a href="private.php?action=delete&amp;pmid={$id}&amp;my_post_key={$mybb->post_code}" title="{$lang->delete_title}" class="postbit_delete_pm"><span>{$lang->postbit_button_delete_pm}</span></a>]]></template>
-		<template name="postbit_edit" version="1800"><![CDATA[<a href="editpost.php?pid={$post['pid']}" id="edit_post_{$post['pid']}" title="{$lang->postbit_edit}" class="postbit_edit"><span>{$lang->postbit_button_edit}</span></a>
-<div id="edit_post_{$post['pid']}_popup" class="popup_menu" style="display: none;"><div class="popup_item_container"><a href="javascript:;" class="popup_item quick_edit_button" id="quick_edit_post_{$post['pid']}">{$lang->postbit_quick_edit}</a></div><div class="popup_item_container"><a href="editpost.php?pid={$post['pid']}" class="popup_item">{$lang->postbit_full_edit}</a></div></div>
+		<template name="postbit_delete_pm" version="1800"><![CDATA[<a href="private.php?action=delete&amp;pmid={$id}&amp;my_post_key={$mybb->post_code}" title="{$lang->delete_title}" class="postbit_button postbit_delete_pm"><span>{$lang->postbit_button_delete_pm}</span></a>]]></template>
+		<template name="postbit_edit" version="1800"><![CDATA[<div class="popup_wrap"><a href="editpost.php?pid={$post['pid']}" id="edit_post_{$post['pid']}" title="{$lang->postbit_edit}" class="postbit_button postbit_edit"><span>{$lang->postbit_button_edit}</span></a>
+<div id="edit_post_{$post['pid']}_popup" class="popup_menu" style="display: none;"><div class="popup_item_container"><a href="javascript:;" class="popup_item quick_edit_button" id="quick_edit_post_{$post['pid']}">{$lang->postbit_quick_edit}</a></div><div class="popup_item_container"><a href="editpost.php?pid={$post['pid']}" class="popup_item">{$lang->postbit_full_edit}</a></div></div></div>
 <script type="text/javascript">
 // <!--
 	if(use_xmlhttprequest == "1")
@@ -9487,10 +9518,10 @@ if(use_xmlhttprequest == "1")
 </script>]]></template>
 		<template name="postbit_editedby" version="1800"><![CDATA[<span class="edited_post">({$post['editnote']} {$post['editedprofilelink']}.{$editreason})</span>]]></template>
 		<template name="postbit_editedby_editreason" version="1800"><![CDATA[ <em>{$lang->postbit_editreason}: {$post['editreason']}</em>]]></template>
-		<template name="postbit_email" version="1800"><![CDATA[<a href="member.php?action=emailuser&amp;uid={$post['uid']}" title="{$lang->postbit_email}" class="postbit_email"><span>{$lang->postbit_button_email}</span></a>]]></template>
-		<template name="postbit_find" version="1800"><![CDATA[<a href="search.php?action=finduser&amp;uid={$post['uid']}" title="{$lang->postbit_find}" class="postbit_find"><span>{$lang->postbit_button_find}</span></a>]]></template>
-		<template name="postbit_forward_pm" version="1800"><![CDATA[<a href="private.php?action=send&amp;pmid={$id}&amp;do=forward" title="{$lang->forward_title}" class="postbit_forward_pm"><span>{$lang->postbit_button_forward}</span></a>]]></template>
-		<template name="postbit_purgespammer" version="1800"><![CDATA[<a href="moderation.php?action=purgespammer&amp;uid={$post['uid']}" title="{$lang->postbit_purgespammer}" class="postbit_purgespammer"><span>{$lang->postbit_button_purgespammer}</span></a>]]></template>
+		<template name="postbit_email" version="1800"><![CDATA[<a href="member.php?action=emailuser&amp;uid={$post['uid']}" title="{$lang->postbit_email}" class="postbit_button postbit_email"><span>{$lang->postbit_button_email}</span></a>]]></template>
+		<template name="postbit_find" version="1800"><![CDATA[<a href="search.php?action=finduser&amp;uid={$post['uid']}" title="{$lang->postbit_find}" class="postbit_button postbit_find"><span>{$lang->postbit_button_find}</span></a>]]></template>
+		<template name="postbit_forward_pm" version="1800"><![CDATA[<a href="private.php?action=send&amp;pmid={$id}&amp;do=forward" title="{$lang->forward_title}" class="postbit_button postbit_forward_pm"><span>{$lang->postbit_button_forward}</span></a>]]></template>
+		<template name="postbit_purgespammer" version="1800"><![CDATA[<a href="moderation.php?action=purgespammer&amp;uid={$post['uid']}" title="{$lang->postbit_purgespammer}" class="postbit_button postbit_purgespammer"><span>{$lang->postbit_button_purgespammer}</span></a>]]></template>
 		<template name="postbit_gotopost" version="1804"><![CDATA[ <a href="{$url}" class="quick_jump"></a>]]></template>
 		<template name="postbit_groupimage" version="120"><![CDATA[<img src="{$usergroup['image']}" alt="{$usergroup['title']}" title="{$usergroup['title']}" />]]></template>
 		<template name="postbit_icon" version="1800"><![CDATA[<img src="{$icon['path']}" alt="{$icon['name']}" title="{$icon['name']}" style="vertical-align: middle;" />&nbsp;]]></template>
@@ -9509,7 +9540,7 @@ if(use_xmlhttprequest == "1")
 		<template name="postbit_inlinecheck" version="1800"><![CDATA[<input type="checkbox" class="checkbox" name="inlinemod_{$post['pid']}" id="inlinemod_{$post['pid']}" value="1" style="vertical-align: middle; margin: -2px 0 0 5px;" {$inlinecheck}  />]]></template>
 		<template name="postbit_iplogged_hiden" version="1800"><![CDATA[{$lang->postbit_ipaddress} <a href="moderation.php?action={$action}&amp;{$idtype}={$post[$idtype]}">{$lang->postbit_ipaddress_logged}</a>]]></template>
 		<template name="postbit_iplogged_show" version="1800"><![CDATA[{$lang->postbit_ipaddress} {$ipaddress}]]></template>
-		<template name="postbit_multiquote" version="1800"><![CDATA[<a href="javascript:Thread.multiQuote({$post['pid']});" style="display: none;" id="multiquote_link_{$post['pid']}" title="{$lang->postbit_multiquote}" class="postbit_multiquote"><span id="multiquote_{$post['pid']}">{$lang->postbit_button_multiquote}</span></a>
+		<template name="postbit_multiquote" version="1800"><![CDATA[<a href="javascript:Thread.multiQuote({$post['pid']});" style="display: none;" id="multiquote_link_{$post['pid']}" title="{$lang->postbit_multiquote}" class="postbit_button postbit_multiquote"><span id="multiquote_{$post['pid']}">{$lang->postbit_button_multiquote}</span></a>
 <script type="text/javascript">
 //<!--
 	$('#multiquote_link_{$post['pid']}').css("display", "");
@@ -9517,7 +9548,7 @@ if(use_xmlhttprequest == "1")
 </script>]]></template>
 		<template name="postbit_offline" version="1800"><![CDATA[<img src="{$theme['imgdir']}/buddy_offline.png" title="{$lang->postbit_status_offline}" alt="{$lang->postbit_status_offline}" class="buddy_status" />]]></template>
 		<template name="postbit_online" version="1800"><![CDATA[<a href="online.php" title="{$lang->postbit_status_online}"><img src="{$theme['imgdir']}/buddy_online.png" border="0" alt="{$lang->postbit_status_online}" class="buddy_status" /></a>]]></template>
-		<template name="postbit_pm" version="1800"><![CDATA[<a href="private.php?action=send&amp;uid={$post['uid']}" title="{$lang->postbit_pm}" class="postbit_pm"><span>{$lang->postbit_button_pm}</span></a>]]></template>
+		<template name="postbit_pm" version="1800"><![CDATA[<a href="private.php?action=send&amp;uid={$post['uid']}" title="{$lang->postbit_pm}" class="postbit_button postbit_pm"><span>{$lang->postbit_button_pm}</span></a>]]></template>
 		<template name="postbit_posturl" version="1801"><![CDATA[<div class="float_right" style="vertical-align: top">
 <strong><a href="{$post['postlink']}#pid{$post['pid']}" title="{$post['subject_title']}">#{$post_number}</a></strong>
 {$post['inlinecheck']}
@@ -9527,23 +9558,23 @@ if(use_xmlhttprequest == "1")
 {$post['fieldvalue_option']}
 </ul>]]></template>
 		<template name="postbit_profilefield_multiselect_value" version="1800"><![CDATA[<li style="margin-left: 0;">{$val}</li>]]></template>
-		<template name="postbit_quickdelete" version="1800"><![CDATA[<a href="editpost.php?pid={$post['pid']}" onclick="Thread.deletePost({$post['pid']}); return false;" style="display: none;" id="quick_delete_{$post['pid']}" title="{$postbit_qdelete}" class="postbit_qdelete"><span>{$lang->postbit_button_qdelete}</span></a>
+		<template name="postbit_quickdelete" version="1800"><![CDATA[<a href="editpost.php?pid={$post['pid']}" onclick="Thread.deletePost({$post['pid']}); return false;" style="display: none;" id="quick_delete_{$post['pid']}" title="{$postbit_qdelete}" class="postbit_button postbit_qdelete"><span>{$lang->postbit_button_qdelete}</span></a>
 <script type="text/javascript">
 // <!--
 	$('#quick_delete_{$post['pid']}').css('display', '{$display}');
 // -->
 </script>]]></template>
-		<template name="postbit_quickrestore" version="1800"><![CDATA[<a href="editpost.php?pid={$post['pid']}" onclick="Thread.restorePost({$post['pid']}); return false;" style="display: none;" id="quick_restore_{$post['pid']}" title="{$postbit_qrestore}" class="postbit_qrestore"><span>{$lang->postbit_button_qrestore}</span></a>
+		<template name="postbit_quickrestore" version="1800"><![CDATA[<a href="editpost.php?pid={$post['pid']}" onclick="Thread.restorePost({$post['pid']}); return false;" style="display: none;" id="quick_restore_{$post['pid']}" title="{$postbit_qrestore}" class="postbit_button postbit_qrestore"><span>{$lang->postbit_button_qrestore}</span></a>
 <script type="text/javascript">
 // <!--
 	$('#quick_restore_{$post['pid']}').css('display', '{$display}');
 // -->
 </script>]]></template>
-		<template name="postbit_quote" version="1800"><![CDATA[<a href="newreply.php?tid={$tid}&amp;replyto={$post['pid']}" title="{$lang->postbit_quote}" class="postbit_quote"><span>{$lang->postbit_button_quote}</span></a>]]></template>
-		<template name="postbit_rep_button" version="1800"><![CDATA[<a href="javascript:MyBB.reputation({$post['uid']},{$post['pid']});" title="{$lang->postbit_reputation_add}" class="postbit_reputation_add"><span>{$lang->postbit_button_reputation_add}</span></a>]]></template>
-		<template name="postbit_reply_pm" version="1800"><![CDATA[<a href="private.php?action=send&amp;pmid={$id}&amp;do=reply" title="{$lang->reply_title}" class="postbit_reply_pm"><span>{$lang->postbit_button_reply_pm}</span></a>]]></template>
-		<template name="postbit_replyall_pm" version="1480"><![CDATA[<a href="private.php?action=send&amp;pmid={$id}&amp;do=replyall" title="{$lang->reply_to_all}" class="postbit_reply_all"><span>{$lang->postbit_button_reply_all}</span></a>]]></template>
-		<template name="postbit_report" version="1800"><![CDATA[<a href="javascript:Report.reportPost({$post['pid']});" title="{$lang->postbit_report}" class="postbit_report"><span>{$lang->postbit_button_report}</span></a>]]></template>
+		<template name="postbit_quote" version="1800"><![CDATA[<a href="newreply.php?tid={$tid}&amp;replyto={$post['pid']}" title="{$lang->postbit_quote}" class="postbit_button postbit_quote"><span>{$lang->postbit_button_quote}</span></a>]]></template>
+		<template name="postbit_rep_button" version="1800"><![CDATA[<a href="javascript:MyBB.reputation({$post['uid']},{$post['pid']});" title="{$lang->postbit_reputation_add}" class="postbit_button postbit_reputation_add"><span>{$lang->postbit_button_reputation_add}</span></a>]]></template>
+		<template name="postbit_reply_pm" version="1800"><![CDATA[<a href="private.php?action=send&amp;pmid={$id}&amp;do=reply" title="{$lang->reply_title}" class="postbit_button postbit_reply_pm"><span>{$lang->postbit_button_reply_pm}</span></a>]]></template>
+		<template name="postbit_replyall_pm" version="1480"><![CDATA[<a href="private.php?action=send&amp;pmid={$id}&amp;do=replyall" title="{$lang->reply_to_all}" class="postbit_button postbit_reply_all"><span>{$lang->postbit_button_reply_all}</span></a>]]></template>
+		<template name="postbit_report" version="1800"><![CDATA[<a href="javascript:Report.reportPost({$post['pid']});" title="{$lang->postbit_report}" class="postbit_button postbit_report"><span>{$lang->postbit_button_report}</span></a>]]></template>
 		<template name="postbit_reputation" version="1400"><![CDATA[<br />{$lang->postbit_reputation} {$post['userreputation']}]]></template>
 		<template name="postbit_reputation_formatted" version="1800"><![CDATA[<strong class="{$reputation_class}">{$reputation}</strong>]]></template>
 		<template name="postbit_reputation_formatted_link" version="1800"><![CDATA[<a href="reputation.php?uid={$uid}"><strong class="{$reputation_class}">{$reputation}</strong></a>]]></template>
@@ -9551,10 +9582,10 @@ if(use_xmlhttprequest == "1")
 {$post['signature']}
 </div>]]></template>
 		<template name="postbit_userstar" version="1800"><![CDATA[<img src="{$post['starimage']}" border="0" alt="*" />]]></template>
-		<template name="postbit_warn" version="1800"><![CDATA[<a href="warnings.php?action=warn&amp;uid={$post['uid']}&amp;pid={$post['pid']}" title="{$lang->postbit_warn}" class="postbit_warn"><span>{$lang->postbit_button_warn}</span></a>]]></template>
+		<template name="postbit_warn" version="1800"><![CDATA[<a href="warnings.php?action=warn&amp;uid={$post['uid']}&amp;pid={$post['pid']}" title="{$lang->postbit_warn}" class="postbit_button postbit_warn"><span>{$lang->postbit_button_warn}</span></a>]]></template>
 		<template name="postbit_warninglevel" version="1400"><![CDATA[<br />{$lang->postbit_warning_level} <a href="{$warning_link}">{$warning_level}</a>]]></template>
 		<template name="postbit_warninglevel_formatted" version="1800"><![CDATA[<span class="{$warning_class}">{$level}%</span>]]></template>
-		<template name="postbit_www" version="1800"><![CDATA[<a href="{$post['website']}" target="_blank" title="{$lang->postbit_website}" class="postbit_website"><span>{$lang->postbit_button_website}</span></a>]]></template>
+		<template name="postbit_www" version="1800"><![CDATA[<a href="{$post['website']}" target="_blank" title="{$lang->postbit_website}" class="postbit_button postbit_website"><span>{$lang->postbit_button_website}</span></a>]]></template>
 		<template name="posticons" version="1800"><![CDATA[<tr>
 <td class="trow1" style="vertical-align: top"><strong>{$lang->post_icon}</strong><span class="smalltext"><label class="posticons_label"><input type="radio" class="radio" name="icon" value="-1"{$no_icons_checked} />{$lang->no_post_icon}</label></span></td>
 <td class="trow1" valign="top">{$iconlist}</td>
@@ -10729,11 +10760,11 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 	</td>
 </tr>]]></template>
 		<template name="reputation_vote_delete" version="1800"><![CDATA[		<div class="float_right postbit_buttons">
-			<a href="reputation.php?action=delete&amp;uid={$reputation_vote['rated_uid']}&amp;rid={$reputation_vote['rid']}&amp;my_post_key={$mybb->post_code}" onclick="MyBB.deleteReputation({$reputation_vote['rated_uid']}, {$reputation_vote['rid']}); return false;" class="postbit_qdelete"><span>{$lang->delete_vote}</span></a>
+			<a href="reputation.php?action=delete&amp;uid={$reputation_vote['rated_uid']}&amp;rid={$reputation_vote['rid']}&amp;my_post_key={$mybb->post_code}" onclick="MyBB.deleteReputation({$reputation_vote['rated_uid']}, {$reputation_vote['rid']}); return false;" class="postbit_button postbit_qdelete"><span>{$lang->delete_vote}</span></a>
 		</div>]]>
 		</template>
 		<template name="reputation_vote_report" version="1800"><![CDATA[		<div class="float_right postbit_buttons">
-			<a href="javascript:Report.reportReputation({$reputation_vote['rid']});" class="postbit_report"><span>{$lang->report_vote}</span></a>
+			<a href="javascript:Report.reportReputation({$reputation_vote['rid']});" class="postbit_button postbit_report"><span>{$lang->report_vote}</span></a>
 		</div>]]>
 		</template>
 		<template name="search" version="1807"><![CDATA[<html>
