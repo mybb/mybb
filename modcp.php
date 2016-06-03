@@ -3741,7 +3741,7 @@ if($mybb->input['action'] == "ipsearch")
 		{
 			$query = $db->simple_select('users', 'username, uid, regip, lastip', $user_ip_sql,
 					array('order_by' => 'regdate', 'order_dir' => 'DESC', 'limit_start' => $start, 'limit' => $perpage));
-			
+
 			while($ipaddress = $db->fetch_array($query))
 			{
 				$result = false;
@@ -4310,7 +4310,7 @@ if($mybb->input['action'] == "banuser")
 	$mybb->input['uid'] = $mybb->get_input('uid', MyBB::INPUT_INT);
 	if($mybb->input['uid'])
 	{
-		add_breadcrumb($lang->mcp_nav_editing_ban);		
+		add_breadcrumb($lang->mcp_nav_editing_ban);
 	}
 	else
 	{
