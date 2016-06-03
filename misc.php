@@ -716,7 +716,13 @@ elseif($mybb->input['action'] == "smilies")
 	$smilies = '';
 	if(!empty($mybb->input['popup']) && !empty($mybb->input['editor']))
 	{ // make small popup list of smilies
-		$editor = preg_replace('#([^a-zA-Z0-9_-]+)#', '', $mybb->get_input('editor'));
+		$editor = preg_replace('#([^a-zA-Z0-9_]+)#', '', $mybb->get_input('editor'));
+
+		if(!trim($editor))
+		{
+			$editor = 'MyBBEditor';
+		}
+
 		$e = 1;
 		$class = "trow1";
 		$smilies = "<tr>";
@@ -728,8 +734,8 @@ elseif($mybb->input['action'] == "smilies")
 			{
 				$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
 				$smilie['image'] = htmlspecialchars_uni($mybb->get_asset_url($smilie['image']));
-				$smilie['name'] = htmlspecialchars_uni($smilie['name']);				
-				
+				$smilie['name'] = htmlspecialchars_uni($smilie['name']);
+
 				// Only show the first text to replace in the box
 				$temp = explode("\n", $smilie['find']); // use temporary variable for php 5.3 compatibility
 				$smilie['find'] = $temp[0];
@@ -737,7 +743,7 @@ elseif($mybb->input['action'] == "smilies")
 				$smilie['find'] = htmlspecialchars_uni($smilie['find']);
 				$smilie_insert = str_replace(array('\\', "'"), array('\\\\', "\'"), $smilie['find']);
 
-				$onclick = " onclick=\"MyBBEditor.insertText(' $smilie_insert ');\"";
+				$onclick = " onclick=\"{$editor}.insertText(' $smilie_insert ');\"";
 				eval('$smilie_image = "'.$templates->get('smilie', 1, 0).'";');
 				eval("\$smilies .= \"".$templates->get("misc_smilies_popup_smilie")."\";");
 				if($e == 2)
@@ -771,8 +777,8 @@ elseif($mybb->input['action'] == "smilies")
 			{
 				$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
 				$smilie['image'] = htmlspecialchars_uni($mybb->get_asset_url($smilie['image']));
-				$smilie['name'] = htmlspecialchars_uni($smilie['name']);				
-				
+				$smilie['name'] = htmlspecialchars_uni($smilie['name']);
+
 				$smilie['find'] = nl2br(htmlspecialchars_uni($smilie['find']));
 				eval('$smilie_image = "'.$templates->get('smilie').'";');
 				eval("\$smilies .= \"".$templates->get("misc_smilies_smilie")."\";");
@@ -831,7 +837,7 @@ elseif($mybb->input['action'] == "imcenter")
 		$imtype_lang = $lang->yahoo_im;
 		eval("\$navigationbar .= \"".$templates->get("misc_imcenter_nav")."\";");
 	}
-	
+
 	$user['skype'] = htmlspecialchars_uni($user['skype']);
 	$user['yahoo'] = htmlspecialchars_uni($user['yahoo']);
 	$user['aim'] = htmlspecialchars_uni($user['aim']);
@@ -866,7 +872,7 @@ elseif($mybb->input['action'] == "syndication")
 	$unexp1 = explode(',', $unviewable);
 	$unexp2 = explode(',', $inactiveforums);
 	$unexp = array_merge($unexp1, $unexp2);
-	
+
 	if(is_array($forums))
 	{
 		foreach($unexp as $fid)
@@ -1033,7 +1039,7 @@ function makesyndicateforums($pid=0, $selitem="", $addselect=true, $depth="")
 			}
 		}
 	}
-	
+
 	if($addselect)
 	{
 		$addsel = '';

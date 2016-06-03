@@ -668,7 +668,7 @@ if($mybb->input['action'] == "send")
 
 	if($mybb->settings['bbcodeinserter'] != 0 && $mybb->settings['pmsallowmycode'] != 0 && $mybb->user['showcodebuttons'] != 0)
 	{
-		$codebuttons = build_mycode_inserter("message", $mybb->settings['pmsallowsmilies']);
+		$codebuttons = build_mycode_inserter("message", $mybb->settings['pmsallowsmilies'], $mybb->settings['pmsallowimgcode'], $mybb->settings['pmsallowvideocode']);
 		if($mybb->settings['pmsallowsmilies'] != 0)
 		{
 			$smilieinserter = build_clickable_smilies();
@@ -2433,7 +2433,7 @@ if(!$mybb->input['action'])
 			{
 				$spaceused_severity = "high";
 			}
-			
+
 			$overhalf = round($spaceused, 0)."%";
 			if((int)$overhalf > 100)
 			{

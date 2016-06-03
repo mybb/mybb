@@ -891,20 +891,24 @@ EOF;
 	 * @param string $bind The ID of the textarea to bind the editor to.
 	 * @param string $editor_language The language string for the editor.
 	 * @param bool $smilies Whether or not smilies should be included
+	 * @param bool $images Whether or not images should be included
+	 * @param bool $videos Whether or not videos should be included
+	 * @param string $editor Name of the editor JS object
+	 *
 	 * @return string The build MyCode editor Javascript.
 	 */
-	function build_codebuttons_editor($bind, $editor_language, $smilies)
+	function build_codebuttons_editor($bind, $editor_language, $smilies, $images, $videos, $editor)
 	{
 		global $lang, $mybb, $smiliecache, $cache;
 
 		// Smilies
-		$emoticon = "";
+		$emoticons_toolbar = '';
 		$emoticons_enabled = "false";
-		if($smilies)
+		if($smilies == true)
 		{
 			if($mybb->settings['smilieinserter'] && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
 			{			
-				$emoticon = ",emoticon";
+				$emoticons_toolbar = 'emoticon';
 			}
 			$emoticons_enabled = "true";
 			
@@ -972,62 +976,101 @@ EOF;
 			}
 		}
 
-		$basic1 = $basic2 = $align = $font = $size = $color = $removeformat = $email = $link = $list = $code = $sourcemode = "";
+		$sourcemode = '';
+		$bars = $basic2 = $font = $multimedia = $blocks = array();
 
 		if($mybb->settings['allowbasicmycode'] == 1)
 		{
-			$basic1 = "bold,italic,underline,strike|";
-			$basic2 = "horizontalrule,";
+			$bars['basic'] = 'bold,italic,underline,strike';
+			$basic2[] = 'horizontalrule';
 		}
 
 		if($mybb->settings['allowalignmycode'] == 1)
 		{
-			$align = "left,center,right,justify|";
+			$bars['align'] = 'left,center,right,justify';
 		}
 
 		if($mybb->settings['allowfontmycode'] == 1)
 		{
-			$font = "font,";
+			$font[] = 'font';
 		}
 
 		if($mybb->settings['allowsizemycode'] == 1)
 		{
-			$size = "size,";
+			$font[] = 'size';
 		}
 
 		if($mybb->settings['allowcolormycode'] == 1)
 		{
-			$color = "color,";
+			$font[] = 'color';
 		}
 
 		if($mybb->settings['allowfontmycode'] == 1 || $mybb->settings['allowsizemycode'] == 1 || $mybb->settings['allowcolormycode'] == 1)
 		{
-			$removeformat = "removeformat|";
+			$font[] = 'removeformat';
+		}
+		
+		if($font)
+		{
+			$bars['font'] = implode(',', $font);
 		}
 
 		if($mybb->settings['allowemailmycode'] == 1)
 		{
-			$email = "email,";
+			$basic2[] = 'email';
 		}
 
 		if($mybb->settings['allowlinkmycode'] == 1)
 		{
-			$link = "link,unlink";
+			$basic2[] = 'link,unlink';
+		}
+		
+		if($basic2)
+		{
+			$bars['basic2'] = implode(',', $basic2);
+		}
+		
+		if($images == true)
+		{
+			$multimedia[] = 'image';
+		}
+		
+		if($videos == true)
+		{
+			$multimedia[] = 'video';
+		}
+		
+		if($emoticons_toolbar == 'emoticon')
+		{
+			$multimedia[] = $emoticons_toolbar;
+		}
+		
+		if($multimedia)
+		{
+			$bars['multimedia'] = implode(',', $multimedia);
 		}
 
 		if($mybb->settings['allowlistmycode'] == 1)
 		{
-			$list = "bulletlist,orderedlist|";
+			$bars['list'] = 'bulletlist,orderedlist';
 		}
 
 		if($mybb->settings['allowcodemycode'] == 1)
 		{
-			$code = "code,php,";
+			$blocks[] = 'code,php';
 		}
+		
+		$blocks[] = 'quote';
+		$bars['blocks'] = implode(',', $blocks);	
+		$bars['other'] = 'maximize,source';
+		
+		$bars = $plugins->run_hooks('mycode_add_codebuttons_toolbar', $bars);
+		
+		$toolbar = implode('|', $bars);
 
 		if($mybb->user['sourceeditor'] == 1)
 		{
-			$sourcemode = "MyBBEditor.sourceMode(true);";
+			$sourcemode = "{$editor}.sourceMode(true);";
 		}
 
 		return <<<EOF
@@ -1057,13 +1100,13 @@ opt_editor = {
 		}
 	},
 	emoticonsCompat: true,
-	toolbar: "{$basic1}{$align}{$font}{$size}{$color}{$removeformat}{$basic2}image,{$email}{$link}|video{$emoticon}|{$list}{$code}quote|maximize,source",
+	toolbar: "{$toolbar}"
 };
 {$editor_language}
 $(function() {
 	$("#{$bind}").sceditor(opt_editor);
 
-	MyBBEditor = $("#{$bind}").sceditor("instance");
+	{$editor} = $("#{$bind}").sceditor("instance");
 	{$sourcemode}
 });
 </script>

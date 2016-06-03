@@ -101,11 +101,12 @@ $forumpermissions = forum_permissions($fid);
 
 if($mybb->settings['bbcodeinserter'] != 0 && $forum['allowmycode'] != 0 && $mybb->user['showcodebuttons'] != 0)
 {
-	$codebuttons = build_mycode_inserter("message", $mybb->settings['smilieinserter']);
-}
-if($mybb->settings['smilieinserter'] != 0)
-{
-	$smilieinserter = build_clickable_smilies();
+	$codebuttons = build_mycode_inserter("message", $forum['allowsmilies'], $forum['allowimgcode'], $forum['allowvideocode']);
+
+	if($forum['allowsmilies'] != 0)
+	{
+		$smilieinserter = build_clickable_smilies();
+	}
 }
 
 $mybb->input['action'] = $mybb->get_input('action');
@@ -878,17 +879,17 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		$lang->max_options = $lang->sprintf($lang->max_options, $mybb->settings['maxpolloptions']);
 		$numpolloptions = $mybb->get_input('numpolloptions', MyBB::INPUT_INT);
 		$postpollchecked = '';
-		
+
 		if($numpolloptions < 1)
 		{
 			$numpolloptions = 2;
 		}
-		
+
 		if($mybb->get_input('postpoll', MyBB::INPUT_INT) == 1)
 		{
 			$postpollchecked = 'checked="checked"';
 		}
-		
+
 		eval("\$pollbox = \"".$templates->get("newthread_postpoll")."\";");
 	}
 	else

@@ -3028,7 +3028,7 @@ if($mybb->input['action'] == "editprofile")
 	$profile_link = build_profile_link(format_name($user['username'], $user['usergroup'], $user['displaygroup']), $user['uid']);
 
 	$user['signature'] = htmlspecialchars_uni($user['signature']);
-	$codebuttons = build_mycode_inserter("signature");
+	$codebuttons = build_mycode_inserter("signature", $mybb->settings['sigsmilies'], $mybb->settings['sigimgcode'], false);
 
 	// Do we mark the suspend signature box?
 	if($user['suspendsignature'] || ($mybb->get_input('suspendsignature', MyBB::INPUT_INT) && !empty($errors)))

@@ -95,7 +95,7 @@ check_forum_password($forum['fid']);
 // If MyCode is on for this forum and the MyCode editor is enabled in the Admin CP, draw the code buttons and smilie inserter.
 if($mybb->settings['bbcodeinserter'] != 0 && $forum['allowmycode'] != 0 && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0))
 {
-	$codebuttons = build_mycode_inserter("message", $forum['allowsmilies']);
+	$codebuttons = build_mycode_inserter("message", $forum['allowsmilies'], $forum['allowimgcode'], $forum['allowvideocode']);
 	if($forum['allowsmilies'] != 0)
 	{
 		$smilieinserter = build_clickable_smilies();
@@ -789,7 +789,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		{
 			$valid_username = true;
 		}
-		
+
 		$post_errors = array();
 		// Fetch friendly error messages if this is an invalid post
 		if(!$valid_thread || !$valid_subject || !$valid_username)
@@ -1029,7 +1029,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 
 		if(!$correct)
 		{
- 			if($post_captcha->type == 1)
+			if($post_captcha->type == 1)
 			{
 				$post_captcha->build_captcha();
 			}

@@ -3108,15 +3108,25 @@ function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
  *
  * @param string $bind The ID of the textarea to bind to. Defaults to "message".
  * @param bool $smilies Whether to include smilies. Defaults to true.
+ * @param bool $images Whether to include images. Defaults to true.
+ * @param bool $videos Whether to include videos. Defaults to true.
+ * @param string $editor Name of the editor instance JS object. Defaults to MyBBEditor.
  *
  * @return string The MyCode inserter
  */
-function build_mycode_inserter($bind="message", $smilies = true)
+function build_mycode_inserter($bind="message", $smilies=true, $images=true, $videos=true, $editor='MyBBEditor')
 {
 	global $db, $mybb, $theme, $templates, $lang, $plugins, $smiliecache, $cache;
 
 	if($mybb->settings['bbcodeinserter'] != 0)
 	{
+		$editor = preg_replace('#([^a-zA-Z0-9_]+)#', '', $editor);
+		
+		if(!trim($editor))
+		{
+			$editor = 'MyBBEditor';
+		}
+		
 		$editor_lang_strings = array(
 			"editor_bold" => "Bold",
 			"editor_italic" => "Italic",
@@ -3212,18 +3222,18 @@ function build_mycode_inserter($bind="message", $smilies = true)
 		if(defined("IN_ADMINCP"))
 		{
 			global $page;
-			$codeinsert = $page->build_codebuttons_editor($bind, $editor_language, $smilies);
+			$codeinsert = $page->build_codebuttons_editor($bind, $editor_language, $smilies, $images, $videos, $editor);
 		}
 		else
 		{
 			// Smilies
-			$emoticon = "";
+			$emoticons_toolbar = '';
 			$emoticons_enabled = "false";
-			if($smilies)
+			if($smilies == true)
 			{
 				if($mybb->settings['smilieinserter'] && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
 				{
-					$emoticon = ",emoticon";
+					$emoticons_toolbar = 'emoticon';
 				}
 				$emoticons_enabled = "true";
 
@@ -3284,62 +3294,101 @@ function build_mycode_inserter($bind="message", $smilies = true)
 				}
 			}
 
-			$basic1 = $basic2 = $align = $font = $size = $color = $removeformat = $email = $link = $list = $code = $sourcemode = "";
+			$sourcemode = '';
+			$bars = $basic2 = $font = $multimedia = $blocks = array();
 
 			if($mybb->settings['allowbasicmycode'] == 1)
 			{
-				$basic1 = "bold,italic,underline,strike|";
-				$basic2 = "horizontalrule,";
+				$bars['basic'] = 'bold,italic,underline,strike';
+				$basic2[] = 'horizontalrule';
 			}
 
 			if($mybb->settings['allowalignmycode'] == 1)
 			{
-				$align = "left,center,right,justify|";
+				$bars['align'] = 'left,center,right,justify';
 			}
 
 			if($mybb->settings['allowfontmycode'] == 1)
 			{
-				$font = "font,";
+				$font[] = 'font';
 			}
 
 			if($mybb->settings['allowsizemycode'] == 1)
 			{
-				$size = "size,";
+				$font[] = 'size';
 			}
 
 			if($mybb->settings['allowcolormycode'] == 1)
 			{
-				$color = "color,";
+				$font[] = 'color';
 			}
 
 			if($mybb->settings['allowfontmycode'] == 1 || $mybb->settings['allowsizemycode'] == 1 || $mybb->settings['allowcolormycode'] == 1)
 			{
-				$removeformat = "removeformat|";
+				$font[] = 'removeformat';
+			}
+
+			if($font)
+			{
+				$bars['font'] = implode(',', $font);
 			}
 
 			if($mybb->settings['allowemailmycode'] == 1)
 			{
-				$email = "email,";
+				$basic2[] = 'email';
 			}
 
 			if($mybb->settings['allowlinkmycode'] == 1)
 			{
-				$link = "link,unlink";
+				$basic2[] = 'link,unlink';
+			}
+
+			if($basic2)
+			{
+				$bars['basic2'] = implode(',', $basic2);
+			}
+
+			if($images == true)
+			{
+				$multimedia[] = 'image';
+			}
+
+			if($videos == true)
+			{
+				$multimedia[] = 'video';
+			}
+
+			if($emoticons_toolbar == 'emoticon')
+			{
+				$multimedia[] = $emoticons_toolbar;
+			}
+
+			if($multimedia)
+			{
+				$bars['multimedia'] = implode(',', $multimedia);
 			}
 
 			if($mybb->settings['allowlistmycode'] == 1)
 			{
-				$list = "bulletlist,orderedlist|";
+				$bars['list'] = 'bulletlist,orderedlist';
 			}
 
 			if($mybb->settings['allowcodemycode'] == 1)
 			{
-				$code = "code,php,";
+				$blocks[] = 'code,php';
 			}
+
+			$blocks[] = 'quote';
+			$bars['blocks'] = implode(',', $blocks);
+			$bars['other'] = 'maximize,source';
+
+			$bars = $plugins->run_hooks('mycode_add_codebuttons_toolbar', $bars);
+
+			$toolbar = implode('|', $bars);
 
 			if($mybb->user['sourceeditor'] == 1)
 			{
-				$sourcemode = "MyBBEditor.sourceMode(true);";
+				$sourcemode = "{$editor}.sourceMode(true);";
 			}
 
 			eval("\$codeinsert = \"".$templates->get("codebuttons")."\";");
@@ -3352,14 +3401,23 @@ function build_mycode_inserter($bind="message", $smilies = true)
 /**
  * Build the javascript clickable smilie inserter
  *
+ * @param string $editor Name of the editor instance JS object where smilies should be inserted. Defaults to MyBBEditor.
+ *
  * @return string The clickable smilies list
  */
-function build_clickable_smilies()
+function build_clickable_smilies($editor='MyBBEditor')
 {
 	global $cache, $smiliecache, $theme, $templates, $lang, $mybb, $smiliecount;
 
 	if($mybb->settings['smilieinserter'] != 0 && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
 	{
+		$editor = preg_replace('#([^a-zA-Z0-9_]+)#', '', $editor);
+		
+		if(!trim($editor))
+		{
+			$editor = 'MyBBEditor';
+		}
+		
 		if(!$smiliecount)
 		{
 			$smilie_cache = $cache->read("smilies");
@@ -3420,7 +3478,7 @@ function build_clickable_smilies()
 
 					$find = str_replace(array('\\', "'"), array('\\\\', "\'"), htmlspecialchars_uni($smilie['find']));
 
-					$onclick = " onclick=\"MyBBEditor.insertText(' $find ');\"";
+					$onclick = " onclick=\"{$editor}.insertText(' $find ');\"";
 					$extra_class = ' smilie_pointer';
 					eval('$smilie = "'.$templates->get('smilie', 1, 0).'";');
 					eval("\$smilies .= \"".$templates->get("smilieinsert_smilie")."\";");

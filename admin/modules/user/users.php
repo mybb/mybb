@@ -1347,7 +1347,7 @@ EOF;
 	if($mybb->settings['sigmycode'] == 1)
 	{
 		$sig_mycode = $lang->on;
-		$signature_editor .= build_mycode_inserter("signature");
+		$signature_editor .= build_mycode_inserter("signature", $mybb->settings['sigsmilies'], $mybb->settings['sigimgcode'], false);
 	}
 	$sig_html = $lang->off;
 	if($mybb->settings['sightml'] == 1)
