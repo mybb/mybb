@@ -1590,6 +1590,7 @@ if($mybb->input['action'] == "resetpassword")
 	{
 		$user = get_user($mybb->get_input('uid', MyBB::INPUT_INT));
 	}
+
 	if(isset($mybb->input['code']) && $user)
 	{
 		$query = $db->simple_select("awaitingactivation", "code", "uid='".$user['uid']."' AND type='p'");
@@ -1607,12 +1608,35 @@ if($mybb->input['action'] == "resetpassword")
 
 		if($password_length < 8)
 		{
-			$password_length = 8;
+			$password_length = min(8, (int)$mybb->settings['maxpasswordlength']);
 		}
 
-		$password = random_str($password_length);
-		$logindetails = update_password($user['uid'], md5($password), $user['salt']);
+		// Set up user handler.
+		require_once MYBB_ROOT.'inc/datahandlers/user.php';
+		$userhandler = new UserDataHandler('update');
 
+		while(!$userhandler->verify_password())
+		{
+			$userhandler->set_data(array(
+				'uid'		=> $user['uid'],
+				'username'	=> $user['username'],
+				'email'		=> $user['email'],
+				'password'	=> random_str($password_length, $mybb->settings['requirecomplexpasswords'])
+			));
+
+			$userhandler->set_validated(true);
+			$userhandler->errors = array();
+		}
+
+		$userhandler->update_user();
+
+		$logindetails = array(
+			'salt'		=> $userhandler->data['salt'],
+			'password'	=> $userhandler->data['saltedpw'],
+			'loginkey'	=> $userhandler->data['loginkey'],
+		);
+
+		$password = &$logindetails['password'];
 		$email = $user['email'];
 
 		$plugins->run_hooks("member_resetpassword_process");

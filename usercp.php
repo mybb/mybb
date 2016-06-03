@@ -244,7 +244,7 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 	);
 
 	// Set up user handler.
-	require_once "inc/datahandlers/user.php";
+	require_once MYBB_ROOT."inc/datahandlers/user.php";
 	$userhandler = new UserDataHandler("update");
 
 	$user = array(
@@ -834,7 +834,6 @@ if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 
 	$userhandler->set_data($user);
 
-
 	if(!$userhandler->validate_user())
 	{
 		$errors = $userhandler->get_friendly_errors();
@@ -1207,7 +1206,7 @@ if($mybb->input['action'] == "do_email" && $mybb->request_method == "post")
 	else
 	{
 		// Set up user handler.
-		require_once "inc/datahandlers/user.php";
+		require_once MYBB_ROOT."inc/datahandlers/user.php";
 		$userhandler = new UserDataHandler("update");
 
 		$user = array(
@@ -1303,7 +1302,7 @@ if($mybb->input['action'] == "do_password" && $mybb->request_method == "post")
 	else
 	{
 		// Set up user handler.
-		require_once "inc/datahandlers/user.php";
+		require_once MYBB_ROOT."inc/datahandlers/user.php";
 		$userhandler = new UserDataHandler("update");
 
 		$user = array(
@@ -1365,7 +1364,7 @@ if($mybb->input['action'] == "do_changename" && $mybb->request_method == "post")
 	else
 	{
 		// Set up user handler.
-		require_once "inc/datahandlers/user.php";
+		require_once MYBB_ROOT."inc/datahandlers/user.php";
 		$userhandler = new UserDataHandler("update");
 
 		$user = array(
