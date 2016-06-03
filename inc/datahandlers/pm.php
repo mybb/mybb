@@ -297,7 +297,7 @@ class PMDataHandler extends DataHandler
 			{
 				if(!empty($user['ignorelist']) && strpos(','.$user['ignorelist'].',', ','.$pm['fromid'].',') !== false)
 				{
-					$this->set_error('recipient_is_ignoring', array($user['username']));
+					$this->set_error("recipient_is_ignoring", array(htmlspecialchars_uni($user['username'])));
 				}
 
 				// Is the recipient only allowing private messages from their buddy list?
@@ -309,7 +309,7 @@ class PMDataHandler extends DataHandler
 				// Can the recipient actually receive private messages based on their permissions or user setting?
 				if(($user['receivepms'] == 0 || $recipient_permissions['canusepms'] == 0) && empty($pm['saveasdraft']))
 				{
-					$this->set_error("recipient_pms_disabled", array($user['username']));
+					$this->set_error("recipient_pms_disabled", array(htmlspecialchars_uni($user['username'])));
 					return false;
 				}
 			}
@@ -359,7 +359,7 @@ class PMDataHandler extends DataHandler
 
 				if($this->admin_override != true)
 				{
-					$this->set_error("recipient_reached_quota", array($user['username']));
+					$this->set_error("recipient_reached_quota", array(htmlspecialchars_uni($user['username'])));
 				}
 			}
 
