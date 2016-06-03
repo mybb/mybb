@@ -519,7 +519,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 					}
 
 					// Load language
-					if($recipient['language'] != $mybb->user['language'] && $lang->language_exists($recipient['language']))
+					if($recipient['language'] != $lang->language && $lang->language_exists($recipient['language']))
 					{
 						$reset_lang = true;
 						$lang->set_language($recipient['language']);
@@ -534,7 +534,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 				// Reset language
 				if(isset($reset_lang))
 				{
-					$lang->set_language($mybb->user['language']);
+					$lang->set_language($mybb->settings['bblanguage']);
 					$lang->load("member");
 				}
 			}
@@ -607,7 +607,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 					}
 
 					// Load language
-					if($recipient['language'] != $mybb->user['language'] && $lang->language_exists($recipient['language']))
+					if($recipient['language'] != $lang->language && $lang->language_exists($recipient['language']))
 					{
 						$reset_lang = true;
 						$lang->set_language($recipient['language']);
@@ -622,7 +622,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 				// Reset language
 				if(isset($reset_lang))
 				{
-					$lang->set_language($mybb->user['language']);
+					$lang->set_language($mybb->settings['bblanguage']);
 					$lang->load("member");
 				}
 			}
