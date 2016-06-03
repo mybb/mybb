@@ -4310,11 +4310,11 @@ if($mybb->input['action'] == "banuser")
 	$mybb->input['uid'] = $mybb->get_input('uid', MyBB::INPUT_INT);
 	if($mybb->input['uid'])
 	{
-		add_breadcrumb($lang->mcp_nav_ban_user);
+		add_breadcrumb($lang->mcp_nav_editing_ban);		
 	}
 	else
 	{
-		add_breadcrumb($lang->mcp_nav_editing_ban);
+		add_breadcrumb($lang->mcp_nav_ban_user);
 	}
 
 	$plugins->run_hooks("modcp_banuser_start");
