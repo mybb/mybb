@@ -497,7 +497,7 @@ if(!$mybb->input['action'])
 		{
 			if($ban['admin'] == 0)
 			{
-				$ban['adminuser'] = "$lang->mybb_engine";
+				$ban['adminuser'] = $lang->mybb_engine;
 			}
 			else
 			{
