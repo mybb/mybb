@@ -44,8 +44,8 @@ if($mybb->user['uid'] == 0 || $mybb->usergroup['canusercp'] == 0)
 
 if(!$mybb->user['pmfolders'])
 {
-	$mybb->user['pmfolders'] = "1**".$lang->folder_inbox."$%%$2**".$lang->folder_sent_items."$%%$3**".$lang->folder_drafts."$%%$4**".$lang->folder_trash;
-	$db->update_query("users", array('pmfolders' => $mybb->user['pmfolders']), "uid='".$mybb->user['uid']."'");
+	$mybb->user['pmfolders'] = '1**$%%$2**$%%$3**$%%$4**';
+	$db->update_query('users', array('pmfolders' => $mybb->user['pmfolders']), "uid = {$mybb->user['uid']}");
 }
 
 $errors = '';
@@ -244,7 +244,7 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 	);
 
 	// Set up user handler.
-	require_once "inc/datahandlers/user.php";
+	require_once MYBB_ROOT."inc/datahandlers/user.php";
 	$userhandler = new UserDataHandler("update");
 
 	$user = array(
@@ -834,7 +834,6 @@ if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 
 	$userhandler->set_data($user);
 
-
 	if(!$userhandler->validate_user())
 	{
 		$errors = $userhandler->get_friendly_errors();
@@ -1207,7 +1206,7 @@ if($mybb->input['action'] == "do_email" && $mybb->request_method == "post")
 	else
 	{
 		// Set up user handler.
-		require_once "inc/datahandlers/user.php";
+		require_once MYBB_ROOT."inc/datahandlers/user.php";
 		$userhandler = new UserDataHandler("update");
 
 		$user = array(
@@ -1303,7 +1302,7 @@ if($mybb->input['action'] == "do_password" && $mybb->request_method == "post")
 	else
 	{
 		// Set up user handler.
-		require_once "inc/datahandlers/user.php";
+		require_once MYBB_ROOT."inc/datahandlers/user.php";
 		$userhandler = new UserDataHandler("update");
 
 		$user = array(
@@ -1365,7 +1364,7 @@ if($mybb->input['action'] == "do_changename" && $mybb->request_method == "post")
 	else
 	{
 		// Set up user handler.
-		require_once "inc/datahandlers/user.php";
+		require_once MYBB_ROOT."inc/datahandlers/user.php";
 		$userhandler = new UserDataHandler("update");
 
 		$user = array(
@@ -2703,6 +2702,7 @@ if($mybb->input['action'] == "do_editlists")
 			{
 				$message = $lang->removed_from_buddy_list;
 			}
+			$user['username'] = htmlspecialchars_uni($user['username']);
 			$message = $lang->sprintf($message, $user['username']);
 		}
 	}
@@ -2813,6 +2813,7 @@ if($mybb->input['action'] == "editlists")
 		$query = $db->simple_select("users", "*", "uid IN ({$mybb->user['buddylist']})", array("order_by" => "username"));
 		while($user = $db->fetch_array($query))
 		{
+			$user['username'] = htmlspecialchars_uni($user['username']);
 			$profile_link = build_profile_link(format_name($user['username'], $user['usergroup'], $user['displaygroup']), $user['uid']);
 			if($user['lastactive'] > $timecut && ($user['invisible'] == 0 || $mybb->usergroup['canviewwolinvis'] == 1) && $user['lastvisit'] != $user['lastactive'])
 			{
@@ -2842,6 +2843,7 @@ if($mybb->input['action'] == "editlists")
 		$query = $db->simple_select("users", "*", "uid IN ({$mybb->user['ignorelist']})", array("order_by" => "username"));
 		while($user = $db->fetch_array($query))
 		{
+			$user['username'] = htmlspecialchars_uni($user['username']);
 			$profile_link = build_profile_link(format_name($user['username'], $user['usergroup'], $user['displaygroup']), $user['uid']);
 			if($user['lastactive'] > $timecut && ($user['invisible'] == 0 || $mybb->usergroup['canviewwolinvis'] == 1) && $user['lastvisit'] != $user['lastactive'])
 			{
@@ -3433,7 +3435,7 @@ if($mybb->input['action'] == "usergroups")
 			$usergroupleaders = '';
 			foreach($groupleaders[$usergroup['gid']] as $leader)
 			{
-				$leader['username'] = format_name($leader['username'], $leader['usergroup'], $leader['displaygroup']);
+				$leader['username'] = format_name(htmlspecialchars_uni($leader['username']), $leader['usergroup'], $leader['displaygroup']);
 				$usergroupleaders .= $comma.build_profile_link($leader['username'], $leader['uid']);
 				$comma = $lang->comma;
 			}
@@ -3700,6 +3702,7 @@ if(!$mybb->input['action'])
 					$warning['postlink'] = get_post_link($warning['pid']);
 					eval("\$post_link .= \"".$templates->get("usercp_warnings_warning_post")."\";");
 				}
+				$warning['username'] = htmlspecialchars_uni($warning['username']);
 				$issuedby = build_profile_link($warning['username'], $warning['issuedby']);
 				$date_issued = my_date('relative', $warning['dateline']);
 				if($warning['type_title'])
@@ -3746,7 +3749,7 @@ if(!$mybb->input['action'])
 	}
 
 	// Format username
-	$username = format_name($mybb->user['username'], $mybb->user['usergroup'], $mybb->user['displaygroup']);
+	$username = format_name(htmlspecialchars_uni($mybb->user['username']), $mybb->user['usergroup'], $mybb->user['displaygroup']);
 	$username = build_profile_link($username, $mybb->user['uid']);
 
 	// Format post numbers
@@ -3912,6 +3915,7 @@ if(!$mybb->input['action'])
 
 						$thread['replies'] = my_number_format($thread['replies']);
 						$thread['views'] = my_number_format($thread['views']);
+						$thread['username'] = htmlspecialchars_uni($thread['username']);
 						$thread['author'] = build_profile_link($thread['username'], $thread['uid']);
 
 						eval("\$latest_subscribed_threads .= \"".$templates->get("usercp_latest_subscribed_threads")."\";");
@@ -4154,6 +4158,7 @@ if(!$mybb->input['action'])
 
 				$thread['replies'] = my_number_format($thread['replies']);
 				$thread['views'] = my_number_format($thread['views']);
+				$thread['username'] = htmlspecialchars_uni($thread['username']);
 				$thread['author'] = build_profile_link($thread['username'], $thread['uid']);
 
 				eval("\$latest_threads_threads .= \"".$templates->get("usercp_latest_threads_threads")."\";");

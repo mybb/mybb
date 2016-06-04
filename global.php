@@ -54,7 +54,7 @@ $session = new session;
 $session->init();
 $mybb->session = &$session;
 
-$mybb->user['ismoderator'] = is_moderator('', '', $mybb->user['uid']);
+$mybb->user['ismoderator'] = is_moderator(0, '', $mybb->user['uid']);
 
 // Set our POST validation code here
 $mybb->post_code = generate_post_check();
@@ -500,7 +500,7 @@ if($mybb->user['uid'] != 0)
 	}
 
 	// Format the welcome back message
-	$lang->welcome_back = $lang->sprintf($lang->welcome_back, build_profile_link($mybb->user['username'], $mybb->user['uid']), $lastvisit);
+	$lang->welcome_back = $lang->sprintf($lang->welcome_back, build_profile_link(htmlspecialchars_uni($mybb->user['username']), $mybb->user['uid']), $lastvisit);
 
 	// Tell the user their PM usage
 	$lang->welcome_pms_usage = $lang->sprintf($lang->welcome_pms_usage, my_number_format($mybb->user['pms_unread']), my_number_format($mybb->user['pms_total']));
@@ -590,7 +590,7 @@ if($mybb->user['uid'] != 0 && is_array($groupleaders) && array_key_exists($mybb-
 
 $unreadreports = '';
 // This user is a moderator, super moderator or administrator
-if($mybb->usergroup['cancp'] == 1 || ($mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanagereportedcontent'] == 1))
+if($mybb->settings['reportmethod'] == "db" && ($mybb->usergroup['cancp'] == 1 || ($mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanagereportedcontent'] == 1)))
 {
 	// Only worth checking if we are here because we have ACP permissions and the other condition fails
 	if($mybb->usergroup['cancp'] == 1 && !($mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanagereportedcontent'] == 1))

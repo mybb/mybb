@@ -430,9 +430,9 @@ function get_events($calendar, $start, $end, $unapproved=0, $private=1)
 {
 	global $db, $mybb;
 
-	// We take in to account timezones here - we add/subtract 12 hours from our GMT time ranges
+	// We take in to account timezones here - we either add 14 hours or subtract 12 hours from our GMT time ranges
 	$start -= 12*3600;
-	$end += 12*3600;
+	$end += 14*3600;
 
 	$visible_where = '';
 	if($unapproved != 1)

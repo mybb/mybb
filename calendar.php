@@ -1461,6 +1461,7 @@ if($mybb->input['action'] == "event")
 	// Event made by registered user
 	if($event['uid'] > 0 && $event['username'])
 	{
+		$event['username'] = htmlspecialchars_uni($event['username']);
 		$event['profilelink'] = build_profile_link(format_name($event['username'], $event['usergroup'], $event['displaygroup']), $event['uid']);
 
 		if(trim($event['usertitle']) != "")
@@ -1516,6 +1517,7 @@ if($mybb->input['action'] == "event")
 			$event['username'] = $lang->guest;
 		}
 
+		$event['username'] = htmlspecialchars_uni($event['username']);
 		$event['profilelink'] = format_name($event['username'], 1);
 
 		if($user_usergroup['usertitle'])
@@ -1721,7 +1723,7 @@ if($mybb->input['action'] == "dayview")
 						$age = '';
 					}
 
-					$birthday['username'] = format_name($birthday['username'], $birthday['usergroup'], $birthday['displaygroup']);
+					$birthday['username'] = format_name(htmlspecialchars_uni($birthday['username']), $birthday['usergroup'], $birthday['displaygroup']);
 					$birthday['profilelink'] = build_profile_link($birthday['username'], $birthday['uid']);
 					eval("\$birthday_list .= \"".$templates->get("calendar_dayview_birthdays_bday", 1, 0)."\";");
 					$comma = $lang->comma;
@@ -1800,6 +1802,7 @@ if($mybb->input['action'] == "dayview")
 			// Event made by registered user
 			if($event['uid'] > 0 && $event['username'])
 			{
+				$event['username'] = htmlspecialchars_uni($event['username']);
 				$event['profilelink'] = build_profile_link(format_name($event['username'], $event['usergroup'], $event['displaygroup']), $event['uid']);
 
 				if(trim($event['usertitle']) != "")
@@ -1854,7 +1857,7 @@ if($mybb->input['action'] == "dayview")
 					$event['username'] = $lang->guest;
 				}
 
-				$event['username'] = $event['username'];
+				$event['username'] = htmlspecialchars_uni($event['username']);
 				$event['profilelink'] = format_name($event['username'], 1);
 
 				if($user_usergroup['usertitle'])

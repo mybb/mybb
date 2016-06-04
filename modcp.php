@@ -510,24 +510,24 @@ if($mybb->input['action'] == "reports")
 			{
 				case 'post':
 					$post = get_post_link($report['id'])."#pid{$report['id']}";
-					$user = build_profile_link($postcache[$report['id']]['username'], $postcache[$report['id']]['uid']);
+					$user = build_profile_link(htmlspecialchars_uni($postcache[$report['id']]['username']), $postcache[$report['id']]['uid']);
 					$report_data['content'] = $lang->sprintf($lang->report_info_post, $post, $user);
 
 					$thread_link = get_thread_link($postcache[$report['id']]['tid']);
-					$thread_subject = htmlspecialchars_uni($postcache[$report['id']]['subject']);
+					$thread_subject = htmlspecialchars_uni($parser->parse_badwords($postcache[$report['id']]['subject']));
 					$report_data['content'] .= $lang->sprintf($lang->report_info_post_thread, $thread_link, $thread_subject);
 
 					break;
 				case 'profile':
-					$user = build_profile_link($usercache[$report['id']]['username'], $usercache[$report['id']]['uid']);
+					$user = build_profile_link(htmlspecialchars_uni($usercache[$report['id']]['username']), $usercache[$report['id']]['uid']);
 					$report_data['content'] = $lang->sprintf($lang->report_info_profile, $user);
 					break;
 				case 'reputation':
 					$reputation_link = "reputation.php?uid={$usercache[$report['id3']]['uid']}#rid{$report['id']}";
-					$bad_user = build_profile_link($usercache[$report['id2']]['username'], $usercache[$report['id2']]['uid']);
+					$bad_user = build_profile_link(htmlspecialchars_uni($usercache[$report['id2']]['username']), $usercache[$report['id2']]['uid']);
 					$report_data['content'] = $lang->sprintf($lang->report_info_reputation, $reputation_link, $bad_user);
 
-					$good_user = build_profile_link($usercache[$report['id3']]['username'], $usercache[$report['id3']]['uid']);
+					$good_user = build_profile_link(htmlspecialchars_uni($usercache[$report['id3']]['username']), $usercache[$report['id3']]['uid']);
 					$report_data['content'] .= $lang->sprintf($lang->report_info_rep_profile, $good_user);
 					break;
 			}
@@ -555,7 +555,7 @@ if($mybb->input['action'] == "reports")
 			{
 				if(is_array($usercache[$report['lastreporter']]))
 				{
-					$lastreport_user = build_profile_link($usercache[$report['lastreporter']]['username'], $report['lastreporter']);
+					$lastreport_user = build_profile_link(htmlspecialchars_uni($usercache[$report['lastreporter']]['username']), $report['lastreporter']);
 				}
 				elseif($usercache[$report['lastreporter']] > 0)
 				{
@@ -701,7 +701,7 @@ if($mybb->input['action'] == "allreports")
 				$report_data['content'] = $lang->sprintf($lang->report_info_post, $post, $user);
 
 				$thread_link = get_thread_link($report['id2']);
-				$thread_subject = htmlspecialchars_uni($report['threadsubject']);
+				$thread_subject = htmlspecialchars_uni($parser->parse_badwords($report['threadsubject']));
 				$report_data['content'] .= $lang->sprintf($lang->report_info_post_thread, $thread_link, $thread_subject);
 			}
 			else if($report['type'] == 'profile')
@@ -726,6 +726,7 @@ if($mybb->input['action'] == "allreports")
 				$report['username'] = $lang->na_deleted;
 				$report['reporterlink'] = $post;
 			}
+			$report['username'] = htmlspecialchars_uni($report['username']);
 
 			if(isset($lang->$report_string))
 			{
@@ -890,13 +891,14 @@ if($mybb->input['action'] == "modlogs")
 		$logitem['action'] = htmlspecialchars_uni($logitem['action']);
 		$log_date = my_date('relative', $logitem['dateline']);
 		$trow = alt_trow();
+		$logitem['username'] = htmlspecialchars_uni($logitem['username']);
 		$username = format_name($logitem['username'], $logitem['usergroup'], $logitem['displaygroup']);
 		$logitem['profilelink'] = build_profile_link($username, $logitem['uid']);
 		$logitem['ipaddress'] = my_inet_ntop($db->unescape_binary($logitem['ipaddress']));
 
 		if($logitem['tsubject'])
 		{
-			$logitem['tsubject'] = htmlspecialchars_uni($logitem['tsubject']);
+			$logitem['tsubject'] = htmlspecialchars_uni($parser->parse_badwords($logitem['tsubject']));
 			$logitem['thread'] = get_thread_link($logitem['tid']);
 			eval("\$information .= \"".$templates->get("modcp_modlogs_result_thread")."\";");
 		}
@@ -907,7 +909,7 @@ if($mybb->input['action'] == "modlogs")
 		}
 		if($logitem['psubject'])
 		{
-			$logitem['psubject'] = htmlspecialchars_uni($logitem['psubject']);
+			$logitem['psubject'] = htmlspecialchars_uni($parser->parse_badwords($logitem['psubject']));
 			$logitem['post'] = get_post_link($logitem['pid']);
 			eval("\$information .= \"".$templates->get("modcp_modlogs_result_post")."\";");
 		}
@@ -918,11 +920,12 @@ if($mybb->input['action'] == "modlogs")
 			$data = my_unserialize($logitem['data']);
 			if(!empty($data['uid']))
 			{
+				$data['username'] = htmlspecialchars_uni($data['username']);
 				$information = $lang->sprintf($lang->edited_user_info, htmlspecialchars_uni($data['username']), get_profile_link($data['uid']));
 			}
 			if(!empty($data['aid']))
 			{
-				$data['subject'] = htmlspecialchars_uni($data['subject']);
+				$data['subject'] = htmlspecialchars_uni($parser->parse_badwords($data['subject']));
 				$data['announcement'] = get_announcement_link($data['aid']);
 				eval("\$information .= \"".$templates->get("modcp_modlogs_result_announcement")."\";");
 			}
@@ -1016,7 +1019,7 @@ if($mybb->input['action'] == "delete_announcement")
 	$query = $db->simple_select("announcements", "aid, subject, fid", "aid='{$aid}'");
 
 	$announcement = $db->fetch_array($query);
-	$announcement['subject'] = htmlspecialchars_uni($announcement['subject']);
+	$announcement['subject'] = htmlspecialchars_uni($parser->parse_badwords($announcement['subject']));
 
 	if(!$announcement)
 	{
@@ -1842,7 +1845,7 @@ if($mybb->input['action'] == "announcements")
 					eval("\$icon = \"".$templates->get("modcp_announcements_announcement_active")."\";");
 				}
 
-				$subject = htmlspecialchars_uni($announcement['subject']);
+				$subject = htmlspecialchars_uni($parser->parse_badwords($announcement['subject']));
 
 				eval("\$announcements_global .= \"".$templates->get("modcp_announcements_announcement_global")."\";");
 			}
@@ -2099,6 +2102,7 @@ if($mybb->input['action'] == "modqueue")
 			{
 				if($thread['threadusername'] != "")
 				{
+					$thread['threadusername'] = htmlspecialchars_uni($thread['threadusername']);
 					$profile_link = $thread['threadusername'];
 				}
 				else
@@ -2108,6 +2112,7 @@ if($mybb->input['action'] == "modqueue")
 			}
 			else
 			{
+				$thread['username'] = htmlspecialchars_uni($thread['username']);
 				$profile_link = build_profile_link($thread['username'], $thread['uid']);
 			}
 
@@ -2220,6 +2225,7 @@ if($mybb->input['action'] == "modqueue")
 			{
 				if($post['postusername'] != "")
 				{
+					$post['postusername'] = htmlspecialchars_uni($post['postusername']);
 					$profile_link = $post['postusername'];
 				}
 				else
@@ -2229,6 +2235,7 @@ if($mybb->input['action'] == "modqueue")
 			}
 			else
 			{
+				$post['username'] = htmlspecialchars_uni($post['username']);
 				$profile_link = build_profile_link($post['username'], $post['uid']);
 			}
 
@@ -2342,13 +2349,14 @@ if($mybb->input['action'] == "modqueue")
 
 			$attachdate = my_date('relative', $attachment['dateuploaded']);
 
-			$attachment['postsubject'] = htmlspecialchars_uni($attachment['postsubject']);
+			$attachment['postsubject'] = htmlspecialchars_uni($parser->parse_badwords($attachment['postsubject']));
 			$attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
-			$attachment['threadsubject'] = htmlspecialchars_uni($attachment['threadsubject']);
+			$attachment['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($attachment['threadsubject']));
 			$attachment['filesize'] = get_friendly_size($attachment['filesize']);
 
 			$link = get_post_link($attachment['pid'], $attachment['tid']) . "#pid{$attachment['pid']}";
 			$thread_link = get_thread_link($attachment['tid']);
+			$attachment['username'] = htmlspecialchars_uni($attachment['username']);
 			$profile_link = build_profile_link($attachment['username'], $attachment['uid']);
 
 			eval("\$attachments .= \"".$templates->get("modcp_modqueue_attachments_attachment")."\";");
@@ -3016,6 +3024,7 @@ if($mybb->input['action'] == "editprofile")
 		eval("\$customfields = \"".$templates->get("usercp_profile_profilefields")."\";");
 	}
 
+	$user['username'] = htmlspecialchars_uni($user['username']);
 	$lang->edit_profile = $lang->sprintf($lang->edit_profile, $user['username']);
 	$profile_link = build_profile_link(format_name($user['username'], $user['usergroup'], $user['displaygroup']), $user['uid']);
 
@@ -3280,6 +3289,7 @@ if($mybb->input['action'] == "finduser")
 	while($user = $db->fetch_array($query))
 	{
 		$alt_row = alt_trow();
+		$user['username'] = htmlspecialchars_uni($user['username']);
 		$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 		$user['postnum'] = my_number_format($user['postnum']);
 		$regdate = my_date('relative', $user['regdate']);
@@ -3486,6 +3496,7 @@ if($mybb->input['action'] == "warninglogs")
 	while($row = $db->fetch_array($query))
 	{
 		$trow = alt_trow();
+		$row['username'] = htmlspecialchars_uni($row['username']);
 		$username = format_name($row['username'], $row['usergroup'], $row['displaygroup']);
 		$username_link = build_profile_link($username, $row['uid']);
 		$mod_username = format_name($row['mod_username'], $row['mod_usergroup'], $row['mod_displaygroup']);
@@ -3731,10 +3742,11 @@ if($mybb->input['action'] == "ipsearch")
 		{
 			$query = $db->simple_select('users', 'username, uid, regip, lastip', $user_ip_sql,
 					array('order_by' => 'regdate', 'order_dir' => 'DESC', 'limit_start' => $start, 'limit' => $perpage));
-			
+
 			while($ipaddress = $db->fetch_array($query))
 			{
 				$result = false;
+				$ipaddress['username'] = htmlspecialchars_uni($ipaddress['username']);
 				$profile_link = build_profile_link($ipaddress['username'], $ipaddress['uid']);
 				$trow = alt_trow();
 				$ip = false;
@@ -3819,7 +3831,11 @@ if($mybb->input['action'] == "ipsearch")
 				foreach($ipaddresses as $ipaddress)
 				{
 					$ip = my_inet_ntop($db->unescape_binary($ipaddress['ipaddress']));
-					if(!$ipaddress['username']) $ipaddress['username'] = $ipaddress['postusername']; // Guest username support
+					if(!$ipaddress['username'])
+					{
+						$ipaddress['username'] = $ipaddress['postusername']; // Guest username support
+					}
+					$ipaddress['username'] = htmlspecialchars_uni($ipaddress['username']);
 					$trow = alt_trow();
 					if(!$ipaddress['subject'])
 					{
@@ -3827,7 +3843,7 @@ if($mybb->input['action'] == "ipsearch")
 					}
 
 					$ipaddress['postlink'] = get_post_link($ipaddress['pid'], $ipaddress['tid']);
-					$ipaddress['subject'] = htmlspecialchars_uni($ipaddress['subject']);
+					$ipaddress['subject'] = htmlspecialchars_uni($parser->parse_badwords($ipaddress['subject']));
 					$ipaddress['profilelink'] = build_profile_link($ipaddress['username'], $ipaddress['uid']);
 
 					eval("\$subject = \"".$templates->get("modcp_ipsearch_result_post")."\";");
@@ -3993,6 +4009,7 @@ if($mybb->input['action'] == "banning")
 	$bannedusers = '';
 	while($banned = $db->fetch_array($query))
 	{
+		$banned['username'] = htmlspecialchars_uni($banned['username']);
 		$profile_link = build_profile_link($banned['username'], $banned['uid']);
 
 		// Only show the edit & lift links if current user created ban, or is super mod/admin
@@ -4304,11 +4321,11 @@ if($mybb->input['action'] == "banuser")
 	$mybb->input['uid'] = $mybb->get_input('uid', MyBB::INPUT_INT);
 	if($mybb->input['uid'])
 	{
-		add_breadcrumb($lang->mcp_nav_ban_user);
+		add_breadcrumb($lang->mcp_nav_editing_ban);
 	}
 	else
 	{
-		add_breadcrumb($lang->mcp_nav_editing_ban);
+		add_breadcrumb($lang->mcp_nav_ban_user);
 	}
 
 	$plugins->run_hooks("modcp_banuser_start");
@@ -4328,7 +4345,7 @@ if($mybb->input['action'] == "banuser")
 		$banned = $db->fetch_array($query);
 		if($banned['username'])
 		{
-			$username = htmlspecialchars_uni($banned['username']);
+			$username = $banned['username'] = htmlspecialchars_uni($banned['username']);
 			$banreason = htmlspecialchars_uni($banned['reason']);
 			$uid = $mybb->input['uid'];
 			$user = get_user($banned['uid']);
@@ -4349,6 +4366,7 @@ if($mybb->input['action'] == "banuser")
 		if($mybb->input['uid'])
 		{
 			$user = get_user($mybb->input['uid']);
+			$user['username'] = htmlspecialchars_uni($user['username']);
 			$username = $user['username'];
 		}
 		else
@@ -4504,6 +4522,7 @@ if(!$mybb->input['action'])
 				");
 				$attachment = $db->fetch_array($query);
 				$attachment['date'] = my_date('relative', $attachment['dateuploaded']);
+				$attachment['username'] = htmlspecialchars_uni($attachment['username']);
 				$attachment['profilelink'] = build_profile_link($attachment['username'], $attachment['uid']);
 				$attachment['link'] = get_post_link($attachment['pid'], $attachment['tid']);
 				$attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
@@ -4541,6 +4560,7 @@ if(!$mybb->input['action'])
 				");
 				$post = $db->fetch_array($query);
 				$post['date'] = my_date('relative', $post['dateline']);
+				$post['username'] = htmlspecialchars_uni($post['username']);
 				$post['profilelink'] = build_profile_link($post['username'], $post['uid']);
 				$post['link'] = get_post_link($post['pid'], $post['tid']);
 				$post['subject'] = $post['fullsubject'] = $parser->parse_badwords($post['subject']);
@@ -4572,6 +4592,7 @@ if(!$mybb->input['action'])
 				$query = $db->simple_select("threads", "tid, subject, uid, username, dateline", "visible='0' {$flist_queue_threads}", array('order_by' =>  'dateline', 'order_dir' => 'DESC', 'limit' => 1));
 				$thread = $db->fetch_array($query);
 				$thread['date'] = my_date('relative', $thread['dateline']);
+				$thread['username'] = htmlspecialchars_uni($thread['username']);
 				$thread['profilelink'] = build_profile_link($thread['username'], $thread['uid']);
 				$thread['link'] = get_thread_link($thread['tid']);
 				$thread['subject'] = $thread['fullsubject'] = $parser->parse_badwords($thread['subject']);
@@ -4627,13 +4648,14 @@ if(!$mybb->input['action'])
 			$logitem['action'] = htmlspecialchars_uni($logitem['action']);
 			$log_date = my_date('relative', $logitem['dateline']);
 			$trow = alt_trow();
+			$logitem['username'] = htmlspecialchars_uni($logitem['username']);
 			$username = format_name($logitem['username'], $logitem['usergroup'], $logitem['displaygroup']);
 			$logitem['profilelink'] = build_profile_link($username, $logitem['uid']);
 			$logitem['ipaddress'] = my_inet_ntop($db->unescape_binary($logitem['ipaddress']));
 
 			if($logitem['tsubject'])
 			{
-				$logitem['tsubject'] = htmlspecialchars_uni($logitem['tsubject']);
+				$logitem['tsubject'] = htmlspecialchars_uni($parser->parse_badwords($logitem['tsubject']));
 				$logitem['thread'] = get_thread_link($logitem['tid']);
 				eval("\$information .= \"".$templates->get("modcp_modlogs_result_thread")."\";");
 			}
@@ -4644,7 +4666,7 @@ if(!$mybb->input['action'])
 			}
 			if($logitem['psubject'])
 			{
-				$logitem['psubject'] = htmlspecialchars_uni($logitem['psubject']);
+				$logitem['psubject'] = htmlspecialchars_uni($parser->parse_badwords($logitem['psubject']));
 				$logitem['post'] = get_post_link($logitem['pid']);
 				eval("\$information .= \"".$templates->get("modcp_modlogs_result_post")."\";");
 			}
@@ -4659,7 +4681,7 @@ if(!$mybb->input['action'])
 				}
 				if($data['aid'])
 				{
-					$data['subject'] = htmlspecialchars_uni($data['subject']);
+					$data['subject'] = htmlspecialchars_uni($parser->parse_badwords($data['subject']));
 					$data['announcement'] = get_announcement_link($data['aid']);
 					eval("\$information .= \"".$templates->get("modcp_modlogs_result_announcement")."\";");
 				}
@@ -4699,6 +4721,7 @@ if(!$mybb->input['action'])
 	$bannedusers = '';
 	foreach($banned_cache as $banned)
 	{
+		$banned['username'] = htmlspecialchars_uni($banned['username']);
 		$profile_link = build_profile_link($banned['username'], $banned['uid']);
 
 		// Only show the edit & lift links if current user created ban, or is super mod/admin

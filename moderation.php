@@ -467,6 +467,7 @@ switch($mybb->input['action'])
 		while($delayedmod = $db->fetch_array($query))
 		{
 			$delayedmod['dateline'] = my_date("jS M Y, G:i", $delayedmod['delaydateline']);
+			$delayedmod['username'] = htmlspecialchars_uni($delayedmod['username']);
 			$delayedmod['profilelink'] = build_profile_link($delayedmod['username'], $delayedmod['uid']);
 			$delayedmod['action'] = $actions[$delayedmod['type']];
 			$info = '';
@@ -474,7 +475,7 @@ switch($mybb->input['action'])
 			{
 				$delayed_thread = get_thread($delayedmod['tids']);
 				$delayed_thread['link'] = get_thread_link($delayed_thread['tid']);
-				$delayed_thread['subject'] = htmlspecialchars_uni($delayed_thread['subject']);
+				$delayed_thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($delayed_thread['subject']));
 				eval("\$info .= \"".$templates->get("moderation_delayedmodaction_notes_thread_single")."\";");
 			}
 			else
@@ -991,12 +992,13 @@ switch($mybb->input['action'])
 			while($modaction = $db->fetch_array($query))
 			{
 				$modaction['dateline'] = my_date("jS M Y, G:i", $modaction['dateline']);
+				$modaction['username'] = htmlspecialchars_uni($modaction['username']);
 				$modaction['profilelink'] = build_profile_link($modaction['username'], $modaction['uid']);
 				$modaction['action'] = htmlspecialchars_uni($modaction['action']);
 				$info = '';
 				if($modaction['tsubject'])
 				{
-					$modaction['tsubject'] = htmlspecialchars_uni($modaction['tsubject']);
+					$modaction['tsubject'] = htmlspecialchars_uni($parser->parse_badwords($modaction['tsubject']));
 					$modaction['threadlink'] = get_thread_link($modaction['tid']);
 					eval("\$info .= \"".$templates->get("moderation_threadnotes_modaction_thread")."\";");
 				}
@@ -1008,7 +1010,8 @@ switch($mybb->input['action'])
 				}
 				if($modaction['psubject'])
 				{
-					$modaction['psubject'] = htmlspecialchars_uni($modaction['psubject']);
+
+					$modaction['psubject'] = htmlspecialchars_uni($parser->parse_badwords($modaction['psubject']));
 					$modaction['postlink'] = get_post_link($modaction['pid']);
 					eval("\$info .= \"".$templates->get("moderation_threadnotes_modaction_post")."\";");
 				}
@@ -1079,6 +1082,7 @@ switch($mybb->input['action'])
 		while($delayedmod = $db->fetch_array($query))
 		{
 			$delayedmod['dateline'] = my_date("jS M Y, G:i", $delayedmod['delaydateline']);
+			$delayedmod['username'] = htmlspecialchars_uni($delayedmod['username']);
 			$delayedmod['profilelink'] = build_profile_link($delayedmod['username'], $delayedmod['uid']);
 			$delayedmod['action'] = $actions[$delayedmod['type']];
 			$info = '';
@@ -1179,6 +1183,7 @@ switch($mybb->input['action'])
 			$hostname = $lang->resolve_fail;
 		}
 
+		$post['username'] = htmlspecialchars_uni($post['username']);
 		$username = build_profile_link($post['username'], $post['uid']);
 
 		// Moderator options
@@ -2900,7 +2905,7 @@ switch($mybb->input['action'])
 			$plugins->run_hooks("moderation_purgespammer_show");
 
 			add_breadcrumb($lang->purgespammer);
-			$lang->purgespammer_purge = $lang->sprintf($lang->purgespammer_purge, $user['username']);
+			$lang->purgespammer_purge = $lang->sprintf($lang->purgespammer_purge, htmlspecialchars_uni($user['username']));
 			if($mybb->settings['purgespammerbandelete'] == "ban")
 			{
 				$lang->purgespammer_purge_desc = $lang->sprintf($lang->purgespammer_purge_desc, $lang->purgespammer_ban);

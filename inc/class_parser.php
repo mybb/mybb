@@ -89,6 +89,14 @@ class postParser
 	public $list_count;
 
 	/**
+	 * Whether or not should a <br /> with clear: both be added at the end of the parsed message
+	 *
+	 * @access public
+	 * @var boolean
+	 */
+	public $clear_needed = false;
+
+	/**
 	 * Parses a message with the specified options.
 	 *
 	 * @param string $message The message to be parsed.
@@ -98,6 +106,8 @@ class postParser
 	function parse_message($message, $options=array())
 	{
 		global $plugins, $mybb;
+
+		$this->clear_needed = false;
 
 		// Set base URL for parsing smilies
 		$this->base_url = $mybb->settings['bburl'];
@@ -215,6 +225,11 @@ class postParser
 			// Fix up new lines and block level elements
 			$message = preg_replace("#(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr)[^>]*>)\s*<br />#i", "$1", $message);
 			$message = preg_replace("#(&nbsp;)+(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr)[^>]*>)#i", "$2", $message);
+		}
+
+		if($this->clear_needed)
+		{
+			$message .= '<br class="clear" />';
 		}
 
 		$message = $plugins->run_hooks("parse_message_end", $message);
@@ -466,16 +481,16 @@ class postParser
 		if(!empty($this->options['allow_imgcode']))
 		{
 			$message = preg_replace_callback("#\[img\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is", array($this, 'mycode_parse_img_callback1'), $message);
-			$message = preg_replace_callback("#\[img=([0-9]{1,3})x([0-9]{1,3})\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is", array($this, 'mycode_parse_img_callback2'), $message);
-			$message = preg_replace_callback("#\[img align=([a-z]+)\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is", array($this, 'mycode_parse_img_callback3'), $message);
-			$message = preg_replace_callback("#\[img=([0-9]{1,3})x([0-9]{1,3}) align=([a-z]+)\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is", array($this, 'mycode_parse_img_callback4'), $message);
+			$message = preg_replace_callback("#\[img=([1-9][0-9]*)x([1-9][0-9]*)\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is", array($this, 'mycode_parse_img_callback2'), $message);
+			$message = preg_replace_callback("#\[img align=(left|right)\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is", array($this, 'mycode_parse_img_callback3'), $message);
+			$message = preg_replace_callback("#\[img=([1-9][0-9]*)x([1-9][0-9]*) align=(left|right)\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is", array($this, 'mycode_parse_img_callback4'), $message);
 		}
 		else
 		{
 			$message = preg_replace_callback("#\[img\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is", array($this, 'mycode_parse_img_disabled_callback1'), $message);
-			$message = preg_replace_callback("#\[img=([0-9]{1,3})x([0-9]{1,3})\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is", array($this, 'mycode_parse_img_disabled_callback2'), $message);
-			$message = preg_replace_callback("#\[img align=([a-z]+)\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is", array($this, 'mycode_parse_img_disabled_callback3'), $message);
-			$message = preg_replace_callback("#\[img=([0-9]{1,3})x([0-9]{1,3}) align=([a-z]+)\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is", array($this, 'mycode_parse_img_disabled_callback4'), $message);
+			$message = preg_replace_callback("#\[img=([1-9][0-9]*)x([1-9][0-9]*)\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is", array($this, 'mycode_parse_img_disabled_callback2'), $message);
+			$message = preg_replace_callback("#\[img align=(left|right)\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is", array($this, 'mycode_parse_img_disabled_callback3'), $message);
+			$message = preg_replace_callback("#\[img=([1-9][0-9]*)x([1-9][0-9]*) align=(left|right)\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is", array($this, 'mycode_parse_img_disabled_callback4'), $message);
 		}
 
 		// Convert videos when allow.
@@ -649,7 +664,7 @@ class postParser
 	}
 
 	/**
- 	 * Attempts to move any javascript references in the specified message.
+	 * Attempts to move any javascript references in the specified message.
 	 *
 	 * @param string The message to be parsed.
 	 * @return string The parsed message.
@@ -658,7 +673,7 @@ class postParser
 	{
 		$js_array = array(
 			"#(&\#(0*)106;?|&\#(0*)74;?|&\#x(0*)4a;?|&\#x(0*)6a;?|j)((&\#(0*)97;?|&\#(0*)65;?|a)(&\#(0*)118;?|&\#(0*)86;?|v)(&\#(0*)97;?|&\#(0*)65;?|a)(\s)?(&\#(0*)115;?|&\#(0*)83;?|s)(&\#(0*)99;?|&\#(0*)67;?|c)(&\#(0*)114;?|&\#(0*)82;?|r)(&\#(0*)105;?|&\#(0*)73;?|i)(&\#112;?|&\#(0*)80;?|p)(&\#(0*)116;?|&\#(0*)84;?|t)(&\#(0*)58;?|\:))#i",
-			"#(on)([a-z]+\s?=)#i",
+			"#([\s\"']on)([a-z]+\s*=)#i",
 		);
 
 		// Add invisible white space
@@ -814,7 +829,7 @@ class postParser
 		{
 			$username = my_substr($username, 0, my_strlen($username)-1);
 		}
-		
+
 		if(!empty($this->options['allow_html']))
 		{
 			$username = htmlspecialchars_uni($username);
@@ -1099,14 +1114,19 @@ class postParser
 		$css_align = '';
 		if($align == "right")
 		{
-			$css_align = " style=\"float: right;\"";
+			$css_align = ' style="float: right;"';
 		}
 		else if($align == "left")
 		{
-			$css_align = " style=\"float: left;\"";
+			$css_align = ' style="float: left;"';
 		}
-		$alt = basename($url);
 
+		if($align)
+		{
+			$this->clear_needed = true;
+		}
+
+		$alt = basename($url);
 		$alt = htmlspecialchars_decode($alt);
 		if(my_strlen($alt) > 55)
 		{
@@ -1652,7 +1672,7 @@ class postParser
 
 		$find = array(
 			"#\[(b|u|i|s|url|email|color|img)\](.*?)\[/\\1\]#is",
-			"#\[img=([0-9]{1,3})x([0-9]{1,3})\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is",
+			"#\[img=([1-9][0-9]*)x([1-9][0-9]*)\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is",
 			"#\[url=([a-z]+?://)([^\r\n\"<]+?)\](.+?)\[/url\]#si",
 			"#\[url=([^\r\n\"<&\(\)]+?)\](.+?)\[/url\]#si",
 		);

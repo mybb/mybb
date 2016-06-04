@@ -268,7 +268,7 @@ if($mybb->input['action'] == "edit")
 	}
 
 	$form_container = new FormContainer($lang->edit_ban);
-	$form_container->output_row($lang->ban_username, "", $user['username']);
+	$form_container->output_row($lang->ban_username, "", htmlspecialchars_uni($user['username']));
 	$form_container->output_row($lang->ban_reason, "", $form->generate_text_area('reason', $mybb->input['reason'], array('id' => 'reason', 'maxlength' => '255')), 'reason');
 	if(count($banned_groups) > 1)
 	{
@@ -316,7 +316,7 @@ if(!$mybb->input['action'])
 		$user = get_user_by_username($mybb->input['username'], $options);
 		
 		// Are we searching a user?
-		if(isset($mybb->input['search']) && $mybb->get_input('search') != '')
+		if(isset($mybb->input['search']))
 		{
 			$where_sql = 'uid=\''.(int)$user['uid'].'\'';
 			$where_sql_full = 'WHERE b.uid=\''.(int)$user['uid'].'\'';
@@ -463,7 +463,7 @@ if(!$mybb->input['action'])
 	// Get the banned users
 	while($ban = $db->fetch_array($query))
 	{
-		$profile_link = build_profile_link($ban['username'], $ban['uid'], "_blank");
+		$profile_link = build_profile_link(htmlspecialchars_uni($ban['username']), $ban['uid'], "_blank");
 		$ban_date = my_date($mybb->settings['dateformat'], $ban['dateline']);
 		if($ban['lifted'] == 'perm' || $ban['lifted'] == '' || $ban['bantime'] == 'perm' || $ban['bantime'] == '---')
 		{
@@ -497,7 +497,7 @@ if(!$mybb->input['action'])
 		{
 			if($ban['admin'] == 0)
 			{
-				$ban['adminuser'] = "MyBB System";
+				$ban['adminuser'] = "$lang->mybb_engine";
 			}
 			else
 			{
@@ -535,7 +535,7 @@ if(!$mybb->input['action'])
 	}
 
 	$form_container = new FormContainer($lang->ban_a_user);
-	$form_container->output_row($lang->ban_username, $lang->autocomplete_enabled, $form->generate_text_box('username', $mybb->input['username'], array('id' => 'username')), 'username');
+	$form_container->output_row($lang->ban_username, $lang->autocomplete_enabled, $form->generate_text_box('username', htmlspecialchars_uni($mybb->get_input('username')), array('id' => 'username')), 'username');
 	$form_container->output_row($lang->ban_reason, "", $form->generate_text_area('reason', $mybb->input['reason'], array('id' => 'reason', 'maxlength' => '255')), 'reason');
 	if(count($banned_groups) > 1)
 	{
@@ -598,7 +598,7 @@ if(!$mybb->input['action'])
 	</script>';
 
 	$buttons[] = $form->generate_submit_button($lang->ban_user);
-	$buttons[] = $form->generate_submit_button($lang->search_user, array('name' => 'search'));
+	$buttons[] = $form->generate_submit_button($lang->search_for_a_user, array('name' => 'search'));
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 

@@ -314,7 +314,7 @@ if($mybb->settings['browsingthisforum'] != 0)
 
 				if($user['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])
 				{
-					$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
+					$user['username'] = format_name(htmlspecialchars_uni($user['username']), $user['usergroup'], $user['displaygroup']);
 					$user['profilelink'] = build_profile_link($user['username'], $user['uid']);
 					eval("\$onlinemembers .= \"".$templates->get("forumdisplay_usersbrowsing_user", 1, 0)."\";");
 					$comma = $lang->comma;
@@ -798,6 +798,9 @@ if($has_announcements == true)
 		$announcement['subject'] = $parser->parse_badwords($announcement['subject']);
 		$announcement['subject'] = htmlspecialchars_uni($announcement['subject']);
 		$postdate = my_date('relative', $announcement['startdate']);
+
+		$announcement['username'] = htmlspecialchars_uni($announcement['username']);
+
 		$announcement['profilelink'] = build_profile_link($announcement['username'], $announcement['uid']);
 
 		if($mybb->settings['allowthreadratings'] != 0 && $foruminfo['allowtratings'] != 0 && $fpermissions['canviewthreads'] != 0)
@@ -1027,11 +1030,11 @@ if(!empty($threadcache) && is_array($threadcache))
 		$thread['author'] = $thread['uid'];
 		if(!$thread['username'])
 		{
-			$thread['username'] = $thread['threadusername'];
-			$thread['profilelink'] = $thread['threadusername'];
+			$thread['username'] = $thread['profilelink'] = htmlspecialchars_uni($thread['threadusername']);
 		}
 		else
 		{
+			$thread['username'] = htmlspecialchars_uni($thread['username']);
 			$thread['profilelink'] = build_profile_link($thread['username'], $thread['uid']);
 		}
 

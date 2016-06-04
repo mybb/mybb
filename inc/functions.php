@@ -865,7 +865,7 @@ function error_no_permission()
 
 	if($mybb->user['uid'])
 	{
-		$lang->error_nopermission_user_username = $lang->sprintf($lang->error_nopermission_user_username, $mybb->user['username']);
+		$lang->error_nopermission_user_username = $lang->sprintf($lang->error_nopermission_user_username, htmlspecialchars_uni($mybb->user['username']));
 		eval("\$errorpage = \"".$templates->get("error_nopermission_loggedin")."\";");
 	}
 	else
@@ -1209,7 +1209,7 @@ function user_permissions($uid=0)
  * Fetch the usergroup permissions for a specific group or series of groups combined
  *
  * @param int|string $gid A list of groups (Can be a single integer, or a list of groups separated by a comma)
- * @return array Array of permissions generated for the groups
+ * @return array Array of permissions generated for the groups, containing also a list of comma-separated checked groups under 'all_usergroups' index
  */
 function usergroup_permissions($gid=0)
 {
@@ -1224,14 +1224,16 @@ function usergroup_permissions($gid=0)
 
 	if(count($groups) == 1)
 	{
+		$groupscache[$gid]['all_usergroups'] = $gid;
 		return $groupscache[$gid];
 	}
-	
+
 	$usergroup = array();
+	$usergroup['all_usergroups'] = $gid;
 
 	foreach($groups as $gid)
 	{
-		if(trim($gid) == "" || !$groupscache[$gid])
+		if(trim($gid) == "" || empty($groupscache[$gid]))
 		{
 			continue;
 		}
@@ -1714,14 +1716,19 @@ function is_moderator($fid=0, $action="", $uid=0)
 			{
 				foreach($modcache as $modusers)
 				{
-					if(isset($modusers['users'][$uid]) && $modusers['users'][$uid]['mid'])
+					if(isset($modusers['users'][$uid]) && $modusers['users'][$uid]['mid'] && (!$action || !empty($modusers['users'][$uid][$action])))
 					{
 						return true;
 					}
-					elseif(isset($user_perms['gid']) && isset($modusers['usergroups'][$user_perms['gid']]))
+
+					$groups = explode(',', $user_perms['all_usergroups']);
+
+					foreach($groups as $group)
 					{
-						// Moderating usergroup
-						return true;
+						if(trim($group) != '' && isset($modusers['usergroups'][$group]) && (!$action || !empty($modusers['usergroups'][$group][$action])))
+						{
+							return true;
+						}
 					}
 				}
 			}
@@ -2145,7 +2152,7 @@ function my_unserialize($str)
 	{
 		mb_internal_encoding($mbIntEnc);
 	}
-	
+
 	return $out;
 }
 
@@ -2165,27 +2172,27 @@ function _safe_serialize( $value )
 	{
 		return 'N;';
 	}
-	
+
 	if(is_bool($value))
 	{
 		return 'b:'.(int)$value.';';
 	}
-	
+
 	if(is_int($value))
 	{
 		return 'i:'.$value.';';
 	}
-	
+
 	if(is_float($value))
 	{
 		return 'd:'.str_replace(',', '.', $value).';';
 	}
-	
+
 	if(is_string($value))
 	{
 		return 's:'.strlen($value).':"'.$value.'";';
 	}
-	
+
 	if(is_array($value))
 	{
 		$out = '';
@@ -2193,7 +2200,7 @@ function _safe_serialize( $value )
 		{
 			$out .= _safe_serialize($k) . _safe_serialize($v);
 		}
-		
+
 		return 'a:'.count($value).':{'.$out.'}';
 	}
 
@@ -2216,13 +2223,13 @@ function my_serialize($value)
 		$mbIntEnc = mb_internal_encoding();
 		mb_internal_encoding('ASCII');
 	}
-	
+
 	$out = _safe_serialize($value);
 	if(isset($mbIntEnc))
 	{
 		mb_internal_encoding($mbIntEnc);
 	}
-	
+
 	return $out;
 }
 
@@ -2414,7 +2421,7 @@ function update_stats($changes=array(), $force=false)
 		$query = $db->simple_select("users", "uid, username", "", array('order_by' => 'regdate', 'order_dir' => 'DESC', 'limit' => 1));
 		$lastmember = $db->fetch_array($query);
 		$new_stats['lastuid'] = $lastmember['uid'];
-		$new_stats['lastusername'] = $lastmember['username'];
+		$new_stats['lastusername'] = $lastmember['username'] = htmlspecialchars_uni($lastmember['username']);
 	}
 
 	if(!empty($new_stats))
@@ -2975,7 +2982,7 @@ function random_str($length=8, $complex=false)
 	{
 		$str[] = $set[my_rand(0, 61)];
 	}
-	
+
 	// Make sure they're in random order and convert them to a string
 	shuffle($str);
 
@@ -3256,7 +3263,7 @@ function build_mycode_inserter($bind="message", $smilies = true)
 
 						if(!$mybb->settings['smilieinserter'] || !$mybb->settings['smilieinsertercols'] || !$mybb->settings['smilieinsertertot'] || !$smilie['showclickable'])
 						{
-							$hiddensmilies .= '"'.$find.'": "'.$image.'",';							
+							$hiddensmilies .= '"'.$find.'": "'.$image.'",';
 						}
 						elseif($i < $mybb->settings['smilieinsertertot'])
 						{
@@ -3640,7 +3647,7 @@ function build_forum_prefix_select($fid, $selected_pid=0)
 
 	$default_selected = array();
 	$selected_pid = (int)$selected_pid;
-	
+
 	if($selected_pid == 0)
 	{
 		$default_selected['all'] = ' selected="selected"';
@@ -3796,7 +3803,7 @@ function get_reputation($reputation, $uid=0)
 	{
 		$reputation_class = "reputation_neutral";
 	}
-	
+
 	$reputation = my_number_format($reputation);
 
 	if($uid != 0)
@@ -4132,9 +4139,9 @@ function get_unviewable_forums($only_readable_threads=false)
 			$unviewable[] = $forum['fid'];
 		}
 	}
-	
+
 	$unviewableforums = implode(',', $unviewable);
-	
+
 	return $unviewableforums;
 }
 
@@ -4881,7 +4888,7 @@ function get_current_location($fields=false, $ignore=array(), $quick=false)
 	{
 		$location = htmlspecialchars_uni($_ENV['PATH_INFO']);
 	}
-	
+
 	if($quick)
 	{
 		return $location;
@@ -4993,13 +5000,6 @@ function build_theme_select($name, $selected=-1, $tid=0, $depth="", $usergroup_o
 
 	if(is_array($tcache[$tid]))
 	{
-		// Figure out what groups this user is in
-		if(isset($mybb->user['additionalgroups']))
-		{
-			$in_groups = explode(",", $mybb->user['additionalgroups']);
-		}
-		$in_groups[] = $mybb->user['usergroup'];
-
 		foreach($tcache[$tid] as $theme)
 		{
 			$sel = "";
@@ -5697,6 +5697,7 @@ function unichr($c)
  */
 function get_event_poster($event)
 {
+	$event['username'] = htmlspecialchars_uni($event['username']);
 	$event['username'] = format_name($event['username'], $event['usergroup'], $event['displaygroup']);
 	$event_poster = build_profile_link($event['username'], $event['author']);
 	return $event_poster;
@@ -6167,7 +6168,7 @@ function get_inactive_forums()
 			}
 		}
 	}
-	
+
 	$inactiveforums = implode(",", $inactive);
 
 	return $inactiveforums;
@@ -6672,6 +6673,8 @@ function get_supported_timezones()
 		"6.5" => $lang->timezone_gmt_650,
 		"7" => $lang->timezone_gmt_700,
 		"8" => $lang->timezone_gmt_800,
+		"8.5" => $lang->timezone_gmt_850,
+		"8.75" => $lang->timezone_gmt_875,
 		"9" => $lang->timezone_gmt_900,
 		"9.5" => $lang->timezone_gmt_950,
 		"10" => $lang->timezone_gmt_1000,
@@ -6964,7 +6967,7 @@ function is_super_admin($uid)
 function is_member($groups, $user = false)
 {
 	global $mybb;
-	
+
 	if(empty($groups))
 	{
 		return array();

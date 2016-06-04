@@ -45,7 +45,7 @@ function upgrade35_dbchanges()
 	}
 
 	// Remove "Are You a Human" captcha
-	$db->update_query('settings', array('value' => 1), "name='captchaimage' AND value=3");
+	$db->update_query('settings', array('value' => '1'), "name='captchaimage' AND value='3'");
 	$db->delete_query('settings', "name IN ('ayahpublisherkey', 'ayahscoringkey')");
 	$db->delete_query('templates', "title IN ('member_register_regimage_ayah', 'post_captcha_ayah')");
 
