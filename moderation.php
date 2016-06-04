@@ -11,11 +11,14 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'moderation.php');
 
-$templatelist = 'changeuserbox,loginbox,moderation_delayedmoderation_custommodtool,moderation_delayedmodaction_notes,moderation_delayedmoderation_merge,moderation_delayedmoderation_move';
-$templatelist .= ',moderation_delayedmoderation,moderation_deletethread,moderation_deletepoll,moderation_mergeposts_post,moderation_viewthreadnotes,moderation_confirmation';
-$templatelist .= ',moderation_move,moderation_threadnotes_modaction,moderation_threadnotes_delayedmodaction,moderation_threadnotes,moderation_getip_modoptions,moderation_getip,moderation_getpmip,moderation_merge';
-$templatelist .= ',moderation_split_post,moderation_split,moderation_inline_deletethreads,moderation_inline_movethreads,moderation_inline_deleteposts,moderation_inline_mergeposts,moderation_threadnotes_modaction_error';
-$templatelist .= ',moderation_inline_splitposts,forumjump_bit,forumjump_special,forumjump_advanced,forumdisplay_password_wrongpass,forumdisplay_password,moderation_inline_moveposts,moderation_delayedmodaction_error,moderation_purgespammer,moderation_delayedmoderation_date_day,moderation_delayedmoderation_date_month';
+$templatelist = "changeuserbox,loginbox,moderation_delayedmoderation_custommodtool,moderation_delayedmodaction_notes,moderation_delayedmoderation_merge,moderation_delayedmoderation_move";
+$templatelist .= ",moderation_delayedmoderation,moderation_deletethread,moderation_deletepoll,moderation_mergeposts_post,moderation_viewthreadnotes,moderation_confirmation,moderation_purgespammer";
+$templatelist .= ",moderation_move,moderation_threadnotes_modaction,moderation_threadnotes_delayedmodaction,moderation_threadnotes,moderation_getip_modoptions,moderation_getip,moderation_getpmip";
+$templatelist .= ",moderation_split_post,moderation_inline_deletethreads,moderation_inline_movethreads,moderation_inline_deleteposts,moderation_inline_mergeposts,moderation_threadnotes_modaction_error";
+$templatelist .= ",moderation_inline_splitposts,forumjump_special,forumjump_advanced,forumdisplay_password_wrongpass,forumdisplay_password,moderation_inline_moveposts,moderation_delayedmodaction_error";
+$templatelist .= ",moderation_delayedmodaction_notes_thread_single,moderation_delayedmodaction_notes_thread_multiple,moderation_delayedmodaction_notes_forum,moderation_delayedmodaction_notes_new_forum";
+$templatelist .= ",moderation_delayedmodaction_notes_redirect,moderation_delayedmodaction_notes_merge,moderation_delayedmoderation_thread,moderation_threadnotes_modaction_thread,forumjump_bit";
+$templatelist .= ",moderation_delayedmoderation_date_day,moderation_delayedmoderation_date_month,moderation_threadnotes_modaction_post,moderation_merge,moderation_split,moderation_threadnotes_modaction_forum";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -471,22 +474,29 @@ switch($mybb->input['action'])
 			if(strpos($delayedmod['tids'], ',') === false)
 			{
 				$delayed_thread = get_thread($delayedmod['tids']);
-				$info .= "<strong>{$lang->thread}</strong> <a href=\"".get_thread_link($delayedmod['tids'])."\">".htmlspecialchars_uni($parser->parse_badwords($delayed_thread['subject']))."</a><br />";
+				$delayed_thread['link'] = get_thread_link($delayed_thread['tid']);
+				$delayed_thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($delayed_thread['subject']));
+				eval("\$info .= \"".$templates->get("moderation_delayedmodaction_notes_thread_single")."\";");
 			}
 			else
 			{
-				$info .= "<strong>{$lang->thread}</strong> {$lang->multiple_threads}<br />";
+				eval("\$info .= \"".$templates->get("moderation_delayedmodaction_notes_thread_multiple")."\";");
 			}
 
 			if($delayedmod['fname'])
 			{
-				$info .= "<strong>{$lang->forum}</strong> <a href=\"".get_forum_link($delayedmod['fid'])."\">".htmlspecialchars_uni($delayedmod['fname'])."</a><br />";
+				$delayedmod['link'] = get_forum_link($delayedmod['fid']);
+				$delayedmod['fname'] = htmlspecialchars_uni($delayedmod['fname']);
+				eval("\$info .= \"".$templates->get("moderation_delayedmodaction_notes_forum")."\";");
 			}
 			$delayedmod['inputs'] = my_unserialize($delayedmod['inputs']);
 
 			if($delayedmod['type'] == 'move')
 			{
-				$info .= "<strong>{$lang->new_forum}</strong>  <a href=\"".get_forum_link($delayedmod['inputs']['new_forum'])."\">".htmlspecialchars_uni($forum_cache[$delayedmod['inputs']['new_forum']]['name'])."</a><br />";
+				$delayedmod['link'] = get_forum_link($delayedmod['inputs']['new_forum']);
+				$delayedmod['name'] = htmlspecialchars_uni($forum_cache[$delayedmod['inputs']['new_forum']]['name']);
+				eval("\$info .= \"".$templates->get("moderation_delayedmodaction_notes_new_forum")."\";");
+
 				if($delayedmod['inputs']['method'] == "redirect")
 				{
 					if((int)$delayedmod['inputs']['redirect_expire'] == 0)
@@ -497,13 +507,15 @@ switch($mybb->input['action'])
 					{
 						$redirect_expire_bit = (int)$delayedmod['inputs']['redirect_expire']." {$lang->days}";
 					}
-					$info .= "<strong>{$lang->leave_redirect_for}</strong> {$redirect_expire_bit}<br />";
+
+					eval("\$info .= \"".$templates->get("moderation_delayedmodaction_notes_redirect")."\";");
 				}
 			}
 			else if($delayedmod['type'] == 'merge')
 			{
-				$info .= "<strong>{$lang->new_subject}</strong> ".htmlspecialchars_uni($delayedmod['inputs']['subject'])."<br />";
-				$info .= "<strong>{$lang->thread_to_merge_with}</strong> <a href=\"".htmlspecialchars_uni($delayedmod['inputs']['threadurl'])."\">".htmlspecialchars_uni($delayedmod['inputs']['threadurl'])."</a><br />";
+				$delayedmod['subject'] = htmlspecialchars_uni($delayedmod['inputs']['subject']);
+				$delayedmod['threadurl'] = htmlspecialchars_uni($delayedmod['inputs']['threadurl']);
+				eval("\$info .= \"".$templates->get("moderation_delayedmodaction_notes_merge")."\";");
 			}
 
 			eval("\$delayedmods .= \"".$templates->get("moderation_delayedmodaction_notes")."\";");
@@ -519,7 +531,8 @@ switch($mybb->input['action'])
 		if($mybb->get_input('tid', MyBB::INPUT_INT))
 		{
 			$lang->threads = $lang->thread;
-			$threads = "<a href=\"".get_thread_link($tid)."\">{$thread['subject']}</a>";
+			$thread['link'] = get_thread_link($tid);
+			eval("\$threads = \"".$templates->get("moderation_delayedmoderation_thread")."\";");
 			eval("\$moderation_delayedmoderation_merge = \"".$templates->get("moderation_delayedmoderation_merge")."\";");
 		}
 		else
@@ -985,15 +998,22 @@ switch($mybb->input['action'])
 				$info = '';
 				if($modaction['tsubject'])
 				{
-					$info .= "<strong>$lang->thread</strong> <a href=\"".get_thread_link($modaction['tid'])."\">".htmlspecialchars_uni($parser->parse_badwords($modaction['tsubject']))."</a><br />";
+					$modaction['tsubject'] = htmlspecialchars_uni($parser->parse_badwords($modaction['tsubject']));
+					$modaction['threadlink'] = get_thread_link($modaction['tid']);
+					eval("\$info .= \"".$templates->get("moderation_threadnotes_modaction_thread")."\";");
 				}
 				if($modaction['fname'])
 				{
-					$info .= "<strong>$lang->forum</strong> <a href=\"".get_forum_link($modaction['fid'])."\">".htmlspecialchars_uni($modaction['fname'])."</a><br />";
+					$modaction['fname'] = htmlspecialchars_uni($modaction['fname']);
+					$modaction['forumlink'] = get_forum_link($modaction['fid']);
+					eval("\$info .= \"".$templates->get("moderation_threadnotes_modaction_forum")."\";");
 				}
 				if($modaction['psubject'])
 				{
-					$info .= "<strong>$lang->post</strong> <a href=\"".get_post_link($modaction['pid'])."#pid".$modaction['pid']."\">".htmlspecialchars_uni($parser->parse_badwords($modaction['psubject']))."</a>";
+
+					$modaction['psubject'] = htmlspecialchars_uni($parser->parse_badwords($modaction['psubject']));
+					$modaction['postlink'] = get_post_link($modaction['pid']);
+					eval("\$info .= \"".$templates->get("moderation_threadnotes_modaction_post")."\";");
 				}
 
 				eval("\$modactions .= \"".$templates->get("moderation_threadnotes_modaction")."\";");
@@ -1068,31 +1088,48 @@ switch($mybb->input['action'])
 			$info = '';
 			if(strpos($delayedmod['tids'], ',') === false)
 			{
-				$info .= "<strong>{$lang->thread}</strong> <a href=\"".get_thread_link($delayedmod['tids'])."\">{$thread['subject']}</a><br />";
+				$delayed_thread['link'] = get_thread_link($delayedmod['tids']);
+				$delayed_thread['subject'] = htmlspecialchars_uni($thread['subject']);
+				eval("\$info .= \"".$templates->get("moderation_delayedmodaction_notes_thread_single")."\";");
 			}
 			else
 			{
-				$info .= "<strong>{$lang->thread}</strong> {$lang->multiple_threads}<br />";
+				eval("\$info .= \"".$templates->get("moderation_delayedmodaction_notes_thread_multiple")."\";");
 			}
 
 			if($delayedmod['fname'])
 			{
-				$info .= "<strong>{$lang->forum}</strong> <a href=\"".get_forum_link($delayedmod['fid'])."\">".htmlspecialchars_uni($delayedmod['fname'])."</a><br />";
+				$delayedmod['link'] = get_forum_link($delayedmod['fid']);
+				$delayedmod['fname'] = htmlspecialchars_uni($delayedmod['fname']);
+				eval("\$info .= \"".$templates->get("moderation_delayedmodaction_notes_forum")."\";");
 			}
 			$delayedmod['inputs'] = my_unserialize($delayedmod['inputs']);
 
 			if($delayedmod['type'] == 'move')
 			{
-				$info .= "<strong>{$lang->new_forum}</strong>  <a href=\"".get_forum_link($delayedmod['inputs']['new_forum'])."\">".htmlspecialchars_uni($forum_cache[$delayedmod['inputs']['new_forum']]['name'])."</a><br />";
+				$delayedmod['link'] = get_forum_link($delayedmod['inputs']['new_forum']);
+				$delayedmod['name'] = htmlspecialchars_uni($forum_cache[$delayedmod['inputs']['new_forum']]['name']);
+				eval("\$info .= \"".$templates->get("moderation_delayedmodaction_notes_new_forum")."\";");
+
 				if($delayedmod['inputs']['method'] == "redirect")
 				{
-					$info .= "<strong>{$lang->leave_redirect_for}</strong> ".(int)$delayedmod['inputs']['redirect_expire']." {$lang->days}<br />";
+					if((int)$delayedmod['inputs']['redirect_expire'] == 0)
+					{
+						$redirect_expire_bit = $lang->redirect_forever;
+					}
+					else
+					{
+						$redirect_expire_bit = (int)$delayedmod['inputs']['redirect_expire']." {$lang->days}";
+					}
+
+					eval("\$info .= \"".$templates->get("moderation_delayedmodaction_notes_redirect")."\";");
 				}
 			}
 			else if($delayedmod['type'] == 'merge')
 			{
-				$info .= "<strong>{$lang->new_subject}</strong> ".htmlspecialchars_uni($delayedmod['inputs']['subject'])."<br />";
-				$info .= "<strong>{$lang->thread_to_merge_with}</strong> <a href=\"".htmlspecialchars_uni($delayedmod['inputs']['threadurl'])."\">".htmlspecialchars_uni($delayedmod['inputs']['threadurl'])."</a><br />";
+				$delayedmod['subject'] = htmlspecialchars_uni($delayedmod['inputs']['subject']);
+				$delayedmod['threadurl'] = htmlspecialchars_uni($delayedmod['inputs']['threadurl']);
+				eval("\$info .= \"".$templates->get("moderation_delayedmodaction_notes_merge")."\";");
 			}
 
 			eval("\$delayedmods .= \"".$templates->get("moderation_threadnotes_delayedmodaction")."\";");

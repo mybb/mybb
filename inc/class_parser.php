@@ -171,8 +171,8 @@ class postParser
 		{
 			global $lang;
 
-			$message = preg_replace('#(>|^|\r|\n)/me ([^\r\n<]*)#i', "\\1<span style=\"color: red;\">* {$this->options['me_username']} \\2</span>", $message);
-			$message = preg_replace('#(>|^|\r|\n)/slap ([^\r\n<]*)#i', "\\1<span style=\"color: red;\">* {$this->options['me_username']} {$lang->slaps} \\2 {$lang->with_trout}</span>", $message);
+			$message = preg_replace('#(>|^|\r|\n)/me ([^\r\n<]*)#i', "\\1<span style=\"color: red;\" class=\"mycode_me\">* {$this->options['me_username']} \\2</span>", $message);
+			$message = preg_replace('#(>|^|\r|\n)/slap ([^\r\n<]*)#i', "\\1<span style=\"color: red;\" class=\"mycode_slap\">* {$this->options['me_username']} {$lang->slaps} \\2 {$lang->with_trout}</span>", $message);
 		}
 
 		// If we can, parse smilies
@@ -847,7 +847,8 @@ class postParser
 				$span = "<span>{$date}</span>";
 			}
 
-			return "<blockquote><cite>{$span}{$username} {$lang->wrote}{$linkback}</cite>{$message}</blockquote>\n";
+			eval("\$mycode_quote = \"".$templates->get("mycode_quote_post", 1, 0)."\";");
+			return $mycode_quote;
 		}
 	}
 
@@ -882,7 +883,7 @@ class postParser
 	*/
 	function mycode_parse_code($code, $text_only=false)
 	{
-		global $lang;
+		global $lang, $templates;
 
 		if($text_only == true)
 		{
@@ -905,7 +906,8 @@ class postParser
 		$code = str_replace("\t", '&nbsp;&nbsp;&nbsp;&nbsp;', $code);
 		$code = str_replace("  ", '&nbsp;&nbsp;', $code);
 
-		return "<div class=\"codeblock\">\n<div class=\"title\">".$lang->code."\n</div><div class=\"body\" dir=\"ltr\"><code>".$code."</code></div></div>\n";
+		eval("\$mycode_code = \"".$templates->get("mycode_code", 1, 0)."\";");
+		return $mycode_code;
 	}
 
 	/**
@@ -929,7 +931,7 @@ class postParser
 	*/
 	function mycode_parse_php($str, $bare_return = false, $text_only = false)
 	{
-		global $lang;
+		global $lang, $templates;
 
 		if($text_only == true)
 		{
@@ -995,7 +997,8 @@ class postParser
 		}
 
 		// Send back the code all nice and pretty
-		return "<div class=\"codeblock phpcodeblock\"><div class=\"title\">$lang->php_code\n</div><div class=\"body\">".$code."</div></div>\n";
+		eval("\$mycode_php = \"".$templates->get("mycode_php", 1, 0)."\";");
+		return $mycode_php;
 	}
 
 	/**

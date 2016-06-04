@@ -11,21 +11,22 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'modcp.php');
 
-$templatelist = "modcp_reports,modcp_reports_report,modcp_reports_multipage,modcp_reports_allreport,modcp_reports_allreports,modcp_modlogs_multipage,modcp_announcements_delete,modcp_announcements_edit,modcp_awaitingmoderation,modcp_banuser_bangroups_hidden";
-$templatelist .= ",modcp_reports_allnoreports,modcp_reports_noreports,modcp_banning,modcp_banning_ban,modcp_announcements_announcement_global,modcp_no_announcements_forum,modcp_modqueue_threads_thread,modcp_awaitingthreads,modcp_banuser_bangroups";
-$templatelist .= ",modcp_banning_nobanned,modcp_modqueue_threads_empty,modcp_modqueue_masscontrols,modcp_modqueue_threads,modcp_modqueue_posts_post,modcp_modqueue_posts_empty,modcp_awaitingposts,modcp_nav_editprofile";
+$templatelist = "modcp_reports,modcp_reports_report,modcp_reports_multipage,modcp_reports_allreport,modcp_reports_allreports,modcp_modlogs_multipage,modcp_announcements_delete,modcp_announcements_edit,modcp_awaitingmoderation";
+$templatelist .= ",modcp_reports_allnoreports,modcp_reports_noreports,modcp_banning,modcp_banning_ban,modcp_announcements_announcement_global,modcp_no_announcements_forum,modcp_modqueue_threads_thread,modcp_awaitingthreads,preview";
+$templatelist .= ",modcp_banning_nobanned,modcp_modqueue_threads_empty,modcp_modqueue_masscontrols,modcp_modqueue_threads,modcp_modqueue_posts_post,modcp_modqueue_posts_empty,modcp_awaitingposts,modcp_nav_editprofile,modcp_nav_banning";
 $templatelist .= ",modcp_nav,modcp_modlogs_noresults,modcp_modlogs_nologs,modcp,modcp_modqueue_posts,modcp_modqueue_attachments_attachment,modcp_modqueue_attachments_empty,modcp_modqueue_attachments,modcp_editprofile_suspensions_info";
 $templatelist .= ",modcp_no_announcements_global,modcp_announcements_global,modcp_announcements_forum,modcp_announcements,modcp_editprofile_select_option,modcp_editprofile_select,modcp_finduser_noresults, modcp_nav_forums_posts";
-$templatelist .= ",codebuttons,smilieinsert,modcp_announcements_new,modcp_modqueue_empty,forumjump_bit,forumjump_special,modcp_warninglogs_warning_revoked,modcp_warninglogs_warning,modcp_ipsearch_result,modcp_nav_modqueue,modcp_banuser_liftlist";
+$templatelist .= ",codebuttons,modcp_announcements_new,modcp_modqueue_empty,forumjump_bit,forumjump_special,modcp_warninglogs_warning_revoked,modcp_warninglogs_warning,modcp_ipsearch_result,modcp_nav_modqueue,modcp_banuser_liftlist";
 $templatelist .= ",modcp_modlogs,modcp_finduser_user,modcp_finduser,usercp_profile_customfield,usercp_profile_profilefields,modcp_ipsearch_noresults,modcp_ipsearch_results,modcp_ipsearch_misc_info,modcp_nav_announcements,modcp_modqueue_post_link";
 $templatelist .= ",modcp_editprofile,modcp_ipsearch,modcp_banuser_addusername,modcp_banuser,modcp_warninglogs_nologs,modcp_banuser_editusername,modcp_lastattachment,modcp_lastpost,modcp_lastthread,modcp_nobanned,modcp_modqueue_thread_link";
-$templatelist .= ",modcp_warninglogs,modcp_modlogs_result,modcp_editprofile_signature,forumjump_advanced,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,modcp_announcements_forum_nomod,modcp_announcements_announcement";
-$templatelist .= ",multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,modcp_editprofile_away,modcp_awaitingattachments,modcp_modqueue_attachment_link,modcp_latestfivemodactions,modcp_nav_banning";
-$templatelist .= ",postbit_groupimage,postbit_userstar,postbit_online,postbit_offline,postbit_away,postbit_avatar,postbit_find,postbit_pm,postbit_email,postbit_www,postbit_author_user,announcement_edit,announcement_quickdelete,postbit,preview,postmodcp_nav_announcements,modcp_nav_reportcenter,modcp_nav_modlogs";
-$templatelist .= ",modcp_awaitingmoderation_none,modcp_banning_edit,modcp_banuser_bangroups_group,modcp_banuser_lift,modcp_modlogs_result_announcement,modcp_modlogs_result_forum,modcp_modlogs_result_post,modcp_modlogs_result_thread,modcp_modlogs_user";
+$templatelist .= ",modcp_warninglogs,modcp_modlogs_result,modcp_editprofile_signature,forumjump_advanced,modcp_announcements_forum_nomod,modcp_announcements_announcement,usercp_profile_away,modcp_modlogs_user,modcp_editprofile_away";
+$templatelist .= ",multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,modcp_awaitingattachments,modcp_modqueue_attachment_link";
+$templatelist .= ",postbit_groupimage,postbit_userstar,postbit_online,postbit_offline,postbit_away,postbit_avatar,postbit_find,postbit_pm,postbit_email,postbit_www,postbit_author_user,announcement_edit,announcement_quickdelete";
+$templatelist .= ",modcp_awaitingmoderation_none,modcp_banning_edit,modcp_banuser_bangroups_group,modcp_banuser_lift,modcp_modlogs_result_announcement,modcp_modlogs_result_forum,modcp_modlogs_result_post,modcp_modlogs_result_thread";
 $templatelist .= ",modcp_nav_warninglogs,modcp_nav_ipsearch,modcp_nav_users,modcp_announcements_day,modcp_announcements_month_start,modcp_announcements_month_end,modcp_announcements_announcement_expired,modcp_announcements_announcement_active";
-$templatelist .= ",modcp_modqueue_link_forum,modcp_modqueue_link_thread,usercp_profile_day,usercp_profile_away,modcp_ipsearch_result_regip,modcp_ipsearch_result_lastip,modcp_ipsearch_result_post,modcp_ipsearch_results_information,usercp_profile_profilefields_text";
-$templatelist .= ",usercp_profile_profilefields_select_option,usercp_profile_profilefields_multiselect,usercp_profile_profilefields_select,usercp_profile_profilefields_textarea,usercp_profile_profilefields_radio,usercp_profile_profilefields_checkbox";
+$templatelist .= ",modcp_modqueue_link_forum,modcp_modqueue_link_thread,usercp_profile_day,modcp_ipsearch_result_regip,modcp_ipsearch_result_lastip,modcp_ipsearch_result_post,modcp_ipsearch_results_information,usercp_profile_profilefields_text";
+$templatelist .= ",usercp_profile_profilefields_select_option,usercp_profile_profilefields_multiselect,usercp_profile_profilefields_select,usercp_profile_profilefields_textarea,usercp_profile_profilefields_radio,postbit";
+$templatelist .= ",modcp_banning_remaining,postmodcp_nav_announcements,modcp_nav_reportcenter,modcp_nav_modlogs,modcp_latestfivemodactions,modcp_banuser_bangroups_hidden,modcp_banuser_bangroups,usercp_profile_profilefields_checkbox";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_user.php";
@@ -4043,22 +4044,32 @@ if($mybb->input['action'] == "banning")
 
 			$timeremaining = nice_time($remaining, array('short' => 1, 'seconds' => false))."";
 
+			$banned_class = '';
+			$ban_remaining = "{$timeremaining} {$lang->ban_remaining}";
+
+			if($remaining <= 0)
+			{
+				$banned_class = "imminent_banned";
+				$ban_remaining = $lang->ban_ending_imminently;
+			}
 			if($remaining < 3600)
 			{
-				$timeremaining = "<span style=\"color: red;\">({$timeremaining} {$lang->ban_remaining})</span>";
+				$banned_class = "high_banned";
 			}
 			else if($remaining < 86400)
 			{
-				$timeremaining = "<span style=\"color: maroon;\">({$timeremaining} {$lang->ban_remaining})</span>";
+				$banned_class = "moderate_banned";
 			}
 			else if($remaining < 604800)
 			{
-				$timeremaining = "<span style=\"color: green;\">({$timeremaining} {$lang->ban_remaining})</span>";
+				$banned_class = "low_banned";
 			}
 			else
 			{
-				$timeremaining = "({$timeremaining} {$lang->ban_remaining})";
+				$banned_class = "normal_banned";
 			}
+
+			eval('$timeremaining = "'.$templates->get('modcp_banning_remaining').'";');
 		}
 
 		eval("\$bannedusers .= \"".$templates->get("modcp_banning_ban")."\";");
@@ -4745,26 +4756,32 @@ if(!$mybb->input['action'])
 
 			$timeremaining = nice_time($remaining, array('short' => 1, 'seconds' => false))."";
 
+			$banned_class = '';
+			$ban_remaining = "{$timeremaining} {$lang->ban_remaining}";
+
 			if($remaining <= 0)
 			{
-				$timeremaining = "<span style=\"color: red;\">({$lang->ban_ending_imminently})</span>";
+				$banned_class = "imminent_banned";
+				$ban_remaining = $lang->ban_ending_imminently;
 			}
 			else if($remaining < 3600)
 			{
-				$timeremaining = "<span style=\"color: red;\">({$timeremaining} {$lang->ban_remaining})</span>";
+				$banned_class = "high_banned";
 			}
 			else if($remaining < 86400)
 			{
-				$timeremaining = "<span style=\"color: maroon;\">({$timeremaining} {$lang->ban_remaining})</span>";
+				$banned_class = "moderate_banned";
 			}
 			else if($remaining < 604800)
 			{
-				$timeremaining = "<span style=\"color: green;\">({$timeremaining} {$lang->ban_remaining})</span>";
+				$banned_class = "low_banned";
 			}
 			else
 			{
-				$timeremaining = "({$timeremaining} {$lang->ban_remaining})";
+				$banned_class = "normal_banned";
 			}
+
+			eval('$timeremaining = "'.$templates->get('modcp_banning_remaining').'";');
 		}
 
 		eval("\$bannedusers .= \"".$templates->get("modcp_banning_ban")."\";");
