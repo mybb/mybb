@@ -267,19 +267,19 @@ class postParser
 		if($mybb->settings['allowbasicmycode'] == 1)
 		{
 			$standard_mycode['b']['regex'] = "#\[b\](.*?)\[/b\]#si";
-			$standard_mycode['b']['replacement'] = "<span style=\"font-weight: bold;\">$1</span>";
+			$standard_mycode['b']['replacement'] = "<span style=\"font-weight: bold;\" class=\"mycode_b\">$1</span>";
 
 			$standard_mycode['u']['regex'] = "#\[u\](.*?)\[/u\]#si";
-			$standard_mycode['u']['replacement'] = "<span style=\"text-decoration: underline;\">$1</span>";
+			$standard_mycode['u']['replacement'] = "<span style=\"text-decoration: underline;\" class=\"mycode_u\">$1</span>";
 
 			$standard_mycode['i']['regex'] = "#\[i\](.*?)\[/i\]#si";
-			$standard_mycode['i']['replacement'] = "<span style=\"font-style: italic;\">$1</span>";
+			$standard_mycode['i']['replacement'] = "<span style=\"font-style: italic;\" class=\"mycode_i\">$1</span>";
 
 			$standard_mycode['s']['regex'] = "#\[s\](.*?)\[/s\]#si";
-			$standard_mycode['s']['replacement'] = "<del>$1</del>";
+			$standard_mycode['s']['replacement'] = "<span style=\"text-decoration: line-through;\" class=\"mycode_s\">$1</span>";
 
 			$standard_mycode['hr']['regex'] = "#\[hr\]#si";
-			$standard_mycode['hr']['replacement'] = "<hr />";
+			$standard_mycode['hr']['replacement'] = "<hr class=\"mycode_hr\" />";
 
 			++$standard_count;
 		}
@@ -329,7 +329,7 @@ class postParser
 		if($mybb->settings['allowcolormycode'] == 1)
 		{
 			$nestable_mycode['color']['regex'] = "#\[color=([a-zA-Z]*|\#?[\da-fA-F]{3}|\#?[\da-fA-F]{6})](.*?)\[/color\]#si";
-			$nestable_mycode['color']['replacement'] = "<span style=\"color: $1;\">$2</span>";
+			$nestable_mycode['color']['replacement'] = "<span style=\"color: $1;\" class=\"mycode_color\">$2</span>";
 
 			++$nestable_count;
 		}
@@ -337,7 +337,7 @@ class postParser
 		if($mybb->settings['allowsizemycode'] == 1)
 		{
 			$nestable_mycode['size']['regex'] = "#\[size=(xx-small|x-small|small|medium|large|x-large|xx-large)\](.*?)\[/size\]#si";
-			$nestable_mycode['size']['replacement'] = "<span style=\"font-size: $1;\">$2</span>";
+			$nestable_mycode['size']['replacement'] = "<span style=\"font-size: $1;\" class=\"mycode_size\">$2</span>";
 
 			$callback_mycode['size_int']['regex'] = "#\[size=([0-9\+\-]+?)\](.*?)\[/size\]#si";
 			$callback_mycode['size_int']['replacement'] = array($this, 'mycode_handle_size_callback');
@@ -349,7 +349,7 @@ class postParser
 		if($mybb->settings['allowfontmycode'] == 1)
 		{
 			$nestable_mycode['font']['regex'] = "#\[font=([a-z0-9 ,\-_'\"]+)\](.*?)\[/font\]#si";
-			$nestable_mycode['font']['replacement'] = "<span style=\"font-family: $1;\">$2</span>";
+			$nestable_mycode['font']['replacement'] = "<span style=\"font-family: $1;\" class=\"mycode_font\">$2</span>";
 
 			++$nestable_count;
 		}
@@ -357,7 +357,7 @@ class postParser
 		if($mybb->settings['allowalignmycode'] == 1)
 		{
 			$nestable_mycode['align']['regex'] = "#\[align=(left|center|right|justify)\](.*?)\[/align\]#si";
-			$nestable_mycode['align']['replacement'] = "<div style=\"text-align: $1;\">$2</div>";
+			$nestable_mycode['align']['replacement'] = "<div style=\"text-align: $1;\" class=\"mycode_align\">$2</div>";
 
 			++$nestable_count;
 		}
@@ -698,7 +698,7 @@ class postParser
 			$size = 50;
 		}
 
-		$text = "<span style=\"font-size: {$size}pt;\">".str_replace("\'", "'", $text)."</span>";
+		$text = "<span style=\"font-size: {$size}pt;\" class=\"mycode_size\">".str_replace("\'", "'", $text)."</span>";
 
 		return $text;
 	}
@@ -731,7 +731,7 @@ class postParser
 
 		if($text_only == false)
 		{
-			$replace = "<blockquote><cite>$lang->quote</cite>$1</blockquote>\n";
+			$replace = "<blockquote class=\"mycode_quote\"><cite>$lang->quote</cite>$1</blockquote>\n";
 			$replace_callback = array($this, 'mycode_parse_post_quotes_callback1');
 		}
 		else
@@ -1021,6 +1021,7 @@ class postParser
 	*/
 	function mycode_parse_url($url, $name="")
 	{
+		global $templates;
 		if(!preg_match("#^[a-z0-9]+://#i", $url))
 		{
 			$url = "http://".$url;
@@ -1057,7 +1058,8 @@ class postParser
 		$url = str_replace(array_keys($entities), array_values($entities), $url);
 
 		$name = preg_replace("#&amp;\#([0-9]+);#si", "&#$1;", $name); // Fix & but allow unicode
-		$link = "<a href=\"$url\" target=\"_blank\"{$nofollow}>$name</a>";
+
+		eval("\$link = \"".$templates->get("mycode_url", 1, 0)."\";");
 		return $link;
 	}
 
@@ -1101,7 +1103,7 @@ class postParser
 	 */
 	function mycode_parse_img($url, $dimensions=array(), $align='')
 	{
-		global $lang;
+		global $lang, $templates;
 		$url = trim($url);
 		$url = str_replace("\n", "", $url);
 		$url = str_replace("\r", "", $url);
@@ -1135,14 +1137,15 @@ class postParser
 		$alt = htmlspecialchars_uni($alt);
 
 		$alt = $lang->sprintf($lang->posted_image, $alt);
+		$width = $height = '';
 		if(isset($dimensions[0]) && $dimensions[0] > 0 && isset($dimensions[1]) && $dimensions[1] > 0)
 		{
-			return "<img src=\"{$url}\" width=\"{$dimensions[0]}\" height=\"{$dimensions[1]}\" border=\"0\" alt=\"{$alt}\"{$css_align} />";
+			$width = " width=\"{$dimensions[0]}\"";
+			$height = " height=\"{$dimensions[1]}\"";
 		}
-		else
-		{
-			return "<img src=\"{$url}\" border=\"0\" alt=\"{$alt}\"{$css_align} />";
-		}
+
+		eval("\$image = \"".$templates->get("mycode_image", 1, 0)."\";");
+		return $image;
 	}
 
 	/**
@@ -1260,22 +1263,23 @@ class postParser
 	*/
 	function mycode_parse_email($email, $name="")
 	{
+		global $templates;
+
 		if(!$name)
 		{
 			$name = $email;
 		}
 		if(preg_match("/^([a-zA-Z0-9-_\+\.]+?)@[a-zA-Z0-9-]+\.[a-zA-Z0-9\.-]+$/si", $email))
 		{
-			return "<a href=\"mailto:$email\">".$name."</a>";
+			$email = $email;
 		}
 		elseif(preg_match("/^([a-zA-Z0-9-_\+\.]+?)@[a-zA-Z0-9-]+\.[a-zA-Z0-9\.-]+\?(.*?)$/si", $email))
 		{
-			return "<a href=\"mailto:".htmlspecialchars_uni($email)."\">".$name."</a>";
+			$email = htmlspecialchars_uni($email);
 		}
-		else
-		{
-			return $email;
-		}
+
+		eval("\$email = \"".$templates->get("mycode_email", 1, 0)."\";");
+		return $email;
 	}
 
 	/**
@@ -1543,11 +1547,11 @@ class postParser
 
 		if($type)
 		{
-			$list = "\n<ol type=\"$type\">$message</ol>\n";
+			$list = "\n<ol type=\"$type\" class=\"mycode_list\">$message</ol>\n";
 		}
 		else
 		{
-			$list = "<ul>$message</ul>\n";
+			$list = "<ul class=\"mycode_list\">$message</ul>\n";
 		}
 		$list = preg_replace("#<(ol type=\"$type\"|ul)>\s*</li>#", "<$1>", $list);
 		return $list;

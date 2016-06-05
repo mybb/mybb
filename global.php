@@ -449,11 +449,12 @@ else
 	$templatelist = '';
 }
 
-$templatelist .= "headerinclude,header,footer,gobutton,htmldoctype,header_welcomeblock_member,header_welcomeblock_guest,header_welcomeblock_member_admin,global_pm_alert,global_unreadreports,footer_languageselect_option,footer_contactus";
-$templatelist .= ",global_pending_joinrequests,global_awaiting_activation,nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active,footer_languageselect,footer_themeselect,header_welcomeblock_member_moderator,redirect,header_menu_calendar,error,nav_dropdown";
-$templatelist .= ",global_boardclosed_warning,global_bannedwarning,error_inline,error_nopermission_loggedin,error_nopermission,debug_summary,header_quicksearch,header_menu_search,header_menu_portal,header_menu_memberlist,global_boardclosed_reason";
-$templatelist .= ",video_dailymotion_embed,video_facebook_embed,video_liveleak_embed,video_metacafe_embed,video_myspacetv_embed,video_veoh_embed,video_vimeo_embed,video_yahoo_embed,video_youtube_embed,global_dst_detection,global_no_permission_modal";
-$templatelist .= ",smilieinsert_row,smilieinsert_row_empty,smilieinsert,smilieinsert_getmore,smilieinsert_smilie,smilie,global_board_offline_modal,footer_themeselector,task_image,usercp_themeselector_option,mycode_code,mycode_php,mycode_quote_post";
+$templatelist .= "headerinclude,header,footer,gobutton,htmldoctype,header_welcomeblock_member,header_welcomeblock_guest,header_welcomeblock_member_moderator,header_welcomeblock_member_admin,footer_languageselect_option";
+$templatelist .= ",global_pending_joinrequests,global_awaiting_activation,nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active,footer_languageselect,footer_themeselect,header_menu_calendar,global_unreadreports";
+$templatelist .= ",global_boardclosed_warning,global_bannedwarning,error_inline,error_nopermission_loggedin,error_nopermission,header_quicksearch,header_menu_search,header_menu_portal,header_menu_memberlist,redirect";
+$templatelist .= ",video_dailymotion_embed,video_facebook_embed,video_liveleak_embed,video_metacafe_embed,video_myspacetv_embed,video_veoh_embed,video_vimeo_embed,video_yahoo_embed,video_youtube_embed,global_dst_detection";
+$templatelist .= ",smilieinsert_row,smilieinsert_row_empty,smilieinsert,smilieinsert_getmore,smilieinsert_smilie,global_board_offline_modal,footer_themeselector,task_image,usercp_themeselector_option,debug_summary";
+$templatelist .= ",mycode_code,mycode_email,mycode_image,mycode_php,mycode_quote_post,mycode_url,global_no_permission_modal,global_boardclosed_reason,nav_dropdown,footer_contactus,global_pm_alert,error,smilie";
 $templates->cache($db->escape_string($templatelist));
 
 // Set the current date and time now
