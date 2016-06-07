@@ -42,3 +42,8 @@ $l['userdata_invalid_checkfield'] = "It has been detected that this form has bee
 $l['userdata_invalid_postnum'] = "The post count you entered is invalid. Please enter a valid post count, or leave the field empty.";
 $l['userdata_invalid_threadnum'] = "The thread count you entered is invalid. Please enter a valid thread count, or leave the field empty.";
 
+$l['userdata_too_many_sig_images'] = "We are sorry, but we cannot update your signature because it contains too many images. Please remove some images from your signature to continue.";
+$l['userdata_too_many_sig_images2'] = "<strong>Note:</strong> The maximum amount of images for signatures is {1}.";
+$l['userdata_sig_too_long'] = "You cannot update your signature because it is too long. The maximum length for signatures is {1} characters. ";
+$l['userdata_sig_remove_chars_plural'] = "Please remove {1} characters and try again.";
+$l['userdata_sig_remove_chars_singular'] = "Please remove 1 character and try again.";
