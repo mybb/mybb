@@ -480,7 +480,7 @@ function upgradethemes()
 		}
 		else
 		{
-			$output->print_error();
+			$output->print_error($lang->no_theme_functions_file);
 		}
 
 		// Import master theme
