@@ -450,11 +450,11 @@ else
 }
 
 $templatelist .= "headerinclude,header,footer,gobutton,htmldoctype,header_welcomeblock_member,header_welcomeblock_guest,header_welcomeblock_member_moderator,header_welcomeblock_member_admin,footer_languageselect_option";
-$templatelist .= ",global_pending_joinrequests,global_awaiting_activation,nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active,footer_languageselect,footer_themeselect,header_menu_calendar,global_unreadreports";
+$templatelist .= ",global_pending_joinrequests,global_awaiting_activation,nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active,footer_languageselect,footer_themeselect,header_menu_calendar,global_unreadreports,smilie";
 $templatelist .= ",global_boardclosed_warning,global_bannedwarning,error_inline,error_nopermission_loggedin,error_nopermission,header_quicksearch,header_menu_search,header_menu_portal,header_menu_memberlist,redirect";
 $templatelist .= ",video_dailymotion_embed,video_facebook_embed,video_liveleak_embed,video_metacafe_embed,video_myspacetv_embed,video_veoh_embed,video_vimeo_embed,video_yahoo_embed,video_youtube_embed,global_dst_detection";
 $templatelist .= ",smilieinsert_row,smilieinsert_row_empty,smilieinsert,smilieinsert_getmore,smilieinsert_smilie,global_board_offline_modal,footer_themeselector,task_image,usercp_themeselector_option,debug_summary";
-$templatelist .= ",mycode_code,mycode_email,mycode_image,mycode_php,mycode_quote_post,mycode_url,global_no_permission_modal,global_boardclosed_reason,nav_dropdown,footer_contactus,global_pm_alert,error,smilie";
+$templatelist .= ",mycode_code,mycode_email,mycode_image,mycode_php,mycode_quote_post,mycode_size_int,mycode_url,global_no_permission_modal,global_boardclosed_reason,nav_dropdown,footer_contactus,global_pm_alert,error";
 $templates->cache($db->escape_string($templatelist));
 
 // Set the current date and time now

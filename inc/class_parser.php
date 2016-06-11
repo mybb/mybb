@@ -691,15 +691,23 @@ class postParser
 	*/
 	function mycode_handle_size($size, $text)
 	{
-		$size = (int)$size+10;
+		global $templates;
+
+		$size = (int)$size;
+
+		if($size < 1)
+		{
+			$size = 1;
+		}
 
 		if($size > 50)
 		{
 			$size = 50;
 		}
 
-		$text = "<span style=\"font-size: {$size}pt;\" class=\"mycode_size\">".str_replace("\'", "'", $text)."</span>";
+		$text = str_replace("\'", "'", $text);
 
+		eval("\$text = \"".$templates->get("mycode_size_int", 1, 0)."\";");
 		return $text;
 	}
 
