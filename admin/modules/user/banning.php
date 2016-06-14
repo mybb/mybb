@@ -99,7 +99,7 @@ if($mybb->input['action'] == "prune")
 		$cache->update_reportedcontent();
 
 		// Log admin action
-		log_admin_action($user['uid'], $user['username']);
+		log_admin_action($user['uid'], htmlspecialchars_uni($user['username']));
 
 		flash_message($lang->success_pruned, 'success');
 		admin_redirect("index.php?module=user-banning");
@@ -154,7 +154,7 @@ if($mybb->input['action'] == "lift")
 		$cache->update_moderators();
 
 		// Log admin action
-		log_admin_action($ban['uid'], $user['username']);
+		log_admin_action($ban['uid'], htmlspecialchars_uni($user['username']));
 
 		flash_message($lang->success_ban_lifted, 'success');
 		admin_redirect("index.php?module=user-banning");
@@ -241,7 +241,7 @@ if($mybb->input['action'] == "edit")
 			$cache->update_banned();
 
 			// Log admin action
-			log_admin_action($ban['uid'], $user['username']);
+			log_admin_action($ban['uid'], htmlspecialchars_uni($user['username']));
 
 			flash_message($lang->success_ban_updated, 'success');
 			admin_redirect("index.php?module=user-banning");
@@ -405,7 +405,7 @@ if(!$mybb->input['action'])
 				$cache->update_banned();
 
 				// Log admin action
-				log_admin_action($user['uid'], $user['username'], $lifted);
+				log_admin_action($user['uid'], htmlspecialchars_uni($user['username']), $lifted);
 
 				flash_message($lang->success_banned, 'success');
 				admin_redirect("index.php?module=user-banning");
@@ -535,7 +535,7 @@ if(!$mybb->input['action'])
 	}
 
 	$form_container = new FormContainer($lang->ban_a_user);
-	$form_container->output_row($lang->ban_username, $lang->autocomplete_enabled, $form->generate_text_box('username', htmlspecialchars_uni($mybb->get_input('username')), array('id' => 'username')), 'username');
+	$form_container->output_row($lang->ban_username, $lang->autocomplete_enabled, $form->generate_text_box('username', $mybb->input['username'], array('id' => 'username')), 'username');
 	$form_container->output_row($lang->ban_reason, "", $form->generate_text_area('reason', $mybb->input['reason'], array('id' => 'reason', 'maxlength' => '255')), 'reason');
 	if(count($banned_groups) > 1)
 	{

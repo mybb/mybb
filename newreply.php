@@ -157,6 +157,7 @@ if($mybb->settings['bbcodeinserter'] != 0 && $forum['allowmycode'] != 0 && (!$my
 // Display a login box or change user box?
 if($mybb->user['uid'] != 0)
 {
+	$mybb->user['username'] = htmlspecialchars_uni($mybb->user['username']);
 	eval("\$loginbox = \"".$templates->get("changeuserbox")."\";");
 }
 else

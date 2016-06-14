@@ -2638,7 +2638,7 @@ if($mybb->input['action'] == "profile")
 			eval('$timeremaining = "'.$templates->get('member_profile_banned_remaining').'";');
 		}
 
-		$memban['adminuser'] = build_profile_link($memban['adminuser'], $memban['admin']);
+		$memban['adminuser'] = build_profile_link(htmlspecialchars_uni($memban['adminuser']), $memban['admin']);
 
 		// Display a nice warning to the user
 		eval('$bannedbit = "'.$templates->get('member_profile_banned').'";');

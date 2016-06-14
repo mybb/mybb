@@ -112,6 +112,7 @@ if($forum['allowpicons'] != 0)
 // If we have a currently logged in user then fetch the change user box.
 if($mybb->user['uid'] != 0)
 {
+	$mybb->user['username'] = htmlspecialchars_uni($mybb->user['username']);
 	eval("\$loginbox = \"".$templates->get("changeuserbox")."\";");
 }
 

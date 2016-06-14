@@ -108,6 +108,7 @@ if(isset($forum))
 	check_forum_password($forum['fid']);
 }
 
+$mybb->user['username'] = htmlspecialchars_uni($mybb->user['username']);
 eval("\$loginbox = \"".$templates->get("changeuserbox")."\";");
 
 $allowable_moderation_actions = array("getip", "getpmip", "cancel_delayedmoderation", "delayedmoderation", "threadnotes", "purgespammer", "viewthreadnotes");
@@ -1375,6 +1376,7 @@ switch($mybb->input['action'])
 		while($post = $db->fetch_array($query))
 		{
 			$postdate = my_date('relative', $post['dateline']);
+			$post['username'] = htmlspecialchars_uni($post['username']);
 
 			$parser_options = array(
 				"allow_html" => $forum['allowhtml'],

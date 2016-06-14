@@ -255,7 +255,6 @@ if($mybb->input['action'] == "get_users")
 	if($limit == 1)
 	{
 		$user = $db->fetch_array($query);
-		$user['username'] = htmlspecialchars_uni($user['username']);
 		$data = array('id' => $user['username'], 'text' => $user['username']);
 	}
 	else
@@ -263,7 +262,6 @@ if($mybb->input['action'] == "get_users")
 		$data = array();
 		while($user = $db->fetch_array($query))
 		{
-			$user['username'] = htmlspecialchars_uni($user['username']);
 			$data[] = array('id' => $user['username'], 'text' => $user['username']);
 		}
 	}

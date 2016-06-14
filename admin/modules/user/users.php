@@ -254,7 +254,7 @@ if($mybb->input['action'] == "activate_user")
 	my_mail($user['email'], $lang->sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']), $message);
 
 	// Log admin action
-	log_admin_action($user['uid'], $user['username']);
+	log_admin_action($user['uid'], htmlspecialchars_uni($user['username']));
 
 	if($mybb->input['from'] == "home")
 	{
@@ -359,7 +359,7 @@ if($mybb->input['action'] == "add")
 			$plugins->run_hooks("admin_user_users_add_commit");
 
 			// Log admin action
-			log_admin_action($user_info['uid'], $user_info['username']);
+			log_admin_action($user_info['uid'], htmlspecialchars_uni($user_info['username']));
 
 			flash_message($lang->success_user_created, 'success');
 			admin_redirect("index.php?module=user-users&action=edit&uid={$user_info['uid']}");
@@ -836,7 +836,7 @@ if($mybb->input['action'] == "edit")
 				}
 
 				// Log admin action
-				log_admin_action($user['uid'], $mybb->input['username']);
+				log_admin_action($user['uid'], htmlspecialchars_uni($mybb->input['username']));
 
 				flash_message($lang->success_user_updated, 'success');
 				admin_redirect("index.php?module=user-users");
@@ -1108,7 +1108,7 @@ EOF;
 	echo "<div id=\"tab_profile\">\n";
 
 	$form_container = new FormContainer($lang->required_profile_info.": ".htmlspecialchars_uni($user['username']));
-	$form_container->output_row($lang->username." <em>*</em>", "", $form->generate_text_box('username', htmlspecialchars_uni($mybb->get_input['username']), array('id' => 'username')), 'username');
+	$form_container->output_row($lang->username." <em>*</em>", "", $form->generate_text_box('username', $mybb->input['username'], array('id' => 'username')), 'username');
 	$form_container->output_row($lang->new_password, $lang->new_password_desc, $form->generate_password_box('new_password', $mybb->input['new_password'], array('id' => 'new_password', 'autocomplete' => 'off')), 'new_password');
 	$form_container->output_row($lang->confirm_new_password, $lang->new_password_desc, $form->generate_password_box('confirm_new_password', $mybb->input['confirm_new_password'], array('id' => 'confirm_new_password')), 'confirm_new_password');
 	$form_container->output_row($lang->email_address." <em>*</em>", "", $form->generate_text_box('email', $mybb->input['email'], array('id' => 'email')), 'email');
@@ -1360,7 +1360,7 @@ EOF;
 		$sig_imgcode = $lang->on;
 	}
 	echo "<div id=\"tab_signature\">\n";
-	$form_container = new FormContainer($lang->signature': '.htmlspecialchars_uni($user['username']));
+	$form_container = new FormContainer($lang->signature.': '.htmlspecialchars_uni($user['username']));
 	$form_container->output_row($lang->signature, $lang->sprintf($lang->signature_desc, $sig_mycode, $sig_smilies, $sig_imgcode, $sig_html), $signature_editor, 'signature');
 
 	$periods = array(
@@ -1739,7 +1739,7 @@ if($mybb->input['action'] == "delete")
 
 		$plugins->run_hooks("admin_user_users_delete_commit_end");
 
-		log_admin_action($user['uid'], $user['username']);
+		log_admin_action($user['uid'], htmlspecialchars_uni($user['username']));
 
 		flash_message($lang->success_user_deleted, 'success');
 		admin_redirect("index.php?module=user-users");
@@ -1819,7 +1819,7 @@ if($mybb->input['action'] == "ipaddresses")
 	$user = $db->fetch_array($query);
 
 	// Log admin action
-	log_admin_action($user['uid'], $user['username']);
+	log_admin_action($user['uid'], htmlspecialchars_uni($user['username']));
 
 	$table = new Table;
 
@@ -2114,7 +2114,7 @@ if($mybb->input['action'] == "merge")
 			$cache->update_awaitingactivation();
 
 			// Log admin action
-			log_admin_action($source_user['uid'], $source_user['username'], $destination_user['uid'], $destination_user['username']);
+			log_admin_action($source_user['uid'], htmlspecialchars_uni($source_user['username']), $destination_user['uid'], htmlspecialchars_uni($destination_user['username']));
 
 			// Redirect!
 			$username = htmlspecialchars_uni($source_user['username']);
@@ -3845,7 +3845,6 @@ function build_user_view_card($user, $view, &$i)
 
 	// And build the final card
 	$card = "<fieldset id=\"uid_{$user['uid']}\" style=\"width: 47%; float: {$float};\">\n";
-	$user['view']['username'] = htmlspecialchars_uni($user['view']['username']);
 	$card .= "<legend><input type=\"checkbox\" class=\"checkbox\" name=\"inlinemod_{$user['uid']}\" id=\"inlinemod_{$user['uid']}\" value=\"1\" onclick=\"$('#uid_{$user['uid']}').toggleClass('inline_selected');\" /> {$user['view']['username']}</legend>\n";
 	if($avatar)
 	{

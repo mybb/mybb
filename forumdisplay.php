@@ -1259,7 +1259,7 @@ if(!empty($threadcache) && is_array($threadcache))
 			$inline_edit_class = "subject_editable";
 		}
 
-		$lastposter = $thread['lastposter'];
+		$lastposter = htmlspecialchars_uni($thread['lastposter']);
 		$lastposteruid = $thread['lastposteruid'];
 		$lastpostdate = my_date('relative', $thread['lastpost']);
 
