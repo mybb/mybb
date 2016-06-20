@@ -99,7 +99,7 @@ if($mybb->input['action'] == "prune")
 		$cache->update_reportedcontent();
 
 		// Log admin action
-		log_admin_action($user['uid'], $user['username']);
+		log_admin_action($user['uid'], htmlspecialchars_uni($user['username']));
 
 		flash_message($lang->success_pruned, 'success');
 		admin_redirect("index.php?module=user-banning");
@@ -314,7 +314,7 @@ if(!$mybb->input['action'])
 		);
 
 		$user = get_user_by_username($mybb->input['username'], $options);
-
+		
 		// Are we searching a user?
 		if(isset($mybb->input['search']))
 		{
@@ -339,7 +339,7 @@ if(!$mybb->input['action'])
 				{
 					$errors[] = $lang->error_already_banned;
 				}
-
+				
 				// Get PRIMARY usergroup information
 				$usergroups = $cache->read("usergroups");
 				if(!empty($usergroups[$user['usergroup']]) && $usergroups[$user['usergroup']]['isbannedgroup'] == 1)
