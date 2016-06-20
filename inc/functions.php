@@ -3035,7 +3035,7 @@ function format_name($username, $usergroup, $displaygroup=0)
  */
 function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
 {
-	global $mybb;
+	global $mybb, $theme;
 	static $avatars;
 
 	if(!isset($avatars))
@@ -3046,7 +3046,12 @@ function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
 	if(!$avatar)
 	{
 		// Default avatar
-		$avatar = $mybb->settings['useravatar'];
+		if(defined('IN_ADMINCP'))
+		{
+			$theme['imgdir'] = '../images';
+		}
+
+		$avatar = str_replace('{theme}', $theme['imgdir'], $mybb->settings['useravatar']);
 		$dimensions = $mybb->settings['useravatardims'];
 	}
 
