@@ -2621,7 +2621,7 @@ if($mybb->input['action'] == "inline_edit")
 			{
 				if($time != '---')
 				{
-					$friendly_time = my_date("D, jS M Y @ g:ia", ban_date2timestamp($time));
+					$friendly_time = my_date("D, jS M Y @ {$mybb->settings['timeformat']}", ban_date2timestamp($time));
 					$period = "{$period} ({$friendly_time})";
 				}
 				$length_list[$time] = $period;

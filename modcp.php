@@ -1103,7 +1103,9 @@ if($mybb->input['action'] == "do_new_announcement")
 		$mybb->input['starttime_month'] = '01';
 	}
 
-	$startdate = gmmktime((int)$startdate[0], (int)$startdate[1], 0, $mybb->get_input('starttime_month', MyBB::INPUT_INT), $mybb->get_input('starttime_day', MyBB::INPUT_INT), $mybb->get_input('starttime_year', MyBB::INPUT_INT));
+	$localized_time_offset = $mybb->user['timezone']*3600 + $mybb->user['dst']*3600;
+	
+	$startdate = gmmktime((int)$startdate[0], (int)$startdate[1], 0, $mybb->get_input('starttime_month', MyBB::INPUT_INT), $mybb->get_input('starttime_day', MyBB::INPUT_INT), $mybb->get_input('starttime_year', MyBB::INPUT_INT)) -$localized_time_offset;
 	if(!checkdate($mybb->get_input('starttime_month', MyBB::INPUT_INT), $mybb->get_input('starttime_day', MyBB::INPUT_INT), $mybb->get_input('starttime_year', MyBB::INPUT_INT)) || $startdate < 0 || $startdate == false)
 	{
 		$errors[] = $lang->error_invalid_start_date;
@@ -1121,7 +1123,7 @@ if($mybb->input['action'] == "do_new_announcement")
 		{
 			$mybb->input['endtime_month'] = '01';
 		}
-		$enddate = gmmktime((int)$enddate[0], (int)$enddate[1], 0, $mybb->get_input('endtime_month', MyBB::INPUT_INT), $mybb->get_input('endtime_day', MyBB::INPUT_INT), $mybb->get_input('endtime_year', MyBB::INPUT_INT));
+		$enddate = gmmktime((int)$enddate[0], (int)$enddate[1], 0, $mybb->get_input('endtime_month', MyBB::INPUT_INT), $mybb->get_input('endtime_day', MyBB::INPUT_INT), $mybb->get_input('endtime_year', MyBB::INPUT_INT)) - $localized_time_offset;
 		if(!checkdate($mybb->get_input('endtime_month', MyBB::INPUT_INT), $mybb->get_input('endtime_day', MyBB::INPUT_INT), $mybb->get_input('endtime_year', MyBB::INPUT_INT)) || $enddate < 0 || $enddate == false)
 		{
 			$errors[] = $lang->error_invalid_end_date;
@@ -1243,12 +1245,13 @@ if($mybb->input['action'] == "new_announcement")
 	}
 	else
 	{
-		// Note: dates are in GMT timezone
-		$starttime_time = gmdate("g:i a", TIME_NOW);
-		$endtime_time = gmdate("g:i a", TIME_NOW);
-		$startday = $endday = gmdate("j", TIME_NOW);
-		$startmonth = $endmonth = gmdate("m", TIME_NOW);
-		$startdateyear = gmdate("Y", TIME_NOW);
+		$localized_time = TIME_NOW + $mybb->user['timezone']*3600 + $mybb->user['dst']*3600;
+		
+		$starttime_time = gmdate($mybb->settings['timeformat'], $localized_time);
+		$endtime_time = gmdate($mybb->settings['timeformat'], $localized_time);
+		$startday = $endday = gmdate("j", TIME_NOW + $localized_time);
+		$startmonth = $endmonth = gmdate("m", $localized_time);
+		$startdateyear = gmdate("Y", $localized_time);
 
 		$announcement = array(
 			'subject' => '',
@@ -1473,7 +1476,9 @@ if($mybb->input['action'] == "do_edit_announcement")
 		$mybb->input['starttime_month'] = '01';
 	}
 
-	$startdate = gmmktime((int)$startdate[0], (int)$startdate[1], 0, $mybb->get_input('starttime_month', MyBB::INPUT_INT), $mybb->get_input('starttime_day', MyBB::INPUT_INT), $mybb->get_input('starttime_year', MyBB::INPUT_INT));
+	$localized_time_offset = TIME_NOW + $mybb->user['timezone']*3600 + $mybb->user['dst']*3600;
+	
+	$startdate = gmmktime((int)$startdate[0], (int)$startdate[1], 0, $mybb->get_input('starttime_month', MyBB::INPUT_INT), $mybb->get_input('starttime_day', MyBB::INPUT_INT), $mybb->get_input('starttime_year', MyBB::INPUT_INT)) - $localized_time_offset;
 	if(!checkdate($mybb->get_input('starttime_month', MyBB::INPUT_INT), $mybb->get_input('starttime_day', MyBB::INPUT_INT), $mybb->get_input('starttime_year', MyBB::INPUT_INT)) || $startdate < 0 || $startdate == false)
 	{
 		$errors[] = $lang->error_invalid_start_date;
@@ -1491,7 +1496,7 @@ if($mybb->input['action'] == "do_edit_announcement")
 		{
 			$mybb->input['endtime_month'] = '01';
 		}
-		$enddate = gmmktime((int)$enddate[0], (int)$enddate[1], 0, $mybb->get_input('endtime_month', MyBB::INPUT_INT), $mybb->get_input('endtime_day', MyBB::INPUT_INT), $mybb->get_input('endtime_year', MyBB::INPUT_INT));
+		$enddate = gmmktime((int)$enddate[0], (int)$enddate[1], 0, $mybb->get_input('endtime_month', MyBB::INPUT_INT), $mybb->get_input('endtime_day', MyBB::INPUT_INT), $mybb->get_input('endtime_year', MyBB::INPUT_INT)) - $localized_time_offset;
 		if(!checkdate($mybb->get_input('endtime_month', MyBB::INPUT_INT), $mybb->get_input('endtime_day', MyBB::INPUT_INT), $mybb->get_input('endtime_year', MyBB::INPUT_INT)) || $enddate < 0 || $enddate == false)
 		{
 			$errors[] = $lang->error_invalid_end_date;
@@ -1645,18 +1650,20 @@ if($mybb->input['action'] == "edit_announcement")
 	}
 	else
 	{
-		// Note: dates are in GMT timezone
-		$starttime_time = gmdate('g:i a', $announcement['startdate']);
-		$endtime_time = gmdate('g:i a', $announcement['enddate']);
+		$localized_time_startdate = $announcement['startdate'] + $mybb->user['timezone']*3600 + $mybb->user['dst']*3600;
+		$localized_time_enddate = $announcement['enddate'] + $mybb->user['timezone']*3600 + $mybb->user['dst']*3600;
+		
+		$starttime_time = gmdate($mybb->settings['timeformat'], $localized_time_startdate);
+		$endtime_time = gmdate($mybb->settings['timeformat'], $localized_time_enddate);
 
-		$startday = gmdate('j', $announcement['startdate']);
-		$endday = gmdate('j', $announcement['enddate']);
+		$startday = gmdate('j', $localized_time_startdate);
+		$endday = gmdate('j', $localized_time_enddate);
 
-		$startmonth = gmdate('m', $announcement['startdate']);
-		$endmonth = gmdate('m', $announcement['enddate']);
+		$startmonth = gmdate('m', $localized_time_startdate);
+		$endmonth = gmdate('m', $localized_time_enddate);
 
-		$startdateyear = gmdate('Y', $announcement['startdate']);
-		$enddateyear = gmdate('Y', $announcement['enddate']);
+		$startdateyear = gmdate('Y', $localized_time_startdate);
+		$enddateyear = gmdate('Y', $localized_time_enddate);
 
 		$errored = false;
 	}
@@ -4407,7 +4414,7 @@ if($mybb->input['action'] == "banuser")
 				$dateline = $banned['dateline'];
 			}
 
-			$thatime = my_date("D, jS M Y @ g:ia", ban_date2timestamp($time, $dateline));
+			$thatime = my_date("D, jS M Y @ {$mybb->settings['timeformat']}", ban_date2timestamp($time, $dateline));
 			$thattime = " ({$thatime})";
 		}
 

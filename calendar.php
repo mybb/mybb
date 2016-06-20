@@ -945,7 +945,7 @@ if($mybb->input['action'] == "editevent")
 		{
 			$privatecheck = '';
 		}
-		$start_date = explode("-", gmdate("j-n-Y-g:i A", $event['starttime']+$event['timezone']*3600));
+		$start_date = explode("-", gmdate("j-n-Y", $event['starttime']+$event['timezone']*3600));
 		$single_day = $start_date[0];
 		$single_month[$start_date[1]] = " selected=\"selected\"";
 		$single_year = $start_date[2];
@@ -962,7 +962,7 @@ if($mybb->input['action'] == "editevent")
 		}
 		if($event['endtime'])
 		{
-			$end_date = explode("-", gmdate("j-n-Y-g:i A", $event['endtime']+$event['timezone']*3600));
+			$end_date = explode("-", gmdate("j-n-Y", $event['endtime']+$event['timezone']*3600));
 			$end_day = $end_date[0];
 			$end_month[$end_date[1]] = " selected=\"selected\"";
 			$end_year = $end_date[2];
