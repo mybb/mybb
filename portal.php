@@ -365,17 +365,18 @@ if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_sho
 		}
 
 		$lastpostdate = my_date('relative', $thread['lastpost']);
+		$lastposter = htmlspecialchars_uni($thread['lastposter']);
 		$thread['replies'] = my_number_format($thread['replies']);
 		$thread['views'] = my_number_format($thread['views']);
 
 		// Don't link to guest's profiles (they have no profile).
 		if($thread['lastposteruid'] == 0)
 		{
-			$lastposterlink = $thread['lastposter'];
+			$lastposterlink = $lastposter;
 		}
 		else
 		{
-			$lastposterlink = build_profile_link($thread['lastposter'], $thread['lastposteruid']);
+			$lastposterlink = build_profile_link($lastposter, $thread['lastposteruid']);
 		}
 		if(my_strlen($thread['subject']) > 25)
 		{

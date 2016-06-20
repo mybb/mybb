@@ -744,6 +744,7 @@ if(isset($mybb->user['pmnotice']) && $mybb->user['pmnotice'] == 2 && $mybb->user
 	}
 	else
 	{
+		$pm['fromusername'] = htmlspecialchars_uni($pm['fromusername']);
 		$user_text = build_profile_link($pm['fromusername'], $pm['fromuid']);
 	}
 

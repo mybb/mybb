@@ -576,7 +576,7 @@ if($mybb->input['action'] == "results")
 				$thread['multipage'] = '';
 			}
 			$lastpostdate = my_date('relative', $thread['lastpost']);
-			$lastposter = $thread['lastposter'];
+			$lastposter = htmlspecialchars_uni($thread['lastposter']);
 			$thread['lastpostlink'] = get_thread_link($thread['tid'], 0, "lastpost");
 			$lastposteruid = $thread['lastposteruid'];
 			$thread_link = get_thread_link($thread['tid']);

@@ -697,7 +697,7 @@ if($mybb->input['action'] == "allreports")
 			if($report['type'] == 'post')
 			{
 				$post = get_post_link($report['id'])."#pid{$report['id']}";
-				$user = build_profile_link($report['postusername'], $report['postuid']);
+				$user = build_profile_link(htmlspecialchars_uni($report['postusername']), $report['postuid']);
 				$report_data['content'] = $lang->sprintf($lang->report_info_post, $post, $user);
 
 				$thread_link = get_thread_link($report['id2']);
@@ -706,12 +706,12 @@ if($mybb->input['action'] == "allreports")
 			}
 			else if($report['type'] == 'profile')
 			{
-				$user = build_profile_link($report['profileusername'], $report['id']);
+				$user = build_profile_link(htmlspecialchars_uni($report['profileusername']), $report['id']);
 				$report_data['content'] = $lang->sprintf($lang->report_info_profile, $user);
 			}
 			else if($report['type'] == 'reputation')
 			{
-				$user = build_profile_link($report['repusername'], $report['id2']);
+				$user = build_profile_link(htmlspecialchars_uni($report['repusername']), $report['id2']);
 				$reputation_link = "reputation.php?uid={$report['id3']}#rid{$report['id']}";
 				$report_data['content'] = $lang->sprintf($lang->report_info_reputation, $reputation_link, $user);
 			}
@@ -3506,6 +3506,7 @@ if($mybb->input['action'] == "warninglogs")
 		$row['username'] = htmlspecialchars_uni($row['username']);
 		$username = format_name($row['username'], $row['usergroup'], $row['displaygroup']);
 		$username_link = build_profile_link($username, $row['uid']);
+		$row['mod_username'] = htmlspecialchars_uni($row['mod_username']);
 		$mod_username = format_name($row['mod_username'], $row['mod_usergroup'], $row['mod_displaygroup']);
 		$mod_username_link = build_profile_link($mod_username, $row['mod_uid']);
 		$issued_date = my_date($mybb->settings['dateformat'], $row['dateline']).' '.my_date($mybb->settings['timeformat'], $row['dateline']);
@@ -4026,7 +4027,7 @@ if($mybb->input['action'] == "banning")
 			eval("\$edit_link = \"".$templates->get("modcp_banning_edit")."\";");
 		}
 
-		$admin_profile = build_profile_link($banned['adminuser'], $banned['admin']);
+		$admin_profile = build_profile_link(htmlspecialchars_uni($banned['adminuser']), $banned['admin']);
 
 		$trow = alt_trow();
 
@@ -4738,7 +4739,7 @@ if(!$mybb->input['action'])
 			eval("\$edit_link = \"".$templates->get("modcp_banning_edit")."\";");
 		}
 
-		$admin_profile = build_profile_link($banned['adminuser'], $banned['admin']);
+		$admin_profile = build_profile_link(htmlspecialchars_uni($banned['adminuser']), $banned['admin']);
 
 		$trow = alt_trow();
 

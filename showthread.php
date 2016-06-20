@@ -1481,7 +1481,7 @@ if($mybb->input['action'] == "thread")
 				if($user['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])
 				{
 					$user['profilelink'] = get_profile_link($user['uid']);
-					$user['username'] = format_name(htmlspecialchars_uni($user['threadusername']), $user['usergroup'], $user['displaygroup']);
+					$user['username'] = format_name(htmlspecialchars_uni($user['username']), $user['usergroup'], $user['displaygroup']);
 					$user['reading'] = my_date($mybb->settings['timeformat'], $user['time']);
 
 					eval("\$onlinemembers .= \"".$templates->get("showthread_usersbrowsing_user", 1, 0)."\";");

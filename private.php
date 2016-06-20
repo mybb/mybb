@@ -413,7 +413,7 @@ if($mybb->input['action'] == "results")
 			}
 			else if($message['toid'])
 			{
-				$tofromusername = $message['tousername'];
+				$tofromusername = htmlspecialchars_uni($message['tousername']);
 				$tofromuid = $message['toid'];
 			}
 			else
@@ -423,7 +423,7 @@ if($mybb->input['action'] == "results")
 		}
 		else
 		{
-			$tofromusername = $message['fromusername'];
+			$tofromusername = htmlspecialchars_uni($message['fromusername']);
 			$tofromuid = $message['fromid'];
 			if($tofromuid == 0)
 			{
@@ -1069,7 +1069,7 @@ if($mybb->input['action'] == "read")
 		eval("\$action_time = \"".$templates->get("private_read_action")."\";");
 	}
 
-	$pm['userusername'] = $pm['username'] = htmlspecialchars_uni($pm['username']);
+	$pm['userusername'] = $pm['username'];
 	$pm['subject'] = htmlspecialchars_uni($parser->parse_badwords($pm['subject']));
 
 	if($pm['fromid'] == 0)
@@ -1273,6 +1273,7 @@ if($mybb->input['action'] == "tracking")
 	while($readmessage = $db->fetch_array($query))
 	{
 		$readmessage['subject'] = htmlspecialchars_uni($parser->parse_badwords($readmessage['subject']));
+		$readmessage['tousername'] = htmlspecialchars_uni($readmessage['tousername']);
 		$readmessage['profilelink'] = build_profile_link($readmessage['tousername'], $readmessage['toid']);
 		$readdate = my_date('relative', $readmessage['readtime']);
 		eval("\$readmessages .= \"".$templates->get("private_tracking_readmessage")."\";");
@@ -1329,6 +1330,7 @@ if($mybb->input['action'] == "tracking")
 	while($unreadmessage = $db->fetch_array($query))
 	{
 		$unreadmessage['subject'] = htmlspecialchars_uni($parser->parse_badwords($unreadmessage['subject']));
+		$unreadmessage['tousername'] = htmlspecialchars_uni($unreadmessage['tousername']);
 		$unreadmessage['profilelink'] = build_profile_link($unreadmessage['tousername'], $unreadmessage['toid']);
 		$senddate = my_date('relative', $unreadmessage['dateline']);
 		eval("\$unreadmessages .= \"".$templates->get("private_tracking_unreadmessage")."\";");
@@ -2323,7 +2325,7 @@ if(!$mybb->input['action'])
 				}
 				else if($message['toid'])
 				{
-					$tofromusername = $message['tousername'];
+					$tofromusername = htmlspecialchars_uni($message['tousername']);
 					$tofromuid = $message['toid'];
 				}
 				else
@@ -2333,7 +2335,7 @@ if(!$mybb->input['action'])
 			}
 			else
 			{
-				$tofromusername = $message['fromusername'];
+				$tofromusername = htmlspecialchars_uni($message['fromusername']);
 				$tofromuid = $message['fromid'];
 				if($tofromuid == 0)
 				{
