@@ -707,8 +707,8 @@ class postParser
 
 		$text = str_replace("\'", "'", $text);
 
-		eval("\$text = \"".$templates->get("mycode_size_int", 1, 0)."\";");
-		return $text;
+		eval("\$mycode_size = \"".$templates->get("mycode_size_int", 1, 0)."\";");
+		return $mycode_size;
 	}
 
 	/**
@@ -1067,8 +1067,8 @@ class postParser
 
 		$name = preg_replace("#&amp;\#([0-9]+);#si", "&#$1;", $name); // Fix & but allow unicode
 
-		eval("\$link = \"".$templates->get("mycode_url", 1, 0)."\";");
-		return $link;
+		eval("\$mycode_url = \"".$templates->get("mycode_url", 1, 0)."\";");
+		return $mycode_url;
 	}
 
 	/**
@@ -1152,8 +1152,8 @@ class postParser
 			$height = " height=\"{$dimensions[1]}\"";
 		}
 
-		eval("\$image = \"".$templates->get("mycode_image", 1, 0)."\";");
-		return $image;
+		eval("\$mycode_img = \"".$templates->get("mycode_img", 1, 0)."\";");
+		return $mycode_img;
 	}
 
 	/**
@@ -1286,8 +1286,8 @@ class postParser
 			$email = htmlspecialchars_uni($email);
 		}
 
-		eval("\$email = \"".$templates->get("mycode_email", 1, 0)."\";");
-		return $email;
+		eval("\$mycode_email = \"".$templates->get("mycode_email", 1, 0)."\";");
+		return $mycode_email;
 	}
 
 	/**
@@ -1433,7 +1433,6 @@ class postParser
 		$id = htmlspecialchars_uni($id);
 
 		eval("\$video_code = \"".$templates->get("video_{$video}_embed")."\";");
-
 		return $video_code;
 	}
 
