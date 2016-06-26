@@ -894,16 +894,16 @@ class PostDataHandler extends DataHandler
 				$modoptions_update = array();
 
 				// Close the thread.
-				if($modoptions['closethread'] == 1 && $thread['closed'] != 1)
+				if($modoptions['closethread'] == 1 && $closed != 1)
 				{
-					$modoptions_update['closed'] = $closed = 0;
+					$modoptions_update['closed'] = $closed = 1;
 					log_moderator_action($modlogdata, $lang->thread_closed);
 				}
 
 				// Open the thread.
-				if($modoptions['closethread'] != 1 && $thread['closed'] == 1)
+				if($modoptions['closethread'] != 1 && $closed == 1)
 				{
-					$modoptions_update['closed'] = $closed = 1;
+					$modoptions_update['closed'] = $closed = 0;
 					log_moderator_action($modlogdata, $lang->thread_opened);
 				}
 
