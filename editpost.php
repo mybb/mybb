@@ -684,6 +684,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 			"subject" => $mybb->get_input('subject'),
 			"icon" => $mybb->get_input('icon', MyBB::INPUT_INT),
 			"uid" => $post['uid'],
+			"username" => $post['username'],
 			"edit_uid" => $mybb->user['uid'],
 			"message" => $mybb->get_input('message'),
 		);
