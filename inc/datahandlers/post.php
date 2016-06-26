@@ -878,7 +878,7 @@ class PostDataHandler extends DataHandler
 
 			// Perform any selected moderation tools.
 			$ismod = is_moderator($post['fid'], "", $post['uid']);
-			if($ismod)
+			if($ismod && isset($post['modoptions']))
 			{
 				$lang->load($this->language_file, true);
 
@@ -886,41 +886,31 @@ class PostDataHandler extends DataHandler
 				$modlogdata['fid'] = $thread['fid'];
 				$modlogdata['tid'] = $thread['tid'];
 
-				if(!isset($modoptions['closethread']))
-				{
-					$modoptions['closethread'] = $closed;
-				}
-
 				$modoptions_update = array();
 
 				// Close the thread.
-				if($modoptions['closethread'] == 1 && $thread['closed'] != 1)
+				if(!empty($modoptions['closethread']) && $thread['closed'] != 1)
 				{
-					$modoptions_update['closed'] = $closed = 0;
+					$modoptions_update['closed'] = $closed = 1;
 					log_moderator_action($modlogdata, $lang->thread_closed);
 				}
 
 				// Open the thread.
-				if($modoptions['closethread'] != 1 && $thread['closed'] == 1)
+				if(empty($modoptions['closethread']) && $thread['closed'] == 1)
 				{
-					$modoptions_update['closed'] = $closed = 1;
+					$modoptions_update['closed'] = $closed = 0;
 					log_moderator_action($modlogdata, $lang->thread_opened);
 				}
 
-				if(!isset($modoptions['stickthread']))
-				{
-					$modoptions['stickthread'] = $thread['sticky'];
-				}
-
 				// Stick the thread.
-				if($modoptions['stickthread'] == 1 && $thread['sticky'] != 1)
+				if(!empty($modoptions['stickthread']) && $thread['sticky'] != 1)
 				{
 					$modoptions_update['sticky'] = 1;
 					log_moderator_action($modlogdata, $lang->thread_stuck);
 				}
 
 				// Unstick the thread.
-				if($modoptions['stickthread'] != 1 && $thread['sticky'])
+				if(empty($modoptions['stickthread']) && $thread['sticky'] == 1)
 				{
 					$modoptions_update['sticky'] = 0;
 					log_moderator_action($modlogdata, $lang->thread_unstuck);
@@ -1527,7 +1517,7 @@ class PostDataHandler extends DataHandler
 			}
 
 			// Perform any selected moderation tools.
-			if(is_moderator($thread['fid'], "", $thread['uid']) && is_array($thread['modoptions']))
+			if(is_moderator($thread['fid'], "", $thread['uid']) && isset($thread['modoptions']))
 			{
 				$lang->load($this->language_file, true);
 
