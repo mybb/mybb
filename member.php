@@ -1769,7 +1769,7 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 			$mybb->input['url'] = str_replace('&amp;', '&', $mybb->input['url']);
 
 			// Redirect to the URL if it is not member.php
-			redirect(htmlentities($mybb->input['url']), $lang->redirect_loggedin);
+			redirect($mybb->input['url'], $lang->redirect_loggedin);
 		}
 		else
 		{
