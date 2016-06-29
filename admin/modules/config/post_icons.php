@@ -465,7 +465,7 @@ if(!$mybb->input['action'])
 	while($icon = $db->fetch_array($query))
 	{
 		$icon['path'] = str_replace("{theme}", "images", $icon['path']);
-		if(my_validate_url($icon['path']))
+		if(my_validate_url($icon['path'], true))
 		{
 			$image = $icon['path'];
 		}

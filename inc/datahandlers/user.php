@@ -296,6 +296,11 @@ class UserDataHandler extends DataHandler
 
 		if(!empty($website) && !my_validate_url($website))
 		{
+			$website = 'http://'.$website;
+		}
+
+		if(!empty($website) && !my_validate_url($website))
+		{
 			$this->set_error('invalid_website');
 			return false;
 		}
