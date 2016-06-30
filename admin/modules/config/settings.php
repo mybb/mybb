@@ -1638,7 +1638,7 @@ EOF;
 	echo '</div>';
 
 	echo '
-<script type="text/javascript" src="./jscripts/search.js"></script>
+<script type="text/javascript" src="./jscripts/search.js?ver=1808"></script>
 <script type="text/javascript">
 //<!--
 $(document).ready(function(){

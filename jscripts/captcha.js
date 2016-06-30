@@ -24,7 +24,7 @@ var captcha = {
 		{
 			$.each(json.errors, function(i, message)
 			{
-				$.jGrowl(lang.captcha_fetch_failure + ' ' + message);
+				$.jGrowl(lang.captcha_fetch_failure + ' ' + message, {theme:'jgrowl_error'});
 			});
 		}
 		else if(json.imagehash)
