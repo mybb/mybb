@@ -1198,9 +1198,9 @@ input.search_button {
 	font-size: 				1em;
 	text-align: 			left;
 	display: 				none;
-    -moz-border-radius:     7px;
-    -webkit-border-radius:  7px;
-    border-radius:          7px;
+	-moz-border-radius:     5px;
+	-webkit-border-radius:  5px;
+	border-radius:          5px;
 }
 
 .jGrowl .jGrowl-notification {
@@ -1235,20 +1235,20 @@ input.search_button {
 }
 
 .jGrowl .jGrowl-notification.jgrowl_success {
-    background: #71C671;
-    border: 1px solid #228B22;
+    background: lightgreen;
+    border: 1px solid lightgreen;
     color: #333;
 }
 
 .jGrowl .jGrowl-notification.jgrowl_error {
-    background: #FBE3E4;
-    border: 1px solid #A5161A;
+    background: red;
+    border: 1px solid red;
     color: #333;
 }
 
 .jGrowl .jGrowl-notification.jgrowl_process, .jGrowl .jGrowl-closer {
-    background: #FFF6BF;
-    border: 1px solid #FFD324;
+    background: yellow;
+    border: 1px solid yellow;
     color: #333;
 }
 

@@ -535,7 +535,7 @@ if(!$mybb->input['action'])
 	}
 
 	$form_container = new FormContainer($lang->ban_a_user);
-	$form_container->output_row($lang->ban_username, $lang->autocomplete_enabled, $form->generate_text_box('username', $mybb->get_input('username'), array('id' => 'username')), 'username');
+	$form_container->output_row($lang->ban_username, $lang->autocomplete_enabled, $form->generate_text_box('username', $mybb->input['username'], array('id' => 'username')), 'username');
 	$form_container->output_row($lang->ban_reason, "", $form->generate_text_area('reason', $mybb->input['reason'], array('id' => 'reason', 'maxlength' => '255')), 'reason');
 	if(count($banned_groups) > 1)
 	{
