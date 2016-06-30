@@ -994,11 +994,11 @@ EOF;
 	{
 		if(my_substr($mybb->settings['useravatar'], 0, 7) === 'http://' || my_substr($mybb->settings['useravatar'], 0, 8) === 'https://')
 		{
-			$user['avatar'] = $mybb->settings['useravatar'];
+			$user['avatar'] = str_replace('{theme}', 'images', $mybb->settings['useravatar'])
 		}
 		else
 		{
-			$user['avatar'] = "../".$mybb->settings['useravatar'];
+			$user['avatar'] = "../".str_replace('{theme}', 'images', $mybb->settings['useravatar']);
 		}
 		$scaled_dimensions = array(
 			"width" => 120,
@@ -3605,11 +3605,11 @@ function build_users_view($view)
 			{
 				if(my_substr($mybb->settings['useravatar'], 0, 7) === 'http://' || my_substr($mybb->settings['useravatar'], 0, 8) === 'https://')
 				{
-					$user['avatar'] = $mybb->settings['useravatar'];
+					$user['avatar'] = str_replace('{theme}', 'images', $mybb->settings['useravatar']);
 				}
 				else
 				{
-					$user['avatar'] = "../".$mybb->settings['useravatar'];
+					$user['avatar'] = "../".str_replace('{theme}', 'images', $mybb->settings['useravatar']);
 				}
 			}
 			$user['view']['avatar'] = "<img src=\"".htmlspecialchars_uni($user['avatar'])."\" alt=\"\" width=\"{$scaled_avatar['width']}\" height=\"{$scaled_avatar['height']}\" />";
