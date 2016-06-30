@@ -13,7 +13,7 @@ class Moderation
 	/**
 	 * Close one or more threads
 	 *
-	 * @param array Thread IDs
+	 * @param array|int $tids Thread ID(s)
 	 * @return boolean true
 	 */
 	function close_threads($tids)
@@ -43,8 +43,8 @@ class Moderation
 	/**
 	 * Open one or more threads
 	 *
-	 * @param int Thread IDs
-	 * @return boolean true
+	 * @param array|int $tids Thread ID(s)
+	 * @return boolean
 	 */
 
 	function open_threads($tids)
@@ -79,8 +79,8 @@ class Moderation
 	/**
 	 * Stick one or more threads
 	 *
-	 * @param int Thread IDs
-	 * @return boolean true
+	 * @param array|int $tids Thread ID(s)
+	 * @return boolean
 	 */
 	function stick_threads($tids)
 	{
@@ -114,8 +114,8 @@ class Moderation
 	/**
 	 * Unstick one or more thread
 	 *
-	 * @param int Thread IDs
-	 * @return boolean true
+	 * @param array|int $tids Thread ID(s)
+	 * @return boolean
 	 */
 	function unstick_threads($tids)
 	{
@@ -149,8 +149,8 @@ class Moderation
 	/**
 	 * Remove redirects that redirect to the specified thread
 	 *
-	 * @param int Thread ID of the thread
-	 * @return boolean true
+	 * @param int $tid Thread ID of the thread
+	 * @return boolean
 	 */
 	function remove_redirects($tid)
 	{
@@ -177,8 +177,8 @@ class Moderation
 	/**
 	 * Delete a thread
 	 *
-	 * @param int Thread ID of the thread
-	 * @return boolean true
+	 * @param int $tid Thread ID of the thread
+	 * @return boolean
 	 */
 	function delete_thread($tid)
 	{
@@ -332,8 +332,8 @@ class Moderation
 	/**
 	 * Delete a poll
 	 *
-	 * @param int Poll id
-	 * @return boolean true
+	 * @param int $pid Poll id
+	 * @return boolean
 	 */
 	function delete_poll($pid)
 	{
@@ -361,8 +361,8 @@ class Moderation
 	/**
 	 * Approve one or more threads
 	 *
-	 * @param array Thread IDs
-	 * @return boolean true
+	 * @param array|int $tids Thread ID(s)
+	 * @return boolean
 	 */
 	function approve_threads($tids)
 	{
@@ -502,8 +502,8 @@ class Moderation
 	/**
 	 * Unapprove one or more threads
 	 *
-	 * @param array Thread IDs
-	 * @return boolean true
+	 * @param array|int $tids Thread ID(s)
+	 * @return boolean
 	 */
 	function unapprove_threads($tids)
 	{
@@ -653,8 +653,8 @@ class Moderation
 	/**
 	 * Delete a specific post
 	 *
-	 * @param int Post ID
-	 * @return boolean true
+	 * @param int $pid Post ID
+	 * @return boolean
 	 */
 	function delete_post($pid)
 	{
@@ -750,9 +750,8 @@ class Moderation
 	/**
 	 * Merge posts within thread
 	 *
-	 * @param array Post IDs to be merged
-	 * @param int Thread ID (Set to 0 if posts from multiple threads are
-	 * selected)
+	 * @param array $pids Post IDs to be merged
+	 * @param int $tid Thread ID (Set to 0 if posts from multiple threads are selected)
 	 * @return int ID of the post into which all other posts are merged
 	 */
 	function merge_posts($pids, $tid=0, $sep="new_line")
@@ -802,6 +801,7 @@ class Moderation
 				$fid = $post['fid'];
 				$mastertid = $post['tid'];
 				$first = 0;
+				$visible = $post['visible'];
 			}
 			else
 			{
@@ -845,6 +845,7 @@ class Moderation
 					{
 						--$user_counters[$post['uid']]['num_threads'];
 					}
+					$thread_counters[$post['tid']]['attachmentcount'] -= $post['attachmentcount'];
 				}
 				elseif($post['visible'] == 0)
 				{
@@ -856,7 +857,6 @@ class Moderation
 					// Subtract 1 deleted post from post's thread
 					--$thread_counters[$post['tid']]['deletedposts'];
 				}
-				$thread_counters[$post['tid']]['attachmentcount'] -= $post['attachmentcount'];
 
 				// Subtract 1 post from post's forum
 				if($post['threadvisible'] == 1 && $post['visible'] == 1)
@@ -870,6 +870,12 @@ class Moderation
 				else
 				{
 					--$forum_counters[$post['fid']]['deletedposts'];
+				}
+
+				// Add attachment count to thread
+				if($visible == 1)
+				{
+					$thread_counters[$mastertid]['attachmentcount'] += $post['attachmentcount'];
 				}
 			}
 		}
@@ -991,10 +997,10 @@ class Moderation
 	/**
 	 * Move/copy thread
 	 *
-	 * @param int Thread to be moved
-	 * @param int Destination forum
-	 * @param string Method of movement (redirect, copy, move)
-	 * @param int Expiry timestamp for redirect
+	 * @param int $tid Thread to be moved
+	 * @param int $new_fid Destination forum
+	 * @param string $method Method of movement (redirect, copy, move)
+	 * @param int $redirect_expire Expiry timestamp for redirect
 	 * @return int Thread ID
 	 */
 	function move_thread($tid, $new_fid, $method="redirect", $redirect_expire=0)
@@ -1224,12 +1230,12 @@ class Moderation
 							'pid' => $pid,
 							'uid' => $attachment['uid'],
 							'filename' => $db->escape_string($attachment['filename']),
-							'filetype' => $attachment['filetype'],
+							'filetype' => $db->escape_string($attachment['filetype']),
 							'filesize' => $attachment['filesize'],
-							'attachname' => $attachment['attachname'],
+							'attachname' => $db->escape_string($attachment['attachname']),
 							'downloads' => $attachment['downloads'],
 							'visible' => $attachment['visible'],
-							'thumbnail' => $attachment['thumbnail']
+							'thumbnail' => $db->escape_string($attachment['thumbnail'])
 						);
 						$new_aid = $db->insert_query("attachments", $attachment_array);
 
@@ -1388,10 +1394,10 @@ class Moderation
 	/**
 	 * Merge one thread into another
 	 *
-	 * @param int Thread that will be merged into destination
-	 * @param int Destination thread
-	 * @param string New thread subject
-	 * @return boolean true
+	 * @param int $mergetid Thread that will be merged into destination
+	 * @param int $tid Destination thread
+	 * @param string $subject New thread subject
+	 * @return boolean
 	 */
 	function merge_threads($mergetid, $tid, $subject)
 	{
@@ -1766,14 +1772,14 @@ class Moderation
 	/**
 	 * Split posts into a new/existing thread
 	 *
-	 * @param array PIDs of posts to split
-	 * @param int Original thread ID (this is only used as a base for the new
+	 * @param array $pids PIDs of posts to split
+	 * @param int $tid Original thread ID (this is only used as a base for the new
 	 * thread; it can be set to 0 when the posts specified are coming from more
 	 * than 1 thread)
-	 * @param int Destination forum
-	 * @param string New thread subject
-	 * @param int TID if moving into existing thread
-	 * @return int New thread ID
+	 * @param int $moveto Destination forum
+	 * @param string $newsubject New thread subject
+	 * @param int $destination_tid TID if moving into existing thread
+	 * @return int|bool New thread ID or false on failure
 	 */
 	function split_posts($pids, $tid, $moveto, $newsubject, $destination_tid=0)
 	{
@@ -2213,9 +2219,9 @@ class Moderation
 	/**
 	 * Move multiple threads to new forum
 	 *
-	 * @param array Thread IDs
-	 * @param int Destination forum
-	 * @return boolean true
+	 * @param array $tids Thread IDs
+	 * @param int $moveto Destination forum
+	 * @return boolean
 	 */
 	function move_threads($tids, $moveto)
 	{
@@ -2414,8 +2420,8 @@ class Moderation
 	/**
 	 * Approve multiple posts
 	 *
-	 * @param array PIDs
-	 * @return boolean true
+	 * @param array $pids PIDs
+	 * @return boolean
 	 */
 	function approve_posts($pids)
 	{
@@ -2562,8 +2568,8 @@ class Moderation
 	/**
 	 * Unapprove multiple posts
 	 *
-	 * @param array PIDs
-	 * @return boolean true
+	 * @param array $pids PIDs
+	 * @return boolean
 	 */
 	function unapprove_posts($pids)
 	{
@@ -2733,9 +2739,9 @@ class Moderation
 	/**
 	 * Change thread subject
 	 *
-	 * @param mixed Thread ID(s)
-	 * @param string Format of new subject (with {subject})
-	 * @return boolean true
+	 * @param int|array $tids Thread ID(s)
+	 * @param string $format Format of new subject (with {subject})
+	 * @return boolean
 	 */
 	function change_thread_subject($tids, $format)
 	{
@@ -2780,9 +2786,9 @@ class Moderation
 	/**
 	 * Add thread expiry
 	 *
-	 * @param int Thread ID
-	 * @param int Timestamp when the thread is deleted
-	 * @return boolean true
+	 * @param int $tid Thread ID
+	 * @param int $deletetime Timestamp when the thread is deleted
+	 * @return boolean
 	 */
 	function expire_thread($tid, $deletetime)
 	{
@@ -2809,7 +2815,7 @@ class Moderation
 	/**
 	 * Toggle post visibility (approved/unapproved)
 	 *
-	 * @param array Post IDs
+	 * @param array $pids Post IDs
 	 * @return boolean true
 	 */
 	function toggle_post_visibility($pids)
@@ -2846,7 +2852,7 @@ class Moderation
 	/**
 	 * Toggle post visibility (deleted/restored)
 	 *
-	 * @param array Post IDs
+	 * @param array $pids Post IDs
 	 * @return boolean true
 	 */
 	function toggle_post_softdelete($pids)
@@ -2883,8 +2889,8 @@ class Moderation
 	/**
 	 * Toggle thread visibility (approved/unapproved)
 	 *
-	 * @param array Thread IDs
-	 * @param int Forum ID
+	 * @param array $tids Thread IDs
+	 * @param int $fid Forum ID
 	 * @return boolean true
 	 */
 	function toggle_thread_visibility($tids, $fid)
@@ -2922,7 +2928,7 @@ class Moderation
 	/**
 	 * Toggle thread visibility (deleted/restored)
 	 *
-	 * @param array Thread IDs
+	 * @param array $tids Thread IDs
 	 * @return boolean true
 	 */
 	function toggle_thread_softdelete($tids)
@@ -2959,7 +2965,7 @@ class Moderation
 	/**
 	 * Toggle threads open/closed
 	 *
-	 * @param array Thread IDs
+	 * @param array $tids Thread IDs
 	 * @return boolean true
 	 */
 	function toggle_thread_status($tids)
@@ -2996,7 +3002,7 @@ class Moderation
 	/**
 	 * Toggle threads stick/unstick
 	 *
-	 * @param array Thread IDs
+	 * @param array $tids Thread IDs
 	 * @return boolean true
 	 */
 	function toggle_thread_importance($tids)
@@ -3036,10 +3042,10 @@ class Moderation
 	/**
 	 * Remove thread subscriptions (from one or multiple threads in the same forum)
 	 *
-	 * @param int $tids Thread ID, or an array of thread IDs from the same forum.
+	 * @param int|array $tids Thread ID, or an array of thread IDs from the same forum.
 	 * @param boolean $all True (default) to delete all subscriptions, false to only delete subscriptions from users with no permission to read the thread
 	 * @param int $fid (Only applies if $all is false) The forum ID of the thread
-	 * @return boolean true
+	 * @return boolean
 	 */
 	function remove_thread_subscriptions($tids, $all = true, $fid = 0)
 	{
@@ -3069,6 +3075,7 @@ class Moderation
 			$forum_parentlist = get_parent_list($fid);
 			$query = $db->simple_select("forumpermissions", "gid", "fid IN ({$forum_parentlist}) AND (canview=0 OR canviewthreads=0)");
 			$groups = array();
+			$additional_groups = '';
 			while($group = $db->fetch_array($query))
 			{
 				$groups[] = $group['gid'];
@@ -3114,8 +3121,9 @@ class Moderation
 	/**
 	 * Apply a thread prefix (to one or multiple threads in the same forum)
 	 *
-	 * @param int $tids Thread ID, or an array of thread IDs from the same forum.
+	 * @param int|array $tids Thread ID, or an array of thread IDs from the same forum.
 	 * @param int $prefix Prefix ID to apply to the threads
+	 * @return bool
 	 */
 	function apply_thread_prefix($tids, $prefix = 0)
 	{
@@ -3149,8 +3157,8 @@ class Moderation
 	/**
 	 * Soft delete multiple posts
 	 *
-	 * @param array PIDs
-	 * @return boolean true
+	 * @param array $pids PIDs
+	 * @return boolean
 	 */
 	function soft_delete_posts($pids)
 	{
@@ -3272,6 +3280,7 @@ class Moderation
 		{
 			$where = "pid IN (".implode(',', $pids).")";
 			$db->update_query("posts", $update, $where);
+			mark_reports($pids, "posts");
 		}
 
 		$plugins->run_hooks("class_moderation_soft_delete_posts", $pids);
@@ -3319,8 +3328,8 @@ class Moderation
 	/**
 	 * Restore multiple posts
 	 *
-	 * @param array PIDs
-	 * @return boolean true
+	 * @param array $pids PIDs
+	 * @return boolean
 	 */
 	function restore_posts($pids)
 	{
@@ -3467,7 +3476,7 @@ class Moderation
 	/**
 	 * Restore one or more threads
 	 *
-	 * @param array Thread IDs
+	 * @param array|int $tids Thread ID(s)
 	 * @return boolean true
 	 */
 	function restore_threads($tids)
@@ -3612,8 +3621,8 @@ class Moderation
 	/**
 	 * Soft delete one or more threads
 	 *
-	 * @param array Thread IDs
-	 * @return boolean true
+	 * @param array|int Thread ID(s)
+	 * @return boolean
 	 */
 	function soft_delete_threads($tids)
 	{
@@ -3715,6 +3724,9 @@ class Moderation
 		// Soft delete redirects, too
 		$redirect_tids = array();
 		$query = $db->simple_select('threads', 'tid', "closed IN ({$tid_moved_list})");
+
+		mark_reports($tids, "threads");
+		
 		while($redirect_tid = $db->fetch_field($query, 'tid'))
 		{
 			$redirect_tids[] = $redirect_tid;

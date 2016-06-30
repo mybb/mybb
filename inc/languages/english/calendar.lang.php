@@ -90,6 +90,7 @@ $l['delete_q'] = "Delete?";
 $l['delete_1'] = "To delete this event, check the checkbox to the left and then click the button to the right.";
 $l['delete_2'] = "<b>Note:</b> This process cannot be undone.";
 $l['delete_now'] = "Delete Now";
+$l['delete_no_checkbox'] = "The event was not deleted because you didn't check the \"Delete\" checkbox.";
 $l['jump_to_calendar'] = "Jump to calendar:";
 $l['select_calendar'] = "Calendar:";
 $l['type_single'] = "Single day event";

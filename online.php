@@ -11,7 +11,8 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'online.php');
 
-$templatelist = "online,online_row,online_row_ip,online_today,online_today_row,online_row_ip_lookup,multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start";
+$templatelist = "online,online_row,online_row_ip,online_today,online_today_row,online_row_ip_lookup,online_refresh,multipage,multipage_end,multipage_start";
+$templatelist .= ",multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -81,8 +82,7 @@ if($mybb->get_input('action') == "today")
 
 		if($online['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $online['uid'] == $mybb->user['uid'])
 		{
-			$username = $online['username'];
-			$username = format_name($username, $online['usergroup'], $online['displaygroup']);
+			$username = format_name(htmlspecialchars_uni($online['username']), $online['usergroup'], $online['displaygroup']);
 			$online['profilelink'] = build_profile_link($username, $online['uid']);
 			$onlinetime = my_date($mybb->settings['timeformat'], $online['lastactive']);
 
@@ -274,7 +274,7 @@ else
 	if($mybb->settings['refreshwol'] > 0)
 	{
 		$refresh_time = $mybb->settings['refreshwol'] * 60;
-		$refresh = "<meta http-equiv=\"refresh\" content=\"{$refresh_time};URL=online.php{$refresh_string}\" />";
+		eval("\$refresh = \"".$templates->get("online_refresh")."\";");
 	}
 
 	$plugins->run_hooks("online_end");

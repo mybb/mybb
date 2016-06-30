@@ -50,6 +50,8 @@ class PMDataHandler extends DataHandler
 
 	/**
 	 * PM ID currently being manipulated by the datahandlers.
+	 *
+	 * @var int
 	 */
 	public $pmid = 0;
 
@@ -295,7 +297,7 @@ class PMDataHandler extends DataHandler
 			{
 				if(!empty($user['ignorelist']) && strpos(','.$user['ignorelist'].',', ','.$pm['fromid'].',') !== false)
 				{
-					$this->set_error('recipient_is_ignoring', array($user['username']));
+					$this->set_error("recipient_is_ignoring", array(htmlspecialchars_uni($user['username'])));
 				}
 
 				// Is the recipient only allowing private messages from their buddy list?
@@ -307,7 +309,7 @@ class PMDataHandler extends DataHandler
 				// Can the recipient actually receive private messages based on their permissions or user setting?
 				if(($user['receivepms'] == 0 || $recipient_permissions['canusepms'] == 0) && empty($pm['saveasdraft']))
 				{
-					$this->set_error("recipient_pms_disabled", array($user['username']));
+					$this->set_error("recipient_pms_disabled", array(htmlspecialchars_uni($user['username'])));
 					return false;
 				}
 			}
@@ -357,7 +359,7 @@ class PMDataHandler extends DataHandler
 
 				if($this->admin_override != true)
 				{
-					$this->set_error("recipient_reached_quota", array($user['username']));
+					$this->set_error("recipient_reached_quota", array(htmlspecialchars_uni($user['username'])));
 				}
 			}
 
@@ -384,7 +386,7 @@ class PMDataHandler extends DataHandler
 	/**
 	* Verify that the user is not flooding the system.
 	*
-	* @return boolean True
+	* @return boolean
 	*/
 	function verify_pm_flooding()
 	{
@@ -393,7 +395,7 @@ class PMDataHandler extends DataHandler
 		$pm = &$this->data;
 
 		// Check if post flooding is enabled within MyBB or if the admin override option is specified.
-		if($mybb->settings['pmfloodsecs'] > 0 && $pm['fromid'] != 0 && $this->admin_override == false)
+		if($mybb->settings['pmfloodsecs'] > 0 && $pm['fromid'] != 0 && $this->admin_override == false && !is_moderator(0, '', $pm['fromid']))
 		{
 			// Fetch the senders profile data.
 			$sender = get_user($pm['fromid']);
@@ -403,7 +405,7 @@ class PMDataHandler extends DataHandler
 			$sender['lastpm'] = $db->fetch_field($query, "dateline");
 
 			// A little bit of calculation magic and moderator status checking.
-			if(TIME_NOW-$sender['lastpm'] <= $mybb->settings['pmfloodsecs'] && !is_moderator("", "", $pm['fromid']))
+			if(TIME_NOW-$sender['lastpm'] <= $mybb->settings['pmfloodsecs'])
 			{
 				// Oops, user has been flooding - throw back error message.
 				$time_to_wait = ($mybb->settings['pmfloodsecs'] - (TIME_NOW-$sender['lastpm'])) + 1;

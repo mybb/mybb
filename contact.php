@@ -11,7 +11,7 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'contact.php');
 
-$templatelist = "contact,post_captcha,post_captcha_recaptcha,post_captcha_nocaptcha,post_captcha_ayah";
+$templatelist = "contact,post_captcha,post_captcha_recaptcha,post_captcha_nocaptcha";
 
 require_once "./global.php";
 require_once MYBB_ROOT.'inc/class_captcha.php';
@@ -209,18 +209,14 @@ if($mybb->request_method == "post")
 			require_once MYBB_ROOT."inc/class_parser.php";
 			$parser = new postParser;
 
-			$parser_options = array(
-				'filter_badwords' => 1
-			);
-
-			$mybb->input['subject'] = $parser->parse_message($mybb->input['subject'], $parser_options);
-			$mybb->input['message'] = $parser->parse_message($mybb->input['message'], $parser_options);
+			$mybb->input['subject'] = $parser->parse_badwords($mybb->input['subject']);
+			$mybb->input['message'] = $parser->parse_badwords($mybb->input['message']);
 		}
 
 		$user = $lang->na;
 		if($mybb->user['uid'])
 		{
-			$user = $mybb->user['username'].' - '.$mybb->settings['bburl'].'/'.get_profile_link($mybb->user['uid']);
+			$user = htmlspecialchars_uni($mybb->user['username']).' - '.$mybb->settings['bburl'].'/'.get_profile_link($mybb->user['uid']);
 		}
 
 		$subject = $lang->sprintf($lang->email_contact_subject, $mybb->input['subject']);

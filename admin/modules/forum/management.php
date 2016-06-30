@@ -2582,7 +2582,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		echo $form->generate_hidden_field("fid", $mybb->input['fid']);
 		echo $form->generate_hidden_field("add", "moderators");
 		$form_container = new FormContainer($lang->add_user_as_moderator);
-		$form_container->output_row($lang->username." <em>*</em>", $lang->moderator_username_desc, $form->generate_text_box('username', $mybb->input['username'], array('id' => 'username')), 'username');
+		$form_container->output_row($lang->username." <em>*</em>", $lang->moderator_username_desc, $form->generate_text_box('username', htmlspecialchars_uni($mybb->get_input('username')), array('id' => 'username')), 'username');
 		$form_container->end();
 
 		// Autocompletion for usernames
@@ -2593,8 +2593,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		<!--
 		$("#username").select2({
 			placeholder: "'.$lang->search_for_a_user.'",
-			minimumInputLength: 3,
-			maximumSelectionSize: 3,
+			minimumInputLength: 2,
 			multiple: false,
 			ajax: { // instead of writing the function to execute the request we use Select2\'s convenient helper
 				url: "../xmlhttp.php?action=get_users",
@@ -2642,7 +2641,9 @@ document.write('".str_replace("/", "\/", $field_select)."');
 }
 
 /**
- *
+ * @param DefaultFormContainer $form_container
+ * @param int $pid
+ * @param int $depth
  */
 function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
 {
@@ -2773,6 +2774,12 @@ function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
 	}
 }
 
+/**
+ * @param int $gid
+ * @param int $fid
+ *
+ * @return string
+ */
 function retrieve_single_permissions_row($gid, $fid)
 {
 	global $mybb, $lang, $cache, $db;

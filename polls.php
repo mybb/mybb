@@ -24,6 +24,7 @@ $plugins->run_hooks("polls_start");
 
 if($mybb->user['uid'] != 0)
 {
+	$mybb->user['username'] = htmlspecialchars_uni($mybb->user['username']);
 	eval("\$loginbox = \"".$templates->get("changeuserbox")."\";");
 }
 else
@@ -57,14 +58,7 @@ if($mybb->input['action'] == "newpoll")
 	}
 
 	// Is the currently logged in user a moderator of this forum?
-	if(is_moderator($thread['fid']))
-	{
-		$ismod = true;
-	}
-	else
-	{
-		$ismod = false;
-	}
+	$ismod = is_moderator($thread['fid']);
 
 	// Make sure we are looking at a real thread here.
 	if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
@@ -166,7 +160,7 @@ if($mybb->input['action'] == "newpoll")
 	{
 		$timeout = 0;
 	}
-	
+
 	if($mybb->get_input('maxoptions', MyBB::INPUT_INT) > 0 && $mybb->get_input('maxoptions', MyBB::INPUT_INT) < $polloptions)
 	{
 		$maxoptions = $mybb->get_input('maxoptions', MyBB::INPUT_INT);
@@ -255,21 +249,32 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 			$options[$i] = '';
 		}
 
-		if(trim($options[$i]) != "")
-		{
-			$optioncount++;
-		}
-
-		if(my_strlen($options[$i]) > $mybb->settings['polloptionlimit'] && $mybb->settings['polloptionlimit'] != 0)
+		if($mybb->settings['polloptionlimit'] != 0 && my_strlen($options[$i]) > $mybb->settings['polloptionlimit'])
 		{
 			$lengtherror = 1;
 			break;
+		}
+
+		if(strpos($options[$i], '||~|~||') !== false)
+		{
+			$sequenceerror = 1;
+			break;
+		}
+		
+		if(trim($options[$i]) != "")
+		{
+			$optioncount++;
 		}
 	}
 
 	if(isset($lengtherror))
 	{
 		error($lang->error_polloptiontoolong);
+	}
+
+	if(isset($sequenceerror))
+	{
+		error($lang->error_polloptionsequence);
 	}
 	
 	$mybb->input['question'] = $mybb->get_input('question');
@@ -312,7 +317,7 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 	{
 		$maxoptions = 0;
 	}
-	
+
 	$newpoll = array(
 		"tid" => $thread['tid'],
 		"question" => $db->escape_string($mybb->input['question']),
@@ -455,7 +460,7 @@ if($mybb->input['action'] == "editpoll")
 		{
 			$timeout = $poll['timeout'];
 		}
-		
+
 		if(!$poll['maxoptions'])
 		{
 			$maxoptions = 0;
@@ -531,7 +536,7 @@ if($mybb->input['action'] == "editpoll")
 		{
 			$timeout = 0;
 		}
-		
+
 		if(!$poll['maxoptions'])
 		{
 			$maxoptions = 0;
@@ -631,21 +636,33 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 		{
 			$options[$i] = '';
 		}
-		if(trim($options[$i]) != '')
-		{
-			$optioncount++;
-		}
 
-		if(my_strlen($options[$i]) > $mybb->settings['polloptionlimit'] && $mybb->settings['polloptionlimit'] != 0)
+		if($mybb->settings['polloptionlimit'] != 0 && my_strlen($options[$i]) > $mybb->settings['polloptionlimit'])
 		{
 			$lengtherror = 1;
 			break;
+		}
+
+		if(strpos($options[$i], '||~|~||') !== false)
+		{
+			$sequenceerror = 1;
+			break;
+		}
+		
+		if(trim($options[$i]) != "")
+		{
+			$optioncount++;
 		}
 	}
 
 	if(isset($lengtherror))
 	{
 		error($lang->error_polloptiontoolong);
+	}
+	
+	if(isset($sequenceerror))
+	{
+		error($lang->error_polloptionsequence);
 	}
 
 	$mybb->input['question'] = $mybb->get_input('question');
@@ -686,7 +703,7 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 	{
 		$timeout = 0;
 	}
-	
+
 	if($mybb->get_input('maxoptions', MyBB::INPUT_INT) > 0 && $mybb->get_input('maxoptions', MyBB::INPUT_INT) < $numoptions)
 	{
 		$maxoptions = $mybb->get_input('maxoptions', MyBB::INPUT_INT);
@@ -788,7 +805,7 @@ if($mybb->input['action'] == "showresults")
 		}
 		else
 		{
-			$voters[$voter['voteoption']][$voter['uid']] = $voter['username'];
+			$voters[$voter['voteoption']][$voter['uid']] = htmlspecialchars_uni($voter['username']);
 		}
 	}
 
@@ -979,7 +996,7 @@ if($mybb->input['action'] == "vote" && $mybb->request_method == "post")
 		if(is_array($option))
 		{
 			$total_options = 0;
-		
+
 			foreach($option as $voteoption => $vote)
 			{
 				if($vote == 1 && isset($votesarray[$voteoption-1]))
@@ -994,7 +1011,7 @@ if($mybb->input['action'] == "vote" && $mybb->request_method == "post")
 					$total_options++;
 				}
 			}
-			
+
 			if($total_options > $poll['maxoptions'] && $poll['maxoptions'] != 0)
 			{
 				error($lang->sprintf($lang->error_maxpolloptions, $poll['maxoptions']));

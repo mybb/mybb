@@ -36,12 +36,13 @@ if($mybb->input['action'] == 'prune')
 	if($mybb->request_method == 'post')
 	{
 		$is_today = false;
+		$mybb->input['older_than'] = $mybb->get_input('older_than', MyBB::INPUT_INT);
 		if($mybb->input['older_than'] <= 0)
 		{
 			$is_today = true;
 			$mybb->input['older_than'] = 1;
 		}
-		$where = 'dateline < '.(TIME_NOW-($mybb->get_input('older_than', MyBB::INPUT_INT)*86400));
+		$where = 'dateline < '.(TIME_NOW-($mybb->input['older_than']*86400));
 
 		// Searching for entries by a particular user
 		if($mybb->input['uid'])
@@ -104,7 +105,7 @@ if($mybb->input['action'] == 'prune')
 	");
 	while($user = $db->fetch_array($query))
 	{
-		$user_options[$user['uid']] = $user['username'];
+		$user_options[$user['uid']] = htmlspecialchars_uni($user['username']);
 	}
 
 	$form = new Form("index.php?module=tools-modlog&amp;action=prune", "post");
@@ -239,7 +240,7 @@ if(!$mybb->input['action'])
 		$logitem['action'] = htmlspecialchars_uni($logitem['action']);
 		$logitem['dateline'] = my_date('relative', $logitem['dateline']);
 		$trow = alt_trow();
-		$username = format_name($logitem['username'], $logitem['usergroup'], $logitem['displaygroup']);
+		$username = format_name(htmlspecialchars_uni($logitem['username']), $logitem['usergroup'], $logitem['displaygroup']);
 		$logitem['profilelink'] = build_profile_link($username, $logitem['uid'], "_blank");
 		if($logitem['tsubject'])
 		{
@@ -309,7 +310,7 @@ if(!$mybb->input['action'])
 		{
 			$selected = "selected=\"selected\"";
 		}
-		$user_options[$user['uid']] = $user['username'];
+		$user_options[$user['uid']] = htmlspecialchars_uni($user['username']);
 	}
 
 	$sort_by = array(

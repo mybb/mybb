@@ -24,10 +24,8 @@ class CustomModeration extends Moderation
 	/**
 	 * Get info on a tool
 	 *
-	 * @param int Tool ID
-	 * @param mixed Thread IDs
-	 * @param mixed Post IDs
-	 * @return mixed Returns tool data (tid, type, name, description) in an array, otherwise boolean false.
+	 * @param int $tool_id Tool ID
+	 * @return array|bool Returns tool data (tid, type, name, description) in an array, otherwise boolean false.
 	 */
 	function tool_info($tool_id)
 	{
@@ -49,9 +47,9 @@ class CustomModeration extends Moderation
 	/**
 	 * Execute Custom Moderation Tool
 	 *
-	 * @param int Tool ID
-	 * @param mixed Thread ID(s)
-	 * @param mixed Post IDs
+	 * @param int $tool_id Tool ID
+	 * @param int|array Thread ID(s)
+	 * @param int|array Post ID(s)
 	 * @return string 'forum' or 'default' indicating where to redirect
 	 */
 	function execute($tool_id, $tids=0, $pids=0)
@@ -81,6 +79,7 @@ class CustomModeration extends Moderation
 		$thread_options = my_unserialize($tool['threadoptions']);
 
 		// If the tool type is a post tool, then execute the post moderation
+		$deleted_thread = 0;
 		if($tool['type'] == 'p')
 		{
 			$deleted_thread = $this->execute_post_moderation($post_options, $pids, $tids);
@@ -99,9 +98,9 @@ class CustomModeration extends Moderation
 	/**
 	 * Execute Inline Post Moderation
 	 *
-	 * @param array Moderation information
-	 * @param mixed Post IDs
-	 * @param array Thread IDs (in order of dateline ascending)
+	 * @param array $post_options Moderation information
+	 * @param array $pids Post IDs
+	 * @param array|int $tid Thread IDs (in order of dateline ascending). Only the first one will be used
 	 * @return boolean true
 	 */
 	function execute_post_moderation($post_options, $pids, $tid)
@@ -140,8 +139,8 @@ class CustomModeration extends Moderation
 					$this->delete_thread($delete_tid);
 					mark_reports($delete_tid, "thread");
 				}
-				// return 1 here so the code in execute() above knows to redirect to the forum
-				return 1;
+				// return true here so the code in execute() above knows to redirect to the forum
+				return true;
 			}
 		}
 		else
@@ -242,7 +241,7 @@ class CustomModeration extends Moderation
 						"uid" => $mybb->user['uid'],
 						"username" => $mybb->user['username'],
 						"message" => $post_options['splitpostsaddreply'],
-						"ipaddress" => $db->escape_binary(my_inet_pton(get_ip())),
+						"ipaddress" => my_inet_pton(get_ip()),
 					);
 					// Set up the post options from the input.
 					$post['options'] = array(
@@ -266,8 +265,8 @@ class CustomModeration extends Moderation
 	/**
 	 * Execute Normal and Inline Thread Moderation
 	 *
-	 * @param array Moderation information
-	 * @param mixed Thread IDs
+	 * @param array $thread_options Moderation information
+	 * @param array Thread IDs. Only the first one will be used, but it needs to be an array
 	 * @return boolean true
 	 */
 	function execute_thread_moderation($thread_options, $tids)
@@ -396,25 +395,25 @@ class CustomModeration extends Moderation
 					$posthandler = new PostDataHandler("insert");
 
 					if(empty($thread_options['replysubject']))
-                    {
-                        $new_subject = 'RE: '.$thread['subject'];
-                    }
-                    else
-                    {
-                        $new_subject = str_ireplace('{username}', $mybb->user['username'], $thread_options['replysubject']);
-                        $new_subject = str_ireplace('{subject}', $thread['subject'], $new_subject);
-                    }
+					{
+						$new_subject = 'RE: '.$thread['subject'];
+					}
+					else
+					{
+						$new_subject = str_ireplace('{username}', $mybb->user['username'], $thread_options['replysubject']);
+						$new_subject = str_ireplace('{subject}', $thread['subject'], $new_subject);
+					}
 
-                    // Set the post data that came from the input to the $post array.
-                    $post = array(
-                        "tid" => $thread['tid'],
-                        "replyto" => $thread['firstpost'],
-                        "fid" => $thread['fid'],
-                        "subject" => $new_subject,
+					// Set the post data that came from the input to the $post array.
+					$post = array(
+						"tid" => $thread['tid'],
+						"replyto" => $thread['firstpost'],
+						"fid" => $thread['fid'],
+						"subject" => $new_subject,
 						"uid" => $mybb->user['uid'],
 						"username" => $mybb->user['username'],
 						"message" => $thread_options['addreply'],
-						"ipaddress" => $db->escape_binary(my_inet_pton(get_ip())),
+						"ipaddress" => my_inet_pton(get_ip()),
 					);
 
 					// Set up the post options from the input.

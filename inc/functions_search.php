@@ -11,13 +11,13 @@
 /**
  * Build a select box list of forums the current user has permission to search
  *
- * @param int The parent forum ID to start at
- * @param int The selected forum ID
- * @param int Add select boxes at this call or not
- * @param int The current depth
+ * @param int $pid The parent forum ID to start at
+ * @param int $selitem The selected forum ID
+ * @param int $addselect Add select boxes at this call or not
+ * @param string $depth The current depth
  * @return string The forum select boxes
  */
-function make_searchable_forums($pid="0", $selitem='', $addselect="1", $depth='')
+function make_searchable_forums($pid=0, $selitem=0, $addselect=1, $depth='')
 {
 	global $db, $pforumcache, $permissioncache, $mybb, $selecteddone, $forumlist, $forumlistbits, $theme, $templates, $lang, $forumpass;
 	$pid = (int)$pid;
@@ -88,11 +88,11 @@ function make_searchable_forums($pid="0", $selitem='', $addselect="1", $depth=''
 /**
  * Build a comma separated list of the forums this user cannot search
  *
- * @param int The parent ID to build from
- * @param int First rotation or not (leave at default)
- * @return return a CSV list of forums the user cannot search
+ * @param int $pid The parent ID to build from
+ * @param int $first First rotation or not (leave at default)
+ * @return string return a CSV list of forums the user cannot search
  */
-function get_unsearchable_forums($pid="0", $first=1)
+function get_unsearchable_forums($pid=0, $first=1)
 {
 	global $db, $forum_cache, $permissioncache, $mybb, $unsearchableforums, $unsearchable, $templates, $forumpass;
 
@@ -173,8 +173,8 @@ function get_unsearchable_forums($pid="0", $first=1)
 /**
  * Build a array list of the forums this user cannot search due to password protection
  *
- * @param int the fids to check (leave null to check all forums)
- * @return return a array list of password protected forums the user cannot search
+ * @param array $fids the fids to check (leave blank to check all forums)
+ * @return array return a array list of password protected forums the user cannot search
  */
 function get_password_protected_forums($fids=array())
 {
@@ -224,17 +224,19 @@ function get_password_protected_forums($fids=array())
 /**
  * Clean search keywords and make them safe for querying
  *
- * @param string The keywords to be cleaned
+ * @param string $keywords The keywords to be cleaned
  * @return string The cleaned keywords
  */
 function clean_keywords($keywords)
 {
+	global $db;
+
 	$keywords = my_strtolower($keywords);
-	$keywords = str_replace("%", "\\%", $keywords);
+	$keywords = $db->escape_string_like($keywords);
 	$keywords = preg_replace("#\*{2,}#s", "*", $keywords);
 	$keywords = str_replace("*", "%", $keywords);
-	$keywords = preg_replace("#([\[\]\|\.\,:'])#s", " ", $keywords);
 	$keywords = preg_replace("#\s+#s", " ", $keywords);
+	$keywords = str_replace('\\"', '"', $keywords);
 
 	// Search for "and" or "or" and remove if it's at the beginning
 	$keywords = trim($keywords);
@@ -254,8 +256,8 @@ function clean_keywords($keywords)
 /**
  * Clean search keywords for fulltext searching, making them safe for querying
  *
- * @param string The keywords to be cleaned
- * @return string The cleaned keywords
+ * @param string $keywords The keywords to be cleaned
+ * @return string|bool The cleaned keywords or false on failure
  */
 function clean_keywords_ft($keywords)
 {
@@ -408,7 +410,7 @@ function clean_keywords_ft($keywords)
 /**
  * Perform a thread and post search under MySQL or MySQLi
  *
- * @param array Array of search data
+ * @param array $search Array of search data
  * @return array Array of search data with results mixed in
  */
 function privatemessage_perform_search_mysql($search)
@@ -719,7 +721,7 @@ function privatemessage_perform_search_mysql($search)
 /**
  * Perform a help document search under MySQL or MySQLi
  *
- * @param array Array of search data
+ * @param array $search Array of search data
  * @return array Array of search data with results mixed in
  */
 function helpdocument_perform_search_mysql($search)
@@ -946,7 +948,7 @@ function helpdocument_perform_search_mysql($search)
 /**
  * Perform a thread and post search under MySQL or MySQLi
  *
- * @param array Array of search data
+ * @param array $search Array of search data
  * @return array Array of search data with results mixed in
  */
 function perform_search_mysql($search)
@@ -1092,7 +1094,10 @@ function perform_search_mysql($search)
 		if($search['matchusername'])
 		{
 			$user = get_user_by_username($search['author']);
-			$userids[] = $user['uid'];
+			if($user)
+			{
+				$userids[] = $user['uid'];
+			}
 		}
 		else
 		{
@@ -1420,7 +1425,7 @@ function perform_search_mysql($search)
 /**
  * Perform a thread and post search under MySQL or MySQLi using boolean fulltext capabilities
  *
- * @param array Array of search data
+ * @param array $search Array of search data
  * @return array Array of search data with results mixed in
  */
 function perform_search_mysql_ft($search)
@@ -1506,7 +1511,10 @@ function perform_search_mysql_ft($search)
 		if($search['matchusername'])
 		{
 			$user = get_user_by_username($search['author']);
-			$userids[] = $user['uid'];
+			if($user)
+			{
+				$userids[] = $user['uid'];
+			}
 		}
 		else
 		{

@@ -182,7 +182,7 @@ if($mybb->input['action'] == "edit")
 		else
 		{
 			$mybb->input['disporder'] = $mybb->get_input('disporder', MyBB::INPUT_INT);
-			$query = $db->simple_select("smilies", "sid", "disporder= '".$mybb->input['disporder']."' AND sid != '".$mybb->input['sid']."'");
+			$query = $db->simple_select("smilies", "sid", "disporder= '".$mybb->input['disporder']."' AND sid != '".$smilie['sid']."'");
 			$duplicate_disporder = $db->fetch_field($query, 'sid');
 
 			if($duplicate_disporder)
@@ -212,7 +212,7 @@ if($mybb->input['action'] == "edit")
 
 			$plugins->run_hooks("admin_config_smilies_edit_commit");
 
-			$db->update_query("smilies", $updated_smilie, "sid = '".$mybb->get_input('sid', MyBB::INPUT_INT)."'");
+			$db->update_query("smilies", $updated_smilie, "sid = '{$smilie['sid']}'");
 
 			$cache->update_smilies();
 

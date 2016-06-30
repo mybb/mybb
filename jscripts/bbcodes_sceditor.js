@@ -78,46 +78,60 @@ $(document).ready(function($) {
 		format: function($elm, content) {
 			var	fontSize,
 				sizes = ['xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large'],
-				size  = $elm.data('scefontsize');
+				size = $elm.attr('size');;
 
-			if(!size)
-			{
-				fontSize = $elm.css('fontSize');
+				if (!size) {
+					fontSize = $elm.css('fontSize');
+					// Most browsers return px value but IE returns 1-7
+					if(fontSize.indexOf('px') > -1) {
+						// convert size to an int
+						fontSize = fontSize.replace('px', '') - 0;
+						size     = 1;
 
-				// Most browsers return px value but IE returns 1-7
-				if(fontSize.indexOf('px') > -1) {
-					// convert size to an int
-					fontSize = fontSize.replace('px', '') - 0;
-					size     = 1;
+						if(fontSize > 9)
+							size = 2;
+						if(fontSize > 12)
+							size = 3;
+						if(fontSize > 15)
+							size = 4;
+						if(fontSize > 17)
+							size = 5;
+						if(fontSize > 23)
+							size = 6;
+						if(fontSize > 31)
+							size = 7;
+					}
+					else {
+						size = (~~fontSize) + 1;						
+					}
 
-					if(fontSize > 9)
-						size = 2;
-					if(fontSize > 12)
-						size = 3;
-					if(fontSize > 15)
-						size = 4;
-					if(fontSize > 17)
-						size = 5;
-					if(fontSize > 23)
-						size = 6;
-					if(fontSize > 31)
+					if(size > 7)
 						size = 7;
+					if(size < 1)
+						size = 1;
+
+					size = sizes[size-1];
 				}
-				else
-					size = (~~fontSize) + 1;
-
-				if(size > 7)
-					size = 7;
-				if(size < 1)
-					size = 1;
-
-				size = sizes[size-1];
-			}
+				else {
+					size = sizes[size-1];
+				}
 
 			return '[size=' + size + ']' + content + '[/size]';
 		},
 		html: function(token, attrs, content) {
-			return '<span data-scefontsize="' + attrs.defaultattr + '" style="font-size:' + attrs.defaultattr + '">' + content + '</span>';
+			var sizes = ['xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large'],
+			size = $.inArray(attrs.defaultattr, sizes)+1;
+			if (!isNaN(attrs.defaultattr)) {
+				size = attrs.defaultattr;
+				if(size > 7)
+					size = 7;
+				if(size < 1)
+					size = 1;
+			}
+			if (size < 0) {
+				size = 0;
+			}
+			return '<font data-scefontsize="' + attrs.defaultattr + '" size="' + size + '">' + content + '</font>';
 		}
 	});
 
@@ -136,14 +150,13 @@ $(document).ready(function($) {
 			editor.createDropDown(caller, 'fontsize-picker', content);
 		},
 		exec: function (caller) {
-			var	editor = this,
-				sizes = ['xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large'];
+			var	editor = this;
 
 			$.sceditor.command.get('size')._dropDown(
 				editor,
 				caller,
 				function(fontSize) {
-					editor.wysiwygEditorInsertHtml('<span data-scefontsize=' + sizes[fontSize-1] + ' style="font-size:' + sizes[fontSize-1] + '">', '</span>');
+					editor.execCommand('fontsize', fontSize);
 				}
 			);
 		},
