@@ -847,7 +847,7 @@ if($mybb->settings['showthemeselect'] != 0)
 $contact_us = '';
 if(($mybb->settings['contactlink'] == "contact.php" && $mybb->settings['contact'] == 1 && ($mybb->settings['contact_guests'] != 1 && $mybb->user['uid'] == 0 || $mybb->user['uid'] > 0)) || $mybb->settings['contactlink'] != "contact.php")
 {
-	if(!my_validate_url($mybb->settings['contactlink'], true))
+	if(!my_validate_url($mybb->settings['contactlink'], true) && my_substr($mybb->settings['contactlink'], 0, 7) != 'mailto:')
 	{
 		$mybb->settings['contactlink'] = $mybb->settings['bburl'].'/'.$mybb->settings['contactlink'];
 	}
