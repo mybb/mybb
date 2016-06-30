@@ -944,8 +944,7 @@ disabled=Disable this feature]]></optionscode>
 		</setting>
 		<setting name="username_method">
 			<title>Allowed Login Methods</title>
-			<description><![CDATA[The login methods you wish to allow for the username field. Username only, Email only, or allow both.<br />
-<strong>Note:</strong> Email options will only work if there are no duplicate accounts using the same e-mail address.]]></description>
+			<description><![CDATA[The login methods you wish to allow for the username field. Username only, Email only, or allow both.]]></description>
 			<disporder>18</disporder>
 			<optionscode><![CDATA[select
 0=Username Only
