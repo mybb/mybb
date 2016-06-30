@@ -50,6 +50,8 @@ class PMDataHandler extends DataHandler
 
 	/**
 	 * PM ID currently being manipulated by the datahandlers.
+	 *
+	 * @var int
 	 */
 	public $pmid = 0;
 
@@ -269,7 +271,7 @@ class PMDataHandler extends DataHandler
 		// If we have one or more invalid recipients and we're not saving a draft, error
 		if(count($invalid_recipients) > 0)
 		{
-			$invalid_recipients = implode(", ", array_map("htmlspecialchars_uni", $invalid_recipients));
+			$invalid_recipients = implode($lang->comma, array_map("htmlspecialchars_uni", $invalid_recipients));
 			$this->set_error("invalid_recipients", array($invalid_recipients));
 			return false;
 		}
@@ -293,26 +295,21 @@ class PMDataHandler extends DataHandler
 			// - sender is an administrator
 			if(($this->admin_override != true && $sender_permissions['cancp'] != 1) && $sender_permissions['canoverridepm'] != 1)
 			{
-				$ignorelist = explode(",", $user['ignorelist']);
-				if(!empty($ignorelist) && in_array($pm['fromid'], $ignorelist))
+				if(!empty($user['ignorelist']) && strpos(','.$user['ignorelist'].',', ','.$pm['fromid'].',') !== false)
 				{
-					$this->set_error("recipient_is_ignoring", array($user['username']));
+					$this->set_error("recipient_is_ignoring", array(htmlspecialchars_uni($user['username'])));
 				}
 
 				// Is the recipient only allowing private messages from their buddy list?
-				if($mybb->settings['allowbuddyonly'] == 1 && $user['receivefrombuddy'] == 1)
+				if($mybb->settings['allowbuddyonly'] == 1 && $user['receivefrombuddy'] == 1 && !empty($user['buddylist']) && strpos(','.$user['buddylist'].',', ','.$pm['fromid'].',') === false)
 				{
-					$buddylist = explode(",", $user['buddylist']);
-					if(!empty($buddylist) && !in_array($pm['fromid'], $buddylist))
-					{
-						$this->set_error("recipient_has_buddy_only", array(htmlspecialchars_uni($user['username'])));
-					}
+					$this->set_error('recipient_has_buddy_only', array(htmlspecialchars_uni($user['username'])));
 				}
 
 				// Can the recipient actually receive private messages based on their permissions or user setting?
 				if(($user['receivepms'] == 0 || $recipient_permissions['canusepms'] == 0) && empty($pm['saveasdraft']))
 				{
-					$this->set_error("recipient_pms_disabled", array($user['username']));
+					$this->set_error("recipient_pms_disabled", array(htmlspecialchars_uni($user['username'])));
 					return false;
 				}
 			}
@@ -362,7 +359,7 @@ class PMDataHandler extends DataHandler
 
 				if($this->admin_override != true)
 				{
-					$this->set_error("recipient_reached_quota", array($user['username']));
+					$this->set_error("recipient_reached_quota", array(htmlspecialchars_uni($user['username'])));
 				}
 			}
 
@@ -389,7 +386,7 @@ class PMDataHandler extends DataHandler
 	/**
 	* Verify that the user is not flooding the system.
 	*
-	* @return boolean True
+	* @return boolean
 	*/
 	function verify_pm_flooding()
 	{
@@ -398,7 +395,7 @@ class PMDataHandler extends DataHandler
 		$pm = &$this->data;
 
 		// Check if post flooding is enabled within MyBB or if the admin override option is specified.
-		if($mybb->settings['pmfloodsecs'] > 0 && $pm['fromid'] != 0 && $this->admin_override == false)
+		if($mybb->settings['pmfloodsecs'] > 0 && $pm['fromid'] != 0 && $this->admin_override == false && !is_moderator(0, '', $pm['fromid']))
 		{
 			// Fetch the senders profile data.
 			$sender = get_user($pm['fromid']);
@@ -408,7 +405,7 @@ class PMDataHandler extends DataHandler
 			$sender['lastpm'] = $db->fetch_field($query, "dateline");
 
 			// A little bit of calculation magic and moderator status checking.
-			if(TIME_NOW-$sender['lastpm'] <= $mybb->settings['pmfloodsecs'] && !is_moderator("", "", $pm['fromid']))
+			if(TIME_NOW-$sender['lastpm'] <= $mybb->settings['pmfloodsecs'])
 			{
 				// Oops, user has been flooding - throw back error message.
 				$time_to_wait = ($mybb->settings['pmfloodsecs'] - (TIME_NOW-$sender['lastpm'])) + 1;
@@ -657,7 +654,13 @@ class PMDataHandler extends DataHandler
 
 				require_once MYBB_ROOT.'inc/class_parser.php';
 				$parser = new Postparser;
-				$pm['message'] = $parser->text_parse_message($pm['message'], array('me_username' => $pm['sender']['username'], 'filter_badwords' => 1, 'safe_html' => 1));
+			
+				$parser_options = array(
+					'me_username'		=> $pm['sender']['username'],
+					'filter_badwords'	=> 1
+				);
+
+				$pm['message'] = $parser->text_parse_message($pm['message'], $parser_options);
 
 				$emailmessage = $lang->sprintf($emailmessage, $recipient['username'], $pm['sender']['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $pm['message']);
 				$emailsubject = $lang->sprintf($emailsubject, $mybb->settings['bbname'], $pm['subject']);

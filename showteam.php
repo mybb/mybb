@@ -69,7 +69,7 @@ if(!$users_in)
 }
 $forum_permissions = forum_permissions();
 
-$query = $db->simple_select("users", "uid, username, displaygroup, usergroup, ignorelist, hideemail, receivepms, lastactive, lastvisit, invisible", "displaygroup IN ($groups_in) OR (displaygroup='0' AND usergroup IN ($groups_in)) OR uid IN ($users_in)", array('order_by' => 'username'));
+$query = $db->simple_select("users", "uid, username, displaygroup, usergroup, ignorelist, hideemail, receivepms, lastactive, lastvisit, invisible, away", "displaygroup IN ($groups_in) OR (displaygroup='0' AND usergroup IN ($groups_in)) OR uid IN ($users_in)", array('order_by' => 'username'));
 while($user = $db->fetch_array($query))
 {
 	// If this user is a moderator
@@ -124,7 +124,7 @@ foreach($usergroups as $usergroup)
 	$bgcolor = '';
 	foreach($usergroup['user_list'] as $user)
 	{
-		$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
+		$user['username'] = format_name(htmlspecialchars_uni($user['username']), $user['usergroup'], $user['displaygroup']);
 		$user['profilelink'] = get_profile_link($user['uid']);
 
 		// For the postbit templates
@@ -144,6 +144,10 @@ foreach($usergroups as $usergroup)
 		if($user['lastactive'] > $timecut && ($user['invisible'] == 0 || $mybb->usergroup['canviewwolinvis'] == 1) && $user['lastvisit'] != $user['lastactive'])
 		{
 			$status = "online";
+		}
+		elseif($user['away'] == 1 && $mybb->settings['allowaway'] != 0)
+		{
+			$status = "away";
 		}
 		else
 		{

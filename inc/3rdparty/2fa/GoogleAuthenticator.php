@@ -71,10 +71,14 @@ class PHPGangsta_GoogleAuthenticator
      *
      * @param string $name
      * @param string $secret
+     * @param string $title
      * @return string
      */
-    public function getQRCodeGoogleUrl($name, $secret) {
+    public function getQRCodeGoogleUrl($name, $secret, $title = null) {
         $urlencoded = urlencode('otpauth://totp/'.$name.'?secret='.$secret.'');
+	if(isset($title)) {
+                $urlencoded .= urlencode('&issuer='.urlencode($title));
+        }
         return 'https://chart.googleapis.com/chart?chs=200x200&chld=M|0&cht=qr&chl='.$urlencoded.'';
     }
 
@@ -84,11 +88,14 @@ class PHPGangsta_GoogleAuthenticator
      * @param string $secret
      * @param string $code
      * @param int $discrepancy This is the allowed time drift in 30 second units (8 means 4 minutes before or after)
+     * @param int|null $currentTimeSlice time slice if we want use other that time()
      * @return bool
      */
-    public function verifyCode($secret, $code, $discrepancy = 1)
+    public function verifyCode($secret, $code, $discrepancy = 1, $currentTimeSlice = null)
     {
-        $currentTimeSlice = floor(time() / 30);
+        if ($currentTimeSlice === null) {
+            $currentTimeSlice = floor(time() / 30);
+        }
 
         for ($i = -$discrepancy; $i <= $discrepancy; $i++) {
             $calculatedCode = $this->getCode($secret, $currentTimeSlice + $i);

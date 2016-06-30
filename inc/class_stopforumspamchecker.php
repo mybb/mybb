@@ -158,6 +158,11 @@ class StopForumSpamChecker
 		return $is_spammer;
 	}
 
+	/**
+	 * @param array $sfsSettingsEnabled
+	 *
+	 * @return string
+	 */
 	public function getErrorText($sfsSettingsEnabled)
 	{
 		global $mybb, $lang;

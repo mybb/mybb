@@ -55,7 +55,7 @@ switch($action)
 
 		$announcement['message'] = $parser->parse_message($announcement['message'], $parser_options);
 
-		$profile_link = build_profile_link($announcement['username'], $announcement['uid']);
+		$profile_link = build_profile_link(htmlspecialchars_uni($announcement['username']), $announcement['uid']);
 
 		// Build the navigation
 		add_breadcrumb($announcement['subject']);
@@ -216,7 +216,7 @@ switch($action)
 			{
 				$post['username'] = $post['userusername'];
 			}
-			$post['username'] = build_profile_link($post['username'], $post['uid']);
+			$post['username'] = build_profile_link(htmlspecialchars_uni($post['username']), $post['uid']);
 
 			$plugins->run_hooks("archive_thread_post");
 
@@ -256,10 +256,19 @@ switch($action)
 		build_forum_breadcrumb($forum['fid'], 1);
 
 		// No threads and not a category? Error!
-		if(($threadcount < 1 || $forumpermissions['canviewthreads'] != 1) && $forum['type'] != 'c')
+		if($forum['type'] != 'c')
 		{
-			archive_header(strip_tags($forum['name']), $forum['name'], $mybb->settings['bburl']."/".get_forum_link($id, $page)."");
-			archive_error($lang->error_nothreads);
+			if($forumpermissions['canviewthreads'] != 1)
+			{
+				archive_header(strip_tags($forum['name']), $forum['name'], $mybb->settings['bburl']."/".get_forum_link($id, $page)."");
+				archive_error($lang->error_nopermission);
+			}
+
+			if($threadcount < 1 && $forumpermissions['canviewthreads'] == 1)
+			{
+				archive_header(strip_tags($forum['name']), $forum['name'], $mybb->settings['bburl']."/".get_forum_link($id, $page)."");
+				archive_error($lang->error_nothreads);
+			}
 		}
 
 		// Build the archive header.
@@ -456,7 +465,7 @@ $plugins->run_hooks("archive_end");
 /**
 * Gets a list of forums and possibly subforums.
 *
-* @param int The parent forum to get the childforums for.
+* @param int $pid The parent forum to get the childforums for.
 * @return array Array of information regarding the child forums of this parent forum
 */
 function build_archive_forumbits($pid=0)

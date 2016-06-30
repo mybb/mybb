@@ -18,7 +18,7 @@ $templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit,forumdispl
 $templatelist .= ",forumdisplay_usersbrowsing_user,forumdisplay_usersbrowsing,forumdisplay_inlinemoderation,forumdisplay_thread_modbit,forumdisplay_inlinemoderation_col,forumdisplay_inlinemoderation_selectall,forumdisplay_threadlist_clearpass,forumdisplay_thread_rating_moved";
 $templatelist .= ",forumdisplay_announcements_announcement,forumdisplay_announcements,forumdisplay_threads_sep,forumbit_depth3_statusicon,forumbit_depth3,forumdisplay_sticky_sep,forumdisplay_thread_attachment_count,forumdisplay_rssdiscovery,forumdisplay_announcement_rating,forumbit_moderators_group";
 $templatelist .= ",forumdisplay_inlinemoderation_openclose,forumdisplay_inlinemoderation_stickunstick,forumdisplay_inlinemoderation_softdelete,forumdisplay_inlinemoderation_restore,forumdisplay_inlinemoderation_delete,forumdisplay_inlinemoderation_manage,forumdisplay_inlinemoderation_approveunapprove";
-$templatelist .= ",forumbit_depth2_forum_unapproved_posts,forumbit_depth2_forum_unapproved_threads,forumbit_moderators_user,forumdisplay_inlinemoderation_standard,forumdisplay_threadlist_prefixes_prefix,forumdisplay_threadlist_prefixes";
+$templatelist .= ",forumbit_depth2_forum_unapproved_posts,forumbit_depth2_forum_unapproved_threads,forumbit_moderators_user,forumdisplay_inlinemoderation_standard,forumdisplay_threadlist_prefixes_prefix,forumdisplay_threadlist_prefixes,forumdisplay_nopermission";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -314,7 +314,7 @@ if($mybb->settings['browsingthisforum'] != 0)
 
 				if($user['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])
 				{
-					$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
+					$user['username'] = format_name(htmlspecialchars_uni($user['username']), $user['usergroup'], $user['displaygroup']);
 					$user['profilelink'] = build_profile_link($user['username'], $user['uid']);
 					eval("\$onlinemembers .= \"".$templates->get("forumdisplay_usersbrowsing_user", 1, 0)."\";");
 					$comma = $lang->comma;
@@ -798,6 +798,9 @@ if($has_announcements == true)
 		$announcement['subject'] = $parser->parse_badwords($announcement['subject']);
 		$announcement['subject'] = htmlspecialchars_uni($announcement['subject']);
 		$postdate = my_date('relative', $announcement['startdate']);
+
+		$announcement['username'] = htmlspecialchars_uni($announcement['username']);
+
 		$announcement['profilelink'] = build_profile_link($announcement['username'], $announcement['uid']);
 
 		if($mybb->settings['allowthreadratings'] != 0 && $foruminfo['allowtratings'] != 0 && $fpermissions['canviewthreads'] != 0)
@@ -927,7 +930,7 @@ if(!empty($tids))
 // Check participation by the current user in any of these threads - for 'dot' folder icons
 if($mybb->settings['dotfolders'] != 0 && $mybb->user['uid'] && !empty($threadcache))
 {
-	$query = $db->simple_select("posts", "tid,uid", "uid='{$mybb->user['uid']}' AND tid IN ({$tids}) {$visibleonly}");
+	$query = $db->simple_select("posts", "DISTINCT tid,uid", "uid='{$mybb->user['uid']}' AND tid IN ({$tids}) {$visibleonly}");
 	while($post = $db->fetch_array($query))
 	{
 		if(!empty($moved_threads[$post['tid']]))
@@ -1027,11 +1030,11 @@ if(!empty($threadcache) && is_array($threadcache))
 		$thread['author'] = $thread['uid'];
 		if(!$thread['username'])
 		{
-			$thread['username'] = $thread['threadusername'];
-			$thread['profilelink'] = $thread['threadusername'];
+			$thread['username'] = $thread['profilelink'] = htmlspecialchars_uni($thread['threadusername']);
 		}
 		else
 		{
+			$thread['username'] = htmlspecialchars_uni($thread['username']);
 			$thread['profilelink'] = build_profile_link($thread['username'], $thread['uid']);
 		}
 
@@ -1256,7 +1259,7 @@ if(!empty($threadcache) && is_array($threadcache))
 			$inline_edit_class = "subject_editable";
 		}
 
-		$lastposter = $thread['lastposter'];
+		$lastposter = htmlspecialchars_uni($thread['lastposter']);
 		$lastposteruid = $thread['lastposteruid'];
 		$lastpostdate = my_date('relative', $thread['lastpost']);
 
@@ -1438,7 +1441,12 @@ $inline_edit_js = $clearstoredpass = '';
 // Is this a real forum with threads?
 if($foruminfo['type'] != "c")
 {
-	if(!$threadcount)
+	if($fpermissions['canviewthreads'] != 1)
+	{
+		eval("\$threads = \"".$templates->get("forumdisplay_nopermission")."\";");
+	}
+
+	if(!$threadcount && $fpermissions['canviewthreads'] == 1)
 	{
 		eval("\$threads = \"".$templates->get("forumdisplay_nothreads")."\";");
 	}

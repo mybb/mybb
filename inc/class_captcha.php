@@ -40,7 +40,6 @@ class captcha
 	 *
 	 * 1 = Default CAPTCHA
 	 * 2 = reCAPTCHA
-	 * 3 = Are You a Human
 	 * 4 = NoCATPCHA reCAPTCHA
 	 *
 	 * @var int
@@ -52,7 +51,7 @@ class captcha
 	 *
 	 * @var string
 	 */
-	 public $captch_template = '';
+	 public $captcha_template = '';
 
 	/**
 	 * CAPTCHA Server URL
@@ -62,29 +61,11 @@ class captcha
 	public $server = '';
 
 	/**
-	 * CAPTCHA Secure Server URL
-	 *
-	 * @var string
-	 */
-	public $secure_server = '';
-
-	/**
 	 * CAPTCHA Verify Server
 	 *
 	 * @var string
 	 */
 	public $verify_server = '';
-
-	/**
-	 * Are You a Human configuration
-	 *
-	 * @var string
-	 */
-	public $ayah_web_service_host = '';
-	public $ayah_publisher_key = '';
-	public $ayah_scoring_key = '';
-	public $ayah_debug_mode = '';
-	public $ayah_use_curl = '';
 
 	/**
 	 * HTML of the built CAPTCHA
@@ -100,6 +81,10 @@ class captcha
 	 */
 	public $errors = array();
 
+	/**
+	 * @param bool   $build
+	 * @param string $template
+	 */
 	function __construct($build = false, $template = "")
 	{
 		global $mybb, $plugins;
@@ -123,35 +108,16 @@ class captcha
 			{
 				$this->captcha_template .= "_recaptcha";
 			}
-			else if($this->type == 3)
-			{
-				$this->captcha_template .= "_ayah";
-			}
 			else if($this->type == 4){
 				$this->captcha_template .= "_nocaptcha";
 			}
 		}
 
 		// Work on which CAPTCHA we've got installed
-		if($this->type == 3 && $mybb->settings['ayahpublisherkey'] && $mybb->settings['ayahscoringkey'])
-		{
-			// We want to use Are You a Human, set configuration options
-			$this->ayah_web_service_host = "ws.areyouahuman.com";
-			$this->ayah_publisher_key = $mybb->settings['ayahpublisherkey'];
-			$this->ayah_scoring_key = $mybb->settings['ayahscoringkey'];
-			$this->ayah_debug_mode = false;
-			$this->ayah_use_curl = true;
-
-			if($build == true)
-			{
-				$this->build_ayah();
-			}
-		}
-		else if($this->type == 2 && $mybb->settings['captchapublickey'] && $mybb->settings['captchaprivatekey'])
+		if($this->type == 2 && $mybb->settings['captchapublickey'] && $mybb->settings['captchaprivatekey'])
 		{
 			// We want to use reCAPTCHA, set the server options
-			$this->server = "http://www.google.com/recaptcha/api";
-			$this->secure_server = "https://www.google.com/recaptcha/api";
+			$this->server = "//www.google.com/recaptcha/api";
 			$this->verify_server = "www.google.com";
 
 			if($build == true)
@@ -162,8 +128,7 @@ class captcha
 		else if($this->type == 4 && $mybb->settings['captchapublickey'] && $mybb->settings['captchaprivatekey'])
 		{
 			// We want to use reCAPTCHA, set the server options
-			$this->server = "http://www.google.com/recaptcha/api.js";
-			$this->secure_server = "https://www.google.com/recaptcha/api.js";
+			$this->server = "//www.google.com/recaptcha/api.js";
 			$this->verify_server = "https://www.google.com/recaptcha/api/siteverify";
 
 			if($build == true)
@@ -176,7 +141,7 @@ class captcha
 			if(!function_exists("imagecreatefrompng"))
 			{
 				// We want to use the default CAPTCHA, but it's not installed
-				return false;
+				return;
 			}
 			else if($build == true)
 			{
@@ -187,6 +152,9 @@ class captcha
 		$plugins->run_hooks('captcha_build_end', $args);
 	}
 
+	/**
+	 * @param bool $return Not used
+	 */
 	function build_captcha($return = false)
 	{
 		global $db, $lang, $templates, $theme, $mybb;
@@ -214,37 +182,13 @@ class captcha
 		$server = $this->server;
 		$public_key = $mybb->settings['captchapublickey'];
 
-		if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off')
-		{
-			// Use secure server if HTTPS
-			$server = $this->secure_server;
-		}
-
 		eval("\$this->html = \"".$templates->get($this->captcha_template, 1, 0)."\";");
 		//eval("\$this->html = \"".$templates->get("member_register_regimage_recaptcha")."\";");
 	}
 
-	function build_ayah()
-	{
-		global $lang, $mybb, $templates;
-
-		define('AYAH_PUBLISHER_KEY', $this->ayah_publisher_key);
-		define('AYAH_SCORING_KEY', $this->ayah_scoring_key);
-		define('AYAH_USE_CURL', $this->ayah_use_curl);
-		define('AYAH_DEBUG_MODE', $this->ayah_debug_mode);
-		define('AYAH_WEB_SERVICE_HOST', $this->ayah_web_service_host);
-
-		require_once MYBB_ROOT."inc/3rdparty/ayah/ayah.php";
-		$ayah = new AYAH();
-		$output = $ayah->getPublisherHTML();
-
-		if(!empty($output))
-		{
-			eval("\$this->html = \"".$templates->get($this->captcha_template, 1, 0)."\";");
-			//eval("\$this->html = \"".$templates->get("member_register_regimage_ayah")."\";");
-		}
-	}
-
+	/**
+	 * @return string
+	 */
 	function build_hidden_captcha()
 	{
 		global $db, $mybb, $templates;
@@ -274,13 +218,16 @@ class captcha
 		else if($this->type == 3)
 		{
 			// Are You a Human can't be built as a hidden captcha
-			continue;
+			return '';
 		}
 
 		eval("\$this->html = \"".$templates->get("post_captcha_hidden")."\";");
 		return $this->html;
 	}
 
+	/**
+	 * @return bool
+	 */
 	function validate_captcha()
 	{
 		global $db, $lang, $mybb, $session, $plugins;
@@ -403,24 +350,6 @@ class captcha
 				}
 			}
 		}
-		elseif($this->type == 3)
-		{
-			define('AYAH_PUBLISHER_KEY', $this->ayah_publisher_key);
-			define('AYAH_SCORING_KEY', $this->ayah_scoring_key);
-			define('AYAH_USE_CURL', $this->ayah_use_curl);
-			define('AYAH_DEBUG_MODE', $this->ayah_debug_mode);
-			define('AYAH_WEB_SERVICE_HOST', $this->ayah_web_service_host);
-
-			require_once MYBB_ROOT."inc/3rdparty/ayah/ayah.php";
-			$ayah = new AYAH();
-
-			$result = $ayah->scoreResult();
-
-			if($result == false)
-			{
-				$this->set_error($lang->invalid_ayah_result);
-			}
-		}
 
 		$plugins->run_hooks('captcha_validate_end', $this);
 
@@ -454,6 +383,9 @@ class captcha
 
 	/**
 	 * Add an error to the error array.
+	 *
+	 * @param string $error
+	 * @param string $data
 	 */
 	function set_error($error, $data='')
 	{
@@ -467,12 +399,13 @@ class captcha
 	 * Returns the error(s) that occurred when handling data
 	 * in a format that MyBB can handle.
 	 *
-	 * @return An array of errors in a MyBB format.
+	 * @return array An array of errors in a MyBB format.
 	 */
 	function get_errors()
 	{
 		global $lang;
 
+		$errors = array();
 		foreach($this->errors as $error)
 		{
 			$lang_string = $error['error_code'];
@@ -514,6 +447,11 @@ class captcha
 		return $errors;
 	}
 
+	/**
+	 * @param array $data
+	 *
+	 * @return string
+	 */
 	private function _qsencode($data)
 	{
 		$req = '';

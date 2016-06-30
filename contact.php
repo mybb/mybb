@@ -11,7 +11,7 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'contact.php');
 
-$templatelist = "contact,post_captcha,post_captcha_recaptcha,post_captcha_nocaptcha,post_captcha_ayah";
+$templatelist = "contact,post_captcha,post_captcha_recaptcha,post_captcha_nocaptcha";
 
 require_once "./global.php";
 require_once MYBB_ROOT.'inc/class_captcha.php';
@@ -27,6 +27,15 @@ add_breadcrumb($lang->contact, "contact.php");
 if($mybb->settings['contact'] != 1 || (!$mybb->user['uid'] && $mybb->settings['contact_guests'] == 1))
 {
 	error_no_permission();
+}
+
+if($mybb->settings['contactemail'])
+{
+	$contactemail = $mybb->settings['contactemail'];
+}
+else
+{
+	$contactemail = $mybb->settings['adminemail'];
 }
 
 // Check group limits
@@ -146,8 +155,8 @@ if($mybb->request_method == "post")
 		}
 	}
 
-	// Should we have a CAPTCHA? Perhaps yes...
-	if($mybb->settings['captchaimage'])
+	// Should we have a CAPTCHA? Perhaps yes, but only for guests like in other pages...
+	if($mybb->settings['captchaimage'] && !$mybb->user['uid'])
 	{
 		$captcha = new captcha;
 
@@ -200,25 +209,21 @@ if($mybb->request_method == "post")
 			require_once MYBB_ROOT."inc/class_parser.php";
 			$parser = new postParser;
 
-			$parser_options = array(
-				'filter_badwords' => 1
-			);
-
-			$mybb->input['subject'] = $parser->parse_message($mybb->input['subject'], $parser_options);
-			$mybb->input['message'] = $parser->parse_message($mybb->input['message'], $parser_options);
+			$mybb->input['subject'] = $parser->parse_badwords($mybb->input['subject']);
+			$mybb->input['message'] = $parser->parse_badwords($mybb->input['message']);
 		}
 
 		$user = $lang->na;
 		if($mybb->user['uid'])
 		{
-			$user = $mybb->user['username'].' - '.$mybb->settings['bburl'].'/'.get_profile_link($mybb->user['uid']);
+			$user = htmlspecialchars_uni($mybb->user['username']).' - '.$mybb->settings['bburl'].'/'.get_profile_link($mybb->user['uid']);
 		}
 
 		$subject = $lang->sprintf($lang->email_contact_subject, $mybb->input['subject']);
 		$message = $lang->sprintf($lang->email_contact, $mybb->input['email'], $user, $session->ipaddress, $mybb->input['message']);
 
 		// Email the administrator
-		my_mail($mybb->settings['adminemail'], $subject, $message, $mybb->input['email']);
+		my_mail($contactemail, $subject, $message, $mybb->input['email']);
 
 		$plugins->run_hooks('contact_do_end');
 
@@ -232,7 +237,7 @@ if($mybb->request_method == "post")
 				"fromuid" => $mybb->user['uid'],
 				"fromemail" => $db->escape_string($mybb->input['email']),
 				"touid" => 0,
-				"toemail" => $db->escape_string($mybb->settings['adminemail']),
+				"toemail" => $db->escape_string($contactemail),
 				"tid" => 0,
 				"ipaddress" => $db->escape_binary($session->packedip),
 				"type" => 3
@@ -261,7 +266,9 @@ if(empty($errors))
 }
 
 // Generate CAPTCHA?
-if($mybb->settings['captchaimage'])
+$captcha = '';
+
+if($mybb->settings['captchaimage'] && !$mybb->user['uid'])
 {
 	$post_captcha = new captcha(true, "post_captcha");
 
@@ -269,10 +276,6 @@ if($mybb->settings['captchaimage'])
 	{
 		$captcha = $post_captcha->html;
 	}
-}
-else
-{
-	$captcha = '';
 }
 
 $mybb->input['subject'] = htmlspecialchars_uni($mybb->input['subject']);

@@ -1726,6 +1726,12 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 		$template_groups[$templategroup['prefix']] = $templategroup;
 	}
 
+	/**
+	 * @param array $a
+	 * @param array $b
+	 *
+	 * @return int
+	 */
 	function sort_template_groups($a, $b)
 	{
 		return strcasecmp($a['title'], $b['title']);
@@ -1739,11 +1745,17 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 		"gid" => -1
 	);
 
+	// Set the template group keys to lowercase for case insensitive comparison.
+	$template_groups = array_change_key_case($template_groups, CASE_LOWER);
+
 	// Load the list of templates
 	$query = $db->simple_select("templates", "*", "sid='".$mybb->get_input('sid', MyBB::INPUT_INT)."' OR sid='-2'", array('order_by' => 'sid DESC, title', 'order_dir' => 'ASC'));
 	while($template = $db->fetch_array($query))
 	{
 		$exploded = explode("_", $template['title'], 2);
+
+		// Set the prefix to lowercase for case insensitive comparison.
+		$exploded[0] = strtolower($exploded[0]);
 
 		if(isset($template_groups[$exploded[0]]))
 		{

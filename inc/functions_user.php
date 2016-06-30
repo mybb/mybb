@@ -11,7 +11,7 @@
 /**
  * Checks if a user with uid $uid exists in the database.
  *
- * @param int The uid to check for.
+ * @param int $uid The uid to check for.
  * @return boolean True when exists, false when not.
  */
 function user_exists($uid)
@@ -32,13 +32,11 @@ function user_exists($uid)
 /**
  * Checks if $username already exists in the database.
  *
- * @param string The username for check for.
+ * @param string $username The username for check for.
  * @return boolean True when exists, false when not.
  */
 function username_exists($username)
 {
-	global $db;
-
 	$options = array(
 		'username_method' => 2
 	);
@@ -49,13 +47,13 @@ function username_exists($username)
 /**
  * Checks a password with a supplied username.
  *
- * @param string The username of the user.
- * @param string The plain-text password.
+ * @param string $username The username of the user.
+ * @param string $password The plain-text password.
  * @return boolean|array False when no match, array with user info when match.
  */
 function validate_password_from_username($username, $password)
 {
-	global $db, $mybb;
+	global $mybb;
 
 	$options = array(
 		'fields' => array('username', 'password', 'salt', 'loginkey', 'coppauser', 'usergroup'),
@@ -75,9 +73,9 @@ function validate_password_from_username($username, $password)
 /**
  * Checks a password with a supplied uid.
  *
- * @param int The user id.
- * @param string The plain-text password.
- * @param string An optional user data array.
+ * @param int $uid The user id.
+ * @param string $password The plain-text password.
+ * @param array $user An optional user data array.
  * @return boolean|array False when not valid, user data array when valid.
  */
 function validate_password_from_uid($uid, $password, $user = array())
@@ -112,7 +110,7 @@ function validate_password_from_uid($uid, $password, $user = array())
 		);
 		$db->update_query("users", $sql_array, "uid = ".$user['uid']);
 	}
-	if(salt_password(md5($password), $user['salt']) == $user['password'])
+	if(salt_password(md5($password), $user['salt']) === $user['password'])
 	{
 		return $user;
 	}
@@ -125,10 +123,11 @@ function validate_password_from_uid($uid, $password, $user = array())
 /**
  * Updates a user's password.
  *
- * @param int The user's id.
- * @param string The md5()'ed password.
- * @param string (Optional) The salt of the user.
+ * @param int $uid The user's id.
+ * @param string $password The md5()'ed password.
+ * @param string $salt (Optional) The salt of the user.
  * @return array The new password.
+ * @deprecated deprecated since version 1.8.6 Please use other alternatives.
  */
 function update_password($uid, $password, $salt="")
 {
@@ -171,8 +170,8 @@ function update_password($uid, $password, $salt="")
 /**
  * Salts a password based on a supplied salt.
  *
- * @param string The md5()'ed password.
- * @param string The salt.
+ * @param string $password The md5()'ed password.
+ * @param string $salt The salt.
  * @return string The password hash.
  */
 function salt_password($password, $salt)
@@ -203,7 +202,7 @@ function generate_loginkey()
 /**
  * Updates a user's salt in the database (does not update a password).
  *
- * @param int The uid of the user to update.
+ * @param int $uid The uid of the user to update.
  * @return string The new salt.
  */
 function update_salt($uid)
@@ -222,7 +221,7 @@ function update_salt($uid)
 /**
  * Generates a new login key for a user.
  *
- * @param int The uid of the user to update.
+ * @param int $uid The uid of the user to update.
  * @return string The new login key.
  */
 function update_loginkey($uid)
@@ -243,12 +242,12 @@ function update_loginkey($uid)
  * Adds a thread to a user's thread subscription list.
  * If no uid is supplied, the currently logged in user's id will be used.
  *
- * @param int The tid of the thread to add to the list.
- * @param int (Optional) The type of notification to receive for replies (0=none, 1=email, 2=pm)
- * @param int (Optional) The uid of the user who's list to update.
+ * @param int $tid The tid of the thread to add to the list.
+ * @param int $notification (Optional) The type of notification to receive for replies (0=none, 1=email, 2=pm)
+ * @param int $uid (Optional) The uid of the user who's list to update.
  * @return boolean True when success, false when otherwise.
  */
-function add_subscribed_thread($tid, $notification=1, $uid="")
+function add_subscribed_thread($tid, $notification=1, $uid=0)
 {
 	global $mybb, $db;
 
@@ -259,7 +258,7 @@ function add_subscribed_thread($tid, $notification=1, $uid="")
 
 	if(!$uid)
 	{
-		return;
+		return false;
 	}
 
 	$query = $db->simple_select("threadsubscriptions", "*", "tid='".(int)$tid."' AND uid='".(int)$uid."'");
@@ -270,9 +269,7 @@ function add_subscribed_thread($tid, $notification=1, $uid="")
 			'uid' => (int)$uid,
 			'tid' => (int)$tid,
 			'notification' => (int)$notification,
-			'dateline' => TIME_NOW,
-			'subscriptionkey' => md5(TIME_NOW.$uid.$tid)
-
+			'dateline' => TIME_NOW
 		);
 		$db->insert_query("threadsubscriptions", $insert_array);
 	}
@@ -291,11 +288,11 @@ function add_subscribed_thread($tid, $notification=1, $uid="")
  * Remove a thread from a user's thread subscription list.
  * If no uid is supplied, the currently logged in user's id will be used.
  *
- * @param int The tid of the thread to remove from the list.
- * @param int (Optional) The uid of the user who's list to update.
+ * @param int $tid The tid of the thread to remove from the list.
+ * @param int $uid (Optional) The uid of the user who's list to update.
  * @return boolean True when success, false when otherwise.
  */
-function remove_subscribed_thread($tid, $uid="")
+function remove_subscribed_thread($tid, $uid=0)
 {
 	global $mybb, $db;
 
@@ -306,7 +303,7 @@ function remove_subscribed_thread($tid, $uid="")
 
 	if(!$uid)
 	{
-		return;
+		return false;
 	}
 	$db->delete_query("threadsubscriptions", "tid='".$tid."' AND uid='{$uid}'");
 
@@ -317,11 +314,11 @@ function remove_subscribed_thread($tid, $uid="")
  * Adds a forum to a user's forum subscription list.
  * If no uid is supplied, the currently logged in user's id will be used.
  *
- * @param int The fid of the forum to add to the list.
- * @param int (Optional) The uid of the user who's list to update.
+ * @param int $fid The fid of the forum to add to the list.
+ * @param int $uid (Optional) The uid of the user who's list to update.
  * @return boolean True when success, false when otherwise.
  */
-function add_subscribed_forum($fid, $uid="")
+function add_subscribed_forum($fid, $uid=0)
 {
 	global $mybb, $db;
 
@@ -332,7 +329,7 @@ function add_subscribed_forum($fid, $uid="")
 
 	if(!$uid)
 	{
-		return;
+		return false;
 	}
 
 	$fid = (int)$fid;
@@ -356,11 +353,11 @@ function add_subscribed_forum($fid, $uid="")
  * Removes a forum from a user's forum subscription list.
  * If no uid is supplied, the currently logged in user's id will be used.
  *
- * @param int The fid of the forum to remove from the list.
- * @param int (Optional) The uid of the user who's list to update.
+ * @param int $fid The fid of the forum to remove from the list.
+ * @param int $uid (Optional) The uid of the user who's list to update.
  * @return boolean True when success, false when otherwise.
  */
-function remove_subscribed_forum($fid, $uid="")
+function remove_subscribed_forum($fid, $uid=0)
 {
 	global $mybb, $db;
 
@@ -371,7 +368,7 @@ function remove_subscribed_forum($fid, $uid="")
 
 	if(!$uid)
 	{
-		return;
+		return false;
 	}
 	$db->delete_query("forumsubscriptions", "fid='".$fid."' AND uid='{$uid}'");
 
@@ -545,10 +542,10 @@ function usercp_menu_misc()
 /**
  * Gets the usertitle for a specific uid.
  *
- * @param int The uid of the user to get the usertitle of.
+ * @param int $uid The uid of the user to get the usertitle of.
  * @return string The usertitle of the user.
  */
-function get_usertitle($uid="")
+function get_usertitle($uid=0)
 {
 	global $db, $mybb;
 
@@ -574,6 +571,7 @@ function get_usertitle($uid="")
 			if($title['posts'] <= $user['postnum'])
 			{
 				$usertitle = $title;
+				break;
 			}
 		}
 
@@ -584,9 +582,9 @@ function get_usertitle($uid="")
 /**
  * Updates a users private message count in the users table with the number of pms they have.
  *
- * @param int The user id to update the count for. If none, assumes currently logged in user.
- * @param int Bitwise value for what to update. 1 = total, 2 = new, 4 = unread. Combinations accepted.
- * @param int The unix timestamp the user with uid last visited. If not specified, will be queried.
+ * @param int $uid The user id to update the count for. If none, assumes currently logged in user.
+ * @param int $count_to_update Bitwise value for what to update. 1 = total, 2 = new, 4 = unread. Combinations accepted.
+ * @return array The updated counters
  */
 function update_pm_count($uid=0, $count_to_update=7)
 {
@@ -631,8 +629,8 @@ function update_pm_count($uid=0, $count_to_update=7)
 /**
  * Return the language specific name for a PM folder.
  *
- * @param int The ID of the folder.
- * @param string The folder name - can be blank, will use language default.
+ * @param int $fid The ID of the folder.
+ * @param string $name The folder name - can be blank, will use language default.
  * @return string The name of the folder.
  */
 function get_pm_folder_name($fid, $name="")
@@ -666,7 +664,7 @@ function get_pm_folder_name($fid, $name="")
 /**
  * Generates a security question for registration.
  *
- * @param int Optional ID of the old question.
+ * @param int $old_qid Optional ID of the old question.
  * @return string The question session id.
  */
 function generate_question($old_qid=0)
@@ -718,9 +716,9 @@ function generate_question($old_qid=0)
 /**
  * Check whether we can show the Purge Spammer Feature
  *
- * @param int The users post count
- * @param int The usergroup of our user
- * @param int The uid of our user
+ * @param int $post_count The users post count
+ * @param int $usergroup The usergroup of our user
+ * @param int $uid The uid of our user
  * @return boolean Whether or not to show the feature
  */
 function purgespammer_show($post_count, $usergroup, $uid)

@@ -11,14 +11,14 @@
 /**
  * Disk Cache Handler
  */
-class diskCacheHandler
+class diskCacheHandler implements CacheHandlerInterface
 {
 	/**
 	 * Connect and initialize this handler.
 	 *
 	 * @return boolean True if successful, false on failure
 	 */
-	function connect($silent=false)
+	function connect()
 	{
 		if(!@is_writable(MYBB_ROOT."cache"))
 		{
@@ -31,26 +31,17 @@ class diskCacheHandler
 	/**
 	 * Retrieve an item from the cache.
 	 *
-	 * @param string The name of the cache
-	 * @param boolean True if we should do a hard refresh
+	 * @param string $name The name of the cache
 	 * @return mixed Cache data if successful, false if failure
 	 */
-
-	function fetch($name, $hard_refresh=false)
+	function fetch($name)
 	{
 		if(!@file_exists(MYBB_ROOT."/cache/{$name}.php"))
 		{
 			return false;
 		}
 
-		if(!isset($this->cache[$name]) || $hard_refresh == true)
-		{
-			@include(MYBB_ROOT."/cache/{$name}.php");
-		}
-		else
-		{
-			@include_once(MYBB_ROOT."/cache/{$name}.php");
-		}
+		@include(MYBB_ROOT."/cache/{$name}.php");
 
 		// Return data
 		return $$name;
@@ -59,8 +50,8 @@ class diskCacheHandler
 	/**
 	 * Write an item to the cache.
 	 *
-	 * @param string The name of the cache
-	 * @param mixed The data to write to the cache item
+	 * @param string $name The name of the cache
+	 * @param mixed $contents The data to write to the cache item
 	 * @return boolean True on success, false on failure
 	 */
 	function put($name, $contents)
@@ -86,7 +77,7 @@ class diskCacheHandler
 	/**
 	 * Delete a cache
 	 *
-	 * @param string The name of the cache
+	 * @param string $name The name of the cache
 	 * @return boolean True on success, false on failure
 	 */
 	function delete($name)
@@ -96,6 +87,8 @@ class diskCacheHandler
 
 	/**
 	 * Disconnect from the cache
+	 *
+	 * @return bool
 	 */
 	function disconnect()
 	{
@@ -105,7 +98,7 @@ class diskCacheHandler
 	/**
 	 * Select the size of the disk cache
 	 *
-	 * @param string The name of the cache
+	 * @param string $name The name of the cache
 	 * @return integer the size of the disk cache
 	 */
 	function size_of($name='')

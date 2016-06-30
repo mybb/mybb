@@ -34,7 +34,9 @@ $l['radio'] = "Radio Buttons";
 $l['checkbox'] = "Checkboxes";
 $l['language_selection_box'] = "Language Selection Box";
 $l['forum_selection_box'] = "Forum Selection Box";
+$l['forum_selection_single'] = "Single Forum Selection Box";
 $l['group_selection_box'] = "Group Selection Box";
+$l['group_selection_single'] = "Single Group Selection Box";
 $l['adminlanguage'] = "Administration Language Selection Box";
 $l['cpstyle'] = "Control Panel Style Selection Box";
 $l['php'] = "Evaluated PHP";
@@ -82,12 +84,13 @@ $l['error_cannot_edit_php'] = "This is a special type of setting which cannot be
 $l['error_ajax_search'] = "There was a problem searching for settings:";
 $l['error_ajax_unknown'] = "An unknown error occurred while searching for settings.";
 $l['error_chmod_settings_file'] = "The settings file \"./inc/settings.php\" isn't writable. Please CHMOD to 777.<br />For more information on CHMODing, see the <a href=\"http://docs.mybb.com/HowTo_Chmod.html\" target=\"_blank\">MyBB Docs</a>.";
-$l['error_hidden_captcha_conflict'] = "The hidden captcha value cannot be \"{1}\" as it conflicts with another registration field.";
 
 $l['success_setting_added'] = "The setting has been created successfully.";
 $l['success_setting_updated'] = "The setting has been updated successfully.";
 $l['success_setting_deleted'] = "The selected setting has been deleted successfully.";
 $l['success_settings_updated'] = "The settings have been updated successfully.";
+$l['success_settings_updated_hiddencaptchaimage'] = '<div class="smalltext" style="font-weight: normal;">Please note that the <strong>Hidden CAPTCHA field</strong> setting was reverted to <strong>{1}</strong> due to a conflict with the <strong>{2}</strong> field in the registration form.</div>';
+$l['success_settings_updated_captchaimage'] = '<div class="smalltext" style="font-weight: normal;">Please note that the <strong>CAPTCHA Images for Registration &amp; Posting</strong> setting was reverted to <strong>MyBB Default Captcha</strong> due to the lack of public/private key(s).</div>';
 $l['success_display_orders_updated'] = "The setting display orders have been updated successfully.";
 $l['success_setting_group_added'] = "The setting group has been created successfully.";
 $l['success_setting_group_updated'] = "The setting group has been updated successfully.";

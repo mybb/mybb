@@ -10,12 +10,33 @@
 
 class installerOutput {
 
+	/**
+	 * @var bool
+	 */
 	public $doneheader;
+	/**
+	 * @var bool
+	 */
 	public $openedform;
+	/**
+	 * @var string
+	 */
 	public $script = "index.php";
+	/**
+	 * @var array
+	 */
 	public $steps = array();
+	/**
+	 * @var string
+	 */
 	public $title = "MyBB Installation Wizard";
 
+	/**
+	 * @param string $title
+	 * @param string $image
+	 * @param int    $form
+	 * @param int    $error
+	 */
 	function print_header($title="Welcome", $image="welcome", $form=1, $error=0)
 	{
 		global $mybb, $lang;
@@ -40,7 +61,7 @@ class installerOutput {
 	<title>{$this->title} &gt; {$title}</title>
 	<link rel="stylesheet" href="stylesheet.css" type="text/css" />
 	<script type="text/javascript" src="../jscripts/jquery.js"></script>
-	<script type="text/javascript" src="../jscripts/general.js"></script>
+	<script type="text/javascript" src="../jscripts/general.js?ver=1807"></script>
 	{$dbconfig_add}
 </head>
 <body>
@@ -99,11 +120,17 @@ END;
 		}
 	}
 
+	/**
+	 * @param string $contents
+	 */
 	function print_contents($contents)
 	{
 		echo $contents;
 	}
 
+	/**
+	 * @param string $message
+	 */
 	function print_error($message)
 	{
 		global $lang;
@@ -118,6 +145,9 @@ END;
 		$this->print_footer();
 	}
 
+	/**
+	 * @param string $nextact
+	 */
 	function print_footer($nextact="")
 	{
 		global $lang, $footer_extra;

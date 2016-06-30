@@ -11,11 +11,14 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'moderation.php');
 
-$templatelist = 'changeuserbox,loginbox,moderation_delayedmoderation_custommodtool,moderation_delayedmodaction_notes,moderation_delayedmoderation_merge,moderation_delayedmoderation_move';
-$templatelist .= ',moderation_delayedmoderation,moderation_deletethread,moderation_deletepoll,moderation_mergeposts_post,moderation_viewthreadnotes,moderation_confirmation';
-$templatelist .= ',moderation_move,moderation_threadnotes_modaction,moderation_threadnotes_delayedmodaction,moderation_threadnotes,moderation_getip_modoptions,moderation_getip,moderation_getpmip,moderation_merge';
-$templatelist .= ',moderation_split_post,moderation_split,moderation_inline_deletethreads,moderation_inline_movethreads,moderation_inline_deleteposts,moderation_inline_mergeposts,moderation_threadnotes_modaction_error';
-$templatelist .= ',moderation_inline_splitposts,forumjump_bit,forumjump_special,forumjump_advanced,forumdisplay_password_wrongpass,forumdisplay_password,moderation_inline_moveposts,moderation_delayedmodaction_error,moderation_purgespammer,moderation_delayedmoderation_date_day,moderation_delayedmoderation_date_month';
+$templatelist = "changeuserbox,loginbox,moderation_delayedmoderation_custommodtool,moderation_delayedmodaction_notes,moderation_delayedmoderation_merge,moderation_delayedmoderation_move";
+$templatelist .= ",moderation_delayedmoderation,moderation_deletethread,moderation_deletepoll,moderation_mergeposts_post,moderation_viewthreadnotes,moderation_confirmation,moderation_purgespammer";
+$templatelist .= ",moderation_move,moderation_threadnotes_modaction,moderation_threadnotes_delayedmodaction,moderation_threadnotes,moderation_getip_modoptions,moderation_getip,moderation_getpmip";
+$templatelist .= ",moderation_split_post,moderation_inline_deletethreads,moderation_inline_movethreads,moderation_inline_deleteposts,moderation_inline_mergeposts,moderation_threadnotes_modaction_error";
+$templatelist .= ",moderation_inline_splitposts,forumjump_special,forumjump_advanced,forumdisplay_password_wrongpass,forumdisplay_password,moderation_inline_moveposts,moderation_delayedmodaction_error";
+$templatelist .= ",moderation_delayedmodaction_notes_thread_single,moderation_delayedmodaction_notes_thread_multiple,moderation_delayedmodaction_notes_forum,moderation_delayedmodaction_notes_new_forum";
+$templatelist .= ",moderation_delayedmodaction_notes_redirect,moderation_delayedmodaction_notes_merge,moderation_delayedmoderation_thread,moderation_threadnotes_modaction_thread,forumjump_bit";
+$templatelist .= ",moderation_delayedmoderation_date_day,moderation_delayedmoderation_date_month,moderation_threadnotes_modaction_post,moderation_merge,moderation_split,moderation_threadnotes_modaction_forum";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -105,6 +108,7 @@ if(isset($forum))
 	check_forum_password($forum['fid']);
 }
 
+$mybb->user['username'] = htmlspecialchars_uni($mybb->user['username']);
 eval("\$loginbox = \"".$templates->get("changeuserbox")."\";");
 
 $allowable_moderation_actions = array("getip", "getpmip", "cancel_delayedmoderation", "delayedmoderation", "threadnotes", "purgespammer", "viewthreadnotes");
@@ -145,14 +149,16 @@ switch($mybb->input['action'])
 	case "delayedmoderation":
 		// Verify incoming POST request
 		verify_post_check($mybb->get_input('my_post_key'));
+		
+		$localized_time_offset = $mybb->user['timezone']*3600 + $mybb->user['dst']*3600;
 
 		if(!$mybb->get_input('date_day', MyBB::INPUT_INT))
 		{
-			$mybb->input['date_day'] = date('d', TIME_NOW);
+			$mybb->input['date_day'] = gmdate('d', TIME_NOW + $localized_time_offset);
 		}
 		if(!$mybb->get_input('date_month', MyBB::INPUT_INT))
 		{
-			$mybb->input['date_month'] = date('m', TIME_NOW);
+			$mybb->input['date_month'] = gmdate('m', TIME_NOW + $localized_time_offset);
 		}
 
 		// Assume in-line moderation if TID is not set
@@ -252,7 +258,7 @@ switch($mybb->input['action'])
 				$errors[] = $lang->error_delayedmoderation_invalid_date_month;
 			}
 
-			if($mybb->input['date_year'] < gmdate('Y', TIME_NOW))
+			if($mybb->input['date_year'] < gmdate('Y', TIME_NOW + $localized_time_offset))
 			{
 				$errors[] = $lang->error_delayedmoderation_invalid_date_year;
 			}
@@ -269,7 +275,7 @@ switch($mybb->input['action'])
 				}
 			}
 
-			$rundate = mktime((int)$date_time[0], (int)$date_time[1], date('s', TIME_NOW), $mybb->get_input('date_month', MyBB::INPUT_INT), $mybb->get_input('date_day', MyBB::INPUT_INT), $mybb->get_input('date_year', MyBB::INPUT_INT));
+			$rundate = gmmktime((int)$date_time[0], (int)$date_time[1], date('s', TIME_NOW), $mybb->get_input('date_month', MyBB::INPUT_INT), $mybb->get_input('date_day', MyBB::INPUT_INT), $mybb->get_input('date_year', MyBB::INPUT_INT)) - $localized_time_offset;
 
 			if(!$errors)
 			{
@@ -461,31 +467,40 @@ switch($mybb->input['action'])
 					");
 			}
 		}
+		
 		while($delayedmod = $db->fetch_array($query))
 		{
-			$delayedmod['dateline'] = my_date("jS M Y, G:i", $delayedmod['delaydateline']);
+			$delayedmod['dateline'] = my_date("jS M Y, {$mybb->settings['timeformat']}", $delayedmod['delaydateline']);
+			$delayedmod['username'] = htmlspecialchars_uni($delayedmod['username']);
 			$delayedmod['profilelink'] = build_profile_link($delayedmod['username'], $delayedmod['uid']);
 			$delayedmod['action'] = $actions[$delayedmod['type']];
 			$info = '';
 			if(strpos($delayedmod['tids'], ',') === false)
 			{
 				$delayed_thread = get_thread($delayedmod['tids']);
-				$info .= "<strong>{$lang->thread}</strong> <a href=\"".get_thread_link($delayedmod['tids'])."\">".htmlspecialchars_uni($delayed_thread['subject'])."</a><br />";
+				$delayed_thread['link'] = get_thread_link($delayed_thread['tid']);
+				$delayed_thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($delayed_thread['subject']));
+				eval("\$info .= \"".$templates->get("moderation_delayedmodaction_notes_thread_single")."\";");
 			}
 			else
 			{
-				$info .= "<strong>{$lang->thread}</strong> {$lang->multiple_threads}<br />";
+				eval("\$info .= \"".$templates->get("moderation_delayedmodaction_notes_thread_multiple")."\";");
 			}
 
 			if($delayedmod['fname'])
 			{
-				$info .= "<strong>{$lang->forum}</strong> <a href=\"".get_forum_link($delayedmod['fid'])."\">".htmlspecialchars_uni($delayedmod['fname'])."</a><br />";
+				$delayedmod['link'] = get_forum_link($delayedmod['fid']);
+				$delayedmod['fname'] = htmlspecialchars_uni($delayedmod['fname']);
+				eval("\$info .= \"".$templates->get("moderation_delayedmodaction_notes_forum")."\";");
 			}
 			$delayedmod['inputs'] = my_unserialize($delayedmod['inputs']);
 
 			if($delayedmod['type'] == 'move')
 			{
-				$info .= "<strong>{$lang->new_forum}</strong>  <a href=\"".get_forum_link($delayedmod['inputs']['new_forum'])."\">".htmlspecialchars_uni($forum_cache[$delayedmod['inputs']['new_forum']]['name'])."</a><br />";
+				$delayedmod['link'] = get_forum_link($delayedmod['inputs']['new_forum']);
+				$delayedmod['name'] = htmlspecialchars_uni($forum_cache[$delayedmod['inputs']['new_forum']]['name']);
+				eval("\$info .= \"".$templates->get("moderation_delayedmodaction_notes_new_forum")."\";");
+
 				if($delayedmod['inputs']['method'] == "redirect")
 				{
 					if((int)$delayedmod['inputs']['redirect_expire'] == 0)
@@ -496,13 +511,15 @@ switch($mybb->input['action'])
 					{
 						$redirect_expire_bit = (int)$delayedmod['inputs']['redirect_expire']." {$lang->days}";
 					}
-					$info .= "<strong>{$lang->leave_redirect_for}</strong> {$redirect_expire_bit}<br />";
+
+					eval("\$info .= \"".$templates->get("moderation_delayedmodaction_notes_redirect")."\";");
 				}
 			}
 			else if($delayedmod['type'] == 'merge')
 			{
-				$info .= "<strong>{$lang->new_subject}</strong> ".htmlspecialchars_uni($delayedmod['inputs']['subject'])."<br />";
-				$info .= "<strong>{$lang->thread_to_merge_with}</strong> <a href=\"".htmlspecialchars_uni($delayedmod['inputs']['threadurl'])."\">".htmlspecialchars_uni($delayedmod['inputs']['threadurl'])."</a><br />";
+				$delayedmod['subject'] = htmlspecialchars_uni($delayedmod['inputs']['subject']);
+				$delayedmod['threadurl'] = htmlspecialchars_uni($delayedmod['inputs']['threadurl']);
+				eval("\$info .= \"".$templates->get("moderation_delayedmodaction_notes_merge")."\";");
 			}
 
 			eval("\$delayedmods .= \"".$templates->get("moderation_delayedmodaction_notes")."\";");
@@ -518,7 +535,8 @@ switch($mybb->input['action'])
 		if($mybb->get_input('tid', MyBB::INPUT_INT))
 		{
 			$lang->threads = $lang->thread;
-			$threads = "<a href=\"".get_thread_link($tid)."\">{$thread['subject']}</a>";
+			$thread['link'] = get_thread_link($tid);
+			eval("\$threads = \"".$templates->get("moderation_delayedmoderation_thread")."\";");
 			eval("\$moderation_delayedmoderation_merge = \"".$templates->get("moderation_delayedmoderation_merge")."\";");
 		}
 		else
@@ -568,8 +586,8 @@ switch($mybb->input['action'])
 
 		eval('$datemonth = "'.$templates->get('moderation_delayedmoderation_date_month').'";');
 
-		$dateyear = gmdate('Y', TIME_NOW);
-		$datetime = gmdate('g:i a', TIME_NOW);
+		$dateyear = gmdate('Y', TIME_NOW  + $localized_time_offset);
+		$datetime = gmdate($mybb->settings['timeformat'], TIME_NOW + $localized_time_offset);
 
 		$plugins->run_hooks("moderation_delayedmoderation");
 
@@ -825,7 +843,7 @@ switch($mybb->input['action'])
 		$lang->thread_restored = $lang->sprintf($lang->thread_restored, $thread['subject']);
 		log_moderator_action($modlogdata, $lang->thread_restored);
 
-		$moderation->restore_threads($tid, $fid);
+		$moderation->restore_threads($tid);
 
 		moderation_redirect(get_thread_link($thread['tid']), $lang->redirect_threadrestored);
 		break;
@@ -978,20 +996,28 @@ switch($mybb->input['action'])
 			while($modaction = $db->fetch_array($query))
 			{
 				$modaction['dateline'] = my_date("jS M Y, G:i", $modaction['dateline']);
+				$modaction['username'] = htmlspecialchars_uni($modaction['username']);
 				$modaction['profilelink'] = build_profile_link($modaction['username'], $modaction['uid']);
 				$modaction['action'] = htmlspecialchars_uni($modaction['action']);
 				$info = '';
 				if($modaction['tsubject'])
 				{
-					$info .= "<strong>$lang->thread</strong> <a href=\"".get_thread_link($modaction['tid'])."\">".htmlspecialchars_uni($modaction['tsubject'])."</a><br />";
+					$modaction['tsubject'] = htmlspecialchars_uni($parser->parse_badwords($modaction['tsubject']));
+					$modaction['threadlink'] = get_thread_link($modaction['tid']);
+					eval("\$info .= \"".$templates->get("moderation_threadnotes_modaction_thread")."\";");
 				}
 				if($modaction['fname'])
 				{
-					$info .= "<strong>$lang->forum</strong> <a href=\"".get_forum_link($modaction['fid'])."\">".htmlspecialchars_uni($modaction['fname'])."</a><br />";
+					$modaction['fname'] = htmlspecialchars_uni($modaction['fname']);
+					$modaction['forumlink'] = get_forum_link($modaction['fid']);
+					eval("\$info .= \"".$templates->get("moderation_threadnotes_modaction_forum")."\";");
 				}
 				if($modaction['psubject'])
 				{
-					$info .= "<strong>$lang->post</strong> <a href=\"".get_post_link($modaction['pid'])."#pid".$modaction['pid']."\">".htmlspecialchars_uni($modaction['psubject'])."</a>";
+
+					$modaction['psubject'] = htmlspecialchars_uni($parser->parse_badwords($modaction['psubject']));
+					$modaction['postlink'] = get_post_link($modaction['pid']);
+					eval("\$info .= \"".$templates->get("moderation_threadnotes_modaction_post")."\";");
 				}
 
 				eval("\$modactions .= \"".$templates->get("moderation_threadnotes_modaction")."\";");
@@ -1060,36 +1086,54 @@ switch($mybb->input['action'])
 		while($delayedmod = $db->fetch_array($query))
 		{
 			$delayedmod['dateline'] = my_date("jS M Y, G:i", $delayedmod['delaydateline']);
+			$delayedmod['username'] = htmlspecialchars_uni($delayedmod['username']);
 			$delayedmod['profilelink'] = build_profile_link($delayedmod['username'], $delayedmod['uid']);
 			$delayedmod['action'] = $actions[$delayedmod['type']];
 			$info = '';
 			if(strpos($delayedmod['tids'], ',') === false)
 			{
-				$info .= "<strong>{$lang->thread}</strong> <a href=\"".get_thread_link($delayedmod['tids'])."\">{$thread['subject']}</a><br />";
+				$delayed_thread['link'] = get_thread_link($delayedmod['tids']);
+				$delayed_thread['subject'] = htmlspecialchars_uni($thread['subject']);
+				eval("\$info .= \"".$templates->get("moderation_delayedmodaction_notes_thread_single")."\";");
 			}
 			else
 			{
-				$info .= "<strong>{$lang->thread}</strong> {$lang->multiple_threads}<br />";
+				eval("\$info .= \"".$templates->get("moderation_delayedmodaction_notes_thread_multiple")."\";");
 			}
 
 			if($delayedmod['fname'])
 			{
-				$info .= "<strong>{$lang->forum}</strong> <a href=\"".get_forum_link($delayedmod['fid'])."\">".htmlspecialchars_uni($delayedmod['fname'])."</a><br />";
+				$delayedmod['link'] = get_forum_link($delayedmod['fid']);
+				$delayedmod['fname'] = htmlspecialchars_uni($delayedmod['fname']);
+				eval("\$info .= \"".$templates->get("moderation_delayedmodaction_notes_forum")."\";");
 			}
 			$delayedmod['inputs'] = my_unserialize($delayedmod['inputs']);
 
 			if($delayedmod['type'] == 'move')
 			{
-				$info .= "<strong>{$lang->new_forum}</strong>  <a href=\"".get_forum_link($delayedmod['inputs']['new_forum'])."\">".htmlspecialchars_uni($forum_cache[$delayedmod['inputs']['new_forum']]['name'])."</a><br />";
+				$delayedmod['link'] = get_forum_link($delayedmod['inputs']['new_forum']);
+				$delayedmod['name'] = htmlspecialchars_uni($forum_cache[$delayedmod['inputs']['new_forum']]['name']);
+				eval("\$info .= \"".$templates->get("moderation_delayedmodaction_notes_new_forum")."\";");
+
 				if($delayedmod['inputs']['method'] == "redirect")
 				{
-					$info .= "<strong>{$lang->leave_redirect_for}</strong> ".(int)$delayedmod['inputs']['redirect_expire']." {$lang->days}<br />";
+					if((int)$delayedmod['inputs']['redirect_expire'] == 0)
+					{
+						$redirect_expire_bit = $lang->redirect_forever;
+					}
+					else
+					{
+						$redirect_expire_bit = (int)$delayedmod['inputs']['redirect_expire']." {$lang->days}";
+					}
+
+					eval("\$info .= \"".$templates->get("moderation_delayedmodaction_notes_redirect")."\";");
 				}
 			}
 			else if($delayedmod['type'] == 'merge')
 			{
-				$info .= "<strong>{$lang->new_subject}</strong> ".htmlspecialchars_uni($delayedmod['inputs']['subject'])."<br />";
-				$info .= "<strong>{$lang->thread_to_merge_with}</strong> <a href=\"".htmlspecialchars_uni($delayedmod['inputs']['threadurl'])."\">".htmlspecialchars_uni($delayedmod['inputs']['threadurl'])."</a><br />";
+				$delayedmod['subject'] = htmlspecialchars_uni($delayedmod['inputs']['subject']);
+				$delayedmod['threadurl'] = htmlspecialchars_uni($delayedmod['inputs']['threadurl']);
+				eval("\$info .= \"".$templates->get("moderation_delayedmodaction_notes_merge")."\";");
 			}
 
 			eval("\$delayedmods .= \"".$templates->get("moderation_threadnotes_delayedmodaction")."\";");
@@ -1143,6 +1187,7 @@ switch($mybb->input['action'])
 			$hostname = $lang->resolve_fail;
 		}
 
+		$post['username'] = htmlspecialchars_uni($post['username']);
 		$username = build_profile_link($post['username'], $post['uid']);
 
 		// Moderator options
@@ -1334,6 +1379,7 @@ switch($mybb->input['action'])
 		while($post = $db->fetch_array($query))
 		{
 			$postdate = my_date('relative', $post['dateline']);
+			$post['username'] = htmlspecialchars_uni($post['username']);
 
 			$parser_options = array(
 				"allow_html" => $forum['allowhtml'],
@@ -1711,7 +1757,7 @@ switch($mybb->input['action'])
 			error($lang->error_inline_nothreadsselected);
 		}
 
-		$moderation->restore_threads($threads, $fid);
+		$moderation->restore_threads($threads);
 
 		log_moderator_action($modlogdata, $lang->multi_restored_threads);
 		if($mybb->get_input('inlinetype') == 'search')
@@ -1754,7 +1800,7 @@ switch($mybb->input['action'])
 			error($lang->error_inline_nothreadsselected);
 		}
 
-		$moderation->soft_delete_threads($threads, $fid);
+		$moderation->soft_delete_threads($threads);
 
 		log_moderator_action($modlogdata, $lang->multi_soft_deleted_threads);
 		if($mybb->get_input('inlinetype') == 'search')
@@ -2710,7 +2756,6 @@ switch($mybb->input['action'])
 
 	// Soft delete posts - Inline moderation
 	case "multisoftdeleteposts":
-
 		// Verify incoming POST request
 		verify_post_check($mybb->get_input('my_post_key'));
 
@@ -2739,8 +2784,8 @@ switch($mybb->input['action'])
 		}
 
 		$moderation->soft_delete_posts($pids);
-
 		log_moderator_action($modlogdata, $lang->multi_soft_delete_posts);
+
 		if($mybb->get_input('inlinetype') == 'search')
 		{
 			clearinline($mybb->get_input('searchid', MyBB::INPUT_INT), 'search');
@@ -2865,7 +2910,7 @@ switch($mybb->input['action'])
 			$plugins->run_hooks("moderation_purgespammer_show");
 
 			add_breadcrumb($lang->purgespammer);
-			$lang->purgespammer_purge = $lang->sprintf($lang->purgespammer_purge, $user['username']);
+			$lang->purgespammer_purge = $lang->sprintf($lang->purgespammer_purge, htmlspecialchars_uni($user['username']));
 			if($mybb->settings['purgespammerbandelete'] == "ban")
 			{
 				$lang->purgespammer_purge_desc = $lang->sprintf($lang->purgespammer_purge_desc, $lang->purgespammer_ban);
@@ -3047,7 +3092,14 @@ switch($mybb->input['action'])
 		break;
 }
 
-// Some little handy functions for our inline moderation
+/**
+ * Some little handy functions for our inline moderation
+ *
+ * @param int $id
+ * @param string $type
+ *
+ * @return array
+ */
 function getids($id, $type)
 {
 	global $mybb;
@@ -3079,6 +3131,12 @@ function getids($id, $type)
 	return $newids;
 }
 
+/**
+ * @param int $id
+ * @param string $type
+ *
+ * @return array
+ */
 function getallids($id, $type)
 {
 	global $db, $mybb;
@@ -3140,16 +3198,24 @@ function getallids($id, $type)
 	return $ids;
 }
 
+/**
+ * @param int $id
+ * @param string $type
+ */
 function clearinline($id, $type)
 {
 	my_unsetcookie("inlinemod_".$type.$id);
-	my_unsetcookie("inlinemod_".$type.$id."_removed");
+	my_unsetcookie("inlinemod_{$type}{$id}_removed");
 }
 
+/**
+ * @param int $id
+ * @param string $type
+ */
 function extendinline($id, $type)
 {
-	my_setcookie("inlinemod_$type$id", '', TIME_NOW+3600);
-	my_setcookie("inlinemod_$type$id_removed", '', TIME_NOW+3600);
+	my_setcookie("inlinemod_{$type}{$id}", '', TIME_NOW+3600);
+	my_setcookie("inlinemod_{$type}{$id}_removed", '', TIME_NOW+3600);
 }
 
 /**
@@ -3158,9 +3224,9 @@ function extendinline($id, $type)
  * Note: If no posts are specified, this function will return true.  It is the
  * responsibility of the calling script to error-check this case if necessary.
  *
- * @param array Array of post IDs
- * @param string Permission to check
- * @returns bool True if moderator of all; false otherwise
+ * @param array $posts Array of post IDs
+ * @param string $permission Permission to check
+ * @return bool True if moderator of all; false otherwise
  */
 function is_moderator_by_pids($posts, $permission='')
 {
@@ -3202,9 +3268,9 @@ function is_moderator_by_pids($posts, $permission='')
  * Note: If no threads are specified, this function will return true.  It is the
  * responsibility of the calling script to error-check this case if necessary.
  *
- * @param array Array of thread IDs
- * @param string Permission to check
- * @returns bool True if moderator of all; false otherwise
+ * @param array $threads Array of thread IDs
+ * @param string $permission Permission to check
+ * @return bool True if moderator of all; false otherwise
  */
 function is_moderator_by_tids($threads, $permission='')
 {
@@ -3242,9 +3308,9 @@ function is_moderator_by_tids($threads, $permission='')
 
 /**
  * Special redirect that takes a return URL into account
- * @param string URL
- * @param string Message
- * @param string Title
+ * @param string $url URL
+ * @param string $message Message
+ * @param string $title Title
  */
 function moderation_redirect($url, $message="", $title="")
 {

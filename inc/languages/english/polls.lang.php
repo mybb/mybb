@@ -45,6 +45,7 @@ $l['redirect_unvoted'] = "Your vote(s) in this thread have been removed.<br />Yo
 $l['redirect_polldeleted'] = "Thank you, the poll has successfully been removed from the thread.<br />You will now be taken back to the thread.";
 
 $l['error_polloptiontoolong'] = "One or more poll options you entered are longer than the acceptable limit. Please go back and shorten them.";
+$l['error_polloptionsequence'] = "One or more poll options you entered contain a sequence which should not be used in them: <strong>||~|~||</strong>. Please go back and remove it.";
 $l['error_noquestionoptions'] = "You either did not enter a question for your poll or do not have enough options. The minimum number of options a poll can have is 2.<br />Please go back and correct this error.";
 $l['error_pollalready'] = "Thread already has poll!";
 $l['error_nopolloptions'] = "The specified poll option is invalid or does not exist.";

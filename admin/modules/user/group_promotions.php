@@ -68,7 +68,7 @@ if($mybb->input['action'] == "disable")
 
 		$plugins->run_hooks("admin_user_group_promotions_disable_commit");
 
-		$db->update_query("promotions", $update_promotion, "pid = '{$mybb->input['pid']}'");
+		$db->update_query("promotions", $update_promotion, "pid = '{$promotion['pid']}'");
 
 		// Log admin action
 		log_admin_action($promotion['pid'], $promotion['title']);
@@ -108,7 +108,7 @@ if($mybb->input['action'] == "delete")
 
 	if($mybb->request_method == "post")
 	{
-		$db->delete_query("promotions", "pid = '{$mybb->input['pid']}'");
+		$db->delete_query("promotions", "pid = '{$promotion['pid']}'");
 
 		$plugins->run_hooks("admin_user_group_promotions_delete_commit");
 
@@ -155,7 +155,7 @@ if($mybb->input['action'] == "enable")
 
 	$plugins->run_hooks("admin_user_group_promotions_enable_commit");
 
-	$db->update_query("promotions", $update_promotion, "pid = '{$mybb->input['pid']}'");
+	$db->update_query("promotions", $update_promotion, "pid = '{$promotion['pid']}'");
 
 	// Log admin action
 	log_admin_action($promotion['pid'], $promotion['title']);
@@ -226,6 +226,17 @@ if($mybb->input['action'] == "edit")
 				$mybb->input['originalusergroup'] = implode(',', array_map('intval', $mybb->input['originalusergroup']));
 			}
 
+			$allowed_operators = array('>', '>=', '=', '<=', '<');
+			$operator_fields = array('posttype', 'threadtype', 'timeregisteredtype', 'reputationtype', 'referralstype', 'warningstype');
+
+			foreach($operator_fields as $field)
+			{
+				if(!in_array($mybb->get_input($field), $allowed_operators))
+				{
+					$mybb->input[$field] = '=';
+				}
+			}
+
 			$update_promotion = array(
 				"title" => $db->escape_string($mybb->input['title']),
 				"description" => $db->escape_string($mybb->input['description']),
@@ -235,7 +246,7 @@ if($mybb->input['action'] == "edit")
 				"threadtype" => $db->escape_string($mybb->input['threadtype']),
 				"registered" => $mybb->get_input('timeregistered', MyBB::INPUT_INT),
 				"registeredtype" => $db->escape_string($mybb->input['timeregisteredtype']),
-				"online" => $db->escape_string($mybb->input['timeonline']),
+				"online" => $mybb->get_input('timeonline', MyBB::INPUT_INT),
 				"onlinetype" => $db->escape_string($mybb->input['timeonlinetype']),
 				"reputations" => $mybb->get_input('reputationcount', MyBB::INPUT_INT),
 				"reputationtype" => $db->escape_string($mybb->input['reputationtype']),
@@ -253,7 +264,7 @@ if($mybb->input['action'] == "edit")
 
 			$plugins->run_hooks("admin_user_group_promotions_edit_commit");
 
-			$db->update_query("promotions", $update_promotion, "pid = '".$mybb->get_input('pid', MyBB::INPUT_INT)."'");
+			$db->update_query("promotions", $update_promotion, "pid = '{$promotion['pid']}'");
 
 			// Log admin action
 			log_admin_action($promotion['pid'], $mybb->input['title']);
@@ -275,7 +286,7 @@ if($mybb->input['action'] == "edit")
 
 	$page->output_nav_tabs($sub_tabs, 'edit_promotion');
 	$form = new Form("index.php?module=user-group_promotions&amp;action=edit", "post", "edit");
-	echo $form->generate_hidden_field("pid", $mybb->input['pid']);
+	echo $form->generate_hidden_field("pid", $promotion['pid']);
 	if($errors)
 	{
 		$page->output_inline_error($errors);
@@ -430,6 +441,17 @@ if($mybb->input['action'] == "add")
 			else
 			{
 				$mybb->input['originalusergroup'] = implode(',', array_map('intval', $mybb->input['originalusergroup']));
+			}
+
+			$allowed_operators = array('>', '>=', '=', '<=', '<');
+			$operator_fields = array('posttype', 'threadtype', 'timeregisteredtype', 'reputationtype', 'referralstype', 'warningstype');
+
+			foreach($operator_fields as $field)
+			{
+				if(!in_array($mybb->get_input($field), $allowed_operators))
+				{
+					$mybb->input[$field] = '=';
+				}
 			}
 
 			$new_promotion = array(

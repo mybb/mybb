@@ -11,14 +11,16 @@
 /**
  * APC Cache Handler
  */
-class apcCacheHandler
+class apcCacheHandler implements CacheHandlerInterface
 {
 	/**
 	 * Unique identifier representing this copy of MyBB
+	 *
+	 * @var string
 	 */
 	public $unique_id;
 
-	function __construct($silent=false)
+	function __construct()
 	{
 		global $mybb;
 
@@ -32,8 +34,6 @@ class apcCacheHandler
 				die;
 			}
 		}
-
-		return false;
 	}
 
 	/**
@@ -43,8 +43,6 @@ class apcCacheHandler
 	 */
 	function connect()
 	{
-		global $mybb;
-
 		// Set a unique identifier for all queries in case other forums on this server also use this cache handler
 		$this->unique_id = md5(MYBB_ROOT);
 
@@ -54,9 +52,10 @@ class apcCacheHandler
 	/**
 	 * Connect and initialize this handler.
 	 *
+	 * @param string $name
 	 * @return boolean True if successful, false on failure
 	 */
-	function fetch($name, $hard_refresh=false)
+	function fetch($name)
 	{
 		if(apc_exists($this->unique_id."_".$name))
 		{
@@ -70,8 +69,8 @@ class apcCacheHandler
 	/**
 	 * Write an item to the cache.
 	 *
-	 * @param string The name of the cache
-	 * @param mixed The data to write to the cache item
+	 * @param string $name The name of the cache
+	 * @param mixed $contents The data to write to the cache item
 	 * @return boolean True on success, false on failure
 	 */
 	function put($name, $contents)
@@ -83,7 +82,7 @@ class apcCacheHandler
 	/**
 	 * Delete a cache
 	 *
-	 * @param string The name of the cache
+	 * @param string $name The name of the cache
 	 * @return boolean True on success, false on failure
 	 */
 	function delete($name)
@@ -93,13 +92,20 @@ class apcCacheHandler
 
 	/**
 	 * Disconnect from the cache
+	 *
+	 * @return bool
 	 */
 	function disconnect()
 	{
 		return true;
 	}
 
-	function size_of($name)
+	/**
+	 * @param string $name
+	 *
+	 * @return string
+	 */
+	function size_of($name='')
 	{
 		global $lang;
 

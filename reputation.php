@@ -12,7 +12,7 @@ define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'reputation.php');
 
 $templatelist = "reputation_addlink,reputation_no_votes,reputation,reputation_vote,multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,reputation_vote_delete";
-$templatelist .= ",reputation_add_delete,reputation_add_neutral,reputation_add_positive,reputation_add_negative,reputation_add_error,reputation_add_error_nomodal,reputation_add,reputation_added,reputation_deleted,reputation_vote_report";
+$templatelist .= ",reputation_add_delete,reputation_add_neutral,reputation_add_positive,reputation_add_negative,reputation_add_error,reputation_add_error_nomodal,reputation_add,reputation_added,reputation_deleted,reputation_vote_report,postbit_reputation_formatted_link";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/class_parser.php";
@@ -104,53 +104,6 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 		$mybb->input['pid'] = 0;
 	}
 
-	// Check if this user has reached their "maximum reputations per day" quota
-	if($mybb->usergroup['maxreputationsday'] != 0 && ($mybb->input['action'] != "do_add" || ($mybb->input['action'] == "do_add" && empty($mybb->input['delete']))))
-	{
-		$timesearch = TIME_NOW - (60 * 60 * 24);
-		$query = $db->simple_select("reputation", "*", "adduid='".$mybb->user['uid']."' AND dateline>'$timesearch'");
-		$numtoday = $db->num_rows($query);
-
-		// Reached the quota - error.
-		if($numtoday >= $mybb->usergroup['maxreputationsday'])
-		{
-			$message = $lang->add_maxperday;
-			if($mybb->input['nomodal'])
-			{
-				eval("\$error = \"".$templates->get("reputation_add_error_nomodal", 1, 0)."\";");
-			}
-			else
-			{
-				eval("\$error = \"".$templates->get("reputation_add_error", 1, 0)."\";");
-			}
-			echo $error;
-			exit;
-		}
-	}
-
-	// Is the user giving too much reputation to another?
-	if($mybb->usergroup['maxreputationsperuser'] != 0 && ($mybb->input['action'] != "do_add" || ($mybb->input['action'] == "do_add" && empty($mybb->input['delete']))))
-	{
-		$timesearch = TIME_NOW - (60 * 60 * 24);
-		$query = $db->simple_select("reputation", "*", "uid='".$uid."' AND dateline>'$timesearch'");
-		$numtoday = $db->num_rows($query);
-
-		if($numtoday >= $mybb->usergroup['maxreputationsperuser'])
-		{
-			$message = $lang->add_maxperuser;
-			if($mybb->input['nomodal'])
-			{
-				eval("\$error = \"".$templates->get("reputation_add_error_nomodal", 1, 0)."\";");
-			}
-			else
-			{
-				eval("\$error = \"".$templates->get("reputation_add_error", 1, 0)."\";");
-			}
-			echo $error;
-			exit;
-		}
-	}
-
 	if($mybb->get_input('pid', MyBB::INPUT_INT))
 	{
 		// Make sure that this post exists, and that the author of the post we're giving this reputation for corresponds with the user the rep is being given to.
@@ -160,54 +113,29 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 			$thread = get_thread($post['tid']);
 			$forum = get_forum($thread['fid']);
 			$forumpermissions = forum_permissions($forum['fid']);
+
 			// Post doesn't belong to that user or isn't visible
-			if($uid != $post['uid'] || ($post['visible'] == 0 && !is_moderator($fid, "canviewunapprove")) || $post['visible'] < 0)
+			if($uid != $post['uid'] || $post['visible'] != 1)
 			{
 				$mybb->input['pid'] = 0;
 			}
+
 			// Thread isn't visible
-			elseif(($thread['visible'] == 0 && !is_moderator($forum['fid'], "canviewunapprove")) || $thread['visible'] < 0)
+			elseif($thread['visible'] != 1)
 			{
 				$mybb->input['pid'] = 0;
 			}
+
 			// Current user can't see the forum
 			elseif($forumpermissions['canview'] == 0 || $forumpermissions['canpostreplys'] == 0 || $mybb->user['suspendposting'] == 1)
 			{
 				$mybb->input['pid'] = 0;
 			}
+
 			// Current user can't see that thread
 			elseif(isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] == 1 && $thread['uid'] != $mybb->user['uid'])
 			{
 				$mybb->input['pid'] = 0;
-			}
-			else
-			// We have the correct post, but has the user given too much reputation to another in the same thread?
-			if($mybb->usergroup['maxreputationsperthread'] != 0 && ($mybb->input['action'] != "do_add" || ($mybb->input['action'] == "do_add" && empty($mybb->input['delete']))))
-			{
-				$timesearch = TIME_NOW - (60 * 60 * 24);
-				$query = $db->query("
-					SELECT COUNT(p.pid) AS posts
-					FROM ".TABLE_PREFIX."reputation r
-					LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid = r.pid)
-					WHERE r.uid = '{$uid}' AND r.adduid = '{$mybb->user['uid']}' AND p.tid = '{$post['tid']}' AND r.dateline > '{$timesearch}'
-				");
-
-				$numtoday = $db->fetch_field($query, 'posts');
-
-				if($numtoday >= $mybb->usergroup['maxreputationsperthread'])
-				{
-					$message = $lang->add_maxperthread;
-					if($mybb->input['nomodal'])
-					{
-						eval("\$error = \"".$templates->get("reputation_add_error_nomodal", 1, 0)."\";");
-					}
-					else
-					{
-						eval("\$error = \"".$templates->get("reputation_add_error", 1, 0)."\";");
-					}
-					echo $error;
-					exit;
-				}
 			}
 		}
 		else
@@ -233,6 +161,71 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 		$existing_reputation = $db->fetch_array($query);
 		$rid = $existing_reputation['rid'];
 		$was_post = true;
+	}
+
+	if($rid == 0 && ($mybb->input['action'] != "do_add" || ($mybb->input['action'] == "do_add" && empty($mybb->input['delete']))))
+	{
+		$message = '';
+
+		// Check if this user has reached their "maximum reputations per day" quota
+		if($mybb->usergroup['maxreputationsday'] != 0)
+		{
+			$timesearch = TIME_NOW - (60 * 60 * 24);
+			$query = $db->simple_select("reputation", "*", "adduid='{$mybb->user['uid']}' AND dateline>'$timesearch'");
+			$numtoday = $db->num_rows($query);
+
+			// Reached the quota - error.
+			if($numtoday >= $mybb->usergroup['maxreputationsday'])
+			{
+				$message = $lang->add_maxperday;
+			}
+		}
+
+		// Is the user giving too much reputation to another?
+		if(!$message && $mybb->usergroup['maxreputationsperuser'] != 0)
+		{
+			$timesearch = TIME_NOW - (60 * 60 * 24);
+			$query = $db->simple_select("reputation", "*", "uid='{$uid}' AND adduid='{$mybb->user['uid']}' AND dateline>'$timesearch'");
+			$numtoday = $db->num_rows($query);
+
+			if($numtoday >= $mybb->usergroup['maxreputationsperuser'])
+			{
+				$message = $lang->add_maxperuser;
+			}
+		}
+
+		// We have the correct post, but has the user given too much reputation to another in the same thread?
+		if(!$message && $was_post && $mybb->usergroup['maxreputationsperthread'] != 0)
+		{
+			$timesearch = TIME_NOW - (60 * 60 * 24);
+			$query = $db->query("
+				SELECT COUNT(p.pid) AS posts
+				FROM ".TABLE_PREFIX."reputation r
+				LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid = r.pid)
+				WHERE r.uid = '{$uid}' AND r.adduid = '{$mybb->user['uid']}' AND p.tid = '{$post['tid']}' AND r.dateline > '{$timesearch}'
+			");
+
+			$numtoday = $db->fetch_field($query, 'posts');
+
+			if($numtoday >= $mybb->usergroup['maxreputationsperthread'])
+			{
+				$message = $lang->add_maxperthread;
+			}
+		}
+
+		if($message)
+		{
+			if($mybb->input['nomodal'])
+			{
+				eval('$error = "'.$templates->get("reputation_add_error_nomodal", 1, 0).'";');
+			}
+			else
+			{
+				eval('$error = "'.$templates->get("reputation_add_error", 1, 0).'";');
+			}
+			echo $error;
+			exit;
+		}
 	}
 }
 
@@ -422,6 +415,7 @@ if($mybb->input['action'] == "add")
 	$plugins->run_hooks("reputation_add_start");
 
 	// If we have an existing reputation for this user, the user can modify or delete it.
+	$user['username'] = htmlspecialchars_uni($user['username']);
 	if(!empty($existing_reputation['uid']))
 	{
 		$vote_title = $lang->sprintf($lang->update_reputation_vote, $user['username']);
@@ -578,6 +572,7 @@ if(!$mybb->input['action'])
 		error($lang->reputations_disabled_group);
 	}
 
+	$user['username'] = htmlspecialchars_uni($user['username']);
 	$lang->nav_profile = $lang->sprintf($lang->nav_profile, $user['username']);
 	$lang->reputation_report = $lang->sprintf($lang->reputation_report, $user['username']);
 
@@ -611,6 +606,7 @@ if(!$mybb->input['action'])
 			if($title['posts'] <= $user['postnum'])
 			{
 				$usertitle = $title['title'];
+				break;
 			}
 		}
 		unset($usertitles, $title);
@@ -770,7 +766,22 @@ if(!$mybb->input['action'])
 			}
 		}
 	}
-
+	
+	// Format all reputation numbers
+	$rep_total = my_number_format($user['reputation']);
+	$f_positive_count = my_number_format($positive_count);
+	$f_negative_count = my_number_format($negative_count);
+	$f_neutral_count = my_number_format($neutral_count);
+	$f_positive_week = my_number_format($positive_week);
+	$f_negative_week = my_number_format($negative_week);
+	$f_neutral_week = my_number_format($neutral_week);
+	$f_positive_month = my_number_format($positive_month);
+	$f_negative_month = my_number_format($negative_month);
+	$f_neutral_month = my_number_format($neutral_month);
+	$f_positive_6months = my_number_format($positive_6months);
+	$f_negative_6months = my_number_format($negative_6months);
+	$f_neutral_6months = my_number_format($neutral_6months);
+	
 	// Format the user's 'total' reputation
 	if($user['reputation'] < 0)
 	{
@@ -793,7 +804,7 @@ if(!$mybb->input['action'])
 
 	// General
 	// We count how many reps in total, then subtract the reps from posts
-	$rep_members = my_number_format($total_reputation - $rep_posts);
+	$rep_members = my_number_format($total_reputation - $rep_post_count);
 
 	// Is negative reputation disabled? If so, tell the user
 	if($mybb->settings['negrep'] == 0)
@@ -811,12 +822,18 @@ if(!$mybb->input['action'])
 		$neu_rep_info = $lang->neu_rep_disabled;
 	}
 
+	$perpage = (int)$mybb->settings['repsperpage'];
+	if($perpage < 1)
+	{
+		$perpage = 15;
+	}
+
 	// Check if we're browsing a specific page of results
 	if($mybb->get_input('page', MyBB::INPUT_INT) > 0)
 	{
 		$page = $mybb->get_input('page', MyBB::INPUT_INT);
-		$start = ($page-1) * $mybb->settings['repsperpage'];
-		$pages = $reputation_count / $mybb->settings['repsperpage'];
+		$start = ($page-1) * $perpage;
+		$pages = $reputation_count / $perpage;
 		$pages = ceil($pages);
 		if($page > $pages)
 		{
@@ -835,7 +852,7 @@ if(!$mybb->input['action'])
 	// Build out multipage navigation
 	if($reputation_count > 0)
 	{
-		$multipage = multipage($reputation_count, $mybb->settings['repsperpage'], $page, "reputation.php?uid={$user['uid']}".$s_url);
+		$multipage = multipage($reputation_count, $perpage, $page, "reputation.php?uid={$user['uid']}".$s_url);
 	}
 
 	// Fetch the reputations which will be displayed on this page
@@ -845,7 +862,7 @@ if(!$mybb->input['action'])
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=r.adduid)
 		WHERE r.uid='{$user['uid']}' $conditions
 		ORDER BY $order
-		LIMIT $start, {$mybb->settings['repsperpage']}
+		LIMIT $start, {$perpage}
 	");
 
 	// Gather a list of items that have post reputation
@@ -864,17 +881,64 @@ if(!$mybb->input['action'])
 
 	if(!empty($post_cache))
 	{
-		$sql = implode(',', $post_cache);
+		$pids = implode(',', $post_cache);
+
+		$sql = array("p.pid IN ({$pids})");
+
+		// get forums user cannot view
+		$unviewable = get_unviewable_forums(true);
+		if($unviewable)
+		{
+			$sql[] = "p.fid NOT IN ({$unviewable})";
+		}
+
+		// get inactive forums
+		$inactive = get_inactive_forums();
+		if($inactive)
+		{
+			$sql[] = "p.fid NOT IN ({$inactive})";
+		}
+
+		if(!$mybb->user['ismoderator'])
+		{
+			$sql[] = "p.visible='1'";
+			$sql[] = "t.visible='1'";
+		}
+
+		$sql = implode(' AND ', $sql);
 
 		$query = $db->query("
-			SELECT p.pid, p.uid, p.message, t.tid, t.subject
+			SELECT p.pid, p.uid, p.fid, p.visible, p.message, t.tid, t.subject, t.visible AS thread_visible
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-			WHERE p.pid IN ({$sql})
+			WHERE {$sql}
 		");
+
+		$forumpermissions = array();
 
 		while($post = $db->fetch_array($query))
 		{
+			if(($post['visible'] == 0 || $post['thread_visible'] == 0) && !is_moderator($post['fid'], 'canviewunapprove'))
+			{
+				continue;
+			}
+
+			if(($post['visible'] == -1 || $post['thread_visible'] == -1) && !is_moderator($post['fid'], 'canviewdeleted'))
+			{
+				continue;
+			}
+
+			if(!isset($forumpermissions[$post['fid']]))
+			{
+				$forumpermissions[$post['fid']] = forum_permissions($post['fid']);
+			}
+
+			// Make sure we can view this post
+			if(isset($forumpermissions[$post['fid']]['canonlyviewownthreads']) && $forumpermissions[$post['fid']]['canonlyviewownthreads'] == 1 && $post['uid'] != $mybb->user['uid'])
+			{
+				continue;
+			}
+
 			$post_reputation[$post['pid']] = $post;
 		}
 	}
@@ -899,7 +963,7 @@ if(!$mybb->input['action'])
 		}
 		else
 		{
-			$reputation_vote['username'] = format_name($reputation_vote['username'], $reputation_vote['user_usergroup'], $reputation_vote['user_displaygroup']);
+			$reputation_vote['username'] = format_name(htmlspecialchars_uni($reputation_vote['username']), $reputation_vote['user_usergroup'], $reputation_vote['user_displaygroup']);
 			$reputation_vote['username'] = build_profile_link($reputation_vote['username'], $reputation_vote['uid']);
 			$reputation_vote['user_reputation'] = "({$reputation_vote['user_reputation']})";
 		}
@@ -935,24 +999,23 @@ if(!$mybb->input['action'])
 		$last_updated_date = my_date('relative', $reputation_vote['dateline']);
 		$last_updated = $lang->sprintf($lang->last_updated, $last_updated_date);
 
+		$user['username'] = htmlspecialchars_uni($user['username']);
+
 		// Is this rating specific to a post?
 		$postrep_given = '';
 		if($reputation_vote['pid'])
 		{
-			$link = get_post_link($reputation_vote['pid'])."#pid{$reputation_vote['pid']}";
-
-			$thread_link = '';
+			$postrep_given = $lang->sprintf($lang->postrep_given_nolink, $user['username']);
 			if(isset($post_reputation[$reputation_vote['pid']]))
 			{
-				$post = $post_reputation[$reputation_vote['pid']];
-
-				$thread_link = get_thread_link($post['tid']);
-				$subject = htmlspecialchars_uni($post['subject']);
+				$thread_link = get_thread_link($post_reputation[$reputation_vote['pid']]['tid']);
+				$subject = htmlspecialchars_uni($parser->parse_badwords($post_reputation[$reputation_vote['pid']]['subject']));
 
 				$thread_link = $lang->sprintf($lang->postrep_given_thread, $thread_link, $subject);
-			}
+				$link = get_post_link($reputation_vote['pid'])."#pid{$reputation_vote['pid']}";
 
-			$postrep_given = $lang->sprintf($lang->postrep_given, $link, $user['username'], $thread_link);
+				$postrep_given = $lang->sprintf($lang->postrep_given, $link, $user['username'], $thread_link);
+			}
 		}
 
 		// Does the current user have permission to delete this reputation? Show delete link

@@ -20,16 +20,9 @@ class datacache
 	/**
 	 * The current cache handler we're using
 	 *
-	 * @var object
+	 * @var CacheHandlerInterface
 	 */
 	public $handler = null;
-
-	/**
-	 * Whether or not to exit the script if we cannot load the specified extension
-	 *
-	 * @var boolean
-	 */
-	var $silent = false;
 
 	/**
 	 * A count of the number of calls.
@@ -67,48 +60,47 @@ class datacache
 	{
 		global $db, $mybb;
 
+		require_once MYBB_ROOT."/inc/cachehandlers/interface.php";
+
 		switch($mybb->config['cache_store'])
 		{
 			// Disk cache
 			case "files":
 				require_once MYBB_ROOT."/inc/cachehandlers/disk.php";
-				$this->handler = new diskCacheHandler($this->silent);
+				$this->handler = new diskCacheHandler();
 				break;
 			// Memcache cache
 			case "memcache":
 				require_once MYBB_ROOT."/inc/cachehandlers/memcache.php";
-				$this->handler = new memcacheCacheHandler($this->silent);
+				$this->handler = new memcacheCacheHandler();
 				break;
 			// Memcached cache
 			case "memcached":
 				require_once MYBB_ROOT."/inc/cachehandlers/memcached.php";
-				$this->handler = new memcachedCacheHandler($this->silent);
+				$this->handler = new memcachedCacheHandler();
 				break;
 			// eAccelerator cache
 			case "eaccelerator":
 				require_once MYBB_ROOT."/inc/cachehandlers/eaccelerator.php";
-				$this->handler = new eacceleratorCacheHandler($this->silent);
+				$this->handler = new eacceleratorCacheHandler();
 				break;
 			// Xcache cache
 			case "xcache":
 				require_once MYBB_ROOT."/inc/cachehandlers/xcache.php";
-				$this->handler = new xcacheCacheHandler($this->silent);
+				$this->handler = new xcacheCacheHandler();
 				break;
 			// APC cache
 			case "apc":
 				require_once MYBB_ROOT."/inc/cachehandlers/apc.php";
-				$this->handler = new apcCacheHandler($this->silent);
+				$this->handler = new apcCacheHandler();
 				break;
 		}
 
-		if(is_object($this->handler))
+		if($this->handler instanceof CacheHandlerInterface)
 		{
-			if(method_exists($this->handler, "connect"))
+			if(!$this->handler->connect())
 			{
-				if(!$this->handler->connect())
-				{
-					$this->handler = null;
-				}
+				$this->handler = null;
 			}
 		}
 		else
@@ -125,9 +117,9 @@ class datacache
 	/**
 	 * Read cache from files or db.
 	 *
-	 * @param string The cache component to read.
-	 * @param boolean If true, cannot be overwritten during script execution.
-	 * @return unknown
+	 * @param string $name The cache component to read.
+	 * @param boolean $hard If true, cannot be overwritten during script execution.
+	 * @return mixed
 	 */
 	function read($name, $hard=false)
 	{
@@ -140,12 +132,12 @@ class datacache
 		}
 		// If we're not hard refreshing, and this cache doesn't exist, return false
 		// It would have been loaded pre-global if it did exist anyway...
-		else if($hard == false && !is_object($this->handler))
+		else if($hard == false && !($this->handler instanceof CacheHandlerInterface))
 		{
 			return false;
 		}
 
-		if(is_object($this->handler))
+		if($this->handler instanceof CacheHandlerInterface)
 		{
 			get_execution_time();
 
@@ -220,8 +212,8 @@ class datacache
 	/**
 	 * Update cache contents.
 	 *
-	 * @param string The cache content identifier.
-	 * @param string The cache content.
+	 * @param string $name The cache content identifier.
+	 * @param string $contents The cache content.
 	 */
 	function update($name, $contents)
 	{
@@ -239,7 +231,7 @@ class datacache
 		$db->replace_query("datacache", $replace_array, "", false);
 
 		// Do we have a cache handler we're using?
-		if(is_object($this->handler))
+		if($this->handler instanceof CacheHandlerInterface)
 		{
 			get_execution_time();
 
@@ -261,8 +253,8 @@ class datacache
 	 * Originally from frostschutz's PluginLibrary
 	 * github.com/frostschutz
 	 *
-	 * @param string Cache name or title
-	 * @param boolean To delete a cache starting with name_
+	 * @param string $name Cache name or title
+	 * @param boolean $greedy To delete a cache starting with name_
 	 */
 	 function delete($name, $greedy = false)
 	 {
@@ -273,7 +265,7 @@ class datacache
 		$where = "title = '{$dbname}'";
 
 		// Delete on-demand or handler cache
-		if($this->handler)
+		if($this->handler instanceof CacheHandlerInterface)
 		{
 			get_execution_time();
 
@@ -314,7 +306,7 @@ class datacache
 
 			$where .= " OR title LIKE '{$ldbname}=_%' ESCAPE '='";
 
-			if($this->handler)
+			if($this->handler instanceof CacheHandlerInterface)
 			{
 				$query = $db->simple_select("datacache", "title", $where);
 
@@ -359,9 +351,9 @@ class datacache
 	/**
 	 * Debug a cache call to a non-database cache handler
 	 *
-	 * @param string The cache key
-	 * @param string The time it took to perform the call.
-	 * @param boolean Hit or miss status
+	 * @param string $string The cache key
+	 * @param string $qtime The time it took to perform the call.
+	 * @param boolean $hit Hit or miss status
 	 */
 	function debug_call($string, $qtime, $hit)
 	{
@@ -386,18 +378,18 @@ class datacache
 		$cache_method = $cache_data[0];
 		$cache_key = $cache_data[1];
 
-		$this->cache_debug .= "<table style=\"background-color: #666;\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n".
-			"<tr>\n".
-			"<td style=\"background-color: #ccc;\">{$debug_extra}<div><strong>#".$this->call_count." - ".ucfirst($cache_method)." Call</strong></div></td>\n".
-			"</tr>\n".
-			"<tr style=\"background-color: #fefefe;\">\n".
-			"<td><span style=\"font-family: Courier; font-size: 14px;\">(".$mybb->config['cache_store'].") [".$hit_status."] ".htmlspecialchars_uni($cache_key)."</span></td>\n".
-			"</tr>\n".
-			"<tr>\n".
-			"<td bgcolor=\"#ffffff\">Call Time: ".format_time_duration($qtime)."</td>\n".
-			"</tr>\n".
-			"</table>\n".
-			"<br />\n";
+		$this->cache_debug = "<table style=\"background-color: #666;\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">
+<tr>
+	<td style=\"background-color: #ccc;\">{$debug_extra}<div><strong>#{$this->call_count} - ".ucfirst($cache_method)." Call</strong></div></td>
+</tr>
+<tr style=\"background-color: #fefefe;\">
+	<td><span style=\"font-family: Courier; font-size: 14px;\">({$mybb->config['cache_store']}) [{$hit_status}] ".htmlspecialchars_uni($cache_key)."</span></td>
+</tr>
+<tr>
+	<td bgcolor=\"#ffffff\">Call Time: ".format_time_duration($qtime)."</td>
+</tr>
+</table>
+<br />\n";
 
 		$this->calllist[$this->call_count]['key'] = $string;
 		$this->calllist[$this->call_count]['time'] = $qtime;
@@ -406,14 +398,14 @@ class datacache
 	/**
 	 * Select the size of the cache
 	 *
-	 * @param string The name of the cache
+	 * @param string $name The name of the cache
 	 * @return integer the size of the cache
 	 */
 	function size_of($name='')
 	{
 		global $db;
 
-		if(is_object($this->handler))
+		if($this->handler instanceof CacheHandlerInterface)
 		{
 			$size = $this->handler->size_of($name);
 			if(!$size)
@@ -563,7 +555,7 @@ class datacache
 	/**
 	 * Update the forum permissions cache.
 	 *
-	 * @return false When failed, returns false.
+	 * @return bool When failed, returns false.
 	 */
 	function update_forumpermissions()
 	{
@@ -603,14 +595,16 @@ class datacache
 
 		$this->build_forum_permissions();
 		$this->update("forumpermissions", $this->built_forum_permissions);
+
+		return true;
 	}
 
 	/**
 	 * Build the forum permissions array
 	 *
 	 * @access private
-	 * @param array An optional permissions array.
-	 * @param int An optional permission id.
+	 * @param array $permissions An optional permissions array.
+	 * @param int $pid An optional permission id.
 	 */
 	private function build_forum_permissions($permissions=array(), $pid=0)
 	{
@@ -646,8 +640,6 @@ class datacache
 	 */
 	function update_stats()
 	{
-		global $db;
-
 		require_once MYBB_ROOT."inc/functions_rebuild.php";
 		rebuild_stats();
 	}
@@ -691,7 +683,7 @@ class datacache
 			'time' => TIME_NOW,
 			'top_referrer' => (array)$topreferrer,
 			'top_poster' => (array)$topposter,
-			'posters' => $posters,
+			'posters' => $posters
 		);
 
 		$this->update('statistics', $statistics);
@@ -700,6 +692,7 @@ class datacache
 	/**
 	 * Update the moderators cache.
 	 *
+	 * @return bool Returns false on failure
 	 */
 	function update_moderators()
 	{
@@ -777,6 +770,8 @@ class datacache
 		$this->build_moderators();
 
 		$this->update("moderators", $this->built_moderators);
+
+		return true;
 	}
 
 	/**
@@ -792,7 +787,7 @@ class datacache
 
 		$data = array(
 			'users'	=> $awaitingusers,
-			'time'	=> TIME_NOW,
+			'time'	=> TIME_NOW
 		);
 
 		$this->update('awaitingactivation', $data);
@@ -802,8 +797,8 @@ class datacache
 	 * Build the moderators array
 	 *
 	 * @access private
-	 * @param array An optional moderators array (moderators of the parent forum for example).
-	 * @param int An optional parent ID.
+	 * @param array $moderators An optional moderators array (moderators of the parent forum for example).
+	 * @param int $pid An optional parent ID.
 	 */
 	private function build_moderators($moderators=array(), $pid=0)
 	{
@@ -892,7 +887,6 @@ class datacache
 	{
 		global $db, $mybb;
 
-		$reports = array();
 		$query = $db->simple_select("reportedcontent", "COUNT(rid) AS unreadcount", "reportstatus='0'");
 		$num = $db->fetch_array($query);
 
@@ -902,25 +896,10 @@ class datacache
 		$query = $db->simple_select("reportedcontent", "dateline", "reportstatus='0'", array('order_by' => 'dateline', 'order_dir' => 'DESC'));
 		$latest = $db->fetch_array($query);
 
-		$reasons = array();
-
-		if(!empty($mybb->settings['reportreasons']))
-		{
-			$options = $mybb->settings['reportreasons'];
-			$options = explode("\n", $options);
-
-			foreach($options as $option)
-			{
-				$option = explode("=", $option);
-				$reasons[$option[0]] = $option[1];
-			}
-		}
-
 		$reports = array(
 			"unread" => $num['unreadcount'],
 			"total" => $total['reportcount'],
-			"lastdateline" => $latest['dateline'],
-			"reasons" => $reasons
+			"lastdateline" => $latest['dateline']
 		);
 
 		$this->update("reportedcontent", $reports);
@@ -947,6 +926,8 @@ class datacache
 	/**
 	 * Update the mailqueue cache
 	 *
+	 * @param int $last_run
+	 * @param int $lock_time
 	 */
 	function update_mailqueue($last_run=0, $lock_time=0)
 	{
@@ -1120,7 +1101,7 @@ class datacache
 
 		$birthdays = array();
 
-		// Get today, yesturday, and tomorrow's time (for different timezones)
+		// Get today, yesterday, and tomorrow's time (for different timezones)
 		$bdaytime = TIME_NOW;
 		$bdaydate = my_date("j-n", $bdaytime, '', 0);
 		$bdaydatetomorrow = my_date("j-n", ($bdaytime+86400), '', 0);

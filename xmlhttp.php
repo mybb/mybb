@@ -84,18 +84,30 @@ else
 }
 
 // Load basic theme information that we could be needing.
+if($loadstyle != "def='1'")
+{
+	$query = $db->simple_select('themes', 'name, tid, properties, allowedgroups', $loadstyle, array('limit' => 1));
+	$theme = $db->fetch_array($query);
+
+	if(isset($theme['tid']) && !is_member($theme['allowedgroups']) && $theme['allowedgroups'] != 'all')
+	{
+		if(isset($mybb->cookies['mybbtheme']))
+		{
+			my_unsetcookie('mybbtheme');
+		}
+
+		$loadstyle = "def='1'";
+	}
+}
+
 if($loadstyle == "def='1'")
 {
 	if(!$cache->read('default_theme'))
 	{
 		$cache->update_default_theme();
 	}
+
 	$theme = $cache->read('default_theme');
-}
-else
-{
-	$query = $db->simple_select("themes", "name, tid, properties", $loadstyle);
-	$theme = $db->fetch_array($query);
 }
 
 // No theme was found - we attempt to load the master or any other theme
@@ -162,7 +174,7 @@ else
 		// Otherwise, the image language directory is the same as the language directory for the theme
 		else
 		{
-		$theme['imglangdir'] = $theme['imgdir'];
+			$theme['imglangdir'] = $theme['imgdir'];
 		}
 	}
 
@@ -186,17 +198,33 @@ else
 $lang->load("global");
 $lang->load("xmlhttp");
 
-$plugins->run_hooks("xmlhttp");
+$closed_bypass = array("refresh_captcha", "validate_captcha");
 
 $mybb->input['action'] = $mybb->get_input('action');
+
+$plugins->run_hooks("xmlhttp");
+
+// If the board is closed, the user is not an administrator and they're not trying to login, show the board closed message
+if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['canviewboardclosed'] != 1 && !in_array($mybb->input['action'], $closed_bypass))
+{
+	// Show error
+	if(!$mybb->settings['boardclosed_reason'])
+	{
+		$mybb->settings['boardclosed_reason'] = $lang->boardclosed_reason;
+	}
+
+	$lang->error_boardclosed .= "<br /><em>{$mybb->settings['boardclosed_reason']}</em>";
+
+	xmlhttp_error($lang->error_boardclosed);
+}
 
 // Fetch a list of usernames beginning with a certain string (used for auto completion)
 if($mybb->input['action'] == "get_users")
 {
 	$mybb->input['query'] = ltrim($mybb->get_input('query'));
 
-	// If the string is less than 3 characters, quit.
-	if(my_strlen($mybb->input['query']) < 3)
+	// If the string is less than 2 characters, quit.
+	if(my_strlen($mybb->input['query']) < 2)
 	{
 		exit;
 	}
@@ -227,7 +255,6 @@ if($mybb->input['action'] == "get_users")
 	if($limit == 1)
 	{
 		$user = $db->fetch_array($query);
-		$user['username'] = htmlspecialchars_uni($user['username']);
 		$data = array('id' => $user['username'], 'text' => $user['username']);
 	}
 	else
@@ -235,7 +262,6 @@ if($mybb->input['action'] == "get_users")
 		$data = array();
 		while($user = $db->fetch_array($query))
 		{
-			$user['username'] = htmlspecialchars_uni($user['username']);
 			$data[] = array('id' => $user['username'], 'text' => $user['username']);
 		}
 	}
@@ -333,37 +359,42 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 		}
 	}
 
-	// Set up posthandler.
-	require_once MYBB_ROOT."inc/datahandlers/post.php";
-	$posthandler = new PostDataHandler("update");
-	$posthandler->action = "post";
-
-	// Set the post data that came from the input to the $post array.
-	$updatepost = array(
-		"pid" => $post['pid'],
-		"tid" => $thread['tid'],
-		"subject" => $subject,
-		"edit_uid" => $mybb->user['uid']
-	);
-	$posthandler->set_data($updatepost);
-
-	// Now let the post handler do all the hard work.
-	if(!$posthandler->validate_post())
+	// Only edit subject if subject has actually been changed
+	if($thread['subject'] != $subject)
 	{
-		$post_errors = $posthandler->get_friendly_errors();
-		xmlhttp_error($post_errors);
-	}
-	// No errors were found, we can call the update method.
-	else
-	{
-		$posthandler->update_post();
-		if($ismod == true)
+		// Set up posthandler.
+		require_once MYBB_ROOT."inc/datahandlers/post.php";
+		$posthandler = new PostDataHandler("update");
+		$posthandler->action = "post";
+
+		// Set the post data that came from the input to the $post array.
+		$updatepost = array(
+			"pid" => $post['pid'],
+			"tid" => $thread['tid'],
+			"prefix" => $thread['prefix'],
+			"subject" => $subject,
+			"edit_uid" => $mybb->user['uid']
+		);
+		$posthandler->set_data($updatepost);
+
+		// Now let the post handler do all the hard work.
+		if(!$posthandler->validate_post())
 		{
-			$modlogdata = array(
-				"tid" => $thread['tid'],
-				"fid" => $forum['fid']
-			);
-			log_moderator_action($modlogdata, $lang->edited_post);
+			$post_errors = $posthandler->get_friendly_errors();
+			xmlhttp_error($post_errors);
+		}
+		// No errors were found, we can call the update method.
+		else
+		{
+			$posthandler->update_post();
+			if($ismod == true)
+			{
+				$modlogdata = array(
+					"tid" => $thread['tid'],
+					"fid" => $forum['fid']
+				);
+				log_moderator_action($modlogdata, $lang->edited_post);
+			}
 		}
 	}
 
@@ -407,6 +438,12 @@ else if($mybb->input['action'] == "edit_post")
 		xmlhttp_error($lang->thread_doesnt_exist);
 	}
 
+	// Check if this forum is password protected and we have a valid password
+	if(check_forum_password($forum['fid'], 0, true))
+	{
+		xmlhttp_error($lang->wrong_forum_password);
+	}
+
 	// Fetch forum permissions.
 	$forumpermissions = forum_permissions($forum['fid']);
 
@@ -436,12 +473,6 @@ else if($mybb->input['action'] == "edit_post")
 		{
 			xmlhttp_error($lang->post_moderation);
 		}
-
-		// Forum is closed - no editing allowed
-		if($forum['open'] == 0)
-		{
-			xmlhttp_error($lang->no_permission_edit_post);
-		}
 	}
 
 	$plugins->run_hooks("xmlhttp_edit_post_end");
@@ -449,13 +480,10 @@ else if($mybb->input['action'] == "edit_post")
 	if($mybb->get_input('do') == "get_post")
 	{
 		// Send our headers.
-		//header("Content-type: text/xml; charset={$charset}");
-		header("Content-type: text/html; charset={$charset}");
-
-		//$post['message'] = htmlspecialchars_uni($post['message']);
+		header("Content-type: application/json; charset={$charset}");
 
 		// Send the contents of the post.
-		echo $post['message'];
+		echo json_encode($post['message']);
 		exit;
 	}
 	else if($mybb->get_input('do') == "update_post")
@@ -499,6 +527,13 @@ else if($mybb->input['action'] == "edit_post")
 			"editreason" => $editreason,
 			"edit_uid" => $mybb->user['uid']
 		);
+
+		// If this is the first post set the prefix. If a forum requires a prefix the quick edit would throw an error otherwise
+		if($post['pid'] == $thread['firstpost'])
+		{
+			$updatepost['prefix'] = $thread['prefix'];
+		}
+
 		$posthandler->set_data($updatepost);
 
 		// Now let the post handler do all the hard work.
@@ -541,6 +576,8 @@ else if($mybb->input['action'] == "edit_post")
 			"filter_badwords" => 1
 		);
 
+		$post['username'] = htmlspecialchars_uni($post['username']);
+
 		if($post['smilieoff'] == 1)
 		{
 			$parser_options['allow_smilies'] = 0;
@@ -578,6 +615,7 @@ else if($mybb->input['action'] == "edit_post")
 		{
 			$post['editdate'] = my_date('relative', TIME_NOW);
 			$post['editnote'] = $lang->sprintf($lang->postbit_edited, $post['editdate']);
+			$mybb->user['username'] = htmlspecialchars_uni($mybb->user['username']);
 			$post['editedprofilelink'] = build_profile_link($mybb->user['username'], $mybb->user['uid']);
 			$post['editreason'] = trim($editreason);
 			$editreason = "";
@@ -747,7 +785,7 @@ else if($mybb->input['action'] == "validate_captcha")
 else if($mybb->input['action'] == "refresh_question" && $mybb->settings['securityquestion'])
 {
 	header("Content-type: application/json; charset={$charset}");
-	
+
 	$sid = $db->escape_string($mybb->get_input('question_id'));
 	$query = $db->query("
 		SELECT q.qid, s.sid
@@ -755,19 +793,19 @@ else if($mybb->input['action'] == "refresh_question" && $mybb->settings['securit
 		LEFT JOIN ".TABLE_PREFIX."questions q ON (q.qid=s.qid)
 		WHERE q.active='1' AND s.sid='{$sid}'
 	");
-	
+
 	if($db->num_rows($query) == 0)
 	{
 		xmlhttp_error($lang->answer_valid_not_exists);
 	}
-	
+
 	$qsession = $db->fetch_array($query);
-	
+
 	// Delete previous question session
 	$db->delete_query("questionsessions", "sid='$sid'");
-	
+
 	require_once MYBB_ROOT."inc/functions_user.php";
-	
+
 	$sid = generate_question($qsession['qid']);
 	$query = $db->query("
 		SELECT q.question, s.sid
@@ -775,17 +813,17 @@ else if($mybb->input['action'] == "refresh_question" && $mybb->settings['securit
 		LEFT JOIN ".TABLE_PREFIX."questions q ON (q.qid=s.qid)
 		WHERE q.active='1' AND s.sid='{$sid}' AND q.qid!='{$qsession['qid']}'
 	");
-	
+
 	$plugins->run_hooks("xmlhttp_refresh_question");
-	
+
 	if($db->num_rows($query) > 0)
 	{
 		$question = $db->fetch_array($query);
-		
+
 		echo json_encode(array("question" => htmlspecialchars_uni($question['question']), 'sid' => htmlspecialchars_uni($question['sid'])));
 		exit;
 	}
-	else 
+	else
 	{
 		xmlhttp_error($lang->answer_valid_not_exists);
 	}
@@ -795,14 +833,14 @@ elseif($mybb->input['action'] == "validate_question" && $mybb->settings['securit
 	header("Content-type: application/json; charset={$charset}");
 	$sid = $db->escape_string($mybb->get_input('question'));
 	$answer = $db->escape_string($mybb->get_input('answer'));
-	
+
 	$query = $db->query("
 		SELECT q.*, s.sid
 		FROM ".TABLE_PREFIX."questionsessions s
 		LEFT JOIN ".TABLE_PREFIX."questions q ON (q.qid=s.qid)
 		WHERE q.active='1' AND s.sid='{$sid}'
 	");
-	
+
 	if($db->num_rows($query) == 0)
 	{
 		echo json_encode($lang->answer_valid_not_exists);
@@ -821,7 +859,7 @@ elseif($mybb->input['action'] == "validate_question" && $mybb->settings['securit
 				$validated = 1;
 			}
 		}
-		
+
 		$plugins->run_hooks("xmlhttp_validate_question");
 
 		if($validated != 1)
@@ -870,7 +908,7 @@ else if($mybb->input['action'] == "username_availability")
 	$username = $mybb->get_input('username');
 
 	// Fix bad characters
-	$username = trim($username);
+	$username = trim_blank_chrs($username);
 	$username = str_replace(array(unichr(160), unichr(173), unichr(0xCA), dec_to_utf8(8238), dec_to_utf8(8237), dec_to_utf8(8203)), array(" ", "-", "", "", "", ""), $username);
 
 	// Remove multiple spaces from the username
@@ -893,7 +931,7 @@ else if($mybb->input['action'] == "username_availability")
 	}
 
 	// Check for certain characters in username (<, >, &, and slashes)
-	if(strpos($username, "<") !== false || strpos($username, ">") !== false || strpos($username, "&") !== false || my_strpos($username, "\\") !== false || strpos($username, ";") !== false || !validate_utf8_string($username, false, false))
+	if(strpos($username, "<") !== false || strpos($username, ">") !== false || strpos($username, "&") !== false || my_strpos($username, "\\") !== false || strpos($username, ";") !== false || strpos($username, ",") !== false || !validate_utf8_string($username, false, false))
 	{
 		echo json_encode($lang->banned_characters_username);
 		exit;
@@ -973,6 +1011,7 @@ else if($mybb->input['action'] == "get_buddyselect")
 		$offline = array();
 		while($buddy = $db->fetch_array($query))
 		{
+			$buddy['username'] = htmlspecialchars_uni($buddy['username']);
 			$buddy_name = format_name($buddy['username'], $buddy['usergroup'], $buddy['displaygroup']);
 			$profile_link = build_profile_link($buddy_name, $buddy['uid'], '_blank');
 			if($buddy['lastactive'] > $timecut && ($buddy['invisible'] == 0 || $mybb->user['usergroup'] == 4) && $buddy['lastvisit'] != $buddy['lastactive'])
@@ -1001,7 +1040,7 @@ else if($mybb->input['action'] == "get_buddyselect")
 /**
  * Spits an XML Http based error message back to the browser
  *
- * @param string The message to send back.
+ * @param string $message The message to send back.
  */
 function xmlhttp_error($message)
 {
@@ -1030,4 +1069,3 @@ function xmlhttp_error($message)
 
 	exit;
 }
-

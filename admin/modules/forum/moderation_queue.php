@@ -229,7 +229,7 @@ if($mybb->input['type'] == "threads" || !$mybb->input['type'])
 			}
 			else
 			{
-				$profile_link = build_profile_link($thread['username'], $thread['uid'], "_blank");
+				$profile_link = build_profile_link(htmlspecialchars_uni($thread['username']), $thread['uid'], "_blank");
 			}
 
 			$thread['postmessage'] = nl2br(htmlspecialchars_uni($thread['postmessage']));
@@ -374,7 +374,7 @@ if($mybb->input['type'] == "posts" || $mybb->input['type'] == "")
 			}
 			else
 			{
-				$profile_link = build_profile_link($post['username'], $post['uid'], "_blank");
+				$profile_link = build_profile_link(htmlspecialchars_uni($post['username']), $post['uid'], "_blank");
 			}
 
 			$post['message'] = nl2br(htmlspecialchars_uni($post['message']));
@@ -510,7 +510,7 @@ if($mybb->input['type'] == "attachments" || $mybb->input['type'] == "")
 
 			$link = get_post_link($attachment['pid'], $attachment['tid']) . "#pid{$attachment['pid']}";
 			$thread_link = get_thread_link($attachment['tid']);
-			$profile_link = build_profile_link($attachment['username'], $attachment['uid'], "_blank");
+			$profile_link = build_profile_link(htmlspecialchars_uni($attachment['username']), $attachment['uid'], "_blank");
 
 			$table->construct_cell("<a href=\"../attachment.php?aid={$attachment['aid']}\" target=\"_blank\">{$attachment['filename']}</a> ({$attachment['filesize']})<br /><small class=\"modqueue_meta\">{$lang->post} <a href=\"{$link}\" target=\"_blank\">{$attachment['postsubject']}</a></small>");
 			$table->construct_cell($profile_link, array("class" => "align_center"));

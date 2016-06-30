@@ -13,7 +13,8 @@ $uid_list = $aid_list = $pid_list = $tid_list = $fid_list = $ann_list = $eid_lis
 /**
  * Fetch a users activity and any corresponding details from their location.
  *
- * @param string The location (URL) of the user.
+ * @param string $location The location (URL) of the user.
+ * @param bool $nopermission
  * @return array Array of location and activity information
  */
 function fetch_wol_activity($location, $nopermission=false)
@@ -566,7 +567,7 @@ function fetch_wol_activity($location, $nopermission=false)
 /**
  * Builds a friendly named Who's Online location from an "activity" and array of user data. Assumes fetch_wol_activity has already been called.
  *
- * @param array Array containing activity and essential IDs.
+ * @param array $user_activity Array containing activity and essential IDs.
  * @return string Location name for the activity being performed.
  */
 function build_friendly_wol_location($user_activity)
@@ -599,12 +600,12 @@ function build_friendly_wol_location($user_activity)
 			$query = $db->simple_select("users", "uid,username", "uid IN ($uid_sql)");
 			while($user = $db->fetch_array($query))
 			{
-				$usernames[$user['uid']] = $user['username'];
+				$usernames[$user['uid']] = htmlspecialchars_uni($user['username']);
 			}
 		}
 		else
 		{
-			$usernames[$mybb->user['uid']] = $mybb->user['username'];
+			$usernames[$mybb->user['uid']] = htmlspecialchars_uni($mybb->user['username']);
 		}
 	}
 
@@ -1117,7 +1118,7 @@ function build_friendly_wol_location($user_activity)
 /**
  * Build a Who's Online row for a specific user
  *
- * @param array Array of user information including activity information
+ * @param array $user Array of user information including activity information
  * @return string Formatted online row
  */
 function build_wol_row($user)
@@ -1140,7 +1141,7 @@ function build_wol_row($user)
 				$invisible_mark = '';
 			}
 
-			$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
+			$user['username'] = format_name(htmlspecialchars_uni($user['username']), $user['usergroup'], $user['displaygroup']);
 			$online_name = build_profile_link($user['username'], $user['uid']).$invisible_mark;
 		}
 	}
@@ -1177,6 +1178,7 @@ function build_wol_row($user)
 		$user_ip = $lookup = $user['ip'] = '';
 	}
 
+	$online_row = '';
 	// And finally if we have permission to view this user, return the completed online row
 	if($user['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])
 	{

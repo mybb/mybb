@@ -61,7 +61,7 @@ if(!$mybb->input['action'])
 			{
 				admin_redirect('index.php?module=tools-cache');
 			}
-			admin_redirect('index.php?module=home-credits');
+			admin_redirect('index.php?module=home-credits&amp;fetch_new=-1');
 		}
 
 		$parser = new XMLParser($contents);
@@ -97,7 +97,7 @@ if(!$mybb->input['action'])
 		else
 		{
 			flash_message($lang->success_credits_updated, 'success');
-			admin_redirect('index.php?module=home-credits');
+			admin_redirect('index.php?module=home-credits&amp;fetch_new=-1');
 		}
 	}
 

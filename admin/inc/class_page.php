@@ -67,7 +67,7 @@ class DefaultPage
 	/**
 	 * Output the page header.
 	 *
-	 * @param string The title of the page.
+	 * @param string $title The title of the page.
 	 */
 	function output_header($title="")
 	{
@@ -108,7 +108,7 @@ class DefaultPage
 
 		echo "	<script type=\"text/javascript\" src=\"../jscripts/jquery.js\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"../jscripts/jquery.plugins.min.js\"></script>\n";
-		echo "	<script type=\"text/javascript\" src=\"../jscripts/general.js\"></script>\n";
+		echo "	<script type=\"text/javascript\" src=\"../jscripts/general.js?ver=1807\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"./jscripts/admincp.js\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"./jscripts/tabs.js\"></script>\n";
 
@@ -142,7 +142,8 @@ lang.saved = \"{$lang->saved}\";
 		echo "<body>\n";
 		echo "<div id=\"container\">\n";
 		echo "	<div id=\"logo\"><h1><span class=\"invisible\">{$lang->mybb_admin_cp}</span></h1></div>\n";
-		echo "	<div id=\"welcome\"><span class=\"logged_in_as\">{$lang->logged_in_as} <a href=\"index.php?module=user-users&amp;action=edit&amp;uid={$mybb->user['uid']}\" class=\"username\">{$mybb->user['username']}</a></span> | <a href=\"{$mybb->settings['bburl']}\" target=\"_blank\" class=\"forum\">{$lang->view_board}</a> | <a href=\"index.php?action=logout&amp;my_post_key={$mybb->post_code}\" class=\"logout\">{$lang->logout}</a></div>\n";
+		$username = htmlspecialchars_uni($mybb->user['username']);
+		echo "	<div id=\"welcome\"><span class=\"logged_in_as\">{$lang->logged_in_as} <a href=\"index.php?module=user-users&amp;action=edit&amp;uid={$mybb->user['uid']}\" class=\"username\">{$username}</a></span> | <a href=\"{$mybb->settings['bburl']}\" target=\"_blank\" class=\"forum\">{$lang->view_board}</a> | <a href=\"index.php?action=logout&amp;my_post_key={$mybb->post_code}\" class=\"logout\">{$lang->logout}</a></div>\n";
 		echo $this->_build_menu();
 		echo "	<div id=\"page\">\n";
 		echo "		<div id=\"left_menu\">\n";
@@ -191,6 +192,8 @@ lang.saved = \"{$lang->saved}\";
 
 	/**
 	 * Output the page footer.
+	 *
+	 * @param bool $quit
 	 */
 	function output_footer($quit=true)
 	{
@@ -240,8 +243,8 @@ lang.saved = \"{$lang->saved}\";
 	/**
 	 * Add an item to the page breadcrumb trail.
 	 *
-	 * @param string The name of the item to add.
-	 * @param string The URL to the item we're adding (if there is one)
+	 * @param string $name The name of the item to add.
+	 * @param string $url The URL to the item we're adding (if there is one)
 	 */
 	function add_breadcrumb_item($name, $url="")
 	{
@@ -250,6 +253,8 @@ lang.saved = \"{$lang->saved}\";
 
 	/**
 	 * Generate a breadcrumb trail.
+	 *
+	 * @return bool|string
 	 */
 	function _generate_breadcrumb()
 	{
@@ -279,7 +284,7 @@ lang.saved = \"{$lang->saved}\";
 	/**
 	 * Output a success message.
 	 *
-	 * @param string The message to output.
+	 * @param string $message The message to output.
 	 */
 	function output_success($message)
 	{
@@ -289,8 +294,8 @@ lang.saved = \"{$lang->saved}\";
 	/**
 	 * Output an alert/warning message.
 	 *
-	 * @param string The message to output.
-	 * @param string The ID of the alert/warning (optional)
+	 * @param string $message The message to output.
+	 * @param string $id The ID of the alert/warning (optional)
 	 */
 	function output_alert($message, $id="")
 	{
@@ -304,7 +309,7 @@ lang.saved = \"{$lang->saved}\";
 	/**
 	 * Output an inline message.
 	 *
-	 * @param string The message to output.
+	 * @param string $message The message to output.
 	 */
 	function output_inline_message($message)
 	{
@@ -314,7 +319,7 @@ lang.saved = \"{$lang->saved}\";
 	/**
 	 * Output a single error message.
 	 *
-	 * @param string The message to output.
+	 * @param string $error The message to output.
 	 */
 	function output_error($error)
 	{
@@ -326,7 +331,7 @@ lang.saved = \"{$lang->saved}\";
 	/**
 	 * Output one or more inline error messages.
 	 *
-	 * @param array Array of error messages to output.
+	 * @param array $errors Array of error messages to output.
 	 */
 	function output_inline_error($errors)
 	{
@@ -350,8 +355,8 @@ lang.saved = \"{$lang->saved}\";
 	/**
 	 * Generate the login page.
 	 *
-	 * @param string The any message to output on the page if there is one.
-	 * @param string The class name of the message (defaults to success)
+	 * @param string $message The any message to output on the page if there is one.
+	 * @param string $class The class name of the message (defaults to success)
 	 */
 	function show_login($message="", $class="success")
 	{
@@ -386,7 +391,7 @@ lang.saved = \"{$lang->saved}\";
 <meta name="copyright" content="Copyright {$copy_year} MyBB Group." />
 <link rel="stylesheet" href="./styles/{$cp_style}/login.css" type="text/css" />
 <script type="text/javascript" src="../jscripts/jquery.js"></script>
-<script type="text/javascript" src="../jscripts/general.js"></script>
+<script type="text/javascript" src="../jscripts/general.js?ver=1807"></script>
 <script type="text/javascript" src="./jscripts/admincp.js"></script>
 <script type="text/javascript">
 //<![CDATA[
@@ -518,7 +523,7 @@ EOF;
 <meta name="copyright" content="Copyright {$copy_year} MyBB Group." />
 <link rel="stylesheet" href="./styles/{$cp_style}/login.css" type="text/css" />
 <script type="text/javascript" src="../jscripts/jquery.js"></script>
-<script type="text/javascript" src="../jscripts/general.js"></script>
+<script type="text/javascript" src="../jscripts/general.js?ver=1807"></script>
 <script type="text/javascript" src="./jscripts/admincp.js"></script>
 <script type="text/javascript">
 //<![CDATA[
@@ -611,8 +616,8 @@ EOF;
 	/**
 	 * Generate the lockout unlock page
 	 *
-	 * @param string The any message to output on the page if there is one.
-	 * @param string The class name of the message (defaults to success)
+	 * @param string $message The any message to output on the page if there is one.
+	 * @param string $class The class name of the message (defaults to success)
 	 */
 	function show_lockout_unlock($message="", $class="success")
 	{
@@ -691,11 +696,11 @@ EOF;
 	/**
 	 * Add an item to the primary navigation menu.
 	 *
-	 * @param string The title of the menu item.
-	 * @param string The ID of the menu item. This should correspond with the module the menu will run.
-	 * @param string The link to follow when the menu item is clicked.
-	 * @param int The display order of the menu item. Lower display order means closer to start of the menu.
-	 * @param array Array of sub menu items if there are any.
+	 * @param string $title The title of the menu item.
+	 * @param string $id The ID of the menu item. This should correspond with the module the menu will run.
+	 * @param string $link The link to follow when the menu item is clicked.
+	 * @param int $order The display order of the menu item. Lower display order means closer to start of the menu.
+	 * @param array $submenu Array of sub menu items if there are any.
 	 */
 	function add_menu_item($title, $id, $link, $order=10, $submenu=array())
 	{
@@ -709,6 +714,8 @@ EOF;
 
 	/**
 	 * Build the actual navigation menu.
+	 *
+	 * @return bool|string
 	 */
 	function _build_menu()
 	{
@@ -748,8 +755,8 @@ EOF;
 	/**
 	 * Build a navigation sub menu if we have one.
 	 *
-	 * @param string A title for the sub menu.
-	 * @param array Array of items for the sub menu.
+	 * @param string $title A title for the sub menu.
+	 * @param array $items Array of items for the sub menu.
 	 */
 	function _build_submenu($title, $items)
 	{
@@ -762,29 +769,11 @@ EOF;
 	}
 
 	/**
-	 * Switch between two different alternating background colours.
-	 */
-	function get_alt_bg()
-	{
-		static $alt_bg;
-		if($alt_bg == "alt1")
-		{
-			$alt_bg = "alt2";
-			return "alt1";
-		}
-		else
-		{
-			$alt_bg = "alt1";
-			return $alt_bg;
-		}
-	}
-
-	/**
 	 * Output a Javascript based tab control on to the page.
 	 *
-	 * @param array Array of tabs in name => title format. Name should correspond to the name of a DIV containing the tab content.
-	 * @param boolean Whether or not to run the event onload or instantly
-	 * @param string The ID to use for the tabs for if you run multiple instances of the tabbing control in one html page
+	 * @param array $tabs Array of tabs in name => title format. Name should correspond to the name of a DIV containing the tab content.
+	 * @param boolean $observe_onload Whether or not to run the event onload or instantly
+	 * @param string $id The ID to use for the tabs for if you run multiple instances of the tabbing control in one html page
 	 */
 	function output_tab_control($tabs=array(), $observe_onload=true, $id="tabs")
 	{
@@ -814,8 +803,8 @@ EOF;
 	/**
 	 * Output a series of primary navigation tabs for swithcing between items within a particular module/action.
 	 *
-	 * @param array Nested array of tabs containing possible keys of align, link_target, link, title.
-	 * @param string The name of the active tab. Corresponds with the key of each tab item.
+	 * @param array $tabs Nested array of tabs containing possible keys of align, link_target, link, title.
+	 * @param string $active The name of the active tab. Corresponds with the key of each tab item.
 	 */
 	function output_nav_tabs($tabs=array(), $active='')
 	{
@@ -859,9 +848,9 @@ EOF;
 	/**
 	 * Output a page asking if a user wishes to continue performing a specific action.
 	 *
-	 * @param string The URL to be forwarded to.
-	 * @param string The confirmation message to output.
-	 * @param string The title to use in the output header
+	 * @param string $url The URL to be forwarded to.
+	 * @param string $message The confirmation message to output.
+	 * @param string $title The title to use in the output header
 	 */
 	function output_confirm_action($url, $message="", $title="")
 	{
@@ -899,8 +888,9 @@ EOF;
 	/**
 	 * Build a clickable MyCode editor for the Admin CP.
 	 *
-	 * @param string The ID of the textarea to bind the editor to.
-	 * @param string The language string for the editor.
+	 * @param string $bind The ID of the textarea to bind the editor to.
+	 * @param string $editor_language The language string for the editor.
+	 * @param bool $smilies Whether or not smilies should be included
 	 * @return string The build MyCode editor Javascript.
 	 */
 	function build_codebuttons_editor($bind, $editor_language, $smilies)
@@ -910,10 +900,14 @@ EOF;
 		// Smilies
 		$emoticon = "";
 		$emoticons_enabled = "false";
-		if($smilies && $mybb->settings['smilieinserter'] != 0 && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
+		if($smilies)
 		{
-			$emoticon = ",emoticon";
+			if($mybb->settings['smilieinserter'] && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
+			{			
+				$emoticon = ",emoticon";
+			}
 			$emoticons_enabled = "true";
+			
 			if(!$smiliecount)
 			{
 				$smilie_cache = $cache->read("smilies");
@@ -928,11 +922,8 @@ EOF;
 				}
 				foreach($smilie_cache as $smilie)
 				{
-					if($smilie['showclickable'] != 0)
-					{
-						$smilie['image'] = str_replace("{theme}", "images", $smilie['image']);
-						$smiliecache[$smilie['find']] = $smilie['image'];
-					}
+					$smilie['image'] = str_replace("{theme}", "images", $smilie['image']);
+					$smiliecache[$smilie['sid']] = $smilie;
 				}
 			}
 
@@ -945,21 +936,27 @@ EOF;
 				$dropdownsmilies = $moresmilies = $hiddensmilies = "";
 				$i = 0;
 
-				foreach($smiliecache as $find => $image)
+				foreach($smiliecache as $smilie)
 				{
-					$finds = explode("\n", $find);
+					$finds = explode("\n", $smilie['find']);
 					$finds_count = count($finds);
 					
 					// Only show the first text to replace in the box
 					$find = str_replace(array('\\', '"'), array('\\\\', '\"'), htmlspecialchars_uni($finds[0]));
-					$image = str_replace(array('\\', '"'), array('\\\\', '\"'), htmlspecialchars_uni($image));
+					$image = str_replace(array('\\', '"'), array('\\\\', '\"'), htmlspecialchars_uni($smilie['image']));
 					if(substr($image, 0, 4) != "http")
 					{
 						$image = $mybb->settings['bburl']."/".$image;
 					}
-					if($i < $mybb->settings['smilieinsertertot'])
+
+					if(!$mybb->settings['smilieinserter'] || !$mybb->settings['smilieinsertercols'] || !$mybb->settings['smilieinsertertot'] || !$smilie['showclickable'])
+					{
+						$hiddensmilies .= '"'.$find.'": "'.$image.'",';							
+					}
+					elseif($i < $mybb->settings['smilieinsertertot'])
 					{
 						$dropdownsmilies .= '"'.$find.'": "'.$image.'",';
+						++$i;
 					}
 					else
 					{
@@ -971,7 +968,6 @@ EOF;
 						$find = str_replace(array('\\', '"'), array('\\\\', '\"'), htmlspecialchars_uni($finds[$j]));
 						$hiddensmilies .= '"'.$find.'": "'.$image.'",';
 					}
-					++$i;
 				}
 			}
 		}
@@ -1044,6 +1040,7 @@ opt_editor = {
 	rtl: {$lang->settings['rtl']},
 	locale: "mybblang",
 	enablePasteFiltering: true,
+	autoUpdate: true,
 	emoticonsEnabled: {$emoticons_enabled},
 	emoticons: {
 		// Emoticons to be included in the dropdown
@@ -1080,7 +1077,7 @@ EOF;
 class DefaultSidebarItem
 {
 	/**
-	 * @var The title of the side bar block.
+	 * @var string The title of the side bar block.
 	 */
 	private $_title;
 
@@ -1092,7 +1089,7 @@ class DefaultSidebarItem
 	/**
 	 * Constructor. Set the title of the side bar block.
 	 *
-	 * @param string The title of the side bar block.
+	 * @param string $title The title of the side bar block.
 	 */
 	function __construct($title="")
 	{
@@ -1102,8 +1099,8 @@ class DefaultSidebarItem
 	/**
 	 * Add menus item to the side bar block.
 	 *
-	 * @param array Array of menu items to add. Each menu item should be a nested array of id, link and title.
-	 * @param string The ID of the active menu item if there is one.
+	 * @param array $items Array of menu items to add. Each menu item should be a nested array of id, link and title.
+	 * @param string $active The ID of the active menu item if there is one.
 	 */
 	function add_menu_items($items, $active)
 	{
@@ -1131,7 +1128,7 @@ class DefaultSidebarItem
 	/**
 	 * Sets custom html to the contents variable
 	 *
-	 * @param string The custom html to set
+	 * @param string $html The custom html to set
 	 */
 	function set_contents($html)
 	{
@@ -1140,6 +1137,8 @@ class DefaultSidebarItem
 
 	/**
 	 * Fetch the HTML markup for the side bar box.
+	 *
+	 * @return string
 	 */
 	function get_markup()
 	{
@@ -1177,8 +1176,8 @@ class DefaultPopupMenu
 	/**
 	 * Initialise a new popup menu.
 	 *
-	 * @var string The ID of the popup menu.
-	 * @var string The title of the popup menu.
+	 * @var string $id The ID of the popup menu.
+	 * @var string $title The title of the popup menu.
 	 */
 	function __construct($id, $title='')
 	{
@@ -1189,9 +1188,9 @@ class DefaultPopupMenu
 	/**
 	 * Add an item to the popup menu.
 	 *
-	 * @param string The title of this item.
-	 * @param string The page this item should link to.
-	 * @param string The onclick event handler if we have one.
+	 * @param string $text The title of this item.
+	 * @param string $link The page this item should link to.
+	 * @param string $onclick The onclick event handler if we have one.
 	 */
 	function add_item($text, $link, $onclick='')
 	{

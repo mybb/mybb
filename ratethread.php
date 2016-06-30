@@ -27,14 +27,7 @@ if(!$thread)
 }
 
 // Is the currently logged in user a moderator of this forum?
-if(is_moderator($thread['fid']))
-{
-	$ismod = true;
-}
-else
-{
-	$ismod = false;
-}
+$ismod = is_moderator($thread['fid']);
 
 // Make sure we are looking at a real thread here.
 if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))

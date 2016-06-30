@@ -11,11 +11,11 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'calendar.php');
 
-$templatelist = "calendar_weekdayheader,calendar_weekrow_day,calendar_weekrow,calendar,calendar_addevent,calendar_move,calendar_year,calendar_day,calendar_select,calendar_repeats,calendar_weekview_day_event_time";
-$templatelist .= ",calendar_weekview_day,calendar_weekview_day_event,calendar_mini_weekdayheader,calendar_mini_weekrow_day,calendar_mini_weekrow,calendar_mini,calendar_weekview_month,calendar_weekview";
-$templatelist .= ",calendar_event_editbutton,calendar_event_modoptions,calendar_dayview_event,calendar_dayview,codebuttons,smilieinsert,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty";
-$templatelist .= ",calendar_jump,calendar_jump_option,calendar_editevent,calendar_dayview_birthdays_bday,calendar_dayview_birthdays,calendar_dayview_noevents,calendar_addeventlink,calendar_addevent_calendarselect_hidden";
-$templatelist .= ",calendar_weekrow_day_birthdays,calendar_weekview_day_birthdays,calendar_year_sel,calendar_event_userstar,calendar_addevent_calendarselect,calendar_eventbit,calendar_event";
+$templatelist = "calendar_weekdayheader,calendar_weekrow_day,calendar_weekrow,calendar,calendar_addevent,calendar_year,calendar_day,calendar_select,calendar_repeats,calendar_weekview_day_event_time";
+$templatelist .= ",calendar_weekview_day,calendar_weekview_day_event,calendar_mini_weekdayheader,calendar_mini_weekrow_day,calendar_mini_weekrow,calendar_mini,calendar_mini_weekrow_day_link,calendar_move";
+$templatelist .= ",calendar_event_editbutton,calendar_event_modoptions,calendar_dayview_event,calendar_dayview,codebuttons,calendar_weekrow_day_events,calendar_weekview_month,calendar_addeventlink";
+$templatelist .= ",calendar_jump,calendar_jump_option,calendar_editevent,calendar_dayview_birthdays_bday,calendar_dayview_birthdays,calendar_dayview_noevents,calendar_addevent_calendarselect_hidden";
+$templatelist .= ",calendar_weekrow_day_birthdays,calendar_weekview_day_birthdays,calendar_year_sel,calendar_event_userstar,calendar_addevent_calendarselect,calendar_eventbit,calendar_event,calendar_weekview";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_calendar.php";
@@ -542,12 +542,67 @@ if($mybb->input['action'] == "addevent")
 		eval("\$calendar_select .= \"".$templates->get("calendar_addevent_calendarselect_hidden")."\";");
 	}
 
-	$event_errors = '';
+	if(!isset($event_errors))
+	{
+		$event_errors = '';
+	}
 
 	$plugins->run_hooks("calendar_addevent_end");
 
 	eval("\$addevent = \"".$templates->get("calendar_addevent")."\";");
 	output_page($addevent);
+}
+
+// Delete an event
+if($mybb->input['action'] == "do_deleteevent" && $mybb->request_method == "post")
+{
+	$query = $db->simple_select("events", "*", "eid='{$mybb->input['eid']}'");
+	$event = $db->fetch_array($query);
+
+	if(!$event)
+	{
+		error($lang->error_invalidevent);
+	}
+
+	$query = $db->simple_select("calendars", "*", "cid='{$event['cid']}'");
+	$calendar = $db->fetch_array($query);
+
+	// Invalid calendar?
+	if(!$calendar)
+	{
+		error($lang->invalid_calendar);
+	}
+
+	// Do we have permission to view this calendar or post events?
+	$calendar_permissions = get_calendar_permissions($calendar['cid']);
+	if($calendar_permissions['canviewcalendar'] != 1 || $calendar_permissions['canaddevents'] != 1)
+	{
+		error_no_permission();
+	}
+
+	if(($event['uid'] != $mybb->user['uid'] || $mybb->user['uid'] == 0) && $calendar_permissions['canmoderateevents'] != 1)
+	{
+		error_no_permission();
+	}
+
+	// Verify incoming POST request
+	verify_post_check($mybb->get_input('my_post_key'));
+
+	$plugins->run_hooks("calendar_do_deleteevent_start");
+
+	// Is the checkbox set?
+	if($mybb->get_input('delete', MyBB::INPUT_INT) == 1)
+	{
+		$db->delete_query("events", "eid='{$event['eid']}'");
+		$plugins->run_hooks("calendar_do_deleteevent_end");
+
+		// Redirect back to the main calendar view.
+		redirect("calendar.php", $lang->redirect_eventdeleted);
+	}
+	else
+	{
+		error($lang->delete_no_checkbox);
+	}
 }
 
 // Edit an event
@@ -584,15 +639,6 @@ if($mybb->input['action'] == "do_editevent" && $mybb->request_method == "post")
 
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
-
-	// Are we going to delete this event or just edit it?
-	if($mybb->get_input('delete', MyBB::INPUT_INT) == 1)
-	{
-		$db->delete_query("events", "eid='{$event['eid']}'");
-
-		// Redirect back to the main calendar view.
-		redirect("calendar.php", $lang->redirect_eventdeleted);
-	}
 
 	$plugins->run_hooks("calendar_do_editevent_start");
 
@@ -899,7 +945,7 @@ if($mybb->input['action'] == "editevent")
 		{
 			$privatecheck = '';
 		}
-		$start_date = explode("-", gmdate("j-n-Y-g:i A", $event['starttime']+$event['timezone']*3600));
+		$start_date = explode("-", gmdate("j-n-Y", $event['starttime']+$event['timezone']*3600));
 		$single_day = $start_date[0];
 		$single_month[$start_date[1]] = " selected=\"selected\"";
 		$single_year = $start_date[2];
@@ -916,7 +962,7 @@ if($mybb->input['action'] == "editevent")
 		}
 		if($event['endtime'])
 		{
-			$end_date = explode("-", gmdate("j-n-Y-g:i A", $event['endtime']+$event['timezone']*3600));
+			$end_date = explode("-", gmdate("j-n-Y", $event['endtime']+$event['timezone']*3600));
 			$end_day = $end_date[0];
 			$end_month[$end_date[1]] = " selected=\"selected\"";
 			$end_year = $end_date[2];
@@ -1415,29 +1461,25 @@ if($mybb->input['action'] == "event")
 	// Event made by registered user
 	if($event['uid'] > 0 && $event['username'])
 	{
+		$event['username'] = htmlspecialchars_uni($event['username']);
 		$event['profilelink'] = build_profile_link(format_name($event['username'], $event['usergroup'], $event['displaygroup']), $event['uid']);
 
-		$hascustomtitle = 0;
 		if(trim($event['usertitle']) != "")
 		{
-			$hascustomtitle = 1;
+			// Do nothing, no need for an extra variable..
 		}
-
-		if($user_usergroup['usertitle'] != "" && !$hascustomtitle)
+		elseif($user_usergroup['usertitle'] != "")
 		{
 			$event['usertitle'] = $user_usergroup['usertitle'];
 		}
 		elseif(is_array($titles_cache) && !$user_usergroup['usertitle'])
 		{
 			reset($titles_cache);
-			foreach($titles_cache as $key => $title)
+			foreach($titles_cache as $title)
 			{
-				if($event['postnum'] >= $key)
+				if($event['postnum'] >= $title['posts'])
 				{
-					if(!$hascustomtitle)
-					{
-						$event['usertitle'] = $title['title'];
-					}
+					$event['usertitle'] = $title['title'];
 					$event['stars'] = $title['stars'];
 					$event['starimage'] = $title['starimage'];
 					break;
@@ -1475,6 +1517,7 @@ if($mybb->input['action'] == "event")
 			$event['username'] = $lang->guest;
 		}
 
+		$event['username'] = htmlspecialchars_uni($event['username']);
 		$event['profilelink'] = format_name($event['username'], 1);
 
 		if($user_usergroup['usertitle'])
@@ -1488,7 +1531,7 @@ if($mybb->input['action'] == "event")
 		$event['userstars'] = '';
 	}
 
-	$event['usertitle'] = htmlspecialchars_uni($event['usertitle']); 
+	$event['usertitle'] = htmlspecialchars_uni($event['usertitle']);
 
 	if($event['ignoretimezone'] == 0)
 	{
@@ -1680,7 +1723,7 @@ if($mybb->input['action'] == "dayview")
 						$age = '';
 					}
 
-					$birthday['username'] = format_name($birthday['username'], $birthday['usergroup'], $birthday['displaygroup']);
+					$birthday['username'] = format_name(htmlspecialchars_uni($birthday['username']), $birthday['usergroup'], $birthday['displaygroup']);
 					$birthday['profilelink'] = build_profile_link($birthday['username'], $birthday['uid']);
 					eval("\$birthday_list .= \"".$templates->get("calendar_dayview_birthdays_bday", 1, 0)."\";");
 					$comma = $lang->comma;
@@ -1759,29 +1802,25 @@ if($mybb->input['action'] == "dayview")
 			// Event made by registered user
 			if($event['uid'] > 0 && $event['username'])
 			{
+				$event['username'] = htmlspecialchars_uni($event['username']);
 				$event['profilelink'] = build_profile_link(format_name($event['username'], $event['usergroup'], $event['displaygroup']), $event['uid']);
 
-				$hascustomtitle = 0;
 				if(trim($event['usertitle']) != "")
 				{
-					$hascustomtitle = 1;
+					// Do nothing, no need for an extra variable..
 				}
-
-				if($user_usergroup['usertitle'] != "" && !$hascustomtitle)
+				elseif($user_usergroup['usertitle'] != "")
 				{
 					$event['usertitle'] = $user_usergroup['usertitle'];
 				}
 				elseif(is_array($titles_cache) && !$user_usergroup['usertitle'])
 				{
 					reset($titles_cache);
-					foreach($titles_cache as $key => $title)
+					foreach($titles_cache as $title)
 					{
-						if($event['postnum'] >= $key)
+						if($event['postnum'] >= $title['posts'])
 						{
-							if(!$hascustomtitle)
-							{
-								$event['usertitle'] = $title['title'];
-							}
+							$event['usertitle'] = $title['title'];
 							$event['stars'] = $title['stars'];
 							$event['starimage'] = $title['starimage'];
 							break;
@@ -1818,7 +1857,7 @@ if($mybb->input['action'] == "dayview")
 					$event['username'] = $lang->guest;
 				}
 
-				$event['username'] = $event['username'];
+				$event['username'] = htmlspecialchars_uni($event['username']);
 				$event['profilelink'] = format_name($event['username'], 1);
 
 				if($user_usergroup['usertitle'])
@@ -1832,7 +1871,7 @@ if($mybb->input['action'] == "dayview")
 				$event['userstars'] = '';
 			}
 
-			$event['usertitle'] = htmlspecialchars_uni($event['usertitle']); 
+			$event['usertitle'] = htmlspecialchars_uni($event['usertitle']);
 
 			if($event['ignoretimezone'] == 0)
 			{
@@ -2380,9 +2419,8 @@ if(!$mybb->input['action'])
 				break;
 			}
 
-			$day_events = '';
-
 			// Any events on this specific day?
+			$day_events = $event_lang = '';
 			if(is_array($events_cache) && array_key_exists("{$day}-{$calendar_month}-{$calendar_year}", $events_cache))
 			{
 				$total_events = count($events_cache["$day-$calendar_month-$calendar_year"]);
@@ -2390,12 +2428,15 @@ if(!$mybb->input['action'])
 				{
 					if($total_events > 1)
 					{
-						$day_events = "<div style=\"margin-bottom: 4px;\"><a href=\"".get_calendar_link($calendar['cid'], $calendar_year, $calendar_month, $day)."\" class=\"smalltext\">{$total_events} {$lang->events}</a></div>\n";
+						$event_lang = $lang->events;
 					}
 					else
 					{
-						$day_events = "<div style=\"margin-bottom: 4px;\"><a href=\"".get_calendar_link($calendar['cid'], $calendar_year, $calendar_month, $day)."\" class=\"smalltext\">1 {$lang->event}</a></div>\n";
+						$event_lang = $lang->event;
 					}
+
+					$calendar['link'] = get_calendar_link($calendar['cid'], $calendar_year, $calendar_month, $day);
+					eval("\$day_events = \"".$templates->get("calendar_weekrow_day_events")."\";");
 				}
 				else
 				{

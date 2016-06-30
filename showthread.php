@@ -11,15 +11,17 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'showthread.php');
 
-$templatelist = "showthread,postbit,postbit_author_user,postbit_author_guest,showthread_newthread,showthread_newreply,showthread_newreply_closed,postbit_avatar,postbit_find,postbit_pm,postbit_www,postbit_email,postbit_edit,postbit_quote,postbit_report,postbit_signature,postbit_online,postbit_offline,postbit_away,showthread_ratethread";
-$templatelist .= ",multipage,multipage_breadcrumb,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,showthread_inlinemoderation_softdelete,showthread_inlinemoderation_restore,showthread_inlinemoderation_delete,postbit_posturl,postbit_icon";
-$templatelist .= ",postbit_editedby,showthread_similarthreads,showthread_similarthreads_bit,postbit_iplogged_show,postbit_iplogged_hiden,postbit_profilefield,showthread_quickreply,showthread_add_poll,showthread_send_thread,showthread_poll_editpoll,showthread_poll_undovote,showthread_moderationoptions_standard,postbit_editedby_editreason";
-$templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit,postbit_reputation,postbit_quickdelete,postbit_attachments,postbit_attachments_attachment,postbit_attachments_thumbnails,postbit_attachments_images_image,postbit_attachments_images,showthread_quickreply_options_stick,showthread_quickreply_options_close,attachment_icon";
-$templatelist .= ",postbit_inlinecheck,showthread_inlinemoderation,postbit_attachments_thumbnails_thumbnail,postbit_ignored,postbit_groupimage,postbit_multiquote,showthread_search,showthread_moderationoptions_custom_tool,showthread_moderationoptions_custom,showthread_inlinemoderation_custom_tool,showthread_inlinemoderation_custom";
-$templatelist .= ",showthread_usersbrowsing,showthread_usersbrowsing_user,showthread_poll_option_multiple,showthread_poll_option,showthread_poll,showthread_quickreply_options_signature,showthread_threaded_bitactive,showthread_threaded_bit,postbit_attachments_attachment_unapproved,showthread_threadnotes,showthread_threadnotes_viewnotes";
-$templatelist .= ",showthread_moderationoptions_openclose,showthread_moderationoptions_stickunstick,showthread_moderationoptions_delete,showthread_moderationoptions_threadnotes,showthread_moderationoptions_manage,showthread_moderationoptions_deletepoll,showthread_threadnoteslink,showthread_poll_results,showthread_classic_header,postbit_warn";
-$templatelist .= ",postbit_userstar,postbit_reputation_formatted_link,postbit_warninglevel_formatted,postbit_quickrestore,forumdisplay_password,forumdisplay_password_wrongpass,postbit_classic,postbit_purgespammer,showthread_inlinemoderation_approve,forumdisplay_thread_icon,showthread_poll_resultbit,postbit_warninglevel,postbit_gotopost";
-$templatelist .= ",showthread_moderationoptions_softdelete,showthread_moderationoptions_restore,post_captcha,post_captcha_recaptcha,post_captcha_nocaptcha,post_captcha_ayah,showthread_moderationoptions,showthread_inlinemoderation_standard,showthread_threadedbox,postbit_rep_button,showthread_inlinemoderation_manage,global_moderation_notice";
+$templatelist = "showthread,postbit,postbit_author_user,postbit_author_guest,showthread_newthread,showthread_newreply,showthread_newreply_closed,postbit_avatar,postbit_find,postbit_pm,postbit_www,postbit_email,postbit_edit,postbit_quote,postbit_report,postbit_signature,postbit_online";
+$templatelist .= ",multipage,multipage_breadcrumb,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,showthread_inlinemoderation_softdelete,showthread_inlinemoderation_restore";
+$templatelist .= ",postbit_editedby,showthread_similarthreads,showthread_similarthreads_bit,postbit_iplogged_show,postbit_iplogged_hiden,postbit_profilefield,showthread_quickreply,showthread_add_poll,showthread_send_thread,showthread_poll_editpoll,showthread_poll_undovote,postbit_offline";
+$templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit,postbit_quickdelete,postbit_attachments,postbit_attachments_attachment,postbit_attachments_thumbnails,postbit_attachments_images_image,postbit_attachments_images,showthread_quickreply_options_stick,showthread_classic_header";
+$templatelist .= ",postbit_inlinecheck,showthread_inlinemoderation,postbit_attachments_thumbnails_thumbnail,postbit_ignored,postbit_groupimage,postbit_multiquote,showthread_moderationoptions_custom_tool,showthread_moderationoptions_custom,showthread_inlinemoderation_custom_tool";
+$templatelist .= ",showthread_usersbrowsing,showthread_usersbrowsing_user,showthread_poll_option,showthread_poll,showthread_quickreply_options_signature,showthread_threaded_bitactive,showthread_threaded_bit,postbit_attachments_attachment_unapproved,showthread_threadnotes,postbit_reputation";
+$templatelist .= ",showthread_moderationoptions_openclose,showthread_moderationoptions_stickunstick,showthread_moderationoptions_delete,showthread_moderationoptions_threadnotes,showthread_moderationoptions_manage,showthread_moderationoptions_deletepoll,showthread_poll_results,postbit_classic";
+$templatelist .= ",postbit_userstar,postbit_reputation_formatted_link,postbit_warninglevel_formatted,postbit_quickrestore,forumdisplay_password,forumdisplay_password_wrongpass,postbit_purgespammer,showthread_inlinemoderation_approve,forumdisplay_thread_icon,showthread_poll_resultbit";
+$templatelist .= ",showthread_moderationoptions_softdelete,showthread_moderationoptions_restore,post_captcha,post_captcha_recaptcha,post_captcha_nocaptcha,showthread_moderationoptions,showthread_inlinemoderation_standard,showthread_threadedbox,showthread_inlinemoderation_manage";
+$templatelist .= ",showthread_ratethread,postbit_posturl,postbit_icon,postbit_editedby_editreason,attachment_icon,global_moderation_notice,showthread_poll_option_multiple,postbit_gotopost,postbit_rep_button,postbit_warninglevel,showthread_threadnoteslink,showthread_search,postbit_warn";
+$templatelist .= ",showthread_moderationoptions_approve,showthread_moderationoptions_unapprove,showthread_inlinemoderation_delete,showthread_moderationoptions_standard,showthread_quickreply_options_close,showthread_inlinemoderation_custom,showthread_threadnotes_viewnotes,postbit_away";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -44,10 +46,10 @@ if(!empty($mybb->input['pid']) && !isset($mybb->input['tid']))
 		$options = array(
 			"limit" => 1
 		);
-		$query = $db->simple_select("posts", "tid", "pid=".$mybb->get_input('pid', MyBB::INPUT_INT), $options);
+		$query = $db->simple_select("posts", "fid,tid,visible", "pid=".$mybb->get_input('pid', MyBB::INPUT_INT), $options);
 		$post = $db->fetch_array($query);
-		
-		if(empty($post))
+
+		if(empty($post) || ($post['visible'] == 0 && !is_moderator($post['fid'], 'canviewunapprove')) || ($post['visible'] == -1 && !is_moderator($post['fid'], 'canviewdeleted')))
 		{
 			// post does not exist --> show corresponding error
 			error($lang->error_invalidpost);
@@ -94,6 +96,7 @@ if(!$thread['username'])
 {
 	$thread['username'] = $lang->guest;
 }
+$thread['username'] = htmlspecialchars_uni($thread['username']);
 
 // Is the currently logged in user a moderator of this forum?
 if(is_moderator($fid))
@@ -121,6 +124,8 @@ if(is_moderator($fid))
 else
 {
 	$ismod = false;
+	$visibleonly = " AND visible=1";
+	$visibleonly2 = "AND p.visible=1 AND t.visible=1";
 }
 
 // Make sure we are looking at a real thread here.
@@ -891,7 +896,11 @@ if($mybb->input['action'] == "thread")
 		if(!empty($mybb->input['pid']))
 		{
 			$post = get_post($mybb->input['pid']);
-			if($post)
+			if(empty($post) || ($post['visible'] == 0 && !is_moderator($post['fid'], 'canviewunapprove')) || ($post['visible'] == -1 && !is_moderator($post['fid'], 'canviewdeleted')))
+			{
+				$footer .= '<script type="text/javascript">$(document).ready(function() { $.jGrowl(\''.$lang->error_invalidpost.'\', {theme: \'jgrowl_error\'}); });</script>';
+			}
+			else
 			{
 				$query = $db->query("
 					SELECT COUNT(p.dateline) AS count FROM ".TABLE_PREFIX."posts p
@@ -1114,11 +1123,11 @@ if($mybb->input['action'] == "thread")
 			}
 			if(!$similar_thread['username'])
 			{
-				$similar_thread['username'] = $similar_thread['threadusername'];
-				$similar_thread['profilelink'] = $similar_thread['threadusername'];
+				$similar_thread['username'] = $similar_thread['profilelink'] = htmlspecialchars_uni($similar_thread['threadusername']);
 			}
 			else
 			{
+				$similar_thread['username'] = htmlspecialchars_uni($similar_thread['username']);
 				$similar_thread['profilelink'] = build_profile_link($similar_thread['username'], $similar_thread['uid']);
 			}
 
@@ -1366,11 +1375,11 @@ if($mybb->input['action'] == "thread")
 		{
 			if($thread['visible'] == 0)
 			{
-				$approveunapprovethread = "<option value=\"approvethread\">".$lang->approve_thread."</option>";
+				eval("\$approveunapprovethread = \"".$templates->get("showthread_moderationoptions_approve")."\";");
 			}
 			else
 			{
-				$approveunapprovethread = "<option value=\"unapprovethread\">".$lang->unapprove_thread."</option>";
+				eval("\$approveunapprovethread = \"".$templates->get("showthread_moderationoptions_unapprove")."\";");
 			}
 		}
 
@@ -1472,7 +1481,7 @@ if($mybb->input['action'] == "thread")
 				if($user['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])
 				{
 					$user['profilelink'] = get_profile_link($user['uid']);
-					$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
+					$user['username'] = format_name(htmlspecialchars_uni($user['username']), $user['usergroup'], $user['displaygroup']);
 					$user['reading'] = my_date($mybb->settings['timeformat'], $user['time']);
 
 					eval("\$onlinemembers .= \"".$templates->get("showthread_usersbrowsing_user", 1, 0)."\";");
@@ -1522,24 +1531,18 @@ if($mybb->input['action'] == "thread")
 /**
  * Build a navigation tree for threaded display.
  *
- * @param unknown_type $replyto
- * @param unknown_type $indent
- * @return unknown
+ * @param int $replyto
+ * @param int $indent
+ * @return string
  */
-function buildtree($replyto="0", $indent="0")
+function buildtree($replyto=0, $indent=0)
 {
-	global $tree, $mybb, $theme, $mybb, $pid, $tid, $templates, $parser;
+	global $tree, $mybb, $theme, $mybb, $pid, $tid, $templates, $parser, $lang;
 
-	if($indent)
-	{
-		$indentsize = 13 * $indent;
-	}
-	else
-	{
-		$indentsize = 0;
-	}
+	$indentsize = 13 * $indent;
 
 	++$indent;
+	$posts = '';
 	if(is_array($tree[$replyto]))
 	{
 		foreach($tree[$replyto] as $key => $post)
@@ -1552,6 +1555,7 @@ function buildtree($replyto="0", $indent="0")
 				$post['subject'] = "[".$lang->no_subject."]";
 			}
 
+			$post['username'] = htmlspecialchars_uni($post['username']);
 			$post['profilelink'] = build_profile_link($post['username'], $post['uid']);
 
 			if($mybb->input['pid'] == $post['pid'])

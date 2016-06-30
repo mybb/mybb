@@ -182,7 +182,7 @@ var ThemeSelector = {
 				confirmReturn = confirm(save_changes_lang_string);
 				if (confirmReturn == true) {
 					ThemeSelector.save(false, isAjax);
-					$.jGrowl('Saved', {theme:'jgrowl_success'});
+					$.jGrowl(lang.saved, {theme:'jgrowl_success'});
 				}
 			}
 		}

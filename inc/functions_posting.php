@@ -17,8 +17,8 @@
  *  #2. INPUT:  [quote=a][quote=b][quote=c][quote=d][/quote][quote=e][/quote][/quote][quote=f][/quote][/quote]
  *     OUTPUT:  [quote=a][quote=b][/quote][quote=f][/quote][/quote]
  *
- * @param string the message from which quotes are to be removed
- * @param integer nested depth at which quotes should be removed; if none supplied, will use MyBB's default; must be at least 0
+ * @param string $text the message from which quotes are to be removed
+ * @param integer $rmdepth nested depth at which quotes should be removed; if none supplied, will use MyBB's default; must be at least 0
  * @return string the original message passed in $text, but with quote tags selectively removed
  */
 function remove_message_quotes(&$text, $rmdepth=null)
@@ -165,8 +165,8 @@ function remove_message_quotes(&$text, $rmdepth=null)
 /**
  * Performs cleanup of a quoted message, such as replacing /me commands, before presenting quoted post to the user.
  *
- * @param array quoted post info, taken from the DB (requires the 'message', 'username', 'pid' and 'dateline' entries to be set; will use 'userusername' if present. requires 'quote_is_pm' if quote message is from a private message)
- * @param boolean whether to call remove_message_quotes() on the quoted message
+ * @param array $quoted_post quoted post info, taken from the DB (requires the 'message', 'username', 'pid' and 'dateline' entries to be set; will use 'userusername' if present. requires 'quote_is_pm' if quote message is from a private message)
+ * @param boolean $remove_message_quotes whether to call remove_message_quotes() on the quoted message
  * @return string the cleaned up message, wrapped in a quote tag
  */
 

@@ -26,19 +26,19 @@ class DefaultForm
 	/**
 	 * Constructor. Outputs the form tag with the specified options.
 	 *
-	 * @param string The action for the form.
-	 * @param string The method (get or post) for this form.
-	 * @param string The ID of the form.
-	 * @param boolean Should file uploads be allowed for this form?
-	 * @param boolean The name of the form
-	 * @param boolean Should this form be returned instead of output to the browser?
-	 * @param boolean The onsubmit action of the form
+	 * @param string $script The action for the form.
+	 * @param string $method The method (get or post) for this form.
+	 * @param string $id The ID of the form.
+	 * @param boolean $allow_uploads Should file uploads be allowed for this form?
+	 * @param string $name The name of the form
+	 * @param boolean $return Should this form be returned instead of output to the browser?
+	 * @param string $onsubmit The onsubmit action of the form
 	 */
-	function __construct($script='', $method='', $id="", $allow_uploads=0, $name="", $return=false, $onsubmit="")
+	function __construct($script='', $method='', $id="", $allow_uploads=false, $name="", $return=false, $onsubmit="")
 	{
 		global $mybb;
 		$form = "<form action=\"{$script}\" method=\"{$method}\"";
-		if($allow_uploads != 0)
+		if($allow_uploads != false)
 		{
 			$form .= " enctype=\"multipart/form-data\"";
 		}
@@ -73,9 +73,9 @@ class DefaultForm
 	/**
 	 * Generate and return a hidden field.
 	 *
-	 * @param string The name of the hidden field.
-	 * @param string The value of the hidden field.
-	 * @param array Optional array of options (id)
+	 * @param string $name The name of the hidden field.
+	 * @param string $value The value of the hidden field.
+	 * @param array $options Optional array of options (id)
 	 * @return string The generated hidden
 	 */
 	function generate_hidden_field($name, $value, $options=array())
@@ -92,9 +92,9 @@ class DefaultForm
 	/**
 	 * Generate a text box field.
 	 *
-	 * @param string The name of the text box.
-	 * @param string The value of the text box.
-	 * @param array Array of options for the text box (class, style, id)
+	 * @param string $name The name of the text box.
+	 * @param string $value The value of the text box.
+	 * @param array $options Array of options for the text box (class, style, id)
 	 * @return string The generated text box.
 	 */
 	function generate_text_box($name, $value="", $options=array())
@@ -123,14 +123,23 @@ class DefaultForm
 	/**
 	 * Generate a numeric field.
 	 *
-	 * @param string The name of the numeric box.
-	 * @param int The value of the numeric box.
-	 * @param array Array of options for the numeric box (min, max, step, class, style, id)
+	 * @param string $name The name of the numeric box.
+	 * @param int $value The value of the numeric box.
+	 * @param array $options Array of options for the numeric box (min, max, step, class, style, id)
 	 * @return string The generated numeric box.
 	 */
-	function generate_numeric_field($name, $value="", $options=array())
+	function generate_numeric_field($name, $value=0, $options=array())
 	{
-		$input = "<input type=\"number\" name=\"".$name."\" value=\"".(int)$value."\"";
+		if(is_numeric($value))
+		{
+			$value = (float)$value;
+		}
+		else
+		{
+			$value = '';
+		}
+
+		$input = "<input type=\"number\" name=\"{$name}\" value=\"{$value}\"";
 		if(isset($options['min']))
 		{
 			$input .= " min=\"".$options['min']."\"";
@@ -166,9 +175,9 @@ class DefaultForm
 	/**
 	 * Generate a password input box.
 	 *
-	 * @param string The name of the password box.
-	 * @param string The value of the password box.
-	 * @param array Array of options for the password box (class, id)
+	 * @param string $name The name of the password box.
+	 * @param string $value The value of the password box.
+	 * @param array $options Array of options for the password box (class, id, autocomplete)
 	 * @return string The generated password input box.
 	 */
 	function generate_password_box($name, $value="", $options=array())
@@ -197,8 +206,8 @@ class DefaultForm
 	/**
 	 * Generate a file upload field.
 	 *
-	 * @param string The name of the file upload field.
-	 * @param array Array of options for the file upload field (class, id)
+	 * @param string $name The name of the file upload field.
+	 * @param array $options Array of options for the file upload field (class, id, style)
 	 * @return string The generated file upload field.
 	 */
 	function generate_file_upload_box($name, $options=array())
@@ -228,9 +237,9 @@ class DefaultForm
 	/**
 	 * Generate a text area.
 	 *
-	 * @param string The name of of the text area.
-	 * @param string The value of the text area field.
-	 * @param array Array of options for text area (class, id, rows, cols, style, disabled, maxlength)
+	 * @param string $name The name of of the text area.
+	 * @param string $value The value of the text area field.
+	 * @param array $options Array of options for text area (class, id, rows, cols, style, disabled, maxlength, readonly)
 	 * @return string The generated text area field.
 	 */
 	function generate_text_area($name, $value="", $options=array())
@@ -281,10 +290,10 @@ class DefaultForm
 	/**
 	 * Generate a radio button.
 	 *
-	 * @param string The name of the radio button.
-	 * @param string The value of the radio button
-	 * @param string The label of the radio button if there is one.
-	 * @param array Array of options for the radio button (id, class, checked)
+	 * @param string $name The name of the radio button.
+	 * @param string $value The value of the radio button
+	 * @param string $label The label of the radio button if there is one.
+	 * @param array $options Array of options for the radio button (id, class, checked)
 	 * @return string The generated radio button.
 	 */
 	function generate_radio_button($name, $value="", $label="", $options=array())
@@ -327,10 +336,10 @@ class DefaultForm
 	/**
 	 * Generate a checkbox.
 	 *
-	 * @param string The name of the check box.
-	 * @param string The value of the check box.
-	 * @param string The label of the check box if there is one.
-	 * @param array Array of options for the check box (id, class, checked)
+	 * @param string $name The name of the check box.
+	 * @param string $value The value of the check box.
+	 * @param string $label The label of the check box if there is one.
+	 * @param array $options Array of options for the check box (id, class, checked, onclick)
 	 * @return string The generated check box.
 	 */
 	function generate_check_box($name, $value="", $label="", $options=array())
@@ -377,10 +386,10 @@ class DefaultForm
 	/**
 	 * Generate a select box.
 	 *
-	 * @param string The name of the select box.
-	 * @param array Array of options in key => val format.
-	 * @param mixed Either a string containing the selected item or an array containing multiple selected items (options['multiple'] must be true)
-	 * @param array Array of options for the select box (multiple, class, id, size)
+	 * @param string $name The name of the select box.
+	 * @param array $option_list Array of options in key => val format.
+	 * @param string|array $selected Either a string containing the selected item or an array containing multiple selected items (options['multiple'] must be true)
+	 * @param array $options Array of options for the select box (multiple, class, id, size)
 	 * @return string The select box.
 	 */
 	function generate_select_box($name, $option_list, $selected=array(), $options=array())
@@ -426,10 +435,10 @@ class DefaultForm
 	/**
 	 * Generate a forum selection box.
 	 *
-	 * @param string The name of the selection box.
-	 * @param mixed Array/string of the selected items.
-	 * @param array Array of options (pid, main_option, multiple)
-	 * @param boolean Is this our first iteration of this function?
+	 * @param string $name The name of the selection box.
+	 * @param array|string $selected Array/string of the selected items.
+	 * @param array Array of options (pid, main_option, multiple, depth)
+	 * @param boolean|int $is_first Is this our first iteration of this function?
 	 * @return string The built select box.
 	 */
 	function generate_forum_select($name, $selected, $options=array(), $is_first=1)
@@ -551,9 +560,9 @@ class DefaultForm
 	/**
 	 * Generate a group selection box.
 	 *
-	 * @param string The name of the selection box.
-	 * @param mixed Array/string of the selected items.
-	 * @param array Array of options (class, id, multiple)
+	 * @param string $name The name of the selection box.
+	 * @param array|string $selected Array/string of the selected items.
+	 * @param array $options Array of options (class, id, multiple, size)
 	 * @return string The built select box.
 	 */
 	function generate_group_select($name, $selected=array(), $options=array())
@@ -585,15 +594,20 @@ class DefaultForm
 		$select .= ">\n";
 
 		$groups_cache = $cache->read('usergroups');
+		
+		if(!is_array($selected))
+		{
+			$selected = array($selected);
+		}
+			
 		foreach($groups_cache as $group)
 		{
 			$selected_add = "";
-			if(is_array($selected))
+			
+			
+			if(in_array($group['gid'], $selected))
 			{
-				if(in_array($group['gid'], $selected))
-				{
-					$selected_add = " selected=\"selected\"";
-				}
+				$selected_add = " selected=\"selected\"";
 			}
 
 			$select .= "<option value=\"{$group['gid']}\"{$selected_add}>".htmlspecialchars_uni($group['title'])."</option>";
@@ -607,8 +621,8 @@ class DefaultForm
 	/**
 	 * Generate a submit button.
 	 *
-	 * @param string The value for the submit button.
-	 * @param array Array of options for the submit button (class, id, name, dsiabled, onclick)
+	 * @param string $value The value for the submit button.
+	 * @param array $options Array of options for the submit button (class, id, name, dsiabled, onclick)
 	 * @return string The generated submit button.
 	 */
 	function generate_submit_button($value, $options=array())
@@ -646,8 +660,8 @@ class DefaultForm
 	/**
 	 * Generate a reset button.
 	 *
-	 * @param string The value for the reset button.
-	 * @param array Array of options for the reset button (class, id, name)
+	 * @param string $value The value for the reset button.
+	 * @param array $options Array of options for the reset button (class, id, name)
 	 * @return string The generated reset button.
 	 */
 	function generate_reset_button($value, $options=array())
@@ -677,14 +691,14 @@ class DefaultForm
 	/**
 	 * Generate a yes/no radio button choice.
 	 *
-	 * @param string The name of the yes/no choice field.
-	 * @param string The value that should be checked.
-	 * @param boolean Using integers for the checkbox?
-	 * @param array Array of options for the yes checkbox (@see generate_radio_button)
-	 * @param array Array of options for the no checkbox (@see generate_radio_button)
+	 * @param string $name The name of the yes/no choice field.
+	 * @param string $value The value that should be checked.
+	 * @param boolean $int Using integers for the checkbox?
+	 * @param array $yes_options Array of options for the yes checkbox (@see generate_radio_button)
+	 * @param array $no_options Array of options for the no checkbox (@see generate_radio_button)
 	 * @return string The generated yes/no radio button.
 	 */
-	function generate_yes_no_radio($name, $value=1, $int=true, $yes_options=array(), $no_options = array())
+	function generate_yes_no_radio($name, $value="1", $int=true, $yes_options=array(), $no_options = array())
 	{
 		global $lang;
 
@@ -735,11 +749,11 @@ class DefaultForm
 	/**
 	 * Generate an on/off radio button choice.
 	 *
-	 * @param string The name of the on/off choice field.
-	 * @param string The value that should be checked.
-	 * @param boolean Using integers for the checkbox?
-	 * @param array Array of options for the on checkbox (@see generate_radio_button)
-	 * @param array Array of options for the off checkbox (@see generate_radio_button)
+	 * @param string $name The name of the on/off choice field.
+	 * @param int $value The value that should be checked.
+	 * @param boolean $int Using integers for the checkbox?
+	 * @param array $on_options Array of options for the on checkbox (@see generate_radio_button)
+	 * @param array $off_options Array of options for the off checkbox (@see generate_radio_button)
 	 * @return string The generated on/off radio button.
 	 */
 	function generate_on_off_radio($name, $value=1, $int=true, $on_options=array(), $off_options = array())
@@ -790,7 +804,15 @@ class DefaultForm
 		return $on." ".$off;
 	}
 
-	function generate_date_select($name, $day="",$month="",$year="")
+	/**
+	 * @param string $name
+	 * @param int $day
+	 * @param int $month
+	 * @param int $year
+	 *
+	 * @return string
+	 */
+	function generate_date_select($name, $day=0,$month=0,$year=0)
 	{
 		global $lang;
 
@@ -840,7 +862,7 @@ class DefaultForm
 	/**
 	 * Output a row of buttons in a wrapped container.
 	 *
-	 * @param array Array of the buttons (html) to output.
+	 * @param array $buttons Array of the buttons (html) to output.
 	 * @return string The submit wrapper (optional)
 	 */
 	function output_submit_wrapper($buttons)
@@ -888,14 +910,16 @@ class DefaultForm
  */
 class DefaultFormContainer
 {
+	/** @var Table */
 	private $_container;
+	/** @var string */
 	public $_title;
 
 	/**
 	 * Initialise the new form container.
 	 *
-	 * @param string The title of the form container
-	 * @param string An additional class to apply if we have one.
+	 * @param string $title The title of the form container
+	 * @param string $extra_class An additional class to apply if we have one.
 	 */
 	function __construct($title='', $extra_class='')
 	{
@@ -907,8 +931,8 @@ class DefaultFormContainer
 	/**
 	 * Output a header row of the form container.
 	 *
-	 * @param string The header row label.
-	 * @param array Array of extra information for this header cell (class, style, colspan, width)
+	 * @param string $title The header row label.
+	 * @param array $extra Array of extra information for this header cell (class, style, colspan, width)
 	 */
 	function output_row_header($title, $extra=array())
 	{
@@ -918,12 +942,12 @@ class DefaultFormContainer
 	/**
 	 * Output a row of the form container.
 	 *
-	 * @param string The title of the row.
-	 * @param string The description of the row/field.
-	 * @param string The HTML content to show in the row.
-	 * @param string The ID of the control this row should be a label for.
-	 * @param array Array of options for the row cell.
-	 * @param array Array of options for the row container.
+	 * @param string $title The title of the row.
+	 * @param string $description The description of the row/field.
+	 * @param string $content The HTML content to show in the row.
+	 * @param string $label_for The ID of the control this row should be a label for.
+	 * @param array $options Array of options for the row cell.
+	 * @param array $row_options Array of options for the row container.
 	 */
 	function output_row($title, $description="", $content="", $label_for="", $options=array(), $row_options=array())
 	{
@@ -951,21 +975,12 @@ class DefaultFormContainer
 			$row = "<label{$for}>{$title}</label>";
 		}
 
-		if(isset($options['id']))
-		{
-			$options['id'] = " id=\"{$options['id']}\"";
-		}
-		else
-		{
-			$options['id'] = '';
-		}
-
 		if($description != '')
 		{
 			$row .= "\n<div class=\"description\">{$description}</div>\n";
 		}
 
-		$row .= "<div class=\"form_row\"{$options['id']}>{$content}</div>\n";
+		$row .= "<div class=\"form_row\">{$content}</div>\n";
 
 		$this->_container->construct_cell($row, $options);
 
@@ -978,8 +993,8 @@ class DefaultFormContainer
 	/**
 	 * Output a row cell for a table based form row.
 	 *
-	 * @param string The data to show in the cell.
-	 * @param array Array of options for the cell (optional).
+	 * @param string $data The data to show in the cell.
+	 * @param array $options Array of options for the cell (optional).
 	 */
 	function output_cell($data, $options=array())
 	{
@@ -989,7 +1004,7 @@ class DefaultFormContainer
 	/**
 	 * Build a row for the table based form row.
 	 *
-	 * @param array Array of extra options for the cell (optional).
+	 * @param array $extra Array of extra options for the cell (optional).
 	 */
 	function construct_row($extra=array())
 	{
@@ -999,8 +1014,8 @@ class DefaultFormContainer
 	/**
 	 * return the cells of a row for the table based form row.
 	 *
-	 * @param string The id of the row.
-	 * @param boolean Whether or not to return or echo the resultant contents.
+	 * @param string $row_id The id of the row.
+	 * @param boolean $return Whether or not to return or echo the resultant contents.
 	 * @return string The output of the row cells (optional).
 	 */
 	function output_row_cells($row_id, $return=false)
@@ -1028,7 +1043,7 @@ class DefaultFormContainer
 	/**
 	 * Output the end of the form container row.
 	 *
-	 * @param boolean Whether or not to return or echo the resultant contents.
+	 * @param boolean $return Whether or not to return or echo the resultant contents.
 	 * @return string The output of the form container (optional).
 	 */
 	function end($return=false)

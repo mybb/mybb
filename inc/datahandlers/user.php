@@ -63,9 +63,19 @@ class UserDataHandler extends DataHandler
 	public $return_values = array();
 
 	/**
+	 * @var array
+	 */
+	var $delete_uids = array();
+
+	/**
+	 * @var int
+	 */
+	var $deleted_users = 0;
+
+	/**
 	 * Verifies if a username is valid or invalid.
 	 *
-	 * @param boolean True when valid, false when invalid.
+	 * @return boolean True when valid, false when invalid.
 	 */
 	function verify_username()
 	{
@@ -115,7 +125,7 @@ class UserDataHandler extends DataHandler
 	/**
 	 * Verifies if a usertitle is valid or invalid.
 	 *
-	 * @param boolean True when valid, false when invalid.
+	 * @return boolean True when valid, false when invalid.
 	 */
 	function verify_usertitle()
 	{
@@ -177,7 +187,7 @@ class UserDataHandler extends DataHandler
 		}
 
 		// Has the user tried to use their email address or username as a password?
-		if($user['email'] == $user['password'] || $user['username'] == $user['password'])
+		if($user['email'] === $user['password'] || $user['username'] === $user['password'])
 		{
 			$this->set_error('bad_password_security');
 			return false;
@@ -196,7 +206,7 @@ class UserDataHandler extends DataHandler
 		}
 
 		// If we have a "password2" check if they both match
-		if(isset($user['password2']) && $user['password'] != $user['password2'])
+		if(isset($user['password2']) && $user['password'] !== $user['password2'])
 		{
 			$this->set_error("passwords_dont_match");
 			return false;
@@ -224,7 +234,6 @@ class UserDataHandler extends DataHandler
 	*/
 	function verify_usergroup()
 	{
-		$user = &$this->data;
 		return true;
 	}
 	/**
@@ -491,8 +500,6 @@ class UserDataHandler extends DataHandler
 		$profile_fields = &$this->data['profile_fields'];
 
 		// Loop through profile fields checking if they exist or not and are filled in.
-		$userfields = array();
-		$comma = '';
 
 		// Fetch all profile fields first.
 		$pfcache = $cache->read('profilefields');
@@ -519,6 +526,7 @@ class UserDataHandler extends DataHandler
 				}
 
 				$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
+				$profilefield['name'] = htmlspecialchars_uni($profilefield['name']);
 				$thing = explode("\n", $profilefield['type'], "2");
 				$type = trim($thing[0]);
 				$field = "fid{$profilefield['fid']}";
@@ -649,7 +657,9 @@ class UserDataHandler extends DataHandler
 		$this->verify_yesno_option($options, 'showquickreply', 1);
 		$this->verify_yesno_option($options, 'showredirect', 1);
 		$this->verify_yesno_option($options, 'showcodebuttons', 1);
-		$this->verify_yesno_option($options, 'sourceeditor', 1);
+		$this->verify_yesno_option($options, 'sourceeditor', 0);
+		$this->verify_yesno_option($options, 'buddyrequestspm', 1);
+		$this->verify_yesno_option($options, 'buddyrequestsauto', 0);
 
 		if($mybb->settings['postlayout'] == 'classic')
 		{
@@ -848,7 +858,7 @@ class UserDataHandler extends DataHandler
 	}
 
 	/**
-	 * Verifies if a langage is valid for this user or not.
+	 * Verifies if a language is valid for this user or not.
 	 *
 	 * @return boolean True when valid, false when invalid.
 	 */
@@ -868,6 +878,31 @@ class UserDataHandler extends DataHandler
 	}
 
 	/**
+	 * Verifies if a style is valid for this user or not.
+	 *
+	 * @return boolean True when valid, false when invalid.
+	 */
+	function verify_style()
+	{
+		global $lang;
+
+		$user = &$this->data;
+
+		if($user['style'])
+		{
+			$theme = get_theme($user['style']);
+
+			if(empty($theme) || !is_member($theme['allowedgroups'], $user) && $theme['allowedgroups'] != 'all')
+			{
+				$this->set_error('invalid_style');
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
 	 * Verifies if this is coming from a spam bot or not
 	 *
 	 * @return boolean True when valid, false when invalid.
@@ -882,6 +917,27 @@ class UserDataHandler extends DataHandler
 			$this->set_error("invalid_checkfield");
 			return false;
 		}
+		return true;
+	}
+
+	/**
+	 * Verifies if the user timezone is valid.
+	 * If the timezone is invalid, the board default is used.
+	 *
+	 * @return boolean True when timezone was valid, false otherwise
+	 */
+	function verify_timezone()
+	{
+		$user = &$this->data;
+
+		$timezones = get_supported_timezones();
+
+		if(!array_key_exists($user['timezone'], $timezones))
+		{
+			$user['timezone'] = $mybb->settings['timezoneoffset'];
+			return false;
+		}
+
 		return true;
 	}
 
@@ -983,6 +1039,10 @@ class UserDataHandler extends DataHandler
 		{
 			$this->verify_language();
 		}
+		if($this->method == "insert" || array_key_exists('timezone', $user))
+		{
+			$this->verify_timezone();
+		}
 		if($this->method == "insert" && array_key_exists('regcheck1', $user) && array_key_exists('regcheck2', $user))
 		{
 			$this->verify_checkfields();
@@ -990,6 +1050,14 @@ class UserDataHandler extends DataHandler
 		if(array_key_exists('birthdayprivacy', $user))
 		{
 			$this->verify_birthday_privacy();
+		}
+		if($this->method == "insert" || array_key_exists('style', $user))
+		{
+			$this->verify_style();
+		}
+		if($this->method == "insert" || array_key_exists('signature', $user))
+		{
+			$this->verify_signature();
 		}
 
 		$plugins->run_hooks("datahandler_user_validate", $this);
@@ -1008,6 +1076,8 @@ class UserDataHandler extends DataHandler
 
 	/**
 	* Inserts a user into the database.
+	*
+	* @return array
 	*/
 	function insert_user()
 	{
@@ -1059,22 +1129,22 @@ class UserDataHandler extends DataHandler
 			"google" => $db->escape_string($user['google']),
 			"birthday" => $user['bday'],
 			"signature" => $db->escape_string($user['signature']),
-			"allownotices" => $user['options']['allownotices'],
-			"hideemail" => $user['options']['hideemail'],
+			"allownotices" => (int)$user['options']['allownotices'],
+			"hideemail" => (int)$user['options']['hideemail'],
 			"subscriptionmethod" => (int)$user['options']['subscriptionmethod'],
-			"receivepms" => $user['options']['receivepms'],
-			"receivefrombuddy" => $user['options']['receivefrombuddy'],
-			"pmnotice" => $user['options']['pmnotice'],
-			"pmnotify" => $user['options']['pmnotify'],
-			"showimages" => $user['options']['showimages'],
-			"showvideos" => $user['options']['showvideos'],
-			"showsigs" => $user['options']['showsigs'],
-			"showavatars" => $user['options']['showavatars'],
-			"showquickreply" => $user['options']['showquickreply'],
-			"showredirect" => $user['options']['showredirect'],
+			"receivepms" => (int)$user['options']['receivepms'],
+			"receivefrombuddy" => (int)$user['options']['receivefrombuddy'],
+			"pmnotice" => (int)$user['options']['pmnotice'],
+			"pmnotify" => (int)$user['options']['pmnotify'],
+			"showimages" => (int)$user['options']['showimages'],
+			"showvideos" => (int)$user['options']['showvideos'],
+			"showsigs" => (int)$user['options']['showsigs'],
+			"showavatars" => (int)$user['options']['showavatars'],
+			"showquickreply" => (int)$user['options']['showquickreply'],
+			"showredirect" => (int)$user['options']['showredirect'],
 			"tpp" => (int)$user['options']['tpp'],
 			"ppp" => (int)$user['options']['ppp'],
-			"invisible" => $user['options']['invisible'],
+			"invisible" => (int)$user['options']['invisible'],
 			"style" => (int)$user['style'],
 			"timezone" => $db->escape_string($user['timezone']),
 			"dstcorrection" => (int)$user['options']['dstcorrection'],
@@ -1084,10 +1154,12 @@ class UserDataHandler extends DataHandler
 			"timeformat" => $db->escape_string($user['timeformat']),
 			"regip" => $db->escape_binary($user['regip']),
 			"language" => $db->escape_string($user['language']),
-			"showcodebuttons" => $user['options']['showcodebuttons'],
-			"sourceeditor" => $user['options']['sourceeditor'],
-			"away" => $user['away']['away'],
-			"awaydate" => $user['away']['date'],
+			"showcodebuttons" => (int)$user['options']['showcodebuttons'],
+			"sourceeditor" => (int)$user['options']['sourceeditor'],
+			"buddyrequestspm" => (int)$user['options']['buddyrequestspm'],
+			"buddyrequestsauto" => (int)$user['options']['buddyrequestsauto'],
+			"away" => (int)$user['away']['away'],
+			"awaydate" => (int)$user['away']['date'],
 			"returndate" => $user['away']['returndate'],
 			"awayreason" => $db->escape_string($user['away']['awayreason']),
 			"notepad" => $db->escape_string($user['notepad']),
@@ -1103,7 +1175,7 @@ class UserDataHandler extends DataHandler
 			"suspendposting" => 0,
 			"suspensiontime" => 0,
 			"coppauser" => (int)$user['coppa_user'],
-			"classicpostbit" => $user['options']['classicpostbit'],
+			"classicpostbit" => (int)$user['options']['classicpostbit'],
 			"usernotes" => ''
 		);
 
@@ -1171,6 +1243,8 @@ class UserDataHandler extends DataHandler
 
 	/**
 	* Updates a user in the database.
+	*
+	* @return bool
 	*/
 	function update_user()
 	{
@@ -1419,9 +1493,9 @@ class UserDataHandler extends DataHandler
 	/**
 	 * Provides a method to completely delete a user.
 	 *
-	 * @param array Array of user information
-	 * @param integer Whether if delete threads/posts or not
-	 * @return boolean True when successful, false if fails
+	 * @param array $delete_uids Array of user information
+	 * @param integer $prunecontent Whether if delete threads/posts or not
+	 * @return array
 	 */
 	function delete_user($delete_uids, $prunecontent=0)
 	{
@@ -1447,7 +1521,17 @@ class UserDataHandler extends DataHandler
 		$plugins->run_hooks('datahandler_user_delete_start', $this);
 
 		$this->delete_uids = implode(',', $this->delete_uids);
-		
+
+		if(empty($this->delete_uids))
+		{
+			$this->deleted_users = 0;
+			$this->return_values = array(
+				"deleted_users" => $this->deleted_users
+			);
+
+			return $this->return_values;
+		}
+
 		$this->delete_content();
 
 		// Delete the user
@@ -1458,13 +1542,20 @@ class UserDataHandler extends DataHandler
 		if((int)$prunecontent == 1)
 		{
 			$this->delete_posts();
+			$db->delete_query('announcements', "uid IN({$this->delete_uids})");
 		}
 		else
 		{
 			// We're just updating the UID
+			$db->update_query('pollvotes', array('uid' => 0), "uid IN({$this->delete_uids})");
 			$db->update_query('posts', array('uid' => 0), "uid IN({$this->delete_uids})");
 			$db->update_query('threads', array('uid' => 0), "uid IN({$this->delete_uids})");
+			$db->update_query('attachments', array('uid' => 0), "uid IN({$this->delete_uids})");
+			$db->update_query('announcements', array('uid' => 0), "uid IN({$this->delete_uids})");
 		}
+
+		$db->update_query('privatemessages', array('fromid' => 0), "fromid IN({$this->delete_uids})");
+		$db->update_query('users', array('referrer' => 0), "referrer IN({$this->delete_uids})");
 
 		// Update thread ratings
 		$query = $db->query("
@@ -1488,22 +1579,21 @@ class UserDataHandler extends DataHandler
 		$db->update_query('forums', array('lastposteruid' => 0), "lastposteruid IN({$this->delete_uids})");
 		$db->update_query('threads', array('lastposteruid' => 0), "lastposteruid IN({$this->delete_uids})");
 
-		$cache->update_banned();
-		$cache->update_moderators();
-
 		// Update forum stats
 		update_stats(array('numusers' => '-'.$this->deleted_users));
 
 		$this->return_values = array(
 			"deleted_users" => $this->deleted_users
 		);
-		
-		// Update reports cache
-		$cache->update_reportedcontent();
-
-		$cache->update_awaitingactivation();
 
 		$plugins->run_hooks("datahandler_user_delete_end", $this);
+
+		// Update  cache
+		$cache->update_banned();
+		$cache->update_moderators();
+		$cache->update_forumsdisplay();
+		$cache->update_reportedcontent();
+		$cache->update_awaitingactivation();
 
 		return $this->return_values;
 	}
@@ -1511,16 +1601,16 @@ class UserDataHandler extends DataHandler
 	/**
 	 * Provides a method to delete users' content
 	 *
-	 * @param array Array of user ids, false if they're already set (eg when using the delete_user function)
+	 * @param array|bool $delete_uids Array of user ids, false if they're already set (eg when using the delete_user function)
 	 */
 	function delete_content($delete_uids=false)
 	{
-		global $db, $plugins;
+		global $db, $plugins, $mybb;
 
 		if($delete_uids != false)
 		{
 			$this->delete_uids = array_map('intval', (array)$delete_uids);
-		
+
 			foreach($this->delete_uids as $key => $uid)
 			{
 				if(!$uid || is_super_admin($uid) || $uid == $mybb->user['uid'])
@@ -1529,11 +1619,16 @@ class UserDataHandler extends DataHandler
 					unset($this->delete_uids[$key]);
 				}
 			}
-		
+
 			$this->delete_uids = implode(',', $this->delete_uids);
 		}
 
 		$plugins->run_hooks('datahandler_user_delete_content', $this);
+
+		if(empty($this->delete_uids))
+		{
+			return;
+		}
 
 		$db->delete_query('userfields', "ufid IN({$this->delete_uids})");
 		$db->delete_query('privatemessages', "uid IN({$this->delete_uids})");
@@ -1565,23 +1660,21 @@ class UserDataHandler extends DataHandler
 		$db->update_query('reportedcontent', array('uid' => 0), "uid IN({$this->delete_uids})");
 
 		// Remove any of the user(s) uploaded avatars
-		$query = $db->simple_select('users', 'avatar', "uid IN({$this->delete_uids}) AND avatartype='upload'");
-		while($avatar = $db->fetch_field($query, 'avatar'))
+		require_once MYBB_ROOT.'inc/functions_upload.php';
+		foreach(explode(',', $this->delete_uids) as $uid)
 		{
-			$avatar = substr($avatar, 2, -20);
-			@unlink(MYBB_ROOT.$avatar);
+			remove_avatars($uid);
 		}
-
 	}
 
 	/**
 	 * Provides a method to delete an users posts and threads
 	 *
-	 * @param array Array of user ids, false if they're already set (eg when using the delete_user function)
+	 * @param array|bool $delete_uids Array of user ids, false if they're already set (eg when using the delete_user function)
 	 */
 	function delete_posts($delete_uids=false)
 	{
-		global $db, $plugins;
+		global $db, $plugins, $mybb;
 
 		if($delete_uids != false)
 		{
@@ -1604,6 +1697,11 @@ class UserDataHandler extends DataHandler
 
 		$plugins->run_hooks('datahandler_user_delete_posts', $this);
 
+		if(empty($this->delete_uids))
+		{
+			return;
+		}
+
 		// Threads
 		$query = $db->simple_select('threads', 'tid', "uid IN({$this->delete_uids})");
 		while($tid = $db->fetch_field($query, 'tid'))
@@ -1612,30 +1710,22 @@ class UserDataHandler extends DataHandler
 		}
 
 		// Posts
-		$pids = array();
 		$query = $db->simple_select('posts', 'pid', "uid IN({$this->delete_uids})");
 		while($pid = $db->fetch_field($query, 'pid'))
 		{
 			$moderation->delete_post($pid);
-			$pids[] = (int)$pid;
-		}
-
-		// Delete Reports made to users's posts/threads
-		if(!empty($pids))
-		{
-			$db->delete_query('reportedcontent', "type='posts' AND id IN(".implode(',', $pids).")");
 		}
 	}
 
 	/**
 	 * Provides a method to clear an users profile
 	 *
-	 * @param array Array of user ids, false if they're already set (eg when using the delete_user function)
-	 * @param int The new usergroup if the users should be moved (additional usergroups are always removed)
+	 * @param array|bool $delete_uids Array of user ids, false if they're already set (eg when using the delete_user function)
+	 * @param int $gid The new usergroup if the users should be moved (additional usergroups are always removed)
 	 */
 	function clear_profile($delete_uids=false, $gid=0)
 	{
-		global $db, $plugins;
+		global $db, $plugins, $mybb;
 
 		// delete_uids isn't a nice name, but it's used as the functions above use the same
 		if($delete_uids != false)
@@ -1682,7 +1772,89 @@ class UserDataHandler extends DataHandler
 
 		$plugins->run_hooks('datahandler_user_clear_profile', $this);
 
+		if(empty($this->delete_uids))
+		{
+			return;
+		}
+
 		$db->update_query("users", $update, "uid IN({$this->delete_uids})");
 		$db->delete_query('userfields', "ufid IN({$this->delete_uids})");
+
+		// Remove any of the user(s) uploaded avatars
+		require_once MYBB_ROOT.'inc/functions_upload.php';
+		foreach(explode(',', $this->delete_uids) as $uid)
+		{
+			remove_avatars($uid);
+		}
+	}
+
+	public function verify_signature()
+	{
+		global $mybb, $parser;
+
+		if(!isset($parser))
+		{
+			require_once MYBB_ROOT."inc/class_parser.php";
+			$parser = new postParser;
+		}
+
+		$parser_options = array(
+			'allow_html' => $mybb->settings['sightml'],
+			'filter_badwords' => 1,
+			'allow_mycode' => $mybb->settings['sigmycode'],
+			'allow_smilies' => $mybb->settings['sigsmilies'],
+			'allow_imgcode' => $mybb->settings['sigimgcode'],
+			"filter_badwords" => 1
+		);
+
+		$parsed_sig = $parser->parse_message($this->data['signature'], $parser_options);
+
+		if((($mybb->settings['sigimgcode'] == 0 && $mybb->settings['sigsmilies'] != 1) &&
+			substr_count($parsed_sig, "<img") > 0) ||
+			(($mybb->settings['sigimgcode'] == 1 || $mybb->settings['sigsmilies'] == 1) &&
+			substr_count($parsed_sig, "<img") > $mybb->settings['maxsigimages'])
+		)
+		{
+			$imgsallowed = 0;
+			
+			if($mybb->settings['sigimgcode'] == 1)
+			{
+				$imgsallowed = $mybb->settings['maxsigimages'];
+			}
+
+			$this->set_error('too_many_sig_images2', array($imgsallowed));
+		}
+
+		if($mybb->settings['sigcountmycode'] == 0)
+		{
+			$parsed_sig = $parser->text_parse_message($this->data['signature']);
+		}
+		else
+		{
+			$parsed_sig = $this->data['signature'];
+		}
+
+		$parsed_sig = preg_replace("#\s#", "", $parsed_sig);
+		$sig_length = my_strlen($parsed_sig);
+
+		if($sig_length > $mybb->settings['siglength'])
+		{
+			$this->set_error('sig_too_long', array($mybb->settings['siglength']));
+
+			if($sig_length - $mybb->settings['siglength'] > 1)
+			{
+				$this->set_error('sig_remove_chars_plural', array($sig_length-$mybb->settings['siglength']));
+			}
+			else
+			{
+				$this->set_error('sig_remove_chars_singular');
+			}
+		}
+
+		if(count($this->get_errors()) > 0)
+		{
+			return false;
+		}
+		return true;
 	}
 }

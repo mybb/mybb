@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<settings version="1800" exported="1178692706">
+<settings version="1808">
 	<settinggroup name="onlineoffline" title="Board Online / Offline" description="These settings allow you to globally turn your forums online or offline, and allow you to specify a reason for turning them off." disporder="1" isdefault="1">
 		<setting name="boardclosed">
 			<title>Board Closed</title>
@@ -67,10 +67,18 @@
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="contactemail">
+			<title>Contact Email</title>
+			<description><![CDATA[The email address that messages sent via the contact form (contact.php) will be sent to. Leave blank to use the admin email address instead.]]></description>
+			<disporder>7</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 		<setting name="contactlink">
 			<title>Contact Us Link</title>
 			<description><![CDATA[This will be used for the Contact Us link on the bottom of all the forum pages. Can either be an email address (using mailto:email@website.com) or a hyperlink.]]></description>
-			<disporder>7</disporder>
+			<disporder>8</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -78,7 +86,7 @@
 		<setting name="cookiedomain">
 			<title>Cookie Domain</title>
 			<description><![CDATA[The domain which cookies should be set to. This can remain blank. It should also start with a . so it covers all subdomains.]]></description>
-			<disporder>8</disporder>
+			<disporder>9</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -86,7 +94,7 @@
 		<setting name="cookiepath">
 			<title>Cookie Path</title>
 			<description><![CDATA[The path which cookies are set to. We recommend setting this to the full directory path to your forums with a trailing slash.]]></description>
-			<disporder>9</disporder>
+			<disporder>10</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[/]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -94,7 +102,7 @@
 		<setting name="cookieprefix">
 			<title>Cookie Prefix</title>
 			<description><![CDATA[A prefix to append to all cookies set by MyBB. This is useful if you wish to install multiple copies of MyBB on the one domain or have other software installed which conflicts with the names of the cookies in MyBB. If not specified, no prefix will be used.]]></description>
-			<disporder>10</disporder>
+			<disporder>11</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -102,7 +110,7 @@
 		<setting name="showvernum">
 			<title>Show Version Numbers</title>
 			<description><![CDATA[Allows you to turn off the public display of version numbers in MyBB.]]></description>
-			<disporder>11</disporder>
+			<disporder>12</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -110,7 +118,7 @@
 		<setting name="mailingaddress">
 			<title>Mailing Address</title>
 			<description><![CDATA[If you have a mailing address, enter it here. This is shown on the COPPA compliance form.]]></description>
-			<disporder>12</disporder>
+			<disporder>13</disporder>
 			<optionscode><![CDATA[textarea]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -118,7 +126,7 @@
 		<setting name="faxno">
 			<title>Contact Fax No</title>
 			<description><![CDATA[If you have a fax number, enter it here. This is shown on the COPPA compliance form.]]></description>
-			<disporder>13</disporder>
+			<disporder>14</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -141,7 +149,6 @@
 0=No CAPTCHA
 1=MyBB Default CAPTCHA
 2=reCAPTCHA
-3=Are You a Human
 4=NoCAPTCHA reCAPTCHA]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -162,26 +169,10 @@
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
-		<setting name="ayahpublisherkey">
-			<title><![CDATA[Are You a Human Publisher Key]]></title>
-			<description><![CDATA[Your Are You a Human publisher key.]]></description>
-			<disporder>5</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
-			<settingvalue><![CDATA[]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-		<setting name="ayahscoringkey">
-			<title><![CDATA[Are You a Human Scoring Key]]></title>
-			<description><![CDATA[Your Are You a Human scoring key.]]></description>
-			<disporder>6</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
-			<settingvalue><![CDATA[]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
 		<setting name="reportmethod">
 			<title>Reported Posts Medium</title>
 			<description><![CDATA[Please select from the list how you want reported posts to be dealt with. Storing them in the database is probably the better of the options listed.]]></description>
-			<disporder>7</disporder>
+			<disporder>5</disporder>
 			<optionscode><![CDATA[radio
 db=Stored in the Database
 pms=Sent as Private Messages
@@ -192,7 +183,7 @@ email=Sent via Email]]></optionscode>
 		<setting name="decpoint">
 			<title>Decimal Point</title>
 			<description><![CDATA[The decimal point you use in your region.]]></description>
-			<disporder>8</disporder>
+			<disporder>6</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[.]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -200,7 +191,7 @@ email=Sent via Email]]></optionscode>
 		<setting name="thousandssep">
 			<title>Thousands Numeric Separator</title>
 			<description><![CDATA[The punctuation you want to use. For example, a setting of ',' with the number 1200 will give you 1,200.]]></description>
-			<disporder>9</disporder>
+			<disporder>7</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[,]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -208,7 +199,7 @@ email=Sent via Email]]></optionscode>
 		<setting name="showlanguageselect">
 			<title>Show Language Selector in Footer</title>
 			<description><![CDATA[Set to no if you do not want to show the language selection area in the footer of all pages in the board. If you only have one language installed this setting will be ignored.]]></description>
-			<disporder>10</disporder>
+			<disporder>8</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -216,7 +207,7 @@ email=Sent via Email]]></optionscode>
 		<setting name="showthemeselect">
 			<title>Show Theme Selector in Footer</title>
 			<description><![CDATA[Set to no if you do not want to show the theme selection area in the footer of all pages in the board.]]></description>
-			<disporder>11</disporder>
+			<disporder>9</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -224,7 +215,7 @@ email=Sent via Email]]></optionscode>
 		<setting name="maxmultipagelinks">
 			<title>Maximum Page Links in Pagination</title>
 			<description><![CDATA[Here you can set the number of next and previous page links to show in the pagination for threads or forums with more than one page of results.]]></description>
-			<disporder>12</disporder>
+			<disporder>10</disporder>
 			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[5]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -232,7 +223,7 @@ email=Sent via Email]]></optionscode>
 		<setting name="jumptopagemultipage">
 			<title>Show Jump To Page form in Pagination</title>
 			<description><![CDATA[Do you want to show a "jump to page" form in pagination if number of pages exceeds "Maximum Page Links in Pagination"?]]></description>
-			<disporder>13</disporder>
+			<disporder>11</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -240,7 +231,7 @@ email=Sent via Email]]></optionscode>
 		<setting name="no_plugins">
 			<title>Disable All Plugins</title>
 			<description><![CDATA[Setting this to yes will disable all plugins without deactivating or uninstalling them. This is equivalent of manually defining NO_PLUGINS at the top of ./inc/init.php.]]></description>
-			<disporder>14</disporder>
+			<disporder>12</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -248,7 +239,7 @@ email=Sent via Email]]></optionscode>
 		<setting name="deleteinvites">
 			<title>Expire Old Group Invites</title>
 			<description><![CDATA[The number of days until any pending invites to user groups expire. Set to 0 to disable.]]></description>
-			<disporder>15</disporder>
+			<disporder>13</disporder>
 			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[180]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -256,7 +247,7 @@ email=Sent via Email]]></optionscode>
 		<setting name="redirects">
 			<title>Friendly Redirection Pages</title>
 			<description><![CDATA[This will enable friendly redirection pages instead of bumping the user directly to the page.]]></description>
-			<disporder>16</disporder>
+			<disporder>14</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -264,7 +255,7 @@ email=Sent via Email]]></optionscode>
 		<setting name="enableforumjump">
 			<title>Enable Forum Jump Menu?</title>
 			<description><![CDATA[The forum jump menu is shown on the forum and thread view pages. It can add significant load to your forums if you have a large amount of forums. Set to 'No' to disable it.]]></description>
-			<disporder>17</disporder>
+			<disporder>15</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -509,6 +500,8 @@ none=Hide Errors and Warnings
 <option value=\"+6.5\" ".($setting['value'] == 6.5?"selected=\"selected\"":"").">GMT +6:30 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 6.5).")</option>
 <option value=\"+7\" ".($setting['value'] == 7?"selected=\"selected\"":"").">GMT +7:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 7).")</option>
 <option value=\"+8\" ".($setting['value'] == 8?"selected=\"selected\"":"").">GMT +8:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 8).")</option>
+<option value=\"+8.5\" ".($setting['value'] == 8.5?"selected=\"selected\"":"").">GMT +8:30 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 8.5).")</option>
+<option value=\"+8.75\" ".($setting['value'] == 8.75?"selected=\"selected\"":"").">GMT +8:45 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 8.75).")</option>
 <option value=\"+9\" ".($setting['value'] == 9?"selected=\"selected\"":"").">GMT +9:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 9).")</option>
 <option value=\"+9.5\" ".($setting['value'] == 9.5?"selected=\"selected\"":"").">GMT +9:30 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 9.5).")</option>
 <option value=\"+10\" ".($setting['value'] == 10?"selected=\"selected\"":"").">GMT +10:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 10).")</option>
@@ -951,7 +944,8 @@ disabled=Disable this feature]]></optionscode>
 		</setting>
 		<setting name="username_method">
 			<title>Allowed Login Methods</title>
-			<description><![CDATA[The login methods you wish to allow for the username field. Username only, Email only, or allow both.]]></description>
+			<description><![CDATA[The login methods you wish to allow for the username field. Username only, Email only, or allow both.<br />
+<strong>Note:</strong> Email options will only work if there are no duplicate accounts using the same e-mail address.]]></description>
 			<disporder>18</disporder>
 			<optionscode><![CDATA[select
 0=Username Only
@@ -1073,7 +1067,7 @@ disabled=Disable this feature]]></optionscode>
 			<optionscode><![CDATA[groupselect]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
-		</setting>		
+		</setting>
 		<setting name="hidewebsite">
 			<title>Hide Websites To Groups</title>
 			<description><![CDATA[Select the usergroups you wish to hide websites from.]]></description>
@@ -1084,7 +1078,7 @@ disabled=Disable this feature]]></optionscode>
 		</setting>
 		<setting name="useravatar">
 			<title>Default User Avatar</title>
-			<description><![CDATA[If the user does not set a custom avatar this image will be used instead.]]></description>
+			<description><![CDATA[If the user does not set a custom avatar this image will be used instead. If you want to use a different image for different themes, please use <strong>{theme}</strong> to represent the image directory of each theme.]]></description>
 			<disporder>10</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[images/default_avatar.png]]></settingvalue>
@@ -1242,7 +1236,7 @@ disabled=Disable this feature]]></optionscode>
 		</setting>
 		<setting name="postmergeuignore">
 			<title>Merge User Groups to Ignore</title>
-			<description><![CDATA[Usergroups, to exclude from the merge feature.]]></description>
+			<description><![CDATA[Select the usergroups which should be excluded from the merge feature.]]></description>
 			<disporder>8</disporder>
 			<optionscode><![CDATA[groupselect]]></optionscode>
 			<settingvalue><![CDATA[4]]></settingvalue>
@@ -1766,7 +1760,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		<setting name="portal">
 			<title>Enable Portal</title>
 			<description><![CDATA[If you wish to disable the portal on your board, set this option to no.]]></description>
-  			<disporder>1</disporder>
+			<disporder>1</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -2210,7 +2204,7 @@ smtp=SMTP mail]]></optionscode>
 	<settinggroup name="purgespammer" title="Purge Spammer" description="This section allows you to change the settings of the Purge Spammer feature." disporder="26" isdefault="1">
 		<setting name="purgespammergroups">
 			<title>Allowed Usergroups</title>
-			<description><![CDATA[Select the usergroups who are allowed to use Purge Spammer.]]></description>
+			<description><![CDATA[Select the usergroups which should be allowed to use Purge Spammer.]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[groupselect]]></optionscode>
 			<settingvalue><![CDATA[3,4,6]]></settingvalue>
@@ -2239,16 +2233,16 @@ delete=Delete]]></optionscode>
 		</setting>
 		<setting name="purgespammerbangroup">
 			<title>Ban Usergroup</title>
-			<description><![CDATA[Enter the ID of the usergroup (not the name) to put users into when they get banned. Defaults to 7, the default Banned usergroup. The above setting must be set to 'Ban' for this to take effect.]]></description>
+			<description><![CDATA[Choose the usergroup to put users into when they get purged. Defaults to the fundamental Banned usergroup.]]></description>
 			<disporder>4</disporder>
-			<optionscode><![CDATA[numeric]]></optionscode>
+			<optionscode><![CDATA[groupselectsingle]]></optionscode>
 			<settingvalue><![CDATA[7]]></settingvalue>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="purgespammerbanreason">
 			<title>Ban Reason</title>
-			<description><![CDATA[The reason which is used to ban the spammer]]></description>
+			<description><![CDATA[The reason which is used to ban the spammer.]]></description>
 			<disporder>5</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[Spam]]></settingvalue>
@@ -2360,7 +2354,7 @@ delete=Delete]]></optionscode>
 	<settinggroup name="contactdetails" title="Contact Details" description="This section allows you to change the settings of the contact fields feature." disporder="28" isdefault="1">
 		<setting name="allowicqfield">
 			<title>Allow ICQ Number Field To Usergroups</title>
-			<description><![CDATA[Select the usergroups who are allowed to use the ICQ Number contact field.]]></description>
+			<description><![CDATA[Select the usergroups which should be allowed to use the ICQ Number contact field.]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[groupselect]]></optionscode>
 			<settingvalue><![CDATA[-1]]></settingvalue>
@@ -2369,7 +2363,7 @@ delete=Delete]]></optionscode>
 		</setting>
 		<setting name="allowaimfield">
 			<title>Allow AIM Screen Name To Usergroups</title>
-			<description><![CDATA[Select the usergroups who are allowed to use the AIM Screen Name contact field.]]></description>
+			<description><![CDATA[Select the usergroups which should be allowed to use the AIM Screen Name contact field.]]></description>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[groupselect]]></optionscode>
 			<settingvalue><![CDATA[-1]]></settingvalue>
@@ -2378,7 +2372,7 @@ delete=Delete]]></optionscode>
 		</setting>
 		<setting name="allowyahoofield">
 			<title>Allow Yahoo ID Field To Usergroups</title>
-			<description><![CDATA[Select the usergroups who are allowed to use the Yahoo ID contact field.]]></description>
+			<description><![CDATA[Select the usergroups which should be allowed to use the Yahoo ID contact field.]]></description>
 			<disporder>3</disporder>
 			<optionscode><![CDATA[groupselect]]></optionscode>
 			<settingvalue><![CDATA[-1]]></settingvalue>
@@ -2387,7 +2381,7 @@ delete=Delete]]></optionscode>
 		</setting>
 		<setting name="allowskypefield">
 			<title>Allow Skype ID Field To Usergroups</title>
-			<description><![CDATA[Select the usergroups who are allowed to use the Skype ID contact field.]]></description>
+			<description><![CDATA[Select the usergroups which should be allowed to use the Skype ID contact field.]]></description>
 			<disporder>4</disporder>
 			<optionscode><![CDATA[groupselect]]></optionscode>
 			<settingvalue><![CDATA[-1]]></settingvalue>
@@ -2396,7 +2390,7 @@ delete=Delete]]></optionscode>
 		</setting>
 		<setting name="allowgooglefield">
 			<title>Allow Google Talk ID Field To Usergroups</title>
-			<description><![CDATA[Select the usergroups who are allowed to use the Google Talk ID contact field.]]></description>
+			<description><![CDATA[Select the usergroups which should be allowed to use the Google Talk ID contact field.]]></description>
 			<disporder>5</disporder>
 			<optionscode><![CDATA[groupselect]]></optionscode>
 			<settingvalue><![CDATA[-1]]></settingvalue>
@@ -2416,7 +2410,7 @@ delete=Delete]]></optionscode>
 		</setting>
 		<setting name="statscachetime">
 			<title>Statistics Cache Time</title>
-			<description><![CDATA[Insert the interval of time to refresh the statistics page cache in hours. 0 to disable caching.]]></description>
+			<description><![CDATA[Insert the interval of time to refresh the statistics page cache (in hours). 0 to disable caching.]]></description>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>

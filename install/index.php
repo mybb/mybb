@@ -65,9 +65,9 @@ require_once MYBB_ROOT."inc/db_base.php";
 // Prevent any shut down functions from running
 $done_shutdown = 1;
 
-// Include the necessary contants for installation
+// Include the necessary constants for installation
 $grouppermignore = array('gid', 'type', 'title', 'description', 'namestyle', 'usertitle', 'stars', 'starimage', 'image');
-$groupzerogreater = array('pmquota', 'maxpmrecipients', 'maxreputationsday', 'attachquota', 'maxemails', 'maxwarningsday', 'maxposts', 'edittimelimit', 'canusesigxposts', 'maxreputationsperthread');
+$groupzerogreater = array('pmquota', 'maxpmrecipients', 'maxreputationsday', 'attachquota', 'maxemails', 'maxwarningsday', 'maxposts', 'edittimelimit', 'canusesigxposts', 'maxreputationsperuser', 'maxreputationsperthread', 'emailfloodtime');
 $displaygroupfields = array('title', 'description', 'namestyle', 'usertitle', 'stars', 'starimage', 'image');
 $fpermfields = array('canview', 'canviewthreads', 'candlattachments', 'canpostthreads', 'canpostreplys', 'canpostattachments', 'canratethreads', 'caneditposts', 'candeleteposts', 'candeletethreads', 'caneditattachments', 'canpostpolls', 'canvotepolls', 'cansearch', 'modposts', 'modthreads', 'modattachments', 'mod_edit_posts');
 
@@ -186,6 +186,9 @@ else
 	}
 }
 
+/**
+ * Welcome page
+ */
 function intro()
 {
 	global $output, $mybb, $lang;
@@ -199,6 +202,9 @@ function intro()
 	$output->print_footer('license');
 }
 
+/**
+ * Show the license agreement
+ */
 function license_agreement()
 {
 	global $output, $lang, $mybb;
@@ -1013,6 +1019,9 @@ EOF;
 	$output->print_footer('requirements_check');
 }
 
+/**
+ * Check our requirements
+ */
 function requirements_check()
 {
 	global $output, $mybb, $dboptions, $lang;
@@ -1198,6 +1207,9 @@ function requirements_check()
 	}
 }
 
+/**
+ * Which database do we use?
+ */
 function database_info()
 {
 	global $output, $dbinfo, $errors, $mybb, $dboptions, $lang;
@@ -1376,6 +1388,9 @@ function database_info()
 	$output->print_footer('create_tables');
 }
 
+/**
+ * Create our tables
+ */
 function create_tables()
 {
 	global $output, $dbinfo, $errors, $mybb, $dboptions, $lang;
@@ -1577,6 +1592,11 @@ function create_tables()
 	fwrite($file, $configdata);
 	fclose($file);
 
+	if(function_exists('opcache_invalidate'))
+	{
+		opcache_invalidate(MYBB_ROOT."inc/config.php");
+	}
+
 	// Error reporting back on
  	$db->error_reporting = 1;
 
@@ -1613,6 +1633,9 @@ function create_tables()
 	$output->print_footer('populate_tables');
 }
 
+/**
+ * Insert our default data
+ */
 function populate_tables()
 {
 	global $output, $lang;
@@ -1657,6 +1680,9 @@ function populate_tables()
 	$output->print_footer('templates');
 }
 
+/**
+ * Install our theme
+ */
 function insert_templates()
 {
 	global $mybb, $output, $cache, $db, $lang;
@@ -1767,14 +1793,17 @@ function insert_templates()
 	$output->print_footer('configuration');
 }
 
+/**
+ * Default configuration
+ */
 function configure()
 {
 	global $output, $mybb, $errors, $lang;
 
 	$output->print_header($lang->board_config, 'config');
-	
+
 	echo <<<EOF
-		<script type="text/javascript">	
+		<script type="text/javascript">
 		function warnUser(inp, warn)
 		{
 			var parenttr = $('#'+inp.id).closest('tr');
@@ -1793,19 +1822,19 @@ function configure()
 				}
 			}
 		}
-			
+
 		function revertSetting(defval, inpid)
 		{
-			$(inpid).val(defval);			
+			$(inpid).val(defval);
 			var parenttr = $(inpid).closest('tr');
 			parenttr.next('.setting_peeker').remove();
 			if(parenttr.is(':last-child'))
 			{
 				parenttr.addClass('last');
-			}			
+			}
 		}
 		</script>
-		
+
 EOF;
 
 	// If board configuration errors
@@ -1835,12 +1864,12 @@ EOF;
 		}
 
 		// Attempt auto-detection
-		if($_SERVER['HTTP_HOST'])
+		if(!empty($_SERVER['HTTP_HOST']))
 		{
 			$hostname = $protocol.$_SERVER['HTTP_HOST'];
 			$cookiedomain = $_SERVER['HTTP_HOST'];
 		}
-		elseif($_SERVER['SERVER_NAME'])
+		elseif(!empty($_SERVER['SERVER_NAME']))
 		{
 			$hostname = $protocol.$_SERVER['SERVER_NAME'];
 			$cookiedomain = $_SERVER['SERVER_NAME'];
@@ -1861,24 +1890,42 @@ EOF;
 			$cookiedomain = ".{$cookiedomain}";
 		}
 
-		if($_SERVER['SERVER_PORT'] && $_SERVER['SERVER_PORT'] != 80 && !preg_match("#:[0-9]#i", $hostname))
+		if(!empty($_SERVER['SERVER_PORT']))
 		{
-			$hostname .= ':'.$_SERVER['SERVER_PORT'];
+			$port = ":{$_SERVER['SERVER_PORT']}";
+			$pos = strrpos($cookiedomain, $port);
+
+			if($pos !== false)
+			{
+				$cookiedomain = substr($cookiedomain, 0, $pos);
+			}
+
+			if($_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443 && !preg_match("#:[0-9]#i", $hostname))
+			{
+				$hostname .= $port;
+			}
 		}
-		
+
 		$currentlocation = get_current_location('', '', true);
 		$noinstall = substr($currentlocation, 0, strrpos($currentlocation, '/install/'));
-		
+
 		$cookiepath = $noinstall.'/';
 		$bburl = $hostname.$noinstall;
 		$websiteurl = $hostname.'/';
-		$contactemail = $_SERVER['SERVER_ADMIN'];
+
+		if(isset($_SERVER['SERVER_ADMIN']) && filter_var($_SERVER['SERVER_ADMIN'], FILTER_VALIDATE_EMAIL))
+		{
+			$contactemail = $_SERVER['SERVER_ADMIN'];
+		}
 	}
 
 	echo $lang->sprintf($lang->config_step_table, $bbname, $bburl, $websitename, $websiteurl, $cookiedomain, $cookiepath, $contactemail);
 	$output->print_footer('adminuser');
 }
 
+/**
+ * How do we want to name the admin user?
+ */
 function create_admin_user()
 {
 	global $output, $mybb, $errors, $db, $lang;
@@ -1901,9 +1948,9 @@ function create_admin_user()
 		}
 	}
 	$output->print_header($lang->create_admin, 'admin');
-	
+
 	echo <<<EOF
-		<script type="text/javascript">	
+		<script type="text/javascript">
 		function comparePass()
 		{
 			var parenttr = $('#adminpass2').closest('tr');
@@ -1919,7 +1966,7 @@ function create_admin_user()
 			}
 		}
 		</script>
-		
+
 EOF;
 
 	if(is_array($errors))
@@ -2110,6 +2157,9 @@ EOF;
 	$output->print_footer('final');
 }
 
+/**
+ * Installation is finished
+ */
 function install_done()
 {
 	global $output, $db, $mybb, $errors, $cache, $lang;
@@ -2215,6 +2265,8 @@ function install_done()
 		'receivepms' => 1,
 		'pmnotice' => 1,
 		'pmnotify' => 1,
+		'buddyrequestspm' => 1,
+		'buddyrequestsauto' => 0,
 		'showimages' => 1,
 		'showvideos' => 1,
 		'showsigs' => 1,
@@ -2373,6 +2425,11 @@ function install_done()
 	$output->print_footer('');
 }
 
+/**
+ * @param array $config
+ *
+ * @return DB_MySQL|DB_MySQLi|DB_PgSQL|DB_SQLite
+ */
 function db_connection($config)
 {
 	require_once MYBB_ROOT."inc/db_{$config['database']['type']}.php";
@@ -2401,6 +2458,11 @@ function db_connection($config)
 	return $db;
 }
 
+/**
+ * @param array $array
+ *
+ * @return string
+ */
 function error_list($array)
 {
 	$string = "<ul>\n";
@@ -2412,6 +2474,9 @@ function error_list($array)
 	return $string;
 }
 
+/**
+ * Write our settings to the settings file
+ */
 function write_settings()
 {
 	global $db;
