@@ -55,12 +55,13 @@ if($attachment['thumbnail'] == '' && isset($mybb->input['thumbnail']))
 
 $attachtypes = (array)$cache->read('attachtypes');
 $ext = get_extension($attachment['filename']);
-$attachtype = $attachtypes[$ext];
 
-if(empty($attachtype))
+if(empty($attachtypes[$ext]))
 {
 	error($lang->error_invalidattachment);
 }
+
+$attachtype = $attachtypes[$ext];
 
 $pid = $attachment['pid'];
 
