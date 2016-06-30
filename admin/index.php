@@ -20,6 +20,8 @@ $shutdown_queries = $shutdown_functions = array();
 
 send_page_headers();
 
+header('X-Frame-Options: SAMEORIGIN');
+
 if(!isset($config['admin_dir']) || !file_exists(MYBB_ROOT.$config['admin_dir']."/inc/class_page.php"))
 {
 	$config['admin_dir'] = basename(dirname(__FILE__));
@@ -50,6 +52,7 @@ if(!isset($cp_language))
 
 // Load global language phrases
 $lang->load("global");
+$lang->load("messages", true);
 
 if(function_exists('mb_internal_encoding') && !empty($lang->settings['charset']))
 {
@@ -237,12 +240,12 @@ elseif($mybb->input['do'] == "login")
 
 		$db->delete_query("adminsessions", "uid='{$mybb->user['uid']}'");
 
-		$sid = md5(uniqid(microtime(true), true));
+		$sid = md5(random_str(50));
 
 		$useragent = $_SERVER['HTTP_USER_AGENT'];
-		if(my_strlen($useragent) > 100)
+		if(my_strlen($useragent) > 200)
 		{
-			$useragent = my_substr($useragent, 0, 100);
+			$useragent = my_substr($useragent, 0, 200);
 		}
 
 		// Create a new admin session for this user
@@ -472,6 +475,7 @@ if(!empty($mybb->user['uid']))
 		$cp_language = $admin_options['cplanguage'];
 		$lang->set_language($cp_language, "admin");
 		$lang->load("global"); // Reload global language vars
+		$lang->load("messages", true);
 	}
 
 	if(!empty($admin_options['cpstyle']) && file_exists(MYBB_ADMIN_DIR."/styles/{$admin_options['cpstyle']}/main.css"))

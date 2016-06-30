@@ -127,6 +127,7 @@ function validate_password_from_uid($uid, $password, $user = array())
  * @param string $password The md5()'ed password.
  * @param string $salt (Optional) The salt of the user.
  * @return array The new password.
+ * @deprecated deprecated since version 1.8.6 Please use other alternatives.
  */
 function update_password($uid, $password, $salt="")
 {
@@ -268,9 +269,7 @@ function add_subscribed_thread($tid, $notification=1, $uid=0)
 			'uid' => (int)$uid,
 			'tid' => (int)$tid,
 			'notification' => (int)$notification,
-			'dateline' => TIME_NOW,
-			'subscriptionkey' => md5(TIME_NOW.$uid.$tid)
-
+			'dateline' => TIME_NOW
 		);
 		$db->insert_query("threadsubscriptions", $insert_array);
 	}

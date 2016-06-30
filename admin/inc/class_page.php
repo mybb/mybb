@@ -108,7 +108,7 @@ class DefaultPage
 
 		echo "	<script type=\"text/javascript\" src=\"../jscripts/jquery.js\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"../jscripts/jquery.plugins.min.js\"></script>\n";
-		echo "	<script type=\"text/javascript\" src=\"../jscripts/general.js\"></script>\n";
+		echo "	<script type=\"text/javascript\" src=\"../jscripts/general.js?ver=1807\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"./jscripts/admincp.js\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"./jscripts/tabs.js\"></script>\n";
 
@@ -391,7 +391,7 @@ lang.saved = \"{$lang->saved}\";
 <meta name="copyright" content="Copyright {$copy_year} MyBB Group." />
 <link rel="stylesheet" href="./styles/{$cp_style}/login.css" type="text/css" />
 <script type="text/javascript" src="../jscripts/jquery.js"></script>
-<script type="text/javascript" src="../jscripts/general.js"></script>
+<script type="text/javascript" src="../jscripts/general.js?ver=1807"></script>
 <script type="text/javascript" src="./jscripts/admincp.js"></script>
 <script type="text/javascript">
 //<![CDATA[
@@ -523,7 +523,7 @@ EOF;
 <meta name="copyright" content="Copyright {$copy_year} MyBB Group." />
 <link rel="stylesheet" href="./styles/{$cp_style}/login.css" type="text/css" />
 <script type="text/javascript" src="../jscripts/jquery.js"></script>
-<script type="text/javascript" src="../jscripts/general.js"></script>
+<script type="text/javascript" src="../jscripts/general.js?ver=1807"></script>
 <script type="text/javascript" src="./jscripts/admincp.js"></script>
 <script type="text/javascript">
 //<![CDATA[
@@ -769,26 +769,6 @@ EOF;
 	}
 
 	/**
-	 * Switch between two different alternating background colours.
-	 *
-	 * @return string
-	 */
-	function get_alt_bg()
-	{
-		static $alt_bg;
-		if($alt_bg == "alt1")
-		{
-			$alt_bg = "alt2";
-			return "alt1";
-		}
-		else
-		{
-			$alt_bg = "alt1";
-			return $alt_bg;
-		}
-	}
-
-	/**
 	 * Output a Javascript based tab control on to the page.
 	 *
 	 * @param array $tabs Array of tabs in name => title format. Name should correspond to the name of a DIV containing the tab content.
@@ -920,10 +900,14 @@ EOF;
 		// Smilies
 		$emoticon = "";
 		$emoticons_enabled = "false";
-		if($smilies && $mybb->settings['smilieinserter'] != 0 && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
+		if($smilies)
 		{
-			$emoticon = ",emoticon";
+			if($mybb->settings['smilieinserter'] && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
+			{			
+				$emoticon = ",emoticon";
+			}
 			$emoticons_enabled = "true";
+			
 			if(!$smiliecount)
 			{
 				$smilie_cache = $cache->read("smilies");
@@ -938,11 +922,8 @@ EOF;
 				}
 				foreach($smilie_cache as $smilie)
 				{
-					if($smilie['showclickable'] != 0)
-					{
-						$smilie['image'] = str_replace("{theme}", "images", $smilie['image']);
-						$smiliecache[$smilie['find']] = $smilie['image'];
-					}
+					$smilie['image'] = str_replace("{theme}", "images", $smilie['image']);
+					$smiliecache[$smilie['sid']] = $smilie;
 				}
 			}
 
@@ -955,21 +936,27 @@ EOF;
 				$dropdownsmilies = $moresmilies = $hiddensmilies = "";
 				$i = 0;
 
-				foreach($smiliecache as $find => $image)
+				foreach($smiliecache as $smilie)
 				{
-					$finds = explode("\n", $find);
+					$finds = explode("\n", $smilie['find']);
 					$finds_count = count($finds);
 					
 					// Only show the first text to replace in the box
 					$find = str_replace(array('\\', '"'), array('\\\\', '\"'), htmlspecialchars_uni($finds[0]));
-					$image = str_replace(array('\\', '"'), array('\\\\', '\"'), htmlspecialchars_uni($image));
+					$image = str_replace(array('\\', '"'), array('\\\\', '\"'), htmlspecialchars_uni($smilie['image']));
 					if(substr($image, 0, 4) != "http")
 					{
 						$image = $mybb->settings['bburl']."/".$image;
 					}
-					if($i < $mybb->settings['smilieinsertertot'])
+
+					if(!$mybb->settings['smilieinserter'] || !$mybb->settings['smilieinsertercols'] || !$mybb->settings['smilieinsertertot'] || !$smilie['showclickable'])
+					{
+						$hiddensmilies .= '"'.$find.'": "'.$image.'",';							
+					}
+					elseif($i < $mybb->settings['smilieinsertertot'])
 					{
 						$dropdownsmilies .= '"'.$find.'": "'.$image.'",';
+						++$i;
 					}
 					else
 					{
@@ -981,7 +968,6 @@ EOF;
 						$find = str_replace(array('\\', '"'), array('\\\\', '\"'), htmlspecialchars_uni($finds[$j]));
 						$hiddensmilies .= '"'.$find.'": "'.$image.'",';
 					}
-					++$i;
 				}
 			}
 		}
@@ -1054,6 +1040,7 @@ opt_editor = {
 	rtl: {$lang->settings['rtl']},
 	locale: "mybblang",
 	enablePasteFiltering: true,
+	autoUpdate: true,
 	emoticonsEnabled: {$emoticons_enabled},
 	emoticons: {
 		// Emoticons to be included in the dropdown

@@ -226,6 +226,17 @@ if($mybb->input['action'] == "edit")
 				$mybb->input['originalusergroup'] = implode(',', array_map('intval', $mybb->input['originalusergroup']));
 			}
 
+			$allowed_operators = array('>', '>=', '=', '<=', '<');
+			$operator_fields = array('posttype', 'threadtype', 'timeregisteredtype', 'reputationtype', 'referralstype', 'warningstype');
+
+			foreach($operator_fields as $field)
+			{
+				if(!in_array($mybb->get_input($field), $allowed_operators))
+				{
+					$mybb->input[$field] = '=';
+				}
+			}
+
 			$update_promotion = array(
 				"title" => $db->escape_string($mybb->input['title']),
 				"description" => $db->escape_string($mybb->input['description']),
@@ -430,6 +441,17 @@ if($mybb->input['action'] == "add")
 			else
 			{
 				$mybb->input['originalusergroup'] = implode(',', array_map('intval', $mybb->input['originalusergroup']));
+			}
+
+			$allowed_operators = array('>', '>=', '=', '<=', '<');
+			$operator_fields = array('posttype', 'threadtype', 'timeregisteredtype', 'reputationtype', 'referralstype', 'warningstype');
+
+			foreach($operator_fields as $field)
+			{
+				if(!in_array($mybb->get_input($field), $allowed_operators))
+				{
+					$mybb->input[$field] = '=';
+				}
 			}
 
 			$new_promotion = array(

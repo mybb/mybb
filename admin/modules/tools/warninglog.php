@@ -400,7 +400,7 @@ if(!$mybb->input['action'])
 		{
 			$username_link = build_profile_link($username, $row['uid'], "_blank");
 		}
-		$mod_username = format_name($row['mod_username'], $row['mod_usergroup'], $row['mod_displaygroup']);
+		$mod_username = format_name(htmlspecialchars_uni($row['mod_username']), $row['mod_usergroup'], $row['mod_displaygroup']);
 		$mod_username_link = build_profile_link($mod_username, $row['mod_uid'], "_blank");
 		$issued_date = my_date('relative', $row['dateline']);
 		$revoked_text = '';

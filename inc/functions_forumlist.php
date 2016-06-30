@@ -184,8 +184,8 @@ function build_forumbits($pid=0, $depth=1)
 				);
 			}
 
-			// If the current forums lastpost is greater than other child forums of the current parent, overwrite it
-			if(!isset($parent_lastpost) || $lastpost_data['lastpost'] > $parent_lastpost['lastpost'])
+			// If the current forums lastpost is greater than other child forums of the current parent and forum info isn't hidden, overwrite it
+			if((!isset($parent_lastpost) || $lastpost_data['lastpost'] > $parent_lastpost['lastpost']) && $hideinfo != true)
 			{
 				$parent_lastpost = $lastpost_data;
 			}
@@ -292,6 +292,7 @@ function build_forumbits($pid=0, $depth=1)
 					$lastpost_date = my_date('relative', $lastpost_data['lastpost']);
 
 					// Set up the last poster, last post thread id, last post subject and format appropriately
+					$lastpost_data['lastposter'] = htmlspecialchars_uni($lastpost_data['lastposter']);
 					$lastpost_profilelink = build_profile_link($lastpost_data['lastposter'], $lastpost_data['lastposteruid']);
 					$lastpost_link = get_thread_link($lastpost_data['lastposttid'], 0, "lastpost");
 					$lastpost_subject = $full_lastpost_subject = $parser->parse_badwords($lastpost_data['lastpostsubject']);

@@ -467,7 +467,7 @@ class session
 		$onlinedata['time'] = TIME_NOW;
 		
 		$onlinedata['location'] = $db->escape_string(substr(get_current_location(), 0, 150));
-		$onlinedata['useragent'] = $db->escape_string(my_substr($this->useragent, 0, 100));
+		$onlinedata['useragent'] = $db->escape_string(my_substr($this->useragent, 0, 200));
 		
 		$onlinedata['location1'] = (int)$speciallocs['1'];
 		$onlinedata['location2'] = (int)$speciallocs['2'];
@@ -512,13 +512,13 @@ class session
 		}
 		else
 		{
-			$onlinedata['sid'] = md5(uniqid(microtime(true), true));
+			$onlinedata['sid'] = md5(random_str(50));
 		}
 		$onlinedata['time'] = TIME_NOW;
 		$onlinedata['ip'] = $db->escape_binary($this->packedip);
 		
 		$onlinedata['location'] = $db->escape_string(substr(get_current_location(), 0, 150));
-		$onlinedata['useragent'] = $db->escape_string(my_substr($this->useragent, 0, 100));
+		$onlinedata['useragent'] = $db->escape_string(my_substr($this->useragent, 0, 200));
 		
 		$onlinedata['location1'] = (int)$speciallocs['1'];
 		$onlinedata['location2'] = (int)$speciallocs['2'];

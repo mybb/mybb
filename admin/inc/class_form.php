@@ -130,7 +130,16 @@ class DefaultForm
 	 */
 	function generate_numeric_field($name, $value=0, $options=array())
 	{
-		$input = "<input type=\"number\" name=\"".$name."\" value=\"".(int)$value."\"";
+		if(is_numeric($value))
+		{
+			$value = (float)$value;
+		}
+		else
+		{
+			$value = '';
+		}
+
+		$input = "<input type=\"number\" name=\"{$name}\" value=\"{$value}\"";
 		if(isset($options['min']))
 		{
 			$input .= " min=\"".$options['min']."\"";
@@ -966,21 +975,12 @@ class DefaultFormContainer
 			$row = "<label{$for}>{$title}</label>";
 		}
 
-		if(isset($options['id']))
-		{
-			$options['id'] = " id=\"{$options['id']}\"";
-		}
-		else
-		{
-			$options['id'] = '';
-		}
-
 		if($description != '')
 		{
 			$row .= "\n<div class=\"description\">{$description}</div>\n";
 		}
 
-		$row .= "<div class=\"form_row\"{$options['id']}>{$content}</div>\n";
+		$row .= "<div class=\"form_row\">{$content}</div>\n";
 
 		$this->_container->construct_cell($row, $options);
 

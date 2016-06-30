@@ -11,7 +11,7 @@
 /**
  * Memcached Cache Handler
  */
-class memcachedCacheHandler
+class memcachedCacheHandler implements CacheHandlerInterface
 {
 	/**
 	 * The memcached server resource
@@ -27,10 +27,7 @@ class memcachedCacheHandler
 	 */
 	public $unique_id;
 
-	/**
-	 * @param bool $silent ignored
-	 */
-	function memcachedCacheHandler($silent=false)
+	function __construct()
 	{
 		global $mybb;
 
@@ -98,10 +95,9 @@ class memcachedCacheHandler
 	 * Retrieve an item from the cache.
 	 *
 	 * @param string $name The name of the cache
-	 * @param boolean $hard_refresh True if we should do a hard refresh
 	 * @return mixed Cache data if successful, false if failure
 	 */
-	function fetch($name, $hard_refresh=false)
+	function fetch($name)
 	{
 		$data = $this->memcached->get($this->unique_id."_".$name);
 
@@ -143,7 +139,7 @@ class memcachedCacheHandler
 	 */
 	function disconnect()
 	{
-		@$this->memcached->close();
+		@$this->memcached->quit();
 	}
 
 	/**
@@ -151,7 +147,7 @@ class memcachedCacheHandler
 	 *
 	 * @return string
 	 */
-	function size_of($name)
+	function size_of($name='')
 	{
 		global $lang;
 

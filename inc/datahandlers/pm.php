@@ -395,7 +395,7 @@ class PMDataHandler extends DataHandler
 		$pm = &$this->data;
 
 		// Check if post flooding is enabled within MyBB or if the admin override option is specified.
-		if($mybb->settings['pmfloodsecs'] > 0 && $pm['fromid'] != 0 && $this->admin_override == false)
+		if($mybb->settings['pmfloodsecs'] > 0 && $pm['fromid'] != 0 && $this->admin_override == false && !is_moderator(0, '', $pm['fromid']))
 		{
 			// Fetch the senders profile data.
 			$sender = get_user($pm['fromid']);
@@ -405,7 +405,7 @@ class PMDataHandler extends DataHandler
 			$sender['lastpm'] = $db->fetch_field($query, "dateline");
 
 			// A little bit of calculation magic and moderator status checking.
-			if(TIME_NOW-$sender['lastpm'] <= $mybb->settings['pmfloodsecs'] && !is_moderator("", "", $pm['fromid']))
+			if(TIME_NOW-$sender['lastpm'] <= $mybb->settings['pmfloodsecs'])
 			{
 				// Oops, user has been flooding - throw back error message.
 				$time_to_wait = ($mybb->settings['pmfloodsecs'] - (TIME_NOW-$sender['lastpm'])) + 1;

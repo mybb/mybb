@@ -20,16 +20,9 @@ class datacache
 	/**
 	 * The current cache handler we're using
 	 *
-	 * @var apcCacheHandler|diskCacheHandler|eacceleratorCacheHandler|memcacheCacheHandler|memcachedCacheHandler|xcacheCacheHandler
+	 * @var CacheHandlerInterface
 	 */
 	public $handler = null;
-
-	/**
-	 * Whether or not to exit the script if we cannot load the specified extension
-	 *
-	 * @var boolean
-	 */
-	var $silent = false;
 
 	/**
 	 * A count of the number of calls.
@@ -67,48 +60,47 @@ class datacache
 	{
 		global $db, $mybb;
 
+		require_once MYBB_ROOT."/inc/cachehandlers/interface.php";
+
 		switch($mybb->config['cache_store'])
 		{
 			// Disk cache
 			case "files":
 				require_once MYBB_ROOT."/inc/cachehandlers/disk.php";
-				$this->handler = new diskCacheHandler($this->silent);
+				$this->handler = new diskCacheHandler();
 				break;
 			// Memcache cache
 			case "memcache":
 				require_once MYBB_ROOT."/inc/cachehandlers/memcache.php";
-				$this->handler = new memcacheCacheHandler($this->silent);
+				$this->handler = new memcacheCacheHandler();
 				break;
 			// Memcached cache
 			case "memcached":
 				require_once MYBB_ROOT."/inc/cachehandlers/memcached.php";
-				$this->handler = new memcachedCacheHandler($this->silent);
+				$this->handler = new memcachedCacheHandler();
 				break;
 			// eAccelerator cache
 			case "eaccelerator":
 				require_once MYBB_ROOT."/inc/cachehandlers/eaccelerator.php";
-				$this->handler = new eacceleratorCacheHandler($this->silent);
+				$this->handler = new eacceleratorCacheHandler();
 				break;
 			// Xcache cache
 			case "xcache":
 				require_once MYBB_ROOT."/inc/cachehandlers/xcache.php";
-				$this->handler = new xcacheCacheHandler($this->silent);
+				$this->handler = new xcacheCacheHandler();
 				break;
 			// APC cache
 			case "apc":
 				require_once MYBB_ROOT."/inc/cachehandlers/apc.php";
-				$this->handler = new apcCacheHandler($this->silent);
+				$this->handler = new apcCacheHandler();
 				break;
 		}
 
-		if(is_object($this->handler))
+		if($this->handler instanceof CacheHandlerInterface)
 		{
-			if(method_exists($this->handler, "connect"))
+			if(!$this->handler->connect())
 			{
-				if(!$this->handler->connect())
-				{
-					$this->handler = null;
-				}
+				$this->handler = null;
 			}
 		}
 		else
@@ -140,12 +132,12 @@ class datacache
 		}
 		// If we're not hard refreshing, and this cache doesn't exist, return false
 		// It would have been loaded pre-global if it did exist anyway...
-		else if($hard == false && !is_object($this->handler))
+		else if($hard == false && !($this->handler instanceof CacheHandlerInterface))
 		{
 			return false;
 		}
 
-		if(is_object($this->handler))
+		if($this->handler instanceof CacheHandlerInterface)
 		{
 			get_execution_time();
 
@@ -239,7 +231,7 @@ class datacache
 		$db->replace_query("datacache", $replace_array, "", false);
 
 		// Do we have a cache handler we're using?
-		if(is_object($this->handler))
+		if($this->handler instanceof CacheHandlerInterface)
 		{
 			get_execution_time();
 
@@ -273,7 +265,7 @@ class datacache
 		$where = "title = '{$dbname}'";
 
 		// Delete on-demand or handler cache
-		if($this->handler)
+		if($this->handler instanceof CacheHandlerInterface)
 		{
 			get_execution_time();
 
@@ -314,7 +306,7 @@ class datacache
 
 			$where .= " OR title LIKE '{$ldbname}=_%' ESCAPE '='";
 
-			if($this->handler)
+			if($this->handler instanceof CacheHandlerInterface)
 			{
 				$query = $db->simple_select("datacache", "title", $where);
 
@@ -413,7 +405,7 @@ class datacache
 	{
 		global $db;
 
-		if(is_object($this->handler))
+		if($this->handler instanceof CacheHandlerInterface)
 		{
 			$size = $this->handler->size_of($name);
 			if(!$size)
@@ -648,8 +640,6 @@ class datacache
 	 */
 	function update_stats()
 	{
-		global $db;
-
 		require_once MYBB_ROOT."inc/functions_rebuild.php";
 		rebuild_stats();
 	}
@@ -797,7 +787,7 @@ class datacache
 
 		$data = array(
 			'users'	=> $awaitingusers,
-			'time'	=> TIME_NOW 
+			'time'	=> TIME_NOW
 		);
 
 		$this->update('awaitingactivation', $data);
@@ -897,7 +887,6 @@ class datacache
 	{
 		global $db, $mybb;
 
-		$reports = array();
 		$query = $db->simple_select("reportedcontent", "COUNT(rid) AS unreadcount", "reportstatus='0'");
 		$num = $db->fetch_array($query);
 
@@ -907,25 +896,10 @@ class datacache
 		$query = $db->simple_select("reportedcontent", "dateline", "reportstatus='0'", array('order_by' => 'dateline', 'order_dir' => 'DESC'));
 		$latest = $db->fetch_array($query);
 
-		$reasons = array();
-
-		if(!empty($mybb->settings['reportreasons']))
-		{
-			$options = $mybb->settings['reportreasons'];
-			$options = explode("\n", $options);
-
-			foreach($options as $option)
-			{
-				$option = explode("=", $option);
-				$reasons[$option[0]] = $option[1];
-			}
-		}
-
 		$reports = array(
 			"unread" => $num['unreadcount'],
 			"total" => $total['reportcount'],
-			"lastdateline" => $latest['dateline'],
-			"reasons" => $reasons
+			"lastdateline" => $latest['dateline']
 		);
 
 		$this->update("reportedcontent", $reports);
