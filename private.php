@@ -1069,7 +1069,7 @@ if($mybb->input['action'] == "read")
 		eval("\$action_time = \"".$templates->get("private_read_action")."\";");
 	}
 
-	$pm['userusername'] = $pm['username'] = htmlspecialchars_uni($pm['username']);
+	$pm['userusername'] = $pm['username'];
 	$pm['subject'] = htmlspecialchars_uni($parser->parse_badwords($pm['subject']));
 
 	if($pm['fromid'] == 0)
