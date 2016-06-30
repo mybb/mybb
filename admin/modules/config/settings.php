@@ -927,6 +927,22 @@ if($mybb->input['action'] == "change")
 			$forum_group_select[] = $name;
 		}
 
+		// Administrator is changing the login method.
+		if($mybb->settings['username_method'] == 1 || $mybb->settings['username_method'] == 2 || $mybb->input['upsetting']['username_method'] == 1 || $mybb->input['upsetting']['username_method'] == 2)
+		{
+			$query = $db->simple_select('users', 'email, COUNT(email) AS duplicates', "email!=''", array('group_by' => 'email HAVING duplicates>1'));
+			if($db->num_rows($query))
+			{
+				$mybb->input['upsetting']['username_method'] = 0;
+				$lang->success_settings_updated .= $lang->success_settings_updated_username_method;
+			}
+			else
+			{
+				$mybb->input['upsetting']['allowmultipleemails'] = 0;
+				$lang->success_settings_updated .= $lang->success_settings_updated_allowmultipleemails;
+			}
+		}
+
 		if(is_array($mybb->input['upsetting']))
 		{
 			foreach($mybb->input['upsetting'] as $name => $value)
@@ -1616,6 +1632,7 @@ function print_setting_peekers()
 		'new Peeker($("#setting_subforumsindex"), $("#row_setting_subforumsstatusicons"), /[^0+|]/, false)',
 		'new Peeker($(".setting_showsimilarthreads"), $("#row_setting_similarityrating, #row_setting_similarlimit"), 1, true)',
 		'new Peeker($(".setting_disableregs"), $("#row_setting_regtype, #row_setting_securityquestion, #row_setting_regtime, #row_setting_allowmultipleemails, #row_setting_hiddencaptchaimage, #row_setting_betweenregstime"), 0, true)',
+		'new Peeker($("#setting_username_method"), $("#row_setting_allowmultipleemails"), /[0+|]/, false)',
 		'new Peeker($(".setting_hiddencaptchaimage"), $("#row_setting_hiddencaptchaimagefield"), 1, true)',
 		'new Peeker($("#setting_failedlogincount"), $("#row_setting_failedlogintime, #row_setting_failedlogintext"), /[^0+|]/, false)',
 		'new Peeker($(".setting_postfloodcheck"), $("#row_setting_postfloodsecs"), 1, true)',
