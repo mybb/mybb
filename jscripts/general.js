@@ -104,7 +104,7 @@ var MyBB = {
 						{
 							name: "action",
 							type: "hidden",
-							value: "do_editevent"
+							value: "do_deleteevent"
 						})
 					);
 
@@ -632,5 +632,26 @@ var expandables = {
 var lang = {
 
 };
+
+/* add keepelement to jquery-modal plugin */
+(function($) {
+	if(typeof $.modal != 'undefined')
+	{
+		$.modal.defaults.keepelement = false;
+
+		$.modal.prototype.oldCloseFunction = $.modal.prototype.close;
+		$.modal.prototype.close = function()
+		{
+			this.oldCloseFunction();
+
+			// Deletes the element (multi-modal feature: e.g. when you click on multiple report buttons, you will want to see different content for each)
+			if(!this.options.keepelement)
+			{
+				this.$elm.remove();
+			}
+		};
+	}
+})(jQuery);
+
 
 MyBB.init();

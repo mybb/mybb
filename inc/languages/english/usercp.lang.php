@@ -25,7 +25,8 @@ $l['nav_addsubscription'] = "Add Subscription";
 $l['resend_activation'] = "Resend Activation Email";
 $l['away_notice_away'] = "You have been marked away since {1}";
 $l['away_notice'] = "This option will allow you to select whether you are away or not.";
-$l['already_uploaded_avatar'] = "You are currently using an uploaded avatar. If you upload another one, your old one will be deleted.";
+$l['already_uploaded_avatar'] = "You are currently using an uploaded image. If you choose to use another one, your old avatar image will be deleted from the server.";
+$l['using_remote_avatar'] = "You are currently using an image from a remote site. If you choose to use another one, your old avatar URL will be emptied.";
 $l['na_deleted'] = "N/A - Been Deleted";
 $l['user_cp'] = "User Control Panel";
 $l['user_cp_welcome'] = "This is your user control panel. You can access your profile, subscriptions, and private messaging all from here.<br />The main page has information on your account.";
@@ -237,11 +238,6 @@ $l['delete_drafts'] = "Delete Selected Drafts";
 $l['draft_options'] = "Draft Options";
 $l['selected_drafts_deleted'] = "The selected drafts have been deleted.<br />You will be now taken back to the drafts listing.";
 $l['no_drafts_selected'] = "You did not select any drafts to delete";
-$l['too_many_sig_images'] = "We are sorry, but we cannot update your signature because it contains too many images. Please remove some images from your signature to continue.";
-$l['too_many_sig_images2'] = "<strong>Note:</strong> The maximum amount of images for signatures is {1}.";
-$l['sig_too_long'] = "You cannot update your signature because it is too long. The maximum length for signatures is {1} characters. ";
-$l['sig_remove_chars_plural'] = "Please remove {1} characters and try again.";
-$l['sig_remove_chars_singular'] = "Please remove 1 character and try again.";
 $l['group_memberships'] = "Group Memberships";
 $l['not_member_of_group'] = "Sorry, you cannot perform that action because you are currently not a member of that group.";
 $l['cannot_set_displaygroup'] = "This group cannot be set as a display group.";
@@ -390,7 +386,6 @@ $l['icon_no_new'] = "No new posts.";
 $l['icon_new'] = "New posts.";
 $l['icon_hot'] = " Hot thread.";
 $l['icon_lock'] = " Locked thread.";
-$l['search_user'] = "Search for a user";
 
 $l['buddylist_error'] = 'There was an error fetching the buddy list. ';
 
@@ -422,4 +417,3 @@ $l['buddyrequest_accepted'] = 'The selected buddy request has been accepted.';
 $l['buddyrequest_declined'] = 'The selected buddy request has been declined.';
 $l['user_doesnt_exist'] = 'The end user no longer exists.';
 $l['buddyrequests_sent_success'] = 'Buddy requests sent successfully.';
-

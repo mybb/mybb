@@ -53,7 +53,7 @@ if($mybb->input['action'] == "toggle_status")
 
 	$plugins->run_hooks("admin_config_mycode_toggle_status_commit");
 
-	$db->update_query("mycode", $mycode_update, "cid='".$mybb->get_input('cid', MyBB::INPUT_INT)."'");
+	$db->update_query("mycode", $mycode_update, "cid='{$mycode['cid']}'");
 
 	$cache->update_mycode();
 
@@ -250,7 +250,7 @@ if($mybb->input['action'] == "edit")
 
 			$plugins->run_hooks("admin_config_mycode_edit_commit");
 
-			$db->update_query("mycode", $updated_mycode, "cid='".$mybb->get_input('cid', MyBB::INPUT_INT)."'");
+			$db->update_query("mycode", $updated_mycode, "cid='{$mycode['cid']}'");
 
 			$cache->update_mycode();
 
@@ -428,6 +428,13 @@ if(!$mybb->input['action'])
 	$page->output_footer();
 }
 
+/**
+ * @param string $regex
+ * @param string $replacement
+ * @param string $test
+ *
+ * @return array
+ */
 function test_regex($regex, $replacement, $test)
 {
 	$array = array();

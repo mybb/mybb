@@ -99,7 +99,7 @@ if($mybb->input['action'] == "prune")
 		$cache->update_reportedcontent();
 
 		// Log admin action
-		log_admin_action($mybb->input['uid'], $user['username']);
+		log_admin_action($user['uid'], htmlspecialchars_uni($user['username']));
 
 		flash_message($lang->success_pruned, 'success');
 		admin_redirect("index.php?module=user-banning");
@@ -154,7 +154,7 @@ if($mybb->input['action'] == "lift")
 		$cache->update_moderators();
 
 		// Log admin action
-		log_admin_action($mybb->input['uid'], $user['username']);
+		log_admin_action($ban['uid'], htmlspecialchars_uni($user['username']));
 
 		flash_message($lang->success_ban_lifted, 'success');
 		admin_redirect("index.php?module=user-banning");
@@ -241,7 +241,7 @@ if($mybb->input['action'] == "edit")
 			$cache->update_banned();
 
 			// Log admin action
-			log_admin_action($mybb->input['uid'], $user['username']);
+			log_admin_action($ban['uid'], htmlspecialchars_uni($user['username']));
 
 			flash_message($lang->success_ban_updated, 'success');
 			admin_redirect("index.php?module=user-banning");
@@ -268,7 +268,7 @@ if($mybb->input['action'] == "edit")
 	}
 
 	$form_container = new FormContainer($lang->edit_ban);
-	$form_container->output_row($lang->ban_username, "", $user['username']);
+	$form_container->output_row($lang->ban_username, "", htmlspecialchars_uni($user['username']));
 	$form_container->output_row($lang->ban_reason, "", $form->generate_text_area('reason', $mybb->input['reason'], array('id' => 'reason', 'maxlength' => '255')), 'reason');
 	if(count($banned_groups) > 1)
 	{
@@ -285,7 +285,7 @@ if($mybb->input['action'] == "edit")
 	{
 		if($time != '---')
 		{
-			$friendly_time = my_date("D, jS M Y @ g:ia", ban_date2timestamp($time));
+			$friendly_time = my_date("D, jS M Y @ {$mybb->settings['timeformat']}", ban_date2timestamp($time));
 			$period = "{$period} ({$friendly_time})";
 		}
 		$length_list[$time] = $period;
@@ -316,7 +316,7 @@ if(!$mybb->input['action'])
 		$user = get_user_by_username($mybb->input['username'], $options);
 		
 		// Are we searching a user?
-		if(isset($mybb->input['search']) && $mybb->get_input('search') != '')
+		if(isset($mybb->input['search']))
 		{
 			$where_sql = 'uid=\''.(int)$user['uid'].'\'';
 			$where_sql_full = 'WHERE b.uid=\''.(int)$user['uid'].'\'';
@@ -405,7 +405,7 @@ if(!$mybb->input['action'])
 				$cache->update_banned();
 
 				// Log admin action
-				log_admin_action($user['uid'], $user['username'], $lifted);
+				log_admin_action($user['uid'], htmlspecialchars_uni($user['username']), $lifted);
 
 				flash_message($lang->success_banned, 'success');
 				admin_redirect("index.php?module=user-banning");
@@ -463,7 +463,7 @@ if(!$mybb->input['action'])
 	// Get the banned users
 	while($ban = $db->fetch_array($query))
 	{
-		$profile_link = build_profile_link($ban['username'], $ban['uid'], "_blank");
+		$profile_link = build_profile_link(htmlspecialchars_uni($ban['username']), $ban['uid'], "_blank");
 		$ban_date = my_date($mybb->settings['dateformat'], $ban['dateline']);
 		if($ban['lifted'] == 'perm' || $ban['lifted'] == '' || $ban['bantime'] == 'perm' || $ban['bantime'] == '---')
 		{
@@ -497,7 +497,7 @@ if(!$mybb->input['action'])
 		{
 			if($ban['admin'] == 0)
 			{
-				$ban['adminuser'] = "MyBB System";
+				$ban['adminuser'] = $lang->mybb_engine;
 			}
 			else
 			{
@@ -535,7 +535,7 @@ if(!$mybb->input['action'])
 	}
 
 	$form_container = new FormContainer($lang->ban_a_user);
-	$form_container->output_row($lang->ban_username, $lang->autocomplete_enabled, $form->generate_text_box('username', $mybb->input['username'], array('id' => 'username')), 'username');
+	$form_container->output_row($lang->ban_username, $lang->autocomplete_enabled, $form->generate_text_box('username', htmlspecialchars_uni($mybb->get_input('username')), array('id' => 'username')), 'username');
 	$form_container->output_row($lang->ban_reason, "", $form->generate_text_area('reason', $mybb->input['reason'], array('id' => 'reason', 'maxlength' => '255')), 'reason');
 	if(count($banned_groups) > 1)
 	{
@@ -545,7 +545,7 @@ if(!$mybb->input['action'])
 	{
 		if($time != "---")
 		{
-			$friendly_time = my_date("D, jS M Y @ g:ia", ban_date2timestamp($time));
+			$friendly_time = my_date("D, jS M Y @ {$mybb->settings['timeformat']}", ban_date2timestamp($time));
 			$period = "{$period} ({$friendly_time})";
 		}
 		$length_list[$time] = $period;
@@ -561,9 +561,8 @@ if(!$mybb->input['action'])
 	<script type="text/javascript">
 	<!--
 	$("#username").select2({
-		placeholder: "'.$lang->search_user.'",
-		minimumInputLength: 3,
-		maximumSelectionSize: 3,
+		placeholder: "'.$lang->search_for_a_user.'",
+		minimumInputLength: 2,
 		multiple: false,
 		ajax: { // instead of writing the function to execute the request we use Select2\'s convenient helper
 			url: "../xmlhttp.php?action=get_users",
@@ -599,7 +598,7 @@ if(!$mybb->input['action'])
 	</script>';
 
 	$buttons[] = $form->generate_submit_button($lang->ban_user);
-	$buttons[] = $form->generate_submit_button($lang->search_user, array('name' => 'search'));
+	$buttons[] = $form->generate_submit_button($lang->search_for_a_user, array('name' => 'search'));
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 

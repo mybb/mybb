@@ -41,12 +41,24 @@ class LoginDataHandler extends DataHandler
 	 */
 	public $login_data = array();
 
+	/**
+	 * @var bool
+	 */
 	public $captcha_verified = true;
-	
+
+	/**
+	 * @var bool|captcha
+	 */
 	private $captcha = false;
 
+	/**
+	 * @var int
+	 */
 	public $username_method = null;
 
+	/**
+	 * @param int $check_captcha
+	 */
 	function verify_attempts($check_captcha = 0)
 	{
 		global $db, $mybb;
@@ -67,6 +79,9 @@ class LoginDataHandler extends DataHandler
 		}
 	}
 
+	/**
+	 * @return bool
+	 */
 	function verify_captcha()
 	{
 		global $db, $mybb;
@@ -106,6 +121,9 @@ class LoginDataHandler extends DataHandler
 		}
 	}
 
+	/**
+	 * @return bool
+	 */
 	function verify_username()
 	{
 		$this->get_login_data();
@@ -115,8 +133,15 @@ class LoginDataHandler extends DataHandler
 			$this->invalid_combination();
 			return false;
 		}
+
+		return true;
 	}
 
+	/**
+	 * @param bool $strict
+	 *
+	 * @return bool
+	 */
 	function verify_password($strict = true)
 	{
 		global $db, $mybb, $plugins;
@@ -183,8 +208,13 @@ class LoginDataHandler extends DataHandler
 			$this->invalid_combination(true);
 			return false;
 		}
+
+		return true;
 	}
 
+	/**
+	 * @param bool $show_login_attempts
+	 */
 	function invalid_combination($show_login_attempts = false)
 	{
 		global $db, $lang, $mybb;
@@ -238,6 +268,9 @@ class LoginDataHandler extends DataHandler
 		$this->login_data = get_user_by_username($user['username'], $options);
 	}
 
+	/**
+	 * @return bool
+	 */
 	function validate_login()
 	{
 		global $plugins, $mybb;
@@ -272,6 +305,9 @@ class LoginDataHandler extends DataHandler
 		return true;
 	}
 
+	/**
+	 * @return bool true
+	 */
 	function complete_login()
 	{
 		global $plugins, $db, $mybb, $session;

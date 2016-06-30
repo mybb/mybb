@@ -11,8 +11,8 @@
 /**
  * Build a post bit
  *
- * @param array The post data
- * @param int The type of post bit we're building (1 = preview, 2 = pm, 3 = announcement, else = post)
+ * @param array $post The post data
+ * @param int $post_type The type of post bit we're building (1 = preview, 2 = pm, 3 = announcement, else = post)
  * @return string The built post bit
  */
 function build_postbit($post, $post_type=0)
@@ -126,6 +126,9 @@ function build_postbit($post, $post_type=0)
 			}
 			break;
 	}
+
+	$post['username'] = htmlspecialchars_uni($post['username']);
+	$post['userusername'] = htmlspecialchars_uni($post['userusername']);
 
 	if(!$postcounter)
 	{ // Used to show the # of the post
@@ -265,7 +268,7 @@ function build_postbit($post, $post_type=0)
 				}
 			}
 		}
-		
+
 		$post['usertitle'] = htmlspecialchars_uni($post['usertitle']);
 
 		if($usergroup['stars'])
@@ -320,12 +323,12 @@ function build_postbit($post, $post_type=0)
 			$useravatar = format_avatar($post['avatar'], $post['avatardimensions'], $mybb->settings['postmaxavatarsize']);
 			eval("\$post['useravatar'] = \"".$templates->get("postbit_avatar")."\";");
 		}
-		else
-		{
-			$post['useravatar'] = '';
-		}
 
-		eval("\$post['button_find'] = \"".$templates->get("postbit_find")."\";");
+		$post['button_find'] = '';
+		if($mybb->usergroup['cansearch'] == 1)
+		{
+			eval("\$post['button_find'] = \"".$templates->get("postbit_find")."\";");
+		}
 
 		if($mybb->settings['enablepms'] == 1 && $post['receivepms'] != 0 && $mybb->usergroup['cansendpms'] == 1 && my_strpos(",".$post['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
 		{
@@ -333,7 +336,7 @@ function build_postbit($post, $post_type=0)
 		}
 
 		$post['button_rep'] = '';
-		if($post_type != 3 && $mybb->settings['enablereputation'] == 1 && $mybb->settings['postrep'] == 1 && $mybb->usergroup['cangivereputations'] == 1 && $usergroup['usereputationsystem'] == 1 && ($mybb->settings['posrep'] || $mybb->settings['neurep'] || $mybb->settings['negrep']) && $post['uid'] != $mybb->user['uid'])
+		if($post_type != 3 && $mybb->settings['enablereputation'] == 1 && $mybb->settings['postrep'] == 1 && $mybb->usergroup['cangivereputations'] == 1 && $usergroup['usereputationsystem'] == 1 && ($mybb->settings['posrep'] || $mybb->settings['neurep'] || $mybb->settings['negrep']) && $post['uid'] != $mybb->user['uid'] && (!isset($post['visible']) || $post['visible'] == 1) && (!isset($thread['visible']) || $thread['visible'] == 1))
 		{
 			if(!$post['pid'])
 			{
@@ -482,7 +485,7 @@ function build_postbit($post, $post_type=0)
 		{
 			$post['usertitle'] = $lang->guest;
 		}
-		
+
 		$post['usertitle'] = htmlspecialchars_uni($post['usertitle']);
 
 		$usergroup['title'] = $lang->na;
@@ -529,11 +532,17 @@ function build_postbit($post, $post_type=0)
 	$post['editedmsg'] = '';
 	if(!$post_type)
 	{
+		if(!isset($forumpermissions))
+		{
+			$forumpermissions = forum_permissions($fid);
+		}
+		
 		// Figure out if we need to show an "edited by" message
 		if($post['edituid'] != 0 && $post['edittime'] != 0 && $post['editusername'] != "" && (($mybb->settings['showeditedby'] != 0 && $usergroup['cancp'] == 0) || ($mybb->settings['showeditedbyadmin'] != 0 && $usergroup['cancp'] == 1)))
 		{
 			$post['editdate'] = my_date('relative', $post['edittime']);
 			$post['editnote'] = $lang->sprintf($lang->postbit_edited, $post['editdate']);
+			$post['editusername'] = htmlspecialchars_uni($post['editusername']);
 			$post['editedprofilelink'] = build_profile_link($post['editusername'], $post['edituid']);
 			$editreason = "";
 			if($post['editreason'] != "")
@@ -612,6 +621,11 @@ function build_postbit($post, $post_type=0)
 				$postbit_qrestore = $lang->postbit_qrestore_thread;
 				eval("\$post['button_quickrestore'] = \"".$templates->get("postbit_quickrestore")."\";");
 			}
+		}
+
+		if(!isset($ismod))
+		{
+			$ismod = is_moderator($fid);
 		}
 
 		// Inline moderation stuff
@@ -735,7 +749,7 @@ function build_postbit($post, $post_type=0)
 			"allow_mycode" => $mybb->settings['sigmycode'],
 			"allow_smilies" => $mybb->settings['sigsmilies'],
 			"allow_imgcode" => $mybb->settings['sigimgcode'],
-			"me_username" => $post['username'],
+			"me_username" => $parser_options['me_username'],
 			"filter_badwords" => 1
 		);
 
@@ -788,6 +802,19 @@ function build_postbit($post, $post_type=0)
 		default: // Regular post
 			$post = $plugins->run_hooks("postbit", $post);
 
+			if(!isset($ignored_users))
+			{
+				$ignored_users = array();
+				if($mybb->user['uid'] > 0 && $mybb->user['ignorelist'] != "")
+				{
+					$ignore_list = explode(',', $mybb->user['ignorelist']);
+					foreach($ignore_list as $uid)
+					{
+						$ignored_users[$uid] = 1;
+					}
+				}
+			}
+
 			// Is this author on the ignore list of the current user? Hide this post
 			if(is_array($ignored_users) && $post['uid'] != 0 && isset($ignored_users[$post['uid']]) && $ignored_users[$post['uid']] == 1)
 			{
@@ -815,8 +842,8 @@ function build_postbit($post, $post_type=0)
  * Fetch the attachments for a specific post and parse inline [attachment=id] code.
  * Note: assumes you have $attachcache, an array of attachments set up.
  *
- * @param int The ID of the item.
- * @param array The post or item passed by reference.
+ * @param int $id The ID of the item.
+ * @param array $post The post or item passed by reference.
  */
 function get_post_attachments($id, &$post)
 {
@@ -825,6 +852,11 @@ function get_post_attachments($id, &$post)
 	$validationcount = 0;
 	$tcount = 0;
 	$post['attachmentlist'] = $post['thumblist'] = $post['imagelist'] = '';
+	if(!isset($forumpermissions))
+	{
+		$forumpermissions = forum_permissions($post['fid']);
+	}
+	
 	if(isset($attachcache[$id]) && is_array($attachcache[$id]))
 	{ // This post has 1 or more attachments
 		foreach($attachcache[$id] as $aid => $attachment)

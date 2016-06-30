@@ -60,7 +60,7 @@ class DataHandler
 	/**
 	 * Constructor for the data handler.
 	 *
-	 * @param string The method we're performing with this object.
+	 * @param string $method The method we're performing with this object.
 	 */
 	function __construct($method="insert")
 	{
@@ -74,7 +74,8 @@ class DataHandler
 	/**
 	 * Sets the data to be used for the data handler
 	 *
-	 * @param array The data.
+	 * @param array $data The data.
+	 * @return bool
 	 */
 	function set_data($data)
 	{
@@ -89,7 +90,8 @@ class DataHandler
 	/**
 	 * Add an error to the error array.
 	 *
-	 * @param string The error name.
+	 * @param string $error The error name.
+	 * @param string $data
 	 */
 	function set_error($error, $data='')
 	{
@@ -102,7 +104,7 @@ class DataHandler
 	/**
 	 * Returns the error(s) that occurred when handling data.
 	 *
-	 * @return string|array An array of errors.
+	 * @return array An array of errors.
 	 */
 	function get_errors()
 	{
@@ -113,12 +115,12 @@ class DataHandler
 	 * Returns the error(s) that occurred when handling data
 	 * in a format that MyBB can handle.
 	 *
-	 * @return An array of errors in a MyBB format.
+	 * @return array An array of errors in a MyBB format.
 	 */
 	function get_friendly_errors()
 	{
 		global $lang;
-
+		
 		// Load the language pack we need
 		if($this->language_file)
 		{
@@ -183,9 +185,9 @@ class DataHandler
 	/**
 	* Verifies if yes/no options haven't been modified.
 	*
-	* @param array The user options array.
-	* @param string The specific option to check.
-	* @param string Optionally specify if the default should be used.
+	* @param array $options The user options array.
+	* @param string $option The specific option to check.
+	* @param int|bool $default Optionally specify if the default should be used.
 	*/
 	function verify_yesno_option(&$options, $option, $default=1)
 	{

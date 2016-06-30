@@ -43,7 +43,7 @@ function upgrade13_dbchanges()
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP KEY username");
 		}
 
-		$query = $db->simple_select("users", "username, uid", "1=1 GROUP BY username HAVING count(*) > 1");
+		$query = $db->simple_select("users", "username, uid", "1=1 GROUP BY uid, username HAVING count(*) > 1");
 		while($user = $db->fetch_array($query))
 		{
 			$db->update_query("users", array('username' => $user['username']."_dup".$user['uid']), "uid='{$user['uid']}'", 1);
@@ -91,12 +91,12 @@ function upgrade13_dbchanges1()
 	}
 	else
 	{
-		$ipp = $_POST['ipspage'];
+		$ipp = (int)$_POST['ipspage'];
 	}
 
 	if($_POST['ipstart'])
 	{
-		$startat = $_POST['ipstart'];
+		$startat = (int)$_POST['ipstart'];
 		$upper = $startat+$ipp;
 		$lower = $startat;
 	}
@@ -163,12 +163,12 @@ function upgrade13_dbchanges2()
 	}
 	else
 	{
-		$ipp = $_POST['ipspage'];
+		$ipp = (int)$_POST['ipspage'];
 	}
 
 	if($_POST['ipstart'])
 	{
-		$startat = $_POST['ipstart'];
+		$startat = (int)$_POST['ipstart'];
 		$upper = $startat+$ipp;
 		$lower = $startat;
 	}

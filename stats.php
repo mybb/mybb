@@ -11,7 +11,8 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'stats.php');
 
-$templatelist = "stats,stats_thread";
+$templatelist = "stats,stats_thread,stats_topforum";
+
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 require_once MYBB_ROOT."inc/class_parser.php";
@@ -151,7 +152,8 @@ if(empty($forum['fid']))
 else
 {
 	$forum['name'] = htmlspecialchars_uni(strip_tags($forum['name']));
-	$topforum = '<a href="'.get_forum_link($forum['fid'])."\">{$forum['name']}</a>";
+	$forum['link'] = get_forum_link($forum['fid']);
+	eval("\$topforum = \"".$templates->get("stats_topforum")."\";");
 	$topforumposts = $forum['posts'];
 	$topforumthreads = $forum['threads'];
 }
@@ -163,7 +165,7 @@ if($mybb->settings['statstopreferrer'] == 1 && isset($statistics['top_referrer']
 	// Only show this if we have anything more the 0 referrals
 	if($statistics['top_referrer']['referrals'] > 0)
 	{
-		$toprefuser = build_profile_link($statistics['top_referrer']['username'], $statistics['top_referrer']['uid']);
+		$toprefuser = build_profile_link(htmlspecialchars_uni($statistics['top_referrer']['username']), $statistics['top_referrer']['uid']);
 		$top_referrer = $lang->sprintf($lang->top_referrer, $toprefuser, my_number_format($statistics['top_referrer']['referrals']));
 	}
 }
@@ -182,7 +184,7 @@ else
 	}
 	else
 	{
-		$topposter = build_profile_link($statistics['top_poster']['username'], $statistics['top_poster']['uid']);
+		$topposter = build_profile_link(htmlspecialchars_uni($statistics['top_poster']['username']), $statistics['top_poster']['uid']);
 	}
 
 	$topposterposts = $statistics['top_poster']['poststoday'];

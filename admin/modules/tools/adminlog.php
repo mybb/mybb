@@ -42,12 +42,13 @@ if($mybb->input['action'] == 'prune')
 	if($mybb->request_method == 'post')
 	{
 		$is_today = false;
+		$mybb->input['older_than'] = $mybb->get_input('older_than', MyBB::INPUT_INT);
 		if($mybb->input['older_than'] <= 0)
 		{
 			$is_today = true;
 			$mybb->input['older_than'] = 1;
 		}
-		$where = 'dateline < '.(TIME_NOW-($mybb->get_input('older_than', MyBB::INPUT_INT)*86400));
+		$where = 'dateline < '.(TIME_NOW-($mybb->input['older_than']*86400));
 
 		// Searching for entries by a particular user
 		if($mybb->input['uid'])
@@ -101,7 +102,7 @@ if($mybb->input['action'] == 'prune')
 	");
 	while($user = $db->fetch_array($query))
 	{
-		$user_options[$user['uid']] = $user['username'];
+		$user_options[$user['uid']] = htmlspecialchars_uni($user['username']);
 	}
 
 	$module_options = array();
@@ -237,6 +238,7 @@ if(!$mybb->input['action'])
 	{
 		$information = '';
 		$trow = alt_trow();
+		$logitem['username'] = htmlspecialchars_uni($logitem['username']);
 		$username = format_name($logitem['username'], $logitem['usergroup'], $logitem['displaygroup']);
 
 		$logitem['data'] = my_unserialize($logitem['data']);
@@ -282,7 +284,7 @@ if(!$mybb->input['action'])
 	");
 	while($user = $db->fetch_array($query))
 	{
-		$user_options[$user['uid']] = $user['username'];
+		$user_options[$user['uid']] = htmlspecialchars_uni($user['username']);
 	}
 
 	$module_options = array();
@@ -325,7 +327,7 @@ if(!$mybb->input['action'])
 
 /**
  * Returns language-friendly string describing $logitem
- * @param array The log item (one row from mybb_adminlogs)
+ * @param array $logitem The log item (one row from mybb_adminlogs)
  * @return string The description
  */
 function get_admin_log_action($logitem)

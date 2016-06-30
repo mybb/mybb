@@ -11,9 +11,9 @@
 /**
  * Output the archive page header.
  *
- * @param string The page title.
- * @param string The full page title.
- * @param string The full page URL.
+ * @param string $title The page title.
+ * @param string $fulltitle The full page title.
+ * @param string $fullurl The full page URL.
  */
 function archive_header($title="", $fulltitle="", $fullurl="")
 {
@@ -121,10 +121,10 @@ function archive_navigation()
 /**
  * Output multipage navigation.
  *
- * @param int The total number of items.
- * @param int The items per page.
- * @param int The current page.
- * @param string The URL base.
+ * @param int $count The total number of items.
+ * @param int $perpage The items per page.
+ * @param int $page The current page.
+ * @param string $url The URL base.
 */
 function archive_multipage($count, $perpage, $page, $url)
 {
@@ -182,7 +182,7 @@ function archive_footer()
 /**
  * Output an archive error.
  *
- * @param string The error language string identifier.
+ * @param string $error The error language string identifier.
  */
 function archive_error($error)
 {
@@ -222,8 +222,9 @@ function archive_error_no_permission()
 /**
  * Check the password given on a certain forum for validity
  *
- * @param int The forum ID
- * @param boolean The Parent ID
+ * @param int $fid The forum ID
+ * @param int $pid The Parent ID
+ * @return bool Returns false on failure
  */
 function check_forum_password_archive($fid, $pid=0)
 {

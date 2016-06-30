@@ -324,10 +324,10 @@ if($mybb->input['action'] == 'edit_prefix')
 
 			$plugins->run_hooks('admin_config_thread_prefixes_edit_prefix_commit');
 
-			$db->update_query('threadprefixes', $update_prefix, "pid='{$mybb->input['pid']}'");
+			$db->update_query('threadprefixes', $update_prefix, "pid='{$prefix['pid']}'");
 
 			// Log admin action
-			log_admin_action($mybb->input['pid'], htmlspecialchars_uni($mybb->input['prefix']));
+			log_admin_action($prefix['pid'], htmlspecialchars_uni($mybb->input['prefix']));
 			$cache->update_threadprefixes();
 
 			flash_message($lang->success_thread_prefix_updated, 'success');
@@ -348,7 +348,7 @@ if($mybb->input['action'] == 'edit_prefix')
 	$page->output_nav_tabs($sub_tabs, "edit_prefix");
 
 	$form = new Form('index.php?module=config-thread_prefixes&amp;action=edit_prefix', 'post');
-	echo $form->generate_hidden_field('pid', $mybb->input['pid']);
+	echo $form->generate_hidden_field('pid', $prefix['pid']);
 
 	if($errors)
 	{
@@ -356,7 +356,7 @@ if($mybb->input['action'] == 'edit_prefix')
 	}
 	else
 	{
-		$query = $db->simple_select('threadprefixes', '*', "pid = '{$mybb->input['pid']}'");
+		$query = $db->simple_select('threadprefixes', '*', "pid = '{$prefix['pid']}'");
 		$threadprefix = $db->fetch_array($query);
 
 		$mybb->input['prefix'] = $threadprefix['prefix'];
@@ -497,7 +497,7 @@ if($mybb->input['action'] == 'delete_prefix')
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?module=config-thread_prefixes&amp;action=delete_prefix&amp;pid={$mybb->input['pid']}", $lang->confirm_thread_prefix_deletion);
+		$page->output_confirm_action("index.php?module=config-thread_prefixes&amp;action=delete_prefix&amp;pid={$prefix['pid']}", $lang->confirm_thread_prefix_deletion);
 	}
 }
 

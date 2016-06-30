@@ -29,7 +29,7 @@ class PhpMail extends MailHandler
 	/**
 	 * Sends the email.
 	 *
-	 * @return true/false whether or not the email got sent or not.
+	 * @return bool whether or not the email got sent or not.
 	 */
 	function send()
 	{
@@ -51,6 +51,14 @@ class PhpMail extends MailHandler
 			@ini_set("sendmail_from", $mybb->settings['adminemail']);
 		}
 
+		$dir = "/{$mybb->config['admin_dir']}/";
+		$pos = strrpos($_SERVER['PHP_SELF'], $dir);
+		if(defined('IN_ADMINCP') && $pos !== false)
+		{
+			$temp_script_path = $_SERVER['PHP_SELF'];
+			$_SERVER['PHP_SELF'] = substr($_SERVER['PHP_SELF'], $pos + strlen($dir) - 1);
+		}
+
 		// If safe mode is on, don't send the additional parameters as we're not allowed to
 		if($mybb->safemode)
 		{
@@ -61,6 +69,11 @@ class PhpMail extends MailHandler
 			$sent = @mail($this->to, $this->subject, $this->message, trim($this->headers), $this->additional_parameters);
 		}
 		$function_used = 'mail()';
+
+		if(defined('IN_ADMINCP') && $pos !== false)
+		{
+			$_SERVER['PHP_SELF'] = $temp_script_path;
+		}
 
 		if(!$sent)
 		{

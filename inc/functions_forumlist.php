@@ -11,8 +11,8 @@
 /**
 * Build a list of forum bits.
 *
-* @param int The parent forum to fetch the child forums for (0 assumes all)
-* @param int The depth to return forums with.
+* @param int $pid The parent forum to fetch the child forums for (0 assumes all)
+* @param int $depth The depth to return forums with.
 * @return array Array of information regarding the child forums of this parent forum
 */
 function build_forumbits($pid=0, $depth=1)
@@ -184,8 +184,8 @@ function build_forumbits($pid=0, $depth=1)
 				);
 			}
 
-			// If the current forums lastpost is greater than other child forums of the current parent, overwrite it
-			if(!isset($parent_lastpost) || $lastpost_data['lastpost'] > $parent_lastpost['lastpost'])
+			// If the current forums lastpost is greater than other child forums of the current parent and forum info isn't hidden, overwrite it
+			if((!isset($parent_lastpost) || $lastpost_data['lastpost'] > $parent_lastpost['lastpost']) && $hideinfo != true)
 			{
 				$parent_lastpost = $lastpost_data;
 			}
@@ -292,6 +292,7 @@ function build_forumbits($pid=0, $depth=1)
 					$lastpost_date = my_date('relative', $lastpost_data['lastpost']);
 
 					// Set up the last poster, last post thread id, last post subject and format appropriately
+					$lastpost_data['lastposter'] = htmlspecialchars_uni($lastpost_data['lastposter']);
 					$lastpost_profilelink = build_profile_link($lastpost_data['lastposter'], $lastpost_data['lastposteruid']);
 					$lastpost_link = get_thread_link($lastpost_data['lastposttid'], 0, "lastpost");
 					$lastpost_subject = $full_lastpost_subject = $parser->parse_badwords($lastpost_data['lastpostsubject']);
@@ -458,9 +459,9 @@ function build_forumbits($pid=0, $depth=1)
 /**
  * Fetch the status indicator for a forum based on its last post and the read date
  *
- * @param array Array of information about the forum
- * @param array Array of information about the lastpost date
- * @param int Whether or not this forum is locked or not
+ * @param array $forum Array of information about the forum
+ * @param array $lastpost Array of information about the lastpost date
+ * @param int $locked Whether or not this forum is locked or not
  * @return array Array of the folder image to be shown and the alt text
  */
 function get_forum_lightbulb($forum, $lastpost, $locked=0)
@@ -538,7 +539,7 @@ function get_forum_lightbulb($forum, $lastpost, $locked=0)
 /**
  * Fetch the number of unapproved posts, formatted, from a forum
  *
- * @param array Array of information about the forum
+ * @param array $forum Array of information about the forum
  * @return array Array containing formatted string for posts and string for threads
  */
 function get_forum_unapproved($forum)

@@ -211,7 +211,7 @@ if($mybb->input['action'] == "stats")
 		{
 			$user['username'] = $lang->na;
 		}
-		$table->construct_cell(build_profile_link($user['username'], $user['useruid'], "_blank"));
+		$table->construct_cell(build_profile_link(htmlspecialchars_uni($user['username']), $user['useruid'], "_blank"));
 		$table->construct_cell("<a href=\"index.php?module=forum-attachments&amp;results=1&amp;username=".urlencode($user['username'])."\" target=\"_blank\">".get_friendly_size($user['totalsize'])."</a>", array('class' => 'align_center'));
 		$table->construct_row();
 	}
@@ -227,6 +227,11 @@ if($mybb->input['action'] == "delete_orphans" && $mybb->request_method == "post"
 	// Deleting specific attachments from uploads directory
 	if(is_array($mybb->input['orphaned_files']))
 	{
+		/**
+		 * @param string $string
+		 *
+		 * @return string
+		 */
 		function clean_filename($string)
 		{
 			return str_replace(array(".."), "", $string);
@@ -484,6 +489,9 @@ if($mybb->input['action'] == "orphans")
 	{
 		$plugins->run_hooks("admin_forum_attachments_orphans_step1");
 
+		/**
+		 * @param string $dir
+		 */
 		function scan_attachments_directory($dir="")
 		{
 			global $db, $mybb, $bad_attachments, $attachments_to_check;
@@ -840,7 +848,7 @@ if(!$mybb->input['action'])
 	$form_container->output_row($lang->name_contains, $lang->name_contains_desc, $form->generate_text_box('filename', $mybb->input['filename'], array('id' => 'filename')), 'filename');
 	$form_container->output_row($lang->type_contains, "", $form->generate_text_box('mimetype', $mybb->input['mimetype'], array('id' => 'mimetype')), 'mimetype');
 	$form_container->output_row($lang->forum_is, "", $form->generate_forum_select('forum[]', $mybb->input['forum'], array('multiple' => true, 'size' => 5, 'id' => 'forum')), 'forum');
-	$form_container->output_row($lang->username_is, "", $form->generate_text_box('username', $mybb->input['username'], array('id' => 'username')), 'username');
+	$form_container->output_row($lang->username_is, "", $form->generate_text_box('username', htmlspecialchars_uni($mybb->get_input('username')), array('id' => 'username')), 'username');
 
 	$more_options = array(
 		"less_than" => $lang->more_than,
@@ -881,9 +889,14 @@ if(!$mybb->input['action'])
 	$page->output_footer();
 }
 
+/**
+ * @param array $attachment
+ * @param DefaultTable $table
+ * @param bool $use_form
+ */
 function build_attachment_row($attachment, &$table, $use_form=false)
 {
-	global $mybb, $form;
+	global $mybb, $form, $lang;
 	$attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
 
 	// Here we do a bit of detection, we want to automatically check for removal any missing attachments and any not assigned to a post uploaded > 24hours ago
@@ -932,9 +945,9 @@ function build_attachment_row($attachment, &$table, $use_form=false)
 
 	if($attachment['user_username'])
 	{
-		$attachment['username'] = $attachment['username'];
+		$attachment['username'] = $attachment['user_username'];
 	}
-	$table->construct_cell(build_profile_link($attachment['username'], $attachment['uid'], "_blank"), array("class" => "align_center"));
+	$table->construct_cell(build_profile_link(htmlspecialchars_uni($attachment['username']), $attachment['uid'], "_blank"), array("class" => "align_center"));
 	$table->construct_cell("<a href=\"../".get_post_link($attachment['pid'])."\" target=\"_blank\">".htmlspecialchars_uni($attachment['subject'])."</a>", array("class" => "align_center"));
 	$table->construct_cell(my_number_format($attachment['downloads']), array("class" => "align_center"));
 	if($attachment['dateuploaded'] > 0)

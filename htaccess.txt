@@ -57,5 +57,11 @@ Options -MultiViews +FollowSymlinks -Indexes
 # the client faster.
 #
 <IfModule mod_deflate.c>
-	AddOutputFilterByType DEFLATE application/javascript text/css text/html text/xml
+	AddOutputFilterByType DEFLATE text/css text/html application/xhtml+xml text/xml application/xml text/plain text/x-component application/javascript application/x-javascript application/rss+xml application/atom+xml application/json application/manifest+json application/x-web-app-manifest+json application/vnd.ms-fontobject application/font-sfnt application/font-woff application/font-woff2 image/svg+xml image/x-icon
 </IfModule>
+
+# Note: You are able to choose a different name in the Admin CP. If you've done that you need to change it here too
+<Files "error.log">
+	Order Deny,Allow
+	Deny from all
+</Files>

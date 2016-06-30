@@ -212,6 +212,7 @@ elseif($mybb->input['action'] == "joinrequests")
 		$user['reason'] = htmlspecialchars_uni($user['reason']);
 		$altbg = alt_trow();
 		$regdate = my_date($mybb->settings['dateformat'], $user['regdate']);
+		$user['username'] = htmlspecialchars_uni($user['username']);
 		$user['profilelink'] = build_profile_link($user['username'], $user['uid']);
 		eval("\$users .= \"".$templates->get("managegroup_joinrequests_request")."\";");
 	}
@@ -309,7 +310,8 @@ else
 		$leader_count = $db->num_rows($query);
 		while($leader = $db->fetch_array($query))
 		{
-			$leader_name = format_name(htmlspecialchars_uni($leader['username']), $leader['usergroup'], $leader['displaygroup']);
+			$leader['username'] = htmlspecialchars_uni($leader['username']);
+			$leader_name = format_name($leader['username'], $leader['usergroup'], $leader['displaygroup']);
 			$leader_profile_link = build_profile_link($leader_name, $leader['uid']);
 
 			$leaders_array[] = $leader['uid'];
@@ -352,7 +354,7 @@ else
 	$page = $mybb->get_input('page', MyBB::INPUT_INT);
 	if($page && $page > 0)
 	{
-		$start = ($page-1) *$perpage;
+		$start = ($page-1) * $perpage;
 	}
 	else
 	{
@@ -360,6 +362,17 @@ else
 		$page = 1;
 	}
 	$multipage = multipage($numusers, $perpage, $page, "managegroup.php?gid=".$gid);
+
+	switch($db->type)
+	{
+		case "pgsql":
+		case "sqlite":
+			$query = $db->simple_select("users", "*", "','||additionalgroups||',' LIKE '%,{$gid},%' OR usergroup='{$gid}'", array('order_by' => 'username', 'limit' => $perpage, 'limit_start' => $start));
+			break;
+		default:
+			$query = $db->simple_select("users", "*", "CONCAT(',',additionalgroups,',') LIKE '%,{$gid},%' OR usergroup='{$gid}'", array('order_by' => 'username', 'limit' => $perpage, 'limit_start' => $start));
+	}
+
 	$users = "";
 	while($user = $db->fetch_array($query))
 	{
@@ -381,6 +394,7 @@ else
 			$email = '';
 		}
 
+		$user['username'] = htmlspecialchars_uni($user['username']);
 		$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 		$user['profilelink'] = build_profile_link($user['username'], $user['uid']);
 		if(in_array($user['uid'], $leaders_array))
