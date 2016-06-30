@@ -3429,11 +3429,11 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 			{$days}]]></template>
 		<template name="calendar_year" version="1800"><![CDATA[<option value="{$year}" {$selected}>{$year}</option>]]></template>
 		<template name="calendar_year_sel" version="1800"><![CDATA[<option value="{$year_sel}">{$year_sel}</option>]]></template>
-		<template name="editpost" version="1800"><![CDATA[<html>
+		<template name="editpost" version="1808"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_post}</title>
 {$headerinclude}
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/post.js?ver=1800"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/post.js?ver=1808"></script>
 </head>
 <body>
 {$header}
@@ -8671,11 +8671,11 @@ if(use_xmlhttprequest == "1")
 		<template name="nav_dropdown" version="1800"><![CDATA[ <img src="{$theme['imgdir']}/arrow_down.png" alt="v" title="" class="pagination_breadcrumb_link" id="breadcrumb_multipage" />{$multipage}]]></template>
 		<template name="nav_sep" version="1800"><![CDATA[&rsaquo;]]></template>
 		<template name="nav_sep_active" version="1800"><![CDATA[<br /><img src="{$theme['imgdir']}/nav_bit.png" alt="" />]]></template>
-		<template name="newreply" version="1800"><![CDATA[<html>
+		<template name="newreply" version="1808"><![CDATA[<html>
 <head>
 <title>{$lang->post_reply_to}</title>
 {$headerinclude}
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/post.js?ver=1800"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/post.js?ver=1808"></script>
 </head>
 <body>
 {$header}
@@ -8771,11 +8771,11 @@ if(use_xmlhttprequest == "1")
 {$reviewmessage}
 </td>
 </tr>]]></template>
-		<template name="newthread" version="1800"><![CDATA[<html>
+		<template name="newthread" version="1808"><![CDATA[<html>
 <head>
 <title>{$lang->newthread_in}</title>
 {$headerinclude}
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/post.js?ver=1800"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/post.js?ver=1808"></script>
 </head>
 <body>
 {$header}

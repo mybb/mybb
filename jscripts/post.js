@@ -103,12 +103,8 @@ var Post = {
 					document.input.attachmentaid.value = aid;
 					document.input.attachmentact.value = "remove";
 					
-					$("form#editpost").submit();
-				}
-				else
-				{
-					document.input.attachmentaid.value = 0;
-					document.input.attachmentact.value = "";
+					$("input[name=rem]").parents('form').append('<input type="submit" id="rem_submit" class="hidden" />');
+					$('#rem_submit').click();
 				}
 			}
 		});
