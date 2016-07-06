@@ -994,7 +994,7 @@ EOF;
 	{
 		if(my_substr($mybb->settings['useravatar'], 0, 7) === 'http://' || my_substr($mybb->settings['useravatar'], 0, 8) === 'https://')
 		{
-			$user['avatar'] = str_replace('{theme}', 'images', $mybb->settings['useravatar'])
+			$user['avatar'] = str_replace('{theme}', 'images', $mybb->settings['useravatar']);
 		}
 		else
 		{
