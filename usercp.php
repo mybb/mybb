@@ -334,9 +334,9 @@ if($mybb->input['action'] == "profile")
 		$ageselected = " selected=\"selected\"";
 	}
 
-	if($user['website'] == "" || $user['website'] == "http://")
+	if(!my_validate_url($user['website']))
 	{
-		$user['website'] = "http://";
+		$user['website'] = '';
 	}
 	else
 	{
@@ -2149,7 +2149,7 @@ if($mybb->input['action'] == "avatar")
 	{
 		$avatarmsg = "<br /><strong>".$lang->already_uploaded_avatar."</strong>";
 	}
-	elseif($mybb->user['avatartype'] == "remote" || my_strpos(my_strtolower($mybb->user['avatar']), "http://") !== false)
+	elseif($mybb->user['avatartype'] == "remote" || my_validate_url($mybb->user['avatar']))
 	{
 		$avatarmsg = "<br /><strong>".$lang->using_remote_avatar."</strong>";
 		$avatarurl = htmlspecialchars_uni($mybb->user['avatar']);

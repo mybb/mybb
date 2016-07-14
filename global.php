@@ -375,7 +375,7 @@ if(!empty($theme_stylesheets) && is_array($theme['disporder']))
 }
 
 // Are we linking to a remote theme server?
-if(my_substr($theme['imgdir'], 0, 7) == 'http://' || my_substr($theme['imgdir'], 0, 8) == 'https://')
+if(my_validate_url($theme['imgdir']))
 {
 	// If a language directory for the current language exists within the theme - we use it
 	if(!empty($mybb->user['language']))
@@ -886,7 +886,7 @@ if($mybb->settings['showthemeselect'] != 0)
 $contact_us = '';
 if(($mybb->settings['contactlink'] == "contact.php" && $mybb->settings['contact'] == 1 && ($mybb->settings['contact_guests'] != 1 && $mybb->user['uid'] == 0 || $mybb->user['uid'] > 0)) || $mybb->settings['contactlink'] != "contact.php")
 {
-	if(my_substr($mybb->settings['contactlink'], 0, 1) != '/' && my_substr($mybb->settings['contactlink'], 0, 7) != 'http://' && my_substr($mybb->settings['contactlink'], 0, 8) != 'https://' && my_substr($mybb->settings['contactlink'], 0, 7) != 'mailto:')
+	if(!my_validate_url($mybb->settings['contactlink'], true) && my_substr($mybb->settings['contactlink'], 0, 7) != 'mailto:')
 	{
 		$mybb->settings['contactlink'] = $mybb->settings['bburl'].'/'.$mybb->settings['contactlink'];
 	}
