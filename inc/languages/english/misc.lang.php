@@ -58,6 +58,7 @@ $l['name'] = "Name";
 $l['abbreviation'] = "Abbreviation";
 $l['click_to_add'] = "Click a smilie to insert it into your message";
 $l['close_window'] = "close window";
+$l['no_smilies'] = "There are currently no smilies available.";
 
 $l['who_posted'] = "Who Posted?";
 $l['total_posts'] = "Total Posts:";

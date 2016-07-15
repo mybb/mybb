@@ -6087,6 +6087,9 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
+		<template name="misc_smilies_no_smilies" version="1808"><![CDATA[<tr>
+<td class="{$class}">{$lang->no_smilies}</td>
+</tr>]]></template>
 		<template name="misc_smilies_popup" version="1800"><![CDATA[<div class="modal">
   <div style="overflow-y: auto; max-height: 400px;" class="modal_{$pid}">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
@@ -6101,6 +6104,9 @@ if(use_xmlhttprequest == "1")
 </div>
 </div>]]></template>
 		<template name="misc_smilies_popup_empty" version="1808"><![CDATA[<tr>{$smile_icons}<td colspan="2" class="{$class}">&nbsp;</td></tr>]]></template>
+		<template name="misc_smilies_popup_no_smilies" version="1808"><![CDATA[<tr>
+<td colspan="2" class="{$class}">{$lang->no_smilies}</td>
+</tr>]]></template>
 		<template name="misc_smilies_popup_row" version="1808"><![CDATA[<tr>{$smile_icons}</tr>]]></template>
 		<template name="misc_smilies_popup_smilie" version="1800"><![CDATA[<td class="{$class}" align="center">{$smilie_image}</a></td>
 <td class="{$class}">{$smilie['find']}</td>]]></template>
