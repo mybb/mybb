@@ -3054,7 +3054,7 @@ switch($mybb->input['action'])
 					'order_by' => 'dateline',
 					'order_dir' => 'asc'
 				);
-				$query = $db->simple_select("posts", "DISTINCT tid", "pid IN (".implode(',',$pids).")", $options);
+				$query = $db->simple_select("posts", "DISTINCT tid, dateline", "pid IN (".implode(',',$pids).")", $options);
 				while($row = $db->fetch_array($query))
 				{
 					$tids[] = $row['tid'];
