@@ -674,7 +674,7 @@ none=Hide Errors and Warnings
 		</setting>
 		<setting name="readparentforums">
 			<title>Attempt to Mark Parent Forums as Read</title>
-			<description><![CDATA[When set to yes, this setting will attempt to mark the parent forums of a sub-forum as read if there are no more unread posts. Please note that this setting can lead to a decrease in performance and multiple database queries and therefore must be treated as experimental. See the <a href="http://docs.mybb.com/165.html">MyBB Docs</a> for more information regarding this change.]]></description>
+			<description><![CDATA[When set to yes, this setting will attempt to mark the parent forums of a sub-forum as read if there are no more unread posts. Please note that this setting can lead to a decrease in performance and multiple database queries and therefore must be treated as experimental. See the <a href="http://docs.mybb.com/versions/1.6.5/">MyBB Docs</a> for more information regarding this change.]]></description>
 			<disporder>9</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
