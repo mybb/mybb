@@ -74,7 +74,7 @@ $l['welcome_step'] = '<p>Welcome to the installation wizard for MyBB {1}. This w
 </ul>
 <p>After each step has successfully been completed, click Next to move on to the next step.</p>
 <p>Click "Next" to view the MyBB license agreement.</p>
-<p><input type="checkbox" name="allow_anonymous_info" value="1" id="allow_anonymous" checked="checked" /> <label for="allow_anonymous"> Send anonymous statistics about your server specifications to the MyBB Group</label> (<a href="http://docs.mybb.com/Anonymous_Statistics.html" style="color: #555;" target="_blank"><small>What information is sent?</small></a>)</p>';
+<p><input type="checkbox" name="allow_anonymous_info" value="1" id="allow_anonymous" checked="checked" /> <label for="allow_anonymous"> Send anonymous statistics about your server specifications to the MyBB Group</label> (<a href="http://docs.mybb.com/1.8/install/anonymous-statistics/" style="color: #555;" target="_blank"><small>What information is sent?</small></a>)</p>';
 
 $l['license_step'] = '<div class="license_agreement">
 {1}
@@ -355,7 +355,7 @@ $l['upgrade_removedir'] = 'Please remove this directory before exploring your up
 $l['upgrade_congrats'] = "<p>Congratulations, your copy of MyBB has successfully been updated to {1}.</p>{2}<p><strong>What's Next?</strong></p><ul><li>Please use the 'Find Updated Templates' tool in the Admin CP to find customized templates updated during this upgrade process. Edit them to contain the changes or revert them to originals.</li><li>Ensure that your board is still fully functional.</li></ul>";
 $l['upgrade_template_reversion'] = "Template Reversion Warning";
 $l['upgrade_template_reversion_success'] = "<p>All necessary database modifications have successfully been made to upgrade your board.</p><p>This upgrade requires all templates to be reverted to the new ones contained in the package so please back up any custom templates you have made before clicking next.";
-$l['upgrade_send_stats'] = "<p><input type=\"checkbox\" name=\"allow_anonymous_info\" value=\"1\" id=\"allow_anonymous\" checked=\"checked\" /> <label for=\"allow_anonymous\"> Send anonymous statistics about your server specifications to the MyBB Group</label> (<a href=\"http://docs.mybb.com/Anonymous_Statistics.html\" style=\"color: #555;\" target=\"_blank\"><small>What information is sent?</small></a>)</p>";
+$l['upgrade_send_stats'] = "<p><input type=\"checkbox\" name=\"allow_anonymous_info\" value=\"1\" id=\"allow_anonymous\" checked=\"checked\" /> <label for=\"allow_anonymous\"> Send anonymous statistics about your server specifications to the MyBB Group</label> (<a href=\"http://docs.mybb.com/1.8/install/anonymous-statistics/\" style=\"color: #555;\" target=\"_blank\"><small>What information is sent?</small></a>)</p>";
 
 $l['please_login'] = "Please Login";
 $l['login'] = "Login";
