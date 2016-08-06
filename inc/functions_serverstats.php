@@ -278,7 +278,7 @@ function build_server_stats($is_install=1, $prev_version='', $current_version=''
 		$amp = "&amp;";
 	}
 
-	$server_stats_url = 'http://community.mybb.com/server_stats.php?'.$string;
+	$server_stats_url = 'https://community.mybb.com/server_stats.php?'.$string;
 
 	$return = array();
 	$return['info_sent_success'] = false;
