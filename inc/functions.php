@@ -1805,6 +1805,10 @@ function get_post_icons()
 	{
 		eval("\$posticons = \"".$templates->get("posticons")."\";");
 	}
+	else
+	{
+		$posticons = '';
+	}
 
 	return $posticons;
 }
