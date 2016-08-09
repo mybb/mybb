@@ -1621,10 +1621,10 @@ if($mybb->input['action'] == "resetpassword")
 		require_once MYBB_ROOT.'inc/datahandlers/user.php';
 		$userhandler = new UserDataHandler('update');
 
-		$password = random_str($password_length, $mybb->settings['requirecomplexpasswords']);
-
 		while(!$userhandler->verify_password())
 		{
+			$password = random_str($password_length, $mybb->settings['requirecomplexpasswords']);
+
 			$userhandler->set_data(array(
 				'uid'		=> $user['uid'],
 				'username'	=> $user['username'],
