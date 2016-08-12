@@ -660,6 +660,7 @@ $tables[] = "CREATE TABLE mybb_reportedcontent (
   id3 int unsigned NOT NULL default '0',
   uid int unsigned NOT NULL default '0',
   reportstatus tinyint(1) NOT NULL default '0',
+  reasonid smallint unsigned NOT NULL default '0',
   reason varchar(250) NOT NULL default '',
   type varchar(50) NOT NULL default '',
   reports int unsigned NOT NULL default '0',
@@ -668,6 +669,15 @@ $tables[] = "CREATE TABLE mybb_reportedcontent (
   lastreport int unsigned NOT NULL default '0',
   KEY reportstatus (reportstatus),
   KEY lastreport (lastreport),
+  PRIMARY KEY (rid)
+) ENGINE=MyISAM;";
+
+$tables[] = "CREATE TABLE mybb_reportreasons (
+  rid int unsigned NOT NULL auto_increment,
+  title varchar(250) NOT NULL default '',
+  appliesto varchar(250) NOT NULL default '',
+  extra tinyint(1) NOT NULL default '0',
+  disporder smallint unsigned NOT NULL default '0',
   PRIMARY KEY (rid)
 ) ENGINE=MyISAM;";
 

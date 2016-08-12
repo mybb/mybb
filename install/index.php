@@ -2382,6 +2382,7 @@ function install_done()
 	$cache->update("plugins", array());
 	$cache->update("internal_settings", array('encryption_key' => random_str(32)));
 	$cache->update_default_theme();
+	$cache->update_reportreasons(true);
 
 	$version_history = array();
 	$dh = opendir(INSTALL_ROOT."resources");

@@ -106,6 +106,10 @@ $l['admin_log_config_questions_delete'] = "Deleted question #{1} ({2})";
 $l['admin_log_config_questions_enable'] = "Enabled question #{1} ({2})";
 $l['admin_log_config_questions_disable'] = "Disabled question #{1} ({2})";
 
+$l['admin_log_config_report_reasons_add'] = "Added report reason #{1} ({2})";
+$l['admin_log_config_report_reasons_edit'] = "Edited report reason #{1} ({2})";
+$l['admin_log_config_report_reasons_delete'] = "Deleted report reason #{1} ({2})";
+
 $l['admin_log_config_settings_delete_duplicates'] = "Deleted duplicate settings and setting groups";
 $l['admin_log_config_settings_addgroup'] = "Added setting group #{1} ({2}) properties ";
 $l['admin_log_config_settings_editgroup'] = "Edited setting group #{1} ({2}) properties ";

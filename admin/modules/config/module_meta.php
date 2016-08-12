@@ -39,6 +39,7 @@ function config_meta()
 	$sub_menu['150'] = array("id" => "warning", "title" => $lang->warning_system, "link" => "index.php?module=config-warning");
 	$sub_menu['160'] = array("id" => "thread_prefixes", "title" => $lang->thread_prefixes, "link" => "index.php?module=config-thread_prefixes");
 	$sub_menu['170'] = array("id" => "questions", "title" => $lang->security_questions, "link" => "index.php?module=config-questions");
+	$sub_menu['180'] = array("id" => "report_reasons", "title" => $lang->report_reasons, "link" => "index.php?module=config-report_reasons");
 
 	$sub_menu = $plugins->run_hooks("admin_config_menu", $sub_menu);
 
@@ -75,7 +76,8 @@ function config_action_handler($action)
 		'mycode' => array('active' => 'mycode', 'file' => 'mycode.php'),
 		'settings' => array('active' => 'settings', 'file' => 'settings.php'),
 		'thread_prefixes' => array('active' => 'thread_prefixes', 'file' => 'thread_prefixes.php'),
-		'questions' => array('active' => 'questions', 'file' => 'questions.php')
+		'questions' => array('active' => 'questions', 'file' => 'questions.php'),
+		'report_reasons' => array('active' => 'report_reasons', 'file' => 'report_reasons.php')
 	);
 
 	$actions = $plugins->run_hooks("admin_config_action_handler", $actions);
@@ -116,7 +118,8 @@ function config_admin_permissions()
 		"warning" => $lang->can_manage_warning_system,
 		"mod_tools" => $lang->can_manage_mod_tools,
 		"thread_prefixes" => $lang->can_manage_thread_prefixes,
-		"questions" => $lang->can_manage_security_questions
+		"questions" => $lang->can_manage_security_questions,
+		"report_reasons" => $lang->can_manage_report_reasons
 	);
 
 	$admin_permissions = $plugins->run_hooks("admin_config_permissions", $admin_permissions);

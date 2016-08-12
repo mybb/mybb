@@ -596,6 +596,7 @@ function buildcaches()
 	$cache->update_groupleaders();
 	$cache->update_threadprefixes();
 	$cache->update_forumsdisplay();
+	$cache->update_reportreasons(true);
 
 	$contents .= $lang->done."</p>";
 

@@ -179,27 +179,45 @@ if(empty($error) && $verified == true && $mybb->input['action'] == "do_report" &
 		);
 
 		// Figure out the reason
-		$reason = trim($mybb->get_input('reason'));
+		$rid = $mybb->get_input('reason', MyBB::INPUT_INT);
+		$query = $db->simple_select("reportreasons", "*", "rid = '{$rid}'");
 
-		if($reason == 'other')
+		if(!$db->num_rows($query))
 		{
-			// Replace the reason with the user comment
-			$reason = trim($mybb->get_input('comment'));
+			$error = $lang->error_invalid_report_reason;
+			$verified = false;
 		}
 		else
 		{
-			$report_reason_string = "report_reason_{$reason}";
-			$reason = "\n".$lang->$report_reason_string;
-		}
+			$reason = $db->fetch_array($query);
 
-		if(my_strlen($reason) < 3)
-		{
-			$error = $lang->error_report_length;
+			$new_report['reasonid'] = $reason['rid'];
+
+			if($reason['extra'])
+			{
+				$comment = trim($mybb->get_input('comment'));
+				if(empty($comment) || $comment == '')
+				{
+					$error = $lang->error_comment_required;
+					$verified = false;
+				}
+				else
+				{
+					if(my_strlen($comment) < 3)
+					{
+						$error = $lang->error_report_length;
+						$verified = false;
+					}
+					else
+					{
+						$new_report['reason'] = $comment;
+					}
+				}
+			}
 		}
 
 		if(empty($error))
 		{
-			$new_report['reason'] = $reason;
 			add_report($new_report, $report_type);
 
 			$plugins->run_hooks("report_do_report_end");
@@ -242,6 +260,14 @@ if(!$mybb->input['action'])
 		}
 		else
 		{
+			$reportreasons = $cache->read('reportreasons');
+			$reasons = $reportreasons[$report_type];
+			$reasonslist = '';
+			foreach($reasons as $reason)
+			{
+				$reason['title'] = htmlspecialchars_uni($lang->parse($reason['title']));
+				eval("\$reasonslist .= \"".$templates->get("report_reason")."\";");
+			}
 			eval("\$report_reasons = \"".$templates->get("report_reasons")."\";");
 		}
 	}

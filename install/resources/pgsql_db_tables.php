@@ -633,12 +633,22 @@ $tables[] = "CREATE TABLE mybb_reportedcontent (
   id3 int NOT NULL default '0',
   uid int NOT NULL default '0',
   reportstatus smallint NOT NULL default '0',
+  reasonid smallint NOT NULL default '0',
   reason varchar(250) NOT NULL default '',
   type varchar(50) NOT NULL default '',
   reports int NOT NULL default '0',
   reporters text NOT NULL default '',
   dateline int NOT NULL default '0',
   lastreport int NOT NULL default '0',
+  PRIMARY KEY (rid)
+);";
+
+$tables[] = "CREATE TABLE mybb_reportreasons (
+  rid serial,
+  title varchar(250) NOT NULL default '',
+  appliesto varchar(250) NOT NULL default '',
+  extra smallint NOT NULL default '0',
+  disporder smallint NOT NULL default '0',
   PRIMARY KEY (rid)
 );";
 

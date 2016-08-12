@@ -273,6 +273,7 @@ function add_report($report, $type = 'post')
 		'id3' => (int)$report['id3'],
 		'uid' => (int)$report['uid'],
 		'reportstatus' => 0,
+		'reasonid' => (int)$report['reasonid'],
 		'reason' => $db->escape_string($report['reason']),
 		'type' => $db->escape_string($type),
 		'reports' => 1,
