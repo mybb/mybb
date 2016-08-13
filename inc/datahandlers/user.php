@@ -303,20 +303,12 @@ class UserDataHandler extends DataHandler
 	{
 		$website = &$this->data['website'];
 
-		if(empty($website) || my_strtolower($website) == 'http://' || my_strtolower($website) == 'https://')
+		if(!empty($website) && !my_validate_url($website))
 		{
-			$website = '';
-			return true;
+			$website = 'http://'.$website;
 		}
 
-		// Does the website start with http(s)://?
-		if(my_strtolower(substr($website, 0, 4)) != "http")
-		{
-			// Website does not start with http://, let's see if the user forgot.
-			$website = "http://".$website;
-		}
-
-		if(!filter_var($website, FILTER_VALIDATE_URL))
+		if(!empty($website) && !my_validate_url($website))
 		{
 			$this->set_error('invalid_website');
 			return false;

@@ -24,7 +24,7 @@ var question = {
 		{
 			$.each(json.errors, function(i, message)
 			{
-				$.jGrowl(lang.question_fetch_failure + ' ' + message);
+				$.jGrowl(lang.question_fetch_failure + ' ' + message, {theme:'jgrowl_error'});
 			});
 		}
 		else if(json.question && json.sid)

@@ -2685,9 +2685,9 @@ if($mybb->input['action'] == "editprofile")
 		error_no_permission();
 	}
 
-	if($user['website'] == "" || $user['website'] == "http://")
+	if(!my_validate_url($user['website']))
 	{
-		$user['website'] = "http://";
+		$user['website'] = '';
 	}
 
 	if($user['icq'] != "0")
