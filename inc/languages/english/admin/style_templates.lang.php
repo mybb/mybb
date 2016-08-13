@@ -114,6 +114,7 @@ $l['group_xmlhttp'] = "XMLHTTP";
 $l['group_footer'] = "Footer";
 $l['group_video'] = "Video MyCode";
 $l['group_sendthread'] = "Send Thread";
+$l['group_mycode'] = "MyCode";
 
 $l['expand'] = "Expand";
 $l['collapse'] = "Collapse";

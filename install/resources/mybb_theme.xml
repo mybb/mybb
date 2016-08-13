@@ -4103,6 +4103,20 @@ $(".forumjump").change(function() {
 <br />]]></template>
 		<template name="global_boardclosed_reason" version="1808"><![CDATA[<blockquote>{$mybb->settings['boardclosed_reason']}</blockquote>]]></template>
 		<template name="global_boardclosed_warning" version="1600"><![CDATA[<div class="red_alert"><strong>{$lang->bbclosed_warning}</strong></div>]]></template>
+		<template name="global_board_offline_modal" version="1804"><![CDATA[<div class="modal">
+	<div style="overflow-y: auto; max-height: 400px;">
+		<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<tr>
+			<td class="thead">
+				<strong>{$mybb->settings['bbname']}</strong>
+			</td>
+		</tr>
+		<tr>
+			<td class="trow1">{$lang->error_boardclosed}</td>
+		</tr>
+		</table>
+	</div>
+</div>]]></template>
 		<template name="global_dst_detection" version="1808"><![CDATA[<script type="text/javascript">if(MyBB) { $([document, window]).bind("load", function() { MyBB.detectDSTChange('{$timezone}'); }); }</script>]]></template>
 		<template name="global_no_permission_modal" version="1808"><![CDATA[<div class="modal">
 	<div style="overflow-y: auto; max-height: 400px;">
@@ -8688,8 +8702,12 @@ if(use_xmlhttprequest == "1")
 		<template name="multipage_prevpage" version="1400"><![CDATA[<a href="{$page_url}" class="pagination_previous">&laquo; {$lang->previous}</a>]]></template>
 		<template name="multipage_start" version="1600"><![CDATA[<a href="{$page_url}" class="pagination_first">1</a> {$lang->multipage_link_start}]]></template>
 		<template name="mycode_code" version="1808"><![CDATA[<div class="codeblock"><div class="title">{$lang->code}</div><div class="body" dir="ltr"><code>{$code}</code></div></div><br />]]></template>
+		<template name="mycode_email" version="1808"><![CDATA[<a href="mailto:{$email}" class="mycode_email">{$name}</a>]]></template>
+		<template name="mycode_img" version="1808"><![CDATA[<img src="{$url}"{$width}{$height} alt="{$alt}"{$css_align} class="mycode_img" />]]></template>
 		<template name="mycode_php" version="1808"><![CDATA[<div class="codeblock phpcodeblock"><div class="title">{$lang->php_code}</div><div class="body">{$code}</div></div><br />]]></template>
-		<template name="mycode_quote_post" version="1808"><![CDATA[<blockquote><cite>{$span}{$username} {$lang->wrote}{$linkback}</cite>{$message}</blockquote><br />]]></template>
+		<template name="mycode_quote_post" version="1808"><![CDATA[<blockquote class="mycode_quote"><cite>{$span}{$username} {$lang->wrote}{$linkback}</cite>{$message}</blockquote><br />]]></template>
+		<template name="mycode_size_int" version="1808"><![CDATA[<span style="font-size: {$size}pt;" class="mycode_size">{$text}</span>]]></template>
+		<template name="mycode_url" version="1808"><![CDATA[<a href="{$url}" target="_blank"{$nofollow} class="mycode_url">{$name}</a>]]></template>
 		<template name="nav" version="120"><![CDATA[
 <div class="navigation">
 {$nav}{$activesep}{$activebit}
@@ -14021,19 +14039,5 @@ $(function() {
 </tr>]]></template>
 		<template name="task_image" version="1800"><![CDATA[<img src="{$mybb->settings['bburl']}/task.php" width="1" height="1" alt="" />]]></template>
 		<template name="smilie" version="1800"><![CDATA[<img src="{$smilie['image']}" alt="{$smilie['name']}" title="{$smilie['name']}" class="smilie smilie_{$smilie['sid']}{$extra_class}"{$onclick} />]]></template>
-		<template name="global_board_offline_modal" version="1804"><![CDATA[<div class="modal">
-	<div style="overflow-y: auto; max-height: 400px;">
-		<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-		<tr>
-			<td class="thead">
-				<strong>{$mybb->settings['bbname']}</strong>
-			</td>
-		</tr>
-		<tr>
-			<td class="trow1">{$lang->error_boardclosed}</td>
-		</tr>
-		</table>
-	</div>
-</div>]]></template>
 	</templates>
 </theme>

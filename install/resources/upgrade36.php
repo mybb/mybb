@@ -81,6 +81,12 @@ function upgrade36_dbchanges()
 		}
 	}
 
+	$query = $db->simple_select("templategroups", "COUNT(*) as numexists", "prefix='mycode'");
+	if($db->fetch_field($query, "numexists") == 0)
+	{
+		$db->insert_query("templategroups", array('prefix' => 'mycode', 'title' => '<lang:group_mycode>', 'isdefault' => '1'));
+	}
+
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("36_done");
 }
