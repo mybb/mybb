@@ -68,6 +68,19 @@ function upgrade36_dbchanges()
 
 	$db->update_query('attachtypes', array('avatarfile' => 1), "atid IN (2, 4, 7, 11)");
 
+	if($mybb->settings['username_method'] == 1 || $mybb->settings['username_method'] == 2)
+	{
+		$query = $db->simple_select('users', 'email, COUNT(email) AS duplicates', "email!=''", array('group_by' => 'email HAVING duplicates>1'));
+		if($db->num_rows($query))
+		{
+			$db->update_query('settings', array('value' => 0), "name='username_method'");
+		}
+		else
+		{
+			$db->update_query('settings', array('value' => 0), "name='allowmultipleemails'");
+		}
+	}
+
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("36_done");
 }
