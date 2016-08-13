@@ -133,6 +133,8 @@ $l['on'] = "On";
 $l['off'] = "Off";
 $l['alt_enabled'] = "Enabled";
 $l['alt_disabled'] = "Disabled";
+$l['enable'] = "Enable";
+$l['disable'] = "Disable";
 $l['saved'] = 'Saved';
 
 $l['rel_in'] = "In ";

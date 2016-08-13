@@ -43,6 +43,7 @@ $l['note_logs_locked'] = "For security reasons, logs less than 24 hours old cann
 $l['admin_log_config_attachment_types_add'] = "Added attachment extension #{1} ({2})";
 $l['admin_log_config_attachment_types_edit'] = "Edited attachment extension #{1} ({2})";
 $l['admin_log_config_attachment_types_delete'] = "Deleted attachment extension #{1} ({2})";
+$l['admin_log_config_attachment_types_toggle_status'] = "Toggled attachment status #{1} ({2})";
 
 $l['admin_log_config_badwords_add'] = "Added word filter #{1} ({2})";
 $l['admin_log_config_badwords_edit'] = "Edited word filter #{1} ({2})";
