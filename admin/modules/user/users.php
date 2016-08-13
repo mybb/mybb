@@ -992,7 +992,14 @@ EOF;
 	}
 	else
 	{
-		$user['avatar'] = "../".str_replace('{theme}', 'images', $mybb->settings['useravatar']);
+		if(my_validate_url($mybb->settings['useravatar']))
+		{
+			$user['avatar'] = str_replace('{theme}', 'images', $mybb->settings['useravatar']);
+		}
+		else
+		{
+			$user['avatar'] = "../".str_replace('{theme}', 'images', $mybb->settings['useravatar']);
+		}
 		$scaled_dimensions = array(
 			"width" => 120,
 			"height" => 120
@@ -3596,7 +3603,14 @@ function build_users_view($view)
 			}
 			if(!$user['avatar'])
 			{
-				$user['avatar'] = "../".str_replace('{theme}', 'images', $mybb->settings['useravatar']);
+				if(my_validate_url($mybb->settings['useravatar']))
+				{
+					$user['avatar'] = str_replace('{theme}', 'images', $mybb->settings['useravatar']);
+				}
+				else
+				{
+					$user['avatar'] = "../".str_replace('{theme}', 'images', $mybb->settings['useravatar']);
+				}
 			}
 			$user['view']['avatar'] = "<img src=\"".htmlspecialchars_uni($user['avatar'])."\" alt=\"\" width=\"{$scaled_avatar['width']}\" height=\"{$scaled_avatar['height']}\" />";
 
