@@ -96,7 +96,7 @@ foreach($data_key as $field => $key)
 }
 
 $announcementarray['dateline'] = $announcementarray['startdate'];
-$announcementarray['userusername'] = htmlspecialchars_uni($announcementarray['username']);
+$announcementarray['userusername'] = $announcementarray['username'];
 $announcement = build_postbit($announcementarray, 3);
 $announcementarray['subject'] = $parser->parse_badwords($announcementarray['subject']);
 $lang->forum_announcement = $lang->sprintf($lang->forum_announcement, htmlspecialchars_uni($announcementarray['subject']));

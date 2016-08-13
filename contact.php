@@ -209,12 +209,8 @@ if($mybb->request_method == "post")
 			require_once MYBB_ROOT."inc/class_parser.php";
 			$parser = new postParser;
 
-			$parser_options = array(
-				'filter_badwords' => 1
-			);
-
-			$mybb->input['subject'] = $parser->parse_message($mybb->input['subject'], $parser_options);
-			$mybb->input['message'] = $parser->parse_message($mybb->input['message'], $parser_options);
+			$mybb->input['subject'] = $parser->parse_badwords($mybb->input['subject']);
+			$mybb->input['message'] = $parser->parse_badwords($mybb->input['message']);
 		}
 
 		$user = $lang->na;

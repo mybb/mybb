@@ -12,10 +12,11 @@ define("IN_MYBB", 1);
 define("IGNORE_CLEAN_VARS", "sid");
 define('THIS_SCRIPT', 'misc.php');
 
-$templatelist = "misc_rules_forum,misc_help_helpdoc,misc_whoposted_poster,misc_whoposted,misc_smilies_popup_smilie,misc_smilies_popup,misc_smilies_popup_empty,misc_smilies_popup_row,misc_syndication_feedurl,misc_syndication";
-$templatelist .= ",misc_buddypopup,misc_buddypopup_user,misc_buddypopup_user_none,misc_buddypopup_user_online,misc_buddypopup_user_offline,misc_buddypopup_user_sendpm,misc_help_search,misc_syndication_forumlist";
-$templatelist .= ",misc_smilies,misc_smilies_smilie,misc_help_section_bit,misc_help_section,misc_help,forumdisplay_password_wrongpass,forumdisplay_password,misc_helpresults,misc_helpresults_bit,misc_helpresults_noresults";
-$templatelist .= ",multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,misc_syndication_forumlist_forum";
+$templatelist = "misc_rules_forum,misc_help_helpdoc,misc_whoposted_poster,misc_whoposted,misc_smilies_popup_smilie,misc_smilies_popup,misc_smilies_popup_empty,misc_smilies_popup_row";
+$templatelist .= ",misc_buddypopup,misc_buddypopup_user,misc_buddypopup_user_none,misc_buddypopup_user_online,misc_buddypopup_user_offline,misc_buddypopup_user_sendpm,misc_syndication_forumlist";
+$templatelist .= ",misc_smilies,misc_smilies_smilie,misc_help_section_bit,misc_help_section,misc_help,forumdisplay_password_wrongpass,forumdisplay_password,misc_helpresults,misc_helpresults_bit";
+$templatelist .= ",multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start";
+$templatelist .= ",misc_smilies_popup_no_smilies,misc_smilies_no_smilies,misc_syndication,misc_help_search,misc_helpresults_noresults,misc_syndication_forumlist_forum,misc_syndication_feedurl";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -722,6 +723,7 @@ elseif($mybb->input['action'] == "smilies")
 		$smile_icons = '';
 		$class = alt_trow(1);
 		$smilies_cache = $cache->read("smilies");
+
 		if(is_array($smilies_cache))
 		{
 			$extra_class = ' smilie_pointer';
@@ -754,10 +756,17 @@ elseif($mybb->input['action'] == "smilies")
 				}
 			}
 		}
+
 		if($e == 2)
 		{
 			eval("\$smilies .= \"".$templates->get("misc_smilies_popup_empty")."\";");
 		}
+
+		if(!$smilies)
+		{
+			eval("\$smilies = \"".$templates->get("misc_smilies_popup_no_smilies")."\";");
+		}
+
 		eval("\$smiliespage = \"".$templates->get("misc_smilies_popup", 1, 0)."\";");
 		output_page($smiliespage);
 	}
@@ -766,6 +775,7 @@ elseif($mybb->input['action'] == "smilies")
 		add_breadcrumb($lang->nav_smilies);
 		$class = "trow1";
 		$smilies_cache = $cache->read("smilies");
+
 		if(is_array($smilies_cache))
 		{
 			$extra_class = $onclick = '';
@@ -781,6 +791,12 @@ elseif($mybb->input['action'] == "smilies")
 				$class = alt_trow();
 			}
 		}
+
+		if(!$smilies)
+		{
+			eval("\$smilies = \"".$templates->get("misc_smilies_no_smilies")."\";");
+		}
+
 		eval("\$smiliespage = \"".$templates->get("misc_smilies")."\";");
 		output_page($smiliespage);
 	}

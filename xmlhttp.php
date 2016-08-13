@@ -124,7 +124,7 @@ $theme = @array_merge($theme, my_unserialize($theme['properties']));
 
 // Set the appropriate image language directory for this theme.
 // Are we linking to a remote theme server?
-if(my_substr($theme['imgdir'], 0, 7) == 'http://' || my_substr($theme['imgdir'], 0, 8) == 'https://')
+if(my_validate_url($theme['imgdir']))
 {
 	// If a language directory for the current language exists within the theme - we use it
 	if(!empty($mybb->user['language']))
@@ -255,7 +255,6 @@ if($mybb->input['action'] == "get_users")
 	if($limit == 1)
 	{
 		$user = $db->fetch_array($query);
-		$user['username'] = htmlspecialchars_uni($user['username']);
 		$data = array('id' => $user['username'], 'text' => $user['username']);
 	}
 	else
@@ -263,7 +262,6 @@ if($mybb->input['action'] == "get_users")
 		$data = array();
 		while($user = $db->fetch_array($query))
 		{
-			$user['username'] = htmlspecialchars_uni($user['username']);
 			$data[] = array('id' => $user['username'], 'text' => $user['username']);
 		}
 	}

@@ -212,7 +212,7 @@ function build_server_stats($is_install=1, $prev_version='', $current_version=''
 	// Check the hosting company
 	if(strpos($_SERVER['HTTP_HOST'], ".") !== false)
 	{
-		$host_url = "http://www.whoishostingthis.com/".str_replace(array('http://', 'www.'), '', $_SERVER['HTTP_HOST']);
+		$host_url = "http://www.whoishostingthis.com/".str_replace(array('http://', 'https://', 'www.'), '', $_SERVER['HTTP_HOST']);
 
 		$hosting = fetch_remote_file($host_url);
 

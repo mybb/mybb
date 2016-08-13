@@ -108,6 +108,7 @@ if(isset($forum))
 	check_forum_password($forum['fid']);
 }
 
+$mybb->user['username'] = htmlspecialchars_uni($mybb->user['username']);
 eval("\$loginbox = \"".$templates->get("changeuserbox")."\";");
 
 $allowable_moderation_actions = array("getip", "getpmip", "cancel_delayedmoderation", "delayedmoderation", "threadnotes", "purgespammer", "viewthreadnotes");
@@ -148,14 +149,16 @@ switch($mybb->input['action'])
 	case "delayedmoderation":
 		// Verify incoming POST request
 		verify_post_check($mybb->get_input('my_post_key'));
+		
+		$localized_time_offset = $mybb->user['timezone']*3600 + $mybb->user['dst']*3600;
 
 		if(!$mybb->get_input('date_day', MyBB::INPUT_INT))
 		{
-			$mybb->input['date_day'] = date('d', TIME_NOW);
+			$mybb->input['date_day'] = gmdate('d', TIME_NOW + $localized_time_offset);
 		}
 		if(!$mybb->get_input('date_month', MyBB::INPUT_INT))
 		{
-			$mybb->input['date_month'] = date('m', TIME_NOW);
+			$mybb->input['date_month'] = gmdate('m', TIME_NOW + $localized_time_offset);
 		}
 
 		// Assume in-line moderation if TID is not set
@@ -255,7 +258,7 @@ switch($mybb->input['action'])
 				$errors[] = $lang->error_delayedmoderation_invalid_date_month;
 			}
 
-			if($mybb->input['date_year'] < gmdate('Y', TIME_NOW))
+			if($mybb->input['date_year'] < gmdate('Y', TIME_NOW + $localized_time_offset))
 			{
 				$errors[] = $lang->error_delayedmoderation_invalid_date_year;
 			}
@@ -272,7 +275,7 @@ switch($mybb->input['action'])
 				}
 			}
 
-			$rundate = mktime((int)$date_time[0], (int)$date_time[1], date('s', TIME_NOW), $mybb->get_input('date_month', MyBB::INPUT_INT), $mybb->get_input('date_day', MyBB::INPUT_INT), $mybb->get_input('date_year', MyBB::INPUT_INT));
+			$rundate = gmmktime((int)$date_time[0], (int)$date_time[1], date('s', TIME_NOW), $mybb->get_input('date_month', MyBB::INPUT_INT), $mybb->get_input('date_day', MyBB::INPUT_INT), $mybb->get_input('date_year', MyBB::INPUT_INT)) - $localized_time_offset;
 
 			if(!$errors)
 			{
@@ -464,9 +467,10 @@ switch($mybb->input['action'])
 					");
 			}
 		}
+		
 		while($delayedmod = $db->fetch_array($query))
 		{
-			$delayedmod['dateline'] = my_date("jS M Y, G:i", $delayedmod['delaydateline']);
+			$delayedmod['dateline'] = my_date("jS M Y, {$mybb->settings['timeformat']}", $delayedmod['delaydateline']);
 			$delayedmod['username'] = htmlspecialchars_uni($delayedmod['username']);
 			$delayedmod['profilelink'] = build_profile_link($delayedmod['username'], $delayedmod['uid']);
 			$delayedmod['action'] = $actions[$delayedmod['type']];
@@ -582,8 +586,8 @@ switch($mybb->input['action'])
 
 		eval('$datemonth = "'.$templates->get('moderation_delayedmoderation_date_month').'";');
 
-		$dateyear = gmdate('Y', TIME_NOW);
-		$datetime = gmdate('g:i a', TIME_NOW);
+		$dateyear = gmdate('Y', TIME_NOW  + $localized_time_offset);
+		$datetime = gmdate($mybb->settings['timeformat'], TIME_NOW + $localized_time_offset);
 
 		$plugins->run_hooks("moderation_delayedmoderation");
 
@@ -1375,6 +1379,7 @@ switch($mybb->input['action'])
 		while($post = $db->fetch_array($query))
 		{
 			$postdate = my_date('relative', $post['dateline']);
+			$post['username'] = htmlspecialchars_uni($post['username']);
 
 			$parser_options = array(
 				"allow_html" => $forum['allowhtml'],
@@ -3049,7 +3054,7 @@ switch($mybb->input['action'])
 					'order_by' => 'dateline',
 					'order_dir' => 'asc'
 				);
-				$query = $db->simple_select("posts", "DISTINCT tid", "pid IN (".implode(',',$pids).")", $options);
+				$query = $db->simple_select("posts", "DISTINCT tid, dateline", "pid IN (".implode(',',$pids).")", $options);
 				while($row = $db->fetch_array($query))
 				{
 					$tids[] = $row['tid'];

@@ -92,7 +92,11 @@ $tables[] = "CREATE TABLE mybb_attachtypes (
 	mimetype varchar(120) NOT NULL default '',
 	extension varchar(10) NOT NULL default '',
 	maxsize int(15) NOT NULL default '0',
-	icon varchar(100) NOT NULL default ''
+	icon varchar(100) NOT NULL default '',
+	enabled tinyint(1) NOT NULL default '1',
+	groups TEXT NOT NULL,
+	forums TEXT NOT NULL,
+	avatarfile tinyint(1) NOT NULL default '0'
 );";
 
 $tables[] = "CREATE TABLE mybb_awaitingactivation (

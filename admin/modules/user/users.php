@@ -254,7 +254,7 @@ if($mybb->input['action'] == "activate_user")
 	my_mail($user['email'], $lang->sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']), $message);
 
 	// Log admin action
-	log_admin_action($user['uid'], $user['username']);
+	log_admin_action($user['uid'], htmlspecialchars_uni($user['username']));
 
 	if($mybb->input['from'] == "home")
 	{
@@ -359,7 +359,7 @@ if($mybb->input['action'] == "add")
 			$plugins->run_hooks("admin_user_users_add_commit");
 
 			// Log admin action
-			log_admin_action($user_info['uid'], $user_info['username']);
+			log_admin_action($user_info['uid'], htmlspecialchars_uni($user_info['username']));
 
 			flash_message($lang->success_user_created, 'success');
 			admin_redirect("index.php?module=user-users&action=edit&uid={$user_info['uid']}");
@@ -836,7 +836,7 @@ if($mybb->input['action'] == "edit")
 				}
 
 				// Log admin action
-				log_admin_action($user['uid'], $mybb->input['username']);
+				log_admin_action($user['uid'], htmlspecialchars_uni($mybb->input['username']));
 
 				flash_message($lang->success_user_updated, 'success');
 				admin_redirect("index.php?module=user-users");
@@ -923,7 +923,7 @@ if($mybb->input['action'] == "edit")
 
 	<link rel="stylesheet" href="../jscripts/sceditor/editor_themes/mybb.css" type="text/css" media="all" />
 	<script type="text/javascript" src="../jscripts/sceditor/jquery.sceditor.bbcode.min.js?ver=1805"></script>
-	<script type="text/javascript" src="../jscripts/bbcodes_sceditor.js?ver=1804"></script>
+	<script type="text/javascript" src="../jscripts/bbcodes_sceditor.js?ver=1808"></script>
 	<script type="text/javascript" src="../jscripts/sceditor/editor_plugins/undo.js?ver=1805"></script>
 EOF;
 	$page->output_header($lang->edit_user);
@@ -985,14 +985,21 @@ EOF;
 				"height" => 120
 			);
 		}
-		if(my_substr($user['avatar'], 0, 7) !== 'http://' && my_substr($user['avatar'], 0, 8) !== 'https://')
+		if(!my_validate_url($user['avatar']))
 		{
 			$user['avatar'] = "../{$user['avatar']}\n";
 		}
 	}
 	else
 	{
-		$user['avatar'] = "../".$mybb->settings['useravatar'];
+		if(my_validate_url($mybb->settings['useravatar']))
+		{
+			$user['avatar'] = str_replace('{theme}', 'images', $mybb->settings['useravatar']);
+		}
+		else
+		{
+			$user['avatar'] = "../".str_replace('{theme}', 'images', $mybb->settings['useravatar']);
+		}
 		$scaled_dimensions = array(
 			"width" => 120,
 			"height" => 120
@@ -1108,7 +1115,7 @@ EOF;
 	echo "<div id=\"tab_profile\">\n";
 
 	$form_container = new FormContainer($lang->required_profile_info.": ".htmlspecialchars_uni($user['username']));
-	$form_container->output_row($lang->username." <em>*</em>", "", $form->generate_text_box('username', htmlspecialchars_uni($mybb->get_input['username']), array('id' => 'username')), 'username');
+	$form_container->output_row($lang->username." <em>*</em>", "", $form->generate_text_box('username', $mybb->input['username'], array('id' => 'username')), 'username');
 	$form_container->output_row($lang->new_password, $lang->new_password_desc, $form->generate_password_box('new_password', $mybb->input['new_password'], array('id' => 'new_password', 'autocomplete' => 'off')), 'new_password');
 	$form_container->output_row($lang->confirm_new_password, $lang->new_password_desc, $form->generate_password_box('confirm_new_password', $mybb->input['confirm_new_password'], array('id' => 'confirm_new_password')), 'confirm_new_password');
 	$form_container->output_row($lang->email_address." <em>*</em>", "", $form->generate_text_box('email', $mybb->input['email'], array('id' => 'email')), 'email');
@@ -1360,7 +1367,7 @@ EOF;
 		$sig_imgcode = $lang->on;
 	}
 	echo "<div id=\"tab_signature\">\n";
-	$form_container = new FormContainer($lang->signature': '.htmlspecialchars_uni($user['username']));
+	$form_container = new FormContainer($lang->signature.': '.htmlspecialchars_uni($user['username']));
 	$form_container->output_row($lang->signature, $lang->sprintf($lang->signature_desc, $sig_mycode, $sig_smilies, $sig_imgcode, $sig_html), $signature_editor, 'signature');
 
 	$periods = array(
@@ -1482,7 +1489,7 @@ EOF;
 	{
 		$current_avatar_msg = "<br /><strong>{$lang->user_current_using_uploaded_avatar}</strong>";
 	}
-	elseif($user['avatartype'] == "remote" || my_strpos(my_strtolower($user['avatar']), "http://") !== false)
+	elseif($user['avatartype'] == "remote" || my_validate_url($user['avatar']))
 	{
 		$current_avatar_msg = "<br /><strong>{$lang->user_current_using_remote_avatar}</strong>";
 		$avatar_url = $user['avatar'];
@@ -1739,7 +1746,7 @@ if($mybb->input['action'] == "delete")
 
 		$plugins->run_hooks("admin_user_users_delete_commit_end");
 
-		log_admin_action($user['uid'], $user['username']);
+		log_admin_action($user['uid'], htmlspecialchars_uni($user['username']));
 
 		flash_message($lang->success_user_deleted, 'success');
 		admin_redirect("index.php?module=user-users");
@@ -1819,7 +1826,7 @@ if($mybb->input['action'] == "ipaddresses")
 	$user = $db->fetch_array($query);
 
 	// Log admin action
-	log_admin_action($user['uid'], $user['username']);
+	log_admin_action($user['uid'], htmlspecialchars_uni($user['username']));
 
 	$table = new Table;
 
@@ -2114,7 +2121,7 @@ if($mybb->input['action'] == "merge")
 			$cache->update_awaitingactivation();
 
 			// Log admin action
-			log_admin_action($source_user['uid'], $source_user['username'], $destination_user['uid'], $destination_user['username']);
+			log_admin_action($source_user['uid'], htmlspecialchars_uni($source_user['username']), $destination_user['uid'], htmlspecialchars_uni($destination_user['username']));
 
 			// Redirect!
 			$username = htmlspecialchars_uni($source_user['username']);
@@ -2621,7 +2628,7 @@ if($mybb->input['action'] == "inline_edit")
 			{
 				if($time != '---')
 				{
-					$friendly_time = my_date("D, jS M Y @ g:ia", ban_date2timestamp($time));
+					$friendly_time = my_date("D, jS M Y @ {$mybb->settings['timeformat']}", ban_date2timestamp($time));
 					$period = "{$period} ({$friendly_time})";
 				}
 				$length_list[$time] = $period;
@@ -3582,7 +3589,7 @@ function build_users_view($view)
 				$user['view']['warninglevel'] = get_colored_warning_level($warning_level);
 			}
 
-			if($user['avatar'] && my_substr($user['avatar'], 0, 7) !== 'http://' && my_substr($user['avatar'], 0, 8) !== 'https://')
+			if(!my_validate_url($user['avatar']))
 			{
 				$user['avatar'] = "../{$user['avatar']}";
 			}
@@ -3596,7 +3603,14 @@ function build_users_view($view)
 			}
 			if(!$user['avatar'])
 			{
-				$user['avatar'] = "../".$mybb->settings['useravatar'];
+				if(my_validate_url($mybb->settings['useravatar']))
+				{
+					$user['avatar'] = str_replace('{theme}', 'images', $mybb->settings['useravatar']);
+				}
+				else
+				{
+					$user['avatar'] = "../".str_replace('{theme}', 'images', $mybb->settings['useravatar']);
+				}
 			}
 			$user['view']['avatar'] = "<img src=\"".htmlspecialchars_uni($user['avatar'])."\" alt=\"\" width=\"{$scaled_avatar['width']}\" height=\"{$scaled_avatar['height']}\" />";
 
@@ -3845,7 +3859,6 @@ function build_user_view_card($user, $view, &$i)
 
 	// And build the final card
 	$card = "<fieldset id=\"uid_{$user['uid']}\" style=\"width: 47%; float: {$float};\">\n";
-	$user['view']['username'] = htmlspecialchars_uni($user['view']['username']);
 	$card .= "<legend><input type=\"checkbox\" class=\"checkbox\" name=\"inlinemod_{$user['uid']}\" id=\"inlinemod_{$user['uid']}\" value=\"1\" onclick=\"$('#uid_{$user['uid']}').toggleClass('inline_selected');\" /> {$user['view']['username']}</legend>\n";
 	if($avatar)
 	{

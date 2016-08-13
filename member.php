@@ -1623,11 +1623,13 @@ if($mybb->input['action'] == "resetpassword")
 
 		while(!$userhandler->verify_password())
 		{
+			$password = random_str($password_length, $mybb->settings['requirecomplexpasswords']);
+
 			$userhandler->set_data(array(
 				'uid'		=> $user['uid'],
 				'username'	=> $user['username'],
 				'email'		=> $user['email'],
-				'password'	=> random_str($password_length, $mybb->settings['requirecomplexpasswords'])
+				'password'	=> $password
 			));
 
 			$userhandler->set_validated(true);
@@ -1642,7 +1644,6 @@ if($mybb->input['action'] == "resetpassword")
 			'loginkey'	=> $userhandler->data['loginkey'],
 		);
 
-		$password = &$logindetails['password'];
 		$email = $user['email'];
 
 		$plugins->run_hooks("member_resetpassword_process");
@@ -1769,7 +1770,7 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 			$mybb->input['url'] = str_replace('&amp;', '&', $mybb->input['url']);
 
 			// Redirect to the URL if it is not member.php
-			redirect(htmlentities($mybb->input['url']), $lang->redirect_loggedin);
+			redirect($mybb->input['url'], $lang->redirect_loggedin);
 		}
 		else
 		{
@@ -1999,7 +2000,7 @@ if($mybb->input['action'] == "profile")
 
 	$website = $sendemail = $sendpm = $contact_details = '';
 	
-	if($memprofile['website'] && !is_member($mybb->settings['hidewebsite']) && $memperms['canchangewebsite'] == 1)
+	if(my_validate_url($memprofile['website']) && !is_member($mybb->settings['hidewebsite']) && $memperms['canchangewebsite'] == 1)
 	{
 		$memprofile['website'] = htmlspecialchars_uni($memprofile['website']);
 		$bgcolor = alt_trow();
@@ -2638,7 +2639,7 @@ if($mybb->input['action'] == "profile")
 			eval('$timeremaining = "'.$templates->get('member_profile_banned_remaining').'";');
 		}
 
-		$memban['adminuser'] = build_profile_link($memban['adminuser'], $memban['admin']);
+		$memban['adminuser'] = build_profile_link(htmlspecialchars_uni($memban['adminuser']), $memban['admin']);
 
 		// Display a nice warning to the user
 		eval('$bannedbit = "'.$templates->get('member_profile_banned').'";');

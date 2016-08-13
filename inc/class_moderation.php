@@ -801,6 +801,7 @@ class Moderation
 				$fid = $post['fid'];
 				$mastertid = $post['tid'];
 				$first = 0;
+				$visible = $post['visible'];
 			}
 			else
 			{
@@ -844,6 +845,7 @@ class Moderation
 					{
 						--$user_counters[$post['uid']]['num_threads'];
 					}
+					$thread_counters[$post['tid']]['attachmentcount'] -= $post['attachmentcount'];
 				}
 				elseif($post['visible'] == 0)
 				{
@@ -855,7 +857,6 @@ class Moderation
 					// Subtract 1 deleted post from post's thread
 					--$thread_counters[$post['tid']]['deletedposts'];
 				}
-				$thread_counters[$post['tid']]['attachmentcount'] -= $post['attachmentcount'];
 
 				// Subtract 1 post from post's forum
 				if($post['threadvisible'] == 1 && $post['visible'] == 1)
@@ -869,6 +870,12 @@ class Moderation
 				else
 				{
 					--$forum_counters[$post['fid']]['deletedposts'];
+				}
+
+				// Add attachment count to thread
+				if($visible == 1)
+				{
+					$thread_counters[$mastertid]['attachmentcount'] += $post['attachmentcount'];
 				}
 			}
 		}

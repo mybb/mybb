@@ -2242,7 +2242,7 @@ if($mybb->input['action'] == "edit_stylesheet" && (!isset($mybb->input['mode']) 
 
 	$form->output_submit_wrapper($buttons);
 
-	echo '<script type="text/javascript" src="./jscripts/themes.js?ver=1804"></script>';
+	echo '<script type="text/javascript" src="./jscripts/themes.js?ver=1808"></script>';
 	echo '<script type="text/javascript">
 
 $(document).ready(function() {
@@ -2348,7 +2348,7 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 <script src="./jscripts/codemirror/mode/css/css.js"></script>
 <script src="./jscripts/codemirror/addon/dialog/dialog.js"></script>
 <script src="./jscripts/codemirror/addon/search/searchcursor.js"></script>
-<script src="./jscripts/codemirror/addon/search/search.js"></script>
+<script src="./jscripts/codemirror/addon/search/search.js?ver=1808"></script>
 ';
 	}
 
@@ -2624,7 +2624,7 @@ if($mybb->input['action'] == "add_stylesheet")
 <script src="./jscripts/codemirror/mode/css/css.js"></script>
 <script src="./jscripts/codemirror/addon/dialog/dialog.js"></script>
 <script src="./jscripts/codemirror/addon/search/searchcursor.js"></script>
-<script src="./jscripts/codemirror/addon/search/search.js"></script>
+<script src="./jscripts/codemirror/addon/search/search.js?ver=1808"></script>
 ';
 	}
 
@@ -2887,7 +2887,7 @@ if($mybb->input['action'] == "add_stylesheet")
 			});</script>';
 	}
 
-	echo '<script type="text/javascript" src="./jscripts/themes.js?ver=1804"></script>';
+	echo '<script type="text/javascript" src="./jscripts/themes.js?ver=1808"></script>';
 	echo '<script type="text/javascript" src="./jscripts/theme_properties.js"></script>';
 	echo '<script type="text/javascript">
 $(function() {

@@ -46,6 +46,35 @@ if($mybb->input['action'] == "add")
 				$mybb->input['extension'] = substr($mybb->input['extension'], 1);
 			}
 
+			foreach(array('groups', 'forums') as $key)
+			{
+				if($mybb->input[$key] == 'all')
+				{
+					$mybb->input[$key] = -1;
+				}
+				elseif($mybb->input[$key] == 'custom')
+				{
+					if(isset($mybb->input['select'][$key]) && is_array($mybb->input['select'][$key]))
+					{
+						foreach($mybb->input['select'][$key] as &$val)
+						{
+							$val = (int)$val;
+						}
+						unset($val);
+
+						$mybb->input[$key] = implode(',', (array)$mybb->input['select'][$key]);
+					}
+					else
+					{
+						$mybb->input[$key] = '';
+					}
+				}
+				else
+				{
+					$mybb->input[$key] = '';
+				}
+			}
+
 			$maxsize = $mybb->get_input('maxsize', MyBB::INPUT_INT);
 
 			if($maxsize == 0)
@@ -58,7 +87,11 @@ if($mybb->input['action'] == "add")
 				"mimetype" => $db->escape_string($mybb->input['mimetype']),
 				"extension" => $db->escape_string($mybb->input['extension']),
 				"maxsize" => $maxsize,
-				"icon" => $db->escape_string($mybb->input['icon'])
+				"icon" => $db->escape_string($mybb->input['icon']),
+				'enabled' => $mybb->get_input('enabled', MyBB::INPUT_INT),
+				'groups' => $db->escape_string($mybb->get_input('groups')),
+				'forums' => $db->escape_string($mybb->get_input('forums')),
+				'avatarfile' => $mybb->get_input('avatarfile', MyBB::INPUT_INT)
 			);
 
 			$atid = $db->insert_query("attachtypes", $new_type);
@@ -95,12 +128,48 @@ if($mybb->input['action'] == "add")
 
 	if($errors)
 	{
+		switch($mybb->input['groups'])
+		{
+			case 'all':
+				$mybb->input['groups'] = -1;
+				break;
+			case 'custom':
+				$mybb->input['groups'] = implode(',', (array)$mybb->input['select']['groups']);
+				break;
+			default:
+				$mybb->input['groups'] = '';
+				break;
+		}
+
+		switch($mybb->input['forums'])
+		{
+			case 'all':
+				$mybb->input['forums'] = -1;
+				break;
+			case 'custom':
+				$mybb->input['forums'] = implode(',', (array)$mybb->input['select']['forums']);
+				break;
+			default:
+				$mybb->input['forums'] = '';
+				break;
+		}
+
 		$page->output_inline_error($errors);
 	}
 	else
 	{
 		$mybb->input['maxsize'] = '1024';
 		$mybb->input['icon'] = "images/attachtypes/";
+	}
+
+	if(empty($mybb->input['groups']))
+	{
+		$mybb->input['groups'] = '';
+	}
+
+	if(empty($mybb->input['forums']))
+	{
+		$mybb->input['forums'] = '';
 	}
 
 	// PHP settings
@@ -120,12 +189,106 @@ if($mybb->input['action'] == "add")
 		}
 	}
 
+	$selected_values = '';
+	if($mybb->input['groups'] != '' && $mybb->input['groups'] != -1)
+	{
+		$selected_values = explode(',', $mybb->get_input('groups'));
+
+		foreach($selected_values as &$value)
+		{
+			$value = (int)$value;
+		}
+		unset($value);
+	}
+
+	$group_checked = array('all' => '', 'custom' => '', 'none' => '');
+	if($mybb->input['groups'] == -1)
+	{
+		$group_checked['all'] = 'checked="checked"';
+	}
+	elseif($mybb->input['groups'] != '')
+	{
+		$group_checked['custom'] = 'checked="checked"';
+	}
+	else
+	{
+		$group_checked['none'] = 'checked="checked"';
+	}
+
+	print_selection_javascript();
+
+	$groups_select_code = "
+	<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%\">
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"groups\" value=\"all\" {$group_checked['all']} class=\"groups_forums_groups_check\" onclick=\"checkAction('groups');\" style=\"vertical-align: middle;\" /> <strong>{$lang->all_groups}</strong></label></dt>
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"groups\" value=\"custom\" {$group_checked['custom']} class=\"groups_forums_groups_check\" onclick=\"checkAction('groups');\" style=\"vertical-align: middle;\" /> <strong>{$lang->select_groups}</strong></label></dt>
+		<dd style=\"margin-top: 4px;\" id=\"groups_forums_groups_custom\" class=\"groups_forums_groups\">
+			<table cellpadding=\"4\">
+				<tr>
+					<td valign=\"top\"><small>{$lang->groups_colon}</small></td>
+					<td>".$form->generate_group_select('select[groups][]', $selected_values, array('id' => 'groups', 'multiple' => true, 'size' => 5))."</td>
+				</tr>
+			</table>
+		</dd>
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"groups\" value=\"none\" {$group_checked['none']} class=\"groups_forums_groups_check\" onclick=\"checkAction('groups');\" style=\"vertical-align: middle;\" /> <strong>{$lang->none}</strong></label></dt>
+	</dl>
+	<script type=\"text/javascript\">
+		checkAction('groups');
+	</script>";
+
+	$selected_values = '';
+	if($mybb->input['forums'] != '' && $mybb->input['forums'] != -1)
+	{
+		$selected_values = explode(',', $mybb->get_input('forums'));
+
+		foreach($selected_values as &$value)
+		{
+			$value = (int)$value;
+		}
+		unset($value);
+	}
+
+	$forum_checked = array('all' => '', 'custom' => '', 'none' => '');
+	if($mybb->input['forums'] == -1)
+	{
+		$forum_checked['all'] = 'checked="checked"';
+	}
+	elseif($mybb->input['forums'] != '')
+	{
+		$forum_checked['custom'] = 'checked="checked"';
+	}
+	else
+	{
+		$forum_checked['none'] = 'checked="checked"';
+	}
+
+	$forums_select_code = "
+	<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%\">
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"forums\" value=\"all\" {$forum_checked['all']} class=\"forums_forums_groups_check\" onclick=\"checkAction('forums');\" style=\"vertical-align: middle;\" /> <strong>{$lang->all_forums}</strong></label></dt>
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"forums\" value=\"custom\" {$forum_checked['custom']} class=\"forums_forums_groups_check\" onclick=\"checkAction('forums');\" style=\"vertical-align: middle;\" /> <strong>{$lang->select_forums}</strong></label></dt>
+		<dd style=\"margin-top: 4px;\" id=\"forums_forums_groups_custom\" class=\"forums_forums_groups\">
+			<table cellpadding=\"4\">
+				<tr>
+					<td valign=\"top\"><small>{$lang->forums_colon}</small></td>
+					<td>".$form->generate_forum_select('select[forums][]', $selected_values, array('id' => 'forums', 'multiple' => true, 'size' => 5))."</td>
+				</tr>
+			</table>
+		</dd>
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"forums\" value=\"none\" {$forum_checked['none']} class=\"forums_forums_groups_check\" onclick=\"checkAction('forums');\" style=\"vertical-align: middle;\" /> <strong>{$lang->none}</strong></label></dt>
+	</dl>
+	<script type=\"text/javascript\">
+		checkAction('forums');
+	</script>";
+
 	$form_container = new FormContainer($lang->add_new_attachment_type);
 	$form_container->output_row($lang->name, $lang->name_desc, $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
 	$form_container->output_row($lang->file_extension." <em>*</em>", $lang->file_extension_desc, $form->generate_text_box('extension', $mybb->input['extension'], array('id' => 'extension')), 'extension');
 	$form_container->output_row($lang->mime_type." <em>*</em>", $lang->mime_type_desc, $form->generate_text_box('mimetype', $mybb->input['mimetype'], array('id' => 'mimetype')), 'mimetype');
 	$form_container->output_row($lang->maximum_file_size, $lang->maximum_file_size_desc.$limit_string, $form->generate_numeric_field('maxsize', $mybb->input['maxsize'], array('id' => 'maxsize', 'min' => 0)), 'maxsize');
 	$form_container->output_row($lang->attachment_icon, $lang->attachment_icon_desc, $form->generate_text_box('icon', $mybb->input['icon'], array('id' => 'icon')), 'icon');
+	$form_container->output_row($lang->enabled, '', $form->generate_yes_no_radio('enabled', $mybb->input['enabled']), 'enabled');
+	$form_container->output_row($lang->available_to_groups, '', $groups_select_code, '', array(), array('id' => 'row_groups'));
+	$form_container->output_row($lang->available_in_forums, '', $forums_select_code, '', array(), array('id' => 'row_forums'));
+	$form_container->output_row($lang->avatar_file, $lang->avatar_file_desc, $form->generate_yes_no_radio('avatarfile', $mybb->input['avatarfile']), 'avatarfile');
 
 	$form_container->end();
 
@@ -174,12 +337,45 @@ if($mybb->input['action'] == "edit")
 				$mybb->input['extension'] = substr($mybb->input['extension'], 1);
 			}
 
+			foreach(array('groups', 'forums') as $key)
+			{
+				if($mybb->input[$key] == 'all')
+				{
+					$mybb->input[$key] = -1;
+				}
+				elseif($mybb->input[$key] == 'custom')
+				{
+					if(isset($mybb->input['select'][$key]) && is_array($mybb->input['select'][$key]))
+					{
+						foreach($mybb->input['select'][$key] as &$val)
+						{
+							$val = (int)$val;
+						}
+						unset($val);
+
+						$mybb->input[$key] = implode(',', (array)$mybb->input['select'][$key]);
+					}
+					else
+					{
+						$mybb->input[$key] = '';
+					}
+				}
+				else
+				{
+					$mybb->input[$key] = '';
+				}
+			}
+
 			$updated_type = array(
 				"name" => $db->escape_string($mybb->input['name']),
 				"mimetype" => $db->escape_string($mybb->input['mimetype']),
 				"extension" => $db->escape_string($mybb->input['extension']),
 				"maxsize" => $mybb->get_input('maxsize', MyBB::INPUT_INT),
-				"icon" => $db->escape_string($mybb->input['icon'])
+				"icon" => $db->escape_string($mybb->input['icon']),
+				'enabled' => $mybb->get_input('enabled', MyBB::INPUT_INT),
+				'groups' => $db->escape_string($mybb->get_input('groups')),
+				'forums' => $db->escape_string($mybb->get_input('forums')),
+				'avatarfile' => $mybb->get_input('avatarfile', MyBB::INPUT_INT)
 			);
 
 			$plugins->run_hooks("admin_config_attachment_types_edit_commit");
@@ -211,11 +407,47 @@ if($mybb->input['action'] == "edit")
 
 	if($errors)
 	{
+		switch($mybb->input['groups'])
+		{
+			case 'all':
+				$mybb->input['groups'] = -1;
+				break;
+			case 'custom':
+				$mybb->input['groups'] = implode(',', (array)$mybb->input['select']['groups']);
+				break;
+			default:
+				$mybb->input['groups'] = '';
+				break;
+		}
+
+		switch($mybb->input['forums'])
+		{
+			case 'all':
+				$mybb->input['forums'] = -1;
+				break;
+			case 'custom':
+				$mybb->input['forums'] = implode(',', (array)$mybb->input['select']['forums']);
+				break;
+			default:
+				$mybb->input['forums'] = '';
+				break;
+		}
+	
 		$page->output_inline_error($errors);
 	}
 	else
 	{
 		$mybb->input = array_merge($mybb->input, $attachment_type);
+	}
+
+	if(empty($mybb->input['groups']))
+	{
+		$mybb->input['groups'] = '';
+	}
+
+	if(empty($mybb->input['forums']))
+	{
+		$mybb->input['forums'] = '';
 	}
 
 	// PHP settings
@@ -235,12 +467,106 @@ if($mybb->input['action'] == "edit")
 		}
 	}
 
+	$selected_values = '';
+	if($mybb->input['groups'] != '' && $mybb->input['groups'] != -1)
+	{
+		$selected_values = explode(',', $mybb->get_input('groups'));
+
+		foreach($selected_values as &$value)
+		{
+			$value = (int)$value;
+		}
+		unset($value);
+	}
+
+	$group_checked = array('all' => '', 'custom' => '', 'none' => '');
+	if($mybb->input['groups'] == -1)
+	{
+		$group_checked['all'] = 'checked="checked"';
+	}
+	elseif($mybb->input['groups'] != '')
+	{
+		$group_checked['custom'] = 'checked="checked"';
+	}
+	else
+	{
+		$group_checked['none'] = 'checked="checked"';
+	}
+
+	print_selection_javascript();
+
+	$groups_select_code = "
+	<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%\">
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"groups\" value=\"all\" {$group_checked['all']} class=\"groups_forums_groups_check\" onclick=\"checkAction('groups');\" style=\"vertical-align: middle;\" /> <strong>{$lang->all_groups}</strong></label></dt>
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"groups\" value=\"custom\" {$group_checked['custom']} class=\"groups_forums_groups_check\" onclick=\"checkAction('groups');\" style=\"vertical-align: middle;\" /> <strong>{$lang->select_groups}</strong></label></dt>
+		<dd style=\"margin-top: 4px;\" id=\"groups_forums_groups_custom\" class=\"groups_forums_groups\">
+			<table cellpadding=\"4\">
+				<tr>
+					<td valign=\"top\"><small>{$lang->groups_colon}</small></td>
+					<td>".$form->generate_group_select('select[groups][]', $selected_values, array('id' => 'groups', 'multiple' => true, 'size' => 5))."</td>
+				</tr>
+			</table>
+		</dd>
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"groups\" value=\"none\" {$group_checked['none']} class=\"groups_forums_groups_check\" onclick=\"checkAction('groups');\" style=\"vertical-align: middle;\" /> <strong>{$lang->none}</strong></label></dt>
+	</dl>
+	<script type=\"text/javascript\">
+		checkAction('groups');
+	</script>";
+
+	$selected_values = '';
+	if($mybb->input['forums'] != '' && $mybb->input['forums'] != -1)
+	{
+		$selected_values = explode(',', $mybb->get_input('forums'));
+
+		foreach($selected_values as &$value)
+		{
+			$value = (int)$value;
+		}
+		unset($value);
+	}
+
+	$forum_checked = array('all' => '', 'custom' => '', 'none' => '');
+	if($mybb->input['forums'] == -1)
+	{
+		$forum_checked['all'] = 'checked="checked"';
+	}
+	elseif($mybb->input['forums'] != '')
+	{
+		$forum_checked['custom'] = 'checked="checked"';
+	}
+	else
+	{
+		$forum_checked['none'] = 'checked="checked"';
+	}
+
+	$forums_select_code = "
+	<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%\">
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"forums\" value=\"all\" {$forum_checked['all']} class=\"forums_forums_groups_check\" onclick=\"checkAction('forums');\" style=\"vertical-align: middle;\" /> <strong>{$lang->all_forums}</strong></label></dt>
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"forums\" value=\"custom\" {$forum_checked['custom']} class=\"forums_forums_groups_check\" onclick=\"checkAction('forums');\" style=\"vertical-align: middle;\" /> <strong>{$lang->select_forums}</strong></label></dt>
+		<dd style=\"margin-top: 4px;\" id=\"forums_forums_groups_custom\" class=\"forums_forums_groups\">
+			<table cellpadding=\"4\">
+				<tr>
+					<td valign=\"top\"><small>{$lang->forums_colon}</small></td>
+					<td>".$form->generate_forum_select('select[forums][]', $selected_values, array('id' => 'forums', 'multiple' => true, 'size' => 5))."</td>
+				</tr>
+			</table>
+		</dd>
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"forums\" value=\"none\" {$forum_checked['none']} class=\"forums_forums_groups_check\" onclick=\"checkAction('forums');\" style=\"vertical-align: middle;\" /> <strong>{$lang->none}</strong></label></dt>
+	</dl>
+	<script type=\"text/javascript\">
+		checkAction('forums');
+	</script>";
+
 	$form_container = new FormContainer($lang->edit_attachment_type);
 	$form_container->output_row($lang->name, $lang->name_desc, $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
 	$form_container->output_row($lang->file_extension." <em>*</em>", $lang->file_extension_desc, $form->generate_text_box('extension', $mybb->input['extension'], array('id' => 'extension')), 'extension');
 	$form_container->output_row($lang->mime_type." <em>*</em>", $lang->mime_type_desc, $form->generate_text_box('mimetype', $mybb->input['mimetype'], array('id' => 'mimetype')), 'mimetype');
 	$form_container->output_row($lang->maximum_file_size, $lang->maximum_file_size_desc.$limit_string, $form->generate_numeric_field('maxsize', $mybb->input['maxsize'], array('id' => 'maxsize', 'min' => 0)), 'maxsize');
 	$form_container->output_row($lang->attachment_icon, $lang->attachment_icon_desc, $form->generate_text_box('icon', $mybb->input['icon'], array('id' => 'icon')), 'icon');
+	$form_container->output_row($lang->enabled, '', $form->generate_yes_no_radio('enabled', $mybb->input['enabled']), 'enabled');
+	$form_container->output_row($lang->available_to_groups, '', $groups_select_code, '', array(), array('id' => 'row_groups'));
+	$form_container->output_row($lang->available_in_forums, '', $forums_select_code, '', array(), array('id' => 'row_forums'));
+	$form_container->output_row($lang->avatar_file, $lang->avatar_file_desc, $form->generate_yes_no_radio('avatarfile', $mybb->input['avatarfile']), 'avatarfile');
 
 	$form_container->end();
 
@@ -290,6 +616,48 @@ if($mybb->input['action'] == "delete")
 	}
 }
 
+if($mybb->input['action'] == 'toggle_status')
+{
+	if(!verify_post_check($mybb->input['my_post_key']))
+	{
+		flash_message($lang->invalid_post_verify_key2, 'error');
+		admin_redirect('index.php?module=config-attachment_types');
+	}
+
+	$atid = $mybb->get_input('atid', MyBB::INPUT_INT);
+
+	$query = $db->simple_select('attachtypes', '*', "atid='{$atid}'");
+	$attachment_type = $db->fetch_array($query);
+
+	if(!$attachment_type['atid'])
+	{
+		flash_message($lang->error_invalid_mycode, 'error');
+		admin_redirect('index.php?module=config-attachment_types');
+	}
+
+	$plugins->run_hooks('admin_config_attachment_types_toggle_status');
+
+	$update_array = array('enabled' => 1);
+	$phrase = $lang->success_activated_attachment_type;
+	if($attachment_type['enabled'] == 1)
+	{
+		$update_array['enabled'] = 0;
+		$phrase = $lang->success_activated_attachment_type;
+	}
+
+	$plugins->run_hooks('admin_config_attachment_types_toggle_status_commit');
+
+	$db->update_query('attachtypes', $update_array, "atid='{$atid}'");
+
+	$cache->update_attachtypes();
+
+	// Log admin action
+	log_admin_action($atid, htmlspecialchars_uni($attachment_type['extension']), $update_array['enabled']);
+
+	flash_message($phrase, 'success');
+	admin_redirect('index.php?module=config-attachment_types');
+}
+
 if(!$mybb->input['action'])
 {
 	$page->output_header($lang->attachment_types);
@@ -311,15 +679,16 @@ if(!$mybb->input['action'])
 	$table = new Table;
 	$table->construct_header($lang->extension, array("colspan" => 2));
 	$table->construct_header($lang->mime_type);
+	$table->construct_header($lang->alt_enabled, array('class' => 'align_center'));
 	$table->construct_header($lang->maximum_size, array("class" => "align_center"));
-	$table->construct_header($lang->controls, array("class" => "align_center", "colspan" => 2));
+	$table->construct_header($lang->controls, array("class" => "align_center"));
 
 	$query = $db->simple_select("attachtypes", "*", "", array('order_by' => 'extension'));
 	while($attachment_type = $db->fetch_array($query))
 	{
 		// Just show default icons in ACP
 		$attachment_type['icon'] = htmlspecialchars_uni(str_replace("{theme}", "images", $attachment_type['icon']));
-		if(my_strpos($attachment_type['icon'], "p://") || substr($attachment_type['icon'], 0, 1) == "/")
+		if(my_validate_url($attachment_type['icon'], true))
 		{
 			$image = $attachment_type['icon'];
 		}
@@ -338,12 +707,29 @@ if(!$mybb->input['action'])
 			$attachment_type['icon'] = "<img src=\"{$image}\" title=\"{$attachment_type['name']}\" alt=\"\" />";
 		}
 
+		if($attachment_type['enabled'])
+		{
+			$phrase = $lang->disable;
+			$icon = "on.png\" alt=\"({$lang->alt_enabled})\" title=\"{$lang->alt_enabled}";
+		}
+		else
+		{
+			$phrase = $lang->enable;
+			$icon = "off.png\" alt=\"({$lang->alt_disabled})\" title=\"{$lang->alt_disabled}";
+		}
+
 		$table->construct_cell($attachment_type['icon'], array("width" => 1));
 		$table->construct_cell("<strong>.{$attachment_type['extension']}</strong>");
 		$table->construct_cell(htmlspecialchars_uni($attachment_type['mimetype']));
+		$table->construct_cell("<img src=\"styles/{$page->style}/images/icons/bullet_{$icon}\" style=\"vertical-align: middle;\" />", array("class" => "align_center"));
 		$table->construct_cell(get_friendly_size(($attachment_type['maxsize']*1024)), array("class" => "align_center"));
-		$table->construct_cell("<a href=\"index.php?module=config-attachment_types&amp;action=edit&amp;atid={$attachment_type['atid']}\">{$lang->edit}</a>", array("class" => "align_center"));
-		$table->construct_cell("<a href=\"index.php?module=config-attachment_types&amp;action=delete&amp;atid={$attachment_type['atid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_attachment_type_deletion}')\">{$lang->delete}</a>", array("class" => "align_center"));
+
+		$popup = new PopupMenu("attachment_type_{$attachment_type['atid']}", $lang->options);
+		$popup->add_item($lang->edit, "index.php?module=config-attachment_types&amp;action=edit&amp;atid={$attachment_type['atid']}");
+		$popup->add_item($phrase, "index.php?module=config-attachment_types&amp;action=toggle_status&amp;atid={$attachment_type['atid']}&amp;my_post_key={$mybb->post_code}");
+		$popup->add_item($lang->delete, "index.php?module=config-attachment_types&amp;action=delete&amp;atid={$attachment_type['atid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_attachment_type_deletion}')");
+		$table->construct_cell($popup->fetch(), array('class' => 'align_center'));
+
 		$table->construct_row();
 	}
 

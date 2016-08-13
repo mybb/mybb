@@ -1592,6 +1592,11 @@ function create_tables()
 	fwrite($file, $configdata);
 	fclose($file);
 
+	if(function_exists('opcache_invalidate'))
+	{
+		opcache_invalidate(MYBB_ROOT."inc/config.php");
+	}
+
 	// Error reporting back on
  	$db->error_reporting = 1;
 

@@ -38,7 +38,7 @@ var inlineEditor = {
 						{
 							$.each(values.errors, function(i, message)
 							{
-								$.jGrowl(lang.post_fetch_error + ' ' + message);
+								$.jGrowl(lang.post_fetch_error + ' ' + message, {theme:'jgrowl_error'});
 							});
 							$(this).html($('#tid_' + tid + '_temp').html());
 						}

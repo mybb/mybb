@@ -966,7 +966,7 @@ function redirect($url, $message="", $title="", $force_redirect=false)
 
 		run_shutdown();
 
-		if(my_substr($url, 0, 7) !== 'http://' && my_substr($url, 0, 8) !== 'https://' && my_substr($url, 0, 1) !== '/')
+		if(!my_validate_url($url, true))
 		{
 			header("Location: {$mybb->settings['bburl']}/{$url}");
 		}
@@ -1801,7 +1801,14 @@ function get_post_icons()
 		eval("\$iconlist .= \"".$templates->get("posticons_icon")."\";");
 	}
 
-	eval("\$posticons = \"".$templates->get("posticons")."\";");
+	if(!empty($iconlist))
+	{
+		eval("\$posticons = \"".$templates->get("posticons")."\";");
+	}
+	else
+	{
+		$posticons = '';
+	}
 
 	return $posticons;
 }
@@ -3035,7 +3042,7 @@ function format_name($username, $usergroup, $displaygroup=0)
  */
 function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
 {
-	global $mybb;
+	global $mybb, $theme;
 	static $avatars;
 
 	if(!isset($avatars))
@@ -3046,7 +3053,12 @@ function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
 	if(!$avatar)
 	{
 		// Default avatar
-		$avatar = $mybb->settings['useravatar'];
+		if(defined('IN_ADMINCP'))
+		{
+			$theme['imgdir'] = '../images';
+		}
+
+		$avatar = str_replace('{theme}', $theme['imgdir'], $mybb->settings['useravatar']);
 		$dimensions = $mybb->settings['useravatardims'];
 	}
 
@@ -3221,12 +3233,6 @@ function build_mycode_inserter($bind="message", $smilies = true)
 			$emoticons_enabled = "false";
 			if($smilies)
 			{
-				if($mybb->settings['smilieinserter'] && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
-				{
-					$emoticon = ",emoticon";
-				}
-				$emoticons_enabled = "true";
-
 				if(!$smiliecache)
 				{
 					if(!isset($smilie_cache) || !is_array($smilie_cache))
@@ -3239,6 +3245,12 @@ function build_mycode_inserter($bind="message", $smilies = true)
 						$smiliecache[$smilie['sid']] = $smilie;
 					}
 				}
+
+				if($mybb->settings['smilieinserter'] && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'] && !empty($smiliecache))
+				{
+					$emoticon = ",emoticon";
+				}
+				$emoticons_enabled = "true";
 
 				unset($smilie);
 
@@ -5714,7 +5726,7 @@ function get_event_date($event)
 	global $mybb;
 
 	$event_date = explode("-", $event['date']);
-	$event_date = mktime(0, 0, 0, $event_date[1], $event_date[0], $event_date[2]);
+	$event_date = gmmktime(0, 0, 0, $event_date[1], $event_date[0], $event_date[2]);
 	$event_date = my_date($mybb->settings['dateformat'], $event_date);
 
 	return $event_date;
@@ -8412,3 +8424,22 @@ function copy_file_to_cdn($file_path = '', &$uploaded_path = null)
 
 	return $success;
 }
+
+/**
+ * Validate an url
+ *
+ * @param string $url The url to validate.
+ * @param bool $relative_path Whether or not the url could be a relative path.
+ *
+ * @return bool Whether this is a valid url.
+ */
+function my_validate_url($url, $relative_path=false)
+{
+	if($relative_path && my_substr($url, 0, 1) == '/' || preg_match('_^(?:(?:https?|ftp)://)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\x{00a1}-\x{ffff}0-9]-*)*[a-z\x{00a1}-\x{ffff}0-9]+)(?:\.(?:[a-z\x{00a1}-\x{ffff}0-9]-*)*[a-z\x{00a1}-\x{ffff}0-9]+)*(?:\.(?:[a-z\x{00a1}-\x{ffff}]{2,}))\.?)(?::\d{2,5})?(?:[/?#]\S*)?$_iuS', $url))
+	{
+		return true;
+	}
+
+	return false;
+}
+

@@ -22,11 +22,64 @@ $upgrade_detail = array(
 
 function upgrade36_dbchanges()
 {
-	global $db, $output;
+	global $db, $output, $mybb;
 
 	$output->print_header("Updating Database");
 	echo "<p>Performing necessary upgrade queries...</p>";
 	flush();
+
+	if($db->field_exists('enabled', 'attachtypes'))
+	{
+		$db->drop_column('attachtypes', 'enabled');
+	}
+
+	if($db->field_exists('groups', 'attachtypes'))
+	{
+		$db->drop_column('attachtypes', 'groups');
+	}
+
+	if($db->field_exists('forums', 'attachtypes'))
+	{
+		$db->drop_column('attachtypes', 'forums');
+	}
+
+	if($db->field_exists('avatarfile', 'attachtypes'))
+	{
+		$db->drop_column('attachtypes', 'avatarfile');
+	}
+
+	switch($db->type)
+	{
+		case "pgsql":
+			$db->add_column('attachtypes', 'enabled', "smallint NOT NULL default '1'");
+			$db->add_column('attachtypes', 'groups', "text NOT NULL default '-1'");
+			$db->add_column('attachtypes', 'forums', "text NOT NULL default '-1'");
+			$db->add_column('attachtypes', 'avatarfile', "smallint NOT NULL default '0'");
+			break;
+		default:
+			$db->add_column('attachtypes', 'enabled', "tinyint(1) NOT NULL default '1'");
+			$db->add_column('attachtypes', 'groups', "TEXT NOT NULL");
+			$db->add_column('attachtypes', 'forums', "TEXT NOT NULL");
+			$db->add_column('attachtypes', 'avatarfile', "tinyint(1) NOT NULL default '0'");
+
+			$db->update_query('attachtypes', array('groups' => '-1', 'forums' => '-1'));
+			break;
+	}
+
+	$db->update_query('attachtypes', array('avatarfile' => 1), "atid IN (2, 4, 7, 11)");
+
+	if($mybb->settings['username_method'] == 1 || $mybb->settings['username_method'] == 2)
+	{
+		$query = $db->simple_select('users', 'email, COUNT(email) AS duplicates', "email!=''", array('group_by' => 'email HAVING duplicates>1'));
+		if($db->num_rows($query))
+		{
+			$db->update_query('settings', array('value' => 0), "name='username_method'");
+		}
+		else
+		{
+			$db->update_query('settings', array('value' => 0), "name='allowmultipleemails'");
+		}
+	}
 
 	$query = $db->simple_select("templategroups", "COUNT(*) as numexists", "prefix='mycode'");
 	if($db->fetch_field($query, "numexists") == 0)

@@ -24,6 +24,7 @@ $plugins->run_hooks("polls_start");
 
 if($mybb->user['uid'] != 0)
 {
+	$mybb->user['username'] = htmlspecialchars_uni($mybb->user['username']);
 	eval("\$loginbox = \"".$templates->get("changeuserbox")."\";");
 }
 else

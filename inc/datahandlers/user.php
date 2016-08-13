@@ -303,20 +303,12 @@ class UserDataHandler extends DataHandler
 	{
 		$website = &$this->data['website'];
 
-		if(empty($website) || my_strtolower($website) == 'http://' || my_strtolower($website) == 'https://')
+		if(!empty($website) && !my_validate_url($website))
 		{
-			$website = '';
-			return true;
+			$website = 'http://'.$website;
 		}
 
-		// Does the website start with http(s)://?
-		if(my_strtolower(substr($website, 0, 4)) != "http")
-		{
-			// Website does not start with http://, let's see if the user forgot.
-			$website = "http://".$website;
-		}
-
-		if(!filter_var($website, FILTER_VALIDATE_URL))
+		if(!empty($website) && !my_validate_url($website))
 		{
 			$this->set_error('invalid_website');
 			return false;
@@ -921,7 +913,7 @@ class UserDataHandler extends DataHandler
 	}
 
 	/**
-	 * Verifies if the user timezone is valid. 
+	 * Verifies if the user timezone is valid.
 	 * If the timezone is invalid, the board default is used.
 	 *
 	 * @return boolean True when timezone was valid, false otherwise
@@ -1054,6 +1046,10 @@ class UserDataHandler extends DataHandler
 		if($this->method == "insert" || array_key_exists('style', $user))
 		{
 			$this->verify_style();
+		}
+		if($this->method == "insert" || array_key_exists('signature', $user))
+		{
+			$this->verify_signature();
 		}
 
 		$plugins->run_hooks("datahandler_user_validate", $this);
@@ -1606,7 +1602,7 @@ class UserDataHandler extends DataHandler
 		if($delete_uids != false)
 		{
 			$this->delete_uids = array_map('intval', (array)$delete_uids);
-		
+
 			foreach($this->delete_uids as $key => $uid)
 			{
 				if(!$uid || is_super_admin($uid) || $uid == $mybb->user['uid'])
@@ -1615,7 +1611,7 @@ class UserDataHandler extends DataHandler
 					unset($this->delete_uids[$key]);
 				}
 			}
-		
+
 			$this->delete_uids = implode(',', $this->delete_uids);
 		}
 
@@ -1782,5 +1778,75 @@ class UserDataHandler extends DataHandler
 		{
 			remove_avatars($uid);
 		}
+	}
+
+	public function verify_signature()
+	{
+		global $mybb, $parser;
+
+		if(!isset($parser))
+		{
+			require_once MYBB_ROOT."inc/class_parser.php";
+			$parser = new postParser;
+		}
+
+		$parser_options = array(
+			'allow_html' => $mybb->settings['sightml'],
+			'filter_badwords' => 1,
+			'allow_mycode' => $mybb->settings['sigmycode'],
+			'allow_smilies' => $mybb->settings['sigsmilies'],
+			'allow_imgcode' => $mybb->settings['sigimgcode'],
+			"filter_badwords" => 1
+		);
+
+		$parsed_sig = $parser->parse_message($this->data['signature'], $parser_options);
+
+		if((($mybb->settings['sigimgcode'] == 0 && $mybb->settings['sigsmilies'] != 1) &&
+			substr_count($parsed_sig, "<img") > 0) ||
+			(($mybb->settings['sigimgcode'] == 1 || $mybb->settings['sigsmilies'] == 1) &&
+			substr_count($parsed_sig, "<img") > $mybb->settings['maxsigimages'])
+		)
+		{
+			$imgsallowed = 0;
+			
+			if($mybb->settings['sigimgcode'] == 1)
+			{
+				$imgsallowed = $mybb->settings['maxsigimages'];
+			}
+
+			$this->set_error('too_many_sig_images2', array($imgsallowed));
+		}
+
+		if($mybb->settings['sigcountmycode'] == 0)
+		{
+			$parsed_sig = $parser->text_parse_message($this->data['signature']);
+		}
+		else
+		{
+			$parsed_sig = $this->data['signature'];
+		}
+
+		$parsed_sig = preg_replace("#\s#", "", $parsed_sig);
+		$sig_length = my_strlen($parsed_sig);
+
+		if($sig_length > $mybb->settings['siglength'])
+		{
+			$this->set_error('sig_too_long', array($mybb->settings['siglength']));
+
+			if($sig_length - $mybb->settings['siglength'] > 1)
+			{
+				$this->set_error('sig_remove_chars_plural', array($sig_length-$mybb->settings['siglength']));
+			}
+			else
+			{
+				$this->set_error('sig_remove_chars_singular');
+			}
+		}
+
+		if(count($this->get_errors()) > 0)
+		{
+			return false;
+		}
+		return true;
 	}
 }

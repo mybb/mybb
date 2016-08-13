@@ -560,6 +560,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		$posticons = get_post_icons();
 	}
 
+	$mybb->user['username'] = htmlspecialchars_uni($mybb->user['username']);
 	eval("\$loginbox = \"".$templates->get("changeuserbox")."\";");
 
 	$deletebox = '';
@@ -683,6 +684,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 			"subject" => $mybb->get_input('subject'),
 			"icon" => $mybb->get_input('icon', MyBB::INPUT_INT),
 			"uid" => $post['uid'],
+			"username" => $post['username'],
 			"edit_uid" => $mybb->user['uid'],
 			"message" => $mybb->get_input('message'),
 		);
