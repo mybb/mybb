@@ -157,7 +157,7 @@ function upgrade36_dbchanges()
 	}
 
 	// Any reason not converted is treated as "Other" with extra text specified
-	$db->update_query("reportedcontent", array('reasonid' => 1), 'reason != ""');
+	$db->update_query("reportedcontent", array('reasonid' => 1), "reason != ''");
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("36_done");
