@@ -1801,7 +1801,14 @@ function get_post_icons()
 		eval("\$iconlist .= \"".$templates->get("posticons_icon")."\";");
 	}
 
-	eval("\$posticons = \"".$templates->get("posticons")."\";");
+	if(!empty($iconlist))
+	{
+		eval("\$posticons = \"".$templates->get("posticons")."\";");
+	}
+	else
+	{
+		$posticons = '';
+	}
 
 	return $posticons;
 }
@@ -3226,12 +3233,6 @@ function build_mycode_inserter($bind="message", $smilies = true)
 			$emoticons_enabled = "false";
 			if($smilies)
 			{
-				if($mybb->settings['smilieinserter'] && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
-				{
-					$emoticon = ",emoticon";
-				}
-				$emoticons_enabled = "true";
-
 				if(!$smiliecache)
 				{
 					if(!isset($smilie_cache) || !is_array($smilie_cache))
@@ -3244,6 +3245,12 @@ function build_mycode_inserter($bind="message", $smilies = true)
 						$smiliecache[$smilie['sid']] = $smilie;
 					}
 				}
+
+				if($mybb->settings['smilieinserter'] && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'] && !empty($smiliecache))
+				{
+					$emoticon = ",emoticon";
+				}
+				$emoticons_enabled = "true";
 
 				unset($smilie);
 
