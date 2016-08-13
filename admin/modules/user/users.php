@@ -992,7 +992,7 @@ EOF;
 	}
 	else
 	{
-		if(my_substr($mybb->settings['useravatar'], 0, 7) === 'http://' || my_substr($mybb->settings['useravatar'], 0, 8) === 'https://')
+		if(my_validate_url($mybb->settings['useravatar']))
 		{
 			$user['avatar'] = str_replace('{theme}', 'images', $mybb->settings['useravatar']);
 		}
@@ -3603,7 +3603,7 @@ function build_users_view($view)
 			}
 			if(!$user['avatar'])
 			{
-				if(my_substr($mybb->settings['useravatar'], 0, 7) === 'http://' || my_substr($mybb->settings['useravatar'], 0, 8) === 'https://')
+				if(my_validate_url($mybb->settings['useravatar']))
 				{
 					$user['avatar'] = str_replace('{theme}', 'images', $mybb->settings['useravatar']);
 				}
