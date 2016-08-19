@@ -1,7 +1,7 @@
-[![MyBB](https://raw.github.com/mybb/mybb/feature/images/logo.png "MyBB")](https://www.mybb.com "MyBB")
+[![MyBB](https://raw.github.com/mybb/mybb/feature/images/logo.png "MyBB")](https://mybb.com "MyBB")
 
 ## Free never tasted so good.
-MyBB is a free and open source, community-based forum software project. Learn more at [MyBB.com](https://www.mybb.com).
+MyBB is a free and open source, community-based forum software project. Learn more at [MyBB.com](https://mybb.com).
 
 ### MyBB 1.6
 
@@ -19,7 +19,7 @@ Please see: https://community.mybb.com/announcement-25.html for information on h
 Visit the [MyBB Community Forums](https://community.mybb.com) or [Documentation](https://docs.mybb.com) for support.
 
 ### License
-MyBB is licensed under the [GNU Lesser General Public License v3](https://www.mybb.com/about/license).
+MyBB is licensed under the [GNU Lesser General Public License v3](https://mybb.com/about/license).
 
 
 Some icons by [Yusuke Kamiyamane](http://p.yusukekamiyamane.com/).

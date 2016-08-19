@@ -1625,74 +1625,74 @@ a.button.report_user_button span {
 * Copyright (c) 2015 Trent Richardson; Licensed MIT */
 
 .jqifade{
-	position: absolute; 
-	background-color: #777777; 
+	position: absolute;
+	background-color: #777777;
 }
 iframe.jqifade{
 	display:block;
 	z-index:-1;
 }
-div.jqi{ 
-	width: 400px; 
+div.jqi{
+	width: 400px;
 	max-width:90%;
-	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; 
-	position: absolute; 
-	background-color: #ffffff; 
-	font-size: 11px; 
-	text-align: left; 
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	position: absolute;
+	background-color: #ffffff;
+	font-size: 11px;
+	text-align: left;
 	border: solid 1px #eeeeee;
 	border-radius: 6px;
 	-moz-border-radius: 6px;
 	-webkit-border-radius: 6px;
 	padding: 7px;
 }
-div.jqi .jqicontainer{ 
+div.jqi .jqicontainer{
 }
-div.jqi .jqiclose{ 
+div.jqi .jqiclose{
 	position: absolute;
-	top: 4px; right: -2px; 
-	width: 18px; 
-	cursor: default; 
-	color: #bbbbbb; 
-	font-weight: bold; 
+	top: 4px; right: -2px;
+	width: 18px;
+	cursor: default;
+	color: #bbbbbb;
+	font-weight: bold;
 }
 div.jqi .jqistate{
 	background-color: #fff;
 }
 div.jqi .jqititle{
 	padding: 5px 10px;
-	font-size: 16px; 
-	line-height: 20px; 
+	font-size: 16px;
+	line-height: 20px;
 	border-bottom: solid 1px #eeeeee;
 }
-div.jqi .jqimessage{ 
-	padding: 10px; 
-	line-height: 20px; 
-	color: #444444; 
+div.jqi .jqimessage{
+	padding: 10px;
+	line-height: 20px;
+	color: #444444;
 	overflow: auto;
 }
 div.jqi .jqibuttonshide{
 	display: none;
-} 
-div.jqi .jqibuttons{ 
-	text-align: right; 
+}
+div.jqi .jqibuttons{
+	text-align: right;
 	margin: 0 -7px -7px -7px;
-	border-top: solid 1px #e4e4e4; 
+	border-top: solid 1px #e4e4e4;
 	background-color: #f4f4f4;
 	border-radius: 0 0 6px 6px;
 	-moz-border-radius: 0 0 6px 6px;
 	-webkit-border-radius: 0 0 6px 6px;
 }
-div.jqi .jqibuttons button{ 
+div.jqi .jqibuttons button{
 	margin: 0;
 	padding: 15px 20px;
 	background-color: transparent;
-	font-weight: normal; 
+	font-weight: normal;
 	border: none;
-	border-left: solid 1px #e4e4e4; 
-	color: #777; 
-	font-weight: bold; 
-	font-size: 12px; 
+	border-left: solid 1px #e4e4e4;
+	color: #777;
+	font-weight: bold;
+	font-size: 12px;
 }
 div.jqi .jqibuttons button.jqidefaultbutton{
 	color: #489afe;
@@ -1705,12 +1705,12 @@ div.jqi .jqibuttons button:focus{
 div.jqi .jqibuttons button[disabled]{
 	color: #aaa;
 }
-.jqiwarning .jqi .jqibuttons{ 
+.jqiwarning .jqi .jqibuttons{
 	background-color: #b95656;
 }
 
 /* sub states */
-div.jqi .jqiparentstate::after{ 
+div.jqi .jqiparentstate::after{
 	background-color: #777;
 	opacity: 0.6;
 	filter: alpha(opacity=60);
@@ -3603,7 +3603,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 </ol>
 <br />
 {$lang->error_nopermission_user_username}]]></template>
-		<template name="footer" version="1800"><![CDATA[<debugstuff>
+		<template name="footer" version="1808"><![CDATA[<debugstuff>
 	</div>
 </div>
 <div id="footer">
@@ -3630,7 +3630,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 					you may be refused support on the MyBB Community Forums.
 
 					This is free software, support us and we'll support you. -->
-				{$lang->powered_by} <a href="http://www.mybb.com" target="_blank">MyBB{$mybbversion}</a>, &copy; 2002-{$copy_year} <a href="http://www.mybb.com" target="_blank">MyBB Group</a>.
+				{$lang->powered_by} <a href="https://mybb.com" target="_blank">MyBB{$mybbversion}</a>, &copy; 2002-{$copy_year} <a href="https://mybb.com" target="_blank">MyBB Group</a>.
 				<!-- End powered by -->
 			</span>
 		</div>
@@ -8998,7 +8998,7 @@ if(use_xmlhttprequest == "1")
   	if($("input[name='postoptions[multiple]']").is(":checked")) {
 		$("#maxOptions").css("display", "");
 	}
-  
+
  	$("input[name='postoptions[multiple]']").click(function() {
  		if($(this).is(":checked")) {
  			$("#maxOptions").css("display", "");
@@ -9074,7 +9074,7 @@ if(use_xmlhttprequest == "1")
 	if($("input[name='postoptions[multiple]']").is(":checked")) {
 		$("#maxOptions").css("display", "");
 	}
-  
+
  	$("input[name='postoptions[multiple]']").click(function() {
  		if($(this).is(":checked")) {
  	    	$("#maxOptions").css("display", "");
