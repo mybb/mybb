@@ -386,7 +386,7 @@ else
 			$mybb->user = get_user($admin_session['uid']);
 
 			// Login key has changed - force logout
-			if(!$mybb->user['uid'] || $mybb->user['loginkey'] != $admin_session['loginkey'])
+			if(!$mybb->user['uid'] || $mybb->user['loginkey'] !== $admin_session['loginkey'])
 			{
 				unset($mybb->user);
 			}
@@ -755,7 +755,7 @@ if($mybb->request_method == "post")
 	if($post_verify == true)
 	{
 		// If the post key does not match we switch the action to GET and set a message to show the user
-		if(!isset($mybb->input['my_post_key']) || $mybb->post_code != $mybb->input['my_post_key'])
+		if(!isset($mybb->input['my_post_key']) || $mybb->post_code !== $mybb->input['my_post_key'])
 		{
 			$mybb->request_method = "get";
 			$page->show_post_verify_error = true;

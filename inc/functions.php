@@ -598,7 +598,7 @@ function generate_post_check()
 function verify_post_check($code, $silent=false)
 {
 	global $lang;
-	if(generate_post_check() != $code)
+	if(generate_post_check() !== $code)
 	{
 		if($silent == true)
 		{
@@ -6765,7 +6765,35 @@ function build_timezone_select($name, $selected=0, $short=false)
  */
 function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 {
-	global $mybb;
+	global $mybb, $config;
+
+	$url_components = @parse_url($url);
+
+	if(
+		!$url_components ||
+		empty($url_components['host']) ||
+		(!empty($url_components['scheme']) && !in_array($url_components['scheme'], array('http', 'https'))) ||
+		(!empty($url_components['port']) && !in_array($url_components['port'], array(80, 8080, 443))) ||
+		(!empty($config['disallowed_remote_hosts']) && in_array($url_components['host'], $config['disallowed_remote_hosts']))
+	)
+	{
+		return false;
+	}
+
+	if(!empty($config['disallowed_remote_addresses']))
+	{
+		$addresses = gethostbynamel($url_components['host']);
+		if($addresses)
+		{
+			foreach($addresses as $address)
+			{
+				if(in_array($address, $config['disallowed_remote_addresses']))
+				{
+					return false;
+				}
+			}
+		}
+	}
 
 	$post_body = '';
 	if(!empty($post_data))
@@ -6834,36 +6862,31 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 	}
 	else if(function_exists("fsockopen"))
 	{
-		$url = @parse_url($url);
-		if(!$url['host'])
+		if(!isset($url_components['port']))
 		{
-			return false;
+			$url_components['port'] = 80;
 		}
-		if(!isset($url['port']))
+		if(!isset($url_components['path']))
 		{
-			$url['port'] = 80;
+			$url_components['path'] = "/";
 		}
-		if(!isset($url['path']))
+		if(isset($url_components['query']))
 		{
-			$url['path'] = "/";
-		}
-		if(isset($url['query']))
-		{
-			$url['path'] .= "?{$url['query']}";
+			$url_components['path'] .= "?{$url_components['query']}";
 		}
 
 		$scheme = '';
 
-		if($url['scheme'] == 'https')
+		if($url_components['scheme'] == 'https')
 		{
 			$scheme = 'ssl://';
-			if($url['port'] == 80)
+			if($url_components['port'] == 80)
 			{
-				$url['port'] = 443;
+				$url_components['port'] = 443;
 			}
 		}
 
-		$fp = @fsockopen($scheme.$url['host'], $url['port'], $error_no, $error, 10);
+		$fp = @fsockopen($scheme.$url_components['host'], $url_components['port'], $error_no, $error, 10);
 		@stream_set_timeout($fp, 10);
 		if(!$fp)
 		{
@@ -6872,16 +6895,16 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 		$headers = array();
 		if(!empty($post_body))
 		{
-			$headers[] = "POST {$url['path']} HTTP/1.0";
+			$headers[] = "POST {$url_components['path']} HTTP/1.0";
 			$headers[] = "Content-Length: ".strlen($post_body);
 			$headers[] = "Content-Type: application/x-www-form-urlencoded";
 		}
 		else
 		{
-			$headers[] = "GET {$url['path']} HTTP/1.0";
+			$headers[] = "GET {$url_components['path']} HTTP/1.0";
 		}
 
-		$headers[] = "Host: {$url['host']}";
+		$headers[] = "Host: {$url_components['host']}";
 		$headers[] = "Connection: Close";
 		$headers[] = '';
 

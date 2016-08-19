@@ -3113,6 +3113,11 @@ function build_users_view($view)
 {
 	global $mybb, $db, $cache, $lang, $user_view_fields, $page;
 
+	if($view['view_type'] != 'card')
+	{
+		$view['view_type'] = 'table';
+	}
+
 	$view_title = '';
 	if($view['title'])
 	{

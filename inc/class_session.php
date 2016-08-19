@@ -144,7 +144,7 @@ class session
 		}
 
 		// Check the password if we're not using a session
-		if(empty($loginkey) || $loginkey != $mybb->user['loginkey'] || !$mybb->user['uid'])
+		if(empty($loginkey) || $loginkey !== $mybb->user['loginkey'] || !$mybb->user['uid'])
 		{
 			unset($mybb->user);
 			$this->uid = 0;

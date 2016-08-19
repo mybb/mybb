@@ -163,7 +163,7 @@ else
 	if($mybb->input['action'] == "logout" && $mybb->user['uid'])
 	{
 		// Check session ID if we have one
-		if($mybb->get_input('logoutkey') != $mybb->user['logoutkey'])
+		if($mybb->get_input('logoutkey') !== $mybb->user['logoutkey'])
 		{
 			$output->print_error("Your user ID could not be verified to log you out.  This may have been because a malicious Javascript was attempting to log you out automatically.  If you intended to log out, please click the Log Out button at the top menu.");
 		}

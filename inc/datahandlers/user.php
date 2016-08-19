@@ -1374,7 +1374,7 @@ class UserDataHandler extends DataHandler
 		}
 		if(isset($user['away']))
 		{
-			$this->user_update_data['away'] = $user['away']['away'];
+			$this->user_update_data['away'] = (int)$user['away']['away'];
 			$this->user_update_data['awaydate'] = $db->escape_string($user['away']['date']);
 			$this->user_update_data['returndate'] = $db->escape_string($user['away']['returndate']);
 			$this->user_update_data['awayreason'] = $db->escape_string($user['away']['awayreason']);

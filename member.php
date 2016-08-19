@@ -1885,12 +1885,12 @@ if($mybb->input['action'] == "logout")
 	}
 
 	// Check session ID if we have one
-	if(isset($mybb->input['sid']) && $mybb->get_input('sid') != $session->sid)
+	if(isset($mybb->input['sid']) && $mybb->get_input('sid') !== $session->sid)
 	{
 		error($lang->error_notloggedout);
 	}
 	// Otherwise, check logoutkey
-	else if(!isset($mybb->input['sid']) && $mybb->get_input('logoutkey') != $mybb->user['logoutkey'])
+	else if(!isset($mybb->input['sid']) && $mybb->get_input('logoutkey') !== $mybb->user['logoutkey'])
 	{
 		error($lang->error_notloggedout);
 	}

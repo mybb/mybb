@@ -1586,6 +1586,34 @@ function create_tables()
 	'promotion_logs' => 180 // Promotion logs
 );
 
+/**
+ * Disallowed Remote Hosts
+ *  List of hosts the fetch_remote_file() function will not
+ *  perform requests to.
+ *  It is recommended that you enter hosts resolving to the
+ *  forum server here to prevent Server Side Request
+ *  Forgery attacks.
+ */
+
+\$config['disallowed_remote_hosts'] = array(
+	'localhost'
+);
+
+/**
+ * Disallowed Remote Addresses
+ *  List of IPv4 addresses the fetch_remote_file() function
+ *  will not perform requests to.
+ *  It is recommended that you enter addresses resolving to
+ *  the forum server here to prevent Server Side Request
+ *  Forgery attacks.
+ *  Removing all values disables resolving hosts in that
+ *  function.
+ */
+
+\$config['disallowed_remote_addresses'] = array(
+	'127.0.0.1'
+);
+
 ";
 
 	$file = fopen(MYBB_ROOT.'inc/config.php', 'w');

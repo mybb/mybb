@@ -388,7 +388,7 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 {
 	global $mybb;
 
-	$filename = str_replace('/', '', $filename);
+	$filename = basename($filename);
 	$tid = (int) $tid;
 	$theme_directory = "cache/themes/theme{$tid}";
 
