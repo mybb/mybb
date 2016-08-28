@@ -3603,7 +3603,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 </ol>
 <br />
 {$lang->error_nopermission_user_username}]]></template>
-		<template name="footer" version="1800"><![CDATA[<debugstuff>
+		<template name="footer" version="1808"><![CDATA[<debugstuff>
 	</div>
 </div>
 <div id="footer">
@@ -3630,7 +3630,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 					you may be refused support on the MyBB Community Forums.
 
 					This is free software, support us and we'll support you. -->
-				{$lang->powered_by} <a href="http://www.mybb.com" target="_blank">MyBB{$mybbversion}</a>, &copy; 2002-{$copy_year} <a href="http://www.mybb.com" target="_blank">MyBB Group</a>.
+				{$lang->powered_by} <a href="https://mybb.com" target="_blank">MyBB{$mybbversion}</a>, &copy; 2002-{$copy_year} <a href="https://mybb.com" target="_blank">MyBB Group</a>.
 				<!-- End powered by -->
 			</span>
 		</div>

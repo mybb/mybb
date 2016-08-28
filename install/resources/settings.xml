@@ -264,7 +264,7 @@ email=Sent via Email]]></optionscode>
 	<settinggroup name="server" title="Server and Optimization Options" description="These options allow you to set various server and optimization preferences allowing you to reduce the load on your server, and gain better performance on your board." disporder="4" isdefault="1">
 		<setting name="seourls">
 			<title>Enable search engine friendly URLs?</title>
-			<description><![CDATA[Search engine friendly URLs change the MyBB links to shorter URLs which search engines prefer and are easier to type. showthread.php?tid=1 becomes thread-1.html. <strong>Once this setting is enabled you need to make sure you have the MyBB .htaccess in your MyBB root directory (or the equivalent for your web server). Automatic detection may not work on all servers.</strong> Please see the <a href="http://docs.mybb.com/1.8/administration/configuring-search-engine-friendly-URLs">MyBB Docs</a> for assistance.]]></description>
+			<description><![CDATA[Search engine friendly URLs change the MyBB links to shorter URLs which search engines prefer and are easier to type. showthread.php?tid=1 becomes thread-1.html. <strong>Once this setting is enabled you need to make sure you have the MyBB .htaccess in your MyBB root directory (or the equivalent for your web server). Automatic detection may not work on all servers.</strong> Please see the <a href="https://docs.mybb.com/1.8/administration/configuring-search-engine-friendly-URLs">MyBB Docs</a> for assistance.]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[select
 auto=Automatic Detection
@@ -674,7 +674,7 @@ none=Hide Errors and Warnings
 		</setting>
 		<setting name="readparentforums">
 			<title>Attempt to Mark Parent Forums as Read</title>
-			<description><![CDATA[When set to yes, this setting will attempt to mark the parent forums of a sub-forum as read if there are no more unread posts. Please note that this setting can lead to a decrease in performance and multiple database queries and therefore must be treated as experimental. See the <a href="http://docs.mybb.com/versions/1.6.5/">MyBB Docs</a> for more information regarding this change.]]></description>
+			<description><![CDATA[When set to yes, this setting will attempt to mark the parent forums of a sub-forum as read if there are no more unread posts. Please note that this setting can lead to a decrease in performance and multiple database queries and therefore must be treated as experimental. See the <a href="https://docs.mybb.com/versions/1.6.5/">MyBB Docs</a> for more information regarding this change.]]></description>
 			<disporder>9</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>

@@ -74,7 +74,7 @@ function hello_info()
 	return array(
 		'name'			=> 'Hello World!',
 		'description'	=> $lang->hello_desc,
-		'website'		=> 'http://mybb.com',
+		'website'		=> 'https://mybb.com',
 		'author'		=> 'MyBB Group',
 		'authorsite'	=> 'http://www.mybb.com',
 		'version'		=> '2.0',

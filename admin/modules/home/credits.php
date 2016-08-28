@@ -30,7 +30,7 @@ if(!$mybb->input['action'])
 
 	$sub_tabs['credits_about'] = array(
 		'title' => $lang->about_the_team,
-		'link' => "http://www.mybb.com/about/team",
+		'link' => "https://mybb.com/about/team",
 		'link_target' => "_blank",
 	);
 
@@ -52,7 +52,7 @@ if(!$mybb->input['action'])
 		);
 
 		require_once MYBB_ROOT."inc/class_xml.php";
-		$contents = fetch_remote_file("http://www.mybb.com/mybb_team.xml");
+		$contents = fetch_remote_file("https://mybb.com/mybb_team.xml");
 
 		if(!$contents)
 		{
@@ -149,4 +149,3 @@ if(!$mybb->input['action'])
 
 	$page->output_footer();
 }
-

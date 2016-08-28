@@ -172,7 +172,7 @@ function archive_footer()
 <div class="navigation"><?php echo $nav; ?></div>
 </div>
 <div id="footer">
-<?php echo $lang->powered_by; ?> <a href="http://www.mybb.com">MyBB</a><?php echo $mybbversion; ?>, &copy; 2002-<?php echo date("Y"); ?> <a href="http://www.mybb.com">MyBB Group</a>
+<?php echo $lang->powered_by; ?> <a href="https://mybb.com">MyBB</a><?php echo $mybbversion; ?>, &copy; 2002-<?php echo date("Y"); ?> <a href="https://mybb.com">MyBB Group</a>
 </div>
 </body>
 </html>

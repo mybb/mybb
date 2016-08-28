@@ -542,7 +542,7 @@ class errorHandler {
 <body>
 	<div id="container">
 		<div id="logo">
-			<h1><a href="http://www.mybb.com/" title="MyBB"><span class="invisible">MyBB</span></a></h1>
+			<h1><a href="https://mybb.com/" title="MyBB"><span class="invisible">MyBB</span></a></h1>
 		</div>
 
 		<div id="content">
@@ -550,7 +550,7 @@ class errorHandler {
 
 			<div id="error">
 				{$error_message}
-				<p id="footer">Please contact the <a href="http://www.mybb.com">MyBB Group</a> for technical support.</p>
+				<p id="footer">Please contact the <a href="https://mybb.com">MyBB Group</a> for technical support.</p>
 			</div>
 		</div>
 	</div>
@@ -575,7 +575,7 @@ EOF;
 		<h2>{$title}</h2>
 		<div id="mybb_error_error">
 		{$error_message}
-			<p id="mybb_error_footer">Please contact the <a href="http://www.mybb.com">MyBB Group</a> for technical support.</p>
+			<p id="mybb_error_footer">Please contact the <a href="https://mybb.com">MyBB Group</a> for technical support.</p>
 		</div>
 	</div>
 EOF;
