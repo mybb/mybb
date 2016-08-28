@@ -76,7 +76,7 @@ function hello_info()
 		'description'	=> $lang->hello_desc,
 		'website'		=> 'https://mybb.com',
 		'author'		=> 'MyBB Group',
-		'authorsite'	=> 'http://www.mybb.com',
+		'authorsite'	=> 'https://www.mybb.com',
 		'version'		=> '2.0',
 		'compatibility'	=> '18*',
 		'codename'		=> 'hello'
