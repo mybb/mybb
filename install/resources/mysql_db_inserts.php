@@ -73,6 +73,12 @@ $inserts[] = "INSERT INTO mybb_profilefields (fid, name, description, disporder,
 
 $inserts[] = "INSERT INTO mybb_questions (qid, question, answer, shown, correct, incorrect, active) VALUES(1, 'What does 2 + 2 equal?', '4\nFour', 0, 0, 0, 1);";
 
+$inserts[] = "INSERT INTO mybb_reportreasons (rid, title, appliesto, extra, disporder) VALUES(1, '<lang:report_reason_other>', 'all', 1, 99);";
+$inserts[] = "INSERT INTO mybb_reportreasons (rid, title, appliesto, extra, disporder) VALUES(2, '<lang:report_reason_rules>', 'all', 0, 1);";
+$inserts[] = "INSERT INTO mybb_reportreasons (rid, title, appliesto, extra, disporder) VALUES(3, '<lang:report_reason_bad>', 'all', 0, 2);";
+$inserts[] = "INSERT INTO mybb_reportreasons (rid, title, appliesto, extra, disporder) VALUES(4, '<lang:report_reason_spam>', 'all', 0, 3);";
+$inserts[] = "INSERT INTO mybb_reportreasons (rid, title, appliesto, extra, disporder) VALUES(5, '<lang:report_reason_wrong>', 'post', 0, 4);";
+
 $inserts[] = "INSERT INTO mybb_smilies (sid, name, find, image, disporder, showclickable) VALUES(1, 'Smile', ':)', 'images/smilies/smile.png', 1, 1);";
 $inserts[] = "INSERT INTO mybb_smilies (sid, name, find, image, disporder, showclickable) VALUES(2, 'Wink', ';)', 'images/smilies/wink.png', 2, 1);";
 $inserts[] = "INSERT INTO mybb_smilies (sid, name, find, image, disporder, showclickable) VALUES(3, 'Cool', ':cool:', 'images/smilies/cool.png', 3, 1);";

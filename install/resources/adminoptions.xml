@@ -24,7 +24,8 @@
 				<permission name="warning">0</permission>
 				<permission name="thread_prefixes">0</permission>
 				<permission name="questions">0</permission>
-			</module>			
+				<permission name="report_reasons">0</permission>
+			</module>
 			<module name="forum">
 				<permission name="tab">0</permission>
 				<permission name="management">0</permission>
@@ -91,7 +92,8 @@
 				<permission name="warning">1</permission>
 				<permission name="thread_prefixes">1</permission>
 				<permission name="questions">1</permission>
-			</module>			
+				<permission name="report_reasons">1</permission>
+			</module>
 			<module name="forum">
 				<permission name="tab">1</permission>
 				<permission name="management">1</permission>
@@ -158,7 +160,8 @@
 				<permission name="warning">1</permission>
 				<permission name="thread_prefixes">1</permission>
 				<permission name="questions">1</permission>
-			</module>			
+				<permission name="report_reasons">1</permission>
+			</module>
 			<module name="forum">
 				<permission name="tab">1</permission>
 				<permission name="management">1</permission>

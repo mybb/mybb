@@ -384,9 +384,10 @@ if($mybb->input['action'] == "reports")
 	// Reports
 	$reports = '';
 	$query = $db->query("
-		SELECT r.*, u.username
+		SELECT r.*, u.username, rr.title
 		FROM ".TABLE_PREFIX."reportedcontent r
 		LEFT JOIN ".TABLE_PREFIX."users u ON (r.uid = u.uid)
+		LEFT JOIN ".TABLE_PREFIX."reportreasons rr ON (r.reasonid = rr.rid)
 		WHERE r.reportstatus = '0'{$tflist_reports}
 		ORDER BY r.reports DESC
 		LIMIT {$start}, {$perpage}
@@ -533,16 +534,23 @@ if($mybb->input['action'] == "reports")
 			}
 
 			// Report reason and comment
-			$report_data['comment'] = $lang->na;
-			$report_string = "report_reason_{$report['reason']}";
+			if($report['reasonid'] > 0)
+			{
+				$reason = htmlspecialchars_uni($lang->parse($report['title']));
 
-			if(isset($lang->$report_string))
-			{
-				$report_data['comment'] = $lang->$report_string;
+				if(empty($report['reason']))
+				{
+					eval("\$report_data['comment'] = \"".$templates->get("modcp_reports_report_comment")."\";");
+				}
+				else
+				{
+					$comment = htmlspecialchars_uni($report['reason']);
+					eval("\$report_data['comment'] = \"".$templates->get("modcp_reports_report_comment_extra")."\";");
+				}
 			}
-			else if(!empty($report['reason']))
+			else
 			{
-				$report_data['comment'] = htmlspecialchars_uni($report['reason']);
+				$report_data['comment'] = $lang->na;
 			}
 
 			$report_reports = 1;
@@ -670,7 +678,7 @@ if($mybb->input['action'] == "allreports")
 	$plugins->run_hooks("modcp_allreports_start");
 
 	$query = $db->query("
-		SELECT r.*, u.username, p.username AS postusername, up.uid AS postuid, t.subject AS threadsubject, prrep.username AS repusername, pr.username AS profileusername
+		SELECT r.*, u.username, p.username AS postusername, up.uid AS postuid, t.subject AS threadsubject, prrep.username AS repusername, pr.username AS profileusername, rr.title
 		FROM ".TABLE_PREFIX."reportedcontent r
 		LEFT JOIN ".TABLE_PREFIX."posts p ON (r.id=p.pid)
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (p.tid=t.tid)
@@ -678,6 +686,7 @@ if($mybb->input['action'] == "allreports")
 		LEFT JOIN ".TABLE_PREFIX."users up ON (p.uid=up.uid)
 		LEFT JOIN ".TABLE_PREFIX."users pr ON (pr.uid=r.id)
 		LEFT JOIN ".TABLE_PREFIX."users prrep ON (prrep.uid=r.id2)
+		LEFT JOIN ".TABLE_PREFIX."reportreasons rr ON (r.reasonid = rr.rid)
 		{$wflist_reports}
 		ORDER BY r.dateline DESC
 		LIMIT {$start}, {$perpage}
@@ -717,8 +726,24 @@ if($mybb->input['action'] == "allreports")
 			}
 
 			// Report reason and comment
-			$report_data['comment'] = $lang->na;
-			$report_string = "report_reason_{$report['reason']}";
+			if($report['reasonid'] > 0)
+			{
+				$reason = htmlspecialchars_uni($lang->parse($report['title']));
+
+				if(empty($report['reason']))
+				{
+					eval("\$report_data['comment'] = \"".$templates->get("modcp_reports_report_comment")."\";");
+				}
+				else
+				{
+					$comment = htmlspecialchars_uni($report['reason']);
+					eval("\$report_data['comment'] = \"".$templates->get("modcp_reports_report_comment_extra")."\";");
+				}
+			}
+			else
+			{
+				$report_data['comment'] = $lang->na;
+			}
 
 			$report['reporterlink'] = get_profile_link($report['uid']);
 			if(!$report['username'])
@@ -727,15 +752,6 @@ if($mybb->input['action'] == "allreports")
 				$report['reporterlink'] = $post;
 			}
 			$report['username'] = htmlspecialchars_uni($report['username']);
-
-			if(isset($lang->$report_string))
-			{
-				$report_data['comment'] = $lang->$report_string;
-			}
-			else if(!empty($report['reason']))
-			{
-				$report_data['comment'] = htmlspecialchars_uni($report['reason']);
-			}
 
 			$report_data['reports'] = my_number_format($report['reports']);
 			$report_data['time'] = my_date('relative', $report['dateline']);
@@ -1104,7 +1120,7 @@ if($mybb->input['action'] == "do_new_announcement")
 	}
 
 	$localized_time_offset = $mybb->user['timezone']*3600 + $mybb->user['dst']*3600;
-	
+
 	$startdate = gmmktime((int)$startdate[0], (int)$startdate[1], 0, $mybb->get_input('starttime_month', MyBB::INPUT_INT), $mybb->get_input('starttime_day', MyBB::INPUT_INT), $mybb->get_input('starttime_year', MyBB::INPUT_INT)) -$localized_time_offset;
 	if(!checkdate($mybb->get_input('starttime_month', MyBB::INPUT_INT), $mybb->get_input('starttime_day', MyBB::INPUT_INT), $mybb->get_input('starttime_year', MyBB::INPUT_INT)) || $startdate < 0 || $startdate == false)
 	{
@@ -1246,7 +1262,7 @@ if($mybb->input['action'] == "new_announcement")
 	else
 	{
 		$localized_time = TIME_NOW + $mybb->user['timezone']*3600 + $mybb->user['dst']*3600;
-		
+
 		$starttime_time = gmdate($mybb->settings['timeformat'], $localized_time);
 		$endtime_time = gmdate($mybb->settings['timeformat'], $localized_time);
 		$startday = $endday = gmdate("j", TIME_NOW + $localized_time);
@@ -1477,7 +1493,7 @@ if($mybb->input['action'] == "do_edit_announcement")
 	}
 
 	$localized_time_offset = TIME_NOW + $mybb->user['timezone']*3600 + $mybb->user['dst']*3600;
-	
+
 	$startdate = gmmktime((int)$startdate[0], (int)$startdate[1], 0, $mybb->get_input('starttime_month', MyBB::INPUT_INT), $mybb->get_input('starttime_day', MyBB::INPUT_INT), $mybb->get_input('starttime_year', MyBB::INPUT_INT)) - $localized_time_offset;
 	if(!checkdate($mybb->get_input('starttime_month', MyBB::INPUT_INT), $mybb->get_input('starttime_day', MyBB::INPUT_INT), $mybb->get_input('starttime_year', MyBB::INPUT_INT)) || $startdate < 0 || $startdate == false)
 	{
@@ -1652,7 +1668,7 @@ if($mybb->input['action'] == "edit_announcement")
 	{
 		$localized_time_startdate = $announcement['startdate'] + $mybb->user['timezone']*3600 + $mybb->user['dst']*3600;
 		$localized_time_enddate = $announcement['enddate'] + $mybb->user['timezone']*3600 + $mybb->user['dst']*3600;
-		
+
 		$starttime_time = gmdate($mybb->settings['timeformat'], $localized_time_startdate);
 		$endtime_time = gmdate($mybb->settings['timeformat'], $localized_time_enddate);
 
