@@ -225,7 +225,7 @@ lang.saved = \"{$lang->saved}\";
 		echo "	<br style=\"clear: both;\" />";
 		echo "	<br style=\"clear: both;\" />";
 		echo "	</div>\n";
-		echo "<div id=\"footer\"><p class=\"generation\">".$lang->sprintf($lang->generated_in, $totaltime, $debuglink, $querycount, $memory_usage)."</p><p class=\"powered\">Powered By <a href=\"http://www.mybb.com/\" target=\"_blank\">MyBB</a>, &copy; 2002-".COPY_YEAR." <a href=\"http://www.mybb.com/\" target=\"_blank\">MyBB Group</a>.</p></div>\n";
+		echo "<div id=\"footer\"><p class=\"generation\">".$lang->sprintf($lang->generated_in, $totaltime, $debuglink, $querycount, $memory_usage)."</p><p class=\"powered\">Powered By <a href=\"https://mybb.com/\" target=\"_blank\">MyBB</a>, &copy; 2002-".COPY_YEAR." <a href=\"https://mybb.com/\" target=\"_blank\">MyBB Group</a>.</p></div>\n";
 		if($mybb->debug_mode)
 		{
 			echo $db->explain;
@@ -903,11 +903,11 @@ EOF;
 		if($smilies)
 		{
 			if($mybb->settings['smilieinserter'] && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
-			{			
+			{
 				$emoticon = ",emoticon";
 			}
 			$emoticons_enabled = "true";
-			
+
 			if(!$smiliecount)
 			{
 				$smilie_cache = $cache->read("smilies");
@@ -940,7 +940,7 @@ EOF;
 				{
 					$finds = explode("\n", $smilie['find']);
 					$finds_count = count($finds);
-					
+
 					// Only show the first text to replace in the box
 					$find = str_replace(array('\\', '"'), array('\\\\', '\"'), htmlspecialchars_uni($finds[0]));
 					$image = str_replace(array('\\', '"'), array('\\\\', '\"'), htmlspecialchars_uni($smilie['image']));
@@ -951,7 +951,7 @@ EOF;
 
 					if(!$mybb->settings['smilieinserter'] || !$mybb->settings['smilieinsertercols'] || !$mybb->settings['smilieinsertertot'] || !$smilie['showclickable'])
 					{
-						$hiddensmilies .= '"'.$find.'": "'.$image.'",';							
+						$hiddensmilies .= '"'.$find.'": "'.$image.'",';
 					}
 					elseif($i < $mybb->settings['smilieinsertertot'])
 					{
