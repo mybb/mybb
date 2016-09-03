@@ -3589,7 +3589,7 @@ function build_users_view($view)
 				$user['view']['warninglevel'] = get_colored_warning_level($warning_level);
 			}
 
-			if(!my_validate_url($user['avatar']))
+			if($user['avatar'] && !my_validate_url($user['avatar']))
 			{
 				$user['avatar'] = "../{$user['avatar']}";
 			}
