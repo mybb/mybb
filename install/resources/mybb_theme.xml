@@ -13917,7 +13917,7 @@ $(function() {
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.js?ver=1806"></script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.plugins.min.js?ver=1806"></script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/general.js?ver=1807"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/general.js?ver=1809"></script>
 
 {$stylesheets}
 <script type="text/javascript">
@@ -13939,6 +13939,7 @@ $(function() {
 	var cookieDomain = "{$mybb->settings['cookiedomain']}";
 	var cookiePath = "{$mybb->settings['cookiepath']}";
 	var cookiePrefix = "{$mybb->settings['cookieprefix']}";
+	var cookieSecureFlag = "{$mybb->settings['cookiesecureflag']}";
 	var deleteevent_confirm = "{$lang->deleteevent_confirm}";
 	var removeattach_confirm = "{$lang->removeattach_confirm}";
 	var loading_text = '{$lang->ajax_loading}';
