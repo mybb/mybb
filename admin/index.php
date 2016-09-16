@@ -11,8 +11,9 @@
 define("IN_MYBB", 1);
 define("IN_ADMINCP", 1);
 
-// Here you can change how much of an Admin CP IP address must match in a previous session for the user is validated (defaults to 3 which matches a.b.c)
+// Here you can change how much of an Admin CP IP address must match in a previous session for the user is validated (e.g. 3 means a.b.c need to match)
 define("ADMIN_IP_SEGMENTS", 0);
+define("ADMIN_IPV6_SEGMENTS", 0);
 
 require_once dirname(dirname(__FILE__))."/inc/init.php";
 
@@ -400,10 +401,10 @@ else
 					unset($mybb->user);
 				}
 				// If IP matching is set - check IP address against the session IP
-				else if(ADMIN_IP_SEGMENTS > 0)
+				else if(ADMIN_IP_SEGMENTS > 0 && strpos($ip_address, ':') === false)
 				{
 					$exploded_ip = explode(".", $ip_address);
-					$exploded_admin_ip = explode(".", $admin_session['ip']);
+					$exploded_admin_ip = explode(".", my_inet_ntop($admin_session['ip']));
 					$matches = 0;
 					$valid_ip = false;
 					for($i = 0; $i < ADMIN_IP_SEGMENTS; ++$i)
@@ -413,6 +414,38 @@ else
 							++$matches;
 						}
 						if($matches == ADMIN_IP_SEGMENTS)
+						{
+							$valid_ip = true;
+							break;
+						}
+					}
+
+					// IP doesn't match properly - show message on logon screen
+					if(!$valid_ip)
+					{
+						$login_message = $lang->error_invalid_ip;
+						unset($mybb->user);
+					}
+				}
+				else if(ADMIN_IPV6_SEGMENTS > 0 && strpos($ip_address, ':') !== false)
+				{
+					// Expand IPv6 addresses
+					$hex = unpack("H*hex", my_inet_pton($ip_address));         
+					$expanded_ip = substr(preg_replace("/([A-f0-9]{4})/", "$1:", $hex['hex']), 0, -1);
+					$hex_admin = unpack("H*hex", $admin_session['ip']);         
+					$expanded_admin_ip = substr(preg_replace("/([A-f0-9]{4})/", "$1:", $hex_admin['hex']), 0, -1);
+
+					$exploded_ip = explode(":", $expanded_ip);
+					$exploded_admin_ip = explode(":", $expanded_admin_ip);
+					$matches = 0;
+					$valid_ip = false;
+					for($i = 0; $i < ADMIN_IPV6_SEGMENTS; ++$i)
+					{
+						if($exploded_ip[$i] == $exploded_admin_ip[$i])
+						{
+							++$matches;
+						}
+						if($matches == ADMIN_IPV6_SEGMENTS)
 						{
 							$valid_ip = true;
 							break;

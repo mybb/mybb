@@ -1226,6 +1226,54 @@ class datacache
 		$this->update("profilefields", $fields);
 	}
 
+	/**
+	 * Update the report reasons cache.
+	 *
+	 */
+	function update_reportreasons($no_plugins = false)
+	{
+		global $db;
+
+		$content_types = array('post', 'profile', 'reputation');
+		if(!$no_plugins)
+		{
+			global $plugins;
+			$content_types = $plugins->run_hooks("report_content_types", $content_types);
+		}
+
+		$reasons = array();
+
+		$query = $db->simple_select("reportreasons", "*", "", array('order_by' => 'disporder'));
+		while($reason = $db->fetch_array($query))
+		{
+			if($reason['appliesto'] == 'all')
+			{
+				foreach($content_types as $content)
+				{
+					$reasons[$content][] = array(
+						'rid' => $reason['rid'],
+						'title' => $reason['title'],
+						'extra' => $reason['extra'],
+					);
+				}
+			}
+			elseif($reason['appliesto'] != '')
+			{
+				$appliesto = explode(",", $reason['appliesto']);
+				foreach($appliesto as $content)
+				{
+					$reasons[$content][] = array(
+						'rid' => $reason['rid'],
+						'title' => $reason['title'],
+						'extra' => $reason['extra'],
+					);
+				}
+			}
+		}
+
+		$this->update("reportreasons", $reasons);
+	}
+
 	/* Other, extra functions for reloading caches if we just changed to another cache extension (i.e. from db -> xcache) */
 	function reload_mostonline()
 	{

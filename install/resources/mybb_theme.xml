@@ -1625,74 +1625,74 @@ a.button.report_user_button span {
 * Copyright (c) 2015 Trent Richardson; Licensed MIT */
 
 .jqifade{
-	position: absolute; 
-	background-color: #777777; 
+	position: absolute;
+	background-color: #777777;
 }
 iframe.jqifade{
 	display:block;
 	z-index:-1;
 }
-div.jqi{ 
-	width: 400px; 
+div.jqi{
+	width: 400px;
 	max-width:90%;
-	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; 
-	position: absolute; 
-	background-color: #ffffff; 
-	font-size: 11px; 
-	text-align: left; 
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	position: absolute;
+	background-color: #ffffff;
+	font-size: 11px;
+	text-align: left;
 	border: solid 1px #eeeeee;
 	border-radius: 6px;
 	-moz-border-radius: 6px;
 	-webkit-border-radius: 6px;
 	padding: 7px;
 }
-div.jqi .jqicontainer{ 
+div.jqi .jqicontainer{
 }
-div.jqi .jqiclose{ 
+div.jqi .jqiclose{
 	position: absolute;
-	top: 4px; right: -2px; 
-	width: 18px; 
-	cursor: default; 
-	color: #bbbbbb; 
-	font-weight: bold; 
+	top: 4px; right: -2px;
+	width: 18px;
+	cursor: default;
+	color: #bbbbbb;
+	font-weight: bold;
 }
 div.jqi .jqistate{
 	background-color: #fff;
 }
 div.jqi .jqititle{
 	padding: 5px 10px;
-	font-size: 16px; 
-	line-height: 20px; 
+	font-size: 16px;
+	line-height: 20px;
 	border-bottom: solid 1px #eeeeee;
 }
-div.jqi .jqimessage{ 
-	padding: 10px; 
-	line-height: 20px; 
-	color: #444444; 
+div.jqi .jqimessage{
+	padding: 10px;
+	line-height: 20px;
+	color: #444444;
 	overflow: auto;
 }
 div.jqi .jqibuttonshide{
 	display: none;
-} 
-div.jqi .jqibuttons{ 
-	text-align: right; 
+}
+div.jqi .jqibuttons{
+	text-align: right;
 	margin: 0 -7px -7px -7px;
-	border-top: solid 1px #e4e4e4; 
+	border-top: solid 1px #e4e4e4;
 	background-color: #f4f4f4;
 	border-radius: 0 0 6px 6px;
 	-moz-border-radius: 0 0 6px 6px;
 	-webkit-border-radius: 0 0 6px 6px;
 }
-div.jqi .jqibuttons button{ 
+div.jqi .jqibuttons button{
 	margin: 0;
 	padding: 15px 20px;
 	background-color: transparent;
-	font-weight: normal; 
+	font-weight: normal;
 	border: none;
-	border-left: solid 1px #e4e4e4; 
-	color: #777; 
-	font-weight: bold; 
-	font-size: 12px; 
+	border-left: solid 1px #e4e4e4;
+	color: #777;
+	font-weight: bold;
+	font-size: 12px;
 }
 div.jqi .jqibuttons button.jqidefaultbutton{
 	color: #489afe;
@@ -1705,12 +1705,12 @@ div.jqi .jqibuttons button:focus{
 div.jqi .jqibuttons button[disabled]{
 	color: #aaa;
 }
-.jqiwarning .jqi .jqibuttons{ 
+.jqiwarning .jqi .jqibuttons{
 	background-color: #b95656;
 }
 
 /* sub states */
-div.jqi .jqiparentstate::after{ 
+div.jqi .jqiparentstate::after{
 	background-color: #777;
 	opacity: 0.6;
 	filter: alpha(opacity=60);
@@ -3603,7 +3603,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 </ol>
 <br />
 {$lang->error_nopermission_user_username}]]></template>
-		<template name="footer" version="1800"><![CDATA[<debugstuff>
+		<template name="footer" version="1808"><![CDATA[<debugstuff>
 	</div>
 </div>
 <div id="footer">
@@ -3630,7 +3630,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 					you may be refused support on the MyBB Community Forums.
 
 					This is free software, support us and we'll support you. -->
-				{$lang->powered_by} <a href="http://www.mybb.com" target="_blank">MyBB{$mybbversion}</a>, &copy; 2002-{$copy_year} <a href="http://www.mybb.com" target="_blank">MyBB Group</a>.
+				{$lang->powered_by} <a href="https://mybb.com" target="_blank">MyBB{$mybbversion}</a>, &copy; 2002-{$copy_year} <a href="https://mybb.com" target="_blank">MyBB Group</a>.
 				<!-- End powered by -->
 			</span>
 		</div>
@@ -7691,7 +7691,7 @@ if(use_xmlhttprequest == "1")
 		<template name="modcp_no_announcements_global" version="1400"><![CDATA[					<tr>
 						<td class="trow1" colspan="3">{$lang->no_global_announcements}</td>
 					</tr>]]></template>
-		<template name="modcp_reports" version="1800"><![CDATA[<html>
+		<template name="modcp_reports" version="1808"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->report_center}</title>
 {$headerinclude}
@@ -7737,12 +7737,20 @@ if(use_xmlhttprequest == "1")
 		if(checked == false)
 		{
 			checked = true;
-			$('input:checkbox').attr('checked','checked');
+			$('input:checkbox').prop('checked', true);
 		}
 		else
 		{
 			checked = false;
-			$('input:checkbox').removeAttr('checked');
+			$('input:checkbox').prop('checked', false);
+		}
+	}
+
+	function checkReportedPost(e)
+	{
+		if($(e).prop('checked') == false)
+		{
+			$('input:checkbox[name="allbox"]').prop('checked', false);
 		}
 	}
 // -->
@@ -7794,13 +7802,15 @@ if(use_xmlhttprequest == "1")
 		<template name="modcp_reports_noreports" version="1607"><![CDATA[<tr>
 <td class="trow1" align="center" colspan="7">{$lang->no_reports}</td>
 </tr>]]></template>
-		<template name="modcp_reports_report" version="1800"><![CDATA[<tr>
+		<template name="modcp_reports_report" version="1808"><![CDATA[<tr>
 	<td class="{$trow}">{$report_data['content']}</td>
 	<td class="{$trow}" align="left">{$report_data['comment']}</td>
 	<td class="{$trow}" align="center">{$report_data['reports']}</td>
 	<td class="{$trow} smalltext" align="right">{$report_data['lastreporter']}</td>
-	<td class="{$trow}" align="center"><input type="checkbox" class="checkbox" name="reports[]" id="reports_{$report['rid']}" value="{$report['rid']}" /></td>
+	<td class="{$trow}" align="center"><input type="checkbox" class="checkbox" name="reports[]" id="reports_{$report['rid']}" value="{$report['rid']}" onclick="checkReportedPost(this);" /></td>
 </tr>]]></template>
+		<template name="modcp_reports_report_comment" version="1808"><![CDATA[{$reason}]]></template>
+		<template name="modcp_reports_report_comment_extra" version="1808"><![CDATA[{$reason}: {$comment}]]></template>
 		<template name="modcp_nobanned" version="1613"><![CDATA[<tr>
 		<td class="trow1" align="center" colspan="4">{$lang->no_bans_ending}</td>
 </tr>]]></template>
@@ -9022,7 +9032,7 @@ if(use_xmlhttprequest == "1")
   	if($("input[name='postoptions[multiple]']").is(":checked")) {
 		$("#maxOptions").css("display", "");
 	}
-  
+
  	$("input[name='postoptions[multiple]']").click(function() {
  		if($(this).is(":checked")) {
  			$("#maxOptions").css("display", "");
@@ -9098,7 +9108,7 @@ if(use_xmlhttprequest == "1")
 	if($("input[name='postoptions[multiple]']").is(":checked")) {
 		$("#maxOptions").css("display", "");
 	}
-  
+
  	$("input[name='postoptions[multiple]']").click(function() {
  		if($(this).is(":checked")) {
  	    	$("#maxOptions").css("display", "");
@@ -10542,7 +10552,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		<template name="private_tracking_unreadmessage_stop" version="1800"><![CDATA[<tr>
 <td class="tfoot" align="right" colspan="5"><strong><input type="submit" class="button" name="stoptrackingunread" value="{$lang->stop_tracking}" /> / <input type="submit" class="button" name="cancel" value="{$lang->delete}" /> {$lang->selected_messages}</strong></td>
 </tr>]]></template>
-		<template name="report" version="1807"><![CDATA[<div class="modal">
+		<template name="report" version="1808"><![CDATA[<div class="modal">
   <div style="overflow-y: auto; max-height: 400px;" class="modal_{$id}">
   <form action="report.php" method="post" class="reportData_{$id}" onsubmit="javascript: return Report.submitReport({$id});">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
@@ -10563,14 +10573,14 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 
 <script type="text/javascript">
 <!--
-	if($("#report_reason option:selected").val() != 'other')
+	if($("#report_reason option:selected").attr('data-extra') != 1)
 	{
 		$("#reason").hide();
 	}
 
 	$("#report_reason").change(function()
 	{
-		if($(this).find("option:selected").val() == 'other')
+		if($(this).find("option:selected").attr('data-extra') == 1)
 		{
 			$("#reason").show();
 			return;
@@ -10602,15 +10612,12 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 	<td colspan="2" class="trow1">{$error}</td>
 </tr>
 </table>]]></template>
-		<template name="report_reasons" version="1800"><![CDATA[<tr>
+		<template name="report_reason" version="1808"><![CDATA[<option value="{$reason['rid']}" data-extra="{$reason['extra']}">{$reason['title']}</option>]]></template>
+		<template name="report_reasons" version="1808"><![CDATA[<tr>
 	<td class="trow1" align="left" style="width: 25%"><span class="smalltext"><strong>{$lang->report_reason}</strong></span></td>
 	<td class="trow1" align="left">
 		<select name="reason" id="report_reason">
-			<option value="rules">{$lang->report_reason_rules}</option>
-			<option value="bad">{$lang->report_reason_bad}</option>
-			<option value="spam">{$lang->report_reason_spam}</option>
-			<option value="wrong">{$lang->report_reason_wrong}</option>
-			<option value="other">{$lang->report_reason_other}</option>
+			{$reasonslist}
 		</select>
 	</td>
 </tr>

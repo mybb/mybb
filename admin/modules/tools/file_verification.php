@@ -36,7 +36,7 @@ if(!$mybb->input['action'])
 
 		$page->output_header($lang->file_verification." - ".$lang->checking);
 
-		$file = explode("\n", fetch_remote_file("http://www.mybb.com/checksums/release_mybb_{$mybb->version_code}.txt"));
+		$file = explode("\n", fetch_remote_file("https://mybb.com/checksums/release_mybb_{$mybb->version_code}.txt"));
 
 		if(strstr($file[0], "<?xml") !== false || empty($file[0]))
 		{
@@ -125,4 +125,3 @@ if(!$mybb->input['action'])
 
 	$page->output_confirm_action("index.php?module=tools-file_verification", $lang->file_verification_message, $lang->file_verification);
 }
-

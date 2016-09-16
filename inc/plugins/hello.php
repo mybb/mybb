@@ -13,7 +13,7 @@ if(!defined('IN_MYBB'))
 {
 	die('This file cannot be accessed directly.');
 }
-	
+
 // cache templates - this is important when it comes to performance
 // THIS_SCRIPT is defined by some of the MyBB scripts, including index.php
 if(defined('THIS_SCRIPT'))
@@ -74,9 +74,9 @@ function hello_info()
 	return array(
 		'name'			=> 'Hello World!',
 		'description'	=> $lang->hello_desc,
-		'website'		=> 'http://mybb.com',
+		'website'		=> 'https://mybb.com',
 		'author'		=> 'MyBB Group',
-		'authorsite'	=> 'http://www.mybb.com',
+		'authorsite'	=> 'https://mybb.com',
 		'version'		=> '2.0',
 		'compatibility'	=> '18*',
 		'codename'		=> 'hello'
@@ -318,13 +318,13 @@ function hello_activate()
 
 	// Delete deprecated entries.
 	$db->delete_query('settings', "gid='{$gid}' AND description='HELLODELETEMARKER'");
-	
+
 	// This is required so it updates the settings.php file as well and not only the database - they must be synchronized!
 	rebuild_settings();
 
 	// Include this file because it is where find_replace_templatesets is defined
 	require_once MYBB_ROOT.'inc/adminfunctions_templates.php';
-	
+
 	// Edit the index template and add our variable to above {$forums}
 	find_replace_templatesets('index', '#'.preg_quote('{$forums}').'#', "{\$hello}\n{\$forums}");
 }
@@ -339,7 +339,7 @@ function hello_activate()
 function hello_deactivate()
 {
 	require_once MYBB_ROOT.'inc/adminfunctions_templates.php';
-	
+
 	// remove template edits
 	find_replace_templatesets('index', '#'.preg_quote('{$hello}').'#', '');
 }
