@@ -967,6 +967,22 @@ if($mybb->input['action'] == "change")
 			}
 		}
 
+		// Administrator is changing the login method.
+		if($mybb->settings['username_method'] == 1 || $mybb->settings['username_method'] == 2 || $mybb->input['upsetting']['username_method'] == 1 || $mybb->input['upsetting']['username_method'] == 2)
+		{
+			$query = $db->simple_select('users', 'email, COUNT(email) AS duplicates', "email!=''", array('group_by' => 'email HAVING duplicates>1'));
+			if($db->num_rows($query))
+			{
+				$mybb->input['upsetting']['username_method'] = 0;
+				$lang->success_settings_updated .= $lang->success_settings_updated_username_method;
+			}
+			else
+			{
+				$mybb->input['upsetting']['allowmultipleemails'] = 0;
+				$lang->success_settings_updated .= $lang->success_settings_updated_allowmultipleemails;
+			}
+		}
+
 		if(is_array($mybb->input['upsetting']))
 		{
 			foreach($mybb->input['upsetting'] as $name => $value)
