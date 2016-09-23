@@ -944,6 +944,8 @@ disabled=Disable this feature]]></optionscode>
 		</setting>
 		<setting name="username_method">
 			<title>Allowed Login Methods</title>
+			<description><![CDATA[The login methods you wish to allow for the username field. Username only, Email only, or allow both.
+<br />To allow email as a valid login method, no users are allowed to share email addresses.]]></description>
 			<disporder>18</disporder>
 			<optionscode><![CDATA[select
 0=Username Only
