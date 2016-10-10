@@ -567,8 +567,7 @@ function buildcaches()
 	$output->print_header($lang->upgrade_datacache_building);
 
 	$contents .= $lang->upgrade_building_datacache;
-	require_once MYBB_ROOT."inc/class_datacache.php";
-	$cache = new datacache;
+
 	$cache->update_version();
 	$cache->update_attachtypes();
 	$cache->update_smilies();
