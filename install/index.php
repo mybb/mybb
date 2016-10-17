@@ -1596,7 +1596,7 @@ function create_tables()
  */
 
 \$config['disallowed_remote_hosts'] = array(
-	'localhost'
+	'localhost',
 );
 
 /**
@@ -1611,7 +1611,10 @@ function create_tables()
  */
 
 \$config['disallowed_remote_addresses'] = array(
-	'127.0.0.1'
+	'127.0.0.1',
+	'10.0.0.0/8',
+	'172.16.0.0/12',
+	'192.168.0.0/16',
 );
 
 ";

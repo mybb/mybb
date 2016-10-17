@@ -4,6 +4,11 @@ location ~ /error.log
     deny all; 
 }
 
+# Note: You are able to rename the admin directory. If you've done that, you need to change it here too
+location /admin/backups {
+    deny all;
+}
+
 rewrite ^/forum-([0-9]+).html$ /forumdisplay.php?fid=$1 last;
 rewrite ^/forum-([0-9]+)-page-([0-9]+).html$ /forumdisplay.php?fid=$1&page=$2 last;
 rewrite ^/thread-([0-9]+).html$ /showthread.php?tid=$1 last;

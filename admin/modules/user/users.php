@@ -3665,7 +3665,8 @@ function build_users_view($view)
 	// Do we need to construct the pagination?
 	if($num_results > $view['perpage'])
 	{
-		$pagination = draw_admin_pagination($mybb->input['page'], $view['perpage'], $num_results, $view['url']."&amp;type={$view['view_type']}");
+		$view_type = htmlspecialchars_uni($view['view_type']);
+		$pagination = draw_admin_pagination($mybb->input['page'], $view['perpage'], $num_results, $view['url']."&amp;type={$view_type}");
 		$search_class = "float_right";
 		$search_style = "";
 	}

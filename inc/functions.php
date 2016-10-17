@@ -6785,11 +6785,24 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 		$addresses = gethostbynamel($url_components['host']);
 		if($addresses)
 		{
-			foreach($addresses as $address)
+			foreach($config['disallowed_remote_addresses'] as $disallowed_address)
 			{
-				if(in_array($address, $config['disallowed_remote_addresses']))
+				$ip_range = fetch_ip_range($disallowed_address);
+				foreach($addresses as $address)
 				{
-					return false;
+					$packed_address = my_inet_pton($address);
+
+					if(is_array($ip_range))
+					{
+						if(strcmp($ip_range[0], $packed_address) <= 0 && strcmp($ip_range[1], $packed_address) >= 0)
+						{
+							return false;
+						}
+					}
+					elseif($address == $disallowed_address)
+					{
+						return false;
+					}
 				}
 			}
 		}

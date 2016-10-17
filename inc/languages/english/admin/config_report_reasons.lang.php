@@ -21,8 +21,6 @@ $l['no_report_reasons'] = "There are no report reasons on your forum at this tim
 
 $l['reason_title'] = "Title";
 $l['reason_title_desc'] = "Enter the title of the reason for reporting the content.";
-$l['answers'] = "Answer(s)";
-$l['answers_desc'] = "Enter the answer(s) to the question above. Please enter each answer on a separate line.";
 $l['requires_extra'] = "Require An Extra Comment?";
 $l['requires_extra_desc'] = "Require the user to enter an additional comment when this reason is selected?";
 $l['save_reason'] = "Save Reason";
