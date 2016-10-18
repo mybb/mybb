@@ -6288,7 +6288,7 @@ if(use_xmlhttprequest == "1")
 						<td class="{$trow}" align="center"><a href="modcp.php?action=delete_announcement&amp;aid={$aid}">{$lang->delete}</a></td>
 					</tr>]]></template>
 		<template name="modcp_announcements_day" version="1800"><![CDATA[<option value="{$day}"{$selected}">{$day}</option>]]></template>
-		<template name="modcp_announcements_delete" version="1800"><![CDATA[<html>
+		<template name="modcp_announcements_delete" version="1809"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->delete_announcement}</title>
 {$headerinclude}
@@ -6317,7 +6317,6 @@ if(use_xmlhttprequest == "1")
 				</td>
 			</tr>
 		</table>
-	</form>
 	{$footer}
 </body>
 </html>]]></template>
