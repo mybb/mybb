@@ -264,7 +264,7 @@ if($mybb->input['action'] == "delete")
 			'reasonid' => 1,
 			'reason' => $db->escape_string($reason['title'])
 		);
-		$db->update_query("reports", $updated_report, "reasonid='{$reason['rid']}'");
+		$db->update_query("reportedcontent", $updated_report, "reasonid='{$reason['rid']}'");
 
 		$db->delete_query("reportreasons", "rid='{$reason['rid']}'");
 
@@ -278,7 +278,7 @@ if($mybb->input['action'] == "delete")
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?module=config-report_reasons&amp;action=delete&amp;qid={$question['qid']}", $lang->confirm_reason_deletion);
+		$page->output_confirm_action("index.php?module=config-report_reasons&amp;action=delete&amp;rid={$reason['rid']}", $lang->confirm_reason_deletion);
 	}
 }
 
