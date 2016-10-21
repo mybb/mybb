@@ -6287,7 +6287,7 @@ if(use_xmlhttprequest == "1")
 						<td class="{$trow}" align="center"><a href="modcp.php?action=edit_announcement&amp;aid={$aid}">{$lang->edit}</a></td>
 						<td class="{$trow}" align="center"><a href="modcp.php?action=delete_announcement&amp;aid={$aid}">{$lang->delete}</a></td>
 					</tr>]]></template>
-		<template name="modcp_announcements_day" version="1800"><![CDATA[<option value="{$day}"{$selected}">{$day}</option>]]></template>
+		<template name="modcp_announcements_day" version="1809"><![CDATA[<option value="{$day}"{$selected}>{$day}</option>]]></template>
 		<template name="modcp_announcements_delete" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->delete_announcement}</title>
@@ -8093,7 +8093,7 @@ if(use_xmlhttprequest == "1")
 <option value="10" {$datemonth['10']}>{$lang->october}</option>
 <option value="11" {$datemonth['11']}>{$lang->november}</option>
 <option value="12" {$datemonth['12']}>{$lang->december}</option>]]></template>
-		<template name="moderation_delayedmoderation_date_day" version="1800"><![CDATA[<option value="{$day}"{$selected}">{$day}</option>]]></template>
+		<template name="moderation_delayedmoderation_date_day" version="1809"><![CDATA[<option value="{$day}"{$selected}>{$day}</option>]]></template>
 		<template name="moderation_delayedmoderation_custommodtool" version="1600"><![CDATA[<dt><input type="radio" name="type" value="modtool_{$tool['tid']}" {$checked} id="type_modtool_{$tool['tid']}" onclick="toggleType();" /> <label for="type_modtool_{$tool['tid']}"><strong>{$tool['name']}</strong> <small>({$lang->custom})</small></label></dt>]]></template>
 		<template name="moderation_delayedmoderation_merge" version="1600"><![CDATA[<dt><input type="radio" name="type" value="merge" {$type_selected['merge']} id="type_merge" onclick="toggleType();" /> <label for="type_merge"><strong>{$lang->merge_threads}</strong></label></dt>
 <dd style="margin-top: 4px; width: 100%;" id="type_merge_expanded">
