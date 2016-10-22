@@ -76,7 +76,7 @@ if(!$mybb->input['action'])
 				continue;
 			}
 
-			if(!is_dir(MYBB_ROOT."install/") && substr($parts[1], 0, 9) == "./install")
+			if(!is_dir(MYBB_ROOT."install/") && substr($parts[1], 0, 10) == "./install/")
 			{
 				continue;
 			}
