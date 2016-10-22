@@ -71,6 +71,16 @@ if(!$mybb->input['action'])
 				}
 			}
 
+			if(!file_exists(MYBB_ROOT."inc/plugins/hello.php") && $parts[1] == "./inc/plugins/hello.php")
+			{
+				continue;
+			}
+
+			if(!is_dir(MYBB_ROOT."install/") && substr($parts[1], 0, 10) == "./install/")
+			{
+				continue;
+			}
+
 			$checksums[trim($parts[1])][] = $parts[0];
 		}
 
