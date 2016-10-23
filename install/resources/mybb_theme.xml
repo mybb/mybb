@@ -10153,7 +10153,7 @@ if(use_xmlhttprequest == "1")
 	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 		<thead>
 			<tr>
-				<td class="thead" colspan="2">
+				<td class="thead{$collapsedthead['quickreply']}" colspan="2">
 					<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['quickreply']}.png" id="quickreply_img" class="expander" alt="[-]" title="[-]" /></div>
 					<div><strong>{$lang->quick_reply}</strong></div>
 				</td>
@@ -11520,7 +11520,7 @@ if(use_xmlhttprequest == "1")
 	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 		<thead>
 			<tr>
-				<td class="thead" colspan="2">
+				<td class="thead{$collapsedthead['quickreply']}" colspan="2">
 					<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['quickreply']}.png" id="quickreply_img" class="expander" alt="[-]" title="[-]" /></div>
 					<div><strong>{$lang->quick_reply}</strong></div>
 				</td>
