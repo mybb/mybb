@@ -386,7 +386,7 @@ function usercp_menu()
 	$lang->load("usercpnav");
 
 	// Add the default items as plugins with separated priorities of 10
-	if($mybb->settings['enablepms'] != 0)
+	if($mybb->settings['enablepms'] != 0 && $mybb->usergroup['canusepms'] == 1)
 	{
 		$plugins->add_hook("usercp_menu", "usercp_menu_messenger", 10);
 	}
