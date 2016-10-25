@@ -517,6 +517,16 @@ function get_admin_log_action($logitem)
 				$lang_string .= '_group';
 			}
 			break;
+		case 'admin_log_user_awaiting_activation_activate':
+			if($logitem['data'][0] == 'deleted')
+			{
+				$lang_string .= '_deleted';
+			}
+			else
+			{
+				$lang_string .= '_activated';
+			}
+			break;
 		case 'admin_log_user_banning_': // banning
 			if($logitem['data'][2] == 0)
 			{
