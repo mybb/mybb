@@ -1248,7 +1248,7 @@ if($mybb->input['action'] == "change")
 						{
 							if($opt[0] != 'step' || $opt[1] != 'any')
 							{
-								$opt[1] = (int)$opt[1];
+								$opt[1] = (float)$opt[1];
 							}
 							$field_options[$opt[0]] = $opt[1];
 						}
