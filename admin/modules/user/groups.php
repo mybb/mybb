@@ -64,8 +64,8 @@ $usergroup_permissions = array(
 	"candeletereputations" => 1,
 	"reputationpower" => 1,
 	"maxreputationsday" => 5,
-	"maxreputationsperuser" => 5,
-	"maxreputationsperthread" => 5,
+	"maxreputationsperuser" => 0,
+	"maxreputationsperthread" => 0,
 	"candisplaygroup" => 0,
 	"attachquota" => 5000,
 	"cancustomtitle" => 0,
@@ -283,7 +283,7 @@ if($mybb->input['action'] == "join_requests")
 	while($request = $db->fetch_array($query))
 	{
 		$table->construct_cell($form->generate_check_box("users[]", $request['uid'], ""));
-		$table->construct_cell("<strong>".build_profile_link($request['username'], $request['uid'], "_blank")."</strong>");
+		$table->construct_cell("<strong>".build_profile_link(htmlspecialchars_uni($request['username']), $request['uid'], "_blank")."</strong>");
 		$table->construct_cell(htmlspecialchars_uni($request['reason']));
 		$table->construct_cell(my_date('relative', $request['dateline']), array('class' => 'align_center'));
 
@@ -364,9 +364,10 @@ if($mybb->input['action'] == "add_leader" && $mybb->request_method == "post")
 		$cache->update_groupleaders();
 
 		// Log admin action
-		log_admin_action($user['uid'], $user['username'], $group['gid'], htmlspecialchars_uni($group['title']));
+		log_admin_action($user['uid'], htmlspecialchars_uni($user['username']), $group['gid'], htmlspecialchars_uni($group['title']));
 
-		flash_message("{$user['username']} ".$lang->success_user_made_leader, 'success');
+		$username = htmlspecialchars_uni($user['username']);
+		flash_message("{$username} ".$lang->success_user_made_leader, 'success');
 		admin_redirect("index.php?module=user-groups&action=leaders&gid={$group['gid']}");
 	}
 	else
@@ -481,7 +482,7 @@ if($mybb->input['action'] == "leaders")
 	}
 
 	$form_container = new FormContainer($lang->add_group_leader.' '.htmlspecialchars_uni($group['title']));
-	$form_container->output_row($lang->username." <em>*</em>", "", $form->generate_text_box('username', $mybb->input['username'], array('id' => 'username')), 'username');
+	$form_container->output_row($lang->username." <em>*</em>", "", $form->generate_text_box('username', htmlspecialchars_uni($mybb->get_input('username')), array('id' => 'username')), 'username');
 	$form_container->output_row($lang->can_manage_group_members, $lang->can_manage_group_members_desc, $form->generate_yes_no_radio('canmanagemembers', $mybb->input['canmanagemembers']));
 	$form_container->output_row($lang->can_manage_group_join_requests, $lang->can_manage_group_join_requests_desc, $form->generate_yes_no_radio('canmanagerequests', $mybb->input['canmanagerequests']));
 	$form_container->output_row($lang->can_invite_group_members, $lang->can_invite_group_members_desc, $form->generate_yes_no_radio('caninvitemembers', $mybb->input['caninvitemembers']));
@@ -496,8 +497,7 @@ if($mybb->input['action'] == "leaders")
 	<!--
 	$("#username").select2({
 		placeholder: "'.$lang->search_for_a_user.'",
-		minimumInputLength: 3,
-		maximumSelectionSize: 3,
+		minimumInputLength: 2,
 		multiple: false,
 		ajax: { // instead of writing the function to execute the request we use Select2\'s convenient helper
 			url: "../xmlhttp.php?action=get_users",
@@ -572,7 +572,7 @@ if($mybb->input['action'] == "delete_leader")
 		$cache->update_groupleaders();
 
 		// Log admin action
-		log_admin_action($leader['uid'], $leader['username'], $group['gid'], htmlspecialchars_uni($group['title']));
+		log_admin_action($leader['uid'], htmlspecialchars_uni($leader['username']), $group['gid'], htmlspecialchars_uni($group['title']));
 
 		flash_message($lang->success_group_leader_deleted, 'success');
 		admin_redirect("index.php?module=user-groups&action=leaders&gid={$group['gid']}");
@@ -619,7 +619,7 @@ if($mybb->input['action'] == "edit_leader")
 		$cache->update_groupleaders();
 
 		// Log admin action
-		log_admin_action($leader['uid'], $leader['username'], $group['gid'], htmlspecialchars_uni($group['title']));
+		log_admin_action($leader['uid'], htmlspecialchars_uni($leader['username']), $group['gid'], htmlspecialchars_uni($group['title']));
 
 		flash_message($lang->success_group_leader_updated, 'success');
 		admin_redirect("index.php?module=user-groups&action=leaders&gid={$group['gid']}");
@@ -631,6 +631,7 @@ if($mybb->input['action'] == "edit_leader")
 	}
 
 	$page->add_breadcrumb_item($lang->group_leaders_for.' '.htmlspecialchars_uni($group['title']), "index.php?module=user-groups&action=leaders&gid={$group['gid']}");
+	$leader['username'] = htmlspecialchars_uni($leader['username']);
 	$page->add_breadcrumb_item($lang->edit_leader." {$leader['username']}");
 
 	$page->output_header($lang->edit_group_leader);
@@ -1148,6 +1149,7 @@ if($mybb->input['action'] == "edit")
 		$form->generate_check_box("candeletereputations", 1, $lang->can_delete_own_reputation, array("checked" => $mybb->input['candeletereputations'])),
 		"{$lang->points_to_award_take}<br /><small class=\"input\">{$lang->points_to_award_take_desc}</small><br />".$form->generate_numeric_field('reputationpower', $mybb->input['reputationpower'], array('id' => 'reputationpower', 'class' => 'field50', 'min' => 0)),
 		"{$lang->max_reputations_perthread}<br /><small class=\"input\">{$lang->max_reputations_perthread_desc}</small><br />".$form->generate_numeric_field('maxreputationsperthread', $mybb->input['maxreputationsperthread'], array('id' => 'maxreputationsperthread', 'class' => 'field50', 'min' => 0)),
+		"{$lang->max_reputations_peruser}<br /><small class=\"input\">{$lang->max_reputations_peruser_desc}</small><br />".$form->generate_numeric_field('maxreputationsperuser', $mybb->input['maxreputationsperuser'], array('id' => 'maxreputationsperuser', 'class' => 'field50', 'min' => 0)),
 		"{$lang->max_reputations_daily}<br /><small class=\"input\">{$lang->max_reputations_daily_desc}</small><br />".$form->generate_numeric_field('maxreputationsday', $mybb->input['maxreputationsday'], array('id' => 'maxreputationsday', 'class' => 'field50', 'min' => 0))
 	);
 	$form_container->output_row($lang->reputation_system, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $reputation_options)."</div>");
@@ -1441,7 +1443,7 @@ if(!$mybb->input['action'])
 	");
 	while($leader = $db->fetch_array($query))
 	{
-		$leaders[$leader['gid']][] = build_profile_link($leader['username'], $leader['uid'], "_blank");
+		$leaders[$leader['gid']][] = build_profile_link(htmlspecialchars_uni($leader['username']), $leader['uid'], "_blank");
 	}
 
 	$form_container = new FormContainer($lang->user_groups);

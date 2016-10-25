@@ -152,7 +152,8 @@ function build_mini_calendar($calendar, $month, $year, &$events_cache)
 			}
 			if($link_to_day)
 			{
-				$day_link = "<a href=\"".get_calendar_link($calendar['cid'], $calendar_year, $calendar_month, $day)."\">{$day}</a>";
+				$calendar['link'] = get_calendar_link($calendar['cid'], $calendar_year, $calendar_month, $day);
+				eval("\$day_link = \"".$templates->get("calendar_mini_weekrow_day_link")."\";");
 			}
 			else
 			{
@@ -429,9 +430,9 @@ function get_events($calendar, $start, $end, $unapproved=0, $private=1)
 {
 	global $db, $mybb;
 
-	// We take in to account timezones here - we add/subtract 12 hours from our GMT time ranges
+	// We take in to account timezones here - we either add 14 hours or subtract 12 hours from our GMT time ranges
 	$start -= 12*3600;
-	$end += 12*3600;
+	$end += 14*3600;
 
 	$visible_where = '';
 	if($unapproved != 1)

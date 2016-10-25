@@ -39,7 +39,7 @@ if($mybb->input['action'] == "version_check")
 	);
 
 	require_once MYBB_ROOT."inc/class_xml.php";
-	$contents = fetch_remote_file("http://www.mybb.com/version_check.php");
+	$contents = fetch_remote_file("https://mybb.com/version_check.php");
 
 	if(!$contents)
 	{
@@ -264,9 +264,13 @@ elseif(!$mybb->input['action'])
 	$query = $db->simple_select("reportedcontent", "COUNT(*) AS reported_posts", "type = 'post' OR type = ''");
 	$reported_posts = my_number_format($db->fetch_field($query, "reported_posts"));
 
-	// Get the number of reported posts that haven't been marked as read yet
-	$query = $db->simple_select("reportedcontent", "COUNT(*) AS new_reported_posts", "reportstatus='0' AND (type = 'post' OR type = '')");
-	$new_reported_posts = my_number_format($db->fetch_field($query, "new_reported_posts"));
+	// If report medium is MCP...
+	if($mybb->settings['reportmethod'] == "db")
+	{
+		// Get the number of reported posts that haven't been marked as read yet
+		$query = $db->simple_select("reportedcontent", "COUNT(*) AS new_reported_posts", "reportstatus='0' AND (type = 'post' OR type = '')");
+		$new_reported_posts = my_number_format($db->fetch_field($query, "new_reported_posts"));
+	}
 
 	// Get the number and total file size of attachments
 	$query = $db->simple_select("attachments", "COUNT(*) AS numattachs, SUM(filesize) as spaceused", "visible='1' AND pid > '0'");
@@ -291,7 +295,7 @@ elseif(!$mybb->input['action'])
 	// If the update check contains information about a newer version, show an alert
 	if(isset($update_check['latest_version_code']) && $update_check['latest_version_code'] > $mybb->version_code)
 	{
-		$lang->new_version_available = $lang->sprintf($lang->new_version_available, "MyBB {$mybb->version}", "<a href=\"http://www.mybb.com/downloads\" target=\"_blank\">MyBB {$update_check['latest_version']}</a>");
+		$lang->new_version_available = $lang->sprintf($lang->new_version_available, "MyBB {$mybb->version}", "<a href=\"https://mybb.com/downloads\" target=\"_blank\">MyBB {$update_check['latest_version']}</a>");
 		$page->output_error("<p><em>{$lang->new_version_available}</em></p>");
 	}
 
@@ -312,7 +316,14 @@ elseif(!$mybb->input['action'])
 	$table->construct_cell("<strong>{$lang->php_version}</strong>", array('width' => '25%'));
 	$table->construct_cell(PHP_VERSION, array('width' => '25%'));
 	$table->construct_cell("<strong>{$lang->posts}</strong>", array('width' => '25%'));
-	$table->construct_cell("<strong>{$posts}</strong> {$lang->posts}<br /><strong>{$newposts}</strong> {$lang->new_today}<br /><a href=\"index.php?module=forum-moderation_queue&amp;type=posts\"><strong>{$unapproved_posts}</strong> {$lang->unapproved}</a><br /><strong>{$reported_posts}</strong> {$lang->reported_posts}<br /><strong>{$new_reported_posts}</strong> {$lang->unread_reports}", array('width' => '25%'));
+	if($mybb->settings['reportmethod'] == "db")
+	{
+		$table->construct_cell("<strong>{$posts}</strong> {$lang->posts}<br /><strong>{$newposts}</strong> {$lang->new_today}<br /><a href=\"index.php?module=forum-moderation_queue&amp;type=posts\"><strong>{$unapproved_posts}</strong> {$lang->unapproved}</a><br /><strong>{$reported_posts}</strong> {$lang->reported_posts}<br /><strong>{$new_reported_posts}</strong> {$lang->unread_reports}", array('width' => '25%'));
+	}
+	else
+	{
+		$table->construct_cell("<strong>{$posts}</strong> {$lang->posts}<br /><strong>{$newposts}</strong> {$lang->new_today}<br /><a href=\"index.php?module=forum-moderation_queue&amp;type=posts\"><strong>{$unapproved_posts}</strong> {$lang->unapproved}</a><br /><strong>{$reported_posts}</strong> {$lang->reported_posts}", array('width' => '25%'));
+	}
 	$table->construct_row();
 
 	$table->construct_cell("<strong>{$lang->sql_engine}</strong>", array('width' => '25%'));

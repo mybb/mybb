@@ -31,9 +31,10 @@ if(!@chdir($forumdir) && !empty($forumdir))
 	}
 }
 
-$templatelist = "portal,portal_welcome_membertext,portal_stats,portal_search,portal_whosonline_memberbit,portal_whosonline,portal_latestthreads_thread,portal_latestthreads,portal_announcement_numcomments_no,portal_announcement,portal_welcome";
-$templatelist .= ",portal_welcome_guesttext,postbit_attachments_thumbnails_thumbnail,postbit_attachments_images_image,postbit_attachments_attachment,postbit_attachments_thumbnails,postbit_attachments_images,postbit_attachments,portal_pms";
-$templatelist .= ",multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,portal_announcement_send_item,portal_announcement_icon,portal_announcement_avatar,portal_announcement_numcomments";
+$templatelist = "portal,portal_welcome_membertext,portal_stats,portal_search,portal_whosonline_memberbit,portal_whosonline,portal_latestthreads_thread,portal_latestthreads,portal_announcement_numcomments_no";
+$templatelist .= ",postbit_attachments_thumbnails_thumbnail,postbit_attachments_images_image,postbit_attachments_attachment,postbit_attachments_thumbnails,postbit_attachments_images,postbit_attachments";
+$templatelist .= ",multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,portal_announcement_send_item";
+$templatelist .= ",portal_stats_nobody,portal_announcement_avatar,portal_announcement_numcomments,portal_announcement_icon,portal_pms,portal_welcome,portal_announcement,portal_welcome_guesttext";
 
 require_once $change_dir."/global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -73,6 +74,8 @@ if($inactive)
 	$unviewwhere .= " AND fid NOT IN ($inactive)";
 	$tunviewwhere .= " AND t.fid NOT IN ($inactive)";
 }
+
+$mybb->user['username'] = htmlspecialchars_uni($mybb->user['username']);
 
 $welcome = '';
 // If user is known, welcome them
@@ -198,7 +201,7 @@ if($mybb->settings['portal_showstats'] != 0)
 	$stats['numusers'] = my_number_format($stats['numusers']);
 	if(!$stats['lastusername'])
 	{
-		$newestmember = "<strong>" . $lang->nobody . "</strong>";
+		eval("\$newestmember = \"".$templates->get("portal_stats_nobody")."\";");
 	}
 	else
 	{
@@ -283,7 +286,7 @@ if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] !
 
 				if(($user['invisible'] == 1 && ($mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])) || $user['invisible'] != 1)
 				{
-					$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
+					$user['username'] = format_name(htmlspecialchars_uni($user['username']), $user['usergroup'], $user['displaygroup']);
 					$user['profilelink'] = get_profile_link($user['uid']);
 					eval("\$onlinemembers .= \"".$templates->get("portal_whosonline_memberbit", 1, 0)."\";");
 					$comma = $lang->comma;
@@ -362,17 +365,18 @@ if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_sho
 		}
 
 		$lastpostdate = my_date('relative', $thread['lastpost']);
+		$lastposter = htmlspecialchars_uni($thread['lastposter']);
 		$thread['replies'] = my_number_format($thread['replies']);
 		$thread['views'] = my_number_format($thread['views']);
 
 		// Don't link to guest's profiles (they have no profile).
 		if($thread['lastposteruid'] == 0)
 		{
-			$lastposterlink = $thread['lastposter'];
+			$lastposterlink = $lastposter;
 		}
 		else
 		{
-			$lastposterlink = build_profile_link($thread['lastposter'], $thread['lastposteruid']);
+			$lastposterlink = build_profile_link($lastposter, $thread['lastposteruid']);
 		}
 		if(my_strlen($thread['subject']) > 25)
 		{

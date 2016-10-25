@@ -110,7 +110,7 @@ if($mybb->input['action'] == "view")
 
 	$page->output_header($lang->warning_details);
 
-	$user_link = build_profile_link($user['username'], $user['uid'], "_blank");
+	$user_link = build_profile_link(htmlspecialchars_uni($user['username']), $user['uid'], "_blank");
 
 	if(is_array($warn_errors))
 	{
@@ -142,7 +142,7 @@ if($mybb->input['action'] == "view")
 		$table->construct_row();
 	}
 
-	$issuedby = build_profile_link($warning['username'], $warning['issuedby'], "_blank");
+	$issuedby = build_profile_link(htmlspecialchars_uni($warning['username']), $warning['issuedby'], "_blank");
 	$notes = nl2br(htmlspecialchars_uni($warning['notes']));
 
 	$date_issued = my_date('relative', $warning['dateline']);
@@ -215,7 +215,7 @@ if($mybb->input['action'] == "view")
 	{
 		$date_revoked = my_date('relative', $warning['daterevoked']);
 		$revoked_user = get_user($warning['revokedby']);
-		$revoked_by = build_profile_link($revoked_user['username'], $revoked_user['uid'], "_blank");
+		$revoked_by = build_profile_link(htmlspecialchars_uni($revoked_user['username']), $revoked_user['uid'], "_blank");
 		$revoke_reason = nl2br(htmlspecialchars_uni($warning['revokereason']));
 
 		$revoke_table = new Table;
@@ -391,7 +391,7 @@ if(!$mybb->input['action'])
 		}
 
 		$trow = alt_trow();
-		$username = format_name($row['username'], $row['usergroup'], $row['displaygroup']);
+		$username = format_name(htmlspecialchars_uni($row['username']), $row['usergroup'], $row['displaygroup']);
 		if(!$row['uid'])
 		{
 			$username_link = $username;
@@ -400,7 +400,7 @@ if(!$mybb->input['action'])
 		{
 			$username_link = build_profile_link($username, $row['uid'], "_blank");
 		}
-		$mod_username = format_name($row['mod_username'], $row['mod_usergroup'], $row['mod_displaygroup']);
+		$mod_username = format_name(htmlspecialchars_uni($row['mod_username']), $row['mod_usergroup'], $row['mod_displaygroup']);
 		$mod_username_link = build_profile_link($mod_username, $row['mod_uid'], "_blank");
 		$issued_date = my_date('relative', $row['dateline']);
 		$revoked_text = '';

@@ -11,9 +11,9 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'warnings.php');
 
-$templatelist = "warnings,warnings_warn_post,warnings_active_header,warnings_expired_header,warnings_warning,warnings_warn_existing,warnings_warn_type,warnings_warn_custom,warnings_warn_pm";
-$templatelist .= ",warnings_view_post,warnings_view_user,warnings_view_revoke,warnings_view_revoked,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,smilieinsert,warnings_warn_type_result";
-$templatelist .= ",multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,warnings_no_warnings,codebuttons,warnings_warn,warnings_view,warnings_warn_pm_anonymous";
+$templatelist = "warnings,warnings_warn_post,warnings_active_header,warnings_expired_header,warnings_warning,warnings_warn_existing,warnings_warn_type,warnings_warn_custom,warnings_warn_pm,warnings_view";
+$templatelist .= ",warnings_view_post,warnings_view_user,warnings_view_revoke,warnings_view_revoked,warnings_warn_type_result,warnings_postlink,codebuttons,warnings_warn,warnings_warn_pm_anonymous";
+$templatelist .= ",multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,warnings_no_warnings";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_warnings.php";
@@ -161,7 +161,7 @@ if($mybb->input['action'] == "warn")
 		$given_today = $db->fetch_field($query, "given_today");
 		if($given_today >= $mybb->usergroup['maxwarningsday'])
 		{
-			error($lang->sprintf($lang->reached_max_warnings_day, $mybb->usergroup['maxwarningsday']));
+			error($lang->sprintf($lang->warnings_reached_max_warnings_day, $mybb->usergroup['maxwarningsday']));
 		}
 	}
 
@@ -173,12 +173,12 @@ if($mybb->input['action'] == "warn")
 
 	if($user['uid'] == $mybb->user['uid'])
 	{
-		error($lang->cannot_warn_self);
+		error($lang->warnings_error_cannot_warn_self);
 	}
 
 	if($user['warningpoints'] >= $mybb->settings['maxwarningpoints'])
 	{
-		error($lang->user_reached_max_warning);
+		error($lang->warnings_error_user_reached_max_warning);
 	}
 
 	$group_permissions = user_permissions($user['uid']);
@@ -207,7 +207,7 @@ if($mybb->input['action'] == "warn")
 
 		if(!$post || !$thread)
 		{
-			error($lang->error_invalid_post);
+			error($lang->warnings_error_invalid_post);
 		}
 
 		$forum_permissions = forum_permissions($thread['fid']);
@@ -249,6 +249,7 @@ if($mybb->input['action'] == "warn")
 			$first = false;
 
 			$post_link = "";
+			$warning['username'] = htmlspecialchars_uni($warning['username']);
 			$issuedby = build_profile_link($warning['username'], $warning['issuedby']);
 			$date_issued = my_date('relative', $warning['dateline']);
 			if($warning['type_title'])
@@ -304,6 +305,7 @@ if($mybb->input['action'] == "warn")
 	$send_pm_checked = '';
 
 	// Coming here from failed do_warn?
+	$user['username'] = htmlspecialchars_uni($user['username']);
 	if(!empty($warn_errors))
 	{
 		$notes = htmlspecialchars_uni($mybb->get_input('notes'));
@@ -344,6 +346,11 @@ if($mybb->input['action'] == "warn")
 	if($mybb->settings['maxwarningpoints'] < 1)
 	{
 		$mybb->settings['maxwarningpoints'] = 10;
+	}
+
+	if(!is_array($groupscache))
+	{
+		$groupscache = $cache->read("usergroups");
 	}
 
 	$current_level = round($user['warningpoints']/$mybb->settings['maxwarningpoints']*100);
@@ -579,6 +586,7 @@ if($mybb->input['action'] == "view")
 	{
 		$user['username'] = $lang->guest;
 	}
+	$user['username'] = htmlspecialchars_uni($user['username']);
 
 	$group_permissions = user_permissions($user['uid']);
 	if($group_permissions['canreceivewarnings'] != 1)
@@ -616,6 +624,7 @@ if($mybb->input['action'] == "view")
 		eval("\$warning_info = \"".$templates->get("warnings_view_user")."\";");
 	}
 
+	$warning['username'] = htmlspecialchars_uni($warning['username']);
 	$issuedby = build_profile_link($warning['username'], $warning['issuedby']);
 	$notes = nl2br(htmlspecialchars_uni($warning['notes']));
 
@@ -678,6 +687,7 @@ if($mybb->input['action'] == "view")
 		{
 			$revoked_user['username'] = $lang->guest;
 		}
+		$revoked_user['username'] = htmlspecialchars_uni($revoked_user['username']);
 		$revoked_by = build_profile_link($revoked_user['username'], $revoked_user['uid']);
 		$revoke_reason = nl2br(htmlspecialchars_uni($warning['revokereason']));
 		eval("\$revoke = \"".$templates->get("warnings_view_revoked")."\";");
@@ -709,6 +719,7 @@ if(!$mybb->input['action'])
 		error($lang->error_cant_warn_group);
 	}
 
+	$user['username'] = htmlspecialchars_uni($user['username']);
 	$lang->nav_profile = $lang->sprintf($lang->nav_profile, $user['username']);
 	add_breadcrumb($lang->nav_profile, get_profile_link($user['uid']));
 	add_breadcrumb($lang->nav_warning_log);
@@ -795,13 +806,16 @@ if(!$mybb->input['action'])
 		}
 		$last_expired = $warning['expired'];
 
-		$post_link = "";
+		$post_link = '';
 		if($warning['post_subject'])
 		{
 			$warning['post_subject'] = $parser->parse_badwords($warning['post_subject']);
 			$warning['post_subject'] = htmlspecialchars_uni($warning['post_subject']);
-			$post_link = "<br /><small>{$lang->warning_for_post} <a href=\"".get_post_link($warning['pid'])."#pid{$warning['pid']}\">{$warning['post_subject']}</a></small>";
+			$warning['post_link'] = get_post_link($warning['pid']);
+			eval("\$post_link = \"".$templates->get("warnings_postlink")."\";");
 		}
+
+		$warning['username'] = htmlspecialchars_uni($warning['username']);
 		$issuedby = build_profile_link($warning['username'], $warning['issuedby']);
 		$date_issued = my_date('relative', $warning['dateline']);
 		if($warning['type_title'])

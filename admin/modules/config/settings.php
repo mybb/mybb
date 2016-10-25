@@ -441,7 +441,7 @@ if($mybb->input['action'] == "add")
 	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1804"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
-			var peeker = new Peeker($("#type"), $("#row_extra"), /select|radio|checkbox|php/, false);
+			new Peeker($("#type"), $("#row_extra"), /^(select|radio|checkbox|php)$/, false);
 		});
 		// Add a star to the extra row since the "extra" is required if the box is shown
 		add_star("row_extra");
@@ -659,7 +659,7 @@ if($mybb->input['action'] == "edit")
 	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1804"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
-			var peeker = new Peeker($("#type"), $("#row_extra"), /select|radio|checkbox|php/, false);
+			new Peeker($("#type"), $("#row_extra"), /^(select|radio|checkbox|php)$/, false);
 		});
 		// Add a star to the extra row since the "extra" is required if the box is shown
 		add_star("row_extra");
@@ -882,56 +882,112 @@ if($mybb->input['action'] == "change")
 			admin_redirect("index.php?module=config-settings");
 		}
 
-		// If we are changing the hidden captcha, make sure it doesn't conflict with another registration field
-		if(isset($mybb->input['upsetting']['hiddencaptchaimagefield']))
+		// Not allowed to be hidden captcha fields
+		$disallowed_fields = array(
+			'username',
+			'password',
+			'password2',
+			'email',
+			'email2',
+			'imagestring',
+			'imagehash',
+			'answer',
+			'question_id',
+			'allownotices',
+			'hideemail',
+			'receivepms',
+			'pmnotice',
+			'emailpmnotify',
+			'invisible',
+			'subscriptionmethod',
+			'timezoneoffset',
+			'dstcorrection',
+			'language',
+			'step',
+			'action',
+			'agree',
+			'regtime',
+			'regcheck1',
+			'regcheck2',
+			'regsubmit'
+		);
+
+		$is_current_hiddencaptcha_wrong = in_array($mybb->settings['hiddencaptchaimagefield'], $disallowed_fields);
+		if(in_array($mybb->input['upsetting']['hiddencaptchaimagefield'], $disallowed_fields) || $is_current_hiddencaptcha_wrong)
 		{
-			// Not allowed to be hidden captcha fields
-			$disallowed_fields = array(
-				'username',
-				'password',
-				'password2',
-				'email',
-				'email2',
-				'imagestring',
-				'allownotices',
-				'hideemail',
-				'receivepms',
-				'pmnotice',
-				'emailpmnotify',
-				'invisible',
-				'subscriptionmethod',
-				'timezoneoffset',
-				'dstcorrection',
-				'language',
-				'step',
-				'action',
-				'regsubmit'
-			);
-
-			if(in_array($mybb->input['upsetting']['hiddencaptchaimagefield'], $disallowed_fields))
+			if(isset($mybb->input['upsetting']['hiddencaptchaimagefield']) && $mybb->input['upsetting']['hiddencaptchaimagefield'] != $mybb->settings['hiddencaptchaimagefield'] && !$is_current_hiddencaptcha_wrong)
 			{
-				// Whoopsies, you can't do that!
-				$error_message = $lang->sprintf($lang->error_hidden_captcha_conflict, htmlspecialchars_uni($mybb->input['upsetting']['hiddencaptchaimagefield']));
+				$wrong_value = $mybb->input['upsetting']['hiddencaptchaimagefield'];
+				$mybb->input['upsetting']['hiddencaptchaimagefield'] = $mybb->settings['hiddencaptchaimagefield'];
+			}
+			else
+			{
+				$wrong_value = $mybb->settings['hiddencaptchaimagefield'];
+				$mybb->input['upsetting']['hiddencaptchaimagefield'] = 'email3';
+			}
 
-				flash_message($error_message, 'error');
-				admin_redirect("index.php?module=config-settings&action=change&gid=9");
+			$lang->success_settings_updated .= $lang->sprintf($lang->success_settings_updated_hiddencaptchaimage, htmlspecialchars_uni($mybb->input['upsetting']['hiddencaptchaimagefield']), htmlspecialchars_uni($wrong_value));
+		}
+
+		// Have we opted for a reCAPTCHA and not set a public/private key?
+		if((isset($mybb->input['upsetting']['captchaimage']) && in_array($mybb->input['upsetting']['captchaimage'], array(2, 4)) && (!$mybb->input['upsetting']['captchaprivatekey'] || !$mybb->input['upsetting']['captchapublickey']))
+		|| (in_array($mybb->settings['captchaimage'], array(2, 4)) && (!$mybb->settings['captchaprivatekey'] || !$mybb->settings['captchapublickey'])))
+		{
+			$mybb->input['upsetting']['captchaimage'] = 1;
+			$lang->success_settings_updated .= $lang->success_settings_updated_captchaimage;
+		}
+
+		// Get settings which optionscode is a forum/group select, checkbox or numeric
+		// We cannot rely on user input to decide this
+		$checkbox_settings = $forum_group_select = array();
+		$query = $db->simple_select('settings', 'name, optionscode', "optionscode IN('forumselect', 'groupselect', 'numeric') OR optionscode LIKE 'checkbox%'");
+
+		while($multisetting = $db->fetch_array($query))
+		{
+			if(substr($multisetting['optionscode'], 0, 8) == 'checkbox')
+			{
+				$checkbox_settings[] = $multisetting['name'];
+
+				// All checkboxes deselected = no $mybb->input['upsetting'] for them, we need to initialize it manually then, but only on pages where the setting is shown
+				if(empty($mybb->input['upsetting'][$multisetting['name']]) && isset($mybb->input["isvisible_{$multisetting['name']}"]))
+				{
+					$mybb->input['upsetting'][$multisetting['name']] = array();
+				}
+			}
+			elseif($multisetting['optionscode'] == 'numeric')
+			{
+				if(isset($mybb->input['upsetting'][$multisetting['name']]))
+				{
+					$mybb->input['upsetting'][$multisetting['name']] = (int)$mybb->input['upsetting'][$multisetting['name']];
+				}
+			}
+			else
+			{
+				$forum_group_select[] = $multisetting['name'];
 			}
 		}
 
-		// Get settings which optionscode is a forum/group select
-		// We cannot rely on user input to decide this
-		$forum_group_select = array();
-		$query = $db->simple_select('settings', 'name', 'optionscode IN (\'forumselect\', \'groupselect\')');
-		while($name = $db->fetch_field($query, 'name'))
+		// Administrator is changing the login method.
+		if($mybb->settings['username_method'] == 1 || $mybb->settings['username_method'] == 2 || $mybb->input['upsetting']['username_method'] == 1 || $mybb->input['upsetting']['username_method'] == 2)
 		{
-			$forum_group_select[] = $name;
+			$query = $db->simple_select('users', 'email, COUNT(email) AS duplicates', "email!=''", array('group_by' => 'email HAVING duplicates>1'));
+			if($db->num_rows($query))
+			{
+				$mybb->input['upsetting']['username_method'] = 0;
+				$lang->success_settings_updated .= $lang->success_settings_updated_username_method;
+			}
+			else
+			{
+				$mybb->input['upsetting']['allowmultipleemails'] = 0;
+				$lang->success_settings_updated .= $lang->success_settings_updated_allowmultipleemails;
+			}
 		}
 
 		if(is_array($mybb->input['upsetting']))
 		{
 			foreach($mybb->input['upsetting'] as $name => $value)
 			{
-				if(!empty($forum_group_select) && in_array($name, $forum_group_select))
+				if($forum_group_select && in_array($name, $forum_group_select))
 				{
 					if($value == 'all')
 					{
@@ -947,7 +1003,7 @@ if($mybb->input['action'] == "change")
 							}
 							unset($val);
 
-							$value = implode(',', (array)$mybb->input['select'][$name]);
+							$value = implode(',', $mybb->input['select'][$name]);
 						}
 						else
 						{
@@ -959,9 +1015,17 @@ if($mybb->input['action'] == "change")
 						$value = '';
 					}
 				}
+				elseif($checkbox_settings && in_array($name, $checkbox_settings))
+				{
+					$value = '';
 
-				$value = $db->escape_string($value);
-				$db->update_query("settings", array('value' => $value), "name='".$db->escape_string($name)."'");
+					if(is_array($mybb->input['upsetting'][$name]))
+					{
+						$value = implode(',', $mybb->input['upsetting'][$name]);
+					}
+				}
+
+				$db->update_query("settings", array('value' => $db->escape_string($value)), "name='".$db->escape_string($name)."'");
 			}
 		}
 
@@ -981,44 +1045,31 @@ if($mybb->input['action'] == "change")
 		// If the delayedthreadviews setting was changed, enable or disable the tasks for it.
 		if(isset($mybb->input['upsetting']['delayedthreadviews']) && $mybb->settings['delayedthreadviews'] != $mybb->input['upsetting']['delayedthreadviews'])
 		{
-			if($mybb->input['upsetting']['delayedthreadviews'] == 0)
-			{
-				$updated_task = array(
-					"enabled" => 0
-				);
-			}
-			else
-			{
-				$updated_task = array(
-					"enabled" => 1
-				);
-			}
-			$db->update_query("tasks", $updated_task, "file='threadviews'");
+			$db->update_query("tasks", array('enabled' => (int)$mybb->input['upsetting']['delayedthreadviews']), "file='threadviews'");
 		}
 
 		// Have we changed our cookie prefix? If so, update our adminsid so we're not logged out
-		if($mybb->input['upsetting']['cookieprefix'] && $mybb->input['upsetting']['cookieprefix'] != $mybb->settings['cookieprefix'])
+		if(isset($mybb->input['upsetting']['cookieprefix']) && $mybb->input['upsetting']['cookieprefix'] != $mybb->settings['cookieprefix'])
 		{
 			my_unsetcookie("adminsid");
 			$mybb->settings['cookieprefix'] = $mybb->input['upsetting']['cookieprefix'];
 			my_setcookie("adminsid", $admin_session['sid'], '', true);
 		}
 
-		// Have we opted for a reCAPTCHA and not set a public/private key?
-		if($mybb->input['upsetting']['captchaimage'] == 2 && !$mybb->input['upsetting']['captchaprivatekey'] && !$mybb->input['upsetting']['captchapublickey'])
+		if(isset($mybb->input['upsetting']['statstopreferrer']) && $mybb->input['upsetting']['statstopreferrer'] != $mybb->settings['statstopreferrer'])
 		{
-			$db->update_query("settings", array("value" => 1), "name = 'captchaimage'");
+			$cache->update_statistics();
+		}
+
+		if(isset($mybb->input['upsetting']['statslimit']) && $mybb->input['upsetting']['statslimit'] != $mybb->settings['statstopreferrer'])
+		{
+			$cache->update_most_replied_threads();
+			$cache->update_most_viewed_threads();
 		}
 
 		rebuild_settings();
 
 		$plugins->run_hooks("admin_config_settings_change_commit");
-
-		// If we have changed our report reasons recache them
-		if(isset($mybb->input['upsetting']['reportreasons']))
-		{
-			$cache->update_reportedposts();
-		}
 
 		// Log admin action
 		log_admin_action();
@@ -1360,7 +1411,14 @@ if($mybb->input['action'] == "change")
 			}
 			else
 			{
-				for($i=0; $i < count($type); $i++)
+				$typecount = count($type);
+
+				if($type[0] == 'checkbox')
+				{
+					$multivalue = explode(',', $setting['value']);
+				}
+
+				for($i = 0; $i < $typecount; $i++)
 				{
 					$optionsexp = explode("=", $type[$i]);
 					if(!isset($optionsexp[1]))
@@ -1390,16 +1448,17 @@ if($mybb->input['action'] == "change")
 					}
 					else if($type[0] == "checkbox")
 					{
-						if($setting['value'] == $optionsexp[0])
+						if(in_array($optionsexp[0], $multivalue))
 						{
-							$option_list[$i] = $form->generate_check_box($element_name, $optionsexp[0], htmlspecialchars_uni($optionsexp[1]), array('id' => $element_id.'_'.$i, "checked" => 1, 'class' => $element_id));
+							$option_list[$i] = $form->generate_check_box("{$element_name}[]", $optionsexp[0], htmlspecialchars_uni($optionsexp[1]), array('id' => $element_id.'_'.$i, "checked" => 1, 'class' => $element_id));
 						}
 						else
 						{
-							$option_list[$i] = $form->generate_check_box($element_name, $optionsexp[0], htmlspecialchars_uni($optionsexp[1]), array('id' => $element_id.'_'.$i, 'class' => $element_id));
+							$option_list[$i] = $form->generate_check_box("{$element_name}[]", $optionsexp[0], htmlspecialchars_uni($optionsexp[1]), array('id' => $element_id.'_'.$i, 'class' => $element_id));
 						}
 					}
 				}
+
 				if($type[0] == "select")
 				{
 					$setting_code = $form->generate_select_box($element_name, $option_list, $setting['value'], array('id' => $element_id));
@@ -1407,9 +1466,15 @@ if($mybb->input['action'] == "change")
 				else
 				{
 					$setting_code = implode("<br />", $option_list);
+
+					if($type[0] == 'checkbox')
+					{
+						$setting_code .= $form->generate_hidden_field("isvisible_{$setting['name']}", 1);
+					}
 				}
 				$option_list = array();
 			}
+
 			// Do we have a custom language variable for this title or description?
 			$title_lang = "setting_".$setting['name'];
 			$desc_lang = $title_lang."_desc";
@@ -1606,7 +1671,7 @@ EOF;
 	echo '</div>';
 
 	echo '
-<script type="text/javascript" src="./jscripts/search.js"></script>
+<script type="text/javascript" src="./jscripts/search.js?ver=1808"></script>
 <script type="text/javascript">
 //<!--
 $(document).ready(function(){
@@ -1645,7 +1710,6 @@ function print_setting_peekers()
 		'new Peeker($("#setting_mail_handler"), $("#row_setting_smtp_host, #row_setting_smtp_port, #row_setting_smtp_user, #row_setting_smtp_pass, #row_setting_secure_smtp"), "smtp", false)',
 		'new Peeker($("#setting_mail_handler"), $("#row_setting_mail_parameters"), "mail", false)',
 		'new Peeker($("#setting_captchaimage"), $("#row_setting_captchapublickey, #row_setting_captchaprivatekey"), /(2|4)/, false)',
-		'new Peeker($("#setting_captchaimage"), $("#row_setting_ayahpublisherkey, #row_setting_ayahscoringkey"), 3, false)',
 		'new Peeker($(".setting_contact"), $("#row_setting_contact_guests, #row_setting_contact_badwords, #row_setting_contact_maxsubjectlength, #row_setting_contact_minmessagelength, #row_setting_contact_maxmessagelength"), 1, true)',
 		'new Peeker($(".setting_enablepruning"), $("#row_setting_enableprunebyposts, #row_setting_pruneunactived, #row_setting_prunethreads"), 1, true)',
 		'new Peeker($(".setting_enableprunebyposts"), $("#row_setting_prunepostcount, #row_setting_dayspruneregistered, #row_setting_prunepostcountall"), 1, true)',

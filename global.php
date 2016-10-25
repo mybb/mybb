@@ -54,7 +54,7 @@ $session = new session;
 $session->init();
 $mybb->session = &$session;
 
-$mybb->user['ismoderator'] = is_moderator('', '', $mybb->user['uid']);
+$mybb->user['ismoderator'] = is_moderator(0, '', $mybb->user['uid']);
 
 // Set our POST validation code here
 $mybb->post_code = generate_post_check();
@@ -363,7 +363,7 @@ foreach($stylesheet_scripts as $stylesheet_script)
 }
 unset($actions);
 
-if(!empty($theme_stylesheets))
+if(!empty($theme_stylesheets) && is_array($theme['disporder']))
 {
 	foreach($theme['disporder'] as $style_name => $order)
 	{
@@ -375,7 +375,7 @@ if(!empty($theme_stylesheets))
 }
 
 // Are we linking to a remote theme server?
-if(my_substr($theme['imgdir'], 0, 7) == 'http://' || my_substr($theme['imgdir'], 0, 8) == 'https://')
+if(my_validate_url($theme['imgdir']))
 {
 	// If a language directory for the current language exists within the theme - we use it
 	if(!empty($mybb->user['language']))
@@ -449,10 +449,12 @@ else
 	$templatelist = '';
 }
 
-$templatelist .= "headerinclude,header,footer,gobutton,htmldoctype,header_welcomeblock_member,header_welcomeblock_guest,header_welcomeblock_member_admin,global_pm_alert,global_unreadreports,error,footer_languageselect_option,footer_contactus";
-$templatelist .= ",global_pending_joinrequests,global_awaiting_activation,nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active,footer_languageselect,footer_themeselect,header_welcomeblock_member_moderator,redirect,header_menu_calendar,nav_dropdown,footer_themeselector,task_image";
-$templatelist .= ",global_boardclosed_warning,global_bannedwarning,error_inline,error_nopermission_loggedin,error_nopermission,debug_summary,header_quicksearch,header_menu_search,header_menu_portal,header_menu_memberlist,usercp_themeselector_option,smilie,global_board_offline_modal";
-$templatelist .= ",video_dailymotion_embed,video_facebook_embed,video_liveleak_embed,video_metacafe_embed,video_myspacetv_embed,video_veoh_embed,video_vimeo_embed,video_yahoo_embed,video_youtube_embed";
+$templatelist .= "headerinclude,header,footer,gobutton,htmldoctype,header_welcomeblock_member,header_welcomeblock_guest,header_welcomeblock_member_moderator,header_welcomeblock_member_admin,footer_languageselect_option";
+$templatelist .= ",global_pending_joinrequests,global_awaiting_activation,nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active,footer_languageselect,footer_themeselect,header_menu_calendar,global_unreadreports,smilie";
+$templatelist .= ",global_boardclosed_warning,global_bannedwarning,error_inline,error_nopermission_loggedin,error_nopermission,header_quicksearch,header_menu_search,header_menu_portal,header_menu_memberlist,redirect";
+$templatelist .= ",video_dailymotion_embed,video_facebook_embed,video_liveleak_embed,video_metacafe_embed,video_myspacetv_embed,video_veoh_embed,video_vimeo_embed,video_yahoo_embed,video_youtube_embed,global_dst_detection";
+$templatelist .= ",smilieinsert_row,smilieinsert_row_empty,smilieinsert,smilieinsert_getmore,smilieinsert_smilie,global_board_offline_modal,footer_themeselector,task_image,usercp_themeselector_option,debug_summary";
+$templatelist .= ",mycode_code,mycode_email,mycode_img,mycode_php,mycode_quote_post,mycode_size_int,mycode_url,global_no_permission_modal,global_boardclosed_reason,nav_dropdown,footer_contactus,global_pm_alert,error";
 $templates->cache($db->escape_string($templatelist));
 
 // Set the current date and time now
@@ -499,7 +501,7 @@ if($mybb->user['uid'] != 0)
 	}
 
 	// Format the welcome back message
-	$lang->welcome_back = $lang->sprintf($lang->welcome_back, build_profile_link($mybb->user['username'], $mybb->user['uid']), $lastvisit);
+	$lang->welcome_back = $lang->sprintf($lang->welcome_back, build_profile_link(htmlspecialchars_uni($mybb->user['username']), $mybb->user['uid']), $lastvisit);
 
 	// Tell the user their PM usage
 	$lang->welcome_pms_usage = $lang->sprintf($lang->welcome_pms_usage, my_number_format($mybb->user['pms_unread']), my_number_format($mybb->user['pms_total']));
@@ -589,7 +591,7 @@ if($mybb->user['uid'] != 0 && is_array($groupleaders) && array_key_exists($mybb-
 
 $unreadreports = '';
 // This user is a moderator, super moderator or administrator
-if($mybb->usergroup['cancp'] == 1 || ($mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanagereportedcontent'] == 1))
+if($mybb->settings['reportmethod'] == "db" && ($mybb->usergroup['cancp'] == 1 || ($mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanagereportedcontent'] == 1)))
 {
 	// Only worth checking if we are here because we have ACP permissions and the other condition fails
 	if($mybb->usergroup['cancp'] == 1 && !($mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanagereportedcontent'] == 1))
@@ -743,6 +745,7 @@ if(isset($mybb->user['pmnotice']) && $mybb->user['pmnotice'] == 2 && $mybb->user
 	}
 	else
 	{
+		$pm['fromusername'] = htmlspecialchars_uni($pm['fromusername']);
 		$user_text = build_profile_link($pm['fromusername'], $pm['fromuid']);
 	}
 
@@ -884,7 +887,7 @@ if($mybb->settings['showthemeselect'] != 0)
 $contact_us = '';
 if(($mybb->settings['contactlink'] == "contact.php" && $mybb->settings['contact'] == 1 && ($mybb->settings['contact_guests'] != 1 && $mybb->user['uid'] == 0 || $mybb->user['uid'] > 0)) || $mybb->settings['contactlink'] != "contact.php")
 {
-	if(my_substr($mybb->settings['contactlink'], 0, 1) != '/' && my_substr($mybb->settings['contactlink'], 0, 7) != 'http://' && my_substr($mybb->settings['contactlink'], 0, 8) != 'https://' && my_substr($mybb->settings['contactlink'], 0, 7) != 'mailto:')
+	if(!my_validate_url($mybb->settings['contactlink'], true) && my_substr($mybb->settings['contactlink'], 0, 7) != 'mailto:')
 	{
 		$mybb->settings['contactlink'] = $mybb->settings['bburl'].'/'.$mybb->settings['contactlink'];
 	}
@@ -896,8 +899,10 @@ if(($mybb->settings['contactlink'] == "contact.php" && $mybb->settings['contact'
 $auto_dst_detection = '';
 if($mybb->user['uid'] > 0 && $mybb->user['dstcorrection'] == 2)
 {
-	$auto_dst_detection = "<script type=\"text/javascript\">if(MyBB) { $([document, window]).bind(\"load\", function() { MyBB.detectDSTChange('".($mybb->user['timezone']+$mybb->user['dst'])."'); }); }</script>\n";
+	$timezone = $mybb->user['timezone'] + $mybb->user['dst'];
+	eval('$auto_dst_detection = "'.$templates->get('global_dst_detection').'";');
 }
+
 eval('$footer = "'.$templates->get('footer').'";');
 
 // Add our main parts to the navigation
@@ -940,7 +945,8 @@ if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['canviewboardclosed']
 		$mybb->settings['boardclosed_reason'] = $lang->boardclosed_reason;
 	}
 
-	$lang->error_boardclosed .= "<blockquote>{$mybb->settings['boardclosed_reason']}</blockquote>";
+	eval('$reason = "'.$templates->get('global_boardclosed_reason').'";');
+	$lang->error_boardclosed .= $reason;
 
 	if(!$mybb->get_input('modal'))
 	{
@@ -1008,6 +1014,8 @@ if(!$mybb->user['uid'] && $mybb->settings['usereferrals'] == 1 && (isset($mybb->
 	}
 }
 
+$output = '';
+$notallowed = false;
 if($mybb->usergroup['canview'] != 1)
 {
 	// Check pages allowable even when not allowed to view board
@@ -1018,19 +1026,33 @@ if($mybb->usergroup['canview'] != 1)
 			$allowable_actions = explode(',', ALLOWABLE_PAGE);
 			if(!in_array($mybb->get_input('action'), $allowable_actions))
 			{
-				error_no_permission();
+				$notallowed = true;
 			}
 
 			unset($allowable_actions);
 		}
 		else if(ALLOWABLE_PAGE !== 1)
 		{
-			error_no_permission();
+			$notallowed = true;
 		}
 	}
 	else
 	{
-		error_no_permission();
+		$notallowed = true;
+	}
+
+	if($notallowed == true)
+	{
+		if(!$mybb->get_input('modal'))
+		{
+			error_no_permission();
+		}
+		else
+		{
+			eval('$output = "'.$templates->get('global_no_permission_modal', 1, 0).'";');
+			echo($output);
+			exit;
+		}
 	}
 }
 

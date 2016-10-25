@@ -12,10 +12,10 @@ $langinfo['name'] = "English (American)";
 $langinfo['author'] = "MyBB Group";
 
 // The language authors website
-$langinfo['website'] = "http://www.mybb.com/";
+$langinfo['website'] = "https://mybb.com/";
 
 // Compatible version of MyBB
-$langinfo['version'] = "1806";
+$langinfo['version'] = "1808";
 
 // Sets if the translation includes the Admin CP (1 = yes, 0 = no)
 $langinfo['admin'] = 1;

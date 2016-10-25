@@ -112,7 +112,7 @@
 		<title>User Pruning</title>
 		<description><![CDATA[Automatically prunes users based on criteria set in the settings every day.]]></description>
 		<file>userpruning</file>
-		<minute>*</minute>
+		<minute>0</minute>
 		<hour>2</hour>
 		<day>*</day>
 		<weekday>*</weekday>

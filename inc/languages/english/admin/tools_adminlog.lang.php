@@ -43,6 +43,7 @@ $l['note_logs_locked'] = "For security reasons, logs less than 24 hours old cann
 $l['admin_log_config_attachment_types_add'] = "Added attachment extension #{1} ({2})";
 $l['admin_log_config_attachment_types_edit'] = "Edited attachment extension #{1} ({2})";
 $l['admin_log_config_attachment_types_delete'] = "Deleted attachment extension #{1} ({2})";
+$l['admin_log_config_attachment_types_toggle_status'] = "Toggled attachment status #{1} ({2})";
 
 $l['admin_log_config_badwords_add'] = "Added word filter #{1} ({2})";
 $l['admin_log_config_badwords_edit'] = "Edited word filter #{1} ({2})";
@@ -105,6 +106,10 @@ $l['admin_log_config_questions_edit'] = "Edited question #{1} ({2})";
 $l['admin_log_config_questions_delete'] = "Deleted question #{1} ({2})";
 $l['admin_log_config_questions_enable'] = "Enabled question #{1} ({2})";
 $l['admin_log_config_questions_disable'] = "Disabled question #{1} ({2})";
+
+$l['admin_log_config_report_reasons_add'] = "Added report reason #{1} ({2})";
+$l['admin_log_config_report_reasons_edit'] = "Edited report reason #{1} ({2})";
+$l['admin_log_config_report_reasons_delete'] = "Deleted report reason #{1} ({2})";
 
 $l['admin_log_config_settings_delete_duplicates'] = "Deleted duplicate settings and setting groups";
 $l['admin_log_config_settings_addgroup'] = "Added setting group #{1} ({2}) properties ";

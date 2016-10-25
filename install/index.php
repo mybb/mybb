@@ -67,7 +67,7 @@ $done_shutdown = 1;
 
 // Include the necessary constants for installation
 $grouppermignore = array('gid', 'type', 'title', 'description', 'namestyle', 'usertitle', 'stars', 'starimage', 'image');
-$groupzerogreater = array('pmquota', 'maxpmrecipients', 'maxreputationsday', 'attachquota', 'maxemails', 'maxwarningsday', 'maxposts', 'edittimelimit', 'canusesigxposts', 'maxreputationsperthread');
+$groupzerogreater = array('pmquota', 'maxpmrecipients', 'maxreputationsday', 'attachquota', 'maxemails', 'maxwarningsday', 'maxposts', 'edittimelimit', 'canusesigxposts', 'maxreputationsperuser', 'maxreputationsperthread', 'emailfloodtime');
 $displaygroupfields = array('title', 'description', 'namestyle', 'usertitle', 'stars', 'starimage', 'image');
 $fpermfields = array('canview', 'canviewthreads', 'candlattachments', 'canpostthreads', 'canpostreplys', 'canpostattachments', 'canratethreads', 'caneditposts', 'candeleteposts', 'candeletethreads', 'caneditattachments', 'canpostpolls', 'canvotepolls', 'cansearch', 'modposts', 'modthreads', 'modattachments', 'mod_edit_posts');
 
@@ -1493,7 +1493,7 @@ function create_tables()
  *
  * Please see the MyBB Docs for advanced
  * database configuration for larger installations
- * http://docs.mybb.com/
+ * https://docs.mybb.com/
  */
 
 \$config['database']['type'] = '{$mybb->input['dbengine']}';
@@ -1586,11 +1586,47 @@ function create_tables()
 	'promotion_logs' => 180 // Promotion logs
 );
 
+/**
+ * Disallowed Remote Hosts
+ *  List of hosts the fetch_remote_file() function will not
+ *  perform requests to.
+ *  It is recommended that you enter hosts resolving to the
+ *  forum server here to prevent Server Side Request
+ *  Forgery attacks.
+ */
+
+\$config['disallowed_remote_hosts'] = array(
+	'localhost',
+);
+
+/**
+ * Disallowed Remote Addresses
+ *  List of IPv4 addresses the fetch_remote_file() function
+ *  will not perform requests to.
+ *  It is recommended that you enter addresses resolving to
+ *  the forum server here to prevent Server Side Request
+ *  Forgery attacks.
+ *  Removing all values disables resolving hosts in that
+ *  function.
+ */
+
+\$config['disallowed_remote_addresses'] = array(
+	'127.0.0.1',
+	'10.0.0.0/8',
+	'172.16.0.0/12',
+	'192.168.0.0/16',
+);
+
 ";
 
 	$file = fopen(MYBB_ROOT.'inc/config.php', 'w');
 	fwrite($file, $configdata);
 	fclose($file);
+
+	if(function_exists('opcache_invalidate'))
+	{
+		opcache_invalidate(MYBB_ROOT."inc/config.php");
+	}
 
 	// Error reporting back on
  	$db->error_reporting = 1;
@@ -1796,9 +1832,9 @@ function configure()
 	global $output, $mybb, $errors, $lang;
 
 	$output->print_header($lang->board_config, 'config');
-	
+
 	echo <<<EOF
-		<script type="text/javascript">	
+		<script type="text/javascript">
 		function warnUser(inp, warn)
 		{
 			var parenttr = $('#'+inp.id).closest('tr');
@@ -1817,19 +1853,19 @@ function configure()
 				}
 			}
 		}
-			
+
 		function revertSetting(defval, inpid)
 		{
-			$(inpid).val(defval);			
+			$(inpid).val(defval);
 			var parenttr = $(inpid).closest('tr');
 			parenttr.next('.setting_peeker').remove();
 			if(parenttr.is(':last-child'))
 			{
 				parenttr.addClass('last');
-			}			
+			}
 		}
 		</script>
-		
+
 EOF;
 
 	// If board configuration errors
@@ -1859,12 +1895,12 @@ EOF;
 		}
 
 		// Attempt auto-detection
-		if($_SERVER['HTTP_HOST'])
+		if(!empty($_SERVER['HTTP_HOST']))
 		{
 			$hostname = $protocol.$_SERVER['HTTP_HOST'];
 			$cookiedomain = $_SERVER['HTTP_HOST'];
 		}
-		elseif($_SERVER['SERVER_NAME'])
+		elseif(!empty($_SERVER['SERVER_NAME']))
 		{
 			$hostname = $protocol.$_SERVER['SERVER_NAME'];
 			$cookiedomain = $_SERVER['SERVER_NAME'];
@@ -1885,18 +1921,33 @@ EOF;
 			$cookiedomain = ".{$cookiedomain}";
 		}
 
-		if($_SERVER['SERVER_PORT'] && $_SERVER['SERVER_PORT'] != 80 && !preg_match("#:[0-9]#i", $hostname))
+		if(!empty($_SERVER['SERVER_PORT']))
 		{
-			$hostname .= ':'.$_SERVER['SERVER_PORT'];
+			$port = ":{$_SERVER['SERVER_PORT']}";
+			$pos = strrpos($cookiedomain, $port);
+
+			if($pos !== false)
+			{
+				$cookiedomain = substr($cookiedomain, 0, $pos);
+			}
+
+			if($_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443 && !preg_match("#:[0-9]#i", $hostname))
+			{
+				$hostname .= $port;
+			}
 		}
-		
+
 		$currentlocation = get_current_location('', '', true);
 		$noinstall = substr($currentlocation, 0, strrpos($currentlocation, '/install/'));
-		
+
 		$cookiepath = $noinstall.'/';
 		$bburl = $hostname.$noinstall;
 		$websiteurl = $hostname.'/';
-		$contactemail = $_SERVER['SERVER_ADMIN'];
+
+		if(isset($_SERVER['SERVER_ADMIN']) && filter_var($_SERVER['SERVER_ADMIN'], FILTER_VALIDATE_EMAIL))
+		{
+			$contactemail = $_SERVER['SERVER_ADMIN'];
+		}
 	}
 
 	echo $lang->sprintf($lang->config_step_table, $bbname, $bburl, $websitename, $websiteurl, $cookiedomain, $cookiepath, $contactemail);
@@ -1928,9 +1979,9 @@ function create_admin_user()
 		}
 	}
 	$output->print_header($lang->create_admin, 'admin');
-	
+
 	echo <<<EOF
-		<script type="text/javascript">	
+		<script type="text/javascript">
 		function comparePass()
 		{
 			var parenttr = $('#adminpass2').closest('tr');
@@ -1946,7 +1997,7 @@ function create_admin_user()
 			}
 		}
 		</script>
-		
+
 EOF;
 
 	if(is_array($errors))
@@ -2362,6 +2413,7 @@ function install_done()
 	$cache->update("plugins", array());
 	$cache->update("internal_settings", array('encryption_key' => random_str(32)));
 	$cache->update_default_theme();
+	$cache->update_reportreasons(true);
 
 	$version_history = array();
 	$dh = opendir(INSTALL_ROOT."resources");

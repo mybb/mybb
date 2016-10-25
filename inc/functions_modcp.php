@@ -41,7 +41,7 @@ function modcp_can_manage_user($uid)
  */
 function fetch_forum_announcements($pid=0, $depth=1)
 {
-	global $mybb, $db, $lang, $theme, $announcements, $templates, $announcements_forum, $moderated_forums, $unviewableforums;
+	global $mybb, $db, $lang, $theme, $announcements, $templates, $announcements_forum, $moderated_forums, $unviewableforums, $parser;
 	static $forums_by_parent, $forum_cache, $parent_forums;
 
 	if(!is_array($forum_cache))
@@ -118,7 +118,7 @@ function fetch_forum_announcements($pid=0, $depth=1)
 							eval("\$icon = \"".$templates->get("modcp_announcements_announcement_active")."\";");
 						}
 
-						$subject = htmlspecialchars_uni($announcement['subject']);
+						$subject = htmlspecialchars_uni($parser->parse_badwords($announcement['subject']));
 
 						eval("\$announcements_forum .= \"".$templates->get("modcp_announcements_announcement")."\";");
 					}
@@ -145,41 +145,41 @@ function send_report($report, $report_type='post')
 {
 	global $db, $lang, $forum, $mybb, $post, $thread, $reputation, $user;
 
-	$nummods = false;
+	$modsjoin = $modswhere = '';
 	if(!empty($forum['parentlist']))
 	{
-		$query = $db->query("
-			SELECT DISTINCT u.username, u.email, u.receivepms, u.uid
-			FROM ".TABLE_PREFIX."moderators m
-			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=m.id)
-			WHERE m.fid IN (".$forum['parentlist'].") AND m.isgroup = '0'
-		");
+		$modswhere = "m.fid IN ({$forum['parentlist']}) OR ";
 
-		$nummods = $db->num_rows($query);
+		if($db->type == 'pgsql' || $db->type == 'sqlite')
+		{
+			$modsjoin = "LEFT JOIN {$db->table_prefix}moderators m ON (m.id = u.uid AND m.isgroup = 0) OR ((m.id = u.usergroup OR ',' || u.additionalgroups || ',' LIKE '%,' || m.id || ',%') AND m.isgroup = 1)";
+		}
+		else
+		{
+			$modsjoin = "LEFT JOIN {$db->table_prefix}moderators m ON (m.id = u.uid AND m.isgroup = 0) OR ((m.id = u.usergroup OR CONCAT(',', u.additionalgroups, ',') LIKE CONCAT('%,', m.id, ',%')) AND m.isgroup = 1)";
+		}
 	}
 
-	if(!$nummods)
+	switch($db->type)
 	{
-		unset($query);
-		switch($db->type)
-		{
-			case "pgsql":
-			case "sqlite":
-				$query = $db->query("
-					SELECT u.username, u.email, u.receivepms, u.uid
-					FROM ".TABLE_PREFIX."users u
-					LEFT JOIN ".TABLE_PREFIX."usergroups g ON (((','|| u.additionalgroups|| ',' LIKE '%,'|| g.gid|| ',%') OR u.usergroup = g.gid))
-					WHERE (g.cancp=1 OR g.issupermod=1)
-				");
-				break;
-			default:
-				$query = $db->query("
-					SELECT u.username, u.email, u.receivepms, u.uid
-					FROM ".TABLE_PREFIX."users u
-					LEFT JOIN ".TABLE_PREFIX."usergroups g ON (((CONCAT(',', u.additionalgroups, ',') LIKE CONCAT('%,', g.gid, ',%')) OR u.usergroup = g.gid))
-					WHERE (g.cancp=1 OR g.issupermod=1)
-				");
-		}
+		case "pgsql":
+		case "sqlite":
+			$query = $db->query("
+				SELECT DISTINCT u.username, u.email, u.receivepms, u.uid
+				FROM {$db->table_prefix}users u
+				{$modsjoin}
+				LEFT JOIN {$db->table_prefix}usergroups g ON (',' || u.additionalgroups || ',' LIKE '%,' || g.gid || ',%' OR g.gid = u.usergroup)
+				WHERE {$modswhere}g.cancp = 1 OR g.issupermod = 1
+			");
+			break;
+		default:
+			$query = $db->query("
+				SELECT DISTINCT u.username, u.email, u.receivepms, u.uid
+				FROM {$db->table_prefix}users u
+				{$modsjoin}
+				LEFT JOIN {$db->table_prefix}usergroups g ON (CONCAT(',', u.additionalgroups, ',') LIKE CONCAT('%,', g.gid, ',%') OR g.gid = u.usergroup)
+				WHERE {$modswhere}g.cancp = 1 OR g.issupermod = 1
+			");
 	}
 
 	$lang_string_subject = "emailsubject_report{$report_type}";
@@ -273,6 +273,7 @@ function add_report($report, $type = 'post')
 		'id3' => (int)$report['id3'],
 		'uid' => (int)$report['uid'],
 		'reportstatus' => 0,
+		'reasonid' => (int)$report['reasonid'],
 		'reason' => $db->escape_string($report['reason']),
 		'type' => $db->escape_string($type),
 		'reports' => 1,
@@ -283,7 +284,7 @@ function add_report($report, $type = 'post')
 
 	if($mybb->settings['reportmethod'] == "email" || $mybb->settings['reportmethod'] == "pms")
 	{
-		return send_report($report, $type);
+		send_report($report, $type);
 	}
 
 	$rid = $db->insert_query("reportedcontent", $insert_array);

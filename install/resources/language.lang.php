@@ -58,7 +58,7 @@ $l['mybb_already_installed'] = "<p>Welcome to the installation wizard for MyBB {
 
 $l['mybb_incorrect_folder'] = "<div class=\"border_wrapper upgrade_note\" style=\"padding: 4px;\">
 	<h3>MyBB has detected that it is running from the \"Upload\" directory.</h3>
-	<p>While there is nothing wrong with this, it is recommended that your upload the contents of the \"Upload\" directory and not the directory itself.<br /><br />For more information please see the <a href=\"http://docs.mybb.com/Help-Upload_Directory.html\" target=\"_blank\">MyBB Docs</a>.</p>
+	<p>While there is nothing wrong with this, it is recommended that your upload the contents of the \"Upload\" directory and not the directory itself.<br /><br />For more information please see the <a href=\"https://docs.mybb.com/1.8/install/#uploading-files\" target=\"_blank\">MyBB Docs</a>.</p>
 </div>";
 
 $l['welcome_step'] = '<p>Welcome to the installation wizard for MyBB {1}. This wizard will install and configure a copy of MyBB on your server.</p>
@@ -74,7 +74,7 @@ $l['welcome_step'] = '<p>Welcome to the installation wizard for MyBB {1}. This w
 </ul>
 <p>After each step has successfully been completed, click Next to move on to the next step.</p>
 <p>Click "Next" to view the MyBB license agreement.</p>
-<p><input type="checkbox" name="allow_anonymous_info" value="1" id="allow_anonymous" checked="checked" /> <label for="allow_anonymous"> Send anonymous statistics about your server specifications to the MyBB Group</label> (<a href="http://docs.mybb.com/Anonymous_Statistics.html" style="color: #555;" target="_blank"><small>What information is sent?</small></a>)</p>';
+<p><input type="checkbox" name="allow_anonymous_info" value="1" id="allow_anonymous" checked="checked" /> <label for="allow_anonymous"> Send anonymous statistics about your server specifications to the MyBB Group</label> (<a href="https://docs.mybb.com/1.8/install/anonymous-statistics/" style="color: #555;" target="_blank"><small>What information is sent?</small></a>)</p>';
 
 $l['license_step'] = '<div class="license_agreement">
 {1}
@@ -141,13 +141,13 @@ $l['req_step_error_box'] = '<p><strong>{1}</strong></p>';
 $l['req_step_error_phpversion'] = 'MyBB Requires PHP 5.2.0 or later to run. You currently have {1} installed.';
 $l['req_step_error_dboptions'] = 'MyBB requires one or more suitable database extensions to be installed. Your server reported that none were available.';
 $l['req_step_error_xmlsupport'] = 'MyBB requires PHP to be compiled with support for XML Data Handling. Please see <a href="http://www.php.net/xml" target="_blank">PHP.net</a> for more information.';
-$l['req_step_error_configdefaultfile'] = 'The configuration file (inc/config.default.php) could not be renamed. Please manually rename the <u>config.default.php</u> file to <u>config.php</u> to allow it to be written to or contact <a href="http://www.mybb.com/support" target="_blank">MyBB Support.</a>';
-$l['req_step_error_configfile'] = 'The configuration file (inc/config.php) is not writable. Please adjust the <a href="http://docs.mybb.com/CHMOD_Files.html" target="_blank">chmod</a> permissions to allow it to be written to.';
-$l['req_step_error_settingsfile'] = 'The settings file (inc/settings.php) is not writable. Please adjust the <a href="http://docs.mybb.com/CHMOD_Files.html" target="_blank">chmod</a> permissions to allow it to be written to.';
-$l['req_step_error_cachedir'] = 'The cache directory (cache/) is not writable. Please adjust the <a href="http://docs.mybb.com/CHMOD_Files.html" target="_blank">chmod</a> permissions to allow it to be written to.';
-$l['req_step_error_uploaddir'] = 'The uploads directory (uploads/) is not writable. Please adjust the <a href="http://docs.mybb.com/CHMOD_Files.html" target="_blank">chmod</a> permissions to allow it to be written to.';
-$l['req_step_error_avatardir'] = 'The avatars directory (uploads/avatars/) is not writable. Please adjust the <a href="http://docs.mybb.com/CHMOD_Files.html" target="_blank">chmod</a> permissions to allow it to be written to.';
-$l['req_step_error_cssddir'] = 'The css directory (css/) is not writable. Please adjust the <a href="http://docs.mybb.com/CHMOD_Files.html" target="_blank">chmod</a> permissions to allow it to be written to.';
+$l['req_step_error_configdefaultfile'] = 'The configuration file (inc/config.default.php) could not be renamed. Please manually rename the <u>config.default.php</u> file to <u>config.php</u> to allow it to be written to or contact <a href="https://mybb.com/support" target="_blank">MyBB Support.</a>';
+$l['req_step_error_configfile'] = 'The configuration file (inc/config.php) is not writable. Please adjust the <a href="https://docs.mybb.com/1.8/administration/security/file-permissions" target="_blank">chmod</a> permissions to allow it to be written to.';
+$l['req_step_error_settingsfile'] = 'The settings file (inc/settings.php) is not writable. Please adjust the <a href="https://docs.mybb.com/1.8/administration/security/file-permissions" target="_blank">chmod</a> permissions to allow it to be written to.';
+$l['req_step_error_cachedir'] = 'The cache directory (cache/) is not writable. Please adjust the <a href="https://docs.mybb.com/1.8/administration/security/file-permissions" target="_blank">chmod</a> permissions to allow it to be written to.';
+$l['req_step_error_uploaddir'] = 'The uploads directory (uploads/) is not writable. Please adjust the <a href="https://docs.mybb.com/1.8/administration/security/file-permissions" target="_blank">chmod</a> permissions to allow it to be written to.';
+$l['req_step_error_avatardir'] = 'The avatars directory (uploads/avatars/) is not writable. Please adjust the <a href="https://docs.mybb.com/1.8/administration/security/file-permissions" target="_blank">chmod</a> permissions to allow it to be written to.';
+$l['req_step_error_cssddir'] = 'The css directory (css/) is not writable. Please adjust the <a href="https://docs.mybb.com/1.8/administration/security/file-permissions" target="_blank">chmod</a> permissions to allow it to be written to.';
 $l['req_step_error_tablelist'] = '<div class="error">
 <h3>Error</h3>
 <p>The MyBB Requirements check failed due to the reasons below. MyBB installation cannot continue because you did not meet the MyBB requirements. Please correct the errors below and try again:</p>
@@ -238,7 +238,7 @@ $l['config_step_table'] = '<p>It is now time for you to configure the basic sett
 					<td class="last alt_col"><input type="text" class="text_input" name="websiteurl" id="websiteurl" value="{4}" /></td>
 				</tr>
 				<tr>
-					<th colspan="2" class="first last">Cookie settings <a title="What\'s this?" target="_blank" href="http://docs.mybb.com/Cookie_Settings.html">(?)</a></th>
+					<th colspan="2" class="first last">Cookie settings <a title="What\'s this?" target="_blank" href="https://docs.mybb.com/1.8/development/cookies">(?)</a></th>
 				</tr>
 				<tr>
 					<td class="first"><label for="cookiedomain">Cookie Domain:</label></td>
@@ -335,10 +335,10 @@ $l['done_step_admincreated'] = '<p>Creating Administrator account...';
 $l['done_step_adminoptions'] = '<p>Building Administrator permissions...';
 $l['done_step_cachebuilding'] = '<p>Building data caches...';
 $l['done_step_success'] = '<p class="success">Your copy of MyBB has successfully been installed and configured correctly.</p>
-<p>The MyBB Group thanks you for your support in installing our software and we hope to see you around the <a href="http://community.mybb.com/" target="_blank">Community Forums</a> if you need help or wish to become a part of the MyBB community.</p>';
+<p>The MyBB Group thanks you for your support in installing our software and we hope to see you around the <a href="https://community.mybb.com/" target="_blank">Community Forums</a> if you need help or wish to become a part of the MyBB community.</p>';
 $l['done_step_locked'] = '<p>Your installer has been locked. To unlock the installer please delete the \'lock\' file in this directory.</p><p>You may now proceed to your new copy of <a href="../index.php">MyBB</a> or its <a href="../admin/index.php">Admin Control Panel</a>.</p>';
 $l['done_step_dirdelete'] = '<p><strong><span style="color:red">Please remove this directory before exploring your copy of MyBB.</span></strong></p>';
-$l['done_whats_next'] = '<div class="error"><p><strong>Switching from another forum software?</strong></p><p>MyBB offers a merge system for easy merging of multiple forums from various different popular forum software, allowing an easy conversion process to MyBB. If you\'re looking to switch to MyBB, you\'re heading in the right direction! Check out the <a target="_blank" href="http://www.mybb.com/downloads/merge-system">Merge System</a> for more information.</p>';
+$l['done_whats_next'] = '<div class="error"><p><strong>Switching from another forum software?</strong></p><p>MyBB offers a merge system for easy merging of multiple forums from various different popular forum software, allowing an easy conversion process to MyBB. If you\'re looking to switch to MyBB, you\'re heading in the right direction! Check out the <a target="_blank" href="https://mybb.com/downloads/merge-system">Merge System</a> for more information.</p>';
 
 /* UPGRADE LANGUAGE VARIABLES */
 $l['upgrade'] = "Upgrade Process";
@@ -355,7 +355,7 @@ $l['upgrade_removedir'] = 'Please remove this directory before exploring your up
 $l['upgrade_congrats'] = "<p>Congratulations, your copy of MyBB has successfully been updated to {1}.</p>{2}<p><strong>What's Next?</strong></p><ul><li>Please use the 'Find Updated Templates' tool in the Admin CP to find customized templates updated during this upgrade process. Edit them to contain the changes or revert them to originals.</li><li>Ensure that your board is still fully functional.</li></ul>";
 $l['upgrade_template_reversion'] = "Template Reversion Warning";
 $l['upgrade_template_reversion_success'] = "<p>All necessary database modifications have successfully been made to upgrade your board.</p><p>This upgrade requires all templates to be reverted to the new ones contained in the package so please back up any custom templates you have made before clicking next.";
-$l['upgrade_send_stats'] = "<p><input type=\"checkbox\" name=\"allow_anonymous_info\" value=\"1\" id=\"allow_anonymous\" checked=\"checked\" /> <label for=\"allow_anonymous\"> Send anonymous statistics about your server specifications to the MyBB Group</label> (<a href=\"http://docs.mybb.com/Anonymous_Statistics.html\" style=\"color: #555;\" target=\"_blank\"><small>What information is sent?</small></a>)</p>";
+$l['upgrade_send_stats'] = "<p><input type=\"checkbox\" name=\"allow_anonymous_info\" value=\"1\" id=\"allow_anonymous\" checked=\"checked\" /> <label for=\"allow_anonymous\"> Send anonymous statistics about your server specifications to the MyBB Group</label> (<a href=\"https://docs.mybb.com/1.8/install/anonymous-statistics/\" style=\"color: #555;\" target=\"_blank\"><small>What information is sent?</small></a>)</p>";
 
 $l['please_login'] = "Please Login";
 $l['login'] = "Login";
@@ -368,6 +368,6 @@ $l['login_password_desc'] = "Please note that passwords are case sensitive.";
 $l['development_preview'] = "<div class=\"error\"><h2 class=\"fail\">Warning</h2><p>This version of MyBB is a development preview and is to be used for testing purposes only.</p><p>No official support, other than for plugins and theme development, will be provided for this version. By continuing with this install/upgrade you do so at your own risk.</p></div>";
 $l['locked'] = 'The installer is currently locked, please remove \'lock\' from the install directory to continue';
 $l['no_permision'] = "You do not have permissions to run this process. You need administrator permissions to be able to run the upgrade procedure.<br /><br />If you need to logout, please click <a href=\"upgrade.php?action=logout&amp;logoutkey={1}\">here</a>. From there you will be able to log in again under your administrator account.";
+$l['no_theme_functions_file'] = 'No theme functions file has been found. Make sure that all files are uploaded properly.';
 
 $l['task_versioncheck_ran'] = "The version check task successfully ran.";
-

@@ -237,6 +237,6 @@ class MyLanguage
 	 */
 	function parse_replace($matches)
 	{
-		return $this->$matches[1];
+		return $this->{$matches[1]};
 	}
 }

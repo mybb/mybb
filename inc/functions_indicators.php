@@ -58,8 +58,38 @@ function fetch_unread_count($fid)
 {
 	global $cache, $db, $mybb;
 
-	$onlyview = $onlyview2 = '';
-	$permissions = forum_permissions($fid);
+	$forums_all = $forums_own = array();
+	$forums = explode(',', $fid);
+	foreach($forums as $forum)
+	{
+		$permissions = forum_permissions($forum);
+		if(!empty($permissions['canonlyviewownthreads']))
+		{
+			$forums_own[] = $forum;
+		}
+		else
+		{
+			$forums_all[] = $forum;
+		}
+	}
+	if(!empty($forums_own))
+	{
+		$where = "(fid IN (".implode(',', $forums_own).") AND uid = {$mybb->user['uid']})";
+		$where2 = "(t.fid IN (".implode(',', $forums_own).") AND t.uid = {$mybb->user['uid']})";
+	}
+	if(!empty($forums_all))
+	{
+		if(isset($where))
+		{
+			$where = "({$where} OR fid IN (".implode(',', $forums_all)."))";
+			$where2 = "({$where2} OR t.fid IN (".implode(',', $forums_all)."))";
+		}
+		else
+		{
+			$where = 'fid IN ('.implode(',', $forums_all).')';
+			$where2 = 't.fid IN ('.implode(',', $forums_all).')';
+		}
+	}
 	$cutoff = TIME_NOW-$mybb->settings['threadreadcut']*60*60*24;
 
 	if(!empty($permissions['canonlyviewownthreads']))
@@ -97,11 +127,11 @@ function fetch_unread_count($fid)
 			$count = 0;
 
 			// We've read at least some threads, are they here?
-			$query = $db->simple_select("threads", "lastpost, tid, fid", "visible=1 AND closed NOT LIKE 'moved|%' AND fid IN ({$fid}) AND lastpost > '{$cutoff}'{$onlyview}", array("limit" => 100));
+			$query = $db->simple_select("threads", "lastpost, tid, fid", "visible=1 AND closed NOT LIKE 'moved|%' AND {$where} AND lastpost > '{$cutoff}'", array("limit" => 100));
 
 			while($thread = $db->fetch_array($query))
 			{
-				if(isset($threadsread[$thread['tid']]) && $thread['lastpost'] > (int)$threadsread[$thread['tid']] && isset($forumsread[$thread['fid']]) && $thread['lastpost'] > (int)$forumsread[$thread['fid']])
+				if((!isset($threadsread[$thread['tid']]) || $thread['lastpost'] > (int)$threadsread[$thread['tid']]) && (!isset($forumsread[$thread['fid']]) || $thread['lastpost'] > (int)$forumsread[$thread['fid']]))
 				{
 					++$count;
 				}
@@ -123,7 +153,7 @@ function fetch_unread_count($fid)
 					FROM ".TABLE_PREFIX."threads t
 					LEFT JOIN ".TABLE_PREFIX."threadsread tr ON (tr.tid=t.tid AND tr.uid='{$mybb->user['uid']}')
 					LEFT JOIN ".TABLE_PREFIX."forumsread fr ON (fr.fid=t.fid AND fr.uid='{$mybb->user['uid']}')
-					WHERE t.visible=1 AND t.closed NOT LIKE 'moved|%' AND t.fid IN ($fid) AND t.lastpost > COALESCE(tr.dateline,$cutoff) AND t.lastpost > COALESCE(fr.dateline,$cutoff) AND t.lastpost>$cutoff{$onlyview2}
+					WHERE t.visible=1 AND t.closed NOT LIKE 'moved|%' AND {$where2} AND t.lastpost > COALESCE(tr.dateline,$cutoff) AND t.lastpost > COALESCE(fr.dateline,$cutoff) AND t.lastpost>$cutoff
 				");
 				break;
 			default:
@@ -132,7 +162,7 @@ function fetch_unread_count($fid)
 					FROM ".TABLE_PREFIX."threads t
 					LEFT JOIN ".TABLE_PREFIX."threadsread tr ON (tr.tid=t.tid AND tr.uid='{$mybb->user['uid']}')
 					LEFT JOIN ".TABLE_PREFIX."forumsread fr ON (fr.fid=t.fid AND fr.uid='{$mybb->user['uid']}')
-					WHERE t.visible=1 AND t.closed NOT LIKE 'moved|%' AND t.fid IN ($fid) AND t.lastpost > IFNULL(tr.dateline,$cutoff) AND t.lastpost > IFNULL(fr.dateline,$cutoff) AND t.lastpost>$cutoff{$onlyview2}
+					WHERE t.visible=1 AND t.closed NOT LIKE 'moved|%' AND {$where2} AND t.lastpost > IFNULL(tr.dateline,$cutoff) AND t.lastpost > IFNULL(fr.dateline,$cutoff) AND t.lastpost>$cutoff
 				");
 		}
 		return $db->fetch_field($query, "unread_count");

@@ -124,7 +124,7 @@ $theme = @array_merge($theme, my_unserialize($theme['properties']));
 
 // Set the appropriate image language directory for this theme.
 // Are we linking to a remote theme server?
-if(my_substr($theme['imgdir'], 0, 7) == 'http://' || my_substr($theme['imgdir'], 0, 8) == 'https://')
+if(my_validate_url($theme['imgdir']))
 {
 	// If a language directory for the current language exists within the theme - we use it
 	if(!empty($mybb->user['language']))
@@ -223,8 +223,8 @@ if($mybb->input['action'] == "get_users")
 {
 	$mybb->input['query'] = ltrim($mybb->get_input('query'));
 
-	// If the string is less than 3 characters, quit.
-	if(my_strlen($mybb->input['query']) < 3)
+	// If the string is less than 2 characters, quit.
+	if(my_strlen($mybb->input['query']) < 2)
 	{
 		exit;
 	}
@@ -255,7 +255,6 @@ if($mybb->input['action'] == "get_users")
 	if($limit == 1)
 	{
 		$user = $db->fetch_array($query);
-		$user['username'] = htmlspecialchars_uni($user['username']);
 		$data = array('id' => $user['username'], 'text' => $user['username']);
 	}
 	else
@@ -263,7 +262,6 @@ if($mybb->input['action'] == "get_users")
 		$data = array();
 		while($user = $db->fetch_array($query))
 		{
-			$user['username'] = htmlspecialchars_uni($user['username']);
 			$data[] = array('id' => $user['username'], 'text' => $user['username']);
 		}
 	}
@@ -373,6 +371,7 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 		$updatepost = array(
 			"pid" => $post['pid'],
 			"tid" => $thread['tid'],
+			"prefix" => $thread['prefix'],
 			"subject" => $subject,
 			"edit_uid" => $mybb->user['uid']
 		);
@@ -577,6 +576,8 @@ else if($mybb->input['action'] == "edit_post")
 			"filter_badwords" => 1
 		);
 
+		$post['username'] = htmlspecialchars_uni($post['username']);
+
 		if($post['smilieoff'] == 1)
 		{
 			$parser_options['allow_smilies'] = 0;
@@ -614,6 +615,7 @@ else if($mybb->input['action'] == "edit_post")
 		{
 			$post['editdate'] = my_date('relative', TIME_NOW);
 			$post['editnote'] = $lang->sprintf($lang->postbit_edited, $post['editdate']);
+			$mybb->user['username'] = htmlspecialchars_uni($mybb->user['username']);
 			$post['editedprofilelink'] = build_profile_link($mybb->user['username'], $mybb->user['uid']);
 			$post['editreason'] = trim($editreason);
 			$editreason = "";
@@ -1009,6 +1011,7 @@ else if($mybb->input['action'] == "get_buddyselect")
 		$offline = array();
 		while($buddy = $db->fetch_array($query))
 		{
+			$buddy['username'] = htmlspecialchars_uni($buddy['username']);
 			$buddy_name = format_name($buddy['username'], $buddy['usergroup'], $buddy['displaygroup']);
 			$profile_link = build_profile_link($buddy_name, $buddy['uid'], '_blank');
 			if($buddy['lastactive'] > $timecut && ($buddy['invisible'] == 0 || $mybb->user['usergroup'] == 4) && $buddy['lastvisit'] != $buddy['lastactive'])

@@ -516,7 +516,7 @@ class errorHandler {
 			@header('Status: 503 Service Temporarily Unavailable');
 			@header('Retry-After: 1800');
 			@header("Content-type: text/html; charset={$charset}");
-			$file_name = basename(__FILE__);
+			$file_name = htmlspecialchars_uni(basename($_SERVER['SCRIPT_FILENAME']));
 
 			echo <<<EOF
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
@@ -542,7 +542,7 @@ class errorHandler {
 <body>
 	<div id="container">
 		<div id="logo">
-			<h1><a href="http://www.mybb.com/" title="MyBB"><span class="invisible">MyBB</span></a></h1>
+			<h1><a href="https://mybb.com/" title="MyBB"><span class="invisible">MyBB</span></a></h1>
 		</div>
 
 		<div id="content">
@@ -550,7 +550,7 @@ class errorHandler {
 
 			<div id="error">
 				{$error_message}
-				<p id="footer">Please contact the <a href="http://www.mybb.com">MyBB Group</a> for technical support.</p>
+				<p id="footer">Please contact the <a href="https://mybb.com">MyBB Group</a> for technical support.</p>
 			</div>
 		</div>
 	</div>
@@ -575,7 +575,7 @@ EOF;
 		<h2>{$title}</h2>
 		<div id="mybb_error_error">
 		{$error_message}
-			<p id="mybb_error_footer">Please contact the <a href="http://www.mybb.com">MyBB Group</a> for technical support.</p>
+			<p id="mybb_error_footer">Please contact the <a href="https://mybb.com">MyBB Group</a> for technical support.</p>
 		</div>
 	</div>
 EOF;

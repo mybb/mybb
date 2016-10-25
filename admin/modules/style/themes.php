@@ -168,7 +168,7 @@ if($mybb->input['action'] == "browse")
 	// Convert to mods site version codes
 	$search_version = ($major_version_code/100).'x';
 
-	$contents = fetch_remote_file("http://community.mybb.com/xmlbrowse.php?type=themes&version={$search_version}{$keywords}{$url_page}", $post_data);
+	$contents = fetch_remote_file("https://community.mybb.com/xmlbrowse.php?type=themes&version={$search_version}{$keywords}{$url_page}", $post_data);
 
 	if(!$contents)
 	{
@@ -214,9 +214,9 @@ if($mybb->input['action'] == "browse")
 			);
 			$result['download_url']['value'] = htmlspecialchars_uni(html_entity_decode($result['download_url']['value']));
 
-			$table->construct_cell("<img src=\"http://community.mybb.com/{$result['thumbnail']['value']}\" alt=\"{$lang->theme_thumbnail}\" title=\"{$lang->theme_thumbnail}\"/>", array("class" => "align_center", "width" => 100));
+			$table->construct_cell("<img src=\"https://community.mybb.com/{$result['thumbnail']['value']}\" alt=\"{$lang->theme_thumbnail}\" title=\"{$lang->theme_thumbnail}\"/>", array("class" => "align_center", "width" => 100));
 			$table->construct_cell("<strong>{$result['name']['value']}</strong><br /><small>{$result['description']['value']}</small><br /><i><small>{$lang->created_by} {$result['author']['value']}</small></i>");
-			$table->construct_cell("<strong><a href=\"http://community.mybb.com/{$result['download_url']['value']}\" target=\"_blank\">{$lang->download}</a></strong>", array("class" => "align_center"));
+			$table->construct_cell("<strong><a href=\"https://community.mybb.com/{$result['download_url']['value']}\" target=\"_blank\">{$lang->download}</a></strong>", array("class" => "align_center"));
 			$table->construct_row();
 		}
 	}
@@ -286,11 +286,11 @@ if($mybb->input['action'] == "browse")
 	// Recommended themes = Default; Otherwise search results & pagination
 	if($mybb->request_method == "post")
 	{
-		$table->output("<span style=\"float: right;\"><small><a href=\"http://community.mybb.com/mods.php?action=browse&category=themes\" target=\"_blank\">{$lang->browse_all_themes}</a></small></span>".$lang->sprintf($lang->browse_results_for_mybb, $mybb->version));
+		$table->output("<span style=\"float: right;\"><small><a href=\"https://community.mybb.com/mods.php?action=browse&category=themes\" target=\"_blank\">{$lang->browse_all_themes}</a></small></span>".$lang->sprintf($lang->browse_results_for_mybb, $mybb->version));
 	}
 	else
 	{
-		$table->output("<span style=\"float: right;\"><small><a href=\"http://community.mybb.com/mods.php?action=browse&category=themes\" target=\"_blank\">{$lang->browse_all_themes}</a></small></span>".$lang->sprintf($lang->recommended_themes_for_mybb, $mybb->version));
+		$table->output("<span style=\"float: right;\"><small><a href=\"https://community.mybb.com/mods.php?action=browse&category=themes\" target=\"_blank\">{$lang->browse_all_themes}</a></small></span>".$lang->sprintf($lang->recommended_themes_for_mybb, $mybb->version));
 	}
 
 	echo "<br />".draw_admin_pagination($mybb->input['page'], 15, $tree['results']['attributes']['total'], "index.php?module=style-themes&amp;action=browse{$keywords}&amp;page={page}");
@@ -614,7 +614,7 @@ if($mybb->input['action'] == "export")
 		{
 			if(strpos($filename, 'css.php?stylesheet=') !== false)
 			{
-				$style['sid'] = (integer)str_replace('css.php?stylesheet=', '', $filename);
+				$style['sid'] = (int)str_replace('css.php?stylesheet=', '', $filename);
 				$filename = $theme_stylesheets[$style['sid']];
 			}
 			else
@@ -756,7 +756,7 @@ if($mybb->input['action'] == "duplicate")
 		{
 			$query = $db->simple_select("themes", "COUNT(tid) as numthemes", "name = '".$db->escape_string($mybb->get_input('name'))."'");
 			$numthemes = $db->fetch_field($query, 'numthemes');
-			
+
 			if($numthemes)
 			{
 				$errors[] = $lang->error_theme_already_exists;
@@ -1010,6 +1010,9 @@ if($mybb->input['action'] == "delete")
 		while($cachefile = $db->fetch_array($query))
 		{
 			@unlink(MYBB_ROOT."cache/themes/theme{$theme['tid']}/{$cachefile['cachefile']}");
+
+			$filename_min = str_replace('.css', '.min.css', $cachefile['cachefile']);
+			@unlink(MYBB_ROOT."cache/themes/theme{$theme['tid']}/{$filename_min}");
 		}
 		@unlink(MYBB_ROOT."cache/themes/theme{$theme['tid']}/index.html");
 
@@ -1025,7 +1028,10 @@ if($mybb->input['action'] == "delete")
 		$children = make_child_theme_list($theme['tid']);
 		$child_tid = $children[0];
 
-		$db->update_query("themes", array('pid' => $theme['pid']), "tid='{$child_tid}'");
+		if($child_tid != 0)
+		{
+			$db->update_query("themes", array('pid' => $theme['pid']), "tid='{$child_tid}'");
+		}
 
 		$db->delete_query("themes", "tid='{$theme['tid']}'", 1);
 
@@ -1092,9 +1098,13 @@ if($mybb->input['action'] == "edit")
 		}
 
 		$theme_properties = my_unserialize($theme['properties']);
-		if($theme_properties['disporder'])
+		if(is_array($theme_properties['disporder']))
 		{
 			$properties['disporder'] = $theme_properties['disporder'];
+		}
+		else
+		{
+			$errors[] = $lang->error_no_display_order;
 		}
 
 		$allowedgroups = array();
@@ -1339,7 +1349,7 @@ if($mybb->input['action'] == "edit")
 		{
 			if(strpos($filename, 'css.php?stylesheet=') !== false)
 			{
-				$style['sid'] = (integer)str_replace('css.php?stylesheet=', '', $filename);
+				$style['sid'] = (int)str_replace('css.php?stylesheet=', '', $filename);
 				$filename = $theme_stylesheets[$style['sid']];
 			}
 
@@ -1356,7 +1366,7 @@ if($mybb->input['action'] == "edit")
 	{
 		if(strpos($filename, 'css.php?stylesheet=') !== false)
 		{
-			$style['sid'] = (integer)str_replace('css.php?stylesheet=', '', $filename);
+			$style['sid'] = (int)str_replace('css.php?stylesheet=', '', $filename);
 			$filename = $theme_stylesheets[$style['sid']];
 		}
 		else
@@ -1744,6 +1754,9 @@ if($mybb->input['action'] == "stylesheet_properties")
 					$db->update_query("themestylesheets", array('cachefile' => "css.php?stylesheet={$stylesheet['sid']}"), "sid='{$stylesheet['sid']}'", 1);
 				}
 				@unlink(MYBB_ROOT."cache/themes/theme{$theme['tid']}/{$stylesheet['cachefile']}");
+
+				$filename_min = str_replace('.css', '.min.css', $stylesheet['cachefile']);
+				@unlink(MYBB_ROOT."cache/themes/theme{$theme['tid']}/{$filename_min}");
 			}
 
 			// Update the CSS file list for this theme
@@ -2232,7 +2245,7 @@ if($mybb->input['action'] == "edit_stylesheet" && (!isset($mybb->input['mode']) 
 
 	$form->output_submit_wrapper($buttons);
 
-	echo '<script type="text/javascript" src="./jscripts/themes.js?ver=1804"></script>';
+	echo '<script type="text/javascript" src="./jscripts/themes.js?ver=1808"></script>';
 	echo '<script type="text/javascript">
 
 $(document).ready(function() {
@@ -2338,7 +2351,7 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 <script src="./jscripts/codemirror/mode/css/css.js"></script>
 <script src="./jscripts/codemirror/addon/dialog/dialog.js"></script>
 <script src="./jscripts/codemirror/addon/search/searchcursor.js"></script>
-<script src="./jscripts/codemirror/addon/search/search.js"></script>
+<script src="./jscripts/codemirror/addon/search/search.js?ver=1808"></script>
 ';
 	}
 
@@ -2459,6 +2472,9 @@ if($mybb->input['action'] == "delete_stylesheet")
 	{
 		$db->delete_query("themestylesheets", "sid='{$stylesheet['sid']}'", 1);
 		@unlink(MYBB_ROOT."cache/themes/theme{$theme['tid']}/{$stylesheet['cachefile']}");
+
+		$filename_min = str_replace('.css', '.min.css', $stylesheet['cachefile']);
+		@unlink(MYBB_ROOT."cache/themes/theme{$theme['tid']}/{$filename_min}");
 
 		// Update the CSS file list for this theme
 		update_theme_stylesheet_list($theme['tid'], $theme, true);
@@ -2611,7 +2627,7 @@ if($mybb->input['action'] == "add_stylesheet")
 <script src="./jscripts/codemirror/mode/css/css.js"></script>
 <script src="./jscripts/codemirror/addon/dialog/dialog.js"></script>
 <script src="./jscripts/codemirror/addon/search/searchcursor.js"></script>
-<script src="./jscripts/codemirror/addon/search/search.js"></script>
+<script src="./jscripts/codemirror/addon/search/search.js?ver=1808"></script>
 ';
 	}
 
@@ -2874,7 +2890,7 @@ if($mybb->input['action'] == "add_stylesheet")
 			});</script>';
 	}
 
-	echo '<script type="text/javascript" src="./jscripts/themes.js?ver=1804"></script>';
+	echo '<script type="text/javascript" src="./jscripts/themes.js?ver=1808"></script>';
 	echo '<script type="text/javascript" src="./jscripts/theme_properties.js"></script>';
 	echo '<script type="text/javascript">
 $(function() {

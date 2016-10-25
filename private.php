@@ -12,15 +12,16 @@ define("IN_MYBB", 1);
 define("IGNORE_CLEAN_VARS", "sid");
 define('THIS_SCRIPT', 'private.php');
 
-$templatelist = "private_send,private_send_buddyselect,private_read,private_tracking,private_tracking_readmessage,private_tracking_unreadmessage,private_orderarrow,usercp_nav_attachments,usercp_nav_messenger_compose,private_tracking_readmessage_stop";
-$templatelist .= ",private_folders,private_folders_folder,private_folders_folder_unremovable,private,usercp_nav,private_empty_folder,private_empty,private_archive_txt,private_archive_csv,private_archive_html,private_tracking_unreadmessage_stop";
-$templatelist .= ",usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,usercp_nav_misc,multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,usercp_nav_editsignature,posticons_icon";
-$templatelist .= ",private_messagebit,codebuttons,smilieinsert,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,posticons,private_send_autocomplete,private_messagebit_denyreceipt,private_read_to,postbit_online,postbit_warninglevel_formatted,postbit_iplogged_hiden";
+$templatelist = "private_send,private_send_buddyselect,private_tracking,private_tracking_readmessage,private_tracking_unreadmessage,usercp_nav_attachments,usercp_nav_messenger_compose,private_tracking_readmessage_stop";
+$templatelist .= ",private_folders,private_folders_folder,private_folders_folder_unremovable,private,usercp_nav,private_empty_folder,private_archive_txt,private_archive_csv,private_archive_html,private_tracking_unreadmessage_stop";
+$templatelist .= ",usercp_nav_messenger,usercp_nav_changename,multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start";
+$templatelist .= ",private_messagebit,codebuttons,posticons,private_send_autocomplete,private_messagebit_denyreceipt,postbit_warninglevel_formatted,private_emptyexportlink,postbit_purgespammer,postbit_gotopost,private_read";
 $templatelist .= ",postbit_delete_pm,postbit,private_tracking_nomessage,private_nomessages,postbit_author_guest,private_multiple_recipients_user,private_multiple_recipients_bcc,private_multiple_recipients,usercp_nav_messenger_folder";
-$templatelist .= ",private_search_messagebit,private_search_results_nomessages,private_search_results,private_advanced_search,previewpost,private_send_tracking,private_send_signature,private_read_bcc,private_composelink,postbit_purgespammer";
-$templatelist .= ",private_archive,private_quickreply,private_pmspace,private_limitwarning,postbit_groupimage,postbit_offline,postbit_www,postbit_replyall_pm,postbit_signature,postbit_classic,postbit_gotopost,postbit_userstar,postbit_reputation_formatted_link,postbit_icon";
-$templatelist .= ",private_archive_folders_folder,private_archive_folders,postbit_warninglevel,postbit_author_user,postbit_reply_pm,postbit_forward_pm,private_messagebit_icon,private_jump_folders_folder,private_advanced_search_folders";
-$templatelist .= ",private_jump_folders,postbit_avatar,postbit_warn,postbit_rep_button,postbit_email,postbit_reputation,private_move,private_read_action,postbit_away,postbit_pm,usercp_nav_messenger_tracking,postbit_find,private_emptyexportlink";
+$templatelist .= ",private_search_messagebit,private_search_results_nomessages,private_search_results,private_advanced_search,previewpost,private_send_tracking,private_send_signature,private_read_bcc,private_composelink";
+$templatelist .= ",private_archive,private_quickreply,private_pmspace,private_limitwarning,postbit_groupimage,postbit_offline,postbit_www,postbit_replyall_pm,postbit_signature,postbit_classic,postbit_reputation_formatted_link";
+$templatelist .= ",private_archive_folders_folder,private_archive_folders,postbit_warninglevel,postbit_author_user,postbit_forward_pm,private_messagebit_icon,private_jump_folders_folder,private_advanced_search_folders";
+$templatelist .= ",private_jump_folders,postbit_avatar,postbit_warn,postbit_rep_button,postbit_email,postbit_reputation,private_move,private_read_action,postbit_away,postbit_pm,usercp_nav_messenger_tracking,postbit_find";
+$templatelist .= ",usercp_nav_editsignature,posticons_icon,postbit_icon,postbit_iplogged_hiden,usercp_nav_profile,usercp_nav_misc,postbit_userstar,private_read_to,postbit_online,private_empty,private_orderarrow,postbit_reply_pm";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -49,13 +50,6 @@ if(!$mybb->user['pmfolders'])
 		 "pmfolders" => $mybb->user['pmfolders']
 	);
 	$db->update_query("users", $sql_array, "uid = ".$mybb->user['uid']);
-}
-
-// On a random occassion, recount the user's pms just to make sure everything is in sync.
-$rand = my_rand(0, 9);
-if($rand == 5)
-{
-	update_pm_count();
 }
 
 $mybb->input['fid'] = $mybb->get_input('fid', MyBB::INPUT_INT);
@@ -360,29 +354,27 @@ if($mybb->input['action'] == "results")
 	");
 	while($message = $db->fetch_array($query))
 	{
-		$msgalt = $msgsuffix = $msgprefix = '';
+		$msgalt = $msgstatus = '';
 
 		// Determine Folder Icon
 		if($message['status'] == 0)
 		{
-			$msgfolder = 'new_pm.png';
+			$msgstatus = 'new_pm';
 			$msgalt = $lang->new_pm;
-			$msgprefix = "<strong>";
-			$msgsuffix = "</strong>";
 		}
-		elseif($message['status'] == 1)
+		else if($message['status'] == 1)
 		{
-			$msgfolder = 'old_pm.png';
+			$msgstatus = 'old_pm';
 			$msgalt = $lang->old_pm;
 		}
-		elseif($message['status'] == 3)
+		else if($message['status'] == 3)
 		{
-			$msgfolder = 're_pm.png';
+			$msgstatus = 're_pm';
 			$msgalt = $lang->reply_pm;
 		}
 		else if($message['status'] == 4)
 		{
-			$msgfolder = 'fw_pm.png';
+			$msgstatus = 'fw_pm';
 			$msgalt = $lang->fwd_pm;
 		}
 
@@ -400,6 +392,7 @@ if($mybb->input['action'] == "results")
 				{
 					$profilelink = get_profile_link($uid);
 					$user = $cached_users[$uid];
+					$user['username'] = htmlspecialchars_uni($user['username']);
 					$username = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 					eval("\$to_users .= \"".$templates->get("private_multiple_recipients_user")."\";");
 				}
@@ -410,6 +403,7 @@ if($mybb->input['action'] == "results")
 					{
 						$profilelink = get_profile_link($uid);
 						$user = $cached_users[$uid];
+						$user['username'] = htmlspecialchars_uni($user['username']);
 						$username = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 						eval("\$bcc_users .= \"".$templates->get("private_multiple_recipients_user")."\";");
 					}
@@ -419,7 +413,7 @@ if($mybb->input['action'] == "results")
 			}
 			else if($message['toid'])
 			{
-				$tofromusername = $message['tousername'];
+				$tofromusername = htmlspecialchars_uni($message['tousername']);
 				$tofromuid = $message['toid'];
 			}
 			else
@@ -429,7 +423,7 @@ if($mybb->input['action'] == "results")
 		}
 		else
 		{
-			$tofromusername = $message['fromusername'];
+			$tofromusername = htmlspecialchars_uni($message['fromusername']);
 			$tofromuid = $message['fromid'];
 			if($tofromuid == 0)
 			{
@@ -1116,6 +1110,7 @@ if($mybb->input['action'] == "read")
 	while($recipient = $db->fetch_array($query))
 	{
 		// User is a BCC recipient
+		$recipient['username'] = htmlspecialchars_uni($recipient['username']);
 		if($show_bcc && in_array($recipient['uid'], $pm['recipients']['bcc']))
 		{
 			$bcc_recipients[] = build_profile_link($recipient['username'], $recipient['uid']);
@@ -1278,6 +1273,7 @@ if($mybb->input['action'] == "tracking")
 	while($readmessage = $db->fetch_array($query))
 	{
 		$readmessage['subject'] = htmlspecialchars_uni($parser->parse_badwords($readmessage['subject']));
+		$readmessage['tousername'] = htmlspecialchars_uni($readmessage['tousername']);
 		$readmessage['profilelink'] = build_profile_link($readmessage['tousername'], $readmessage['toid']);
 		$readdate = my_date('relative', $readmessage['readtime']);
 		eval("\$readmessages .= \"".$templates->get("private_tracking_readmessage")."\";");
@@ -1334,6 +1330,7 @@ if($mybb->input['action'] == "tracking")
 	while($unreadmessage = $db->fetch_array($query))
 	{
 		$unreadmessage['subject'] = htmlspecialchars_uni($parser->parse_badwords($unreadmessage['subject']));
+		$unreadmessage['tousername'] = htmlspecialchars_uni($unreadmessage['tousername']);
 		$unreadmessage['profilelink'] = build_profile_link($unreadmessage['tousername'], $unreadmessage['toid']);
 		$senddate = my_date('relative', $unreadmessage['dateline']);
 		eval("\$unreadmessages .= \"".$templates->get("private_tracking_unreadmessage")."\";");
@@ -1808,7 +1805,7 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 
 	$plugins->run_hooks("private_do_export_start");
 
-	$lang->private_messages_for = $lang->sprintf($lang->private_messages_for, $mybb->user['username']);
+	$lang->private_messages_for = $lang->sprintf($lang->private_messages_for, htmlspecialchars_uni($mybb->user['username']));
 	$exdate = my_date($mybb->settings['dateformat'], TIME_NOW, 0, 0);
 	$extime = my_date($mybb->settings['timeformat'], TIME_NOW, 0, 0);
 	$lang->exported_date = $lang->sprintf($lang->exported_date, $exdate, $extime);
@@ -2264,28 +2261,27 @@ if(!$mybb->input['action'])
 	{
 		while($message = $db->fetch_array($query))
 		{
-			$msgalt = $msgsuffix = $msgprefix = '';
+			$msgalt = $msgstatus = '';
+
 			// Determine Folder Icon
 			if($message['status'] == 0)
 			{
-				$msgfolder = 'new_pm.png';
+				$msgstatus = 'new_pm';
 				$msgalt = $lang->new_pm;
-				$msgprefix = "<strong>";
-				$msgsuffix = "</strong>";
 			}
-			elseif($message['status'] == 1)
+			else if($message['status'] == 1)
 			{
-				$msgfolder = 'old_pm.png';
+				$msgstatus = 'old_pm';
 				$msgalt = $lang->old_pm;
 			}
-			elseif($message['status'] == 3)
+			else if($message['status'] == 3)
 			{
-				$msgfolder = 're_pm.png';
+				$msgstatus = 're_pm';
 				$msgalt = $lang->reply_pm;
 			}
-			elseif($message['status'] == 4)
+			else if($message['status'] == 4)
 			{
-				$msgfolder = 'fw_pm.png';
+				$msgstatus = 'fw_pm';
 				$msgalt = $lang->fwd_pm;
 			}
 
@@ -2300,6 +2296,7 @@ if(!$mybb->input['action'])
 					{
 						$profilelink = get_profile_link($uid);
 						$user = $cached_users[$uid];
+						$user['username'] = htmlspecialchars_uni($user['username']);
 						$username = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 						if(!$user['username'])
 						{
@@ -2314,6 +2311,7 @@ if(!$mybb->input['action'])
 						{
 							$profilelink = get_profile_link($uid);
 							$user = $cached_users[$uid];
+							$user['username'] = htmlspecialchars_uni($user['username']);
 							$username = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 							if(!$user['username'])
 							{
@@ -2327,7 +2325,7 @@ if(!$mybb->input['action'])
 				}
 				else if($message['toid'])
 				{
-					$tofromusername = $message['tousername'];
+					$tofromusername = htmlspecialchars_uni($message['tousername']);
 					$tofromuid = $message['toid'];
 				}
 				else
@@ -2337,7 +2335,7 @@ if(!$mybb->input['action'])
 			}
 			else
 			{
-				$tofromusername = $message['fromusername'];
+				$tofromusername = htmlspecialchars_uni($message['fromusername']);
 				$tofromuid = $message['fromid'];
 				if($tofromuid == 0)
 				{

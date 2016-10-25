@@ -346,7 +346,7 @@ Thank you,
 Unsubscription Information:
 
 If you would not like to receive any more notifications of replies to this thread, visit the following URL in your browser:
-{6}/usercp2.php?action=removesubscription&tid={8}&key={9}&my_post_key={10}
+{6}/usercp2.php?action=removesubscription&tid={8}&my_post_key={9}
 
 ------------------------------------------";
 $l['email_reachedpmquota'] = "{1},
@@ -392,7 +392,7 @@ We have received a request on {2} to change your email address (see details belo
 Old Email Address: {3}
 New Email Address: {4}
 
-This change has been automatically processed. If you did not request this change, please get it touch with an Administrator.
+This change has been automatically processed. If you did not request this change, please get in touch with an Administrator.
 
 Thank you,
 {2} Staff
@@ -491,6 +491,13 @@ There may also be other replies to this thread but you will not receive anymore 
 Unsubscription Information:
 
 If you would not like to receive any more notifications of replies to this thread, visit the following URL in your browser:
-[url]{5}/usercp2.php?action=removesubscription&tid={7}&key={8}&my_post_key={9}[/url]
+[url]{5}/usercp2.php?action=removesubscription&tid={7}&my_post_key={8}[/url]
 
 ------------------------------------------";
+
+$l['email_broken_task_subject'] = "MyBB task error on {1}";
+$l['email_broken_task'] = "Your copy of MyBB running on {1} ({2}) has experienced an error with the task system.
+
+The task file for {3} is missing.
+
+This task has been disabled until issue is resolved.";
