@@ -1032,7 +1032,7 @@ if(!empty($threadcache) && is_array($threadcache))
 		{
 			if(!$thread['threadusername'])
 			{
-				$thread['username'] = $thread['profilelink'] = $lang->guest;
+				$thread['username'] = $thread['profilelink'] = htmlspecialchars_uni($lang->guest);
 			}
 			else
 			{
@@ -1270,7 +1270,7 @@ if(!empty($threadcache) && is_array($threadcache))
 		$lastposteruid = $thread['lastposteruid'];
 		if(!$lastposteruid && !$thread['lastposter'])
 		{
-			$lastposter = $lang->guest;
+			$lastposter = htmlspecialchars_uni($lang->guest);
 		}
 		else
 		{

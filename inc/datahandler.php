@@ -120,7 +120,7 @@ class DataHandler
 	function get_friendly_errors()
 	{
 		global $lang;
-		
+
 		// Load the language pack we need
 		if($this->language_file)
 		{

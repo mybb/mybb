@@ -1167,7 +1167,7 @@ class PostDataHandler extends DataHandler
 					// If the poster is unregistered and hasn't set a username, call them Guest
 					if(!$post['uid'] && !$post['username'])
 					{
-						$post['username'] = $lang->guest;
+						$post['username'] = htmlspecialchars_uni($lang->guest);
 					}
 				}
 				else
@@ -1660,7 +1660,7 @@ class PostDataHandler extends DataHandler
 						// If the poster is unregistered and hasn't set a username, call them Guest
 						if(!$thread['uid'] && !$thread['username'])
 						{
-							$thread['username'] = $lang->guest;
+							$thread['username'] = htmlspecialchars_uni($lang->guest);
 						}
 					}
 					else

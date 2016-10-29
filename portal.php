@@ -367,7 +367,7 @@ if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_sho
 		$lastpostdate = my_date('relative', $thread['lastpost']);
 		if(!$thread['lastposteruid'] && !$thread['lastposter'])
 		{
-			$lastposter = $lang->guest;
+			$lastposter = htmlspecialchars_uni($lang->guest);
 		}
 		else
 		{
@@ -544,7 +544,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 			$announcement['username'] = htmlspecialchars_uni($announcement['username']);
 			if(!$announcement['uid'] && !$announcement['threadusername'])
 			{
-				$announcement['threadusername'] = $lang->guest;
+				$announcement['threadusername'] = htmlspecialchars_uni($lang->guest);
 			}
 			else
 			{
