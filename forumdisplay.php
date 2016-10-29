@@ -1030,14 +1030,7 @@ if(!empty($threadcache) && is_array($threadcache))
 		$thread['author'] = $thread['uid'];
 		if(!$thread['username'])
 		{
-			if(!$thread['threadusername'])
-			{
-				$thread['username'] = $thread['profilelink'] = htmlspecialchars_uni($lang->guest);
-			}
-			else
-			{
-				$thread['username'] = $thread['profilelink'] = htmlspecialchars_uni($thread['threadusername']);
-			}
+			$thread['username'] = $thread['profilelink'] = htmlspecialchars_uni($thread['threadusername']);
 		}
 		else
 		{
@@ -1266,16 +1259,8 @@ if(!empty($threadcache) && is_array($threadcache))
 			$inline_edit_class = "subject_editable";
 		}
 
-
+		$lastposter = htmlspecialchars_uni($thread['lastposter']);
 		$lastposteruid = $thread['lastposteruid'];
-		if(!$lastposteruid && !$thread['lastposter'])
-		{
-			$lastposter = htmlspecialchars_uni($lang->guest);
-		}
-		else
-		{
-			$lastposter = htmlspecialchars_uni($thread['lastposter']);
-		}
 		$lastpostdate = my_date('relative', $thread['lastpost']);
 
 		// Don't link to guest's profiles (they have no profile).

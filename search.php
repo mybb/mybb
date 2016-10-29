@@ -576,16 +576,9 @@ if($mybb->input['action'] == "results")
 				$thread['multipage'] = '';
 			}
 			$lastpostdate = my_date('relative', $thread['lastpost']);
+			$lastposter = htmlspecialchars_uni($thread['lastposter']);
 			$thread['lastpostlink'] = get_thread_link($thread['tid'], 0, "lastpost");
 			$lastposteruid = $thread['lastposteruid'];
-			if(!$lastposteruid && !$thread['lastposter'])
-			{
-				$lastposter = $lang->guest;
-			}
-			else
-			{
-				$lastposter = htmlspecialchars_uni($thread['lastposter']);
-			}
 			$thread_link = get_thread_link($thread['tid']);
 
 			// Don't link to guest's profiles (they have no profile).
