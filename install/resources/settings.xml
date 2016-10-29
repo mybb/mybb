@@ -170,13 +170,13 @@
 			<isdefault>1</isdefault>
 		</setting>
 		<setting name="reportmethod">
-			<title>Reported Posts Medium</title>
-			<description><![CDATA[Please select from the list how you want reported posts to be dealt with. Storing them in the database is probably the better of the options listed.]]></description>
+			<title>Reported Content Notification Method</title>
+			<description><![CDATA[Please select from the list how you would like moderators to be notified when content is reported. Note: Moderators are only notified for posts in forums they moderate or all content if they are a super moderator.]]></description>
 			<disporder>5</disporder>
 			<optionscode><![CDATA[radio
-db=Stored in the Database
-pms=Sent as Private Messages
-email=Sent via Email]]></optionscode>
+db=Shown in the Mod CP only
+pms=Sent as Private Messages and shown in the Mod CP
+email=Sent via Email and shown in the Mod CP]]></optionscode>
 			<settingvalue><![CDATA[db]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
