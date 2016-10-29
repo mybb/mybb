@@ -136,6 +136,7 @@ $l['alt_disabled'] = "Disabled";
 $l['enable'] = "Enable";
 $l['disable'] = "Disable";
 $l['saved'] = 'Saved';
+$l['guest'] = 'Guest';
 
 $l['rel_in'] = "In ";
 $l['rel_ago'] = "ago";

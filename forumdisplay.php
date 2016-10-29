@@ -338,15 +338,15 @@ if($mybb->settings['browsingthisforum'] != 0)
 	if($inviscount && $mybb->usergroup['canviewwolinvis'] != 1)
 	{
 		$invisonline = $lang->sprintf($lang->users_browsing_forum_invis, $inviscount);
-	} 
-	
+	}
+
 
 	$onlinesep = '';
 	if($invisonline != '' && $onlinemembers)
 	{
 		$onlinesep = $lang->comma;
 	}
-	
+
 	$onlinesep2 = '';
 	if($invisonline != '' && $guestcount || $onlinemembers && $guestcount)
 	{
@@ -1030,7 +1030,14 @@ if(!empty($threadcache) && is_array($threadcache))
 		$thread['author'] = $thread['uid'];
 		if(!$thread['username'])
 		{
-			$thread['username'] = $thread['profilelink'] = htmlspecialchars_uni($thread['threadusername']);
+			if(!$thread['threadusername'])
+			{
+				$thread['username'] = $thread['profilelink'] = $lang->guest;
+			}
+			else
+			{
+				$thread['username'] = $thread['profilelink'] = htmlspecialchars_uni($thread['threadusername']);
+			}
 		}
 		else
 		{
@@ -1259,8 +1266,16 @@ if(!empty($threadcache) && is_array($threadcache))
 			$inline_edit_class = "subject_editable";
 		}
 
-		$lastposter = htmlspecialchars_uni($thread['lastposter']);
+
 		$lastposteruid = $thread['lastposteruid'];
+		if(!$lastposteruid && !$thread['lastposter'])
+		{
+			$lastposter = $lang->guest;
+		}
+		else
+		{
+			$lastposter = htmlspecialchars_uni($thread['lastposter']);
+		}
 		$lastpostdate = my_date('relative', $thread['lastpost']);
 
 		// Don't link to guest's profiles (they have no profile).
