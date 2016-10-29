@@ -365,7 +365,14 @@ if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_sho
 		}
 
 		$lastpostdate = my_date('relative', $thread['lastpost']);
-		$lastposter = htmlspecialchars_uni($thread['lastposter']);
+		if(!$thread['lastposteruid'] && !$thread['lastposter'])
+		{
+			$lastposter = htmlspecialchars_uni($lang->guest);
+		}
+		else
+		{
+			$lastposter = htmlspecialchars_uni($thread['lastposter']);
+		}
 		$thread['replies'] = my_number_format($thread['replies']);
 		$thread['views'] = my_number_format($thread['views']);
 
@@ -430,7 +437,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 			$forum[$fid] = $f;
 		}
 	}
-	
+
 	$query = $db->simple_select("threads t", "COUNT(t.tid) AS threads", "t.visible='1'{$annfidswhere}{$tunviewwhere} AND t.closed NOT LIKE 'moved|%'", array('limit' => 1));
 	$announcementcount = $db->fetch_field($query, "threads");
 
@@ -534,9 +541,15 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 			$announcement['threadlink'] = get_thread_link($announcement['tid']);
 			$announcement['forumlink'] = get_forum_link($announcement['fid']);
 			$announcement['forumname'] = $forum_cache[$announcement['fid']]['name'];
-
 			$announcement['username'] = htmlspecialchars_uni($announcement['username']);
-			$announcement['threadusername'] = htmlspecialchars_uni($announcement['threadusername']);
+			if(!$announcement['uid'] && !$announcement['threadusername'])
+			{
+				$announcement['threadusername'] = htmlspecialchars_uni($lang->guest);
+			}
+			else
+			{
+				$announcement['threadusername'] = htmlspecialchars_uni($announcement['threadusername']);
+			}
 
 			if($announcement['uid'] == 0)
 			{

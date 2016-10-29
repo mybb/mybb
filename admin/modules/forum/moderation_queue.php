@@ -216,7 +216,7 @@ if($mybb->input['type'] == "threads" || !$mybb->input['type'])
 			$forum_name = $forum_cache[$thread['fid']]['name'];
 			$threaddate = my_date('relative', $thread['dateline']);
 
-			if($thread['username'] == "")
+			if(!$thread['uid'])
 			{
 				if($thread['threadusername'] != "")
 				{
@@ -224,7 +224,7 @@ if($mybb->input['type'] == "threads" || !$mybb->input['type'])
 				}
 				else
 				{
-					$profile_link = $lang->guest;
+					$profile_link = htmlspecialchars_uni($lang->guest);
 				}
 			}
 			else
@@ -361,7 +361,7 @@ if($mybb->input['type'] == "posts" || $mybb->input['type'] == "")
 			$forum_name = $forum_cache[$post['fid']]['name'];
 			$postdate = my_date('relative', $post['dateline']);
 
-			if($post['username'] == "")
+			if(!$post['uid'])
 			{
 				if($post['postusername'] != "")
 				{
@@ -488,7 +488,7 @@ if($mybb->input['type'] == "attachments" || $mybb->input['type'] == "")
 		$table->construct_header($lang->controls, array("class" => "align_center", "colspan" => 3));
 
 		$query = $db->query("
-			SELECT a.*, p.subject AS postsubject, p.dateline, p.uid, u.username, t.tid, t.subject AS threadsubject
+			SELECT a.*, p.subject AS postsubject, p.dateline, p.username AS postusername, p.uid, u.username, t.tid, t.subject AS threadsubject
 			FROM  ".TABLE_PREFIX."attachments a
 			LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=a.pid)
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
@@ -510,7 +510,22 @@ if($mybb->input['type'] == "attachments" || $mybb->input['type'] == "")
 
 			$link = get_post_link($attachment['pid'], $attachment['tid']) . "#pid{$attachment['pid']}";
 			$thread_link = get_thread_link($attachment['tid']);
-			$profile_link = build_profile_link(htmlspecialchars_uni($attachment['username']), $attachment['uid'], "_blank");
+
+			if(!$attachment['uid'])
+			{
+				if($attachment['postusername'] != "")
+				{
+					$profile_link = $attachment['postusername'];
+				}
+				else
+				{
+					$profile_link = $lang->guest;
+				}
+			}
+			else
+			{
+				$profile_link = build_profile_link(htmlspecialchars_uni($attachment['username']), $attachment['uid'], "_blank");
+			}
 
 			$table->construct_cell("<a href=\"../attachment.php?aid={$attachment['aid']}\" target=\"_blank\">{$attachment['filename']}</a> ({$attachment['filesize']})<br /><small class=\"modqueue_meta\">{$lang->post} <a href=\"{$link}\" target=\"_blank\">{$attachment['postsubject']}</a></small>");
 			$table->construct_cell($profile_link, array("class" => "align_center"));

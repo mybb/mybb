@@ -1808,7 +1808,7 @@ class UserDataHandler extends DataHandler
 		)
 		{
 			$imgsallowed = 0;
-			
+
 			if($mybb->settings['sigimgcode'] == 1)
 			{
 				$imgsallowed = $mybb->settings['maxsigimages'];

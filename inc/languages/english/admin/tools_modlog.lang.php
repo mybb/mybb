@@ -14,6 +14,7 @@ $l['prune_mod_logs_desc'] = "Here you can prune the moderator logs matching a sp
 $l['no_modlogs'] = "There are no log entries with the selected criteria.";
 
 $l['username'] = "Username";
+$l['na_deleted'] = "N/A - Been Deleted";
 $l['date'] = "Date";
 $l['action'] = "Action";
 $l['information'] = "Information";
