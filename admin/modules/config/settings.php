@@ -940,7 +940,7 @@ if($mybb->input['action'] == "change")
 		// Get settings which optionscode is a forum/group select, checkbox or numeric
 		// We cannot rely on user input to decide this
 		$checkbox_settings = $forum_group_select = array();
-		$query = $db->simple_select('settings', 'name, optionscode', "optionscode IN('forumselect', 'groupselect', 'numeric') OR optionscode LIKE 'checkbox%'");
+		$query = $db->simple_select('settings', 'name, optionscode', "optionscode IN('forumselect', 'groupselect') OR optionscode LIKE 'checkbox%' OR optionscode LIKE 'numeric%'");
 
 		while($multisetting = $db->fetch_array($query))
 		{
@@ -954,11 +954,38 @@ if($mybb->input['action'] == "change")
 					$mybb->input['upsetting'][$multisetting['name']] = array();
 				}
 			}
-			elseif($multisetting['optionscode'] == 'numeric')
+			elseif(substr($multisetting['optionscode'], 0, 7) == 'numeric')
 			{
 				if(isset($mybb->input['upsetting'][$multisetting['name']]))
 				{
-					$mybb->input['upsetting'][$multisetting['name']] = (int)$mybb->input['upsetting'][$multisetting['name']];
+					$type = explode("\n", $multisetting['optionscode']);
+					for($i=1; $i < count($type); $i++)
+					{
+						$optionsexp = explode("=", $type[$i]);
+						$opt = array_map('trim', $optionsexp);
+						if(in_array($opt[0], array('min', 'max', 'step')))
+						{
+							if($opt[0] != 'step' || $opt[1] != 'any')
+							{
+								$opt[1] = (float)$opt[1];
+							}
+							$options[$opt[0]] = $opt[1];
+						}
+					}
+
+					$value = (float)$mybb->input['upsetting'][$multisetting['name']];
+
+					if(isset($options['min']))
+					{
+						$value = max($value, $options['min']);
+					}
+
+					if(isset($options['max']))
+					{
+						$value = min($value, $options['max']);
+					}
+
+					$mybb->input['upsetting'][$multisetting['name']] = $value;
 				}
 			}
 			else
