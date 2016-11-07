@@ -1950,9 +1950,6 @@ if($mybb->input['action'] == "delete")
 		$fid = $mybb->get_input('fid', MyBB::INPUT_INT);
 		$forum_info = get_forum($fid);
 
-		$query = $db->simple_select("forums", "posts,unapprovedposts,threads,unapprovedthreads", "fid='{$fid}'");
-		$stats = $db->fetch_array($query);
-
 		// Delete the forum
 		$db->delete_query("forums", "fid='$fid'");
 
@@ -1970,11 +1967,6 @@ if($mybb->input['action'] == "delete")
 		{
 			$fids[$forum['fid']] = $fid;
 			$delquery .= " OR fid='{$forum['fid']}'";
-
-			$stats['posts'] += $forum['posts'];
-			$stats['unapprovedposts'] += $forum['unapprovedposts'];
-			$stats['threads'] += $forum['threads'];
-			$stats['unapprovedthreads'] += $forum['unapprovedthreads'];
 		}
 
 		switch($db->type)
