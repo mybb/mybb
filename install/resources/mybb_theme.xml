@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<theme name="MyBB Master Style" version="1808">
+<theme name="MyBB Master Style" version="1809">
 	<properties>
 		<templateset><![CDATA[1]]></templateset>
 		<imgdir><![CDATA[images]]></imgdir>
@@ -11619,13 +11619,15 @@ if(use_xmlhttprequest == "1")
 <td class="trow1">{$threadedbits}</td>
 </tr>
 </table>]]></template>
-		<template name="showthread_threadnotes" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder tfixed">
+		<template name="showthread_threadnotes" version="1809"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder tfixed">
+<thead>
 <tr>
 	<td class="thead thead_collapse{$collapsedimg['threadnotes']}">
 		<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['threadnotes']}.png" id="threadnotes_img" class="expander" alt="[-]" title="[-]" /></div>
 		<div><span class="smalltext"><strong>{$lang->view_thread_notes}</strong></span></div>
 	</td>
 </tr>
+</thead>
 <tbody style="{$collapsed['threadnotes_e']}" id="threadnotes_e">
 <tr>
 	<td class="trow1">
