@@ -1956,6 +1956,7 @@ if($mybb->input['action'] == "delete")
 		// Delete the forum
 		$db->delete_query("forums", "fid='$fid'");
 
+		$delquery = "";
 		switch($db->type)
 		{
 			case "pgsql":
@@ -1995,24 +1996,11 @@ if($mybb->input['action'] == "delete")
 			$moderation->delete_thread($tid);
 		}
 
-		$query = $db->simple_select('posts', 'pid', "fid='{$fid}' {$delquery}");
-		while($pid = $db->fetch_field($query, 'pid'))
-		{
-			$moderation->delete_post($pid);
-		}
-
-		$db->delete_query("moderators", "fid='{$fid}' {$delquery}");
-		$db->delete_query("forumsubscriptions", "fid='{$fid}' {$delquery}");
-		$db->delete_query("forumpermissions", "fid='{$fid}' {$delquery}");
+		$db->delete_query('moderators', "fid='{$fid}' {$delquery}");
+		$db->delete_query('forumsubscriptions', "fid='{$fid}' {$delquery}");
+		$db->delete_query('forumpermissions', "fid='{$fid}' {$delquery}");
 		$db->delete_query('announcements', "fid='{$fid}' {$delquery}");
-
-		$update_stats = array(
-			'numthreads' => "-".$stats['threads'],
-			'numunapprovedthreads' => "-".$stats['unapprovedthreads'],
-			'numposts' => "-".$stats['posts'],
-			'numunapprovedposts' => "-".$stats['unapprovedposts']
-		);
-		update_stats($update_stats);
+		$db->delete_query('forumsread', "fid='{$fid}' {$delquery}");
 
 		$plugins->run_hooks("admin_forum_management_delete_commit");
 
