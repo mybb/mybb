@@ -1950,9 +1950,6 @@ if($mybb->input['action'] == "delete")
 		$fid = $mybb->get_input('fid', MyBB::INPUT_INT);
 		$forum_info = get_forum($fid);
 
-		// Delete the forum
-		$db->delete_query("forums", "fid='$fid'");
-
 		$delquery = "";
 		switch($db->type)
 		{
@@ -1969,6 +1966,49 @@ if($mybb->input['action'] == "delete")
 			$delquery .= " OR fid='{$forum['fid']}'";
 		}
 
+		require_once MYBB_ROOT.'inc/class_moderation.php';
+		$moderation = new Moderation();
+
+		// Start pagination. Limit results to 50
+		$query = $db->simple_select("threads", "tid", "fid='{$fid}' {$delquery}", array("limit" => 50));
+
+		while($tid = $db->fetch_field($query, 'tid'))
+		{
+			$moderation->delete_thread($tid);
+		}
+
+		// Check whether all threads have been deleted
+		$query = $db->simple_select("threads", "tid", "fid='{$fid}' {$delquery}");
+
+		if($db->num_rows($query) > 0)
+		{
+			$page->output_header();
+
+			$form = new Form("index.php?module=forum-management", 'post');
+
+			echo $form->generate_hidden_field("fid", $fid);
+			echo $form->generate_hidden_field("action", "delete");
+			echo "<div class=\"confirm_action\">\n";
+			echo "<p>{$lang->confirm_proceed_deletion}</p>\n";
+			echo "<br />\n";
+			echo "<script type=\"text/javascript\">$(function() { var button = $(\"#proceed_button\"); if(button.length > 0) { button.val(\"{$lang->automatically_redirecting}\"); button.attr(\"disabled\", true); button.css(\"color\", \"#aaa\"); button.css(\"borderColor\", \"#aaa\"); document.forms[0].submit(); }})</script>";
+			echo "<p class=\"buttons\">\n";
+			echo $form->generate_submit_button($lang->proceed, array('class' => 'button_yes', 'id' => 'proceed_button'));
+			echo "</p>\n";
+			echo "</div>\n";
+
+			$form->end();
+
+			$page->output_footer();
+			exit;
+		}
+
+		// End pagination
+
+		// Delete the forum
+		$db->delete_query("forums", "fid='$fid'");
+
+		// Delete subforums
 		switch($db->type)
 		{
 			case "pgsql":
@@ -1977,15 +2017,6 @@ if($mybb->input['action'] == "delete")
 				break;
 			default:
 				$db->delete_query("forums", "CONCAT(',',parentlist,',') LIKE '%,$fid,%'");
-		}
-
-		require_once MYBB_ROOT.'inc/class_moderation.php';
-		$moderation = new Moderation();
-
-		$query = $db->simple_select("threads", "tid", "fid='{$fid}' {$delquery}");
-		while($tid = $db->fetch_field($query, 'tid'))
-		{
-			$moderation->delete_thread($tid);
 		}
 
 		$db->delete_query('moderators', "fid='{$fid}' {$delquery}");
