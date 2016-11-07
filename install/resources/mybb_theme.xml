@@ -6313,10 +6313,10 @@ if(use_xmlhttprequest == "1")
 					<br />
 					<div align="center"><input type="submit" class="button" name="submit" value="{$lang->delete_announcement}" /></div>
 					<input type="hidden" name="aid" value="{$aid}" />
-					</form>
 				</td>
 			</tr>
 		</table>
+	</form>
 	{$footer}
 </body>
 </html>]]></template>
