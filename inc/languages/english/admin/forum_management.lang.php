@@ -263,6 +263,7 @@ $l['editing_field_caneditposts'] = "Can edit own posts?";
 $l['editing_field_candeleteposts'] = "Can delete own posts?";
 $l['editing_field_candeletethreads'] = "Can delete own threads?";
 $l['editing_field_caneditattachments'] = "Can update own attachments?";
+$l['editing_field_canviewdeletionnotice'] = "Can view deletion notices?";
 
 $l['moderate_field_modposts'] = "Moderate new posts?";
 $l['moderate_field_modthreads'] = "Moderate new threads?";

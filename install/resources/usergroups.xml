@@ -28,6 +28,7 @@
 		<candeleteposts><![CDATA[0]]></candeleteposts>
 		<candeletethreads><![CDATA[0]]></candeletethreads>
 		<caneditattachments><![CDATA[0]]></caneditattachments>
+		<canviewdeletionnotice><![CDATA[0]]></canviewdeletionnotice>
 		<canpostpolls><![CDATA[0]]></canpostpolls>
 		<canvotepolls><![CDATA[0]]></canvotepolls>
 		<canundovotes><![CDATA[0]]></canundovotes>
@@ -118,6 +119,7 @@
 		<candeleteposts><![CDATA[1]]></candeleteposts>
 		<candeletethreads><![CDATA[1]]></candeletethreads>
 		<caneditattachments><![CDATA[1]]></caneditattachments>
+		<canviewdeletionnotice><![CDATA[1]]></canviewdeletionnotice>
 		<canpostpolls><![CDATA[1]]></canpostpolls>
 		<canvotepolls><![CDATA[1]]></canvotepolls>
 		<canundovotes><![CDATA[0]]></canundovotes>
@@ -208,6 +210,7 @@
 		<candeleteposts><![CDATA[1]]></candeleteposts>
 		<candeletethreads><![CDATA[1]]></candeletethreads>
 		<caneditattachments><![CDATA[1]]></caneditattachments>
+		<canviewdeletionnotice><![CDATA[1]]></canviewdeletionnotice>
 		<canpostpolls><![CDATA[1]]></canpostpolls>
 		<canvotepolls><![CDATA[1]]></canvotepolls>
 		<canundovotes><![CDATA[1]]></canundovotes>
@@ -299,6 +302,7 @@
 		<candeleteposts><![CDATA[1]]></candeleteposts>
 		<candeletethreads><![CDATA[1]]></candeletethreads>
 		<caneditattachments><![CDATA[1]]></caneditattachments>
+		<canviewdeletionnotice><![CDATA[1]]></canviewdeletionnotice>
 		<canpostpolls><![CDATA[1]]></canpostpolls>
 		<canvotepolls><![CDATA[1]]></canvotepolls>
 		<canundovotes><![CDATA[1]]></canundovotes>
@@ -389,6 +393,7 @@
 		<candeleteposts><![CDATA[0]]></candeleteposts>
 		<candeletethreads><![CDATA[0]]></candeletethreads>
 		<caneditattachments><![CDATA[0]]></caneditattachments>
+		<canviewdeletionnotice><![CDATA[0]]></canviewdeletionnotice>
 		<canpostpolls><![CDATA[0]]></canpostpolls>
 		<canvotepolls><![CDATA[0]]></canvotepolls>
 		<canundovotes><![CDATA[0]]></canundovotes>
@@ -479,6 +484,7 @@
 		<candeleteposts><![CDATA[1]]></candeleteposts>
 		<candeletethreads><![CDATA[1]]></candeletethreads>
 		<caneditattachments><![CDATA[1]]></caneditattachments>
+		<canviewdeletionnotice><![CDATA[1]]></canviewdeletionnotice>
 		<canpostpolls><![CDATA[1]]></canpostpolls>
 		<canvotepolls><![CDATA[1]]></canvotepolls>
 		<canundovotes><![CDATA[0]]></canundovotes>
@@ -569,6 +575,7 @@
 		<candeleteposts><![CDATA[0]]></candeleteposts>
 		<candeletethreads><![CDATA[0]]></candeletethreads>
 		<caneditattachments><![CDATA[0]]></caneditattachments>
+		<canviewdeletionnotice><![CDATA[0]]></canviewdeletionnotice>
 		<canpostpolls><![CDATA[0]]></canpostpolls>
 		<canvotepolls><![CDATA[0]]></canvotepolls>
 		<canundovotes><![CDATA[0]]></canundovotes>

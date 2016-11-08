@@ -94,6 +94,7 @@ $l['page_selected'] = "All <strong>{1}</strong> threads on this page are selecte
 $l['all_selected'] = "All <strong>{1}</strong> threads in this forum are selected.";
 $l['select_all'] = "Select all <strong>{1}</strong> threads in this forum.";
 $l['clear_selection'] = "Clear Selection.";
+$l['deleted_thread'] = "Deleted Thread";
 
 $l['error_containsnoforums'] = "Sorry, but the forum you are currently viewing does not contain any child forums.";
 
