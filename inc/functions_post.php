@@ -708,7 +708,7 @@ function build_postbit($post, $post_type=0)
 				eval("\$post['iplogged'] = \"".$templates->get("postbit_iplogged_hiden")."\";");
 			}
 		}
-}
+	}
 
 	$post['poststatus'] = '';
 	if(!$post_type && $post['visible'] != 1)
