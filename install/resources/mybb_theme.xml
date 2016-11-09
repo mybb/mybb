@@ -9621,7 +9621,7 @@ if(use_xmlhttprequest == "1")
 <div class="post deleted_post_hidden" id="post_{$post['pid']}">
 	<div class="deleted_post_author"><strong><span class="largetext">{$post['profilelink']}</span></strong></div>
 		<div class="post_content">
-			<em>{$lang->postbit_deleted_post}</em>
+			<em>{$lang->postbit_post_deleted}</em>
 		</div>
 	</div>
 </div>]]></template>
