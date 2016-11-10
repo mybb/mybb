@@ -357,14 +357,32 @@ function hello_install()
 	// Create our entries table
 	$collation = $db->build_create_table_collation();
 
-	// create table if it doesn't exist already
+	// Create table if it doesn't exist already
 	if(!$db->table_exists('hello_messages'))
 	{
-		$db->write_query("CREATE TABLE `".TABLE_PREFIX."hello_messages` (
-			`mid` int(10) UNSIGNED NOT NULL auto_increment,
-			`message` varchar(100) NOT NULL default '',
-			PRIMARY KEY  (`mid`)
-		) ENGINE=MyISAM{$collation}");
+		switch($db->type)
+		{
+			case "pgsql":
+				$db->write_query("CREATE TABLE ".TABLE_PREFIX."hello_messages (
+					mid serial,
+					message varchar(100) NOT NULL default '',
+					PRIMARY KEY (mid)
+				);");
+				break;
+			case "sqlite":
+				$db->write_query("CREATE TABLE ".TABLE_PREFIX."hello_messages (
+					mid INTEGER PRIMARY KEY,
+					message varchar(100) NOT NULL default ''
+				);");
+				break;
+			default:
+				$db->write_query("CREATE TABLE ".TABLE_PREFIX."hello_messages (
+					mid int unsigned NOT NULL auto_increment,
+					message varchar(100) NOT NULL default '',
+					PRIMARY KEY (mid)
+				) ENGINE=MyISAM{$collation};");
+				break;
+		}
 	}
 }
 
