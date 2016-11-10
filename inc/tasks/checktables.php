@@ -62,7 +62,7 @@ function task_checktables($task)
 			}
 		}
 
-		if($table['Table'] != $mybb->config['database']['table_prefix'].".".TABLE_PREFIX."settings" && $setting_done == true)
+		if($setting_done == true)
 		{
 			$db->update_query("settings", array('value' => (int)$boardclosed), "name='boardclosed'", 1);
 			$db->update_query("settings", array('value' => $db->escape_string($boardclosed_reason)), "name='boardclosed_reason'", 1);
