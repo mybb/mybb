@@ -191,16 +191,18 @@ function create_password_hash($password, $salt, $user = false)
 {
 	global $plugins;
 
-	$parameters = compact('password', 'salt', 'user');
+	$hash = null;
+
+	$parameters = compact('password', 'salt', 'user', 'hash');
 
 	if(!defined('IN_INSTALL') && !defined('IN_UPGRADE'))
 	{
 		$plugins->run_hooks('create_password_hash', $parameters);
 	}
 
-	if(is_string($parameters))
+	if(!is_null($parameters['hash']))
 	{
-		return $parameters;
+		return $parameters['hash'];
 	}
 	else
 	{
@@ -219,16 +221,18 @@ function verify_user_password($user, $password)
 {
 	global $plugins;
 
-	$parameters = compact('user', 'password');
+	$result = null;
+
+	$parameters = compact('user', 'password', 'result');
 
 	if(!defined('IN_INSTALL') && !defined('IN_UPGRADE'))
 	{
 		$plugins->run_hooks('verify_user_password', $parameters);
 	}
 
-	if(is_bool($parameters))
+	if(!is_null($parameters['result']))
 	{
-		return $parameters;
+		return $parameters['result'];
 	}
 	else
 	{
