@@ -1265,7 +1265,7 @@ if($mybb->input['action'] == "new_announcement")
 
 		$starttime_time = gmdate($mybb->settings['timeformat'], $localized_time);
 		$endtime_time = gmdate($mybb->settings['timeformat'], $localized_time);
-		$startday = $endday = gmdate("j", TIME_NOW + $localized_time);
+		$startday = $endday = gmdate("j", $localized_time);
 		$startmonth = $endmonth = gmdate("m", $localized_time);
 		$startdateyear = gmdate("Y", $localized_time);
 
