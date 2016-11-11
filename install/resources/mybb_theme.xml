@@ -11347,13 +11347,13 @@ if(use_xmlhttprequest == "1")
 			<td class="tcat"><span class="smalltext"><strong>{$lang->message}</strong></span></td>
 		</tr>
 		]]></template>
-		<template name="showthread_inlinemoderation" version="1807"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1807"></script>
-<form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;">
+		<template name="showthread_inlinemoderation" version="1809"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1807"></script>
+<form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;" id="inlinemoderation_options">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="tid" value="{$tid}" />
 <input type="hidden" name="modtype" value="inlinepost" />
 <span class="smalltext"><strong>{$lang->inline_post_moderation}</strong></span>
-<select name="action">
+<select name="action" id="inlinemoderation_options_selector">
 {$standardposttools}
 {$customposttools}
 </select>
@@ -11366,6 +11366,10 @@ if(use_xmlhttprequest == "1")
 	var all_text = "{$threadcount}";
 	var inlineType = "thread";
 	var inlineId = {$tid};
+
+	$("#inlinemoderation_options_selector").change(function() {
+		$("#inlinemoderation_options").submit();
+	})
 // -->
 </script><br />]]></template>
 		<template name="showthread_inlinemoderation_approve" version="1800"><![CDATA[<option value="multiapproveposts">{$lang->inline_approve_posts}</option>
