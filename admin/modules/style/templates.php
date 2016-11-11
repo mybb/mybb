@@ -343,6 +343,11 @@ if($mybb->input['action'] == "add_template_group")
 			$errors[] = $lang->error_missing_group_prefix;
 		}
 
+		if(strpos($prefix, "_") !== false)
+		{
+			$errors[] = $lang->error_invalid_group_title;
+		}
+
 		$title = trim($mybb->input['title']);
 		if(!$title)
 		{
@@ -764,6 +769,11 @@ if($mybb->input['action'] == "edit_template_group")
 		if(!$prefix)
 		{
 			$errors[] = $lang->error_missing_group_prefix;
+		}
+
+		if(strpos($prefix, "_") !== false)
+		{
+			$errors[] = $lang->error_invalid_group_title;
 		}
 
 		$title = trim($mybb->input['title']);
