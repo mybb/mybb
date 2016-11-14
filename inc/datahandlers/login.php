@@ -164,8 +164,6 @@ class LoginDataHandler extends DataHandler
 
 		$user = &$this->data;
 
-		$password = md5($user['password']);
-
 		if(!$this->login_data['uid'] || $this->login_data['uid'] && !$this->login_data['salt'] && $strict == false)
 		{
 			$this->invalid_combination();
@@ -177,7 +175,7 @@ class LoginDataHandler extends DataHandler
 			{
 				// Generate a salt for this user and assume the password stored in db is a plain md5 password
 				$this->login_data['salt'] = generate_salt();
-				$this->login_data['password'] = salt_password($this->login_data['password'], $this->login_data['salt']);
+				$this->login_data['password'] = create_password_hash($this->login_data['password'], $this->login_data['salt']);
 
 				$sql_array = array(
 					"salt" => $this->login_data['salt'],
@@ -199,11 +197,9 @@ class LoginDataHandler extends DataHandler
 			}
 		}
 
-		$salted_password = md5(md5($this->login_data['salt']).$password);
-
 		$plugins->run_hooks('datahandler_login_verify_password_end', $args);
 
-		if($salted_password !== $this->login_data['password'])
+		if(!verify_user_password($this->login_data, $user['password']))
 		{
 			$this->invalid_combination(true);
 			return false;
@@ -256,7 +252,7 @@ class LoginDataHandler extends DataHandler
 		$user = &$this->data;
 
 		$options = array(
-			'fields' => array('uid', 'username', 'password', 'salt', 'loginkey', 'coppauser', 'usergroup', 'loginattempts'),
+			'fields' => '*',
 			'username_method' => (int)$settings['username_method']
 		);
 
