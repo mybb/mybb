@@ -161,7 +161,7 @@ $l['icq_number'] = "ICQ Number";
 $l['aim_handle'] = "AIM Handle";
 $l['yahoo_messanger_handle'] = "Yahoo! Messenger Handle";
 $l['skype_handle'] = "Skype Handle";
-$l['google_handle'] = "Google Talk Handle";
+$l['google_handle'] = "Google Hangouts Handle";
 $l['birthday'] = "Date of Birth";
 
 $l['away_information'] = "Away Information";
@@ -344,7 +344,7 @@ $l['icq_number_contains'] = "ICQ number contains";
 $l['aim_handle_contains'] = "AIM handle contains";
 $l['yahoo_contains'] = "Yahoo! Messenger handle contains";
 $l['skype_contains'] = "Skype handle contains";
-$l['google_contains'] = "Google Talk handle contains";
+$l['google_contains'] = "Google Hangouts handle contains";
 $l['signature_contains'] = "Signature contains";
 $l['user_title_contains'] = "Custom user title contains";
 $l['greater_than'] = "Greater than";
