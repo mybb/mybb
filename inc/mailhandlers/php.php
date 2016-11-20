@@ -46,7 +46,7 @@ class PhpMail extends MailHandler
 
 		// Some mail providers ignore email's with incorrect return-to path's so try and fix that here
 		$this->sendmail_from = @ini_get('sendmail_from');
-		if($this->sendmail_from != $mybb->settings['adminemail'])
+		if($this->sendmail_from != $mybb->settings['adminemail'] && !empty(trim($mybb->settings['adminemail'])))
 		{
 			@ini_set("sendmail_from", $mybb->settings['adminemail']);
 		}
