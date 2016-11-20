@@ -118,9 +118,11 @@ class MailHandler
 		{
 			$email = $mybb->settings['returnemail'];
 		}
-		else
+		else if(trim($mybb->settings['adminemail']))
 		{
 			$email = $mybb->settings['adminemail'];
+		}else{
+			$email = @ini_get('sendmail_from');
 		}
 		
 		return $email;
