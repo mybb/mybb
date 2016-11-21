@@ -268,6 +268,11 @@ $l['postbit_currently_ignoring_user'] = "The contents of this message are hidden
 $l['postbit_warning_level'] = "Warning Level:";
 $l['postbit_warn'] = "Warn the author for this post";
 $l['postbit_purgespammer'] = "Purge Spammer";
+$l['postbit_post_deleted'] = "This post has been deleted.";
+$l['postbit_post_unapproved'] = "This post is awaiting approval.";
+$l['postbit_thread_deleted'] = "This thread has been deleted.";
+$l['postbit_thread_unapproved'] = "This thread is awaiting approval.";
+$l['postbit_deleted_post_user'] = "This post by {1} has been deleted.";
 
 $l['postbit_button_reputation_add'] = 'Rate';
 $l['postbit_button_website'] = 'Website';

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<theme name="MyBB Master Style" version="1808">
+<theme name="MyBB Master Style" version="1809">
 	<properties>
 		<templateset><![CDATA[1]]></templateset>
 		<imgdir><![CDATA[images]]></imgdir>
@@ -9,7 +9,7 @@
 		<editortheme><![CDATA[mybb.css]]></editortheme>
 	</properties>
 	<stylesheets>
-		<stylesheet name="global.css" version="1808" disporder="1"><![CDATA[body {
+		<stylesheet name="global.css" version="1809" disporder="1"><![CDATA[body {
 	background: #fff;
 	color: #333;
 	text-align: center;
@@ -1079,6 +1079,24 @@ div.error ul {
 }
 
 .ignored_post .show_ignored_post a.button span {
+	background-position: 0 -400px;
+}
+
+.deleted_post_hidden {
+	border-top: 2px solid #ccc;
+	padding: 15px;
+}
+
+.deleted_post_collapsed {
+	border-top: 3px solid #333;
+	padding: 15px;
+}
+
+.deleted_post_collapsed .show_deleted_post {
+	margin-top: -15px;
+}
+
+.deleted_post_collapsed .show_deleted_post a.button span {
 	background-position: 0 -400px;
 }
 
@@ -3924,6 +3942,16 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 {$modbit}
 </tr>]]></template>
 		<template name="forumdisplay_thread_attachment_count" version="1800"><![CDATA[<div class="float_right"><img src="{$theme['imgdir']}/paperclip.png" alt="" title="{$attachment_count}" /></div>]]></template>
+		<template name="forumdisplay_thread_deleted" version="1809"><![CDATA[<tr class="inline_row">
+	<td align="center" class="{$bgcolor}{$thread_type_class}" width="2%"><span class="thread_status {$folder}" title="{$folder_label}">&nbsp;</span></td>
+	<td align="center" class="{$bgcolor}{$thread_type_class}" width="2%">&nbsp;</td>
+	<td class="{$bgcolor}{$thread_type_class}"><em>{$lang->deleted_thread}</em></td>
+	<td align="center" class="{$bgcolor}{$thread_type_class}">-</td>
+	<td align="center" class="{$bgcolor}{$thread_type_class}">-</td>
+	{$rating}
+	<td class="{$bgcolor}{$thread_type_class}" style="white-space: nowrap; text-align: right;">-</td>
+	{$modbit}
+</tr>]]></template>
 		<template name="forumdisplay_thread_gotounread" version="1800"><![CDATA[<a href="{$thread['newpostlink']}"><img src="{$theme['imgdir']}/jump.png" alt="{$lang->goto_first_unread}" title="{$lang->goto_first_unread}" /></a> ]]></template>
 		<template name="forumdisplay_thread_icon" version="1800"><![CDATA[<img src="{$icon['path']}" alt="{$icon['name']}" title="{$icon['name']}" />]]></template>
 		<template name="forumdisplay_thread_modbit" version="1800"><![CDATA[<td class="{$bgcolor}{$thread_type_class}" align="center" style="white-space: nowrap"><input type="checkbox" class="checkbox" name="inlinemod_{$multitid}" id="inlinemod_{$multitid}" value="1" {$inlinecheck}  /></td>]]></template>
@@ -6290,7 +6318,7 @@ if(use_xmlhttprequest == "1")
 						<td class="{$trow}" align="center"><a href="modcp.php?action=delete_announcement&amp;aid={$aid}">{$lang->delete}</a></td>
 					</tr>]]></template>
 		<template name="modcp_announcements_day" version="1809"><![CDATA[<option value="{$day}"{$selected}>{$day}</option>]]></template>
-		<template name="modcp_announcements_delete" version="1800"><![CDATA[<html>
+		<template name="modcp_announcements_delete" version="1809"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->delete_announcement}</title>
 {$headerinclude}
@@ -6315,7 +6343,6 @@ if(use_xmlhttprequest == "1")
 					<br />
 					<div align="center"><input type="submit" class="button" name="submit" value="{$lang->delete_announcement}" /></div>
 					<input type="hidden" name="aid" value="{$aid}" />
-					</form>
 				</td>
 			</tr>
 		</table>
@@ -9469,7 +9496,7 @@ if(use_xmlhttprequest == "1")
 	<label><input type="radio" name="postoptions[subscriptionmethod]" {$postoptions_subscriptionmethod_pm} value="pm" style="vertical-align: middle;" /> {$lang->instant_pm_subscribe}</label><br />
 </td>
 </tr>]]></template>
-		<template name="postbit" version="1801"><![CDATA[{$ignore_bit}
+		<template name="postbit" version="1809"><![CDATA[{$ignore_bit}{$deleted_bit}
 <a name="pid{$post['pid']}" id="pid{$post['pid']}"></a>
 <div class="post {$unapproved_shade}" style="{$post_visibility}" id="post_{$post['pid']}">
 <div class="post_author">
@@ -9537,7 +9564,7 @@ if(use_xmlhttprequest == "1")
 	{$post['replink']}{$post['profilefield']}{$post['warninglevel']}]]></template>
 		<template name="postbit_avatar" version="1800"><![CDATA[<div class="author_avatar"><a href="{$post['profilelink_plain']}"><img src="{$useravatar['image']}" alt="" {$useravatar['width_height']} /></a></div>]]></template>
 		<template name="postbit_away" version="1800"><![CDATA[<a href="{$post['profilelink_plain']}" title="{$lang->postbit_status_away}"><img src="{$theme['imgdir']}/buddy_away.png" border="0" alt="{$lang->postbit_status_away}" class="buddy_status" /></a>]]></template>
-		<template name="postbit_classic" version="1801"><![CDATA[{$ignore_bit}
+		<template name="postbit_classic" version="1809"><![CDATA[{$ignore_bit}{$deleted_bit}
 <a name="pid{$post['pid']}" id="pid{$post['pid']}"></a>
 <div class="post classic {$unapproved_shade}" style="{$post_visibility}" id="post_{$post['pid']}">
 <div class="post_author scaleimages">
@@ -9580,6 +9607,26 @@ if(use_xmlhttprequest == "1")
 </div>
 </div>]]></template>
 		<template name="postbit_delete_pm" version="1800"><![CDATA[<a href="private.php?action=delete&amp;pmid={$id}&amp;my_post_key={$mybb->post_code}" title="{$lang->delete_title}" class="postbit_delete_pm"><span>{$lang->postbit_button_delete_pm}</span></a>]]></template>
+		<template name="postbit_deleted" version="1809"><![CDATA[<div class="deleted_post_collapsed" id="deleted_post_{$post['pid']}">
+	<div class="deleted_post_author"><strong><span class="largetext">{$post['profilelink']}</span></strong></div>
+	<div class="deleted_post_message">
+		<div class="show_deleted_post float_right" style="vertical-align: top;" id="show_deleted_link_{$post['pid']}"><a href="#" onclick="Thread.showDeletedPost({$post['pid']}); return false;" class="button small_button"><span>{$lang->postbit_show_ignored_post}</span></a></div>
+<script type="text/javascript">
+<!--
+	$('#show_deleted_link_{$post['pid']}').show();
+// -->
+</script>
+		{$deleted_message}
+	</div>
+</div>]]></template>
+		<template name="postbit_deleted_member" version="1809"><![CDATA[<a name="pid{$post['pid']}" id="pid{$post['pid']}"></a>
+<div class="post deleted_post_hidden" id="post_{$post['pid']}">
+	<div class="deleted_post_author"><strong><span class="largetext">{$post['profilelink']}</span></strong></div>
+		<div class="post_content">
+			<em>{$lang->postbit_post_deleted}</em>
+		</div>
+	</div>
+</div>]]></template>
 		<template name="postbit_edit" version="1800"><![CDATA[<a href="editpost.php?pid={$post['pid']}" id="edit_post_{$post['pid']}" title="{$lang->postbit_edit}" class="postbit_edit"><span>{$lang->postbit_button_edit}</span></a>
 <div id="edit_post_{$post['pid']}_popup" class="popup_menu" style="display: none;"><div class="popup_item_container"><a href="javascript:;" class="popup_item quick_edit_button" id="quick_edit_post_{$post['pid']}">{$lang->postbit_quick_edit}</a></div><div class="popup_item_container"><a href="editpost.php?pid={$post['pid']}" class="popup_item">{$lang->postbit_full_edit}</a></div></div>
 <script type="text/javascript">
@@ -9654,6 +9701,9 @@ if(use_xmlhttprequest == "1")
 		<template name="postbit_reputation_formatted_link" version="1800"><![CDATA[<a href="reputation.php?uid={$uid}"><strong class="{$reputation_class}">{$reputation}</strong></a>]]></template>
 		<template name="postbit_signature" version="1800"><![CDATA[<div class="signature scaleimages">
 {$post['signature']}
+</div>]]></template>
+		<template name="postbit_status" version="1809"><![CDATA[<div class="float_right">
+	<em><strong>{$status_type}</strong></em>
 </div>]]></template>
 		<template name="postbit_userstar" version="1800"><![CDATA[<img src="{$post['starimage']}" border="0" alt="*" />]]></template>
 		<template name="postbit_warn" version="1800"><![CDATA[<a href="warnings.php?action=warn&amp;uid={$post['uid']}&amp;pid={$post['pid']}" title="{$lang->postbit_warn}" class="postbit_warn"><span>{$lang->postbit_button_warn}</span></a>]]></template>
@@ -11263,7 +11313,7 @@ if(use_xmlhttprequest == "1")
 <!-- jeditable (jquery) -->
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/report.js?ver=1804"></script>
 <script src="{$mybb->asset_url}/jscripts/jeditable/jeditable.min.js"></script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/thread.js?ver=1808"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/thread.js?ver=1809"></script>
 </head>
 <body>
 	{$header}
@@ -11350,13 +11400,13 @@ if(use_xmlhttprequest == "1")
 			<td class="tcat"><span class="smalltext"><strong>{$lang->message}</strong></span></td>
 		</tr>
 		]]></template>
-		<template name="showthread_inlinemoderation" version="1807"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1807"></script>
-<form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;">
+		<template name="showthread_inlinemoderation" version="1809"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1807"></script>
+<form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;" id="inlinemoderation_options">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="tid" value="{$tid}" />
 <input type="hidden" name="modtype" value="inlinepost" />
 <span class="smalltext"><strong>{$lang->inline_post_moderation}</strong></span>
-<select name="action">
+<select name="action" id="inlinemoderation_options_selector">
 {$standardposttools}
 {$customposttools}
 </select>
@@ -11369,6 +11419,10 @@ if(use_xmlhttprequest == "1")
 	var all_text = "{$threadcount}";
 	var inlineType = "thread";
 	var inlineId = {$tid};
+
+	$("#inlinemoderation_options_selector").change(function() {
+		$("#inlinemoderation_options").submit();
+	})
 // -->
 </script><br />]]></template>
 		<template name="showthread_inlinemoderation_approve" version="1800"><![CDATA[<option value="multiapproveposts">{$lang->inline_approve_posts}</option>
@@ -11622,13 +11676,15 @@ if(use_xmlhttprequest == "1")
 <td class="trow1">{$threadedbits}</td>
 </tr>
 </table>]]></template>
-		<template name="showthread_threadnotes" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder tfixed">
+		<template name="showthread_threadnotes" version="1809"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder tfixed">
+<thead>
 <tr>
 	<td class="thead thead_collapse{$collapsedimg['threadnotes']}">
 		<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['threadnotes']}.png" id="threadnotes_img" class="expander" alt="[-]" title="[-]" /></div>
 		<div><span class="smalltext"><strong>{$lang->view_thread_notes}</strong></span></div>
 	</td>
 </tr>
+</thead>
 <tbody style="{$collapsed['threadnotes_e']}" id="threadnotes_e">
 <tr>
 	<td class="trow1">

@@ -731,7 +731,7 @@ if($mybb->input['action'] == "add_thread_tool")
 			$mybb->input['stickthread'] = '';
 		}
 
-		if(!$mybb->get_input('threadprefix', MyBB::INPUT_INT))
+		if(!isset($mybb->input['threadprefix']))
 		{
 			$mybb->input['threadprefix'] = '';
 		}

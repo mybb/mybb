@@ -153,7 +153,7 @@ class PostDataHandler extends DataHandler
 				$this->errors = array_merge($this->errors, $userhandler->get_errors());
 				return false;
 			}
-			
+
 			if($userhandler->verify_username_exists())
 			{
 				// username is in use
@@ -1101,7 +1101,7 @@ class PostDataHandler extends DataHandler
 			$done_users = array();
 
 			$subject = $parser->parse_badwords($thread['subject']);
-			
+
 			$parser_options = array(
 				'me_username'		=> $post['username'],
 				'filter_badwords'	=> 1

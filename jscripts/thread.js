@@ -434,6 +434,12 @@ var Thread = {
 		$('#post_'+pid).slideToggle("slow");
 	},
 
+	showDeletedPost: function(pid)
+	{
+		$('#deleted_post_'+pid).slideToggle("slow");
+		$('#post_'+pid).slideToggle("slow");
+	},
+
 	deletePost: function(pid)
 	{
 		$.prompt(quickdelete_confirm, {

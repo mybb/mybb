@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<settings version="1808">
+<settings version="1809">
 	<settinggroup name="onlineoffline" title="Board Online / Offline" description="These settings allow you to globally turn your forums online or offline, and allow you to specify a reason for turning them off." disporder="1" isdefault="1">
 		<setting name="boardclosed">
 			<title>Board Closed</title>
@@ -2389,8 +2389,8 @@ delete=Delete]]></optionscode>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="allowgooglefield">
-			<title>Allow Google Talk ID Field To Usergroups</title>
-			<description><![CDATA[Select the usergroups which should be allowed to use the Google Talk ID contact field.]]></description>
+			<title>Allow Google Hangouts ID Field To Usergroups</title>
+			<description><![CDATA[Select the usergroups which should be allowed to use the Google Hangouts ID contact field.]]></description>
 			<disporder>5</disporder>
 			<optionscode><![CDATA[groupselect]]></optionscode>
 			<settingvalue><![CDATA[-1]]></settingvalue>

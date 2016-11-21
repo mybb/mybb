@@ -70,6 +70,10 @@ if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
 	if(!$userhandler->verify_signature())
 	{
 		$error = inline_error($userhandler->get_friendly_errors());
+	}
+
+	if(isset($error) || !empty($mybb->input['preview']))
+	{
 		$mybb->input['action'] = "editsig";
 	}
 }

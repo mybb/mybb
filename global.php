@@ -612,7 +612,7 @@ if($mybb->settings['reportmethod'] == "db" && ($mybb->usergroup['cancp'] == 1 ||
 	{
 		// First we check if the user's a super admin: if yes, we don't care about permissions
 		$can_access_moderationqueue = true;
-		$is_super_admin = is_super_admin($recipient['uid']);
+		$is_super_admin = is_super_admin($mybb->user['uid']);
 		if(!$is_super_admin)
 		{
 			// Include admin functions

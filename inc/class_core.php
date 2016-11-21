@@ -614,6 +614,7 @@ $fpermfields = array(
 	'candeleteposts',
 	'candeletethreads',
 	'caneditattachments',
+	'canviewdeletionnotice',
 	'modposts',
 	'modthreads',
 	'modattachments',

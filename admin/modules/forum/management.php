@@ -719,6 +719,7 @@ $(document).ready(function() {
 			'candeleteposts' => 'editing',
 			'candeletethreads' => 'editing',
 			'caneditattachments' => 'editing',
+			'canviewdeletionnotice' => 'editing',
 
 			'modposts' => 'moderate',
 			'modthreads' => 'moderate',
