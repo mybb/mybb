@@ -38,6 +38,7 @@ if($mybb->input['action'] == "activate" && $mybb->request_method == "post")
 	}
 
 	$num_activated = $num_deleted = 0;
+	$users_to_delete = array();
 	if($mybb->input['delete']) // Delete selected user(s)
 	{
 		require_once MYBB_ROOT.'inc/datahandlers/user.php';
@@ -49,8 +50,13 @@ if($mybb->input['action'] == "activate" && $mybb->request_method == "post")
 			if($user['usergroup'] == 5)
 			{
 				++$num_deleted;
-				$userhandler->delete_user($user['uid'], 1);
+				$users_to_delete[] = (int)$user['uid'];
 			}
+		}
+
+		if(!empty($users_to_delete))
+		{
+			$userhandler->delete_user($users_to_delete, 1);
 		}
 
 		$plugins->run_hooks("admin_user_awaiting_activation_activate_delete_commit");
