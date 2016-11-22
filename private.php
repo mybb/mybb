@@ -2096,12 +2096,14 @@ if(!$mybb->input['action'])
 	switch(my_strtolower($mybb->input['order']))
 	{
 		case "asc":
+			$mybb->input['order'] = "asc";
 			$sortordernow = "asc";
 			$ordersel['asc'] = "selected=\"selected\"";
 			$oppsort = $lang->desc;
 			$oppsortnext = "desc";
 			break;
 		default:
+			$mybb->input['order'] = "desc";
 			$sortordernow = "desc";
 			$ordersel['desc'] = "selected=\"selected\"";
 			$oppsort = $lang->asc;
