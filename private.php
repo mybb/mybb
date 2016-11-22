@@ -2163,7 +2163,7 @@ if(!$mybb->input['action'])
 
 	if($mybb->input['order'] || ($sortby && $sortby != "dateline"))
 	{
-		$page_url = "private.php?fid={$folder}&sortby={$sortby}&order={$mybb->input['order']}";
+		$page_url = "private.php?fid={$folder}&sortby={$sortby}&order={$sortordernow}";
 	}
 	else
 	{
@@ -2194,7 +2194,7 @@ if(!$mybb->input['action'])
 			FROM ".TABLE_PREFIX."privatemessages pm
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.toid)
 			WHERE pm.folder='{$folder}' AND pm.uid='{$mybb->user['uid']}'
-			ORDER BY {$u}{$sortfield} {$mybb->input['order']}
+			ORDER BY {$u}{$sortfield} {$sortordernow}
 			LIMIT {$start}, {$perpage}
 		");
 		while($row = $db->fetch_array($users_query))
