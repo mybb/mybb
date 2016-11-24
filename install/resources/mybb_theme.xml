@@ -2524,7 +2524,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 				// -->
 				</script>
 				<dl style="margin-top: 0; margin-bottom: 0; width: 100%;">
-					<dt><input type="radio" name="type" value="single" {$type_single} id="type_single" onclick="toggleType();" /> <label for="type_single"><strong>{$lang->type_single}</strong></label></dt>
+					<dt><input type="radio" name="type" value="single" {$type_single} id="type_single" onclick="toggleType(); return false;" /> <label for="type_single"><strong>{$lang->type_single}</strong></label></dt>
 					<dd style="margin-top: 4px;" id="single_selects">
 						<select name="single_day">
 							{$single_days}
@@ -2549,7 +2549,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 							{$single_years}
 						</select>
 					</dd>
-					<dt><input type="radio" name="type" value="ranged" {$type_ranged} id="type_ranged" onclick="toggleType();" /> <label for="type_ranged"><strong>{$lang->type_ranged}</strong></label></dt>
+					<dt><input type="radio" name="type" value="ranged" {$type_ranged} id="type_ranged" onclick="toggleType(); return false;" /> <label for="type_ranged"><strong>{$lang->type_ranged}</strong></label></dt>
 					<dd style="margin-top: 4px; width: 100%;" id="ranged_selects">
 						<table width="100%">
 							<tr>
@@ -2948,7 +2948,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 				// -->
 				</script>
 				<dl style="margin-top: 0; margin-bottom: 0; width: 100%;">
-					<dt><input type="radio" name="type" value="single" {$type_single} id="type_single" onclick="toggleType();" /> <label for="type_single"><strong>{$lang->type_single}</strong></label></dt>
+					<dt><input type="radio" name="type" value="single" {$type_single} id="type_single" onclick="toggleType(); return false;" /> <label for="type_single"><strong>{$lang->type_single}</strong></label></dt>
 					<dd style="margin-top: 4px;" id="single_selects">
 						<select name="single_day">
 							{$single_days}
@@ -2973,7 +2973,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 							{$single_years}
 						</select>
 					</dd>
-					<dt><input type="radio" name="type" value="ranged" {$type_ranged} id="type_ranged" onclick="toggleType();" /> <label for="type_ranged"><strong>{$lang->type_ranged}</strong></label></dt>
+					<dt><input type="radio" name="type" value="ranged" {$type_ranged} id="type_ranged" onclick="toggleType(); return false;" /> <label for="type_ranged"><strong>{$lang->type_ranged}</strong></label></dt>
 					<dd style="margin-top: 4px; width: 100%;" id="ranged_selects">
 						<table width="100%">
 							<tr>
@@ -3799,7 +3799,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 	{$customthreadtools}
 </select>
 <input type="submit" class="button" name="go" value="{$lang->inline_go} ({$inlinecount})" id="inline_go" />&nbsp;
-<input type="button" onclick="javascript:inlineModeration.clearChecked();" value="{$lang->clear}" class="button" />
+<input type="button" onclick="inlineModeration.clearChecked(); return false;" value="{$lang->clear}" class="button" />
 </form>
 <script type="text/javascript">
 <!--
@@ -3812,7 +3812,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 <br />]]></template>
 		<template name="forumdisplay_inlinemoderation_approveunapprove" version="1800"><![CDATA[<option value="multiapprovethreads">{$lang->approve_threads}</option>
 <option value="multiunapprovethreads">{$lang->unapprove_threads}</option>]]></template>
-		<template name="forumdisplay_inlinemoderation_col" version="1400"><![CDATA[<td class="tcat" align="center" width="1"><input type="checkbox" name="allbox" onclick="inlineModeration.checkAll(this)" /></td>]]></template>
+		<template name="forumdisplay_inlinemoderation_col" version="1400"><![CDATA[<td class="tcat" align="center" width="1"><input type="checkbox" name="allbox" onclick="inlineModeration.checkAll(this); return false;" /></td>]]></template>
 		<template name="forumdisplay_inlinemoderation_custom" version="120"><![CDATA[<optgroup label="{$lang->custom_mod_tools}">{$customthreadtools}</optgroup>]]></template>
 		<template name="forumdisplay_inlinemoderation_custom_tool" version="120"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
 		<template name="forumdisplay_inlinemoderation_delete" version="1800"><![CDATA[<option value="multideletethreads">{$lang->delete_threads}</option>]]></template>
@@ -3821,10 +3821,10 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 <option value="multiopenthreads">{$lang->open_threads}</option>]]></template>
 		<template name="forumdisplay_inlinemoderation_restore" version="1800"><![CDATA[<option value="multirestorethreads">{$lang->restore_threads}</option>]]></template>
 		<template name="forumdisplay_inlinemoderation_selectall" version="1600"><![CDATA[<tr id="selectAllrow" class="hiddenrow">
-	<td colspan="8" class="selectall">{$lang->page_selected} <a href="#" onclick='inlineModeration.selectAll();'>{$lang->select_all}</a></td>
+	<td colspan="8" class="selectall">{$lang->page_selected} <a href="javascript:void(0)" onclick='inlineModeration.selectAll(); return false;'>{$lang->select_all}</a></td>
 </tr>
 <tr id="allSelectedrow" class="hiddenrow">
-	<td colspan="8" class="selectall">{$lang->all_selected} <a href="#" onclick='inlineModeration.clearChecked();'>{$lang->clear_selection}</a></td>
+	<td colspan="8" class="selectall">{$lang->all_selected} <a href="javascript:void(0)" onclick='inlineModeration.clearChecked(); return false;'>{$lang->clear_selection}</a></td>
 </tr>]]></template>
 		<template name="forumdisplay_inlinemoderation_softdelete" version="1800"><![CDATA[<option value="multisoftdeletethreads">{$lang->soft_delete_threads}</option>]]></template>
 		<template name="forumdisplay_inlinemoderation_standard" version="1800"><![CDATA[<optgroup label="{$lang->standard_mod_tools}">
@@ -4162,7 +4162,7 @@ $(".forumjump").change(function() {
 </div>]]></template>
 		<template name="global_pending_joinrequests" version="1600"><![CDATA[<div class="red_alert"><a href="{$mybb->settings['bburl']}/usercp.php?action=usergroups">{$lang->pending_joinrequests}</a></div>]]></template>
 		<template name="global_pm_alert" version="1800"><![CDATA[<div class="pm_alert" id="pm_notice">
-	<div class="float_right"><a href="{$mybb->settings['bburl']}/private.php?action=dismiss_notice&amp;my_post_key={$mybb->post_code}" title="{$lang->dismiss_notice}" onclick="return MyBB.dismissPMNotice('{$mybb->settings['bburl']}/')"><img src="{$theme['imgdir']}/dismiss_notice.png" alt="{$lang->dismiss_notice}" title="{$lang->dismiss_notice}" /></a></div>
+	<div class="float_right"><a href="{$mybb->settings['bburl']}/private.php?action=dismiss_notice&amp;my_post_key={$mybb->post_code}" title="{$lang->dismiss_notice}" onclick="return MyBB.dismissPMNotice('{$mybb->settings['bburl']}/');"><img src="{$theme['imgdir']}/dismiss_notice.png" alt="{$lang->dismiss_notice}" title="{$lang->dismiss_notice}" /></a></div>
 	<div>{$privatemessage_text}</div>
 </div>]]></template>
 		<template name="global_unreadreports" version="1800"><![CDATA[<div class="red_alert"><a href="{$mybb->settings['bburl']}/modcp.php?action=reports">{$lang->unread_reports}</a></div>]]></template>
@@ -4267,7 +4267,7 @@ $(".forumjump").change(function() {
 			{$admincplink}
 		</ul>
 		<ul class="menu user_links">
-			<li><a href="#" onclick="MyBB.popupWindow('{$mybb->settings['bburl']}/misc.php?action=buddypopup&modal=1', null, true); return false;">{$lang->welcome_open_buddy_list}</a></li>
+			<li><a href="javascript:void(0)" onclick="MyBB.popupWindow('{$mybb->settings['bburl']}/misc.php?action=buddypopup&modal=1', null, true); return false;">{$lang->welcome_open_buddy_list}</a></li>
 			<li><a href="{$mybb->settings['bburl']}/search.php?action=getnew">{$lang->welcome_newposts}</a></li>
 			<li><a href="{$mybb->settings['bburl']}/search.php?action=getdaily">{$lang->welcome_todaysposts}</a></li>
 			<li><a href="{$mybb->settings['bburl']}/private.php">{$lang->welcome_pms}</a> {$lang->welcome_pms_usage}</li>
@@ -6905,7 +6905,7 @@ if(use_xmlhttprequest == "1")
 										<tr>
 											<td>
 <dl style="margin-top: 0; margin-bottom: 0;">
-<dt><label><input type="checkbox" name="moderateposting" value="1" {$modpost_checked} class="checkbox" onclick="toggleSuspend('modposts');" id="modpost" /> {$lang->moderate_posts}</label></dt>
+<dt><label><input type="checkbox" name="moderateposting" value="1" {$modpost_checked} class="checkbox" onclick="toggleSuspend('modposts'); return false;" id="modpost" /> {$lang->moderate_posts}</label></dt>
 <dd style="margin-top: 4px;" id="modposts_action">
 <table cellpadding="4">
 {$moderateposts_info}
@@ -6921,7 +6921,7 @@ if(use_xmlhttprequest == "1")
 										<tr>
 											<td>
 <dl style="margin-top: 0; margin-bottom: 0;">
-<dt><label><input type="checkbox" name="suspendposting" value="1" {$suspost_checked} class="checkbox" onclick="toggleSuspend('susposts');" id="suspost" /> {$lang->suspend_posts}</label></dt>
+<dt><label><input type="checkbox" name="suspendposting" value="1" {$suspost_checked} class="checkbox" onclick="toggleSuspend('susposts'); return false;" id="suspost" /> {$lang->suspend_posts}</label></dt>
 <dd style="margin-top: 4px;" id="susposts_action">
 <table cellpadding="4">
 {$suspendposting_info}
@@ -7102,7 +7102,7 @@ if(use_xmlhttprequest == "1")
 // -->
 </script>
 <dl style="margin-top: 0; margin-bottom: 0; width: 100%;">
-<dt><label><input type="checkbox" name="suspendsignature" value="1" class="checkbox" {$checked_item} onclick="toggleAction();" /> {$lang->suspend_signature}</label></dt>
+<dt><label><input type="checkbox" name="suspendsignature" value="1" class="checkbox" {$checked_item} onclick="toggleAction(); return false;" /> {$lang->suspend_signature}</label></dt>
 <dd style="margin-top: 4px;" id="suspend_action">
 <table cellpadding="4">
 {$suspendsignature_info}
@@ -7532,9 +7532,9 @@ if(use_xmlhttprequest == "1")
 		<template name="modcp_modqueue_link_forum" version="1800"><![CDATA[<strong>{$lang->meta_forum} <a href="{$forum_link}">{$forum_name}</a></strong><br />]]></template>
 		<template name="modcp_modqueue_link_thread" version="1800"><![CDATA[<strong>{$lang->meta_thread} <a href="{$post['threadlink']}">{$post['threadsubject']}</a></strong>]]></template>
 		<template name="modcp_modqueue_masscontrols" version="1800"><![CDATA[<ul class="modqueue_mass">
-  <li><a href="#" class="mass_ignore" onclick="$('input.radio_ignore').each(function(){ $(this).prop('checked', true); }); return false">{$lang->mark_all_ignored}</a></li>
-	<li><a href="#" class="mass_delete" onclick="$('input.radio_delete').each(function(){ $(this).prop('checked', true); }); return false;">{$lang->mark_all_deletion}</a></li>
-	<li><a href="#" class="mass_approve" onclick="$('input.radio_approve').each(function(){ $(this).prop('checked', true); }); return false;">{$lang->mark_all_approved}</a></li>
+	<li><a href="javascript:void(0)" class="mass_ignore" onclick="$('input.radio_ignore').each(function(){ $(this).prop('checked', true); }); return false;">{$lang->mark_all_ignored}</a></li>
+	<li><a href="javascript:void(0)" class="mass_delete" onclick="$('input.radio_delete').each(function(){ $(this).prop('checked', true); }); return false;">{$lang->mark_all_deletion}</a></li>
+	<li><a href="javascript:void(0)" class="mass_approve" onclick="$('input.radio_approve').each(function(){ $(this).prop('checked', true); }); return false;">{$lang->mark_all_approved}</a></li>
 </ul>]]></template>
 		<template name="modcp_modqueue_posts" version="1800"><![CDATA[<html>
 <head>
@@ -7741,7 +7741,7 @@ if(use_xmlhttprequest == "1")
 			<td class="tcat" align="left" width="25%"><span class="smalltext"><strong>{$lang->report_type}</strong></span></td>
 			<td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{$lang->report_count}</strong></span></td>
 			<td class="tcat" align="right" width="20%"><span class="smalltext"><strong>{$lang->report_lastpost}</strong></span></td>
-			<td class="tcat" align="center" width="5%"><input type="checkbox" name="allbox" onclick="selectReportedPosts();" /></td>
+			<td class="tcat" align="center" width="5%"><input type="checkbox" name="allbox" onclick="selectReportedPosts(); return false;" /></td>
 		</tr>
 		{$reports}
 		<tr>
@@ -7834,7 +7834,7 @@ if(use_xmlhttprequest == "1")
 	<td class="{$trow}" align="left">{$report_data['comment']}</td>
 	<td class="{$trow}" align="center">{$report_data['reports']}</td>
 	<td class="{$trow} smalltext" align="right">{$report_data['lastreporter']}</td>
-	<td class="{$trow}" align="center"><input type="checkbox" class="checkbox" name="reports[]" id="reports_{$report['rid']}" value="{$report['rid']}" onclick="checkReportedPost(this);" /></td>
+	<td class="{$trow}" align="center"><input type="checkbox" class="checkbox" name="reports[]" id="reports_{$report['rid']}" value="{$report['rid']}" onclick="checkReportedPost(this); return false;" /></td>
 </tr>]]></template>
 		<template name="modcp_reports_report_comment" version="1808"><![CDATA[{$reason}]]></template>
 		<template name="modcp_reports_report_comment_extra" version="1808"><![CDATA[{$reason}: {$comment}]]></template>
@@ -8078,20 +8078,20 @@ if(use_xmlhttprequest == "1")
 // -->
 </script>
 <dl style="margin-top: 0; margin-bottom: 0; width: 100%;">
-	<dt><input type="radio" name="type" value="openclosethread" {$type_selected['openclosethread']} id="type_openclosethread" onclick="toggleType();" /> <label for="type_openclosethread"><strong>{$lang->open_close_thread}</strong></label></dt>
-	<dt><input type="radio" name="type" value="softdeleterestorethread" {$type_selected['softdeleterestorethread']} id="type_softdeleterestorethread" onclick="toggleType();" /> <label for="type_softdeleterestorethread"><strong>{$lang->softdelete_restore_thread}</strong></label></dt>
-	<dt><input type="radio" name="type" value="deletethread" {$type_selected['deletethread']} id="type_deletethread" onclick="toggleType();" /> <label for="type_deletethread"><strong>{$lang->delete_thread}</strong></label></dt>
-	<dt><input type="radio" name="type" value="move" {$type_selected['move']} id="type_movecopythread" onclick="toggleType();" /> <label for="type_movecopythread"><strong>{$lang->move_copy_thread}</strong></label></dt>
+	<dt><input type="radio" name="type" value="openclosethread" {$type_selected['openclosethread']} id="type_openclosethread" onclick="toggleType(); return false;" /> <label for="type_openclosethread"><strong>{$lang->open_close_thread}</strong></label></dt>
+	<dt><input type="radio" name="type" value="softdeleterestorethread" {$type_selected['softdeleterestorethread']} id="type_softdeleterestorethread" onclick="toggleType(); return false;" /> <label for="type_softdeleterestorethread"><strong>{$lang->softdelete_restore_thread}</strong></label></dt>
+	<dt><input type="radio" name="type" value="deletethread" {$type_selected['deletethread']} id="type_deletethread" onclick="toggleType(); return false;" /> <label for="type_deletethread"><strong>{$lang->delete_thread}</strong></label></dt>
+	<dt><input type="radio" name="type" value="move" {$type_selected['move']} id="type_movecopythread" onclick="toggleType(); return false;" /> <label for="type_movecopythread"><strong>{$lang->move_copy_thread}</strong></label></dt>
 	<dd style="margin-top: 4px;" id="type_movecopythread_expanded">
 	{$lang->new_forum}<br />
 	{$forumselect}
 	{$moderation_delayedmoderation_move}
 	</dd>
-	<dt><input type="radio" name="type" value="stick" {$type_selected['stick']} id="type_stick_unstick_thread" onclick="toggleType();" /> <label for="type_stick_unstick_thread"><strong>{$lang->stick_unstick_thread}</strong></label></dt>
+	<dt><input type="radio" name="type" value="stick" {$type_selected['stick']} id="type_stick_unstick_thread" onclick="toggleType(); return false;" /> <label for="type_stick_unstick_thread"><strong>{$lang->stick_unstick_thread}</strong></label></dt>
 	{$moderation_delayedmoderation_merge}
-	<dt><input type="radio" name="type" value="removeredirects" {$type_selected['removeredirects']} id="type_removeredirects" onclick="toggleType();" /> <label for="type_removeredirects"><strong>{$lang->remove_redirects}</strong></label></dt>
-	<dt><input type="radio" name="type" value="removesubscriptions" {$type_selected['removesubscriptions']} id="type_removesubscriptions" onclick="toggleType();" /> <label for="type_removesubscriptions"><strong>{$lang->remove_subscriptions}</strong></label></dt>
-	<dt><input type="radio" name="type" value="approveunapprovethread" {$type_selected['approveunapprovethread']} id="type_approveunapprovethread" onclick="toggleType();" /> <label for="type_approveunapprovethread"><strong>{$lang->approve_unapprove_thread}</strong></label></dt>
+	<dt><input type="radio" name="type" value="removeredirects" {$type_selected['removeredirects']} id="type_removeredirects" onclick="toggleType(); return false;" /> <label for="type_removeredirects"><strong>{$lang->remove_redirects}</strong></label></dt>
+	<dt><input type="radio" name="type" value="removesubscriptions" {$type_selected['removesubscriptions']} id="type_removesubscriptions" onclick="toggleType(); return false;" /> <label for="type_removesubscriptions"><strong>{$lang->remove_subscriptions}</strong></label></dt>
+	<dt><input type="radio" name="type" value="approveunapprovethread" {$type_selected['approveunapprovethread']} id="type_approveunapprovethread" onclick="toggleType(); return false;" /> <label for="type_approveunapprovethread"><strong>{$lang->approve_unapprove_thread}</strong></label></dt>
 	{$customthreadtools}
 </dl>
 <script type="text/javascript">
@@ -8121,8 +8121,8 @@ if(use_xmlhttprequest == "1")
 <option value="11" {$datemonth['11']}>{$lang->november}</option>
 <option value="12" {$datemonth['12']}>{$lang->december}</option>]]></template>
 		<template name="moderation_delayedmoderation_date_day" version="1809"><![CDATA[<option value="{$day}"{$selected}>{$day}</option>]]></template>
-		<template name="moderation_delayedmoderation_custommodtool" version="1600"><![CDATA[<dt><input type="radio" name="type" value="modtool_{$tool['tid']}" {$checked} id="type_modtool_{$tool['tid']}" onclick="toggleType();" /> <label for="type_modtool_{$tool['tid']}"><strong>{$tool['name']}</strong> <small>({$lang->custom})</small></label></dt>]]></template>
-		<template name="moderation_delayedmoderation_merge" version="1600"><![CDATA[<dt><input type="radio" name="type" value="merge" {$type_selected['merge']} id="type_merge" onclick="toggleType();" /> <label for="type_merge"><strong>{$lang->merge_threads}</strong></label></dt>
+		<template name="moderation_delayedmoderation_custommodtool" version="1600"><![CDATA[<dt><input type="radio" name="type" value="modtool_{$tool['tid']}" {$checked} id="type_modtool_{$tool['tid']}" onclick="toggleType(); return false;" /> <label for="type_modtool_{$tool['tid']}"><strong>{$tool['name']}</strong> <small>({$lang->custom})</small></label></dt>]]></template>
+		<template name="moderation_delayedmoderation_merge" version="1600"><![CDATA[<dt><input type="radio" name="type" value="merge" {$type_selected['merge']} id="type_merge" onclick="toggleType(); return false;" /> <label for="type_merge"><strong>{$lang->merge_threads}</strong></label></dt>
 <dd style="margin-top: 4px; width: 100%;" id="type_merge_expanded">
 	{$lang->new_subject}<br />
 	<input type="text" class="textbox" name="delayedmoderation[subject]" value="{$mybb->input['delayedmoderation']['subject']}" size="40" /><br />
@@ -9392,7 +9392,7 @@ if(use_xmlhttprequest == "1")
 </tr>]]></template>
 		<template name="post_attachments_attachment_mod_approve" version="120"><![CDATA[<input type="submit" class="button" name="approveattach" value="{$lang->approve_attachment}" onclick="return Post.attachmentAction({$attachment['aid']},'approve');" />]]></template>
 		<template name="post_attachments_attachment_mod_unapprove" version="120"><![CDATA[<input type="submit" class="button" name="unapproveattach" value="{$lang->unapprove_attachment}" onclick="return Post.attachmentAction({$attachment['aid']},'unapprove');" />]]></template>
-		<template name="post_attachments_attachment_postinsert" version="1800"><![CDATA[<input type="button" class="button" name="insert" value="{$lang->insert_attachment_post}" onclick="$('#message').sceditor('instance').insertText('[attachment={$attachment['aid']}]');" />]]></template>
+		<template name="post_attachments_attachment_postinsert" version="1800"><![CDATA[<input type="button" class="button" name="insert" value="{$lang->insert_attachment_post}" onclick="$('#message').sceditor('instance').insertText('[attachment={$attachment['aid']}]'); return false;" />]]></template>
 		<template name="post_attachments_attachment_remove" version="1604"><![CDATA[<input type="submit" class="button" name="rem" value="{$lang->remove_attachment}" onclick="return Post.removeAttachment({$attachment['aid']});" />]]></template>
 		<template name="post_attachments_attachment_unapproved" version="120"><![CDATA[<tr>
 <td class="trow_shaded" width="1" align="center">{$attachment['icon']}</td>
@@ -9608,7 +9608,7 @@ if(use_xmlhttprequest == "1")
 		<template name="postbit_deleted" version="1809"><![CDATA[<div class="deleted_post_collapsed" id="deleted_post_{$post['pid']}">
 	<div class="deleted_post_author"><strong><span class="largetext">{$post['profilelink']}</span></strong></div>
 	<div class="deleted_post_message">
-		<div class="show_deleted_post float_right" style="vertical-align: top;" id="show_deleted_link_{$post['pid']}"><a href="#" onclick="Thread.showDeletedPost({$post['pid']}); return false;" class="button small_button"><span>{$lang->postbit_show_ignored_post}</span></a></div>
+		<div class="show_deleted_post float_right" style="vertical-align: top;" id="show_deleted_link_{$post['pid']}"><a href="javascript:void(0)" onclick="Thread.showDeletedPost({$post['pid']}); return false;" class="button small_button"><span>{$lang->postbit_show_ignored_post}</span></a></div>
 <script type="text/javascript">
 <!--
 	$('#show_deleted_link_{$post['pid']}').show();
@@ -9647,7 +9647,7 @@ if(use_xmlhttprequest == "1")
 		<template name="postbit_ignored" version="1800"><![CDATA[<div class="ignored_post" id="ignored_post_{$post['pid']}">
 	<div class="ignored_post_author"><strong><span class="largetext">{$post['profilelink']}</span></strong></div>
 	<div class="ignored_post_message">
-		<div class="show_ignored_post float_right" style="vertical-align: top;" id="show_ignored_link_{$post['pid']}"><a href="#" onclick="Thread.showIgnoredPost({$post['pid']}); return false;" class="button small_button"><span>{$lang->postbit_show_ignored_post}</span></a></div>
+		<div class="show_ignored_post float_right" style="vertical-align: top;" id="show_ignored_link_{$post['pid']}"><a href="javascript:void(0)" onclick="Thread.showIgnoredPost({$post['pid']}); return false;" class="button small_button"><span>{$lang->postbit_show_ignored_post}</span></a></div>
 <script type="text/javascript">
 <!--
 	$('#show_ignored_link_{$post['pid']}').show();
@@ -10364,7 +10364,7 @@ if(use_xmlhttprequest == "1")
 <td class="trow1" valign="top" width="200"><strong>{$lang->compose_to}</strong>
 	<script type="text/javascript">
 	<!--
-		document.write('(<a href="#" onclick="showBcc(); return false;" title="{$lang->compose_bcc_show_title}">{$lang->compose_bcc_show}<\/a>)');
+		document.write('(<a href="javascript:void(0)" onclick="showBcc(); return false;" title="{$lang->compose_bcc_show_title}">{$lang->compose_bcc_show}<\/a>)');
 	// -->
 	</script>
 	<br /><span class="smalltext">{$lang->separate_names}{$buddy_select_to}</span></td>
@@ -10524,7 +10524,7 @@ if(use_xmlhttprequest == "1")
 // -->
 </script>]]></template>
 		<template name="private_send_buddyselect" version="1800"><![CDATA[<script type="text/javascript"><!--
-document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBuddySelect(\'{$buddy_select}\');"><img src="{$theme['imgdir']}/buddies.png" alt="" style="vertical-align: middle;" alt="" title="{$lang->select_from_buddies}" /> {$lang->select_from_buddies}</a></span>');
+document.write('<br /><span class="smalltext"><a href="javascript:void(0)" onclick="UserCP.openBuddySelect(\'{$buddy_select}\'); return false;"><img src="{$theme['imgdir']}/buddies.png" alt="" style="vertical-align: middle;" alt="" title="{$lang->select_from_buddies}" /> {$lang->select_from_buddies}</a></span>');
 // --></script>]]></template>
 		<template name="private_send_tracking" version="1805"><![CDATA[<br /><label><input type="checkbox" class="checkbox" name="options[readreceipt]" value="1" tabindex="8" {$optionschecked['readreceipt']} /> {$lang->options_read_receipt}</label>]]></template>
 		<template name="private_tracking" version="1800"><![CDATA[<html>
@@ -10825,7 +10825,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </table>
   </div>
 </div>]]></template>
-		<template name="reputation_add_delete" version="1800"><![CDATA[<input type="button" class="button" name="delete" value="{$lang->delete_vote}" onclick="javascript: return MyBB.submitReputation({$user['uid']}, {$mybb->input['pid']}, 1);" />]]></template>
+		<template name="reputation_add_delete" version="1800"><![CDATA[<input type="button" class="button" name="delete" value="{$lang->delete_vote}" onclick="return MyBB.submitReputation({$user['uid']}, {$mybb->input['pid']}, 1);" />]]></template>
 		<template name="reputation_add_error" version="1800"><![CDATA[<div class="modal">
 	<div style="overflow-y: auto; max-height: 400px;">
       <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
@@ -10846,9 +10846,9 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		</td>
 	</tr>
 </table>]]></template>
-		<template name="reputation_add_negative" version="1800"><![CDATA[					<option value="{$neg_value}" class="reputation_negative" onclick="$('#reputation').attr('class', 'reputation_negative')"{$vote_check[$neg_value]}>{$negative_title}</option>]]></template>
-		<template name="reputation_add_neutral" version="1800"><![CDATA[					<option value="0" class="reputation_neutral" onclick="$('#reputation').attr('class', 'reputation_neutral')"{$vote_check[0]}>{$lang->power_neutral}</option>]]></template>
-		<template name="reputation_add_positive" version="1800"><![CDATA[					<option value="{$value}" class="reputation_positive" onclick="$('#reputation').attr('class', 'reputation_positive')"{$vote_check[$value]}>{$positive_title}</option>
+		<template name="reputation_add_negative" version="1800"><![CDATA[					<option value="{$neg_value}" class="reputation_negative" onclick="$('#reputation').attr('class', 'reputation_negative'); return false;"{$vote_check[$neg_value]}>{$negative_title}</option>]]></template>
+		<template name="reputation_add_neutral" version="1800"><![CDATA[					<option value="0" class="reputation_neutral" onclick="$('#reputation').attr('class', 'reputation_neutral'); return false;"{$vote_check[0]}>{$lang->power_neutral}</option>]]></template>
+		<template name="reputation_add_positive" version="1800"><![CDATA[					<option value="{$value}" class="reputation_positive" onclick="$('#reputation').attr('class', 'reputation_positive'); return false;"{$vote_check[$value]}>{$positive_title}</option>
 {$positive_power}]]></template>
 		<template name="reputation_added" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 	<tr>
@@ -11027,13 +11027,13 @@ if(use_xmlhttprequest == "1")
 </tr>]]></template>
 		<template name="search_orderarrow" version="120"><![CDATA[<span class="smalltext">[<a href="{$sorturl}&amp;sortby={$sortby}&amp;order={$oppsortnext}">{$oppsort}</a>]</span>]]></template>
 		<template name="search_posts_inlinemoderation_selectall" version="1600"><![CDATA[<tr id="selectAllrow" class="hiddenrow">
-	<td colspan="9" class="selectall">{$lang->page_selected} <a href="#" onclick='inlineModeration.selectAll();'>{$lang->select_all}</a></td>
+	<td colspan="9" class="selectall">{$lang->page_selected} <a href="javascript:void(0)" onclick='inlineModeration.selectAll(); return false;'>{$lang->select_all}</a></td>
 </tr>
 <tr id="allSelectedrow" class="hiddenrow">
-	<td colspan="9" class="selectall">{$lang->all_selected} <a href="#" onclick='inlineModeration.clearChecked();'>{$lang->clear_selection}</a></td>
+	<td colspan="9" class="selectall">{$lang->all_selected} <a href="javascript:void(0)" onclick='inlineModeration.clearChecked(); return false;'>{$lang->clear_selection}</a></td>
 </tr>]]></template>
 		<template name="search_results_icon" version="1800"><![CDATA[<img src="{$posticon['path']}" alt="{$posticon['name']}" title="{$posticon['name']}" />]]></template>
-		<template name="search_results_inlinemodcol" version="1408"><![CDATA[<td class="tcat" align="center" width="1"><input type="checkbox" name="allbox" onclick="inlineModeration.checkAll(this)" /></td>]]></template>
+		<template name="search_results_inlinemodcol" version="1408"><![CDATA[<td class="tcat" align="center" width="1"><input type="checkbox" name="allbox" onclick="inlineModeration.checkAll(this); return false;" /></td>]]></template>
 		<template name="search_results_posts" version="1600"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->search_results}</title>
@@ -11096,7 +11096,7 @@ if(use_xmlhttprequest == "1")
 {$customposttools}
 </select>
 <input type="submit" class="button" name="go" value="{$lang->go} ({$inlinecount})" id="inline_go" />&nbsp;
-<input type="button" class="button" onclick="javascript:inlineModeration.clearChecked();" value="{$lang->clear}" />
+<input type="button" class="button" onclick="inlineModeration.clearChecked(); return false;" value="{$lang->clear}" />
 <input type="hidden" name="url" value="{$return_url}" />
 <input type="hidden" name="inlinetype" value="search" />
 </form>
@@ -11192,7 +11192,7 @@ if(use_xmlhttprequest == "1")
 	{$customthreadtools}
 </select>
 <input type="submit" class="button" name="go" value="{$lang->inline_go} ({$inlinecount})" id="inline_go" />&nbsp;
-<input type="button" onclick="javascript:inlineModeration.clearChecked();" value="{$lang->clear}" class="button" />
+<input type="button" onclick="inlineModeration.clearChecked(); return false;" value="{$lang->clear}" class="button" />
 <input type="hidden" name="url" value="{$return_url}" />
 <input type="hidden" name="inlinetype" value="search" />
 </form>
@@ -11230,10 +11230,10 @@ if(use_xmlhttprequest == "1")
 	{$inline_mod_checkbox}
 </tr>]]></template>
 		<template name="search_threads_inlinemoderation_selectall" version="1600"><![CDATA[<tr id="selectAllrow" class="hiddenrow">
-	<td colspan="8" class="selectall">{$lang->page_selected} <a href="#" onclick='inlineModeration.selectAll();'>{$lang->select_all}</a></td>
+	<td colspan="8" class="selectall">{$lang->page_selected} <a href="javascript:void(0)" onclick='inlineModeration.selectAll(); return false;'>{$lang->select_all}</a></td>
 </tr>
 <tr id="allSelectedrow" class="hiddenrow">
-	<td colspan="8" class="selectall">{$lang->all_selected} <a href="#" onclick='inlineModeration.clearChecked();'>{$lang->clear_selection}</a></td>
+	<td colspan="8" class="selectall">{$lang->all_selected} <a href="javascript:void(0)" onclick='inlineModeration.clearChecked(); return false;'>{$lang->clear_selection}</a></td>
 </tr>]]></template>
 		<template name="showteam" version="120"><![CDATA[<html>
 <head>
@@ -11409,7 +11409,7 @@ if(use_xmlhttprequest == "1")
 {$customposttools}
 </select>
 <input type="submit" class="button" name="go" value="{$lang->go} ({$inlinecount})" id="inline_go" />&nbsp;
-<input type="button" class="button" onclick="javascript:inlineModeration.clearChecked();" value="{$lang->clear}" />
+<input type="button" class="button" onclick="inlineModeration.clearChecked(); return false;" value="{$lang->clear}" />
 </form>
 <script type="text/javascript">
 <!--
@@ -13732,7 +13732,7 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
-		<template name="warnings_warn_custom" version="1400"><![CDATA[					<dt><label style="display: block;"><input type="radio" name="type" value="custom" {$type_checked['custom']} class="types_check" onclick="checkType();" style="vertical-align: middle;" /> <strong>{$lang->custom}</strong></label></dt>
+		<template name="warnings_warn_custom" version="1400"><![CDATA[					<dt><label style="display: block;"><input type="radio" name="type" value="custom" {$type_checked['custom']} class="types_check" onclick="checkType(); return false;" style="vertical-align: middle;" /> <strong>{$lang->custom}</strong></label></dt>
 					<dd style="margin-top: 4px;" id="type_custom" class="types">
 						<table>
 						<tr>
@@ -13800,7 +13800,7 @@ if(use_xmlhttprequest == "1")
 					}
 				// -->
 				</script>
-				<label style="display: block;"><input type="checkbox" class="checkbox" value="1" name="send_pm" id="send_pm" onclick="togglePM();" style="vertical-align: middle;" {$send_pm_checked} /> {$lang->send_user_warning_pm}</label>
+				<label style="display: block;"><input type="checkbox" class="checkbox" value="1" name="send_pm" id="send_pm" onclick="togglePM(); return false;" style="vertical-align: middle;" {$send_pm_checked} /> {$lang->send_user_warning_pm}</label>
 				<table id="pm_input" cellpadding="{$theme['tablespace']}">
 					<tr>
 						<td><strong>{$lang->send_pm_subject}</strong></td>
@@ -13830,7 +13830,7 @@ if(use_xmlhttprequest == "1")
 			<td width="20%" class="trow2"><strong>{$lang->post}</strong></td>
 			<td class="trow2"><input type="hidden" name="pid" value="{$post['pid']}" /><a href="{$post_link}">{$post['subject']}</a></td>
 		</tr>]]></template>
-		<template name="warnings_warn_type" version="1800"><![CDATA[					<dt><label style="display: block;"><input type="radio" name="type" value="{$type['tid']}" {$checked} class="types_check" onclick="checkType();" style="vertical-align: middle;" /> <strong>{$type['title']}</strong> {$points}</label></dt>
+		<template name="warnings_warn_type" version="1800"><![CDATA[					<dt><label style="display: block;"><input type="radio" name="type" value="{$type['tid']}" {$checked} class="types_check" onclick="checkType(); return false;" style="vertical-align: middle;" /> <strong>{$type['title']}</strong> {$points}</label></dt>
 					<dd style="margin-top: 4px;" id="type_{$type['tid']}" class="types">
 						<div class="smalltext">{$lang->new_warning_level}</div>
 						<div class="tborder float_left" style="width: 150px; margin: 0; padding: 1px;">
@@ -13852,7 +13852,7 @@ if(use_xmlhttprequest == "1")
 	<thead>
 		<tr>
 			<td class="thead">
-				<div class="float_right" style="margin-top: 3px;"><span class="smalltext"><a href="#" onclick="UserCP.closeBuddySelect(true); return false;">{$lang->close}</a></span></div>
+				<div class="float_right" style="margin-top: 3px;"><span class="smalltext"><a href="javascript:void(0)" onclick="UserCP.closeBuddySelect(true); return false;">{$lang->close}</a></span></div>
 				<div><strong>{$lang->select_buddies}</strong></div>
 			</td>
 		</tr>
@@ -13875,16 +13875,16 @@ if(use_xmlhttprequest == "1")
 			<td class="trow1">
 				<div class="smalltext"><strong>{$lang->selected_recipients}</strong></div>
 				<div id="buddyselect_buddies" class="smalltext" style="padding-left: 10px; height: 50px; overflow: auto;"></div>
-				<div style="text-align: right;"><input type="button" class="button" value="{$lang->ok}" onclick="UserCP.closeBuddySelect();" /> <input type="button" class="button" value="{$lang->cancel}" onclick="UserCP.closeBuddySelect(true);" /></div>
+				<div style="text-align: right;"><input type="button" class="button" value="{$lang->ok}" onclick="UserCP.closeBuddySelect(); return false;" /> <input type="button" class="button" value="{$lang->cancel}" onclick="UserCP.closeBuddySelect(true); return false;" /></div>
 			</td>
 		</tr>
 	</tbody>
 </table>]]></template>
 		<template name="xmlhttp_buddyselect_offline" version="1800"><![CDATA[					<tr>
-						<td class="trow1" onmouseover="this.className='trow2';" onmouseout="this.className='trow1';"><label><input type="checkbox" style="vertical-align: middle;" id="checkbox_{$buddy['uid']}" onclick="UserCP.selectBuddy('{$buddy['uid']}', '{$buddy['username']}');" /> <img src="{$theme['imgdir']}/buddy_offline.png" alt="({$lang->offline})" title="{$lang->offline}" style="vertical-align: middle;" /> {$buddy_name}</label></td>
+						<td class="trow1" onmouseover="this.className='trow2';" onmouseout="this.className='trow1';"><label><input type="checkbox" style="vertical-align: middle;" id="checkbox_{$buddy['uid']}" onclick="UserCP.selectBuddy('{$buddy['uid']}', '{$buddy['username']}'); return false;" /> <img src="{$theme['imgdir']}/buddy_offline.png" alt="({$lang->offline})" title="{$lang->offline}" style="vertical-align: middle;" /> {$buddy_name}</label></td>
 					</tr>]]></template>
 		<template name="xmlhttp_buddyselect_online" version="1800"><![CDATA[					<tr>
-						<td class="trow1" onmouseover="this.className='trow2';" onmouseout="this.className='trow1';"><label><input type="checkbox" style="vertical-align: middle;" id="checkbox_{$buddy['uid']}" onclick="UserCP.selectBuddy('{$buddy['uid']}', '{$buddy['username']}');" /> <img src="{$theme['imgdir']}/buddy_online.png" alt="({$lang->online})" title="{$lang->online}" style="vertical-align: middle;" /> {$buddy_name}</label></td>
+						<td class="trow1" onmouseover="this.className='trow2';" onmouseout="this.className='trow1';"><label><input type="checkbox" style="vertical-align: middle;" id="checkbox_{$buddy['uid']}" onclick="UserCP.selectBuddy('{$buddy['uid']}', '{$buddy['username']}'); return false;" /> <img src="{$theme['imgdir']}/buddy_online.png" alt="({$lang->online})" title="{$lang->online}" style="vertical-align: middle;" /> {$buddy_name}</label></td>
 					</tr>]]></template>
 		<template name="attachment_icon" version="1800"><![CDATA[<img src="{$icon}" title="{$name}" border="0" alt=".{$ext}" />]]></template>		<template name="changeuserbox" version="1400"><![CDATA[<tr>
 <td class="trow1" width="20%"><strong>{$lang->username}</strong></td>
