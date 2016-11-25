@@ -3271,7 +3271,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 {$footer}
 </body>
 </html>]]></template>
-		<template name="calendar_event_editbutton" version="1801"><![CDATA[<div style="text-align: right; vertical-align: bottom;" class="postbit_buttons">
+		<template name="calendar_event_editbutton" version="1809"><![CDATA[<div style="text-align: right; vertical-align: bottom;" class="postbit_buttons">
 	<a href="calendar.php?action=editevent&amp;eid={$event['eid']}" class="postbit_edit"><span>{$lang->postbit_button_edit}</span></a>
 	<a href="javascript:void(0)" onclick="MyBB.deleteEvent({$event['eid']}); return false;" class="postbit_qdelete"><span>{$lang->postbit_button_qdelete}</span></a>
 </div>]]></template>
