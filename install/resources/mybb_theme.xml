@@ -3922,7 +3922,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 {$forums}
 </table>
 <br />]]></template>
-		<template name="forumdisplay_thread" version="1801"><![CDATA[<tr class="inline_row">
+		<template name="forumdisplay_thread" version="1809"><![CDATA[<tr class="inline_row">
 	<td align="center" class="{$bgcolor}{$thread_type_class}" width="2%"><span class="thread_status {$folder}" title="{$folder_label}">&nbsp;</span></td>
 	<td align="center" class="{$bgcolor}{$thread_type_class}" width="2%">{$icon}</td>
 	<td class="{$bgcolor}{$thread_type_class}">
@@ -4947,7 +4947,7 @@ if(use_xmlhttprequest == "1")
 </ul>
 </td>
 </tr>]]></template>
-		<template name="member_profile_modoptions_viewnotes" version="1801"><![CDATA[[<a href="javascript:void(0)" onclick="MyBB.viewNotes({$memprofile['uid']}); return false;">{$lang->view_all_notes}</a>]]]></template>
+		<template name="member_profile_modoptions_viewnotes" version="1809"><![CDATA[[<a href="javascript:void(0)" onclick="MyBB.viewNotes({$memprofile['uid']}); return false;">{$lang->view_all_notes}</a>]]]></template>
 		<template name="member_profile_offline" version="1400"><![CDATA[<span class="offline" style="font-weight: bold;">{$lang->postbit_status_offline}</span>]]></template>
 		<template name="member_profile_online" version="1400"><![CDATA[<a href="online.php"><span class="online" style="font-weight: bold;">{$lang->postbit_status_online}</span></a> ({$location} @ {$location_time})]]></template>
 		<template name="member_profile_pm" version="1800"><![CDATA[<tr>
@@ -4962,7 +4962,7 @@ if(use_xmlhttprequest == "1")
 	<td class="{$bg_color}"><strong>{$lang->reputation}</strong></td>
 	<td class="{$bg_color}">{$reputation} [<a href="reputation.php?uid={$memprofile['uid']}">{$lang->reputation_details}</a>] {$vote_link}</td>
 </tr>]]></template>
-		<template name="member_profile_reputation_vote" version="1801"><![CDATA[[<a href="javascript:void(0)" onclick="MyBB.reputation({$memprofile['uid']}); return false;">{$lang->reputation_vote}</a>]]]></template>
+		<template name="member_profile_reputation_vote" version="1809"><![CDATA[[<a href="javascript:void(0)" onclick="MyBB.reputation({$memprofile['uid']}); return false;">{$lang->reputation_vote}</a>]]]></template>
 		<template name="member_profile_signature" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder tfixed">
 <tr>
 <td class="thead"><strong>{$lang->users_signature}</strong></td>
@@ -8714,7 +8714,7 @@ if(use_xmlhttprequest == "1")
 // -->
 </script>]]></template>
 		<template name="multipage_end" version="1600"><![CDATA[{$lang->multipage_link_end} <a href="{$page_url}" class="pagination_last">{$pages}</a>]]></template>
-		<template name="multipage_jump_page" version="1801"><![CDATA[<div class="popup_menu drop_go_page" style="display: none;">
+		<template name="multipage_jump_page" version="1809"><![CDATA[<div class="popup_menu drop_go_page" style="display: none;">
 	<form action="{$jump_url}" method="post">
 		<label for="page">{$lang->multipage_jump}:</label> <input type="text" class="textbox" name="page" value="{$page}" size="4" />
 		<input type="submit" class="button" value="{$lang->go}" />
@@ -8834,7 +8834,7 @@ if(use_xmlhttprequest == "1")
 <label><input type="checkbox" class="checkbox" name="modoptions[stickthread]" value="1"{$stickycheck} />&nbsp;{$lang->stick_thread}</label>
 </span></td>
 </tr>]]></template>
-		<template name="newreply_multiquote_external" version="1800"><![CDATA[<div id="multiquote_unloaded"><span class="smalltext">{$multiquote_text} <a href="./newreply.php?tid={$tid}" onclick="return Post.loadMultiQuoted();">{$multiquote_quote}</a>, <a href="javascript:void(0)" onclick="Post.clearMultiQuoted(); return false;">{$multiquote_deselect}</a></span></div>]]></template>
+		<template name="newreply_multiquote_external" version="1809"><![CDATA[<div id="multiquote_unloaded"><span class="smalltext">{$multiquote_text} <a href="./newreply.php?tid={$tid}" onclick="return Post.loadMultiQuoted();">{$multiquote_quote}</a>, <a href="javascript:void(0)" onclick="Post.clearMultiQuoted(); return false;">{$multiquote_deselect}</a></span></div>]]></template>
 		<template name="newreply_threadreview" version="1800"><![CDATA[<br />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder tfixed">
 <tr>
@@ -8921,7 +8921,7 @@ if(use_xmlhttprequest == "1")
 <label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="1" tabindex="9"{$postoptionschecked['disablesmilies']} /> {$lang->options_disablesmilies}</label>]]></template>
 		<template name="newthread_disablesmilies_hidden" version="1800"><![CDATA[<input type="hidden" name="postoptions[disablesmilies]" value="no" />]]></template>
 		<template name="newthread_draftinput" version="1808"><![CDATA[<input type="hidden" name="pid" value="{$pid}" />]]></template>
-		<template name="newthread_multiquote_external" version="1800"><![CDATA[<div id="multiquote_unloaded"><span class="smalltext">{$multiquote_text} <a href="./newthread.php?fid={$fid}&amp;load_all_quotes=1" onclick="return Post.loadMultiQuotedAll();">{$multiquote_quote}</a>, <a href="javascript:void(0)" onclick="Post.clearMultiQuoted(); return false;">{$multiquote_deselect}</a></span></div>]]></template>
+		<template name="newthread_multiquote_external" version="1809"><![CDATA[<div id="multiquote_unloaded"><span class="smalltext">{$multiquote_text} <a href="./newthread.php?fid={$fid}&amp;load_all_quotes=1" onclick="return Post.loadMultiQuotedAll();">{$multiquote_quote}</a>, <a href="javascript:void(0)" onclick="Post.clearMultiQuoted(); return false;">{$multiquote_deselect}</a></span></div>]]></template>
 		<template name="newthread_postpoll" version="120"><![CDATA[<tr>
 <td class="{$bgcolor2}" valign="top">
 <strong>{$lang->poll}</strong><br /><span class="smalltext">{$lang->poll_desc}</span>
@@ -9625,7 +9625,7 @@ if(use_xmlhttprequest == "1")
 		</div>
 	</div>
 </div>]]></template>
-		<template name="postbit_edit" version="1801"><![CDATA[<a href="editpost.php?pid={$post['pid']}" id="edit_post_{$post['pid']}" title="{$lang->postbit_edit}" class="postbit_edit"><span>{$lang->postbit_button_edit}</span></a>
+		<template name="postbit_edit" version="1809"><![CDATA[<a href="editpost.php?pid={$post['pid']}" id="edit_post_{$post['pid']}" title="{$lang->postbit_edit}" class="postbit_edit"><span>{$lang->postbit_button_edit}</span></a>
 <div id="edit_post_{$post['pid']}_popup" class="popup_menu" style="display: none;"><div class="popup_item_container"><a href="javascript:void(0)" class="popup_item quick_edit_button" id="quick_edit_post_{$post['pid']}">{$lang->postbit_quick_edit}</a></div><div class="popup_item_container"><a href="editpost.php?pid={$post['pid']}" class="popup_item">{$lang->postbit_full_edit}</a></div></div>
 <script type="text/javascript">
 // <!--
@@ -9659,7 +9659,7 @@ if(use_xmlhttprequest == "1")
 		<template name="postbit_inlinecheck" version="1800"><![CDATA[<input type="checkbox" class="checkbox" name="inlinemod_{$post['pid']}" id="inlinemod_{$post['pid']}" value="1" style="vertical-align: middle; margin: -2px 0 0 5px;" {$inlinecheck}  />]]></template>
 		<template name="postbit_iplogged_hiden" version="1800"><![CDATA[{$lang->postbit_ipaddress} <a href="moderation.php?action={$action}&amp;{$idtype}={$post[$idtype]}">{$lang->postbit_ipaddress_logged}</a>]]></template>
 		<template name="postbit_iplogged_show" version="1800"><![CDATA[{$lang->postbit_ipaddress} {$ipaddress}]]></template>
-		<template name="postbit_multiquote" version="1801"><![CDATA[<a href="javascript:void(0)" onclick="Thread.multiQuote({$post['pid']}); return false;" style="display: none;" id="multiquote_link_{$post['pid']}" title="{$lang->postbit_multiquote}" class="postbit_multiquote"><span id="multiquote_{$post['pid']}">{$lang->postbit_button_multiquote}</span></a>
+		<template name="postbit_multiquote" version="1809"><![CDATA[<a href="javascript:void(0)" onclick="Thread.multiQuote({$post['pid']}); return false;" style="display: none;" id="multiquote_link_{$post['pid']}" title="{$lang->postbit_multiquote}" class="postbit_multiquote"><span id="multiquote_{$post['pid']}">{$lang->postbit_button_multiquote}</span></a>
 <script type="text/javascript">
 //<!--
 	$('#multiquote_link_{$post['pid']}').css("display", "");
@@ -9690,10 +9690,10 @@ if(use_xmlhttprequest == "1")
 // -->
 </script>]]></template>
 		<template name="postbit_quote" version="1800"><![CDATA[<a href="newreply.php?tid={$tid}&amp;replyto={$post['pid']}" title="{$lang->postbit_quote}" class="postbit_quote"><span>{$lang->postbit_button_quote}</span></a>]]></template>
-		<template name="postbit_rep_button" version="1801"><![CDATA[<a href="javascript:void(0)" onclick="MyBB.reputation({$post['uid']},{$post['pid']}); return false;" title="{$lang->postbit_reputation_add}" class="postbit_reputation_add"><span>{$lang->postbit_button_reputation_add}</span></a>]]></template>
+		<template name="postbit_rep_button" version="1809"><![CDATA[<a href="javascript:void(0)" onclick="MyBB.reputation({$post['uid']},{$post['pid']}); return false;" title="{$lang->postbit_reputation_add}" class="postbit_reputation_add"><span>{$lang->postbit_button_reputation_add}</span></a>]]></template>
 		<template name="postbit_reply_pm" version="1800"><![CDATA[<a href="private.php?action=send&amp;pmid={$id}&amp;do=reply" title="{$lang->reply_title}" class="postbit_reply_pm"><span>{$lang->postbit_button_reply_pm}</span></a>]]></template>
 		<template name="postbit_replyall_pm" version="1480"><![CDATA[<a href="private.php?action=send&amp;pmid={$id}&amp;do=replyall" title="{$lang->reply_to_all}" class="postbit_reply_all"><span>{$lang->postbit_button_reply_all}</span></a>]]></template>
-		<template name="postbit_report" version="1801"><![CDATA[<a href="javascript:void(0)" onclick="Report.reportPost({$post['pid']}); return false;" title="{$lang->postbit_report}" class="postbit_report"><span>{$lang->postbit_button_report}</span></a>]]></template>
+		<template name="postbit_report" version="1809"><![CDATA[<a href="javascript:void(0)" onclick="Report.reportPost({$post['pid']}); return false;" title="{$lang->postbit_report}" class="postbit_report"><span>{$lang->postbit_button_report}</span></a>]]></template>
 		<template name="postbit_reputation" version="1400"><![CDATA[<br />{$lang->postbit_reputation} {$post['userreputation']}]]></template>
 		<template name="postbit_reputation_formatted" version="1800"><![CDATA[<strong class="{$reputation_class}">{$reputation}</strong>]]></template>
 		<template name="postbit_reputation_formatted_link" version="1800"><![CDATA[<a href="reputation.php?uid={$uid}"><strong class="{$reputation_class}">{$reputation}</strong></a>]]></template>
@@ -10792,7 +10792,7 @@ document.write('<br /><span class="smalltext"><a href="javascript:void(0)" oncli
 {$footer}
 </body>
 </html>]]></template>
-		<template name="reputation_add" version="1801"><![CDATA[<div class="modal">
+		<template name="reputation_add" version="1809"><![CDATA[<div class="modal">
 	<div style="overflow-y: auto; max-height: 400px;" class="modal_{$user['uid']}_{$mybb->input['pid']}">
       <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 	<tr>
@@ -10858,7 +10858,7 @@ document.write('<br /><span class="smalltext"><a href="javascript:void(0)" oncli
 		</td>
 	</tr>
 </table>]]></template>
-		<template name="reputation_addlink" version="1801"><![CDATA[<div class="float_right" style="padding-bottom: 4px;"><a href="javascript:void(0)" onclick="MyBB.reputation({$user['uid']}); return false;" class="button rate_user_button"><span>{$lang->rate_user}</span></a></div>]]></template>
+		<template name="reputation_addlink" version="1809"><![CDATA[<div class="float_right" style="padding-bottom: 4px;"><a href="javascript:void(0)" onclick="MyBB.reputation({$user['uid']}); return false;" class="button rate_user_button"><span>{$lang->rate_user}</span></a></div>]]></template>
 		<template name="reputation_deleted" version="1800"><![CDATA[
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 	<tr>
@@ -10883,7 +10883,7 @@ document.write('<br /><span class="smalltext"><a href="javascript:void(0)" oncli
 			<a href="reputation.php?action=delete&amp;uid={$reputation_vote['rated_uid']}&amp;rid={$reputation_vote['rid']}&amp;my_post_key={$mybb->post_code}" onclick="MyBB.deleteReputation({$reputation_vote['rated_uid']}, {$reputation_vote['rid']}); return false;" class="postbit_qdelete"><span>{$lang->delete_vote}</span></a>
 		</div>]]>
 		</template>
-		<template name="reputation_vote_report" version="1801"><![CDATA[		<div class="float_right postbit_buttons">
+		<template name="reputation_vote_report" version="1809"><![CDATA[		<div class="float_right postbit_buttons">
 			<a href="javascript:void(0)" onclick="Report.reportReputation({$reputation_vote['rid']}); return false;" class="postbit_report"><span>{$lang->report_vote}</span></a>
 		</div>]]>
 		</template>
@@ -11111,7 +11111,7 @@ if(use_xmlhttprequest == "1")
 		<template name="search_results_posts_inlinemoderation_custom" version="120"><![CDATA[<optgroup label="{$lang->custom_mod_tools}">{$customposttools}</optgroup>]]></template>
 		<template name="search_results_posts_inlinemoderation_custom_tool" version="120"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
 		<template name="search_results_posts_nocheck" version="120"><![CDATA[<td class="{$bgcolor}" align="center" style="white-space: nowrap">&nbsp;</td>]]></template>
-		<template name="search_results_posts_post" version="1808"><![CDATA[<tr class="inline_row">
+		<template name="search_results_posts_post" version="1809"><![CDATA[<tr class="inline_row">
 	<td align="center" class="{$bgcolor}" width="2%"><span class="thread_status {$folder}" title="{$folder_label}">&nbsp;</span></td>
 	<td align="center" class="{$bgcolor}" width="2%">{$icon}</td>
 	<td class="{$bgcolor}">
@@ -11208,7 +11208,7 @@ if(use_xmlhttprequest == "1")
 		<template name="search_results_threads_inlinemoderation_custom" version="120"><![CDATA[<optgroup label="{$lang->custom_mod_tools}">{$customthreadtools}</optgroup>]]></template>
 		<template name="search_results_threads_inlinemoderation_custom_tool" version="120"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
 		<template name="search_results_threads_nocheck" version="120"><![CDATA[<td class="{$bgcolor}" align="center" style="white-space: nowrap">&nbsp;</td>]]></template>
-		<template name="search_results_threads_thread" version="1801"><![CDATA[<tr class="inline_row">
+		<template name="search_results_threads_thread" version="1809"><![CDATA[<tr class="inline_row">
 	<td align="center" class="{$bgcolor}" width="2%"><span class="thread_status {$folder}" title="{$folder_label}">&nbsp;</span></td>
 	<td align="center" class="{$bgcolor}" width="2%">{$icon}</td>
 	<td class="{$bgcolor}">
@@ -11556,7 +11556,7 @@ if(use_xmlhttprequest == "1")
 </table>
 <br />]]></template>
 		<template name="showthread_poll_undovote" version="1800"><![CDATA[ [<a href="polls.php?action=do_undovote&amp;pid={$poll['pid']}&amp;my_post_key={$mybb->post_code}">{$lang->undo_vote}</a>]]]></template>
-		<template name="showthread_quickreply" version="1801"><![CDATA[
+		<template name="showthread_quickreply" version="1809"><![CDATA[
 <div id="quickreply_spinner" class="showthread_spinner" style="display: none"><img src="{$theme['imgdir']}/spinner.gif" /></div>
 <br />
 {$moderation_notice}
@@ -11651,7 +11651,7 @@ if(use_xmlhttprequest == "1")
 </tr>
 {$similarthreadbits}
 </table>]]></template>
-		<template name="showthread_similarthreads_bit" version="1801"><![CDATA[<tr>
+		<template name="showthread_similarthreads_bit" version="1809"><![CDATA[<tr>
 	<td align="center" class="{$trow}" width="2%">{$icon}</td>
 	<td class="{$trow}">{$similar_thread['threadprefix']}<a href="{$similar_thread['threadlink']}">{$similar_thread['subject']}</a></td>
 	<td align="center" class="{$trow}">{$similar_thread['profilelink']}</td>
@@ -11691,7 +11691,7 @@ if(use_xmlhttprequest == "1")
 </tbody>
 </table>
 <br />]]></template>
-		<template name="showthread_threadnotes_viewnotes" version="1801"><![CDATA[[<a href="javascript:void(0)" onclick="Thread.viewNotes({$thread['tid']}); return false;">{$lang->view_all_notes}</a>]]]></template>
+		<template name="showthread_threadnotes_viewnotes" version="1809"><![CDATA[[<a href="javascript:void(0)" onclick="Thread.viewNotes({$thread['tid']}); return false;">{$lang->view_all_notes}</a>]]]></template>
 		<template name="showthread_threadnoteslink" version="1800"><![CDATA[ | <a href="moderation.php?action=threadnotes&modtype=thread&tid={$thread['tid']}">{$lang->view_thread_notes}</a>]]></template>
 		<template name="showthread_usersbrowsing" version="1600"><![CDATA[<br />
 <span class="smalltext">{$lang->users_browsing_thread} {$onlinemembers}{$onlinesep}{$invisonline}{$onlinesep2}{$guestsonline}</span>
@@ -11713,7 +11713,7 @@ if(use_xmlhttprequest == "1")
 {$getmore}
 </table>
 </div>]]></template>
-		<template name="smilieinsert_getmore" version="1805"><![CDATA[<tr>
+		<template name="smilieinsert_getmore" version="1809"><![CDATA[<tr>
   <td class="trow2" align="center"><span class="smalltext"><strong>[<a href="javascript:void(0)" onclick="MyBB.popupWindow('/misc.php?action=smilies&popup=true&editor=MyBBEditor&modal=1'); return false;">{$lang->smilieinsert_getmore}</a>]</strong></span></td>
 </tr>]]></template>
 		<template name="smilieinsert_row" version="1808"><![CDATA[<tr>{$smilie_icons}</tr>]]></template>
@@ -12562,7 +12562,7 @@ if(use_xmlhttprequest == "1")
 </tr>
 {$latest_subscribed_threads}
 </table>]]></template>
-		<template name="usercp_latest_subscribed_threads" version="1801"><![CDATA[<tr>
+		<template name="usercp_latest_subscribed_threads" version="1809"><![CDATA[<tr>
 <td align="center" class="{$bgcolor}" width="2%"><span class="thread_status {$folder}" title="{$folder_label}">&nbsp;</span></td>
 <td align="center" class="{$bgcolor}" width="2%">{$icon}</td>
 <td class="{$bgcolor}">{$gotounread}{$thread['displayprefix']}<a href="{$thread['threadlink']}" class="{$new_class}">{$thread['subject']}</a><br /><span class="smalltext">{$thread['author']}</span></td>
@@ -12585,7 +12585,7 @@ if(use_xmlhttprequest == "1")
 </tr>
 {$latest_threads_threads}
 </table>]]></template>
-		<template name="usercp_latest_threads_threads" version="1801"><![CDATA[<tr>
+		<template name="usercp_latest_threads_threads" version="1809"><![CDATA[<tr>
 <td align="center" class="{$bgcolor}" width="2%"><span class="thread_status {$folder}" title="{$folder_label}">&nbsp;</span></td>
 <td align="center" class="{$bgcolor}" width="2%">{$icon}</td>
 <td class="{$bgcolor}">{$gotounread}{$thread['displayprefix']}<a href="{$thread['threadlink']}" class="{$new_class}">{$thread['subject']}</a><br /><span class="smalltext">{$thread['author']}</span></td>
@@ -13331,7 +13331,7 @@ if(use_xmlhttprequest == "1")
 	</div>
 	</td>
 </tr>]]></template>
-		<template name="usercp_subscriptions_thread" version="1801"><![CDATA[<tr>
+		<template name="usercp_subscriptions_thread" version="1809"><![CDATA[<tr>
 	<td align="center" class="{$bgcolor}" width="2%"><span class="thread_status {$folder}" title="{$folder_label}">&nbsp;</span></td>
 	<td align="center" class="{$bgcolor}" width="2%">{$icon}</td>
 	<td class="{$bgcolor}">{$gotounread}{$thread['threadprefix']}<a href="{$thread['threadlink']}" class="{$new_class}">{$thread['subject']}</a><br /><span class="smalltext">{$lang->notification_method} {$notification_type}</span></td>
