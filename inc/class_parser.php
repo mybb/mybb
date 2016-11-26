@@ -1421,6 +1421,12 @@ class postParser
 					$id = $path[1]; // http://www.youtu.be/fds123
 				}
 				break;
+			case "twitch":
+				if(isset($path[3]))
+				{
+					$id = $path[3]; // https://www.twitch.tv/giantbomb/v/100048090
+				}
+				break;
 			default:
 				return "[video={$video}]{$url}[/video]";
 		}
