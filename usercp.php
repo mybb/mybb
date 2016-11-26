@@ -2029,7 +2029,7 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 			$db->update_query("users", $updated_avatar, "uid='".$mybb->user['uid']."'");
 		}
 	}
-	else // remote avatar
+	elseif($mybb->settings['allowremoteavatars']) // remote avatar
 	{
 		$mybb->input['avatarurl'] = trim($mybb->get_input('avatarurl'));
 		if(validate_email_format($mybb->input['avatarurl']) != false)
@@ -2130,6 +2130,10 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 			}
 		}
 	}
+	else // remote avatar, but remote avatars are not allowed
+	{
+		$avatar_error = $lang->error_remote_avatar_not_allowed;
+	}
 
 	if(empty($avatar_error))
 	{
@@ -2188,6 +2192,12 @@ if($mybb->input['action'] == "avatar")
 	if($mybb->usergroup['canuploadavatars'] == 1)
 	{
 		eval("\$avatarupload = \"".$templates->get("usercp_avatar_upload")."\";");
+	}
+
+	$avatar_remote = '';
+	if($mybb->settings['allowremoteavatars'] == 1)
+	{
+		eval("\$avatar_remote = \"".$templates->get("usercp_avatar_remote")."\";");
 	}
 
 	$removeavatar = '';
