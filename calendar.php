@@ -1664,10 +1664,9 @@ if($mybb->input['action'] == "dayview")
 	}
 
 	// Incoming year?
-	$mybb->input['year'] = $mybb->get_input('year', MyBB::INPUT_INT);
-	if($mybb->input['year'] && $mybb->input['year'] <= my_date("Y")+5)
+	if(isset($mybb->input['year']) && $mybb->get_input('year', MyBB::INPUT_INT) <= my_date("Y")+5)
 	{
-		$year = $mybb->input['year'];
+		$year = $mybb->get_input('year', MyBB::INPUT_INT);
 	}
 	else
 	{
@@ -2277,10 +2276,9 @@ if(!$mybb->input['action'])
 	$plugins->run_hooks("calendar_main_view");
 
 	// Incoming year?
-	$mybb->input['year'] = $mybb->get_input('year', MyBB::INPUT_INT);
-	if($mybb->input['year'] && $mybb->input['year'] <= my_date("Y")+5)
+	if(isset($mybb->input['year']) && $mybb->get_input('year', MyBB::INPUT_INT) <= my_date("Y")+5)
 	{
-		$year = $mybb->input['year'];
+		$year = $mybb->get_input('year', MyBB::INPUT_INT);
 	}
 	else
 	{
