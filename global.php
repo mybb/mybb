@@ -761,7 +761,7 @@ if(isset($mybb->user['pmnotice']) && $mybb->user['pmnotice'] == 2 && $mybb->user
 }
 
 $remote_avatar_notice = '';
-if($mybb->user['avatartype'] === 'remote' && !$mybb->settings['allowremoteavatars'])
+if(($mybb->user['avatartype'] === 'remote' || $mybb->user['avatartype'] === 'gravatar') && !$mybb->settings['allowremoteavatars'])
 {
 	eval('$remote_avatar_notice = "'.$templates->get('global_remote_avatar_notice').'";');
 }
