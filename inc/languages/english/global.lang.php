@@ -207,6 +207,7 @@ $l['editor_metacafe'] = "MetaCafe";
 $l['editor_veoh'] = "Veoh";
 $l['editor_vimeo'] = "Vimeo";
 $l['editor_youtube'] = "Youtube";
+$l['editor_twitch'] = "Twitch";
 $l['editor_facebook'] = "Facebook";
 $l['editor_liveleak'] = "LiveLeak";
 $l['editor_insertvideo'] = "Insert a video";

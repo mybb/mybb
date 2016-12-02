@@ -81,6 +81,7 @@ $l['post_separator'] = "Post Separator";
 $l['new_line'] = "New Line";
 $l['horizontal_rule'] = "Horizontal Rule";
 $l['resolve_fail'] = "N/A (Unable to resolve)";
+$l['time'] = "Time:";
 
 $l['opened'] = "Opened";
 $l['closed'] = "Closed";
