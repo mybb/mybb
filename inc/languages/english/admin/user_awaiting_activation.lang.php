@@ -6,7 +6,7 @@
  */
 
 $l['awaiting_activation'] = "Awaiting Activation";
-$l['awaiting_activation_desc'] = "Here you can manage users who are awaiting activation.";
+$l['awaiting_activation_desc'] = "Here you can manage users who are awaiting activation. Please note any user who is awaiting email activation will not need to confirm their email if they are activated here.";
 
 $l['manage_awaiting_activation'] = "Manage Awaiting Activation";
 
