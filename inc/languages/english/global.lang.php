@@ -19,7 +19,6 @@ $l['bottomlinks_contactus'] = "Contact Us";
 $l['bottomlinks_returntop'] = "Return to Top";
 $l['bottomlinks_syndication'] = "RSS Syndication";
 $l['bottomlinks_litemode'] = "Lite (Archive) Mode";
-$l['bottomlinks_marksiteasread'] = "Mark site as read";
 
 $l['welcome_usercp'] = "User CP";
 $l['welcome_modcp'] = "Mod CP";
