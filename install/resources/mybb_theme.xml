@@ -3634,7 +3634,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 				<li><a href="{$mybb->settings['homeurl']}">{$mybb->settings['homename']}</a></li>
 				<li><a href="#top">{$lang->bottomlinks_returntop}</a></li>
 				<li><a href="<archive_url>">{$lang->bottomlinks_litemode}</a></li>
-				<li><a href="{$mybb->settings['bburl']}/misc.php?action=markread&my_post_key={$mybb->post_code}">{$lang->bottomlinks_marksiteasread}</a></li>
+				<li><a href="{$mybb->settings['bburl']}/misc.php?action=markread&my_post_key={$mybb->post_code}">{$lang->markread}</a></li>
 				<li><a href="{$mybb->settings['bburl']}/misc.php?action=syndication">{$lang->bottomlinks_syndication}</a></li>
 			</ul>
 		</div>
