@@ -1060,6 +1060,12 @@ class postParser
 		{
 			$nofollow = " rel=\"nofollow\"";
 		}
+		
+		// Fix eventual XSS attempts
+		if(strpos($url, 'javascript:') !== false)
+		{
+			$url = $this->fix_javascript($url);
+		}
 
 		// Fix some entities in URLs
 		$entities = array('$' => '%24', '&#36;' => '%24', '^' => '%5E', '`' => '%60', '[' => '%5B', ']' => '%5D', '{' => '%7B', '}' => '%7D', '"' => '%22', '<' => '%3C', '>' => '%3E', ' ' => '%20');
