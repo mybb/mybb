@@ -1408,7 +1408,7 @@ min=0]]></optionscode>
 		</setting>
 		<setting name="maxattachments">
 			<title>Maximum Attachments Per Post</title>
-			<description><![CDATA[The maximum number of attachments a user is allowed to upload per post. Set to 0 disable.]]></description>
+			<description><![CDATA[The maximum number of attachments a user is allowed to upload per post. Set to 0 to disable.]]></description>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[numeric
 min=1]]></optionscode>
