@@ -1870,6 +1870,11 @@ function my_setcookie($name, $value="", $expires="", $httponly=false)
 		$cookie .= "; HttpOnly";
 	}
 
+	if($mybb->settings['cookiesecureflag'])
+	{
+		$cookie .= "; Secure";
+	}
+
 	$mybb->cookies[$name] = $value;
 
 	header($cookie, false);
