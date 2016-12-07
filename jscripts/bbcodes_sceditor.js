@@ -463,7 +463,8 @@ $(document).ready(function($) {
 					metacafe: '<iframe src="{url}" width="440" height="248" frameborder=0 data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>',
 					veoh: '<iframe src="{url}" width="410" height="341" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>',
 					vimeo: '<iframe src="{url}" width="500" height="281" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>',
-					youtube: '<iframe width="560" height="315" src="{url}" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>'
+					youtube: '<iframe width="560" height="315" src="{url}" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>',
+					twitch: '<iframe src="{url}" frameborder="0" scrolling="no" height="378" width="620" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>'
 				};
 
 			if(html[attrs.defaultattr])
@@ -498,6 +499,10 @@ $(document).ready(function($) {
 						matches = content.match(/(?:v=|v\/|embed\/|youtu\.be\/)(.{11})/);
 						url     = matches ? '//www.youtube.com/embed/' + matches[1] : false;
 						break;
+					case 'twitch':
+						matches = content.match(/twitch\.tv\/(?:[\w+_-]+)\/v\/(\d+)/);
+						url     = matches ? '//player.twitch.tv/?video=v' + matches[1] : false;
+						break;
 				}
 
 				if(url)
@@ -529,6 +534,7 @@ $(document).ready(function($) {
 						'<option value="veoh">' + editor._('Veoh') + '</option>' +
 						'<option value="vimeo">' + editor._('Vimeo') + '</option>' +
 						'<option value="youtube">' + editor._('Youtube') + '</option>' +
+						'<option value="twitch">' + editor._('Twitch') + '</option>' +
 					'</select>'+
 				'</div>' +
 				'<div>' +

@@ -207,6 +207,7 @@ $l['editor_metacafe'] = "MetaCafe";
 $l['editor_veoh'] = "Veoh";
 $l['editor_vimeo'] = "Vimeo";
 $l['editor_youtube'] = "Youtube";
+$l['editor_twitch'] = "Twitch";
 $l['editor_facebook'] = "Facebook";
 $l['editor_liveleak'] = "LiveLeak";
 $l['editor_insertvideo'] = "Insert a video";
@@ -458,7 +459,7 @@ $l['timezone_gmt_350'] = "(GMT +3:30) Tehran";
 $l['timezone_gmt_400'] = "(GMT +4:00) Moscow, Abu Dhabi, Baku, Muscat, Tbilisi";
 $l['timezone_gmt_450'] = "(GMT +4:30) Kabul";
 $l['timezone_gmt_500'] = "(GMT +5:00) Islamabad, Karachi, Tashkent";
-$l['timezone_gmt_550'] = "(GMT +5:30) Mumbai, Calcutta, Madras, New Delhi";
+$l['timezone_gmt_550'] = "(GMT +5:30) Mumbai, Kolkata, Chennai, New Delhi";
 $l['timezone_gmt_575'] = "(GMT +5:45) Kathmandu";
 $l['timezone_gmt_600'] = "(GMT +6:00) Almaty, Dhakra, Yekaterinburg";
 $l['timezone_gmt_650'] = "(GMT +6:30) Yangon";
@@ -548,7 +549,7 @@ $l['moderation_user_posts'] = "Please note that new posts you make must be appro
 $l['moderation_forum_thread'] = "Please note that new threads in this forum must be approved by a moderator before becoming visible.";
 $l['moderation_forum_edits'] = "Please note that edited posts in this forum must be approved by a moderator before becoming visible.";
 $l['moderation_forum_edits_quick'] = "Please note that edited posts in this forum must be approved by a moderator before becoming visible.";
-$l['awaiting_message_link'] = " <a href=\"{1}/{2}/index.php?module=user-users&amp;action=search&amp;results=1&amp;conditions=a%3A1%3A%7Bs%3A9%3A%22usergroup%22%3Bs%3A1%3A%225%22%3B%7D\">Go to the ACP</a>.";
+$l['awaiting_message_link'] = " <a href=\"{1}/{2}/index.php?module=user-awaiting_activation\">Go to the ACP</a>.";
 $l['awaiting_message_single'] = "There is 1 account awaiting activation. Please go to your ACP to activate the user.";
 $l['awaiting_message_plural'] = "There are {1} accounts awaiting activation. Please go to your ACP to activate the users.";
 
