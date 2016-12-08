@@ -449,10 +449,10 @@ else
 	$templatelist = '';
 }
 
-$templatelist .= "headerinclude,header,footer,gobutton,htmldoctype,header_welcomeblock_member,header_welcomeblock_member_moderator,header_welcomeblock_member_admin,footer_languageselect_option,error";
+$templatelist .= "headerinclude,header,footer,gobutton,htmldoctype,header_welcomeblock_member,header_welcomeblock_member_user,header_welcomeblock_member_moderator,header_welcomeblock_member_admin,error";
 $templatelist .= ",global_pending_joinrequests,global_awaiting_activation,nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active,footer_languageselect,footer_themeselect,global_unreadreports,footer_contactus";
-$templatelist .= ",global_boardclosed_warning,global_bannedwarning,error_inline,error_nopermission_loggedin,error_nopermission,global_pm_alert,header_menu_search,header_menu_portal,debug_summary,redirect";
-$templatelist .= ",video_dailymotion_embed,video_facebook_embed,video_liveleak_embed,video_metacafe_embed,video_myspacetv_embed,video_veoh_embed,video_vimeo_embed,video_yahoo_embed,video_youtube_embed";
+$templatelist .= ",global_boardclosed_warning,global_bannedwarning,error_inline,error_nopermission_loggedin,error_nopermission,global_pm_alert,header_menu_search,header_menu_portal,redirect,footer_languageselect_option";
+$templatelist .= ",video_dailymotion_embed,video_facebook_embed,video_liveleak_embed,video_metacafe_embed,video_myspacetv_embed,video_veoh_embed,video_vimeo_embed,video_yahoo_embed,video_youtube_embed,debug_summary";
 $templatelist .= ",smilieinsert_row,smilieinsert_row_empty,smilieinsert,smilieinsert_getmore,smilieinsert_smilie,global_board_offline_modal,footer_themeselector,task_image,usercp_themeselector_option";
 $templatelist .= ",mycode_code,mycode_email,mycode_img,mycode_php,mycode_quote_post,mycode_size_int,mycode_url,global_no_permission_modal,global_boardclosed_reason,nav_dropdown,global_remote_avatar_notice";
 $templatelist .= ",header_welcomeblock_member_pms,header_welcomeblock_member_search,header_welcomeblock_guest,header_menu_calendar,header_menu_memberlist,global_dst_detection,header_quicksearch,smilie";
@@ -484,7 +484,7 @@ if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['canviewboardclosed']
 }
 
 // Prepare the main templates for use
-$admincplink = $modcplink = '';
+$admincplink = $modcplink = $usercplink = '';
 
 // Load appropriate welcome block for the current logged in user
 if($mybb->user['uid'] != 0)
@@ -499,6 +499,11 @@ if($mybb->user['uid'] != 0)
 	if($mybb->usergroup['canmodcp'] == 1)
 	{
 		eval('$modcplink = "'.$templates->get('header_welcomeblock_member_moderator').'";');
+	}
+
+	if($mybb->usergroup['canusercp'] == 1)
+	{
+		eval('$usercplink = "'.$templates->get('header_welcomeblock_member_user').'";');
 	}
 
 	// Format the welcome back message

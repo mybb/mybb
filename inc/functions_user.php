@@ -498,6 +498,11 @@ function usercp_menu()
 	$plugins->run_hooks("usercp_menu");
 	global $usercpmenu;
 
+	if($mybb->usergroup['canusercp'] == 1)
+	{
+		eval("\$ucp_nav_home = \"".$templates->get("usercp_nav_home")."\";");
+	}
+
 	eval("\$usercpnav = \"".$templates->get("usercp_nav")."\";");
 
 	$plugins->run_hooks("usercp_menu_built");

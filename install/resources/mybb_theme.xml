@@ -4264,7 +4264,7 @@ $(".forumjump").change(function() {
 <div class="lower">
 	<div class="wrapper">
 		<ul class="menu panel_links">
-			<li><a href="{$mybb->settings['bburl']}/usercp.php" class="usercp">{$lang->welcome_usercp}</a></li>
+			{$usercplink}
 			{$modcplink}
 			{$admincplink}
 		</ul>
@@ -4281,6 +4281,7 @@ $(".forumjump").change(function() {
 		<template name="header_welcomeblock_member_pms" version="1809"><![CDATA[<li><a href="{$mybb->settings['bburl']}/private.php">{$lang->welcome_pms}</a> {$lang->welcome_pms_usage}</li>]]></template>
 		<template name="header_welcomeblock_member_search" version="1809"><![CDATA[<li><a href="{$mybb->settings['bburl']}/search.php?action=getnew">{$lang->welcome_newposts}</a></li>
 <li><a href="{$mybb->settings['bburl']}/search.php?action=getdaily">{$lang->welcome_todaysposts}</a></li>]]></template>
+		<template name="header_welcomeblock_member_user" version="1809"><![CDATA[<li><a href="{$mybb->settings['bburl']}/usercp.php" class="usercp">{$lang->welcome_usercp}</a></li>]]></template>
 		<template name="index" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']}</title>
@@ -12601,15 +12602,13 @@ if(use_xmlhttprequest == "1")
 <br /><a href="{$thread['lastpostlink']}">{$lang->lastpost}</a>: {$lastposterlink}</span>
 </td>
 </tr>]]></template>
-		<template name="usercp_nav" version="1800"><![CDATA[<td width="{$lang->ucp_nav_width}" valign="top">
+		<template name="usercp_nav" version="1809"><![CDATA[<td width="{$lang->ucp_nav_width}" valign="top">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tbody>
 	<tr>
 		<td class="thead"><strong>{$lang->ucp_nav_menu}</strong></td>
 	</tr>
-	<tr>
-		<td class="trow1 smalltext"><a href="usercp.php" class="usercp_nav_item usercp_nav_home">{$lang->ucp_nav_home}</a></td>
-	</tr>
+	{$ucp_nav_home}
 </tbody>
 {$usercpmenu}
 </table>
@@ -12617,6 +12616,9 @@ if(use_xmlhttprequest == "1")
 		<template name="usercp_nav_attachments" version="1800"><![CDATA[<tr><td class="trow1 smalltext"><a href="usercp.php?action=attachments" class="usercp_nav_item usercp_nav_attachments">{$lang->ucp_nav_attachments}</a></td></tr>]]></template>
 		<template name="usercp_nav_changename" version="1400"><![CDATA[<div><a href="usercp.php?action=changename" class="usercp_nav_item usercp_nav_username">{$lang->ucp_nav_change_username}</a></div>]]></template>
 		<template name="usercp_nav_editsignature" version="1600"><![CDATA[<div><a href="usercp.php?action=editsig" class="usercp_nav_item usercp_nav_editsig">{$lang->ucp_nav_edit_sig}</a></div>]]></template>
+		<template name="usercp_nav_home" version="1809"><![CDATA[<tr>
+	<td class="trow1 smalltext"><a href="usercp.php" class="usercp_nav_item usercp_nav_home">{$lang->ucp_nav_home}</a></td>
+</tr>]]></template>
 		<template name="usercp_nav_messenger" version="1800"><![CDATA[<tbody>
 <tr>
 	<td class="tcat tcat_menu tcat_collapse{$collapsedimg['usercppms']}">
