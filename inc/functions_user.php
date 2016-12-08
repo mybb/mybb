@@ -483,17 +483,25 @@ function usercp_menu()
 	$lang->load("usercpnav");
 
 	// Add the default items as plugins with separated priorities of 10
-	if($mybb->settings['enablepms'] != 0)
+	if($mybb->settings['enablepms'] != 0 && $mybb->usergroup['canusepms'] == 1)
 	{
 		$plugins->add_hook("usercp_menu", "usercp_menu_messenger", 10);
 	}
 
-	$plugins->add_hook("usercp_menu", "usercp_menu_profile", 20);
-	$plugins->add_hook("usercp_menu", "usercp_menu_misc", 30);
+	if($mybb->usergroup['canusercp'] == 1)
+	{
+		$plugins->add_hook("usercp_menu", "usercp_menu_profile", 20);
+		$plugins->add_hook("usercp_menu", "usercp_menu_misc", 30);
+	}
 
 	// Run the plugin hooks
 	$plugins->run_hooks("usercp_menu");
 	global $usercpmenu;
+
+	if($mybb->usergroup['canusercp'] == 1)
+	{
+		eval("\$ucp_nav_home = \"".$templates->get("usercp_nav_home")."\";");
+	}
 
 	eval("\$usercpnav = \"".$templates->get("usercp_nav")."\";");
 

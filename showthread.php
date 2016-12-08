@@ -18,10 +18,10 @@ $templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit,postbit_qu
 $templatelist .= ",postbit_inlinecheck,showthread_inlinemoderation,postbit_attachments_thumbnails_thumbnail,postbit_ignored,postbit_groupimage,postbit_multiquote,showthread_moderationoptions_custom_tool,showthread_moderationoptions_custom,showthread_inlinemoderation_custom_tool,postbit_deleted";
 $templatelist .= ",showthread_usersbrowsing,showthread_usersbrowsing_user,showthread_poll_option,showthread_poll,showthread_quickreply_options_signature,showthread_threaded_bitactive,showthread_threaded_bit,postbit_attachments_attachment_unapproved,showthread_threadnotes,postbit_reputation";
 $templatelist .= ",showthread_moderationoptions_openclose,showthread_moderationoptions_stickunstick,showthread_moderationoptions_delete,showthread_moderationoptions_threadnotes,showthread_moderationoptions_manage,showthread_moderationoptions_deletepoll,showthread_poll_results,postbit_classic";
-$templatelist .= ",postbit_userstar,postbit_reputation_formatted_link,postbit_warninglevel_formatted,postbit_quickrestore,forumdisplay_password,forumdisplay_password_wrongpass,postbit_purgespammer,showthread_inlinemoderation_approve,forumdisplay_thread_icon,showthread_poll_resultbit";
+$templatelist .= ",postbit_userstar,postbit_reputation_formatted_link,postbit_warninglevel_formatted,postbit_quickrestore,forumdisplay_password,forumdisplay_password_wrongpass,postbit_purgespammer,showthread_inlinemoderation_approve,forumdisplay_thread_icon,showthread_poll_resultbit,postbit_warn";
 $templatelist .= ",showthread_moderationoptions_softdelete,showthread_moderationoptions_restore,post_captcha,post_captcha_recaptcha,post_captcha_nocaptcha,showthread_moderationoptions,showthread_inlinemoderation_standard,showthread_threadedbox,showthread_inlinemoderation_manage,postbit_away";
-$templatelist .= ",showthread_ratethread,postbit_posturl,postbit_icon,postbit_editedby_editreason,attachment_icon,global_moderation_notice,showthread_poll_option_multiple,postbit_gotopost,postbit_rep_button,postbit_warninglevel,showthread_threadnoteslink,showthread_search,postbit_warn";
-$templatelist .= ",showthread_moderationoptions_approve,showthread_moderationoptions_unapprove,showthread_inlinemoderation_delete,showthread_moderationoptions_standard,showthread_quickreply_options_close,showthread_inlinemoderation_custom,showthread_threadnotes_viewnotes,postbit_deleted_member";
+$templatelist .= ",showthread_ratethread,postbit_posturl,postbit_icon,postbit_editedby_editreason,attachment_icon,global_moderation_notice,showthread_poll_option_multiple,postbit_gotopost,postbit_rep_button,postbit_warninglevel,showthread_threadnoteslink,showthread_search,postbit_deleted_member";
+$templatelist .= ",showthread_moderationoptions_approve,showthread_moderationoptions_unapprove,showthread_inlinemoderation_delete,showthread_moderationoptions_standard,showthread_quickreply_options_close,showthread_inlinemoderation_custom,showthread_threadnotes_viewnotes,showthread_subscription";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -453,7 +453,7 @@ if($mybb->input['action'] == "thread")
 		$now = TIME_NOW;
 
 		// If the poll or the thread is closed or if the poll is expired, show the results.
-		if($poll['closed'] == 1 || $thread['closed'] == 1 || ($expiretime < $now && $poll['timeout'] > 0))
+		if($poll['closed'] == 1 || $thread['closed'] == 1 || ($expiretime < $now && $poll['timeout'] > 0) || $forumpermissions['canvotepolls'] != 1)
 		{
 			$showresults = 1;
 		}
@@ -1436,6 +1436,8 @@ if($mybb->input['action'] == "thread")
 			$add_remove_subscription = 'remove';
 			$add_remove_subscription_text = $lang->unsubscribe_thread;
 		}
+
+		eval("\$addremovesubscription = \"".$templates->get("showthread_subscription")."\";");
 	}
 
 	$classic_header = '';

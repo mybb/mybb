@@ -11,9 +11,9 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'newthread.php');
 
-$templatelist = "newthread,previewpost,loginbox,changeuserbox,newthread_postpoll,posticons,codebuttons,postbit,post_attachments_attachment_unapproved,newthread_disablesmilies_hidden,postbit_icon";
+$templatelist = "newthread,previewpost,loginbox,changeuserbox,newthread_postpoll,posticons,codebuttons,postbit,post_attachments_attachment_unapproved,newthread_postoptions,postbit_icon";
 $templatelist .= ",newthread_disablesmilies,post_attachments_new,post_attachments,post_savedraftbutton,post_subscription_method,post_attachments_attachment_remove,postbit_warninglevel_formatted";
-$templatelist .= ",forumdisplay_rules,forumdisplay_rules_link,post_attachments_attachment_postinsert,post_attachments_attachment,newthread_options_signature,post_prefixselect_prefix,post_prefixselect_single";
+$templatelist .= ",forumdisplay_rules,forumdisplay_rules_link,post_attachments_attachment_postinsert,post_attachments_attachment,newthread_signature,post_prefixselect_prefix,post_prefixselect_single";
 $templatelist .= ",member_register_regimage,member_register_regimage_recaptcha,post_captcha_hidden,post_captcha,post_captcha_recaptcha,post_captcha_nocaptcha,postbit_gotopost,posticons_icon";
 $templatelist .= ",postbit_avatar,postbit_find,postbit_pm,postbit_rep_button,postbit_www,postbit_email,postbit_reputation,postbit_warn,postbit_warninglevel,postbit_author_user,postbit_author_guest";
 $templatelist .= ",postbit_signature,postbit_classic,postbit_attachments_thumbnails_thumbnail,postbit_attachments_images_image,postbit_attachments_attachment,postbit_attachments_attachment_unapproved";
@@ -885,15 +885,31 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 
 	$posthash = htmlspecialchars_uni($mybb->get_input('posthash'));
 
+	// Hide signature option if no permission
+	$signature = '';
+	if($mybb->usergroup['canusesig'] == 1 && !$mybb->user['suspendsignature'])
+	{
+		eval("\$signature = \"".$templates->get('newthread_signature')."\";");
+	}
+
 	// Can we disable smilies or are they disabled already?
 	$disablesmilies = '';
 	if($forum['allowsmilies'] != 0)
 	{
 		eval("\$disablesmilies = \"".$templates->get("newthread_disablesmilies")."\";");
 	}
+
+	$postoptions = '';
+	if(!empty($signature) || !empty($disablesmilies))
+	{
+		eval("\$postoptions = \"".$templates->get("newthread_postoptions")."\";");
+		$bgcolor = "trow2";
+		$bgcolor2 = "trow1";
+	}
 	else
 	{
-		eval("\$disablesmilies = \"".$templates->get("newthread_disablesmilies_hidden")."\";");
+		$bgcolor = "trow1";
+		$bgcolor2 = "trow2";
 	}
 
 	$modoptions = '';
