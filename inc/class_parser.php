@@ -300,16 +300,16 @@ class postParser
 
 		if($mybb->settings['allowlinkmycode'] == 1)
 		{
-			$callback_mycode['url_simple']['regex'] = "#\[url\]([a-z]+?://)([^\r\n\"<]+?)\[/url\]#si";
+			$callback_mycode['url_simple']['regex'] = "#\[url\]((?!javascript)[a-z]+?://)([^\r\n\"<]+?)\[/url\]#si";
 			$callback_mycode['url_simple']['replacement'] = array($this, 'mycode_parse_url_callback1');
 
-			$callback_mycode['url_simple2']['regex'] = "#\[url\]([^\r\n\"<]+?)\[/url\]#i";
+			$callback_mycode['url_simple2']['regex'] = "#\[url\]((?!javascript:)[^\r\n\"<]+?)\[/url\]#i";
 			$callback_mycode['url_simple2']['replacement'] = array($this, 'mycode_parse_url_callback2');
 
-			$callback_mycode['url_complex']['regex'] = "#\[url=([a-z]+?://)([^\r\n\"<]+?)\](.+?)\[/url\]#si";
+			$callback_mycode['url_complex']['regex'] = "#\[url=((?!javascript)[a-z]+?://)([^\r\n\"<]+?)\](.+?)\[/url\]#si";
 			$callback_mycode['url_complex']['replacement'] = array($this, 'mycode_parse_url_callback1');
 
-			$callback_mycode['url_complex2']['regex'] = "#\[url=([^\r\n\"<]+?)\](.+?)\[/url\]#si";
+			$callback_mycode['url_complex2']['regex'] = "#\[url=((?!javascript:)[^\r\n\"<]+?)\](.+?)\[/url\]#si";
 			$callback_mycode['url_complex2']['replacement'] = array($this, 'mycode_parse_url_callback2');
 
 			++$callback_count;
@@ -1690,8 +1690,8 @@ class postParser
 		$find = array(
 			"#\[(b|u|i|s|url|email|color|img)\](.*?)\[/\\1\]#is",
 			"#\[img=([1-9][0-9]*)x([1-9][0-9]*)\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is",
-			"#\[url=([a-z]+?://)([^\r\n\"<]+?)\](.+?)\[/url\]#si",
-			"#\[url=([^\r\n\"<&\(\)]+?)\](.+?)\[/url\]#si",
+			"#\[url=((?!javascript)[a-z]+?://)([^\r\n\"<]+?)\](.+?)\[/url\]#si",
+			"#\[url=((?!javascript:)[^\r\n\"<&\(\)]+?)\](.+?)\[/url\]#si",
 		);
 
 		$replace = array(
