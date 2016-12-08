@@ -1254,7 +1254,7 @@ class PostDataHandler extends DataHandler
 			update_forum_counters($post['fid'], array("deletedposts" => "+1"));
 		}
 
-		// Update forum count
+		// Update last poster
 		if($visible == 1)
 		{
 			update_last_post($post['tid']);
