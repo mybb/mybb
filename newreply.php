@@ -277,7 +277,8 @@ if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid'
 	}
 }
 
-$reply_errors = $quoted_ids = '';
+$reply_errors = '';
+$quoted_ids = array();
 $hide_captcha = false;
 
 // Check the maximum posts per day for this user
