@@ -1026,7 +1026,7 @@ class PostDataHandler extends DataHandler
 			$update_array = array(
 				'lastpost' => "'{$now}'"
 			);
-			if($forum['usepostcounts'] != 0)
+			if($forum['usepostcounts'] != 0 && $thread['visible'] == 1)
 			{
 				$update_array['postnum'] = 'postnum+1';
 			}
@@ -1228,6 +1228,9 @@ class PostDataHandler extends DataHandler
 			}
 
 			$thread_update = array('replies' => '+1');
+			
+			// Update counters
+			update_forum_counters($post['fid'], array("posts" => "+1"));
 		}
 		// Post is stuck in moderation queue
 		else if($visible == 0)
@@ -1253,7 +1256,6 @@ class PostDataHandler extends DataHandler
 		// Update forum count
 		if($visible == 1) {
 			update_last_post($post['tid']);
-			update_forum_counters($post['fid'], array("posts" => "+1"));
 			update_forum_lastpost($thread['fid']);
 		}
 
