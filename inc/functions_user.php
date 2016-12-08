@@ -488,8 +488,11 @@ function usercp_menu()
 		$plugins->add_hook("usercp_menu", "usercp_menu_messenger", 10);
 	}
 
-	$plugins->add_hook("usercp_menu", "usercp_menu_profile", 20);
-	$plugins->add_hook("usercp_menu", "usercp_menu_misc", 30);
+	if($mybb->usergroup['canusercp'] == 1)
+	{
+		$plugins->add_hook("usercp_menu", "usercp_menu_profile", 20);
+		$plugins->add_hook("usercp_menu", "usercp_menu_misc", 30);
+	}
 
 	// Run the plugin hooks
 	$plugins->run_hooks("usercp_menu");
