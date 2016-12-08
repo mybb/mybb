@@ -11676,7 +11676,7 @@ if(use_xmlhttprequest == "1")
 		<template name="showthread_threadnotes" version="1809"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder tfixed">
 <thead>
 <tr>
-	<td class="thead thead_collapse{$collapsedimg['threadnotes']}">
+	<td class="thead{$collapsedthead['threadnotes']}">
 		<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['threadnotes']}.png" id="threadnotes_img" class="expander" alt="[-]" title="[-]" /></div>
 		<div><span class="smalltext"><strong>{$lang->view_thread_notes}</strong></span></div>
 	</td>
