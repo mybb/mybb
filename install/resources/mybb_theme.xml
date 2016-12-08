@@ -8825,12 +8825,14 @@ if(use_xmlhttprequest == "1")
 		<template name="newreply_disablesmilies" version="1809"><![CDATA[<label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="1" tabindex="9"{$postoptionschecked['disablesmilies']} /> {$lang->options_disablesmilies}</label>]]></template>
 		<template name="newreply_draftinput" version="1808"><![CDATA[<input type="hidden" name="pid" value="{$pid}" />]]></template>
 		<template name="newreply_modoptions" version="1809"><![CDATA[<tr>
-<td class="{$bgcolor}" valign="top"><strong>{$lang->mod_options}</strong></td>
-<td class="{$bgcolor}"><span class="smalltext">
-<label><input type="checkbox" class="checkbox" name="modoptions[closethread]" value="1"{$closecheck} />&nbsp;{$lang->close_thread}</label><br />
-<label><input type="checkbox" class="checkbox" name="modoptions[stickthread]" value="1"{$stickycheck} />&nbsp;{$lang->stick_thread}</label>
-</span></td>
+	<td class="{$bgcolor}" valign="top"><strong>{$lang->mod_options}</strong></td>
+	<td class="{$bgcolor}"><span class="smalltext">
+		{$closeoption}
+		{$stickoption}
+	</span></td>
 </tr>]]></template>
+		<template name="newreply_modoptions_close" version="1809"><![CDATA[<label><input type="checkbox" class="checkbox" name="modoptions[closethread]" value="1"{$closecheck} />&nbsp;{$lang->close_thread}</label><br />]]></template>
+		<template name="newreply_modoptions_stick" version="1809"><![CDATA[<label><input type="checkbox" class="checkbox" name="modoptions[stickthread]" value="1"{$stickycheck} />&nbsp;{$lang->stick_thread}</label>]]></template>
 		<template name="newreply_multiquote_external" version="1809"><![CDATA[<div id="multiquote_unloaded"><span class="smalltext">{$multiquote_text} <a href="./newreply.php?tid={$tid}" onclick="return Post.loadMultiQuoted();">{$multiquote_quote}</a>, <a href="javascript:void(0)" onclick="Post.clearMultiQuoted(); return false;">{$multiquote_deselect}</a></span></div>]]></template>
 		<template name="newreply_postoptions" version="1809"><![CDATA[<tr>
 <td class="trow1" valign="top"><strong>{$lang->post_options}</strong></td>
