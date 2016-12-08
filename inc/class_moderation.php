@@ -426,8 +426,6 @@ class Moderation
 					$user_counters[$counter['uid']]['num_posts'] += $counter['posts'];
 				}
 			}
-			
-			update_last_post($thread['tid']);
 
 			if($forum['usethreadcounts'] != 0 && substr($thread['closed'], 0, 6) != 'moved|')
 			{

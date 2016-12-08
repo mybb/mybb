@@ -1018,7 +1018,7 @@ class PostDataHandler extends DataHandler
 			}
 		}
 
-		if($visible == 1 && $thread['visible'] == 1)
+		if($visible == 1)
 		{
 			$now = TIME_NOW;
 
@@ -1094,7 +1094,6 @@ class PostDataHandler extends DataHandler
 		$thread_update = array();
 		if($visible == 1 && $thread['visible'] == 1)
 		{
-			$thread = get_thread($post['tid']);
 			require_once MYBB_ROOT.'inc/class_parser.php';
 			$parser = new Postparser;
 
@@ -1229,11 +1228,6 @@ class PostDataHandler extends DataHandler
 			}
 
 			$thread_update = array('replies' => '+1');
-
-			// Update forum count
-			update_last_post($post['tid']);
-			update_forum_counters($post['fid'], array("posts" => "+1"));
-			update_forum_lastpost($thread['fid']);
 		}
 		// Post is stuck in moderation queue
 		else if($visible == 0)
@@ -1254,6 +1248,13 @@ class PostDataHandler extends DataHandler
 			// Update the unapproved posts count for the current forum
 			$thread_update = array('replies' => '+1');
 			update_forum_counters($post['fid'], array("deletedposts" => "+1"));
+		}
+		
+		// Update forum count
+		if($visible == 1) {
+			update_last_post($post['tid']);
+			update_forum_counters($post['fid'], array("posts" => "+1"));
+			update_forum_lastpost($thread['fid']);
 		}
 
 		$query = $db->simple_select("attachments", "COUNT(aid) AS attachmentcount", "pid='{$this->pid}' AND visible='1'");
