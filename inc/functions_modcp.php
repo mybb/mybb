@@ -148,7 +148,7 @@ function send_report($report, $report_type='post')
 	$report_reason = '';
 	if($report['reasonid'])
 	{
-		$query = $db->simple_select("reportreasons", "title", "rid = '{$report['reasonid']}'", array('limit' => 1));
+		$query = $db->simple_select("reportreasons", "title", "rid = '".(int)$report['reasonid']."'", array('limit' => 1));
 		$reason = $db->fetch_array($query);
 
 		$lang->load('report');
