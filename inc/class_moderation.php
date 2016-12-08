@@ -2260,9 +2260,12 @@ class Moderation
 				);
 			}
 
-			if(!isset($user_counters[$thread['uid']]['num_threads']))
+			if(!isset($user_counters[$thread['uid']]))
 			{
-				$user_counters[$thread['uid']]['num_threads'] = 0;
+				$user_counters[$thread['uid']] = array(
+					'num_posts' => 0,
+					'num_threads' => 0
+				);
 			}
 
 			if($thread['visible'] == 1)
@@ -2296,9 +2299,12 @@ class Moderation
 				");
 				while($posters = $db->fetch_array($query1))
 				{
-					if(!isset($user_counters[$posters['uid']]['num_posts']))
+					if(!isset($user_counters[$posters['uid']]))
 					{
-						$user_counters[$posters['uid']]['num_posts'] = 0;
+						$user_counters[$posters['uid']] = array(
+							'num_posts' => 0,
+							'num_threads' => 0
+						);
 					}
 
 					if($newforum['usepostcounts'] != 0 && $forum['usepostcounts'] == 0)

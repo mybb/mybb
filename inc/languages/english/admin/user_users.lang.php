@@ -88,6 +88,7 @@ $l['option_6'] = "More than 2 years old";
 
 $l['error_avatartoobig'] = "Sorry, but we cannot change your avatar as the new avatar you specified is too big. The maximum dimensions are {1}x{2} (width x height)";
 $l['error_invalidavatarurl'] = "The URL you entered for your avatar does not appear to be valid. Please ensure you enter a valid URL.";
+$l['error_remote_avatar_not_allowed'] = "Remote avatar URLs have been disabled by the forum administrator.";
 $l['error_invalid_user'] = "You have selected an invalid user.";
 $l['error_no_perms_super_admin'] = "You do not have permission to edit this user because you are not a super administrator.";
 $l['error_invalid_user_source'] = "The source account username you entered does not exist";

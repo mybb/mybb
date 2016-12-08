@@ -494,7 +494,8 @@ var Cookie = {
 		options = {
 			expires: expire,
 			path: cookiePath,
-			domain: cookieDomain
+			domain: cookieDomain,
+			secure: cookieSecureFlag,
 		};
 
 		return $.cookie(name, value, options);
