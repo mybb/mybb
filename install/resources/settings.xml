@@ -1318,8 +1318,8 @@ show=Show to all Users]]></optionscode>
 			<isdefault>1</isdefault>
 		</setting>
 		<setting name="showeditedbyadmin">
-			<title>Show 'edited by' Message for Administrators</title>
-			<description><![CDATA[Do you want to show edited by messages for posts created by administrators?]]></description>
+			<title>Show 'edited by' Message for Administrators and Moderators</title>
+			<description><![CDATA[Do you want to show edited by messages for posts created by administrators and moderators?]]></description>
 			<disporder>12</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
