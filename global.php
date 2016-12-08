@@ -454,7 +454,7 @@ $templatelist .= ",global_pending_joinrequests,global_awaiting_activation,nav,na
 $templatelist .= ",global_boardclosed_warning,global_bannedwarning,error_inline,error_nopermission_loggedin,error_nopermission,header_quicksearch,header_menu_search,header_menu_portal,header_menu_memberlist,redirect";
 $templatelist .= ",video_dailymotion_embed,video_facebook_embed,video_liveleak_embed,video_metacafe_embed,video_myspacetv_embed,video_veoh_embed,video_vimeo_embed,video_yahoo_embed,video_youtube_embed,global_dst_detection";
 $templatelist .= ",smilieinsert_row,smilieinsert_row_empty,smilieinsert,smilieinsert_getmore,smilieinsert_smilie,global_board_offline_modal,footer_themeselector,task_image,usercp_themeselector_option,debug_summary";
-$templatelist .= ",mycode_code,mycode_email,mycode_img,mycode_php,mycode_quote_post,mycode_size_int,mycode_url,global_no_permission_modal,global_boardclosed_reason,nav_dropdown,footer_contactus,global_pm_alert,error";
+$templatelist .= ",mycode_code,mycode_email,mycode_img,mycode_php,mycode_quote_post,mycode_size_int,mycode_url,global_no_permission_modal,global_boardclosed_reason,nav_dropdown,footer_contactus,global_pm_alert,global_remote_avatar_notice,error";
 $templates->cache($db->escape_string($templatelist));
 
 // Set the current date and time now
@@ -758,6 +758,12 @@ if(isset($mybb->user['pmnotice']) && $mybb->user['pmnotice'] == 2 && $mybb->user
 		$privatemessage_text = $lang->sprintf($lang->newpm_notice_multiple, $mybb->user['pms_unread'], $user_text, $mybb->settings['bburl'], $pm['pmid'], htmlspecialchars_uni($pm['subject']));
 	}
 	eval('$pm_notice = "'.$templates->get('global_pm_alert').'";');
+}
+
+$remote_avatar_notice = '';
+if(($mybb->user['avatartype'] === 'remote' || $mybb->user['avatartype'] === 'gravatar') && !$mybb->settings['allowremoteavatars'])
+{
+	eval('$remote_avatar_notice = "'.$templates->get('global_remote_avatar_notice').'";');
 }
 
 if($mybb->settings['awactialert'] == 1 && $mybb->usergroup['cancp'] == 1)

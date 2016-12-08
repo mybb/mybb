@@ -3055,6 +3055,12 @@ function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
 		$avatars = array();
 	}
 
+	if(my_strpos($avatar, '://') !== false && !$mybb->settings['allowremoteavatars'])
+	{
+		// Remote avatar, but remote avatars are disallowed.
+		$avatar = null;
+	}
+
 	if(!$avatar)
 	{
 		// Default avatar

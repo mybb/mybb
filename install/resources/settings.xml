@@ -1181,10 +1181,18 @@ disabled=Disable this feature]]></optionscode>
 			<settingvalue><![CDATA[./uploads/avatars]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="allowremoteavatars">
+			<title>Allow Remote Avatars</title>
+			<description><![CDATA[Whether to allow the usage of avatars from remote servers. Having this enabled can expose your server's IP address.]]></description>
+			<disporder>17</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 		<setting name="customtitlemaxlength">
 			<title>Custom User Title Maximum Length</title>
 			<description><![CDATA[Maximum length a user can enter for the custom user title. Set to 0 to disable the limitation.]]></description>
-			<disporder>17</disporder>
+			<disporder>18</disporder>
 			<optionscode><![CDATA[numeric
 min=0]]></optionscode>
 			<settingvalue><![CDATA[40]]></settingvalue>
@@ -1193,7 +1201,7 @@ min=0]]></optionscode>
 		<setting name="allowaway">
 			<title>Allow Away Statuses?</title>
 			<description><![CDATA[Should users be allowed to set their status to 'Away' with a custom reason & return date?]]></description>
-			<disporder>18</disporder>
+			<disporder>19</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1201,7 +1209,7 @@ min=0]]></optionscode>
 		<setting name="allowbuddyonly">
 			<title>Allow Buddy-Only Messaging?</title>
 			<description><![CDATA[Allow users to send private messages only to people on their buddy list?]]></description>
-			<disporder>19</disporder>
+			<disporder>20</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
