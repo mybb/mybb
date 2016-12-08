@@ -323,6 +323,7 @@ class Moderation
 		// Update forum count
 		update_forum_counters($thread['fid'], $updated_counters);
 		update_forum_lastpost($thread['fid']);
+		mark_reports($tid, 'thread');
 
 		$plugins->run_hooks("class_moderation_delete_thread", $tid);
 

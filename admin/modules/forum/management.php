@@ -1951,12 +1951,7 @@ if($mybb->input['action'] == "delete")
 		$fid = $mybb->get_input('fid', MyBB::INPUT_INT);
 		$forum_info = get_forum($fid);
 
-		$query = $db->simple_select("forums", "posts,unapprovedposts,threads,unapprovedthreads", "fid='{$fid}'");
-		$stats = $db->fetch_array($query);
-
-		// Delete the forum
-		$db->delete_query("forums", "fid='$fid'");
-
+		$delquery = "";
 		switch($db->type)
 		{
 			case "pgsql":
@@ -1970,13 +1965,51 @@ if($mybb->input['action'] == "delete")
 		{
 			$fids[$forum['fid']] = $fid;
 			$delquery .= " OR fid='{$forum['fid']}'";
-
-			$stats['posts'] += $forum['posts'];
-			$stats['unapprovedposts'] += $forum['unapprovedposts'];
-			$stats['threads'] += $forum['threads'];
-			$stats['unapprovedthreads'] += $forum['unapprovedthreads'];
 		}
 
+		require_once MYBB_ROOT.'inc/class_moderation.php';
+		$moderation = new Moderation();
+
+		// Start pagination. Limit results to 50
+		$query = $db->simple_select("threads", "tid", "fid='{$fid}' {$delquery}", array("limit" => 50));
+
+		while($tid = $db->fetch_field($query, 'tid'))
+		{
+			$moderation->delete_thread($tid);
+		}
+
+		// Check whether all threads have been deleted
+		$query = $db->simple_select("threads", "tid", "fid='{$fid}' {$delquery}");
+
+		if($db->num_rows($query) > 0)
+		{
+			$page->output_header();
+
+			$form = new Form("index.php?module=forum-management", 'post');
+
+			echo $form->generate_hidden_field("fid", $fid);
+			echo $form->generate_hidden_field("action", "delete");
+			echo "<div class=\"confirm_action\">\n";
+			echo "<p>{$lang->confirm_proceed_deletion}</p>\n";
+			echo "<br />\n";
+			echo "<script type=\"text/javascript\">$(function() { var button = $(\"#proceed_button\"); if(button.length > 0) { button.val(\"{$lang->automatically_redirecting}\"); button.attr(\"disabled\", true); button.css(\"color\", \"#aaa\"); button.css(\"borderColor\", \"#aaa\"); document.forms[0].submit(); }})</script>";
+			echo "<p class=\"buttons\">\n";
+			echo $form->generate_submit_button($lang->proceed, array('class' => 'button_yes', 'id' => 'proceed_button'));
+			echo "</p>\n";
+			echo "</div>\n";
+
+			$form->end();
+
+			$page->output_footer();
+			exit;
+		}
+
+		// End pagination
+
+		// Delete the forum
+		$db->delete_query("forums", "fid='$fid'");
+
+		// Delete subforums
 		switch($db->type)
 		{
 			case "pgsql":
@@ -1987,25 +2020,18 @@ if($mybb->input['action'] == "delete")
 				$db->delete_query("forums", "CONCAT(',',parentlist,',') LIKE '%,$fid,%'");
 		}
 
-		$db->delete_query("threads", "fid='{$fid}' {$delquery}");
-		$db->delete_query("posts", "fid='{$fid}' {$delquery}");
-		$db->delete_query("moderators", "fid='{$fid}' {$delquery}");
-		$db->delete_query("forumsubscriptions", "fid='{$fid}' {$delquery}");
-		$db->delete_query("forumpermissions", "fid='{$fid}' {$delquery}");
-
-		$update_stats = array(
-			'numthreads' => "-".$stats['threads'],
-			'numunapprovedthreads' => "-".$stats['unapprovedthreads'],
-			'numposts' => "-".$stats['posts'],
-			'numunapprovedposts' => "-".$stats['unapprovedposts']
-		);
-		update_stats($update_stats);
+		$db->delete_query('moderators', "fid='{$fid}' {$delquery}");
+		$db->delete_query('forumsubscriptions', "fid='{$fid}' {$delquery}");
+		$db->delete_query('forumpermissions', "fid='{$fid}' {$delquery}");
+		$db->delete_query('announcements', "fid='{$fid}' {$delquery}");
+		$db->delete_query('forumsread', "fid='{$fid}' {$delquery}");
 
 		$plugins->run_hooks("admin_forum_management_delete_commit");
 
 		$cache->update_forums();
 		$cache->update_moderators();
 		$cache->update_forumpermissions();
+		$cache->update_forumsdisplay();
 
 		// Log admin action
 		log_admin_action($forum_info['fid'], $forum_info['name']);
