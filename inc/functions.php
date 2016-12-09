@@ -8479,3 +8479,20 @@ function my_validate_url($url, $relative_path=false)
 	return false;
 }
 
+/**
+ * Strip html tags from string, also removes <script> and <style> contents.
+ * 
+ * @param  string $string         String to stripe
+ * @param  string $allowable_tags Allowed html tags
+ * 
+ * @return string                 Striped string
+ */
+function my_strip_tags($string, $allowable_tags = '')
+{
+	$pattern = array(
+		'@(&lt;)style[^(&gt;)]*?(&gt;).*?(&lt;)/style(&gt;)@siu',
+        '@(&lt;)script[^(&gt;)]*?.*?(&lt;)/script(&gt;)@siu',
+	);
+	$string = preg_replace($pattern, '', $string);
+	return strip_tags($string, $allowable_tags);
+}
