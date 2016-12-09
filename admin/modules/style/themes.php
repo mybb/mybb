@@ -1749,7 +1749,7 @@ if($mybb->input['action'] == "stylesheet_properties")
 				$update_d = true;
 
 				$db->update_query("themestylesheets", array('lastmodified' => TIME_NOW), "sid='{$stylesheet['sid']}'", 1);
-				if(!cache_stylesheet($theme['tid'], str_replace('/', '', $mybb->input['name']), $theme['stylesheet']))
+				if(!cache_stylesheet($theme['tid'], str_replace('/', '', $mybb->input['name']), $stylesheet['stylesheet']))
 				{
 					$db->update_query("themestylesheets", array('cachefile' => "css.php?stylesheet={$stylesheet['sid']}"), "sid='{$stylesheet['sid']}'", 1);
 				}

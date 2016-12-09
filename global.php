@@ -449,12 +449,13 @@ else
 	$templatelist = '';
 }
 
-$templatelist .= "headerinclude,header,footer,gobutton,htmldoctype,header_welcomeblock_member,header_welcomeblock_guest,header_welcomeblock_member_moderator,header_welcomeblock_member_admin,footer_languageselect_option";
-$templatelist .= ",global_pending_joinrequests,global_awaiting_activation,nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active,footer_languageselect,footer_themeselect,header_menu_calendar,global_unreadreports,smilie";
-$templatelist .= ",global_boardclosed_warning,global_bannedwarning,error_inline,error_nopermission_loggedin,error_nopermission,header_quicksearch,header_menu_search,header_menu_portal,header_menu_memberlist,redirect";
-$templatelist .= ",video_dailymotion_embed,video_facebook_embed,video_liveleak_embed,video_metacafe_embed,video_myspacetv_embed,video_veoh_embed,video_vimeo_embed,video_yahoo_embed,video_youtube_embed,global_dst_detection";
-$templatelist .= ",smilieinsert_row,smilieinsert_row_empty,smilieinsert,smilieinsert_getmore,smilieinsert_smilie,global_board_offline_modal,footer_themeselector,task_image,usercp_themeselector_option,debug_summary";
-$templatelist .= ",mycode_code,mycode_email,mycode_img,mycode_php,mycode_quote_post,mycode_size_int,mycode_url,global_no_permission_modal,global_boardclosed_reason,nav_dropdown,footer_contactus,global_pm_alert,error";
+$templatelist .= "headerinclude,header,footer,gobutton,htmldoctype,header_welcomeblock_member,header_welcomeblock_member_user,header_welcomeblock_member_moderator,header_welcomeblock_member_admin,error";
+$templatelist .= ",global_pending_joinrequests,global_awaiting_activation,nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active,footer_languageselect,footer_themeselect,global_unreadreports,footer_contactus";
+$templatelist .= ",global_boardclosed_warning,global_bannedwarning,error_inline,error_nopermission_loggedin,error_nopermission,global_pm_alert,header_menu_search,header_menu_portal,redirect,footer_languageselect_option";
+$templatelist .= ",video_dailymotion_embed,video_facebook_embed,video_liveleak_embed,video_metacafe_embed,video_myspacetv_embed,video_veoh_embed,video_vimeo_embed,video_yahoo_embed,video_youtube_embed,debug_summary";
+$templatelist .= ",smilieinsert_row,smilieinsert_row_empty,smilieinsert,smilieinsert_getmore,smilieinsert_smilie,global_board_offline_modal,footer_themeselector,task_image,usercp_themeselector_option";
+$templatelist .= ",mycode_code,mycode_email,mycode_img,mycode_php,mycode_quote_post,mycode_size_int,mycode_url,global_no_permission_modal,global_boardclosed_reason,nav_dropdown,global_remote_avatar_notice";
+$templatelist .= ",header_welcomeblock_member_pms,header_welcomeblock_member_search,header_welcomeblock_guest,header_menu_calendar,header_menu_memberlist,global_dst_detection,header_quicksearch,smilie";
 $templates->cache($db->escape_string($templatelist));
 
 // Set the current date and time now
@@ -483,7 +484,7 @@ if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['canviewboardclosed']
 }
 
 // Prepare the main templates for use
-$admincplink = $modcplink = '';
+$admincplink = $modcplink = $usercplink = '';
 
 // Load appropriate welcome block for the current logged in user
 if($mybb->user['uid'] != 0)
@@ -500,11 +501,29 @@ if($mybb->user['uid'] != 0)
 		eval('$modcplink = "'.$templates->get('header_welcomeblock_member_moderator').'";');
 	}
 
+	if($mybb->usergroup['canusercp'] == 1)
+	{
+		eval('$usercplink = "'.$templates->get('header_welcomeblock_member_user').'";');
+	}
+
 	// Format the welcome back message
 	$lang->welcome_back = $lang->sprintf($lang->welcome_back, build_profile_link(htmlspecialchars_uni($mybb->user['username']), $mybb->user['uid']), $lastvisit);
 
+	$searchlink = '';
+	if($mybb->usergroup['cansearch'] == 1)
+	{
+		eval('$searchlink = "'.$templates->get('header_welcomeblock_member_search').'";');
+	}
+
 	// Tell the user their PM usage
-	$lang->welcome_pms_usage = $lang->sprintf($lang->welcome_pms_usage, my_number_format($mybb->user['pms_unread']), my_number_format($mybb->user['pms_total']));
+	$pmslink = '';
+	if($mybb->settings['enablepms'] != 0 && $mybb->usergroup['canusepms'] == 1)
+	{
+		$lang->welcome_pms_usage = $lang->sprintf($lang->welcome_pms_usage, my_number_format($mybb->user['pms_unread']), my_number_format($mybb->user['pms_total']));
+
+		eval('$pmslink = "'.$templates->get('header_welcomeblock_member_pms').'";');
+	}
+
 	eval('$welcomeblock = "'.$templates->get('header_welcomeblock_member').'";');
 }
 // Otherwise, we have a guest
@@ -598,7 +617,7 @@ if($mybb->settings['reportmethod'] == "db" && ($mybb->usergroup['cancp'] == 1 ||
 	{
 		// First we check if the user's a super admin: if yes, we don't care about permissions
 		$can_access_moderationqueue = true;
-		$is_super_admin = is_super_admin($recipient['uid']);
+		$is_super_admin = is_super_admin($mybb->user['uid']);
 		if(!$is_super_admin)
 		{
 			// Include admin functions
@@ -758,6 +777,12 @@ if(isset($mybb->user['pmnotice']) && $mybb->user['pmnotice'] == 2 && $mybb->user
 		$privatemessage_text = $lang->sprintf($lang->newpm_notice_multiple, $mybb->user['pms_unread'], $user_text, $mybb->settings['bburl'], $pm['pmid'], htmlspecialchars_uni($pm['subject']));
 	}
 	eval('$pm_notice = "'.$templates->get('global_pm_alert').'";');
+}
+
+$remote_avatar_notice = '';
+if(($mybb->user['avatartype'] === 'remote' || $mybb->user['avatartype'] === 'gravatar') && !$mybb->settings['allowremoteavatars'])
+{
+	eval('$remote_avatar_notice = "'.$templates->get('global_remote_avatar_notice').'";');
 }
 
 if($mybb->settings['awactialert'] == 1 && $mybb->usergroup['cancp'] == 1)

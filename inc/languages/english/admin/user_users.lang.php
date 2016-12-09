@@ -88,6 +88,7 @@ $l['option_6'] = "More than 2 years old";
 
 $l['error_avatartoobig'] = "Sorry, but we cannot change your avatar as the new avatar you specified is too big. The maximum dimensions are {1}x{2} (width x height)";
 $l['error_invalidavatarurl'] = "The URL you entered for your avatar does not appear to be valid. Please ensure you enter a valid URL.";
+$l['error_remote_avatar_not_allowed'] = "Remote avatar URLs have been disabled by the forum administrator.";
 $l['error_invalid_user'] = "You have selected an invalid user.";
 $l['error_no_perms_super_admin'] = "You do not have permission to edit this user because you are not a super administrator.";
 $l['error_invalid_user_source'] = "The source account username you entered does not exist";
@@ -161,7 +162,7 @@ $l['icq_number'] = "ICQ Number";
 $l['aim_handle'] = "AIM Handle";
 $l['yahoo_messanger_handle'] = "Yahoo! Messenger Handle";
 $l['skype_handle'] = "Skype Handle";
-$l['google_handle'] = "Google Talk Handle";
+$l['google_handle'] = "Google Hangouts Handle";
 $l['birthday'] = "Date of Birth";
 
 $l['away_information'] = "Away Information";
@@ -344,7 +345,7 @@ $l['icq_number_contains'] = "ICQ number contains";
 $l['aim_handle_contains'] = "AIM handle contains";
 $l['yahoo_contains'] = "Yahoo! Messenger handle contains";
 $l['skype_contains'] = "Skype handle contains";
-$l['google_contains'] = "Google Talk handle contains";
+$l['google_contains'] = "Google Hangouts handle contains";
 $l['signature_contains'] = "Signature contains";
 $l['user_title_contains'] = "Custom user title contains";
 $l['greater_than'] = "Greater than";

@@ -1870,6 +1870,11 @@ function my_setcookie($name, $value="", $expires="", $httponly=false)
 		$cookie .= "; HttpOnly";
 	}
 
+	if($mybb->settings['cookiesecureflag'])
+	{
+		$cookie .= "; Secure";
+	}
+
 	$mybb->cookies[$name] = $value;
 
 	header($cookie, false);
@@ -3048,6 +3053,12 @@ function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
 	if(!isset($avatars))
 	{
 		$avatars = array();
+	}
+
+	if(my_strpos($avatar, '://') !== false && !$mybb->settings['allowremoteavatars'])
+	{
+		// Remote avatar, but remote avatars are disallowed.
+		$avatar = null;
 	}
 
 	if(!$avatar)

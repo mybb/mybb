@@ -14,8 +14,8 @@ define('THIS_SCRIPT', 'newreply.php');
 $templatelist = "newreply,previewpost,loginbox,changeuserbox,posticons,newreply_threadreview,newreply_threadreview_post,forumdisplay_rules_link,newreply_multiquote_external,post_attachments_add,post_subscription_method";
 $templatelist .= ",codebuttons,post_attachments_new,post_attachments,post_savedraftbutton,newreply_modoptions,newreply_threadreview_more,postbit_online,postbit_pm,newreply_disablesmilies_hidden,post_attachments_update";
 $templatelist .= ",postbit_www,postbit_email,postbit_reputation,postbit_warninglevel,postbit_author_user,postbit_edit,postbit_quickdelete,postbit_inlinecheck,postbit_posturl,postbit_quote,postbit_multiquote,postbit_icon";
-$templatelist .= ",post_attachments_attachment_postinsert,post_attachments_attachment_remove,post_attachments_attachment_unapproved,post_attachments_attachment,postbit_attachments_attachment,newreply_options_signature";
-$templatelist .= ",member_register_regimage,member_register_regimage_recaptcha,post_captcha_hidden,post_captcha,post_captcha_recaptcha,post_captcha_nocaptcha,postbit_groupimage,postbit_attachments,postbit_report";
+$templatelist .= ",post_attachments_attachment_postinsert,post_attachments_attachment_remove,post_attachments_attachment_unapproved,post_attachments_attachment,postbit_attachments_attachment,newreply_signature,postbit_report";
+$templatelist .= ",member_register_regimage,member_register_regimage_recaptcha,post_captcha_hidden,post_captcha,post_captcha_recaptcha,post_captcha_nocaptcha,postbit_groupimage,postbit_attachments,newreply_postoptions";
 $templatelist .= ",postbit_rep_button,postbit_warn,postbit_author_guest,postbit_signature,postbit_classic,postbit_attachments_thumbnails_thumbnailpostbit_attachments_images_image,postbit_attachments_attachment_unapproved";
 $templatelist .= ",postbit_attachments_thumbnails,postbit_attachments_images,postbit_gotopost,forumdisplay_password_wrongpass,forumdisplay_password,posticons_icon,attachment_icon,postbit_reputation_formatted_link,postbit_away";
 $templatelist .= ",global_moderation_notice,newreply_disablesmilies,postbit_userstar,newreply_draftinput,postbit_avatar,forumdisplay_rules,postbit_offline,postbit_find,postbit_warninglevel_formatted,postbit_ignored,postbit";
@@ -277,7 +277,8 @@ if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid'
 	}
 }
 
-$reply_errors = $quoted_ids = '';
+$reply_errors = '';
+$quoted_ids = array();
 $hide_captcha = false;
 
 // Check the maximum posts per day for this user
@@ -1379,15 +1380,29 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		eval("\$threadreview = \"".$templates->get("newreply_threadreview")."\";");
 	}
 
+	// Hide signature option if no permission
+	$signature = '';
+	if($mybb->usergroup['canusesig'] == 1 && !$mybb->user['suspendsignature'])
+	{
+		eval("\$signature = \"".$templates->get('newreply_signature')."\";");
+	}
+
 	// Can we disable smilies or are they disabled already?
 	$disablesmilies = '';
 	if($forum['allowsmilies'] != 0)
 	{
 		eval("\$disablesmilies = \"".$templates->get("newreply_disablesmilies")."\";");
 	}
+
+	$postoptions = '';
+	if(!empty($signature) || !empty($disablesmilies))
+	{
+		eval("\$postoptions = \"".$templates->get("newreply_postoptions")."\";");
+		$bgcolor = "trow2";
+	}
 	else
 	{
-		eval("\$disablesmilies = \"".$templates->get("newreply_disablesmilies_hidden")."\";");
+		$bgcolor = "trow1";
 	}
 
 	$modoptions = '';

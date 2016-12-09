@@ -16,7 +16,7 @@ $templatelist .= ",editpost_delete,forumdisplay_password_wrongpass,forumdisplay_
 $templatelist .= ",postbit_avatar,postbit_find,postbit_pm,postbit_rep_button,postbit_www,postbit_email,postbit_reputation,postbit_warn,postbit_warninglevel,postbit_author_user,error_attacherror";
 $templatelist .= ",postbit_signature,postbit_classic,postbit,postbit_attachments_thumbnails_thumbnail,postbit_attachments_images_image,postbit_attachments_attachment,postbit_attachments_attachment_unapproved";
 $templatelist .= ",posticons_icon,post_prefixselect_prefix,post_prefixselect_single,newthread_postpoll,editpost_disablesmilies,post_attachments_attachment_mod_approve,post_attachments_attachment_unapproved";
-$templatelist .= ",postbit_warninglevel_formatted,postbit_reputation_formatted_link,editpost_disablesmilies_hidden,attachment_icon,post_attachments_attachment,post_attachments_add,post_attachments";
+$templatelist .= ",postbit_warninglevel_formatted,postbit_reputation_formatted_link,editpost_signature,attachment_icon,post_attachments_attachment,post_attachments_add,post_attachments,editpost_postoptions";
 $templatelist .= ",postbit_attachments_images,global_moderation_notice,post_attachments_new,postbit_attachments,postbit_online,postbit_away,postbit_offline,postbit_gotopost,postbit_userstar,postbit_icon";
 
 require_once "./global.php";
@@ -899,15 +899,24 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		$pollbox = '';
 	}
 
+	// Hide signature option if no permission
+	$signature = '';
+	if($mybb->usergroup['canusesig'] == 1 && !$mybb->user['suspendsignature'])
+	{
+		eval("\$signature = \"".$templates->get('editpost_signature')."\";");
+	}
+
 	// Can we disable smilies or are they disabled already?
 	$disablesmilies = '';
 	if($forum['allowsmilies'] != 0)
 	{
 		eval("\$disablesmilies = \"".$templates->get("editpost_disablesmilies")."\";");
 	}
-	else
+
+	$postoptions = '';
+	if(!empty($signature) || !empty($disablesmilies))
 	{
-		eval("\$disablesmilies = \"".$templates->get("editpost_disablesmilies_hidden")."\";");
+		eval("\$postoptions = \"".$templates->get("editpost_postoptions")."\";");
 	}
 
 	$moderation_notice = '';

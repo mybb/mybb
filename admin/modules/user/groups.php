@@ -28,6 +28,7 @@ $usergroup_permissions = array(
 	"candeleteposts" => 1,
 	"candeletethreads" => 1,
 	"caneditattachments" => 1,
+	"canviewdeletionnotice" => 1,
 	"canpostpolls" => 1,
 	"canvotepolls" => 1,
 	"canundovotes" => 0,
@@ -884,6 +885,7 @@ if($mybb->input['action'] == "edit")
 				"candeleteposts" => $mybb->get_input('candeleteposts', MyBB::INPUT_INT),
 				"candeletethreads" => $mybb->get_input('candeletethreads', MyBB::INPUT_INT),
 				"caneditattachments" => $mybb->get_input('caneditattachments', MyBB::INPUT_INT),
+				"canviewdeletionnotice" => $mybb->get_input('canviewdeletionnotice', MyBB::INPUT_INT),
 				"canpostpolls" => $mybb->get_input('canpostpolls', MyBB::INPUT_INT),
 				"canvotepolls" => $mybb->get_input('canvotepolls', MyBB::INPUT_INT),
 				"canundovotes" => $mybb->get_input('canundovotes', MyBB::INPUT_INT),
@@ -1117,6 +1119,7 @@ if($mybb->input['action'] == "edit")
 		$form->generate_check_box("candeleteposts", 1, $lang->can_delete_posts, array("checked" => $mybb->input['candeleteposts'])),
 		$form->generate_check_box("candeletethreads", 1, $lang->can_delete_threads, array("checked" => $mybb->input['candeletethreads'])),
 		$form->generate_check_box("caneditattachments", 1, $lang->can_edit_attachments, array("checked" => $mybb->input['caneditattachments'])),
+		$form->generate_check_box("canviewdeletionnotice", 1, $lang->can_view_deletion_notices, array("checked" => $mybb->input['canviewdeletionnotice'])),
 		"{$lang->edit_time_limit}<br /><small class=\"input\">{$lang->edit_time_limit_desc}</small><br />".$form->generate_numeric_field('edittimelimit', $mybb->input['edittimelimit'], array('id' => 'edittimelimit', 'class' => 'field50', 'min' => 0))
 	);
 	$form_container->output_row($lang->editing_deleting_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $editing_options)."</div>");
