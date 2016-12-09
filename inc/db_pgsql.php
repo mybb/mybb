@@ -1347,7 +1347,7 @@ class DB_PgSQL implements DB_Base
 
 		if($update === true)
 		{
-			return $this->update_query($table, $replacements, "{$main_field}=".$this->quote_val($replacements[$main_field]));
+			return $this->update_query($table, $replacements, $search_bit);
 		}
 		else
 		{
