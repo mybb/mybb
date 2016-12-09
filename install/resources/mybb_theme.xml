@@ -4333,7 +4333,6 @@ $(".forumjump").change(function() {
 	<td class="tfoot" style="text-align: right">
 		<span class="smalltext">
 			{$logoutlink}
-			<a href="misc.php?action=markread{$post_code_string}">{$lang->markread}</a> |
 			<a href="showteam.php">{$lang->forumteam}</a>
 			{$statspage}
 		</span>
