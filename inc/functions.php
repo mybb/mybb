@@ -8491,7 +8491,9 @@ function my_strip_tags($string, $allowable_tags = '')
 {
 	$pattern = array(
 		'@(&lt;)style[^(&gt;)]*?(&gt;).*?(&lt;)/style(&gt;)@siu',
-        '@(&lt;)script[^(&gt;)]*?.*?(&lt;)/script(&gt;)@siu',
+		'@(&lt;)script[^(&gt;)]*?.*?(&lt;)/script(&gt;)@siu',
+		'@<style[^>]*?>.*?</style>@siu',
+		'@<script[^>]*?.*?</script>@siu',
 	);
 	$string = preg_replace($pattern, '', $string);
 	return strip_tags($string, $allowable_tags);
