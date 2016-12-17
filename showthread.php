@@ -1061,8 +1061,11 @@ if($mybb->input['action'] == "thread")
 			WHERE $pids
 			ORDER BY p.dateline
 		");
+
 		while($post = $db->fetch_array($query))
 		{
+			$post['regip'] = my_inet_ntop($db->unescape_binary($post['regip']));
+			$post['lastip'] = my_inet_ntop($db->unescape_binary($post['lastip']));
 			if($thread['firstpost'] == $post['pid'] && $thread['visible'] == 0)
 			{
 				$post['visible'] = 0;
@@ -1484,6 +1487,7 @@ if($mybb->input['action'] == "thread")
 					++$inviscount;
 				}
 
+				$user['ip'] = my_inet_ntop($db->unescape_binary($user['ip']));
 				if($user['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])
 				{
 					$user['profilelink'] = get_profile_link($user['uid']);
