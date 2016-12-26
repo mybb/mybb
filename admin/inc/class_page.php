@@ -108,7 +108,7 @@ class DefaultPage
 
 		echo "	<script type=\"text/javascript\" src=\"../jscripts/jquery.js\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"../jscripts/jquery.plugins.min.js\"></script>\n";
-		echo "	<script type=\"text/javascript\" src=\"../jscripts/general.js?ver=1807\"></script>\n";
+		echo "	<script type=\"text/javascript\" src=\"../jscripts/general.js?ver=1809\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"./jscripts/admincp.js\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"./jscripts/tabs.js\"></script>\n";
 
@@ -131,6 +131,7 @@ var loading_text = '{$lang->loading_text}';
 var cookieDomain = '{$mybb->settings['cookiedomain']}';
 var cookiePath = '{$mybb->settings['cookiepath']}';
 var cookiePrefix = '{$mybb->settings['cookieprefix']}';
+var cookieSecureFlag = '{$mybb->settings['cookiesecureflag']}';
 var imagepath = '../images';
 
 lang.unknown_error = \"{$lang->unknown_error}\";
