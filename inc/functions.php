@@ -7640,7 +7640,7 @@ function verify_files($path=MYBB_ROOT, $count=0)
 	global $mybb, $checksums, $bad_verify_files;
 
 	// We don't need to check these types of files
-	$ignore = array(".", "..", ".svn", "config.php", "settings.php", "Thumb.db", "config.default.php", "lock", "htaccess.txt", "logo.gif", "logo.png");
+	$ignore = array(".", "..", ".svn", "config.php", "settings.php", "Thumb.db", "config.default.php", "lock", "htaccess.txt", "htaccess-nginx.txt", "logo.gif", "logo.png");
 	$ignore_ext = array("attach");
 
 	if(substr($path, -1, 1) == "/")
