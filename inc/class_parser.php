@@ -632,15 +632,10 @@ class postParser
 				}
 
 				// Take into account the position offset for our last replacement.
-				$index = substr_count($badword['badword'], '*')+2;
 				$badword['badword'] = str_replace('\*', '([a-zA-Z0-9_]{1})', preg_quote($badword['badword'], "#"));
 
 				// Ensure we run the replacement enough times but not recursively (i.e. not while(preg_match..))
-				$count = preg_match_all("#(^|\W)".$badword['badword']."(\W|$)#i", $message, $matches);
-				for($i=0; $i < $count; ++$i)
-				{
-					$message = preg_replace("#(^|\W)".$badword['badword']."(\W|$)#i", "\\1".$badword['replacement'].'\\'.$index, $message);
-				}
+				$message = preg_replace("#(^|\W)".$badword['badword']."(?=\W|$)#i", '\1'.$badword['replacement'], $message);
 			}
 		}
 		if(!empty($this->options['strip_tags']))
