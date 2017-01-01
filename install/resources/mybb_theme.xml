@@ -5709,7 +5709,7 @@ if(use_xmlhttprequest == "1")
 </html>]]></template>
 		<template name="memberlist_referrals" version="1800"><![CDATA[<td class="tcat" width="10%" align="center"><span class="smalltext"><a href="{$sorturl}&amp;sort=referrals&amp;order=descending"><strong>{$lang->referrals}</strong></a> {$orderarrow['referrals']}</span></td>]]></template>
 		<template name="memberlist_referrals_bit" version="1600"><![CDATA[<td class="{$alt_bg}" align="center">{$user['referrals']}</td>]]></template>
-		<template name="memberlist_search" version="1807"><![CDATA[<html>
+		<template name="memberlist_search" version="1810"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->search_member_list}</title>
 {$headerinclude}
@@ -5741,36 +5741,11 @@ if(use_xmlhttprequest == "1")
 		<input type="text" class="textbox" name="website" id="website" />
 	</td>
 </tr>
-<tr>
-	<td class="trow1" width="20%"><strong><label for="aim">{$lang->search_aim}</label></strong></td>
-	<td class="trow1">
-		<input type="text" class="textbox" name="aim" id="aim" />
-	</td>
-</tr>
-<tr>
-	<td class="trow1" width="20%"><strong><label for="skype">{$lang->search_skype}</label></strong></td>
-	<td class="trow1">
-		<input type="text" class="textbox" name="skype" id="skype" />
-	</td>
-</tr>
-<tr>
-	<td class="trow1" width="20%"><strong><label for="google">{$lang->search_google}</label></strong></td>
-	<td class="trow1">
-		<input type="text" class="textbox" name="google" id="google" />
-	</td>
-</tr>
-<tr>
-	<td class="trow1" width="20%"><strong><label for="yahoo">{$lang->search_yahoo}</label></strong></td>
-	<td class="trow1">
-		<input type="text" class="textbox" name="yahoo" id="yahoo" />
-	</td>
-</tr>
-<tr>
-	<td class="trow1" width="20%"><strong><label for="icq">{$lang->search_icq}</label></strong></td>
-	<td class="trow1">
-		<input type="text" class="textbox" name="icq" id="icq" />
-	</td>
-</tr>
+{$contact_fields['aim']}
+{$contact_fields['skype']}
+{$contact_fields['google']}
+{$contact_fields['yahoo']}
+{$contact_fields['icq']}
 <tr>
 	<td class="tcat" colspan="2"><strong>{$lang->search_options}</strong></td>
 </tr>
@@ -5853,6 +5828,10 @@ if(use_xmlhttprequest == "1")
 </script>
 </body>
 </html>]]></template>
+		<template name="memberlist_search_contact_field" version="1810"><![CDATA[<tr>
+	<td class="{$bgcolors[$field]}" width="20%"><strong><label for="{$field}">{$lang_string}</label></strong></td>
+	<td class="{$bgcolors[$field]}"><input type="text" class="textbox" name="{$field}" id="{$field}" /></td>
+</tr>]]></template>
 		<template name="memberlist_user" version="1800"><![CDATA[<tr>
 	<td class="{$alt_bg}" align="center">{$user['avatar']}</td>
 	<td class="{$alt_bg}">{$user['profilelink']}<br />
