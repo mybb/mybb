@@ -1050,13 +1050,9 @@ class DB_MySQLi implements DB_Base
 			return $this->version;
 		}
 
-		$version = @mysqli_get_server_info($this->read_link);
-		if(!$version)
-		{
-			$query = $this->query("SELECT VERSION() as version");
-			$ver = $this->fetch_array($query);
-			$version = $ver['version'];
-		}
+		$query = $this->query("SELECT VERSION() as version");
+		$ver = $this->fetch_array($query);
+		$version = $ver['version'];
 
 		if($version)
 		{
