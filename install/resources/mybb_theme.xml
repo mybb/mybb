@@ -8935,7 +8935,7 @@ if(use_xmlhttprequest == "1")
 {$lang->num_options} <input type="text" class="textbox" name="numpolloptions" value="{$numpolloptions}" size="10" /> {$lang->max_options}</span>
 </td>
 </tr>]]></template>
-		<template name="newthread_signature" version="1809"><![CDATA[<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="1" tabindex="7"{$postoptionschecked['signature']} /> {$lang->options_sig}</label>]]></template>
+		<template name="newthread_signature" version="1810"><![CDATA[<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="1" tabindex="7"{$postoptionschecked['signature']} /> {$lang->options_sig}</label><br />]]></template>
 		<template name="online" version="1400"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->users_online}</title>
