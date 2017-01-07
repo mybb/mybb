@@ -924,7 +924,7 @@ if(($mybb->settings['contactlink'] == "contact.php" && $mybb->settings['contact'
 $auto_dst_detection = '';
 if($mybb->user['uid'] > 0 && $mybb->user['dstcorrection'] == 2)
 {
-	$timezone = $mybb->user['timezone'] + $mybb->user['dst'];
+	$timezone = (float)$mybb->user['timezone'] + $mybb->user['dst'];
 	eval('$auto_dst_detection = "'.$templates->get('global_dst_detection').'";');
 }
 
