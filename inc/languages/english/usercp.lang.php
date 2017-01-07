@@ -140,7 +140,7 @@ $l['email_notify'] = "Automatically subscribe to threads you post in.";
 $l['email_notify_desc'] = "Selecting yes will automatically subscribe you to threads when you make a post in them.";
 $l['receive_pms'] = "Receive private messages from other users.";
 $l['receive_pms_desc'] = "Enables you to send and receive Private Messages.";
-$l['receive_from_buddy'] = "Only receive private messages from users on my <a href=\"#\" onclick=\"MyBB.popupWindow('/misc.php?action=buddypopup'); return false;\" target=\"_blank\">Buddy List</a>. This setting has no effect unless there is at least one buddy on the list";
+$l['receive_from_buddy'] = "Only receive private messages from users on my <a href=\"#\" onclick=\"MyBB.popupWindow('/misc.php?action=buddypopup'); return false;\" target=\"_blank\">Buddy List</a>. This setting has no effect unless there is at least one buddy on the list.";
 $l['pm_notice'] = "Alert me with a notice when I receive a Private Message.";
 $l['pm_notify'] = "Notify me by email when I receive a new Private Message.";
 $l['show_codebuttons'] = "Show the MyCode formatting options on the posting pages.";
