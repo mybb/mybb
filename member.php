@@ -1981,15 +1981,7 @@ if($mybb->input['action'] == "profile")
 
 	$lang->users_forum_info = $lang->sprintf($lang->users_forum_info, $memprofile['username']);
 	$lang->users_contact_details = $lang->sprintf($lang->users_contact_details, $memprofile['username']);
-
-	if($mybb->settings['enablepms'] != 0 && (($memprofile['receivepms'] != 0 && $memperms['canusepms'] != 0 && my_strpos(",".$memprofile['ignorelist'].",", ",".$mybb->user['uid'].",") === false) || $mybb->usergroup['canoverridepm'] == 1))
-	{
-		$lang->send_pm = $lang->sprintf($lang->send_pm, $memprofile['username']);
-	}
-	else
-	{
-		$lang->send_pm = '';
-	}
+	$lang->send_pm = $lang->sprintf($lang->send_pm, $memprofile['username']);
 	$lang->away_note = $lang->sprintf($lang->away_note, $memprofile['username']);
 	$lang->users_additional_info = $lang->sprintf($lang->users_additional_info, $memprofile['username']);
 	$lang->users_signature = $lang->sprintf($lang->users_signature, $memprofile['username']);
@@ -2013,7 +2005,7 @@ if($mybb->input['action'] == "profile")
 		eval("\$sendemail = \"".$templates->get("member_profile_email")."\";");
 	}
 	
-	if($mybb->settings['enablepms'] == 1 && $memprofile['receivepms'] != 0 && $mybb->usergroup['cansendpms'] == 1 && my_strpos(",".$memprofile['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
+	if($mybb->settings['enablepms'] != 0 && (($memprofile['receivepms'] != 0 && $memperms['canusepms'] != 0 && my_strpos(",".$memprofile['ignorelist'].",", ",".$mybb->user['uid'].",") === false) || $mybb->usergroup['canoverridepm'] == 1))
 	{
 		$bgcolor = alt_trow();	
 		eval('$sendpm = "'.$templates->get("member_profile_pm").'";');
