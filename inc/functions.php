@@ -7640,7 +7640,7 @@ function verify_files($path=MYBB_ROOT, $count=0)
 	global $mybb, $checksums, $bad_verify_files;
 
 	// We don't need to check these types of files
-	$ignore = array(".", "..", ".svn", "config.php", "settings.php", "Thumb.db", "config.default.php", "lock", "htaccess.txt", "logo.gif", "logo.png");
+	$ignore = array(".", "..", ".svn", "config.php", "settings.php", "Thumb.db", "config.default.php", "lock", "htaccess.txt", "htaccess-nginx.txt", "logo.gif", "logo.png");
 	$ignore_ext = array("attach");
 
 	if(substr($path, -1, 1) == "/")
@@ -8490,3 +8490,22 @@ function my_validate_url($url, $relative_path=false)
 	return false;
 }
 
+/**
+ * Strip html tags from string, also removes <script> and <style> contents.
+ * 
+ * @param  string $string         String to stripe
+ * @param  string $allowable_tags Allowed html tags
+ * 
+ * @return string                 Striped string
+ */
+function my_strip_tags($string, $allowable_tags = '')
+{
+	$pattern = array(
+		'@(&lt;)style[^(&gt;)]*?(&gt;).*?(&lt;)/style(&gt;)@siu',
+		'@(&lt;)script[^(&gt;)]*?.*?(&lt;)/script(&gt;)@siu',
+		'@<style[^>]*?>.*?</style>@siu',
+		'@<script[^>]*?.*?</script>@siu',
+	);
+	$string = preg_replace($pattern, '', $string);
+	return strip_tags($string, $allowable_tags);
+}

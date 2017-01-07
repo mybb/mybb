@@ -1474,6 +1474,10 @@ switch($mybb->input['action'])
 
 	// Delete Thread Subscriptions
 	case "removesubscriptions":
+
+        // Verify incoming POST request
+        verify_post_check($mybb->get_input('my_post_key'));
+
 		if(!is_moderator($fid, "canmanagethreads"))
 		{
 			error_no_permission();

@@ -889,28 +889,28 @@ class PostDataHandler extends DataHandler
 				$modoptions_update = array();
 
 				// Close the thread.
-				if(!empty($modoptions['closethread']) && $thread['closed'] != 1)
+				if(!empty($modoptions['closethread']) && $thread['closed'] != 1 && is_moderator($post['fid'], "canopenclosethreads", $post['uid']))
 				{
 					$modoptions_update['closed'] = $closed = 1;
 					log_moderator_action($modlogdata, $lang->thread_closed);
 				}
 
 				// Open the thread.
-				if(empty($modoptions['closethread']) && $thread['closed'] == 1)
+				if(empty($modoptions['closethread']) && $thread['closed'] == 1 && is_moderator($post['fid'], "canopenclosethreads", $post['uid']))
 				{
 					$modoptions_update['closed'] = $closed = 0;
 					log_moderator_action($modlogdata, $lang->thread_opened);
 				}
 
 				// Stick the thread.
-				if(!empty($modoptions['stickthread']) && $thread['sticky'] != 1)
+				if(!empty($modoptions['stickthread']) && $thread['sticky'] != 1 && is_moderator($post['fid'], "canstickunstickthreads", $post['uid']))
 				{
 					$modoptions_update['sticky'] = 1;
 					log_moderator_action($modlogdata, $lang->thread_stuck);
 				}
 
 				// Unstick the thread.
-				if(empty($modoptions['stickthread']) && $thread['sticky'] == 1)
+				if(empty($modoptions['stickthread']) && $thread['sticky'] == 1 && is_moderator($post['fid'], "canstickunstickthreads", $post['uid']))
 				{
 					$modoptions_update['sticky'] = 0;
 					log_moderator_action($modlogdata, $lang->thread_unstuck);
@@ -1531,14 +1531,14 @@ class PostDataHandler extends DataHandler
 				$modoptions_update = array();
 
 				// Close the thread.
-				if(!empty($modoptions['closethread']))
+				if(!empty($modoptions['closethread']) && is_moderator($thread['fid'], "canopenclosethreads", $thread['uid']))
 				{
 					$modoptions_update['closed'] = 1;
 					log_moderator_action($modlogdata, $lang->thread_closed);
 				}
 
 				// Stick the thread.
-				if(!empty($modoptions['stickthread']))
+				if(!empty($modoptions['stickthread']) && is_moderator($thread['fid'], "canstickunstickthreads", $thread['uid']))
 				{
 					$modoptions_update['sticky'] = 1;
 					log_moderator_action($modlogdata, $lang->thread_stuck);

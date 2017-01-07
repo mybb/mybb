@@ -145,6 +145,22 @@ function send_report($report, $report_type='post')
 {
 	global $db, $lang, $forum, $mybb, $post, $thread, $reputation, $user;
 
+	$report_reason = '';
+	if($report['reasonid'])
+	{
+		$query = $db->simple_select("reportreasons", "title", "rid = '".(int)$report['reasonid']."'", array('limit' => 1));
+		$reason = $db->fetch_array($query);
+
+		$lang->load('report');
+
+		$report_reason = $lang->parse($reason['title']);
+	}
+
+	if($report['reason'])
+	{
+		$report_reason = $lang->sprintf($lang->email_report_comment_extra, $report_reason, $report['reason']);
+	}
+
 	$modsjoin = $modswhere = '';
 	if(!empty($forum['parentlist']))
 	{
@@ -210,7 +226,7 @@ function send_report($report, $report_type='post')
 	}
 
 	$emailsubject = $lang->sprintf($lang->$lang_string_subject, $mybb->settings['bbname']);
-	$emailmessage = $lang->sprintf($lang->$lang_string_message, $mybb->user['username'], $mybb->settings['bbname'], $send_report_subject, $mybb->settings['bburl'], $send_report_url, $report['reason']);
+	$emailmessage = $lang->sprintf($lang->$lang_string_message, $mybb->user['username'], $mybb->settings['bbname'], $send_report_subject, $mybb->settings['bburl'], $send_report_url, $report_reason);
 
 	while($mod = $db->fetch_array($query))
 	{

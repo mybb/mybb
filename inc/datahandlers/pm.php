@@ -293,7 +293,7 @@ class PMDataHandler extends DataHandler
 			// See if the sender is on the recipients ignore list and that either
 			// - admin_override is set or
 			// - sender is an administrator
-			if(($this->admin_override != true && $sender_permissions['cancp'] != 1) && $sender_permissions['canoverridepm'] != 1)
+			if($this->admin_override != true && $sender_permissions['canoverridepm'] != 1)
 			{
 				if(!empty($user['ignorelist']) && strpos(','.$user['ignorelist'].',', ','.$pm['fromid'].',') !== false)
 				{

@@ -216,9 +216,42 @@ var MyBB = {
 		return false;
 	},
 
-	whoPosted: function(tid)
+	whoPosted: function(tid, sortby)
 	{
-		MyBB.popupWindow("/misc.php?action=whoposted&tid="+tid+"&modal=1");
+		var sort = "", url, body;
+
+		if(typeof sortby === "undefined")
+		{
+			sortby = "";
+		}
+
+		if(sortby == "username")
+		{
+			sort = "&sort=" + sortby;
+		}
+		url = "/misc.php?action=whoposted&tid="+tid+sort+"&modal=1";
+
+		// if the modal is already open just replace the contents
+		if($.modal.isActive())
+		{
+			// don't waste a query if we are already sorted correctly
+			if(sortby == MyBB.whoPostedSort)
+			{
+				return;
+			}
+
+			MyBB.whoPostedSort = sortby;
+
+			$.get(rootpath + url, function(html)
+			{
+				// just replace the inner div
+				body = $(html).children("div");
+				$("div.modal").children("div").replaceWith(body);
+			});
+			return;
+		}
+		MyBB.whoPostedSort = "";
+		MyBB.popupWindow(url);
 	},
 
 	markForumRead: function(event)
@@ -483,7 +516,7 @@ var Cookie = {
 	set: function(name, value, expires)
 	{
 		name = cookiePrefix + name;
-		if(!expires) 
+		if(!expires)
 		{
 			expires = 315360000; // 10*365*24*60*60 => 10 years
 		}
@@ -495,7 +528,7 @@ var Cookie = {
 			expires: expire,
 			path: cookiePath,
 			domain: cookieDomain,
-			secure: cookieSecureFlag,
+			secure: cookieSecureFlag == true,
 		};
 
 		return $.cookie(name, value, options);

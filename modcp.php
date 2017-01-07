@@ -3293,7 +3293,6 @@ if($mybb->input['action'] == "finduser")
 	$page_url = 'modcp.php?action=finduser';
 	foreach(array('username', 'sortby', 'order') as $field)
 	{
-		$mybb->input[$field] = urlencode($mybb->get_input($field));
 		if(!empty($mybb->input[$field]))
 		{
 			$page_url .= "&amp;{$field}=".$mybb->input[$field];

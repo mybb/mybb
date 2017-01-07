@@ -3469,7 +3469,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 			{$days}]]></template>
 		<template name="calendar_year" version="1800"><![CDATA[<option value="{$year}" {$selected}>{$year}</option>]]></template>
 		<template name="calendar_year_sel" version="1800"><![CDATA[<option value="{$year_sel}">{$year_sel}</option>]]></template>
-		<template name="editpost" version="1808"><![CDATA[<html>
+		<template name="editpost" version="1809"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_post}</title>
 {$headerinclude}
@@ -3502,13 +3502,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 </td>
 </tr>
 {$editreason}
-<tr>
-<td class="trow2" valign="top"><strong>{$lang->post_options}</strong></td>
-<td class="trow2"><span class="smalltext">
-<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="1" tabindex="6"{$postoptionschecked['signature']} /> {$lang->options_sig}</label>
-{$disablesmilies}</span>
-</td>
-</tr>
+{$postoptions}
 {$subscriptionmethod}
 {$pollbox}
 </table>
@@ -3543,13 +3537,19 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 <input type="hidden" name="pid" value="{$pid}" />
 </form>
 <br />]]></template>
-		<template name="editpost_disablesmilies" version="120"><![CDATA[<br />
-<label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="1" tabindex="8"{$postoptionschecked['disablesmilies']} /> {$lang->options_disablesmilies}</label>]]></template>
-		<template name="editpost_disablesmilies_hidden" version="1800"><![CDATA[<input type="hidden" name="postoptions[disablesmilies]" value="no" />]]></template>
+		<template name="editpost_disablesmilies" version="1809"><![CDATA[<label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="1" tabindex="8"{$postoptionschecked['disablesmilies']} /> {$lang->options_disablesmilies}</label>]]></template>
+		<template name="editpost_postoptions" version="1809"><![CDATA[<tr>
+<td class="trow2" valign="top"><strong>{$lang->post_options}</strong></td>
+<td class="trow2"><span class="smalltext">
+{$signature}
+{$disablesmilies}</span>
+</td>
+</tr>]]></template>
 		<template name="editpost_reason" version="1800"><![CDATA[<tr>
 <td class="trow1"><strong>{$lang->editreason}</strong></td>
 <td class="trow1"><input type="text" class="textbox" name="editreason" size="40" maxlength="150" value="{$reason}" tabindex="5" /></td>
 </tr>]]></template>
+		<template name="editpost_signature" version="1809"><![CDATA[<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="1" tabindex="6"{$postoptionschecked['signature']} /> {$lang->options_sig}</label><br />]]></template>
 		<template name="error" version="120"><![CDATA[<html>
 <head>
 <title>{$title}</title>
@@ -4264,21 +4264,24 @@ $(".forumjump").change(function() {
 <div class="lower">
 	<div class="wrapper">
 		<ul class="menu panel_links">
-			<li><a href="{$mybb->settings['bburl']}/usercp.php" class="usercp">{$lang->welcome_usercp}</a></li>
+			{$usercplink}
 			{$modcplink}
 			{$admincplink}
 		</ul>
 		<ul class="menu user_links">
 			<li><a href="javascript:void(0)" onclick="MyBB.popupWindow('{$mybb->settings['bburl']}/misc.php?action=buddypopup&modal=1', null, true); return false;">{$lang->welcome_open_buddy_list}</a></li>
-			<li><a href="{$mybb->settings['bburl']}/search.php?action=getnew">{$lang->welcome_newposts}</a></li>
-			<li><a href="{$mybb->settings['bburl']}/search.php?action=getdaily">{$lang->welcome_todaysposts}</a></li>
-			<li><a href="{$mybb->settings['bburl']}/private.php">{$lang->welcome_pms}</a> {$lang->welcome_pms_usage}</li>
+			{$searchlink}
+			{$pmslink}
 		</ul>
 	</div>
 	<br class="clear" />
 </div>]]></template>
 		<template name="header_welcomeblock_member_admin" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/{$admin_dir}/index.php" class="admincp">{$lang->welcome_admin}</a></li>]]></template>
 		<template name="header_welcomeblock_member_moderator" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/modcp.php" class="modcp">{$lang->welcome_modcp}</a></li>]]></template>
+		<template name="header_welcomeblock_member_pms" version="1809"><![CDATA[<li><a href="{$mybb->settings['bburl']}/private.php">{$lang->welcome_pms}</a> {$lang->welcome_pms_usage}</li>]]></template>
+		<template name="header_welcomeblock_member_search" version="1809"><![CDATA[<li><a href="{$mybb->settings['bburl']}/search.php?action=getnew">{$lang->welcome_newposts}</a></li>
+<li><a href="{$mybb->settings['bburl']}/search.php?action=getdaily">{$lang->welcome_todaysposts}</a></li>]]></template>
+		<template name="header_welcomeblock_member_user" version="1809"><![CDATA[<li><a href="{$mybb->settings['bburl']}/usercp.php" class="usercp">{$lang->welcome_usercp}</a></li>]]></template>
 		<template name="index" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']}</title>
@@ -5706,7 +5709,7 @@ if(use_xmlhttprequest == "1")
 </html>]]></template>
 		<template name="memberlist_referrals" version="1800"><![CDATA[<td class="tcat" width="10%" align="center"><span class="smalltext"><a href="{$sorturl}&amp;sort=referrals&amp;order=descending"><strong>{$lang->referrals}</strong></a> {$orderarrow['referrals']}</span></td>]]></template>
 		<template name="memberlist_referrals_bit" version="1600"><![CDATA[<td class="{$alt_bg}" align="center">{$user['referrals']}</td>]]></template>
-		<template name="memberlist_search" version="1807"><![CDATA[<html>
+		<template name="memberlist_search" version="1810"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->search_member_list}</title>
 {$headerinclude}
@@ -5738,36 +5741,11 @@ if(use_xmlhttprequest == "1")
 		<input type="text" class="textbox" name="website" id="website" />
 	</td>
 </tr>
-<tr>
-	<td class="trow1" width="20%"><strong><label for="aim">{$lang->search_aim}</label></strong></td>
-	<td class="trow1">
-		<input type="text" class="textbox" name="aim" id="aim" />
-	</td>
-</tr>
-<tr>
-	<td class="trow1" width="20%"><strong><label for="skype">{$lang->search_skype}</label></strong></td>
-	<td class="trow1">
-		<input type="text" class="textbox" name="skype" id="skype" />
-	</td>
-</tr>
-<tr>
-	<td class="trow1" width="20%"><strong><label for="google">{$lang->search_google}</label></strong></td>
-	<td class="trow1">
-		<input type="text" class="textbox" name="google" id="google" />
-	</td>
-</tr>
-<tr>
-	<td class="trow1" width="20%"><strong><label for="yahoo">{$lang->search_yahoo}</label></strong></td>
-	<td class="trow1">
-		<input type="text" class="textbox" name="yahoo" id="yahoo" />
-	</td>
-</tr>
-<tr>
-	<td class="trow1" width="20%"><strong><label for="icq">{$lang->search_icq}</label></strong></td>
-	<td class="trow1">
-		<input type="text" class="textbox" name="icq" id="icq" />
-	</td>
-</tr>
+{$contact_fields['aim']}
+{$contact_fields['skype']}
+{$contact_fields['google']}
+{$contact_fields['yahoo']}
+{$contact_fields['icq']}
 <tr>
 	<td class="tcat" colspan="2"><strong>{$lang->search_options}</strong></td>
 </tr>
@@ -5850,6 +5828,10 @@ if(use_xmlhttprequest == "1")
 </script>
 </body>
 </html>]]></template>
+		<template name="memberlist_search_contact_field" version="1810"><![CDATA[<tr>
+	<td class="{$bgcolors[$field]}" width="20%"><strong><label for="{$field}">{$lang_string}</label></strong></td>
+	<td class="{$bgcolors[$field]}"><input type="text" class="textbox" name="{$field}" id="{$field}" /></td>
+</tr>]]></template>
 		<template name="memberlist_user" version="1800"><![CDATA[<tr>
 	<td class="{$alt_bg}" align="center">{$user['avatar']}</td>
 	<td class="{$alt_bg}">{$user['profilelink']}<br />
@@ -6210,15 +6192,15 @@ if(use_xmlhttprequest == "1")
 {$forumlistbits}
 </select>]]></template>
 		<template name="misc_syndication_forumlist_forum" version="1808"><![CDATA[<option value="{$forum['fid']}" {$optionselected}>{$depth} {$forum['name']}</option>]]></template>
-		<template name="misc_whoposted" version="1800"><![CDATA[<div class="modal">
+		<template name="misc_whoposted" version="1810"><![CDATA[<div class="modal">
 	<div style="overflow-y: auto; max-height: 400px;">
 <table width="100%" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" border="0" align="center" class="tborder">
 <tr>
 <td colspan="2" class="thead"><strong>{$lang->total_posts} {$numposts}</strong></td>
 </tr>
 <tr>
-<td class="tcat"><span class="smalltext"><strong><a href="misc.php?action=whoposted&amp;tid={$tid}&amp;sort=username">{$lang->user}</a></strong></span></td>
-<td class="tcat"><span class="smalltext"><strong><a href="misc.php?action=whoposted&amp;tid={$tid}&amp;sort=numposts">{$lang->num_posts}</a></strong></span></td>
+<td class="tcat"><span class="smalltext"><strong><a href="javascript:void(0)"  onclick="MyBB.whoPosted({$thread['tid']}, 'username'); return false;">{$lang->user}</a></strong></span></td>
+<td class="tcat"><span class="smalltext"><strong><a href="javascript:void(0)"  onclick="MyBB.whoPosted({$thread['tid']}); return false;">{$lang->num_posts}</a></strong></span></td>
 </tr>
 {$whoposted}
 </table>
@@ -8756,7 +8738,7 @@ if(use_xmlhttprequest == "1")
 		<template name="nav_dropdown" version="1800"><![CDATA[ <img src="{$theme['imgdir']}/arrow_down.png" alt="v" title="" class="pagination_breadcrumb_link" id="breadcrumb_multipage" />{$multipage}]]></template>
 		<template name="nav_sep" version="1800"><![CDATA[&rsaquo;]]></template>
 		<template name="nav_sep_active" version="1800"><![CDATA[<br /><img src="{$theme['imgdir']}/nav_bit.png" alt="" />]]></template>
-		<template name="newreply" version="1808"><![CDATA[<html>
+		<template name="newreply" version="1809"><![CDATA[<html>
 <head>
 <title>{$lang->post_reply_to}</title>
 {$headerinclude}
@@ -8792,13 +8774,7 @@ if(use_xmlhttprequest == "1")
 {$multiquote_external}
 </td>
 </tr>
-<tr>
-<td class="trow1" valign="top"><strong>{$lang->post_options}</strong></td>
-<td class="trow1"><span class="smalltext">
-<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="1" tabindex="6"{$postoptionschecked['signature']} /> {$lang->options_sig}</label>
-{$disablesmilies}
-</span></td>
-</tr>
+{$postoptions}
 {$modoptions}
 {$subscriptionmethod}
 {$captcha}
@@ -8825,18 +8801,26 @@ if(use_xmlhttprequest == "1")
 </script>
 </body>
 </html>]]></template>
-		<template name="newreply_disablesmilies" version="120"><![CDATA[<br />
-<label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="1" tabindex="9"{$postoptionschecked['disablesmilies']} /> {$lang->options_disablesmilies}</label>]]></template>
-		<template name="newreply_disablesmilies_hidden" version="1800"><![CDATA[<input type="hidden" name="postoptions[disablesmilies]" value="no" />]]></template>
+		<template name="newreply_disablesmilies" version="1809"><![CDATA[<label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="1" tabindex="9"{$postoptionschecked['disablesmilies']} /> {$lang->options_disablesmilies}</label>]]></template>
 		<template name="newreply_draftinput" version="1808"><![CDATA[<input type="hidden" name="pid" value="{$pid}" />]]></template>
-		<template name="newreply_modoptions" version="1400"><![CDATA[<tr>
-<td class="trow2" valign="top"><strong>{$lang->mod_options}</strong></td>
-<td class="trow2"><span class="smalltext">
-<label><input type="checkbox" class="checkbox" name="modoptions[closethread]" value="1"{$closecheck} />&nbsp;{$lang->close_thread}</label><br />
-<label><input type="checkbox" class="checkbox" name="modoptions[stickthread]" value="1"{$stickycheck} />&nbsp;{$lang->stick_thread}</label>
+		<template name="newreply_modoptions" version="1810"><![CDATA[<tr>
+	<td class="{$bgcolor}" valign="top"><strong>{$lang->mod_options}</strong></td>
+	<td class="{$bgcolor}"><span class="smalltext">
+		{$closeoption}
+		{$stickoption}
+	</span></td>
+</tr>]]></template>
+		<template name="newreply_modoptions_close" version="1810"><![CDATA[<label><input type="checkbox" class="checkbox" name="modoptions[closethread]" value="1"{$closecheck} />&nbsp;{$lang->close_thread}</label><br />]]></template>
+		<template name="newreply_modoptions_stick" version="1810"><![CDATA[<label><input type="checkbox" class="checkbox" name="modoptions[stickthread]" value="1"{$stickycheck} />&nbsp;{$lang->stick_thread}</label>]]></template>
+		<template name="newreply_multiquote_external" version="1809"><![CDATA[<div id="multiquote_unloaded"><span class="smalltext">{$multiquote_text} <a href="./newreply.php?tid={$tid}" onclick="return Post.loadMultiQuoted();">{$multiquote_quote}</a>, <a href="javascript:void(0)" onclick="Post.clearMultiQuoted(); return false;">{$multiquote_deselect}</a></span></div>]]></template>
+		<template name="newreply_postoptions" version="1809"><![CDATA[<tr>
+<td class="trow1" valign="top"><strong>{$lang->post_options}</strong></td>
+<td class="trow1"><span class="smalltext">
+{$signature}
+{$disablesmilies}
 </span></td>
 </tr>]]></template>
-		<template name="newreply_multiquote_external" version="1809"><![CDATA[<div id="multiquote_unloaded"><span class="smalltext">{$multiquote_text} <a href="./newreply.php?tid={$tid}" onclick="return Post.loadMultiQuoted();">{$multiquote_quote}</a>, <a href="javascript:void(0)" onclick="Post.clearMultiQuoted(); return false;">{$multiquote_deselect}</a></span></div>]]></template>
+		<template name="newreply_signature" version="1809"><![CDATA[<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="1" tabindex="6"{$postoptionschecked['signature']} /> {$lang->options_sig}</label><br />]]></template>
 		<template name="newreply_threadreview" version="1800"><![CDATA[<br />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder tfixed">
 <tr>
@@ -8856,7 +8840,7 @@ if(use_xmlhttprequest == "1")
 {$reviewmessage}
 </td>
 </tr>]]></template>
-		<template name="newthread" version="1808"><![CDATA[<html>
+		<template name="newthread" version="1809"><![CDATA[<html>
 <head>
 <title>{$lang->newthread_in}</title>
 {$headerinclude}
@@ -8888,12 +8872,7 @@ if(use_xmlhttprequest == "1")
 {$multiquote_external}
 </td>
 </tr>
-<tr>
-<td class="trow1" valign="top"><strong>{$lang->post_options}</strong></td>
-<td class="trow1"><span class="smalltext">
-<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="1" tabindex="7"{$postoptionschecked['signature']} /> {$lang->options_sig}</label>
-{$disablesmilies}</span></td>
-</tr>
+{$postoptions}
 {$modoptions}
 {$subscriptionmethod}
 {$pollbox}
@@ -8919,11 +8898,15 @@ if(use_xmlhttprequest == "1")
 </script>
 </body>
 </html>]]></template>
-		<template name="newthread_disablesmilies" version="120"><![CDATA[<br />
-<label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="1" tabindex="9"{$postoptionschecked['disablesmilies']} /> {$lang->options_disablesmilies}</label>]]></template>
-		<template name="newthread_disablesmilies_hidden" version="1800"><![CDATA[<input type="hidden" name="postoptions[disablesmilies]" value="no" />]]></template>
+		<template name="newthread_disablesmilies" version="1809"><![CDATA[<label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="1" tabindex="9"{$postoptionschecked['disablesmilies']} /> {$lang->options_disablesmilies}</label>]]></template>
 		<template name="newthread_draftinput" version="1808"><![CDATA[<input type="hidden" name="pid" value="{$pid}" />]]></template>
 		<template name="newthread_multiquote_external" version="1809"><![CDATA[<div id="multiquote_unloaded"><span class="smalltext">{$multiquote_text} <a href="./newthread.php?fid={$fid}&amp;load_all_quotes=1" onclick="return Post.loadMultiQuotedAll();">{$multiquote_quote}</a>, <a href="javascript:void(0)" onclick="Post.clearMultiQuoted(); return false;">{$multiquote_deselect}</a></span></div>]]></template>
+		<template name="newthread_postoptions" version="1809"><![CDATA[<tr>
+<td class="trow1" valign="top"><strong>{$lang->post_options}</strong></td>
+<td class="trow1"><span class="smalltext">
+{$signature}
+{$disablesmilies}</span></td>
+</tr>]]></template>
 		<template name="newthread_postpoll" version="120"><![CDATA[<tr>
 <td class="{$bgcolor2}" valign="top">
 <strong>{$lang->poll}</strong><br /><span class="smalltext">{$lang->poll_desc}</span>
@@ -8933,6 +8916,7 @@ if(use_xmlhttprequest == "1")
 {$lang->num_options} <input type="text" class="textbox" name="numpolloptions" value="{$numpolloptions}" size="10" /> {$lang->max_options}</span>
 </td>
 </tr>]]></template>
+		<template name="newthread_signature" version="1810"><![CDATA[<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="1" tabindex="7"{$postoptionschecked['signature']} /> {$lang->options_sig}</label><br />]]></template>
 		<template name="online" version="1400"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->users_online}</title>
@@ -10193,7 +10177,7 @@ if(use_xmlhttprequest == "1")
   </span>
   {$lang->pmspaceused}
 </span>]]></template>
-		<template name="private_quickreply" version="1806"><![CDATA[<br />
+		<template name="private_quickreply" version="1809"><![CDATA[<br />
 <form action="private.php" method="post" name="input">
 	<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 	<input type="hidden" name="to" value="{$to}" />
@@ -10205,7 +10189,7 @@ if(use_xmlhttprequest == "1")
 	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 		<thead>
 			<tr>
-				<td class="thead" colspan="2">
+				<td class="thead{$collapsedthead['quickreply']}" colspan="2">
 					<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['quickreply']}.png" id="quickreply_img" class="expander" alt="[-]" title="[-]" /></div>
 					<div><strong>{$lang->quick_reply}</strong></div>
 				</td>
@@ -10528,7 +10512,7 @@ if(use_xmlhttprequest == "1")
 		<template name="private_send_buddyselect" version="1809"><![CDATA[<script type="text/javascript"><!--
 document.write('<br /><span class="smalltext"><a href="javascript:void(0)" onclick="UserCP.openBuddySelect(\'{$buddy_select}\'); return false;"><img src="{$theme['imgdir']}/buddies.png" alt="" style="vertical-align: middle;" alt="" title="{$lang->select_from_buddies}" /> {$lang->select_from_buddies}</a></span>');
 // --></script>]]></template>
-		<template name="private_send_tracking" version="1805"><![CDATA[<br /><label><input type="checkbox" class="checkbox" name="options[readreceipt]" value="1" tabindex="8" {$optionschecked['readreceipt']} /> {$lang->options_read_receipt}</label>]]></template>
+		<template name="private_send_tracking" version="1810"><![CDATA[<br /><label><input type="checkbox" class="checkbox" name="options[readreceipt]" value="1" tabindex="8" {$optionschecked['readreceipt']} />{$lang->options_read_receipt}</label>]]></template>
 		<template name="private_tracking" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->pm_tracking}</title>
@@ -11366,7 +11350,7 @@ if(use_xmlhttprequest == "1")
 		<ul class="thread_tools">
 			<li class="printable"><a href="printthread.php?tid={$tid}">{$lang->view_printable}</a></li>
 			{$sendthread}
-			<li class="subscription_{$add_remove_subscription}"><a href="usercp2.php?action={$add_remove_subscription}subscription&amp;tid={$tid}&amp;my_post_key={$mybb->post_code}">{$add_remove_subscription_text}</a></li>
+			{$addremovesubscription}
 			{$addpoll}
 		</ul>
 	</div>
@@ -11576,7 +11560,7 @@ if(use_xmlhttprequest == "1")
 	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 		<thead>
 			<tr>
-				<td class="thead" colspan="2">
+				<td class="thead{$collapsedthead['quickreply']}" colspan="2">
 					<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['quickreply']}.png" id="quickreply_img" class="expander" alt="[-]" title="[-]" /></div>
 					<div><strong>{$lang->quick_reply}</strong></div>
 				</td>
@@ -11664,6 +11648,7 @@ if(use_xmlhttprequest == "1")
 		<a href="{$similar_thread['lastpostlink']}">{$lang->lastpost}</a>: {$lastposterlink}</span>
 	</td>
 	</tr>]]></template>
+		<template name="showthread_subscription" version="1809"><![CDATA[<li class="subscription_{$add_remove_subscription}"><a href="usercp2.php?action={$add_remove_subscription}subscription&amp;tid={$tid}&amp;my_post_key={$mybb->post_code}">{$add_remove_subscription_text}</a></li>]]></template>
 		<template name="showthread_threaded_bit" version="1800"><![CDATA[<div style="margin-left: {$indentsize}px;"><a href="showthread.php?tid={$tid}&amp;pid={$post['pid']}&amp;mode=threaded">{$post['subject']}</a> <span class="smalltext">- {$lang->by} {$post['profilelink']} - {$postdate}</span></div>]]></template>
 		<template name="showthread_threaded_bitactive" version="1800"><![CDATA[<div style="margin-left: {$indentsize}px;"><strong>{$post['subject']}</strong> <span class="smalltext">- {$lang->by} {$post['profilelink']} - {$postdate}</span></div>]]></template>
 		<template name="showthread_threadedbox" version="120"><![CDATA[<br />
@@ -11678,7 +11663,7 @@ if(use_xmlhttprequest == "1")
 		<template name="showthread_threadnotes" version="1809"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder tfixed">
 <thead>
 <tr>
-	<td class="thead thead_collapse{$collapsedimg['threadnotes']}">
+	<td class="thead{$collapsedthead['threadnotes']}">
 		<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['threadnotes']}.png" id="threadnotes_img" class="expander" alt="[-]" title="[-]" /></div>
 		<div><span class="smalltext"><strong>{$lang->view_thread_notes}</strong></span></div>
 	</td>
@@ -12598,15 +12583,13 @@ if(use_xmlhttprequest == "1")
 <br /><a href="{$thread['lastpostlink']}">{$lang->lastpost}</a>: {$lastposterlink}</span>
 </td>
 </tr>]]></template>
-		<template name="usercp_nav" version="1800"><![CDATA[<td width="{$lang->ucp_nav_width}" valign="top">
+		<template name="usercp_nav" version="1809"><![CDATA[<td width="{$lang->ucp_nav_width}" valign="top">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tbody>
 	<tr>
 		<td class="thead"><strong>{$lang->ucp_nav_menu}</strong></td>
 	</tr>
-	<tr>
-		<td class="trow1 smalltext"><a href="usercp.php" class="usercp_nav_item usercp_nav_home">{$lang->ucp_nav_home}</a></td>
-	</tr>
+	{$ucp_nav_home}
 </tbody>
 {$usercpmenu}
 </table>
@@ -12614,6 +12597,9 @@ if(use_xmlhttprequest == "1")
 		<template name="usercp_nav_attachments" version="1800"><![CDATA[<tr><td class="trow1 smalltext"><a href="usercp.php?action=attachments" class="usercp_nav_item usercp_nav_attachments">{$lang->ucp_nav_attachments}</a></td></tr>]]></template>
 		<template name="usercp_nav_changename" version="1400"><![CDATA[<div><a href="usercp.php?action=changename" class="usercp_nav_item usercp_nav_username">{$lang->ucp_nav_change_username}</a></div>]]></template>
 		<template name="usercp_nav_editsignature" version="1600"><![CDATA[<div><a href="usercp.php?action=editsig" class="usercp_nav_item usercp_nav_editsig">{$lang->ucp_nav_edit_sig}</a></div>]]></template>
+		<template name="usercp_nav_home" version="1809"><![CDATA[<tr>
+	<td class="trow1 smalltext"><a href="usercp.php" class="usercp_nav_item usercp_nav_home">{$lang->ucp_nav_home}</a></td>
+</tr>]]></template>
 		<template name="usercp_nav_messenger" version="1800"><![CDATA[<tbody>
 <tr>
 	<td class="tcat tcat_menu tcat_collapse{$collapsedimg['usercppms']}">
@@ -12690,7 +12676,7 @@ if(use_xmlhttprequest == "1")
 <input type="submit" class="button" name="submit" value="{$lang->update_notepad}" />
 </div>
 </form>]]></template>
-		<template name="usercp_options" version="1800"><![CDATA[<html>
+		<template name="usercp_options" version="1809"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_options}</title>
 {$headerinclude}
@@ -12731,23 +12717,7 @@ if(use_xmlhttprequest == "1")
 <td valign="top" width="1"><input type="checkbox" class="checkbox" name="hideemail" id="hideemail" value="1" {$hideemailcheck} /></td>
 <td><span class="smalltext"><label for="hideemail">{$lang->allow_emails}</label></span></td>
 </tr>
-<tr>
-<td valign="top" width="1"><input type="checkbox" class="checkbox" name="receivepms" id="receivepms" value="1" {$receivepmscheck} /></td>
-<td><span class="smalltext"><label for="receivepms">{$lang->receive_pms}</label></span></td>
-</tr>
-{$pms_from_buddys}
-<tr>
-<td valign="top" width="1"><input type="checkbox" class="checkbox" name="pmnotice" id="pmnotice" value="1"{$pmnoticecheck} /></td>
-<td><span class="smalltext"><label for="pmnotice">{$lang->pm_notice}</label></span></td>
-</tr>
-<tr>
-<td valign="top" width="1"><input type="checkbox" class="checkbox" name="pmnotify" id="pmnotify" value="1" {$pmnotifycheck} /></td>
-<td><span class="smalltext"><label for="pmnotify">{$lang->pm_notify}</label></span></td>
-</tr>
-<tr>
-<td valign="top" width="1"><input type="checkbox" class="checkbox" name="buddyrequestspm" id="buddyrequestspm" value="1" {$buddyrequestspmcheck} /></td>
-<td><span class="smalltext"><label for="buddyrequestspm">{$lang->buddyrequests_pm}</label></span></td>
-</tr>
+{$pms}
 <tr>
 <td valign="top" width="1"><input type="checkbox" class="checkbox" name="buddyrequestsauto" id="buddyrequestsauto" value="1" {$buddyrequestsautocheck} /></td>
 <td><span class="smalltext"><label for="buddyrequestsauto">{$lang->buddyrequests_auto}</label></span></td>
@@ -12865,10 +12835,7 @@ if(use_xmlhttprequest == "1")
 <td valign="top" width="1"><input type="checkbox" class="checkbox" name="showavatars" id="showavatars" value="1" {$showavatarscheck} /></td>
 <td><span class="smalltext"><label for="showavatars">{$lang->show_avatars}</label></span></td>
 </tr>
-<tr>
-<td valign="top" width="1"><input type="checkbox" class="checkbox" name="showquickreply" id="showquickreply" value="1" {$showquickreplycheck} /></td>
-<td><span class="smalltext"><label for="showquickreply">{$lang->show_quick_reply}</label></span></td>
-</tr>
+{$quick_reply}
 {$pppselect}
 <tr>
 <td colspan="2"><span class="smalltext">{$lang->thread_mode}</span></td>
@@ -12927,6 +12894,23 @@ if(use_xmlhttprequest == "1")
 </td>
 </tr>]]></template>
 		<template name="usercp_options_language_option" version="1800"><![CDATA[<option value="{$name}"{$sel}>{$language}</option>]]></template>
+		<template name="usercp_options_pms" version="1809"><![CDATA[<tr>
+<td valign="top" width="1"><input type="checkbox" class="checkbox" name="receivepms" id="receivepms" value="1" {$receivepmscheck} /></td>
+<td><span class="smalltext"><label for="receivepms">{$lang->receive_pms}</label></span></td>
+</tr>
+{$pms_from_buddys}
+<tr>
+<td valign="top" width="1"><input type="checkbox" class="checkbox" name="pmnotice" id="pmnotice" value="1"{$pmnoticecheck} /></td>
+<td><span class="smalltext"><label for="pmnotice">{$lang->pm_notice}</label></span></td>
+</tr>
+<tr>
+<td valign="top" width="1"><input type="checkbox" class="checkbox" name="pmnotify" id="pmnotify" value="1" {$pmnotifycheck} /></td>
+<td><span class="smalltext"><label for="pmnotify">{$lang->pm_notify}</label></span></td>
+</tr>
+<tr>
+<td valign="top" width="1"><input type="checkbox" class="checkbox" name="buddyrequestspm" id="buddyrequestspm" value="1" {$buddyrequestspmcheck} /></td>
+<td><span class="smalltext"><label for="buddyrequestspm">{$lang->buddyrequests_pm}</label></span></td>
+</tr>]]></template>
 		<template name="usercp_options_pms_from_buddys" version="1600"><![CDATA[<tr>
 <td valign="top" width="1"><input type="checkbox" class="checkbox" name="receivefrombuddy" id="receivefrombuddy" value="1" {$receivefrombuddycheck} /></td>
 <td><span class="smalltext"><label for="receivefrombuddy">{$lang->receive_from_buddy}</label></span></td>
@@ -12943,6 +12927,10 @@ if(use_xmlhttprequest == "1")
 </td>
 </tr>]]></template>
 		<template name="usercp_options_pppselect_option" version="1800"><![CDATA[<option value="{$val}"{$selected}>{$ppp_option}</option>]]></template>
+		<template name="usercp_options_quick_reply" version="1809"><![CDATA[<tr>
+<td valign="top" width="1"><input type="checkbox" class="checkbox" name="showquickreply" id="showquickreply" value="1" {$showquickreplycheck} /></td>
+<td><span class="smalltext"><label for="showquickreply">{$lang->show_quick_reply}</label></span></td>
+</tr>]]></template>
 		<template name="usercp_options_style" version="1800"><![CDATA[<tr>
 <td colspan="2"><span class="smalltext">{$lang->style}</span></td>
 </tr>
@@ -13971,7 +13959,7 @@ $(function() {
 </html>]]></template>
 		<template name="debug_summary" version="1800"><![CDATA[<div id="debug">{$generated_in} {$debug_weight} <br />{$sql_queries} / {$server_load} / {$memory_usage}<br />[<a href="{$debuglink}" target="_blank">{$lang->debug_advanced_details}</a>]<br /></div>]]></template>
 		<template name="gobutton" version="120"><![CDATA[<input type="submit" class="button" value="{$lang->go}" />]]></template>
-		<template name="headerinclude" version="1807"><![CDATA[<link rel="alternate" type="application/rss+xml" title="{$lang->latest_threads} (RSS 2.0)" href="{$mybb->settings['bburl']}/syndication.php" />
+		<template name="headerinclude" version="1809"><![CDATA[<link rel="alternate" type="application/rss+xml" title="{$lang->latest_threads} (RSS 2.0)" href="{$mybb->settings['bburl']}/syndication.php" />
 <link rel="alternate" type="application/atom+xml" title="{$lang->latest_threads} (Atom 1.0)" href="{$mybb->settings['bburl']}/syndication.php?type=atom1.0" />
 <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
 <meta http-equiv="Content-Script-Type" content="text/javascript" />

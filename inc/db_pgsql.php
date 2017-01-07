@@ -1321,51 +1321,33 @@ class DB_PgSQL implements DB_Base
 
 		$update = false;
 		$search_bit = array();
-		if(is_array($main_field) && !empty($main_field))
-		{
-			foreach($main_field as $field)
-			{
-				if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
-				{
-					$search_bit[] = "{$field} = ".$replacements[$field];
-				}
-				else
-				{
-					$search_bit[] = "{$field} = ".$this->quote_val($replacements[$field]);
-				}
-			}
 
-			$search_bit = implode(" AND ", $search_bit);
-			$query = $this->write_query("SELECT COUNT(".$main_field[0].") as count FROM {$this->table_prefix}{$table} WHERE {$search_bit} LIMIT 1");
-			if($this->fetch_field($query, "count") == 1)
+		if(!is_array($main_field))
+		{
+			$main_field = array($main_field);
+		}
+
+		foreach($main_field as $field)
+		{
+			if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
 			{
-				$update = true;
+				$search_bit[] = "{$field} = ".$replacements[$field];
+			}
+			else
+			{
+				$search_bit[] = "{$field} = ".$this->quote_val($replacements[$field]);
 			}
 		}
-		else
+		$search_bit = implode(" AND ", $search_bit);
+		$query = $this->write_query("SELECT COUNT(".$main_field[0].") as count FROM {$this->table_prefix}{$table} WHERE {$search_bit} LIMIT 1");
+		if($this->fetch_field($query, "count") == 1)
 		{
-			$query = $this->write_query("SELECT {$main_field} FROM {$this->table_prefix}{$table}");
-
-			while($column = $this->fetch_array($query))
-			{
-				if($column[$main_field] == $replacements[$main_field])
-				{
-					$update = true;
-					break;
-				}
-			}
+			$update = true;
 		}
 
 		if($update === true)
 		{
-			if(is_array($main_field))
-			{
-				return $this->update_query($table, $replacements, $search_bit);
-			}
-			else
-			{
-				return $this->update_query($table, $replacements, "{$main_field}=".$this->quote_val($replacements[$main_field]));
-			}
+			return $this->update_query($table, $replacements, $search_bit);
 		}
 		else
 		{
