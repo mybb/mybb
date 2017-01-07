@@ -6192,15 +6192,15 @@ if(use_xmlhttprequest == "1")
 {$forumlistbits}
 </select>]]></template>
 		<template name="misc_syndication_forumlist_forum" version="1808"><![CDATA[<option value="{$forum['fid']}" {$optionselected}>{$depth} {$forum['name']}</option>]]></template>
-		<template name="misc_whoposted" version="1800"><![CDATA[<div class="modal">
+		<template name="misc_whoposted" version="1810"><![CDATA[<div class="modal">
 	<div style="overflow-y: auto; max-height: 400px;">
 <table width="100%" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" border="0" align="center" class="tborder">
 <tr>
 <td colspan="2" class="thead"><strong>{$lang->total_posts} {$numposts}</strong></td>
 </tr>
 <tr>
-<td class="tcat"><span class="smalltext"><strong><a href="misc.php?action=whoposted&amp;tid={$tid}&amp;sort=username">{$lang->user}</a></strong></span></td>
-<td class="tcat"><span class="smalltext"><strong><a href="misc.php?action=whoposted&amp;tid={$tid}&amp;sort=numposts">{$lang->num_posts}</a></strong></span></td>
+<td class="tcat"><span class="smalltext"><strong><a href="javascript:void(0)"  onclick="MyBB.whoPosted({$thread['tid']}, 'username'); return false;">{$lang->user}</a></strong></span></td>
+<td class="tcat"><span class="smalltext"><strong><a href="javascript:void(0)"  onclick="MyBB.whoPosted({$thread['tid']}); return false;">{$lang->num_posts}</a></strong></span></td>
 </tr>
 {$whoposted}
 </table>
