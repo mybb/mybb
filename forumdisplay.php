@@ -1410,7 +1410,7 @@ if(!empty($threadcache) && is_array($threadcache))
 			eval("\$inlinemodmanage = \"".$templates->get("forumdisplay_inlinemoderation_manage")."\";");
 		}
 
-		if(is_moderator($fid, "canapproveunapproveposts"))
+		if(is_moderator($fid, "canapproveunapprovethreads"))
 		{
 			eval("\$inlinemodapproveunapprove = \"".$templates->get("forumdisplay_inlinemoderation_approveunapprove")."\";");
 		}
