@@ -26,6 +26,7 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "permissions" ||
 	$sub_tabs['add_calendar'] = array(
 		'title' => $lang->add_calendar,
 		'link' => "index.php?module=config-calendars&amp;action=add",
+		'description' => $lang->add_calendar_desc
 	);
 }
 
@@ -92,15 +93,8 @@ if($mybb->input['action'] == "add")
 	$page->add_breadcrumb_item($lang->add_calendar);
 	$page->output_header($lang->calendars." - ".$lang->add_calendar);
 
-	$sub_tabs['add_calendar'] = array(
-		'title' => $lang->add_calendar,
-		'link' => "index.php?module=config-calendars&amp;action=add",
-		'description' => $lang->add_calendar_desc
-	);
-
 	$page->output_nav_tabs($sub_tabs, 'add_calendar');
 	$form = new Form("index.php?module=config-calendars&amp;action=add", "post");
-
 
 	if($errors)
 	{
