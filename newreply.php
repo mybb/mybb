@@ -771,11 +771,11 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			$group_permissions = forum_permissions();
 			$onlyusfids = array();
 			$onlyusforums = '';
-			foreach($group_permissions as $fid => $forum_permissions)
+			foreach($group_permissions as $gpfid => $forum_permissions)
 			{
 				if(isset($forum_permissions['canonlyviewownthreads']) && $forum_permissions['canonlyviewownthreads'] == 1)
 				{
-					$onlyusfids[] = $fid;
+					$onlyusfids[] = $gpfid;
 				}
 			}
 			if(!empty($onlyusfids))
