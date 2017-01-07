@@ -11,8 +11,8 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'memberlist.php');
 
-$templatelist = "memberlist,memberlist_search,memberlist_user,memberlist_user_groupimage,memberlist_user_avatar,memberlist_user_userstar";
-$templatelist .= ",multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,memberlist_referrals,memberlist_referrals_bit,memberlist_error,memberlist_orderarrow";
+$templatelist = "memberlist,memberlist_search,memberlist_user,memberlist_user_groupimage,memberlist_user_avatar,memberlist_user_userstar,memberlist_search_contact_field,memberlist_referrals,memberlist_referrals_bit";
+$templatelist .= ",multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,memberlist_error,memberlist_orderarrow";
 
 require_once "./global.php";
 
@@ -38,6 +38,25 @@ if($mybb->get_input('action') == "search")
 {
 	$plugins->run_hooks("memberlist_search");
 	add_breadcrumb($lang->nav_memberlist_search);
+
+	$contact_fields = array();
+	foreach(array('aim', 'skype', 'google', 'yahoo', 'icq') as $field)
+	{
+		$contact_fields[$field] = '';
+		$settingkey = 'allow'.$field.'field';
+
+		if($mybb->settings[$settingkey] != '' && is_member($mybb->settings[$settingkey], array('usergroup' => $mybb->usergroup['usergroup'], 'additionalgroups' => $mybb->usergroup['additionalgroups'])))
+		{
+			$tmpl = 'memberlist_search_'.$field;
+
+			$lang_string = 'search_'.$field;
+			$lang_string = $lang->{$lang_string};
+
+			$bgcolors[$field] = alt_trow();
+			eval('$contact_fields[\''.$field.'\'] = "'.$templates->get('memberlist_search_contact_field').'";');
+		}
+	}
+
 	eval("\$search_page = \"".$templates->get("memberlist_search")."\";");
 	output_page($search_page);
 }
