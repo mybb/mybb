@@ -108,7 +108,7 @@ class DefaultPage
 
 		echo "	<script type=\"text/javascript\" src=\"../jscripts/jquery.js\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"../jscripts/jquery.plugins.min.js\"></script>\n";
-		echo "	<script type=\"text/javascript\" src=\"../jscripts/general.js?ver=1809\"></script>\n";
+		echo "	<script type=\"text/javascript\" src=\"../jscripts/general.js?ver=1810\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"./jscripts/admincp.js\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"./jscripts/tabs.js\"></script>\n";
 
