@@ -2184,7 +2184,9 @@ if($mybb->input['action'] == "profile")
 			eval("\$awaybit = \"".$templates->get("member_profile_away")."\";");
 		}
 	}
-	
+
+	$memprofile['timezone'] = (float)$memprofile['timezone'];
+
 	if($memprofile['dst'] == 1)
 	{
 		$memprofile['timezone']++;

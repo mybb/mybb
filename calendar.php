@@ -799,6 +799,7 @@ if($mybb->input['action'] == "editevent")
 	}
 
 	$event['name'] = htmlspecialchars_uni($event['name']);
+	$event['timezone'] = (float)$event['timezone'];
 
 	add_breadcrumb(htmlspecialchars_uni($calendar['name']), get_calendar_link($calendar['cid']));
 	add_breadcrumb($event['name'], get_event_link($event['eid']));
@@ -1536,11 +1537,11 @@ if($mybb->input['action'] == "event")
 
 	if($event['ignoretimezone'] == 0)
 	{
-		$offset = $event['timezone'];
+		$offset = (float)$event['timezone'];
 	}
 	else
 	{
-		$offset = $mybb->user['timezone'];
+		$offset = (float)$mybb->user['timezone'];
 	}
 
 	$event['starttime_user'] = $event['starttime']+$offset*3600;
@@ -1875,11 +1876,11 @@ if($mybb->input['action'] == "dayview")
 
 			if($event['ignoretimezone'] == 0)
 			{
-				$offset = $event['timezone'];
+				$offset = (float)$event['timezone'];
 			}
 			else
 			{
-				$offset = $mybb->user['timezone'];
+				$offset = (float)$mybb->user['timezone'];
 			}
 
 			$event['starttime_user'] = $event['starttime']+$offset*3600;
