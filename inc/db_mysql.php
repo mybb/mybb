@@ -1057,13 +1057,9 @@ class DB_MySQL implements DB_Base
 			return $this->version;
 		}
 
-		$version = @mysql_get_server_info();
-		if(!$version)
-		{
-			$query = $this->query("SELECT VERSION() as version");
-			$ver = $this->fetch_array($query);
-			$version = $ver['version'];
-		}
+		$query = $this->query("SELECT VERSION() as version");
+		$ver = $this->fetch_array($query);
+		$version = $ver['version'];
 
 		if($version)
 		{
