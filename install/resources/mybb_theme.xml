@@ -3621,7 +3621,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 </ol>
 <br />
 {$lang->error_nopermission_user_username}]]></template>
-		<template name="footer" version="1809"><![CDATA[<debugstuff>
+		<template name="footer" version="1810"><![CDATA[<debugstuff>
 	</div>
 </div>
 <div id="footer">
