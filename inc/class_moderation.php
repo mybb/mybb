@@ -792,7 +792,7 @@ class Moderation
 				$query = $db->simple_select("threads", "tid", "closed LIKE 'moved|".intval($tid)."' AND fid='".intval($new_fid)."'");
 				while($movedthread = $db->fetch_array($query))
 				{
-					$db->delete_query("threads", "tid='".intval($movedthread['tid'])."'", 1);
+					$db->delete_query("threads", "tid='".intval($movedthread['tid'])."'");
 				}				
  				break;
 			case "copy":// copy thread
@@ -984,7 +984,7 @@ class Moderation
 				$query = $db->simple_select("threads", "tid", "closed LIKE 'moved|".intval($tid)."' AND fid='".intval($new_fid)."'");
 				while($movedthread = $db->fetch_array($query))
 				{
-					$db->delete_query("threads", "tid='".intval($movedthread['tid'])."'", 1);
+					$db->delete_query("threads", "tid='".intval($movedthread['tid'])."'");
 				}
 				break;
 		}
