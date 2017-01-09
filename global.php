@@ -865,6 +865,13 @@ if($task_cache['nextrun'] <= TIME_NOW)
 	eval("\$task_image = \"".$templates->get("task_image")."\";");
 }
 
+// Post code
+$post_code_string = '';
+if($mybb->user['uid'])
+{
+	$post_code_string = '&amp;my_post_key='.$mybb->post_code;
+}
+
 // Are we showing the quick language selection box?
 $lang_select = $lang_options = '';
 if($mybb->settings['showlanguageselect'] != 0)

@@ -1473,12 +1473,6 @@ if($foruminfo['type'] != "c")
 		eval("\$clearstoredpass = \"".$templates->get("forumdisplay_threadlist_clearpass")."\";");
 	}
 
-	$post_code_string = '';
-	if($mybb->user['uid'])
-	{
-		$post_code_string = "&amp;my_post_key=".$mybb->post_code;
-	}
-
 	$prefixselect = build_forum_prefix_select($fid, $tprefix);
 
 	$lang->rss_discovery_forum = $lang->sprintf($lang->rss_discovery_forum, htmlspecialchars_uni(strip_tags($foruminfo['name'])));
