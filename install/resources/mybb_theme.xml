@@ -4321,7 +4321,7 @@ $(".forumjump").change(function() {
 <td class="trow1"><span class="smalltext">{$bdays}</span></td>
 </tr>]]></template>
 		<template name="index_birthdays_birthday" version="1400"><![CDATA[{$comma}{$bdayuser['profilelink']}{$age}]]></template>
-		<template name="index_boardstats" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<template name="index_boardstats" version="1810"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <thead>
 <tr>
 <td class="thead{$collapsedthead['boardstats']}">
