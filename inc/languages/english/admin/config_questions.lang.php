@@ -13,6 +13,7 @@ $l['edit_question'] = "Edit Question";
 $l['edit_question_desc'] = "Here you edit a security question.";
 
 $l['options'] = "Options";
+$l['shown'] = "Shown";
 $l['correct'] = "Correct";
 $l['incorrect'] = "Incorrect";
 $l['disable_question'] = "Disable Question";

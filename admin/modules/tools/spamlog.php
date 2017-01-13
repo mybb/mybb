@@ -239,9 +239,11 @@ if(!$mybb->input['action'])
 			}
 		}
 
+		$search_sfs = "<div class=\"float_right\"><a href=\"http://www.stopforumspam.com/ipcheck/{$ip_address}\" target=\"_blank\"><img src=\"styles/{$page->style}/images/icons/find.png\" title=\"{$lang->search_ip_on_sfs}\" alt=\"{$lang->search}\" /></a></div>";
+
 		$table->construct_cell($username);
 		$table->construct_cell($email);
-		$table->construct_cell($ip_address);
+		$table->construct_cell("{$search_sfs}<div>{$ip_address}</div>");
 		$table->construct_cell($dateline);
 		$table->construct_cell($confidence);
 		$table->construct_row();
