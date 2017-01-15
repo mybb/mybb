@@ -343,17 +343,17 @@ function my_date($format, $stamp=0, $offset="", $ty=1, $adodb=false)
 	{
 		if(isset($mybb->user['uid']) && $mybb->user['uid'] != 0 && array_key_exists("timezone", $mybb->user))
 		{
-			$offset = $mybb->user['timezone'];
+			$offset = (float)$mybb->user['timezone'];
 			$dstcorrection = $mybb->user['dst'];
 		}
 		elseif(defined("IN_ADMINCP"))
 		{
-			$offset =  $mybbadmin['timezone'];
+			$offset = (float)$mybbadmin['timezone'];
 			$dstcorrection = $mybbadmin['dst'];
 		}
 		else
 		{
-			$offset = $mybb->settings['timezoneoffset'];
+			$offset = (float)$mybb->settings['timezoneoffset'];
 			$dstcorrection = $mybb->settings['dstcorrection'];
 		}
 

@@ -917,6 +917,8 @@ class UserDataHandler extends DataHandler
 	 */
 	function verify_timezone()
 	{
+		global $mybb;
+
 		$user = &$this->data;
 
 		$timezones = get_supported_timezones();

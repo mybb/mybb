@@ -1024,11 +1024,11 @@ EOF;
 	$reg_date = my_date('relative', $user['regdate']);
 	if($user['dst'] == 1)
 	{
-		$timezone = $user['timezone']+1;
+		$timezone = (float)$user['timezone']+1;
 	}
 	else
 	{
-		$timezone = $user['timezone'];
+		$timezone = (float)$user['timezone'];
 	}
 	$local_date = gmdate($mybb->settings['dateformat'], TIME_NOW + ($timezone * 3600));
 	$local_time = gmdate($mybb->settings['timeformat'], TIME_NOW + ($timezone * 3600));

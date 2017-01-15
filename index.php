@@ -318,12 +318,6 @@ if(($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0) |
 		$stats = $cache->read('stats');
 	}
 
-	$post_code_string = '';
-	if($mybb->user['uid'])
-	{
-		$post_code_string = '&amp;my_post_key='.$mybb->post_code;
-	}
-
 	eval('$boardstats = "'.$templates->get('index_boardstats').'";');
 }
 

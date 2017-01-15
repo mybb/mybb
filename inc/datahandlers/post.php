@@ -1230,6 +1230,7 @@ class PostDataHandler extends DataHandler
 			$thread_update = array('replies' => '+1');
 
 			// Update counters
+			update_last_post($post['tid']);
 			update_forum_counters($post['fid'], array("posts" => "+1"));
 			update_forum_lastpost($thread['fid']);
 		}
@@ -1255,7 +1256,7 @@ class PostDataHandler extends DataHandler
 		}
 
 		// Update last poster
-		if($visible == 1)
+		if($visible == 1 && $thread['visible'] != 1)
 		{
 			update_last_post($post['tid']);
 		}
