@@ -28,6 +28,7 @@ $l['theme_install'] = 'Theme Installation';
 $l['board_config'] = 'Board Configuration';
 $l['admin_user'] = 'Administrator User';
 $l['finish_setup'] = 'Finish Setup';
+$l['upgrade_complete'] = 'Upgrade Complete';
 
 $l['table_population'] = 'Table Population';
 $l['theme_installation'] = 'Theme Insertion';
