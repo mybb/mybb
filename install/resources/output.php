@@ -37,9 +37,14 @@ class installerOutput {
 	 * @param int    $form
 	 * @param int    $error
 	 */
-	function print_header($title="Welcome", $image="welcome", $form=1, $error=0)
+	function print_header($title="", $image="welcome", $form=1, $error=0)
 	{
 		global $mybb, $lang;
+
+		if($title == "")
+		{
+			$title = $lang->welcome;
+		}
 
 		if($lang->title)
 		{
