@@ -666,15 +666,24 @@ class datacache
 				break;
 		}
 
-		$query = $db->query('
-			SELECT u.uid, u.username, COUNT(pid) AS poststoday
-			FROM '.TABLE_PREFIX.'posts p
-			LEFT JOIN '.TABLE_PREFIX.'users u ON (p.uid=u.uid)
-			WHERE p.dateline>'.$timesearch.'
-			GROUP BY '.$group_by.' ORDER BY poststoday DESC
-			LIMIT 1
-		');
-		$topposter = $db->fetch_array($query);
+		$query = $db->query("
+			SELECT u.uid, u.username, COUNT(*) AS poststoday
+			FROM {$db->table_prefix}posts p
+			LEFT JOIN {$db->table_prefix}users u ON (p.uid=u.uid)
+			WHERE p.dateline > {$timesearch}
+			GROUP BY {$group_by}
+			ORDER BY NULL DESC
+		");
+
+		$most_posts = 0;
+		while($user = $db->fetch_array($query))
+		{
+			if($user['poststoday'] > $most_posts)
+			{
+				$most_posts = $user['poststoday'];
+				$topposter = $user;
+			}
+		}
 
 		$query = $db->simple_select('users', 'COUNT(uid) AS posters', 'postnum>0');
 		$posters = $db->fetch_field($query, 'posters');
