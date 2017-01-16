@@ -333,7 +333,7 @@ elseif($mybb->input['action'] == "helpresults")
 			'allow_imgcode' => 0,
 			'filter_badwords' => 1
 		);
-		$helpdoc['helpdoc'] = strip_tags($parser->parse_message($helpdoc['document'], $parser_options));
+		$helpdoc['helpdoc'] = my_strip_tags($parser->parse_message($helpdoc['document'], $parser_options));
 
 		if(my_strlen($helpdoc['helpdoc']) > 350)
 		{

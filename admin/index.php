@@ -162,6 +162,22 @@ elseif($mybb->input['do'] == "login")
 	require_once MYBB_ROOT."inc/datahandlers/login.php";
 	$loginhandler = new LoginDataHandler("get");
 
+	// Determine login method
+	$login_lang_string = $lang->error_invalid_username_password;
+	switch($mybb->settings['username_method'])
+	{
+		case 0: // Username only
+			$login_lang_string = $lang->sprintf($login_lang_string, $lang->login_username);
+			break;
+		case 1: // Email only
+			$login_lang_string = $lang->sprintf($login_lang_string, $lang->login_email);
+			break;
+		case 2: // Username and email
+		default:
+			$login_lang_string = $lang->sprintf($login_lang_string, $lang->login_username_and_password);
+			break;
+	}
+
 	// Validate PIN first
 	if(!empty($config['secret_pin']) && (empty($mybb->input['pin']) || $mybb->input['pin'] != $config['secret_pin']))
 	{
@@ -211,7 +227,7 @@ elseif($mybb->input['do'] == "login")
 		}
 		else
 		{
-			$default_page->show_login($lang->error_invalid_secret_pin, "error");
+			$default_page->show_login($login_lang_string, "error");
 		}
 	}
 
@@ -562,22 +578,6 @@ if(!isset($mybb->user['uid']) || $logged_out == true)
 	}
 	elseif($fail_check == 1)
 	{
-		$login_lang_string = $lang->error_invalid_username_password;
-
-		switch($mybb->settings['username_method'])
-		{
-			case 0: // Username only
-				$login_lang_string = $lang->sprintf($login_lang_string, $lang->login_username);
-				break;
-			case 1: // Email only
-				$login_lang_string = $lang->sprintf($login_lang_string, $lang->login_email);
-				break;
-			case 2: // Username and email
-			default:
-				$login_lang_string = $lang->sprintf($login_lang_string, $lang->login_username_and_password);
-				break;
-		}
-
 		$page->show_login($login_lang_string, "error");
 	}
 	else

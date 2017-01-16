@@ -122,6 +122,7 @@ $l['can_edit_posts'] = "Can edit own posts?";
 $l['can_delete_posts'] = "Can delete own posts?";
 $l['can_delete_threads'] = "Can delete own threads?";
 $l['can_edit_attachments'] = "Can update own attachments?";
+$l['can_view_deletion_notices'] = "Can view deletion notices?";
 $l['account_management'] = "Account Management";
 $l['edit_time_limit'] = "Edit Time Limit";
 $l['edit_time_limit_desc'] = "The number of minutes until regular users cannot edit their own posts (if they have the permission). Enter 0 (zero) for no limit.";

@@ -330,7 +330,7 @@ function build_postbit($post, $post_type=0)
 			eval("\$post['button_find'] = \"".$templates->get("postbit_find")."\";");
 		}
 
-		if($mybb->settings['enablepms'] == 1 && $post['receivepms'] != 0 && $mybb->usergroup['cansendpms'] == 1 && my_strpos(",".$post['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
+		if($mybb->settings['enablepms'] == 1 && (($post['receivepms'] != 0 && $usergroup['canusepms'] != 0 && $mybb->usergroup['cansendpms'] == 1 && my_strpos(",".$post['ignorelist'].",", ",".$mybb->user['uid'].",") === false) || $mybb->usergroup['canoverridepm'] == 1))
 		{
 			eval("\$post['button_pm'] = \"".$templates->get("postbit_pm")."\";");
 		}
@@ -710,6 +710,29 @@ function build_postbit($post, $post_type=0)
 		}
 	}
 
+	$post['poststatus'] = '';
+	if(!$post_type && $post['visible'] != 1)
+	{
+		if(is_moderator($fid, "canviewdeleted") && $postcounter != 1 && $post['visible'] == -1)
+		{
+			$status_type = $lang->postbit_post_deleted;
+		}
+		else if(is_moderator($fid, "canviewunapprove") && $postcounter != 1 && $post['visible'] == 0)
+		{
+			$status_type = $lang->postbit_post_unapproved;
+		}
+		else if(is_moderator($fid, "canviewdeleted") && $postcounter == 1 && $post['visible'] == -1)
+		{
+			$status_type = $lang->postbit_thread_deleted;
+		}
+		else if(is_moderator($fid, "canviewunapprove") && $postcounter == 1 && $post['visible'] == 0)
+		{
+			$status_type = $lang->postbit_thread_unapproved;
+		}
+
+		eval("\$post['poststatus'] = \"".$templates->get("postbit_status")."\";");
+	}
+
 	if(isset($post['smilieoff']) && $post['smilieoff'] == 1)
 	{
 		$parser_options['allow_smilies'] = 0;
@@ -787,7 +810,7 @@ function build_postbit($post, $post_type=0)
 		$post['icon'] = "";
 	}
 
-	$post_visibility = $ignore_bit = '';
+	$post_visibility = $ignore_bit = $deleted_bit = '';
 	switch($post_type)
 	{
 		case 1: // Message preview
@@ -822,17 +845,33 @@ function build_postbit($post, $post_type=0)
 				eval("\$ignore_bit = \"".$templates->get("postbit_ignored")."\";");
 				$post_visibility = "display: none;";
 			}
+
+			// Has this post been deleted but can be viewed? Hide this post
+			if($post['visible'] == -1 && is_moderator($fid, "canviewdeleted"))
+			{
+				$deleted_message = $lang->sprintf($lang->postbit_deleted_post_user, $post['username']);
+				eval("\$deleted_bit = \"".$templates->get("postbit_deleted")."\";");
+				$post_visibility = "display: none;";
+			}
 			break;
 	}
 
-	if($mybb->settings['postlayout'] == "classic")
+	if($forumpermissions['canviewdeletionnotice'] == 1 && $post['visible'] == -1 && $post_type == 0 && !is_moderator($fid, "canviewdeleted"))
 	{
-		eval("\$postbit = \"".$templates->get("postbit_classic")."\";");
+		eval("\$postbit = \"".$templates->get("postbit_deleted_member")."\";");
 	}
 	else
 	{
-		eval("\$postbit = \"".$templates->get("postbit")."\";");
+		if($mybb->settings['postlayout'] == "classic")
+		{
+			eval("\$postbit = \"".$templates->get("postbit_classic")."\";");
+		}
+		else
+		{
+			eval("\$postbit = \"".$templates->get("postbit")."\";");
+		}
 	}
+
 	$GLOBALS['post'] = "";
 
 	return $postbit;

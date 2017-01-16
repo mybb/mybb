@@ -212,14 +212,11 @@ class UserDataHandler extends DataHandler
 			return false;
 		}
 
-		// MD5 the password
-		$user['md5password'] = md5($user['password']);
-
 		// Generate our salt
 		$user['salt'] = generate_salt();
 
 		// Combine the password and salt
-		$user['saltedpw'] = salt_password($user['md5password'], $user['salt']);
+		$user['saltedpw'] = create_password_hash($user['password'], $user['salt'], $user);
 
 		// Generate the user login key
 		$user['loginkey'] = generate_loginkey();
@@ -920,6 +917,8 @@ class UserDataHandler extends DataHandler
 	 */
 	function verify_timezone()
 	{
+		global $mybb;
+
 		$user = &$this->data;
 
 		$timezones = get_supported_timezones();

@@ -1119,7 +1119,7 @@ if($mybb->input['action'] == "do_new_announcement")
 		$mybb->input['starttime_month'] = '01';
 	}
 
-	$localized_time_offset = $mybb->user['timezone']*3600 + $mybb->user['dst']*3600;
+	$localized_time_offset = (float)$mybb->user['timezone']*3600 + $mybb->user['dst']*3600;
 
 	$startdate = gmmktime((int)$startdate[0], (int)$startdate[1], 0, $mybb->get_input('starttime_month', MyBB::INPUT_INT), $mybb->get_input('starttime_day', MyBB::INPUT_INT), $mybb->get_input('starttime_year', MyBB::INPUT_INT)) -$localized_time_offset;
 	if(!checkdate($mybb->get_input('starttime_month', MyBB::INPUT_INT), $mybb->get_input('starttime_day', MyBB::INPUT_INT), $mybb->get_input('starttime_year', MyBB::INPUT_INT)) || $startdate < 0 || $startdate == false)
@@ -1261,11 +1261,11 @@ if($mybb->input['action'] == "new_announcement")
 	}
 	else
 	{
-		$localized_time = TIME_NOW + $mybb->user['timezone']*3600 + $mybb->user['dst']*3600;
+		$localized_time = TIME_NOW + (float)$mybb->user['timezone']*3600 + $mybb->user['dst']*3600;
 
 		$starttime_time = gmdate($mybb->settings['timeformat'], $localized_time);
 		$endtime_time = gmdate($mybb->settings['timeformat'], $localized_time);
-		$startday = $endday = gmdate("j", TIME_NOW + $localized_time);
+		$startday = $endday = gmdate("j", $localized_time);
 		$startmonth = $endmonth = gmdate("m", $localized_time);
 		$startdateyear = gmdate("Y", $localized_time);
 
@@ -1492,7 +1492,7 @@ if($mybb->input['action'] == "do_edit_announcement")
 		$mybb->input['starttime_month'] = '01';
 	}
 
-	$localized_time_offset = TIME_NOW + $mybb->user['timezone']*3600 + $mybb->user['dst']*3600;
+	$localized_time_offset = TIME_NOW + (float)$mybb->user['timezone']*3600 + $mybb->user['dst']*3600;
 
 	$startdate = gmmktime((int)$startdate[0], (int)$startdate[1], 0, $mybb->get_input('starttime_month', MyBB::INPUT_INT), $mybb->get_input('starttime_day', MyBB::INPUT_INT), $mybb->get_input('starttime_year', MyBB::INPUT_INT)) - $localized_time_offset;
 	if(!checkdate($mybb->get_input('starttime_month', MyBB::INPUT_INT), $mybb->get_input('starttime_day', MyBB::INPUT_INT), $mybb->get_input('starttime_year', MyBB::INPUT_INT)) || $startdate < 0 || $startdate == false)
@@ -1666,8 +1666,8 @@ if($mybb->input['action'] == "edit_announcement")
 	}
 	else
 	{
-		$localized_time_startdate = $announcement['startdate'] + $mybb->user['timezone']*3600 + $mybb->user['dst']*3600;
-		$localized_time_enddate = $announcement['enddate'] + $mybb->user['timezone']*3600 + $mybb->user['dst']*3600;
+		$localized_time_startdate = $announcement['startdate'] + (float)$mybb->user['timezone']*3600 + $mybb->user['dst']*3600;
+		$localized_time_enddate = $announcement['enddate'] + (float)$mybb->user['timezone']*3600 + $mybb->user['dst']*3600;
 
 		$starttime_time = gmdate($mybb->settings['timeformat'], $localized_time_startdate);
 		$endtime_time = gmdate($mybb->settings['timeformat'], $localized_time_enddate);
@@ -3293,7 +3293,6 @@ if($mybb->input['action'] == "finduser")
 	$page_url = 'modcp.php?action=finduser';
 	foreach(array('username', 'sortby', 'order') as $field)
 	{
-		$mybb->input[$field] = urlencode($mybb->get_input($field));
 		if(!empty($mybb->input[$field]))
 		{
 			$page_url .= "&amp;{$field}=".$mybb->input[$field];

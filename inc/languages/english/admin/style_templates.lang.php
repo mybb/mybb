@@ -164,6 +164,7 @@ $l['error_invalid_set'] = "Please select a valid template set.";
 $l['error_invalid_template_set'] = "Invalid template set selected.";
 $l['error_themes_attached_template_set'] = "This template set cannot be deleted as there are themes attached to this template set.";
 $l['error_missing_group_prefix'] = "Please enter a prefix for the template group.";
+$l['error_invalid_group_title'] = "As underscores (_) are used as delimiter those are forbidden in template group prefixes. Please select another prefix.";
 $l['error_missing_group_title'] = "Please enter a title for the template group.";
 $l['error_duplicate_group_prefix'] = "A template group already exists with this prefix. Please enter another prefix.";
 $l['error_missing_template_group'] = "The template group could not be found.";

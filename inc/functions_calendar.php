@@ -452,11 +452,11 @@ function get_events($calendar, $start, $end, $unapproved=0, $private=1)
 	{
 		if($event['ignoretimezone'] == 0)
 		{
-			$offset = $event['timezone'];
+			$offset = (float)$event['timezone'];
 		}
 		else
 		{
-			$offset = $mybb->user['timezone'];
+			$offset = (float)$mybb->user['timezone'];
 		}
 		$event['starttime_user'] = $event['starttime']+($offset*3600);
 

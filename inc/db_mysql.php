@@ -1057,13 +1057,9 @@ class DB_MySQL implements DB_Base
 			return $this->version;
 		}
 
-		$version = @mysql_get_server_info();
-		if(!$version)
-		{
-			$query = $this->query("SELECT VERSION() as version");
-			$ver = $this->fetch_array($query);
-			$version = $ver['version'];
-		}
+		$query = $this->query("SELECT VERSION() as version");
+		$ver = $this->fetch_array($query);
+		$version = $ver['version'];
 
 		if($version)
 		{
@@ -1477,7 +1473,6 @@ class DB_MySQL implements DB_Base
 			'cp1251' => 'Windows Cyrillic',
 			'cp1256' => 'Windows Arabic',
 			'cp1257' => 'Windows Baltic',
-			'binary' => 'Binary pseudo charset',
 			'geostd8' => 'GEOSTD8 Georgian',
 			'cp932' => 'SJIS for Windows Japanese',
 			'eucjpms' => 'UJIS for Windows Japanese',
@@ -1526,7 +1521,6 @@ class DB_MySQL implements DB_Base
 			'cp1251' => 'cp1251_general_ci',
 			'cp1256' => 'cp1256_general_ci',
 			'cp1257' => 'cp1257_general_ci',
-			'binary' => 'binary',
 			'geostd8' => 'geostd8_general_ci',
 			'cp932' => 'cp932_japanese_ci',
 			'eucjpms' => 'eucjpms_japanese_ci',

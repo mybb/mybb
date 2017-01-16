@@ -20,6 +20,7 @@ $templatelist .= ",calendar_weekrow_day_birthdays,calendar_weekview_day_birthday
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_calendar.php";
 require_once MYBB_ROOT."inc/functions_post.php";
+require_once MYBB_ROOT."inc/functions_time.php";
 require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 
@@ -798,6 +799,7 @@ if($mybb->input['action'] == "editevent")
 	}
 
 	$event['name'] = htmlspecialchars_uni($event['name']);
+	$event['timezone'] = (float)$event['timezone'];
 
 	add_breadcrumb(htmlspecialchars_uni($calendar['name']), get_calendar_link($calendar['cid']));
 	add_breadcrumb($event['name'], get_event_link($event['eid']));
@@ -1535,11 +1537,11 @@ if($mybb->input['action'] == "event")
 
 	if($event['ignoretimezone'] == 0)
 	{
-		$offset = $event['timezone'];
+		$offset = (float)$event['timezone'];
 	}
 	else
 	{
-		$offset = $mybb->user['timezone'];
+		$offset = (float)$mybb->user['timezone'];
 	}
 
 	$event['starttime_user'] = $event['starttime']+$offset*3600;
@@ -1549,8 +1551,8 @@ if($mybb->input['action'] == "event")
 	if($event['endtime'] > 0 && $event['endtime'] != $event['starttime'])
 	{
 		$event['endtime_user'] = $event['endtime']+$offset*3600;
-		$start_day = gmmktime(0, 0, 0, gmdate("n", $event['starttime_user']), gmdate("j", $event['starttime_user']), gmdate("Y", $event['starttime_user']));
-		$end_day = gmmktime(0, 0, 0, gmdate("n", $event['endtime_user']), gmdate("j", $event['endtime_user']), gmdate("Y", $event['endtime_user']));
+		$start_day = adodb_gmmktime(0, 0, 0, gmdate("n", $event['starttime_user']), gmdate("j", $event['starttime_user']), gmdate("Y", $event['starttime_user']));
+		$end_day = adodb_gmmktime(0, 0, 0, gmdate("n", $event['endtime_user']), gmdate("j", $event['endtime_user']), gmdate("Y", $event['endtime_user']));
 		$start_time = gmdate("Hi", $event['starttime_user']);
 		$end_time = gmdate("Hi", $event['endtime_user']);
 
@@ -1663,10 +1665,9 @@ if($mybb->input['action'] == "dayview")
 	}
 
 	// Incoming year?
-	$mybb->input['year'] = $mybb->get_input('year', MyBB::INPUT_INT);
-	if($mybb->input['year'] && $mybb->input['year'] <= my_date("Y")+5)
+	if(isset($mybb->input['year']) && $mybb->get_input('year', MyBB::INPUT_INT) <= my_date("Y")+5)
 	{
-		$year = $mybb->input['year'];
+		$year = $mybb->get_input('year', MyBB::INPUT_INT);
 	}
 	else
 	{
@@ -1686,7 +1687,7 @@ if($mybb->input['action'] == "dayview")
 
 	// And day?
 	$mybb->input['day'] = $mybb->get_input('day', MyBB::INPUT_INT);
-	if($mybb->input['day'] && $mybb->input['day'] <= gmdate("t", gmmktime(0, 0, 0, $month, 1, $year)))
+	if($mybb->input['day'] && $mybb->input['day'] <= gmdate("t", adodb_gmmktime(0, 0, 0, $month, 1, $year)))
 	{
 		$day = $mybb->input['day'];
 	}
@@ -1744,15 +1745,15 @@ if($mybb->input['action'] == "dayview")
 		}
 		if($birthday_list)
 		{
-			$bdaydate = my_date($mybb->settings['dateformat'], gmmktime(0, 0, 0, $month, $day, $year), 0, 0);
+			$bdaydate = my_date($mybb->settings['dateformat'], adodb_gmmktime(0, 0, 0, $month, $day, $year), 0, 0);
 			$lang->birthdays_on_day = $lang->sprintf($lang->birthdays_on_day, $bdaydate);
 			eval("\$birthdays = \"".$templates->get("calendar_dayview_birthdays", 1, 0)."\";");
 		}
 	}
 
 	// So now we fetch events for this month
-	$start_timestamp = gmmktime(0, 0, 0, $month, $day, $year);
-	$end_timestamp = gmmktime(23, 59, 59, $month, $day, $year);
+	$start_timestamp = adodb_gmmktime(0, 0, 0, $month, $day, $year);
+	$end_timestamp = adodb_gmmktime(23, 59, 59, $month, $day, $year);
 
 	$events_cache = get_events($calendar, $start_timestamp, $end_timestamp, $calendar_permissions['canmoderateevents']);
 
@@ -1875,11 +1876,11 @@ if($mybb->input['action'] == "dayview")
 
 			if($event['ignoretimezone'] == 0)
 			{
-				$offset = $event['timezone'];
+				$offset = (float)$event['timezone'];
 			}
 			else
 			{
-				$offset = $mybb->user['timezone'];
+				$offset = (float)$mybb->user['timezone'];
 			}
 
 			$event['starttime_user'] = $event['starttime']+$offset*3600;
@@ -1889,8 +1890,8 @@ if($mybb->input['action'] == "dayview")
 			if($event['endtime'] > 0 && $event['endtime'] != $event['starttime'])
 			{
 				$event['endtime_user'] = $event['endtime']+$offset*3600;
-				$start_day = gmmktime(0, 0, 0, gmdate("n", $event['starttime_user']), gmdate("j", $event['starttime_user']), gmdate("Y", $event['starttime_user']));
-				$end_day = gmmktime(0, 0, 0, gmdate("n", $event['endtime_user']), gmdate("j", $event['endtime_user']), gmdate("Y", $event['endtime_user']));
+				$start_day = adodb_gmmktime(0, 0, 0, gmdate("n", $event['starttime_user']), gmdate("j", $event['starttime_user']), gmdate("Y", $event['starttime_user']));
+				$end_day = adodb_gmmktime(0, 0, 0, gmdate("n", $event['endtime_user']), gmdate("j", $event['endtime_user']), gmdate("Y", $event['endtime_user']));
 				$start_time = gmdate("Hi", $event['starttime_user']);
 				$end_time = gmdate("Hi", $event['endtime_user']);
 
@@ -2019,11 +2020,11 @@ if($mybb->input['action'] == "weekview")
 	if(empty($mybb->input['week']))
 	{
 		list($day, $month, $year) = explode("-", my_date("j-n-Y"));
-		$php_weekday = gmdate("w", gmmktime(0, 0, 0, $month, $day, $year));
+		$php_weekday = gmdate("w", adodb_gmmktime(0, 0, 0, $month, $day, $year));
 		$my_weekday = array_search($php_weekday, $weekdays);
 		// So now we have the start day of this week to show
 		$start_day = $day-$my_weekday;
-		$mybb->input['week'] = gmmktime(0, 0, 0, $month, $start_day, $year);
+		$mybb->input['week'] = adodb_gmmktime(0, 0, 0, $month, $start_day, $year);
 	}
 	else
 	{
@@ -2039,7 +2040,7 @@ if($mybb->input['action'] == "weekview")
 	$week_from = explode("-", gmdate("j-n-Y", $mybb->input['week']));
 	$week_from_one = $week_from[1];
 	$friendly_week_from = gmdate($mybb->settings['dateformat'], $mybb->input['week']);
-	$week_to_stamp = gmmktime(0, 0, 0, $week_from[1], $week_from[0]+6, $week_from[2]);
+	$week_to_stamp = adodb_gmmktime(0, 0, 0, $week_from[1], $week_from[0]+6, $week_from[2]);
 	$week_to = explode("-", gmdate("j-n-Y-t", $week_to_stamp));
 	$friendly_week_to = gmdate($mybb->settings['dateformat'], $week_to_stamp);
 
@@ -2069,8 +2070,8 @@ if($mybb->input['action'] == "weekview")
 	}
 
 	// We load events for the entire month date range - for our mini calendars too
-	$events_from = gmmktime(0, 0, 0, $week_from[1], 1, $week_from[2]);
-	$events_to = gmmktime(0, 0, 0, $week_to[1], $week_to[3], $week_to[2]);
+	$events_from = adodb_gmmktime(0, 0, 0, $week_from[1], 1, $week_from[2]);
+	$events_to = adodb_gmmktime(0, 0, 0, $week_to[1], $week_to[3], $week_to[2]);
 
 	$events_cache = get_events($calendar, $events_from, $events_to, $calendar_permissions['canmoderateevents']);
 
@@ -2116,8 +2117,8 @@ if($mybb->input['action'] == "weekview")
 				$time_period = '';
 				if($event['endtime'] > 0 && $event['endtime'] != $event['starttime'])
 				{
-					$start_day = gmmktime(0, 0, 0, gmdate("n", $event['starttime_user']), gmdate("j", $event['starttime_user']), gmdate("Y", $event['starttime_user']));
-					$end_day = gmmktime(0, 0, 0, gmdate("n", $event['endtime_user']), gmdate("j", $event['endtime_user']), gmdate("Y", $event['endtime_user']));
+					$start_day = adodb_gmmktime(0, 0, 0, gmdate("n", $event['starttime_user']), gmdate("j", $event['starttime_user']), gmdate("Y", $event['starttime_user']));
+					$end_day = adodb_gmmktime(0, 0, 0, gmdate("n", $event['endtime_user']), gmdate("j", $event['endtime_user']), gmdate("Y", $event['endtime_user']));
 					$start_time = gmdate("Hi", $event['starttime_user']);
 					$end_time = gmdate("Hi", $event['endtime_user']);
 					// Event only runs over one day
@@ -2211,7 +2212,7 @@ if($mybb->input['action'] == "weekview")
 		}
 		eval("\$day_bits[$weekday_month] .= \"".$templates->get("calendar_weekview_day")."\";");
 		$day_events = $day_birthdays = "";
-		$weekday_date = gmmktime(0, 0, 0, $weekday_month, $weekday_day+1, $weekday_year);
+		$weekday_date = adodb_gmmktime(0, 0, 0, $weekday_month, $weekday_day+1, $weekday_year);
 	}
 
 	// Now we build our month headers
@@ -2276,10 +2277,9 @@ if(!$mybb->input['action'])
 	$plugins->run_hooks("calendar_main_view");
 
 	// Incoming year?
-	$mybb->input['year'] = $mybb->get_input('year', MyBB::INPUT_INT);
-	if($mybb->input['year'] && $mybb->input['year'] <= my_date("Y")+5)
+	if(isset($mybb->input['year']) && $mybb->get_input('year', MyBB::INPUT_INT) <= my_date("Y")+5)
 	{
-		$year = $mybb->input['year'];
+		$year = $mybb->get_input('year', MyBB::INPUT_INT);
 	}
 	else
 	{
@@ -2310,14 +2310,14 @@ if(!$mybb->input['action'])
 
 	$weekdays = fetch_weekday_structure($calendar['startofweek']);
 
-	$month_start_weekday = gmdate("w", gmmktime(0, 0, 0, $month, $calendar['startofweek']+1, $year));
+	$month_start_weekday = gmdate("w", adodb_gmmktime(0, 0, 0, $month, $calendar['startofweek']+1, $year));
 
-	$prev_month_days = gmdate("t", gmmktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
+	$prev_month_days = gmdate("t", adodb_gmmktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
 
 	// This is if we have days in the previous month to show
 	if($month_start_weekday != $weekdays[0] || $calendar['startofweek'] != 0)
 	{
-		$prev_days = $day = gmdate("t", gmmktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
+		$prev_days = $day = gmdate("t", adodb_gmmktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
 		$day -= array_search(($month_start_weekday), $weekdays);
 		$day += $calendar['startofweek']+1;
 		if($day > $prev_month_days+1)
@@ -2336,10 +2336,10 @@ if(!$mybb->input['action'])
 	}
 
 	// So now we fetch events for this month (nb, cache events for past month, current month and next month for mini calendars too)
-	$start_timestamp = gmmktime(0, 0, 0, $calendar_month, $day, $calendar_year);
-	$num_days = gmdate("t", gmmktime(0, 0, 0, $month, 1, $year));
+	$start_timestamp = adodb_gmmktime(0, 0, 0, $calendar_month, $day, $calendar_year);
+	$num_days = gmdate("t", adodb_gmmktime(0, 0, 0, $month, 1, $year));
 
-	$month_end_weekday = gmdate("w", gmmktime(0, 0, 0, $month, $num_days, $year));
+	$month_end_weekday = gmdate("w", adodb_gmmktime(0, 0, 0, $month, $num_days, $year));
 	$next_days = 6-$month_end_weekday+$calendar['startofweek'];
 
 	// More than a week? Go one week back
@@ -2349,12 +2349,12 @@ if(!$mybb->input['action'])
 	}
 	if($next_days > 0)
 	{
-		$end_timestamp = gmmktime(23, 59, 59, $next_month['month'], $next_days, $next_month['year']);
+		$end_timestamp = adodb_gmmktime(23, 59, 59, $next_month['month'], $next_days, $next_month['year']);
 	}
 	else
 	{
 		// We don't need days from the next month
-		$end_timestamp = gmmktime(23, 59, 59, $month, $num_days, $year);
+		$end_timestamp = adodb_gmmktime(23, 59, 59, $month, $num_days, $year);
 	}
 
 	$events_cache = get_events($calendar, $start_timestamp, $end_timestamp, $calendar_permissions['canmoderateevents']);
@@ -2410,7 +2410,7 @@ if(!$mybb->input['action'])
 
 			if($weekday_id == 0)
 			{
-				$week_stamp = gmmktime(0, 0, 0, $calendar_month, $day, $calendar_year);
+				$week_stamp = adodb_gmmktime(0, 0, 0, $calendar_month, $day, $calendar_year);
 				$week_link = get_calendar_week_link($calendar['cid'], $week_stamp);
 			}
 
