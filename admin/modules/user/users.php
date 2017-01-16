@@ -4274,7 +4274,7 @@ function merge_thread_ratings($source_uid, $destination_uid)
 	}
 
 	// Update the rest
-	$db->update_query("threadratings", $uid_update, "uid='{$source_uid}'");
+	$db->update_query("threadratings", array("uid" => $destination_uid), "uid='{$source_uid}'");
 
 	// Remove ratings previously given to recently acquired threads
 	$query = $db->query("
