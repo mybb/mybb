@@ -1231,6 +1231,7 @@ class PostDataHandler extends DataHandler
 
 			// Update counters
 			update_last_post($post['tid']);
+			update_thread_counters($post['tid'], $thread_update);
 			update_forum_counters($post['fid'], array("posts" => "+1"));
 			update_forum_lastpost($thread['fid']);
 		}
@@ -1267,7 +1268,6 @@ class PostDataHandler extends DataHandler
 		{
 			$thread_update['attachmentcount'] = "+{$attachmentcount}";
 		}
-		update_thread_counters($post['tid'], $thread_update);
 
 		// Return the post's pid and whether or not it is visible.
 		$this->return_values = array(
