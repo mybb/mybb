@@ -9,6 +9,9 @@
  * $Id$
  */
 
+// Foo bar!
+// Hello World!
+
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'online.php');
 
