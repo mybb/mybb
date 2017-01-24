@@ -39,7 +39,7 @@ if(!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_tools_statistics_overall_begin");
 	
-	$query = $db->simple_select("stats", "COUNT(*) as total");
+	$query = $db->simple_select("stats", "COUNT(dateline) as total");
 	if($db->fetch_field($query, "total") == 0)
 	{
 		flash_message($lang->error_no_statistics_available_yet, 'error');
