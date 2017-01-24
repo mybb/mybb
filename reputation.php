@@ -511,9 +511,20 @@ if(!$mybb->input['action'])
 	// Otherwise, fetch it from our titles table for the number of posts this user has
 	else
 	{
-		$query = $db->simple_select("usertitles", "*", "posts<='{$user['postnum']}'", array('order_by' => 'posts', 'order_dir' => 'DESC'));
-		$title = $db->fetch_array($query);
-		$usertitle = $title['title'];
+		// No usergroup title so get a default one
+		$usertitles = $cache->read('usertitles');
+
+		if(is_array($usertitles))
+		{
+			foreach($usertitles as $title)
+			{
+				if($user['postnum'] >= $title['posts'])
+				{
+					$usertitle = $title['title'];
+					break;
+				}
+			}
+		}
 	}
 
 	// If the user has permission to add reputations - show the image
