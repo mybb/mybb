@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<theme name="MyBB Master Style" version="1810">
+<theme name="MyBB Master Style" version="1811">
 	<properties>
 		<templateset><![CDATA[1]]></templateset>
 		<imgdir><![CDATA[images]]></imgdir>
@@ -929,8 +929,7 @@ blockquote cite span.highlight {
 
 div.error {
 	padding: 5px 10px;
-	border-top: 2px solid #FFD324;
-	border-bottom: 2px solid #FFD324;
+	border: 2px solid #FFD324;
 	background: #FFF6BF;
 	font-size: 12px;
 }
@@ -2233,7 +2232,7 @@ ul.thread_tools li.poll {
 .thread_status.newlockfolder {
 	background-position: 0 -320px;
 }]]></stylesheet>
-	<stylesheet name="css3.css" version="1807" disporder="7"><![CDATA[tr td.trow1:first-child,
+	<stylesheet name="css3.css" version="1811" disporder="7"><![CDATA[tr td.trow1:first-child,
 tr td.trow2:first-child,
 tr td.trow_shaded:first-child {
 	border-left: 0;
@@ -2367,6 +2366,12 @@ a.button {
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
+}
+
+div.error {
+	-moz-border-radius: 6px;
+    	-webkit-border-radius: 6px;
+   	 border-radius: 6px;
 }]]></stylesheet>
 	</stylesheets>
 	<templates>
