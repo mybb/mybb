@@ -657,7 +657,7 @@ if($mybb->input['action'] == "profile")
 			$options = "";
 			$expoptions = "";
 			$useropts = "";
-			$seloptions = "";
+			$seloptions = array();
 		}
 	}
 	if($customfields)
