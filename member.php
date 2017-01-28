@@ -893,7 +893,8 @@ if($mybb->input['action'] == "register")
 					continue;
 				}
 
-				$code = $select = $val = $options = $expoptions = $useropts = $seloptions = '';
+				$code = $select = $val = $options = $expoptions = $useropts = '';
+				$seloptions = array();
 				$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
 				$thing = explode("\n", $profilefield['type'], "2");
 				$type = trim($thing[0]);
