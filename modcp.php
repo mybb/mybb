@@ -2877,7 +2877,8 @@ if($mybb->input['action'] == "editprofile")
 	{
 		foreach($pfcache as $profilefield)
 		{
-			$userfield = $code = $select = $val = $options = $expoptions = $useropts = $seloptions = '';
+			$userfield = $code = $select = $val = $options = $expoptions = $useropts = '';
+			$seloptions = array();
 			$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
 			$profilefield['name'] = htmlspecialchars_uni($profilefield['name']);
 			$profilefield['description'] = htmlspecialchars_uni($profilefield['description']);
