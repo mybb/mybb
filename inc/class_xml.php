@@ -21,14 +21,115 @@ class XMLParser {
 	public $vals;
 	public $collapse_dups = 1;
 	public $index_numeric = 0;
+	/**
+	 * The parsed XML
+	 * 
+	 * 
+	 * @var		string
+	 */
+	public $parsedXML = '';
 
 	/**
 	 * Initialize the parser and store the XML data to be parsed.
+	 * 
+	 * @param	string		Can be supplied with either data or Filename to be opened
+	 * @return	void
 	 */
-	function __construct($data)
+	function __construct($fileordata, $init = false)
 	{
-		$this->data = $data;
+		if(is_file($fileordata))
+		{
+			$data = @file_get_contents($fileordata);
+			$this->data = $data;
+		}
+		else
+		{
+			$this->data = $data;
+		}
+		if($init === true)
+		{
+			$this->parse();
+		}
 	}
+	
+	/**
+	 * Initiates parsing
+	 * Usage:
+	 * $xml = new XMLParser('c:/wamp/something/xml.xml');
+	 * $xml->parse();
+	 * $data = $xml->parsedXML;
+	 * 
+	 * Or even:
+	 * $xml = new XMLParser('c:/wamp/something/xml.xml', true);
+	 * $data = $xml->parsedXML;
+	 * 
+	 * So simple eh? But still, you guys have it complex.
+	 * 
+	 * @return 	void
+	 */
+	public function parse()
+	{
+		$this->parsedXML = $this->get_tree($this->data);
+	}
+	
+	/**
+	 * This function accepts an array and removes all base tags & returns the last children tags
+	 * Usage:
+	 * Example XML:
+	 *	<?xml version="1.0" encoding="utf-8"?>
+	 *	<info>
+	 *		<data>
+	 *			<name>INS Test Addon</name>
+	 *			<author>AskAmn</author>
+	 *			<description>Test build for testing INS Applications/Hooks Pages</description>
+	 *		</data>
+	 *	</info>
+	 * $xml = new XMLParser;
+	 * $xmlfile = @file_get_contents('abovexml.xml');
+	 * $arrays = $xml->get_tree();
+	 * $tag = array();
+	 * $i = 1;
+	 * foreach($arrays AS $array)
+	 * {
+	 * 	$tag.'_'.$i = $xml->getXMLElement($array);
+	 * 	$i++;
+	 * }
+	 * // Lets print $tag_1 (infact there will be only this TAG)
+	 * print_r($tag_1);
+	 * Array
+	 *	(
+	 * 	    [name] => INS Test Addon
+	 *	    [author] => AskAmn
+	 *	    [description] => Test build for testing INS Applications/Hooks Pages
+	 *	    [last] => 1
+	 *	)
+	 * 
+	 * @param	array		The tag to parse
+	 * @return	array		Parsed array
+	 */
+	function getXMLElement($xml)
+	{
+		foreach($xml AS $tag => $array)
+		{
+			if(is_array($array))
+			{
+				$_array = getAppInfo($array);
+				if(array_key_exists('last', $_array))
+				{
+					return $_array;
+				}
+			}
+			else
+			{
+				$myarray[$tag] = $array;
+			}
+		}
+		if(is_array($myarray))
+		{
+			$myarray['last'] = 1;
+	     		return $myarray;
+		}	
+	}		
 
 	/**
 	 * Build a tree based structure based from the parsed data
