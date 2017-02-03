@@ -219,6 +219,7 @@ function parse_quoted_message(&$quoted_post, $remove_message_quotes=true)
 	{
 		$quote_char = "'";
 	}
+
 	return "[quote={$quote_char}{$quoted_post['username']}{$quote_char}{$extra}]\n{$quoted_post['message']}\n[/quote]\n\n";
 }
 
