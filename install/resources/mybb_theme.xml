@@ -3677,8 +3677,8 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 </form>
 </div>]]></template>
 		<template name="footer_languageselect_option" version="1800"><![CDATA[<option value="{$key}"{$selected}>&nbsp;&nbsp;&nbsp;{$language}</option>]]></template>
-		<template name="footer_themeselect" version="1800"><![CDATA[<div class="theme">
-<form method="{$theme_redirect_url['form_method']}" action="{$theme_redirect_url['location']}" id="theme_select">
+		<template name="footer_themeselect" version="1811"><![CDATA[<div class="theme">
+<form method="POST" action="{$theme_redirect_url['location']}" id="theme_select">
 	{$theme_redirect_url['form_html']}
 	<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 	{$theme_options}
