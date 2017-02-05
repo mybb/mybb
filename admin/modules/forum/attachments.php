@@ -224,6 +224,8 @@ if($mybb->input['action'] == "delete_orphans" && $mybb->request_method == "post"
 {
 	$plugins->run_hooks("admin_forum_attachments_delete_orphans");
 
+	$success_count = $error_count = 0;
+
 	// Deleting specific attachments from uploads directory
 	if(is_array($mybb->input['orphaned_files']))
 	{
@@ -241,7 +243,11 @@ if($mybb->input['action'] == "delete_orphans" && $mybb->request_method == "post"
 		{
 			if(!@unlink(MYBB_ROOT.$mybb->settings['uploadspath']."/".$file))
 			{
-				$error = true;
+				$error_count++;
+			}
+			else
+			{
+				$success_count++;
 			}
 		}
 	}
@@ -263,6 +269,7 @@ if($mybb->input['action'] == "delete_orphans" && $mybb->request_method == "post"
 			{
 				remove_attachment($attachment['pid'], null, $attachment['aid']);
 			}
+			$success_count++;
 		}
 	}
 
@@ -271,15 +278,27 @@ if($mybb->input['action'] == "delete_orphans" && $mybb->request_method == "post"
 	// Log admin action
 	log_admin_action();
 
-	if($error == true)
+	$message = '';
+	$status = 'success';
+	if($error_count > 0)
 	{
-		flash_message($lang->error_not_all_removed, 'error');
+		$status = 'error';
+		$message = $lang->sprintf($lang->error_count, $error_count);
 	}
-	else
+
+	if($success_count > 0)
 	{
-		flash_message($lang->success_orphan_deleted, 'success');
+		if($error_count > 0)
+		{
+			$message .= '<br />'.$lang->sprintf($lang->success_count, $success_count);
+		}
+		else
+		{
+			$message = $lang->success_orphan_deleted;
+		}
 	}
-	admin_redirect("index.php?module=forum-attachments");
+	flash_message($message, $status);
+	admin_redirect('index.php?module=forum-attachments');
 }
 
 if($mybb->input['action'] == "orphans")
