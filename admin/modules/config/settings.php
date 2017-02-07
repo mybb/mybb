@@ -1090,13 +1090,15 @@ if($mybb->input['action'] == "change")
 			$cache->update_statistics();
 		}
 
-		if(isset($mybb->input['upsetting']['statslimit']) && $mybb->input['upsetting']['statslimit'] != $mybb->settings['statstopreferrer'])
+		$statslimit = $mybb->settings['statslimit'];
+
+		rebuild_settings();
+
+		if(isset($mybb->input['upsetting']['statslimit']) && $mybb->input['upsetting']['statslimit'] != $statslimit)
 		{
 			$cache->update_most_replied_threads();
 			$cache->update_most_viewed_threads();
 		}
-
-		rebuild_settings();
 
 		$plugins->run_hooks("admin_config_settings_change_commit");
 
