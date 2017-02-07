@@ -3664,8 +3664,8 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 {$auto_dst_detection}
 </div>]]></template>
 		<template name="footer_contactus" version="1800"><![CDATA[<li><a href="{$mybb->settings['contactlink']}">{$lang->bottomlinks_contactus}</a></li>]]></template>
-		<template name="footer_languageselect" version="1800"><![CDATA[<div class="language">
-<form method="{$lang_redirect_url['form_method']}" action="{$lang_redirect_url['location']}" id="lang_select">
+		<template name="footer_languageselect" version="1811"><![CDATA[<div class="language">
+<form method="POST" action="{$lang_redirect_url['location']}" id="lang_select">
 	{$lang_redirect_url['form_html']}
 	<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 	<select name="language" onchange="MyBB.changeLanguage();">
