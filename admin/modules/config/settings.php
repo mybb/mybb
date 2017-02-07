@@ -1089,7 +1089,7 @@ if($mybb->input['action'] == "change")
 		{
 			$cache->update_statistics();
 		}
-		
+
 		$statslimit = $mybb->settings['statslimit'];
 
 		rebuild_settings();
