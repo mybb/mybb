@@ -944,6 +944,8 @@ if($mybb->input['action'] == "change")
 
 		while($multisetting = $db->fetch_array($query))
 		{
+			$options = array();
+
 			if(substr($multisetting['optionscode'], 0, 8) == 'checkbox')
 			{
 				$checkbox_settings[] = $multisetting['name'];
