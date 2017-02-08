@@ -4251,8 +4251,10 @@ function merge_thread_ratings($source_uid, $destination_uid)
 {
 	global $db;
 
-	$source_ratings = $dest_threads = $delete_list = array();
-	$query = $db->simple_select('threadratings', 'tid, uid, rid', "uid IN ({$destination_uid}, {$source_uid})");
+	$source_ratings = $dest_threads = $delete_list = $decrement_list = array();
+
+	// Get all thread ratings from both accounts
+	$query = $db->simple_select('threadratings', 'tid, uid, rid, rating', "uid IN ({$destination_uid}, {$source_uid})");
 	while($rating = $db->fetch_array($query))
 	{
 		if($rating['uid'] == $destination_uid)
@@ -4265,32 +4267,45 @@ function merge_thread_ratings($source_uid, $destination_uid)
 		}
 	}
 
+	// If there are duplicates, mark them for deletion
 	foreach($source_ratings as $rating)
 	{
 		if(in_array($rating['tid'], $dest_threads))
 		{
 			$delete_list[] = $rating['rid'];
+			$decrement_list[$rating['tid']][] = (int) $rating['rating'];
 		}
 	}
 
-	// Update the rest
+	// Attribute all of the source user's ratings to the destination user
 	$db->update_query("threadratings", array("uid" => $destination_uid), "uid='{$source_uid}'");
 
 	// Remove ratings previously given to recently acquired threads
 	$query = $db->query("
-		SELECT tr.rid
+		SELECT tr.rid, tr.rating, t.tid
 		FROM {$db->table_prefix}threadratings tr
 		LEFT JOIN {$db->table_prefix}threads t ON (t.tid=tr.tid)
 		WHERE tr.uid='{$destination_uid}' AND tr.uid=t.uid
 	");
-	while($rid = $db->fetch_field($query, 'rid'))
+	while($rating = $db->fetch_array($query))
 	{
-		$delete_list[] = $rid;
+		$delete_list[] = $rating['rid'];
+		$decrement_list[$rating['tid']][] = (int) $rating['rating'];
 	}
 
+	// Delete the duplicate/disallowed ratings
 	if(!empty($delete_list))
 	{
 		$imp = implode(',', $delete_list);
 		$db->delete_query('threadratings', "rid IN ({$imp})");
+	}
+
+	// Correct the thread rating counters
+	if(!empty($decrement_list))
+	{
+		foreach($decrement_list as $tid => $ratings)
+		{
+			$db->update_query('threads', array('numratings' => 'numratings-'.count($ratings), 'totalratings' => 'totalratings-'.array_sum($ratings)), "tid='{$tid}'", 1, true);
+		}
 	}
 }
