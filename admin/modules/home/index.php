@@ -295,7 +295,7 @@ elseif(!$mybb->input['action'])
 	// If the update check contains information about a newer version, show an alert
 	if(isset($update_check['latest_version_code']) && $update_check['latest_version_code'] > $mybb->version_code)
 	{
-		$lang->new_version_available = $lang->sprintf($lang->new_version_available, "MyBB {$mybb->version}", "<a href=\"https://mybb.com/downloads\" target=\"_blank\">MyBB {$update_check['latest_version']}</a>");
+		$lang->new_version_available = $lang->sprintf($lang->new_version_available, "MyBB {$mybb->version}", "<a href=\"https://mybb.com/download\" target=\"_blank\">MyBB {$update_check['latest_version']}</a>");
 		$page->output_error("<p><em>{$lang->new_version_available}</em></p>");
 	}
 
