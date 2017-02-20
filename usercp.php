@@ -2190,6 +2190,8 @@ if($mybb->input['action'] == "avatar")
 		$lang->avatar_note .= "<br />".$lang->sprintf($lang->avatar_note_size, $maxsize);
 	}
 
+	$plugins->run_hooks("usercp_avatar_intermediate");
+
 	$auto_resize = '';
 	if($mybb->settings['avatarresizing'] == "auto")
 	{
