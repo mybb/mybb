@@ -242,6 +242,11 @@ $l['admin_log_tools_recount_rebuild_privatemessages'] = "Recounted and rebuilt p
 $l['admin_log_tools_recount_rebuild_referral'] = "Recounted and rebuilt user referral count";
 $l['admin_log_tools_recount_rebuild_threadrating'] = "Recounted and rebuilt thread ratings";
 
+$l['admin_log_tools_spamlog_prune'] = "Pruned {4} spam logs older than {1} days";
+$l['admin_log_tools_spamlog_prune_user'] = "Pruned {4} spam logs older than {1} days with username {2}";
+$l['admin_log_tools_spamlog_prune_email'] = "Pruned {4} spam logs older than {1} days with email {3}";
+$l['admin_log_tools_spamlog_prune_user_email'] = "Pruned {4} spam logs older than {1} days with username {2} and email {3}";
+
 $l['admin_log_tools_tasks_add'] = "Added task #{1} ({2})";
 $l['admin_log_tools_tasks_edit'] = "Edited task #{1} ({2})";
 $l['admin_log_tools_tasks_delete'] = "Deleted task #{1} ({2})";
