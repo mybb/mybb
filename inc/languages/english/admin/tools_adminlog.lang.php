@@ -222,6 +222,8 @@ $l['admin_log_tools_index_utf8_conversion'] = "Converted table {1} to UTF-8";
 
 $l['admin_log_tools_mailerrors_prune'] = "Pruned {1} email error logs";
 
+$l['admin_log_tools_maillogs_prune'] = "Pruned {1} email logs";
+
 $l['admin_log_tools_optimizedb_'] = "Optimized database tables: {1}";
 
 $l['admin_log_tools_php_info_phpinfo'] = "Viewed PHP Info";

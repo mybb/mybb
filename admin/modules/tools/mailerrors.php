@@ -43,12 +43,12 @@ if($mybb->input['action'] == "prune" && $mybb->request_method == "post")
 			$db->delete_query("mailerrors", "eid IN ({$log_ids})");
 			$num_deleted = $db->affected_rows();
 		}
+
+		// Log admin action
+		log_admin_action($num_deleted);
 	}
 
 	$plugins->run_hooks("admin_tools_mailerrors_prune_commit");
-
-	// Log admin action
-	log_admin_action($num_deleted);
 
 	flash_message($lang->selected_logs_deleted, 'success');
 	admin_redirect("index.php?module=tools-mailerrors");
