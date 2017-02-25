@@ -838,19 +838,19 @@ function build_postbit($post, $post_type=0)
 				}
 			}
 
-			// Is this author on the ignore list of the current user? Hide this post
-			if(is_array($ignored_users) && $post['uid'] != 0 && isset($ignored_users[$post['uid']]) && $ignored_users[$post['uid']] == 1)
-			{
-				$ignored_message = $lang->sprintf($lang->postbit_currently_ignoring_user, $post['username']);
-				eval("\$ignore_bit = \"".$templates->get("postbit_ignored")."\";");
-				$post_visibility = "display: none;";
-			}
-
 			// Has this post been deleted but can be viewed? Hide this post
 			if($post['visible'] == -1 && is_moderator($fid, "canviewdeleted"))
 			{
 				$deleted_message = $lang->sprintf($lang->postbit_deleted_post_user, $post['username']);
 				eval("\$deleted_bit = \"".$templates->get("postbit_deleted")."\";");
+				$post_visibility = "display: none;";
+			}
+
+			// Is this author on the ignore list of the current user? Hide this post
+			if(is_array($ignored_users) && $post['uid'] != 0 && isset($ignored_users[$post['uid']]) && $ignored_users[$post['uid']] == 1 && empty($deleted_bit))
+			{
+				$ignored_message = $lang->sprintf($lang->postbit_currently_ignoring_user, $post['username']);
+				eval("\$ignore_bit = \"".$templates->get("postbit_ignored")."\";");
 				$post_visibility = "display: none;";
 			}
 			break;
