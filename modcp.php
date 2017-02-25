@@ -947,6 +947,8 @@ if($mybb->input['action'] == "modlogs")
 			}
 		}
 
+		$plugins->run_hooks("modcp_modlogs_result");
+
 		eval("\$results .= \"".$templates->get("modcp_modlogs_result")."\";");
 	}
 
@@ -4710,6 +4712,8 @@ if(!$mybb->input['action'])
 					eval("\$information .= \"".$templates->get("modcp_modlogs_result_announcement")."\";");
 				}
 			}
+
+			$plugins->run_hooks("modcp_modlogs_result");
 
 			eval("\$modlogresults .= \"".$templates->get("modcp_modlogs_result")."\";");
 		}
