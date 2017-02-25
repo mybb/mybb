@@ -47,3 +47,4 @@ You will be able to login with the credentials you registered with.
 
 Thank you,
 {2} Staff";
+
