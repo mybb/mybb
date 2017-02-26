@@ -673,7 +673,7 @@ if($mybb->input['action'] == "add")
 		{
 			$errors[] = $lang->error_missing_title;
 		}
-		
+
 		if($mybb->input['title'])
 		{
 			$groupcache = $cache->read('usergroups');
@@ -832,7 +832,7 @@ if($mybb->input['action'] == "edit")
 		{
 			$errors[] = $lang->error_missing_title;
 		}
-		
+
 		if($mybb->input['title'])
 		{
 			$groupcache = $cache->read('usergroups');
