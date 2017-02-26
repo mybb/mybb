@@ -1097,7 +1097,6 @@ if($mybb->input['action'] == "register")
 		{
 			$allownoticescheck = "checked=\"checked\"";
 			$hideemailcheck = '';
-			$emailnotifycheck = '';
 			$receivepmscheck = "checked=\"checked\"";
 			$pmnoticecheck = " checked=\"checked\"";
 			$pmnotifycheck = '';
