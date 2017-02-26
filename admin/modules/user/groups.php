@@ -674,17 +674,17 @@ if($mybb->input['action'] == "add")
 			$errors[] = $lang->error_missing_title;
 		}
 		
-		if ($mybb->input['title'])
+		if($mybb->input['title'])
 		{
 			$groupcache = $cache->read('usergroups');
-			if ($groupcache)
+			if($groupcache)
 			{
-				foreach ($groupcache as $key => $value)
+				foreach($groupcache as $key => $value)
 				{
 					$grouptitles[] = $value['title'];
 				}
 
-				if (in_array(trim($mybb->input['title']), $grouptitles))
+				if(in_array(trim($mybb->input['title']), $grouptitles))
 				{
 					$errors[] = $lang->error_title_already_exists;
 				}
@@ -833,17 +833,17 @@ if($mybb->input['action'] == "edit")
 			$errors[] = $lang->error_missing_title;
 		}
 		
-		if ($mybb->input['title'])
+		if($mybb->input['title'])
 		{
 			$groupcache = $cache->read('usergroups');
-			if ($groupcache)
+			if($groupcache)
 			{
-				foreach ($groupcache as $key => $value)
+				foreach($groupcache as $key => $value)
 				{
 					$grouptitles[] = $value['title'];
 				}
 
-				if (in_array(trim($mybb->input['title']), $grouptitles))
+				if(in_array(trim($mybb->input['title']), $grouptitles))
 				{
 					$errors[] = $lang->error_title_already_exists;
 				}
