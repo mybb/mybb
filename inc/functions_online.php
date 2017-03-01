@@ -802,6 +802,10 @@ function build_friendly_wol_location($user_activity)
 			{
 				$location_name = $lang->sprintf($lang->viewing_profile2, get_profile_link($user_activity['uid']), $usernames[$user_activity['uid']]);
 			}
+			elseif($user_activity['uid'] == 0)
+			{
+				$location_name = $lang->sprintf($lang->viewing_profile2, get_profile_link($mybb->user['uid']), $mybb->user['username']);
+			}
 			else
 			{
 				$location_name = $lang->viewing_profile;
