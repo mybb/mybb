@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<theme name="MyBB Master Style" version="1810">
+<theme name="MyBB Master Style" version="1811">
 	<properties>
 		<templateset><![CDATA[1]]></templateset>
 		<imgdir><![CDATA[images]]></imgdir>
@@ -9,7 +9,7 @@
 		<editortheme><![CDATA[mybb.css]]></editortheme>
 	</properties>
 	<stylesheets>
-		<stylesheet name="global.css" version="1809" disporder="1"><![CDATA[body {
+		<stylesheet name="global.css" version="1811" disporder="1"><![CDATA[body {
 	background: #fff;
 	color: #333;
 	text-align: center;
@@ -929,8 +929,7 @@ blockquote cite span.highlight {
 
 div.error {
 	padding: 5px 10px;
-	border-top: 2px solid #FFD324;
-	border-bottom: 2px solid #FFD324;
+	border: 2px solid #FFD324;
 	background: #FFF6BF;
 	font-size: 12px;
 }
@@ -2233,7 +2232,7 @@ ul.thread_tools li.poll {
 .thread_status.newlockfolder {
 	background-position: 0 -320px;
 }]]></stylesheet>
-	<stylesheet name="css3.css" version="1807" disporder="7"><![CDATA[tr td.trow1:first-child,
+	<stylesheet name="css3.css" version="1811" disporder="7"><![CDATA[tr td.trow1:first-child,
 tr td.trow2:first-child,
 tr td.trow_shaded:first-child {
 	border-left: 0;
@@ -2367,6 +2366,12 @@ a.button {
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
+}
+
+div.error {
+	-moz-border-radius: 6px;
+    	-webkit-border-radius: 6px;
+   	 border-radius: 6px;
 }]]></stylesheet>
 	</stylesheets>
 	<templates>
@@ -3659,8 +3664,8 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 {$auto_dst_detection}
 </div>]]></template>
 		<template name="footer_contactus" version="1800"><![CDATA[<li><a href="{$mybb->settings['contactlink']}">{$lang->bottomlinks_contactus}</a></li>]]></template>
-		<template name="footer_languageselect" version="1800"><![CDATA[<div class="language">
-<form method="{$lang_redirect_url['form_method']}" action="{$lang_redirect_url['location']}" id="lang_select">
+		<template name="footer_languageselect" version="1811"><![CDATA[<div class="language">
+<form method="POST" action="{$lang_redirect_url['location']}" id="lang_select">
 	{$lang_redirect_url['form_html']}
 	<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 	<select name="language" onchange="MyBB.changeLanguage();">
@@ -3672,8 +3677,8 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 </form>
 </div>]]></template>
 		<template name="footer_languageselect_option" version="1800"><![CDATA[<option value="{$key}"{$selected}>&nbsp;&nbsp;&nbsp;{$language}</option>]]></template>
-		<template name="footer_themeselect" version="1800"><![CDATA[<div class="theme">
-<form method="{$theme_redirect_url['form_method']}" action="{$theme_redirect_url['location']}" id="theme_select">
+		<template name="footer_themeselect" version="1811"><![CDATA[<div class="theme">
+<form method="POST" action="{$theme_redirect_url['location']}" id="theme_select">
 	{$theme_redirect_url['form_html']}
 	<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 	{$theme_options}
@@ -6294,15 +6299,15 @@ if(use_xmlhttprequest == "1")
 	{$footer}
 </body>
 </html>]]></template>
-		<template name="modcp_announcements_announcement" version="1400"><![CDATA[					<tr>
-						<td class="{$trow}"><div style="padding-left: {$padding}px;">{$icon}<a href="modcp.php?action=edit_announcement&amp;aid={$aid}">{$subject}</a></div></td>
+		<template name="modcp_announcements_announcement" version="1811"><![CDATA[					<tr>
+						<td class="{$trow}"><div style="padding-left: {$padding}px;">{$icon}<a href="announcements.php?aid={$aid}">{$subject}</a></div></td>
 						<td class="{$trow}" align="center"><a href="modcp.php?action=edit_announcement&amp;aid={$aid}">{$lang->edit}</a></td>
 						<td class="{$trow}" align="center"><a href="modcp.php?action=delete_announcement&amp;aid={$aid}">{$lang->delete}</a></td>
 					</tr>]]></template>
 		<template name="modcp_announcements_announcement_active" version="1800"><![CDATA[<div class="subforumicon subforum_minion" title="{$lang->active_announcement}"></div>]]></template>
 		<template name="modcp_announcements_announcement_expired" version="1800"><![CDATA[<div class="subforumicon subforum_minioff" title="{$lang->expired_announcement}"></div>]]></template>
-		<template name="modcp_announcements_announcement_global" version="1400"><![CDATA[					<tr>
-						<td class="{$trow}">{$icon}<a href="modcp.php?action=edit_announcement&amp;aid={$aid}">{$subject}</a></td>
+		<template name="modcp_announcements_announcement_global" version="1811"><![CDATA[					<tr>
+						<td class="{$trow}">{$icon}<a href="announcements.php?aid={$aid}">{$subject}</a></td>
 						<td class="{$trow}" align="center"><a href="modcp.php?action=edit_announcement&amp;aid={$aid}">{$lang->edit}</a></td>
 						<td class="{$trow}" align="center"><a href="modcp.php?action=delete_announcement&amp;aid={$aid}">{$lang->delete}</a></td>
 					</tr>]]></template>
@@ -13503,13 +13508,13 @@ if(use_xmlhttprequest == "1")
 		<template name="video_metacafe_embed" version="1807"><![CDATA[<iframe src="http://www.metacafe.com/embed/{$id}/" width="440" height="248" allowFullScreen frameborder=0></iframe>]]></template>
 		<template name="video_dailymotion_embed" version="1807"><![CDATA[<iframe frameborder="0" width="480" height="270" src="//www.dailymotion.com/embed/video/{$id}" allowfullscreen></iframe>]]></template>
 		<template name="video_facebook_embed" version="1800"><![CDATA[<iframe src="https://www.facebook.com/video/embed?video_id={$id}" width="625" height="350" frameborder="0"></iframe>]]></template>
-		<template name="video_liveleak_embed" version="1800"><![CDATA[<iframe width="500" height="300" src="http://www.liveleak.com/ll_embed?i={$id}" frameborder="0" allowfullscreen></iframe>]]></template>
+		<template name="video_liveleak_embed" version="1811"><![CDATA[<iframe width="500" height="300" src="https://www.liveleak.com/ll_embed?i={$id}" frameborder="0" allowfullscreen></iframe>]]></template>
 		<template name="video_myspacetv_embed" version="1807"><![CDATA[<iframe width="480" height="270" src="//media.myspace.com/play/video/{$id}" frameborder="0" allowtransparency="true" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>]]></template>
 		<template name="video_youtube_embed" version="1807"><![CDATA[<iframe width="560" height="315" src="//www.youtube.com/embed/{$id}" frameborder="0" allowfullscreen></iframe>]]></template>
 		<template name="video_veoh_embed" version="1800"><![CDATA[<object width="410" height="341" id="veohFlashPlayer" name="veohFlashPlayer"><param name="movie" value="http://www.veoh.com/swf/webplayer/WebPlayer.swf?version=AFrontend.5.7.0.1446&permalinkId={$id}&player=videodetailsembedded&videoAutoPlay=0&id=anonymous"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.veoh.com/swf/webplayer/WebPlayer.swf?version=AFrontend.5.7.0.1446&permalinkId={$id}&player=videodetailsembedded&videoAutoPlay=0&id=anonymous" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="410" height="341" id="veohFlashPlayerEmbed" name="veohFlashPlayerEmbed"></embed></object>]]></template>
 		<template name="video_vimeo_embed" version="1807"><![CDATA[<iframe src="//player.vimeo.com/video/{$id}" width="500" height="375" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>]]></template>
 		<template name="video_yahoo_embed" version="1807"><![CDATA[<iframe width="640" height="360" scrolling="no" frameborder="0" src="//{$local}screen.yahoo.com/{$id}?format=embed" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true" allowtransparency="true"></iframe>]]></template>
-		<template name="video_twitch_embed" version="1809"><![CDATA[<iframe src="https://player.twitch.tv/?video=v{$id}" frameborder="0" scrolling="no" height="378" width="620"></iframe>]]></template>
+		<template name="video_twitch_embed" version="1811"><![CDATA[<iframe src="https://player.twitch.tv/?video=v{$id}&amp;autoplay=false" frameborder="0" scrolling="no" height="378" width="620"></iframe>]]></template>
 		<template name="warnings" version="1400"><![CDATA[<html>
 <head>
 	<title>{$mybb->settings['bbname']} - {$lang->warning_log}</title>

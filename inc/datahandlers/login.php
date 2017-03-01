@@ -174,15 +174,9 @@ class LoginDataHandler extends DataHandler
 			if(!$this->login_data['salt'])
 			{
 				// Generate a salt for this user and assume the password stored in db is a plain md5 password
-				$this->login_data['salt'] = generate_salt();
-				$this->login_data['password'] = create_password_hash($this->login_data['password'], $this->login_data['salt']);
-
-				$sql_array = array(
-					"salt" => $this->login_data['salt'],
-					"password" => $this->login_data['password']
-				);
-
-				$db->update_query("users", $sql_array, "uid = '{$this->login_data['uid']}'");
+				$password_fields = create_password($this->login_data['password']);
+				$this->login_data = array_merge($this->login_data, $password_fields);
+				$db->update_query("users", $password_fields, "uid = '{$this->login_data['uid']}'");
 			}
 
 			if(!$this->login_data['loginkey'])

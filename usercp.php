@@ -657,7 +657,7 @@ if($mybb->input['action'] == "profile")
 			$options = "";
 			$expoptions = "";
 			$useropts = "";
-			$seloptions = "";
+			$seloptions = array();
 		}
 	}
 	if($customfields)
@@ -2189,6 +2189,8 @@ if($mybb->input['action'] == "avatar")
 		$maxsize = get_friendly_size($mybb->settings['avatarsize']*1024);
 		$lang->avatar_note .= "<br />".$lang->sprintf($lang->avatar_note_size, $maxsize);
 	}
+
+	$plugins->run_hooks("usercp_avatar_intermediate");
 
 	$auto_resize = '';
 	if($mybb->settings['avatarresizing'] == "auto")
