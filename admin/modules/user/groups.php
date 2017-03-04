@@ -843,7 +843,7 @@ if($mybb->input['action'] == "edit")
 					$grouptitles[] = $value['title'];
 				}
 
-				if(in_array(trim($mybb->input['title']), $grouptitles))
+				if(in_array(trim($mybb->input['title']), $grouptitles) && trim($mybb->input['title']) != $usergroup['title'])
 				{
 					$errors[] = $lang->error_title_already_exists;
 				}
