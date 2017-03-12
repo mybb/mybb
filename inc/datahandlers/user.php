@@ -1587,6 +1587,7 @@ class UserDataHandler extends DataHandler
 		$cache->update_forumsdisplay();
 		$cache->update_reportedcontent();
 		$cache->update_awaitingactivation();
+		$cache->update_birthdays();
 
 		return $this->return_values;
 	}
