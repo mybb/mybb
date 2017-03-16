@@ -158,7 +158,7 @@
 			}).bind('jGrowl.afterOpen', function() {
 				o.afterOpen.apply( notification , [notification,message,o,self.element] );
 			}).bind('click', function() {
-				o.click.apply( notification, [notification.message,o,self.element] );
+				o.click.apply( notification, [notification,message,o,self.element] );
 			}).bind('jGrowl.beforeClose', function() {
 				if ( o.beforeClose.apply( notification , [notification,message,o,self.element] ) !== false )
 					$(this).trigger('jGrowl.close');
