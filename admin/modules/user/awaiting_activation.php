@@ -69,7 +69,7 @@ if($mybb->input['action'] == "activate" && $mybb->request_method == "post")
 	}
 	else // Activate selected user(s)
 	{
-		$query = $db->simple_select("users", "uid, usergroup, coppauser", "uid IN ({$user_ids})");
+		$query = $db->simple_select("users", "uid, username, email, usergroup, coppauser", "uid IN ({$user_ids})");
 		while($user = $db->fetch_array($query))
 		{
 			++$num_activated;
@@ -91,6 +91,8 @@ if($mybb->input['action'] == "activate" && $mybb->request_method == "post")
 			}
 
 			$db->update_query("users", $updated_user, "uid='{$user['uid']}'");
+
+			$message = $lang->sprintf($lang->email_adminactivateaccount, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl']); my_mail($user['email'], $lang->sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']), $message);
 		}
 
 		$cache->update_awaitingactivation();
