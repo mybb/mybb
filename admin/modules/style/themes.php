@@ -1025,12 +1025,20 @@ if($mybb->input['action'] == "delete")
 
 		@rmdir(MYBB_ROOT."cache/themes/theme{$theme['tid']}/");
 
-		$children = make_child_theme_list($theme['tid']);
-		$child_tid = $children[0];
+		$children = (array)make_child_theme_list($theme['tid']);
+		$child_tids = array();
 
-		if($child_tid != 0)
+		foreach($children as $child_tid)
 		{
-			$db->update_query("themes", array('pid' => $theme['pid']), "tid='{$child_tid}'");
+			if($child_tid != 0)
+			{
+				$child_tids[] = $child_tid;
+			}
+		}
+
+		if(!empty($child_tids))
+		{
+			$db->update_query("themes", array('pid' => $theme['pid']), "tid IN (".implode(',', $child_tids).")");
 		}
 
 		$db->delete_query("themes", "tid='{$theme['tid']}'", 1);
