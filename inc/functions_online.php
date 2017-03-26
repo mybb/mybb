@@ -161,10 +161,26 @@ function fetch_wol_activity($location, $nopermission=false)
 			elseif($parameters['action'] == "profile")
 			{
 				$user_activity['activity'] = "member_profile";
-				if(!isset($parameters['uid']))
+
+				if($parameters['uid'] == 0)
+				{
+					global $memprofile;
+
+					// $user is available in Who's Online but not in Member Profile, use $memprofile instead
+					if(!empty($user['uid']))
+					{
+						$parameters['uid'] = $user['uid'];
+					}
+					elseif(!empty($memprofile['uid']))
+					{
+						$parameters['uid'] = $memprofile['uid'];
+					}
+				}
+				else if(!isset($parameters['uid']))
 				{
 					$parameters['uid'] = 0;
 				}
+
 				$parameters['uid'] = (int)$parameters['uid'];
 				if($parameters['uid'] > 0)
 				{
@@ -801,10 +817,6 @@ function build_friendly_wol_location($user_activity)
 			if(!empty($usernames[$user_activity['uid']]))
 			{
 				$location_name = $lang->sprintf($lang->viewing_profile2, get_profile_link($user_activity['uid']), $usernames[$user_activity['uid']]);
-			}
-			elseif($user_activity['uid'] == 0)
-			{
-				$location_name = $lang->sprintf($lang->viewing_profile2, get_profile_link($mybb->user['uid']), $mybb->user['username']);
 			}
 			else
 			{
