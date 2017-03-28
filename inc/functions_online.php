@@ -182,7 +182,8 @@ function fetch_wol_activity($location, $nopermission=false)
 						$parameters['uid'] = $memprofile['uid'];
 					}
 				}
-				elseif($parameters['uid'] > 0)
+
+				if($parameters['uid'] > 0)
 				{
 					$uid_list[$parameters['uid']] = $parameters['uid'];
 				}
