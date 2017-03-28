@@ -162,6 +162,12 @@ function fetch_wol_activity($location, $nopermission=false)
 			{
 				$user_activity['activity'] = "member_profile";
 
+				if(!isset($parameters['uid']))
+				{
+					$parameters['uid'] = 0;
+				}
+				$parameters['uid'] = (int)$parameters['uid'];
+
 				if($parameters['uid'] == 0)
 				{
 					global $memprofile;
@@ -176,13 +182,7 @@ function fetch_wol_activity($location, $nopermission=false)
 						$parameters['uid'] = $memprofile['uid'];
 					}
 				}
-				elseif(!isset($parameters['uid']))
-				{
-					$parameters['uid'] = 0;
-				}
-
-				$parameters['uid'] = (int)$parameters['uid'];
-				if($parameters['uid'] > 0)
+				elseif($parameters['uid'] > 0)
 				{
 					$uid_list[$parameters['uid']] = $parameters['uid'];
 				}
