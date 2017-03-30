@@ -1107,6 +1107,7 @@ class DefaultSidebarItem
 	{
 		global $run_module;
 
+		ksort($items, SORT_NUMERIC);
 		$this->_contents = "<ul class=\"menu\">";
 		foreach($items as $item)
 		{
