@@ -539,7 +539,7 @@ $(document).ready(function($) {
 				'</div>' +
 				'<div>' +
 					'<label for="link">' + editor._('Video URL:') + '</label> ' +
-					'<input type="text" id="videourl" value="http://" />' +
+					'<input type="text" id="videourl" placeholder="https://" />' +
 				'</div>' +
 				'<div><input type="button" class="button" value="' + editor._('Insert') + '" /></div>'
 			);
