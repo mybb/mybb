@@ -872,9 +872,13 @@ elseif($mybb->input['action'] == "syndication")
 
 	$fid = $mybb->get_input('fid', MyBB::INPUT_INT);
 	$version = $mybb->get_input('version');
-	$limit = $mybb->get_input('limit', MyBB::INPUT_INT);
+	$new_limit = $mybb->get_input('limit', MyBB::INPUT_INT);
 	$forums = $mybb->get_input('forums', MyBB::INPUT_ARRAY);
 	$limit = 15;
+	if(!empty($new_limit) && $new_limit != $limit)
+	{
+		$limit = $new_limit;
+	}
 	$feedurl = '';
 	$add = false;
 
@@ -902,7 +906,7 @@ elseif($mybb->input['action'] == "syndication")
 				$all = true;
 				break;
 			}
-			elseif(is_numeric($fid))
+			elseif((int)$fid)
 			{
 				if(!isset($unview[$fid]))
 				{
@@ -935,9 +939,9 @@ elseif($mybb->input['action'] == "syndication")
 		}
 		if((int)$limit > 0)
 		{
-			if($limit > 100)
+			if($limit > 50)
 			{
-				$limit = 100;
+				$limit = 50;
 			}
 			if(!$add)
 			{
