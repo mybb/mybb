@@ -317,10 +317,10 @@ class postParser
 
 		if($mybb->settings['allowemailmycode'] == 1)
 		{
-			$callback_mycode['email_simple']['regex'] = "#\[email\](.*?)\[/email\]#i";
+			$callback_mycode['email_simple']['regex'] = "#\[email\]((?:[a-zA-Z0-9-_\+\.]+?)@[a-zA-Z0-9-]+\.[a-zA-Z0-9\.-]+(?:\?.*?)?)\[/email\]#i";
 			$callback_mycode['email_simple']['replacement'] = array($this, 'mycode_parse_email_callback');
 
-			$callback_mycode['email_complex']['regex'] = "#\[email=(.*?)\](.*?)\[/email\]#i";
+			$callback_mycode['email_complex']['regex'] = "#\[email=((?:[a-zA-Z0-9-_\+\.]+?)@[a-zA-Z0-9-]+\.[a-zA-Z0-9\.-]+(?:\?.*?)?)\](.*?)\[/email\]#i";
 			$callback_mycode['email_complex']['replacement'] = array($this, 'mycode_parse_email_callback');
 
 			++$callback_count;
