@@ -611,7 +611,7 @@ function upgradedone()
 	global $db, $output, $mybb, $lang, $config, $plugins;
 
 	ob_start();
-	$output->print_header($lang>upgrade_complete);
+	$output->print_header($lang->upgrade_complete);
 
 	$allow_anonymous_info = get_upgrade_store("allow_anonymous_info");
 	if($allow_anonymous_info == 1)
