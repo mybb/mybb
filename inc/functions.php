@@ -6867,15 +6867,17 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 		$curl_version_info = curl_version();
 		$curl_version = $curl_version_info['version'];
 
-		if(version_compare($curl_version, '7.0.7', '>=') && version_compare($curl_version, '7.49', '>='))
+		if(version_compare(PHP_VERSION, '7.0.7', '>=') && version_compare($curl_version, '7.49', '>='))
 		{
-			$curlopt[CURLOPT_CONNECT_TO] = array(
+			// CURLOPT_CONNECT_TO
+			$curlopt[10243] = array(
 				$url_components['host'].':'.$url_components['port'].':'.$destination_address
 			);
 		}
-		elseif(version_compare(PHP_VERSION, '5.5', '>='))
+		elseif(version_compare(PHP_VERSION, '5.5', '>=') && version_compare($curl_version, '7.21.3', '>='))
 		{
-			$curlopt[CURLOPT_RESOLVE] = array(
+			// CURLOPT_RESOLVE
+			$curlopt[10203] = array(
 				$url_components['host'].':'.$url_components['port'].':'.$destination_address
 			);
 		}
@@ -6944,23 +6946,23 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 		{
 			if($url_components['scheme'] == 'https' && $ca_bundle_path = get_ca_bundle_path())
 			{
-				$context = stream_context_create([
-					'ssl' => [
+				$context = stream_context_create(array(
+					'ssl' => array(
 						'verify_peer' => true,
 						'verify_peer_name' => true,
 						'peer_name' => $url_components['host'],
 						'cafile' => $ca_bundle_path,
-					],
-				]);
+					),
+				));
 			}
 			else
 			{
-				$context = stream_context_create([
-					'ssl' => [
+				$context = stream_context_create(array(
+					'ssl' => array(
 						'verify_peer' => false,
 						'verify_peer_name' => false,
-					],
-				]);
+					),
+				));
 			}
 
 			$fp = @stream_socket_client($scheme.$destination_address.':'.(int)$url_components['port'], $error_no, $error, 10, STREAM_CLIENT_CONNECT, $context);
@@ -7051,11 +7053,11 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
  */
 function get_ip_by_hostname($hostname)
 {
-	$addresses = gethostbynamel($hostname);
+	$addresses = @gethostbynamel($hostname);
 
 	if(!$addresses)
 	{
-		$result_set = dns_get_record($hostname, DNS_A | DNS_AAAA);
+		$result_set = @dns_get_record($hostname, DNS_A | DNS_AAAA);
 
 		if($result_set)
 		{
