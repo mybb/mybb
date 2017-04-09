@@ -6778,43 +6778,54 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 {
 	global $mybb, $config;
 
+	if(!my_validate_url($url, true))
+	{
+		return false;
+	}
+
 	$url_components = @parse_url($url);
+
+	if(!isset($url_components['scheme']))
+	{
+		$url_components['scheme'] = 'https';
+	}
+	if(!isset($url_components['port']))
+	{
+		$url_components['port'] = $url_components['scheme'] == 'https' ? 443 : 80;
+	}
 
 	if(
 		!$url_components ||
 		empty($url_components['host']) ||
 		(!empty($url_components['scheme']) && !in_array($url_components['scheme'], array('http', 'https'))) ||
-		(!empty($url_components['port']) && !in_array($url_components['port'], array(80, 8080, 443))) ||
+		(!in_array($url_components['port'], array(80, 8080, 443))) ||
 		(!empty($config['disallowed_remote_hosts']) && in_array($url_components['host'], $config['disallowed_remote_hosts']))
 	)
 	{
 		return false;
 	}
 
+	$addresses = get_ip_by_hostname($url_components['host']);
+	$destination_address = $addresses[0];
+
 	if(!empty($config['disallowed_remote_addresses']))
 	{
-		$addresses = gethostbynamel($url_components['host']);
-		if($addresses)
+		foreach($config['disallowed_remote_addresses'] as $disallowed_address)
 		{
-			foreach($config['disallowed_remote_addresses'] as $disallowed_address)
-			{
-				$ip_range = fetch_ip_range($disallowed_address);
-				foreach($addresses as $address)
-				{
-					$packed_address = my_inet_pton($address);
+			$ip_range = fetch_ip_range($disallowed_address);
 
-					if(is_array($ip_range))
-					{
-						if(strcmp($ip_range[0], $packed_address) <= 0 && strcmp($ip_range[1], $packed_address) >= 0)
-						{
-							return false;
-						}
-					}
-					elseif($address == $disallowed_address)
-					{
-						return false;
-					}
+			$packed_address = my_inet_pton($destination_address);
+
+			if(is_array($ip_range))
+			{
+				if(strcmp($ip_range[0], $packed_address) <= 0 && strcmp($ip_range[1], $packed_address) >= 0)
+				{
+					return false;
 				}
+			}
+			elseif($destination_address == $disallowed_address)
+			{
+				return false;
 			}
 		}
 	}
@@ -6831,32 +6842,57 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 
 	if(function_exists("curl_init"))
 	{
-		$can_followlocation = @ini_get('open_basedir') === '' && !$mybb->safemode;
-
-		$request_header = $max_redirects != 0 && !$can_followlocation;
+		$fetch_header = $max_redirects > 0;
 
 		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_HEADER, $request_header);
-		curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
 
-		if($max_redirects != 0 && $can_followlocation)
+		$curlopt = array(
+			CURLOPT_URL => $url,
+			CURLOPT_HEADER => $fetch_header,
+			CURLOPT_TIMEOUT => 10,
+			CURLOPT_RETURNTRANSFER => 1,
+			CURLOPT_FOLLOWLOCATION => 0,
+		);
+
+		if($ca_bundle_path = get_ca_bundle_path())
 		{
-			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-			curl_setopt($ch, CURLOPT_MAXREDIRS, $max_redirects);
+			$curlopt[CURLOPT_SSL_VERIFYPEER] = 1;
+			$curlopt[CURLOPT_CAINFO] = $ca_bundle_path;
+		}
+		else
+		{
+			$curlopt[CURLOPT_SSL_VERIFYPEER] = 0;
+		}
+
+		$curl_version_info = curl_version();
+		$curl_version = $curl_version_info['version'];
+
+		if(version_compare(PHP_VERSION, '7.0.7', '>=') && version_compare($curl_version, '7.49', '>='))
+		{
+			// CURLOPT_CONNECT_TO
+			$curlopt[10243] = array(
+				$url_components['host'].':'.$url_components['port'].':'.$destination_address
+			);
+		}
+		elseif(version_compare(PHP_VERSION, '5.5', '>=') && version_compare($curl_version, '7.21.3', '>='))
+		{
+			// CURLOPT_RESOLVE
+			$curlopt[10203] = array(
+				$url_components['host'].':'.$url_components['port'].':'.$destination_address
+			);
 		}
 
 		if(!empty($post_body))
 		{
-			curl_setopt($ch, CURLOPT_POST, 1);
-			curl_setopt($ch, CURLOPT_POSTFIELDS, $post_body);
+			$curlopt[CURLOPT_POST] = 1;
+			$curlopt[CURLOPT_POSTFIELDS] = $post_body;
 		}
+
+		curl_setopt_array($ch, $curlopt);
 
 		$response = curl_exec($ch);
 
-		if($request_header)
+		if($fetch_header)
 		{
 			$header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
 			$header = substr($response, 0, $header_size);
@@ -6886,10 +6922,6 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 	}
 	else if(function_exists("fsockopen"))
 	{
-		if(!isset($url_components['port']))
-		{
-			$url_components['port'] = 80;
-		}
 		if(!isset($url_components['path']))
 		{
 			$url_components['path'] = "/";
@@ -6910,7 +6942,36 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 			}
 		}
 
-		$fp = @fsockopen($scheme.$url_components['host'], $url_components['port'], $error_no, $error, 10);
+		if(function_exists('stream_context_create'))
+		{
+			if($url_components['scheme'] == 'https' && $ca_bundle_path = get_ca_bundle_path())
+			{
+				$context = stream_context_create(array(
+					'ssl' => array(
+						'verify_peer' => true,
+						'verify_peer_name' => true,
+						'peer_name' => $url_components['host'],
+						'cafile' => $ca_bundle_path,
+					),
+				));
+			}
+			else
+			{
+				$context = stream_context_create(array(
+					'ssl' => array(
+						'verify_peer' => false,
+						'verify_peer_name' => false,
+					),
+				));
+			}
+
+			$fp = @stream_socket_client($scheme.$destination_address.':'.(int)$url_components['port'], $error_no, $error, 10, STREAM_CLIENT_CONNECT, $context);
+		}
+		else
+		{
+			$fp = @fsockopen($scheme.$url_components['host'], (int)$url_components['port'], $error_no, $error, 10);
+		}
+
 		@stream_set_timeout($fp, 10);
 		if(!$fp)
 		{
@@ -6962,7 +7023,7 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 		$status_line = current(explode("\n\n", $header, 1));
 		$body = $data[1];
 
-		if($max_redirects != 0 && (strstr($status_line, ' 301 ') || strstr($status_line, ' 302 ')))
+		if($max_redirects > 0 && (strstr($status_line, ' 301 ') || strstr($status_line, ' 302 ')))
 		{
 			preg_match('/Location:(.*?)(?:\n|$)/', $header, $matches);
 
@@ -6978,14 +7039,56 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 
 		return $data;
 	}
-	else if(empty($post_data))
-	{
-		return @implode("", @file($url));
-	}
 	else
 	{
 		return false;
 	}
+}
+
+/**
+ * Resolves a hostname into a set of IP addresses.
+ *
+ * @param string $hostname The hostname to be resolved
+ * @return array|bool The resulting IP addresses. False on failure
+ */
+function get_ip_by_hostname($hostname)
+{
+	$addresses = @gethostbynamel($hostname);
+
+	if(!$addresses)
+	{
+		$result_set = @dns_get_record($hostname, DNS_A | DNS_AAAA);
+
+		if($result_set)
+		{
+			$addresses = array_column($result_set, 'ip');
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	return $addresses;
+}
+
+/**
+ * Returns the location of the CA bundle defined in the PHP configuration.
+ *
+ * @return string|bool The location of the CA bundle, false if not set
+ */
+function get_ca_bundle_path()
+{
+	if($path = ini_get('openssl.cafile'))
+	{
+		return $path;
+	}
+	if($path = ini_get('curl.cainfo'))
+	{
+		return $path;
+	}
+
+	return false;
 }
 
 /**
