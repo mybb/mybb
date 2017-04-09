@@ -24,6 +24,8 @@ $l['days'] = "days";
 $l['filter_spam_logs'] = 'Filter Spam Logs';
 $l['asc'] = "Ascending";
 $l['desc'] = "Descending";
+$l['search_ip_on_sfs'] = "Search this IP on Stop Forum Spam";
+$l['search'] = "Search";
 
 $l['in'] = "in";
 $l['order'] = "order";

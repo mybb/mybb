@@ -15,16 +15,17 @@ define("ALLOWABLE_PAGE", "register,do_register,login,do_login,logout,lostpw,do_l
 
 $nosession['avatar'] = 1;
 
-$templatelist = "member_register,member_register_hiddencaptcha,member_coppa_form,member_register_coppa,member_register_agreement_coppa,member_register_agreement,member_register_customfield,member_register_requiredfields,member_register_password";
-$templatelist .= ",member_loggedin_notice,member_profile_away,member_register_regimage,member_register_regimage_recaptcha,member_register_regimage_nocaptcha,post_captcha_hidden,post_captcha,post_captcha_recaptcha,member_viewnotes,member_register_referrer";
+$templatelist = "member_register,member_register_hiddencaptcha,member_register_coppa,member_register_agreement_coppa,member_register_agreement,member_register_customfield,member_register_requiredfields,member_profile_findthreads";
+$templatelist .= ",member_loggedin_notice,member_profile_away,member_register_regimage,member_register_regimage_recaptcha,member_register_regimage_nocaptcha,post_captcha_hidden,post_captcha,post_captcha_recaptcha,member_register_referrer";
 $templatelist .= ",member_profile_email,member_profile_offline,member_profile_reputation,member_profile_warn,member_profile_warninglevel,member_profile_customfields_field,member_profile_customfields,member_profile_adminoptions,member_profile";
-$templatelist .= ",member_profile_signature,member_profile_avatar,member_profile_groupimage,member_profile_referrals,member_profile_website,member_profile_reputation_vote,member_activate,member_resendactivation,member_lostpw,member_register_additionalfields";
+$templatelist .= ",member_profile_signature,member_profile_avatar,member_profile_groupimage,member_profile_referrals,member_profile_website,member_profile_reputation_vote,member_activate,member_lostpw,member_register_additionalfields";
 $templatelist .= ",member_profile_modoptions_manageuser,member_profile_modoptions_editprofile,member_profile_modoptions_banuser,member_profile_modoptions_viewnotes,member_profile_modoptions_editnotes,member_profile_modoptions_purgespammer";
-$templatelist .= ",usercp_profile_profilefields_select_option,usercp_profile_profilefields_multiselect,usercp_profile_profilefields_select,usercp_profile_profilefields_textarea,usercp_profile_profilefields_radio,usercp_profile_profilefields_checkbox";
-$templatelist .= ",member_register_question,member_register_question_refresh,usercp_options_timezone,usercp_options_timezone_option,usercp_options_language_option,member_register_language,member_profile_customfields_field_multi_item,member_profile_customfields_field_multi";
-$templatelist .= ",member_profile_contact_fields_aim,member_profile_contact_fields_google,member_profile_contact_fields_icq,member_profile_contact_fields_skype,member_profile_contact_fields_yahoo,member_profile_pm,member_profile_contact_details,member_profile_banned";
-$templatelist .= ",member_profile_banned_remaining,member_profile_addremove,member_emailuser_guest,member_register_day,usercp_options_tppselect_option,postbit_warninglevel_formatted,member_profile_userstar,member_profile_findposts,member_profile_findthreads";
-$templatelist .= ",usercp_options_tppselect,usercp_options_pppselect,member_resetpassword,member_login,member_profile_online,usercp_options_pppselect_option,postbit_reputation_formatted,member_emailuser,member_profile_modoptions,usercp_profile_profilefields_text";
+$templatelist .= ",usercp_profile_profilefields_select_option,usercp_profile_profilefields_multiselect,usercp_profile_profilefields_select,usercp_profile_profilefields_textarea,usercp_profile_profilefields_radio,member_viewnotes";
+$templatelist .= ",member_register_question,member_register_question_refresh,usercp_options_timezone,usercp_options_timezone_option,usercp_options_language_option,member_profile_customfields_field_multi_item,member_profile_customfields_field_multi";
+$templatelist .= ",member_profile_contact_fields_aim,member_profile_contact_fields_google,member_profile_contact_fields_icq,member_profile_contact_fields_skype,member_profile_contact_fields_yahoo,member_profile_pm,member_profile_contact_details";
+$templatelist .= ",member_profile_banned_remaining,member_profile_addremove,member_emailuser_guest,member_register_day,usercp_options_tppselect_option,postbit_warninglevel_formatted,member_profile_userstar,member_profile_findposts";
+$templatelist .= ",usercp_options_tppselect,usercp_options_pppselect,member_resetpassword,member_login,member_profile_online,usercp_options_pppselect_option,postbit_reputation_formatted,member_emailuser,usercp_profile_profilefields_text";
+$templatelist .= ",member_profile_modoptions_ipaddress,member_profile_modoptions,member_profile_banned,member_register_language,member_resendactivation,usercp_profile_profilefields_checkbox,member_register_password,member_coppa_form";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -2649,6 +2650,14 @@ if($mybb->input['action'] == "profile")
 	$can_purge_spammer = purgespammer_show($memprofile['postnum'], $memprofile['usergroup'], $memprofile['uid']);
 	if($mybb->usergroup['canmodcp'] == 1 || $can_purge_spammer)
 	{
+		if($mybb->usergroup['canuseipsearch'] == 1)
+		{
+			$memprofile['regip'] = my_inet_ntop($db->unescape_binary($memprofile['regip']));
+			$memprofile['lastip'] = my_inet_ntop($db->unescape_binary($memprofile['lastip']));
+
+			eval("\$ipaddress = \"".$templates->get("member_profile_modoptions_ipaddress")."\";");
+		}
+
 		$memprofile['usernotes'] = nl2br(htmlspecialchars_uni($memprofile['usernotes']));
 
 		if(!empty($memprofile['usernotes']))

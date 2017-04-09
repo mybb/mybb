@@ -378,11 +378,12 @@ if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_sho
 		{
 			$lastposterlink = build_profile_link($lastposter, $thread['lastposteruid']);
 		}
+
+		$thread['subject'] = $thread['fullsubject'] = $parser->parse_badwords($thread['subject']);
 		if(my_strlen($thread['subject']) > 25)
 		{
 			$thread['subject'] = my_substr($thread['subject'], 0, 25) . "...";
 		}
-		$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 		$thread['threadlink'] = get_thread_link($thread['tid']);
 		$thread['lastpostlink'] = get_thread_link($thread['tid'], 0, "lastpost");
 		$thread['forumlink'] = get_forum_link($thread['fid']);
