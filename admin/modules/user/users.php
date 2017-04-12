@@ -2093,13 +2093,6 @@ if($mybb->input['action'] == "merge")
 			);
 			$db->update_query("users", $lists, "uid='{$destination_user['uid']}'");
 
-			// Set up user handler.
-			require_once MYBB_ROOT.'inc/datahandlers/user.php';
-			$userhandler = new UserDataHandler('delete');
-
-			// Delete the old user
-			$userhandler->delete_user($source_user['uid']);
-
 			// Get a list of forums where post count doesn't apply
 			$fids = array();
 			$query = $db->simple_select("forums", "fid", "usepostcounts=0");
@@ -2137,6 +2130,13 @@ if($mybb->input['action'] == "merge")
 			}
 
 			$plugins->run_hooks("admin_user_users_merge_commit");
+
+			// Set up user handler.
+			require_once MYBB_ROOT.'inc/datahandlers/user.php';
+			$userhandler = new UserDataHandler('delete');
+
+			// Delete the old user
+			$userhandler->delete_user($source_user['uid']);
 
 			$cache->update_awaitingactivation();
 
