@@ -180,7 +180,7 @@ function salt_password($password, $salt)
  * @param string $password The input password.
  * @param string $salt (Optional) The salt used by the MyBB algorithm.
  * @param string $user (Optional) An array containing password-related data.
- * @return string The password hash.
+ * @return array Password-related fields.
  */
 function create_password($password, $salt = false, $user = false)
 {
