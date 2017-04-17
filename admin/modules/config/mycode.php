@@ -235,7 +235,7 @@ if($mybb->input['action'] == "edit")
 
 		$regex = str_replace("\x0", "", $mybb->input['regex']);
 
-		if(check_existing_regex($regex))
+		if(check_existing_regex($regex, $mycode))
 		{
 			$errors[] = $lang->error_regex_already_available;
 		}
@@ -460,15 +460,22 @@ function test_regex($regex, $replacement, $test)
 /**
  * Checks if a regex is already available
  *
- * @param string $regex
+ * @param string $regex The regex to check
+ * @param array $current The currently edited MyCode
  *
  * @return bool True if already available, false otherwise
  */
-function check_existing_regex($regex='')
+function check_existing_regex($regex='', $current=array())
 {
 	global $cache;
 
+	if(!empty($current) && $current['regex'] == $regex)
+	{
+		return false;
+	}
+
 	$mycodes = $cache->read('mycode');
+
 	foreach($mycodes as $mycode)
 	{
 		if($mycode['regex'] == $regex)
