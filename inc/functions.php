@@ -400,6 +400,20 @@ function my_date($format, $stamp=0, $offset="", $ty=1, $adodb=false)
 	if($format == 'relative')
 	{
 		// Relative formats both date and time
+		$real_date = $real_time = '';
+		if($adodb == true)
+		{
+			$real_date = adodb_date($mybb->settings['dateformat'], $stamp + ($offset * 3600));
+			$real_time = $mybb->settings['datetimesep'];
+			$real_time .= adodb_date($mybb->settings['timeformat'], $stamp + ($offset * 3600));
+		}
+		else
+		{
+			$real_date = gmdate($mybb->settings['dateformat'], $stamp + ($offset * 3600));
+			$real_time = $mybb->settings['datetimesep'];
+			$real_time .= gmdate($mybb->settings['timeformat'], $stamp + ($offset * 3600));
+		}
+
 		if($ty != 2 && abs(TIME_NOW - $stamp) < 3600)
 		{
 			$diff = TIME_NOW - $stamp;
@@ -426,7 +440,7 @@ function my_date($format, $stamp=0, $offset="", $ty=1, $adodb=false)
 				$relative['prefix'] = $lang->rel_less_than;
 			}
 
-			$date = $lang->sprintf($lang->rel_time, $relative['prefix'], $relative['minute'], $relative['plural'], $relative['suffix']);
+			$date = $lang->sprintf($lang->rel_time, $relative['prefix'], $relative['minute'], $relative['plural'], $relative['suffix'], $real_date, $real_time);
 		}
 		elseif($ty != 2 && abs(TIME_NOW - $stamp) < 43200)
 		{
@@ -448,7 +462,7 @@ function my_date($format, $stamp=0, $offset="", $ty=1, $adodb=false)
 				$relative['plural'] = $lang->rel_hours_single;
 			}
 
-			$date = $lang->sprintf($lang->rel_time, $relative['prefix'], $relative['hour'], $relative['plural'], $relative['suffix']);
+			$date = $lang->sprintf($lang->rel_time, $relative['prefix'], $relative['hour'], $relative['plural'], $relative['suffix'], $real_date, $real_time);
 		}
 		else
 		{
@@ -456,11 +470,11 @@ function my_date($format, $stamp=0, $offset="", $ty=1, $adodb=false)
 			{
 				if($todaysdate == $date)
 				{
-					$date = $lang->today;
+					$date = $lang->sprintf($lang->today, $real_date);
 				}
 				else if($yesterdaysdate == $date)
 				{
-					$date = $lang->yesterday;
+					$date = $lang->sprintf($lang->yesterday, $real_date);
 				}
 			}
 
@@ -481,11 +495,11 @@ function my_date($format, $stamp=0, $offset="", $ty=1, $adodb=false)
 		{
 			if($todaysdate == $date)
 			{
-				$date = $lang->today;
+				$date = $lang->sprintf($lang->today, $real_date);
 			}
 			else if($yesterdaysdate == $date)
 			{
-				$date = $lang->yesterday;
+				$date = $lang->sprintf($lang->yesterday, $real_date);
 			}
 		}
 		else
