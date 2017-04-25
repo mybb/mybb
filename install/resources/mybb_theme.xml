@@ -6041,6 +6041,18 @@ if(use_xmlhttprequest == "1")
 </table>
 </div>
 </div>]]></template>
+		<template name="misc_imcenter_error" version="1812"><![CDATA[<div class="modal">
+<div style="overflow-y: auto; max-height: 400px;">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+	<tr>
+		<td class="trow1" style="padding: 20px">
+			<strong>{$lang->error}</strong><br /><br />
+			<blockquote>{$message}</blockquote>
+		</td>
+	</tr>
+</table>
+</div>
+</div>]]></template>
 		<template name="misc_imcenter_nav" version="1809"><![CDATA[{$navsep}<a href="javascript:void(0)" onclick="MyBB.popupWindow('/misc.php?action=imcenter&amp;imtype={$imtype}&amp;uid={$uid}&amp;modal=1'); return false;">{$imtype_lang}</a>]]></template>
 		<template name="misc_imcenter_skype" version="1807"><![CDATA[<div class="modal">
 <div style="overflow-y: auto; max-height: 400px;">
@@ -6060,7 +6072,7 @@ if(use_xmlhttprequest == "1")
 </table>
 </div>
 </div>]]></template>
-		<template name="misc_imcenter_yahoo" version="1800"><![CDATA[<div class="modal">
+		<template name="misc_imcenter_yahoo" version="1812"><![CDATA[<div class="modal">
 <div style="overflow-y: auto; max-height: 400px;">
 <table width="100%" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" border="0" align="center" class="tborder">
 <tr>
@@ -6071,14 +6083,6 @@ if(use_xmlhttprequest == "1")
 </tr>
 <tr>
 <td class="trow1" align="center" colspan="2"><strong>{$user['yahoo']}</strong></td>
-</tr>
-<tr>
-<td class="trow1" align="center" colspan="2"><strong><img src="http://opi.yahoo.com/online?u={$user['yahoo']}&amp;m=g&amp;t=2" /></strong></td>
-</tr>
-<tr>
-<td class="trow1" align="center" colspan="2"><span class="smalltext"><a href="http://edit.yahoo.com/config/send_webmesg?.target={$user['yahoo']}&amp;.src=pg">{$lang->send_y_message}</a></span></td>
-</tr><tr>
-<td class="trow1" align="center" colspan="2"><span class="smalltext"><a href="http://members.yahoo.com/interests?.oc=t&amp;.kw={$user['yahoo']}&amp;.sb=1">{$lang->view_y_profile}</a></span></td>
 </tr>
 </table>
 </div>

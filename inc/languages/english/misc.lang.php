@@ -16,8 +16,6 @@ $l['skype_center'] = "Skype Center";
 $l['chat_on_skype'] = "Chat with {1} on Skype";
 $l['call_on_skype'] = "Call {1} on Skype";
 $l['yahoo_center'] = "Yahoo! Center";
-$l['send_y_message'] = "Send {1} a Yahoo! Message.";
-$l['view_y_profile'] = "View {1}'s Yahoo! Profile.";
 $l['aim_center'] = "AOL IM Center";
 
 $l['download_aim'] = "Download AIM";
