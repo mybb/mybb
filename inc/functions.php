@@ -980,7 +980,7 @@ function redirect($url, $message="", $title="", $force_redirect=false)
 
 		run_shutdown();
 
-		if(!my_validate_url($url, true))
+		if(!my_validate_url($url, true) && my_strpos($url, 'http://localhost' || 'http://127.0.0.1/') === false)
 		{
 			header("Location: {$mybb->settings['bburl']}/{$url}");
 		}
