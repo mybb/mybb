@@ -13556,7 +13556,7 @@ if(use_xmlhttprequest == "1")
 				<td class="trow1" colspan="5" align="center">{$lang->no_warnings}</td>
 			</tr>]]></template>
 		<template name="warnings_postlink" version="1808"><![CDATA[<br /><small>{$lang->warning_for_post} <a href="{$warning['post_link']}#pid{$warning['pid']}">{$warning['post_subject']}</a></small>]]></template>
-		<template name="warnings_view" version="1800"><![CDATA[<html>
+		<template name="warnings_view" version="1812"><![CDATA[<html>
 <head>
 	<title>{$mybb->settings['bbname']} - {$lang->warning_log}</title>
 	{$headerinclude}
@@ -13574,7 +13574,7 @@ if(use_xmlhttprequest == "1")
 		{$warning_info}
 		<tr>
 			<td class="tcat" width="50%"><span class="smalltext"><strong>{$lang->warning}</strong></span></td>
-			<td class="tcat" width="50%"><span class="smalltext"><strong>{$lang->date_issued}<strong></span></td>
+			<td class="tcat" width="50%"><span class="smalltext"><strong>{$lang->date_issued}</strong></span></td>
 		</tr>
 		<tr>
 			<td class="trow2">{$warning_type} {$points}</td>
@@ -13582,7 +13582,7 @@ if(use_xmlhttprequest == "1")
 		</tr>
 		<tr>
 			<td class="tcat" width="50%"><span class="smalltext"><strong>{$lang->issued_by}</strong></span></td>
-			<td class="tcat" width="50%"><span class="smalltext"><strong>{$lang->expiry_date}<strong></span></td>
+			<td class="tcat" width="50%"><span class="smalltext"><strong>{$lang->expiry_date}</strong></span></td>
 		</tr>
 		<tr>
 			<td class="trow1">{$issuedby}</td>
@@ -13601,9 +13601,9 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
-		<template name="warnings_view_post" version="1400"><![CDATA[		<tr>
+		<template name="warnings_view_post" version="1812"><![CDATA[		<tr>
 			<td class="tcat" width="50%"><span class="smalltext"><strong>{$lang->username}</strong></span></td>
-			<td class="tcat" width="50%"><span class="smalltext"><strong>{$lang->post}<strong></span></td>
+			<td class="tcat" width="50%"><span class="smalltext"><strong>{$lang->post}</strong></span></td>
 		</tr>
 		<tr>
 			<td class="trow1">{$user_link}</td>
