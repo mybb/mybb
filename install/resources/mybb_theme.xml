@@ -8334,7 +8334,7 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
-		<template name="moderation_inline_mergeposts" version="1600"><![CDATA[<html>
+		<template name="moderation_inline_mergeposts" version="1812"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->merge_posts}</title>
 {$headerinclude}
@@ -8347,7 +8347,6 @@ if(use_xmlhttprequest == "1")
 <tr>
 <td class="thead" colspan="2"><strong>{$lang->merge_posts}</strong></td>
 </tr>
-<tr>
 {$loginbox}
 <tr>
 <td class="trow2"><strong>{$lang->post_separator}</strong></td>
