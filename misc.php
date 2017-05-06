@@ -12,10 +12,10 @@ define("IN_MYBB", 1);
 define("IGNORE_CLEAN_VARS", "sid");
 define('THIS_SCRIPT', 'misc.php');
 
-$templatelist = "misc_rules_forum,misc_help_helpdoc,misc_whoposted_poster,misc_whoposted,misc_smilies_popup_smilie,misc_smilies_popup,misc_smilies_popup_empty,misc_smilies_popup_row";
+$templatelist = "misc_rules_forum,misc_help_helpdoc,misc_whoposted_poster,misc_whoposted,misc_smilies_popup_smilie,misc_smilies_popup,misc_smilies_popup_empty,misc_smilies_popup_row,multipage_start";
 $templatelist .= ",misc_buddypopup,misc_buddypopup_user,misc_buddypopup_user_none,misc_buddypopup_user_online,misc_buddypopup_user_offline,misc_buddypopup_user_sendpm,misc_syndication_forumlist";
 $templatelist .= ",misc_smilies,misc_smilies_smilie,misc_help_section_bit,misc_help_section,misc_help,forumdisplay_password_wrongpass,forumdisplay_password,misc_helpresults,misc_helpresults_bit";
-$templatelist .= ",multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start";
+$templatelist .= ",multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,misc_imcenter_error";
 $templatelist .= ",misc_smilies_popup_no_smilies,misc_smilies_no_smilies,misc_syndication,misc_help_search,misc_helpresults_noresults,misc_syndication_forumlist_forum,misc_syndication_feedurl";
 
 require_once "./global.php";
@@ -806,44 +806,57 @@ elseif($mybb->input['action'] == "imcenter")
 	$mybb->input['imtype'] = $mybb->get_input('imtype');
 	if($mybb->input['imtype'] != "aim" && $mybb->input['imtype'] != "skype" && $mybb->input['imtype'] != "yahoo")
 	{
-		error($lang->error_invalidimtype);
+		$message = $lang->error_invalidimtype;
+		eval("\$error = \"".$templates->get("misc_imcenter_error", 1, 0)."\";");
+		echo $error;
+		exit;
 	}
+
 	$uid = $mybb->get_input('uid', MyBB::INPUT_INT);
 	$user = get_user($uid);
 
 	if(!$user)
 	{
-		error($lang->error_invaliduser);
+		$message = $lang->error_invaliduser;
+		eval("\$error = \"".$templates->get("misc_imcenter_error", 1, 0)."\";");
+		echo $error;
+		exit;
 	}
 
 	if(empty($user[$mybb->input['imtype']]))
 	{
-		error($lang->error_invalidimtype);
+		$message = $lang->error_invalidimtype;
+		eval("\$error = \"".$templates->get("misc_imcenter_error", 1, 0)."\";");
+		echo $error;
+		exit;
 	}
 
 	$settingkey = 'allow'.$mybb->input['imtype'].'field';
 	if(!is_member($mybb->settings[$settingkey], $user))
 	{
-		error_no_permission();
+		$message = $lang->error_nopermission_user_ajax;
+		eval("\$error = \"".$templates->get("misc_imcenter_error", 1, 0)."\";");
+		echo $error;
+		exit;
 	}
 
 	// Build IM navigation bar
 	$navigationbar = $navsep = $imtype = $imtype_lang = '';
-	if($user['aim'])
+	if(!empty($user['aim']) && is_member($mybb->settings['allowaimfield'], array('usergroup' => $user['usergroup'], 'additionalgroups' => $user['additionalgroups'])))
 	{
 		$imtype = "aim";
 		$imtype_lang = $lang->aol_im;
 		eval("\$navigationbar .= \"".$templates->get("misc_imcenter_nav")."\";");
 		$navsep = ' - ';
 	}
-	if($user['skype'])
+	if(!empty($user['skype']) && is_member($mybb->settings['allowskypefield'], array('usergroup' => $user['usergroup'], 'additionalgroups' => $user['additionalgroups'])))
 	{
 		$imtype = "skype";
 		$imtype_lang = $lang->skype;
 		eval("\$navigationbar .= \"".$templates->get("misc_imcenter_nav")."\";");
 		$navsep = ' - ';
 	}
-	if($user['yahoo'])
+	if(!empty($user['yahoo']) && is_member($mybb->settings['allowyahoofield'], array('usergroup' => $user['usergroup'], 'additionalgroups' => $user['additionalgroups'])))
 	{
 		$imtype = "yahoo";
 		$imtype_lang = $lang->yahoo_im;
@@ -858,8 +871,6 @@ elseif($mybb->input['action'] == "imcenter")
 
 	$lang->chat_on_skype = $lang->sprintf($lang->chat_on_skype, $user['username']);
 	$lang->call_on_skype = $lang->sprintf($lang->call_on_skype, $user['username']);
-	$lang->send_y_message = $lang->sprintf($lang->send_y_message, $user['username']);
-	$lang->view_y_profile = $lang->sprintf($lang->view_y_profile, $user['username']);
 
 	$imtemplate = "misc_imcenter_".$mybb->input['imtype'];
 	eval("\$imcenter = \"".$templates->get($imtemplate, 1, 0)."\";");
