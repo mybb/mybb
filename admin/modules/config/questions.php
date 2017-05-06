@@ -293,6 +293,7 @@ if(!$mybb->input['action'])
 	$table = new Table;
 	$table->construct_header($lang->question);
 	$table->construct_header($lang->answers, array("width" => "35%"));
+	$table->construct_header($lang->shown, array("width" => "5%", "class" => "align_center"));
 	$table->construct_header($lang->correct, array("width" => "5%", "class" => "align_center"));
 	$table->construct_header($lang->incorrect, array("width" => "5%", "class" => "align_center"));
 	$table->construct_header($lang->controls, array("class" => "align_center", "width" => 150));
@@ -303,6 +304,7 @@ if(!$mybb->input['action'])
 		$questions['question'] = htmlspecialchars_uni($questions['question']);
 		$questions['answer'] = htmlspecialchars_uni($questions['answer']);
 		$questions['answer'] = preg_replace("#(\n)#s", "<br />", trim($questions['answer']));
+		$questions['shown'] = my_number_format($questions['shown']);
 		$questions['correct'] = my_number_format($questions['correct']);
 		$questions['incorrect'] = my_number_format($questions['incorrect']);
 
@@ -317,6 +319,7 @@ if(!$mybb->input['action'])
 
 		$table->construct_cell("<div>{$icon}{$questions['question']}</div>");
 		$table->construct_cell($questions['answer']);
+		$table->construct_cell($questions['shown'], array("class" => "align_center"));
 		$table->construct_cell($questions['correct'], array("class" => "align_center"));
 		$table->construct_cell($questions['incorrect'], array("class" => "align_center"));
 		$popup = new PopupMenu("questions_{$questions['qid']}", $lang->options);
@@ -336,7 +339,7 @@ if(!$mybb->input['action'])
 
 	if($table->num_rows() == 0)
 	{
-		$table->construct_cell($lang->no_security_questions, array('colspan' => 5));
+		$table->construct_cell($lang->no_security_questions, array('colspan' => 6));
 		$table->construct_row();
 	}
 
