@@ -23,7 +23,7 @@ $l['close_thread'] = "<strong>Close Thread</strong>: prevent further posting in 
 $l['stick_thread'] = "<strong>Stick Thread:</strong> stick this thread to the top of the forum.";
 $l['forum_rules'] = "{1} - Rules";
 $l['thread_review'] = "Thread Review (Newest First)";
-$l['thread_review_more'] = "This thread has more than {1} replies. <a href=\"{2}\">Read the whole thread.</a>";
+$l['thread_review_more'] = "This thread has more than {1} replies. <a href=\"{2}\" target=\"_blank\">Read the whole thread.</a>";
 $l['posted_by'] = "Posted by";
 $l['draft_saved'] = "The new post has successfully been saved as a draft.<br />You will now be taken to your draft listing.";
 $l['error_post_already_submitted'] = "You have already posted this reply to the specified thread. Please visit the thread to see your reply.";
