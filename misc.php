@@ -917,7 +917,7 @@ elseif($mybb->input['action'] == "syndication")
 				$all = true;
 				break;
 			}
-			elseif((int)$fid)
+			elseif(ctype_digit($fid))
 			{
 				if(!isset($unview[$fid]))
 				{
