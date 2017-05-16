@@ -78,7 +78,7 @@ $(document).ready(function($) {
 		format: function($elm, content) {
 			var	fontSize,
 				sizes = ['xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large'],
-				size = $elm.attr('size');;
+				size = $elm.attr('size');
 
 				if (!size) {
 					fontSize = $elm.css('fontSize');
