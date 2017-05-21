@@ -18,6 +18,9 @@ require_once "./global.php";
 require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 
+//Yay!
+
+
 // Load global language phrases
 $lang->load("reputation");
 
