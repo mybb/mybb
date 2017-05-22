@@ -23,10 +23,10 @@ function upgrade40_dbchanges()
 	global $db, $output;
 
 	$output->print_header("Updating Database");
+	
+	$db->delete_query('spiders', 'name=\'Blekko\'');
 
-  $db->write_query("DELETE FROM mybb_spiders WHERE name = 'Blekko';");
-
-  $output->print_contents("<p>Click next to continue with the upgrade process.</p>");
+  	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("40_done");
 }
 
