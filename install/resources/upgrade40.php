@@ -29,7 +29,3 @@ function upgrade40_dbchanges()
   	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("40_done");
 }
-
-@set_time_limit(0);
-
-/* Nothing to do for 1.8.12 */
