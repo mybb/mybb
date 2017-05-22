@@ -9,7 +9,7 @@
  */
 
 /**
- * Upgrade Script: 1.8.10
+ * Upgrade Script: 1.8.12
  */
 
 $upgrade_detail = array(
@@ -32,4 +32,4 @@ function upgrade40_dbchanges()
 
 @set_time_limit(0);
 
-/* Nothing to do for 1.8.10 */
+/* Nothing to do for 1.8.12 */
