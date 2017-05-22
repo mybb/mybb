@@ -1953,8 +1953,8 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 		$message['subject'] = $parser->parse_badwords($message['subject']);
 		if($message['folder'] != "3")
 		{
-			$senddate = my_date($mybb->settings['dateformat'], $message['dateline']);
-			$sendtime = my_date($mybb->settings['timeformat'], $message['dateline']);
+			$senddate = my_date($mybb->settings['dateformat'], $message['dateline'], "", false);
+			$sendtime = my_date($mybb->settings['timeformat'], $message['dateline'], "", false);
 			$senddate .= " $lang->at $sendtime";
 		}
 		else
@@ -1986,10 +1986,10 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 
 		if($mybb->input['exporttype'] == "csv")
 		{
-			$message['message'] = addslashes($message['message']);
-			$message['subject'] = addslashes($message['subject']);
-			$message['tousername'] = addslashes($message['tousername']);
-			$message['fromusername'] = addslashes($message['fromusername']);
+			$message['message'] = my_escape_csv($message['message']);
+			$message['subject'] = my_escape_csv($message['subject']);
+			$message['tousername'] = my_escape_csv($message['tousername']);
+			$message['fromusername'] = my_escape_csv($message['fromusername']);
 		}
 
 		if(empty($donefolder[$message['folder']]))
@@ -2011,7 +2011,7 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 					}
 					else
 					{
-						$foldername = addslashes($folderinfo[1]);
+						$foldername = my_escape_csv($folderinfo[1]);
 					}
 					$donefolder[$message['folder']] = 1;
 				}

@@ -1056,7 +1056,7 @@ class datacache
 
 		$threads = array();
 
-		$query = $db->simple_select("threads", "tid, subject, replies, fid", "visible='1'", array('order_by' => 'replies', 'order_dir' => 'DESC', 'limit_start' => 0, 'limit' => $mybb->settings['statslimit']));
+		$query = $db->simple_select("threads", "tid, subject, replies, fid, uid", "visible='1'", array('order_by' => 'replies', 'order_dir' => 'DESC', 'limit_start' => 0, 'limit' => $mybb->settings['statslimit']));
 		while($thread = $db->fetch_array($query))
 		{
 			$threads[] = $thread;
@@ -1071,7 +1071,7 @@ class datacache
 
 		$threads = array();
 
-		$query = $db->simple_select("threads", "tid, subject, views, fid", "visible='1'", array('order_by' => 'views', 'order_dir' => 'DESC', 'limit_start' => 0, 'limit' => $mybb->settings['statslimit']));
+		$query = $db->simple_select("threads", "tid, subject, views, fid, uid", "visible='1'", array('order_by' => 'views', 'order_dir' => 'DESC', 'limit_start' => 0, 'limit' => $mybb->settings['statslimit']));
 		while($thread = $db->fetch_array($query))
 		{
 			$threads[] = $thread;

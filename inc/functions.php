@@ -8635,3 +8635,42 @@ function my_strip_tags($string, $allowable_tags = '')
 	$string = preg_replace($pattern, '', $string);
 	return strip_tags($string, $allowable_tags);
 }
+
+/**
+ * Escapes a RFC 4180-compliant CSV string.
+ * Based on https://github.com/Automattic/camptix/blob/f80725094440bf09861383b8f11e96c177c45789/camptix.php#L2867
+ *
+ * @param string $string The string to be escaped
+ * @param boolean $escape_active_content Whether or not to escape active content trigger characters
+ * @return string The escaped string
+ */
+function my_escape_csv($string, $escape_active_content=true)
+{
+	if($escape_active_content)
+	{
+		$active_content_triggers = array('=', '+', '-', '@');
+		$delimiters = array(',', ';', ':', '|', '^', "\n", "\t", " ");
+
+		$first_character = mb_substr($string, 0, 1);
+
+		if(
+			in_array($first_character, $active_content_triggers, true) ||
+			in_array($first_character, $delimiters, true)
+		)
+		{
+			$string = "'".$string;
+		}
+
+		foreach($delimiters as $delimiter)
+		{
+			foreach($active_content_triggers as $trigger)
+			{
+				$string = str_replace($delimiter.$trigger, $delimiter."'".$trigger, $string);
+			}
+		}
+	}
+
+	$string = str_replace('"', '""', $string);
+
+	return $string;
+}

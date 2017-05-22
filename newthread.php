@@ -560,6 +560,22 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 				$visible_where = "AND p.visible > 0";
 			}
 
+			// Check group permissions if we can't view threads not started by us
+			$group_permissions = forum_permissions();
+			$onlyusfids = array();
+			$onlyusforums = '';
+			foreach($group_permissions as $gpfid => $forum_permissions)
+			{
+				if(isset($forum_permissions['canonlyviewownthreads']) && $forum_permissions['canonlyviewownthreads'] == 1)
+				{
+					$onlyusfids[] = $gpfid;
+				}
+			}
+			if(!empty($onlyusfids))
+			{
+				$onlyusforums = "AND ((t.fid IN(".implode(',', $onlyusfids).") AND t.uid='{$mybb->user['uid']}') OR t.fid NOT IN(".implode(',', $onlyusfids)."))";
+			}
+
 			if($mybb->get_input('load_all_quotes', MyBB::INPUT_INT) == 1)
 			{
 				$query = $db->query("
@@ -567,7 +583,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 					FROM ".TABLE_PREFIX."posts p
 					LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 					LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-					WHERE p.pid IN ({$quoted_posts}) {$unviewable_forums} {$inactiveforums} {$visible_where}
+					WHERE p.pid IN ({$quoted_posts}) {$unviewable_forums} {$inactiveforums} {$onlyusforums} {$visible_where}
 					ORDER BY p.dateline
 				");
 				while($quoted_post = $db->fetch_array($query))
@@ -590,7 +606,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 					SELECT COUNT(*) AS quotes
 					FROM ".TABLE_PREFIX."posts p
 					LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-					WHERE p.pid IN ({$quoted_posts}) {$unviewable_forums} {$inactiveforums} {$visible_where}
+					WHERE p.pid IN ({$quoted_posts}) {$unviewable_forums} {$inactiveforums} {$onlyusforums} {$visible_where}
 				");
 				$external_quotes = $db->fetch_field($query, 'quotes');
 

@@ -1341,7 +1341,7 @@ if($mybb->input['action'] == "activate")
 		{
 			error($lang->error_alreadyactivated);
 		}
-		if($activation['code'] != $mybb->get_input('code'))
+		if($activation['code'] !== $mybb->get_input('code'))
 		{
 			error($lang->error_badactivationcode);
 		}
@@ -1525,7 +1525,7 @@ if($mybb->input['action'] == "do_lostpw" && $mybb->request_method == "post")
 		while($user = $db->fetch_array($query))
 		{
 			$db->delete_query("awaitingactivation", "uid='{$user['uid']}' AND type='p'");
-			$user['activationcode'] = random_str();
+			$user['activationcode'] = random_str(30);
 			$now = TIME_NOW;
 			$uid = $user['uid'];
 			$awaitingarray = array(
@@ -1603,7 +1603,7 @@ if($mybb->input['action'] == "resetpassword")
 		$query = $db->simple_select("awaitingactivation", "code", "uid='".$user['uid']."' AND type='p'");
 		$activationcode = $db->fetch_field($query, 'code');
 		$now = TIME_NOW;
-		if(!$activationcode || $activationcode != $mybb->get_input('code'))
+		if(!$activationcode || $activationcode !== $mybb->get_input('code'))
 		{
 			error($lang->error_badlostpwcode);
 		}
