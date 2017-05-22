@@ -18,7 +18,7 @@ $upgrade_detail = array(
 	"revert_all_settings" => 0
 );
 
-function upgrade40_dbchanges()
+function upgrade41_dbchanges()
 {
 	global $db, $output;
 
@@ -27,6 +27,6 @@ function upgrade40_dbchanges()
 	$db->delete_query('spiders', 'name=\'Blekko\'');
 
   	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("40_done");
+	$output->print_footer("41_done");
 }
 
