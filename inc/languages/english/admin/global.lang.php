@@ -139,7 +139,7 @@ $l['saved'] = 'Saved';
 $l['rel_in'] = "In ";
 $l['rel_ago'] = "ago";
 $l['rel_less_than'] = "Less than ";
-$l['rel_time'] = "<span title=\"{5}{6}\">{1}{2} {3} {4}</span>";
+$l['rel_time'] = "{1}{2} {3} {4}";
 $l['rel_minutes_single'] = "minute";
 $l['rel_minutes_plural'] = "minutes";
 $l['rel_hours_single'] = "hour";
