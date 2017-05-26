@@ -2867,7 +2867,7 @@ if($mybb->input['action'] == "editlists")
 				{
 					$bgcolor = alt_trow();
 					$request['username'] = build_profile_link(htmlspecialchars_uni($request['username']), (int)$request['touid']);
-					$request['date'] = my_date($mybb->settings['dateformat'], $request['date'])." ".my_date($mybb->settings['timeformat'], $request['date']);
+					$request['date'] = my_date('relative', $request['date']);
 					eval("\$sent_rows .= \"".$templates->get("usercp_editlists_sent_request", 1, 0)."\";");
 				}
 
@@ -2901,7 +2901,7 @@ if($mybb->input['action'] == "editlists")
 	{
 		$bgcolor = alt_trow();
 		$request['username'] = build_profile_link(htmlspecialchars_uni($request['username']), (int)$request['uid']);
-		$request['date'] = my_date($mybb->settings['dateformat'], $request['date'])." ".my_date($mybb->settings['timeformat'], $request['date']);
+		$request['date'] = my_date('relative', $request['date']);
 		eval("\$received_rows .= \"".$templates->get("usercp_editlists_received_request")."\";");
 	}
 
@@ -2923,7 +2923,7 @@ if($mybb->input['action'] == "editlists")
 	{
 		$bgcolor = alt_trow();
 		$request['username'] = build_profile_link(htmlspecialchars_uni($request['username']), (int)$request['touid']);
-		$request['date'] = my_date($mybb->settings['dateformat'], $request['date'])." ".my_date($mybb->settings['timeformat'], $request['date']);
+		$request['date'] = my_date('relative', $request['date']);
 		eval("\$sent_rows .= \"".$templates->get("usercp_editlists_sent_request")."\";");
 	}
 
