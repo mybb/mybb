@@ -9499,7 +9499,7 @@ if(use_xmlhttprequest == "1")
 	<label><input type="radio" name="postoptions[subscriptionmethod]" {$postoptions_subscriptionmethod_pm} value="pm" style="vertical-align: middle;" /> {$lang->instant_pm_subscribe}</label><br />
 </td>
 </tr>]]></template>
-		<template name="postbit" version="1809"><![CDATA[{$ignore_bit}{$deleted_bit}
+		<template name="postbit" version="1813"><![CDATA[{$ignore_bit}{$deleted_bit}
 <a name="pid{$post['pid']}" id="pid{$post['pid']}"></a>
 <div class="post {$unapproved_shade}" style="{$post_visibility}" id="post_{$post['pid']}">
 <div class="post_author">
@@ -9530,6 +9530,7 @@ if(use_xmlhttprequest == "1")
 	{$post['signature']}
 	<div class="post_meta" id="post_meta_{$post['pid']}">
 		{$post['iplogged']}
+		{$post['poststatus']}
 	</div>
 </div>
 <div class="post_controls">
@@ -9567,7 +9568,7 @@ if(use_xmlhttprequest == "1")
 	{$post['replink']}{$post['profilefield']}{$post['warninglevel']}]]></template>
 		<template name="postbit_avatar" version="1800"><![CDATA[<div class="author_avatar"><a href="{$post['profilelink_plain']}"><img src="{$useravatar['image']}" alt="" {$useravatar['width_height']} /></a></div>]]></template>
 		<template name="postbit_away" version="1800"><![CDATA[<a href="{$post['profilelink_plain']}" title="{$lang->postbit_status_away}"><img src="{$theme['imgdir']}/buddy_away.png" border="0" alt="{$lang->postbit_status_away}" class="buddy_status" /></a>]]></template>
-		<template name="postbit_classic" version="1809"><![CDATA[{$ignore_bit}{$deleted_bit}
+		<template name="postbit_classic" version="1813"><![CDATA[{$ignore_bit}{$deleted_bit}
 <a name="pid{$post['pid']}" id="pid{$post['pid']}"></a>
 <div class="post classic {$unapproved_shade}" style="{$post_visibility}" id="post_{$post['pid']}">
 <div class="post_author scaleimages">
@@ -9598,6 +9599,7 @@ if(use_xmlhttprequest == "1")
 	{$post['signature']}
 	<div class="post_meta" id="post_meta_{$post['pid']}">
 		{$post['iplogged']}
+		{$post['poststatus']}
 	</div>
 </div>
 <div class="post_controls">
