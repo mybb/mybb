@@ -3980,7 +3980,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 	</td>]]></template>
 		<template name="forumdisplay_thread_rating_moved" version="1800"><![CDATA[<td class="{$bgcolor}" style="text-align: center;">-</td>]]></template>
 		<template name="forumdisplay_thread_unapproved_posts" version="1800"><![CDATA[ <span title="{$unapproved_posts_count}">({$thread['unapprovedposts']})</span>]]></template>
-		<template name="forumdisplay_threadlist" version="1801"><![CDATA[<div class="float_left">
+		<template name="forumdisplay_threadlist" version="1807"><![CDATA[<div class="float_left">
 	{$multipage}
 </div>
 <div class="float_right">
@@ -4053,7 +4053,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 <div class="float_left">
 	<div class="float_left">
 		<dl class="thread_legend smalltext">
-			<dd><span class="thread_status newfolder" title="{$lang->new_thread}">&nbsp;</span> {$lang->new_thread}</dd>
+			<dd><span class="thread_status newfolder" title="{$lang->new_posts_thread}">&nbsp;</span> {$lang->new_posts_thread}</dd>
 			<dd><span class="thread_status newhotfolder" title="{$lang->new_hot_thread}">&nbsp;</span> {$lang->new_hot_thread}</dd>
 			<dd><span class="thread_status hotfolder" title="{$lang->hot_thread}">&nbsp;</span> {$lang->hot_thread}</dd>
 		</dl>
