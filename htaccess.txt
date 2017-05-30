@@ -22,6 +22,7 @@ Options -MultiViews +FollowSymlinks -Indexes
 #
 <IfModule mod_rewrite.c>
 	RewriteEngine on
+	RewriteBase /
 	RewriteRule ^forum-([0-9]+)\.html$ forumdisplay.php?fid=$1 [L,QSA]
 	RewriteRule ^forum-([0-9]+)-page-([0-9]+)\.html$ forumdisplay.php?fid=$1&page=$2 [L,QSA]
 
