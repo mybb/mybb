@@ -473,7 +473,7 @@ $(document).ready(function($) {
 				{
 					case 'dailymotion':
 						matches = content.match(/dailymotion\.com\/video\/([^_]+)/);
-						url     = matches ? 'http://www.dailymotion.com/embed/video/' + matches[1] : false;
+						url     = matches ? 'https://www.dailymotion.com/embed/video/' + matches[1] : false;
 						break;
 					case 'facebook':
 						matches = content.match(/facebook\.com\/(?:photo.php\?v=|video\/video.php\?v=|video\/embed\?video_id=|v\/?)(\d+)/);
@@ -489,15 +489,15 @@ $(document).ready(function($) {
 						break;
 					case 'veoh':
 						matches = content.match(/veoh\.com\/watch\/([^\/]+)/);
-						url     = matches ? '//www.veoh.com/swf/webplayer/WebPlayer.swf?videoAutoPlay=0&permalinkId=' + matches[1] : false;
+						url     = matches ? 'https://www.veoh.com/swf/webplayer/WebPlayer.swf?videoAutoPlay=0&permalinkId=' + matches[1] : false;
 						break;
 					case 'vimeo':
 						matches = content.match(/vimeo.com\/(\d+)($|\/)/);
-						url     = matches ? '//player.vimeo.com/video/' + matches[1] : false;
+						url     = matches ? 'https://player.vimeo.com/video/' + matches[1] : false;
 						break;
 					case 'youtube':
 						matches = content.match(/(?:v=|v\/|embed\/|youtu\.be\/)(.{11})/);
-						url     = matches ? '//www.youtube.com/embed/' + matches[1] : false;
+						url     = matches ? 'https://www.youtube.com/embed/' + matches[1] : false;
 						break;
 					case 'twitch':
 						matches = content.match(/twitch\.tv\/(?:[\w+_-]+)\/v\/(\d+)/);
