@@ -3910,7 +3910,10 @@ function get_ip()
 		{
 			$addresses = explode(',', strtolower($_SERVER['HTTP_X_REAL_IP']));
 		}
-
+		elseif(isset($_SERVER['HTTP_X_REMOTE_ADDR']))
+		{
+			preg_match_all("#[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}#s", $_SERVER['HTTP_X_REMOTE_ADDR'], $addresses);
+		}
 		if(is_array($addresses))
 		{
 			foreach($addresses as $val)
