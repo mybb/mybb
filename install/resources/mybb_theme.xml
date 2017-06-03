@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<theme name="MyBB Master Style" version="1811">
+<theme name="MyBB Master Style" version="1813">
 	<properties>
 		<templateset><![CDATA[1]]></templateset>
 		<imgdir><![CDATA[images]]></imgdir>
@@ -9,7 +9,7 @@
 		<editortheme><![CDATA[mybb.css]]></editortheme>
 	</properties>
 	<stylesheets>
-		<stylesheet name="global.css" version="1811" disporder="1"><![CDATA[body {
+		<stylesheet name="global.css" version="1813" disporder="1"><![CDATA[body {
 	background: #fff;
 	color: #333;
 	text-align: center;
@@ -791,7 +791,7 @@ blockquote cite {
 	margin: 0 0 10px 0;
 }
 
-blockquote cite span {
+blockquote cite > span {
 	float: right;
 	font-weight: normal;
 	font-size: 12px;
