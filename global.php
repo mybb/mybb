@@ -90,6 +90,9 @@ else if(!isset($mybb->settings['bblanguage']))
 	$mybb->settings['bblanguage'] = 'english';
 }
 
+// Remember last used FrontEnd language for ACP LoginForm
+my_setcookie("mybb[frontendlang]", $mybb->settings['bblanguage']);
+
 // Load language
 $lang->set_language($mybb->settings['bblanguage']);
 $lang->load('global');
