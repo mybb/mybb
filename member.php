@@ -202,7 +202,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 
 	$userhandler->set_data($user);
 
-	$errors = "";
+	$errors = array();
 
 	if(!$userhandler->validate_user())
 	{
