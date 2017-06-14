@@ -202,7 +202,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 
 	$userhandler->set_data($user);
 
-	$errors = "";
+	$errors = array();
 
 	if(!$userhandler->validate_user())
 	{
@@ -1341,6 +1341,7 @@ if($mybb->input['action'] == "activate")
 		{
 			error($lang->error_alreadyactivated);
 		}
+		if($activation['code'] !== $mybb->get_input('code'))
 		if($activation['code'] !== $mybb->get_input('code'))
 		{
 			error($lang->error_badactivationcode);
