@@ -1342,7 +1342,6 @@ if($mybb->input['action'] == "activate")
 			error($lang->error_alreadyactivated);
 		}
 		if($activation['code'] !== $mybb->get_input('code'))
-		if($activation['code'] !== $mybb->get_input('code'))
 		{
 			error($lang->error_badactivationcode);
 		}
