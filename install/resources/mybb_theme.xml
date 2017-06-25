@@ -9817,7 +9817,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 </body>
 </html>]]></template>
-		<template name="private_advanced_search" version="1807"><![CDATA[<html>
+		<template name="private_advanced_search" version="1813"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->advanced_private_message_search}</title>
 {$headerinclude}
@@ -9850,7 +9850,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		</td>
 	</tr>
 	<tr>
-		<td class="trow2"><strong><label for="keywords">{$lang->sender}</label></strong></td>
+		<td class="trow2"><strong><label for="sender">{$lang->sender}</label></strong></td>
 		<td class="trow2"><input type="text" class="textbox" name="sender" id="sender" size="35" maxlength="250" /></td>
 	</tr>
 	<tr>
