@@ -580,7 +580,7 @@ if($mybb->input['action'] == "results")
 			$lastposteruid = $thread['lastposteruid'];
 			if(!$lastposteruid && !$thread['lastposter'])
 			{
-				$lastposter = $lang->guest;
+				$lastposter = htmlspecialchars_uni($lang->guest);
 			}
 			else
 			{

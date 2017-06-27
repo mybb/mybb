@@ -114,7 +114,7 @@ function build_forumbits($pid=0, $depth=1)
 
 					if(!$private_forums[$forum['fid']]['lastposteruid'] && !$private_forums[$forum['fid']]['lastposter'])
 					{
-						$private_forums[$forum['fid']]['lastposter'] = $lang->guest;
+						$private_forums[$forum['fid']]['lastposter'] = $lang->guest; // htmlspecialchars_uni'd when formatted later
 					}
 
 					$lastpost_data = array(
@@ -130,7 +130,7 @@ function build_forumbits($pid=0, $depth=1)
 			{
 				if(!$forum['lastposteruid'] && !$forum['lastposter'])
 				{
-					$forum['lastposter'] = $lang->guest;
+					$forum['lastposter'] = $lang->guest; // htmlspecialchars_uni'd when formatted later
 				}
 
 				$lastpost_data = array(

@@ -1677,7 +1677,7 @@ if($mybb->input['action'] == "subscriptions")
 			$lastpostdate = my_date('relative', $thread['lastpost']);
 			if(!$lastposteruid && !$thread['lastposter'])
 			{
-				$lastposter = $lang->guest;
+				$lastposter = htmlspecialchars_uni($lang->guest);
 			}
 			else
 			{
@@ -1801,13 +1801,20 @@ if($mybb->input['action'] == "forumsubscriptions")
 			$lastposttid = $forum['lastposttid'];
 			if(!$forum['lastposteruid'] && !$forum['lastposter'])
 			{
-				$lastposter = $lang->guest;
+				$lastposter = htmlspecialchars_uni($lang->guest);
 			}
 			else
 			{
 				$lastposter = htmlspecialchars_uni($forum['lastposter']);
 			}
-			$lastpost_profilelink = build_profile_link($lastposter, $forum['lastposteruid']);
+			if($forum['lastposteruid'] == 0)
+			{
+				$lastpost_profilelink = $lastposter;
+			}
+			else
+			{
+				$lastpost_profilelink = build_profile_link($lastposter, $forum['lastposteruid']);
+			}
 			$full_lastpost_subject = $lastpost_subject = htmlspecialchars_uni($forum['lastpostsubject']);
 			if(my_strlen($lastpost_subject) > 25)
 			{
@@ -3870,7 +3877,7 @@ if(!$mybb->input['action'])
 						$lastposteruid = $thread['lastposteruid'];
 						if(!$lastposteruid && !$thread['lastposter'])
 						{
-							$lastposter = $lang->guest;
+							$lastposter = htmlspecialchars_uni($lang->guest);
 						}
 						else
 						{

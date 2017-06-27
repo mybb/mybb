@@ -115,7 +115,7 @@ function build_postbit($post, $post_type=0)
 
 	if(!$post['username'])
 	{
-		$post['username'] = $lang->guest;
+		$post['username'] = $lang->guest; // htmlspecialchars_uni'd below
 	}
 
 	if($post['userusername'])

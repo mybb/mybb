@@ -5772,7 +5772,7 @@ function build_profile_link($username="", $uid=0, $target="", $onclick="")
 	if(!$username && $uid == 0)
 	{
 		// Return Guest phrase for no UID, no guest nickname
-		return $lang->guest;
+		return htmlspecialchars_uni($lang->guest);
 	}
 	elseif($uid == 0)
 	{

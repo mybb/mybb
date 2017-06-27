@@ -519,7 +519,7 @@ if($mybb->input['type'] == "attachments" || $mybb->input['type'] == "")
 				}
 				else
 				{
-					$profile_link = $lang->guest;
+					$profile_link = htmlspecialchars_uni($lang->guest);
 				}
 			}
 			else
