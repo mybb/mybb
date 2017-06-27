@@ -3932,7 +3932,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 {$forums}
 </table>
 <br />]]></template>
-		<template name="forumdisplay_thread" version="1809"><![CDATA[<tr class="inline_row">
+		<template name="forumdisplay_thread" version="1813"><![CDATA[<tr class="inline_row">
 	<td align="center" class="{$bgcolor}{$thread_type_class}" width="2%"><span class="thread_status {$folder}" title="{$folder_label}">&nbsp;</span></td>
 	<td align="center" class="{$bgcolor}{$thread_type_class}" width="2%">{$icon}</td>
 	<td class="{$bgcolor}{$thread_type_class}">
@@ -3942,7 +3942,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 			<div class="author smalltext">{$thread['profilelink']}</div>
 		</div>
 	</td>
-	<td align="center" class="{$bgcolor}{$thread_type_class}"><a href="javascript:void(0)" onclick="MyBB.whoPosted({$thread['tid']}); return false;">{$thread['replies']}</a>{$unapproved_posts}</td>
+	<td align="center" class="{$bgcolor}{$thread_type_class}"><a href="{$mybb->settings['bburl']}/misc.php?action=whoposted&tid={$thread['tid']}" onclick="MyBB.whoPosted({$thread['tid']}); return false;">{$thread['replies']}</a>{$unapproved_posts}</td>
 	<td align="center" class="{$bgcolor}{$thread_type_class}">{$thread['views']}</td>
 	{$rating}
 	<td class="{$bgcolor}{$thread_type_class}" style="white-space: nowrap; text-align: right;">
@@ -6226,6 +6226,27 @@ if(use_xmlhttprequest == "1")
 </table>
 </div>
 </div>]]></template>
+		<template name="misc_whoposted_page" version="1813"><![CDATA[<html>
+<head>
+<title>{$thread['subject']} - {$lang->who_posted}</title>
+{$headerinclude}
+</head>
+<body>
+{$header}
+<br />
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<tr>
+<td colspan="2" class="thead"><strong>{$lang->total_posts} {$numposts}</strong></td>
+</tr>
+<tr>
+<td class="tcat"><span class="smalltext"><strong><a href="{$mybb->settings['bburl']}/misc.php?action=whoposted&tid={$thread['tid']}&sort=username">{$lang->user}</a></strong></span></td>
+<td class="tcat"><span class="smalltext"><strong><a href="{$mybb->settings['bburl']}/misc.php?action=whoposted&tid={$thread['tid']}">{$lang->num_posts}</a></strong></span></td>
+</tr>
+{$whoposted}
+</table>
+{$footer}
+</body>
+</html>]]></template>
 		<template name="misc_whoposted_poster" version="1807"><![CDATA[<tr>
 <td class="{$altbg}">{$profile_link}</td>
 <td class="{$altbg}">{$poster['posts']}</td>
@@ -11116,7 +11137,7 @@ if(use_xmlhttprequest == "1")
 		<template name="search_results_posts_inlinemoderation_custom" version="120"><![CDATA[<optgroup label="{$lang->custom_mod_tools}">{$customposttools}</optgroup>]]></template>
 		<template name="search_results_posts_inlinemoderation_custom_tool" version="120"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
 		<template name="search_results_posts_nocheck" version="120"><![CDATA[<td class="{$bgcolor}" align="center" style="white-space: nowrap">&nbsp;</td>]]></template>
-		<template name="search_results_posts_post" version="1809"><![CDATA[<tr class="inline_row">
+		<template name="search_results_posts_post" version="1813"><![CDATA[<tr class="inline_row">
 	<td align="center" class="{$bgcolor}" width="2%"><span class="thread_status {$folder}" title="{$folder_label}">&nbsp;</span></td>
 	<td align="center" class="{$bgcolor}" width="2%">{$icon}</td>
 	<td class="{$bgcolor}">
@@ -11128,7 +11149,7 @@ if(use_xmlhttprequest == "1")
 	</td>
 	<td align="center" class="{$bgcolor}">{$post['profilelink']}</td>
 	<td class="{$bgcolor}" >{$post['forumlink']}</td>
-	<td align="center" class="{$bgcolor}"><a href="javascript:void(0)" onclick="MyBB.whoPosted({$post['tid']}); return false;">{$post['thread_replies']}</a></td>
+	<td align="center" class="{$bgcolor}"><a href="{$mybb->settings['bburl']}/misc.php?action=whoposted&tid={$post['tid']}" onclick="MyBB.whoPosted({$post['tid']}); return false;">{$post['thread_replies']}</a></td>
 	<td align="center" class="{$bgcolor}">{$post['thread_views']}</td>
 	<td class="{$bgcolor}" style="white-space: nowrap; text-align: center;"><span class="smalltext">{$posted}</span></td>
 	{$inline_mod_checkbox}
@@ -11213,7 +11234,7 @@ if(use_xmlhttprequest == "1")
 		<template name="search_results_threads_inlinemoderation_custom" version="120"><![CDATA[<optgroup label="{$lang->custom_mod_tools}">{$customthreadtools}</optgroup>]]></template>
 		<template name="search_results_threads_inlinemoderation_custom_tool" version="120"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
 		<template name="search_results_threads_nocheck" version="120"><![CDATA[<td class="{$bgcolor}" align="center" style="white-space: nowrap">&nbsp;</td>]]></template>
-		<template name="search_results_threads_thread" version="1809"><![CDATA[<tr class="inline_row">
+		<template name="search_results_threads_thread" version="1813"><![CDATA[<tr class="inline_row">
 	<td align="center" class="{$bgcolor}" width="2%"><span class="thread_status {$folder}" title="{$folder_label}">&nbsp;</span></td>
 	<td align="center" class="{$bgcolor}" width="2%">{$icon}</td>
 	<td class="{$bgcolor}">
@@ -11224,7 +11245,7 @@ if(use_xmlhttprequest == "1")
 		</div>
 	</td>
 	<td class="{$bgcolor}">{$thread['forumlink']}</td>
-	<td align="center" class="{$bgcolor}"><a href="javascript:void(0)" onclick="MyBB.whoPosted({$thread['tid']}); return false;">{$thread['replies']}</a></td>
+	<td align="center" class="{$bgcolor}"><a href="{$mybb->settings['bburl']}/misc.php?action=whoposted&tid={$thread['tid']}" onclick="MyBB.whoPosted({$thread['tid']}); return false;">{$thread['replies']}</a></td>
 	<td align="center" class="{$bgcolor}">{$thread['views']}</td>
 	<td class="{$bgcolor}" style="white-space: nowrap">
 		<span class="smalltext">
@@ -11656,11 +11677,11 @@ if(use_xmlhttprequest == "1")
 </tr>
 {$similarthreadbits}
 </table>]]></template>
-		<template name="showthread_similarthreads_bit" version="1809"><![CDATA[<tr>
+		<template name="showthread_similarthreads_bit" version="1813"><![CDATA[<tr>
 	<td align="center" class="{$trow}" width="2%">{$icon}</td>
 	<td class="{$trow}">{$similar_thread['threadprefix']}<a href="{$similar_thread['threadlink']}">{$similar_thread['subject']}</a></td>
 	<td align="center" class="{$trow}">{$similar_thread['profilelink']}</td>
-	<td align="center" class="{$trow}"><a href="javascript:void(0)" onclick="MyBB.whoPosted({$similar_thread['tid']}); return false;">{$similar_thread['replies']}</a></td>
+	<td align="center" class="{$trow}"><a href="{$mybb->settings['bburl']}/misc.php?action=whoposted&tid={$similar_thread['tid']}" onclick="MyBB.whoPosted({$similar_thread['tid']}); return false;">{$similar_thread['replies']}</a></td>
 	<td align="center" class="{$trow}">{$similar_thread['views']}</td>
 	<td class="{$trow}" style="white-space: nowrap">
 		<span class="smalltext">{$lastpostdate}<br />
@@ -12569,11 +12590,11 @@ if(use_xmlhttprequest == "1")
 </tr>
 {$latest_subscribed_threads}
 </table>]]></template>
-		<template name="usercp_latest_subscribed_threads" version="1809"><![CDATA[<tr>
+		<template name="usercp_latest_subscribed_threads" version="1813"><![CDATA[<tr>
 <td align="center" class="{$bgcolor}" width="2%"><span class="thread_status {$folder}" title="{$folder_label}">&nbsp;</span></td>
 <td align="center" class="{$bgcolor}" width="2%">{$icon}</td>
 <td class="{$bgcolor}">{$gotounread}{$thread['displayprefix']}<a href="{$thread['threadlink']}" class="{$new_class}">{$thread['subject']}</a><br /><span class="smalltext">{$thread['author']}</span></td>
-<td align="center" class="{$bgcolor}"><a href="javascript:void(0)" onclick="MyBB.whoPosted({$thread['tid']}); return false;">{$thread['replies']}</a></td>
+<td align="center" class="{$bgcolor}"><a href="{$mybb->settings['bburl']}/misc.php?action=whoposted&tid={$thread['tid']}" onclick="MyBB.whoPosted({$thread['tid']}); return false;">{$thread['replies']}</a></td>
 <td align="center" class="{$bgcolor}">{$thread['views']}</td>
 <td class="{$bgcolor}" style="white-space: nowrap"><span class="smalltext">{$lastpostdate}
 <br /><a href="{$thread['lastpostlink']}">{$lang->lastpost}</a>: {$lastposterlink}</span>
@@ -12592,11 +12613,11 @@ if(use_xmlhttprequest == "1")
 </tr>
 {$latest_threads_threads}
 </table>]]></template>
-		<template name="usercp_latest_threads_threads" version="1809"><![CDATA[<tr>
+		<template name="usercp_latest_threads_threads" version="1813"><![CDATA[<tr>
 <td align="center" class="{$bgcolor}" width="2%"><span class="thread_status {$folder}" title="{$folder_label}">&nbsp;</span></td>
 <td align="center" class="{$bgcolor}" width="2%">{$icon}</td>
 <td class="{$bgcolor}">{$gotounread}{$thread['displayprefix']}<a href="{$thread['threadlink']}" class="{$new_class}">{$thread['subject']}</a><br /><span class="smalltext">{$thread['author']}</span></td>
-<td align="center" class="{$bgcolor}"><a href="javascript:void(0)" onclick="MyBB.whoPosted({$thread['tid']}); return false;">{$thread['replies']}</a></td>
+<td align="center" class="{$bgcolor}"><a href="{$mybb->settings['bburl']}/misc.php?action=whoposted&tid={$thread['tid']}" onclick="MyBB.whoPosted({$thread['tid']}); return false;">{$thread['replies']}</a></td>
 <td align="center" class="{$bgcolor}">{$thread['views']}</td>
 <td class="{$bgcolor}" style="white-space: nowrap"><span class="smalltext">{$lastpostdate}
 <br /><a href="{$thread['lastpostlink']}">{$lang->lastpost}</a>: {$lastposterlink}</span>
@@ -13341,11 +13362,11 @@ if(use_xmlhttprequest == "1")
 	</div>
 	</td>
 </tr>]]></template>
-		<template name="usercp_subscriptions_thread" version="1809"><![CDATA[<tr>
+		<template name="usercp_subscriptions_thread" version="1813"><![CDATA[<tr>
 	<td align="center" class="{$bgcolor}" width="2%"><span class="thread_status {$folder}" title="{$folder_label}">&nbsp;</span></td>
 	<td align="center" class="{$bgcolor}" width="2%">{$icon}</td>
 	<td class="{$bgcolor}">{$gotounread}{$thread['threadprefix']}<a href="{$thread['threadlink']}" class="{$new_class}">{$thread['subject']}</a><br /><span class="smalltext">{$lang->notification_method} {$notification_type}</span></td>
-	<td align="center" class="{$bgcolor}"><a href="javascript:void(0)" onclick="MyBB.whoPosted({$thread['tid']}); return false;">{$thread['replies']}</a></td>
+	<td align="center" class="{$bgcolor}"><a href="{$mybb->settings['bburl']}/misc.php?action=whoposted&tid={$thread['tid']}" onclick="MyBB.whoPosted({$thread['tid']}); return false;">{$thread['replies']}</a></td>
 	<td align="center" class="{$bgcolor}">{$thread['views']}</td>
 	<td class="{$bgcolor}" style="white-space: nowrap">
 		<span class="smalltext">{$lastpostdate}<br />
