@@ -57,8 +57,8 @@ $l['d7_document'] = "You can use MyCode, a simplified version of HTML, in your p
 <p>[email=example@example.com?subject=spam]E-mail with subject[/email]<br />&nbsp;&nbsp;&nbsp;<a href=\"mailto:example@example.com?subject=spam\">E-mail with subject</a>
 <p><br />[quote]Quoted text will be here[/quote]<br />&nbsp;&nbsp;&nbsp;<quote>Quoted text will be here</quote>
 <p>[code]Text with preserved formatting[/code]<br />&nbsp;&nbsp;&nbsp;<code>Text with preserved formatting</code>
-<p><br />[img]http://www.php.net/images/php.gif[/img]<br />&nbsp;&nbsp;&nbsp;<img src=\"http://www.php.net/images/php.gif\">
-<p>[img=50x50]http://www.php.net/images/php.gif[/img]<br />&nbsp;&nbsp;&nbsp;<img src=\"http://www.php.net/images/php.gif\" width=\"50\" height=\"50\">
+<p><br />[img]https://secure.php.net/images/php.gif[/img]<br />&nbsp;&nbsp;&nbsp;<img src=\"https://secure.php.net/images/php.gif\">
+<p>[img=50x50]https://secure.php.net/images/php.gif[/img]<br />&nbsp;&nbsp;&nbsp;<img src=\"https://secure.php.net/images/php.gif\" width=\"50\" height=\"50\">
 <p><br />[color=red]This text is red[/color]<br />&nbsp;&nbsp;&nbsp;<font color=\"red\">This text is red</font>
 <p>[size=3]This text is size 3[/size]<br />&nbsp;&nbsp;&nbsp;<font size=\"3\">This text is size 3</font>
 <p>[font=Tahoma]This font is Tahoma[/font]<br />&nbsp;&nbsp;&nbsp;<font face=\"Tahoma\">This font is Tahoma</font>
