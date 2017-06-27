@@ -137,7 +137,6 @@ class CustomModeration extends Moderation
 				foreach($delete_tids as $delete_tid)
 				{
 					$this->delete_thread($delete_tid);
-					mark_reports($delete_tid, "thread");
 				}
 				// return true here so the code in execute() above knows to redirect to the forum
 				return true;

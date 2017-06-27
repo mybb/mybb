@@ -23,12 +23,13 @@ function user_meta()
 
 	$sub_menu = array();
 	$sub_menu['10'] = array("id" => "users", "title" => $lang->users, "link" => "index.php?module=user-users");
-	$sub_menu['20'] = array("id" => "groups", "title" => $lang->groups, "link" => "index.php?module=user-groups");
-	$sub_menu['30'] = array("id" => "titles", "title" => $lang->user_titles, "link" => "index.php?module=user-titles");
-	$sub_menu['40'] = array("id" => "banning", "title" => $lang->banning, "link" => "index.php?module=user-banning");
-	$sub_menu['50'] = array("id" => "admin_permissions", "title" => $lang->admin_permissions, "link" => "index.php?module=user-admin_permissions");
-	$sub_menu['60'] = array("id" => "mass_mail", "title" => $lang->mass_mail, "link" => "index.php?module=user-mass_mail");
-	$sub_menu['70'] = array("id" => "group_promotions", "title" => $lang->group_promotions, "link" => "index.php?module=user-group_promotions");
+	$sub_menu['20'] = array("id" => "awaiting_activation", "title" => $lang->awaiting_activation, "link" => "index.php?module=user-awaiting_activation");
+	$sub_menu['30'] = array("id" => "groups", "title" => $lang->groups, "link" => "index.php?module=user-groups");
+	$sub_menu['40'] = array("id" => "titles", "title" => $lang->user_titles, "link" => "index.php?module=user-titles");
+	$sub_menu['50'] = array("id" => "banning", "title" => $lang->banning, "link" => "index.php?module=user-banning");
+	$sub_menu['60'] = array("id" => "admin_permissions", "title" => $lang->admin_permissions, "link" => "index.php?module=user-admin_permissions");
+	$sub_menu['70'] = array("id" => "mass_mail", "title" => $lang->mass_mail, "link" => "index.php?module=user-mass_mail");
+	$sub_menu['80'] = array("id" => "group_promotions", "title" => $lang->group_promotions, "link" => "index.php?module=user-group_promotions");
 
 	$sub_menu = $plugins->run_hooks("admin_user_menu", $sub_menu);
 
@@ -48,6 +49,7 @@ function user_action_handler($action)
 	$page->active_module = "user";
 
 	$actions = array(
+		'awaiting_activation' => array('active' => 'awaiting_activation', 'file' => 'awaiting_activation.php'),
 		'group_promotions' => array('active' => 'group_promotions', 'file' => 'group_promotions.php'),
 		'admin_permissions' => array('active' => 'admin_permissions', 'file' => 'admin_permissions.php'),
 		'titles' => array('active' => 'titles', 'file' => 'titles.php'),
@@ -80,6 +82,7 @@ function user_admin_permissions()
 
 	$admin_permissions = array(
 		"users" => $lang->can_manage_users,
+		"awaiting_activation" => $lang->can_manage_awaiting_activation,
 		"groups" => $lang->can_manage_user_groups,
 		"titles" => $lang->can_manage_user_titles,
 		"banning" => $lang->can_manage_user_bans,

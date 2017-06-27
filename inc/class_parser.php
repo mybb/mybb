@@ -300,16 +300,16 @@ class postParser
 
 		if($mybb->settings['allowlinkmycode'] == 1)
 		{
-			$callback_mycode['url_simple']['regex'] = "#\[url\]([a-z]+?://)([^\r\n\"<]+?)\[/url\]#si";
+			$callback_mycode['url_simple']['regex'] = "#\[url\]((?!javascript)[a-z]+?://)([^\r\n\"<]+?)\[/url\]#si";
 			$callback_mycode['url_simple']['replacement'] = array($this, 'mycode_parse_url_callback1');
 
-			$callback_mycode['url_simple2']['regex'] = "#\[url\]([^\r\n\"<]+?)\[/url\]#i";
+			$callback_mycode['url_simple2']['regex'] = "#\[url\]((?!javascript:)[^\r\n\"<]+?)\[/url\]#i";
 			$callback_mycode['url_simple2']['replacement'] = array($this, 'mycode_parse_url_callback2');
 
-			$callback_mycode['url_complex']['regex'] = "#\[url=([a-z]+?://)([^\r\n\"<]+?)\](.+?)\[/url\]#si";
+			$callback_mycode['url_complex']['regex'] = "#\[url=((?!javascript)[a-z]+?://)([^\r\n\"<]+?)\](.+?)\[/url\]#si";
 			$callback_mycode['url_complex']['replacement'] = array($this, 'mycode_parse_url_callback1');
 
-			$callback_mycode['url_complex2']['regex'] = "#\[url=([^\r\n\"<]+?)\](.+?)\[/url\]#si";
+			$callback_mycode['url_complex2']['regex'] = "#\[url=((?!javascript:)[^\r\n\"<]+?)\](.+?)\[/url\]#si";
 			$callback_mycode['url_complex2']['replacement'] = array($this, 'mycode_parse_url_callback2');
 
 			++$callback_count;
@@ -317,10 +317,10 @@ class postParser
 
 		if($mybb->settings['allowemailmycode'] == 1)
 		{
-			$callback_mycode['email_simple']['regex'] = "#\[email\](.*?)\[/email\]#i";
+			$callback_mycode['email_simple']['regex'] = "#\[email\]((?:[a-zA-Z0-9-_\+\.]+?)@[a-zA-Z0-9-]+\.[a-zA-Z0-9\.-]+(?:\?.*?)?)\[/email\]#i";
 			$callback_mycode['email_simple']['replacement'] = array($this, 'mycode_parse_email_callback');
 
-			$callback_mycode['email_complex']['regex'] = "#\[email=(.*?)\](.*?)\[/email\]#i";
+			$callback_mycode['email_complex']['regex'] = "#\[email=((?:[a-zA-Z0-9-_\+\.]+?)@[a-zA-Z0-9-]+\.[a-zA-Z0-9\.-]+(?:\?.*?)?)\](.*?)\[/email\]#i";
 			$callback_mycode['email_complex']['replacement'] = array($this, 'mycode_parse_email_callback');
 
 			++$callback_count;
@@ -632,15 +632,10 @@ class postParser
 				}
 
 				// Take into account the position offset for our last replacement.
-				$index = substr_count($badword['badword'], '*')+2;
 				$badword['badword'] = str_replace('\*', '([a-zA-Z0-9_]{1})', preg_quote($badword['badword'], "#"));
 
 				// Ensure we run the replacement enough times but not recursively (i.e. not while(preg_match..))
-				$count = preg_match_all("#(^|\W)".$badword['badword']."(\W|$)#i", $message, $matches);
-				for($i=0; $i < $count; ++$i)
-				{
-					$message = preg_replace("#(^|\W)".$badword['badword']."(\W|$)#i", "\\1".$badword['replacement'].'\\'.$index, $message);
-				}
+				$message = preg_replace("#(^|\W)".$badword['badword']."(?=\W|$)#i", '\1'.$badword['replacement'], $message);
 			}
 		}
 		if(!empty($this->options['strip_tags']))
@@ -1421,6 +1416,12 @@ class postParser
 					$id = $path[1]; // http://www.youtu.be/fds123
 				}
 				break;
+			case "twitch":
+				if(isset($path[3]))
+				{
+					$id = $path[3]; // https://www.twitch.tv/giantbomb/v/100048090
+				}
+				break;
 			default:
 				return "[video={$video}]{$url}[/video]";
 		}
@@ -1684,8 +1685,8 @@ class postParser
 		$find = array(
 			"#\[(b|u|i|s|url|email|color|img)\](.*?)\[/\\1\]#is",
 			"#\[img=([1-9][0-9]*)x([1-9][0-9]*)\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is",
-			"#\[url=([a-z]+?://)([^\r\n\"<]+?)\](.+?)\[/url\]#si",
-			"#\[url=([^\r\n\"<&\(\)]+?)\](.+?)\[/url\]#si",
+			"#\[url=((?!javascript)[a-z]+?://)([^\r\n\"<]+?)\](.+?)\[/url\]#si",
+			"#\[url=((?!javascript:)[^\r\n\"<&\(\)]+?)\](.+?)\[/url\]#si",
 		);
 
 		$replace = array(

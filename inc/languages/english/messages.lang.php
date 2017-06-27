@@ -185,6 +185,8 @@ This message has been sent to all moderators of this forum, or all administrator
 
 Please check this reputation out as soon as possible.";
 
+$l['email_report_comment_extra'] = "{1}: {2}";
+
 $l['email_passwordreset'] = "{1},
 
 Your password at {2} has been reset.

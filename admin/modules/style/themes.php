@@ -1025,12 +1025,20 @@ if($mybb->input['action'] == "delete")
 
 		@rmdir(MYBB_ROOT."cache/themes/theme{$theme['tid']}/");
 
-		$children = make_child_theme_list($theme['tid']);
-		$child_tid = $children[0];
+		$children = (array)make_child_theme_list($theme['tid']);
+		$child_tids = array();
 
-		if($child_tid != 0)
+		foreach($children as $child_tid)
 		{
-			$db->update_query("themes", array('pid' => $theme['pid']), "tid='{$child_tid}'");
+			if($child_tid != 0)
+			{
+				$child_tids[] = $child_tid;
+			}
+		}
+
+		if(!empty($child_tids))
+		{
+			$db->update_query("themes", array('pid' => $theme['pid']), "tid IN (".implode(',', $child_tids).")");
 		}
 
 		$db->delete_query("themes", "tid='{$theme['tid']}'", 1);
@@ -1749,7 +1757,7 @@ if($mybb->input['action'] == "stylesheet_properties")
 				$update_d = true;
 
 				$db->update_query("themestylesheets", array('lastmodified' => TIME_NOW), "sid='{$stylesheet['sid']}'", 1);
-				if(!cache_stylesheet($theme['tid'], str_replace('/', '', $mybb->input['name']), $theme['stylesheet']))
+				if(!cache_stylesheet($theme['tid'], str_replace('/', '', $mybb->input['name']), $stylesheet['stylesheet']))
 				{
 					$db->update_query("themestylesheets", array('cachefile' => "css.php?stylesheet={$stylesheet['sid']}"), "sid='{$stylesheet['sid']}'", 1);
 				}

@@ -295,7 +295,7 @@ elseif(!$mybb->input['action'])
 	// If the update check contains information about a newer version, show an alert
 	if(isset($update_check['latest_version_code']) && $update_check['latest_version_code'] > $mybb->version_code)
 	{
-		$lang->new_version_available = $lang->sprintf($lang->new_version_available, "MyBB {$mybb->version}", "<a href=\"https://mybb.com/downloads\" target=\"_blank\">MyBB {$update_check['latest_version']}</a>");
+		$lang->new_version_available = $lang->sprintf($lang->new_version_available, "MyBB {$mybb->version}", "<a href=\"https://mybb.com/download\" target=\"_blank\">MyBB {$update_check['latest_version']}</a>");
 		$page->output_error("<p><em>{$lang->new_version_available}</em></p>");
 	}
 
@@ -329,7 +329,7 @@ elseif(!$mybb->input['action'])
 	$table->construct_cell("<strong>{$lang->sql_engine}</strong>", array('width' => '25%'));
 	$table->construct_cell($db->short_title." ".$db->get_version(), array('width' => '25%'));
 	$table->construct_cell("<strong>{$lang->users}</strong>", array('width' => '25%'));
-	$table->construct_cell("<a href=\"index.php?module=user-users\"><strong>{$users}</strong> {$lang->registered_users}</a><br /><strong>{$activeusers}</strong> {$lang->active_users}<br /><strong>{$newusers}</strong> {$lang->registrations_today}<br /><a href=\"index.php?module=user-users&amp;action=search&amp;results=1&amp;conditions=".urlencode(my_serialize(array('usergroup' => '5')))."&amp;from=home\"><strong>{$awaitingusers}</strong> {$lang->awaiting_activation}</a>", array('width' => '25%'));
+	$table->construct_cell("<a href=\"index.php?module=user-users\"><strong>{$users}</strong> {$lang->registered_users}</a><br /><strong>{$activeusers}</strong> {$lang->active_users}<br /><strong>{$newusers}</strong> {$lang->registrations_today}<br /><a href=\"index.php?module=user-awaiting_activation\"><strong>{$awaitingusers}</strong> {$lang->awaiting_activation}</a>", array('width' => '25%'));
 	$table->construct_row();
 
 	$table->construct_cell("<strong>{$lang->server_load}</strong>", array('width' => '25%'));

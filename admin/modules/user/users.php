@@ -437,6 +437,7 @@ if($mybb->input['action'] == "edit")
 
 	if($mybb->request_method == "post")
 	{
+		$plugins->run_hooks("admin_user_users_edit_start");
 		if(is_super_admin($mybb->input['uid']) && $mybb->user['uid'] != $mybb->input['uid'] && !is_super_admin($mybb->user['uid']))
 		{
 			flash_message($lang->error_no_perms_super_admin, 'error');
@@ -627,91 +628,98 @@ if($mybb->input['action'] == "edit")
 			// Are we setting a new avatar from a URL?
 			else if($mybb->input['avatar_url'] && $mybb->input['avatar_url'] != $user['avatar'])
 			{
-				if(filter_var($mybb->input['avatar_url'], FILTER_VALIDATE_EMAIL) !== false)
+				if(!$mybb->settings['allowremoteavatars'])
 				{
-					// Gravatar
-					$email = md5(strtolower(trim($mybb->input['avatar_url'])));
-
-					$s = '';
-					if(!$mybb->settings['maxavatardims'])
-					{
-						$mybb->settings['maxavatardims'] = '100x100'; // Hard limit of 100 if there are no limits
-					}
-
-					// Because Gravatars are square, hijack the width
-					list($maxwidth, $maxheight) = explode("x", my_strtolower($mybb->settings['maxavatardims']));
-
-					$s = "?s={$maxwidth}";
-					$maxheight = (int)$maxwidth;
-
-					$extra_user_updates = array(
-						"avatar" => "https://www.gravatar.com/avatar/{$email}{$s}",
-						"avatardimensions" => "{$maxheight}|{$maxheight}",
-						"avatartype" => "gravatar"
-					);
+					$errors = array($lang->error_remote_avatar_not_allowed);
 				}
 				else
 				{
-					$mybb->input['avatar_url'] = preg_replace("#script:#i", "", $mybb->input['avatar_url']);
-					$ext = get_extension($mybb->input['avatar_url']);
-
-					// Copy the avatar to the local server (work around remote URL access disabled for getimagesize)
-					$file = fetch_remote_file($mybb->input['avatar_url']);
-					if(!$file)
+					if(filter_var($mybb->input['avatar_url'], FILTER_VALIDATE_EMAIL) !== false)
 					{
-						$avatar_error = $lang->error_invalidavatarurl;
+						// Gravatar
+						$email = md5(strtolower(trim($mybb->input['avatar_url'])));
+
+						$s = '';
+						if(!$mybb->settings['maxavatardims'])
+						{
+							$mybb->settings['maxavatardims'] = '100x100'; // Hard limit of 100 if there are no limits
+						}
+
+						// Because Gravatars are square, hijack the width
+						list($maxwidth, $maxheight) = explode("x", my_strtolower($mybb->settings['maxavatardims']));
+
+						$s = "?s={$maxwidth}";
+						$maxheight = (int)$maxwidth;
+
+						$extra_user_updates = array(
+							"avatar" => "https://www.gravatar.com/avatar/{$email}{$s}",
+							"avatardimensions" => "{$maxheight}|{$maxheight}",
+							"avatartype" => "gravatar"
+						);
 					}
 					else
 					{
-						$tmp_name = "../".$mybb->settings['avataruploadpath']."/remote_".md5(random_str());
-						$fp = @fopen($tmp_name, "wb");
-						if(!$fp)
+						$mybb->input['avatar_url'] = preg_replace("#script:#i", "", $mybb->input['avatar_url']);
+						$ext = get_extension($mybb->input['avatar_url']);
+
+						// Copy the avatar to the local server (work around remote URL access disabled for getimagesize)
+						$file = fetch_remote_file($mybb->input['avatar_url']);
+						if(!$file)
 						{
 							$avatar_error = $lang->error_invalidavatarurl;
 						}
 						else
 						{
-							fwrite($fp, $file);
-							fclose($fp);
-							list($width, $height, $type) = @getimagesize($tmp_name);
-							@unlink($tmp_name);
-							echo $type;
-							if(!$type)
+							$tmp_name = "../".$mybb->settings['avataruploadpath']."/remote_".md5(random_str());
+							$fp = @fopen($tmp_name, "wb");
+							if(!$fp)
 							{
 								$avatar_error = $lang->error_invalidavatarurl;
 							}
-						}
-					}
-
-					if(empty($avatar_error))
-					{
-						if($width && $height && $mybb->settings['maxavatardims'] != "")
-						{
-							list($maxwidth, $maxheight) = explode("x", my_strtolower($mybb->settings['maxavatardims']));
-							if(($maxwidth && $width > $maxwidth) || ($maxheight && $height > $maxheight))
+							else
 							{
-								$lang->error_avatartoobig = $lang->sprintf($lang->error_avatartoobig, $maxwidth, $maxheight);
-								$avatar_error = $lang->error_avatartoobig;
+								fwrite($fp, $file);
+								fclose($fp);
+								list($width, $height, $type) = @getimagesize($tmp_name);
+								@unlink($tmp_name);
+								echo $type;
+								if(!$type)
+								{
+									$avatar_error = $lang->error_invalidavatarurl;
+								}
 							}
 						}
-					}
 
-					if(empty($avatar_error))
-					{
-						if($width > 0 && $height > 0)
+						if(empty($avatar_error))
 						{
-							$avatar_dimensions = (int)$width."|".(int)$height;
+							if($width && $height && $mybb->settings['maxavatardims'] != "")
+							{
+								list($maxwidth, $maxheight) = explode("x", my_strtolower($mybb->settings['maxavatardims']));
+								if(($maxwidth && $width > $maxwidth) || ($maxheight && $height > $maxheight))
+								{
+									$lang->error_avatartoobig = $lang->sprintf($lang->error_avatartoobig, $maxwidth, $maxheight);
+									$avatar_error = $lang->error_avatartoobig;
+								}
+							}
 						}
-						$extra_user_updates = array(
-							"avatar" => $db->escape_string($mybb->input['avatar_url'].'?dateline='.TIME_NOW),
-							"avatardimensions" => $avatar_dimensions,
-							"avatartype" => "remote"
-						);
-						remove_avatars($user['uid']);
-					}
-					else
-					{
-						$errors = array($avatar_error);
+
+						if(empty($avatar_error))
+						{
+							if($width > 0 && $height > 0)
+							{
+								$avatar_dimensions = (int)$width."|".(int)$height;
+							}
+							$extra_user_updates = array(
+								"avatar" => $db->escape_string($mybb->input['avatar_url'].'?dateline='.TIME_NOW),
+								"avatardimensions" => $avatar_dimensions,
+								"avatartype" => "remote"
+							);
+							remove_avatars($user['uid']);
+						}
+						else
+						{
+							$errors = array($avatar_error);
+						}
 					}
 				}
 			}
@@ -841,6 +849,7 @@ if($mybb->input['action'] == "edit")
 				flash_message($lang->success_user_updated, 'success');
 				admin_redirect("index.php?module=user-users");
 			}
+			$plugins->run_hooks("admin_user_users_edit_end");
 		}
 	}
 
@@ -970,7 +979,7 @@ EOF;
 
 	// Avatar
 	$avatar_dimensions = explode("|", $user['avatardimensions']);
-	if($user['avatar'])
+	if($user['avatar'] && (my_strpos($user['avatar'], '://') === false || $mybb->settings['allowremoteavatars']))
 	{
 		if($user['avatardimensions'])
 		{
@@ -1017,11 +1026,11 @@ EOF;
 	$reg_date = my_date('relative', $user['regdate']);
 	if($user['dst'] == 1)
 	{
-		$timezone = $user['timezone']+1;
+		$timezone = (float)$user['timezone']+1;
 	}
 	else
 	{
-		$timezone = $user['timezone'];
+		$timezone = (float)$user['timezone'];
 	}
 	$local_date = gmdate($mybb->settings['dateformat'], TIME_NOW + ($timezone * 3600));
 	$local_time = gmdate($mybb->settings['timeformat'], TIME_NOW + ($timezone * 3600));
@@ -1107,6 +1116,7 @@ EOF;
 
 	$username = htmlspecialchars_uni($user['username']);
 	$table->output("{$lang->user_overview}: {$username}");
+	$plugins->run_hooks("admin_user_users_edit_overview");
 	echo "</div>\n";
 
 	//
@@ -1214,6 +1224,7 @@ EOF;
 		$form_container->end();
 	}
 
+	$plugins->run_hooks("admin_user_users_edit_profile");
 	echo "</div>\n";
 
 	//
@@ -1339,6 +1350,7 @@ EOF;
 	$form_container->output_row($lang->other_options, "", "<div class=\"user_settings_bit\">".implode("</div><div class=\"user_settings_bit\">", $other_options)."</div>");
 
 	$form_container->end();
+	$plugins->run_hooks("admin_user_users_edit_settings");
 	echo "</div>\n";
 
 	//
@@ -1473,6 +1485,7 @@ EOF;
 	$form_container->output_row($lang->signature_preferences, "", implode("<br />", $signature_options));
 
 	$form_container->end();
+	$plugins->run_hooks("admin_user_users_edit_signatur");
 	echo "</div>\n";
 
 	//
@@ -1533,8 +1546,12 @@ EOF;
 	}
 	$form_container = new FormContainer($lang->specify_custom_avatar);
 	$form_container->output_row($lang->upload_avatar, $auto_resize, $form->generate_file_upload_box('avatar_upload', array('id' => 'avatar_upload')), 'avatar_upload');
-	$form_container->output_row($lang->or_specify_avatar_url, "", $form->generate_text_box('avatar_url', $avatar_url, array('id' => 'avatar_url')), 'avatar_url');
+	if($mybb->settings['allowremoteavatars'])
+	{
+		$form_container->output_row($lang->or_specify_avatar_url, "", $form->generate_text_box('avatar_url', $avatar_url, array('id' => 'avatar_url')), 'avatar_url');
+	}
 	$form_container->end();
+	$plugins->run_hooks("admin_user_users_edit_avatar");
 	echo "</div>\n";
 
 	//
@@ -1634,6 +1651,7 @@ EOF;
 
 
 	$form_container->end();
+	$plugins->run_hooks("admin_user_users_edit_moderator_options");
 	echo "</div>\n";
 
 	$plugins->run_hooks("admin_user_users_edit_graph");
@@ -1952,11 +1970,13 @@ if($mybb->input['action'] == "merge")
 			$db->update_query("posts", $uid_update, "uid='{$source_user['uid']}'");
 			$db->update_query("privatemessages", $uid_update, "uid='{$source_user['uid']}'");
 			$db->update_query("reportedcontent", $uid_update, "uid='{$source_user['uid']}'");
-			$db->update_query("threadratings", $uid_update, "uid='{$source_user['uid']}'");
 			$db->update_query("threads", $uid_update, "uid='{$source_user['uid']}'");
 			$db->update_query("warnings", $uid_update, "uid='{$source_user['uid']}'");
 			$db->update_query("warnings", array("revokedby" => $destination_user['uid']), "revokedby='{$source_user['uid']}'");
 			$db->update_query("warnings", array("issuedby" => $destination_user['uid']), "issuedby='{$source_user['uid']}'");
+
+			// Thread ratings
+			merge_thread_ratings($source_user['uid'], $destination_user['uid']);
 
 			// Banning
 			$db->update_query("banned", array('admin' => $destination_user['uid']), "admin = '{$source_user['uid']}'");
@@ -2073,13 +2093,6 @@ if($mybb->input['action'] == "merge")
 			);
 			$db->update_query("users", $lists, "uid='{$destination_user['uid']}'");
 
-			// Set up user handler.
-			require_once MYBB_ROOT.'inc/datahandlers/user.php';
-			$userhandler = new UserDataHandler('delete');
-
-			// Delete the old user
-			$userhandler->delete_user($source_user['uid']);
-
 			// Get a list of forums where post count doesn't apply
 			$fids = array();
 			$query = $db->simple_select("forums", "fid", "usepostcounts=0");
@@ -2117,6 +2130,13 @@ if($mybb->input['action'] == "merge")
 			}
 
 			$plugins->run_hooks("admin_user_users_merge_commit");
+
+			// Set up user handler.
+			require_once MYBB_ROOT.'inc/datahandlers/user.php';
+			$userhandler = new UserDataHandler('delete');
+
+			// Delete the old user
+			$userhandler->delete_user($source_user['uid']);
 
 			$cache->update_awaitingactivation();
 
@@ -3606,7 +3626,7 @@ function build_users_view($view)
 			{
 				$scaled_avatar = fetch_scaled_avatar($user, 34, 34);
 			}
-			if(!$user['avatar'])
+			if(!$user['avatar'] || (my_strpos($user['avatar'], '://') !== false && !$mybb->settings['allowremoteavatars']))
 			{
 				if(my_validate_url($mybb->settings['useravatar']))
 				{
@@ -3939,7 +3959,9 @@ function fetch_scaled_avatar($user, $max_width=80, $max_height=80)
 		"height" => $max_height,
 	);
 
-	if($user['avatar'])
+	global $mybb;
+
+	if($user['avatar'] && (my_strpos($user['avatar'], '://') === false || $mybb->settings['allowremoteavatars']))
 	{
 		if($user['avatardimensions'])
 		{
@@ -4227,4 +4249,71 @@ $("#username").select2({
 });
 // -->
 </script>';
+}
+
+/**
+ * @param int $source_uid
+ * @param int $destination_uid
+ */
+function merge_thread_ratings($source_uid, $destination_uid)
+{
+	global $db;
+
+	$source_ratings = $dest_threads = $delete_list = $decrement_list = array();
+
+	// Get all thread ratings from both accounts
+	$query = $db->simple_select('threadratings', 'tid, uid, rid, rating', "uid IN ({$destination_uid}, {$source_uid})");
+	while($rating = $db->fetch_array($query))
+	{
+		if($rating['uid'] == $destination_uid)
+		{
+			$dest_threads[] = $rating['tid'];
+		}
+		else
+		{
+			$source_ratings[] = $rating;
+		}
+	}
+
+	// If there are duplicates, mark them for deletion
+	foreach($source_ratings as $rating)
+	{
+		if(in_array($rating['tid'], $dest_threads))
+		{
+			$delete_list[] = $rating['rid'];
+			$decrement_list[$rating['tid']][] = (int) $rating['rating'];
+		}
+	}
+
+	// Attribute all of the source user's ratings to the destination user
+	$db->update_query("threadratings", array("uid" => $destination_uid), "uid='{$source_uid}'");
+
+	// Remove ratings previously given to recently acquired threads
+	$query = $db->query("
+		SELECT tr.rid, tr.rating, t.tid
+		FROM {$db->table_prefix}threadratings tr
+		LEFT JOIN {$db->table_prefix}threads t ON (t.tid=tr.tid)
+		WHERE tr.uid='{$destination_uid}' AND tr.uid=t.uid
+	");
+	while($rating = $db->fetch_array($query))
+	{
+		$delete_list[] = $rating['rid'];
+		$decrement_list[$rating['tid']][] = (int) $rating['rating'];
+	}
+
+	// Delete the duplicate/disallowed ratings
+	if(!empty($delete_list))
+	{
+		$imp = implode(',', $delete_list);
+		$db->delete_query('threadratings', "rid IN ({$imp})");
+	}
+
+	// Correct the thread rating counters
+	if(!empty($decrement_list))
+	{
+		foreach($decrement_list as $tid => $ratings)
+		{
+			$db->update_query('threads', array('numratings' => 'numratings-'.count($ratings), 'totalratings' => 'totalratings-'.array_sum($ratings)), "tid='{$tid}'", 1, true);
+		}
+	}
 }

@@ -22,6 +22,7 @@ $shutdown_queries = $shutdown_functions = array();
 send_page_headers();
 
 header('X-Frame-Options: SAMEORIGIN');
+header('Referrer-Policy: no-referrer');
 
 if(!isset($config['admin_dir']) || !file_exists(MYBB_ROOT.$config['admin_dir']."/inc/class_page.php"))
 {
@@ -104,6 +105,9 @@ if($mybb->input['action'] == "unlock")
 {
 	$user = array();
 	$error = '';
+
+	$plugins->run_hooks("admin_unlock_start");
+
 	if($mybb->input['username'])
 	{
 		$user = get_user_by_username($mybb->input['username'], array('fields' => '*'));
@@ -127,6 +131,8 @@ if($mybb->input['action'] == "unlock")
 	{
 		$query = $db->simple_select("awaitingactivation", "COUNT(aid) AS num", "uid='".(int)$user['uid']."' AND code='".$db->escape_string($mybb->input['token'])."' AND type='l'");
 
+		$plugins->run_hooks("admin_unlock_end");
+
 		// If we're good to go
 		if($db->fetch_field($query, "num") > 0)
 		{
@@ -145,6 +151,8 @@ if($mybb->input['action'] == "unlock")
 }
 elseif($mybb->input['do'] == "login")
 {
+	$plugins->run_hooks("admin_login");
+
 	// We have an adminsid cookie?
 	if(isset($mybb->cookies['adminsid']))
 	{
@@ -162,10 +170,28 @@ elseif($mybb->input['do'] == "login")
 	require_once MYBB_ROOT."inc/datahandlers/login.php";
 	$loginhandler = new LoginDataHandler("get");
 
+	// Determine login method
+	$login_lang_string = $lang->error_invalid_username_password;
+	switch($mybb->settings['username_method'])
+	{
+		case 0: // Username only
+			$login_lang_string = $lang->sprintf($login_lang_string, $lang->login_username);
+			break;
+		case 1: // Email only
+			$login_lang_string = $lang->sprintf($login_lang_string, $lang->login_email);
+			break;
+		case 2: // Username and email
+		default:
+			$login_lang_string = $lang->sprintf($login_lang_string, $lang->login_username_and_password);
+			break;
+	}
+
 	// Validate PIN first
 	if(!empty($config['secret_pin']) && (empty($mybb->input['pin']) || $mybb->input['pin'] != $config['secret_pin']))
 	{
 		$login_user = get_user_by_username($mybb->input['username'], array('fields' => array('email', 'username')));
+
+		$plugins->run_hooks("admin_login_incorrect_pin");
 
 		if($login_user['uid'] > 0)
 		{
@@ -211,7 +237,7 @@ elseif($mybb->input['do'] == "login")
 		}
 		else
 		{
-			$default_page->show_login($lang->error_invalid_secret_pin, "error");
+			$default_page->show_login($login_lang_string, "error");
 		}
 	}
 
@@ -238,6 +264,8 @@ elseif($mybb->input['do'] == "login")
 
 			$default_page->show_lockedout();
 		}
+
+		$plugins->run_hooks("admin_login_success");
 
 		$db->delete_query("adminsessions", "uid='{$mybb->user['uid']}'");
 
@@ -315,6 +343,8 @@ elseif($mybb->input['do'] == "login")
 	{
 		$login_user = get_user_by_username($mybb->input['username'], array('fields' => array('email', 'username')));
 
+		$plugins->run_hooks("admin_login_fail");
+
 		if($login_user['uid'] > 0)
 		{
 			$db->update_query("adminoptions", array("loginattempts" => "loginattempts+1"), "uid='".(int)$login_user['uid']."'", '', true);
@@ -330,6 +360,8 @@ elseif($mybb->input['do'] == "login")
 			{
 				$db->update_query("adminoptions", array("loginlockoutexpiry" => TIME_NOW+((int)$mybb->settings['loginattemptstimeout']*60)), "uid='".(int)$login_user['uid']."'");
 			}
+
+			$plugins->run_hooks("admin_login_lockout");
 
 			// Did we hit lockout for the first time? Send the unlock email to the administrator
 			if($loginattempts['loginattempts'] == $mybb->settings['maxloginattempts'])
@@ -466,6 +498,8 @@ else
 
 if($mybb->input['action'] == "logout" && $mybb->user)
 {
+	$plugins->run_hooks("admin_logout");
+
 	if(verify_post_check($mybb->input['my_post_key']))
 	{
 		$db->delete_query("adminsessions", "sid='".$db->escape_string($mybb->cookies['adminsid'])."'");
@@ -562,22 +596,6 @@ if(!isset($mybb->user['uid']) || $logged_out == true)
 	}
 	elseif($fail_check == 1)
 	{
-		$login_lang_string = $lang->error_invalid_username_password;
-
-		switch($mybb->settings['username_method'])
-		{
-			case 0: // Username only
-				$login_lang_string = $lang->sprintf($login_lang_string, $lang->login_username);
-				break;
-			case 1: // Email only
-				$login_lang_string = $lang->sprintf($login_lang_string, $lang->login_email);
-				break;
-			case 2: // Username and email
-			default:
-				$login_lang_string = $lang->sprintf($login_lang_string, $lang->login_username_and_password);
-				break;
-		}
-
 		$page->show_login($login_lang_string, "error");
 	}
 	else

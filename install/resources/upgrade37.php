@@ -22,37 +22,33 @@ $upgrade_detail = array(
 
 function upgrade37_dbchanges()
 {
-	global $db, $output, $mybb;
+	global $db, $output;
 
 	$output->print_header("Updating Database");
 	echo "<p>Performing necessary upgrade queries...</p>";
 	flush();
 
-	$guestlangs = array();
-
-	$templang = new MyLanguage();
-	$templang->set_path(MYBB_ROOT."inc/languages");
-
-	$langs = array_keys($templang->get_languages());
-	foreach($langs as $langname)
+	if($db->field_exists('canviewdeletionnotice', 'usergroups'))
 	{
-		unset($templang);
-		$templang = new MyLanguage();
-		$templang->set_path(MYBB_ROOT."inc/languages");
-		$templang->set_language($langname);
-		$templang->load("global");
-
-		if(isset($templang->guest))
-		{
-			$guestlangs[] = $db->escape_string($templang->guest);
-		}
+		$db->drop_column("usergroups", "canviewdeletionnotice");
 	}
-	unset($templang);
 
-	$guestlangs = implode("', '", $guestlangs);
+	if($db->field_exists('canviewdeletionnotice', 'forumpermissions'))
+	{
+		$db->drop_column("forumpermissions", "canviewdeletionnotice");
+	}
 
-	$db->update_query('posts', array('username' => ''), "uid = 0 AND username IN ('{$guestlangs}')");
-	$db->update_query('threads', array('username' => ''), "uid = 0 AND username IN ('{$guestlangs}')");
+	switch($db->type)
+	{
+		case "pgsql":
+			$db->add_column("forumpermissions", "canviewdeletionnotice", "smallint NOT NULL default '0' AFTER caneditattachments");
+			$db->add_column("usergroups", "canviewdeletionnotice", "smallint NOT NULL default '0' AFTER caneditattachments");
+			break;
+		default:
+			$db->add_column("forumpermissions", "canviewdeletionnotice", "tinyint(1) NOT NULL default '0' AFTER caneditattachments");
+			$db->add_column("usergroups", "canviewdeletionnotice", "tinyint(1) NOT NULL default '0' AFTER caneditattachments");
+			break;
+	}
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("37_done");

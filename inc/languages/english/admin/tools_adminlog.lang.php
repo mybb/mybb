@@ -222,6 +222,8 @@ $l['admin_log_tools_index_utf8_conversion'] = "Converted table {1} to UTF-8";
 
 $l['admin_log_tools_mailerrors_prune'] = "Pruned {1} email error logs";
 
+$l['admin_log_tools_maillogs_prune'] = "Pruned {1} email logs";
+
 $l['admin_log_tools_optimizedb_'] = "Optimized database tables: {1}";
 
 $l['admin_log_tools_php_info_phpinfo'] = "Viewed PHP Info";
@@ -240,12 +242,20 @@ $l['admin_log_tools_recount_rebuild_privatemessages'] = "Recounted and rebuilt p
 $l['admin_log_tools_recount_rebuild_referral'] = "Recounted and rebuilt user referral count";
 $l['admin_log_tools_recount_rebuild_threadrating'] = "Recounted and rebuilt thread ratings";
 
+$l['admin_log_tools_spamlog_prune'] = "Pruned {4} spam logs older than {1} days";
+$l['admin_log_tools_spamlog_prune_user'] = "Pruned {4} spam logs older than {1} days with username {2}";
+$l['admin_log_tools_spamlog_prune_email'] = "Pruned {4} spam logs older than {1} days with email {3}";
+$l['admin_log_tools_spamlog_prune_user_email'] = "Pruned {4} spam logs older than {1} days with username {2} and email {3}";
+
 $l['admin_log_tools_tasks_add'] = "Added task #{1} ({2})";
 $l['admin_log_tools_tasks_edit'] = "Edited task #{1} ({2})";
 $l['admin_log_tools_tasks_delete'] = "Deleted task #{1} ({2})";
 $l['admin_log_tools_tasks_enable'] = "Enabled task #{1} ({2})";
 $l['admin_log_tools_tasks_disable'] = "Disabled task #{1} ({2})";
 $l['admin_log_tools_tasks_run'] = "Executed task #{1} ({2})";
+
+$l['admin_log_user_awaiting_activation_activate_activated'] = "Activated {2} user account(s)";
+$l['admin_log_user_awaiting_activation_activate_deleted'] = "Deleted {2} user account(s)";
 
 $l['admin_log_user_admin_permissions_delete_user'] = "Deleted administrator permissions for user #{1} ({2})";
 $l['admin_log_user_admin_permissions_delete_group'] = "Deleted group administrator permissions for usergroup #{1} ({2})";

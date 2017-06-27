@@ -343,17 +343,17 @@ function my_date($format, $stamp=0, $offset="", $ty=1, $adodb=false)
 	{
 		if(isset($mybb->user['uid']) && $mybb->user['uid'] != 0 && array_key_exists("timezone", $mybb->user))
 		{
-			$offset = $mybb->user['timezone'];
+			$offset = (float)$mybb->user['timezone'];
 			$dstcorrection = $mybb->user['dst'];
 		}
 		elseif(defined("IN_ADMINCP"))
 		{
-			$offset =  $mybbadmin['timezone'];
+			$offset = (float)$mybbadmin['timezone'];
 			$dstcorrection = $mybbadmin['dst'];
 		}
 		else
 		{
-			$offset = $mybb->settings['timezoneoffset'];
+			$offset = (float)$mybb->settings['timezoneoffset'];
 			$dstcorrection = $mybb->settings['dstcorrection'];
 		}
 
@@ -400,6 +400,20 @@ function my_date($format, $stamp=0, $offset="", $ty=1, $adodb=false)
 	if($format == 'relative')
 	{
 		// Relative formats both date and time
+		$real_date = $real_time = '';
+		if($adodb == true)
+		{
+			$real_date = adodb_date($mybb->settings['dateformat'], $stamp + ($offset * 3600));
+			$real_time = $mybb->settings['datetimesep'];
+			$real_time .= adodb_date($mybb->settings['timeformat'], $stamp + ($offset * 3600));
+		}
+		else
+		{
+			$real_date = gmdate($mybb->settings['dateformat'], $stamp + ($offset * 3600));
+			$real_time = $mybb->settings['datetimesep'];
+			$real_time .= gmdate($mybb->settings['timeformat'], $stamp + ($offset * 3600));
+		}
+
 		if($ty != 2 && abs(TIME_NOW - $stamp) < 3600)
 		{
 			$diff = TIME_NOW - $stamp;
@@ -426,7 +440,7 @@ function my_date($format, $stamp=0, $offset="", $ty=1, $adodb=false)
 				$relative['prefix'] = $lang->rel_less_than;
 			}
 
-			$date = $lang->sprintf($lang->rel_time, $relative['prefix'], $relative['minute'], $relative['plural'], $relative['suffix']);
+			$date = $lang->sprintf($lang->rel_time, $relative['prefix'], $relative['minute'], $relative['plural'], $relative['suffix'], $real_date, $real_time);
 		}
 		elseif($ty != 2 && abs(TIME_NOW - $stamp) < 43200)
 		{
@@ -448,7 +462,7 @@ function my_date($format, $stamp=0, $offset="", $ty=1, $adodb=false)
 				$relative['plural'] = $lang->rel_hours_single;
 			}
 
-			$date = $lang->sprintf($lang->rel_time, $relative['prefix'], $relative['hour'], $relative['plural'], $relative['suffix']);
+			$date = $lang->sprintf($lang->rel_time, $relative['prefix'], $relative['hour'], $relative['plural'], $relative['suffix'], $real_date, $real_time);
 		}
 		else
 		{
@@ -456,11 +470,11 @@ function my_date($format, $stamp=0, $offset="", $ty=1, $adodb=false)
 			{
 				if($todaysdate == $date)
 				{
-					$date = $lang->today;
+					$date = $lang->sprintf($lang->today, $real_date);
 				}
 				else if($yesterdaysdate == $date)
 				{
-					$date = $lang->yesterday;
+					$date = $lang->sprintf($lang->yesterday, $real_date);
 				}
 			}
 
@@ -481,11 +495,11 @@ function my_date($format, $stamp=0, $offset="", $ty=1, $adodb=false)
 		{
 			if($todaysdate == $date)
 			{
-				$date = $lang->today;
+				$date = $lang->sprintf($lang->today, $real_date);
 			}
 			else if($yesterdaysdate == $date)
 			{
-				$date = $lang->yesterday;
+				$date = $lang->sprintf($lang->yesterday, $real_date);
 			}
 		}
 		else
@@ -966,7 +980,7 @@ function redirect($url, $message="", $title="", $force_redirect=false)
 
 		run_shutdown();
 
-		if(!my_validate_url($url, true))
+		if(!my_validate_url($url, true, true))
 		{
 			header("Location: {$mybb->settings['bburl']}/{$url}");
 		}
@@ -1868,6 +1882,11 @@ function my_setcookie($name, $value="", $expires="", $httponly=false)
 	if($httponly == true)
 	{
 		$cookie .= "; HttpOnly";
+	}
+
+	if($mybb->settings['cookiesecureflag'])
+	{
+		$cookie .= "; Secure";
 	}
 
 	$mybb->cookies[$name] = $value;
@@ -3048,6 +3067,12 @@ function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
 	if(!isset($avatars))
 	{
 		$avatars = array();
+	}
+
+	if(my_strpos($avatar, '://') !== false && !$mybb->settings['allowremoteavatars'])
+	{
+		// Remote avatar, but remote avatars are disallowed.
+		$avatar = null;
 	}
 
 	if(!$avatar)
@@ -6767,43 +6792,54 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 {
 	global $mybb, $config;
 
+	if(!my_validate_url($url, true))
+	{
+		return false;
+	}
+
 	$url_components = @parse_url($url);
+
+	if(!isset($url_components['scheme']))
+	{
+		$url_components['scheme'] = 'https';
+	}
+	if(!isset($url_components['port']))
+	{
+		$url_components['port'] = $url_components['scheme'] == 'https' ? 443 : 80;
+	}
 
 	if(
 		!$url_components ||
 		empty($url_components['host']) ||
 		(!empty($url_components['scheme']) && !in_array($url_components['scheme'], array('http', 'https'))) ||
-		(!empty($url_components['port']) && !in_array($url_components['port'], array(80, 8080, 443))) ||
+		(!in_array($url_components['port'], array(80, 8080, 443))) ||
 		(!empty($config['disallowed_remote_hosts']) && in_array($url_components['host'], $config['disallowed_remote_hosts']))
 	)
 	{
 		return false;
 	}
 
+	$addresses = get_ip_by_hostname($url_components['host']);
+	$destination_address = $addresses[0];
+
 	if(!empty($config['disallowed_remote_addresses']))
 	{
-		$addresses = gethostbynamel($url_components['host']);
-		if($addresses)
+		foreach($config['disallowed_remote_addresses'] as $disallowed_address)
 		{
-			foreach($config['disallowed_remote_addresses'] as $disallowed_address)
-			{
-				$ip_range = fetch_ip_range($disallowed_address);
-				foreach($addresses as $address)
-				{
-					$packed_address = my_inet_pton($address);
+			$ip_range = fetch_ip_range($disallowed_address);
 
-					if(is_array($ip_range))
-					{
-						if(strcmp($ip_range[0], $packed_address) <= 0 && strcmp($ip_range[1], $packed_address) >= 0)
-						{
-							return false;
-						}
-					}
-					elseif($address == $disallowed_address)
-					{
-						return false;
-					}
+			$packed_address = my_inet_pton($destination_address);
+
+			if(is_array($ip_range))
+			{
+				if(strcmp($ip_range[0], $packed_address) <= 0 && strcmp($ip_range[1], $packed_address) >= 0)
+				{
+					return false;
 				}
+			}
+			elseif($destination_address == $disallowed_address)
+			{
+				return false;
 			}
 		}
 	}
@@ -6820,32 +6856,57 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 
 	if(function_exists("curl_init"))
 	{
-		$can_followlocation = @ini_get('open_basedir') === '' && !$mybb->safemode;
-
-		$request_header = $max_redirects != 0 && !$can_followlocation;
+		$fetch_header = $max_redirects > 0;
 
 		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_HEADER, $request_header);
-		curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
 
-		if($max_redirects != 0 && $can_followlocation)
+		$curlopt = array(
+			CURLOPT_URL => $url,
+			CURLOPT_HEADER => $fetch_header,
+			CURLOPT_TIMEOUT => 10,
+			CURLOPT_RETURNTRANSFER => 1,
+			CURLOPT_FOLLOWLOCATION => 0,
+		);
+
+		if($ca_bundle_path = get_ca_bundle_path())
 		{
-			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-			curl_setopt($ch, CURLOPT_MAXREDIRS, $max_redirects);
+			$curlopt[CURLOPT_SSL_VERIFYPEER] = 1;
+			$curlopt[CURLOPT_CAINFO] = $ca_bundle_path;
+		}
+		else
+		{
+			$curlopt[CURLOPT_SSL_VERIFYPEER] = 0;
+		}
+
+		$curl_version_info = curl_version();
+		$curl_version = $curl_version_info['version'];
+
+		if(version_compare(PHP_VERSION, '7.0.7', '>=') && version_compare($curl_version, '7.49', '>='))
+		{
+			// CURLOPT_CONNECT_TO
+			$curlopt[10243] = array(
+				$url_components['host'].':'.$url_components['port'].':'.$destination_address
+			);
+		}
+		elseif(version_compare(PHP_VERSION, '5.5', '>=') && version_compare($curl_version, '7.21.3', '>='))
+		{
+			// CURLOPT_RESOLVE
+			$curlopt[10203] = array(
+				$url_components['host'].':'.$url_components['port'].':'.$destination_address
+			);
 		}
 
 		if(!empty($post_body))
 		{
-			curl_setopt($ch, CURLOPT_POST, 1);
-			curl_setopt($ch, CURLOPT_POSTFIELDS, $post_body);
+			$curlopt[CURLOPT_POST] = 1;
+			$curlopt[CURLOPT_POSTFIELDS] = $post_body;
 		}
+
+		curl_setopt_array($ch, $curlopt);
 
 		$response = curl_exec($ch);
 
-		if($request_header)
+		if($fetch_header)
 		{
 			$header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
 			$header = substr($response, 0, $header_size);
@@ -6875,10 +6936,6 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 	}
 	else if(function_exists("fsockopen"))
 	{
-		if(!isset($url_components['port']))
-		{
-			$url_components['port'] = 80;
-		}
 		if(!isset($url_components['path']))
 		{
 			$url_components['path'] = "/";
@@ -6899,7 +6956,36 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 			}
 		}
 
-		$fp = @fsockopen($scheme.$url_components['host'], $url_components['port'], $error_no, $error, 10);
+		if(function_exists('stream_context_create'))
+		{
+			if($url_components['scheme'] == 'https' && $ca_bundle_path = get_ca_bundle_path())
+			{
+				$context = stream_context_create(array(
+					'ssl' => array(
+						'verify_peer' => true,
+						'verify_peer_name' => true,
+						'peer_name' => $url_components['host'],
+						'cafile' => $ca_bundle_path,
+					),
+				));
+			}
+			else
+			{
+				$context = stream_context_create(array(
+					'ssl' => array(
+						'verify_peer' => false,
+						'verify_peer_name' => false,
+					),
+				));
+			}
+
+			$fp = @stream_socket_client($scheme.$destination_address.':'.(int)$url_components['port'], $error_no, $error, 10, STREAM_CLIENT_CONNECT, $context);
+		}
+		else
+		{
+			$fp = @fsockopen($scheme.$url_components['host'], (int)$url_components['port'], $error_no, $error, 10);
+		}
+
 		@stream_set_timeout($fp, 10);
 		if(!$fp)
 		{
@@ -6951,7 +7037,7 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 		$status_line = current(explode("\n\n", $header, 1));
 		$body = $data[1];
 
-		if($max_redirects != 0 && (strstr($status_line, ' 301 ') || strstr($status_line, ' 302 ')))
+		if($max_redirects > 0 && (strstr($status_line, ' 301 ') || strstr($status_line, ' 302 ')))
 		{
 			preg_match('/Location:(.*?)(?:\n|$)/', $header, $matches);
 
@@ -6967,14 +7053,56 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 
 		return $data;
 	}
-	else if(empty($post_data))
-	{
-		return @implode("", @file($url));
-	}
 	else
 	{
 		return false;
 	}
+}
+
+/**
+ * Resolves a hostname into a set of IP addresses.
+ *
+ * @param string $hostname The hostname to be resolved
+ * @return array|bool The resulting IP addresses. False on failure
+ */
+function get_ip_by_hostname($hostname)
+{
+	$addresses = @gethostbynamel($hostname);
+
+	if(!$addresses)
+	{
+		$result_set = @dns_get_record($hostname, DNS_A | DNS_AAAA);
+
+		if($result_set)
+		{
+			$addresses = array_column($result_set, 'ip');
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	return $addresses;
+}
+
+/**
+ * Returns the location of the CA bundle defined in the PHP configuration.
+ *
+ * @return string|bool The location of the CA bundle, false if not set
+ */
+function get_ca_bundle_path()
+{
+	if($path = ini_get('openssl.cafile'))
+	{
+		return $path;
+	}
+	if($path = ini_get('curl.cainfo'))
+	{
+		return $path;
+	}
+
+	return false;
 }
 
 /**
@@ -7629,7 +7757,7 @@ function verify_files($path=MYBB_ROOT, $count=0)
 	global $mybb, $checksums, $bad_verify_files;
 
 	// We don't need to check these types of files
-	$ignore = array(".", "..", ".svn", "config.php", "settings.php", "Thumb.db", "config.default.php", "lock", "htaccess.txt", "logo.gif", "logo.png");
+	$ignore = array(".", "..", ".svn", "config.php", "settings.php", "Thumb.db", "config.default.php", "lock", "htaccess.txt", "htaccess-nginx.txt", "logo.gif", "logo.png");
 	$ignore_ext = array("attach");
 
 	if(substr($path, -1, 1) == "/")
@@ -8466,16 +8594,83 @@ function copy_file_to_cdn($file_path = '', &$uploaded_path = null)
  *
  * @param string $url The url to validate.
  * @param bool $relative_path Whether or not the url could be a relative path.
+ * @param bool $allow_local Whether or not the url could be pointing to local networks.
  *
  * @return bool Whether this is a valid url.
  */
-function my_validate_url($url, $relative_path=false)
+function my_validate_url($url, $relative_path=false, $allow_local=false)
 {
-	if($relative_path && my_substr($url, 0, 1) == '/' || preg_match('_^(?:(?:https?|ftp)://)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\x{00a1}-\x{ffff}0-9]-*)*[a-z\x{00a1}-\x{ffff}0-9]+)(?:\.(?:[a-z\x{00a1}-\x{ffff}0-9]-*)*[a-z\x{00a1}-\x{ffff}0-9]+)*(?:\.(?:[a-z\x{00a1}-\x{ffff}]{2,}))\.?)(?::\d{2,5})?(?:[/?#]\S*)?$_iuS', $url))
+	if($allow_local)
+	{
+		$regex = '_^(?:(?:https?|ftp)://)(?:\S+(?::\S*)?@)?(?:(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:localhost|(?:(?:[a-z\x{00a1}-\x{ffff}0-9]-*)*[a-z\x{00a1}-\x{ffff}0-9]+)(?:\.(?:[a-z\x{00a1}-\x{ffff}0-9]-*)*[a-z\x{00a1}-\x{ffff}0-9]+)*(?:\.(?:[a-z\x{00a1}-\x{ffff}]{2,}))\.?))(?::\d{2,5})?(?:[/?#]\S*)?$_iuS';
+	}
+	else
+	{
+		$regex = '_^(?:(?:https?|ftp)://)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\x{00a1}-\x{ffff}0-9]-*)*[a-z\x{00a1}-\x{ffff}0-9]+)(?:\.(?:[a-z\x{00a1}-\x{ffff}0-9]-*)*[a-z\x{00a1}-\x{ffff}0-9]+)*(?:\.(?:[a-z\x{00a1}-\x{ffff}]{2,}))\.?)(?::\d{2,5})?(?:[/?#]\S*)?$_iuS';
+	}
+
+	if($relative_path && my_substr($url, 0, 1) == '/' || preg_match($regex, $url))
 	{
 		return true;
 	}
-
 	return false;
 }
 
+/**
+ * Strip html tags from string, also removes <script> and <style> contents.
+ * 
+ * @param  string $string         String to stripe
+ * @param  string $allowable_tags Allowed html tags
+ * 
+ * @return string                 Striped string
+ */
+function my_strip_tags($string, $allowable_tags = '')
+{
+	$pattern = array(
+		'@(&lt;)style[^(&gt;)]*?(&gt;).*?(&lt;)/style(&gt;)@siu',
+		'@(&lt;)script[^(&gt;)]*?.*?(&lt;)/script(&gt;)@siu',
+		'@<style[^>]*?>.*?</style>@siu',
+		'@<script[^>]*?.*?</script>@siu',
+	);
+	$string = preg_replace($pattern, '', $string);
+	return strip_tags($string, $allowable_tags);
+}
+
+/**
+ * Escapes a RFC 4180-compliant CSV string.
+ * Based on https://github.com/Automattic/camptix/blob/f80725094440bf09861383b8f11e96c177c45789/camptix.php#L2867
+ *
+ * @param string $string The string to be escaped
+ * @param boolean $escape_active_content Whether or not to escape active content trigger characters
+ * @return string The escaped string
+ */
+function my_escape_csv($string, $escape_active_content=true)
+{
+	if($escape_active_content)
+	{
+		$active_content_triggers = array('=', '+', '-', '@');
+		$delimiters = array(',', ';', ':', '|', '^', "\n", "\t", " ");
+
+		$first_character = mb_substr($string, 0, 1);
+
+		if(
+			in_array($first_character, $active_content_triggers, true) ||
+			in_array($first_character, $delimiters, true)
+		)
+		{
+			$string = "'".$string;
+		}
+
+		foreach($delimiters as $delimiter)
+		{
+			foreach($active_content_triggers as $trigger)
+			{
+				$string = str_replace($delimiter.$trigger, $delimiter."'".$trigger, $string);
+			}
+		}
+	}
+
+	$string = str_replace('"', '""', $string);
+
+	return $string;
+}

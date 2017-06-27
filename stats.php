@@ -73,6 +73,17 @@ if($inactiveforums)
 
 $unviewableforumsarray = array_merge($unviewablefids, $inactivefids);
 
+// Check group permissions if we can't view threads not started by us
+$group_permissions = forum_permissions();
+$onlyusfids = array();
+foreach($group_permissions as $gpfid => $forum_permissions)
+{
+	if(isset($forum_permissions['canonlyviewownthreads']) && $forum_permissions['canonlyviewownthreads'] == 1)
+	{
+		$onlyusfids[] = $gpfid;
+	}
+}
+
 // Most replied-to threads
 $most_replied = $cache->read("most_replied_threads");
 
@@ -87,7 +98,10 @@ if(!empty($most_replied))
 {
 	foreach($most_replied as $key => $thread)
 	{
-		if(!in_array($thread['fid'], $unviewableforumsarray))
+		if(
+			!in_array($thread['fid'], $unviewableforumsarray) &&
+			(!in_array($thread['fid'], $onlyusfids) || ($mybb->user['uid'] && $thread['uid'] == $mybb->user['uid']))
+		)
 		{
 			$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 			$numberbit = my_number_format($thread['replies']);
@@ -112,7 +126,10 @@ if(!empty($most_viewed))
 {
 	foreach($most_viewed as $key => $thread)
 	{
-		if(!in_array($thread['fid'], $unviewableforumsarray))
+		if(
+			!in_array($thread['fid'], $unviewableforumsarray) &&
+			(!in_array($thread['fid'], $onlyusfids) || ($mybb->user['uid'] && $thread['uid'] == $mybb->user['uid']))
+		)
 		{
 			$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 			$numberbit = my_number_format($thread['views']);

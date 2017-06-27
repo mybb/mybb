@@ -883,28 +883,28 @@ class PostDataHandler extends DataHandler
 				$modoptions_update = array();
 
 				// Close the thread.
-				if(!empty($modoptions['closethread']) && $thread['closed'] != 1)
+				if(!empty($modoptions['closethread']) && $thread['closed'] != 1 && is_moderator($post['fid'], "canopenclosethreads", $post['uid']))
 				{
 					$modoptions_update['closed'] = $closed = 1;
 					log_moderator_action($modlogdata, $lang->thread_closed);
 				}
 
 				// Open the thread.
-				if(empty($modoptions['closethread']) && $thread['closed'] == 1)
+				if(empty($modoptions['closethread']) && $thread['closed'] == 1 && is_moderator($post['fid'], "canopenclosethreads", $post['uid']))
 				{
 					$modoptions_update['closed'] = $closed = 0;
 					log_moderator_action($modlogdata, $lang->thread_opened);
 				}
 
 				// Stick the thread.
-				if(!empty($modoptions['stickthread']) && $thread['sticky'] != 1)
+				if(!empty($modoptions['stickthread']) && $thread['sticky'] != 1 && is_moderator($post['fid'], "canstickunstickthreads", $post['uid']))
 				{
 					$modoptions_update['sticky'] = 1;
 					log_moderator_action($modlogdata, $lang->thread_stuck);
 				}
 
 				// Unstick the thread.
-				if(empty($modoptions['stickthread']) && $thread['sticky'] == 1)
+				if(empty($modoptions['stickthread']) && $thread['sticky'] == 1 && is_moderator($post['fid'], "canstickunstickthreads", $post['uid']))
 				{
 					$modoptions_update['sticky'] = 0;
 					log_moderator_action($modlogdata, $lang->thread_unstuck);
@@ -1012,7 +1012,7 @@ class PostDataHandler extends DataHandler
 			}
 		}
 
-		if($visible == 1 && $thread['visible'] == 1)
+		if($visible == 1)
 		{
 			$now = TIME_NOW;
 
@@ -1020,7 +1020,7 @@ class PostDataHandler extends DataHandler
 			$update_array = array(
 				'lastpost' => "'{$now}'"
 			);
-			if($forum['usepostcounts'] != 0)
+			if($forum['usepostcounts'] != 0 && $thread['visible'] == 1)
 			{
 				$update_array['postnum'] = 'postnum+1';
 			}
@@ -1088,7 +1088,6 @@ class PostDataHandler extends DataHandler
 		$thread_update = array();
 		if($visible == 1 && $thread['visible'] == 1)
 		{
-			$thread = get_thread($post['tid']);
 			require_once MYBB_ROOT.'inc/class_parser.php';
 			$parser = new Postparser;
 
@@ -1243,7 +1242,7 @@ class PostDataHandler extends DataHandler
 
 			$thread_update = array('replies' => '+1');
 
-			// Update forum count
+			// Update counters
 			update_last_post($post['tid']);
 			update_forum_counters($post['fid'], array("posts" => "+1"));
 			update_forum_lastpost($thread['fid']);
@@ -1267,6 +1266,12 @@ class PostDataHandler extends DataHandler
 			// Update the unapproved posts count for the current forum
 			$thread_update = array('replies' => '+1');
 			update_forum_counters($post['fid'], array("deletedposts" => "+1"));
+		}
+
+		// Update last poster
+		if($visible == 1 && $thread['visible'] != 1)
+		{
+			update_last_post($post['tid']);
 		}
 
 		$query = $db->simple_select("attachments", "COUNT(aid) AS attachmentcount", "pid='{$this->pid}' AND visible='1'");
@@ -1544,14 +1549,14 @@ class PostDataHandler extends DataHandler
 				$modoptions_update = array();
 
 				// Close the thread.
-				if(!empty($modoptions['closethread']))
+				if(!empty($modoptions['closethread']) && is_moderator($thread['fid'], "canopenclosethreads", $thread['uid']))
 				{
 					$modoptions_update['closed'] = 1;
 					log_moderator_action($modlogdata, $lang->thread_closed);
 				}
 
 				// Stick the thread.
-				if(!empty($modoptions['stickthread']))
+				if(!empty($modoptions['stickthread']) && is_moderator($thread['fid'], "canstickunstickthreads", $thread['uid']))
 				{
 					$modoptions_update['sticky'] = 1;
 					log_moderator_action($modlogdata, $lang->thread_stuck);

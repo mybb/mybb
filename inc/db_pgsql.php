@@ -1094,6 +1094,8 @@ class DB_PgSQL implements DB_Base
 		$primary_key = array();
 		$primary_key_name = '';
 
+		$unique_keys = array();
+
 		// We do this in two steps. It makes placing the comma easier
 		while($row = $this->fetch_array($query))
 		{
@@ -1102,11 +1104,21 @@ class DB_PgSQL implements DB_Base
 				$primary_key[] = $row['column_name'];
 				$primary_key_name = $row['index_name'];
 			}
+
+			if($row['unique_key'] == 't')
+			{
+				$unique_keys[$row['index_name']][] = $row['column_name'];
+			}
 		}
 
 		if(!empty($primary_key))
 		{
 			$lines[] = "  CONSTRAINT $primary_key_name PRIMARY KEY (".implode(', ', $primary_key).")";
+		}
+
+		foreach($unique_keys as $key_name => $key_columns)
+		{
+			$lines[] = "  CONSTRAINT $key_name UNIQUE (".implode(', ', $key_columns).")";
 		}
 
 		$table_lines .= implode(", \n", $lines);
@@ -1321,51 +1333,33 @@ class DB_PgSQL implements DB_Base
 
 		$update = false;
 		$search_bit = array();
-		if(is_array($main_field) && !empty($main_field))
-		{
-			foreach($main_field as $field)
-			{
-				if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
-				{
-					$search_bit[] = "{$field} = ".$replacements[$field];
-				}
-				else
-				{
-					$search_bit[] = "{$field} = ".$this->quote_val($replacements[$field]);
-				}
-			}
 
-			$search_bit = implode(" AND ", $search_bit);
-			$query = $this->write_query("SELECT COUNT(".$main_field[0].") as count FROM {$this->table_prefix}{$table} WHERE {$search_bit} LIMIT 1");
-			if($this->fetch_field($query, "count") == 1)
+		if(!is_array($main_field))
+		{
+			$main_field = array($main_field);
+		}
+
+		foreach($main_field as $field)
+		{
+			if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
 			{
-				$update = true;
+				$search_bit[] = "{$field} = ".$replacements[$field];
+			}
+			else
+			{
+				$search_bit[] = "{$field} = ".$this->quote_val($replacements[$field]);
 			}
 		}
-		else
+		$search_bit = implode(" AND ", $search_bit);
+		$query = $this->write_query("SELECT COUNT(".$main_field[0].") as count FROM {$this->table_prefix}{$table} WHERE {$search_bit} LIMIT 1");
+		if($this->fetch_field($query, "count") == 1)
 		{
-			$query = $this->write_query("SELECT {$main_field} FROM {$this->table_prefix}{$table}");
-
-			while($column = $this->fetch_array($query))
-			{
-				if($column[$main_field] == $replacements[$main_field])
-				{
-					$update = true;
-					break;
-				}
-			}
+			$update = true;
 		}
 
 		if($update === true)
 		{
-			if(is_array($main_field))
-			{
-				return $this->update_query($table, $replacements, $search_bit);
-			}
-			else
-			{
-				return $this->update_query($table, $replacements, "{$main_field}=".$this->quote_val($replacements[$main_field]));
-			}
+			return $this->update_query($table, $replacements, $search_bit);
 		}
 		else
 		{

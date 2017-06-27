@@ -19,7 +19,7 @@ $templatelist .= ",private_messagebit,codebuttons,posticons,private_send_autocom
 $templatelist .= ",postbit_delete_pm,postbit,private_tracking_nomessage,private_nomessages,postbit_author_guest,private_multiple_recipients_user,private_multiple_recipients_bcc,private_multiple_recipients,usercp_nav_messenger_folder";
 $templatelist .= ",private_search_messagebit,private_search_results_nomessages,private_search_results,private_advanced_search,previewpost,private_send_tracking,private_send_signature,private_read_bcc,private_composelink";
 $templatelist .= ",private_archive,private_quickreply,private_pmspace,private_limitwarning,postbit_groupimage,postbit_offline,postbit_www,postbit_replyall_pm,postbit_signature,postbit_classic,postbit_reputation_formatted_link";
-$templatelist .= ",private_archive_folders_folder,private_archive_folders,postbit_warninglevel,postbit_author_user,postbit_forward_pm,private_messagebit_icon,private_jump_folders_folder,private_advanced_search_folders";
+$templatelist .= ",private_archive_folders_folder,private_archive_folders,postbit_warninglevel,postbit_author_user,postbit_forward_pm,private_messagebit_icon,private_jump_folders_folder,private_advanced_search_folders,usercp_nav_home";
 $templatelist .= ",private_jump_folders,postbit_avatar,postbit_warn,postbit_rep_button,postbit_email,postbit_reputation,private_move,private_read_action,postbit_away,postbit_pm,usercp_nav_messenger_tracking,postbit_find";
 $templatelist .= ",usercp_nav_editsignature,posticons_icon,postbit_icon,postbit_iplogged_hiden,usercp_nav_profile,usercp_nav_misc,postbit_userstar,private_read_to,postbit_online,private_empty,private_orderarrow,postbit_reply_pm";
 
@@ -1953,8 +1953,8 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 		$message['subject'] = $parser->parse_badwords($message['subject']);
 		if($message['folder'] != "3")
 		{
-			$senddate = my_date($mybb->settings['dateformat'], $message['dateline']);
-			$sendtime = my_date($mybb->settings['timeformat'], $message['dateline']);
+			$senddate = my_date($mybb->settings['dateformat'], $message['dateline'], "", false);
+			$sendtime = my_date($mybb->settings['timeformat'], $message['dateline'], "", false);
 			$senddate .= " $lang->at $sendtime";
 		}
 		else
@@ -1986,10 +1986,10 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 
 		if($mybb->input['exporttype'] == "csv")
 		{
-			$message['message'] = addslashes($message['message']);
-			$message['subject'] = addslashes($message['subject']);
-			$message['tousername'] = addslashes($message['tousername']);
-			$message['fromusername'] = addslashes($message['fromusername']);
+			$message['message'] = my_escape_csv($message['message']);
+			$message['subject'] = my_escape_csv($message['subject']);
+			$message['tousername'] = my_escape_csv($message['tousername']);
+			$message['fromusername'] = my_escape_csv($message['fromusername']);
 		}
 
 		if(empty($donefolder[$message['folder']]))
@@ -2011,7 +2011,7 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 					}
 					else
 					{
-						$foldername = addslashes($folderinfo[1]);
+						$foldername = my_escape_csv($folderinfo[1]);
 					}
 					$donefolder[$message['folder']] = 1;
 				}
@@ -2163,7 +2163,7 @@ if(!$mybb->input['action'])
 
 	if($mybb->input['order'] || ($sortby && $sortby != "dateline"))
 	{
-		$page_url = "private.php?fid={$folder}&sortby={$sortby}&order={$mybb->input['order']}";
+		$page_url = "private.php?fid={$folder}&sortby={$sortby}&order={$sortordernow}";
 	}
 	else
 	{
@@ -2194,7 +2194,7 @@ if(!$mybb->input['action'])
 			FROM ".TABLE_PREFIX."privatemessages pm
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.toid)
 			WHERE pm.folder='{$folder}' AND pm.uid='{$mybb->user['uid']}'
-			ORDER BY {$u}{$sortfield} {$mybb->input['order']}
+			ORDER BY {$u}{$sortfield} {$sortordernow}
 			LIMIT {$start}, {$perpage}
 		");
 		while($row = $db->fetch_array($users_query))

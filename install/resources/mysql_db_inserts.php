@@ -110,10 +110,15 @@ $inserts[] = "INSERT INTO mybb_spiders (name,useragent) VALUES ('Alexa Internet'
 $inserts[] = "INSERT INTO mybb_spiders (name,useragent) VALUES ('Ask.com','Teoma');";
 $inserts[] = "INSERT INTO mybb_spiders (name,useragent) VALUES ('Baidu','Baiduspider');";
 $inserts[] = "INSERT INTO mybb_spiders (name,useragent) VALUES ('Yandex','YandexBot');";
-$inserts[] = "INSERT INTO mybb_spiders (name,useragent) VALUES ('Blekko','Blekkobot');";
 $inserts[] = "INSERT INTO mybb_spiders (name,useragent) VALUES ('Facebook','facebookexternalhit');";
 $inserts[] = "INSERT INTO mybb_spiders (name,useragent) VALUES ('Twitter','Twitterbot');";
 $inserts[] = "INSERT INTO mybb_spiders (name,useragent) VALUES ('Internet Archive','archive.org_bot');";
+$inserts[] = "INSERT INTO mybb_spiders (name,useragent) VALUES ('Discord','Mozilla/5.0 (compatible; Discordbot/2.0; +https://discordapp.com)');";
+$inserts[] = "INSERT INTO mybb_spiders (name,useragent) VALUES ('Applebot','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/600.2.5 (KHTML, like Gecko) Version/8.0.2 Safari/600.2.5 (Applebot/0.1; +http://www.apple.com/go/applebot)');";
+$inserts[] = "INSERT INTO mybb_spiders (name,useragent) VALUES ('CheckHost','CheckHost (http://check-host.net/)');";
+$inserts[] = "INSERT INTO mybb_spiders (name,useragent) VALUES ('Pingdom','Pingdom.com_bot_version_1.4_(http://www.pingdom.com)');";
+$inserts[] = "INSERT INTO mybb_spiders (name,useragent) VALUES ('DuckDuckGo','DuckDuckBot/1.1; (+http://duckduckgo.com/duckduckbot.html)');";
+$inserts[] = "INSERT INTO mybb_spiders (name,useragent) VALUES ('UptimeRobot','Mozilla/5.0+(compatible; UptimeRobot/2.0; http://www.uptimerobot.com/)');";
 
 $inserts[] = "INSERT INTO mybb_templategroups (gid,prefix,title,isdefault) VALUES ('1','calendar','<lang:group_calendar>','1');";
 $inserts[] = "INSERT INTO mybb_templategroups (gid,prefix,title,isdefault) VALUES ('2','editpost','<lang:group_editpost>','1');";
@@ -163,4 +168,3 @@ $inserts[] = "INSERT INTO mybb_usertitles (utid, posts, title, stars, starimage)
 $inserts[] = "INSERT INTO mybb_usertitles (utid, posts, title, stars, starimage) VALUES (3, 50, 'Member', 3, '');";
 $inserts[] = "INSERT INTO mybb_usertitles (utid, posts, title, stars, starimage) VALUES (4, 250, 'Senior Member', 4, '');";
 $inserts[] = "INSERT INTO mybb_usertitles (utid, posts, title, stars, starimage) VALUES (5, 750, 'Posting Freak', 5, '');";
-

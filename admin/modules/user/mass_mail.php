@@ -82,7 +82,7 @@ if($mybb->input['action'] == "edit")
 	$html_personalisation = substr($html_personalisation, 0, -2)."');\n// --></script>\n";
 	$text_personalisation = substr($text_personalisation, 0, -2)."');\n// --></script>\n";
 
-	$localized_time_offset = $mybb->user['timezone']*3600 + $mybb->user['dst']*3600;
+	$localized_time_offset = (float)$mybb->user['timezone']*3600 + $mybb->user['dst']*3600;
 	
 	// All done here
 	if($mybb->request_method == "post")
@@ -615,7 +615,7 @@ if($mybb->input['action'] == "send")
 
 	$plugins->run_hooks("admin_user_mass_email_send_start");
 	
-	$localized_time_offset = $mybb->user['timezone']*3600 + $mybb->user['dst']*3600;
+	$localized_time_offset = (float)$mybb->user['timezone']*3600 + $mybb->user['dst']*3600;
 
 	if($mybb->input['step'] == 4)
 	{

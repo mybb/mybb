@@ -20,13 +20,13 @@ $templatelist .= ",usercp_nav_editsignature,usercp_referrals,usercp_notepad,user
 $templatelist .= ",usercp_editsig_suspended,usercp_editsig,usercp_avatar_current,usercp_options_timezone_option,usercp_drafts,usercp_options_language,usercp_options_date_format,usercp_profile_website,usercp_latest_subscribed,usercp_warnings";
 $templatelist .= ",usercp_avatar,usercp_editlists_userusercp_editlists,usercp_drafts_draft,usercp_usergroups_joingroup,usercp_attachments_none,usercp_avatar_upload,usercp_options_timezone,usercp_usergroups_joinable_usergroup_join";
 $templatelist .= ",usercp_warnings_warning,usercp_nav_messenger_tracking,multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start";
-$templatelist .= ",codebuttons,usercp_nav_messenger_compose,usercp_options_language_option,usercp_editlists,usercp_profile_contact_fields_field,usercp_latest_subscribed_threads,usercp_profile_contact_fields,usercp_profile_day";
+$templatelist .= ",codebuttons,usercp_nav_messenger_compose,usercp_options_language_option,usercp_editlists,usercp_profile_contact_fields_field,usercp_latest_subscribed_threads,usercp_profile_contact_fields,usercp_profile_day,usercp_nav_home";
 $templatelist .= ",usercp_profile_profilefields_select_option,usercp_profile_profilefields_multiselect,usercp_profile_profilefields_select,usercp_profile_profilefields_textarea,usercp_profile_profilefields_radio,usercp_profile_profilefields_checkbox";
 $templatelist .= ",usercp_options_tppselect_option,usercp_options_pppselect_option,forumbit_depth2_forum_lastpost_never,forumbit_depth2_forum_lastpost_hidden,usercp_avatar_auto_resize_auto,usercp_avatar_auto_resize_user,usercp_options";
-$templatelist .= ",usercp_editlists_no_buddies,usercp_editlists_no_ignored,usercp_editlists_no_requests,usercp_editlists_received_requests,usercp_editlists_sent_requests,usercp_drafts_draft_thread,usercp_drafts_draft_forum";
-$templatelist .= ",usercp_usergroups_leader_usergroup_memberlist,usercp_usergroups_leader_usergroup_moderaterequests,usercp_usergroups_memberof_usergroup_leaveprimary,usercp_usergroups_memberof_usergroup_display,usercp_email";
+$templatelist .= ",usercp_editlists_no_buddies,usercp_editlists_no_ignored,usercp_editlists_no_requests,usercp_editlists_received_requests,usercp_editlists_sent_requests,usercp_drafts_draft_thread,usercp_drafts_draft_forum,usercp_editlists_user";
+$templatelist .= ",usercp_usergroups_leader_usergroup_memberlist,usercp_usergroups_leader_usergroup_moderaterequests,usercp_usergroups_memberof_usergroup_leaveprimary,usercp_usergroups_memberof_usergroup_display,usercp_email,usercp_options_pms";
 $templatelist .= ",usercp_usergroups_memberof_usergroup_leaveleader,usercp_usergroups_memberof_usergroup_leaveother,usercp_usergroups_memberof_usergroup_leave,usercp_usergroups_joinable_usergroup_description,usercp_options_time_format";
-$templatelist .= ",usercp_editlists_sent_request,usercp_editlists_received_request,usercp_drafts_none,usercp_usergroups_memberof_usergroup_setdisplay,usercp_usergroups_memberof_usergroup_description,usercp_editlists_user";
+$templatelist .= ",usercp_editlists_sent_request,usercp_editlists_received_request,usercp_drafts_none,usercp_usergroups_memberof_usergroup_setdisplay,usercp_usergroups_memberof_usergroup_description,usercp_options_quick_reply";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -70,6 +70,10 @@ if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
 	if(!$userhandler->verify_signature())
 	{
 		$error = inline_error($userhandler->get_friendly_errors());
+	}
+
+	if(isset($error) || !empty($mybb->input['preview']))
+	{
 		$mybb->input['action'] = "editsig";
 	}
 }
@@ -653,7 +657,7 @@ if($mybb->input['action'] == "profile")
 			$options = "";
 			$expoptions = "";
 			$useropts = "";
-			$seloptions = "";
+			$seloptions = array();
 		}
 	}
 	if($customfields)
@@ -1069,6 +1073,18 @@ if($mybb->input['action'] == "options")
 		eval("\$pms_from_buddys = \"".$templates->get("usercp_options_pms_from_buddys")."\";");
 	}
 
+	$pms = '';
+	if($mybb->settings['enablepms'] != 0 && $mybb->usergroup['canusepms'] == 1)
+	{
+		eval("\$pms = \"".$templates->get("usercp_options_pms")."\";");
+	}
+
+	$quick_reply = '';
+	if($mybb->settings['quickreply'] == 1)
+	{
+		eval("\$quick_reply = \"".$templates->get("usercp_options_quick_reply")."\";");
+	}
+
 	$threadview = array('linear' => '', 'threaded' => '');
 	if(isset($user['threadmode']) && is_scalar($user['threadmode']))
 	{
@@ -1272,7 +1288,7 @@ if($mybb->input['action'] == "do_password" && $mybb->request_method == "post")
 		else
 		{
 			$userhandler->update_user();
-			my_setcookie("mybbuser", $mybb->user['uid']."_".$userhandler->data['loginkey']);
+			my_setcookie("mybbuser", $mybb->user['uid']."_".$userhandler->data['loginkey'], null, true);
 
 			// Notify the user by email that their password has been changed
 			$mail_message = $lang->sprintf($lang->email_changepassword, $mybb->user['username'], $mybb->user['email'], $mybb->settings['bbname'], $mybb->settings['bburl']);
@@ -2046,7 +2062,7 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 			$db->update_query("users", $updated_avatar, "uid='".$mybb->user['uid']."'");
 		}
 	}
-	else // remote avatar
+	elseif($mybb->settings['allowremoteavatars']) // remote avatar
 	{
 		$mybb->input['avatarurl'] = trim($mybb->get_input('avatarurl'));
 		if(validate_email_format($mybb->input['avatarurl']) != false)
@@ -2147,6 +2163,10 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 			}
 		}
 	}
+	else // remote avatar, but remote avatars are not allowed
+	{
+		$avatar_error = $lang->error_remote_avatar_not_allowed;
+	}
 
 	if(empty($avatar_error))
 	{
@@ -2191,6 +2211,8 @@ if($mybb->input['action'] == "avatar")
 		$lang->avatar_note .= "<br />".$lang->sprintf($lang->avatar_note_size, $maxsize);
 	}
 
+	$plugins->run_hooks("usercp_avatar_intermediate");
+
 	$auto_resize = '';
 	if($mybb->settings['avatarresizing'] == "auto")
 	{
@@ -2205,6 +2227,12 @@ if($mybb->input['action'] == "avatar")
 	if($mybb->usergroup['canuploadavatars'] == 1)
 	{
 		eval("\$avatarupload = \"".$templates->get("usercp_avatar_upload")."\";");
+	}
+
+	$avatar_remote = '';
+	if($mybb->settings['allowremoteavatars'] == 1)
+	{
+		eval("\$avatar_remote = \"".$templates->get("usercp_avatar_remote")."\";");
 	}
 
 	$removeavatar = '';

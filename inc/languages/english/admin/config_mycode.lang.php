@@ -43,6 +43,7 @@ $l['test'] = "Test MyCode";
 
 $l['error_missing_title'] = "You did not enter a title.";
 $l['error_missing_regex'] = "You did not enter a regular expression.";
+$l['error_regex_already_available'] = "You entered a regular expression which is already defined in another MyCode. Please provide a different regular expression for this MyCode.";
 $l['error_missing_replacement'] = "You did not enter a replacement.";
 $l['error_invalid_mycode'] = "The specified MyCode does not exist.";
 

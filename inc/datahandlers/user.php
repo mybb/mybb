@@ -212,17 +212,12 @@ class UserDataHandler extends DataHandler
 			return false;
 		}
 
-		// MD5 the password
-		$user['md5password'] = md5($user['password']);
-
-		// Generate our salt
-		$user['salt'] = generate_salt();
-
-		// Combine the password and salt
-		$user['saltedpw'] = salt_password($user['md5password'], $user['salt']);
-
 		// Generate the user login key
 		$user['loginkey'] = generate_loginkey();
+
+		// Combine the password and salt
+		$password_fields = create_password($user['password'], false, $user);
+		$user = array_merge($user, $password_fields);
 
 		return true;
 	}
@@ -1098,7 +1093,7 @@ class UserDataHandler extends DataHandler
 
 		$this->user_insert_data = array(
 			"username" => $db->escape_string($user['username']),
-			"password" => $user['saltedpw'],
+			"password" => $user['password'],
 			"salt" => $user['salt'],
 			"loginkey" => $user['loginkey'],
 			"email" => $db->escape_string($user['email']),
@@ -1261,10 +1256,16 @@ class UserDataHandler extends DataHandler
 		{
 			$this->user_update_data['username'] = $db->escape_string($user['username']);
 		}
-		if(isset($user['saltedpw']))
+		if(isset($user['password']))
 		{
-			$this->user_update_data['password'] = $user['saltedpw'];
+			$this->user_update_data['password'] = $user['password'];
+		}
+		if(isset($user['salt']))
+		{
 			$this->user_update_data['salt'] = $user['salt'];
+		}
+		if(isset($user['loginkey']))
+		{
 			$this->user_update_data['loginkey'] = $user['loginkey'];
 		}
 		if(isset($user['email']))
@@ -1586,6 +1587,7 @@ class UserDataHandler extends DataHandler
 		$cache->update_forumsdisplay();
 		$cache->update_reportedcontent();
 		$cache->update_awaitingactivation();
+		$cache->update_birthdays();
 
 		return $this->return_values;
 	}

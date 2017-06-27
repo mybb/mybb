@@ -19,6 +19,7 @@ $l['bottomlinks_contactus'] = "Contact Us";
 $l['bottomlinks_returntop'] = "Return to Top";
 $l['bottomlinks_syndication'] = "RSS Syndication";
 $l['bottomlinks_litemode'] = "Lite (Archive) Mode";
+$l['bottomlinks_markread'] = "Mark All Forums Read";
 
 $l['welcome_usercp'] = "User CP";
 $l['welcome_modcp'] = "Mod CP";
@@ -131,8 +132,8 @@ $l['no_subscribe_notification'] = "Subscribe without receiving any notification 
 $l['instant_email_subscribe'] = "Subscribe and receive email notification of new replies";
 $l['instant_pm_subscribe'] = "Subscribe and receive PM notification of new replies";
 
-$l['today'] = "Today";
-$l['yesterday'] = "Yesterday";
+$l['today'] = "<span title=\"{1}\">Today</span>";
+$l['yesterday'] = "<span title=\"{1}\">Yesterday</span>";
 $l['error'] = "Board Message";
 
 $l['multipage_pages'] = "Pages ({1}):";
@@ -207,6 +208,7 @@ $l['editor_metacafe'] = "MetaCafe";
 $l['editor_veoh'] = "Veoh";
 $l['editor_vimeo'] = "Vimeo";
 $l['editor_youtube'] = "Youtube";
+$l['editor_twitch'] = "Twitch";
 $l['editor_facebook'] = "Facebook";
 $l['editor_liveleak'] = "LiveLeak";
 $l['editor_insertvideo'] = "Insert a video";
@@ -268,6 +270,11 @@ $l['postbit_currently_ignoring_user'] = "The contents of this message are hidden
 $l['postbit_warning_level'] = "Warning Level:";
 $l['postbit_warn'] = "Warn the author for this post";
 $l['postbit_purgespammer'] = "Purge Spammer";
+$l['postbit_post_deleted'] = "This post has been deleted.";
+$l['postbit_post_unapproved'] = "This post is awaiting approval.";
+$l['postbit_thread_deleted'] = "This thread has been deleted.";
+$l['postbit_thread_unapproved'] = "This thread is awaiting approval.";
+$l['postbit_deleted_post_user'] = "This post by {1} has been deleted.";
 
 $l['postbit_button_reputation_add'] = 'Rate';
 $l['postbit_button_website'] = 'Website';
@@ -303,6 +310,7 @@ $l['smilieinsert'] = "Smilies";
 $l['smilieinsert_getmore'] = "get more";
 $l['on'] = "On";
 $l['off'] = "Off";
+$l['remote_avatar_disabled_default_avatar'] = "You are currently using a remote avatar, which has been disabled. The default avatar will be used instead.";
 $l['unread_report'] = "Moderator Notice: There is 1 unread report.";
 $l['unread_reports'] = "Moderator Notice: There are {1} unread reports.";
 $l['pending_joinrequest'] = "Group Leader Notice: You have 1 pending group membership join request.";
@@ -342,7 +350,7 @@ $l['seconds_short'] = "s";
 $l['rel_in'] = "In ";
 $l['rel_ago'] = "ago";
 $l['rel_less_than'] = "Less than ";
-$l['rel_time'] = "{1}{2} {3} {4}";
+$l['rel_time'] = "<span title=\"{5}{6}\">{1}{2} {3} {4}</span>";
 $l['rel_minutes_single'] = "minute";
 $l['rel_minutes_plural'] = "minutes";
 $l['rel_hours_single'] = "hour";
@@ -452,7 +460,7 @@ $l['timezone_gmt_350'] = "(GMT +3:30) Tehran";
 $l['timezone_gmt_400'] = "(GMT +4:00) Moscow, Abu Dhabi, Baku, Muscat, Tbilisi";
 $l['timezone_gmt_450'] = "(GMT +4:30) Kabul";
 $l['timezone_gmt_500'] = "(GMT +5:00) Islamabad, Karachi, Tashkent";
-$l['timezone_gmt_550'] = "(GMT +5:30) Mumbai, Calcutta, Madras, New Delhi";
+$l['timezone_gmt_550'] = "(GMT +5:30) Mumbai, Kolkata, Chennai, New Delhi";
 $l['timezone_gmt_575'] = "(GMT +5:45) Kathmandu";
 $l['timezone_gmt_600'] = "(GMT +6:00) Almaty, Dhakra, Yekaterinburg";
 $l['timezone_gmt_650'] = "(GMT +6:30) Yangon";
@@ -542,7 +550,7 @@ $l['moderation_user_posts'] = "Please note that new posts you make must be appro
 $l['moderation_forum_thread'] = "Please note that new threads in this forum must be approved by a moderator before becoming visible.";
 $l['moderation_forum_edits'] = "Please note that edited posts in this forum must be approved by a moderator before becoming visible.";
 $l['moderation_forum_edits_quick'] = "Please note that edited posts in this forum must be approved by a moderator before becoming visible.";
-$l['awaiting_message_link'] = " <a href=\"{1}/{2}/index.php?module=user-users&amp;action=search&amp;results=1&amp;conditions=a%3A1%3A%7Bs%3A9%3A%22usergroup%22%3Bs%3A1%3A%225%22%3B%7D\">Go to the ACP</a>.";
+$l['awaiting_message_link'] = " <a href=\"{1}/{2}/index.php?module=user-awaiting_activation\">Go to the ACP</a>.";
 $l['awaiting_message_single'] = "There is 1 account awaiting activation. Please go to your ACP to activate the user.";
 $l['awaiting_message_plural'] = "There are {1} accounts awaiting activation. Please go to your ACP to activate the users.";
 

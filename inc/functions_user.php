@@ -56,7 +56,7 @@ function validate_password_from_username($username, $password)
 	global $mybb;
 
 	$options = array(
-		'fields' => array('username', 'password', 'salt', 'loginkey', 'coppauser', 'usergroup'),
+		'fields' => '*',
 		'username_method' => $mybb->settings['username_method'],
 	);
 
@@ -87,19 +87,13 @@ function validate_password_from_uid($uid, $password, $user = array())
 	}
 	if(!$user['password'])
 	{
-		$query = $db->simple_select("users", "uid,username,password,salt,loginkey,usergroup", "uid='".(int)$uid."'");
-		$user = $db->fetch_array($query);
+		$user = get_user($uid);
 	}
 	if(!$user['salt'])
 	{
 		// Generate a salt for this user and assume the password stored in db is a plain md5 password
-		$user['salt'] = generate_salt();
-		$user['password'] = salt_password($user['password'], $user['salt']);
-		$sql_array = array(
-			"salt" => $user['salt'],
-			"password" => $user['password']
-		);
-		$db->update_query("users", $sql_array, "uid='".$user['uid']."'");
+		$password_fields = create_password($user['password'], false, $user);
+		$db->update_query("users", $password_fields, "uid='".$user['uid']."'");
 	}
 
 	if(!$user['loginkey'])
@@ -110,7 +104,7 @@ function validate_password_from_uid($uid, $password, $user = array())
 		);
 		$db->update_query("users", $sql_array, "uid = ".$user['uid']);
 	}
-	if(salt_password(md5($password), $user['salt']) === $user['password'])
+	if(verify_user_password($user, $password))
 	{
 		return $user;
 	}
@@ -173,10 +167,120 @@ function update_password($uid, $password, $salt="")
  * @param string $password The md5()'ed password.
  * @param string $salt The salt.
  * @return string The password hash.
+ * @deprecated deprecated since version 1.8.9 Please use other alternatives.
  */
 function salt_password($password, $salt)
 {
 	return md5(md5($salt).$password);
+}
+
+/**
+ * Salts a password based on a supplied salt.
+ *
+ * @param string $password The input password.
+ * @param string $salt (Optional) The salt used by the MyBB algorithm.
+ * @param string $user (Optional) An array containing password-related data.
+ * @return array Password-related fields.
+ */
+function create_password($password, $salt = false, $user = false)
+{
+	global $plugins;
+
+	$fields = null;
+
+	$parameters = compact('password', 'salt', 'user', 'fields');
+
+	if(!defined('IN_INSTALL') && !defined('IN_UPGRADE'))
+	{
+		$plugins->run_hooks('create_password', $parameters);
+	}
+
+	if(!is_null($parameters['fields']))
+	{
+		$fields = $parameters['fields'];
+	}
+	else
+	{
+		if(!$salt)
+		{
+			$salt = generate_salt();
+		}
+
+		$hash = md5(md5($salt).md5($password));
+
+		$fields = array(
+			'salt' => $salt,
+			'password' => $hash,
+		);
+	}
+
+	return $fields;
+}
+
+/**
+ * Compares user's password data against provided input.
+ *
+ * @param array $user An array containing password-related data.
+ * @param string $password The plain-text input password.
+ * @return bool Result of the comparison.
+ */
+function verify_user_password($user, $password)
+{
+	global $plugins;
+
+	$result = null;
+
+	$parameters = compact('user', 'password', 'result');
+
+	if(!defined('IN_INSTALL') && !defined('IN_UPGRADE'))
+	{
+		$plugins->run_hooks('verify_user_password', $parameters);
+	}
+
+	if(!is_null($parameters['result']))
+	{
+		return $parameters['result'];
+	}
+	else
+	{
+		$password_fields = create_password($password, $user['salt'], $user);
+
+		return my_hash_equals($user['password'], $password_fields['password']);
+	}
+}
+
+/**
+ * Performs a timing attack safe string comparison.
+ *
+ * @param string $known_string The first string to be compared.
+ * @param string $user_string The second, user-supplied string to be compared.
+ * @return bool Result of the comparison.
+ */
+function my_hash_equals($known_string, $user_string)
+{
+	if(version_compare(PHP_VERSION, '5.6.0', '>='))
+	{
+		return hash_equals($known_string, $user_string);
+	}
+	else
+	{
+		$known_string_length = my_strlen($known_string);
+		$user_string_length = my_strlen($user_string);
+
+		if($user_string_length != $known_string_length)
+		{
+			return false;
+		}
+
+		$result = 0;
+
+		for($i = 0; $i < $known_string_length; $i++)
+		{
+			$result |= ord($known_string[$i]) ^ ord($user_string[$i]);
+		}
+
+		return $result === 0;
+	}
 }
 
 /**
@@ -386,17 +490,25 @@ function usercp_menu()
 	$lang->load("usercpnav");
 
 	// Add the default items as plugins with separated priorities of 10
-	if($mybb->settings['enablepms'] != 0)
+	if($mybb->settings['enablepms'] != 0 && $mybb->usergroup['canusepms'] == 1)
 	{
 		$plugins->add_hook("usercp_menu", "usercp_menu_messenger", 10);
 	}
 
-	$plugins->add_hook("usercp_menu", "usercp_menu_profile", 20);
-	$plugins->add_hook("usercp_menu", "usercp_menu_misc", 30);
+	if($mybb->usergroup['canusercp'] == 1)
+	{
+		$plugins->add_hook("usercp_menu", "usercp_menu_profile", 20);
+		$plugins->add_hook("usercp_menu", "usercp_menu_misc", 30);
+	}
 
 	// Run the plugin hooks
 	$plugins->run_hooks("usercp_menu");
 	global $usercpmenu;
+
+	if($mybb->usergroup['canusercp'] == 1)
+	{
+		eval("\$ucp_nav_home = \"".$templates->get("usercp_nav_home")."\";");
+	}
 
 	eval("\$usercpnav = \"".$templates->get("usercp_nav")."\";");
 
