@@ -536,7 +536,7 @@ function build_postbit($post, $post_type=0)
 		{
 			$forumpermissions = forum_permissions($fid);
 		}
-		
+
 		// Figure out if we need to show an "edited by" message
 		if($post['edituid'] != 0 && $post['edittime'] != 0 && $post['editusername'] != "" && (($mybb->settings['showeditedby'] != 0 && $usergroup['cancp'] == 0) || ($mybb->settings['showeditedbyadmin'] != 0 && $usergroup['cancp'] == 1)))
 		{
@@ -631,7 +631,7 @@ function build_postbit($post, $post_type=0)
 		// Inline moderation stuff
 		if($ismod)
 		{
-			if(isset($mybb->cookies[$inlinecookie]) && my_strpos($mybb->cookies[$inlinecookie], "|".$post['pid']."|"))
+			if(isset($mybb->cookies[$inlinecookie]) && my_strpos($mybb->cookies[$inlinecookie], "|".$post['pid']."|") !== false)
 			{
 				$inlinecheck = "checked=\"checked\"";
 				$inlinecount++;
@@ -895,7 +895,7 @@ function get_post_attachments($id, &$post)
 	{
 		$forumpermissions = forum_permissions($post['fid']);
 	}
-	
+
 	if(isset($attachcache[$id]) && is_array($attachcache[$id]))
 	{ // This post has 1 or more attachments
 		foreach($attachcache[$id] as $aid => $attachment)

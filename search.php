@@ -637,7 +637,7 @@ if($mybb->input['action'] == "results")
 			$inline_mod_checkbox = '';
 			if($is_supermod || is_moderator($thread['fid']))
 			{
-				if(isset($mybb->cookies[$inlinecookie]) && my_strpos($mybb->cookies[$inlinecookie], "|{$thread['tid']}|"))
+				if(isset($mybb->cookies[$inlinecookie]) && my_strpos($mybb->cookies[$inlinecookie], "|{$thread['tid']}|") !== false)
 				{
 					$inlinecheck = "checked=\"checked\"";
 					++$inlinecount;
@@ -1047,7 +1047,7 @@ if($mybb->input['action'] == "results")
 			$inline_mod_checkbox = '';
 			if($is_supermod || is_moderator($post['fid']))
 			{
-				if(isset($mybb->cookies[$inlinecookie]) && my_strpos($mybb->cookies[$inlinecookie], "|{$post['pid']}|"))
+				if(isset($mybb->cookies[$inlinecookie]) && my_strpos($mybb->cookies[$inlinecookie], "|{$post['pid']}|") !== false)
 				{
 					$inlinecheck = "checked=\"checked\"";
 					++$inlinecount;
