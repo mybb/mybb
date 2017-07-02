@@ -1193,13 +1193,13 @@ function user_permissions($uid=0)
 	if($uid != $mybb->user['uid'])
 	{
 		// We've already cached permissions for this user, return them.
-		if($user_cache[$uid]['permissions'])
+		if(isset($user_cache[$uid]['permissions']))
 		{
 			return $user_cache[$uid]['permissions'];
 		}
 
 		// This user was not already cached, fetch their user information.
-		if(!$user_cache[$uid])
+		if(!isset($user_cache[$uid]))
 		{
 			$user_cache[$uid] = get_user($uid);
 		}
