@@ -2399,7 +2399,7 @@ if(!$mybb->input['action'])
 	}
 
 	$pmspacebar = '';
-	if($mybb->usergroup['pmquota'] != '0' && $mybb->usergroup['cancp'] != 1)
+	if($mybb->usergroup['pmquota'] != 0)
 	{
 		$query = $db->simple_select("privatemessages", "COUNT(*) AS total", "uid='".$mybb->user['uid']."'");
 		$pmscount = $db->fetch_array($query);
@@ -2463,7 +2463,7 @@ if(!$mybb->input['action'])
 	}
 
 	$limitwarning = '';
-	if($mybb->usergroup['pmquota'] != "0" && $pmscount['total'] >= $mybb->usergroup['pmquota'] && $mybb->usergroup['cancp'] != 1)
+	if($mybb->usergroup['pmquota'] != 0 && $pmscount['total'] >= $mybb->usergroup['pmquota'])
 	{
 		eval("\$limitwarning = \"".$templates->get("private_limitwarning")."\";");
 	}
