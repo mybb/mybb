@@ -54,7 +54,7 @@ if(!empty($mybb->input['pid']) && !isset($mybb->input['tid']))
 			// post does not exist --> show corresponding error
 			error($lang->error_invalidpost);
 		}
-		
+
 		$mybb->input['tid'] = $post['tid'];
 	}
 }
@@ -98,6 +98,20 @@ if(!$thread['username'])
 }
 $thread['username'] = htmlspecialchars_uni($thread['username']);
 
+$forumpermissions = forum_permissions($thread['fid']);
+
+// Set here to fetch only approved/deleted posts (and then below for a moderator we change this).
+if($forumpermissions['canviewdeletionnotice'] != 0)
+{
+	$visibleonly = "AND visible IN (-1,1)";
+	$visibleonly2 = "AND p.visible IN (-1,1) AND t.visible IN (-1,1)";
+}
+else
+{
+	$visibleonly = " AND visible=1";
+	$visibleonly2 = "AND p.visible=1 AND t.visible=1";
+}
+
 // Is the currently logged in user a moderator of this forum?
 if(is_moderator($fid))
 {
@@ -124,8 +138,6 @@ if(is_moderator($fid))
 else
 {
 	$ismod = false;
-	$visibleonly = " AND visible=1";
-	$visibleonly2 = "AND p.visible=1 AND t.visible=1";
 }
 
 // Make sure we are looking at a real thread here.
@@ -133,8 +145,6 @@ if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] == 0 && !
 {
 	error($lang->error_invalidthread);
 }
-
-$forumpermissions = forum_permissions($thread['fid']);
 
 // Does the user have permission to view this thread?
 if($forumpermissions['canview'] != 1 || $forumpermissions['canviewthreads'] != 1)
@@ -369,13 +379,25 @@ if($mybb->settings['showforumpagesbreadcrumb'])
 		$mybb->settings['threadsperpage'] = 20;
 	}
 
-	$query = $db->simple_select("forums", "threads, unapprovedthreads", "fid = '{$fid}'", array('limit' => 1));
+	$query = $db->simple_select("forums", "threads, unapprovedthreads, deletedthreads", "fid = '{$fid}'", array('limit' => 1));
 	$forum_threads = $db->fetch_array($query);
 	$threadcount = $forum_threads['threads'];
 
-	if(is_moderator($fid, "canviewunapprove") == true)
+
+	if(is_moderator($fid, "canviewdeleted") == true || is_moderator($fid, "canviewunapprove") == true)
 	{
-		$threadcount += $forum_threads['unapprovedthreads'];
+		if(is_moderator($fid, "canviewdeleted") == true)
+		{
+			$threadcount += $forum_threads['deletedthreads'];
+		}
+		if(is_moderator($fid, "canviewunapprove") == true)
+		{
+			$threadcount += $forum_threads['unapprovedthreads'];
+		}
+	}
+	elseif($forumpermissions['canviewdeletionnotice'] != 0)
+	{
+		$threadcount += $forum_threads['deletedthreads'];
 	}
 
 	// Limit to only our own threads
@@ -939,6 +961,10 @@ if($mybb->input['action'] == "thread")
 				rebuild_thread_counters($thread['tid']);
 			}
 		}
+		elseif($forumpermissions['canviewdeletionnotice'] != 0)
+		{
+			$thread['replies'] += $thread['deletedposts'];
+		}
 
 		$postcount = (int)$thread['replies']+1;
 		$pages = $postcount / $perpage;
@@ -1225,7 +1251,7 @@ if($mybb->input['action'] == "thread")
 				$moderation_text = $lang->moderation_forum_posts;
 				eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
 			}
-			
+
 			if($mybb->user['moderateposts'] == 1)
 			{
 				$moderation_text = $lang->moderation_user_posts;
@@ -1518,7 +1544,7 @@ if($mybb->input['action'] == "thread")
 		{
 			$onlinesep = $lang->comma;
 		}
-		
+
 		$onlinesep2 = '';
 		if($invisonline != '' && $guestcount || $onlinemembers && $guestcount)
 		{
