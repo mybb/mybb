@@ -5,7 +5,7 @@ var Thread = {
 			Thread.quickEdit();
 			Thread.initQuickReply();
 			Thread.initMultiQuote();
-			
+
 			// Set spinner image
 			$('#quickreply_spinner img').attr('src', spinner_image);
 		});
@@ -55,7 +55,7 @@ var Thread = {
 				}
 			});
 		}
-		
+
 		var mquote_a = $("#multiquote_"+pid).closest('a')
 		if(is_new == true)
 		{
@@ -66,7 +66,7 @@ var Thread = {
 		{
 			mquote_a.removeClass('postbit_multiquote_on').addClass('postbit_multiquote');
 		}
-		
+
 		var mquote_quick = $('#quickreply_multiquote');
 		if(mquote_quick.length)
 		{
@@ -97,7 +97,7 @@ var Thread = {
 				complete: function (request, status)
 				{
 					Thread.multiQuotedLoaded(request, status);
-					
+
 					// Get rid of spinner
 					mquote_spinner.hide();
 				}
@@ -191,6 +191,7 @@ var Thread = {
 				{
 					id = $(this).attr('id');
 					pid = id.replace( /[^\d.]/g, '');
+					$("#quickedit_" + pid + "_editreason_original").val($("#quickedit_" + pid + "_editreason").val());
 					return {
 						editreason: $("#quickedit_" + pid + "_editreason").val()
 					}
@@ -199,7 +200,7 @@ var Thread = {
 				{
 					id = $(this).attr('id');
 					pid = id.replace( /[^\d.]/g, '');
-					
+
 					var json = $.parseJSON(values);
 					if(typeof json == 'object')
 					{
@@ -236,12 +237,12 @@ var Thread = {
 							$(".jGrowl").jGrowl("close");
 
 							$(this).html(json.message);
-							
+
 							alert(json.moderation_thread);
-							
+
 							// Redirect user to forum
 							window.location = json.url;
-						}	
+						}
 						else
 						{
 							// Change html content
@@ -283,7 +284,9 @@ var Thread = {
 				$('#pid_' + pid + ' textarea').attr('id', 'quickedit_' + pid);
 				if(allowEditReason == 1 && $('#quickedit_' + pid + '_editreason').length == 0)
 				{
-					$('#quickedit_' + pid).after('<label for="editreason">' + lang.editreason + ':</label> <input type="text" class="textbox" style="margin: 6px 0;" name="editreason" size="40" maxlength="150" id="quickedit_' + pid + '_editreason" /><br />');
+					edit_el = $('#editreason_' + pid + '_original').clone().attr('id','editreason_' + pid);
+					edit_el.children('#quickedit_' + pid + '_editreason_original').attr('id','quickedit_' + pid + '_editreason');
+					edit_el.insertAfter('#quickedit_' + pid).show();
 				}
 			});
         });
@@ -313,7 +316,7 @@ var Thread = {
 
 		this.quick_replying = 1;
 		var post_body = $('#quick_reply_form').serialize();
-		
+
 		// Spinner!
 		var qreply_spinner = $('#quickreply_spinner');
 		qreply_spinner.show();
@@ -327,7 +330,7 @@ var Thread = {
         	complete: function (request, status)
         	{
 		  		Thread.quickReplyDone(request, status);
-				
+
 				// Get rid of spinner
 				qreply_spinner.hide();
           	}
@@ -388,7 +391,7 @@ var Thread = {
 				}
 			}
 		}
-		
+
 		if(json.hasOwnProperty("errors"))
 			return false;
 
@@ -398,10 +401,10 @@ var Thread = {
 			var post = document.createElement("div");
 
 			$('#posts').append(json.data);
-			
+
 			if (typeof inlineModeration != "undefined") // Guests don't have this object defined
 				$("#inlinemod_" + pid).on('change', inlineModeration.checkItem);
-				
+
 			Thread.quickEdit("#pid_" + pid);
 
 			// Eval javascript
@@ -481,23 +484,23 @@ var Thread = {
 								{
 									// Actually deleted
 									$('#post_'+pid).slideToggle("slow");
-									
+
 									$.jGrowl(lang.quick_delete_success, {theme:'jgrowl_success'});
-								} else if(json.data == 3) 
+								} else if(json.data == 3)
 								{
 									// deleted thread --> redirect
-									
-									if(!json.hasOwnProperty("url")) 
+
+									if(!json.hasOwnProperty("url"))
 									{
 										$.jGrowl(lang.unknown_error, {theme:'jgrowl_error'});
 									}
-									
+
 									// set timeout for redirect
-									window.setTimeout(function() 
+									window.setTimeout(function()
 									{
  										window.location = json.url;
 									}, 3000);
-									
+
 									// print success message
 									$.jGrowl(lang.quick_delete_thread_success, {theme:'jgrowl_success'});
 								}
@@ -511,7 +514,7 @@ var Thread = {
 				}
 			}
 		});
-		
+
 		return false;
 	},
 
@@ -559,7 +562,7 @@ var Thread = {
 				}
 			}
 		});
-		
+
 		return false;
 	},
 
