@@ -103,7 +103,7 @@ $forumpermissions = forum_permissions($thread['fid']);
 // Set here to fetch only approved/deleted posts (and then below for a moderator we change this).
 if($forumpermissions['canviewdeletionnotice'] != 0)
 {
-	$visibleonly = "AND visible IN (-1,1)";
+	$visibleonly = " AND visible IN (-1,1)";
 	$visibleonly2 = "AND p.visible IN (-1,1) AND t.visible IN (-1,1)";
 }
 else
