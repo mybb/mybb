@@ -9759,15 +9759,13 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <br />
 <br />
 <hr size="1" />]]></template>
-		<template name="private" version="1800"><![CDATA[<html>
+		<template name="private" version="1813"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->private_messaging}</title>
 {$headerinclude}
 </head>
 <body>
 {$header}
-<form action="private.php" method="post" name="pmForm">
-<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
@@ -9777,6 +9775,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </fieldset>
 <br />
 {$limitwarning}
+<form action="private.php" method="post" name="pmForm">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="6">
@@ -9800,6 +9800,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </td>
 </tr>
 </table>
+<input type="hidden" name="action" value="do_stuff" />
+</form>
 <br />
 <div class="float_left">{$multipage}</div>
 <div class="float_right">
@@ -9812,8 +9814,6 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </td>
 </tr>
 </table>
-<input type="hidden" name="action" value="do_stuff" />
-</form>
 {$footer}
 </body>
 </html>]]></template>
