@@ -9800,10 +9800,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </td>
 </tr>
 </table>
-<input type="hidden" name="action" value="do_stuff" />
-</form>
 <br />
-<div class="float_left">{$multipage}</div>
 <div class="float_right">
 <span class="smalltext">
 <strong>{$lang->jump_folder} {$folderjump}
@@ -9811,6 +9808,9 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </strong>
 </span>
 </div>
+<input type="hidden" name="action" value="do_stuff" />
+</form>
+<div class="float_left">{$multipage}</div>
 </td>
 </tr>
 </table>
@@ -10288,19 +10288,19 @@ if(use_xmlhttprequest == "1")
 	<td class="trow2" align="center" style="white-space: nowrap"><span class="smalltext">{$senddate}</span></td>
 	<td class="trow1" align="center"><input type="checkbox" class="checkbox" name="check[{$message['pmid']}]" value="1" /></td>
 </tr>]]></template>
-		<template name="private_search_results" version="1600"><![CDATA[<html>
+		<template name="private_search_results" version="1813"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->private_messaging}</title>
 {$headerinclude}
 </head>
 <body>
 {$header}
-<form action="private.php" method="post" name="pmForm">
-<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
 <td valign="top">
+<form action="private.php" method="post" name="pmForm">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="7">
@@ -10326,7 +10326,6 @@ if(use_xmlhttprequest == "1")
 </tr>
 </table>
 <br />
-<div class="float_left">{$multipage}</div>
 <div class="float_right">
 <span class="smalltext">
 <strong>{$lang->jump_folder} {$folderjump}
@@ -10334,11 +10333,12 @@ if(use_xmlhttprequest == "1")
 </strong>
 </span>
 </div>
+<input type="hidden" name="action" value="do_stuff" />
+</form>
+<div class="float_left">{$multipage}</div>
 </td>
 </tr>
 </table>
-<input type="hidden" name="action" value="do_stuff" />
-</form>
 {$footer}
 </body>
 </html>]]></template>
