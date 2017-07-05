@@ -9551,7 +9551,9 @@ if(use_xmlhttprequest == "1")
 	{$post['signature']}
 	<div class="post_meta" id="post_meta_{$post['pid']}">
 		{$post['iplogged']}
-		{$post['poststatus']}
+		<div class="float_right">
+			{$post['poststatus']}
+		</div>
 	</div>
 	{$post['input_editreason']}
 </div>
@@ -9621,7 +9623,9 @@ if(use_xmlhttprequest == "1")
 	{$post['signature']}
 	<div class="post_meta" id="post_meta_{$post['pid']}">
 		{$post['iplogged']}
-		{$post['poststatus']}
+		<div class="float_right">
+			{$post['poststatus']}
+		</div>
 	</div>
 	{$post['input_editreason']}
 </div>
@@ -9731,9 +9735,7 @@ if(use_xmlhttprequest == "1")
 		<template name="postbit_signature" version="1800"><![CDATA[<div class="signature scaleimages">
 {$post['signature']}
 </div>]]></template>
-		<template name="postbit_status" version="1809"><![CDATA[<div class="float_right">
-	<em><strong>{$status_type}</strong></em>
-</div>]]></template>
+		<template name="postbit_status" version="1813"><![CDATA[<span class="status_type">{$status_type}</span>]]></template>
 		<template name="postbit_userstar" version="1800"><![CDATA[<img src="{$post['starimage']}" border="0" alt="*" />]]></template>
 		<template name="postbit_warn" version="1800"><![CDATA[<a href="warnings.php?action=warn&amp;uid={$post['uid']}&amp;pid={$post['pid']}" title="{$lang->postbit_warn}" class="postbit_warn"><span>{$lang->postbit_button_warn}</span></a>]]></template>
 		<template name="postbit_warninglevel" version="1400"><![CDATA[<br />{$lang->postbit_warning_level} <a href="{$warning_link}">{$warning_level}</a>]]></template>
