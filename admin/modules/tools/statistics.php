@@ -100,7 +100,6 @@ if(!$mybb->input['action'])
 	if(empty($stats))
 	{
 		flash_message($lang->error_no_results_found_for_criteria, 'error');
-		admin_redirect("index.php?module=tools");
 	}
 
 	krsort($stats, SORT_NUMERIC);
@@ -120,40 +119,43 @@ if(!$mybb->input['action'])
 	echo "</fieldset>\n";
 	$form->end();
 
-	echo "<fieldset><legend>{$lang->users}</legend>\n";
-	echo "<img src=\"index.php?module=tools-statistics&amp;action=do_graph&amp;type=users{$range}\" />\n";
-	echo "</fieldset>\n";
-
-	echo "<fieldset><legend>{$lang->threads}</legend>\n";
-	echo "<img src=\"index.php?module=tools-statistics&amp;action=do_graph&amp;type=threads{$range}\" />\n";
-	echo "</fieldset>\n";
-
-	echo "<fieldset><legend>{$lang->posts}</legend>\n";
-	echo "<img src=\"index.php?module=tools-statistics&amp;action=do_graph&amp;type=posts{$range}\" />\n";
-	echo "</fieldset>\n";
-
-	$total_rows = count($stats);
-
-	$table = new Table;
-	$table->construct_header($lang->date);
-	$table->construct_header($lang->users);
-	$table->construct_header($lang->threads);
-	$table->construct_header($lang->posts);
-	$query = $db->simple_select("stats", "*", "dateline >= '".(int)$start_dateline."' AND dateline <= '".(int)$end_dateline."'", array('order_by' => 'dateline', 'order_dir' => 'desc', 'limit_start' => $start, 'limit' => $per_page));
-	while($stat = $db->fetch_array($query))
+	if(!empty($stats))
 	{
-		$table->construct_cell("<strong>".date($mybb->settings['dateformat'], $stat['dateline'])."</strong>");
-		$table->construct_cell(my_number_format($stat['numusers'])." <small>".generate_growth_string($stats[$stat['dateline']]['change_users'])."</small>");
-		$table->construct_cell(my_number_format($stat['numthreads'])." <small>".generate_growth_string($stats[$stat['dateline']]['change_threads'])."</small>");
-		$table->construct_cell(my_number_format($stat['numposts'])." <small>".generate_growth_string($stats[$stat['dateline']]['change_posts'])."</small>");
-		$table->construct_row();
+		echo "<fieldset><legend>{$lang->users}</legend>\n";
+		echo "<img src=\"index.php?module=tools-statistics&amp;action=do_graph&amp;type=users{$range}\" />\n";
+		echo "</fieldset>\n";
+
+		echo "<fieldset><legend>{$lang->threads}</legend>\n";
+		echo "<img src=\"index.php?module=tools-statistics&amp;action=do_graph&amp;type=threads{$range}\" />\n";
+		echo "</fieldset>\n";
+
+		echo "<fieldset><legend>{$lang->posts}</legend>\n";
+		echo "<img src=\"index.php?module=tools-statistics&amp;action=do_graph&amp;type=posts{$range}\" />\n";
+		echo "</fieldset>\n";
+
+		$total_rows = count($stats);
+
+		$table = new Table;
+		$table->construct_header($lang->date);
+		$table->construct_header($lang->users);
+		$table->construct_header($lang->threads);
+		$table->construct_header($lang->posts);
+		$query = $db->simple_select("stats", "*", "dateline >= '".(int)$start_dateline."' AND dateline <= '".(int)$end_dateline."'", array('order_by' => 'dateline', 'order_dir' => 'desc', 'limit_start' => $start, 'limit' => $per_page));
+		while($stat = $db->fetch_array($query))
+		{
+			$table->construct_cell("<strong>".date($mybb->settings['dateformat'], $stat['dateline'])."</strong>");
+			$table->construct_cell(my_number_format($stat['numusers'])." <small>".generate_growth_string($stats[$stat['dateline']]['change_users'])."</small>");
+			$table->construct_cell(my_number_format($stat['numthreads'])." <small>".generate_growth_string($stats[$stat['dateline']]['change_threads'])."</small>");
+			$table->construct_cell(my_number_format($stat['numposts'])." <small>".generate_growth_string($stats[$stat['dateline']]['change_posts'])."</small>");
+			$table->construct_row();
+		}
+		$table->output($lang->overall_statistics);
+
+		$url_range = "&amp;from_month=".$mybb->get_input('from_month', MyBB::INPUT_INT)."&amp;from_day=".$mybb->get_input('from_day', MyBB::INPUT_INT)."&amp;from_year=".$mybb->get_input('from_year', MyBB::INPUT_INT);
+		$url_range .= "&amp;to_month=".$mybb->get_input('to_month', MyBB::INPUT_INT)."&amp;to_day=".$mybb->get_input('to_day', MyBB::INPUT_INT)."&amp;to_year=".$mybb->get_input('to_year', MyBB::INPUT_INT);
+
+		echo draw_admin_pagination($mybb->input['page'], $per_page, $total_rows, "index.php?module=tools-statistics{$url_range}&amp;page={page}");
 	}
-	$table->output($lang->overall_statistics);
-
-	$url_range = "&amp;from_month=".$mybb->get_input('from_month', MyBB::INPUT_INT)."&amp;from_day=".$mybb->get_input('from_day', MyBB::INPUT_INT)."&amp;from_year=".$mybb->get_input('from_year', MyBB::INPUT_INT);
-	$url_range .= "&amp;to_month=".$mybb->get_input('to_month', MyBB::INPUT_INT)."&amp;to_day=".$mybb->get_input('to_day', MyBB::INPUT_INT)."&amp;to_year=".$mybb->get_input('to_year', MyBB::INPUT_INT);
-
-	echo draw_admin_pagination($mybb->input['page'], $per_page, $total_rows, "index.php?module=tools-statistics{$url_range}&amp;page={page}");
 
 	$page->output_footer();
 }
