@@ -503,6 +503,7 @@ function build_postbit($post, $post_type=0)
 		eval("\$post['user_details'] = \"".$templates->get("postbit_author_guest")."\";");
 	}
 
+	$post['input_editreason'] = '';
 	$post['button_edit'] = '';
 	$post['button_quickdelete'] = '';
 	$post['button_quickrestore'] = '';
@@ -536,7 +537,7 @@ function build_postbit($post, $post_type=0)
 		{
 			$forumpermissions = forum_permissions($fid);
 		}
-		
+
 		// Figure out if we need to show an "edited by" message
 		if($post['edituid'] != 0 && $post['edittime'] != 0 && $post['editusername'] != "" && (($mybb->settings['showeditedby'] != 0 && $usergroup['cancp'] == 0) || ($mybb->settings['showeditedbyadmin'] != 0 && $usergroup['cancp'] == 1)))
 		{
@@ -557,6 +558,7 @@ function build_postbit($post, $post_type=0)
 		$time = TIME_NOW;
 		if((is_moderator($fid, "caneditposts") || ($forumpermissions['caneditposts'] == 1 && $mybb->user['uid'] == $post['uid'] && $thread['closed'] != 1 && ($mybb->usergroup['edittimelimit'] == 0 || $mybb->usergroup['edittimelimit'] != 0 && $post['dateline'] > ($time-($mybb->usergroup['edittimelimit']*60))))) && $mybb->user['uid'] != 0)
 		{
+			eval("\$post['input_editreason'] = \"".$templates->get("postbit_editreason")."\";");
 			eval("\$post['button_edit'] = \"".$templates->get("postbit_edit")."\";");
 		}
 
@@ -895,7 +897,7 @@ function get_post_attachments($id, &$post)
 	{
 		$forumpermissions = forum_permissions($post['fid']);
 	}
-	
+
 	if(isset($attachcache[$id]) && is_array($attachcache[$id]))
 	{ // This post has 1 or more attachments
 		foreach($attachcache[$id] as $aid => $attachment)

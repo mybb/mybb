@@ -1827,6 +1827,10 @@ class PostDataHandler extends DataHandler
 		{
 			$this->post_update_data['editreason'] = $db->escape_string(trim($post['editreason']));
 		}
+		elseif($post['editreason'] == '')
+		{
+			$this->post_update_data['editreason'] = '';
+		}
 
 		if(isset($post['icon']))
 		{
