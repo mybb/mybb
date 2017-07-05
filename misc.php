@@ -621,6 +621,7 @@ elseif($mybb->input['action'] == "whoposted")
 	$whoposted = '';
 	$tid = $mybb->get_input('tid', MyBB::INPUT_INT);
 	$thread = get_thread($tid);
+	$modal = $mybb->get_input('modal', MyBB::INPUT_INT);
 
 	// Make sure we are looking at a real thread here.
 	if(!$thread)
@@ -698,20 +699,58 @@ elseif($mybb->input['action'] == "whoposted")
 		$poster['username'] = htmlspecialchars_uni($poster['username']);
 		$poster['postusername'] = htmlspecialchars_uni($poster['postusername']);
 		$poster_name = format_name($poster['username'], $poster['usergroup'], $poster['displaygroup']);
-		if($poster['uid'])
+		if($modal)
 		{
-			$onclick = "opener.location.href='".get_profile_link($poster['uid'])."'; return false;";
+			$onclick = '';
+			if($poster['uid'])
+			{
+				$onclick = "opener.location.href='".get_profile_link($poster['uid'])."'; return false;";
+			}
+			$profile_link = build_profile_link($poster_name, $poster['uid'], '_blank', $onclick);
 		}
-		$profile_link = build_profile_link($poster_name, $poster['uid'], '_blank', $onclick);
+		else
+		{
+			$profile_link = build_profile_link($poster_name, $poster['uid']);
+		}
 		$numposts += $poster['posts'];
 		eval("\$whoposted .= \"".$templates->get("misc_whoposted_poster")."\";");
 		$altbg = alt_trow();
 	}
 	$numposts = my_number_format($numposts);
 	$poster['posts'] = my_number_format($poster['posts']);
-	eval("\$whop = \"".$templates->get("misc_whoposted", 1, 0)."\";");
-	echo $whop;
-	exit;
+	if($modal)
+	{
+		eval("\$whop = \"".$templates->get("misc_whoposted", 1, 0)."\";");
+		echo $whop;
+		exit;
+	}
+	else
+	{
+		require_once MYBB_ROOT."inc/class_parser.php";
+		$parser = new postParser;
+
+		// Get thread prefix
+		$breadcrumbprefix = '';
+		$threadprefix = array('prefix' => '');
+		if($thread['prefix'])
+		{
+			$threadprefix = build_prefixes($thread['prefix']);
+			if(!empty($threadprefix['displaystyle']))
+			{
+				$breadcrumbprefix = $threadprefix['displaystyle'].'&nbsp;';
+			}
+		}
+
+		$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
+
+		// Build the navigation.
+		build_forum_breadcrumb($forum['fid']);
+		add_breadcrumb($breadcrumbprefix.$thread['subject'], get_thread_link($thread['tid']));
+		add_breadcrumb($lang->who_posted);
+
+		eval("\$whoposted = \"".$templates->get("misc_whoposted_page")."\";");
+		output_page($whoposted);
+	}
 }
 elseif($mybb->input['action'] == "smilies")
 {
@@ -731,8 +770,8 @@ elseif($mybb->input['action'] == "smilies")
 			{
 				$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
 				$smilie['image'] = htmlspecialchars_uni($mybb->get_asset_url($smilie['image']));
-				$smilie['name'] = htmlspecialchars_uni($smilie['name']);				
-				
+				$smilie['name'] = htmlspecialchars_uni($smilie['name']);
+
 				// Only show the first text to replace in the box
 				$temp = explode("\n", $smilie['find']); // use temporary variable for php 5.3 compatibility
 				$smilie['find'] = $temp[0];
@@ -783,8 +822,8 @@ elseif($mybb->input['action'] == "smilies")
 			{
 				$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
 				$smilie['image'] = htmlspecialchars_uni($mybb->get_asset_url($smilie['image']));
-				$smilie['name'] = htmlspecialchars_uni($smilie['name']);				
-				
+				$smilie['name'] = htmlspecialchars_uni($smilie['name']);
+
 				$smilie['find'] = nl2br(htmlspecialchars_uni($smilie['find']));
 				eval('$smilie_image = "'.$templates->get('smilie').'";');
 				eval("\$smilies .= \"".$templates->get("misc_smilies_smilie")."\";");
@@ -862,7 +901,7 @@ elseif($mybb->input['action'] == "imcenter")
 		$imtype_lang = $lang->yahoo_im;
 		eval("\$navigationbar .= \"".$templates->get("misc_imcenter_nav")."\";");
 	}
-	
+
 	$user['skype'] = htmlspecialchars_uni($user['skype']);
 	$user['yahoo'] = htmlspecialchars_uni($user['yahoo']);
 	$user['aim'] = htmlspecialchars_uni($user['aim']);
@@ -899,7 +938,7 @@ elseif($mybb->input['action'] == "syndication")
 	$unexp1 = explode(',', $unviewable);
 	$unexp2 = explode(',', $inactiveforums);
 	$unexp = array_merge($unexp1, $unexp2);
-	
+
 	if(is_array($forums))
 	{
 		foreach($unexp as $fid)
@@ -1066,7 +1105,7 @@ function makesyndicateforums($pid=0, $selitem="", $addselect=true, $depth="")
 			}
 		}
 	}
-	
+
 	if($addselect)
 	{
 		$addsel = '';
