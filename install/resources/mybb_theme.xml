@@ -9551,6 +9551,7 @@ if(use_xmlhttprequest == "1")
 	{$post['signature']}
 	<div class="post_meta" id="post_meta_{$post['pid']}">
 		{$post['iplogged']}
+		{$post['poststatus']}
 	</div>
 	{$post['input_editreason']}
 </div>
@@ -9620,6 +9621,7 @@ if(use_xmlhttprequest == "1")
 	{$post['signature']}
 	<div class="post_meta" id="post_meta_{$post['pid']}">
 		{$post['iplogged']}
+		{$post['poststatus']}
 	</div>
 	{$post['input_editreason']}
 </div>
