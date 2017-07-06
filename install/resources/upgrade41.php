@@ -66,5 +66,5 @@ function upgrade41_dbchanges2()
 	$db->update_query('posts', array('username' => ''), "uid = 0 AND username IN ('{$guestlangs}')");
 	$db->update_query('threads', array('username' => ''), "uid = 0 AND username IN ('{$guestlangs}')");
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("37_done");
+	$output->print_footer("41_done");
 }
