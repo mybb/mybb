@@ -266,7 +266,7 @@ if($mybb->input['action'] == "join_requests")
 
 	$form = new Form("index.php?module=user-groups&amp;action=join_requests&gid={$group['gid']}", "post");
 	$table = new Table;
-	$table->construct_header($form->generate_check_box("checkall", 1, "", array('class' => 'checkall')), array('width' => 1));
+	$table->construct_header($form->generate_check_box("allbox", 1, "", array('class' => 'checkall')), array('width' => 1));
 	$table->construct_header($lang->users);
 	$table->construct_header($lang->reason);
 	$table->construct_header($lang->date_requested, array("class" => 'align_center', "width" => 200));
