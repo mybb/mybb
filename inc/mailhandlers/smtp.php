@@ -420,12 +420,12 @@ class SmtpMail extends MailHandler
 
 			case 'CRAM-MD5':
 
-				$response = $this->send_data("AUTH CRAM-MD5", 334);
-				if(!empty($response))
+				$challenge = $this->send_data("AUTH CRAM-MD5", 334);
+				if(!empty($challenge))
 				{
-					$challenge = base64_decode(substr($response, 4));
+					$challenge = base64_decode(substr($challenge, 4));
 					$response = $this->username.' '.$this->hmac($challenge, $this->password);
-					$resp = $this->send_data(base64_encode($response), 235);
+					$this->send_data(base64_encode($response), 235);
 
 					if($this->code == 235)
 						return true;
@@ -434,14 +434,14 @@ class SmtpMail extends MailHandler
 
 			case 'DIGEST-MD5':
 
-				$resp = $this->send_data("AUTH DIGEST-MD5", 334);
-				if(!empty($resp))
+				$challenge = $this->send_data("AUTH DIGEST-MD5", 334);
+				if(!empty($challenge))
 				{
-					$resp = base64_decode(substr($resp,4));
-					$response = $this->saslauth->getResponse($this->username, $this->password, $resp, $this->helo, "smtp");
+					$challenge = base64_decode(substr($challenge,4));
+					$response = $this->saslauth->getResponse($this->username, $this->password, $challenge, $this->helo, "smtp");
 					
-					$resp = $this->send_data(base64_encode($response), 334);
-					$resp = $this->send_data("", 235);
+					$this->send_data(base64_encode($response), 334);
+					$this->send_data("", 235);
 
 					if($this->code == 235)
 						return true;
