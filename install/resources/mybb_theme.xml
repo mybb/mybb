@@ -9746,13 +9746,14 @@ if(use_xmlhttprequest == "1")
 <td class="trow1" valign="top">{$iconlist}</td>
 </tr>]]></template>
 		<template name="posticons_icon" version="1800"><![CDATA[<label class="posticons_label"><input type="radio" name="icon" value="{$dbicon['iid']}"{$checked} /> <img src="{$dbicon['path']}" alt="{$dbicon['name']}" title="{$dbicon['name']}" /></label>]]></template>
-		<template name="printthread" version="1600"><![CDATA[<html>
+		<template name="printthread" version="1813"><![CDATA[<html>
 <head>
 <title>{$thread['threadprefix']} {$thread['subject']} - {$lang->printable_version}</title>
 <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
 <style type="text/css">
 body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 .largetext { font-family: Verdana, Arial, sans-serif; font-size: medium; font-weight: bold; }
+img { max-width: 100%; height: auto; }
 </style>
 </head>
 <body>
