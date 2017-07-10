@@ -396,6 +396,24 @@ class SmtpMail extends MailHandler
 				return false;
 			}
 		}
+    else if(in_array("DIGEST-MD5", $auth_methods))
+		{	
+			require "digestmd5.php";
+			$saslauth = new Auth_SASL_DigestMD5();
+
+			$challenge = $this->send_data("AUTH DIGEST-MD5", 334);
+			if(!empty($challenge))
+			{
+				$challenge = base64_decode(substr($challenge,4));
+				$response = $saslauth->getResponse($this->username, $this->password, $challenge, $this->helo, "smtp");
+					
+				$this->send_data(base64_encode($response), 334);
+				$this->send_data("", 235);
+				if($this->code == 235)
+						return true;
+			}
+			return false;
+    }
 		else
 		{
 			$this->fatal_error("The SMTP server does not support any of the AUTH methods that MyBB supports");
