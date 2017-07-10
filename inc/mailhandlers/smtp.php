@@ -13,7 +13,7 @@ if(!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
-
+require "digestmd5.php";
 /**
  * SMTP mail handler class.
  */
@@ -30,6 +30,7 @@ if(!defined('MYBB_TLS'))
 
 class SmtpMail extends MailHandler
 {
+
 	/**
 	 * The SMTP connection.
 	 *
@@ -121,9 +122,12 @@ class SmtpMail extends MailHandler
 	 */
 	public $use_tls = false;
 
+	public $saslauth;
+
 	function __construct()
 	{
 		global $mybb;
+		$this->saslauth = new Auth_SASL_DigestMD5();
 
 		$protocol = '';
 		switch($mybb->settings['secure_smtp'])
@@ -352,58 +356,104 @@ class SmtpMail extends MailHandler
 	{
 		global $lang, $mybb;
 
+		$allowed_auth_methods = array('DIGEST-MD5', 'CRAM-MD5', 'LOGIN', 'PLAIN');
+		#server auth methods
 		$auth_methods = explode(" ", trim($auth_methods));
+		#auth method
+		$auth = false;
 
-		if(in_array("LOGIN", $auth_methods))
-		{
-			if(!$this->send_data("AUTH LOGIN", 334))
+		foreach ($allowed_auth_methods as $value) {
+			if(in_array($value, $auth_methods))
 			{
-				if($this->code == 503)
+				$auth = $value;
+				break;
+			}
+		}
+
+		if(!$auth)
+			$auth = "NONE";
+
+		switch ($auth) {
+			
+			case 'PLAIN':
+				if(!$this->send_data("AUTH PLAIN", '334'))
 				{
-					return true;
+					if($this->code == 503)
+					{
+						return true;
+					}
+					$this->fatal_error("The SMTP server did not respond correctly to the AUTH PLAIN command");
+					return false;
 				}
-				$this->fatal_error("The SMTP server did not respond correctly to the AUTH LOGIN command");
-				return false;
-			}
-
-			if(!$this->send_data(base64_encode($this->username), '334'))
-			{
-				$this->fatal_error("The SMTP server rejected the supplied SMTP username. Reason: ".$this->get_error());
-				return false;
-			}
-
-			if(!$this->send_data(base64_encode($this->password), '235'))
-			{
-				$this->fatal_error("The SMTP server rejected the supplied SMTP password. Reason: ".$this->get_error());
-				return false;
-			}
-		}
-		else if(in_array("PLAIN", $auth_methods))
-		{
-			if(!$this->send_data("AUTH PLAIN", '334'))
-			{
-				if($this->code == 503)
+				$_auth = base64_encode(chr(0).$this->username.chr(0).$this->password);
+				if(!$this->send_data($_auth, 235))
 				{
-					return true;
+					$this->fatal_error("The SMTP server rejected the supplied login username and password. Reason: ".$this->get_error());
+					return false;
 				}
-				$this->fatal_error("The SMTP server did not respond correctly to the AUTH PLAIN command");
-				return false;
-			}
-			$auth = base64_encode(chr(0).$this->username.chr(0).$this->password);
-			if(!$this->send_data($auth, 235))
-			{
-				$this->fatal_error("The SMTP server rejected the supplied login username and password. Reason: ".$this->get_error());
-				return false;
-			}
-		}
-		else
-		{
-			$this->fatal_error("The SMTP server does not support any of the AUTH methods that MyBB supports");
-			return false;
-		}
+				return true;
+			
+			case 'LOGIN':
+		
+				if(!$this->send_data("AUTH LOGIN", 334))
+				{
+					if($this->code == 503)
+					{
+						return true;
+					}
+					$this->fatal_error("The SMTP server did not respond correctly to the AUTH LOGIN command");
+					return false;
+				}
 
-		// Still here, we're authenticated
-		return true;
+				if(!$this->send_data(base64_encode($this->username), '334'))
+				{
+					$this->fatal_error("The SMTP server rejected the supplied SMTP username. Reason: ".$this->get_error());
+					return false;
+				}
+
+				if(!$this->send_data(base64_encode($this->password), '235'))
+				{
+					$this->fatal_error("The SMTP server rejected the supplied SMTP password. Reason: ".$this->get_error());
+					return false;
+				}
+				return true;
+
+			case 'CRAM-MD5':
+
+				$response = $this->send_data("AUTH CRAM-MD5", 334);
+				if(!empty($response))
+				{
+					$challenge = base64_decode(substr($response, 4));
+					$response = $this->username.' '.$this->hmac($challenge, $this->password);
+					$resp = $this->send_data(base64_encode($response), 235);
+
+					if($this->code == 235)
+						return true;
+				}
+				return false;
+
+			case 'DIGEST-MD5':
+
+				$resp = $this->send_data("AUTH DIGEST-MD5", 334);
+				if(!empty($resp))
+				{
+					$resp = base64_decode(substr($resp,4));
+					$response = $this->saslauth->getResponse($this->username, $this->password, $resp, $this->helo, "smtp");
+					
+					$resp = $this->send_data(base64_encode($response), 334);
+					$resp = $this->send_data("", 235);
+
+					if($this->code == 235)
+						return true;
+				}
+
+				return false;
+
+			default:
+				$this->fatal_error("The SMTP server does not support any of the AUTH methods that MyBB supports");
+				return false;
+				break;
+		}		
 	}
 
 	/**
@@ -535,4 +585,40 @@ class SmtpMail extends MailHandler
 	{
 		$this->last_error = $error;
 	}
+
+	 /**
+     * Calculate an MD5 HMAC hash.
+     * Works like hash_hmac('md5', $data, $key)
+     * in case that function is not available
+     * @param string $data The data to hash
+     * @param string $key  The key to hash with
+     * @access protected
+     * @return string
+     */
+    protected function hmac($data, $key)
+    {
+        if (function_exists('hash_hmac')) {
+            return hash_hmac('md5', $data, $key);
+        }
+
+        // The following borrowed from
+        // http://php.net/manual/en/function.mhash.php#27225
+
+        // RFC 2104 HMAC implementation for php.
+        // Creates an md5 HMAC.
+        // Eliminates the need to install mhash to compute a HMAC
+        // by Lance Rushing
+
+        $bytelen = 64; // byte length for md5
+        if (strlen($key) > $bytelen) {
+            $key = pack('H*', md5($key));
+        }
+        $key = str_pad($key, $bytelen, chr(0x00));
+        $ipad = str_pad('', $bytelen, chr(0x36));
+        $opad = str_pad('', $bytelen, chr(0x5c));
+        $k_ipad = $key ^ $ipad;
+        $k_opad = $key ^ $opad;
+
+        return md5($k_opad . pack('H*', md5($k_ipad . $data)));
+    }
 }
