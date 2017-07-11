@@ -354,7 +354,39 @@ class SmtpMail extends MailHandler
 
 		$auth_methods = explode(" ", trim($auth_methods));
 
-		if(in_array("LOGIN", $auth_methods))
+		if(in_array("DIGEST-MD5", $auth_methods))
+		{	
+			require "digestmd5.php";
+			$saslauth = new Auth_SASL_DigestMD5();
+
+			$challenge = $this->send_data("AUTH DIGEST-MD5", 334);
+			if(!empty($challenge))
+			{
+				$challenge = base64_decode(substr($challenge,4));
+				$response = $saslauth->getResponse($this->username, $this->password, $challenge, $this->helo, "smtp");
+					
+				$this->send_data(base64_encode($response), 334);
+				$this->send_data("", 235);
+				if($this->code == 235)
+						return true;
+			}
+			return false;
+		}
+		else if(in_array("CRAM-MD5", $auth_methods))
+		{
+			$challenge = $this->send_data("AUTH CRAM-MD5", 334);
+			if(!empty($challenge))
+			{
+				$challenge = base64_decode(substr($challenge, 4));
+				$response = $this->username.' '.$this->hmac($challenge, $this->password);
+				$this->send_data(base64_encode($response), 235);
+
+				if($this->code == 235)
+					return true;
+			}
+				return false;
+		}
+		else if(in_array("LOGIN", $auth_methods))
 		{
 			if(!$this->send_data("AUTH LOGIN", 334))
 			{
@@ -401,9 +433,9 @@ class SmtpMail extends MailHandler
 			$this->fatal_error("The SMTP server does not support any of the AUTH methods that MyBB supports");
 			return false;
 		}
-
+		
 		// Still here, we're authenticated
-		return true;
+		return true;	
 	}
 
 	/**
@@ -535,4 +567,40 @@ class SmtpMail extends MailHandler
 	{
 		$this->last_error = $error;
 	}
+
+	 /**
+     * Calculate an MD5 HMAC hash.
+     * Works like hash_hmac('md5', $data, $key)
+     * in case that function is not available
+     * @param string $data The data to hash
+     * @param string $key  The key to hash with
+     * @access protected
+     * @return string
+     */
+    protected function hmac($data, $key)
+    {
+        if (function_exists('hash_hmac')) {
+            return hash_hmac('md5', $data, $key);
+        }
+
+        // The following borrowed from
+        // http://php.net/manual/en/function.mhash.php#27225
+
+        // RFC 2104 HMAC implementation for php.
+        // Creates an md5 HMAC.
+        // Eliminates the need to install mhash to compute a HMAC
+        // by Lance Rushing
+
+        $bytelen = 64; // byte length for md5
+        if (strlen($key) > $bytelen) {
+            $key = pack('H*', md5($key));
+        }
+        $key = str_pad($key, $bytelen, chr(0x00));
+        $ipad = str_pad('', $bytelen, chr(0x36));
+        $opad = str_pad('', $bytelen, chr(0x5c));
+        $k_ipad = $key ^ $ipad;
+        $k_opad = $key ^ $opad;
+
+        return md5($k_opad . pack('H*', md5($k_ipad . $data)));
+    }
 }
