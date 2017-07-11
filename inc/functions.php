@@ -5683,8 +5683,8 @@ function my_strtoupper($string)
 function unhtmlentities($string)
 {
 	// Replace numeric entities
-	$string = preg_replace_callback('~&#x([0-9a-f]+);~i', create_function('$matches', 'return unichr(hexdec($matches[1]));'), $string);
-	$string = preg_replace_callback('~&#([0-9]+);~', create_function('$matches', 'return unichr($matches[1]);'), $string);
+	$string = preg_replace_callback('~&#x([0-9a-f]+);~i', 'unichr_callback1', $string);
+	$string = preg_replace_callback('~&#([0-9]+);~', 'unichr_callback2', $string);
 
 	// Replace literal entities
 	$trans_tbl = get_html_translation_table(HTML_ENTITIES);
@@ -5724,6 +5724,28 @@ function unichr($c)
 	{
 		return false;
 	}
+}
+
+/**
+ * Returns any ascii to it's character (utf-8 safe).
+ *
+ * @param array $matches Matches.
+ * @return string|bool The characterized ascii. False on failure
+ */
+function unichr_callback1($matches)
+{
+	return unichr(hexdec($matches[1]));
+}
+
+/**
+ * Returns any ascii to it's character (utf-8 safe).
+ *
+ * @param array $matches Matches.
+ * @return string|bool The characterized ascii. False on failure
+ */
+function unichr_callback2($matches)
+{
+	return unichr($matches[1]);
 }
 
 /**
@@ -6476,7 +6498,7 @@ function build_highlight_array($terms)
 
 	// Sort the word array by length. Largest terms go first and work their way down to the smallest term.
 	// This resolves problems like "test tes" where "tes" will be highlighted first, then "test" can't be highlighted because of the changed html
-	usort($words, create_function('$a,$b', 'return strlen($b) - strlen($a);'));
+	usort($words, 'build_highlight_array_sort');
 
 	// Loop through our words to build the PREG compatible strings
 	foreach($words as $word)
@@ -6498,6 +6520,18 @@ function build_highlight_array($terms)
 	}
 
 	return $highlight_cache;
+}
+
+/**
+ * Sort the word array by length. Largest terms go first and work their way down to the smallest term.
+ *
+ * @param string $a First word.
+ * @param string $b Second word.
+ * @return integer Result of comparison function.
+ */
+function build_highlight_array_sort($a, $b)
+{
+	return strlen($b) - strlen($a);
 }
 
 /**
