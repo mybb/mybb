@@ -1050,6 +1050,8 @@ if($mybb->input['action'] == "thread")
 			error($lang->error_invalidthread);
 		}
 
+		$plugins->run_hooks("showthread_pre_postbit_linear");
+
 		// Get the actual posts from the database here.
 		$posts = '';
 		$query = $db->query("
