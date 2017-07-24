@@ -130,7 +130,7 @@ class PMDataHandler extends DataHandler
 		// Check if the sender is over their quota or not - if they are, disable draft sending
 		if(isset($pm['options']['savecopy']) && $pm['options']['savecopy'] != 0 && empty($pm['saveasdraft']))
 		{
-			if($sender_permissions['pmquota'] != "0" && $sender['totalpms'] >= $sender_permissions['pmquota'] && $this->admin_override != true)
+			if($sender_permissions['pmquota'] != 0 && $sender['totalpms'] >= $sender_permissions['pmquota'] && $this->admin_override != true)
 			{
 				$pm['options']['savecopy'] = 0;
 			}
@@ -315,7 +315,7 @@ class PMDataHandler extends DataHandler
 			}
 
 			// Check to see if the user has reached their private message quota - if they have, email them.
-			if($recipient_permissions['pmquota'] != "0" && $user['totalpms'] >= $recipient_permissions['pmquota'] && $recipient_permissions['cancp'] != 1 && $sender_permissions['cancp'] != 1 && empty($pm['saveasdraft']) && !$this->admin_override)
+			if($recipient_permissions['pmquota'] != 0 && $user['totalpms'] >= $recipient_permissions['pmquota'] && $sender_permissions['cancp'] != 1 && empty($pm['saveasdraft']) && !$this->admin_override)
 			{
 				if(trim($user['language']) != '' && $lang->language_exists($user['language']))
 				{

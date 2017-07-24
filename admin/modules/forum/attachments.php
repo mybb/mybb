@@ -847,6 +847,31 @@ if(!$mybb->input['action'])
 			$form->output_submit_wrapper($buttons);
 			$form->end();
 
+			echo "<script type=\"text/javascript\">
+				var checked = false;
+				$(\"input:checkbox.checkall\").click(function()
+				{
+					if(checked == false)
+					{
+						checked = true;
+						$('input:checkbox').prop('checked', true);
+					}
+					else
+					{
+						checked = false;
+						$('input:checkbox').prop('checked', false);
+					}
+				});
+				$(\"input:checkbox:not(.checkall)\").click(function()
+				{
+					if($(this).prop('checked') == false)
+					{
+						$('input:checkbox[name=\"checkall\"]').prop('checked', false);
+						checked = false;
+					}
+				});
+				</script>\n";
+
 			$page->output_footer();
 		}
 	}
