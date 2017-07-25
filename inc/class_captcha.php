@@ -108,8 +108,11 @@ class captcha
 			{
 				$this->captcha_template .= "_recaptcha";
 			}
-			else if($this->type == 4){
+			elseif($this->type == 4){
 				$this->captcha_template .= "_nocaptcha";
+			}
+			elseif($this->type == 5){
+				$this->captcha_template .= "_recaptcha_invisible";
 			}
 		}
 
@@ -125,9 +128,9 @@ class captcha
 				$this->build_recaptcha();
 			}
 		}
-		else if($this->type == 4 && $mybb->settings['captchapublickey'] && $mybb->settings['captchaprivatekey'])
+		elseif(in_array($this->type, array(4, 5)) && $mybb->settings['captchapublickey'] && $mybb->settings['captchaprivatekey'])
 		{
-			// We want to use reCAPTCHA, set the server options
+			// We want to use noCAPTCHA or reCAPTCHA invisible, set the server options
 			$this->server = "//www.google.com/recaptcha/api.js";
 			$this->verify_server = "https://www.google.com/recaptcha/api/siteverify";
 
@@ -136,14 +139,14 @@ class captcha
 				$this->build_recaptcha();
 			}
 		}
-		else if($this->type == 1)
+		elseif($this->type == 1)
 		{
 			if(!function_exists("imagecreatefrompng"))
 			{
 				// We want to use the default CAPTCHA, but it's not installed
 				return;
 			}
-			else if($build == true)
+			elseif($build == true)
 			{
 				$this->build_captcha();
 			}
@@ -205,7 +208,7 @@ class captcha
 			$field['hash'] = $db->escape_string($mybb->input['imagehash']);
 			$field['string'] = $db->escape_string($mybb->input['imagestring']);
 		}
-		else if($this->type == 2)
+		elseif($this->type == 2)
 		{
 			// Names
 			$hash = "recaptcha_challenge_field";
@@ -215,7 +218,7 @@ class captcha
 			$field['hash'] = $mybb->input['recaptcha_challenge_field'];
 			$field['string'] = $mybb->input['recaptcha_response_field'];
 		}
-		else if($this->type == 3)
+		elseif($this->type == 3)
 		{
 			// Are You a Human can't be built as a hidden captcha
 			return '';
@@ -317,7 +320,7 @@ class captcha
 				}
 			}
 		}
-		elseif($this->type == 4)
+		elseif(in_array($this->type, array(4, 5)))
 		{
 			$response = $mybb->input['g-recaptcha-response'];
 			if(!$response || strlen($response) == 0)
@@ -326,7 +329,7 @@ class captcha
 			}
 			else
 			{
-				// We have a noCAPTCHA to handle
+				// We have a noCAPTCHA or reCAPTCHA invisible to handle
 				// Contact Google and see if our reCAPTCHA was successful
 				$response = fetch_remote_file($this->verify_server, array(
 					'secret' => $mybb->settings['captchaprivatekey'],
