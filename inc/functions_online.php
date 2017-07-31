@@ -245,7 +245,7 @@ function fetch_wol_activity($location, $nopermission=false)
 		case "modcp":
 			if(!isset($parameters['action']))
 			{
-				$parameters['action'] = 0;
+				$parameters['action'] = '';
 			}
 
 			$accepted_parameters = array("modlogs", "announcements", "finduser", "warninglogs", "ipsearch");
@@ -442,7 +442,7 @@ function fetch_wol_activity($location, $nopermission=false)
 		case "showthread":
 			if(!isset($parameters['action']))
 			{
-				$parameters['action'] = 0;
+				$parameters['action'] = '';
 			}
 			if(!isset($parameters['pid']))
 			{
