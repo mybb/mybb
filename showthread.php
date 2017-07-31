@@ -924,8 +924,8 @@ if($mybb->input['action'] == "thread")
 			}
 		}
 
-		// Recount replies if user is a moderator to take into account unapproved posts.
-		if($ismod)
+		// Recount replies if user is a moderator or can see the deletion notice to take into account unapproved/deleted posts.
+		if($ismod || $forumpermissions['canviewdeletionnotice'] != 0)
 		{
 			$query = $db->simple_select("posts p", "COUNT(*) AS replies", "p.tid='$tid' $visible");
 			$cached_replies = $thread['replies']+$thread['unapprovedposts']+$thread['deletedposts'];
