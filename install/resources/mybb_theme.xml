@@ -9651,12 +9651,11 @@ if(use_xmlhttprequest == "1")
 		{$deleted_message}
 	</div>
 </div>]]></template>
-		<template name="postbit_deleted_member" version="1809"><![CDATA[<a name="pid{$post['pid']}" id="pid{$post['pid']}"></a>
+		<template name="postbit_deleted_member" version="1813"><![CDATA[<a name="pid{$post['pid']}" id="pid{$post['pid']}"></a>
 <div class="post deleted_post_hidden" id="post_{$post['pid']}">
 	<div class="deleted_post_author"><strong><span class="largetext">{$post['profilelink']}</span></strong></div>
-		<div class="post_content">
-			<em>{$lang->postbit_post_deleted}</em>
-		</div>
+	<div class="post_content">
+		<em>{$lang->postbit_post_deleted}</em>
 	</div>
 </div>]]></template>
 		<template name="postbit_edit" version="1809"><![CDATA[<a href="editpost.php?pid={$post['pid']}" id="edit_post_{$post['pid']}" title="{$lang->postbit_edit}" class="postbit_edit"><span>{$lang->postbit_button_edit}</span></a>
