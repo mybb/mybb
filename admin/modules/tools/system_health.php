@@ -757,7 +757,7 @@ if(!$mybb->input['action'])
 	while($task = $db->fetch_array($query))
 	{
 		$task['title'] = htmlspecialchars_uni($task['title']);
-		$next_run = date($mybb->settings['dateformat'], $task['nextrun']).", ".date($mybb->settings['timeformat'], $task['nextrun']);
+		$next_run = my_date('normal', $task['nextrun'], "", 2);
 		$table->construct_cell("<strong>{$task['title']}</strong>");
 		$table->construct_cell($next_run, array("class" => "align_center"));
 

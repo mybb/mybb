@@ -821,7 +821,14 @@ class postParser
 		{
 			if($match[1] < TIME_NOW)
 			{
-				$postdate = my_date('relative', (int)$match[1]);
+				if($text_only)
+				{
+					$postdate = my_date('normal', (int)$match[1]);
+				}
+				else
+				{
+					$postdate = my_date('relative', (int)$match[1]);
+				}
 				$date = " ({$postdate})";
 			}
 			$username = preg_replace("#(?:&quot;|\"|')? dateline=(?:&quot;|\"|')?[0-9]+(?:&quot;|\"|')?#i", '', $username);

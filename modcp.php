@@ -3527,7 +3527,7 @@ if($mybb->input['action'] == "warninglogs")
 		$row['mod_username'] = htmlspecialchars_uni($row['mod_username']);
 		$mod_username = format_name($row['mod_username'], $row['mod_usergroup'], $row['mod_displaygroup']);
 		$mod_username_link = build_profile_link($mod_username, $row['mod_uid']);
-		$issued_date = my_date($mybb->settings['dateformat'], $row['dateline']).' '.my_date($mybb->settings['timeformat'], $row['dateline']);
+		$issued_date = my_date('normal', $row['dateline']);
 		$revoked_text = '';
 		if($row['daterevoked'] > 0)
 		{

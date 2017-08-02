@@ -132,8 +132,10 @@ $l['no_subscribe_notification'] = "Subscribe without receiving any notification 
 $l['instant_email_subscribe'] = "Subscribe and receive email notification of new replies";
 $l['instant_pm_subscribe'] = "Subscribe and receive PM notification of new replies";
 
-$l['today'] = "<span title=\"{1}\">Today</span>";
-$l['yesterday'] = "<span title=\"{1}\">Yesterday</span>";
+$l['today_rel'] = "<span title=\"{1}\">Today</span>";
+$l['yesterday_rel'] = "<span title=\"{1}\">Yesterday</span>";
+$l['today'] = "Today";
+$l['yesterday'] = "Yesterday";
 $l['error'] = "Board Message";
 
 $l['multipage_pages'] = "Pages ({1}):";

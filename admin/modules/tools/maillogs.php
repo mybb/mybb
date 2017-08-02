@@ -69,7 +69,7 @@ if($mybb->input['action'] == "view")
 	$log['toemail'] = htmlspecialchars_uni($log['toemail']);
 	$log['fromemail'] = htmlspecialchars_uni($log['fromemail']);
 	$log['subject'] = htmlspecialchars_uni($log['subject']);
-	$log['dateline'] = date($mybb->settings['dateformat'], $log['dateline']).", ".date($mybb->settings['timeformat'], $log['dateline']);
+	$log['dateline'] = my_date('relative', $log['dateline']);
 	if($mybb->settings['mail_logging'] == 1)
 	{
 		$log['message'] = $lang->na;
@@ -289,7 +289,7 @@ if(!$mybb->input['action'])
 	{
 		$table->construct_cell($form->generate_check_box("log[{$log['mid']}]", $log['mid'], ''), array("width" => 1));
 		$log['subject'] = htmlspecialchars_uni($log['subject']);
-		$log['dateline'] = date($mybb->settings['dateformat'], $log['dateline']).", ".date($mybb->settings['timeformat'], $log['dateline']);
+		$log['dateline'] = my_date('relative', $log['dateline']);
 
 		if($log['type'] == 2)
 		{
