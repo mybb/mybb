@@ -440,7 +440,7 @@ function my_date($format, $stamp=0, $offset="", $ty=1, $adodb=false)
 				$relative['prefix'] = $lang->rel_less_than;
 			}
 
-			$date = $lang->sprintf($lang->rel_time, $relative['prefix'], $relative['minute'], $relative['plural'], $relative['suffix'], $real_date, $real_time);
+			$date = $lang->sprintf($lang->rel_time, $relative['prefix'], $relative['minute'], $relative['plural'], $relative['suffix']);
 		}
 		elseif($ty != 2 && abs(TIME_NOW - $stamp) < 43200)
 		{
@@ -462,7 +462,7 @@ function my_date($format, $stamp=0, $offset="", $ty=1, $adodb=false)
 				$relative['plural'] = $lang->rel_hours_single;
 			}
 
-			$date = $lang->sprintf($lang->rel_time, $relative['prefix'], $relative['hour'], $relative['plural'], $relative['suffix'], $real_date, $real_time);
+			$date = $lang->sprintf($lang->rel_time, $relative['prefix'], $relative['hour'], $relative['plural'], $relative['suffix']);
 		}
 		else
 		{
