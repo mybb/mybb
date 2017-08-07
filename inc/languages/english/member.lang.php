@@ -87,7 +87,7 @@ $l['agreement_4'] = "Any information you provide on these forums will not be dis
 $l['agreement_5'] = "By continuing with the sign up process you agree to the above rules and any others that the Administrator specifies.";
 $l['registration'] = "Registration";
 $l['required_fields'] = "Required Fields";
-$l['complex_password'] = "<acronym title=\"A password that is at least {1} characters long and contains an upper case letter, a lower case letter and a number.\">Complex</acronym> Password:";
+$l['complex_password'] = "<abbr title=\"A password that is at least {1} characters long and contains an upper case letter, a lower case letter and a number.\">Complex</abbr> Password:";
 $l['confirm_email'] = "Confirm Email:";
 $l['optional_fields'] = "Optional Fields";
 $l['website_url'] = "Your Website URL:";
