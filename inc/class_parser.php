@@ -1525,7 +1525,7 @@ class postParser
 				$last_char = my_substr($matches[3], -1);
 			}
 		}
-		if($matches[2] == 'www' || $matches[2] == 'ftp')
+		if(in_array(strtolower($matches[2]), array('www', 'ftp')))
 		{
 			return "{$matches[1]}[url]{$matches[2]}.{$matches[3]}[/url]{$external}";
 		}
