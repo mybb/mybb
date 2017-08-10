@@ -1110,7 +1110,7 @@ function update_theme_stylesheet_list($tid, $theme = false, $update_disporders =
 	$db->update_query("themes", $updated_theme, "tid = '{$tid}'");
 
 	// Do we have any children themes that need updating too?
-	if(count($child_list) > 0)
+	if(is_array($child_list) && count($child_list) > 0)
 	{
 		foreach($child_list as $id)
 		{
