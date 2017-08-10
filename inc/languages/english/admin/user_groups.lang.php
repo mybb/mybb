@@ -196,6 +196,7 @@ $l['no_join_requests'] = "There are no outstanding join requests for this user g
 $l['no_assigned_leaders'] = "You haven't assigned any users as leaders of this group yet. To create a leader for this group, fill in the form below.";
 
 $l['error_missing_title'] = "You did not enter a title for this new user group.";
+$l['error_title_already_exists'] = "The entered title for this new user group is identical with title of an existing group.";
 $l['error_invalid_user_group'] = "You have selected an invalid user group.";
 $l['error_invalid_join_request'] = "You have selected an invalid join request.";
 $l['error_invalid_username'] = "The username you entered is invalid.";
