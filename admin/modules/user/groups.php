@@ -1483,7 +1483,7 @@ if(!$mybb->input['action'])
 			$join_requests = " <small><a href=\"index.php?module=user-groups&amp;action=join_requests&amp;gid={$usergroup['gid']}\"><span style=\"color: red;\">({$joinrequests[$usergroup['gid']]} {$lang->outstanding_join_request})</span></a></small>";
 		}
 
-		$form_container->output_cell("<div class=\"float_right\">{$icon}</div><div><strong><a href=\"index.php?module=user-groups&amp;action=edit&amp;gid={$usergroup['gid']}\">".htmlspecialchars_uni($usergroup['title'])."</a></strong>{$join_requests}<br /><small>".htmlspecialchars_uni($usergroup['description'])."{$leaders_list}</small></div>");
+		$form_container->output_cell("<div class=\"float_right\">{$icon}</div><div><strong><a href=\"index.php?module=user-groups&amp;action=edit&amp;gid={$usergroup['gid']}\">".format_name(htmlspecialchars_uni($usergroup['title']), $usergroup['gid'])."</a></strong>{$join_requests}<br /><small>".htmlspecialchars_uni($usergroup['description'])."{$leaders_list}</small></div>");
 
 		if(!$primaryusers[$usergroup['gid']])
 		{
