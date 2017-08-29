@@ -9431,9 +9431,9 @@ if(use_xmlhttprequest == "1")
 <td class="trow1" style="white-space: nowrap" align="center">{$attach_update_options} {$attach_add_options}</td>
 </tr>]]></template>
 		<template name="post_attachments_update" version="1604"><![CDATA[<input type="submit" class="button" name="updateattachment" value="{$lang->update_attachment}" tabindex="12" />]]></template>
-		<template name="post_captcha" version="1808"><![CDATA[<tr id="captcha_trow">
+		<template name="post_captcha" version="1813"><![CDATA[<tr id="captcha_trow">
 <td class="trow1" valign="top" width="350"><strong>{$lang->image_verification}</strong>
-<br/>
+<br />
 <span class="smalltext">{$lang->verification_note}</span>
 </td>
 <td class="trow1">
@@ -11280,7 +11280,7 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
-		<template name="showteam_moderators" version="120"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<template name="showteam_moderators" version="1813"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="5"><strong>{$lang->moderators}</strong></td>
 </tr>
@@ -11293,8 +11293,8 @@ if(use_xmlhttprequest == "1")
 </tr>
 {$modrows}
 </table>
-<br/>]]></template>
-		<template name="showteam_moderators_forum" version="1400"><![CDATA[<a href="{$forum_url}">{$forum['name']}</a><br/>]]></template>
+<br />]]></template>
+		<template name="showteam_moderators_forum" version="1813"><![CDATA[<a href="{$forum_url}">{$forum['name']}</a><br />]]></template>
 		<template name="showteam_moderators_mod" version="1800"><![CDATA[<tr>
 <td width="45%" class="{$bgcolor}"><img src="{$theme['imgdir']}/buddy_{$status}.png" title="{$lang->$status}" alt="{$lang->$status}" style="vertical-align: middle;" /><a href="{$user['profilelink']}"><strong>{$user['username']}</strong></a></td>
 <td width="30%" class="{$bgcolor}"><span class="smalltext">{$forumslist}</span></td>
