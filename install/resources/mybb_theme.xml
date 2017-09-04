@@ -2409,7 +2409,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 </html>]]></template>
 		<template name="announcement_edit" version="1800"><![CDATA[<a href="modcp.php?action=edit_announcement&amp;aid={$post['aid']}" title="{$lang->announcement_edit}" class="postbit_edit"><span>{$lang->postbit_button_edit}</span></a>]]></template>
 		<template name="announcement_quickdelete" version="1800"><![CDATA[<a href="modcp.php?action=delete_announcement&amp;aid={$post['aid']}&amp;my_post_key={$mybb->post_code}" onclick="MyBB.deleteAnnouncement(this); return false;" class="postbit_qdelete"><span>{$lang->postbit_button_qdelete}</span></a>]]></template>
-		<template name="calendar" version="1800"><![CDATA[<html>
+		<template name="calendar" version="1813"><![CDATA[<html>
 <head>
 	<title>{$mybb->settings['bbname']} - {$lang->calendar}</title>
 	{$headerinclude}
@@ -2421,7 +2421,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 			<tr>
 				<td class="thead" colspan="8">
 					<div class="float_right">
-						<a href="{$prev_link}">&laquo; {$prev_month['name']} {$prev_month['year']}</a> | <a href="{$next_link}">{$next_month['name']} {$next_month['year']} &raquo;</a>
+						{$prev_month_link}{$sep}{$next_month_link}
 					</div>
 					<div><strong>{$monthnames[$month]} {$year}</strong></div>
 				</td>
@@ -3359,6 +3359,8 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 {$footer}
 </body>
 </html>]]></template>
+		<template name="calendar_nextlink" version="1813"><![CDATA[<a href="{$next_link}">{$next_month['name']} {$next_month['year']} &raquo;</a>]]></template>
+		<template name="calendar_prevlink" version="1813"><![CDATA[<a href="{$prev_link}">&laquo; {$prev_month['name']} {$prev_month['year']}</a>]]></template>
 		<template name="calendar_repeats" version="1800"><![CDATA[<span class="smalltext"><strong>{$lang->repeats}</strong><br />{$repeats}</span>]]></template>
 		<template name="calendar_select" version="1800"><![CDATA[<option value="{$calendar_option['cid']}"{$selected}>{$calendar_option['name']}</option>]]></template>
 		<template name="calendar_weekdayheader" version="1400"><![CDATA[				<td class="tcat" align="center" width="14%"><strong>{$weekday_name}</strong></td>]]></template>
@@ -3389,7 +3391,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 					{$day_birthdays}
 					</div>
 				</td>]]></template>
-		<template name="calendar_weekview" version="1800"><![CDATA[<html>
+		<template name="calendar_weekview" version="1813"><![CDATA[<html>
 <head>
 	<title>{$mybb->settings['bbname']} - {$lang->calendar}</title>
 	{$headerinclude}
@@ -3404,7 +3406,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 			<tr>
 				<td class="thead" colspan="2">
 					<div class="float_right">
-						<a href="{$prev_link}">&laquo; {$lang->previous_week}</a> | <a href="{$next_link}">{$lang->next_week} &raquo;</a>
+						{$prev_week_link}{$sep}{$next_week_link}
 					</div>
 					<div><strong>{$lang->weekly_overview} ({$friendly_week_from} - {$friendly_week_to})</strong></div>
 				</td>
@@ -3476,6 +3478,8 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 				<td class="tcat" colspan="2"><strong>{$weekday_month} {$weekday_year}</strong></td>
 			</tr>
 			{$days}]]></template>
+		<template name="calendar_weekview_nextlink" version="1813"><![CDATA[<a href="{$next_link}">{$lang->next_week} &raquo;</a>]]></template>
+		<template name="calendar_weekview_prevlink" version="1813"><![CDATA[<a href="{$prev_link}">&laquo; {$lang->previous_week}</a>]]></template>
 		<template name="calendar_year" version="1800"><![CDATA[<option value="{$year}" {$selected}>{$year}</option>]]></template>
 		<template name="calendar_year_sel" version="1800"><![CDATA[<option value="{$year_sel}">{$year_sel}</option>]]></template>
 		<template name="editpost" version="1809"><![CDATA[<html>
