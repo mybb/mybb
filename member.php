@@ -202,7 +202,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 
 	$userhandler->set_data($user);
 
-	$errors = "";
+	$errors = array();
 
 	if(!$userhandler->validate_user())
 	{
@@ -304,7 +304,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		}
 	}
 
-	if(is_array($errors))
+	if(!empty($errors))
 	{
 		$username = htmlspecialchars_uni($mybb->get_input('username'));
 		$email = htmlspecialchars_uni($mybb->get_input('email'));
