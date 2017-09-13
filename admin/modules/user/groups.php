@@ -747,7 +747,8 @@ if($mybb->input['action'] == "add")
 			$grouptitles = array_column($groups, 'title');
 
 			$message = $lang->success_group_created;
-			if(in_array($mybb->input['title'], $grouptitles) && count(array_keys($grouptitles, $mybb->input['title'])) > 1) {
+			if(in_array($mybb->input['title'], $grouptitles) && count(array_keys($grouptitles, $mybb->input['title'])) > 1)
+			{
 				$message = $lang->sprintf($lang->success_group_created_duplicate_title, htmlspecialchars_uni($mybb->input['title']));
 			}
 
@@ -976,7 +977,8 @@ if($mybb->input['action'] == "edit")
 			$grouptitles = array_column($groups, 'title');
 
 			$message = $lang->success_group_updated;
-			if(in_array($mybb->input['title'], $grouptitles) && count(array_keys($grouptitles, $mybb->input['title'])) > 1) {
+			if(in_array($mybb->input['title'], $grouptitles) && count(array_keys($grouptitles, $mybb->input['title'])) > 1)
+			{
 				$message = $lang->sprintf($lang->success_group_updated_duplicate_title, htmlspecialchars_uni($mybb->input['title']));
 			}
 
