@@ -904,7 +904,7 @@ if($mybb->input['action'] == "modlogs")
 	while($logitem = $db->fetch_array($query))
 	{
 		$information = '';
-		$logitem['action'] = htmlspecialchars_uni($logitem['action']);
+		$logitem['action'] = stripslashes(htmlspecialchars_uni($logitem['action']));
 		$log_date = my_date('relative', $logitem['dateline']);
 		$trow = alt_trow();
 		$logitem['username'] = htmlspecialchars_uni($logitem['username']);
@@ -4671,7 +4671,7 @@ if(!$mybb->input['action'])
 		while($logitem = $db->fetch_array($query))
 		{
 			$information = '';
-			$logitem['action'] = htmlspecialchars_uni($logitem['action']);
+			$logitem['action'] = stripslashes(htmlspecialchars_uni($logitem['action']));
 			$log_date = my_date('relative', $logitem['dateline']);
 			$trow = alt_trow();
 			$logitem['username'] = htmlspecialchars_uni($logitem['username']);
