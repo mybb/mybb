@@ -743,7 +743,16 @@ if($mybb->input['action'] == "add")
 			// Log admin action
 			log_admin_action($gid, htmlspecialchars_uni($mybb->input['title']));
 
-			flash_message($lang->success_group_created, 'success');
+			$groups = $cache->read('usergroups');
+			$grouptitles = array_column($groups, 'title');
+
+			$message = $lang->success_group_created;
+			if(in_array($mybb->input['title'], $grouptitles) && count(array_keys($grouptitles, $mybb->input['title'])) > 1)
+			{
+				$message = $lang->sprintf($lang->success_group_created_duplicate_title, htmlspecialchars_uni($mybb->input['title']));
+			}
+
+			flash_message($message, 'success');
 			admin_redirect("index.php?module=user-groups&action=edit&gid={$gid}");
 		}
 	}
@@ -964,7 +973,16 @@ if($mybb->input['action'] == "edit")
 			// Log admin action
 			log_admin_action($usergroup['gid'], htmlspecialchars_uni($mybb->input['title']));
 
-			flash_message($lang->success_group_updated, 'success');
+			$groups = $cache->read('usergroups');
+			$grouptitles = array_column($groups, 'title');
+
+			$message = $lang->success_group_updated;
+			if(in_array($mybb->input['title'], $grouptitles) && count(array_keys($grouptitles, $mybb->input['title'])) > 1)
+			{
+				$message = $lang->sprintf($lang->success_group_updated_duplicate_title, htmlspecialchars_uni($mybb->input['title']));
+			}
+
+			flash_message($message, 'success');
 			admin_redirect("index.php?module=user-groups");
 		}
 	}
