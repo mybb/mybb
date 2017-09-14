@@ -7747,10 +7747,11 @@ if(use_xmlhttprequest == "1")
 		<template name="modcp_no_announcements_global" version="1400"><![CDATA[					<tr>
 						<td class="trow1" colspan="3">{$lang->no_global_announcements}</td>
 					</tr>]]></template>
-		<template name="modcp_reports" version="1808"><![CDATA[<html>
+		<template name="modcp_reports" version="1813"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->report_center}</title>
 {$headerinclude}
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_reports.js?ver=1813"></script>
 </head>
 <body>
 {$header}
@@ -7770,8 +7771,9 @@ if(use_xmlhttprequest == "1")
 			<td class="tcat" align="left" width="25%"><span class="smalltext"><strong>{$lang->report_type}</strong></span></td>
 			<td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{$lang->report_count}</strong></span></td>
 			<td class="tcat" align="right" width="20%"><span class="smalltext"><strong>{$lang->report_lastpost}</strong></span></td>
-			<td class="tcat" align="center" width="5%"><input type="checkbox" name="allbox" onclick="selectReportedPosts();" /></td>
+			<td class="tcat" align="center" width="5%"><input type="checkbox" name="allbox" onclick="inlineReports.checkAll(this);" /></td>
 		</tr>
+		{$selectall}
 		{$reports}
 		<tr>
 			<td class="tfoot" colspan="7" align="right"><span class="smalltext"><strong><a href="modcp.php?action=allreports">{$lang->view_all_reports}</a></strong></span></td>
@@ -7779,7 +7781,7 @@ if(use_xmlhttprequest == "1")
 		</table>
 		{$reportspages}
 		<br />
-		<div align="center"><input type="hidden" name="action" value="do_reports" /><input type="submit" class="button" name="reportsubmit" value="{$lang->mark_read}" /></div>
+		<div align="center"><input type="hidden" name="action" value="do_reports" /><input type="submit" id="inline_read" class="button" name="reportsubmit" value="{$lang->mark_read} ({$inlinecount})" /></div>
 	</td>
 </tr>
 </table>
@@ -7787,28 +7789,8 @@ if(use_xmlhttprequest == "1")
 {$footer}
 <script type="text/javascript">
 <!--
-	var checked = false;
-	function selectReportedPosts()
-	{
-		if(checked == false)
-		{
-			checked = true;
-			$('input:checkbox').prop('checked', true);
-		}
-		else
-		{
-			checked = false;
-			$('input:checkbox').prop('checked', false);
-		}
-	}
-
-	function checkReportedPost(e)
-	{
-		if($(e).prop('checked') == false)
-		{
-			$('input:checkbox[name="allbox"]').prop('checked', false);
-		}
-	}
+	var mark_read_text = "{$lang->mark_read}";
+	var all_text = "{$report_count}";
 // -->
 </script>
 </body>
@@ -7858,15 +7840,21 @@ if(use_xmlhttprequest == "1")
 		<template name="modcp_reports_noreports" version="1607"><![CDATA[<tr>
 <td class="trow1" align="center" colspan="7">{$lang->no_reports}</td>
 </tr>]]></template>
-		<template name="modcp_reports_report" version="1808"><![CDATA[<tr>
+		<template name="modcp_reports_report" version="1813"><![CDATA[<tr class="inline_row">
 	<td class="{$trow}">{$report_data['content']}</td>
 	<td class="{$trow}" align="left">{$report_data['comment']}</td>
 	<td class="{$trow}" align="center">{$report_data['reports']}</td>
 	<td class="{$trow} smalltext" align="right">{$report_data['lastreporter']}</td>
-	<td class="{$trow}" align="center"><input type="checkbox" class="checkbox" name="reports[]" id="reports_{$report['rid']}" value="{$report['rid']}" onclick="checkReportedPost(this);" /></td>
+	<td class="{$trow}" align="center"><input type="checkbox" class="checkbox" name="reports[]" id="reports_{$report['rid']}" value="{$report['rid']}"{$inlinecheck} /></td>
 </tr>]]></template>
 		<template name="modcp_reports_report_comment" version="1808"><![CDATA[{$reason}]]></template>
 		<template name="modcp_reports_report_comment_extra" version="1808"><![CDATA[{$reason}: {$comment}]]></template>
+		<template name="modcp_reports_selectall" version="1813"><![CDATA[<tr id="selectAllrow" class="hiddenrow">
+	<td colspan="8" class="selectall">{$lang->page_selected} <a href="javascript:void(0)" onclick='inlineReports.selectAll(); return false;'>{$lang->select_all}</a></td>
+</tr>
+<tr id="allSelectedrow" class="hiddenrow">
+	<td colspan="8" class="selectall">{$lang->all_selected} <a href="javascript:void(0)" onclick='inlineReports.clearChecked(); return false;'>{$lang->clear_selection}</a></td>
+</tr>]]></template>
 		<template name="modcp_nobanned" version="1613"><![CDATA[<tr>
 		<td class="trow1" align="center" colspan="4">{$lang->no_bans_ending}</td>
 </tr>]]></template>
