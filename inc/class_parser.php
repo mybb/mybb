@@ -177,7 +177,7 @@ class postParser
 			$message = preg_replace('#(>|^|\r|\n)/slap ([^\r\n<]*)#i', "\\1<span style=\"color: red;\" class=\"mycode_slap\">* {$this->options['me_username']} {$lang->slaps} \\2 {$lang->with_trout}</span>", $message);
 		}
 
-		$message = $plugins->run_hooks("parse_message_memycode", $message);
+		$message = $plugins->run_hooks("parse_message_me_mycode", $message);
 
 		// If we can, parse smilies
 		if(!empty($this->options['allow_smilies']))
