@@ -808,7 +808,7 @@ class datacache
 			{
 				foreach($main as $forum)
 				{
-					$forum_mods = '';
+					$forum_mods = array();
 					if(count($moderators))
 					{
 						$forum_mods = $moderators;
