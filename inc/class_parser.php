@@ -166,6 +166,8 @@ class postParser
 			$message = str_replace($find, $replace, $message);
 		}
 
+		$message = $plugins->run_hooks("parse_message_htmlsanitized", $message);
+
 		// Replace "me" code and slaps if we have a username
 		if(!empty($this->options['me_username']) && $mybb->settings['allowmemycode'] == 1)
 		{
@@ -174,6 +176,8 @@ class postParser
 			$message = preg_replace('#(>|^|\r|\n)/me ([^\r\n<]*)#i', "\\1<span style=\"color: red;\" class=\"mycode_me\">* {$this->options['me_username']} \\2</span>", $message);
 			$message = preg_replace('#(>|^|\r|\n)/slap ([^\r\n<]*)#i', "\\1<span style=\"color: red;\" class=\"mycode_slap\">* {$this->options['me_username']} {$lang->slaps} \\2 {$lang->with_trout}</span>", $message);
 		}
+
+		$message = $plugins->run_hooks("parse_message_me_mycode", $message);
 
 		// If we can, parse smilies
 		if(!empty($this->options['allow_smilies']))
