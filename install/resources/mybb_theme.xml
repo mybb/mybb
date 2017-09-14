@@ -11072,6 +11072,7 @@ if(use_xmlhttprequest == "1")
 </tr>]]></template>
 		<template name="search_results_icon" version="1800"><![CDATA[<img src="{$posticon['path']}" alt="{$posticon['name']}" title="{$posticon['name']}" />]]></template>
 		<template name="search_results_inlinemodcol" version="1809"><![CDATA[<td class="tcat" align="center" width="1"><input type="checkbox" name="allbox" onclick="inlineModeration.checkAll(this);" /></td>]]></template>
+		<template name="search_results_inlinemodcol_empty" version="1813"><![CDATA[<td class="tcat" align="center" width="1"></td>]]></template>
 		<template name="search_results_posts" version="1600"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->search_results}</title>
