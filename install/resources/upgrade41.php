@@ -36,7 +36,8 @@ function upgrade41_dbchanges()
 	$db->insert_query('spiders', array("name" => "UptimeRobot", "useragent" => "Mozilla/5.0+(compatible; UptimeRobot/2.0; http://www.uptimerobot.com/)"));
 
 	// Iterate through moderator log and remove slashes
-	for ($x = 1; $x < $db->num_rows('moderatorlog'); $x++) {
+	for ($x = 1; $x < $db->num_rows('moderatorlog'); $x++)
+	{
 
 		$moderatorlogitemarray = $db->simple_select("moderatorlog", "*", "tid='".$x."'", array(
 			"limit" => 1
