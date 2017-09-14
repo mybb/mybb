@@ -1202,7 +1202,7 @@ if($mybb->input['action'] == "do_new_announcement")
 			);
 			$aid = $db->insert_query("announcements", $insert_announcement);
 
-			log_moderator_action(array("aid" => $aid, "subject" => $db->escape_string($mybb->input['title'])), $lang->announcement_added);
+			log_moderator_action(array("aid" => $aid, "subject" => $mybb->input['title']), $lang->announcement_added);
 
 			$plugins->run_hooks("modcp_do_new_announcement_end");
 
@@ -1574,7 +1574,7 @@ if($mybb->input['action'] == "do_edit_announcement")
 			);
 			$db->update_query("announcements", $update_announcement, "aid='{$aid}'");
 
-			log_moderator_action(array("aid" => $announcement['aid'], "subject" => $db->escape_string($mybb->input['title'])), $lang->announcement_edited);
+			log_moderator_action(array("aid" => $announcement['aid'], "subject" => $mybb->input['title']), $lang->announcement_edited);
 
 			$plugins->run_hooks("modcp_do_edit_announcement_end");
 
