@@ -420,7 +420,7 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 		"theme" => $theme_directory
 	);
 	$stylesheet = parse_theme_variables($stylesheet, $theme_vars);
-	$stylesheet = preg_replace_callback("#url\((\"|'|)(.*)\\1\)#", create_function('$matches', 'return fix_css_urls($matches[2]);'), $stylesheet);
+	$stylesheet = preg_replace_callback("#url\((\"|'|)(.*)\\1\)#", 'fix_css_urls_callback', $stylesheet);
 
 	$fp = @fopen(MYBB_ROOT . "{$theme_directory}/{$filename}", "wb");
 	if(!$fp)
@@ -525,6 +525,16 @@ function fix_css_urls($url)
 	{
 		return "url({$url})";
 	}
+}
+
+/**
+ * @param array $matches Matches.
+ *
+ * @return string
+ */
+function fix_css_urls_callback($matches)
+{
+	return fix_css_urls($matches[2]);
 }
 
 /**
