@@ -35,28 +35,21 @@ function upgrade41_dbchanges()
 	$db->insert_query('spiders', array("name" => "DuckDuckGo", "useragent" => "DuckDuckBot/1.1; (+http://duckduckgo.com/duckduckbot.html)"));
 	$db->insert_query('spiders', array("name" => "UptimeRobot", "useragent" => "Mozilla/5.0+(compatible; UptimeRobot/2.0; http://www.uptimerobot.com/)"));
 
-	// Iterate through moderator log and remove slashes
-	for ($x = 1; $x < $db->num_rows('moderatorlog'); $x++)
+	// Remove backslashes from last 1,000 log files.
+	$query = $db->simple_select('moderatorlog', '*', "action LIKE '%\\\\\\%", "limit" => 1000);
+
+	while($row = $db->fetch_array($query))
 	{
+    $original = $row['action'];
+    $stripped = stripslashes($original);
 
-		$moderatorlogitemarray = $db->simple_select("moderatorlog", "*", "tid='".$x."'", array(
-			"limit" => 1
-		));
+    if($stripped !== $original)
+    {
+        $db->update_query("moderatorlog", "action" => stripped, "WHERE tid = '".$row['tid']."'");
+    }
 
-		$update_log_array = array(
-			"uid" => $moderatorlogitemarray[0],
-			"dateline" => $moderatorlogitemarray[1],
-			"fid" => $moderatorlogitemarray[2],
-			"tid" => $moderatorlogitemarray[3],
-			"pid" => $moderatorlogitemarray[4],
-			"action" => stripslashes($moderatorlogitemarray[5]),
-			"data" => $moderatorlogitemarray[6],
-			"ipaddress" => $moderatorlogitemarray[7]
-		);
-
-		$db->update_query("moderatorlog", $update_log_array, "WHERE tid = '".$x."'");
 	}
-	
-  	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
+
+  $output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("41_done");
 }
