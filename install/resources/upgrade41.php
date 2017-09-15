@@ -36,20 +36,23 @@ function upgrade41_dbchanges()
 	$db->insert_query('spiders', array("name" => "UptimeRobot", "useragent" => "Mozilla/5.0+(compatible; UptimeRobot/2.0; http://www.uptimerobot.com/)"));
 
 	// Remove backslashes from last 1,000 log files.
-	$query = $db->simple_select('moderatorlog', '*', "action LIKE '%\\\\\\%", "limit" => 1000);
+	$query = $db->simple_select('moderatorlog', 'tid, action', "action LIKE '%\\\\\\%", array(
+		"order_by" => 'tid',
+		"order_dir" => 'DESC',
+		"limit" => 1000
+	));
 
 	while($row = $db->fetch_array($query))
 	{
-    $original = $row['action'];
-    $stripped = stripslashes($original);
+		$original = $row['action'];
+		$stripped = $db->escape_string(stripslashes($original));
 
-    if($stripped !== $original)
-    {
-        $db->update_query("moderatorlog", "action" => stripped, "WHERE tid = '".$row['tid']."'");
-    }
-
+		if($stripped !== $original)
+		{
+			$db->update_query("moderatorlog", "action" => $stripped, "WHERE tid = '".$row['tid']."'");
+		}
 	}
 
-  $output->print_contents("<p>Click next to continue with the upgrade process.</p>");
+	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("41_done");
 }
