@@ -420,7 +420,7 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 		"theme" => $theme_directory
 	);
 	$stylesheet = parse_theme_variables($stylesheet, $theme_vars);
-	$stylesheet = preg_replace_callback("#url\((\"|'|)(.*)\\1\)#", 'fix_css_urls_callback', $stylesheet);
+	$stylesheet = preg_replace_callback("#url\((\"|'|)([^\"'\s]*?)\\1\)#", 'fix_css_urls_callback', $stylesheet);
 
 	$fp = @fopen(MYBB_ROOT . "{$theme_directory}/{$filename}", "wb");
 	if(!$fp)
