@@ -45,11 +45,11 @@ function upgrade41_dbchanges()
 	while($row = $db->fetch_array($query))
 	{
 		$original = $row['action'];
-		$stripped = $db->escape_string(stripslashes($original));
+		$stripped = stripslashes($original);
 
 		if($stripped !== $original)
 		{
-			$db->update_query("moderatorlog", "action" => $stripped, "WHERE tid = '".$row['tid']."'");
+			$db->update_query("moderatorlog", "action" => $db->escape_string($stripped), "WHERE tid = '".$row['tid']."'");
 		}
 	}
 
