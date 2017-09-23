@@ -966,6 +966,7 @@ $closed_bypass = array(
 		'logout',
 	),
 	'captcha.php',
+	'contact.php',
 );
 
 // If the board is closed, the user is not an administrator and they're not trying to login, show the board closed message
