@@ -36,7 +36,7 @@ function upgrade41_dbchanges()
 	$db->insert_query('spiders', array("name" => "UptimeRobot", "useragent" => "Mozilla/5.0+(compatible; UptimeRobot/2.0; http://www.uptimerobot.com/)"));
 
 	// Remove backslashes from last 1,000 log files.
-	$query = $db->simple_select('moderatorlog', 'tid, action', "action LIKE '%\\\\\\%", array(
+	$query = $db->simple_select('moderatorlog', 'tid, action', "action LIKE '%\\\\\\\\%'", array(
 		"order_by" => 'tid',
 		"order_dir" => 'DESC',
 		"limit" => 1000
