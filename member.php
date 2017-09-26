@@ -202,7 +202,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 
 	$userhandler->set_data($user);
 
-	$errors = "";
+	$errors = array();
 
 	if(!$userhandler->validate_user())
 	{
@@ -304,7 +304,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		}
 	}
 
-	if(is_array($errors))
+	if(!empty($errors))
 	{
 		$username = htmlspecialchars_uni($mybb->get_input('username'));
 		$email = htmlspecialchars_uni($mybb->get_input('email'));
@@ -443,16 +443,16 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 			switch($mybb->settings['username_method'])
 			{
 				case 0:
-					$emailmessage = $lang->sprintf($lang->email_randompassword, $user['username'], $mybb->settings['bbname'], $user_info['username'], $user_info['password']);
+					$emailmessage = $lang->sprintf($lang->email_randompassword, $user['username'], $mybb->settings['bbname'], $user_info['username'], $mybb->get_input('password'));
 					break;
 				case 1:
-					$emailmessage = $lang->sprintf($lang->email_randompassword1, $user['username'], $mybb->settings['bbname'], $user_info['username'], $user_info['password']);
+					$emailmessage = $lang->sprintf($lang->email_randompassword1, $user['username'], $mybb->settings['bbname'], $user_info['username'], $mybb->get_input('password'));
 					break;
 				case 2:
-					$emailmessage = $lang->sprintf($lang->email_randompassword2, $user['username'], $mybb->settings['bbname'], $user_info['username'], $user_info['password']);
+					$emailmessage = $lang->sprintf($lang->email_randompassword2, $user['username'], $mybb->settings['bbname'], $user_info['username'], $mybb->get_input('password'));
 					break;
 				default:
-					$emailmessage = $lang->sprintf($lang->email_randompassword, $user['username'], $mybb->settings['bbname'], $user_info['username'], $user_info['password']);
+					$emailmessage = $lang->sprintf($lang->email_randompassword, $user['username'], $mybb->settings['bbname'], $user_info['username'], $mybb->get_input('password'));
 					break;
 			}
 			my_mail($user_info['email'], $emailsubject, $emailmessage);
@@ -630,7 +630,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 					$lang->load("member");
 				}
 			}
-			
+
 			$activationcode = random_str();
 			$activationarray = array(
 				"uid" => $user_info['uid'],
@@ -1051,21 +1051,21 @@ if($mybb->input['action'] == "register")
 					{
 						if($type == "textarea")
 						{
-							$inp_selector = "$('textarea[name=\"profile_fields[{$field}]\"]')";					
+							$inp_selector = "$('textarea[name=\"profile_fields[{$field}]\"]')";
 						}
 						elseif($type == "multiselect")
 						{
-							$inp_selector = "$('select[name=\"profile_fields[{$field}][]\"]')";					
+							$inp_selector = "$('select[name=\"profile_fields[{$field}][]\"]')";
 						}
 						elseif($type == "checkbox")
 						{
-							$inp_selector = "$('input[name=\"profile_fields[{$field}][]\"]')";	
+							$inp_selector = "$('input[name=\"profile_fields[{$field}][]\"]')";
 						}
 						else
 						{
 							$inp_selector = "$('input[name=\"profile_fields[{$field}]\"]')";
 						}
-						
+
 						$validator_extra .= "
 						{$inp_selector}.rules('add', {
 							required: true,
@@ -1082,7 +1082,7 @@ if($mybb->input['action'] == "register")
 					eval("\$customfields .= \"".$templates->get("member_register_customfield")."\";");
 				}
 			}
-			
+
 			if($requiredfields)
 			{
 				eval("\$requiredfields = \"".$templates->get("member_register_requiredfields")."\";");
@@ -1170,9 +1170,9 @@ if($mybb->input['action'] == "register")
 				{
 					eval("\$refresh = \"".$templates->get("member_register_question_refresh")."\";");
 				}
-				
+
 				eval("\$questionbox = \"".$templates->get("member_register_question")."\";");
-				
+
 				$validator_extra .= "
 				$('#answer').rules('add', {
 					required: true,
@@ -1212,7 +1212,7 @@ if($mybb->input['action'] == "register")
 			if($mybb->settings['requirecomplexpasswords'] == 1)
 			{
 				$lang->password = $lang->complex_password = $lang->sprintf($lang->complex_password, $mybb->settings['minpasswordlength']);
-				
+
 				$validator_extra .= "
 				$('#password').rules('add', {
 					required: true,
@@ -1992,26 +1992,26 @@ if($mybb->input['action'] == "profile")
 	eval("\$avatar = \"".$templates->get("member_profile_avatar")."\";");
 
 	$website = $sendemail = $sendpm = $contact_details = '';
-	
+
 	if(my_validate_url($memprofile['website']) && !is_member($mybb->settings['hidewebsite']) && $memperms['canchangewebsite'] == 1)
 	{
 		$memprofile['website'] = htmlspecialchars_uni($memprofile['website']);
 		$bgcolor = alt_trow();
 		eval("\$website = \"".$templates->get("member_profile_website")."\";");
 	}
-	
+
 	if($memprofile['hideemail'] != 1 && (my_strpos(",".$memprofile['ignorelist'].",", ",".$mybb->user['uid'].",") === false || $mybb->usergroup['cansendemailoverride'] != 0))
 	{
-		$bgcolor = alt_trow();	
+		$bgcolor = alt_trow();
 		eval("\$sendemail = \"".$templates->get("member_profile_email")."\";");
 	}
-	
+
 	if($mybb->settings['enablepms'] != 0 && (($memprofile['receivepms'] != 0 && $memperms['canusepms'] != 0 && my_strpos(",".$memprofile['ignorelist'].",", ",".$mybb->user['uid'].",") === false) || $mybb->usergroup['canoverridepm'] == 1))
 	{
-		$bgcolor = alt_trow();	
+		$bgcolor = alt_trow();
 		eval('$sendpm = "'.$templates->get("member_profile_pm").'";');
 	}
-	
+
 	$contact_fields = array();
 	$any_contact_field = false;
 	foreach(array('icq', 'aim', 'yahoo', 'skype', 'google') as $field)
@@ -2022,7 +2022,7 @@ if($mybb->input['action'] == "profile")
 		if(!empty($memprofile[$field]) && is_member($mybb->settings[$settingkey], array('usergroup' => $memprofile['usergroup'], 'additionalgroups' => $memprofile['additionalgroups'])))
 		{
 			$any_contact_field = true;
-			
+
 			if($field == 'icq')
 			{
 				$memprofile[$field] = (int)$memprofile[$field];
@@ -2037,7 +2037,7 @@ if($mybb->input['action'] == "profile")
 			eval('$contact_fields[\''.$field.'\'] = "'.$templates->get($tmpl).'";');
 		}
 	}
-	
+
 	if($any_contact_field || $sendemail || $sendpm || $website)
 	{
 		eval('$contact_details = "'.$templates->get("member_profile_contact_details").'";');
@@ -2196,7 +2196,7 @@ if($mybb->input['action'] == "profile")
 			$memprofile['timezone'] = "+{$memprofile['timezone']}";
 		}
 	}
-	
+
 	$memregdate = my_date($mybb->settings['dateformat'], $memprofile['regdate']);
 	$memlocaldate = gmdate($mybb->settings['dateformat'], TIME_NOW + ($memprofile['timezone'] * 3600));
 	$memlocaltime = gmdate($mybb->settings['timeformat'], TIME_NOW + ($memprofile['timezone'] * 3600));
@@ -2312,7 +2312,7 @@ if($mybb->input['action'] == "profile")
 			}
 		}
 	}
-	
+
 	$usertitle = htmlspecialchars_uni($usertitle);
 
 	if($displaygroup['stars'] || $displaygroup['usertitle'])
@@ -2432,7 +2432,7 @@ if($mybb->input['action'] == "profile")
 
 	// Reset the background colours to keep it inline
 	$alttrow = 'trow1';
-	
+
 	// Build Referral
 	$referrals = '';
 	if($mybb->settings['usereferrals'] == 1)
@@ -2501,7 +2501,7 @@ if($mybb->input['action'] == "profile")
 	{
 		foreach($pfcache as $customfield)
 		{
-			if($mybb->usergroup['cancp'] != 1 && $mybb->usergroup['issupermod'] != 1 && $mybb->usergroup['canmodcp'] != 1 && !is_member($customfield['viewableby']) || !$customfield['profile'])
+			if($mybb->usergroup['cancp'] != 1 && $mybb->usergroup['issupermod'] != 1 && $mybb->usergroup['canmodcp'] != 1 && (!is_member($customfield['viewableby']) || !$customfield['profile']))
 			{
 				continue;
 			}
@@ -2559,7 +2559,7 @@ if($mybb->input['action'] == "profile")
 					$customfieldval = $parser->parse_message($userfields[$field], $parser_options);
 				}
 			}
-			
+
 			if($customfieldval)
 			{
 				$customfield['name'] = htmlspecialchars_uni($customfield['name']);

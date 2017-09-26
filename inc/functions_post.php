@@ -503,6 +503,7 @@ function build_postbit($post, $post_type=0)
 		eval("\$post['user_details'] = \"".$templates->get("postbit_author_guest")."\";");
 	}
 
+	$post['input_editreason'] = '';
 	$post['button_edit'] = '';
 	$post['button_quickdelete'] = '';
 	$post['button_quickrestore'] = '';
@@ -557,6 +558,7 @@ function build_postbit($post, $post_type=0)
 		$time = TIME_NOW;
 		if((is_moderator($fid, "caneditposts") || ($forumpermissions['caneditposts'] == 1 && $mybb->user['uid'] == $post['uid'] && $thread['closed'] != 1 && ($mybb->usergroup['edittimelimit'] == 0 || $mybb->usergroup['edittimelimit'] != 0 && $post['dateline'] > ($time-($mybb->usergroup['edittimelimit']*60))))) && $mybb->user['uid'] != 0)
 		{
+			eval("\$post['input_editreason'] = \"".$templates->get("postbit_editreason")."\";");
 			eval("\$post['button_edit'] = \"".$templates->get("postbit_edit")."\";");
 		}
 
@@ -631,7 +633,7 @@ function build_postbit($post, $post_type=0)
 		// Inline moderation stuff
 		if($ismod)
 		{
-			if(isset($mybb->cookies[$inlinecookie]) && my_strpos($mybb->cookies[$inlinecookie], "|".$post['pid']."|"))
+			if(isset($mybb->cookies[$inlinecookie]) && my_strpos($mybb->cookies[$inlinecookie], "|".$post['pid']."|") !== false)
 			{
 				$inlinecheck = "checked=\"checked\"";
 				$inlinecount++;
@@ -920,7 +922,7 @@ function get_post_attachments($id, &$post)
 				{
 					$attachment['dateuploaded'] = $attachment['dateline'];
 				}
-				$attachdate = my_date('relative', $attachment['dateuploaded']);
+				$attachdate = my_date('normal', $attachment['dateuploaded']);
 				// Support for [attachment=id] code
 				if(stripos($post['message'], "[attachment=".$attachment['aid']."]") !== false)
 				{

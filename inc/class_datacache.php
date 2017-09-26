@@ -670,7 +670,7 @@ class datacache
 			SELECT u.uid, u.username, COUNT(pid) AS poststoday
 			FROM '.TABLE_PREFIX.'posts p
 			LEFT JOIN '.TABLE_PREFIX.'users u ON (p.uid=u.uid)
-			WHERE p.dateline>'.$timesearch.'
+			WHERE p.dateline>'.$timesearch.' AND p.visible=1
 			GROUP BY '.$group_by.' ORDER BY poststoday DESC
 			LIMIT 1
 		');
@@ -808,7 +808,7 @@ class datacache
 			{
 				foreach($main as $forum)
 				{
-					$forum_mods = '';
+					$forum_mods = array();
 					if(count($moderators))
 					{
 						$forum_mods = $moderators;

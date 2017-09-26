@@ -1,12 +1,25 @@
 <?php
 /**
- * Copyright 2007-2011 Horde LLC (http://www.horde.org/)
+ * Copyright 2007-2017 Horde LLC (http://www.horde.org/)
  *
  * See the enclosed file COPYING for license information (LGPL). If you did
  * not receive this file, see http://www.horde.org/licenses/lgpl21.
  *
- * @package Text_Diff
- * @author  Geoffrey T. Dairiki <dairiki@dairiki.org>
+ * @author   Geoffrey T. Dairiki <dairiki@dairiki.org>
+ * @category Horde
+ * @license  http://www.horde.org/licenses/lgpl21 LGPL-2.1
+ * @package  Text_Diff
+ */
+
+/**
+ * This can be used to compute things like case-insensitve diffs, or diffs
+ * which ignore changes in white-space.
+ *
+ * @author    Geoffrey T. Dairiki <dairiki@dairiki.org>
+ * @category  Horde
+ * @copyright 2007-2017 Horde LLC
+ * @license   http://www.horde.org/licenses/lgpl21 LGPL-2.1
+ * @package   Text_Diff
  */
 
 // Disallow direct access to this file for security reasons
@@ -20,26 +33,22 @@ class Horde_Text_Diff_Mapped extends Horde_Text_Diff
     /**
      * Computes a diff between sequences of strings.
      *
-     * This can be used to compute things like case-insensitve diffs, or diffs
-     * which ignore changes in white-space.
-     *
-     * @param array $from_lines         An array of strings.
-     * @param array $to_lines           An array of strings.
-     * @param array $mapped_from_lines  This array should have the same size
-     *                                  number of elements as $from_lines.  The
-     *                                  elements in $mapped_from_lines and
-     *                                  $mapped_to_lines are what is actually
-     *                                  compared when computing the diff.
-     * @param array $mapped_to_lines    This array should have the same number
-     *                                  of elements as $to_lines.
+     * @param string $engine  Name of the diffing engine to use.  'auto' will
+     *                        automatically select the best.
+     * @param array $params   Parameters to pass to the diffing engine:
+     *                        - Two arrays, each containing the lines from a
+     *                          file.
+     *                        - Two arrays with the same size as the first
+     *                          parameters. The elements are what is actually
+     *                          compared when computing the diff.
      */
-    public function __construct($from_lines, $to_lines,
-                                $mapped_from_lines, $mapped_to_lines)
+    public function __construct($engine, $params)
     {
+        list($from_lines, $to_lines, $mapped_from_lines, $mapped_to_lines) = $params;
         assert(count($from_lines) == count($mapped_from_lines));
         assert(count($to_lines) == count($mapped_to_lines));
 
-        parent::__construct($mapped_from_lines, $mapped_to_lines);
+        parent::__construct($engine, array($mapped_from_lines, $mapped_to_lines));
 
         $xi = $yi = 0;
         for ($i = 0; $i < count($this->_edits); $i++) {

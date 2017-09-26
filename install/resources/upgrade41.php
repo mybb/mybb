@@ -41,6 +41,30 @@ function upgrade41_dbchanges()
 
 function upgrade41_dbchanges2()
 {
+	// Remove backslashes from last 1,000 log files.
+	$query = $db->simple_select('moderatorlog', 'tid, action', "action LIKE '%\\\\\\%", array(
+		"order_by" => 'tid',
+		"order_dir" => 'DESC',
+		"limit" => 1000
+	));
+
+	while($row = $db->fetch_array($query))
+	{
+		$original = $row['action'];
+		$stripped = stripslashes($original);
+
+		if($stripped !== $original)
+		{
+			$db->update_query("moderatorlog", "action" => $db->escape_string($stripped), "WHERE tid = '".$row['tid']."'");
+		}
+	}
+
+	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
+	$output->print_footer("41_dbchanges3");
+}
+
+function upgrade41_dbchanges3()
+{
 	global $db, $output, $mybb;
 	$output->print_header("Updating Database");
 	echo "<p>Performing necessary upgrade queries...</p>";
@@ -65,6 +89,7 @@ function upgrade41_dbchanges2()
 	$guestlangs = implode("', '", $guestlangs);
 	$db->update_query('posts', array('username' => ''), "uid = 0 AND username IN ('{$guestlangs}')");
 	$db->update_query('threads', array('username' => ''), "uid = 0 AND username IN ('{$guestlangs}')");
+
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("41_done");
 }

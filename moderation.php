@@ -2807,7 +2807,7 @@ switch($mybb->input['action'])
 		require_once MYBB_ROOT."inc/functions_user.php";
 
 		$groups = explode(",", $mybb->settings['purgespammergroups']);
-		if(!in_array($mybb->user['usergroup'], $groups))
+		if(!is_member($groups))
 		{
 			error_no_permission();
 		}

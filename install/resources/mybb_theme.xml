@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<theme name="MyBB Master Style" version="1811">
+<theme name="MyBB Master Style" version="1813">
 	<properties>
 		<templateset><![CDATA[1]]></templateset>
 		<imgdir><![CDATA[images]]></imgdir>
@@ -9,7 +9,7 @@
 		<editortheme><![CDATA[mybb.css]]></editortheme>
 	</properties>
 	<stylesheets>
-		<stylesheet name="global.css" version="1811" disporder="1"><![CDATA[body {
+		<stylesheet name="global.css" version="1813" disporder="1"><![CDATA[body {
 	background: #fff;
 	color: #333;
 	text-align: center;
@@ -791,7 +791,7 @@ blockquote cite {
 	margin: 0 0 10px 0;
 }
 
-blockquote cite span {
+blockquote cite > span {
 	float: right;
 	font-weight: normal;
 	font-size: 12px;
@@ -2409,7 +2409,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 </html>]]></template>
 		<template name="announcement_edit" version="1800"><![CDATA[<a href="modcp.php?action=edit_announcement&amp;aid={$post['aid']}" title="{$lang->announcement_edit}" class="postbit_edit"><span>{$lang->postbit_button_edit}</span></a>]]></template>
 		<template name="announcement_quickdelete" version="1800"><![CDATA[<a href="modcp.php?action=delete_announcement&amp;aid={$post['aid']}&amp;my_post_key={$mybb->post_code}" onclick="MyBB.deleteAnnouncement(this); return false;" class="postbit_qdelete"><span>{$lang->postbit_button_qdelete}</span></a>]]></template>
-		<template name="calendar" version="1800"><![CDATA[<html>
+		<template name="calendar" version="1813"><![CDATA[<html>
 <head>
 	<title>{$mybb->settings['bbname']} - {$lang->calendar}</title>
 	{$headerinclude}
@@ -2421,7 +2421,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 			<tr>
 				<td class="thead" colspan="8">
 					<div class="float_right">
-						<a href="{$prev_link}">&laquo; {$prev_month['name']} {$prev_month['year']}</a> | <a href="{$next_link}">{$next_month['name']} {$next_month['year']} &raquo;</a>
+						{$prev_month_link}{$sep}{$next_month_link}
 					</div>
 					<div><strong>{$monthnames[$month]} {$year}</strong></div>
 				</td>
@@ -3359,6 +3359,8 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 {$footer}
 </body>
 </html>]]></template>
+		<template name="calendar_nextlink" version="1813"><![CDATA[<a href="{$next_link}">{$next_month['name']} {$next_month['year']} &raquo;</a>]]></template>
+		<template name="calendar_prevlink" version="1813"><![CDATA[<a href="{$prev_link}">&laquo; {$prev_month['name']} {$prev_month['year']}</a>]]></template>
 		<template name="calendar_repeats" version="1800"><![CDATA[<span class="smalltext"><strong>{$lang->repeats}</strong><br />{$repeats}</span>]]></template>
 		<template name="calendar_select" version="1800"><![CDATA[<option value="{$calendar_option['cid']}"{$selected}>{$calendar_option['name']}</option>]]></template>
 		<template name="calendar_weekdayheader" version="1400"><![CDATA[				<td class="tcat" align="center" width="14%"><strong>{$weekday_name}</strong></td>]]></template>
@@ -3389,7 +3391,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 					{$day_birthdays}
 					</div>
 				</td>]]></template>
-		<template name="calendar_weekview" version="1800"><![CDATA[<html>
+		<template name="calendar_weekview" version="1813"><![CDATA[<html>
 <head>
 	<title>{$mybb->settings['bbname']} - {$lang->calendar}</title>
 	{$headerinclude}
@@ -3404,7 +3406,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 			<tr>
 				<td class="thead" colspan="2">
 					<div class="float_right">
-						<a href="{$prev_link}">&laquo; {$lang->previous_week}</a> | <a href="{$next_link}">{$lang->next_week} &raquo;</a>
+						{$prev_week_link}{$sep}{$next_week_link}
 					</div>
 					<div><strong>{$lang->weekly_overview} ({$friendly_week_from} - {$friendly_week_to})</strong></div>
 				</td>
@@ -3476,6 +3478,8 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 				<td class="tcat" colspan="2"><strong>{$weekday_month} {$weekday_year}</strong></td>
 			</tr>
 			{$days}]]></template>
+		<template name="calendar_weekview_nextlink" version="1813"><![CDATA[<a href="{$next_link}">{$lang->next_week} &raquo;</a>]]></template>
+		<template name="calendar_weekview_prevlink" version="1813"><![CDATA[<a href="{$prev_link}">&laquo; {$lang->previous_week}</a>]]></template>
 		<template name="calendar_year" version="1800"><![CDATA[<option value="{$year}" {$selected}>{$year}</option>]]></template>
 		<template name="calendar_year_sel" version="1800"><![CDATA[<option value="{$year_sel}">{$year_sel}</option>]]></template>
 		<template name="editpost" version="1809"><![CDATA[<html>
@@ -3932,7 +3936,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 {$forums}
 </table>
 <br />]]></template>
-		<template name="forumdisplay_thread" version="1809"><![CDATA[<tr class="inline_row">
+		<template name="forumdisplay_thread" version="1813"><![CDATA[<tr class="inline_row">
 	<td align="center" class="{$bgcolor}{$thread_type_class}" width="2%"><span class="thread_status {$folder}" title="{$folder_label}">&nbsp;</span></td>
 	<td align="center" class="{$bgcolor}{$thread_type_class}" width="2%">{$icon}</td>
 	<td class="{$bgcolor}{$thread_type_class}">
@@ -3942,7 +3946,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 			<div class="author smalltext">{$thread['profilelink']}</div>
 		</div>
 	</td>
-	<td align="center" class="{$bgcolor}{$thread_type_class}"><a href="javascript:void(0)" onclick="MyBB.whoPosted({$thread['tid']}); return false;">{$thread['replies']}</a>{$unapproved_posts}</td>
+	<td align="center" class="{$bgcolor}{$thread_type_class}"><a href="{$mybb->settings['bburl']}/misc.php?action=whoposted&tid={$thread['tid']}" onclick="MyBB.whoPosted({$thread['tid']}); return false;">{$thread['replies']}</a>{$unapproved_posts}</td>
 	<td align="center" class="{$bgcolor}{$thread_type_class}">{$thread['views']}</td>
 	{$rating}
 	<td class="{$bgcolor}{$thread_type_class}" style="white-space: nowrap; text-align: right;">
@@ -6226,6 +6230,27 @@ if(use_xmlhttprequest == "1")
 </table>
 </div>
 </div>]]></template>
+		<template name="misc_whoposted_page" version="1813"><![CDATA[<html>
+<head>
+<title>{$thread['subject']} - {$lang->who_posted}</title>
+{$headerinclude}
+</head>
+<body>
+{$header}
+<br />
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<tr>
+<td colspan="2" class="thead"><strong>{$lang->total_posts} {$numposts}</strong></td>
+</tr>
+<tr>
+<td class="tcat"><span class="smalltext"><strong><a href="{$mybb->settings['bburl']}/misc.php?action=whoposted&tid={$thread['tid']}&sort=username">{$lang->user}</a></strong></span></td>
+<td class="tcat"><span class="smalltext"><strong><a href="{$mybb->settings['bburl']}/misc.php?action=whoposted&tid={$thread['tid']}">{$lang->num_posts}</a></strong></span></td>
+</tr>
+{$whoposted}
+</table>
+{$footer}
+</body>
+</html>]]></template>
 		<template name="misc_whoposted_poster" version="1807"><![CDATA[<tr>
 <td class="{$altbg}">{$profile_link}</td>
 <td class="{$altbg}">{$poster['posts']}</td>
@@ -7722,10 +7747,11 @@ if(use_xmlhttprequest == "1")
 		<template name="modcp_no_announcements_global" version="1400"><![CDATA[					<tr>
 						<td class="trow1" colspan="3">{$lang->no_global_announcements}</td>
 					</tr>]]></template>
-		<template name="modcp_reports" version="1808"><![CDATA[<html>
+		<template name="modcp_reports" version="1813"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->report_center}</title>
 {$headerinclude}
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_reports.js?ver=1813"></script>
 </head>
 <body>
 {$header}
@@ -7745,8 +7771,9 @@ if(use_xmlhttprequest == "1")
 			<td class="tcat" align="left" width="25%"><span class="smalltext"><strong>{$lang->report_type}</strong></span></td>
 			<td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{$lang->report_count}</strong></span></td>
 			<td class="tcat" align="right" width="20%"><span class="smalltext"><strong>{$lang->report_lastpost}</strong></span></td>
-			<td class="tcat" align="center" width="5%"><input type="checkbox" name="allbox" onclick="selectReportedPosts();" /></td>
+			<td class="tcat" align="center" width="5%"><input type="checkbox" name="allbox" onclick="inlineReports.checkAll(this);" /></td>
 		</tr>
+		{$selectall}
 		{$reports}
 		<tr>
 			<td class="tfoot" colspan="7" align="right"><span class="smalltext"><strong><a href="modcp.php?action=allreports">{$lang->view_all_reports}</a></strong></span></td>
@@ -7754,7 +7781,7 @@ if(use_xmlhttprequest == "1")
 		</table>
 		{$reportspages}
 		<br />
-		<div align="center"><input type="hidden" name="action" value="do_reports" /><input type="submit" class="button" name="reportsubmit" value="{$lang->mark_read}" /></div>
+		<div align="center"><input type="hidden" name="action" value="do_reports" /><input type="submit" id="inline_read" class="button" name="reportsubmit" value="{$lang->mark_read} ({$inlinecount})" /></div>
 	</td>
 </tr>
 </table>
@@ -7762,28 +7789,8 @@ if(use_xmlhttprequest == "1")
 {$footer}
 <script type="text/javascript">
 <!--
-	var checked = false;
-	function selectReportedPosts()
-	{
-		if(checked == false)
-		{
-			checked = true;
-			$('input:checkbox').prop('checked', true);
-		}
-		else
-		{
-			checked = false;
-			$('input:checkbox').prop('checked', false);
-		}
-	}
-
-	function checkReportedPost(e)
-	{
-		if($(e).prop('checked') == false)
-		{
-			$('input:checkbox[name="allbox"]').prop('checked', false);
-		}
-	}
+	var mark_read_text = "{$lang->mark_read}";
+	var all_text = "{$report_count}";
 // -->
 </script>
 </body>
@@ -7833,15 +7840,21 @@ if(use_xmlhttprequest == "1")
 		<template name="modcp_reports_noreports" version="1607"><![CDATA[<tr>
 <td class="trow1" align="center" colspan="7">{$lang->no_reports}</td>
 </tr>]]></template>
-		<template name="modcp_reports_report" version="1808"><![CDATA[<tr>
+		<template name="modcp_reports_report" version="1813"><![CDATA[<tr class="inline_row">
 	<td class="{$trow}">{$report_data['content']}</td>
 	<td class="{$trow}" align="left">{$report_data['comment']}</td>
 	<td class="{$trow}" align="center">{$report_data['reports']}</td>
 	<td class="{$trow} smalltext" align="right">{$report_data['lastreporter']}</td>
-	<td class="{$trow}" align="center"><input type="checkbox" class="checkbox" name="reports[]" id="reports_{$report['rid']}" value="{$report['rid']}" onclick="checkReportedPost(this);" /></td>
+	<td class="{$trow}" align="center"><input type="checkbox" class="checkbox" name="reports[]" id="reports_{$report['rid']}" value="{$report['rid']}"{$inlinecheck} /></td>
 </tr>]]></template>
 		<template name="modcp_reports_report_comment" version="1808"><![CDATA[{$reason}]]></template>
 		<template name="modcp_reports_report_comment_extra" version="1808"><![CDATA[{$reason}: {$comment}]]></template>
+		<template name="modcp_reports_selectall" version="1813"><![CDATA[<tr id="selectAllrow" class="hiddenrow">
+	<td colspan="8" class="selectall">{$lang->page_selected} <a href="javascript:void(0)" onclick='inlineReports.selectAll(); return false;'>{$lang->select_all}</a></td>
+</tr>
+<tr id="allSelectedrow" class="hiddenrow">
+	<td colspan="8" class="selectall">{$lang->all_selected} <a href="javascript:void(0)" onclick='inlineReports.clearChecked(); return false;'>{$lang->clear_selection}</a></td>
+</tr>]]></template>
 		<template name="modcp_nobanned" version="1613"><![CDATA[<tr>
 		<td class="trow1" align="center" colspan="4">{$lang->no_bans_ending}</td>
 </tr>]]></template>
@@ -9410,9 +9423,9 @@ if(use_xmlhttprequest == "1")
 <td class="trow1" style="white-space: nowrap" align="center">{$attach_update_options} {$attach_add_options}</td>
 </tr>]]></template>
 		<template name="post_attachments_update" version="1604"><![CDATA[<input type="submit" class="button" name="updateattachment" value="{$lang->update_attachment}" tabindex="12" />]]></template>
-		<template name="post_captcha" version="1808"><![CDATA[<tr id="captcha_trow">
+		<template name="post_captcha" version="1813"><![CDATA[<tr id="captcha_trow">
 <td class="trow1" valign="top" width="350"><strong>{$lang->image_verification}</strong>
-<br/>
+<br />
 <span class="smalltext">{$lang->verification_note}</span>
 </td>
 <td class="trow1">
@@ -9499,7 +9512,7 @@ if(use_xmlhttprequest == "1")
 	<label><input type="radio" name="postoptions[subscriptionmethod]" {$postoptions_subscriptionmethod_pm} value="pm" style="vertical-align: middle;" /> {$lang->instant_pm_subscribe}</label><br />
 </td>
 </tr>]]></template>
-		<template name="postbit" version="1809"><![CDATA[{$ignore_bit}{$deleted_bit}
+		<template name="postbit" version="1813"><![CDATA[{$ignore_bit}{$deleted_bit}
 <a name="pid{$post['pid']}" id="pid{$post['pid']}"></a>
 <div class="post {$unapproved_shade}" style="{$post_visibility}" id="post_{$post['pid']}">
 <div class="post_author">
@@ -9530,7 +9543,11 @@ if(use_xmlhttprequest == "1")
 	{$post['signature']}
 	<div class="post_meta" id="post_meta_{$post['pid']}">
 		{$post['iplogged']}
+		<div class="float_right">
+			{$post['poststatus']}
+		</div>
 	</div>
+	{$post['input_editreason']}
 </div>
 <div class="post_controls">
 	<div class="postbit_buttons author_buttons float_left">
@@ -9567,7 +9584,7 @@ if(use_xmlhttprequest == "1")
 	{$post['replink']}{$post['profilefield']}{$post['warninglevel']}]]></template>
 		<template name="postbit_avatar" version="1800"><![CDATA[<div class="author_avatar"><a href="{$post['profilelink_plain']}"><img src="{$useravatar['image']}" alt="" {$useravatar['width_height']} /></a></div>]]></template>
 		<template name="postbit_away" version="1800"><![CDATA[<a href="{$post['profilelink_plain']}" title="{$lang->postbit_status_away}"><img src="{$theme['imgdir']}/buddy_away.png" border="0" alt="{$lang->postbit_status_away}" class="buddy_status" /></a>]]></template>
-		<template name="postbit_classic" version="1809"><![CDATA[{$ignore_bit}{$deleted_bit}
+		<template name="postbit_classic" version="1813"><![CDATA[{$ignore_bit}{$deleted_bit}
 <a name="pid{$post['pid']}" id="pid{$post['pid']}"></a>
 <div class="post classic {$unapproved_shade}" style="{$post_visibility}" id="post_{$post['pid']}">
 <div class="post_author scaleimages">
@@ -9598,7 +9615,11 @@ if(use_xmlhttprequest == "1")
 	{$post['signature']}
 	<div class="post_meta" id="post_meta_{$post['pid']}">
 		{$post['iplogged']}
+		<div class="float_right">
+			{$post['poststatus']}
+		</div>
 	</div>
+	{$post['input_editreason']}
 </div>
 <div class="post_controls">
 	<div class="postbit_buttons author_buttons float_left">
@@ -9622,12 +9643,11 @@ if(use_xmlhttprequest == "1")
 		{$deleted_message}
 	</div>
 </div>]]></template>
-		<template name="postbit_deleted_member" version="1809"><![CDATA[<a name="pid{$post['pid']}" id="pid{$post['pid']}"></a>
+		<template name="postbit_deleted_member" version="1813"><![CDATA[<a name="pid{$post['pid']}" id="pid{$post['pid']}"></a>
 <div class="post deleted_post_hidden" id="post_{$post['pid']}">
 	<div class="deleted_post_author"><strong><span class="largetext">{$post['profilelink']}</span></strong></div>
-		<div class="post_content">
-			<em>{$lang->postbit_post_deleted}</em>
-		</div>
+	<div class="post_content">
+		<em>{$lang->postbit_post_deleted}</em>
 	</div>
 </div>]]></template>
 		<template name="postbit_edit" version="1809"><![CDATA[<a href="editpost.php?pid={$post['pid']}" id="edit_post_{$post['pid']}" title="{$lang->postbit_edit}" class="postbit_edit"><span>{$lang->postbit_button_edit}</span></a>
@@ -9642,6 +9662,7 @@ if(use_xmlhttprequest == "1")
 </script>]]></template>
 		<template name="postbit_editedby" version="1800"><![CDATA[<span class="edited_post">({$post['editnote']} {$post['editedprofilelink']}.{$editreason})</span>]]></template>
 		<template name="postbit_editedby_editreason" version="1800"><![CDATA[ <em>{$lang->postbit_editreason}: {$post['editreason']}</em>]]></template>
+		<template name="postbit_editreason" version="1813"><![CDATA[<div class="editreason" id="editreason_{$post['pid']}_original" style="display: none;"><label for="editreason">{$lang->postbit_editreason}:</label> <input type="text" class="textbox" style="margin: 6px 0;" name="editreason" size="40" maxlength="150" id="quickedit_{$post['pid']}_editreason_original" value="{$post['editreason']}" /><br /></div>]]></template>
 		<template name="postbit_email" version="1800"><![CDATA[<a href="member.php?action=emailuser&amp;uid={$post['uid']}" title="{$lang->postbit_email}" class="postbit_email"><span>{$lang->postbit_button_email}</span></a>]]></template>
 		<template name="postbit_find" version="1800"><![CDATA[<a href="search.php?action=finduser&amp;uid={$post['uid']}" title="{$lang->postbit_find}" class="postbit_find"><span>{$lang->postbit_button_find}</span></a>]]></template>
 		<template name="postbit_forward_pm" version="1800"><![CDATA[<a href="private.php?action=send&amp;pmid={$id}&amp;do=forward" title="{$lang->forward_title}" class="postbit_forward_pm"><span>{$lang->postbit_button_forward}</span></a>]]></template>
@@ -9705,9 +9726,7 @@ if(use_xmlhttprequest == "1")
 		<template name="postbit_signature" version="1800"><![CDATA[<div class="signature scaleimages">
 {$post['signature']}
 </div>]]></template>
-		<template name="postbit_status" version="1809"><![CDATA[<div class="float_right">
-	<em><strong>{$status_type}</strong></em>
-</div>]]></template>
+		<template name="postbit_status" version="1813"><![CDATA[<span class="status_type">{$status_type}</span>]]></template>
 		<template name="postbit_userstar" version="1800"><![CDATA[<img src="{$post['starimage']}" border="0" alt="*" />]]></template>
 		<template name="postbit_warn" version="1800"><![CDATA[<a href="warnings.php?action=warn&amp;uid={$post['uid']}&amp;pid={$post['pid']}" title="{$lang->postbit_warn}" class="postbit_warn"><span>{$lang->postbit_button_warn}</span></a>]]></template>
 		<template name="postbit_warninglevel" version="1400"><![CDATA[<br />{$lang->postbit_warning_level} <a href="{$warning_link}">{$warning_level}</a>]]></template>
@@ -9718,13 +9737,14 @@ if(use_xmlhttprequest == "1")
 <td class="trow1" valign="top">{$iconlist}</td>
 </tr>]]></template>
 		<template name="posticons_icon" version="1800"><![CDATA[<label class="posticons_label"><input type="radio" name="icon" value="{$dbicon['iid']}"{$checked} /> <img src="{$dbicon['path']}" alt="{$dbicon['name']}" title="{$dbicon['name']}" /></label>]]></template>
-		<template name="printthread" version="1600"><![CDATA[<html>
+		<template name="printthread" version="1813"><![CDATA[<html>
 <head>
 <title>{$thread['threadprefix']} {$thread['subject']} - {$lang->printable_version}</title>
 <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
 <style type="text/css">
 body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 .largetext { font-family: Verdana, Arial, sans-serif; font-size: medium; font-weight: bold; }
+img { max-width: 100%; height: auto; }
 </style>
 </head>
 <body>
@@ -9759,15 +9779,13 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <br />
 <br />
 <hr size="1" />]]></template>
-		<template name="private" version="1800"><![CDATA[<html>
+		<template name="private" version="1813"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->private_messaging}</title>
 {$headerinclude}
 </head>
 <body>
 {$header}
-<form action="private.php" method="post" name="pmForm">
-<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
@@ -9777,6 +9795,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </fieldset>
 <br />
 {$limitwarning}
+<form action="private.php" method="post" name="pmForm">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="6">
@@ -9801,7 +9821,6 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>
 </table>
 <br />
-<div class="float_left">{$multipage}</div>
 <div class="float_right">
 <span class="smalltext">
 <strong>{$lang->jump_folder} {$folderjump}
@@ -9809,15 +9828,16 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </strong>
 </span>
 </div>
+<input type="hidden" name="action" value="do_stuff" />
+</form>
+<div class="float_left">{$multipage}</div>
 </td>
 </tr>
 </table>
-<input type="hidden" name="action" value="do_stuff" />
-</form>
 {$footer}
 </body>
 </html>]]></template>
-		<template name="private_advanced_search" version="1807"><![CDATA[<html>
+		<template name="private_advanced_search" version="1813"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->advanced_private_message_search}</title>
 {$headerinclude}
@@ -9850,7 +9870,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		</td>
 	</tr>
 	<tr>
-		<td class="trow2"><strong><label for="keywords">{$lang->sender}</label></strong></td>
+		<td class="trow2"><strong><label for="sender">{$lang->sender}</label></strong></td>
 		<td class="trow2"><input type="text" class="textbox" name="sender" id="sender" size="35" maxlength="250" /></td>
 	</tr>
 	<tr>
@@ -10288,19 +10308,19 @@ if(use_xmlhttprequest == "1")
 	<td class="trow2" align="center" style="white-space: nowrap"><span class="smalltext">{$senddate}</span></td>
 	<td class="trow1" align="center"><input type="checkbox" class="checkbox" name="check[{$message['pmid']}]" value="1" /></td>
 </tr>]]></template>
-		<template name="private_search_results" version="1600"><![CDATA[<html>
+		<template name="private_search_results" version="1813"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->private_messaging}</title>
 {$headerinclude}
 </head>
 <body>
 {$header}
-<form action="private.php" method="post" name="pmForm">
-<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
 <td valign="top">
+<form action="private.php" method="post" name="pmForm">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="7">
@@ -10326,7 +10346,6 @@ if(use_xmlhttprequest == "1")
 </tr>
 </table>
 <br />
-<div class="float_left">{$multipage}</div>
 <div class="float_right">
 <span class="smalltext">
 <strong>{$lang->jump_folder} {$folderjump}
@@ -10334,11 +10353,12 @@ if(use_xmlhttprequest == "1")
 </strong>
 </span>
 </div>
+<input type="hidden" name="action" value="do_stuff" />
+</form>
+<div class="float_left">{$multipage}</div>
 </td>
 </tr>
 </table>
-<input type="hidden" name="action" value="do_stuff" />
-</form>
 {$footer}
 </body>
 </html>]]></template>
@@ -11039,6 +11059,7 @@ if(use_xmlhttprequest == "1")
 </tr>]]></template>
 		<template name="search_results_icon" version="1800"><![CDATA[<img src="{$posticon['path']}" alt="{$posticon['name']}" title="{$posticon['name']}" />]]></template>
 		<template name="search_results_inlinemodcol" version="1809"><![CDATA[<td class="tcat" align="center" width="1"><input type="checkbox" name="allbox" onclick="inlineModeration.checkAll(this);" /></td>]]></template>
+		<template name="search_results_inlinemodcol_empty" version="1813"><![CDATA[<td class="tcat" align="center" width="1"></td>]]></template>
 		<template name="search_results_posts" version="1600"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->search_results}</title>
@@ -11116,7 +11137,7 @@ if(use_xmlhttprequest == "1")
 		<template name="search_results_posts_inlinemoderation_custom" version="120"><![CDATA[<optgroup label="{$lang->custom_mod_tools}">{$customposttools}</optgroup>]]></template>
 		<template name="search_results_posts_inlinemoderation_custom_tool" version="120"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
 		<template name="search_results_posts_nocheck" version="120"><![CDATA[<td class="{$bgcolor}" align="center" style="white-space: nowrap">&nbsp;</td>]]></template>
-		<template name="search_results_posts_post" version="1809"><![CDATA[<tr class="inline_row">
+		<template name="search_results_posts_post" version="1813"><![CDATA[<tr class="inline_row">
 	<td align="center" class="{$bgcolor}" width="2%"><span class="thread_status {$folder}" title="{$folder_label}">&nbsp;</span></td>
 	<td align="center" class="{$bgcolor}" width="2%">{$icon}</td>
 	<td class="{$bgcolor}">
@@ -11128,7 +11149,7 @@ if(use_xmlhttprequest == "1")
 	</td>
 	<td align="center" class="{$bgcolor}">{$post['profilelink']}</td>
 	<td class="{$bgcolor}" >{$post['forumlink']}</td>
-	<td align="center" class="{$bgcolor}"><a href="javascript:void(0)" onclick="MyBB.whoPosted({$post['tid']}); return false;">{$post['thread_replies']}</a></td>
+	<td align="center" class="{$bgcolor}"><a href="{$mybb->settings['bburl']}/misc.php?action=whoposted&tid={$post['tid']}" onclick="MyBB.whoPosted({$post['tid']}); return false;">{$post['thread_replies']}</a></td>
 	<td align="center" class="{$bgcolor}">{$post['thread_views']}</td>
 	<td class="{$bgcolor}" style="white-space: nowrap; text-align: center;"><span class="smalltext">{$posted}</span></td>
 	{$inline_mod_checkbox}
@@ -11213,7 +11234,7 @@ if(use_xmlhttprequest == "1")
 		<template name="search_results_threads_inlinemoderation_custom" version="120"><![CDATA[<optgroup label="{$lang->custom_mod_tools}">{$customthreadtools}</optgroup>]]></template>
 		<template name="search_results_threads_inlinemoderation_custom_tool" version="120"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
 		<template name="search_results_threads_nocheck" version="120"><![CDATA[<td class="{$bgcolor}" align="center" style="white-space: nowrap">&nbsp;</td>]]></template>
-		<template name="search_results_threads_thread" version="1809"><![CDATA[<tr class="inline_row">
+		<template name="search_results_threads_thread" version="1813"><![CDATA[<tr class="inline_row">
 	<td align="center" class="{$bgcolor}" width="2%"><span class="thread_status {$folder}" title="{$folder_label}">&nbsp;</span></td>
 	<td align="center" class="{$bgcolor}" width="2%">{$icon}</td>
 	<td class="{$bgcolor}">
@@ -11224,7 +11245,7 @@ if(use_xmlhttprequest == "1")
 		</div>
 	</td>
 	<td class="{$bgcolor}">{$thread['forumlink']}</td>
-	<td align="center" class="{$bgcolor}"><a href="javascript:void(0)" onclick="MyBB.whoPosted({$thread['tid']}); return false;">{$thread['replies']}</a></td>
+	<td align="center" class="{$bgcolor}"><a href="{$mybb->settings['bburl']}/misc.php?action=whoposted&tid={$thread['tid']}" onclick="MyBB.whoPosted({$thread['tid']}); return false;">{$thread['replies']}</a></td>
 	<td align="center" class="{$bgcolor}">{$thread['views']}</td>
 	<td class="{$bgcolor}" style="white-space: nowrap">
 		<span class="smalltext">
@@ -11251,7 +11272,7 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
-		<template name="showteam_moderators" version="120"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<template name="showteam_moderators" version="1813"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="5"><strong>{$lang->moderators}</strong></td>
 </tr>
@@ -11264,8 +11285,8 @@ if(use_xmlhttprequest == "1")
 </tr>
 {$modrows}
 </table>
-<br/>]]></template>
-		<template name="showteam_moderators_forum" version="1400"><![CDATA[<a href="{$forum_url}">{$forum['name']}</a><br/>]]></template>
+<br />]]></template>
+		<template name="showteam_moderators_forum" version="1813"><![CDATA[<a href="{$forum_url}">{$forum['name']}</a><br />]]></template>
 		<template name="showteam_moderators_mod" version="1800"><![CDATA[<tr>
 <td width="45%" class="{$bgcolor}"><img src="{$theme['imgdir']}/buddy_{$status}.png" title="{$lang->$status}" alt="{$lang->$status}" style="vertical-align: middle;" /><a href="{$user['profilelink']}"><strong>{$user['username']}</strong></a></td>
 <td width="30%" class="{$bgcolor}"><span class="smalltext">{$forumslist}</span></td>
@@ -11292,7 +11313,7 @@ if(use_xmlhttprequest == "1")
 <td width="5%" class="{$bgcolor}"><div class="postbit_buttons">{$emailcode}</div></td>
 <td width="5%" class="{$bgcolor}"><div class="postbit_buttons">{$pmcode}</div></td>
 </tr>]]></template>
-		<template name="showthread" version="1809"><![CDATA[<html>
+		<template name="showthread" version="1813"><![CDATA[<html>
 <head>
 <title>{$thread['subject']}</title>
 {$headerinclude}
@@ -11316,7 +11337,7 @@ if(use_xmlhttprequest == "1")
 <!-- jeditable (jquery) -->
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/report.js?ver=1804"></script>
 <script src="{$mybb->asset_url}/jscripts/jeditable/jeditable.min.js"></script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/thread.js?ver=1809"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/thread.js?ver=1813"></script>
 </head>
 <body>
 	{$header}
@@ -11656,11 +11677,11 @@ if(use_xmlhttprequest == "1")
 </tr>
 {$similarthreadbits}
 </table>]]></template>
-		<template name="showthread_similarthreads_bit" version="1809"><![CDATA[<tr>
+		<template name="showthread_similarthreads_bit" version="1813"><![CDATA[<tr>
 	<td align="center" class="{$trow}" width="2%">{$icon}</td>
 	<td class="{$trow}">{$similar_thread['threadprefix']}<a href="{$similar_thread['threadlink']}">{$similar_thread['subject']}</a></td>
 	<td align="center" class="{$trow}">{$similar_thread['profilelink']}</td>
-	<td align="center" class="{$trow}"><a href="javascript:void(0)" onclick="MyBB.whoPosted({$similar_thread['tid']}); return false;">{$similar_thread['replies']}</a></td>
+	<td align="center" class="{$trow}"><a href="{$mybb->settings['bburl']}/misc.php?action=whoposted&tid={$similar_thread['tid']}" onclick="MyBB.whoPosted({$similar_thread['tid']}); return false;">{$similar_thread['replies']}</a></td>
 	<td align="center" class="{$trow}">{$similar_thread['views']}</td>
 	<td class="{$trow}" style="white-space: nowrap">
 		<span class="smalltext">{$lastpostdate}<br />
@@ -12569,11 +12590,11 @@ if(use_xmlhttprequest == "1")
 </tr>
 {$latest_subscribed_threads}
 </table>]]></template>
-		<template name="usercp_latest_subscribed_threads" version="1809"><![CDATA[<tr>
+		<template name="usercp_latest_subscribed_threads" version="1813"><![CDATA[<tr>
 <td align="center" class="{$bgcolor}" width="2%"><span class="thread_status {$folder}" title="{$folder_label}">&nbsp;</span></td>
 <td align="center" class="{$bgcolor}" width="2%">{$icon}</td>
 <td class="{$bgcolor}">{$gotounread}{$thread['displayprefix']}<a href="{$thread['threadlink']}" class="{$new_class}">{$thread['subject']}</a><br /><span class="smalltext">{$thread['author']}</span></td>
-<td align="center" class="{$bgcolor}"><a href="javascript:void(0)" onclick="MyBB.whoPosted({$thread['tid']}); return false;">{$thread['replies']}</a></td>
+<td align="center" class="{$bgcolor}"><a href="{$mybb->settings['bburl']}/misc.php?action=whoposted&tid={$thread['tid']}" onclick="MyBB.whoPosted({$thread['tid']}); return false;">{$thread['replies']}</a></td>
 <td align="center" class="{$bgcolor}">{$thread['views']}</td>
 <td class="{$bgcolor}" style="white-space: nowrap"><span class="smalltext">{$lastpostdate}
 <br /><a href="{$thread['lastpostlink']}">{$lang->lastpost}</a>: {$lastposterlink}</span>
@@ -12592,11 +12613,11 @@ if(use_xmlhttprequest == "1")
 </tr>
 {$latest_threads_threads}
 </table>]]></template>
-		<template name="usercp_latest_threads_threads" version="1809"><![CDATA[<tr>
+		<template name="usercp_latest_threads_threads" version="1813"><![CDATA[<tr>
 <td align="center" class="{$bgcolor}" width="2%"><span class="thread_status {$folder}" title="{$folder_label}">&nbsp;</span></td>
 <td align="center" class="{$bgcolor}" width="2%">{$icon}</td>
 <td class="{$bgcolor}">{$gotounread}{$thread['displayprefix']}<a href="{$thread['threadlink']}" class="{$new_class}">{$thread['subject']}</a><br /><span class="smalltext">{$thread['author']}</span></td>
-<td align="center" class="{$bgcolor}"><a href="javascript:void(0)" onclick="MyBB.whoPosted({$thread['tid']}); return false;">{$thread['replies']}</a></td>
+<td align="center" class="{$bgcolor}"><a href="{$mybb->settings['bburl']}/misc.php?action=whoposted&tid={$thread['tid']}" onclick="MyBB.whoPosted({$thread['tid']}); return false;">{$thread['replies']}</a></td>
 <td align="center" class="{$bgcolor}">{$thread['views']}</td>
 <td class="{$bgcolor}" style="white-space: nowrap"><span class="smalltext">{$lastpostdate}
 <br /><a href="{$thread['lastpostlink']}">{$lang->lastpost}</a>: {$lastposterlink}</span>
@@ -13341,11 +13362,11 @@ if(use_xmlhttprequest == "1")
 	</div>
 	</td>
 </tr>]]></template>
-		<template name="usercp_subscriptions_thread" version="1809"><![CDATA[<tr>
+		<template name="usercp_subscriptions_thread" version="1813"><![CDATA[<tr>
 	<td align="center" class="{$bgcolor}" width="2%"><span class="thread_status {$folder}" title="{$folder_label}">&nbsp;</span></td>
 	<td align="center" class="{$bgcolor}" width="2%">{$icon}</td>
 	<td class="{$bgcolor}">{$gotounread}{$thread['threadprefix']}<a href="{$thread['threadlink']}" class="{$new_class}">{$thread['subject']}</a><br /><span class="smalltext">{$lang->notification_method} {$notification_type}</span></td>
-	<td align="center" class="{$bgcolor}"><a href="javascript:void(0)" onclick="MyBB.whoPosted({$thread['tid']}); return false;">{$thread['replies']}</a></td>
+	<td align="center" class="{$bgcolor}"><a href="{$mybb->settings['bburl']}/misc.php?action=whoposted&tid={$thread['tid']}" onclick="MyBB.whoPosted({$thread['tid']}); return false;">{$thread['replies']}</a></td>
 	<td align="center" class="{$bgcolor}">{$thread['views']}</td>
 	<td class="{$bgcolor}" style="white-space: nowrap">
 		<span class="smalltext">{$lastpostdate}<br />
@@ -13978,13 +13999,13 @@ $(function() {
 </html>]]></template>
 		<template name="debug_summary" version="1800"><![CDATA[<div id="debug">{$generated_in} {$debug_weight} <br />{$sql_queries} / {$server_load} / {$memory_usage}<br />[<a href="{$debuglink}" target="_blank">{$lang->debug_advanced_details}</a>]<br /></div>]]></template>
 		<template name="gobutton" version="120"><![CDATA[<input type="submit" class="button" value="{$lang->go}" />]]></template>
-		<template name="headerinclude" version="1810"><![CDATA[<link rel="alternate" type="application/rss+xml" title="{$lang->latest_threads} (RSS 2.0)" href="{$mybb->settings['bburl']}/syndication.php" />
+		<template name="headerinclude" version="1813"><![CDATA[<link rel="alternate" type="application/rss+xml" title="{$lang->latest_threads} (RSS 2.0)" href="{$mybb->settings['bburl']}/syndication.php" />
 <link rel="alternate" type="application/atom+xml" title="{$lang->latest_threads} (Atom 1.0)" href="{$mybb->settings['bburl']}/syndication.php?type=atom1.0" />
 <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.js?ver=1806"></script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.plugins.min.js?ver=1806"></script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/general.js?ver=1810"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/general.js?ver=1813"></script>
 
 {$stylesheets}
 <script type="text/javascript">

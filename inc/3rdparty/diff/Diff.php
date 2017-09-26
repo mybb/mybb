@@ -7,7 +7,7 @@
  * <dairiki@dairiki.org>, and is used/adapted with his permission.
  *
  * Copyright 2004 Geoffrey T. Dairiki <dairiki@dairiki.org>
- * Copyright 2004-2011 Horde LLC (http://www.horde.org/)
+ * Copyright 2004-2017 Horde LLC (http://www.horde.org/)
  *
  * See the enclosed file COPYING for license information (LGPL). If you did
  * not receive this file, see http://www.horde.org/licenses/lgpl21.
@@ -82,8 +82,6 @@ class Horde_Text_Diff
     /**
      * returns the number of new (added) lines in a given diff.
      *
-     * @since Text_Diff 1.1.0
-     *
      * @return integer The number of new lines
      */
     public function countAddedLines()
@@ -100,8 +98,6 @@ class Horde_Text_Diff
 
     /**
      * Returns the number of deleted (removed) lines in a given diff.
-     *
-     * @since Text_Diff 1.1.0
      *
      * @return integer The number of deleted lines
      */
@@ -221,7 +217,7 @@ class Horde_Text_Diff
      * @param string $line  The line to trim.
      * @param integer $key  The index of the line in the array. Not used.
      */
-    static public function trimNewlines(&$line, $key)
+    public static function trimNewlines(&$line, $key)
     {
         $line = str_replace(array("\n", "\r"), '', $line);
     }

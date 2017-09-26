@@ -689,7 +689,7 @@ if($mybb->input['action'] == "logs")
 			$log['type'] = $lang->primary;
 		}
 
-		$log['dateline'] = date($mybb->settings['dateformat'], $log['dateline']).", ".date($mybb->settings['timeformat'], $log['dateline']);
+		$log['dateline'] = my_date('relative', $log['dateline']);
 		$table->construct_cell($log['username']);
 		$table->construct_cell($log['type'], array('style' => 'text-align: center;'));
 		$table->construct_cell($log['oldusergroup'], array('style' => 'text-align: center;'));

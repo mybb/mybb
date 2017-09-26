@@ -71,7 +71,7 @@ if($mybb->input['action'] == "view")
 	$log['subject'] = htmlspecialchars_uni($log['subject']);
 	$log['error'] = htmlspecialchars_uni($log['error']);
 	$log['smtperror'] = htmlspecialchars_uni($log['smtpcode']);
-	$log['dateline'] = date($mybb->settings['dateformat'], $log['dateline']).", ".date($mybb->settings['timeformat'], $log['dateline']);
+	$log['dateline'] = my_date('relative', $log['dateline']);
 	$log['message'] = nl2br(htmlspecialchars_uni($log['message']));
 
 	?>
@@ -214,7 +214,7 @@ if(!$mybb->input['action'])
 		$log['subject'] = htmlspecialchars_uni($log['subject']);
 		$log['toemail'] = htmlspecialchars_uni($log['toemail']);
 		$log['error'] = htmlspecialchars_uni($log['error']);
-		$log['dateline'] = date($mybb->settings['dateformat'], $log['dateline']).", ".date($mybb->settings['timeformat'], $log['dateline']);
+		$log['dateline'] = my_date('relative', $log['dateline']);
 
 		$table->construct_cell($form->generate_check_box("log[{$log['eid']}]", $log['eid'], ''));
 		$table->construct_cell("<a href=\"javascript:MyBB.popupWindow('index.php?module=tools-mailerrors&amp;action=view&amp;eid={$log['eid']}', null, true);\">{$log['subject']}</a>");

@@ -322,7 +322,7 @@ function parse_page($contents)
 /**
  * Turn a unix timestamp in to a "friendly" date/time format for the user.
  *
- * @param string $format A date format according to PHP's date structure.
+ * @param string $format A date format (either relative, normal or PHP's date() structure).
  * @param int $stamp The unix timestamp the date should be generated for.
  * @param int|string $offset The offset in hours that should be applied to times. (timezones) Or an empty string to determine that automatically
  * @param int $ty Whether or not to use today/yesterday formatting.
@@ -380,7 +380,7 @@ function my_date($format, $stamp=0, $offset="", $ty=1, $adodb=false)
 	}
 
 	$todaysdate = $yesterdaysdate = '';
-	if($ty && ($format == $mybb->settings['dateformat'] || $format == 'relative'))
+	if($ty && ($format == $mybb->settings['dateformat'] || $format == 'relative' || $format == 'normal'))
 	{
 		$_stamp = TIME_NOW;
 		if($adodb == true)
@@ -470,11 +470,11 @@ function my_date($format, $stamp=0, $offset="", $ty=1, $adodb=false)
 			{
 				if($todaysdate == $date)
 				{
-					$date = $lang->sprintf($lang->today, $real_date);
+					$date = $lang->sprintf($lang->today_rel, $real_date);
 				}
 				else if($yesterdaysdate == $date)
 				{
-					$date = $lang->sprintf($lang->yesterday, $real_date);
+					$date = $lang->sprintf($lang->yesterday_rel, $real_date);
 				}
 			}
 
@@ -489,17 +489,42 @@ function my_date($format, $stamp=0, $offset="", $ty=1, $adodb=false)
 			}
 		}
 	}
+	elseif($format == 'normal')
+	{
+		// Normal format both date and time
+		if($ty != 2)
+		{
+			if($todaysdate == $date)
+			{
+				$date = $lang->today;
+			}
+			else if($yesterdaysdate == $date)
+			{
+				$date = $lang->yesterday;
+			}
+		}
+
+		$date .= $mybb->settings['datetimesep'];
+		if($adodb == true)
+		{
+			$date .= adodb_date($mybb->settings['timeformat'], $stamp + ($offset * 3600));
+		}
+		else
+		{
+			$date .= gmdate($mybb->settings['timeformat'], $stamp + ($offset * 3600));
+		}
+	}
 	else
 	{
 		if($ty && $format == $mybb->settings['dateformat'])
 		{
 			if($todaysdate == $date)
 			{
-				$date = $lang->sprintf($lang->today, $real_date);
+				$date = $lang->today;
 			}
 			else if($yesterdaysdate == $date)
 			{
-				$date = $lang->sprintf($lang->yesterday, $real_date);
+				$date = $lang->yesterday;
 			}
 		}
 		else
@@ -1193,13 +1218,13 @@ function user_permissions($uid=0)
 	if($uid != $mybb->user['uid'])
 	{
 		// We've already cached permissions for this user, return them.
-		if($user_cache[$uid]['permissions'])
+		if(!empty($user_cache[$uid]['permissions']))
 		{
 			return $user_cache[$uid]['permissions'];
 		}
 
 		// This user was not already cached, fetch their user information.
-		if(!$user_cache[$uid])
+		if(empty($user_cache[$uid]))
 		{
 			$user_cache[$uid] = get_user($uid);
 		}
@@ -5683,8 +5708,8 @@ function my_strtoupper($string)
 function unhtmlentities($string)
 {
 	// Replace numeric entities
-	$string = preg_replace_callback('~&#x([0-9a-f]+);~i', create_function('$matches', 'return unichr(hexdec($matches[1]));'), $string);
-	$string = preg_replace_callback('~&#([0-9]+);~', create_function('$matches', 'return unichr($matches[1]);'), $string);
+	$string = preg_replace_callback('~&#x([0-9a-f]+);~i', 'unichr_callback1', $string);
+	$string = preg_replace_callback('~&#([0-9]+);~', 'unichr_callback2', $string);
 
 	// Replace literal entities
 	$trans_tbl = get_html_translation_table(HTML_ENTITIES);
@@ -5724,6 +5749,28 @@ function unichr($c)
 	{
 		return false;
 	}
+}
+
+/**
+ * Returns any ascii to it's character (utf-8 safe).
+ *
+ * @param array $matches Matches.
+ * @return string|bool The characterized ascii. False on failure
+ */
+function unichr_callback1($matches)
+{
+	return unichr(hexdec($matches[1]));
+}
+
+/**
+ * Returns any ascii to it's character (utf-8 safe).
+ *
+ * @param array $matches Matches.
+ * @return string|bool The characterized ascii. False on failure
+ */
+function unichr_callback2($matches)
+{
+	return unichr($matches[1]);
 }
 
 /**
@@ -6476,7 +6523,7 @@ function build_highlight_array($terms)
 
 	// Sort the word array by length. Largest terms go first and work their way down to the smallest term.
 	// This resolves problems like "test tes" where "tes" will be highlighted first, then "test" can't be highlighted because of the changed html
-	usort($words, create_function('$a,$b', 'return strlen($b) - strlen($a);'));
+	usort($words, 'build_highlight_array_sort');
 
 	// Loop through our words to build the PREG compatible strings
 	foreach($words as $word)
@@ -6498,6 +6545,18 @@ function build_highlight_array($terms)
 	}
 
 	return $highlight_cache;
+}
+
+/**
+ * Sort the word array by length. Largest terms go first and work their way down to the smallest term.
+ *
+ * @param string $a First word.
+ * @param string $b Second word.
+ * @return integer Result of comparison function.
+ */
+function build_highlight_array_sort($a, $b)
+{
+	return strlen($b) - strlen($a);
 }
 
 /**

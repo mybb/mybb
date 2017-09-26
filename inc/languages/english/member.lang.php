@@ -87,7 +87,7 @@ $l['agreement_4'] = "Any information you provide on these forums will not be dis
 $l['agreement_5'] = "By continuing with the sign up process you agree to the above rules and any others that the Administrator specifies.";
 $l['registration'] = "Registration";
 $l['required_fields'] = "Required Fields";
-$l['complex_password'] = "<acronym title=\"A password that is at least {1} characters long and contains an upper case letter, a lower case letter and a number.\">Complex</acronym> Password:";
+$l['complex_password'] = "<abbr title=\"A password that is at least {1} characters long and contains an upper case letter, a lower case letter and a number.\">Complex</abbr> Password:";
 $l['confirm_email'] = "Confirm Email:";
 $l['optional_fields'] = "Optional Fields";
 $l['website_url'] = "Your Website URL:";
@@ -104,7 +104,7 @@ $l['email_notify'] = "Automatically subscribe to threads you post in.";
 $l['receive_pms'] = "Receive private messages from other users.";
 $l['pm_notice'] = "Alert me with a notice when I receive a Private Message.";
 $l['email_notify_newpm'] = "Notify me by email when I receive a new Private Message.";
-$l['time_offset'] = "Time Zone (<acronym title=\"Daylight Saving Time\">DST</acronym> correction excluded):";
+$l['time_offset'] = "Time Zone (<abbr title=\"Daylight Saving Time\">DST</abbr> correction excluded):";
 $l['time_offset_desc'] = "If you live in a time zone which differs to what this board is set at, you can select it from the list below.";
 $l['dst_correction'] = "Daylight Saving Time correction:";
 $l['dst_correction_auto'] = "Automatically detect DST settings";
