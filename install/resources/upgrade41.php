@@ -49,7 +49,9 @@ function upgrade41_dbchanges()
 
 		if($stripped !== $original)
 		{
-			$db->update_query("moderatorlog", "action" => $db->escape_string($stripped), "WHERE tid = '".$row['tid']."'");
+			$db->update_query("moderatorlog", array(
+				"action" => $db->escape_string($stripped),
+			), "WHERE tid = '".$row['tid']."'");
 		}
 	}
 
