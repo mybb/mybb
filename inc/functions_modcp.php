@@ -143,7 +143,7 @@ function fetch_forum_announcements($pid=0, $depth=1)
  */
 function send_report($report, $report_type='post')
 {
-	global $db, $lang, $forum, $mybb, $post, $thread, $reputation, $user;
+	global $db, $lang, $forum, $mybb, $post, $thread, $reputation, $user, $plugins;
 
 	$report_reason = '';
 	if($report['reasonid'])
@@ -224,6 +224,8 @@ function send_report($report, $report_type='post')
 			$send_report_url = "reputation.php?uid={$reputation['uid']}#rid{$reputation['rid']}";
 			break;
 	}
+
+	$plugins->run_hooks("send_report_report_type");
 
 	$emailsubject = $lang->sprintf($lang->$lang_string_subject, $mybb->settings['bbname']);
 	$emailmessage = $lang->sprintf($lang->$lang_string_message, $mybb->user['username'], $mybb->settings['bbname'], $send_report_subject, $mybb->settings['bburl'], $send_report_url, $report_reason);

@@ -214,6 +214,12 @@ function parse_quoted_message(&$quoted_post, $remove_message_quotes=true)
 		$extra = " pid='{$quoted_post['pid']}' dateline='{$quoted_post['dateline']}'";
 	}
 
-	return "[quote='{$quoted_post['username']}'{$extra}]\n{$quoted_post['message']}\n[/quote]\n\n";
+	$quote_char = '"';
+	if(strpos($quoted_post['username'], '"') !== false)
+	{
+		$quote_char = "'";
+	}
+
+	return "[quote={$quote_char}{$quoted_post['username']}{$quote_char}{$extra}]\n{$quoted_post['message']}\n[/quote]\n\n";
 }
 

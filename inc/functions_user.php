@@ -92,13 +92,8 @@ function validate_password_from_uid($uid, $password, $user = array())
 	if(!$user['salt'])
 	{
 		// Generate a salt for this user and assume the password stored in db is a plain md5 password
-		$user['salt'] = generate_salt();
-		$user['password'] = create_password_hash($user['password'], $user['salt'], $user);
-		$sql_array = array(
-			"salt" => $user['salt'],
-			"password" => $user['password']
-		);
-		$db->update_query("users", $sql_array, "uid='".$user['uid']."'");
+		$password_fields = create_password($user['password'], false, $user);
+		$db->update_query("users", $password_fields, "uid='".$user['uid']."'");
 	}
 
 	if(!$user['loginkey'])
@@ -183,31 +178,43 @@ function salt_password($password, $salt)
  * Salts a password based on a supplied salt.
  *
  * @param string $password The input password.
- * @param string $salt The salt used by the MyBB algorithm.
+ * @param string $salt (Optional) The salt used by the MyBB algorithm.
  * @param string $user (Optional) An array containing password-related data.
- * @return string The password hash.
+ * @return array Password-related fields.
  */
-function create_password_hash($password, $salt, $user = false)
+function create_password($password, $salt = false, $user = false)
 {
 	global $plugins;
 
-	$hash = null;
+	$fields = null;
 
-	$parameters = compact('password', 'salt', 'user', 'hash');
+	$parameters = compact('password', 'salt', 'user', 'fields');
 
 	if(!defined('IN_INSTALL') && !defined('IN_UPGRADE'))
 	{
-		$plugins->run_hooks('create_password_hash', $parameters);
+		$plugins->run_hooks('create_password', $parameters);
 	}
 
-	if(!is_null($parameters['hash']))
+	if(!is_null($parameters['fields']))
 	{
-		return $parameters['hash'];
+		$fields = $parameters['fields'];
 	}
 	else
 	{
-		return md5(md5($salt).md5($password));
+		if(!$salt)
+		{
+			$salt = generate_salt();
+		}
+
+		$hash = md5(md5($salt).md5($password));
+
+		$fields = array(
+			'salt' => $salt,
+			'password' => $hash,
+		);
 	}
+
+	return $fields;
 }
 
 /**
@@ -236,9 +243,9 @@ function verify_user_password($user, $password)
 	}
 	else
 	{
-		$hashed_password = create_password_hash($password, $user['salt'], $user);
+		$password_fields = create_password($password, $user['salt'], $user);
 
-		return my_hash_equals($user['password'], $hashed_password);
+		return my_hash_equals($user['password'], $password_fields['password']);
 	}
 }
 

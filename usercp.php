@@ -657,7 +657,7 @@ if($mybb->input['action'] == "profile")
 			$options = "";
 			$expoptions = "";
 			$useropts = "";
-			$seloptions = "";
+			$seloptions = array();
 		}
 	}
 	if($customfields)
@@ -1288,7 +1288,7 @@ if($mybb->input['action'] == "do_password" && $mybb->request_method == "post")
 		else
 		{
 			$userhandler->update_user();
-			my_setcookie("mybbuser", $mybb->user['uid']."_".$userhandler->data['loginkey']);
+			my_setcookie("mybbuser", $mybb->user['uid']."_".$userhandler->data['loginkey'], null, true);
 
 			// Notify the user by email that their password has been changed
 			$mail_message = $lang->sprintf($lang->email_changepassword, $mybb->user['username'], $mybb->user['email'], $mybb->settings['bbname'], $mybb->settings['bburl']);
@@ -2190,6 +2190,8 @@ if($mybb->input['action'] == "avatar")
 		$lang->avatar_note .= "<br />".$lang->sprintf($lang->avatar_note_size, $maxsize);
 	}
 
+	$plugins->run_hooks("usercp_avatar_intermediate");
+
 	$auto_resize = '';
 	if($mybb->settings['avatarresizing'] == "auto")
 	{
@@ -2865,7 +2867,7 @@ if($mybb->input['action'] == "editlists")
 				{
 					$bgcolor = alt_trow();
 					$request['username'] = build_profile_link(htmlspecialchars_uni($request['username']), (int)$request['touid']);
-					$request['date'] = my_date($mybb->settings['dateformat'], $request['date'])." ".my_date($mybb->settings['timeformat'], $request['date']);
+					$request['date'] = my_date('relative', $request['date']);
 					eval("\$sent_rows .= \"".$templates->get("usercp_editlists_sent_request", 1, 0)."\";");
 				}
 
@@ -2899,7 +2901,7 @@ if($mybb->input['action'] == "editlists")
 	{
 		$bgcolor = alt_trow();
 		$request['username'] = build_profile_link(htmlspecialchars_uni($request['username']), (int)$request['uid']);
-		$request['date'] = my_date($mybb->settings['dateformat'], $request['date'])." ".my_date($mybb->settings['timeformat'], $request['date']);
+		$request['date'] = my_date('relative', $request['date']);
 		eval("\$received_rows .= \"".$templates->get("usercp_editlists_received_request")."\";");
 	}
 
@@ -2921,7 +2923,7 @@ if($mybb->input['action'] == "editlists")
 	{
 		$bgcolor = alt_trow();
 		$request['username'] = build_profile_link(htmlspecialchars_uni($request['username']), (int)$request['touid']);
-		$request['date'] = my_date($mybb->settings['dateformat'], $request['date'])." ".my_date($mybb->settings['timeformat'], $request['date']);
+		$request['date'] = my_date('relative', $request['date']);
 		eval("\$sent_rows .= \"".$templates->get("usercp_editlists_sent_request")."\";");
 	}
 

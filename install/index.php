@@ -193,7 +193,7 @@ function intro()
 {
 	global $output, $mybb, $lang;
 
-	$output->print_header($lang->welcome, 'welcome');
+	$output->print_header();
 	if(strpos(strtolower(get_current_location('', '', true)), '/upload/') !== false)
 	{
 		echo $lang->sprintf($lang->mybb_incorrect_folder);

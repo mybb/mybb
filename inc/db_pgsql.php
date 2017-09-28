@@ -1094,6 +1094,8 @@ class DB_PgSQL implements DB_Base
 		$primary_key = array();
 		$primary_key_name = '';
 
+		$unique_keys = array();
+
 		// We do this in two steps. It makes placing the comma easier
 		while($row = $this->fetch_array($query))
 		{
@@ -1102,11 +1104,21 @@ class DB_PgSQL implements DB_Base
 				$primary_key[] = $row['column_name'];
 				$primary_key_name = $row['index_name'];
 			}
+
+			if($row['unique_key'] == 't')
+			{
+				$unique_keys[$row['index_name']][] = $row['column_name'];
+			}
 		}
 
 		if(!empty($primary_key))
 		{
 			$lines[] = "  CONSTRAINT $primary_key_name PRIMARY KEY (".implode(', ', $primary_key).")";
+		}
+
+		foreach($unique_keys as $key_name => $key_columns)
+		{
+			$lines[] = "  CONSTRAINT $key_name UNIQUE (".implode(', ', $key_columns).")";
 		}
 
 		$table_lines .= implode(", \n", $lines);

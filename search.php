@@ -14,7 +14,7 @@ define('THIS_SCRIPT', 'search.php');
 
 $templatelist = "search,forumdisplay_thread_gotounread,search_results_threads_thread,search_results_threads,search_results_posts,search_results_posts_post,search_results_icon,search_forumlist_forum,search_forumlist";
 $templatelist .= ",multipage,multipage_breadcrumb,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start";
-$templatelist .= ",search_results_posts_inlinecheck,search_results_posts_nocheck,search_results_threads_inlinecheck,search_results_threads_nocheck,search_results_inlinemodcol,search_results_posts_inlinemoderation_custom_tool";
+$templatelist .= ",search_results_posts_inlinecheck,search_results_posts_nocheck,search_results_threads_inlinecheck,search_results_threads_nocheck,search_results_inlinemodcol,search_results_inlinemodcol_empty,search_results_posts_inlinemoderation_custom_tool";
 $templatelist .= ",search_results_posts_inlinemoderation_custom,search_results_posts_inlinemoderation,search_results_threads_inlinemoderation_custom_tool,search_results_threads_inlinemoderation_custom,search_results_threads_inlinemoderation";
 $templatelist .= ",forumdisplay_thread_attachment_count,search_threads_inlinemoderation_selectall,search_posts_inlinemoderation_selectall,post_prefixselect_prefix,post_prefixselect_multiple,search_orderarrow";
 $templatelist .= ",search_results_posts_forumlink,search_results_threads_forumlink,forumdisplay_thread_multipage_more,forumdisplay_thread_multipage_page,forumdisplay_thread_multipage,search_moderator_options";
@@ -217,14 +217,13 @@ if($mybb->input['action'] == "results")
 
 	// Inline Mod Column for moderators
 	$inlinemodcol = $inlinecookie = '';
-	$is_mod = $is_supermod = false;
+	$is_mod = $is_supermod = $show_inline_moderation = false;
 	if($mybb->usergroup['issupermod'])
 	{
 		$is_supermod = true;
 	}
 	if($is_supermod || is_moderator())
 	{
-		eval("\$inlinemodcol = \"".$templates->get("search_results_inlinemodcol")."\";");
 		$inlinecookie = "inlinemod_search".$sid;
 		$inlinecount = 0;
 		$is_mod = true;
@@ -637,7 +636,7 @@ if($mybb->input['action'] == "results")
 			$inline_mod_checkbox = '';
 			if($is_supermod || is_moderator($thread['fid']))
 			{
-				if(isset($mybb->cookies[$inlinecookie]) && my_strpos($mybb->cookies[$inlinecookie], "|{$thread['tid']}|"))
+				if(isset($mybb->cookies[$inlinecookie]) && my_strpos($mybb->cookies[$inlinecookie], "|{$thread['tid']}|") !== false)
 				{
 					$inlinecheck = "checked=\"checked\"";
 					++$inlinecount;
@@ -646,6 +645,10 @@ if($mybb->input['action'] == "results")
 				{
 					$inlinecheck = '';
 				}
+
+				// If this user is allowed to use the inline moderation tools for at least one thread, include the necessary scripts
+				$show_inline_moderation = true;
+
 				eval("\$inline_mod_checkbox = \"".$templates->get("search_results_threads_inlinecheck")."\";");
 			}
 			elseif($is_mod)
@@ -667,8 +670,10 @@ if($mybb->input['action'] == "results")
 		}
 
 		// Inline Thread Moderation Options
-		if($is_mod)
+		if($show_inline_moderation)
 		{
+			eval("\$inlinemodcol = \"".$templates->get("search_results_inlinemodcol")."\";");
+
 			// If user has moderation tools available, prepare the Select All feature
 			$lang->page_selected = $lang->sprintf($lang->page_selected, count($thread_cache));
 			$lang->all_selected = $lang->sprintf($lang->all_selected, (int)$threadcount);
@@ -696,6 +701,10 @@ if($mybb->input['action'] == "results")
 				eval("\$customthreadtools = \"".$templates->get("search_results_threads_inlinemoderation_custom")."\";");
 			}
 			eval("\$inlinemod = \"".$templates->get("search_results_threads_inlinemoderation")."\";");
+		}
+		elseif($is_mod)
+		{
+			eval("\$inlinemodcol = \"".$templates->get("search_results_inlinemodcol_empty")."\";");
 		}
 
 		$plugins->run_hooks("search_results_end");
@@ -1047,7 +1056,7 @@ if($mybb->input['action'] == "results")
 			$inline_mod_checkbox = '';
 			if($is_supermod || is_moderator($post['fid']))
 			{
-				if(isset($mybb->cookies[$inlinecookie]) && my_strpos($mybb->cookies[$inlinecookie], "|{$post['pid']}|"))
+				if(isset($mybb->cookies[$inlinecookie]) && my_strpos($mybb->cookies[$inlinecookie], "|{$post['pid']}|") !== false)
 				{
 					$inlinecheck = "checked=\"checked\"";
 					++$inlinecount;
@@ -1056,6 +1065,9 @@ if($mybb->input['action'] == "results")
 				{
 					$inlinecheck = '';
 				}
+
+				$show_inline_moderation = true;
+
 				eval("\$inline_mod_checkbox = \"".$templates->get("search_results_posts_inlinecheck")."\";");
 			}
 			elseif($is_mod)
@@ -1077,8 +1089,10 @@ if($mybb->input['action'] == "results")
 		}
 
 		// Inline Post Moderation Options
-		if($is_mod)
+		if($show_inline_moderation)
 		{
+			eval("\$inlinemodcol = \"".$templates->get("search_results_inlinemodcol")."\";");
+
 			// If user has moderation tools available, prepare the Select All feature
 			$num_results = $db->num_rows($query);
 			$lang->page_selected = $lang->sprintf($lang->page_selected, (int)$num_results);
@@ -1107,6 +1121,10 @@ if($mybb->input['action'] == "results")
 				eval("\$customposttools = \"".$templates->get("search_results_posts_inlinemoderation_custom")."\";");
 			}
 			eval("\$inlinemod = \"".$templates->get("search_results_posts_inlinemoderation")."\";");
+		}
+		elseif($is_mod)
+		{
+			eval("\$inlinemodcol = \"".$templates->get("search_results_inlinemodcol_empty")."\";");
 		}
 
 		$plugins->run_hooks("search_results_end");

@@ -2477,6 +2477,8 @@ switch($mybb->input['action'])
 		// Verify incoming POST request
 		verify_post_check($mybb->get_input('my_post_key'));
 
+		$plugins->run_hooks("moderation_do_multimoveposts");
+
 		// explode at # sign in a url (indicates a name reference) and reassign to the url
 		$realurl = explode("#", $mybb->get_input('threadurl'));
 		$mybb->input['threadurl'] = $realurl[0];
@@ -2805,7 +2807,7 @@ switch($mybb->input['action'])
 		require_once MYBB_ROOT."inc/functions_user.php";
 
 		$groups = explode(",", $mybb->settings['purgespammergroups']);
-		if(!in_array($mybb->user['usergroup'], $groups))
+		if(!is_member($groups))
 		{
 			error_no_permission();
 		}

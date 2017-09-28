@@ -409,8 +409,10 @@ if($mybb->input['action'] == "add_multiple")
 					$find = str_replace(".".$ext, "", $file);
 					$name = ucfirst($find);
 
-					$form_container->output_cell("<img src=\"../".$path.$file."\" alt=\"\" /><br /><small>{$file}</small>", array("class" => "align_center", "width" => 1));
-					$form_container->output_cell($form->generate_text_box("name[{$file}]", $name, array('id' => 'name', 'style' => 'width: 98%')));
+					$file = htmlspecialchars_uni($file);
+
+					$form_container->output_cell("<img src=\"../".htmlspecialchars_uni($path).$file."\" alt=\"\" /><br /><small>{$file}</small>", array("class" => "align_center", "width" => 1));
+					$form_container->output_cell($form->generate_text_box("name[{$file}]", htmlspecialchars_uni($name), array('id' => 'name', 'style' => 'width: 98%')));
 					$form_container->output_cell($form->generate_text_box("find[{$file}]", ":".$find.":", array('id' => 'find', 'style' => 'width: 95%')));
 					$form_container->output_cell($form->generate_check_box("include[{$file}]", 1, "", array('checked' => 1)), array("class" => "align_center"));
 					$form_container->construct_row();
@@ -645,11 +647,11 @@ if($mybb->input['action'] == "mass_edit")
 		$smilie['image'] = str_replace("{theme}", "images", $smilie['image']);
 		if(my_validate_url($smilie['image'], true))
 		{
-			$image = $smilie['image'];
+			$image = htmlspecialchars_uni($smilie['image']);
 		}
 		else
 		{
-			$image = "../".$smilie['image'];
+			$image = "../".htmlspecialchars_uni($smilie['image']);
 		}
 
 		$form_container->output_cell("<img src=\"{$image}\" alt=\"\" />", array("class" => "align_center", "width" => 1));
@@ -728,11 +730,11 @@ if(!$mybb->input['action'])
 		$smilie['image'] = str_replace("{theme}", "images", $smilie['image']);
 		if(my_validate_url($smilie['image'], true))
 		{
-			$image = $smilie['image'];
+			$image = htmlspecialchars_uni($smilie['image']);
 		}
 		else
 		{
-			$image = "../".$smilie['image'];
+			$image = "../".htmlspecialchars_uni($smilie['image']);
 		}
 
 		$table->construct_cell("<img src=\"{$image}\" alt=\"\" class=\"smilie smilie_{$smilie['sid']}\" />", array("class" => "align_center"));

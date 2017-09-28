@@ -1160,7 +1160,7 @@ if(!empty($threadcache) && is_array($threadcache))
 
 		if($ismod)
 		{
-			if(isset($mybb->cookies[$inlinecookie]) && my_strpos($mybb->cookies[$inlinecookie], "|{$thread['tid']}|"))
+			if(isset($mybb->cookies[$inlinecookie]) && my_strpos($mybb->cookies[$inlinecookie], "|{$thread['tid']}|") !== false)
 			{
 				$inlinecheck = "checked=\"checked\"";
 				++$inlinecount;

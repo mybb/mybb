@@ -420,7 +420,7 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 		"theme" => $theme_directory
 	);
 	$stylesheet = parse_theme_variables($stylesheet, $theme_vars);
-	$stylesheet = preg_replace_callback("#url\((\"|'|)(.*)\\1\)#", create_function('$matches', 'return fix_css_urls($matches[2]);'), $stylesheet);
+	$stylesheet = preg_replace_callback("#url\((\"|'|)(.*)\\1\)#", 'fix_css_urls_callback', $stylesheet);
 
 	$fp = @fopen(MYBB_ROOT . "{$theme_directory}/{$filename}", "wb");
 	if(!$fp)
@@ -525,6 +525,16 @@ function fix_css_urls($url)
 	{
 		return "url({$url})";
 	}
+}
+
+/**
+ * @param array $matches Matches.
+ *
+ * @return string
+ */
+function fix_css_urls_callback($matches)
+{
+	return fix_css_urls($matches[2]);
 }
 
 /**
@@ -1110,7 +1120,7 @@ function update_theme_stylesheet_list($tid, $theme = false, $update_disporders =
 	$db->update_query("themes", $updated_theme, "tid = '{$tid}'");
 
 	// Do we have any children themes that need updating too?
-	if(count($child_list) > 0)
+	if(is_array($child_list) && count($child_list) > 0)
 	{
 		foreach($child_list as $id)
 		{

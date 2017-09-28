@@ -345,11 +345,11 @@ if($mybb->input['action'] == "quick_phrases")
 			$value = $l[$phrase];
 			if(my_strtolower($langinfo['charset']) == "utf-8")
 			{
-				$value = preg_replace_callback("#%u([0-9A-F]{1,4})#i", create_function('$matches', 'return dec_to_utf8(hexdec($matches[1]));'), $value);
+				$value = preg_replace_callback("#%u([0-9A-F]{1,4})#i", 'encode_language_string_utf8', $value);
 			}
 			else
 			{
-				$value = preg_replace_callback("#%u([0-9A-F]{1,4})#i", create_function('$matches', 'return "&#".hexdec($matches[1]).";";'), $value);
+				$value = preg_replace_callback("#%u([0-9A-F]{1,4})#i", 'encode_language_string', $value);
 			}
 
 			$form_container->output_row($description, $phrase, $form->generate_text_area("edit[$phrase]", $value, array('id' => 'lang_'.$phrase, 'rows' => 2, 'class' => "langeditor_textarea_edit {$quickphrases_dir_class}")), 'lang_'.$phrase, array('width' => '50%'));
@@ -558,13 +558,13 @@ if($mybb->input['action'] == "edit")
 			{
 				if(my_strtolower($langinfo['charset']) == "utf-8")
 				{
-					$withvars[$key] = preg_replace_callback("#%u([0-9A-F]{1,4})#i", create_function('$matches', 'return dec_to_utf8(hexdec($matches[1]));'), $withvars[$key]);
-					$editvars[$key] = preg_replace_callback("#%u([0-9A-F]{1,4})#i", create_function('$matches', 'return dec_to_utf8(hexdec($matches[1]));'), $editvars[$key]);
+					$withvars[$key] = preg_replace_callback("#%u([0-9A-F]{1,4})#i", 'encode_language_string_utf8', $withvars[$key]);
+					$editvars[$key] = preg_replace_callback("#%u([0-9A-F]{1,4})#i", 'encode_language_string_utf8', $editvars[$key]);
 				}
 				else
 				{
-					$withvars[$key] = preg_replace_callback("#%u([0-9A-F]{1,4})#i", create_function('$matches', 'return dec_to_utf8(hexdec($matches[1]));'), $withvars[$key]);
-					$editvars[$key] = preg_replace_callback("#%u([0-9A-F]{1,4})#i", create_function('$matches', 'return "&#".hexdec($matches[1]).";";'), $editvars[$key]);
+					$withvars[$key] = preg_replace_callback("#%u([0-9A-F]{1,4})#i", 'encode_language_string_utf8', $withvars[$key]);
+					$editvars[$key] = preg_replace_callback("#%u([0-9A-F]{1,4})#i", 'encode_language_string', $editvars[$key]);
 				}
 
 				// Find problems and differences in editfile in comparision to editwithfile
@@ -595,11 +595,11 @@ if($mybb->input['action'] == "edit")
 				{
 					if(my_strtolower($langinfo['charset']) == "utf-8")
 					{
-						$editvars[$key] = preg_replace_callback("#%u([0-9A-F]{1,4})#i", create_function('$matches', 'return dec_to_utf8(hexdec($matches[1]));'), $editvars[$key]);
+						$editvars[$key] = preg_replace_callback("#%u([0-9A-F]{1,4})#i", 'encode_language_string_utf8', $editvars[$key]);
 					}
 					else
 					{
-						$editvars[$key] = preg_replace_callback("#%u([0-9A-F]{1,4})#i", create_function('$matches', 'return "&#".hexdec($matches[1]).";";'), $editvars[$key]);
+						$editvars[$key] = preg_replace_callback("#%u([0-9A-F]{1,4})#i", 'encode_language_string', $editvars[$key]);
 					}
 
 					$form_container->output_row("", "", "", "", array('width' => '50%', 'skip_construct' => true));
@@ -618,11 +618,11 @@ if($mybb->input['action'] == "edit")
 			{
 				if(my_strtolower($langinfo['charset']) == "utf-8")
 				{
-					$value = preg_replace_callback("#%u([0-9A-F]{1,4})#i", create_function('$matches', 'return dec_to_utf8(hexdec($matches[1]));'), $value);
+					$value = preg_replace_callback("#%u([0-9A-F]{1,4})#i", 'encode_language_string_utf8', $value);
 				}
 				else
 				{
-					$value = preg_replace_callback("#%u([0-9A-F]{1,4})#i", create_function('$matches', 'return "&#".hexdec($matches[1]).";";'), $value);
+					$value = preg_replace_callback("#%u([0-9A-F]{1,4})#i", 'encode_language_string', $value);
 				}
 				$form_container->output_row($key, "", $form->generate_text_area("edit[$key]", $value, array('id' => 'lang_'.$key, 'rows' => 2, 'class' => "langeditor_textarea_edit {$editlang_dir_class}")), 'lang_'.$key, array('width' => '50%'));
 			}
@@ -1049,4 +1049,26 @@ if(!$mybb->input['action'])
 	$table->output($lang->installed_language_packs);
 
 	$page->output_footer();
+}
+
+/**
+ * Fixes url encoded unicode characters
+ *
+ * @param string $string The string to encode.
+ * @return string The encoded string.
+ */
+function encode_language_string_utf8($matches)
+{
+	return dec_to_utf8(hexdec($matches[1]));
+}
+
+/**
+ * Fixes url encoded unicode characters
+ *
+ * @param string $string The string to encode.
+ * @return string The encoded string.
+ */
+function encode_language_string($matches)
+{
+	return "&#".hexdec($matches[1]).";";
 }

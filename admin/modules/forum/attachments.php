@@ -224,6 +224,8 @@ if($mybb->input['action'] == "delete_orphans" && $mybb->request_method == "post"
 {
 	$plugins->run_hooks("admin_forum_attachments_delete_orphans");
 
+	$success_count = $error_count = 0;
+
 	// Deleting specific attachments from uploads directory
 	if(is_array($mybb->input['orphaned_files']))
 	{
@@ -241,7 +243,11 @@ if($mybb->input['action'] == "delete_orphans" && $mybb->request_method == "post"
 		{
 			if(!@unlink(MYBB_ROOT.$mybb->settings['uploadspath']."/".$file))
 			{
-				$error = true;
+				$error_count++;
+			}
+			else
+			{
+				$success_count++;
 			}
 		}
 	}
@@ -263,6 +269,7 @@ if($mybb->input['action'] == "delete_orphans" && $mybb->request_method == "post"
 			{
 				remove_attachment($attachment['pid'], null, $attachment['aid']);
 			}
+			$success_count++;
 		}
 	}
 
@@ -271,15 +278,27 @@ if($mybb->input['action'] == "delete_orphans" && $mybb->request_method == "post"
 	// Log admin action
 	log_admin_action();
 
-	if($error == true)
+	$message = '';
+	$status = 'success';
+	if($error_count > 0)
 	{
-		flash_message($lang->error_not_all_removed, 'error');
+		$status = 'error';
+		$message = $lang->sprintf($lang->error_count, $error_count);
 	}
-	else
+
+	if($success_count > 0)
 	{
-		flash_message($lang->success_orphan_deleted, 'success');
+		if($error_count > 0)
+		{
+			$message .= '<br />'.$lang->sprintf($lang->success_count, $success_count);
+		}
+		else
+		{
+			$message = $lang->success_orphan_deleted;
+		}
 	}
-	admin_redirect("index.php?module=forum-attachments");
+	flash_message($message, $status);
+	admin_redirect('index.php?module=forum-attachments');
 }
 
 if($mybb->input['action'] == "orphans")
@@ -345,7 +364,7 @@ if($mybb->input['action'] == "orphans")
 		$form = new Form("index.php?module=forum-attachments&amp;action=delete_orphans", "post");
 
 		$table = new Table;
-		$table->construct_header($form->generate_check_box('checkall', '1', '', array('class' => 'checkall')), array( 'width' => 1));
+		$table->construct_header($form->generate_check_box('allbox', '1', '', array('class' => 'checkall')), array( 'width' => 1));
 		$table->construct_header($lang->size_attachments, array('colspan' => 2));
 		$table->construct_header($lang->reason_orphaned, array('width' => '20%', 'class' => 'align_center'));
 		$table->construct_header($lang->date_uploaded, array("class" => "align_center"));
@@ -780,7 +799,7 @@ if(!$mybb->input['action'])
 			$form = new Form("index.php?module=forum-attachments&amp;action=delete", "post");
 
 			$table = new Table;
-			$table->construct_header($form->generate_check_box('checkall', '1', '', array('class' => 'checkall')), array( 'width' => 1));
+			$table->construct_header($form->generate_check_box('allbox', '1', '', array('class' => 'checkall')), array( 'width' => 1));
 			$table->construct_header($lang->attachments, array('colspan' => 2));
 			$table->construct_header($lang->size, array('width' => '10%', 'class' => 'align_center'));
 			$table->construct_header($lang->posted_by, array('width' => '20%', 'class' => 'align_center'));

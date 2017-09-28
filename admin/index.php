@@ -22,6 +22,7 @@ $shutdown_queries = $shutdown_functions = array();
 send_page_headers();
 
 header('X-Frame-Options: SAMEORIGIN');
+header('Referrer-Policy: no-referrer');
 
 if(!isset($config['admin_dir']) || !file_exists(MYBB_ROOT.$config['admin_dir']."/inc/class_page.php"))
 {
@@ -104,6 +105,9 @@ if($mybb->input['action'] == "unlock")
 {
 	$user = array();
 	$error = '';
+
+	$plugins->run_hooks("admin_unlock_start");
+
 	if($mybb->input['username'])
 	{
 		$user = get_user_by_username($mybb->input['username'], array('fields' => '*'));
@@ -127,6 +131,8 @@ if($mybb->input['action'] == "unlock")
 	{
 		$query = $db->simple_select("awaitingactivation", "COUNT(aid) AS num", "uid='".(int)$user['uid']."' AND code='".$db->escape_string($mybb->input['token'])."' AND type='l'");
 
+		$plugins->run_hooks("admin_unlock_end");
+
 		// If we're good to go
 		if($db->fetch_field($query, "num") > 0)
 		{
@@ -145,6 +151,8 @@ if($mybb->input['action'] == "unlock")
 }
 elseif($mybb->input['do'] == "login")
 {
+	$plugins->run_hooks("admin_login");
+
 	// We have an adminsid cookie?
 	if(isset($mybb->cookies['adminsid']))
 	{
@@ -182,6 +190,8 @@ elseif($mybb->input['do'] == "login")
 	if(!empty($config['secret_pin']) && (empty($mybb->input['pin']) || $mybb->input['pin'] != $config['secret_pin']))
 	{
 		$login_user = get_user_by_username($mybb->input['username'], array('fields' => array('email', 'username')));
+
+		$plugins->run_hooks("admin_login_incorrect_pin");
 
 		if($login_user['uid'] > 0)
 		{
@@ -254,6 +264,8 @@ elseif($mybb->input['do'] == "login")
 
 			$default_page->show_lockedout();
 		}
+
+		$plugins->run_hooks("admin_login_success");
 
 		$db->delete_query("adminsessions", "uid='{$mybb->user['uid']}'");
 
@@ -331,6 +343,8 @@ elseif($mybb->input['do'] == "login")
 	{
 		$login_user = get_user_by_username($mybb->input['username'], array('fields' => array('email', 'username')));
 
+		$plugins->run_hooks("admin_login_fail");
+
 		if($login_user['uid'] > 0)
 		{
 			$db->update_query("adminoptions", array("loginattempts" => "loginattempts+1"), "uid='".(int)$login_user['uid']."'", '', true);
@@ -346,6 +360,8 @@ elseif($mybb->input['do'] == "login")
 			{
 				$db->update_query("adminoptions", array("loginlockoutexpiry" => TIME_NOW+((int)$mybb->settings['loginattemptstimeout']*60)), "uid='".(int)$login_user['uid']."'");
 			}
+
+			$plugins->run_hooks("admin_login_lockout");
 
 			// Did we hit lockout for the first time? Send the unlock email to the administrator
 			if($loginattempts['loginattempts'] == $mybb->settings['maxloginattempts'])
@@ -446,9 +462,9 @@ else
 				else if(ADMIN_IPV6_SEGMENTS > 0 && strpos($ip_address, ':') !== false)
 				{
 					// Expand IPv6 addresses
-					$hex = unpack("H*hex", my_inet_pton($ip_address));         
+					$hex = unpack("H*hex", my_inet_pton($ip_address));
 					$expanded_ip = substr(preg_replace("/([A-f0-9]{4})/", "$1:", $hex['hex']), 0, -1);
-					$hex_admin = unpack("H*hex", $admin_session['ip']);         
+					$hex_admin = unpack("H*hex", $admin_session['ip']);
 					$expanded_admin_ip = substr(preg_replace("/([A-f0-9]{4})/", "$1:", $hex_admin['hex']), 0, -1);
 
 					$exploded_ip = explode(":", $expanded_ip);
@@ -482,6 +498,8 @@ else
 
 if($mybb->input['action'] == "logout" && $mybb->user)
 {
+	$plugins->run_hooks("admin_logout");
+
 	if(verify_post_check($mybb->input['my_post_key']))
 	{
 		$db->delete_query("adminsessions", "sid='".$db->escape_string($mybb->cookies['adminsid'])."'");
@@ -519,19 +537,6 @@ if(!empty($mybb->user['uid']))
 	$query = $db->simple_select("adminoptions", "*", "uid='".$mybb->user['uid']."'");
 	$admin_options = $db->fetch_array($query);
 
-	if(!empty($admin_options['cplanguage']) && file_exists(MYBB_ROOT."inc/languages/".$admin_options['cplanguage']."/admin/home_dashboard.lang.php"))
-	{
-		$cp_language = $admin_options['cplanguage'];
-		$lang->set_language($cp_language, "admin");
-		$lang->load("global"); // Reload global language vars
-		$lang->load("messages", true);
-	}
-
-	if(!empty($admin_options['cpstyle']) && file_exists(MYBB_ADMIN_DIR."/styles/{$admin_options['cpstyle']}/main.css"))
-	{
-		$cp_style = $admin_options['cpstyle'];
-	}
-
 	// Update the session information in the DB
 	if($admin_session['sid'])
 	{
@@ -542,43 +547,16 @@ if(!empty($mybb->user['uid']))
 	$mybb->admin['permissions'] = get_admin_permissions($mybb->user['uid']);
 }
 
-// Include the layout generation class overrides for this style
-if(file_exists(MYBB_ADMIN_DIR."/styles/{$cp_style}/style.php"))
-{
-	require_once MYBB_ADMIN_DIR."/styles/{$cp_style}/style.php";
-}
-
-// Check if any of the layout generation classes we can override exist in the style file
-$classes = array(
-	"Page" => "DefaultPage",
-	"SidebarItem" => "DefaultSidebarItem",
-	"PopupMenu" => "DefaultPopupMenu",
-	"Table" => "DefaultTable",
-	"Form" => "DefaultForm",
-	"FormContainer" => "DefaultFormContainer"
-);
-foreach($classes as $style_name => $default_name)
-{
-	// Style does not have this layout generation class, create it
-	if(!class_exists($style_name))
-	{
-		eval("class {$style_name} extends {$default_name} { }");
-	}
-}
-
-$page = new Page;
-$page->style = $cp_style;
-
 // Do not have a valid Admin user, throw back to login page.
 if(!isset($mybb->user['uid']) || $logged_out == true)
 {
 	if($logged_out == true)
 	{
-		$page->show_login($lang->success_logged_out);
+		$default_page->show_login($lang->success_logged_out);
 	}
 	elseif($fail_check == 1)
 	{
-		$page->show_login($login_lang_string, "error");
+		$default_page->show_login($login_lang_string, "error");
 	}
 	else
 	{
@@ -588,7 +566,7 @@ if(!isset($mybb->user['uid']) || $logged_out == true)
 			echo json_encode(array("errors" => array("login")));
 			exit;
 		}
-		$page->show_login($login_message, "error");
+		$default_page->show_login($login_message, "error");
 	}
 }
 
@@ -672,19 +650,59 @@ if($mybb->input['do'] == "do_2fa" && $mybb->request_method == "post")
 				)
 			);
 
-			$page->show_lockedout();
+			$default_page->show_lockedout();
 		}
 
 		// Still here? Show a custom login page
-		$page->show_login($lang->my2fa_failed, "error");
+		$default_page->show_login($lang->my2fa_failed, "error");
 	}
 }
 
 // Show our 2FA page
 if(!empty($admin_options['authsecret']) && $admin_session['authenticated'] != 1)
 {
-	$page->show_2fa();
+	$default_page->show_2fa();
 }
+
+// Now the user is fully authenticated setup their personal options
+if(!empty($admin_options['cplanguage']) && file_exists(MYBB_ROOT."inc/languages/".$admin_options['cplanguage']."/admin/home_dashboard.lang.php"))
+{
+	$cp_language = $admin_options['cplanguage'];
+	$lang->set_language($cp_language, "admin");
+	$lang->load("global"); // Reload global language vars
+	$lang->load("messages", true);
+}
+if(!empty($admin_options['cpstyle']) && file_exists(MYBB_ADMIN_DIR."/styles/{$admin_options['cpstyle']}/main.css"))
+{
+	$cp_style = $admin_options['cpstyle'];
+}
+
+// Include the layout generation class overrides for this style
+if(file_exists(MYBB_ADMIN_DIR."/styles/{$cp_style}/style.php"))
+{
+	require_once MYBB_ADMIN_DIR."/styles/{$cp_style}/style.php";
+}
+
+// Check if any of the layout generation classes we can override exist in the style file
+$classes = array(
+	"Page" => "DefaultPage",
+	"SidebarItem" => "DefaultSidebarItem",
+	"PopupMenu" => "DefaultPopupMenu",
+	"Table" => "DefaultTable",
+	"Form" => "DefaultForm",
+	"FormContainer" => "DefaultFormContainer"
+);
+foreach($classes as $style_name => $default_name)
+{
+	// Style does not have this layout generation class, create it
+	if(!class_exists($style_name))
+	{
+		eval("class {$style_name} extends {$default_name} { }");
+	}
+}
+
+$page = new Page;
+$page->style = $cp_style;
 
 $page->add_breadcrumb_item($lang->home, "index.php");
 

@@ -32,7 +32,7 @@ if($mybb->input['action'] == "recovery_codes")
 	$table = new Table;
 	$table->construct_header($lang->recovery_codes);
 
-	$table->construct_cell($lang->recovery_codes_warning);
+	$table->construct_cell("{$lang->recovery_codes_warning} <strong><a href=\"javascript:window.print()\">{$lang->print_recovery_codes}</a></strong>");
 	$table->construct_row();
 
 	$table->construct_cell(implode("<br />", $codes));
@@ -42,6 +42,7 @@ if($mybb->input['action'] == "recovery_codes")
 
 	$page->output_footer();
 }
+
 if(!$mybb->input['action'])
 {
 	require_once MYBB_ROOT."inc/3rdparty/2fa/GoogleAuthenticator.php";

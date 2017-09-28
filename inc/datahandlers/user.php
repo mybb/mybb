@@ -212,14 +212,12 @@ class UserDataHandler extends DataHandler
 			return false;
 		}
 
-		// Generate our salt
-		$user['salt'] = generate_salt();
-
-		// Combine the password and salt
-		$user['saltedpw'] = create_password_hash($user['password'], $user['salt'], $user);
-
 		// Generate the user login key
 		$user['loginkey'] = generate_loginkey();
+
+		// Combine the password and salt
+		$password_fields = create_password($user['password'], false, $user);
+		$user = array_merge($user, $password_fields);
 
 		return true;
 	}
@@ -917,8 +915,6 @@ class UserDataHandler extends DataHandler
 	 */
 	function verify_timezone()
 	{
-		global $mybb;
-
 		$user = &$this->data;
 
 		$timezones = get_supported_timezones();
@@ -1097,7 +1093,7 @@ class UserDataHandler extends DataHandler
 
 		$this->user_insert_data = array(
 			"username" => $db->escape_string($user['username']),
-			"password" => $user['saltedpw'],
+			"password" => $user['password'],
 			"salt" => $user['salt'],
 			"loginkey" => $user['loginkey'],
 			"email" => $db->escape_string($user['email']),
@@ -1260,10 +1256,16 @@ class UserDataHandler extends DataHandler
 		{
 			$this->user_update_data['username'] = $db->escape_string($user['username']);
 		}
-		if(isset($user['saltedpw']))
+		if(isset($user['password']))
 		{
-			$this->user_update_data['password'] = $user['saltedpw'];
+			$this->user_update_data['password'] = $user['password'];
+		}
+		if(isset($user['salt']))
+		{
 			$this->user_update_data['salt'] = $user['salt'];
+		}
+		if(isset($user['loginkey']))
+		{
 			$this->user_update_data['loginkey'] = $user['loginkey'];
 		}
 		if(isset($user['email']))
@@ -1585,6 +1587,7 @@ class UserDataHandler extends DataHandler
 		$cache->update_forumsdisplay();
 		$cache->update_reportedcontent();
 		$cache->update_awaitingactivation();
+		$cache->update_birthdays();
 
 		return $this->return_values;
 	}

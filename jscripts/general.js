@@ -15,13 +15,19 @@ var MyBB = {
 
 		/* Create the Check All feature */
 		$('[name="allbox"]').each(function(key, value) {
-			$(this).change(function() {
-				var checkboxes = $(this).closest('form').find(':checkbox');
-				if($(this).is(':checked')) {
-					checkboxes.prop('checked', true);
-				} else {
-					checkboxes.removeAttr('checked');
+			var allbox = this;
+			var checked = $(this).is(':checked');
+			var checkboxes = $(this).closest('form').find(':checkbox');
+			checkboxes.change(function() {
+				if(checked && !$(this).prop('checked'))
+				{
+					checked = false;
+					$(allbox).prop('checked', checked);
 				}
+			});
+			$(this).change(function() {
+				checked = $(this).is(':checked');
+				checkboxes.prop('checked', checked);
 			});
 		});
 

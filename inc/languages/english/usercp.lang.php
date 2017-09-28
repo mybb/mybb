@@ -177,7 +177,7 @@ $l['date_format'] = "Date Format:";
 $l['date_format_desc'] = "The format that dates will be shown in.";
 $l['time_format'] = "Time Format:";
 $l['time_format_desc'] = "The format that times will be shown in.";
-$l['time_offset'] = "Time Zone (<acronym title=\"Daylight Saving Time\">DST</acronym> correction excluded):";
+$l['time_offset'] = "Time Zone (<abbr title=\"Daylight Saving Time\">DST</abbr> correction excluded):";
 $l['time_offset_desc'] = "If you live in a time zone which differs to what this board is set at, you can select it from the list below.";
 $l['gmt'] = "GMT";
 $l['dst_correction'] = "Daylight Saving Time correction:";

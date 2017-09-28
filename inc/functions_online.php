@@ -161,11 +161,28 @@ function fetch_wol_activity($location, $nopermission=false)
 			elseif($parameters['action'] == "profile")
 			{
 				$user_activity['activity'] = "member_profile";
+
 				if(!isset($parameters['uid']))
 				{
 					$parameters['uid'] = 0;
 				}
 				$parameters['uid'] = (int)$parameters['uid'];
+
+				if($parameters['uid'] == 0)
+				{
+					global $memprofile;
+
+					// $user is available in Who's Online but not in Member Profile, use $memprofile instead
+					if(!empty($user['uid']))
+					{
+						$parameters['uid'] = $user['uid'];
+					}
+					elseif(!empty($memprofile['uid']))
+					{
+						$parameters['uid'] = $memprofile['uid'];
+					}
+				}
+
 				if($parameters['uid'] > 0)
 				{
 					$uid_list[$parameters['uid']] = $parameters['uid'];
@@ -228,7 +245,7 @@ function fetch_wol_activity($location, $nopermission=false)
 		case "modcp":
 			if(!isset($parameters['action']))
 			{
-				$parameters['action'] = 0;
+				$parameters['action'] = '';
 			}
 
 			$accepted_parameters = array("modlogs", "announcements", "finduser", "warninglogs", "ipsearch");
@@ -425,7 +442,7 @@ function fetch_wol_activity($location, $nopermission=false)
 		case "showthread":
 			if(!isset($parameters['action']))
 			{
-				$parameters['action'] = 0;
+				$parameters['action'] = '';
 			}
 			if(!isset($parameters['pid']))
 			{

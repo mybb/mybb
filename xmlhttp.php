@@ -682,6 +682,18 @@ else if($mybb->input['action'] == "get_multiquoted")
 	{
 		$inactiveforums = "AND t.fid NOT IN ({$inactiveforums})";
 	}
+
+	// Check group permissions if we can't view threads not started by us
+	$group_permissions = forum_permissions();
+	$onlyusfids = array();
+	foreach($group_permissions as $gpfid => $forum_permissions)
+	{
+		if(isset($forum_permissions['canonlyviewownthreads']) && $forum_permissions['canonlyviewownthreads'] == 1)
+		{
+			$onlyusfids[] = $gpfid;
+		}
+	}
+
 	$message = '';
 
 	// Are we loading all quoted posts or only those not in the current thread?
@@ -703,7 +715,7 @@ else if($mybb->input['action'] == "get_multiquoted")
 
 	// Query for any posts in the list which are not within the specified thread
 	$query = $db->query("
-		SELECT p.subject, p.message, p.pid, p.tid, p.username, p.dateline, t.fid, p.visible, u.username AS userusername
+		SELECT p.subject, p.message, p.pid, p.tid, p.username, p.dateline, t.fid, t.uid AS thread_uid, p.visible, u.username AS userusername
 		FROM ".TABLE_PREFIX."posts p
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
@@ -712,7 +724,11 @@ else if($mybb->input['action'] == "get_multiquoted")
 	");
 	while($quoted_post = $db->fetch_array($query))
 	{
-		if(!is_moderator($quoted_post['fid'], "canviewunapprove") && $quoted_post['visible'] == 0)
+		if(
+			(!is_moderator($quoted_post['fid'], "canviewunapprove") && $quoted_post['visible'] == 0) ||
+			(!is_moderator($quoted_post['fid'], "canviewdeleted") && $quoted_post['visible'] == -1) ||
+			(in_array($quoted_post['fid'], $onlyusfids) && (!$mybb->user['uid'] || $quoted_post['thread_uid'] != $mybb->user['uid']))
+		)
 		{
 			continue;
 		}

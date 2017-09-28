@@ -37,9 +37,14 @@ class installerOutput {
 	 * @param int    $form
 	 * @param int    $error
 	 */
-	function print_header($title="Welcome", $image="welcome", $form=1, $error=0)
+	function print_header($title="", $image="welcome", $form=1, $error=0)
 	{
 		global $mybb, $lang;
+
+		if($title == "")
+		{
+			$title = $lang->welcome;
+		}
 
 		if($lang->title)
 		{
@@ -61,7 +66,7 @@ class installerOutput {
 	<title>{$this->title} &gt; {$title}</title>
 	<link rel="stylesheet" href="stylesheet.css" type="text/css" />
 	<script type="text/javascript" src="../jscripts/jquery.js"></script>
-	<script type="text/javascript" src="../jscripts/general.js?ver=1807"></script>
+	<script type="text/javascript" src="../jscripts/general.js?ver=1813"></script>
 	{$dbconfig_add}
 </head>
 <body>
