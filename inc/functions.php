@@ -3822,6 +3822,13 @@ function log_moderator_action($data, $action="")
 		unset($data['pid']);
 	}
 
+	$tids = array();
+	if(isset($data['tids']))
+	{
+		$tids = (array)$data['tids'];
+		unset($data['tids']);
+	}
+
 	// Any remaining extra data - we my_serialize and insert in to its own column
 	if(is_array($data))
 	{
@@ -3838,7 +3845,23 @@ function log_moderator_action($data, $action="")
 		"data" => $db->escape_string($data),
 		"ipaddress" => $db->escape_binary($session->packedip)
 	);
-	$db->insert_query("moderatorlog", $sql_array);
+
+	if($tids)
+	{
+		$multiple_sql_array = array();
+
+		foreach($tids as $tid)
+		{
+			$sql_array['tid'] = (int)$tid;
+			$multiple_sql_array[] = $sql_array;
+		}
+
+		$db->insert_query_multiple("moderatorlog", $multiple_sql_array);
+	}
+	else
+	{
+		$db->insert_query("moderatorlog", $sql_array);
+	}
 }
 
 /**
