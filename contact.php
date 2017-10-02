@@ -180,7 +180,8 @@ if($mybb->request_method == "post")
 			$mybb->settings['stopforumspam_check_usernames'],
 			$mybb->settings['stopforumspam_check_emails'],
 			$mybb->settings['stopforumspam_check_ips'],
-			$mybb->settings['stopforumspam_log_blocks']
+			$mybb->settings['stopforumspam_log_blocks'],
+			$mybb->settings['stopforumspam_block_on_invalid_email_or_ip']
 		);
 
 		try {

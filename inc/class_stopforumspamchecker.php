@@ -53,6 +53,12 @@ class StopForumSpamChecker
 	 * @var bool
 	 */
 	private $log_blocks;
+	/**
+	 * Whether to mark a user as a spammer if their email address isn't a valid email or if their IP address isn't a valid IP address (or is a private network IP).
+	 *
+	 * @var bool
+	 */
+	private $block_on_invalid_email_or_ip;
 
 	/**
 	 * Create a new instance of the StopForumSpam.com checker.
@@ -62,8 +68,10 @@ class StopForumSpamChecker
 	 * @param bool         $check_usernames           Whether to check usernames against StopForumSpam.
 	 * @param bool         $check_emails              Whether to check email address against StopForumSpam.
 	 * @param bool         $check_ips                 Whether to check IP addresses against StopForumSpam.
+	 * @param bool         $block_on_invalid_email_or_ip Whether to mark a user as a spammer if their email address isn't a valid email or if their IP address isn't a valid IP address (or is a private network IP).
 	 */
-	public function __construct(&$plugins, $min_weighting_before_spam = 50.00, $check_usernames = false, $check_emails = true, $check_ips = true, $log_blocks = true)
+	public function __construct(&$plugins, $min_weighting_before_spam = 50.00, $check_usernames = false,
+		$check_emails = true, $check_ips = true, $log_blocks = true, $block_on_invalid_email_or_ip = false)
 	{
 		$this->plugins                   = $plugins;
 		$this->min_weighting_before_spam = (double)$min_weighting_before_spam;
@@ -71,6 +79,7 @@ class StopForumSpamChecker
 		$this->check_emails              = (bool)$check_emails;
 		$this->check_ips                 = (bool)$check_ips;
 		$this->log_blocks                = (bool)$log_blocks;
+		$this->block_on_invalid_email_or_ip = (bool)$block_on_invalid_email_or_ip;
 	}
 
 	/**
@@ -87,7 +96,11 @@ class StopForumSpamChecker
 		$is_spammer = false;
 		$confidence = 0;
 
-		if(filter_var($email, FILTER_VALIDATE_EMAIL) && filter_var($ip_address, FILTER_VALIDATE_IP)) // Calls to the API with invalid email/ip formats cause issues
+		// Calls to the API with invalid email/ip formats cause issues
+		$valid_email = filter_var($email, FILTER_VALIDATE_EMAIL);
+		$valid_ip = filter_var($ip_address, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE);
+
+		if($valid_email && $valid_ip)
 		{
 			$username_encoded = urlencode($username);
 			$email_encoded    = urlencode($email);
@@ -132,6 +145,10 @@ class StopForumSpamChecker
 				throw new Exception('stopforumspam_error_retrieving');
 			}
 		}
+		elseif($this->block_on_invalid_email_or_ip)
+		{
+			$is_spammer = true;
+		}
 
 		if($this->plugins)
 		{
@@ -167,38 +184,41 @@ class StopForumSpamChecker
 	{
 		global $mybb, $lang;
 
+		$settings_enabled = array();
+
 		foreach($sfsSettingsEnabled as $setting)
 		{
 			if($setting == 'stopforumspam_check_usernames' && $mybb->settings[$setting])
 			{
-				$settingsenabled[] = $lang->sfs_error_username;
+				$settings_enabled[] = $lang->sfs_error_username;
 				continue;
 			}
 
 			if($setting == 'stopforumspam_check_emails' && $mybb->settings[$setting])
 			{
-				$settingsenabled[] = $lang->sfs_error_email;
+				$settings_enabled[] = $lang->sfs_error_email;
 				continue;
 			}
 
 			if($setting = 'stopforumspam_check_ips' && $mybb->settings[$setting])
 			{
-				$settingsenabled[] = $lang->sfs_error_ip;
+				$settings_enabled[] = $lang->sfs_error_ip;
 				continue;
 			}
 		}
 
-		if(sizeof($settingsenabled) > 1)
+		if(count($settings_enabled) > 1)
 		{
-			$lastsetting = $settingsenabled[sizeof($settingsenabled)-1];
-			unset($settingsenabled[sizeof($settingsenabled)-1]);
+			$last_setting = $settings_enabled[count($settings_enabled)-1];
+			unset($settings_enabled[count($settings_enabled)-1]);
 
-			$stopforumspamerror = implode($lang->comma, $settingsenabled) . " {$lang->sfs_error_or} " . $lastsetting;
+			$stop_forum_spam_error = implode($lang->comma, $settings_enabled) . " {$lang->sfs_error_or} " . $last_setting;
 		}
 		else
 		{
-			$stopforumspamerror = $settingsenabled[0];
+			$stop_forum_spam_error = $settings_enabled[0];
 		}
-		return $stopforumspamerror;
+
+		return $stop_forum_spam_error;
 	}
 }

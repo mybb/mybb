@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<settings version="1809">
+<settings version="1813">
 	<settinggroup name="onlineoffline" title="Board Online / Offline" description="These settings allow you to globally turn your forums online or offline, and allow you to specify a reason for turning them off." disporder="1" isdefault="1">
 		<setting name="boardclosed">
 			<title>Board Closed</title>
@@ -2428,6 +2428,15 @@ delete=Delete]]></optionscode>
 			<title>Log StopForumSpam blocks?</title>
 			<description>
 				<![CDATA[Should every StopForumSpam block be logged?]]></description>
+			<disporder>10</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[0]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="block_on_invalid_email_or_ip">
+			<title>Mark as spammer if email or IP address is invalid?</title>
+			<description>
+				<![CDATA[Should users be marked as a spammer if their email address is not a valid email address or their IP address is not a valid IP (or is an internal network)?]]></description>
 			<disporder>10</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
