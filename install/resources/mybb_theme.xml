@@ -3634,7 +3634,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 </ol>
 <br />
 {$lang->error_nopermission_user_username}]]></template>
-		<template name="footer" version="1810"><![CDATA[<debugstuff>
+		<template name="footer" version="1813"><![CDATA[<debugstuff>
 	</div>
 </div>
 <div id="footer">
@@ -3662,7 +3662,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 					you may be refused support on the MyBB Community Forums.
 
 					This is free software, support us and we'll support you. -->
-				{$lang->powered_by} <a href="https://mybb.com" target="_blank">MyBB{$mybbversion}</a>, &copy; 2002-{$copy_year} <a href="https://mybb.com" target="_blank">MyBB Group</a>.
+				{$lang->powered_by} <a href="https://mybb.com" target="_blank" rel="noopener">MyBB{$mybbversion}</a>, &copy; 2002-{$copy_year} <a href="https://mybb.com" target="_blank" rel="noopener">MyBB Group</a>.
 				<!-- End powered by -->
 			</span>
 		</div>
@@ -9686,7 +9686,7 @@ if(use_xmlhttprequest == "1")
 		<template name="postbit_warn" version="1800"><![CDATA[<a href="warnings.php?action=warn&amp;uid={$post['uid']}&amp;pid={$post['pid']}" title="{$lang->postbit_warn}" class="postbit_warn"><span>{$lang->postbit_button_warn}</span></a>]]></template>
 		<template name="postbit_warninglevel" version="1400"><![CDATA[<br />{$lang->postbit_warning_level} <a href="{$warning_link}">{$warning_level}</a>]]></template>
 		<template name="postbit_warninglevel_formatted" version="1800"><![CDATA[<span class="{$warning_class}">{$level}%</span>]]></template>
-		<template name="postbit_www" version="1800"><![CDATA[<a href="{$post['website']}" target="_blank" title="{$lang->postbit_website}" class="postbit_website"><span>{$lang->postbit_button_website}</span></a>]]></template>
+		<template name="postbit_www" version="1813"><![CDATA[<a href="{$post['website']}" target="_blank" rel="noopener" title="{$lang->postbit_website}" class="postbit_website"><span>{$lang->postbit_button_website}</span></a>]]></template>
 		<template name="posticons" version="1800"><![CDATA[<tr>
 <td class="trow1" style="vertical-align: top"><strong>{$lang->post_icon}</strong><span class="smalltext"><label class="posticons_label"><input type="radio" class="radio" name="icon" value="-1"{$no_icons_checked} />{$lang->no_post_icon}</label></span></td>
 <td class="trow1" valign="top">{$iconlist}</td>

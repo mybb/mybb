@@ -226,7 +226,7 @@ lang.saved = \"{$lang->saved}\";
 		echo "	<br style=\"clear: both;\" />";
 		echo "	<br style=\"clear: both;\" />";
 		echo "	</div>\n";
-		echo "<div id=\"footer\"><p class=\"generation\">".$lang->sprintf($lang->generated_in, $totaltime, $debuglink, $querycount, $memory_usage)."</p><p class=\"powered\">Powered By <a href=\"https://mybb.com/\" target=\"_blank\">MyBB</a>, &copy; 2002-".COPY_YEAR." <a href=\"https://mybb.com/\" target=\"_blank\">MyBB Group</a>.</p></div>\n";
+		echo "<div id=\"footer\"><p class=\"generation\">".$lang->sprintf($lang->generated_in, $totaltime, $debuglink, $querycount, $memory_usage)."</p><p class=\"powered\">Powered By <a href=\"https://mybb.com/\" target=\"_blank\" rel=\"noopener\">MyBB</a>, &copy; 2002-".COPY_YEAR." <a href=\"https://mybb.com/\" target=\"_blank\" rel=\"noopener\">MyBB Group</a>.</p></div>\n";
 		if($mybb->debug_mode)
 		{
 			echo $db->explain;
@@ -804,7 +804,7 @@ EOF;
 	/**
 	 * Output a series of primary navigation tabs for swithcing between items within a particular module/action.
 	 *
-	 * @param array $tabs Nested array of tabs containing possible keys of align, link_target, link, title.
+	 * @param array $tabs Nested array of tabs containing possible keys of align, link_target, link_rel, link, title.
 	 * @param string $active The name of the active tab. Corresponds with the key of each tab item.
 	 */
 	function output_nav_tabs($tabs=array(), $active='')
@@ -829,11 +829,16 @@ EOF;
 			{
 				$target = " target=\"{$tab['link_target']}\"";
 			}
+			$rel = '';
+			if(isset($tab['link_rel']))
+			{
+				$rel = " rel=\"{$tab['link_rel']}\"";
+			}
 			if(!isset($tab['link']))
 			{
 				$tab['link'] = '';
 			}
-			echo "\t\t<li class=\"{$class}\"><a href=\"{$tab['link']}\"{$target}>{$tab['title']}</a></li>\n";
+			echo "\t\t<li class=\"{$class}\"><a href=\"{$tab['link']}\"{$target}{$rel}>{$tab['title']}</a></li>\n";
 			$target = '';
 		}
 		echo "\t</ul>\n";
