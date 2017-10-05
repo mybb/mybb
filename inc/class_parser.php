@@ -1061,14 +1061,13 @@ class postParser
 			$name = htmlspecialchars_uni($name);
 		}
 
-		$nofollow = '';
 		if(!empty($this->options['nofollow_on']))
 		{
-			$nofollow = " rel=\"noopener nofollow\"";
+			$rel = " rel=\"noopener nofollow\"";
 		}
 		else
 		{
-			$nofollow = " rel=\"noopener\"";
+			$rel = " rel=\"noopener\"";
 		}
 
 		// Fix some entities in URLs
