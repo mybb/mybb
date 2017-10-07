@@ -1428,9 +1428,20 @@ class postParser
 				}
 				break;
 			case "twitch":
-				if(isset($path[3]))
+				if(count($path) >= 3 && $path[1] == 'videos')
 				{
-					$id = $path[3]; // https://www.twitch.tv/giantbomb/v/100048090
+					// Direct video embed with URL like: https://www.twitch.tv/videos/179723472
+					$id = 'video=v'.$path[2];
+				}
+				elseif(count($path) >= 4 && $path[2] == 'v')
+				{
+					// Direct video embed with URL like: https://www.twitch.tv/waypoint/v/179723472
+					$id = 'video=v'.$path[3];
+				}
+				elseif(count($path) >= 2)
+				{
+					// Channel (livestream) embed with URL like: https://twitch.tv/waypoint
+					$id = 'channel='.$path[1];
 				}
 				break;
 			default:
