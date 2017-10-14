@@ -5490,7 +5490,7 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
-		<template name="member_resetpassword" version="1607"><![CDATA[<html>
+		<template name="member_resetpassword" version="1813"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->reset_password}</title>
 {$headerinclude}
@@ -5508,8 +5508,8 @@ if(use_xmlhttprequest == "1")
 <td class="trow1"><input type="text" class="textbox" name="username" value="{$user['username']}" /></td>
 </tr>
 <tr>
-<td class="trow1" width="30%"><strong>{$lang->activation_code}</strong></td>
-<td class="trow1"><input type="text" class="textbox" name="code" value="{$code}" /></td>
+<td class="trow2" width="30%"><strong>{$lang->activation_code}</strong></td>
+<td class="trow2"><input type="text" class="textbox" name="code" value="{$code}" /></td>
 </tr>
 </table>
 <br />
