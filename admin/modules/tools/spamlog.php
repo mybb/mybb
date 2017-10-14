@@ -239,7 +239,7 @@ if(!$mybb->input['action'])
 			}
 		}
 
-		$search_sfs = "<div class=\"float_right\"><a href=\"http://www.stopforumspam.com/ipcheck/{$ip_address}\" target=\"_blank\"><img src=\"styles/{$page->style}/images/icons/find.png\" title=\"{$lang->search_ip_on_sfs}\" alt=\"{$lang->search}\" /></a></div>";
+		$search_sfs = "<div class=\"float_right\"><a href=\"http://www.stopforumspam.com/ipcheck/{$ip_address}\" target=\"_blank\" rel=\"noopener\"><img src=\"styles/{$page->style}/images/icons/find.png\" title=\"{$lang->search_ip_on_sfs}\" alt=\"{$lang->search}\" /></a></div>";
 
 		$table->construct_cell($username);
 		$table->construct_cell($email);
