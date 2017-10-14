@@ -602,7 +602,10 @@ class PMDataHandler extends DataHandler
 			}
 
 			$plugins->run_hooks("datahandler_pm_insert_updatedraft", $this);
-			$db->insert_query("privatemessages", $this->pm_insert_data);
+
+			$this->pmid = $db->insert_query("privatemessages", $this->pm_insert_data);
+
+			$plugins->run_hooks("datahandler_pm_insert_updatedraft_commit", $this);
 
 			// If this is a draft, end it here - below deals with complete messages
 			return array(
@@ -681,7 +684,10 @@ class PMDataHandler extends DataHandler
 			$this->pm_insert_data['toid'] = $recipient['uid'];
 
 			$plugins->run_hooks("datahandler_pm_insert", $this);
+
 			$this->pmid[] = $db->insert_query("privatemessages", $this->pm_insert_data);
+
+			$plugins->run_hooks("datahandler_pm_insert_commit", $this);
 
 			// If PM noices/alerts are on, show!
 			if($recipient['pmnotice'] == 1)
@@ -735,7 +741,10 @@ class PMDataHandler extends DataHandler
 			$this->pm_insert_data['receipt'] = 0;
 
 			$plugins->run_hooks("datahandler_pm_insert_savedcopy", $this);
+
 			$db->insert_query("privatemessages", $this->pm_insert_data);
+
+			$plugins->run_hooks("datahandler_pm_insert_savedcopy_commit", $this);
 
 			// Because the sender saved a copy, update their total pm count
 			require_once MYBB_ROOT."/inc/functions_user.php";
