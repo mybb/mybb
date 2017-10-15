@@ -36,7 +36,7 @@ function upgrade41_dbchanges()
 		array("name" => "UptimeRobot", "useragent" => "UptimeRobot"),
 	));
 
-  $output->print_contents("<p>Click next to continue with the upgrade process.</p>");
+	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("41_dbchanges2");
 }
 
