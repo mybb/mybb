@@ -214,7 +214,7 @@ if($mybb->request_method == "post")
 			$mybb->input['message'] = $parser->parse_badwords($mybb->input['message']);
 		}
 
-		$user = $lang->na;
+		$user = $lang->guest;
 		if($mybb->user['uid'])
 		{
 			$user = htmlspecialchars_uni($mybb->user['username']).' - '.$mybb->settings['bburl'].'/'.get_profile_link($mybb->user['uid']);
