@@ -110,21 +110,21 @@ function build_postbit($post, $post_type=0)
 			$parser_options['allow_imgcode'] = $forum['allowimgcode'];
 			$parser_options['allow_videocode'] = $forum['allowvideocode'];
 			$parser_options['filter_badwords'] = 1;
-
-			if(!$post['username'])
-			{
-				$post['username'] = $lang->guest;
-			}
-
-			if($post['userusername'])
-			{
-				$parser_options['me_username'] = $post['userusername'];
-			}
-			else
-			{
-				$parser_options['me_username'] = $post['username'];
-			}
 			break;
+	}
+
+	if(!$post['username'])
+	{
+		$post['username'] = $lang->guest; // htmlspecialchars_uni'd below
+	}
+
+	if($post['userusername'])
+	{
+		$parser_options['me_username'] = $post['userusername'];
+	}
+	else
+	{
+		$parser_options['me_username'] = $post['username'];
 	}
 
 	$post['username'] = htmlspecialchars_uni($post['username']);

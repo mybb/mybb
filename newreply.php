@@ -305,10 +305,10 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 	// If this isn't a logged in user, then we need to do some special validation.
 	if($mybb->user['uid'] == 0)
 	{
-		// If they didn't specify a username then give them "Guest"
+		// If they didn't specify a username leave blank so $lang->guest can be used on output
 		if(!$mybb->get_input('username'))
 		{
-			$username = $lang->guest;
+			$username = '';
 		}
 		// Otherwise use the name they specified.
 		else
@@ -996,10 +996,10 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		// If this isn't a logged in user, then we need to do some special validation.
 		if($mybb->user['uid'] == 0)
 		{
-			// If they didn't specify a username then give them "Guest"
+			// If they didn't specify a username leave blank so $lang->guest can be used on output
 			if(!$mybb->get_input('username'))
 			{
-				$username = $lang->guest;
+				$username = '';
 			}
 			// Otherwise use the name they specified.
 			else
@@ -1070,10 +1070,6 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		else
 		{
 			$quote_ids = htmlspecialchars_uni($mybb->get_input('quote_ids'));
-			if(!isset($mybb->input['username']))
-			{
-				$mybb->input['username'] = $lang->guest;
-			}
 			$mybb->input['icon'] = $mybb->get_input('icon', MyBB::INPUT_INT);
 			$query = $db->query("
 				SELECT u.*, f.*
@@ -1082,14 +1078,10 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 				WHERE u.uid='".$mybb->user['uid']."'
 			");
 			$post = $db->fetch_array($query);
-			if(!$mybb->user['uid'] || !$post['username'])
-			{
-				$post['username'] = $mybb->get_input('username');
-			}
-			else
+			$post['username'] = $username;
+			if($mybb->user['uid'])
 			{
 				$post['userusername'] = $mybb->user['username'];
-				$post['username'] = $mybb->user['username'];
 			}
 			$post['message'] = $previewmessage;
 			$post['subject'] = $subject;

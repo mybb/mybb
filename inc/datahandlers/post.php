@@ -138,7 +138,7 @@ class PostDataHandler extends DataHandler
 			$post['username'] = $user['username'];
 		}
 		// if the uid is 0 verify the username
-		else if($post['uid'] == 0 && $post['username'] != $lang->guest)
+		else if($post['uid'] == 0 && $post['username'] != '')
 		{
 			// Set up user handler
 			require_once MYBB_ROOT."inc/datahandlers/user.php";
@@ -160,12 +160,6 @@ class PostDataHandler extends DataHandler
 				$this->errors = array_merge($this->errors, $userhandler->get_errors());
 				return false;
 			}
-		}
-
-		// After all of this, if we still don't have a username, force the username as "Guest" (Note, this is not translatable as it is always a fallback)
-		if(!$post['username'])
-		{
-			$post['username'] = "Guest";
 		}
 
 		return true;
@@ -1168,23 +1162,42 @@ class PostDataHandler extends DataHandler
 						$emailsubject = $lang->emailsubject_subscription;
 						$emailmessage = $lang->email_subscription;
 					}
+
+					// If the poster is unregistered and hasn't set a username, call them Guest
+					if(!$post['uid'] && !$post['username'])
+					{
+						$post['username'] = htmlspecialchars_uni($lang->guest);
+					}
 				}
 				else
 				{
-					if($subscribedmember['notification'] == 1)
+
+					if(($subscribedmember['notification'] == 1 && !isset($langcache[$uselang]['emailsubject_subscription'])) || !isset($langcache[$uselang]['guest']))
 					{
-						if(!isset($langcache[$uselang]['emailsubject_subscription']))
+						$userlang = new MyLanguage;
+						$userlang->set_path(MYBB_ROOT."inc/languages");
+						$userlang->set_language($uselang);
+						if($subscribedmember['notification'] == 1)
 						{
-							$userlang = new MyLanguage;
-							$userlang->set_path(MYBB_ROOT."inc/languages");
-							$userlang->set_language($uselang);
 							$userlang->load("messages");
 							$langcache[$uselang]['emailsubject_subscription'] = $userlang->emailsubject_subscription;
 							$langcache[$uselang]['email_subscription'] = $userlang->email_subscription;
-							unset($userlang);
 						}
+						$userlang->load("global");
+
+						$langcache[$uselang]['guest'] = $userlang->guest;
+						unset($userlang);
+					}
+					if($subscribedmember['notification'] == 1)
+					{
 						$emailsubject = $langcache[$uselang]['emailsubject_subscription'];
 						$emailmessage = $langcache[$uselang]['email_subscription'];
+					}
+
+					// If the poster is unregistered and hasn't set a username, call them Guest
+					if(!$post['uid'] && !$post['username'])
+					{
+						$post['username'] = $langcache[$uselang]['guest'];
 					}
 				}
 
@@ -1648,6 +1661,12 @@ class PostDataHandler extends DataHandler
 					{
 						$emailsubject = $lang->emailsubject_forumsubscription;
 						$emailmessage = $lang->email_forumsubscription;
+
+						// If the poster is unregistered and hasn't set a username, call them Guest
+						if(!$thread['uid'] && !$thread['username'])
+						{
+							$thread['username'] = htmlspecialchars_uni($lang->guest);
+						}
 					}
 					else
 					{
@@ -1657,12 +1676,20 @@ class PostDataHandler extends DataHandler
 							$userlang->set_path(MYBB_ROOT."inc/languages");
 							$userlang->set_language($uselang);
 							$userlang->load("messages");
+							$userlang->load("global");
 							$langcache[$uselang]['emailsubject_forumsubscription'] = $userlang->emailsubject_forumsubscription;
 							$langcache[$uselang]['email_forumsubscription'] = $userlang->email_forumsubscription;
+							$langcache[$uselang]['guest'] = $userlang->guest;
 							unset($userlang);
 						}
 						$emailsubject = $langcache[$uselang]['emailsubject_forumsubscription'];
 						$emailmessage = $langcache[$uselang]['email_forumsubscription'];
+
+						// If the poster is unregistered and hasn't set a username, call them Guest
+						if(!$thread['uid'] && !$thread['username'])
+						{
+							$thread['username'] = $langcache[$uselang]['guest'];
+						}
 					}
 					$emailsubject = $lang->sprintf($emailsubject, $forum['name']);
 
