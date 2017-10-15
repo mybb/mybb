@@ -60,15 +60,18 @@ class pluginSystem
 			}
 
 			if(is_string($function[0]))
-			{ // Static class method
+			{
+				// Static class method
 				$method_representation = sprintf('%s::%s', $function[0], $function[1]);
 			}
 			elseif(is_object($function[0]))
-			{ // Instance class method
-				$method_representation = sprintf('%s->%s', get_class($function[0]), $function[1]);
+			{
+				// Instance class method
+				$method_representation = sprintf('%s->%s', spl_object_hash($function[0]), $function[1]);
 			}
 			else
-			{ // Unknown array type
+			{
+				// Unknown array type
 				return false;
 			}
 

@@ -537,7 +537,7 @@ class session
 	{
 		global $mybb;
 		$array = array('1' => '', '2' => '');
-		if(preg_match("#forumdisplay.php#", $_SERVER['PHP_SELF']) && $mybb->get_input('fid', MyBB::INPUT_INT) > 0)
+		if(preg_match("#forumdisplay.php#", $_SERVER['PHP_SELF']) && $mybb->get_input('fid', MyBB::INPUT_INT) > 0 && $mybb->get_input('fid', MyBB::INPUT_INT) < 4294967296)
 		{
 			$array[1] = $mybb->get_input('fid', MyBB::INPUT_INT);
 			$array[2] = '';
@@ -546,7 +546,7 @@ class session
 		{
 			global $db;
 
-			if($mybb->get_input('tid', MyBB::INPUT_INT) > 0)
+			if($mybb->get_input('tid', MyBB::INPUT_INT) > 0 && $mybb->get_input('tid', MyBB::INPUT_INT) < 4294967296)
 			{
 				$array[2] = $mybb->get_input('tid', MyBB::INPUT_INT);
 			}

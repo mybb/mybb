@@ -783,7 +783,64 @@ if($mybb->input['action'] == "register")
 	{
 		$plugins->run_hooks("member_register_start");
 
-		$validator_extra = '';
+		// JS validator extra
+		if($mybb->settings['maxnamelength'] > 0 && $mybb->settings['minnamelength'] > 0)
+		{
+			$lang->js_validator_username_length = $lang->sprintf($lang->js_validator_username_length, $mybb->settings['minnamelength'], $mybb->settings['maxnamelength']);
+		}
+
+		$validator_javascript = "<script type=\"text/javascript\">
+$(document).ready(function() {
+	$('#registration_form').validate({
+		rules: {
+			username: {
+				required: true,
+				minlength: {$mybb->settings['minnamelength']},
+				maxlength: {$mybb->settings['maxnamelength']},
+				remote: {
+					url: 'xmlhttp.php?action=username_availability',
+					type: 'post',
+					dataType: 'json',
+					data:
+					{
+						my_post_key: my_post_key
+					},
+				},
+			},
+			email: {
+				required: true,
+				email: true,
+				remote: {
+					url: 'xmlhttp.php?action=email_availability',
+					type: 'post',
+					dataType: 'json',
+					data:
+					{
+						my_post_key: my_post_key
+					},
+				},
+			},
+			email2: {
+				required: true,
+				email: true,
+				equalTo: '#email'
+			},
+		},
+		messages: {
+			username: {
+				minlength: '{$lang->js_validator_username_length}',
+				maxlength: '{$lang->js_validator_username_length}',
+			},
+			email: '{$lang->js_validator_invalid_email}',
+			email2: '{$lang->js_validator_email_match}',
+		},
+		errorPlacement: function(error, element) {
+			if(element.is(':checkbox') || element.is(':radio'))
+				error.insertAfter($('input[name=\"' + element.attr('name') + '\"]').last().next('span'));
+			else
+				error.insertAfter(element);
+		}
+	});\n";
 
 		if(isset($mybb->input['timezoneoffset']))
 		{
@@ -1066,13 +1123,13 @@ if($mybb->input['action'] == "register")
 							$inp_selector = "$('input[name=\"profile_fields[{$field}]\"]')";
 						}
 
-						$validator_extra .= "
-						{$inp_selector}.rules('add', {
-							required: true,
-							messages: {
-								required: '{$lang->js_validator_not_empty}'
-							}
-						});\n";
+						$validator_javascript .= "
+	{$inp_selector}.rules('add', {
+		required: true,
+		messages: {
+			required: '{$lang->js_validator_not_empty}'
+		}
+	});\n";
 					}
 
 					eval("\$requiredfields .= \"".$templates->get("member_register_customfield")."\";");
@@ -1124,25 +1181,25 @@ if($mybb->input['action'] == "register")
 				if($mybb->settings['captchaimage'] == 1)
 				{
 					// JS validator extra for our default CAPTCHA
-					$validator_extra .= "
-					$('#imagestring').rules('add', {
-						required: true,
-						remote:{
-							url: 'xmlhttp.php?action=validate_captcha',
-							type: 'post',
-							dataType: 'json',
-							data:
-							{
-								imagehash: function () {
-									return $('#imagehash').val();
-								},
-								my_post_key: my_post_key
-							},
-						},
-						messages: {
-							remote: '{$lang->js_validator_no_image_text}'
-						}
-					});\n";
+					$validator_javascript .= "
+	$('#imagestring').rules('add', {
+		required: true,
+		remote:{
+			url: 'xmlhttp.php?action=validate_captcha',
+			type: 'post',
+			dataType: 'json',
+			data:
+			{
+				imagehash: function () {
+					return $('#imagehash').val();
+				},
+				my_post_key: my_post_key
+			},
+		},
+		messages: {
+			remote: '{$lang->js_validator_no_image_text}'
+		}
+	});\n";
 				}
 			}
 		}
@@ -1173,25 +1230,25 @@ if($mybb->input['action'] == "register")
 
 				eval("\$questionbox = \"".$templates->get("member_register_question")."\";");
 
-				$validator_extra .= "
-				$('#answer').rules('add', {
-					required: true,
-					remote:{
-						url: 'xmlhttp.php?action=validate_question',
-						type: 'post',
-						dataType: 'json',
-						data:
-						{
-							question: function () {
-								return $('#question_id').val();
-							},
-							my_post_key: my_post_key
-						},
-					},
-					messages: {
-						remote: '{$lang->js_validator_no_security_question}'
-					}
-				});\n";
+				$validator_javascript .= "
+	$('#answer').rules('add', {
+		required: true,
+		remote:{
+			url: 'xmlhttp.php?action=validate_question',
+			type: 'post',
+			dataType: 'json',
+			data:
+			{
+				question: function () {
+					return $('#question_id').val();
+				},
+				my_post_key: my_post_key
+			},
+		},
+		messages: {
+			remote: '{$lang->js_validator_no_security_question}'
+		}
+	});\n";
 			}
 		}
 
@@ -1208,63 +1265,66 @@ if($mybb->input['action'] == "register")
 			// JS validator extra
 			$lang->js_validator_password_length = $lang->sprintf($lang->js_validator_password_length, $mybb->settings['minpasswordlength']);
 
+			$validator_javascript .= "
+	$.validator.addMethod('passwordSecurity', function(value, element, param) {
+		return (value != $('#email').val() && value != $('#username').val()
+			&& value.indexOf($('#email').val()) === false && value.indexOf($('#username').val()) === false
+			&& $('#email').val().indexOf(value) === false && $('#username').val().indexOf(value) === false);
+	}, '{$lang->userdata_bad_password_security}');\n";
+
 			// See if the board has "require complex passwords" enabled.
 			if($mybb->settings['requirecomplexpasswords'] == 1)
 			{
 				$lang->password = $lang->complex_password = $lang->sprintf($lang->complex_password, $mybb->settings['minpasswordlength']);
 
-				$validator_extra .= "
-				$('#password').rules('add', {
-					required: true,
-					minlength: {$mybb->settings['minpasswordlength']},
-					remote:{
-						url: 'xmlhttp.php?action=complex_password',
-						type: 'post',
-						dataType: 'json',
-						data:
-						{
-							my_post_key: my_post_key
-						},
-					},
-					messages: {
-						minlength: '{$lang->js_validator_password_length}',
-						required: '{$lang->js_validator_password_length}',
-						remote: '{$lang->js_validator_no_image_text}'
-					}
-				});\n";
+				$validator_javascript .= "
+	$('#password').rules('add', {
+		required: true,
+		minlength: {$mybb->settings['minpasswordlength']},
+		remote:{
+			url: 'xmlhttp.php?action=complex_password',
+			type: 'post',
+			dataType: 'json',
+			data:
+			{
+				my_post_key: my_post_key
+			},
+		},
+		passwordSecurity: '',
+		messages: {
+			minlength: '{$lang->js_validator_password_length}',
+			required: '{$lang->js_validator_password_length}',
+			remote: '{$lang->js_validator_no_image_text}'
+		}
+	});\n";
 			}
 			else
 			{
-				$validator_extra .= "
-				$('#password').rules('add', {
-					required: true,
-					minlength: {$mybb->settings['minpasswordlength']},
-					messages: {
-						minlength: '{$lang->js_validator_password_length}',
-						required: '{$lang->js_validator_password_length}'
-					}
-				});\n";
+				$validator_javascript .= "
+	$('#password').rules('add', {
+		required: true,
+		minlength: {$mybb->settings['minpasswordlength']},
+        passwordSecurity: '',
+		messages: {
+			minlength: '{$lang->js_validator_password_length}',
+			required: '{$lang->js_validator_password_length}'
+		}
+	});\n";
 			}
 
-			$validator_extra .= "
-				$('#password2').rules('add', {
-					required: true,
-					minlength: {$mybb->settings['minpasswordlength']},
-					equalTo: '#password',
-					messages: {
-						minlength: '{$lang->js_validator_password_length}',
-						required: '{$lang->js_validator_password_length}',
-						equalTo: '{$lang->js_validator_password_matches}'
-					}
-				});\n";
+			$validator_javascript .= "
+	$('#password2').rules('add', {
+		required: true,
+		minlength: {$mybb->settings['minpasswordlength']},
+		equalTo: '#password',
+		messages: {
+			minlength: '{$lang->js_validator_password_length}',
+			required: '{$lang->js_validator_password_length}',
+			equalTo: '{$lang->js_validator_password_matches}'
+		}
+	});\n";
 
 			eval("\$passboxes = \"".$templates->get("member_register_password")."\";");
-		}
-
-		// JS validator extra
-		if($mybb->settings['maxnamelength'] > 0 && $mybb->settings['minnamelength'] > 0)
-		{
-			$lang->js_validator_username_length = $lang->sprintf($lang->js_validator_username_length, $mybb->settings['minnamelength'], $mybb->settings['maxnamelength']);
 		}
 
 		$languages = $lang->get_languages();
@@ -1291,6 +1351,10 @@ if($mybb->input['action'] == "register")
 		$time = TIME_NOW;
 
 		$plugins->run_hooks("member_register_end");
+
+		$validator_javascript .= "
+});
+</script>\n";
 
 		eval("\$registration = \"".$templates->get("member_register")."\";");
 		output_page($registration);

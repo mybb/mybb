@@ -9,7 +9,7 @@
  */
 
 /**
- * Upgrade Script: 1.8.13
+ * Upgrade Script: 1.8.12
  */
 
 $upgrade_detail = array(
@@ -24,18 +24,19 @@ function upgrade41_dbchanges()
 
 	$output->print_header("Updating Database");
 
-	// Remove Blekko Spider
-	$db->delete_query('spiders', 'name=\'Blekko\'');
+	// Remove Blekko Spider, Insert Modern Spiders
+	$db->delete_query('spiders', "name IN('Blekko', 'Discord', 'Applebot', 'CheckHost', 'Pingdom', 'DuckDuckGo', 'UptimeRobot')");
 
-	// Insert Modern Spiders
-	$db->insert_query('spiders', array("name" => "Discord", "useragent" => "Mozilla/5.0 (compatible; Discordbot/2.0; +https://discordapp.com)"));
-	$db->insert_query('spiders', array("name" => "Applebot", "useragent" => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/600.2.5 (KHTML, like Gecko) Version/8.0.2 Safari/600.2.5 (Applebot/0.1; +http://www.apple.com/go/applebot)"));
-	$db->insert_query('spiders', array("name" => "CheckHost", "useragent" => "CheckHost (http://check-host.net/)"));
-	$db->insert_query('spiders', array("name" => "Pingdom", "useragent" => "Pingdom.com_bot_version_1.4_(http://www.pingdom.com)"));
-	$db->insert_query('spiders', array("name" => "DuckDuckGo", "useragent" => "DuckDuckBot/1.1; (+http://duckduckgo.com/duckduckbot.html)"));
-	$db->insert_query('spiders', array("name" => "UptimeRobot", "useragent" => "Mozilla/5.0+(compatible; UptimeRobot/2.0; http://www.uptimerobot.com/)"));
+	$db->insert_query_multiple('spiders', array(
+		array("name" => "Discord", "useragent" => "Discordbot"),
+		array("name" => "Applebot", "useragent" => "Applebot"),
+		array("name" => "CheckHost", "useragent" => "CheckHost"),
+		array("name" => "Pingdom", "useragent" => "Pingdom.com_bot"),
+		array("name" => "DuckDuckGo", "useragent" => "DuckDuckBot"),
+		array("name" => "UptimeRobot", "useragent" => "UptimeRobot"),
+	));
 
-  	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
+  $output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("41_dbchanges2");
 }
 
@@ -55,7 +56,9 @@ function upgrade41_dbchanges2()
 
 		if($stripped !== $original)
 		{
-			$db->update_query("moderatorlog", "action" => $db->escape_string($stripped), "WHERE tid = '".$row['tid']."'");
+			$db->update_query("moderatorlog", array(
+				"action" => $db->escape_string($stripped),
+			), "WHERE tid = '".$row['tid']."'");
 		}
 	}
 
