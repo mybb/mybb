@@ -1128,10 +1128,20 @@ if(!empty($threadcache) && is_array($threadcache))
 		$threadpages = '';
 		$morelink = '';
 		$thread['posts'] = $thread['replies'] + 1;
-
-		if($thread['unapprovedposts'] > 0 && $ismod)
+		if(is_moderator($fid, "canviewdeleted") == true || is_moderator($fid, "canviewunapprove") == true)
 		{
-			$thread['posts'] += $thread['unapprovedposts'] + $thread['deletedposts'];
+			if(is_moderator($fid, "canviewdeleted") == true)
+			{
+				$thread['posts'] += $thread['deletedposts'];
+			}
+			if(is_moderator($fid, "canviewunapprove") == true)
+			{
+				$thread['posts'] += $thread['unapprovedposts'];
+			}
+		}
+		elseif($fpermissions['canviewdeletionnotice'] != 0)
+		{
+			$thread['posts'] += $thread['deletedposts'];
 		}
 
 		if($thread['posts'] > $mybb->settings['postsperpage'])
