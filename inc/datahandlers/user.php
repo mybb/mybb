@@ -574,7 +574,7 @@ class UserDataHandler extends DataHandler
 						$this->set_error('max_limit_reached', array($profilefield['name'], $profilefield['maxlength']));
 					}
 
-					if(!empty($profilefield['regex']) && !preg_match("#".$profilefield['regex']."#i", $profile_fields[$field]))
+					if(!empty($profilefield['regex']) && !empty($profile_fields[$field]) && !preg_match("#".$profilefield['regex']."#i", $profile_fields[$field]))
 					{
 						$this->set_error('bad_profile_field_value', array($profilefield['name']));
 					}
