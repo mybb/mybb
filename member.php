@@ -1275,7 +1275,7 @@ $(document).ready(function() {
 				|| $('#email').val() != '' && $('#email').val().indexOf(value)
 				|| $('#username').val() != '' && $('#username').val().indexOf(value)
 		);
-	}, '{$lang->userdata_bad_password_security}');\n";
+	}, '{$lang->js_validator_bad_password_security}');\n";
 
 			// See if the board has "require complex passwords" enabled.
 			if($mybb->settings['requirecomplexpasswords'] == 1)
