@@ -4737,40 +4737,84 @@ function nice_time($stamp, $options=array())
 	$stamp %= $msecs;
 	$seconds = $stamp;
 
-	if($years == 1)
+	// Prevent gross over accuracy ($options parameter will override these)
+	if($years > 0)
 	{
-		$nicetime['years'] = "1".$lang_year;
+		$options = array_merge(array(
+			'days' => false,
+			'hours' => false,
+			'minutes' => false,
+			'seconds' => false
+		), $options);
 	}
-	else if($years > 1)
+	elseif($months > 0)
 	{
-		$nicetime['years'] = $years.$lang_years;
+		$options = array_merge(array(
+			'hours' => false,
+			'minutes' => false,
+			'seconds' => false
+		), $options);
+	}
+	elseif($weeks > 0)
+	{
+		$options = array_merge(array(
+			'minutes' => false,
+			'seconds' => false
+		), $options);
+	}
+	elseif($days > 0)
+	{
+		$options = array_merge(array(
+			'seconds' => false
+		), $options);
 	}
 
-	if($months == 1)
+	if(!isset($options['years']) || $options['years'] !== false)
 	{
-		$nicetime['months'] = "1".$lang_month;
-	}
-	else if($months > 1)
-	{
-		$nicetime['months'] = $months.$lang_months;
-	}
-
-	if($weeks == 1)
-	{
-		$nicetime['weeks'] = "1".$lang_week;
-	}
-	else if($weeks > 1)
-	{
-		$nicetime['weeks'] = $weeks.$lang_weeks;
+		if($years == 1)
+		{
+			$nicetime['years'] = "1".$lang_year;
+		}
+		else if($years > 1)
+		{
+			$nicetime['years'] = $years.$lang_years;
+		}
 	}
 
-	if($days == 1)
+	if(!isset($options['months']) || $options['months'] !== false)
 	{
-		$nicetime['days'] = "1".$lang_day;
+		if($months == 1)
+		{
+			$nicetime['months'] = "1".$lang_month;
+		}
+		else if($months > 1)
+		{
+			$nicetime['months'] = $months.$lang_months;
+		}
 	}
-	else if($days > 1)
+
+	if(!isset($options['weeks']) || $options['weeks'] !== false)
 	{
-		$nicetime['days'] = $days.$lang_days;
+		if($weeks == 1)
+		{
+			$nicetime['weeks'] = "1".$lang_week;
+		}
+		else if($weeks > 1)
+		{
+			$nicetime['weeks'] = $weeks.$lang_weeks;
+		}
+	}
+
+	if(!isset($options['days']) || $options['days'] !== false)
+	{
+		if($days == 1)
+		{
+			$nicetime['days'] = "1".$lang_day;
+		}
+		else if($days > 1)
+		{
+			$nicetime['days'] = $days.$lang_days;
+		}
 	}
 
 	if(!isset($options['hours']) || $options['hours'] !== false)
@@ -8689,10 +8733,10 @@ function my_validate_url($url, $relative_path=false, $allow_local=false)
 
 /**
  * Strip html tags from string, also removes <script> and <style> contents.
- * 
+ *
  * @param  string $string         String to stripe
  * @param  string $allowable_tags Allowed html tags
- * 
+ *
  * @return string                 Striped string
  */
 function my_strip_tags($string, $allowable_tags = '')
