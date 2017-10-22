@@ -3588,7 +3588,7 @@ if($mybb->input['action'] == "warninglogs")
 		}
 		if($row['expires'] > 0)
 		{
-			$expire_date = my_date('relative', $row['expires'], '', 2);
+			$expire_date = nice_time($row['expires']-TIME_NOW);
 		}
 		else
 		{
