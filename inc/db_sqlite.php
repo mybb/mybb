@@ -1112,10 +1112,11 @@ class DB_SQLite implements DB_Base
 	 *
 	 * @param string $table The table
 	 * @param array $replacements The replacements
-	 * @param mixed $default_field The default field(s)
+	 * @param string|array $default_field The default field(s)
+	 * @param boolean $insert_id Whether or not to return an insert id. True by default
 	 * @return int|PDOStatement|bool Returns either the insert id (if a new row is inserted), the query resource (if a row is updated) or false on failure
 	 */
-	function replace_query($table, $replacements=array(), $default_field="")
+	function replace_query($table, $replacements=array(), $default_field="", $insert_id=true)
 	{
 		global $mybb;
 
