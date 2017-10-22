@@ -2204,7 +2204,7 @@ smtp=SMTP mail]]></optionscode>
 		</setting>
 		<setting name="mail_parameters">
 			<title>Additional Parameters for PHP's mail()</title>
-			<description><![CDATA[This setting allows you to set additional parameters for the PHP mail() function. Only used when 'PHP mail' is selected as Mail Handler. <a href="http://php.net/function.mail" target="_blank">More information</a>]]></description>
+			<description><![CDATA[This setting allows you to set additional parameters for the PHP mail() function. Only used when 'PHP mail' is selected as Mail Handler. <a href="http://php.net/function.mail" target="_blank" rel="noopener">More information</a>]]></description>
 			<disporder>7</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
@@ -2334,7 +2334,7 @@ delete=Delete]]></optionscode>
 		</setting>
 		<setting name="purgespammerapikey">
 			<title>Stop Forum Spam API Key</title>
-			<description><![CDATA[In order to be able to submit information on a spammer to the Stop Forum Spam database, you need an API key. You can get one of these <a href="https://www.stopforumspam.com/forum/register.php" target="_blank">here</a>. When you have your key, paste it into the box below.]]></description>
+			<description><![CDATA[In order to be able to submit information on a spammer to the Stop Forum Spam database, you need an API key. You can get one of these <a href="https://www.stopforumspam.com/forum/register.php" target="_blank" rel="noopener">here</a>. When you have your key, paste it into the box below.]]></description>
 			<disporder>6</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>

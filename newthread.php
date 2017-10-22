@@ -254,10 +254,10 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 	// If this isn't a logged in user, then we need to do some special validation.
 	if($mybb->user['uid'] == 0)
 	{
-		// If they didn't specify a username then give them "Guest"
+		// If they didn't specify a username leave blank so $lang->guest can be used on output
 		if(!$mybb->get_input('username'))
 		{
-			$username = $lang->guest;
+			$username = '';
 		}
 		// Otherwise use the name they specified.
 		else
@@ -744,16 +744,16 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 
 	$preview = '';
 
-	// If we're preving a post then generate the preview.
+	// If we're previewing a post then generate the preview.
 	if(!empty($mybb->input['previewpost']))
 	{
 		// If this isn't a logged in user, then we need to do some special validation.
 		if($mybb->user['uid'] == 0)
 		{
-			// If they didn't specify a username then give them "Guest"
+			// If they didn't specify a username leave blank so $lang->guest can be used on output
 			if(!$mybb->get_input('username'))
 			{
-				$username = $lang->guest;
+				$username = '';
 			}
 			// Otherwise use the name they specified.
 			else
@@ -807,7 +807,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		{
 			$valid_username = true;
 		}
-		
+
 		$post_errors = array();
 		// Fetch friendly error messages if this is an invalid post
 		if(!$valid_thread || !$valid_subject || !$valid_username)
@@ -822,10 +822,6 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		}
 		else
 		{
-			if(empty($mybb->input['username']))
-			{
-				$mybb->input['username'] = $lang->guest;
-			}
 			$query = $db->query("
 				SELECT u.*, f.*
 				FROM ".TABLE_PREFIX."users u
@@ -833,14 +829,10 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 				WHERE u.uid='".$mybb->user['uid']."'
 			");
 			$post = $db->fetch_array($query);
-			if(!$mybb->user['uid'] || !$post['username'])
-			{
-				$post['username'] = htmlspecialchars_uni($mybb->get_input('username'));
-			}
-			else
+			$post['username'] = $username;
+			if($mybb->user['uid'])
 			{
 				$post['userusername'] = $mybb->user['username'];
-				$post['username'] = $mybb->user['username'];
 			}
 			$previewmessage = $mybb->get_input('message');
 			$post['message'] = $previewmessage;

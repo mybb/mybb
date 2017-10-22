@@ -222,6 +222,7 @@ if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['canviewboardclosed']
 if($mybb->input['action'] == "get_users")
 {
 	$mybb->input['query'] = ltrim($mybb->get_input('query'));
+	$search_type = $mybb->get_input('search_type', MyBB::INPUT_INT); // 0: contains, 1: starts with, 2: ends with
 
 	// If the string is less than 2 characters, quit.
 	if(my_strlen($mybb->input['query']) < 2)
@@ -251,18 +252,32 @@ if($mybb->input['action'] == "get_users")
 
 	$plugins->run_hooks("xmlhttp_get_users_start");
 
-	$query = $db->simple_select("users", "uid, username", "username LIKE '".$db->escape_string_like($mybb->input['query'])."%'", $query_options);
+	$likestring = $db->escape_string_like($mybb->input['query']);
+	if($search_type == 1)
+	{
+		$likestring .= '%';
+	}
+	elseif($search_type == 2)
+	{
+		$likestring = '%'.$likestring;
+	}
+	else
+	{
+		$likestring = '%'.$likestring.'%';
+	}
+
+	$query = $db->simple_select("users", "uid, username", "username LIKE '{$likestring}'", $query_options);
 	if($limit == 1)
 	{
 		$user = $db->fetch_array($query);
-		$data = array('id' => $user['username'], 'text' => $user['username']);
+		$data = array('uid' => $user['uid'], 'id' => $user['username'], 'text' => $user['username']);
 	}
 	else
 	{
 		$data = array();
 		while($user = $db->fetch_array($query))
 		{
-			$data[] = array('id' => $user['username'], 'text' => $user['username']);
+			$data[] = array('uid' => $user['uid'], 'id' => $user['username'], 'text' => $user['username']);
 		}
 	}
 
@@ -971,39 +986,43 @@ else if($mybb->input['action'] == "username_availability")
 		exit;
 	}
 }
-else if($mybb->input['action'] == "username_exists")
+else if($mybb->input['action'] == "email_availability")
 {
 	if(!verify_post_check($mybb->get_input('my_post_key'), true))
 	{
 		xmlhttp_error($lang->invalid_post_code);
 	}
 
-	require_once MYBB_ROOT."inc/functions_user.php";
-	$username = $mybb->get_input('value');
+	require_once MYBB_ROOT."inc/datahandlers/user.php";
+	$userhandler = new UserDataHandler("insert");
+
+	$email = $mybb->get_input('email');
 
 	header("Content-type: application/json; charset={$charset}");
 
-	if(!trim($username))
+	$user = array(
+		'email' => $email
+	);
+
+	$userhandler->set_data($user);
+
+	$errors = array();
+
+	if(!$userhandler->verify_email())
 	{
-		echo json_encode(array("success" => 1));
-		exit;
+		$errors = $userhandler->get_friendly_errors();
 	}
 
-	// Check if the username actually exists
-	$user = get_user_by_username($username);
+	$plugins->run_hooks("xmlhttp_email_availability");
 
-	$plugins->run_hooks("xmlhttp_username_exists");
-
-	if($user['uid'])
+	if(!empty($errors))
 	{
-		$lang->valid_username = $lang->sprintf($lang->valid_username, htmlspecialchars_uni($username));
-		echo json_encode(array("success" => $lang->valid_username));
+		echo json_encode($errors[0]);
 		exit;
 	}
 	else
 	{
-		$lang->invalid_username = $lang->sprintf($lang->invalid_username, htmlspecialchars_uni($username));
-		echo json_encode($lang->invalid_username);
+		echo json_encode("true");
 		exit;
 	}
 }

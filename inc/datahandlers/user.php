@@ -187,7 +187,9 @@ class UserDataHandler extends DataHandler
 		}
 
 		// Has the user tried to use their email address or username as a password?
-		if($user['email'] === $user['password'] || $user['username'] === $user['password'])
+		if($user['email'] === $user['password'] || $user['username'] === $user['password']
+			|| strpos($user['password'], $user['email']) !== false || strpos($user['password'], $user['username']) !== false
+			|| strpos($user['email'], $user['password']) !== false || strpos($user['username'], $user['password']) !== false)
 		{
 			$this->set_error('bad_password_security');
 			return false;
@@ -572,7 +574,7 @@ class UserDataHandler extends DataHandler
 						$this->set_error('max_limit_reached', array($profilefield['name'], $profilefield['maxlength']));
 					}
 
-					if(!empty($profilefield['regex']) && !preg_match("#".$profilefield['regex']."#i", $profile_fields[$field]))
+					if(!empty($profilefield['regex']) && !empty($profile_fields[$field]) && !preg_match("#".$profilefield['regex']."#i", $profile_fields[$field]))
 					{
 						$this->set_error('bad_profile_field_value', array($profilefield['name']));
 					}

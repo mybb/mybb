@@ -650,6 +650,23 @@ if(!$mybb->input['action'])
 
 		$errors = array();
 
+		// Normal users only
+		if($mybb->get_input('user_types', MyBB::INPUT_INT) == 1)
+		{
+			$user_types = 1;
+		}
+		// Guests only
+		elseif($mybb->get_input('user_types', MyBB::INPUT_INT) == -1)
+		{
+			$user_types = -1;
+			$search_sql .= " AND a.uid='0'";
+		}
+		// Users & Guests
+		else
+		{
+			$user_types = 0;
+		}
+
 		// Username matching
 		if($mybb->input['username'])
 		{
@@ -657,7 +674,16 @@ if(!$mybb->input['action'])
 
 			if(!$user['uid'])
 			{
-				$errors[] = $lang->error_invalid_username;
+				if($user_types == 1)
+				{
+					$errors[] = $lang->error_invalid_username;
+				}
+				else
+				{
+					// Don't error if we are searching for guests or users & guests
+					$search_sql .= " AND p.username LIKE '%".$db->escape_string_like($mybb->input['username'])."%'";
+				}
+
 			}
 			else
 			{
@@ -868,6 +894,7 @@ if(!$mybb->input['action'])
 	$form_container->output_row($lang->type_contains, "", $form->generate_text_box('mimetype', $mybb->input['mimetype'], array('id' => 'mimetype')), 'mimetype');
 	$form_container->output_row($lang->forum_is, "", $form->generate_forum_select('forum[]', $mybb->input['forum'], array('multiple' => true, 'size' => 5, 'id' => 'forum')), 'forum');
 	$form_container->output_row($lang->username_is, "", $form->generate_text_box('username', htmlspecialchars_uni($mybb->get_input('username')), array('id' => 'username')), 'username');
+	$form_container->output_row($lang->poster_is, "", $form->generate_select_box('user_types', array('0' => $lang->poster_is_either, '1' => $lang->poster_is_user, '-1' => $lang->poster_is_guest), $mybb->get_input('user_types', MyBB::INPUT_INT), array('id' => 'guests')), 'user_types');
 
 	$more_options = array(
 		"less_than" => $lang->more_than,

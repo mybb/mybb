@@ -32,6 +32,7 @@ if(!$mybb->input['action'])
 		'title' => $lang->about_the_team,
 		'link' => "https://mybb.com/about/team",
 		'link_target' => "_blank",
+		'link_rel' => "noopener",
 	);
 
 	$sub_tabs['check_for_updates'] = array(
@@ -138,7 +139,7 @@ if(!$mybb->input['action'])
 				}
 				else
 				{
-					$table->construct_cell("<a href=\"{$mybb_credits['credits'][$team]['members'][$i]['profile']}\" title=\"{$mybb_credits['credits'][$team]['members'][$i]['username']}\" target=\"_blank\">{$mybb_credits['credits'][$team]['members'][$i]['name']}</a>");
+					$table->construct_cell("<a href=\"{$mybb_credits['credits'][$team]['members'][$i]['profile']}\" title=\"{$mybb_credits['credits'][$team]['members'][$i]['username']}\" target=\"_blank\" rel=\"noopener\">{$mybb_credits['credits'][$team]['members'][$i]['name']}</a>");
 				}
 			}
 			$table->construct_row();

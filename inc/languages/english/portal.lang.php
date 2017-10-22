@@ -27,7 +27,6 @@ $l['num_threads'] = "Forum threads:";
 $l['num_posts'] = "Forum posts:";
 $l['full_stats'] = "Full Statistics";
 $l['welcome'] = "Welcome, {1}";
-$l['guest'] = "Guest";
 $l['guest_welcome_registration'] = "You have to <a href=\"{1}\">register</a> before you can post on our site.";
 $l['username'] = "Username";
 $l['password'] = "Password";

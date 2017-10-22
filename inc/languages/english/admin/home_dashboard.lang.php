@@ -36,7 +36,7 @@ $l['latest_mybb_announcements'] = "Latest MyBB Announcements";
 $l['no_announcements'] = "No stored announcements. <a href=\"index.php?module=home&amp;action=version_check\">Check for Updates</a>.";
 $l['your_version'] = "Your Version";
 $l['latest_version'] = "Latest Version";
-$l['update_forum'] = "Please upgrade to the latest version of MyBB by visiting the <a href=\"https://mybb.com\" target=\"_blank\">MyBB Website</a>.";
+$l['update_forum'] = "Please upgrade to the latest version of MyBB by visiting the <a href=\"https://mybb.com\" target=\"_blank\" rel=\"noopener\">MyBB Website</a>.";
 $l['read_more'] = "Read more";
 
 $l['success_up_to_date'] = "Congratulations, you are running the latest version of MyBB.";
@@ -45,7 +45,7 @@ $l['error_out_of_date'] = "Your copy of MyBB is out of date.";
 $l['error_communication'] = "There was a problem communicating with the version server. Please try again in a few minutes.";
 $l['error_fetch_news'] = "MyBB was unable to successfully fetch the latest announcements from the MyBB website.";
 
-$l['news_description'] = "The latest news from the <a href=\"https://blog.mybb.com/\" target=\"_blank\">MyBB Blog</a>.";
+$l['news_description'] = "The latest news from the <a href=\"https://blog.mybb.com/\" target=\"_blank\" rel=\"noopener\">MyBB Blog</a>.";
 
 $l['admin_notes_public'] = "These notes are public to all administrators.";
 $l['admin_notes'] = "Administrator Notes";
