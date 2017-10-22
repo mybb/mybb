@@ -991,7 +991,8 @@ if(!$mybb->input['action'])
 	$sub_tabs['find_language'] = array(
 		'title' => $lang->find_language_packs,
 		'link' => "https://community.mybb.com/mods.php?action=browse&category=19",
-		'target' => "_blank"
+		'link_target' => "_blank",
+		'link_rel' => "noopener"
 	);
 
 	$plugins->run_hooks("admin_config_languages_start");
@@ -1016,7 +1017,7 @@ if(!$mybb->input['action'])
 
 		if(!empty($langinfo['website']))
 		{
-			$author = "<a href=\"{$langinfo['website']}\" target=\"_blank\">{$langinfo['author']}</a>";
+			$author = "<a href=\"{$langinfo['website']}\" target=\"_blank\" rel=\"noopener\">{$langinfo['author']}</a>";
 		}
 		else
 		{

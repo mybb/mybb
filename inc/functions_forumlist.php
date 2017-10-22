@@ -112,6 +112,11 @@ function build_forumbits($pid=0, $depth=1)
 				{
 					$forum['lastpost'] = $private_forums[$forum['fid']]['lastpost'];
 
+					if(!$private_forums[$forum['fid']]['lastposteruid'] && !$private_forums[$forum['fid']]['lastposter'])
+					{
+						$private_forums[$forum['fid']]['lastposter'] = $lang->guest; // htmlspecialchars_uni'd when formatted later
+					}
+
 					$lastpost_data = array(
 						"lastpost" => $private_forums[$forum['fid']]['lastpost'],
 						"lastpostsubject" => $private_forums[$forum['fid']]['subject'],
@@ -123,6 +128,11 @@ function build_forumbits($pid=0, $depth=1)
 			}
 			else
 			{
+				if(!$forum['lastposteruid'] && !$forum['lastposter'])
+				{
+					$forum['lastposter'] = $lang->guest; // htmlspecialchars_uni'd when formatted later
+				}
+
 				$lastpost_data = array(
 					"lastpost" => $forum['lastpost'],
 					"lastpostsubject" => $forum['lastpostsubject'],
@@ -282,7 +292,7 @@ function build_forumbits($pid=0, $depth=1)
 			if($forum['linkto'] == '')
 			{
 				// No posts have been made in this forum - show never text
-				if(($lastpost_data['lastpost'] == 0 || $lastpost_data['lastposter'] == '') && $hideinfo != true)
+				if($lastpost_data['lastpost'] == 0 && $hideinfo != true)
 				{
 					eval("\$lastpost = \"".$templates->get("forumbit_depth2_forum_lastpost_never")."\";");
 				}

@@ -999,7 +999,7 @@ if($mybb->input['action'] == "change")
 		// Administrator is changing the login method.
 		if($mybb->settings['username_method'] == 1 || $mybb->settings['username_method'] == 2 || $mybb->input['upsetting']['username_method'] == 1 || $mybb->input['upsetting']['username_method'] == 2)
 		{
-			$query = $db->simple_select('users', 'email, COUNT(email) AS duplicates', "email!=''", array('group_by' => 'email HAVING duplicates>1'));
+			$query = $db->simple_select('users', 'email', "email != ''", array('group_by' => 'email HAVING COUNT(email)>1'));
 			if($db->num_rows($query))
 			{
 				$mybb->input['upsetting']['username_method'] = 0;

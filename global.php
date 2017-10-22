@@ -966,6 +966,7 @@ $closed_bypass = array(
 		'logout',
 	),
 	'captcha.php',
+	'contact.php',
 );
 
 // If the board is closed, the user is not an administrator and they're not trying to login, show the board closed message
@@ -1008,6 +1009,7 @@ $force_bypass = array(
 		'resetpassword',
 	),
 	'captcha.php',
+	'contact.php',
 );
 
 // If the board forces user to login/register, and the user is a guest, show the force login message

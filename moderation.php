@@ -108,6 +108,23 @@ if(isset($forum))
 	check_forum_password($forum['fid']);
 }
 
+$log_multithreads_actions = array("do_multideletethreads", "multiclosethreads", "multiopenthreads", "multiapprovethreads", "multiunapprovethreads", "multirestorethreads", "multisoftdeletethreads","multistickthreads", "multiunstickthreads", "do_multimovethreads");
+if(in_array($mybb->input['action'], $log_multithreads_actions))
+{
+	if(!empty($mybb->input['searchid']))
+	{
+		$tids = getids($mybb->get_input('searchid'), 'search');
+	}
+	else
+	{
+		$tids = getids($fid, 'forum');
+	}
+
+	$modlogdata['tids'] = (array)$tids;
+
+	unset($tids);
+}
+
 $mybb->user['username'] = htmlspecialchars_uni($mybb->user['username']);
 eval("\$loginbox = \"".$templates->get("changeuserbox")."\";");
 
@@ -281,7 +298,7 @@ switch($mybb->input['action'])
 			{
 				if(is_array($mybb->input['tids']))
 				{
-					$mybb->input['tids'] = implode(',' , $mybb->input['tids']);
+					$mybb->input['tids'] = implode(',', $mybb->input['tids']);
 				}
 
 				$did = $db->insert_query("delayedmoderation", array(
@@ -1398,6 +1415,8 @@ switch($mybb->input['action'])
 			eval("\$posts .= \"".$templates->get("moderation_split_post")."\";");
 			$altbg = alt_trow();
 		}
+
+		clearinline($tid, 'thread');
 		$forumselect = build_forum_jump("", $fid, 1, '', 0, true, '', "moveto");
 
 		$plugins->run_hooks("moderation_split");

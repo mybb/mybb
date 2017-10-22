@@ -236,7 +236,7 @@ function acp_recount_reputation()
 		$query2 = $db->query("
 			SELECT SUM(reputation) as total_rep
 			FROM ".TABLE_PREFIX."reputation
-			WHERE `uid`='{$user['uid']}'
+			WHERE uid='{$user['uid']}'
 		");
 		$total_rep = $db->fetch_field($query2, "total_rep");
 
