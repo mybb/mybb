@@ -1307,6 +1307,8 @@ class DB_MySQL implements DB_Base
 	 *
 	 * @param string $table The table
 	 * @param array $replacements The replacements
+	 * @param string|array $default_field The default field(s)
+	 * @param boolean $insert_id Whether or not to return an insert id. True by default
 	 * @return resource|bool
 	 */
 	function replace_query($table, $replacements=array(), $default_field="", $insert_id=true)
