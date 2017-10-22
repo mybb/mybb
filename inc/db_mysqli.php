@@ -1290,7 +1290,7 @@ class DB_MySQLi implements DB_Base
 	 * @param array $replacements The replacements
 	 * @return mysqli_result|bool
 	 */
-	function replace_query($table, $replacements=array())
+	function replace_query($table, $replacements=array(), $default_field="", $insert_id=true)
 	{
 		global $mybb;
 
