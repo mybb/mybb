@@ -3736,7 +3736,7 @@ if(!$mybb->input['action'])
 				}
 				else
 				{
-					$expires = my_date('relative', $warning['expires']);
+					$expires = nice_time($warning['expires']-TIME_NOW);
 				}
 
 				$alt_bg = alt_trow();
