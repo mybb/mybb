@@ -1592,11 +1592,42 @@ a.button.report_user_button span {
 
 /** Modal Start **/
 
+.blocker {
+	position: fixed;
+	top: 0; right: 0; bottom: 0; left: 0;
+	width: 100%; height: 100%;
+	overflow: auto;
+	z-index: 1;
+	padding: 20px;
+	box-sizing: border-box;
+	background-color: rgb(0,0,0);
+	background-color: rgba(0,0,0,0.75);
+	text-align: center;
+}
+
+.blocker:before{
+	content: "";
+	display: inline-block;
+	height: 100%;
+	vertical-align: middle;
+	margin-right: -0.05em;
+}
+
+.blocker.behind {
+	background-color: transparent;
+}
+
 .modal {
-	display: none;
 	width: 400px;
 	text-align: left;
 	background: #fff;
+	display: inline-block;
+	vertical-align: middle;
+	position: relative;
+	z-index: 2;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
 	-webkit-border-radius: 8px;
 	-moz-border-radius: 8px;
 	-o-border-radius: 8px;
@@ -1641,9 +1672,9 @@ a.button.report_user_button span {
 
 /** Impromptu Start **/
 
-/*! jQuery-Impromptu - v6.2.1 - 2015-05-10
+/*! jQuery-Impromptu - v6.2.3 - 2016-04-23
 * http://trentrichardson.com/Impromptu
-* Copyright (c) 2015 Trent Richardson; Licensed MIT */
+* Copyright (c) 2016 Trent Richardson; Licensed MIT */
 
 .jqifade{
 	position: absolute;
@@ -5446,6 +5477,27 @@ if(use_xmlhttprequest == "1")
 	</tr>
 </table>
 </fieldset>]]></template>
+		<template name="member_register_regimage_recaptcha_invisible" version="1813"><![CDATA[<br />
+<script src="{$server}?onload=captchaOnloadCallback&render=explicit" async defer></script>
+<script type="text/javascript">
+
+	var captchaOnSubmit = function(token) {
+		$("#registration_form").submit();
+	};
+
+	var captchaOnloadCallback = function() {
+
+		var target = $('input[name="regsubmit"]');
+		target.attr('data-size', 'invisible');
+
+		grecaptcha.render(target.get(0), {
+				'sitekey': '{$public_key}',
+				'callback': captchaOnSubmit
+			}, true);
+
+	}
+
+</script>]]></template>
 		<template name="member_register_regimage_nocaptcha" version="1804"><![CDATA[<br />
 <fieldset class="trow2">
 	<legend><strong>{$lang->human_verification}</strong></legend>
@@ -9433,6 +9485,42 @@ if(use_xmlhttprequest == "1")
 </table>
 </td>
 </tr>]]></template>
+		<template name="post_captcha_recaptcha_invisible" version="1813"><![CDATA[<br />
+<script src="{$server}?onload=captchaOnloadCallback&render=explicit" async defer></script>
+<script type="text/javascript">
+
+	var captchaTarget = '';
+
+	var captchaOnSubmit = function(token) {
+
+		if (!captchaTarget.is('#quick_reply_submit')) {
+			document.createElement('form').submit.apply(captchaTarget.closest('form')[0]);
+		}
+		else {
+			captchaTarget.bind('click', function(e) {
+				return Thread.quickReply(e);
+			}).trigger('click').unbind('click');
+			grecaptcha.reset();
+		}
+
+	};
+
+	var captchaOnloadCallback = function() {
+
+		captchaTarget = $('input[name="submit"], #quick_reply_submit').filter(function(){
+			return $(this).closest('#quick_login').length == 0
+		});
+		
+		captchaTarget.attr('data-size', 'invisible').unbind('click');
+
+		grecaptcha.render(captchaTarget.get(0), {
+				'sitekey': '{$public_key}',
+				'callback': captchaOnSubmit
+			}, true);
+
+	}
+
+</script>]]></template>
 		<template name="post_captcha_nocaptcha" version="1804"><![CDATA[<tr id="captcha_trow">
 <td class="trow1" valign="top"><strong>{$lang->human_verification}</strong></td>
 <td class="trow1">
@@ -13958,7 +14046,7 @@ $(function() {
 <link rel="alternate" type="application/atom+xml" title="{$lang->latest_threads} (Atom 1.0)" href="{$mybb->settings['bburl']}/syndication.php?type=atom1.0" />
 <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.js?ver=1806"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.js?ver=1811"></script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.plugins.min.js?ver=1806"></script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/general.js?ver=1813"></script>
 

@@ -157,7 +157,8 @@
 0=No CAPTCHA
 1=MyBB Default CAPTCHA
 2=reCAPTCHA
-4=NoCAPTCHA reCAPTCHA]]></optionscode>
+4=NoCAPTCHA reCAPTCHA
+5=reCAPTCHA invisible]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>

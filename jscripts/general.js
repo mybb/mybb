@@ -645,7 +645,7 @@ var expandables = {
 	{
 		var saved = [];
 		var newCollapsed = [];
-		var collapsed = Cookie.get('collapsed');
+		var collapsed = Cookies.get('collapsed');
 
 		if(collapsed)
 		{
@@ -664,7 +664,7 @@ var expandables = {
 		{
 			newCollapsed[newCollapsed.length] = id;
 		}
-		Cookie.set('collapsed', newCollapsed.join("|"));
+		Cookies.set('collapsed', newCollapsed.join("|"));
 	}
 };
 

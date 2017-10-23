@@ -1,5 +1,5 @@
 /**
- * jGrowl 1.4.3
+ * jGrowl 1.4.5
  *
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
@@ -158,7 +158,7 @@
 			}).bind('jGrowl.afterOpen', function() {
 				o.afterOpen.apply( notification , [notification,message,o,self.element] );
 			}).bind('click', function() {
-				o.click.apply( notification, [notification.message,o,self.element] );
+				o.click.apply( notification, [notification,message,o,self.element] );
 			}).bind('jGrowl.beforeClose', function() {
 				if ( o.beforeClose.apply( notification , [notification,message,o,self.element] ) !== false )
 					$(this).trigger('jGrowl.close');
@@ -253,24 +253,52 @@
 
 /*
     A simple jQuery modal (http://github.com/kylefox/jquery-modal)
-    Version 0.5.8
+    Version 0.8.0
 */
-(function($) {
 
-  var current = null;
+(function (factory) {
+  // Making your jQuery plugin work better with npm tools
+  // http://blog.npmjs.org/post/112712169830/making-your-jquery-plugin-work-better-with-npm
+  if(typeof module === "object" && typeof module.exports === "object") {
+    factory(require("jquery"), window, document);
+  }
+  else {
+    factory(jQuery, window, document);
+  }
+}(function($, window, document, undefined) {
+
+  var modals = [],
+      getCurrent = function() {
+        return modals.length ? modals[modals.length - 1] : null;
+      },
+      selectCurrent = function() {
+        var i,
+            selected = false;
+        for (i=modals.length-1; i>=0; i--) {
+          if (modals[i].$blocker) {
+            modals[i].$blocker.toggleClass('current',!selected).toggleClass('behind',selected);
+            selected = true;
+          }
+        }
+      };
 
   $.modal = function(el, options) {
-    $.modal.close(); // Close any open modals.
     var remove, target;
     this.$body = $('body');
     this.options = $.extend({}, $.modal.defaults, options);
     this.options.doFade = !isNaN(parseInt(this.options.fadeDuration, 10));
+    this.$blocker = null;
+    if (this.options.closeExisting)
+      while ($.modal.isActive())
+        $.modal.close(); // Close any open modals.
+    modals.push(this);
     if (el.is('a')) {
       target = el.attr('href');
       //Select element by id from href
       if (/^#/.test(target)) {
         this.$elm = $(target);
         if (this.$elm.length !== 1) return null;
+        this.$body.append(this.$elm);
         this.open();
       //AJAX
       } else {
@@ -280,15 +308,18 @@
         this.showSpinner();
         el.trigger($.modal.AJAX_SEND);
         $.get(target).done(function(html) {
-          if (!current) return;
+          if (!$.modal.isActive()) return;
           el.trigger($.modal.AJAX_SUCCESS);
+          var current = getCurrent();
           current.$elm.empty().append(html).on($.modal.CLOSE, remove);
           current.hideSpinner();
           current.open();
           el.trigger($.modal.AJAX_COMPLETE);
         }).fail(function() {
           el.trigger($.modal.AJAX_FAIL);
+          var current = getCurrent();
           current.hideSpinner();
+          modals.pop(); // remove expected modal from the list
           el.trigger($.modal.AJAX_COMPLETE);
         });
       }
@@ -304,54 +335,54 @@
 
     open: function() {
       var m = this;
+      this.block();
       if(this.options.doFade) {
-        this.block();
         setTimeout(function() {
           m.show();
         }, this.options.fadeDuration * this.options.fadeDelay);
       } else {
-        this.block();
         this.show();
       }
-      if (this.options.escapeClose) {
-        $(document).on('keydown.modal', function(event) {
-          if (event.which == 27) $.modal.close();
+      $(document).off('keydown.modal').on('keydown.modal', function(event) {
+        var current = getCurrent();
+        if (event.which == 27 && current.options.escapeClose) current.close();
+      });
+      if (this.options.clickClose)
+        this.$blocker.click(function(e) {
+          if (e.target==this)
+            $.modal.close();
         });
-      }
-      if (this.options.clickClose) this.blocker.click($.modal.close);
     },
 
     close: function() {
+      modals.pop();
       this.unblock();
       this.hide();
-      $(document).off('keydown.modal');
+      if (!$.modal.isActive())
+        $(document).off('keydown.modal');
     },
 
     block: function() {
-      var initialOpacity = this.options.doFade ? 0 : this.options.opacity;
       this.$elm.trigger($.modal.BEFORE_BLOCK, [this._ctx()]);
-      this.blocker = $('<div class="jquery-modal blocker"></div>').css({
-        top: 0, right: 0, bottom: 0, left: 0,
-        width: "100%", height: "100%",
-        position: "fixed",
-        zIndex: this.options.zIndex,
-        background: this.options.overlay,
-        opacity: initialOpacity
-      });
-      this.$body.append(this.blocker);
+      this.$body.css('overflow','hidden');
+      this.$blocker = $('<div class="jquery-modal blocker current"></div>').appendTo(this.$body);
+      selectCurrent();
       if(this.options.doFade) {
-        this.blocker.animate({opacity: this.options.opacity}, this.options.fadeDuration);
+        this.$blocker.css('opacity',0).animate({opacity: 1}, this.options.fadeDuration);
       }
       this.$elm.trigger($.modal.BLOCK, [this._ctx()]);
     },
 
-    unblock: function() {
-      if(this.options.doFade) {
-        this.blocker.fadeOut(this.options.fadeDuration, function() {
-          $(this).remove();
-        });
-      } else {
-        this.blocker.remove();
+    unblock: function(now) {
+      if (!now && this.options.doFade)
+        this.$blocker.fadeOut(this.options.fadeDuration, this.unblock.bind(this,true));
+      else {
+        this.$blocker.children().appendTo(this.$body);
+        this.$blocker.remove();
+        this.$blocker = null;
+        selectCurrent();
+        if (!$.modal.isActive())
+          this.$body.css('overflow','');
       }
     },
 
@@ -361,10 +392,9 @@
         this.closeButton = $('<a href="#close-modal" rel="modal:close" class="close-modal ' + this.options.closeClass + '">' + this.options.closeText + '</a>');
         this.$elm.append(this.closeButton);
       }
-      this.$elm.addClass(this.options.modalClass + ' current');
-      this.center();
+      this.$elm.addClass(this.options.modalClass).appendTo(this.$blocker);
       if(this.options.doFade) {
-        this.$elm.fadeIn(this.options.fadeDuration);
+        this.$elm.css('opacity',0).show().animate({opacity: 1}, this.options.fadeDuration);
       } else {
         this.$elm.show();
       }
@@ -374,12 +404,15 @@
     hide: function() {
       this.$elm.trigger($.modal.BEFORE_CLOSE, [this._ctx()]);
       if (this.closeButton) this.closeButton.remove();
-      this.$elm.removeClass('current');
-
+      var _this = this;
       if(this.options.doFade) {
-        this.$elm.fadeOut(this.options.fadeDuration);
+        this.$elm.fadeOut(this.options.fadeDuration, function () {
+          _this.$elm.trigger($.modal.AFTER_CLOSE, [_this._ctx()]);
+        });
       } else {
-        this.$elm.hide();
+        this.$elm.hide(0, function () {
+          _this.$elm.trigger($.modal.AFTER_CLOSE, [_this._ctx()]);
+        });
       }
       this.$elm.trigger($.modal.CLOSE, [this._ctx()]);
     },
@@ -396,49 +429,29 @@
       if (this.spinner) this.spinner.remove();
     },
 
-    center: function() {
-      this.$elm.css({
-        position: 'fixed',
-        top: "50%",
-        left: "50%",
-        marginTop: - (this.$elm.outerHeight() / 2),
-        marginLeft: - (this.$elm.outerWidth() / 2),
-        zIndex: this.options.zIndex + 1
-      });
-    },
-
     //Return context for custom events
     _ctx: function() {
-      return { elm: this.$elm, blocker: this.blocker, options: this.options };
+      return { elm: this.$elm, $blocker: this.$blocker, options: this.options };
     }
   };
 
-  //resize is alias for center for now
-  $.modal.prototype.resize = $.modal.prototype.center;
-
   $.modal.close = function(event) {
-    if (!current) return;
+    if (!$.modal.isActive()) return;
     if (event) event.preventDefault();
+    var current = getCurrent();
     current.close();
-    var that = current.$elm;
-    current = null;
-    return that;
-  };
-
-  $.modal.resize = function() {
-    if (!current) return;
-    current.resize();
+    return current.$elm;
   };
 
   // Returns if there currently is an active modal
   $.modal.isActive = function () {
-    return current ? true : false;
+    return modals.length > 0;
   }
 
+  $.modal.getCurrent = getCurrent;
+
   $.modal.defaults = {
-    overlay: "#000",
-    opacity: 0.75,
-    zIndex: 1,
+    closeExisting: true,
     escapeClose: true,
     clickClose: true,
     closeText: 'Close',
@@ -458,6 +471,7 @@
   $.modal.OPEN = 'modal:open';
   $.modal.BEFORE_CLOSE = 'modal:before-close';
   $.modal.CLOSE = 'modal:close';
+  $.modal.AFTER_CLOSE = 'modal:after-close';
   $.modal.AJAX_SEND = 'modal:ajax:send';
   $.modal.AJAX_SUCCESS = 'modal:ajax:success';
   $.modal.AJAX_FAIL = 'modal:ajax:fail';
@@ -465,7 +479,7 @@
 
   $.fn.modal = function(options){
     if (this.length === 1) {
-      current = new $.modal(this, options);
+      new $.modal(this, options);
     }
     return this;
   };
@@ -476,8 +490,7 @@
     event.preventDefault();
     $(this).modal();
   });
-})(jQuery);
-
+}));
 
 /*
 	Conversion of 1.6.x popup_menu.js
@@ -554,9 +567,9 @@
 	}
 })(jQuery);
 
-/*! jQuery-Impromptu - v6.2.1 - 2015-05-10
+/*! jQuery-Impromptu - v6.2.3 - 2016-04-23
 * http://trentrichardson.com/Impromptu
-* Copyright (c) 2015 Trent Richardson; Licensed MIT */
+* Copyright (c) 2016 Trent Richardson; Licensed MIT */
 (function(root, factory) {
 	if (typeof define === 'function' && define.amd) {
 		define(['jquery'], factory);
@@ -992,14 +1005,15 @@
 				arrow = '',
 				title = '',
 				opts = t.options,
+				pos = $.isFunction(stateobj.position) ? stateobj.position() : stateobj.position,
 				$jqistates = t.jqi.find('.'+ opts.prefix +'states'),
 				buttons = [],
 				showHtml,defbtn,k,v,l,i=0;
 
 			stateobj = $.extend({},Imp.defaults.state, {name:statename}, stateobj);
 
-			if(stateobj.position.arrow !== null){
-				arrow = '<div class="'+ opts.prefix + 'arrow '+ opts.prefix + 'arrow'+ stateobj.position.arrow +'"></div>';
+			if($.isPlainObject(pos) && pos.arrow !== null){
+				arrow = '<div class="'+ opts.prefix + 'arrow '+ opts.prefix + 'arrow'+ pos.arrow +'"></div>';
 			}
 			if(stateobj.title && stateobj.title !== ''){
 				title = '<div class="lead '+ opts.prefix + 'title '+ opts.classes.title +'">'+  stateobj.title +'</div>';
@@ -1186,7 +1200,7 @@
 				restoreFx = $.fx.off,
 				$state = t.getCurrentState(),
 				stateObj = t.options.states[$state.data('jqi-name')],
-				pos = stateObj? stateObj.position : undefined,
+				pos = stateObj ? $.isFunction(stateObj.position) ? stateObj.position() : stateObj.position : undefined,
 				$window = $(window),
 				bodyHeight = document.body.scrollHeight, //$(document.body).outerHeight(true),
 				windowHeight = $(window).height(),
@@ -1481,119 +1495,167 @@
 }));
 
 /*!
- * jQuery Cookie Plugin v1.4.1
- * https://github.com/carhartl/jquery-cookie
+ * JavaScript Cookie v2.1.4
+ * https://github.com/js-cookie/js-cookie
  *
- * Copyright 2013 Klaus Hartl
+ * Copyright 2006, 2015 Klaus Hartl & Fagner Brack
  * Released under the MIT license
  */
-(function (factory) {
+;(function (factory) {
+	var registeredInModuleLoader = false;
 	if (typeof define === 'function' && define.amd) {
-		// AMD
-		define(['jquery'], factory);
-	} else if (typeof exports === 'object') {
-		// CommonJS
-		factory(require('jquery'));
-	} else {
-		// Browser globals
-		factory(jQuery);
+		define(factory);
+		registeredInModuleLoader = true;
 	}
-}(function ($) {
-
-	var pluses = /\+/g;
-
-	function encode(s) {
-		return config.raw ? s : encodeURIComponent(s);
+	if (typeof exports === 'object') {
+		module.exports = factory();
+		registeredInModuleLoader = true;
 	}
-
-	function decode(s) {
-		return config.raw ? s : decodeURIComponent(s);
+	if (!registeredInModuleLoader) {
+		var OldCookies = window.Cookies;
+		var api = window.Cookies = factory();
+		api.noConflict = function () {
+			window.Cookies = OldCookies;
+			return api;
+		};
 	}
-
-	function stringifyCookieValue(value) {
-		return encode(config.json ? JSON.stringify(value) : String(value));
-	}
-
-	function parseCookieValue(s) {
-		if (s.indexOf('"') === 0) {
-			// This is a quoted cookie as according to RFC2068, unescape...
-			s = s.slice(1, -1).replace(/\\"/g, '"').replace(/\\\\/g, '\\');
-		}
-
-		try {
-			// Replace server-side written pluses with spaces.
-			// If we can't decode the cookie, ignore it, it's unusable.
-			// If we can't parse the cookie, ignore it, it's unusable.
-			s = decodeURIComponent(s.replace(pluses, ' '));
-			return config.json ? JSON.parse(s) : s;
-		} catch(e) {}
-	}
-
-	function read(s, converter) {
-		var value = config.raw ? s : parseCookieValue(s);
-		return $.isFunction(converter) ? converter(value) : value;
-	}
-
-	var config = $.cookie = function (key, value, options) {
-
-		// Write
-
-		if (value !== undefined && !$.isFunction(value)) {
-			options = $.extend({}, config.defaults, options);
-
-			if (typeof options.expires === 'number') {
-				var days = options.expires, t = options.expires = new Date();
-				t.setTime(+t + days * 864e+5);
-			}
-
-			return (document.cookie = [
-				encode(key), '=', stringifyCookieValue(value),
-				options.expires ? '; expires=' + options.expires.toUTCString() : '', // use expires attribute, max-age is not supported by IE
-				options.path    ? '; path=' + options.path : '',
-				options.domain  ? '; domain=' + options.domain : '',
-				options.secure  ? '; secure' : ''
-			].join(''));
-		}
-
-		// Read
-
-		var result = key ? undefined : {};
-
-		// To prevent the for loop in the first place assign an empty array
-		// in case there are no cookies at all. Also prevents odd result when
-		// calling $.cookie().
-		var cookies = document.cookie ? document.cookie.split('; ') : [];
-
-		for (var i = 0, l = cookies.length; i < l; i++) {
-			var parts = cookies[i].split('=');
-			var name = decode(parts.shift());
-			var cookie = parts.join('=');
-
-			if (key && key === name) {
-				// If second argument (value) is a function it's a converter...
-				result = read(cookie, value);
-				break;
-			}
-
-			// Prevent storing a cookie that we couldn't decode.
-			if (!key && (cookie = read(cookie)) !== undefined) {
-				result[name] = cookie;
+}(function () {
+	function extend () {
+		var i = 0;
+		var result = {};
+		for (; i < arguments.length; i++) {
+			var attributes = arguments[ i ];
+			for (var key in attributes) {
+				result[key] = attributes[key];
 			}
 		}
-
 		return result;
-	};
+	}
 
-	config.defaults = {};
+	function init (converter) {
+		function api (key, value, attributes) {
+			var result;
+			if (typeof document === 'undefined') {
+				return;
+			}
 
-	$.removeCookie = function (key, options) {
-		if ($.cookie(key) === undefined) {
-			return false;
+			// Write
+
+			if (arguments.length > 1) {
+				attributes = extend({
+					path: '/'
+				}, api.defaults, attributes);
+
+				if (typeof attributes.expires === 'number') {
+					var expires = new Date();
+					expires.setMilliseconds(expires.getMilliseconds() + attributes.expires * 864e+5);
+					attributes.expires = expires;
+				}
+
+				// We're using "expires" because "max-age" is not supported by IE
+				attributes.expires = attributes.expires ? attributes.expires.toUTCString() : '';
+
+				try {
+					result = JSON.stringify(value);
+					if (/^[\{\[]/.test(result)) {
+						value = result;
+					}
+				} catch (e) {}
+
+				if (!converter.write) {
+					value = encodeURIComponent(String(value))
+						.replace(/%(23|24|26|2B|3A|3C|3E|3D|2F|3F|40|5B|5D|5E|60|7B|7D|7C)/g, decodeURIComponent);
+				} else {
+					value = converter.write(value, key);
+				}
+
+				key = encodeURIComponent(String(key));
+				key = key.replace(/%(23|24|26|2B|5E|60|7C)/g, decodeURIComponent);
+				key = key.replace(/[\(\)]/g, escape);
+
+				var stringifiedAttributes = '';
+
+				for (var attributeName in attributes) {
+					if (!attributes[attributeName]) {
+						continue;
+					}
+					stringifiedAttributes += '; ' + attributeName;
+					if (attributes[attributeName] === true) {
+						continue;
+					}
+					stringifiedAttributes += '=' + attributes[attributeName];
+				}
+				return (document.cookie = key + '=' + value + stringifiedAttributes);
+			}
+
+			// Read
+
+			if (!key) {
+				result = {};
+			}
+
+			// To prevent the for loop in the first place assign an empty array
+			// in case there are no cookies at all. Also prevents odd result when
+			// calling "get()"
+			var cookies = document.cookie ? document.cookie.split('; ') : [];
+			var rdecode = /(%[0-9A-Z]{2})+/g;
+			var i = 0;
+
+			for (; i < cookies.length; i++) {
+				var parts = cookies[i].split('=');
+				var cookie = parts.slice(1).join('=');
+
+				if (cookie.charAt(0) === '"') {
+					cookie = cookie.slice(1, -1);
+				}
+
+				try {
+					var name = parts[0].replace(rdecode, decodeURIComponent);
+					cookie = converter.read ?
+						converter.read(cookie, name) : converter(cookie, name) ||
+						cookie.replace(rdecode, decodeURIComponent);
+
+					if (this.json) {
+						try {
+							cookie = JSON.parse(cookie);
+						} catch (e) {}
+					}
+
+					if (key === name) {
+						result = cookie;
+						break;
+					}
+
+					if (!key) {
+						result[name] = cookie;
+					}
+				} catch (e) {}
+			}
+
+			return result;
 		}
 
-		// Must not alter options, thus extending a fresh object...
-		$.cookie(key, '', $.extend({}, options, { expires: -1 }));
-		return !$.cookie(key);
-	};
+		api.set = api;
+		api.get = function (key) {
+			return api.call(api, key);
+		};
+		api.getJSON = function () {
+			return api.apply({
+				json: true
+			}, [].slice.call(arguments));
+		};
+		api.defaults = {};
 
+		api.remove = function (key, attributes) {
+			api(key, '', extend(attributes, {
+				expires: -1
+			}));
+		};
+
+		api.withConverter = init;
+
+		return api;
+	}
+
+	return init(function () {});
 }));
