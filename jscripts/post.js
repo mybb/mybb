@@ -87,7 +87,7 @@ var Post = {
 	clearMultiQuoted: function()
 	{
 		$('#multiquote_unloaded').hide();
-		Cookie.unset('multiquote');
+		Cookies.remove('multiquote');
 	},
 	
 	removeAttachment: function(aid)
