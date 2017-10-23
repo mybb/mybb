@@ -1272,7 +1272,7 @@ $(document).ready(function() {
 				($('#username').val() != '' && value == $('#username').val()) ||
 				($('#email').val() != '' && value.indexOf($('#email').val()) > -1) ||
 				($('#username').val() != '' && value.indexOf($('#username').val()) > -1) ||
-				($('#email').val() != '' && $('#email').val().indexOf(value)) ||
+				($('#email').val() != '' && $('#email').val().indexOf(value) > -1) ||
 				($('#username').val() != '' && $('#username').val().indexOf(value) > -1)
 		);
 	}, '{$lang->js_validator_bad_password_security}');\n";
