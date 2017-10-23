@@ -1268,9 +1268,14 @@ $(document).ready(function() {
 
 			$validator_javascript .= "
 	$.validator.addMethod('passwordSecurity', function(value, element, param) {
-		return (value != $('#email').val() && value != $('#username').val()
-			&& value.indexOf($('#email').val()) === false && value.indexOf($('#username').val()) === false
-			&& $('#email').val().indexOf(value) === false && $('#username').val().indexOf(value) === false);
+		return !(
+				($('#email').val() != '' && value == $('#email').val()) ||
+				($('#username').val() != '' && value == $('#username').val()) ||
+				($('#email').val() != '' && value.indexOf($('#email').val()) > -1) ||
+				($('#username').val() != '' && value.indexOf($('#username').val()) > -1) ||
+				($('#email').val() != '' && $('#email').val().indexOf(value) > -1) ||
+				($('#username').val() != '' && $('#username').val().indexOf(value) > -1)
+		);
 	}, '{$lang->js_validator_bad_password_security}');\n";
 
 			// See if the board has "require complex passwords" enabled.
