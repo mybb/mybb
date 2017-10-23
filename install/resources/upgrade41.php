@@ -9,7 +9,7 @@
  */
 
 /**
- * Upgrade Script: 1.8.13
+ * Upgrade Script: 1.8.12
  */
 
 $upgrade_detail = array(
@@ -36,8 +36,14 @@ function upgrade41_dbchanges()
 		array("name" => "UptimeRobot", "useragent" => "UptimeRobot"),
 	));
 
-	// Remove backslashes from last 1,000 log files
-	$query = $db->simple_select('moderatorlog', 'tid, action', "action LIKE '%\\\\\\\\%'", array(
+	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
+	$output->print_footer("41_dbchanges2");
+}
+
+function upgrade41_dbchanges2()
+{
+	// Remove backslashes from last 1,000 log files.
+	$query = $db->simple_select('moderatorlog', 'tid, action', "action LIKE '%\\\\\\%", array(
 		"order_by" => 'tid',
 		"order_dir" => 'DESC',
 		"limit" => 1000
@@ -55,6 +61,37 @@ function upgrade41_dbchanges()
 			), "WHERE tid = '".$row['tid']."'");
 		}
 	}
+
+	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
+	$output->print_footer("41_dbchanges3");
+}
+
+function upgrade41_dbchanges3()
+{
+	global $db, $output, $mybb;
+	$output->print_header("Updating Database");
+	echo "<p>Performing necessary upgrade queries...</p>";
+	flush();
+	$guestlangs = array();
+	$templang = new MyLanguage();
+	$templang->set_path(MYBB_ROOT."inc/languages");
+	$langs = array_keys($templang->get_languages());
+	foreach($langs as $langname)
+	{
+		unset($templang);
+		$templang = new MyLanguage();
+		$templang->set_path(MYBB_ROOT."inc/languages");
+		$templang->set_language($langname);
+		$templang->load("global");
+		if(isset($templang->guest))
+		{
+			$guestlangs[] = $db->escape_string($templang->guest);
+		}
+	}
+	unset($templang);
+	$guestlangs = implode("', '", $guestlangs);
+	$db->update_query('posts', array('username' => ''), "uid = 0 AND username IN ('{$guestlangs}')");
+	$db->update_query('threads', array('username' => ''), "uid = 0 AND username IN ('{$guestlangs}')");
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("41_done");

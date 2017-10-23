@@ -922,7 +922,7 @@ if(!$mybb->input['action'])
 
 	if($errors)
 	{
-		$page->output_error("<p><em>{$errors} {$lang->error_chmod}</span></strong> {$lang->chmod_info} <a href=\"https://docs.mybb.com/1.8/administration/security/file-permissions\" target=\"_blank\">MyBB Docs</a>.</em></p>");
+		$page->output_error("<p><em>{$errors} {$lang->error_chmod}</span></strong> {$lang->chmod_info} <a href=\"https://docs.mybb.com/1.8/administration/security/file-permissions\" target=\"_blank\" rel=\"noopener\">MyBB Docs</a>.</em></p>");
 	}
 	else
 	{

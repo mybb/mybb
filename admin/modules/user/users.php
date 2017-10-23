@@ -3614,30 +3614,18 @@ function build_users_view($view)
 				$user['view']['warninglevel'] = get_colored_warning_level($warning_level);
 			}
 
-			if($user['avatar'] && !my_validate_url($user['avatar']))
-			{
-				$user['avatar'] = "../{$user['avatar']}";
-			}
 			if($view['view_type'] == "card")
 			{
-				$scaled_avatar = fetch_scaled_avatar($user, 80, 80);
+				$max_dimensions = '80x80';
 			}
 			else
 			{
-				$scaled_avatar = fetch_scaled_avatar($user, 34, 34);
+				$max_dimensions = '34x34';
 			}
-			if(!$user['avatar'] || (my_strpos($user['avatar'], '://') !== false && !$mybb->settings['allowremoteavatars']))
-			{
-				if(my_validate_url($mybb->settings['useravatar']))
-				{
-					$user['avatar'] = str_replace('{theme}', 'images', $mybb->settings['useravatar']);
-				}
-				else
-				{
-					$user['avatar'] = "../".str_replace('{theme}', 'images', $mybb->settings['useravatar']);
-				}
-			}
-			$user['view']['avatar'] = "<img src=\"".htmlspecialchars_uni($user['avatar'])."\" alt=\"\" width=\"{$scaled_avatar['width']}\" height=\"{$scaled_avatar['height']}\" />";
+
+			$avatar = format_avatar($user['avatar'], $user['avatardimensions'], $max_dimensions);
+
+			$user['view']['avatar'] = "<img src=\"".$avatar['image']."\" alt=\"\" {$avatar['width_height']} />";
 
 			// Convert IP's to readable
 			$user['regip'] = my_inet_ntop($db->unescape_binary($user['regip']));
@@ -3943,35 +3931,6 @@ function build_user_view_table($user, $view, &$table)
 	$table->construct_cell("<input type=\"checkbox\" class=\"checkbox\" name=\"inlinemod_{$user['uid']}\" id=\"inlinemod_{$user['uid']}\" value=\"1\" onclick=\"$('#uid_{$user['uid']}').toggleClass('inline_selected');\" />");
 
 	$table->construct_row();
-}
-
-/**
- * @param array $user
- * @param int $max_width
- * @param int $max_height
- *
- * @return array
- */
-function fetch_scaled_avatar($user, $max_width=80, $max_height=80)
-{
-	$scaled_dimensions = array(
-		"width" => $max_width,
-		"height" => $max_height,
-	);
-
-	global $mybb;
-
-	if($user['avatar'] && (my_strpos($user['avatar'], '://') === false || $mybb->settings['allowremoteavatars']))
-	{
-		if($user['avatardimensions'])
-		{
-			require_once MYBB_ROOT."inc/functions_image.php";
-			list($width, $height) = explode("|", $user['avatardimensions']);
-			$scaled_dimensions = scale_image($width, $height, $max_width, $max_height);
-		}
-	}
-
-	return array("width" => $scaled_dimensions['width'], "height" => $scaled_dimensions['height']);
 }
 
 /**

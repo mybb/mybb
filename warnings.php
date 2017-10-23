@@ -123,7 +123,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 				$warningshandler->friendly_action .= $lang->redirect_warned_pmerror;
 			}
 		}
-	
+
 		$plugins->run_hooks("warnings_do_warn_end");
 
 		$lang->redirect_warned = $lang->sprintf($lang->redirect_warned, htmlspecialchars_uni($user['username']), $warningshandler->new_warning_level, $warningshandler->friendly_action);
@@ -274,7 +274,7 @@ if($mybb->input['action'] == "warn")
 				}
 				else
 				{
-					$expires = my_date('normal', $warning['expires']);
+					$expires = nice_time($warning['expires']-TIME_NOW);
 				}
 			}
 			else
@@ -299,7 +299,7 @@ if($mybb->input['action'] == "warn")
 	}
 
 	$plugins->run_hooks("warnings_warn_start");
-	
+
 	$type_checked = array('custom' => '');
 	$expires_period = array('hours' => '', 'days' => '', 'weeks' => '', 'months' => '', 'never' => '');
 	$send_pm_checked = '';
@@ -654,7 +654,7 @@ if($mybb->input['action'] == "view")
 		}
 		else
 		{
-			$expires = my_date('normal', $warning['expires']);
+			$expires = my_date('normal', $warning['expires']); // Purposely not using nice_time here as the moderator has clicked for more details so the actual day/time should be shown
 		}
 		$status = $lang->warning_active;
 	}
@@ -840,7 +840,7 @@ if(!$mybb->input['action'])
 			}
 			else
 			{
-				$expires = my_date('normal', $warning['expires']);
+				$expires = nice_time($warning['expires']-TIME_NOW);
 			}
 		}
 		else

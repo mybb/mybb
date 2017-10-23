@@ -204,6 +204,34 @@ if(!$mybb->input['action'])
 		$page->output_inline_error($errors);
 	}
 
+	$form = new Form("index.php?module=config-banning&amp;action=add", "post", "add");
+
+	if($mybb->input['type'] == "usernames")
+	{
+		$form_container = new FormContainer($lang->add_disallowed_username);
+		$form_container->output_row($lang->username." <em>*</em>", $lang->username_desc, $form->generate_text_box('filter', $mybb->input['filter'], array('id' => 'filter')), 'filter');
+		$buttons[] = $form->generate_submit_button($lang->disallow_username);
+	}
+	else if($mybb->input['type'] == "emails")
+	{
+		$form_container = new FormContainer($lang->add_disallowed_email_address);
+		$form_container->output_row($lang->email_address." <em>*</em>", $lang->email_address_desc, $form->generate_text_box('filter', $mybb->input['filter'], array('id' => 'filter')), 'filter');
+		$buttons[] = $form->generate_submit_button($lang->disallow_email_address);
+	}
+	else
+	{
+		$form_container = new FormContainer($lang->ban_an_ip_address);
+		$form_container->output_row($lang->ip_address." <em>*</em>", $lang->ip_address_desc, $form->generate_text_box('filter', $mybb->input['filter'], array('id' => 'filter')), 'filter');
+		$buttons[] = $form->generate_submit_button($lang->ban_ip_address);
+	}
+
+	$form_container->end();
+	echo $form->generate_hidden_field("type", $type);
+	$form->output_submit_wrapper($buttons);
+	$form->end();
+
+	echo '<br />';
+
 	$table = new Table;
 	if($mybb->input['type'] == "usernames")
 	{
@@ -262,32 +290,6 @@ if(!$mybb->input['action'])
 	}
 
 	$table->output($title);
-
-	$form = new Form("index.php?module=config-banning&amp;action=add", "post", "add");
-
-	if($mybb->input['type'] == "usernames")
-	{
-		$form_container = new FormContainer($lang->add_disallowed_username);
-		$form_container->output_row($lang->username." <em>*</em>", $lang->username_desc, $form->generate_text_box('filter', $mybb->input['filter'], array('id' => 'filter')), 'filter');
-		$buttons[] = $form->generate_submit_button($lang->disallow_username);
-	}
-	else if($mybb->input['type'] == "emails")
-	{
-		$form_container = new FormContainer($lang->add_disallowed_email_address);
-		$form_container->output_row($lang->email_address." <em>*</em>", $lang->email_address_desc, $form->generate_text_box('filter', $mybb->input['filter'], array('id' => 'filter')), 'filter');
-		$buttons[] = $form->generate_submit_button($lang->disallow_email_address);
-	}
-	else
-	{
-		$form_container = new FormContainer($lang->ban_an_ip_address);
-		$form_container->output_row($lang->ip_address." <em>*</em>", $lang->ip_address_desc, $form->generate_text_box('filter', $mybb->input['filter'], array('id' => 'filter')), 'filter');
-		$buttons[] = $form->generate_submit_button($lang->ban_ip_address);
-	}
-
-	$form_container->end();
-	echo $form->generate_hidden_field("type", $type);
-	$form->output_submit_wrapper($buttons);
-	$form->end();
 
 	$page->output_footer();
 }

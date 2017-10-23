@@ -605,7 +605,7 @@ if($mybb->input['action'] == "reports")
 				}
 				elseif($usercache[$report['lastreporter']] > 0)
 				{
-					$lastreport_user = $lang->na_deleted;
+					$lastreport_user = htmlspecialchars_uni($lang->na_deleted);
 				}
 
 				$lastreport_date = my_date('relative', $report['lastreport']);
@@ -952,9 +952,16 @@ if($mybb->input['action'] == "modlogs")
 		$logitem['action'] = htmlspecialchars_uni($logitem['action']);
 		$log_date = my_date('relative', $logitem['dateline']);
 		$trow = alt_trow();
-		$logitem['username'] = htmlspecialchars_uni($logitem['username']);
-		$username = format_name($logitem['username'], $logitem['usergroup'], $logitem['displaygroup']);
-		$logitem['profilelink'] = build_profile_link($username, $logitem['uid']);
+		if($logitem['username'])
+		{
+			$logitem['username'] = htmlspecialchars_uni($logitem['username']);
+			$username = format_name($logitem['username'], $logitem['usergroup'], $logitem['displaygroup']);
+			$logitem['profilelink'] = build_profile_link($username, $logitem['uid']);
+		}
+		else
+		{
+			$username = $logitem['profilelink'] = $logitem['username'] = htmlspecialchars_uni($lang->na_deleted);
+		}
 		$logitem['ipaddress'] = my_inet_ntop($db->unescape_binary($logitem['ipaddress']));
 
 		if($logitem['tsubject'])
@@ -3581,7 +3588,7 @@ if($mybb->input['action'] == "warninglogs")
 		}
 		if($row['expires'] > 0)
 		{
-			$expire_date = my_date('relative', $row['expires'], '', 2);
+			$expire_date = nice_time($row['expires']-TIME_NOW);
 		}
 		else
 		{

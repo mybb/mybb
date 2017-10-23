@@ -538,11 +538,18 @@ if($mybb->input['action'] == "results")
 			$threadpages = '';
 			$morelink = '';
 			$thread['posts'] = $thread['replies'] + 1;
-			if(is_moderator($thread['fid'], "canviewunapprove"))
+			if(is_moderator($thread['fid'], "canviewdeleted") == true || is_moderator($thread['fid'], "canviewunapprove") == true)
 			{
-				$thread['posts'] += $thread['unapprovedposts'];
+				if(is_moderator($thread['fid'], "canviewdeleted") == true)
+				{
+					$thread['posts'] += $thread['deletedposts'];
+				}
+				if(is_moderator($thread['fid'], "canviewunapprove") == true)
+				{
+					$thread['posts'] += $thread['unapprovedposts'];
+				}
 			}
-			if(is_moderator($thread['fid'], "canviewdeleted"))
+			elseif($group_permissions[$thread['fid']]['canviewdeletionnotice'] != 0)
 			{
 				$thread['posts'] += $thread['deletedposts'];
 			}
@@ -575,9 +582,16 @@ if($mybb->input['action'] == "results")
 				$thread['multipage'] = '';
 			}
 			$lastpostdate = my_date('relative', $thread['lastpost']);
-			$lastposter = htmlspecialchars_uni($thread['lastposter']);
 			$thread['lastpostlink'] = get_thread_link($thread['tid'], 0, "lastpost");
 			$lastposteruid = $thread['lastposteruid'];
+			if(!$lastposteruid && !$thread['lastposter'])
+			{
+				$lastposter = htmlspecialchars_uni($lang->guest);
+			}
+			else
+			{
+				$lastposter = htmlspecialchars_uni($thread['lastposter']);
+			}
 			$thread_link = get_thread_link($thread['tid']);
 
 			// Don't link to guest's profiles (they have no profile).
@@ -1708,5 +1722,3 @@ else
 	eval("\$search = \"".$templates->get("search")."\";");
 	output_page($search);
 }
-
-

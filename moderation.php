@@ -1415,6 +1415,8 @@ switch($mybb->input['action'])
 			eval("\$posts .= \"".$templates->get("moderation_split_post")."\";");
 			$altbg = alt_trow();
 		}
+
+		clearinline($tid, 'thread');
 		$forumselect = build_forum_jump("", $fid, 1, '', 0, true, '', "moveto");
 
 		$plugins->run_hooks("moderation_split");

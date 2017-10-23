@@ -1521,7 +1521,7 @@ if($mybb->input['action'] == "subscriptions")
 	{
 		$tids = implode(",", array_keys($subscriptions));
 		$readforums = array();
-		
+
 		// Build a forum cache.
 		$query = $db->query("
 			SELECT f.fid, fr.dateline AS lastread
@@ -1530,7 +1530,7 @@ if($mybb->input['action'] == "subscriptions")
 			WHERE f.active != 0
 			ORDER BY pid, disporder
 		");
-		
+
 		while($forum = $db->fetch_array($query))
 		{
 			$readforums[$forum['fid']] = $forum['lastread'];
@@ -1691,7 +1691,14 @@ if($mybb->input['action'] == "subscriptions")
 
 			// Build last post info
 			$lastpostdate = my_date('relative', $thread['lastpost']);
-			$lastposter = htmlspecialchars_uni($thread['lastposter']);
+			if(!$lastposteruid && !$thread['lastposter'])
+			{
+				$lastposter = htmlspecialchars_uni($lang->guest);
+			}
+			else
+			{
+				$lastposter = htmlspecialchars_uni($thread['lastposter']);
+			}
 			$lastposteruid = $thread['lastposteruid'];
 
 			// Don't link to guest's profiles (they have no profile).
@@ -1794,7 +1801,7 @@ if($mybb->input['action'] == "forumsubscriptions")
 			$threads = my_number_format($forum['threads']);
 		}
 
-		if($forum['lastpost'] == 0 || $forum['lastposter'] == "")
+		if($forum['lastpost'] == 0)
 		{
 			eval("\$lastpost = \"".$templates->get("forumbit_depth2_forum_lastpost_never")."\";");
 		}
@@ -1808,8 +1815,22 @@ if($mybb->input['action'] == "forumsubscriptions")
 			$forum['lastpostsubject'] = $parser->parse_badwords($forum['lastpostsubject']);
 			$lastpost_date = my_date('relative', $forum['lastpost']);
 			$lastposttid = $forum['lastposttid'];
-			$lastposter = htmlspecialchars_uni($forum['lastposter']);
-			$lastpost_profilelink = build_profile_link($lastposter, $forum['lastposteruid']);
+			if(!$forum['lastposteruid'] && !$forum['lastposter'])
+			{
+				$lastposter = htmlspecialchars_uni($lang->guest);
+			}
+			else
+			{
+				$lastposter = htmlspecialchars_uni($forum['lastposter']);
+			}
+			if($forum['lastposteruid'] == 0)
+			{
+				$lastpost_profilelink = $lastposter;
+			}
+			else
+			{
+				$lastpost_profilelink = build_profile_link($lastposter, $forum['lastposteruid']);
+			}
 			$full_lastpost_subject = $lastpost_subject = htmlspecialchars_uni($forum['lastpostsubject']);
 			if(my_strlen($lastpost_subject) > 25)
 			{
@@ -3715,7 +3736,7 @@ if(!$mybb->input['action'])
 				}
 				else
 				{
-					$expires = my_date('relative', $warning['expires']);
+					$expires = nice_time($warning['expires']-TIME_NOW);
 				}
 
 				$alt_bg = alt_trow();
@@ -3881,8 +3902,15 @@ if(!$mybb->input['action'])
 						}
 
 						$lastpostdate = my_date('relative', $thread['lastpost']);
-						$lastposter = htmlspecialchars_uni($thread['lastposter']);
 						$lastposteruid = $thread['lastposteruid'];
+						if(!$lastposteruid && !$thread['lastposter'])
+						{
+							$lastposter = htmlspecialchars_uni($lang->guest);
+						}
+						else
+						{
+							$lastposter = htmlspecialchars_uni($thread['lastposter']);
+						}
 
 						if($lastposteruid == 0)
 						{
@@ -3968,7 +3996,7 @@ if(!$mybb->input['action'])
 			WHERE f.active != 0
 			ORDER BY pid, disporder
 		");
-		
+
 		while($forum = $db->fetch_array($query))
 		{
 			$readforums[$forum['fid']] = $forum['lastread'];
