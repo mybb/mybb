@@ -87,6 +87,27 @@ class StopForumSpamChecker
 		$is_spammer = false;
 		$confidence = 0;
 
+		if(!filter_var($email, FILTER_VALIDATE_EMAIL))
+		{
+			throw new Exception("stopforumspam_invalid_email");
+		}
+
+		if(!filter_var($ip_address, FILTER_VALIDATE_IP))
+		{
+			throw new Exception('stopforumspam_invalid_ip_address');
+		}
+
+		$is_internal_ip = !filter_var(
+			$ip_address,
+			FILTER_VALIDATE_IP,
+			FILTER_FLAG_NO_PRIV_RANGE |  FILTER_FLAG_NO_RES_RANGE
+		);
+
+		if($is_internal_ip)
+		{
+			return false;
+		}
+
 		if(filter_var($email, FILTER_VALIDATE_EMAIL) && filter_var($ip_address, FILTER_VALIDATE_IP)) // Calls to the API with invalid email/ip formats cause issues
 		{
 			$username_encoded = urlencode($username);

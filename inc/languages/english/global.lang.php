@@ -570,6 +570,8 @@ $l['select2_searching'] = "Searching…";
 
 $l['stopforumspam_error_decoding'] = 'Error decoding data from StopForumSpam.com.';
 $l['stopforumspam_error_retrieving'] = 'Error retrieving data from StopForumSpam.com.';
+$l['stopforumspam_invalid_email'] = 'Invalid email address whilst checking against the StopForumSpam.com API.';
+$l['stopforumspam_invalid_ip_address'] = 'Invalid IP address whilst checking against the StopForumSpam.com API.';
 
 $l['sfs_error_username'] = 'username';
 $l['sfs_error_ip'] = 'IP';
