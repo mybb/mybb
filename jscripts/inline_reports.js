@@ -173,8 +173,8 @@ var inlineReports = {
 		});
 
 		$('#inline_read').val(mark_read_text+' (0)');
-		Cookie.unset(inlineReports.cookieName);
-		Cookie.unset(inlineReports.cookieName + '_removed');
+		Cookies.remove(inlineReports.cookieName);
+		Cookies.remove(inlineReports.cookieName + '_removed');
 
 		return true;
 	},
@@ -282,7 +282,7 @@ var inlineReports = {
 
 	getCookie: function(name)
 	{
-		var inlineCookie = Cookie.get(name);
+		var inlineCookie = Cookies.get(name);
 
 		var ids = new Array();
 		if(inlineCookie)
@@ -303,11 +303,11 @@ var inlineReports = {
 		if(array.length != 0)
 		{
 			var data = '|'+array.join('|')+'|';
-			Cookie.set(name, data, 60 * 60 * 1000);
+			Cookies.set(name, data, 60 * 60 * 1000);
 		}
 		else
 		{
-			Cookie.unset(name);
+			Cookies.remove(name);
 		}
 	},
 

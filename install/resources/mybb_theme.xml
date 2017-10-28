@@ -3513,11 +3513,11 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 		<template name="calendar_weekview_prevlink" version="1813"><![CDATA[<a href="{$prev_link}">&laquo; {$lang->previous_week}</a>]]></template>
 		<template name="calendar_year" version="1800"><![CDATA[<option value="{$year}" {$selected}>{$year}</option>]]></template>
 		<template name="calendar_year_sel" version="1800"><![CDATA[<option value="{$year_sel}">{$year_sel}</option>]]></template>
-		<template name="editpost" version="1809"><![CDATA[<html>
+		<template name="editpost" version="1813"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_post}</title>
 {$headerinclude}
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/post.js?ver=1808"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/post.js?ver=1813"></script>
 </head>
 <body>
 {$header}
@@ -3832,7 +3832,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 {$modann}
 </tr>]]></template>
 		<template name="forumdisplay_announcements_announcement_modbit" version="1800"><![CDATA[<td align="center" class="{$bgcolor} forumdisplay_announcement">-</td>]]></template>
-		<template name="forumdisplay_inlinemoderation" version="1807"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1807"></script>
+		<template name="forumdisplay_inlinemoderation" version="1813"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1813"></script>
 		<form action="moderation.php" method="post">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="fid" value="{$fid}" />
@@ -5044,7 +5044,7 @@ if(use_xmlhttprequest == "1")
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->registration}</title>
 {$headerinclude}
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/validate/jquery.validate.min.js?ver=1804"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/validate/jquery.validate.min.js?ver=1813"></script>
 </head>
 <body>
 {$header}
@@ -8777,11 +8777,11 @@ if(use_xmlhttprequest == "1")
 		<template name="nav_dropdown" version="1800"><![CDATA[ <img src="{$theme['imgdir']}/arrow_down.png" alt="v" title="" class="pagination_breadcrumb_link" id="breadcrumb_multipage" />{$multipage}]]></template>
 		<template name="nav_sep" version="1800"><![CDATA[&rsaquo;]]></template>
 		<template name="nav_sep_active" version="1800"><![CDATA[<br /><img src="{$theme['imgdir']}/nav_bit.png" alt="" />]]></template>
-		<template name="newreply" version="1809"><![CDATA[<html>
+		<template name="newreply" version="1813"><![CDATA[<html>
 <head>
 <title>{$lang->post_reply_to}</title>
 {$headerinclude}
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/post.js?ver=1808"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/post.js?ver=1813"></script>
 </head>
 <body>
 {$header}
@@ -8879,11 +8879,11 @@ if(use_xmlhttprequest == "1")
 {$reviewmessage}
 </td>
 </tr>]]></template>
-		<template name="newthread" version="1809"><![CDATA[<html>
+		<template name="newthread" version="1813"><![CDATA[<html>
 <head>
 <title>{$lang->newthread_in}</title>
 {$headerinclude}
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/post.js?ver=1808"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/post.js?ver=1813"></script>
 </head>
 <body>
 {$header}
@@ -11144,7 +11144,7 @@ if(use_xmlhttprequest == "1")
 </html>]]></template>
 		<template name="search_results_posts_forumlink" version="1808"><![CDATA[<a href="{$post['forumlink_link']}">{$post['forumlink_name']}</a>]]></template>
 		<template name="search_results_posts_inlinecheck" version="120"><![CDATA[<td class="{$bgcolor}" align="center" style="white-space: nowrap"><input type="checkbox" class="checkbox" name="inlinemod_{$post['pid']}" id="inlinemod_{$post['pid']}" value="1" style="vertical-align: middle;" {$inlinecheck}  /></td>]]></template>
-		<template name="search_results_posts_inlinemoderation" version="1809"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1807"></script>
+		<template name="search_results_posts_inlinemoderation" version="1813"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1813"></script>
 <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="tid" value="0" />
@@ -11238,7 +11238,7 @@ if(use_xmlhttprequest == "1")
 		</html>]]></template>
 		<template name="search_results_threads_forumlink" version="1808"><![CDATA[<a href="{$thread['forumlink_link']}">{$thread['forumlink_name']}</a>]]></template>
 		<template name="search_results_threads_inlinecheck" version="120"><![CDATA[<td class="{$bgcolor}" align="center" style="white-space: nowrap"><input type="checkbox" class="checkbox" name="inlinemod_{$thread['tid']}" id="inlinemod_{$thread['tid']}" value="1" style="vertical-align: middle;" {$inlinecheck}  /></td>]]></template>
-		<template name="search_results_threads_inlinemoderation" version="1809"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1807"></script>
+		<template name="search_results_threads_inlinemoderation" version="1813"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1813"></script>
 		<form action="moderation.php" method="post">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="fid" value="0" />
@@ -11467,7 +11467,7 @@ if(use_xmlhttprequest == "1")
 			<td class="tcat"><span class="smalltext"><strong>{$lang->message}</strong></span></td>
 		</tr>
 		]]></template>
-		<template name="showthread_inlinemoderation" version="1809"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1807"></script>
+		<template name="showthread_inlinemoderation" version="1813"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1813"></script>
 <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;" id="inlinemoderation_options">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="tid" value="{$tid}" />
@@ -14046,8 +14046,8 @@ $(function() {
 <link rel="alternate" type="application/atom+xml" title="{$lang->latest_threads} (Atom 1.0)" href="{$mybb->settings['bburl']}/syndication.php?type=atom1.0" />
 <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.js?ver=1811"></script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.plugins.min.js?ver=1806"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.js?ver=1813"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.plugins.min.js?ver=1813"></script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/general.js?ver=1813"></script>
 
 {$stylesheets}

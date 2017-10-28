@@ -106,8 +106,8 @@ class DefaultPage
 			echo "	<link rel=\"stylesheet\" href=\"styles/{$this->style}/{$this->active_module}.css\" type=\"text/css\" />\n";
 		}
 
-		echo "	<script type=\"text/javascript\" src=\"../jscripts/jquery.js\"></script>\n";
-		echo "	<script type=\"text/javascript\" src=\"../jscripts/jquery.plugins.min.js\"></script>\n";
+		echo "	<script type=\"text/javascript\" src=\"../jscripts/jquery.js?ver=1813\"></script>\n";
+		echo "	<script type=\"text/javascript\" src=\"../jscripts/jquery.plugins.min.js?ver=1813\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"../jscripts/general.js?ver=1813\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"./jscripts/admincp.js\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"./jscripts/tabs.js\"></script>\n";
@@ -115,7 +115,7 @@ class DefaultPage
 		echo "	<link rel=\"stylesheet\" href=\"jscripts/jqueryui/css/redmond/jquery-ui.min.css\" />\n";
 		echo "	<link rel=\"stylesheet\" href=\"jscripts/jqueryui/css/redmond/jquery-ui.structure.min.css\" />\n";
 		echo "	<link rel=\"stylesheet\" href=\"jscripts/jqueryui/css/redmond/jquery-ui.theme.min.css\" />\n";
-		echo "	<script src=\"jscripts/jqueryui/js/jquery-ui.min.js?ver=1804\"></script>\n";
+		echo "	<script src=\"jscripts/jqueryui/js/jquery-ui.min.js?ver=1813\"></script>\n";
 
 		// Stop JS elements showing while page is loading (JS supported browsers only)
 		echo "  <style type=\"text/css\">.popup_button { display: none; } </style>\n";
@@ -391,7 +391,7 @@ lang.saved = \"{$lang->saved}\";
 <meta name="author" content="MyBB Group" />
 <meta name="copyright" content="Copyright {$copy_year} MyBB Group." />
 <link rel="stylesheet" href="./styles/{$cp_style}/login.css" type="text/css" />
-<script type="text/javascript" src="../jscripts/jquery.js"></script>
+<script type="text/javascript" src="../jscripts/jquery.js?ver=1813"></script>
 <script type="text/javascript" src="../jscripts/general.js?ver=1813"></script>
 <script type="text/javascript" src="./jscripts/admincp.js"></script>
 <script type="text/javascript">
@@ -523,7 +523,7 @@ EOF;
 <meta name="author" content="MyBB Group" />
 <meta name="copyright" content="Copyright {$copy_year} MyBB Group." />
 <link rel="stylesheet" href="./styles/{$cp_style}/login.css" type="text/css" />
-<script type="text/javascript" src="../jscripts/jquery.js"></script>
+<script type="text/javascript" src="../jscripts/jquery.js?ver=1813"></script>
 <script type="text/javascript" src="../jscripts/general.js?ver=1813"></script>
 <script type="text/javascript" src="./jscripts/admincp.js"></script>
 <script type="text/javascript">
