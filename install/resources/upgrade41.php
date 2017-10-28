@@ -42,8 +42,10 @@ function upgrade41_dbchanges()
 
 function upgrade41_dbchanges2()
 {
+	global $db, $output;
+
 	// Remove backslashes from last 1,000 log files.
-	$query = $db->simple_select('moderatorlog', 'tid, action', "action LIKE '%\\\\\\%", array(
+	$query = $db->simple_select('moderatorlog', 'tid, action', "action LIKE '%\\\\\\\\%'", array(
 		"order_by" => 'tid',
 		"order_dir" => 'DESC',
 		"limit" => 1000
