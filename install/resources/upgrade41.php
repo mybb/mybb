@@ -44,6 +44,8 @@ function upgrade41_dbchanges2()
 {
 	global $db, $output;
 
+	$output->print_header("Updating Database");
+
 	// Remove backslashes from last 1,000 log files.
 	$query = $db->simple_select('moderatorlog', 'tid, action', "action LIKE '%\\\\\\\\%'", array(
 		"order_by" => 'tid',
@@ -74,13 +76,17 @@ function upgrade41_dbchanges2()
 function upgrade41_dbchanges3()
 {
 	global $db, $output, $mybb;
+
 	$output->print_header("Updating Database");
+
 	echo "<p>Performing necessary upgrade queries...</p>";
 	flush();
+
 	$guestlangs = array();
 	$templang = new MyLanguage();
 	$templang->set_path(MYBB_ROOT."inc/languages");
 	$langs = array_keys($templang->get_languages());
+
 	foreach($langs as $langname)
 	{
 		unset($templang);
@@ -93,8 +99,10 @@ function upgrade41_dbchanges3()
 			$guestlangs[] = $db->escape_string($templang->guest);
 		}
 	}
+
 	unset($templang);
 	$guestlangs = implode("', '", $guestlangs);
+
 	$db->update_query('posts', array('username' => ''), "uid = 0 AND username IN ('{$guestlangs}')");
 	$db->update_query('threads', array('username' => ''), "uid = 0 AND username IN ('{$guestlangs}')");
 
