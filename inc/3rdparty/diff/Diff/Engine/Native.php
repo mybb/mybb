@@ -197,7 +197,7 @@ class Horde_Text_Diff_Engine_Native
                 }
                 $matches = $ymatches[$line];
                 reset($matches);
-                while ($y = current($matches)) {
+                while (($y = current($matches)) !== false) {
                     if (empty($this->in_seq[$y])) {
                         $k = $this->_lcsPos($y);
                         assert($k > 0);
@@ -206,7 +206,7 @@ class Horde_Text_Diff_Engine_Native
                     }
                     next($matches);
                 }
-                while ($y = current($matches)) {
+                while (($y = current($matches)) !== false) {
                     if ($y > $this->seq[$k - 1]) {
                         assert($y <= $this->seq[$k]);
                         /* Optimization: this is a common case: next match is
