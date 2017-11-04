@@ -209,8 +209,8 @@ var inlineModeration = {
 		});
 
 		$('#inline_go').val(go_text+' (0)');
-		Cookies.remove(inlineModeration.cookieName);
-		Cookies.remove(inlineModeration.cookieName + '_removed');
+		Cookie.unset(inlineModeration.cookieName);
+		Cookie.unset(inlineModeration.cookieName + '_removed');
 
 		return true;
 	},
@@ -343,7 +343,7 @@ var inlineModeration = {
 
 	getCookie: function(name)
 	{
-		var inlineCookie = Cookies.get(name);
+		var inlineCookie = Cookie.get(name);
 
 		var ids = new Array();
 		if(inlineCookie)
@@ -364,13 +364,11 @@ var inlineModeration = {
 		if(array.length != 0)
 		{
 			var data = '|'+array.join('|')+'|';
-			Cookies.set(name, data, {
-				expires: 1000
-			});
+			Cookie.set(name, data, 60 * 60 * 1000);
 		}
 		else
 		{
-			Cookies.remove(name);
+			Cookie.unset(name);
 		}
 	},
 
