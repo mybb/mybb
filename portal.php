@@ -606,7 +606,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 			$plugins->run_hooks("portal_announcement");
 
 			$parser_options = array(
-				"allow_html" => $forum[$announcement['fid']]['allowhtml'],
+				"allow_html" => $mybb->settings['announcementshtml'] && $forum[$announcement['fid']]['allowhtml'],
 				"allow_mycode" => $forum[$announcement['fid']]['allowmycode'],
 				"allow_smilies" => $forum[$announcement['fid']]['allowsmilies'],
 				"allow_imgcode" => $forum[$announcement['fid']]['allowimgcode'],

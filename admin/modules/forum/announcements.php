@@ -117,7 +117,7 @@ if($mybb->input['action'] == "add")
 			if(isset($mybb->input['preview']))
 			{
 				$parser_options = array();
-				$parser_options['allow_html'] = $mybb->get_input('allowhtml', MyBB::INPUT_INT);
+				$parser_options['allow_html'] = $mybb->settings['announcementshtml'] && $mybb->get_input('allowhtml', MyBB::INPUT_INT);
 				$parser_options['allow_mycode'] = $mybb->get_input('allowmycode', MyBB::INPUT_INT);
 				$parser_options['allow_smilies'] = $mybb->get_input('allowsmilies', MyBB::INPUT_INT);
 				$parser_options['allow_imgcode'] = 1;
@@ -162,7 +162,7 @@ if($mybb->input['action'] == "add")
 					"message" => $db->escape_string($mybb->input['message']),
 					"startdate" => $startdate,
 					"enddate" => $enddate,
-					"allowhtml" => $mybb->get_input('allowhtml', MyBB::INPUT_INT),
+					"allowhtml" => (int)($mybb->settings['announcementshtml'] && $mybb->get_input('allowhtml', MyBB::INPUT_INT)),
 					"allowmycode" => $mybb->get_input('allowmycode', MyBB::INPUT_INT),
 					"allowsmilies" => $mybb->get_input('allowsmilies', MyBB::INPUT_INT)
 				);
@@ -404,7 +404,10 @@ if($mybb->input['action'] == "add")
 
 	$form_container->output_row($lang->forums_to_appear_in." <em>*</em>", $lang->forums_to_appear_in_desc, $form->generate_forum_select('fid', $mybb->input['fid'], array('size' => 5, 'main_option' => $lang->all_forums)));
 
-	$form_container->output_row($lang->allow_html." <em>*</em>", "", $form->generate_yes_no_radio('allowhtml', $mybb->input['allowhtml'], array('style' => 'width: 2em;')));
+	if ($mybb->settings['announcementshtml'])
+	{
+		$form_container->output_row($lang->allow_html." <em>*</em>", "", $form->generate_yes_no_radio('allowhtml', $mybb->input['allowhtml'], array('style' => 'width: 2em;')));
+	}
 
 	$form_container->output_row($lang->allow_mycode." <em>*</em>", "", $form->generate_yes_no_radio('allowmycode', $mybb->input['allowmycode'], array('style' => 'width: 2em;')));
 
@@ -496,7 +499,7 @@ if($mybb->input['action'] == "edit")
 			if(isset($mybb->input['preview']))
 			{
 				$parser_options = array();
-				$parser_options['allow_html'] = $mybb->get_input('allowhtml', MyBB::INPUT_INT);
+				$parser_options['allow_html'] = $mybb->settings['announcementshtml'] && $mybb->get_input('allowhtml', MyBB::INPUT_INT);
 				$parser_options['allow_mycode'] = $mybb->get_input('allowmycode', MyBB::INPUT_INT);
 				$parser_options['allow_smilies'] = $mybb->get_input('allowsmilies', MyBB::INPUT_INT);
 				$parser_options['allow_imgcode'] = 1;
@@ -541,7 +544,7 @@ if($mybb->input['action'] == "edit")
 					"message" => $db->escape_string($mybb->input['message']),
 					"startdate" => $startdate,
 					"enddate" => $enddate,
-					"allowhtml" => $mybb->get_input('allowhtml', MyBB::INPUT_INT),
+					"allowhtml" => (int)($mybb->settings['announcementshtml'] && $mybb->get_input('allowhtml', MyBB::INPUT_INT)),
 					"allowmycode" => $mybb->get_input('allowmycode', MyBB::INPUT_INT),
 					"allowsmilies" => $mybb->get_input('allowsmilies', MyBB::INPUT_INT)
 				);
@@ -628,7 +631,7 @@ if($mybb->input['action'] == "edit")
 
 		$mybb->input['title'] = $announcement['subject'];
 		$mybb->input['message'] = $announcement['message'];
-		$mybb->input['allowhtml'] = $announcement['allowhtml'];
+		$mybb->input['allowhtml'] = $mybb->settings['announcementshtml'] && $announcement['allowhtml'];
 		$mybb->input['allowsmilies'] = $announcement['allowsmilies'];
 		$mybb->input['allowmycode'] = $announcement['allowmycode'];
 		$mybb->input['fid'] = $announcement['fid'];
@@ -758,7 +761,10 @@ if($mybb->input['action'] == "edit")
 
 	$form_container->output_row($lang->forums_to_appear_in." <em>*</em>", $lang->forums_to_appear_in_desc, $form->generate_forum_select('fid', $mybb->input['fid'], array('size' => 5, 'main_option' => $lang->all_forums)));
 
-	$form_container->output_row($lang->allow_html." <em>*</em>", "", $form->generate_yes_no_radio('allowhtml', $mybb->input['allowhtml'], array('style' => 'width: 2em;')));
+	if ($mybb->settings['announcementshtml'])
+	{
+		$form_container->output_row($lang->allow_html." <em>*</em>", "", $form->generate_yes_no_radio('allowhtml', $mybb->input['allowhtml'], array('style' => 'width: 2em;')));
+	}
 
 	$form_container->output_row($lang->allow_mycode." <em>*</em>", "", $form->generate_yes_no_radio('allowmycode', $mybb->input['allowmycode'], array('style' => 'width: 2em;')));
 
@@ -949,4 +955,3 @@ function fetch_forum_announcements(&$table, $pid=0, $depth=1)
 		}
 	}
 }
-

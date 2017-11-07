@@ -6389,7 +6389,7 @@ if(use_xmlhttprequest == "1")
 	{$footer}
 </body>
 </html>]]></template>
-		<template name="modcp_announcements_edit" version="1800"><![CDATA[<html>
+		<template name="modcp_announcements_edit" version="1813"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_announcement}</title>
 {$headerinclude}
@@ -6451,10 +6451,7 @@ if(use_xmlhttprequest == "1")
 							<td class="trow1" valign="top" width="25%"><strong>{$lang->announcement}</strong><br />{$smilieinserter}</td>
 							<td class="trow1" valign="top" width="75%"><textarea id="message" name="message" rows="20" cols="70">{$message}</textarea>{$codebuttons}</td>
 						</tr>
-						<tr>
-							<td class="trow1" valign="top" width="25%"><strong>{$lang->allow_html}</strong></td>
-							<td class="trow1" valign="top" width="75%"><label><input type="radio" name="allowhtml" value="1"{$html_sel['yes']} />&nbsp;{$lang->yes}</label> &nbsp;&nbsp;<label><input type="radio" name="allowhtml" value="0"{$html_sel['no']} />&nbsp;{$lang->no}</label></td>
-						</tr>
+						{$allow_html}
 						<tr>
 							<td class="trow1" valign="top" width="25%"><strong>{$lang->allow_mycode}</strong></td>
 							<td class="trow1" valign="top" width="75%"><label><input type="radio" name="allowmycode" value="1"{$mycode_sel['yes']} />&nbsp;{$lang->yes}</label> &nbsp;&nbsp;<label><input type="radio" name="allowmycode" value="0"{$mycode_sel['no']} />&nbsp;{$lang->no}</label></td>
@@ -6524,7 +6521,11 @@ if(use_xmlhttprequest == "1")
 <option value="10" {$startmonthsel['10']}>{$lang->october}</option>
 <option value="11" {$startmonthsel['11']}>{$lang->november}</option>
 <option value="12" {$startmonthsel['12']}>{$lang->december}</option>]]></template>
-		<template name="modcp_announcements_new" version="1800"><![CDATA[<html>
+		<template name="modcp_announcements_allowhtml" version="1813"><![CDATA[						<tr>
+							<td class="trow1" valign="top" width="25%"><strong>{$lang->allow_html}</strong></td>
+							<td class="trow1" valign="top" width="75%"><label><input type="radio" name="allowhtml" value="1"{$html_sel['yes']} />&nbsp;{$lang->yes}</label> &nbsp;&nbsp;<label><input type="radio" name="allowhtml" value="0"{$html_sel['no']} />&nbsp;{$lang->no}</label></td>
+						</tr>]]></template>
+		<template name="modcp_announcements_new" version="1813"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->add_announcement}</title>
 {$headerinclude}
@@ -6585,10 +6586,7 @@ if(use_xmlhttprequest == "1")
 							<td class="trow1" valign="top" width="25%"><strong>{$lang->announcement}</strong><br />{$smilieinserter}</td>
 							<td class="trow1" valign="top" width="75%"><textarea id="message" name="message" rows="20" cols="70">{$message}</textarea>{$codebuttons}</td>
 						</tr>
-						<tr>
-							<td class="trow1" valign="top" width="25%"><strong>{$lang->allow_html}</strong></td>
-							<td class="trow1" valign="top" width="75%"><label><input type="radio" name="allowhtml" value="1"{$html_sel['yes']} />&nbsp;{$lang->yes}</label> &nbsp;&nbsp;<label><input type="radio" name="allowhtml" value="0"{$html_sel['no']} />&nbsp;{$lang->no}</label></td>
-						</tr>
+						{$allow_html}
 						<tr>
 							<td class="trow1" valign="top" width="25%"><strong>{$lang->allow_mycode}</strong></td>
 							<td class="trow1" valign="top" width="75%"><label><input type="radio" name="allowmycode" value="1"{$mycode_sel['yes']} />&nbsp;{$lang->yes}</label> &nbsp;&nbsp;<label><input type="radio" name="allowmycode" value="0"{$mycode_sel['no']} />&nbsp;{$lang->no}</label></td>
@@ -8106,20 +8104,20 @@ if(use_xmlhttprequest == "1")
 // -->
 </script>
 <dl style="margin-top: 0; margin-bottom: 0; width: 100%;">
-	<dt><input type="radio" name="type" value="openclosethread" {$type_selected['openclosethread']} id="type_openclosethread" onclick="toggleType();" /> <label for="type_openclosethread"><strong>{$lang->open_close_thread}</strong></label></dt>
-	<dt><input type="radio" name="type" value="softdeleterestorethread" {$type_selected['softdeleterestorethread']} id="type_softdeleterestorethread" onclick="toggleType();" /> <label for="type_softdeleterestorethread"><strong>{$lang->softdelete_restore_thread}</strong></label></dt>
-	<dt><input type="radio" name="type" value="deletethread" {$type_selected['deletethread']} id="type_deletethread" onclick="toggleType();" /> <label for="type_deletethread"><strong>{$lang->delete_thread}</strong></label></dt>
+	{$openclosethread}
+	{$softdeleterestorethread}
+	{$deletethread}
+	{$stickunstickthread}
 	<dt><input type="radio" name="type" value="move" {$type_selected['move']} id="type_movecopythread" onclick="toggleType();" /> <label for="type_movecopythread"><strong>{$lang->move_copy_thread}</strong></label></dt>
 	<dd style="margin-top: 4px;" id="type_movecopythread_expanded">
 	{$lang->new_forum}<br />
 	{$forumselect}
 	{$moderation_delayedmoderation_move}
 	</dd>
-	<dt><input type="radio" name="type" value="stick" {$type_selected['stick']} id="type_stick_unstick_thread" onclick="toggleType();" /> <label for="type_stick_unstick_thread"><strong>{$lang->stick_unstick_thread}</strong></label></dt>
 	{$moderation_delayedmoderation_merge}
 	<dt><input type="radio" name="type" value="removeredirects" {$type_selected['removeredirects']} id="type_removeredirects" onclick="toggleType();" /> <label for="type_removeredirects"><strong>{$lang->remove_redirects}</strong></label></dt>
 	<dt><input type="radio" name="type" value="removesubscriptions" {$type_selected['removesubscriptions']} id="type_removesubscriptions" onclick="toggleType();" /> <label for="type_removesubscriptions"><strong>{$lang->remove_subscriptions}</strong></label></dt>
-	<dt><input type="radio" name="type" value="approveunapprovethread" {$type_selected['approveunapprovethread']} id="type_approveunapprovethread" onclick="toggleType();" /> <label for="type_approveunapprovethread"><strong>{$lang->approve_unapprove_thread}</strong></label></dt>
+	{$approveunapprovethread}
 	{$customthreadtools}
 </dl>
 <script type="text/javascript">
@@ -8136,6 +8134,11 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
+		<template name="moderation_delayedmoderation_approve" version="1813"><![CDATA[<dt><input type="radio" name="type" value="approveunapprovethread" {$type_selected['approveunapprovethread']} id="type_approveunapprovethread" onclick="toggleType();" /> <label for="type_approveunapprovethread"><strong>{$lang->approve_unapprove_thread}</strong></label></dt>]]></template>
+		<template name="moderation_delayedmoderation_delete" version="1813"><![CDATA[<dt><input type="radio" name="type" value="deletethread" {$type_selected['deletethread']} id="type_deletethread" onclick="toggleType();" /> <label for="type_deletethread"><strong>{$lang->delete_thread}</strong></label></dt>]]></template>
+		<template name="moderation_delayedmoderation_openclose" version="1813"><![CDATA[<dt><input type="radio" name="type" value="openclosethread" {$type_selected['openclosethread']} id="type_openclosethread" onclick="toggleType();" /> <label for="type_openclosethread"><strong>{$lang->open_close_thread}</strong></label></dt>]]></template>
+		<template name="moderation_delayedmoderation_softdeleterestore" version="1813"><![CDATA[<dt><input type="radio" name="type" value="softdeleterestorethread" {$type_selected['softdeleterestorethread']} id="type_softdeleterestorethread" onclick="toggleType();" /> <label for="type_softdeleterestorethread"><strong>{$lang->softdelete_restore_thread}</strong></label></dt>]]></template>
+		<template name="moderation_delayedmoderation_stick" version="1813"><![CDATA[<dt><input type="radio" name="type" value="stick" {$type_selected['stick']} id="type_stick_unstick_thread" onclick="toggleType();" /> <label for="type_stick_unstick_thread"><strong>{$lang->stick_unstick_thread}</strong></label></dt>]]></template>
 		<template name="moderation_delayedmoderation_date_month" version="1800"><![CDATA[<option value="01" {$datemonth['01']}>{$lang->january}</option>
 <option value="02" {$datemonth['02']}>{$lang->february}</option>
 <option value="03" {$datemonth['03']}>{$lang->march}</option>
@@ -13373,7 +13376,7 @@ if(use_xmlhttprequest == "1")
 							<dd><span class="thread_status hotfolder" title="{$lang->hot_thread}">&nbsp;</span> {$lang->hot_thread}</dd>
 						</dl>
 					</div>
-				
+
 					<div class="float_left">
 						<dl class="thread_legend smalltext">
 							<dd><span class="thread_status folder" title="{$lang->no_new_thread}">&nbsp;</span> {$lang->no_new_thread}</dd>

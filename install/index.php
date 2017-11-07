@@ -1443,12 +1443,12 @@ function create_tables()
 	$connection = $db->connect($connect_array);
 	if($connection === false)
 	{
-		$errors[] = $lang->sprintf($lang->db_step_error_noconnect, $config['dbhost']);
+		$errors[] = $lang->sprintf($lang->db_step_error_noconnect, htmlspecialchars_uni($config['dbhost']));
 	}
 	// double check if the DB exists for MySQL
 	elseif(method_exists($db, 'select_db') && !$db->select_db($config['dbname']))
 	{
-		$errors[] = $lang->sprintf($lang->db_step_error_nodbname, $config['dbname']);
+		$errors[] = $lang->sprintf($lang->db_step_error_nodbname, htmlspecialchars_uni($config['dbname']));
 	}
 
 	// Most DB engines only allow certain characters in the table name. Oracle requires an alphabetic character first.
@@ -1477,14 +1477,12 @@ function create_tables()
 	// Decide if we can use a database encoding or not
 	if($db->fetch_db_charsets() != false)
 	{
-		$db_encoding = "\$config['database']['encoding'] = '{$config['encoding']}';";
+		$db_encoding = "\$config['database']['encoding'] = '".addcslashes($config['encoding'], "'")."';";
 	}
 	else
 	{
-		$db_encoding = "// \$config['database']['encoding'] = '{$config['encoding']}';";
+		$db_encoding = "// \$config['database']['encoding'] = '".addcslashes($config['encoding'], "'")."';";
 	}
-
-	$config['dbpass'] = addslashes($config['dbpass']);
 
 	// Write the configuration file
 	$configdata = "<?php
@@ -1496,13 +1494,13 @@ function create_tables()
  * https://docs.mybb.com/
  */
 
-\$config['database']['type'] = '{$mybb->input['dbengine']}';
-\$config['database']['database'] = '{$config['dbname']}';
-\$config['database']['table_prefix'] = '{$config['tableprefix']}';
+\$config['database']['type'] = '".addcslashes($mybb->input['dbengine'], "'")."';
+\$config['database']['database'] = '".addcslashes($config['dbname'], "'")."';
+\$config['database']['table_prefix'] = '".addcslashes($config['tableprefix'], "'")."';
 
-\$config['database']['hostname'] = '{$config['dbhost']}';
-\$config['database']['username'] = '{$config['dbuser']}';
-\$config['database']['password'] = '{$config['dbpass']}';
+\$config['database']['hostname'] = '".addcslashes($config['dbhost'], "'")."';
+\$config['database']['username'] = '".addcslashes($config['dbuser'], "'")."';
+\$config['database']['password'] = '".addcslashes($config['dbpass'], "'")."';
 
 /**
  * Admin CP directory
