@@ -81,7 +81,7 @@ if($mybb->input['action'] == 'add_prefix')
 		{
 			$new_prefix = array(
 				'prefix'		=> $db->escape_string($mybb->input['prefix']),
-				'displaystyle'	=> $db->escape_string($mybb->input['displaystyle'])
+				'displaystyle'	=> $db->escape_string(my_strip_tags($mybb->input['displaystyle']))
 			);
 
 			if($mybb->input['forum_type'] == 2)
