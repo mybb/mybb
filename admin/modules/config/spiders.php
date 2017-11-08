@@ -37,7 +37,7 @@ if($mybb->input['action'] == "add")
 		if(!$errors)
 		{
 			$new_spider = array(
-				"name" => $db->escape_string(htmlspecialchars(($mybb->input['name'])),
+				"name" => $db->escape_string(htmlspecialchars($mybb->input['name'])),
 				"theme" => $mybb->get_input('theme', MyBB::INPUT_INT),
 				"language" => $db->escape_string($mybb->input['language']),
 				"usergroup" => $mybb->get_input('usergroup', MyBB::INPUT_INT),
