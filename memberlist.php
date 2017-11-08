@@ -158,6 +158,16 @@ else
 	$search_query = '1=1';
 	$search_url = "";
 
+	switch($db->type)
+	{
+		// PostgreSQL's LIKE is case sensitive
+		case "pgsql":
+			$like = "ILIKE";
+			break;
+		default:
+			$like = "LIKE";
+	}
+
 	// Limiting results to a certain letter
 	if(isset($mybb->input['letter']))
 	{
@@ -168,7 +178,7 @@ else
 		}
 		else if(strlen($letter) == 1)
 		{
-			$search_query .= " AND u.username LIKE '".$db->escape_string_like($letter)."%'";
+			$search_query .= " AND u.username {$like} '".$db->escape_string_like($letter)."%'";
 		}
 		$search_url .= "&letter={$letter}";
 	}
@@ -182,13 +192,13 @@ else
 		// Name begins with
 		if($mybb->input['username_match'] == "begins")
 		{
-			$search_query .= " AND u.username LIKE '".$username_like_query."%'";
+			$search_query .= " AND u.username {$like} '".$username_like_query."%'";
 			$search_url .= "&username_match=begins";
 		}
 		// Just contains
 		else
 		{
-			$search_query .= " AND u.username LIKE '%".$username_like_query."%'";
+			$search_query .= " AND u.username {$like} '%".$username_like_query."%'";
 		}
 
 		$search_url .= "&username=".urlencode($search_username);
@@ -199,7 +209,7 @@ else
 	$search_website = htmlspecialchars_uni($mybb->input['website']);
 	if(trim($mybb->input['website']))
 	{
-		$search_query .= " AND u.website LIKE '%".$db->escape_string_like($mybb->input['website'])."%'";
+		$search_query .= " AND u.website {$like} '%".$db->escape_string_like($mybb->input['website'])."%'";
 		$search_url .= "&website=".urlencode($mybb->input['website']);
 	}
 
@@ -240,7 +250,7 @@ else
 			}
 			else
 			{
-				$search_query .= " AND u.{$cfield} LIKE '%".$db->escape_string_like($mybb->input[$cfield])."%'";
+				$search_query .= " AND u.{$cfield} {$like} '%".$db->escape_string_like($mybb->input[$cfield])."%'";
 			}
 			$search_url .= "&{$cfield}=".urlencode($mybb->input[$cfield]);
 		}
