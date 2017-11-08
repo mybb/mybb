@@ -1665,7 +1665,7 @@ if($mybb->input['action'] == "dayview")
 	}
 
 	// Incoming year?
-	if(isset($mybb->input['year']) && $mybb->get_input('year', MyBB::INPUT_INT) <= my_date("Y")+5)
+	if(isset($mybb->input['year']) && $mybb->get_input('year', MyBB::INPUT_INT) <= my_date("Y")+5 && $mybb->get_input('year', MyBB::INPUT_INT) >= 1901)
 	{
 		$year = $mybb->get_input('year', MyBB::INPUT_INT);
 	}
@@ -2029,10 +2029,10 @@ if($mybb->input['action'] == "weekview")
 	else
 	{
 		$mybb->input['week'] = (int)str_replace("n", "-", $mybb->get_input('week'));
-		// No negative years please ;)
-		if($mybb->input['week'] < -62167219200)
+		// Nothing before 1901 please ;)
+		if($mybb->input['week'] < -2177625600)
 		{
-			$mybb->input['week'] = -62167219200;
+			$mybb->input['week'] = -2177625600;
 		}
 	}
 
