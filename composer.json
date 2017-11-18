@@ -1,0 +1,42 @@
+{
+    "name": "mybb/mybb",
+    "description": "MyBB is a free and open source, community-based forum software project.",
+    "type": "project",
+    "keywords": [
+        "forum",
+        "community"
+    ],
+    "homepage": "https://mybb.com",
+    "license": "LGPL-3.0",
+    "authors": [
+        {
+            "name": "MyBB Group",
+            "email": "contact@mybb.com"
+        }
+    ],
+    "support": {
+        "forum": "https://community.mybb.com",
+        "docs": "https://docs.mybb.com",
+        "source": "https://github.com/mybb/mybb",
+        "issues": "https://github.com/mybb/mybb/issues"
+    },
+    "require": {
+        "php": "^5.6 || ^7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "MyBB\\": "inc/src/"
+        },
+        "files": [
+            "inc/functions.php"
+        ]
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "config": {
+        "vendor-dir": "inc/vendor",
+        "bin-dir": "inc/vendor/bin",
+        "optimize-autoloader": true,
+        "sort-packages": true
+    }
+}
