@@ -555,7 +555,7 @@ function my_date($format, $stamp=0, $offset="", $ty=1, $adodb=false)
  * @param string $subject The subject of the email being sent.
  * @param string $message The message being sent.
  * @param string $from The from address of the email, if blank, the board name will be used.
- * @param string $charset The chracter set being used to send this email.
+ * @param string $charset The character set being used to send this email.
  * @param string $headers
  * @param boolean $keep_alive Do we wish to keep the connection to the mail server alive to send more than one message (SMTP only)
  * @param string $format The format of the email to be sent (text or html). text is default
@@ -566,46 +566,68 @@ function my_date($format, $stamp=0, $offset="", $ty=1, $adodb=false)
 function my_mail($to, $subject, $message, $from="", $charset="", $headers="", $keep_alive=false, $format="text", $message_text="", $return_email="")
 {
 	global $mybb;
+	/** @var Swift_Mailer $mail */
 	static $mail;
 
 	// Does our object not exist? Create it
-	if(!is_object($mail))
-	{
-		require_once MYBB_ROOT."inc/class_mailhandler.php";
+	if (!is_object($mail) || !($mail instanceof Swift_Mailer)) {
+		if (!class_exists(\MyBB\Mail\TransportFactory::class)) {
+			require_once __DIR__ . '/vendor/autoload.php';
+		}
 
-		if($mybb->settings['mail_handler'] == 'smtp')
-		{
-			require_once MYBB_ROOT."inc/mailhandlers/smtp.php";
-			$mail = new SmtpMail();
-		}
-		else
-		{
-			require_once MYBB_ROOT."inc/mailhandlers/php.php";
-			$mail = new PhpMail();
-		}
+		$transport = \MyBB\Mail\TransportFactory::createTransport($mybb);
+		$mail = new Swift_Mailer($transport);
 	}
 
-	// Using SMTP based mail
-	if($mybb->settings['mail_handler'] == 'smtp')
-	{
-		if($keep_alive == true)
-		{
-			$mail->keep_alive = true;
-		}
+	$email = (new Swift_Message($subject));
+
+	// From and to email can be in the form 'Name <email>'. We need to fix this for SwiftMailer
+	$indexOfLessThan = my_strpos($from, '<');
+	if ($indexOfLessThan !== false) {
+		$email->setFrom(
+			my_substr($from, $indexOfLessThan + 1, my_strlen($from) - ($indexOfLessThan + 2)),
+			my_substr($from, $indexOfLessThan - 1));
+	} else {
+		$email->setFrom($from);
 	}
 
-	// Using PHP based mail()
-	else
-	{
-		if($mybb->settings['mail_parameters'] != '')
-		{
-			$mail->additional_parameters = $mybb->settings['mail_parameters'];
-		}
+	$indexOfLessThan = my_strpos($to, '<');
+	if ($indexOfLessThan !== false) {
+		$email->setFrom(
+			my_substr($to, $indexOfLessThan + 1, my_strlen($to) - ($indexOfLessThan + 2)),
+			my_substr($to, $indexOfLessThan - 1)
+		);
+	} else {
+		$email->setTo($to);
 	}
 
-	// Build and send
-	$mail->build_message($to, $subject, $message, $from, $charset, $headers, $format, $message_text, $return_email);
-	return $mail->send();
+	if ($charset) {
+		$email->setCharset($charset);
+	}
+
+	if ($format === 'html') {
+		if ($message_text) {
+			$email->setBody($message_text);
+		}
+
+		$email->addPart($message, 'text/html');
+	} else {
+        $email->setBody($message);
+	}
+
+	if ($return_email) {
+		$email->setReturnPath($return_email);
+	}
+
+	// TODO: Headers aren't used in the core as far as I can tell - do we consider removing them?
+
+	$failedRecipients = array();
+
+	$numSent = $mail->send($email, $failedRecipients);
+
+	// TODO: Handle failed recipients
+
+	return $numSent > 0;
 }
 
 /**
