@@ -28,6 +28,7 @@
             "MyBB\\": "inc/src/"
         },
         "files": [
+            "inc/functions.php"
         ]
     },
     "minimum-stability": "stable",
