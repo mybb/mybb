@@ -257,11 +257,12 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 	if(!$userhandler->validate_user())
 	{
 		$errors = $userhandler->get_friendly_errors();
+		$raw_errors = $userhandler->get_errors();
 
-		// Set allowed value otherwise select options disappear
-		if(in_array($lang->userdata_invalid_birthday_privacy, $errors))
+		// Set to stored value if invalid
+		if(array_key_exists("invalid_birthday_privacy", $raw_errors))
 		{
-			$mybb->input['birthdayprivacy'] = 'none';
+			$mybb->input['birthdayprivacy'] = $mybb->user['birthdayprivacy'];
 		}
 
 		$errors = inline_error($errors);

@@ -22,6 +22,7 @@ require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 
 $lang->load("warnings");
+$lang->load("datahandler_warnings");
 
 if($mybb->settings['enablewarningsystem'] == 0)
 {
