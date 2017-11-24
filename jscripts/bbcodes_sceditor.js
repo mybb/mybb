@@ -539,7 +539,7 @@ $(document).ready(function($) {
 				'</div>' +
 				'<div>' +
 					'<label for="link">' + editor._('Video URL:') + '</label> ' +
-					'<input type="text" id="videourl" value="http://" />' +
+					'<input type="text" id="videourl" value="https://" />' +
 				'</div>' +
 				'<div><input type="button" class="button" value="' + editor._('Insert') + '" /></div>'
 			);
@@ -548,7 +548,7 @@ $(document).ready(function($) {
 				videourl  = $content.find('#videourl').val();
 				videotype = $content.find('#videotype').val();
 
-				if (videourl !== '' && videourl !== 'http://')
+				if (videourl !== '' && videourl !== 'https://')
 					editor.insert('[video=' + videotype + ']' + videourl + '[/video]');
 
 				editor.closeDropDown(true);
