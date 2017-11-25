@@ -551,10 +551,10 @@ function my_date($format, $stamp=0, $offset="", $ty=1, $adodb=false)
 /**
  * Sends an email using PHP's mail function, formatting it appropriately.
  *
- * @param string $to Address the email should be addressed to.
+ * @param string|array $to Address the email should be addressed to. If this is an array, it should be in the form `address => name`.
  * @param string $subject The subject of the email being sent.
  * @param string $message The message being sent.
- * @param string $from The from address of the email, if blank, the board name will be used.
+ * @param string $from The from address of the email, if blank, the board name will be used. If this is an array, it should be in the form `address => name`.
  * @param string $charset The character set being used to send this email.
  * @param string $headers
  * @param boolean $keep_alive Do we wish to keep the connection to the mail server alive to send more than one message (SMTP only)
@@ -579,26 +579,45 @@ function my_mail($to, $subject, $message, $from="", $charset="", $headers="", $k
 		$mail = new Swift_Mailer($transport);
 	}
 
-	$email = (new Swift_Message($subject));
+	$email = new Swift_Message($subject);
 
-	// From and to email can be in the form 'Name <email>'. We need to fix this for SwiftMailer
-	$indexOfLessThan = my_strpos($from, '<');
-	if ($indexOfLessThan !== false) {
-		$email->setFrom(
-			my_substr($from, $indexOfLessThan + 1, my_strlen($from) - ($indexOfLessThan + 2)),
-			my_substr($from, $indexOfLessThan - 1));
+	// From and to email can be in the form 'Name <email>'. We need to fix this for SwiftMailer if the values aren't arrays.
+	if (is_array($to)) {
+		$email->setTo($to);
 	} else {
-		$email->setFrom($from);
+		$indexOfLessThan = my_strpos($to, '<');
+		if ($indexOfLessThan !== false) {
+			$email->setFrom(
+				my_substr($to, $indexOfLessThan + 1, my_strlen($to) - ($indexOfLessThan + 2)),
+				my_substr($to, $indexOfLessThan - 1)
+			);
+		} else {
+			$email->setTo($to);
+		}
 	}
 
-	$indexOfLessThan = my_strpos($to, '<');
-	if ($indexOfLessThan !== false) {
-		$email->setFrom(
-			my_substr($to, $indexOfLessThan + 1, my_strlen($to) - ($indexOfLessThan + 2)),
-			my_substr($to, $indexOfLessThan - 1)
-		);
+	if ($from) {
+		if (is_array($from)) {
+			$email->setFrom($from);
+		} else {
+			$indexOfLessThan = my_strpos($from, '<');
+			if ($indexOfLessThan !== false) {
+				$fromEmail = my_substr($from, $indexOfLessThan + 1, my_strlen($from) - ($indexOfLessThan + 2));
+				$fromName = my_substr($from, $indexOfLessThan - 1);
+
+				$email->setFrom([$fromEmail => $fromName]);
+			} else {
+				$email->setFrom($from);
+			}
+		}
 	} else {
-		$email->setTo($to);
+		if (trim($mybb->settings['returnemail'])) {
+			$from = $mybb->settings['returnemail'];
+		} else {
+			$from = $mybb->settings['adminemail'];
+		}
+
+		$email->setFrom([$from => $mybb->settings['bbname']]);
 	}
 
 	if ($charset) {
@@ -612,7 +631,7 @@ function my_mail($to, $subject, $message, $from="", $charset="", $headers="", $k
 
 		$email->addPart($message, 'text/html');
 	} else {
-        $email->setBody($message);
+		$email->setBody($message);
 	}
 
 	if ($return_email) {
