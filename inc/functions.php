@@ -554,7 +554,7 @@ function my_date($format, $stamp=0, $offset="", $ty=1, $adodb=false)
  * @param string|array $to Address the email should be addressed to. If this is an array, it should be in the form `address => name`.
  * @param string $subject The subject of the email being sent.
  * @param string $message The message being sent.
- * @param string $from The from address of the email, if blank, the board name will be used. If this is an array, it should be in the form `address => name`.
+ * @param string|array $from The from address of the email, if blank, the board name will be used. If this is an array, it should be in the form `address => name`.
  * @param string $charset The character set being used to send this email.
  * @param string $headers
  * @param boolean $keep_alive Do we wish to keep the connection to the mail server alive to send more than one message (SMTP only)
