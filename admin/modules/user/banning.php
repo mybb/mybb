@@ -314,7 +314,7 @@ if(!$mybb->input['action'])
 		);
 
 		$user = get_user_by_username($mybb->input['username'], $options);
-		
+
 		// Are we searching a user?
 		if(isset($mybb->input['search']))
 		{
@@ -339,7 +339,7 @@ if(!$mybb->input['action'])
 				{
 					$errors[] = $lang->error_already_banned;
 				}
-				
+
 				// Get PRIMARY usergroup information
 				$usergroups = $cache->read("usergroups");
 				if(!empty($usergroups[$user['usergroup']]) && $usergroups[$user['usergroup']]['isbannedgroup'] == 1)
@@ -442,86 +442,6 @@ if(!$mybb->input['action'])
 
 	$pagination = draw_admin_pagination($current_page, $per_page, $ban_count, "index.php?module=user-banning&amp;page={page}");
 
-	$table = new Table;
-	$table->construct_header($lang->user);
-	$table->construct_header($lang->ban_lifts_on, array("class" => "align_center", "width" => 150));
-	$table->construct_header($lang->time_left, array("class" => "align_center", "width" => 150));
-	$table->construct_header($lang->controls, array("class" => "align_center", "colspan" => 2, "width" => 200));
-	$table->construct_header($lang->moderation, array("class" => "align_center", "colspan" => 1, "width" => 200));
-
-	// Fetch bans
-	$query = $db->query("
-		SELECT b.*, a.username AS adminuser, u.username
-		FROM ".TABLE_PREFIX."banned b
-		LEFT JOIN ".TABLE_PREFIX."users u ON (b.uid=u.uid)
-		LEFT JOIN ".TABLE_PREFIX."users a ON (b.admin=a.uid)
-		{$where_sql_full}
-		ORDER BY dateline DESC
-		LIMIT {$start}, {$per_page}
-	");
-
-	// Get the banned users
-	while($ban = $db->fetch_array($query))
-	{
-		$profile_link = build_profile_link(htmlspecialchars_uni($ban['username']), $ban['uid'], "_blank");
-		$ban_date = my_date($mybb->settings['dateformat'], $ban['dateline']);
-		if($ban['lifted'] == 'perm' || $ban['lifted'] == '' || $ban['bantime'] == 'perm' || $ban['bantime'] == '---')
-		{
-			$ban_period = $lang->permenantly;
-			$time_remaining = $lifts_on = $lang->na;
-		}
-		else
-		{
-			$ban_period = $lang->for." ".$ban_times[$ban['bantime']];
-
-			$remaining = $ban['lifted']-TIME_NOW;
-			$time_remaining = nice_time($remaining, array('short' => 1, 'seconds' => false))."";
-
-			if($remaining < 3600)
-			{
-				$time_remaining = "<span style=\"color: red;\">{$time_remaining}</span>";
-			}
-			else if($remaining < 86400)
-			{
-				$time_remaining = "<span style=\"color: maroon;\">{$time_remaining}</span>";
-			}
-			else if($remaining < 604800)
-			{
-				$time_remaining = "<span style=\"color: green;\">{$time_remaining}</span>";
-			}
-
-			$lifts_on = my_date($mybb->settings['dateformat'], $ban['lifted']);
-		}
-
-		if(!$ban['adminuser'])
-		{
-			if($ban['admin'] == 0)
-			{
-				$ban['adminuser'] = $lang->mybb_engine;
-			}
-			else
-			{
-				$ban['adminuser'] = $ban['admin'];
-			}
-		}
-
-		$table->construct_cell($lang->sprintf($lang->bannedby_x_on_x, $profile_link, htmlspecialchars_uni($ban['adminuser']), $ban_date, $ban_period));
-		$table->construct_cell($lifts_on, array("class" => "align_center"));
-		$table->construct_cell($time_remaining, array("class" => "align_center"));
-		$table->construct_cell("<a href=\"index.php?module=user-banning&amp;action=edit&amp;uid={$ban['uid']}\">{$lang->edit}</a>", array("class" => "align_center"));
-		$table->construct_cell("<a href=\"index.php?module=user-banning&amp;action=lift&amp;uid={$ban['uid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_lift_ban}');\">{$lang->lift}</a>", array("class" => "align_center"));
-		$table->construct_cell("<a href=\"index.php?module=user-banning&amp;action=prune&amp;uid={$ban['uid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_prune}');\">{$lang->prune_threads_and_posts}</a>", array("class" => "align_center"));
-		$table->construct_row();
-	}
-
-	if($table->num_rows() == 0)
-	{
-		$table->construct_cell($lang->no_banned_users, array("colspan" => "6"));
-		$table->construct_row();
-	}
-	$table->output($lang->banned_accounts);
-	echo $pagination;
-
 	$form = new Form("index.php?module=user-banning", "post");
 	if($errors)
 	{
@@ -601,6 +521,88 @@ if(!$mybb->input['action'])
 	$buttons[] = $form->generate_submit_button($lang->search_for_a_user, array('name' => 'search'));
 	$form->output_submit_wrapper($buttons);
 	$form->end();
+
+	echo '<br />';
+
+	$table = new Table;
+	$table->construct_header($lang->user);
+	$table->construct_header($lang->ban_lifts_on, array("class" => "align_center", "width" => 150));
+	$table->construct_header($lang->time_left, array("class" => "align_center", "width" => 150));
+	$table->construct_header($lang->controls, array("class" => "align_center", "colspan" => 2, "width" => 200));
+	$table->construct_header($lang->moderation, array("class" => "align_center", "colspan" => 1, "width" => 200));
+
+	// Fetch bans
+	$query = $db->query("
+		SELECT b.*, a.username AS adminuser, u.username
+		FROM ".TABLE_PREFIX."banned b
+		LEFT JOIN ".TABLE_PREFIX."users u ON (b.uid=u.uid)
+		LEFT JOIN ".TABLE_PREFIX."users a ON (b.admin=a.uid)
+		{$where_sql_full}
+		ORDER BY dateline DESC
+		LIMIT {$start}, {$per_page}
+	");
+
+	// Get the banned users
+	while($ban = $db->fetch_array($query))
+	{
+		$profile_link = build_profile_link(htmlspecialchars_uni($ban['username']), $ban['uid'], "_blank");
+		$ban_date = my_date($mybb->settings['dateformat'], $ban['dateline']);
+		if($ban['lifted'] == 'perm' || $ban['lifted'] == '' || $ban['bantime'] == 'perm' || $ban['bantime'] == '---')
+		{
+			$ban_period = $lang->permenantly;
+			$time_remaining = $lifts_on = $lang->na;
+		}
+		else
+		{
+			$ban_period = $lang->for." ".$ban_times[$ban['bantime']];
+
+			$remaining = $ban['lifted']-TIME_NOW;
+			$time_remaining = nice_time($remaining, array('short' => 1, 'seconds' => false))."";
+
+			if($remaining < 3600)
+			{
+				$time_remaining = "<span style=\"color: red;\">{$time_remaining}</span>";
+			}
+			else if($remaining < 86400)
+			{
+				$time_remaining = "<span style=\"color: maroon;\">{$time_remaining}</span>";
+			}
+			else if($remaining < 604800)
+			{
+				$time_remaining = "<span style=\"color: green;\">{$time_remaining}</span>";
+			}
+
+			$lifts_on = my_date($mybb->settings['dateformat'], $ban['lifted']);
+		}
+
+		if(!$ban['adminuser'])
+		{
+			if($ban['admin'] == 0)
+			{
+				$ban['adminuser'] = $lang->mybb_engine;
+			}
+			else
+			{
+				$ban['adminuser'] = $ban['admin'];
+			}
+		}
+
+		$table->construct_cell($lang->sprintf($lang->bannedby_x_on_x, $profile_link, htmlspecialchars_uni($ban['adminuser']), $ban_date, $ban_period));
+		$table->construct_cell($lifts_on, array("class" => "align_center"));
+		$table->construct_cell($time_remaining, array("class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=user-banning&amp;action=edit&amp;uid={$ban['uid']}\">{$lang->edit}</a>", array("class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=user-banning&amp;action=lift&amp;uid={$ban['uid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_lift_ban}');\">{$lang->lift}</a>", array("class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=user-banning&amp;action=prune&amp;uid={$ban['uid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_prune}');\">{$lang->prune_threads_and_posts}</a>", array("class" => "align_center"));
+		$table->construct_row();
+	}
+
+	if($table->num_rows() == 0)
+	{
+		$table->construct_cell($lang->no_banned_users, array("colspan" => "6"));
+		$table->construct_row();
+	}
+	$table->output($lang->banned_accounts);
+	echo $pagination;
 
 	$page->output_footer();
 }

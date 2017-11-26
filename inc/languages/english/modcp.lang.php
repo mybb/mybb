@@ -41,10 +41,11 @@ $l['report_time'] = "Reported";
 $l['mark_read'] = "Mark Selected as Read";
 $l['no_reports'] = "There are currently no unread reports.";
 $l['no_logs'] = "No moderator actions are currently logged.";
-$l['error_noselected_reports'] = "Sorry, but you did not select any reported posts to mark as read. Either that or the selected posts have already been marked read by another user.";
+$l['error_noselected_reports'] = "Sorry, but you did not select any reported content to mark as read.";
 $l['error_missing_ipaddress'] = "Sorry, but you did not enter in an IP Address to find.";
 $l['error_no_results'] = "Sorry, there were no results found with the criteria you selected.";
-$l['redirect_reportsmarked'] = "The selected reported posts have been marked as read.";
+$l['redirect_reportsmarked'] = "The selected reported content have been marked as read.";
+$l['redirect_allreportsmarked'] = "All reported content has been marked as read.";
 $l['redirect_modnotes'] = "The moderator notes have been updated.";
 
 $l['for'] = "For";
@@ -61,6 +62,11 @@ $l['report_info_profile'] = "Profile of {1}";
 $l['report_info_reputation'] = "<a href=\"{1}\">Reputation</a> from {2}";
 $l['report_info_rep_profile'] = "<br /><span class=\"smalltext\">On {1}'s profile</span>";
 $l['report_info_lastreporter'] = "{1}<br />by {2}";
+
+$l['page_selected'] = "All <strong>{1}</strong> unread reports on this page are selected.";
+$l['all_selected'] = "All <strong>{1}</strong> unread reports are selected.";
+$l['select_all'] = "Select all <strong>{1}</strong> unread reports.";
+$l['clear_selection'] = "Clear Selection.";
 
 $l['moderator_notes'] = "Moderator Notes";
 $l['notes_public_all'] = "These notes are public to all moderators.";
@@ -93,7 +99,8 @@ $l['modlogs'] = "Moderator Logs";
 $l['action'] = "Action";
 $l['all_moderators'] = "All Moderators";
 $l['ip'] = "IP Address";
-$l['info_on_ip'] = "Information on This IP Address";
+$l['info_on_ip'] = "Information on this IP Address";
+$l['search_ip_sfs']  = "Search this IP on Stop Forum Spam";
 $l['information']  = "Information";
 $l['filter_modlogs'] = "Filter Moderator Logs";
 $l['forum'] = "Forum";

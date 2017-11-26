@@ -266,7 +266,7 @@ if($mybb->input['action'] == "join_requests")
 
 	$form = new Form("index.php?module=user-groups&amp;action=join_requests&gid={$group['gid']}", "post");
 	$table = new Table;
-	$table->construct_header($form->generate_check_box("checkall", 1, "", array('class' => 'checkall')), array('width' => 1));
+	$table->construct_header($form->generate_check_box("allbox", 1, "", array('class' => 'checkall')), array('width' => 1));
 	$table->construct_header($lang->users);
 	$table->construct_header($lang->reason);
 	$table->construct_header($lang->date_requested, array("class" => 'align_center', "width" => 200));
@@ -743,7 +743,16 @@ if($mybb->input['action'] == "add")
 			// Log admin action
 			log_admin_action($gid, htmlspecialchars_uni($mybb->input['title']));
 
-			flash_message($lang->success_group_created, 'success');
+			$groups = $cache->read('usergroups');
+			$grouptitles = array_column($groups, 'title');
+
+			$message = $lang->success_group_created;
+			if(in_array($mybb->input['title'], $grouptitles) && count(array_keys($grouptitles, $mybb->input['title'])) > 1)
+			{
+				$message = $lang->sprintf($lang->success_group_created_duplicate_title, htmlspecialchars_uni($mybb->input['title']));
+			}
+
+			flash_message($message, 'success');
 			admin_redirect("index.php?module=user-groups&action=edit&gid={$gid}");
 		}
 	}
@@ -964,7 +973,16 @@ if($mybb->input['action'] == "edit")
 			// Log admin action
 			log_admin_action($usergroup['gid'], htmlspecialchars_uni($mybb->input['title']));
 
-			flash_message($lang->success_group_updated, 'success');
+			$groups = $cache->read('usergroups');
+			$grouptitles = array_column($groups, 'title');
+
+			$message = $lang->success_group_updated;
+			if(in_array($mybb->input['title'], $grouptitles) && count(array_keys($grouptitles, $mybb->input['title'])) > 1)
+			{
+				$message = $lang->sprintf($lang->success_group_updated_duplicate_title, htmlspecialchars_uni($mybb->input['title']));
+			}
+
+			flash_message($message, 'success');
 			admin_redirect("index.php?module=user-groups");
 		}
 	}
@@ -1483,7 +1501,7 @@ if(!$mybb->input['action'])
 			$join_requests = " <small><a href=\"index.php?module=user-groups&amp;action=join_requests&amp;gid={$usergroup['gid']}\"><span style=\"color: red;\">({$joinrequests[$usergroup['gid']]} {$lang->outstanding_join_request})</span></a></small>";
 		}
 
-		$form_container->output_cell("<div class=\"float_right\">{$icon}</div><div><strong><a href=\"index.php?module=user-groups&amp;action=edit&amp;gid={$usergroup['gid']}\">".htmlspecialchars_uni($usergroup['title'])."</a></strong>{$join_requests}<br /><small>".htmlspecialchars_uni($usergroup['description'])."{$leaders_list}</small></div>");
+		$form_container->output_cell("<div class=\"float_right\">{$icon}</div><div><strong><a href=\"index.php?module=user-groups&amp;action=edit&amp;gid={$usergroup['gid']}\">".format_name(htmlspecialchars_uni($usergroup['title']), $usergroup['gid'])."</a></strong>{$join_requests}<br /><small>".htmlspecialchars_uni($usergroup['description'])."{$leaders_list}</small></div>");
 
 		if(!$primaryusers[$usergroup['gid']])
 		{

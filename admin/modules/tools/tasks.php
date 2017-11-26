@@ -730,7 +730,7 @@ if(!$mybb->input['action'])
 	{
 		$task['title'] = htmlspecialchars_uni($task['title']);
 		$task['description'] = htmlspecialchars_uni($task['description']);
-		$next_run = date($mybb->settings['dateformat'], $task['nextrun']).", ".date($mybb->settings['timeformat'], $task['nextrun']);
+		$next_run = my_date('normal', $task['nextrun'], "", 2);
 		if($task['enabled'] == 1)
 		{
 			$icon = "<img src=\"styles/{$page->style}/images/icons/bullet_on.png\" alt=\"({$lang->alt_enabled})\" title=\"{$lang->alt_enabled}\"  style=\"vertical-align: middle;\" /> ";

@@ -437,6 +437,7 @@ if($mybb->input['action'] == "edit")
 
 	if($mybb->request_method == "post")
 	{
+		$plugins->run_hooks("admin_user_users_edit_start");
 		if(is_super_admin($mybb->input['uid']) && $mybb->user['uid'] != $mybb->input['uid'] && !is_super_admin($mybb->user['uid']))
 		{
 			flash_message($lang->error_no_perms_super_admin, 'error');
@@ -848,6 +849,7 @@ if($mybb->input['action'] == "edit")
 				flash_message($lang->success_user_updated, 'success');
 				admin_redirect("index.php?module=user-users");
 			}
+			$plugins->run_hooks("admin_user_users_edit_end");
 		}
 	}
 
@@ -1114,6 +1116,7 @@ EOF;
 
 	$username = htmlspecialchars_uni($user['username']);
 	$table->output("{$lang->user_overview}: {$username}");
+	$plugins->run_hooks("admin_user_users_edit_overview");
 	echo "</div>\n";
 
 	//
@@ -1221,6 +1224,7 @@ EOF;
 		$form_container->end();
 	}
 
+	$plugins->run_hooks("admin_user_users_edit_profile");
 	echo "</div>\n";
 
 	//
@@ -1346,6 +1350,7 @@ EOF;
 	$form_container->output_row($lang->other_options, "", "<div class=\"user_settings_bit\">".implode("</div><div class=\"user_settings_bit\">", $other_options)."</div>");
 
 	$form_container->end();
+	$plugins->run_hooks("admin_user_users_edit_settings");
 	echo "</div>\n";
 
 	//
@@ -1480,6 +1485,7 @@ EOF;
 	$form_container->output_row($lang->signature_preferences, "", implode("<br />", $signature_options));
 
 	$form_container->end();
+	$plugins->run_hooks("admin_user_users_edit_signatur");
 	echo "</div>\n";
 
 	//
@@ -1545,6 +1551,7 @@ EOF;
 		$form_container->output_row($lang->or_specify_avatar_url, "", $form->generate_text_box('avatar_url', $avatar_url, array('id' => 'avatar_url')), 'avatar_url');
 	}
 	$form_container->end();
+	$plugins->run_hooks("admin_user_users_edit_avatar");
 	echo "</div>\n";
 
 	//
@@ -1644,6 +1651,7 @@ EOF;
 
 
 	$form_container->end();
+	$plugins->run_hooks("admin_user_users_edit_moderator_options");
 	echo "</div>\n";
 
 	$plugins->run_hooks("admin_user_users_edit_graph");
@@ -1962,11 +1970,13 @@ if($mybb->input['action'] == "merge")
 			$db->update_query("posts", $uid_update, "uid='{$source_user['uid']}'");
 			$db->update_query("privatemessages", $uid_update, "uid='{$source_user['uid']}'");
 			$db->update_query("reportedcontent", $uid_update, "uid='{$source_user['uid']}'");
-			$db->update_query("threadratings", $uid_update, "uid='{$source_user['uid']}'");
 			$db->update_query("threads", $uid_update, "uid='{$source_user['uid']}'");
 			$db->update_query("warnings", $uid_update, "uid='{$source_user['uid']}'");
 			$db->update_query("warnings", array("revokedby" => $destination_user['uid']), "revokedby='{$source_user['uid']}'");
 			$db->update_query("warnings", array("issuedby" => $destination_user['uid']), "issuedby='{$source_user['uid']}'");
+
+			// Thread ratings
+			merge_thread_ratings($source_user['uid'], $destination_user['uid']);
 
 			// Banning
 			$db->update_query("banned", array('admin' => $destination_user['uid']), "admin = '{$source_user['uid']}'");
@@ -2083,13 +2093,6 @@ if($mybb->input['action'] == "merge")
 			);
 			$db->update_query("users", $lists, "uid='{$destination_user['uid']}'");
 
-			// Set up user handler.
-			require_once MYBB_ROOT.'inc/datahandlers/user.php';
-			$userhandler = new UserDataHandler('delete');
-
-			// Delete the old user
-			$userhandler->delete_user($source_user['uid']);
-
 			// Get a list of forums where post count doesn't apply
 			$fids = array();
 			$query = $db->simple_select("forums", "fid", "usepostcounts=0");
@@ -2127,6 +2130,13 @@ if($mybb->input['action'] == "merge")
 			}
 
 			$plugins->run_hooks("admin_user_users_merge_commit");
+
+			// Set up user handler.
+			require_once MYBB_ROOT.'inc/datahandlers/user.php';
+			$userhandler = new UserDataHandler('delete');
+
+			// Delete the old user
+			$userhandler->delete_user($source_user['uid']);
 
 			$cache->update_awaitingactivation();
 
@@ -3604,30 +3614,18 @@ function build_users_view($view)
 				$user['view']['warninglevel'] = get_colored_warning_level($warning_level);
 			}
 
-			if($user['avatar'] && !my_validate_url($user['avatar']))
-			{
-				$user['avatar'] = "../{$user['avatar']}";
-			}
 			if($view['view_type'] == "card")
 			{
-				$scaled_avatar = fetch_scaled_avatar($user, 80, 80);
+				$max_dimensions = '80x80';
 			}
 			else
 			{
-				$scaled_avatar = fetch_scaled_avatar($user, 34, 34);
+				$max_dimensions = '34x34';
 			}
-			if(!$user['avatar'] || (my_strpos($user['avatar'], '://') !== false && !$mybb->settings['allowremoteavatars']))
-			{
-				if(my_validate_url($mybb->settings['useravatar']))
-				{
-					$user['avatar'] = str_replace('{theme}', 'images', $mybb->settings['useravatar']);
-				}
-				else
-				{
-					$user['avatar'] = "../".str_replace('{theme}', 'images', $mybb->settings['useravatar']);
-				}
-			}
-			$user['view']['avatar'] = "<img src=\"".htmlspecialchars_uni($user['avatar'])."\" alt=\"\" width=\"{$scaled_avatar['width']}\" height=\"{$scaled_avatar['height']}\" />";
+
+			$avatar = format_avatar($user['avatar'], $user['avatardimensions'], $max_dimensions);
+
+			$user['view']['avatar'] = "<img src=\"".$avatar['image']."\" alt=\"\" {$avatar['width_height']} />";
 
 			// Convert IP's to readable
 			$user['regip'] = my_inet_ntop($db->unescape_binary($user['regip']));
@@ -3936,35 +3934,6 @@ function build_user_view_table($user, $view, &$table)
 }
 
 /**
- * @param array $user
- * @param int $max_width
- * @param int $max_height
- *
- * @return array
- */
-function fetch_scaled_avatar($user, $max_width=80, $max_height=80)
-{
-	$scaled_dimensions = array(
-		"width" => $max_width,
-		"height" => $max_height,
-	);
-
-	global $mybb;
-
-	if($user['avatar'] && (my_strpos($user['avatar'], '://') === false || $mybb->settings['allowremoteavatars']))
-	{
-		if($user['avatardimensions'])
-		{
-			require_once MYBB_ROOT."inc/functions_image.php";
-			list($width, $height) = explode("|", $user['avatardimensions']);
-			$scaled_dimensions = scale_image($width, $height, $max_width, $max_height);
-		}
-	}
-
-	return array("width" => $scaled_dimensions['width'], "height" => $scaled_dimensions['height']);
-}
-
-/**
  * @param array $fields
  * @param array $values
  * @param DefaultFormContainer $form_container
@@ -4239,4 +4208,71 @@ $("#username").select2({
 });
 // -->
 </script>';
+}
+
+/**
+ * @param int $source_uid
+ * @param int $destination_uid
+ */
+function merge_thread_ratings($source_uid, $destination_uid)
+{
+	global $db;
+
+	$source_ratings = $dest_threads = $delete_list = $decrement_list = array();
+
+	// Get all thread ratings from both accounts
+	$query = $db->simple_select('threadratings', 'tid, uid, rid, rating', "uid IN ({$destination_uid}, {$source_uid})");
+	while($rating = $db->fetch_array($query))
+	{
+		if($rating['uid'] == $destination_uid)
+		{
+			$dest_threads[] = $rating['tid'];
+		}
+		else
+		{
+			$source_ratings[] = $rating;
+		}
+	}
+
+	// If there are duplicates, mark them for deletion
+	foreach($source_ratings as $rating)
+	{
+		if(in_array($rating['tid'], $dest_threads))
+		{
+			$delete_list[] = $rating['rid'];
+			$decrement_list[$rating['tid']][] = (int) $rating['rating'];
+		}
+	}
+
+	// Attribute all of the source user's ratings to the destination user
+	$db->update_query("threadratings", array("uid" => $destination_uid), "uid='{$source_uid}'");
+
+	// Remove ratings previously given to recently acquired threads
+	$query = $db->query("
+		SELECT tr.rid, tr.rating, t.tid
+		FROM {$db->table_prefix}threadratings tr
+		LEFT JOIN {$db->table_prefix}threads t ON (t.tid=tr.tid)
+		WHERE tr.uid='{$destination_uid}' AND tr.uid=t.uid
+	");
+	while($rating = $db->fetch_array($query))
+	{
+		$delete_list[] = $rating['rid'];
+		$decrement_list[$rating['tid']][] = (int) $rating['rating'];
+	}
+
+	// Delete the duplicate/disallowed ratings
+	if(!empty($delete_list))
+	{
+		$imp = implode(',', $delete_list);
+		$db->delete_query('threadratings', "rid IN ({$imp})");
+	}
+
+	// Correct the thread rating counters
+	if(!empty($decrement_list))
+	{
+		foreach($decrement_list as $tid => $ratings)
+		{
+			$db->update_query('threads', array('numratings' => 'numratings-'.count($ratings), 'totalratings' => 'totalratings-'.array_sum($ratings)), "tid='{$tid}'", 1, true);
+		}
+	}
 }

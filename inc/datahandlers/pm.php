@@ -130,7 +130,7 @@ class PMDataHandler extends DataHandler
 		// Check if the sender is over their quota or not - if they are, disable draft sending
 		if(isset($pm['options']['savecopy']) && $pm['options']['savecopy'] != 0 && empty($pm['saveasdraft']))
 		{
-			if($sender_permissions['pmquota'] != "0" && $sender['totalpms'] >= $sender_permissions['pmquota'] && $this->admin_override != true)
+			if($sender_permissions['pmquota'] != 0 && $sender['totalpms'] >= $sender_permissions['pmquota'] && $this->admin_override != true)
 			{
 				$pm['options']['savecopy'] = 0;
 			}
@@ -315,7 +315,7 @@ class PMDataHandler extends DataHandler
 			}
 
 			// Check to see if the user has reached their private message quota - if they have, email them.
-			if($recipient_permissions['pmquota'] != "0" && $user['totalpms'] >= $recipient_permissions['pmquota'] && $recipient_permissions['cancp'] != 1 && $sender_permissions['cancp'] != 1 && empty($pm['saveasdraft']) && !$this->admin_override)
+			if($recipient_permissions['pmquota'] != 0 && $user['totalpms'] >= $recipient_permissions['pmquota'] && $sender_permissions['cancp'] != 1 && empty($pm['saveasdraft']) && !$this->admin_override)
 			{
 				if(trim($user['language']) != '' && $lang->language_exists($user['language']))
 				{
@@ -602,7 +602,10 @@ class PMDataHandler extends DataHandler
 			}
 
 			$plugins->run_hooks("datahandler_pm_insert_updatedraft", $this);
-			$db->insert_query("privatemessages", $this->pm_insert_data);
+
+			$this->pmid = $db->insert_query("privatemessages", $this->pm_insert_data);
+
+			$plugins->run_hooks("datahandler_pm_insert_updatedraft_commit", $this);
 
 			// If this is a draft, end it here - below deals with complete messages
 			return array(
@@ -681,7 +684,10 @@ class PMDataHandler extends DataHandler
 			$this->pm_insert_data['toid'] = $recipient['uid'];
 
 			$plugins->run_hooks("datahandler_pm_insert", $this);
+
 			$this->pmid[] = $db->insert_query("privatemessages", $this->pm_insert_data);
+
+			$plugins->run_hooks("datahandler_pm_insert_commit", $this);
 
 			// If PM noices/alerts are on, show!
 			if($recipient['pmnotice'] == 1)
@@ -735,7 +741,10 @@ class PMDataHandler extends DataHandler
 			$this->pm_insert_data['receipt'] = 0;
 
 			$plugins->run_hooks("datahandler_pm_insert_savedcopy", $this);
+
 			$db->insert_query("privatemessages", $this->pm_insert_data);
+
+			$plugins->run_hooks("datahandler_pm_insert_savedcopy_commit", $this);
 
 			// Because the sender saved a copy, update their total pm count
 			require_once MYBB_ROOT."/inc/functions_user.php";

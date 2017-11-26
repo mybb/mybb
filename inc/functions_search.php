@@ -1184,76 +1184,29 @@ function perform_search_mysql($search)
 
 	$forumin = '';
 	$fidlist = array();
-	$searchin = array();
-	if(!is_array($search['forums']) || $search['forums'][0] != "all")
+	if(!empty($search['forums']) && (!is_array($search['forums']) || $search['forums'][0] != "all"))
 	{
 		if(!is_array($search['forums']))
 		{
 			$search['forums'] = array((int)$search['forums']);
 		}
-		// Generate a comma separated list of all groups the user belongs to
-		$user_groups = $mybb->user['usergroup'];
-		if($mybb->user['additionalgroups'])
-		{
-			$user_groups .= ",".$mybb->user['additionalgroups'];
-
-			// Setup some quick permissions for us
-			$fcache = $cache->read("forumpermissions");
-			$add_groups = explode(",", $mybb->user['additionalgroups']);
-		}
 		foreach($search['forums'] as $forum)
 		{
 			$forum = (int)$forum;
-			if(empty($searchin[$forum]))
+			if($forum > 0)
 			{
-				if(isset($add_groups) && is_array($add_groups))
+				$fidlist[] = $forum;
+				$child_list = get_child_list($forum);
+				if(is_array($child_list))
 				{
-					$can_search = 0;
-					foreach($add_groups as $add_group)
-					{
-						// Check to make sure that we have sufficient permissions to search this forum
-						if(!is_array($fcache[$forum][$add_group]) || $fcache[$forum][$add_group]['cansearch'] == 1 || $mybb->usergroup['cansearch'] == 1)
-						{
-							$can_search = 1;
-						}
-					}
-
-					if($can_search == 0)
-					{
-						// We can't search this forum...
-						continue;
-					}
-				}
-
- 				switch($db->type)
- 				{
- 					case "pgsql":
-						$query = $db->simple_select("forums", "DISTINCT fid", "(','||parentlist||',' LIKE ',%{$forum}%,') = true AND active != 0");
- 						break;
- 					case "sqlite":
-						$query = $db->simple_select("forums", "DISTINCT fid", "(','||parentlist||',' LIKE ',%{$forum}%,') > 0 AND active != 0");
- 						break;
- 					default:
-						$query = $db->simple_select("forums", "DISTINCT fid", "INSTR(CONCAT(',',parentlist,','),',{$forum},') > 0 AND active != 0");
- 				}
-
-				while($sforum = $db->fetch_array($query))
-				{
-					$fidlist[] = $sforum['fid'];
+					$fidlist = array_merge($fidlist, $child_list);
 				}
 			}
 		}
-		if(count($fidlist) == 1)
+		$fidlist = array_unique($fidlist);
+		if(count($fidlist) >= 1)
 		{
-			$forumin .= " AND t.fid='$forum' ";
-			$searchin[$forum] = 1;
-		}
-		else
-		{
-			if(count($fidlist) > 1)
-			{
-				$forumin = " AND t.fid IN (".implode(',', $fidlist).")";
-			}
+			$forumin = " AND t.fid IN (".implode(',', $fidlist).")";
 		}
 	}
 
@@ -1518,17 +1471,7 @@ function perform_search_mysql_ft($search)
 		}
 		else
 		{
-			switch($db->type)
-			{
-				case 'mysql':
-				case 'mysqli':
-					$field = 'username';
-					break;
-				default:
-					$field = 'LOWER(username)';
-					break;
-			}
-			$query = $db->simple_select("users", "uid", "{$field} LIKE '%".$db->escape_string_like($search['author'])."%'");
+			$query = $db->simple_select("users", "uid", "username LIKE '%".$db->escape_string_like($search['author'])."%'");
 
 			while($user = $db->fetch_array($query))
 			{
@@ -1603,60 +1546,29 @@ function perform_search_mysql_ft($search)
 	$forumin = '';
 	$fidlist = array();
 	$searchin = array();
-	if(!is_array($search['forums']) || $search['forums'][0] != "all")
+	if(!empty($search['forums']) && (!is_array($search['forums']) || $search['forums'][0] != "all"))
 	{
 		if(!is_array($search['forums']))
 		{
 			$search['forums'] = array((int)$search['forums']);
 		}
-		// Generate a comma separated list of all groups the user belongs to
-		$user_groups = $mybb->user['usergroup'];
-		if($mybb->user['additionalgroups'])
-		{
-			$user_groups .= ",".$mybb->user['additionalgroups'];
-		}
 		foreach($search['forums'] as $forum)
 		{
 			$forum = (int)$forum;
-			if(empty($searchin[$forum]))
+			if($forum > 0)
 			{
-				switch($db->type)
+				$fidlist[] = $forum;
+				$child_list = get_child_list($forum);
+				if(is_array($child_list))
 				{
-					case "pgsql":
-					case "sqlite":
-						$query = $db->query("
-							SELECT f.fid
-							FROM ".TABLE_PREFIX."forums f
-							LEFT JOIN ".TABLE_PREFIX."forumpermissions p ON (f.fid=p.fid AND p.gid IN (".$user_groups."))
-							WHERE INSTR(','||parentlist||',',',$forum,') > 0 AND active!=0 AND ((p.fid) IS NULL OR p.cansearch=1)
-						");
-						break;
-					default:
-						$query = $db->query("
-							SELECT f.fid
-							FROM ".TABLE_PREFIX."forums f
-							LEFT JOIN ".TABLE_PREFIX."forumpermissions p ON (f.fid=p.fid AND p.gid IN (".$user_groups."))
-							WHERE INSTR(CONCAT(',',parentlist,','),',$forum,') > 0 AND active!=0 AND ((p.fid) IS NULL OR p.cansearch=1)
-						");
-				}
-				while($sforum = $db->fetch_array($query))
-				{
-					$fidlist[] = $sforum['fid'];
+					$fidlist = array_merge($fidlist, $child_list);
 				}
 			}
 		}
-		if(count($fidlist) == 1)
+		$fidlist = array_unique($fidlist);
+		if(count($fidlist) >= 1)
 		{
-			$forumin .= " AND t.fid='$forum' ";
-			$searchin[$forum] = 1;
-		}
-		else
-		{
-
-			if(count($fidlist) > 1)
-			{
-				$forumin = " AND t.fid IN (".implode(',', $fidlist).")";
-			}
+			$forumin = " AND t.fid IN (".implode(',', $fidlist).")";
 		}
 	}
 	$permsql = "";

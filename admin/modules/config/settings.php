@@ -944,6 +944,8 @@ if($mybb->input['action'] == "change")
 
 		while($multisetting = $db->fetch_array($query))
 		{
+			$options = array();
+
 			if(substr($multisetting['optionscode'], 0, 8) == 'checkbox')
 			{
 				$checkbox_settings[] = $multisetting['name'];
@@ -997,7 +999,7 @@ if($mybb->input['action'] == "change")
 		// Administrator is changing the login method.
 		if($mybb->settings['username_method'] == 1 || $mybb->settings['username_method'] == 2 || $mybb->input['upsetting']['username_method'] == 1 || $mybb->input['upsetting']['username_method'] == 2)
 		{
-			$query = $db->simple_select('users', 'email, COUNT(email) AS duplicates', "email!=''", array('group_by' => 'email HAVING duplicates>1'));
+			$query = $db->simple_select('users', 'email', "email != ''", array('group_by' => 'email HAVING COUNT(email)>1'));
 			if($db->num_rows($query))
 			{
 				$mybb->input['upsetting']['username_method'] = 0;
@@ -1088,13 +1090,15 @@ if($mybb->input['action'] == "change")
 			$cache->update_statistics();
 		}
 
-		if(isset($mybb->input['upsetting']['statslimit']) && $mybb->input['upsetting']['statslimit'] != $mybb->settings['statstopreferrer'])
+		$statslimit = $mybb->settings['statslimit'];
+
+		rebuild_settings();
+
+		if(isset($mybb->input['upsetting']['statslimit']) && $mybb->input['upsetting']['statslimit'] != $statslimit)
 		{
 			$cache->update_most_replied_threads();
 			$cache->update_most_viewed_threads();
 		}
-
-		rebuild_settings();
 
 		$plugins->run_hooks("admin_config_settings_change_commit");
 

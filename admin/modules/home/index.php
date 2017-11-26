@@ -151,7 +151,7 @@ if($mybb->input['action'] == "version_check")
 
 			$link = htmlspecialchars_uni($item['link']);
 
-			$table->construct_cell("<span style=\"font-size: 16px;\"><strong>".htmlspecialchars_uni($item['title'])."</strong></span><br /><br />{$content}<strong><span style=\"float: right;\">{$stamp}</span><br /><br /><a href=\"{$link}\" target=\"_blank\">&raquo; {$lang->read_more}</a></strong>");
+			$table->construct_cell("<span style=\"font-size: 16px;\"><strong>".htmlspecialchars_uni($item['title'])."</strong></span><br /><br />{$content}<strong><span style=\"float: right;\">{$stamp}</span><br /><br /><a href=\"{$link}\" target=\"_blank\" rel=\"noopener\">&raquo; {$lang->read_more}</a></strong>");
 			$table->construct_row();
 		}
 	}
@@ -295,7 +295,7 @@ elseif(!$mybb->input['action'])
 	// If the update check contains information about a newer version, show an alert
 	if(isset($update_check['latest_version_code']) && $update_check['latest_version_code'] > $mybb->version_code)
 	{
-		$lang->new_version_available = $lang->sprintf($lang->new_version_available, "MyBB {$mybb->version}", "<a href=\"https://mybb.com/downloads\" target=\"_blank\">MyBB {$update_check['latest_version']}</a>");
+		$lang->new_version_available = $lang->sprintf($lang->new_version_available, "MyBB {$mybb->version}", "<a href=\"https://mybb.com/download\" target=\"_blank\" rel=\"noopener\">MyBB {$update_check['latest_version']}</a>");
 		$page->output_error("<p><em>{$lang->new_version_available}</em></p>");
 	}
 
@@ -368,7 +368,7 @@ elseif(!$mybb->input['action'])
 		foreach($update_check['news'] as $news_item)
 		{
 			$posted = my_date('relative', $news_item['dateline']);
-			$table->construct_cell("<strong><a href=\"{$news_item['link']}\" target=\"_blank\">{$news_item['title']}</a></strong><br /><span class=\"smalltext\">{$posted}</span>");
+			$table->construct_cell("<strong><a href=\"{$news_item['link']}\" target=\"_blank\" rel=\"noopener\">{$news_item['title']}</a></strong><br /><span class=\"smalltext\">{$posted}</span>");
 			$table->construct_row();
 
 			$table->construct_cell($news_item['description']);

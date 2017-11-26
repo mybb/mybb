@@ -16,8 +16,6 @@ $l['skype_center'] = "Skype Center";
 $l['chat_on_skype'] = "Chat with {1} on Skype";
 $l['call_on_skype'] = "Call {1} on Skype";
 $l['yahoo_center'] = "Yahoo! Center";
-$l['send_y_message'] = "Send {1} a Yahoo! Message.";
-$l['view_y_profile'] = "View {1}'s Yahoo! Profile.";
 $l['aim_center'] = "AOL IM Center";
 
 $l['download_aim'] = "Download AIM";
@@ -71,7 +69,7 @@ $l['error_invalid_limit'] = "The feed item limit you entered is invalid. Please 
 
 $l['syndication'] = "Latest Thread Syndication";
 $l['syndication_generated_url'] = "Your Generated Syndication URL:";
-$l['syndication_note'] = "Below you can generate links to specific RSS syndication feeds. Links can be generated for all forums, per forum, or for a specific number of forums. You will then be presented with a link which you can copy in to an RSS reader. <i><a href=\"http://en.wikipedia.org/wiki/RSS\" target=\"_blank\">What is RSS?</a></i>";
+$l['syndication_note'] = "Below you can generate links to specific RSS syndication feeds. Links can be generated for all forums, per forum, or for a specific number of forums. You will then be presented with a link which you can copy in to an RSS reader. <i><a href=\"https://en.wikipedia.org/wiki/RSS\" target=\"_blank\" rel=\"noopener\">What is RSS?</a></i>";
 $l['syndication_forum'] = "Forum to Syndicate:";
 $l['syndication_forum_desc'] = "Please select a forum from the right. Use the CTRL key to select multiple forums.";
 $l['syndication_version'] = "Feed Version:";
@@ -80,7 +78,7 @@ $l['syndication_version_atom1'] = "Atom 1.0";
 $l['syndication_version_rss2'] = "RSS 2.00 (Default)";
 $l['syndication_generate'] = "Generate Syndication URL";
 $l['syndication_limit'] = "Limit:";
-$l['syndication_limit_desc'] = "The amount of threads to download at one time. Not recommended to be beyond 50.";
+$l['syndication_limit_desc'] = "The amount of threads to download at one time. 50 at once is maximum limit.";
 $l['syndication_threads_time'] = "threads at a time";
 $l['syndicate_all_forums'] = "Syndicate All Forums";
 

@@ -208,6 +208,8 @@ $l['error_cannot_have_both_types'] = "You cannot have a joinable group that is b
 
 $l['success_group_created'] = "The new user group has been created successfully.";
 $l['success_group_updated'] = "The selected user group has been updated successfully.";
+$l['success_group_created_duplicate_title'] = "The new user group has been created successfully. Please note that there are multiple user groups named \"{1}\".";
+$l['success_group_updated_duplicate_title'] = "The selected user group has been updated successfully. Please note that there are multiple user groups named \"{1}\".";
 $l['success_group_deleted'] = "The selected user group has been deleted successfully.";
 $l['success_groups_disporder_updated'] = "The user group display orders have been updated successfully.";
 $l['success_join_request_approved'] = "The selected join request has been approved successfully. The user is now a member of this user group.";

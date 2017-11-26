@@ -4,7 +4,7 @@
  *
  * This class renders diffs in the Wiki-style "inline" format.
  *
- * Copyright 2004-2011 Horde LLC (http://www.horde.org/)
+ * Copyright 2004-2017 Horde LLC (http://www.horde.org/)
  *
  * See the enclosed file COPYING for license information (LGPL). If you did
  * not receive this file, see http://www.horde.org/licenses/lgpl21.
@@ -153,8 +153,8 @@ class Horde_Text_Diff_Renderer_Inline extends Horde_Text_Diff_Renderer
 
         if ($this->_split_characters) {
             $diff = new Horde_Text_Diff('native',
-                                  array(preg_split('//', $text1),
-                                        preg_split('//', $text2)));
+                                  array(preg_split('//u', str_replace("\n", $nl, $text1)),
+                                        preg_split('//u', str_replace("\n", $nl, $text2))));
         } else {
             /* We want to split on word boundaries, but we need to preserve
              * whitespace as well. Therefore we split on words, but include

@@ -110,21 +110,21 @@ function build_postbit($post, $post_type=0)
 			$parser_options['allow_imgcode'] = $forum['allowimgcode'];
 			$parser_options['allow_videocode'] = $forum['allowvideocode'];
 			$parser_options['filter_badwords'] = 1;
-
-			if(!$post['username'])
-			{
-				$post['username'] = $lang->guest;
-			}
-
-			if($post['userusername'])
-			{
-				$parser_options['me_username'] = $post['userusername'];
-			}
-			else
-			{
-				$parser_options['me_username'] = $post['username'];
-			}
 			break;
+	}
+
+	if(!$post['username'])
+	{
+		$post['username'] = $lang->guest; // htmlspecialchars_uni'd below
+	}
+
+	if($post['userusername'])
+	{
+		$parser_options['me_username'] = $post['userusername'];
+	}
+	else
+	{
+		$parser_options['me_username'] = $post['username'];
 	}
 
 	$post['username'] = htmlspecialchars_uni($post['username']);
@@ -503,6 +503,7 @@ function build_postbit($post, $post_type=0)
 		eval("\$post['user_details'] = \"".$templates->get("postbit_author_guest")."\";");
 	}
 
+	$post['input_editreason'] = '';
 	$post['button_edit'] = '';
 	$post['button_quickdelete'] = '';
 	$post['button_quickrestore'] = '';
@@ -536,7 +537,7 @@ function build_postbit($post, $post_type=0)
 		{
 			$forumpermissions = forum_permissions($fid);
 		}
-		
+
 		// Figure out if we need to show an "edited by" message
 		if($post['edituid'] != 0 && $post['edittime'] != 0 && $post['editusername'] != "" && (($mybb->settings['showeditedby'] != 0 && $usergroup['cancp'] == 0) || ($mybb->settings['showeditedbyadmin'] != 0 && $usergroup['cancp'] == 1)))
 		{
@@ -557,6 +558,7 @@ function build_postbit($post, $post_type=0)
 		$time = TIME_NOW;
 		if((is_moderator($fid, "caneditposts") || ($forumpermissions['caneditposts'] == 1 && $mybb->user['uid'] == $post['uid'] && $thread['closed'] != 1 && ($mybb->usergroup['edittimelimit'] == 0 || $mybb->usergroup['edittimelimit'] != 0 && $post['dateline'] > ($time-($mybb->usergroup['edittimelimit']*60))))) && $mybb->user['uid'] != 0)
 		{
+			eval("\$post['input_editreason'] = \"".$templates->get("postbit_editreason")."\";");
 			eval("\$post['button_edit'] = \"".$templates->get("postbit_edit")."\";");
 		}
 
@@ -631,7 +633,7 @@ function build_postbit($post, $post_type=0)
 		// Inline moderation stuff
 		if($ismod)
 		{
-			if(isset($mybb->cookies[$inlinecookie]) && my_strpos($mybb->cookies[$inlinecookie], "|".$post['pid']."|"))
+			if(isset($mybb->cookies[$inlinecookie]) && my_strpos($mybb->cookies[$inlinecookie], "|".$post['pid']."|") !== false)
 			{
 				$inlinecheck = "checked=\"checked\"";
 				$inlinecount++;
@@ -838,19 +840,19 @@ function build_postbit($post, $post_type=0)
 				}
 			}
 
-			// Is this author on the ignore list of the current user? Hide this post
-			if(is_array($ignored_users) && $post['uid'] != 0 && isset($ignored_users[$post['uid']]) && $ignored_users[$post['uid']] == 1)
-			{
-				$ignored_message = $lang->sprintf($lang->postbit_currently_ignoring_user, $post['username']);
-				eval("\$ignore_bit = \"".$templates->get("postbit_ignored")."\";");
-				$post_visibility = "display: none;";
-			}
-
 			// Has this post been deleted but can be viewed? Hide this post
 			if($post['visible'] == -1 && is_moderator($fid, "canviewdeleted"))
 			{
 				$deleted_message = $lang->sprintf($lang->postbit_deleted_post_user, $post['username']);
 				eval("\$deleted_bit = \"".$templates->get("postbit_deleted")."\";");
+				$post_visibility = "display: none;";
+			}
+
+			// Is this author on the ignore list of the current user? Hide this post
+			if(is_array($ignored_users) && $post['uid'] != 0 && isset($ignored_users[$post['uid']]) && $ignored_users[$post['uid']] == 1 && empty($deleted_bit))
+			{
+				$ignored_message = $lang->sprintf($lang->postbit_currently_ignoring_user, $post['username']);
+				eval("\$ignore_bit = \"".$templates->get("postbit_ignored")."\";");
 				$post_visibility = "display: none;";
 			}
 			break;
@@ -895,7 +897,7 @@ function get_post_attachments($id, &$post)
 	{
 		$forumpermissions = forum_permissions($post['fid']);
 	}
-	
+
 	if(isset($attachcache[$id]) && is_array($attachcache[$id]))
 	{ // This post has 1 or more attachments
 		foreach($attachcache[$id] as $aid => $attachment)
@@ -920,7 +922,7 @@ function get_post_attachments($id, &$post)
 				{
 					$attachment['dateuploaded'] = $attachment['dateline'];
 				}
-				$attachdate = my_date('relative', $attachment['dateuploaded']);
+				$attachdate = my_date('normal', $attachment['dateuploaded']);
 				// Support for [attachment=id] code
 				if(stripos($post['message'], "[attachment=".$attachment['aid']."]") !== false)
 				{

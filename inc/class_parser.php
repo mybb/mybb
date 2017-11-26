@@ -166,6 +166,8 @@ class postParser
 			$message = str_replace($find, $replace, $message);
 		}
 
+		$message = $plugins->run_hooks("parse_message_htmlsanitized", $message);
+
 		// Replace "me" code and slaps if we have a username
 		if(!empty($this->options['me_username']) && $mybb->settings['allowmemycode'] == 1)
 		{
@@ -174,6 +176,8 @@ class postParser
 			$message = preg_replace('#(>|^|\r|\n)/me ([^\r\n<]*)#i', "\\1<span style=\"color: red;\" class=\"mycode_me\">* {$this->options['me_username']} \\2</span>", $message);
 			$message = preg_replace('#(>|^|\r|\n)/slap ([^\r\n<]*)#i', "\\1<span style=\"color: red;\" class=\"mycode_slap\">* {$this->options['me_username']} {$lang->slaps} \\2 {$lang->with_trout}</span>", $message);
 		}
+
+		$message = $plugins->run_hooks("parse_message_me_mycode", $message);
 
 		// If we can, parse smilies
 		if(!empty($this->options['allow_smilies']))
@@ -317,10 +321,10 @@ class postParser
 
 		if($mybb->settings['allowemailmycode'] == 1)
 		{
-			$callback_mycode['email_simple']['regex'] = "#\[email\](.*?)\[/email\]#i";
+			$callback_mycode['email_simple']['regex'] = "#\[email\]((?:[a-zA-Z0-9-_\+\.]+?)@[a-zA-Z0-9-]+\.[a-zA-Z0-9\.-]+(?:\?.*?)?)\[/email\]#i";
 			$callback_mycode['email_simple']['replacement'] = array($this, 'mycode_parse_email_callback');
 
-			$callback_mycode['email_complex']['regex'] = "#\[email=(.*?)\](.*?)\[/email\]#i";
+			$callback_mycode['email_complex']['regex'] = "#\[email=((?:[a-zA-Z0-9-_\+\.]+?)@[a-zA-Z0-9-]+\.[a-zA-Z0-9\.-]+(?:\?.*?)?)\](.*?)\[/email\]#i";
 			$callback_mycode['email_complex']['replacement'] = array($this, 'mycode_parse_email_callback');
 
 			++$callback_count;
@@ -821,7 +825,14 @@ class postParser
 		{
 			if($match[1] < TIME_NOW)
 			{
-				$postdate = my_date('relative', (int)$match[1]);
+				if($text_only)
+				{
+					$postdate = my_date('normal', (int)$match[1]);
+				}
+				else
+				{
+					$postdate = my_date('relative', (int)$match[1]);
+				}
 				$date = " ({$postdate})";
 			}
 			$username = preg_replace("#(?:&quot;|\"|')? dateline=(?:&quot;|\"|')?[0-9]+(?:&quot;|\"|')?#i", '', $username);
@@ -1050,10 +1061,13 @@ class postParser
 			$name = htmlspecialchars_uni($name);
 		}
 
-		$nofollow = '';
 		if(!empty($this->options['nofollow_on']))
 		{
-			$nofollow = " rel=\"nofollow\"";
+			$rel = " rel=\"noopener nofollow\"";
+		}
+		else
+		{
+			$rel = " rel=\"noopener\"";
 		}
 
 		// Fix some entities in URLs
@@ -1417,9 +1431,20 @@ class postParser
 				}
 				break;
 			case "twitch":
-				if(isset($path[3]))
+				if(count($path) >= 3 && $path[1] == 'videos')
 				{
-					$id = $path[3]; // https://www.twitch.tv/giantbomb/v/100048090
+					// Direct video embed with URL like: https://www.twitch.tv/videos/179723472
+					$id = 'video=v'.$path[2];
+				}
+				elseif(count($path) >= 4 && $path[2] == 'v')
+				{
+					// Direct video embed with URL like: https://www.twitch.tv/waypoint/v/179723472
+					$id = 'video=v'.$path[3];
+				}
+				elseif(count($path) >= 2)
+				{
+					// Channel (livestream) embed with URL like: https://twitch.tv/waypoint
+					$id = 'channel='.$path[1];
 				}
 				break;
 			default:
@@ -1525,7 +1550,7 @@ class postParser
 				$last_char = my_substr($matches[3], -1);
 			}
 		}
-		if($matches[2] == 'www' || $matches[2] == 'ftp')
+		if(in_array(strtolower($matches[2]), array('www', 'ftp')))
 		{
 			return "{$matches[1]}[url]{$matches[2]}.{$matches[3]}[/url]{$external}";
 		}

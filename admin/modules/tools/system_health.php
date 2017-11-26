@@ -757,7 +757,7 @@ if(!$mybb->input['action'])
 	while($task = $db->fetch_array($query))
 	{
 		$task['title'] = htmlspecialchars_uni($task['title']);
-		$next_run = date($mybb->settings['dateformat'], $task['nextrun']).", ".date($mybb->settings['timeformat'], $task['nextrun']);
+		$next_run = my_date('normal', $task['nextrun'], "", 2);
 		$table->construct_cell("<strong>{$task['title']}</strong>");
 		$table->construct_cell($next_run, array("class" => "align_center"));
 
@@ -922,7 +922,7 @@ if(!$mybb->input['action'])
 
 	if($errors)
 	{
-		$page->output_error("<p><em>{$errors} {$lang->error_chmod}</span></strong> {$lang->chmod_info} <a href=\"https://docs.mybb.com/1.8/administration/security/file-permissions\" target=\"_blank\">MyBB Docs</a>.</em></p>");
+		$page->output_error("<p><em>{$errors} {$lang->error_chmod}</span></strong> {$lang->chmod_info} <a href=\"https://docs.mybb.com/1.8/administration/security/file-permissions\" target=\"_blank\" rel=\"noopener\">MyBB Docs</a>.</em></p>");
 	}
 	else
 	{

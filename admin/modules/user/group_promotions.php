@@ -172,7 +172,7 @@ if($mybb->input['action'] == "edit")
 		admin_redirect("index.php?module=user-group_promotions");
 	}
 
-	$query = $db->simple_select("promotions", "*", "pid = '{$mybb->input['pid']}'");
+	$query = $db->simple_select("promotions", "*", "pid='".$mybb->get_input('pid', MyBB::INPUT_INT)."'");
 	$promotion = $db->fetch_array($query);
 
 	if(!$promotion)
@@ -227,13 +227,24 @@ if($mybb->input['action'] == "edit")
 			}
 
 			$allowed_operators = array('>', '>=', '=', '<=', '<');
-			$operator_fields = array('posttype', 'threadtype', 'timeregisteredtype', 'reputationtype', 'referralstype', 'warningstype');
+			$operator_fields = array('posttype', 'threadtype', 'reputationtype', 'referralstype', 'warningstype');
 
 			foreach($operator_fields as $field)
 			{
 				if(!in_array($mybb->get_input($field), $allowed_operators))
 				{
 					$mybb->input[$field] = '=';
+				}
+			}
+
+			$allowed_times = array('hours', 'days', 'weeks', 'months', 'years');
+			$time_fields = array('timeregisteredtype', 'timeonlinetype');
+
+			foreach($time_fields as $field)
+			{
+				if(!in_array($mybb->get_input($field), $allowed_times))
+				{
+					$mybb->input[$field] = 'days';
 				}
 			}
 
@@ -444,13 +455,24 @@ if($mybb->input['action'] == "add")
 			}
 
 			$allowed_operators = array('>', '>=', '=', '<=', '<');
-			$operator_fields = array('posttype', 'threadtype', 'timeregisteredtype', 'reputationtype', 'referralstype', 'warningstype');
+			$operator_fields = array('posttype', 'threadtype', 'reputationtype', 'referralstype', 'warningstype');
 
 			foreach($operator_fields as $field)
 			{
 				if(!in_array($mybb->get_input($field), $allowed_operators))
 				{
 					$mybb->input[$field] = '=';
+				}
+			}
+
+			$allowed_times = array('hours', 'days', 'weeks', 'months', 'years');
+			$time_fields = array('timeregisteredtype', 'timeonlinetype');
+
+			foreach($time_fields as $field)
+			{
+				if(!in_array($mybb->get_input($field), $allowed_times))
+				{
+					$mybb->input[$field] = 'days';
 				}
 			}
 
@@ -667,7 +689,7 @@ if($mybb->input['action'] == "logs")
 			$log['type'] = $lang->primary;
 		}
 
-		$log['dateline'] = date($mybb->settings['dateformat'], $log['dateline']).", ".date($mybb->settings['timeformat'], $log['dateline']);
+		$log['dateline'] = my_date('relative', $log['dateline']);
 		$table->construct_cell($log['username']);
 		$table->construct_cell($log['type'], array('style' => 'text-align: center;'));
 		$table->construct_cell($log['oldusergroup'], array('style' => 'text-align: center;'));

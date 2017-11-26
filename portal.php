@@ -365,7 +365,14 @@ if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_sho
 		}
 
 		$lastpostdate = my_date('relative', $thread['lastpost']);
-		$lastposter = htmlspecialchars_uni($thread['lastposter']);
+		if(!$thread['lastposteruid'] && !$thread['lastposter'])
+		{
+			$lastposter = htmlspecialchars_uni($lang->guest);
+		}
+		else
+		{
+			$lastposter = htmlspecialchars_uni($thread['lastposter']);
+		}
 		$thread['replies'] = my_number_format($thread['replies']);
 		$thread['views'] = my_number_format($thread['views']);
 
@@ -378,11 +385,15 @@ if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_sho
 		{
 			$lastposterlink = build_profile_link($lastposter, $thread['lastposteruid']);
 		}
+
+		$thread['subject'] = $thread['fullsubject'] = $parser->parse_badwords($thread['subject']);
 		if(my_strlen($thread['subject']) > 25)
 		{
 			$thread['subject'] = my_substr($thread['subject'], 0, 25) . "...";
 		}
-		$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
+		$thread['subject'] = htmlspecialchars_uni($thread['subject']);
+		$thread['fullsubject'] = htmlspecialchars_uni($thread['fullsubject']);
+
 		$thread['threadlink'] = get_thread_link($thread['tid']);
 		$thread['lastpostlink'] = get_thread_link($thread['tid'], 0, "lastpost");
 		$thread['forumlink'] = get_forum_link($thread['fid']);
@@ -534,9 +545,15 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 			$announcement['threadlink'] = get_thread_link($announcement['tid']);
 			$announcement['forumlink'] = get_forum_link($announcement['fid']);
 			$announcement['forumname'] = $forum_cache[$announcement['fid']]['name'];
-
 			$announcement['username'] = htmlspecialchars_uni($announcement['username']);
-			$announcement['threadusername'] = htmlspecialchars_uni($announcement['threadusername']);
+			if(!$announcement['uid'] && !$announcement['threadusername'])
+			{
+				$announcement['threadusername'] = htmlspecialchars_uni($lang->guest);
+			}
+			else
+			{
+				$announcement['threadusername'] = htmlspecialchars_uni($announcement['threadusername']);
+			}
 
 			if($announcement['uid'] == 0)
 			{

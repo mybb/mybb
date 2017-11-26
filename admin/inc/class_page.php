@@ -97,7 +97,7 @@ class DefaultPage
 		echo "	<title>".$title."</title>\n";
 		echo "	<meta name=\"author\" content=\"MyBB Group\" />\n";
 		echo "	<meta name=\"copyright\" content=\"Copyright ".COPY_YEAR." MyBB Group.\" />\n";
-		echo "	<link rel=\"stylesheet\" href=\"styles/".$this->style."/main.css?ver=1804\" type=\"text/css\" />\n";
+		echo "	<link rel=\"stylesheet\" href=\"styles/".$this->style."/main.css?ver=1813\" type=\"text/css\" />\n";
 		echo "	<link rel=\"stylesheet\" href=\"styles/".$this->style."/modal.css\" type=\"text/css\" />\n";
 
 		// Load stylesheet for this module if it has one
@@ -108,7 +108,7 @@ class DefaultPage
 
 		echo "	<script type=\"text/javascript\" src=\"../jscripts/jquery.js\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"../jscripts/jquery.plugins.min.js\"></script>\n";
-		echo "	<script type=\"text/javascript\" src=\"../jscripts/general.js?ver=1810\"></script>\n";
+		echo "	<script type=\"text/javascript\" src=\"../jscripts/general.js?ver=1813\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"./jscripts/admincp.js\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"./jscripts/tabs.js\"></script>\n";
 
@@ -226,7 +226,7 @@ lang.saved = \"{$lang->saved}\";
 		echo "	<br style=\"clear: both;\" />";
 		echo "	<br style=\"clear: both;\" />";
 		echo "	</div>\n";
-		echo "<div id=\"footer\"><p class=\"generation\">".$lang->sprintf($lang->generated_in, $totaltime, $debuglink, $querycount, $memory_usage)."</p><p class=\"powered\">Powered By <a href=\"https://mybb.com/\" target=\"_blank\">MyBB</a>, &copy; 2002-".COPY_YEAR." <a href=\"https://mybb.com/\" target=\"_blank\">MyBB Group</a>.</p></div>\n";
+		echo "<div id=\"footer\"><p class=\"generation\">".$lang->sprintf($lang->generated_in, $totaltime, $debuglink, $querycount, $memory_usage)."</p><p class=\"powered\">Powered By <a href=\"https://mybb.com/\" target=\"_blank\" rel=\"noopener\">MyBB</a>, &copy; 2002-".COPY_YEAR." <a href=\"https://mybb.com/\" target=\"_blank\" rel=\"noopener\">MyBB Group</a>.</p></div>\n";
 		if($mybb->debug_mode)
 		{
 			echo $db->explain;
@@ -392,7 +392,7 @@ lang.saved = \"{$lang->saved}\";
 <meta name="copyright" content="Copyright {$copy_year} MyBB Group." />
 <link rel="stylesheet" href="./styles/{$cp_style}/login.css" type="text/css" />
 <script type="text/javascript" src="../jscripts/jquery.js"></script>
-<script type="text/javascript" src="../jscripts/general.js?ver=1807"></script>
+<script type="text/javascript" src="../jscripts/general.js?ver=1813"></script>
 <script type="text/javascript" src="./jscripts/admincp.js"></script>
 <script type="text/javascript">
 //<![CDATA[
@@ -524,7 +524,7 @@ EOF;
 <meta name="copyright" content="Copyright {$copy_year} MyBB Group." />
 <link rel="stylesheet" href="./styles/{$cp_style}/login.css" type="text/css" />
 <script type="text/javascript" src="../jscripts/jquery.js"></script>
-<script type="text/javascript" src="../jscripts/general.js?ver=1807"></script>
+<script type="text/javascript" src="../jscripts/general.js?ver=1813"></script>
 <script type="text/javascript" src="./jscripts/admincp.js"></script>
 <script type="text/javascript">
 //<![CDATA[
@@ -804,7 +804,7 @@ EOF;
 	/**
 	 * Output a series of primary navigation tabs for swithcing between items within a particular module/action.
 	 *
-	 * @param array $tabs Nested array of tabs containing possible keys of align, link_target, link, title.
+	 * @param array $tabs Nested array of tabs containing possible keys of align, link_target, link_rel, link, title.
 	 * @param string $active The name of the active tab. Corresponds with the key of each tab item.
 	 */
 	function output_nav_tabs($tabs=array(), $active='')
@@ -829,11 +829,16 @@ EOF;
 			{
 				$target = " target=\"{$tab['link_target']}\"";
 			}
+			$rel = '';
+			if(isset($tab['link_rel']))
+			{
+				$rel = " rel=\"{$tab['link_rel']}\"";
+			}
 			if(!isset($tab['link']))
 			{
 				$tab['link'] = '';
 			}
-			echo "\t\t<li class=\"{$class}\"><a href=\"{$tab['link']}\"{$target}>{$tab['title']}</a></li>\n";
+			echo "\t\t<li class=\"{$class}\"><a href=\"{$tab['link']}\"{$target}{$rel}>{$tab['title']}</a></li>\n";
 			$target = '';
 		}
 		echo "\t</ul>\n";
