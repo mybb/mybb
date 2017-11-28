@@ -1017,7 +1017,7 @@ if(!$mybb->input['action'])
 
 		if(!empty($langinfo['website']))
 		{
-			$author = "<a href=\"".htmlspecialchars_uni($langinfo['website'])."\" target=\"_blank\">".htmlspecialchars_uni($langinfo['author'])."</a>";
+			$author = "<a href=\"".htmlspecialchars_uni($langinfo['website'])."\" target=\"_blank\" rel=\"noopener\">".htmlspecialchars_uni($langinfo['author'])."</a>";
 		}
 		else
 		{
