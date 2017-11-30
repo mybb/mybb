@@ -703,10 +703,14 @@ function build_postbit($post, $post_type=0)
 			else if($show_ips == "hide" && (is_moderator($fid, "canviewips") || $mybb->usergroup['issupermod']))
 			{
 				$action = 'getip';
+				$javascript = 'getIP';
+
 				if($post_type == 2)
 				{
 					$action = 'getpmip';
+					$javascript = 'getPMIP';
 				}
+
 				eval("\$post['iplogged'] = \"".$templates->get("postbit_iplogged_hiden")."\";");
 			}
 		}

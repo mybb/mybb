@@ -11,13 +11,13 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'moderation.php');
 
-$templatelist = "changeuserbox,loginbox,moderation_delayedmoderation_custommodtool,moderation_delayedmodaction_notes,moderation_delayedmoderation_merge,moderation_delayedmoderation_move";
-$templatelist .= ",moderation_delayedmoderation,moderation_deletethread,moderation_deletepoll,moderation_mergeposts_post,moderation_viewthreadnotes,moderation_confirmation,moderation_purgespammer";
-$templatelist .= ",moderation_move,moderation_threadnotes_modaction,moderation_threadnotes_delayedmodaction,moderation_threadnotes,moderation_getip_modoptions,moderation_getip,moderation_getpmip";
+$templatelist = "changeuserbox,loginbox,moderation_delayedmoderation_custommodtool,moderation_delayedmodaction_notes,moderation_delayedmoderation_merge,moderation_delayedmoderation_move,moderation_threadnotes";
+$templatelist .= ",moderation_delayedmoderation,moderation_deletethread,moderation_deletepoll,moderation_mergeposts_post,moderation_viewthreadnotes,moderation_confirmation,moderation_purgespammer,forumjump_bit";
+$templatelist .= ",moderation_move,moderation_threadnotes_modaction,moderation_threadnotes_delayedmodaction,moderation_getip_modoptions,moderation_getip,moderation_getpmip,moderation_getpmip_modal";
 $templatelist .= ",moderation_split_post,moderation_inline_deletethreads,moderation_inline_movethreads,moderation_inline_deleteposts,moderation_inline_mergeposts,moderation_threadnotes_modaction_error";
 $templatelist .= ",moderation_inline_splitposts,forumjump_special,forumjump_advanced,forumdisplay_password_wrongpass,forumdisplay_password,moderation_inline_moveposts,moderation_delayedmodaction_error";
 $templatelist .= ",moderation_delayedmodaction_notes_thread_single,moderation_delayedmodaction_notes_thread_multiple,moderation_delayedmodaction_notes_forum,moderation_delayedmodaction_notes_new_forum";
-$templatelist .= ",moderation_delayedmodaction_notes_redirect,moderation_delayedmodaction_notes_merge,moderation_delayedmoderation_thread,moderation_threadnotes_modaction_thread,forumjump_bit";
+$templatelist .= ",moderation_delayedmodaction_notes_redirect,moderation_delayedmodaction_notes_merge,moderation_delayedmoderation_thread,moderation_threadnotes_modaction_thread,moderation_getip_modal";
 $templatelist .= ",moderation_delayedmoderation_date_day,moderation_delayedmoderation_date_month,moderation_threadnotes_modaction_post,moderation_merge,moderation_split,moderation_threadnotes_modaction_forum";
 $templatelist .= ",moderation_delayedmoderation_openclose,moderation_delayedmoderation_softdeleterestore,moderation_delayedmoderation_delete,moderation_delayedmoderation_stick,moderation_delayedmoderation_approve";
 
@@ -38,6 +38,7 @@ $tid = $mybb->get_input('tid', MyBB::INPUT_INT);
 $pid = $mybb->get_input('pid', MyBB::INPUT_INT);
 $fid = $mybb->get_input('fid', MyBB::INPUT_INT);
 $pmid = $mybb->get_input('pmid', MyBB::INPUT_INT);
+$modal = $mybb->get_input('modal', MyBB::INPUT_INT);
 
 if($pid)
 {
@@ -1279,9 +1280,18 @@ switch($mybb->input['action'])
 
 		$plugins->run_hooks('moderation_getip');
 
-		eval("\$getip = \"".$templates->get("moderation_getip")."\";");
-		output_page($getip);
-		break;
+		if($modal)
+		{
+			eval("\$getip = \"".$templates->get("moderation_getip_modal", 1, 0)."\";");
+			echo $getip;
+			exit;
+		}
+		else
+		{
+			eval("\$getip = \"".$templates->get("moderation_getip")."\";");
+			output_page($getip);
+			break;
+		}
 
 	// Let's look up the ip address of a PM
 	case "getpmip":
@@ -1318,9 +1328,18 @@ switch($mybb->input['action'])
 
 		$plugins->run_hooks('moderation_getpmip');
 
-		eval("\$getpmip = \"".$templates->get("moderation_getpmip")."\";");
-		output_page($getpmip);
-		break;
+		if($modal)
+		{
+			eval("\$getpmip = \"".$templates->get("moderation_getpmip_modal", 1, 0)."\";");
+			echo $getpmip;
+			exit;
+		}
+		else
+		{
+			eval("\$getpmip = \"".$templates->get("moderation_getpmip")."\";");
+			output_page($getpmip);
+			break;
+		}
 
 	// Merge threads
 	case "merge":
