@@ -801,3 +801,30 @@ function print_selection_javascript()
 	}
 </script>";
 }
+
+if(!function_exists('array_column'))
+{
+	function array_column($input, $column_key)
+	{
+		$values = array();
+
+		if(!is_array($input))
+		{
+			$input = array($input);
+		}
+
+		foreach($input as $val)
+		{
+			if(is_array($val) && isset($val[$column_key]))
+			{
+				$values[] = $val[$column_key];
+			}
+			elseif(is_object($val) && isset($val->$column_key))
+			{
+				$values[] = $val->$column_key;
+			}
+		}
+
+		return $values;
+	}
+}
