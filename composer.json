@@ -21,14 +21,15 @@
         "issues": "https://github.com/mybb/mybb/issues"
     },
     "require": {
-        "php": "^5.6 || ^7.0"
+        "php": "^5.6 || ^7.0",
+        "illuminate/container": "^5.5"
     },
     "autoload": {
         "psr-4": {
             "MyBB\\": "inc/src/"
         },
         "files": [
-            "inc/functions.php"
+            "inc/src/functions.php"
         ]
     },
     "minimum-stability": "stable",
