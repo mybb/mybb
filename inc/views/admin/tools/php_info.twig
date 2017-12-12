@@ -1,1 +1,9 @@
-{{ php_info|raw }}
+{% extends "layouts/admin.twig" %}
+
+{% block head %}
+    <title>PHP Info</title>
+{% endblock head %}
+
+{% block body %}
+    {{ php_info|raw }}
+{% endblock body %}
