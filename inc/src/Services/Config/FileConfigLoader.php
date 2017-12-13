@@ -6,7 +6,7 @@ use MyBB\Contracts\Config\LoaderInterface;
 
 class FileConfigLoader implements LoaderInterface
 {
-    public function get($key)
+    public function get($key, $default = null)
     {
         // TODO: Implement get() method.
     }

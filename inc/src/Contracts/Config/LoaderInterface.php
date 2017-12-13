@@ -8,9 +8,10 @@ interface LoaderInterface
      * Get the specified configuration value.
      *
      * @param string $key
+     * @param null $default
      * @return mixed
      */
-    public function get($key);
+    public function get($key, $default = null);
 
     /**
      * Determine if the given configuration value exists.
