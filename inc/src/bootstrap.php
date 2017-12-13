@@ -2,15 +2,22 @@
 
 namespace MyBB;
 
+use Illuminate\Container\Container;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Router;
 use Psr\Container\ContainerInterface;
+use MyBB\Services\Config;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
 /** @var \Illuminate\Contracts\Container\Container $container */
 $container = app();
+
+$container->bind(Services\Config::class, function(ContainerInterface $container) {
+    //Will need to pass the loader in
+   return new Config();
+});
 
 // Twig
 $container->singleton(\Twig_Environment::class, function(ContainerInterface $container) {
