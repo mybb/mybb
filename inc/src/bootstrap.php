@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Router;
 use Psr\Container\ContainerInterface;
 use MyBB\Services\Config;
+use Illuminate\Database\Capsule\Manager as Capsule;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -16,8 +17,32 @@ $container = app();
 
 $container->bind(Services\Config::class, function(ContainerInterface $container) {
     //Will need to pass the loader in
-   return new Config();
+   return new Config(new Config\CoreConfigLoader(__DIR__ . '/../config.php'));
 });
+
+$container->alias(Services\Config::class, 'config');
+
+$container->bind(Capsule::class, function(Container $container) {
+    $capsule = new Capsule;
+    $config = $container->get('config');
+
+    $capsule->addConnection([
+        'driver'    => $config->get('database.type'),
+        'host'      => $config->get('database.hostname'),
+        'database'  => $config->get('database.database'),
+        'username'  => $config->get('database.username'),
+        'password'  => $config->get('database.password'),
+        'charset'   => 'utf8',
+        'collation' => 'utf8_unicode_ci',
+        'prefix'    => $config->get('database.table_prefix'),
+    ]);
+
+    $capsule->setAsGlobal();
+    $capsule->bootEloquent();
+    return $capsule;
+});
+
+$container->alias(Capsule::class, 'database');
 
 // Twig
 $container->singleton(\Twig_Environment::class, function(ContainerInterface $container) {
