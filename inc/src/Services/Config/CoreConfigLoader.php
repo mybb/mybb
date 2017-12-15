@@ -9,12 +9,12 @@ class CoreConfigLoader implements LoaderInterface
 {
 
     /**
-     * @var array|null config
+     * @var array|null $config
      */
     private $config;
 
     /**
-     * @var string path
+     * @var string $path
      */
     private $path;
 
@@ -33,8 +33,11 @@ class CoreConfigLoader implements LoaderInterface
      */
     private function loadConfig()
     {
-        require $this->path;
-        $this->config = $config;
+        if (is_null($this->config) && file_exists($this->path)) {
+            $config = array();
+            require $this->path;
+            $this->config = $config;
+        }
     }
 
     /**
@@ -44,17 +47,24 @@ class CoreConfigLoader implements LoaderInterface
      * @param null $default
      * @return mixed|null
      */
-    public function get($key, $default = null)
+    public function get(String $key, $default = null)
     {
-        if (is_null($this->config)) {
-            $this->loadConfig();
-        }
+        $this->loadConfig();
 
-        if ($this->config[$key]) {
+        if (isset($this->config[$key])) {
             return $this->config[$key];
         }
 
-        return $default;
+        if (strpos($key, '.') === false) {
+            return $default;
+        }
+
+        $items = $this->config;
+        foreach (explode('.', $key) as $segment) {
+            $items = &$items[$segment];
+        }
+
+        return $items;
     }
 
     /**
@@ -63,11 +73,9 @@ class CoreConfigLoader implements LoaderInterface
      * @param string $key
      * @return bool
      */
-    public function has($key)
+    public function has(String $key) : bool
     {
-        if (is_null($this->config)) {
-            $this->loadConfig();
-        }
+        $this->loadConfig();
         return isset($this->config[$key]);
     }
 
@@ -78,9 +86,7 @@ class CoreConfigLoader implements LoaderInterface
      */
     public function all()
     {
-        if (is_null($this->config)) {
-            $this->loadConfig();
-        }
+        $this->loadConfig();
         return $this->config;
     }
 
@@ -91,11 +97,9 @@ class CoreConfigLoader implements LoaderInterface
      * @param null $value
      * @return mixed
      */
-    public function set($key, $value = null)
+    public function set(String $key, $value = null)
     {
-        if (is_null($this->config)) {
-            $this->loadConfig();
-        }
+        $this->loadConfig();
 
         $this->config[$key] = $value;
 
