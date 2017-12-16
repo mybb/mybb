@@ -23,6 +23,7 @@ $l['deactivate'] = "Deactivate";
 $l['activate'] = "Activate";
 $l['install_and_activate'] = "Install &amp; Activate";
 $l['uninstall'] = "Uninstall";
+$l['configure'] = "Configure";
 $l['created_by'] = "Created by";
 $l['no_plugins'] = "There are no plugins on your forum at this time.";
 $l['no_active_plugins'] = "There are no active plugins on your forum.";
