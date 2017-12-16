@@ -887,9 +887,9 @@ if($fpermissions['canviewthreads'] != 0)
 		}
 
 		// If this is a moved thread - set the tid for participation marking and thread read marking to that of the moved thread
-		if(substr($thread['closed'], 0, 5) == "moved")
+		if($thread['moved'] != 0)
 		{
-			$tid = substr($thread['closed'], 6);
+			$tid = $thread['moved'];
 			if(!isset($tids[$tid]))
 			{
 				$moved_threads[$tid] = $thread['tid'];
@@ -1009,8 +1009,6 @@ if(!empty($threadcache) && is_array($threadcache))
 	{
 		$plugins->run_hooks("forumdisplay_thread");
 
-		$moved = explode("|", $thread['closed']);
-
 		if($thread['visible'] == 0)
 		{
 			$bgcolor = "trow_shaded";
@@ -1102,7 +1100,7 @@ if(!empty($threadcache) && is_array($threadcache))
 		$rating = '';
 		if($mybb->settings['allowthreadratings'] != 0 && $foruminfo['allowtratings'] != 0)
 		{
-			if($moved[0] == "moved" || ($fpermissions['canviewdeletionnotice'] != 0 && $thread['visible'] == -1))
+			if($thread['moved'] != 0 || ($fpermissions['canviewdeletionnotice'] != 0 && $thread['visible'] == -1))
 			{
 				eval("\$rating = \"".$templates->get("forumdisplay_thread_rating_moved")."\";");
 			}
@@ -1195,10 +1193,10 @@ if(!empty($threadcache) && is_array($threadcache))
 			$modbit = '';
 		}
 
-		if($moved[0] == "moved")
+		if($thread['moved'] != 0)
 		{
 			$prefix = $lang->moved_prefix;
-			$thread['tid'] = $moved[1];
+			$thread['tid'] = $thread['moved'];
 			$thread['replies'] = "-";
 			$thread['views'] = "-";
 		}
@@ -1241,7 +1239,7 @@ if(!empty($threadcache) && is_array($threadcache))
 			$last_read = $forum_read;
 		}
 
-		if($thread['lastpost'] > $last_read && $moved[0] != "moved")
+		if($thread['lastpost'] > $last_read && $thread['moved'] == 0)
 		{
 			$folder .= "new";
 			$folder_label .= $lang->icon_new;
@@ -1268,7 +1266,7 @@ if(!empty($threadcache) && is_array($threadcache))
 			$folder_label .= $lang->icon_lock;
 		}
 
-		if($moved[0] == "moved")
+		if($thread['moved'] != 0)
 		{
 			$folder = "move";
 			$gotounread = '';

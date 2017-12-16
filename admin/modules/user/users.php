@@ -2816,7 +2816,7 @@ if($mybb->input['action'] == "inline_edit")
 						foreach($prune_array['to_delete'] as $tid)
 						{
 							$db->delete_query("threads", "tid='$tid'");
-							$db->delete_query("threads", "closed='moved|$tid'");
+							$db->delete_query("threads", "moved='$tid'");
 							$db->delete_query("threadsubscriptions", "tid='$tid'");
 							$db->delete_query("polls", "tid='$tid'");
 							$db->delete_query("threadsread", "tid='$tid'");

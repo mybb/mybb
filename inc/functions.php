@@ -2652,7 +2652,7 @@ function update_forum_lastpost($fid)
 	$query = $db->query("
 		SELECT tid, lastpost, lastposter, lastposteruid, subject
 		FROM ".TABLE_PREFIX."threads
-		WHERE fid='{$fid}' AND visible='1' AND closed NOT LIKE 'moved|%'
+		WHERE fid='{$fid}' AND visible='1' AND moved='0'
 		ORDER BY lastpost DESC
 		LIMIT 0, 1
 	");
@@ -2738,7 +2738,7 @@ function update_thread_data($tid)
 	$thread = get_thread($tid);
 
 	// If this is a moved thread marker, don't update it - we need it to stay as it is
-	if(strpos($thread['closed'], 'moved|') !== false)
+	if($thread['moved'] != 0)
 	{
 		return;
 	}

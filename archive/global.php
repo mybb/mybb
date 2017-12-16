@@ -120,7 +120,7 @@ if($endpart != "index.php")
 	}
 	elseif($action == "thread")
 	{
-		$query = $db->simple_select("threads", "*", "tid='{$id}' AND closed NOT LIKE 'moved|%'");
+		$query = $db->simple_select("threads", "*", "tid='{$id}' AND moved = '0'");
 		$thread = $db->fetch_array($query);
 		if(!$thread['tid'])
 		{
