@@ -351,8 +351,9 @@ table.general tr:last-child td:last-child {
     font-weight: bold;
     text-decoration: underline;
 }
-/* Popup Menus */
+/* Buttons & Popup Menus */
 
+.button,
 .popup_button {
 	color: #444;
 	text-align: right;
@@ -368,6 +369,10 @@ table.general tr:last-child td:last-child {
 	-webkit-border-radius: 5px;
 }
 
+a.button:link,
+a.button:visited,
+a.button:active,
+a.button:hover,
 a.popup_button:link,
 a.popup_button:visited,
 a.popup_button:active,
@@ -376,6 +381,8 @@ a.popup_button:hover {
 	color: #444;
 }
 
+a.button:active,
+a.button:hover,
 a.popup_button:active,
 a.popup_button:hover {
 	text-decoration: none;
@@ -1187,8 +1194,8 @@ input.search_button {
 .jGrowl .jGrowl-notification, .jGrowl .jGrowl-closer {
 	background-color: 		transparent;
 	opacity: 				.85;
-	-ms-filter: 			"progid:DXImageTransform.Microsoft.Alpha(Opacity=85)"; 
-	filter: 				progid:DXImageTransform.Microsoft.Alpha(Opacity=85); 
+	-ms-filter: 			"progid:DXImageTransform.Microsoft.Alpha(Opacity=85)";
+	filter: 				progid:DXImageTransform.Microsoft.Alpha(Opacity=85);
 	zoom: 					1;
 	width: 					235px;
 	padding: 				10px;

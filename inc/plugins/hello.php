@@ -84,6 +84,27 @@ function hello_info()
 }
 
 /*
+ * _configure():
+ *    Called to determine the configure link shown in the plugins list. This is only called when
+ *    the plugin is installed. Return `false` to prevent the configure link from being displayed.
+*/
+function hello_configure()
+{
+	global $db;
+
+	$query = $db->simple_select('settinggroups', 'gid', "name='hello'");
+
+	$gid = (int)$db->fetch_field($query, 'gid');
+
+	if ($gid > 0)
+	{
+		return "index.php?module=config-settings&amp;action=change&amp;gid={$gid}";
+	}
+
+	return false;
+}
+
+/*
  * _activate():
  *    Called whenever a plugin is activated via the Admin CP. This should essentially make a plugin
  *    'visible' by adding templates/template changes, language changes etc.
