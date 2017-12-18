@@ -4,6 +4,7 @@ namespace MyBB\Contracts\Cache;
 
 interface CacheInterface
 {
+
     /**
      * Connect and initialize this handle.
      *
@@ -14,7 +15,7 @@ interface CacheInterface
     /**
      * Disconnect from this handle.
      *
-     * @return mixed
+     * @return boolean true if successful, false on failure
      */
     public function disconnect();
 

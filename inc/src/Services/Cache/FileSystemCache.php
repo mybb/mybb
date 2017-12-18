@@ -6,6 +6,23 @@ use MyBB\Contracts\Cache\CacheInterface;
 
 class FileSystemCache implements CacheInterface
 {
+
+    /**
+     * The file cache directory.
+     *
+     * @var string
+     */
+    protected $directory;
+
+    /**
+     * FileSystemCache constructor.
+     * @param string $directory
+     */
+    public function __construct($directory = 'cache')
+    {
+        $this->directory = $directory;
+    }
+
     /**
      * @return mixed
      */
@@ -56,8 +73,28 @@ class FileSystemCache implements CacheInterface
      * @param mixed $value
      * @return mixed
      */
-    public function put($key, $value)
+    public function put($key, $value, $expiration = 0)
     {
+//        $storeData = [
+//            'time' => time(),
+//            'expire' => $expiration,
+//            'data' => serialize($value)
+//        ];
+//
+//        $dataArray = $this->_loadCache();
+//
+//        if (true === is_array($dataArray)) {
+//            $dataArray[$key] = $storeData;
+//        } else {
+//            $dataArray = array($key => $storeData);
+//        }
+//
+//        $cacheData = json_encode($dataArray);
+//
+//        file_put_contents($this->getCacheDir(), $cacheData);
+//
+//        return $this;
+
         // TODO: Implement put() method.
     }
 
@@ -88,5 +125,4 @@ class FileSystemCache implements CacheInterface
     {
         // TODO: Implement size_of() method.
     }
-
 }
