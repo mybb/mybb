@@ -4,7 +4,6 @@ namespace MyBB\Contracts\Cache;
 
 interface Store
 {
-
     /**
      * Connect and initialize this handle.
      *
@@ -20,10 +19,10 @@ interface Store
     public function disconnect(): bool;
 
     /**
-     * @param $key
+     * @param string $key
      * @return mixed
      */
-    public function fetch($key);
+    public function fetch(string $key);
 
     /**
      * Store an item in the cache.

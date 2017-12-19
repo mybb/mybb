@@ -23,22 +23,20 @@ class FileStore implements Store
      *
      * @var string
      */
-    protected $directory;
+    protected $directory = 'cache/data';
 
     /**
      * Create a new file cache store instance.
-     *
-     * @param  \Illuminate\Filesystem\Filesystem $files
-     * @param  string $directory
      */
-    public function __construct(Filesystem $files, $directory)
+    public function __construct()
     {
-        $this->files = $files;
-        $this->directory = $directory;
+        $this->files = new Filesystem();
     }
 
     /**
-     * @return mixed
+     * Connect and initialize this handle.
+     *
+     * @return bool
      */
     public function connect(): bool
     {
@@ -50,7 +48,9 @@ class FileStore implements Store
     }
 
     /**
-     * @return mixed
+     * Disconnect from this handle.
+     *
+     * @return bool
      */
     public function disconnect(): bool
     {
@@ -58,18 +58,21 @@ class FileStore implements Store
     }
 
     /**
-     * @param string $key
-     * @return null
+     * @param $key
+     * @return mixed|null
      */
-    public function fetch($key)
+    public function fetch(string $key)
     {
         return $this->getPayload($key)['data'] ?? null;
     }
 
     /**
-     * @param string $key
-     * @param mixed $value
-     * @return mixed
+     * Store an item in the cache.
+     *
+     * @param  string $key
+     * @param  mixed $value
+     * @param  float|int $minutes
+     * @return void
      */
     public function put(string $key, $value, $minutes = 0)
     {
