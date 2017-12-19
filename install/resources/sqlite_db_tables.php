@@ -468,7 +468,8 @@ $tables[] = "CREATE TABLE mybb_pollvotes (
 	pid int NOT NULL default '0',
 	uid int NOT NULL default '0',
 	voteoption smallint NOT NULL default '0',
-	dateline int NOT NULL default '0'
+	dateline int NOT NULL default '0',
+	ipaddress blob(16) NOT NULL default ''
 );";
 
 $tables[] = "CREATE TABLE mybb_posts (
