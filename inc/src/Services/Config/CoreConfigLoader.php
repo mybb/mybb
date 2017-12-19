@@ -47,7 +47,7 @@ class CoreConfigLoader implements LoaderInterface
      * @param null $default
      * @return mixed|null
      */
-    public function get(String $key, $default = null)
+    public function get(string $key, $default = null)
     {
         $this->loadConfig();
 
@@ -73,7 +73,7 @@ class CoreConfigLoader implements LoaderInterface
      * @param string $key
      * @return bool
      */
-    public function has(String $key) : bool
+    public function has(string $key) : bool
     {
         $this->loadConfig();
         return isset($this->config[$key]);
@@ -84,7 +84,7 @@ class CoreConfigLoader implements LoaderInterface
      *
      * @return array|mixed
      */
-    public function all()
+    public function all() : array
     {
         $this->loadConfig();
         return $this->config;
@@ -97,7 +97,7 @@ class CoreConfigLoader implements LoaderInterface
      * @param null $value
      * @return mixed
      */
-    public function set(String $key, $value = null)
+    public function set(string $key, $value = null)
     {
         $this->loadConfig();
 

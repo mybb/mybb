@@ -18,22 +18,22 @@ class Config implements LoaderInterface
         $this->loader = $loader;
     }
 
-    public function get($key, $default = null)
+    public function get(string $key, $default = null) : string
     {
         return $this->loader->get($key, $default);
     }
 
-    public function has($key)
+    public function has(string $key) : bool
     {
         return $this->loader->has($key);
     }
 
-    public function all()
+    public function all() : array
     {
         return $this->loader->all();
     }
 
-    public function set($key, $value = null)
+    public function set(string $key, $value = null)
     {
         return $this->loader->set($key, $value);
     }

@@ -11,7 +11,7 @@ interface LoaderInterface
      * @param string|null $default A default value to use if the specified configuration value doesn't exist.
      * @return mixed
      */
-    public function get(String $key, $default = null);
+    public function get(string $key, $default = null);
 
     /**
      * Determine if the given configuration value exists.
@@ -19,14 +19,14 @@ interface LoaderInterface
      * @param string $key
      * @return bool
      */
-    public function has(String $key) : bool;
+    public function has(string $key) : bool;
 
     /**
      * Return all configuration values.
      *
      * @return array
      */
-    public function all();
+    public function all() : array;
 
     /**
      * Set a configuration value.
@@ -35,5 +35,5 @@ interface LoaderInterface
      * @param mixed $value
      * @return mixed
      */
-    public function set(String $key, $value = null);
+    public function set(string $key, $value = null);
 }
