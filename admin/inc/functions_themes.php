@@ -575,7 +575,7 @@ function build_new_theme($name, $properties=null, $parent=1)
 	{
 		$query = $db->simple_select("themes", "*", "tid='".(int)$parent."'");
 		$parent_theme = $db->fetch_array($query);
-		if(count($properties) == 0 || !is_array($properties))
+		if(!is_array($properties) || count($properties) == 0)
 		{
 			$parent_properties = my_unserialize($parent_theme['properties']);
 			if(!empty($parent_properties))
