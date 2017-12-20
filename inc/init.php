@@ -97,6 +97,11 @@ if(empty($config['admin_dir']))
 	$config['admin_dir'] = "admin";
 }
 
+if (!is_array($config['multiforums'])) {
+	//disable multiforums by default
+	$config['multiforums']['enabled'] = false;
+}
+
 // Trigger an error if the installation directory exists
 if(is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
 {
@@ -299,4 +304,8 @@ $time_formats = array(
 	2 => "h:i A",
 	3 => "H:i"
 );
+
+//load multiforums
+include_once MYBB_ROOT."inc/class_multiforums.php";
+$multiforums = new MultiForums($config['multiforums']);
 

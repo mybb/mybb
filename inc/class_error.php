@@ -21,6 +21,8 @@ define("MYBB_INSTALL_DIR_EXISTS", 43);
 define("MYBB_SQL_LOAD_ERROR", 44);
 define("MYBB_CACHE_NO_WRITE", 45);
 define("MYBB_CACHEHANDLER_LOAD_ERROR", 46);
+define("MYBB_MULTIFORUMS_GENERAL", 50);
+define("MYBB_MULTIFORUMS_NOT_ENABLED", 51);
 
 if(!defined("E_RECOVERABLE_ERROR"))
 {
@@ -72,6 +74,8 @@ class errorHandler {
 		MYBB_SQL_LOAD_ERROR				=> 'MyBB Error',
 		MYBB_CACHE_NO_WRITE				=> 'MyBB Error',
 		MYBB_CACHEHANDLER_LOAD_ERROR	=> 'MyBB Error',
+		MYBB_MULTIFORUMS_GENERAL        => 'MyBB MultiForums Error',
+		MYBB_MULTIFORUMS_NOT_ENABLED    => 'MyBB MultiForums Error',
 	);
 
 	/**
@@ -89,6 +93,8 @@ class errorHandler {
 		MYBB_SQL_LOAD_ERROR,
 		MYBB_CACHE_NO_WRITE,
 		MYBB_CACHEHANDLER_LOAD_ERROR,
+		MYBB_MULTIFORUMS_GENERAL,
+		MYBB_MULTIFORUMS_NOT_ENABLED
 	);
 
 	/**
