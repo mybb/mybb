@@ -26,6 +26,9 @@ error.log
 .project
 .buildpath
 
+# PhpStorm IDE files
+.idea
+
 # Generic OS stuff
 .DS_Store
 .DS_Store?
