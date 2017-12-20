@@ -1615,6 +1615,8 @@ function create_tables()
 	'192.168.0.0/16',
 );
 
+\$config['multiforums']['enabled'] = false;
+
 ";
 
 	$file = fopen(MYBB_ROOT.'inc/config.php', 'w');
