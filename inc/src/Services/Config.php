@@ -18,7 +18,7 @@ class Config implements LoaderInterface
         $this->loader = $loader;
     }
 
-    public function get(string $key, $default = null) : string
+    public function get(string $key, $default = null)
     {
         return $this->loader->get($key, $default);
     }

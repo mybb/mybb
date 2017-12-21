@@ -15,9 +15,10 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $container = app();
 
 $container->bind(Services\Config::class, function(ContainerInterface $container) {
-    //Will need to pass the loader in
-   return new Config();
+   return new Config(new Config\CoreConfigLoader(__DIR__ . '/../config.php'));
 });
+
+$container->alias(Services\Config::class, 'config');
 
 // Twig
 $container->singleton(\Twig_Environment::class, function(ContainerInterface $container) {
