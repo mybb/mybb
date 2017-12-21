@@ -1303,17 +1303,17 @@ elseif($mybb->input['action'] == "finduser")
 }
 elseif($mybb->input['action'] == "finduserthreads")
 {
-	$where_sql = "t.uid='".$mybb->get_input('uid', MyBB::INPUT_INT)."'";
+	$where_sql = "uid='".$mybb->get_input('uid', MyBB::INPUT_INT)."'";
 
 	$unsearchforums = get_unsearchable_forums();
 	if($unsearchforums)
 	{
-		$where_sql .= " AND t.fid NOT IN ($unsearchforums)";
+		$where_sql .= " AND fid NOT IN ($unsearchforums)";
 	}
 	$inactiveforums = get_inactive_forums();
 	if($inactiveforums)
 	{
-		$where_sql .= " AND t.fid NOT IN ($inactiveforums)";
+		$where_sql .= " AND fid NOT IN ($inactiveforums)";
 	}
 
 	$permsql = "";
@@ -1330,7 +1330,16 @@ elseif($mybb->input['action'] == "finduserthreads")
 	}
 	if(!empty($onlyusfids))
 	{
-		$where_sql .= "AND ((t.fid IN(".implode(',', $onlyusfids).") AND t.uid='{$mybb->user['uid']}') OR t.fid NOT IN(".implode(',', $onlyusfids)."))";
+		$where_sql .= "AND ((fid IN(".implode(',', $onlyusfids).") AND uid='{$mybb->user['uid']}') OR fid NOT IN(".implode(',', $onlyusfids)."))";
+	}
+
+	$tids = '';
+	$comma = '';
+	$query = $db->simple_select("threads", "tid", $where_sql);
+	while($tid = $db->fetch_field($query, "tid"))
+	{
+			$tids .= $comma.$tid;
+			$comma = ',';
 	}
 
 	$sid = md5(uniqid(microtime(), true));
@@ -1339,7 +1348,7 @@ elseif($mybb->input['action'] == "finduserthreads")
 		"uid" => $mybb->user['uid'],
 		"dateline" => TIME_NOW,
 		"ipaddress" => $db->escape_binary($session->packedip),
-		"threads" => '',
+		"threads" => $db->escape_string($tids),
 		"posts" => '',
 		"resulttype" => "threads",
 		"querycache" => $db->escape_string($where_sql),
