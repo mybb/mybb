@@ -17,7 +17,8 @@ class RepositoryFactory
      * @param \MyBB $mybb The MyBB core instance.
      * @param \errorHandler|null $errorHandler Error handler instance to handle fatal errors.
      *
-     * @return \Illuminate\Contracts\Cache\Repository|null The created repository instance, or null if no cache is configured.
+     * @return \Illuminate\Contracts\Cache\Repository|null The created repository instance, or null if no cache is
+     *     configured.
      */
     public static function getRepository(\MyBB $mybb, \errorHandler $errorHandler = null)
     {
@@ -50,17 +51,14 @@ class RepositoryFactory
     {
         $memcached = new \Memcached();
 
-        if($mybb->config['memcache']['host'])
-        {
+        if ($mybb->config['memcache']['host']) {
             $mybb->config['memcache'][0] = $mybb->config['memcache'];
             unset($mybb->config['memcache']['host']);
             unset($mybb->config['memcache']['port']);
         }
 
-        foreach($mybb->config['memcache'] as $serverSettings)
-        {
-            if(!$serverSettings['host'])
-            {
+        foreach ($mybb->config['memcache'] as $serverSettings) {
+            if (!$serverSettings['host']) {
                 $message = "Please configure the memcache settings in inc/config.php before attempting to use this cache handler";
 
                 if (!is_null($errorHandler)) {
@@ -71,8 +69,7 @@ class RepositoryFactory
                 }
             }
 
-            if(!isset($serverSettings['port']))
-            {
+            if (!isset($serverSettings['port'])) {
                 $serverSettings['port'] = "11211";
             }
 

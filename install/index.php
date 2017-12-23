@@ -1720,9 +1720,9 @@ function insert_templates()
 	$db = db_connection($config);
 
 	require_once MYBB_ROOT.'inc/class_datacache.php';
-    $cache = new datacache($db, $mybb->debug_mode, \MyBB\Cache\RepositoryFactory::getRepository($mybb, $error_handler));
+	$cache = new datacache($db, $mybb->debug_mode, \MyBB\Cache\RepositoryFactory::getRepository($mybb, $error_handler));
 
-    $output->print_header($lang->theme_installation, 'theme');
+	$output->print_header($lang->theme_installation, 'theme');
 
 	echo $lang->theme_step_importing;
 
@@ -2383,8 +2383,8 @@ function install_done()
 
 	echo $lang->done_step_cachebuilding;
 	require_once MYBB_ROOT.'inc/class_datacache.php';
-    $cache = new datacache($db, $mybb->debug_mode, \MyBB\Cache\RepositoryFactory::getRepository($mybb, null));
-    $cache->update_version();
+	$cache = new datacache($db, $mybb->debug_mode, \MyBB\Cache\RepositoryFactory::getRepository($mybb, null));
+	$cache->update_version();
 	$cache->update_attachtypes();
 	$cache->update_smilies();
 	$cache->update_badwords();

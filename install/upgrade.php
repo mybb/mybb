@@ -131,7 +131,6 @@ $mybb->parse_cookies();
 require_once MYBB_ROOT."inc/class_datacache.php";
 $cache = new datacache($db, $mybb->debug_mode, \MyBB\Cache\RepositoryFactory::getRepository($mybb, $error_handler));
 
-
 $mybb->cache = &$cache;
 
 require_once MYBB_ROOT."inc/class_session.php";
