@@ -22,8 +22,10 @@
     },
     "require": {
         "php": "^7.0",
+        "illuminate/cache": "^5.5",
         "illuminate/container": "^5.5",
         "illuminate/events": "^5.5",
+        "illuminate/filesystem": "^5.5",
         "illuminate/routing": "^5.5",
         "twig/twig": "^2.4"
     },

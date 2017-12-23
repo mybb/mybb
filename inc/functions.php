@@ -205,8 +205,7 @@ function run_shutdown()
 	if(!is_object($cache))
 	{
 		require_once MYBB_ROOT."inc/class_datacache.php";
-		$cache = new datacache;
-		$cache->cache();
+		$cache = new datacache($db, $mybb->debug_mode, \MyBB\Cache\RepositoryFactory::getRepository($mybb, $error_handler));
 	}
 
 	// And finally.. plugins

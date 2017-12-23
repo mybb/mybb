@@ -134,7 +134,7 @@ require_once MYBB_ROOT."inc/class_templates.php";
 $templates = new templates;
 
 require_once MYBB_ROOT."inc/class_datacache.php";
-$cache = new datacache;
+$cache = new datacache($db, $mybb->debug_mode, \MyBB\Cache\RepositoryFactory::getRepository($mybb, $error_handler));
 
 require_once MYBB_ROOT."inc/class_plugins.php";
 $plugins = new pluginSystem;
@@ -153,8 +153,6 @@ require_once MYBB_ROOT."inc/class_language.php";
 $lang = new MyLanguage;
 $lang->set_path(MYBB_ROOT."inc/languages");
 
-// Load cache
-$cache->cache();
 
 // Load Settings
 if(file_exists(MYBB_ROOT."inc/settings.php"))
