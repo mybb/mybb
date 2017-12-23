@@ -21,3 +21,23 @@ function app($className = null, array $parameters = [])
 
 	return Container::getInstance()->make($className, $parameters);
 }
+
+/**
+ * Render a view using the Twig template system.
+ *
+ * @param string $name The name of the template to render.
+ * @param array $context An array of variables to be accessible within the template.
+ *
+ * @throws \Twig_Error_Loader  When the template cannot be found
+ * @throws \Twig_Error_Syntax  When an error occurred during compilation
+ * @throws \Twig_Error_Runtime When an error occurred during rendering
+ *
+ * @return string The rendered HTML content of the template.
+ */
+function template(string $name, array $context = [])
+{
+    /** @var \Twig_Environment $twig */
+    $twig = app('twig');
+
+    return $twig->render($name, $context);
+}
