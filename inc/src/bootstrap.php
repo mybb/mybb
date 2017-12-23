@@ -5,6 +5,7 @@ namespace MyBB;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Router;
+use MyBB\Cache\RepositoryFactory;
 use Psr\Container\ContainerInterface;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -13,7 +14,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $container = app();
 
 // Twig
-$container->singleton(\Twig_Environment::class, function(ContainerInterface $container) {
+$container->singleton(\Twig_Environment::class, function() {
     // TODO: The loader should be aware of both front-end and ACP themes
     $loader = new \Twig_Loader_Filesystem([
         __DIR__ . '/../views'
@@ -43,9 +44,35 @@ $container->singleton(Router::class, function(ContainerInterface $container) {
 $container->alias(Router::class, 'router');
 
 // Request
-$container->bind(Request::class, function(ContainerInterface $container) {
+$container->bind(Request::class, function() {
     return Request::capture();
 });
 
 $container->alias(Request::class, 'request');
 
+// MyBB
+$container->singleton(\MyBB::class, function() {
+    return $GLOBALS['mybb'];
+});
+
+// Error handler
+$container->singleton(\errorHandler::class, function() {
+    return $GLOBALS['error_handler'];
+});
+
+// DB
+$container->singleton(\DB_Base::class, function() {
+   return $GLOBALS['db'];
+});
+
+// Cache
+$container->singleton(\datacache::class, function(ContainerInterface $container) {
+    /** @var \MyBB $mybb */
+    $mybb = \MyBB::class;
+
+    return new \datacache(
+        $container->get(\DB_Base::class),
+        $mybb->debug_mode,
+        RepositoryFactory::getRepository($mybb, $container->get(\errorHandler::class))
+    );
+});

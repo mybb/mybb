@@ -129,10 +129,8 @@ $mybb->settings = &$settings;
 $mybb->parse_cookies();
 
 require_once MYBB_ROOT."inc/class_datacache.php";
-$cache = new datacache;
+$cache = new datacache($db, $mybb->debug_mode, \MyBB\Cache\RepositoryFactory::getRepository($mybb, $error_handler));
 
-// Load cache
-$cache->cache();
 
 $mybb->cache = &$cache;
 
