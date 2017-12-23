@@ -48,3 +48,4 @@ $container->bind(Request::class, function(ContainerInterface $container) {
 });
 
 $container->alias(Request::class, 'request');
+
