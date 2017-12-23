@@ -3019,8 +3019,9 @@ if($mybb->input['action'] == "drafts")
 
 	$plugins->run_hooks("usercp_drafts_end");
 
-	eval("\$draftlist = \"".$templates->get("usercp_drafts")."\";");
-	output_page($draftlist);
+	output_page(\MyBB\template('usercp/drafts.twig', [
+	    'drafts' => $drafts,
+    ]));
 }
 
 if($mybb->input['action'] == "do_drafts" && $mybb->request_method == "post")

@@ -5,6 +5,7 @@ namespace MyBB;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Router;
+use MyBB\Twig\Extensions\GetAssetUrl;
 use Psr\Container\ContainerInterface;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -68,8 +69,15 @@ $container->singleton(\Twig_Environment::class, function(ContainerInterface $con
         'cache' => __DIR__ . '/../../cache/views',
     ]);
 
+    $env->addExtension(new GetAssetUrl($container->get(\MyBB::class)));
+
     $env->addGlobal('mybb', $container->get(\MyBB::class));
     $env->addGlobal('lang', $container->get(\MyLanguage::class));
+
+    // TODO: improve theme handling
+    $env->addGlobal('theme', $GLOBALS['theme']);
+
+    return $env;
 });
 
 $container->alias(\Twig_Environment::class, 'twig');

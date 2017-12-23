@@ -37,7 +37,7 @@ function app($className = null, array $parameters = [])
 function template(string $name, array $context = [])
 {
     /** @var \Twig_Environment $twig */
-    $twig = app('twig');
+    $twig = app(\Twig_Environment::class);
 
     return $twig->render($name, $context);
 }
