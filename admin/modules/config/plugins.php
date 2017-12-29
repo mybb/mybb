@@ -671,7 +671,8 @@ function build_plugin_list($plugin_list)
 		}
 
 		$extra = array();
-		if ($installed != false && $configure_link == false) {
+		if($installed != false && $configure_link == false)
+		{
 			$extra['colspan'] = 2;
 		}
 
@@ -692,10 +693,13 @@ function build_plugin_list($plugin_list)
 		// Plugin is activated and installed
 		else if($plugininfo['is_active'])
 		{
-			if ($configure_link !== false) {
+			if($configure_link !== false)
+			{
 				$col_width = 100;
 				$table->construct_cell("<a href=\"{$configure_link}\" class=\"button\">{$lang->configure}</a>", array("class" => "align_center", "width" => 100));
-			} else {
+			}
+			else
+			{
 				$col_width = 150;
 			}
 			$table->construct_cell("<a href=\"index.php?module=config-plugins&amp;action=deactivate&amp;plugin={$plugininfo['codename']}&amp;my_post_key={$mybb->post_code}\" class=\"button\">{$lang->deactivate}</a>", array("class" => "align_center", "width" => $col_width));
@@ -717,10 +721,13 @@ function build_plugin_list($plugin_list)
 			}
 			else
 			{
-				if ($configure_link !== false) {
+				if($configure_link !== false)
+				{
 					$col_width = 100;
 					$table->construct_cell("<a href=\"{$configure_link}\" class=\"button\">{$lang->configure}</a>", array("class" => "align_center", "width" => 100));
-				} else {
+				}
+				else
+				{
 					$col_width = 150;
 				}
 				$table->construct_cell("<a href=\"index.php?module=config-plugins&amp;action=activate&amp;plugin={$plugininfo['codename']}&amp;my_post_key={$mybb->post_code}\" class=\"button\">{$lang->activate}</a>", array("class" => "align_center", "width" => $col_width));

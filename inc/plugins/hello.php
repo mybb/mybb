@@ -96,7 +96,7 @@ function hello_configure()
 
 	$gid = (int)$db->fetch_field($query, 'gid');
 
-	if ($gid > 0)
+	if($gid > 0)
 	{
 		return "index.php?module=config-settings&amp;action=change&amp;gid={$gid}";
 	}
