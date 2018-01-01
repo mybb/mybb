@@ -49,7 +49,7 @@ class LangExtension extends \Twig_Extension implements \Twig_Extension_GlobalsIn
      *
      * @return string The resolved translation string.
      */
-    public function trans(string $languageVariable, ...$params)
+    public function trans(string $languageVariable, ...$params) : string
     {
         return $this->lang->sprintf($this->lang->$languageVariable, ...$params);
     }

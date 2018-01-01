@@ -78,7 +78,7 @@ class ThemeExtension extends \Twig_Extension implements \Twig_Extension_GlobalsI
      *
      * @return string `trow1` or `trow2` depending on the previous call.
      */
-    public function altTrow(bool $reset = false)
+    public function altTrow(bool $reset = false) : string
     {
         if (is_null($this->altRowState) || $this->altRowState === 'trow2' || $reset) {
             $this->altRowState = 'trow1';
@@ -94,8 +94,9 @@ class ThemeExtension extends \Twig_Extension implements \Twig_Extension_GlobalsI
      *
      * @return \Generator A generator object that yields each stylesheet, as a full URL.
      */
-    public function getStylesheets()
+    public function getStylesheets() : \Generator
     {
+        // TODO: Optimise this function - it looks like it can be improved at a glance
         $theme = $GLOBALS['theme'];
 
         $alreadyLoaded = [];

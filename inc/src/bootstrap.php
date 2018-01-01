@@ -5,7 +5,6 @@ namespace MyBB;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Router;
-use MyBB\Twig\Extensions\GetAssetUrl;
 use MyBB\Twig\Extensions\LangExtension;
 use MyBB\Twig\Extensions\ThemeExtension;
 use Psr\Container\ContainerInterface;
