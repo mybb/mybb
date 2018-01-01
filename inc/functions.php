@@ -290,18 +290,6 @@ function parse_page($contents)
 	$contents = str_replace('<navigation>', build_breadcrumb(), $contents);
 	$contents = str_replace('<archive_url>', $archive_url, $contents);
 
-	$contents = str_replace("<html", "<html xmlns=\"http://www.w3.org/1999/xhtml\"", $contents);
-
-	if($lang->settings['rtl'] == 1)
-	{
-		$contents = str_replace("<html", "<html dir=\"rtl\"", $contents);
-	}
-
-	if($lang->settings['htmllang'])
-	{
-		$contents = str_replace("<html", "<html xml:lang=\"".$lang->settings['htmllang']."\" lang=\"".$lang->settings['htmllang']."\"", $contents);
-	}
-
 	if($error_handler->warnings)
 	{
 		$contents = str_replace("<body>", "<body>\n".$error_handler->show_warnings(), $contents);

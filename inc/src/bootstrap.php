@@ -78,9 +78,6 @@ $container->singleton(\Twig_Environment::class, function(ContainerInterface $con
 
     $env->addGlobal('mybb', $container->get(\MyBB::class));
 
-    // TODO: improve theme handling
-    $env->addGlobal('theme', $GLOBALS['theme']);
-
     return $env;
 });
 

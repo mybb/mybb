@@ -5,12 +5,17 @@ namespace MyBB\Twig\Extensions;
 /**
  * A Twig extension class to provide functionality related to themes and assets.
  */
-class ThemeExtension extends \Twig_Extension
+class ThemeExtension extends \Twig_Extension implements \Twig_Extension_GlobalsInterface
 {
     /**
      * @var \MyBB $mybb
      */
     private $mybb;
+
+    /**
+     * @var string $altRowState
+     */
+    private $altRowState;
 
     /**
      * Create a new instance of the ThemeExtension.
@@ -20,12 +25,26 @@ class ThemeExtension extends \Twig_Extension
     public function __construct(\MyBB $mybb)
     {
         $this->mybb = $mybb;
+        $this->altRowState = null;
     }
 
     public function getFunctions()
     {
         return [
             new \Twig_SimpleFunction('asset_url', [$this, 'getAssetUrl']),
+            new \Twig_SimpleFunction('alt_trow', [$this, 'altTrow']),
+        ];
+    }
+
+    /**
+     * Returns a list of global variables to add to the existing list.
+     *
+     * @return array An array of global variables
+     */
+    public function getGlobals()
+    {
+        return [
+            'theme' => $GLOBALS['theme'],
         ];
     }
 
@@ -41,6 +60,23 @@ class ThemeExtension extends \Twig_Extension
     {
         // TODO: This could be smart and add cache busting query parameters to the path automatically...
         return $this->mybb->get_asset_url($path, $useCdn);
+    }
+
+    /**
+     * Select an alternating row colour based on the previous call to this function.
+     *
+     * @param bool $reset Whether to reset the row state to `trow1`.
+     * @return string `trow1` or `trow2` depending on the previous call.
+     */
+    public function altTrow(bool $reset = false)
+    {
+        if (is_null($this->altRowState) || $this->altRowState === 'trow2' || $reset) {
+            $this->altRowState = 'trow1';
+        } else {
+            $this->altRowState = 'trow2';
+        }
+
+        return $this->altRowState;
     }
 
     /**

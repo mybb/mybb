@@ -6,7 +6,7 @@
 
 {% block body %}
     <form action="usercp.php" method="post">
-        <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
         <table width="100%" border="0" align="center">
             <tr>
                 {# TODO: usercpnav #}
@@ -21,12 +21,19 @@
                             <td class="tcat" align="center" width="20%"><span class="smalltext"><strong>{{ lang.draft_options }}</strong></span></td>
                             <td class="tcat" align="center" width="1"><input type="checkbox" name="allbox" class="checkbox checkall" /></td>
                         </tr>
-                        {# TODO: drafts #}
+
+                        {% for draft in drafts %}
+                            {% include 'usercp/draft_row.twig' %}
+                        {% else %}
+                            <tr>
+                                <td class="trow1" colspan="7">{{ lang.no_drafts|raw }}</td>
+                            </tr>
+                        {% endfor %}
                     </table>
                     <br />
                     <div align="center">
                         <input type="hidden" name="action" value="do_drafts" />
-                        <input type="submit" class="button" name="draftman" value="{{ lang.delete_drafts }}" />
+                        <input type="submit" class="button" name="draftman" value="{{ lang.delete_drafts }}"{% if not deleteDraftsEnabled %} disabled{% endif %} />
                     </div>
                 </td>
             </tr>

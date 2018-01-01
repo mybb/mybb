@@ -2961,19 +2961,18 @@ if($mybb->input['action'] == "editlists")
 	output_page($listpage);
 }
 
-if($mybb->input['action'] == "drafts")
-{
+if ($mybb->input['action'] == "drafts") {
 	$plugins->run_hooks("usercp_drafts_start");
 
-	$query = $db->simple_select("posts", "COUNT(pid) AS draftcount", "visible='-2' AND uid='{$mybb->user['uid']}'");
-	$draftcount = $db->fetch_field($query, 'draftcount');
+	$query = $db->simple_select('posts', 'COUNT(pid) AS draftcount', "visible='-2' AND uid='{$mybb->user['uid']}'");
+	$draftCount = $db->fetch_field($query, 'draftcount');
 
-	$drafts = $disable_delete_drafts = '';
-	$lang->drafts_count = $lang->sprintf($lang->drafts_count, my_number_format($draftcount));
+	$deleteDraftsEnabled = $draftCount > 0;
+	$drafts = [];
+	$lang->drafts_count = $lang->sprintf($lang->drafts_count, my_number_format($draftCount));
 
 	// Show a listing of all of the current 'draft' posts or threads the user has.
-	if($draftcount)
-	{
+	if ($draftCount) {
 		$query = $db->query("
 			SELECT p.subject, p.pid, t.tid, t.subject AS threadsubject, t.fid, f.name AS forumname, p.dateline, t.visible AS threadvisible, p.visible AS postvisible
 			FROM ".TABLE_PREFIX."posts p
@@ -2983,44 +2982,31 @@ if($mybb->input['action'] == "drafts")
 			ORDER BY p.dateline DESC
 		");
 
-		while($draft = $db->fetch_array($query))
-		{
-			$detail = '';
+		while ($draft = $db->fetch_array($query)) {
 			$trow = alt_trow();
-			if($draft['threadvisible'] == 1) // We're looking at a draft post
-			{
+
+			if ($draft['threadvisible'] == 1) { // We're looking at a draft post
 				$draft['threadlink'] = get_thread_link($draft['tid']);
-				$draft['threadsubject'] = htmlspecialchars_uni($draft['threadsubject']);
-				eval("\$detail = \"".$templates->get("usercp_drafts_draft_thread")."\";");
-				$editurl = "newreply.php?action=editdraft&amp;pid={$draft['pid']}";
-				$id = $draft['pid'];
-				$type = "post";
-			}
-			elseif($draft['threadvisible'] == -2) // We're looking at a draft thread
-			{
+				$draft['editurl'] = "newreply.php?action=editdraft&amp;pid={$draft['pid']}";
+                $draft['type'] = 'post';
+			} else if ($draft['threadvisible'] == -2) { // We're looking at a draft thread
 				$draft['forumlink'] = get_forum_link($draft['fid']);
-				$draft['forumname'] = htmlspecialchars_uni($draft['forumname']);
-				eval("\$detail = \"".$templates->get("usercp_drafts_draft_forum")."\";");
-				$editurl = "newthread.php?action=editdraft&amp;tid={$draft['tid']}";
-				$id = $draft['tid'];
-				$type = "thread";
+                $draft['editurl'] = "newthread.php?action=editdraft&amp;tid={$draft['tid']}";
+                $draft['type'] = 'thread';
 			}
 
 			$draft['subject'] = htmlspecialchars_uni($draft['subject']);
-			$savedate = my_date('relative', $draft['dateline']);
-			eval("\$drafts .= \"".$templates->get("usercp_drafts_draft")."\";");
+			$draft['savedate'] = my_date('relative', $draft['dateline']);
+
+			$drafts[] = $draft;
 		}
-	}
-	else
-	{
-		$disable_delete_drafts = 'disabled="disabled"';
-		eval("\$drafts = \"".$templates->get("usercp_drafts_none")."\";");
 	}
 
 	$plugins->run_hooks("usercp_drafts_end");
 
 	output_page(\MyBB\template('usercp/drafts.twig', [
 	    'drafts' => $drafts,
+        'deleteDraftsEnabled' => $deleteDraftsEnabled,
     ]));
 }
 
