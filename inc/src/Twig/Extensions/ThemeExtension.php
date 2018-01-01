@@ -13,6 +13,11 @@ class ThemeExtension extends \Twig_Extension implements \Twig_Extension_GlobalsI
     private $mybb;
 
     /**
+     * @var \DB_Base $db
+     */
+    private $db;
+
+    /**
      * @var string $altRowState
      */
     private $altRowState;
@@ -21,10 +26,13 @@ class ThemeExtension extends \Twig_Extension implements \Twig_Extension_GlobalsI
      * Create a new instance of the ThemeExtension.
      *
      * @param \MyBB $mybb
+     * @param \DB_Base $db
      */
-    public function __construct(\MyBB $mybb)
+    public function __construct(\MyBB $mybb, \DB_Base $db)
     {
         $this->mybb = $mybb;
+        $this->db = $db;
+
         $this->altRowState = null;
     }
 
@@ -33,6 +41,7 @@ class ThemeExtension extends \Twig_Extension implements \Twig_Extension_GlobalsI
         return [
             new \Twig_SimpleFunction('asset_url', [$this, 'getAssetUrl']),
             new \Twig_SimpleFunction('alt_trow', [$this, 'altTrow']),
+            new \Twig_SimpleFunction('get_stylesheets', [$this, 'getStylesheets']),
         ];
     }
 
@@ -56,7 +65,7 @@ class ThemeExtension extends \Twig_Extension implements \Twig_Extension_GlobalsI
      *
      * @return string The complete URL to the asset.
      */
-    public function getAssetUrl(string $path, bool $useCdn = true) : string
+    public function getAssetUrl(string $path, bool $useCdn = true): string
     {
         // TODO: This could be smart and add cache busting query parameters to the path automatically...
         return $this->mybb->get_asset_url($path, $useCdn);
@@ -66,6 +75,7 @@ class ThemeExtension extends \Twig_Extension implements \Twig_Extension_GlobalsI
      * Select an alternating row colour based on the previous call to this function.
      *
      * @param bool $reset Whether to reset the row state to `trow1`.
+     *
      * @return string `trow1` or `trow2` depending on the previous call.
      */
     public function altTrow(bool $reset = false)
@@ -86,6 +96,71 @@ class ThemeExtension extends \Twig_Extension implements \Twig_Extension_GlobalsI
      */
     public function getStylesheets()
     {
-        yield 1;
+        $theme = $GLOBALS['theme'];
+
+        $alreadyLoaded = [];
+
+        if (!is_array($theme['stylesheets'])) {
+            $theme['stylesheets'] = my_unserialize($theme['stylesheets']);
+        }
+
+        $stylesheetScripts = array("global", basename($_SERVER['PHP_SELF']));
+        if (!empty($theme['color'])) {
+            $stylesheetScripts[] = $theme['color'];
+        }
+
+        $stylesheetActions = array("global");
+        if (!empty($this->mybb->input['action'])) {
+            $stylesheetActions[] = $this->mybb->get_input('action');
+        }
+        foreach ($stylesheetScripts as $stylesheetScript) {
+            // Load stylesheets for global actions and the current action
+            foreach ($stylesheetActions as $stylesheet_action) {
+                if (!$stylesheet_action) {
+                    continue;
+                }
+
+                if (!empty($theme['stylesheets'][$stylesheetScript][$stylesheet_action])) {
+                    // Actually add the stylesheets to the list
+                    foreach ($theme['stylesheets'][$stylesheetScript][$stylesheet_action] as $pageStylesheet) {
+                        if (!empty($alreadyLoaded[$pageStylesheet])) {
+                            continue;
+                        }
+
+                        if (strpos($pageStylesheet, 'css.php') !== false) {
+                            $stylesheetUrl = $this->mybb->settings['bburl'] . '/' . $pageStylesheet;
+                        } else {
+                            $stylesheetUrl = $this->mybb->get_asset_url($pageStylesheet);
+                        }
+
+                        if ($this->mybb->settings['minifycss']) {
+                            $stylesheetUrl = str_replace('.css', '.min.css', $stylesheetUrl);
+                        }
+
+                        if (strpos($pageStylesheet, 'css.php') !== false) {
+                            // We need some modification to get it working with the displayorder
+                            $queryString = parse_url($stylesheetUrl, PHP_URL_QUERY);
+                            $id = (int)my_substr($queryString, 11);
+                            $query = $this->db->simple_select("themestylesheets", "name", "sid={$id}");
+                            $realName = $this->db->fetch_field($query, "name");
+                            $themeStylesheets[$realName] = $stylesheetUrl;
+                        } else {
+                            $themeStylesheets[basename($pageStylesheet)] = $stylesheetUrl;
+                        }
+
+                        $alreadyLoaded[$pageStylesheet] = 1;
+                    }
+                }
+            }
+        }
+        unset($actions);
+
+        if (!empty($themeStylesheets) && is_array($theme['disporder'])) {
+            foreach ($theme['disporder'] as $style_name => $order) {
+                if (!empty($themeStylesheets[$style_name])) {
+                    yield $themeStylesheets[$style_name];
+                }
+            }
+        }
     }
 }

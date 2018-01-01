@@ -71,7 +71,7 @@ $container->singleton(\Twig_Environment::class, function(ContainerInterface $con
         'cache' => __DIR__ . '/../../cache/views',
     ]);
 
-    $env->addExtension(new ThemeExtension($container->get(\MyBB::class)));
+    $env->addExtension(new ThemeExtension($container->get(\MyBB::class), $container->get(\DB_Base::class)));
     $env->addExtension(new LangExtension($container->get(\MyLanguage::class)));
 
     $plugins->run_hooks('twig_environment_env', $env);

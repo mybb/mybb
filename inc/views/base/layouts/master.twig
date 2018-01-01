@@ -10,6 +10,10 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+    {% for stylesheet in get_stylesheets() %}
+        <link rel="stylesheet" href="{{ stylesheet }}">
+    {% endfor %}
+
     <script type="text/javascript" src="{{ asset_url('jscripts/jquery.js') }}"></script>
     <script type="text/javascript" src="{{ asset_url('jscripts/jquery.plugins.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset_url('jscripts/general.js') }}"></script>
