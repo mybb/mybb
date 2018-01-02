@@ -1,5 +1,6 @@
+{% set row = alt_trow() %}
 <tr>
-    <td class="{{ alt_trow() }}">
+    <td class="{{ row }}">
         <strong>{{ draft.subject }}</strong><br />
         <span class="smalltext">
             {% if draft.type == 'post' %}
@@ -9,13 +10,13 @@
             {% endif %}
         </span>
     </td>
-    <td class="{{ alt_trow() }}" align="center">
+    <td class="{{ row }}" align="center">
         {{ draft.savedate|raw }} {# TODO: Format dates as a Twig function, rather than using |raw for HTML... #}
     </td>
-    <td class="{{ alt_trow() }}" align="center">
+    <td class="{{ row }}" align="center">
         <a href="{{ draft.editurl|raw }}">{{ lang.edit_draft }}</a>
     </td>
-    <td class="{{ alt_trow() }}" align="center">
+    <td class="{{ row }}" align="center">
         <input type="checkbox" class="checkbox" name="deletedraft[{{ draft.id }}]" value="{{ draft.type }}" />
     </td>
 </tr>
