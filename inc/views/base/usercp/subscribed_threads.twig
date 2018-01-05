@@ -1,0 +1,65 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ mybb.settings.bburl }} - {{ lang.subscriptions }}</title>
+{% endblock head %}
+
+{% block body %}
+    {{ multipage|raw }} # TODO: improve multipage so that `|raw` isn't required - perhaps make it a Twig function?
+    <form action="usercp.php" method="post" name="input">
+        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+        <input type="hidden" name="action" value="do_subscriptions" />
+        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+            <tr>
+                <td class="thead" colspan="7"><strong>{{ lang.subscriptions }} ({{ threadcount }})</strong></td>
+            </tr>
+            <tr>
+                <td width="66%" colspan="3" class="tcat">
+                    <span class="smalltext">
+                        <strong>{{ lang.thread }}{$lang->thread}</strong>
+                    </span>
+                </td>
+                <td class="tcat" align="center" width="7%">
+                    <span class="smalltext">
+                        <strong>{{ lang.replies }}</strong>
+                    </span>
+                </td>
+                <td class="tcat" align="center" width="7%">
+                    <span class="smalltext">
+                        <strong>{{ lang.views }}</strong>
+                    </span>
+                </td>
+                <td class="tcat" align="center" width="200">
+                    <span class="smalltext">
+                        <strong>{{ lang.lastpost }}</strong>
+                    </span>
+                </td>
+                <td class="tcat" align="center" width="1">
+                    <input name="allbox" title="Select All" type="checkbox" class="checkbox checkall" value="1" />
+                </td>
+            </tr>
+            {$threads}
+            {$remove_options}
+        </table>
+    </form>
+    {{ multipage|raw }}
+    <br />
+    <div class="float_left">
+        <div class="float_left">
+            <dl class="thread_legend smalltext">
+                <dd><span class="thread_status newfolder" title="{{ lang.new_posts_thread }}">&nbsp;</span> {{ lang.new_posts_thread }}</dd>
+                <dd><span class="thread_status newhotfolder" title="{{ lang.new_hot_thread }}">&nbsp;</span> {{ lang.new_hot_thread }}</dd>
+                <dd><span class="thread_status hotfolder" title="{{ lang.hot_thread }}">&nbsp;</span> {{ lang.hot_thread }}</dd>
+            </dl>
+        </div>
+
+        <div class="float_left">
+            <dl class="thread_legend smalltext">
+                <dd><span class="thread_status folder" title="{{ lang.no_new_thread }}">&nbsp;</span> {{ lang.no_new_thread }}</dd>
+                <dd><span class="thread_status dot_folder" title="{{ lang.posts_by_you }}">&nbsp;</span> {{ lang.posts_by_you }}</dd>
+                <dd><span class="thread_status lockfolder" title="{{ lang.locked_thread }}">&nbsp;</span> {{ lang.locked_thread }}</dd>
+            </dl>
+        </div>
+        <br class="clear" />
+    </div>
+{% endblock body %}
