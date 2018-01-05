@@ -1,0 +1,31 @@
+<div id="container">
+    <a name="top" id="top"></a>
+    <div id="header">
+        <div id="logo">
+            <div class="wrapper">
+                <a href="{{ mybb.settings.bburl }}/index.php">
+                    <img src="{{ theme.logo }}" alt="{{ mybb.settings.bburl }}" title="{{ mybb.settings.bburl }}" />
+                </a>
+                <ul class="menu top_links">
+                    {# TODO: top links #}
+                    <li>
+                        <a href="{{ mybb.settings.bburl }}/misc.php?action=help" class="help">{{ lang.toplinks_help }}</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div id="panel">
+            <div class="upper">
+                <div class="wrapper">
+                    {% if mybb.user.uid > 0 %}
+                        {% include 'header/welcomeblock_member.twig' %}
+                    {% else %}
+                        {% include 'header/welcomeblock_guest.twig' %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="content">
+        <div class="wrapper">
+                <br />

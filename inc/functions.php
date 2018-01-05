@@ -285,31 +285,10 @@ function send_mail_queue($count=10)
  */
 function parse_page($contents)
 {
-	global $lang, $theme, $mybb, $htmldoctype, $archive_url, $error_handler;
+	global $lang, $theme, $mybb, $archive_url, $error_handler;
 
 	$contents = str_replace('<navigation>', build_breadcrumb(), $contents);
 	$contents = str_replace('<archive_url>', $archive_url, $contents);
-
-	if($htmldoctype)
-	{
-		$contents = $htmldoctype.$contents;
-	}
-	else
-	{
-		$contents = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n".$contents;
-	}
-
-	$contents = str_replace("<html", "<html xmlns=\"http://www.w3.org/1999/xhtml\"", $contents);
-
-	if($lang->settings['rtl'] == 1)
-	{
-		$contents = str_replace("<html", "<html dir=\"rtl\"", $contents);
-	}
-
-	if($lang->settings['htmllang'])
-	{
-		$contents = str_replace("<html", "<html xml:lang=\"".$lang->settings['htmllang']."\" lang=\"".$lang->settings['htmllang']."\"", $contents);
-	}
 
 	if($error_handler->warnings)
 	{
