@@ -1,0 +1,28 @@
+<!doctype html>
+<html class="no-js"{% if lang.settings.rtl %} dir="rtl"{% endif %}{% if lang.settings.htmllang %} lang="{{ lang.settings.htmllang }}"{% endif %}>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    {% block head %}
+        <title>MyBB</title>
+    {% endblock head %}
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    {% for stylesheet in get_stylesheets() %}
+        <link rel="stylesheet" href="{{ stylesheet }}">
+    {% endfor %}
+
+    <script type="text/javascript" src="{{ asset_url('jscripts/jquery.js') }}"></script>
+    <script type="text/javascript" src="{{ asset_url('jscripts/jquery.plugins.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset_url('jscripts/general.js') }}"></script>
+</head>
+<body>
+{% include 'partials/header.twig' %}
+
+{% block body %}{% endblock %}
+
+{% include 'partials/footer.twig' %}
+</body>
+</html>
