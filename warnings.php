@@ -752,121 +752,92 @@ if(!$mybb->input['action'])
 		$page = 1;
 	}
 
-	$multipage = multipage($warning_count, $perpage, $page, "warnings.php?uid={$user['uid']}");
+    $multipage = multipage($warning_count, $perpage, $page, "warnings.php?uid={$user['uid']}");
 
-	if($mybb->settings['maxwarningpoints'] < 1)
-	{
-		$mybb->settings['maxwarningpoints'] = 10;
-	}
+    if ($mybb->settings['maxwarningpoints'] < 2) {
+        $mybb->settings['maxwarningpoints'] = 10;
+    }
 
-	$warning_level = round($user['warningpoints']/$mybb->settings['maxwarningpoints']*100);
-	if($warning_level > 100)
-	{
-		$warning_level = 100;
-	}
+    $warning_level = round($user['warningpoints']/$mybb->settings['maxwarningpoints']*100);
+    if ($warning_level > 100) {
+        $warning_level = 100;
+    }
 
-	if($user['warningpoints'] > $mybb->settings['maxwarningpoints'])
-	{
-		$user['warningpoints'] = $mybb->settings['maxwarningpoints'];
-	}
+    if ($user['warningpoints'] > $mybb->settings['maxwarningpoints']) {
+        $user['warningpoints'] = $mybb->settings['maxwarningpoints'];
+    }
 
-	if($warning_level > 0)
-	{
-		$lang->current_warning_level = $lang->sprintf($lang->current_warning_level, $warning_level, $user['warningpoints'], $mybb->settings['maxwarningpoints']);
-	}
-	else
-	{
-		$lang->current_warning_level = "";
-	}
+    $warnings = [];
 
-	// Fetch the actual warnings
-	$query = $db->query("
-		SELECT w.*, t.title AS type_title, u.username, p.subject AS post_subject
-		FROM ".TABLE_PREFIX."warnings w
-		LEFT JOIN ".TABLE_PREFIX."warningtypes t ON (t.tid=w.tid)
-		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=w.issuedby)
-		LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=w.pid)
-		WHERE w.uid='{$user['uid']}'
-		ORDER BY w.expired ASC, w.dateline DESC
-		LIMIT {$start}, {$perpage}
-	");
-	$warnings = '';
-	while($warning = $db->fetch_array($query))
-	{
-		if(!isset($last_expired) || $warning['expired'] != $last_expired)
-		{
-			if($warning['expired'] == 0)
-			{
-				eval("\$warnings .= \"".$templates->get("warnings_active_header")."\";");
-			}
-			else
-			{
-				eval("\$warnings .= \"".$templates->get("warnings_expired_header")."\";");
-			}
-		}
-		$last_expired = $warning['expired'];
+    // Fetch the actual warnings
+    $query = $db->query("
+        SELECT w.*, t.title AS type_title, u.username, p.subject AS post_subject
+        FROM " . TABLE_PREFIX . "warnings w
+        LEFT JOIN " . TABLE_PREFIX . "warningtypes t ON (t.tid=w.tid)
+        LEFT JOIN " . TABLE_PREFIX . "users u ON (u.uid=w.issuedby)
+        LEFT JOIN " . TABLE_PREFIX . "posts p ON (p.pid=w.pid)
+        WHERE w.uid='{$user['uid']}'
+        ORDER BY w.expired ASC, w.dateline DESC
+        LIMIT {$start}, {$perpage}
+    ");
+    while($warning = $db->fetch_array($query))
+    {
+        if (!isset($last_expired) || $warning['expired'] != $last_expired) {
+            if ($warning['expired'] == 0) {
+                $warning['active'] = 1;
+            } else {
+                $warning['active'] = 2;
+            }
+        }
+        $last_expired = $warning['expired'];
 
-		$post_link = '';
-		if($warning['post_subject'])
-		{
-			$warning['post_subject'] = $parser->parse_badwords($warning['post_subject']);
-			$warning['post_subject'] = htmlspecialchars_uni($warning['post_subject']);
-			$warning['post_link'] = get_post_link($warning['pid']);
-			eval("\$post_link = \"".$templates->get("warnings_postlink")."\";");
-		}
+        if ($warning['post_subject']) {
+            $warning['post_subject'] = $parser->parse_badwords($warning['post_subject']);
+            $warning['post_subject'] = htmlspecialchars_uni($warning['post_subject']);
+            $warning['post_link'] = get_post_link($warning['pid']);
+        }
 
-		$warning['username'] = htmlspecialchars_uni($warning['username']);
-		$issuedby = build_profile_link($warning['username'], $warning['issuedby']);
-		$date_issued = my_date('relative', $warning['dateline']);
-		if($warning['type_title'])
-		{
-			$warning_type = $warning['type_title'];
-		}
-		else
-		{
-			$warning_type = $warning['title'];
-		}
-		$warning_type = htmlspecialchars_uni($warning_type);
-		if($warning['points'] > 0)
-		{
-			$warning['points'] = "+{$warning['points']}";
-		}
-		$points = $lang->sprintf($lang->warning_points, $warning['points']);
-		if($warning['expired'] != 1)
-		{
-			if($warning['expires'] == 0)
-			{
-				$expires = $lang->never;
-			}
-			else
-			{
-				$expires = nice_time($warning['expires']-TIME_NOW);
-			}
-		}
-		else
-		{
-			if($warning['daterevoked'])
-			{
-				$expires = $lang->warning_revoked;
-			}
-			else if($warning['expires'])
-			{
-				$expires = $lang->already_expired;
-			}
-		}
-		$alt_bg = alt_trow();
-		$plugins->run_hooks("warnings_warning");
-		eval("\$warnings .= \"".$templates->get("warnings_warning")."\";");
-	}
+        $warning['username'] = htmlspecialchars_uni($warning['username']);
+        $warning['issuedby'] = build_profile_link($warning['username'], $warning['issuedby']);
 
-	if(!$warnings)
-	{
-		eval("\$warnings = \"".$templates->get("warnings_no_warnings")."\";");
-	}
+        $warning['date_issued'] = my_date('relative', $warning['dateline']);
 
-	$plugins->run_hooks("warnings_end");
+        if ($warning['type_title']) {
+            $warning_type = $warning['type_title'];
+        } else {
+            $warning_type = $warning['title'];
+        }
 
-	eval("\$warnings = \"".$templates->get("warnings")."\";");
-	output_page($warnings);
+        $warning['warning_type'] = htmlspecialchars_uni($warning_type);
+        if ($warning['points'] > 0) {
+            $warning['points'] = "+{$warning['points']}";
+        }
+
+        if ($warning['expired'] != 1) {
+            if ($warning['expires'] == 0) {
+                $warning['expires'] = $lang->never;
+            } else {
+                $warning['expires'] = nice_time($warning['expires']-TIME_NOW);
+            }
+        } else {
+            if ($warning['daterevoked']) {
+                $warning['expires'] = $lang->warning_revoked;
+            }
+            else if ($warning['expires']) {
+                $warning['expires'] = $lang->already_expired;
+            }
+        }
+
+        $plugins->run_hooks("warnings_warning");
+
+        $warnings[] = $warning;
+    }
+
+    $plugins->run_hooks("warnings_end");
+
+    output_page(\MyBB\template('warnings/warnings.twig', [
+        'user' => $user,
+        'warning_level' => $warning_level,
+        'warnings' => $warnings
+    ]));
 }
-
