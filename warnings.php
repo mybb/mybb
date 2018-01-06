@@ -754,7 +754,7 @@ if(!$mybb->input['action'])
 
     $multipage = multipage($warning_count, $perpage, $page, "warnings.php?uid={$user['uid']}");
 
-    if ($mybb->settings['maxwarningpoints'] < 2) {
+    if ($mybb->settings['maxwarningpoints'] < 1) {
         $mybb->settings['maxwarningpoints'] = 10;
     }
 
@@ -776,12 +776,12 @@ if(!$mybb->input['action'])
         LEFT JOIN " . TABLE_PREFIX . "warningtypes t ON (t.tid=w.tid)
         LEFT JOIN " . TABLE_PREFIX . "users u ON (u.uid=w.issuedby)
         LEFT JOIN " . TABLE_PREFIX . "posts p ON (p.pid=w.pid)
-        WHERE w.uid='{$user['uid']}'
+        WHERE w.uid = '{$user['uid']}'
         ORDER BY w.expired ASC, w.dateline DESC
         LIMIT {$start}, {$perpage}
     ");
-    while($warning = $db->fetch_array($query))
-    {
+
+    while($warning = $db->fetch_array($query)) {
         if (!isset($last_expired) || $warning['expired'] != $last_expired) {
             if ($warning['expired'] == 0) {
                 $warning['active'] = 1;
@@ -803,12 +803,11 @@ if(!$mybb->input['action'])
         $warning['date_issued'] = my_date('relative', $warning['dateline']);
 
         if ($warning['type_title']) {
-            $warning_type = $warning['type_title'];
+            $warning['warning_type'] = $warning['type_title'];
         } else {
-            $warning_type = $warning['title'];
+            $warning['warning_type'] = $warning['title'];
         }
 
-        $warning['warning_type'] = htmlspecialchars_uni($warning_type);
         if ($warning['points'] > 0) {
             $warning['points'] = "+{$warning['points']}";
         }
