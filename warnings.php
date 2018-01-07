@@ -609,94 +609,70 @@ if($mybb->input['action'] == "view")
 	}
 	add_breadcrumb($lang->nav_view_warning);
 
-	$user_link = build_profile_link($user['username'], $user['uid']);
+    $user['user_link'] = build_profile_link($user['username'], $user['uid']);
 
-	$post_link = "";
-	if($warning['post_subject'])
-	{
-		$warning['post_subject'] = $parser->parse_badwords($warning['post_subject']);
-		$warning['post_subject'] = htmlspecialchars_uni($warning['post_subject']);
-		$post_link = get_post_link($warning['pid'])."#pid{$warning['pid']}";
-		eval("\$warning_info = \"".$templates->get("warnings_view_post")."\";");
-	}
-	else
-	{
-		eval("\$warning_info = \"".$templates->get("warnings_view_user")."\";");
-	}
+    if ($warning['post_subject']) {
+        $warning['post_subject'] = $parser->parse_badwords($warning['post_subject']);
+        $warning['post_subject'] = htmlspecialchars_uni($warning['post_subject']);
+        $warning['post_link'] = get_post_link($warning['pid']);
+    }
 
-	$warning['username'] = htmlspecialchars_uni($warning['username']);
-	$issuedby = build_profile_link($warning['username'], $warning['issuedby']);
-	$notes = nl2br(htmlspecialchars_uni($warning['notes']));
+    $warning['username'] = htmlspecialchars_uni($warning['username']);
+    $warning['issuedby'] = build_profile_link($warning['username'], $warning['issuedby']);
+    $warning['notes'] = nl2br($warning['notes']);
 
-	$date_issued = my_date('relative', $warning['dateline']);
-	if($warning['type_title'])
-	{
-		$warning_type = $warning['type_title'];
-	}
-	else
-	{
-		$warning_type = $warning['title'];
-	}
-	$warning_type = htmlspecialchars_uni($warning_type);
-	if($warning['points'] > 0)
-	{
-		$warning['points'] = "+{$warning['points']}";
-	}
+    $warning['date_issued'] = my_date('relative', $warning['dateline']);
 
-	$revoked_date = '';
+    if ($warning['type_title']) {
+        $warning['warning_type'] = $warning['type_title'];
+    } else {
+        $warning['warning_type'] = $warning['title'];
+    }
 
-	$points = $lang->sprintf($lang->warning_points, $warning['points']);
-	if($warning['expired'] != 1)
-	{
-		if($warning['expires'] == 0)
-		{
-			$expires = $lang->never;
-		}
-		else
-		{
-			$expires = my_date('normal', $warning['expires']); // Purposely not using nice_time here as the moderator has clicked for more details so the actual day/time should be shown
-		}
-		$status = $lang->warning_active;
-	}
-	else
-	{
-		if($warning['daterevoked'])
-		{
-			$expires = $status = $lang->warning_revoked;
-		}
-		else if($warning['expires'])
-		{
-			$revoked_date = '('.my_date('normal', $warning['expires']).')';
-			$expires = $status = $lang->already_expired;
-		}
-	}
+    if ($warning['points'] > 0) {
+        $warning['points'] = "+{$warning['points']}";
+    }
 
-	if(!$warning['daterevoked'])
-	{
-		if(!isset($warn_errors))
-		{
-			$warn_errors = '';
-		}
-		eval("\$revoke = \"".$templates->get("warnings_view_revoke")."\";");
-	}
-	else
-	{
-		$date_revoked = my_date('relative', $warning['daterevoked']);
-		$revoked_user = get_user($warning['revokedby']);
-		if(!$revoked_user['username'])
-		{
-			$revoked_user['username'] = $lang->guest;
-		}
-		$revoked_user['username'] = htmlspecialchars_uni($revoked_user['username']);
-		$revoked_by = build_profile_link($revoked_user['username'], $revoked_user['uid']);
-		$revoke_reason = nl2br(htmlspecialchars_uni($warning['revokereason']));
-		eval("\$revoke = \"".$templates->get("warnings_view_revoked")."\";");
-	}
+    if ($warning['expired'] != 1) {
+        if ($warning['expires'] == 0) {
+            $warning['expires'] = $lang->never;
+        } else {
+            $warning['expires'] = my_date('normal', $warning['expires']); // Purposely not using nice_time here as the moderator has clicked for more details so the actual day/time should be shown
+        }
+        $warning['status'] = $lang->warning_active;
+    } else {
+        if ($warning['daterevoked']) {
+            $warning['expires'] = $warning['status'] = $lang->warning_revoked;
+        }
+        else if ($warning['expires']) {
+            $warning['revoked_date'] = '('.my_date('normal', $warning['expires']).')';
+            $warning['expires'] = $warning['status'] = $lang->already_expired;
+        }
+    }
 
-	$plugins->run_hooks("warnings_view_end");
+    if (!$warning['daterevoked']) {
+        if (!isset($warn_errors)) {
+            $warn_errors = '';
+        }
+    } else {
+        $warning['daterevoked'] = my_date('relative', $warning['daterevoked']);
+        $revoked_user = get_user($warning['revokedby']);
+        if (!$revoked_user['username']) {
+            $revoked_user['username'] = $lang->guest;
+        }
+        $revoked_user['username'] = htmlspecialchars_uni($revoked_user['username']);
+        $revoked_user['profile'] = build_profile_link($revoked_user['username'], $revoked_user['uid']);
+        $warning['revokereason'] = nl2br($warning['revokereason']);
+    }
 
-	eval("\$warning = \"".$templates->get("warnings_view")."\";");
-	output_page($warning);
+    $plugins->run_hooks("warnings_view_end");
+
+    output_page(\MyBB\template('warnings/view.twig', [
+        'user' => $user,
+        'revoked_user' => $revoked_user,
+        'warning' => $warning,
+        'warn_errors' => $warn_errors,
+    ]));
 }
 
 // Showing list of warnings for a particular user
