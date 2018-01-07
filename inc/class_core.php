@@ -161,6 +161,7 @@ class MyBB {
 		'adminsessions' => array('ip' => true),
 		'maillogs' => array('ipaddress' => true),
 		'moderatorlog' => array('ipaddress' => true),
+		'pollvotes' => array('ipaddress' => true),
 		'posts' => array('ipaddress' => true),
 		'privatemessages' => array('ipaddress' => true),
 		'searchlog' => array('ipaddress' => true),
