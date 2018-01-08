@@ -1,0 +1,38 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ mybb.settings.bburl }} - {{ lang.warning_log }}</title>
+{% endblock head %}
+
+{% block body %}
+    {{ multipage|raw }}
+    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+        <thead>
+            <tr>
+                <td class="thead" colspan="5">
+                    {% if warning_level > 0 %}
+                        <div class="float_right">{{ trans('current_warning_level', warning_level, user.warningpoints, mybb.settings.maxwarningpoints)|raw }}</div>
+                    {% endif %}
+                    <div><strong>{{ lang.warning_log }}</strong></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="tcat"><span class="smalltext"><strong>{{ lang.warning }}</strong></span></td>
+                <td class="tcat" width="20%" align="center"><span class="smalltext"><strong>{{ lang.date_issued }}</strong></span></td>
+                <td class="tcat" width="20%" align="center"><span class="smalltext"><strong>{{ lang.expiry_date }}</strong></span></td>
+                <td class="tcat" width="20%" align="center"><span class="smalltext"><strong>{{ lang.issued_by }}</strong></span></td>
+                <td class="tcat" width="1" align="center"><span class="smalltext"><strong>{{ lang.details }}</strong></span></td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for warning in warnings %}
+                {% include 'warnings/warning_row.twig' %}
+            {% else %}
+                <tr>
+                    <td class="trow1" colspan="5" align="center">{{ lang.no_warnings }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {{ multipage|raw }}
+{% endblock body %}
