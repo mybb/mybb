@@ -1,0 +1,28 @@
+<tr>
+    <td align="center" class="{{ thread.bg_colour }}" width="2%">
+        <span class="thread_status {{ thread.folder }}" title="{{ thread.folder_label }}">&nbsp;</span>
+    </td>
+    <td align="center" class="{{ thread.bg_colour }}" width="2%">
+        <img src="{{ thread.icon.path }}" alt="{{ thread.icon.name }}" title="{{ thread.icon.name }}" />
+    </td>
+    <td class="{{ thread.bg_colour }}">
+        <a href="{{ thread.newpostlink }}"><img src="{{ theme.imgdir }}/jump.png" alt="{{ lang.goto_first_unread }}" title="{{ lang.goto_first_unread }}" /></a>
+        {{ thread.threadprefix }}
+        <a href="{{ thread.threadlink }}" class="{{ thread.new_class }}">{{ thread.subject }}</a><br />
+        <span class="smalltext">{{ lang.notification_method }} {{ thread.notification_type }}</span>
+    </td>
+    <td align="center" class="{{ thread.bg_colour }}">
+        <a href="{{ mybb.settings.bburl }}/misc.php?action=whoposted&tid={{ thread.tid }}" onclick="MyBB.whoPosted({{ thread.tid }}); return false;">
+            {{ thread.replies }}
+        </a>
+    </td>
+    <td align="center" class="{{ thread.bg_colour }}">
+        {{ thread.views }}
+    </td>
+    <td class="{{ thread.bg_colour }}" style="white-space: nowrap">
+		<span class="smalltext">{{ thread.last_post_date|raw }}<br />
+		<a href="{{ thread.lastpostlink }}">{{ lang.lastpost }}</a>: {{ thread.last_poster_link|raw }}</span>
+    </td>
+    <td class="{{ thread.bg_colour }}" align="center">
+        <input type="checkbox" class="checkbox" name="check[{{ thread.tid }}]" value="{{ thread.tid }}" /></td>
+</tr>

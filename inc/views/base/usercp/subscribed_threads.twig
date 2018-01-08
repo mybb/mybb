@@ -5,18 +5,18 @@
 {% endblock head %}
 
 {% block body %}
-    {{ multipage|raw }} # TODO: improve multipage so that `|raw` isn't required - perhaps make it a Twig function?
+    {{ multipage|raw }} {# TODO: improve multipage so that `|raw` isn't required - perhaps make it a Twig function? #}
     <form action="usercp.php" method="post" name="input">
         <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
         <input type="hidden" name="action" value="do_subscriptions" />
         <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
             <tr>
-                <td class="thead" colspan="7"><strong>{{ lang.subscriptions }} ({{ threadcount }})</strong></td>
+                <td class="thead" colspan="7"><strong>{{ lang.subscriptions }} ({{ thread_count }})</strong></td>
             </tr>
             <tr>
                 <td width="66%" colspan="3" class="tcat">
                     <span class="smalltext">
-                        <strong>{{ lang.thread }}{$lang->thread}</strong>
+                        <strong>{{ lang.thread }}</strong>
                     </span>
                 </td>
                 <td class="tcat" align="center" width="7%">
@@ -38,8 +38,36 @@
                     <input name="allbox" title="Select All" type="checkbox" class="checkbox checkall" value="1" />
                 </td>
             </tr>
-            {$threads}
-            {$remove_options}
+
+            {% for thread in threads %}
+                {% include 'usercp/subscribed_thread_row.twig' %}
+            {% else %}
+                <tr>
+                    <td class="trow1" colspan="7">{{ lang.no_thread_subscriptions }}</td>
+                </tr>
+            {% endfor %}
+
+            <tr>
+                <td class="tfoot" colspan="7">
+                    <div class="float_right">
+                        <label for="do"><strong>{{ lang.with_selected }}</strong></label>
+                        <select name="do" id="do">
+                            <option value="delete">{{ lang.delete_subscriptions }}</option>
+                            <option value="no_notification">{{ lang.update_no_notification }}</option>
+                            <option value="email_notification">{{ lang.update_email_notification }}</option>
+                            <option value="pm_notification">{{ lang.update_pm_notification }}</option>
+                        </select>
+                        <input type="submit" class="button" value="{{ lang.go }}" />
+                    </div>
+                    <div>
+                        <strong>
+                            <a href="usercp2.php?action=removesubscriptions&amp;my_post_key={{ mybb.post_code }}">
+                                {{ lang.remove_all_subscriptions }}
+                            </a>
+                        </strong>
+                    </div>
+                </td>
+            </tr>
         </table>
     </form>
     {{ multipage|raw }}
