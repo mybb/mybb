@@ -193,313 +193,242 @@ if($mybb->input['action'] == "warn")
 		error($lang->error_cant_warn_user);
 	}
 
-	$post = $existing_warnings = '';
+    // Giving a warning for a specific post
+    if ($mybb->get_input('pid', MyBB::INPUT_INT)) {
+        $post = get_post($mybb->get_input('pid', MyBB::INPUT_INT));
 
-	// Giving a warning for a specific post
-	if($mybb->get_input('pid', MyBB::INPUT_INT))
-	{
-		$post = get_post($mybb->get_input('pid', MyBB::INPUT_INT));
+        if ($post) {
+            $thread = get_thread($post['tid']);
+        }
 
-		if($post)
-		{
-			$thread = get_thread($post['tid']);
-		}
+        if (!$post || !$thread) {
+            error($lang->warnings_error_invalid_post);
+        }
 
-		if(!$post || !$thread)
-		{
-			error($lang->warnings_error_invalid_post);
-		}
+        $forum_permissions = forum_permissions($thread['fid']);
+        if ($forum_permissions['canview'] != 1) {
+            error_no_permission();
+        }
 
-		$forum_permissions = forum_permissions($thread['fid']);
-		if($forum_permissions['canview'] != 1)
-		{
-			error_no_permission();
-		}
+        $post['subject'] = $parser->parse_badwords($post['subject']);
+        $post['subject'] = htmlspecialchars_uni($post['subject']);
+        $post['link'] = get_post_link($post['pid']);
 
-		$post['subject'] = $parser->parse_badwords($post['subject']);
-		$post['subject'] = htmlspecialchars_uni($post['subject']);
-		$post_link = get_post_link($post['pid']);
-		eval("\$post = \"".$templates->get("warnings_warn_post")."\";");
+        $warnings = [];
 
-		// Fetch any existing warnings issued for this post
-		$query = $db->query("
-			SELECT w.*, t.title AS type_title, u.username
-			FROM ".TABLE_PREFIX."warnings w
-			LEFT JOIN ".TABLE_PREFIX."warningtypes t ON (t.tid=w.tid)
-			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=w.issuedby)
-			WHERE w.pid='".$mybb->get_input('pid', MyBB::INPUT_INT)."'
-			ORDER BY w.expired ASC, w.dateline DESC
-		");
-		$first = true;
-		$warnings = '';
-		while($warning = $db->fetch_array($query))
-		{
-			if($warning['expired'] != $last_expired || $first)
-			{
-				if($warning['expired'] == 0)
-				{
-					eval("\$warnings .= \"".$templates->get("warnings_active_header")."\";");
-				}
-				else
-				{
-					eval("\$warnings .= \"".$templates->get("warnings_expired_header")."\";");
-				}
-			}
-			$last_expired = $warning['expired'];
-			$first = false;
+        // Fetch any existing warnings issued for this post
+        $query = $db->query("
+            SELECT w.*, t.title AS type_title, u.username
+            FROM " . TABLE_PREFIX . "warnings w
+            LEFT JOIN " . TABLE_PREFIX . "warningtypes t ON (t.tid=w.tid)
+            LEFT JOIN " . TABLE_PREFIX . "users u ON (u.uid=w.issuedby)
+            WHERE w.pid = '".$mybb->get_input('pid', MyBB::INPUT_INT)."'
+            ORDER BY w.expired ASC, w.dateline DESC
+        ");
+        $first = true;
+        while ($warning = $db->fetch_array($query)) {
+            if ($warning['expired'] != $last_expired || $first) {
+                if ($warning['expired'] == 0) {
+                    $warning['active'] = 1;
+                } else {
+                    $warning['active'] = 2;
+                }
+            }
+            $last_expired = $warning['expired'];
+            $first = false;
 
-			$post_link = "";
-			$warning['username'] = htmlspecialchars_uni($warning['username']);
-			$issuedby = build_profile_link($warning['username'], $warning['issuedby']);
-			$date_issued = my_date('relative', $warning['dateline']);
-			if($warning['type_title'])
-			{
-				$warning_type = $warning['type_title'];
-			}
-			else
-			{
-				$warning_type = $warning['title'];
-			}
-			$warning_type = htmlspecialchars_uni($warning_type);
-			if($warning['points'] > 0)
-			{
-				$warning['points'] = "+{$warning['points']}";
-			}
-			$points = $lang->sprintf($lang->warning_points, $warning['points']);
-			if($warning['expired'] != 1)
-			{
-				if($warning['expires'] == 0)
-				{
-					$expires = $lang->never;
-				}
-				else
-				{
-					$expires = nice_time($warning['expires']-TIME_NOW);
-				}
-			}
-			else
-			{
-				if($warning['daterevoked'])
-				{
-					$expires = $lang->warning_revoked;
-				}
-				else if($warning['expires'])
-				{
-					$expires = $lang->already_expired;
-				}
-			}
-			$alt_bg = alt_trow();
-			$plugins->run_hooks("warnings_warning");
-			eval("\$warnings .= \"".$templates->get("warnings_warning")."\";");
-		}
-		if($warnings)
-		{
-			eval("\$existing_warnings = \"".$templates->get("warnings_warn_existing")."\";");
-		}
-	}
+            $warning['username'] = htmlspecialchars_uni($warning['username']);
+            $warning['issuedby'] = build_profile_link($warning['username'], $warning['issuedby']);
 
-	$plugins->run_hooks("warnings_warn_start");
+            $warning['date_issued'] = my_date('relative', $warning['dateline']);
 
-	$type_checked = array('custom' => '');
-	$expires_period = array('hours' => '', 'days' => '', 'weeks' => '', 'months' => '', 'never' => '');
-	$send_pm_checked = '';
+            if ($warning['type_title']) {
+                $warning['warning_type'] = $warning['type_title'];
+            } else {
+                $warning['warning_type'] = $warning['title'];
+            }
 
-	// Coming here from failed do_warn?
-	$user['username'] = htmlspecialchars_uni($user['username']);
-	if(!empty($warn_errors))
-	{
-		$notes = htmlspecialchars_uni($mybb->get_input('notes'));
-		if($mybb->get_input('type', MyBB::INPUT_INT))
-		{
-			$type_checked[$mybb->get_input('type', MyBB::INPUT_INT)] = "checked=\"checked\"";
-		}
-		$pm_subject = htmlspecialchars_uni($mybb->get_input('pm_subject'));
-		$message = htmlspecialchars_uni($mybb->get_input('pm_message'));
-		if(!empty($mybb->input['send_pm']))
-		{
-			$send_pm_checked = "checked=\"checked\"";
-		}
-		$custom_reason = htmlspecialchars_uni($mybb->get_input('custom_reason'));
-		$custom_points = $mybb->get_input('custom_points', MyBB::INPUT_INT);
-		$expires = $mybb->get_input('expires', MyBB::INPUT_INT);
-		if($mybb->get_input('expires_period', MyBB::INPUT_INT))
-		{
-			$expires_period[$mybb->get_input('expires_period', MyBB::INPUT_INT)] = "selected=\"selected\"";
-		}
-	}
-	else
-	{
-		$notes = $custom_reason = $custom_points = $expires = '';
-		$expires = 1;
-		$custom_points = 2;
-		$pm_subject = $lang->warning_pm_subject;
-		$message = $lang->sprintf($lang->warning_pm_message, $user['username'], $mybb->settings['bbname']);
-		$warn_errors = '';
-	}
+            if ($warning['points'] > 0) {
+                $warning['points'] = "+{$warning['points']}";
+            }
 
-	$lang->nav_profile = $lang->sprintf($lang->nav_profile, $user['username']);
-	add_breadcrumb($lang->nav_profile, get_profile_link($user['uid']));
-	add_breadcrumb($lang->nav_add_warning);
+            if ($warning['expired'] != 1) {
+                if ($warning['expires'] == 0) {
+                    $warning['expires'] = $lang->never;
+                } else {
+                    $warning['expires'] = nice_time($warning['expires']-TIME_NOW);
+                }
+            } else {
+                if ($warning['daterevoked']) {
+                    $warning['expires'] = $lang->warning_revoked;
+                }
+                else if ($warning['expires']) {
+                    $warning['expires'] = $lang->already_expired;
+                }
+            }
 
-	$user_link = build_profile_link($user['username'], $user['uid']);
+            $plugins->run_hooks("warnings_warning");
 
-	if($mybb->settings['maxwarningpoints'] < 1)
-	{
-		$mybb->settings['maxwarningpoints'] = 10;
-	}
+            $warnings[] = $warning;
+        }
+    }
 
-	if(!is_array($groupscache))
-	{
-		$groupscache = $cache->read("usergroups");
-	}
+    $plugins->run_hooks("warnings_warn_start");
 
-	$current_level = round($user['warningpoints']/$mybb->settings['maxwarningpoints']*100);
+    $type_checked = array('custom' => '');
 
-	// Fetch warning levels
-	$levels = array();
-	$query = $db->simple_select("warninglevels", "*");
-	while($level = $db->fetch_array($query))
-	{
-		$level['action'] = my_unserialize($level['action']);
-		switch($level['action']['type'])
-		{
-			case 1:
-				if($level['action']['length'] > 0)
-				{
-					$ban_length = fetch_friendly_expiration($level['action']['length']);
-					$lang_str = "expiration_".$ban_length['period'];
-					$period = $lang->sprintf($lang->result_period, $ban_length['time'], $lang->$lang_str);
-				}
-				else
-				{
-					$period = $lang->result_period_perm;
-				}
-				$group_name = $groupscache[$level['action']['usergroup']]['title'];
-				$level['friendly_action'] = $lang->sprintf($lang->result_banned, $group_name, $period);
-				break;
-			case 2:
-				if($level['action']['length'] > 0)
-				{
-					$period = fetch_friendly_expiration($level['action']['length']);
-					$lang_str = "expiration_".$period['period'];
-					$period = $lang->sprintf($lang->result_period, $period['time'], $lang->$lang_str);
-				}
-				else
-				{
-					$period = $lang->result_period_perm;
-				}
-				$level['friendly_action'] = $lang->sprintf($lang->result_suspended, $period);
-				break;
-			case 3:
-				if($level['action']['length'] > 0)
-				{
-					$period = fetch_friendly_expiration($level['action']['length']);
-					$lang_str = "expiration_".$period['period'];
-					$period = $lang->sprintf($lang->result_period, $period['time'], $lang->$lang_str);
-				}
-				else
-				{
-					$period = $lang->result_period_perm;
-				}
-				$level['friendly_action'] = $lang->sprintf($lang->result_moderated, $period);
-				break;
-		}
-		$levels[$level['percentage']] = $level;
-	}
-	krsort($levels);
+    // Coming here from failed do_warn?
+    $user['username'] = htmlspecialchars_uni($user['username']);
+    if (!empty($warn_errors)) {
+        $type_checked['notes'] = htmlspecialchars_uni($mybb->get_input('notes'));
+        if ($mybb->get_input('type', MyBB::INPUT_INT)) {
+            $type_checked[$mybb->get_input('type', MyBB::INPUT_INT)] = "checked=\"checked\"";
+        }
+        $type_checked['pm_subject'] = htmlspecialchars_uni($mybb->get_input('pm_subject'));
+        $type_checked['message'] = htmlspecialchars_uni($mybb->get_input('pm_message'));
+        if (!empty($mybb->input['send_pm'])) {
+            $type_checked['send_pm_checked'] = "checked=\"checked\"";
+        }
+        $type_checked['custom_reason'] = htmlspecialchars_uni($mybb->get_input('custom_reason'));
+        $type_checked['custom_points'] = $mybb->get_input('custom_points', MyBB::INPUT_INT);
+        $type_checked['expires'] = $mybb->get_input('expires', MyBB::INPUT_INT);
+        if ($mybb->get_input('expires_period')) {
+            $type_checked[$mybb->get_input('expires_period')] = "selected=\"selected\"";
+        }
+    } else {
+        $type_checked['notes'] = $type_checked['custom_reason'] = $type_checked['custom_points'] = $type_checked['expires'] = '';
+        $type_checked['expires'] = 1;
+        $type_checked['custom_points'] = 2;
+        $type_checked['pm_subject'] = $lang->warning_pm_subject;
+        $type_checked['message'] = $lang->sprintf($lang->warning_pm_message, $user['username'], $mybb->settings['bbname']);
+        $warn_errors = '';
+    }
 
-	$types = '';
+    $lang->nav_profile = $lang->sprintf($lang->nav_profile, $user['username']);
+    add_breadcrumb($lang->nav_profile, get_profile_link($user['uid']));
+    add_breadcrumb($lang->nav_add_warning);
 
-	// Fetch all current warning types
-	$query = $db->simple_select("warningtypes", "*", "", array("order_by" => "title"));
-	while($type = $db->fetch_array($query))
-	{
-		if(!isset($type_checked[$type['tid']]))
-		{
-			$type_checked[$type['tid']] = '';
-		}
-		$checked = $type_checked[$type['tid']];
-		$type['title'] = htmlspecialchars_uni($type['title']);
-		$new_warning_level = round(($user['warningpoints']+$type['points'])/$mybb->settings['maxwarningpoints']*100);
-		if($new_warning_level > 100)
-		{
-			$new_warning_level = 100;
-		}
-		if($type['points'] > 0)
-		{
-			$type['points'] = "+{$type['points']}";
-		}
-		$points = $lang->sprintf($lang->warning_points, $type['points']);
+    $user['user_link'] = build_profile_link($user['username'], $user['uid']);
 
-		if(is_array($levels))
-		{
-			foreach($levels as $level)
-			{
-				if($new_warning_level >= $level['percentage'])
-				{
-					$new_level = $level;
-					break;
-				}
-			}
-		}
-		$level_diff = $new_warning_level-$current_level;
-		$result = '';
-		if(!empty($new_level['friendly_action']))
-		{
-			eval("\$result = \"".$templates->get("warnings_warn_type_result")."\";");
-		}
-		eval("\$types .= \"".$templates->get("warnings_warn_type")."\";");
-		unset($new_level);
-		unset($result);
-	}
+    if ($mybb->settings['maxwarningpoints'] < 1) {
+        $mybb->settings['maxwarningpoints'] = 10;
+    }
 
-	$custom_warning = '';
+    if (!is_array($groupscache)) {
+        $groupscache = $cache->read("usergroups");
+    }
 
-	if($mybb->settings['allowcustomwarnings'] != 0)
-	{
-		if(empty($types) && empty($warn_errors) || $mybb->get_input('type') == 'custom')
-		{
-			$type_checked['custom'] = "checked=\"checked\"";
-		}
+    $user['currentlevel'] = round($user['warningpoints']/$mybb->settings['maxwarningpoints']*100);
 
-		eval("\$custom_warning = \"".$templates->get("warnings_warn_custom")."\";");
-	}
+    // Fetch warning levels
+    $levels = array();
+    $query = $db->simple_select("warninglevels", "*");
+    while ($level = $db->fetch_array($query)) {
+        $level['action'] = my_unserialize($level['action']);
+        switch ($level['action']['type']) {
+            case 1:
+                if ($level['action']['length'] > 0) {
+                    $ban_length = fetch_friendly_expiration($level['action']['length']);
+                    $lang_str = "expiration_".$ban_length['period'];
+                    $period = $lang->sprintf($lang->result_period, $ban_length['time'], $lang->$lang_str);
+                } else {
+                    $period = $lang->result_period_perm;
+                }
+                $group_name = $groupscache[$level['action']['usergroup']]['title'];
+                $level['friendly_action'] = $lang->sprintf($lang->result_banned, $group_name, $period);
+                break;
+            case 2:
+                if ($level['action']['length'] > 0) {
+                    $period = fetch_friendly_expiration($level['action']['length']);
+                    $lang_str = "expiration_".$period['period'];
+                    $period = $lang->sprintf($lang->result_period, $period['time'], $lang->$lang_str);
+                } else {
+                    $period = $lang->result_period_perm;
+                }
+                $level['friendly_action'] = $lang->sprintf($lang->result_suspended, $period);
+                break;
+            case 3:
+                if ($level['action']['length'] > 0) {
+                    $period = fetch_friendly_expiration($level['action']['length']);
+                    $lang_str = "expiration_".$period['period'];
+                    $period = $lang->sprintf($lang->result_period, $period['time'], $lang->$lang_str);
+                } else {
+                    $period = $lang->result_period_perm;
+                }
+                $level['friendly_action'] = $lang->sprintf($lang->result_moderated, $period);
+                break;
+        }
+        $levels[$level['percentage']] = $level;
+    }
+    krsort($levels);
 
-	$pm_notify = '';
+    $types = [];
 
-	if($group_permissions['canusepms']  != 0 && $mybb->user['receivepms'] != 0 && $mybb->settings['enablepms'] != 0)
-	{
-		$smilieinserter = $codebuttons = "";
+    // Fetch all current warning types
+    $query = $db->simple_select("warningtypes", "*", "", array("order_by" => "title"));
+    while ($type = $db->fetch_array($query)) {
+        if (!isset($type_checked[$type['tid']])) {
+            $type_checked[$type['tid']] = '';
+        }
 
-		if($mybb->settings['bbcodeinserter'] != 0 && $mybb->settings['pmsallowmycode'] != 0 && $mybb->user['showcodebuttons'] != 0)
-		{
-			$codebuttons = build_mycode_inserter("message", $mybb->settings['pmsallowsmilies']);
-			if($mybb->settings['pmsallowsmilies'] != 0)
-			{
-				$smilieinserter = build_clickable_smilies();
-			}
-		}
+        $type['new_warning_level'] = round(($user['warningpoints']+$type['points'])/$mybb->settings['maxwarningpoints']*100);
 
-		$anonymous_pm = '';
-		if($mybb->settings['allowanonwarningpms'] == 1)
-		{
-			$checked = '';
-			if($mybb->get_input('pm_anonymous', MyBB::INPUT_INT))
-			{
-				$checked = ' checked="checked"';
-			}
+        if ($type['new_warning_level'] > 100) {
+            $type['new_warning_level'] = 100;
+        }
 
-			eval('$anonymous_pm = "'.$templates->get('warnings_warn_pm_anonymous').'";');
-		}
+        if ($type['points'] > 0) {
+            $type['points'] = "+{$type['points']}";
+        }
 
-		eval("\$pm_notify = \"".$templates->get("warnings_warn_pm")."\";");
-	}
+        if (is_array($levels)) {
+            foreach ($levels as $level) {
+                if ($type['new_warning_level'] >= $level['percentage']) {
+                    $type['action'] = $level;
+                    break;
+                }
+            }
+        }
 
-	$plugins->run_hooks("warnings_warn_end");
+        $type['level_diff'] = $type['new_warning_level'] - $user['currentlevel'];
 
-	eval("\$warn = \"".$templates->get("warnings_warn")."\";");
-	output_page($warn);
-	exit;
+        $types[] = $type;
+    }
+
+    if ($mybb->settings['allowcustomwarnings'] != 0) {
+        if (empty($types) && empty($warn_errors) || $mybb->get_input('type') == 'custom') {
+            $type_checked['custom'] = "checked=\"checked\"";
+        }
+    }
+
+    $pm['haspermission'] = false;
+    if ($group_permissions['canusepms']  != 0 && $mybb->user['receivepms'] != 0 && $mybb->settings['enablepms'] != 0) {
+        $pm['haspermission'] = true;
+        $smilieinserter = '';
+
+        if ($mybb->settings['bbcodeinserter'] != 0 && $mybb->settings['pmsallowmycode'] != 0 && $mybb->user['showcodebuttons'] != 0) {
+            $pm['codebuttons'] = build_mycode_inserter("message", $mybb->settings['pmsallowsmilies']);
+            if ($mybb->settings['pmsallowsmilies'] != 0) {
+                $smilieinserter = build_clickable_smilies();
+            }
+        }
+
+        if ($mybb->get_input('pm_anonymous', MyBB::INPUT_INT)) {
+            $pm['anonymous_checked'] = ' checked="checked"';
+        }
+    }
+
+    $plugins->run_hooks("warnings_warn_end");
+
+    output_page(\MyBB\template('warnings/warn.twig', [
+        'warnings' => $warnings,
+        'post' => $post,
+        'warn_errors' => $warn_errors,
+        'types' => $types,
+        'type_checked' => $type_checked,
+        'user' => $user,
+        'pm' => $pm,
+    ]));
 }
 
 // Revoke a warning
@@ -609,94 +538,70 @@ if($mybb->input['action'] == "view")
 	}
 	add_breadcrumb($lang->nav_view_warning);
 
-	$user_link = build_profile_link($user['username'], $user['uid']);
+    $user['user_link'] = build_profile_link($user['username'], $user['uid']);
 
-	$post_link = "";
-	if($warning['post_subject'])
-	{
-		$warning['post_subject'] = $parser->parse_badwords($warning['post_subject']);
-		$warning['post_subject'] = htmlspecialchars_uni($warning['post_subject']);
-		$post_link = get_post_link($warning['pid'])."#pid{$warning['pid']}";
-		eval("\$warning_info = \"".$templates->get("warnings_view_post")."\";");
-	}
-	else
-	{
-		eval("\$warning_info = \"".$templates->get("warnings_view_user")."\";");
-	}
+    if ($warning['post_subject']) {
+        $warning['post_subject'] = $parser->parse_badwords($warning['post_subject']);
+        $warning['post_subject'] = htmlspecialchars_uni($warning['post_subject']);
+        $warning['post_link'] = get_post_link($warning['pid']);
+    }
 
-	$warning['username'] = htmlspecialchars_uni($warning['username']);
-	$issuedby = build_profile_link($warning['username'], $warning['issuedby']);
-	$notes = nl2br(htmlspecialchars_uni($warning['notes']));
+    $warning['username'] = htmlspecialchars_uni($warning['username']);
+    $warning['issuedby'] = build_profile_link($warning['username'], $warning['issuedby']);
+    $warning['notes'] = nl2br($warning['notes']);
 
-	$date_issued = my_date('relative', $warning['dateline']);
-	if($warning['type_title'])
-	{
-		$warning_type = $warning['type_title'];
-	}
-	else
-	{
-		$warning_type = $warning['title'];
-	}
-	$warning_type = htmlspecialchars_uni($warning_type);
-	if($warning['points'] > 0)
-	{
-		$warning['points'] = "+{$warning['points']}";
-	}
+    $warning['date_issued'] = my_date('relative', $warning['dateline']);
 
-	$revoked_date = '';
+    if ($warning['type_title']) {
+        $warning['warning_type'] = $warning['type_title'];
+    } else {
+        $warning['warning_type'] = $warning['title'];
+    }
 
-	$points = $lang->sprintf($lang->warning_points, $warning['points']);
-	if($warning['expired'] != 1)
-	{
-		if($warning['expires'] == 0)
-		{
-			$expires = $lang->never;
-		}
-		else
-		{
-			$expires = my_date('normal', $warning['expires']); // Purposely not using nice_time here as the moderator has clicked for more details so the actual day/time should be shown
-		}
-		$status = $lang->warning_active;
-	}
-	else
-	{
-		if($warning['daterevoked'])
-		{
-			$expires = $status = $lang->warning_revoked;
-		}
-		else if($warning['expires'])
-		{
-			$revoked_date = '('.my_date('normal', $warning['expires']).')';
-			$expires = $status = $lang->already_expired;
-		}
-	}
+    if ($warning['points'] > 0) {
+        $warning['points'] = "+{$warning['points']}";
+    }
 
-	if(!$warning['daterevoked'])
-	{
-		if(!isset($warn_errors))
-		{
-			$warn_errors = '';
-		}
-		eval("\$revoke = \"".$templates->get("warnings_view_revoke")."\";");
-	}
-	else
-	{
-		$date_revoked = my_date('relative', $warning['daterevoked']);
-		$revoked_user = get_user($warning['revokedby']);
-		if(!$revoked_user['username'])
-		{
-			$revoked_user['username'] = $lang->guest;
-		}
-		$revoked_user['username'] = htmlspecialchars_uni($revoked_user['username']);
-		$revoked_by = build_profile_link($revoked_user['username'], $revoked_user['uid']);
-		$revoke_reason = nl2br(htmlspecialchars_uni($warning['revokereason']));
-		eval("\$revoke = \"".$templates->get("warnings_view_revoked")."\";");
-	}
+    if ($warning['expired'] != 1) {
+        if ($warning['expires'] == 0) {
+            $warning['expires'] = $lang->never;
+        } else {
+            $warning['expires'] = my_date('normal', $warning['expires']); // Purposely not using nice_time here as the moderator has clicked for more details so the actual day/time should be shown
+        }
+        $warning['status'] = $lang->warning_active;
+    } else {
+        if ($warning['daterevoked']) {
+            $warning['expires'] = $warning['status'] = $lang->warning_revoked;
+        }
+        else if ($warning['expires']) {
+            $warning['revoked_date'] = '('.my_date('normal', $warning['expires']).')';
+            $warning['expires'] = $warning['status'] = $lang->already_expired;
+        }
+    }
 
-	$plugins->run_hooks("warnings_view_end");
+    if (!$warning['daterevoked']) {
+        if (!isset($warn_errors)) {
+            $warn_errors = '';
+        }
+    } else {
+        $warning['daterevoked'] = my_date('relative', $warning['daterevoked']);
+        $revoked_user = get_user($warning['revokedby']);
+        if (!$revoked_user['username']) {
+            $revoked_user['username'] = $lang->guest;
+        }
+        $revoked_user['username'] = htmlspecialchars_uni($revoked_user['username']);
+        $revoked_user['profile'] = build_profile_link($revoked_user['username'], $revoked_user['uid']);
+        $warning['revokereason'] = nl2br($warning['revokereason']);
+    }
 
-	eval("\$warning = \"".$templates->get("warnings_view")."\";");
-	output_page($warning);
+    $plugins->run_hooks("warnings_view_end");
+
+    output_page(\MyBB\template('warnings/view.twig', [
+        'user' => $user,
+        'revoked_user' => $revoked_user,
+        'warning' => $warning,
+        'warn_errors' => $warn_errors,
+    ]));
 }
 
 // Showing list of warnings for a particular user
@@ -752,121 +657,91 @@ if(!$mybb->input['action'])
 		$page = 1;
 	}
 
-	$multipage = multipage($warning_count, $perpage, $page, "warnings.php?uid={$user['uid']}");
+    $multipage = multipage($warning_count, $perpage, $page, "warnings.php?uid={$user['uid']}");
 
-	if($mybb->settings['maxwarningpoints'] < 1)
-	{
-		$mybb->settings['maxwarningpoints'] = 10;
-	}
+    if ($mybb->settings['maxwarningpoints'] < 1) {
+        $mybb->settings['maxwarningpoints'] = 10;
+    }
 
-	$warning_level = round($user['warningpoints']/$mybb->settings['maxwarningpoints']*100);
-	if($warning_level > 100)
-	{
-		$warning_level = 100;
-	}
+    $warning_level = round($user['warningpoints']/$mybb->settings['maxwarningpoints']*100);
+    if ($warning_level > 100) {
+        $warning_level = 100;
+    }
 
-	if($user['warningpoints'] > $mybb->settings['maxwarningpoints'])
-	{
-		$user['warningpoints'] = $mybb->settings['maxwarningpoints'];
-	}
+    if ($user['warningpoints'] > $mybb->settings['maxwarningpoints']) {
+        $user['warningpoints'] = $mybb->settings['maxwarningpoints'];
+    }
 
-	if($warning_level > 0)
-	{
-		$lang->current_warning_level = $lang->sprintf($lang->current_warning_level, $warning_level, $user['warningpoints'], $mybb->settings['maxwarningpoints']);
-	}
-	else
-	{
-		$lang->current_warning_level = "";
-	}
+    $warnings = [];
 
-	// Fetch the actual warnings
-	$query = $db->query("
-		SELECT w.*, t.title AS type_title, u.username, p.subject AS post_subject
-		FROM ".TABLE_PREFIX."warnings w
-		LEFT JOIN ".TABLE_PREFIX."warningtypes t ON (t.tid=w.tid)
-		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=w.issuedby)
-		LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=w.pid)
-		WHERE w.uid='{$user['uid']}'
-		ORDER BY w.expired ASC, w.dateline DESC
-		LIMIT {$start}, {$perpage}
-	");
-	$warnings = '';
-	while($warning = $db->fetch_array($query))
-	{
-		if(!isset($last_expired) || $warning['expired'] != $last_expired)
-		{
-			if($warning['expired'] == 0)
-			{
-				eval("\$warnings .= \"".$templates->get("warnings_active_header")."\";");
-			}
-			else
-			{
-				eval("\$warnings .= \"".$templates->get("warnings_expired_header")."\";");
-			}
-		}
-		$last_expired = $warning['expired'];
+    // Fetch the actual warnings
+    $query = $db->query("
+        SELECT w.*, t.title AS type_title, u.username, p.subject AS post_subject
+        FROM " . TABLE_PREFIX . "warnings w
+        LEFT JOIN " . TABLE_PREFIX . "warningtypes t ON (t.tid=w.tid)
+        LEFT JOIN " . TABLE_PREFIX . "users u ON (u.uid=w.issuedby)
+        LEFT JOIN " . TABLE_PREFIX . "posts p ON (p.pid=w.pid)
+        WHERE w.uid = '{$user['uid']}'
+        ORDER BY w.expired ASC, w.dateline DESC
+        LIMIT {$start}, {$perpage}
+    ");
 
-		$post_link = '';
-		if($warning['post_subject'])
-		{
-			$warning['post_subject'] = $parser->parse_badwords($warning['post_subject']);
-			$warning['post_subject'] = htmlspecialchars_uni($warning['post_subject']);
-			$warning['post_link'] = get_post_link($warning['pid']);
-			eval("\$post_link = \"".$templates->get("warnings_postlink")."\";");
-		}
+    while($warning = $db->fetch_array($query)) {
+        if (!isset($last_expired) || $warning['expired'] != $last_expired) {
+            if ($warning['expired'] == 0) {
+                $warning['active'] = 1;
+            } else {
+                $warning['active'] = 2;
+            }
+        }
+        $last_expired = $warning['expired'];
 
-		$warning['username'] = htmlspecialchars_uni($warning['username']);
-		$issuedby = build_profile_link($warning['username'], $warning['issuedby']);
-		$date_issued = my_date('relative', $warning['dateline']);
-		if($warning['type_title'])
-		{
-			$warning_type = $warning['type_title'];
-		}
-		else
-		{
-			$warning_type = $warning['title'];
-		}
-		$warning_type = htmlspecialchars_uni($warning_type);
-		if($warning['points'] > 0)
-		{
-			$warning['points'] = "+{$warning['points']}";
-		}
-		$points = $lang->sprintf($lang->warning_points, $warning['points']);
-		if($warning['expired'] != 1)
-		{
-			if($warning['expires'] == 0)
-			{
-				$expires = $lang->never;
-			}
-			else
-			{
-				$expires = nice_time($warning['expires']-TIME_NOW);
-			}
-		}
-		else
-		{
-			if($warning['daterevoked'])
-			{
-				$expires = $lang->warning_revoked;
-			}
-			else if($warning['expires'])
-			{
-				$expires = $lang->already_expired;
-			}
-		}
-		$alt_bg = alt_trow();
-		$plugins->run_hooks("warnings_warning");
-		eval("\$warnings .= \"".$templates->get("warnings_warning")."\";");
-	}
+        if ($warning['post_subject']) {
+            $warning['post_subject'] = $parser->parse_badwords($warning['post_subject']);
+            $warning['post_subject'] = htmlspecialchars_uni($warning['post_subject']);
+            $warning['post_link'] = get_post_link($warning['pid']);
+        }
 
-	if(!$warnings)
-	{
-		eval("\$warnings = \"".$templates->get("warnings_no_warnings")."\";");
-	}
+        $warning['username'] = htmlspecialchars_uni($warning['username']);
+        $warning['issuedby'] = build_profile_link($warning['username'], $warning['issuedby']);
 
-	$plugins->run_hooks("warnings_end");
+        $warning['date_issued'] = my_date('relative', $warning['dateline']);
 
-	eval("\$warnings = \"".$templates->get("warnings")."\";");
-	output_page($warnings);
+        if ($warning['type_title']) {
+            $warning['warning_type'] = $warning['type_title'];
+        } else {
+            $warning['warning_type'] = $warning['title'];
+        }
+
+        if ($warning['points'] > 0) {
+            $warning['points'] = "+{$warning['points']}";
+        }
+
+        if ($warning['expired'] != 1) {
+            if ($warning['expires'] == 0) {
+                $warning['expires'] = $lang->never;
+            } else {
+                $warning['expires'] = nice_time($warning['expires']-TIME_NOW);
+            }
+        } else {
+            if ($warning['daterevoked']) {
+                $warning['expires'] = $lang->warning_revoked;
+            }
+            else if ($warning['expires']) {
+                $warning['expires'] = $lang->already_expired;
+            }
+        }
+
+        $plugins->run_hooks("warnings_warning");
+
+        $warnings[] = $warning;
+    }
+
+    $plugins->run_hooks("warnings_end");
+
+    output_page(\MyBB\template('warnings/warnings.twig', [
+        'user' => $user,
+        'warning_level' => $warning_level,
+        'warnings' => $warnings
+    ]));
 }
-
