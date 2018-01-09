@@ -670,7 +670,7 @@ class datacache
 			SELECT u.uid, u.username, COUNT(*) AS poststoday
 			FROM {$db->table_prefix}posts p
 			LEFT JOIN {$db->table_prefix}users u ON (p.uid=u.uid)
-			WHERE p.dateline > {$timesearch}
+			WHERE p.dateline > {$timesearch} AND p.visible=1
 			GROUP BY {$group_by}
 			ORDER BY NULL DESC
 		");
