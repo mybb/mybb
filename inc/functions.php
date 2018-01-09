@@ -6427,12 +6427,7 @@ function login_attempt_check($fatal = true)
  */
 function validate_email_format($email)
 {
-	if(strpos($email, ' ') !== false)
-	{
-		return false;
-	}
-	// Valid local characters for email addresses: http://www.remote.org/jochen/mail/info/chars.html
-	return preg_match("/^[a-zA-Z0-9&*+\-_.{}~^\?=\/]+@[a-zA-Z0-9-]+\.([a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]{2,}$/si", $email);
+	return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
 }
 
 /**
