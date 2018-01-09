@@ -2352,14 +2352,14 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 	if($admin_options['codepress'] != 0)
 	{
 		$page->extra_header .= '
-<link href="./jscripts/codemirror/lib/codemirror.css" rel="stylesheet">
-<link href="./jscripts/codemirror/theme/mybb.css?ver=1804" rel="stylesheet">
-<link href="./jscripts/codemirror/addon/dialog/dialog-mybb.css" rel="stylesheet">
-<script src="./jscripts/codemirror/lib/codemirror.js"></script>
-<script src="./jscripts/codemirror/mode/css/css.js"></script>
-<script src="./jscripts/codemirror/addon/dialog/dialog.js"></script>
-<script src="./jscripts/codemirror/addon/search/searchcursor.js"></script>
-<script src="./jscripts/codemirror/addon/search/search.js?ver=1808"></script>
+<link href="./jscripts/codemirror/lib/codemirror.css?ver=1813" rel="stylesheet">
+<link href="./jscripts/codemirror/theme/mybb.css?ver=1813" rel="stylesheet">
+<link href="./jscripts/codemirror/addon/dialog/dialog-mybb.css?ver=1813" rel="stylesheet">
+<script src="./jscripts/codemirror/lib/codemirror.js?ver=1813"></script>
+<script src="./jscripts/codemirror/mode/css/css.js?ver=1813"></script>
+<script src="./jscripts/codemirror/addon/dialog/dialog.js?ver=1813"></script>
+<script src="./jscripts/codemirror/addon/search/searchcursor.js?ver=1813"></script>
+<script src="./jscripts/codemirror/addon/search/search.js?ver=1813"></script>
 ';
 	}
 
@@ -2628,14 +2628,14 @@ if($mybb->input['action'] == "add_stylesheet")
 	if($admin_options['codepress'] != 0)
 	{
 		$page->extra_header .= '
-<link href="./jscripts/codemirror/lib/codemirror.css" rel="stylesheet">
-<link href="./jscripts/codemirror/theme/mybb.css?ver=1804" rel="stylesheet">
-<link href="./jscripts/codemirror/addon/dialog/dialog-mybb.css" rel="stylesheet">
-<script src="./jscripts/codemirror/lib/codemirror.js"></script>
-<script src="./jscripts/codemirror/mode/css/css.js"></script>
-<script src="./jscripts/codemirror/addon/dialog/dialog.js"></script>
-<script src="./jscripts/codemirror/addon/search/searchcursor.js"></script>
-<script src="./jscripts/codemirror/addon/search/search.js?ver=1808"></script>
+<link href="./jscripts/codemirror/lib/codemirror.css?ver=1813" rel="stylesheet">
+<link href="./jscripts/codemirror/theme/mybb.css?ver=1813" rel="stylesheet">
+<link href="./jscripts/codemirror/addon/dialog/dialog-mybb.css?ver=1813" rel="stylesheet">
+<script src="./jscripts/codemirror/lib/codemirror.js?ver=1813"></script>
+<script src="./jscripts/codemirror/mode/css/css.js?ver=1813"></script>
+<script src="./jscripts/codemirror/addon/dialog/dialog.js?ver=1813"></script>
+<script src="./jscripts/codemirror/addon/search/searchcursor.js?ver=1813"></script>
+<script src="./jscripts/codemirror/addon/search/search.js?ver=1813"></script>
 ';
 	}
 

@@ -516,7 +516,7 @@ var Cookie = {
 	get: function(name)
 	{
 		name = cookiePrefix + name;
-		return $.cookie(name);
+		return Cookies.get(name);
 	},
 
 	set: function(name, value, expires)
@@ -537,7 +537,7 @@ var Cookie = {
 			secure: cookieSecureFlag == true,
 		};
 
-		return $.cookie(name, value, options);
+		return Cookies.set(name, value, options);
 	},
 
 	unset: function(name)
@@ -548,7 +548,7 @@ var Cookie = {
 			path: cookiePath,
 			domain: cookieDomain
 		};
-		return $.removeCookie(name, options);
+		return Cookies.remove(name, options);
 	}
 };
 

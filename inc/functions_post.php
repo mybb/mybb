@@ -90,7 +90,7 @@ function build_postbit($post, $post_type=0)
 			break;
 		case 3: // Announcement
 			global $announcementarray, $message;
-			$parser_options['allow_html'] = $announcementarray['allowhtml'];
+			$parser_options['allow_html'] = $mybb->settings['announcementshtml'] && $announcementarray['allowhtml'];
 			$parser_options['allow_mycode'] = $announcementarray['allowmycode'];
 			$parser_options['allow_smilies'] = $announcementarray['allowsmilies'];
 			$parser_options['allow_imgcode'] = 1;

@@ -16,7 +16,7 @@ define("ALLOWABLE_PAGE", "register,do_register,login,do_login,logout,lostpw,do_l
 $nosession['avatar'] = 1;
 
 $templatelist = "member_register,member_register_hiddencaptcha,member_register_coppa,member_register_agreement_coppa,member_register_agreement,member_register_customfield,member_register_requiredfields,member_profile_findthreads";
-$templatelist .= ",member_loggedin_notice,member_profile_away,member_register_regimage,member_register_regimage_recaptcha,member_register_regimage_nocaptcha,post_captcha_hidden,post_captcha,post_captcha_recaptcha,member_register_referrer";
+$templatelist .= ",member_loggedin_notice,member_profile_away,member_register_regimage,member_register_regimage_recaptcha,member_register_regimage_recaptcha_invisible,member_register_regimage_nocaptcha,post_captcha_hidden,post_captcha,post_captcha_recaptcha,member_register_referrer";
 $templatelist .= ",member_profile_email,member_profile_offline,member_profile_reputation,member_profile_warn,member_profile_warninglevel,member_profile_customfields_field,member_profile_customfields,member_profile_adminoptions,member_profile";
 $templatelist .= ",member_profile_signature,member_profile_avatar,member_profile_groupimage,member_profile_referrals,member_profile_website,member_profile_reputation_vote,member_activate,member_lostpw,member_register_additionalfields";
 $templatelist .= ",member_profile_modoptions_manageuser,member_profile_modoptions_editprofile,member_profile_modoptions_banuser,member_profile_modoptions_viewnotes,member_profile_modoptions_editnotes,member_profile_modoptions_purgespammer";
@@ -1267,9 +1267,14 @@ $(document).ready(function() {
 
 			$validator_javascript .= "
 	$.validator.addMethod('passwordSecurity', function(value, element, param) {
-		return (value != $('#email').val() && value != $('#username').val()
-			&& value.indexOf($('#email').val()) === false && value.indexOf($('#username').val()) === false
-			&& $('#email').val().indexOf(value) === false && $('#username').val().indexOf(value) === false);
+		return !(
+				($('#email').val() != '' && value == $('#email').val()) ||
+				($('#username').val() != '' && value == $('#username').val()) ||
+				($('#email').val() != '' && value.indexOf($('#email').val()) > -1) ||
+				($('#username').val() != '' && value.indexOf($('#username').val()) > -1) ||
+				($('#email').val() != '' && $('#email').val().indexOf(value) > -1) ||
+				($('#username').val() != '' && $('#username').val().indexOf(value) > -1)
+		);
 	}, '{$lang->js_validator_bad_password_security}');\n";
 
 			// See if the board has "require complex passwords" enabled.
@@ -1891,7 +1896,7 @@ if($mybb->input['action'] == "login")
 				$captcha = $login_captcha->build_hidden_captcha();
 			}
 		}
-		elseif($login_captcha->type == 2 || $login_captcha->type == 4)
+		elseif(in_array($login_captcha->type, array(2, 4, 5)))
 		{
 			$login_captcha->build_recaptcha();
 		}
@@ -2955,7 +2960,7 @@ if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 		}
 
 		$message = $lang->sprintf($lang->email_emailuser, $to_user['username'], $mybb->input['fromname'], $mybb->settings['bbname'], $mybb->settings['bburl'], $mybb->get_input('message'));
-		my_mail($to_user['email'], $mybb->get_input('subject'), $message, $from, "", "", false, "text", "", $mybb->input['fromemail']);
+		my_mail($to_user['email'], $mybb->get_input('subject'), $message, '', '', '', false, 'text', '', $from);
 
 		if($mybb->settings['mail_logging'] > 0)
 		{

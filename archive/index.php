@@ -44,7 +44,7 @@ switch($action)
 		$announcement['subject'] = htmlspecialchars_uni($parser->parse_badwords($announcement['subject']));
 
 		$parser_options = array(
-			"allow_html" => $announcement['allowhtml'],
+			"allow_html" => $mybb->settings['announcementshtml'] && $announcement['allowhtml'],
 			"allow_mycode" => $announcement['allowmycode'],
 			"allow_smilies" => $announcement['allowsmilies'],
 			"allow_imgcode" => 1,

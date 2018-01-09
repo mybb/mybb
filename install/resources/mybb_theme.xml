@@ -1592,11 +1592,46 @@ a.button.report_user_button span {
 
 /** Modal Start **/
 
+.blocker {
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	z-index: 9999;
+	padding: 20px;
+	box-sizing: border-box;
+	background-color: rgb(0,0,0);
+	background-color: rgba(0,0,0,0.75);
+	text-align: center;
+}
+
+.blocker:before{
+	content: "";
+	display: inline-block;
+	height: 100%;
+	vertical-align: middle;
+	margin-right: -0.05em;
+}
+
+.blocker.behind {
+	background-color: transparent;
+}
+
 .modal {
-	display: none;
 	width: 400px;
 	text-align: left;
 	background: #fff;
+	display: inline-block;
+	vertical-align: middle;
+	position: relative;
+	z-index: 2;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
 	-webkit-border-radius: 8px;
 	-moz-border-radius: 8px;
 	-o-border-radius: 8px;
@@ -1641,9 +1676,9 @@ a.button.report_user_button span {
 
 /** Impromptu Start **/
 
-/*! jQuery-Impromptu - v6.2.1 - 2015-05-10
+/*! jQuery-Impromptu - v6.2.3 - 2016-04-23
 * http://trentrichardson.com/Impromptu
-* Copyright (c) 2015 Trent Richardson; Licensed MIT */
+* Copyright (c) 2016 Trent Richardson; Licensed MIT */
 
 .jqifade{
 	position: absolute;
@@ -3482,11 +3517,11 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 		<template name="calendar_weekview_prevlink" version="1813"><![CDATA[<a href="{$prev_link}">&laquo; {$lang->previous_week}</a>]]></template>
 		<template name="calendar_year" version="1800"><![CDATA[<option value="{$year}" {$selected}>{$year}</option>]]></template>
 		<template name="calendar_year_sel" version="1800"><![CDATA[<option value="{$year_sel}">{$year_sel}</option>]]></template>
-		<template name="editpost" version="1809"><![CDATA[<html>
+		<template name="editpost" version="1813"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_post}</title>
 {$headerinclude}
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/post.js?ver=1808"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/post.js?ver=1813"></script>
 </head>
 <body>
 {$header}
@@ -3801,7 +3836,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 {$modann}
 </tr>]]></template>
 		<template name="forumdisplay_announcements_announcement_modbit" version="1800"><![CDATA[<td align="center" class="{$bgcolor} forumdisplay_announcement">-</td>]]></template>
-		<template name="forumdisplay_inlinemoderation" version="1807"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1807"></script>
+		<template name="forumdisplay_inlinemoderation" version="1813"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1813"></script>
 		<form action="moderation.php" method="post">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="fid" value="{$fid}" />
@@ -5013,7 +5048,7 @@ if(use_xmlhttprequest == "1")
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->registration}</title>
 {$headerinclude}
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/validate/jquery.validate.min.js?ver=1804"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/validate/jquery.validate.min.js?ver=1813"></script>
 </head>
 <body>
 {$header}
@@ -5446,6 +5481,27 @@ if(use_xmlhttprequest == "1")
 	</tr>
 </table>
 </fieldset>]]></template>
+		<template name="member_register_regimage_recaptcha_invisible" version="1813"><![CDATA[<br />
+<script src="{$server}?onload=captchaOnloadCallback&render=explicit" async defer></script>
+<script type="text/javascript">
+
+	var captchaOnSubmit = function(token) {
+		$("#registration_form").submit();
+	};
+
+	var captchaOnloadCallback = function() {
+
+		var target = $('input[name="regsubmit"]');
+		target.attr('data-size', 'invisible');
+
+		grecaptcha.render(target.get(0), {
+				'sitekey': '{$public_key}',
+				'callback': captchaOnSubmit
+			}, true);
+
+	}
+
+</script>]]></template>
 		<template name="member_register_regimage_nocaptcha" version="1804"><![CDATA[<br />
 <fieldset class="trow2">
 	<legend><strong>{$lang->human_verification}</strong></legend>
@@ -6333,7 +6389,7 @@ if(use_xmlhttprequest == "1")
 	{$footer}
 </body>
 </html>]]></template>
-		<template name="modcp_announcements_edit" version="1800"><![CDATA[<html>
+		<template name="modcp_announcements_edit" version="1813"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_announcement}</title>
 {$headerinclude}
@@ -6395,10 +6451,7 @@ if(use_xmlhttprequest == "1")
 							<td class="trow1" valign="top" width="25%"><strong>{$lang->announcement}</strong><br />{$smilieinserter}</td>
 							<td class="trow1" valign="top" width="75%"><textarea id="message" name="message" rows="20" cols="70">{$message}</textarea>{$codebuttons}</td>
 						</tr>
-						<tr>
-							<td class="trow1" valign="top" width="25%"><strong>{$lang->allow_html}</strong></td>
-							<td class="trow1" valign="top" width="75%"><label><input type="radio" name="allowhtml" value="1"{$html_sel['yes']} />&nbsp;{$lang->yes}</label> &nbsp;&nbsp;<label><input type="radio" name="allowhtml" value="0"{$html_sel['no']} />&nbsp;{$lang->no}</label></td>
-						</tr>
+						{$allow_html}
 						<tr>
 							<td class="trow1" valign="top" width="25%"><strong>{$lang->allow_mycode}</strong></td>
 							<td class="trow1" valign="top" width="75%"><label><input type="radio" name="allowmycode" value="1"{$mycode_sel['yes']} />&nbsp;{$lang->yes}</label> &nbsp;&nbsp;<label><input type="radio" name="allowmycode" value="0"{$mycode_sel['no']} />&nbsp;{$lang->no}</label></td>
@@ -6468,7 +6521,11 @@ if(use_xmlhttprequest == "1")
 <option value="10" {$startmonthsel['10']}>{$lang->october}</option>
 <option value="11" {$startmonthsel['11']}>{$lang->november}</option>
 <option value="12" {$startmonthsel['12']}>{$lang->december}</option>]]></template>
-		<template name="modcp_announcements_new" version="1800"><![CDATA[<html>
+		<template name="modcp_announcements_allowhtml" version="1813"><![CDATA[						<tr>
+							<td class="trow1" valign="top" width="25%"><strong>{$lang->allow_html}</strong></td>
+							<td class="trow1" valign="top" width="75%"><label><input type="radio" name="allowhtml" value="1"{$html_sel['yes']} />&nbsp;{$lang->yes}</label> &nbsp;&nbsp;<label><input type="radio" name="allowhtml" value="0"{$html_sel['no']} />&nbsp;{$lang->no}</label></td>
+						</tr>]]></template>
+		<template name="modcp_announcements_new" version="1813"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->add_announcement}</title>
 {$headerinclude}
@@ -6529,10 +6586,7 @@ if(use_xmlhttprequest == "1")
 							<td class="trow1" valign="top" width="25%"><strong>{$lang->announcement}</strong><br />{$smilieinserter}</td>
 							<td class="trow1" valign="top" width="75%"><textarea id="message" name="message" rows="20" cols="70">{$message}</textarea>{$codebuttons}</td>
 						</tr>
-						<tr>
-							<td class="trow1" valign="top" width="25%"><strong>{$lang->allow_html}</strong></td>
-							<td class="trow1" valign="top" width="75%"><label><input type="radio" name="allowhtml" value="1"{$html_sel['yes']} />&nbsp;{$lang->yes}</label> &nbsp;&nbsp;<label><input type="radio" name="allowhtml" value="0"{$html_sel['no']} />&nbsp;{$lang->no}</label></td>
-						</tr>
+						{$allow_html}
 						<tr>
 							<td class="trow1" valign="top" width="25%"><strong>{$lang->allow_mycode}</strong></td>
 							<td class="trow1" valign="top" width="75%"><label><input type="radio" name="allowmycode" value="1"{$mycode_sel['yes']} />&nbsp;{$lang->yes}</label> &nbsp;&nbsp;<label><input type="radio" name="allowmycode" value="0"{$mycode_sel['no']} />&nbsp;{$lang->no}</label></td>
@@ -7954,7 +8008,7 @@ if(use_xmlhttprequest == "1")
 		<template name="moderation_delayedmodaction_notes_redirect" version="1808"><![CDATA[<strong>{$lang->leave_redirect_for}</strong> {$redirect_expire_bit}<br />]]></template>
 		<template name="moderation_delayedmodaction_notes_thread_multiple" version="1808"><![CDATA[<strong>{$lang->thread}</strong> {$lang->multiple_threads}<br />]]></template>
 		<template name="moderation_delayedmodaction_notes_thread_single" version="1808"><![CDATA[<strong>{$lang->thread}</strong> <a href="{$delayed_thread['link']}">{$delayed_thread['subject']}</a><br />]]></template>
-		<template name="moderation_delayedmoderation" version="1800"><![CDATA[<html>
+		<template name="moderation_delayedmoderation" version="1813"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->delayed_moderation}</title>
 {$headerinclude}
@@ -8050,20 +8104,20 @@ if(use_xmlhttprequest == "1")
 // -->
 </script>
 <dl style="margin-top: 0; margin-bottom: 0; width: 100%;">
-	<dt><input type="radio" name="type" value="openclosethread" {$type_selected['openclosethread']} id="type_openclosethread" onclick="toggleType();" /> <label for="type_openclosethread"><strong>{$lang->open_close_thread}</strong></label></dt>
-	<dt><input type="radio" name="type" value="softdeleterestorethread" {$type_selected['softdeleterestorethread']} id="type_softdeleterestorethread" onclick="toggleType();" /> <label for="type_softdeleterestorethread"><strong>{$lang->softdelete_restore_thread}</strong></label></dt>
-	<dt><input type="radio" name="type" value="deletethread" {$type_selected['deletethread']} id="type_deletethread" onclick="toggleType();" /> <label for="type_deletethread"><strong>{$lang->delete_thread}</strong></label></dt>
+	{$openclosethread}
+	{$softdeleterestorethread}
+	{$deletethread}
+	{$stickunstickthread}
 	<dt><input type="radio" name="type" value="move" {$type_selected['move']} id="type_movecopythread" onclick="toggleType();" /> <label for="type_movecopythread"><strong>{$lang->move_copy_thread}</strong></label></dt>
 	<dd style="margin-top: 4px;" id="type_movecopythread_expanded">
 	{$lang->new_forum}<br />
 	{$forumselect}
 	{$moderation_delayedmoderation_move}
 	</dd>
-	<dt><input type="radio" name="type" value="stick" {$type_selected['stick']} id="type_stick_unstick_thread" onclick="toggleType();" /> <label for="type_stick_unstick_thread"><strong>{$lang->stick_unstick_thread}</strong></label></dt>
 	{$moderation_delayedmoderation_merge}
 	<dt><input type="radio" name="type" value="removeredirects" {$type_selected['removeredirects']} id="type_removeredirects" onclick="toggleType();" /> <label for="type_removeredirects"><strong>{$lang->remove_redirects}</strong></label></dt>
 	<dt><input type="radio" name="type" value="removesubscriptions" {$type_selected['removesubscriptions']} id="type_removesubscriptions" onclick="toggleType();" /> <label for="type_removesubscriptions"><strong>{$lang->remove_subscriptions}</strong></label></dt>
-	<dt><input type="radio" name="type" value="approveunapprovethread" {$type_selected['approveunapprovethread']} id="type_approveunapprovethread" onclick="toggleType();" /> <label for="type_approveunapprovethread"><strong>{$lang->approve_unapprove_thread}</strong></label></dt>
+	{$approveunapprovethread}
 	{$customthreadtools}
 </dl>
 <script type="text/javascript">
@@ -8080,6 +8134,11 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
+		<template name="moderation_delayedmoderation_approve" version="1813"><![CDATA[<dt><input type="radio" name="type" value="approveunapprovethread" {$type_selected['approveunapprovethread']} id="type_approveunapprovethread" onclick="toggleType();" /> <label for="type_approveunapprovethread"><strong>{$lang->approve_unapprove_thread}</strong></label></dt>]]></template>
+		<template name="moderation_delayedmoderation_delete" version="1813"><![CDATA[<dt><input type="radio" name="type" value="deletethread" {$type_selected['deletethread']} id="type_deletethread" onclick="toggleType();" /> <label for="type_deletethread"><strong>{$lang->delete_thread}</strong></label></dt>]]></template>
+		<template name="moderation_delayedmoderation_openclose" version="1813"><![CDATA[<dt><input type="radio" name="type" value="openclosethread" {$type_selected['openclosethread']} id="type_openclosethread" onclick="toggleType();" /> <label for="type_openclosethread"><strong>{$lang->open_close_thread}</strong></label></dt>]]></template>
+		<template name="moderation_delayedmoderation_softdeleterestore" version="1813"><![CDATA[<dt><input type="radio" name="type" value="softdeleterestorethread" {$type_selected['softdeleterestorethread']} id="type_softdeleterestorethread" onclick="toggleType();" /> <label for="type_softdeleterestorethread"><strong>{$lang->softdelete_restore_thread}</strong></label></dt>]]></template>
+		<template name="moderation_delayedmoderation_stick" version="1813"><![CDATA[<dt><input type="radio" name="type" value="stick" {$type_selected['stick']} id="type_stick_unstick_thread" onclick="toggleType();" /> <label for="type_stick_unstick_thread"><strong>{$lang->stick_unstick_thread}</strong></label></dt>]]></template>
 		<template name="moderation_delayedmoderation_date_month" version="1800"><![CDATA[<option value="01" {$datemonth['01']}>{$lang->january}</option>
 <option value="02" {$datemonth['02']}>{$lang->february}</option>
 <option value="03" {$datemonth['03']}>{$lang->march}</option>
@@ -8725,11 +8784,11 @@ if(use_xmlhttprequest == "1")
 		<template name="nav_dropdown" version="1800"><![CDATA[ <img src="{$theme['imgdir']}/arrow_down.png" alt="v" title="" class="pagination_breadcrumb_link" id="breadcrumb_multipage" />{$multipage}]]></template>
 		<template name="nav_sep" version="1800"><![CDATA[&rsaquo;]]></template>
 		<template name="nav_sep_active" version="1800"><![CDATA[<br /><img src="{$theme['imgdir']}/nav_bit.png" alt="" />]]></template>
-		<template name="newreply" version="1809"><![CDATA[<html>
+		<template name="newreply" version="1813"><![CDATA[<html>
 <head>
 <title>{$lang->post_reply_to}</title>
 {$headerinclude}
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/post.js?ver=1808"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/post.js?ver=1813"></script>
 </head>
 <body>
 {$header}
@@ -8827,11 +8886,11 @@ if(use_xmlhttprequest == "1")
 {$reviewmessage}
 </td>
 </tr>]]></template>
-		<template name="newthread" version="1809"><![CDATA[<html>
+		<template name="newthread" version="1813"><![CDATA[<html>
 <head>
 <title>{$lang->newthread_in}</title>
 {$headerinclude}
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/post.js?ver=1808"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/post.js?ver=1813"></script>
 </head>
 <body>
 {$header}
@@ -9433,6 +9492,42 @@ if(use_xmlhttprequest == "1")
 </table>
 </td>
 </tr>]]></template>
+		<template name="post_captcha_recaptcha_invisible" version="1813"><![CDATA[<br />
+<script src="{$server}?onload=captchaOnloadCallback&render=explicit" async defer></script>
+<script type="text/javascript">
+
+	var captchaTarget = '';
+
+	var captchaOnSubmit = function(token) {
+
+		if (!captchaTarget.is('#quick_reply_submit')) {
+			document.createElement('form').submit.apply(captchaTarget.closest('form')[0]);
+		}
+		else {
+			captchaTarget.bind('click', function(e) {
+				return Thread.quickReply(e);
+			}).trigger('click').unbind('click');
+			grecaptcha.reset();
+		}
+
+	};
+
+	var captchaOnloadCallback = function() {
+
+		captchaTarget = $('input[name="submit"], #quick_reply_submit').filter(function(){
+			return $(this).closest('#quick_login').length == 0
+		});
+		
+		captchaTarget.attr('data-size', 'invisible').unbind('click');
+
+		grecaptcha.render(captchaTarget.get(0), {
+				'sitekey': '{$public_key}',
+				'callback': captchaOnSubmit
+			}, true);
+
+	}
+
+</script>]]></template>
 		<template name="post_captcha_nocaptcha" version="1804"><![CDATA[<tr id="captcha_trow">
 <td class="trow1" valign="top"><strong>{$lang->human_verification}</strong></td>
 <td class="trow1">
@@ -11056,7 +11151,7 @@ if(use_xmlhttprequest == "1")
 </html>]]></template>
 		<template name="search_results_posts_forumlink" version="1808"><![CDATA[<a href="{$post['forumlink_link']}">{$post['forumlink_name']}</a>]]></template>
 		<template name="search_results_posts_inlinecheck" version="120"><![CDATA[<td class="{$bgcolor}" align="center" style="white-space: nowrap"><input type="checkbox" class="checkbox" name="inlinemod_{$post['pid']}" id="inlinemod_{$post['pid']}" value="1" style="vertical-align: middle;" {$inlinecheck}  /></td>]]></template>
-		<template name="search_results_posts_inlinemoderation" version="1809"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1807"></script>
+		<template name="search_results_posts_inlinemoderation" version="1813"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1813"></script>
 <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="tid" value="0" />
@@ -11150,7 +11245,7 @@ if(use_xmlhttprequest == "1")
 		</html>]]></template>
 		<template name="search_results_threads_forumlink" version="1808"><![CDATA[<a href="{$thread['forumlink_link']}">{$thread['forumlink_name']}</a>]]></template>
 		<template name="search_results_threads_inlinecheck" version="120"><![CDATA[<td class="{$bgcolor}" align="center" style="white-space: nowrap"><input type="checkbox" class="checkbox" name="inlinemod_{$thread['tid']}" id="inlinemod_{$thread['tid']}" value="1" style="vertical-align: middle;" {$inlinecheck}  /></td>]]></template>
-		<template name="search_results_threads_inlinemoderation" version="1809"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1807"></script>
+		<template name="search_results_threads_inlinemoderation" version="1813"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1813"></script>
 		<form action="moderation.php" method="post">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="fid" value="0" />
@@ -11379,7 +11474,7 @@ if(use_xmlhttprequest == "1")
 			<td class="tcat"><span class="smalltext"><strong>{$lang->message}</strong></span></td>
 		</tr>
 		]]></template>
-		<template name="showthread_inlinemoderation" version="1809"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1807"></script>
+		<template name="showthread_inlinemoderation" version="1813"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1813"></script>
 <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;" id="inlinemoderation_options">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="tid" value="{$tid}" />
@@ -13281,7 +13376,7 @@ if(use_xmlhttprequest == "1")
 							<dd><span class="thread_status hotfolder" title="{$lang->hot_thread}">&nbsp;</span> {$lang->hot_thread}</dd>
 						</dl>
 					</div>
-				
+
 					<div class="float_left">
 						<dl class="thread_legend smalltext">
 							<dd><span class="thread_status folder" title="{$lang->no_new_thread}">&nbsp;</span> {$lang->no_new_thread}</dd>
@@ -13958,8 +14053,8 @@ $(function() {
 <link rel="alternate" type="application/atom+xml" title="{$lang->latest_threads} (Atom 1.0)" href="{$mybb->settings['bburl']}/syndication.php?type=atom1.0" />
 <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.js?ver=1806"></script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.plugins.min.js?ver=1806"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.js?ver=1813"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.plugins.min.js?ver=1813"></script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/general.js?ver=1813"></script>
 
 {$stylesheets}

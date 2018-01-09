@@ -1205,7 +1205,7 @@ if($mybb->input['action'] == "do_new_announcement")
 		}
 	}
 
-	if($mybb->get_input('allowhtml', MyBB::INPUT_INT) == 1)
+	if($mybb->settings['announcementshtml'] && $mybb->get_input('allowhtml', MyBB::INPUT_INT) == 1)
 	{
 		$allowhtml = 1;
 	}
@@ -1326,7 +1326,7 @@ if($mybb->input['action'] == "new_announcement")
 		$announcement = array(
 			'subject' => '',
 			'message' => '',
-			'allowhtml' => 1,
+			'allowhtml' => 0,
 			'allowmycode' => 1,
 			'allowsmilies' => 1
 			);
@@ -1379,13 +1379,23 @@ if($mybb->input['action'] == "new_announcement")
 	$message = htmlspecialchars_uni($announcement['message']);
 
 	$html_sel = $mycode_sel = $smilies_sel = array('yes' => '', 'no' => '');
-	if($announcement['allowhtml'])
+
+	if($mybb->settings['announcementshtml'])
 	{
-		$html_sel['yes'] = ' checked="checked"';
+		if($announcement['allowhtml'])
+		{
+			$html_sel['yes'] = ' checked="checked"';
+		}
+		else
+		{
+			$html_sel['no'] = ' checked="checked"';
+		}
+
+		eval("\$allow_html = \"".$templates->get("modcp_announcements_allowhtml")."\";");
 	}
 	else
 	{
-		$html_sel['no'] = ' checked="checked"';
+		$allow_html = '';
 	}
 
 	if($announcement['allowmycode'])
@@ -1428,7 +1438,7 @@ if($mybb->input['action'] == "new_announcement")
 			'uid' => $mybb->user['uid'],
 			'subject' => $mybb->input['title'],
 			'message' => $mybb->input['message'],
-			'allowhtml' => $mybb->get_input('allowhtml', MyBB::INPUT_INT),
+			'allowhtml' => $mybb->settings['announcementshtml'] && $mybb->get_input('allowhtml', MyBB::INPUT_INT),
 			'allowmycode' => $mybb->get_input('allowmycode', MyBB::INPUT_INT),
 			'allowsmilies' => $mybb->get_input('allowsmilies', MyBB::INPUT_INT),
 			'dateline' => TIME_NOW,
@@ -1577,7 +1587,7 @@ if($mybb->input['action'] == "do_edit_announcement")
 		}
 	}
 
-	if($mybb->get_input('allowhtml', MyBB::INPUT_INT) == 1)
+	if($mybb->settings['announcementshtml'] && $mybb->get_input('allowhtml', MyBB::INPUT_INT) == 1)
 	{
 		$allowhtml = 1;
 	}
@@ -1783,13 +1793,23 @@ if($mybb->input['action'] == "edit_announcement")
 	$message = htmlspecialchars_uni($announcement['message']);
 
 	$html_sel = $mycode_sel = $smilies_sel = array('yes' => '', 'no' => '');
-	if($announcement['allowhtml'])
+
+	if($mybb->settings['announcementshtml'])
 	{
-		$html_sel['yes'] = ' checked="checked"';
+		if($announcement['allowhtml'])
+		{
+			$html_sel['yes'] = ' checked="checked"';
+		}
+		else
+		{
+			$html_sel['no'] = ' checked="checked"';
+		}
+
+		eval("\$allow_html = \"".$templates->get("modcp_announcements_allowhtml")."\";");
 	}
 	else
 	{
-		$html_sel['no'] = ' checked="checked"';
+		$allow_html = '';
 	}
 
 	if($announcement['allowmycode'])
@@ -1832,7 +1852,7 @@ if($mybb->input['action'] == "edit_announcement")
 			'uid' => $mybb->user['uid'],
 			'subject' => $mybb->input['title'],
 			'message' => $mybb->input['message'],
-			'allowhtml' => $mybb->get_input('allowhtml', MyBB::INPUT_INT),
+			'allowhtml' => $mybb->settings['announcementshtml'] && $mybb->get_input('allowhtml', MyBB::INPUT_INT),
 			'allowmycode' => $mybb->get_input('allowmycode', MyBB::INPUT_INT),
 			'allowsmilies' => $mybb->get_input('allowsmilies', MyBB::INPUT_INT),
 			'dateline' => TIME_NOW,
@@ -3246,6 +3266,8 @@ if($mybb->input['action'] == "editprofile")
 	}
 
 	eval("\$suspend_signature = \"".$templates->get("modcp_editprofile_signature")."\";");
+
+	$user['usernotes'] = htmlspecialchars_uni($user['usernotes']);
 
 	if(!isset($newtitle))
 	{

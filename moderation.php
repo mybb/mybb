@@ -19,6 +19,7 @@ $templatelist .= ",moderation_inline_splitposts,forumjump_special,forumjump_adva
 $templatelist .= ",moderation_delayedmodaction_notes_thread_single,moderation_delayedmodaction_notes_thread_multiple,moderation_delayedmodaction_notes_forum,moderation_delayedmodaction_notes_new_forum";
 $templatelist .= ",moderation_delayedmodaction_notes_redirect,moderation_delayedmodaction_notes_merge,moderation_delayedmoderation_thread,moderation_threadnotes_modaction_thread,forumjump_bit";
 $templatelist .= ",moderation_delayedmoderation_date_day,moderation_delayedmoderation_date_month,moderation_threadnotes_modaction_post,moderation_merge,moderation_split,moderation_threadnotes_modaction_forum";
+$templatelist .= ",moderation_delayedmoderation_openclose,moderation_delayedmoderation_softdeleterestore,moderation_delayedmoderation_delete,moderation_delayedmoderation_stick,moderation_delayedmoderation_approve";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -212,32 +213,63 @@ switch($mybb->input['action'])
 		$errors = array();
 		$customthreadtools = "";
 
-		$allowed_types = array('openclosethread', 'softdeleterestorethread', 'deletethread', 'move', 'stick', 'merge', 'removeredirects', 'removesubscriptions', 'approveunapprovethread');
+		$allowed_types = array('move', 'merge', 'removeredirects', 'removesubscriptions');
+
+		if(is_moderator($fid, "canopenclosethreads"))
+		{
+			$allowed_types[] = "openclosethread";
+		}
+
+		if(is_moderator($fid, "cansoftdeletethreads") || is_moderator($fid, "canrestorethreads"))
+		{
+			$allowed_types[] = "softdeleterestorethread";
+		}
+
+		if(is_moderator($fid, "candeletethreads"))
+		{
+			$allowed_types[] = "deletethread";
+		}
+
+		if(is_moderator($fid, "canstickunstickthreads"))
+		{
+			$allowed_types[] = "stick";
+		}
+
+		if(is_moderator($fid, "canapproveunapprovethreads"))
+		{
+			$allowed_types[] = "approveunapprovethread";
+		}
 
 		$mybb->input['type'] = $mybb->get_input('type');
 
-		switch($db->type)
+		if(is_moderator($fid, "canusecustomtools"))
 		{
-			case "pgsql":
-			case "sqlite":
-				$query = $db->simple_select("modtools", 'tid, name', "(','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%' OR forums='') AND type = 't'");
-				break;
-			default:
-				$query = $db->simple_select("modtools", 'tid, name', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='') AND type = 't'");
-		}
-		while($tool = $db->fetch_array($query))
-		{
-			$allowed_types[] = "modtool_".$tool['tid'];
-
-			$tool['name'] = htmlspecialchars_uni($tool['name']);
-
-			$checked = "";
-			if($mybb->input['type'] == "modtool_".$tool['tid'])
+			switch($db->type)
 			{
-				$checked = "checked=\"checked\"";
+				case "pgsql":
+				case "sqlite":
+					$query = $db->simple_select("modtools", 'tid, name, groups', "(','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%' OR forums='') AND type = 't'");
+					break;
+				default:
+					$query = $db->simple_select("modtools", 'tid, name, groups', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='') AND type = 't'");
 			}
+			while($tool = $db->fetch_array($query))
+			{
+				if(is_member($tool['groups']))
+				{
+					$allowed_types[] = "modtool_".$tool['tid'];
 
-			eval("\$customthreadtools .= \"".$templates->get("moderation_delayedmoderation_custommodtool")."\";");
+					$tool['name'] = htmlspecialchars_uni($tool['name']);
+
+					$checked = "";
+					if($mybb->input['type'] == "modtool_".$tool['tid'])
+					{
+						$checked = "checked=\"checked\"";
+					}
+
+					eval("\$customthreadtools .= \"".$templates->get("moderation_delayedmoderation_custommodtool")."\";");
+				}
+			}
 		}
 
 		$mybb->input['delayedmoderation'] = $mybb->get_input('delayedmoderation', MyBB::INPUT_ARRAY);
@@ -605,6 +637,36 @@ switch($mybb->input['action'])
 
 		$dateyear = gmdate('Y', TIME_NOW  + $localized_time_offset);
 		$datetime = gmdate($mybb->settings['timeformat'], TIME_NOW + $localized_time_offset);
+
+		$openclosethread = '';
+		if(is_moderator($fid, "canopenclosethreads"))
+		{
+			eval('$openclosethread = "'.$templates->get('moderation_delayedmoderation_openclose').'";');
+		}
+
+		$softdeleterestorethread = '';
+		if(is_moderator($fid, "cansoftdeletethreads") || is_moderator($fid, "canrestorethreads"))
+		{
+			eval('$softdeleterestorethread = "'.$templates->get('moderation_delayedmoderation_softdeleterestore').'";');
+		}
+
+		$deletethread = '';
+		if(is_moderator($fid, "candeletethreads"))
+		{
+			eval('$deletethread = "'.$templates->get('moderation_delayedmoderation_delete').'";');
+		}
+
+		$stickunstickthread = '';
+		if(is_moderator($fid, "canstickunstickthreads"))
+		{
+			eval('$stickunstickthread = "'.$templates->get('moderation_delayedmoderation_stick').'";');
+		}
+
+		$approveunapprovethread = '';
+		if(is_moderator($fid, "canapproveunapprovethreads"))
+		{
+			eval('$approveunapprovethread = "'.$templates->get('moderation_delayedmoderation_approve').'";');
+		} 
 
 		$plugins->run_hooks("moderation_delayedmoderation");
 

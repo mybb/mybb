@@ -42,8 +42,12 @@ function upgrade41_dbchanges()
 
 function upgrade41_dbchanges2()
 {
+	global $db, $output;
+
+	$output->print_header("Updating Database");
+
 	// Remove backslashes from last 1,000 log files.
-	$query = $db->simple_select('moderatorlog', 'tid, action', "action LIKE '%\\\\\\%", array(
+	$query = $db->simple_select('moderatorlog', 'tid, action', "action LIKE '%\\\\\\\\%'", array(
 		"order_by" => 'tid',
 		"order_dir" => 'DESC',
 		"limit" => 1000
@@ -58,9 +62,12 @@ function upgrade41_dbchanges2()
 		{
 			$db->update_query("moderatorlog", array(
 				"action" => $db->escape_string($stripped),
-			), "WHERE tid = '".$row['tid']."'");
+			), "tid = '".$row['tid']."'");
 		}
 	}
+
+	// Add Google reCAPTCHA invisible
+	$db->update_query("settings", array('optionscode' => 'select\r\n0=No CAPTCHA\r\n1=MyBB Default CAPTCHA\r\n2=reCAPTCHA\r\n3=Are You a Human\r\n4=NoCAPTCHA reCAPTCHA\r\n5=reCAPTCHA invisible'), "name='captchaimage'");
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("41_dbchanges3");
@@ -69,13 +76,17 @@ function upgrade41_dbchanges2()
 function upgrade41_dbchanges3()
 {
 	global $db, $output, $mybb;
+
 	$output->print_header("Updating Database");
+
 	echo "<p>Performing necessary upgrade queries...</p>";
 	flush();
+
 	$guestlangs = array();
 	$templang = new MyLanguage();
 	$templang->set_path(MYBB_ROOT."inc/languages");
 	$langs = array_keys($templang->get_languages());
+
 	foreach($langs as $langname)
 	{
 		unset($templang);
@@ -88,8 +99,10 @@ function upgrade41_dbchanges3()
 			$guestlangs[] = $db->escape_string($templang->guest);
 		}
 	}
+
 	unset($templang);
 	$guestlangs = implode("', '", $guestlangs);
+
 	$db->update_query('posts', array('username' => ''), "uid = 0 AND username IN ('{$guestlangs}')");
 	$db->update_query('threads', array('username' => ''), "uid = 0 AND username IN ('{$guestlangs}')");
 
