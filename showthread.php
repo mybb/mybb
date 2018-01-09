@@ -482,6 +482,10 @@ if($mybb->input['action'] == "thread")
 			$showresults = 1;
 		}
 
+		if ($forumpermissions['canvotepolls'] != 1) {
+			$nopermission = 1;
+		}
+
 		// If the user is not a guest, check if he already voted.
 		if($mybb->user['uid'] != 0)
 		{
@@ -596,7 +600,7 @@ if($mybb->input['action'] == "thread")
 		}
 
 		// Decide what poll status to show depending on the status of the poll and whether or not the user voted already.
-		if(isset($alreadyvoted) || isset($showresults))
+		if(isset($alreadyvoted) || isset($showresults) || isset($nopermission))
 		{
 			if($alreadyvoted)
 			{
@@ -606,6 +610,10 @@ if($mybb->input['action'] == "thread")
 				{
 					eval("\$pollstatus .= \"".$templates->get("showthread_poll_undovote")."\";");
 				}
+			}
+			elseif($nopermission)
+			{
+				$pollstatus = $lang->no_voting_permission;
 			}
 			else
 			{
