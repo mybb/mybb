@@ -3050,7 +3050,7 @@ function random_str($length=8, $complex=false)
  */
 function format_name($username, $usergroup, $displaygroup=0)
 {
-	global $groupscache, $cache;
+	global $groupscache, $cache, $plugins;
 
 	if(!is_array($groupscache))
 	{
@@ -3072,6 +3072,12 @@ function format_name($username, $usergroup, $displaygroup=0)
 	}
 
 	$format = stripslashes($format);
+
+	$parameters = compact('username', 'usergroup', 'displaygroup', 'format');
+
+	$parameters = $plugins->run_hooks('format_name', $parameters);
+
+	$format = $parameters['format'];
 
 	return str_replace("{username}", $username, $format);
 }
