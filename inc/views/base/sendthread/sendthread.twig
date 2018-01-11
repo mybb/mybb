@@ -1,0 +1,44 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ thread.subject }} - {{ lang.send_thread }}</title>
+{% endblock head %}
+
+{% block body %}
+    {{ errors|raw }}
+    <form action="sendthread.php" method="post">
+        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+            <tr>
+                <td colspan="2" width="100%" class="thead"><strong>{{ lang.send_thread }}</strong></td>
+            </tr>
+            {% if mybb.user.uid == 0 %}
+                <tr>
+                    <td width="40%" class="trow1"><strong>{{ lang.your_name }}</strong><br /><span class="smalltext">{{ lang.name_note }}</span></td>
+                    <td width="60%" class="trow1"><input type="text" class="textbox" size="50" name="fromname" value="{{ form.fromname }}" /></td>
+                </tr>
+                <tr>
+                    <td width="40%" class="trow2"><strong>{{ lang.your_email }}</strong><br /><span class="smalltext">{{ lang.email_note }}</span></td>
+                    <td width="60%" class="trow2"><input type="text" class="textbox" size="50" name="fromemail" value="{{ form.fromemail }}" /></td>
+                </tr>
+            {% endif %}
+            <tr>
+                <td width="40%" class="trow1"><strong>{{ lang.recipient }}</strong><br /><span class="smalltext">{{ lang.recipient_note }}</span></td>
+                <td width="60%" class="trow1"><input type="text" class="textbox" size="50" name="email" value="{{ form.email }}" /></td>
+            </tr>
+            <tr>
+                <td width="40%" class="trow2"><strong>{{ lang.subject }}</strong></td>
+                <td width="60%" class="trow2"><input type="text" class="textbox" size="50" name="subject" value="{{ form.subject }}" /></td>
+            </tr>
+            <tr>
+                <td valign="top" width="40%" class="trow1"><strong>{{ lang.message }}</strong></td>
+                <td width="60%" class="trow1"><textarea cols="50" rows="10" name="message">{{ form.message }}</textarea></td>
+            </tr>
+            {{ captcha|raw }}
+        </table>
+        <br />
+        <input type="hidden" name="action" value="do_sendtofriend" />
+        <input type="hidden" name="tid" value="{{ thread.tid }}" />
+        <div align="center"><input type="submit" class="button" value="{{ lang.send_thread }}" /></div>
+    </form>
+{% endblock body %}
