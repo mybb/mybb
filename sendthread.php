@@ -241,54 +241,44 @@ if($mybb->input['action'] == "do_sendtofriend" && $mybb->request_method == "post
 	}
 }
 
-if(!$mybb->input['action'])
-{
-	$plugins->run_hooks("sendthread_start");
+if (!$mybb->input['action']) {
+    $plugins->run_hooks("sendthread_start");
 
-	// Do we have some errors?
-	if(count($errors) >= 1)
-	{
-		$errors = inline_error($errors);
-		$email = htmlspecialchars_uni($mybb->input['email']);
-		$fromname = htmlspecialchars_uni($mybb->input['fromname']);
-		$fromemail = htmlspecialchars_uni($mybb->input['fromemail']);
-		$subject = htmlspecialchars_uni($mybb->input['subject']);
-		$message = htmlspecialchars_uni($mybb->input['message']);
-	}
-	else
-	{
-		$errors = '';
-		$email = '';
-		$fromname = '';
-		$fromemail = '';
-		$subject = $lang->sprintf($lang->emailsubject_sendtofriend, $mybb->settings['bbname']);
-		$message = '';
-	}
+    // Do we have some errors?
+    if (count($errors) >= 1) {
+        $errors = inline_error($errors);
+        $form['email'] = $mybb->input['email'];
+        $form['fromname'] = $mybb->input['fromname'];
+        $form['fromemail'] = $mybb->input['fromemail'];
+        $form['subject'] = $mybb->input['subject'];
+        $form['message'] = $mybb->input['message'];
+    } else {
+        $errors = '';
+        $form['email'] = '';
+        $form['fromname'] = '';
+        $form['fromemail'] = '';
+        $form['subject'] = $lang->sprintf($lang->emailsubject_sendtofriend, $mybb->settings['bbname']);
+        $form['message'] = '';
+    }
 
-	// Generate CAPTCHA?
-	if($mybb->settings['captchaimage'] && $mybb->user['uid'] == 0)
-	{
-		require_once MYBB_ROOT.'inc/class_captcha.php';
-		$post_captcha = new captcha(true, "post_captcha");
+    // Generate CAPTCHA?
+    if ($mybb->settings['captchaimage'] && $mybb->user['uid'] == 0) {
+        require_once MYBB_ROOT.'inc/class_captcha.php';
+        $post_captcha = new captcha(true, "post_captcha");
 
-		if($post_captcha->html)
-		{
-			$captcha = $post_captcha->html;
-		}
-	}
-	else
-	{
-		$captcha = '';
-	}
+        if ($post_captcha->html) {
+            $captcha = $post_captcha->html;
+        }
+    } else {
+        $captcha = '';
+    }
 
-	$from_email = '';
-	if($mybb->user['uid'] == 0)
-	{
-		eval("\$from_email = \"".$templates->get("sendthread_fromemail")."\";");
-	}
+    $plugins->run_hooks("sendthread_end");
 
-	$plugins->run_hooks("sendthread_end");
-
-	eval("\$sendtofriend = \"".$templates->get("sendthread")."\";");
-	output_page($sendtofriend);
+    output_page(\MyBB\template('sendthread/sendthread.twig', [
+        'thread' => $thread,
+        'captcha' => $captcha,
+        'errors' => $errors,
+        'form' => $form,
+    ]));
 }
