@@ -1421,328 +1421,276 @@ if($mybb->input['action'] == "do_subscriptions")
 	redirect("usercp.php?action=subscriptions", $lang->redirect_subscriptions_updated);
 }
 
-if($mybb->input['action'] == "subscriptions")
-{
-	$plugins->run_hooks("usercp_subscriptions_start");
+if ($mybb->input['action'] == "subscriptions") {
+    $plugins->run_hooks("usercp_subscriptions_start");
 
-	// Thread visiblity
-	$visible = "AND t.visible != 0";
-	if(is_moderator() == true)
-	{
-		$visible = '';
-	}
+    // Thread visiblity
+    $visible = "AND t.visible != 0";
+    if (is_moderator() == true) {
+        $visible = '';
+    }
 
-	// Do Multi Pages
-	$query = $db->query("
+    // Do Multi Pages
+    $query = $db->query("
 		SELECT COUNT(ts.tid) as threads
-		FROM ".TABLE_PREFIX."threadsubscriptions ts
-		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid = ts.tid)
-		WHERE ts.uid = '".$mybb->user['uid']."' AND t.visible >= 0 {$visible}
+		FROM " . TABLE_PREFIX . "threadsubscriptions ts
+		LEFT JOIN " . TABLE_PREFIX . "threads t ON (t.tid = ts.tid)
+		WHERE ts.uid = '" . $mybb->user['uid'] . "' AND t.visible >= 0 {$visible}
 	");
-	$threadcount = $db->fetch_field($query, "threads");
+    $threadcount = $db->fetch_field($query, "threads");
 
-	if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
-	{
-		$mybb->settings['threadsperpage'] = 20;
-	}
+    if (!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1) {
+        $mybb->settings['threadsperpage'] = 20;
+    }
 
-	$perpage = $mybb->settings['threadsperpage'];
-	$page = $mybb->get_input('page', MyBB::INPUT_INT);
-	if($page > 0)
-	{
-		$start = ($page-1) * $perpage;
-		$pages = $threadcount / $perpage;
-		$pages = ceil($pages);
-		if($page > $pages || $page <= 0)
-		{
-			$start = 0;
-			$page = 1;
-		}
-	}
-	else
-	{
-		$start = 0;
-		$page = 1;
-	}
-	$end = $start + $perpage;
-	$lower = $start+1;
-	$upper = $end;
-	if($upper > $threadcount)
-	{
-		$upper = $threadcount;
-	}
-	$multipage = multipage($threadcount, $perpage, $page, "usercp.php?action=subscriptions");
-	$fpermissions = forum_permissions();
-	$del_subscriptions = $subscriptions = array();
+    $perpage = $mybb->settings['threadsperpage'];
+    $page = $mybb->get_input('page', MyBB::INPUT_INT);
+    if ($page > 0) {
+        $start = ($page - 1) * $perpage;
+        $pages = $threadcount / $perpage;
+        $pages = ceil($pages);
+        if ($page > $pages || $page <= 0) {
+            $start = 0;
+            $page = 1;
+        }
+    } else {
+        $start = 0;
+        $page = 1;
+    }
+    $end = $start + $perpage;
+    $lower = $start + 1;
+    $upper = $end;
+    if ($upper > $threadcount) {
+        $upper = $threadcount;
+    }
+    $multipage = multipage($threadcount, $perpage, $page, "usercp.php?action=subscriptions");
+    $fpermissions = forum_permissions();
+    $del_subscriptions = $subscriptions = array();
 
-	// Fetch subscriptions
-	$query = $db->query("
+    // Fetch subscriptions
+    $query = $db->query("
 		SELECT s.*, t.*, t.username AS threadusername, u.username
-		FROM ".TABLE_PREFIX."threadsubscriptions s
-		LEFT JOIN ".TABLE_PREFIX."threads t ON (s.tid=t.tid)
-		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
-		WHERE s.uid='".$mybb->user['uid']."' and t.visible >= 0 {$visible}
+		FROM " . TABLE_PREFIX . "threadsubscriptions s
+		LEFT JOIN " . TABLE_PREFIX . "threads t ON (s.tid=t.tid)
+		LEFT JOIN " . TABLE_PREFIX . "users u ON (u.uid = t.uid)
+		WHERE s.uid='" . $mybb->user['uid'] . "' and t.visible >= 0 {$visible}
 		ORDER BY t.lastpost DESC
 		LIMIT $start, $perpage
 	");
-	while($subscription = $db->fetch_array($query))
-	{
-		$forumpermissions = $fpermissions[$subscription['fid']];
+    while ($subscription = $db->fetch_array($query)) {
+        $forumpermissions = $fpermissions[$subscription['fid']];
 
-		if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || (isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] != 0 && $subscription['uid'] != $mybb->user['uid']))
-		{
-			// Hmm, you don't have permission to view this thread - unsubscribe!
-			$del_subscriptions[] = $subscription['sid'];
-		}
-		else if($subscription['tid'])
-		{
-			$subscriptions[$subscription['tid']] = $subscription;
-		}
-	}
+        if ($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || (isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] != 0 && $subscription['uid'] != $mybb->user['uid'])) {
+            // Hmm, you don't have permission to view this thread - unsubscribe!
+            $del_subscriptions[] = $subscription['sid'];
+        } else {
+            if ($subscription['tid']) {
+                $subscriptions[$subscription['tid']] = $subscription;
+            }
+        }
+    }
 
-	if(!empty($del_subscriptions))
-	{
-		$sids = implode(',', $del_subscriptions);
+    if (!empty($del_subscriptions)) {
+        $sids = implode(',', $del_subscriptions);
 
-		if($sids)
-		{
-			$db->delete_query("threadsubscriptions", "sid IN ({$sids}) AND uid='{$mybb->user['uid']}'");
-		}
+        if ($sids) {
+            $db->delete_query("threadsubscriptions", "sid IN ({$sids}) AND uid='{$mybb->user['uid']}'");
+        }
 
-		$threadcount = $threadcount - count($del_subscriptions);
+        $threadcount = $threadcount - count($del_subscriptions);
 
-		if($threadcount < 0)
-		{
-			$threadcount = 0;
-		}
-	}
+        if ($threadcount < 0) {
+            $threadcount = 0;
+        }
+    }
 
-	if(!empty($subscriptions))
-	{
-		$tids = implode(",", array_keys($subscriptions));
-		$readforums = array();
+    if (!empty($subscriptions)) {
+        $tids = implode(",", array_keys($subscriptions));
+        $readforums = array();
 
-		// Build a forum cache.
-		$query = $db->query("
+        // Build a forum cache.
+        $query = $db->query("
 			SELECT f.fid, fr.dateline AS lastread
-			FROM ".TABLE_PREFIX."forums f
-			LEFT JOIN ".TABLE_PREFIX."forumsread fr ON (fr.fid=f.fid AND fr.uid='{$mybb->user['uid']}')
+			FROM " . TABLE_PREFIX . "forums f
+			LEFT JOIN " . TABLE_PREFIX . "forumsread fr ON (fr.fid=f.fid AND fr.uid='{$mybb->user['uid']}')
 			WHERE f.active != 0
 			ORDER BY pid, disporder
 		");
 
-		while($forum = $db->fetch_array($query))
-		{
-			$readforums[$forum['fid']] = $forum['lastread'];
-		}
+        while ($forum = $db->fetch_array($query)) {
+            $readforums[$forum['fid']] = $forum['lastread'];
+        }
 
-		// Check participation by the current user in any of these threads - for 'dot' folder icons
-		if($mybb->settings['dotfolders'] != 0)
-		{
-			$query = $db->simple_select("posts", "tid,uid", "uid='{$mybb->user['uid']}' AND tid IN ({$tids})");
-			while($post = $db->fetch_array($query))
-			{
-				$subscriptions[$post['tid']]['doticon'] = 1;
-			}
-		}
+        // Check participation by the current user in any of these threads - for 'dot' folder icons
+        if ($mybb->settings['dotfolders'] != 0) {
+            $query = $db->simple_select("posts", "tid,uid", "uid='{$mybb->user['uid']}' AND tid IN ({$tids})");
+            while ($post = $db->fetch_array($query)) {
+                $subscriptions[$post['tid']]['doticon'] = 1;
+            }
+        }
 
-		// Read threads
-		if($mybb->settings['threadreadcut'] > 0)
-		{
-			$query = $db->simple_select("threadsread", "*", "uid='{$mybb->user['uid']}' AND tid IN ({$tids})");
-			while($readthread = $db->fetch_array($query))
-			{
-				$subscriptions[$readthread['tid']]['lastread'] = $readthread['dateline'];
-			}
-		}
+        // Read threads
+        if ($mybb->settings['threadreadcut'] > 0) {
+            $query = $db->simple_select("threadsread", "*", "uid='{$mybb->user['uid']}' AND tid IN ({$tids})");
+            while ($readthread = $db->fetch_array($query)) {
+                $subscriptions[$readthread['tid']]['lastread'] = $readthread['dateline'];
+            }
+        }
 
-		$icon_cache = $cache->read("posticons");
-		$threadprefixes = build_prefixes();
+        $icon_cache = $cache->read("posticons");
+        $threadprefixes = build_prefixes();
 
-		$threads = '';
+        $threads = [];
 
-		// Now we can build our subscription list
-		foreach($subscriptions as $thread)
-		{
-			$bgcolor = alt_trow();
+        // Now we can build our subscription list
+        foreach ($subscriptions as $thread) {
+            $thread['bg_colour'] = alt_trow();
 
-			$folder = '';
-			$prefix = '';
-			$thread['threadprefix'] = '';
+            $folder = '';
+            $prefix = '';
+            $thread['threadprefix'] = '';
 
-			// If this thread has a prefix, insert a space between prefix and subject
-			if($thread['prefix'] != 0 && !empty($threadprefixes[$thread['prefix']]))
-			{
-				$thread['threadprefix'] = $threadprefixes[$thread['prefix']]['displaystyle'].'&nbsp;';
-			}
+            // If this thread has a prefix, insert a space between prefix and subject
+            if ($thread['prefix'] != 0 && !empty($threadprefixes[$thread['prefix']])) {
+                $thread['threadprefix'] = $threadprefixes[$thread['prefix']]['displaystyle'];
+            }
 
-			// Sanitize
-			$thread['subject'] = $parser->parse_badwords($thread['subject']);
-			$thread['subject'] = htmlspecialchars_uni($thread['subject']);
+            // Sanitize
+            $thread['subject'] = $parser->parse_badwords($thread['subject']);
 
-			// Build our links
-			$thread['threadlink'] = get_thread_link($thread['tid']);
-			$thread['lastpostlink'] = get_thread_link($thread['tid'], 0, "lastpost");
+            // Build our links
+            $thread['threadlink'] = get_thread_link($thread['tid']);
+            $thread['lastpostlink'] = get_thread_link($thread['tid'], 0, "lastpost");
 
-			// Fetch the thread icon if we have one
-			if($thread['icon'] > 0 && $icon_cache[$thread['icon']])
-			{
-				$icon = $icon_cache[$thread['icon']];
-				$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
-				$icon['path'] = htmlspecialchars_uni($icon['path']);
-				$icon['name'] = htmlspecialchars_uni($icon['name']);
-				eval("\$icon = \"".$templates->get("usercp_subscriptions_thread_icon")."\";");
-			}
-			else
-			{
-				$icon = "&nbsp;";
-			}
+            // Fetch the thread icon if we have one
+            if ($thread['icon'] > 0 && $icon_cache[$thread['icon']]) {
+                $icon = $icon_cache[$thread['icon']];
+                $icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
+                $thread['icon'] = $icon;
+            } else {
+                $icon = "&nbsp;";
+            }
 
-			// Determine the folder
-			$folder = '';
-			$folder_label = '';
+            // Determine the folder
+            $thread['folder'] = '';
+            $thread['folder_label'] = '';
 
-			if(isset($thread['doticon']))
-			{
-				$folder = "dot_";
-				$folder_label .= $lang->icon_dot;
-			}
+            if (isset($thread['doticon'])) {
+                $thread['folder'] = "dot_";
+                $thread['folder_label'] .= $lang->icon_dot;
+            }
 
-			$gotounread = '';
-			$isnew = 0;
-			$donenew = 0;
-			$lastread = 0;
+            $gotounread = '';
+            $isnew = 0;
+            $donenew = 0;
+            $lastread = 0;
 
-			if($mybb->settings['threadreadcut'] > 0)
-			{
-				$forum_read = $readforums[$thread['fid']];
+            if ($mybb->settings['threadreadcut'] > 0) {
+                $forum_read = $readforums[$thread['fid']];
 
-				$read_cutoff = TIME_NOW-$mybb->settings['threadreadcut']*60*60*24;
-				if($forum_read == 0 || $forum_read < $read_cutoff)
-				{
-					$forum_read = $read_cutoff;
-				}
-			}
+                $read_cutoff = TIME_NOW - $mybb->settings['threadreadcut'] * 60 * 60 * 24;
+                if ($forum_read == 0 || $forum_read < $read_cutoff) {
+                    $forum_read = $read_cutoff;
+                }
+            }
 
-			$cutoff = 0;
-			if($mybb->settings['threadreadcut'] > 0 && $thread['lastpost'] > $forum_read)
-			{
-				$cutoff = TIME_NOW-$mybb->settings['threadreadcut']*60*60*24;
-			}
+            $cutoff = 0;
+            if ($mybb->settings['threadreadcut'] > 0 && $thread['lastpost'] > $forum_read) {
+                $cutoff = TIME_NOW - $mybb->settings['threadreadcut'] * 60 * 60 * 24;
+            }
 
-			if($thread['lastpost'] > $cutoff)
-			{
-				if($thread['lastread'])
-				{
-					$lastread = $thread['lastread'];
-				}
-				else
-				{
-					$lastread = 1;
-				}
-			}
+            if ($thread['lastpost'] > $cutoff) {
+                if ($thread['lastread']) {
+                    $lastread = $thread['lastread'];
+                } else {
+                    $lastread = 1;
+                }
+            }
 
-			if(!$lastread)
-			{
-				$readcookie = $threadread = my_get_array_cookie("threadread", $thread['tid']);
-				if($readcookie > $forum_read)
-				{
-					$lastread = $readcookie;
-				}
-				else
-				{
-					$lastread = $forum_read;
-				}
-			}
+            if (!$lastread) {
+                $readcookie = $threadread = my_get_array_cookie("threadread", $thread['tid']);
+                if ($readcookie > $forum_read) {
+                    $lastread = $readcookie;
+                } else {
+                    $lastread = $forum_read;
+                }
+            }
 
-			if($lastread && $lastread < $thread['lastpost'])
-			{
-				$folder .= "new";
-				$folder_label .= $lang->icon_new;
-				$new_class = "subject_new";
-				$thread['newpostlink'] = get_thread_link($thread['tid'], 0, "newpost");
-				eval("\$gotounread = \"".$templates->get("forumdisplay_thread_gotounread")."\";");
-				$unreadpost = 1;
-			}
-			else
-			{
-				$folder_label .= $lang->icon_no_new;
-				$new_class = "subject_old";
-			}
+            if ($lastread && $lastread < $thread['lastpost']) {
+                $thread['folder'] .= "new";
+                $thread['folder_label'] .= $lang->icon_new;
+                $thread['new_class'] = "subject_new";
+                $thread['newpostlink'] = get_thread_link($thread['tid'], 0, "newpost");
+                $unreadpost = 1;
+            } else {
+                $thread['folder_label'] .= $lang->icon_no_new;
+                $thread['new_class'] = "subject_old";
+            }
 
-			if($thread['replies'] >= $mybb->settings['hottopic'] || $thread['views'] >= $mybb->settings['hottopicviews'])
-			{
-				$folder .= "hot";
-				$folder_label .= $lang->icon_hot;
-			}
+            if ($thread['replies'] >= $mybb->settings['hottopic'] || $thread['views'] >= $mybb->settings['hottopicviews']) {
+                $thread['folder'] .= "hot";
+                $thread['folder_label'] .= $lang->icon_hot;
+            }
 
-			if($thread['closed'] == 1)
-			{
-				$folder .= "lock";
-				$folder_label .= $lang->icon_lock;
-			}
+            if ($thread['closed'] == 1) {
+                $thread['folder'] .= "lock";
+                $thread['folder_label'] .= $lang->icon_lock;
+            }
 
-			$folder .= "folder";
+            $thread['folder'] .= "folder";
 
-			if($thread['visible'] == 0)
-			{
-				$bgcolor = "trow_shaded";
-			}
+            if ($thread['visible'] == 0) {
+                $thread['bg_colour'] = "trow_shaded";
+            }
 
-			// Build last post info
-			$lastpostdate = my_date('relative', $thread['lastpost']);
-			if(!$lastposteruid && !$thread['lastposter'])
-			{
-				$lastposter = htmlspecialchars_uni($lang->guest);
-			}
-			else
-			{
-				$lastposter = htmlspecialchars_uni($thread['lastposter']);
-			}
-			$lastposteruid = $thread['lastposteruid'];
+            // Build last post info
+            $thread['last_post_date'] = my_date('relative', $thread['lastpost']);
+            if (!$lastposteruid && !$thread['lastposter']) {
+                $lastposter = htmlspecialchars_uni($lang->guest);
+            } else {
+                $lastposter = htmlspecialchars_uni($thread['lastposter']);
+            }
+            $lastposteruid = $thread['lastposteruid'];
 
-			// Don't link to guest's profiles (they have no profile).
-			if($lastposteruid == 0)
-			{
-				$lastposterlink = $lastposter;
-			}
-			else
-			{
-				$lastposterlink = build_profile_link($lastposter, $lastposteruid);
-			}
+            // Don't link to guest's profiles (they have no profile).
+            if ($lastposteruid == 0) {
+                $thread['last_poster_link'] = $lastposter;
+            } else {
+                $thread['last_poster_link'] = build_profile_link($lastposter, $lastposteruid);
+            }
 
-			$thread['replies'] = my_number_format($thread['replies']);
-			$thread['views'] = my_number_format($thread['views']);
+            $thread['replies'] = my_number_format($thread['replies']);
+            $thread['views'] = my_number_format($thread['views']);
 
-			// What kind of notification type do we have here?
-			switch($thread['notification'])
-			{
-				case "2": // PM
-					$notification_type = $lang->pm_notification;
-					break;
-				case "1": // Email
-					$notification_type = $lang->email_notification;
-					break;
-				default: // No notification
-					$notification_type = $lang->no_notification;
-			}
+            // What kind of notification type do we have here?
+            switch ($thread['notification']) {
+                case "2": // PM
+                    $thread['notification_type'] = $lang->pm_notification;
+                    break;
+                case "1": // Email
+                    $thread['notification_type'] = $lang->email_notification;
+                    break;
+                default: // No notification
+                    $thread['notification_type'] = $lang->no_notification;
+            }
 
-			eval("\$threads .= \"".$templates->get("usercp_subscriptions_thread")."\";");
-		}
+            $threads[] = $thread;
+        }
 
-		// Provide remove options
-		eval("\$remove_options = \"".$templates->get("usercp_subscriptions_remove")."\";");
-	}
-	else
-	{
-		$remove_options = '';
-		eval("\$threads = \"".$templates->get("usercp_subscriptions_none")."\";");
-	}
+        // Provide remove options
+        eval("\$remove_options = \"" . $templates->get("usercp_subscriptions_remove") . "\";");
+    } else {
+        $remove_options = '';
+    }
 
-	$plugins->run_hooks("usercp_subscriptions_end");
+    $plugins->run_hooks("usercp_subscriptions_end");
 
-	eval("\$subscriptions = \"".$templates->get("usercp_subscriptions")."\";");
-	output_page($subscriptions);
+    output_page(\MyBB\template('usercp/subscribed_threads.twig', [
+        'multipage' => $multipage,
+        'subscriptions' => $subscriptions,
+        'thread_count' => $threadcount,
+        'threads' => $threads,
+    ]));
 }
 
 if($mybb->input['action'] == "forumsubscriptions")
