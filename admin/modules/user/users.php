@@ -3959,7 +3959,6 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 		switch($type)
 		{
 			case "multiselect":
-				
 				$selected_options = array();
 				if(!is_array($values[$field_name]))
 				{
@@ -3995,7 +3994,6 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 				$code = $form->generate_select_box("profile_fields[{$field_name}][]", $options, $selected_options, array('id' => "profile_field_{$field_name}", 'multiple' => true, 'size' => $profile_field['length']));
 				break;
 			case "select":
-				
 				$select_options = array();
 				if($search == true)
 				{
@@ -4022,7 +4020,6 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 				}
 				break;
 			case "radio":
-				
 				$radio_options = array();
 				if($search == true)
 				{
@@ -4037,7 +4034,6 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 				}
 				break;
 			case "checkbox":
-				
 				$select_options = array();
 				if(!is_array($values[$field_name]))
 				{
@@ -4067,7 +4063,6 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 				}
 				break;
 			case "textarea":
-				
 				$extra = '';
 				if(isset($mybb->input['action']) && $mybb->input['action'] == "search")
 				{
@@ -4077,7 +4072,6 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 				$code = $form->generate_text_area("profile_fields[{$field_name}]", $values[$field_name], array('id' => "profile_field_{$field_name}", 'rows' => 6, 'cols' => 50)).$extra;
 				break;
 			default:
-				
 				$extra = '';
 				if(isset($mybb->input['action']) && $mybb->input['action'] == "search")
 				{
