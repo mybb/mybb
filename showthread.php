@@ -482,7 +482,8 @@ if($mybb->input['action'] == "thread")
 			$showresults = 1;
 		}
 
-		if ($forumpermissions['canvotepolls'] != 1) {
+		if($forumpermissions['canvotepolls'] != 1)
+		{
 			$nopermission = 1;
 		}
 
