@@ -1552,7 +1552,7 @@ if ($mybb->input['action'] == "subscriptions") {
 
             // If this thread has a prefix, insert a space between prefix and subject
             if ($thread['prefix'] != 0 && !empty($threadprefixes[$thread['prefix']])) {
-                $thread['threadprefix'] = $threadprefixes[$thread['prefix']]['displaystyle'] . '&nbsp;';
+                $thread['threadprefix'] = $threadprefixes[$thread['prefix']]['displaystyle'];
             }
 
             // Sanitize

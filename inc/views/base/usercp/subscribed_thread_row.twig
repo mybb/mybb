@@ -7,7 +7,9 @@
     </td>
     <td class="{{ thread.bg_colour }}">
         <a href="{{ thread.newpostlink }}"><img src="{{ theme.imgdir }}/jump.png" alt="{{ lang.goto_first_unread }}" title="{{ lang.goto_first_unread }}" /></a>
-        {{ thread.threadprefix }}
+        {% if thread.threadprefix %}
+            {{ thread.threadprefix|raw }}&nbsp;
+        {% endif %}
         <a href="{{ thread.threadlink }}" class="{{ thread.new_class }}">{{ thread.subject }}</a><br />
         <span class="smalltext">{{ lang.notification_method }} {{ thread.notification_type }}</span>
     </td>
