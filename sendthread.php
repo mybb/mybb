@@ -247,11 +247,11 @@ if (!$mybb->input['action']) {
     // Do we have some errors?
     if (count($errors) >= 1) {
         $errors = inline_error($errors);
-        $form['email'] = htmlspecialchars_uni($mybb->input['email']);
-        $form['fromname'] = htmlspecialchars_uni($mybb->input['fromname']);
-        $form['fromemail'] = htmlspecialchars_uni($mybb->input['fromemail']);
-        $form['subject'] = htmlspecialchars_uni($mybb->input['subject']);
-        $form['message'] = htmlspecialchars_uni($mybb->input['message']);
+        $form['email'] = $mybb->input['email'];
+        $form['fromname'] = $mybb->input['fromname'];
+        $form['fromemail'] = $mybb->input['fromemail'];
+        $form['subject'] = $mybb->input['subject'];
+        $form['message'] = $mybb->input['message'];
     } else {
         $errors = '';
         $form['email'] = '';
