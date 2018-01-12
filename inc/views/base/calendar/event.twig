@@ -1,0 +1,102 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ mybb.settings.bbname }} - {{ lang.calendar }} - {{ event.name }}</title>
+{% endblock head %}
+
+{% block body %}
+    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder tfixed">
+        <tr>
+            <td class="thead"><strong>{{ event.name }}</strong></td>
+        </tr>
+        <tr>
+            <td class="tcat"><strong>{{ event.time_period }}</strong></td>
+        </tr>
+        <tr>
+            <td class="trow1{{ event.event_class }}">
+                <div class="float_left">
+                    <strong><span class="largetext">{{ event.profilelink|raw }}</span></strong><br />
+                    <span class="smalltext">
+                        {{ event.usertitle }}<br />
+                        {{ event.userstars|raw }}
+                    </span>
+                </div>
+                <div class="float_right" style="text-align: right;">
+                    {% if calendar_permissions.canmoderateevents %}
+                        <form method="post" action="calendar.php">
+                            <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+                            <input type="hidden" name="eid" value="{{ event.eid }}">
+                            <select name="action" onchange="if(this.options[this.selectedIndex].value != '') { window.location=('calendar.php?action='+this.options[this.selectedIndex].value+'&amp;eid={{ event.eid }}&amp;my_post_key={{ mybb.post_code }}') }">
+                                <option value="" style="font-weight: bold;">{{ lang.moderator_options }}</option>
+                                <option value="{{ event.approve_value }}">{{ event.approve }}</option>
+                                <option value="move">{{ lang.move_event }}</option>
+                            </select>
+                            {{ gobutton|raw }}
+                        </form>
+                        <br />
+                    {% endif %}
+                    {% if event.repeats %}
+                        <span class="smalltext"><strong>{{ lang.repeats }}</strong><br />{{ event.repeats }}</span>
+                    {% endif %}
+                </div>
+                <br class="clear" />
+            </td>
+        </tr>
+        <tr>
+            <td class="trow2 scaleimages{{ event.event_class }}">
+                <p>{{ event.description|raw }}</p>
+                {% if event.can_edit == true %}
+                    <div style="text-align: right; vertical-align: bottom;" class="postbit_buttons">
+                        <a href="calendar.php?action=editevent&amp;eid={{ event.eid }}" class="postbit_edit"><span>{{ lang.postbit_button_edit }}</span></a>
+                        <a href="javascript:void(0)" onclick="MyBB.deleteEvent({{ event.eid }}); return false;" class="postbit_qdelete"><span>{{ lang.postbit_button_qdelete }}</span></a>
+                    </div>
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+    <br />
+    <form action="calendar.php" method="post">
+        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+            <tr>
+                <td class="trow1">
+                    <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                        <tr>
+                            <td valign="top">
+                                {% if calendar_permissions.canaddevents %}
+                                    <a href="calendar.php?action=addevent&amp;calendar={{ event.cid }}">{{ lang.add_public_event }}</a> | <a href="calendar.php?action=addevent&amp;calendar={{ event.cid }}&amp;private=1">{{ lang.add_private_event }}</a>
+                                {% endif %}
+                            </td>
+                            <td align="right">
+                            <span class="smalltext"><strong>{{ lang.jump_month }}</strong></span>
+                            <select name="month">
+                                <option value="{{ event.month }}">{{ event.currentmonth }}</option>
+                                <option value="{{ event.month }}">----------</option>
+                                <option value="1">{{ lang.alt_month_1 }}</option>
+                                <option value="2">{{ lang.alt_month_2 }}</option>
+                                <option value="3">{{ lang.alt_month_3 }}</option>
+                                <option value="4">{{ lang.alt_month_4 }}</option>
+                                <option value="5">{{ lang.alt_month_5 }}</option>
+                                <option value="6">{{ lang.alt_month_6 }}</option>
+                                <option value="7">{{ lang.alt_month_7 }}</option>
+                                <option value="8">{{ lang.alt_month_8 }}</option>
+                                <option value="9">{{ lang.alt_month_9 }}</option>
+                                <option value="10">{{ lang.alt_month_10 }}</option>
+                                <option value="11">{{ lang.alt_month_11 }}</option>
+                                <option value="12">{{ lang.alt_month_12 }}</option>
+                            </select>
+                            <select name="year">
+                                {% for year in years %}
+                                    <option value="{{ year }}">{{ year }}</option>
+                                {% endfor %}
+                            </select>
+                            {{ gobutton|raw }}
+                            <br />
+                            {{ calendar_jump|raw }}
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </form>
+{% endblock body %}
