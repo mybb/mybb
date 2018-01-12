@@ -242,316 +242,230 @@ if($mybb->input['action'] == "addevent")
 	add_breadcrumb(htmlspecialchars_uni($calendar['name']), get_calendar_link($calendar['cid']));
 	add_breadcrumb($lang->nav_addevent);
 
-	$plugins->run_hooks("calendar_addevent_start");
+    $plugins->run_hooks("calendar_addevent_start");
 
-	// If MyCode is on for this forum and the MyCode editor is enabled inthe Admin CP, draw the code buttons and smilie inserter.
-	if($mybb->settings['bbcodeinserter'] != 0 && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0) && $calendar['allowmycode'] == 1)
-	{
-		$codebuttons = build_mycode_inserter("message", $calendar['allowsmilies']);
-		if($calendar['allowsmilies'] == 1)
-		{
-			$smilieinserter = build_clickable_smilies();
-		}
-	}
+    // If MyCode is on for this forum and the MyCode editor is enabled inthe Admin CP, draw the code buttons and smilie inserter.
+    if ($mybb->settings['bbcodeinserter'] != 0 && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0) && $calendar['allowmycode'] == 1) {
+        $codebuttons = build_mycode_inserter("message", $calendar['allowsmilies']);
+        if ($calendar['allowsmilies'] == 1) {
+            $smilieinserter = build_clickable_smilies();
+        }
+    }
 
-	// Previous selections
-	$name = $description = '';
-	if(isset($mybb->input['name']))
-	{
-		$name = htmlspecialchars_uni($mybb->get_input('name'));
-	}
+    // Previous selections
+    if (isset($mybb->input['name'])) {
+        $select['name'] = $mybb->get_input('name');
+    }
 
-	if(isset($mybb->input['description']))
-	{
-		$description = htmlspecialchars_uni($mybb->get_input('description'));
-	}
+    if (isset($mybb->input['description'])) {
+        $select['description'] = $mybb->get_input('description');
+    }
 
-	$single_month = $start_month = $end_month = $repeats_sel = $repeats_3_days = $repeats_4_occurance = $repeats_4_weekday = $repeats_5_month = $repeats_5_occurance = $repeats_5_weekday = $repeats_5_month2 = array();
-	foreach(range(1, 12) as $number)
-	{
-		$single_month[$number] = $start_month[$number] = $end_month[$number] = $repeats_5_month[$number] = $repeats_5_month2[$number] = '';
-	}
-	foreach(range(1, 5) as $number)
-	{
-		$repeats_sel[$number] = '';
-	}
-	foreach(range(0, 6) as $number)
-	{
-		$repeats_3_days[$number] = $repeats_4_weekday[$number] = $repeats_5_weekday[$number] = '';
-	}
-	foreach(range(1, 4) as $number)
-	{
-		$repeats_4_occurance[$number] = $repeats_5_occurance[$number] = '';
-	}
-	$repeats_4_occurance['last'] = $repeats_5_occurance['last'] = '';
-	$repeats_4_type = array(1 => '', 2 => '');
-	$repeats_5_type = array(1 => '', 2 => '');
+    $select['single_month'] = $select['start_month'] = $select['end_month'] = $select['repeats_sel'] = $select['repeats_3_days'] = $select['repeats_4_occurance'] = $select['repeats_4_weekday'] = $select['repeats_5_month'] = $select['repeats_5_occurance'] = $select['repeats_5_weekday'] = $select['repeats_5_month2'] = array();
+    foreach (range(1, 12) as $number) {
+        $select['single_month'][$number] = $select['start_month'][$number] = $select['end_month'][$number] = $select['repeats_5_month'][$number] = $select['repeats_5_month2'][$number] = '';
+    }
+    foreach (range(1, 5) as $number) {
+        $select['repeats_sel'][$number] = '';
+    }
+    foreach (range(0, 6) as $number) {
+        $select['repeats_3_days'][$number] = $select['repeats_4_weekday'][$number] = $select['repeats_5_weekday'][$number] = '';
+    }
+    foreach (range(1, 4) as $number) {
+        $select['repeats_4_occurance'][$number] = $select['repeats_5_occurance'][$number] = '';
+    }
 
-	if($mybb->request_method == "post")
-	{
-		$single_day = $mybb->get_input('single_day', MyBB::INPUT_INT);
-		$single_month[$mybb->get_input('single_month', MyBB::INPUT_INT)] = " selected=\"selected\"";
-		$single_year = $mybb->get_input('single_year', MyBB::INPUT_INT);
-		$start_day = $mybb->get_input('start_day', MyBB::INPUT_INT);
-		$start_month[$mybb->get_input('start_month', MyBB::INPUT_INT)] = " selected=\"selected\"";
-		$start_year = $mybb->get_input('start_year', MyBB::INPUT_INT);
-		$start_time = htmlspecialchars_uni($mybb->get_input('start_time'));
-		$end_day = $mybb->get_input('end_day', MyBB::INPUT_INT);
-		$end_month[$mybb->get_input('end_month', MyBB::INPUT_INT)] = " selected=\"selected\"";
-		$end_year = $mybb->get_input('end_year', MyBB::INPUT_INT);
-		$end_time = htmlspecialchars_uni($mybb->get_input('end_time'));
-		if($mybb->get_input('type') == "single")
-		{
-			$type_single = "checked=\"checked\"";
-			$type_ranged = '';
-			$type = "single";
-		}
-		else
-		{
-			$type_ranged = "checked=\"checked\"";
-			$type_single = '';
-			$type = "ranged";
-		}
-		if(!empty($mybb->input['repeats']))
-		{
-			$repeats_sel[$mybb->get_input('repeats', MyBB::INPUT_INT)] = " selected=\"selected\"";
-		}
-		$repeats_1_days = $mybb->get_input('repeats_1_days', MyBB::INPUT_INT);
-		$repeats_3_weeks = $mybb->get_input('repeats_3_weeks', MyBB::INPUT_INT);
-		foreach($mybb->get_input('repeats_3_days', MyBB::INPUT_ARRAY) as $day => $val)
-		{
-			if($val != 1)
-			{
-				continue;
-			}
-			$day = (int)$day;
-			$repeats_3_days[$day] = " checked=\"checked\"";
-		}
-		$repeats_4_type = array();
-		if($mybb->get_input('repeats_4_type', MyBB::INPUT_INT) == 1)
-		{
-			$repeats_4_type[1] = "checked=\"checked\"";
-			$repeats_4_type[2] = '';
-		}
-		else
-		{
-			$repeats_4_type[2] = "checked=\"checked\"";
-			$repeats_4_type[1] = '';
-		}
-		$repeats_4_day = $mybb->get_input('repeats_4_day', MyBB::INPUT_INT);
-		$repeats_4_months = $mybb->get_input('repeats_4_months', MyBB::INPUT_INT);
-		$repeats_4_occurance[$mybb->get_input('repeats_4_occurance')] = "selected=\"selected\"";
-		$repeats_4_weekday[$mybb->get_input('repeats_4_weekday', MyBB::INPUT_INT)] = "selected=\"selected\"";
-		$repeats_4_months2 = $mybb->get_input('repeats_4_months2', MyBB::INPUT_INT);
-		if($mybb->get_input('repeats_5_type', MyBB::INPUT_INT) == 1)
-		{
-			$repeats_5_type[1] = "checked=\"checked\"";
-		}
-		else
-		{
-			$repeats_5_type[2] = "checked=\"checked\"";
-		}
-		$repeats_5_day = $mybb->get_input('repeats_5_day', MyBB::INPUT_INT);
-		$repeats_5_month[$mybb->get_input('repeats_5_month', MyBB::INPUT_INT)] = "selected=\"selected\"";
-		$repeats_5_years = $mybb->get_input('repeats_5_years', MyBB::INPUT_INT);
-		$repeats_5_occurance[$mybb->get_input('repeats_5_occurance')] = "selected=\"selected\"";
-		$repeats_5_weekday[$mybb->get_input('repeats_5_weekday', MyBB::INPUT_INT)] = "selected=\"selected\"";
-		$repeats_5_month2[$mybb->get_input('repeats_5_month2', MyBB::INPUT_INT)] = "selected=\"selected\"";
-		$repeats_5_years2 = $mybb->get_input('repeats_5_years2', MyBB::INPUT_INT);
+    $select['repeats_4_occurance']['last'] = $select['repeats_5_occurance']['last'] = '';
+    $select['repeats_4_type'] = array(1 => '', 2 => '');
+    $select['repeats_5_type'] = array(1 => '', 2 => '');
 
-		$timezone = $mybb->get_input('timezone', MyBB::INPUT_INT);
-	}
-	else
-	{
-		if(!empty($mybb->input['day']))
-		{
-			$single_day = $start_day = $end_day = $mybb->get_input('day', MyBB::INPUT_INT);
-		}
-		else
-		{
-			$single_day = $start_day = $end_day = my_date("j");
-		}
-		if(!empty($mybb->input['month']))
-		{
-			$month = $mybb->get_input('month', MyBB::INPUT_INT);
-		}
-		else
-		{
-			$month = my_date("n");
-		}
-		$single_month[$month] = $start_month[$month] = $end_month[$month] = "selected=\"selected\"";
-		if(!empty($mybb->input['year']))
-		{
-			$single_year = $start_year = $end_year = $mybb->get_input('year', MyBB::INPUT_INT);
-		}
-		else
-		{
-			$single_year = $start_year = $end_year = my_date("Y");
-		}
-		$start_time = $end_time = "";
-		$type_single = "checked=\"checked\"";
-		$type_ranged = '';
-		$type = "single";
-		$repeats_1_days = 1;
-		$repeats_3_weeks = 1;
-		$repeats_4_type[1] = "checked=\"checked\"";
-		$repeats_4_day = 1;
-		$repeats_4_months = 1;
-		$repeats_4_occurance[1] = "selected=\"selected\"";
-		$repeats_4_weekday[0] = "selected=\"selected\"";
-		$repeats_4_months2 = 1;
-		$repeats_5_type[1] = "checked=\"checked\"";
-		$repeats_5_day = 1;
-		$repeats_5_month[1] = "selected=\"selected\"";
-		$repeats_5_years = 1;
-		$repeats_5_occurance[1] = "selected=\"selected\"";
-		$repeats_5_weekday[0] = "selected=\"selected\"";
-		$repeats_5_month2[1] = "selected=\"selected\"";
-		$repeats_5_years2 = 1;
-		$timezone = $mybb->user['timezone'];
-	}
+    if ($mybb->request_method == "post") {
+        $select['single_day'][$mybb->get_input('single_day', MyBB::INPUT_INT)] = " selected=\"selected\"";
+        $select['single_month'][$mybb->get_input('single_month', MyBB::INPUT_INT)] = " selected=\"selected\"";
+        $single_year = $mybb->get_input('single_year', MyBB::INPUT_INT);
+        $select['start_day'][$mybb->get_input('start_day', MyBB::INPUT_INT)] = " selected=\"selected\"";
+        $select['start_month'][$mybb->get_input('start_month', MyBB::INPUT_INT)] = " selected=\"selected\"";
+        $start_year = $mybb->get_input('start_year', MyBB::INPUT_INT);
+        $select['start_time'] = $mybb->get_input('start_time');
+        $select['end_day'][$mybb->get_input('end_day', MyBB::INPUT_INT)] = " selected=\"selected\"";
+        $select['end_month'][$mybb->get_input('end_month', MyBB::INPUT_INT)] = " selected=\"selected\"";
+        $end_year = $mybb->get_input('end_year', MyBB::INPUT_INT);
+        $select['end_time'] = $mybb->get_input('end_time');
 
-	$single_years = $start_years = $end_years = '';
+        if ($mybb->get_input('type') == "single") {
+            $select['type_single'] = "checked=\"checked\"";
+            $select['type_ranged'] = '';
+            $select['type'] = "single";
+        } else {
+            $select['type_ranged'] = "checked=\"checked\"";
+            $select['type_single'] = '';
+            $select['type'] = "ranged";
+        }
 
-	// Construct option list for years
-	for($year = my_date('Y'); $year < (my_date('Y') + 5); ++$year)
-	{
-		if($year == $single_year)
-		{
-			$selected = "selected=\"selected\"";
-			eval("\$single_years .= \"".$templates->get("calendar_year")."\";");
-		}
-		else
-		{
-			$selected = "";
-			eval("\$single_years .= \"".$templates->get("calendar_year")."\";");
-		}
+        if (!empty($mybb->input['repeats'])) {
+            $select['repeats_sel'][$mybb->get_input('repeats', MyBB::INPUT_INT)] = " selected=\"selected\"";
+        }
 
-		if($year == $start_year)
-		{
-			$selected = "selected=\"selected\"";
-			eval("\$start_years .= \"".$templates->get("calendar_year")."\";");
-		}
-		else
-		{
-			$selected = "";
-			eval("\$start_years .= \"".$templates->get("calendar_year")."\";");
-		}
+        $select['repeats_1_days'] = $mybb->get_input('repeats_1_days', MyBB::INPUT_INT);
+        $select['repeats_3_weeks'] = $mybb->get_input('repeats_3_weeks', MyBB::INPUT_INT);
+        foreach ($mybb->get_input('repeats_3_days', MyBB::INPUT_ARRAY) as $day => $val) {
+            if ($val != 1) {
+                continue;
+            }
+            $day = (int)$day;
+            $select['repeats_3_days'][$day] = " checked=\"checked\"";
+        }
 
-		if($year == $end_year)
-		{
-			$selected = "selected=\"selected\"";
-			eval("\$end_years .= \"".$templates->get("calendar_year")."\";");
-		}
-		else
-		{
-			$selected = "";
-			eval("\$end_years .= \"".$templates->get("calendar_year")."\";");
-		}
-	}
+        $select['repeats_4_type'] = array();
+        if ($mybb->get_input('repeats_4_type', MyBB::INPUT_INT) == 1) {
+            $select['repeats_4_type'][1] = "checked=\"checked\"";
+            $select['repeats_4_type'][2] = '';
+        } else {
+            $select['repeats_4_type'][2] = "checked=\"checked\"";
+            $select['repeats_4_type'][1] = '';
+        }
 
-	$single_days = $start_days = $end_days = '';
+        $select['repeats_4_day'] = $mybb->get_input('repeats_4_day', MyBB::INPUT_INT);
+        $select['repeats_4_months'] = $mybb->get_input('repeats_4_months', MyBB::INPUT_INT);
+        $select['repeats_4_occurance'][$mybb->get_input('repeats_4_occurance')] = "selected=\"selected\"";
+        $select['repeats_4_weekday'][$mybb->get_input('repeats_4_weekday', MyBB::INPUT_INT)] = "selected=\"selected\"";
+        $select['repeats_4_months2'] = $mybb->get_input('repeats_4_months2', MyBB::INPUT_INT);
 
-	// Construct option list for days
-	for($day = 1; $day <= 31; ++$day)
-	{
-		if($day == $single_day)
-		{
-			$selected = "selected=\"selected\"";
-			eval("\$single_days .= \"".$templates->get("calendar_day")."\";");
-		}
-		else
-		{
-			$selected = "";
-			eval("\$single_days .= \"".$templates->get("calendar_day")."\";");
-		}
+        if ($mybb->get_input('repeats_5_type', MyBB::INPUT_INT) == 1) {
+            $select['repeats_5_type'][1] = "checked=\"checked\"";
+        } else {
+            $select['repeats_5_type'][2] = "checked=\"checked\"";
+        }
 
-		if($day == $start_day)
-		{
-			$selected = "selected=\"selected\"";
-			eval("\$start_days .= \"".$templates->get("calendar_day")."\";");
-		}
-		else
-		{
-			$selected = "";
-			eval("\$start_days .= \"".$templates->get("calendar_day")."\";");
-		}
+        $select['repeats_5_day'] = $mybb->get_input('repeats_5_day', MyBB::INPUT_INT);
+        $select['repeats_5_month'][$mybb->get_input('repeats_5_month', MyBB::INPUT_INT)] = "selected=\"selected\"";
+        $select['repeats_5_years'] = $mybb->get_input('repeats_5_years', MyBB::INPUT_INT);
+        $select['repeats_5_occurance'][$mybb->get_input('repeats_5_occurance')] = "selected=\"selected\"";
+        $select['repeats_5_weekday'][$mybb->get_input('repeats_5_weekday', MyBB::INPUT_INT)] = "selected=\"selected\"";
+        $select['repeats_5_month2'][$mybb->get_input('repeats_5_month2', MyBB::INPUT_INT)] = "selected=\"selected\"";
+        $select['repeats_5_years2'] = $mybb->get_input('repeats_5_years2', MyBB::INPUT_INT);
 
-		if($day == $end_day)
-		{
-			$selected = "selected=\"selected\"";
-			eval("\$end_days .= \"".$templates->get("calendar_day")."\";");
-		}
-		else
-		{
-			$selected = "";
-			eval("\$end_days .= \"".$templates->get("calendar_day")."\";");
-		}
-	}
+        $timezone = $mybb->get_input('timezone', MyBB::INPUT_INT);
+    } else {
+        if (!empty($mybb->input['day'])) {
+            $day = $mybb->get_input('day', MyBB::INPUT_INT);
+        } else {
+            $day = my_date("j");
+        }
+        $select['single_day'][$day] = $select['start_day'][$day] = $select['end_day'][$day] = "selected=\"selected\"";
 
-	$timezones = build_timezone_select("timezone", $timezone);
+        if (!empty($mybb->input['month'])) {
+            $month = $mybb->get_input('month', MyBB::INPUT_INT);
+        } else {
+            $month = my_date("n");
+        }
+        $select['single_month'][$month] = $select['start_month'][$month] = $select['end_month'][$month] = "selected=\"selected\"";
 
-	if($mybb->get_input('ignoretimezone', MyBB::INPUT_INT) == 1)
-	{
-		$ignore_timezone = "checked=\"checked\"";
-	}
-	else
-	{
-		$ignore_timezone = '';
-	}
+        if (!empty($mybb->input['year'])) {
+            $single_year = $start_year = $end_year = $mybb->get_input('year', MyBB::INPUT_INT);
+        } else {
+            $single_year = $start_year = $end_year = my_date("Y");
+        }
 
-	if($mybb->get_input('private', MyBB::INPUT_INT) == 1)
-	{
-		$privatecheck = " checked=\"checked\"";
-	}
-	else
-	{
-		$privatecheck = '';
-	}
+        $select['start_time'] = $select['end_time'] = '';
+        $select['type_single'] = "checked=\"checked\"";
+        $select['type_ranged'] = '';
+        $select['type'] = "single";
+        $select['repeats_1_days'] = 1;
+        $select['repeats_3_weeks'] = 1;
+        $select['repeats_4_type'][1] = "checked=\"checked\"";
+        $select['repeats_4_day'] = 1;
+        $select['repeats_4_months'] = 1;
+        $select['repeats_4_occurance'][1] = "selected=\"selected\"";
+        $select['repeats_4_weekday'][0] = "selected=\"selected\"";
+        $select['repeats_4_months2'] = 1;
+        $select['repeats_5_type'][1] = "checked=\"checked\"";
+        $select['repeats_5_day'] = 1;
+        $select['repeats_5_month'][1] = "selected=\"selected\"";
+        $select['repeats_5_years'] = 1;
+        $select['repeats_5_occurance'][1] = "selected=\"selected\"";
+        $select['repeats_5_weekday'][0] = "selected=\"selected\"";
+        $select['repeats_5_month2'][1] = "selected=\"selected\"";
+        $select['repeats_5_years2'] = 1;
+        $timezone = $mybb->user['timezone'];
+    }
 
-	$select_calendar = $calendar_select = '';
-	$calendarcount = 0;
+    $years = [];
 
-	// Build calendar select
-	$calendar_permissions = get_calendar_permissions();
-	$query = $db->simple_select("calendars", "*", "", array("order_by" => "name", "order_dir" => "asc"));
-	while($calendar_option = $db->fetch_array($query))
-	{
-		if($calendar_permissions[$calendar['cid']]['canviewcalendar'] == 1)
-		{
-			$calendar_option['name'] = htmlspecialchars_uni($calendar_option['name']);
-			if($calendar_option['cid'] == $mybb->input['calendar'])
-			{
-				$selected = " selected=\"selected\"";
-			}
-			else
-			{
-				$selected = "";
-			}
+    // Construct option list for years
+    for ($year = my_date('Y'); $year < (my_date('Y') + 5); ++$year) {
+        if ($year == $single_year) {
+            $select['single_year'] = "selected=\"selected\"";
+        } else {
+            $select['single_year'] = '';
+        }
 
-			++$calendarcount;
-			eval("\$select_calendar .= \"".$templates->get("calendar_select")."\";");
-		}
-	}
+        if ($year == $start_year) {
+            $select['start_year'] = "selected=\"selected\"";
+        } else {
+            $select['start_year'] = '';
+        }
 
-	if($calendarcount > 1)
-	{
-		eval("\$calendar_select .= \"".$templates->get("calendar_addevent_calendarselect")."\";");
-	}
-	else
-	{
-		eval("\$calendar_select .= \"".$templates->get("calendar_addevent_calendarselect_hidden")."\";");
-	}
+        if ($year == $end_year) {
+            $select['end_year'] = "selected=\"selected\"";
+        } else {
+            $select['end_year'] = '';
+        }
 
-	if(!isset($event_errors))
-	{
-		$event_errors = '';
-	}
+        $years[] = $year;
+    }
 
-	$plugins->run_hooks("calendar_addevent_end");
+    $timezones = build_timezone_select("timezone", $timezone);
 
-	eval("\$addevent = \"".$templates->get("calendar_addevent")."\";");
-	output_page($addevent);
+    if ($mybb->get_input('ignoretimezone', MyBB::INPUT_INT) == 1) {
+        $select['ignore_timezone'] = "checked=\"checked\"";
+    } else {
+        $select['ignore_timezone'] = '';
+    }
+
+    if ($mybb->get_input('private', MyBB::INPUT_INT) == 1) {
+        $select['privatecheck'] = " checked=\"checked\"";
+    } else {
+        $select['privatecheck'] = '';
+    }
+
+    $calendar_select = [];
+    $calendarcount = 0;
+
+    // Build calendar select
+    $calendar_permissions = get_calendar_permissions();
+    $query = $db->simple_select("calendars", "*", "", array("order_by" => "name", "order_dir" => "asc"));
+    while ($calendar_option = $db->fetch_array($query)) {
+        if ($calendar_permissions[$calendar['cid']]['canviewcalendar'] == 1) {
+            if ($calendar_option['cid'] == $mybb->input['calendar']) {
+                $calendar_option['selected'] = " selected=\"selected\"";
+            } else {
+                $calendar_option['selected'] = '';
+            }
+
+            ++$calendarcount;
+            $calendar_select[] = $calendar_option;
+        }
+    }
+
+    if (!isset($event_errors)) {
+        $event_errors = '';
+    }
+
+    $plugins->run_hooks("calendar_addevent_end");
+
+    output_page(\MyBB\template('calendar/addevent.twig', [
+        'calendar' => $calendar,
+        'codebuttons' => $codebuttons,
+        'smilieinserter' => $smilieinserter,
+        'select' => $select,
+        'event_errors' => $event_errors,
+        'calendarcount' => $calendarcount,
+        'calendar_select' => $calendar_select,
+        'years' => $years,
+        'timezones' => $timezones,
+    ]));
+
 }
 
 // Delete an event
