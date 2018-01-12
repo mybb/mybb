@@ -1036,31 +1036,28 @@ if($mybb->input['action'] == "move")
 		error_no_permission();
 	}
 
-	$event['name'] = htmlspecialchars_uni($event['name']);
-
 	add_breadcrumb(htmlspecialchars_uni($calendar['name']), get_calendar_link($calendar['cid']));
 	add_breadcrumb($event['name'], get_event_link($event['eid']));
 	add_breadcrumb($lang->nav_move_event);
 
-	$plugins->run_hooks("calendar_move_start");
+    $plugins->run_hooks("calendar_move_start");
 
-	$calendar_select = $selected = '';
+    $calendar_select = [];
 
-	// Build calendar select
-	$query = $db->simple_select("calendars", "*", "", array("order_by" => "name", "order_dir" => "asc"));
-	while($calendar_option = $db->fetch_array($query))
-	{
-		if($calendar_permissions[$calendar['cid']]['canviewcalendar'] == 1)
-		{
-			$calendar_option['name'] = htmlspecialchars_uni($calendar_option['name']);
-			eval("\$calendar_select .= \"".$templates->get("calendar_select")."\";");
-		}
-	}
+    // Build calendar select
+    $query = $db->simple_select("calendars", "*", "", array("order_by" => "name", "order_dir" => "asc"));
+    while ($calendar_option = $db->fetch_array($query)) {
+        if ($calendar_permissions[$calendar['cid']]['canviewcalendar'] == 1) {
+            $calendar_select[] = $calendar_option;
+        }
+    }
 
-	$plugins->run_hooks("calendar_move_end");
+    $plugins->run_hooks("calendar_move_end");
 
-	eval("\$moveevent = \"".$templates->get("calendar_move")."\";");
-	output_page($moveevent);
+    output_page(\MyBB\template('calendar/move.twig', [
+        'event' => $event,
+        'calendar_select' => $calendar_select,
+    ]));
 }
 
 // Actually move the event
