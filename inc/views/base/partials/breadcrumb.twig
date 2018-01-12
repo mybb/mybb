@@ -1,0 +1,20 @@
+<div class="navigation">
+    {% if navbits is iterable %}
+        {% for navbit in navbits %}
+            {% if not loop.last %}
+                <a href="{{ navbit.url }}">{{ navbit.name }}</a>
+                {% if navbit.multipage is not empty %}
+                    <img src="{{ theme.imgdir }}/arrow_down.png" alt="v" title="" class="pagination_breadcrumb_link" id="breadcrumb_multipage" />{{ multipage|raw }}
+                {% endif %}
+                {% if loop.index + 1 in navbits|keys %}
+                    &rsaquo;
+                {% endif %}
+            {% else %}
+                {% if not loop.first %}
+                    <br /><img src="{{ theme.imgdir }}/nav_bit.png" alt="" />
+                {% endif %}
+                <span class="active">{{ navbit.name }}</span>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+</div>
