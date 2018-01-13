@@ -1753,11 +1753,11 @@ if($mybb->input['action'] == "weekview")
 
 	$weekdays = fetch_weekday_structure($calendar['startofweek']);
 
-	$yearsel = '';
-	for($year_sel = my_date("Y"); $year_sel < (my_date("Y") + 5); ++$year_sel)
-	{
-		eval("\$yearsel .= \"".$templates->get("calendar_year_sel")."\";");
-	}
+    $years = [];
+
+    for ($year = my_date("Y"); $year < (my_date("Y") + 5); ++$year) {
+        $years[] = $year;
+    }
 
 	// No incoming week, show THIS week
 	if(empty($mybb->input['week']))
@@ -1782,230 +1782,187 @@ if($mybb->input['action'] == "weekview")
 	// This is where we've come from and where we're headed
 	$week_from = explode("-", gmdate("j-n-Y", $mybb->input['week']));
 	$week_from_one = $week_from[1];
-	$friendly_week_from = gmdate($mybb->settings['dateformat'], $mybb->input['week']);
+	$calendar['friendly_week_from'] = gmdate($mybb->settings['dateformat'], $mybb->input['week']);
 	$week_to_stamp = adodb_gmmktime(0, 0, 0, $week_from[1], $week_from[0]+6, $week_from[2]);
 	$week_to = explode("-", gmdate("j-n-Y-t", $week_to_stamp));
-	$friendly_week_to = gmdate($mybb->settings['dateformat'], $week_to_stamp);
+	$calendar['friendly_week_to'] = gmdate($mybb->settings['dateformat'], $week_to_stamp);
 
 	add_breadcrumb(htmlspecialchars_uni($calendar['name']), get_calendar_link($calendar['cid']));
 	add_breadcrumb("{$monthnames[$week_from[1]]} {$week_from[2]}", get_calendar_link($calendar['cid'], $week_from[2], $week_from[1]));
 	add_breadcrumb($lang->weekly_overview);
 
-	$plugins->run_hooks("calendar_weekview_start");
+    $plugins->run_hooks("calendar_weekview_start");
 
-	// Establish if we have a month ending in this week
-	if($week_from[1] != $week_to[1])
-	{
-		$different_months = true;
-		$week_months = array(array($week_from[1], $week_from[2]), array($week_to[1], $week_to[2]));
-		$bday_months = array($week_from[1], $week_to[1]);
-	}
-	else
-	{
-		$week_months = array(array($week_from[1], $week_from[2]));
-		$bday_months = array($week_from[1]);
-	}
+    // Establish if we have a month ending in this week
+    if ($week_from[1] != $week_to[1]) {
+        $different_months = true;
+        $week_months = array(array($week_from[1], $week_from[2]), array($week_to[1], $week_to[2]));
+        $bday_months = array($week_from[1], $week_to[1]);
+    } else {
+        $week_months = array(array($week_from[1], $week_from[2]));
+        $bday_months = array($week_from[1]);
+    }
 
-	// Load Birthdays for this month
-	if($calendar['showbirthdays'] == 1)
-	{
-		$birthdays = get_birthdays($bday_months);
-	}
+    // Load Birthdays for this month
+    if ($calendar['showbirthdays'] == 1) {
+        $birthdays = get_birthdays($bday_months);
+    }
 
-	// We load events for the entire month date range - for our mini calendars too
-	$events_from = adodb_gmmktime(0, 0, 0, $week_from[1], 1, $week_from[2]);
-	$events_to = adodb_gmmktime(0, 0, 0, $week_to[1], $week_to[3], $week_to[2]);
+    // We load events for the entire month date range - for our mini calendars too
+    $events_from = adodb_gmmktime(0, 0, 0, $week_from[1], 1, $week_from[2]);
+    $events_to = adodb_gmmktime(0, 0, 0, $week_to[1], $week_to[3], $week_to[2]);
 
-	$events_cache = get_events($calendar, $events_from, $events_to, $calendar_permissions['canmoderateevents']);
+    $events_cache = get_events($calendar, $events_from, $events_to, $calendar_permissions['canmoderateevents']);
 
-	$today = my_date("dnY");
+    $today = my_date("dnY");
 
-	$prev_week = $mybb->input['week'] - 604800;
+    $prev_week = $mybb->input['week'] - 604800;
 
-	$prev_week_link = '';
-	if(my_date("Y", $prev_week) >= 1901)
-	{
-		$prev_link = get_calendar_week_link($calendar['cid'], $prev_week);
+    if (my_date("Y", $prev_week) >= 1901) {
+        $calendar['prev_week_link'] = get_calendar_week_link($calendar['cid'], $prev_week);
+    }
 
-		eval("\$prev_week_link = \"".$templates->get("calendar_weekview_prevlink")."\";");
-	}
+    $next_week = $mybb->input['week'] + 604800;
 
-	$next_week = $mybb->input['week'] + 604800;
+    if (my_date("Y", $next_week)+1 <= my_date("Y")+5) {
+        $calendar['next_week_link'] = get_calendar_week_link($calendar['cid'], $next_week);
+    }
 
-	$next_week_link = '';
-	if(my_date("Y", $next_week)+1 <= my_date("Y")+5)
-	{
-		$next_link = get_calendar_week_link($calendar['cid'], $next_week);
+    if (!empty($calendar['prev_week_link']) && !empty($calendar['next_week_link'])) {
+        $calendar['sep'] = true;
+    }
 
-		eval("\$next_week_link = \"".$templates->get("calendar_weekview_nextlink")."\";");
-	}
+    $weekday_date = $mybb->input['week'];
 
-	$sep = '';
-	if(!empty($prev_week_link) && !empty($next_week_link))
-	{
-		$sep = " | ";
-	}
+    $days = [];
+    while($weekday_date <= $week_to_stamp) {
+        $weekday = gmdate("w", $weekday_date);
+        $day['weekday_month'] = $weekday_month = gmdate("n", $weekday_date);
+        $weekday_year = gmdate("Y", $weekday_date);
+        $day['weekday_name'] = fetch_weekday_name($weekday);
+        $day['weekday_day'] = $weekday_day = gmdate("j", $weekday_date);
 
-	$weekday_date = $mybb->input['week'];
+        // Special shading for today
+        if (gmdate("dnY", $weekday_date) == $today) {
+            $day['day_shaded'] = ' trow_shaded';
+        }
 
-	while($weekday_date <= $week_to_stamp)
-	{
-		$weekday = gmdate("w", $weekday_date);
-		$weekday_name = fetch_weekday_name($weekday);
-		$weekday_month = gmdate("n", $weekday_date);
-		$weekday_year = gmdate("Y", $weekday_date);
-		$weekday_day = gmdate("j", $weekday_date);
+        $day['events'] = [];
 
-		// Special shading for today
-		$day_shaded = '';
-		if(gmdate("dnY", $weekday_date) == $today)
-		{
-			$day_shaded = ' trow_shaded';
-		}
+        // Any events on this specific day?
+        if (is_array($events_cache) && array_key_exists("{$weekday_day}-{$weekday_month}-{$weekday_year}", $events_cache)) {
+            foreach ($events_cache["$weekday_day-$weekday_month-$weekday_year"] as $event) {
+                $event['eventlink'] = get_event_link($event['eid']);
+                $event['fullname'] = $event['name'];
+                if (my_strlen($event['name']) > 50) {
+                    $event['name'] = my_substr($event['name'], 0, 50) . "...";
+                }
 
-		$day_events = '';
+                // Events over more than one day
+                if ($event['endtime'] > 0 && $event['endtime'] != $event['starttime']) {
+                    $start_day = adodb_gmmktime(0, 0, 0, gmdate("n", $event['starttime_user']), gmdate("j", $event['starttime_user']), gmdate("Y", $event['starttime_user']));
+                    $end_day = adodb_gmmktime(0, 0, 0, gmdate("n", $event['endtime_user']), gmdate("j", $event['endtime_user']), gmdate("Y", $event['endtime_user']));
+                    $start_time = gmdate("Hi", $event['starttime_user']);
+                    $end_time = gmdate("Hi", $event['endtime_user']);
 
-		// Any events on this specific day?
-		if(is_array($events_cache) && array_key_exists("{$weekday_day}-{$weekday_month}-{$weekday_year}", $events_cache))
-		{
-			foreach($events_cache["$weekday_day-$weekday_month-$weekday_year"] as $event)
-			{
-				$event['eventlink'] = get_event_link($event['eid']);
-				$event['name'] = htmlspecialchars_uni($event['name']);
-				$event['fullname'] = $event['name'];
-				if(my_strlen($event['name']) > 50)
-				{
-					$event['name'] = my_substr($event['name'], 0, 50) . "...";
-				}
-				// Events over more than one day
-				$time_period = '';
-				if($event['endtime'] > 0 && $event['endtime'] != $event['starttime'])
-				{
-					$start_day = adodb_gmmktime(0, 0, 0, gmdate("n", $event['starttime_user']), gmdate("j", $event['starttime_user']), gmdate("Y", $event['starttime_user']));
-					$end_day = adodb_gmmktime(0, 0, 0, gmdate("n", $event['endtime_user']), gmdate("j", $event['endtime_user']), gmdate("Y", $event['endtime_user']));
-					$start_time = gmdate("Hi", $event['starttime_user']);
-					$end_time = gmdate("Hi", $event['endtime_user']);
-					// Event only runs over one day
-					if($start_day == $end_day || $event['repeats'] > 0)
-					{
-						// Event runs all day
-						if($start_time == 0000 && $end_time == 2359)
-						{
-							$time_period = $lang->all_day;
-						}
-						else
-						{
-							$time_period = gmdate($mybb->settings['timeformat'], $event['starttime_user'])." - ".gmdate($mybb->settings['timeformat'], $event['endtime_user']);
-						}
-					}
-					// Event starts on this day
-					else if($start_day == $weekday_date)
-					{
-						// Event runs all day
-						if($start_time == 0000)
-						{
-							$time_period = $lang->all_day;
-						}
-						else
-						{
-							$time_period = $lang->starts.gmdate($mybb->settings['timeformat'], $event['starttime_user']);
-						}
-					}
-					// Event finishes on this day
-					else if($end_day == $weekday_date)
-					{
-						// Event runs all day
-						if($end_time == 2359)
-						{
-							$time_period = $lang->all_day;
-						}
-						else
-						{
-							$time_period = $lang->finishes.gmdate($mybb->settings['timeformat'], $event['endtime_user']);
-						}
-					}
-					// Event is in the middle
-					else
-					{
-						$time_period = $lang->all_day;
-					}
-				}
-				$event_time = '';
-				if($time_period)
-				{
-					eval("\$event_time = \"".$templates->get("calendar_weekview_day_event_time")."\";");
-				}
-				if($event['private'] == 1)
-				{
-					$event_class = " private_event";
-				}
-				else
-				{
-					$event_class = " public_event";
-				}
-				if($event['visible'] == 0)
-				{
-					$event_class .= " trow_shaded";
-				}
-				eval("\$day_events .= \"".$templates->get("calendar_weekview_day_event")."\";");
-			}
-		}
+                    // Event only runs over one day
+                    if ($start_day == $end_day || $event['repeats'] > 0){
+                        // Event runs all day
+                        if ($start_time == 0000 && $end_time == 2359) {
+                            $event['time_period'] = $lang->all_day;
+                        } else {
+                            $event['time_period'] = gmdate($mybb->settings['timeformat'], $event['starttime_user'])." - ".gmdate($mybb->settings['timeformat'], $event['endtime_user']);
+                        }
+                    }
+                    // Event starts on this day
+                    else if ($start_day == $weekday_date) {
+                        // Event runs all day
+                        if ($start_time == 0000) {
+                            $event['time_period'] = $lang->all_day;
+                        } else {
+                            $event['time_period'] = $lang->starts.gmdate($mybb->settings['timeformat'], $event['starttime_user']);
+                        }
+                    }
+                    // Event finishes on this day
+                    else if ($end_day == $weekday_date) {
+                        // Event runs all day
+                        if ($end_time == 2359) {
+                            $event['time_period'] = $lang->all_day;
+                        } else {
+                            $event['time_period'] = $lang->finishes.gmdate($mybb->settings['timeformat'], $event['endtime_user']);
+                        }
+                    } else {
+                        // Event is in the middle
+                        $event['time_period'] = $lang->all_day;
+                    }
+                }
 
-		// Birthdays on this day?
-		$day_birthdays = $calendar_link = $birthday_lang = '';
-		if($calendar['showbirthdays'] && is_array($birthdays) && array_key_exists("{$weekday_day}-{$weekday_month}", $birthdays))
-		{
-			$bday_count = count($birthdays["$weekday_day-$weekday_month"]);
-			if($bday_count > 1)
-			{
-				$birthday_lang = $lang->birthdays;
-			}
-			else
-			{
-				$birthday_lang = $lang->birthday;
-			}
+                if ($event['private'] == 1) {
+                    $event['event_class'] = " private_event";
+                } else {
+                    $event['event_class'] = " public_event";
+                }
 
-			$calendar_link = get_calendar_link($calendar['cid'], $weekday_year, $weekday_month, $weekday_day);
-			eval("\$day_birthdays = \"".$templates->get("calendar_weekview_day_birthdays")."\";");
-		}
+                if ($event['visible'] == 0) {
+                    $event['event_class'] .= " trow_shaded";
+                }
 
-		$day_link = get_calendar_link($calendar['cid'], $weekday_year, $weekday_month, $weekday_day);
-		if(!isset($day_bits[$weekday_month]))
-		{
-			$day_bits[$weekday_month] = '';
-		}
-		eval("\$day_bits[$weekday_month] .= \"".$templates->get("calendar_weekview_day")."\";");
-		$day_events = $day_birthdays = "";
-		$weekday_date = adodb_gmmktime(0, 0, 0, $weekday_month, $weekday_day+1, $weekday_year);
-	}
+                $day['events'][] = $event;
+            }
+        }
 
-	// Now we build our month headers
-	$mini_calendars = $weekday_bits = '';
-	foreach($week_months as $month)
-	{
-		$weekday_month = $monthnames[$month[0]];
-		$weekday_year = $month[1];
+        // Birthdays on this day?
+        $day['bday_count'] = 0;
+        $day['birthday_lang'] = $day['calendar_link'] = '';
+        if ($calendar['showbirthdays'] && is_array($birthdays) && array_key_exists("{$weekday_day}-{$weekday_month}", $birthdays)) {
+            $day['bday_count'] = count($birthdays["$weekday_day-$weekday_month"]);
+            if ($day['bday_count'] > 1) {
+                $day['birthday_lang'] = $lang->birthdays;
+            } else {
+                $day['birthday_lang'] = $lang->birthday;
+            }
 
-		// Fetch mini calendar for each month in this week
-		$mini_calendars .= build_mini_calendar($calendar, $month[0], $weekday_year, $events_cache)."<br />";
+            $day['calendar_link'] = get_calendar_link($calendar['cid'], $weekday_year, $weekday_month, $weekday_day);
+        }
 
-		// Fetch out the days for this month
-		$days = $day_bits[$month[0]];
+        $day_link = get_calendar_link($calendar['cid'], $weekday_year, $weekday_month, $weekday_day);
 
-		eval("\$weekday_bits .= \"".$templates->get("calendar_weekview_month")."\";");
-	}
+        $days[] = $day;
+        $weekday_date = adodb_gmmktime(0, 0, 0, $weekday_month, $weekday_day+1, $weekday_year);
+    }
 
-	$addevent = '';
-	if($mybb->usergroup['canaddevents'] == 1)
-	{
-		eval("\$addevent = \"".$templates->get("calendar_addeventlink")."\";");
-	}
+    // Now we build our month headers
+    $weekdays = [];
+    foreach ($week_months as $month) {
+        $month['monthnum'] = $month[0];
+        $month['month'] = $monthnames[$month[0]];
+        $month['year'] = $month[1];
 
-	// Now output the page
-	$plugins->run_hooks("calendar_weekview_end");
+        // Fetch mini calendar for each month in this week
+        $mini_calendars .= build_mini_calendar($calendar, $month[0], $weekday_year, $events_cache)."<br />";
 
-	eval("\$weekview = \"".$templates->get("calendar_weekview")."\";");
-	output_page($weekview);
+        // Fetch out the days for this month
+        $month['days'] = $days;
+
+        $weekdays[] = $month;
+    }
+
+    $calendar['week_from_month'] = $week_from[1];
+    $calendar['week_from_year'] = $week_from[2];
+    $calendar['week_from_one'] = $monthnames[$week_from_one];
+
+    // Now output the page
+    $plugins->run_hooks("calendar_weekview_end");
+
+    output_page(\MyBB\template('calendar/weekview.twig', [
+        'calendar_permissions' => $calendar_permissions,
+        'years' => $years,
+        'calendar_jump' => $calendar_jump,
+        'mini_calendars' => $mini_calendars,
+        'calendar' => $calendar,
+        'gobutton' => $gobutton,
+        'weekdays' => $weekdays,
+    ]));
 }
 
 // Showing a calendar
