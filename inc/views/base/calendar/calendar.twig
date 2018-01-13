@@ -1,0 +1,105 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ mybb.settings.bbname }} - {{ lang.calendar }}</title>
+{% endblock head %}
+
+{% block body %}
+    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+        <thead>
+            <tr>
+                <td class="thead" colspan="8">
+                    <div class="float_right">
+                        {% if calendar.prev_link %}
+                            <a href="{{ calendar.prev_link|raw }}">&laquo; {{ calendar.prev_month_name }} {{ calendar.prev_month_year }}</a>
+                        {% endif %}
+                        {% if calendar.sep == true %}
+                         | 
+                        {% endif %}
+                        {% if calendar.next_link %}
+                            <a href="{{ calendar.next_link|raw }}">{{ calendar.next_month_name }} {{ calendar.next_month_year }} &raquo;</a>
+                        {% endif %}
+                    </div>
+                    <div><strong>{{ calendar.currentmonth }} {{ calendar.year }}</strong></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="tcat">&nbsp;</td>
+                {% for weekday in weekday_headers %}
+                    <td class="tcat" align="center" width="14%"><strong>{{ weekday }}</strong></td>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for week in weeks %}
+                <tr>
+                    <td class="tcat" align="center" width="1"><a href="{{ week.week_link|raw }}">&raquo;</a></td>
+                    {% for day in week.days %}
+                        <td class="{{ day.day_class }}" style="vertical-align: top; height: 100px;">
+                            <div class="float_right smalltext"><a href="{{ day.day_link|raw }}">{{ day.day }}</a></div>
+                            <div class="clear">
+                                {% if day.bday_count > 0 %}
+                                     <div style="margin-bottom: 4px;"><a href="{{ day.calendar_link|raw }}" class="smalltext">{{ day.bday_count }} {{ day.birthday_lang }}</a></div>
+                                {% endif %}
+                                {% if day.eventlimit == true %}
+                                    <div style="margin-bottom: 4px;"><a href="{{ calendar.link }}" class="smalltext">{{ day_bit.total_events }} {{ day_bit.event_lang }}</a></div>
+                                {% else %}
+                                    {% for event in day.events %}
+                                        <div style="margin-bottom: 4px;" class="smalltext {{ event.event_class }}"><a href="{{ event.eventlink|raw }}" title="{{ event.fullname }}">{{ event.name }}</a></div>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br />
+    <form action="calendar.php" method="post">
+        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+            <tr>
+                <td class="trow1">
+                    <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                        <tr>
+                            <td valign="top">
+                                {% if calendar_permissions.canaddevents %}
+                                    <a href="calendar.php?action=addevent&amp;calendar={{ calendar.cid }}">{{ lang.add_public_event }}</a> | <a href="calendar.php?action=addevent&amp;calendar={{ calendar.cid }}&amp;private=1">{{ lang.add_private_event }}</a>
+                                {% endif %}
+                            </td>
+                            <td align="right">
+                            <span class="smalltext"><strong>{{ lang.jump_month }}</strong></span>
+                            <select name="month">
+                                <option value="{{ calendar.month }}">{{ calendar.currentmonth }}</option>
+                                <option value="{{ calendar.month }}">----------</option>
+                                <option value="1">{{ lang.alt_month_1 }}</option>
+                                <option value="2">{{ lang.alt_month_2 }}</option>
+                                <option value="3">{{ lang.alt_month_3 }}</option>
+                                <option value="4">{{ lang.alt_month_4 }}</option>
+                                <option value="5">{{ lang.alt_month_5 }}</option>
+                                <option value="6">{{ lang.alt_month_6 }}</option>
+                                <option value="7">{{ lang.alt_month_7 }}</option>
+                                <option value="8">{{ lang.alt_month_8 }}</option>
+                                <option value="9">{{ lang.alt_month_9 }}</option>
+                                <option value="10">{{ lang.alt_month_10 }}</option>
+                                <option value="11">{{ lang.alt_month_11 }}</option>
+                                <option value="12">{{ lang.alt_month_12 }}</option>
+                            </select>
+                            <select name="year">
+                                <option value="{{ calendar.year }}">{{ calendar.year }}</option>
+                                <option value="{{ calendar.year }}">----------</option>
+                                {% for year in years %}
+                                    <option value="{{ year }}">{{ year }}</option>
+                                {% endfor %}
+                            </select>
+                            {{ gobutton|raw }}
+                            <br />
+                            {{ calendar_jump|raw }}
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </form>
+{% endblock body %}
