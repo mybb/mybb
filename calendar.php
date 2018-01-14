@@ -1416,7 +1416,6 @@ if($mybb->input['action'] == "event")
         'calendar_jump' => $calendar_jump,
         'event' => $event,
         'calendar_permissions' => $calendar_permissions,
-        'gobutton' => $gobutton,
         'years' => $years,
     ]));
 }
@@ -1717,7 +1716,6 @@ if($mybb->input['action'] == "dayview")
         'events' => $events,
         'calendar_permissions' => $calendar_permissions,
         'calendar' => $calendar,
-        'gobutton' => $gobutton,
         'years' => $years,
     ]));
 }
@@ -1960,7 +1958,6 @@ if($mybb->input['action'] == "weekview")
         'calendar_jump' => $calendar_jump,
         'mini_calendars' => $mini_calendars,
         'calendar' => $calendar,
-        'gobutton' => $gobutton,
         'weekdays' => $weekdays,
     ]));
 }
@@ -2242,7 +2239,6 @@ if(!$mybb->input['action'])
         'years' => $years,
         'calendar_jump' => $calendar_jump,
         'calendar' => $calendar,
-        'gobutton' => $gobutton,
         'weekday_headers' => $weekday_headers,
         'weeks' => $weeks,
     ]));
