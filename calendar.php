@@ -242,316 +242,302 @@ if($mybb->input['action'] == "addevent")
 	add_breadcrumb(htmlspecialchars_uni($calendar['name']), get_calendar_link($calendar['cid']));
 	add_breadcrumb($lang->nav_addevent);
 
-	$plugins->run_hooks("calendar_addevent_start");
+    $plugins->run_hooks("calendar_addevent_start");
 
-	// If MyCode is on for this forum and the MyCode editor is enabled inthe Admin CP, draw the code buttons and smilie inserter.
-	if($mybb->settings['bbcodeinserter'] != 0 && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0) && $calendar['allowmycode'] == 1)
-	{
-		$codebuttons = build_mycode_inserter("message", $calendar['allowsmilies']);
-		if($calendar['allowsmilies'] == 1)
-		{
-			$smilieinserter = build_clickable_smilies();
-		}
-	}
+    // If MyCode is on for this forum and the MyCode editor is enabled inthe Admin CP, draw the code buttons and smilie inserter.
+    if ($mybb->settings['bbcodeinserter'] != 0 && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0) && $calendar['allowmycode'] == 1) {
+        $codebuttons = build_mycode_inserter("message", $calendar['allowsmilies']);
+        if ($calendar['allowsmilies'] == 1) {
+            $smilieinserter = build_clickable_smilies();
+        }
+    }
 
-	// Previous selections
-	$name = $description = '';
-	if(isset($mybb->input['name']))
-	{
-		$name = htmlspecialchars_uni($mybb->get_input('name'));
-	}
+    // Previous selections
+    if (isset($mybb->input['name'])) {
+        $select['name'] = $mybb->get_input('name');
+    }
 
-	if(isset($mybb->input['description']))
-	{
-		$description = htmlspecialchars_uni($mybb->get_input('description'));
-	}
+    if (isset($mybb->input['description'])) {
+        $select['description'] = $mybb->get_input('description');
+    }
 
-	$single_month = $start_month = $end_month = $repeats_sel = $repeats_3_days = $repeats_4_occurance = $repeats_4_weekday = $repeats_5_month = $repeats_5_occurance = $repeats_5_weekday = $repeats_5_month2 = array();
-	foreach(range(1, 12) as $number)
-	{
-		$single_month[$number] = $start_month[$number] = $end_month[$number] = $repeats_5_month[$number] = $repeats_5_month2[$number] = '';
-	}
-	foreach(range(1, 5) as $number)
-	{
-		$repeats_sel[$number] = '';
-	}
-	foreach(range(0, 6) as $number)
-	{
-		$repeats_3_days[$number] = $repeats_4_weekday[$number] = $repeats_5_weekday[$number] = '';
-	}
-	foreach(range(1, 4) as $number)
-	{
-		$repeats_4_occurance[$number] = $repeats_5_occurance[$number] = '';
-	}
-	$repeats_4_occurance['last'] = $repeats_5_occurance['last'] = '';
-	$repeats_4_type = array(1 => '', 2 => '');
-	$repeats_5_type = array(1 => '', 2 => '');
+    $select['single_month'] = $select['start_month'] = $select['end_month'] = $select['repeats_sel'] = $select['repeats_3_days'] = $select['repeats_4_occurance'] = $select['repeats_4_weekday'] = $select['repeats_5_month'] = $select['repeats_5_occurance'] = $select['repeats_5_weekday'] = $select['repeats_5_month2'] = array();
+    foreach (range(1, 12) as $number) {
+        $select['single_month'][$number] = $select['start_month'][$number] = $select['end_month'][$number] = $select['repeats_5_month'][$number] = $select['repeats_5_month2'][$number] = '';
+    }
+    foreach (range(1, 5) as $number) {
+        $select['repeats_sel'][$number] = '';
+    }
+    foreach (range(0, 6) as $number) {
+        $select['repeats_3_days'][$number] = $select['repeats_4_weekday'][$number] = $select['repeats_5_weekday'][$number] = '';
+    }
+    foreach (range(1, 4) as $number) {
+        $select['repeats_4_occurance'][$number] = $select['repeats_5_occurance'][$number] = '';
+    }
 
-	if($mybb->request_method == "post")
-	{
-		$single_day = $mybb->get_input('single_day', MyBB::INPUT_INT);
-		$single_month[$mybb->get_input('single_month', MyBB::INPUT_INT)] = " selected=\"selected\"";
-		$single_year = $mybb->get_input('single_year', MyBB::INPUT_INT);
-		$start_day = $mybb->get_input('start_day', MyBB::INPUT_INT);
-		$start_month[$mybb->get_input('start_month', MyBB::INPUT_INT)] = " selected=\"selected\"";
-		$start_year = $mybb->get_input('start_year', MyBB::INPUT_INT);
-		$start_time = htmlspecialchars_uni($mybb->get_input('start_time'));
-		$end_day = $mybb->get_input('end_day', MyBB::INPUT_INT);
-		$end_month[$mybb->get_input('end_month', MyBB::INPUT_INT)] = " selected=\"selected\"";
-		$end_year = $mybb->get_input('end_year', MyBB::INPUT_INT);
-		$end_time = htmlspecialchars_uni($mybb->get_input('end_time'));
-		if($mybb->get_input('type') == "single")
-		{
-			$type_single = "checked=\"checked\"";
-			$type_ranged = '';
-			$type = "single";
-		}
-		else
-		{
-			$type_ranged = "checked=\"checked\"";
-			$type_single = '';
-			$type = "ranged";
-		}
-		if(!empty($mybb->input['repeats']))
-		{
-			$repeats_sel[$mybb->get_input('repeats', MyBB::INPUT_INT)] = " selected=\"selected\"";
-		}
-		$repeats_1_days = $mybb->get_input('repeats_1_days', MyBB::INPUT_INT);
-		$repeats_3_weeks = $mybb->get_input('repeats_3_weeks', MyBB::INPUT_INT);
-		foreach($mybb->get_input('repeats_3_days', MyBB::INPUT_ARRAY) as $day => $val)
-		{
-			if($val != 1)
-			{
-				continue;
-			}
-			$day = (int)$day;
-			$repeats_3_days[$day] = " checked=\"checked\"";
-		}
-		$repeats_4_type = array();
-		if($mybb->get_input('repeats_4_type', MyBB::INPUT_INT) == 1)
-		{
-			$repeats_4_type[1] = "checked=\"checked\"";
-			$repeats_4_type[2] = '';
-		}
-		else
-		{
-			$repeats_4_type[2] = "checked=\"checked\"";
-			$repeats_4_type[1] = '';
-		}
-		$repeats_4_day = $mybb->get_input('repeats_4_day', MyBB::INPUT_INT);
-		$repeats_4_months = $mybb->get_input('repeats_4_months', MyBB::INPUT_INT);
-		$repeats_4_occurance[$mybb->get_input('repeats_4_occurance')] = "selected=\"selected\"";
-		$repeats_4_weekday[$mybb->get_input('repeats_4_weekday', MyBB::INPUT_INT)] = "selected=\"selected\"";
-		$repeats_4_months2 = $mybb->get_input('repeats_4_months2', MyBB::INPUT_INT);
-		if($mybb->get_input('repeats_5_type', MyBB::INPUT_INT) == 1)
-		{
-			$repeats_5_type[1] = "checked=\"checked\"";
-		}
-		else
-		{
-			$repeats_5_type[2] = "checked=\"checked\"";
-		}
-		$repeats_5_day = $mybb->get_input('repeats_5_day', MyBB::INPUT_INT);
-		$repeats_5_month[$mybb->get_input('repeats_5_month', MyBB::INPUT_INT)] = "selected=\"selected\"";
-		$repeats_5_years = $mybb->get_input('repeats_5_years', MyBB::INPUT_INT);
-		$repeats_5_occurance[$mybb->get_input('repeats_5_occurance')] = "selected=\"selected\"";
-		$repeats_5_weekday[$mybb->get_input('repeats_5_weekday', MyBB::INPUT_INT)] = "selected=\"selected\"";
-		$repeats_5_month2[$mybb->get_input('repeats_5_month2', MyBB::INPUT_INT)] = "selected=\"selected\"";
-		$repeats_5_years2 = $mybb->get_input('repeats_5_years2', MyBB::INPUT_INT);
+    $select['repeats_4_occurance']['last'] = $select['repeats_5_occurance']['last'] = '';
+    $select['repeats_4_type'] = array(1 => '', 2 => '');
+    $select['repeats_5_type'] = array(1 => '', 2 => '');
 
-		$timezone = $mybb->get_input('timezone', MyBB::INPUT_INT);
-	}
-	else
-	{
-		if(!empty($mybb->input['day']))
-		{
-			$single_day = $start_day = $end_day = $mybb->get_input('day', MyBB::INPUT_INT);
-		}
-		else
-		{
-			$single_day = $start_day = $end_day = my_date("j");
-		}
-		if(!empty($mybb->input['month']))
-		{
-			$month = $mybb->get_input('month', MyBB::INPUT_INT);
-		}
-		else
-		{
-			$month = my_date("n");
-		}
-		$single_month[$month] = $start_month[$month] = $end_month[$month] = "selected=\"selected\"";
-		if(!empty($mybb->input['year']))
-		{
-			$single_year = $start_year = $end_year = $mybb->get_input('year', MyBB::INPUT_INT);
-		}
-		else
-		{
-			$single_year = $start_year = $end_year = my_date("Y");
-		}
-		$start_time = $end_time = "";
-		$type_single = "checked=\"checked\"";
-		$type_ranged = '';
-		$type = "single";
-		$repeats_1_days = 1;
-		$repeats_3_weeks = 1;
-		$repeats_4_type[1] = "checked=\"checked\"";
-		$repeats_4_day = 1;
-		$repeats_4_months = 1;
-		$repeats_4_occurance[1] = "selected=\"selected\"";
-		$repeats_4_weekday[0] = "selected=\"selected\"";
-		$repeats_4_months2 = 1;
-		$repeats_5_type[1] = "checked=\"checked\"";
-		$repeats_5_day = 1;
-		$repeats_5_month[1] = "selected=\"selected\"";
-		$repeats_5_years = 1;
-		$repeats_5_occurance[1] = "selected=\"selected\"";
-		$repeats_5_weekday[0] = "selected=\"selected\"";
-		$repeats_5_month2[1] = "selected=\"selected\"";
-		$repeats_5_years2 = 1;
-		$timezone = $mybb->user['timezone'];
-	}
+    if ($mybb->request_method == "post") {
+        $select['single_day'][$mybb->get_input('single_day', MyBB::INPUT_INT)] = true;
+        $select['single_month'][$mybb->get_input('single_month', MyBB::INPUT_INT)] = true;
+        $select['single_year'][$mybb->get_input('single_year', MyBB::INPUT_INT)] = true;
+        $select['start_day'][$mybb->get_input('start_day', MyBB::INPUT_INT)] = true;
+        $select['start_month'][$mybb->get_input('start_month', MyBB::INPUT_INT)] = true;
+        $select['start_year'][$mybb->get_input('start_year', MyBB::INPUT_INT)] = true;
+        $select['start_time'] = $mybb->get_input('start_time');
+        $select['end_day'][$mybb->get_input('end_day', MyBB::INPUT_INT)] = true;
+        $select['end_month'][$mybb->get_input('end_month', MyBB::INPUT_INT)] = true;
+        $select['end_year'][$mybb->get_input('end_year', MyBB::INPUT_INT)] = true;
+        $select['end_time'] = $mybb->get_input('end_time');
 
-	$single_years = $start_years = $end_years = '';
+        if ($mybb->get_input('type') == "single") {
+            $select['type_single'] = true;
+            $select['type_ranged'] = '';
+            $select['type'] = "single";
+        } else {
+            $select['type_ranged'] = true;
+            $select['type_single'] = '';
+            $select['type'] = "ranged";
+        }
 
-	// Construct option list for years
-	for($year = my_date('Y'); $year < (my_date('Y') + 5); ++$year)
-	{
-		if($year == $single_year)
-		{
-			$selected = "selected=\"selected\"";
-			eval("\$single_years .= \"".$templates->get("calendar_year")."\";");
-		}
-		else
-		{
-			$selected = "";
-			eval("\$single_years .= \"".$templates->get("calendar_year")."\";");
-		}
+        if (!empty($mybb->input['repeats'])) {
+            $select['repeats_sel'][$mybb->get_input('repeats', MyBB::INPUT_INT)] = true;
+        }
 
-		if($year == $start_year)
-		{
-			$selected = "selected=\"selected\"";
-			eval("\$start_years .= \"".$templates->get("calendar_year")."\";");
-		}
-		else
-		{
-			$selected = "";
-			eval("\$start_years .= \"".$templates->get("calendar_year")."\";");
-		}
+        $select['repeats_1_days'] = $mybb->get_input('repeats_1_days', MyBB::INPUT_INT);
+        $select['repeats_3_weeks'] = $mybb->get_input('repeats_3_weeks', MyBB::INPUT_INT);
+        foreach ($mybb->get_input('repeats_3_days', MyBB::INPUT_ARRAY) as $day => $val) {
+            if ($val != 1) {
+                continue;
+            }
+            $day = (int)$day;
+            $select['repeats_3_days'][$day] = true;
+        }
 
-		if($year == $end_year)
-		{
-			$selected = "selected=\"selected\"";
-			eval("\$end_years .= \"".$templates->get("calendar_year")."\";");
-		}
-		else
-		{
-			$selected = "";
-			eval("\$end_years .= \"".$templates->get("calendar_year")."\";");
-		}
-	}
+        $select['repeats_4_type'] = array();
+        if ($mybb->get_input('repeats_4_type', MyBB::INPUT_INT) == 1) {
+            $select['repeats_4_type'][1] = true;
+            $select['repeats_4_type'][2] = '';
+        } else {
+            $select['repeats_4_type'][2] = true;
+            $select['repeats_4_type'][1] = '';
+        }
 
-	$single_days = $start_days = $end_days = '';
+        $select['repeats_4_day'] = $mybb->get_input('repeats_4_day', MyBB::INPUT_INT);
+        $select['repeats_4_months'] = $mybb->get_input('repeats_4_months', MyBB::INPUT_INT);
+        $select['repeats_4_occurance'][$mybb->get_input('repeats_4_occurance')] = true;
+        $select['repeats_4_weekday'][$mybb->get_input('repeats_4_weekday', MyBB::INPUT_INT)] = true;
+        $select['repeats_4_months2'] = $mybb->get_input('repeats_4_months2', MyBB::INPUT_INT);
 
-	// Construct option list for days
-	for($day = 1; $day <= 31; ++$day)
-	{
-		if($day == $single_day)
-		{
-			$selected = "selected=\"selected\"";
-			eval("\$single_days .= \"".$templates->get("calendar_day")."\";");
-		}
-		else
-		{
-			$selected = "";
-			eval("\$single_days .= \"".$templates->get("calendar_day")."\";");
-		}
+        if ($mybb->get_input('repeats_5_type', MyBB::INPUT_INT) == 1) {
+            $select['repeats_5_type'][1] = true;
+        } else {
+            $select['repeats_5_type'][2] = true;
+        }
 
-		if($day == $start_day)
-		{
-			$selected = "selected=\"selected\"";
-			eval("\$start_days .= \"".$templates->get("calendar_day")."\";");
-		}
-		else
-		{
-			$selected = "";
-			eval("\$start_days .= \"".$templates->get("calendar_day")."\";");
-		}
+        $select['repeats_5_day'] = $mybb->get_input('repeats_5_day', MyBB::INPUT_INT);
+        $select['repeats_5_month'][$mybb->get_input('repeats_5_month', MyBB::INPUT_INT)] = true;
+        $select['repeats_5_years'] = $mybb->get_input('repeats_5_years', MyBB::INPUT_INT);
+        $select['repeats_5_occurance'][$mybb->get_input('repeats_5_occurance')] = true;
+        $select['repeats_5_weekday'][$mybb->get_input('repeats_5_weekday', MyBB::INPUT_INT)] = true;
+        $select['repeats_5_month2'][$mybb->get_input('repeats_5_month2', MyBB::INPUT_INT)] = true;
+        $select['repeats_5_years2'] = $mybb->get_input('repeats_5_years2', MyBB::INPUT_INT);
 
-		if($day == $end_day)
-		{
-			$selected = "selected=\"selected\"";
-			eval("\$end_days .= \"".$templates->get("calendar_day")."\";");
-		}
-		else
-		{
-			$selected = "";
-			eval("\$end_days .= \"".$templates->get("calendar_day")."\";");
-		}
-	}
+        $timezone = $mybb->get_input('timezone', MyBB::INPUT_INT);
+    } else {
+        if (!empty($mybb->input['day'])) {
+            $day = $mybb->get_input('day', MyBB::INPUT_INT);
+        } else {
+            $day = my_date("j");
+        }
+        $select['single_day'][$day] = $select['start_day'][$day] = $select['end_day'][$day] = true;
 
-	$timezones = build_timezone_select("timezone", $timezone);
+        if (!empty($mybb->input['month'])) {
+            $month = $mybb->get_input('month', MyBB::INPUT_INT);
+        } else {
+            $month = my_date("n");
+        }
+        $select['single_month'][$month] = $select['start_month'][$month] = $select['end_month'][$month] = true;
 
-	if($mybb->get_input('ignoretimezone', MyBB::INPUT_INT) == 1)
-	{
-		$ignore_timezone = "checked=\"checked\"";
-	}
-	else
-	{
-		$ignore_timezone = '';
-	}
+        if (!empty($mybb->input['year'])) {
+            $year = $mybb->get_input('year', MyBB::INPUT_INT);
+        } else {
+            $year = my_date("Y");
+        }
+        $select['single_year'][$year] = $select['start_year'][$year] = $select['end_year'][$year] = true;
 
-	if($mybb->get_input('private', MyBB::INPUT_INT) == 1)
-	{
-		$privatecheck = " checked=\"checked\"";
-	}
-	else
-	{
-		$privatecheck = '';
-	}
+        $select['start_time'] = $select['end_time'] = '';
+        $select['type_single'] = true;
+        $select['type_ranged'] = '';
+        $select['type'] = "single";
+        $select['repeats_1_days'] = 1;
+        $select['repeats_3_weeks'] = 1;
+        $select['repeats_4_type'][1] = true;
+        $select['repeats_4_day'] = 1;
+        $select['repeats_4_months'] = 1;
+        $select['repeats_4_occurance'][1] = true;
+        $select['repeats_4_weekday'][0] = true;
+        $select['repeats_4_months2'] = 1;
+        $select['repeats_5_type'][1] = true;
+        $select['repeats_5_day'] = 1;
+        $select['repeats_5_month'][1] = true;
+        $select['repeats_5_years'] = 1;
+        $select['repeats_5_occurance'][1] = true;
+        $select['repeats_5_weekday'][0] = true;
+        $select['repeats_5_month2'][1] = true;
+        $select['repeats_5_years2'] = 1;
+        $timezone = $mybb->user['timezone'];
+    }
 
-	$select_calendar = $calendar_select = '';
-	$calendarcount = 0;
+    $days = [];
 
-	// Build calendar select
-	$calendar_permissions = get_calendar_permissions();
-	$query = $db->simple_select("calendars", "*", "", array("order_by" => "name", "order_dir" => "asc"));
-	while($calendar_option = $db->fetch_array($query))
-	{
-		if($calendar_permissions[$calendar['cid']]['canviewcalendar'] == 1)
-		{
-			$calendar_option['name'] = htmlspecialchars_uni($calendar_option['name']);
-			if($calendar_option['cid'] == $mybb->input['calendar'])
-			{
-				$selected = " selected=\"selected\"";
-			}
-			else
-			{
-				$selected = "";
-			}
+    // Construct option list for days
+    for ($day_count = 1; $day_count <= 31; ++$day_count) {
+        $day_sel['day'] = $day_count;
 
-			++$calendarcount;
-			eval("\$select_calendar .= \"".$templates->get("calendar_select")."\";");
-		}
-	}
+        if ($day_count == $select['single_day'][$day_count]) {
+            $day_sel['single_day'] = true;
+        } else {
+            $day_sel['single_day'] = '';
+        }
 
-	if($calendarcount > 1)
-	{
-		eval("\$calendar_select .= \"".$templates->get("calendar_addevent_calendarselect")."\";");
-	}
-	else
-	{
-		eval("\$calendar_select .= \"".$templates->get("calendar_addevent_calendarselect_hidden")."\";");
-	}
+        if ($day_count == $select['start_day'][$day_count]) {
+            $day_sel['start_day'] = true;
+        } else {
+            $day_sel['start_day'] = '';
+        }
 
-	if(!isset($event_errors))
-	{
-		$event_errors = '';
-	}
+        if ($day_count == $select['end_day'][$day_count]) {
+            $day_sel['end_day'] = true;
+        } else {
+            $day_sel['end_day'] = '';
+        }
 
-	$plugins->run_hooks("calendar_addevent_end");
+        $days[] = $day_sel;
+    }
 
-	eval("\$addevent = \"".$templates->get("calendar_addevent")."\";");
-	output_page($addevent);
+    $months = [];
+
+    // Construct option list for months
+    for ($month_count = 1; $month_count <= 12; ++$month_count) {
+        $month_sel['month'] = $month_count;
+
+        $lang_string = 'month_'.$month_count;
+        $month_sel['name'] = $lang->{$lang_string};
+
+        if ($month_count == $select['single_month'][$month_count]) {
+            $month_sel['single_month'] = true;
+        } else {
+            $month_sel['single_month'] = '';
+        }
+
+        if ($month_count == $select['start_month'][$month_count]) {
+            $month_sel['start_month'] = true;
+        } else {
+            $month_sel['start_month'] = '';
+        }
+
+        if ($month_count == $select['end_month'][$month_count]) {
+            $month_sel['end_month'] = true;
+        } else {
+            $month_sel['end_month'] = '';
+        }
+
+        if ($month_count == $select['repeats_5_month'][$month_count]) {
+            $month_sel['repeats_5_month'] = true;
+        } else {
+            $month_sel['repeats_5_month'] = '';
+        }
+
+        if ($month_count == $select['repeats_5_month2'][$month_count]) {
+            $month_sel['repeats_5_month2'] = true;
+        } else {
+            $month_sel['repeats_5_month2'] = '';
+        }
+        $months[] = $month_sel;
+    }
+
+    $years = [];
+
+    // Construct option list for years
+    for ($year_count = my_date('Y'); $year_count < (my_date('Y') + 5); ++$year_count) {
+        $year_sel['year'] = $year_count;
+
+        if ($year_count == $select['single_year'][$year_count]) {
+            $year_sel['single_year'] = true;
+        } else {
+            $year_sel['single_year'] = '';
+        }
+
+        if ($year_count == $select['start_year'][$year_count]) {
+            $year_sel['start_year'] = true;
+        } else {
+            $year_sel['start_year'] = '';
+        }
+
+        if ($year_count == $select['end_year'][$year_count]) {
+            $year_sel['end_year'] = true;
+        } else {
+            $year_sel['end_year'] = '';
+        }
+
+        $years[] = $year_sel;
+    }
+
+    $timezones = build_timezone_select("timezone", $timezone);
+
+    if ($mybb->get_input('ignoretimezone', MyBB::INPUT_INT) == 1) {
+        $select['ignore_timezone'] = true;
+    } else {
+        $select['ignore_timezone'] = '';
+    }
+
+    if ($mybb->get_input('private', MyBB::INPUT_INT) == 1) {
+        $select['privatecheck'] = true;
+    } else {
+        $select['privatecheck'] = '';
+    }
+
+    $calendar_select = [];
+    $calendarcount = 0;
+
+    // Build calendar select
+    $calendar_permissions = get_calendar_permissions();
+    $query = $db->simple_select("calendars", "*", "", array("order_by" => "name", "order_dir" => "asc"));
+    while ($calendar_option = $db->fetch_array($query)) {
+        if ($calendar_permissions[$calendar['cid']]['canviewcalendar'] == 1) {
+            if ($calendar_option['cid'] == $mybb->input['calendar']) {
+                $calendar_option['selected'] = true;
+            } else {
+                $calendar_option['selected'] = '';
+            }
+
+            ++$calendarcount;
+            $calendar_select[] = $calendar_option;
+        }
+    }
+
+    if (!isset($event_errors)) {
+        $event_errors = '';
+    }
+
+    $plugins->run_hooks("calendar_addevent_end");
+
+    output_page(\MyBB\template('calendar/addevent.twig', [
+        'calendar' => $calendar,
+        'codebuttons' => $codebuttons,
+        'smilieinserter' => $smilieinserter,
+        'select' => $select,
+        'event_errors' => $event_errors,
+        'calendarcount' => $calendarcount,
+        'calendar_select' => $calendar_select,
+        'days' => $days,
+        'months' => $months,
+        'years' => $years,
+        'timezones' => $timezones,
+    ]));
 }
 
 // Delete an event
@@ -805,368 +791,361 @@ if($mybb->input['action'] == "editevent")
 	add_breadcrumb($event['name'], get_event_link($event['eid']));
 	add_breadcrumb($lang->nav_editevent);
 
-	$plugins->run_hooks("calendar_editevent_start");
+    $plugins->run_hooks("calendar_editevent_start");
 
-	// If MyCode is on for this forum and the MyCode editor is enabled inthe Admin CP, draw the code buttons and smilie inserter.
-	if($mybb->settings['bbcodeinserter'] != 0 && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0) && $calendar['allowmycode'] == 1)
-	{
-		$codebuttons = build_mycode_inserter("message", $calendar['allowsmilies']);
-		if($calendar['allowsmilies'] == 1)
-		{
-			$smilieinserter = build_clickable_smilies();
-		}
-	}
+    // If MyCode is on for this forum and the MyCode editor is enabled inthe Admin CP, draw the code buttons and smilie inserter.
+    if ($mybb->settings['bbcodeinserter'] != 0 && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0) && $calendar['allowmycode'] == 1) {
+        $codebuttons = build_mycode_inserter("message", $calendar['allowsmilies']);
+        if ($calendar['allowsmilies'] == 1) {
+            $smilieinserter = build_clickable_smilies();
+        }
+    }
 
-	$single_month = $start_month = $end_month = $repeats_sel = $repeats_3_days = $repeats_4_occurance = $repeats_4_weekday = $repeats_5_month = $repeats_5_occurance = $repeats_5_weekday = $repeats_5_month2 = array();
-	foreach(range(1, 12) as $number)
-	{
-		$single_month[$number] = $start_month[$number] = $end_month[$number] = $repeats_5_month[$number] = $repeats_5_month2[$number] = '';
-	}
-	foreach(range(1, 5) as $number)
-	{
-		$repeats_sel[$number] = '';
-	}
-	foreach(range(0, 6) as $number)
-	{
-		$repeats_3_days[$number] = $repeats_4_weekday[$number] = $repeats_5_weekday[$number] = '';
-	}
-	foreach(range(1, 4) as $number)
-	{
-		$repeats_4_occurance[$number] = $repeats_5_occurance[$number] = '';
-	}
-	$repeats_4_occurance['last'] = $repeats_5_occurance['last'] = '';
-	$repeats_4_type = array(1 => '', 2 => '');
-	$repeats_5_type = array(1 => '', 2 => '');
+    $select['single_month'] = $select['start_month'] = $select['end_month'] = $select['repeats_sel'] = $select['repeats_3_days'] = $select['repeats_4_occurance'] = $select['repeats_4_weekday'] = $select['repeats_5_month'] = $select['repeats_5_occurance'] = $select['repeats_5_weekday'] = $select['repeats_5_month2'] = array();
+    foreach (range(1, 12) as $number) {
+        $select['single_month'][$number] = $select['start_month'][$number] = $select['end_month'][$number] = $select['repeats_5_month'][$number] = $select['repeats_5_month2'][$number] = '';
+    }
+    foreach (range(1, 5) as $number) {
+        $select['repeats_sel'][$number] = '';
+    }
+    foreach (range(0, 6) as $number) {
+        $select['repeats_3_days'][$number] = $select['repeats_4_weekday'][$number] = $select['repeats_5_weekday'][$number] = '';
+    }
+    foreach (range(1, 4) as $number) {
+        $select['repeats_4_occurance'][$number] = $select['repeats_5_occurance'][$number] = '';
+    }
+    $select['repeats_4_occurance']['last'] = $select['repeats_5_occurance']['last'] = '';
+    $select['repeats_4_type'] = array(1 => '', 2 => '');
+    $select['repeats_5_type'] = array(1 => '', 2 => '');
 
-	// Previous selections
-	if(isset($event_errors))
-	{
-		$name = htmlspecialchars_uni($mybb->get_input('name'));
-		$description = htmlspecialchars_uni($mybb->get_input('description'));
-		$single_day = $mybb->get_input('single_day', MyBB::INPUT_INT);
-		$single_month[$mybb->get_input('single_month', MyBB::INPUT_INT)] = " selected=\"selected\"";
-		$single_year = $mybb->get_input('single_year', MyBB::INPUT_INT);
-		$start_day = $mybb->get_input('start_day', MyBB::INPUT_INT);
-		$start_month[$mybb->get_input('start_month', MyBB::INPUT_INT)] = " selected=\"selected\"";
-		$start_year = $mybb->get_input('start_year', MyBB::INPUT_INT);
-		$start_time = htmlspecialchars_uni($mybb->get_input('start_time'));
-		$end_day = $mybb->get_input('end_day', MyBB::INPUT_INT);
-		$end_month[$mybb->get_input('end_month', MyBB::INPUT_INT)] = " selected=\"selected\"";
-		$end_year = $mybb->get_input('end_year', MyBB::INPUT_INT);
-		$end_time = htmlspecialchars_uni($mybb->get_input('end_time'));
-		if($mybb->get_input('type') == "single")
-		{
-			$type_single = "checked=\"checked\"";
-			$type_ranged = '';
-			$type = "single";
-		}
-		else
-		{
-			$type_ranged = "checked=\"checked\"";
-			$type_single = '';
-			$type = "ranged";
-		}
-		if(!empty($mybb->input['repeats']))
-		{
-			$repeats_sel[$mybb->get_input('repeats', MyBB::INPUT_INT)] = " selected=\"selected\"";
-		}
-		$repeats_1_days = $mybb->get_input('repeats_1_days', MyBB::INPUT_INT);
-		$repeats_3_weeks = $mybb->get_input('repeats_3_weeks', MyBB::INPUT_INT);
-		foreach($mybb->get_input('repeats_3_days', MyBB::INPUT_ARRAY) as $day => $val)
-		{
-			if($val != 1)
-			{
-				continue;
-			}
-			$day = (int)$day;
-			$repeats_3_days[$day] = " checked=\"checked\"";
-		}
-		$repeats_4_type = array();
-		if($mybb->get_input('repeats_4_type', MyBB::INPUT_INT) == 1)
-		{
-			$repeats_4_type[1] = "checked=\"checked\"";
-			$repeats_4_type[2] = '';
-		}
-		else
-		{
-			$repeats_4_type[2] = "checked=\"checked\"";
-			$repeats_4_type[1] = '';
-		}
-		$repeats_4_day = $mybb->get_input('repeats_4_day', MyBB::INPUT_INT);
-		$repeats_4_months = $mybb->get_input('repeats_4_months', MyBB::INPUT_INT);
-		$repeats_4_occurance[$mybb->get_input('repeats_4_occurance')] = "selected=\"selected\"";
-		$repeats_4_weekday[$mybb->get_input('repeats_4_weekday', MyBB::INPUT_INT)] = "selected=\"selected\"";
-		$repeats_4_months2 = $mybb->get_input('repeats_4_months2', MyBB::INPUT_INT);
-		if($mybb->get_input('repeats_5_type', MyBB::INPUT_INT) == 1)
-		{
-			$repeats_5_type[1] = "checked=\"checked\"";
-		}
-		else
-		{
-			$repeats_5_type[2] = "checked=\"checked\"";
-		}
-		$repeats_5_day = $mybb->get_input('repeats_5_day', MyBB::INPUT_INT);
-		$repeats_5_month[$mybb->get_input('repeats_5_month', MyBB::INPUT_INT)] = "selected=\"selected\"";
-		$repeats_5_years = $mybb->get_input('repeats_5_years', MyBB::INPUT_INT);
-		$repeats_5_occurance[$mybb->get_input('repeats_5_occurance')] = "selected=\"selected\"";
-		$repeats_5_weekday[$mybb->get_input('repeats_5_weekday', MyBB::INPUT_INT)] = "selected=\"selected\"";
-		$repeats_5_month2[$mybb->get_input('repeats_5_month2', MyBB::INPUT_INT)] = "selected=\"selected\"";
-		$repeats_5_years2 = $mybb->get_input('repeats_5_years2', MyBB::INPUT_INT);
+    // Previous selections
+    if (isset($event_errors)) {
+        $select['name'] = $mybb->get_input('name');
+        $select['description'] = $mybb->get_input('description');
+        $select['single_day'][$mybb->get_input('single_day', MyBB::INPUT_INT)] = true;
+        $select['single_month'][$mybb->get_input('single_month', MyBB::INPUT_INT)] = true;
+        $select['single_year'][$mybb->get_input('single_year', MyBB::INPUT_INT)] = true;
+        $select['start_day'][$mybb->get_input('start_day', MyBB::INPUT_INT)] = true;
+        $select['start_month'][$mybb->get_input('start_month', MyBB::INPUT_INT)] = true;
+        $select['start_year'][$mybb->get_input('start_year', MyBB::INPUT_INT)] = true;
+        $select['start_time'] = $mybb->get_input('start_time');
+        $select['end_day'][$mybb->get_input('end_day', MyBB::INPUT_INT)] = true;
+        $select['end_month'][$mybb->get_input('end_month', MyBB::INPUT_INT)] = true;
+        $select['end_year'][$mybb->get_input('end_year', MyBB::INPUT_INT)] = true;
+        $select['end_time'] = $mybb->get_input('end_time');
 
-		if($mybb->get_input('private', MyBB::INPUT_INT) == 1)
-		{
-			$privatecheck = " checked=\"checked\"";
-		}
-		else
-		{
-			$privatecheck = '';
-		}
+        if ($mybb->get_input('type') == "single")
+        {
+            $select['type_single'] = true;
+            $select['type_ranged'] = '';
+            $select['type'] = "single";
+        } else {
+            $select['type_ranged'] = true;
+            $select['type_single'] = '';
+            $select['type'] = "ranged";
+        }
 
-		if($mybb->get_input('ignoretimezone', MyBB::INPUT_INT) == 1)
-		{
-			$ignore_timezone = "checked=\"checked\"";
-		}
-		else
-		{
-			$ignore_timezone = '';
-		}
+        if (!empty($mybb->input['repeats'])) {
+            $select['repeats_sel'][$mybb->get_input('repeats', MyBB::INPUT_INT)] = true;
+        }
 
-		$timezone = $mybb->get_input('timezone');
-	}
-	else
-	{
-		$event_errors = '';
-		$mybb->input['calendar'] = $event['cid'];
-		$name = htmlspecialchars_uni($event['name']);
-		$description = htmlspecialchars_uni($event['description']);
-		if($event['private'] == 1)
-		{
-			$privatecheck = " checked=\"checked\"";
-		}
-		else
-		{
-			$privatecheck = '';
-		}
-		$start_date = explode("-", gmdate("j-n-Y", $event['starttime']+$event['timezone']*3600));
-		$single_day = $start_date[0];
-		$single_month[$start_date[1]] = " selected=\"selected\"";
-		$single_year = $start_date[2];
-		$start_day = $start_date[0];
-		$start_month[$start_date[1]] = " selected=\"selected\"";
-		$start_year = $start_date[2];
-		if($event['usingtime'])
-		{
-			$start_time = gmdate($mybb->settings['timeformat'], $event['starttime']+$event['timezone']*3600);
-		}
-		else
-		{
-			$start_time = '';
-		}
-		if($event['endtime'])
-		{
-			$end_date = explode("-", gmdate("j-n-Y", $event['endtime']+$event['timezone']*3600));
-			$end_day = $end_date[0];
-			$end_month[$end_date[1]] = " selected=\"selected\"";
-			$end_year = $end_date[2];
-			if($event['usingtime'])
-			{
-				$end_time = gmdate($mybb->settings['timeformat'], $event['endtime']+$event['timezone']*3600);
-			}
-			else
-			{
-				$end_time = '';
-			}
-			$type_ranged = "checked=\"checked\"";
-			$type_single = '';
-			$type = "ranged";
-			$repeats = my_unserialize($event['repeats']);
-			if($repeats['repeats'] >= 0)
-			{
-				$repeats_sel[$repeats['repeats']] = " selected=\"selected\"";
-				switch($repeats['repeats'])
-				{
-					case 1:
-						$repeats_1_days = $repeats['days'];
-						$repeats_3_weeks = 1;
-						$repeats_4_type[1] = "checked=\"checked\"";
-						$repeats_4_day = 1;
-						$repeats_4_months = 1;
-						$repeats_4_months2 = 1;
-						$repeats_5_type[1] = "checked=\"checked\"";
-						$repeats_5_day = 1;
-						$repeats_5_years = $repeats_5_years2 = 1;
-						break;
-					case 3:
-						$repeats_1_days = 1;
-						$repeats_3_weeks = $repeats['weeks'];
-						if(is_array($repeats['days']))
-						{
-							foreach($repeats['days'] as $weekday)
-							{
-								$repeats_3_days[$weekday] = " checked=\"checked\"";
-							}
-						}
-						$repeats_4_type[1] = "checked=\"checked\"";
-						$repeats_4_day = 1;
-						$repeats_4_months = 1;
-						$repeats_4_months2 = 1;
-						$repeats_5_type[1] = "checked=\"checked\"";
-						$repeats_5_day = 1;
-						$repeats_5_years = $repeats_5_years2 = 1;
-						break;
-					case 4:
-						$repeats_1_days = 1;
-						$repeats_3_weeks = 1;
-						if($repeats['day'])
-						{
-							$repeats_4_type[1] = "checked=\"checked\"";
-							$repeats_4_day = $repeats['day'];
-							$repeats_4_months = $repeats_4_months2 = $repeats['months'];
-						}
-						else
-						{
-							$repeats_4_type[2] = "checked=\"checked\"";
-							$repeats_4_day = 1;
-							$repeats_4_months2 = $repeats_4_months = $repeats['months'];
-							$repeats_4_occurance[$repeats['occurance']] = "selected=\"selected\"";
-							$repeats_4_weekday[$repeats['weekday']] = "selected=\"selected\"";
-						}
-						$repeats_5_type[1] = "checked=\"checked\"";
-						$repeats_5_day = 1;
-						$repeats_5_years = $repeats_5_years2 = 1;
-						break;
-					case 5:
-						$repeats_1_days = 1;
-						$repeats_3_weeks = 1;
-						$repeats_4_type[1] = "checked=\"checked\"";
-						$repeats_4_day = 1;
-						$repeats_4_months = 1;
-						$repeats_4_months2 = 1;
-						if($repeats['day'])
-						{
-							$repeats_5_type[1] = "checked=\"checked\"";
-							$repeats_5_day = $repeats['day'];
-							$repeats_5_month[$repeats['month']] = $repeats_5_month2[$repeats['month']] = "selected=\"selected\"";
-							$repeats_5_years = $repeats_5_years2 = $repeats['years'];
-						}
-						else
-						{
-							$repeats_5_type[2] = "checked=\"checked\"";
-							$repeats_5_occurance[$repeats['occurance']] = "selected=\"selected\"";
-							$repeats_5_weekday[$repeats['weekday']] = "selected=\"selected\"";
-							$repeats_5_month[$repeats['month']] = $repeats_5_month2[$repeats['month']] = "selected=\"selected\"";
-							$repeats_5_years = $repeats_5_years2 = $repeats['years'];
-						}
-						break;
-				}
-			}
-			if($event['ignoretimezone'])
-			{
-				$timezone = 0;
-				$ignore_timezone = "checked=\"checked\"";
-			}
-			else
-			{
-				$timezone = $event['timezone'];
-				$ignore_timezone = '';
-			}
-		}
-		else
-		{
-			$type_single = "checked=\"checked\"";
-			$type_ranged = $ignore_timezone = $repeats_1_days = $repeats_3_weeks = $repeats_4_day = $repeats_4_months = $repeats_4_months2 = $repeats_5_day = $repeats_5_years = $timezone = $end_time = '';
-			$type = "single";
-			// set some defaults if the user wants to make a ranged event
-			$end_day = $start_day;
-			$end_month = $start_month;
-			$end_year = $start_year;
-		}
-	}
+        $select['repeats_1_days'] = $mybb->get_input('repeats_1_days', MyBB::INPUT_INT);
+        $select['repeats_3_weeks'] = $mybb->get_input('repeats_3_weeks', MyBB::INPUT_INT);
 
-	$single_years = $start_years = $end_years = '';
+        foreach ($mybb->get_input('repeats_3_days', MyBB::INPUT_ARRAY) as $day => $val) {
+            if ($val != 1) {
+                continue;
+            }
+            $day = (int)$day;
+            $select['repeats_3_days'][$day] = true;
+        }
 
-	// Construct option list for years
-	for($year = my_date('Y'); $year < (my_date('Y') + 5); ++$year)
-	{
-		if($year == $single_year)
-		{
-			$selected = "selected=\"selected\"";
-			eval("\$single_years .= \"".$templates->get("calendar_year")."\";");
-		}
-		else
-		{
-			$selected = "";
-			eval("\$single_years .= \"".$templates->get("calendar_year")."\";");
-		}
+        $select['repeats_4_type'] = array();
+        if ($mybb->get_input('repeats_4_type', MyBB::INPUT_INT) == 1) {
+            $select['repeats_4_type'][1] = true;
+            $select['repeats_4_type'][2] = '';
+        } else {
+            $select['repeats_4_type'][2] = true;
+            $select['repeats_4_type'][1] = '';
+        }
 
-		if($year == $start_year)
-		{
-			$selected = "selected=\"selected\"";
-			eval("\$start_years .= \"".$templates->get("calendar_year")."\";");
-		}
-		else
-		{
-			$selected = "";
-			eval("\$start_years .= \"".$templates->get("calendar_year")."\";");
-		}
+        $select['repeats_4_day'] = $mybb->get_input('repeats_4_day', MyBB::INPUT_INT);
+        $select['repeats_4_months'] = $mybb->get_input('repeats_4_months', MyBB::INPUT_INT);
+        $select['repeats_4_occurance'][$mybb->get_input('repeats_4_occurance')] = true;
+        $select['repeats_4_weekday'][$mybb->get_input('repeats_4_weekday', MyBB::INPUT_INT)] = true;
+        $select['repeats_4_months2'] = $mybb->get_input('repeats_4_months2', MyBB::INPUT_INT);
 
-		if($year == $end_year)
-		{
-			$selected = "selected=\"selected\"";
-			eval("\$end_years .= \"".$templates->get("calendar_year")."\";");
-		}
-		else
-		{
-			$selected = "";
-			eval("\$end_years .= \"".$templates->get("calendar_year")."\";");
-		}
-	}
+        if ($mybb->get_input('repeats_5_type', MyBB::INPUT_INT) == 1) {
+            $select['repeats_5_type'][1] = true;
+        } else {
+            $select['repeats_5_type'][2] = true;
+        }
 
-	$single_days = $start_days = $end_days = '';
+        $select['repeats_5_day'] = $mybb->get_input('repeats_5_day', MyBB::INPUT_INT);
+        $select['repeats_5_month'][$mybb->get_input('repeats_5_month', MyBB::INPUT_INT)] = true;
+        $select['repeats_5_years'] = $mybb->get_input('repeats_5_years', MyBB::INPUT_INT);
+        $select['repeats_5_occurance'][$mybb->get_input('repeats_5_occurance')] = true;
+        $select['repeats_5_weekday'][$mybb->get_input('repeats_5_weekday', MyBB::INPUT_INT)] = true;
+        $select['repeats_5_month2'][$mybb->get_input('repeats_5_month2', MyBB::INPUT_INT)] = true;
+        $select['repeats_5_years2'] = $mybb->get_input('repeats_5_years2', MyBB::INPUT_INT);
 
-	// Construct option list for days
-	for($day = 1; $day <= 31; ++$day)
-	{
-		if($day == $single_day)
-		{
-			$selected = "selected=\"selected\"";
-			eval("\$single_days .= \"".$templates->get("calendar_day")."\";");
-		}
-		else
-		{
-			$selected = "";
-			eval("\$single_days .= \"".$templates->get("calendar_day")."\";");
-		}
+        if ($mybb->get_input('private', MyBB::INPUT_INT) == 1) {
+            $select['privatecheck'] = true;
+        } else {
+            $select['privatecheck'] = '';
+        }
 
-		if($day == $start_day)
-		{
-			$selected = "selected=\"selected\"";
-			eval("\$start_days .= \"".$templates->get("calendar_day")."\";");
-		}
-		else
-		{
-			$selected = "";
-			eval("\$start_days .= \"".$templates->get("calendar_day")."\";");
-		}
+        if ($mybb->get_input('ignoretimezone', MyBB::INPUT_INT) == 1)
+        {
+            $select['ignore_timezone'] = true;
+        } else {
+            $select['ignore_timezone'] = '';
+        }
 
-		if($day == $end_day)
-		{
-			$selected = "selected=\"selected\"";
-			eval("\$end_days .= \"".$templates->get("calendar_day")."\";");
-		}
-		else
-		{
-			$selected = "";
-			eval("\$end_days .= \"".$templates->get("calendar_day")."\";");
-		}
-	}
+        $timezone = $mybb->get_input('timezone');
+    } else {
+        $event_errors = '';
+        $mybb->input['calendar'] = $event['cid'];
+        $select['name'] = $event['name'];
+        $select['description'] = $event['description'];
 
-	$timezones = build_timezone_select("timezone", $timezone);
+        if ($event['private'] == 1) {
+            $select['privatecheck'] = true;
+        } else {
+            $select['privatecheck'] = '';
+        }
 
-	$plugins->run_hooks("calendar_editevent_end");
+        $start_date = explode("-", gmdate("j-n-Y", $event['starttime']+$event['timezone']*3600));
+        $select['single_day'][$start_date[0]] = true;
+        $select['single_month'][$start_date[1]] = true;
+        $select['single_year'][$start_date[2]] = true;
+        $select['start_day'][$start_date[0]] = true;
+        $select['start_month'][$start_date[1]] = true;
+        $select['start_year'][$start_date[2]] = true;
 
-	eval("\$editevent = \"".$templates->get("calendar_editevent")."\";");
-	output_page($editevent);
+        if ($event['usingtime']) {
+            $select['start_time'] = gmdate($mybb->settings['timeformat'], $event['starttime']+$event['timezone']*3600);
+        } else {
+            $select['start_time'] = '';
+        }
+
+        if ($event['endtime']) {
+            $end_date = explode("-", gmdate("j-n-Y", $event['endtime']+$event['timezone']*3600));
+            $select['end_day'][$end_date[0]] = true;
+            $select['end_month'][$end_date[1]] = true;
+            $select['end_year'][$end_date[2]] = true;
+
+            if ($event['usingtime']) {
+                $select['end_time'] = gmdate($mybb->settings['timeformat'], $event['endtime']+$event['timezone']*3600);
+            } else {
+                $select['end_time'] = '';
+            }
+
+            $select['type_ranged'] = true;
+            $select['type_single'] = '';
+            $select['type'] = "ranged";
+            $repeats = my_unserialize($event['repeats']);
+
+            if ($repeats['repeats'] >= 0) {
+                $select['repeats_sel'][$repeats['repeats']] = true;
+                switch ($repeats['repeats']) {
+                    case 1:
+                        $select['repeats_1_days'] = $repeats['days'];
+                        $select['repeats_3_weeks'] = 1;
+                        $select['repeats_4_type'][1] = true;
+                        $select['repeats_4_day'] = 1;
+                        $select['repeats_4_months'] = 1;
+                        $select['repeats_4_months2'] = 1;
+                        $select['repeats_5_type'][1] = true;
+                        $select['repeats_5_day'] = 1;
+                        $select['repeats_5_years'] = $select['repeats_5_years2'] = 1;
+                        break;
+                    case 3:
+                        $select['repeats_1_days'] = 1;
+                        $select['repeats_3_weeks'] = $repeats['weeks'];
+                        if (is_array($repeats['days'])) {
+                            foreach ($repeats['days'] as $weekday) {
+                                $select['repeats_3_days'][$weekday] = true;
+                            }
+                        }
+                        $select['repeats_4_type'][1] = true;
+                        $select['repeats_4_day'] = 1;
+                        $select['repeats_4_months'] = 1;
+                        $select['repeats_4_months2'] = 1;
+                        $select['repeats_5_type'][1] = true;
+                        $select['repeats_5_day'] = 1;
+                        $select['repeats_5_years'] = $select['repeats_5_years2'] = 1;
+                        break;
+                    case 4:
+                        $select['repeats_1_days'] = 1;
+                        $select['repeats_3_weeks'] = 1;
+                        if ($repeats['day']) {
+                            $select['repeats_4_type'][1] = true;
+                            $select['repeats_4_day'] = $repeats['day'];
+                            $select['repeats_4_months'] = $select['repeats_4_months2'] = $repeats['months'];
+                        } else {
+                            $select['repeats_4_type'][2] = true;
+                            $select['repeats_4_day'] = 1;
+                            $select['repeats_4_months2'] = $select['repeats_4_months'] = $repeats['months'];
+                            $select['repeats_4_occurance'][$repeats['occurance']] = true;
+                            $select['repeats_4_weekday'][$repeats['weekday']] = true;
+                        }
+                        $select['repeats_5_type'][1] = true;
+                        $select['repeats_5_day'] = 1;
+                        $select['repeats_5_years'] = $select['repeats_5_years2'] = 1;
+                        break;
+                    case 5:
+                        $select['repeats_1_days'] = 1;
+                        $select['repeats_3_weeks'] = 1;
+                        $select['repeats_4_type'][1] = true;
+                        $select['repeats_4_day'] = 1;
+                        $select['repeats_4_months'] = 1;
+                        $select['repeats_4_months2'] = 1;
+                        if ($repeats['day']) {
+                            $select['repeats_5_type'][1] = true;
+                            $select['repeats_5_day'] = $repeats['day'];
+                            $select['repeats_5_month'][$repeats['month']] = $select['repeats_5_month2'][$repeats['month']] = true;
+                            $select['repeats_5_years'] = $select['repeats_5_years2'] = $repeats['years'];
+                        } else {
+                            $select['repeats_5_type'][2] = true;
+                            $select['repeats_5_occurance'][$repeats['occurance']] = true;
+                            $select['repeats_5_weekday'][$repeats['weekday']] = true;
+                            $select['repeats_5_month'][$repeats['month']] = $select['repeats_5_month2'][$repeats['month']] = true;
+                            $select['repeats_5_years'] = $select['repeats_5_years2'] = $repeats['years'];
+                        }
+                        break;
+                }
+            }
+
+            if ($event['ignoretimezone']) {
+                $timezone = 0;
+                $select['ignore_timezone'] = true;
+            } else {
+                $timezone = $event['timezone'];
+                $select['ignore_timezone'] = '';
+            }
+        } else {
+            $select['type_single'] = true;
+            $select['type_ranged'] = $select['ignore_timezone'] = $select['repeats_1_days'] = $select['repeats_3_weeks'] = $select['repeats_4_day'] = $select['repeats_4_months'] = $select['repeats_4_months2'] = $select['repeats_5_day'] = $select['repeats_5_years'] = $timezone = $select['end_time'] = '';
+            $select['type'] = "single";
+            // set some defaults if the user wants to make a ranged event
+            $select['end_day'] = $select['start_day'];
+            $select['end_month'] = $select['start_month'];
+            $select['end_year'] = $select['start_year'];
+        }
+    }
+
+    $days = [];
+
+    // Construct option list for days
+    for ($day_count = 1; $day_count <= 31; ++$day_count) {
+        $day_sel['day'] = $day_count;
+
+        if ($day_count == $select['single_day'][$day_count]) {
+            $day_sel['single_day'] = true;
+        } else {
+            $day_sel['single_day'] = '';
+        }
+
+        if ($day_count == $select['start_day'][$day_count]) {
+            $day_sel['start_day'] = true;
+        } else {
+            $day_sel['start_day'] = '';
+        }
+
+        if ($day_count == $select['end_day'][$day_count]) {
+            $day_sel['end_day'] = true;
+        } else {
+            $day_sel['end_day'] = '';
+        }
+
+        $days[] = $day_sel;
+    }
+    $months = [];
+
+    // Construct option list for months
+    for ($month_count = 1; $month_count <= 12; ++$month_count) {
+        $month_sel['month'] = $month_count;
+
+        $lang_string = 'month_'.$month_count;
+        $month_sel['name'] = $lang->{$lang_string};
+
+        if ($month_count == $select['single_month'][$month_count]) {
+            $month_sel['single_month'] = true;
+        } else {
+            $month_sel['single_month'] = '';
+        }
+
+        if ($month_count == $select['start_month'][$month_count]) {
+            $month_sel['start_month'] = true;
+        } else {
+            $month_sel['start_month'] = '';
+        }
+
+        if ($month_count == $select['end_month'][$month_count]) {
+            $month_sel['end_month'] = true;
+        } else {
+            $month_sel['end_month'] = '';
+        }
+
+        if ($month_count == $select['repeats_5_month'][$month_count]) {
+            $month_sel['repeats_5_month'] = true;
+        } else {
+            $month_sel['repeats_5_month'] = '';
+        }
+
+        if ($month_count == $select['repeats_5_month2'][$month_count]) {
+            $month_sel['repeats_5_month2'] = true;
+        } else {
+            $month_sel['repeats_5_month2'] = '';
+        }
+        $months[] = $month_sel;
+    }
+
+    $years = [];
+
+    // Construct option list for years
+    for ($year_count = my_date('Y'); $year_count < (my_date('Y') + 5); ++$year_count) {
+        $year_sel['year'] = $year_count;
+
+        if ($year_count == $select['single_year'][$year_count]) {
+            $year_sel['single_year'] = true;
+        } else {
+            $year_sel['single_year'] = '';
+        }
+
+        if ($year_count == $select['start_year'][$year_count]) {
+            $year_sel['start_year'] = true;
+        } else {
+            $year_sel['start_year'] = '';
+        }
+
+        if ($year_count == $select['end_year'][$year_count]) {
+            $year_sel['end_year'] = true;
+        } else {
+            $year_sel['end_year'] = '';
+        }
+
+        $years[] = $year_sel;
+    }
+
+    $timezones = build_timezone_select("timezone", $timezone);
+
+    $plugins->run_hooks("calendar_editevent_end");
+
+    output_page(\MyBB\template('calendar/editevent.twig', [
+        'event' => $event,
+        'codebuttons' => $codebuttons,
+        'smilieinserter' => $smilieinserter,
+        'select' => $select,
+        'event_errors' => $event_errors,
+        'calendarcount' => $calendarcount,
+        'calendar_select' => $calendar_select,
+        'days' => $days,
+        'months' => $months,
+        'years' => $years,
+        'timezones' => $timezones,
+    ]));
 }
 
 // Move an event to another calendar
@@ -1201,31 +1180,28 @@ if($mybb->input['action'] == "move")
 		error_no_permission();
 	}
 
-	$event['name'] = htmlspecialchars_uni($event['name']);
-
 	add_breadcrumb(htmlspecialchars_uni($calendar['name']), get_calendar_link($calendar['cid']));
 	add_breadcrumb($event['name'], get_event_link($event['eid']));
 	add_breadcrumb($lang->nav_move_event);
 
-	$plugins->run_hooks("calendar_move_start");
+    $plugins->run_hooks("calendar_move_start");
 
-	$calendar_select = $selected = '';
+    $calendar_select = [];
 
-	// Build calendar select
-	$query = $db->simple_select("calendars", "*", "", array("order_by" => "name", "order_dir" => "asc"));
-	while($calendar_option = $db->fetch_array($query))
-	{
-		if($calendar_permissions[$calendar['cid']]['canviewcalendar'] == 1)
-		{
-			$calendar_option['name'] = htmlspecialchars_uni($calendar_option['name']);
-			eval("\$calendar_select .= \"".$templates->get("calendar_select")."\";");
-		}
-	}
+    // Build calendar select
+    $query = $db->simple_select("calendars", "*", "", array("order_by" => "name", "order_dir" => "asc"));
+    while ($calendar_option = $db->fetch_array($query)) {
+        if ($calendar_permissions[$calendar['cid']]['canviewcalendar'] == 1) {
+            $calendar_select[] = $calendar_option;
+        }
+    }
 
-	$plugins->run_hooks("calendar_move_end");
+    $plugins->run_hooks("calendar_move_end");
 
-	eval("\$moveevent = \"".$templates->get("calendar_move")."\";");
-	output_page($moveevent);
+    output_page(\MyBB\template('calendar/move.twig', [
+        'event' => $event,
+        'calendar_select' => $calendar_select,
+    ]));
 }
 
 // Actually move the event
@@ -1410,232 +1386,183 @@ if($mybb->input['action'] == "event")
 		error($lang->invalid_calendar);
 	}
 
-	// Do we have permission to view this calendar?
-	$calendar_permissions = get_calendar_permissions($calendar['cid']);
-	if($calendar_permissions['canviewcalendar'] != 1 || ($calendar_permissions['canmoderateevents'] != 1 && $event['visible'] == 0))
-	{
-		error_no_permission();
-	}
+    // Do we have permission to view this calendar?
+    $calendar_permissions = get_calendar_permissions($calendar['cid']);
+    if ($calendar_permissions['canviewcalendar'] != 1 || ($calendar_permissions['canmoderateevents'] != 1 && $event['visible'] == 0)) {
+        error_no_permission();
+    }
 
-	$event['name'] = htmlspecialchars_uni($event['name']);
+    $event['name'] = htmlspecialchars_uni($event['name']);
 
-	add_breadcrumb(htmlspecialchars_uni($calendar['name']), get_calendar_link($calendar['cid']));
-	add_breadcrumb($event['name'], get_event_link($event['eid']));
+    add_breadcrumb(htmlspecialchars_uni($calendar['name']), get_calendar_link($calendar['cid']));
+    add_breadcrumb($event['name'], get_event_link($event['eid']));
 
-	$plugins->run_hooks("calendar_event_start");
+    $plugins->run_hooks("calendar_event_start");
 
-	$event_parser_options = array(
-		"allow_html" => $calendar['allowhtml'],
-		"allow_mycode" => $calendar['allowmycode'],
-		"allow_smilies" => $calendar['allowsmilies'],
-		"allow_imgcode" => $calendar['allowimgcode'],
-		"allow_videocode" => $calendar['allowvideocode']
-	);
+    $event_parser_options = array(
+        "allow_html" => $calendar['allowhtml'],
+        "allow_mycode" => $calendar['allowmycode'],
+        "allow_smilies" => $calendar['allowsmilies'],
+        "allow_imgcode" => $calendar['allowimgcode'],
+        "allow_videocode" => $calendar['allowvideocode']
+    );
 
-	if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
-	{
-		$event_parser_options['allow_imgcode'] = 0;
-	}
+    if ($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0) {
+        $event_parser_options['allow_imgcode'] = 0;
+    }
 
-	if($mybb->user['showvideos'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
-	{
-		$event_parser_options['allow_videocode'] = 0;
-	}
+    if ($mybb->user['showvideos'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0) {
+        $event_parser_options['allow_videocode'] = 0;
+    }
 
-	$event['description'] = $parser->parse_message($event['description'], $event_parser_options);
+    $event['description'] = $parser->parse_message($event['description'], $event_parser_options);
 
-	// Get the usergroup
-	if($event['usergroup'])
-	{
-		$user_usergroup = usergroup_permissions($event['usergroup']);
-	}
-	else
-	{
-		$user_usergroup = usergroup_permissions(1);
-	}
+    // Get the usergroup
+    if($event['usergroup'])
+    {
+        $user_usergroup = usergroup_permissions($event['usergroup']);
+    }
+    else
+    {
+        $user_usergroup = usergroup_permissions(1);
+    }
+    $displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
+    if(!$event['displaygroup'])
+    {
+        $event['displaygroup'] = $event['usergroup'];
+    }
+    $display_group = usergroup_displaygroup($event['displaygroup']);
+    if(is_array($display_group))
+    {
+        $user_usergroup = array_merge($user_usergroup, $display_group);
+    }
 
-	$displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
-	$display_group = usergroup_displaygroup($event['displaygroup']);
-	if(is_array($display_group))
-	{
-		$user_usergroup = array_merge($user_usergroup, $display_group);
-	}
+    // Event made by registered user
+    if ($event['uid'] > 0 && $event['username']) {
+        $event['username'] = htmlspecialchars_uni($event['username']);
+        $event['profilelink'] = build_profile_link(format_name($event['username'], $event['usergroup'], $event['displaygroup']), $event['uid']);
 
-	$titles_cache = $cache->read("usertitles");
+        if (trim($event['usertitle']) != "") {
+            // Do nothing, no need for an extra variable..
+        }
+        elseif ($user_usergroup['usertitle'] != "") {
+            $event['usertitle'] = $user_usergroup['usertitle'];
+        }
+        elseif (is_array($titles_cache) && !$user_usergroup['usertitle']) {
+            reset($titles_cache);
+            foreach ($titles_cache as $title){
+                if ($event['postnum'] >= $title['posts']) {
+                    $event['usertitle'] = $title['title'];
+                    $event['stars'] = $title['stars'];
+                    $event['starimage'] = $title['starimage'];
+                    break;
+                }
+            }
+        }
 
-	// Event made by registered user
-	if($event['uid'] > 0 && $event['username'])
-	{
-		$event['username'] = htmlspecialchars_uni($event['username']);
-		$event['profilelink'] = build_profile_link(format_name($event['username'], $event['usergroup'], $event['displaygroup']), $event['uid']);
+        if ($user_usergroup['stars']) {
+            $event['stars'] = $user_usergroup['stars'];
+        }
 
-		if(trim($event['usertitle']) != "")
-		{
-			// Do nothing, no need for an extra variable..
-		}
-		elseif($user_usergroup['usertitle'] != "")
-		{
-			$event['usertitle'] = $user_usergroup['usertitle'];
-		}
-		elseif(is_array($titles_cache) && !$user_usergroup['usertitle'])
-		{
-			reset($titles_cache);
-			foreach($titles_cache as $title)
-			{
-				if($event['postnum'] >= $title['posts'])
-				{
-					$event['usertitle'] = $title['title'];
-					$event['stars'] = $title['stars'];
-					$event['starimage'] = $title['starimage'];
-					break;
-				}
-			}
-		}
+        if (empty($event['starimage'])) {
+            $event['starimage'] = $user_usergroup['starimage'];
+        }
+        $event['starimage'] = str_replace("{theme}", $theme['imgdir'], $event['starimage']);
+    } else {
+        // Created by a guest or an unknown user
+        if (!$event['username']) {
+            $event['username'] = $lang->guest;
+        }
 
-		if($user_usergroup['stars'])
-		{
-			$event['stars'] = $user_usergroup['stars'];
-		}
+        $event['username'] = htmlspecialchars_uni($event['username']);
+        $event['profilelink'] = format_name($event['username'], 1);
 
-		if(empty($event['starimage']))
-		{
-			$event['starimage'] = $user_usergroup['starimage'];
-		}
-		$event['starimage'] = str_replace("{theme}", $theme['imgdir'], $event['starimage']);
+        if ($user_usergroup['usertitle']) {
+            $event['usertitle'] = $user_usergroup['usertitle'];
+        } else {
+            $event['usertitle'] = $lang->guest;
+        }
+        $event['userstars'] = '';
+    }
 
-		$event['userstars'] = '';
-		for($i = 0; $i < $event['stars']; ++$i)
-		{
-			eval("\$event['userstars'] .= \"".$templates->get("calendar_event_userstar", 1, 0)."\";");
-		}
+    $event['usertitle'] = htmlspecialchars_uni($event['usertitle']);
 
-		if($event['userstars'] && $event['starimage'] && $event['stars'])
-		{
-			$event['userstars'] .= "<br />";
-		}
-	}
-	// Created by a guest or an unknown user
-	else
-	{
-		if(!$event['username'])
-		{
-			$event['username'] = $lang->guest;
-		}
+    if ($event['ignoretimezone'] == 0) {
+        $offset = (float)$event['timezone'];
+    } else {
+        $offset = (float)$mybb->user['timezone'];
+    }
 
-		$event['username'] = htmlspecialchars_uni($event['username']);
-		$event['profilelink'] = format_name($event['username'], 1);
+    $event['starttime_user'] = $event['starttime']+$offset*3600;
 
-		if($user_usergroup['usertitle'])
-		{
-			$event['usertitle'] = $user_usergroup['usertitle'];
-		}
-		else
-		{
-			$event['usertitle'] = $lang->guest;
-		}
-		$event['userstars'] = '';
-	}
+    // Events over more than one day
+    if ($event['endtime'] > 0 && $event['endtime'] != $event['starttime']) {
+        $event['endtime_user'] = $event['endtime']+$offset*3600;
+        $start_day = adodb_gmmktime(0, 0, 0, gmdate("n", $event['starttime_user']), gmdate("j", $event['starttime_user']), gmdate("Y", $event['starttime_user']));
+        $end_day = adodb_gmmktime(0, 0, 0, gmdate("n", $event['endtime_user']), gmdate("j", $event['endtime_user']), gmdate("Y", $event['endtime_user']));
+        $start_time = gmdate("Hi", $event['starttime_user']);
+        $end_time = gmdate("Hi", $event['endtime_user']);
 
-	$event['usertitle'] = htmlspecialchars_uni($event['usertitle']);
+        $event['repeats'] = my_unserialize($event['repeats']);
 
-	if($event['ignoretimezone'] == 0)
-	{
-		$offset = (float)$event['timezone'];
-	}
-	else
-	{
-		$offset = (float)$mybb->user['timezone'];
-	}
+        // Event only runs over one day
+        if ($start_day == $end_day && $event['repeats']['repeats'] == 0) {
+            $event['time_period'] = gmdate($mybb->settings['dateformat'], $event['starttime_user']);
+            // Event runs all day
+            if ($start_time != 0000 && $end_time != 2359) {
+                $event['time_period'] .= $lang->comma.gmdate($mybb->settings['timeformat'], $event['starttime_user'])." - ".gmdate($mybb->settings['timeformat'], $event['endtime_user']);
+            } else {
+                $event['time_period'] .= $lang->comma.$lang->all_day;
+            }
+        } else {
+            $event['time_period'] = gmdate($mybb->settings['dateformat'], $event['starttime_user']).", ".gmdate($mybb->settings['timeformat'], $event['starttime_user']);
+            $event['time_period'] .= " - ";
+            $event['time_period'] .= gmdate($mybb->settings['dateformat'], $event['endtime_user']).", ".gmdate($mybb->settings['timeformat'], $event['endtime_user']);
+        }
+    } else {
+        $event['time_period'] = gmdate($mybb->settings['dateformat'], $event['starttime_user']);
+    }
 
-	$event['starttime_user'] = $event['starttime']+$offset*3600;
+    $event['repeats'] = fetch_friendly_repetition($event);
 
-	// Events over more than one day
-	$time_period = '';
-	if($event['endtime'] > 0 && $event['endtime'] != $event['starttime'])
-	{
-		$event['endtime_user'] = $event['endtime']+$offset*3600;
-		$start_day = adodb_gmmktime(0, 0, 0, gmdate("n", $event['starttime_user']), gmdate("j", $event['starttime_user']), gmdate("Y", $event['starttime_user']));
-		$end_day = adodb_gmmktime(0, 0, 0, gmdate("n", $event['endtime_user']), gmdate("j", $event['endtime_user']), gmdate("Y", $event['endtime_user']));
-		$start_time = gmdate("Hi", $event['starttime_user']);
-		$end_time = gmdate("Hi", $event['endtime_user']);
+    if ($calendar_permissions['canmoderateevents'] == 1 || ($mybb->user['uid'] > 0 && $mybb->user['uid'] == $event['uid'])) {
+        $event['can_edit'] = true;
 
-		$event['repeats'] = my_unserialize($event['repeats']);
+        if ($calendar_permissions['canmoderateevents'] == 1) {
+            if ($event['visible'] == 1) {
+                $event['approve'] = $lang->unapprove_event;
+                $event['approve_value'] = "unapprove";
+            } else {
+                $event['approve'] = $lang->approve_event;
+                $event['approve_value'] = "approve";
+            }
+        }
 
-		// Event only runs over one day
-		if($start_day == $end_day && $event['repeats']['repeats'] == 0)
-		{
-			$time_period = gmdate($mybb->settings['dateformat'], $event['starttime_user']);
-			// Event runs all day
-			if($start_time != 0000 && $end_time != 2359)
-			{
-				$time_period .= $lang->comma.gmdate($mybb->settings['timeformat'], $event['starttime_user'])." - ".gmdate($mybb->settings['timeformat'], $event['endtime_user']);
-			}
-			else
-			{
-				$time_period .= $lang->comma.$lang->all_day;
-			}
-		}
-		else
-		{
-			$time_period = gmdate($mybb->settings['dateformat'], $event['starttime_user']).", ".gmdate($mybb->settings['timeformat'], $event['starttime_user']);
-			$time_period .= " - ";
-			$time_period .= gmdate($mybb->settings['dateformat'], $event['endtime_user']).", ".gmdate($mybb->settings['timeformat'], $event['endtime_user']);
-		}
-	}
-	else
-	{
-		$time_period = gmdate($mybb->settings['dateformat'], $event['starttime_user']);
-	}
+        if ($event['visible'] == 0) {
+            $event['event_class'] = " trow_shaded";
+        }
+    }
 
-	$repeats = fetch_friendly_repetition($event);
-	if($repeats)
-	{
-		eval("\$repeats = \"".$templates->get("calendar_repeats")."\";");
-	}
+    $calendar['month'] = my_date("n");
+    $calendar['year'] = my_date("Y");
+    $calendar['currentmonth'] = $monthnames[$calendar['month']];
 
-	$event_class = '';
-	if($calendar_permissions['canmoderateevents'] == 1 || ($mybb->user['uid'] > 0 && $mybb->user['uid'] == $event['uid']))
-	{
-		eval("\$edit_event = \"".$templates->get("calendar_event_editbutton")."\";");
-		if($calendar_permissions['canmoderateevents'] == 1)
-		{
-			if($event['visible'] == 1)
-			{
-				$approve = $lang->unapprove_event;
-				$approve_value = "unapprove";
-			}
-			else
-			{
-				$approve = $lang->approve_event;
-				$approve_value = "approve";
-			}
-			eval("\$moderator_options = \"".$templates->get("calendar_event_modoptions")."\";");
-		}
+    $years = [];
 
-		if($event['visible'] == 0)
-		{
-			$event_class = " trow_shaded";
-		}
-	}
+    for ($year = my_date("Y"); $year < (my_date("Y") + 5); ++$year) {
+        $years[] = $year;
+    }
 
-	$month = my_date("n");
+    // Now output the page
+    $plugins->run_hooks("calendar_event_end");
 
-	$yearsel = '';
-	for($year_sel = my_date("Y"); $year_sel < (my_date("Y") + 5); ++$year_sel)
-	{
-		eval("\$yearsel .= \"".$templates->get("calendar_year_sel")."\";");
-	}
-
-	$addevent = '';
-	if($mybb->usergroup['canaddevents'] == 1)
-	{
-		eval("\$addevent = \"".$templates->get("calendar_addeventlink")."\";");
-	}
-
-	// Now output the page
-	$plugins->run_hooks("calendar_event_end");
-	eval("\$event = \"".$templates->get("calendar_event")."\";");
-	output_page($event);
+    output_page(\MyBB\template('calendar/event.twig', [
+        'calendar_jump' => $calendar_jump,
+        'calendar' => $calendar,
+        'event' => $event,
+        'calendar_permissions' => $calendar_permissions,
+        'years' => $years,
+    ]));
 }
 
 // View all events on a specific day.
@@ -1702,287 +1629,240 @@ if($mybb->input['action'] == "dayview")
 	add_breadcrumb(htmlspecialchars_uni($calendar['name']), get_calendar_link($calendar['cid']));
 	add_breadcrumb("$day $monthnames[$month] $year", get_calendar_link($calendar['cid'], $year, $month, $day));
 
-	$plugins->run_hooks("calendar_dayview_start");
+    $plugins->run_hooks("calendar_dayview_start");
 
-	// Load Birthdays for this day
-	$birthday_list = $birthdays = '';
-	if($calendar['showbirthdays'])
-	{
-		$birthdays2 = get_birthdays($month, $day);
-		$bdayhidden = 0;
-		if(is_array($birthdays2))
-		{
-			foreach($birthdays2 as $birthday)
-			{
-				if($birthday['birthdayprivacy'] == 'all')
-				{
-					$bday = explode("-", $birthday['birthday']);
-					if($bday[2] && $bday[2] < $year)
-					{
-						$age = $year - $bday[2];
-						$age = " (".$lang->sprintf($lang->years_old, $age).")";
-					}
-					else
-					{
-						$age = '';
-					}
+    // Load Birthdays for this day
+    $birthdays = [];
+    $birthdaycount = 0;
 
-					$birthday['username'] = format_name(htmlspecialchars_uni($birthday['username']), $birthday['usergroup'], $birthday['displaygroup']);
-					$birthday['profilelink'] = build_profile_link($birthday['username'], $birthday['uid']);
-					eval("\$birthday_list .= \"".$templates->get("calendar_dayview_birthdays_bday", 1, 0)."\";");
-					$comma = $lang->comma;
-				}
-				else
-				{
-					++$bdayhidden;
-				}
-			}
-		}
-		if($bdayhidden > 0)
-		{
-			if($birthday_list)
-			{
-				$birthday_list .= " - ";
-			}
-			$birthday_list .= "{$bdayhidden} {$lang->birthdayhidden}";
-		}
-		if($birthday_list)
-		{
-			$bdaydate = my_date($mybb->settings['dateformat'], adodb_gmmktime(0, 0, 0, $month, $day, $year), 0, 0);
-			$lang->birthdays_on_day = $lang->sprintf($lang->birthdays_on_day, $bdaydate);
-			eval("\$birthdays = \"".$templates->get("calendar_dayview_birthdays", 1, 0)."\";");
-		}
-	}
+    if ($calendar['showbirthdays']) {
+        $birthdays2 = get_birthdays($month, $day);
+        $bdayhidden = 0;
+        if (is_array($birthdays2)) {
+            foreach ($birthdays2 as $birthday) {
+                if ($birthday['birthdayprivacy'] == 'all') {
+                    $bday = explode("-", $birthday['birthday']);
+                    if ($bday[2] && $bday[2] < $year) {
+                        $birthday['age'] = $year - $bday[2];
+                        $birthday['age'] = " (".$lang->sprintf($lang->years_old, $birthday['age']).")";
+                    } else {
+                        $birthday['age'] = '';
+                    }
 
-	// So now we fetch events for this month
-	$start_timestamp = adodb_gmmktime(0, 0, 0, $month, $day, $year);
-	$end_timestamp = adodb_gmmktime(23, 59, 59, $month, $day, $year);
+                    $birthday['username'] = format_name(htmlspecialchars_uni($birthday['username']), $birthday['usergroup'], $birthday['displaygroup']);
+                    $birthday['profilelink'] = build_profile_link($birthday['username'], $birthday['uid']);
 
-	$events_cache = get_events($calendar, $start_timestamp, $end_timestamp, $calendar_permissions['canmoderateevents']);
+                    if ($birthdaycount > 1) {
+                        $birthday['comma'] = $lang->comma;
+                    } else {
+                        $birthday['comma'] = '';
+                    }
 
-	$events = '';
-	if(isset($events_cache["$day-$month-$year"]) && is_array($events_cache["$day-$month-$year"]))
-	{
-		foreach($events_cache["$day-$month-$year"] as $event)
-		{
-			$event['name'] = htmlspecialchars_uni($event['name']);
+                    $birthdays[] = $birthday;
+                    ++$birthdaycount;
+                } else {
+                    ++$bdayhidden;
+                    ++$birthdaycount;
+                }
+            }
+        }
 
-			$event_parser_options = array(
-				"allow_html" => $calendar['allowhtml'],
-				"allow_mycode" => $calendar['allowmycode'],
-				"allow_smilies" => $calendar['allowsmilies'],
-				"allow_imgcode" => $calendar['allowimgcode'],
-				"allow_videocode" => $calendar['allowvideocode']
-			);
+        if ($bdayhidden > 0) {
+            if ($birthdays) {
+                $calendar['hiddendash'] = " - ";
+            } else {
+                $calendar['hiddendash'] = '';
+            }
+        }
 
-			if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
-			{
-				$event_parser_options['allow_imgcode'] = 0;
-			}
+        $calendar['bdaydate'] = my_date($mybb->settings['dateformat'], adodb_gmmktime(0, 0, 0, $month, $day, $year), 0, 0);
+    }
 
-			if($mybb->user['showvideos'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
-			{
-				$event_parser_options['allow_videocode'] = 0;
-			}
+    // So now we fetch events for this month
+    $start_timestamp = adodb_gmmktime(0, 0, 0, $month, $day, $year);
+    $end_timestamp = adodb_gmmktime(23, 59, 59, $month, $day, $year);
 
-			$event['description'] = $parser->parse_message($event['description'], $event_parser_options);
+    $events_cache = get_events($calendar, $start_timestamp, $end_timestamp, $calendar_permissions['canmoderateevents']);
 
-			// Get the usergroup
-			if($event['usergroup'])
-			{
-				$user_usergroup = usergroup_permissions($event['usergroup']);
-			}
-			else
-			{
-				$user_usergroup = usergroup_permissions(1);
-			}
+    $events = [];
+    if (isset($events_cache["$day-$month-$year"]) && is_array($events_cache["$day-$month-$year"])) {
+        foreach ($events_cache["$day-$month-$year"] as $event) {
+            $event['name'] = htmlspecialchars_uni($event['name']);
 
-			$displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
-			$display_group = usergroup_displaygroup($event['displaygroup']);
-			if(is_array($display_group))
-			{
-				$user_usergroup = array_merge($user_usergroup, $display_group);
-			}
+            $event_parser_options = array(
+                "allow_html" => $calendar['allowhtml'],
+                "allow_mycode" => $calendar['allowmycode'],
+                "allow_smilies" => $calendar['allowsmilies'],
+                "allow_imgcode" => $calendar['allowimgcode'],
+                "allow_videocode" => $calendar['allowvideocode']
+            );
 
-			$titles_cache = $cache->read("usertitles");
+            if ($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0) {
+                $event_parser_options['allow_imgcode'] = 0;
+            }
 
-			// Event made by registered user
-			if($event['uid'] > 0 && $event['username'])
-			{
-				$event['username'] = htmlspecialchars_uni($event['username']);
-				$event['profilelink'] = build_profile_link(format_name($event['username'], $event['usergroup'], $event['displaygroup']), $event['uid']);
+            if ($mybb->user['showvideos'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0) {
+                $event_parser_options['allow_videocode'] = 0;
+            }
 
-				if(trim($event['usertitle']) != "")
-				{
-					// Do nothing, no need for an extra variable..
-				}
-				elseif($user_usergroup['usertitle'] != "")
-				{
-					$event['usertitle'] = $user_usergroup['usertitle'];
-				}
-				elseif(is_array($titles_cache) && !$user_usergroup['usertitle'])
-				{
-					reset($titles_cache);
-					foreach($titles_cache as $title)
-					{
-						if($event['postnum'] >= $title['posts'])
-						{
-							$event['usertitle'] = $title['title'];
-							$event['stars'] = $title['stars'];
-							$event['starimage'] = $title['starimage'];
-							break;
-						}
-					}
-				}
+            $event['description'] = $parser->parse_message($event['description'], $event_parser_options);
 
-				if($user_usergroup['stars'])
-				{
-					$event['stars'] = $user_usergroup['stars'];
-				}
+            // Get the usergroup
+            if($event['usergroup'])
+            {
+                $user_usergroup = usergroup_permissions($event['usergroup']);
+            }
+            else
+            {
+                $user_usergroup = usergroup_permissions(1);
+            }
+            $displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
+            if(!$event['displaygroup'])
+            {
+                $event['displaygroup'] = $event['usergroup'];
+            }
+            $display_group = usergroup_displaygroup($event['displaygroup']);
+            if(is_array($display_group))
+            {
+                $user_usergroup = array_merge($user_usergroup, $display_group);
+            }
+            $titles_cache = $cache->read("usertitles");
 
-				if(empty($event['starimage']))
-				{
-					$event['starimage'] = $user_usergroup['starimage'];
-				}
+            // Event made by registered user
+            if ($event['uid'] > 0 && $event['username']) {
+                $event['username'] = htmlspecialchars_uni($event['username']);
+                $event['profilelink'] = build_profile_link(format_name($event['username'], $event['usergroup'], $event['displaygroup']), $event['uid']);
 
-				$event['userstars'] = '';
-				for($i = 0; $i < $event['stars']; ++$i)
-				{
-					eval("\$event['userstars'] .= \"".$templates->get("calendar_event_userstar", 1, 0)."\";");
-				}
+                if (trim($event['usertitle']) != "") {
+                    // Do nothing, no need for an extra variable..
+                }
+                elseif ($user_usergroup['usertitle'] != "") {
+                    $event['usertitle'] = $user_usergroup['usertitle'];
+                }
+                elseif (is_array($titles_cache) && !$user_usergroup['usertitle']) {
+                    reset($titles_cache);
+                    foreach ($titles_cache as $title) {
+                        if ($event['postnum'] >= $title['posts']) {
+                            $event['usertitle'] = $title['title'];
+                            $event['stars'] = $title['stars'];
+                            $event['starimage'] = $title['starimage'];
+                            break;
+                        }
+                    }
+                }
 
-				if($event['userstars'] && $event['starimage'] && $event['stars'])
-				{
-					$event['userstars'] .= "<br />";
-				}
-			}
-			// Created by a guest or an unknown user
-			else
-			{
-				if(!$event['username'])
-				{
-					$event['username'] = $lang->guest;
-				}
+                if ($user_usergroup['stars']) {
+                    $event['stars'] = $user_usergroup['stars'];
+                }
 
-				$event['username'] = htmlspecialchars_uni($event['username']);
-				$event['profilelink'] = format_name($event['username'], 1);
+                if (empty($event['starimage'])) {
+                    $event['starimage'] = $user_usergroup['starimage'];
+                }
+            } else {
+                // Created by a guest or an unknown user
+                if (!$event['username']) {
+                    $event['username'] = $lang->guest;
+                }
 
-				if($user_usergroup['usertitle'])
-				{
-					$event['usertitle'] = $user_usergroup['usertitle'];
-				}
-				else
-				{
-					$event['usertitle'] = $lang->guest;
-				}
-				$event['userstars'] = '';
-			}
+                $event['username'] = htmlspecialchars_uni($event['username']);
+                $event['profilelink'] = format_name($event['username'], 1);
 
-			$event['usertitle'] = htmlspecialchars_uni($event['usertitle']);
+                if ($user_usergroup['usertitle']) {
+                    $event['usertitle'] = $user_usergroup['usertitle'];
+                } else {
+                    $event['usertitle'] = $lang->guest;
+                }
+                $event['userstars'] = '';
+            }
 
-			if($event['ignoretimezone'] == 0)
-			{
-				$offset = (float)$event['timezone'];
-			}
-			else
-			{
-				$offset = (float)$mybb->user['timezone'];
-			}
+            $event['usertitle'] = htmlspecialchars_uni($event['usertitle']);
 
-			$event['starttime_user'] = $event['starttime']+$offset*3600;
+            if ($event['ignoretimezone'] == 0) {
+                $offset = (float)$event['timezone'];
+            } else {
+                $offset = (float)$mybb->user['timezone'];
+            }
 
-			// Events over more than one day
-			$time_period = '';
-			if($event['endtime'] > 0 && $event['endtime'] != $event['starttime'])
-			{
-				$event['endtime_user'] = $event['endtime']+$offset*3600;
-				$start_day = adodb_gmmktime(0, 0, 0, gmdate("n", $event['starttime_user']), gmdate("j", $event['starttime_user']), gmdate("Y", $event['starttime_user']));
-				$end_day = adodb_gmmktime(0, 0, 0, gmdate("n", $event['endtime_user']), gmdate("j", $event['endtime_user']), gmdate("Y", $event['endtime_user']));
-				$start_time = gmdate("Hi", $event['starttime_user']);
-				$end_time = gmdate("Hi", $event['endtime_user']);
+            $event['starttime_user'] = $event['starttime']+$offset*3600;
 
-				// Event only runs over one day
-				if($start_day == $end_day && $event['repeats']['repeats'] == 0)
-				{
-					$time_period = gmdate($mybb->settings['dateformat'], $event['starttime_user']);
-					// Event runs all day
-					if($start_time != 0000 && $end_time != 2359)
-					{
-						$time_period .= $lang->comma.gmdate($mybb->settings['timeformat'], $event['starttime_user'])." - ".gmdate($mybb->settings['timeformat'], $event['endtime_user']);
-					}
-					else
-					{
-						$time_period .= $lang->comma.$lang->all_day;
-					}
-				}
-				else
-				{
-					$time_period = gmdate($mybb->settings['dateformat'], $event['starttime_user']).", ".gmdate($mybb->settings['timeformat'], $event['starttime_user']);
-					$time_period .= " - ";
-					$time_period .= gmdate($mybb->settings['dateformat'], $event['endtime_user']).", ".gmdate($mybb->settings['timeformat'], $event['endtime_user']);
-				}
-			}
-			else
-			{
-				$time_period = gmdate($mybb->settings['dateformat'], $event['starttime_user']);
-			}
+            // Events over more than one day
+            if ($event['endtime'] > 0 && $event['endtime'] != $event['starttime']) {
+                $event['endtime_user'] = $event['endtime']+$offset*3600;
+                $start_day = adodb_gmmktime(0, 0, 0, gmdate("n", $event['starttime_user']), gmdate("j", $event['starttime_user']), gmdate("Y", $event['starttime_user']));
+                $end_day = adodb_gmmktime(0, 0, 0, gmdate("n", $event['endtime_user']), gmdate("j", $event['endtime_user']), gmdate("Y", $event['endtime_user']));
+                $start_time = gmdate("Hi", $event['starttime_user']);
+                $end_time = gmdate("Hi", $event['endtime_user']);
 
-			$repeats = fetch_friendly_repetition($event);
-			if($repeats)
-			{
-				eval("\$repeats = \"".$templates->get("calendar_repeats")."\";");
-			}
+                // Event only runs over one day
+                if ($start_day == $end_day && $event['repeats']['repeats'] == 0) {
+                    $event['time_period'] = gmdate($mybb->settings['dateformat'], $event['starttime_user']);
+                    // Event runs all day
+                    if ($start_time != 0000 && $end_time != 2359) {
+                        $event['time_period'] .= $lang->comma.gmdate($mybb->settings['timeformat'], $event['starttime_user'])." - ".gmdate($mybb->settings['timeformat'], $event['endtime_user']);
+                    } else {
+                        $event['time_period'] .= $lang->comma.$lang->all_day;
+                    }
+                } else {
+                    $event['time_period'] = gmdate($mybb->settings['dateformat'], $event['starttime_user']).", ".gmdate($mybb->settings['timeformat'], $event['starttime_user']);
+                    $event['time_period'] .= " - ";
+                    $event['time_period'] .= gmdate($mybb->settings['dateformat'], $event['endtime_user']).", ".gmdate($mybb->settings['timeformat'], $event['endtime_user']);
+                }
+            } else {
+                $event['time_period'] = gmdate($mybb->settings['dateformat'], $event['starttime_user']);
+            }
 
-			$edit_event = $moderator_options = $event_class = "";
-			if($calendar_permissions['canmoderateevents'] == 1 || ($mybb->user['uid'] > 0 && $mybb->user['uid'] == $event['uid']))
-			{
-				eval("\$edit_event = \"".$templates->get("calendar_event_editbutton")."\";");
-				if($calendar_permissions['canmoderateevents'] == 1)
-				{
-					if($event['visible'] == 1)
-					{
-						$approve = $lang->unapprove_event;
-						$approve_value = "unapprove";
-					}
-					else
-					{
-						$approve = $lang->approve_event;
-						$approve_value = "approve";
-					}
-					eval("\$moderator_options = \"".$templates->get("calendar_event_modoptions")."\";");
-				}
-				if($event['visible'] == 0)
-				{
-					$event_class = " trow_shaded";
-				}
-			}
-			eval("\$events .= \"".$templates->get("calendar_dayview_event")."\";");
-		}
-	}
+            $event['repeats'] = fetch_friendly_repetition($event);
 
-	$yearsel = '';
-	for($year_sel = my_date("Y"); $year_sel < (my_date("Y") + 5); ++$year_sel)
-	{
-		eval("\$yearsel .= \"".$templates->get("calendar_year_sel")."\";");
-	}
+            $event['event_class'] = '';
+            if ($calendar_permissions['canmoderateevents'] == 1 || ($mybb->user['uid'] > 0 && $mybb->user['uid'] == $event['uid'])) {
+                $event['can_edit'] = true;
 
-	$addevent = '';
-	if($mybb->usergroup['canaddevents'] == 1)
-	{
-		eval("\$addevent = \"".$templates->get("calendar_addeventlink")."\";");
-	}
+                if ($calendar_permissions['canmoderateevents'] == 1) {
+                    if ($event['visible'] == 1) {
+                        $event['approve'] = $lang->unapprove_event;
+                        $event['approve_value'] = "unapprove";
+                    } else {
+                        $event['approve'] = $lang->approve_event;
+                        $event['approve_value'] = "approve";
+                    }
+                }
 
-	if(!$events)
-	{
-		$lang->no_events = $lang->sprintf($lang->no_events, $calendar['cid'], $day, $month, $year);
-		eval("\$events = \"".$templates->get("calendar_dayview_noevents")."\";");
-	}
+                if ($event['visible'] == 0) {
+                    $event['event_class'] = " trow_shaded";
+                }
+            }
 
-	// Now output the page
-	$plugins->run_hooks("calendar_dayview_end");
+            $events[] = $event;
+        }
+    }
 
-	eval("\$day_view = \"".$templates->get("calendar_dayview")."\";");
-	output_page($day_view);
+    $years = [];
+
+    for ($year_sel = my_date("Y"); $year_sel < (my_date("Y") + 5); ++$year_sel) {
+        $years[] = $year_sel;
+    }
+
+    if (!$events) {
+        $lang->no_events = $lang->sprintf($lang->no_events, $calendar['cid'], $day, $month, $year);
+    }
+
+    $calendar['year'] = $year;
+    $calendar['month'] = $month;
+    $calendar['currentmonth'] = $monthnames[$month];
+
+    // Now output the page
+    $plugins->run_hooks("calendar_dayview_end");
+
+    output_page(\MyBB\template('calendar/dayview.twig', [
+        'birthdaycount' => $birthdaycount,
+        'bdayhidden' => $bdayhidden,
+        'birthdays' => $birthdays,
+        'calendar_jump' => $calendar_jump,
+        'events' => $events,
+        'calendar_permissions' => $calendar_permissions,
+        'calendar' => $calendar,
+        'years' => $years,
+    ]));
 }
 
 // View all events for a specific week
@@ -2016,12 +1896,6 @@ if($mybb->input['action'] == "weekview")
 
 	$weekdays = fetch_weekday_structure($calendar['startofweek']);
 
-	$yearsel = '';
-	for($year_sel = my_date("Y"); $year_sel < (my_date("Y") + 5); ++$year_sel)
-	{
-		eval("\$yearsel .= \"".$templates->get("calendar_year_sel")."\";");
-	}
-
 	// No incoming week, show THIS week
 	if(empty($mybb->input['week']))
 	{
@@ -2045,230 +1919,192 @@ if($mybb->input['action'] == "weekview")
 	// This is where we've come from and where we're headed
 	$week_from = explode("-", gmdate("j-n-Y", $mybb->input['week']));
 	$week_from_one = $week_from[1];
-	$friendly_week_from = gmdate($mybb->settings['dateformat'], $mybb->input['week']);
+	$calendar['friendly_week_from'] = gmdate($mybb->settings['dateformat'], $mybb->input['week']);
 	$week_to_stamp = adodb_gmmktime(0, 0, 0, $week_from[1], $week_from[0]+6, $week_from[2]);
 	$week_to = explode("-", gmdate("j-n-Y-t", $week_to_stamp));
-	$friendly_week_to = gmdate($mybb->settings['dateformat'], $week_to_stamp);
+	$calendar['friendly_week_to'] = gmdate($mybb->settings['dateformat'], $week_to_stamp);
 
 	add_breadcrumb(htmlspecialchars_uni($calendar['name']), get_calendar_link($calendar['cid']));
 	add_breadcrumb("{$monthnames[$week_from[1]]} {$week_from[2]}", get_calendar_link($calendar['cid'], $week_from[2], $week_from[1]));
 	add_breadcrumb($lang->weekly_overview);
 
-	$plugins->run_hooks("calendar_weekview_start");
+    $plugins->run_hooks("calendar_weekview_start");
 
-	// Establish if we have a month ending in this week
-	if($week_from[1] != $week_to[1])
-	{
-		$different_months = true;
-		$week_months = array(array($week_from[1], $week_from[2]), array($week_to[1], $week_to[2]));
-		$bday_months = array($week_from[1], $week_to[1]);
-	}
-	else
-	{
-		$week_months = array(array($week_from[1], $week_from[2]));
-		$bday_months = array($week_from[1]);
-	}
+    // Establish if we have a month ending in this week
+    if ($week_from[1] != $week_to[1]) {
+        $different_months = true;
+        $week_months = array(array($week_from[1], $week_from[2]), array($week_to[1], $week_to[2]));
+        $bday_months = array($week_from[1], $week_to[1]);
+    } else {
+        $week_months = array(array($week_from[1], $week_from[2]));
+        $bday_months = array($week_from[1]);
+    }
 
-	// Load Birthdays for this month
-	if($calendar['showbirthdays'] == 1)
-	{
-		$birthdays = get_birthdays($bday_months);
-	}
+    // Load Birthdays for this month
+    if ($calendar['showbirthdays'] == 1) {
+        $birthdays = get_birthdays($bday_months);
+    }
 
-	// We load events for the entire month date range - for our mini calendars too
-	$events_from = adodb_gmmktime(0, 0, 0, $week_from[1], 1, $week_from[2]);
-	$events_to = adodb_gmmktime(0, 0, 0, $week_to[1], $week_to[3], $week_to[2]);
+    // We load events for the entire month date range - for our mini calendars too
+    $events_from = adodb_gmmktime(0, 0, 0, $week_from[1], 1, $week_from[2]);
+    $events_to = adodb_gmmktime(0, 0, 0, $week_to[1], $week_to[3], $week_to[2]);
 
-	$events_cache = get_events($calendar, $events_from, $events_to, $calendar_permissions['canmoderateevents']);
+    $events_cache = get_events($calendar, $events_from, $events_to, $calendar_permissions['canmoderateevents']);
 
-	$today = my_date("dnY");
+    $today = my_date("dnY");
 
-	$prev_week = $mybb->input['week'] - 604800;
+    $prev_week = $mybb->input['week'] - 604800;
 
-	$prev_week_link = '';
-	if(my_date("Y", $prev_week) >= 1901)
-	{
-		$prev_link = get_calendar_week_link($calendar['cid'], $prev_week);
+    if (my_date("Y", $prev_week) >= 1901) {
+        $calendar['prev_week_link'] = get_calendar_week_link($calendar['cid'], $prev_week);
+    }
 
-		eval("\$prev_week_link = \"".$templates->get("calendar_weekview_prevlink")."\";");
-	}
+    $next_week = $mybb->input['week'] + 604800;
 
-	$next_week = $mybb->input['week'] + 604800;
+    if (my_date("Y", $next_week)+1 <= my_date("Y")+5) {
+        $calendar['next_week_link'] = get_calendar_week_link($calendar['cid'], $next_week);
+    }
 
-	$next_week_link = '';
-	if(my_date("Y", $next_week)+1 <= my_date("Y")+5)
-	{
-		$next_link = get_calendar_week_link($calendar['cid'], $next_week);
+    if (!empty($calendar['prev_week_link']) && !empty($calendar['next_week_link'])) {
+        $calendar['sep'] = true;
+    }
 
-		eval("\$next_week_link = \"".$templates->get("calendar_weekview_nextlink")."\";");
-	}
+    $weekday_date = $mybb->input['week'];
 
-	$sep = '';
-	if(!empty($prev_week_link) && !empty($next_week_link))
-	{
-		$sep = " | ";
-	}
+    $days = [];
+    while($weekday_date <= $week_to_stamp) {
+        $weekday = gmdate("w", $weekday_date);
+        $day['weekday_month'] = $weekday_month = gmdate("n", $weekday_date);
+        $weekday_year = gmdate("Y", $weekday_date);
+        $day['weekday_name'] = fetch_weekday_name($weekday);
+        $day['weekday_day'] = $weekday_day = gmdate("j", $weekday_date);
 
-	$weekday_date = $mybb->input['week'];
+        // Special shading for today
+        if (gmdate("dnY", $weekday_date) == $today) {
+            $day['day_shaded'] = ' trow_shaded';
+        }
 
-	while($weekday_date <= $week_to_stamp)
-	{
-		$weekday = gmdate("w", $weekday_date);
-		$weekday_name = fetch_weekday_name($weekday);
-		$weekday_month = gmdate("n", $weekday_date);
-		$weekday_year = gmdate("Y", $weekday_date);
-		$weekday_day = gmdate("j", $weekday_date);
+        $day['events'] = [];
 
-		// Special shading for today
-		$day_shaded = '';
-		if(gmdate("dnY", $weekday_date) == $today)
-		{
-			$day_shaded = ' trow_shaded';
-		}
+        // Any events on this specific day?
+        if (is_array($events_cache) && array_key_exists("{$weekday_day}-{$weekday_month}-{$weekday_year}", $events_cache)) {
+            foreach ($events_cache["$weekday_day-$weekday_month-$weekday_year"] as $event) {
+                $event['eventlink'] = get_event_link($event['eid']);
+                $event['fullname'] = $event['name'];
+                if (my_strlen($event['name']) > 50) {
+                    $event['name'] = my_substr($event['name'], 0, 50) . "...";
+                }
 
-		$day_events = '';
+                // Events over more than one day
+                if ($event['endtime'] > 0 && $event['endtime'] != $event['starttime']) {
+                    $start_day = adodb_gmmktime(0, 0, 0, gmdate("n", $event['starttime_user']), gmdate("j", $event['starttime_user']), gmdate("Y", $event['starttime_user']));
+                    $end_day = adodb_gmmktime(0, 0, 0, gmdate("n", $event['endtime_user']), gmdate("j", $event['endtime_user']), gmdate("Y", $event['endtime_user']));
+                    $start_time = gmdate("Hi", $event['starttime_user']);
+                    $end_time = gmdate("Hi", $event['endtime_user']);
 
-		// Any events on this specific day?
-		if(is_array($events_cache) && array_key_exists("{$weekday_day}-{$weekday_month}-{$weekday_year}", $events_cache))
-		{
-			foreach($events_cache["$weekday_day-$weekday_month-$weekday_year"] as $event)
-			{
-				$event['eventlink'] = get_event_link($event['eid']);
-				$event['name'] = htmlspecialchars_uni($event['name']);
-				$event['fullname'] = $event['name'];
-				if(my_strlen($event['name']) > 50)
-				{
-					$event['name'] = my_substr($event['name'], 0, 50) . "...";
-				}
-				// Events over more than one day
-				$time_period = '';
-				if($event['endtime'] > 0 && $event['endtime'] != $event['starttime'])
-				{
-					$start_day = adodb_gmmktime(0, 0, 0, gmdate("n", $event['starttime_user']), gmdate("j", $event['starttime_user']), gmdate("Y", $event['starttime_user']));
-					$end_day = adodb_gmmktime(0, 0, 0, gmdate("n", $event['endtime_user']), gmdate("j", $event['endtime_user']), gmdate("Y", $event['endtime_user']));
-					$start_time = gmdate("Hi", $event['starttime_user']);
-					$end_time = gmdate("Hi", $event['endtime_user']);
-					// Event only runs over one day
-					if($start_day == $end_day || $event['repeats'] > 0)
-					{
-						// Event runs all day
-						if($start_time == 0000 && $end_time == 2359)
-						{
-							$time_period = $lang->all_day;
-						}
-						else
-						{
-							$time_period = gmdate($mybb->settings['timeformat'], $event['starttime_user'])." - ".gmdate($mybb->settings['timeformat'], $event['endtime_user']);
-						}
-					}
-					// Event starts on this day
-					else if($start_day == $weekday_date)
-					{
-						// Event runs all day
-						if($start_time == 0000)
-						{
-							$time_period = $lang->all_day;
-						}
-						else
-						{
-							$time_period = $lang->starts.gmdate($mybb->settings['timeformat'], $event['starttime_user']);
-						}
-					}
-					// Event finishes on this day
-					else if($end_day == $weekday_date)
-					{
-						// Event runs all day
-						if($end_time == 2359)
-						{
-							$time_period = $lang->all_day;
-						}
-						else
-						{
-							$time_period = $lang->finishes.gmdate($mybb->settings['timeformat'], $event['endtime_user']);
-						}
-					}
-					// Event is in the middle
-					else
-					{
-						$time_period = $lang->all_day;
-					}
-				}
-				$event_time = '';
-				if($time_period)
-				{
-					eval("\$event_time = \"".$templates->get("calendar_weekview_day_event_time")."\";");
-				}
-				if($event['private'] == 1)
-				{
-					$event_class = " private_event";
-				}
-				else
-				{
-					$event_class = " public_event";
-				}
-				if($event['visible'] == 0)
-				{
-					$event_class .= " trow_shaded";
-				}
-				eval("\$day_events .= \"".$templates->get("calendar_weekview_day_event")."\";");
-			}
-		}
+                    // Event only runs over one day
+                    if ($start_day == $end_day || $event['repeats'] > 0){
+                        // Event runs all day
+                        if ($start_time == 0000 && $end_time == 2359) {
+                            $event['time_period'] = $lang->all_day;
+                        } else {
+                            $event['time_period'] = gmdate($mybb->settings['timeformat'], $event['starttime_user'])." - ".gmdate($mybb->settings['timeformat'], $event['endtime_user']);
+                        }
+                    }
+                    // Event starts on this day
+                    else if ($start_day == $weekday_date) {
+                        // Event runs all day
+                        if ($start_time == 0000) {
+                            $event['time_period'] = $lang->all_day;
+                        } else {
+                            $event['time_period'] = $lang->starts.gmdate($mybb->settings['timeformat'], $event['starttime_user']);
+                        }
+                    }
+                    // Event finishes on this day
+                    else if ($end_day == $weekday_date) {
+                        // Event runs all day
+                        if ($end_time == 2359) {
+                            $event['time_period'] = $lang->all_day;
+                        } else {
+                            $event['time_period'] = $lang->finishes.gmdate($mybb->settings['timeformat'], $event['endtime_user']);
+                        }
+                    } else {
+                        // Event is in the middle
+                        $event['time_period'] = $lang->all_day;
+                    }
+                }
 
-		// Birthdays on this day?
-		$day_birthdays = $calendar_link = $birthday_lang = '';
-		if($calendar['showbirthdays'] && is_array($birthdays) && array_key_exists("{$weekday_day}-{$weekday_month}", $birthdays))
-		{
-			$bday_count = count($birthdays["$weekday_day-$weekday_month"]);
-			if($bday_count > 1)
-			{
-				$birthday_lang = $lang->birthdays;
-			}
-			else
-			{
-				$birthday_lang = $lang->birthday;
-			}
+                if ($event['private'] == 1) {
+                    $event['event_class'] = " private_event";
+                } else {
+                    $event['event_class'] = " public_event";
+                }
 
-			$calendar_link = get_calendar_link($calendar['cid'], $weekday_year, $weekday_month, $weekday_day);
-			eval("\$day_birthdays = \"".$templates->get("calendar_weekview_day_birthdays")."\";");
-		}
+                if ($event['visible'] == 0) {
+                    $event['event_class'] .= " trow_shaded";
+                }
 
-		$day_link = get_calendar_link($calendar['cid'], $weekday_year, $weekday_month, $weekday_day);
-		if(!isset($day_bits[$weekday_month]))
-		{
-			$day_bits[$weekday_month] = '';
-		}
-		eval("\$day_bits[$weekday_month] .= \"".$templates->get("calendar_weekview_day")."\";");
-		$day_events = $day_birthdays = "";
-		$weekday_date = adodb_gmmktime(0, 0, 0, $weekday_month, $weekday_day+1, $weekday_year);
-	}
+                $day['events'][] = $event;
+            }
+        }
 
-	// Now we build our month headers
-	$mini_calendars = $weekday_bits = '';
-	foreach($week_months as $month)
-	{
-		$weekday_month = $monthnames[$month[0]];
-		$weekday_year = $month[1];
+        // Birthdays on this day?
+        $day['bday_count'] = 0;
+        $day['birthday_lang'] = $day['calendar_link'] = '';
+        if ($calendar['showbirthdays'] && is_array($birthdays) && array_key_exists("{$weekday_day}-{$weekday_month}", $birthdays)) {
+            $day['bday_count'] = count($birthdays["$weekday_day-$weekday_month"]);
+            if ($day['bday_count'] > 1) {
+                $day['birthday_lang'] = $lang->birthdays;
+            } else {
+                $day['birthday_lang'] = $lang->birthday;
+            }
 
-		// Fetch mini calendar for each month in this week
-		$mini_calendars .= build_mini_calendar($calendar, $month[0], $weekday_year, $events_cache)."<br />";
+            $day['calendar_link'] = get_calendar_link($calendar['cid'], $weekday_year, $weekday_month, $weekday_day);
+        }
 
-		// Fetch out the days for this month
-		$days = $day_bits[$month[0]];
+        $day_link = get_calendar_link($calendar['cid'], $weekday_year, $weekday_month, $weekday_day);
 
-		eval("\$weekday_bits .= \"".$templates->get("calendar_weekview_month")."\";");
-	}
+        $days[] = $day;
+        $weekday_date = adodb_gmmktime(0, 0, 0, $weekday_month, $weekday_day+1, $weekday_year);
+    }
 
-	$addevent = '';
-	if($mybb->usergroup['canaddevents'] == 1)
-	{
-		eval("\$addevent = \"".$templates->get("calendar_addeventlink")."\";");
-	}
+    // Now we build our month headers
+    $weekdays = [];
+    foreach ($week_months as $month) {
+        $month['monthnum'] = $month[0];
+        $month['month'] = $monthnames[$month[0]];
+        $month['year'] = $month[1];
 
-	// Now output the page
-	$plugins->run_hooks("calendar_weekview_end");
+        // Fetch mini calendar for each month in this week
+        $mini_calendars .= build_mini_calendar($calendar, $month[0], $weekday_year, $events_cache)."<br />";
 
-	eval("\$weekview = \"".$templates->get("calendar_weekview")."\";");
-	output_page($weekview);
+        // Fetch out the days for this month
+        $month['days'] = $days;
+
+        $weekdays[] = $month;
+    }
+
+    $calendar['month'] = $week_from[1];
+    $calendar['year'] = $week_from[2];
+    $calendar['currentmonth'] = $monthnames[$week_from_one];
+
+    $years = [];
+
+    for ($year = my_date("Y"); $year < (my_date("Y") + 5); ++$year) {
+        $years[] = $year;
+    }
+
+    // Now output the page
+    $plugins->run_hooks("calendar_weekview_end");
+
+    output_page(\MyBB\template('calendar/weekview.twig', [
+        'calendar_permissions' => $calendar_permissions,
+        'weekdays' => $weekdays,
+        'calendar_jump' => $calendar_jump,
+        'mini_calendars' => $mini_calendars,
+        'calendar' => $calendar,
+        'years' => $years,
+    ]));
 }
 
 // Showing a calendar
@@ -2327,252 +2163,228 @@ if(!$mybb->input['action'])
 	add_breadcrumb(htmlspecialchars_uni($calendar['name']), get_calendar_link($calendar['cid']));
 	add_breadcrumb("$monthnames[$month] $year", get_calendar_link($calendar['cid'], $year, $month));
 
-	$prev_month = get_prev_month($month, $year);
+    $prev_month = get_prev_month($month, $year);
 
-	$prev_month_link = '';
-	if($prev_month['year'] >= 1901)
-	{
-		$prev_link = get_calendar_link($calendar['cid'], $prev_month['year'], $prev_month['month']);
+    if ($prev_month['year'] >= 1901) {
+        $calendar['prev_month_name'] = $prev_month['name'];
+        $calendar['prev_month_year'] = $prev_month['year'];
+        $calendar['prev_link'] = get_calendar_link($calendar['cid'], $prev_month['year'], $prev_month['month']);
+    }
 
-		eval("\$prev_month_link = \"".$templates->get("calendar_prevlink")."\";");
-	}
+    $next_month = get_next_month($month, $year);
 
-	$next_month = get_next_month($month, $year);
+    if ($next_month['year'] <= my_date("Y") + 5) {
+        $calendar['next_month_name'] = $next_month['name'];
+        $calendar['next_month_year'] = $next_month['year'];
+        $calendar['next_link'] = get_calendar_link($calendar['cid'], $next_month['year'], $next_month['month']);
+    }
 
-	$next_month_link = '';
-	if($next_month['year'] <= my_date("Y")+5)
-	{
-		$next_link = get_calendar_link($calendar['cid'], $next_month['year'], $next_month['month']);
+    if (!empty($calendar['prev_link']) && !empty($calendar['next_link'])) {
+        $calendar['sep'] = true;
+    }
 
-		eval("\$next_month_link = \"".$templates->get("calendar_nextlink")."\";");
-	}
+    // Start constructing the calendar
 
-	$sep = '';
-	if(!empty($prev_month_link) && !empty($next_month_link))
-	{
-		$sep = " | ";
-	}
+    $weekdays = fetch_weekday_structure($calendar['startofweek']);
 
-	// Start constructing the calendar
+    $month_start_weekday = gmdate("w", adodb_gmmktime(0, 0, 0, $month, $calendar['startofweek']+1, $year));
 
-	$weekdays = fetch_weekday_structure($calendar['startofweek']);
+    $prev_month_days = gmdate("t", adodb_gmmktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
 
-	$month_start_weekday = gmdate("w", adodb_gmmktime(0, 0, 0, $month, $calendar['startofweek']+1, $year));
+    // This is if we have days in the previous month to show
+    if ($month_start_weekday != $weekdays[0] || $calendar['startofweek'] != 0) {
+        $prev_days = $day = gmdate("t", adodb_gmmktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
+        $day -= array_search(($month_start_weekday), $weekdays);
+        $day += $calendar['startofweek']+1;
+        if ($day > $prev_month_days+1) {
+            // Go one week back
+            $day -= 7;
+        }
+        $calendar_month = $prev_month['month'];
+        $calendar_year = $prev_month['year'];
+    } else {
+        $day = $calendar['startofweek']+1;
+        $calendar_month = $month;
+        $calendar_year = $year;
+    }
 
-	$prev_month_days = gmdate("t", adodb_gmmktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
+    // So now we fetch events for this month (nb, cache events for past month, current month and next month for mini calendars too)
+    $start_timestamp = adodb_gmmktime(0, 0, 0, $calendar_month, $day, $calendar_year);
+    $num_days = gmdate("t", adodb_gmmktime(0, 0, 0, $month, 1, $year));
 
-	// This is if we have days in the previous month to show
-	if($month_start_weekday != $weekdays[0] || $calendar['startofweek'] != 0)
-	{
-		$prev_days = $day = gmdate("t", adodb_gmmktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
-		$day -= array_search(($month_start_weekday), $weekdays);
-		$day += $calendar['startofweek']+1;
-		if($day > $prev_month_days+1)
-		{
-			// Go one week back
-			$day -= 7;
-		}
-		$calendar_month = $prev_month['month'];
-		$calendar_year = $prev_month['year'];
-	}
-	else
-	{
-		$day = $calendar['startofweek']+1;
-		$calendar_month = $month;
-		$calendar_year = $year;
-	}
+    $month_end_weekday = gmdate("w", adodb_gmmktime(0, 0, 0, $month, $num_days, $year));
+    $next_days = 6-$month_end_weekday+$calendar['startofweek'];
 
-	// So now we fetch events for this month (nb, cache events for past month, current month and next month for mini calendars too)
-	$start_timestamp = adodb_gmmktime(0, 0, 0, $calendar_month, $day, $calendar_year);
-	$num_days = gmdate("t", adodb_gmmktime(0, 0, 0, $month, 1, $year));
+    // More than a week? Go one week back
+    if ($next_days >= 7) {
+        $next_days -= 7;
+    }
 
-	$month_end_weekday = gmdate("w", adodb_gmmktime(0, 0, 0, $month, $num_days, $year));
-	$next_days = 6-$month_end_weekday+$calendar['startofweek'];
+    if ($next_days > 0) {
+        $end_timestamp = adodb_gmmktime(23, 59, 59, $next_month['month'], $next_days, $next_month['year']);
+    } else {
+        // We don't need days from the next month
+        $end_timestamp = adodb_gmmktime(23, 59, 59, $month, $num_days, $year);
+    }
 
-	// More than a week? Go one week back
-	if($next_days >= 7)
-	{
-		$next_days -= 7;
-	}
-	if($next_days > 0)
-	{
-		$end_timestamp = adodb_gmmktime(23, 59, 59, $next_month['month'], $next_days, $next_month['year']);
-	}
-	else
-	{
-		// We don't need days from the next month
-		$end_timestamp = adodb_gmmktime(23, 59, 59, $month, $num_days, $year);
-	}
+    $events_cache = get_events($calendar, $start_timestamp, $end_timestamp, $calendar_permissions['canmoderateevents']);
 
-	$events_cache = get_events($calendar, $start_timestamp, $end_timestamp, $calendar_permissions['canmoderateevents']);
+    // Fetch birthdays
+    if ($calendar['showbirthdays']) {
+        $bday_months = array($month, $prev_month['month'], $next_month['month']);
+        $birthdays = get_birthdays($bday_months);
+    }
 
-	// Fetch birthdays
-	if($calendar['showbirthdays'])
-	{
-		$bday_months = array($month, $prev_month['month'], $next_month['month']);
-		$birthdays = get_birthdays($bday_months);
-	}
+    $today = my_date("dnY");
 
-	$today = my_date("dnY");
-	$weekday_headers = '';
+    $weekday_headers = [];
 
-	// Build weekday headers
-	foreach($weekdays as $weekday)
-	{
-		$weekday_name = fetch_weekday_name($weekday);
-		eval("\$weekday_headers .= \"".$templates->get("calendar_weekdayheader")."\";");
-	}
+    // Build weekday headers
+    foreach ($weekdays as $weekday) {
+        $weekday = fetch_weekday_name($weekday);
+        $weekday_headers[] = $weekday;
+    }
 
-	$in_month = 0;
-	$day_bits = $calendar_rows = '';
-	for($row = 0; $row < 6; ++$row) // Iterate weeks (each week gets a row)
-	{
-		foreach($weekdays as $weekday_id => $weekday)
-		{
-			// Current month always starts on 1st row
-			if($row == 0 && $day == $calendar['startofweek']+1)
-			{
-				$in_month = 1;
-				$calendar_month = $month;
-				$calendar_year = $year;
-			}
-			else if($calendar_month == $prev_month['month'] && $day > $prev_month_days)
-			{
-				$day = 1;
-				$in_month = 1;
-				$calendar_month = $month;
-				$calendar_year = $year;
-			}
-			else if($day > $num_days && $calendar_month != $prev_month['month'])
-			{
-				$in_month = 0;
-				$calendar_month = $next_month['month'];
-				$calendar_year = $next_month['year'];
-				$day = 1;
-				if($calendar_month == $month)
-				{
-					$in_month = 1;
-				}
-			}
+    $weeks = [];
+    $in_month = 0;
 
-			if($weekday_id == 0)
-			{
-				$week_stamp = adodb_gmmktime(0, 0, 0, $calendar_month, $day, $calendar_year);
-				$week_link = get_calendar_week_link($calendar['cid'], $week_stamp);
-			}
+    // Iterate weeks (each week gets a row)
+	$week = $day_bit = '';
+    for ($row = 0; $row < 6; ++$row) {
+        $days = [];
+        foreach ($weekdays as $weekday_id => $weekday) {
+            // Current month always starts on 1st row
+            if ($row == 0 && $day == $calendar['startofweek']+1) {
+                $in_month = 1;
+                $calendar_month = $month;
+                $calendar_year = $year;
+            }
+            else if ($calendar_month == $prev_month['month'] && $day > $prev_month_days) {
+                $day = 1;
+                $in_month = 1;
+                $calendar_month = $month;
+                $calendar_year = $year;
+            }
+            else if ($day > $num_days && $calendar_month != $prev_month['month']) {
+                $in_month = 0;
+                $calendar_month = $next_month['month'];
+                $calendar_year = $next_month['year'];
+                $day = 1;
+                if ($calendar_month == $month) {
+                    $in_month = 1;
+                }
+            }
 
-			if($weekday_id == 0 && $calendar_month == $next_month['month'])
-			{
-				break;
-			}
+            if ($weekday_id == 0) {
+                $week_stamp = adodb_gmmktime(0, 0, 0, $calendar_month, $day, $calendar_year);
+                $week['week_link'] = get_calendar_week_link($calendar['cid'], $week_stamp);
+            }
 
-			// Any events on this specific day?
-			$day_events = $event_lang = '';
-			if(is_array($events_cache) && array_key_exists("{$day}-{$calendar_month}-{$calendar_year}", $events_cache))
-			{
-				$total_events = count($events_cache["$day-$calendar_month-$calendar_year"]);
-				if($total_events > $calendar['eventlimit'] && $calendar['eventlimit'] != 0)
-				{
-					if($total_events > 1)
-					{
-						$event_lang = $lang->events;
-					}
-					else
-					{
-						$event_lang = $lang->event;
-					}
+            if ($weekday_id == 0 && $calendar_month == $next_month['month']) {
+                break;
+            }
 
-					$calendar['link'] = get_calendar_link($calendar['cid'], $calendar_year, $calendar_month, $day);
-					eval("\$day_events = \"".$templates->get("calendar_weekrow_day_events")."\";");
-				}
-				else
-				{
-					foreach($events_cache["$day-$calendar_month-$calendar_year"] as $event)
-					{
-						$event['eventlink'] = get_event_link($event['eid']);
-						$event['fullname'] = htmlspecialchars_uni($event['name']);
-						if(my_strlen($event['name']) > 15)
-						{
-							$event['name'] = my_substr($event['name'], 0, 15) . "...";
-						}
-						$event['name'] = htmlspecialchars_uni($event['name']);
-						if($event['private'] == 1)
-						{
-							$event_class = " private_event";
-						}
-						else
-						{
-							$event_class = " public_event";
-						}
-						if($event['visible'] == 0)
-						{
-							$event_class .= " trow_shaded";
-						}
-						eval("\$day_events .= \"".$templates->get("calendar_eventbit")."\";");
-					}
-				}
-			}
+            // Any events on this specific day?
+            $day_bit['total_events'] = 0;
+            $day_bit['eventlimit'] = false;
+            $day_bit['events'] = $day_bit['event_lang'] = '';
 
-			// Birthdays on this day?
-			$day_birthdays = $birthday_lang = '';
-			if($calendar['showbirthdays'] && is_array($birthdays) && array_key_exists("$day-$calendar_month", $birthdays))
-			{
-				$bday_count = count($birthdays["$day-$calendar_month"]);
-				if($bday_count > 1)
-				{
-					$birthday_lang = $lang->birthdays;
-				}
-				else
-				{
-					$birthday_lang = $lang->birthday;
-				}
+            if (is_array($events_cache) && array_key_exists("{$day}-{$calendar_month}-{$calendar_year}", $events_cache)) {
+                $day_bit['total_events'] = count($events_cache["$day-$calendar_month-$calendar_year"]);
+                if ($day_bit['total_events'] > $calendar['eventlimit'] && $calendar['eventlimit'] != 0) {
+                    $day_bit['eventlimit'] = true;
+                    if ($day_bit['total_events'] > 1) {
+                        $day_bit['event_lang'] = $lang->events;
+                    } else {
+                        $day_bit['event_lang'] = $lang->event;
+                    }
 
-				$calendar['link'] = get_calendar_link($calendar['cid'], $calendar_year, $calendar_month, $day);
-				eval("\$day_birthdays = \"".$templates->get("calendar_weekrow_day_birthdays")."\";");
-			}
+                    $calendar['link'] = get_calendar_link($calendar['cid'], $calendar_year, $calendar_month, $day);
+                } else {
+                    $events = [];
+                    foreach ($events_cache["$day-$calendar_month-$calendar_year"] as $event) {
+                        $event['eventlink'] = get_event_link($event['eid']);
+                        $event['fullname'] = $event['name'];
 
-			$day_link = get_calendar_link($calendar['cid'], $calendar_year, $calendar_month, $day);
+                        if (my_strlen($event['name']) > 15) {
+                            $event['name'] = my_substr($event['name'], 0, 15) . "...";
+                        }
 
-			// Is the current day
-			if($day.$calendar_month.$year == $today && $month == $calendar_month)
-			{
-				$day_class = "trow_sep";
-			}
-			// Not in this month
-			else if($in_month == 0)
-			{
-				$day_class = "trow1";
-			}
-			// Just a normal day in this month
-			else
-			{
-				$day_class = "trow2";
-			}
-			eval("\$day_bits .= \"".$templates->get("calendar_weekrow_day")."\";");
-			$day_birthdays = $day_events = "";
-			++$day;
-		}
-		if($day_bits)
-		{
-			eval("\$calendar_rows .= \"".$templates->get("calendar_weekrow")."\";");
-		}
-		$day_bits = "";
-	}
+                        if ($event['private'] == 1) {
+                            $event['event_class'] = " private_event";
+                        } else {
+                            $event['event_class'] = " public_event";
+                        }
 
-	$yearsel = '';
-	for($year_sel = my_date("Y"); $year_sel < (my_date("Y") + 5); ++$year_sel)
-	{
-		eval("\$yearsel .= \"".$templates->get("calendar_year_sel")."\";");
-	}
+                        if ($event['visible'] == 0) {
+                            $event['event_class'] .= " trow_shaded";
+                        }
 
-	$addevent = '';
-	if($mybb->usergroup['canaddevents'] == 1)
-	{
-		eval("\$addevent = \"".$templates->get("calendar_addeventlink")."\";");
-	}
+                        $events[] = $event;
+                    }
 
-	$plugins->run_hooks("calendar_end");
+                    $day_bit['events'] = $events;
+                }
+            }
 
-	eval("\$calendar = \"".$templates->get("calendar")."\";");
-	output_page($calendar);
+            // Birthdays on this day?
+            $day_bit['bday_count'] = 0;
+            $day_bit['birthday_lang'] = $day_bit['calendar_link'] = '';
+            if ($calendar['showbirthdays'] && is_array($birthdays) && array_key_exists("$day-$calendar_month", $birthdays)) {
+                $day_bit['bday_count'] = count($birthdays["$day-$calendar_month"]);
+                if ($day_bit['bday_count'] > 1) {
+                    $day_bit['birthday_lang'] = $lang->birthdays;
+                } else {
+                    $day_bit['birthday_lang'] = $lang->birthday;
+                }
+
+                $day_bit['calendar_link'] = get_calendar_link($calendar['cid'], $calendar_year, $calendar_month, $day);
+            }
+
+            $day_bit['day_link'] = get_calendar_link($calendar['cid'], $calendar_year, $calendar_month, $day);
+
+            // Is the current day
+            if ($day.$calendar_month.$year == $today && $month == $calendar_month) {
+                $day_bit['day_class'] = "trow_sep";
+            }
+            // Not in this month
+            else if ($in_month == 0) {
+                $day_bit['day_class'] = "trow1";
+            } else {
+                // Just a normal day in this month
+                $day_bit['day_class'] = "trow2";
+            }
+
+            $day_bit['day'] = $day;
+            $days[] = $day_bit;
+            ++$day;
+        }
+
+        $week['days'] = $days;
+        if(!empty($week['days']))
+        {
+            $weeks[] = $week;
+        }
+    }
+
+    $years = [];
+
+    for ($year_sel = my_date("Y"); $year_sel < (my_date("Y") + 5); ++$year_sel) {
+        $years[] = $year_sel;
+    }
+
+    $calendar['month'] = $month;
+    $calendar['year'] = $year;
+    $calendar['currentmonth'] = $monthnames[$month];
+
+    $plugins->run_hooks("calendar_end");
+
+    output_page(\MyBB\template('calendar/calendar.twig', [
+        'calendar_permissions' => $calendar_permissions,
+        'years' => $years,
+        'calendar_jump' => $calendar_jump,
+        'calendar' => $calendar,
+        'weekday_headers' => $weekday_headers,
+        'weeks' => $weeks,
+    ]));
 }

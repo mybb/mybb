@@ -1,0 +1,30 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ mybb.settings.bbname }} - {{ lang.calendar }} - {{ lang.move_event }}</title>
+{% endblock head %}
+
+{% block body %}
+    <form action="calendar.php" method="post" name="input">
+        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder clear">
+            <tr>
+                <td colspan="2" width="100%" class="thead"><strong>{{ lang.move_event }}: {{ event.name }}</strong></td>
+            </tr>
+            <tr>
+                <td width="20%" class="trow1"><strong>{{ lang.move_to_calendar }}</strong></td>
+                <td class="trow1">
+                    <select name="new_calendar">
+                        {% for calendar in calendar_select %}
+                            <option value="{{ calendar.cid }}">{{ calendar.name }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+            </tr>
+        </table>
+        <br />
+        <input type="hidden" name="action" value="do_move" />
+        <input type="hidden" name="eid" value="{{ event.eid }}" />
+        <div align="center"><input type="submit" class="button" value="{{ lang.move_event }}" /></div>
+    </form>
+{% endblock body %}

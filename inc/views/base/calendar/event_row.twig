@@ -1,0 +1,57 @@
+<table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder tfixed">
+    <tr>
+        <td class="thead"><strong>{{ event.name }}</strong></td>
+    </tr>
+    <tr>
+        <td class="tcat"><strong>{{ event.time_period }}</strong></td>
+    </tr>
+    <tr>
+        <td class="trow1{{ event.event_class }}">
+            <div class="float_left">
+                <strong><span class="largetext">{{ event.profilelink|raw }}</span></strong><br />
+                <span class="smalltext">
+                    {{ event.usertitle }}<br />
+                    {% if event.starimage and event.stars %}
+                        {% spaceless %}
+                            {% for star in range(1, event.stars) %}
+                                <img src="{{ event.starimage }}" border="0" alt="*" />
+                            {% endfor %}
+                        {% endspaceless %}
+                        <br />
+                    {% endif %}
+                </span>
+            </div>
+            <div class="float_right" style="text-align: right;">
+                {% if calendar_permissions.canmoderateevents %}
+                    <form method="post" action="calendar.php">
+                        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+                        <input type="hidden" name="eid" value="{{ event.eid }}">
+                        <select name="action" onchange="if(this.options[this.selectedIndex].value != '') { window.location=('calendar.php?action='+this.options[this.selectedIndex].value+'&amp;eid={{ event.eid }}&amp;my_post_key={{ mybb.post_code }}') }">
+                            <option value="" style="font-weight: bold;">{{ lang.moderator_options }}</option>
+                            <option value="{{ event.approve_value }}">{{ event.approve }}</option>
+                            <option value="move">{{ lang.move_event }}</option>
+                        </select>
+                        {{ gobutton|raw }}
+                    </form>
+                    <br />
+                {% endif %}
+                {% if event.repeats %}
+                    <span class="smalltext"><strong>{{ lang.repeats }}</strong><br />{{ event.repeats }}</span>
+                {% endif %}
+            </div>
+            <br class="clear" />
+        </td>
+    </tr>
+    <tr>
+        <td class="trow2 scaleimages{{ event.event_class }}">
+            <p>{{ event.description|raw }}</p>
+            {% if event.can_edit == true %}
+                <div style="text-align: right; vertical-align: bottom;" class="postbit_buttons">
+                    <a href="calendar.php?action=editevent&amp;eid={{ event.eid }}" class="postbit_edit"><span>{{ lang.postbit_button_edit }}</span></a>
+                    <a href="javascript:void(0)" onclick="MyBB.deleteEvent({{ event.eid }}); return false;" class="postbit_qdelete"><span>{{ lang.postbit_button_qdelete }}</span></a>
+                </div>
+            {% endif %}
+        </td>
+    </tr>
+</table>
+<br />
