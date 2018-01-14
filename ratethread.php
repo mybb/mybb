@@ -53,13 +53,6 @@ if(!$forum)
 {
 	error($lang->error_invalidforum);
 }
-
-// Get forum info
-$forum = get_forum($fid);
-if(!$forum)
-{
-	error($lang->error_invalidforum);
-}
 else
 {
 	// Is our forum closed?
