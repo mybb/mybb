@@ -240,13 +240,6 @@ function build_postbit($post, $post_type=0)
 			$post['stars']) {
 			// Only display stars if we have an image to use...
 			$post['starimage'] = str_replace("{theme}", $theme['imgdir'], $post['starimage']);
-
-			$post['userstars'] = '';
-			for ($i = 0; $i < $post['stars']; ++$i) {
-				eval("\$post['userstars'] .= \"".$templates->get("postbit_userstar", 1, 0)."\";");
-			}
-
-			$post['userstars'] .= "<br />";
 		}
 
 		$postnum = $post['postnum'];
