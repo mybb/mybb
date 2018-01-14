@@ -25,14 +25,14 @@ function build_postbit($post, $post_type=0)
 	$hascustomtitle = 0;
 
 	// Set default values for any fields not provided here
-	foreach (array('pid', 'aid', 'pmid', 'posturl', 'subject_extra', 'attachments', 'replink', 'warninglevel') as $post_field) {
+	foreach (array('pid', 'aid', 'pmid', 'posturl', 'subject_extra', 'attachments', 'warninglevel') as $post_field) {
 		if (empty($post[$post_field])) {
 			$post[$post_field] = '';
 		}
 	}
 
 	// Set default values for buttons here
-	foreach (array('button_multiquote', 'button_rep', 'button_warn', 'button_purgespammer', 'button_pm', 'button_reply_pm', 'button_replyall_pm', 'button_forward_pm', 'button_delete_pm') as $post_button) {
+	foreach (array('button_multiquote', 'button_rep', 'button_warn', 'button_purgespammer', 'button_pm', 'button_reply_pm', 'button_replyall_pm', 'button_forward_pm', 'button_delete_pm', 'replink') as $post_button) {
 		if (empty($post[$post_button])) {
 			$post[$post_button] = false;
 		}
@@ -325,7 +325,7 @@ function build_postbit($post, $post_type=0)
 			$usergroup['usereputationsystem'] != 0
 			&& $mybb->settings['enablereputation'] == 1) {
 			$post['userreputation'] = get_reputation($post['reputation'], $post['uid']);
-			eval("\$post['replink'] = \"".$templates->get("postbit_reputation")."\";");
+			$post['replink'] = true;
 		}
 
 		// Showing the warning level? (only show if not announcement)
@@ -438,7 +438,7 @@ function build_postbit($post, $post_type=0)
 		$post['button_pm'] = false;
 		$post['button_find'] = false;
 		$post['onlinestatus'] = '';
-		$post['replink'] = '';
+		$post['replink'] = false;
 	}
 
 	$post['input_editreason'] = '';

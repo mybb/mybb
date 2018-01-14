@@ -37,7 +37,10 @@
 			{{ lang.postbit_posts }} {{ post.postnum }}<br />
 			{{ lang.postbit_threads }} {{ post.threadnum }}<br />
 			{{ lang.postbit_joined }} {{ post.userregdate }}
-			{{ post.replink|raw }}{{ post.profilefield }}{{ post.warninglevel|raw }}
+	{% if post.replink %}
+			<br />{{ lang.postbit_reputation }} {{ post.userreputation|raw }}
+	{% endif %}
+			{{ post.profilefield }}{{ post.warninglevel|raw }}
 {% endif %}
 		</div>
 	</div>
