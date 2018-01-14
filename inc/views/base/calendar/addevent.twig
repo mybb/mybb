@@ -22,7 +22,7 @@
                     <td class="trow1">
                         <select name="calendar">
                             {% for calendar in calendar_select %}
-                                <option value="{{ calendar.cid }}"{{ calendar.selected }}>{{ calendar.name }}</option>
+                                <option value="{{ calendar.cid }}"{% if calendar.selected %} selected="selected"{% endif %}>{{ calendar.name }}</option>
                             {% endfor %}
                         </select>
                     </td>
@@ -65,119 +65,63 @@
                     // -->
                     </script>
                     <dl style="margin-top: 0; margin-bottom: 0; width: 100%;">
-                        <dt><input type="radio" name="type" value="single" {{ select.type_single }} id="type_single" onclick="toggleType();" /> <label for="type_single"><strong>{{ lang.type_single }}</strong></label></dt>
+                        <dt><input type="radio" name="type" value="single"{% if select.type_single %} checked="checked"{% endif %} id="type_single" onclick="toggleType();" /> <label for="type_single"><strong>{{ lang.type_single }}</strong></label></dt>
                         <dd style="margin-top: 4px;" id="single_selects">
                             <select name="single_day">
-                                <option value="1"{{ select.single_day.1 }}>1</option>
-                                <option value="2"{{ select.single_day.2 }}>2</option>
-                                <option value="3"{{ select.single_day.3 }}>3</option>
-                                <option value="4"{{ select.single_day.4 }}>4</option>
-                                <option value="5"{{ select.single_day.5 }}>5</option>
-                                <option value="6"{{ select.single_day.6 }}>6</option>
-                                <option value="7"{{ select.single_day.7 }}>7</option>
-                                <option value="8"{{ select.single_day.8 }}>8</option>
-                                <option value="9"{{ select.single_day.9 }}>9</option>
-                                <option value="10"{{ select.single_day.10 }}>10</option>
-                                <option value="11"{{ select.single_day.11 }}>11</option>
-                                <option value="12"{{ select.single_day.12 }}>12</option>
-                                <option value="13"{{ select.single_day.13 }}>13</option>
-                                <option value="14"{{ select.single_day.14 }}>14</option>
-                                <option value="15"{{ select.single_day.15 }}>15</option>
-                                <option value="16"{{ select.single_day.16 }}>16</option>
-                                <option value="17"{{ select.single_day.17 }}>17</option>
-                                <option value="18"{{ select.single_day.18 }}>18</option>
-                                <option value="19"{{ select.single_day.19 }}>19</option>
-                                <option value="20"{{ select.single_day.20 }}>20</option>
-                                <option value="21"{{ select.single_day.21 }}>21</option>
-                                <option value="22"{{ select.single_day.22 }}>22</option>
-                                <option value="23"{{ select.single_day.23 }}>23</option>
-                                <option value="24"{{ select.single_day.24 }}>24</option>
-                                <option value="25"{{ select.single_day.25 }}>25</option>
-                                <option value="26"{{ select.single_day.26 }}>26</option>
-                                <option value="27"{{ select.single_day.27 }}>27</option>
-                                <option value="28"{{ select.single_day.28 }}>28</option>
-                                <option value="29"{{ select.single_day.29 }}>29</option>
-                                <option value="30"{{ select.single_day.30 }}>30</option>
-                                <option value="31"{{ select.single_day.31 }}>31</option>
+                                {% for day in days %}
+                                    <option value="{{ day.day }}"{% if day.single_day %} selected="selected"{% endif %}>{{ day.day }}</option>
+                                {% endfor %}
                             </select>
                             &nbsp;
                             <select name="single_month">
-                                <option value="1"{{ select.single_month.1 }}>{{ lang.month_1 }}</option>
-                                <option value="2"{{ select.single_month.2 }}>{{ lang.month_2 }}</option>
-                                <option value="3"{{ select.single_month.3 }}>{{ lang.month_3 }}</option>
-                                <option value="4"{{ select.single_month.4 }}>{{ lang.month_4 }}</option>
-                                <option value="5"{{ select.single_month.5 }}>{{ lang.month_5 }}</option>
-                                <option value="6"{{ select.single_month.6 }}>{{ lang.month_6 }}</option>
-                                <option value="7"{{ select.single_month.7 }}>{{ lang.month_7 }}</option>
-                                <option value="8"{{ select.single_month.8 }}>{{ lang.month_8 }}</option>
-                                <option value="9"{{ select.single_month.9 }}>{{ lang.month_9 }}</option>
-                                <option value="10"{{ select.single_month.10 }}>{{ lang.month_10 }}</option>
-                                <option value="11"{{ select.single_month.11 }}>{{ lang.month_11 }}</option>
-                                <option value="12"{{ select.single_month.12 }}>{{ lang.month_12 }}</option>
+                                <option value="1"{% if select.single_month.1 %} selected="selected"{% endif %}>{{ lang.month_1 }}</option>
+                                <option value="2"{% if select.single_month.2 %} selected="selected"{% endif %}>{{ lang.month_2 }}</option>
+                                <option value="3"{% if select.single_month.3 %} selected="selected"{% endif %}>{{ lang.month_3 }}</option>
+                                <option value="4"{% if select.single_month.4 %} selected="selected"{% endif %}>{{ lang.month_4 }}</option>
+                                <option value="5"{% if select.single_month.5 %} selected="selected"{% endif %}>{{ lang.month_5 }}</option>
+                                <option value="6"{% if select.single_month.6 %} selected="selected"{% endif %}>{{ lang.month_6 }}</option>
+                                <option value="7"{% if select.single_month.7 %} selected="selected"{% endif %}>{{ lang.month_7 }}</option>
+                                <option value="8"{% if select.single_month.8 %} selected="selected"{% endif %}>{{ lang.month_8 }}</option>
+                                <option value="9"{% if select.single_month.9 %} selected="selected"{% endif %}>{{ lang.month_9 }}</option>
+                                <option value="10"{% if select.single_month.10 %} selected="selected"{% endif %}>{{ lang.month_10 }}</option>
+                                <option value="11"{% if select.single_month.11 %} selected="selected"{% endif %}>{{ lang.month_11 }}</option>
+                                <option value="12"{% if select.single_month.12 %} selected="selected"{% endif %}>{{ lang.month_12 }}</option>
                             </select>
                             &nbsp;
                             <select name="single_year">
                                 {% for year in years %}
-                                    <option value="{{ year }}" {{ select.single_year }}>{{ year }}</option>
+                                    <option value="{{ year.year }}"{% if year.single_year %} selected="selected"{% endif %}>{{ year.year }}</option>
                                 {% endfor %}
                             </select>
                         </dd>
-                        <dt><input type="radio" name="type" value="ranged" {{ select.type_ranged }} id="type_ranged" onclick="toggleType();" /> <label for="type_ranged"><strong>{{ lang.type_ranged }}</strong></label></dt>
+                        <dt><input type="radio" name="type" value="ranged"{% if select.type_ranged %} checked="checked"{% endif %} id="type_ranged" onclick="toggleType();" /> <label for="type_ranged"><strong>{{ lang.type_ranged }}</strong></label></dt>
                         <dd style="margin-top: 4px; width: 100%;" id="ranged_selects">
                             <table width="100%">
                                 <tr>
                                     <td class="smalltext" style="padding: 4px; text-align: right;">{{ lang.start_time }}</td>
                                     <td style="padding: 4px;">
                                         <select name="start_day">
-                                            <option value="1"{{ select.start_day.1 }}>1</option>
-                                            <option value="2"{{ select.start_day.2 }}>2</option>
-                                            <option value="3"{{ select.start_day.3 }}>3</option>
-                                            <option value="4"{{ select.start_day.4 }}>4</option>
-                                            <option value="5"{{ select.start_day.5 }}>5</option>
-                                            <option value="6"{{ select.start_day.6 }}>6</option>
-                                            <option value="7"{{ select.start_day.7 }}>7</option>
-                                            <option value="8"{{ select.start_day.8 }}>8</option>
-                                            <option value="9"{{ select.start_day.9 }}>9</option>
-                                            <option value="10"{{ select.start_day.10 }}>10</option>
-                                            <option value="11"{{ select.start_day.11 }}>11</option>
-                                            <option value="12"{{ select.start_day.12 }}>12</option>
-                                            <option value="13"{{ select.start_day.13 }}>13</option>
-                                            <option value="14"{{ select.start_day.14 }}>14</option>
-                                            <option value="15"{{ select.start_day.15 }}>15</option>
-                                            <option value="16"{{ select.start_day.16 }}>16</option>
-                                            <option value="17"{{ select.start_day.17 }}>17</option>
-                                            <option value="18"{{ select.start_day.18 }}>18</option>
-                                            <option value="19"{{ select.start_day.19 }}>19</option>
-                                            <option value="20"{{ select.start_day.20 }}>20</option>
-                                            <option value="21"{{ select.start_day.21 }}>21</option>
-                                            <option value="22"{{ select.start_day.22 }}>22</option>
-                                            <option value="23"{{ select.start_day.23 }}>23</option>
-                                            <option value="24"{{ select.start_day.24 }}>24</option>
-                                            <option value="25"{{ select.start_day.25 }}>25</option>
-                                            <option value="26"{{ select.start_day.26 }}>26</option>
-                                            <option value="27"{{ select.start_day.27 }}>27</option>
-                                            <option value="28"{{ select.start_day.28 }}>28</option>
-                                            <option value="29"{{ select.start_day.29 }}>29</option>
-                                            <option value="30"{{ select.start_day.30 }}>30</option>
-                                            <option value="31"{{ select.start_day.31 }}>31</option>
+                                            {% for day in days %}
+                                                <option value="{{ day.day }}"{% if day.start_day %} selected="selected"{% endif %}>{{ day.day }}</option>
+                                            {% endfor %}
                                         </select>
                                         <select name="start_month">
-                                            <option value="1"{{ select.start_month.1 }}>{{ lang.month_1 }}</option>
-                                            <option value="2"{{ select.start_month.2 }}>{{ lang.month_2 }}</option>
-                                            <option value="3"{{ select.start_month.3 }}>{{ lang.month_3 }}</option>
-                                            <option value="4"{{ select.start_month.4 }}>{{ lang.month_4 }}</option>
-                                            <option value="5"{{ select.start_month.5 }}>{{ lang.month_5 }}</option>
-                                            <option value="6"{{ select.start_month.6 }}>{{ lang.month_6 }}</option>
-                                            <option value="7"{{ select.start_month.7 }}>{{ lang.month_7 }}</option>
-                                            <option value="8"{{ select.start_month.8 }}>{{ lang.month_8 }}</option>
-                                            <option value="9"{{ select.start_month.9 }}>{{ lang.month_9 }}</option>
-                                            <option value="10"{{ select.start_month.10 }}>{{ lang.month_10 }}</option>
-                                            <option value="11"{{ select.start_month.11 }}>{{ lang.month_11 }}</option>
-                                            <option value="12"{{ select.start_month.12 }}>{{ lang.month_12 }}</option>
+                                            <option value="1"{% if select.start_month.1 %} selected="selected"{% endif %}>{{ lang.month_1 }}</option>
+                                            <option value="2"{% if select.start_month.2 %} selected="selected"{% endif %}>{{ lang.month_2 }}</option>
+                                            <option value="3"{% if select.start_month.3 %} selected="selected"{% endif %}>{{ lang.month_3 }}</option>
+                                            <option value="4"{% if select.start_month.4 %} selected="selected"{% endif %}>{{ lang.month_4 }}</option>
+                                            <option value="5"{% if select.start_month.5 %} selected="selected"{% endif %}>{{ lang.month_5 }}</option>
+                                            <option value="6"{% if select.start_month.6 %} selected="selected"{% endif %}>{{ lang.month_6 }}</option>
+                                            <option value="7"{% if select.start_month.7 %} selected="selected"{% endif %}>{{ lang.month_7 }}</option>
+                                            <option value="8"{% if select.start_month.8 %} selected="selected"{% endif %}>{{ lang.month_8 }}</option>
+                                            <option value="9"{% if select.start_month.9 %} selected="selected"{% endif %}>{{ lang.month_9 }}</option>
+                                            <option value="10"{% if select.start_month.10 %} selected="selected"{% endif %}>{{ lang.month_10 }}</option>
+                                            <option value="11"{% if select.start_month.11 %} selected="selected"{% endif %}>{{ lang.month_11 }}</option>
+                                            <option value="12"{% if select.start_month.12 %} selected="selected"{% endif %}>{{ lang.month_12 }}</option>
                                         </select>
                                         <select name="start_year">
                                             {% for year in years %}
-                                                <option value="{{ year }}" {{ select.start_year.year }}>{{ year }}</option>
+                                                <option value="{{ year.year }}"{% if year.start_year %} selected="selected"{% endif %}>{{ year.year }}</option>
                                             {% endfor %}
                                         </select>
                                         <span class="smalltext">&nbsp;&nbsp;&nbsp;{{ lang.enter_time }}</span>
@@ -188,55 +132,27 @@
                                     <td class="smalltext" style="padding: 4px; text-align: right;">{{ lang.end_time }}</td>
                                     <td style="padding: 4px;">
                                         <select name="end_day">
-                                            <option value="1"{{ select.end_day.1 }}>1</option>
-                                            <option value="2"{{ select.end_day.2 }}>2</option>
-                                            <option value="3"{{ select.end_day.3 }}>3</option>
-                                            <option value="4"{{ select.end_day.4 }}>4</option>
-                                            <option value="5"{{ select.end_day.5 }}>5</option>
-                                            <option value="6"{{ select.end_day.6 }}>6</option>
-                                            <option value="7"{{ select.end_day.7 }}>7</option>
-                                            <option value="8"{{ select.end_day.8 }}>8</option>
-                                            <option value="9"{{ select.end_day.9 }}>9</option>
-                                            <option value="10"{{ select.end_day.10 }}>10</option>
-                                            <option value="11"{{ select.end_day.11 }}>11</option>
-                                            <option value="12"{{ select.end_day.12 }}>12</option>
-                                            <option value="13"{{ select.end_day.13 }}>13</option>
-                                            <option value="14"{{ select.end_day.14 }}>14</option>
-                                            <option value="15"{{ select.end_day.15 }}>15</option>
-                                            <option value="16"{{ select.end_day.16 }}>16</option>
-                                            <option value="17"{{ select.end_day.17 }}>17</option>
-                                            <option value="18"{{ select.end_day.18 }}>18</option>
-                                            <option value="19"{{ select.end_day.19 }}>19</option>
-                                            <option value="20"{{ select.end_day.20 }}>20</option>
-                                            <option value="21"{{ select.end_day.21 }}>21</option>
-                                            <option value="22"{{ select.end_day.22 }}>22</option>
-                                            <option value="23"{{ select.end_day.23 }}>23</option>
-                                            <option value="24"{{ select.end_day.24 }}>24</option>
-                                            <option value="25"{{ select.end_day.25 }}>25</option>
-                                            <option value="26"{{ select.end_day.26 }}>26</option>
-                                            <option value="27"{{ select.end_day.27 }}>27</option>
-                                            <option value="28"{{ select.end_day.28 }}>28</option>
-                                            <option value="29"{{ select.end_day.29 }}>29</option>
-                                            <option value="30"{{ select.end_day.30 }}>30</option>
-                                            <option value="31"{{ select.end_day.31 }}>31</option>
+                                            {% for day in days %}
+                                                <option value="{{ day.day }}"{% if day.end_day %} selected="selected"{% endif %}>{{ day.day }}</option>
+                                            {% endfor %}
                                         </select>
                                         <select name="end_month">
-                                            <option value="1"{{ select.end_month.1 }}>{{ lang.month_1 }}</option>
-                                            <option value="2"{{ select.end_month.2 }}>{{ lang.month_2 }}</option>
-                                            <option value="3"{{ select.end_month.3 }}>{{ lang.month_3 }}</option>
-                                            <option value="4"{{ select.end_month.4 }}>{{ lang.month_4 }}</option>
-                                            <option value="5"{{ select.end_month.5 }}>{{ lang.month_5 }}</option>
-                                            <option value="6"{{ select.end_month.6 }}>{{ lang.month_6 }}</option>
-                                            <option value="7"{{ select.end_month.7 }}>{{ lang.month_7 }}</option>
-                                            <option value="8"{{ select.end_month.8 }}>{{ lang.month_8 }}</option>
-                                            <option value="9"{{ select.end_month.9 }}>{{ lang.month_9 }}</option>
-                                            <option value="10"{{ select.end_month.10 }}>{{ lang.month_10 }}</option>
-                                            <option value="11"{{ select.end_month.11 }}>{{ lang.month_11 }}</option>
-                                            <option value="12"{{ select.end_month.12 }}>{{ lang.month_12 }}</option>
+                                            <option value="1"{% if select.end_month.1 %} selected="selected"{% endif %}>{{ lang.month_1 }}</option>
+                                            <option value="2"{% if select.end_month.2 %} selected="selected"{% endif %}>{{ lang.month_2 }}</option>
+                                            <option value="3"{% if select.end_month.3 %} selected="selected"{% endif %}>{{ lang.month_3 }}</option>
+                                            <option value="4"{% if select.end_month.4 %} selected="selected"{% endif %}>{{ lang.month_4 }}</option>
+                                            <option value="5"{% if select.end_month.5 %} selected="selected"{% endif %}>{{ lang.month_5 }}</option>
+                                            <option value="6"{% if select.end_month.6 %} selected="selected"{% endif %}>{{ lang.month_6 }}</option>
+                                            <option value="7"{% if select.end_month.7 %} selected="selected"{% endif %}>{{ lang.month_7 }}</option>
+                                            <option value="8"{% if select.end_month.8 %} selected="selected"{% endif %}>{{ lang.month_8 }}</option>
+                                            <option value="9"{% if select.end_month.9 %} selected="selected"{% endif %}>{{ lang.month_9 }}</option>
+                                            <option value="10"{% if select.end_month.10 %} selected="selected"{% endif %}>{{ lang.month_10 }}</option>
+                                            <option value="11"{% if select.end_month.11 %} selected="selected"{% endif %}>{{ lang.month_11 }}</option>
+                                            <option value="12"{% if select.end_month.12 %} selected="selected"{% endif %}>{{ lang.month_12 }}</option>
                                         </select>
                                         <select name="end_year">
                                             {% for year in years %}
-                                                <option value="{{ year }}" {{ select.end_year.year }}>{{ year }}</option>
+                                                <option value="{{ year.year }}"{% if year.end_year %} selected="selected"{% endif %}>{{ year.year }}</option>
                                             {% endfor %}
                                         </select>
                                         <span class="smalltext">&nbsp;&nbsp;&nbsp;{{ lang.enter_time }}</span>
@@ -247,7 +163,7 @@
                                     <td class="smalltext" style="padding: 4px; text-align: right; vertical-align: top;">{{ lang.timezone }}</td>
                                     <td style="padding: 4px;">
                                         {{ timezones|raw }}<br />
-                                        <label class="smalltext" style="display: block; padding-top: 4px;"><input type="checkbox" name="ignoretimezone" value="1" {{ select.ignore_timezone }} style="vertical-align: middle;" /> {{ lang.ignore_timezone|raw }} </label>
+                                        <label class="smalltext" style="display: block; padding-top: 4px;"><input type="checkbox" name="ignoretimezone" value="1"{% if select.ignore_timezone %} checked="checked"{% endif %} style="vertical-align: middle;" /> {{ lang.ignore_timezone|raw }} </label>
                                     </td>
                                 </tr>
                                 <tr>
@@ -255,11 +171,11 @@
                                     <td class="smalltext" style="padding: 4px;">
                                         <select name="repeats" id="repeats" onchange="toggleRepeats();">
                                             <option value="0">{{ lang.does_not_repeat }}</option>
-                                            <option value="1"{{ select.repeats_sel.1 }}>{{ lang.repeats_daily }}</option>
-                                            <option value="2"{{ select.repeats_sel.2 }}>{{ lang.repeats_weekdays }}</option>
-                                            <option value="3"{{ select.repeats_sel.3 }}>{{ lang.repeats_weekly }}</option>
-                                            <option value="4"{{ select.repeats_sel.4 }}>{{ lang.repeats_monthly }}</option>
-                                            <option value="5"{{ select.repeats_sel.5 }}>{{ lang.repeats_yearly }}</option>
+                                            <option value="1"{% if select.repeats_sel.1 %} selected="selected"{% endif %}>{{ lang.repeats_daily }}</option>
+                                            <option value="2"{% if select.repeats_sel.2 %} selected="selected"{% endif %}>{{ lang.repeats_weekdays }}</option>
+                                            <option value="3"{% if select.repeats_sel.3 %} selected="selected"{% endif %}>{{ lang.repeats_weekly }}</option>
+                                            <option value="4"{% if select.repeats_sel.4 %} selected="selected"{% endif %}>{{ lang.repeats_monthly }}</option>
+                                            <option value="5"{% if select.repeats_sel.5 %} selected="selected"{% endif %}>{{ lang.repeats_yearly }}</option>
                                         </select>
                                         <div class="repeats_type" id="repeats_type_1" style="padding: 4px;">
                                             {{ lang.repeats_every }}
@@ -271,42 +187,42 @@
                                             <br />
                                             <table style="padding: 4px;">
                                                 <tr>
-                                                    <td style="padding: 2px;" class="smalltext"><label><input type="checkbox" name="repeats_3_days[0]" value="1" {{ select.repeats_3_days.0 }} style="vertical-align: middle;" /> {{ lang.sunday }}</label></td>
-                                                    <td style="padding: 2px;" class="smalltext"><label><input type="checkbox" name="repeats_3_days[1]" value="1" {{ select.repeats_3_days.1 }} style="vertical-align: middle;" /> {{ lang.monday }}</label></td>
-                                                    <td style="padding: 2px;" class="smalltext"><label><input type="checkbox" name="repeats_3_days[2]" value="1" {{ select.repeats_3_days.2 }} style="vertical-align: middle;" /> {{ lang.tuesday }}</label></td>
-                                                    <td style="padding: 2px;" class="smalltext"><label><input type="checkbox" name="repeats_3_days[3]" value="1" {{ select.repeats_3_days.3 }} style="vertical-align: middle;" /> {{ lang.wednesday }}</label></td>
+                                                    <td style="padding: 2px;" class="smalltext"><label><input type="checkbox" name="repeats_3_days[0]" value="1"{% if select.repeats_3_days.0 %} checked="checked"{% endif %} style="vertical-align: middle;" /> {{ lang.sunday }}</label></td>
+                                                    <td style="padding: 2px;" class="smalltext"><label><input type="checkbox" name="repeats_3_days[1]" value="1"{% if select.repeats_3_days.1 %} checked="checked"{% endif %} style="vertical-align: middle;" /> {{ lang.monday }}</label></td>
+                                                    <td style="padding: 2px;" class="smalltext"><label><input type="checkbox" name="repeats_3_days[2]" value="1"{% if select.repeats_3_days.2 %} checked="checked"{% endif %} style="vertical-align: middle;" /> {{ lang.tuesday }}</label></td>
+                                                    <td style="padding: 2px;" class="smalltext"><label><input type="checkbox" name="repeats_3_days[3]" value="1"{% if select.repeats_3_days.3 %} checked="checked"{% endif %} style="vertical-align: middle;" /> {{ lang.wednesday }}</label></td>
                                                 </tr>
                                                 <tr>
-                                                    <td style="padding: 2px;" class="smalltext"><label><input type="checkbox" name="repeats_3_days[4]" value="1" {{ select.repeats_3_days.4 }} style="vertical-align: middle;" /> {{ lang.thursday }}</label></td>
-                                                    <td style="padding: 2px;" class="smalltext"><label><input type="checkbox" name="repeats_3_days[5]" value="1" {{ select.repeats_3_days.5 }} style="vertical-align: middle;" /> {{ lang.friday }}</label></td>
-                                                    <td style="padding: 2px;" class="smalltext" colspan="2"><label><input type="checkbox" name="repeats_3_days[6]" value="1" {{ select.repeats_3_days.6 }} style="vertical-align: middle;" /> {{ lang.saturday }}</label></td>
+                                                    <td style="padding: 2px;" class="smalltext"><label><input type="checkbox" name="repeats_3_days[4]" value="1"{% if select.repeats_3_days.4 %} checked="checked"{% endif %} style="vertical-align: middle;" /> {{ lang.thursday }}</label></td>
+                                                    <td style="padding: 2px;" class="smalltext"><label><input type="checkbox" name="repeats_3_days[5]" value="1"{% if select.repeats_3_days.5 %} checked="checked"{% endif %} style="vertical-align: middle;" /> {{ lang.friday }}</label></td>
+                                                    <td style="padding: 2px;" class="smalltext" colspan="2"><label><input type="checkbox" name="repeats_3_days[6]" value="1"{% if select.repeats_3_days.6 %} checked="checked"{% endif %} style="vertical-align: middle;" /> {{ lang.saturday }}</label></td>
                                                 </tr>
                                             </table>
                                         </div>
                                         <div class="repeats_type" id="repeats_type_4" style="padding: 4px;">
                                             <div class="smalltext"><label>
-                                                <input type="radio" name="repeats_4_type" id="repeats_4_type_1" value="1" style="vertical-align: middle;" {{ select.repeats_4_type.1 }} />
+                                                <input type="radio" name="repeats_4_type" id="repeats_4_type_1" value="1" style="vertical-align: middle;"{% if select.repeats_4_type.1 %} checked="checked"{% endif %} />
                                                 {{ lang.repeats_on_day }}</label>
                                                 <input type="text" class="textbox" name="repeats_4_day" value="{{ select.repeats_4_day }}" onfocus="$('#repeats_4_type_1').prop('checked', true);" size="2" /> {{ lang.of_every }} <input type="text" class="textbox" name="repeats_4_months" value="{{ select.repeats_4_months }}" size="2" onfocus="$('#repeats_4_type_1').prop('checked', true);" /> {{ lang.month_or_months }}
                                             </div>
                                             <div class="smalltext" style="margin-top: 5px;"><label>
-                                                <input type="radio" name="repeats_4_type" id="repeats_4_type_2" value="2" style="vertical-align: middle;" {{ select.repeats_4_type.2 }} />
+                                                <input type="radio" name="repeats_4_type" id="repeats_4_type_2" value="2" style="vertical-align: middle;"{% if select.repeats_4_type.2 %} checked="checked"{% endif %} />
                                                 {{ lang.repeats_on_the }}</label>
                                                 <select name="repeats_4_occurance" onfocus="$('#repeats_4_type_2').prop('checked', true);">
-                                                    <option value="1"{{ select.repeats_4_occurance.1 }}>{{ lang.first }}</option>
-                                                    <option value="2"{{ select.repeats_4_occurance.2 }}>{{ lang.second }}</option>
-                                                    <option value="3"{{ select.repeats_4_occurance.3 }}>{{ lang.third }}</option>
-                                                    <option value="4"{{ select.repeats_4_occurance.4 }}>{{ lang.fourth }}</option>
-                                                    <option value="last"{{ select.repeats_4_occurance.last }}>{{ lang.last }}</option>
+                                                    <option value="1"{% if select.repeats_4_occurance.1 %} selected="selected"{% endif %}>{{ lang.first }}</option>
+                                                    <option value="2"{% if select.repeats_4_occurance.2 %} selected="selected"{% endif %}>{{ lang.second }}</option>
+                                                    <option value="3"{% if select.repeats_4_occurance.3 %} selected="selected"{% endif %}>{{ lang.third }}</option>
+                                                    <option value="4"{% if select.repeats_4_occurance.4 %} selected="selected"{% endif %}>{{ lang.fourth }}</option>
+                                                    <option value="last"{% if select.repeats_4_occurance.last %} selected="selected"{% endif %}>{{ lang.last }}</option>
                                                 </select>
                                                 <select name="repeats_4_weekday" onfocus="$('#repeats_4_type_2').prop('checked', true);">
-                                                    <option value="0"{{ select.repeats_4_weekday.0 }}>{{ lang.sunday }}</option>
-                                                    <option value="1"{{ select.repeats_4_weekday.1 }}>{{ lang.monday }}</option>
-                                                    <option value="2"{{ select.repeats_4_weekday.2 }}>{{ lang.tuesday }}</option>
-                                                    <option value="3"{{ select.repeats_4_weekday.3 }}>{{ lang.wednesday }}</option>
-                                                    <option value="4"{{ select.repeats_4_weekday.4 }}>{{ lang.thursday }}</option>
-                                                    <option value="5"{{ select.repeats_4_weekday.5 }}>{{ lang.friday }}</option>
-                                                    <option value="6"{{ select.repeats_4_weekday.6 }}>{{ lang.saturday }}</option>
+                                                    <option value="0"{% if select.repeats_4_weekday.0 %} selected="selected"{% endif %}>{{ lang.sunday }}</option>
+                                                    <option value="1"{% if select.repeats_4_weekday.1 %} selected="selected"{% endif %}>{{ lang.monday }}</option>
+                                                    <option value="2"{% if select.repeats_4_weekday.2 %} selected="selected"{% endif %}>{{ lang.tuesday }}</option>
+                                                    <option value="3"{% if select.repeats_4_weekday.3 %} selected="selected"{% endif %}>{{ lang.wednesday }}</option>
+                                                    <option value="4"{% if select.repeats_4_weekday.4 %} selected="selected"{% endif %}>{{ lang.thursday }}</option>
+                                                    <option value="5"{% if select.repeats_4_weekday.5 %} selected="selected"{% endif %}>{{ lang.friday }}</option>
+                                                    <option value="6"{% if select.repeats_4_weekday.6 %} selected="selected"{% endif %}>{{ lang.saturday }}</option>
                                                 </select>
                                                 {{ lang.of_every }}
                                                 <input type="text" class="textbox" name="repeats_4_months2" value="{{ select.repeats_4_months2 }}" size="2" onfocus="$('#repeats_4_type_2').prop('checked', true);" /> {{ lang.month_or_months }}
@@ -314,59 +230,59 @@
                                         </div>
                                         <div class="repeats_type" id="repeats_type_5" style="padding: 4px;">
                                             <div class="smalltext"><label>
-                                                <input type="radio" name="repeats_5_type" value="1" id="repeats_5_type_1" style="vertical-align: middle;" {{ select.repeats_5_type.1 }} />
+                                                <input type="radio" name="repeats_5_type" value="1" id="repeats_5_type_1" style="vertical-align: middle;"{% if select.repeats_5_type.1 %} checked="checked"{% endif %} />
                                                 {{ lang.repeats_on }}</label>
                                                 <input type="text" class="textbox" name="repeats_5_day" onfocus="$('#repeats_5_type_1').prop('checked', true);" value="{{ select.repeats_5_day }}" size="2" />
                                                 <select name="repeats_5_month" onfocus="$('#repeats_5_type_1').prop('checked', true);" >
-                                                    <option value="1"{{ select.repeats_5_month.1 }}>{{ lang.month_1 }}</option>
-                                                    <option value="2"{{ select.repeats_5_month.2 }}>{{ lang.month_2 }}</option>
-                                                    <option value="3"{{ select.repeats_5_month.3 }}>{{ lang.month_3 }}</option>
-                                                    <option value="4"{{ select.repeats_5_month.4 }}>{{ lang.month_4 }}</option>
-                                                    <option value="5"{{ select.repeats_5_month.5 }}>{{ lang.month_5 }}</option>
-                                                    <option value="6"{{ select.repeats_5_month.6 }}>{{ lang.month_6 }}</option>
-                                                    <option value="7"{{ select.repeats_5_month.7 }}>{{ lang.month_7 }}</option>
-                                                    <option value="8"{{ select.repeats_5_month.8 }}>{{ lang.month_8 }}</option>
-                                                    <option value="9"{{ select.repeats_5_month.9 }}>{{ lang.month_9 }}</option>
-                                                    <option value="10"{{ select.repeats_5_month.10 }}>{{ lang.month_10 }}</option>
-                                                    <option value="11"{{ select.repeats_5_month.11 }}>{{ lang.month_11 }}</option>
-                                                    <option value="12"{{ select.repeats_5_month.12 }}>{{ lang.month_12 }}</option>
+                                                    <option value="1"{% if select.repeats_5_month.1 %} selected="selected"{% endif %}>{{ lang.month_1 }}</option>
+                                                    <option value="2"{% if select.repeats_5_month.2 %} selected="selected"{% endif %}>{{ lang.month_2 }}</option>
+                                                    <option value="3"{% if select.repeats_5_month.3 %} selected="selected"{% endif %}>{{ lang.month_3 }}</option>
+                                                    <option value="4"{% if select.repeats_5_month.4 %} selected="selected"{% endif %}>{{ lang.month_4 }}</option>
+                                                    <option value="5"{% if select.repeats_5_month.5 %} selected="selected"{% endif %}>{{ lang.month_5 }}</option>
+                                                    <option value="6"{% if select.repeats_5_month.6 %} selected="selected"{% endif %}>{{ lang.month_6 }}</option>
+                                                    <option value="7"{% if select.repeats_5_month.7 %} selected="selected"{% endif %}>{{ lang.month_7 }}</option>
+                                                    <option value="8"{% if select.repeats_5_month.8 %} selected="selected"{% endif %}>{{ lang.month_8 }}</option>
+                                                    <option value="9"{% if select.repeats_5_month.9 %} selected="selected"{% endif %}>{{ lang.month_9 }}</option>
+                                                    <option value="10"{% if select.repeats_5_month.10 %} selected="selected"{% endif %}>{{ lang.month_10 }}</option>
+                                                    <option value="11"{% if select.repeats_5_month.11 %} selected="selected"{% endif %}>{{ lang.month_11 }}</option>
+                                                    <option value="12"{% if select.repeats_5_month.12 %} selected="selected"{% endif %}>{{ lang.month_12 }}</option>
                                                 </select>
                                                 {{ lang.every }}
                                                 <input type="text" class="textbox" name="repeats_5_years" value="{{ select.repeats_5_years }}" onfocus="$('#repeats_5_type_1').prop('checked', true);" size="2" /> {{ lang.year_or_years }}
                                             </div>
                                             <div class="smalltext" style="margin-top: 5px;"><label>
-                                                <input type="radio" name="repeats_5_type" value="2" id="repeats_5_type_2" style="vertical-align: middle;" {{ select.repeats_5_type.2 }} />
+                                                <input type="radio" name="repeats_5_type" value="2" id="repeats_5_type_2" style="vertical-align: middle;"{% if select.repeats_5_type.2 %} checked="checked"{% endif %} />
                                                 {{ lang.repeats_on_the }}</label>
                                                 <select name="repeats_5_occurance" onfocus="$('#repeats_5_type_2').prop('checked', true);" >
-                                                    <option value="1"{{ select.repeats_5_occurance.1 }}>{{ lang.first }}</option>
-                                                    <option value="2"{{ select.repeats_5_occurance.2 }}>{{ lang.second }}</option>
-                                                    <option value="3"{{ select.repeats_5_occurance.3 }}>{{ lang.third }}</option>
-                                                    <option value="4"{{ select.repeats_5_occurance.4 }}>{{ lang.fourth }}</option>
-                                                    <option value="last"{{ select.repeats_5_occurance.last }}>{{ lang.last }}</option>
+                                                    <option value="1"{% if select.repeats_5_occurance.1 %} selected="selected"{% endif %}>{{ lang.first }}</option>
+                                                    <option value="2"{% if select.repeats_5_occurance.2 %} selected="selected"{% endif %}>{{ lang.second }}</option>
+                                                    <option value="3"{% if select.repeats_5_occurance.3 %} selected="selected"{% endif %}>{{ lang.third }}</option>
+                                                    <option value="4"{% if select.repeats_5_occurance.4 %} selected="selected"{% endif %}>{{ lang.fourth }}</option>
+                                                    <option value="last"{% if select.repeats_5_occurance.last %} selected="selected"{% endif %}>{{ lang.last }}</option>
                                                 </select>
                                                 <select name="repeats_5_weekday" onfocus="$('#repeats_5_type_2').prop('checked', true);" >
-                                                    <option value="0"{{ select.repeats_5_weekday.0 }}>{{ lang.sunday }}</option>
-                                                    <option value="1"{{ select.repeats_5_weekday.1 }}>{{ lang.monday }}</option>
-                                                    <option value="2"{{ select.repeats_5_weekday.2 }}>{{ lang.tuesday }}</option>
-                                                    <option value="3"{{ select.repeats_5_weekday.3 }}>{{ lang.wednesday }}</option>
-                                                    <option value="4"{{ select.repeats_5_weekday.4 }}>{{ lang.thursday }}</option>
-                                                    <option value="5"{{ select.repeats_5_weekday.5 }}>{{ lang.friday }}</option>
-                                                    <option value="6"{{ select.repeats_5_weekday.6 }}>{{ lang.saturday }}</option>
+                                                    <option value="0"{% if select.repeats_5_weekday.0 %} selected="selected"{% endif %}>{{ lang.sunday }}</option>
+                                                    <option value="1"{% if select.repeats_5_weekday.1 %} selected="selected"{% endif %}>{{ lang.monday }}</option>
+                                                    <option value="2"{% if select.repeats_5_weekday.2 %} selected="selected"{% endif %}>{{ lang.tuesday }}</option>
+                                                    <option value="3"{% if select.repeats_5_weekday.3 %} selected="selected"{% endif %}>{{ lang.wednesday }}</option>
+                                                    <option value="4"{% if select.repeats_5_weekday.4 %} selected="selected"{% endif %}>{{ lang.thursday }}</option>
+                                                    <option value="5"{% if select.repeats_5_weekday.5 %} selected="selected"{% endif %}>{{ lang.friday }}</option>
+                                                    <option value="6"{% if select.repeats_5_weekday.6 %} selected="selected"{% endif %}>{{ lang.saturday }}</option>
                                                 </select>
                                                 {{ lang.of }}
                                                 <select name="repeats_5_month2" onfocus="$('#repeats_5_type_2').prop('checked', true);" >
-                                                    <option value="1"{{ select.repeats_5_month2.1 }}>{{ lang.month_1 }}</option>
-                                                    <option value="2"{{ select.repeats_5_month2.2 }}>{{ lang.month_2 }}</option>
-                                                    <option value="3"{{ select.repeats_5_month2.3 }}>{{ lang.month_3 }}</option>
-                                                    <option value="4"{{ select.repeats_5_month2.4 }}>{{ lang.month_4 }}</option>
-                                                    <option value="5"{{ select.repeats_5_month2.5 }}>{{ lang.month_5 }}</option>
-                                                    <option value="6"{{ select.repeats_5_month2.6 }}>{{ lang.month_6 }}</option>
-                                                    <option value="7"{{ select.repeats_5_month2.7 }}>{{ lang.month_7 }}</option>
-                                                    <option value="8"{{ select.repeats_5_month2.8 }}>{{ lang.month_8 }}</option>
-                                                    <option value="9"{{ select.repeats_5_month2.9 }}>{{ lang.month_9 }}</option>
-                                                    <option value="10"{{ select.repeats_5_month2.10 }}>{{ lang.month_10 }}</option>
-                                                    <option value="11"{{ select.repeats_5_month2.11 }}>{{ lang.month_11 }}</option>
-                                                    <option value="12"{{ select.repeats_5_month2.12 }}>{{ lang.month_12 }}</option>
+                                                    <option value="1"{% if select.repeats_5_month2.1 %} selected="selected"{% endif %}>{{ lang.month_1 }}</option>
+                                                    <option value="2"{% if select.repeats_5_month2.2 %} selected="selected"{% endif %}>{{ lang.month_2 }}</option>
+                                                    <option value="3"{% if select.repeats_5_month2.3 %} selected="selected"{% endif %}>{{ lang.month_3 }}</option>
+                                                    <option value="4"{% if select.repeats_5_month2.4 %} selected="selected"{% endif %}>{{ lang.month_4 }}</option>
+                                                    <option value="5"{% if select.repeats_5_month2.5 %} selected="selected"{% endif %}>{{ lang.month_5 }}</option>
+                                                    <option value="6"{% if select.repeats_5_month2.6 %} selected="selected"{% endif %}>{{ lang.month_6 }}</option>
+                                                    <option value="7"{% if select.repeats_5_month2.7 %} selected="selected"{% endif %}>{{ lang.month_7 }}</option>
+                                                    <option value="8"{% if select.repeats_5_month2.8 %} selected="selected"{% endif %}>{{ lang.month_8 }}</option>
+                                                    <option value="9"{% if select.repeats_5_month2.9 %} selected="selected"{% endif %}>{{ lang.month_9 }}</option>
+                                                    <option value="10"{% if select.repeats_5_month2.10 %} selected="selected"{% endif %}>{{ lang.month_10 }}</option>
+                                                    <option value="11"{% if select.repeats_5_month2.11 %} selected="selected"{% endif %}>{{ lang.month_11 }}</option>
+                                                    <option value="12"{% if select.repeats_5_month2.12 %} selected="selected"{% endif %}>{{ lang.month_12 }}</option>
                                                 </select>
                                                 {{ lang.every }}
                                                 <input type="text" class="textbox" name="repeats_5_years2" value="{{ select.repeats_5_years2 }}" size="2" onfocus="$('#repeats_5_type_2').prop('checked', true);" /> {{ lang.year_or_years }}
@@ -393,7 +309,7 @@
             <tr>
                 <td width="20%" class="trow2"><strong>{{ lang.event_options }}</strong></td>
                 <td class="trow2">
-                    <input type="checkbox" class="checkbox" name="private" value="1"{{ select.privatecheck }} /><span class="smalltext">{{ lang.private_option|raw }}</span><br />
+                    <input type="checkbox" class="checkbox" name="private" value="1"{% if select.privatecheck %} checked="checked"{% endif %} /><span class="smalltext">{{ lang.private_option|raw }}</span><br />
                 </td>
             </tr>
         </table>

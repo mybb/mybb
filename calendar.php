@@ -280,30 +280,30 @@ if($mybb->input['action'] == "addevent")
     $select['repeats_5_type'] = array(1 => '', 2 => '');
 
     if ($mybb->request_method == "post") {
-        $select['single_day'][$mybb->get_input('single_day', MyBB::INPUT_INT)] = " selected=\"selected\"";
-        $select['single_month'][$mybb->get_input('single_month', MyBB::INPUT_INT)] = " selected=\"selected\"";
-        $single_year = $mybb->get_input('single_year', MyBB::INPUT_INT);
-        $select['start_day'][$mybb->get_input('start_day', MyBB::INPUT_INT)] = " selected=\"selected\"";
-        $select['start_month'][$mybb->get_input('start_month', MyBB::INPUT_INT)] = " selected=\"selected\"";
-        $start_year = $mybb->get_input('start_year', MyBB::INPUT_INT);
+        $select['single_day'][$mybb->get_input('single_day', MyBB::INPUT_INT)] = true;
+        $select['single_month'][$mybb->get_input('single_month', MyBB::INPUT_INT)] = true;
+        $select['single_year'][$mybb->get_input('single_year', MyBB::INPUT_INT)] = true;
+        $select['start_day'][$mybb->get_input('start_day', MyBB::INPUT_INT)] = true;
+        $select['start_month'][$mybb->get_input('start_month', MyBB::INPUT_INT)] = true;
+        $select['start_year'][$mybb->get_input('start_year', MyBB::INPUT_INT)] = true;
         $select['start_time'] = $mybb->get_input('start_time');
-        $select['end_day'][$mybb->get_input('end_day', MyBB::INPUT_INT)] = " selected=\"selected\"";
-        $select['end_month'][$mybb->get_input('end_month', MyBB::INPUT_INT)] = " selected=\"selected\"";
-        $end_year = $mybb->get_input('end_year', MyBB::INPUT_INT);
+        $select['end_day'][$mybb->get_input('end_day', MyBB::INPUT_INT)] = true;
+        $select['end_month'][$mybb->get_input('end_month', MyBB::INPUT_INT)] = true;
+        $select['end_year'][$mybb->get_input('end_year', MyBB::INPUT_INT)] = true;
         $select['end_time'] = $mybb->get_input('end_time');
 
         if ($mybb->get_input('type') == "single") {
-            $select['type_single'] = "checked=\"checked\"";
+            $select['type_single'] = true;
             $select['type_ranged'] = '';
             $select['type'] = "single";
         } else {
-            $select['type_ranged'] = "checked=\"checked\"";
+            $select['type_ranged'] = true;
             $select['type_single'] = '';
             $select['type'] = "ranged";
         }
 
         if (!empty($mybb->input['repeats'])) {
-            $select['repeats_sel'][$mybb->get_input('repeats', MyBB::INPUT_INT)] = " selected=\"selected\"";
+            $select['repeats_sel'][$mybb->get_input('repeats', MyBB::INPUT_INT)] = true;
         }
 
         $select['repeats_1_days'] = $mybb->get_input('repeats_1_days', MyBB::INPUT_INT);
@@ -313,36 +313,36 @@ if($mybb->input['action'] == "addevent")
                 continue;
             }
             $day = (int)$day;
-            $select['repeats_3_days'][$day] = " checked=\"checked\"";
+            $select['repeats_3_days'][$day] = true;
         }
 
         $select['repeats_4_type'] = array();
         if ($mybb->get_input('repeats_4_type', MyBB::INPUT_INT) == 1) {
-            $select['repeats_4_type'][1] = "checked=\"checked\"";
+            $select['repeats_4_type'][1] = true;
             $select['repeats_4_type'][2] = '';
         } else {
-            $select['repeats_4_type'][2] = "checked=\"checked\"";
+            $select['repeats_4_type'][2] = true;
             $select['repeats_4_type'][1] = '';
         }
 
         $select['repeats_4_day'] = $mybb->get_input('repeats_4_day', MyBB::INPUT_INT);
         $select['repeats_4_months'] = $mybb->get_input('repeats_4_months', MyBB::INPUT_INT);
-        $select['repeats_4_occurance'][$mybb->get_input('repeats_4_occurance')] = "selected=\"selected\"";
-        $select['repeats_4_weekday'][$mybb->get_input('repeats_4_weekday', MyBB::INPUT_INT)] = "selected=\"selected\"";
+        $select['repeats_4_occurance'][$mybb->get_input('repeats_4_occurance')] = true;
+        $select['repeats_4_weekday'][$mybb->get_input('repeats_4_weekday', MyBB::INPUT_INT)] = true;
         $select['repeats_4_months2'] = $mybb->get_input('repeats_4_months2', MyBB::INPUT_INT);
 
         if ($mybb->get_input('repeats_5_type', MyBB::INPUT_INT) == 1) {
-            $select['repeats_5_type'][1] = "checked=\"checked\"";
+            $select['repeats_5_type'][1] = true;
         } else {
-            $select['repeats_5_type'][2] = "checked=\"checked\"";
+            $select['repeats_5_type'][2] = true;
         }
 
         $select['repeats_5_day'] = $mybb->get_input('repeats_5_day', MyBB::INPUT_INT);
-        $select['repeats_5_month'][$mybb->get_input('repeats_5_month', MyBB::INPUT_INT)] = "selected=\"selected\"";
+        $select['repeats_5_month'][$mybb->get_input('repeats_5_month', MyBB::INPUT_INT)] = true;
         $select['repeats_5_years'] = $mybb->get_input('repeats_5_years', MyBB::INPUT_INT);
-        $select['repeats_5_occurance'][$mybb->get_input('repeats_5_occurance')] = "selected=\"selected\"";
-        $select['repeats_5_weekday'][$mybb->get_input('repeats_5_weekday', MyBB::INPUT_INT)] = "selected=\"selected\"";
-        $select['repeats_5_month2'][$mybb->get_input('repeats_5_month2', MyBB::INPUT_INT)] = "selected=\"selected\"";
+        $select['repeats_5_occurance'][$mybb->get_input('repeats_5_occurance')] = true;
+        $select['repeats_5_weekday'][$mybb->get_input('repeats_5_weekday', MyBB::INPUT_INT)] = true;
+        $select['repeats_5_month2'][$mybb->get_input('repeats_5_month2', MyBB::INPUT_INT)] = true;
         $select['repeats_5_years2'] = $mybb->get_input('repeats_5_years2', MyBB::INPUT_INT);
 
         $timezone = $mybb->get_input('timezone', MyBB::INPUT_INT);
@@ -352,79 +352,109 @@ if($mybb->input['action'] == "addevent")
         } else {
             $day = my_date("j");
         }
-        $select['single_day'][$day] = $select['start_day'][$day] = $select['end_day'][$day] = "selected=\"selected\"";
+        $select['single_day'][$day] = $select['start_day'][$day] = $select['end_day'][$day] = true;
 
         if (!empty($mybb->input['month'])) {
             $month = $mybb->get_input('month', MyBB::INPUT_INT);
         } else {
             $month = my_date("n");
         }
-        $select['single_month'][$month] = $select['start_month'][$month] = $select['end_month'][$month] = "selected=\"selected\"";
+        $select['single_month'][$month] = $select['start_month'][$month] = $select['end_month'][$month] = true;
 
         if (!empty($mybb->input['year'])) {
-            $single_year = $start_year = $end_year = $mybb->get_input('year', MyBB::INPUT_INT);
+            $year = $mybb->get_input('year', MyBB::INPUT_INT);
         } else {
-            $single_year = $start_year = $end_year = my_date("Y");
+            $year = my_date("Y");
         }
+        $select['single_year'][$year] = $select['start_year'][$year] = $select['end_year'][$year] = true;
 
         $select['start_time'] = $select['end_time'] = '';
-        $select['type_single'] = "checked=\"checked\"";
+        $select['type_single'] = true;
         $select['type_ranged'] = '';
         $select['type'] = "single";
         $select['repeats_1_days'] = 1;
         $select['repeats_3_weeks'] = 1;
-        $select['repeats_4_type'][1] = "checked=\"checked\"";
+        $select['repeats_4_type'][1] = true;
         $select['repeats_4_day'] = 1;
         $select['repeats_4_months'] = 1;
-        $select['repeats_4_occurance'][1] = "selected=\"selected\"";
-        $select['repeats_4_weekday'][0] = "selected=\"selected\"";
+        $select['repeats_4_occurance'][1] = true;
+        $select['repeats_4_weekday'][0] = true;
         $select['repeats_4_months2'] = 1;
-        $select['repeats_5_type'][1] = "checked=\"checked\"";
+        $select['repeats_5_type'][1] = true;
         $select['repeats_5_day'] = 1;
-        $select['repeats_5_month'][1] = "selected=\"selected\"";
+        $select['repeats_5_month'][1] = true;
         $select['repeats_5_years'] = 1;
-        $select['repeats_5_occurance'][1] = "selected=\"selected\"";
-        $select['repeats_5_weekday'][0] = "selected=\"selected\"";
-        $select['repeats_5_month2'][1] = "selected=\"selected\"";
+        $select['repeats_5_occurance'][1] = true;
+        $select['repeats_5_weekday'][0] = true;
+        $select['repeats_5_month2'][1] = true;
         $select['repeats_5_years2'] = 1;
         $timezone = $mybb->user['timezone'];
+    }
+
+    $days = [];
+
+    // Construct option list for days
+    for ($day_count = 1; $day_count <= 31; ++$day_count) {
+        $day_sel['day'] = $day_count;
+
+        if ($day_count == $select['single_day'][$day_count]) {
+            $day_sel['single_day'] = true;
+        } else {
+            $day_sel['single_day'] = '';
+        }
+
+        if ($day_count == $select['start_day'][$day_count]) {
+            $day_sel['start_day'] = true;
+        } else {
+            $day_sel['start_day'] = '';
+        }
+
+        if ($day_count == $select['end_day'][$day_count]) {
+            $day_sel['end_day'] = true;
+        } else {
+            $day_sel['end_day'] = '';
+        }
+
+        $days[] = $day_sel;
     }
 
     $years = [];
 
     // Construct option list for years
-    for ($year = my_date('Y'); $year < (my_date('Y') + 5); ++$year) {
-        if ($year == $single_year) {
-            $select['single_year'] = "selected=\"selected\"";
+    for ($year_count = my_date('Y'); $year_count < (my_date('Y') + 5); ++$year_count) {
+        $year_sel['year'] = $year_count;
+
+        if ($year_count == $select['single_year'][$year_count]) {
+            $year_sel['single_year'] = true;
         } else {
-            $select['single_year'] = '';
+            $year_sel['single_year'] = '';
         }
 
-        if ($year == $start_year) {
-            $select['start_year'] = "selected=\"selected\"";
+        if ($year_count == $select['start_year'][$year_count]) {
+            $year_sel['start_year'] = true;
         } else {
-            $select['start_year'] = '';
+            $year_sel['start_year'] = '';
         }
 
-        if ($year == $end_year) {
-            $select['end_year'] = "selected=\"selected\"";
+        if ($year_count == $select['end_year'][$year_count]) {
+            $year_sel['end_year'] = true;
         } else {
-            $select['end_year'] = '';
+            $year_sel['end_year'] = '';
         }
 
-        $years[] = $year;
+        $years[] = $year_sel;
     }
 
     $timezones = build_timezone_select("timezone", $timezone);
 
     if ($mybb->get_input('ignoretimezone', MyBB::INPUT_INT) == 1) {
-        $select['ignore_timezone'] = "checked=\"checked\"";
+        $select['ignore_timezone'] = true;
     } else {
         $select['ignore_timezone'] = '';
     }
 
     if ($mybb->get_input('private', MyBB::INPUT_INT) == 1) {
-        $select['privatecheck'] = " checked=\"checked\"";
+        $select['privatecheck'] = true;
     } else {
         $select['privatecheck'] = '';
     }
@@ -438,7 +468,7 @@ if($mybb->input['action'] == "addevent")
     while ($calendar_option = $db->fetch_array($query)) {
         if ($calendar_permissions[$calendar['cid']]['canviewcalendar'] == 1) {
             if ($calendar_option['cid'] == $mybb->input['calendar']) {
-                $calendar_option['selected'] = " selected=\"selected\"";
+                $calendar_option['selected'] = true;
             } else {
                 $calendar_option['selected'] = '';
             }
@@ -463,6 +493,7 @@ if($mybb->input['action'] == "addevent")
         'calendarcount' => $calendarcount,
         'calendar_select' => $calendar_select,
         'years' => $years,
+        'days' => $days,
         'timezones' => $timezones,
     ]));
 }
@@ -749,31 +780,31 @@ if($mybb->input['action'] == "editevent")
     if (isset($event_errors)) {
         $select['name'] = $mybb->get_input('name');
         $select['description'] = $mybb->get_input('description');
-        $select['single_day'][$mybb->get_input('single_day', MyBB::INPUT_INT)] = " selected=\"selected\"";
-        $select['single_month'][$mybb->get_input('single_month', MyBB::INPUT_INT)] = " selected=\"selected\"";
-        $single_year = $mybb->get_input('single_year', MyBB::INPUT_INT);
-        $select['start_day'][$mybb->get_input('start_day', MyBB::INPUT_INT)] = " selected=\"selected\"";
-        $select['start_month'][$mybb->get_input('start_month', MyBB::INPUT_INT)] = " selected=\"selected\"";
-        $start_year = $mybb->get_input('start_year', MyBB::INPUT_INT);
+        $select['single_day'][$mybb->get_input('single_day', MyBB::INPUT_INT)] = true;
+        $select['single_month'][$mybb->get_input('single_month', MyBB::INPUT_INT)] = true;
+        $select['single_year'][$mybb->get_input('single_year', MyBB::INPUT_INT)] = true;
+        $select['start_day'][$mybb->get_input('start_day', MyBB::INPUT_INT)] = true;
+        $select['start_month'][$mybb->get_input('start_month', MyBB::INPUT_INT)] = true;
+        $select['start_year'][$mybb->get_input('start_year', MyBB::INPUT_INT)] = true;
         $select['start_time'] = $mybb->get_input('start_time');
-        $select['end_day'][$mybb->get_input('end_day', MyBB::INPUT_INT)] = " selected=\"selected\"";
-        $select['end_month'][$mybb->get_input('end_month', MyBB::INPUT_INT)] = " selected=\"selected\"";
-        $end_year = $mybb->get_input('end_year', MyBB::INPUT_INT);
+        $select['end_day'][$mybb->get_input('end_day', MyBB::INPUT_INT)] = true;
+        $select['end_month'][$mybb->get_input('end_month', MyBB::INPUT_INT)] = true;
+        $select['end_year'][$mybb->get_input('end_year', MyBB::INPUT_INT)] = true;
         $select['end_time'] = $mybb->get_input('end_time');
 
         if ($mybb->get_input('type') == "single")
         {
-            $select['type_single'] = "checked=\"checked\"";
+            $select['type_single'] = true;
             $select['type_ranged'] = '';
             $select['type'] = "single";
         } else {
-            $select['type_ranged'] = "checked=\"checked\"";
+            $select['type_ranged'] = true;
             $select['type_single'] = '';
             $select['type'] = "ranged";
         }
 
         if (!empty($mybb->input['repeats'])) {
-            $select['repeats_sel'][$mybb->get_input('repeats', MyBB::INPUT_INT)] = " selected=\"selected\"";
+            $select['repeats_sel'][$mybb->get_input('repeats', MyBB::INPUT_INT)] = true;
         }
 
         $select['repeats_1_days'] = $mybb->get_input('repeats_1_days', MyBB::INPUT_INT);
@@ -784,47 +815,47 @@ if($mybb->input['action'] == "editevent")
                 continue;
             }
             $day = (int)$day;
-            $select['repeats_3_days'][$day] = " checked=\"checked\"";
+            $select['repeats_3_days'][$day] = true;
         }
 
         $select['repeats_4_type'] = array();
         if ($mybb->get_input('repeats_4_type', MyBB::INPUT_INT) == 1) {
-            $select['repeats_4_type'][1] = "checked=\"checked\"";
+            $select['repeats_4_type'][1] = true;
             $select['repeats_4_type'][2] = '';
         } else {
-            $select['repeats_4_type'][2] = "checked=\"checked\"";
+            $select['repeats_4_type'][2] = true;
             $select['repeats_4_type'][1] = '';
         }
 
         $select['repeats_4_day'] = $mybb->get_input('repeats_4_day', MyBB::INPUT_INT);
         $select['repeats_4_months'] = $mybb->get_input('repeats_4_months', MyBB::INPUT_INT);
-        $select['repeats_4_occurance'][$mybb->get_input('repeats_4_occurance')] = "selected=\"selected\"";
-        $select['repeats_4_weekday'][$mybb->get_input('repeats_4_weekday', MyBB::INPUT_INT)] = "selected=\"selected\"";
+        $select['repeats_4_occurance'][$mybb->get_input('repeats_4_occurance')] = true;
+        $select['repeats_4_weekday'][$mybb->get_input('repeats_4_weekday', MyBB::INPUT_INT)] = true;
         $select['repeats_4_months2'] = $mybb->get_input('repeats_4_months2', MyBB::INPUT_INT);
 
         if ($mybb->get_input('repeats_5_type', MyBB::INPUT_INT) == 1) {
-            $select['repeats_5_type'][1] = "checked=\"checked\"";
+            $select['repeats_5_type'][1] = true;
         } else {
-            $select['repeats_5_type'][2] = "checked=\"checked\"";
+            $select['repeats_5_type'][2] = true;
         }
 
         $select['repeats_5_day'] = $mybb->get_input('repeats_5_day', MyBB::INPUT_INT);
-        $select['repeats_5_month'][$mybb->get_input('repeats_5_month', MyBB::INPUT_INT)] = "selected=\"selected\"";
+        $select['repeats_5_month'][$mybb->get_input('repeats_5_month', MyBB::INPUT_INT)] = true;
         $select['repeats_5_years'] = $mybb->get_input('repeats_5_years', MyBB::INPUT_INT);
-        $select['repeats_5_occurance'][$mybb->get_input('repeats_5_occurance')] = "selected=\"selected\"";
-        $select['repeats_5_weekday'][$mybb->get_input('repeats_5_weekday', MyBB::INPUT_INT)] = "selected=\"selected\"";
-        $select['repeats_5_month2'][$mybb->get_input('repeats_5_month2', MyBB::INPUT_INT)] = "selected=\"selected\"";
+        $select['repeats_5_occurance'][$mybb->get_input('repeats_5_occurance')] = true;
+        $select['repeats_5_weekday'][$mybb->get_input('repeats_5_weekday', MyBB::INPUT_INT)] = true;
+        $select['repeats_5_month2'][$mybb->get_input('repeats_5_month2', MyBB::INPUT_INT)] = true;
         $select['repeats_5_years2'] = $mybb->get_input('repeats_5_years2', MyBB::INPUT_INT);
 
         if ($mybb->get_input('private', MyBB::INPUT_INT) == 1) {
-            $select['privatecheck'] = " checked=\"checked\"";
+            $select['privatecheck'] = true;
         } else {
             $select['privatecheck'] = '';
         }
 
         if ($mybb->get_input('ignoretimezone', MyBB::INPUT_INT) == 1)
         {
-            $select['ignore_timezone'] = "checked=\"checked\"";
+            $select['ignore_timezone'] = true;
         } else {
             $select['ignore_timezone'] = '';
         }
@@ -837,18 +868,18 @@ if($mybb->input['action'] == "editevent")
         $select['description'] = $event['description'];
 
         if ($event['private'] == 1) {
-            $select['privatecheck'] = " checked=\"checked\"";
+            $select['privatecheck'] = true;
         } else {
             $select['privatecheck'] = '';
         }
 
         $start_date = explode("-", gmdate("j-n-Y", $event['starttime']+$event['timezone']*3600));
-        $select['single_day'][$start_date[0]] = " selected=\"selected\"";
-        $select['single_month'][$start_date[1]] = " selected=\"selected\"";
-        $single_year = $start_date[2];
-        $select['start_day'][$start_date[0]] = " selected=\"selected\"";
-        $select['start_month'][$start_date[1]] = " selected=\"selected\"";
-        $start_year = $start_date[2];
+        $select['single_day'][$start_date[0]] = true;
+        $select['single_month'][$start_date[1]] = true;
+        $select['single_year'][$start_date[2]] = true;
+        $select['start_day'][$start_date[0]] = true;
+        $select['start_month'][$start_date[1]] = true;
+        $select['start_year'][$start_date[2]] = true;
 
         if ($event['usingtime']) {
             $select['start_time'] = gmdate($mybb->settings['timeformat'], $event['starttime']+$event['timezone']*3600);
@@ -858,9 +889,9 @@ if($mybb->input['action'] == "editevent")
 
         if ($event['endtime']) {
             $end_date = explode("-", gmdate("j-n-Y", $event['endtime']+$event['timezone']*3600));
-            $select['end_day'][$end_date[0]] = " selected=\"selected\"";
-            $select['end_month'][$end_date[1]] = " selected=\"selected\"";
-            $end_year = $end_date[2];
+            $select['end_day'][$end_date[0]] = true;
+            $select['end_month'][$end_date[1]] = true;
+            $select['end_year'][$end_date[2]] = true;
 
             if ($event['usingtime']) {
                 $select['end_time'] = gmdate($mybb->settings['timeformat'], $event['endtime']+$event['timezone']*3600);
@@ -868,22 +899,22 @@ if($mybb->input['action'] == "editevent")
                 $select['end_time'] = '';
             }
 
-            $select['type_ranged'] = "checked=\"checked\"";
+            $select['type_ranged'] = true;
             $select['type_single'] = '';
             $select['type'] = "ranged";
             $repeats = my_unserialize($event['repeats']);
 
             if ($repeats['repeats'] >= 0) {
-                $select['repeats_sel'][$repeats['repeats']] = " selected=\"selected\"";
+                $select['repeats_sel'][$repeats['repeats']] = true;
                 switch ($repeats['repeats']) {
                     case 1:
                         $select['repeats_1_days'] = $repeats['days'];
                         $select['repeats_3_weeks'] = 1;
-                        $select['repeats_4_type'][1] = "checked=\"checked\"";
+                        $select['repeats_4_type'][1] = true;
                         $select['repeats_4_day'] = 1;
                         $select['repeats_4_months'] = 1;
                         $select['repeats_4_months2'] = 1;
-                        $select['repeats_5_type'][1] = "checked=\"checked\"";
+                        $select['repeats_5_type'][1] = true;
                         $select['repeats_5_day'] = 1;
                         $select['repeats_5_years'] = $select['repeats_5_years2'] = 1;
                         break;
@@ -892,14 +923,14 @@ if($mybb->input['action'] == "editevent")
                         $select['repeats_3_weeks'] = $repeats['weeks'];
                         if (is_array($repeats['days'])) {
                             foreach ($repeats['days'] as $weekday) {
-                                $select['repeats_3_days'][$weekday] = " checked=\"checked\"";
+                                $select['repeats_3_days'][$weekday] = true;
                             }
                         }
-                        $select['repeats_4_type'][1] = "checked=\"checked\"";
+                        $select['repeats_4_type'][1] = true;
                         $select['repeats_4_day'] = 1;
                         $select['repeats_4_months'] = 1;
                         $select['repeats_4_months2'] = 1;
-                        $select['repeats_5_type'][1] = "checked=\"checked\"";
+                        $select['repeats_5_type'][1] = true;
                         $select['repeats_5_day'] = 1;
                         $select['repeats_5_years'] = $select['repeats_5_years2'] = 1;
                         break;
@@ -907,37 +938,37 @@ if($mybb->input['action'] == "editevent")
                         $select['repeats_1_days'] = 1;
                         $select['repeats_3_weeks'] = 1;
                         if ($repeats['day']) {
-                            $select['repeats_4_type'][1] = "checked=\"checked\"";
+                            $select['repeats_4_type'][1] = true;
                             $select['repeats_4_day'] = $repeats['day'];
                             $select['repeats_4_months'] = $select['repeats_4_months2'] = $repeats['months'];
                         } else {
-                            $select['repeats_4_type'][2] = "checked=\"checked\"";
+                            $select['repeats_4_type'][2] = true;
                             $select['repeats_4_day'] = 1;
                             $select['repeats_4_months2'] = $select['repeats_4_months'] = $repeats['months'];
-                            $select['repeats_4_occurance'][$repeats['occurance']] = "selected=\"selected\"";
-                            $select['repeats_4_weekday'][$repeats['weekday']] = "selected=\"selected\"";
+                            $select['repeats_4_occurance'][$repeats['occurance']] = true;
+                            $select['repeats_4_weekday'][$repeats['weekday']] = true;
                         }
-                        $select['repeats_5_type'][1] = "checked=\"checked\"";
+                        $select['repeats_5_type'][1] = true;
                         $select['repeats_5_day'] = 1;
                         $select['repeats_5_years'] = $select['repeats_5_years2'] = 1;
                         break;
                     case 5:
                         $select['repeats_1_days'] = 1;
                         $select['repeats_3_weeks'] = 1;
-                        $select['repeats_4_type'][1] = "checked=\"checked\"";
+                        $select['repeats_4_type'][1] = true;
                         $select['repeats_4_day'] = 1;
                         $select['repeats_4_months'] = 1;
                         $select['repeats_4_months2'] = 1;
                         if ($repeats['day']) {
-                            $select['repeats_5_type'][1] = "checked=\"checked\"";
+                            $select['repeats_5_type'][1] = true;
                             $select['repeats_5_day'] = $repeats['day'];
-                            $select['repeats_5_month'][$repeats['month']] = $select['repeats_5_month2'][$repeats['month']] = "selected=\"selected\"";
+                            $select['repeats_5_month'][$repeats['month']] = $select['repeats_5_month2'][$repeats['month']] = true;
                             $select['repeats_5_years'] = $select['repeats_5_years2'] = $repeats['years'];
                         } else {
-                            $select['repeats_5_type'][2] = "checked=\"checked\"";
-                            $select['repeats_5_occurance'][$repeats['occurance']] = "selected=\"selected\"";
-                            $select['repeats_5_weekday'][$repeats['weekday']] = "selected=\"selected\"";
-                            $select['repeats_5_month'][$repeats['month']] = $select['repeats_5_month2'][$repeats['month']] = "selected=\"selected\"";
+                            $select['repeats_5_type'][2] = true;
+                            $select['repeats_5_occurance'][$repeats['occurance']] = true;
+                            $select['repeats_5_weekday'][$repeats['weekday']] = true;
+                            $select['repeats_5_month'][$repeats['month']] = $select['repeats_5_month2'][$repeats['month']] = true;
                             $select['repeats_5_years'] = $select['repeats_5_years2'] = $repeats['years'];
                         }
                         break;
@@ -946,45 +977,74 @@ if($mybb->input['action'] == "editevent")
 
             if ($event['ignoretimezone']) {
                 $timezone = 0;
-                $select['ignore_timezone'] = "checked=\"checked\"";
+                $select['ignore_timezone'] = true;
             } else {
                 $timezone = $event['timezone'];
                 $select['ignore_timezone'] = '';
             }
         } else {
-            $select['type_single'] = "checked=\"checked\"";
+            $select['type_single'] = true;
             $select['type_ranged'] = $select['ignore_timezone'] = $select['repeats_1_days'] = $select['repeats_3_weeks'] = $select['repeats_4_day'] = $select['repeats_4_months'] = $select['repeats_4_months2'] = $select['repeats_5_day'] = $select['repeats_5_years'] = $timezone = $select['end_time'] = '';
             $select['type'] = "single";
             // set some defaults if the user wants to make a ranged event
             $select['end_day'] = $select['start_day'];
             $select['end_month'] = $select['start_month'];
-            $end_year = $start_year;
+            $select['end_year'] = $select['start_year'];
         }
+    }
+
+    $days = [];
+
+    // Construct option list for days
+    for ($day_count = 1; $day_count <= 31; ++$day_count) {
+        $day_sel['day'] = $day_count;
+
+        if ($day_count == $select['single_day'][$day_count]) {
+            $day_sel['single_day'] = true;
+        } else {
+            $day_sel['single_day'] = '';
+        }
+
+        if ($day_count == $select['start_day'][$day_count]) {
+            $day_sel['start_day'] = true;
+        } else {
+            $day_sel['start_day'] = '';
+        }
+
+        if ($day_count == $select['end_day'][$day_count]) {
+            $day_sel['end_day'] = true;
+        } else {
+            $day_sel['end_day'] = '';
+        }
+
+        $days[] = $day_sel;
     }
 
     $years = [];
 
     // Construct option list for years
-    for ($year = my_date('Y'); $year < (my_date('Y') + 5); ++$year) {
-        if ($year == $single_year) {
-            $select['single_year'] = "selected=\"selected\"";
+    for ($year_count = my_date('Y'); $year_count < (my_date('Y') + 5); ++$year_count) {
+        $year_sel['year'] = $year_count;
+
+        if ($year_count == $select['single_year'][$year_count]) {
+            $year_sel['single_year'] = true;
         } else {
-            $select['single_year'] = '';
+            $year_sel['single_year'] = '';
         }
 
-        if ($year == $start_year) {
-            $select['start_year'] = "selected=\"selected\"";
+        if ($year_count == $select['start_year'][$year_count]) {
+            $year_sel['start_year'] = true;
         } else {
-            $select['start_year'] = '';
+            $year_sel['start_year'] = '';
         }
 
-        if ($year == $end_year) {
-            $select['end_year'] = "selected=\"selected\"";
+        if ($year_count == $select['end_year'][$year_count]) {
+            $year_sel['end_year'] = true;
         } else {
-            $select['end_year'] = '';
+            $year_sel['end_year'] = '';
         }
 
-        $years[] = $year;
+        $years[] = $year_sel;
     }
 
     $timezones = build_timezone_select("timezone", $timezone);
@@ -1000,6 +1060,7 @@ if($mybb->input['action'] == "editevent")
         'calendarcount' => $calendarcount,
         'calendar_select' => $calendar_select,
         'years' => $years,
+        'days' => $days,
         'timezones' => $timezones,
     ]));
 }
