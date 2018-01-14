@@ -60,7 +60,9 @@
 {% if post.button_pm %}
 <a href="private.php?action=send&amp;uid={{ post.uid }}" title="{{ lang.postbit_pm }}" class="postbit_pm"><span>{{ lang.postbit_button_pm }}</span></a>
 {% endif %}
-			{{ post.button_www|raw }}
+{% if post.button_www %}
+<a href="{{ post.website }}" target="_blank" rel="noopener" title="{{ lang.postbit_website }}" class="postbit_website"><span>{{ lang.postbit_button_website }}</span></a>
+{% endif %}
 {% if post.button_find %}
 <a href="search.php?action=finduser&amp;uid={{ post.uid }}" title="{{ lang.postbit_find }}" class="postbit_find"><span>{{ lang.postbit_button_find }}</span></a>
 {% endif %}

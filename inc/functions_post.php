@@ -303,13 +303,12 @@ function build_postbit($post, $post_type=0)
 			$post['button_rep'] = true;
 		}
 
+		$post['button_www'] = false;
 		if ($post['website'] != "" &&
-			!is_member($mybb->settings['hidewebsite']) && $usergroup['canchangewebsite'] == 1) {
-			$post['website'] = htmlspecialchars_uni($post['website']);
-			eval("\$post['button_www'] = \"".$templates->get("postbit_www")."\";");
-		} else {
-			$post['button_www'] = "";
-		}
+			!is_member($mybb->settings['hidewebsite']) &&
+			$usergroup['canchangewebsite'] == 1) {
+			$post['button_www'] = true;
+		} 
 
 		if ($post['hideemail'] != 1 &&
 			$mybb->usergroup['cansendemail'] == 1) {
@@ -435,7 +434,7 @@ function build_postbit($post, $post_type=0)
 		$post['postnum'] = $lang->na;
 		$post['button_profile'] = '';
 		$post['button_email'] = '';
-		$post['button_www'] = '';
+		$post['button_www'] = false;
 		$post['signature'] = '';
 		$post['button_pm'] = false;
 		$post['button_find'] = false;
