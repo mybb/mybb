@@ -356,7 +356,7 @@ function build_postbit($post, $post_type=0)
 		if ($post_type != 3 &&
 			$post_type != 1 &&
 			purgespammer_show($post['postnum'], $post['usergroup'], $post['uid'])) {
-			eval("\$post['button_purgespammer'] = \"".$templates->get('postbit_purgespammer')."\";");
+			$post['button_purgespammer'] = true;
 		}
 
 		// Display profile fields on posts - only if field is filled in

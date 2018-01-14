@@ -90,7 +90,10 @@
 {% if post.can_warn %}
 <a href="warnings.php?action=warn&amp;uid={{ post.uid }}&amp;pid={{ post.pid }}" title="{{ lang.postbit_warn }}" class="postbit_warn"><span>{{ lang.postbit_button_warn }}</span></a>
 {% endif %}
-			{{ post.button_purgespammer|raw }}{{ post.button_reply_pm|raw }}{{ post.button_replyall_pm|raw }}{{ post.button_forward_pm|raw }}{{ post.button_delete_pm|raw }}
+{% if post.button_purgespammer %}
+<a href="moderation.php?action=purgespammer&amp;uid={{ post.uid }}" title="{{ lang.postbit_purgespammer }}" class="postbit_purgespammer"><span>{{ lang.postbit_button_purgespammer }}</span></a>
+{% endif %}
+			{{ post.button_reply_pm|raw }}{{ post.button_replyall_pm|raw }}{{ post.button_forward_pm|raw }}{{ post.button_delete_pm|raw }}
 		</div>
 	</div>
 </div>
