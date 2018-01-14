@@ -251,13 +251,13 @@ function build_postbit($post, $post_type=0)
 		if ($post['lastactive'] > $timecut &&
 			($post['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1) &&
 			$post['lastvisit'] != $post['lastactive']) {
-			eval("\$post['onlinestatus'] = \"".$templates->get("postbit_online")."\";");
+			$post['onlinestatus'] = 'online';
 		} else {
 			if ($post['away'] == 1 &&
 				$mybb->settings['allowaway'] != 0) {
-				eval("\$post['onlinestatus'] = \"".$templates->get("postbit_away")."\";");
+				$post['onlinestatus'] = 'away';
 			} else {
-				eval("\$post['onlinestatus'] = \"".$templates->get("postbit_offline")."\";");
+				$post['onlinestatus'] = 'offline';
 			}
 		}
 
