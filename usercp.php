@@ -1693,118 +1693,102 @@ if ($mybb->input['action'] == "subscriptions") {
     ]));
 }
 
-if($mybb->input['action'] == "forumsubscriptions")
-{
-	$plugins->run_hooks("usercp_forumsubscriptions_start");
+if ($mybb->input['action'] == 'forumsubscriptions') {
+    $plugins->run_hooks('usercp_forumsubscriptions_start');
 
-	// Build a forum cache.
-	$query = $db->query("
+    // Build a forum cache.
+    $query = $db->query("
 		SELECT f.fid, fr.dateline AS lastread
-		FROM ".TABLE_PREFIX."forums f
-		LEFT JOIN ".TABLE_PREFIX."forumsread fr ON (fr.fid=f.fid AND fr.uid='{$mybb->user['uid']}')
+		FROM " . TABLE_PREFIX . "forums f
+		LEFT JOIN " . TABLE_PREFIX . "forumsread fr ON (fr.fid=f.fid AND fr.uid='{$mybb->user['uid']}')
 		WHERE f.active != 0
 		ORDER BY pid, disporder
 	");
-	$readforums = array();
-	while($forum = $db->fetch_array($query))
-	{
-		$readforums[$forum['fid']] = $forum['lastread'];
-	}
+    $readforums = array();
+    while ($forum = $db->fetch_array($query)) {
+        $readforums[$forum['fid']] = $forum['lastread'];
+    }
 
-	$fpermissions = forum_permissions();
-	require_once MYBB_ROOT."inc/functions_forumlist.php";
+    $fpermissions = forum_permissions();
+    require_once MYBB_ROOT . 'inc/functions_forumlist.php';
 
-	$query = $db->query("
+    $query = $db->query("
 		SELECT fs.*, f.*, t.subject AS lastpostsubject, fr.dateline AS lastread
-		FROM ".TABLE_PREFIX."forumsubscriptions fs
-		LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid = fs.fid)
-		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid = f.lastposttid)
-		LEFT JOIN ".TABLE_PREFIX."forumsread fr ON (fr.fid=f.fid AND fr.uid='{$mybb->user['uid']}')
-		WHERE f.type='f' AND fs.uid='".$mybb->user['uid']."'
+		FROM " . TABLE_PREFIX . "forumsubscriptions fs
+		LEFT JOIN " . TABLE_PREFIX . "forums f ON (f.fid = fs.fid)
+		LEFT JOIN " . TABLE_PREFIX . "threads t ON (t.tid = f.lastposttid)
+		LEFT JOIN " . TABLE_PREFIX . "forumsread fr ON (fr.fid=f.fid AND fr.uid='{$mybb->user['uid']}')
+		WHERE f.type='f' AND fs.uid='{$mybb->user['uid']}'
 		ORDER BY f.name ASC
 	");
 
-	$forums = '';
-	while($forum = $db->fetch_array($query))
-	{
-		$forum_url = get_forum_link($forum['fid']);
-		$forumpermissions = $fpermissions[$forum['fid']];
+    $forums = [];
+    while ($forum = $db->fetch_array($query)) {
+        $forum['url'] = get_forum_link($forum['fid']);
+        $forumpermissions = $fpermissions[$forum['fid']];
 
-		if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0)
-		{
-			continue;
-		}
+        if ($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0) {
+            continue;
+        }
 
-		$lightbulb = get_forum_lightbulb(array('open' => $forum['open'], 'lastread' => $forum['lastread']), array('lastpost' => $forum['lastpost']));
-		$folder = $lightbulb['folder'];
+        $lightbulb = get_forum_lightbulb(array('open' => $forum['open'], 'lastread' => $forum['lastread']),
+            array('lastpost' => $forum['lastpost']));
 
-		if(isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] != 0)
-		{
-			$posts = '-';
-			$threads = '-';
-		}
-		else
-		{
-			$posts = my_number_format($forum['posts']);
-			$threads = my_number_format($forum['threads']);
-		}
+        $forum['light_bulb_folder'] = $lightbulb['folder'];
+        $forum['light_bulb_alt_on_off'] = $lightbulb['altonoff'];
 
-		if($forum['lastpost'] == 0)
-		{
-			eval("\$lastpost = \"".$templates->get("forumbit_depth2_forum_lastpost_never")."\";");
-		}
-		// Hide last post
-		elseif(isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] != 0 && $forum['lastposteruid'] != $mybb->user['uid'])
-		{
-			eval("\$lastpost = \"".$templates->get("forumbit_depth2_forum_lastpost_hidden")."\";");
-		}
-		else
-		{
-			$forum['lastpostsubject'] = $parser->parse_badwords($forum['lastpostsubject']);
-			$lastpost_date = my_date('relative', $forum['lastpost']);
-			$lastposttid = $forum['lastposttid'];
-			if(!$forum['lastposteruid'] && !$forum['lastposter'])
-			{
-				$lastposter = htmlspecialchars_uni($lang->guest);
-			}
-			else
-			{
-				$lastposter = htmlspecialchars_uni($forum['lastposter']);
-			}
-			if($forum['lastposteruid'] == 0)
-			{
-				$lastpost_profilelink = $lastposter;
-			}
-			else
-			{
-				$lastpost_profilelink = build_profile_link($lastposter, $forum['lastposteruid']);
-			}
-			$full_lastpost_subject = $lastpost_subject = htmlspecialchars_uni($forum['lastpostsubject']);
-			if(my_strlen($lastpost_subject) > 25)
-			{
-				$lastpost_subject = my_substr($lastpost_subject, 0, 25) . "...";
-			}
-			$lastpost_link = get_thread_link($forum['lastposttid'], 0, "lastpost");
-			eval("\$lastpost = \"".$templates->get("forumbit_depth2_forum_lastpost")."\";");
-		}
+        if (isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] != 0) {
+            $forum['posts'] = '-';
+            $forum['threads'] = '-';
+        } else {
+            $forum['posts'] = my_number_format($forum['posts']);
+            $forum['threads'] = my_number_format($forum['threads']);
+        }
 
-		if($mybb->settings['showdescriptions'] == 0)
-		{
-			$forum['description'] = "";
-		}
+        if (isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] != 0 && $forum['lastposteruid'] != $mybb->user['uid']) {
+            $forum['lastpost_hidden'] = true;
+        } else {
+            $forum['lastpost_hidden'] = false;
 
-		eval("\$forums .= \"".$templates->get("usercp_forumsubscriptions_forum")."\";");
-	}
+            $forum['lastpostsubject'] = $parser->parse_badwords($forum['lastpostsubject']);
+            if (!$forum['lastposteruid'] && !$forum['lastposter']) {
+                $lastposter = $lang->guest;
+            } else {
+                $lastposter = $forum['lastposter'];
+            }
 
-	if(!$forums)
-	{
-		eval("\$forums = \"".$templates->get("usercp_forumsubscriptions_none")."\";");
-	}
+            if ($forum['lastposteruid'] == 0) {
+                $lastpost_profilelink = $lastposter;
+            } else {
+                $lastpost_profilelink = build_profile_link($lastposter, $forum['lastposteruid']);
+            }
 
-	$plugins->run_hooks("usercp_forumsubscriptions_end");
+            $lastpost_subject = $forum['lastpostsubject'];
+            if (my_strlen($lastpost_subject) > 25) {
+                $lastpost_subject = my_substr($lastpost_subject, 0, 25) . "...";
+            }
 
-	eval("\$forumsubscriptions = \"".$templates->get("usercp_forumsubscriptions")."\";");
-	output_page($forumsubscriptions);
+            $forum['last_post'] = [
+                'link' => get_thread_link($forum['lastposttid'], 0, 'lastpost'),
+                'full_subject' => $forum['lastpostsubject'],
+                'subject' => $lastpost_subject,
+                'date' => my_date('relative', $forum['lastpost']),
+                'profile_link' => $lastpost_profilelink,
+            ];
+        }
+
+        if ($mybb->settings['showdescriptions'] == 0) {
+            $forum['description'] = "";
+        }
+
+        $forums[] = $forum;
+    }
+
+    $plugins->run_hooks('usercp_forumsubscriptions_end');
+
+    output_page(\MyBB\template('usercp/subscribed_forums.twig', [
+        'forums' => $forums,
+    ]));
 }
 
 if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
