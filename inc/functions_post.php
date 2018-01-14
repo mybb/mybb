@@ -25,9 +25,16 @@ function build_postbit($post, $post_type=0)
 	$hascustomtitle = 0;
 
 	// Set default values for any fields not provided here
-	foreach (array('pid', 'aid', 'pmid', 'posturl', 'button_multiquote', 'subject_extra', 'attachments', 'button_rep', 'button_warn', 'button_purgespammer', 'button_pm', 'button_reply_pm', 'button_replyall_pm', 'button_forward_pm', 'button_delete_pm', 'replink', 'warninglevel') as $post_field) {
+	foreach (array('pid', 'aid', 'pmid', 'posturl', 'subject_extra', 'attachments', 'replink', 'warninglevel') as $post_field) {
 		if (empty($post[$post_field])) {
 			$post[$post_field] = '';
+		}
+	}
+
+	// Set default values for buttons here
+	foreach (array('button_multiquote', 'button_rep', 'button_warn', 'button_purgespammer', 'button_pm', 'button_reply_pm', 'button_replyall_pm', 'button_forward_pm', 'button_delete_pm') as $post_button) {
+		if (empty($post[$post_button])) {
+			$post[$post_button] = false;
 		}
 	}
 
@@ -275,8 +282,8 @@ function build_postbit($post, $post_type=0)
 		}
 
 		if ($mybb->settings['enablepms'] == 1 &&
-			(($post['receivepms'] != 0 && $usergroup['canusepms'] != 0 && $mybb->usergroup['cansendpms'] == 1 && my_strpos(",".$post['ignorelist'].",", ",".$mybb->user['uid'].",") === false) || $mybb->usergroup['canoverridepm'] == 1)) {
-			eval("\$post['button_pm'] = \"".$templates->get("postbit_pm")."\";");
+			(($post['receivepms'] != 0 && $usergroup['canusepms'] != 0 && $mybb->usergroup['cansendpms'] == 1 && my_strpos("," . $post['ignorelist'] . ",", "," . $mybb->user['uid'] . ",") === false) || $mybb->usergroup['canoverridepm'] == 1)) {
+			$post['button_pm'] = true;
 		}
 
 		$post['button_rep'] = '';
@@ -430,7 +437,7 @@ function build_postbit($post, $post_type=0)
 		$post['button_email'] = '';
 		$post['button_www'] = '';
 		$post['signature'] = '';
-		$post['button_pm'] = '';
+		$post['button_pm'] = false;
 		$post['button_find'] = false;
 		$post['onlinestatus'] = '';
 		$post['replink'] = '';
