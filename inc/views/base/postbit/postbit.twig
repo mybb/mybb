@@ -2,13 +2,17 @@
 <a name="pid{{ post.pid }}" id="pid{{ post.pid }}"></a>
 <div class="post classic {{ unapproved_shade }}" style="{{ post_visibility }}" id="post_{{ post.pid }}">
 	<div class="post_author scaleimages">
-		{{ post.useravatar|raw }}
+{% if post.showavatar %}
+		<div class="author_avatar">
+			<a href="{{ post.profilelink_plain|raw }}"><img src="{{ post.useravatar.image }}" alt="" {{ post.useravatar.width_height|raw }} /></a>
+		</div>
+{% endif %}
 		<div class="author_information">
 				<strong><span class="largetext">{{ post.profilelink|raw }}</span></strong> 
 {% if post.onlinestatus == "online" %}
 <a href="online.php" title="{{ lang.postbit_status_online }}"><img src="{{ theme.imgdir }}/buddy_online.png" border="0" alt="{{ lang.postbit_status_online }}" class="buddy_status" /></a>
 {% elseif post.onlinestatus == "away" %}
-<a href="{{ post.profilelink_plain }}" title="{{ lang.postbit_status_away }}"><img src="{{ theme.imgdir }}/buddy_away.png" border="0" alt="{{ lang.postbit_status_away }}" class="buddy_status" /></a>
+<a href="{{ post.profilelink_plain|raw }}" title="{{ lang.postbit_status_away }}"><img src="{{ theme.imgdir }}/buddy_away.png" border="0" alt="{{ lang.postbit_status_away }}" class="buddy_status" /></a>
 {% else %}
 <img src="{{ theme.imgdir }}/buddy_offline.png" title="{{ lang.postbit_status_offline }}" alt="{{ lang.postbit_status_offline }}" class="buddy_status" />
 {% endif %}

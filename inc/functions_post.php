@@ -261,12 +261,12 @@ function build_postbit($post, $post_type=0)
 			}
 		}
 
-		$post['useravatar'] = '';
+		$post['showavatar'] = false;
 		if (isset($mybb->user['showavatars']) &&
 			$mybb->user['showavatars'] != 0 ||
 			$mybb->user['uid'] == 0) {
-			$useravatar = format_avatar($post['avatar'], $post['avatardimensions'], $mybb->settings['postmaxavatarsize']);
-			eval("\$post['useravatar'] = \"".$templates->get("postbit_avatar")."\";");
+			$post['showavatar'] = true;
+			$post['useravatar'] = format_avatar($post['avatar'], $post['avatardimensions'], $mybb->settings['postmaxavatarsize']);
 		}
 
 		$post['button_find'] = '';
