@@ -185,7 +185,7 @@ function build_postbit($post, $post_type=0)
 	}
 
 	// Work out the usergroup/title stuff
-	$post['groupimage'] = '';
+	$post['groupimage'] = false;
 	if (!empty($usergroup['image'])) {
 		$language = $mybb->settings['bblanguage'];
 		if (!empty($mybb->user['language'])) {
@@ -194,11 +194,7 @@ function build_postbit($post, $post_type=0)
 
 		$usergroup['image'] = str_replace("{lang}", $language, $usergroup['image']);
 		$usergroup['image'] = str_replace("{theme}", $theme['imgdir'], $usergroup['image']);
-		eval("\$post['groupimage'] = \"".$templates->get("postbit_groupimage")."\";");
-
-		if ($mybb->settings['postlayout'] == "classic") {
-			$post['groupimage'] .= "<br />";
-		}
+		$post['groupimage'] = true;
 	}
 
 	if ($post['userusername']) {
@@ -804,6 +800,7 @@ function build_postbit($post, $post_type=0)
 	} else {
 		$postbit = \MyBB\template('postbit/postbit.twig', [
 			'post' => $post,
+			'usergroup' => $usergroup,
 			'ignore_bit' => $ignore_bit,
 			'deleted_bit' => $deleted_bit,
 			'unapproved_shade' => $unapproved_shade,

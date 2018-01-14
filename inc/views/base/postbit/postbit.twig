@@ -8,7 +8,9 @@
 				<span class="smalltext">
 					{{ post.usertitle|raw }}<br />
 					{{ post.userstars|raw }}
-					{{ post.groupimage|raw }}
+{% if post.groupimage %}
+					<img src="{{ usergroup.image }}" alt="{{ usergroup.title }}" title="{{ usergroup.title }}" /><br />
+{% endif %}
 				</span>
 		</div>
 		<div class="author_statistics">
