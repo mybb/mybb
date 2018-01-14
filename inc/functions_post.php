@@ -204,7 +204,9 @@ function build_postbit($post, $post_type=0)
 		$post['groupimage'] = true;
 	}
 
+	$post['isguest'] = true;
 	if ($post['userusername']) {
+		$post['isguest'] = false;
 		// This post was made by a registered user
 		$post['username'] = $post['userusername'];
 		$post['profilelink_plain'] = get_profile_link($post['uid']);
@@ -413,8 +415,6 @@ function build_postbit($post, $post_type=0)
 				}
 			}
 		}
-
-		eval("\$post['user_details'] = \"".$templates->get("postbit_author_user")."\";");
 	// Message was posted by a guest or an unknown user
 	} else {
 		$post['profilelink'] = format_name($post['username'], 1);
@@ -439,7 +439,6 @@ function build_postbit($post, $post_type=0)
 		$post['button_find'] = false;
 		$post['onlinestatus'] = '';
 		$post['replink'] = '';
-		eval("\$post['user_details'] = \"".$templates->get("postbit_author_guest")."\";");
 	}
 
 	$post['input_editreason'] = '';

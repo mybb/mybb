@@ -31,7 +31,14 @@
 				</span>
 		</div>
 		<div class="author_statistics">
-			{{ post.user_details|raw }}
+{% if post.isguest %}
+			&nbsp;
+{% else %}
+			{{ lang.postbit_posts }} {{ post.postnum }}<br />
+			{{ lang.postbit_threads }} {{ post.threadnum }}<br />
+			{{ lang.postbit_joined }} {{ post.userregdate }}
+			{{ post.replink|raw }}{{ post.profilefield }}{{ post.warninglevel|raw }}
+{% endif %}
 		</div>
 	</div>
 	<div class="post_content">
