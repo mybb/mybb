@@ -418,6 +418,47 @@ if($mybb->input['action'] == "addevent")
         $days[] = $day_sel;
     }
 
+    $months = [];
+
+    // Construct option list for months
+    for ($month_count = 1; $month_count <= 12; ++$month_count) {
+        $month_sel['month'] = $month_count;
+
+        $lang_string = 'month_'.$month_count;
+        $month_sel['name'] = $lang->{$lang_string};
+
+        if ($month_count == $select['single_month'][$month_count]) {
+            $month_sel['single_month'] = true;
+        } else {
+            $month_sel['single_month'] = '';
+        }
+
+        if ($month_count == $select['start_month'][$month_count]) {
+            $month_sel['start_month'] = true;
+        } else {
+            $month_sel['start_month'] = '';
+        }
+
+        if ($month_count == $select['end_month'][$month_count]) {
+            $month_sel['end_month'] = true;
+        } else {
+            $month_sel['end_month'] = '';
+        }
+
+        if ($month_count == $select['repeats_5_month'][$month_count]) {
+            $month_sel['repeats_5_month'] = true;
+        } else {
+            $month_sel['repeats_5_month'] = '';
+        }
+
+        if ($month_count == $select['repeats_5_month2'][$month_count]) {
+            $month_sel['repeats_5_month2'] = true;
+        } else {
+            $month_sel['repeats_5_month2'] = '';
+        }
+        $months[] = $month_sel;
+    }
+
     $years = [];
 
     // Construct option list for years
@@ -492,8 +533,9 @@ if($mybb->input['action'] == "addevent")
         'event_errors' => $event_errors,
         'calendarcount' => $calendarcount,
         'calendar_select' => $calendar_select,
-        'years' => $years,
         'days' => $days,
+        'months' => $months,
+        'years' => $years,
         'timezones' => $timezones,
     ]));
 }
@@ -1019,6 +1061,46 @@ if($mybb->input['action'] == "editevent")
 
         $days[] = $day_sel;
     }
+    $months = [];
+
+    // Construct option list for months
+    for ($month_count = 1; $month_count <= 12; ++$month_count) {
+        $month_sel['month'] = $month_count;
+
+        $lang_string = 'month_'.$month_count;
+        $month_sel['name'] = $lang->{$lang_string};
+
+        if ($month_count == $select['single_month'][$month_count]) {
+            $month_sel['single_month'] = true;
+        } else {
+            $month_sel['single_month'] = '';
+        }
+
+        if ($month_count == $select['start_month'][$month_count]) {
+            $month_sel['start_month'] = true;
+        } else {
+            $month_sel['start_month'] = '';
+        }
+
+        if ($month_count == $select['end_month'][$month_count]) {
+            $month_sel['end_month'] = true;
+        } else {
+            $month_sel['end_month'] = '';
+        }
+
+        if ($month_count == $select['repeats_5_month'][$month_count]) {
+            $month_sel['repeats_5_month'] = true;
+        } else {
+            $month_sel['repeats_5_month'] = '';
+        }
+
+        if ($month_count == $select['repeats_5_month2'][$month_count]) {
+            $month_sel['repeats_5_month2'] = true;
+        } else {
+            $month_sel['repeats_5_month2'] = '';
+        }
+        $months[] = $month_sel;
+    }
 
     $years = [];
 
@@ -1059,8 +1141,9 @@ if($mybb->input['action'] == "editevent")
         'event_errors' => $event_errors,
         'calendarcount' => $calendarcount,
         'calendar_select' => $calendar_select,
-        'years' => $years,
         'days' => $days,
+        'months' => $months,
+        'years' => $years,
         'timezones' => $timezones,
     ]));
 }
@@ -1377,15 +1460,6 @@ if($mybb->input['action'] == "event")
             $event['starimage'] = $user_usergroup['starimage'];
         }
         $event['starimage'] = str_replace("{theme}", $theme['imgdir'], $event['starimage']);
-
-        $event['userstars'] = '';
-        for ($i = 0; $i < $event['stars']; ++$i) {
-            eval("\$event['userstars'] .= \"".$templates->get("calendar_event_userstar", 1, 0)."\";");
-        }
-
-        if ($event['userstars'] && $event['starimage'] && $event['stars']) {
-            $event['userstars'] .= "<br />";
-        }
     } else {
         // Created by a guest or an unknown user
         if (!$event['username']) {
@@ -1461,8 +1535,9 @@ if($mybb->input['action'] == "event")
         }
     }
 
-    $event['month'] = my_date("n");
-    $event['currentmonth'] = $monthnames[$event['month']];
+    $calendar['month'] = my_date("n");
+    $calendar['year'] = my_date("Y");
+    $calendar['currentmonth'] = $monthnames[$calendar['month']];
 
     $years = [];
 
@@ -1475,6 +1550,7 @@ if($mybb->input['action'] == "event")
 
     output_page(\MyBB\template('calendar/event.twig', [
         'calendar_jump' => $calendar_jump,
+        'calendar' => $calendar,
         'event' => $event,
         'calendar_permissions' => $calendar_permissions,
         'years' => $years,
@@ -1665,15 +1741,6 @@ if($mybb->input['action'] == "dayview")
                 if (empty($event['starimage'])) {
                     $event['starimage'] = $user_usergroup['starimage'];
                 }
-
-                $event['userstars'] = '';
-                for ($i = 0; $i < $event['stars']; ++$i) {
-                    eval("\$event['userstars'] .= \"".$templates->get("calendar_event_userstar", 1, 0)."\";");
-                }
-
-                if ($event['userstars'] && $event['starimage'] && $event['stars']) {
-                    $event['userstars'] .= "<br />";
-                }
             } else {
                 // Created by a guest or an unknown user
                 if (!$event['username']) {
@@ -1811,12 +1878,6 @@ if($mybb->input['action'] == "weekview")
 	}
 
 	$weekdays = fetch_weekday_structure($calendar['startofweek']);
-
-    $years = [];
-
-    for ($year = my_date("Y"); $year < (my_date("Y") + 5); ++$year) {
-        $years[] = $year;
-    }
 
 	// No incoming week, show THIS week
 	if(empty($mybb->input['week']))
@@ -2006,20 +2067,26 @@ if($mybb->input['action'] == "weekview")
         $weekdays[] = $month;
     }
 
-    $calendar['week_from_month'] = $week_from[1];
-    $calendar['week_from_year'] = $week_from[2];
-    $calendar['week_from_one'] = $monthnames[$week_from_one];
+    $calendar['month'] = $week_from[1];
+    $calendar['year'] = $week_from[2];
+    $calendar['currentmonth'] = $monthnames[$week_from_one];
+
+    $years = [];
+
+    for ($year = my_date("Y"); $year < (my_date("Y") + 5); ++$year) {
+        $years[] = $year;
+    }
 
     // Now output the page
     $plugins->run_hooks("calendar_weekview_end");
 
     output_page(\MyBB\template('calendar/weekview.twig', [
         'calendar_permissions' => $calendar_permissions,
-        'years' => $years,
+        'weekdays' => $weekdays,
         'calendar_jump' => $calendar_jump,
         'mini_calendars' => $mini_calendars,
         'calendar' => $calendar,
-        'weekdays' => $weekdays,
+        'years' => $years,
     ]));
 }
 

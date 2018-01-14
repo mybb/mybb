@@ -76,18 +76,9 @@
                             </select>
                             &nbsp;
                             <select name="single_month">
-                                <option value="1"{% if select.single_month.1 %} selected="selected"{% endif %}>{{ lang.month_1 }}</option>
-                                <option value="2"{% if select.single_month.2 %} selected="selected"{% endif %}>{{ lang.month_2 }}</option>
-                                <option value="3"{% if select.single_month.3 %} selected="selected"{% endif %}>{{ lang.month_3 }}</option>
-                                <option value="4"{% if select.single_month.4 %} selected="selected"{% endif %}>{{ lang.month_4 }}</option>
-                                <option value="5"{% if select.single_month.5 %} selected="selected"{% endif %}>{{ lang.month_5 }}</option>
-                                <option value="6"{% if select.single_month.6 %} selected="selected"{% endif %}>{{ lang.month_6 }}</option>
-                                <option value="7"{% if select.single_month.7 %} selected="selected"{% endif %}>{{ lang.month_7 }}</option>
-                                <option value="8"{% if select.single_month.8 %} selected="selected"{% endif %}>{{ lang.month_8 }}</option>
-                                <option value="9"{% if select.single_month.9 %} selected="selected"{% endif %}>{{ lang.month_9 }}</option>
-                                <option value="10"{% if select.single_month.10 %} selected="selected"{% endif %}>{{ lang.month_10 }}</option>
-                                <option value="11"{% if select.single_month.11 %} selected="selected"{% endif %}>{{ lang.month_11 }}</option>
-                                <option value="12"{% if select.single_month.12 %} selected="selected"{% endif %}>{{ lang.month_12 }}</option>
+                                {% for month in months %}
+                                    <option value="{{ month.month }}"{% if month.single_month %} selected="selected"{% endif %}>{{ month.name }}</option>
+                                {% endfor %}
                             </select>
                             &nbsp;
                             <select name="single_year">
@@ -108,18 +99,9 @@
                                             {% endfor %}
                                         </select>
                                         <select name="start_month">
-                                            <option value="1"{% if select.start_month.1 %} selected="selected"{% endif %}>{{ lang.month_1 }}</option>
-                                            <option value="2"{% if select.start_month.2 %} selected="selected"{% endif %}>{{ lang.month_2 }}</option>
-                                            <option value="3"{% if select.start_month.3 %} selected="selected"{% endif %}>{{ lang.month_3 }}</option>
-                                            <option value="4"{% if select.start_month.4 %} selected="selected"{% endif %}>{{ lang.month_4 }}</option>
-                                            <option value="5"{% if select.start_month.5 %} selected="selected"{% endif %}>{{ lang.month_5 }}</option>
-                                            <option value="6"{% if select.start_month.6 %} selected="selected"{% endif %}>{{ lang.month_6 }}</option>
-                                            <option value="7"{% if select.start_month.7 %} selected="selected"{% endif %}>{{ lang.month_7 }}</option>
-                                            <option value="8"{% if select.start_month.8 %} selected="selected"{% endif %}>{{ lang.month_8 }}</option>
-                                            <option value="9"{% if select.start_month.9 %} selected="selected"{% endif %}>{{ lang.month_9 }}</option>
-                                            <option value="10"{% if select.start_month.10 %} selected="selected"{% endif %}>{{ lang.month_10 }}</option>
-                                            <option value="11"{% if select.start_month.11 %} selected="selected"{% endif %}>{{ lang.month_11 }}</option>
-                                            <option value="12"{% if select.start_month.12 %} selected="selected"{% endif %}>{{ lang.month_12 }}</option>
+                                            {% for month in months %}
+                                                <option value="{{ month.month }}"{% if month.start_month %} selected="selected"{% endif %}>{{ month.name }}</option>
+                                            {% endfor %}
                                         </select>
                                         <select name="start_year">
                                             {% for year in years %}
@@ -139,18 +121,9 @@
                                             {% endfor %}
                                         </select>
                                         <select name="end_month">
-                                            <option value="1"{% if select.end_month.1 %} selected="selected"{% endif %}>{{ lang.month_1 }}</option>
-                                            <option value="2"{% if select.end_month.2 %} selected="selected"{% endif %}>{{ lang.month_2 }}</option>
-                                            <option value="3"{% if select.end_month.3 %} selected="selected"{% endif %}>{{ lang.month_3 }}</option>
-                                            <option value="4"{% if select.end_month.4 %} selected="selected"{% endif %}>{{ lang.month_4 }}</option>
-                                            <option value="5"{% if select.end_month.5 %} selected="selected"{% endif %}>{{ lang.month_5 }}</option>
-                                            <option value="6"{% if select.end_month.6 %} selected="selected"{% endif %}>{{ lang.month_6 }}</option>
-                                            <option value="7"{% if select.end_month.7 %} selected="selected"{% endif %}>{{ lang.month_7 }}</option>
-                                            <option value="8"{% if select.end_month.8 %} selected="selected"{% endif %}>{{ lang.month_8 }}</option>
-                                            <option value="9"{% if select.end_month.9 %} selected="selected"{% endif %}>{{ lang.month_9 }}</option>
-                                            <option value="10"{% if select.end_month.10 %} selected="selected"{% endif %}>{{ lang.month_10 }}</option>
-                                            <option value="11"{% if select.end_month.11 %} selected="selected"{% endif %}>{{ lang.month_11 }}</option>
-                                            <option value="12"{% if select.end_month.12 %} selected="selected"{% endif %}>{{ lang.month_12 }}</option>
+                                            {% for month in months %}
+                                                <option value="{{ month.month }}"{% if month.end_month %} selected="selected"{% endif %}>{{ month.name }}</option>
+                                            {% endfor %}
                                         </select>
                                         <select name="end_year">
                                             {% for year in years %}
@@ -236,18 +209,9 @@
                                                 {{ lang.repeats_on }}</label>
                                                 <input type="text" class="textbox" name="repeats_5_day" onfocus="$('#repeats_5_type_1').prop('checked', true);" value="{{ select.repeats_5_day }}" size="2" />
                                                 <select name="repeats_5_month" onfocus="$('#repeats_5_type_1').prop('checked', true);" >
-                                                    <option value="1"{% if select.repeats_5_month.1 %} selected="selected"{% endif %}>{{ lang.month_1 }}</option>
-                                                    <option value="2"{% if select.repeats_5_month.2 %} selected="selected"{% endif %}>{{ lang.month_2 }}</option>
-                                                    <option value="3"{% if select.repeats_5_month.3 %} selected="selected"{% endif %}>{{ lang.month_3 }}</option>
-                                                    <option value="4"{% if select.repeats_5_month.4 %} selected="selected"{% endif %}>{{ lang.month_4 }}</option>
-                                                    <option value="5"{% if select.repeats_5_month.5 %} selected="selected"{% endif %}>{{ lang.month_5 }}</option>
-                                                    <option value="6"{% if select.repeats_5_month.6 %} selected="selected"{% endif %}>{{ lang.month_6 }}</option>
-                                                    <option value="7"{% if select.repeats_5_month.7 %} selected="selected"{% endif %}>{{ lang.month_7 }}</option>
-                                                    <option value="8"{% if select.repeats_5_month.8 %} selected="selected"{% endif %}>{{ lang.month_8 }}</option>
-                                                    <option value="9"{% if select.repeats_5_month.9 %} selected="selected"{% endif %}>{{ lang.month_9 }}</option>
-                                                    <option value="10"{% if select.repeats_5_month.10 %} selected="selected"{% endif %}>{{ lang.month_10 }}</option>
-                                                    <option value="11"{% if select.repeats_5_month.11 %} selected="selected"{% endif %}>{{ lang.month_11 }}</option>
-                                                    <option value="12"{% if select.repeats_5_month.12 %} selected="selected"{% endif %}>{{ lang.month_12 }}</option>
+                                                    {% for month in months %}
+                                                        <option value="{{ month.month }}"{% if month.repeats_5_month %} selected="selected"{% endif %}>{{ month.name }}</option>
+                                                    {% endfor %}
                                                 </select>
                                                 {{ lang.every }}
                                                 <input type="text" class="textbox" name="repeats_5_years" value="{{ select.repeats_5_years }}" onfocus="$('#repeats_5_type_1').prop('checked', true);" size="2" /> {{ lang.year_or_years }}
@@ -273,18 +237,9 @@
                                                 </select>
                                                 {{ lang.of }}
                                                 <select name="repeats_5_month2" onfocus="$('#repeats_5_type_2').prop('checked', true);" >
-                                                    <option value="1"{% if select.repeats_5_month2.1 %} selected="selected"{% endif %}>{{ lang.month_1 }}</option>
-                                                    <option value="2"{% if select.repeats_5_month2.2 %} selected="selected"{% endif %}>{{ lang.month_2 }}</option>
-                                                    <option value="3"{% if select.repeats_5_month2.3 %} selected="selected"{% endif %}>{{ lang.month_3 }}</option>
-                                                    <option value="4"{% if select.repeats_5_month2.4 %} selected="selected"{% endif %}>{{ lang.month_4 }}</option>
-                                                    <option value="5"{% if select.repeats_5_month2.5 %} selected="selected"{% endif %}>{{ lang.month_5 }}</option>
-                                                    <option value="6"{% if select.repeats_5_month2.6 %} selected="selected"{% endif %}>{{ lang.month_6 }}</option>
-                                                    <option value="7"{% if select.repeats_5_month2.7 %} selected="selected"{% endif %}>{{ lang.month_7 }}</option>
-                                                    <option value="8"{% if select.repeats_5_month2.8 %} selected="selected"{% endif %}>{{ lang.month_8 }}</option>
-                                                    <option value="9"{% if select.repeats_5_month2.9 %} selected="selected"{% endif %}>{{ lang.month_9 }}</option>
-                                                    <option value="10"{% if select.repeats_5_month2.10 %} selected="selected"{% endif %}>{{ lang.month_10 }}</option>
-                                                    <option value="11"{% if select.repeats_5_month2.11 %} selected="selected"{% endif %}>{{ lang.month_11 }}</option>
-                                                    <option value="12"{% if select.repeats_5_month2.12 %} selected="selected"{% endif %}>{{ lang.month_12 }}</option>
+                                                    {% for month in months %}
+                                                        <option value="{{ month.month }}"{% if month.repeats_5_month2 %} selected="selected"{% endif %}>{{ month.name }}</option>
+                                                    {% endfor %}
                                                 </select>
                                                 {{ lang.every }}
                                                 <input type="text" class="textbox" name="repeats_5_years2" value="{{ select.repeats_5_years2 }}" size="2" onfocus="$('#repeats_5_type_2').prop('checked', true);" /> {{ lang.year_or_years }}

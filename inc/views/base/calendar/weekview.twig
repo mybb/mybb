@@ -16,7 +16,7 @@
                             {% if calendar.prev_week_link %}
                                 <a href="{{ calendar.prev_week_link|raw }}">&laquo; {{ lang.previous_week }}</a>
                             {% endif %}
-                            {% if calendar.sep == true %}
+                            {% if calendar.sep %}
                              | 
                             {% endif %}
                             {% if calendar.next_week_link %}
@@ -68,40 +68,12 @@
                 <td class="trow1">
                     <table width="100%" cellspacing="0" cellpadding="0" border="0">
                         <tr>
-                        <td valign="top">
-                            {% if calendar_permissions.canaddevents %}
-                                <a href="calendar.php?action=addevent&amp;calendar={{ calendar.cid }}">{{ lang.add_public_event }}</a> | <a href="calendar.php?action=addevent&amp;calendar={{ calendar.cid }}&amp;private=1">{{ lang.add_private_event }}</a>
-                            {% endif %}
-                        </td>
-                        <td align="right">
-                            <span class="smalltext"><strong>{{ lang.jump_month }}</strong></span>
-                            <select name="month">
-                                <option value="{{ calendar.week_from_month }}">{{ calendar.week_from_one }}</option>
-                                <option value="{{ calendar.week_from_month }}">----------</option>
-                                <option value="1">{{ lang.alt_month_1 }}</option>
-                                <option value="2">{{ lang.alt_month_2 }}</option>
-                                <option value="3">{{ lang.alt_month_3 }}</option>
-                                <option value="4">{{ lang.alt_month_4 }}</option>
-                                <option value="5">{{ lang.alt_month_5 }}</option>
-                                <option value="6">{{ lang.alt_month_6 }}</option>
-                                <option value="7">{{ lang.alt_month_7 }}</option>
-                                <option value="8">{{ lang.alt_month_8 }}</option>
-                                <option value="9">{{ lang.alt_month_9 }}</option>
-                                <option value="10">{{ lang.alt_month_10 }}</option>
-                                <option value="11">{{ lang.alt_month_11 }}</option>
-                                <option value="12">{{ lang.alt_month_12 }}</option>
-                            </select>
-                            <select name="year">
-                                <option value="{{ calendar.week_from_year }}">{{ calendar.week_from_year }}</option>
-                                <option value="{{ calendar.week_from_year }}">----------</option>
-                                {% for year in years %}
-                                    <option value="{{ year }}">{{ year }}</option>
-                                {% endfor %}
-                            </select>
-                            <input type="submit" class="button" value="{{ lang.go }}" />
-                            <br />
-                            {{ calendar_jump|raw }}
+                            <td valign="top">
+                                {% if calendar_permissions.canaddevents %}
+                                    <a href="calendar.php?action=addevent&amp;calendar={{ calendar.cid }}">{{ lang.add_public_event }}</a> | <a href="calendar.php?action=addevent&amp;calendar={{ calendar.cid }}&amp;private=1">{{ lang.add_private_event }}</a>
+                                {% endif %}
                             </td>
+                            {% include 'calendar/calendar_select.twig' %}
                         </tr>
                     </table>
                 </td>
