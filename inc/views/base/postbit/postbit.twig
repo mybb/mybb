@@ -56,7 +56,9 @@
 	</div>
 	<div class="post_controls">
 		<div class="postbit_buttons author_buttons float_left">
-			{{ post.button_email|raw }}
+{% if post.button_email %}
+<a href="member.php?action=emailuser&amp;uid={{ post.uid }}" title="{{ lang.postbit_email }}" class="postbit_email"><span>{{ lang.postbit_button_email }}</span></a>
+{% endif %}
 {% if post.button_pm %}
 <a href="private.php?action=send&amp;uid={{ post.uid }}" title="{{ lang.postbit_pm }}" class="postbit_pm"><span>{{ lang.postbit_button_pm }}</span></a>
 {% endif %}

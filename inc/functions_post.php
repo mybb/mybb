@@ -310,11 +310,10 @@ function build_postbit($post, $post_type=0)
 			$post['button_www'] = true;
 		} 
 
+		$post['button_email'] = false;
 		if ($post['hideemail'] != 1 &&
 			$mybb->usergroup['cansendemail'] == 1) {
-			eval("\$post['button_email'] = \"".$templates->get("postbit_email")."\";");
-		} else {
-			$post['button_email'] = "";
+			$post['button_email'] = true;
 		}
 
 		$post['userregdate'] = my_date($mybb->settings['regdateformat'], $post['regdate']);
@@ -433,7 +432,7 @@ function build_postbit($post, $post_type=0)
 		$post['userregdate'] = $lang->na;
 		$post['postnum'] = $lang->na;
 		$post['button_profile'] = '';
-		$post['button_email'] = '';
+		$post['button_email'] = false;
 		$post['button_www'] = false;
 		$post['signature'] = '';
 		$post['button_pm'] = false;
