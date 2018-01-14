@@ -1,0 +1,83 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ mybb.settings.bbname }} - {{ lang.calendar }}</title>
+{% endblock head %}
+
+{% block body %}
+    <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+    <td width="100%">
+        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+            <thead>
+                <tr>
+                    <td class="thead" colspan="2">
+                        <div class="float_right">
+                            {% if calendar.prev_week_link %}
+                                <a href="{{ calendar.prev_week_link|raw }}">&laquo; {{ lang.previous_week }}</a>
+                            {% endif %}
+                            {% if calendar.sep %}
+                             | 
+                            {% endif %}
+                            {% if calendar.next_week_link %}
+                                <a href="{{ calendar.next_week_link|raw }}">{{ lang.next_week }} &raquo;</a>
+                            {% endif %}
+                        </div>
+                        <div><strong>{{ lang.weekly_overview }} ({{ calendar.friendly_week_from }} - {{ calendar.friendly_week_to }})</strong></div>
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for weekday in weekdays %}
+                    <tr>
+                        <td class="tcat" colspan="2"><strong>{{ weekday.month }} {{ weekday.year }}</strong></td>
+                    </tr>
+                    {% for day in weekday.days %}
+                        {% if day.weekday_month == weekday.monthnum %}
+                            <tr>
+                                <td class="trow_sep" colspan="2">{{ day.weekday_name }}</td>
+                            </tr>
+                            <tr>
+                                <td class="trow2{{ day.day_shaded }}" style="text-align: center; padding: 8px;"><span class="largetext">{{ day.weekday_day }}</span></td>
+                                <td class="trow1" width="100%">
+                                    {% if day.bday_count > 0 %}
+                                        <a href="{{ day.calendar_link|raw }}">{{ day.bday_count }} {{ day.birthday_lang }}</a><br />
+                                    {% endif %}
+                                    {% for event in day.events %}
+                                        <a href="{{ event.eventlink|raw }}" class="{{ event.event_class }}" title="{{ event.fullname }}">{{ event.fullname }}</a>
+                                        {% if event.time_period %}
+                                            <span class="smalltext"> ({{ event.time_period }})</span>
+                                        {% endif %}
+                                        <br />
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </td>
+    <td style="padding-left: 10px; vertical-align: top;">{{ mini_calendars|raw }}</td>
+    </tr>
+    </table>
+    <br />
+    <form action="calendar.php" method="post">
+        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+            <tr>
+                <td class="trow1">
+                    <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                        <tr>
+                            <td valign="top">
+                                {% if calendar_permissions.canaddevents %}
+                                    <a href="calendar.php?action=addevent&amp;calendar={{ calendar.cid }}">{{ lang.add_public_event }}</a> | <a href="calendar.php?action=addevent&amp;calendar={{ calendar.cid }}&amp;private=1">{{ lang.add_private_event }}</a>
+                                {% endif %}
+                            </td>
+                            {% include 'calendar/calendar_select.twig' %}
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </form>
+{% endblock body %}
