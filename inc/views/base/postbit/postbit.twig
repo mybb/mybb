@@ -56,7 +56,11 @@
 	</div>
 	<div class="post_controls">
 		<div class="postbit_buttons author_buttons float_left">
-			{{ post.button_email|raw }}{{ post.button_pm|raw }}{{ post.button_www|raw }}{{ post.button_find|raw }}{{ post.button_rep|raw }}
+			{{ post.button_email|raw }}{{ post.button_pm|raw }}{{ post.button_www|raw }}
+{% if post.button_find %}
+<a href="search.php?action=finduser&amp;uid={{ post.uid }}" title="{{ lang.postbit_find }}" class="postbit_find"><span>{{ lang.postbit_button_find }}</span></a>
+{% endif %}
+{{ post.button_rep|raw }}
 		</div>
 		<div class="postbit_buttons post_management_buttons float_right">
 			{{ post.button_edit|raw }}{{ post.button_quickdelete|raw }}{{ post.button_quickrestore|raw }}{{ post.button_quote|raw }}{{ post.button_multiquote|raw }}{{ post.button_report|raw }}{{ post.button_warn|raw }}{{ post.button_purgespammer|raw }}{{ post.button_reply_pm|raw }}{{ post.button_replyall_pm|raw }}{{ post.button_forward_pm|raw }}{{ post.button_delete_pm|raw }}

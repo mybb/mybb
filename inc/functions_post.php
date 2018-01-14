@@ -269,9 +269,9 @@ function build_postbit($post, $post_type=0)
 			$post['useravatar'] = format_avatar($post['avatar'], $post['avatardimensions'], $mybb->settings['postmaxavatarsize']);
 		}
 
-		$post['button_find'] = '';
+		$post['button_find'] = false;
 		if ($mybb->usergroup['cansearch'] == 1) {
-			eval("\$post['button_find'] = \"".$templates->get("postbit_find")."\";");
+			$post['button_find'] = true;
 		}
 
 		if ($mybb->settings['enablepms'] == 1 &&
@@ -431,7 +431,7 @@ function build_postbit($post, $post_type=0)
 		$post['button_www'] = '';
 		$post['signature'] = '';
 		$post['button_pm'] = '';
-		$post['button_find'] = '';
+		$post['button_find'] = false;
 		$post['onlinestatus'] = '';
 		$post['replink'] = '';
 		eval("\$post['user_details'] = \"".$templates->get("postbit_author_guest")."\";");
