@@ -64,7 +64,9 @@
 {% if post.button_find %}
 <a href="search.php?action=finduser&amp;uid={{ post.uid }}" title="{{ lang.postbit_find }}" class="postbit_find"><span>{{ lang.postbit_button_find }}</span></a>
 {% endif %}
-{{ post.button_rep|raw }}
+{% if post.button_rep %}
+<a href="javascript:void(0)" onclick="MyBB.reputation({{ post.uid }}, {{ post.pid }}); return false;" title="{{ lang.postbit_reputation_add }}" class="postbit_reputation_add"><span>{{ lang.postbit_button_reputation_add }}</span></a>
+{% endif %}
 		</div>
 		<div class="postbit_buttons post_management_buttons float_right">
 			{{ post.button_edit|raw }}{{ post.button_quickdelete|raw }}{{ post.button_quickrestore|raw }}{{ post.button_quote|raw }}{{ post.button_multiquote|raw }}{{ post.button_report|raw }}{{ post.button_warn|raw }}{{ post.button_purgespammer|raw }}{{ post.button_reply_pm|raw }}{{ post.button_replyall_pm|raw }}{{ post.button_forward_pm|raw }}{{ post.button_delete_pm|raw }}

@@ -286,7 +286,7 @@ function build_postbit($post, $post_type=0)
 			$post['button_pm'] = true;
 		}
 
-		$post['button_rep'] = '';
+		$post['button_rep'] = false;
 		if ($post_type != 3 &&
 			$mybb->settings['enablereputation'] == 1 &&
 			$mybb->settings['postrep'] == 1 &&
@@ -300,7 +300,7 @@ function build_postbit($post, $post_type=0)
 				$post['pid'] = 0;
 			}
 
-			eval("\$post['button_rep'] = \"".$templates->get("postbit_rep_button")."\";");
+			$post['button_rep'] = true;
 		}
 
 		if ($post['website'] != "" &&
