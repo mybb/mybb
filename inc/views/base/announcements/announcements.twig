@@ -6,16 +6,16 @@
 
 {% block body %}
 
-<table border="0" cellspacing="{{theme.borderwidth}}" cellpadding="{{theme.tablespace}}" class="tborder tfixed clear no_bottom_border">
+<table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder tfixed clear no_bottom_border">
 	<tr>
 		<td class="thead">
-			<strong>{{lang.forum_announcement}}</strong>
+			<strong>{{ lang.forum_announcement }}</strong>
 		</td>
 	</tr>
 	<tr>
 		<td id="posts_container">
 			<div id="posts">
-				{{announcement|raw}}
+				{{ announcement|raw }}
 			</div>
 		</td>
 	</tr>
