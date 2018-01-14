@@ -40,7 +40,10 @@
 	{% if post.replink %}
 			<br />{{ lang.postbit_reputation }} {{ post.userreputation|raw }}
 	{% endif %}
-			{{ post.profilefield }}{{ post.warninglevel|raw }}
+			{{ post.profilefield }}
+	{% if post.can_warn %}
+			<br />{{ lang.postbit_warning_level }} <a href="{{ post.warning_link }}">{{ post.warning_level|raw }}</a>
+	{% endif %}
 {% endif %}
 		</div>
 	</div>
@@ -83,7 +86,11 @@
 {% endif %}
 		</div>
 		<div class="postbit_buttons post_management_buttons float_right">
-			{{ post.button_edit|raw }}{{ post.button_quickdelete|raw }}{{ post.button_quickrestore|raw }}{{ post.button_quote|raw }}{{ post.button_multiquote|raw }}{{ post.button_report|raw }}{{ post.button_warn|raw }}{{ post.button_purgespammer|raw }}{{ post.button_reply_pm|raw }}{{ post.button_replyall_pm|raw }}{{ post.button_forward_pm|raw }}{{ post.button_delete_pm|raw }}
+			{{ post.button_edit|raw }}{{ post.button_quickdelete|raw }}{{ post.button_quickrestore|raw }}{{ post.button_quote|raw }}{{ post.button_multiquote|raw }}{{ post.button_report|raw }}
+{% if post.can_warn %}
+<a href="warnings.php?action=warn&amp;uid={{ post.uid }}&amp;pid={{ post.pid }}" title="{{ lang.postbit_warn }}" class="postbit_warn"><span>{{ lang.postbit_button_warn }}</span></a>
+{% endif %}
+			{{ post.button_purgespammer|raw }}{{ post.button_reply_pm|raw }}{{ post.button_replyall_pm|raw }}{{ post.button_forward_pm|raw }}{{ post.button_delete_pm|raw }}
 		</div>
 	</div>
 </div>

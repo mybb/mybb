@@ -32,7 +32,7 @@ function build_postbit($post, $post_type=0)
 	}
 
 	// Set default values for buttons here
-	foreach (array('button_multiquote', 'button_rep', 'button_warn', 'button_purgespammer', 'button_pm', 'button_reply_pm', 'button_replyall_pm', 'button_forward_pm', 'button_delete_pm', 'replink') as $post_button) {
+	foreach (array('button_multiquote', 'button_rep', 'can_warn', 'button_purgespammer', 'button_pm', 'button_reply_pm', 'button_replyall_pm', 'button_forward_pm', 'button_delete_pm', 'replink') as $post_button) {
 		if (empty($post[$post_button])) {
 			$post[$post_button] = false;
 		}
@@ -337,23 +337,20 @@ function build_postbit($post, $post_type=0)
 				$mybb->settings['maxwarningpoints'] = 10;
 			}
 
-			$warning_level = round($post['warningpoints']/$mybb->settings['maxwarningpoints']*100);
-			if ($warning_level > 100) {
-				$warning_level = 100;
+			$post['warning_level'] = round($post['warningpoints']/$mybb->settings['maxwarningpoints']*100);
+			if ($post['warning_level'] > 100) {
+				$post['warning_level'] = 100;
 			}
-			$warning_level = get_colored_warning_level($warning_level);
+			$post['warning_level'] = get_colored_warning_level($post['warning_level']);
 
 			// If we can warn them, it's not the same person, and we're in a PM or a post.
+			$post['warning_link'] = "usercp.php";
 			if ($mybb->usergroup['canwarnusers'] != 0 &&
 				$post['uid'] != $mybb->user['uid'] &&
 				($post_type == 0 || $post_type == 2)) {
-				eval("\$post['button_warn'] = \"".$templates->get("postbit_warn")."\";");
-				$warning_link = "warnings.php?uid={$post['uid']}";
-			} else {
-				$post['button_warn'] = '';
-				$warning_link = "usercp.php";
+				$post['can_warn'] = true;
+				$post['warning_link'] = "warnings.php?uid={$post['uid']}";
 			}
-			eval("\$post['warninglevel'] = \"".$templates->get("postbit_warninglevel")."\";");
 		}
 
 		if ($post_type != 3 &&
