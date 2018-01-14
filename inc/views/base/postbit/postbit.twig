@@ -1,7 +1,7 @@
 {{ ignore_bit|raw }}{{ deleted_bit|raw }}
 <a name="pid{{ post.pid }}" id="pid{{ post.pid }}"></a>
-<div class="post {{ unapproved_shade }}" style="{{ post_visibility }}" id="post_{{ post.pid }}">
-	<div class="post_author">
+<div class="post classic {{ unapproved_shade }}" style="{{ post_visibility }}" id="post_{{ post.pid }}">
+	<div class="post_author scaleimages">
 		{{ post.useravatar|raw }}
 		<div class="author_information">
 				<strong><span class="largetext">{{ post.profilelink|raw }}</span></strong> {{ post.onlinestatus|raw }}<br />
@@ -20,7 +20,7 @@
 			{{ post.posturl|raw }}
 			{{ post.icon|raw }}
 			<span class="post_date">{{ post.postdate|raw }} <span class="post_edit" id="edited_by_{{ post.pid }}">{{ post.editedmsg|raw }}</span></span>
-			{{ post.subject_extra|raw }}
+		{{ post.subject_extra|raw }}
 		</div>
 		<div class="post_body scaleimages" id="pid_{{ post.pid }}">
 			{{ post.message|raw }}

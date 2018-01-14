@@ -802,12 +802,7 @@ function build_postbit($post, $post_type=0)
 		!is_moderator($fid, "canviewdeleted")) {
 		eval("\$postbit = \"".$templates->get("postbit_deleted_member")."\";");
 	} else {
-		$templateFile = 'postbit/postbit.twig';
-		if ($mybb->settings['postlayout'] == "classic") {
-			$templateFile = 'postbit/postbit_classic.twig';
-		}
-
-		$postbit = \MyBB\template($templateFile, [
+		$postbit = \MyBB\template('postbit/postbit.twig', [
 			'post' => $post,
 			'ignore_bit' => $ignore_bit,
 			'deleted_bit' => $deleted_bit,
