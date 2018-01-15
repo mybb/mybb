@@ -522,27 +522,21 @@ function build_postbit($post, $post_type=0)
 		}
 
 		// Inline moderation stuff
+		$post['inlinechecked'] = false;
 		if ($ismod) {
 			if (isset($mybb->cookies[$inlinecookie]) &&
-				my_strpos($mybb->cookies[$inlinecookie], "|".$post['pid']."|") !== false) {
-				$inlinecheck = "checked=\"checked\"";
+				my_strpos($mybb->cookies[$inlinecookie], "|" . $post['pid'] . "|") !== false) {
+				$post['inlinechecked'] = true;
 				$inlinecount++;
-			} else {
-				$inlinecheck = "";
 			}
-
-			eval("\$post['inlinecheck'] = \"".$templates->get("postbit_inlinecheck")."\";");
 
 			if ($post['visible'] == 0) {
 				$invisiblepost = 1;
 			}
-		} else
-		{
-			$post['inlinecheck'] = "";
 		}
 		$post['postlink'] = get_post_link($post['pid'], $post['tid']);
-		$post_number = my_number_format($postcounter);
-		eval("\$post['posturl'] = \"".$templates->get("postbit_posturl")."\";");
+		$post['number'] = my_number_format($postcounter);
+
 		global $forum, $thread;
 
 		if ($forum['open'] != 0 &&
@@ -765,6 +759,7 @@ function build_postbit($post, $post_type=0)
 			'deleted_bit' => $deleted_bit,
 			'unapproved_shade' => $unapproved_shade,
 			'post_visibility' => $post_visibility,
+			'ismod' => $ismod,
 		]);
 	}
 

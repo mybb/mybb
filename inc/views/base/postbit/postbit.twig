@@ -60,7 +60,9 @@
 	</div>
 	<div class="post_content">
 		<div class="post_head">
-			{{ post.posturl|raw }}
+			<div class="float_right" style="vertical-align: top">
+				<strong><a href="{{ post.postlink }}#pid{{ post.pid }}" title="{{ post.subject_title }}">#{{ post.number }}</a></strong>{% if ismod %}<input type="checkbox" class="checkbox" name="inlinemod_{{ post.pid }}" id="inlinemod_{{ post.pid }}" value="1" style="vertical-align: middle; margin: -2px 0 0 5px;" {% if post.inlinechecked %}checked="checked"{% endif %}/>{% endif %}
+			</div>
 			{{ post.icon|raw }}
 			<span class="post_date">{{ post.postdate|raw }} <span class="post_edit" id="edited_by_{{ post.pid }}">
 			{% if post.editedmsg %}
