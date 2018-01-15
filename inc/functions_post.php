@@ -433,7 +433,7 @@ function build_postbit($post, $post_type=0)
 	$post['button_edit'] = '';
 	$post['button_quickdelete'] = '';
 	$post['button_quickrestore'] = '';
-	$post['button_quote'] = '';
+	$post['button_quote'] = false;
 	$post['button_quickquote'] = '';
 	$post['button_report'] = '';
 
@@ -543,7 +543,7 @@ function build_postbit($post, $post_type=0)
 			($thread['closed'] != 1 ||
 			is_moderator($forum['fid'], "canpostclosedthreads")) &&
 			($thread['uid'] == $mybb->user['uid'] || $forumpermissions['canonlyreplyownthreads'] != 1)) {
-			eval("\$post['button_quote'] = \"".$templates->get("postbit_quote")."\";");
+			$post['button_quote'] = true;
 		}
 
 		if ($forumpermissions['canpostreplys'] != 0 &&

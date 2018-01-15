@@ -135,7 +135,10 @@
 // -->
 </script>
 			{% endif %}
-			{{ post.button_quote|raw }}{{ post.button_multiquote|raw }}{{ post.button_report|raw }}
+			{% if post.button_quote %}
+				<a href="newreply.php?tid={{ post.tid }}&amp;replyto={{ post.pid }}" title="{{ lang.postbit_quote }}" class="postbit_quote"><span>{{ lang.postbit_button_quote }}</span></a>
+			{% endif %}
+			{{ post.button_multiquote|raw }}{{ post.button_report|raw }}
 {% if post.can_warn %}
 <a href="warnings.php?action=warn&amp;uid={{ post.uid }}&amp;pid={{ post.pid }}" title="{{ lang.postbit_warn }}" class="postbit_warn"><span>{{ lang.postbit_button_warn }}</span></a>
 {% endif %}
