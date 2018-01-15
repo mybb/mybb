@@ -10,19 +10,19 @@
         {{ errors|raw }}
         <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
             <tr>
-            <td class="thead" colspan="2"><strong>{{ lang.contact }}</strong></td>
+                <td class="thead" colspan="2"><strong>{{ lang.contact }}</strong></td>
             </tr>
             <tr>
-            <td class="trow1" valign="top"><strong>{{ lang.contact_subject }}:</strong><br /><span class="smalltext">{{ lang.contact_subject_desc }}</span></td>
-            <td class="trow1"><input type="text" name="subject" class="textbox" size="49" value="{{ mybb.input.subject }}" /></td>
+                <td class="trow1" valign="top"><strong>{{ lang.contact_subject }}:</strong><br /><span class="smalltext">{{ lang.contact_subject_desc }}</span></td>
+                <td class="trow1"><input type="text" name="subject" class="textbox" size="49" value="{{ mybb.input.subject }}" /></td>
             </tr>
             <tr>
-            <td class="trow2" valign="top"><strong>{{ lang.contact_message }}:</strong><br /><span class="smalltext">{{ lang.contact_message_desc }}</span></td>
-            <td class="trow2"><textarea cols="50" rows="10" name="message" class="textarea" >{{ mybb.input.message }}</textarea></td>
+                <td class="trow2" valign="top"><strong>{{ lang.contact_message }}:</strong><br /><span class="smalltext">{{ lang.contact_message_desc }}</span></td>
+                <td class="trow2"><textarea cols="50" rows="10" name="message" class="textarea" >{{ mybb.input.message }}</textarea></td>
             </tr>
             <tr>
-            <td class="trow1" valign="top"><strong>{{ lang.contact_email }}:</strong><br /><span class="smalltext">{{ lang.contact_email_desc }}</span></td>
-            <td class="trow1"><input type="text" name="email" class="textbox" size="49" value="{{ mybb.input.email }}" /></td>
+                <td class="trow1" valign="top"><strong>{{ lang.contact_email }}:</strong><br /><span class="smalltext">{{ lang.contact_email_desc }}</span></td>
+                <td class="trow1"><input type="text" name="email" class="textbox" size="49" value="{{ mybb.input.email }}" /></td>
             </tr>
             {{ captcha|raw }}
         </table>
