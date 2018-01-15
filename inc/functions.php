@@ -3052,34 +3052,44 @@ function format_name($username, $usergroup, $displaygroup=0)
 {
 	global $groupscache, $cache, $plugins;
 
-	if(!is_array($groupscache))
-	{
-		$groupscache = $cache->read("usergroups");
-	}
+	static $formattednames = array();
 
-	if($displaygroup != 0)
+	if(!isset($formattednames[$username]))
 	{
-		$usergroup = $displaygroup;
-	}
+		if(!is_array($groupscache))
+		{
+			$groupscache = $cache->read("usergroups");
+		}
 
-	$ugroup = $groupscache[$usergroup];
-	$format = $ugroup['namestyle'];
-	$userin = substr_count($format, "{username}");
+		if($displaygroup != 0)
+		{
+			$usergroup = $displaygroup;
+		}
 
-	if($userin == 0)
-	{
 		$format = "{username}";
+
+		if(isset($groupscache[$usergroup]))
+		{
+			$ugroup = $groupscache[$usergroup];
+
+			if(strpos($ugroup['namestyle'], "{username}") !== false)
+			{
+				$format = $ugroup['namestyle'];
+			}
+		}
+
+		$format = stripslashes($format);
+
+		$parameters = compact('username', 'usergroup', 'displaygroup', 'format');
+
+		$parameters = $plugins->run_hooks('format_name', $parameters);
+
+		$format = $parameters['format'];
+
+		$formattednames[$username] = str_replace("{username}", $username, $format);
 	}
 
-	$format = stripslashes($format);
-
-	$parameters = compact('username', 'usergroup', 'displaygroup', 'format');
-
-	$parameters = $plugins->run_hooks('format_name', $parameters);
-
-	$format = $parameters['format'];
-
-	return str_replace("{username}", $username, $format);
+	return $formattednames[$username];
 }
 
 /**
