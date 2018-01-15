@@ -447,6 +447,7 @@ function build_postbit($post, $post_type=0)
 	}
 
 	$post['editedmsg'] = false;
+	$post['is_announcement'] = false;
 	if (!$post_type) {
 		if (!isset($forumpermissions)) {
 			$forumpermissions = forum_permissions($fid);
@@ -563,8 +564,7 @@ function build_postbit($post, $post_type=0)
 		if ($mybb->usergroup['canmodcp'] == 1 &&
 			$mybb->usergroup['canmanageannounce'] == 1 &&
 			is_moderator($fid, "canmanageannouncements")) {
-			eval("\$post['button_edit'] = \"".$templates->get("announcement_edit")."\";");
-			eval("\$post['button_quickdelete'] = \"".$templates->get("announcement_quickdelete")."\";");
+			$post['quick_delete'] = $post['can_edit'] = $post['is_announcement'] = true;
 		}
 	}
 

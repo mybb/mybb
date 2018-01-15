@@ -106,11 +106,16 @@
 		</div>
 		<div class="postbit_buttons post_management_buttons float_right">			
 			{% if post.can_edit %}
-				<a href="editpost.php?pid={{ post.pid }}" id="edit_post_{{ post.pid }}" title="{{ lang.postbit_edit }}" class="postbit_edit"><span>{{ lang.postbit_button_edit }}</span></a>
-				<div id="edit_post_{{ post.pid }}_popup" class="popup_menu" style="display: none;"><div class="popup_item_container">
-					<a href="javascript:void(0)" class="popup_item quick_edit_button" id="quick_edit_post_{{ post.pid }}">{{ lang.postbit_quick_edit }}</a></div>
-					<div class="popup_item_container"><a href="editpost.php?pid={{ post.pid }}" class="popup_item">{{ lang.postbit_full_edit }}</a></div>
-				</div>
+				{% if post.is_announcement %}
+					<a href="modcp.php?action=edit_announcement&amp;aid={{ post.aid }}" title="{{ lang.announcement_edit }}" class="postbit_edit"><span>{{ lang.postbit_button_edit }}</span></a>
+				{% else %}
+					<a href="editpost.php?pid={{ post.pid }}" id="edit_post_{{ post.pid }}" title="{{ lang.postbit_edit }}" class="postbit_edit"><span>{{ lang.postbit_button_edit }}</span></a>
+					<div id="edit_post_{{ post.pid }}_popup" class="popup_menu" style="display: none;">
+						<div class="popup_item_container">
+							<a href="javascript:void(0)" class="popup_item quick_edit_button" id="quick_edit_post_{{ post.pid }}">{{ lang.postbit_quick_edit }}</a></div>
+							<div class="popup_item_container"><a href="editpost.php?pid={{ post.pid }}" class="popup_item">{{ lang.postbit_full_edit }}</a>
+						</div>
+					</div>
 <script type="text/javascript">
 // <!--
 	if (use_xmlhttprequest == "1") {
@@ -118,14 +123,19 @@
 	}
 // -->
 </script>
+				{% endif %}
 			{% endif %}
 			{% if post.quick_delete %}
-				<a href="editpost.php?pid={{ post.pid }}" onclick="Thread.deletePost({{ post.pid }}); return false;" style="display: none;" id="quick_delete_{{ post.pid }}" title="{{ lang.postbit_quick_delete }}" class="postbit_qdelete"><span>{{ lang.postbit_button_qdelete }}</span></a>
+				{% if post.is_announcement %}
+					<a href="modcp.php?action=delete_announcement&amp;aid={{ post.aid }}&amp;my_post_key={{ mybb.post_code }}" onclick="MyBB.deleteAnnouncement(this); return false;" class="postbit_qdelete"><span>{{ lang.postbit_button_qdelete }}</span></a>
+				{% else %}
+					<a href="editpost.php?pid={{ post.pid }}" onclick="Thread.deletePost({{ post.pid }}); return false;" style="display: none;" id="quick_delete_{{ post.pid }}" title="{{ lang.postbit_quick_delete }}" class="postbit_qdelete"><span>{{ lang.postbit_button_qdelete }}</span></a>
 <script type="text/javascript">
 // <!--
 	$('#quick_delete_{{ post.pid }}').css('display', '{{ post.quick_delete_display }}');
 // -->
 </script>
+				{% endif %}
 			{% endif %}
 			{% if post.quick_restore %}
 				<a href="editpost.php?pid={{ post.pid }}" onclick="Thread.restorePost({{ post.pid }}); return false;" style="display: none;" id="quick_restore_{{ post.pid }}" title="{{ lang.postbit_quick_restore }}" class="postbit_qrestore"><span>{{ lang.postbit_button_qrestore }}</span></a>
