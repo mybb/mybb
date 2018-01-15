@@ -435,7 +435,7 @@ function build_postbit($post, $post_type=0)
 	$post['button_quickrestore'] = '';
 	$post['button_quote'] = false;
 	$post['button_quickquote'] = '';
-	$post['button_report'] = '';
+	$post['button_report'] = false;
 
 	// For private messages, fetch the reply/forward/delete icons
 	if ($post_type == 2 &&
@@ -556,7 +556,7 @@ function build_postbit($post, $post_type=0)
 		}
 
 		if ($mybb->user['uid'] != "0") {
-			eval("\$post['button_report'] = \"".$templates->get("postbit_report")."\";");
+			$post['button_report'] = true;
 		}
 	// announcement
 	} elseif ($post_type == 3) {

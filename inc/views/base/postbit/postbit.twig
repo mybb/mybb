@@ -146,7 +146,9 @@
 // -->
 </script>
 			{% endif %}
-			{{ post.button_report|raw }}
+			{% if post.button_report %}
+				<a href="javascript:void(0)" onclick="Report.reportPost({{ post.pid }}); return false;" title="{{ lang.postbit_report }}" class="postbit_report"><span>{{ lang.postbit_button_report }}</span></a>
+			{% endif %}
 {% if post.can_warn %}
 <a href="warnings.php?action=warn&amp;uid={{ post.uid }}&amp;pid={{ post.pid }}" title="{{ lang.postbit_warn }}" class="postbit_warn"><span>{{ lang.postbit_button_warn }}</span></a>
 {% endif %}
