@@ -32,7 +32,7 @@ function build_postbit($post, $post_type=0)
 	}
 
 	// Set default values for buttons here
-	foreach (array('button_multiquote', 'button_rep', 'can_warn', 'button_purgespammer', 'button_pm', 'button_reply_pm', 'is_pm', 'replink', 'can_edit') as $post_button) {
+	foreach (array('button_multiquote', 'button_rep', 'can_warn', 'button_purgespammer', 'button_pm', 'button_reply_pm', 'is_pm', 'replink', 'can_edit', 'quick_delete', 'quick_restore') as $post_button) {
 		if (empty($post[$post_button])) {
 			$post[$post_button] = false;
 		}
@@ -480,52 +480,40 @@ function build_postbit($post, $post_type=0)
 			if ($forumpermissions['candeletethreads'] == 1 &&
 				$postcounter == 1) {
 				$can_delete_thread = 1;
-			} else if ($forumpermissions['candeleteposts'] == 1 &&
+			} elseif ($forumpermissions['candeleteposts'] == 1 &&
 				$postcounter != 1) {
 				$can_delete_post = 1;
 			}
 		}
 
-		$postbit_qdelete = $postbit_qrestore = '';
 		if ($mybb->user['uid'] != 0) {
+			$post['quick_delete_display'] = '';
+			$post['quick_restore_display'] = 'none';
+			if ($post['visible'] == -1) {
+				$post['quick_delete_display'] = 'none';
+				$post['quick_restore_display'] = '';
+			}
+
 			if ((is_moderator($fid, "candeleteposts") || is_moderator($fid, "cansoftdeleteposts") || $can_delete_post == 1) &&
-			$postcounter != 1) {
-				$postbit_qdelete = $lang->postbit_qdelete_post;
-				$display = '';
-				if ($post['visible'] == -1) {
-					$display = "none";
-				}
-				eval("\$post['button_quickdelete'] = \"".$templates->get("postbit_quickdelete")."\";");
-			} else if ((is_moderator($fid, "candeletethreads") || is_moderator($fid, "cansoftdeletethreads") || $can_delete_thread == 1) &&
+				$postcounter != 1) {
+				$post['quick_delete'] = true;
+				$lang->postbit_quick_delete = $lang->postbit_qdelete_post;
+			} elseif ((is_moderator($fid, "candeletethreads") || is_moderator($fid, "cansoftdeletethreads") || $can_delete_thread == 1) &&
 				$postcounter == 1) {
-				$postbit_qdelete = $lang->postbit_qdelete_thread;
-				$display = '';
-				if ($post['visible'] == -1) {
-					$display = "none";
-				}
-				eval("\$post['button_quickdelete'] = \"".$templates->get("postbit_quickdelete")."\";");
+				$post['quick_delete'] = true;
+				$lang->postbit_quick_delete = $lang->postbit_qdelete_thread;
 			}
 
 			// Restore Post
 			if (is_moderator($fid, "canrestoreposts") &&
 				$postcounter != 1) {
-				$display = "none";
-				if ($post['visible'] == -1) {
-					$display = '';
-				}
-				$postbit_qrestore = $lang->postbit_qrestore_post;
-				eval("\$post['button_quickrestore'] = \"".$templates->get("postbit_quickrestore")."\";");
-			}
-
+				$post['quick_restore'] = true;
+				$lang->postbit_quick_restore = $lang->postbit_qrestore_post;
 			// Restore Thread
-			else if (is_moderator($fid, "canrestorethreads") &&
+			} elseif (is_moderator($fid, "canrestorethreads") &&
 				$postcounter == 1) {
-				$display = "none";
-				if ($post['visible'] == -1) {
-					$display = "";
-				}
-				$postbit_qrestore = $lang->postbit_qrestore_thread;
-				eval("\$post['button_quickrestore'] = \"".$templates->get("postbit_quickrestore")."\";");
+				$post['quick_restore'] = true;
+				$lang->postbit_quick_restore = $lang->postbit_qrestore_thread;
 			}
 		}
 

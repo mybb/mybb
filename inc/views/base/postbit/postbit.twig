@@ -117,7 +117,23 @@
 // -->
 </script>
 			{% endif %}
-			{{ post.button_quickdelete|raw }}{{ post.button_quickrestore|raw }}{{ post.button_quote|raw }}{{ post.button_multiquote|raw }}{{ post.button_report|raw }}
+			{% if post.quick_delete %}
+				<a href="editpost.php?pid={{ post.pid }}" onclick="Thread.deletePost({{ post.pid }}); return false;" style="display: none;" id="quick_delete_{{ post.pid }}" title="{{ lang.postbit_quick_delete }}" class="postbit_qdelete"><span>{{ lang.postbit_button_qdelete }}</span></a>
+<script type="text/javascript">
+// <!--
+	$('#quick_delete_{{ post.pid }}').css('display', '{{ post.quick_delete_display }}');
+// -->
+</script>
+			{% endif %}
+			{% if post.quick_restore %}
+				<a href="editpost.php?pid={{ post.pid }}" onclick="Thread.restorePost({{ post.pid }}); return false;" style="display: none;" id="quick_restore_{{ post.pid }}" title="{{ lang.postbit_quick_restore }}" class="postbit_qrestore"><span>{{ lang.postbit_button_qrestore }}</span></a>
+<script type="text/javascript">
+// <!--
+	$('#quick_restore_{{ post.pid }}').css('display', '{{ post.quick_restore_display }}');
+// -->
+</script>
+			{% endif %}
+			{{ post.button_quote|raw }}{{ post.button_multiquote|raw }}{{ post.button_report|raw }}
 {% if post.can_warn %}
 <a href="warnings.php?action=warn&amp;uid={{ post.uid }}&amp;pid={{ post.pid }}" title="{{ lang.postbit_warn }}" class="postbit_warn"><span>{{ lang.postbit_button_warn }}</span></a>
 {% endif %}
