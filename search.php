@@ -1361,11 +1361,11 @@ elseif($mybb->input['action'] == "finduserthreads")
 elseif($mybb->input['action'] == "getnew")
 {
 
-	$where_sql = "t.lastpost >= '".(int)$mybb->user['lastvisit']."'";
+	$where_sql = "lastpost >= '".(int)$mybb->user['lastvisit']."'";
 
 	if($mybb->get_input('fid', MyBB::INPUT_INT))
 	{
-		$where_sql .= " AND t.fid='".$mybb->get_input('fid', MyBB::INPUT_INT)."'";
+		$where_sql .= " AND fid='".$mybb->get_input('fid', MyBB::INPUT_INT)."'";
 	}
 	else if($mybb->get_input('fids'))
 	{
@@ -1377,19 +1377,19 @@ elseif($mybb->input['action'] == "getnew")
 
 		if(!empty($fids))
 		{
-			$where_sql .= " AND t.fid IN (".implode(',', $fids).")";
+			$where_sql .= " AND fid IN (".implode(',', $fids).")";
 		}
 	}
 
 	$unsearchforums = get_unsearchable_forums();
 	if($unsearchforums)
 	{
-		$where_sql .= " AND t.fid NOT IN ($unsearchforums)";
+		$where_sql .= " AND fid NOT IN ($unsearchforums)";
 	}
 	$inactiveforums = get_inactive_forums();
 	if($inactiveforums)
 	{
-		$where_sql .= " AND t.fid NOT IN ($inactiveforums)";
+		$where_sql .= " AND fid NOT IN ($inactiveforums)";
 	}
 
 	$permsql = "";
@@ -1406,7 +1406,16 @@ elseif($mybb->input['action'] == "getnew")
 	}
 	if(!empty($onlyusfids))
 	{
-		$where_sql .= "AND ((t.fid IN(".implode(',', $onlyusfids).") AND t.uid='{$mybb->user['uid']}') OR t.fid NOT IN(".implode(',', $onlyusfids)."))";
+		$where_sql .= "AND ((fid IN(".implode(',', $onlyusfids).") AND uid='{$mybb->user['uid']}') OR fid NOT IN(".implode(',', $onlyusfids)."))";
+	}
+	
+	$tids = '';
+	$comma = '';
+	$query = $db->simple_select("threads", "tid", $where_sql);
+	while($tid = $db->fetch_field($query, "tid"))
+	{
+			$tids .= $comma.$tid;
+			$comma = ',';
 	}
 
 	$sid = md5(uniqid(microtime(), true));
@@ -1415,7 +1424,7 @@ elseif($mybb->input['action'] == "getnew")
 		"uid" => $mybb->user['uid'],
 		"dateline" => TIME_NOW,
 		"ipaddress" => $db->escape_binary($session->packedip),
-		"threads" => '',
+		"threads" => $db->escape_string($tids),
 		"posts" => '',
 		"resulttype" => "threads",
 		"querycache" => $db->escape_string($where_sql),
@@ -1438,11 +1447,11 @@ elseif($mybb->input['action'] == "getdaily")
 	}
 	$datecut = TIME_NOW-(86400*$days);
 
-	$where_sql = "t.lastpost >='".$datecut."'";
+	$where_sql = "lastpost >='".$datecut."'";
 
 	if($mybb->get_input('fid', MyBB::INPUT_INT))
 	{
-		$where_sql .= " AND t.fid='".$mybb->get_input('fid', MyBB::INPUT_INT)."'";
+		$where_sql .= " AND fid='".$mybb->get_input('fid', MyBB::INPUT_INT)."'";
 	}
 	else if($mybb->get_input('fids'))
 	{
@@ -1454,19 +1463,19 @@ elseif($mybb->input['action'] == "getdaily")
 
 		if(!empty($fids))
 		{
-			$where_sql .= " AND t.fid IN (".implode(',', $fids).")";
+			$where_sql .= " AND fid IN (".implode(',', $fids).")";
 		}
 	}
 
 	$unsearchforums = get_unsearchable_forums();
 	if($unsearchforums)
 	{
-		$where_sql .= " AND t.fid NOT IN ($unsearchforums)";
+		$where_sql .= " AND fid NOT IN ($unsearchforums)";
 	}
 	$inactiveforums = get_inactive_forums();
 	if($inactiveforums)
 	{
-		$where_sql .= " AND t.fid NOT IN ($inactiveforums)";
+		$where_sql .= " AND fid NOT IN ($inactiveforums)";
 	}
 
 	$permsql = "";
@@ -1483,16 +1492,25 @@ elseif($mybb->input['action'] == "getdaily")
 	}
 	if(!empty($onlyusfids))
 	{
-		$where_sql .= "AND ((t.fid IN(".implode(',', $onlyusfids).") AND t.uid='{$mybb->user['uid']}') OR t.fid NOT IN(".implode(',', $onlyusfids)."))";
+		$where_sql .= "AND ((fid IN(".implode(',', $onlyusfids).") AND uid='{$mybb->user['uid']}') OR fid NOT IN(".implode(',', $onlyusfids)."))";
 	}
 
+	$tids = '';
+	$comma = '';
+	$query = $db->simple_select("threads", "tid", $where_sql);
+	while($tid = $db->fetch_field($query, "tid"))
+	{
+			$tids .= $comma.$tid;
+			$comma = ',';
+	}
+	
 	$sid = md5(uniqid(microtime(), true));
 	$searcharray = array(
 		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],
 		"dateline" => TIME_NOW,
 		"ipaddress" => $db->escape_binary($session->packedip),
-		"threads" => '',
+		"threads" => $db->escape_string($tids),
 		"posts" => '',
 		"resulttype" => "threads",
 		"querycache" => $db->escape_string($where_sql),
