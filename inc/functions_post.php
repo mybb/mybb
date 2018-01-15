@@ -32,7 +32,7 @@ function build_postbit($post, $post_type=0)
 	}
 
 	// Set default values for buttons here
-	foreach (array('button_multiquote', 'button_rep', 'can_warn', 'button_purgespammer', 'button_pm', 'button_reply_pm', 'button_replyall_pm', 'button_forward_pm', 'button_delete_pm', 'replink') as $post_button) {
+	foreach (array('button_multiquote', 'button_rep', 'can_warn', 'button_purgespammer', 'button_pm', 'button_reply_pm', 'is_pm', 'replink') as $post_button) {
 		if (empty($post[$post_button])) {
 			$post[$post_button] = false;
 		}
@@ -436,23 +436,14 @@ function build_postbit($post, $post_type=0)
 	$post['button_quote'] = '';
 	$post['button_quickquote'] = '';
 	$post['button_report'] = '';
-	$post['button_reply_pm'] = '';
-	$post['button_replyall_pm'] = '';
-	$post['button_forward_pm']  = '';
-	$post['button_delete_pm'] = '';
 
 	// For private messages, fetch the reply/forward/delete icons
 	if ($post_type == 2 &&
 		$post['pmid']) {
 		global $replyall;
 
-		eval("\$post['button_reply_pm'] = \"".$templates->get("postbit_reply_pm")."\";");
-		eval("\$post['button_forward_pm'] = \"".$templates->get("postbit_forward_pm")."\";");
-		eval("\$post['button_delete_pm'] = \"".$templates->get("postbit_delete_pm")."\";");
-
-		if ($replyall == true) {
-			eval("\$post['button_replyall_pm'] = \"".$templates->get("postbit_replyall_pm")."\";");
-		}
+		$post['replyall'] = $replyall;
+		$post['is_pm'] = true;
 	}
 
 	$post['editedmsg'] = '';
