@@ -552,7 +552,7 @@ function build_postbit($post, $post_type=0)
 			$mybb->settings['multiquote'] != 0 &&
 			$forum['open'] != 0 &&
 			!$post_type) {
-			eval("\$post['button_multiquote'] = \"".$templates->get("postbit_multiquote")."\";");
+			$post['button_multiquote'] = true;
 		}
 
 		if ($mybb->user['uid'] != "0") {
