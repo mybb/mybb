@@ -62,7 +62,11 @@
 		<div class="post_head">
 			{{ post.posturl|raw }}
 			{{ post.icon|raw }}
-			<span class="post_date">{{ post.postdate|raw }} <span class="post_edit" id="edited_by_{{ post.pid }}">{{ post.editedmsg|raw }}</span></span>
+			<span class="post_date">{{ post.postdate|raw }} <span class="post_edit" id="edited_by_{{ post.pid }}">
+			{% if post.editedmsg %}
+				<span class="edited_post">({{ post.editnote|raw }} {{ post.editedprofilelink|raw }}.{% if post.editreason %} <em>{{ lang.postbit_editreason }}: {{ post.editreason }}</em>{% endif %})</span>
+			{% endif %}
+			</span></span>
 		{{ post.subject_extra|raw }}
 		</div>
 		<div class="post_body scaleimages" id="pid_{{ post.pid }}">

@@ -446,7 +446,7 @@ function build_postbit($post, $post_type=0)
 		$post['is_pm'] = true;
 	}
 
-	$post['editedmsg'] = '';
+	$post['editedmsg'] = false;
 	if (!$post_type) {
 		if (!isset($forumpermissions)) {
 			$forumpermissions = forum_permissions($fid);
@@ -457,17 +457,14 @@ function build_postbit($post, $post_type=0)
 			$post['edittime'] != 0 &&
 			$post['editusername'] != "" &&
 			(($mybb->settings['showeditedby'] != 0 && $usergroup['cancp'] == 0) || ($mybb->settings['showeditedbyadmin'] != 0 && $usergroup['cancp'] == 1))) {
+			$post['editedmsg'] = true;
+
 			$post['editdate'] = my_date('relative', $post['edittime']);
 			$post['editnote'] = $lang->sprintf($lang->postbit_edited, $post['editdate']);
-			$post['editusername'] = htmlspecialchars_uni($post['editusername']);
 			$post['editedprofilelink'] = build_profile_link($post['editusername'], $post['edituid']);
-			$editreason = "";
 			if ($post['editreason'] != "") {
 				$post['editreason'] = $parser->parse_badwords($post['editreason']);
-				$post['editreason'] = htmlspecialchars_uni($post['editreason']);
-				eval("\$editreason = \"".$templates->get("postbit_editedby_editreason")."\";");
 			}
-			eval("\$post['editedmsg'] = \"".$templates->get("postbit_editedby")."\";");
 		}
 
 		$time = TIME_NOW;
