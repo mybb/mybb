@@ -80,7 +80,9 @@
 				{{ post.poststatus|raw }}
 			</div>
 		</div>
-		{{ post.input_editreason|raw }}
+		{% if post.can_edit %}
+			<div class="editreason" id="editreason_{{ post.pid }}_original" style="display: none;"><label for="editreason">{{ lang.postbit_editreason }}:</label> <input type="text" class="textbox" style="margin: 6px 0;" name="editreason" size="40" maxlength="150" id="quickedit_{{ post.pid }}_editreason_original" value="{{ post.editreason }}" /><br /></div>
+		{% endif %}
 	</div>
 	<div class="post_controls">
 		<div class="postbit_buttons author_buttons float_left">
@@ -100,8 +102,22 @@
 <a href="javascript:void(0)" onclick="MyBB.reputation({{ post.uid }}, {{ post.pid }}); return false;" title="{{ lang.postbit_reputation_add }}" class="postbit_reputation_add"><span>{{ lang.postbit_button_reputation_add }}</span></a>
 {% endif %}
 		</div>
-		<div class="postbit_buttons post_management_buttons float_right">
-			{{ post.button_edit|raw }}{{ post.button_quickdelete|raw }}{{ post.button_quickrestore|raw }}{{ post.button_quote|raw }}{{ post.button_multiquote|raw }}{{ post.button_report|raw }}
+		<div class="postbit_buttons post_management_buttons float_right">			
+			{% if post.can_edit %}
+				<a href="editpost.php?pid={{ post.pid }}" id="edit_post_{{ post.pid }}" title="{{ lang.postbit_edit }}" class="postbit_edit"><span>{{ lang.postbit_button_edit }}</span></a>
+				<div id="edit_post_{{ post.pid }}_popup" class="popup_menu" style="display: none;"><div class="popup_item_container">
+					<a href="javascript:void(0)" class="popup_item quick_edit_button" id="quick_edit_post_{{ post.pid }}">{{ lang.postbit_quick_edit }}</a></div>
+					<div class="popup_item_container"><a href="editpost.php?pid={{ post.pid }}" class="popup_item">{{ lang.postbit_full_edit }}</a></div>
+				</div>
+<script type="text/javascript">
+// <!--
+	if (use_xmlhttprequest == "1") {
+		$("#edit_post_{{ post.pid }}").popupMenu();
+	}
+// -->
+</script>
+			{% endif %}
+			{{ post.button_quickdelete|raw }}{{ post.button_quickrestore|raw }}{{ post.button_quote|raw }}{{ post.button_multiquote|raw }}{{ post.button_report|raw }}
 {% if post.can_warn %}
 <a href="warnings.php?action=warn&amp;uid={{ post.uid }}&amp;pid={{ post.pid }}" title="{{ lang.postbit_warn }}" class="postbit_warn"><span>{{ lang.postbit_button_warn }}</span></a>
 {% endif %}

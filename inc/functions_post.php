@@ -32,7 +32,7 @@ function build_postbit($post, $post_type=0)
 	}
 
 	// Set default values for buttons here
-	foreach (array('button_multiquote', 'button_rep', 'can_warn', 'button_purgespammer', 'button_pm', 'button_reply_pm', 'is_pm', 'replink') as $post_button) {
+	foreach (array('button_multiquote', 'button_rep', 'can_warn', 'button_purgespammer', 'button_pm', 'button_reply_pm', 'is_pm', 'replink', 'can_edit') as $post_button) {
 		if (empty($post[$post_button])) {
 			$post[$post_button] = false;
 		}
@@ -470,8 +470,7 @@ function build_postbit($post, $post_type=0)
 		$time = TIME_NOW;
 		if ((is_moderator($fid, "caneditposts") || ($forumpermissions['caneditposts'] == 1 && $mybb->user['uid'] == $post['uid'] && $thread['closed'] != 1 && ($mybb->usergroup['edittimelimit'] == 0 || $mybb->usergroup['edittimelimit'] != 0 && $post['dateline'] > ($time-($mybb->usergroup['edittimelimit']*60))))) &&
 		$mybb->user['uid'] != 0) {
-			eval("\$post['input_editreason'] = \"".$templates->get("postbit_editreason")."\";");
-			eval("\$post['button_edit'] = \"".$templates->get("postbit_edit")."\";");
+			$post['can_edit'] = true;
 		}
 
 		// Quick Delete button
