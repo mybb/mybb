@@ -166,6 +166,16 @@ var MyBB = {
 		MyBB.popupWindow("/member.php?action=viewnotes&uid="+uid+"&modal=1");
 	},
 
+	getIP: function(pid)
+	{
+		MyBB.popupWindow("/moderation.php?action=getip&pid="+pid+"&modal=1");
+	},
+
+	getPMIP: function(pmid)
+	{
+		MyBB.popupWindow("/moderation.php?action=getpmip&pmid="+pmid+"&modal=1");
+	},
+
 	deleteReputation: function(uid, rid)
 	{
 		$.prompt(delete_reputation_confirm, {
