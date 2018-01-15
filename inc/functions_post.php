@@ -360,28 +360,19 @@ function build_postbit($post, $post_type=0)
 		}
 
 		// Display profile fields on posts - only if field is filled in
+		$post['profile_fields'] = array();
 		if (is_array($profile_fields)) {
 			foreach ($profile_fields as $field) {
 				$fieldfid = "fid{$field['fid']}";
 				if (!empty($post[$fieldfid])) {
-					$post['fieldvalue'] = '';
-					$post['fieldname'] = htmlspecialchars_uni($field['name']);
-
 					$thing = explode("\n", $field['type'], "2");
-					$type = trim($thing[0]);
-					$useropts = explode("\n", $post[$fieldfid]);
+					$field['type'] = trim($thing[0]);
+					$field['useropts'] = explode("\n", $post[$fieldfid]);
 
+					$field['multi'] = false;
 					if (is_array($useropts) &&
 						($type == "multiselect" || $type == "checkbox")) {
-						foreach ($useropts as $val) {
-							if ($val != '') {
-								eval("\$post['fieldvalue_option'] .= \"".$templates->get("postbit_profilefield_multiselect_value")."\";");
-							}
-						}
-
-						if ($post['fieldvalue_option'] != '') {
-							eval("\$post['fieldvalue'] .= \"".$templates->get("postbit_profilefield_multiselect")."\";");
-						}
+						$field['multi'] = true;
 					} else {
 						$field_parser_options = array(
 							"allow_html" => $field['allowhtml'],
@@ -389,10 +380,10 @@ function build_postbit($post, $post_type=0)
 							"allow_smilies" => $field['allowsmilies'],
 							"allow_imgcode" => $field['allowimgcode'],
 							"allow_videocode" => $field['allowvideocode'],
-							"filter_badwords" => 1
+							"filter_badwords" => 1,
 						);
 
-						if ($customfield['type'] == "textarea") {
+						if ($field['type'] == "textarea") {
 							$field_parser_options['me_username'] = $post['username'];
 						} else {
 							$field_parser_options['nl2br'] = 0;
@@ -405,10 +396,10 @@ function build_postbit($post, $post_type=0)
 							$field_parser_options['allow_imgcode'] = 0;
 						}
 
-						$post['fieldvalue'] = $parser->parse_message($post[$fieldfid], $field_parser_options);
+						$field['value'] = $parser->parse_message($post[$fieldfid], $field_parser_options);
 					}
 
-					eval("\$post['profilefield'] .= \"".$templates->get("postbit_profilefield")."\";");
+					$post['profile_fields'][] = $field;
 				}
 			}
 		}

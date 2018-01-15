@@ -40,7 +40,18 @@
 	{% if post.replink %}
 			<br />{{ lang.postbit_reputation }} {{ post.userreputation|raw }}
 	{% endif %}
-			{{ post.profilefield }}
+	{% for field in post.profile_fields %}
+		<br />{{ field.name }}: 
+		{% if field.multi and field.useropts %}
+			<ul style="margin: 0; padding-left: 15px;">
+			{% for val in field.useropts %}
+				<li style="margin-left: 0;">{{ val }}</li>
+			{% endfor %}
+			</ul>
+		{% else %}
+			{{ field.value }}
+		{% endif %}
+	{% endfor %}
 	{% if post.can_warn %}
 			<br />{{ lang.postbit_warning_level }} <a href="{{ post.warning_link }}">{{ post.warning_level|raw }}</a>
 	{% endif %}
