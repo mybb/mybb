@@ -2233,7 +2233,7 @@ if(!$mybb->input['action'])
 
     // Iterate weeks (each week gets a row)
     $week = [];
-	$day_bit = [];
+    $day_bit = [];
     for ($row = 0; $row < 6; ++$row) {
         $days = [];
         foreach ($weekdays as $weekday_id => $weekday) {
