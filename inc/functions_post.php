@@ -76,7 +76,7 @@ function build_postbit($post, $post_type=0)
 		break;
 	case 2: // Private message
 		global $message, $pmid;
-		$idtype = 'pmid';
+		$post['idtype'] = 'pmid';
 		$parser_options['allow_html'] = $mybb->settings['pmsallowhtml'];
 		$parser_options['allow_mycode'] = $mybb->settings['pmsallowmycode'];
 		$parser_options['allow_smilies'] = $mybb->settings['pmsallowsmilies'];
@@ -101,7 +101,7 @@ function build_postbit($post, $post_type=0)
 		global $forum, $thread, $tid;
 		$oldforum = $forum;
 		$id = (int)$post['pid'];
-		$idtype = 'pid';
+		$post['idtype'] = 'pid';
 		$parser_options['allow_html'] = $forum['allowhtml'];
 		$parser_options['allow_mycode'] = $forum['allowmycode'];
 		$parser_options['allow_smilies'] = $forum['allowsmilies'];
@@ -570,7 +570,7 @@ function build_postbit($post, $post_type=0)
 
 	$post['iplogged'] = '';
 	$show_ips = $mybb->settings['logip'];
-	$ipaddress = my_inet_ntop($db->unescape_binary($post['ipaddress']));
+	$post['ip'] = my_inet_ntop($db->unescape_binary($post['ipaddress']));
 
 	// Show post IP addresses... PMs now can have IP addresses too as of 1.8!
 	if ($post_type == 2) {
@@ -581,15 +581,17 @@ function build_postbit($post, $post_type=0)
 		$post_type == 2) {
 		if ($show_ips != "no" &&
 			!empty($post['ipaddress'])) {
+			$post['iphide'] = $post['ipshow'] = false;
+
 			if ($show_ips == "show") {
-				eval("\$post['iplogged'] = \"".$templates->get("postbit_iplogged_show")."\";");
+				$post['ipshow'] = true;
 			} else if ($show_ips == "hide" &&
 				(is_moderator($fid, "canviewips") || $mybb->usergroup['issupermod'])) {
-				$action = 'getip';
+				$post['iphide'] = true;
+				$post['action'] = 'getip';
 				if ($post_type == 2) {
-					$action = 'getpmip';
+					$post['action'] = 'getpmip';
 				}
-				eval("\$post['iplogged'] = \"".$templates->get("postbit_iplogged_hiden")."\";");
 			}
 		}
 	}

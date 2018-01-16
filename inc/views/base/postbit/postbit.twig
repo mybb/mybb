@@ -77,7 +77,11 @@
 		{{ post.attachments|raw }}
 		{{ post.signature|raw }}
 		<div class="post_meta" id="post_meta_{{ post.pid }}">
-			{{ post.iplogged|raw }}
+			{% if post.ipshow %}
+				{{ lang.postbit_ipaddress }} {{ post.ip }}
+			{% elseif post.iphide %}
+				{{ lang.postbit_ipaddress }} <a href="moderation.php?action={{ post.action }}&amp;{{ post.idtype }}=post[{{ post.idtype }}]">{{ lang.postbit_ipaddress_logged }}</a>
+			{% endif %}
 			<div class="float_right">
 				{{ post.poststatus|raw }}
 			</div>
