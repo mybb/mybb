@@ -752,7 +752,9 @@ function build_postbit($post, $post_type=0)
 		$post['visible'] == -1 &&
 		$post_type == 0 &&
 		!is_moderator($fid, "canviewdeleted")) {
-		eval("\$postbit = \"".$templates->get("postbit_deleted_member")."\";");
+		$postbit = \MyBB\template('postbit/postbit_deleted_member.twig', [
+			'post' => $post,
+		]);
 	} else {
 		$postbit = \MyBB\template('postbit/postbit.twig', [
 			'post' => $post,
