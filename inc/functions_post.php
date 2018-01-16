@@ -688,17 +688,14 @@ function build_postbit($post, $post_type=0)
 
 	$icon_cache = $cache->read("posticons");
 
+	$post['showicon'] = false;
 	if (isset($post['icon']) &&
 		$post['icon'] > 0 &&
 		$icon_cache[$post['icon']]) {
-		$icon = $icon_cache[$post['icon']];
+		$post['showicon'] = true;
 
-		$icon['path'] = htmlspecialchars_uni($icon['path']);
+		$icon = $icon_cache[$post['icon']];
 		$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
-		$icon['name'] = htmlspecialchars_uni($icon['name']);
-		eval("\$post['icon'] = \"".$templates->get("postbit_icon")."\";");
-	} else {
-		$post['icon'] = "";
 	}
 
 	$post_visibility = $ignore_bit = $deleted_bit = '';
@@ -755,6 +752,7 @@ function build_postbit($post, $post_type=0)
 	} else {
 		$postbit = \MyBB\template('postbit/postbit.twig', [
 			'post' => $post,
+			'icon' => $icon,
 			'usergroup' => $usergroup,
 			'ignore_bit' => $ignore_bit,
 			'deleted_bit' => $deleted_bit,
