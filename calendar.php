@@ -2251,7 +2251,8 @@ if(!$mybb->input['action'])
     $in_month = 0;
 
     // Iterate weeks (each week gets a row)
-	$week = $day_bit = '';
+    $week = [];
+    $day_bit = [];
     for ($row = 0; $row < 6; ++$row) {
         $days = [];
         foreach ($weekdays as $weekday_id => $weekday) {
