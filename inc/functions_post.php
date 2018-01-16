@@ -596,28 +596,28 @@ function build_postbit($post, $post_type=0)
 		}
 	}
 
-	$post['poststatus'] = '';
+	$post['poststatus'] = false;
 	if (!$post_type &&
 		$post['visible'] != 1) {
 		if (is_moderator($fid, "canviewdeleted") &&
 			$postcounter != 1 &&
 			$post['visible'] == -1) {
-			$status_type = $lang->postbit_post_deleted;
+			$post['status_type'] = $lang->postbit_post_deleted;
 		} else if (is_moderator($fid, "canviewunapprove") &&
 			$postcounter != 1 &&
 			$post['visible'] == 0) {
-			$status_type = $lang->postbit_post_unapproved;
+			$post['status_type'] = $lang->postbit_post_unapproved;
 		} else if (is_moderator($fid, "canviewdeleted") &&
 			$postcounter == 1 &&
 			$post['visible'] == -1) {
-			$status_type = $lang->postbit_thread_deleted;
+			$post['status_type'] = $lang->postbit_thread_deleted;
 		} else if (is_moderator($fid, "canviewunapprove") &&
 			$postcounter == 1 &&
 			$post['visible'] == 0) {
-			$status_type = $lang->postbit_thread_unapproved;
+			$post['status_type'] = $lang->postbit_thread_unapproved;
 		}
 
-		eval("\$post['poststatus'] = \"".$templates->get("postbit_status")."\";");
+		$post['poststatus'] = true;
 	}
 
 	if (isset($post['smilieoff']) &&

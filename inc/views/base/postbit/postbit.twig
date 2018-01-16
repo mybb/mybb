@@ -83,7 +83,9 @@
 				{{ lang.postbit_ipaddress }} <a href="moderation.php?action={{ post.action }}&amp;{{ post.idtype }}=post[{{ post.idtype }}]">{{ lang.postbit_ipaddress_logged }}</a>
 			{% endif %}
 			<div class="float_right">
-				{{ post.poststatus|raw }}
+				{% if post.poststatus %}
+					<span class="status_type">{{ post.status_type }}</span>
+				{% endif %}
 			</div>
 		</div>
 		{% if post.can_edit %}
