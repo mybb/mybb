@@ -505,6 +505,7 @@ $tables[] = "CREATE TABLE mybb_pollvotes (
   uid int NOT NULL default '0',
   voteoption smallint NOT NULL default '0',
   dateline int NOT NULL default '0',
+  ipaddress bytea NOT NULL default '',
   PRIMARY KEY (vid)
 );";
 
