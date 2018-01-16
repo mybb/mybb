@@ -1,4 +1,18 @@
-{{ ignore_bit|raw }}{{ deleted_bit|raw }}
+{{ ignore_bit|raw }}
+{% if post.isdeleted %}
+<div class="deleted_post_collapsed" id="deleted_post_{{ post.pid }}">
+	<div class="deleted_post_author"><strong><span class="largetext">{{ post.profilelink|raw }}</span></strong></div>
+	<div class="deleted_post_message">
+		<div class="show_deleted_post float_right" style="vertical-align: top;" id="show_deleted_link_{{ post.pid }}"><a href="javascript:void(0)" onclick="Thread.showDeletedPost({{ post.pid }}); return false;" class="button small_button"><span>{{ lang.postbit_show_ignored_post }}</span></a></div>
+<script type="text/javascript">
+<!--
+	$('#show_deleted_link_{{ post.pid }}').show();
+// -->
+</script>
+		{{ post.deleted_message }}
+	</div>
+</div>
+{% endif %}
 <a name="pid{{ post.pid }}" id="pid{{ post.pid }}"></a>
 <div class="post classic {{ unapproved_shade }}" style="{{ post_visibility }}" id="post_{{ post.pid }}">
 	<div class="post_author scaleimages">

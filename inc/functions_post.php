@@ -724,10 +724,12 @@ function build_postbit($post, $post_type=0)
 		}
 
 		// Has this post been deleted but can be viewed? Hide this post
+		$post['isdeleted'] = false;
 		if ($post['visible'] == -1 &&
 			is_moderator($fid, "canviewdeleted")) {
-			$deleted_message = $lang->sprintf($lang->postbit_deleted_post_user, $post['username']);
-			eval("\$deleted_bit = \"".$templates->get("postbit_deleted")."\";");
+			$post['isdeleted'] = true;
+
+			$post['deleted_message'] = $lang->sprintf($lang->postbit_deleted_post_user, $post['username']);
 			$post_visibility = "display: none;";
 		}
 
