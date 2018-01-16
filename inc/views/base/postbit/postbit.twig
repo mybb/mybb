@@ -75,7 +75,11 @@
 			{{ post.message|raw }}
 		</div>
 		{{ post.attachments|raw }}
-		{{ post.signature|raw }}
+		{% if post.showsig %}
+			<div class="signature scaleimages">
+				{{ post.signature|raw }}
+			</div>
+		{% endif %}
 		<div class="post_meta" id="post_meta_{{ post.pid }}">
 			{% if post.ipshow %}
 				{{ lang.postbit_ipaddress }} {{ post.ip }}

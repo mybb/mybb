@@ -652,6 +652,7 @@ function build_postbit($post, $post_type=0)
 		get_post_attachments($id, $post);
 	}
 
+	$post['showsig'] = false;
 	if (isset($post['includesig']) &&
 		$post['includesig'] != 0 &&
 		$post['username'] &&
@@ -682,9 +683,7 @@ function build_postbit($post, $post_type=0)
 		}
 
 		$post['signature'] = $parser->parse_message($post['signature'], $sig_parser);
-		eval("\$post['signature'] = \"".$templates->get("postbit_signature")."\";");
-	} else {
-		$post['signature'] = "";
+		$post['showsig'] = true;
 	}
 
 	$icon_cache = $cache->read("posticons");
