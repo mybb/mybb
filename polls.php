@@ -977,8 +977,7 @@ if($mybb->input['action'] == "vote" && $mybb->request_method == "post")
 		error($lang->error_alreadyvoted);
 	}
 
-	$votesql = '';
-	$now = TIME_NOW;
+	$votesql = array();
 	$votesarray = explode("||~|~||", $poll['votes']);
 	$option = $mybb->input['option'];
 	$numvotes = (int)$poll['numvotes'];
@@ -992,11 +991,14 @@ if($mybb->input['action'] == "vote" && $mybb->request_method == "post")
 			{
 				if($vote == 1 && isset($votesarray[$voteoption-1]))
 				{
-					if($votesql)
-					{
-						$votesql .= ",";
-					}
-					$votesql .= "('".$poll['pid']."','".$mybb->user['uid']."','".$db->escape_string($voteoption)."','$now','".$session->packedip."')";
+					$votesql[] = array(
+						"pid" => $poll['pid'],
+						"uid" => (int)$mybb->user['uid'],
+						"voteoption" => $db->escape_string($voteoption),
+						"dateline" => TIME_NOW,
+						"ipaddress" => $db->escape_binary($session->packedip)
+					);
+
 					$votesarray[$voteoption-1]++;
 					$numvotes = $numvotes+1;
 					$total_options++;
@@ -1015,7 +1017,15 @@ if($mybb->input['action'] == "vote" && $mybb->request_method == "post")
 		{
 			error($lang->error_nopolloptions);
 		}
-		$votesql = "('".$poll['pid']."','".$mybb->user['uid']."','".$db->escape_string($option)."','$now','".$session->packedip."')";
+
+		$votesql = array(
+			"pid" => $poll['pid'],
+			"uid" => (int)$mybb->user['uid'],
+			"voteoption" => $db->escape_string($option),
+			"dateline" => TIME_NOW,
+			"ipaddress" => $db->escape_binary($session->packedip)
+		);
+
 		$votesarray[$option-1]++;
 		$numvotes = $numvotes+1;
 	}
@@ -1025,11 +1035,15 @@ if($mybb->input['action'] == "vote" && $mybb->request_method == "post")
 		error($lang->error_nopolloptions);
 	}
 
-	$db->write_query("
-		INSERT INTO
-		".TABLE_PREFIX."pollvotes (pid,uid,voteoption,dateline,ipaddress)
-		VALUES $votesql
-	");
+	if($poll['multiple'] == 1)
+	{
+		$db->insert_query_multiple("pollvotes", $votesql);
+	}
+	else
+	{
+		$db->insert_query("pollvotes", $votesql);
+	}
+
 	$voteslist = '';
 	for($i = 1; $i <= $poll['numoptions']; ++$i)
 	{

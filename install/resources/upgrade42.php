@@ -9,7 +9,7 @@
  */
 
 /**
- * Upgrade Script: 1.8.15
+ * Upgrade Script: 1.8.13 or 1.8.14
  */
 
 $upgrade_detail = array(
