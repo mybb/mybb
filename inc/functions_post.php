@@ -698,7 +698,7 @@ function build_postbit($post, $post_type=0)
 		$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
 	}
 
-	$post_visibility = $ignore_bit = $deleted_bit = '';
+	$post_visibility = '';
 	switch ($post_type) {
 	case 1: // Message preview
 		$post = $plugins->run_hooks("postbit_prev", $post);
@@ -734,13 +734,15 @@ function build_postbit($post, $post_type=0)
 		}
 
 		// Is this author on the ignore list of the current user? Hide this post
+		$post['isignored'] = false;
 		if (is_array($ignored_users) &&
 			$post['uid'] != 0 &&
 			isset($ignored_users[$post['uid']]) &&
 			$ignored_users[$post['uid']] == 1 &&
 			empty($deleted_bit)) {
-			$ignored_message = $lang->sprintf($lang->postbit_currently_ignoring_user, $post['username']);
-			eval("\$ignore_bit = \"".$templates->get("postbit_ignored")."\";");
+			$post['isignored'] = true;
+
+			$post['ignored_message'] = $lang->sprintf($lang->postbit_currently_ignoring_user, $post['username']);
 			$post_visibility = "display: none;";
 		}
 		break;
@@ -756,8 +758,6 @@ function build_postbit($post, $post_type=0)
 			'post' => $post,
 			'icon' => $icon,
 			'usergroup' => $usergroup,
-			'ignore_bit' => $ignore_bit,
-			'deleted_bit' => $deleted_bit,
 			'unapproved_shade' => $unapproved_shade,
 			'post_visibility' => $post_visibility,
 			'ismod' => $ismod,
