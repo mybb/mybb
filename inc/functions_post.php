@@ -25,7 +25,7 @@ function build_postbit($post, $post_type=0)
 	$hascustomtitle = 0;
 
 	// Set default values for any fields not provided here
-	foreach (array('pid', 'aid', 'pmid', 'posturl', 'subject_extra', 'attachments', 'warninglevel') as $post_field) {
+	foreach (array('pid', 'aid', 'pmid', 'posturl', 'subject_extra', 'warninglevel') as $post_field) {
 		if (empty($post[$post_field])) {
 			$post[$post_field] = '';
 		}
@@ -310,7 +310,7 @@ function build_postbit($post, $post_type=0)
 			!is_member($mybb->settings['hidewebsite']) &&
 			$usergroup['canchangewebsite'] == 1) {
 			$post['button_www'] = true;
-		} 
+		}
 
 		$post['button_email'] = false;
 		if ($post['hideemail'] != 1 &&
@@ -647,9 +647,8 @@ function build_postbit($post, $post_type=0)
 
 	$post['message'] = $parser->parse_message($post['message'], $parser_options);
 
-	$post['attachments'] = '';
 	if ($mybb->settings['enableattachments'] != 0) {
-		get_post_attachments($id, $post);
+		$attached = get_post_attachments($id, $post);
 	}
 
 	$post['showsig'] = false;
@@ -758,6 +757,7 @@ function build_postbit($post, $post_type=0)
 	} else {
 		$postbit = \MyBB\template('postbit/postbit.twig', [
 			'post' => $post,
+			'attached' => $attached,
 			'icon' => $icon,
 			'usergroup' => $usergroup,
 			'unapproved_shade' => $unapproved_shade,
@@ -780,122 +780,83 @@ function build_postbit($post, $post_type=0)
  */
 function get_post_attachments($id, &$post)
 {
-	global $attachcache, $mybb, $theme, $templates, $forumpermissions, $lang;
+	global $attachcache, $mybb, $forumpermissions, $lang;
 
-	$validationcount = 0;
-	$tcount = 0;
-	$post['attachmentlist'] = $post['thumblist'] = $post['imagelist'] = '';
-	if(!isset($forumpermissions))
-	{
+	$attached['validationcount'] = 0;
+
+	if (!isset($forumpermissions)) {
 		$forumpermissions = forum_permissions($post['fid']);
 	}
 
-	if(isset($attachcache[$id]) && is_array($attachcache[$id]))
-	{ // This post has 1 or more attachments
-		foreach($attachcache[$id] as $aid => $attachment)
-		{
-			if($attachment['visible'])
-			{ // There is an attachment thats visible!
-				$attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
-				$attachment['filesize'] = get_friendly_size($attachment['filesize']);
-				$ext = get_extension($attachment['filename']);
-				if($ext == "jpeg" || $ext == "gif" || $ext == "bmp" || $ext == "png" || $ext == "jpg")
-				{
-					$isimage = true;
-				}
-				else
-				{
-					$isimage = false;
-				}
-				$attachment['icon'] = get_attachment_icon($ext);
-				$attachment['downloads'] = my_number_format($attachment['downloads']);
+	$post['hasattachments'] = (isset($attachcache[$id]) && is_array($attachcache[$id]));
+	if (!$post['hasattachments']) {
+		return $attached;
+	}
 
-				if(!$attachment['dateuploaded'])
-				{
-					$attachment['dateuploaded'] = $attachment['dateline'];
-				}
-				$attachdate = my_date('normal', $attachment['dateuploaded']);
-				// Support for [attachment=id] code
-				if(stripos($post['message'], "[attachment=".$attachment['aid']."]") !== false)
-				{
-					// Show as thumbnail IF image is big && thumbnail exists && setting=='thumb'
-					// Show as full size image IF setting=='fullsize' || (image is small && permissions allow)
-					// Show as download for all other cases
-					if($attachment['thumbnail'] != "SMALL" && $attachment['thumbnail'] != "" && $mybb->settings['attachthumbnails'] == "yes")
-					{
-						eval("\$attbit = \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
-					}
-					elseif((($attachment['thumbnail'] == "SMALL" && $forumpermissions['candlattachments'] == 1) || $mybb->settings['attachthumbnails'] == "no") && $isimage)
-					{
-						eval("\$attbit = \"".$templates->get("postbit_attachments_images_image")."\";");
-					}
-					else
-					{
-						eval("\$attbit = \"".$templates->get("postbit_attachments_attachment")."\";");
-					}
-					$post['message'] = preg_replace("#\[attachment=".$attachment['aid']."]#si", $attbit, $post['message']);
-				}
-				else
-				{
-					// Show as thumbnail IF image is big && thumbnail exists && setting=='thumb'
-					// Show as full size image IF setting=='fullsize' || (image is small && permissions allow)
-					// Show as download for all other cases
-					if($attachment['thumbnail'] != "SMALL" && $attachment['thumbnail'] != "" && $mybb->settings['attachthumbnails'] == "yes")
-					{
-						eval("\$post['thumblist'] .= \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
-						if($tcount == 5)
-						{
-							$thumblist .= "<br />";
-							$tcount = 0;
-						}
-						++$tcount;
-					}
-					elseif((($attachment['thumbnail'] == "SMALL" && $forumpermissions['candlattachments'] == 1) || $mybb->settings['attachthumbnails'] == "no") && $isimage)
-					{
-						eval("\$post['imagelist'] .= \"".$templates->get("postbit_attachments_images_image")."\";");
-					}
-					else
-					{
-						eval("\$post['attachmentlist'] .= \"".$templates->get("postbit_attachments_attachment")."\";");
-					}
-				}
+	foreach ($attachcache[$id] as $aid => $attachment) {
+		if (!$attachment['visible']) {
+			$attached['validationcount']++;
+			continue;
+		}
+		
+		$ext = get_extension($attachment['filename']);
+		$isimage = in_array($ext, ['jpeg', 'jpg', 'gif', 'bmp', 'png']);
+
+		$attachment['filesize'] = get_friendly_size($attachment['filesize']);
+		$attachment['icon'] = get_attachment_icon($ext);
+		$attachment['downloads'] = my_number_format($attachment['downloads']);
+
+		$attachment['date'] = my_date('normal', $attachment['dateuploaded'] ?? $attachment['dateline']);
+
+		// Support for [attachment=id] code
+		if (stripos($post['message'], "[attachment=" . $attachment['aid'] . "]") !== false) {
+			// Show as thumbnail IF image is big && thumbnail exists && setting=='thumb'
+			// Show as full size image IF setting=='fullsize' || (image is small && permissions allow)
+			// Show as download for all other cases
+			if ($attachment['thumbnail'] != "SMALL" &&
+				$attachment['thumbnail'] != "" &&
+				$mybb->settings['attachthumbnails'] == "yes") {
+				$attbit = \MyBB\template('postbit/postbit_attached_thumbnail.twig', [
+					'thumb' => $attachment,
+				]);
+			} elseif ((($attachment['thumbnail'] == "SMALL" && $forumpermissions['candlattachments'] == 1) || $mybb->settings['attachthumbnails'] == "no") &&
+				$isimage) {
+				$attbit = \MyBB\template('postbit/postbit_attached_image.twig', [
+					'image' => $attachment,
+				]);
+			} else {
+				$attbit = \MyBB\template('postbit/postbit_attached_image.twig', [
+					'attachment' => $attachment,
+				]);
 			}
-			else
-			{
-				$validationcount++;
+
+			$post['message'] = preg_replace("#\[attachment=" . $attachment['aid'] . "]#si", $attbit, $post['message']);
+		} else {
+			// Show as thumbnail IF image is big && thumbnail exists && setting=='thumb'
+			// Show as full size image IF setting=='fullsize' || (image is small && permissions allow)
+			// Show as download for all other cases
+			if ($attachment['thumbnail'] != "SMALL" &&
+				$attachment['thumbnail'] != "" &&
+				$mybb->settings['attachthumbnails'] == "yes") {
+				$attached['thumbs'][] = $attachment;
+			} elseif ((($attachment['thumbnail'] == "SMALL" && $forumpermissions['candlattachments'] == 1) || $mybb->settings['attachthumbnails'] == "no") &&
+				$isimage) {
+				$attached['images'][] = $attachment;
+			} else {
+				$attached['attachments'][] = $attachment;
 			}
-		}
-		if($validationcount > 0 && is_moderator($post['fid'], "canviewunapprove"))
-		{
-			if($validationcount == 1)
-			{
-				$postbit_unapproved_attachments = $lang->postbit_unapproved_attachment;
-			}
-			else
-			{
-				$postbit_unapproved_attachments = $lang->sprintf($lang->postbit_unapproved_attachments, $validationcount);
-			}
-			eval("\$post['attachmentlist'] .= \"".$templates->get("postbit_attachments_attachment_unapproved")."\";");
-		}
-		if($post['thumblist'])
-		{
-			eval("\$post['attachedthumbs'] = \"".$templates->get("postbit_attachments_thumbnails")."\";");
-		}
-		else
-		{
-			$post['attachedthumbs'] = '';
-		}
-		if($post['imagelist'])
-		{
-			eval("\$post['attachedimages'] = \"".$templates->get("postbit_attachments_images")."\";");
-		}
-		else
-		{
-			$post['attachedimages'] = '';
-		}
-		if($post['attachmentlist'] || $post['thumblist'] || $post['imagelist'])
-		{
-			eval("\$post['attachments'] = \"".$templates->get("postbit_attachments")."\";");
 		}
 	}
+
+	if ($attached['validationcount'] > 0 &&
+		is_moderator($post['fid'], "canviewunapprove")) {
+		$post['showunapproved'] = true;
+
+		$lang->postbit_unapproved_attachment_language = $lang->postbit_unapproved_attachment;
+		if ($attached['validationcount'] > 1) {
+			$lang->postbit_unapproved_attachment_language = $lang->sprintf($lang->postbit_unapproved_attachments, $attached['validationcount']);
+		}
+	}
+
+	return $attached;
 }

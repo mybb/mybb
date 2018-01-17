@@ -103,7 +103,9 @@
 		<div class="post_body scaleimages" id="pid_{{ post.pid }}">
 			{{ post.message|raw }}
 		</div>
-		{{ post.attachments|raw }}
+		{% if post.hasattachments %}
+			{% include 'postbit/postbit_attachments.twig' %}
+		{% endif %}
 		{% if post.showsig %}
 			<div class="signature scaleimages">
 				{{ post.signature|raw }}
