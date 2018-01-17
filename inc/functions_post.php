@@ -62,6 +62,7 @@ function build_postbit($post, $post_type=0)
 		$altbg = 'trow1';
 	}
 	$post['fid'] = $fid;
+
 	switch ($post_type) {
 	case 1: // Message preview
 		global $forum;
@@ -361,47 +362,47 @@ function build_postbit($post, $post_type=0)
 
 		// Display profile fields on posts - only if field is filled in
 		$post['profile_fields'] = array();
-		if (is_array($profile_fields)) {
-			foreach ($profile_fields as $field) {
-				$fieldfid = "fid{$field['fid']}";
-				if (!empty($post[$fieldfid])) {
-					$thing = explode("\n", $field['type'], '2');
-					$field['type'] = trim($thing[0]);
-					$field['useropts'] = explode("\n", $post[$fieldfid]);
-
-					$field['multi'] = false;
-					if (is_array($useropts) &&
-						($type == 'multiselect' || $type == 'checkbox')) {
-						$field['multi'] = true;
-					} else {
-						$field_parser_options = array(
-							'allow_html' => $field['allowhtml'],
-							'allow_mycode' => $field['allowmycode'],
-							'allow_smilies' => $field['allowsmilies'],
-							'allow_imgcode' => $field['allowimgcode'],
-							'allow_videocode' => $field['allowvideocode'],
-							'filter_badwords' => 1,
-						);
-
-						if ($field['type'] == 'textarea') {
-							$field_parser_options['me_username'] = $post['username'];
-						} else {
-							$field_parser_options['nl2br'] = 0;
-						}
-
-						if ($mybb->user['showimages'] != 1 &&
-							$mybb->user['uid'] != 0 ||
-							$mybb->settings['guestimages'] != 1 &&
-							$mybb->user['uid'] == 0) {
-							$field_parser_options['allow_imgcode'] = 0;
-						}
-
-						$field['value'] = $parser->parse_message($post[$fieldfid], $field_parser_options);
-					}
-
-					$post['profile_fields'][] = $field;
-				}
+		foreach ((array)$profile_fields as $field) {
+			$fieldfid = "fid{$field['fid']}";
+			if (empty($post[$fieldfid])) {
+				continue;
 			}
+
+			$thing = explode("\n", $field['type'], '2');
+			$field['type'] = trim($thing[0]);
+			$field['useropts'] = explode("\n", $post[$fieldfid]);
+
+			$field['multi'] = false;
+			if (is_array($useropts) &&
+				($type == 'multiselect' || $type == 'checkbox')) {
+				$field['multi'] = true;
+			} else {
+				$field_parser_options = array(
+					'allow_html' => $field['allowhtml'],
+					'allow_mycode' => $field['allowmycode'],
+					'allow_smilies' => $field['allowsmilies'],
+					'allow_imgcode' => $field['allowimgcode'],
+					'allow_videocode' => $field['allowvideocode'],
+					'filter_badwords' => 1,
+				);
+
+				if ($field['type'] == 'textarea') {
+					$field_parser_options['me_username'] = $post['username'];
+				} else {
+					$field_parser_options['nl2br'] = 0;
+				}
+
+				if ($mybb->user['showimages'] != 1 &&
+					$mybb->user['uid'] != 0 ||
+					$mybb->settings['guestimages'] != 1 &&
+					$mybb->user['uid'] == 0) {
+					$field_parser_options['allow_imgcode'] = 0;
+				}
+
+				$field['value'] = $parser->parse_message($post[$fieldfid], $field_parser_options);
+			}
+
+			$post['profile_fields'][] = $field;
 		}
 	// Message was posted by a guest or an unknown user
 	} else {
@@ -419,22 +420,16 @@ function build_postbit($post, $post_type=0)
 
 		$post['userregdate'] = $lang->na;
 		$post['postnum'] = $lang->na;
-		$post['button_profile'] = '';
+		$post['onlinestatus'] = '';
+		$post['signature'] = '';
 		$post['button_email'] = false;
 		$post['button_www'] = false;
-		$post['signature'] = '';
 		$post['button_pm'] = false;
 		$post['button_find'] = false;
-		$post['onlinestatus'] = '';
 		$post['replink'] = false;
 	}
 
-	$post['input_editreason'] = '';
-	$post['button_edit'] = '';
-	$post['button_quickdelete'] = '';
-	$post['button_quickrestore'] = '';
 	$post['button_quote'] = false;
-	$post['button_quickquote'] = '';
 	$post['button_report'] = false;
 
 	// For private messages, fetch the reply/forward/delete icons
@@ -519,8 +514,9 @@ function build_postbit($post, $post_type=0)
 		}
 
 		if (!isset($ismod)) {
-			$post['ismod'] = $ismod = is_moderator($fid);
+			$ismod = is_moderator($fid);
 		}
+		$post['ismod'] = $ismod;
 
 		// Inline moderation stuff
 		$post['inlinechecked'] = false;
