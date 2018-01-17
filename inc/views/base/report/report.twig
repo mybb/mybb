@@ -1,0 +1,37 @@
+<div class="modal">
+  <div style="overflow-y: auto; max-height: 400px;" class="modal_{{ report.id }}">
+  <form action="report.php" method="post" class="reportData_{{ report.id }}" onsubmit="return Report.submitReport({{ report.id }});">
+<input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+<input type="hidden" name="action" value="do_report" />
+<input type="hidden" name="type" value="{{ report.type }}" />
+<input type="hidden" name="pid" value="{{ report.id }}" />
+<input type="hidden" name="no_modal" value="1" />
+<table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+<tr>
+	<td class="thead" colspan="2"><strong>{{ report.title }}</strong></td>
+</tr>
+<tr>
+	<td class="tcat" colspan="2">{{ lang.report_to_mod }}</td>
+</tr>
+{{ report.reasons|raw }}
+</table>
+</form>
+
+<script type="text/javascript">
+<!--
+	if ($("#report_reason option:selected").attr('data-extra') != 1) {
+		$("#reason").hide();
+	}
+
+	$("#report_reason").change(function() {
+		if ($(this).find("option:selected").attr('data-extra') == 1) {
+			$("#reason").show();
+			return;
+		}
+
+		$("#reason").hide();
+	});
+// -->
+</script>
+	</div>
+</div>
