@@ -1132,7 +1132,7 @@ if($mybb->input['action'] == "do_undovote")
 	}
 	else
 	{
-		$user_check = "ipaddress=".$db->escape_binary($session->packedip);
+		$user_check = "uid='0' AND ipaddress=".$db->escape_binary($session->packedip);
 	}
 
 	$query = $db->simple_select("pollvotes", "vid,voteoption", "{$user_check} AND pid='".$poll['pid']."'");
