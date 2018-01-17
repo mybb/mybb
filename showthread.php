@@ -494,7 +494,7 @@ if($mybb->input['action'] == "thread")
 		}
 		else
 		{
-			$user_check = "ipaddress=".$db->escape_binary($session->packedip);
+			$user_check = "uid='0' AND ipaddress=".$db->escape_binary($session->packedip);
 		}
 
 		$query = $db->simple_select("pollvotes", "*", "{$user_check} AND pid='".$poll['pid']."'");
@@ -607,9 +607,10 @@ if($mybb->input['action'] == "thread")
 			{
 				$pollstatus = $lang->already_voted;
 
+				$undovote = '';
 				if($mybb->usergroup['canundovotes'] == 1)
 				{
-					eval("\$pollstatus .= \"".$templates->get("showthread_poll_undovote")."\";");
+					eval("\$undovote = \"".$templates->get("showthread_poll_undovote")."\";");
 				}
 			}
 			elseif($nopermission)
@@ -620,6 +621,7 @@ if($mybb->input['action'] == "thread")
 			{
 				$pollstatus = $lang->poll_closed;
 			}
+
 			$lang->total_votes = $lang->sprintf($lang->total_votes, $totalvotes);
 			eval("\$pollbox = \"".$templates->get("showthread_poll_results")."\";");
 			$plugins->run_hooks("showthread_poll_results");
