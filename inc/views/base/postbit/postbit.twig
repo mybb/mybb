@@ -27,68 +27,68 @@
 	</div>
 {% endif %}
 <a name="pid{{ post.pid }}" id="pid{{ post.pid }}"></a>
-<div class="post classic {{ unapproved_shade }}" style="{{ post_visibility }}" id="post_{{ post.pid }}">
+<div class="post classic {{ post.unapproved_shade }}" style="{{ post.visibility }}" id="post_{{ post.pid }}">
 	<div class="post_author scaleimages">
-{% if post.showavatar %}
-		<div class="author_avatar">
-			<a href="{{ post.profilelink_plain|raw }}"><img src="{{ post.useravatar.image }}" alt="" {{ post.useravatar.width_height|raw }} /></a>
-		</div>
-{% endif %}
+		{% if post.showavatar %}
+			<div class="author_avatar">
+				<a href="{{ post.profilelink_plain|raw }}"><img src="{{ post.useravatar.image }}" alt="" {{ post.useravatar.width_height|raw }} /></a>
+			</div>
+		{% endif %}
 		<div class="author_information">
-				<strong><span class="largetext">{{ post.profilelink|raw }}</span></strong> 
-{% if post.onlinestatus == "online" %}
-<a href="online.php" title="{{ lang.postbit_status_online }}"><img src="{{ theme.imgdir }}/buddy_online.png" border="0" alt="{{ lang.postbit_status_online }}" class="buddy_status" /></a>
-{% elseif post.onlinestatus == "away" %}
-<a href="{{ post.profilelink_plain|raw }}" title="{{ lang.postbit_status_away }}"><img src="{{ theme.imgdir }}/buddy_away.png" border="0" alt="{{ lang.postbit_status_away }}" class="buddy_status" /></a>
-{% else %}
-<img src="{{ theme.imgdir }}/buddy_offline.png" title="{{ lang.postbit_status_offline }}" alt="{{ lang.postbit_status_offline }}" class="buddy_status" />
-{% endif %}
+			<strong><span class="largetext">{{ post.profilelink|raw }}</span></strong> 
+			{% if post.onlinestatus == "online" %}
+				<a href="online.php" title="{{ lang.postbit_status_online }}"><img src="{{ theme.imgdir }}/buddy_online.png" border="0" alt="{{ lang.postbit_status_online }}" class="buddy_status" /></a>
+			{% elseif post.onlinestatus == "away" %}
+				<a href="{{ post.profilelink_plain|raw }}" title="{{ lang.postbit_status_away }}"><img src="{{ theme.imgdir }}/buddy_away.png" border="0" alt="{{ lang.postbit_status_away }}" class="buddy_status" /></a>
+			{% else %}
+				<img src="{{ theme.imgdir }}/buddy_offline.png" title="{{ lang.postbit_status_offline }}" alt="{{ lang.postbit_status_offline }}" class="buddy_status" />
+			{% endif %}
 <br />
 				<span class="smalltext">
 					{{ post.usertitle|raw }}<br />
-{% if post.starimage and post.stars %}
-	{% for i in range(0, post.stars) %}
-		<img src="{{ post.starimage }}" border="0" alt="*" />
-	{% endfor %}
-	<br />
-{% endif %}
-{% if post.groupimage %}
-					<img src="{{ usergroup.image }}" alt="{{ usergroup.title }}" title="{{ usergroup.title }}" /><br />
-{% endif %}
+					{% if post.starimage and post.stars %}
+						{% for i in range(0, post.stars) %}
+							<img src="{{ post.starimage }}" border="0" alt="*" />
+						{% endfor %}
+						<br />
+					{% endif %}
+					{% if post.groupimage %}
+						<img src="{{ usergroup.image }}" alt="{{ usergroup.title }}" title="{{ usergroup.title }}" /><br />
+					{% endif %}
 				</span>
 		</div>
 		<div class="author_statistics">
-{% if post.isguest %}
-			&nbsp;
-{% else %}
-			{{ lang.postbit_posts }} {{ post.postnum }}<br />
-			{{ lang.postbit_threads }} {{ post.threadnum }}<br />
-			{{ lang.postbit_joined }} {{ post.userregdate }}
-	{% if post.replink %}
-			<br />{{ lang.postbit_reputation }} {{ post.userreputation|raw }}
-	{% endif %}
-	{% for field in post.profile_fields %}
-		<br />{{ field.name }}: 
-		{% if field.multi and field.useropts %}
-			<ul style="margin: 0; padding-left: 15px;">
-			{% for val in field.useropts %}
-				<li style="margin-left: 0;">{{ val }}</li>
-			{% endfor %}
-			</ul>
-		{% else %}
-			{{ field.value }}
-		{% endif %}
-	{% endfor %}
-	{% if post.can_warn %}
-			<br />{{ lang.postbit_warning_level }} <a href="{{ post.warning_link }}">{{ post.warning_level|raw }}</a>
-	{% endif %}
-{% endif %}
+			{% if post.isguest %}
+				&nbsp;
+			{% else %}
+				{{ lang.postbit_posts }} {{ post.postnum }}<br />
+				{{ lang.postbit_threads }} {{ post.threadnum }}<br />
+				{{ lang.postbit_joined }} {{ post.userregdate }}
+				{% if post.replink %}
+					<br />{{ lang.postbit_reputation }} {{ post.userreputation|raw }}
+				{% endif %}
+				{% for field in post.profile_fields %}
+					<br />{{ field.name }}: 
+					{% if field.multi and field.useropts %}
+						<ul style="margin: 0; padding-left: 15px;">
+						{% for val in field.useropts %}
+							<li style="margin-left: 0;">{{ val }}</li>
+						{% endfor %}
+						</ul>
+					{% else %}
+						{{ field.value }}
+					{% endif %}
+				{% endfor %}
+				{% if post.can_warn %}
+					<br />{{ lang.postbit_warning_level }} <a href="{{ post.warning_link }}">{{ post.warning_level|raw }}</a>
+				{% endif %}
+			{% endif %}
 		</div>
 	</div>
 	<div class="post_content">
 		<div class="post_head">
 			<div class="float_right" style="vertical-align: top">
-				<strong><a href="{{ post.postlink }}#pid{{ post.pid }}" title="{{ post.subject_title }}">#{{ post.number }}</a></strong>{% if ismod %}<input type="checkbox" class="checkbox" name="inlinemod_{{ post.pid }}" id="inlinemod_{{ post.pid }}" value="1" style="vertical-align: middle; margin: -2px 0 0 5px;" {% if post.inlinechecked %}checked="checked"{% endif %}/>{% endif %}
+				<strong><a href="{{ post.postlink }}#pid{{ post.pid }}" title="{{ post.subject_title }}">#{{ post.number }}</a></strong>{% if post.ismod %}<input type="checkbox" class="checkbox" name="inlinemod_{{ post.pid }}" id="inlinemod_{{ post.pid }}" value="1" style="vertical-align: middle; margin: -2px 0 0 5px;" {% if post.inlinechecked %}checked="checked"{% endif %}/>{% endif %}
 			</div>
 			{% if post.showicon %}
 				<img src="{{ icon.path }}" alt="{{ icon.name }}" title="{{ icon.name }}" style="vertical-align: middle;" />&nbsp;
@@ -129,23 +129,23 @@
 	</div>
 	<div class="post_controls">
 		<div class="postbit_buttons author_buttons float_left">
-{% if post.button_email %}
-<a href="member.php?action=emailuser&amp;uid={{ post.uid }}" title="{{ lang.postbit_email }}" class="postbit_email"><span>{{ lang.postbit_button_email }}</span></a>
-{% endif %}
-{% if post.button_pm %}
-<a href="private.php?action=send&amp;uid={{ post.uid }}" title="{{ lang.postbit_pm }}" class="postbit_pm"><span>{{ lang.postbit_button_pm }}</span></a>
-{% endif %}
-{% if post.button_www %}
-<a href="{{ post.website }}" target="_blank" rel="noopener" title="{{ lang.postbit_website }}" class="postbit_website"><span>{{ lang.postbit_button_website }}</span></a>
-{% endif %}
-{% if post.button_find %}
-<a href="search.php?action=finduser&amp;uid={{ post.uid }}" title="{{ lang.postbit_find }}" class="postbit_find"><span>{{ lang.postbit_button_find }}</span></a>
-{% endif %}
-{% if post.button_rep %}
-<a href="javascript:void(0)" onclick="MyBB.reputation({{ post.uid }}, {{ post.pid }}); return false;" title="{{ lang.postbit_reputation_add }}" class="postbit_reputation_add"><span>{{ lang.postbit_button_reputation_add }}</span></a>
-{% endif %}
+			{% if post.button_email %}
+				<a href="member.php?action=emailuser&amp;uid={{ post.uid }}" title="{{ lang.postbit_email }}" class="postbit_email"><span>{{ lang.postbit_button_email }}</span></a>
+			{% endif %}
+			{% if post.button_pm %}
+				<a href="private.php?action=send&amp;uid={{ post.uid }}" title="{{ lang.postbit_pm }}" class="postbit_pm"><span>{{ lang.postbit_button_pm }}</span></a>
+			{% endif %}
+			{% if post.button_www %}
+				<a href="{{ post.website }}" target="_blank" rel="noopener" title="{{ lang.postbit_website }}" class="postbit_website"><span>{{ lang.postbit_button_website }}</span></a>
+			{% endif %}
+			{% if post.button_find %}
+				<a href="search.php?action=finduser&amp;uid={{ post.uid }}" title="{{ lang.postbit_find }}" class="postbit_find"><span>{{ lang.postbit_button_find }}</span></a>
+			{% endif %}
+			{% if post.button_rep %}
+				<a href="javascript:void(0)" onclick="MyBB.reputation({{ post.uid }}, {{ post.pid }}); return false;" title="{{ lang.postbit_reputation_add }}" class="postbit_reputation_add"><span>{{ lang.postbit_button_reputation_add }}</span></a>
+			{% endif %}
 		</div>
-		<div class="postbit_buttons post_management_buttons float_right">			
+		<div class="postbit_buttons post_management_buttons float_right">
 			{% if post.can_edit %}
 				{% if post.is_announcement %}
 					<a href="modcp.php?action=edit_announcement&amp;aid={{ post.aid }}" title="{{ lang.announcement_edit }}" class="postbit_edit"><span>{{ lang.postbit_button_edit }}</span></a>
@@ -200,12 +200,12 @@
 			{% if post.button_report %}
 				<a href="javascript:void(0)" onclick="Report.reportPost({{ post.pid }}); return false;" title="{{ lang.postbit_report }}" class="postbit_report"><span>{{ lang.postbit_button_report }}</span></a>
 			{% endif %}
-{% if post.can_warn %}
-<a href="warnings.php?action=warn&amp;uid={{ post.uid }}&amp;pid={{ post.pid }}" title="{{ lang.postbit_warn }}" class="postbit_warn"><span>{{ lang.postbit_button_warn }}</span></a>
-{% endif %}
-{% if post.button_purgespammer %}
-<a href="moderation.php?action=purgespammer&amp;uid={{ post.uid }}" title="{{ lang.postbit_purgespammer }}" class="postbit_purgespammer"><span>{{ lang.postbit_button_purgespammer }}</span></a>
-{% endif %}
+			{% if post.can_warn %}
+				<a href="warnings.php?action=warn&amp;uid={{ post.uid }}&amp;pid={{ post.pid }}" title="{{ lang.postbit_warn }}" class="postbit_warn"><span>{{ lang.postbit_button_warn }}</span></a>
+			{% endif %}
+			{% if post.button_purgespammer %}
+				<a href="moderation.php?action=purgespammer&amp;uid={{ post.uid }}" title="{{ lang.postbit_purgespammer }}" class="postbit_purgespammer"><span>{{ lang.postbit_button_purgespammer }}</span></a>
+			{% endif %}
 			{% if post.is_pm %}
 				<a href="private.php?action=send&amp;pmid={{ post.pid }}&amp;do=reply" title="{{ lang.reply_title }}" class="postbit_reply_pm"><span>{{ lang.postbit_button_reply_pm }}</span></a>
 				{% if post.replyall %}
