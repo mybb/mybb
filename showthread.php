@@ -487,23 +487,23 @@ if($mybb->input['action'] == "thread")
 			$nopermission = 1;
 		}
 
-		// If the user is not a guest, check if he already voted.
-		if($mybb->user['uid'] != 0)
+		// Check if the user has voted before...
+		if($mybb->user['uid'])
 		{
-			$query = $db->simple_select("pollvotes", "*", "uid='".$mybb->user['uid']."' AND pid='".$poll['pid']."'");
-			while($votecheck = $db->fetch_array($query))
-			{
-				$alreadyvoted = 1;
-				$votedfor[$votecheck['voteoption']] = 1;
-			}
+			$user_check = "uid='{$mybb->user['uid']}'";
 		}
 		else
 		{
-			if(isset($mybb->cookies['pollvotes'][$poll['pid']]) && $mybb->cookies['pollvotes'][$poll['pid']] !== "")
-			{
-				$alreadyvoted = 1;
-			}
+			$user_check = "uid='0' AND ipaddress=".$db->escape_binary($session->packedip);
 		}
+
+		$query = $db->simple_select("pollvotes", "*", "{$user_check} AND pid='".$poll['pid']."'");
+		while($votecheck = $db->fetch_array($query))
+		{
+			$alreadyvoted = 1;
+			$votedfor[$votecheck['voteoption']] = 1;
+		}
+
 		$optionsarray = explode("||~|~||", $poll['options']);
 		$votesarray = explode("||~|~||", $poll['votes']);
 		$poll['question'] = htmlspecialchars_uni($poll['question']);
@@ -607,9 +607,10 @@ if($mybb->input['action'] == "thread")
 			{
 				$pollstatus = $lang->already_voted;
 
+				$undovote = '';
 				if($mybb->usergroup['canundovotes'] == 1)
 				{
-					eval("\$pollstatus .= \"".$templates->get("showthread_poll_undovote")."\";");
+					eval("\$undovote = \"".$templates->get("showthread_poll_undovote")."\";");
 				}
 			}
 			elseif($nopermission)
@@ -620,6 +621,7 @@ if($mybb->input['action'] == "thread")
 			{
 				$pollstatus = $lang->poll_closed;
 			}
+
 			$lang->total_votes = $lang->sprintf($lang->total_votes, $totalvotes);
 			eval("\$pollbox = \"".$templates->get("showthread_poll_results")."\";");
 			$plugins->run_hooks("showthread_poll_results");

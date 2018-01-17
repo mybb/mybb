@@ -11652,14 +11652,14 @@ if(use_xmlhttprequest == "1")
 <td class="{$optionbg}" style="text-align: center;">{$votes}</td>
 <td class="{$optionbg}" style="text-align: center;">{$percent}%</td>
 </tr>]]></template>
-		<template name="showthread_poll_results" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder tfixed">
+		<template name="showthread_poll_results" version="1815"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder tfixed">
 <colgroup>
 <col style="width: 35%" />
 <col style="width: 50%" />
 <col style="width: 7%" />
 </colgroup>
 <tr>
-<td class="thead" colspan="4" style="text-align: center;"><strong>{$lang->poll} {$poll['question']}</strong><br /><span class="smalltext">{$pollstatus}</span></td>
+<td class="thead" colspan="4" style="text-align: center;"><strong>{$lang->poll} {$poll['question']}</strong><br /><span class="smalltext">{$pollstatus}{$undovote}</span></td>
 </tr>
 {$polloptions}
 <tr>

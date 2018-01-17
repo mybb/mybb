@@ -523,6 +523,7 @@ $tables[] = "CREATE TABLE mybb_pollvotes (
   uid int unsigned NOT NULL default '0',
   voteoption smallint unsigned NOT NULL default '0',
   dateline int unsigned NOT NULL default '0',
+  ipaddress varbinary(16) NOT NULL default '',
   KEY pid (pid, uid),
   PRIMARY KEY (vid)
 ) ENGINE=MyISAM;";
