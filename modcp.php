@@ -4267,6 +4267,8 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 		}
 	}
 
+	$errors = array();
+
 	// Creating a new ban
 	if(!$existing_ban)
 	{
