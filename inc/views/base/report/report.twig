@@ -13,6 +13,26 @@
 <tr>
 	<td class="tcat" colspan="2">{{ lang.report_to_mod }}</td>
 </tr>
+	{% if report.has_errors %}
+		{% if report.nomodal %}
+			<table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+				<tr>
+					<td class="thead" colspan="2"><strong>{{ report.title }}</strong></td>
+				</tr>
+				<tr>
+					<td class="tcat" colspan="2">{{ lang.report_to_mod }}</td>
+				</tr>
+				<tr>
+					<td colspan="2" class="trow1">{{ report.error }}</td>
+				</tr>
+			</table>
+		{% else %}
+			<tr>
+				<td colspan="2" class="trow1">{{ report.error }}</td>
+			</tr>
+		{% endif %}
+	{% else %}
+	{% endif %}
 {{ report.reasons|raw }}
 </table>
 </form>

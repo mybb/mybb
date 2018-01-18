@@ -106,12 +106,13 @@ if ($report['type'] == 'post') {
 $plugins->run_hooks('report_type');
 
 // Check for an existing report
-$alreadyReported = false;
+$report['isduplicate'] = false;
 if (!empty($report_type_db)) {
 	$query = $db->simple_select('reportedcontent', '*', "reportstatus != '1' AND id = '{$report['id']}' AND {$report_type_db}");
 
 	if ($db->num_rows($query)) {
-		$alreadyReported = true;
+		$report['isduplicate'] = true;
+
 		// Existing report
 		$report = $db->fetch_array($query);
 		$report['reporters'] = my_unserialize($report['reporters']);
@@ -207,15 +208,18 @@ if (!empty($error) ||
 	}
 }
 
+$report['has_errors'] = false;
 if (!$mybb->input['action']) {
 	if (!empty($error)) {
+		$report['has_errors'] = true;
+		$report['error'] = $error;
+
+		$report['nomodal'] = false;
 		if ($mybb->input['no_modal']) {
-			eval("\$report['reasons'] = \"".$templates->get('report_error_nomodal')."\";");
-		} else {
-			eval("\$report['reasons'] = \"".$templates->get('report_error')."\";");
+			$report['nomodal'] = true;
 		}
 	} else {
-		if ($alreadyReported) {
+		if ($report['isduplicate']) {
 			eval("\$report['reasons'] = \"".$templates->get('report_duplicate')."\";");
 		} else {
 			$reportreasons = $cache->read('reportreasons');
