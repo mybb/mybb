@@ -16,7 +16,6 @@
                 <td class="trow1">
                     <span class="smalltext">
                         {{ lang.online_note }}<br />
-
                         {% for user in online_users %}
                             {{ user.profilelink|raw }}{{ user.invisible ? user.invisible : '' }}{{ not loop.last ? lang.comma : '' }}
                         {% endfor %}
@@ -45,26 +44,27 @@
         {% if mybb.settings.showindexstats %}
             <tr><td class="tcat"><span class="smalltext"><strong>{{ lang.boardstats }}</strong></span></td></tr>
             <tr>
-                <td class="trow1"><span class="smalltext">
-                    {{ lang.stats_posts_threads }}<br />
-                    {{ lang.stats_numusers }}<br />
-                    {{ lang.stats_newestuser|raw }}<br />
-                    {{ lang.stats_mostonline }}
-                </span>
+                <td class="trow1">
+                    <span class="smalltext">
+                        {{ lang.stats_posts_threads }}<br />
+                        {{ lang.stats_numusers }}<br />
+                        {{ lang.stats_newestuser|raw }}<br />
+                        {{ lang.stats_mostonline }}
+                    </span>
                 </td>
             </tr>
         {% endif %}
     <tr>
         <td class="tfoot" style="text-align: right">
-		<span class="smalltext">
-            {% if mybb.user.uid != 0 %}
-			    <a href="member.php?action=logout&amp;logoutkey={{  mybb.user.logoutkey }}">{{ lang.index_logout }}</a> |
-            {% endif %}
-			<a href="showteam.php">{{ lang.forumteam }}</a>
-            {% if mybb.settings.statsenabled %}
-                | <a href="stats.php">{{ lang.forumstats }}</a>
-            {% endif %}
-		</span>
+            <span class="smalltext">
+                {% if mybb.user.uid != 0 %}
+                    <a href="member.php?action=logout&amp;logoutkey={{ mybb.user.logoutkey }}">{{ lang.index_logout }}</a> |
+                {% endif %}
+                <a href="showteam.php">{{ lang.forumteam }}</a>
+                {% if mybb.settings.statsenabled %}
+                    | <a href="stats.php">{{ lang.forumstats }}</a>
+                {% endif %}
+            </span>
         </td>
     </tr>
     </tbody>
