@@ -39,26 +39,26 @@ if($mybb->get_input('action') == "search")
 	$plugins->run_hooks("memberlist_search");
 	add_breadcrumb($lang->nav_memberlist_search);
 
-	$contact_fields = array();
-	foreach(array('aim', 'skype', 'google', 'yahoo', 'icq') as $field)
-	{
-		$contact_fields[$field] = '';
-		$settingkey = 'allow'.$field.'field';
+    $contact_fields = [];
+    foreach (array('aim', 'skype', 'google', 'yahoo', 'icq') as $field) {
+        $contact_field[$field] = '';
+        $settingkey = 'allow'.$field.'field';
 
-		if($mybb->settings[$settingkey] != '' && is_member($mybb->settings[$settingkey], array('usergroup' => $mybb->usergroup['usergroup'], 'additionalgroups' => $mybb->usergroup['additionalgroups'])))
-		{
-			$tmpl = 'memberlist_search_'.$field;
+        if ($mybb->settings[$settingkey] != '' && is_member($mybb->settings[$settingkey], array('usergroup' => $mybb->usergroup['usergroup'], 'additionalgroups' => $mybb->usergroup['additionalgroups']))) {
+            $contact_field['field'] = $field;
 
-			$lang_string = 'search_'.$field;
-			$lang_string = $lang->{$lang_string};
+            $lang_string = 'search_'.$field;
+            $contact_field['lang_string'] = $lang->{$lang_string};
 
-			$bgcolors[$field] = alt_trow();
-			eval('$contact_fields[\''.$field.'\'] = "'.$templates->get('memberlist_search_contact_field').'";');
-		}
-	}
+            $contact_field['bgcolors'] = alt_trow();
 
-	eval("\$search_page = \"".$templates->get("memberlist_search")."\";");
-	output_page($search_page);
+            $contact_fields[] = $contact_field;
+        }
+    }
+
+    output_page(\MyBB\template('memberlist/search.twig', [
+        'contact_fields' => $contact_fields,
+    ]));
 }
 else
 {
