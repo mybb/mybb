@@ -1,0 +1,9 @@
+<span class="smalltext">
+    <a href="{{ forum.last_post.link|raw }}" title="{{ forum.last_post.full_subject }}">
+        <strong>{{ forum.last_post.subject }}</strong>
+    </a>
+    <br />
+    {{ forum.last_post.date|raw }}
+    <br />
+    {{ lang.by }} {{ forum.last_post.profile_link|raw }}
+</span>
