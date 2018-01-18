@@ -11,10 +11,6 @@
 define('IN_MYBB', 1);
 define('THIS_SCRIPT', 'index.php');
 
-$templatelist = "index,index_whosonline,index_whosonline_memberbit,forumbit_depth1_cat,forumbit_depth2_cat,forumbit_depth2_forum,forumbit_depth1_forum_lastpost,forumbit_depth2_forum_lastpost,forumbit_moderators";
-$templatelist .= ",index_birthdays_birthday,index_birthdays,index_logoutlink,index_statspage,index_stats,forumbit_depth3,forumbit_depth3_statusicon,index_boardstats,forumbit_depth2_forum_lastpost_never,forumbit_depth2_forum_viewers";
-$templatelist .= ",forumbit_moderators_group,forumbit_moderators_user,forumbit_depth2_forum_lastpost_hidden,forumbit_subforums,forumbit_depth2_forum_unapproved_posts,forumbit_depth2_forum_unapproved_threads";
-
 require_once './global.php';
 require_once MYBB_ROOT.'inc/functions_forumlist.php';
 require_once MYBB_ROOT.'inc/class_parser.php';
@@ -25,19 +21,7 @@ $plugins->run_hooks('index_start');
 // Load global language phrases
 $lang->load('index');
 
-$logoutlink = '';
-if($mybb->user['uid'] != 0)
-{
-	eval('$logoutlink = "'.$templates->get('index_logoutlink').'";');
-}
-
-$statspage = '';
-if($mybb->settings['statsenabled'] != 0)
-{
-	eval('$statspage = "'.$templates->get('index_statspage').'";');
-}
-
-$whosonline = '';
+$online_users = [];
 if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 {
 	// Get the online users.
@@ -64,7 +48,6 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 
 	$forum_viewers = $doneusers = array();
 	$membercount = $guestcount = $anoncount = $botcount = 0;
-	$onlinemembers = $comma = '';
 
 	// Fetch spiders
 	$spiders = $cache->read('spiders');
@@ -87,24 +70,14 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 					++$anoncount;
 				}
 				++$membercount;
+
 				if($user['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])
 				{
-					// If this usergroup can see anonymously logged-in users, mark them.
-					if($user['invisible'] == 1)
-					{
-						$invisiblemark = '*';
-					}
-					else
-					{
-						$invisiblemark = '';
-					}
-
 					// Properly format the username and assign the template.
 					$user['username'] = format_name(htmlspecialchars_uni($user['username']), $user['usergroup'], $user['displaygroup']);
 					$user['profilelink'] = build_profile_link($user['username'], $user['uid']);
-					eval('$onlinemembers .= "'.$templates->get('index_whosonline_memberbit', 1, 0).'";');
-					$comma = $lang->comma;
-				}
+                    $online_users[] = $user;
+                }
 				// This user has been handled.
 				$doneusers[$user['uid']] = $user['time'];
 			}
@@ -112,8 +85,7 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 		elseif(my_strpos($user['sid'], 'bot=') !== false && $spiders[$botkey])
 		{
 			// The user is a search bot.
-			$onlinemembers .= $comma.format_name($spiders[$botkey]['name'], $spiders[$botkey]['usergroup']);
-			$comma = $lang->comma;
+            $online_users[] = format_name($spiders[$botkey]['name'], $spiders[$botkey]['usergroup']);
 			++$botcount;
 		}
 		else
@@ -164,11 +136,11 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 		$guestbit = $lang->online_guest_singular;
 	}
 	$lang->online_note = $lang->sprintf($lang->online_note, my_number_format($onlinecount), $onlinebit, $mybb->settings['wolcutoffmins'], my_number_format($membercount), $memberbit, my_number_format($anoncount), $anonbit, my_number_format($guestcount), $guestbit);
-	eval('$whosonline = "'.$templates->get('index_whosonline').'";');
 }
 
 // Build the birthdays for to show on the index page.
 $bdays = $birthdays = '';
+$birthday_users = [];
 if($mybb->settings['showbirthdays'] != 0)
 {
 	// First, see what day this is.
@@ -184,10 +156,10 @@ if($mybb->settings['showbirthdays'] != 0)
 		$bdaycache = $cache->read('birthdays');
 	}
 
-	$hiddencount = $today_bdays = 0;
+	$bDayHiddenCount = $today_bdays = 0;
 	if(isset($bdaycache[$bdaydate]))
 	{
-		$hiddencount = $bdaycache[$bdaydate]['hiddencount'];
+		$bDayHiddenCount = $bdaycache[$bdaydate]['hiddencount'];
 		$today_bdays = $bdaycache[$bdaydate]['users'];
 	}
 
@@ -234,41 +206,24 @@ if($mybb->settings['showbirthdays'] != 0)
 					continue;
 				}
 
-				$age = '';
+				$bdayuser['age'] = '';
 				$bday = explode('-', $bdayuser['birthday']);
 				if($year > $bday['2'] && $bday['2'] != '')
 				{
-					$age = ' ('.($year - $bday['2']).')';
+					$bdayuser['age'] = ' ('.($year - $bday['2']).')';
 				}
 
 				$bdayuser['username'] = format_name(htmlspecialchars_uni($bdayuser['username']), $bdayuser['usergroup'], $bdayuser['displaygroup']);
 				$bdayuser['profilelink'] = build_profile_link($bdayuser['username'], $bdayuser['uid']);
-				eval('$bdays .= "'.$templates->get('index_birthdays_birthday', 1, 0).'";');
+				$birthday_users[] = $bdayuser;
 				++$bdaycount;
-				$comma = $lang->comma;
 			}
 		}
-	}
-
-	if($hiddencount > 0)
-	{
-		if($bdaycount > 0)
-		{
-			$bdays .= ' - ';
-		}
-
-		$bdays .= "{$hiddencount} {$lang->birthdayhidden}";
-	}
-
-	// If there are one or more birthdays, show them.
-	if($bdaycount > 0 || $hiddencount > 0)
-	{
-		eval('$birthdays = "'.$templates->get('index_birthdays').'";');
 	}
 }
 
 // Build the forum statistics to show on the index page.
-$forumstats = '';
+$forumstats = [];
 if($mybb->settings['showindexstats'] != 0)
 {
 	// First, load the stats cache.
@@ -277,7 +232,7 @@ if($mybb->settings['showindexstats'] != 0)
 	// Check who's the newest member.
 	if(!$stats['lastusername'])
 	{
-		$newestmember = $lang->nobody;;
+		$newestmember = $lang->nobody;
 	}
 	else
 	{
@@ -304,12 +259,10 @@ if($mybb->settings['showindexstats'] != 0)
 
 	// Then format that language string.
 	$lang->stats_mostonline = $lang->sprintf($lang->stats_mostonline, my_number_format($recordcount), $recorddate, $recordtime);
-
-	eval('$forumstats = "'.$templates->get('index_stats').'";');
 }
 
 // Show the board statistics table only if one or more index statistics are enabled.
-$boardstats = '';
+$show_board_statistics = false;
 if(($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0) || $mybb->settings['showindexstats'] != 0 || ($mybb->settings['showbirthdays'] != 0 && $bdaycount > 0))
 {
 	if(!isset($stats) || isset($stats) && !is_array($stats))
@@ -318,7 +271,7 @@ if(($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0) |
 		$stats = $cache->read('stats');
 	}
 
-	eval('$boardstats = "'.$templates->get('index_boardstats').'";');
+	$show_board_statistics = true;
 }
 
 if($mybb->user['uid'] == 0)
@@ -380,5 +333,11 @@ $forums = $forum_list['forum_list'];
 
 $plugins->run_hooks('index_end');
 
-eval('$index = "'.$templates->get('index').'";');
-output_page($index);
+//echo '<pre>'; var_dump($online_users); echo '</pre>'; exit(); //TODO remove this
+output_page(\MyBB\template('index/index.twig', [
+    'online_users' => $online_users,
+    'show_birthdays' => (bool) $bdaycount || (bool) $bDayHiddenCount,
+    'birthday_hidden' => $bDayHiddenCount,
+    'birthday_users' => $birthday_users,
+    'show_board_statistics' => $show_board_statistics,
+]));

@@ -1,0 +1,72 @@
+<table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+    <thead>
+    <tr>
+        <td class="thead{{ collapsedthead.boardstats }}">
+            <div class="expcolimage"><img src="{{ theme.imgdir }}/collapse{{ collapsedthead.boardstats }}.png" id="boardstats_img" class="expander" alt="[-]" title="[-]" /></div>
+            <div><strong>{{ lang.boardstats }}</strong></div>
+        </td>
+    </tr>
+    </thead>
+    <tbody style="{{ collapsed.boardstats_e }}" id="boardstats_e">
+        {% if mybb.settings.showwol and mybb.usergroup.canviewonline %}
+            <tr>
+                <td class="tcat"><span class="smalltext"><strong>{{ lang.whos_online }}</strong> [<a href="online.php">{{ lang.complete_list }}</a>]</span></td>
+            </tr>
+            <tr>
+                <td class="trow1">
+                    <span class="smalltext">
+                        {{ lang.online_note }}<br />
+
+                        {% for user in online_users %}
+                            {{ user.profilelink|raw }}{{ user.invisible ? user.invisible : '' }}{{ not loop.last ? lang.comma : '' }}
+                        {% endfor %}
+                    </span>
+                </td>
+            </tr>
+        {% endif %}
+        {% if show_birthdays %}
+            <tr><td class="tcat"><span class="smalltext"><strong>{{ lang.todays_birthdays }}</strong></span></td></tr>
+            <tr>
+                <td class="trow1">
+                    <span class="smalltext">
+                        {% if birthday_users|length %}
+                            {% for user in birthday_users %}
+                                {{ user.profilelink|raw }}{{ user.age }}{{ not loop.last ? lang.comma : '' }}
+                            {% endfor %}
+                        {% endif %}
+                        {% if birthday_hidden %}
+                            {{ birthday_users|length ? ' - ' : '' }}
+                            {{ birthday_hidden }} {{ lang.birthdayhidden }}
+                        {% endif %}
+                    </span>
+                </td>
+            </tr>
+        {% endif %}
+        {% if mybb.settings.showindexstats %}
+            <tr><td class="tcat"><span class="smalltext"><strong>{{ lang.boardstats }}</strong></span></td></tr>
+            <tr>
+                <td class="trow1"><span class="smalltext">
+                    {{ lang.stats_posts_threads }}<br />
+                    {{ lang.stats_numusers }}<br />
+                    {{ lang.stats_newestuser|raw }}<br />
+                    {{ lang.stats_mostonline }}
+                </span>
+                </td>
+            </tr>
+        {% endif %}
+    <tr>
+        <td class="tfoot" style="text-align: right">
+		<span class="smalltext">
+            {% if mybb.user.uid != 0 %}
+			    <a href="member.php?action=logout&amp;logoutkey={{  mybb.user.logoutkey }}">{{ lang.index_logout }}</a> |
+            {% endif %}
+			<a href="showteam.php">{{ lang.forumteam }}</a>
+            {% if mybb.settings.statsenabled %}
+                | <a href="stats.php">{{ lang.forumstats }}</a>
+            {% endif %}
+		</span>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<br />
