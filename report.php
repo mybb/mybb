@@ -219,14 +219,11 @@ if (!$mybb->input['action']) {
 			$report['nomodal'] = true;
 		}
 	} else {
-		if ($report['isduplicate']) {
-			eval("\$report['reasons'] = \"".$templates->get('report_duplicate')."\";");
-		} else {
+		if (!$report['isduplicate']) {
 			$reportreasons = $cache->read('reportreasons');
 			$reasons = $reportreasons[$report['type']];
 			$reasonslist = '';
 			foreach ($reasons as $reason) {
-				$reason['title'] = htmlspecialchars_uni($lang->parse($reason['title']));
 				eval("\$reasonslist .= \"".$templates->get('report_reason')."\";");
 			}
 			eval("\$report['reasons'] = \"".$templates->get('report_reasons')."\";");

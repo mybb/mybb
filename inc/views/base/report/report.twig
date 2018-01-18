@@ -32,6 +32,16 @@
 			</tr>
 		{% endif %}
 	{% else %}
+		{% if report.is_duplicate %}
+			<tr>
+				<td class="trow1">{{ lang.error_report_duplicate }}</td>
+			</tr>
+			<tr>
+				<td class="tfoot"><input type="submit" class="button" value="{{ report.title }}" /></td>
+			</tr>
+		{% else %}
+			
+		{% end if %}
 	{% endif %}
 {{ report.reasons|raw }}
 </table>
