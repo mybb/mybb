@@ -1,0 +1,31 @@
+<tr>
+    <td class="trow1" align="center" valign="top" width="1">
+        <span class="forum_status forum_{{ forum.light_bulb_folder }}" title="{{ forum.light_bulb_alt_on_off }}"></span>
+    </td>
+    <td class="trow1" valign="top">
+        <strong>
+            <a href="{{ forum.url }}">{{ forum.name }}</a>
+        </strong>
+        <br />
+        <span class="smalltext">
+            <a href="usercp2.php?action=removesubscription&amp;type=forum&amp;fid={{ forum.fid }}&amp;my_post_key={{ mybb.post_code }}">
+                {{ lang.unsubscribe }}
+            </a> | <a href="newthread.php?fid={{ forum.fid }}">{{ lang.new_thread }}</a>
+        </span>
+    </td>
+    <td class="trow2" valign="top" style="white-space: nowrap; text-align: center;">
+        {{ forum.posts }}
+    </td>
+    <td class="trow1" valign="top" style="white-space: nowrap; text-align: center;">
+        {{ forum.threads }}
+    </td>
+    <td class="trow2" valign="top" style="white-space: nowrap">
+        {% if forum.lastpost == 0 %}
+            {% include 'forumbit/depth_2/last_post_never.twig' %}
+        {% elseif forum.lastpost_hidden %}
+            {% include 'forumbit/depth_2/last_post_hidden.twig' %}
+        {% else %}
+            {% include 'forumbit/depth_2/last_post.twig' %}
+        {% endif %}
+    </td>
+</tr>
