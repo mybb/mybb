@@ -142,8 +142,9 @@ if (empty($error) &&
 
 		$plugins->run_hooks('report_do_report_end');
 
-		eval("\$report_thanks = \"".$templates->get("report_thanks")."\";");
-		echo $report_thanks;
+		echo \MyBB\template('report/report_thanks.twig', [
+			'report' => $report,
+		]);
 		exit;
 	} else {
 		// Bad user!
