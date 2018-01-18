@@ -3050,30 +3050,46 @@ function random_str($length=8, $complex=false)
  */
 function format_name($username, $usergroup, $displaygroup=0)
 {
-	global $groupscache, $cache;
+	global $groupscache, $cache, $plugins;
 
-	if(!is_array($groupscache))
+	static $formattednames = array();
+
+	if(!isset($formattednames[$username]))
 	{
-		$groupscache = $cache->read("usergroups");
-	}
+		if(!is_array($groupscache))
+		{
+			$groupscache = $cache->read("usergroups");
+		}
 
-	if($displaygroup != 0)
-	{
-		$usergroup = $displaygroup;
-	}
+		if($displaygroup != 0)
+		{
+			$usergroup = $displaygroup;
+		}
 
-	$ugroup = $groupscache[$usergroup];
-	$format = $ugroup['namestyle'];
-	$userin = substr_count($format, "{username}");
-
-	if($userin == 0)
-	{
 		$format = "{username}";
+
+		if(isset($groupscache[$usergroup]))
+		{
+			$ugroup = $groupscache[$usergroup];
+
+			if(strpos($ugroup['namestyle'], "{username}") !== false)
+			{
+				$format = $ugroup['namestyle'];
+			}
+		}
+
+		$format = stripslashes($format);
+
+		$parameters = compact('username', 'usergroup', 'displaygroup', 'format');
+
+		$parameters = $plugins->run_hooks('format_name', $parameters);
+
+		$format = $parameters['format'];
+
+		$formattednames[$username] = str_replace("{username}", $username, $format);
 	}
 
-	$format = stripslashes($format);
-
-	return str_replace("{username}", $username, $format);
+	return $formattednames[$username];
 }
 
 /**
