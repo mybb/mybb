@@ -23,24 +23,24 @@ if (!$mybb->user['uid']) {
 
 $plugins->run_hooks('report_start');
 
-$report = array();
+$report = [];
 $verified = false;
-$report['type'] = 'post';
+$report_info['type'] = 'post';
 $error = $report_type_db = '';
 
 if (!empty($mybb->input['type'])) {
-	$report['type'] = htmlspecialchars_uni($mybb->get_input('type'));
+	$report_info['type'] = $mybb->get_input('type');
 }
 
-$report['title'] = $lang->report_content;
-$report_string = "report_reason_{$report['type']}";
+$report_info['title'] = $lang->report_content;
+$report_string = "report_reason_{$report_info['type']}";
 
 if (isset($lang->$report_string)) {
-	$report['title'] = $lang->$report_string;
+	$report_info['title'] = $lang->$report_string;
 }
 
-$report['id'] = 0;
-if ($report['type'] == 'post') {
+$report_info['id'] = 0;
+if ($report_info['type'] == 'post') {
 	if ($mybb->usergroup['canview'] == 0) {
 		error_no_permission();
 	}
@@ -51,7 +51,7 @@ if ($report['type'] == 'post') {
 	if (!$post) {
 		$error = $lang->error_invalid_report;
 	} else {
-		$report['id'] = $post['pid'];
+		$report_info['id'] = $post['pid'];
 		$id2 = $post['tid'];
 		$report_type_db = "(type = 'post' OR type = '')";
 
@@ -68,14 +68,14 @@ if ($report['type'] == 'post') {
 		$id3 = $forum['fid'];
 		check_forum_password($forum['parentlist']);
 	}
-} else if ($report['type'] == 'profile') {
+} else if ($report_info['type'] == 'profile') {
 	$user = get_user($mybb->get_input('pid', MyBB::INPUT_INT));
 
 	if (!isset($user['uid'])) {
 		$error = $lang->error_invalid_report;
 	} else {
 		$id2 = $id3 = 0; // We don't use these on the profile
-		$report['id'] = $user['uid']; // id is the profile user
+		$report_info['id'] = $user['uid']; // id is the profile user
 		$permissions = user_permissions($user['uid']);
 
 		if (empty($permissions['canbereported'])) {
@@ -85,7 +85,7 @@ if ($report['type'] == 'post') {
 			$report_type_db = "type = 'profile'";
 		}
 	}
-} else if ($report['type'] == 'reputation') {
+} else if ($report_info['type'] == 'reputation') {
 	// Any member can report a reputation comment but let's make sure it exists first
 	$query = $db->simple_select('reputation', '*', "rid = '".$mybb->get_input('pid', MyBB::INPUT_INT)."'");
 
@@ -95,7 +95,7 @@ if ($report['type'] == 'post') {
 		$verified = true;
 		$reputation = $db->fetch_array($query);
 
-		$report['id'] = $reputation['rid']; // id is the reputation id
+		$report_info['id'] = $reputation['rid']; // id is the reputation id
 		$id2 = $reputation['adduid']; // id2 is the user who gave the comment
 		$id3 = $reputation['uid']; // id3 is the user who received the comment
 
@@ -106,12 +106,12 @@ if ($report['type'] == 'post') {
 $plugins->run_hooks('report_type');
 
 // Check for an existing report
-$report['isduplicate'] = false;
+$report_info['isduplicate'] = false;
 if (!empty($report_type_db)) {
-	$query = $db->simple_select('reportedcontent', '*', "reportstatus != '1' AND id = '{$report['id']}' AND {$report_type_db}");
+	$query = $db->simple_select('reportedcontent', '*', "reportstatus != '1' AND id = '{$report_info['id']}' AND {$report_type_db}");
 
 	if ($db->num_rows($query)) {
-		$report['isduplicate'] = true;
+		$report_info['isduplicate'] = true;
 
 		// Existing report
 		$report = $db->fetch_array($query);
@@ -136,7 +136,7 @@ if (empty($error) &&
 	$plugins->run_hooks('report_do_report_start');
 
 	// Is this an existing report or a new offender?
-	if (!empty($report)) {
+	if ($report_info['isduplicate']) {
 		// Existing report, add vote
 		$report['reporters'][] = $mybb->user['uid'];
 		update_report($report);
@@ -144,13 +144,13 @@ if (empty($error) &&
 		$plugins->run_hooks('report_do_report_end');
 
 		echo \MyBB\template('report/report_thanks.twig', [
-			'report' => $report,
+			'report' => $report_info,
 		]);
 		exit;
 	} else {
 		// Bad user!
 		$new_report = array(
-			'id' => $report['id'],
+			'id' => $report_info['id'],
 			'id2' => $id2,
 			'id3' => $id3,
 			'uid' => $mybb->user['uid']
@@ -186,12 +186,12 @@ if (empty($error) &&
 		}
 
 		if (empty($error)) {
-			add_report($new_report, $report['type']);
+			add_report($new_report, $report_info['type']);
 
 			$plugins->run_hooks('report_do_report_end');
 
 			echo \MyBB\template('report/report_thanks.twig', [
-				'report' => $new_report,
+				'report' => $report_info,
 			]);
 			exit;
 		}
@@ -208,36 +208,41 @@ if (!empty($error) ||
 	}
 }
 
-$report['has_errors'] = false;
-if (!$mybb->input['action']) {
-	if (!empty($error)) {
-		$report['has_errors'] = true;
-		$report['error'] = $error;
+$report_info['nomodal'] = false;
+if ($mybb->input['no_modal']) {
+	$report_info['nomodal'] = true;
+}
 
-		$report['nomodal'] = false;
-		if ($mybb->input['no_modal']) {
-			$report['nomodal'] = true;
-		}
-	} else {
-		if (!$report['isduplicate']) {
-			$report['reasons'] = $cache->read('reportreasons')[$report['type']];
-			foreach ($report['reasons'] as $key => $reason) {
-				$report['reasons'][$key]['title'] = $lang->parse($reason['title']);
-			}
-		}
-	}
-
-	if ($mybb->input['no_modal']) {
-		echo \MyBB\template('report/report_reasons.twig', [
-			'report' => $report,
-		]);
-		exit;
-	}
-
-	$plugins->run_hooks('report_end');
-
-	output_page(\MyBB\template('report/report.twig', [
-		'report' => $report,
-	]));
+if ($mybb->input['action']) {
 	exit;
 }
+
+$report_info['has_errors'] = false;
+if (!empty($error)) {
+	$report_info['has_errors'] = true;
+	$report_info['error'] = $error;
+} else {
+	$report_info['reasons'] = $cache->read('reportreasons')[$report_info['type']];
+	foreach ($report_info['reasons'] as $key => $reason) {
+		$report_info['reasons'][$key]['title'] = $lang->parse($reason['title']);
+	}
+}
+
+if ($mybb->input['no_modal']) {
+	$template = 'report/report_reasons.twig';
+	if ($report_info['has_errors']) {
+		$template = 'report/report_error_nomodal.twig';
+	}
+
+	echo \MyBB\template($template, [
+		'report' => $report_info,
+	]);
+	exit;
+}
+
+$plugins->run_hooks('report_end');
+
+output_page(\MyBB\template('report/report.twig', [
+	'report' => $report_info,
+]));
+exit;

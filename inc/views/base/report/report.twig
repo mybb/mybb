@@ -14,34 +14,18 @@
 	<td class="tcat" colspan="2">{{ lang.report_to_mod }}</td>
 </tr>
 	{% if report.has_errors %}
-		{% if report.nomodal %}
-			<table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-				<tr>
-					<td class="thead" colspan="2"><strong>{{ report.title }}</strong></td>
-				</tr>
-				<tr>
-					<td class="tcat" colspan="2">{{ lang.report_to_mod }}</td>
-				</tr>
-				<tr>
-					<td colspan="2" class="trow1">{{ report.error }}</td>
-				</tr>
-			</table>
-		{% else %}
-			<tr>
-				<td colspan="2" class="trow1">{{ report.error }}</td>
-			</tr>
-		{% endif %}
+		<tr>
+			<td colspan="2" class="trow1">{{ report.error|raw }}</td>
+		</tr>
+	{% elseif report.is_duplicate %}
+		<tr>
+			<td class="trow1">{{ lang.error_report_duplicate }}</td>
+		</tr>
+		<tr>
+			<td class="tfoot"><input type="submit" class="button" value="{{ report.title }}" /></td>
+		</tr>
 	{% else %}
-		{% if report.is_duplicate %}
-			<tr>
-				<td class="trow1">{{ lang.error_report_duplicate }}</td>
-			</tr>
-			<tr>
-				<td class="tfoot"><input type="submit" class="button" value="{{ report.title }}" /></td>
-			</tr>
-		{% else %}
-			{% include 'report/report_reasons.twig' %}
-		{% endif %}
+		{% include 'report/report_reasons.twig' %}
 	{% endif %}
 </table>
 </form>
