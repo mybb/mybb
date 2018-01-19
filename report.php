@@ -208,11 +208,6 @@ if (!empty($error) ||
 	}
 }
 
-$report_info['nomodal'] = false;
-if ($mybb->input['no_modal']) {
-	$report_info['nomodal'] = true;
-}
-
 if ($mybb->input['action']) {
 	exit;
 }
