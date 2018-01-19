@@ -220,18 +220,17 @@ if (!$mybb->input['action']) {
 		}
 	} else {
 		if (!$report['isduplicate']) {
-			$reportreasons = $cache->read('reportreasons');
-			$reasons = $reportreasons[$report['type']];
-			$reasonslist = '';
-			foreach ($reasons as $reason) {
-				eval("\$reasonslist .= \"".$templates->get('report_reason')."\";");
+			$report['reasons'] = $cache->read('reportreasons')[$report['type']];
+			foreach ($report['reasons'] as $key => $reason) {
+				$report['reasons'][$key]['title'] = $lang->parse($reason['title']);
 			}
-			eval("\$report['reasons'] = \"".$templates->get('report_reasons')."\";");
 		}
 	}
 
 	if ($mybb->input['no_modal']) {
-		echo $report['reasons'];
+		echo \MyBB\template('report/report_reasons.twig', [
+			'report' => $report,
+		]);
 		exit;
 	}
 

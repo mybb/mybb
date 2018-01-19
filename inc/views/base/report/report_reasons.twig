@@ -1,0 +1,20 @@
+<tr>
+	<td class="trow1" align="left" style="width: 25%"><span class="smalltext"><strong>{{ lang.report_reason }}</strong></span></td>
+	<td class="trow1" align="left">
+		<select name="reason" id="report_reason">
+			{% for reason in report.reasons %}
+				<option value="{{ reason.rid }}" data-extra="{{ reason.extra }}">{{ reason.title }}</option>
+			{% endfor %}
+		</select>
+	</td>
+</tr>
+<tr id="reason">
+	<td class="trow2">&nbsp;</td>
+	<td class="trow2" align="left">
+		<div>{$lang->report_reason_other_description}</div>
+		<input type="text" class="textbox" name="comment" size="40" maxlength="250" />
+	</td>
+</tr>
+<tr>
+	<td colspan="2" class="tfoot"><input type="submit" class="button" value="{{ report.title }}" /></td>
+</tr>

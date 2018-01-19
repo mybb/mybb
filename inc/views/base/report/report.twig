@@ -40,10 +40,9 @@
 				<td class="tfoot"><input type="submit" class="button" value="{{ report.title }}" /></td>
 			</tr>
 		{% else %}
-			
-		{% end if %}
+			{% include 'report/report_reasons.twig' %}
+		{% endif %}
 	{% endif %}
-{{ report.reasons|raw }}
 </table>
 </form>
 
