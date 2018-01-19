@@ -1,0 +1,99 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ mybb.settings.bburl }} - {{ lang.warning_log }}</title>
+{% endblock head %}
+
+{% block body %}
+    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+        <tr>
+            <td class="thead" colspan="2">
+                <div class="float_right">{{ warning.status }}</div>
+                <div><strong>{{ lang.warning_details }}</strong></div>
+            </td>
+        </tr>
+        {% if warning.post_subject %}
+            <tr>
+                <td class="tcat" width="50%"><span class="smalltext"><strong>{{ lang.username }}</strong></span></td>
+                <td class="tcat" width="50%"><span class="smalltext"><strong>{{ lang.post }}</strong></span></td>
+            </tr>
+            <tr>
+                <td class="trow1">{{ user.user_link|raw }}</td>
+                <td class="trow1"><a href="{{ warning.post_link|raw }}#pid{{ warning.pid }}">{{ warning.post_subject }}</a></td>
+            </tr>
+        {% else %}
+            <tr>
+                <td class="tcat" colspan="2"><span class="smalltext"><strong>{{ lang.details_username }}</strong></span></td>
+            </tr>
+            <tr>
+                <td class="trow1" colspan="2">{{ user.user_link|raw }}</td>
+            </tr>
+        {% endif %}
+        <tr>
+            <td class="tcat" width="50%"><span class="smalltext"><strong>{{ lang.warning }}</strong></span></td>
+            <td class="tcat" width="50%"><span class="smalltext"><strong>{{ lang.date_issued }}</strong></span></td>
+        </tr>
+        <tr>
+            <td class="trow2">{{ warning.warning_type }} {{ trans('warning_points', warning.points) }}</td>
+            <td class="trow2">{{ warning.date_issued|raw }}</td>
+        </tr>
+        <tr>
+            <td class="tcat" width="50%"><span class="smalltext"><strong>{{ lang.issued_by }}</strong></span></td>
+            <td class="tcat" width="50%"><span class="smalltext"><strong>{{ lang.expiry_date }}</strong></span></td>
+        </tr>
+        <tr>
+            <td class="trow1">{{ warning.issuedby|raw }}</td>
+            <td class="trow1">{{ warning.expires }} {{ warning.revoked_date }}</td>
+        </tr>
+        <tr>
+            <td class="tcat" colspan="2"><span class="smalltext"><strong>{{ lang.details_warning_note }}</strong></span></td>
+        </tr>
+        <tr>
+            <td class="trow2" colspan="2"> {{ warning.notes }}</td>
+        </tr>
+    </table>
+    <br />
+    {% if warning.daterevoked %}
+        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder clear">
+            <tr>
+                <td class="thead" colspan="2"><strong>{{ lang.warning_is_revoked }}</strong></td>
+            </tr>
+            <tr>
+                <td class="tcat" style="width: 50%;"><span class="smalltext"><strong>{{ lang.revoked_by }}</strong></span></td>
+                <td class="tcat"><span class="smalltext"><strong>{{ lang.date_revoked }}</strong></span></td>
+            </tr>
+            <tr>
+                <td class="trow1">{{ revoked_user.profile|raw }}</td>
+                <td class="trow1">{{ warning.daterevoked|raw }}</td>
+            </tr>
+            <tr>
+                <td class="tcat" colspan="2"><span class="smalltext"><strong>{{ lang.details_reason }}</strong></span></td>
+            </tr>
+            <tr>
+                <td class="trow2" colspan="2">{{ warning.revokereason }}</td>
+            </tr>
+        </table>
+    {% else %}
+        {{ warn_errors|raw }}
+        <form action="warnings.php" method="post" name="input">
+            <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+            <input type="hidden" name="action" value="do_revoke" />
+            <input type="hidden" name="wid" value="{{ warning.wid }}" />
+
+            <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder clear">
+                <tr>
+                    <td class="thead" colspan="2"><strong>{{ lang.revoke_warning }}</strong></td>
+                </tr>
+                <tr>
+                    <td class="tcat" colspan="2"><span class="smalltext"><strong>{{ lang.revoke_warning_desc }}</strong></span></td>
+                </tr>
+                <tr>
+                    <td class="trow1" style="width: 20%; vertical-align: top;"><strong>{{ lang.reason }}</strong></td>
+                    <td class="trow1"><textarea name="reason" cols="60" rows="4"></textarea></td>
+                </tr>
+            </table>
+            <br />
+            <div style="text-align: center;"><input type="submit" class="button" value="{{ lang.revoke_warning }}" /></div>
+        </form>
+    {% endif %}
+{% endblock body %}

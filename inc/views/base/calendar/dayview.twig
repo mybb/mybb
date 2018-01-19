@@ -1,0 +1,56 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ mybb.settings.bbname }} - {{ lang.calendar }}</title>
+{% endblock head %}
+
+{% block body %}
+    {% if birthdaycount > 0 %}
+        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+            <tr>
+                <td class="thead"><strong>{{ trans('birthdays_on_day', calendar.bdaydate) }}</strong></td>
+            </tr>
+            <tr>
+                <td class="trow1">
+                    <span class="smalltext">
+                        {% for birthday in birthdays %}
+                            {{ birthday.comma }}{{ birthday.profilelink|raw }}{{ birthday.age }}
+                        {% endfor %}
+                        {% if bdayhidden > 0 %}
+                            {{ calendar.hiddendash }}{{ bdayhidden }} {{ lang.birthdayhidden }}
+                        {% endif %}
+                    </span>
+                </td>
+            </tr>
+        </table>
+        <br />
+    {% endif %}
+    {% for event in events %}
+        {% include 'calendar/event_row.twig' %}
+    {% else %}
+        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+            <tr>
+                <td class="trow1">{{ lang.no_events|raw }}</td>
+            </tr>
+        </table>
+    {% endfor %}
+    <br />
+    <form action="calendar.php" method="post">
+        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+            <tr>
+                <td class="trow1">
+                    <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                        <tr>
+                            <td valign="top">
+                                {% if calendar_permissions.canaddevents %}
+                                    <a href="calendar.php?action=addevent&amp;calendar={{ calendar.cid }}">{{ lang.add_public_event }}</a> | <a href="calendar.php?action=addevent&amp;calendar={{ calendar.cid }}&amp;private=1">{{ lang.add_private_event }}</a>
+                                {% endif %}
+                            </td>
+                            {% include 'calendar/calendar_select.twig' %}
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </form>
+{% endblock body %}
