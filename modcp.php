@@ -60,7 +60,7 @@ if($mybb->usergroup['issupermod'] != 1)
 {
 	$in = explode(',', $mybb->user['additionalgroups']);
 	$in = array_map('intval', $in);
-	$in[] = (int) $mybb->user['usergroup'];
+	$in[] = (int)$mybb->user['usergroup'];
 	$in = array_unique($in);
 
 	$in_query = implode(',', $in);
