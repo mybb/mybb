@@ -1,18 +1,18 @@
 {% set row = alt_trow() %}
 <tr>
-	<td class="{{ row }}" align="center">
-		{% if user.avatar %}
-			<img src="{{ user.avatar_image }}" alt="" {{ user.avatar_width_height }} />
-		{% endif %}
-	</td>
-	<td class="{{ row }}">
-		{{ user.profilelink|raw }}<br />
-		<span class="smalltext">
-			{{ user.usertitle }}<br />
-			{% if user.groupimage %}
-				<img src="{{ user.groupimage }}" alt="{{ user.groupimage_title }}" title="{{ user.groupimage_title }}" />
-			<br />
-			{% endif %}
+    <td class="{{ row }}" align="center">
+        {% if user.avatar %}
+            <img src="{{ user.avatar_image }}" alt="" {{ user.avatar_width_height }} />
+        {% endif %}
+    </td>
+    <td class="{{ row }}">
+        {{ user.profilelink|raw }}<br />
+        <span class="smalltext">
+            {{ user.usertitle }}<br />
+            {% if user.groupimage %}
+                <img src="{{ user.groupimage }}" alt="{{ user.groupimage_title }}" title="{{ user.groupimage_title }}" />
+            <br />
+            {% endif %}
             {% if user.starimage and user.stars %}
                 {% spaceless %}
                     {% for star in range(1, user.stars) %}
@@ -21,23 +21,23 @@
                 {% endspaceless %}
                 <br />
             {% endif %}
-		</span>
-	</td>
-	<td class="{{ row }}" align="center">
-		{{ user.regdate|raw }}
-	</td>
-	<td class="{{ row }}" align="center">
-		{{ user.lastvisit|raw }}
-	</td>
-	<td class="{{ row }}" align="center">
-		{{ user.postnum }}
-	</td>
-	<td class="{{ row }}" align="center">
-		{{ user.threadnum }}
-	</td>
-	{% if mybb.settings.usereferrals %}
-		<td class="{{ row }}" align="center">
-			{{ user.referrals }}
-		</td>
-	{% endif %}
+        </span>
+    </td>
+    <td class="{{ row }}" align="center">
+        {{ user.regdate|raw }}
+    </td>
+    <td class="{{ row }}" align="center">
+        {{ user.lastvisit|raw }}
+    </td>
+    <td class="{{ row }}" align="center">
+        {{ user.postnum }}
+    </td>
+    <td class="{{ row }}" align="center">
+        {{ user.threadnum }}
+    </td>
+    {% if mybb.settings.usereferrals %}
+        <td class="{{ row }}" align="center">
+            {{ user.referrals }}
+        </td>
+    {% endif %}
 </tr>
