@@ -56,12 +56,12 @@ class LangExtension extends \Twig_Extension implements \Twig_Extension_GlobalsIn
         return $this->lang->sprintf($this->lang->$languageVariable, ...$params);
     }
 
-	/**
-	 * Report any custom filters
-	 *
-	 * @return array Twig\TwigFilter
-	 */
-	public function getFilters()
+    /**
+     * Report any custom filters
+     *
+     * @return array Twig\TwigFilter
+     */
+    public function getFilters()
     {
         return array(
             new TwigFilter('lparse', array($this, 'lparseFilter')),
@@ -69,27 +69,27 @@ class LangExtension extends \Twig_Extension implements \Twig_Extension_GlobalsIn
     }
 
     /**
-	 * Language parse.
-	 *
-	 * @param string
-	 *
-	 * @return string Parsed langugae string
-	 */
-	public function lparseFilter(string $contents)
-	{
-		$contents = preg_replace_callback("#<lang:([a-zA-Z0-9_]+)>#", array($this, 'lparseReplace'), $contents);
-		return $contents;
+     * Language parse.
+     *
+     * @param string
+     *
+     * @return string Parsed langugae string
+     */
+    public function lparseFilter(string $contents)
+    {
+        $contents = preg_replace_callback("#<lang:([a-zA-Z0-9_]+)>#", array($this, 'lparseReplace'), $contents);
+        return $contents;
     }
 
-	/**
-	 * Callback for LangExtension::lparseFilter
-	 *
-	 * @param array
-	 *
-	 * @return string
-	 */
+    /**
+     * Callback for LangExtension::lparseFilter
+     *
+     * @param array
+     *
+     * @return string
+     */
     public function lparseReplace(array $matches)
-	{
-		return $this->lang->{$matches[1]};
-	}
+    {
+        return $this->lang->{$matches[1]};
+    }
 }
