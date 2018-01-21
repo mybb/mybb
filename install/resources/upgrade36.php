@@ -33,9 +33,9 @@ function upgrade36_dbchanges()
 		$db->drop_column('attachtypes', 'enabled');
 	}
 
-	if($db->field_exists('`groups`', 'attachtypes'))
+	if($db->field_exists('groups', 'attachtypes'))
 	{
-		$db->drop_column('attachtypes', '`groups`');
+		$db->drop_column('attachtypes', 'groups');
 	}
 
 	if($db->field_exists('forums', 'attachtypes'))
@@ -52,17 +52,17 @@ function upgrade36_dbchanges()
 	{
 		case "pgsql":
 			$db->add_column('attachtypes', 'enabled', "smallint NOT NULL default '1'");
-			$db->add_column('attachtypes', '`groups`', "text NOT NULL default '-1'");
+			$db->add_column('attachtypes', 'groups', "text NOT NULL default '-1'");
 			$db->add_column('attachtypes', 'forums', "text NOT NULL default '-1'");
 			$db->add_column('attachtypes', 'avatarfile', "smallint NOT NULL default '0'");
 			break;
 		default:
 			$db->add_column('attachtypes', 'enabled', "tinyint(1) NOT NULL default '1'");
-			$db->add_column('attachtypes', '`groups`', "TEXT NOT NULL");
+			$db->add_column('attachtypes', 'groups', "TEXT NOT NULL");
 			$db->add_column('attachtypes', 'forums', "TEXT NOT NULL");
 			$db->add_column('attachtypes', 'avatarfile', "tinyint(1) NOT NULL default '0'");
 
-			$db->update_query('attachtypes', array('`groups`' => '-1', 'forums' => '-1'));
+			$db->update_query('attachtypes', array('groups' => '-1', 'forums' => '-1'));
 			break;
 	}
 
