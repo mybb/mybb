@@ -681,9 +681,9 @@ function upgrade30_dbchanges4()
 		$db->drop_column("maillogs", "type");
 	}
 
-	if($db->field_exists('groups', 'modtools'))
+	if($db->field_exists('`groups`', 'modtools'))
 	{
-		$db->drop_column("modtools", "groups");
+		$db->drop_column("modtools", "`groups`");
 	}
 
 	switch($db->type)
@@ -717,10 +717,10 @@ function upgrade30_dbchanges4()
 	switch($db->type)
 	{
 		case "sqlite":
-			$db->add_column("modtools", "groups", "text NOT NULL default ''");
+			$db->add_column("modtools", "`groups`", "text NOT NULL default ''");
 			break;
 		default:
-			$db->add_column("modtools", "groups", "text NOT NULL");
+			$db->add_column("modtools", "`groups`", "text NOT NULL");
 			break;
 	}
 
