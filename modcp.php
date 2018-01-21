@@ -58,7 +58,7 @@ $flist_queue_attach = $wflist_reports = $tflist_reports = $flist_reports = $tfli
 $moderated_forums = array();
 if($mybb->usergroup['issupermod'] != 1)
 {
-	$query = $db->simple_select("moderators", "*", "(id='{$mybb->user['uid']}' AND isgroup = '0') OR (id='{$mybb->user['usergroup']}' AND isgroup = '1')");
+	$query = $db->simple_select("moderators", "*", "(id='{$mybb->user['uid']}' AND isgroup = '0') OR (id IN ({$mybb->usergroup['all_usergroups']}) AND isgroup = '1')");
 
 	$numannouncements = $nummodqueuethreads = $nummodqueueposts = $nummodqueueattach = $numreportedposts = $nummodlogs = 0;
 	while($forum = $db->fetch_array($query))
