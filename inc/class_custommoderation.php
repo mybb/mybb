@@ -32,7 +32,7 @@ class CustomModeration extends Moderation
 		global $db;
 
 		// Get tool info
-		$query = $db->simple_select("modtools", "*", 'tid="'.(int)$tool_id.'"');
+		$query = $db->simple_select("modtools", "*", 'tid='.(int)$tool_id);
 		$tool = $db->fetch_array($query);
 		if(!$tool['tid'])
 		{
@@ -57,7 +57,7 @@ class CustomModeration extends Moderation
 		global $db;
 
 		// Get tool info
-		$query = $db->simple_select("modtools", '*', 'tid="'.(int)$tool_id.'"');
+		$query = $db->simple_select("modtools", '*', 'tid='.(int)$tool_id);
 		$tool = $db->fetch_array($query);
 		if(!$tool['tid'])
 		{
