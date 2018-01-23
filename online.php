@@ -235,7 +235,7 @@ else
 		// Otherwise this session is a bot
 		else if(my_strpos($user['sid'], "bot=") !== false && $spiders[$botkey])
 		{
-			$user['bot'] = $spiders[$botkey]['name'];
+			$user['bot'] = htmlspecialchars_uni($spiders[$botkey]['name']);
 			$user['usergroup'] = $spiders[$botkey]['usergroup'];
 			$guests[] = $user;
 		}

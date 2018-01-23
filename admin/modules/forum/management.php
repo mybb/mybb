@@ -832,8 +832,8 @@ if($mybb->input['action'] == "add")
 				$pid = 0;
 			}
 			$insert_array = array(
-				"name" => $db->escape_string($mybb->input['title']),
-				"description" => $db->escape_string($mybb->input['description']),
+				"name" => $db->escape_string(my_strip_tags($mybb->input['title'])),
+				"description" => $db->escape_string(my_strip_tags($mybb->input['description'])),
 				"linkto" => $db->escape_string($mybb->input['linkto']),
 				"type" => $db->escape_string($type),
 				"pid" => $pid,
@@ -856,8 +856,8 @@ if($mybb->input['action'] == "add")
 				"style" => $mybb->get_input('style', MyBB::INPUT_INT),
 				"overridestyle" => $mybb->get_input('overridestyle', MyBB::INPUT_INT),
 				"rulestype" => $mybb->get_input('rulestype', MyBB::INPUT_INT),
-				"rulestitle" => $db->escape_string($mybb->input['rulestitle']),
-				"rules" => $db->escape_string($mybb->input['rules']),
+				"rulestitle" => $db->escape_string(my_strip_tags($mybb->input['rulestitle'])),
+				"rules" => $db->escape_string(my_strip_tags($mybb->input['rules'])),
 				"defaultdatecut" => $mybb->get_input('defaultdatecut', MyBB::INPUT_INT),
 				"defaultsortby" => $db->escape_string($mybb->input['defaultsortby']),
 				"defaultsortorder" => $db->escape_string($mybb->input['defaultsortorder']),
@@ -1366,8 +1366,8 @@ if($mybb->input['action'] == "edit")
 				$pid = 0;
 			}
 			$update_array = array(
-				"name" => $db->escape_string($mybb->input['title']),
-				"description" => $db->escape_string($mybb->input['description']),
+				"name" => $db->escape_string(my_strip_tags($mybb->input['title'])),
+				"description" => $db->escape_string(my_strip_tags($mybb->input['description'])),
 				"linkto" => $db->escape_string($mybb->input['linkto']),
 				"type" => $db->escape_string($type),
 				"pid" => $pid,
@@ -1389,8 +1389,8 @@ if($mybb->input['action'] == "edit")
 				"style" => $mybb->get_input('style', MyBB::INPUT_INT),
 				"overridestyle" => $mybb->get_input('overridestyle', MyBB::INPUT_INT),
 				"rulestype" => $mybb->get_input('rulestype', MyBB::INPUT_INT),
-				"rulestitle" => $db->escape_string($mybb->input['rulestitle']),
-				"rules" => $db->escape_string($mybb->input['rules']),
+				"rulestitle" => $db->escape_string(my_strip_tags($mybb->input['rulestitle'])),
+				"rules" => $db->escape_string(my_strip_tags($mybb->input['rules'])),
 				"defaultdatecut" => $mybb->get_input('defaultdatecut', MyBB::INPUT_INT),
 				"defaultsortby" => $db->escape_string($mybb->input['defaultsortby']),
 				"defaultsortorder" => $db->escape_string($mybb->input['defaultsortorder']),
