@@ -11,9 +11,6 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'online.php');
 
-$templatelist = "online,online_row,online_row_ip,online_today,online_today_row,online_row_ip_lookup,online_refresh,multipage,multipage_end,multipage_start";
-$templatelist .= ",multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage";
-
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 require_once MYBB_ROOT."inc/functions_online.php";
@@ -71,22 +68,17 @@ if($mybb->get_input('action') == "today")
 
 	$query = $db->simple_select("users", "*", "lastactive > '{$threshold}'", array("order_by" => "lastactive", "order_dir" => "desc", "limit" => $perpage, "limit_start" => $start));
 
-	$todayrows = '';
+	$online_today_users = [];
 	while($online = $db->fetch_array($query))
 	{
-		$invisiblemark = '';
-		if($online['invisible'] == 1)
-		{
-			$invisiblemark = "*";
-		}
-
 		if($online['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $online['uid'] == $mybb->user['uid'])
 		{
-			$username = format_name(htmlspecialchars_uni($online['username']), $online['usergroup'], $online['displaygroup']);
-			$online['profilelink'] = build_profile_link($username, $online['uid']);
-			$onlinetime = my_date($mybb->settings['timeformat'], $online['lastactive']);
-
-			eval("\$todayrows .= \"".$templates->get("online_today_row")."\";");
+            $username = format_name(htmlspecialchars_uni($online['username']), $online['usergroup'], $online['displaygroup']);
+            $online_today_users[] = [
+                'profilelink' => build_profile_link($username, $online['uid']),
+                'onlinetime' => my_date($mybb->settings['timeformat'], $online['lastactive']),
+                'invisible' => $online['invisible'],
+            ];
 		}
 	}
 
@@ -118,8 +110,11 @@ if($mybb->get_input('action') == "today")
 
 	$plugins->run_hooks("online_today_end");
 
-	eval("\$today = \"".$templates->get("online_today")."\";");
-	output_page($today);
+    output_page(\MyBB\template('online/today.twig', [
+        'online_today' => $onlinetoday,
+        'online_today_users' => $online_today_users,
+        'multipage' => $multipage,
+    ]));
 }
 else
 {
@@ -247,13 +242,16 @@ else
 	}
 
 	// Now we build the actual online rows - we do this separately because we need to query all of the specific activity and location information
-	$online_rows = '';
+	$online_rows = [];
 	if(isset($users) && is_array($users))
 	{
 		reset($users);
 		foreach($users as $user)
 		{
-			$online_rows .= build_wol_row($user);
+			$row = build_wol_row($user);
+			if ($row) {
+			    $online_rows[] = $row;
+            }
 		}
 	}
 	if(isset($guests) && is_array($guests))
@@ -261,7 +259,10 @@ else
 		reset($guests);
 		foreach($guests as $user)
 		{
-			$online_rows .= build_wol_row($user);
+            $row = build_wol_row($user);
+            if ($row) {
+                $online_rows[] = $row;
+            }
 		}
 	}
 
@@ -270,15 +271,11 @@ else
 	$record_count = $most_online['numusers'];
 	$record_date = my_date('relative', $most_online['time']);
 
-	// Set automatic refreshing if enabled
-	if($mybb->settings['refreshwol'] > 0)
-	{
-		$refresh_time = $mybb->settings['refreshwol'] * 60;
-		eval("\$refresh = \"".$templates->get("online_refresh")."\";");
-	}
-
 	$plugins->run_hooks("online_end");
 
-	eval("\$online = \"".$templates->get("online")."\";");
-	output_page($online);
+    output_page(\MyBB\template('online/online.twig', [
+        'refresh_string' => $refresh_string,
+        'online_users' => $online_rows,
+        'multipage' => $multipage,
+    ]));
 }
