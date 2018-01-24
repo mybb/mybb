@@ -329,15 +329,14 @@ if($mybb->settings['subforumsindex'] != 0)
 }
 
 $forum_list = build_forumbits();
-$forums = $forum_list['forum_list'];
 
 $plugins->run_hooks('index_end');
 
-//echo '<pre>'; var_dump($online_users); echo '</pre>'; exit(); //TODO remove this
 output_page(\MyBB\template('index/index.twig', [
     'online_users' => $online_users,
     'show_birthdays' => (bool) $bdaycount || (bool) $bDayHiddenCount,
     'birthday_hidden' => $bDayHiddenCount,
     'birthday_users' => $birthday_users,
     'show_board_statistics' => $show_board_statistics,
+    'forums' => $forum_list['forum_list']
 ]));
