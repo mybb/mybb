@@ -1,0 +1,78 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ mybb.settings.bbname }} - {{ lang.board_stats }}</title>
+{% endblock head %}
+
+{% block body %}
+    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+        <tr>
+            <td class="thead" colspan="2"><strong>{{ lang.board_stats }}</strong></td>
+        </tr>
+        <tr>
+            <td class="tcat" width="50%"><strong>{{ lang.totals }}</strong></td>
+            <td class="tcat" width="50%"><strong>{{ lang.averages }}</strong></td>
+        </tr>
+        <tr>
+            <td class="trow1" valign="top">
+                {{ lang.posts }} <strong>{{ stats.numposts }}</strong><br/>
+                {{ lang.threads }} <strong>{{ stats.numthreads }}</strong><br/>
+                {{ lang.members }} <strong>{{ stats.numusers }}</strong>
+            </td>
+            <td class="trow1" rowspan="3" valign="top">
+                {{ lang.ppd }} <strong>{{ stats.posts_perday }}</strong><br/>
+                {{ lang.tpd }} <strong>{{ stats.threads_perday }}</strong><br/>
+                {{ lang.mpd }} <strong>{{ stats.members_perday }}</strong><br/>
+                {{ lang.ppm }} <strong>{{ stats.posts_permember }}</strong><br/>
+                {{ lang.tpm }} <strong>{{ stats.threads_permember }}</strong><br/>
+                {{ lang.rpt }} <strong>{{ stats.replies_perthread }}</strong>
+            </td>
+        </tr>
+        <tr>
+            <td class="tcat" valign="top"><strong>{{ lang.general }}</strong></td>
+        </tr>
+        <tr>
+            <td class="trow1">
+                {{ lang.newest_member }} {{ stats.newest_user|raw }}<br/>
+                {{ lang.members_posted }} <strong>{{ stats.have_posted_percent }}</strong><br/>
+                {{ lang.todays_top_poster|raw }}<br/>
+
+                {% if top_forum %}
+                    {% set forum_link = '<a href="' ~ top_forum.link ~ '">' ~ top_forum.name ~ '</a>' %}
+                    {{ trans('popular_forum', forum_link, top_forum.posts, top_forum.threads)|raw }}<br/>
+                {% else %}
+                    {{ trans('popular_forum', lang.none, lang.no, lang.no)|raw }}<br/>
+                {% endif %}
+
+                {{ top_referer|raw ?: '' }}
+            </td>
+        </tr>
+    </table>
+
+    <br/>
+    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+        <tr>
+            <td class="thead" colspan="2"><strong>{{ lang.most_popular }}</strong></td>
+        </tr>
+        <tr>
+            <td class="tcat" width="50%"><strong>{{ lang.most_replied_threads }}</strong></td>
+            <td class="tcat" width="50%"><strong>{{ lang.most_viewed_threads }}</strong></td>
+        </tr>
+        <tr>
+            <td class="trow1" valign="top">
+                {% for thread in most_replied_to_threads %}
+                    <a href="{{ thread.link }}"><strong>{{ thread.subject }}</strong></a>
+                    ({{ thread.replies }} {{ lang.replies }})
+                    <br/>
+                {% endfor %}
+            </td>
+            <td class="trow1" valign="top">
+                {% for thread in most_viewed_threads %}
+                    <a href="{{ thread.link }}"><strong>{{ thread.subject }}</strong></a>
+                    ({{ thread.views }} {{ lang.views }})
+                    <br/>
+                {% endfor %}
+            </td>
+        </tr>
+    </table>
+{% endblock body %}
