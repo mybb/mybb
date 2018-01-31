@@ -171,6 +171,7 @@ $l['error_nosplitposts'] = "You cannot split this thread as you did not select a
 $l['error_movetosameforum'] = "You cannot move this thread into the forum it is currently situated in. Please select a different forum.";
 $l['error_mergewithself'] = "Threads cannot be merged with themselves.<br />Please go back and enter a valid URL.";
 $l['error_movetoself'] = "Posts cannot be moved to the thread they are in.<br />Please go back and enter a valid URL.";
+$l['error_movetononmodforum'] = "You cannot move this thread to a forum you are not a moderator of or do not have permission to view.";
 $l['error_delayedmoderation_unsupported_type'] = "Sorry, but you did not select a valid type for this delayed moderation action or you do not have permission to do this action.";
 $l['error_delayedmoderation_unsupported_method'] = "Sorry, but you did not select a valid move method for this delayed moderation action.";
 $l['error_delayedmoderation_invalid_date_day'] = "Sorry, but you did not select a valid delay date day for this delayed moderation action.";

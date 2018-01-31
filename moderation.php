@@ -291,10 +291,25 @@ switch($mybb->input['action'])
 
 			if($mybb->input['type'] == 'move')
 			{
-				$newforum = get_forum($fid);
+				$newfid = (int)$mybb->input['delayedmoderation']['new_forum'];
+
+				// Make sure moderator has permission to move to the new forum
+				$newperms = forum_permissions($newfid);
+				if($newperms['canview'] == 0 || !is_moderator($newfid, 'canmovetononmodforum'))
+				{
+					$errors[] = $lang->error_movetononmodforum;
+				}
+
+				$newforum = get_forum($newfid);
 				if(!$newforum || $newforum['type'] != "f" || $newforum['type'] == "f" && $newforum['linkto'] != '')
 				{
 					$errors[] = $lang->error_invalidforum;
+				}
+
+				$method = $mybb->input['delayedmoderation']['method'];
+				if($method != "copy" && $fid == $newfid)
+				{
+					$errors[] = $lang->error_movetosameforum;
 				}
 			}
 
@@ -986,7 +1001,7 @@ switch($mybb->input['action'])
 		$newperms = forum_permissions($moveto);
 		if($newperms['canview'] == 0 && !is_moderator($fid, "canmovetononmodforum"))
 		{
-			error_no_permission();
+			error($lang->error_movetononmodforum);
 		}
 
 		$newforum = get_forum($moveto);
@@ -2064,7 +2079,7 @@ switch($mybb->input['action'])
 		$newperms = forum_permissions($moveto);
 		if(($newperms['canview'] == 0 || !is_moderator($moveto, 'canmanagethreads')) && !is_moderator_by_tids($tids, 'canmovetononmodforum'))
 		{
-			error_no_permission();
+			error($lang->error_movetononmodforum);
 		}
 
 		$newforum = get_forum($moveto);
