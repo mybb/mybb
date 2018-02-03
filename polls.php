@@ -107,73 +107,67 @@ if($mybb->input['action'] == "newpoll")
 		error($lang->poll_time_limit);
 	}
 
-	// Sanitize number of poll options
-	if($mybb->get_input('numpolloptions', MyBB::INPUT_INT) > 0)
-	{
-		$mybb->input['polloptions'] = $mybb->get_input('numpolloptions', MyBB::INPUT_INT);
-	}
-	if($mybb->settings['maxpolloptions'] && $mybb->get_input('polloptions', MyBB::INPUT_INT) > $mybb->settings['maxpolloptions'])
-	{	// Too big
-		$polloptions = $mybb->settings['maxpolloptions'];
-	}
-	elseif($mybb->get_input('polloptions', MyBB::INPUT_INT) < 2)
-	{	// Too small
-		$polloptions = 2;
-	}
-	else
-	{	// Just right
-		$polloptions = $mybb->get_input('polloptions', MyBB::INPUT_INT);
-	}
+    // Sanitize number of poll options
+    if ($mybb->get_input('numpolloptions', MyBB::INPUT_INT) > 0) {
+        $mybb->input['polloptions'] = $mybb->get_input('numpolloptions', MyBB::INPUT_INT);
+    }
 
-	$question = htmlspecialchars_uni($mybb->get_input('question'));
+    if ($mybb->settings['maxpolloptions'] && $mybb->get_input('polloptions', MyBB::INPUT_INT) > $mybb->settings['maxpolloptions']) {
+        // Too big
+        $select['polloptions'] = $mybb->settings['maxpolloptions'];
+    }
+    elseif ($mybb->get_input('polloptions', MyBB::INPUT_INT) < 2) {
+        // Too small
+        $select['polloptions'] = 2;
+    } else {
+        // Just right
+        $select['polloptions'] = $mybb->get_input('polloptions', MyBB::INPUT_INT);
+    }
 
-	$postoptionschecked = array('public' => '', 'multiple' => '');
-	$postoptions = $mybb->get_input('postoptions', MyBB::INPUT_INT);
-	if(isset($postoptions['multiple']) && $postoptions['multiple'] == 1)
-	{
-		$postoptionschecked['multiple'] = 'checked="checked"';
-	}
-	if(isset($postoptions['public']) && $postoptions['public'] == 1)
-	{
-		$postoptionschecked['public'] = 'checked="checked"';
-	}
+    $select['question'] = $mybb->get_input('question');
 
-	$options = $mybb->get_input('options', MyBB::INPUT_ARRAY);
-	$optionbits = '';
-	for($i = 1; $i <= $polloptions; ++$i)
-	{
-		if(!isset($options[$i]))
-		{
-			$options[$i] = '';
-		}
-		$option = $options[$i];
-		$option = htmlspecialchars_uni($option);
-		eval("\$optionbits .= \"".$templates->get("polls_newpoll_option")."\";");
-		$option = "";
-	}
+    $select['postoptions'] = array('public' => '', 'multiple' => '');
+    $postoptions = $mybb->get_input('postoptions', MyBB::INPUT_ARRAY);
+    if (isset($postoptions['multiple']) && $postoptions['multiple'] == 1) {
+        $select['postoptions']['multiple'] = true;
+    }
 
-	if($mybb->get_input('timeout', MyBB::INPUT_INT) > 0)
-	{
-		$timeout = $mybb->get_input('timeout', MyBB::INPUT_INT);
-	}
-	else
-	{
-		$timeout = 0;
-	}
+    if (isset($postoptions['public']) && $postoptions['public'] == 1) {
+        $select['postoptions']['public'] = true;
+    }
 
-	if($mybb->get_input('maxoptions', MyBB::INPUT_INT) > 0 && $mybb->get_input('maxoptions', MyBB::INPUT_INT) < $polloptions)
-	{
-		$maxoptions = $mybb->get_input('maxoptions', MyBB::INPUT_INT);
-	}
-	else
-	{
-		$maxoptions = 0;
-	}
+    $optionbits = [];
+    $options = $mybb->get_input('options', MyBB::INPUT_ARRAY);
+    for ($i = 1; $i <= $select['polloptions']; ++$i) {
+        if (!isset($options[$i])) {
+            $options[$i] = '';
+        }
+        $option['id'] = $i;
+        $option['value'] = $options[$i];
 
-	$plugins->run_hooks("polls_newpoll_end");
+        $optionbits[] = $option;
+    }
 
-	eval("\$newpoll = \"".$templates->get("polls_newpoll")."\";");
-	output_page($newpoll);
+    if ($mybb->get_input('timeout', MyBB::INPUT_INT) > 0) {
+        $select['timeout'] = $mybb->get_input('timeout', MyBB::INPUT_INT);
+    } else {
+        $select['timeout'] = 0;
+    }
+
+    if ($mybb->get_input('maxoptions', MyBB::INPUT_INT) > 0 && $mybb->get_input('maxoptions', MyBB::INPUT_INT) < $select['polloptions']) {
+        $select['maxoptions'] = $mybb->get_input('maxoptions', MyBB::INPUT_INT);
+    } else {
+        $select['maxoptions'] = 0;
+    }
+
+    $plugins->run_hooks("polls_newpoll_end");
+
+    output_page(\MyBB\template('polls/newpoll.twig', [
+        'loginbox' => $loginbox,
+        'thread' => $thread,
+        'select' => $select,
+        'optionbits' => $optionbits,
+    ]));
 }
 if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 {
@@ -403,154 +397,129 @@ if($mybb->input['action'] == "editpoll")
 		error_no_permission();
 	}
 
-	$postoptionschecked = array('closed' => '', 'multiple' => '', 'public' => '');
+    $select['postoptions'] = array('closed' => '', 'multiple' => '', 'public' => '');
 
-	$polldate = my_date($mybb->settings['dateformat'], $poll['dateline']);
-	if(empty($mybb->input['updateoptions']))
-	{
-		if($poll['closed'] == 1)
-		{
-			$postoptionschecked['closed'] = 'checked="checked"';
-		}
+    $poll['polldate'] = my_date($mybb->settings['dateformat'], $poll['dateline']);
+    if (empty($mybb->input['updateoptions'])) {
+        if ($poll['closed'] == 1) {
+            $select['postoptions']['closed'] = true;
+        }
 
-		if($poll['multiple'] == 1)
-		{
-			$postoptionschecked['multiple'] = 'checked="checked"';
-		}
+        if ($poll['multiple'] == 1){
+            $select['postoptions']['multiple'] = true;
+        }
 
-		if($poll['public'] == 1)
-		{
-			$postoptionschecked['public'] = 'checked="checked"';
-		}
+        if ($poll['public'] == 1) {
+            $select['postoptions']['public'] = true;
+        }
 
-		$optionsarray = explode("||~|~||", $poll['options']);
-		$votesarray = explode("||~|~||", $poll['votes']);
+        $optionsarray = explode("||~|~||", $poll['options']);
+        $votesarray = explode("||~|~||", $poll['votes']);
 
-		$poll['totvotes'] = 0;
-		for($i = 1; $i <= $poll['numoptions']; ++$i)
-		{
-			$poll['totvotes'] = $poll['totvotes'] + $votesarray[$i-1];
-		}
+        $poll['totvotes'] = 0;
+        for ($i = 1; $i <= $poll['numoptions']; ++$i) {
+            $poll['totvotes'] = $poll['totvotes'] + $votesarray[$i-1];
+        }
 
-		$question = htmlspecialchars_uni($poll['question']);
-		$numoptions = $poll['numoptions'];
-		$optionbits = "";
-		for($i = 0; $i < $numoptions; ++$i)
-		{
-			$counter = $i + 1;
-			$option = $optionsarray[$i];
-			$option = htmlspecialchars_uni($option);
-			$optionvotes = (int)$votesarray[$i];
+        $select['question'] = $poll['question'];
+        $select['numoptions'] = $poll['numoptions'];
 
-			if(!$optionvotes)
-			{
-				$optionvotes = 0;
-			}
+        $optionbits = [];
+        for ($i = 0; $i < $select['numoptions']; ++$i) {
+            $option['id'] = $i + 1;
+            $option['value'] = $optionsarray[$i];
+            $option['votes'] = (int)$votesarray[$i];
 
-			eval("\$optionbits .= \"".$templates->get("polls_editpoll_option")."\";");
-			$option = "";
-			$optionvotes = "";
-		}
+            if (!$option['votes']) {
+                $option['votes'] = 0;
+            }
 
-		if(!$poll['timeout'])
-		{
-			$timeout = 0;
-		}
-		else
-		{
-			$timeout = $poll['timeout'];
-		}
+            $optionbits[] = $option;
+        }
 
-		if(!$poll['maxoptions'])
-		{
-			$maxoptions = 0;
-		}
-		else
-		{
-			$maxoptions = $poll['maxoptions'];
-		}
-	}
-	else
-	{
-		if($mybb->settings['maxpolloptions'] && $mybb->get_input('numoptions', MyBB::INPUT_INT) > $mybb->settings['maxpolloptions'])
-		{
-			$numoptions = $mybb->settings['maxpolloptions'];
-		}
-		elseif($mybb->get_input('numoptions', MyBB::INPUT_INT) < 2)
-		{
-			$numoptions = 2;
-		}
-		else
-		{
-			$numoptions = $mybb->get_input('numoptions', MyBB::INPUT_INT);
-		}
-		$question = htmlspecialchars_uni($mybb->input['question']);
+        if (!$poll['timeout']) {
+            $select['timeout'] = 0;
+        } else {
+            $select['timeout'] = $poll['timeout'];
+        }
 
-		$postoptions = $mybb->get_input('postoptions', MyBB::INPUT_ARRAY);
-		if(isset($postoptions['multiple']) && $postoptions['multiple'] == 1)
-		{
-			$postoptionschecked['multiple'] = 'checked="checked"';
-		}
+        if (!$poll['maxoptions']) {
+            $select['maxoptions'] = 0;
+        } else {
+            $select['maxoptions'] = $poll['maxoptions'];
+        }
+    } else {
+        if ($mybb->settings['maxpolloptions'] && $mybb->get_input('numoptions', MyBB::INPUT_INT) > $mybb->settings['maxpolloptions']) {
+            $select['numoptions'] = $mybb->settings['maxpolloptions'];
+        }
+        elseif ($mybb->get_input('numoptions', MyBB::INPUT_INT) < 2) {
+            $select['numoptions'] = 2;
+        } else {
+            $select['numoptions'] = $mybb->get_input('numoptions', MyBB::INPUT_INT);
+        }
 
-		if(isset($postoptions['public']) && $postoptions['public'] == 1)
-		{
-			$postoptionschecked['public'] = 'checked="checked"';
-		}
+        $select['question'] = $mybb->input['question'];
 
-		if(isset($postoptions['closed']) && $postoptions['closed'] == 1)
-		{
-			$postoptionschecked['closed'] = 'checked="checked"';
-		}
+        $postoptions = $mybb->get_input('postoptions', MyBB::INPUT_ARRAY);
+        if (isset($postoptions['multiple']) && $postoptions['multiple'] == 1) {
+            $select['postoptions']['multiple'] = true;
+        }
 
-		$options = $mybb->get_input('options', MyBB::INPUT_ARRAY);
-		$votes = $mybb->get_input('votes', MyBB::INPUT_ARRAY);
-		$optionbits = '';
-		for($i = 1; $i <= $numoptions; ++$i)
-		{
-			$counter = $i;
-			if(!isset($options[$i]))
-			{
-				$options[$i] = '';
-			}
-			$option = htmlspecialchars_uni($options[$i]);
-			if(!isset($votes[$i]))
-			{
-				$votes[$i] = 0;
-			}
-			$optionvotes = (int)$votes[$i];
+        if (isset($postoptions['public']) && $postoptions['public'] == 1) {
+            $select['postoptions']['public'] = true;
+        }
 
-			if(!$optionvotes)
-			{
-				$optionvotes = 0;
-			}
+        if (isset($postoptions['closed']) && $postoptions['closed'] == 1) {
+            $select['postoptions']['closed'] = true;
+        }
 
-			eval("\$optionbits .= \"".$templates->get("polls_editpoll_option")."\";");
-			$option = "";
-		}
+        $options = $mybb->get_input('options', MyBB::INPUT_ARRAY);
+        $votes = $mybb->get_input('votes', MyBB::INPUT_ARRAY);
 
-		if($mybb->get_input('timeout', MyBB::INPUT_INT) > 0)
-		{
-			$timeout = $mybb->get_input('timeout', MyBB::INPUT_INT);
-		}
-		else
-		{
-			$timeout = 0;
-		}
+        $optionbits = [];
+        for ($i = 1; $i <= $select['numoptions']; ++$i) {
+            $option['id'] = $i;
 
-		if(!$poll['maxoptions'])
-		{
-			$maxoptions = 0;
-		}
-		else
-		{
-			$maxoptions = $poll['maxoptions'];
-		}
-	}
+            if (!isset($options[$i])) {
+                $options[$i] = '';
+            }
 
-	$plugins->run_hooks("polls_editpoll_end");
+            $option['value'] = $options[$i];
 
-	eval("\$editpoll = \"".$templates->get("polls_editpoll")."\";");
-	output_page($editpoll);
+            if (!isset($votes[$i])) {
+                $votes[$i] = 0;
+            }
+
+            $option['votes'] = (int)$votes[$i];
+
+            if (!$option['votes']) {
+                $option['votes'] = 0;
+            }
+
+            $optionbits[] = $option;
+        }
+
+        if ($mybb->get_input('timeout', MyBB::INPUT_INT) > 0) {
+            $select['timeout'] = $mybb->get_input('timeout', MyBB::INPUT_INT);
+        } else {
+            $select['timeout'] = 0;
+        }
+
+        if (!$poll['maxoptions']) {
+            $select['maxoptions'] = 0;
+        } else {
+            $select['maxoptions'] = $poll['maxoptions'];
+        }
+    }
+
+    $plugins->run_hooks("polls_editpoll_end");
+
+    output_page(\MyBB\template('polls/editpoll.twig', [
+        'loginbox' => $loginbox,
+        'poll' => $poll,
+        'select' => $select,
+        'optionbits' => $optionbits,
+    ]));
 }
 
 if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
@@ -809,95 +778,83 @@ if($mybb->input['action'] == "showresults")
 		}
 	}
 
-	$optionsarray = explode("||~|~||", $poll['options']);
-	$votesarray = explode("||~|~||", $poll['votes']);
-	$poll['totvotes'] = 0;
-	for($i = 1; $i <= $poll['numoptions']; ++$i)
-	{
-		$poll['totvotes'] = $poll['totvotes'] + $votesarray[$i-1];
-	}
+    $optionsarray = explode("||~|~||", $poll['options']);
+    $votesarray = explode("||~|~||", $poll['votes']);
+    $poll['totvotes'] = 0;
 
-	$polloptions = '';
-	for($i = 1; $i <= $poll['numoptions']; ++$i)
-	{
-		$parser_options = array(
-			"allow_html" => $forum['allowhtml'],
-			"allow_mycode" => $forum['allowmycode'],
-			"allow_smilies" => $forum['allowsmilies'],
-			"allow_imgcode" => $forum['allowimgcode'],
-			"allow_videocode" => $forum['allowvideocode'],
-			"filter_badwords" => 1
-		);
-		$option = $parser->parse_message($optionsarray[$i-1], $parser_options);
+    for ($i = 1; $i <= $poll['numoptions']; ++$i) {
+        $poll['totvotes'] = $poll['totvotes'] + $votesarray[$i-1];
+    }
 
-		$votes = $votesarray[$i-1];
-		$number = $i;
-		// Make the mark for current user's voted option
-		if(!empty($votedfor[$number]))
-		{
-			$optionbg = 'trow2';
-			$votestar = '*';
-		}
-		else
-		{
-			$optionbg = 'trow1';
-			$votestar = '';
-		}
+    $polloptions = [];
+    for ($i = 1; $i <= $poll['numoptions']; ++$i) {
+        $parser_options = array(
+            "allow_html" => $forum['allowhtml'],
+            "allow_mycode" => $forum['allowmycode'],
+            "allow_smilies" => $forum['allowsmilies'],
+            "allow_imgcode" => $forum['allowimgcode'],
+            "allow_videocode" => $forum['allowvideocode'],
+            "filter_badwords" => 1
+        );
+        $polloption['option'] = $parser->parse_message($optionsarray[$i-1], $parser_options);
 
-		if($votes == 0)
-		{
-			$percent = 0;
-		}
-		else
-		{
-			$percent = number_format($votes / $poll['totvotes'] * 100, 2);
-		}
+        $polloption['votes'] = $votesarray[$i-1];
+        $number = $i;
 
-		$imagewidth = round($percent);
-		$comma = '';
-		$guest_comma = '';
-		$userlist = '';
-		$guest_count = 0;
-		if($poll['public'] == 1 || is_moderator($fid, "canmanagepolls"))
-		{
-			if(isset($voters[$number]) && is_array($voters[$number]))
-			{
-				foreach($voters[$number] as $uid => $username)
-				{
-					$userlist .= $comma.build_profile_link($username, $uid);
-					$comma = $guest_comma = $lang->comma;
-				}
-			}
+        // Make the mark for current user's voted option
+        if (!empty($votedfor[$number])) {
+            $polloption['optionbg'] = 'trow2';
+            $polloption['votestar'] = '*';
+        } else {
+            $polloption['optionbg'] = 'trow1';
+            $polloption['votestar'] = '';
+        }
 
-			if(isset($guest_voters[$number]) && $guest_voters[$number] > 0)
-			{
-				if($guest_voters[$number] == 1)
-				{
-					$userlist .= $guest_comma.$lang->guest_count;
-				}
-				else
-				{
-					$userlist .= $guest_comma.$lang->sprintf($lang->guest_count_multiple, $guest_voters[$number]);
-				}
-			}
-		}
-		eval("\$polloptions .= \"".$templates->get("polls_showresults_resultbit")."\";");
-	}
+        if ($polloption['votes'] == 0) {
+            $polloption['percent'] = 0;
+        } else {
+            $polloption['percent'] = number_format($polloption['votes'] / $poll['totvotes'] * 100, 2);
+        }
 
-	if($poll['totvotes'])
-	{
-		$totpercent = '100%';
-	}
-	else
-	{
-		$totpercent = '0%';
-	}
+        $polloption['imagewidth'] = round($polloption['percent']);
+        $comma = '';
+        $guest_comma = '';
+        $polloption['userlist'] = '';
+        $guest_count = 0;
 
-	$plugins->run_hooks("polls_showresults_end");
+        if ($poll['public'] == 1 || is_moderator($fid, "canmanagepolls")) {
+            if (isset($voters[$number]) && is_array($voters[$number])) {
+                foreach ($voters[$number] as $uid => $username) {
+                    $polloption['userlist'] .= $comma.build_profile_link($username, $uid);
+                    $comma = $guest_comma = $lang->comma;
+                }
+            }
 
-	$poll['question'] = htmlspecialchars_uni($poll['question']);
-	eval("\$showresults = \"".$templates->get("polls_showresults")."\";");
-	output_page($showresults);
+            if (isset($guest_voters[$number]) && $guest_voters[$number] > 0) {
+                if ($guest_voters[$number] == 1) {
+                    $polloption['userlist'] .= $guest_comma.$lang->guest_count;
+                } else {
+                    $polloption['userlist'] .= $guest_comma.$lang->sprintf($lang->guest_count_multiple, $guest_voters[$number]);
+                }
+            }
+        }
+
+        $polloptions[] = $polloption;
+    }
+
+    if ($poll['totvotes']) {
+        $poll['totpercent'] = '100%';
+    } else {
+        $poll['totpercent'] = '0%';
+    }
+
+    $plugins->run_hooks("polls_showresults_end");
+
+    output_page(\MyBB\template('polls/showresults.twig', [
+        'poll' => $poll,
+        'polloptions' => $polloptions,
+    ]));
+
 }
 if($mybb->input['action'] == "vote" && $mybb->request_method == "post")
 {

@@ -1,0 +1,33 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ mybb.settings.bbname }} - {{ lang.poll_results }}</title>
+{% endblock head %}
+
+{% block body %}
+    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder tfixed">
+        <colgroup>
+            <col style="width: 35%;" />
+            <col style="width: 50%" />
+            <col style="width: 7%" />
+        </colgroup>
+        <tr>
+            <td class="thead" colspan="4" style="text-align: center;"><strong>{{ poll.question }}</strong></td>
+        </tr>
+        {% for polloption in polloptions %}
+            <tr>
+                <td class="{{ polloption.optionbg }} scaleimages" style="text-align: right;">{{ polloption.option|raw }}{{ polloption.votestar }}</td>
+                <td class="{{ polloption.optionbg }}">
+                    <div class="pollbar" style="width: {{ polloption.imagewidth }}%" title="{{ polloption.percent }}%"><span class="percent">{{ polloption.percent }}%</span></div>{{ polloption.userlist|raw }}
+                </td>
+                <td class="{{ polloption.optionbg }}" style="text-align: center;">{{ polloption.votes }}</td>
+                <td class="{{ polloption.optionbg }}" style="text-align: center;">{{ polloption.percent }}%</td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <td class="tfoot" colspan="2" style="text-align: right;"><strong>{{ lang.poll_total }}</strong></td>
+            <td class="tfoot" style="text-align: center;"><strong>{{ poll.numvotes }} {{ lang.poll_votes }}</strong></td>
+            <td class="tfoot" style="text-align: center;"><strong>{{ poll.totpercent }}</strong></td>
+        </tr>
+    </table>
+{% endblock body %}
