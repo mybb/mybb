@@ -278,19 +278,18 @@ if($mybb->settings['captchaimage'] && !$mybb->user['uid'])
 	}
 }
 
-$mybb->input['subject'] = htmlspecialchars_uni($mybb->input['subject']);
-$mybb->input['message'] = htmlspecialchars_uni($mybb->input['message']);
-
 if($mybb->user['uid'] && !$mybb->get_input('email'))
 {
-	$mybb->input['email'] = htmlspecialchars_uni($mybb->user['email']);
+	$mybb->input['email'] = $mybb->user['email'];
 }
 else
 {
-	$mybb->input['email'] = htmlspecialchars_uni($mybb->get_input('email'));
+	$mybb->input['email'] = $mybb->get_input('email');
 }
 
 $plugins->run_hooks('contact_end');
 
-eval("\$page = \"".$templates->get("contact")."\";");
-output_page($page);
+output_page(\MyBB\template('contact/contact.twig', [
+    'errors' => $errors,
+    'captcha' => $captcha,
+]));
