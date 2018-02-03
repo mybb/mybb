@@ -39,36 +39,31 @@ if($mybb->get_input('action') == "search")
 	$plugins->run_hooks("memberlist_search");
 	add_breadcrumb($lang->nav_memberlist_search);
 
-	$contact_fields = array();
-	foreach(array('skype', 'google', 'yahoo', 'icq') as $field)
-	{
-		$contact_fields[$field] = '';
-		$settingkey = 'allow'.$field.'field';
+    $contact_fields = [];
+    foreach (array('skype', 'google', 'yahoo', 'icq') as $field) {
+        $contact_field[$field] = '';
+        $settingkey = 'allow'.$field.'field';
 
-		if($mybb->settings[$settingkey] != '' && is_member($mybb->settings[$settingkey], array('usergroup' => $mybb->usergroup['usergroup'], 'additionalgroups' => $mybb->usergroup['additionalgroups'])))
-		{
-			$tmpl = 'memberlist_search_'.$field;
+        if ($mybb->settings[$settingkey] != '' && is_member($mybb->settings[$settingkey], array('usergroup' => $mybb->usergroup['usergroup'], 'additionalgroups' => $mybb->usergroup['additionalgroups']))) {
+            $contact_field['field'] = $field;
 
-			$lang_string = 'search_'.$field;
-			$lang_string = $lang->{$lang_string};
+            $lang_string = 'search_'.$field;
+            $contact_field['lang_string'] = $lang->{$lang_string};
 
-			$bgcolors[$field] = alt_trow();
-			eval('$contact_fields[\''.$field.'\'] = "'.$templates->get('memberlist_search_contact_field').'";');
-		}
-	}
+            $contact_field['bgcolors'] = alt_trow();
 
-	if($mybb->settings['usereferrals'] == 1)
-	{
-		eval("\$referrals_option = \"".$templates->get("memberlist_referrals_option")."\";");
-	}
+            $contact_fields[] = $contact_field;
+        }
+    }
 
-	eval("\$search_page = \"".$templates->get("memberlist_search")."\";");
-	output_page($search_page);
+    output_page(\MyBB\template('memberlist/search.twig', [
+        'contact_fields' => $contact_fields,
+    ]));
 }
 else
 {
-	$colspan = 6;
-	$search_url = '';
+	$memberlist['colspan'] = 6;
+	$memberlist['search_url'] = '';
 
 	// Incoming sort field?
 	if(isset($mybb->input['sort']))
@@ -80,7 +75,7 @@ else
 		$mybb->input['sort'] = $mybb->settings['default_memberlist_sortby'];
 	}
 
-	$sort_selected = array(
+	$memberlist['sort'] = array(
 		'regdate' => '',
 		'lastvisit' => '',
 		'reputation' => '',
@@ -121,7 +116,7 @@ else
 			$mybb->input['sort'] = 'username';
 			break;
 	}
-	$sort_selected[$mybb->input['sort']] = " selected=\"selected\"";
+	$memberlist['sort'][$mybb->input['sort']] = true;
 
 	// Incoming sort order?
 	if(isset($mybb->input['order']))
@@ -133,24 +128,24 @@ else
 		$mybb->input['order'] = strtolower($mybb->settings['default_memberlist_order']);
 	}
 
-	$order_check = array('ascending' => '', 'descending' => '');
+	$memberlist['order'] = array('ascending' => '', 'descending' => '');
 	if($mybb->input['order'] == "ascending" || (!$mybb->input['order'] && $mybb->input['sort'] == 'username'))
 	{
 		$sort_order = "ASC";
 		$sortordernow = "ascending";
-		$oppsort = $lang->desc;
-		$oppsortnext = "descending";
+		$memberlist['oppsort'] = $lang->desc;
+		$memberlist['oppsortnext'] = "descending";
 		$mybb->input['order'] = "ascending";
 	}
 	else
 	{
 		$sort_order = "DESC";
 		$sortordernow = "descending";
-		$oppsort = $lang->asc;
-		$oppsortnext = "ascending";
+		$memberlist['oppsort'] = $lang->asc;
+		$memberlist['oppsortnext'] = "ascending";
 		$mybb->input['order'] = "descending";
 	}
-	$order_check[$mybb->input['order']] = " checked=\"checked\"";
+	$memberlist['order'][$mybb->input['order']] = true;
 
 	// Incoming results per page?
 	$mybb->input['perpage'] = $mybb->get_input('perpage', MyBB::INPUT_INT);
@@ -168,7 +163,6 @@ else
 	}
 
 	$search_query = '1=1';
-	$search_url = "";
 
 	switch($db->type)
 	{
@@ -192,20 +186,20 @@ else
 		{
 			$search_query .= " AND u.username {$like} '".$db->escape_string_like($letter)."%'";
 		}
-		$search_url .= "&letter={$letter}";
+		$memberlist['search_url'] .= "&letter={$letter}";
 	}
 
 	// Searching for a matching username
-	$search_username = htmlspecialchars_uni(trim($mybb->get_input('username')));
-	if($search_username != '')
+	$memberlist['username'] = trim($mybb->get_input('username'));
+	if($memberlist['username'] != '')
 	{
-		$username_like_query = $db->escape_string_like($search_username);
+		$username_like_query = $db->escape_string_like($memberlist['username']);
 
 		// Name begins with
 		if($mybb->input['username_match'] == "begins")
 		{
 			$search_query .= " AND u.username {$like} '".$username_like_query."%'";
-			$search_url .= "&username_match=begins";
+			$memberlist['search_url'] .= "&username_match=begins";
 		}
 		// Just contains
 		else
@@ -213,16 +207,15 @@ else
 			$search_query .= " AND u.username {$like} '%".$username_like_query."%'";
 		}
 
-		$search_url .= "&username=".urlencode($search_username);
+		$memberlist['search_url'] .= "&username=".urlencode($memberlist['username']);
 	}
 
 	// Website contains
-	$mybb->input['website'] = trim($mybb->get_input('website'));
-	$search_website = htmlspecialchars_uni($mybb->input['website']);
-	if(trim($mybb->input['website']))
+	$memberlist['website'] = trim($mybb->get_input('website'));
+	if(trim($memberlist['website']))
 	{
-		$search_query .= " AND u.website {$like} '%".$db->escape_string_like($mybb->input['website'])."%'";
-		$search_url .= "&website=".urlencode($mybb->input['website']);
+		$search_query .= " AND u.website {$like} '%".$db->escape_string_like($memberlist['website'])."%'";
+		$memberlist['search_url'] .= "&website=".urlencode($memberlist['website']);
 	}
 
 	// Search by contact field input
@@ -264,7 +257,7 @@ else
 			{
 				$search_query .= " AND u.{$cfield} {$like} '%".$db->escape_string_like($mybb->input[$cfield])."%'";
 			}
-			$search_url .= "&{$cfield}=".urlencode($mybb->input[$cfield]);
+			$memberlist['search_url'] .= "&{$cfield}=".urlencode($mybb->input[$cfield]);
 		}
 	}
 
@@ -299,9 +292,6 @@ else
 			}
 		}
 	}
-  
-	$sorturl = htmlspecialchars_uni("memberlist.php?perpage={$mybb->input['perpage']}{$search_url}");
-	$search_url = htmlspecialchars_uni("memberlist.php?sort={$mybb->input['sort']}&order={$mybb->input['order']}&perpage={$mybb->input['perpage']}{$search_url}");
 
 	$plugins->run_hooks('memberlist_intermediate');
 
@@ -312,6 +302,13 @@ else
 	if($page && $page > 0)
 	{
 		$start = ($page - 1) * $per_page;
+        $pages = ceil($num_users / $per_page);
+
+        if($page > $pages)
+        {
+            $start = 0;
+            $page = 1;
+        }
 	}
 	else
 	{
@@ -319,180 +316,141 @@ else
 		$page = 1;
 	}
 
-	$sort = htmlspecialchars_uni($mybb->input['sort']);
-	eval("\$orderarrow['{$sort}'] = \"".$templates->get("memberlist_orderarrow")."\";");
+    $memberlist['orderarrow'][$mybb->input['sort']] = true;
 
-	// Referral?
-	if($mybb->settings['usereferrals'] == 1)
-	{
-		$colspan = 7;
-		eval("\$referral_header = \"".$templates->get("memberlist_referrals")."\";");
-	}
+    // Referral?
+    if ($mybb->settings['usereferrals'] == 1) {
+        $memberlist['colspan'] = 7;
+    }
 
-	$multipage = multipage($num_users, $per_page, $page, $search_url);
+    $search_url = htmlspecialchars_uni("memberlist.php?sort={$mybb->input['sort']}&order={$mybb->input['order']}&perpage={$mybb->input['perpage']}{$memberlist['search_url']}");
+    $multipage = multipage($num_users, $per_page, $page, $search_url);
 
-	// Cache a few things
-	$usertitles = $cache->read('usertitles');
-	$usertitles_cache = array();
-	foreach($usertitles as $usertitle)
-	{
-		$usertitles_cache[$usertitle['posts']] = $usertitle;
-	}
-	$users = '';
-	$query = $db->query("
-		SELECT u.*, f.*
-		FROM ".TABLE_PREFIX."users u
-		LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
-		WHERE {$search_query}
-		ORDER BY {$sort_field} {$sort_order}
-		LIMIT {$start}, {$per_page}
-	");
-	while($user = $db->fetch_array($query))
-	{
-		$user = $plugins->run_hooks("memberlist_user", $user);
+    // Cache a few things
+    $usertitles = $cache->read('usertitles');
+    $usertitles_cache = array();
+    foreach ($usertitles as $usertitle) {
+        $usertitles_cache[$usertitle['posts']] = $usertitle;
+    }
 
-		$alt_bg = alt_trow();
+    $users = [];
 
-		$user['username'] = format_name(htmlspecialchars_uni($user['username']), $user['usergroup'], $user['displaygroup']);
+    $query = $db->query("
+        SELECT u.*, f.*
+        FROM " . TABLE_PREFIX . "users u
+        LEFT JOIN " . TABLE_PREFIX . "userfields f ON (f.ufid=u.uid)
+        WHERE {$search_query}
+        ORDER BY {$sort_field} {$sort_order}
+        LIMIT {$start}, {$per_page}
+    ");
+    while($user = $db->fetch_array($query)) {
+        $user = $plugins->run_hooks("memberlist_user", $user);
 
-		$user['profilelink'] = build_profile_link($user['username'], $user['uid']);
+        $user['username'] = format_name(htmlspecialchars_uni($user['username']), $user['usergroup'], $user['displaygroup']);
 
-		// Get the display usergroup
-		if($user['usergroup'])
-		{
-			$usergroup = usergroup_permissions($user['usergroup']);
-		}
-		else
-		{
-			$usergroup = usergroup_permissions(1);
-		}
+        $user['profilelink'] = build_profile_link($user['username'], $user['uid']);
 
-		$displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
+        // Get the display usergroup
+        if($user['usergroup'])
+        {
+            $usergroup = usergroup_permissions($user['usergroup']);
+        }
+        else
+        {
+            $usergroup = usergroup_permissions(1);
+        }
 
-		if(!$user['displaygroup'])
-		{
-			$user['displaygroup'] = $user['usergroup'];
-		}
+        $displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
+        if(!$user['displaygroup'])
+        {
+            $user['displaygroup'] = $user['usergroup'];
+        }
 
-		$display_group = usergroup_displaygroup($user['displaygroup']);
-		if(is_array($display_group))
-		{
-			$usergroup = array_merge($usergroup, $display_group);
-		}
+        $display_group = usergroup_displaygroup($user['displaygroup']);
 
-		// Build referral?
-		if($mybb->settings['usereferrals'] == 1)
-		{
-			eval("\$referral_bit = \"".$templates->get("memberlist_referrals_bit")."\";");
-			eval("\$referrals_option = \"".$templates->get("memberlist_referrals_option")."\";");
-		}
+        if(is_array($display_group))
+        {
+            $usergroup = array_merge($usergroup, $display_group);
+        }
 
-		$usergroup['groupimage'] = '';
-		// Work out the usergroup/title stuff
-		if(!empty($usergroup['image']))
-		{
-			if(!empty($mybb->user['language']))
-			{
-				$language = $mybb->user['language'];
-			}
-			else
-			{
-				$language = $mybb->settings['bblanguage'];
-			}
-			$usergroup['image'] = str_replace("{lang}", $language, $usergroup['image']);
-			$usergroup['image'] = str_replace("{theme}", $theme['imgdir'], $usergroup['image']);
-			eval("\$usergroup['groupimage'] = \"".$templates->get("memberlist_user_groupimage")."\";");
-		}
+        $user['groupimage'] = '';
+        // Work out the usergroup/title stuff
+        if (!empty($usergroup['image'])) {
+            if (!empty($mybb->user['language'])) {
+                $language = $mybb->user['language'];
+            } else {
+                $language = $mybb->settings['bblanguage'];
+            }
 
-		$has_custom_title = 0;
-		if(trim($user['usertitle']) != "")
-		{
-			$has_custom_title = 1;
-		}
+            $user['groupimage'] = str_replace("{lang}", $language, $usergroup['image']);
+            $user['groupimage'] = str_replace("{theme}", $theme['imgdir'], $usergroup['image']);
+        }
 
-		if($usergroup['usertitle'] != "" && !$has_custom_title)
-		{
-			$user['usertitle'] = $usergroup['usertitle'];
-		}
-		elseif(is_array($usertitles_cache) && !$usergroup['usertitle'])
-		{
-			foreach($usertitles_cache as $posts => $titleinfo)
-			{
-				if($user['postnum'] >= $posts)
-				{
-					if(!$has_custom_title)
-					{
-						$user['usertitle'] = $titleinfo['title'];
-					}
-					$user['stars'] = $titleinfo['stars'];
-					$user['starimage'] = $titleinfo['starimage'];
-					break;
-				}
-			}
-		}
-		
-		$user['usertitle'] = htmlspecialchars_uni($user['usertitle']);
+        $user['groupimage_title'] = $usergroup['title'];
 
-		if(!empty($usergroup['stars']))
-		{
-			$user['stars'] = $usergroup['stars'];
-		}
+        $has_custom_title = 0;
+        if (trim($user['usertitle']) != "") {
+            $has_custom_title = 1;
+        }
 
-		if(empty($user['starimage']))
-		{
-			$user['starimage'] = $usergroup['starimage'];
-		}
+        if ($usergroup['usertitle'] != "" && !$has_custom_title) {
+            $user['usertitle'] = $usergroup['usertitle'];
+        }
+        elseif (is_array($usertitles_cache) && !$usergroup['usertitle']) {
+            foreach ($usertitles_cache as $posts => $titleinfo) {
+                if ($user['postnum'] >= $posts) {
+                    if (!$has_custom_title) {
+                        $user['usertitle'] = $titleinfo['title'];
+                    }
+                    $user['stars'] = $titleinfo['stars'];
+                    $user['starimage'] = $titleinfo['starimage'];
+                    break;
+                }
+            }
+        }
 
-		$user['userstars'] = '';
-		if(!empty($user['starimage']))
-		{
-			// Only display stars if we have an image to use...
-			$starimage = str_replace("{theme}", $theme['imgdir'], $user['starimage']);
+        if (!empty($usergroup['stars'])) {
+            $user['stars'] = $usergroup['stars'];
+        }
 
-			for($i = 0; $i < $user['stars']; ++$i)
-			{
-				eval("\$user['userstars'] .= \"".$templates->get("memberlist_user_userstar", 1, 0)."\";");
-			}
-		}
+        if (empty($user['starimage'])) {
+            $user['starimage'] = $usergroup['starimage'];
+        }
 
-		if($user['userstars'] && $usergroup['groupimage'])
-		{
-			$user['userstars'] = "<br />".$user['userstars'];
-		}
+        $user['userstars'] = '';
+        if (!empty($user['starimage'])) {
+            // Only display stars if we have an image to use...
+            $user['starimage'] = str_replace("{theme}", $theme['imgdir'], $user['starimage']);
+        }
 
-		// Show avatar
-		$useravatar = format_avatar($user['avatar'], $user['avatardimensions'], my_strtolower($mybb->settings['memberlistmaxavatarsize']));
-		eval("\$user['avatar'] = \"".$templates->get("memberlist_user_avatar")."\";");
+        // Show avatar
+        $useravatar = format_avatar($user['avatar'], $user['avatardimensions'], my_strtolower($mybb->settings['memberlistmaxavatarsize']));
+        $user['avatar_image'] = $useravatar['image'];
+        $user['avatar_width_height'] = $useravatar['width_height'];
 
-		if($user['invisible'] == 1 && $mybb->usergroup['canviewwolinvis'] != 1 && $user['uid'] != $mybb->user['uid'])
-		{
-			$user['lastvisit'] = $lang->lastvisit_never;
+        if ($user['invisible'] == 1 && $mybb->usergroup['canviewwolinvis'] != 1 && $user['uid'] != $mybb->user['uid']) {
+            $user['lastvisit'] = $lang->lastvisit_never;
 
-			if($user['lastvisit'])
-			{
-				// We have had at least some active time, hide it instead
-				$user['lastvisit'] = $lang->lastvisit_hidden;
-			}
-		}
-		else
-		{
-			$user['lastvisit'] = my_date('relative', $user['lastactive']);
-		}
+            if ($user['lastvisit']) {
+                // We have had at least some active time, hide it instead
+                $user['lastvisit'] = $lang->lastvisit_hidden;
+            }
+        } else {
+            $user['lastvisit'] = my_date('relative', $user['lastactive']);
+        }
 
-		$user['regdate'] = my_date('relative', $user['regdate']);
-		$user['postnum'] = my_number_format($user['postnum']);
-		$user['threadnum'] = my_number_format($user['threadnum']);
-		eval("\$users .= \"".$templates->get("memberlist_user")."\";");
-	}
+        $user['regdate'] = my_date('relative', $user['regdate']);
+        $user['postnum'] = my_number_format($user['postnum']);
+        $user['threadnum'] = my_number_format($user['threadnum']);
 
-	// Do we have no results?
-	if(!$users)
-	{
-		eval("\$users = \"".$templates->get("memberlist_error")."\";");
-	}
+        $users[] = $user;
+    }
 
-	$plugins->run_hooks("memberlist_end");
+    $plugins->run_hooks("memberlist_end");
 
-	eval("\$memberlist = \"".$templates->get("memberlist")."\";");
-	output_page($memberlist);
+    output_page(\MyBB\template('memberlist/memberlist.twig', [
+        'memberlist' => $memberlist,
+        'multipage' => $multipage,
+        'users' => $users,
+    ]));
 }

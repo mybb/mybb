@@ -48,31 +48,3 @@ $l['per_page'] = "Results Per Page";
 $l['search'] = "Search";
 
 $l['error_no_members'] = "<p>There were no members found with the search criteria you entered.</p><p>Please enter a different search term and try again.</p>";
-
-$l['a'] = 'A';
-$l['b'] = 'B';
-$l['c'] = 'C';
-$l['d'] = 'D';
-$l['e'] = 'E';
-$l['f'] = 'F';
-$l['g'] = 'G';
-$l['h'] = 'H';
-$l['i'] = 'I';
-$l['j'] = 'J';
-$l['k'] = 'K';
-$l['l'] = 'L';
-$l['m'] = 'M';
-$l['n'] = 'N';
-$l['o'] = 'O';
-$l['p'] = 'P';
-$l['q'] = 'Q';
-$l['r'] = 'R';
-$l['s'] = 'S';
-$l['t'] = 'T';
-$l['u'] = 'U';
-$l['v'] = 'V';
-$l['w'] = 'W';
-$l['x'] = 'X';
-$l['y'] = 'Y';
-$l['z'] = 'Z';
-
