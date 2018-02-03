@@ -1,0 +1,34 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ thread.subject }} - {{ lang.contact }}</title>
+{% endblock head %}
+
+{% block body %}
+    <form action="contact.php" method="post">
+        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+        {{ errors|raw }}
+        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+            <tr>
+                <td class="thead" colspan="2"><strong>{{ lang.contact }}</strong></td>
+            </tr>
+            <tr>
+                <td class="trow1" valign="top"><strong>{{ lang.contact_subject }}:</strong><br /><span class="smalltext">{{ lang.contact_subject_desc }}</span></td>
+                <td class="trow1"><input type="text" name="subject" class="textbox" size="49" value="{{ mybb.input.subject }}" /></td>
+            </tr>
+            <tr>
+                <td class="trow2" valign="top"><strong>{{ lang.contact_message }}:</strong><br /><span class="smalltext">{{ lang.contact_message_desc }}</span></td>
+                <td class="trow2"><textarea cols="50" rows="10" name="message" class="textarea" >{{ mybb.input.message }}</textarea></td>
+            </tr>
+            <tr>
+                <td class="trow1" valign="top"><strong>{{ lang.contact_email }}:</strong><br /><span class="smalltext">{{ lang.contact_email_desc }}</span></td>
+                <td class="trow1"><input type="text" name="email" class="textbox" size="49" value="{{ mybb.input.email }}" /></td>
+            </tr>
+            {{ captcha|raw }}
+        </table>
+        <br />
+        <div align="center">
+            <input type="submit" class="button" name="submit" value="{{ lang.contact_send }}" />
+        </div>
+    </form>
+{% endblock body %}
