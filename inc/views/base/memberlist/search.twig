@@ -1,0 +1,119 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ mybb.settings.bbname }} - {{ lang.search_member_list }}</title>
+{% endblock head %}
+
+{% block body %}
+    <form method="post" action="memberlist.php">
+        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+        <tr>
+        <td class="thead" colspan="2"><strong>{{ lang.search_member_list }}</strong></td>
+        </tr>
+        <tr>
+            <td class="tcat" colspan="2"><strong>{{ lang.search_criteria }}</strong></td>
+        </tr>
+        <tr>
+            <td class="trow1" style="vertical-align: top;" width="20%"><strong><label for="username">{{ lang.username }}</label></strong></td>
+            <td class="trow1">
+                <select name="username_match">
+                    <option value="begins">{{ lang.begins_with }}</option>
+                    <option value="contains">{{ lang.username_contains }}</option>
+                </select>
+                &nbsp;
+                <input type="text" class="textbox" name="username" id="username" />
+            </td>
+        </tr>
+        <tr>
+            <td class="trow2" width="20%"><strong><label for="website">{{ lang.search_website }}</label></strong></td>
+            <td class="trow2">
+                <input type="text" class="textbox" name="website" id="website" />
+            </td>
+        </tr>
+        {% for contact_field in contact_fields %}
+            <tr>
+                <td class="{{ contact_field.bgcolors }}" width="20%"><strong><label for="{{ contact_field.field }}">{{ contact_field.lang_string }}</label></strong></td>
+                <td class="{{ contact_field.bgcolors }}"><input type="text" class="textbox" name="{{ contact_field.field }}" id="{{ contact_field.field }}" /></td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <td class="tcat" colspan="2"><strong>{{ lang.search_options }}</strong></td>
+        </tr>
+        <tr>
+            <td class="trow1" width="20%"><strong><label for="sort">{{ lang.sort_by }}</label></strong></td>
+            <td class="trow1">
+                <select name="sort" id="sort">
+                    <option value="username">{{ lang.sort_by_username }}</option>
+                    <option value="regdate">{{ lang.sort_by_regdate }}</option>
+                    <option value="lastvisit">{{ lang.sort_by_lastvisit }}</option>
+                    <option value="postnum">{{ lang.sort_by_posts }}</option>
+                    <option value="threadnum">{{ lang.sort_by_threads }}</option>
+                    <option value="referrals">{{ lang.sort_by_referrals }}</option>
+                </select><br />
+                <span class="smalltext">
+                <input type="radio" class="radio" name="order" id="order_asc" value="asc" /> <label for="order_asc">{{ lang.order_asc }}</label><br />
+                <input type="radio" class="radio" name="order" id="order_desc" value="desc" checked="checked" /> <label for="order_desc">{{ lang.order_desc }}</label>
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td class="trow1" width="20%"><strong><label for="perpage">{{ lang.per_page }}</label></strong></td>
+            <td class="trow1">
+                <input type="text" class="textbox" size="4" name="perpage" id="perpage" value="15" />
+            </td>
+        </tr>
+        </table>
+    <div align="center"><br /><input type="submit" class="button" name="submit" value="{{ lang.search }}" /></div>
+    </form>
+
+    <link rel="stylesheet" href="{{ asset_url('jscripts/select2/select2.css') }}">
+    <script type="text/javascript" src="{{ asset_url('jscripts/select2/select2.min.js') }}"></script>
+    <script type="text/javascript">
+    <!--
+    if({{ mybb.settings.use_xmlhttprequest }})
+    {
+        MyBB.select2();
+        $("#username").select2({
+            placeholder: "{{ lang.search_user }}",
+            minimumInputLength: 2,
+            multiple: false,
+            ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+                url: "xmlhttp.php?action=get_users",
+                dataType: 'json',
+                data: function (term, page) {
+                    return {
+                        query: term, // search term
+                    };
+                },
+                results: function (data, page) { // parse the results into the format expected by Select2.
+                    // since we are using custom formatting functions we do not need to alter remote JSON data
+                    return {results: data};
+                }
+            },
+            initSelection: function(element, callback) {
+                var value = $(element).val();
+                if (value !== "") {
+                    callback({
+                        id: value,
+                        text: value
+                    });
+                }
+            },
+           // Allow the user entered text to be selected as well
+           createSearchChoice:function(term, data) {
+                if ( $(data).filter( function() {
+                    return this.text.localeCompare(term)===0;
+                }).length===0) {
+                    return {id:term, text:term};
+                }
+            },
+        });
+
+        $('[for=username]').click(function(){
+            $("#username").select2('open');
+            return false;
+        });
+    }
+    // -->
+    </script>
+{% endblock body %}
