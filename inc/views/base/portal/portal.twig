@@ -1,0 +1,159 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ mybb.settings.bbname }}</title>
+    <link rel="alternate" type="application/rss+xml" title="{{ lang.latest_announcements }} (RSS 2.0)" href="{{ mybb.settings.bburl }}/syndication.php?portal=1" />
+    <link rel="alternate" type="application/atom+xml" title="{{ lang.latest_announcements }} (Atom 1.0)" href="{{ mybb.settings.bburl }}/syndication.php?portal=1&type=atom1.0" />
+{% endblock head %}
+
+{% block body %}
+    <table width="100%" cellspacing="0" cellpadding="{{ theme.tablespace }}" border="0" align="center">
+        <tr>
+            <td valign="top" width="200">
+                {% if mybb.settings.portal_showwelcome %}
+                    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+                        <tr>
+                            <td class="thead"><strong>{{ lang.welcome }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td class="trow1">
+                                {% if mybb.user.uid %}
+                                    <span class="smalltext">
+                                        <em>{{ lang.member_welcome_lastvisit }}</em> {{ portal.lastvisit|raw }}<br />
+                                        {{ lang.since_then }}<br />
+                                        <strong>&raquo;</strong> {{ lang.new_announcements }}<br />
+                                        <strong>&raquo;</strong> {{ lang.new_threads }}<br />
+                                        <strong>&raquo;</strong> {{ lang.new_posts }}<br /><br />
+                                        <a href="{{ mybb.settings.bburl }}/search.php?action=getnew">{{ lang.view_new }}</a><br /><a href="{{ mybb.settings.bburl }}/search.php?action=getdaily">{{ lang.view_todays }}</a>
+                                    </span>
+                                {% else %}
+                                    <span class="smalltext">{{ lang.guest_welcome_registration|raw }}</span><br />
+                                    <br />
+                                    <form method="post" action="{{ mybb.settings.bburl }}/member.php">
+                                        <input type="hidden" name="action" value="do_login" />
+                                        <input type="hidden" name="url" value="{{ portal.portal_url }}" />
+                                        {{ portal.username }}<br />&nbsp;&nbsp;<input type="text" class="textbox" name="username" value="" /><br /><br />
+                                        {{ lang.password }}<br />&nbsp;&nbsp;<input type="password" class="textbox" name="password" value="" /><br /><br />
+                                        <label title="{{ lang.remember_me_desc }}"><input type="checkbox" class="checkbox" name="remember" value="yes" /> {{ lang.remember_me }}</label><br /><br />
+                                        <br /><input type="submit" class="button" name="loginsubmit" value="{{ lang.login }}" />
+                                    </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </table>
+                    <br />
+                {% endif %}
+                {% if portal.showpms %}
+                    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+                        <tr>
+                            <td class="thead"><strong><a href="{{ mybb.settings.bburl }}/private.php">{{ lang.private_messages }}</a></strong></td>
+                        </tr>
+                        <tr>
+                            <td class="trow1">
+                                <span class="smalltext">{{ lang.pms_received_new|raw }}<br /><br />
+                                    <strong>&raquo; </strong> <strong>{{ portal.pms_unread }}</strong> {{ lang.pms_unread }}<br />
+                                    <strong>&raquo; </strong> <strong>{{ portal.pms_total }}</strong> {{ lang.pms_total }}
+                                </span>
+                            </td>
+                        </tr>
+                    </table>
+                    <br />
+                {% endif %}
+                {% if mybb.settings.portal_showsearch %}
+                    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+                        <tr>
+                            <td class="thead"><strong>{{ lang.search_forums }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td class="trow1" align="center">
+                                <form method="post" action="{{ mybb.settings.bburl }}/search.php">
+                                    <input type="hidden" name="action" value="do_search" />
+                                    <input type="hidden" name="postthread" value="1" />
+                                    <input type="hidden" name="forums" value="all" />
+                                    <input type="hidden" name="showresults" value="threads" />
+                                    <input type="text" class="textbox portal_search" name="keywords" value="" />
+                                    <input type="submit" class="button" value="{{ lang.go }}" />
+                                </form><br />
+                                <span class="smalltext">
+                                    (<a href="{{ mybb.settings.bburl }}/search.php">{{ lang.advanced_search }}</a>)
+                                </span>
+                            </td>
+                        </tr>
+                    </table>
+                    <br />
+                {% endif %}
+                {% if mybb.settings.portal_showstats %}
+                    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+                        <tr>
+                            <td class="thead"><strong>{{ lang.forum_stats }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td class="trow1">
+                                <span class="smalltext">
+                                    <strong>&raquo; </strong>{{ lang.num_members }} {{ portal.numusers }}<br />
+                                    <strong>&raquo; </strong>{{ lang.latest_member }} {{ portal.newestmember|raw }}<br />
+                                    <strong>&raquo; </strong>{{ lang.num_threads }} {{ portal.numthreads }}<br />
+                                    <strong>&raquo; </strong>{{ lang.num_posts }} {{ portal.numposts }}
+                                    <br /><br /><a href="{{ mybb.settings.bburl }}/stats.php">{{ lang.full_stats }}</a>
+                                </span>
+                            </td>
+                        </tr>
+                    </table>
+                    <br />
+                {% endif %}
+                {% if mybb.settings.portal_showwol and mybb.usergroup.canviewonline %}
+                    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+                        <tr>
+                            <td class="thead"><strong>{{ lang.online }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td class="trow1">
+                                <span class="smalltext">
+                                    {{ lang.online_users|raw }}<br /><strong>&raquo;</strong> {{ lang.online_counts|raw }}<br />
+                                    {% for online in onlinemembers %}
+                                        {% if online.isbot %}
+                                            {{ online.username }}{% if not loop.last %}{{ lang.comma }}{% endif %}
+                                        {% else %}
+                                            <a href="{{ mybb.settings.bburl }}/{{ online.profilelink|raw }}">{{ online.username|raw }}</a>{{ online.invisiblemark }}{% if not loop.last %}{{ lang.comma }}{% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </span>
+                            </td>
+                        </tr>
+                    </table>
+                    <br />
+                {% endif %}
+                {% if portal.latestthreads %}
+                    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+                        <tr>
+                            <td class="thead"><strong>{{ lang.latest_threads }}</strong></td>
+                        </tr>
+                        {% for thread in threadlist %}
+                            {% set row = alt_trow() %}
+                            <tr>
+                                <td class="{{ row }}">
+                                    <strong><a href="{{ mybb.settings.bburl }}/{{ thread.threadlink }}" title="{{ thread.fullsubject }}">{{ thread.subject }}</a></strong>
+                                    <span class="smalltext"><br />
+                                        {{ lang.forum }} <a href="{{ thread.forumlink }}">{{ thread.forumname }}</a><br />
+                                        <a href="{{ thread.lastpostlink|raw }}">{{ lang.latest_threads_lastpost }}</a> {{ thread.lastposterlink|raw }}<br />
+                                        {{ thread.lastpostdate|raw }}<br />
+                                        <strong>&raquo; </strong>{{ lang.latest_threads_replies }} {{ thread.replies }}<br />
+                                        <strong>&raquo; </strong>{{ lang.latest_threads_views }} {{ thread.views }}
+                                    </span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                    <br />
+                {% endif %}
+            </td>
+            <td>&nbsp;</td>
+            <td valign="top">
+                {% for announcement in announcements %}
+                    {% include 'portal/portal_announcement.twig' %}
+                {% endfor %}
+                {{ multipage|raw }}
+            </td>
+        </tr>
+    </table>
+{% endblock body %}

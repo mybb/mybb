@@ -1,0 +1,56 @@
+<table cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+    <tr>
+        <td class="thead">
+            <strong>
+                {% if announcement.hasicon %}
+                    <img src="{{ announcement.icon_path }}" alt="{{ announcement.icon_name }}" title="{{ announcement.icon_name }}" /> 
+                {% else %}
+                    &nbsp;
+                {% endif %}
+                <a href="{{ mybb.settings.bburl }}/{{ announcement.threadlink }}">{{ announcement.subject }}</a>
+            </strong>
+        </td>
+    </tr>
+    <tr>
+        <td class="trow2" align="right">
+            <span class="smalltext">
+                {{ lang.posted_by }} {{ announcement.profilelink|raw }}  - {{ announcement.date|raw }} - {{ lang.forum }} <a href="{{ mybb.settings.bburl }}/{{ announcement.forumlink }}">{{ announcement.forumname }}</a> 
+                {% if announcement.replies %}
+                    - <a href="{{ mybb.settings.bburl }}/{{ announcement.threadlink }}">{{ lang.replies }}</a> ({{ announcement.replies }})
+                {% else %}
+                    - {{ lang.no_replies }}
+                {% endif %}
+            </span>
+        </td>
+    </tr>
+    <tr>
+        <td class="trow1">
+            <table border="0" cellpadding="{{ theme.tablespace }}" class="tfixed" style="width: 100%;">
+                <tr>
+                    {% if announcement.useravatar %}
+                        <td class="trow1" style="text-align: center; vertical-align: top;" {{ announcement.avatar_width_height|raw }}>
+                            <img src="{{ announcement.avatar_image }}" alt="" {{ announcement.avatar_width_height|raw }} />
+                        </td>
+                    {% endif %}
+                    <td class="trow1 scaleimages">
+                        <p>
+                            {{ announcement.message|raw }}
+                        </p>
+                        {$post['attachments']}
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right" colspan="2" valign="bottom">
+                        <span class="smalltext">
+                            <a href="{{ mybb.settings.bburl }}/printthread.php?tid={{ announcement.tid }}"><img src="{{ theme.imgdir }}/printable.png" alt="{{ lang.print_this_item }}" title="{{ lang.print_this_item }}" /></a>
+                            {% if mybb.usergroup.cansendemail %}
+                                &nbsp;<a href="{{ mybb.settings.bburl }}/sendthread.php?tid={{ announcement.tid }}"><img src="{{ theme.imgdir }}/send.png" alt="{{ lang.send_to_friend }}" title="{{ lang.send_to_friend }}" /></a>
+                            {% endif %}
+                        </span>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+<br />
