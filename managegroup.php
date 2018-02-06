@@ -210,10 +210,8 @@ elseif ($mybb->input['action'] == "joinrequests") {
         ORDER BY u.username ASC
     ");
     while ($user = $db->fetch_array($query)) {
-        $user['reason'] = htmlspecialchars_uni($user['reason']);
         $altbg = alt_trow();
         $regdate = my_date($mybb->settings['dateformat'], $user['regdate']);
-        $user['username'] = htmlspecialchars_uni($user['username']);
         $user['profilelink'] = build_profile_link($user['username'], $user['uid']);
 
         $users[] = $user;
@@ -272,8 +270,7 @@ else
 
     if ($usergroup['type'] == 5) {
         $usergroup['usergrouptype'] = $lang->group_public_invite;
-    }
-    elseif ($usergroup['type'] == 4) {
+    } else if ($usergroup['type'] == 4) {
         $query = $db->simple_select("joinrequests", "COUNT(*) AS req", "gid='{$gid}'");
         $numrequests = $db->fetch_array($query);
 
@@ -282,11 +279,9 @@ else
             $lang->num_requests_pending = $lang->sprintf($lang->num_requests_pending, $numrequests['req']);
         }
         $usergroup['usergrouptype'] = $lang->group_public_moderated;
-    }
-    elseif ($usergroup['type'] == 3) {
+    } else if ($usergroup['type'] == 3) {
         $usergroup['usergrouptype'] = $lang->group_public_not_moderated;
-    }
-    elseif ($usergroup['type'] == 2) {
+    } else if ($usergroup['type'] == 2) {
         $usergroup['usergrouptype'] = $lang->group_private;
     } else {
         $usergroup['usergrouptype'] = $lang->group_default;
@@ -302,27 +297,16 @@ else
         WHERE g.gid = '{$gid}'
     ");
 
-    $leaders_array = array();
+    $leaders_array = [];
 
     if ($db->num_rows($query)) {
-        $loop = 1;
         $leaders = [];
-        $leader_count = $db->num_rows($query);
         while ($leader = $db->fetch_array($query)) {
-            $leader['username'] = htmlspecialchars_uni($leader['username']);
             $leader_name = format_name($leader['username'], $leader['usergroup'], $leader['displaygroup']);
             $leader['profilelink'] = build_profile_link($leader_name, $leader['uid']);
 
             $leaders_array[] = $leader['uid'];
 
-            // Get commas...
-            if ($loop != $leader_count) {
-                $leader['comma'] = $lang->comma;
-            } else {
-                $leader['comma'] = '';
-            }
-
-            ++$loop;
             $leaders[] = $leader;
         }
 
@@ -378,7 +362,6 @@ else
             $user['showemail'] = true;
         }
 
-        $user['username'] = htmlspecialchars_uni($user['username']);
         $user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
         $user['profilelink'] = build_profile_link($user['username'], $user['uid']);
 

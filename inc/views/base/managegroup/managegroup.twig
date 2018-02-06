@@ -16,7 +16,7 @@
         <p>
             {{ lang.group_leaders }}:
             {% for leader in leaders %}
-                {{ leader.profilelink|raw }}{{ leader.comma }}
+                {{ leader.profilelink|raw }}{% if not loop.last %}{{ lang.comma }}{% endif %}
             {% endfor %}
         </p>
     {% endif %}
