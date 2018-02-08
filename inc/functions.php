@@ -8583,7 +8583,6 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 	}
 
 	$pm['options'] = array(
-		"signature" => 0,
 		"disablesmilies" => 0,
 		"savecopy" => 0,
 		"readreceipt" => 0
