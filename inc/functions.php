@@ -7924,17 +7924,17 @@ function verify_files($path=MYBB_ROOT, $count=0)
 				{
 					$filename = $path."/".$file;
 					$handle = fopen($filename, "rb");
-					$contents = '';
+					$hashingContext = hash_init('sha512');
 					while(!feof($handle))
 					{
-						$contents .= fread($handle, 8192);
+						hash_update($hashingContext, fread($handle, 8192));
 					}
 					fclose($handle);
 
-					$md5 = md5($contents);
+					$checksum = hash_final($hashingContext);
 
 					// Does it match any of our hashes (unix/windows new lines taken into consideration with the hashes)
-					if(!in_array($md5, $checksums[$file_path]))
+					if(!in_array($checksum, $checksums[$file_path]))
 					{
 						$bad_verify_files[] = array("status" => "changed", "path" => $file_path);
 					}
