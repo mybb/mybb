@@ -1,0 +1,37 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ mybb.settings.bbname }} - {{ lang.join_requests }}</title>
+{% endblock head %}
+
+{% block body %}
+    <form method="post" action="managegroup.php">
+        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+        <input type="hidden" name="action" value="do_joinrequests" />
+        <input type="hidden" name="gid" value="{{ usergroup.gid }}" />
+        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+            <tr>
+                <td class="thead" colspan="6"><strong>{{ lang.join_requests }}</strong></td>
+            </tr>
+            <tr>
+                <td class="tcat" width="30%"><strong>{{ lang.user_name }}</strong></td>
+                <td class="tcat" align="center" width="40%"><strong>{{ lang.reason }}</strong></td>
+                <td class="tcat" align="center" width="10%"><strong>{{ lang.accept }}</strong></td>
+                <td class="tcat" align="center" width="10%"><strong>{{ lang.ignore }}</strong></td>
+                <td class="tcat" align="center" width="10%"><strong>{{ lang.decline }}</strong></td>
+            </tr>
+            {% for user in users %}
+                {% set row = alt_trow() %}
+                <tr>
+                    <td class="{{ row }}">{{ user.profilelink|raw }}</td>
+                    <td class="{{ row }}" align="center">{{ user.reason }}</td>
+                    <td class="{{ row }}" align="center"><input type="radio" class="radio" name="request[{{ user.uid }}]" value="accept" /></td>
+                    <td class="{{ row }}" align="center"><input type="radio" class="radio" name="request[{{ user.uid }}]" value="ignore" checked="checked" /></td>
+                    <td class="{{ row }}" align="center"><input type="radio" class="radio" name="request[{{ user.uid }}]" value="decline" /></td>
+                </tr>
+            {% endfor %}
+        </table>
+        <br />
+        <div align="center"><input type="submit" class="button" value="{{ lang.action_requests }}" /></div>
+    </form>
+{% endblock body %}
