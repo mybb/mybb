@@ -1,0 +1,38 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ mybb.settings.bbname }} - {{ lang.login }}</title>
+{% endblock head %}
+
+{% block body %}
+    {{ inline_errors|raw }}
+    {% if mybb.user.uid %}
+        <fieldset class="align_right smalltext">{{ lang.already_logged_in|raw }}</fieldset>
+        <br />
+    {% endif %}
+    <form action="member.php" method="post">
+        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+            <tr>
+                <td class="thead" colspan="2"><strong>{{ lang.login }}</strong></td>
+            </tr>
+            <tr>
+                <td class="trow1"><strong><label for="username">{{ lang.username }}</label></strong></td>
+                <td class="trow1"><input type="text" class="textbox" name="username" size="25" style="width: 200px;" id="username" value="{{ login.username }}" /></td>
+            </tr>
+            <tr>
+                <td class="trow2"><strong><label for="password">{{ lang.password }}</label></strong><br /><span class="smalltext">{{ lang.pw_note }}</span></td>
+                <td class="trow2"><input type="password" class="textbox" name="password" size="25" style="width: 200px;" id="password" value="{{ login.password }}" /> (<a href="member.php?action=lostpw">{{ lang.lostpw_note }}</a>)</td>
+            </tr>
+            <tr>
+                <td class="trow1" colspan="2" align="center"><label title="{{ lang.remember_me_desc }}"><input type="checkbox" class="checkbox" name="remember" checked="checked" value="yes" /> {{ lang.remember_me }}</label></td>
+            </tr>
+            {{ captcha|raw }}
+        </table>
+        <br />
+        <div align="center">
+            <input type="hidden" name="action" value="do_login" />
+            <input type="hidden" name="url" value="{{ login.redirect_url }}" />
+            <input type="submit" class="button" name="submit" value="{{ lang.login }}" />
+        </div>
+    </form>
+{% endblock body %}

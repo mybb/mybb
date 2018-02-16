@@ -683,8 +683,7 @@ if($mybb->input['action'] == "coppa_form")
 
 	$plugins->run_hooks("member_coppa_form");
 
-	eval("\$coppa_form = \"".$templates->get("member_coppa_form")."\";");
-	output_page($coppa_form);
+    output_page(\MyBB\template('member/coppa_form.twig'));
 }
 
 if($mybb->input['action'] == "register")
@@ -1460,46 +1459,44 @@ if($mybb->input['action'] == "activate")
 	}
 	else
 	{
-		$plugins->run_hooks("member_activate_form");
+        $plugins->run_hooks("member_activate_form");
 
-		$code = htmlspecialchars_uni($mybb->get_input('code'));
+        $activate['code'] = $mybb->get_input('code');
 
-		if(!isset($user['username']))
-		{
-			$user['username'] = '';
-		}
-		$user['username'] = htmlspecialchars_uni($user['username']);
+        if (!isset($user['username'])) {
+            $user['username'] = '';
+        }
 
-		eval("\$activate = \"".$templates->get("member_activate")."\";");
-		output_page($activate);
-	}
+        $activate['username'] = $user['username'];
+
+        output_page(\MyBB\template('member/activate.twig', [
+            'activate' => $activate,
+        ]));
+    }
 }
 
 if($mybb->input['action'] == "resendactivation")
 {
-	$plugins->run_hooks("member_resendactivation");
+    $plugins->run_hooks("member_resendactivation");
 
-	if($mybb->settings['regtype'] == "admin")
-	{
-		error($lang->error_activated_by_admin);
-	}
-	if($mybb->user['uid'] && $mybb->user['usergroup'] != 5)
-	{
-		error($lang->error_alreadyactivated);
-	}
+    if ($mybb->settings['regtype'] == "admin") {
+        error($lang->error_activated_by_admin);
+    }
 
-	$query = $db->simple_select("awaitingactivation", "*", "uid='".$user['uid']."' AND type='b'");
-	$activation = $db->fetch_array($query);
+    if ($mybb->user['uid'] && $mybb->user['usergroup'] != 5) {
+        error($lang->error_alreadyactivated);
+    }
 
-	if($activation['validated'] == 1)
-	{
-		error($lang->error_activated_by_admin);
-	}
+    $query = $db->simple_select("awaitingactivation", "*", "uid='".$user['uid']."' AND type='b'");
+    $activation = $db->fetch_array($query);
 
-	$plugins->run_hooks("member_resendactivation_end");
+    if ($activation['validated'] == 1) {
+        error($lang->error_activated_by_admin);
+    }
 
-	eval("\$activate = \"".$templates->get("member_resendactivation")."\";");
-	output_page($activate);
+    $plugins->run_hooks("member_resendactivation_end");
+
+    output_page(\MyBB\template('member/resendactivation.twig'));
 }
 
 if($mybb->input['action'] == "do_resendactivation" && $mybb->request_method == "post")
@@ -1575,10 +1572,9 @@ if($mybb->input['action'] == "do_resendactivation" && $mybb->request_method == "
 
 if($mybb->input['action'] == "lostpw")
 {
-	$plugins->run_hooks("member_lostpw");
+    $plugins->run_hooks("member_lostpw");
 
-	eval("\$lostpw = \"".$templates->get("member_lostpw")."\";");
-	output_page($lostpw);
+    output_page(\MyBB\template('member/lostpw.twig'));
 }
 
 if($mybb->input['action'] == "do_lostpw" && $mybb->request_method == "post")
@@ -1731,34 +1727,34 @@ if($mybb->input['action'] == "resetpassword")
 	}
 	else
 	{
-		$plugins->run_hooks("member_resetpassword_form");
+        $plugins->run_hooks("member_resetpassword_form");
 
-		switch($mybb->settings['username_method'])
-		{
-			case 0:
-				$lang_username = $lang->username;
-				break;
-			case 1:
-				$lang_username = $lang->username1;
-				break;
-			case 2:
-				$lang_username = $lang->username2;
-				break;
-			default:
-				$lang_username = $lang->username;
-				break;
-		}
+        switch ($mybb->settings['username_method']) {
+            case 0:
+                $activate['lang_username'] = $lang->username;
+                break;
+            case 1:
+                $activate['lang_username'] = $lang->username1;
+                break;
+            case 2:
+                $activate['lang_username'] = $lang->username2;
+                break;
+            default:
+                $activate['lang_username'] = $lang->username;
+                break;
+        }
 
-		$code = $mybb->get_input('code');
+        $activate['code'] = $mybb->get_input('code');
 
-		if(!isset($user['username']))
-		{
-			$user['username'] = '';
-		}
-		$user['username'] = htmlspecialchars_uni($user['username']);
+        if (!isset($user['username'])) {
+            $user['username'] = '';
+        }
 
-		eval("\$activate = \"".$templates->get("member_resetpassword")."\";");
-		output_page($activate);
+        $activate['username'] = $user['username'];
+
+        output_page(\MyBB\template('member/resetpassword.twig', [
+            'activate' => $activate,
+        ]));
 	}
 }
 
@@ -1857,95 +1853,74 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "login")
 {
-	$plugins->run_hooks("member_login");
+    $plugins->run_hooks("member_login");
 
-	$member_loggedin_notice = "";
-	if($mybb->user['uid'] != 0)
-	{
-		$mybb->user['username'] = htmlspecialchars_uni($mybb->user['username']);
-		$lang->already_logged_in = $lang->sprintf($lang->already_logged_in, build_profile_link($mybb->user['username'], $mybb->user['uid']));
-		eval("\$member_loggedin_notice = \"".$templates->get("member_loggedin_notice")."\";");
-	}
+    if ($mybb->user['uid'] != 0) {
+        $lang->already_logged_in = $lang->sprintf($lang->already_logged_in, build_profile_link($mybb->user['username'], $mybb->user['uid']));
+    }
 
-	// Checks to make sure the user can login; they haven't had too many tries at logging in.
-	// Is a fatal call if user has had too many tries
-	login_attempt_check();
+    // Checks to make sure the user can login; they haven't had too many tries at logging in.
+    // Is a fatal call if user has had too many tries
+    login_attempt_check();
 
-	// Redirect to the page where the user came from, but not if that was the login page.
-	if(isset($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'], "action=login") === false)
-	{
-		$redirect_url = htmlentities($_SERVER['HTTP_REFERER']);
-	}
-	else
-	{
-		$redirect_url = '';
-	}
+    // Redirect to the page where the user came from, but not if that was the login page.
+    if (isset($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'], "action=login") === false) {
+        $login['redirect_url'] = htmlentities($_SERVER['HTTP_REFERER']);
+    }
 
-	$captcha = '';
-	// Show captcha image for guests if enabled and only if we have to do
-	if($mybb->settings['captchaimage'] && $do_captcha == true)
-	{
-		require_once MYBB_ROOT.'inc/class_captcha.php';
-		$login_captcha = new captcha(false, "post_captcha");
+    // Show captcha image for guests if enabled and only if we have to do
+    if ($mybb->settings['captchaimage'] && $do_captcha == true) {
+        require_once MYBB_ROOT.'inc/class_captcha.php';
+        $login_captcha = new captcha(false, "post_captcha");
 
-		if($login_captcha->type == 1)
-		{
-			if(!$correct)
-			{
-				$login_captcha->build_captcha();
-			}
-			else
-			{
-				$captcha = $login_captcha->build_hidden_captcha();
-			}
-		}
-		elseif(in_array($login_captcha->type, array(2, 4, 5)))
-		{
-			$login_captcha->build_recaptcha();
-		}
+        if ($login_captcha->type == 1) {
+            if (!$correct) {
+                $login_captcha->build_captcha();
+            } else {
+                $captcha = $login_captcha->build_hidden_captcha();
+            }
+        } else if (in_array($login_captcha->type, array(2, 4, 5))) {
+            $login_captcha->build_recaptcha();
+        }
 
-		if($login_captcha->html)
-		{
-			$captcha = $login_captcha->html;
-		}
-	}
+        if ($login_captcha->html) {
+            $captcha = $login_captcha->html;
+        }
+    }
 
-	$username = "";
-	$password = "";
-	if(isset($mybb->input['username']) && $mybb->request_method == "post")
-	{
-		$username = htmlspecialchars_uni($mybb->get_input('username'));
-	}
+    if (isset($mybb->input['username']) && $mybb->request_method == "post") {
+        $login['username'] = $mybb->get_input('username');
+    }
 
-	if(isset($mybb->input['password']) && $mybb->request_method == "post")
-	{
-		$password = htmlspecialchars_uni($mybb->get_input('password'));
-	}
+    if (isset($mybb->input['password']) && $mybb->request_method == "post") {
+        $login['password'] = $mybb->get_input('password');
+    }
 
-	if(!empty($errors))
-	{
-		$mybb->input['action'] = "login";
-		$mybb->request_method = "get";
+    if (!empty($errors)) {
+        $mybb->input['action'] = "login";
+        $mybb->request_method = "get";
 
-		$inline_errors = inline_error($errors);
-	}
+        $inline_errors = inline_error($errors);
+    }
 
-	switch($mybb->settings['username_method'])
-	{
-		case 1:
-			$lang->username = $lang->username1;
-			break;
-		case 2:
-			$lang->username = $lang->username2;
-			break;
-		default:
-			break;
-	}
+    switch ($mybb->settings['username_method']) {
+        case 1:
+            $lang->username = $lang->username1;
+            break;
+        case 2:
+            $lang->username = $lang->username2;
+            break;
+        default:
+            break;
+    }
 
-	$plugins->run_hooks("member_login_end");
+    $plugins->run_hooks("member_login_end");
 
-	eval("\$login = \"".$templates->get("member_login")."\";");
-	output_page($login);
+    output_page(\MyBB\template('member/login.twig', [
+        'inline_errors' => $inline_errors,
+        'login' => $login,
+        'captcha' => $captcha,
+    ]));
 }
 
 if($mybb->input['action'] == "logout")
@@ -1986,30 +1961,29 @@ if($mybb->input['action'] == "logout")
 
 if($mybb->input['action'] == "viewnotes")
 {
-	$uid = $mybb->get_input('uid', MyBB::INPUT_INT);
-	$user = get_user($uid);
+    $uid = $mybb->get_input('uid', MyBB::INPUT_INT);
+    $user = get_user($uid);
 
-	// Make sure we are looking at a real user here.
-	if(!$user)
-	{
-		error($lang->error_nomember);
-	}
+    // Make sure we are looking at a real user here.
+    if (!$user) {
+        error($lang->error_nomember);
+    }
 
-	if($mybb->user['uid'] == 0 || $mybb->usergroup['canmodcp'] != 1)
-	{
-		error_no_permission();
-	}
+    if ($mybb->user['uid'] == 0 || $mybb->usergroup['canmodcp'] != 1) {
+        error_no_permission();
+    }
 
-	$user['username'] = htmlspecialchars_uni($user['username']);
-	$lang->view_notes_for = $lang->sprintf($lang->view_notes_for, $user['username']);
+    $user['username'] = htmlspecialchars_uni($user['username']);
+    $lang->view_notes_for = $lang->sprintf($lang->view_notes_for, $user['username']);
 
-	$user['usernotes'] = nl2br(htmlspecialchars_uni($user['usernotes']));
+    $user['usernotes'] = nl2br($user['usernotes']);
 
-	$plugins->run_hooks('member_viewnotes');
+    $plugins->run_hooks('member_viewnotes');
 
-	eval("\$viewnotes = \"".$templates->get("member_viewnotes", 1, 0)."\";");
-	echo $viewnotes;
-	exit;
+    output_page(\MyBB\template('member/viewnotes.twig', [
+        'user' => $user,
+    ]));
+    exit;
 }
 
 if($mybb->input['action'] == "profile")
@@ -3068,70 +3042,57 @@ if($mybb->input['action'] == "emailuser")
 		}
 	}
 
-	$query = $db->simple_select("users", "uid, username, email, hideemail, ignorelist", "uid='".$mybb->get_input('uid', MyBB::INPUT_INT)."'");
-	$to_user = $db->fetch_array($query);
+    $query = $db->simple_select("users", "uid, username, email, hideemail, ignorelist", "uid='".$mybb->get_input('uid', MyBB::INPUT_INT)."'");
+    $to_user = $db->fetch_array($query);
 
-	$to_user['username'] = htmlspecialchars_uni($to_user['username']);
-	$lang->email_user = $lang->sprintf($lang->email_user, $to_user['username']);
+    $to_user['username'] = htmlspecialchars_uni($to_user['username']);
+    $lang->email_user = $lang->sprintf($lang->email_user, $to_user['username']);
+    $email['uid'] = $to_user['uid'];
 
-	if(!$to_user['uid'])
-	{
-		error($lang->error_invaliduser);
-	}
+    if (!$to_user['uid']) {
+        error($lang->error_invaliduser);
+    }
 
-	if($to_user['hideemail'] != 0)
-	{
-		error($lang->error_hideemail);
-	}
+    if ($to_user['hideemail'] != 0) {
+        error($lang->error_hideemail);
+    }
 
-	if($to_user['ignorelist'] && (my_strpos(",".$to_user['ignorelist'].",", ",".$mybb->user['uid'].",") !== false && $mybb->usergroup['cansendemailoverride'] != 1))
-	{
-		error_no_permission();
-	}
+    if ($to_user['ignorelist'] && (my_strpos(",".$to_user['ignorelist'].",", ",".$mybb->user['uid'].",") !== false && $mybb->usergroup['cansendemailoverride'] != 1)) {
+        error_no_permission();
+    }
 
-	if(isset($errors) && count($errors) > 0)
-	{
-		$errors = inline_error($errors);
-		$fromname = htmlspecialchars_uni($mybb->get_input('fromname'));
-		$fromemail = htmlspecialchars_uni($mybb->get_input('fromemail'));
-		$subject = htmlspecialchars_uni($mybb->get_input('subject'));
-		$message = htmlspecialchars_uni($mybb->get_input('message'));
-	}
-	else
-	{
-		$errors = '';
-		$fromname = '';
-		$fromemail = '';
-		$subject = '';
-		$message = '';
-	}
+    $email['fromname'] = $email['fromemail'] = $email['subject'] = $email['message'] = '';
+    if (isset($errors) && count($errors) > 0) {
+        $errors = inline_error($errors);
+        $email['fromname'] = $mybb->get_input('fromname');
+        $email['fromemail'] = $mybb->get_input('fromemail');
+        $email['subject'] = $mybb->get_input('subject');
+        $email['message'] = $mybb->get_input('message');
+    }
 
-	// Generate CAPTCHA?
-	if($mybb->settings['captchaimage'] && $mybb->user['uid'] == 0)
-	{
-		require_once MYBB_ROOT.'inc/class_captcha.php';
-		$post_captcha = new captcha(true, "post_captcha");
+    // Generate CAPTCHA?
+	$captcha = '';
+    if ($mybb->settings['captchaimage'] && $mybb->user['uid'] == 0) {
+        require_once MYBB_ROOT.'inc/class_captcha.php';
+        $post_captcha = new captcha(true, "post_captcha");
 
-		if($post_captcha->html)
-		{
-			$captcha = $post_captcha->html;
-		}
-	}
-	else
-	{
-		$captcha = '';
-	}
+        if ($post_captcha->html) {
+            $captcha = $post_captcha->html;
+        }
+    }
 
-	$from_email = '';
-	if($mybb->user['uid'] == 0)
-	{
-		eval("\$from_email = \"".$templates->get("member_emailuser_guest")."\";");
-	}
+    $email['guest'] = false;
+    if ($mybb->user['uid'] == 0) {
+        $email['guest'] = true;
+    }
 
-	$plugins->run_hooks("member_emailuser_end");
+    $plugins->run_hooks("member_emailuser_end");
 
-	eval("\$emailuser = \"".$templates->get("member_emailuser")."\";");
-	output_page($emailuser);
+    output_page(\MyBB\template('member/emailuser.twig', [
+        'errors' => $errors,
+        'captcha' => $captcha,
+        'email' => $email,
+    ]));
 }
 
 if(!$mybb->input['action'])
