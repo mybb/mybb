@@ -1925,6 +1925,7 @@ if ($mybb->input['action'] == 'editsig') {
         $plugins->run_hooks('usercp_editsig_end');
 
         $editsig = \MyBB\template('usercp/editsig.twig', [
+            'error' => $error,
             'sig' => $sig,
             'sigPreview' => $sigpreview,
             'showSigType' => $show_sig_type,
