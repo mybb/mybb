@@ -1,0 +1,36 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ mybb.settings.bbname }} - {{ lang.move_copy_thread }}</title>
+{% endblock head %}
+
+{% block body %}
+    <form action="moderation.php" method="post">
+        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+            <tr>
+                <td class="thead" colspan="2"><strong>{{ lang.move_copy_thread }}</strong></td>
+            </tr>
+            {{ loginbox|raw }}
+            <tr>
+                <td class="trow1"><strong>{{ lang.new_forum }}</strong></td>
+                <td class="trow2">{{ forumselect|raw }}</td>
+            </tr>
+            <tr>
+                <td class="trow1" valign="top"><strong>{{ lang.method }}</strong></td>
+                <td class="trow2">
+                    <label><input type="radio" class="radio" name="method" value="move" />{{ lang.method_move }}</label><br />
+                    <label>
+                        <input type="radio" class="radio" name="method" value="redirect" checked="checked" />{{ lang.method_move_redirect }}
+                        <input type="text" class="textbox" name="redirect_expire" size="3" /> {{ lang.redirect_expire_note }}
+                    </label><br />
+                    <label><input type="radio" class="radio" name="method" value="copy" />{{ lang.method_copy }}</label><br />
+                </td>
+            </tr>
+        </table>
+        <br />
+        <div align="center"><input type="submit" class="button" name="submit" value="{{ lang.move_copy_thread }}" /></div>
+        <input type="hidden" name="action" value="do_move" />
+        <input type="hidden" name="tid" value="{{ thread.tid }}" />
+    </form>
+{% endblock body %}
