@@ -2341,556 +2341,450 @@ elseif($mybb->input['action'] == "cancelrequest")
 	redirect("usercp.php?action=editlists", $lang->buddyrequest_cancelled);
 }
 
-if($mybb->input['action'] == "do_editlists")
-{
-	// Verify incoming POST request
-	verify_post_check($mybb->get_input('my_post_key'));
+if ($mybb->input['action'] == "do_editlists") {
+    // Verify incoming POST request
+    verify_post_check($mybb->get_input('my_post_key'));
 
-	$plugins->run_hooks("usercp_do_editlists_start");
+    $plugins->run_hooks("usercp_do_editlists_start");
 
-	$existing_users = array();
-	$selected_list = array();
-	if($mybb->get_input('manage') == "ignored")
-	{
-		if($mybb->user['ignorelist'])
-		{
-			$existing_users = explode(",", $mybb->user['ignorelist']);
-		}
+    $existing_users = [];
+    $selected_list = [];
+    if ($mybb->get_input('manage') == "ignored") {
+        if ($mybb->user['ignorelist']) {
+            $existing_users = explode(",", $mybb->user['ignorelist']);
+        }
 
-		if($mybb->user['buddylist'])
-		{
-			// Create a list of buddies...
-			$selected_list = explode(",", $mybb->user['buddylist']);
-		}
-	}
-	else
-	{
-		if($mybb->user['buddylist'])
-		{
-			$existing_users = explode(",", $mybb->user['buddylist']);
-		}
+        if ($mybb->user['buddylist']) {
+            // Create a list of buddies...
+            $selected_list = explode(",", $mybb->user['buddylist']);
+        }
+    } else {
+        if ($mybb->user['buddylist']) {
+            $existing_users = explode(",", $mybb->user['buddylist']);
+        }
 
-		if($mybb->user['ignorelist'])
-		{
-			// Create a list of ignored users
-			$selected_list = explode(",", $mybb->user['ignorelist']);
-		}
-	}
+        if ($mybb->user['ignorelist']) {
+            // Create a list of ignored users
+            $selected_list = explode(",", $mybb->user['ignorelist']);
+        }
+    }
 
-	$error_message = "";
-	$message = "";
+    $error_message = "";
+    $message = "";
 
-	// Adding one or more users to this list
-	if($mybb->get_input('add_username'))
-	{
-		// Split up any usernames we have
-		$found_users = 0;
-		$adding_self = false;
-		$users = explode(",", $mybb->get_input('add_username'));
-		$users = array_map("trim", $users);
-		$users = array_unique($users);
-		foreach($users as $key => $username)
-		{
-			if(empty($username))
-			{
-				unset($users[$key]);
-				continue;
-			}
+    // Adding one or more users to this list
+    if ($mybb->get_input('add_username')) {
+        // Split up any usernames we have
+        $found_users = 0;
+        $adding_self = false;
+        $users = explode(",", $mybb->get_input('add_username'));
+        $users = array_map("trim", $users);
+        $users = array_unique($users);
+        foreach ($users as $key => $username) {
+            if (empty($username)) {
+                unset($users[$key]);
+                continue;
+            }
 
-			if(my_strtoupper($mybb->user['username']) == my_strtoupper($username))
-			{
-				$adding_self = true;
-				unset($users[$key]);
-				continue;
-			}
-			$users[$key] = $db->escape_string($username);
-		}
+            if (my_strtoupper($mybb->user['username']) == my_strtoupper($username)) {
+                $adding_self = true;
+                unset($users[$key]);
+                continue;
+            }
+            $users[$key] = $db->escape_string($username);
+        }
 
-		// Get the requests we have sent that are still pending
-		$query = $db->simple_select('buddyrequests', 'touid', 'uid='.(int)$mybb->user['uid']);
-		$requests = array();
-		while($req = $db->fetch_array($query))
-		{
-			$requests[$req['touid']] = true;
-		}
+        // Get the requests we have sent that are still pending
+        $query = $db->simple_select('buddyrequests', 'touid', 'uid=' . (int)$mybb->user['uid']);
+        $requests = [];
+        while ($req = $db->fetch_array($query)) {
+            $requests[$req['touid']] = true;
+        }
 
-		// Get the requests we have received that are still pending
-		$query = $db->simple_select('buddyrequests', 'uid', 'touid='.(int)$mybb->user['uid']);
-		$requests_rec = array();
-		while($req = $db->fetch_array($query))
-		{
-			$requests_rec[$req['uid']] = true;
-		}
+        // Get the requests we have received that are still pending
+        $query = $db->simple_select('buddyrequests', 'uid', 'touid=' . (int)$mybb->user['uid']);
+        $requests_rec = [];
+        while ($req = $db->fetch_array($query)) {
+            $requests_rec[$req['uid']] = true;
+        }
 
-		$sent = false;
+        $sent = false;
 
-		// Fetch out new users
-		if(count($users) > 0)
-		{
-			switch($db->type)
-			{
-				case 'mysql':
-				case 'mysqli':
-					$field = 'username';
-					break;
-				default:
-					$field = 'LOWER(username)';
-					break;
-			}
-			$query = $db->simple_select("users", "uid,buddyrequestsauto,buddyrequestspm,language", "{$field} IN ('".my_strtolower(implode("','", $users))."')");
-			while($user = $db->fetch_array($query))
-			{
-				++$found_users;
+        // Fetch out new users
+        if (count($users) > 0) {
+            switch ($db->type) {
+                case 'mysql':
+                case 'mysqli':
+                    $field = 'username';
+                    break;
+                default:
+                    $field = 'LOWER(username)';
+                    break;
+            }
+            $query = $db->simple_select("users", "uid,buddyrequestsauto,buddyrequestspm,language",
+                "{$field} IN ('" . my_strtolower(implode("','", $users)) . "')");
+            while ($user = $db->fetch_array($query)) {
+                ++$found_users;
 
-				// Make sure we're not adding a duplicate
-				if(in_array($user['uid'], $existing_users) || in_array($user['uid'], $selected_list))
-				{
-					if($mybb->get_input('manage') == "ignored")
-					{
-						$error_message = "ignore";
-					}
-					else
-					{
-						$error_message = "buddy";
-					}
+                // Make sure we're not adding a duplicate
+                if (in_array($user['uid'], $existing_users) || in_array($user['uid'], $selected_list)) {
+                    if ($mybb->get_input('manage') == "ignored") {
+                        $error_message = "ignore";
+                    } else {
+                        $error_message = "buddy";
+                    }
 
-					// On another list?
-					$string = "users_already_on_".$error_message."_list";
-					if(in_array($user['uid'], $selected_list))
-					{
-						$string .= "_alt";
-					}
+                    // On another list?
+                    $string = "users_already_on_" . $error_message . "_list";
+                    if (in_array($user['uid'], $selected_list)) {
+                        $string .= "_alt";
+                    }
 
-					$error_message = $lang->$string;
-					array_pop($users); // To maintain a proper count when we call count($users)
-					continue;
-				}
+                    $error_message = $lang->$string;
+                    array_pop($users); // To maintain a proper count when we call count($users)
+                    continue;
+                }
 
-				if(isset($requests[$user['uid']]))
-				{
-					if($mybb->get_input('manage') != "ignored")
-					{
-						$error_message = $lang->users_already_sent_request;
-					}
-					elseif($mybb->get_input('manage') == "ignored")
-					{
-						$error_message = $lang->users_already_sent_request_alt;
-					}
+                if (isset($requests[$user['uid']])) {
+                    if ($mybb->get_input('manage') != "ignored") {
+                        $error_message = $lang->users_already_sent_request;
+                    } elseif ($mybb->get_input('manage') == "ignored") {
+                        $error_message = $lang->users_already_sent_request_alt;
+                    }
 
-					array_pop($users); // To maintain a proper count when we call count($users)
-					continue;
-				}
+                    array_pop($users); // To maintain a proper count when we call count($users)
+                    continue;
+                }
 
-				if(isset($requests_rec[$user['uid']]))
-				{
-					if($mybb->get_input('manage') != "ignored")
-					{
-						$error_message = $lang->users_already_rec_request;
-					}
-					elseif($mybb->get_input('manage') == "ignored")
-					{
-						$error_message = $lang->users_already_rec_request_alt;
-					}
+                if (isset($requests_rec[$user['uid']])) {
+                    if ($mybb->get_input('manage') != "ignored") {
+                        $error_message = $lang->users_already_rec_request;
+                    } elseif ($mybb->get_input('manage') == "ignored") {
+                        $error_message = $lang->users_already_rec_request_alt;
+                    }
 
-					array_pop($users); // To maintain a proper count when we call count($users)
-					continue;
-				}
+                    array_pop($users); // To maintain a proper count when we call count($users)
+                    continue;
+                }
 
-				// Do we have auto approval set to On?
-				if($user['buddyrequestsauto'] == 1 && $mybb->get_input('manage') != "ignored")
-				{
-					$existing_users[] = $user['uid'];
+                // Do we have auto approval set to On?
+                if ($user['buddyrequestsauto'] == 1 && $mybb->get_input('manage') != "ignored") {
+                    $existing_users[] = $user['uid'];
 
-					$pm = array(
-						'subject' => 'buddyrequest_new_buddy',
-						'message' => 'buddyrequest_new_buddy_message',
-						'touid' => $user['uid'],
-						'receivepms' => (int)$user['buddyrequestspm'],
-						'language' => $user['language'],
-						'language_file' => 'usercp'
-					);
+                    $pm = [
+                        'subject' => 'buddyrequest_new_buddy',
+                        'message' => 'buddyrequest_new_buddy_message',
+                        'touid' => $user['uid'],
+                        'receivepms' => (int)$user['buddyrequestspm'],
+                        'language' => $user['language'],
+                        'language_file' => 'usercp',
+                    ];
 
-					send_pm($pm);
-				}
-				elseif($user['buddyrequestsauto'] != 1 && $mybb->get_input('manage') != "ignored")
-				{
-					// Send request
-					$id = $db->insert_query('buddyrequests', array('uid' => (int)$mybb->user['uid'], 'touid' => (int)$user['uid'], 'date' => TIME_NOW));
+                    send_pm($pm);
+                } elseif ($user['buddyrequestsauto'] != 1 && $mybb->get_input('manage') != "ignored") {
+                    // Send request
+                    $id = $db->insert_query('buddyrequests',
+                        ['uid' => (int)$mybb->user['uid'], 'touid' => (int)$user['uid'], 'date' => TIME_NOW]);
 
-					$pm = array(
-						'subject' => 'buddyrequest_received',
-						'message' => 'buddyrequest_received_message',
-						'touid' => $user['uid'],
-						'receivepms' => (int)$user['buddyrequestspm'],
-						'language' => $user['language'],
-						'language_file' => 'usercp'
-					);
+                    $pm = [
+                        'subject' => 'buddyrequest_received',
+                        'message' => 'buddyrequest_received_message',
+                        'touid' => $user['uid'],
+                        'receivepms' => (int)$user['buddyrequestspm'],
+                        'language' => $user['language'],
+                        'language_file' => 'usercp',
+                    ];
 
-					send_pm($pm);
+                    send_pm($pm);
 
-					$sent = true;
-				}
-				elseif($mybb->get_input('manage') == "ignored")
-				{
-					$existing_users[] = $user['uid'];
-				}
-			}
-		}
+                    $sent = true;
+                } elseif ($mybb->get_input('manage') == "ignored") {
+                    $existing_users[] = $user['uid'];
+                }
+            }
+        }
 
-		if($found_users < count($users))
-		{
-			if($error_message)
-			{
-				$error_message .= "<br />";
-			}
+        if ($found_users < count($users)) {
+            if ($error_message) {
+                $error_message .= "<br />";
+            }
 
-			$error_message .= $lang->invalid_user_selected;
-		}
+            $error_message .= $lang->invalid_user_selected;
+        }
 
-		if(($adding_self != true || ($adding_self == true && count($users) > 0)) && ($error_message == "" || count($users) > 1))
-		{
-			if($mybb->get_input('manage') == "ignored")
-			{
-				$message = $lang->users_added_to_ignore_list;
-			}
-			else
-			{
-				$message = $lang->users_added_to_buddy_list;
-			}
-		}
+        if (($adding_self != true || ($adding_self == true && count($users) > 0)) && ($error_message == "" || count($users) > 1)) {
+            if ($mybb->get_input('manage') == "ignored") {
+                $message = $lang->users_added_to_ignore_list;
+            } else {
+                $message = $lang->users_added_to_buddy_list;
+            }
+        }
 
-		if($adding_self == true)
-		{
-			if($mybb->get_input('manage') == "ignored")
-			{
-				$error_message = $lang->cant_add_self_to_ignore_list;
-			}
-			else
-			{
-				$error_message = $lang->cant_add_self_to_buddy_list;
-			}
-		}
+        if ($adding_self == true) {
+            if ($mybb->get_input('manage') == "ignored") {
+                $error_message = $lang->cant_add_self_to_ignore_list;
+            } else {
+                $error_message = $lang->cant_add_self_to_buddy_list;
+            }
+        }
 
-		if(count($existing_users) == 0)
-		{
-			$message = "";
+        if (count($existing_users) == 0) {
+            $message = "";
 
-			if($sent === true)
-			{
-				$message = $lang->buddyrequests_sent_success;
-			}
-		}
-	}
+            if ($sent === true) {
+                $message = $lang->buddyrequests_sent_success;
+            }
+        }
+    } // Removing a user from this list
+    else {
+        if ($mybb->get_input('delete', MyBB::INPUT_INT)) {
+            // Check if user exists on the list
+            $key = array_search($mybb->get_input('delete', MyBB::INPUT_INT), $existing_users);
+            if ($key !== false) {
+                unset($existing_users[$key]);
+                $user = get_user($mybb->get_input('delete', MyBB::INPUT_INT));
+                if (!empty($user)) {
+                    // We want to remove us from this user's buddy list
+                    if ($user['buddylist'] != '') {
+                        $user['buddylist'] = explode(',', $user['buddylist']);
+                    } else {
+                        $user['buddylist'] = [];
+                    }
 
-	// Removing a user from this list
-	else if($mybb->get_input('delete', MyBB::INPUT_INT))
-	{
-		// Check if user exists on the list
-		$key = array_search($mybb->get_input('delete', MyBB::INPUT_INT), $existing_users);
-		if($key !== false)
-		{
-			unset($existing_users[$key]);
-			$user = get_user($mybb->get_input('delete', MyBB::INPUT_INT));
-			if(!empty($user))
-			{
-				// We want to remove us from this user's buddy list
-				if($user['buddylist'] != '')
-				{
-					$user['buddylist'] = explode(',', $user['buddylist']);
-				}
-				else
-				{
-					$user['buddylist'] = array();
-				}
+                    $key = array_search($mybb->get_input('delete', MyBB::INPUT_INT), $user['buddylist']);
+                    unset($user['buddylist'][$key]);
 
-				$key = array_search($mybb->get_input('delete', MyBB::INPUT_INT), $user['buddylist']);
-				unset($user['buddylist'][$key]);
+                    // Now we have the new list, so throw it all back together
+                    $new_list = implode(",", $user['buddylist']);
 
-				// Now we have the new list, so throw it all back together
-				$new_list = implode(",", $user['buddylist']);
+                    // And clean it up a little to ensure there is no possibility of bad values
+                    $new_list = preg_replace("#,{2,}#", ",", $new_list);
+                    $new_list = preg_replace("#[^0-9,]#", "", $new_list);
 
-				// And clean it up a little to ensure there is no possibility of bad values
-				$new_list = preg_replace("#,{2,}#", ",", $new_list);
-				$new_list = preg_replace("#[^0-9,]#", "", $new_list);
+                    if (my_substr($new_list, 0, 1) == ",") {
+                        $new_list = my_substr($new_list, 1);
+                    }
+                    if (my_substr($new_list, -1) == ",") {
+                        $new_list = my_substr($new_list, 0, my_strlen($new_list) - 2);
+                    }
 
-				if(my_substr($new_list, 0, 1) == ",")
-				{
-					$new_list = my_substr($new_list, 1);
-				}
-				if(my_substr($new_list, -1) == ",")
-				{
-					$new_list = my_substr($new_list, 0, my_strlen($new_list)-2);
-				}
+                    $user['buddylist'] = $db->escape_string($new_list);
 
-				$user['buddylist'] = $db->escape_string($new_list);
+                    $db->update_query("users", ['buddylist' => $user['buddylist']], "uid='" . (int)$user['uid'] . "'");
+                }
 
-				$db->update_query("users", array('buddylist' => $user['buddylist']), "uid='".(int)$user['uid']."'");
-			}
+                if ($mybb->get_input('manage') == "ignored") {
+                    $message = $lang->removed_from_ignore_list;
+                } else {
+                    $message = $lang->removed_from_buddy_list;
+                }
+                $user['username'] = htmlspecialchars_uni($user['username']);
+                $message = $lang->sprintf($message, $user['username']);
+            }
+        }
+    }
 
-			if($mybb->get_input('manage') == "ignored")
-			{
-				$message = $lang->removed_from_ignore_list;
-			}
-			else
-			{
-				$message = $lang->removed_from_buddy_list;
-			}
-			$user['username'] = htmlspecialchars_uni($user['username']);
-			$message = $lang->sprintf($message, $user['username']);
-		}
-	}
+    // Now we have the new list, so throw it all back together
+    $new_list = implode(",", $existing_users);
 
-	// Now we have the new list, so throw it all back together
-	$new_list = implode(",", $existing_users);
+    // And clean it up a little to ensure there is no possibility of bad values
+    $new_list = preg_replace("#,{2,}#", ",", $new_list);
+    $new_list = preg_replace("#[^0-9,]#", "", $new_list);
 
-	// And clean it up a little to ensure there is no possibility of bad values
-	$new_list = preg_replace("#,{2,}#", ",", $new_list);
-	$new_list = preg_replace("#[^0-9,]#", "", $new_list);
+    if (my_substr($new_list, 0, 1) == ",") {
+        $new_list = my_substr($new_list, 1);
+    }
+    if (my_substr($new_list, -1) == ",") {
+        $new_list = my_substr($new_list, 0, my_strlen($new_list) - 2);
+    }
 
-	if(my_substr($new_list, 0, 1) == ",")
-	{
-		$new_list = my_substr($new_list, 1);
-	}
-	if(my_substr($new_list, -1) == ",")
-	{
-		$new_list = my_substr($new_list, 0, my_strlen($new_list)-2);
-	}
+    // And update
+    $user = [];
+    if ($mybb->get_input('manage') == "ignored") {
+        $user['ignorelist'] = $db->escape_string($new_list);
+        $mybb->user['ignorelist'] = $user['ignorelist'];
+    } else {
+        $user['buddylist'] = $db->escape_string($new_list);
+        $mybb->user['buddylist'] = $user['buddylist'];
+    }
 
-	// And update
-	$user = array();
-	if($mybb->get_input('manage') == "ignored")
-	{
-		$user['ignorelist'] = $db->escape_string($new_list);
-		$mybb->user['ignorelist'] = $user['ignorelist'];
-	}
-	else
-	{
-		$user['buddylist'] = $db->escape_string($new_list);
-		$mybb->user['buddylist'] = $user['buddylist'];
-	}
+    $db->update_query("users", $user, "uid='" . $mybb->user['uid'] . "'");
 
-	$db->update_query("users", $user, "uid='".$mybb->user['uid']."'");
+    $plugins->run_hooks("usercp_do_editlists_end");
 
-	$plugins->run_hooks("usercp_do_editlists_end");
+    // Ajax based request, throw new list to browser
+    if (!empty($mybb->input['ajax'])) {
+        if ($mybb->get_input('manage') == "ignored") {
+            $list = "ignore";
+        } else {
+            $list = "buddy";
+        }
 
-	// Ajax based request, throw new list to browser
-	if(!empty($mybb->input['ajax']))
-	{
-		if($mybb->get_input('manage') == "ignored")
-		{
-			$list = "ignore";
-		}
-		else
-		{
-			$list = "buddy";
-		}
+        $message_js = '';
+        if ($message) {
+            $message_js = "$.jGrowl('{$message}', {theme:'jgrowl_success'});";
+        }
 
-		$message_js = '';
-		if($message)
-		{
-			$message_js = "$.jGrowl('{$message}', {theme:'jgrowl_success'});";
-		}
+        if ($error_message) {
+            $message_js .= " $.jGrowl('{$error_message}', {theme:'jgrowl_error'});";
+        }
 
-		if($error_message)
-		{
-			$message_js .= " $.jGrowl('{$error_message}', {theme:'jgrowl_error'});";
-		}
-
-		if($mybb->get_input('delete', MyBB::INPUT_INT))
-		{
-			header("Content-type: text/javascript");
-			echo "$(\"#".$mybb->get_input('manage')."_".$mybb->get_input('delete', MyBB::INPUT_INT)."\").remove();\n";
-			if($new_list == "")
-			{
-				echo "\$(\"#".$mybb->get_input('manage')."_count\").html(\"0\");\n";
-				if($mybb->get_input('manage') == "ignored")
-				{
-					echo "\$(\"#ignore_list\").html(\"<li>{$lang->ignore_list_empty}</li>\");\n";
-				}
-				else
-				{
-					echo "\$(\"#buddy_list\").html(\"<li>{$lang->buddy_list_empty}</li>\");\n";
-				}
-			}
-			else
-			{
-				echo "\$(\"#".$mybb->get_input('manage')."_count\").html(\"".count(explode(",", $new_list))."\");\n";
-			}
-			echo $message_js;
-			exit;
-		}
-		$mybb->input['action'] = "editlists";
-	}
-	else
-	{
-		if($error_message)
-		{
-			$message .= "<br />".$error_message;
-		}
-		redirect("usercp.php?action=editlists#".$mybb->get_input('manage'), $message);
-	}
+        if ($mybb->get_input('delete', MyBB::INPUT_INT)) {
+            header("Content-type: text/javascript");
+            echo "$(\"#" . $mybb->get_input('manage') . "_" . $mybb->get_input('delete',
+                    MyBB::INPUT_INT) . "\").remove();\n";
+            if ($new_list == "") {
+                echo "\$(\"#" . $mybb->get_input('manage') . "_count\").html(\"0\");\n";
+                if ($mybb->get_input('manage') == "ignored") {
+                    echo "\$(\"#ignore_list\").html(\"<li>{$lang->ignore_list_empty}</li>\");\n";
+                } else {
+                    echo "\$(\"#buddy_list\").html(\"<li>{$lang->buddy_list_empty}</li>\");\n";
+                }
+            } else {
+                echo "\$(\"#" . $mybb->get_input('manage') . "_count\").html(\"" . count(explode(",",
+                        $new_list)) . "\");\n";
+            }
+            echo $message_js;
+            exit;
+        }
+        $mybb->input['action'] = "editlists";
+    } else {
+        if ($error_message) {
+            $message .= "<br />" . $error_message;
+        }
+        redirect("usercp.php?action=editlists#" . $mybb->get_input('manage'), $message);
+    }
 }
 
-if($mybb->input['action'] == "editlists")
-{
-	$plugins->run_hooks("usercp_editlists_start");
+if ($mybb->input['action'] == 'editlists') {
+    $plugins->run_hooks('usercp_editlists_start');
 
-	$timecut = TIME_NOW - $mybb->settings['wolcutoff'];
+    $timecut = TIME_NOW - $mybb->settings['wolcutoff'];
 
-	// Fetch out buddies
-	$buddy_count = 0;
-	$buddy_list = '';
-	if($mybb->user['buddylist'])
-	{
-		$type = "buddy";
-		$query = $db->simple_select("users", "*", "uid IN ({$mybb->user['buddylist']})", array("order_by" => "username"));
-		while($user = $db->fetch_array($query))
-		{
-			$user['username'] = htmlspecialchars_uni($user['username']);
-			$profile_link = build_profile_link(format_name($user['username'], $user['usergroup'], $user['displaygroup']), $user['uid']);
-			if($user['lastactive'] > $timecut && ($user['invisible'] == 0 || $mybb->usergroup['canviewwolinvis'] == 1) && $user['lastvisit'] != $user['lastactive'])
-			{
-				$status = "online";
-			}
-			else
-			{
-				$status = "offline";
-			}
-			eval("\$buddy_list .= \"".$templates->get("usercp_editlists_user")."\";");
-			++$buddy_count;
-		}
-	}
+    // Fetch out buddies
+    $buddy_list = [];
+    if ($mybb->user['buddylist']) {
+        $query = $db->simple_select('users', '*', "uid IN ({$mybb->user['buddylist']})", ['order_by' => 'username']);
+        while ($user = $db->fetch_array($query)) {
+            $user['type'] = 'buddy';
 
-	$lang->current_buddies = $lang->sprintf($lang->current_buddies, $buddy_count);
-	if(!$buddy_list)
-	{
-		eval("\$buddy_list = \"".$templates->get("usercp_editlists_no_buddies")."\";");
-	}
+            $user['profile_link'] = build_profile_link(
+                format_name(htmlspecialchars_uni($user['username']),
+                $user['usergroup'], $user['displaygroup']), $user['uid']
+            );
 
-	// Fetch out ignore list users
-	$ignore_count = 0;
-	$ignore_list = '';
-	if($mybb->user['ignorelist'])
-	{
-		$type = "ignored";
-		$query = $db->simple_select("users", "*", "uid IN ({$mybb->user['ignorelist']})", array("order_by" => "username"));
-		while($user = $db->fetch_array($query))
-		{
-			$user['username'] = htmlspecialchars_uni($user['username']);
-			$profile_link = build_profile_link(format_name($user['username'], $user['usergroup'], $user['displaygroup']), $user['uid']);
-			if($user['lastactive'] > $timecut && ($user['invisible'] == 0 || $mybb->usergroup['canviewwolinvis'] == 1) && $user['lastvisit'] != $user['lastactive'])
-			{
-				$status = "online";
-			}
-			else
-			{
-				$status = "offline";
-			}
-			eval("\$ignore_list .= \"".$templates->get("usercp_editlists_user")."\";");
-			++$ignore_count;
-		}
-	}
+            if ($user['lastactive'] > $timecut && ($user['invisible'] == 0 || $mybb->usergroup['canviewwolinvis'] == 1) && $user['lastvisit'] != $user['lastactive']) {
+                $user['status'] = 'online';
+            } else {
+                $user['status'] = 'offline';
+            }
 
-	$lang->current_ignored_users = $lang->sprintf($lang->current_ignored_users, $ignore_count);
-	if(!$ignore_list)
-	{
-		eval("\$ignore_list = \"".$templates->get("usercp_editlists_no_ignored")."\";");
-	}
+            $buddy_list[] = $user;
+        }
+    }
 
-	// If an AJAX request from buddy management, echo out whatever the new list is.
-	if($mybb->request_method == "post" && $mybb->input['ajax'] == 1)
-	{
-		if($mybb->input['manage'] == "ignored")
-		{
-			echo $ignore_list;
-			echo "<script type=\"text/javascript\"> $(\"#ignored_count\").html(\"{$ignore_count}\"); {$message_js}</script>";
-		}
-		else
-		{
-			if(isset($sent) && $sent === true)
-			{
-				$sent_rows = '';
-				$query = $db->query("
+    // Fetch out ignore list users
+    $ignore_list = [];
+    if ($mybb->user['ignorelist']) {
+        $query = $db->simple_select('users', '*', "uid IN ({$mybb->user['ignorelist']})", ['order_by' => 'username']);
+        while ($user = $db->fetch_array($query)) {
+            $user['type'] = 'ignored';
+
+            $user['profile_link'] = build_profile_link(
+                format_name(htmlspecialchars_uni($user['username']),
+                $user['usergroup'], $user['displaygroup']), $user['uid']
+            );
+
+            if ($user['lastactive'] > $timecut && ($user['invisible'] == 0 || $mybb->usergroup['canviewwolinvis'] == 1) && $user['lastvisit'] != $user['lastactive']) {
+                $user['status'] = 'online';
+            } else {
+                $user['status'] = 'offline';
+            }
+
+            $ignore_list[] = $user;
+        }
+    }
+
+    // If an AJAX request from buddy management, echo out whatever the new list is.
+    if ($mybb->request_method == 'post' && $mybb->input['ajax'] == 1) {
+        if ($mybb->input['manage'] == 'ignored') {
+            echo \MyBB\template('usercp/editlists/ignore_list.twig', [
+                'ignoreList' => $ignore_list
+            ]);
+
+            $ignore_count = count($ignore_list);
+            echo "<script type=\"text/javascript\"> $(\"#ignored_count\").html(\"{$ignore_count}\"); {$message_js}</script>";
+        } else {
+            if (isset($sent) && $sent === true) {
+                $query = $db->query('
 					SELECT r.*, u.username
-					FROM ".TABLE_PREFIX."buddyrequests r
-					LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=r.touid)
-					WHERE r.uid=".(int)$mybb->user['uid']);
+					FROM ' . TABLE_PREFIX . 'buddyrequests r
+					LEFT JOIN ' . TABLE_PREFIX . 'users u ON (u.uid=r.touid)
+					WHERE r.uid=' . (int)$mybb->user['uid']);
 
-				while($request = $db->fetch_array($query))
-				{
-					$bgcolor = alt_trow();
-					$request['username'] = build_profile_link(htmlspecialchars_uni($request['username']), (int)$request['touid']);
-					$request['date'] = my_date('relative', $request['date']);
-					eval("\$sent_rows .= \"".$templates->get("usercp_editlists_sent_request", 1, 0)."\";");
-				}
+                $sent_rows = [];
 
-				if($sent_rows == '')
-				{
-					eval("\$sent_rows = \"".$templates->get("usercp_editlists_no_requests", 1, 0)."\";");
-				}
+                while ($request = $db->fetch_array($query)) {
+                    $request['username'] = build_profile_link(htmlspecialchars_uni($request['username']),
+                        (int)$request['touid']);
+                    $request['date'] = my_date('relative', $request['date']);
 
-				eval("\$sent_requests = \"".$templates->get("usercp_editlists_sent_requests", 1, 0)."\";");
+                    $sent_rows[] = $request;
+                }
 
-				echo $sentrequests;
-				echo $sent_requests."<script type=\"text/javascript\">{$message_js}</script>";
-			}
-			else
-			{
-				echo $buddy_list;
-				echo "<script type=\"text/javascript\"> $(\"#buddy_count\").html(\"{$buddy_count}\"); {$message_js}</script>";
-			}
-		}
-		exit;
-	}
+                echo \MyBB\template('usercp/editlists/sent_requests.twig', [
+                    'sentRequests' => $sent_rows,
+                ]);
 
-	$received_rows = '';
-	$query = $db->query("
+                echo $sent_requests . "<script type=\"text/javascript\">{$message_js}</script>";
+            } else {
+                echo \MyBB\template('usercp/editlists/buddy_list.twig', [
+                    'buddyList' => $buddy_list,
+                ]);
+
+                $buddy_count = count($buddy_list);
+                echo "<script type=\"text/javascript\"> $(\"#buddy_count\").html(\"{$buddy_count}\"); {$message_js}</script>";
+            }
+        }
+        exit;
+    }
+
+    $received_rows = [];
+    $query = $db->query('
 		SELECT r.*, u.username
-		FROM ".TABLE_PREFIX."buddyrequests r
-		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=r.uid)
-		WHERE r.touid=".(int)$mybb->user['uid']);
+		FROM ' . TABLE_PREFIX . 'buddyrequests r
+		LEFT JOIN ' . TABLE_PREFIX . 'users u ON (u.uid=r.uid)
+		WHERE r.touid=' . (int)$mybb->user['uid']);
 
-	while($request = $db->fetch_array($query))
-	{
-		$bgcolor = alt_trow();
-		$request['username'] = build_profile_link(htmlspecialchars_uni($request['username']), (int)$request['uid']);
-		$request['date'] = my_date('relative', $request['date']);
-		eval("\$received_rows .= \"".$templates->get("usercp_editlists_received_request")."\";");
-	}
+    while ($request = $db->fetch_array($query)) {
+        $request['username'] = build_profile_link(htmlspecialchars_uni($request['username']), (int)$request['uid']);
+        $request['date'] = my_date('relative', $request['date']);
 
-	if($received_rows == '')
-	{
-		eval("\$received_rows = \"".$templates->get("usercp_editlists_no_requests")."\";");
-	}
+        $received_rows[] = $request;
+    }
 
-	eval("\$received_requests = \"".$templates->get("usercp_editlists_received_requests")."\";");
-
-	$sent_rows = '';
-	$query = $db->query("
+    $sent_rows = [];
+    $query = $db->query('
 		SELECT r.*, u.username
-		FROM ".TABLE_PREFIX."buddyrequests r
-		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=r.touid)
-		WHERE r.uid=".(int)$mybb->user['uid']);
+		FROM ' . TABLE_PREFIX . 'buddyrequests r
+		LEFT JOIN ' . TABLE_PREFIX . 'users u ON (u.uid=r.touid)
+		WHERE r.uid=' . (int)$mybb->user['uid']);
 
-	while($request = $db->fetch_array($query))
-	{
-		$bgcolor = alt_trow();
-		$request['username'] = build_profile_link(htmlspecialchars_uni($request['username']), (int)$request['touid']);
-		$request['date'] = my_date('relative', $request['date']);
-		eval("\$sent_rows .= \"".$templates->get("usercp_editlists_sent_request")."\";");
-	}
+    while ($request = $db->fetch_array($query)) {
+        $request['username'] = build_profile_link(htmlspecialchars_uni($request['username']), (int)$request['touid']);
+        $request['date'] = my_date('relative', $request['date']);
 
-	if($sent_rows == '')
-	{
-		eval("\$sent_rows = \"".$templates->get("usercp_editlists_no_requests")."\";");
-	}
+        $sent_rows[] = $request;
+    }
 
-	eval("\$sent_requests = \"".$templates->get("usercp_editlists_sent_requests")."\";");
+    $plugins->run_hooks('usercp_editlists_end');
 
-	$plugins->run_hooks("usercp_editlists_end");
-
-	eval("\$listpage = \"".$templates->get("usercp_editlists")."\";");
-	output_page($listpage);
+    output_page(\MyBB\template('usercp/editlists.twig', [
+        'buddyList' => $buddy_list,
+        'ignoreList' => $ignore_list,
+        'receivedRequests' => $received_rows,
+        'sentRequests' => $sent_rows,
+    ]));
 }
 
 if ($mybb->input['action'] == "drafts") {

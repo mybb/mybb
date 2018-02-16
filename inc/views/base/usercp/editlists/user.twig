@@ -1,0 +1,9 @@
+<li class="float_left" id="{{ user.type }}_{{ user.uid }}" style="width: 33%; list-style: none; margin-bottom: 4px;">
+    <a href="usercp.php?action=do_editlists&amp;my_post_key={{ mybb.post_code }}&amp;manage={{ user.type }}&amp;delete={{ user.uid }}"
+       onclick="return UserCP.removeBuddy('{{ user.type }}', {{ user.uid }});" title="{{ lang.remove_from_list }}">
+        <img src="{{ theme.imgdir }}/buddy_delete.png" title="{{ lang.remove_from_list }}"
+             alt="{{ lang.remove_from_list }}" style="vertical-align: middle;" />
+    </a>
+    <img src="{{ theme.imgdir }}/buddy_{{ user.status }}.png" title="{{ attribute(lang, user.status) }}" alt="" style="vertical-align: middle;" />
+    {{ user.profile_link|raw }}
+</li>

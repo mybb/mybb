@@ -1,0 +1,198 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ mybb.settings.bburl }} - {{ lang.edit_lists }}</title>
+{% endblock head %}
+
+{% block body %}
+    <form action="usercp.php" method="post" id="buddy" onsubmit="return UserCP.addBuddy('buddy');">
+        <input type="hidden" name="action" value="do_editlists" />
+        <input type="hidden" name="manage" value="buddy" />
+        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+            <thead>
+                <tr>
+                    <th class="thead" align="center">
+                        <strong>{{ lang.edit_buddy_list }}</strong>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="trow1">
+                        <fieldset>
+                            <legend>
+                                <strong>{{ lang.add_buddies }}</strong>
+                            </legend>
+                            <span class="smalltext">
+                                {{ lang.add_buddies_desc }}
+                            </span>
+                            <br />
+                            <div class="float_left" style="width: 120px; text-align: right;">
+                                <strong>{{ lang.username_or_usernames }}</strong>
+                            </div>
+                            <div style="margin-left: 130px;">
+                                <input type="text" name="add_username" id="buddy_add_username" style="width: 60%;" class="textbox" />
+                                <input type="submit" value="{{ lang.add_to_buddies }}" id="buddy_submit" class="button" />
+                            </div>
+                            <script type="text/javascript">
+                                <!--
+                                if(use_xmlhttprequest == "1")
+                                {
+                                    MyBB.select2();
+                                    $("#buddy_add_username").select2({
+                                        placeholder: "{{ lang.search_user }}",
+                                        minimumInputLength: 2,
+                                        maximumSelectionSize: 5,
+                                        multiple: true,
+                                        ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+                                            url: "xmlhttp.php?action=get_users",
+                                            dataType: 'json',
+                                            data: function (term, page) {
+                                                return {
+                                                    query: term, // search term
+                                                };
+                                            },
+                                            results: function (data, page) { // parse the results into the format expected by Select2.
+                                                // since we are using custom formatting functions we do not need to alter remote JSON data
+                                                return {results: data};
+                                            }
+                                        },
+                                        initSelection: function(element, callback) {
+                                            var query = $(element).val();
+                                            if (query !== "") {
+                                                var newqueries = [];
+                                                exp_queries = query.split(",");
+                                                $.each(exp_queries, function(index, value ){
+                                                    if(value.replace(/\s/g, '') != "")
+                                                    {
+                                                        var newquery = {
+                                                            id: value.replace(/,\s?/g, ", "),
+                                                            text: value.replace(/,\s?/g, ", ")
+                                                        };
+                                                        newqueries.push(newquery);
+                                                    }
+                                                });
+                                                callback(newqueries);
+                                            }
+                                        },
+                                    });
+                                }
+                                // -->
+                            </script>
+                        </fieldset>
+                        <fieldset id="buddy_container">
+                            <legend>
+                                <strong>{{ trans('current_budies', buddyList|length) }}</strong>
+                            </legend>
+                            <ul id="buddy_list" style="list-style: none;">
+                                {% include 'usercp/editlists/buddy_list.twig' %}
+                            </ul>
+                        </fieldset>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+    <br />
+    <form action="usercp.php" method="post" id="ignored" onsubmit="return UserCP.addBuddy('ignored');">
+        <input type="hidden" name="action" value="do_editlists" />
+        <input type="hidden" name="manage" value="ignored" />
+        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+            <thead>
+                <tr>
+                    <th class="thead" align="center">
+                        <strong>{{ lang.edit_ignore_list }}</strong>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="trow1">
+                        <fieldset>
+                            <legend>
+                                <strong>{{ lang.add_ignored_users }}</strong>
+                            </legend>
+                            <span class="smalltext">
+                                {{ lang.add_ignored_users_desc }}
+                            </span>
+                            <br />
+                            <div class="float_left" style="width: 120px; text-align: right;">
+                                <strong>{{ lang.username_or_usernames }}</strong>
+                            </div>
+                            <div style="margin-left: 130px;">
+                                <input type="text" name="add_username" id="ignored_add_username" style="width: 60%;" class="textbox" />
+                                <input type="submit" value="{{ lang.ignore_users }}" id="ignored_submit" class="button" />
+                            </div>
+                            <script type="text/javascript">
+                                <!--
+                                if(use_xmlhttprequest == "1")
+                                {
+                                    MyBB.select2();
+                                    $("#ignored_add_username").select2({
+                                        placeholder: "{{ lang.search_user }}",
+                                        minimumInputLength: 2,
+                                        maximumSelectionSize: 5,
+                                        multiple: true,
+                                        ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+                                            url: "xmlhttp.php?action=get_users",
+                                            dataType: 'json',
+                                            data: function (term, page) {
+                                                return {
+                                                    query: term, // search term
+                                                };
+                                            },
+                                            results: function (data, page) { // parse the results into the format expected by Select2.
+                                                // since we are using custom formatting functions we do not need to alter remote JSON data
+                                                return {results: data};
+                                            }
+                                        },
+                                        initSelection: function(element, callback) {
+                                            var query = $(element).val();
+                                            if (query !== "") {
+                                                var newqueries = [];
+                                                exp_queries = query.split(",");
+                                                $.each(exp_queries, function(index, value ){
+                                                    if(value.replace(/\s/g, '') != "")
+                                                    {
+                                                        var newquery = {
+                                                            id: value.replace(/,\s?/g, ", "),
+                                                            text: value.replace(/,\s?/g, ", ")
+                                                        };
+                                                        newqueries.push(newquery);
+                                                    }
+                                                });
+                                                callback(newqueries);
+                                            }
+                                        },
+                                    });
+                                }
+                                // -->
+                            </script>
+                        </fieldset>
+                        <fieldset id="ignored_container">
+                            <legend>
+                                <strong>{{ trans('current_ignored_users', ignoreList|length) }}</strong>
+                            </legend>
+                            <ul id="ignore_list" style="list-style: none;">
+                                {% include 'usercp/editlists/ignore_list.twig' %}
+                            </ul>
+                        </fieldset>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+    <br />
+    <table border="0" style="width: 100%">
+        <tr>
+            <td style="width: 50%; vertical-align: top" id="receivedrequests">
+                {% include 'usercp/editlists/received_requests.twig' %}
+            </td>
+            <td style="width: 50%; vertical-align: top" id="sentrequests">
+                {% include 'usercp/editlists/sent_requests.twig' %}
+            </td>
+        </tr>
+    </table>
+{% endblock body %}
