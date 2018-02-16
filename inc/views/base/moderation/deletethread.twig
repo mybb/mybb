@@ -1,0 +1,24 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ mybb.settings.bbname }} - {{ lang.delete_thread }}</title>
+{% endblock head %}
+
+{% block body %}
+    <form action="moderation.php" method="post">
+        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+            <tr>
+                <td class="thead" colspan="2"><strong>{{ thread.subject }} - {{ lang.delete_thread }}</strong></td>
+            </tr>
+            <tr>
+                <td class="trow1" colspan="2" align="center">{{ lang.confirm_delete_threads }}</td>
+            </tr>
+            {{ loginbox|raw }}
+        </table>
+        <br />
+        <div align="center"><input type="submit" class="button" name="submit" value="{{ lang.delete_thread }}" /></div>
+        <input type="hidden" name="action" value="do_deletethread" />
+        <input type="hidden" name="tid" value="{{ thread.tid }}" />
+    </form>
+{% endblock body %}
