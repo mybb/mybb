@@ -1,0 +1,190 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ mybb.settings.bbname }} - {{ lang.members_of }}</title>
+{% endblock head %}
+
+{% block body %}
+    {% if usergroup.pendingrequests %}
+        <p>
+            <strong><a href="managegroup.php?action=joinrequests&amp;gid={{ usergroup.gid }}">{{ lang.pending_requests }}</a></strong><br />
+            {{ lang.num_requests_pending|raw }}
+        </p>
+    {% endif %}
+    <p>{{ usergroup.usergrouptype }}</p>
+    {% if usergroup.leaders %}
+        <p>
+            {{ lang.group_leaders }}:
+            {% for leader in leaders %}
+                {{ leader.profilelink|raw }}{% if not loop.last %}{{ lang.comma }}{% endif %}
+            {% endfor %}
+        </p>
+    {% endif %}
+    {{ multipage|raw }}
+    <form method="post" action="managegroup.php">
+        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+        <input type="hidden" name="action" value="do_manageusers" />
+        <input type="hidden" name="gid" value="{{ usergroup.gid }}" />
+        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+            <tr>
+                <td class="thead" colspan="6"><strong>{{ lang.members_of }}</strong></td>
+            </tr>
+            <tr>
+                <td class="tcat" width="40%"><span class="smalltext"><strong>{{ lang.user_name }}</strong></span></td>
+                <td class="tcat" colspan="2" align="center"><span class="smalltext"><strong>{{ lang.contact }}</strong></span></td>
+                <td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{{ lang.reg_date }}</strong></span></td>
+                <td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{{ lang.post_count }}</strong></span></td>
+                <td class="tcat" width="1">&nbsp;</td>
+            </tr>
+            {% for user in users %}
+                {% set row = alt_trow() %}
+                <tr>
+                    <td class="{{ row }}">{{ user.profilelink|raw }} {{ user.leader }}</td>
+                    <td class="{{ row }}" align="center" width="100">
+                        <div class="postbit_buttons">
+                            {% if user.showemail %}
+                                <a href="member.php?action=emailuser&amp;uid={{ user.uid }}" title="{{ lang.postbit_email }}" class="postbit_email"><span>{{ lang.postbit_button_email }}</span></a>
+                            {% endif %}
+                        </div>
+                    </td>
+                    <td class="{{ row }}" align="center" width="100">
+                        <div class="postbit_buttons">
+                            {% if user.showpm %}
+                                <a href="private.php?action=send&amp;uid={{ user.uid }}" title="{{ lang.postbit_pm }}" class="postbit_pm"><span>{{ lang.postbit_button_pm }}</span></a>
+                            {% endif %}
+                        </div>
+                    </td>
+                    <td class="{{ row }}" align="center">{{ user.reg_date|raw }}</td>
+                    <td class="{{ row }}" align="center">{{ user.postnum }}</td>
+                    <td class="{{ row }}" align="center">
+                        {% if groupleader.canmanagemembers %}
+                            <input type="checkbox" class="checkbox" name="removeuser[{{ user.uid }}]" value="{{ user.uid }}" />
+                        {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td class="trow1" colspan="6">{{ lang.no_users }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+        <br />
+        <div align="center">
+            {% if groupleader.canmanagemembers %}
+                <input type="submit" class="button" value="{{ lang.remove_selected }}" />
+            {% endif %}
+        </div>
+    </form>
+    {% if groupleader.canmanagemembers %}
+        <br />
+        <form method="post" action="managegroup.php">
+        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+        <input type="hidden" name="action" value="do_add" />
+        <input type="hidden" name="gid" value="{{ usergroup.gid }}" />
+        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+            <tr>
+                <td class="thead" colspan="6"><strong>{{ lang.add_member }}</strong></td>
+            </tr>
+            <tr>
+                <td class="trow1">{{ lang.username }}</td>
+                <td class="trow1"><input type="text" id="username" class="textbox" name="username" size="40" maxlength="{{ mybb.settings.maxnamelength }}" style="width: 210px" /></td>
+            </tr>
+        </table>
+        <link rel="stylesheet" href="{{ asset_url('jscripts/select2/select2.css') }}">
+        <script type="text/javascript" src="{{ asset_url('jscripts/select2/select2.min.js') }}"></script>
+        <script type="text/javascript">
+        <!--
+        if({{ mybb.settings.use_xmlhttprequest }})
+        {
+            MyBB.select2();
+            $("#username").select2({
+                placeholder: "{{ lang.search_user }}",
+                minimumInputLength: 2,
+                multiple: false,
+                ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+                    url: "xmlhttp.php?action=get_users",
+                    dataType: 'json',
+                    data: function (term, page) {
+                        return {
+                            query: term, // search term
+                        };
+                    },
+                    results: function (data, page) { // parse the results into the format expected by Select2.
+                        // since we are using custom formatting functions we do not need to alter remote JSON data
+                        return {results: data};
+                    }
+                },
+                initSelection: function(element, callback) {
+                    var value = $(element).val();
+                    if (value !== "") {
+                        callback({
+                            id: value,
+                            text: value
+                        });
+                    }
+                },
+            });
+        }
+        // -->
+        </script>
+        <br />
+        <div align="center"><input type="submit" class="button" value="{{ lang.add_member_submit }}" /></div>
+        </form>
+    {% endif %}
+    {% if usergroup.type == 5 and groupleader.caninvitemembers %}
+        <br />
+        <form method="post" action="managegroup.php">
+            <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+            <input type="hidden" name="action" value="do_invite" />
+            <input type="hidden" name="gid" value="{{ usergroup.gid }}" />
+            <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+                <tr>
+                    <td class="thead" colspan="6"><strong>{{ lang.invite_member }}</strong></td>
+                </tr>
+                <tr>
+                    <td class="trow1">{{ lang.username }}</td>
+                    <td class="trow1"><input type="text" id="inviteusername" class="textbox" name="inviteusername" size="40" maxlength="{{ mybb.settings.maxnamelength }}" style="width: 210px" /></td>
+                </tr>
+            </table>
+            <link rel="stylesheet" href="{{ asset_url('jscripts/select2/select2.css') }}">
+            <script type="text/javascript" src="{{ asset_url('jscripts/select2/select2.min.js') }}"></script>
+            <script type="text/javascript">
+            <!--
+            if({{ mybb.settings.use_xmlhttprequest }})
+            {
+                MyBB.select2();
+                $("#inviteusername").select2({
+                    placeholder: "{{ lang.search_user }}",
+                    minimumInputLength: 2,
+                    multiple: false,
+                    ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+                        url: "xmlhttp.php?action=get_users",
+                        dataType: 'json',
+                        data: function (term, page) {
+                            return {
+                                query: term, // search term
+                            };
+                        },
+                        results: function (data, page) { // parse the results into the format expected by Select2.
+                            // since we are using custom formatting functions we do not need to alter remote JSON data
+                            return {results: data};
+                        }
+                    },
+                    initSelection: function(element, callback) {
+                        var value = $(element).val();
+                        if (value !== "") {
+                            callback({
+                                id: value,
+                                text: value
+                            });
+                        }
+                    },
+                });
+            }
+            // -->
+            </script>
+            <br />
+            <div align="center"><input type="submit" class="button" value="{{ lang.invite_member_submit }}" /></div>
+        </form>
+    {% endif %}
+{% endblock body %}
