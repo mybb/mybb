@@ -16,12 +16,12 @@
                 <td class="thead" colspan="2"><strong>{{ lang.login }}</strong></td>
             </tr>
             <tr>
-                <td class="trow1"><strong>{{ lang.username }}</strong></td>
-                <td class="trow1"><input type="text" class="textbox" name="username" size="25" style="width: 200px;" value="{{ login.username }}" /></td>
+                <td class="trow1"><strong><label for="username">{{ lang.username }}</label></strong></td>
+                <td class="trow1"><input type="text" class="textbox" name="username" size="25" style="width: 200px;" id="username" value="{{ login.username }}" /></td>
             </tr>
             <tr>
-                <td class="trow2"><strong>{{ lang.password }}</strong><br /><span class="smalltext">{{ lang.pw_note }}</span></td>
-                <td class="trow2"><input type="password" class="textbox" name="password" size="25" style="width: 200px;" value="{{ login.password }}" /> (<a href="member.php?action=lostpw">{{ lang.lostpw_note }}</a>)</td>
+                <td class="trow2"><strong><label for="password">{{ lang.password }}</label></strong><br /><span class="smalltext">{{ lang.pw_note }}</span></td>
+                <td class="trow2"><input type="password" class="textbox" name="password" size="25" style="width: 200px;" id="password" value="{{ login.password }}" /> (<a href="member.php?action=lostpw">{{ lang.lostpw_note }}</a>)</td>
             </tr>
             <tr>
                 <td class="trow1" colspan="2" align="center"><label title="{{ lang.remember_me_desc }}"><input type="checkbox" class="checkbox" name="remember" checked="checked" value="yes" /> {{ lang.remember_me }}</label></td>

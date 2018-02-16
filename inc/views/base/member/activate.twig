@@ -11,12 +11,12 @@
                 <td class="thead" colspan="2"><strong>{{ lang.activate_account }}</strong></td>
             </tr>
             <tr>
-                <td class="trow1" width="30%"><strong>{{ lang.username }}</strong></td>
-                <td class="trow1"><input type="text" class="textbox" name="username" value="{{ activate.username }}" /></td>
+                <td class="trow1" width="30%"><strong><label for="username">{{ lang.username }}</label></strong></td>
+                <td class="trow1"><input type="text" class="textbox" name="username" id="username" value="{{ activate.username }}" /></td>
             </tr>
             <tr>
-                <td class="trow1" width="30%"><strong>{{ lang.activation_code }}</strong></td>
-                <td class="trow1"><input type="text" class="textbox" name="code" value="{{ activate.code }}" /></td>
+                <td class="trow1" width="30%"><strong><label for="code">{{ lang.activation_code }}</label></strong></td>
+                <td class="trow1"><input type="text" class="textbox" name="code" id="code" value="{{ activate.code }}" /></td>
             </tr>
         </table>
         <br />
