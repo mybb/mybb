@@ -3,7 +3,7 @@
 {% block head %}
     <title>{{ mybb.settings.bbname }}</title>
     <link rel="alternate" type="application/rss+xml" title="{{ lang.latest_announcements }} (RSS 2.0)" href="{{ mybb.settings.bburl }}/syndication.php?portal=1" />
-    <link rel="alternate" type="application/atom+xml" title="{{ lang.latest_announcements }} (Atom 1.0)" href="{{ mybb.settings.bburl }}/syndication.php?portal=1&type=atom1.0" />
+    <link rel="alternate" type="application/atom+xml" title="{{ lang.latest_announcements }} (Atom 1.0)" href="{{ mybb.settings.bburl }}/syndication.php?portal=1&amp;type=atom1.0" />
 {% endblock head %}
 
 {% block body %}
@@ -50,7 +50,7 @@
                         </tr>
                         <tr>
                             <td class="trow1">
-                                <span class="smalltext">{{ lang.pms_received_new|raw }}<br /><br />
+                                <span class="smalltext">{{ trans('pms_received_new', mybb.user.username, portal.pms_unread ) }}<br /><br />
                                     <strong>&raquo; </strong> <strong>{{ portal.pms_unread }}</strong> {{ lang.pms_unread }}<br />
                                     <strong>&raquo; </strong> <strong>{{ portal.pms_total }}</strong> {{ lang.pms_total }}
                                 </span>

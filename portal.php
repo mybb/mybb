@@ -163,8 +163,6 @@ if ($mybb->settings['portal_showpms'] != 0) {
         $portal['showpms'] = true;
         $portal['pms_total'] = $mybb->user['pms_total'];
         $portal['pms_unread'] = $mybb->user['pms_unread'];
-
-        $lang->pms_received_new = $lang->sprintf($lang->pms_received_new, $mybb->user['username'], $portal['pms_unread']);
     }
 }
 
