@@ -1,0 +1,226 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ mybb.settings.bbname }} - {{ lang.delayed_moderation }}</title>
+{% endblock head %}
+
+{% block body %}
+    {{ display_errors|raw }}
+    <br />
+    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+        <tr>
+            <td class="thead" colspan="5"><strong>{{ lang.delayed_mod_queue }}</strong></td>
+        </tr>
+        <tr>
+            <td class="tcat" align="center"><strong>{{ lang.mod_username }}</strong></td>
+            <td class="tcat" align="center"><strong>{{ lang.days_to_perform_action }}</strong></td>
+            <td class="tcat" align="center"><strong>{{ lang.mod_actions }}</strong></td>
+            <td class="tcat" align="center"><strong>{{ lang.mod_information }}</strong></td>
+            <td class="tcat" align="center"><strong>{{ lang.actions }}</strong></td>
+        </tr>
+        {% for delayedmod in delayedmods %}
+            {% set row = alt_trow() %}
+            <tr>
+                <td class="{{ row }}" align="center">{{ delayedmod.profilelink|raw }}</td>
+                <td class="{{ row }}" align="center">{{ delayedmod.dateline|raw }}</td>
+                <td class="{{ row }}" align="center">{{ delayedmod.action }}</td>
+                <td class="{{ row }}">
+                    {% if delayedmod.thread_single %}
+                        <strong>{{ lang.thread }}</strong> <a href="{{ delayedmod.threadlink }}">{{ delayedmod.threadsubject }}</a><br />
+                    {% endif %}
+                    {% if delayedmod.thread_multiple %}
+                        <strong>{{ lang.thread }}</strong> {{ lang.multiple_threads }}<br />
+                    {% endif %}
+                    {% if delayedmod.forum %}
+                        <strong>{{ lang.forum }}</strong> <a href="{{ delayedmod.link }}">{{ delayedmod.fname }}</a><br />
+                    {% endif %}
+                    {% if delayedmod.new_forum %}
+                        <strong>{{ lang.new_forum }}</strong> <a href="{{ delayedmod.new_link }}">{{ delayedmod.new_name }}</a><br />
+                    {% endif %}
+                    {% if delayedmod.redirect %}
+                        <strong>{{ lang.leave_redirect_for }}</strong> {{ delayedmod.redirect_expire }}<br />
+                    {% endif %}
+                    {% if delayedmod.merge %}
+                        <strong>{{ lang.new_subject }}</strong> {{ delayedmod.subject }}<br />
+                        <strong>{{ lang.thread_to_merge_with }}</strong> <a href="{{ delayedmod.threadurl }}">{{ delayedmod.threadurl }}</a><br />
+                    {% endif %}
+                </td>
+                <td class="{{ row }}" align="center">
+                    <a href="moderation.php?action=cancel_delayedmoderation&amp;tid={{ delayed.tid }}&amp;fid={{ delayed.fid }}&amp;did={{ delayedmod.did }}&amp;my_post_key={{ mybb.post_code }}">{{ lang.cancel }}</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td class="trow1" colspan="5">{{ lang.no_delayed_mods }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <br />
+    <form action="moderation.php" method="post">
+        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+        <input type="hidden" name="action" value="do_delayedmoderation" />
+        <input type="hidden" name="url" value="{{ delayed.url }}" />
+        <input type="hidden" name="tid" value="{{ delayed.tid }}" />
+        <input type="hidden" name="fid" value="{{ delayed.fid }}" />
+        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+            <tr>
+                <td class="thead" colspan="2"><strong>{{ lang.delayed_moderation }}</strong></td>
+            </tr>
+            <tr>
+                <td class="tcat" colspan="2"><strong>{{ lang.delayed_moderation_desc }}</strong></td>
+            </tr>
+            {{ loginbox|raw }}
+            <tr>
+                {% if delayed.singlethread %}
+                    <td class="trow1"><strong>{{ lang.thread }}</strong></td>
+                    <td class="trow2"><a href="{{ delayed.threadlink }}">{{ delayed.threadsubject }}</a></td>
+                {% else %}
+                    <td class="trow1"><strong>{{ lang.threads }}</strong></td>
+                    <td class="trow2">{{ trans('threads_selected', delayed.threadcount) }}</td>
+                {% endif %}
+            </tr>
+            <tr>
+                <td class="trow1"><strong>{{ lang.run_moderation_time }}</strong></td>
+                <td class="trow2">
+                    <select name="date_day">
+                        {% for day in days %}
+                            <option value="{{ day.day }}"{% if day.selected %} selected="selected"{% endif %}>{{ day.day }}</option>
+                        {% endfor %}
+                    </select>
+                    &nbsp;
+                    <select name="date_month">
+                        {% for month in months %}
+                            <option value="{{ month.month }}"{% if month.selected %} selected="selected"{% endif %}>{{ month.name }}</option>
+                        {% endfor %}
+                    </select>
+                    &nbsp;
+                    <input type="text" name="date_year" value="{{ delayed.dateyear }}" size="4" maxlength="4" class="textbox" />
+                     - {{ lang.time }} <input type="text" name="date_time" value="{{ delayed.datetime }}" size="10" class="textbox" />
+                </td>
+            </tr>
+            <tr>
+                <td class="trow1" style="vertical-align: top;"><strong>{{ lang.moderation_action }}</strong></td>
+                <td class="trow2">
+                    <script type="text/javascript">
+                    <!--
+                        function toggleType()
+                        {
+                            if($('#type_merge'))
+                            {
+                                if($('#type_movecopythread').prop('checked') == true)
+                                {
+                                    $('#type_merge_expanded').hide();
+                                    $('#type_movecopythread_expanded').show();
+                                }
+                                else if($('#type_merge').prop('checked') == true)
+                                {
+                                    $('#type_movecopythread_expanded').hide();
+                                    $('#type_merge_expanded').show();
+                                }
+                                else
+                                {
+                                    $('#type_movecopythread_expanded').hide();
+                                    $('#type_merge_expanded').hide();
+                                }
+                            }
+                            else
+                            {
+                                if($('#type_movecopythread').prop('checked') == true)
+                                {
+                                    $('#type_movecopythread_expanded').show();
+                                }
+                                else
+                                {
+                                    $('#type_movecopythread_expanded').hide();
+                                }
+                            }
+                        }
+                    // -->
+                    </script>
+                    <dl style="margin-top: 0; margin-bottom: 0; width: 100%;">
+                        {% if delayed.openclose %}
+                            <dt>
+                                <input type="radio" name="type" value="openclosethread"{% if delayed.type_selected.openclosethread %} checked="checked"{% endif %} id="type_openclosethread" onclick="toggleType();" /> 
+                                <label for="type_openclosethread"><strong>{{ lang.open_close_thread }}</strong></label>
+                            </dt>
+                        {% endif %}
+                        {% if delayed.softdeleterestore %}
+                            <dt>
+                                <input type="radio" name="type" value="softdeleterestorethread"{% if delayed.type_selected.softdeleterestorethread %} checked="checked"{% endif %} id="type_softdeleterestorethread" onclick="toggleType();" /> 
+                                <label for="type_softdeleterestorethread"><strong>{{ lang.softdelete_restore_thread }}</strong></label>
+                            </dt>
+                        {% endif %}
+                        {% if delayed.delete %}
+                            <dt>
+                                <input type="radio" name="type" value="deletethread"{% if delayed.type_selected.deletethread %} checked="checked"{% endif %} id="type_deletethread" onclick="toggleType();" /> 
+                                <label for="type_deletethread"><strong>{{ lang.delete_thread }}</strong></label>
+                            </dt>
+                        {% endif %}
+                        {% if delayed.stickunstick %}
+                            <dt>
+                                <input type="radio" name="type" value="stick"{% if delayed.type_selected.stick %} checked="checked"{% endif %} id="type_stick_unstick_thread" onclick="toggleType();" /> 
+                                <label for="type_stick_unstick_thread"><strong>{{ lang.stick_unstick_thread }}</strong></label>
+                            </dt>
+                        {% endif %}
+                            <dt>
+                                <input type="radio" name="type" value="move"{% if delayed.type_selected.move %} checked="checked"{% endif %} id="type_movecopythread" onclick="toggleType();" /> 
+                                <label for="type_movecopythread"><strong>{{ lang.move_copy_thread }}</strong></label>
+                            </dt>
+                            <dd style="margin-top: 4px;" id="type_movecopythread_expanded">
+                                {{ lang.new_forum }}<br />
+                                {{ forumselect|raw }}
+                                <br />
+                                {{ lang.method }}:<br />
+                                <label><input type="radio" class="radio" name="delayedmoderation[method]" value="move"{% if delayed.method_selected.move %} checked="checked"{% endif %} />{{ lang.method_move }}</label><br />
+                                <label>
+                                    <input type="radio" class="radio" name="delayedmoderation[method]" value="redirect"{% if delayed.method_selected.redirect %} checked="checked"{% endif %} />{{ lang.method_move_redirect }} 
+                                    <input type="text" class="textbox" name="delayedmoderation[redirect_expire]" value="{{ delayed.delayedmoderation.redirect_expire }}" size="3" /> {{ lang.redirect_expire_note }}
+                                </label><br />
+                                <label><input type="radio" class="radio" name="delayedmoderation[method]" value="copy"{% if delayed.method_selected.copy %} checked="checked"{% endif %} />{{ lang.method_copy }}</label><br />
+                            </dd>
+                        {% if delayed.singlethread %}
+                            <dt>
+                                <input type="radio" name="type" value="merge"{% if delayed.type_selected.merge %} checked="checked"{% endif %} id="type_merge" onclick="toggleType();" /> 
+                                <label for="type_merge"><strong>{{ lang.merge_threads }}</strong></label>
+                            </dt>
+                            <dd style="margin-top: 4px; width: 100%;" id="type_merge_expanded">
+                                {{ lang.new_subject }}<br />
+                                <input type="text" class="textbox" name="delayedmoderation[subject]" value="{{ delayed.delayedmoderation.subject }}" size="40" /><br />
+                                {{ lang.thread_to_merge_with }}<br />
+                                <input type="text" class="textbox" name="delayedmoderation[threadurl]" value="{{ delayed.delayedmoderation.threadurl }}" size="40" />
+                                <br /><span class="smalltext">{{ lang.merge_with_note }}</span>
+                            </dd>
+                        {% endif %}
+                        <dt>
+                            <input type="radio" name="type" value="removeredirects"{% if delayed.type_selected.removeredirects %} checked="checked"{% endif %} id="type_removeredirects" onclick="toggleType();" /> 
+                            <label for="type_removeredirects"><strong>{{ lang.remove_redirects }}</strong></label>
+                        </dt>
+                        <dt>
+                            <input type="radio" name="type" value="removesubscriptions"{% if delayed.type_selected.removesubscriptions %} checked="checked"{% endif %} id="type_removesubscriptions" onclick="toggleType();" /> 
+                            <label for="type_removesubscriptions"><strong>{{ lang.remove_subscriptions }}</strong></label>
+                        </dt>
+                        {% if delayed.approveunapprove %}
+                            <dt>
+                                <input type="radio" name="type" value="approveunapprovethread"{% if delayed.type_selected.approveunapprovethread %} checked="checked"{% endif %} id="type_approveunapprovethread" onclick="toggleType();" /> 
+                                <label for="type_approveunapprovethread"><strong>{{ lang.approve_unapprove_thread }}</strong></label>
+                            </dt>
+                        {% endif %}
+                        {% for tool in customtools %}
+                            <dt>
+                                <input type="radio" name="type" value="modtool_{{ tool.tid }}"{% if tool.selected %} checked="checked"{% endif %} id="type_modtool_{{ tool.tid }}" onclick="toggleType();" /> 
+                                <label for="type_modtool_{{ tool.tid }}"><strong>{{ tool.name }}</strong> <small>({{ lang.custom }})</small></label>
+                            </dt>
+                        {% endfor %}
+                    </dl>
+                    <script type="text/javascript">
+                    <!--
+                        toggleType();
+                    // -->
+                    </script>
+                </td>
+            </tr>
+        </table>
+        <br />
+        <div align="center"><input type="submit" class="button" value="{{ lang.save_delayed_moderation }}" /></div>
+    </form>
+{% endblock body %}
