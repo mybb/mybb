@@ -1249,66 +1249,60 @@ if ($mybb->input['action'] == "email") {
     ]));
 }
 
-if($mybb->input['action'] == "do_password" && $mybb->request_method == "post")
-{
-	// Verify incoming POST request
-	verify_post_check($mybb->get_input('my_post_key'));
+if ($mybb->input['action'] == 'do_password' && $mybb->request_method == 'post') {
+    // Verify incoming POST request
+    verify_post_check($mybb->get_input('my_post_key'));
 
-	$errors = array();
+    $errors = [];
 
-	$plugins->run_hooks("usercp_do_password_start");
-	if(validate_password_from_uid($mybb->user['uid'], $mybb->get_input('oldpassword')) == false)
-	{
-		$errors[] = $lang->error_invalidpassword;
-	}
-	else
-	{
-		// Set up user handler.
-		require_once MYBB_ROOT."inc/datahandlers/user.php";
-		$userhandler = new UserDataHandler("update");
+    $plugins->run_hooks('usercp_do_password_start');
+    if (validate_password_from_uid($mybb->user['uid'], $mybb->get_input('oldpassword')) == false) {
+        $errors[] = $lang->error_invalidpassword;
+    } else {
+        // Set up user handler.
+        require_once MYBB_ROOT . 'inc/datahandlers/user.php';
+        $userhandler = new UserDataHandler("update");
 
-		$user = array(
-			"uid" => $mybb->user['uid'],
-			"password" => $mybb->get_input('password'),
-			"password2" => $mybb->get_input('password2')
-		);
+        $user = [
+            'uid' => $mybb->user['uid'],
+            'password' => $mybb->get_input('password'),
+            'password2' => $mybb->get_input('password2'),
+        ];
 
-		$userhandler->set_data($user);
+        $userhandler->set_data($user);
 
-		if(!$userhandler->validate_user())
-		{
-			$errors = $userhandler->get_friendly_errors();
-		}
-		else
-		{
-			$userhandler->update_user();
-			my_setcookie("mybbuser", $mybb->user['uid']."_".$userhandler->data['loginkey'], null, true);
+        if (!$userhandler->validate_user()) {
+            $errors = $userhandler->get_friendly_errors();
+        } else {
+            $userhandler->update_user();
+            my_setcookie('mybbuser', $mybb->user['uid'] . '_' . $userhandler->data['loginkey'], null, true);
 
-			// Notify the user by email that their password has been changed
-			$mail_message = $lang->sprintf($lang->email_changepassword, $mybb->user['username'], $mybb->user['email'], $mybb->settings['bbname'], $mybb->settings['bburl']);
-			$lang->emailsubject_changepassword = $lang->sprintf($lang->emailsubject_changepassword, $mybb->settings['bbname']);
-			my_mail($mybb->user['email'], $lang->emailsubject_changepassword, $mail_message);
+            // Notify the user by email that their password has been changed
+            $mail_message = $lang->sprintf($lang->email_changepassword, $mybb->user['username'], $mybb->user['email'],
+                $mybb->settings['bbname'], $mybb->settings['bburl']);
+            $lang->emailsubject_changepassword = $lang->sprintf($lang->emailsubject_changepassword,
+                $mybb->settings['bbname']);
+            my_mail($mybb->user['email'], $lang->emailsubject_changepassword, $mail_message);
 
-			$plugins->run_hooks("usercp_do_password_end");
-			redirect("usercp.php?action=password", $lang->redirect_passwordupdated);
-		}
-	}
-	if(count($errors) > 0)
-	{
-			$mybb->input['action'] = "password";
-			$errors = inline_error($errors);
-	}
+            $plugins->run_hooks('usercp_do_password_end');
+            redirect('usercp.php?action=password', $lang->redirect_passwordupdated);
+        }
+    }
+    if (count($errors) > 0) {
+        $mybb->input['action'] = 'password';
+        $errors = inline_error($errors);
+    }
 }
 
-if($mybb->input['action'] == "password")
-{
-	$plugins->run_hooks("usercp_password");
+if ($mybb->input['action'] == 'password') {
+    $plugins->run_hooks('usercp_password');
 
-	eval("\$editpassword = \"".$templates->get("usercp_password")."\";");
-	output_page($editpassword);
+    output_page(\MyBB\template('usercp/password.twig', [
+        'errors' => $errors,
+    ]));
 }
 
-if($mybb->input['action'] == "do_changename" && $mybb->request_method == "post")
+if ($mybb->input['action'] == "do_changename" && $mybb->request_method == "post")
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
