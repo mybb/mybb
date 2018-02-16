@@ -1,0 +1,36 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ mybb.settings.bburl }} - {{ lang.edit_sig }}</title>
+{% endblock head %}
+
+{% block body %}
+    <div class="error">
+        <p>
+            <em>{{ lang.edit_sig_error_title }}</em>
+        </p>
+        <ul>
+            <li>{{ lang.edit_sig_no_permission }}</li>
+        </ul>
+    </div>
+    <br />
+    {% if not sig is empty and showSig %}
+        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder tfixed">
+            <thead>
+            <tr>
+                <th class="thead">
+                    <strong>{{ attribute(lang, showSigType) }}</strong>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td class="trow1 scaleimages">
+                    {{ sigPreview|raw }}
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <br />
+    {% endif %}
+{% endblock body %}

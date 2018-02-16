@@ -1791,165 +1791,153 @@ if ($mybb->input['action'] == 'forumsubscriptions') {
     ]));
 }
 
-if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
-{
-	// Verify incoming POST request
-	verify_post_check($mybb->get_input('my_post_key'));
+if ($mybb->input['action'] == 'do_editsig' && $mybb->request_method == 'post') {
+    // Verify incoming POST request
+    verify_post_check($mybb->get_input('my_post_key'));
 
-	$plugins->run_hooks("usercp_do_editsig_start");
+    $plugins->run_hooks('usercp_do_editsig_start');
 
-	// User currently has a suspended signature
-	if($mybb->user['suspendsignature'] == 1 && $mybb->user['suspendsigtime'] > TIME_NOW)
-	{
-		error_no_permission();
-	}
+    // User currently has a suspended signature
+    if ($mybb->user['suspendsignature'] == 1 && $mybb->user['suspendsigtime'] > TIME_NOW) {
+        error_no_permission();
+    }
 
-	if($mybb->get_input('updateposts') == "enable")
-	{
-		$update_signature = array(
-			"includesig" => 1
-		);
-		$db->update_query("posts", $update_signature, "uid='".$mybb->user['uid']."'");
-	}
-	elseif($mybb->get_input('updateposts') == "disable")
-	{
-		$update_signature = array(
-			"includesig" => 0
-		);
-		$db->update_query("posts", $update_signature, "uid='".$mybb->user['uid']."'");
-	}
-	$new_signature = array(
-		"signature" => $db->escape_string($mybb->get_input('signature'))
-	);
-	$plugins->run_hooks("usercp_do_editsig_process");
-	$db->update_query("users", $new_signature, "uid='".$mybb->user['uid']."'");
-	$plugins->run_hooks("usercp_do_editsig_end");
-	redirect("usercp.php?action=editsig", $lang->redirect_sigupdated);
+    if ($mybb->get_input('updateposts') == 'enable') {
+        $update_signature = [
+            "includesig" => 1,
+        ];
+        $db->update_query('posts', $update_signature, "uid='" . $mybb->user['uid'] . "'");
+    } elseif ($mybb->get_input('updateposts') == 'disable') {
+        $update_signature = [
+            'includesig' => 0,
+        ];
+        $db->update_query('posts', $update_signature, "uid='" . $mybb->user['uid'] . "'");
+    }
+    $new_signature = [
+        'signature' => $db->escape_string($mybb->get_input('signature')),
+    ];
+    $plugins->run_hooks('usercp_do_editsig_process');
+    $db->update_query('users', $new_signature, "uid='" . $mybb->user['uid'] . "'");
+    $plugins->run_hooks('usercp_do_editsig_end');
+    redirect('usercp.php?action=editsig', $lang->redirect_sigupdated);
 }
 
-if($mybb->input['action'] == "editsig")
-{
-	$plugins->run_hooks("usercp_editsig_start");
-	if(!empty($mybb->input['preview']) && empty($error))
-	{
-		$sig = $mybb->get_input('signature');
-		$template = "usercp_editsig_preview";
-	}
-	elseif(empty($error))
-	{
-		$sig = $mybb->user['signature'];
-		$template = "usercp_editsig_current";
-	}
-	else
-	{
-		$sig = $mybb->get_input('signature');
-		$template = false;
-	}
+if ($mybb->input['action'] == 'editsig') {
+    $plugins->run_hooks('usercp_editsig_start');
 
-	if(!isset($error))
-	{
-		$error = '';
-	}
+    $show_sig = true;
 
-	if($mybb->user['suspendsignature'] && ($mybb->user['suspendsigtime'] == 0 || $mybb->user['suspendsigtime'] > 0 && $mybb->user['suspendsigtime'] > TIME_NOW))
-	{
-		// User currently has no signature and they're suspended
-		error($lang->sig_suspended);
-	}
+    if (!empty($mybb->input['preview']) && empty($error)) {
+        $sig = $mybb->get_input('signature');
+        $show_sig_type = 'sig_preview';
+    } elseif (empty($error)) {
+        $sig = $mybb->user['signature'];
+        $show_sig_type = 'current_sig';
+    } else {
+        $sig = $mybb->get_input('signature');
+        $show_sig = false;
+        $show_sig_type = '';
+    }
 
-	if($mybb->usergroup['canusesig'] != 1)
-	{
-		// Usergroup has no permission to use this facility
-		error_no_permission();
-	}
-	else if($mybb->usergroup['canusesig'] == 1 && $mybb->usergroup['canusesigxposts'] > 0 && $mybb->user['postnum'] < $mybb->usergroup['canusesigxposts'])
-	{
-		// Usergroup can use this facility, but only after x posts
-		error($lang->sprintf($lang->sig_suspended_posts, $mybb->usergroup['canusesigxposts']));
-	}
+    if (!isset($error)) {
+        $error = '';
+    }
 
-	$signature = '';
-	if($sig && $template)
-	{
-		$sig_parser = array(
-			"allow_html" => $mybb->settings['sightml'],
-			"allow_mycode" => $mybb->settings['sigmycode'],
-			"allow_smilies" => $mybb->settings['sigsmilies'],
-			"allow_imgcode" => $mybb->settings['sigimgcode'],
-			"me_username" => $mybb->user['username'],
-			"filter_badwords" => 1
-		);
+    if ($mybb->user['suspendsignature'] && ($mybb->user['suspendsigtime'] == 0 || $mybb->user['suspendsigtime'] > 0 && $mybb->user['suspendsigtime'] > TIME_NOW)) {
+        // User currently has no signature and they're suspended
+        error($lang->sig_suspended);
+    }
 
-		if($mybb->user['showimages'] != 1)
-		{
-			$sig_parser['allow_imgcode'] = 0;
-		}
+    if ($mybb->usergroup['canusesig'] != 1) {
+        // Usergroup has no permission to use this facility
+        error_no_permission();
+    } else {
+        if ($mybb->usergroup['canusesig'] == 1 && $mybb->usergroup['canusesigxposts'] > 0 && $mybb->user['postnum'] < $mybb->usergroup['canusesigxposts']) {
+            // Usergroup can use this facility, but only after x posts
+            error($lang->sprintf($lang->sig_suspended_posts, $mybb->usergroup['canusesigxposts']));
+        }
+    }
 
-		$sigpreview = $parser->parse_message($sig, $sig_parser);
-		eval("\$signature = \"".$templates->get($template)."\";");
-	}
+    $sigpreview = '';
+    if ($sig && $show_sig) {
+        $sig_parser = [
+            'allow_html' => $mybb->settings['sightml'],
+            'allow_mycode' => $mybb->settings['sigmycode'],
+            'allow_smilies' => $mybb->settings['sigsmilies'],
+            'allow_imgcode' => $mybb->settings['sigimgcode'],
+            'me_username' => $mybb->user['username'],
+            'filter_badwords' => 1,
+        ];
 
-	// User has a current signature, so let's display it (but show an error message)
-	if($mybb->user['suspendsignature'] && $mybb->user['suspendsigtime'] > TIME_NOW)
-	{
-		$plugins->run_hooks("usercp_editsig_end");
+        if ($mybb->user['showimages'] != 1) {
+            $sig_parser['allow_imgcode'] = 0;
+        }
 
-		// User either doesn't have permission, or has their signature suspended
-		eval("\$editsig = \"".$templates->get("usercp_editsig_suspended")."\";");
-	}
-	else
-	{
-		// User is allowed to edit their signature
-		if($mybb->settings['sigsmilies'] == 1)
-		{
-			$sigsmilies = $lang->on;
-			$smilieinserter = build_clickable_smilies();
-		}
-		else
-		{
-			$sigsmilies = $lang->off;
-		}
-		if($mybb->settings['sigmycode'] == 1)
-		{
-			$sigmycode = $lang->on;
-		}
-		else
-		{
-			$sigmycode = $lang->off;
-		}
-		if($mybb->settings['sightml'] == 1)
-		{
-			$sightml = $lang->on;
-		}
-		else
-		{
-			$sightml = $lang->off;
-		}
-		if($mybb->settings['sigimgcode'] == 1)
-		{
-			$sigimgcode = $lang->on;
-		}
-		else
-		{
-			$sigimgcode = $lang->off;
-		}
-		$sig = htmlspecialchars_uni($sig);
-		$lang->edit_sig_note2 = $lang->sprintf($lang->edit_sig_note2, $sigsmilies, $sigmycode, $sigimgcode, $sightml, $mybb->settings['siglength']);
+        $sigpreview = $parser->parse_message($sig, $sig_parser);
+    }
 
-		if($mybb->settings['bbcodeinserter'] != 0 || $mybb->user['showcodebuttons'] != 0)
-		{
-			$codebuttons = build_mycode_inserter("signature");
-		}
+    // User has a current signature, so let's display it (but show an error message)
+    if ($mybb->user['suspendsignature'] && $mybb->user['suspendsigtime'] > TIME_NOW) {
+        $plugins->run_hooks('usercp_editsig_end');
 
-		$plugins->run_hooks("usercp_editsig_end");
+        // User either doesn't have permission, or has their signature suspended
+        $editsig = \MyBB\template('usercp/editsig_suspended.twig', [
+            'sig' => $sig,
+            'sigPreview' => $sigpreview,
+            'showSigType' => $show_sig_type,
+            'showSig' => $show_sig,
+        ]);
+    } else {
+        // User is allowed to edit their signature
+        if ($mybb->settings['sigsmilies'] == 1) {
+            $sigsmilies = $lang->on;
+            $smilieinserter = build_clickable_smilies();
+        } else {
+            $sigsmilies = $lang->off;
+        }
 
-		eval("\$editsig = \"".$templates->get("usercp_editsig")."\";");
-	}
+        if ($mybb->settings['sigmycode'] == 1) {
+            $sigmycode = $lang->on;
+        } else {
+            $sigmycode = $lang->off;
+        }
 
-	output_page($editsig);
+        if ($mybb->settings['sightml'] == 1) {
+            $sightml = $lang->on;
+        } else {
+            $sightml = $lang->off;
+        }
+
+        if ($mybb->settings['sigimgcode'] == 1) {
+            $sigimgcode = $lang->on;
+        } else {
+            $sigimgcode = $lang->off;
+        }
+
+        $sig = htmlspecialchars_uni($sig);
+        $lang->edit_sig_note2 = $lang->sprintf($lang->edit_sig_note2, $sigsmilies, $sigmycode, $sigimgcode, $sightml,
+            $mybb->settings['siglength']);
+
+        if ($mybb->settings['bbcodeinserter'] != 0 || $mybb->user['showcodebuttons'] != 0) {
+            $codebuttons = build_mycode_inserter('signature');
+        }
+
+        $plugins->run_hooks('usercp_editsig_end');
+
+        $editsig = \MyBB\template('usercp/editsig.twig', [
+            'sig' => $sig,
+            'sigPreview' => $sigpreview,
+            'showSigType' => $show_sig_type,
+            'showSig' => $show_sig,
+            'smilieInserter' => $smilieinserter,
+            'codeButtons' => $codebuttons,
+        ]);
+    }
+
+    output_page($editsig);
 }
 
-if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
+if ($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
