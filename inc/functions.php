@@ -8743,26 +8743,6 @@ function my_validate_url($url, $relative_path=false, $allow_local=false)
 }
 
 /**
- * Strip html tags from string, also removes <script> and <style> contents.
- *
- * @param  string $string         String to stripe
- * @param  string $allowable_tags Allowed html tags
- *
- * @return string                 Striped string
- */
-function my_strip_tags($string, $allowable_tags = '')
-{
-	$pattern = array(
-		'@(&lt;)style[^(&gt;)]*?(&gt;).*?(&lt;)/style(&gt;)@siu',
-		'@(&lt;)script[^(&gt;)]*?.*?(&lt;)/script(&gt;)@siu',
-		'@<style[^>]*?>.*?</style>@siu',
-		'@<script[^>]*?.*?</script>@siu',
-	);
-	$string = preg_replace($pattern, '', $string);
-	return strip_tags($string, $allowable_tags);
-}
-
-/**
  * Escapes a RFC 4180-compliant CSV string.
  * Based on https://github.com/Automattic/camptix/blob/f80725094440bf09861383b8f11e96c177c45789/camptix.php#L2867
  *
