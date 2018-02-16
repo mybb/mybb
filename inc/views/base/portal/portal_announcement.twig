@@ -36,7 +36,10 @@
                         <p>
                             {{ announcement.message|raw }}
                         </p>
-                        {$post['attachments']}
+                        {% if announcement.hasattachments %}
+                            {% set attached = announcement.attached %}
+                            {% include 'postbit/postbit_attachments.twig' %}
+                        {% endif %}
                     </td>
                 </tr>
                 <tr>
