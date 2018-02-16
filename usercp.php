@@ -1302,68 +1302,58 @@ if ($mybb->input['action'] == 'password') {
     ]));
 }
 
-if ($mybb->input['action'] == "do_changename" && $mybb->request_method == "post")
-{
-	// Verify incoming POST request
-	verify_post_check($mybb->get_input('my_post_key'));
+if ($mybb->input['action'] == 'do_changename' && $mybb->request_method == 'post') {
+    // Verify incoming POST request
+    verify_post_check($mybb->get_input('my_post_key'));
 
-	$plugins->run_hooks("usercp_do_changename_start");
-	if($mybb->usergroup['canchangename'] != 1)
-	{
-		error_no_permission();
-	}
+    $plugins->run_hooks('usercp_do_changename_start');
+    if ($mybb->usergroup['canchangename'] != 1) {
+        error_no_permission();
+    }
 
-	if(validate_password_from_uid($mybb->user['uid'], $mybb->get_input('password')) == false)
-	{
-		$errors[] = $lang->error_invalidpassword;
-	}
-	else
-	{
-		// Set up user handler.
-		require_once MYBB_ROOT."inc/datahandlers/user.php";
-		$userhandler = new UserDataHandler("update");
+    if (validate_password_from_uid($mybb->user['uid'], $mybb->get_input('password')) == false) {
+        $errors[] = $lang->error_invalidpassword;
+    } else {
+        // Set up user handler.
+        require_once MYBB_ROOT . 'inc/datahandlers/user.php';
+        $userhandler = new UserDataHandler('update');
 
-		$user = array(
-			"uid" => $mybb->user['uid'],
-			"username" => $mybb->get_input('username')
-		);
+        $user = [
+            'uid' => $mybb->user['uid'],
+            'username' => $mybb->get_input('username'),
+        ];
 
-		$userhandler->set_data($user);
+        $userhandler->set_data($user);
 
-		if(!$userhandler->validate_user())
-		{
-			$errors = $userhandler->get_friendly_errors();
-		}
-		else
-		{
-			$userhandler->update_user();
-			$plugins->run_hooks("usercp_do_changename_end");
-			redirect("usercp.php?action=changename", $lang->redirect_namechanged);
+        if (!$userhandler->validate_user()) {
+            $errors = $userhandler->get_friendly_errors();
+        } else {
+            $userhandler->update_user();
+            $plugins->run_hooks('usercp_do_changename_end');
+            redirect('usercp.php?action=changename', $lang->redirect_namechanged);
 
-		}
-	}
-	if(count($errors) > 0)
-	{
-		$errors = inline_error($errors);
-		$mybb->input['action'] = "changename";
-	}
+        }
+    }
+    if (count($errors) > 0) {
+        $errors = inline_error($errors);
+        $mybb->input['action'] = 'changename';
+    }
 }
 
-if($mybb->input['action'] == "changename")
-{
-	$plugins->run_hooks("usercp_changename_start");
-	if($mybb->usergroup['canchangename'] != 1)
-	{
-		error_no_permission();
-	}
+if ($mybb->input['action'] == 'changename') {
+    $plugins->run_hooks('usercp_changename_start');
+    if ($mybb->usergroup['canchangename'] != 1) {
+        error_no_permission();
+    }
 
-	$plugins->run_hooks("usercp_changename_end");
+    $plugins->run_hooks('usercp_changename_end');
 
-	eval("\$changename = \"".$templates->get("usercp_changename")."\";");
-	output_page($changename);
+    output_page(\MyBB\template('usercp/changename.twig', [
+        'errors' => $errors,
+    ]));
 }
 
-if($mybb->input['action'] == "do_subscriptions")
+if ($mybb->input['action'] == "do_subscriptions")
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
