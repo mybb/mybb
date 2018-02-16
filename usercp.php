@@ -1159,100 +1159,94 @@ if($mybb->input['action'] == "options")
 	output_page($editprofile);
 }
 
-if($mybb->input['action'] == "do_email" && $mybb->request_method == "post")
-{
-	// Verify incoming POST request
-	verify_post_check($mybb->get_input('my_post_key'));
+if ($mybb->input['action'] == 'do_email' && $mybb->request_method == 'post') {
+    // Verify incoming POST request
+    verify_post_check($mybb->get_input('my_post_key'));
 
-	$errors = array();
+    $errors = [];
 
-	$plugins->run_hooks("usercp_do_email_start");
-	if(validate_password_from_uid($mybb->user['uid'], $mybb->get_input('password')) == false)
-	{
-		$errors[] = $lang->error_invalidpassword;
-	}
-	else
-	{
-		// Set up user handler.
-		require_once MYBB_ROOT."inc/datahandlers/user.php";
-		$userhandler = new UserDataHandler("update");
+    $plugins->run_hooks('usercp_do_email_start');
+    if (validate_password_from_uid($mybb->user['uid'], $mybb->get_input('password')) == false) {
+        $errors[] = $lang->error_invalidpassword;
+    } else {
+        // Set up user handler.
+        require_once MYBB_ROOT . 'inc/datahandlers/user.php';
+        $userhandler = new UserDataHandler('update');
 
-		$user = array(
-			"uid" => $mybb->user['uid'],
-			"email" => $mybb->get_input('email'),
-			"email2" => $mybb->get_input('email2')
-		);
+        $user = [
+            'uid' => $mybb->user['uid'],
+            'email' => $mybb->get_input('email'),
+            'email2' => $mybb->get_input('email2'),
+        ];
 
-		$userhandler->set_data($user);
+        $userhandler->set_data($user);
 
-		if(!$userhandler->validate_user())
-		{
-			$errors = $userhandler->get_friendly_errors();
-		}
-		else
-		{
-			if($mybb->user['usergroup'] != "5" && $mybb->usergroup['cancp'] != 1 && $mybb->settings['regtype'] != "verify")
-			{
-				$uid = $mybb->user['uid'];
-				$username = $mybb->user['username'];
+        if (!$userhandler->validate_user()) {
+            $errors = $userhandler->get_friendly_errors();
+        } else {
+            if ($mybb->user['usergroup'] != "5" && $mybb->usergroup['cancp'] != 1 && $mybb->settings['regtype'] != 'verify') {
+                $uid = $mybb->user['uid'];
+                $username = $mybb->user['username'];
 
-				// Emails require verification
-				$activationcode = random_str();
-				$db->delete_query("awaitingactivation", "uid='".$mybb->user['uid']."'");
+                // Emails require verification
+                $activationcode = random_str();
+                $db->delete_query('awaitingactivation', "uid='" . $mybb->user['uid'] . "'");
 
-				$newactivation = array(
-					"uid" => $mybb->user['uid'],
-					"dateline" => TIME_NOW,
-					"code" => $activationcode,
-					"type" => "e",
-					"misc" => $db->escape_string($mybb->get_input('email'))
-				);
+                $newactivation = [
+                    'uid' => $mybb->user['uid'],
+                    'dateline' => TIME_NOW,
+                    'code' => $activationcode,
+                    'type' => "e",
+                    'misc' => $db->escape_string($mybb->get_input('email')),
+                ];
 
-				$db->insert_query("awaitingactivation", $newactivation);
+                $db->insert_query('awaitingactivation', $newactivation);
 
-				$mail_message = $lang->sprintf($lang->email_changeemail, $mybb->user['username'], $mybb->settings['bbname'], $mybb->user['email'], $mybb->get_input('email'), $mybb->settings['bburl'], $activationcode, $mybb->user['username'], $mybb->user['uid']);
+                $mail_message = $lang->sprintf($lang->email_changeemail, $mybb->user['username'],
+                    $mybb->settings['bbname'], $mybb->user['email'], $mybb->get_input('email'),
+                    $mybb->settings['bburl'], $activationcode, $mybb->user['username'], $mybb->user['uid']);
 
-				$lang->emailsubject_changeemail = $lang->sprintf($lang->emailsubject_changeemail, $mybb->settings['bbname']);
-				my_mail($mybb->get_input('email'), $lang->emailsubject_changeemail, $mail_message);
+                $lang->emailsubject_changeemail = $lang->sprintf($lang->emailsubject_changeemail,
+                    $mybb->settings['bbname']);
+                my_mail($mybb->get_input('email'), $lang->emailsubject_changeemail, $mail_message);
 
-				$plugins->run_hooks("usercp_do_email_verify");
-				error($lang->redirect_changeemail_activation);
-			}
-			else
-			{
-				$userhandler->update_user();
-				// Email requires no activation
-				$mail_message = $lang->sprintf($lang->email_changeemail_noactivation, $mybb->user['username'], $mybb->settings['bbname'], $mybb->user['email'], $mybb->get_input('email'), $mybb->settings['bburl']);
-				my_mail($mybb->get_input('email'), $lang->sprintf($lang->emailsubject_changeemail, $mybb->settings['bbname']), $mail_message);
-				$plugins->run_hooks("usercp_do_email_changed");
-				redirect("usercp.php?action=email", $lang->redirect_emailupdated);
-			}
-		}
-	}
-	if(count($errors) > 0)
-	{
-		$mybb->input['action'] = "email";
-		$errors = inline_error($errors);
-	}
+                $plugins->run_hooks('usercp_do_email_verify');
+                error($lang->redirect_changeemail_activation);
+            } else {
+                $userhandler->update_user();
+                // Email requires no activation
+                $mail_message = $lang->sprintf($lang->email_changeemail_noactivation, $mybb->user['username'],
+                    $mybb->settings['bbname'], $mybb->user['email'], $mybb->get_input('email'),
+                    $mybb->settings['bburl']);
+                my_mail($mybb->get_input('email'),
+                    $lang->sprintf($lang->emailsubject_changeemail, $mybb->settings['bbname']), $mail_message);
+                $plugins->run_hooks('usercp_do_email_changed');
+                redirect('usercp.php?action=email', $lang->redirect_emailupdated);
+            }
+        }
+    }
+    if (count($errors) > 0) {
+        $mybb->input['action'] = 'email';
+        $errors = inline_error($errors);
+    }
 }
 
-if($mybb->input['action'] == "email")
-{
-	// Coming back to this page after one or more errors were experienced, show fields the user previously entered (with the exception of the password)
-	if($errors)
-	{
-		$email = htmlspecialchars_uni($mybb->get_input('email'));
-		$email2 = htmlspecialchars_uni($mybb->get_input('email2'));
-	}
-	else
-	{
-		$email = $email2 = '';
-	}
+if ($mybb->input['action'] == "email") {
+    // Coming back to this page after one or more errors were experienced, show fields the user previously entered (with the exception of the password)
+    if ($errors) {
+        $email = $mybb->get_input('email');
+        $email2 = $mybb->get_input('email2');
+    } else {
+        $email = $email2 = '';
+    }
 
-	$plugins->run_hooks("usercp_email");
+    $plugins->run_hooks('usercp_email');
 
-	eval("\$changemail = \"".$templates->get("usercp_email")."\";");
-	output_page($changemail);
+    output_page(\MyBB\template('usercp/email.twig', [
+        'errors' => $errors,
+        'email' => $email,
+        'email2' => $email2,
+    ]));
 }
 
 if($mybb->input['action'] == "do_password" && $mybb->request_method == "post")
