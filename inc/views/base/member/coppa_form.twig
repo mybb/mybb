@@ -1,0 +1,61 @@
+<html>
+    <head>
+        <title>{{ mybb.settings.bbname }} - {{ lang.coppa_compliance }}</title>
+        <style type="text/css">
+            body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
+            .largetext, h1 { font-family: Verdana, Arial, sans-serif; font-size: medium; font-weight: bold; margin: 0; }
+            .grey { color: #ccc; }
+            dl { margin-left: 40px; }
+            dt { width: 150px; float: left; clear: left; font-weight: bold; }
+            dd { margin-bottom: 20px; margin-left: 150px; }
+            dd.single { margin-left: 0; }
+            input.textbox { border: 0; border-bottom: 1px solid #000; font-size: 16px; width: 350px; }
+            input.date { width: 80px; }
+        </style>
+    </head>
+    <body>
+        <div class="largetext float_right" style="text-align: center; padding-bottom: 10px;">
+            {{ mybb.settings.bbname }}<br /><span class="grey">{{ lang.coppa_registration }}</span>
+        </div>
+        <div style="padding-bottom: 10px;"><a href="index.php"><img src="{{ theme.logo }}" alt="{{ mybb.settings.bbname }}" border="0" /></a></div>
+        <br class="clear" />
+
+        <p>{{ lang.coppa_form_instructions }}</p>
+
+        <dl>
+            <dt>{{ lang.fax_number }}</dt>
+            <dd>{{ mybb.settings.faxno }}</dd>
+
+            <dt>{{ lang.mailing_address }}</dt>
+            <dd>{{ mybb.settings.mailingaddress }}</dd>
+        </dl>
+
+        <h1 class="clear" />{{ lang.account_information }}</h1>
+        <dl>
+            <dt><label for="username">{{ lang.username }}</label></dt>
+            <dd><input type="text" class="textbox" id="username" /></dd>
+
+            <dt><label for="email">{{ lang.email }}</label></dt>
+            <dd><input type="text" class="textbox" id="email" /></dd>
+        </dl>
+        <h1 class="clear" />{{ lang.parent_details }}</h1>
+        <dl>
+            <dt><label for="name">{{ lang.full_name }}</label></dt>
+            <dd><input type="text" class="textbox" id="name" /></dd>
+
+            <dt><label for="relation">{{ lang.relation }}</label></dt>
+            <dd><input type="text" class="textbox" id="relation" /></dd>
+
+            <dt><label for="phone">{{ lang.phone_no }}</label></dt>
+            <dd><input type="text" class="textbox" id="phone" /></dd>
+
+            <dt><label for="parent_email">{{ lang.email }}</label></dt>
+            <dd><input type="text" class="textbox" id="parent_email" /></dd>
+
+            <dd class="single">{{ lang.coppa_parent_agreement }}</dd>
+
+            <dt><label for="signature">{{ lang.signature }}</label></dt>
+            <dd><input type="text" class="textbox" id="signature" /> {{ lang.date }}: <input type="text" class="textbox date" id="date" /></dd>
+        </dl>
+    </body>
+</html>
