@@ -1,0 +1,69 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ mybb.settings.bbname }} - {{ lang.users_online }}</title>
+
+    {% if mybb.settings.refreshwol > 0 %}
+        <meta http-equiv="refresh" content="{{ mybb.settings.refreshwol * 60 }};URL=online.php{{ refresh_string }}"/>
+    {% endif %}
+{% endblock head %}
+
+{% block body %}
+    {{ multipage|raw }}
+    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+        <tr>
+            <td class="thead" colspan="3"><strong>{{ lang.users_online }}</strong></td>
+        </tr>
+        <tr>
+            <td class="tcat" align="center">
+                <a href="online.php?sortby=username">
+                    <span class="smalltext"><strong>{{ lang.on_username }}</strong></span>
+                </a>
+            </td>
+            <td class="tcat" align="center">
+                <a href="online.php?sortby=time">
+                    <span class="smalltext"><strong>{{ lang.time }}</strong></span>
+                </a>
+            </td>
+            <td class="tcat" width="50%">
+                <a href="online.php?sortby=location">
+                    <span class="smalltext"><strong>{{ lang.location }}</strong></span>
+                </a>
+            </td>
+        </tr>
+        {% for user in online_users %}
+            <tr>
+                <td class="trow1">
+                    {{ user.online_name|raw }}
+
+                    {% if mybb.usergroup.canviewonlineips %}
+                        <br/>
+                        <span class="smalltext">
+                            {{ lang.ip }} {{ user.ip }}
+
+                            {% if mybb.usergroup.canmodcp and mybb.usergroup.canuseipsearch %}
+                                <a href="modcp.php?action=ipsearch&amp;ipaddress={{ user.ip }}&amp;search_users=1">
+                                    {{ lang.lookup }}
+                                </a>
+                            {% endif %}
+                        </span>
+                    {% endif %}
+                </td>
+                <td align="center" class="trow2">{{ user.online_time }}</td>
+                <td class="trow1" width="50%">{{ user.location|raw }}</td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <td class="tfoot" colspan="3" align="right">
+                <span class="smalltext">
+                    <strong>
+                        <a href="online.php?action=today">{{ lang.online_today }}</a> |
+                        <a href="online.php">{{ lang.refresh_page }}</a>
+                    </strong>
+                </span>
+            </td>
+        </tr>
+    </table>
+    <br/>
+    {{ multipage|raw }}
+{% endblock body %}

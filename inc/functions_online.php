@@ -1136,11 +1136,11 @@ function build_friendly_wol_location($user_activity)
  * Build a Who's Online row for a specific user
  *
  * @param array $user Array of user information including activity information
- * @return string Formatted online row
+ * @return array|bool Array of formatted user information
  */
 function build_wol_row($user)
 {
-	global $mybb, $lang, $templates, $theme, $session, $db;
+	global $mybb, $lang, $db;
 
 	// We have a registered user
 	if($user['uid'] > 0)
@@ -1159,47 +1159,36 @@ function build_wol_row($user)
 			}
 
 			$user['username'] = format_name(htmlspecialchars_uni($user['username']), $user['usergroup'], $user['displaygroup']);
-			$online_name = build_profile_link($user['username'], $user['uid']).$invisible_mark;
+			$user['online_name'] = build_profile_link($user['username'], $user['uid']).$invisible_mark;
 		}
 	}
 	// We have a bot
 	elseif(!empty($user['bot']))
 	{
-		$online_name = format_name($user['bot'], $user['usergroup']);
+		$user['online_name'] = format_name($user['bot'], $user['usergroup']);
 	}
 	// Otherwise we've got a plain old guest
 	else
 	{
-		$online_name = format_name($lang->guest, 1);
+		$user['online_name'] = format_name($lang->guest, 1);
 	}
 
-	$online_time = my_date($mybb->settings['timeformat'], $user['time']);
+	$user['online_time'] = my_date($mybb->settings['timeformat'], $user['time']);
 
 	// Fetch the location name for this users activity
-	$location = build_friendly_wol_location($user['activity']);
+	$user['location'] = build_friendly_wol_location($user['activity']);
 
 	// Can view IPs, then fetch the IP template
 	if($mybb->usergroup['canviewonlineips'] == 1)
 	{
 		$user['ip'] = my_inet_ntop($db->unescape_binary($user['ip']));
-
-		if($mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canuseipsearch'] == 1)
-		{
-			eval("\$lookup = \"".$templates->get("online_row_ip_lookup")."\";");
-		}
-
-		eval("\$user_ip = \"".$templates->get("online_row_ip")."\";");
-	}
-	else
-	{
-		$user_ip = $lookup = $user['ip'] = '';
 	}
 
-	$online_row = '';
 	// And finally if we have permission to view this user, return the completed online row
 	if($user['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])
 	{
-		eval("\$online_row = \"".$templates->get("online_row")."\";");
-	}
-	return $online_row;
+		return $user;
+	} else {
+	    return false;
+    }
 }
