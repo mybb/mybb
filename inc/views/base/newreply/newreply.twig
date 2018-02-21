@@ -38,12 +38,29 @@
             </tr>
             {{ loginbox|raw }}
             <tr>
-                <td class="trow2" width="20%"><strong>{{ lang.post_subject }}</strong></td>
-                <td class="trow2"><input type="text" class="textbox" name="subject" size="40" maxlength="85" value="{{ newreply.subject }}" tabindex="1" /></td>
+                <td class="trow2" width="20%"><strong><label for="subject">{{ lang.post_subject }}</label></strong></td>
+                <td class="trow2"><input type="text" class="textbox" name="subject" size="40" maxlength="85" id="subject" value="{{ newreply.subject }}" tabindex="1" /></td>
             </tr>
-            {{ posticons|raw }}
+            {% if newreply.showposticons %}
+                <tr>
+                    <td class="trow1" style="vertical-align: top">
+                        <strong>{{ lang.post_icon }}</strong>
+                        <span class="smalltext">
+                            <label class="posticons_label"><input type="radio" class="radio" name="icon" value="-1"{% if newreply.emptyiconcheck %} checked="checked"{% endif %} />{{ lang.no_post_icon }}</label>
+                        </span>
+                    </td>
+                    <td class="trow1" valign="top">
+                        {% for posticon in posticons %}
+                            <label class="posticons_label">
+                                <input type="radio" name="icon" value="{{ posticon.iid }}"{% if posticon.checked %} checked="checked"{% endif %} /> 
+                                <img src="{{ posticon.path }}" alt="{{ posticon.name }}" title="{{ posticon.name }}" />
+                            </label>
+                        {% endfor %}
+                    </td>
+                </tr>
+            {% endif %}
             <tr>
-                <td class="trow2" valign="top"><strong>{{ lang.your_message }}</strong><br />{{ smilieinserter|raw }}</td>
+                <td class="trow2" valign="top"><strong><label for="message">{{ lang.your_message }}</label></strong><br />{{ smilieinserter|raw }}</td>
                 <td class="trow2">
                     <textarea id="message" name="message" rows="20" cols="70" tabindex="2" >{{ newreply.message }}</textarea>
                     {{ codebuttons|raw }}

@@ -1349,6 +1349,16 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
     $newreply['replyto'] = $replyto;
     $newreply['pid'] = $pid;
 
+    $newreply['showposticons'] = false;
+    if (is_array($posticons)) {
+        $newreply['showposticons'] = true;
+    }
+
+    $newreply['emptyiconcheck'] = false;
+    if (empty($mybb->input['icon'])) {
+        $newreply['emptyiconcheck'] = true;
+    }
+
     output_page(\MyBB\template('newreply/newreply.twig', [
         'newreply' => $newreply,
         'reply_errors' => $reply_errors,
