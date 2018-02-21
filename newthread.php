@@ -823,7 +823,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
         $mybb->input['threadprefix'] = 0;
     }
 
-    $prefixselect = build_prefix_select($forum['fid'], $mybb->get_input('threadprefix', MyBB::INPUT_INT));
+    $prefixes = build_prefix_select($forum['fid'], $mybb->get_input('threadprefix', MyBB::INPUT_INT));
 
     $newthread['posthash'] = $mybb->get_input('posthash');
 
@@ -1031,6 +1031,21 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
     $newthread['tid'] = $tid;
     $newthread['pid'] = $pid;
 
+    $newthread['showprefixes'] = false;
+    if (is_array($prefixes)) {
+        $newthread['showprefixes'] = true;
+    }
+
+    $newthread['showposticons'] = false;
+    if (is_array($posticons)) {
+        $newthread['showposticons'] = true;
+    }
+
+    $newthread['emptyiconcheck'] = false;
+    if (empty($mybb->input['icon'])) {
+        $newthread['emptyiconcheck'] = true;
+    }
+
     output_page(\MyBB\template('newthread/newthread.twig', [
         'newthread' => $newthread,
         'thread_errors' => $thread_errors,
@@ -1041,7 +1056,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
         'postbit' => $postbit,
         'attachments' => $attachments,
         'captcha' => $captcha,
-        'prefixselect' => $prefixselect,
+        'prefixes' => $prefixes,
         'posticons' => $posticons,
     ]));
 }

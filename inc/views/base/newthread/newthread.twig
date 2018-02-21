@@ -35,12 +35,39 @@
             </tr>
             {{ loginbox|raw }}
             <tr>
-                <td class="trow2" width="20%"><strong>{{ lang.thread_subject }}</strong></td>
-                <td class="trow2">{{ prefixselect|raw }}<input type="text" class="textbox" name="subject" size="40" maxlength="85" value="{{ newthread.subject }}" tabindex="1" /></td>
+                <td class="trow2" width="20%"><strong><label for="subject">{{ lang.thread_subject }}</label></strong></td>
+                <td class="trow2">
+                    {% if newthread.showprefixes %}
+                        <select name="threadprefix">
+                            <option value="0">{{ lang.no_prefix }}</option>
+                            {% for prefix in prefixes %}
+                                <option value="{{ prefix.pid }}"{% if prefix.selected %} selected="selected"{% endif %}>{{ prefix.prefix }}</option>
+                            {% endfor %}
+                        </select>
+                    {% endif %}
+                    <input type="text" class="textbox" name="subject" size="40" maxlength="85" id="subject" value="{{ newthread.subject }}" tabindex="1" />
+                </td>
             </tr>
-            {{ posticons|raw }}
+            {% if newthread.showposticons %}
+                <tr>
+                    <td class="trow1" style="vertical-align: top">
+                        <strong>{{ lang.post_icon }}</strong>
+                        <span class="smalltext">
+                            <label class="posticons_label"><input type="radio" class="radio" name="icon" value="-1"{% if newthread.emptyiconcheck %} checked="checked"{% endif %} />{{ lang.no_post_icon }}</label>
+                        </span>
+                    </td>
+                    <td class="trow1" valign="top">
+                        {% for posticon in posticons %}
+                            <label class="posticons_label">
+                                <input type="radio" name="icon" value="{{ posticon.iid }}"{% if posticon.checked %} checked="checked"{% endif %} /> 
+                                <img src="{{ posticon.path }}" alt="{{ posticon.name }}" title="{{ posticon.name }}" />
+                            </label>
+                        {% endfor %}
+                    </td>
+                </tr>
+            {% endif %}
             <tr>
-                <td class="trow2" valign="top"><strong>{{ lang.your_message }}</strong>{{ smilieinserter|raw }}</td>
+                <td class="trow2" valign="top"><strong><label for="message">{{ lang.your_message }}</label></strong>{{ smilieinserter|raw }}</td>
                 <td class="trow2">
                     <textarea name="message" id="message" rows="20" cols="70" tabindex="2">{{ newthread.message }}</textarea>
                     {{ codebuttons|raw }}
