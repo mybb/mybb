@@ -794,13 +794,12 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
     }
 
     // Generate thread prefix selector if this is the first post of the thread
-    $prefixselect = '';
     if ($thread['firstpost'] == $pid) {
         if (!$mybb->get_input('threadprefix', MyBB::INPUT_INT)) {
             $mybb->input['threadprefix'] = $thread['prefix'];
         }
 
-        $prefixselect = build_prefix_select($forum['fid'], $mybb->get_input('threadprefix', MyBB::INPUT_INT), 0, $thread['prefix']);
+        $prefixes = build_prefix_select($forum['fid'], $mybb->get_input('threadprefix', MyBB::INPUT_INT), 0, $thread['prefix']);
     }
 
     $query = $db->simple_select("posts", "*", "tid='{$tid}'", array("limit" => 1, "order_by" => "dateline", "order_dir" => "asc"));
@@ -857,6 +856,23 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 
     $forum['name'] = strip_tags($forum['name']);
 
+    $editpost['pid'] = $pid;
+
+    $editpost['showprefixes'] = false;
+    if (is_array($prefixes)) {
+        $editpost['showprefixes'] = true;
+    }
+
+    $editpost['showposticons'] = false;
+    if (is_array($posticons)) {
+        $editpost['showposticons'] = true;
+    }
+
+    $editpost['emptyiconcheck'] = false;
+    if (empty($mybb->input['icon'])) {
+        $editpost['emptyiconcheck'] = true;
+    }
+
     output_page(\MyBB\template('editpost/editpost.twig', [
         'editpost' => $editpost,
         'post_errors' => $post_errors,
@@ -867,7 +883,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
         'codebuttons' => $codebuttons,
         'postbit' => $postbit,
         'attachments' => $attachments,
-        'prefixselect' => $prefixselect,
+        'prefixes' => $prefixes,
         'posticons' => $posticons,
     ]));
 }

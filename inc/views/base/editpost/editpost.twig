@@ -41,11 +41,11 @@
                 </tr>
             </table>
             <input type="hidden" name="action" value="deletepost" />
-            <input type="hidden" name="pid" value="{{ post.pid }}" />
+            <input type="hidden" name="pid" value="{{ editpost.pid }}" />
         </form>
         <br />
     {% endif %}
-    <form id="editpost" action="editpost.php?pid={{ post.pid }}&amp;processed=1" method="post" enctype="multipart/form-data" name="input">
+    <form id="editpost" action="editpost.php?pid={{ editpost.pid }}&amp;processed=1" method="post" enctype="multipart/form-data" name="input">
         <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
         <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
             <tr>
@@ -53,12 +53,38 @@
             </tr>
             {{ loginbox|raw }}
             <tr>
-                <td class="trow2"><strong>{{ lang.subject }}</strong></td>
-                <td class="trow2">{{ prefixselect|raw }}<input type="text" class="textbox" name="subject" size="40" maxlength="85" value="{{ editpost.subject }}" tabindex="1" /></td>
+                <td class="trow2"><strong><label for="subject">{{ lang.subject }}</label></strong></td>
+                <td class="trow2">
+                    {% if editpost.showprefixes %}
+                        <select name="threadprefix">
+                            <option value="0">{{ lang.no_prefix }}</option>
+                            {% for prefix in prefixes %}
+                                <option value="{{ prefix.pid }}"{% if prefix.selected %} selected="selected"{% endif %}>{{ prefix.prefix }}</option>
+                            {% endfor %}
+                        </select>
+                    {% endif %}
+                <input type="text" class="textbox" name="subject" size="40" maxlength="85" id="subject" value="{{ editpost.subject }}" tabindex="1" /></td>
             </tr>
-            {{ posticons|raw }}
+            {% if editpost.showposticons %}
+                <tr>
+                    <td class="trow1" style="vertical-align: top">
+                        <strong>{{ lang.post_icon }}</strong>
+                        <span class="smalltext">
+                            <label class="posticons_label"><input type="radio" class="radio" name="icon" value="-1"{% if editpost.emptyiconcheck %} checked="checked"{% endif %} />{{ lang.no_post_icon }}</label>
+                        </span>
+                    </td>
+                    <td class="trow1" valign="top">
+                        {% for posticon in posticons %}
+                            <label class="posticons_label">
+                                <input type="radio" name="icon" value="{{ posticon.iid }}"{% if posticon.checked %} checked="checked"{% endif %} /> 
+                                <img src="{{ posticon.path }}" alt="{{ posticon.name }}" title="{{ posticon.name }}" />
+                            </label>
+                        {% endfor %}
+                    </td>
+                </tr>
+            {% endif %}
             <tr>
-                <td class="trow2" valign="top"><strong>{{ lang.your_message }}:</strong><br /><div style="text-align: center;">{{ smilieinserter|raw }}</div></td>
+                <td class="trow2" valign="top"><strong><label for="message">{{ lang.your_message }}:</label></strong><br /><div style="text-align: center;">{{ smilieinserter|raw }}</div></td>
                 <td class="trow2">
                     <textarea name="message" id="message" rows="20" cols="70" tabindex="3">{{ editpost.message }}</textarea>
                     {{ codebuttons|raw }}
@@ -66,8 +92,8 @@
             </tr>
             {% if mybb.settings.alloweditreason %}
                 <tr>
-                    <td class="trow1"><strong>{{ lang.editreason }}</strong></td>
-                    <td class="trow1"><input type="text" class="textbox" name="editreason" size="40" maxlength="150" value="{{ editpost.reason }}" tabindex="5" /></td>
+                    <td class="trow1"><strong><label for="editreason">{{ lang.editreason }}</label></strong></td>
+                    <td class="trow1"><input type="text" class="textbox" name="editreason" size="40" maxlength="150" id="editreason" value="{{ editpost.reason }}" tabindex="5" /></td>
                 </tr>
             {% endif %}
             {% if editpost.showpostoptions %}
