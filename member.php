@@ -306,72 +306,55 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 
 	if(!empty($errors))
 	{
-		$username = htmlspecialchars_uni($mybb->get_input('username'));
-		$email = htmlspecialchars_uni($mybb->get_input('email'));
-		$email2 = htmlspecialchars_uni($mybb->get_input('email2'));
-		$referrername = htmlspecialchars_uni($mybb->get_input('referrername'));
+		$select['username'] = $mybb->get_input('username');
+		$select['email'] = $mybb->get_input('email');
+		$select['email2'] = $mybb->get_input('email2');
+		$select['referrername'] = $mybb->get_input('referrername');
 
-		$allownoticescheck = $hideemailcheck = $no_auto_subscribe_selected = $instant_email_subscribe_selected = $instant_pm_subscribe_selected = $no_subscribe_selected = '';
-		$receivepmscheck = $pmnoticecheck = $pmnotifycheck = $invisiblecheck = $dst_auto_selected = $dst_enabled_selected = $dst_disabled_selected = '';
+		$select['allownotices'] = $select['hideemail'] = $select['receivepms'] = $select['pmnotice'] = $select['pmnotify'] = $select['invisible'] = false;
+		$select['subscriptionmethod']['none'] = $select['subscriptionmethod']['email'] = $select['subscriptionmethod']['pm'] = $select['subscriptionmethod']['no'] = false;
+		$select['dst']['auto'] = $select['dst']['enabled'] = $select['dst']['disabled'] = false;
 
-		if($mybb->get_input('allownotices', MyBB::INPUT_INT) == 1)
-		{
-			$allownoticescheck = "checked=\"checked\"";
-		}
-
-		if($mybb->get_input('hideemail', MyBB::INPUT_INT) == 1)
-		{
-			$hideemailcheck = "checked=\"checked\"";
+		if ($mybb->get_input('allownotices', MyBB::INPUT_INT) == 1) {
+			$select['allownotices'] = true;
 		}
 
-		if($mybb->get_input('subscriptionmethod', MyBB::INPUT_INT) == 1)
-		{
-			$no_subscribe_selected = "selected=\"selected\"";
-		}
-		else if($mybb->get_input('subscriptionmethod', MyBB::INPUT_INT) == 2)
-		{
-			$instant_email_subscribe_selected = "selected=\"selected\"";
-		}
-		else if($mybb->get_input('subscriptionmethod', MyBB::INPUT_INT) == 3)
-		{
-			$instant_pm_subscribe_selected = "selected=\"selected\"";
-		}
-		else
-		{
-			$no_auto_subscribe_selected = "selected=\"selected\"";
+		if ($mybb->get_input('hideemail', MyBB::INPUT_INT) == 1) {
+			$select['hideemail'] = true;
 		}
 
-		if($mybb->get_input('receivepms', MyBB::INPUT_INT) == 1)
-		{
-			$receivepmscheck = "checked=\"checked\"";
+		if ($mybb->get_input('receivepms', MyBB::INPUT_INT) == 1) {
+			$select['receivepms'] = true;
 		}
 
-		if($mybb->get_input('pmnotice', MyBB::INPUT_INT) == 1)
-		{
-			$pmnoticecheck = " checked=\"checked\"";
+		if ($mybb->get_input('pmnotice', MyBB::INPUT_INT) == 1) {
+			$select['pmnotice'] = true;
 		}
 
-		if($mybb->get_input('pmnotify', MyBB::INPUT_INT) == 1)
-		{
-			$pmnotifycheck = "checked=\"checked\"";
+		if ($mybb->get_input('pmnotify', MyBB::INPUT_INT) == 1) {
+			$select['pmnotify'] = true;
 		}
 
-		if($mybb->get_input('invisible', MyBB::INPUT_INT) == 1)
-		{
-			$invisiblecheck = "checked=\"checked\"";
+		if ($mybb->get_input('invisible', MyBB::INPUT_INT) == 1) {
+			$select['invisible'] = true;
 		}
 
-		if($mybb->get_input('dstcorrection', MyBB::INPUT_INT) == 2)
-		{
-			$dst_auto_selected = "selected=\"selected\"";
+		if($mybb->get_input('subscriptionmethod', MyBB::INPUT_INT) == 1) {
+			$select['subscriptionmethod']['no'] = true;
+		} else if($mybb->get_input('subscriptionmethod', MyBB::INPUT_INT) == 2) {
+			$select['subscriptionmethod']['email'] = true;
+		} else if($mybb->get_input('subscriptionmethod', MyBB::INPUT_INT) == 3) {
+			$select['subscriptionmethod']['pm'] = true;
+		} else {
+			$select['subscriptionmethod']['none'] = true;
 		}
-		else if($mybb->get_input('dstcorrection', MyBB::INPUT_INT) == 1)
-		{
-			$dst_enabled_selected = "selected=\"selected\"";
-		}
-		else
-		{
-			$dst_disabled_selected = "selected=\"selected\"";
+
+		if($mybb->get_input('dstcorrection', MyBB::INPUT_INT) == 2) {
+			$select['dst']['auto'] = true;
+		} else if($mybb->get_input('dstcorrection', MyBB::INPUT_INT) == 1) {
+			$select['dst']['enabled'] = true;
+		} else {
+			$select['dst']['disabled'] = true;
 		}
 
 		$regerrors = inline_error($errors);
@@ -676,110 +659,108 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "coppa_form")
 {
-	if(!$mybb->settings['faxno'])
-	{
-		$mybb->settings['faxno'] = "&nbsp;";
-	}
+    if (!$mybb->settings['faxno']) {
+        $mybb->settings['faxno'] = "&nbsp;";
+    }
 
-	$plugins->run_hooks("member_coppa_form");
+    $plugins->run_hooks("member_coppa_form");
 
     output_page(\MyBB\template('member/coppa_form.twig'));
 }
 
 if($mybb->input['action'] == "register")
 {
-	$bdaysel = '';
-	if($mybb->settings['coppa'] == "disabled")
-	{
-		$bdaysel = $bday2blank = '';
-	}
-	$mybb->input['bday1'] = $mybb->get_input('bday1', MyBB::INPUT_INT);
-	for($day = 1; $day <= 31; ++$day)
-	{
-		$selected = '';
-		if($mybb->input['bday1'] == $day)
-		{
-			$selected = " selected=\"selected\"";
-		}
+    $days = [];
+    $mybb->input['bday1'] = $mybb->get_input('bday1', MyBB::INPUT_INT);
+    for ($day_count = 1; $day_count <= 31; ++$day_count)
+    {
+        $day['day'] = $day_count;
+        if ($mybb->input['bday1'] == $day_count) {
+            $day['selected'] = true;
+        } else {
+            $day['selected'] = '';
+        }
 
-		eval("\$bdaysel .= \"".$templates->get("member_register_day")."\";");
-	}
+        $days[] = $day;
+    }
 
-	$mybb->input['bday2'] = $mybb->get_input('bday2', MyBB::INPUT_INT);
-	$bdaymonthsel = array();
-	foreach(range(1, 12) as $number)
-	{
-		$bdaymonthsel[$number] = '';
-	}
-	$bdaymonthsel[$mybb->input['bday2']] = "selected=\"selected\"";
-	$mybb->input['bday3'] = $mybb->get_input('bday3', MyBB::INPUT_INT);
+    $mybb->input['bday2'] = $mybb->get_input('bday2', MyBB::INPUT_INT);
+    $months = [];
+    for ($month_count = 1; $month_count <= 12; ++$month_count) {
+        $month['month'] = $month_count;
 
-	if($mybb->input['bday3'] == 0)
-	{
-		$mybb->input['bday3'] = '';
-	}
+        $lang_string = 'month_'.$month_count;
+        $month['name'] = $lang->{$lang_string};
 
-	// Is COPPA checking enabled?
-	if($mybb->settings['coppa'] != "disabled" && !isset($mybb->input['step']))
-	{
-		// Just selected DOB, we check
-		if($mybb->input['bday1'] && $mybb->input['bday2'] && $mybb->input['bday3'])
-		{
-			my_unsetcookie("coppauser");
+        if ($mybb->input['bday2'] == $month_count) {
+            $month['selected'] = true;
+        } else {
+            $month['selected'] = '';
+        }
 
-			$months = get_bdays($mybb->input['bday3']);
-			if($mybb->input['bday2'] < 1 || $mybb->input['bday2'] > 12 || $mybb->input['bday3'] < (date("Y")-100) || $mybb->input['bday3'] > date("Y") || $mybb->input['bday1'] > $months[$mybb->input['bday2']-1])
-			{
-				error($lang->error_invalid_birthday);
-			}
+        $months[] = $month;
+    }
 
-			$bdaytime = @mktime(0, 0, 0, $mybb->input['bday2'], $mybb->input['bday1'], $mybb->input['bday3']);
+    $mybb->input['bday3'] = $mybb->get_input('bday3', MyBB::INPUT_INT);
 
-			// Store DOB in cookie so we can save it with the registration
-			my_setcookie("coppadob", "{$mybb->input['bday1']}-{$mybb->input['bday2']}-{$mybb->input['bday3']}", -1);
+    if ($mybb->input['bday3'] == 0) {
+        $year = '';
+    }
 
-			// User is <= 13, we mark as a coppa user
-			if($bdaytime >= mktime(0, 0, 0, my_date('n'), my_date('d'), my_date('Y')-13))
-			{
-				my_setcookie("coppauser", 1, -0);
-				$under_thirteen = true;
-			}
-			$mybb->request_method = "";
-		}
-		// Show DOB select form
-		else
-		{
-			$plugins->run_hooks("member_register_coppa");
+    // Is COPPA checking enabled?
+    if ($mybb->settings['coppa'] != "disabled" && !isset($mybb->input['step'])) {
+        // Just selected DOB, we check
+        if ($mybb->input['bday1'] && $mybb->input['bday2'] && $mybb->input['bday3']) {
+            my_unsetcookie("coppauser");
 
-			my_unsetcookie("coppauser");
+            $month_check = get_bdays($mybb->input['bday3']);
+            if ($mybb->input['bday2'] < 1 || $mybb->input['bday2'] > 12 || $mybb->input['bday3'] < (date("Y")-100) || $mybb->input['bday3'] > date("Y") || $mybb->input['bday1'] > $month_check[$mybb->input['bday2']-1]) {
+                error($lang->error_invalid_birthday);
+            }
 
-			eval("\$coppa = \"".$templates->get("member_register_coppa")."\";");
-			output_page($coppa);
-			exit;
-		}
-	}
+            $bdaytime = @mktime(0, 0, 0, $mybb->input['bday2'], $mybb->input['bday1'], $mybb->input['bday3']);
 
-	if((!isset($mybb->input['agree']) && !isset($mybb->input['regsubmit'])) && $fromreg == 0 || $mybb->request_method != "post")
-	{
-		$coppa_agreement = '';
-		// Is this user a COPPA user? We need to show the COPPA agreement too
-		if($mybb->settings['coppa'] != "disabled" && ($mybb->cookies['coppauser'] == 1 || $under_thirteen))
-		{
-			if($mybb->settings['coppa'] == "deny")
-			{
-				error($lang->error_need_to_be_thirteen);
-			}
-			$lang->coppa_agreement_1 = $lang->sprintf($lang->coppa_agreement_1, $mybb->settings['bbname']);
-			eval("\$coppa_agreement = \"".$templates->get("member_register_agreement_coppa")."\";");
-		}
+            // Store DOB in cookie so we can save it with the registration
+            my_setcookie("coppadob", "{$mybb->input['bday1']}-{$mybb->input['bday2']}-{$mybb->input['bday3']}", -1);
 
-		$plugins->run_hooks("member_register_agreement");
+            // User is <= 13, we mark as a coppa user
+            if ($bdaytime >= mktime(0, 0, 0, my_date('n'), my_date('d'), my_date('Y')-13)) {
+                my_setcookie("coppauser", 1, -0);
+                $under_thirteen = true;
+            }
 
-		eval("\$agreement = \"".$templates->get("member_register_agreement")."\";");
-		output_page($agreement);
-	}
-	else
-	{
+            $mybb->request_method = "";
+        } else {
+            // Show DOB select form
+            $plugins->run_hooks("member_register_coppa");
+
+            my_unsetcookie("coppauser");
+
+            output_page(\MyBB\template('member/register_coppa.twig', [
+                'days' => $days,
+                'months' => $months,
+                'year' => $year,
+            ]));
+            exit;
+        }
+    }
+
+    if ((!isset($mybb->input['agree']) && !isset($mybb->input['regsubmit'])) && $fromreg == 0 || $mybb->request_method != "post") {
+        $coppa_agreement = false;
+        // Is this user a COPPA user? We need to show the COPPA agreement too
+        if ($mybb->settings['coppa'] != "disabled" && ($mybb->cookies['coppauser'] == 1 || $under_thirteen)) {
+            $coppa_agreement = true;
+            if ($mybb->settings['coppa'] == "deny") {
+                error($lang->error_need_to_be_thirteen);
+            }
+        }
+
+        $plugins->run_hooks("member_register_agreement");
+
+        output_page(\MyBB\template('member/register_agreement.twig', [
+            'coppa_agreement' => $coppa_agreement,
+        ]));
+    } else {
 		$plugins->run_hooks("member_register_start");
 
 		// JS validator extra
@@ -841,264 +822,174 @@ $(document).ready(function() {
 		}
 	});\n";
 
-		if(isset($mybb->input['timezoneoffset']))
-		{
-			$timezoneoffset = $mybb->get_input('timezoneoffset');
-		}
-		else
-		{
-			$timezoneoffset = $mybb->settings['timezoneoffset'];
-		}
-		$tzselect = build_timezone_select("timezoneoffset", $timezoneoffset, true);
+        if (isset($mybb->input['timezoneoffset'])) {
+            $timezoneoffset = $mybb->get_input('timezoneoffset');
+        } else {
+            $timezoneoffset = $mybb->settings['timezoneoffset'];
+        }
 
-		$stylelist = build_theme_select("style");
+        $timezones = build_timezone_select("timezoneoffset", $timezoneoffset, true);
 
-		if($mybb->settings['usertppoptions'])
-		{
-			$tppoptions = '';
-			$explodedtpp = explode(",", $mybb->settings['usertppoptions']);
-			if(is_array($explodedtpp))
-			{
-				foreach($explodedtpp as $val)
-				{
-					$val = trim($val);
-					$tpp_option = $lang->sprintf($lang->tpp_option, $val);
-					eval("\$tppoptions .= \"".$templates->get("usercp_options_tppselect_option")."\";");
-				}
-			}
-			eval("\$tppselect = \"".$templates->get("usercp_options_tppselect")."\";");
-		}
-		if($mybb->settings['userpppoptions'])
-		{
-			$pppoptions = '';
-			$explodedppp = explode(",", $mybb->settings['userpppoptions']);
-			if(is_array($explodedppp))
-			{
-				foreach($explodedppp as $val)
-				{
-					$val = trim($val);
-					$ppp_option = $lang->sprintf($lang->ppp_option, $val);
-					eval("\$pppoptions .= \"".$templates->get("usercp_options_pppselect_option")."\";");
-				}
-			}
-			eval("\$pppselect = \"".$templates->get("usercp_options_pppselect")."\";");
-		}
-		if($mybb->settings['usereferrals'] == 1 && !$mybb->user['uid'])
-		{
-			if(isset($mybb->cookies['mybb']['referrer']))
-			{
-				$query = $db->simple_select("users", "uid,username", "uid='".(int)$mybb->cookies['mybb']['referrer']."'");
-				$ref = $db->fetch_array($query);
-				$ref['username'] = htmlspecialchars_uni($ref['username']);
-				$referrername = $ref['username'];
-			}
-			elseif(isset($referrer))
-			{
-				$query = $db->simple_select("users", "username", "uid='".(int)$referrer['uid']."'");
-				$ref = $db->fetch_array($query);
-				$ref['username'] = htmlspecialchars_uni($ref['username']);
-				$referrername = $ref['username'];
-			}
-			elseif(!empty($referrername))
-			{
-				$ref = get_user_by_username($referrername);
-				if(!$ref['uid'])
-				{
-					$errors[] = $lang->error_badreferrer;
-				}
-			}
-			else
-			{
-				$referrername = '';
-			}
-			if(isset($quickreg))
-			{
-				$refbg = "trow1";
-			}
-			else
-			{
-				$refbg = "trow2";
-			}
-			eval("\$referrer = \"".$templates->get("member_register_referrer")."\";");
-		}
-		else
-		{
-			$referrer = '';
-		}
-		$mybb->input['profile_fields'] = $mybb->get_input('profile_fields', MyBB::INPUT_ARRAY);
-		// Custom profile fields baby!
-		$altbg = "trow1";
-		$requiredfields = $customfields = '';
+        $registration['showreferrer'] = false;
+        if ($mybb->settings['usereferrals'] == 1 && !$mybb->user['uid']) {
+            $registration['showreferrer'] = true;
+            if (isset($mybb->cookies['mybb']['referrer'])) {
+                $query = $db->simple_select("users", "uid,username", "uid='".(int)$mybb->cookies['mybb']['referrer']."'");
+                $ref = $db->fetch_array($query);
+                $select['referrername'] = $ref['username'];
+            } else if(isset($referrer)) {
+                $query = $db->simple_select("users", "username", "uid='".(int)$referrer['uid']."'");
+                $ref = $db->fetch_array($query);
+                $select['referrername'] = $ref['username'];
+            } else if(!empty($select['referrername'])) {
+                $ref = get_user_by_username($select['referrername']);
+                if (!$ref['uid']) {
+                    $errors[] = $lang->error_badreferrer;
+                }
+            } else {
+                $select['referrername'] = '';
+            }
+        }
 
-		if($mybb->settings['regtype'] == "verify" || $mybb->settings['regtype'] == "admin" || $mybb->settings['regtype'] == "both" || $mybb->get_input('coppa', MyBB::INPUT_INT) == 1)
-		{
-			$usergroup = 5;
-		}
-		else
-		{
-			$usergroup = 2;
-		}
+        $mybb->input['profile_fields'] = $mybb->get_input('profile_fields', MyBB::INPUT_ARRAY);
 
-		$pfcache = $cache->read('profilefields');
+        // Custom profile fields baby!
+        $requiredfields = $customfields = [];
 
-		if(is_array($pfcache))
-		{
-			foreach($pfcache as $profilefield)
-			{
-				if($profilefield['required'] != 1 && $profilefield['registration'] != 1 || !is_member($profilefield['editableby'], array('usergroup' => $mybb->user['usergroup'], 'additionalgroups' => $usergroup)))
-				{
-					continue;
-				}
+        if ($mybb->settings['regtype'] == "verify" || $mybb->settings['regtype'] == "admin" || $mybb->settings['regtype'] == "both" || $mybb->get_input('coppa', MyBB::INPUT_INT) == 1) {
+            $usergroup = 5;
+        } else {
+            $usergroup = 2;
+        }
 
-				$code = $select = $val = $options = $expoptions = $useropts = '';
-				$seloptions = array();
-				$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
-				$thing = explode("\n", $profilefield['type'], "2");
-				$type = trim($thing[0]);
-				$options = $thing[1];
-				$select = '';
-				$field = "fid{$profilefield['fid']}";
-				$profilefield['description'] = htmlspecialchars_uni($profilefield['description']);
-				$profilefield['name'] = htmlspecialchars_uni($profilefield['name']);
-				if($errors && isset($mybb->input['profile_fields'][$field]))
-				{
-					$userfield = $mybb->input['profile_fields'][$field];
-				}
-				else
-				{
-					$userfield = '';
-				}
-				if($type == "multiselect")
-				{
-					if($errors)
-					{
-						$useropts = $userfield;
-					}
-					else
-					{
-						$useropts = explode("\n", $userfield);
-					}
-					if(is_array($useropts))
-					{
-						foreach($useropts as $key => $val)
-						{
-							$seloptions[$val] = $val;
-						}
-					}
-					$expoptions = explode("\n", $options);
-					if(is_array($expoptions))
-					{
-						foreach($expoptions as $key => $val)
-						{
-							$val = trim($val);
-							$val = str_replace("\n", "\\n", $val);
+        $pfcache = $cache->read('profilefields');
 
-							$sel = "";
-							if(isset($seloptions[$val]) && $val == $seloptions[$val])
-							{
-								$sel = ' selected="selected"';
-							}
+        if (is_array($pfcache)) {
+            foreach ($pfcache as $profilefield) {
+                if ($profilefield['required'] != 1 && $profilefield['registration'] != 1 || !is_member($profilefield['editableby'], array('usergroup' => $mybb->user['usergroup'], 'additionalgroups' => $usergroup))) {
+                    continue;
+                }
 
-							eval("\$select .= \"".$templates->get("usercp_profile_profilefields_select_option")."\";");
-						}
-						if(!$profilefield['length'])
-						{
-							$profilefield['length'] = 3;
-						}
+                $profilefield['type_multiselect'] = $profilefield['type_select'] = $profilefield['type_radio'] = $profilefield['type_checkbox'] = $profilefield['type_textarea'] = $profilefield['type_text'] = false;
+                $seloptions = array();
+                $thing = explode("\n", $profilefield['type'], "2");
+                $type = trim($thing[0]);
+                $options = $thing[1];
+                $profilefield['field'] = "fid{$profilefield['fid']}";
 
-						eval("\$code = \"".$templates->get("usercp_profile_profilefields_multiselect")."\";");
-					}
-				}
-				elseif($type == "select")
-				{
-					$expoptions = explode("\n", $options);
-					if(is_array($expoptions))
-					{
-						foreach($expoptions as $key => $val)
-						{
-							$val = trim($val);
-							$val = str_replace("\n", "\\n", $val);
-							$sel = "";
-							if($val == $userfield)
-							{
-								$sel = ' selected="selected"';
-							}
+                if ($errors && isset($mybb->input['profile_fields'][$profilefield['field']])) {
+                    $userfield = $mybb->input['profile_fields'][$profilefield['field']];
+                } else {
+                    $userfield = '';
+                }
 
-							eval("\$select .= \"".$templates->get("usercp_profile_profilefields_select_option")."\";");
-						}
-						if(!$profilefield['length'])
-						{
-							$profilefield['length'] = 1;
-						}
+                if ($type == "multiselect") {
+                    if ($errors) {
+                        $useropts = $userfield;
+                    } else {
+                        $useropts = explode("\n", $userfield);
+                    }
 
-						eval("\$code = \"".$templates->get("usercp_profile_profilefields_select")."\";");
-					}
-				}
-				elseif($type == "radio")
-				{
-					$expoptions = explode("\n", $options);
-					if(is_array($expoptions))
-					{
-						foreach($expoptions as $key => $val)
-						{
-							$checked = "";
-							if($val == $userfield)
-							{
-								$checked = 'checked="checked"';
-							}
+                    if (is_array($useropts)) {
+                        foreach ($useropts as $key => $val) {
+                            $seloptions[$val] = $val;
+                        }
+                    }
 
-							eval("\$code .= \"".$templates->get("usercp_profile_profilefields_radio")."\";");
-						}
-					}
-				}
-				elseif($type == "checkbox")
-				{
-					if($errors)
-					{
-						$useropts = $userfield;
-					}
-					else
-					{
-						$useropts = explode("\n", $userfield);
-					}
-					if(is_array($useropts))
-					{
-						foreach($useropts as $key => $val)
-						{
-							$seloptions[$val] = $val;
-						}
-					}
-					$expoptions = explode("\n", $options);
-					if(is_array($expoptions))
-					{
-						foreach($expoptions as $key => $val)
-						{
-							$checked = "";
-							if(isset($seloptions[$val]) && $val == $seloptions[$val])
-							{
-								$checked = 'checked="checked"';
-							}
+                    $expoptions = explode("\n", $options);
+                    $profilefield['select'] = [];
+                    if (is_array($expoptions)) {
+                        $profilefield['type_multiselect'] = true;
+                        foreach ($expoptions as $key => $val) {
+                            $val = trim($val);
+                            $val = str_replace("\n", "\\n", $val);
 
-							eval("\$code .= \"".$templates->get("usercp_profile_profilefields_checkbox")."\";");
-						}
-					}
-				}
-				elseif($type == "textarea")
-				{
-					$value = htmlspecialchars_uni($userfield);
-					eval("\$code = \"".$templates->get("usercp_profile_profilefields_textarea")."\";");
-				}
-				else
-				{
-					$value = htmlspecialchars_uni($userfield);
-					$maxlength = "";
-					if($profilefield['maxlength'] > 0)
-					{
-						$maxlength = " maxlength=\"{$profilefield['maxlength']}\"";
-					}
+                            $select_item['selected'] = false;
+                            if (isset($seloptions[$val]) && $val == $seloptions[$val]) {
+                                $select_item['selected'] = true;
+                            }
 
-					eval("\$code = \"".$templates->get("usercp_profile_profilefields_text")."\";");
-				}
+                            $select_item['value'] = $val;
+                            $profilefield['select'][] = $select_item;
+                        }
+
+                        if (!$profilefield['length']) {
+                            $profilefield['length'] = 3;
+                        }
+                    }
+                } else if($type == "select") {
+                    $expoptions = explode("\n", $options);
+                    if (is_array($expoptions)) {
+                        $profilefield['type_select'] = true;
+                        $profilefield['select'] = [];
+                        foreach ($expoptions as $key => $val) {
+                            $val = trim($val);
+                            $val = str_replace("\n", "\\n", $val);
+
+                            $select_item['selected'] = false;
+                            if ($val == $userfield) {
+                                $select_item['selected'] = true;
+                            }
+
+                            $select_item['value'] = $val;
+                            $profilefield['select'][] = $select_item;
+                        }
+
+                        if (!$profilefield['length']) {
+                            $profilefield['length'] = 1;
+                        }
+                    }
+                } else if($type == "radio") {
+                    $expoptions = explode("\n", $options);
+                    if (is_array($expoptions)) {
+                        $profilefield['type_radio'] = true;
+                        $profilefield['radio'] = [];
+                        foreach ($expoptions as $key => $val) {
+                            $radio_item['checked'] = false;
+                            if ($val == $userfield) {
+                                $radio_item['checked'] = true;
+                            }
+
+                            $radio_item['value'] = $val;
+                            $profilefield['radio'][] = $radio_item;
+                        }
+                    }
+                } else if($type == "checkbox") {
+                    if ($errors) {
+                        $useropts = $userfield;
+                    } else {
+                        $useropts = explode("\n", $userfield);
+                    }
+
+                    if (is_array($useropts)) {
+                        foreach ($useropts as $key => $val) {
+                            $seloptions[$val] = $val;
+                        }
+                    }
+
+                    $expoptions = explode("\n", $options);
+                    if (is_array($expoptions)) {
+                        $profilefield['type_checkbox'] = true;
+                        $profilefield['checkbox'] = [];
+                        foreach ($expoptions as $key => $val) {
+                            $checkbox_item['checked'] = false;
+                            if (isset($seloptions[$val]) && $val == $seloptions[$val]) {
+                                $checkbox_item['checked'] = true;
+                            }
+
+                            $checkbox_item['value'] = $val;
+                            $profilefield['checkbox'][] = $checkbox_item;
+                        }
+                    }
+                } else if($type == "textarea") {
+                    $profilefield['type_textarea'] = true;
+                    $profilefield['value'] = $userfield;
+                } else {
+                    $profilefield['type_text'] = true;
+                    $profilefield['value'] = $userfield;
+                }
+
+                $profilefield['fieldtype'] = $type;
 
 				if($profilefield['required'] == 1)
 				{
@@ -1107,19 +998,19 @@ $(document).ready(function() {
 					{
 						if($type == "textarea")
 						{
-							$inp_selector = "$('textarea[name=\"profile_fields[{$field}]\"]')";
+							$inp_selector = "$('textarea[name=\"profile_fields[{$profilefield['field']}]\"]')";
 						}
 						elseif($type == "multiselect")
 						{
-							$inp_selector = "$('select[name=\"profile_fields[{$field}][]\"]')";
+							$inp_selector = "$('select[name=\"profile_fields[{$profilefield['field']}][]\"]')";
 						}
 						elseif($type == "checkbox")
 						{
-							$inp_selector = "$('input[name=\"profile_fields[{$field}][]\"]')";
+							$inp_selector = "$('input[name=\"profile_fields[{$profilefield['field']}][]\"]')";
 						}
 						else
 						{
-							$inp_selector = "$('input[name=\"profile_fields[{$field}]\"]')";
+							$inp_selector = "$('input[name=\"profile_fields[{$profilefield['field']}]\"]')";
 						}
 
 						$validator_javascript .= "
@@ -1131,42 +1022,39 @@ $(document).ready(function() {
 	});\n";
 					}
 
-					eval("\$requiredfields .= \"".$templates->get("member_register_customfield")."\";");
+					$requiredfields[] = $profilefield;
 				}
 				else
 				{
-					eval("\$customfields .= \"".$templates->get("member_register_customfield")."\";");
+					$customfields[] = $profilefield;
 				}
 			}
 
-			if($requiredfields)
-			{
-				eval("\$requiredfields = \"".$templates->get("member_register_requiredfields")."\";");
-			}
+            $registration['showrequiredfields'] = false;
+            if (!empty($requiredfields)) {
+                $registration['showrequiredfields'] = true;
+            }
 
-			if($customfields)
-			{
-				eval("\$customfields = \"".$templates->get("member_register_additionalfields")."\";");
-			}
-		}
+            $registration['showcustomfields'] = false;
+            if (!empty($customfields)) {
+                $registration['showcustomfields'] = true;
+            }
+        }
 
-		if(!isset($fromreg))
-		{
-			$allownoticescheck = "checked=\"checked\"";
-			$hideemailcheck = '';
-			$receivepmscheck = "checked=\"checked\"";
-			$pmnoticecheck = " checked=\"checked\"";
-			$pmnotifycheck = '';
-			$invisiblecheck = '';
-			if($mybb->settings['dstcorrection'] == 1)
-			{
-				$enabledstcheck = "checked=\"checked\"";
-			}
-			$no_auto_subscribe_selected = $instant_email_subscribe_selected = $instant_pm_subscribe_selected = $no_subscribe_selected = '';
-			$dst_auto_selected = $dst_enabled_selected = $dst_disabled_selected = '';
-			$username = $email = $email2 = '';
-			$regerrors = '';
-		}
+        if (!isset($fromreg)) {
+            $select['allownotices'] = true;
+            $select['hideemail'] = false;
+            $select['receivepms'] = true;
+            $select['pmnotice'] = true;
+            $select['pmnotify'] = false;
+            $select['invisible'] = false;
+
+            $select['subscriptionmethod']['none'] = $select['subscriptionmethod']['email'] = $select['subscriptionmethod']['pm'] = $select['subscriptionmethod']['no'] = false;
+            $select['dst']['auto'] = $select['dst']['enabled'] = $select['dst']['disabled'] = false;
+            $select['username'] = $select['email'] = $select['email2'] = '';
+            $regerrors = '';
+        }
+
 		// Spambot registration image thingy
 		if($mybb->settings['captchaimage'])
 		{
@@ -1175,7 +1063,7 @@ $(document).ready(function() {
 
 			if($captcha->html)
 			{
-				$regimage = $captcha->html;
+				$registration['regimage'] = $captcha->html;
 
 				if($mybb->settings['captchaimage'] == 1)
 				{
@@ -1204,30 +1092,28 @@ $(document).ready(function() {
 		}
 
 		// Security Question
-		$questionbox = '';
-		if($mybb->settings['securityquestion'])
-		{
-			$sid = generate_question();
+		$registration['showquestion'] = false;
+		if ($mybb->settings['securityquestion']) {
+			$registration['questionsid'] = generate_question();
 			$query = $db->query("
 				SELECT q.question, s.sid
 				FROM ".TABLE_PREFIX."questionsessions s
 				LEFT JOIN ".TABLE_PREFIX."questions q ON (q.qid=s.qid)
-				WHERE q.active='1' AND s.sid='{$sid}'
+				WHERE q.active='1' AND s.sid='{$registration['questionsid']}'
 			");
-			if($db->num_rows($query) > 0)
-			{
+			if ($db->num_rows($query) > 0) {
+				$registration['showquestion'] = true;
 				$question = $db->fetch_array($query);
 
-				$refresh = '';
+				$registration['questionrefresh'] = false;
+				$registration['question'] = $question['question'];
+
 				// Total questions
 				$q = $db->simple_select('questions', 'COUNT(qid) as num', 'active=1');
 				$num = $db->fetch_field($q, 'num');
-				if($num > 1)
-				{
-					eval("\$refresh = \"".$templates->get("member_register_question_refresh")."\";");
+				if ($num > 1) {
+					$registration['questionrefresh'] = true;
 				}
-
-				eval("\$questionbox = \"".$templates->get("member_register_question")."\";");
 
 				$validator_javascript .= "
 	$('#answer').rules('add', {
@@ -1251,16 +1137,10 @@ $(document).ready(function() {
 			}
 		}
 
-		$hiddencaptcha = '';
-		// Hidden CAPTCHA for Spambots
-		if($mybb->settings['hiddencaptchaimage'])
-		{
-			$captcha_field = $mybb->settings['hiddencaptchaimagefield'];
-
-			eval("\$hiddencaptcha = \"".$templates->get("member_register_hiddencaptcha")."\";");
-		}
+		$registration['showpassword'] = false;
 		if($mybb->settings['regtype'] != "randompass")
 		{
+			$registration['showpassword'] = true;
 			// JS validator extra
 			$lang->js_validator_password_length = $lang->sprintf($lang->js_validator_password_length, $mybb->settings['minpasswordlength']);
 
@@ -1327,41 +1207,45 @@ $(document).ready(function() {
 			equalTo: '{$lang->js_validator_password_matches}'
 		}
 	});\n";
-
-			eval("\$passboxes = \"".$templates->get("member_register_password")."\";");
 		}
 
-		$languages = $lang->get_languages();
-		$langoptions = $boardlanguage = '';
-		if(count($languages) > 1)
-		{
-			foreach($languages as $name => $language)
-			{
-				$language = htmlspecialchars_uni($language);
+        $registration['showlanguages'] = false;
+        $get_languages = $lang->get_languages();
+        $languages = [];
+        if (count($get_languages) > 1) {
+            $registration['showlanguages'] = true;
+            foreach ($get_languages as $name => $language) {
+                $lang_array['language'] = $language;
+                $lang_array['name'] = $name;
 
-				$sel = '';
-				if($mybb->get_input('language') == $name)
-				{
-					$sel = " selected=\"selected\"";
-				}
+                $lang_array['selected'] = false;
+                if ($mybb->get_input('language') == $name) {
+                    $lang_array['selected'] = true;
+                }
 
-				eval('$langoptions .= "'.$templates->get('usercp_options_language_option').'";');
-			}
+                $languages[] = $lang_array;
+            }
+        }
 
-			eval('$boardlanguage = "'.$templates->get('member_register_language').'";');
-		}
+        // Set the time so we can find automated signups
+        $registration['time'] = TIME_NOW;
 
-		// Set the time so we can find automated signups
-		$time = TIME_NOW;
-
-		$plugins->run_hooks("member_register_end");
+        $plugins->run_hooks("member_register_end");
 
 		$validator_javascript .= "
 });
 </script>\n";
 
-		eval("\$registration = \"".$templates->get("member_register")."\";");
-		output_page($registration);
+        output_page(\MyBB\template('member/register.twig', [
+            'regerrors' => $regerrors,
+            'select' => $select,
+            'registration' => $registration,
+            'timezones' => $timezones,
+            'requiredfields' => $requiredfields,
+            'customfields' => $customfields,
+            'languages' => $languages,
+            'validator_javascript' => $validator_javascript,
+        ]));
 	}
 }
 
@@ -2015,7 +1899,6 @@ if($mybb->input['action'] == "profile")
 
 	$me_username = $memprofile['username'];
 	$memprofile['username'] = htmlspecialchars_uni($memprofile['username']);
-	$lang->profile = $lang->sprintf($lang->profile, $memprofile['username']);
 
 	// Get member's permissions
 	$memperms = user_permissions($memprofile['uid']);
@@ -2023,769 +1906,545 @@ if($mybb->input['action'] == "profile")
 	$lang->nav_profile = $lang->sprintf($lang->nav_profile, $memprofile['username']);
 	add_breadcrumb($lang->nav_profile);
 
-	$lang->users_forum_info = $lang->sprintf($lang->users_forum_info, $memprofile['username']);
-	$lang->users_contact_details = $lang->sprintf($lang->users_contact_details, $memprofile['username']);
-	$lang->send_pm = $lang->sprintf($lang->send_pm, $memprofile['username']);
-	$lang->away_note = $lang->sprintf($lang->away_note, $memprofile['username']);
-	$lang->users_additional_info = $lang->sprintf($lang->users_additional_info, $memprofile['username']);
-	$lang->users_signature = $lang->sprintf($lang->users_signature, $memprofile['username']);
-	$lang->send_user_email = $lang->sprintf($lang->send_user_email, $memprofile['username']);
-
-	$useravatar = format_avatar($memprofile['avatar'], $memprofile['avatardimensions']);
-	eval("\$avatar = \"".$templates->get("member_profile_avatar")."\";");
-
-	$website = $sendemail = $sendpm = $contact_details = '';
-
-	if(my_validate_url($memprofile['website']) && !is_member($mybb->settings['hidewebsite']) && $memperms['canchangewebsite'] == 1)
-	{
-		$memprofile['website'] = htmlspecialchars_uni($memprofile['website']);
-		$bgcolor = alt_trow();
-		eval("\$website = \"".$templates->get("member_profile_website")."\";");
-	}
-
-	if($memprofile['hideemail'] != 1 && (my_strpos(",".$memprofile['ignorelist'].",", ",".$mybb->user['uid'].",") === false || $mybb->usergroup['cansendemailoverride'] != 0))
-	{
-		$bgcolor = alt_trow();
-		eval("\$sendemail = \"".$templates->get("member_profile_email")."\";");
-	}
-
-	if($mybb->settings['enablepms'] != 0 && (($memprofile['receivepms'] != 0 && $memperms['canusepms'] != 0 && my_strpos(",".$memprofile['ignorelist'].",", ",".$mybb->user['uid'].",") === false) || $mybb->usergroup['canoverridepm'] == 1))
-	{
-		$bgcolor = alt_trow();
-		eval('$sendpm = "'.$templates->get("member_profile_pm").'";');
-	}
-
-	$contact_fields = array();
-	$any_contact_field = false;
-	foreach(array('icq', 'aim', 'yahoo', 'skype', 'google') as $field)
-	{
-		$contact_fields[$field] = '';
-		$settingkey = 'allow'.$field.'field';
-
-		if(!empty($memprofile[$field]) && is_member($mybb->settings[$settingkey], array('usergroup' => $memprofile['usergroup'], 'additionalgroups' => $memprofile['additionalgroups'])))
-		{
-			$any_contact_field = true;
-
-			if($field == 'icq')
-			{
-				$memprofile[$field] = (int)$memprofile[$field];
-			}
-			else
-			{
-				$memprofile[$field] = htmlspecialchars_uni($memprofile[$field]);
-			}
-			$tmpl = 'member_profile_contact_fields_'.$field;
-
-			$bgcolors[$field] = alt_trow();
-			eval('$contact_fields[\''.$field.'\'] = "'.$templates->get($tmpl).'";');
-		}
-	}
-
-	if($any_contact_field || $sendemail || $sendpm || $website)
-	{
-		eval('$contact_details = "'.$templates->get("member_profile_contact_details").'";');
-	}
-
-	$signature = '';
-	if($memprofile['signature'] && ($memprofile['suspendsignature'] == 0 || $memprofile['suspendsigtime'] < TIME_NOW) && !is_member($mybb->settings['hidesignatures']) && $memperms['canusesig'] && $memperms['canusesigxposts'] <= $memprofile['postnum'])
-	{
-		$sig_parser = array(
-			"allow_html" => $mybb->settings['sightml'],
-			"allow_mycode" => $mybb->settings['sigmycode'],
-			"allow_smilies" => $mybb->settings['sigsmilies'],
-			"allow_imgcode" => $mybb->settings['sigimgcode'],
-			"me_username" => $me_username,
-			"filter_badwords" => 1
-		);
-
-		if($memperms['signofollow'])
-		{
-			$sig_parser['nofollow_on'] = 1;
-		}
-
-		if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
-		{
-			$sig_parser['allow_imgcode'] = 0;
-		}
-
-		$memprofile['signature'] = $parser->parse_message($memprofile['signature'], $sig_parser);
-		eval("\$signature = \"".$templates->get("member_profile_signature")."\";");
-	}
-
-	$daysreg = (TIME_NOW - $memprofile['regdate']) / (24*3600);
-
-	if($daysreg < 1)
-	{
-		$daysreg = 1;
-	}
-
-	$stats = $cache->read("stats");
-
-	// Format post count, per day count and percent of total
-	$ppd = $memprofile['postnum'] / $daysreg;
-	$ppd = round($ppd, 2);
-	if($ppd > $memprofile['postnum'])
-	{
-		$ppd = $memprofile['postnum'];
-	}
-
-	$numposts = $stats['numposts'];
-	if($numposts == 0)
-	{
-		$post_percent = "0";
-	}
-	else
-	{
-		$post_percent = $memprofile['postnum']*100/$numposts;
-		$post_percent = round($post_percent, 2);
-	}
-
-	if($post_percent > 100)
-	{
-		$post_percent = 100;
-	}
-
-	// Format thread count, per day count and percent of total
-	$tpd = $memprofile['threadnum'] / $daysreg;
-	$tpd = round($tpd, 2);
-	if($tpd > $memprofile['threadnum'])
-	{
-		$tpd = $memprofile['threadnum'];
-	}
-
-	$numthreads = $stats['numthreads'];
-	if($numthreads == 0)
-	{
-		$thread_percent = "0";
-	}
-	else
-	{
-		$thread_percent = $memprofile['threadnum']*100/$numthreads;
-		$thread_percent = round($thread_percent, 2);
-	}
-
-	if($thread_percent > 100)
-	{
-		$thread_percent = 100;
-	}
-
-	$findposts = $findthreads = '';
-	if($mybb->usergroup['cansearch'] == 1)
-	{
-		eval("\$findposts = \"".$templates->get("member_profile_findposts")."\";");
-		eval("\$findthreads = \"".$templates->get("member_profile_findthreads")."\";");
-	}
-
-	$awaybit = '';
-	if($memprofile['away'] == 1 && $mybb->settings['allowaway'] != 0)
-	{
-		$lang->away_note = $lang->sprintf($lang->away_note, $memprofile['username']);
-		$awaydate = my_date($mybb->settings['dateformat'], $memprofile['awaydate']);
-		if(!empty($memprofile['awayreason']))
-		{
-			$reason = $parser->parse_badwords($memprofile['awayreason']);
-			$awayreason = htmlspecialchars_uni($reason);
-		}
-		else
-		{
-			$awayreason = $lang->away_no_reason;
-		}
-		if($memprofile['returndate'] == '')
-		{
-			$returndate = "$lang->unknown";
-		}
-		else
-		{
-			$returnhome = explode("-", $memprofile['returndate']);
-
-			// PHP native date functions use integers so timestamps for years after 2038 will not work
-			// Thus we use adodb_mktime
-			if($returnhome[2] >= 2038)
-			{
-				require_once MYBB_ROOT."inc/functions_time.php";
-				$returnmkdate = adodb_mktime(0, 0, 0, $returnhome[1], $returnhome[0], $returnhome[2]);
-				$returndate = my_date($mybb->settings['dateformat'], $returnmkdate, "", 1, true);
-			}
-			else
-			{
-				$returnmkdate = mktime(0, 0, 0, $returnhome[1], $returnhome[0], $returnhome[2]);
-				$returndate = my_date($mybb->settings['dateformat'], $returnmkdate);
-			}
-
-			// If our away time has expired already, we should be back, right?
-			if($returnmkdate < TIME_NOW)
-			{
-				$db->update_query('users', array('away' => '0', 'awaydate' => '0', 'returndate' => '', 'awayreason' => ''), 'uid=\''.(int)$memprofile['uid'].'\'');
-
-				// Update our status to "not away"
-				$memprofile['away'] = 0;
-			}
-		}
-
-		// Check if our away status is set to 1, it may have been updated already (see a few lines above)
-		if($memprofile['away'] == 1)
-		{
-			eval("\$awaybit = \"".$templates->get("member_profile_away")."\";");
-		}
-	}
-
-	$memprofile['timezone'] = (float)$memprofile['timezone'];
-
-	if($memprofile['dst'] == 1)
-	{
-		$memprofile['timezone']++;
-		if(my_substr($memprofile['timezone'], 0, 1) != "-")
-		{
-			$memprofile['timezone'] = "+{$memprofile['timezone']}";
-		}
-	}
-
-	$memregdate = my_date($mybb->settings['dateformat'], $memprofile['regdate']);
-	$memlocaldate = gmdate($mybb->settings['dateformat'], TIME_NOW + ($memprofile['timezone'] * 3600));
-	$memlocaltime = gmdate($mybb->settings['timeformat'], TIME_NOW + ($memprofile['timezone'] * 3600));
-
-	$localtime = $lang->sprintf($lang->local_time_format, $memlocaldate, $memlocaltime);
-
-	if($memprofile['lastactive'])
-	{
-		$memlastvisitdate = my_date($mybb->settings['dateformat'], $memprofile['lastactive']);
-		$memlastvisitsep = $lang->comma;
-		$memlastvisittime = my_date($mybb->settings['timeformat'], $memprofile['lastactive']);
-	}
-	else
-	{
-		$memlastvisitdate = $lang->lastvisit_never;
-		$memlastvisitsep = '';
-		$memlastvisittime = '';
-	}
-
-	if($memprofile['birthday'])
-	{
-		$membday = explode("-", $memprofile['birthday']);
-
-		if($memprofile['birthdayprivacy'] != 'none')
-		{
-			if($membday[0] && $membday[1] && $membday[2])
-			{
-				$lang->membdayage = $lang->sprintf($lang->membdayage, get_age($memprofile['birthday']));
-
-				$bdayformat = fix_mktime($mybb->settings['dateformat'], $membday[2]);
-				$membday = mktime(0, 0, 0, $membday[1], $membday[0], $membday[2]);
-				$membday = date($bdayformat, $membday);
-
-				$membdayage = $lang->membdayage;
-			}
-			elseif($membday[2])
-			{
-				$membday = mktime(0, 0, 0, 1, 1, $membday[2]);
-				$membday = date("Y", $membday);
-				$membdayage = '';
-			}
-			else
-			{
-				$membday = mktime(0, 0, 0, $membday[1], $membday[0], 0);
-				$membday = date("F j", $membday);
-				$membdayage = '';
-			}
-		}
-
-		if($memprofile['birthdayprivacy'] == 'age')
-		{
-			$membday = $lang->birthdayhidden;
-		}
-		else if($memprofile['birthdayprivacy'] == 'none')
-		{
-			$membday = $lang->birthdayhidden;
-			$membdayage = '';
-		}
-	}
-	else
-	{
-		$membday = $lang->not_specified;
-		$membdayage = '';
-	}
-
-	if(!$memprofile['displaygroup'])
-	{
-		$memprofile['displaygroup'] = $memprofile['usergroup'];
-	}
-
-	// Grab the following fields from the user's displaygroup
-	$displaygroupfields = array(
-		"title",
-		"usertitle",
-		"stars",
-		"starimage",
-		"image",
-		"usereputationsystem"
-	);
-	$displaygroup = usergroup_displaygroup($memprofile['displaygroup']);
-
-	// Get the user title for this user
-	unset($usertitle);
-	unset($stars);
-	$starimage = '';
-	if(trim($memprofile['usertitle']) != '')
-	{
-		// User has custom user title
-		$usertitle = $memprofile['usertitle'];
-	}
-	elseif(trim($displaygroup['usertitle']) != '')
-	{
-		// User has group title
-		$usertitle = $displaygroup['usertitle'];
-	}
-	else
-	{
-		// No usergroup title so get a default one
-		$usertitles = $cache->read('usertitles');
-
-		if(is_array($usertitles))
-		{
-			foreach($usertitles as $title)
-			{
-				if($memprofile['postnum'] >= $title['posts'])
-				{
-					$usertitle = $title['title'];
-					$stars = $title['stars'];
-					$starimage = $title['starimage'];
-
-					break;
-				}
-			}
-		}
-	}
-
-	$usertitle = htmlspecialchars_uni($usertitle);
-
-	if($displaygroup['stars'] || $displaygroup['usertitle'])
-	{
-		// Set the number of stars if display group has constant number of stars
-		$stars = $displaygroup['stars'];
-	}
-	elseif(!$stars)
-	{
-		if(!is_array($usertitles))
-		{
-			$usertitles = $cache->read('usertitles');
-		}
-
-		// This is for cases where the user has a title, but the group has no defined number of stars (use number of stars as per default usergroups)
-		if(is_array($usertitles))
-		{
-			foreach($usertitles as $title)
-			{
-				if($memprofile['postnum'] >= $title['posts'])
-				{
-					$stars = $title['stars'];
-					$starimage = $title['starimage'];
-					break;
-				}
-			}
-		}
-	}
-
-	$groupimage = '';
-	if(!empty($displaygroup['image']))
-	{
-		if(!empty($mybb->user['language']))
-		{
-			$language = $mybb->user['language'];
-		}
-		else
-		{
-			$language = $mybb->settings['bblanguage'];
-		}
-		$displaygroup['image'] = str_replace("{lang}", $language, $displaygroup['image']);
-		$displaygroup['image'] = str_replace("{theme}", $theme['imgdir'], $displaygroup['image']);
-		eval("\$groupimage = \"".$templates->get("member_profile_groupimage")."\";");
-	}
-
-	if(empty($starimage))
-	{
-		$starimage = $displaygroup['starimage'];
-	}
-
-	if(!empty($starimage))
-	{
-		// Only display stars if we have an image to use...
-		$starimage = str_replace("{theme}", $theme['imgdir'], $starimage);
-		$userstars = '';
-		for($i = 0; $i < $stars; ++$i)
-		{
-			eval("\$userstars .= \"".$templates->get("member_profile_userstar", 1, 0)."\";");
-		}
-	}
-
-	// User is currently online and this user has permissions to view the user on the WOL
-	$timesearch = TIME_NOW - $mybb->settings['wolcutoffmins']*60;
-	$query = $db->simple_select("sessions", "location,nopermission", "uid='$uid' AND time>'{$timesearch}'", array('order_by' => 'time', 'order_dir' => 'DESC', 'limit' => 1));
-	$session = $db->fetch_array($query);
-
-	$online_status = '';
-	if($memprofile['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $memprofile['uid'] == $mybb->user['uid'])
-	{
-		// Lastvisit
-		if($memprofile['lastactive'])
-		{
-			$memlastvisitsep = $lang->comma;
-			$memlastvisitdate = my_date('relative', $memprofile['lastactive']);
-		}
-
-		// Time Online
-		$timeonline = $lang->none_registered;
-		if($memprofile['timeonline'] > 0)
-		{
-			$timeonline = nice_time($memprofile['timeonline']);
-		}
-
-		// Online?
-		if(!empty($session))
-		{
-			// Fetch their current location
-			$lang->load("online");
-			require_once MYBB_ROOT."inc/functions_online.php";
-			$activity = fetch_wol_activity($session['location'], $session['nopermission']);
-			$location = build_friendly_wol_location($activity);
-			$location_time = my_date($mybb->settings['timeformat'], $memprofile['lastactive']);
-
-			eval("\$online_status = \"".$templates->get("member_profile_online")."\";");
-		}
-		// User is offline
-		else
-		{
-			eval("\$online_status = \"".$templates->get("member_profile_offline")."\";");
-		}
-	}
-
-	if($memprofile['invisible'] == 1 && $mybb->usergroup['canviewwolinvis'] != 1 && $memprofile['uid'] != $mybb->user['uid'])
-	{
-		$memlastvisitsep = '';
-		$memlastvisittime = '';
-		$memlastvisitdate = $lang->lastvisit_never;
-
-		if($memprofile['lastactive'])
-		{
-			// We have had at least some active time, hide it instead
-			$memlastvisitdate = $lang->lastvisit_hidden;
-		}
-
-		$timeonline = $lang->timeonline_hidden;
-	}
-
-	// Reset the background colours to keep it inline
-	$alttrow = 'trow1';
-
-	// Build Referral
-	$referrals = '';
-	if($mybb->settings['usereferrals'] == 1)
-	{
-		$bg_color = alt_trow();
-
-		eval("\$referrals = \"".$templates->get("member_profile_referrals")."\";");
-	}
-
-	// Fetch the reputation for this user
-	$reputation = '';
-	if($memperms['usereputationsystem'] == 1 && $displaygroup['usereputationsystem'] == 1 && $mybb->settings['enablereputation'] == 1)
-	{
-		$bg_color = alt_trow();
-		$reputation = get_reputation($memprofile['reputation']);
-
-		// If this user has permission to give reputations show the vote link
-		$vote_link = '';
-		if($mybb->usergroup['cangivereputations'] == 1 && $memprofile['uid'] != $mybb->user['uid'] && ($mybb->settings['posrep'] || $mybb->settings['neurep'] || $mybb->settings['negrep']))
-		{
-			eval("\$vote_link = \"".$templates->get("member_profile_reputation_vote")."\";");
-		}
-
-		eval("\$reputation = \"".$templates->get("member_profile_reputation")."\";");
-	}
-
-	$warning_level = '';
-	if($mybb->settings['enablewarningsystem'] != 0 && $memperms['canreceivewarnings'] != 0 && ($mybb->usergroup['canwarnusers'] != 0 || ($mybb->user['uid'] == $memprofile['uid'] && $mybb->settings['canviewownwarning'] != 0)))
-	{
-		$bg_color = alt_trow();
-
-		if($mybb->settings['maxwarningpoints'] < 1)
-		{
-			$mybb->settings['maxwarningpoints'] = 10;
-		}
-
-		$warning_level = round($memprofile['warningpoints']/$mybb->settings['maxwarningpoints']*100);
-
-		if($warning_level > 100)
-		{
-			$warning_level = 100;
-		}
-
-		$warn_user = '';
-		$warning_link = 'usercp.php';
-		$warning_level = get_colored_warning_level($warning_level);
-		if($mybb->usergroup['canwarnusers'] != 0 && $memprofile['uid'] != $mybb->user['uid'])
-		{
-			eval("\$warn_user = \"".$templates->get("member_profile_warn")."\";");
-			$warning_link = "warnings.php?uid={$memprofile['uid']}";
-		}
-
-		eval("\$warning_level = \"".$templates->get("member_profile_warninglevel")."\";");
-	}
-
-	$bgcolor = $alttrow = 'trow1';
-	$customfields = $profilefields = '';
-
-	$query = $db->simple_select("userfields", "*", "ufid = '{$uid}'");
-	$userfields = $db->fetch_array($query);
-
-	// If this user is an Administrator or a Moderator then we wish to show all profile fields
-	$pfcache = $cache->read('profilefields');
-
-	if(is_array($pfcache))
-	{
-		foreach($pfcache as $customfield)
-		{
-			if($mybb->usergroup['cancp'] != 1 && $mybb->usergroup['issupermod'] != 1 && $mybb->usergroup['canmodcp'] != 1 && (!is_member($customfield['viewableby']) || !$customfield['profile']))
-			{
-				continue;
-			}
-
-			$thing = explode("\n", $customfield['type'], "2");
-			$type = trim($thing[0]);
-
-			$customfieldval = $customfield_val = '';
-			$field = "fid{$customfield['fid']}";
-
-			if(isset($userfields[$field]))
-			{
-				$useropts = explode("\n", $userfields[$field]);
-				$customfieldval = $comma = '';
-				if(is_array($useropts) && ($type == "multiselect" || $type == "checkbox"))
-				{
-					foreach($useropts as $val)
-					{
-						if($val != '')
-						{
-							eval("\$customfield_val .= \"".$templates->get("member_profile_customfields_field_multi_item")."\";");
-						}
-					}
-					if($customfield_val != '')
-					{
-						eval("\$customfieldval = \"".$templates->get("member_profile_customfields_field_multi")."\";");
-					}
-				}
-				else
-				{
-					$parser_options = array(
-						"allow_html" => $customfield['allowhtml'],
-						"allow_mycode" => $customfield['allowmycode'],
-						"allow_smilies" => $customfield['allowsmilies'],
-						"allow_imgcode" => $customfield['allowimgcode'],
-						"allow_videocode" => $customfield['allowvideocode'],
-						#"nofollow_on" => 1,
-						"filter_badwords" => 1
-					);
-
-					if($customfield['type'] == "textarea")
-					{
-						$parser_options['me_username'] = $memprofile['username'];
-					}
-					else
-					{
-						$parser_options['nl2br'] = 0;
-					}
-
-					if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
-					{
-						$parser_options['allow_imgcode'] = 0;
-					}
-
-					$customfieldval = $parser->parse_message($userfields[$field], $parser_options);
-				}
-			}
-
-			if($customfieldval)
-			{
-				$customfield['name'] = htmlspecialchars_uni($customfield['name']);
-				eval("\$customfields .= \"".$templates->get("member_profile_customfields_field")."\";");
-				$bgcolor = alt_trow();
-			}
-		}
-	}
-
-	if($customfields)
-	{
-		eval("\$profilefields = \"".$templates->get("member_profile_customfields")."\";");
-	}
-
-	$memprofile['postnum'] = my_number_format($memprofile['postnum']);
-	$lang->ppd_percent_total = $lang->sprintf($lang->ppd_percent_total, my_number_format($ppd), $post_percent);
-
-	$memprofile['threadnum'] = my_number_format($memprofile['threadnum']);
-	$lang->tpd_percent_total = $lang->sprintf($lang->tpd_percent_total, my_number_format($tpd), $thread_percent);
-
-	$formattedname = format_name($memprofile['username'], $memprofile['usergroup'], $memprofile['displaygroup']);
-
-	$bannedbit = '';
-	if($memperms['isbannedgroup'] == 1 && $mybb->usergroup['canbanusers'] == 1)
-	{
-		// Fetch details on their ban
-		$query = $db->simple_select('banned b LEFT JOIN '.TABLE_PREFIX.'users a ON (b.admin=a.uid)', 'b.*, a.username AS adminuser', "b.uid='{$uid}'", array('limit' => 1));
-		$memban = $db->fetch_array($query);
-
-		if($memban['reason'])
-		{
-			$memban['reason'] = htmlspecialchars_uni($parser->parse_badwords($memban['reason']));
-		}
-		else
-		{
-			$memban['reason'] = $lang->na;
-		}
-
-		if($memban['lifted'] == 'perm' || $memban['lifted'] == '' || $memban['bantime'] == 'perm' || $memban['bantime'] == '---')
-		{
-			$banlength = $lang->permanent;
-			$timeremaining = $lang->na;
-		}
-		else
-		{
-			// Set up the array of ban times.
-			$bantimes = fetch_ban_times();
-
-			$banlength = $bantimes[$memban['bantime']];
-			$remaining = $memban['lifted']-TIME_NOW;
-
-			$timeremaining = nice_time($remaining, array('short' => 1, 'seconds' => false))."";
-
-			$banned_class = '';
-			if($remaining < 3600)
-			{
-				$banned_class = "high_banned";
-			}
-			else if($remaining < 86400)
-			{
-				$banned_class = "moderate_banned";
-			}
-			else if($remaining < 604800)
-			{
-				$banned_class = "low_banned";
-			}
-			else
-			{
-				$banned_class = "normal_banned";
-			}
-
-			eval('$timeremaining = "'.$templates->get('member_profile_banned_remaining').'";');
-		}
-
-		$memban['adminuser'] = build_profile_link(htmlspecialchars_uni($memban['adminuser']), $memban['admin']);
-
-		// Display a nice warning to the user
-		eval('$bannedbit = "'.$templates->get('member_profile_banned').'";');
-	}
-
-	$adminoptions = '';
-	if($mybb->usergroup['cancp'] == 1 && $mybb->config['hide_admin_links'] != 1)
-	{
-		eval("\$adminoptions = \"".$templates->get("member_profile_adminoptions")."\";");
-	}
-
-	$modoptions = $viewnotes = $editnotes = $editprofile = $banuser = $manageuser = '';
-	$can_purge_spammer = purgespammer_show($memprofile['postnum'], $memprofile['usergroup'], $memprofile['uid']);
-	if($mybb->usergroup['canmodcp'] == 1 || $can_purge_spammer)
-	{
-		if($mybb->usergroup['canuseipsearch'] == 1)
-		{
-			$memprofile['regip'] = my_inet_ntop($db->unescape_binary($memprofile['regip']));
-			$memprofile['lastip'] = my_inet_ntop($db->unescape_binary($memprofile['lastip']));
-
-			eval("\$ipaddress = \"".$templates->get("member_profile_modoptions_ipaddress")."\";");
-		}
-
-		$memprofile['usernotes'] = nl2br(htmlspecialchars_uni($memprofile['usernotes']));
-
-		if(!empty($memprofile['usernotes']))
-		{
-			if(strlen($memprofile['usernotes']) > 100)
-			{
-				eval("\$viewnotes = \"".$templates->get("member_profile_modoptions_viewnotes")."\";");
-				$memprofile['usernotes'] = my_substr($memprofile['usernotes'], 0, 100)."... {$viewnotes}";
-			}
-		}
-		else
-		{
-			$memprofile['usernotes'] = $lang->no_usernotes;
-		}
-
-		if($mybb->usergroup['caneditprofiles'] == 1)
-		{
-			eval("\$editprofile = \"".$templates->get("member_profile_modoptions_editprofile")."\";");
-			eval("\$editnotes = \"".$templates->get("member_profile_modoptions_editnotes")."\";");
-		}
-
-		if($mybb->usergroup['canbanusers'] == 1 && (!$memban['uid'] || $memban['uid'] && ($mybb->user['uid'] == $memban['admin']) || $mybb->usergroup['issupermod'] == 1 || $mybb->usergroup['cancp'] == 1))
-		{
-			eval("\$banuser = \"".$templates->get("member_profile_modoptions_banuser")."\";");
-		}
-
-		if($can_purge_spammer)
-		{
-			eval("\$purgespammer = \"".$templates->get('member_profile_modoptions_purgespammer')."\";");
-		}
-
-		if(!empty($editprofile) || !empty($banuser) || !empty($purgespammer))
-		{
-			eval("\$manageuser = \"".$templates->get("member_profile_modoptions_manageuser")."\";");
-		}
-
-		eval("\$modoptions = \"".$templates->get("member_profile_modoptions")."\";");
-	}
-
-	$add_remove_options = array();
-	$buddy_options = $ignore_options = $report_options = '';
-	if($mybb->user['uid'] != $memprofile['uid'] && $mybb->user['uid'] != 0)
-	{
-		$buddy_list = explode(',', $mybb->user['buddylist']);
-		$ignore_list = explode(',', $mybb->user['ignorelist']);
-
-		if(in_array($uid, $buddy_list))
-		{
-			$add_remove_options = array('url' => "usercp.php?action=do_editlists&amp;delete={$uid}&amp;my_post_key={$mybb->post_code}", 'class' => 'remove_buddy_button', 'lang' => $lang->remove_from_buddy_list);
-		}
-		else
-		{
-			$add_remove_options = array('url' => "usercp.php?action=do_editlists&amp;add_username=".urlencode($memprofile['username'])."&amp;my_post_key={$mybb->post_code}", 'class' => 'add_buddy_button', 'lang' => $lang->add_to_buddy_list);
-		}
-
-		if(!in_array($uid, $ignore_list))
-		{
-			eval("\$buddy_options = \"".$templates->get("member_profile_addremove")."\";"); // Add/Remove Buddy
-		}
-
-		if(in_array($uid, $ignore_list))
-		{
-			$add_remove_options = array('url' => "usercp.php?action=do_editlists&amp;manage=ignored&amp;delete={$uid}&amp;my_post_key={$mybb->post_code}", 'class' => 'remove_ignore_button', 'lang' => $lang->remove_from_ignore_list);
-		}
-		else
-		{
-			$add_remove_options = array('url' => "usercp.php?action=do_editlists&amp;manage=ignored&amp;add_username=".urlencode($memprofile['username'])."&amp;my_post_key={$mybb->post_code}", 'class' => 'add_ignore_button', 'lang' => $lang->add_to_ignore_list);
-		}
-
-		if(!in_array($uid, $buddy_list))
-		{
-			eval("\$ignore_options = \"".$templates->get("member_profile_addremove")."\";"); // Add/Remove Ignore
-		}
-
-		if(isset($memperms['canbereported']) && $memperms['canbereported'] == 1)
-		{
-			$add_remove_options = array('url' => "javascript:Report.reportUser({$memprofile['uid']});", 'class' => 'report_user_button', 'lang' => $lang->report_user);
-			eval("\$report_options = \"".$templates->get("member_profile_addremove")."\";"); // Report User
-		}
-	}
-
-	$plugins->run_hooks("member_profile_end");
-
-	eval("\$profile = \"".$templates->get("member_profile")."\";");
-	output_page($profile);
+    $memprofile['useravatar'] = format_avatar($memprofile['avatar'], $memprofile['avatardimensions']);
+    $memprofile['avatar_image'] = $memprofile['useravatar']['image'];
+    $memprofile['avatar_width_height'] = $memprofile['useravatar']['width_height'];
+
+    $memprofile['hascontacts'] = false;
+    $memprofile['showwebsite'] = false;
+    if (my_validate_url($memprofile['website']) && !is_member($mybb->settings['hidewebsite']) && $memperms['canchangewebsite'] == 1) {
+        $memprofile['hascontacts'] = true;
+        $memprofile['showwebsite'] = true;
+    }
+
+    $memprofile['showemail'] = false;
+    if ($memprofile['hideemail'] != 1 && (my_strpos(",".$memprofile['ignorelist'].",", ",".$mybb->user['uid'].",") === false || $mybb->usergroup['cansendemailoverride'] != 0)) {
+        $memprofile['hascontacts'] = true;
+        $memprofile['showemail'] = true;
+    }
+
+    $memprofile['showpm'] = false;
+    if ($mybb->settings['enablepms'] != 0 && (($memprofile['receivepms'] != 0 && $memperms['canusepms'] != 0 && my_strpos(",".$memprofile['ignorelist'].",", ",".$mybb->user['uid'].",") === false) || $mybb->usergroup['canoverridepm'] == 1)) {
+        $memprofile['hascontacts'] = true;
+        $memprofile['showpm'] = true;
+    }
+
+    foreach (array('icq', 'aim', 'yahoo', 'skype', 'google') as $field) {
+        $contact_field[$field] = '';
+        $settingkey = 'allow'.$field.'field';
+        $templatekey = 'show'.$field;
+
+        $memprofile[$templatekey] = false;
+        if(!empty($memprofile[$field]) && is_member($mybb->settings[$settingkey], array('usergroup' => $memprofile['usergroup'], 'additionalgroups' => $memprofile['additionalgroups'])))
+        {
+            $memprofile['hascontacts'] = true;
+            $memprofile[$templatekey] = true;
+        }
+    }
+
+    $memprofile['showsignature'] = false;
+    if ($memprofile['signature'] && ($memprofile['suspendsignature'] == 0 || $memprofile['suspendsigtime'] < TIME_NOW) && !is_member($mybb->settings['hidesignatures']) && $memperms['canusesig'] && $memperms['canusesigxposts'] <= $memprofile['postnum']) {
+        $memprofile['showsignature'] = true;
+
+        $sig_parser = array(
+            "allow_html" => $mybb->settings['sightml'],
+            "allow_mycode" => $mybb->settings['sigmycode'],
+            "allow_smilies" => $mybb->settings['sigsmilies'],
+            "allow_imgcode" => $mybb->settings['sigimgcode'],
+            "me_username" => $me_username,
+            "filter_badwords" => 1
+        );
+
+        if ($memperms['signofollow']) {
+            $sig_parser['nofollow_on'] = 1;
+        }
+
+        if ($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0) {
+            $sig_parser['allow_imgcode'] = 0;
+        }
+
+        $memprofile['signature'] = $parser->parse_message($memprofile['signature'], $sig_parser);
+    }
+
+    $daysreg = (TIME_NOW - $memprofile['regdate']) / (24*3600);
+
+    if ($daysreg < 1) {
+        $daysreg = 1;
+    }
+
+    $stats = $cache->read("stats");
+
+    // Format post count, per day count and percent of total
+    $ppd = $memprofile['postnum'] / $daysreg;
+    $ppd = round($ppd, 2);
+    if ($ppd > $memprofile['postnum']) {
+        $ppd = $memprofile['postnum'];
+    }
+
+    $numposts = $stats['numposts'];
+    if ($numposts == 0) {
+        $post_percent = "0";
+    } else {
+        $post_percent = $memprofile['postnum']*100/$numposts;
+        $post_percent = round($post_percent, 2);
+    }
+
+    if ($post_percent > 100) {
+        $post_percent = 100;
+    }
+
+    // Format thread count, per day count and percent of total
+    $tpd = $memprofile['threadnum'] / $daysreg;
+    $tpd = round($tpd, 2);
+    if ($tpd > $memprofile['threadnum']) {
+        $tpd = $memprofile['threadnum'];
+    }
+
+    $numthreads = $stats['numthreads'];
+    if ($numthreads == 0) {
+        $thread_percent = "0";
+    } else {
+        $thread_percent = $memprofile['threadnum']*100/$numthreads;
+        $thread_percent = round($thread_percent, 2);
+    }
+
+    if ($thread_percent > 100) {
+        $thread_percent = 100;
+    }
+
+    if ($memprofile['away'] == 1 && $mybb->settings['allowaway'] != 0) {
+        $memprofile['awaydate'] = my_date($mybb->settings['dateformat'], $memprofile['awaydate']);
+
+        if (!empty($memprofile['awayreason'])) {
+            $memprofile['awayreason'] = $parser->parse_badwords($memprofile['awayreason']);
+        } else {
+            $memprofile['awayreason'] = $lang->away_no_reason;
+        }
+
+        if ($memprofile['returndate'] == '') {
+            $memprofile['returndate'] = $lang->unknown;
+        } else {
+            $returnhome = explode("-", $memprofile['returndate']);
+
+            // PHP native date functions use integers so timestamps for years after 2038 will not work
+            // Thus we use adodb_mktime
+            if ($returnhome[2] >= 2038) {
+                require_once MYBB_ROOT."inc/functions_time.php";
+                $returnmkdate = adodb_mktime(0, 0, 0, $returnhome[1], $returnhome[0], $returnhome[2]);
+                $memprofile['returndate'] = my_date($mybb->settings['dateformat'], $returnmkdate, "", 1, true);
+            } else {
+                $returnmkdate = mktime(0, 0, 0, $returnhome[1], $returnhome[0], $returnhome[2]);
+                $memprofile['returndate'] = my_date($mybb->settings['dateformat'], $returnmkdate);
+            }
+
+            // If our away time has expired already, we should be back, right?
+            if ($returnmkdate < TIME_NOW) {
+                $db->update_query('users', array('away' => '0', 'awaydate' => '0', 'returndate' => '', 'awayreason' => ''), 'uid=\''.(int)$memprofile['uid'].'\'');
+
+                // Update our status to "not away"
+                $memprofile['away'] = 0;
+            }
+        }
+    }
+
+    $memprofile['timezone'] = (float)$memprofile['timezone'];
+
+    if ($memprofile['dst'] == 1) {
+        $memprofile['timezone']++;
+        if(my_substr($memprofile['timezone'], 0, 1) != "-")
+        {
+            $memprofile['timezone'] = "+{$memprofile['timezone']}";
+        }
+    }
+
+    $memprofile['memregdate'] = my_date($mybb->settings['dateformat'], $memprofile['regdate']);
+    $memprofile['memlocaldate'] = gmdate($mybb->settings['dateformat'], TIME_NOW + ($memprofile['timezone'] * 3600));
+    $memprofile['memlocaltime'] = gmdate($mybb->settings['timeformat'], TIME_NOW + ($memprofile['timezone'] * 3600));
+
+    if ($memprofile['birthday']) {
+        $membday = explode("-", $memprofile['birthday']);
+
+        if ($memprofile['birthdayprivacy'] != 'none') {
+            if ($membday[0] && $membday[1] && $membday[2]) {
+                $lang->membdayage = $lang->sprintf($lang->membdayage, get_age($memprofile['birthday']));
+
+                $bdayformat = fix_mktime($mybb->settings['dateformat'], $membday[2]);
+                $membday = mktime(0, 0, 0, $membday[1], $membday[0], $membday[2]);
+                $memprofile['membday'] = date($bdayformat, $membday);
+
+                $memprofile['membdayage'] = $lang->membdayage;
+            } else if($membday[2]) {
+                $membday = mktime(0, 0, 0, 1, 1, $membday[2]);
+                $memprofile['membday'] = date("Y", $membday);
+                $memprofile['membdayage'] = '';
+            } else {
+                $membday = mktime(0, 0, 0, $membday[1], $membday[0], 0);
+                $memprofile['membday'] = date("F j", $membday);
+                $memprofile['membdayage'] = '';
+            }
+        }
+
+        if ($memprofile['birthdayprivacy'] == 'age') {
+            $memprofile['membday'] = $lang->birthdayhidden;
+        } else if ($memprofile['birthdayprivacy'] == 'none') {
+            $memprofile['membday'] = $lang->birthdayhidden;
+            $memprofile['membdayage'] = '';
+        }
+    } else {
+        $memprofile['membday'] = $lang->not_specified;
+        $memprofile['membdayage'] = '';
+    }
+
+    if (!$memprofile['displaygroup']) {
+        $memprofile['displaygroup'] = $memprofile['usergroup'];
+    }
+
+    // Grab the following fields from the user's displaygroup
+    $displaygroupfields = array(
+        "title",
+        "usertitle",
+        "stars",
+        "starimage",
+        "image",
+        "usereputationsystem"
+    );
+    $displaygroup = usergroup_displaygroup($memprofile['displaygroup']);
+
+    // Get the user title for this user
+    unset($memprofile['user_title']);
+    unset($stars);
+    $starimage = '';
+    if (trim($memprofile['usertitle']) != '') {
+        // User has custom user title
+        $memprofile['user_title'] = $memprofile['usertitle'];
+    } else if (trim($displaygroup['usertitle']) != '') {
+        // User has group title
+        $memprofile['user_title'] = $displaygroup['usertitle'];
+    } else {
+        // No usergroup title so get a default one
+        $usertitles = $cache->read('usertitles');
+
+        if (is_array($usertitles)) {
+            foreach ($usertitles as $title) {
+                if ($memprofile['postnum'] >= $title['posts']) {
+                    $memprofile['user_title'] = $title['title'];
+                    $stars = $title['stars'];
+                    $starimage = $title['starimage'];
+
+                    break;
+                }
+            }
+        }
+    }
+
+    if ($displaygroup['stars'] || $displaygroup['usertitle']) {
+        // Set the number of stars if display group has constant number of stars
+        $stars = $displaygroup['stars'];
+    } else if (!$stars) {
+        if (!is_array($usertitles)) {
+            $usertitles = $cache->read('usertitles');
+        }
+
+        // This is for cases where the user has a title, but the group has no defined number of stars (use number of stars as per default usergroups)
+        if (is_array($usertitles)) {
+            foreach ($usertitles as $title) {
+                if ($memprofile['postnum'] >= $title['posts']) {
+                    $stars = $title['stars'];
+                    $starimage = $title['starimage'];
+                    break;
+                }
+            }
+        }
+    }
+
+    $memprofile['groupimage'] = false;
+    if (!empty($displaygroup['image'])) {
+        if (!empty($mybb->user['language'])) {
+            $language = $mybb->user['language'];
+        } else {
+            $language = $mybb->settings['bblanguage'];
+        }
+
+        $displaygroup['image'] = str_replace("{lang}", $language, $displaygroup['image']);
+        $displaygroup['image'] = str_replace("{theme}", $theme['imgdir'], $displaygroup['image']);
+
+        $memprofile['groupimage'] = $displaygroup['image'];
+    }
+
+    if (empty($starimage)) {
+        $starimage = $displaygroup['starimage'];
+    }
+
+    if (!empty($starimage)) {
+        // Only display stars if we have an image to use...
+        $memprofile['stars'] = $stars;
+        $memprofile['starimage'] = str_replace("{theme}", $theme['imgdir'], $starimage);
+    }
+
+    // User is currently online and this user has permissions to view the user on the WOL
+    $timesearch = TIME_NOW - $mybb->settings['wolcutoffmins']*60;
+    $query = $db->simple_select("sessions", "location,nopermission", "uid='$uid' AND time>'{$timesearch}'", array('order_by' => 'time', 'order_dir' => 'DESC', 'limit' => 1));
+    $session = $db->fetch_array($query);
+
+    $memprofile['isonline'] = false;
+    if ($memprofile['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $memprofile['uid'] == $mybb->user['uid']) {
+        // Last Visit
+        if ($memprofile['lastactive']) {
+            $memprofile['last_active'] = my_date('relative', $memprofile['lastactive']);
+        }
+
+        // Time Online
+        $memprofile['time_online'] = $lang->none_registered;
+        if ($memprofile['timeonline'] > 0) {
+            $memprofile['time_online'] = nice_time($memprofile['timeonline']);
+        }
+
+        // Online?
+        if (!empty($session)) {
+            $memprofile['isonline'] = true;
+
+            // Fetch their current location
+            $lang->load("online");
+            require_once MYBB_ROOT."inc/functions_online.php";
+            $activity = fetch_wol_activity($session['location'], $session['nopermission']);
+            $memprofile['online_location'] = build_friendly_wol_location($activity);
+            $memprofile['online_location_time'] = my_date($mybb->settings['timeformat'], $memprofile['lastactive']);
+        }
+    }
+
+    if ($memprofile['invisible'] == 1 && $mybb->usergroup['canviewwolinvis'] != 1 && $memprofile['uid'] != $mybb->user['uid']) {
+        $memprofile['last_active'] = $lang->lastvisit_never;
+
+        if ($memprofile['lastactive']) {
+            // We have had at least some active time, hide it instead
+            $memprofile['last_active'] = $lang->lastvisit_hidden;
+        }
+
+        $memprofile['time_online'] = $lang->timeonline_hidden;
+    }
+
+    // Fetch the reputation for this user
+    $memprofile['showreputation'] = false;
+    if ($memperms['usereputationsystem'] == 1 && $displaygroup['usereputationsystem'] == 1 && $mybb->settings['enablereputation'] == 1) {
+        $memprofile['showreputation'] = true;
+        $memprofile['reputation'] = get_reputation($memprofile['reputation']);
+
+        // If this user has permission to give reputations show the vote link
+        $memprofile['showvote'] = false;
+        if ($mybb->usergroup['cangivereputations'] == 1 && $memprofile['uid'] != $mybb->user['uid'] && ($mybb->settings['posrep'] || $mybb->settings['neurep'] || $mybb->settings['negrep'])) {
+            $memprofile['showvote'] = true;
+        }
+    }
+
+    $memprofile['showwarning'] = false;
+    if ($mybb->settings['enablewarningsystem'] != 0 && $memperms['canreceivewarnings'] != 0 && ($mybb->usergroup['canwarnusers'] != 0 || ($mybb->user['uid'] == $memprofile['uid'] && $mybb->settings['canviewownwarning'] != 0))) {
+        $memprofile['showwarning'] = true;
+
+        if ($mybb->settings['maxwarningpoints'] < 1) {
+            $mybb->settings['maxwarningpoints'] = 10;
+        }
+
+        $warning_level = round($memprofile['warningpoints']/$mybb->settings['maxwarningpoints']*100);
+
+        if ($warning_level > 100) {
+            $warning_level = 100;
+        }
+
+        $memprofile['warn_user'] = false;
+        $memprofile['warning_link'] = 'usercp.php';
+        $memprofile['warning_level'] = get_colored_warning_level($warning_level);
+
+        if ($mybb->usergroup['canwarnusers'] != 0 && $memprofile['uid'] != $mybb->user['uid']) {
+            $memprofile['warn_user'] = true;
+            $memprofile['warning_link'] = "warnings.php?uid={$memprofile['uid']}";
+        }
+    }
+
+    $memprofile['profilefields'] = false;
+    $customfields = [];
+
+    $query = $db->simple_select("userfields", "*", "ufid = '{$uid}'");
+    $userfields = $db->fetch_array($query);
+
+    // If this user is an Administrator or a Moderator then we wish to show all profile fields
+    $pfcache = $cache->read('profilefields');
+
+    if (is_array($pfcache)) {
+        foreach ($pfcache as $customfield) {
+            if ($mybb->usergroup['cancp'] != 1 && $mybb->usergroup['issupermod'] != 1 && $mybb->usergroup['canmodcp'] != 1 && (!is_member($customfield['viewableby']) || !$customfield['profile'])) {
+                continue;
+            }
+
+            $thing = explode("\n", $customfield['type'], "2");
+            $type = trim($thing[0]);
+
+            $field = "fid{$customfield['fid']}";
+
+            if (!empty($userfields[$field])) {
+                $memprofile['profilefields'] = true;
+                $useropts = explode("\n", $userfields[$field]);
+                $customfield['ismulti'] = false;
+                if (is_array($useropts) && ($type == "multiselect" || $type == "checkbox")) {
+                    $customfield['ismulti'] = true;
+                    $customfield['value'] = [];
+                    foreach ($useropts as $val) {
+                        if ($val != '') {
+                            $customfield['value'][] = $val;
+                        }
+                    }
+                } else {
+                    $parser_options = array(
+                        "allow_html" => $customfield['allowhtml'],
+                        "allow_mycode" => $customfield['allowmycode'],
+                        "allow_smilies" => $customfield['allowsmilies'],
+                        "allow_imgcode" => $customfield['allowimgcode'],
+                        "allow_videocode" => $customfield['allowvideocode'],
+                        #"nofollow_on" => 1,
+                        "filter_badwords" => 1
+                    );
+
+                    if ($customfield['type'] == "textarea") {
+                        $parser_options['me_username'] = $memprofile['username'];
+                    } else {
+                        $parser_options['nl2br'] = 0;
+                    }
+
+                    if ($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0) {
+                        $parser_options['allow_imgcode'] = 0;
+                    }
+
+                    $customfield['value'] = $parser->parse_message($userfields[$field], $parser_options);
+                }
+
+                $customfields[] = $customfield;
+            }
+        }
+    }
+
+    $memprofile['postnum'] = my_number_format($memprofile['postnum']);
+    $memprofile['ppd'] = my_number_format($ppd);
+    $memprofile['post_percent'] = $post_percent;
+
+    $memprofile['threadnum'] = my_number_format($memprofile['threadnum']);
+    $memprofile['tpd'] = my_number_format($tpd);
+    $memprofile['thread_percent'] = $thread_percent;
+
+    $memprofile['formattedname'] = format_name($memprofile['username'], $memprofile['usergroup'], $memprofile['displaygroup']);
+
+    $memprofile['banned'] = false;
+    if ($memperms['isbannedgroup'] == 1 && $mybb->usergroup['canbanusers'] == 1) {
+        $memprofile['banned'] = true;
+
+        // Fetch details on their ban
+        $query = $db->simple_select('banned b LEFT JOIN '.TABLE_PREFIX.'users a ON (b.admin=a.uid)', 'b.*, a.username AS adminuser', "b.uid='{$uid}'", array('limit' => 1));
+        $memban = $db->fetch_array($query);
+
+        if ($memban['reason']) {
+            $memprofile['banned_reason'] = $parser->parse_badwords($memban['reason']);
+        } else {
+            $memprofile['banned_reason'] = $lang->na;
+        }
+
+        $memprofile['perm_ban'] = false;
+        if ($memban['lifted'] == 'perm' || $memban['lifted'] == '' || $memban['bantime'] == 'perm' || $memban['bantime'] == '---') {
+            $memprofile['perm_ban'] = true;
+            $memprofile['banlength'] = $lang->permanent;
+        } else {
+            // Set up the array of ban times.
+            $bantimes = fetch_ban_times();
+
+            $memprofile['banlength'] = $bantimes[$memban['bantime']];
+            $remaining = $memban['lifted']-TIME_NOW;
+
+            $memprofile['timeremaining'] = nice_time($remaining, array('short' => 1, 'seconds' => false))."";
+
+            if ($remaining < 3600) {
+                $memprofile['banned_class'] = "high_banned";
+            } else if($remaining < 86400) {
+                $memprofile['banned_class'] = "moderate_banned";
+            } else if($remaining < 604800) {
+                $memprofile['banned_class'] = "low_banned";
+            } else {
+                $memprofile['banned_class'] = "normal_banned";
+            }
+        }
+
+        $memprofile['banned_adminuser'] = build_profile_link(htmlspecialchars_uni($memban['adminuser']), $memban['admin']);
+    }
+
+    $memprofile['showadminoptions'] = false;
+    if ($mybb->usergroup['cancp'] == 1 && $mybb->config['hide_admin_links'] != 1) {
+        $memprofile['showadminoptions'] = true;
+        $memprofile['admin_dir'] = $admin_dir;
+    }
+
+    $memprofile['showmodoptions'] = $memprofile['showmanageuser'] = false;
+    $can_purge_spammer = purgespammer_show($memprofile['postnum'], $memprofile['usergroup'], $memprofile['uid']);
+    if ($mybb->usergroup['canmodcp'] == 1 || $can_purge_spammer) {
+        $memprofile['showmodoptions'] = true;
+        if ($mybb->usergroup['canuseipsearch'] == 1) {
+            $memprofile['regip'] = my_inet_ntop($db->unescape_binary($memprofile['regip']));
+            $memprofile['lastip'] = my_inet_ntop($db->unescape_binary($memprofile['lastip']));
+        }
+
+        $memprofile['showeditprofile'] = false;
+        if ($mybb->usergroup['caneditprofiles'] == 1) {
+            $memprofile['showmanageuser'] = true;
+            $memprofile['showeditprofile'] = true;
+        }
+
+        $memprofile['showbanuser'] = false;
+        if ($mybb->usergroup['canbanusers'] == 1 && (!$memban['uid'] || $memban['uid'] && ($mybb->user['uid'] == $memban['admin']) || $mybb->usergroup['issupermod'] == 1 || $mybb->usergroup['cancp'] == 1)) {
+            $memprofile['showmanageuser'] = true;
+            $memprofile['showbanuser'] = true;
+        }
+
+        $memprofile['showpurgespammer'] = false;
+        if ($can_purge_spammer) {
+            $memprofile['showmanageuser'] = true;
+            $memprofile['showpurgespammer'] = true;
+        }
+    }
+
+    $memprofile['showoptions'] = false;
+    if ($mybb->user['uid'] != $memprofile['uid'] && $mybb->user['uid'] != 0) {
+        $memprofile['showoptions'] = true;
+
+        $buddy_list = explode(',', $mybb->user['buddylist']);
+        $ignore_list = explode(',', $mybb->user['ignorelist']);
+
+        $memprofile['onbuddylist'] = false;
+        if (in_array($uid, $buddy_list) && !in_array($uid, $ignore_list)) {
+            $memprofile['onbuddylist'] = true;
+        }
+
+        $memprofile['showbuddy'] = false;
+        if (!in_array($uid, $ignore_list)) {
+            $memprofile['showbuddy'] = true;
+        }
+
+        $memprofile['onignorelist'] = false;
+        if (in_array($uid, $ignore_list)) {
+            $memprofile['onignorelist'] = true;
+        }
+
+        $memprofile['showignore'] = false;
+        if (!in_array($uid, $buddy_list)) {
+            $memprofile['showignore'] = true;
+        }
+
+        $memprofile['showreport'] = false;
+        if (isset($memperms['canbereported']) && $memperms['canbereported'] == 1) {
+            $memprofile['showreport'] = true;
+        }
+    }
+
+    $plugins->run_hooks("member_profile_end");
+
+    output_page(\MyBB\template('member/profile.twig', [
+        'memprofile' => $memprofile,
+        'customfields' => $customfields,
+    ]));
 }
 
 if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
