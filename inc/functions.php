@@ -1786,7 +1786,7 @@ function is_moderator($fid=0, $action="", $uid=0)
 /**
  * Generate a list of the posticons.
  *
- * @return string The template of posticons.
+ * @return array The list of posticons.
  */
 function get_post_icons()
 {
@@ -1797,10 +1797,9 @@ function get_post_icons()
 		$icon = $mybb->get_input('icon');
 	}
 
-	$iconlist = '';
-	$no_icons_checked = " checked=\"checked\"";
 	// read post icons from cache, and sort them accordingly
 	$posticons_cache = (array)$cache->read("posticons");
+
 	$posticons = array();
 	foreach($posticons_cache as $posticon)
 	{
@@ -1808,35 +1807,22 @@ function get_post_icons()
 	}
 	krsort($posticons);
 
+	$icons = [];
 	foreach($posticons as $dbicon)
 	{
 		$dbicon['path'] = str_replace("{theme}", $theme['imgdir'], $dbicon['path']);
-		$dbicon['path'] = htmlspecialchars_uni($mybb->get_asset_url($dbicon['path']));
-		$dbicon['name'] = htmlspecialchars_uni($dbicon['name']);
+		$dbicon['path'] = $mybb->get_asset_url($dbicon['path']);
 
+		$dbicon['checked'] = false;
 		if($icon == $dbicon['iid'])
 		{
-			$checked = " checked=\"checked\"";
-			$no_icons_checked = '';
-		}
-		else
-		{
-			$checked = '';
+			$dbicon['checked'] = true;
 		}
 
-		eval("\$iconlist .= \"".$templates->get("posticons_icon")."\";");
+		$icons[] = $dbicon;
 	}
 
-	if(!empty($iconlist))
-	{
-		eval("\$posticons = \"".$templates->get("posticons")."\";");
-	}
-	else
-	{
-		$posticons = '';
-	}
-
-	return $posticons;
+	return $icons;
 }
 
 /**
@@ -3633,45 +3619,19 @@ function build_prefix_select($fid, $selected_pid=0, $multiple=0, $previous_pid=0
 		return '';
 	}
 
-	$prefixselect = $prefixselect_prefix = '';
-
-	if($multiple == 1)
-	{
-		$any_selected = "";
-		if($selected_pid == 'any')
-		{
-			$any_selected = " selected=\"selected\"";
-		}
-	}
-
-	$default_selected = "";
-	if(((int)$selected_pid == 0) && $selected_pid != 'any')
-	{
-		$default_selected = " selected=\"selected\"";
-	}
-
+	$prefix_array = [];
 	foreach($prefixes as $prefix)
 	{
-		$selected = "";
+		$prefix['selected'] = false;
 		if($prefix['pid'] == $selected_pid)
 		{
-			$selected = " selected=\"selected\"";
+			$prefix['selected'] = true;
 		}
 
-		$prefix['prefix'] = htmlspecialchars_uni($prefix['prefix']);
-		eval("\$prefixselect_prefix .= \"".$templates->get("post_prefixselect_prefix")."\";");
+		$prefix_array[] = $prefix;
 	}
 
-	if($multiple != 0)
-	{
-		eval("\$prefixselect = \"".$templates->get("post_prefixselect_multiple")."\";");
-	}
-	else
-	{
-		eval("\$prefixselect = \"".$templates->get("post_prefixselect_single")."\";");
-	}
-
-	return $prefixselect;
+	return $prefix_array;
 }
 
 /**

@@ -31,8 +31,11 @@ $tid = $pid = 0;
 $mybb->input['action'] = $mybb->get_input('action');
 $mybb->input['tid'] = $mybb->get_input('tid', MyBB::INPUT_INT);
 $mybb->input['pid'] = $mybb->get_input('pid', MyBB::INPUT_INT);
+
+$newthread['isdraft'] = false;
 if($mybb->input['action'] == "editdraft" || ($mybb->get_input('savedraft') && $mybb->input['tid']) || ($mybb->input['tid'] && $mybb->input['pid']))
 {
+	$newthread['isdraft'] = true;
 	$thread = get_thread($mybb->input['tid']);
 
 	$query = $db->simple_select("posts", "*", "tid='".$mybb->get_input('tid', MyBB::INPUT_INT)."' AND visible='-2'", array('order_by' => 'dateline', 'limit' => 1));
@@ -46,12 +49,10 @@ if($mybb->input['action'] == "editdraft" || ($mybb->get_input('savedraft') && $m
 	$pid = $post['pid'];
 	$fid = $thread['fid'];
 	$tid = $thread['tid'];
-	eval("\$editdraftpid = \"".$templates->get("newthread_draftinput")."\";");
 }
 else
 {
 	$fid = $mybb->get_input('fid', MyBB::INPUT_INT);
-	$editdraftpid = '';
 }
 
 // Fetch forum information.
@@ -112,7 +113,6 @@ if($forum['allowpicons'] != 0)
 // If we have a currently logged in user then fetch the change user box.
 if($mybb->user['uid'] != 0)
 {
-	$mybb->user['username'] = htmlspecialchars_uni($mybb->user['username']);
 	eval("\$loginbox = \"".$templates->get("changeuserbox")."\";");
 }
 
@@ -154,7 +154,6 @@ if((empty($_POST) && empty($_FILES)) && $mybb->get_input('processed', MyBB::INPU
 }
 
 $errors = array();
-$maximageserror = $attacherror = '';
 
 // Handle attachments if we've got any.
 if($mybb->settings['enableattachments'] == 1 && !$mybb->get_input('attachmentaid', MyBB::INPUT_INT) && ($mybb->get_input('newattachment') || $mybb->get_input('updateattachment') || ($mybb->input['action'] == "do_newthread" && $mybb->get_input('submit') && $_FILES['attachment'])))
@@ -208,7 +207,6 @@ if($mybb->settings['enableattachments'] == 1 && !$mybb->get_input('attachmentaid
 	// If we were dealing with an attachment but didn't click 'Post Thread', force the new thread page again.
 	if(!$mybb->get_input('submit'))
 	{
-		//$editdraftpid = "<input type=\"hidden\" name=\"pid\" value=\"$pid\" />";
 		$mybb->input['action'] = "newthread";
 	}
 }
@@ -510,561 +508,424 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft")
 {
-	$plugins->run_hooks("newthread_start");
+    $plugins->run_hooks("newthread_start");
 
-	// Do we have attachment errors?
-	if(count($errors) > 0)
-	{
-		$thread_errors = inline_error($errors);
-	}
+    // Do we have attachment errors?
+    if (count($errors) > 0) {
+        $thread_errors = inline_error($errors);
+    }
 
-	$multiquote_external = $quoted_ids = '';
+    $newthread['subject'] = $newthread['message'] = '';
 
-	$subject = $message = '';
-	// If this isn't a preview and we're not editing a draft, then handle quoted posts
-	if(empty($mybb->input['previewpost']) && !$thread_errors && $mybb->input['action'] != "editdraft")
-	{
-		$quoted_posts = array();
-		// Handle multiquote
-		if(isset($mybb->cookies['multiquote']) && $mybb->settings['multiquote'] != 0)
-		{
-			$multiquoted = explode("|", $mybb->cookies['multiquote']);
-			foreach($multiquoted as $post)
-			{
-				$quoted_posts[$post] = (int)$post;
-			}
-		}
+    // If this isn't a preview and we're not editing a draft, then handle quoted posts
+    if (empty($mybb->input['previewpost']) && !$thread_errors && $mybb->input['action'] != "editdraft") {
+        $quoted_posts = array();
+        // Handle multiquote
+        if (isset($mybb->cookies['multiquote']) && $mybb->settings['multiquote'] != 0) {
+            $multiquoted = explode("|", $mybb->cookies['multiquote']);
+            foreach ($multiquoted as $post) {
+                $quoted_posts[$post] = (int)$post;
+            }
+        }
 
-		// Quoting more than one post - fetch them
-		if(count($quoted_posts) > 0)
-		{
-			$external_quotes = 0;
-			$quoted_posts = implode(",", $quoted_posts);
-			$unviewable_forums = get_unviewable_forums();
-			$inactiveforums = get_inactive_forums();
-			if($unviewable_forums)
-			{
-				$unviewable_forums = "AND t.fid NOT IN ({$unviewable_forums})";
-			}
-			if($inactiveforums)
-			{
-				$inactiveforums = "AND t.fid NOT IN ({$inactiveforums})";
-			}
+        // Quoting more than one post - fetch them
+        if (count($quoted_posts) > 0) {
+            $external_quotes = 0;
+            $quoted_posts = implode(",", $quoted_posts);
+            $unviewable_forums = get_unviewable_forums();
+            $inactiveforums = get_inactive_forums();
 
-			if(is_moderator($fid))
-			{
-				$visible_where = "AND p.visible != 2";
-			}
-			else
-			{
-				$visible_where = "AND p.visible > 0";
-			}
+            if ($unviewable_forums) {
+                $unviewable_forums = "AND t.fid NOT IN ({$unviewable_forums})";
+            }
 
-			// Check group permissions if we can't view threads not started by us
-			$group_permissions = forum_permissions();
-			$onlyusfids = array();
-			$onlyusforums = '';
-			foreach($group_permissions as $gpfid => $forum_permissions)
-			{
-				if(isset($forum_permissions['canonlyviewownthreads']) && $forum_permissions['canonlyviewownthreads'] == 1)
-				{
-					$onlyusfids[] = $gpfid;
-				}
-			}
-			if(!empty($onlyusfids))
-			{
-				$onlyusforums = "AND ((t.fid IN(".implode(',', $onlyusfids).") AND t.uid='{$mybb->user['uid']}') OR t.fid NOT IN(".implode(',', $onlyusfids)."))";
-			}
+            if ($inactiveforums) {
+                $inactiveforums = "AND t.fid NOT IN ({$inactiveforums})";
+            }
 
-			if($mybb->get_input('load_all_quotes', MyBB::INPUT_INT) == 1)
-			{
-				$query = $db->query("
-					SELECT p.subject, p.message, p.pid, p.tid, p.username, p.dateline, u.username AS userusername
-					FROM ".TABLE_PREFIX."posts p
-					LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-					LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-					WHERE p.pid IN ({$quoted_posts}) {$unviewable_forums} {$inactiveforums} {$onlyusforums} {$visible_where}
-					ORDER BY p.dateline
-				");
-				while($quoted_post = $db->fetch_array($query))
-				{
-					if($quoted_post['userusername'])
-					{
-						$quoted_post['username'] = $quoted_post['userusername'];
-					}
-					$quoted_post['message'] = preg_replace('#(^|\r|\n)/me ([^\r\n<]*)#i', "\\1* {$quoted_post['username']} \\2", $quoted_post['message']);
-					$quoted_post['message'] = preg_replace('#(^|\r|\n)/slap ([^\r\n<]*)#i', "\\1* {$quoted_post['username']} {$lang->slaps} \\2 {$lang->with_trout}", $quoted_post['message']);
-					$quoted_post['message'] = preg_replace("#\[attachment=([0-9]+?)\]#i", '', $quoted_post['message']);
-					$message .= "[quote='{$quoted_post['username']}' pid='{$quoted_post['pid']}' dateline='{$quoted_post['dateline']}']\n{$quoted_post['message']}\n[/quote]\n\n";
-				}
+            if (is_moderator($fid)) {
+                $visible_where = "AND p.visible != 2";
+            } else {
+                $visible_where = "AND p.visible > 0";
+            }
 
-				$quoted_ids = "all";
-			}
-			else
-			{
-				$query = $db->query("
-					SELECT COUNT(*) AS quotes
-					FROM ".TABLE_PREFIX."posts p
-					LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-					WHERE p.pid IN ({$quoted_posts}) {$unviewable_forums} {$inactiveforums} {$onlyusforums} {$visible_where}
-				");
-				$external_quotes = $db->fetch_field($query, 'quotes');
+            // Check group permissions if we can't view threads not started by us
+            $group_permissions = forum_permissions();
+            $onlyusfids = array();
+            $onlyusforums = '';
+            foreach ($group_permissions as $gpfid => $forum_permissions) {
+                if (isset($forum_permissions['canonlyviewownthreads']) && $forum_permissions['canonlyviewownthreads'] == 1) {
+                    $onlyusfids[] = $gpfid;
+                }
+            }
 
-				if($external_quotes > 0)
-				{
-					if($external_quotes == 1)
-					{
-						$multiquote_text = $lang->multiquote_external_one;
-						$multiquote_deselect = $lang->multiquote_external_one_deselect;
-						$multiquote_quote = $lang->multiquote_external_one_quote;
-					}
-					else
-					{
-						$multiquote_text = $lang->sprintf($lang->multiquote_external, $external_quotes);
-						$multiquote_deselect = $lang->multiquote_external_deselect;
-						$multiquote_quote = $lang->multiquote_external_quote;
-					}
-					eval("\$multiquote_external = \"".$templates->get("newthread_multiquote_external")."\";");
-				}
-			}
-		}
-	}
+            if (!empty($onlyusfids)) {
+                $onlyusforums = "AND ((t.fid IN(".implode(',', $onlyusfids).") AND t.uid='{$mybb->user['uid']}') OR t.fid NOT IN(".implode(',', $onlyusfids)."))";
+            }
 
-	if(isset($mybb->input['quoted_ids']))
-	{
-		$quoted_ids = htmlspecialchars_uni($mybb->get_input('quoted_ids'));
-	}
+            if ($mybb->get_input('load_all_quotes', MyBB::INPUT_INT) == 1) {
+                $query = $db->query("
+                    SELECT p.subject, p.message, p.pid, p.tid, p.username, p.dateline, u.username AS userusername
+                    FROM " . TABLE_PREFIX . "posts p
+                    LEFT JOIN " . TABLE_PREFIX . "threads t ON (t.tid=p.tid)
+                    LEFT JOIN " . TABLE_PREFIX . "users u ON (u.uid=p.uid)
+                    WHERE p.pid IN ({$quoted_posts}) {$unviewable_forums} {$inactiveforums} {$onlyusforums} {$visible_where}
+                    ORDER BY p.dateline
+                ");
+                while ($quoted_post = $db->fetch_array($query)) {
+                    if ($quoted_post['userusername']) {
+                        $quoted_post['username'] = $quoted_post['userusername'];
+                    }
 
-	$postoptionschecked = array('signature' => '', 'disablesmilies' => '');
-	$postoptions_subscriptionmethod_dont = $postoptions_subscriptionmethod_none = $postoptions_subscriptionmethod_email = $postoptions_subscriptionmethod_pm = '';
-	$postpollchecked = '';
+                    $quoted_post['message'] = preg_replace('#(^|\r|\n)/me ([^\r\n<]*)#i', "\\1* {$quoted_post['username']} \\2", $quoted_post['message']);
+                    $quoted_post['message'] = preg_replace('#(^|\r|\n)/slap ([^\r\n<]*)#i', "\\1* {$quoted_post['username']} {$lang->slaps} \\2 {$lang->with_trout}", $quoted_post['message']);
+                    $quoted_post['message'] = preg_replace("#\[attachment=([0-9]+?)\]#i", '', $quoted_post['message']);
+                    $newthread['message'] .= "[quote='{$quoted_post['username']}' pid='{$quoted_post['pid']}' dateline='{$quoted_post['dateline']}']\n{$quoted_post['message']}\n[/quote]\n\n";
+                }
 
-	// Check the various post options if we're
-	// a -> previewing a post
-	// b -> removing an attachment
-	// c -> adding a new attachment
-	// d -> have errors from posting
+                $newthread['quoted_ids'] = "all";
+            } else {
+                $query = $db->query("
+                    SELECT COUNT(*) AS quotes
+                    FROM " . TABLE_PREFIX . "posts p
+                    LEFT JOIN " . TABLE_PREFIX . "threads t ON (t.tid=p.tid)
+                    WHERE p.pid IN ({$quoted_posts}) {$unviewable_forums} {$inactiveforums} {$onlyusforums} {$visible_where}
+                ");
+                $external_quotes = $db->fetch_field($query, 'quotes');
 
-	if(!empty($mybb->input['previewpost']) || $mybb->get_input('attachmentaid', MyBB::INPUT_INT) || $mybb->get_input('newattachment') || $mybb->get_input('updateattachment') || $thread_errors)
-	{
-		$postoptions = $mybb->get_input('postoptions', MyBB::INPUT_ARRAY);
-		if(isset($postoptions['signature']) && $postoptions['signature'] == 1)
-		{
-			$postoptionschecked['signature'] = " checked=\"checked\"";
-		}
-		if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "none")
-		{
-			$postoptions_subscriptionmethod_none = "checked=\"checked\"";
-		}
-		else if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "email")
-		{
-			$postoptions_subscriptionmethod_email = "checked=\"checked\"";
-		}
-		else if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "pm")
-		{
-			$postoptions_subscriptionmethod_pm = "checked=\"checked\"";
-		}
-		else
-		{
-			$postoptions_subscriptionmethod_dont = "checked=\"checked\"";
-		}
-		if(isset($postoptions['disablesmilies']) && $postoptions['disablesmilies'] == 1)
-		{
-			$postoptionschecked['disablesmilies'] = " checked=\"checked\"";
-		}
-		if($mybb->get_input('postpoll', MyBB::INPUT_INT) == 1)
-		{
-			$postpollchecked = "checked=\"checked\"";
-		}
-		$numpolloptions = $mybb->get_input('numpolloptions', MyBB::INPUT_INT);
-	}
+                $newthread['multiquote'] = false;
+                if ($external_quotes > 0) {
+                    $newthread['multiquote'] = true;
+                    if ($external_quotes == 1) {
+                        $newthread['multiquote_text'] = $lang->multiquote_external_one;
+                        $newthread['multiquote_deselect'] = $lang->multiquote_external_one_deselect;
+                        $newthread['multiquote_quote'] = $lang->multiquote_external_one_quote;
+                    } else {
+                        $newthread['multiquote_text'] = $lang->sprintf($lang->multiquote_external, $external_quotes);
+                        $newthread['multiquote_deselect'] = $lang->multiquote_external_deselect;
+                        $newthread['multiquote_quote'] = $lang->multiquote_external_quote;
+                    }
+                }
+            }
+        }
+    }
 
-	// Editing a draft thread
-	else if($mybb->input['action'] == "editdraft" && $mybb->user['uid'])
-	{
-		$mybb->input['threadprefix'] = $thread['prefix'];
-		$message = htmlspecialchars_uni($post['message']);
-		$subject = htmlspecialchars_uni($post['subject']);
-		if($post['includesig'] != 0)
-		{
-			$postoptionschecked['signature'] = " checked=\"checked\"";
-		}
-		if($post['smilieoff'] == 1)
-		{
-			$postoptionschecked['disablesmilies'] = " checked=\"checked\"";
-		}
-		$icon = $post['icon'];
-		if($forum['allowpicons'] != 0)
-		{
-			$posticons = get_post_icons();
-		}
-		if($postoptions['subscriptionmethod'] == "none")
-		{
-			$postoptions_subscriptionmethod_none = "checked=\"checked\"";
-		}
-		else if($postoptions['subscriptionmethod'] == "email")
-		{
-			$postoptions_subscriptionmethod_email = "checked=\"checked\"";
-		}
-		else if($postoptions['subscriptionmethod'] == "pm")
-		{
-			$postoptions_subscriptionmethod_pm = "checked=\"checked\"";
-		}
-		else
-		{
-			$postoptions_subscriptionmethod_dont = "checked=\"checked\"";
-		}
-	}
+    if (isset($mybb->input['quoted_ids'])) {
+        $newthread['quoted_ids'] = $mybb->get_input('quoted_ids');
+    }
 
-	// Otherwise, this is our initial visit to this page.
-	else
-	{
-		if($mybb->user['signature'] != '')
-		{
-			$postoptionschecked['signature'] = " checked=\"checked\"";
-		}
-		if($mybb->user['subscriptionmethod'] ==  1)
-		{
-			$postoptions_subscriptionmethod_none = "checked=\"checked\"";
-		}
-		else if($mybb->user['subscriptionmethod'] == 2)
-		{
-			$postoptions_subscriptionmethod_email = "checked=\"checked\"";
-		}
-		else if($mybb->user['subscriptionmethod'] == 3)
-		{
-			$postoptions_subscriptionmethod_pm = "checked=\"checked\"";
-		}
-		else
-		{
-			$postoptions_subscriptionmethod_dont = "checked=\"checked\"";
-		}
-		$numpolloptions = "2";
-	}
+    $newthread['postoptions'] = array('signature' => false, 'disablesmilies' => false);
+    $newthread['subscriptionmethod'] = array('dont' => false, 'none' => false, 'email' => false, 'pm' => false);
+    $newthread['postpollchecked'] = false;
 
-	$preview = '';
+    // Check the various post options if we're
+    // a -> previewing a post
+    // b -> removing an attachment
+    // c -> adding a new attachment
+    // d -> have errors from posting
 
-	// If we're previewing a post then generate the preview.
-	if(!empty($mybb->input['previewpost']))
-	{
-		// If this isn't a logged in user, then we need to do some special validation.
-		if($mybb->user['uid'] == 0)
-		{
-			// If they didn't specify a username leave blank so $lang->guest can be used on output
-			if(!$mybb->get_input('username'))
-			{
-				$username = '';
-			}
-			// Otherwise use the name they specified.
-			else
-			{
-				$username = $mybb->get_input('username');
-			}
-			$uid = 0;
-		}
-		// This user is logged in.
-		else
-		{
-			$username = $mybb->user['username'];
-			$uid = $mybb->user['uid'];
-		}
+    if (!empty($mybb->input['previewpost']) || $mybb->get_input('attachmentaid', MyBB::INPUT_INT) || $mybb->get_input('newattachment') || $mybb->get_input('updateattachment') || $thread_errors) {
+        $postoptions = $mybb->get_input('postoptions', MyBB::INPUT_ARRAY);
+        if (isset($postoptions['signature']) && $postoptions['signature'] == 1) {
+            $newthread['postoptions']['signature'] = true;
+        }
 
-		// Set up posthandler.
-		require_once MYBB_ROOT."inc/datahandlers/post.php";
-		$posthandler = new PostDataHandler("insert");
-		$posthandler->action = "thread";
+        if (isset($postoptions['disablesmilies']) && $postoptions['disablesmilies'] == 1) {
+            $newthread['postoptions']['disablesmilies'] = true;
+        }
 
-		// Set the thread data that came from the input to the $thread array.
-		$new_thread = array(
-			"fid" => $forum['fid'],
-			"prefix" => $mybb->get_input('threadprefix', MyBB::INPUT_INT),
-			"subject" => $mybb->get_input('subject'),
-			"icon" => $mybb->get_input('icon'),
-			"uid" => $uid,
-			"username" => $username,
-			"message" => $mybb->get_input('message'),
-			"ipaddress" => $session->packedip,
-			"posthash" => $mybb->get_input('posthash')
-		);
+        if (isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "none") {
+            $newthread['subscriptionmethod']['none'] = true;
+        } else if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "email") {
+            $newthread['subscriptionmethod']['email'] = true;
+        } else if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "pm") {
+            $newthread['subscriptionmethod']['pm'] = true;
+        } else {
+            $newthread['subscriptionmethod']['dont'] = true;
+        }
 
-		if($pid != '')
-		{
-			$new_thread['pid'] = $pid;
-		}
+        if ($mybb->get_input('postpoll', MyBB::INPUT_INT) == 1) {
+            $newthread['postpollchecked'] = true;
+        }
 
-		$posthandler->set_data($new_thread);
+        $newthread['numpolloptions'] = $mybb->get_input('numpolloptions', MyBB::INPUT_INT);
+    } else if ($mybb->input['action'] == "editdraft" && $mybb->user['uid']) {
+        // Editing a draft thread
+        $mybb->input['threadprefix'] = $thread['prefix'];
+        $newthread['message'] = $post['message'];
+        $newthread['subject'] = $post['subject'];
 
-		// Now let the post handler do all the hard work.
-		$valid_thread = $posthandler->verify_message();
-		$valid_subject = $posthandler->verify_subject();
+        if ($post['includesig'] != 0) {
+            $newthread['postoptions']['signature'] = true;
+        }
 
-		// guest post --> verify author
-		if($new_thread['uid'] == 0)
-		{
-			$valid_username = $posthandler->verify_author();
-		}
-		else
-		{
-			$valid_username = true;
-		}
+        if($post['smilieoff'] == 1) {
+            $newthread['postoptions']['disablesmilies'] = true;
+        }
 
-		$post_errors = array();
-		// Fetch friendly error messages if this is an invalid post
-		if(!$valid_thread || !$valid_subject || !$valid_username)
-		{
-			$post_errors = $posthandler->get_friendly_errors();
-		}
+        $icon = $post['icon'];
+        if ($forum['allowpicons'] != 0) {
+            $posticons = get_post_icons();
+        }
 
-		// One or more errors returned, fetch error list and throw to newreply page
-		if(count($post_errors) > 0)
-		{
-			$thread_errors = inline_error($post_errors);
-		}
-		else
-		{
-			$query = $db->query("
-				SELECT u.*, f.*
-				FROM ".TABLE_PREFIX."users u
-				LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
-				WHERE u.uid='".$mybb->user['uid']."'
-			");
-			$post = $db->fetch_array($query);
-			$post['username'] = $username;
-			if($mybb->user['uid'])
-			{
-				$post['userusername'] = $mybb->user['username'];
-			}
-			$previewmessage = $mybb->get_input('message');
-			$post['message'] = $previewmessage;
-			$post['subject'] = $mybb->get_input('subject');
-			$post['icon'] = $mybb->get_input('icon', MyBB::INPUT_INT);
-			$mybb->input['postoptions'] = $mybb->get_input('postoptions', MyBB::INPUT_ARRAY);
-			if(isset($mybb->input['postoptions']['disablesmilies']))
-			{
-				$post['smilieoff'] = $mybb->input['postoptions']['disablesmilies'];
-			}
-			$post['dateline'] = TIME_NOW;
-			if(isset($mybb->input['postoptions']['signature']))
-			{
-				$post['includesig'] = $mybb->input['postoptions']['signature'];
-			}
-			if(!isset($post['includesig']) || $post['includesig'] != 1)
-			{
-				$post['includesig'] = 0;
-			}
+        if ($postoptions['subscriptionmethod'] == "none") {
+            $newthread['subscriptionmethod']['none'] = true;
+        } else if($postoptions['subscriptionmethod'] == "email") {
+            $newthread['subscriptionmethod']['email'] = true;
+        } else if($postoptions['subscriptionmethod'] == "pm") {
+            $newthread['subscriptionmethod']['pm'] = true;
+        } else {
+            $newthread['subscriptionmethod']['dont'] = true;
+        }
+    } else {
+        // Otherwise, this is our initial visit to this page.
+        if ($mybb->user['signature'] != '') {
+            $newthread['postoptions']['signature'] = true;
+        }
 
-			// Fetch attachments assigned to this post
-			if($mybb->get_input('pid', MyBB::INPUT_INT))
-			{
-				$attachwhere = "pid='".$mybb->get_input('pid', MyBB::INPUT_INT)."'";
-			}
-			else
-			{
-				$attachwhere = "posthash='".$db->escape_string($mybb->get_input('posthash'))."'";
-			}
+        if ($mybb->user['subscriptionmethod'] == 1) {
+            $newthread['subscriptionmethod']['none'] = true;
+        } else if($mybb->user['subscriptionmethod'] == 2) {
+            $newthread['subscriptionmethod']['email'] = true;
+        } else if($mybb->user['subscriptionmethod'] == 3) {
+            $newthread['subscriptionmethod']['pm'] = true;
+        } else {
+            $newthread['subscriptionmethod']['dont'] = true;
+        }
 
-			$query = $db->simple_select("attachments", "*", $attachwhere);
-			while($attachment = $db->fetch_array($query))
-			{
-				$attachcache[0][$attachment['aid']] = $attachment;
-			}
+        $newthread['numpolloptions'] = 2;
+    }
 
-			$postbit = build_postbit($post, 1);
-			eval("\$preview = \"".$templates->get("previewpost")."\";");
-		}
-		$message = htmlspecialchars_uni($mybb->get_input('message'));
-		$subject = htmlspecialchars_uni($mybb->get_input('subject'));
-	}
+    // If we're previewing a post then generate the preview.
+    $newthread['preview'] = false;
+    if (!empty($mybb->input['previewpost'])) {
+        // If this isn't a logged in user, then we need to do some special validation.
+        if ($mybb->user['uid'] == 0) {
+            // If they didn't specify a username leave blank so $lang->guest can be used on output
+            if (!$mybb->get_input('username')) {
+                $username = '';
+            } else {
+                // Otherwise use the name they specified.
+                $username = $mybb->get_input('username');
+            }
 
-	// Removing an attachment or adding a new one, or showing thread errors.
-	else if($mybb->get_input('attachmentaid', MyBB::INPUT_INT) || $mybb->get_input('newattachment') || $mybb->get_input('updateattachment') || $thread_errors)
-	{
-		$message = htmlspecialchars_uni($mybb->get_input('message'));
-		$subject = htmlspecialchars_uni($mybb->get_input('subject'));
-	}
+            $uid = 0;
+        } else {
+            // This user is logged in.
+            $username = $mybb->user['username'];
+            $uid = $mybb->user['uid'];
+        }
 
-	// Generate thread prefix selector
-	if(!$mybb->get_input('threadprefix', MyBB::INPUT_INT))
-	{
-		$mybb->input['threadprefix'] = 0;
-	}
+        // Set up posthandler.
+        require_once MYBB_ROOT."inc/datahandlers/post.php";
+        $posthandler = new PostDataHandler("insert");
+        $posthandler->action = "thread";
 
-	$prefixselect = build_prefix_select($forum['fid'], $mybb->get_input('threadprefix', MyBB::INPUT_INT));
+        // Set the thread data that came from the input to the $thread array.
+        $new_thread = array(
+            "fid" => $forum['fid'],
+            "prefix" => $mybb->get_input('threadprefix', MyBB::INPUT_INT),
+            "subject" => $mybb->get_input('subject'),
+            "icon" => $mybb->get_input('icon'),
+            "uid" => $uid,
+            "username" => $username,
+            "message" => $mybb->get_input('message'),
+            "ipaddress" => $session->packedip,
+            "posthash" => $mybb->get_input('posthash')
+        );
 
-	$posthash = htmlspecialchars_uni($mybb->get_input('posthash'));
+        if ($pid != '') {
+            $new_thread['pid'] = $pid;
+        }
 
-	// Hide signature option if no permission
-	$signature = '';
-	if($mybb->usergroup['canusesig'] == 1 && !$mybb->user['suspendsignature'])
-	{
-		eval("\$signature = \"".$templates->get('newthread_signature')."\";");
-	}
+        $posthandler->set_data($new_thread);
 
-	// Can we disable smilies or are they disabled already?
-	$disablesmilies = '';
-	if($forum['allowsmilies'] != 0)
-	{
-		eval("\$disablesmilies = \"".$templates->get("newthread_disablesmilies")."\";");
-	}
+        // Now let the post handler do all the hard work.
+        $valid_thread = $posthandler->verify_message();
+        $valid_subject = $posthandler->verify_subject();
 
-	$postoptions = '';
-	if(!empty($signature) || !empty($disablesmilies))
-	{
-		eval("\$postoptions = \"".$templates->get("newthread_postoptions")."\";");
-		$bgcolor = "trow2";
-		$bgcolor2 = "trow1";
-	}
-	else
-	{
-		$bgcolor = "trow1";
-		$bgcolor2 = "trow2";
-	}
+        // guest post --> verify author
+        if ($new_thread['uid'] == 0) {
+            $valid_username = $posthandler->verify_author();
+        } else {
+            $valid_username = true;
+        }
 
-	$modoptions = '';
-	// Show the moderator options
-	if(is_moderator($fid))
-	{
-		$modoptions = $mybb->get_input('modoptions', MyBB::INPUT_ARRAY);
-		if(isset($modoptions['closethread']) && $modoptions['closethread'] == 1)
-		{
-			$closecheck = "checked=\"checked\"";
-		}
-		else
-		{
-			$closecheck = '';
-		}
-		if(isset($modoptions['stickthread']) && $modoptions['stickthread'] == 1)
-		{
-			$stickycheck = "checked=\"checked\"";
-		}
-		else
-		{
-			$stickycheck = '';
-		}
+        $post_errors = array();
+        // Fetch friendly error messages if this is an invalid post
+        if (!$valid_thread || !$valid_subject || !$valid_username) {
+            $post_errors = $posthandler->get_friendly_errors();
+        }
 
-		$closeoption = '';
-		if(is_moderator($thread['fid'], "canopenclosethreads"))
-		{
-			eval("\$closeoption = \"".$templates->get("newreply_modoptions_close")."\";");
-		}
+        // One or more errors returned, fetch error list and throw to newreply page
+        if (count($post_errors) > 0) {
+            $thread_errors = inline_error($post_errors);
+        } else {
+            $query = $db->query("
+                SELECT u.*, f.*
+                FROM ".TABLE_PREFIX."users u
+                LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
+                WHERE u.uid='".$mybb->user['uid']."'
+            ");
+            $post = $db->fetch_array($query);
+            $post['username'] = $username;
+            if ($mybb->user['uid']) {
+                $post['userusername'] = $mybb->user['username'];
+            }
 
-		$stickoption = '';
-		if(is_moderator($thread['fid'], "canstickunstickthreads"))
-		{
-			eval("\$stickoption = \"".$templates->get("newreply_modoptions_stick")."\";");
-		}
+            $previewmessage = $mybb->get_input('message');
+            $post['message'] = $previewmessage;
+            $post['subject'] = $mybb->get_input('subject');
+            $post['icon'] = $mybb->get_input('icon', MyBB::INPUT_INT);
 
-		if(!empty($closeoption) || !empty($stickoption))
-		{
-			eval("\$modoptions = \"".$templates->get("newreply_modoptions")."\";");
-			$bgcolor = "trow1";
-			$bgcolor2 = "trow2";
-		}
-		else
-		{
-			$bgcolor = "trow2";
-			$bgcolor2 = "trow1";
-		}
-	}
-	else
-	{
-		$bgcolor = "trow2";
-		$bgcolor2 = "trow1";
-	}
+            $mybb->input['postoptions'] = $mybb->get_input('postoptions', MyBB::INPUT_ARRAY);
+            if (isset($mybb->input['postoptions']['disablesmilies'])) {
+                $post['smilieoff'] = $mybb->input['postoptions']['disablesmilies'];
+            }
 
-	// Fetch subscription select box
-	eval("\$subscriptionmethod = \"".$templates->get("post_subscription_method")."\";");
+            $post['dateline'] = TIME_NOW;
+            if (isset($mybb->input['postoptions']['signature'])) {
+                $post['includesig'] = $mybb->input['postoptions']['signature'];
+            }
 
-	if($mybb->settings['enableattachments'] != 0 && $forumpermissions['canpostattachments'] != 0)
-	{ // Get a listing of the current attachments, if there are any
-		$attachcount = 0;
-		if($mybb->input['action'] == "editdraft" || ($mybb->input['tid'] && $mybb->input['pid']))
-		{
-			$attachwhere = "pid='$pid'";
-		}
-		else
-		{
-			$attachwhere = "posthash='".$db->escape_string($posthash)."'";
-		}
-		$query = $db->simple_select("attachments", "*", $attachwhere);
-		$attachments = '';
-		while($attachment = $db->fetch_array($query))
-		{
-			$attachment['size'] = get_friendly_size($attachment['filesize']);
-			$attachment['icon'] = get_attachment_icon(get_extension($attachment['filename']));
-			$attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
+            if (!isset($post['includesig']) || $post['includesig'] != 1) {
+                $post['includesig'] = 0;
+            }
 
-			if($mybb->settings['bbcodeinserter'] != 0 && $forum['allowmycode'] != 0 && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0))
-			{
-				eval("\$postinsert = \"".$templates->get("post_attachments_attachment_postinsert")."\";");
-			}
+            // Fetch attachments assigned to this post
+            if ($mybb->get_input('pid', MyBB::INPUT_INT)) {
+                $attachwhere = "pid='".$mybb->get_input('pid', MyBB::INPUT_INT)."'";
+            } else {
+                $attachwhere = "posthash='".$db->escape_string($mybb->get_input('posthash'))."'";
+            }
 
-			eval("\$attach_rem_options = \"".$templates->get("post_attachments_attachment_remove")."\";");
+            $query = $db->simple_select("attachments", "*", $attachwhere);
+            while ($attachment = $db->fetch_array($query)) {
+                $attachcache[0][$attachment['aid']] = $attachment;
+            }
 
-			$attach_mod_options = '';
-			if($attachment['visible'] != 1)
-			{
-				eval("\$attachments .= \"".$templates->get("post_attachments_attachment_unapproved")."\";");
-			}
-			else
-			{
-				eval("\$attachments .= \"".$templates->get("post_attachments_attachment")."\";");
-			}
-			$attachcount++;
-		}
-		$query = $db->simple_select("attachments", "SUM(filesize) AS ausage", "uid='".$mybb->user['uid']."'");
-		$usage = $db->fetch_array($query);
-		if($usage['ausage'] > ($mybb->usergroup['attachquota']*1024) && $mybb->usergroup['attachquota'] != 0)
-		{
-			$noshowattach = 1;
-		}
-		if($mybb->usergroup['attachquota'] == 0)
-		{
-			$friendlyquota = $lang->unlimited;
-		}
-		else
-		{
-			$friendlyquota = get_friendly_size($mybb->usergroup['attachquota']*1024);
-		}
-		$lang->attach_quota = $lang->sprintf($lang->attach_quota, $friendlyquota);
-		
-		if($usage['ausage'] !== NULL)
-		{
-			$friendlyusage = get_friendly_size($usage['ausage']);
-			$lang->attach_usage = $lang->sprintf($lang->attach_usage, $friendlyusage);
-			eval("\$link_viewattachments = \"".$templates->get("post_attachments_viewlink")."\";");
-		}
-		else
-		{
-			$lang->attach_usage = "";
-		}
-		
-		if($mybb->settings['maxattachments'] == 0 || ($mybb->settings['maxattachments'] != 0 && $attachcount < $mybb->settings['maxattachments']) && !isset($noshowattach))
-		{
-			eval("\$attach_add_options = \"".$templates->get("post_attachments_add")."\";");
-		}
+            $newthread['preview'] = true;
+            $postbit = build_postbit($post, 1);
+        }
 
-		if(($mybb->usergroup['caneditattachments'] || $forumpermissions['caneditattachments']) && $attachcount > 0)
-		{
-			eval("\$attach_update_options = \"".$templates->get("post_attachments_update")."\";");
-		}
+        $newthread['message'] = $mybb->get_input('message');
+        $newthread['subject'] = $mybb->get_input('subject');
+    }
 
-		if($attach_add_options || $attach_update_options)
-		{
-			eval("\$newattach = \"".$templates->get("post_attachments_new")."\";");
-		}
-		eval("\$attachbox = \"".$templates->get("post_attachments")."\";");
+    // Removing an attachment or adding a new one, or showing thread errors.
+    else if ($mybb->get_input('attachmentaid', MyBB::INPUT_INT) || $mybb->get_input('newattachment') || $mybb->get_input('updateattachment') || $thread_errors) {
+        $newthread['message'] = $mybb->get_input('message');
+        $newthread['subject'] = $mybb->get_input('subject');
+    }
 
-		$bgcolor = alt_trow();
-	}
+    // Generate thread prefix selector
+    if (!$mybb->get_input('threadprefix', MyBB::INPUT_INT)) {
+        $mybb->input['threadprefix'] = 0;
+    }
 
-	if($mybb->user['uid'])
-	{
-		eval("\$savedraftbutton = \"".$templates->get("post_savedraftbutton", 1, 0)."\";");
-	}
+    $prefixes = build_prefix_select($forum['fid'], $mybb->get_input('threadprefix', MyBB::INPUT_INT));
+
+    $newthread['posthash'] = $mybb->get_input('posthash');
+
+    $newthread['showpostoptions'] = false;
+
+    // Hide signature option if no permission
+    $newthread['showsignature'] = false;
+    if ($mybb->usergroup['canusesig'] == 1 && !$mybb->user['suspendsignature']) {
+        $newthread['showpostoptions'] = true;
+        $newthread['showsignature'] = true;
+    }
+
+    // Can we disable smilies or are they disabled already?
+    $newthread['showdisablesmilies'] = false;
+    if ($forum['allowsmilies'] != 0) {
+        $newthread['showpostoptions'] = true;
+        $newthread['showdisablesmilies'] = true;
+    }
+
+    $newthread['showmodoptions'] = false;
+    $newthread['modoptions'] = array('closethread' => false, 'stickthread' => false);
+    // Show the moderator options
+    if (is_moderator($fid)) {
+        $modoptions = $mybb->get_input('modoptions', MyBB::INPUT_ARRAY);
+        if (isset($modoptions['closethread']) && $modoptions['closethread'] == 1) {
+            $newthread['modoptions']['closethread'] = true;
+        }
+
+        if (isset($modoptions['stickthread']) && $modoptions['stickthread'] == 1) {
+            $newthread['modoptions']['stickthread'] = true;
+        }
+
+        $newthread['showcloseoption'] = false;
+        if (is_moderator($thread['fid'], "canopenclosethreads")) {
+            $newthread['showmodoptions'] = true;
+            $newthread['showcloseoption'] = true;
+        }
+
+        $newthread['showstickoption'] = false;
+        if (is_moderator($thread['fid'], "canstickunstickthreads")) {
+            $newthread['showmodoptions'] = true;
+            $newthread['showstickoption'] = true;
+        }
+    }
+
+    $newthread['showattachments'] = false;
+    if ($mybb->settings['enableattachments'] != 0 && $forumpermissions['canpostattachments'] != 0) {
+        // Get a listing of the current attachments, if there are any
+        $newthread['showattachments'] = true;
+        $attachcount = 0;
+
+        if ($mybb->input['action'] == "editdraft" || ($mybb->input['tid'] && $mybb->input['pid'])) {
+            $attachwhere = "pid='$pid'";
+        } else {
+            $attachwhere = "posthash='".$db->escape_string($newthread['posthash'])."'";
+        }
+
+        $attachments = [];
+        $query = $db->simple_select("attachments", "*", $attachwhere);
+        while ($attachment = $db->fetch_array($query)) {
+            $attachment['size'] = get_friendly_size($attachment['filesize']);
+            $attachment['icon'] = get_attachment_icon(get_extension($attachment['filename']));
+            $attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
+
+            $attachment['showinsert'] = false;
+            if ($mybb->settings['bbcodeinserter'] != 0 && $forum['allowmycode'] != 0 && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0)) {
+                $attachment['showinsert'] = true;
+            }
+
+            $attachcount++;
+            $attachments[] = $attachment;
+        }
+
+        $query = $db->simple_select("attachments", "SUM(filesize) AS ausage", "uid='".$mybb->user['uid']."'");
+        $usage = $db->fetch_array($query);
+        if ($usage['ausage'] > ($mybb->usergroup['attachquota']*1024) && $mybb->usergroup['attachquota'] != 0) {
+            $noshowattach = 1;
+        }
+
+        if ($mybb->usergroup['attachquota'] == 0) {
+            $newthread['friendlyquota'] = $lang->unlimited;
+        } else {
+            $newthread['friendlyquota'] = get_friendly_size($mybb->usergroup['attachquota']*1024);
+        }
+
+        $newthread['friendlyusage'] = get_friendly_size($usage['ausage']);
+
+        $newthread['showattachoptions'] = false;
+        $newthread['showattachadd'] = false;
+        if ($mybb->settings['maxattachments'] == 0 || ($mybb->settings['maxattachments'] != 0 && $attachcount < $mybb->settings['maxattachments']) && !isset($noshowattach)) {
+            $newthread['showattachoptions'] = true;
+            $newthread['showattachadd'] = true;
+        }
+
+        $newthread['showattachupdate'] = false;
+        if (($mybb->usergroup['caneditattachments'] || $forumpermissions['caneditattachments']) && $attachcount > 0) {
+            $newthread['showattachoptions'] = true;
+            $newthread['showattachupdate'] = true;
+        }
+    }
 
 	$captcha = '';
-
 	// Show captcha image for guests if enabled
 	if($mybb->settings['captchaimage'] && !$mybb->user['uid'])
 	{
@@ -1107,81 +968,90 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		}
 	}
 
-	if($forumpermissions['canpostpolls'] != 0)
-	{
-		$lang->max_options = $lang->sprintf($lang->max_options, $mybb->settings['maxpolloptions']);
-		eval("\$pollbox = \"".$templates->get("newthread_postpoll")."\";");
-	}
+    $newthread['showpollbox'] = false;
+    if ($forumpermissions['canpostpolls'] != 0) {
+        $newthread['showpollbox'] = true;
+    }
 
-	// Do we have any forum rules to show for this forum?
-	$forumrules = '';
-	if($forum['rulestype'] >= 2 && $forum['rules'])
-	{
-		if(!$forum['rulestitle'])
-		{
-			$forum['rulestitle'] = $lang->sprintf($lang->forum_rules, $forum['name']);
-		}
+    // Do we have any forum rules to show for this forum?
+    $newthread['showforumrules'] = false;
+    if ($forum['rulestype'] >= 2 && $forum['rules']) {
+        $newthread['showforumrules'] = true;
 
-		if(!$parser)
-		{
-			require_once MYBB_ROOT.'inc/class_parser.php';
-			$parser = new postParser;
-		}
+        if (!$forum['rulestitle']) {
+            $forum['rulestitle'] = $lang->sprintf($lang->forum_rules, $forum['name']);
+        }
 
-		$rules_parser = array(
-			"allow_html" => 1,
-			"allow_mycode" => 1,
-			"allow_smilies" => 1,
-			"allow_imgcode" => 1
-		);
+        if (!$parser) {
+            require_once MYBB_ROOT.'inc/class_parser.php';
+            $parser = new postParser;
+        }
 
-		$forum['rules'] = $parser->parse_message($forum['rules'], $rules_parser);
-		$foruminfo = $forum;
+        $rules_parser = array(
+            "allow_html" => 1,
+            "allow_mycode" => 1,
+            "allow_smilies" => 1,
+            "allow_imgcode" => 1
+        );
 
-		if($forum['rulestype'] == 3)
-		{
-			eval("\$forumrules = \"".$templates->get("forumdisplay_rules")."\";");
-		}
-		else if($forum['rulestype'] == 2)
-		{
-			eval("\$forumrules = \"".$templates->get("forumdisplay_rules_link")."\";");
-		}
-	}
+        $forum['rules'] = $parser->parse_message($forum['rules'], $rules_parser);
+    }
 
-	$moderation_notice = '';
-	if(!is_moderator($forum['fid'], "canapproveunapproveattachs"))
-	{
-		if($forumpermissions['modattachments'] == 1  && $forumpermissions['canpostattachments'] != 0)
-		{
-			$moderation_text = $lang->moderation_forum_attachments;
-			eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
-		}
-	}
+    $newthread['showmodnotice'] = false;
+    if (!is_moderator($forum['fid'], "canapproveunapproveattachs")) {
+        if ($forumpermissions['modattachments'] == 1  && $forumpermissions['canpostattachments'] != 0) {
+            $newthread['showmodnotice'] = true;
+            $newthread['moderation_text'] = $lang->moderation_forum_attachments;
+        }
+    }
 
-	if(!is_moderator($forum['fid'], "canapproveunapprovethreads"))
-	{
-		if($forumpermissions['modthreads'] == 1)
-		{
-			$moderation_text = $lang->moderation_forum_thread;
-			eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
-		}
-	}
+    if (!is_moderator($forum['fid'], "canapproveunapprovethreads")) {
+        if ($forumpermissions['modthreads'] == 1) {
+            $newthread['showmodnotice'] = true;
+            $newthread['moderation_text'] = $lang->moderation_forum_thread;
+        }
+    }
 
-	if(!is_moderator($forum['fid'], "canapproveunapproveposts"))
-	{
-		if($mybb->user['moderateposts'] == 1)
-		{
-			$moderation_text = $lang->moderation_user_posts;
-			eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
-		}
-	}
+    if (!is_moderator($forum['fid'], "canapproveunapproveposts")) {
+        if ($mybb->user['moderateposts'] == 1) {
+            $newthread['showmodnotice'] = true;
+            $newthread['moderation_text'] = $lang->moderation_user_posts;
+        }
+    }
 
-	$plugins->run_hooks("newthread_end");
+    $plugins->run_hooks("newthread_end");
 
-	$forum['name'] = strip_tags($forum['name']);
-	$lang->newthread_in = $lang->sprintf($lang->newthread_in, $forum['name']);
+    $forum['name'] = strip_tags($forum['name']);
 
-	eval("\$newthread = \"".$templates->get("newthread")."\";");
-	output_page($newthread);
+    $newthread['tid'] = $tid;
+    $newthread['pid'] = $pid;
+
+    $newthread['showprefixes'] = false;
+    if (is_array($prefixes)) {
+        $newthread['showprefixes'] = true;
+    }
+
+    $newthread['showposticons'] = false;
+    if (is_array($posticons)) {
+        $newthread['showposticons'] = true;
+    }
+
+    $newthread['emptyiconcheck'] = false;
+    if (empty($mybb->input['icon'])) {
+        $newthread['emptyiconcheck'] = true;
+    }
+
+    output_page(\MyBB\template('newthread/newthread.twig', [
+        'newthread' => $newthread,
+        'thread_errors' => $thread_errors,
+        'loginbox' => $loginbox,
+        'forum' => $forum,
+        'smilieinserter' => $smilieinserter,
+        'codebuttons' => $codebuttons,
+        'postbit' => $postbit,
+        'attachments' => $attachments,
+        'captcha' => $captcha,
+        'prefixes' => $prefixes,
+        'posticons' => $posticons,
+    ]));
 }
-
