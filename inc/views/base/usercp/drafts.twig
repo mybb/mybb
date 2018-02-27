@@ -24,7 +24,7 @@
                         </tr>
 
                         {% for draft in drafts %}
-                            {% include 'usercp/draft_row.twig' %}
+                            {% include 'usercp/drafts/row.twig' %}
                         {% else %}
                             <tr>
                                 <td class="trow1" colspan="7">{{ lang.no_drafts|raw }}</td>
