@@ -1,7 +1,7 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bburl }} - {{ lang.warning_log }}</title>
+    <title>{{ mybb.settings.bbname }} - {{ lang.warning_log }}</title>
 {% endblock head %}
 
 {% block body %}
@@ -49,7 +49,7 @@
             <td class="tcat" colspan="2"><span class="smalltext"><strong>{{ lang.details_warning_note }}</strong></span></td>
         </tr>
         <tr>
-            <td class="trow2" colspan="2"> {{ warning.notes }}</td>
+            <td class="trow2" colspan="2"> {{ warning.notes|nl2br }}</td>
         </tr>
     </table>
     <br />
@@ -70,7 +70,7 @@
                 <td class="tcat" colspan="2"><span class="smalltext"><strong>{{ lang.details_reason }}</strong></span></td>
             </tr>
             <tr>
-                <td class="trow2" colspan="2">{{ warning.revokereason }}</td>
+                <td class="trow2" colspan="2">{{ warning.revokereason|nl2br }}</td>
             </tr>
         </table>
     {% else %}

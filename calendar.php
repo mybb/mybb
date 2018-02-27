@@ -1635,11 +1635,11 @@ if($mybb->input['action'] == "dayview")
 
     // Load Birthdays for this day
     $birthdays = [];
-    $birthdaycount = 0;
+    $calendar['birthdaycount'] = 0;
 
     if ($calendar['showbirthdays']) {
         $birthdays2 = get_birthdays($month, $day);
-        $bdayhidden = 0;
+        $calendar['bdayhidden'] = 0;
         if (is_array($birthdays2)) {
             foreach ($birthdays2 as $birthday) {
                 if ($birthday['birthdayprivacy'] == 'all') {
@@ -1654,22 +1654,16 @@ if($mybb->input['action'] == "dayview")
                     $birthday['username'] = format_name(htmlspecialchars_uni($birthday['username']), $birthday['usergroup'], $birthday['displaygroup']);
                     $birthday['profilelink'] = build_profile_link($birthday['username'], $birthday['uid']);
 
-                    if ($birthdaycount > 1) {
-                        $birthday['comma'] = $lang->comma;
-                    } else {
-                        $birthday['comma'] = '';
-                    }
-
                     $birthdays[] = $birthday;
-                    ++$birthdaycount;
+                    ++$calendar['birthdaycount'];
                 } else {
-                    ++$bdayhidden;
-                    ++$birthdaycount;
+                    ++$calendar['bdayhidden'];
+                    ++$calendar['birthdaycount'];
                 }
             }
         }
 
-        if ($bdayhidden > 0) {
+        if ($calendar['bdayhidden'] > 0) {
             if ($birthdays) {
                 $calendar['hiddendash'] = " - ";
             } else {
@@ -1844,20 +1838,15 @@ if($mybb->input['action'] == "dayview")
         $years[] = $year_sel;
     }
 
-    if (!$events) {
-        $lang->no_events = $lang->sprintf($lang->no_events, $calendar['cid'], $day, $month, $year);
-    }
-
     $calendar['year'] = $year;
     $calendar['month'] = $month;
+    $calendar['day'] = $day;
     $calendar['currentmonth'] = $monthnames[$month];
 
     // Now output the page
     $plugins->run_hooks("calendar_dayview_end");
 
     output_page(\MyBB\template('calendar/dayview.twig', [
-        'birthdaycount' => $birthdaycount,
-        'bdayhidden' => $bdayhidden,
         'birthdays' => $birthdays,
         'calendar_jump' => $calendar_jump,
         'events' => $events,
