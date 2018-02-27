@@ -1,0 +1,223 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ mybb.settings.bbname }} - {{ lang.edit_post }}</title>
+    <script type="text/javascript" src="{{ asset_url('jscripts/post.js') }}"></script>
+{% endblock head %}
+
+{% block body %}
+    {% if editpost.preview %}
+        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder tfixed clear no_bottom_border">
+            <tr>
+                <td class="thead"><strong>{{ lang.post_preview }}</strong></td>
+            </tr>
+            <tr>
+                <td id="posts_container">
+                    <div id="posts">
+                        {{ postbit|raw }}
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <br />
+    {% endif %}
+    {{ post_errors|raw }}
+    {% if editpost.showmodnotice %}
+        <div class="pm_alert">
+            {{ editpost.moderation_text }}
+        </div>
+    {% endif %}
+    {% if editpost.showdelete %}
+        <form action="editpost.php" method="post" name="editpost">
+            <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+            <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+                <tr>
+                    <td class="thead" colspan="3"><strong>{{ lang.delete_post }}</strong></td>
+                </tr>
+                <tr>
+                    <td class="trow1" style="white-space: nowrap"><input type="checkbox" class="checkbox" name="delete" value="1" tabindex="9" /> <strong>{{ lang.delete_q }}</strong></td>
+                    <td class="trow1" width="100%">{{ lang.delete_1 }}<br /><span class="smalltext">{{ lang.delete_2|raw }}</span></td>
+                    <td class="trow1"><input type="submit" class="button" name="submit" value="{{ lang.delete_now }}" tabindex="10" /></td>
+                </tr>
+            </table>
+            <input type="hidden" name="action" value="deletepost" />
+            <input type="hidden" name="pid" value="{{ editpost.pid }}" />
+        </form>
+        <br />
+    {% endif %}
+    <form id="editpost" action="editpost.php?pid={{ editpost.pid }}&amp;processed=1" method="post" enctype="multipart/form-data" name="input">
+        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+            <tr>
+                <td class="thead" colspan="2"><strong>{{ lang.edit_post }}</strong></td>
+            </tr>
+            {{ loginbox|raw }}
+            <tr>
+                <td class="trow2"><strong><label for="subject">{{ lang.subject }}</label></strong></td>
+                <td class="trow2">
+                    {% if editpost.showprefixes %}
+                        <select name="threadprefix">
+                            <option value="0">{{ lang.no_prefix }}</option>
+                            {% for prefix in prefixes %}
+                                <option value="{{ prefix.pid }}"{% if prefix.selected %} selected="selected"{% endif %}>{{ prefix.prefix }}</option>
+                            {% endfor %}
+                        </select>
+                    {% endif %}
+                <input type="text" class="textbox" name="subject" size="40" maxlength="85" id="subject" value="{{ editpost.subject }}" tabindex="1" /></td>
+            </tr>
+            {% if editpost.showposticons %}
+                <tr>
+                    <td class="trow1" style="vertical-align: top">
+                        <strong>{{ lang.post_icon }}</strong>
+                        <span class="smalltext">
+                            <label class="posticons_label"><input type="radio" class="radio" name="icon" value="-1"{% if editpost.emptyiconcheck %} checked="checked"{% endif %} />{{ lang.no_post_icon }}</label>
+                        </span>
+                    </td>
+                    <td class="trow1" valign="top">
+                        {% for posticon in posticons %}
+                            <label class="posticons_label">
+                                <input type="radio" name="icon" value="{{ posticon.iid }}"{% if posticon.checked %} checked="checked"{% endif %} /> 
+                                <img src="{{ posticon.path }}" alt="{{ posticon.name }}" title="{{ posticon.name }}" />
+                            </label>
+                        {% endfor %}
+                    </td>
+                </tr>
+            {% endif %}
+            <tr>
+                <td class="trow2" valign="top"><strong><label for="message">{{ lang.your_message }}:</label></strong><br /><div style="text-align: center;">{{ smilieinserter|raw }}</div></td>
+                <td class="trow2">
+                    <textarea name="message" id="message" rows="20" cols="70" tabindex="3">{{ editpost.message }}</textarea>
+                    {{ codebuttons|raw }}
+                </td>
+            </tr>
+            {% if mybb.settings.alloweditreason %}
+                <tr>
+                    <td class="trow1"><strong><label for="editreason">{{ lang.editreason }}</label></strong></td>
+                    <td class="trow1"><input type="text" class="textbox" name="editreason" size="40" maxlength="150" id="editreason" value="{{ editpost.reason }}" tabindex="5" /></td>
+                </tr>
+            {% endif %}
+            {% if editpost.showpostoptions %}
+                <tr>
+                    <td class="trow2" valign="top"><strong>{{ lang.post_options }}</strong></td>
+                    <td class="trow2">
+                        <span class="smalltext">
+                            {% if editpost.showsignature %}
+                                <label>
+                                    <input type="checkbox" class="checkbox" name="postoptions[signature]" value="1" tabindex="6"{% if editpost.postoptions.signature %} checked="checked"{% endif %} /> {{ lang.options_sig|raw }}
+                                </label><br />
+                            {% endif %}
+                            {% if editpost.showdisablesmilies %}
+                                <label>
+                                    <input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="1" tabindex="9"{% if editpost.postoptions.disablesmilies %} checked="checked"{% endif %} /> {{ lang.options_disablesmilies|raw }}
+                                </label>
+                            {% endif %}
+                        </span>
+                    </td>
+                </tr>
+            {% endif %}
+            <tr>
+                <td class="trow1" valign="top">
+                    <strong>{{ lang.thread_subscription_method }}</strong><br />
+                    <span class="smalltext">{{ lang.thread_subscription_method_desc }}</span>
+                </td>
+                <td class="trow1 smalltext">
+                    <label>
+                        <input type="radio" name="postoptions[subscriptionmethod]" value="" style="vertical-align: middle;"{% if editpost.subscriptionmethod.dont %} checked="checked"{% endif %} /> {{ lang.no_subscribe }}
+                    </label><br />
+                    <label>
+                        <input type="radio" name="postoptions[subscriptionmethod]" value="none" style="vertical-align: middle;"{% if editpost.subscriptionmethod.none %} checked="checked"{% endif %} /> {{ lang.no_subscribe_notification }}
+                    </label><br />
+                    <label>
+                        <input type="radio" name="postoptions[subscriptionmethod]" value="email" style="vertical-align: middle;"{% if editpost.subscriptionmethod.email %} checked="checked"{% endif %} /> {{ lang.instant_email_subscribe }}
+                    </label><br />
+                    <label>
+                        <input type="radio" name="postoptions[subscriptionmethod]" value="pm" style="vertical-align: middle;"{% if editpost.subscriptionmethod.pm %} checked="checked"{% endif %} /> {{ lang.instant_pm_subscribe }}
+                    </label><br />
+                </td>
+             </tr>
+            {% if editpost.showpollbox %}
+                <tr>
+                    <td class="trow2" valign="top">
+                        <strong>{{ lang.poll }}</strong><br /><span class="smalltext">{{ lang.poll_desc }}</span>
+                    </td>
+                    <td class="trow2" valign="top">
+                        <span class="smalltext">
+                            <label><input type="checkbox" class="checkbox" name="postpoll" value="1"{% if editpost.postpollchecked %} checked="checked"{% endif %} /><strong>{{ lang.poll_check }}</strong></label><br />
+                            {{ lang.num_options }} <input type="text" class="textbox" name="numpolloptions" value="{{ editpost.numpolloptions }}" size="10" /> {{ trans('max_options', mybb.settings.maxpolloptions) }}
+                        </span>
+                    </td>
+                </tr>
+            {% endif %}
+        </table>
+        {% if editpost.showattachments %}
+            <br />
+            <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+                <tr>
+                    <td class="thead" colspan="3"><strong>{{ lang.attachments }}</strong></td>
+                </tr>
+                <tr>
+                    <td class="tcat smalltext" colspan="3">{{ trans('attach_quota', editpost.friendlyusage, editpost.friendlyquota) }} <a href="usercp.php?action=attachments">{{ lang.view_attachments }}</a></td>
+                </tr>
+                {% if editpost.showattachoptions %}
+                    <tr>
+                        <td class="trow1" width="1"><img src="{{ theme.imgdir }}/paperclip.png" alt="" /></td>
+                        <td class="trow1" style="white-space: nowrap"><strong>{{ lang.new_attachment }}</strong> <input type="file" name="attachment" size="30" class="fileupload" /></td>
+                        <td class="trow1" style="white-space: nowrap" align="center">
+                            {% if editpost.showattachupdate %}
+                                <input type="submit" class="button" name="updateattachment" value="{{ lang.update_attachment }}" tabindex="12" />
+                            {% endif %}
+                            {% if editpost.showattachadd %}
+                                <input type="submit" class="button" name="newattachment" value="{{ lang.add_attachment }}" tabindex="13" />
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endif %}
+                {% for attachment in attachments %}
+                    {% if attachment.visible %}
+                        <tr>
+                            <td class="trow2" width="1" align="center">{{ attachment.icon|raw }}</td>
+                            <td class="trow2" width="60%" style="white-space: nowrap">{{ attachment.filename }} ({{ attachment.size }})</td>
+                            <td class="trow2" style="white-space: nowrap; text-align: center;">
+                                {% if attachment.showmodapproval %}
+                                    {% if attachment.visible %}
+                                        <input type="submit" class="button" name="unapproveattach" value="{{ lang.unapprove_attachment }}" onclick="return Post.attachmentAction({{ attachment.aid }},'unapprove');" />
+                                    {% else %}
+                                        <input type="submit" class="button" name="approveattach" value="{{ lang.approve_attachment }}" onclick="return Post.attachmentAction({{ attachment.aid }},'approve');" />
+                                    {% endif %}
+                                {% endif %}
+                                <input type="submit" class="button" name="rem" value="{{ lang.remove_attachment }}" onclick="return Post.removeAttachment({{ attachment.aid }});" /> 
+                                {% if attachment.showinsert %}
+                                    <input type="button" class="button" name="insert" value="{{ lang.insert_attachment_post }}" onclick="$('#message').sceditor('instance').insertText('[attachment={{ attachment.aid }}]'); return false;" />
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td class="trow_shaded" width="1" align="center">{{ attachment.icon|raw }}</td>
+                            <td class="trow_shaded" style="white-space: nowrap"><em><a href="attachment.php?aid={{ attachment.aid }}" target="_blank">{{ attachment.filename }}</a> ({{ attachment.size }})</em></td>
+                            <td class="trow_shaded" style="white-space: nowrap; text-align: center;">
+                                <input type="submit" class="button" name="rem" value="{{ lang.remove_attachment }}" onclick="return Post.removeAttachment({{ attachment.aid }});" />
+                                {% if attachment.showinsert %}
+                                    <input type="button" class="button" name="insert" value="{{ lang.insert_attachment_post }}" onclick="$('#message').sceditor('instance').insertText('[attachment={{ attachment.aid }}]'); return false;" />
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </table>
+        {% endif %}
+        <br />
+        <div align="center">
+            <input type="submit" class="button" name="submitbutton" value="{{ lang.update_post }}" tabindex="3" accesskey="s" />
+            <input type="submit" class="button" name="previewpost" value="{{ lang.preview_post }}" tabindex="4" />
+            <input type="hidden" name="action" value="do_editpost" />
+            <input type="hidden" name="attachmentaid" value="" />
+            <input type="hidden" name="attachmentact" value="" />
+        </div>
+    </form>
+    <script type="text/javascript">
+        $(".author_avatar img").error(function () {
+            $(this).unbind("error").closest('.author_avatar').remove();
+        });
+    </script>
+{% endblock body %}
