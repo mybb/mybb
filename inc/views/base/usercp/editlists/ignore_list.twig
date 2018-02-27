@@ -1,0 +1,5 @@
+{% for user in ignoreList %}
+    {% include 'usercp/editlists/user.twig' %}
+{% else %}
+    <li>{{ lang.ignore_list_empty }}</li>
+{% endfor %}
