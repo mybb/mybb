@@ -1,0 +1,33 @@
+<table class="tborder" border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}">
+    <thead>
+    <tr>
+        <th class="thead" colspan="3">
+            <strong>{{ lang.buddyrequests_sent }}</strong>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td class="tcat" width="33%">
+            <strong>{{ lang.to }}</strong>
+        </td>
+        <td class="tcat" width="33%">
+            <strong>{{ lang.date }}</strong>
+        </td>
+        <td class="tcat" width="33%">
+            <strong>{{ lang.options }}</strong>
+        </td>
+    </tr>
+    {% for request in sentRequests %}
+        {% set row = alt_trow() %}
+
+        {% include 'usercp/editlists/sent_request_row.twig' %}
+    {% else %}
+        <tr>
+            <td class="trow1" colspan="3">
+                {{ lang.no_requests }}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

@@ -1,0 +1,13 @@
+<tr>
+    <td class="{{ row }}">
+        {{ request.username|raw }}
+    </td>
+    <td class="{{ row }}">
+        {{ request.date|raw }}
+    </td>
+    <td class="{{ row }}">
+        <a href="{{ mybb.settings.bburl }}/usercp.php?action=cancelrequest&amp;id={{ request.id }}&amp;my_post_key={{ mybb.post_code }}">
+            {{ lang.cancel }}
+        </a>
+    </td>
+</tr>

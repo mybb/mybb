@@ -1,0 +1,5 @@
+{% for user in buddyList %}
+    {% include 'usercp/editlists/user.twig' %}
+{% else %}
+    <li>{{ lang.buddy_list_empty }}</li>
+{% endfor %}
