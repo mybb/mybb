@@ -1,7 +1,7 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bburl }} - {{ lang.warn_user }}</title>
+    <title>{{ mybb.settings.bbname }} - {{ lang.warn_user }}</title>
 {% endblock head %}
 
 {% block body %}
@@ -52,8 +52,8 @@
             </tr>
         {% endif %}
         <tr>
-            <td class="trow1" style="width: 20%; vertical-align: top;"><strong>{{ lang.warning_note }}</strong></td>
-            <td class="trow1"><textarea name="notes" cols="60" rows="4">{{ type_checked.notes }}</textarea></td>
+            <td class="trow1" style="width: 20%; vertical-align: top;"><strong><label for="notes">{{ lang.warning_note }}</label></strong></td>
+            <td class="trow1"><textarea name="notes" id="notes" cols="60" rows="4">{{ type_checked.notes }}</textarea></td>
         </tr>
         <tr>
             <td class="trow2" style="width: 20%; vertical-align: top;"><strong>{{ lang.warning_type }}</strong></td>

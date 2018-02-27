@@ -543,13 +543,10 @@ if($mybb->input['action'] == "view")
 
     if ($warning['post_subject']) {
         $warning['post_subject'] = $parser->parse_badwords($warning['post_subject']);
-        $warning['post_subject'] = htmlspecialchars_uni($warning['post_subject']);
         $warning['post_link'] = get_post_link($warning['pid']);
     }
 
-    $warning['username'] = htmlspecialchars_uni($warning['username']);
     $warning['issuedby'] = build_profile_link($warning['username'], $warning['issuedby']);
-    $warning['notes'] = nl2br($warning['notes']);
 
     $warning['date_issued'] = my_date('relative', $warning['dateline']);
 
@@ -590,9 +587,8 @@ if($mybb->input['action'] == "view")
         if (!$revoked_user['username']) {
             $revoked_user['username'] = $lang->guest;
         }
-        $revoked_user['username'] = htmlspecialchars_uni($revoked_user['username']);
+
         $revoked_user['profile'] = build_profile_link($revoked_user['username'], $revoked_user['uid']);
-        $warning['revokereason'] = nl2br($warning['revokereason']);
     }
 
     $plugins->run_hooks("warnings_view_end");

@@ -13,12 +13,12 @@
             </tr>
             {{ loginbox|raw }}
             <tr>
-                <td class="trow2"><strong>{{ lang.question }}</strong></td>
-                <td class="trow2"><input type="text" class="textbox" name="question" size="40" maxlength="240" value="{{ select.question }}" /></td>
+                <td class="trow2"><strong><label for="question">{{ lang.question }}</label></strong></td>
+                <td class="trow2"><input type="text" class="textbox" name="question" id="question" size="40" maxlength="240" value="{{ select.question }}" /></td>
             </tr>
             <tr>
-                <td class="trow1" valign="top"><strong>{{ lang.num_options }}</strong><br /><span class="smalltext">{{ lang.max_options }} {{ mybb.settings.maxpolloptions }}</span></td>
-                <td class="trow1"><input type="text" class="textbox" name="polloptions" size="10" value="{{ select.polloptions }}" />&nbsp;<input type="submit" class="button" name="updateoptions" value="{{ lang.update_options }}" /></td>
+                <td class="trow1" valign="top"><strong><label for="polloptions">{{ lang.num_options }}</label></strong><br /><span class="smalltext">{{ lang.max_options }} {{ mybb.settings.maxpolloptions }}</span></td>
+                <td class="trow1"><input type="text" class="textbox" name="polloptions" id="polloptions" size="10" value="{{ select.polloptions }}" />&nbsp;<input type="submit" class="button" name="updateoptions" value="{{ lang.update_options }}" /></td>
             </tr>
             <tr>
                 <td class="trow2" valign="top"><strong>{{ lang.poll_options }}</strong></td>
@@ -58,8 +58,8 @@
                 </td>
             </tr>
             <tr>
-                <td class="trow2" valign="top"><strong>{{ lang.poll_timeout }}</strong><br /><span class="smalltext">{{ lang.timeout_note }}</span></td>
-                <td class="trow2"><input type="text" class="textbox" name="timeout" value="{{ select.timeout }}" /> {{ lang.days }}</td>
+                <td class="trow2" valign="top"><strong><label for="timeout">{{ lang.poll_timeout }}</label></strong><br /><span class="smalltext">{{ lang.timeout_note }}</span></td>
+                <td class="trow2"><input type="text" class="textbox" name="timeout" id="timeout" value="{{ select.timeout }}" /> {{ lang.days }}</td>
             </tr>
         </table>
         <br />

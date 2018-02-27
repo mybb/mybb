@@ -992,10 +992,6 @@ switch($mybb->input['action'])
 
         $plugins->run_hooks('moderation_viewthreadnotes');
 
-        $lang->view_notes_for = $lang->sprintf($lang->view_notes_for, $thread['subject']);
-
-        $thread['notes'] = nl2br($thread['notes']);
-
         output_page(\MyBB\template('moderation/viewthreadnotes.twig', [
             'thread' => $thread,
         ]));

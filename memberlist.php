@@ -378,7 +378,7 @@ else
             $usergroup = array_merge($usergroup, $display_group);
         }
 
-        $user['groupimage'] = '';
+        $user['groupimage'] = false;
         // Work out the usergroup/title stuff
         if (!empty($usergroup['image'])) {
             if (!empty($mybb->user['language'])) {
@@ -387,8 +387,10 @@ else
                 $language = $mybb->settings['bblanguage'];
             }
 
-            $user['groupimage'] = str_replace("{lang}", $language, $usergroup['image']);
-            $user['groupimage'] = str_replace("{theme}", $theme['imgdir'], $usergroup['image']);
+            $usergroup['image'] = str_replace("{lang}", $language, $usergroup['image']);
+            $usergroup['image'] = str_replace("{theme}", $theme['imgdir'], $usergroup['image']);
+
+            $user['groupimage'] = $usergroup['image'];
         }
 
         $user['groupimage_title'] = $usergroup['title'];
