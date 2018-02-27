@@ -221,8 +221,6 @@ elseif ($mybb->input['action'] == "joinrequests") {
         error($lang->no_requests);
     }
 
-    $lang->join_requests = $lang->sprintf($lang->join_requests_title, htmlspecialchars_uni($usergroup['title']));
-
     $plugins->run_hooks("managegroup_joinrequests_end");
 
     output_page(\MyBB\template('managegroup/joinrequests.twig', [
@@ -263,9 +261,6 @@ else
 {
     $plugins->run_hooks("managegroup_start");
 
-    $lang->members_of = $lang->sprintf($lang->members_of, htmlspecialchars_uni($usergroup['title']));
-    $lang->add_member = $lang->sprintf($lang->add_member, htmlspecialchars_uni($usergroup['title']));
-    $lang->invite_member = $lang->sprintf($lang->invite_member, htmlspecialchars_uni($usergroup['title']));
     $usergroup['pendingrequests'] = false;
 
     if ($usergroup['type'] == 5) {
@@ -276,7 +271,7 @@ else
 
         if ($numrequests['req']) {
             $usergroup['pendingrequests'] = true;
-            $lang->num_requests_pending = $lang->sprintf($lang->num_requests_pending, $numrequests['req']);
+            $usergroup['num_requests'] = $numrequests['req'];
         }
         $usergroup['usergrouptype'] = $lang->group_public_moderated;
     } else if ($usergroup['type'] == 3) {

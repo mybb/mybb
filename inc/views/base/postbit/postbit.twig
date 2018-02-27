@@ -43,19 +43,21 @@
 			{% else %}
 				<img src="{{ theme.imgdir }}/buddy_offline.png" title="{{ lang.postbit_status_offline }}" alt="{{ lang.postbit_status_offline }}" class="buddy_status" />
 			{% endif %}
-<br />
-				<span class="smalltext">
-					{{ post.usertitle|raw }}<br />
-					{% if post.starimage and post.stars %}
-						{% for i in range(0, post.stars) %}
+			<br />
+			<span class="smalltext">
+				{{ post.usertitle|raw }}<br />
+				{% if post.starimage and post.stars %}
+					{% spaceless %}
+						{% for star in range(1, post.stars) %}
 							<img src="{{ post.starimage }}" border="0" alt="*" />
 						{% endfor %}
-						<br />
-					{% endif %}
-					{% if post.groupimage %}
-						<img src="{{ usergroup.image }}" alt="{{ usergroup.title }}" title="{{ usergroup.title }}" /><br />
-					{% endif %}
-				</span>
+					{% endspaceless %}
+					<br />
+				{% endif %}
+				{% if post.groupimage %}
+					<img src="{{ usergroup.image }}" alt="{{ usergroup.title }}" title="{{ usergroup.title }}" /><br />
+				{% endif %}
+			</span>
 		</div>
 		<div class="author_statistics">
 			{% if post.isguest %}
