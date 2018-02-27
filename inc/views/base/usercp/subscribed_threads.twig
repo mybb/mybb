@@ -40,10 +40,10 @@
             </tr>
 
             {% for thread in threads %}
-                {% include 'usercp/subscribed_thread_row.twig' %}
+                {% include 'usercp/subscribed_threads/row.twig' %}
             {% else %}
                 <tr>
-                    <td class="trow1" colspan="7">{{ lang.no_thread_subscriptions }}</td>
+                    <td class="trow1" colspan="7">{{ lang.no_thread_subscriptions|raw }}</td>
                 </tr>
             {% endfor %}
 

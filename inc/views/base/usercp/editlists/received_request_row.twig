@@ -1,0 +1,15 @@
+<tr>
+    <td class="{{ row }}">
+        {{ request.username|raw }}
+    </td>
+    <td class="{{ row }}">
+        {{ request.date|raw }}
+    </td>
+    <td class="{{ row }}">
+        <a href="{{ mybb.settings.bburl }}/usercp.php?action=acceptrequest&amp;id={{ request.id }}&amp;my_post_key={{ mybb.post_code }}">
+            {{ lang.accept }}
+        </a> - <a href="{{ mybb.settings.bburl }}/usercp.php?action=declinerequest&amp;id={{ request.id }}&amp;my_post_key={{ mybb.post_code }}">
+            {{ lang.decline }}
+        </a>
+    </td>
+</tr>
