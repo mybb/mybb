@@ -90,6 +90,8 @@ if($mybb->get_input('action') == "today")
 		}
 	}
 
+	$multipage = multipage($todaycount, $perpage, $page, "online.php?action=today");
+
 	$todaycount = my_number_format($todaycount);
 	$invis_count = my_number_format($invis_count);
 
@@ -113,8 +115,6 @@ if($mybb->get_input('action') == "today")
 
 		$onlinetoday .= $lang->sprintf($string, $invis_count);
 	}
-
-	$multipage = multipage($todaycount, $perpage, $page, "online.php?action=today");
 
 	$plugins->run_hooks("online_today_end");
 
