@@ -1009,129 +1009,90 @@ function redirect($url, $message="", $title="", $force_redirect=false)
  */
 function multipage($count, $perpage, $page, $url, $breadcrumb=false)
 {
-	global $theme, $templates, $lang, $mybb;
+    global $lang, $mybb;
 
-	if($count <= $perpage)
-	{
-		return '';
-	}
+    if ($count <= $perpage) {
+        return '';
+    }
 
-	$url = str_replace("&amp;", "&", $url);
-	$url = htmlspecialchars_uni($url);
+    $url = str_replace("&amp;", "&", $url);
+    $url = htmlspecialchars_uni($url);
 
-	$pages = ceil($count / $perpage);
+    $pages = ceil($count / $perpage);
 
-	$prevpage = '';
-	if($page > 1)
-	{
-		$prev = $page-1;
-		$page_url = fetch_page_url($url, $prev);
-		eval("\$prevpage = \"".$templates->get("multipage_prevpage")."\";");
-	}
+    if ($page > 1) {
+        $prev = $page-1;
+        $multipage['previous_page_url'] = fetch_page_url($url, $prev);
+    }
 
-	// Maximum number of "page bits" to show
-	if(!$mybb->settings['maxmultipagelinks'])
-	{
-		$mybb->settings['maxmultipagelinks'] = 5;
-	}
+    // Maximum number of "page bits" to show
+    if (!$mybb->settings['maxmultipagelinks']) {
+        $mybb->settings['maxmultipagelinks'] = 5;
+    }
 
-	$from = $page-floor($mybb->settings['maxmultipagelinks']/2);
-	$to = $page+floor($mybb->settings['maxmultipagelinks']/2);
+    $from = $page-floor($mybb->settings['maxmultipagelinks']/2);
+    $to = $page+floor($mybb->settings['maxmultipagelinks']/2);
 
-	if($from <= 0)
-	{
-		$from = 1;
-		$to = $from+$mybb->settings['maxmultipagelinks']-1;
-	}
+    if ($from <= 0) {
+        $from = 1;
+        $to = $from+$mybb->settings['maxmultipagelinks']-1;
+    }
 
-	if($to > $pages)
-	{
-		$to = $pages;
-		$from = $pages-$mybb->settings['maxmultipagelinks']+1;
-		if($from <= 0)
-		{
-			$from = 1;
-		}
-	}
+    if ($to > $pages) {
+        $to = $pages;
+        $from = $pages-$mybb->settings['maxmultipagelinks']+1;
+        if ($from <= 0) {
+            $from = 1;
+        }
+    }
 
-	if($to == 0)
-	{
-		$to = $pages;
-	}
+    if ($to == 0) {
+        $to = $pages;
+    }
 
-	$start = '';
-	if($from > 1)
-	{
-		if($from-1 == 1)
-		{
-			$lang->multipage_link_start = '';
-		}
+    $multipage['from'] = $from;
+    $multipage['to'] = $to;
+    $multipage['total_pages'] = $pages;
 
-		$page_url = fetch_page_url($url, 1);
-		eval("\$start = \"".$templates->get("multipage_start")."\";");
-	}
+    if ($from > 1) {
+        if ($from-1 == 1) {
+            $lang->multipage_link_start = '';
+        }
 
-	$mppage = '';
-	for($i = $from; $i <= $to; ++$i)
-	{
-		$page_url = fetch_page_url($url, $i);
-		if($page == $i)
-		{
-			if($breadcrumb == true)
-			{
-				eval("\$mppage .= \"".$templates->get("multipage_page_link_current")."\";");
-			}
-			else
-			{
-				eval("\$mppage .= \"".$templates->get("multipage_page_current")."\";");
-			}
-		}
-		else
-		{
-			eval("\$mppage .= \"".$templates->get("multipage_page")."\";");
-		}
-	}
+        $multipage['start_page_url'] = fetch_page_url($url, 1);
+    }
 
-	$end = '';
-	if($to < $pages)
-	{
-		if($to+1 == $pages)
-		{
-			$lang->multipage_link_end = '';
-		}
+    $multipage['pages'] = [];
+    for ($page_num = $from; $page_num <= $to; ++$page_num) {
+        $page_for['num'] = $page_num;
+        $page_for['page_url'] = fetch_page_url($url, $page_num);
 
-		$page_url = fetch_page_url($url, $pages);
-		eval("\$end = \"".$templates->get("multipage_end")."\";");
-	}
+        $multipage['pages'][] = $page_for;
+    }
 
-	$nextpage = '';
-	if($page < $pages)
-	{
-		$next = $page+1;
-		$page_url = fetch_page_url($url, $next);
-		eval("\$nextpage = \"".$templates->get("multipage_nextpage")."\";");
-	}
+    if ($to < $pages) {
+        if ($to+1 == $pages) {
+            $lang->multipage_link_end = '';
+        }
 
-	$jumptopage = '';
-	if($pages > ($mybb->settings['maxmultipagelinks']+1) && $mybb->settings['jumptopagemultipage'] == 1)
-	{
-		// When the second parameter is set to 1, fetch_page_url thinks it's the first page and removes it from the URL as it's unnecessary
-		$jump_url = fetch_page_url($url, 1);
-		eval("\$jumptopage = \"".$templates->get("multipage_jump_page")."\";");
-	}
+        $multipage['end_page_url'] = fetch_page_url($url, $pages);
+    }
 
-	$lang->multipage_pages = $lang->sprintf($lang->multipage_pages, $pages);
+    if ($page < $pages) {
+        $next = $page+1;
+        $multipage['next_page_url'] = fetch_page_url($url, $next);
+    }
 
-	if($breadcrumb == true)
-	{
-		eval("\$multipage = \"".$templates->get("multipage_breadcrumb")."\";");
-	}
-	else
-	{
-		eval("\$multipage = \"".$templates->get("multipage")."\";");
-	}
+    if ($breadcrumb == false && $pages > ($mybb->settings['maxmultipagelinks']+1) && $mybb->settings['jumptopagemultipage'] == 1) {
+        // When the second parameter is set to 1, fetch_page_url thinks it's the first page and removes it from the URL as it's unnecessary
+        $multipage['jump_url'] = fetch_page_url($url, 1);
+    }
 
-	return $multipage;
+    return \MyBB\template('partials/multipage.twig', [
+        'multipage' => $multipage,
+        'page' => $page,
+        'breadcrumb' => $breadcrumb,
+    ]);
 }
 
 /**

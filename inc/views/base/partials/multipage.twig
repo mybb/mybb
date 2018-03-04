@@ -1,0 +1,60 @@
+{% if breadcrumb %}
+    <div id="breadcrumb_multipage_popup" class="pagination pagination_breadcrumb" style="display: none;">
+{% else %}
+    <div class="pagination">
+{% endif %}
+    <span class="pages">{{ trans('multipage_pages', multipage.total_pages) }}</span>
+    {% if page > 1 %}
+        <a href="{{ multipage.previous_page_url|raw }}" class="pagination_previous">&laquo; {{ lang.previous }}</a>
+    {% endif %}
+    {% if multipage.from > 1 %}
+        <a href="{{ multipage.start_page_url|raw }}" class="pagination_first">1</a> {{ lang.multipage_link_start }}
+    {% endif %}
+    {% for pages in multipage.pages %}
+        {% if pages.num == page %}
+            {% if breadcrumb %}
+                <a href="{{ pages.page_url|raw }}" class="pagination_current">{{ pages.num }}</a>
+            {% else %}
+                <span class="pagination_current">{{ pages.num }}</span>
+            {% endif %}
+        {% else %}
+            <a href="{{ pages.page_url|raw }}" class="pagination_page">{{ pages.num }}</a>
+        {% endif %}
+    {% endfor %}
+    {% if multipage.to < multipage.total_pages %}
+        {{ lang.multipage_link_end }} <a href="{{ multipage.end_page_url|raw }}" class="pagination_last">{{ multipage.total_pages }}</a>
+    {% endif %}
+    {% if page < multipage.total_pages %}
+        <a href="{{ multipage.next_page_url|raw }}" class="pagination_next">{{ lang.next }} &raquo;</a>
+    {% endif %}
+    {% if breadcrumb == false and mybb.settings.jumptopagemultipage and multipage.total_pages > ( mybb.settings.maxmultipagelinks + 1 ) %}
+        <div class="popup_menu drop_go_page" style="display: none;">
+            <form action="{{ multipage.jump_url }}" method="post">
+                <label for="page">{{ lang.multipage_jump }}:</label> <input type="text" class="textbox" name="page" value="{{ page }}" size="4" />
+                <input type="submit" class="button" value="{{ lang.go }}" />
+            </form>
+        </div>
+        <a href="javascript:void(0)" class="go_page" title="{{ lang.multipage_jump }}"><img src="{{ theme.imgdir }}/arrow_down.png" alt="{{ lang.multipage_jump }}" /></a>&nbsp;
+        <script type="text/javascript">
+            var go_page = 'go_page_' + $(".go_page").length;
+            $(".go_page").last().attr('id', go_page);
+            $(".drop_go_page").last().attr('id', go_page + '_popup');
+            $('#' + go_page).popupMenu(false).click(function() {
+                var drop_go_page = $(this).prev('.drop_go_page');
+                if (drop_go_page.is(':visible')) {
+                    drop_go_page.find('.textbox').focus();
+                }
+            });
+        </script>
+    {% endif %}
+</div>
+{% if breadcrumb %}
+    <script type="text/javascript">
+    // <!--
+        if(use_xmlhttprequest == "1")
+        {
+            $("#breadcrumb_multipage").popupMenu();
+        }
+    // -->
+    </script>
+{% endif %}
