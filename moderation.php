@@ -3078,6 +3078,8 @@ switch($mybb->input['action'])
 				exit;
 			}
 
+			$tool['name'] = htmlspecialchars_uni($tool['name']);
+
 			if($tool['type'] == 't' && $mybb->get_input('modtype') == 'inlinethread')
 			{
 				if($mybb->get_input('inlinetype') == 'search')

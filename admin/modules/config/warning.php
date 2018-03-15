@@ -744,7 +744,7 @@ if(!$mybb->input['action'])
 	while($type = $db->fetch_array($query))
 	{
 		$type['name'] = htmlspecialchars_uni($type['title']);
-		$table->construct_cell("<a href=\"index.php?module=config-warning&amp;action=edit_type&amp;tid={$type['tid']}\"><strong>{$type['title']}</strong></a>");
+		$table->construct_cell("<a href=\"index.php?module=config-warning&amp;action=edit_type&amp;tid={$type['tid']}\"><strong>{$type['name']}</strong></a>");
 		$table->construct_cell("{$type['points']}", array("class" => "align_center"));
 		$expiration = fetch_friendly_expiration($type['expirationtime']);
 		$lang_str = "expiration_".$expiration['period'];

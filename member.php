@@ -1219,6 +1219,9 @@ $(document).ready(function() {
 			{
 				$question = $db->fetch_array($query);
 
+				$question['question'] = htmlspecialchars_uni($question['question']);
+				$question['sid'] = htmlspecialchars_uni($question['sid']);
+
 				$refresh = '';
 				// Total questions
 				$q = $db->simple_select('questions', 'COUNT(qid) as num', 'active=1');

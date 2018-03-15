@@ -51,8 +51,10 @@ function run_task($tid=0)
 		$db->update_query("tasks", array("locked" => TIME_NOW), "tid='{$task['tid']}'");
 	}
 
+    $file = basename($task['file'], '.php');
+
 	// The task file does not exist
-	if(!file_exists(MYBB_ROOT."inc/tasks/{$task['file']}.php"))
+	if(!file_exists(MYBB_ROOT."inc/tasks/{$file}.php"))
 	{
 		if($task['logging'] == 1)
 		{
@@ -80,8 +82,8 @@ function run_task($tid=0)
 		// Update the nextrun time now, so if the task causes a fatal error, it doesn't get stuck first in the queue
 		$nextrun = fetch_next_run($task);
 		$db->update_query("tasks", array("nextrun" => $nextrun), "tid='{$task['tid']}'");
-
-		include_once MYBB_ROOT."inc/tasks/{$task['file']}.php";
+		
+		include_once MYBB_ROOT."inc/tasks/{$file}.php";
 		$function = "task_{$task['file']}";
 		if(function_exists($function))
 		{

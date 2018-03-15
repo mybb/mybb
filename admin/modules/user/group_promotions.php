@@ -379,7 +379,7 @@ if($mybb->input['action'] == "edit")
 	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
 	while($usergroup = $db->fetch_array($query))
 	{
-		$options[(int)$usergroup['gid']] = $usergroup['title'];
+		$options[(int)$usergroup['gid']] = htmlspecialchars_uni($usergroup['title']);
 	}
 
 	$form_container->output_row($lang->orig_user_group." <em>*</em>", $lang->orig_user_group_desc, $form->generate_select_box('originalusergroup[]', $options, $mybb->input['originalusergroup'], array('id' => 'originalusergroup', 'multiple' => true, 'size' => 5)), 'originalusergroup');
@@ -603,7 +603,7 @@ if($mybb->input['action'] == "add")
 	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
 	while($usergroup = $db->fetch_array($query))
 	{
-		$options[(int)$usergroup['gid']] = $usergroup['title'];
+		$options[(int)$usergroup['gid']] = htmlspecialchars_uni($usergroup['title']);
 	}
 
 	$form_container->output_row($lang->orig_user_group." <em>*</em>", $lang->orig_user_group_desc, $form->generate_select_box('originalusergroup[]', $options, $mybb->input['originalusergroup'], array('id' => 'originalusergroup', 'multiple' => true, 'size' => 5)), 'originalusergroup');

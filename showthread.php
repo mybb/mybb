@@ -1325,6 +1325,7 @@ if($mybb->input['action'] == "thread")
 
 			while($tool = $db->fetch_array($query))
 			{
+				$tool['name'] = htmlspecialchars_uni($tool['name']);
 				if($tool['type'] == 'p')
 				{
 					eval("\$customposttools .= \"".$templates->get("showthread_inlinemoderation_custom_tool")."\";");

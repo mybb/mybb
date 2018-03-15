@@ -79,7 +79,10 @@ if($mybb->input['action'] == "add")
 			$errors[] = $lang->error_missing_description;
 		}
 
-		if(!file_exists(MYBB_ROOT."inc/tasks/".$mybb->input['file'].".php"))
+		$file = $mybb->get_input('file');
+		$file = basename($file, '.php');
+
+		if(!file_exists(MYBB_ROOT."inc/tasks/".$file.".php"))
 		{
 			$errors[] = $lang->error_invalid_task_file;
 		}
@@ -126,7 +129,7 @@ if($mybb->input['action'] == "add")
 			$new_task = array(
 				"title" => $db->escape_string($mybb->input['title']),
 				"description" => $db->escape_string($mybb->input['description']),
-				"file" => $db->escape_string($mybb->input['file']),
+				"file" => $db->escape_string($file),
 				"minute" => $db->escape_string($mybb->input['minute']),
 				"hour" => $db->escape_string($mybb->input['hour']),
 				"day" => $db->escape_string($mybb->input['day']),
@@ -271,7 +274,10 @@ if($mybb->input['action'] == "edit")
 			$errors[] = $lang->error_missing_description;
 		}
 
-		if(!file_exists(MYBB_ROOT."inc/tasks/".$mybb->input['file'].".php"))
+        $file = $mybb->get_input('file');
+        $file = basename($file, '.php');
+
+		if(!file_exists(MYBB_ROOT."inc/tasks/".$file.".php"))
 		{
 			$errors[] = $lang->error_invalid_task_file;
 		}
@@ -326,7 +332,7 @@ if($mybb->input['action'] == "edit")
 			$updated_task = array(
 				"title" => $db->escape_string($mybb->input['title']),
 				"description" => $db->escape_string($mybb->input['description']),
-				"file" => $db->escape_string($mybb->input['file']),
+				"file" => $db->escape_string($file),
 				"minute" => $db->escape_string($mybb->input['minute']),
 				"hour" => $db->escape_string($mybb->input['hour']),
 				"day" => $db->escape_string($mybb->input['day']),

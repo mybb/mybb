@@ -718,6 +718,8 @@ if(!$mybb->input['action'])
 			$icon = "off.png\" alt=\"({$lang->alt_disabled})\" title=\"{$lang->alt_disabled}";
 		}
 
+		$attachment_type['extension'] = htmlspecialchars_uni($attachment_type['extension']);
+
 		$table->construct_cell($attachment_type['icon'], array("width" => 1));
 		$table->construct_cell("<strong>.{$attachment_type['extension']}</strong>");
 		$table->construct_cell(htmlspecialchars_uni($attachment_type['mimetype']));

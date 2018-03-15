@@ -102,7 +102,7 @@ $template_sets[-1] = $lang->global_templates;
 $query = $db->simple_select("templatesets", "*", "", array('order_by' => 'title', 'order_dir' => 'ASC'));
 while($template_set = $db->fetch_array($query))
 {
-	$template_sets[$template_set['sid']] = $template_set['title'];
+	$template_sets[$template_set['sid']] = htmlspecialchars_uni($template_set['title']);
 }
 
 $plugins->run_hooks("admin_style_templates");
@@ -157,7 +157,7 @@ if($mybb->input['action'] == "add_set")
 	$form = new Form("index.php?module=style-templates&amp;action=add_set", "post", "add_set");
 
 	$form_container = new FormContainer($lang->add_set);
-	$form_container->output_row($lang->title, "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
+	$form_container->output_row($lang->title, "", $form->generate_text_box('title', htmlspecialchars_uni($mybb->input['title']), array('id' => 'title')), 'title');
 	$form_container->end();
 
 	$buttons = array();
@@ -1335,7 +1335,7 @@ LEGEND;
 	{
 		if(!$done_set[$sid])
 		{
-			$table->construct_header($templatesets[$sid]['title'], array("colspan" => 2));
+			$table->construct_header(htmlspecialchars_uni($templatesets[$sid]['title']), array("colspan" => 2));
 
 			$done_set[$sid] = 1;
 			++$count;
@@ -2003,6 +2003,8 @@ if(!$mybb->input['action'])
 
 			$actions = $popup->fetch();
 		}
+
+		$set['title'] = htmlspecialchars_uni($set['title']);
 
 		$table->construct_cell("<strong><a href=\"index.php?module=style-templates&amp;sid={$set['sid']}\">{$set['title']}</a></strong><br /><small>{$used_by_note}</small>");
 		$table->construct_cell($actions, array("class" => "align_center"));

@@ -12,7 +12,7 @@ define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'usercp2.php');
 define("ALLOWABLE_PAGE", "removesubscription,removesubscriptions");
 
-$templatelist = "usercp_nav_messenger,usercp_nav_profile,usercp_nav,usercp_addsubscription_thread,usercp_nav_messenger_tracking,usercp_nav_messenger_folder";
+$templatelist = "usercp_nav_messenger,usercp_nav_profile,usercp_nav,usercp_addsubscription_thread,forumdisplay_password,forumdisplay_password_wrongpass,usercp_nav_messenger_tracking,usercp_nav_messenger_folder";
 $templatelist .= ",usercp_nav_home,usercp_nav_editsignature,usercp_nav_attachments,usercp_nav_changename,usercp_nav_messenger_compose,usercp_nav_misc";
 
 require_once "./global.php";
@@ -57,6 +57,9 @@ if($mybb->get_input('action') == "do_addsubscription" && $mybb->get_input('type'
 		error_no_permission();
 	}
 
+	// check if the forum requires a password to view. If so, we need to show a form to the user
+	check_forum_password($thread['fid']);
+
 	$plugins->run_hooks("usercp2_do_addsubscription");
 
 	add_subscribed_thread($thread['tid'], $mybb->get_input('notification', MyBB::INPUT_INT));
@@ -86,10 +89,13 @@ elseif($mybb->get_input('action') == "addsubscription")
 			error_no_permission();
 		}
 
+		// check if the forum requires a password to view. If so, we need to show a form to the user
+		check_forum_password($forum['fid']);
+
 		$plugins->run_hooks("usercp2_addsubscription_forum");
 
 		add_subscribed_forum($forum['fid']);
-		if($server_http_referer)
+		if($server_http_referer && $mybb->request_method != 'post')
 		{
 			$url = $server_http_referer;
 		}
@@ -124,6 +130,10 @@ elseif($mybb->get_input('action') == "addsubscription")
 		{
 			error_no_permission();
 		}
+
+		// check if the forum requires a password to view. If so, we need to show a form to the user
+		check_forum_password($thread['fid']);
+
 		$referrer = '';
 		if($server_http_referer)
 		{
@@ -167,10 +177,13 @@ elseif($mybb->get_input('action') == "removesubscription")
 			error($lang->error_invalidforum);
 		}
 
+		// check if the forum requires a password to view. If so, we need to show a form to the user
+		check_forum_password($forum['fid']);
+
 		$plugins->run_hooks("usercp2_removesubscription_forum");
 
 		remove_subscribed_forum($forum['fid']);
-		if($server_http_referer)
+		if($server_http_referer && $mybb->request_method != 'post')
 		{
 			$url = $server_http_referer;
 		}
@@ -197,10 +210,13 @@ elseif($mybb->get_input('action') == "removesubscription")
 			error($lang->error_invalidthread);
 		}
 
+		// check if the forum requires a password to view. If so, we need to show a form to the user
+		check_forum_password($thread['fid']);
+
 		$plugins->run_hooks("usercp2_removesubscription_thread");
 
 		remove_subscribed_thread($thread['tid']);
-		if($server_http_referer)
+		if($server_http_referer && $mybb->request_method != 'post')
 		{
 			$url = $server_http_referer;
 		}

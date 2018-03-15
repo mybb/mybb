@@ -707,6 +707,7 @@ if($mybb->input['action'] == "results")
 
 			while($tool = $db->fetch_array($query))
 			{
+				$tool['name'] = htmlspecialchars_uni($tool['name']);
 				eval("\$customthreadtools .= \"".$templates->get("search_results_threads_inlinemoderation_custom_tool")."\";");
 			}
 			// Build inline moderation dropdown
