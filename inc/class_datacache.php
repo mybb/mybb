@@ -672,7 +672,7 @@ class datacache
 			LEFT JOIN {$db->table_prefix}users u ON (p.uid=u.uid)
 			WHERE p.dateline > {$timesearch} AND p.visible=1
 			GROUP BY {$group_by}
-			ORDER BY NULL DESC
+			ORDER BY poststoday DESC
 		");
 
 		$most_posts = 0;
