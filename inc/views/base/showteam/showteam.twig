@@ -1,0 +1,62 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ mybb.settings.bbname }} - {{ lang.forum_team }}</title>
+{% endblock head %}
+
+{% block body %}
+    {% for usergroup in usergrouplist %}
+        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+            <tr>
+                <td class="thead" colspan="5"><strong>{{ usergroup.title }}</strong></td>
+            </tr>
+            <tr>
+                <td class="tcat"><span class="smalltext"><strong>{{ lang.username }}</strong></span></td>
+                {% if usergroup.gid == 6 %}
+                    <td class="tcat"><span class="smalltext"><strong>{{ lang.mod_forums }}</strong></span></td>
+                {% endif %}
+                <td class="tcat"><span class="smalltext"><strong>{{ lang.lastvisit }}</strong></span></td>
+                <td class="tcat"><span class="smalltext"><strong>{{ lang.email }}</strong></span></td>
+                <td class="tcat"><span class="smalltext"><strong>{{ lang.pm }}</strong></span></td>
+            </tr>
+            {% for user in usergroup.users %}
+                {% set row = alt_trow() %}
+                <tr>
+                    {% if usergroup.gid == 6 %}
+                        <td width="45%" class="{{ row }}">
+                    {% else %}
+                        <td width="75%" class="{{ row }}">
+                    {% endif %}
+                        <img src="{{ theme.imgdir }}/buddy_{{ user.status }}.png" title="{{ user.statuslang }}" alt="{{ user.statuslang }}" style="vertical-align: middle;" />
+                        <a href="{{ user.profilelink|raw }}"><strong>{{ user.username|raw }}</strong></a>
+                    </td>
+                    {% if usergroup.gid == 6 %}
+                        <td width="30%" class="{{ row }}">
+                            <span class="smalltext">
+                                {% for forum in user.forumlist %}
+                                    <a href="{{ forum.url }}">{{ forum.name }}</a><br />
+                                {% endfor %}
+                            </span>
+                        </td>
+                    {% endif %}
+                    <td width="15%" class="{{ row }}">{{ user.lastvisit|raw }}</td>
+                    <td width="5%" class="{{ row }}">
+                        <div class="postbit_buttons">
+                            {% if user.showemail %}
+                                <a href="member.php?action=emailuser&amp;uid={{ user.uid }}" title="{{ lang.postbit_email }}" class="postbit_email"><span>{{ lang.postbit_button_email }}</span></a>
+                            {% endif %}
+                        </div>
+                    </td>
+                    <td width="5%" class="{{ row }}">
+                        <div class="postbit_buttons">
+                            {% if user.showpm %}
+                                <a href="private.php?action=send&amp;uid={{ user.uid }}" title="{{ lang.postbit_pm }}" class="postbit_pm"><span>{{ lang.postbit_button_pm }}</span></a>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        <br />
+    {% endfor %}
+{% endblock body %}
