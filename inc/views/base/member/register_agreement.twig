@@ -1,0 +1,42 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ mybb.settings.bbname }} - {{ lang.agreement }}</title>
+{% endblock head %}
+
+{% block body %}
+    <form action="member.php" method="post">
+        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+            <tr>
+                <td class="thead"><strong>{{ mybb.settings.bbname }} - {{ lang.agreement }}</strong></td>
+            </tr>
+            {% if coppa_agreement %}
+                <tr>
+                    <td class="tcat"><strong>{{ lang.coppa_compliance }}</strong></td>
+                </tr>
+                <tr>
+                    <td class="trow1">
+                        <p>{{ trans('coppa_agreement_1', mybb.settings.bbname) }}</p>
+                        <p>{{ lang.coppa_agreement_2|raw }}</p>
+                        <p>{{ lang.coppa_agreement_3 }}</p>
+                    </td>
+                </tr>
+            {% endif %}
+            <tr>
+                <td class="trow1">
+                    <p>{{ lang.agreement_1 }}</p>
+                    <p>{{ lang.agreement_2 }}</p>
+                    <p>{{ lang.agreement_3 }}</p>
+                    <p>{{ lang.agreement_4 }}</p>
+                    <p><strong>{{ lang.agreement_5 }}</strong></p>
+                </td>
+            </tr>
+        </table>
+        <br />
+        <div align="center">
+            <input type="hidden" name="step" value="agreement" />
+            <input type="hidden" name="action" value="register" />
+            <input type="submit" class="button" name="agree" value="{{ lang.i_agree }}" />
+        </div>
+    </form>
+{% endblock body %}

@@ -6800,18 +6800,21 @@ function get_supported_timezones()
  */
 function build_timezone_select($name, $selected=0, $short=false)
 {
-	global $mybb, $lang, $templates;
+	global $mybb, $lang;
 
 	$timezones = get_supported_timezones();
 
+	$timezone_array = [];
 	$selected = str_replace("+", "", $selected);
 	foreach($timezones as $timezone => $label)
 	{
-		$selected_add = "";
+		$timezone_item['timezone'] = $timezone;
+		$timezone_item['selected'] = false;
 		if($selected == $timezone)
 		{
-			$selected_add = " selected=\"selected\"";
+			$timezone_item['selected'] = true;
 		}
+
 		if($short == true)
 		{
 			$label = '';
@@ -6834,14 +6837,17 @@ function build_timezone_select($name, $selected=0, $short=false)
 				}
 			}
 			$time_in_zone = my_date($mybb->settings['timeformat'], TIME_NOW, $timezone);
-			$label = $lang->sprintf($lang->timezone_gmt_short, $label." ", $time_in_zone);
+			$timezone_item['label'] = $lang->sprintf($lang->timezone_gmt_short, $label." ", $time_in_zone);
+		}
+		else
+		{
+			$timezone_item['label'] = $label;
 		}
 
-		eval("\$timezone_option .= \"".$templates->get("usercp_options_timezone_option")."\";");
+		$timezone_array[] = $timezone_item;
 	}
 
-	eval("\$select = \"".$templates->get("usercp_options_timezone")."\";");
-	return $select;
+	return $timezone_array;
 }
 
 /**

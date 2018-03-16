@@ -306,72 +306,55 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 
 	if(!empty($errors))
 	{
-		$username = htmlspecialchars_uni($mybb->get_input('username'));
-		$email = htmlspecialchars_uni($mybb->get_input('email'));
-		$email2 = htmlspecialchars_uni($mybb->get_input('email2'));
-		$referrername = htmlspecialchars_uni($mybb->get_input('referrername'));
+		$select['username'] = $mybb->get_input('username');
+		$select['email'] = $mybb->get_input('email');
+		$select['email2'] = $mybb->get_input('email2');
+		$select['referrername'] = $mybb->get_input('referrername');
 
-		$allownoticescheck = $hideemailcheck = $no_auto_subscribe_selected = $instant_email_subscribe_selected = $instant_pm_subscribe_selected = $no_subscribe_selected = '';
-		$receivepmscheck = $pmnoticecheck = $pmnotifycheck = $invisiblecheck = $dst_auto_selected = $dst_enabled_selected = $dst_disabled_selected = '';
+		$select['allownotices'] = $select['hideemail'] = $select['receivepms'] = $select['pmnotice'] = $select['pmnotify'] = $select['invisible'] = false;
+		$select['subscriptionmethod']['none'] = $select['subscriptionmethod']['email'] = $select['subscriptionmethod']['pm'] = $select['subscriptionmethod']['no'] = false;
+		$select['dst']['auto'] = $select['dst']['enabled'] = $select['dst']['disabled'] = false;
 
-		if($mybb->get_input('allownotices', MyBB::INPUT_INT) == 1)
-		{
-			$allownoticescheck = "checked=\"checked\"";
-		}
-
-		if($mybb->get_input('hideemail', MyBB::INPUT_INT) == 1)
-		{
-			$hideemailcheck = "checked=\"checked\"";
+		if ($mybb->get_input('allownotices', MyBB::INPUT_INT) == 1) {
+			$select['allownotices'] = true;
 		}
 
-		if($mybb->get_input('subscriptionmethod', MyBB::INPUT_INT) == 1)
-		{
-			$no_subscribe_selected = "selected=\"selected\"";
-		}
-		else if($mybb->get_input('subscriptionmethod', MyBB::INPUT_INT) == 2)
-		{
-			$instant_email_subscribe_selected = "selected=\"selected\"";
-		}
-		else if($mybb->get_input('subscriptionmethod', MyBB::INPUT_INT) == 3)
-		{
-			$instant_pm_subscribe_selected = "selected=\"selected\"";
-		}
-		else
-		{
-			$no_auto_subscribe_selected = "selected=\"selected\"";
+		if ($mybb->get_input('hideemail', MyBB::INPUT_INT) == 1) {
+			$select['hideemail'] = true;
 		}
 
-		if($mybb->get_input('receivepms', MyBB::INPUT_INT) == 1)
-		{
-			$receivepmscheck = "checked=\"checked\"";
+		if ($mybb->get_input('receivepms', MyBB::INPUT_INT) == 1) {
+			$select['receivepms'] = true;
 		}
 
-		if($mybb->get_input('pmnotice', MyBB::INPUT_INT) == 1)
-		{
-			$pmnoticecheck = " checked=\"checked\"";
+		if ($mybb->get_input('pmnotice', MyBB::INPUT_INT) == 1) {
+			$select['pmnotice'] = true;
 		}
 
-		if($mybb->get_input('pmnotify', MyBB::INPUT_INT) == 1)
-		{
-			$pmnotifycheck = "checked=\"checked\"";
+		if ($mybb->get_input('pmnotify', MyBB::INPUT_INT) == 1) {
+			$select['pmnotify'] = true;
 		}
 
-		if($mybb->get_input('invisible', MyBB::INPUT_INT) == 1)
-		{
-			$invisiblecheck = "checked=\"checked\"";
+		if ($mybb->get_input('invisible', MyBB::INPUT_INT) == 1) {
+			$select['invisible'] = true;
 		}
 
-		if($mybb->get_input('dstcorrection', MyBB::INPUT_INT) == 2)
-		{
-			$dst_auto_selected = "selected=\"selected\"";
+		if ($mybb->get_input('subscriptionmethod', MyBB::INPUT_INT) == 1) {
+			$select['subscriptionmethod']['no'] = true;
+		} else if ($mybb->get_input('subscriptionmethod', MyBB::INPUT_INT) == 2) {
+			$select['subscriptionmethod']['email'] = true;
+		} else if ($mybb->get_input('subscriptionmethod', MyBB::INPUT_INT) == 3) {
+			$select['subscriptionmethod']['pm'] = true;
+		} else {
+			$select['subscriptionmethod']['none'] = true;
 		}
-		else if($mybb->get_input('dstcorrection', MyBB::INPUT_INT) == 1)
-		{
-			$dst_enabled_selected = "selected=\"selected\"";
-		}
-		else
-		{
-			$dst_disabled_selected = "selected=\"selected\"";
+
+		if ($mybb->get_input('dstcorrection', MyBB::INPUT_INT) == 2) {
+			$select['dst']['auto'] = true;
+		} else if ($mybb->get_input('dstcorrection', MyBB::INPUT_INT) == 1) {
+			$select['dst']['enabled'] = true;
+		} else {
+			$select['dst']['disabled'] = true;
 		}
 
 		$regerrors = inline_error($errors);
@@ -676,110 +659,108 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "coppa_form")
 {
-	if(!$mybb->settings['faxno'])
-	{
-		$mybb->settings['faxno'] = "&nbsp;";
-	}
+    if (!$mybb->settings['faxno']) {
+        $mybb->settings['faxno'] = "&nbsp;";
+    }
 
-	$plugins->run_hooks("member_coppa_form");
+    $plugins->run_hooks("member_coppa_form");
 
     output_page(\MyBB\template('member/coppa_form.twig'));
 }
 
 if($mybb->input['action'] == "register")
 {
-	$bdaysel = '';
-	if($mybb->settings['coppa'] == "disabled")
-	{
-		$bdaysel = $bday2blank = '';
-	}
-	$mybb->input['bday1'] = $mybb->get_input('bday1', MyBB::INPUT_INT);
-	for($day = 1; $day <= 31; ++$day)
-	{
-		$selected = '';
-		if($mybb->input['bday1'] == $day)
-		{
-			$selected = " selected=\"selected\"";
-		}
+    $days = [];
+    $mybb->input['bday1'] = $mybb->get_input('bday1', MyBB::INPUT_INT);
+    for ($day_count = 1; $day_count <= 31; ++$day_count)
+    {
+        $day['day'] = $day_count;
+        if ($mybb->input['bday1'] == $day_count) {
+            $day['selected'] = true;
+        } else {
+            $day['selected'] = '';
+        }
 
-		eval("\$bdaysel .= \"".$templates->get("member_register_day")."\";");
-	}
+        $days[] = $day;
+    }
 
-	$mybb->input['bday2'] = $mybb->get_input('bday2', MyBB::INPUT_INT);
-	$bdaymonthsel = array();
-	foreach(range(1, 12) as $number)
-	{
-		$bdaymonthsel[$number] = '';
-	}
-	$bdaymonthsel[$mybb->input['bday2']] = "selected=\"selected\"";
-	$mybb->input['bday3'] = $mybb->get_input('bday3', MyBB::INPUT_INT);
+    $mybb->input['bday2'] = $mybb->get_input('bday2', MyBB::INPUT_INT);
+    $months = [];
+    for ($month_count = 1; $month_count <= 12; ++$month_count) {
+        $month['month'] = $month_count;
 
-	if($mybb->input['bday3'] == 0)
-	{
-		$mybb->input['bday3'] = '';
-	}
+        $lang_string = 'month_'.$month_count;
+        $month['name'] = $lang->{$lang_string};
 
-	// Is COPPA checking enabled?
-	if($mybb->settings['coppa'] != "disabled" && !isset($mybb->input['step']))
-	{
-		// Just selected DOB, we check
-		if($mybb->input['bday1'] && $mybb->input['bday2'] && $mybb->input['bday3'])
-		{
-			my_unsetcookie("coppauser");
+        if ($mybb->input['bday2'] == $month_count) {
+            $month['selected'] = true;
+        } else {
+            $month['selected'] = '';
+        }
 
-			$months = get_bdays($mybb->input['bday3']);
-			if($mybb->input['bday2'] < 1 || $mybb->input['bday2'] > 12 || $mybb->input['bday3'] < (date("Y")-100) || $mybb->input['bday3'] > date("Y") || $mybb->input['bday1'] > $months[$mybb->input['bday2']-1])
-			{
-				error($lang->error_invalid_birthday);
-			}
+        $months[] = $month;
+    }
 
-			$bdaytime = @mktime(0, 0, 0, $mybb->input['bday2'], $mybb->input['bday1'], $mybb->input['bday3']);
+    $mybb->input['bday3'] = $mybb->get_input('bday3', MyBB::INPUT_INT);
 
-			// Store DOB in cookie so we can save it with the registration
-			my_setcookie("coppadob", "{$mybb->input['bday1']}-{$mybb->input['bday2']}-{$mybb->input['bday3']}", -1);
+    if ($mybb->input['bday3'] == 0) {
+        $year = '';
+    }
 
-			// User is <= 13, we mark as a coppa user
-			if($bdaytime >= mktime(0, 0, 0, my_date('n'), my_date('d'), my_date('Y')-13))
-			{
-				my_setcookie("coppauser", 1, -0);
-				$under_thirteen = true;
-			}
-			$mybb->request_method = "";
-		}
-		// Show DOB select form
-		else
-		{
-			$plugins->run_hooks("member_register_coppa");
+    // Is COPPA checking enabled?
+    if ($mybb->settings['coppa'] != "disabled" && !isset($mybb->input['step'])) {
+        // Just selected DOB, we check
+        if ($mybb->input['bday1'] && $mybb->input['bday2'] && $mybb->input['bday3']) {
+            my_unsetcookie("coppauser");
 
-			my_unsetcookie("coppauser");
+            $month_check = get_bdays($mybb->input['bday3']);
+            if ($mybb->input['bday2'] < 1 || $mybb->input['bday2'] > 12 || $mybb->input['bday3'] < (date("Y")-100) || $mybb->input['bday3'] > date("Y") || $mybb->input['bday1'] > $month_check[$mybb->input['bday2']-1]) {
+                error($lang->error_invalid_birthday);
+            }
 
-			eval("\$coppa = \"".$templates->get("member_register_coppa")."\";");
-			output_page($coppa);
-			exit;
-		}
-	}
+            $bdaytime = @mktime(0, 0, 0, $mybb->input['bday2'], $mybb->input['bday1'], $mybb->input['bday3']);
 
-	if((!isset($mybb->input['agree']) && !isset($mybb->input['regsubmit'])) && $fromreg == 0 || $mybb->request_method != "post")
-	{
-		$coppa_agreement = '';
-		// Is this user a COPPA user? We need to show the COPPA agreement too
-		if($mybb->settings['coppa'] != "disabled" && ($mybb->cookies['coppauser'] == 1 || $under_thirteen))
-		{
-			if($mybb->settings['coppa'] == "deny")
-			{
-				error($lang->error_need_to_be_thirteen);
-			}
-			$lang->coppa_agreement_1 = $lang->sprintf($lang->coppa_agreement_1, $mybb->settings['bbname']);
-			eval("\$coppa_agreement = \"".$templates->get("member_register_agreement_coppa")."\";");
-		}
+            // Store DOB in cookie so we can save it with the registration
+            my_setcookie("coppadob", "{$mybb->input['bday1']}-{$mybb->input['bday2']}-{$mybb->input['bday3']}", -1);
 
-		$plugins->run_hooks("member_register_agreement");
+            // User is <= 13, we mark as a coppa user
+            if ($bdaytime >= mktime(0, 0, 0, my_date('n'), my_date('d'), my_date('Y')-13)) {
+                my_setcookie("coppauser", 1, -0);
+                $under_thirteen = true;
+            }
 
-		eval("\$agreement = \"".$templates->get("member_register_agreement")."\";");
-		output_page($agreement);
-	}
-	else
-	{
+            $mybb->request_method = "";
+        } else {
+            // Show DOB select form
+            $plugins->run_hooks("member_register_coppa");
+
+            my_unsetcookie("coppauser");
+
+            output_page(\MyBB\template('member/register_coppa.twig', [
+                'days' => $days,
+                'months' => $months,
+                'year' => $year,
+            ]));
+            exit;
+        }
+    }
+
+    if ((!isset($mybb->input['agree']) && !isset($mybb->input['regsubmit'])) && $fromreg == 0 || $mybb->request_method != "post") {
+        $coppa_agreement = false;
+        // Is this user a COPPA user? We need to show the COPPA agreement too
+        if ($mybb->settings['coppa'] != "disabled" && ($mybb->cookies['coppauser'] == 1 || $under_thirteen)) {
+            $coppa_agreement = true;
+            if ($mybb->settings['coppa'] == "deny") {
+                error($lang->error_need_to_be_thirteen);
+            }
+        }
+
+        $plugins->run_hooks("member_register_agreement");
+
+        output_page(\MyBB\template('member/register_agreement.twig', [
+            'coppa_agreement' => $coppa_agreement,
+        ]));
+    } else {
 		$plugins->run_hooks("member_register_start");
 
 		// JS validator extra
@@ -841,264 +822,174 @@ $(document).ready(function() {
 		}
 	});\n";
 
-		if(isset($mybb->input['timezoneoffset']))
-		{
-			$timezoneoffset = $mybb->get_input('timezoneoffset');
-		}
-		else
-		{
-			$timezoneoffset = $mybb->settings['timezoneoffset'];
-		}
-		$tzselect = build_timezone_select("timezoneoffset", $timezoneoffset, true);
+        if (isset($mybb->input['timezoneoffset'])) {
+            $timezoneoffset = $mybb->get_input('timezoneoffset');
+        } else {
+            $timezoneoffset = $mybb->settings['timezoneoffset'];
+        }
 
-		$stylelist = build_theme_select("style");
+        $timezones = build_timezone_select("timezoneoffset", $timezoneoffset, true);
 
-		if($mybb->settings['usertppoptions'])
-		{
-			$tppoptions = '';
-			$explodedtpp = explode(",", $mybb->settings['usertppoptions']);
-			if(is_array($explodedtpp))
-			{
-				foreach($explodedtpp as $val)
-				{
-					$val = trim($val);
-					$tpp_option = $lang->sprintf($lang->tpp_option, $val);
-					eval("\$tppoptions .= \"".$templates->get("usercp_options_tppselect_option")."\";");
-				}
-			}
-			eval("\$tppselect = \"".$templates->get("usercp_options_tppselect")."\";");
-		}
-		if($mybb->settings['userpppoptions'])
-		{
-			$pppoptions = '';
-			$explodedppp = explode(",", $mybb->settings['userpppoptions']);
-			if(is_array($explodedppp))
-			{
-				foreach($explodedppp as $val)
-				{
-					$val = trim($val);
-					$ppp_option = $lang->sprintf($lang->ppp_option, $val);
-					eval("\$pppoptions .= \"".$templates->get("usercp_options_pppselect_option")."\";");
-				}
-			}
-			eval("\$pppselect = \"".$templates->get("usercp_options_pppselect")."\";");
-		}
-		if($mybb->settings['usereferrals'] == 1 && !$mybb->user['uid'])
-		{
-			if(isset($mybb->cookies['mybb']['referrer']))
-			{
-				$query = $db->simple_select("users", "uid,username", "uid='".(int)$mybb->cookies['mybb']['referrer']."'");
-				$ref = $db->fetch_array($query);
-				$ref['username'] = htmlspecialchars_uni($ref['username']);
-				$referrername = $ref['username'];
-			}
-			elseif(isset($referrer))
-			{
-				$query = $db->simple_select("users", "username", "uid='".(int)$referrer['uid']."'");
-				$ref = $db->fetch_array($query);
-				$ref['username'] = htmlspecialchars_uni($ref['username']);
-				$referrername = $ref['username'];
-			}
-			elseif(!empty($referrername))
-			{
-				$ref = get_user_by_username($referrername);
-				if(!$ref['uid'])
-				{
-					$errors[] = $lang->error_badreferrer;
-				}
-			}
-			else
-			{
-				$referrername = '';
-			}
-			if(isset($quickreg))
-			{
-				$refbg = "trow1";
-			}
-			else
-			{
-				$refbg = "trow2";
-			}
-			eval("\$referrer = \"".$templates->get("member_register_referrer")."\";");
-		}
-		else
-		{
-			$referrer = '';
-		}
-		$mybb->input['profile_fields'] = $mybb->get_input('profile_fields', MyBB::INPUT_ARRAY);
-		// Custom profile fields baby!
-		$altbg = "trow1";
-		$requiredfields = $customfields = '';
+        $registration['showreferrer'] = false;
+        if ($mybb->settings['usereferrals'] == 1 && !$mybb->user['uid']) {
+            $registration['showreferrer'] = true;
+            if (isset($mybb->cookies['mybb']['referrer'])) {
+                $query = $db->simple_select("users", "uid,username", "uid='".(int)$mybb->cookies['mybb']['referrer']."'");
+                $ref = $db->fetch_array($query);
+                $select['referrername'] = $ref['username'];
+            } else if (isset($referrer)) {
+                $query = $db->simple_select("users", "username", "uid='".(int)$referrer['uid']."'");
+                $ref = $db->fetch_array($query);
+                $select['referrername'] = $ref['username'];
+            } else if (!empty($select['referrername'])) {
+                $ref = get_user_by_username($select['referrername']);
+                if (!$ref['uid']) {
+                    $errors[] = $lang->error_badreferrer;
+                }
+            } else {
+                $select['referrername'] = '';
+            }
+        }
 
-		if($mybb->settings['regtype'] == "verify" || $mybb->settings['regtype'] == "admin" || $mybb->settings['regtype'] == "both" || $mybb->get_input('coppa', MyBB::INPUT_INT) == 1)
-		{
-			$usergroup = 5;
-		}
-		else
-		{
-			$usergroup = 2;
-		}
+        $mybb->input['profile_fields'] = $mybb->get_input('profile_fields', MyBB::INPUT_ARRAY);
 
-		$pfcache = $cache->read('profilefields');
+        // Custom profile fields baby!
+        $requiredfields = $customfields = [];
 
-		if(is_array($pfcache))
-		{
-			foreach($pfcache as $profilefield)
-			{
-				if($profilefield['required'] != 1 && $profilefield['registration'] != 1 || !is_member($profilefield['editableby'], array('usergroup' => $mybb->user['usergroup'], 'additionalgroups' => $usergroup)))
-				{
-					continue;
-				}
+        if ($mybb->settings['regtype'] == "verify" || $mybb->settings['regtype'] == "admin" || $mybb->settings['regtype'] == "both" || $mybb->get_input('coppa', MyBB::INPUT_INT) == 1) {
+            $usergroup = 5;
+        } else {
+            $usergroup = 2;
+        }
 
-				$code = $select = $val = $options = $expoptions = $useropts = '';
-				$seloptions = array();
-				$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
-				$thing = explode("\n", $profilefield['type'], "2");
-				$type = trim($thing[0]);
-				$options = $thing[1];
-				$select = '';
-				$field = "fid{$profilefield['fid']}";
-				$profilefield['description'] = htmlspecialchars_uni($profilefield['description']);
-				$profilefield['name'] = htmlspecialchars_uni($profilefield['name']);
-				if($errors && isset($mybb->input['profile_fields'][$field]))
-				{
-					$userfield = $mybb->input['profile_fields'][$field];
-				}
-				else
-				{
-					$userfield = '';
-				}
-				if($type == "multiselect")
-				{
-					if($errors)
-					{
-						$useropts = $userfield;
-					}
-					else
-					{
-						$useropts = explode("\n", $userfield);
-					}
-					if(is_array($useropts))
-					{
-						foreach($useropts as $key => $val)
-						{
-							$seloptions[$val] = $val;
-						}
-					}
-					$expoptions = explode("\n", $options);
-					if(is_array($expoptions))
-					{
-						foreach($expoptions as $key => $val)
-						{
-							$val = trim($val);
-							$val = str_replace("\n", "\\n", $val);
+        $pfcache = $cache->read('profilefields');
 
-							$sel = "";
-							if(isset($seloptions[$val]) && $val == $seloptions[$val])
-							{
-								$sel = ' selected="selected"';
-							}
+        if (is_array($pfcache)) {
+            foreach ($pfcache as $profilefield) {
+                if ($profilefield['required'] != 1 && $profilefield['registration'] != 1 || !is_member($profilefield['editableby'], array('usergroup' => $mybb->user['usergroup'], 'additionalgroups' => $usergroup))) {
+                    continue;
+                }
 
-							eval("\$select .= \"".$templates->get("usercp_profile_profilefields_select_option")."\";");
-						}
-						if(!$profilefield['length'])
-						{
-							$profilefield['length'] = 3;
-						}
+                $profilefield['type_multiselect'] = $profilefield['type_select'] = $profilefield['type_radio'] = $profilefield['type_checkbox'] = $profilefield['type_textarea'] = $profilefield['type_text'] = false;
+                $seloptions = array();
+                $thing = explode("\n", $profilefield['type'], "2");
+                $type = trim($thing[0]);
+                $options = $thing[1];
+                $profilefield['field'] = "fid{$profilefield['fid']}";
 
-						eval("\$code = \"".$templates->get("usercp_profile_profilefields_multiselect")."\";");
-					}
-				}
-				elseif($type == "select")
-				{
-					$expoptions = explode("\n", $options);
-					if(is_array($expoptions))
-					{
-						foreach($expoptions as $key => $val)
-						{
-							$val = trim($val);
-							$val = str_replace("\n", "\\n", $val);
-							$sel = "";
-							if($val == $userfield)
-							{
-								$sel = ' selected="selected"';
-							}
+                if ($errors && isset($mybb->input['profile_fields'][$profilefield['field']])) {
+                    $userfield = $mybb->input['profile_fields'][$profilefield['field']];
+                } else {
+                    $userfield = '';
+                }
 
-							eval("\$select .= \"".$templates->get("usercp_profile_profilefields_select_option")."\";");
-						}
-						if(!$profilefield['length'])
-						{
-							$profilefield['length'] = 1;
-						}
+                if ($type == "multiselect") {
+                    if ($errors) {
+                        $useropts = $userfield;
+                    } else {
+                        $useropts = explode("\n", $userfield);
+                    }
 
-						eval("\$code = \"".$templates->get("usercp_profile_profilefields_select")."\";");
-					}
-				}
-				elseif($type == "radio")
-				{
-					$expoptions = explode("\n", $options);
-					if(is_array($expoptions))
-					{
-						foreach($expoptions as $key => $val)
-						{
-							$checked = "";
-							if($val == $userfield)
-							{
-								$checked = 'checked="checked"';
-							}
+                    if (is_array($useropts)) {
+                        foreach ($useropts as $key => $val) {
+                            $seloptions[$val] = $val;
+                        }
+                    }
 
-							eval("\$code .= \"".$templates->get("usercp_profile_profilefields_radio")."\";");
-						}
-					}
-				}
-				elseif($type == "checkbox")
-				{
-					if($errors)
-					{
-						$useropts = $userfield;
-					}
-					else
-					{
-						$useropts = explode("\n", $userfield);
-					}
-					if(is_array($useropts))
-					{
-						foreach($useropts as $key => $val)
-						{
-							$seloptions[$val] = $val;
-						}
-					}
-					$expoptions = explode("\n", $options);
-					if(is_array($expoptions))
-					{
-						foreach($expoptions as $key => $val)
-						{
-							$checked = "";
-							if(isset($seloptions[$val]) && $val == $seloptions[$val])
-							{
-								$checked = 'checked="checked"';
-							}
+                    $expoptions = explode("\n", $options);
+                    $profilefield['select'] = [];
+                    if (is_array($expoptions)) {
+                        $profilefield['type_multiselect'] = true;
+                        foreach ($expoptions as $key => $val) {
+                            $val = trim($val);
+                            $val = str_replace("\n", "\\n", $val);
 
-							eval("\$code .= \"".$templates->get("usercp_profile_profilefields_checkbox")."\";");
-						}
-					}
-				}
-				elseif($type == "textarea")
-				{
-					$value = htmlspecialchars_uni($userfield);
-					eval("\$code = \"".$templates->get("usercp_profile_profilefields_textarea")."\";");
-				}
-				else
-				{
-					$value = htmlspecialchars_uni($userfield);
-					$maxlength = "";
-					if($profilefield['maxlength'] > 0)
-					{
-						$maxlength = " maxlength=\"{$profilefield['maxlength']}\"";
-					}
+                            $select_item['selected'] = false;
+                            if (isset($seloptions[$val]) && $val == $seloptions[$val]) {
+                                $select_item['selected'] = true;
+                            }
 
-					eval("\$code = \"".$templates->get("usercp_profile_profilefields_text")."\";");
-				}
+                            $select_item['value'] = $val;
+                            $profilefield['select'][] = $select_item;
+                        }
+
+                        if (!$profilefield['length']) {
+                            $profilefield['length'] = 3;
+                        }
+                    }
+                } else if ($type == "select") {
+                    $expoptions = explode("\n", $options);
+                    if (is_array($expoptions)) {
+                        $profilefield['type_select'] = true;
+                        $profilefield['select'] = [];
+                        foreach ($expoptions as $key => $val) {
+                            $val = trim($val);
+                            $val = str_replace("\n", "\\n", $val);
+
+                            $select_item['selected'] = false;
+                            if ($val == $userfield) {
+                                $select_item['selected'] = true;
+                            }
+
+                            $select_item['value'] = $val;
+                            $profilefield['select'][] = $select_item;
+                        }
+
+                        if (!$profilefield['length']) {
+                            $profilefield['length'] = 1;
+                        }
+                    }
+                } else if ($type == "radio") {
+                    $expoptions = explode("\n", $options);
+                    if (is_array($expoptions)) {
+                        $profilefield['type_radio'] = true;
+                        $profilefield['radio'] = [];
+                        foreach ($expoptions as $key => $val) {
+                            $radio_item['checked'] = false;
+                            if ($val == $userfield) {
+                                $radio_item['checked'] = true;
+                            }
+
+                            $radio_item['value'] = $val;
+                            $profilefield['radio'][] = $radio_item;
+                        }
+                    }
+                } else if ($type == "checkbox") {
+                    if ($errors) {
+                        $useropts = $userfield;
+                    } else {
+                        $useropts = explode("\n", $userfield);
+                    }
+
+                    if (is_array($useropts)) {
+                        foreach ($useropts as $key => $val) {
+                            $seloptions[$val] = $val;
+                        }
+                    }
+
+                    $expoptions = explode("\n", $options);
+                    if (is_array($expoptions)) {
+                        $profilefield['type_checkbox'] = true;
+                        $profilefield['checkbox'] = [];
+                        foreach ($expoptions as $key => $val) {
+                            $checkbox_item['checked'] = false;
+                            if (isset($seloptions[$val]) && $val == $seloptions[$val]) {
+                                $checkbox_item['checked'] = true;
+                            }
+
+                            $checkbox_item['value'] = $val;
+                            $profilefield['checkbox'][] = $checkbox_item;
+                        }
+                    }
+                } else if ($type == "textarea") {
+                    $profilefield['type_textarea'] = true;
+                    $profilefield['value'] = $userfield;
+                } else {
+                    $profilefield['type_text'] = true;
+                    $profilefield['value'] = $userfield;
+                }
+
+                $profilefield['fieldtype'] = $type;
 
 				if($profilefield['required'] == 1)
 				{
@@ -1107,19 +998,19 @@ $(document).ready(function() {
 					{
 						if($type == "textarea")
 						{
-							$inp_selector = "$('textarea[name=\"profile_fields[{$field}]\"]')";
+							$inp_selector = "$('textarea[name=\"profile_fields[{$profilefield['field']}]\"]')";
 						}
 						elseif($type == "multiselect")
 						{
-							$inp_selector = "$('select[name=\"profile_fields[{$field}][]\"]')";
+							$inp_selector = "$('select[name=\"profile_fields[{$profilefield['field']}][]\"]')";
 						}
 						elseif($type == "checkbox")
 						{
-							$inp_selector = "$('input[name=\"profile_fields[{$field}][]\"]')";
+							$inp_selector = "$('input[name=\"profile_fields[{$profilefield['field']}][]\"]')";
 						}
 						else
 						{
-							$inp_selector = "$('input[name=\"profile_fields[{$field}]\"]')";
+							$inp_selector = "$('input[name=\"profile_fields[{$profilefield['field']}]\"]')";
 						}
 
 						$validator_javascript .= "
@@ -1131,42 +1022,39 @@ $(document).ready(function() {
 	});\n";
 					}
 
-					eval("\$requiredfields .= \"".$templates->get("member_register_customfield")."\";");
+					$requiredfields[] = $profilefield;
 				}
 				else
 				{
-					eval("\$customfields .= \"".$templates->get("member_register_customfield")."\";");
+					$customfields[] = $profilefield;
 				}
 			}
 
-			if($requiredfields)
-			{
-				eval("\$requiredfields = \"".$templates->get("member_register_requiredfields")."\";");
-			}
+            $registration['showrequiredfields'] = false;
+            if (!empty($requiredfields)) {
+                $registration['showrequiredfields'] = true;
+            }
 
-			if($customfields)
-			{
-				eval("\$customfields = \"".$templates->get("member_register_additionalfields")."\";");
-			}
-		}
+            $registration['showcustomfields'] = false;
+            if (!empty($customfields)) {
+                $registration['showcustomfields'] = true;
+            }
+        }
 
-		if(!isset($fromreg))
-		{
-			$allownoticescheck = "checked=\"checked\"";
-			$hideemailcheck = '';
-			$receivepmscheck = "checked=\"checked\"";
-			$pmnoticecheck = " checked=\"checked\"";
-			$pmnotifycheck = '';
-			$invisiblecheck = '';
-			if($mybb->settings['dstcorrection'] == 1)
-			{
-				$enabledstcheck = "checked=\"checked\"";
-			}
-			$no_auto_subscribe_selected = $instant_email_subscribe_selected = $instant_pm_subscribe_selected = $no_subscribe_selected = '';
-			$dst_auto_selected = $dst_enabled_selected = $dst_disabled_selected = '';
-			$username = $email = $email2 = '';
-			$regerrors = '';
-		}
+        if (!isset($fromreg)) {
+            $select['allownotices'] = true;
+            $select['hideemail'] = false;
+            $select['receivepms'] = true;
+            $select['pmnotice'] = true;
+            $select['pmnotify'] = false;
+            $select['invisible'] = false;
+
+            $select['subscriptionmethod']['none'] = $select['subscriptionmethod']['email'] = $select['subscriptionmethod']['pm'] = $select['subscriptionmethod']['no'] = false;
+            $select['dst']['auto'] = $select['dst']['enabled'] = $select['dst']['disabled'] = false;
+            $select['username'] = $select['email'] = $select['email2'] = '';
+            $regerrors = '';
+        }
+
 		// Spambot registration image thingy
 		if($mybb->settings['captchaimage'])
 		{
@@ -1175,7 +1063,7 @@ $(document).ready(function() {
 
 			if($captcha->html)
 			{
-				$regimage = $captcha->html;
+				$registration['regimage'] = $captcha->html;
 
 				if($mybb->settings['captchaimage'] == 1)
 				{
@@ -1204,33 +1092,28 @@ $(document).ready(function() {
 		}
 
 		// Security Question
-		$questionbox = '';
-		if($mybb->settings['securityquestion'])
-		{
-			$sid = generate_question();
+		$registration['showquestion'] = false;
+		if ($mybb->settings['securityquestion']) {
+			$registration['questionsid'] = generate_question();
 			$query = $db->query("
 				SELECT q.question, s.sid
-				FROM ".TABLE_PREFIX."questionsessions s
-				LEFT JOIN ".TABLE_PREFIX."questions q ON (q.qid=s.qid)
-				WHERE q.active='1' AND s.sid='{$sid}'
+				FROM " . TABLE_PREFIX . "questionsessions s
+				LEFT JOIN " . TABLE_PREFIX . "questions q ON (q.qid=s.qid)
+				WHERE q.active='1' AND s.sid='{$registration['questionsid']}'
 			");
-			if($db->num_rows($query) > 0)
-			{
+			if ($db->num_rows($query) > 0) {
+				$registration['showquestion'] = true;
 				$question = $db->fetch_array($query);
 
-				$question['question'] = htmlspecialchars_uni($question['question']);
-				$question['sid'] = htmlspecialchars_uni($question['sid']);
+				$registration['questionrefresh'] = false;
+				$registration['question'] = $question['question'];
 
-				$refresh = '';
 				// Total questions
 				$q = $db->simple_select('questions', 'COUNT(qid) as num', 'active=1');
 				$num = $db->fetch_field($q, 'num');
-				if($num > 1)
-				{
-					eval("\$refresh = \"".$templates->get("member_register_question_refresh")."\";");
+				if ($num > 1) {
+					$registration['questionrefresh'] = true;
 				}
-
-				eval("\$questionbox = \"".$templates->get("member_register_question")."\";");
 
 				$validator_javascript .= "
 	$('#answer').rules('add', {
@@ -1254,16 +1137,10 @@ $(document).ready(function() {
 			}
 		}
 
-		$hiddencaptcha = '';
-		// Hidden CAPTCHA for Spambots
-		if($mybb->settings['hiddencaptchaimage'])
-		{
-			$captcha_field = $mybb->settings['hiddencaptchaimagefield'];
-
-			eval("\$hiddencaptcha = \"".$templates->get("member_register_hiddencaptcha")."\";");
-		}
+		$registration['showpassword'] = false;
 		if($mybb->settings['regtype'] != "randompass")
 		{
+			$registration['showpassword'] = true;
 			// JS validator extra
 			$lang->js_validator_password_length = $lang->sprintf($lang->js_validator_password_length, $mybb->settings['minpasswordlength']);
 
@@ -1330,41 +1207,45 @@ $(document).ready(function() {
 			equalTo: '{$lang->js_validator_password_matches}'
 		}
 	});\n";
-
-			eval("\$passboxes = \"".$templates->get("member_register_password")."\";");
 		}
 
-		$languages = $lang->get_languages();
-		$langoptions = $boardlanguage = '';
-		if(count($languages) > 1)
-		{
-			foreach($languages as $name => $language)
-			{
-				$language = htmlspecialchars_uni($language);
+        $registration['showlanguages'] = false;
+        $get_languages = $lang->get_languages();
+        $languages = [];
+        if (count($get_languages) > 1) {
+            $registration['showlanguages'] = true;
+            foreach ($get_languages as $name => $language) {
+                $lang_array['language'] = $language;
+                $lang_array['name'] = $name;
 
-				$sel = '';
-				if($mybb->get_input('language') == $name)
-				{
-					$sel = " selected=\"selected\"";
-				}
+                $lang_array['selected'] = false;
+                if ($mybb->get_input('language') == $name) {
+                    $lang_array['selected'] = true;
+                }
 
-				eval('$langoptions .= "'.$templates->get('usercp_options_language_option').'";');
-			}
+                $languages[] = $lang_array;
+            }
+        }
 
-			eval('$boardlanguage = "'.$templates->get('member_register_language').'";');
-		}
+        // Set the time so we can find automated signups
+        $registration['time'] = TIME_NOW;
 
-		// Set the time so we can find automated signups
-		$time = TIME_NOW;
-
-		$plugins->run_hooks("member_register_end");
+        $plugins->run_hooks("member_register_end");
 
 		$validator_javascript .= "
 });
 </script>\n";
 
-		eval("\$registration = \"".$templates->get("member_register")."\";");
-		output_page($registration);
+        output_page(\MyBB\template('member/register.twig', [
+            'regerrors' => $regerrors,
+            'select' => $select,
+            'registration' => $registration,
+            'timezones' => $timezones,
+            'requiredfields' => $requiredfields,
+            'customfields' => $customfields,
+            'languages' => $languages,
+            'validator_javascript' => $validator_javascript,
+        ]));
 	}
 }
 
