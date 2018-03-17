@@ -25,5 +25,14 @@
     </select>
     <input type="submit" class="button" value="{{ lang.go }}" />
     <br />
-    {{ calendar_jump|raw }}
+    {% if calendar_jump %}
+        <br />
+        <span class="smalltext"><strong>{{ lang.jump_to_calendar }}</strong></span>
+        <select name="calendar">
+            {% for calendar in calendar_jump %}
+                <option value="{{ calendar.cid }}"{% if calendar.selected %} selected="selected"{% endif %}>{{ calendar.name }}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" class="button" value="{{ lang.go }}" />
+    {% endif %}
 </td>
