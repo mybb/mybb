@@ -73,7 +73,7 @@ function build_postbit($post, $post_type=0)
 		$parser_options['allow_videocode'] = $forum['allowvideocode'];
 		$parser_options['me_username'] = $post['username'];
 		$parser_options['filter_badwords'] = 1;
-		$id = 0;
+		$post['id'] = 0;
 		break;
 	case 2: // Private message
 		global $message, $pmid;
@@ -85,7 +85,7 @@ function build_postbit($post, $post_type=0)
 		$parser_options['allow_videocode'] = $mybb->settings['pmsallowvideocode'];
 		$parser_options['me_username'] = $post['username'];
 		$parser_options['filter_badwords'] = 1;
-		$id = $pmid;
+		$post['id'] = $pmid;
 		break;
 	case 3: // Announcement
 		global $announcementarray, $message;
@@ -96,12 +96,12 @@ function build_postbit($post, $post_type=0)
 		$parser_options['allow_videocode'] = 1;
 		$parser_options['me_username'] = $post['username'];
 		$parser_options['filter_badwords'] = 1;
-		$id = $announcementarray['aid'];
+		$post['id'] = $announcementarray['aid'];
 		break;
 	default: // Regular post
 		global $forum, $thread, $tid;
 		$oldforum = $forum;
-		$id = (int)$post['pid'];
+		$post['id'] = (int)$post['pid'];
 		$post['idtype'] = 'pid';
 		$parser_options['allow_html'] = $forum['allowhtml'];
 		$parser_options['allow_mycode'] = $forum['allowmycode'];
@@ -646,7 +646,7 @@ function build_postbit($post, $post_type=0)
 	$post['message'] = $parser->parse_message($post['message'], $parser_options);
 
 	if ($mybb->settings['enableattachments'] != 0) {
-		$attached = get_post_attachments($id, $post);
+		$attached = get_post_attachments($post['id'], $post);
 	}
 
 	$post['showsig'] = false;
