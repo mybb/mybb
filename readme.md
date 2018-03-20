@@ -26,7 +26,7 @@ Visit the [MyBB Community Forums](https://community.mybb.com) or [Documentation]
 ### Contributors
 
 This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
-<a href="graphs/contributors"><img src="https://opencollective.com/mybb/contributors.svg?width=890&button=false" /></a>
+<a href="https://github.com/mybb/mybb/graphs/contributors"><img src="https://opencollective.com/mybb/contributors.svg?width=890&button=false" /></a>
 
 
 ### Backers
