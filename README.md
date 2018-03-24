@@ -1,7 +1,7 @@
 [![MyBB](https://raw.github.com/mybb/mybb/feature/images/logo.png "MyBB")](https://mybb.com "MyBB")
 
-[![Backers on Open Collective](https://opencollective.com/mybb/backers/badge.svg)](#backers)
- [![Sponsors on Open Collective](https://opencollective.com/mybb/sponsors/badge.svg)](#sponsors) 
+![Build Status on Travis CI](https://travis-ci.org/mybb/mybb.svg?branch=develop%2F1.9) [![Backers on Open Collective](https://opencollective.com/mybb/backers/badge.svg)](#backers)
+ [![Sponsors on Open Collective](https://opencollective.com/mybb/sponsors/badge.svg)](#sponsors)
 
 ## Free never tasted so good.
 MyBB is a free and open source, community-based forum software project. Learn more at [MyBB.com](https://mybb.com).
