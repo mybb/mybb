@@ -1,0 +1,31 @@
+<div class="modal">
+    <div style="overflow-y: auto; max-height: 400px;">
+        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+            <tr>
+                <td class="thead" colspan="2"><strong>{{ lang.get_pm_ip }}</strong></td>
+            </tr>
+            <tr>
+                <td class="trow1" width="20%"><strong>{{ lang.username }}</strong></td>
+                <td class="trow1">{{ pm.user_name|raw }}</td>
+            </tr>
+            <tr>
+                <td class="trow2"><strong>{{ lang.ip_address }}</strong></td>
+                <td class="trow2">{{ pm.ipaddress }}</td>
+            </tr>
+            <tr>
+                <td class="trow1"><strong>{{ lang.hostname }}<br /><span class="smalltext">{{ lang.if_resolvable }}</span></strong></td>
+                <td class="trow2">{{ pm.hostname }}</td>
+            </tr>
+            {% if mybb.usergroup.canmodcp and mybb.usergroup.canuseipsearch %}
+                <tr>
+                    <td class="trow2"><strong>{{ lang.mod_options }}</strong></td>
+                    <td class="trow2">
+                        <a href="modcp.php?action=ipsearch&amp;ipaddress={{ pm.ipaddress }}&amp;search_users=1">{{ lang.search_ip_users }}</a><br />
+                        <a href="modcp.php?action=ipsearch&amp;ipaddress={{ pm.ipaddress }}&amp;search_posts=1">{{ lang.search_ip_posts }}</a><br />
+                        <a href="modcp.php?action=iplookup&amp;ipaddress={{ pm.ipaddress }}" onclick="MyBB.popupWindow('/modcp.php?action=iplookup&amp;ipaddress={{ pm.ipaddress }}&amp;modal=1'); return false;">{{ lang.info_on_ip }}</a>
+                    </td>
+                </tr>
+            {% endif %}
+        </table>
+    </div>
+</div>
