@@ -1184,92 +1184,70 @@ switch($mybb->input['action'])
 
 	// Let's look up the ip address of a post
 	case "getip":
-		add_breadcrumb($lang->nav_getip);
-		if(!is_moderator($fid, "canviewips"))
-		{
-			error_no_permission();
-		}
+        add_breadcrumb($lang->nav_getip);
+        if (!is_moderator($fid, "canviewips")) {
+            error_no_permission();
+        }
 
-		$post['ipaddress'] = my_inet_ntop($db->unescape_binary($post['ipaddress']));
-		$hostname = @gethostbyaddr($post['ipaddress']);
-		if(!$hostname || $hostname == $post['ipaddress'])
-		{
-			$hostname = $lang->resolve_fail;
-		}
+        $post['ipaddress'] = my_inet_ntop($db->unescape_binary($post['ipaddress']));
+        $post['hostname'] = @gethostbyaddr($post['ipaddress']);
+        if (!$post['hostname'] || $post['hostname'] == $post['ipaddress']) {
+            $post['hostname'] = $lang->resolve_fail;
+        }
 
-		$post['username'] = htmlspecialchars_uni($post['username']);
-		$username = build_profile_link($post['username'], $post['uid']);
+        $post['user_name'] = build_profile_link($post['username'], $post['uid']);
 
-		// Moderator options
-		$modoptions = "";
-		if($mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canuseipsearch'] == 1)
-		{
-			$ipaddress = $post['ipaddress'];
-			eval("\$modoptions = \"".$templates->get("moderation_getip_modoptions")."\";");
-		}
+        $plugins->run_hooks('moderation_getip');
 
-		$plugins->run_hooks('moderation_getip');
-
-		if($modal)
-		{
-			eval("\$getip = \"".$templates->get("moderation_getip_modal", 1, 0)."\";");
-			echo $getip;
-			exit;
-		}
-		else
-		{
-			eval("\$getip = \"".$templates->get("moderation_getip")."\";");
-			output_page($getip);
-			break;
-		}
+        if ($modal) {
+            output_page(\MyBB\template('moderation/getip_modal.twig', [
+                'post' => $post,
+            ]));
+            exit;
+        } else {
+            output_page(\MyBB\template('moderation/getip.twig', [
+                'post' => $post,
+            ]));
+            break;
+        }
 
 	// Let's look up the ip address of a PM
 	case "getpmip":
-		if($pmid <= 0)
-		{
-			error($lang->error_invalidpm);
-		}
-		add_breadcrumb($lang->nav_pms, "private.php");
-		$pm['subject'] = htmlspecialchars_uni($parser->parse_badwords($pm['subject']));
-		add_breadcrumb($pm['subject'], "private.php?action=read&amp;pmid={$pmid}");
-		add_breadcrumb($lang->nav_getpmip);
-		if(!$mybb->usergroup['issupermod'])
-		{
-			error_no_permission();
-		}
+        if ($pmid <= 0) {
+            error($lang->error_invalidpm);
+        }
 
-		$pm['ipaddress'] = my_inet_ntop($db->unescape_binary($pm['ipaddress']));
-		$hostname = @gethostbyaddr($pm['ipaddress']);
-		if(!$hostname || $hostname == $pm['ipaddress'])
-		{
-			$hostname = $lang->resolve_fail;
-		}
+        add_breadcrumb($lang->nav_pms, "private.php");
+        $pm['subject'] = htmlspecialchars_uni($parser->parse_badwords($pm['subject']));
+        add_breadcrumb($pm['subject'], "private.php?action=read&amp;pmid={$pmid}");
+        add_breadcrumb($lang->nav_getpmip);
 
-		$name = $db->fetch_field($db->simple_select('users', 'username', "uid = {$pm['fromid']}"), 'username');
-		$username = build_profile_link($name, $pm['fromid']);
+        if (!$mybb->usergroup['issupermod']) {
+            error_no_permission();
+        }
 
-		// Moderator options
-		$modoptions = "";
-		if($mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canuseipsearch'] == 1)
-		{
-			$ipaddress = $pm['ipaddress'];
-			eval("\$modoptions = \"".$templates->get("moderation_getip_modoptions")."\";");
-		}
+        $pm['ipaddress'] = my_inet_ntop($db->unescape_binary($pm['ipaddress']));
+        $pm['hostname'] = @gethostbyaddr($pm['ipaddress']);
+        if (!$pm['hostname'] || $pm['hostname'] == $pm['ipaddress']) {
+            $pm['hostname'] = $lang->resolve_fail;
+        }
 
-		$plugins->run_hooks('moderation_getpmip');
+        $name = $db->fetch_field($db->simple_select('users', 'username', "uid = {$pm['fromid']}"), 'username');
+        $pm['user_name'] = build_profile_link($name, $pm['fromid']);
 
-		if($modal)
-		{
-			eval("\$getpmip = \"".$templates->get("moderation_getpmip_modal", 1, 0)."\";");
-			echo $getpmip;
-			exit;
-		}
-		else
-		{
-			eval("\$getpmip = \"".$templates->get("moderation_getpmip")."\";");
-			output_page($getpmip);
-			break;
-		}
+        $plugins->run_hooks('moderation_getpmip');
+
+        if ($modal) {
+            output_page(\MyBB\template('moderation/getpmip_modal.twig', [
+                'pm' => $pm,
+            ]));
+            exit;
+        } else {
+            output_page(\MyBB\template('moderation/getpmip.twig', [
+                'pm' => $pm,
+            ]));
+            break;
+        }
 
 	// Merge threads
 	case "merge":

@@ -117,7 +117,7 @@
 			{% if post.ipshow %}
 				{{ lang.postbit_ipaddress }} {{ post.ip }}
 			{% elseif post.iphide %}
-				{{ lang.postbit_ipaddress }} <a href="moderation.php?action={{ post.action }}&amp;{{ post.idtype }}=post[{{ post.idtype }}]">{{ lang.postbit_ipaddress_logged }}</a>
+				{{ lang.postbit_ipaddress }} <a href="moderation.php?action={{ post.action }}&amp;{{ post.idtype }}={{ post.id }}" onclick="MyBB.{{ post.javascript }}({{ post.id }}); return false;">{{ lang.postbit_ipaddress_logged }}</a>
 			{% endif %}
 			<div class="float_right">
 				{% if post.poststatus %}
