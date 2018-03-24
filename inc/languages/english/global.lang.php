@@ -414,7 +414,7 @@ $l['error_loadlimit'] = "The maximum server load limit has been reached.  Please
 $l['error_boardclosed'] = "This bulletin board is currently closed. The Administrator has specified the reason as to why below.";
 $l['error_banned'] = "I'm sorry, but you are banned.  You may not post, read threads, or access the forum.  Please contact your forum administrator should you have any questions.";
 $l['error_cannot_upload_php_post'] = "Can not upload file - Too large for php post_max_size directive. Please press the back button.";
-$l['error_empty_post_input'] = "There has been an error due to your post data being empty. Possibly cause is a browser page refresh or direct access to this page. We recommend you press the browser back button and begin again.";
+$l['error_empty_post_input'] = "There has been an error due to your post data being empty. This could be due to a browser page refresh or direct access to this page. We recommend you press the browser back button and begin again.";
 $l['error_database_repair'] = "MyBB is automatically repairing a crashed table.";
 
 $l['unknown_user_trigger'] = "An unknown error has been triggered.";
