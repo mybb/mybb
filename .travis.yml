@@ -7,9 +7,6 @@ env:
 matrix:
   fast_finish: true
   include:
-    - php: 7.0
-    - php: 7.0
-      env: setup=lowest
     - php: 7.1
     - php: 7.1
       env: setup=lowest
@@ -33,4 +30,4 @@ install:
 
 script:
   - inc/vendor/bin/phpunit
-  - inc/vendor/phpcs
+  - inc/vendor/bin/phpcs
