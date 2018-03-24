@@ -450,6 +450,16 @@ class postParser
 			$message = preg_replace_callback("#\[img=([1-9][0-9]*)x([1-9][0-9]*) align=(left|right)\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is", array($this, 'mycode_parse_img_disabled_callback4'), $message);
 		}
 
+		// Convert videos when allow.
+		if(!empty($this->options['allow_videocode']))
+		{
+			$message = preg_replace_callback("#\[video=(.*?)\](.*?)\[/video\]#i", array($this, 'mycode_parse_video_callback'), $message);
+		}
+		else
+		{
+			$message = preg_replace_callback("#\[video=(.*?)\](.*?)\[/video\]#i", array($this, 'mycode_parse_video_disabled_callback'), $message);
+		}
+
 		$message = $this->mycode_auto_url($message);
 
 		$message = str_replace('$', '&#36;', $message);
@@ -495,16 +505,6 @@ class postParser
 				// Ignores missing end tags
 				$message = preg_replace_callback("#\s?\[list(=(a|A|i|I|1))?&{$i}\](.*?)(\[/list&{$i}\]|$)(\r\n?|\n?)#si", array($this, 'mycode_parse_list_callback'), $message, 1);
 			}
-		}
-
-		// Convert videos when allow.
-		if(!empty($this->options['allow_videocode']))
-		{
-			$message = preg_replace_callback("#\[video=(.*?)\](.*?)\[/video\]#i", array($this, 'mycode_parse_video_callback'), $message);
-		}
-		else
-		{
-			$message = preg_replace_callback("#\[video=(.*?)\](.*?)\[/video\]#i", array($this, 'mycode_parse_video_disabled_callback'), $message);
 		}
 
 		return $message;
