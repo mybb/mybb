@@ -1,0 +1,5 @@
+suites:
+  mybb:
+    namespace: MyBB
+    psr4_prefix: MyBB
+    src_path: inc/src
