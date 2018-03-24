@@ -15,35 +15,35 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $container = app();
 
 // MyBB
-$container->singleton(\MyBB::class, function() {
+$container->singleton(\MyBB::class, function () {
     return $GLOBALS['mybb'];
 });
 
 $container->alias(\MyBB::class, 'mybb');
 
 // DB
-$container->singleton(\DB_Base::class, function() {
+$container->singleton(\DB_Base::class, function () {
     return $GLOBALS['db'];
 });
 
 $container->alias(\DB_Base::class, 'db');
 
 // Plugins
-$container->singleton(\pluginSystem::class, function() {
+$container->singleton(\pluginSystem::class, function () {
     return $GLOBALS['plugins'];
 });
 
 $container->alias(\pluginSystem::class, 'plugins');
 
 // Lang
-$container->singleton(\MyLanguage::class, function() {
+$container->singleton(\MyLanguage::class, function () {
     return $GLOBALS['lang'];
 });
 
 $container->alias(\MyLanguage::class, 'lang');
 
 // Twig
-$container->singleton(\Twig_Environment::class, function(ContainerInterface $container) {
+$container->singleton(\Twig_Environment::class, function (ContainerInterface $container) {
     if (defined('IN_ADMINCP')) {
         $paths = [
             __DIR__ . '/../views/admin',
@@ -51,7 +51,8 @@ $container->singleton(\Twig_Environment::class, function(ContainerInterface $con
     } else {
         // TODO: views for the current theme, it's parent, it's parent's parent, etc. should be here
         // The filesystem loader works by using files from the first array entry.
-        // If a file doesn't exist, it looks in the second array entry and so on. This allows us to easily implement template inheritance.
+        // If a file doesn't exist, it looks in the second array entry and so on.
+        // This allows us to easily implement template inheritance.
 
         $paths = [
             __DIR__ . '/../views/base',
@@ -83,21 +84,21 @@ $container->singleton(\Twig_Environment::class, function(ContainerInterface $con
 $container->alias(\Twig_Environment::class, 'twig');
 
 // Events
-$container->singleton(\Illuminate\Contracts\Events\Dispatcher::class, function(ContainerInterface $container) {
+$container->singleton(\Illuminate\Contracts\Events\Dispatcher::class, function (ContainerInterface $container) {
     return new Dispatcher($container);
 });
 
 $container->alias(\Illuminate\Contracts\Events\Dispatcher::class, 'events');
 
 // Router
-$container->singleton(Router::class, function(ContainerInterface $container) {
+$container->singleton(Router::class, function (ContainerInterface $container) {
     return new Router($container->get('events'), $container);
 });
 
 $container->alias(Router::class, 'router');
 
 // Request
-$container->bind(Request::class, function(ContainerInterface $container) {
+$container->bind(Request::class, function (ContainerInterface $container) {
     return Request::capture();
 });
 

@@ -27,6 +27,13 @@
         "illuminate/routing": "^5.5",
         "twig/twig": "^2.4"
     },
+    "require-dev": {
+        "php": "^7.1",
+        "mockery/mockery": "^1.0",
+        "phpspec/phpspec": "^4.3",
+        "phpunit/phpunit": "^7.0",
+        "squizlabs/php_codesniffer": "^3.2"
+    },
     "autoload": {
         "psr-4": {
             "MyBB\\": "inc/src/"
@@ -34,6 +41,11 @@
         "files": [
             "inc/src/functions.php"
         ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "MyBB\\Tests\\": "tests/"
+        }
     },
     "minimum-stability": "stable",
     "prefer-stable": true,
