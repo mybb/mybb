@@ -203,7 +203,7 @@ if(!$mybb->get_input('posthash') && !$pid)
 
 if((empty($_POST) && empty($_FILES)) && $mybb->get_input('processed', MyBB::INPUT_INT) == 1)
 {
-	error($lang->error_cannot_upload_php_post);
+	error($lang->error_empty_post_input);
 }
 
 $errors = array();
