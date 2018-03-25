@@ -207,7 +207,7 @@
                     <span class="smalltext">
                         <strong>
                             <a href="javascript:void(0)" id="thread_modes">{{ lang.thread_modes }}</a>
-                            {% if thread.shownoteslink %}
+                            {% if modpermissions.canmanagethreads and thread.notes %}
                                 | <a href="moderation.php?action=threadnotes&amp;modtype=thread&amp;tid={{ thread.tid }}">{{ lang.view_thread_notes }}</a>
                             {% endif %}
                         </strong>
@@ -388,7 +388,7 @@
     <div class="float_left">
         <ul class="thread_tools">
             <li class="printable"><a href="printthread.php?tid={{ thread.tid }}">{{ lang.view_printable }}</a></li>
-            {% if mybb.usergroup.canundovotes %}
+            {% if mybb.usergroup.cansendemail %}
                 <li class="sendthread"><a href="sendthread.php?tid={{ thread.tid }}">{{ lang.send_thread }}</a></li>
             {% endif %}
             {% if mybb.user.uid %}

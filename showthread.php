@@ -194,11 +194,6 @@ if(!$forum || $forum['type'] != "f")
 	error($lang->error_invalidforum);
 }
 
-$thread['shownoteslink'] = false;
-if (is_moderator($fid, "canmanagethreads") && !empty($thread['notes'])) {
-	$thread['shownoteslink'] = true;
-}
-
 // Check if this forum is password protected and we have a valid password
 check_forum_password($forum['fid']);
 
