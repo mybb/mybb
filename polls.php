@@ -751,7 +751,7 @@ if($mybb->input['action'] == "showresults")
 
 	$tid = $poll['tid'];
 	$thread = get_thread($tid);
-	if(!$thread)
+	if(!$thread || $thread['visible'] != 1)
 	{
 		error($lang->error_invalidthread);
 	}
