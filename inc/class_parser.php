@@ -1708,7 +1708,7 @@ class postParser
 		$message = preg_replace_callback("#\[code\](.*?)\[/code\](\r\n?|\n?)#is", array($this, 'mycode_parse_code_callback'), $message);
 
 		$find = array(
-			"#\[(b|u|i|s|url|email|color|img)\](.*?)\[/\\1\]#is",
+			"#\[(email|color|size|font|align|)=[^]]*\](.*?)\[/\\1\]#is",
 			"#\[img=([1-9][0-9]*)x([1-9][0-9]*)\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is",
 			"#\[url=((?!javascript)[a-z]+?://)([^\r\n\"<]+?)\](.+?)\[/url\]#si",
 			"#\[url=((?!javascript:)[^\r\n\"<&\(\)]+?)\](.+?)\[/url\]#si",
@@ -1716,11 +1716,17 @@ class postParser
 
 		$replace = array(
 			"$2",
+			"$2",
 			"$4",
 			"$3 ($1$2)",
 			"$2 ($1)",
 		);
-		$message = preg_replace($find, $replace, $message);
+		$messageBefore = "";
+		for ($cnt = 1; $cnt < 5 && $message != $messageBefore; $cnt++)
+			{
+				$messageBefore = $message;
+				$message = preg_replace($find, $replace, $messageBefore);
+			}
 
 		// Replace "me" code and slaps if we have a username
 		if(!empty($this->options['me_username']))
