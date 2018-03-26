@@ -1722,7 +1722,9 @@ class postParser
 			"$3 ($1$2)",
 			"$2 ($1)",
 		);
+		
 		$messageBefore = "";
+		// The counter limit for this "for" loop is for defensive programming purpose only. It protects against infinite repetition. 
 		for ($cnt = 1; $cnt < 5 && $message != $messageBefore; $cnt++)
 			{
 				$messageBefore = $message;
