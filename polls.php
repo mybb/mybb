@@ -751,7 +751,7 @@ if($mybb->input['action'] == "showresults")
 
 	$tid = $poll['tid'];
 	$thread = get_thread($tid);
-	if(!$thread || $thread['visible'] != 1)
+	if(!$thread || ($thread['visible'] != 1 && ($thread['visible'] == 0 && !is_moderator($thread['fid'], "canviewunapprove")) || ($thread['visible'] == -1 && !is_moderator($thread['fid'], "canviewdeleted"))))
 	{
 		error($lang->error_invalidthread);
 	}
@@ -899,6 +899,7 @@ if($mybb->input['action'] == "showresults")
 	eval("\$showresults = \"".$templates->get("polls_showresults")."\";");
 	output_page($showresults);
 }
+
 if($mybb->input['action'] == "vote" && $mybb->request_method == "post")
 {
 	// Verify incoming POST request
@@ -919,7 +920,7 @@ if($mybb->input['action'] == "vote" && $mybb->request_method == "post")
 	$query = $db->simple_select("threads", "*", "poll='".(int)$poll['pid']."'");
 	$thread = $db->fetch_array($query);
 
-	if(!$thread || $thread['visible'] == 0)
+	if(!$thread || ($thread['visible'] != 1 && ($thread['visible'] == 0 && !is_moderator($thread['fid'], "canviewunapprove")) || ($thread['visible'] == -1 && !is_moderator($thread['fid'], "canviewdeleted"))))
 	{
 		error($lang->error_invalidthread);
 	}
@@ -1091,7 +1092,7 @@ if($mybb->input['action'] == "do_undovote")
 	// We do not have $forum_cache available here since no forums permissions are checked in undo vote
 	// Get thread ID and then get forum info
 	$thread = get_thread($poll['tid']);
-	if(!$thread || $thread['visible'] == 0)
+	if(!$thread || ($thread['visible'] != 1 && ($thread['visible'] == 0 && !is_moderator($thread['fid'], "canviewunapprove")) || ($thread['visible'] == -1 && !is_moderator($thread['fid'], "canviewdeleted"))))
 	{
 		error($lang->error_invalidthread);
 	}
