@@ -7,25 +7,32 @@
                     <img src="{{ theme.logo }}" alt="{{ mybb.settings.bburl }}" title="{{ mybb.settings.bburl }}" />
                 </a>
                 <ul class="menu top_links">
-                    {# TODO: top links #}
-                    <li>
-                        <a href="{{ mybb.settings.bburl }}/misc.php?action=help" class="help">{{ lang.toplinks_help }}</a>
-                    </li>
+                    {% spaceless %}
+                    {% if mybb.settings.portal %}
+                        <li><a href="{{ mybb.settings.bburl }}/portal.php" class="portal">{{ lang.toplinks_portal }}</a></li>
+                    {% endif %}
+                    {% if mybb.usergroup.cansearch %}
+                        <li><a href="{{ mybb.settings.bburl }}/search.php" class="search">{{ lang.toplinks_search }}</a></li>
+                    {% endif %}
+                    {% if mybb.settings.enablememberlist and mybb.usergroup.canviewmemberlist %}
+                        <li><a href="{{ mybb.settings.bburl }}/memberlist.php" class="memberlist">{{ lang.toplinks_memberlist }}</a></li>
+                    {% endif %}
+                    {% if mybb.settings.enablecalendar and mybb.usergroup.canviewcalendar %}
+                        <li><a href="{{ mybb.settings.bburl }}/calendar.php" class="calendar">{{ lang.toplinks_calendar }}</a></li>
+                    {% endif %}
+                    <li><a href="{{ mybb.settings.bburl }}/misc.php?action=help" class="help">{{ lang.toplinks_help }}</a></li>
+                    {% endspaceless %}
                 </ul>
             </div>
         </div>
         <div id="panel">
-            <div class="upper">
-                <div class="wrapper">
-                    {% if mybb.user.uid > 0 %}
-                        {% include 'header/welcomeblock_member.twig' %}
-                    {% else %}
-                        {% include 'header/welcomeblock_guest.twig' %}
-                    {% endif %}
-                </div>
-            </div>
+            {% if mybb.user.uid > 0 %}
+                {% include 'header/welcomeblock_member.twig' %}
+            {% else %}
+                {% include 'header/welcomeblock_guest.twig' %}
+            {% endif %}
         </div>
     </div>
     <div id="content">
         <div class="wrapper">
-                <br />
+            <br />
