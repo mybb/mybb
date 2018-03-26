@@ -1,0 +1,21 @@
+{% if type == 'dailymotion' %}
+    <iframe src="//www.dailymotion.com/embed/video/{{ id }}" frameborder="0" width="480" height="270" allowfullscreen></iframe>
+{% elseif type == 'facebook' %}
+    <iframe src="https://www.facebook.com/video/embed?video_id={{ id }}" frameborder="0" width="625" height="350"></iframe>
+{% elseif type == 'liveleak' %}
+    <iframe src="https://www.liveleak.com/ll_embed?i={{ id }}" frameborder="0" width="500" height="300" allowfullscreen></iframe>
+{% elseif type == 'metacafe' %}
+    <iframe src="http://www.metacafe.com/embed/{{ id }}/" frameborder="0" width="440" height="248" allowfullscreen></iframe>
+{% elseif type == 'myspacetv' %}
+    <iframe src="//media.myspace.com/play/video/{{ id }}" frameborder="0" width="480" height="270" allowtransparency allowfullscreen></iframe>
+{% elseif type == 'twitch' %}
+    <iframe src="https://player.twitch.tv/?{{ id }}&amp;autoplay=false" frameborder="0" scrolling="no" height="378" width="620"></iframe>
+{% elseif type == 'veoh' %}
+    <object width="410" height="341" id="veohFlashPlayer" name="veohFlashPlayer"><param name="movie" value="http://www.veoh.com/swf/webplayer/WebPlayer.swf?version=AFrontend.5.7.0.1446&permalinkId={{ id }}&player=videodetailsembedded&videoAutoPlay=0&id=anonymous"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.veoh.com/swf/webplayer/WebPlayer.swf?version=AFrontend.5.7.0.1446&permalinkId={{ id }}&player=videodetailsembedded&videoAutoPlay=0&id=anonymous" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen width="410" height="341" id="veohFlashPlayerEmbed" name="veohFlashPlayerEmbed"></embed></object>
+{% elseif type == 'vimeo' %}
+    <iframe src="//player.vimeo.com/video/{{ id }}" frameborder="0" width="500" height="375" allowfullscreen></iframe>
+{% elseif type == 'yahoo' %}
+    <iframe src="//{{ local }}screen.yahoo.com/{{ id }}?format=embed" frameborder="0" width="640" height="360" scrolling="no" allowtransparency allowfullscreen></iframe>
+{% elseif type == 'youtube' %}
+    <iframe src="//www.youtube.com/embed/{{ id }}" frameborder="0" width="560" height="315" allowfullscreen></iframe>
+{% endif %}
