@@ -1,0 +1,36 @@
+{{ lang.error_nopermission_guest_1 }}
+<ol>
+    <li>{{ lang.error_nopermission_guest_2 }}</li>
+    <li>{{ lang.error_nopermission_guest_3 }}</li>
+    <li>{{ lang.error_nopermission_guest_4 }}{% if mybb.user.uid %} (<a href="member.php?action=resendactivation">{{ lang.error_nopermission_user_resendactivation }}</a>){% endif %}</li>
+    <li>{{ lang.error_nopermission_guest_5 }}</li>
+</ol>
+
+{% if mybb.user.uid > 0 %}
+    <br />
+    {{ trans('error_nopermission_user_username', mybb.user.username) }}
+{% else %}
+
+    <form action="member.php" method="post">
+        <input type="hidden" name="action" value="do_login" />
+        <input type="hidden" name="url" value="{{ redirect_url }}" />
+        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+            <tr>
+                <td class="thead" colspan="2"><span class="smalltext"><strong>{{ lang.login }}</strong></span></td>
+            </tr>
+            <tr>
+                <td class="trow1"><strong>{{ username }}</strong></td>
+                <td class="trow1"><input type="text" class="textbox" name="username" tabindex="1" /></td>
+            </tr>
+            <tr>
+                <td class="trow2"><strong>{{ lang.password }}</strong></td>
+                <td class="trow2"><input type="password" class="textbox" name="password" tabindex="2" /></td>
+            </tr>
+            <tr>
+                <td class="trow2" colspan="2"><span class="smalltext float_right" style="padding-top: 3px;"><a href="member.php?action=register">{{ lang.need_reg }}</a> | <a href="member.php?action=lostpw">{{ lang.forgot_password }}</a>&nbsp;</span>&nbsp;<input type="submit" class="button" value="{{ lang.login }}" tabindex="3" /></td>
+            </tr>
+        </table>
+    </form>
+    <br />
+
+{% endif %}
