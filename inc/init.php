@@ -14,6 +14,12 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
+// Fallback
+if(!defined('THIS_SCRIPT'))
+{
+	define('THIS_SCRIPT', 'unknown');
+}
+
 /* Defines the root directory for MyBB.
 
 	Uncomment the below line and set the path manually
