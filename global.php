@@ -29,11 +29,6 @@ if(!is_array($groupscache))
 	$groupscache = $cache->read('usergroups');
 }
 
-if(!defined('THIS_SCRIPT'))
-{
-	define('THIS_SCRIPT', '');
-}
-
 $current_page = my_strtolower(basename(THIS_SCRIPT));
 
 // Send page headers - don't send no-cache headers for attachment.php
