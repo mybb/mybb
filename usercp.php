@@ -1893,7 +1893,8 @@ if($mybb->input['action'] == "do_addsubscription" && $mybb->get_input('type') !=
 	// check if the forum requires a password to view. If so, we need to show a form to the user
 	check_forum_password($thread['fid']);
 
-	$plugins->run_hooks("usercp_do_addsubscription");
+	// Naming of the hook retained for backward compatibility while dropping usercp2.php
+	$plugins->run_hooks("usercp2_do_addsubscription");
 
 	add_subscribed_thread($thread['tid'], $mybb->get_input('notification', MyBB::INPUT_INT));
 
@@ -1929,7 +1930,8 @@ if($mybb->input['action'] == "addsubscription")
 		// check if the forum requires a password to view. If so, we need to show a form to the user
 		check_forum_password($forum['fid']);
 
-		$plugins->run_hooks("usercp_addsubscription_forum");
+		// Naming of the hook retained for backward compatibility while dropping usercp2.php
+		$plugins->run_hooks("usercp2_addsubscription_forum");
 
 		add_subscribed_forum($forum['fid']);
 		if($server_http_referer && $mybb->request_method != 'post')
@@ -1997,7 +1999,8 @@ if($mybb->input['action'] == "addsubscription")
 			$notification_pm_checked = "checked=\"checked\"";
 		}
 
-		$plugins->run_hooks("usercp_addsubscription_thread");
+		// Naming of the hook retained for backward compatibility while dropping usercp2.php
+		$plugins->run_hooks("usercp2_addsubscription_thread");
 
 		eval("\$add_subscription = \"".$templates->get("usercp_addsubscription_thread")."\";");
 		output_page($add_subscription);
@@ -2021,7 +2024,8 @@ if($mybb->input['action'] == "removesubscription")
 		// check if the forum requires a password to view. If so, we need to show a form to the user
 		check_forum_password($forum['fid']);
 
-		$plugins->run_hooks("usercp_removesubscription_forum");
+		// Naming of the hook retained for backward compatibility while dropping usercp2.php
+		$plugins->run_hooks("usercp2_removesubscription_forum");
 
 		remove_subscribed_forum($forum['fid']);
 		if($server_http_referer && $mybb->request_method != 'post')
@@ -2054,7 +2058,8 @@ if($mybb->input['action'] == "removesubscription")
 		// check if the forum requires a password to view. If so, we need to show a form to the user
 		check_forum_password($thread['fid']);
 
-		$plugins->run_hooks("usercp_removesubscription_thread");
+		// Naming of the hook retained for backward compatibility while dropping usercp2.php
+		$plugins->run_hooks("usercp2_removesubscription_thread");
 
 		remove_subscribed_thread($thread['tid']);
 		if($server_http_referer && $mybb->request_method != 'post')
@@ -2076,7 +2081,8 @@ if($mybb->input['action'] == "removesubscriptions")
 
 	if($mybb->get_input('type') == "forum")
 	{
-		$plugins->run_hooks("usercp_removesubscriptions_forum");
+		// Naming of the hook retained for backward compatibility while dropping usercp2.php
+		$plugins->run_hooks("usercp2_removesubscriptions_forum");
 
 		$db->delete_query("forumsubscriptions", "uid='".$mybb->user['uid']."'");
 		if($server_http_referer)
@@ -2091,7 +2097,8 @@ if($mybb->input['action'] == "removesubscriptions")
 	}
 	else
 	{
-		$plugins->run_hooks("usercp_removesubscriptions_thread");
+		// Naming of the hook retained for backward compatibility while dropping usercp2.php
+		$plugins->run_hooks("usercp2_removesubscriptions_thread");
 
 		$db->delete_query("threadsubscriptions", "uid='".$mybb->user['uid']."'");
 		if($server_http_referer)
