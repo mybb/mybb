@@ -10,6 +10,7 @@
 
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'usercp.php');
+define("ALLOWABLE_PAGE", "removesubscription,removesubscriptions");
 
 $templatelist = "usercp,usercp_nav,usercp_profile,usercp_changename,usercp_password,usercp_subscriptions_thread,forumbit_depth2_forum_lastpost,usercp_forumsubscriptions_forum,postbit_reputation_formatted,usercp_subscriptions_thread_icon";
 $templatelist .= ",usercp_usergroups_memberof_usergroup,usercp_usergroups_memberof,usercp_usergroups_joinable_usergroup,usercp_usergroups_joinable,usercp_usergroups,usercp_nav_attachments,usercp_options_style,usercp_warnings_warning_post";
