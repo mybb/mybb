@@ -5240,7 +5240,7 @@ if(use_xmlhttprequest == "1")
 </tr>
 <tr>
 <td class="trow1">
-{$lang->coppa_desc}
+{$coppa_desc}
 <div style="width: 400px; margin: auto; margin-bottom: 15px;">
 	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 		<tr>

@@ -754,6 +754,7 @@ if($mybb->input['action'] == "register")
 
 			my_unsetcookie("coppauser");
 
+			$coppa_desc = $mybb->settings['coppa'] == 'deny' ? $lang->coppa_desc_for_deny : $lang->coppa_desc;
 			eval("\$coppa = \"".$templates->get("member_register_coppa")."\";");
 			output_page($coppa);
 			exit;
