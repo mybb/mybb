@@ -10811,7 +10811,7 @@ document.write('<br /><span class="smalltext"><a href="javascript:void(0)" oncli
 		<td class="trow1">{$lang->success_report_voted}</td>
 	</tr>
 </table>]]></template>
-		<template name="reputation" version="1805"><![CDATA[<html>
+		<template name="reputation" version="1816"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->reputation_report}</title>
 {$headerinclude}
@@ -10825,7 +10825,7 @@ document.write('<br /><span class="smalltext"><a href="javascript:void(0)" oncli
 <body>
 {$header}
 {$add_reputation}
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder clear">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder tfixed clear">
 <tr>
 	<td class="thead"><strong>{$lang->reputation_report}</strong></td>
 </tr>
