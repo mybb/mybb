@@ -271,7 +271,7 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 	$mybb->input['comments'] = trim($mybb->get_input('comments')); // Trim whitespace to check for length
 	if(my_strlen($mybb->input['comments']) < $mybb->settings['minreplength'] && $mybb->get_input('pid', MyBB::INPUT_INT) == 0)
 	{
-		$message = $lang->add_no_comment;
+		$message = $lang->sprintf($lang->add_no_comment, $mybb->settings['minreplength']);
 		if($mybb->input['nomodal'])
 		{
 			eval("\$error = \"".$templates->get("reputation_add_error_nomodal", 1, 0)."\";");
