@@ -2290,7 +2290,7 @@ if(!$mybb->input['action'])
 			{ // Sent Items or Drafts Folder Check
 				$recipients = my_unserialize($message['recipients']);
 				$to_users = $bcc_users = '';
-				if(count($recipients['to']) > 1 || (count($recipients['to']) == 1 && isset($recipients['bcc']) && count($recipients['bcc']) > 0))
+				if(isset($recipients['to']) && count($recipients['to']) > 1 || (isset($recipients['to']) && count($recipients['to']) == 1 && isset($recipients['bcc']) && count($recipients['bcc']) > 0))
 				{
 					foreach($recipients['to'] as $uid)
 					{
