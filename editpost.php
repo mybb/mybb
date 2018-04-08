@@ -196,8 +196,28 @@ if($mybb->settings['enableattachments'] == 1 && !$mybb->get_input('attachmentaid
 
 	// If there's an attachment, check it and upload it
 	if($_FILES['attachment']['size'] > 0 && $forumpermissions['canpostattachments'] != 0)
+
+	$fields = array ('name', 'type', 'tmp_name', 'error', 'size');
+		if (is_array($_FILES['attachment']['name']))
+		{
+			// Already in multi-attachment array format
+			$attachments = $_FILES;
+		}
+		else
+		{
+			// Convert original-style non-array $_FILES['attachment'][$field] to array format in $attachments
+			$attachments = array('attachment' => array());
+			foreach ($fields as $field)
+				$attachments['attachment'][$field] = array($_FILES['attachment'][$field]);
+		}
+		foreach ($attachments['attachment']['name'] as $key => $name)
+		{
+			// Convert array $attachments['attachment'][$field][$key] to non-array format in $FILE
+			$FILE = array('attachment' => array());                
+			foreach ($fields as $field)
+				$FILE['attachment'][$field] = $attachments['attachment'][$field][$key];
 	{
-		$query = $db->simple_select("attachments", "aid", "filename='".$db->escape_string($_FILES['attachment']['name'])."' AND pid='{$pid}'");
+		$query = $db->simple_select("attachments", "aid", "filename='".$db->escape_string($FILE['attachment']['name'])."' AND pid='{$pid}'");
 		$updateattach = $db->fetch_field($query, "aid");
 
 		$update_attachment = false;
@@ -205,7 +225,7 @@ if($mybb->settings['enableattachments'] == 1 && !$mybb->get_input('attachmentaid
 		{
 			$update_attachment = true;
 		}
-		$attachedfile = upload_attachment($_FILES['attachment'], $update_attachment);
+		$attachedfile = upload_attachment($FILE['attachment'], $update_attachment);
 	}
 	if(!empty($attachedfile['error']))
 	{
@@ -216,6 +236,7 @@ if($mybb->settings['enableattachments'] == 1 && !$mybb->get_input('attachmentaid
 	{
 		$mybb->input['action'] = "editpost";
 	}
+		}
 }
 
 if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid', MyBB::INPUT_INT) && isset($mybb->input['attachmentact']) && $mybb->input['action'] == "do_editpost" && $mybb->request_method == "post") // Lets remove/approve/unapprove the attachment
