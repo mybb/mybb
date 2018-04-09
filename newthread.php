@@ -1027,7 +1027,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			$friendlyquota = get_friendly_size($mybb->usergroup['attachquota']*1024);
 		}
 		$lang->attach_quota = $lang->sprintf($lang->attach_quota, $friendlyquota);
-		if($usage['ausage']!==NULL)
+		if($usage['ausage'] !== NULL)
 		{
 			$friendlyusage = get_friendly_size($usage['ausage']);
 			$lang->attach_usage = $lang->sprintf($lang->attach_usage, $friendlyusage);
