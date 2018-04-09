@@ -1190,7 +1190,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		}
 
 		$lang->attach_quota = $lang->sprintf($lang->attach_quota, $friendlyquota);
-		if($usage['ausage']!==NULL)
+		if($usage['ausage'] !== NULL)
 		{
 			$friendlyusage = get_friendly_size($usage['ausage']);
 			$lang->attach_usage = $lang->sprintf($lang->attach_usage, $friendlyusage);
