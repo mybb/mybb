@@ -454,6 +454,9 @@ class MyBB {
 				{
 					return array();
 				}
+				foreach ($this->input[$name] as $ikey => $ivalue) {
+					$this->input[$name][$ikey] = trim($ivalue);
+				}
 				return $this->input[$name];
 			case MyBB::INPUT_INT:
 				if(!isset($this->input[$name]) || !is_numeric($this->input[$name]))
@@ -478,7 +481,7 @@ class MyBB {
 				{
 					return '';
 				}
-				return $this->input[$name];
+				return trim($this->input[$name]);
 		}
 	}
 
