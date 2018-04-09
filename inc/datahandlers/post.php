@@ -1614,7 +1614,7 @@ class PostDataHandler extends DataHandler
 				$parser = new postParser;
 				$excerpt = $parser->parse_badwords($excerpt);
 				$excerpt = $parser->text_parse_message($excerpt);
-				if (strlen($excerpt) > $mybb->settings['subscribeexcerpt'])
+				if(strlen($excerpt) > $mybb->settings['subscribeexcerpt'])
 					$excerpt = my_substr($excerpt, 0, $mybb->settings['subscribeexcerpt']).$lang->emailbit_viewthread;
 
 				$query = $db->query("
