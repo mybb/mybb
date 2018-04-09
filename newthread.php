@@ -174,7 +174,7 @@ if($mybb->settings['enableattachments'] == 1 && !$mybb->get_input('attachmentaid
 	// If there's an attachment, check it and upload it
 	if($forumpermissions['canpostattachments'] != 0)
 	$fields = array ('name', 'type', 'tmp_name', 'error', 'size');
-		if (is_array($_FILES['attachment']['name']))
+		if(is_array($_FILES['attachment']['name']))
 		{
 			// Already in multi-attachment array format
 			$attachments = $_FILES;
@@ -183,16 +183,16 @@ if($mybb->settings['enableattachments'] == 1 && !$mybb->get_input('attachmentaid
 		{
 			// Convert original-style non-array $_FILES['attachment'][$field] to array format in $attachments
 			$attachments = array('attachment' => array());
-			foreach ($fields as $field)
+		foreach($fields as $field)
 				$attachments['attachment'][$field] = array($_FILES['attachment'][$field]);
 		}
-		foreach ($attachments['attachment']['name'] as $key => $name)
+		foreach($attachments['attachment']['name'] as $key => $name)
 		{
 			// Convert array $attachments['attachment'][$field][$key] to non-array format in $FILE
 			$FILE = array('attachment' => array());                
-			foreach ($fields as $field)
-				$FILE['attachment'][$field] = $attachments['attachment'][$field][$key];
-	{
+		foreach($fields as $field)
+			$FILE['attachment'][$field] = $attachments['attachment'][$field][$key];
+		{
 		if(!empty($FILE['attachment']['name']) && !empty($FILE['attachment']['type']))
 		{
 			if($FILE['attachment']['size'] > 0)
