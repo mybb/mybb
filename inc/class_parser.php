@@ -1725,7 +1725,7 @@ class postParser
 		
 		$messageBefore = "";
 		// The counter limit for this "for" loop is for defensive programming purpose only. It protects against infinite repetition. 
-		for ($cnt = 1; $cnt < 5 && $message != $messageBefore; $cnt++)
+		for($cnt = 1; $cnt < 5 && $message != $messageBefore; $cnt++)
 			{
 				$messageBefore = $message;
 				$message = preg_replace($find, $replace, $messageBefore);
