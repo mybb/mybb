@@ -1189,8 +1189,17 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			$friendlyquota = get_friendly_size($mybb->usergroup['attachquota']*1024);
 		}
 
-		$friendlyusage = get_friendly_size($usage['ausage']);
-		$lang->attach_quota = $lang->sprintf($lang->attach_quota, $friendlyusage, $friendlyquota);
+		$lang->attach_quota = $lang->sprintf($lang->attach_quota, $friendlyquota);
+		if($usage['ausage'] !== NULL)
+		{
+			$friendlyusage = get_friendly_size($usage['ausage']);
+			$lang->attach_usage = $lang->sprintf($lang->attach_usage, $friendlyusage);
+			eval("\$link_viewattachments = \"".$templates->get("post_attachments_viewlink")."\";");
+		}
+		else
+		{
+			$lang->attach_usage = "";
+		}
 
 		if($mybb->settings['maxattachments'] == 0 || ($mybb->settings['maxattachments'] != 0 && $attachcount < $mybb->settings['maxattachments']) && !$noshowattach)
 		{

@@ -369,7 +369,8 @@ $l['banned_lifted_never'] = "Never";
 $l['banned_email_warning'] = "You are currently using an email that is not allowed to be used on this forum. Please reset it before continuing.";
 $l['powered_by'] = "Powered By";
 $l['copyright'] = "Copyright";
-$l['attach_quota'] = "You are currently using <strong>{1}</strong> of your allocated attachment usage ({2})";
+$l['attach_quota'] = "Your allocated attachment usage quota is {1}.";
+$l['attach_usage'] = "You are currently using <strong>{1}</strong>";
 $l['view_attachments'] = "[View My Attachments]";
 $l['unlimited'] = "Unlimited";
 
