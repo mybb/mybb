@@ -196,7 +196,7 @@ if($mybb->settings['enableattachments'] == 1 && !$mybb->get_input('attachmentaid
 
 	// If there's an attachment, check it and upload it
 	if($_FILES['attachment']['size'] > 0 && $forumpermissions['canpostattachments'] != 0)
-
+	{
 	$fields = array ('name', 'type', 'tmp_name', 'error', 'size');
 		if(is_array($_FILES['attachment']['name']))
 		{
@@ -236,7 +236,7 @@ if($mybb->settings['enableattachments'] == 1 && !$mybb->get_input('attachmentaid
 	{
 		$mybb->input['action'] = "editpost";
 	}
-		}
+	}
 }
 
 if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid', MyBB::INPUT_INT) && isset($mybb->input['attachmentact']) && $mybb->input['action'] == "do_editpost" && $mybb->request_method == "post") // Lets remove/approve/unapprove the attachment
