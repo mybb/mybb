@@ -454,7 +454,8 @@ class MyBB {
 				{
 					return array();
 				}
-				foreach ($this->input[$name] as $ikey => $ivalue) {
+				foreach($this->input[$name] as $ikey => $ivalue)
+				{
 					$this->input[$name][$ikey] = trim($ivalue);
 				}
 				return $this->input[$name];
