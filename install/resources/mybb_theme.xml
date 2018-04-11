@@ -4373,7 +4373,7 @@ $(".forumjump").change(function() {
 <thead>
 <tr>
 <td class="thead{$collapsedthead['boardstats']}">
-<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['boardstats']}.png" id="boardstats_img" class="expander" alt="[-]" title="[-]" /></div>
+<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['boardstats']}.png" id="boardstats_img" class="expander" alt="{$expaltext}" title="{$expaltext}" /></div>
 <div><strong>{$lang->boardstats}</strong></div>
 </td>
 </tr>
@@ -5989,7 +5989,7 @@ if(use_xmlhttprequest == "1")
 		<template name="misc_help_section" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder clear">
 <thead>
 <tr>
-<td class="thead{$expthead}"><div class="expcolimage"><img src="{$theme['imgdir']}/{$expcolimage}" id="sid_{$section['sid']}_img" class="expander" alt="[-]" title="[-]" /></div><div><strong>{$section['name']}</strong></div></td>
+<td class="thead{$expthead}"><div class="expcolimage"><img src="{$theme['imgdir']}/{$expcolimage}" id="sid_{$section['sid']}_img" class="expander" alt="{$expaltext}" title="{$expaltext}" /></div><div><strong>{$section['name']}</strong></div></td>
 </tr>
 </thead>
 <tbody style="{$expdisplay}" id="sid_{$section['sid']}_e">
@@ -7722,7 +7722,7 @@ if(use_xmlhttprequest == "1")
 		<template name="modcp_nav_banning" version="1800"><![CDATA[<tr><td class="trow1 smalltext"><a href="modcp.php?action=banning" class="modcp_nav_item modcp_nav_banning">{$lang->mcp_nav_banning}</a></td></tr>]]></template>
 		<template name="modcp_nav_forums_posts" version="1800"><![CDATA[	<tr>
 		<td class="tcat tcat_menu tcat_collapse{$collapsedimg['modcpforums']}">
-			<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['modcpforums']}.png" id="modcpforums_img" class="expander" alt="[-]" title="[-]" /></div>
+			<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['modcpforums']}.png" id="modcpforums_img" class="expander" alt="{$expaltext}" title="{$expaltext}" /></div>
 			<div><span class="smalltext"><strong>{$lang->mcp_nav_forums}</strong></span></div>
 		</td>
 	</tr>
@@ -7739,7 +7739,7 @@ if(use_xmlhttprequest == "1")
 		<template name="modcp_nav_reportcenter" version="1800"><![CDATA[<tr><td class="trow1 smalltext"><a href="modcp.php?action=reports" class="modcp_nav_item modcp_nav_reports">{$lang->mcp_nav_report_center}</a></td></tr>]]></template>
 		<template name="modcp_nav_users" version="1800"><![CDATA[	<tr>
 		<td class="tcat tcat_menu tcat_collapse{$collapsedimg['modcpusers']}">
-			<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['modcpusers']}.png" id="modcpusers_img" class="expander" alt="[-]" title="[-]" /></div>
+			<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['modcpusers']}.png" id="modcpusers_img" class="expander" alt="{$expaltext}" title="{$expaltext}" /></div>
 			<div><span class="smalltext"><strong>{$lang->mcp_nav_users}</strong></span></div>
 		</td>
 	</tr>
@@ -10323,7 +10323,7 @@ if(use_xmlhttprequest == "1")
 		<thead>
 			<tr>
 				<td class="thead{$collapsedthead['quickreply']}" colspan="2">
-					<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['quickreply']}.png" id="quickreply_img" class="expander" alt="[-]" title="[-]" /></div>
+					<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['quickreply']}.png" id="quickreply_img" class="expander" alt="{$expaltext}" title="{$expaltext}" /></div>
 					<div><strong>{$lang->quick_reply}</strong></div>
 				</td>
 			</tr>
@@ -11695,7 +11695,7 @@ if(use_xmlhttprequest == "1")
 		<thead>
 			<tr>
 				<td class="thead{$collapsedthead['quickreply']}" colspan="2">
-					<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['quickreply']}.png" id="quickreply_img" class="expander" alt="[-]" title="[-]" /></div>
+					<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['quickreply']}.png" id="quickreply_img" class="expander" alt="{$expaltext}" title="{$expaltext}" /></div>
 					<div><strong>{$lang->quick_reply}</strong></div>
 				</td>
 			</tr>
@@ -11798,7 +11798,7 @@ if(use_xmlhttprequest == "1")
 <thead>
 <tr>
 	<td class="thead{$collapsedthead['threadnotes']}">
-		<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['threadnotes']}.png" id="threadnotes_img" class="expander" alt="[-]" title="[-]" /></div>
+		<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['threadnotes']}.png" id="threadnotes_img" class="expander" alt="{$expaltext}" title="{$expaltext}" /></div>
 		<div><span class="smalltext"><strong>{$lang->view_thread_notes}</strong></span></div>
 	</td>
 </tr>
@@ -12737,7 +12737,7 @@ if(use_xmlhttprequest == "1")
 		<template name="usercp_nav_messenger" version="1800"><![CDATA[<tbody>
 <tr>
 	<td class="tcat tcat_menu tcat_collapse{$collapsedimg['usercppms']}">
-		<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['usercppms']}.png" id="usercppms_img" class="expander" alt="[-]"/></div>
+		<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['usercppms']}.png" id="usercppms_img" class="expander" alt="{$expaltext}" title="{$expaltext}" /></div>
 		<div><span class="smalltext"><strong>{$lang->ucp_nav_messenger}</strong></span></div>
 	</td>
 </tr>
@@ -12758,7 +12758,7 @@ if(use_xmlhttprequest == "1")
 		<template name="usercp_nav_misc" version="1800"><![CDATA[<tbody>
 <tr>
 	<td class="tcat tcat_menu tcat_collapse{$collapsedimg['usercpmisc']}">
-		<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['usercpmisc']}.png" id="usercpmisc_img" class="expander" alt="[-]" title="[-]" /></div>
+		<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['usercpmisc']}.png" id="usercpmisc_img" class="expander" alt="{$expaltext}" title="{$expaltext}" /></div>
 		<div><span class="smalltext"><strong>{$lang->ucp_nav_misc}</strong></span></div>
 	</td>
 </tr>
@@ -12775,7 +12775,7 @@ if(use_xmlhttprequest == "1")
 		<template name="usercp_nav_profile" version="1800"><![CDATA[<tbody>
 <tr>
 	<td class="tcat tcat_menu tcat_collapse{$collapsedimg['usercpprofile']}">
-		<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['usercpprofile']}.png" id="usercpprofile_img" class="expander" alt="[-]" title="[-]" /></div>
+		<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['usercpprofile']}.png" id="usercpprofile_img" class="expander" alt="{$expaltext}" title="{$expaltext}" /></div>
 		<div><span class="smalltext"><strong>{$lang->ucp_nav_profile}</strong></span></div>
 	</td>
 </tr>
