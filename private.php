@@ -1204,7 +1204,8 @@ if($mybb->input['action'] == "read")
 
 			eval("\$private_send_tracking = \"".$templates->get("private_send_tracking")."\";");
 		}
-
+		
+		$expaltext = (in_array("quickreply", $collapse)) ? "[+]" : "[-]";
 		eval("\$quickreply = \"".$templates->get("private_quickreply")."\";");
 	}
 
