@@ -1106,19 +1106,13 @@ if(!empty($mybb->cookies['collapsed']))
 	$colcookie = $mybb->cookies['collapsed'];
 }
 
-// set up collapsable items (to automatically show them us expanded)
-$collapsed = array('boardstats' => '', 'boardstats_e' => '', 'quickreply' => '', 'quickreply_e' => '');
-$collapsedimg = $collapsed;
+$collapse = $collapsed = $collapsedimg = array();
 
 if($colcookie)
 {
-	$col = explode("|", $colcookie);
-	if(!is_array($col))
-	{
-		$col[0] = $colcookie; // only one item
-	}
-	unset($collapsed);
-	foreach($col as $key => $val)
+	// Preserve and don't unset $collapse, will be needed globally throughout many pages
+	$collapse = explode("|", $colcookie);
+	foreach($collapse as $val)
 	{
 		$ex = $val."_e";
 		$co = $val."_c";
