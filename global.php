@@ -318,12 +318,15 @@ foreach($stylesheet_scripts as $stylesheet_script)
 			// Actually add the stylesheets to the list
 			foreach($theme['stylesheets'][$stylesheet_script][$stylesheet_action] as $page_stylesheet)
 			{
-				// Get the activation state of the file
-				$active = ($theme['styleactive'][basename($page_stylesheet)]);
-				// Load the content to check whether empty
-				$code = file_get_contents('./'.$page_stylesheet, FILE_USE_INCLUDE_PATH);
+				$code = "";
 				
-				if(!$active || trim($code) === "" || !empty($already_loaded[$page_stylesheet]))
+				// If the stylesheet is active and not already loaded then get the content to check whether its empty
+				if($theme['styleactive'][basename($page_stylesheet)] && empty($already_loaded[$page_stylesheet]))
+				{
+					$code = file_get_contents('./'.$page_stylesheet, FILE_USE_INCLUDE_PATH);
+				}
+
+				if(trim($code) === "")
 				{
 					continue;
 				}
