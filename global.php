@@ -320,8 +320,11 @@ foreach($stylesheet_scripts as $stylesheet_script)
 			{
 				$code = "";
 				
+				// Fallback for stylesheets with unsaved states : default to show
+				$state = isset($theme['styleactive'][basename($page_stylesheet)]) ? $theme['styleactive'][basename($page_stylesheet)] : 1;
+				
 				// If the stylesheet is active and not already loaded then get the content to check whether its empty
-				if($theme['styleactive'][basename($page_stylesheet)] && empty($already_loaded[$page_stylesheet]))
+				if($state && empty($already_loaded[$page_stylesheet]))
 				{
 					$code = file_get_contents('./'.$page_stylesheet, FILE_USE_INCLUDE_PATH);
 				}
