@@ -576,6 +576,7 @@ $groupleaders = $cache->read('groupleaders');
 if($mybb->user['uid'] != 0 && is_array($groupleaders) && array_key_exists($mybb->user['uid'], $groupleaders))
 {
 	$groupleader = $groupleaders[$mybb->user['uid']];
+	$showjoinnotice = false;
 
 	$gids = "'0'";
 	foreach($groupleader as $user)
@@ -586,25 +587,33 @@ if($mybb->user['uid'] != 0 && is_array($groupleaders) && array_key_exists($mybb-
 		}
 
 		$user['gid'] = (int)$user['gid'];
-		$gids .= ",'{$user['gid']}'";
+
+		if(!empty($groupscache[$user['gid']]['joinable']) && $groupscache[$user['gid']]['joinable'] == 1)
+		{
+			$showjoinnotice = true;
+			$gids .= ",'{$user['gid']}'";
+		}
 	}
 
-	$query = $db->simple_select('joinrequests', 'COUNT(uid) as total', "gid IN ({$gids}) AND invite='0'");
-	$total_joinrequests = $db->fetch_field($query, 'total');
-
-	if($total_joinrequests > 0)
+	if($showjoinnotice)
 	{
-		if($total_joinrequests == 1)
-		{
-			$lang->pending_joinrequests = $lang->pending_joinrequest;
-		}
-		else
-		{
-			$total_joinrequests = my_number_format($total_joinrequests);
-			$lang->pending_joinrequests = $lang->sprintf($lang->pending_joinrequests, $total_joinrequests);
-		}
+		$query = $db->simple_select('joinrequests', 'COUNT(uid) as total', "gid IN ({$gids}) AND invite='0'");
+		$total_joinrequests = $db->fetch_field($query, 'total');
 
-		eval('$pending_joinrequests = "'.$templates->get('global_pending_joinrequests').'";');
+		if($total_joinrequests > 0)
+		{
+			if($total_joinrequests == 1)
+			{
+				$lang->pending_joinrequests = $lang->pending_joinrequest;
+			}
+			else
+			{
+				$total_joinrequests = my_number_format($total_joinrequests);
+				$lang->pending_joinrequests = $lang->sprintf($lang->pending_joinrequests, $total_joinrequests);
+			}
+
+			eval('$pending_joinrequests = "'.$templates->get('global_pending_joinrequests').'";');
+		}
 	}
 }
 
