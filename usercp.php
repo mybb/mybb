@@ -3550,7 +3550,6 @@ if($mybb->input['action'] == "attachments")
 	}
 	else
 	{
-		$percent = "";
 		$attachquota = $lang->unlimited;
 		$usagenote = $lang->sprintf($lang->attachments_usage, $friendlyusage, $totalattachments);
 	}
