@@ -218,9 +218,9 @@ class LoginDataHandler extends DataHandler
 		$login_text = '';
 		if($show_login_attempts)
 		{
-			if($mybb->settings['failedlogincount'] != 0 && $mybb->settings['failedlogintext'] == 1)
+			if($mybb->settings['failedlogincount'] != 0 && $mybb->settings['failedlogintext'] == 1 && $this->login_data['uid'] != 0)
 			{
-				$logins = login_attempt_check(false) + 1;
+				$logins = login_attempt_check($this->login_data['uid'], false) + 1;
 				$login_text = $lang->sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);
 			}
 		}
@@ -327,7 +327,7 @@ class LoginDataHandler extends DataHandler
 		}
 
 		my_setcookie("mybbuser", $user['uid']."_".$user['loginkey'], $remember, true, "lax");
-		
+
 		if($this->captcha !== false)
 		{
 			$this->captcha->invalidate_captcha();
