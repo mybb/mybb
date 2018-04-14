@@ -7065,7 +7065,7 @@ if(use_xmlhttprequest == "1")
 </script>
 </body>
 </html>]]></template>
-		<template name="modcp_editprofile_away" version="1800"><![CDATA[<br />
+		<template name="modcp_editprofile_away" version="1816"><![CDATA[<br />
 <fieldset class="trow2">
 <legend><strong>{$lang->away_information}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
@@ -7080,7 +7080,7 @@ if(use_xmlhttprequest == "1")
 <td colspan="2"><span class="smalltext">{$lang->away_reason}</span></td>
 </tr>
 <tr>
-<td colspan="2"><input type="text" class="textbox" name="awayreason" value="{$user['awayreason']}" size="25" /></td>
+<td colspan="2"><input type="text" class="textbox" name="awayreason" value="{$user['awayreason']}" size="25" maxlength="200" /></td>
 </tr>
 </table>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
@@ -13256,7 +13256,7 @@ if(use_xmlhttprequest == "1")
 <tr>
   <td><input type="text" class="textbox" name="{$cfield}" size="25" value="{$cfvalue}" /></td>
 </tr>]]></template>
-		<template name="usercp_profile_away" version="120"><![CDATA[<br />
+		<template name="usercp_profile_away" version="1816"><![CDATA[<br />
 <fieldset class="trow2">
 <legend><strong>{$lang->away_information}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
@@ -13271,7 +13271,7 @@ if(use_xmlhttprequest == "1")
 <td colspan="2"><span class="smalltext">{$lang->away_reason}</span></td>
 </tr>
 <tr>
-<td colspan="2"><input type="text" class="textbox" name="awayreason" value="{$user['awayreason']}" size="25" /></td>
+<td colspan="2"><input type="text" class="textbox" name="awayreason" value="{$user['awayreason']}" size="25" maxlength="200" /></td>
 </tr>
 </table>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
