@@ -3544,7 +3544,7 @@ if($mybb->input['action'] == "attachments")
 	{
 		$percent = round(($totalusage/($mybb->usergroup['attachquota']*1024))*100);
 		$percent = $lang->sprintf($lang->attachments_usage_percent, $percent);
-		$friendlyusage .= " ".$percent;
+		$friendlyusage .= $percent;
 		$attachquota = get_friendly_size($mybb->usergroup['attachquota']*1024);
 		$usagenote = $lang->sprintf($lang->attachments_usage_quota, $friendlyusage, $attachquota, $totalattachments);
 	}
