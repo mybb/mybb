@@ -2060,14 +2060,14 @@ if($mybb->input['action'] == "weekview")
     }
 
     // Now we build our month headers
-    $weekdays = [];
+    $weekdays = $mini_calendars = [];
     foreach ($week_months as $month) {
         $month['monthnum'] = $month[0];
         $month['month'] = $monthnames[$month[0]];
         $month['year'] = $month[1];
 
         // Fetch mini calendar for each month in this week
-        $mini_calendars .= build_mini_calendar($calendar, $month[0], $weekday_year, $events_cache)."<br />";
+        $mini_calendars[] = build_mini_calendar($calendar, $month[0], $weekday_year, $events_cache);
 
         // Fetch out the days for this month
         $month['days'] = $days;
