@@ -1,0 +1,44 @@
+{% block head %}
+    <title>{{ thread.threadprefix }} {{ thread.subject }} - {{ lang.printable_version }} - {{ mybb.settings.bbname }}</title>
+    <style type="text/css">
+        body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
+        .largetext { font-family: Verdana, Arial, sans-serif; font-size: medium; font-weight: bold; }
+        img { max-width: 100%; height: auto; }
+    </style>
+{% endblock head %}
+
+{% block body %}
+    <table width="98%" align="center">
+        <tr>
+            <td valign="top">
+                <a href="index.php"><img src="{{ theme.logo }}" alt="{{ mybb.settings.bbname }}" title="{{ mybb.settings.bbname }}" border="0" /></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="largetext">{{ thread.displaystyle }} <a href="{{ thread.threadlink }}">{{ thread.subject }}</a> - {{ lang.printable_version }}</span><br />
+                <br />
+                +- {{ mybb.settings.bbname }} (<em>{{ mybb.settings.bburl }}</em>)<br />
+                {{ breadcrumb|raw }}
+                +{{ tdepth }} {{ lang.thread }} {{ thread.displaystyle }} {{ thread.subject }} (<em>/{{ thread.threadlink }}</em>)<br />
+                <br />
+                {{ multipage|raw }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <br />
+                <hr size="1" />
+                {% for post in posts %}
+                    <strong>{{ post.subject }}</strong> - {{ post.profilelink|raw }} -  <strong>{{ post.date }}</strong>
+                    <br />
+                    <br />
+                    {{ post.message|raw }}
+                    <br />
+                    <br />
+                    <hr size="1" />
+                {% endfor %}
+            </td>
+        </tr>
+    </table>
+{% endblock body %}
