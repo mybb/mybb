@@ -1,0 +1,10 @@
+<div class="multipage">
+    {{ lang.pages }} <strong>{{ lang.archive_pages }}</strong>
+    {% for page in 1..pages %}
+        {% if page == currentPage %}
+            <strong>{{ page }}</strong>
+        {% else %}
+            <a href="{{ url }}&amp;page={{ page }}">{{ page }}</a>
+        {% endif %}
+    {% endfor %}
+</div>
