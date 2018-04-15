@@ -19,157 +19,139 @@
  */
 function build_mini_calendar($calendar, $month, $year, &$events_cache)
 {
-	global $events_cache, $mybb, $templates, $theme, $monthnames;
+    global $events_cache, $mybb, $monthnames;
 
-	// Incoming month/year?
-	if(!$year || $year > my_date("Y")+5)
-	{
-		$year = my_date("Y");
-	}
+    // Incoming month/year?
+    if (!$year || $year > my_date("Y")+5) {
+        $year = my_date("Y");
+    }
 
-	// Then the month
-	if($month < 1 || $month > 12)
-	{
-		$month = my_date("n");
-	}
+    // Then the month
+    if ($month < 1 || $month > 12) {
+        $month = my_date("n");
+    }
 
-	$weekdays = fetch_weekday_structure($calendar['startofweek']);
+    $weekdays = fetch_weekday_structure($calendar['startofweek']);
 
-	$calendar_permissions = get_calendar_permissions($calendar['cid']);
+    $calendar_permissions = get_calendar_permissions($calendar['cid']);
 
-	$month_link = get_calendar_link($calendar['cid'], $year, $month);
+    $mini_calendar['month_link'] = get_calendar_link($calendar['cid'], $year, $month);
 
-	$next_month = get_next_month($month, $year);
-	$prev_month = get_prev_month($month, $year);
+    $next_month = get_next_month($month, $year);
+    $prev_month = get_prev_month($month, $year);
 
-	$month_start_weekday = gmdate("w", gmmktime(0, 0, 0, $month, $calendar['startofweek']+1, $year));
+    $month_start_weekday = gmdate("w", gmmktime(0, 0, 0, $month, $calendar['startofweek']+1, $year));
 
-	$prev_month_days = gmdate("t", gmmktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
-	if($month_start_weekday != $weekdays[0] || $calendar['startofweek'] != 0)
-	{
-		$prev_days = $day = gmdate("t", gmmktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
-		$day -= array_search(($month_start_weekday), $weekdays);
-		$day += $calendar['startofweek']+1;
-		if($day > $prev_month_days+1)
-		{
-			// Go one week back
-			$day -= 7;
-		}
-		$calendar_month = $prev_month['month'];
-		$calendar_year = $prev_month['year'];
-	}
-	else
-	{
-		$day = $calendar['startofweek']+1;
-		$calendar_month = $month;
-		$calendar_year = $year;
-	}
+    $prev_month_days = gmdate("t", gmmktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
+    if ($month_start_weekday != $weekdays[0] || $calendar['startofweek'] != 0) {
+        $prev_days = $day = gmdate("t", gmmktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
+        $day -= array_search(($month_start_weekday), $weekdays);
+        $day += $calendar['startofweek']+1;
+        if ($day > $prev_month_days+1) {
+            // Go one week back
+            $day -= 7;
+        }
 
-	// So now we fetch events for this month
-	$start_timestamp = gmmktime(0, 0, 0, $calendar_month, $day, $year);
-	$num_days = gmdate("t", gmmktime(0, 0, 0, $month, 1, $year));
-	$end_timestamp = gmmktime(23, 59, 59, $month, $num_days, $year);
+        $calendar_month = $prev_month['month'];
+        $calendar_year = $prev_month['year'];
+    } else {
+        $day = $calendar['startofweek']+1;
+        $calendar_month = $month;
+        $calendar_year = $year;
+    }
 
-	if(!$events_cache)
-	{
-		$events_cache = get_events($calendar, $start_timestamp, $end_timestamp, $calendar_permissions['canmoderateevents']);
-	}
+    // So now we fetch events for this month
+    $start_timestamp = gmmktime(0, 0, 0, $calendar_month, $day, $year);
+    $num_days = gmdate("t", gmmktime(0, 0, 0, $month, 1, $year));
+    $end_timestamp = gmmktime(23, 59, 59, $month, $num_days, $year);
 
-	$today = my_date("dnY");
+    if (!$events_cache) {
+        $events_cache = get_events($calendar, $start_timestamp, $end_timestamp, $calendar_permissions['canmoderateevents']);
+    }
 
-	// Build weekday headers
-	$weekday_headers = '';
-	foreach($weekdays as $weekday)
-	{
-		$weekday_name = fetch_weekday_name($weekday, true);
-		eval("\$weekday_headers .= \"".$templates->get("calendar_mini_weekdayheader")."\";");
-	}
+    $today = my_date("dnY");
 
-	$in_month = 0;
-	$day_bits = $calendar_rows = '';
-	for($row = 0; $row < 6; ++$row) // Iterate weeks (each week gets a row)
-	{
-		foreach($weekdays as $weekday_id => $weekday)
-		{
-			// Current month always starts on 1st row
-			if($row == 0 && $day == $calendar['startofweek']+1)
-			{
-				$in_month = 1;
-				$calendar_month = $month;
-				$calendar_year = $year;
-			}
-			else if($calendar_month == $prev_month['month'] && $day > $prev_month_days)
-			{
-				$day = 1;
-				$in_month = 1;
-				$calendar_month = $month;
-				$calendar_year = $year;
-			}
-			else if($day > $num_days && $calendar_month != $prev_month['month'])
-			{
-				$in_month = 0;
-				$calendar_month = $next_month['month'];
-				$calendar_year = $next_month['year'];
-				$day = 1;
-				if($calendar_month == $month)
-				{
-					$in_month = 1;
-				}
-			}
+    // Build weekday headers
+    $mini_calendar['weekday_headers'] = [];
+    foreach ($weekdays as $weekday) {
+        $mini_calendar['weekday_headers'][] = fetch_weekday_name($weekday, true);
+    }
 
-			if($weekday_id == 0)
-			{
-				$week_stamp = gmmktime(0, 0, 0, $calendar_month, $day, $calendar_year);
-				$week_link = get_calendar_week_link($calendar['cid'], $week_stamp);
-			}
+    $mini_calendar['week'] = [];
+    $in_month = 0;
+    $day_bits = [];
 
-			if($weekday_id == 0 && $calendar_month == $next_month['month'])
-			{
-				break;
-			}
+    // Iterate weeks (each week gets a row)
+    for ($row = 0; $row < 6; ++$row) {
+        $days = [];
+        foreach ($weekdays as $weekday_id => $weekday) {
+            // Current month always starts on 1st row
+            if ($row == 0 && $day == $calendar['startofweek']+1) {
+                $in_month = 1;
+                $calendar_month = $month;
+                $calendar_year = $year;
+            } else if ($calendar_month == $prev_month['month'] && $day > $prev_month_days) {
+                $day = 1;
+                $in_month = 1;
+                $calendar_month = $month;
+                $calendar_year = $year;
+            } else if ($day > $num_days && $calendar_month != $prev_month['month']) {
+                $in_month = 0;
+                $calendar_month = $next_month['month'];
+                $calendar_year = $next_month['year'];
+                $day = 1;
+                if ($calendar_month == $month) {
+                    $in_month = 1;
+                }
+            }
 
-			$link_to_day = false;
-			// Any events on this specific day?
-			if(@count($events_cache["$day-$calendar_month-$calendar_year"]) > 0)
-			{
-				$link_to_day = true;
-			}
+            if($weekday_id == 0) {
+                $week_stamp = gmmktime(0, 0, 0, $calendar_month, $day, $calendar_year);
+                $week['week_link'] = get_calendar_week_link($calendar['cid'], $week_stamp);
+            }
 
-			// Is the current day
-			if($day.$calendar_month.$year == $today && $month == $calendar_month)
-			{
-				$day_class = "trow_sep";
-			}
-			// Not in this month
-			else if($in_month == 0)
-			{
-				$day_class = "trow1";
-			}
-			// Just a normal day in this month
-			else
-			{
-				$day_class = "trow2";
-			}
-			if($link_to_day)
-			{
-				$calendar['link'] = get_calendar_link($calendar['cid'], $calendar_year, $calendar_month, $day);
-				eval("\$day_link = \"".$templates->get("calendar_mini_weekrow_day_link")."\";");
-			}
-			else
-			{
-				$day_link = $day;
-			}
-			eval("\$day_bits .= \"".$templates->get("calendar_mini_weekrow_day")."\";");
-			++$day;
-		}
-		if($day_bits)
-		{
-			eval("\$calendar_rows .= \"".$templates->get("calendar_mini_weekrow")."\";");
-		}
-		$day_bits = "";
-	}
-	eval("\$mini_calendar = \"".$templates->get("calendar_mini")."\";");
-	return $mini_calendar;
+            if ($weekday_id == 0 && $calendar_month == $next_month['month']) {
+                break;
+            }
+
+            $link_to_day = false;
+            // Any events on this specific day?
+            if (@count($events_cache["$day-$calendar_month-$calendar_year"]) > 0) {
+                $link_to_day = true;
+            }
+
+            if ($day.$calendar_month.$year == $today && $month == $calendar_month) {
+                // Is the current day
+                $day_bit['day_class'] = "trow_sep";
+            } else if($in_month == 0) {
+                // Not in this month
+                $day_bit['day_class'] = "trow1";
+            } else {
+                // Just a normal day in this month
+                $day_bit['day_class'] = "trow2";
+            }
+
+            $day_bit['link'] = false;
+            if ($link_to_day) {
+                $day_bit['link'] = get_calendar_link($calendar['cid'], $calendar_year, $calendar_month, $day);
+            }
+
+            $day_bit['day'] = $day;
+
+            $days[] = $day_bit;
+            ++$day;
+        }
+
+        $week['days'] = $days;
+        if (!empty($week['days'])) {
+            $mini_calendar['week'][] = $week;
+        }
+    }
+
+    $mini_calendar['month'] = $monthnames[$month];
+    $mini_calendar['year'] = $year;
+
+    return $mini_calendar;
 }
 
 /**
@@ -333,37 +315,32 @@ function fetch_calendar_permissions($cid, $gid, $calendar_permissions)
  */
 function build_calendar_jump($selected=0)
 {
-	global $db, $mybb, $templates, $lang, $gobutton;
+    global $db, $mybb;
 
-	$calendar_permissions = get_calendar_permissions();
+    $calendar_permissions = get_calendar_permissions();
 
-	$calendars = cache_calendars();
+    $calendars = cache_calendars();
 
-	if(!is_array($calendars))
-	{
-		return;
-	}
+    if (!is_array($calendars)) {
+        return;
+    }
 
-	$jump_options = '';
+    $calendar_jump = [];
 
-	foreach($calendars as $calendar)
-	{
-		if($calendar_permissions[$calendar['cid']]['canviewcalendar'] == 0)
-		{
-			continue;
-		}
-		$calendar['name'] = htmlspecialchars_uni($calendar['name']);
-		$sel = "";
-		if($selected == $calendar['cid'] || ($selected == 0 && $calendar['disporder'] == 1))
-		{
-			$sel = "selected=\"selected\"";
-		}
+    foreach ($calendars as $calendar) {
+        if ($calendar_permissions[$calendar['cid']]['canviewcalendar'] == 0) {
+            continue;
+        }
 
-		eval("\$jump_options .= \"".$templates->get("calendar_jump_option")."\";");
-	}
+        $calendar['selected'] = false;
+        if ($selected == $calendar['cid'] || ($selected == 0 && $calendar['disporder'] == 1)) {
+            $calendar['selected'] = true;
+        }
 
-	eval("\$calendar_jump = \"".$templates->get("calendar_jump")."\";");
-	return $calendar_jump;
+        $calendar_jump[] = $calendar;
+    }
+
+    return $calendar_jump;
 }
 
 /**
