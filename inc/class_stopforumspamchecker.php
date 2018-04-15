@@ -123,19 +123,19 @@ class StopForumSpamChecker
 			{
 				if($this->check_usernames && $result_json->username->appears)
 				{
-					$checknum += 1;
+					$checknum++;
 					$confidence += $result_json->username->confidence;
 				}
 
 				if($this->check_emails && $result_json->email->appears)
 				{
-					$checknum += 1;
+					$checknum++;
 					$confidence += $result_json->email->confidence;
 				}
 
 				if($this->check_ips && $result_json->ip->appears)
 				{
-					$checknum += 1;
+					$checknum++;
 					$confidence += $result_json->ip->confidence;
 				}
 				
