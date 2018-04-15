@@ -87,6 +87,7 @@ $l['duplicate_templates_desc'] = "If this theme contains custom templates should
 $l['create_a_theme'] = "Create a Theme";
 $l['name'] = "Name";
 $l['name_desc'] = "Specify a name for the new theme.";
+$l['style_active'] = "Active";
 $l['display_order'] = "Order";
 
 $l['edit_theme_properties'] = "Edit Theme Properties";
@@ -107,7 +108,6 @@ $l['table_spacing_desc'] = "The width of the inner padding of table cells, in pi
 $l['inner_border'] = "Inner Table Border Width";
 $l['inner_border_desc'] = "The amount of padding between each table cell, in pixels. This is HTML's <em>cellspacing</em> attribute of the <em>table</em> tag.";
 $l['save_theme_properties'] = "Save Theme Properties";
-$l['save_stylesheet_order'] = "Save Stylesheet Orders";
 
 $l['background'] = "Background";
 $l['extra_css_atribs'] = "Extra CSS Attributes";
@@ -207,7 +207,7 @@ $l['success_theme_set_default'] = "The selected theme is now the forum default."
 $l['success_theme_forced'] = "All users have been forced to use the selected theme successfully.";
 $l['success_theme_properties_updated'] = "The properties for the select theme have been updated successfully.";
 $l['success_stylesheet_added'] = "The stylesheet for this theme has been created successfully.";
-$l['success_stylesheet_order_updated'] = "The display orders for the stylesheets have been updated successfully.";
+$l['success_stylesheet_actorder_updated'] = "The active states and display orders for the stylesheets have been updated successfully.";
 
 $l['confirm_theme_deletion'] = "Are you sure you want to delete this theme?";
 $l['confirm_stylesheet_deletion'] = "Are you sure you want to delete / revert this stylesheet?";

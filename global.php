@@ -318,7 +318,18 @@ foreach($stylesheet_scripts as $stylesheet_script)
 			// Actually add the stylesheets to the list
 			foreach($theme['stylesheets'][$stylesheet_script][$stylesheet_action] as $page_stylesheet)
 			{
-				if(!empty($already_loaded[$page_stylesheet]))
+				$code = "";
+				
+				// Fallback for stylesheets with unsaved states : default to show
+				$state = isset($theme['styleactive'][basename($page_stylesheet)]) ? $theme['styleactive'][basename($page_stylesheet)] : 1;
+				
+				// If the stylesheet is active and not already loaded then get the content to check whether its empty
+				if($state && empty($already_loaded[$page_stylesheet]))
+				{
+					$code = file_get_contents('./'.$page_stylesheet, FILE_USE_INCLUDE_PATH);
+				}
+
+				if(trim($code) === "")
 				{
 					continue;
 				}

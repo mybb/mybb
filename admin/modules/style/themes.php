@@ -1265,7 +1265,7 @@ if($mybb->input['action'] == "edit")
 	}
 
 	// Save any stylesheet orders
-	if($mybb->request_method == "post" && $mybb->input['do'] == "save_orders")
+	if($mybb->request_method == "post" && $mybb->input['do'] == "save_actorders")
 	{
 		if(!is_array($mybb->input['disporder']))
 		{
@@ -1274,22 +1274,24 @@ if($mybb->input['action'] == "edit")
 			admin_redirect("index.php?module=style-themes&action=edit&tid={$theme['tid']}");
 		}
 
-		$orders = array();
+		$orders = $actives = array();
 		foreach($theme_stylesheets as $stylesheet => $properties)
 		{
 			if(is_array($properties))
 			{
 				$order = (int)$mybb->input['disporder'][$properties['sid']];
-
+				$active = (int)$mybb->input['styleactive'][$properties['sid']];
 				$orders[$properties['name']] = $order;
+				$actives[$properties['name']] = $active;
 			}
 		}
 
 		asort($orders, SORT_NUMERIC);
 
-		// Save the orders in the theme properties
+		// Save the orders and active states in the theme properties
 		$properties = my_unserialize($theme['properties']);
 		$properties['disporder'] = $orders;
+		$properties['styleactive'] = $actives;
 
 		$update_array = array(
 			"properties" => $db->escape_string(my_serialize($properties))
@@ -1305,7 +1307,7 @@ if($mybb->input['action'] == "edit")
 		// normalize for consistency
 		update_theme_stylesheet_list($theme['tid'], false, true);
 
-		flash_message($lang->success_stylesheet_order_updated, 'success');
+		flash_message($lang->success_stylesheet_actorder_updated, 'success');
 		admin_redirect("index.php?module=style-themes&action=edit&tid={$theme['tid']}");
 	}
 
@@ -1340,13 +1342,14 @@ if($mybb->input['action'] == "edit")
 
 	$table = new Table;
 	$table->construct_header($lang->stylesheets);
+	$table->construct_header($lang->style_active, array("class" => "align_center", "width" => 160));
 	$table->construct_header($lang->display_order, array("class" => "align_center", "width" => 50));
-	$table->construct_header($lang->controls, array("class" => "align_center", "width" => 150));
+	$table->construct_header($lang->controls, array("class" => "align_center", "width" => 80));
 
 	// Display Order form
 	$form = new Form("index.php?module=style-themes&amp;action=edit", "post", "edit");
 	echo $form->generate_hidden_field("tid", $theme['tid']);
-	echo $form->generate_hidden_field("do", 'save_orders');
+	echo $form->generate_hidden_field("do", 'save_actorders');
 
 	// Order the stylesheets
 	$ordered_stylesheets = array();
@@ -1523,6 +1526,7 @@ if($mybb->input['action'] == "edit")
 		}
 
 		$table->construct_cell("<strong><a href=\"index.php?module=style-themes&amp;action=edit_stylesheet&amp;file=".htmlspecialchars_uni($filename)."&amp;tid={$theme['tid']}\">{$filename}</a></strong>{$inherited}<br />{$attached_to}");
+		$table->construct_cell($form->generate_yes_no_radio("styleactive[{$theme_stylesheets[$filename]['sid']}]", $properties['styleactive'][$filename]));
 		$table->construct_cell($form->generate_numeric_field("disporder[{$theme_stylesheets[$filename]['sid']}]", $properties['disporder'][$filename], array('style' => 'width: 80%; text-align: center;', 'min' => 0)), array("class" => "align_center"));
 		$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 		$table->construct_row();
@@ -1530,7 +1534,7 @@ if($mybb->input['action'] == "edit")
 
 	$table->output("{$lang->stylesheets_in} ".htmlspecialchars_uni($theme['name']));
 
-	$buttons = array($form->generate_submit_button($lang->save_stylesheet_order));
+	$buttons = array($form->generate_submit_button($lang->save_changes));
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 
