@@ -1709,7 +1709,7 @@ class postParser
 
 		$find = array(
 			"#\[(b|u|i|s|url|email|color|img)\](.*?)\[/\\1\]#is",
-			"#\[(email|color|size|font|align|video|)=[^]]*\](.*?)\[/\\1\]#is",
+			"#\[(email|color|size|font|align|video)=[^]]*\](.*?)\[/\\1\]#is",
 			"#\[img=([1-9][0-9]*)x([1-9][0-9]*)\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is",
 			"#\[url=((?!javascript)[a-z]+?://)([^\r\n\"<]+?)\](.+?)\[/url\]#si",
 			"#\[url=((?!javascript:)[^\r\n\"<&\(\)]+?)\](.+?)\[/url\]#si",
