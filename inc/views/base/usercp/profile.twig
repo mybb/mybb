@@ -1,0 +1,233 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ mybb.settings.bbname }} - {{ lang.edit_profile }}</title>
+{% endblock head %}
+
+{% block body %}
+    <form action="usercp.php" method="post">
+        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+
+        <table width="100%" border="0" align="center">
+            <tr>
+                {# TODO: usercpnav #}
+                <td valign="top">
+
+                    {{ errors|raw }}
+
+                    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+                        <tr>
+                            <td class="thead" colspan="2"><strong>{{ lang.edit_profile }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td width="50%" class="trow1" valign="top">
+
+                                <fieldset class="trow2">
+                                    <legend><strong>{{ lang.profile_required }}</strong></legend>
+                                    <table cellspacing="0" cellpadding="{{ theme.tablespace }}">
+                                        <tr>
+                                            <td colspan="2"><span class="smalltext"><strong>{{ lang.change_email_notice|raw }}</strong></span></td>
+                                        </tr>
+
+                                        {% for field in requiredFields %}
+                                            {% include 'usercp/profilefield.twig' %}
+                                        {% endfor %}
+
+                                    </table>
+                                </fieldset>
+                                <br />
+
+                                <fieldset class="trow2">
+                                    <legend><strong>{{ lang.profile_optional }}</strong></legend>
+                                    <table cellspacing="0" cellpadding="{{ theme.tablespace }}">
+                                        <tr>
+                                            <td colspan="3"><span class="smalltext">{{ lang.birthday }}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <select name="bday1">
+                                                    <option value="">&nbsp;</option>
+                                                    {% for day in 1..31 %}
+                                                        <option value="{{ day }}"{% if bday.0 == day %} selected{% endif %}>{{ day }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select name="bday2">
+                                                    <option value="">&nbsp;</option>
+                                                    {% for month in 1..12 %}
+                                                        {% set monthName = "month_" ~ month %}
+                                                        <option value="{{ month }}"{% if bday.1 == month %} selected{% endif %}>{{ attribute(lang, monthName) }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input type="text" class="textbox" size="4" maxlength="4" name="bday3" value="{{ bday.2 }}" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="3">
+                                                <span class="smalltext">{{ lang.birthdayprivacy }}</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="3">
+                                            <select name="birthdayprivacy">
+                                                <option value="all"{% if user.birthdayprivacy == 'all' or user.birthdayprivacy is empty %} selected{% endif %}>{{ lang.birthdayprivacyall }}</option>
+                                                <option value="none"{% if user.birthdayprivacy == 'none' %} selected{% endif %}>{{ lang.birthdayprivacynone }}</option>
+                                                <option value="age"{% if user.birthdayprivacy == 'age' %} selected{% endif %}>{{ lang.birthdayprivacyage }}</option>
+                                            </select>
+                                            </td>
+                                        </tr>
+                                        {% if mybb.usergroup.canchangewebsite %}
+                                            <tr>
+                                                <td colspan="3"><span class="smalltext">{{ lang.website_url }}</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3"><input type="text" class="textbox" name="website" size="25" maxlength="75" value="{{ user.website }}" /></td>
+                                            </tr>
+                                        {% endif %}
+                                    </table>
+                                </fieldset>
+
+                                {% if customFields %}
+                                    <br />
+                                    <fieldset class="trow2">
+                                        <legend><strong>{{ lang.additional_information }}</strong></legend>
+                                        <table cellspacing="0" cellpadding="{{ theme.tablespace }}" width="100%">
+                                            {% for field in customFields %}
+                                                {% include 'usercp/profilefield.twig' %}
+                                            {% endfor %}
+                                        </table>
+                                    </fieldset>
+                                {% endif %}
+
+                            </td>
+                            <td width="50%" class="trow1" valign="top">
+
+                                {% if mybb.usergroup.cancustomtitle %}
+                                    <fieldset class="trow2">
+                                        <legend><strong>{{ lang.custom_usertitle }}</strong></legend>
+                                        <table cellspacing="0" cellpadding="{{ theme.tablespace }}">
+                                            <tr>
+                                                <td><span class="smalltext">{{ lang.custom_usertitle_note }}</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td><span class="smalltext">{{ lang.default_usertitle }}</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td><span class="smalltext"><strong>{{ defaultTitle|default(mybb.usergroup.usertitle) }}</strong></span></td>
+                                            </tr>
+                                            {% if mybb.user.usertitle and mybb.user.usertitle != mybb.usergroup.usertitle %}
+                                                <tr>
+                                                    <td><span class="smalltext">{{ lang.current_custom_usertitle }}</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <span class="smalltext">
+                                                            <strong>
+                                                                {% if errors %}
+                                                                    {{ mybb.user.usertitle }}
+                                                                {% else %}
+                                                                    {{ user.usertitle }}
+                                                                {% endif %}
+                                                            </strong>
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td><span class="smalltext"><label><input type="checkbox" name="reverttitle" id="reverttitle" class="checkbox" /> {{ lang.revert_usertitle }}</label></span></td>
+                                                </tr>
+                                            {% endif %}
+                                            <tr>
+                                                <td><span class="smalltext">{{ lang.new_custom_usertitle }}</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <input type="text" class="textbox" name="usertitle" size="25" maxlength="{{ mybb.settings.customtitlemaxlength }}" value="{% if errors %}{{ user.usertitle }}{% endif %}" /></td>
+                                            </tr>
+                                        </table>
+                                    </fieldset>
+                                {% endif %}
+
+                                {% if contactFields %}
+                                    <br />
+                                    <fieldset class="trow2">
+                                    <legend><strong>{{ lang.additional_contact_details }}</strong></legend>
+                                    <table cellspacing="0" cellpadding="{{ theme.tablespace }}">
+                                        {% for field, label in contactFields %}
+                                            <tr>
+                                                <td><label for="{{ field }}" class="smalltext">{{ label }}</label></td>
+                                            </tr>
+                                            <tr>
+                                                <td><input type="text" class="textbox" name="{{ field }}" size="25" value="{{ user[field] }}" /></td>
+                                            </tr>
+                                        {% endfor %}
+                                    </table>
+                                    </fieldset>
+                                {% endif %}
+
+                                {% if mybb.settings.allowaway %}
+                                    <br />
+                                    <fieldset class="trow2">
+                                        <legend><strong>{{ lang.away_information }}</strong></legend>
+                                        <table cellspacing="0" cellpadding="{{ theme.tablespace }}">
+                                            <tr>
+                                                <td colspan="2"><span class="smalltext">{{ lang.away_status }}</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td><span class="smalltext"><input type="radio" class="radio" name="away" value="1"{% if mybb.user.away %} checked{% endif %} /> {{ lang.im_away }}</span></td>
+                                                <td><span class="smalltext"><input type="radio" class="radio" name="away" value="0"{% if mybb.user.away == 0 %} checked{% endif %} /> {{ lang.im_here }}</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2"><span class="smalltext">{{ lang.away_reason }}</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2"><input type="text" class="textbox" name="awayreason" value="{{ user.awayreason }}" size="25" /></td>
+                                            </tr>
+                                        </table>
+                                        <table cellspacing="0" cellpadding="{{ theme.tablespace }}">
+                                            <tr>
+                                                <td colspan="3"><span class="smalltext">{{ lang.return_date }}</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <select name="awayday">
+                                                        <option value="">&nbsp;</option>
+                                                        {% for day in 1..31 %}
+                                                            <option value="{{ day }}"{% if returndate.0 == day %} selected{% endif %}>{{ day }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select name="awaymonth">
+                                                        <option value="">&nbsp;</option>
+                                                        {% for month in 1..12 %}
+                                                            {% set monthName = "month_" ~ month %}
+                                                            <option value="{{ month }}"{% if returndate.1 == month %} selected{% endif %}>{{ attribute(lang, monthName) }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="textbox" size="4" maxlength="4" name="awayyear" value="{{ returndate.2 }}" />
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </fieldset>
+                                {% endif %}
+
+                            </td>
+                        </tr>
+                    </table>
+                    <br />
+
+                    <div align="center">
+                        <input type="hidden" name="action" value="do_profile" />
+                        <input type="submit" class="button" name="regsubmit" value="{{ lang.update_profile }}" />
+                    </div>
+
+                </td>
+            </tr>
+        </table>
+    </form>
+{% endblock body %}
