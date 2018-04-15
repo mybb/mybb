@@ -25,7 +25,7 @@ function home_meta()
 	$sub_menu['10'] = array("id" => "dashboard", "title" => $lang->dashboard, "link" => "index.php?module=home-dashboard");
 	$sub_menu['20'] = array("id" => "preferences", "title" => $lang->preferences, "link" => "index.php?module=home-preferences");
 	$sub_menu['30'] = array("id" => "docs", "title" => $lang->mybb_documentation, "link" => "https://docs.mybb.com");
-	$sub_menu['40'] = array("id" => "credits", "title" => $lang->mybb_credits, "link" => "index.php?module=home-credits");
+	$sub_menu['40'] = array("id" => "credits", "title" => $lang->mybb_credits, "link" => "https://mybb.com/credits");
 	$sub_menu = $plugins->run_hooks("admin_home_menu", $sub_menu);
 
 	$page->add_menu_item($lang->home, "home", "index.php", 1, $sub_menu);
@@ -46,7 +46,6 @@ function home_action_handler($action)
 
 	$actions = array(
 		'preferences' => array('active' => 'preferences', 'file' => 'preferences.php'),
-		'credits' => array('active' => 'credits', 'file' => 'credits.php'),
 		'version_check' => array('active' => 'version_check', 'file' => 'version_check.php'),
 		'dashboard' => array('active' => 'dashboard', 'file' => 'index.php')
 	);
@@ -80,9 +79,9 @@ function home_action_handler($action)
 				unset($sub_menu[$id]);
 			}
 		}
-		
+
 		$sub_menu = $plugins->run_hooks("admin_home_menu_quick_access", $sub_menu);
-		
+
 		if(!empty($sub_menu))
 		{
 			$sidebar = new SidebarItem($lang->quick_access);

@@ -258,7 +258,7 @@ class datacache
 	 */
 	 function delete($name, $greedy = false)
 	 {
-		 global $db, $mybb, $cache;
+		global $db, $mybb, $cache;
 
 		// Prepare for database query.
 		$dbname = $db->escape_string($name);
@@ -1338,10 +1338,5 @@ class datacache
 
 		$query = $db->simple_select("datacache", "title,cache", "title='adminnotes'");
 		$this->update("adminnotes", unserialize($db->fetch_field($query, "cache")));
-	}
-
-	function reload_mybb_credits()
-	{
-		admin_redirect('index.php?module=home-credits&amp;fetch_new=-2');
 	}
 }
