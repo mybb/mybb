@@ -33,6 +33,7 @@ $l['userdata_invalid_birthday_privacy'] = 'Please choose a valid birthday privac
 $l['userdata_invalid_referrer'] = 'The referrer you entered does not exist. Please enter an existing referrer or leave the field empty.';
 $l['userdata_invalid_language'] = 'The language you selected does not exist. Please select an existing language.';
 $l['userdata_invalid_style'] = 'The style you selected is invalid. Please select a valid style.';
+$l['userdata_away_too_long'] = 'The Away Reason you specified is too long. A maximum of 200 characters is allowed for this field. Please remove {1} character(s) from this field.';
 $l['userdata_missing_returndate'] = 'The Return Date you specified is missing one or more fields. Please make sure you have filled in the day, month, and year fields.';
 $l['userdata_missing_required_profile_field'] = 'You did not enter an option for the "{1}" field. Please fill in or select a value for this field.';
 $l['userdata_bad_profile_field_value'] = 'You did not enter a valid value for the "{1}" field. Please enter a valid value before continuing.';

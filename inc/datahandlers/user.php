@@ -378,7 +378,7 @@ class UserDataHandler extends DataHandler
 			$this->set_error("invalid_birthday");
 			return false;
 		}
-		else if($birthday['year'] == date("Y"))
+		elseif($birthday['year'] == date("Y"))
 		{
 			// Error if birth date is in future
 			if($birthday['month'] > date("m") || ($birthday['month'] == date("m") && $birthday['day'] > date("d")))
@@ -683,7 +683,7 @@ class UserDataHandler extends DataHandler
 		{
 			$options['dst'] = 1;
 		}
-		else if($options['dstcorrection'] == 0)
+		elseif($options['dstcorrection'] == 0)
 		{
 			$options['dst'] = 0;
 		}
@@ -831,8 +831,16 @@ class UserDataHandler extends DataHandler
 			$user['away']['awayreason'] = '';
 			return true;
 		}
-		else if($user['away']['returndate'])
+		elseif($user['away']['returndate'])
 		{
+			// Validate the awayreason length, since the db holds 200 chars for this field
+			$reasonlength = my_strlen($user['away']['awayreason']);
+			if($reasonlength > 200)
+			{
+				$this->set_error("awayreason_too_long", array($reasonlength - 200));
+				return false;
+			}
+
 			list($returnday, $returnmonth, $returnyear) = explode('-', $user['away']['returndate']);
 			if(!$returnday || !$returnmonth || !$returnyear)
 			{
@@ -1172,7 +1180,7 @@ class UserDataHandler extends DataHandler
 		{
 			$this->user_insert_data['dst'] = 1;
 		}
-		else if($user['options']['dstcorrection'] == 0)
+		elseif($user['options']['dstcorrection'] == 0)
 		{
 			$this->user_insert_data['dst'] = 0;
 		}

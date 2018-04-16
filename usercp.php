@@ -182,12 +182,6 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 			"returndate" => $returndate,
 			"awayreason" => $mybb->get_input('awayreason')
 		);
-
-		// Hard limit of 200 characters, as the field is varchar(200)
-		if(my_strlen($away['awayreason']) > 200)
-		{
-			$away['awayreason'] = my_substr($away['awayreason'], 200);
-		}
 	}
 	else
 	{
