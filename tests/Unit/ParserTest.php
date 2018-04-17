@@ -85,4 +85,40 @@ class ParserTest extends TestCase
 
         $this->assertEquals($expected, $actual);
     }
+
+    public function testSimpleParseAlignLeftMyCode()
+    {
+        $input = '[align=left]test[/align]';
+        $expected = '<div style="text-align: left;" class="mycode_align">test</div>';
+
+        $actual = $this->parser->parse_message($input, [
+            'allow_mycode' => true,
+        ]);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testSimpleParseAlignCenterMyCode()
+    {
+        $input = '[align=center]test[/align]';
+        $expected = '<div style="text-align: center;" class="mycode_align">test</div>';
+
+        $actual = $this->parser->parse_message($input, [
+            'allow_mycode' => true,
+        ]);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testSimpleParseAlignRightMyCode()
+    {
+        $input = '[align=right]test[/align]';
+        $expected = '<div style="text-align: right;" class="mycode_align">test</div>';
+
+        $actual = $this->parser->parse_message($input, [
+            'allow_mycode' => true,
+        ]);
+
+        $this->assertEquals($expected, $actual);
+    }
 }
