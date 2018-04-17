@@ -460,8 +460,6 @@ class postParser
 			$message = preg_replace_callback("#\[video=(.*?)\](.*?)\[/video\]#i", array($this, 'mycode_parse_video_disabled_callback'), $message);
 		}
 
-		$message = $this->mycode_auto_url($message);
-
 		$message = str_replace('$', '&#36;', $message);
 
 		// Replace the rest
@@ -506,6 +504,8 @@ class postParser
 				$message = preg_replace_callback("#\s?\[list(=(a|A|i|I|1))?&{$i}\](.*?)(\[/list&{$i}\]|$)(\r\n?|\n?)#si", array($this, 'mycode_parse_list_callback'), $message, 1);
 			}
 		}
+
+		$message = $this->mycode_auto_url($message);
 
 		return $message;
 	}
@@ -1511,9 +1511,10 @@ class postParser
 	function mycode_auto_url($message)
 	{
 		$message = " ".$message;
+
 		// Links should end with slashes, numbers, characters and braces but not with dots, commas or question marks
-		$message = preg_replace_callback("#([\>\s\(\)\[]|(?:\[(?!url)(?:.*?)\]))(http|https|ftp|news|irc|ircs|irc6){1}://([^\/\"\s\<\[\.]+\.([^\/\"\s\<\[\.]+\.)*[\w]+(:[0-9]+)?(/([^\"\s<\[]|\[\])*)?([\w\/\)]))#iu", array($this, 'mycode_auto_url_callback'), $message);
-		$message = preg_replace_callback("#([\>\s\(\)\[]|(?:\[(?!url)(?:.*?)\]))(www|ftp)\.(([^\/\"\s\<\[\.]+\.)*[\w]+(:[0-9]+)?(/([^\"\s<\[]|\[\])*)?([\w\/\)]))#iu", array($this, 'mycode_auto_url_callback'), $message);
+		$message = preg_replace_callback("#([\s\(\)\[]|<(?!a(?:\\s|>))[^>]*>)(http|https|ftp|news|irc|ircs|irc6){1}://([^\/\"\s\<\[\.]+\.([^\/\"\s\<\[\.]+\.)*[\w]+(:[0-9]+)?(/([^\"\s<\[]|\[\])*)?([\w\/\)]))#iu", array($this, 'mycode_auto_url_callback'), $message);
+		$message = preg_replace_callback("#([\s\(\)\[]|<(?!a(?:\\s|>))[^>]*>)(www|ftp)\.(([^\/\"\s\<\[\.]+\.)*[\w]+(:[0-9]+)?(/([^\"\s<\[]|\[\])*)?([\w\/\)]))#iu", array($this, 'mycode_auto_url_callback'), $message);
 		$message = my_substr($message, 1);
 
 		return $message;
@@ -1552,12 +1553,14 @@ class postParser
 		}
 		if(in_array(strtolower($matches[2]), array('www', 'ftp')))
 		{
-			return "{$matches[1]}[url]{$matches[2]}.{$matches[3]}[/url]{$external}";
+			$url = "{$matches[2]}.{$matches[3]}";
 		}
 		else
 		{
-			return "{$matches[1]}[url]{$matches[2]}://{$matches[3]}[/url]{$external}";
+			$url = "{$matches[2]}://{$matches[3]}";
 		}
+
+		return $matches[1].$this->mycode_parse_url($url, $url).$external;
 	}
 
 	/**
