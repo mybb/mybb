@@ -16,6 +16,15 @@ class ParserTest extends TestCase
     public static function setUpBeforeClass()
     {
         static::setupMybb();
+
+        /** @var \Mockery\MockInterface $templatesMock */
+        $templatesMock = $GLOBALS['templates'];
+
+        $templatesMock->shouldReceive('get')
+            ->withArgs(['mycode_size_int', 1, 0])
+            ->andReturn(
+                str_replace("\\'", "'", addslashes('<span style="font-size: {$size}pt;" class="mycode_size">{$text}</span>'))
+            );
     }
 
     protected function setUp()
@@ -86,10 +95,10 @@ class ParserTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function testSimpleParseAlignLeftMyCode()
+    public function testSimpleHrMyCode()
     {
-        $input = '[align=left]test[/align]';
-        $expected = '<div style="text-align: left;" class="mycode_align">test</div>';
+        $input = '[hr]';
+        $expected = '<hr class="mycode_hr" />';
 
         $actual = $this->parser->parse_message($input, [
             'allow_mycode' => true,
@@ -98,27 +107,93 @@ class ParserTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function testSimpleParseAlignCenterMyCode()
+    public function testSimpleSymbolMyCodes()
     {
-        $input = '[align=center]test[/align]';
-        $expected = '<div style="text-align: center;" class="mycode_align">test</div>';
+        $symbols = [
+            '(c)' => '&copy;',
+            '(tm)' => '&#153;',
+            '(r)' => '&reg;',
+        ];
 
-        $actual = $this->parser->parse_message($input, [
-            'allow_mycode' => true,
-        ]);
-
-        $this->assertEquals($expected, $actual);
+        foreach ($symbols as $input => $expected) {
+            $this->assertEquals($expected, $this->parser->parse_message($input, [
+                'allow_mycode' => true,
+            ]));
+        }
     }
 
-    public function testSimpleParseAlignRightMyCode()
+    public function testSimpleAlignMyCodes()
     {
-        $input = '[align=right]test[/align]';
-        $expected = '<div style="text-align: right;" class="mycode_align">test</div>';
+        $alignments = [
+            'left',
+            'center',
+            'right',
+            'justify',
+        ];
 
-        $actual = $this->parser->parse_message($input, [
-            'allow_mycode' => true,
-        ]);
+        foreach ($alignments as $alignment) {
+            $input = "[align={$alignment}]test[/align]";
+            $expected = "<div style=\"text-align: {$alignment};\" class=\"mycode_align\">test</div>";
 
-        $this->assertEquals($expected, $actual);
+            $actual = $this->parser->parse_message($input, [
+                'allow_mycode' => true,
+            ]);
+
+            $this->assertEquals($expected, $actual);
+        }
+    }
+
+    public function testSimpleSizeTextMyCodes()
+    {
+        $sizes = [
+            'xx-small',
+            'x-small',
+            'small',
+            'medium',
+            'large',
+            'x-large',
+            'xx-large',
+        ];
+
+        foreach ($sizes as $size) {
+            $input = "[size={$size}]test[/size]";
+
+            $expected = "<span style=\"font-size: {$size};\" class=\"mycode_size\">test</span>";
+
+            $actual = $this->parser->parse_message($input, [
+                'allow_mycode' => true,
+            ]);
+
+            $this->assertEquals($expected, $actual);
+        }
+    }
+
+    public function testSimpleSizeIntegerMyCodes()
+    {
+        $sizes = [
+            '-10' => '1',
+            '-1' => '1',
+            '0' => '1',
+            '1' => '1',
+            '10' => '10',
+            '50' => '50',
+            '100' => '50',
+            '+1' => '1',
+            '+10' => '10',
+            '+50' => '50',
+            '+100' => '50',
+        ];
+
+        foreach ($sizes as $size => $expected) {
+            $input = "[size={$size}]test[/size]";
+
+            $expected = "<span style=\"font-size: {$expected}pt;\" class=\"mycode_size\">test</span>";
+
+            $actual = $this->parser->parse_message($input, [
+                'allow_mycode' => true,
+            ]);
+
+            $this->assertEquals($expected, $actual);
+        }
     }
 }
