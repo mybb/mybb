@@ -1456,8 +1456,6 @@ class postParser
 			return "[video={$video}]{$url}[/video]";
 		}
 
-		$id = htmlspecialchars_uni($id);
-
 		return \MyBB\template('parser/video.twig', [
 			'id' => $id,
 			'type' => $video,
