@@ -1814,7 +1814,7 @@ div.jqi .jqisubstate .jqibuttons button{
 
 /** Impromptu End */
 ]]></stylesheet>
-		<stylesheet name="usercp.css" attachedto="usercp.php|private.php" version="1808" disporder="2"><![CDATA[.usercp_nav_item {
+		<stylesheet name="usercp.css" attachedto="usercp.php|private.php" version="1816" disporder="2"><![CDATA[.usercp_nav_item {
 	display: block;
 	padding: 1px 0 1px 23px;
 	background-image: url(images/usercp_sprite.png);
@@ -4019,7 +4019,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 	</td>]]></template>
 		<template name="forumdisplay_thread_rating_moved" version="1800"><![CDATA[<td class="{$bgcolor}" style="text-align: center;">-</td>]]></template>
 		<template name="forumdisplay_thread_unapproved_posts" version="1800"><![CDATA[ <span title="{$unapproved_posts_count}">({$thread['unapprovedposts']})</span>]]></template>
-		<template name="forumdisplay_threadlist" version="1801"><![CDATA[<div class="float_left">
+		<template name="forumdisplay_threadlist" version="1816"><![CDATA[<div class="float_left">
 	{$multipage}
 </div>
 <div class="float_right">
@@ -11782,7 +11782,7 @@ if(use_xmlhttprequest == "1")
 		<a href="{$similar_thread['lastpostlink']}">{$lang->lastpost}</a>: {$lastposterlink}</span>
 	</td>
 	</tr>]]></template>
-		<template name="showthread_subscription" version="1809"><![CDATA[<li class="subscription_{$add_remove_subscription}"><a href="usercp.php?action={$add_remove_subscription}subscription&amp;tid={$tid}&amp;my_post_key={$mybb->post_code}">{$add_remove_subscription_text}</a></li>]]></template>
+		<template name="showthread_subscription" version="1816"><![CDATA[<li class="subscription_{$add_remove_subscription}"><a href="usercp.php?action={$add_remove_subscription}subscription&amp;tid={$tid}&amp;my_post_key={$mybb->post_code}">{$add_remove_subscription_text}</a></li>]]></template>
 		<template name="showthread_threaded_bit" version="1800"><![CDATA[<div style="margin-left: {$indentsize}px;"><a href="showthread.php?tid={$tid}&amp;pid={$post['pid']}&amp;mode=threaded">{$post['subject']}</a> <span class="smalltext">- {$lang->by} {$post['profilelink']} - {$postdate}</span></div>]]></template>
 		<template name="showthread_threaded_bitactive" version="1800"><![CDATA[<div style="margin-left: {$indentsize}px;"><strong>{$post['subject']}</strong> <span class="smalltext">- {$lang->by} {$post['profilelink']} - {$postdate}</span></div>]]></template>
 		<template name="showthread_threadedbox" version="120"><![CDATA[<br />
@@ -11942,7 +11942,7 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
-		<template name="usercp_addsubscription_thread" version="1800"><![CDATA[<html>
+		<template name="usercp_addsubscription_thread" version="1816"><![CDATA[<html>
 <head>
 <title>{$lang->subscribe_to_thread}</title>
 {$headerinclude}
@@ -12660,7 +12660,7 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
-		<template name="usercp_forumsubscriptions_forum" version="1804"><![CDATA[<tr>
+		<template name="usercp_forumsubscriptions_forum" version="1816"><![CDATA[<tr>
 <td class="trow1" align="center" valign="top" width="1"><span class="forum_status forum_{$lightbulb['folder']}" title="{$lightbulb['altonoff']}"></span></td>
 <td class="trow1" valign="top">
 <strong><a href="{$forum_url}">{$forum['name']}</a></strong><br /><span class="smalltext"><a href="usercp.php?action=removesubscription&amp;type=forum&amp;fid={$forum['fid']}&amp;my_post_key={$mybb->post_code}">{$lang->unsubscribe}</a> | <a href="newthread.php?fid={$forum['fid']}">{$lang->new_thread}</a></span></td>
@@ -13439,7 +13439,7 @@ if(use_xmlhttprequest == "1")
 		<template name="usercp_subscriptions_none" version="120"><![CDATA[<tr>
 <td class="trow1" colspan="7">{$lang->no_thread_subscriptions}</td>
 </tr>]]></template>
-		<template name="usercp_subscriptions_remove" version="1800"><![CDATA[<tr>
+		<template name="usercp_subscriptions_remove" version="1816"><![CDATA[<tr>
 	<td class="tfoot" colspan="7">
 	<div class="float_right">
 		<strong>{$lang->with_selected}</strong>
