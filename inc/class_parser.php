@@ -1357,7 +1357,8 @@ class postParser
 		switch($video)
 		{
 			case "dailymotion":
-				if(isset($path[2])){
+				if(isset($path[2]))
+				{
 					list($id) = explode('_', $path[2], 2); // http://www.dailymotion.com/video/fds123_title-goes-here
 				}
 				else
