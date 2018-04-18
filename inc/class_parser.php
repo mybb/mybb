@@ -146,8 +146,17 @@ class postParser
 			// This code is reserved and could break codes
 			$message = str_replace("<mybb-code>\n", "<mybb_code>\n", $message);
 
-			preg_match_all("#\[(code|php)\](.*?)\[/\\1\](\r\n?|\n?)#si", $message, $code_matches, PREG_SET_ORDER);
-			$message = preg_replace("#\[(code|php)\](.*?)\[/\\1\](\r\n?|\n?)#si", "<mybb-code>\n", $message);
+			preg_match_all("#\[(code|php)\](.*?)(\[/\\1\])+(\r\n?|\n?)#si", $message, $code_matches, PREG_SET_ORDER);
+			foreach($code_matches as $point => $part)
+			{
+				if(isset($part[3]))
+				{
+					$part[1] = "[".$part[1]."]";
+					$code_matches[$point][2] = substr_replace($part[0], "", strrpos($part[0], $part[3]), strlen($part[3]));
+					$code_matches[$point][2] = substr_replace($code_matches[$point][2], "", strpos($code_matches[$point][2], $part[1]), strlen($part[1]));
+				}
+			}
+			$message = preg_replace("#\[(code|php)\](.*?)(\[/\\1\])+(\r\n?|\n?)#si", "<mybb-code>\n", $message);
 		}
 
 		if(empty($this->options['allow_html']))
