@@ -1531,7 +1531,8 @@ class postParser
 	{
 		// If we matched a preexisting link (the part of the regexes in mycode_auto_url() before the pipe symbol),
 		// then simply return it - we don't create links within existing links.
-		if (count($matches) == 1) {
+		if(count($matches) == 1)
+		{
 			return $matches[0];
 		}
 
