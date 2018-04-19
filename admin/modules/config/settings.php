@@ -930,8 +930,8 @@ if($mybb->input['action'] == "change")
 		}
 
 		// Have we opted for a reCAPTCHA and not set a public/private key?
-		if((isset($mybb->input['upsetting']['captchaimage']) && ($mybb->input['upsetting']['captchaimage'] >= 4) && (!$mybb->input['upsetting']['captchaprivatekey'] || !$mybb->input['upsetting']['captchapublickey']))
-		|| (($mybb->settings['captchaimage'] >= 4) && (!$mybb->settings['captchaprivatekey'] || !$mybb->settings['captchapublickey'])))
+		if((isset($mybb->input['upsetting']['captchaimage']) && in_array($mybb->input['upsetting']['captchaimage'], array(4, 5)) && (!$mybb->input['upsetting']['captchaprivatekey'] || !$mybb->input['upsetting']['captchapublickey']))
+		   || (in_array($mybb->settings['captchaimage'], array(4, 5)) && (!$mybb->settings['captchaprivatekey'] || !$mybb->settings['captchapublickey'])))
 		{
 			$mybb->input['upsetting']['captchaimage'] = 1;
 			$lang->success_settings_updated .= $lang->success_settings_updated_captchaimage;
