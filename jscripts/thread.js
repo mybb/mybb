@@ -365,11 +365,7 @@ var Thread = {
 			{
 				json.data = json.data.replace(/^<captcha>(.*)<\/captcha>/, '');
 
-				if(cap[1] == "reload")
-				{
-					Recaptcha.reload();
-				}
-				else if($("#captcha_img").length)
+				if($("#captcha_img").length)
 				{
 					if(cap[1])
 					{
