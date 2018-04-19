@@ -3428,8 +3428,7 @@ if($mybb->input['action'] == "usergroups")
 
 		if($mybb->get_input('do') == "joingroup" && $usergroup['type'] == 4)
 		{
-			$reason = $db->escape_string($mybb->get_input('reason'));
-			$reasonlength = my_strlen($reason);
+			$reasonlength = my_strlen($mybb->get_input('reason'));
 			
 			if($reasonlength > 250) // Reason field is varchar(250) in database
 			{
@@ -3440,7 +3439,7 @@ if($mybb->input['action'] == "usergroups")
 			$joinrequest = array(
 				"uid" => $mybb->user['uid'],
 				"gid" => $mybb->get_input('joingroup', MyBB::INPUT_INT),
-				"reason" => $reason,
+				"reason" => $db->escape_string($mybb->get_input('reason')),
 				"dateline" => TIME_NOW
 			);
 
