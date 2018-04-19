@@ -15,7 +15,7 @@ $templatelist = "newreply,previewpost,loginbox,changeuserbox,posticons,newreply_
 $templatelist .= ",codebuttons,post_attachments_new,post_attachments,post_savedraftbutton,newreply_modoptions,newreply_threadreview_more,postbit_online,postbit_pm,newreply_disablesmilies_hidden,post_attachments_update";
 $templatelist .= ",postbit_warninglevel,postbit_author_user,postbit_edit,postbit_quickdelete,postbit_inlinecheck,postbit_posturl,postbit_quote,postbit_multiquote,newreply_modoptions_close,newreply_modoptions_stick";
 $templatelist .= ",post_attachments_attachment_postinsert,post_attachments_attachment_remove,post_attachments_attachment_unapproved,post_attachments_attachment,postbit_attachments_attachment,newreply_signature";
-$templatelist .= ",post_captcha_recaptcha_invisible,post_captcha_hidden,post_captcha,post_captcha_recaptcha,post_captcha_nocaptcha,postbit_groupimage,postbit_attachments,newreply_postoptions";
+$templatelist .= ",post_captcha_recaptcha_invisible,post_captcha_hidden,post_captcha,post_captcha_nocaptcha,postbit_groupimage,postbit_attachments,newreply_postoptions";
 $templatelist .= ",postbit_rep_button,postbit_author_guest,postbit_signature,postbit_classic,postbit_attachments_thumbnails_thumbnailpostbit_attachments_images_image,postbit_attachments_attachment_unapproved";
 $templatelist .= ",postbit_attachments_thumbnails,postbit_attachments_images,postbit_gotopost,forumdisplay_password_wrongpass,forumdisplay_password,posticons_icon,attachment_icon,postbit_reputation_formatted_link";
 $templatelist .= ",global_moderation_notice,newreply_disablesmilies,postbit_userstar,newreply_draftinput,postbit_avatar,forumdisplay_rules,postbit_offline,postbit_find,postbit_warninglevel_formatted,postbit_ignored";
@@ -468,43 +468,32 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 			$hide_captcha = true;
 		}
 
-		if($mybb->get_input('ajax', MyBB::INPUT_INT))
+		if($mybb->get_input('ajax', MyBB::INPUT_INT) && $post_captcha->type == 1)
 		{
-			if($post_captcha->type == 1)
+			$randomstr = random_str(5);
+			$imagehash = md5(random_str(12));
+
+			$imagearray = array(
+				"imagehash" => $imagehash,
+				"imagestring" => $randomstr,
+				"dateline" => TIME_NOW
+			);
+
+			$db->insert_query("captcha", $imagearray);
+
+			//header("Content-type: text/html; charset={$lang->settings['charset']}");
+			$data = '';
+			$data .= "<captcha>$imagehash";
+
+			if($hide_captcha)
 			{
-				$randomstr = random_str(5);
-				$imagehash = md5(random_str(12));
-
-				$imagearray = array(
-					"imagehash" => $imagehash,
-					"imagestring" => $randomstr,
-					"dateline" => TIME_NOW
-				);
-
-				$db->insert_query("captcha", $imagearray);
-
-				//header("Content-type: text/html; charset={$lang->settings['charset']}");
-				$data = '';
-				$data .= "<captcha>$imagehash";
-
-				if($hide_captcha)
-				{
-					$data .= "|$randomstr";
-				}
-
-				$data .= "</captcha>";
-
-				//header("Content-type: application/json; charset={$lang->settings['charset']}");
-				$json_data = array("data" => $data);
+				$data .= "|$randomstr";
 			}
-			else if($post_captcha->type == 2)
-			{
-				//header("Content-type: text/html; charset={$lang->settings['charset']}");
-				$data = "<captcha>reload</captcha>";
 
-				//header("Content-type: application/json; charset={$lang->settings['charset']}");
-				$json_data = array("data" => $data);
-			}
+			$data .= "</captcha>";
+
+			//header("Content-type: application/json; charset={$lang->settings['charset']}");
+			$json_data = array("data" => $data);
 		}
 	}
 
@@ -1243,24 +1232,19 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			{
 				$post_captcha->build_captcha();
 			}
-			elseif(in_array($post_captcha->type, array(2, 4, 5)))
+			elseif(in_array($post_captcha->type, array(4, 5)))
 			{
 				$post_captcha->build_recaptcha();
 			}
-
-			if($post_captcha->html)
-			{
-				$captcha = $post_captcha->html;
-			}
 		}
-		else if($correct && (in_array($post_captcha->type, array(2, 4, 5))))
+		else if($correct && (in_array($post_captcha->type, array(4, 5))))
 		{
 			$post_captcha->build_recaptcha();
+		}
 
-			if($post_captcha->html)
-			{
-				$captcha = $post_captcha->html;
-			}
+		if($post_captcha->html)
+		{
+			$captcha = $post_captcha->html;
 		}
 	}
 
