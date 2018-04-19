@@ -10,6 +10,7 @@
 
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'usercp.php');
+define("ALLOWABLE_PAGE", "removesubscription,removesubscriptions");
 
 $templatelist = "usercp,usercp_nav,usercp_profile,usercp_changename,usercp_password,usercp_subscriptions_thread,forumbit_depth2_forum_lastpost,usercp_forumsubscriptions_forum,postbit_reputation_formatted,usercp_subscriptions_thread_icon";
 $templatelist .= ",usercp_usergroups_memberof_usergroup,usercp_usergroups_memberof,usercp_usergroups_joinable_usergroup,usercp_usergroups_joinable,usercp_usergroups,usercp_nav_attachments,usercp_options_style,usercp_warnings_warning_post";
@@ -27,6 +28,7 @@ $templatelist .= ",usercp_editlists_no_buddies,usercp_editlists_no_ignored,userc
 $templatelist .= ",usercp_usergroups_leader_usergroup_memberlist,usercp_usergroups_leader_usergroup_moderaterequests,usercp_usergroups_memberof_usergroup_leaveprimary,usercp_usergroups_memberof_usergroup_display,usercp_email,usercp_options_pms";
 $templatelist .= ",usercp_usergroups_memberof_usergroup_leaveleader,usercp_usergroups_memberof_usergroup_leaveother,usercp_usergroups_memberof_usergroup_leave,usercp_usergroups_joinable_usergroup_description,usercp_options_time_format";
 $templatelist .= ",usercp_editlists_sent_request,usercp_editlists_received_request,usercp_drafts_none,usercp_usergroups_memberof_usergroup_setdisplay,usercp_usergroups_memberof_usergroup_description,usercp_options_quick_reply";
+$templatelist .= ",usercp_addsubscription_thread,forumdisplay_password,forumdisplay_password_wrongpass,";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -53,6 +55,8 @@ $errors = '';
 $mybb->input['action'] = $mybb->get_input('action');
 
 usercp_menu();
+
+$server_http_referer = htmlentities($_SERVER['HTTP_REFERER']);
 
 $plugins->run_hooks("usercp_start");
 if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
@@ -1858,6 +1862,255 @@ if($mybb->input['action'] == "forumsubscriptions")
 
 	eval("\$forumsubscriptions = \"".$templates->get("usercp_forumsubscriptions")."\";");
 	output_page($forumsubscriptions);
+}
+
+if($mybb->input['action'] == "do_addsubscription" && $mybb->get_input('type') != "forum")
+{
+	// Verify incoming POST request
+	verify_post_check($mybb->get_input('my_post_key'));
+
+	$thread = get_thread($mybb->get_input('tid'));
+	if(!$thread)
+	{
+		error($lang->error_invalidthread);
+	}
+
+	// Is the currently logged in user a moderator of this forum?
+	$ismod = is_moderator($thread['fid']);
+
+	// Make sure we are looking at a real thread here.
+	if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
+	{
+		error($lang->error_invalidthread);
+	}
+
+	$forumpermissions = forum_permissions($thread['fid']);
+	if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || (isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']))
+	{
+		error_no_permission();
+	}
+
+	// check if the forum requires a password to view. If so, we need to show a form to the user
+	check_forum_password($thread['fid']);
+
+	// Naming of the hook retained for backward compatibility while dropping usercp2.php
+	$plugins->run_hooks("usercp2_do_addsubscription");
+
+	add_subscribed_thread($thread['tid'], $mybb->get_input('notification', MyBB::INPUT_INT));
+
+	if($mybb->get_input('referrer'))
+	{
+		$url = htmlspecialchars_uni($mybb->get_input('referrer'));
+	}
+	else
+	{
+		$url = get_thread_link($thread['tid']);
+	}
+	redirect($url, $lang->redirect_subscriptionadded);
+}
+
+if($mybb->input['action'] == "addsubscription")
+{
+	// Verify incoming POST request
+	verify_post_check($mybb->get_input('my_post_key'));
+
+	if($mybb->get_input('type') == "forum")
+	{
+		$forum = get_forum($mybb->get_input('fid', MyBB::INPUT_INT));
+		if(!$forum)
+		{
+			error($lang->error_invalidforum);
+		}
+		$forumpermissions = forum_permissions($forum['fid']);
+		if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0)
+		{
+			error_no_permission();
+		}
+
+		// check if the forum requires a password to view. If so, we need to show a form to the user
+		check_forum_password($forum['fid']);
+
+		// Naming of the hook retained for backward compatibility while dropping usercp2.php
+		$plugins->run_hooks("usercp2_addsubscription_forum");
+
+		add_subscribed_forum($forum['fid']);
+		if($server_http_referer && $mybb->request_method != 'post')
+		{
+			$url = $server_http_referer;
+		}
+		else
+		{
+			$url = "index.php";
+		}
+		redirect($url, $lang->redirect_forumsubscriptionadded);
+	}
+	else
+	{
+		$thread  = get_thread($mybb->get_input('tid', MyBB::INPUT_INT));
+		if(!$thread)
+		{
+			error($lang->error_invalidthread);
+		}
+
+		// Is the currently logged in user a moderator of this forum?
+		$ismod = is_moderator($thread['fid']);
+
+		// Make sure we are looking at a real thread here.
+		if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
+		{
+			error($lang->error_invalidthread);
+		}
+
+		add_breadcrumb($lang->nav_subthreads, "usercp.php?action=subscriptions");
+		add_breadcrumb($lang->nav_addsubscription);
+
+		$forumpermissions = forum_permissions($thread['fid']);
+		if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || (isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']))
+		{
+			error_no_permission();
+		}
+
+		// check if the forum requires a password to view. If so, we need to show a form to the user
+		check_forum_password($thread['fid']);
+
+		$referrer = '';
+		if($server_http_referer)
+		{
+			$referrer = $server_http_referer;
+		}
+
+		require_once MYBB_ROOT."inc/class_parser.php";
+		$parser = new postParser;
+		$thread['subject'] = $parser->parse_badwords($thread['subject']);
+		$thread['subject'] = htmlspecialchars_uni($thread['subject']);
+		$lang->subscribe_to_thread = $lang->sprintf($lang->subscribe_to_thread, $thread['subject']);
+
+		$notification_none_checked = $notification_email_checked = $notification_pm_checked = '';
+		if($mybb->user['subscriptionmethod'] == 1 || $mybb->user['subscriptionmethod'] == 0)
+		{
+			$notification_none_checked = "checked=\"checked\"";
+		}
+		else if($mybb->user['subscriptionmethod'] == 2)
+		{
+			$notification_email_checked = "checked=\"checked\"";
+		}
+		else if($mybb->user['subscriptionmethod'] == 3)
+		{
+			$notification_pm_checked = "checked=\"checked\"";
+		}
+
+		// Naming of the hook retained for backward compatibility while dropping usercp2.php
+		$plugins->run_hooks("usercp2_addsubscription_thread");
+
+		eval("\$add_subscription = \"".$templates->get("usercp_addsubscription_thread")."\";");
+		output_page($add_subscription);
+		exit;
+	}
+}
+
+if($mybb->input['action'] == "removesubscription")
+{
+	// Verify incoming POST request
+	verify_post_check($mybb->get_input('my_post_key'));
+
+	if($mybb->get_input('type') == "forum")
+	{
+		$forum = get_forum($mybb->get_input('fid', MyBB::INPUT_INT));
+		if(!$forum)
+		{
+			error($lang->error_invalidforum);
+		}
+
+		// check if the forum requires a password to view. If so, we need to show a form to the user
+		check_forum_password($forum['fid']);
+
+		// Naming of the hook retained for backward compatibility while dropping usercp2.php
+		$plugins->run_hooks("usercp2_removesubscription_forum");
+
+		remove_subscribed_forum($forum['fid']);
+		if($server_http_referer && $mybb->request_method != 'post')
+		{
+			$url = $server_http_referer;
+		}
+		else
+		{
+			$url = "usercp.php?action=forumsubscriptions";
+		}
+		redirect($url, $lang->redirect_forumsubscriptionremoved);
+	}
+	else
+	{
+		$thread = get_thread($mybb->get_input('tid', MyBB::INPUT_INT));
+		if(!$thread)
+		{
+			error($lang->error_invalidthread);
+		}
+
+		// Is the currently logged in user a moderator of this forum?
+		$ismod = is_moderator($thread['fid']);
+
+		// Make sure we are looking at a real thread here.
+		if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
+		{
+			error($lang->error_invalidthread);
+		}
+
+		// check if the forum requires a password to view. If so, we need to show a form to the user
+		check_forum_password($thread['fid']);
+
+		// Naming of the hook retained for backward compatibility while dropping usercp2.php
+		$plugins->run_hooks("usercp2_removesubscription_thread");
+
+		remove_subscribed_thread($thread['tid']);
+		if($server_http_referer && $mybb->request_method != 'post')
+		{
+			$url = $server_http_referer;
+		}
+		else
+		{
+			$url = "usercp.php?action=subscriptions";
+		}
+		redirect($url, $lang->redirect_subscriptionremoved);
+	}
+}
+
+if($mybb->input['action'] == "removesubscriptions")
+{
+	// Verify incoming POST request
+	verify_post_check($mybb->get_input('my_post_key'));
+
+	if($mybb->get_input('type') == "forum")
+	{
+		// Naming of the hook retained for backward compatibility while dropping usercp2.php
+		$plugins->run_hooks("usercp2_removesubscriptions_forum");
+
+		$db->delete_query("forumsubscriptions", "uid='".$mybb->user['uid']."'");
+		if($server_http_referer)
+		{
+			$url = $server_http_referer;
+		}
+		else
+		{
+			$url = "usercp.php?action=forumsubscriptions";
+		}
+		redirect($url, $lang->redirect_forumsubscriptionsremoved);
+	}
+	else
+	{
+		// Naming of the hook retained for backward compatibility while dropping usercp2.php
+		$plugins->run_hooks("usercp2_removesubscriptions_thread");
+
+		$db->delete_query("threadsubscriptions", "uid='".$mybb->user['uid']."'");
+		if($server_http_referer)
+		{
+			$url = $server_http_referer;
+		}
+		else
+		{
+			$url = "usercp.php?action=subscriptions";
+		}
+		redirect($url, $lang->redirect_subscriptionsremoved);
+	}
 }
 
 if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")

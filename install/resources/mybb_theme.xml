@@ -1814,7 +1814,7 @@ div.jqi .jqisubstate .jqibuttons button{
 
 /** Impromptu End */
 ]]></stylesheet>
-		<stylesheet name="usercp.css" attachedto="usercp.php|usercp2.php|private.php" version="1808" disporder="2"><![CDATA[.usercp_nav_item {
+		<stylesheet name="usercp.css" attachedto="usercp.php|private.php" version="1808" disporder="2"><![CDATA[.usercp_nav_item {
 	display: block;
 	padding: 1px 0 1px 23px;
 	background-image: url(images/usercp_sprite.png);
@@ -4029,7 +4029,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 	<tr>
 		<td class="thead" colspan="{$colspan}">
 			<div class="float_right">
-				<span class="smalltext"><strong><a href="misc.php?action=markread&amp;fid={$fid}{$post_code_string}">{$lang->markforum_read}</a> | <a href="usercp2.php?action={$add_remove_subscription}subscription&amp;type=forum&amp;fid={$fid}&amp;my_post_key={$mybb->post_code}">{$add_remove_subscription_text}</a>{$clearstoredpass}</strong></span>
+				<span class="smalltext"><strong><a href="misc.php?action=markread&amp;fid={$fid}{$post_code_string}">{$lang->markforum_read}</a> | <a href="usercp.php?action={$add_remove_subscription}subscription&amp;type=forum&amp;fid={$fid}&amp;my_post_key={$mybb->post_code}">{$add_remove_subscription_text}</a>{$clearstoredpass}</strong></span>
 			</div>
 			<div>
 				<strong>{$foruminfo['name']}</strong>
@@ -11743,7 +11743,7 @@ if(use_xmlhttprequest == "1")
 		<a href="{$similar_thread['lastpostlink']}">{$lang->lastpost}</a>: {$lastposterlink}</span>
 	</td>
 	</tr>]]></template>
-		<template name="showthread_subscription" version="1809"><![CDATA[<li class="subscription_{$add_remove_subscription}"><a href="usercp2.php?action={$add_remove_subscription}subscription&amp;tid={$tid}&amp;my_post_key={$mybb->post_code}">{$add_remove_subscription_text}</a></li>]]></template>
+		<template name="showthread_subscription" version="1809"><![CDATA[<li class="subscription_{$add_remove_subscription}"><a href="usercp.php?action={$add_remove_subscription}subscription&amp;tid={$tid}&amp;my_post_key={$mybb->post_code}">{$add_remove_subscription_text}</a></li>]]></template>
 		<template name="showthread_threaded_bit" version="1800"><![CDATA[<div style="margin-left: {$indentsize}px;"><a href="showthread.php?tid={$tid}&amp;pid={$post['pid']}&amp;mode=threaded">{$post['subject']}</a> <span class="smalltext">- {$lang->by} {$post['profilelink']} - {$postdate}</span></div>]]></template>
 		<template name="showthread_threaded_bitactive" version="1800"><![CDATA[<div style="margin-left: {$indentsize}px;"><strong>{$post['subject']}</strong> <span class="smalltext">- {$lang->by} {$post['profilelink']} - {$postdate}</span></div>]]></template>
 		<template name="showthread_threadedbox" version="120"><![CDATA[<br />
@@ -11910,7 +11910,7 @@ if(use_xmlhttprequest == "1")
 </head>
 <body>
 {$header}
-<form action="usercp2.php" method="post" name="input">
+<form action="usercp.php" method="post" name="input">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="do_addsubscription" />
 <input type="hidden" name="tid" value="{$thread['tid']}" />
@@ -12624,7 +12624,7 @@ if(use_xmlhttprequest == "1")
 		<template name="usercp_forumsubscriptions_forum" version="1804"><![CDATA[<tr>
 <td class="trow1" align="center" valign="top" width="1"><span class="forum_status forum_{$lightbulb['folder']}" title="{$lightbulb['altonoff']}"></span></td>
 <td class="trow1" valign="top">
-<strong><a href="{$forum_url}">{$forum['name']}</a></strong><br /><span class="smalltext"><a href="usercp2.php?action=removesubscription&amp;type=forum&amp;fid={$forum['fid']}&amp;my_post_key={$mybb->post_code}">{$lang->unsubscribe}</a> | <a href="newthread.php?fid={$forum['fid']}">{$lang->new_thread}</a></span></td>
+<strong><a href="{$forum_url}">{$forum['name']}</a></strong><br /><span class="smalltext"><a href="usercp.php?action=removesubscription&amp;type=forum&amp;fid={$forum['fid']}&amp;my_post_key={$mybb->post_code}">{$lang->unsubscribe}</a> | <a href="newthread.php?fid={$forum['fid']}">{$lang->new_thread}</a></span></td>
 <td class="trow2" valign="top" style="white-space: nowrap; text-align: center;">{$posts}</td>
 <td class="trow1" valign="top" style="white-space: nowrap; text-align: center;">{$threads}</td>
 <td class="trow2" valign="top" style="white-space: nowrap">{$lastpost}</td>
@@ -13413,7 +13413,7 @@ if(use_xmlhttprequest == "1")
 		{$gobutton}
 	</div>
 	<div>
-		<strong><a href="usercp2.php?action=removesubscriptions&amp;my_post_key={$mybb->post_code}">{$lang->remove_all_subscriptions}</a></strong>
+		<strong><a href="usercp.php?action=removesubscriptions&amp;my_post_key={$mybb->post_code}">{$lang->remove_all_subscriptions}</a></strong>
 	</div>
 	</td>
 </tr>]]></template>

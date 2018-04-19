@@ -8583,7 +8583,6 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 	}
 
 	$pm['options'] = array(
-		"signature" => 0,
 		"disablesmilies" => 0,
 		"savecopy" => 0,
 		"readreceipt" => 0
@@ -8745,6 +8744,7 @@ function my_validate_url($url, $relative_path=false, $allow_local=false)
 /**
  * Strip html tags from string, also removes <script> and <style> contents.
  *
+ * @deprecated
  * @param  string $string         String to stripe
  * @param  string $allowable_tags Allowed html tags
  *

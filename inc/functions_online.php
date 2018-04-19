@@ -516,6 +516,14 @@ function fetch_wol_activity($location, $nopermission=false)
 			{
 				$user_activity['activity'] = "usercp_subscriptions";
 			}
+			elseif($parameters['action'] == "addfavorite" || $parameters['action'] == "removefavorite" || $parameters['action'] == "removefavorites")
+			{
+				$user_activity['activity'] = "usercp_managefavorites";
+			}
+			else if($parameters['action'] == "addsubscription" || $parameters['action'] == "do_addsubscription" || $parameters['action'] == "removesubscription" || $parameters['action'] == "removesubscriptions")
+			{
+				$user_activity['activity'] = "usercp_managesubscriptions";
+			}
 			elseif($parameters['action'] == "notepad" || $parameters['action'] == "do_notepad")
 			{
 				$user_activity['activity'] = "usercp_notepad";
@@ -523,20 +531,6 @@ function fetch_wol_activity($location, $nopermission=false)
 			else
 			{
 				$user_activity['activity'] = "usercp";
-			}
-			break;
-		case "usercp2":
-			if(!isset($parameters['action']))
-			{
-				$parameters['action'] = '';
-			}
-			if($parameters['action'] == "addfavorite" || $parameters['action'] == "removefavorite" || $parameters['action'] == "removefavorites")
-			{
-				$user_activity['activity'] = "usercp2_favorites";
-			}
-			else if($parameters['action'] == "addsubscription" || $parameters['action'] == "do_addsubscription" || $parameters['action'] == "removesubscription" || $parameters['action'] == "removesubscriptions")
-			{
-				$user_activity['activity'] = "usercp2_subscriptions";
 			}
 			break;
 		case "portal":
@@ -1088,10 +1082,10 @@ function build_friendly_wol_location($user_activity)
 		case "usercp":
 			$location_name = $lang->user_cp;
 			break;
-		case "usercp2_favorites":
+		case "usercp_managefavorites":
 			$location_name = $lang->managing_favorites;
 			break;
-		case "usercp2_subscriptions":
+		case "usercp_managesubscriptions":
 			$location_name = $lang->managing_subscriptions;
 			break;
 		case "portal":
