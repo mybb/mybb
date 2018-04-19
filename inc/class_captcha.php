@@ -104,10 +104,12 @@ class captcha
 		{
 			$this->captcha_template = $template;
 
-			if($this->type == 4){
+			if($this->type == 4)
+			{
 				$this->captcha_template .= "_nocaptcha";
 			}
-			elseif($this->type == 5){
+			elseif($this->type == 5)
+			{
 				$this->captcha_template .= "_recaptcha_invisible";
 			}
 		}
