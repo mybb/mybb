@@ -22,12 +22,19 @@ $upgrade_detail = array(
 
 function upgrade43_dbchanges()
 {
-	global $output, $cache;
+	global $output, $mybb, $db, $cache;
 
 	$output->print_header("Updating Database");
-
 	echo "<p>Performing necessary upgrade queries...</p>";
 	flush();
+
+	$db->update_query('settings', array('optionscode' => 'select\r\n0=No CAPTCHA\r\n1=MyBB Default CAPTCHA\r\n4=NoCAPTCHA reCAPTCHA\r\n5=reCAPTCHA invisible'), "name='captchaimage'");
+
+	if($mybb->settings['captchaimage'] == 2)
+	{
+		$db->update_query('settings', array('value' => 1), "name='captchaimage'"); // Reset CAPTCHA to MyBB Default
+		$db->update_query('settings', "value=''", 'name IN (\'captchapublickey\', \'captchaprivatekey\''); // Clean out stored credential keys
+	}
 
 	$cache->delete("mybb_credits");
 
