@@ -251,7 +251,7 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 		{
 			$user['usertitle'] = $mybb->get_input('usertitle');
 		}
-		else if(!empty($mybb->input['reverttitle']))
+		elseif(!empty($mybb->input['reverttitle']))
 		{
 			$user['usertitle'] = '';
 		}
@@ -334,11 +334,11 @@ if($mybb->input['action'] == "profile")
 	{
 		$allselected = " selected=\"selected\"";
 	}
-	else if($user['birthdayprivacy'] == 'none')
+	elseif($user['birthdayprivacy'] == 'none')
 	{
 		$noneselected = " selected=\"selected\"";
 	}
-	else if($user['birthdayprivacy'] == 'age')
+	elseif($user['birthdayprivacy'] == 'age')
 	{
 		$ageselected = " selected=\"selected\"";
 	}
@@ -877,11 +877,11 @@ if($mybb->input['action'] == "options")
 	{
 		$no_subscribe_selected = "selected=\"selected\"";
 	}
-	else if(isset($user['subscriptionmethod']) && $user['subscriptionmethod'] == 2)
+	elseif(isset($user['subscriptionmethod']) && $user['subscriptionmethod'] == 2)
 	{
 		$instant_email_subscribe_selected = "selected=\"selected\"";
 	}
-	else if(isset($user['subscriptionmethod']) && $user['subscriptionmethod'] == 3)
+	elseif(isset($user['subscriptionmethod']) && $user['subscriptionmethod'] == 3)
 	{
 		$instant_pm_subscribe_selected = "selected=\"selected\"";
 	}
@@ -967,7 +967,7 @@ if($mybb->input['action'] == "options")
 	{
 		$dst_auto_selected = "selected=\"selected\"";
 	}
-	else if(isset($user['dstcorrection']) && $user['dstcorrection'] == 1)
+	elseif(isset($user['dstcorrection']) && $user['dstcorrection'] == 1)
 	{
 		$dst_enabled_selected = "selected=\"selected\"";
 	}
@@ -1408,11 +1408,11 @@ if($mybb->input['action'] == "do_subscriptions")
 		{
 			$new_notification = 0;
 		}
-		else if($mybb->get_input('do') == "email_notification")
+		elseif($mybb->get_input('do') == "email_notification")
 		{
 			$new_notification = 1;
 		}
-		else if($mybb->get_input('do') == "pm_notification")
+		elseif($mybb->get_input('do') == "pm_notification")
 		{
 			$new_notification = 2;
 		}
@@ -1499,7 +1499,7 @@ if($mybb->input['action'] == "subscriptions")
 			// Hmm, you don't have permission to view this thread - unsubscribe!
 			$del_subscriptions[] = $subscription['sid'];
 		}
-		else if($subscription['tid'])
+		elseif($subscription['tid'])
 		{
 			$subscriptions[$subscription['tid']] = $subscription;
 		}
@@ -1990,11 +1990,11 @@ if($mybb->input['action'] == "addsubscription")
 		{
 			$notification_none_checked = "checked=\"checked\"";
 		}
-		else if($mybb->user['subscriptionmethod'] == 2)
+		elseif($mybb->user['subscriptionmethod'] == 2)
 		{
 			$notification_email_checked = "checked=\"checked\"";
 		}
-		else if($mybb->user['subscriptionmethod'] == 3)
+		elseif($mybb->user['subscriptionmethod'] == 3)
 		{
 			$notification_pm_checked = "checked=\"checked\"";
 		}
@@ -2184,7 +2184,7 @@ if($mybb->input['action'] == "editsig")
 		// Usergroup has no permission to use this facility
 		error_no_permission();
 	}
-	else if($mybb->usergroup['canusesig'] == 1 && $mybb->usergroup['canusesigxposts'] > 0 && $mybb->user['postnum'] < $mybb->usergroup['canusesigxposts'])
+	elseif($mybb->usergroup['canusesig'] == 1 && $mybb->usergroup['canusesigxposts'] > 0 && $mybb->user['postnum'] < $mybb->usergroup['canusesigxposts'])
 	{
 		// Usergroup can use this facility, but only after x posts
 		error($lang->sprintf($lang->sig_suspended_posts, $mybb->usergroup['canusesigxposts']));
@@ -2472,7 +2472,7 @@ if($mybb->input['action'] == "avatar")
 	{
 		eval("\$auto_resize = \"".$templates->get("usercp_avatar_auto_resize_auto")."\";");
 	}
-	else if($mybb->settings['avatarresizing'] == "user")
+	elseif($mybb->settings['avatarresizing'] == "user")
 	{
 		eval("\$auto_resize = \"".$templates->get("usercp_avatar_auto_resize_user")."\";");
 	}
@@ -2905,7 +2905,7 @@ if($mybb->input['action'] == "do_editlists")
 	}
 
 	// Removing a user from this list
-	else if($mybb->get_input('delete', MyBB::INPUT_INT))
+	elseif($mybb->get_input('delete', MyBB::INPUT_INT))
 	{
 		// Check if user exists on the list
 		$key = array_search($mybb->get_input('delete', MyBB::INPUT_INT), $existing_users);
@@ -3420,17 +3420,27 @@ if($mybb->input['action'] == "usergroups")
 
 		$query = $db->simple_select("joinrequests", "*", "uid='".$mybb->user['uid']."' AND gid='".$mybb->get_input('joingroup', MyBB::INPUT_INT)."'");
 		$joinrequest = $db->fetch_array($query);
+
 		if($joinrequest['rid'])
 		{
 			error($lang->already_sent_join_request);
 		}
+
 		if($mybb->get_input('do') == "joingroup" && $usergroup['type'] == 4)
 		{
+			$reason = $db->escape_string($mybb->get_input('reason'));
+			$reasonlength = my_strlen($reason);
+			
+			if($reasonlength > 250) // Reason field is varchar(250) in database
+			{
+				error($lang->sprintf($lang->joinreason_too_long, ($reasonlength - 250)));
+			}
+
 			$now = TIME_NOW;
 			$joinrequest = array(
 				"uid" => $mybb->user['uid'],
 				"gid" => $mybb->get_input('joingroup', MyBB::INPUT_INT),
-				"reason" => $db->escape_string($mybb->get_input('reason')),
+				"reason" => $reason,
 				"dateline" => TIME_NOW
 			);
 

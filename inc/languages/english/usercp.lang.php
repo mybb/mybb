@@ -272,6 +272,7 @@ $l['no_pending_invitation'] = "You do not have any pending invitation to this gr
 $l['already_accepted_invite'] = "You have already accepted an invite to join this group.";
 $l['already_member_of_group'] = "You cannot join a group of which you are already a member of.";
 $l['already_sent_join_request'] = "You have already sent a request to join this group and it is yet to be moderated.";
+$l['joinreason_too_long'] = "Specified Join Reason is too long. A maximum of 250 characters is allowed. Please remove {1} character(s) from this field.";
 $l['group_join_requestsent'] = "Your join request has been successfully sent. Once your membership is approved you will be automatically joined to this user group.<br />You will be now taken to the group memberships page.";
 $l['joined_group'] = "You have successfully joined the specified group.<br />You will be now taken back to the group management page.";
 $l['cannot_leave_primary_group'] = "Sorry, but you cannot leave your primary group.";
