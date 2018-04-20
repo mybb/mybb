@@ -17,11 +17,11 @@
             </tr>
             {% for usergroup in leadinggroups %}
                 <tr>
-                    <td class="{{ trow }}"><strong>{{ usergroup.title|e }}</strong></td>
-                    <td class="{{ trow }}" align="center">
+                    <td><strong>{{ usergroup.title|e }}</strong></td>
+                    <td align="center">
                         {{ usergroup.users }} [<a href="managegroup.php?gid={{ usergroup.gid }}">{{ lang.view_members }}</a>]
                     </td>
-                    <td class="{{ trow }}" align="center">
+                    <td align="center">
                         {% if usergroup.type != 4 %}
                             --
                         {% else %}
@@ -49,13 +49,13 @@
             </tr>
             {% for usergroup in joinablegroups %}
                 <tr>
-                    <td class="{{ trow }}">
+                    <td>
                         <strong>{{ usergroup.title|e }}</strong>
                         {% if usergroup.description %}
                             <br /><span class="smalltext">{{ usergroup.description|e }}</span>
                         {% endif %}
                     </td>
-                    <td class="{{ trow }}">
+                    <td>
                         <span class="smalltext">
                             {% if usergroup.type == 4 %}
                                 {{ lang.usergroup_joins_moderated }}
@@ -74,7 +74,7 @@
                             </span>
                         {% endif %}
                     </td>
-                    <td class="{{ trow }}" align="center">
+                    <td align="center">
                         {% if usergroup.joinlink %}
                             {{ usergroup.joinlink }}
                         {% elseif usergroup.type == 5 %}
@@ -101,7 +101,7 @@
             </tr>
             {% for usergroup in groupsmemberof %}
                 <tr>
-                    <td class="{{ trow }}">
+                    <td>
                         <strong>{{ usergroup.title|e }}</strong>
                         {% if usergroup.candisplaygroup and usergroup.gid == mybb.user.displaygroup %}
                             ({{ lang.display_group }})
@@ -112,8 +112,8 @@
                             <br /><span class="smalltext">{{ usergroup.description|e }}</span>
                         {% endif %}
                     </td>
-                    <td class="{{ trow }}" align="center">{{ usergroup.usertitle|e }}</td>
-                    <td class="{{ trow }}" align="center">
+                    <td align="center">{{ usergroup.usertitle|e }}</td>
+                    <td align="center">
                         {% if usergroup.primary %}
                             <span class="smalltext">{{ lang.usergroup_leave_primary }}</span>
                         {% elseif groupleader[usergroup.gid] %}
