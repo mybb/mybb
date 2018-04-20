@@ -64,7 +64,7 @@ if(!empty($mybb->input['pid']) && !isset($mybb->input['tid']))
 // Get the thread details from the database.
 $thread = get_thread($mybb->get_input('tid', MyBB::INPUT_INT));
 
-if(!$thread || substr($thread['closed'], 0, 6) == "moved|")
+if(!$thread || $thread['moved'] != 0)
 {
 	error($lang->error_invalidthread);
 }
@@ -299,13 +299,13 @@ if($mybb->input['action'] == "newpost")
 // Jump to the last post.
 if($mybb->input['action'] == "lastpost")
 {
-	if(my_strpos($thread['closed'], "moved|"))
+	if($thread['moved'] != 0)
 	{
 		$query = $db->query("
 			SELECT p.pid
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON(p.tid=t.tid)
-			WHERE t.fid='".$thread['fid']."' AND t.closed NOT LIKE 'moved|%' {$visibleonly2}
+			WHERE t.fid='".$thread['fid']."' AND t.moved='0' {$visibleonly2}
 			ORDER BY p.dateline DESC
 			LIMIT 1
 		");
@@ -334,7 +334,7 @@ if($mybb->input['action'] == "nextnewest")
 		"limit" => 1,
 		"order_by" => "lastpost"
 	);
-	$query = $db->simple_select('threads', '*', "fid={$thread['fid']} AND lastpost > {$thread['lastpost']} {$visibleonly} AND closed NOT LIKE 'moved|%'", $options);
+	$query = $db->simple_select('threads', '*', "fid={$thread['fid']} AND lastpost > {$thread['lastpost']} {$visibleonly} AND moved = 0", $options);
 	$nextthread = $db->fetch_array($query);
 
 	// Are there actually next newest posts?
@@ -365,7 +365,7 @@ if($mybb->input['action'] == "nextoldest")
 		"order_by" => "lastpost",
 		"order_dir" => "desc"
 	);
-	$query = $db->simple_select("threads", "*", "fid=".$thread['fid']." AND lastpost < ".$thread['lastpost']." {$visibleonly} AND closed NOT LIKE 'moved|%'", $options);
+	$query = $db->simple_select("threads", "*", "fid=".$thread['fid']." AND lastpost < ".$thread['lastpost']." {$visibleonly} AND moved = '0'", $options);
 	$nextthread = $db->fetch_array($query);
 
 	// Are there actually next oldest posts?
@@ -946,7 +946,7 @@ if($mybb->input['action'] == "thread")
                     SELECT t.*, t.username AS threadusername, u.username
                     FROM " . TABLE_PREFIX . "threads t
                     LEFT JOIN " . TABLE_PREFIX . "users u ON (u.uid = t.uid), plainto_tsquery ('".$db->escape_string($thread['subject'])."') AS query
-                    WHERE t.fid='{$thread['fid']}' AND t.tid!='{$thread['tid']}' AND t.visible='1' AND t.closed NOT LIKE 'moved|%' AND t.subject @@ query{$own_perm}
+                    WHERE t.fid='{$thread['fid']}' AND t.tid!='{$thread['tid']}' AND t.visible='1' AND t.moved='0' AND t.subject @@ query{$own_perm}
                     ORDER BY t.lastpost DESC
                     OFFSET 0 LIMIT {$mybb->settings['similarlimit']}
                 ");
@@ -956,7 +956,7 @@ if($mybb->input['action'] == "thread")
                     SELECT t.*, t.username AS threadusername, u.username, MATCH (t.subject) AGAINST ('".$db->escape_string($thread['subject'])."') AS relevance
                     FROM " . TABLE_PREFIX . "threads t
                     LEFT JOIN " . TABLE_PREFIX . "users u ON (u.uid = t.uid)
-                    WHERE t.fid='{$thread['fid']}' AND t.tid!='{$thread['tid']}' AND t.visible='1' AND t.closed NOT LIKE 'moved|%'{$own_perm} AND MATCH (t.subject) AGAINST ('".$db->escape_string($thread['subject'])."') >= '{$mybb->settings['similarityrating']}'
+                    WHERE t.fid='{$thread['fid']}' AND t.tid!='{$thread['tid']}' AND t.visible='1' AND t.moved='0'{$own_perm} AND MATCH (t.subject) AGAINST ('".$db->escape_string($thread['subject'])."') >= '{$mybb->settings['similarityrating']}'
                     ORDER BY t.lastpost DESC
                     LIMIT 0, {$mybb->settings['similarlimit']}
                 ");

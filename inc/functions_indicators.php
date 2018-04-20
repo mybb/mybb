@@ -127,7 +127,7 @@ function fetch_unread_count($fid)
 			$count = 0;
 
 			// We've read at least some threads, are they here?
-			$query = $db->simple_select("threads", "lastpost, tid, fid", "visible=1 AND closed NOT LIKE 'moved|%' AND {$where} AND lastpost > '{$cutoff}'", array("limit" => 100));
+			$query = $db->simple_select("threads", "lastpost, tid, fid", "visible=1 AND moved=0 AND {$where} AND lastpost > '{$cutoff}'", array("limit" => 100));
 
 			while($thread = $db->fetch_array($query))
 			{
@@ -153,7 +153,7 @@ function fetch_unread_count($fid)
 					FROM ".TABLE_PREFIX."threads t
 					LEFT JOIN ".TABLE_PREFIX."threadsread tr ON (tr.tid=t.tid AND tr.uid='{$mybb->user['uid']}')
 					LEFT JOIN ".TABLE_PREFIX."forumsread fr ON (fr.fid=t.fid AND fr.uid='{$mybb->user['uid']}')
-					WHERE t.visible=1 AND t.closed NOT LIKE 'moved|%' AND {$where2} AND t.lastpost > COALESCE(tr.dateline,$cutoff) AND t.lastpost > COALESCE(fr.dateline,$cutoff) AND t.lastpost>$cutoff
+					WHERE t.visible=1 AND t.moved=0 AND {$where2} AND t.lastpost > COALESCE(tr.dateline,$cutoff) AND t.lastpost > COALESCE(fr.dateline,$cutoff) AND t.lastpost>$cutoff
 				");
 				break;
 			default:
@@ -162,7 +162,7 @@ function fetch_unread_count($fid)
 					FROM ".TABLE_PREFIX."threads t
 					LEFT JOIN ".TABLE_PREFIX."threadsread tr ON (tr.tid=t.tid AND tr.uid='{$mybb->user['uid']}')
 					LEFT JOIN ".TABLE_PREFIX."forumsread fr ON (fr.fid=t.fid AND fr.uid='{$mybb->user['uid']}')
-					WHERE t.visible=1 AND t.closed NOT LIKE 'moved|%' AND {$where2} AND t.lastpost > IFNULL(tr.dateline,$cutoff) AND t.lastpost > IFNULL(fr.dateline,$cutoff) AND t.lastpost>$cutoff
+					WHERE t.visible=1 AND t.moved=0 AND {$where2} AND t.lastpost > IFNULL(tr.dateline,$cutoff) AND t.lastpost > IFNULL(fr.dateline,$cutoff) AND t.lastpost>$cutoff
 				");
 		}
 		return $db->fetch_field($query, "unread_count");
