@@ -1,0 +1,150 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ mybb.settings.bbname }} - {{ lang.search }}</title>
+{% endblock head %}
+
+{% block body %}
+    <form method="post" action="search.php">
+        <input type="hidden" name="action" value="do_search" />
+        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+            <tr>
+                <td colspan="2" class="thead"><strong>{{ lang.search }}</strong></td>
+            </tr>
+            <tr>
+                <td class="tcat" width="50%"><strong>{{ lang.search_keyword }}</strong></td>
+                <td class="tcat" width="50%"><strong>{{ lang.search_username }}</strong></td>
+            </tr>
+            <tr>
+                <td class="trow1">
+                    <table>
+                        <tr>
+                            <td valign="top"><input type="text" class="textbox" name="keywords" size="35" maxlength="250" /></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="smalltext">
+                                    <input type="radio" class="radio" name="postthread" value="1" checked="checked" />{{ lang.search_entire_post }}<br />
+                                    <input type="radio" class="radio" name="postthread" value="2" />{{ lang.search_titles_only }}
+                                </span>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                <td class="trow1">
+                    <input type="text" class="textbox" id="author" name="author" size="35" maxlength="{{ mybb.settings.maxnamelength }}" /><br />
+                    <span class="smalltext"><input type="checkbox" class="checkbox" name="matchusername" value="1" checked="checked" /> {{ lang.match_username }}</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="tcat"><strong>{{ lang.search_forums }}</strong></td>
+                <td class="tcat"><strong>{{ lang.search_options }}</strong></td>
+            </tr>
+            <tr>
+                <td class="trow1 no_bottom_border" rowspan="{{ search.rowspan }}">{{ srchlist }}</td>
+                <td class="trow1">
+                    <select name="findthreadst">
+                        <option value="1">{{ lang.threads_at_least }}</option>
+                        <option value="2">{{ lang.threads_at_most }}</option>
+                    </select> <input type="text" class="textbox" name="numreplies" size="2" maxlength="4" />&nbsp;{{ lang.replies2 }}<br />
+                    <br />
+                    <select name="postdate">
+                        <option value="0">{{ lang.find_anydate }}</option>
+                        <option value="1">{{ lang.find_yesterday }}</option>
+                        <option value="7">{{ lang.find_lastweek }}</option>
+                        <option value="14">{{ lang.find_2weeks }}</option>
+                        <option value="30">{{ lang.find_month }}</option>
+                        <option value="90">{{ lang.find_3months }}</option>
+                        <option value="180">{{ lang.find_6months }}</option>
+                        <option value="365">{{ lang.find_year }}</option>
+                    </select>&nbsp;&nbsp; <input type="radio" class="radio" name="pddir" value="1" checked="checked" />{{ lang.and_newer }}  <input type="radio" class="radio" name="pddir" value="0" />{{ lang.and_older }}<br />
+                    <br />
+                    {% if search.showprefixes %}
+                        <select name="threadprefix[]" multiple="multiple" size="5">
+                            <option value="any">{{ lang.any_prefix }}</option>
+                            <option value="0">{{ lang.no_prefix }}</option>
+                            {% for prefix in prefixes %}
+                                <option value="{{ prefix.pid }}"{% if prefix.selected %} selected="selected"{% endif %}>{{ prefix.prefix }}</option>
+                            {% endfor %}
+                        </select>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td class="tcat"><strong>{{ lang.sorting_options }}</strong></td>
+            </tr>
+            <tr>
+                <td class="trow1">
+                    <select name="sortby">
+                        <option value="lastpost">{{ lang.sort_lastpost }}</option>
+                        <option value="starter">{{ lang.sort_author }}</option>
+                        <option value="forum">{{ lang.sort_forum }}</option>
+                    </select> {{ lang.sort_in }} <input type="radio" class="radio" name="sortordr" value="asc" />{{ lang.sort_asc }} <input type="radio" class="radio" name="sortordr" value="desc" checked="checked" />{{ lang.sort_desc }} {{ lang.sort_order }}
+                </td>
+            </tr>
+            <tr>
+                <td class="tcat"><strong>{{ lang.display_options }}</strong></td>
+            </tr>
+            <tr>
+                <td class="trow1">
+                    {{ lang.show_results_as }} 
+                    <input type="radio" class="radio" name="showresults" value="threads" checked="checked" />{{ lang.show_results_threads }} 
+                    <input type="radio" class="radio" name="showresults" value="posts" />{{ lang.show_results_posts }}
+                </td>
+            </tr>
+            {% if search.ismoderator %}
+                <tr>
+                    <td class="tcat"><strong>{{ lang.mod_options }}</strong></td>
+                </tr>
+                <tr>
+                    <td class="trow1" valign="top">
+                        <select name="visible">
+                            <option value="">{{ lang.display_all }}</option>
+                            <option value="1">{{ lang.display_only_approved }}</option>
+                            <option value="0">{{ lang.display_only_unapproved }}</option>
+                            <option value="-1">{{ lang.display_only_softdeleted }}</option>
+                        </select> {{ lang.results }}
+                    </td>
+                </tr>
+            {% endif %}
+        </table>
+        <div align="center"><br /><input type="submit" class="button" name="submit" value="{{ lang.search }}" /></div>
+    </form>
+    <link rel="stylesheet" href="{{ asset_url('jscripts/select2/select2.css') }}">
+    <script type="text/javascript" src="{{ asset_url('jscripts/select2/select2.min.js') }}"></script>
+    <script type="text/javascript">
+        <!--
+        if({{ mybb.settings.use_xmlhttprequest }})
+        {
+            MyBB.select2();
+            $("#author").select2({
+                placeholder: "{{ lang.search_user }}",
+                minimumInputLength: 2,
+                multiple: false,
+                ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+                    url: "xmlhttp.php?action=get_users",
+                    dataType: 'json',
+                    data: function (term, page) {
+                        return {
+                            query: term, // search term
+                        };
+                    },
+                    results: function (data, page) { // parse the results into the format expected by Select2.
+                        // since we are using custom formatting functions we do not need to alter remote JSON data
+                        return {results: data};
+                    }
+                },
+                initSelection: function(element, callback) {
+                    var value = $(element).val();
+                    if (value !== "") {
+                        callback({
+                            id: value,
+                            text: value
+                        });
+                    }
+                },
+            });
+        }
+        // -->
+    </script>
+{% endblock body %}

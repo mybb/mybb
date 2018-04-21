@@ -1734,19 +1734,26 @@ else
 {
 	$plugins->run_hooks("search_start");
 	$srchlist = make_searchable_forums();
-	$prefixselect = build_prefix_select('all', 'any', 1);
+    $prefixes = build_prefix_select('all', 'any', 1);
 
-	$rowspan = 5;
+    $search['showprefixes'] = false;
+    if (is_array($prefixes)) {
+        $search['showprefixes'] = true;
+    }
 
-	$moderator_options = '';
-	if(is_moderator())
-	{
-		$rowspan += 2;
-		eval("\$moderator_options = \"".$templates->get("search_moderator_options")."\";");
-	}
+    $search['rowspan'] = 5;
 
-	$plugins->run_hooks("search_end");
+    $search['ismoderator'] = false;
+    if (is_moderator()) {
+        $search['ismoderator'] = true;
+        $search['rowspan'] += 2;
+    }
 
-	eval("\$search = \"".$templates->get("search")."\";");
-	output_page($search);
+    $plugins->run_hooks("search_end");
+
+    output_page(\MyBB\template('search/search.twig', [
+        'search' => $search,
+        'srchlist' => $srchlist,
+        'prefixes' => $prefixes,
+    ]));
 }
