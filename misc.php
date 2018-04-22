@@ -490,11 +490,13 @@ elseif($mybb->input['action'] == "help")
 						$expcolimage = "collapse_collapsed.png";
 						$expdisplay = "display: none;";
 						$expthead = " thead_collapsed";
+						$expaltext = "[+]";
 					}
 					else
 					{
 						$expcolimage = "collapse.png";
 						$expthead = "";
+						$expaltext = "[-]";
 					}
 				}
 				eval("\$sections .= \"".$templates->get("misc_help_section")."\";");
