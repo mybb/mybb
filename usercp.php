@@ -3801,16 +3801,16 @@ if($mybb->input['action'] == "attachments")
 	$usage = $db->fetch_array($query);
 	$totalusage = $usage['ausage'];
 	$totalattachments = $usage['acount'];
-	$friendlyusage = get_friendly_size($totalusage);
+	$friendlyusage = get_friendly_size((int)$totalusage);
 	if($mybb->usergroup['attachquota'])
 	{
-		$percent = round(($totalusage/($mybb->usergroup['attachquota']*1024))*100)."%";
+		$percent = round(($totalusage/($mybb->usergroup['attachquota']*1024))*100);
+		$friendlyusage .= $lang->sprintf($lang->attachments_usage_percent, $percent);
 		$attachquota = get_friendly_size($mybb->usergroup['attachquota']*1024);
-		$usagenote = $lang->sprintf($lang->attachments_usage_quota, $friendlyusage, $attachquota, $percent, $totalattachments);
+		$usagenote = $lang->sprintf($lang->attachments_usage_quota, $friendlyusage, $attachquota, $totalattachments);
 	}
 	else
 	{
-		$percent = $lang->unlimited;
 		$attachquota = $lang->unlimited;
 		$usagenote = $lang->sprintf($lang->attachments_usage, $friendlyusage, $totalattachments);
 	}
