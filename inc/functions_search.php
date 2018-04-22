@@ -699,6 +699,13 @@ function privatemessage_perform_search_mysql($search)
 		$searchsql .= $statussql.")";
 	}
 
+	$limitsql = "";
+	if((int)$mybb->settings['searchhardlimit'] > 0)
+	{
+		$limitsql = " LIMIT ".(int)$mybb->settings['searchhardlimit'];
+	}
+	$searchsql .= $limitsql;
+
 	// Run the search
 	$pms = array();
 	$query = $db->simple_select("privatemessages", "pmid", $searchsql);
