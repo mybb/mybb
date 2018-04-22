@@ -21,10 +21,13 @@ error.log
 .htgroup
 .htpasswd
 
-# Eclipse IDE files
+# IDE files
 .settings
 .project
 .buildpath
+.vscode
+.history
+.idea
 
 # Generic OS stuff
 .DS_Store
@@ -35,6 +38,11 @@ error.log
 ehthumbs.db
 Thumbs.db
 *~
+
+# Logs and DBs
+*.log
+*.sql
+*.sqlite
 
 # Generic git files
 *.orig
