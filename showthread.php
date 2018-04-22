@@ -1448,9 +1448,16 @@ if($mybb->input['action'] == "thread")
 		}
 	}
 
+	// Display 'print thread' link if permissions allow
+	$printthread = '';
+	if($thread['visible'] != -1)
+	{
+		eval("\$printthread = \"".$templates->get("showthread_printthread")."\";");
+	}
+
 	// Display 'send thread' link if permissions allow
 	$sendthread = '';
-	if($mybb->usergroup['cansendemail'] == 1)
+	if($thread['visible'] != -1 && $mybb->usergroup['cansendemail'] == 1)
 	{
 		eval("\$sendthread = \"".$templates->get("showthread_send_thread")."\";");
 	}
@@ -1458,7 +1465,7 @@ if($mybb->input['action'] == "thread")
 	// Display 'add poll' link to thread creator (or mods) if thread doesn't have a poll already
 	$addpoll = '';
 	$time = TIME_NOW;
-	if(!$thread['poll'] && ($thread['uid'] == $mybb->user['uid'] || $ismod == true) && $forumpermissions['canpostpolls'] == 1 && $forum['open'] != 0 && $thread['closed'] != 1 && ($ismod == true || $thread['dateline'] > ($time-($mybb->settings['polltimelimit']*60*60)) || $mybb->settings['polltimelimit'] == 0))
+	if($thread['visible'] != -1 && !$thread['poll'] && ($thread['uid'] == $mybb->user['uid'] || $ismod == true) && $forumpermissions['canpostpolls'] == 1 && $forum['open'] != 0 && $thread['closed'] != 1 && ($ismod == true || $thread['dateline'] > ($time-($mybb->settings['polltimelimit']*60*60)) || $mybb->settings['polltimelimit'] == 0))
 	{
 		eval("\$addpoll = \"".$templates->get("showthread_add_poll")."\";");
 	}
@@ -1467,7 +1474,7 @@ if($mybb->input['action'] == "thread")
 	$add_remove_subscription = 'add';
 	$add_remove_subscription_text = $lang->subscribe_thread;
 
-	if($mybb->user['uid'])
+	if($thread['visible'] != -1 && $mybb->user['uid'])
 	{
 		$query = $db->simple_select("threadsubscriptions", "tid", "tid='".(int)$tid."' AND uid='".(int)$mybb->user['uid']."'", array('limit' => 1));
 

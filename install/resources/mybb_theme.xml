@@ -11407,7 +11407,7 @@ if(use_xmlhttprequest == "1")
 <td width="5%" class="{$bgcolor}"><div class="postbit_buttons">{$emailcode}</div></td>
 <td width="5%" class="{$bgcolor}"><div class="postbit_buttons">{$pmcode}</div></td>
 </tr>]]></template>
-		<template name="showthread" version="1813"><![CDATA[<html>
+		<template name="showthread" version="1816"><![CDATA[<html>
 <head>
 <title>{$thread['subject']}</title>
 {$headerinclude}
@@ -11482,7 +11482,7 @@ if(use_xmlhttprequest == "1")
 	<br />
 	<div class="float_left">
 		<ul class="thread_tools">
-			<li class="printable"><a href="printthread.php?tid={$tid}">{$lang->view_printable}</a></li>
+			{$printthread}
 			{$sendthread}
 			{$addremovesubscription}
 			{$addpoll}
@@ -11676,6 +11676,7 @@ if(use_xmlhttprequest == "1")
 </table>
 <br />]]></template>
 		<template name="showthread_poll_undovote" version="1800"><![CDATA[ [<a href="polls.php?action=do_undovote&amp;pid={$poll['pid']}&amp;my_post_key={$mybb->post_code}">{$lang->undo_vote}</a>]]]></template>
+		<template name="showthread_printthread" version="1816"><![CDATA[<li class="printable"><a href="printthread.php?tid={$tid}">{$lang->view_printable}</a></li>]]></template>
 		<template name="showthread_quickreply" version="1809"><![CDATA[
 <div id="quickreply_spinner" class="showthread_spinner" style="display: none"><img src="{$theme['imgdir']}/spinner.gif" /></div>
 <br />
