@@ -732,7 +732,7 @@ if($mybb->input['action'] == "thread")
 
 	// Work out the thread rating for this thread.
 	$rating = '';
-	if($mybb->settings['allowthreadratings'] != 0 && $forum['allowtratings'] != 0)
+	if($mybb->settings['allowthreadratings'] != 0 && $forum['allowtratings'] != 0 && $thread['visible'] != -1)
 	{
 		$rated = 0;
 		$lang->load("ratethread");
