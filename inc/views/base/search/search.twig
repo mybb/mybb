@@ -41,7 +41,15 @@
                 <td class="tcat"><strong>{{ lang.search_options }}</strong></td>
             </tr>
             <tr>
-                <td class="trow1 no_bottom_border" rowspan="{{ search.rowspan }}">{{ srchlist }}</td>
+                <td class="trow1 no_bottom_border" rowspan="{{ search.rowspan }}">
+                    <select name="forums[]" size="20" multiple="multiple">
+                        <option value="all" selected="selected">{{ lang.search_all_forums }}</option>
+                        <option value="all">----------------------</option>
+                        {% for forum in forums %}
+                            <option value="{{ forum.fid }}">{{ forum.depth|raw }} {{ forum.name }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
                 <td class="trow1">
                     <select name="findthreadst">
                         <option value="1">{{ lang.threads_at_least }}</option>

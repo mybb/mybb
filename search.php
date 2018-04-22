@@ -1557,8 +1557,8 @@ else if($mybb->input['action'] == "thread")
 }
 else
 {
-	$plugins->run_hooks("search_start");
-	$srchlist = make_searchable_forums();
+    $plugins->run_hooks("search_start");
+    $forums = make_searchable_forums();
     $prefixes = build_prefix_select('all', 'any', 1);
 
     $search['showprefixes'] = false;
@@ -1578,7 +1578,7 @@ else
 
     output_page(\MyBB\template('search/search.twig', [
         'search' => $search,
-        'srchlist' => $srchlist,
+        'forums' => $forums,
         'prefixes' => $prefixes,
     ]));
 }
