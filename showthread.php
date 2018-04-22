@@ -1111,7 +1111,7 @@ if($mybb->input['action'] == "thread")
 		}
 		$plugins->run_hooks("showthread_linear");
 	}
-	
+
 	// Show the similar threads table if wanted.
 	$similarthreads = '';
 	if($mybb->settings['showsimilarthreads'] != 0)
