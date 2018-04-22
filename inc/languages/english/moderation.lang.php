@@ -87,6 +87,7 @@ $l['opened'] = "Opened";
 $l['closed'] = "Closed";
 $l['stuck'] = "Stuck";
 $l['unstuck'] = "Unstuck";
+$l['error'] = "Error!";
 $l['mod_process'] = "Thread {1}";
 $l['redirects_removed'] = "Thread Redirects Removed";
 $l['thread_deleted'] = "Thread Deleted Permanently: {1}";
@@ -177,6 +178,7 @@ $l['error_delayedmoderation_unsupported_method'] = "Sorry, but you did not selec
 $l['error_delayedmoderation_invalid_date_day'] = "Sorry, but you did not select a valid delay date day for this delayed moderation action.";
 $l['error_delayedmoderation_invalid_date_month'] = "Sorry, but you did not select a valid delay date month for this delayed moderation action.";
 $l['error_delayedmoderation_invalid_date_year'] = "Sorry, but you did not select a valid delay date year for this delayed moderation action.";
+$l['error_thread_deleted'] = "The target thread is soft deleted. In order to perform this action you need to restore the thread first.";
 
 $l['redirect_pollnotdeleted'] = "The poll was not deleted because you did not check the \"Delete\" checkbox.";
 $l['redirect_polldeleted'] = "Thank you, the poll has successfully been removed from the thread.<br />You will now be taken back to the thread.";

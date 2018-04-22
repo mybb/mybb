@@ -677,7 +677,7 @@ if($mybb->input['action'] == "thread")
 		{
 			eval("\$newreply = \"".$templates->get("showthread_newreply")."\";");
 		}
-		elseif($thread['closed'] == 1)
+		elseif($thread['visible'] != -1 && $thread['closed'] == 1)
 		{
 			eval("\$newreply = \"".$templates->get("showthread_newreply_closed")."\";");
 		}
@@ -1387,7 +1387,12 @@ if($mybb->input['action'] == "thread")
 			eval("\$customthreadtools = \"".$templates->get("showthread_moderationoptions_custom")."\";");
 		}
 
-		$openclosethread = $stickunstickthread = $deletethread = $threadnotes = $managethread = $adminpolloptions = $approveunapprovethread = $softdeletethread = '';
+		$openclosethread = $stickunstickthread = $deletethread = $threadnotes = $managethread = $adminpolloptions = $approveunapprovethread = $softdeletethread = $disabled = '';
+
+		if($thread['visible'] == -1)
+		{
+			$disabled = 'disabled';
+		}
 
 		if(is_moderator($forum['fid'], "canopenclosethreads"))
 		{
