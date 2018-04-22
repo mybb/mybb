@@ -472,8 +472,8 @@ $(document).ready(function($) {
 				switch(attrs.defaultattr)
 				{
 					case 'dailymotion':
-						matches = content.match(/dailymotion\.com\/video\/([^_]+)/);
-						url     = matches ? 'http://www.dailymotion.com/embed/video/' + matches[1] : false;
+						matches = content.match(/(dailymotion\.com\/video\/|dai\.ly\/)([^\/]+)/);
+						url     = matches ? '//www.dailymotion.com/embed/video/' + matches[2] : false;
 						break;
 					case 'facebook':
 						matches = content.match(/facebook\.com\/(?:photo.php\?v=|video\/video.php\?v=|video\/embed\?video_id=|v\/?)(\d+)/);
