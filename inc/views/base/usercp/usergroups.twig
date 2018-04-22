@@ -17,7 +17,7 @@
             </tr>
             {% for usergroup in leadinggroups %}
                 <tr>
-                    <td><strong>{{ usergroup.title|e }}</strong></td>
+                    <td><strong>{{ usergroup.title }}</strong></td>
                     <td align="center">
                         {{ usergroup.users }} [<a href="managegroup.php?gid={{ usergroup.gid }}">{{ lang.view_members }}</a>]
                     </td>
@@ -50,9 +50,9 @@
             {% for usergroup in joinablegroups %}
                 <tr>
                     <td>
-                        <strong>{{ usergroup.title|e }}</strong>
+                        <strong>{{ usergroup.title }}</strong>
                         {% if usergroup.description %}
-                            <br /><span class="smalltext">{{ usergroup.description|e }}</span>
+                            <br /><span class="smalltext">{{ usergroup.description }}</span>
                         {% endif %}
                     </td>
                     <td>
@@ -102,17 +102,17 @@
             {% for usergroup in groupsmemberof %}
                 <tr>
                     <td>
-                        <strong>{{ usergroup.title|e }}</strong>
+                        <strong>{{ usergroup.title }}</strong>
                         {% if usergroup.candisplaygroup and usergroup.gid == mybb.user.displaygroup %}
                             ({{ lang.display_group }})
                         {% elseif usergroup.candisplaygroup %}
                             (<a href="usercp.php?action=usergroups&amp;displaygroup={{ usergroup.gid }}&amp;my_post_key={{ mybb.post_code }}">{{ lang.set_as_display_group }}</a>)
                         {% endif %}
                         {% if usergroup.description %}
-                            <br /><span class="smalltext">{{ usergroup.description|e }}</span>
+                            <br /><span class="smalltext">{{ usergroup.description }}</span>
                         {% endif %}
                     </td>
-                    <td align="center">{{ usergroup.usertitle|e }}</td>
+                    <td align="center">{{ usergroup.usertitle }}</td>
                     <td align="center">
                         {% if usergroup.primary %}
                             <span class="smalltext">{{ lang.usergroup_leave_primary }}</span>
