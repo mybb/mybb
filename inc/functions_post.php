@@ -559,7 +559,10 @@ function build_postbit($post, $post_type=0)
 		if((is_moderator($fid, "caneditposts") || ($forumpermissions['caneditposts'] == 1 && $mybb->user['uid'] == $post['uid'] && $thread['closed'] != 1 && ($mybb->usergroup['edittimelimit'] == 0 || $mybb->usergroup['edittimelimit'] != 0 && $post['dateline'] > ($time-($mybb->usergroup['edittimelimit']*60))))) && $mybb->user['uid'] != 0)
 		{
 			eval("\$post['input_editreason'] = \"".$templates->get("postbit_editreason")."\";");
-			eval("\$post['button_edit'] = \"".$templates->get("postbit_edit")."\";");
+			if($post['visible'] != -1)
+			{
+				eval("\$post['button_edit'] = \"".$templates->get("postbit_edit")."\";");
+			}
 		}
 
 		// Quick Delete button
@@ -659,12 +662,12 @@ function build_postbit($post, $post_type=0)
 		eval("\$post['posturl'] = \"".$templates->get("postbit_posturl")."\";");
 		global $forum, $thread;
 
-		if($forum['open'] != 0 && ($thread['closed'] != 1 || is_moderator($forum['fid'], "canpostclosedthreads")) && ($thread['uid'] == $mybb->user['uid'] || $forumpermissions['canonlyreplyownthreads'] != 1))
+		if($post['visible'] != -1 && $forum['open'] != 0 && ($thread['closed'] != 1 || is_moderator($forum['fid'], "canpostclosedthreads")) && ($thread['uid'] == $mybb->user['uid'] || $forumpermissions['canonlyreplyownthreads'] != 1))
 		{
 			eval("\$post['button_quote'] = \"".$templates->get("postbit_quote")."\";");
 		}
 
-		if($forumpermissions['canpostreplys'] != 0 && ($thread['uid'] == $mybb->user['uid'] || $forumpermissions['canonlyreplyownthreads'] != 1) && ($thread['closed'] != 1 || is_moderator($fid, "canpostclosedthreads")) && $mybb->settings['multiquote'] != 0 && $forum['open'] != 0 && !$post_type)
+		if($post['visible'] != -1 && $forumpermissions['canpostreplys'] != 0 && ($thread['uid'] == $mybb->user['uid'] || $forumpermissions['canonlyreplyownthreads'] != 1) && ($thread['closed'] != 1 || is_moderator($fid, "canpostclosedthreads")) && $mybb->settings['multiquote'] != 0 && $forum['open'] != 0 && !$post_type)
 		{
 			eval("\$post['button_multiquote'] = \"".$templates->get("postbit_multiquote")."\";");
 		}
