@@ -1,0 +1,20 @@
+<tr>
+    <td><div style="padding-left: {{ 40*(depth - 1) }}px"><strong>{{ forum.name }}</strong></div></td>
+    <td colspan="2" align="center">
+        {% if moderate %}
+        	<a href="modcp.php?action=new_announcement&amp;fid={{ forum.fid }}">{{ lang.add_announcement }}</a>
+        {% endif %}
+    </td>
+</tr>
+{% for aid, announcement in announcements %}
+    <tr>
+        <td>
+            <div style="padding-left: {{ 40*(depth - 1) }}px">
+                <div class="subforumicon subforum_minioff" title="{{ lang[announcement.icon ~ '_announcement'] }}"></div>
+                <a href="announcements.php?aid={{ aid }}">{{ announcement.subject }}</a>
+            </div>
+        </td>
+        <td align="center"><a href="modcp.php?action=edit_announcement&amp;aid={{ aid }}">{{ lang.edit }}</a></td>
+        <td align="center"><a href="modcp.php?action=delete_announcement&amp;aid={{ aid }}">{{ lang.delete }}</a></td>
+    </tr>
+{% endfor %}
