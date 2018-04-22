@@ -18,19 +18,11 @@
         <span class="smalltext">
             {{ lang.post_thread }} <a href="{{ post.thread_url|raw }}">{{ post.thread_subject }}</a><br />
             {{ lang.post_subject }} <a href="{{ post.post_url|raw }}#pid{{ post.pid }}">
-                {% if post.subject|length > 50 %}
-                    {{ post.subject|slice(0, 50) }}...
-                {% else %}
-                    {{ post.subject }}
-                {% endif %}
+                {{ post.subject|slice(0, 50) }}{% if post.subject|length > 50 %}...{% endif %}
             </a>
         </span><br />
         <table width="100%"><tr><td><span class="smalltext"><em>
-            {% if post.message|length > 200 %}
-                {{ post.message|slice(0, 200) }}...
-            {% else %}
-                {{ post.message }}
-            {% endif %}
+            {{ post.message|slice(0, 200) }}{% if post.message|length > 200 %}...{% endif %}
         </em></span></td></tr></table>
     </td>
     <td align="center" class="{{ row }}">{{ post.profilelink|raw }}</td>
