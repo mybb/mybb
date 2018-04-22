@@ -196,4 +196,25 @@ class ParserTest extends TestCase
             $this->assertEquals($expected, $actual);
         }
     }
+
+    public function testSimpleColourMyCodes()
+    {
+        $colours = [
+            '#000000',
+            '#fff',
+            'red',
+        ];
+
+        foreach ($colours as $colour) {
+            $input = "[color={$colour}]test[/color]";
+
+            $expected = "<span style=\"color: {$colour};\" class=\"mycode_color\">test</span>";
+
+            $actual = $this->parser->parse_message($input, [
+                'allow_mycode' => true,
+            ]);
+
+            $this->assertEquals($expected, $actual);
+        }
+    }
 }
