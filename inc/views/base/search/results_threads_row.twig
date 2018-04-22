@@ -1,0 +1,61 @@
+{% if thread.visible == 0 %}
+    {% set row = 'trow_shaded' %}
+{% elseif thread.visible == -1 %}
+    {% set row = 'trow_shaded trow_deleted' %}
+{% else %}
+    {% set row = alt_trow() %}
+{% endif %}
+<tr class="inline_row">
+    <td align="center" class="{{ row }}" width="2%"><span class="thread_status {{ thread.folder }}" title="{{ thread.folder_label }}">&nbsp;</span></td>
+    <td align="center" class="{{ row }}" width="2%">
+        {% if thread.hasicon %}
+            <img src="{{ thread.icon_path }}" alt="{{ thread.icon_name }}" title="{{ thread.icon_name }}" /> 
+        {% else %}
+            &nbsp;
+        {% endif %}
+    </td>
+    <td class="{{ row }}">
+        {% if mybb.settings.enableattachments and thread.attachmentcount %}
+            <div class="float_right"><img src="{{ theme.imgdir }}/paperclip.png" alt="" title="{{ thread.attachment_count }}" /></div>
+        {% endif %}
+        <div>
+            <span>
+                {% if thread.poll %}
+                    {{ lang.poll_prefix }} 
+                {% endif %}
+                {% if thread.unread %}
+                    <a href="{{ thread.newpostlink|raw }}"><img src="{{ theme.imgdir }}/jump.png" alt="{{ lang.goto_first_unread }}" title="{{ lang.goto_first_unread }}" /></a> 
+                {% endif %}
+                {{ thread.threadprefix }}<a href="{{ thread.thread_link|raw }}" class="{% if thread.editable_subject %}subject_editable {% endif %}{{ thread.new_class }}" id="tid_{{ thread.tid }}">{{ thread.subject }}</a>
+                {% if thread.posts > mybb.settings.postsperpage %}
+                    <span class="smalltext">
+                    ({{ lang.pages }} 
+                    {% for page in thread.multipage %}
+                        <a href="{{ page.page_link|raw }}">{{ page.page }}</a> 
+                    {% endfor %}
+                    {% if thread.posts > mybb.settings.maxmultipagelinks %}
+                        ... <a href="{{ thread.page_link|raw }}">{{ thread.pages }}</a>
+                    {% endif %}
+                    )</span>
+                {% endif %}
+            </span>
+            <div class="author smalltext">{{ thread.profilelink|raw }}</div>
+        </div>
+    </td>
+    <td class="{{ row }}"><a href="{{ thread.forumlink_link }}">{{ thread.forumlink_name }}</a></td>
+    <td align="center" class="{{ row }}"><a href="{{ mybb.settings.bburl }}/misc.php?action=whoposted&amp;tid={{ thread.tid }}" onclick="MyBB.whoPosted({{ thread.tid }}); return false;">{{ thread.replies }}</a></td>
+    <td align="center" class="{{ row }}">{{ thread.views }}</td>
+    <td class="{{ row }}" style="white-space: nowrap">
+        <span class="smalltext">
+            {{ thread.lastpostdate|raw }}<br />
+            <a href="{{ thread.lastpostlink|raw }}">{{ lang.lastpost }}</a>: {{ thread.lastposterlink|raw }}
+        </span>
+    </td>
+    {% if thread.show_mod_checkbox %}
+        <td class="{{ row }}" align="center" style="white-space: nowrap">
+            <input type="checkbox" class="checkbox" name="inlinemod_{{ thread.tid }}" id="inlinemod_{{ thread.tid }}" value="1" style="vertical-align: middle;" {% if thread.checked %} checked="checked"{% endif %}  />
+        </td>
+    {% elseif thread.show_mod_nocheck %}
+        <td class="{{ row }}" align="center" style="white-space: nowrap">&nbsp;</td>
+    {% endif %}
+</tr>

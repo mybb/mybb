@@ -1,0 +1,40 @@
+{% if post.visible == 0 %}
+    {% set row = 'trow_shaded' %}
+{% elseif post.visible == -1 %}
+    {% set row = 'trow_shaded trow_deleted' %}
+{% else %}
+    {% set row = alt_trow() %}
+{% endif %}
+<tr class="inline_row">
+    <td align="center" class="{{ row }}" width="2%"><span class="thread_status {{ post.folder }}" title="{{ post.folder_label }}">&nbsp;</span></td>
+    <td align="center" class="{{ row }}" width="2%">
+        {% if post.hasicon %}
+            <img src="{{ post.icon_path }}" alt="{{ post.icon_name }}" title="{{ post.icon_name }}" /> 
+        {% else %}
+            &nbsp;
+        {% endif %}
+    </td>
+    <td class="{{ row }}">
+        <span class="smalltext">
+            {{ lang.post_thread }} <a href="{{ post.thread_url|raw }}">{{ post.thread_subject }}</a><br />
+            {{ lang.post_subject }} <a href="{{ post.post_url|raw }}#pid{{ post.pid }}">
+                {{ post.subject|slice(0, 50) }}{% if post.subject|length > 50 %}...{% endif %}
+            </a>
+        </span><br />
+        <table width="100%"><tr><td><span class="smalltext"><em>
+            {{ post.message|slice(0, 200) }}{% if post.message|length > 200 %}...{% endif %}
+        </em></span></td></tr></table>
+    </td>
+    <td align="center" class="{{ row }}">{{ post.profilelink|raw }}</td>
+    <td class="{{ row }}"><a href="{{ post.forumlink_link }}">{{ post.forumlink_name }}</a></td>
+    <td align="center" class="{{ row }}"><a href="{{ mybb.settings.bburl }}/misc.php?action=whoposted&amp;tid={{ post.tid }}" onclick="MyBB.whoPosted({{ post.tid }}); return false;">{{ post.thread_replies }}</a></td>
+    <td align="center" class="{{ row }}">{{ post.thread_views }}</td>
+    <td class="{{ row }}" style="white-space: nowrap; text-align: center;"><span class="smalltext">{{ post.posted|raw }}</span></td>
+    {% if post.show_mod_checkbox %}
+        <td class="{{ row }}" align="center" style="white-space: nowrap">
+            <input type="checkbox" class="checkbox" name="inlinemod_{{ post.pid }}" id="inlinemod_{{ post.pid }}" value="1" style="vertical-align: middle;" {% if post.checked %} checked="checked"{% endif %}  />
+        </td>
+    {% elseif post.show_mod_nocheck %}
+        <td class="{{ row }}" align="center" style="white-space: nowrap">&nbsp;</td>
+    {% endif %}
+</tr>
