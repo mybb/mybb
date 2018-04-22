@@ -435,8 +435,8 @@ else if($mybb->input['action'] == "edit_post")
 	// Fetch the post from the database.
 	$post = get_post($mybb->get_input('pid', MyBB::INPUT_INT));
 
-	// No result, die.
-	if(!$post)
+	// No result or thread deleted, die.
+	if(!$post || $post['visible'] == -1)
 	{
 		xmlhttp_error($lang->post_doesnt_exist);
 	}

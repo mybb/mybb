@@ -49,7 +49,7 @@ else
 	$post = get_post($pid);
 }
 
-if(!$post)
+if(!$post || $post['visible'] == -1)
 {
 	error($lang->error_invalidpost);
 }

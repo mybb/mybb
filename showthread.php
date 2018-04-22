@@ -673,11 +673,11 @@ if($mybb->input['action'] == "thread")
 		}
 
 		// Show the appropriate reply button if this thread is open or closed
-		if($forumpermissions['canpostreplys'] != 0 && $mybb->user['suspendposting'] != 1 && ($thread['closed'] != 1 || is_moderator($fid, "canpostclosedthreads")) && ($thread['uid'] == $mybb->user['uid'] || $forumpermissions['canonlyreplyownthreads'] != 1))
+		if($thread['visible'] != -1 && $forumpermissions['canpostreplys'] != 0 && $mybb->user['suspendposting'] != 1 && ($thread['closed'] != 1 || is_moderator($fid, "canpostclosedthreads")) && ($thread['uid'] == $mybb->user['uid'] || $forumpermissions['canonlyreplyownthreads'] != 1))
 		{
 			eval("\$newreply = \"".$templates->get("showthread_newreply")."\";");
 		}
-		elseif($thread['closed'] == 1)
+		elseif($thread['visible'] != -1 && $thread['closed'] == 1)
 		{
 			eval("\$newreply = \"".$templates->get("showthread_newreply_closed")."\";");
 		}
@@ -732,7 +732,7 @@ if($mybb->input['action'] == "thread")
 
 	// Work out the thread rating for this thread.
 	$rating = '';
-	if($mybb->settings['allowthreadratings'] != 0 && $forum['allowtratings'] != 0)
+	if($mybb->settings['allowthreadratings'] != 0 && $forum['allowtratings'] != 0 && $thread['visible'] != -1)
 	{
 		$rated = 0;
 		$lang->load("ratethread");
@@ -1214,7 +1214,7 @@ if($mybb->input['action'] == "thread")
 
 	// Decide whether or not to show quick reply.
 	$quickreply = '';
-	if($forumpermissions['canpostreplys'] != 0 && $mybb->user['suspendposting'] != 1 && ($thread['closed'] != 1 || is_moderator($fid, "canpostclosedthreads")) && $mybb->settings['quickreply'] != 0 && $mybb->user['showquickreply'] != '0' && $forum['open'] != 0 && ($thread['uid'] == $mybb->user['uid'] || $forumpermissions['canonlyreplyownthreads'] != 1))
+	if($forumpermissions['canpostreplys'] != 0 && $mybb->user['suspendposting'] != 1 && ($thread['closed'] != 1 || is_moderator($fid, "canpostclosedthreads")) && $mybb->settings['quickreply'] != 0 && $mybb->user['showquickreply'] != '0' && $forum['open'] != 0 && ($thread['uid'] == $mybb->user['uid'] || $forumpermissions['canonlyreplyownthreads'] != 1) && $thread['visible'] != -1)
 	{
 		$query = $db->simple_select("posts", "pid", "tid='{$tid}'", array("order_by" => "pid", "order_dir" => "desc", "limit" => 1));
 		$last_pid = $db->fetch_field($query, "pid");
@@ -1387,7 +1387,12 @@ if($mybb->input['action'] == "thread")
 			eval("\$customthreadtools = \"".$templates->get("showthread_moderationoptions_custom")."\";");
 		}
 
-		$openclosethread = $stickunstickthread = $deletethread = $threadnotes = $managethread = $adminpolloptions = $approveunapprovethread = $softdeletethread = '';
+		$openclosethread = $stickunstickthread = $deletethread = $threadnotes = $managethread = $adminpolloptions = $approveunapprovethread = $softdeletethread = $disabled = '';
+
+		if($thread['visible'] == -1)
+		{
+			$disabled = 'disabled';
+		}
 
 		if(is_moderator($forum['fid'], "canopenclosethreads"))
 		{
@@ -1448,9 +1453,16 @@ if($mybb->input['action'] == "thread")
 		}
 	}
 
+	// Display 'print thread' link if permissions allow
+	$printthread = '';
+	if($thread['visible'] != -1)
+	{
+		eval("\$printthread = \"".$templates->get("showthread_printthread")."\";");
+	}
+
 	// Display 'send thread' link if permissions allow
 	$sendthread = '';
-	if($mybb->usergroup['cansendemail'] == 1)
+	if($thread['visible'] != -1 && $mybb->usergroup['cansendemail'] == 1)
 	{
 		eval("\$sendthread = \"".$templates->get("showthread_send_thread")."\";");
 	}
@@ -1458,7 +1470,7 @@ if($mybb->input['action'] == "thread")
 	// Display 'add poll' link to thread creator (or mods) if thread doesn't have a poll already
 	$addpoll = '';
 	$time = TIME_NOW;
-	if(!$thread['poll'] && ($thread['uid'] == $mybb->user['uid'] || $ismod == true) && $forumpermissions['canpostpolls'] == 1 && $forum['open'] != 0 && $thread['closed'] != 1 && ($ismod == true || $thread['dateline'] > ($time-($mybb->settings['polltimelimit']*60*60)) || $mybb->settings['polltimelimit'] == 0))
+	if($thread['visible'] != -1 && !$thread['poll'] && ($thread['uid'] == $mybb->user['uid'] || $ismod == true) && $forumpermissions['canpostpolls'] == 1 && $forum['open'] != 0 && $thread['closed'] != 1 && ($ismod == true || $thread['dateline'] > ($time-($mybb->settings['polltimelimit']*60*60)) || $mybb->settings['polltimelimit'] == 0))
 	{
 		eval("\$addpoll = \"".$templates->get("showthread_add_poll")."\";");
 	}
@@ -1467,7 +1479,7 @@ if($mybb->input['action'] == "thread")
 	$add_remove_subscription = 'add';
 	$add_remove_subscription_text = $lang->subscribe_thread;
 
-	if($mybb->user['uid'])
+	if($thread['visible'] != -1 && $mybb->user['uid'])
 	{
 		$query = $db->simple_select("threadsubscriptions", "tid", "tid='".(int)$tid."' AND uid='".(int)$mybb->user['uid']."'", array('limit' => 1));
 
