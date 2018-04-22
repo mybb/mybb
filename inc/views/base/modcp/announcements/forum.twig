@@ -11,7 +11,7 @@
         <td>
             <div style="padding-left: {{ 40*(depth - 1) }}px">
                 <div class="subforumicon subforum_minioff" title="{{ lang[announcement.icon ~ '_announcement'] }}"></div>
-                <a href="announcements.php?aid={{ aid }}">{{ announcement.subject|e }}</a>
+                <a href="announcements.php?aid={{ aid }}">{{ announcement.subject }}</a>
             </div>
         </td>
         <td align="center"><a href="modcp.php?action=edit_announcement&amp;aid={{ aid }}">{{ lang.edit }}</a></td>

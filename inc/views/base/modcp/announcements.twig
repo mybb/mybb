@@ -30,7 +30,7 @@
                                             {% set title = lang.active_announcement %}
                                         {% endif %}
                                         <div class="subforumicon subforum_minioff" title="{{ title }}"></div>
-                                        <a href="announcements.php?aid={{ aid }}">{{ announcement.subject|e }}</a>
+                                        <a href="announcements.php?aid={{ aid }}">{{ announcement.subject }}</a>
                                     </td>
                                     <td align="center"><a href="modcp.php?action=edit_announcement&amp;aid={{ aid }}">{{ lang.edit }}</a></td>
                                     <td align="center"><a href="modcp.php?action=delete_announcement&amp;aid={{ aid }}">{{ lang.delete }}</a></td>

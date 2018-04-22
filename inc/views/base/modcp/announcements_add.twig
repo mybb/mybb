@@ -22,7 +22,7 @@
                         </tr>
                         <tr>
                             <td valign="top" width="25%"><strong>{{ lang.title }}</strong></td>
-                            <td valign="top" width="75%"><input type="text" class="textbox" name="title" size="40" value="{{ announcement.subject|e }}" /></td>
+                            <td valign="top" width="75%"><input type="text" class="textbox" name="title" size="40" value="{{ announcement.subject }}" /></td>
                         </tr>
                         <tr>
                             <td colspan="1" valign="top" width="25%"><strong>{{ lang.start_date }}</strong></td>
@@ -62,7 +62,7 @@
                         </tr>
                         <tr>
                             <td valign="top" width="25%"><strong>{{ lang.announcement }}</strong><br />{{ smilieinserter|raw }}</td>
-                            <td valign="top" width="75%"><textarea id="message" name="message" rows="20" cols="70">{{ announcement.message|e }}</textarea>{{ codebuttons|raw }}</td>
+                            <td valign="top" width="75%"><textarea id="message" name="message" rows="20" cols="70">{{ announcement.message }}</textarea>{{ codebuttons|raw }}</td>
                         </tr>
                         {% if mybb.settings.announcementshtml %}
                             <tr>
