@@ -673,7 +673,7 @@ if($mybb->input['action'] == "thread")
 		}
 
 		// Show the appropriate reply button if this thread is open or closed
-		if($forumpermissions['canpostreplys'] != 0 && $mybb->user['suspendposting'] != 1 && ($thread['closed'] != 1 || is_moderator($fid, "canpostclosedthreads")) && ($thread['uid'] == $mybb->user['uid'] || $forumpermissions['canonlyreplyownthreads'] != 1))
+		if($thread['visible'] != -1 && $forumpermissions['canpostreplys'] != 0 && $mybb->user['suspendposting'] != 1 && ($thread['closed'] != 1 || is_moderator($fid, "canpostclosedthreads")) && ($thread['uid'] == $mybb->user['uid'] || $forumpermissions['canonlyreplyownthreads'] != 1))
 		{
 			eval("\$newreply = \"".$templates->get("showthread_newreply")."\";");
 		}
@@ -1111,6 +1111,7 @@ if($mybb->input['action'] == "thread")
 		}
 		$plugins->run_hooks("showthread_linear");
 	}
+	
 	// Show the similar threads table if wanted.
 	$similarthreads = '';
 	if($mybb->settings['showsimilarthreads'] != 0)
