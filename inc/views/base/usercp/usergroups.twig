@@ -69,7 +69,7 @@
                             <span class="smalltext">
                                 {{ lang.usergroup_leaders }} 
                                 {% for leader in usergroup.leaders %}
-                                    {{ leader }}{% if loop.last != true %}{{ lang.comma }} {% endif %}
+                                    {{ leader }}{% if not loop.last %}{{ lang.comma }} {% endif %}
                                 {% endfor %}
                             </span>
                         {% endif %}
