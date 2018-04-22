@@ -117,17 +117,14 @@ if($mybb->input['action'] == "results")
 			break;
 	}
 
-	if($order != "asc")
-	{
-		$order = "desc";
-		$results['oppsortnext'] = "asc";
-		$results['oppsort'] = $lang->asc;
-	}
-	else
-	{
-		$results['oppsortnext'] = "desc";
-		$results['oppsort'] = $lang->desc;
-	}
+    if ($order != "asc") {
+        $order = "desc";
+        $results['oppsortnext'] = "asc";
+        $results['oppsort'] = $lang->asc;
+    } else {
+        $results['oppsortnext'] = "desc";
+        $results['oppsort'] = $lang->desc;
+    }
 
 	if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
 	{
@@ -164,12 +161,9 @@ if($mybb->input['action'] == "results")
 		}
 	}
 
-	$thread_url = "";
-	$post_url = "";
-
-	$results['orderarrow'] = array('replies' => '', 'views' => '', 'subject' => '', 'forum' => '', 'starter' => '', 'lastpost' => '', 'dateline' => '');
+    $results['orderarrow'] = array('replies' => '', 'views' => '', 'subject' => '', 'forum' => '', 'starter' => '', 'lastpost' => '', 'dateline' => '');
     $results['orderarrow'][$sortby] = true;
-	$results['sorturl'] = "search.php?action=results&amp;sid={$sid}";
+    $results['sorturl'] = "search.php?action=results&amp;sid={$sid}";
 
 	// Read some caches we will be using
 	$forumcache = $cache->read("forums");
@@ -636,7 +630,7 @@ if($mybb->input['action'] == "results")
 			error($lang->error_nosearchresults);
 		}
 
-		$postcount = 0;
+		$results['postcount'] = 0;
 
 		// Moderators can view unapproved threads
 		$query = $db->simple_select("moderators", "fid, canviewunapprove, canviewdeleted", "(id='{$mybb->user['uid']}' AND isgroup='0') OR (id='{$mybb->user['usergroup']}' AND isgroup='1')");
@@ -752,9 +746,9 @@ if($mybb->input['action'] == "results")
 		}
 
 		// Declare our post count
-		$postcount = count($pids);
+		$results['postcount'] = count($pids);
 
-		if(!$postcount)
+		if(!$results['postcount'])
 		{
 			error($lang->error_nosearchresults);
 		}
@@ -784,270 +778,199 @@ if($mybb->input['action'] == "results")
 			}
 		}
 
-		$results = '';
+        $posts = [];
 
-		$query = $db->query("
-			SELECT p.*, u.username AS userusername, t.subject AS thread_subject, t.replies AS thread_replies, t.views AS thread_views, t.lastpost AS thread_lastpost, t.closed AS thread_closed, t.uid as thread_uid
-			FROM ".TABLE_PREFIX."posts p
-			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-			WHERE p.pid IN (".$db->escape_string($search['posts']).")
-			ORDER BY $sortfield $order
-			LIMIT $start, $perpage
-		");
-		while($post = $db->fetch_array($query))
-		{
-			$bgcolor = alt_trow();
-			if($post['visible'] == 0)
-			{
-				$bgcolor = 'trow_shaded';
-			}
-			elseif($post['visible'] == -1)
-			{
-				$bgcolor = 'trow_shaded trow_deleted';
-			}
-			if($post['userusername'])
-			{
-				$post['username'] = $post['userusername'];
-			}
-			$post['username'] = htmlspecialchars_uni($post['username']);
-			$post['profilelink'] = build_profile_link($post['username'], $post['uid']);
-			$post['subject'] = $parser->parse_badwords($post['subject']);
-			$post['thread_subject'] = $parser->parse_badwords($post['thread_subject']);
-			$post['thread_subject'] = htmlspecialchars_uni($post['thread_subject']);
+        $query = $db->query("
+            SELECT p.*, u.username AS userusername, t.subject AS thread_subject, t.replies AS thread_replies, t.views AS thread_views, t.lastpost AS thread_lastpost, t.closed AS thread_closed, t.uid as thread_uid
+            FROM " . TABLE_PREFIX . "posts p
+            LEFT JOIN " . TABLE_PREFIX . "threads t ON (t.tid=p.tid)
+            LEFT JOIN " . TABLE_PREFIX . "users u ON (u.uid=p.uid)
+            WHERE p.pid IN (".$db->escape_string($search['posts']).")
+            ORDER BY $sortfield $order
+            LIMIT $start, $perpage
+        ");
+        while ($post = $db->fetch_array($query)) {
+            if ($post['userusername']) {
+                $post['username'] = $post['userusername'];
+            }
 
-			if(isset($icon_cache[$post['icon']]))
-			{
-				$posticon = $icon_cache[$post['icon']];
-				$posticon['path'] = str_replace("{theme}", $theme['imgdir'], $posticon['path']);
-				$posticon['path'] = htmlspecialchars_uni($posticon['path']);
-				$posticon['name'] = htmlspecialchars_uni($posticon['name']);
-				eval("\$icon = \"".$templates->get("search_results_icon")."\";");
-			}
-			else
-			{
-				$icon = "&nbsp;";
-			}
+            $post['profilelink'] = build_profile_link($post['username'], $post['uid']);
+            $post['subject'] = $parser->parse_badwords($post['subject']);
+            $post['thread_subject'] = $parser->parse_badwords($post['thread_subject']);
 
-			$post['forumlink'] = '';
-			if(!empty($forumcache[$thread['fid']]))
-			{
-				$post['forumlink_link'] = get_forum_link($post['fid']);
-				$post['forumlink_name'] = $forumcache[$post['fid']]['name'];
-				eval("\$post['forumlink'] = \"".$templates->get("search_results_posts_forumlink")."\";");
-			}
+            $post['hasicon'] = false;
+            if (isset($icon_cache[$post['icon']])) {
+                $post['hasicon'] = true;
+                $posticon = $icon_cache[$post['icon']];
+                $posticon['path'] = str_replace("{theme}", $theme['imgdir'], $posticon['path']);
+                $post['icon_path'] = $posticon['path'];
+                $post['icon_name'] = $posticon['name'];
+            }
 
-			// Determine the folder
-			$folder = '';
-			$folder_label = '';
-			$gotounread = '';
-			$isnew = 0;
-			$donenew = 0;
-			$last_read = 0;
-			$post['thread_lastread'] = $readthreads[$post['tid']];
+            if (!empty($forumcache[$thread['fid']])) {
+                $post['forumlink_link'] = get_forum_link($post['fid']);
+                $post['forumlink_name'] = $forumcache[$post['fid']]['name'];
+            }
 
-			if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'])
-			{
-				$forum_read = $readforums[$post['fid']];
+            // Determine the folder
+            $post['folder'] = '';
+            $post['folder_label'] = '';
+            $last_read = 0;
+            $post['thread_lastread'] = $readthreads[$post['tid']];
 
-				$read_cutoff = TIME_NOW-$mybb->settings['threadreadcut']*60*60*24;
-				if($forum_read == 0 || $forum_read < $read_cutoff)
-				{
-					$forum_read = $read_cutoff;
-				}
-			}
-			else
-			{
-				$forum_read = $forumsread[$post['fid']];
-			}
+            if ($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid']) {
+                $forum_read = $readforums[$post['fid']];
 
-			if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'] && $post['thread_lastpost'] > $forum_read)
-			{
-				$cutoff = TIME_NOW-$mybb->settings['threadreadcut']*60*60*24;
-				if($post['thread_lastpost'] > $cutoff)
-				{
-					if($post['thread_lastread'])
-					{
-						$last_read = $post['thread_lastread'];
-					}
-					else
-					{
-						$last_read = 1;
-					}
-				}
-			}
+                $read_cutoff = TIME_NOW-$mybb->settings['threadreadcut']*60*60*24;
+                if ($forum_read == 0 || $forum_read < $read_cutoff) {
+                    $forum_read = $read_cutoff;
+                }
+            } else {
+                $forum_read = $forumsread[$post['fid']];
+            }
 
-			if(isset($dot_icon[$post['tid']]))
-			{
-				$folder = "dot_";
-				$folder_label .= $lang->icon_dot;
-			}
+            if ($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'] && $post['thread_lastpost'] > $forum_read) {
+                $cutoff = TIME_NOW-$mybb->settings['threadreadcut']*60*60*24;
+                if ($post['thread_lastpost'] > $cutoff) {
+                    if ($post['thread_lastread']) {
+                        $last_read = $post['thread_lastread'];
+                    } else {
+                        $last_read = 1;
+                    }
+                }
+            }
 
-			if(!$last_read)
-			{
-				$readcookie = $threadread = my_get_array_cookie("threadread", $post['tid']);
-				if($readcookie > $forum_read)
-				{
-					$last_read = $readcookie;
-				}
-				elseif($forum_read > $mybb->user['lastvisit'])
-				{
-					$last_read = $forum_read;
-				}
-				else
-				{
-					$last_read = $mybb->user['lastvisit'];
-				}
-			}
+            if (isset($dot_icon[$post['tid']])) {
+                $post['folder'] = "dot_";
+                $post['folder_label'] .= $lang->icon_dot;
+            }
 
-			if($post['thread_lastpost'] > $last_read && $last_read)
-			{
-				$folder .= "new";
-				$folder_label .= $lang->icon_new;
-				eval("\$gotounread = \"".$templates->get("forumdisplay_thread_gotounread")."\";");
-				$unreadpost = 1;
-			}
-			else
-			{
-				$folder_label .= $lang->icon_no_new;
-			}
+            if (!$last_read) {
+                $readcookie = $threadread = my_get_array_cookie("threadread", $post['tid']);
+                if ($readcookie > $forum_read) {
+                    $last_read = $readcookie;
+                } elseif ($forum_read > $mybb->user['lastvisit']) {
+                    $last_read = $forum_read;
+                } else {
+                    $last_read = $mybb->user['lastvisit'];
+                }
+            }
 
-			if($post['thread_replies'] >= $mybb->settings['hottopic'] || $post['thread_views'] >= $mybb->settings['hottopicviews'])
-			{
-				$folder .= "hot";
-				$folder_label .= $lang->icon_hot;
-			}
-			if($post['thread_closed'] == 1)
-			{
-				$folder .= "lock";
-				$folder_label .= $lang->icon_lock;
-			}
-			$folder .= "folder";
+            $post['unread'] = false;
+            if ($post['thread_lastpost'] > $last_read && $last_read) {
+                $post['folder'] .= "new";
+                $post['folder_label'] .= $lang->icon_new;
+                $post['unread'] = true;
+            } else {
+                $post['folder_label'] .= $lang->icon_no_new;
+            }
 
-			$post['thread_replies'] = my_number_format($post['thread_replies']);
-			$post['thread_views'] = my_number_format($post['thread_views']);
+            if ($post['thread_replies'] >= $mybb->settings['hottopic'] || $post['thread_views'] >= $mybb->settings['hottopicviews']) {
+                $post['folder'] .= "hot";
+                $post['folder_label'] .= $lang->icon_hot;
+            }
 
-			$post['forumlink'] = '';
-			if($forumcache[$post['fid']])
-			{
-				$post['forumlink_link'] = get_forum_link($post['fid']);
-				$post['forumlink_name'] = $forumcache[$post['fid']]['name'];
-				eval("\$post['forumlink'] = \"".$templates->get("search_results_posts_forumlink")."\";");
-			}
+            if ($post['thread_closed'] == 1) {
+                $post['folder'] .= "lock";
+                $post['folder_label'] .= $lang->icon_lock;
+            }
 
-			if(!$post['subject'])
-			{
-				$post['subject'] = $post['message'];
-			}
-			if(my_strlen($post['subject']) > 50)
-			{
-				$post['subject'] = htmlspecialchars_uni(my_substr($post['subject'], 0, 50)."...");
-			}
-			else
-			{
-				$post['subject'] = htmlspecialchars_uni($post['subject']);
-			}
-			// What we do here is parse the post using our post parser, then strip the tags from it
-			$parser_options = array(
-				'allow_html' => 0,
-				'allow_mycode' => 1,
-				'allow_smilies' => 0,
-				'allow_imgcode' => 0,
-				'filter_badwords' => 1
-			);
-			$post['message'] = strip_tags($parser->parse_message($post['message'], $parser_options));
-			if(my_strlen($post['message']) > 200)
-			{
-				$prev = my_substr($post['message'], 0, 200)."...";
-			}
-			else
-			{
-				$prev = $post['message'];
-			}
-			$posted = my_date('relative', $post['dateline']);
+            $post['folder'] .= "folder";
 
-			$thread_url = get_thread_link($post['tid']);
-			$post_url = get_post_link($post['pid'], $post['tid']);
+            $post['thread_replies'] = my_number_format($post['thread_replies']);
+            $post['thread_views'] = my_number_format($post['thread_views']);
 
-			// Inline post moderation
-			$inline_mod_checkbox = '';
-			if($is_supermod || is_moderator($post['fid']))
-			{
-				if(isset($mybb->cookies[$inlinecookie]) && my_strpos($mybb->cookies[$inlinecookie], "|{$post['pid']}|") !== false)
-				{
-					$inlinecheck = "checked=\"checked\"";
-					++$results['inlinecount'];
-				}
-				else
-				{
-					$inlinecheck = '';
-				}
+            if ($forumcache[$post['fid']]) {
+                $post['forumlink_link'] = get_forum_link($post['fid']);
+                $post['forumlink_name'] = $forumcache[$post['fid']]['name'];
+            }
 
-				$show_inline_moderation = true;
+            if (!$post['subject']) {
+                $post['subject'] = $post['message'];
+            }
 
-				eval("\$inline_mod_checkbox = \"".$templates->get("search_results_posts_inlinecheck")."\";");
-			}
-			elseif($is_mod)
-			{
-				eval("\$inline_mod_checkbox = \"".$templates->get("search_results_posts_nocheck")."\";");
-			}
+            // What we do here is parse the post using our post parser, then strip the tags from it
+            $parser_options = array(
+                'allow_html' => 0,
+                'allow_mycode' => 1,
+                'allow_smilies' => 0,
+                'allow_imgcode' => 0,
+                'filter_badwords' => 1
+            );
+            $post['message'] = strip_tags($parser->parse_message($post['message'], $parser_options));
 
-			$plugins->run_hooks("search_results_post");
-			eval("\$results .= \"".$templates->get("search_results_posts_post")."\";");
-		}
-		if(!$results)
-		{
-			error($lang->error_nosearchresults);
-		}
-		$multipage = multipage($postcount, $perpage, $page, "search.php?action=results&amp;sid=".htmlspecialchars_uni($mybb->get_input('sid'))."&amp;sortby=$sortby&amp;order=$order&amp;uid=".$mybb->get_input('uid', MyBB::INPUT_INT));
-		if($upper > $postcount)
-		{
-			$upper = $postcount;
-		}
+            $post['posted'] = my_date('relative', $post['dateline']);
 
-		// Inline Post Moderation Options
-		if($show_inline_moderation)
-		{
-			eval("\$inlinemodcol = \"".$templates->get("search_results_inlinemodcol")."\";");
+            $post['thread_url'] = get_thread_link($post['tid']).$highlight;
+            $post['post_url'] = get_post_link($post['pid'], $post['tid']).$highlight;
 
-			// If user has moderation tools available, prepare the Select All feature
-			$num_results = $db->num_rows($query);
-			$lang->page_selected = $lang->sprintf($lang->page_selected, (int)$num_results);
-			$lang->select_all = $lang->sprintf($lang->select_all, (int)$postcount);
-			$lang->all_selected = $lang->sprintf($lang->all_selected, (int)$postcount);
-			eval("\$selectall = \"".$templates->get("search_posts_inlinemoderation_selectall")."\";");
+            // Inline post moderation
+            $post['show_mod_checkbox'] = $post['show_mod_nocheck'] = false;
+            if ($is_supermod || is_moderator($post['fid'])) {
+                $post['checked'] = false;
+                if (isset($mybb->cookies[$inlinecookie]) && my_strpos($mybb->cookies[$inlinecookie], "|{$post['pid']}|") !== false) {
+                    $post['checked'] = true;
+                    ++$results['inlinecount'];
+                }
 
-			$customthreadtools = $customposttools = '';
-			switch($db->type)
-			{
-				case "pgsql":
-				case "sqlite":
-					$query = $db->simple_select("modtools", "tid, name, type", "type='p' AND (','||forums||',' LIKE '%,-1,%' OR forums='')");
-					break;
-				default:
-					$query = $db->simple_select("modtools", "tid, name, type", "type='p' AND (CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='')");
-			}
+                $results['show_inline_moderation'] = true;
+                $post['show_mod_checkbox'] = true;
+            } elseif ($is_mod) {
+                $post['show_mod_nocheck'] = true;
+            }
 
-			while($tool = $db->fetch_array($query))
-			{
-				eval("\$customposttools .= \"".$templates->get("search_results_posts_inlinemoderation_custom_tool")."\";");
-			}
-			// Build inline moderation dropdown
-			if(!empty($customposttools))
-			{
-				eval("\$customposttools = \"".$templates->get("search_results_posts_inlinemoderation_custom")."\";");
-			}
-			eval("\$inlinemod = \"".$templates->get("search_results_posts_inlinemoderation")."\";");
-		}
-		elseif($is_mod)
-		{
-			eval("\$inlinemodcol = \"".$templates->get("search_results_inlinemodcol_empty")."\";");
-		}
+            $plugins->run_hooks("search_results_post");
+            $posts[] = $post;
+        }
 
-		$plugins->run_hooks("search_results_end");
+        if (!$posts) {
+            error($lang->error_nosearchresults);
+        }
 
-		eval("\$searchresults = \"".$templates->get("search_results_posts")."\";");
-		output_page($searchresults);
+        $multipage = multipage($results['postcount'], $perpage, $page, "search.php?action=results&amp;sid=".htmlspecialchars_uni($mybb->get_input('sid'))."&amp;sortby=$sortby&amp;order=$order&amp;uid=".$mybb->get_input('uid', MyBB::INPUT_INT));
+        if ($upper > $results['postcount']) {
+            $upper = $results['postcount'];
+        }
+
+        // Inline Post Moderation Options
+        if ($results['show_inline_moderation']) {
+            // If user has moderation tools available, prepare the Select All feature
+            $num_results = $db->num_rows($query);
+            $lang->page_selected = $lang->sprintf($lang->page_selected, (int)$num_results);
+            $lang->select_all = $lang->sprintf($lang->select_all, (int)$results['postcount']);
+            $lang->all_selected = $lang->sprintf($lang->all_selected, (int)$results['postcount']);
+
+            $results['customposttools'] = [];
+            switch ($db->type) {
+                case "pgsql":
+                case "sqlite":
+                    $query = $db->simple_select("modtools", "tid, name, type", "type='p' AND (','||forums||',' LIKE '%,-1,%' OR forums='')");
+                    break;
+                default:
+                    $query = $db->simple_select("modtools", "tid, name, type", "type='p' AND (CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='')");
+            }
+
+            while ($tool = $db->fetch_array($query)) {
+                $results['customposttools'][] = $tool;
+            }
+
+            // Build inline moderation dropdown
+            $results['show_custom_tools'] = false;
+            if (!empty($results['customposttools'])) {
+                $results['show_custom_tools'] = true;
+            }
+        } elseif ($is_mod) {
+            $results['show_mod_empty'] = true;
+        }
+
+        $results['sid'] = $sid;
+        $plugins->run_hooks("search_results_end");
+
+        output_page(\MyBB\template('search/results_posts.twig', [
+            'multipage' => $multipage,
+            'results' => $results,
+            'posts' => $posts,
+        ]));
 	}
 }
 elseif($mybb->input['action'] == "findguest")
