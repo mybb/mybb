@@ -13514,7 +13514,7 @@ if(use_xmlhttprequest == "1")
 </tr>]]></template>
 		<template name="usercp_usergroups_joinable_usergroup_description" version="1800"><![CDATA[<br /><span class="smalltext">{$usergroup['description']}</span>]]></template>
 		<template name="usercp_usergroups_joinable_usergroup_join" version="1800"><![CDATA[<a href="usercp.php?action=usergroups&amp;joingroup={$usergroup['gid']}&amp;my_post_key={$mybb->post_code}">{$lang->join_group}</a>]]></template>
-		<template name="usercp_usergroups_joingroup" version="1400"><![CDATA[<html>
+		<template name="usercp_usergroups_joingroup" version="1816"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->request_join_usergroup}</title>
 {$headerinclude}
@@ -13540,7 +13540,7 @@ if(use_xmlhttprequest == "1")
 </tr>
 <tr>
 <td class="trow1"><strong>{$lang->join_reason}</strong></td>
-<td class="trow1"><input type="text" class="textbox" name="reason" value="" size="50" /></td>
+<td class="trow1"><input type="text" class="textbox" name="reason" value="" size="50"  maxlength="250" /></td>
 </tr>
 </table>
 <br />
