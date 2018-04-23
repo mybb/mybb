@@ -666,61 +666,40 @@ elseif($mybb->input['action'] == "whoposted")
 }
 elseif($mybb->input['action'] == "smilies")
 {
-	$smilies = [];
-	if(!empty($mybb->input['popup']) && !empty($mybb->input['editor']))
-	{ // make small popup list of smilies
-		$editor = preg_replace('#([^a-zA-Z0-9_-]+)#', '', $mybb->get_input('editor'));
-		$e = 1;
-		$smile_icons = '';
-		$class = alt_trow(1);
-		$smilies_cache = $cache->read("smilies");
+    $smilies = [];
+    if (!empty($mybb->input['popup']) && !empty($mybb->input['editor'])){
+        // make small popup list of smilies
+        $editor = preg_replace('#([^a-zA-Z0-9_-]+)#', '', $mybb->get_input('editor'));
+        $e = 1;
+        $smilies_cache = $cache->read("smilies");
 
-		if(is_array($smilies_cache))
-		{
-			$extra_class = ' smilie_pointer';
-			foreach($smilies_cache as $smilie)
-			{
-				$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
-				$smilie['image'] = htmlspecialchars_uni($mybb->get_asset_url($smilie['image']));
-				$smilie['name'] = htmlspecialchars_uni($smilie['name']);
+        if (is_array($smilies_cache)) {
+            $extra_class = ' smilie_pointer';
+            foreach ($smilies_cache as $smilie) {
+                $smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
+                $smilie['image'] = $mybb->get_asset_url($smilie['image']);
 
-				// Only show the first text to replace in the box
-				$temp = explode("\n", $smilie['find']); // use temporary variable for php 5.3 compatibility
-				$smilie['find'] = $temp[0];
+                // Only show the first text to replace in the box
+                $temp = explode("\n", $smilie['find']); // use temporary variable for php 5.3 compatibility
+                $smilie['find'] = $temp[0];
 
-				$smilie['find'] = htmlspecialchars_uni($smilie['find']);
-				$smilie_insert = str_replace(array('\\', "'"), array('\\\\', "\'"), $smilie['find']);
+                $smilie['smilie_insert'] = str_replace(array('\\', "'"), array('\\\\', "\'"), $smilie['find']);
 
-				$onclick = " onclick=\"MyBBEditor.insertText(' $smilie_insert ');\"";
-				eval('$smilie_image = "'.$templates->get('smilie', 1, 0).'";');
-				eval("\$smile_icons .= \"".$templates->get("misc_smilies_popup_smilie")."\";");
-				if($e == 2)
-				{
-					eval("\$smilies .= \"".$templates->get("misc_smilies_popup_row")."\";");
-					$smile_icons = '';
-					$e = 1;
-					$class = alt_trow();
-				}
-				else
-				{
-					$e = 2;
-				}
-			}
-		}
+                $smilies_row[] = $smilie;
+                if ($e == 2) {
+                    $smilies[] = $smilies_row;
+                    $smilies_row = '';
+                    $e = 1;
+                } else {
+                    $e = 2;
+                }
+            }
+        }
 
-		if($e == 2)
-		{
-			eval("\$smilies .= \"".$templates->get("misc_smilies_popup_empty")."\";");
-		}
-
-		if(!$smilies)
-		{
-			eval("\$smilies = \"".$templates->get("misc_smilies_popup_no_smilies")."\";");
-		}
-
-		eval("\$smiliespage = \"".$templates->get("misc_smilies_popup", 1, 0)."\";");
-		output_page($smiliespage);
-	} else {
+        output_page(\MyBB\template('misc/smilies_modal.twig', [
+            'smilies' => $smilies,
+        ]));
+    } else {
         add_breadcrumb($lang->nav_smilies);
         $smilies_cache = $cache->read("smilies");
 
