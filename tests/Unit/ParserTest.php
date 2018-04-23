@@ -49,50 +49,82 @@ class ParserTest extends TestCase
 
     public function testParseBoldMyCode()
     {
-        $input = '[b]test[/b]';
-        $expected = '<span style="font-weight: bold;" class="mycode_b">test</span>';
+        $tests = [
+            '[b]test[/b]' => '<span style="font-weight: bold;" class="mycode_b">test</span>',
+            '[b]
+test
+[/b]' => '<span style="font-weight: bold;" class="mycode_b"><br />
+test<br />
+</span>',
+        ];
 
-        $actual = $this->parser->parse_message($input, [
-            'allow_mycode' => true,
-        ]);
+        foreach ($tests as $input => $expected) {
+            $actual = $this->parser->parse_message($input, [
+                'allow_mycode' => true,
+            ]);
 
-        $this->assertEquals($expected, $actual);
+            $this->assertEquals($expected, $actual);
+        }
     }
 
     public function testParseUnderlineMyCode()
     {
-        $input = '[u]test[/u]';
-        $expected = '<span style="text-decoration: underline;" class="mycode_u">test</span>';
+        $tests = [
+            '[u]test[/u]' => '<span style="text-decoration: underline;" class="mycode_u">test</span>',
+            '[u]
+test
+[/u]' => '<span style="text-decoration: underline;" class="mycode_u"><br />
+test<br />
+</span>',
+        ];
 
-        $actual = $this->parser->parse_message($input, [
-            'allow_mycode' => true,
-        ]);
+        foreach ($tests as $input => $expected) {
+            $actual = $this->parser->parse_message($input, [
+                'allow_mycode' => true,
+            ]);
 
-        $this->assertEquals($expected, $actual);
+            $this->assertEquals($expected, $actual);
+        }
     }
 
     public function testSimpleParseItalicMyCode()
     {
-        $input = '[i]test[/i]';
-        $expected = '<span style="font-style: italic;" class="mycode_i">test</span>';
+        $tests = [
+            '[i]test[/i]' => '<span style="font-style: italic;" class="mycode_i">test</span>',
+            '[i]
+test
+[/i]' => '<span style="font-style: italic;" class="mycode_i"><br />
+test<br />
+</span>',
+        ];
 
-        $actual = $this->parser->parse_message($input, [
-            'allow_mycode' => true,
-        ]);
+        foreach ($tests as $input => $expected) {
+            $actual = $this->parser->parse_message($input, [
+                'allow_mycode' => true,
+            ]);
 
-        $this->assertEquals($expected, $actual);
+            $this->assertEquals($expected, $actual);
+        }
     }
 
     public function testSimpleParseStrikeThroughMyCode()
     {
-        $input = '[s]test[/s]';
-        $expected = '<span style="text-decoration: line-through;" class="mycode_s">test</span>';
+        $tests = [
+            '[s]test[/s]' => '<span style="text-decoration: line-through;" class="mycode_s">test</span>',
+            '[s]
+test
+[/s]' => '<span style="text-decoration: line-through;" class="mycode_s"><br />
+test<br />
+</span>',
+        ];
 
-        $actual = $this->parser->parse_message($input, [
-            'allow_mycode' => true,
-        ]);
+        foreach ($tests as $input => $expected) {
+            $actual = $this->parser->parse_message($input, [
+                'allow_mycode' => true,
+            ]);
 
-        $this->assertEquals($expected, $actual);
+            $this->assertEquals($expected, $actual);
+        }
     }
 
     public function testSimpleHrMyCode()
@@ -132,14 +164,22 @@ class ParserTest extends TestCase
         ];
 
         foreach ($alignments as $alignment) {
-            $input = "[align={$alignment}]test[/align]";
-            $expected = "<div style=\"text-align: {$alignment};\" class=\"mycode_align\">test</div>";
+            $tests = [
+                "[align={$alignment}]test[/align]" => "<div style=\"text-align: {$alignment};\" class=\"mycode_align\">test</div>",
+                "[align={$alignment}]
+test
+[/align]" => "<div style=\"text-align: {$alignment};\" class=\"mycode_align\"><br />
+test<br />
+</div>",
+            ];
 
-            $actual = $this->parser->parse_message($input, [
-                'allow_mycode' => true,
-            ]);
+            foreach ($tests as $input => $expected) {
+                $actual = $this->parser->parse_message($input, [
+                    'allow_mycode' => true,
+                ]);
 
-            $this->assertEquals($expected, $actual);
+                $this->assertEquals($expected, $actual);
+            }
         }
     }
 
@@ -156,15 +196,22 @@ class ParserTest extends TestCase
         ];
 
         foreach ($sizes as $size) {
-            $input = "[size={$size}]test[/size]";
+            $tests = [
+                "[size={$size}]test[/size]" => "<span style=\"font-size: {$size};\" class=\"mycode_size\">test</span>",
+                "[size={$size}]
+test
+[/size]" => "<span style=\"font-size: {$size};\" class=\"mycode_size\"><br />
+test<br />
+</span>",
+            ];
 
-            $expected = "<span style=\"font-size: {$size};\" class=\"mycode_size\">test</span>";
+            foreach ($tests as $input => $expected) {
+                $actual = $this->parser->parse_message($input, [
+                    'allow_mycode' => true,
+                ]);
 
-            $actual = $this->parser->parse_message($input, [
-                'allow_mycode' => true,
-            ]);
-
-            $this->assertEquals($expected, $actual);
+                $this->assertEquals($expected, $actual);
+            }
         }
     }
 
@@ -185,15 +232,22 @@ class ParserTest extends TestCase
         ];
 
         foreach ($sizes as $size => $expected) {
-            $input = "[size={$size}]test[/size]";
+            $tests = [
+                "[size={$size}]test[/size]" => "<span style=\"font-size: {$expected}pt;\" class=\"mycode_size\">test</span>",
+                "[size={$size}]
+test
+[/size]" => "<span style=\"font-size: {$expected}pt;\" class=\"mycode_size\"><br />
+test<br />
+</span>",
+            ];
 
-            $expected = "<span style=\"font-size: {$expected}pt;\" class=\"mycode_size\">test</span>";
+            foreach ($tests as $input => $expectedResult) {
+                $actual = $this->parser->parse_message($input, [
+                    'allow_mycode' => true,
+                ]);
 
-            $actual = $this->parser->parse_message($input, [
-                'allow_mycode' => true,
-            ]);
-
-            $this->assertEquals($expected, $actual);
+                $this->assertEquals($expectedResult, $actual);
+            }
         }
     }
 
@@ -206,15 +260,50 @@ class ParserTest extends TestCase
         ];
 
         foreach ($colours as $colour) {
-            $input = "[color={$colour}]test[/color]";
+            $tests = [
+                "[color={$colour}]test[/color]" => "<span style=\"color: {$colour};\" class=\"mycode_color\">test</span>",
+                "[color={$colour}]
+test
+[/color]" => "<span style=\"color: {$colour};\" class=\"mycode_color\"><br />
+test<br />
+</span>",
+            ];
 
-            $expected = "<span style=\"color: {$colour};\" class=\"mycode_color\">test</span>";
+            foreach ($tests as $input => $expected) {
+                $actual = $this->parser->parse_message($input, [
+                    'allow_mycode' => true,
+                ]);
 
-            $actual = $this->parser->parse_message($input, [
-                'allow_mycode' => true,
-            ]);
+                $this->assertEquals($expected, $actual);
+            }
+        }
+    }
 
-            $this->assertEquals($expected, $actual);
+    public function testSimpleFontMyCodes()
+    {
+        $fonts = [
+            'arial',
+            'Segoe UI',
+            'sans 10',
+        ];
+
+        foreach ($fonts as $font) {
+            $tests = [
+                "[font={$font}]test[/font]" => "<span style=\"font-family: {$font};\" class=\"mycode_font\">test</span>",
+                "[font={$font}]
+test
+[/font]" => "<span style=\"font-family: {$font};\" class=\"mycode_font\"><br />
+test<br />
+</span>",
+            ];
+
+            foreach ($tests as $input => $expected) {
+                $actual = $this->parser->parse_message($input, [
+                    'allow_mycode' => true,
+                ]);
+
+                $this->assertEquals($expected, $actual);
+            }
         }
     }
 }
