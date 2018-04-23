@@ -666,7 +666,7 @@ elseif($mybb->input['action'] == "whoposted")
 }
 elseif($mybb->input['action'] == "smilies")
 {
-	$smilies = '';
+	$smilies = [];
 	if(!empty($mybb->input['popup']) && !empty($mybb->input['editor']))
 	{ // make small popup list of smilies
 		$editor = preg_replace('#([^a-zA-Z0-9_-]+)#', '', $mybb->get_input('editor'));
@@ -720,225 +720,171 @@ elseif($mybb->input['action'] == "smilies")
 
 		eval("\$smiliespage = \"".$templates->get("misc_smilies_popup", 1, 0)."\";");
 		output_page($smiliespage);
-	}
-	else
-	{
-		add_breadcrumb($lang->nav_smilies);
-		$class = "trow1";
-		$smilies_cache = $cache->read("smilies");
+	} else {
+        add_breadcrumb($lang->nav_smilies);
+        $smilies_cache = $cache->read("smilies");
 
-		if(is_array($smilies_cache))
-		{
-			$extra_class = $onclick = '';
-			foreach($smilies_cache as $smilie)
-			{
-				$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
-				$smilie['image'] = htmlspecialchars_uni($mybb->get_asset_url($smilie['image']));
-				$smilie['name'] = htmlspecialchars_uni($smilie['name']);
+        if (is_array($smilies_cache)) {
+            foreach ($smilies_cache as $smilie) {
+                $smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
+                $smilie['image'] = $mybb->get_asset_url($smilie['image']);
 
-				$smilie['find'] = nl2br(htmlspecialchars_uni($smilie['find']));
-				eval('$smilie_image = "'.$templates->get('smilie').'";');
-				eval("\$smilies .= \"".$templates->get("misc_smilies_smilie")."\";");
-				$class = alt_trow();
-			}
-		}
+                $smilies[] = $smilie;
+            }
+        }
 
-		if(!$smilies)
-		{
-			eval("\$smilies = \"".$templates->get("misc_smilies_no_smilies")."\";");
-		}
-
-		eval("\$smiliespage = \"".$templates->get("misc_smilies")."\";");
-		output_page($smiliespage);
-	}
+        output_page(\MyBB\template('misc/smilies.twig', [
+            'smilies' => $smilies,
+        ]));
+    }
 }
 elseif($mybb->input['action'] == "imcenter")
 {
-	$mybb->input['imtype'] = $mybb->get_input('imtype');
-	if($mybb->input['imtype'] != "aim" && $mybb->input['imtype'] != "skype" && $mybb->input['imtype'] != "yahoo")
-	{
-		$message = $lang->error_invalidimtype;
-		eval("\$error = \"".$templates->get("misc_imcenter_error", 1, 0)."\";");
-		echo $error;
-		exit;
-	}
+    $message = '';
+    $mybb->input['imtype'] = $mybb->get_input('imtype');
+    if ($mybb->input['imtype'] != "skype" && $mybb->input['imtype'] != "yahoo") {
+        $message = $lang->error_invalidimtype;
+    }
 
-	$uid = $mybb->get_input('uid', MyBB::INPUT_INT);
-	$user = get_user($uid);
+    $uid = $mybb->get_input('uid', MyBB::INPUT_INT);
+    $user = get_user($uid);
 
-	if(!$user)
-	{
-		$message = $lang->error_invaliduser;
-		eval("\$error = \"".$templates->get("misc_imcenter_error", 1, 0)."\";");
-		echo $error;
-		exit;
-	}
+    if (!$user) {
+        $message = $lang->error_invaliduser;
+    }
 
-	if(empty($user[$mybb->input['imtype']]))
-	{
-		$message = $lang->error_invalidimtype;
-		eval("\$error = \"".$templates->get("misc_imcenter_error", 1, 0)."\";");
-		echo $error;
-		exit;
-	}
+    if (empty($user[$mybb->input['imtype']])) {
+        $message = $lang->error_invalidimtype;
+    }
 
-	$settingkey = 'allow'.$mybb->input['imtype'].'field';
-	if(!is_member($mybb->settings[$settingkey], $user))
-	{
-		$message = $lang->error_nopermission_user_ajax;
-		eval("\$error = \"".$templates->get("misc_imcenter_error", 1, 0)."\";");
-		echo $error;
-		exit;
-	}
+    $settingkey = 'allow'.$mybb->input['imtype'].'field';
+    if (!is_member($mybb->settings[$settingkey], $user)) {
+        $message = $lang->error_nopermission_user_ajax;
+    }
 
-	// Build IM navigation bar
-	$navigationbar = $navsep = $imtype = $imtype_lang = '';
-	if(!empty($user['aim']) && is_member($mybb->settings['allowaimfield'], array('usergroup' => $user['usergroup'], 'additionalgroups' => $user['additionalgroups'])))
-	{
-		$imtype = "aim";
-		$imtype_lang = $lang->aol_im;
-		eval("\$navigationbar .= \"".$templates->get("misc_imcenter_nav")."\";");
-		$navsep = ' - ';
-	}
-	if(!empty($user['skype']) && is_member($mybb->settings['allowskypefield'], array('usergroup' => $user['usergroup'], 'additionalgroups' => $user['additionalgroups'])))
-	{
-		$imtype = "skype";
-		$imtype_lang = $lang->skype;
-		eval("\$navigationbar .= \"".$templates->get("misc_imcenter_nav")."\";");
-		$navsep = ' - ';
-	}
-	if(!empty($user['yahoo']) && is_member($mybb->settings['allowyahoofield'], array('usergroup' => $user['usergroup'], 'additionalgroups' => $user['additionalgroups'])))
-	{
-		$imtype = "yahoo";
-		$imtype_lang = $lang->yahoo_im;
-		eval("\$navigationbar .= \"".$templates->get("misc_imcenter_nav")."\";");
-	}
+    if (!empty($message)) {
+        output_page(\MyBB\template('misc/imcenter_error.twig', [
+            'message' => $message,
+        ]));
+        exit;
+    }
 
-	$user['skype'] = htmlspecialchars_uni($user['skype']);
-	$user['yahoo'] = htmlspecialchars_uni($user['yahoo']);
-	$user['aim'] = htmlspecialchars_uni($user['aim']);
-
-	$user['username'] = htmlspecialchars_uni($user['username']);
-
-	$lang->chat_on_skype = $lang->sprintf($lang->chat_on_skype, $user['username']);
-	$lang->call_on_skype = $lang->sprintf($lang->call_on_skype, $user['username']);
-
-	$imtemplate = "misc_imcenter_".$mybb->input['imtype'];
-	eval("\$imcenter = \"".$templates->get($imtemplate, 1, 0)."\";");
-	echo $imcenter;
-	exit;
+    $imtype = $mybb->input['imtype'];
+    output_page(\MyBB\template('misc/imcenter.twig', [
+        'imtype' => $imtype,
+        'user' => $user,
+    ]));
+    exit;
 }
 elseif($mybb->input['action'] == "syndication")
 {
-	$plugins->run_hooks("misc_syndication_start");
+    $plugins->run_hooks("misc_syndication_start");
 
-	$fid = $mybb->get_input('fid', MyBB::INPUT_INT);
-	$version = $mybb->get_input('version');
-	$new_limit = $mybb->get_input('limit', MyBB::INPUT_INT);
-	$forums = $mybb->get_input('forums', MyBB::INPUT_ARRAY);
-	$limit = 15;
-	if(!empty($new_limit) && $new_limit != $limit)
-	{
-		$limit = $new_limit;
-	}
-	$feedurl = '';
-	$add = false;
+    $fid = $mybb->get_input('fid', MyBB::INPUT_INT);
+    $version = $mybb->get_input('version');
+    $new_limit = $mybb->get_input('limit', MyBB::INPUT_INT);
+    $forums = $mybb->get_input('forums', MyBB::INPUT_ARRAY);
+    $limit = 15;
 
-	add_breadcrumb($lang->nav_syndication);
-	$unviewable = get_unviewable_forums();
-	$inactiveforums = get_inactive_forums();
-	$unexp1 = explode(',', $unviewable);
-	$unexp2 = explode(',', $inactiveforums);
-	$unexp = array_merge($unexp1, $unexp2);
+    if (!empty($new_limit) && $new_limit != $limit) {
+        $limit = $new_limit;
+    }
 
-	if(is_array($forums))
-	{
-		foreach($unexp as $fid)
-		{
-			$unview[$fid] = true;
-		}
+    $add = false;
 
-		$syndicate = '';
-		$comma = '';
-		$all = false;
-		foreach($forums as $fid)
-		{
-			if($fid == "all")
-			{
-				$all = true;
-				break;
-			}
-			elseif(ctype_digit($fid))
-			{
-				if(!isset($unview[$fid]))
-				{
-					$syndicate .= $comma.$fid;
-					$comma = ",";
-					$flist[$fid] = true;
-				}
-			}
-		}
-		$url = $mybb->settings['bburl']."/syndication.php";
-		if(!$all)
-		{
-			$url .= "?fid=$syndicate";
-			$add = true;
-		}
+    add_breadcrumb($lang->nav_syndication);
+    $unviewable = get_unviewable_forums();
+    $inactiveforums = get_inactive_forums();
+    $unexp1 = explode(',', $unviewable);
+    $unexp2 = explode(',', $inactiveforums);
+    $unexp = array_merge($unexp1, $unexp2);
 
-		// If the version is not RSS2.0, set the type to Atom1.0.
-		if($version != "rss2.0")
-		{
-			if(!$add)
-			{
-				$url .= "?";
-			}
-			else
-			{
-				$url .= "&";
-			}
-			$url .= "type=atom1.0";
-			$add = true;
-		}
-		if((int)$limit > 0)
-		{
-			if($limit > 50)
-			{
-				$limit = 50;
-			}
-			if(!$add)
-			{
-				$url .= "?";
-			}
-			else
-			{
-				$url .= "&";
-			}
-			if(is_numeric($limit))
-			{
-				$url .= "limit=$limit";
-			}
-		}
-		eval("\$feedurl = \"".$templates->get("misc_syndication_feedurl")."\";");
-	}
-	unset($GLOBALS['forumcache']);
+    $syndication['url'] = '';
+    $syndication['feedurl'] = $syndication['allselected'] = false;
+    if (!empty($forums)) {
+        foreach ($unexp as $fid) {
+            $unview[$fid] = true;
+        }
 
-	// If there is no version in the input, check the default (RSS2.0).
-	if($version == "atom1.0")
-	{
-		$atom1check = "checked=\"checked\"";
-		$rss2check = '';
-	}
-	else
-	{
-		$atom1check = '';
-		$rss2check = "checked=\"checked\"";
-	}
-	$forumselect = makesyndicateforums();
+        $syndicate = '';
+        $comma = '';
+        $all = false;
+        foreach ($forums as $fid) {
+            if ($fid == "all") {
+                $syndication['allselected'] = true;
+                $all = true;
+                break;
+            }
+            elseif (ctype_digit($fid)) {
+                if (!isset($unview[$fid])) {
+                    $syndicate .= $comma.$fid;
+                    $comma = ",";
+                    $flist[$fid] = true;
+                }
+            }
+        }
 
-	$plugins->run_hooks("misc_syndication_end");
+        $syndication['url'] = $mybb->settings['bburl']."/syndication.php";
+        if (!$all) {
+            $syndication['url'] .= "?fid=$syndicate";
+            $add = true;
+        }
 
-	eval("\$syndication = \"".$templates->get("misc_syndication")."\";");
-	output_page($syndication);
+        // If the version is not RSS2.0, set the type to Atom1.0.
+        if ($version != "rss2.0") {
+            if (!$add) {
+                $syndication['url'] .= "?";
+            } else {
+                $syndication['url'] .= "&";
+            }
+
+            $syndication['url'] .= "type=atom1.0";
+            $add = true;
+        }
+
+        if ((int)$limit > 0) {
+            if ($limit > 50) {
+                $limit = 50;
+            }
+
+            if (!$add) {
+                $syndication['url'] .= "?";
+            } else {
+                $syndication['url'] .= "&";
+            }
+
+            if (is_numeric($limit)) {
+                $syndication['url'] .= "limit=$limit";
+            }
+        }
+
+        $syndication['feedurl'] = true;
+    }
+
+    unset($GLOBALS['forumcache']);
+
+    // If there is no version in the input, check the default (RSS2.0).
+    if ($version == "atom1.0") {
+        $syndication['atom1check'] = true;
+        $syndication['rss2check'] = false;
+    } else {
+        $syndication['atom1check'] = false;
+        $syndication['rss2check'] = true;
+    }
+
+    $forums = makesyndicateforums();
+    $syndication['limit'] = $limit;
+
+    if ($syndication['feedurl'] == false) {
+        $syndication['allselected'] = true;
+    }
+
+    $plugins->run_hooks("misc_syndication_end");
+
+    output_page(\MyBB\template('misc/syndication.twig', [
+        'syndication' => $syndication,
+        'forums' => $forums,
+    ]));
 }
 elseif($mybb->input['action'] == "clearcookies")
 {
@@ -967,67 +913,49 @@ elseif($mybb->input['action'] == "clearcookies")
  */
 function makesyndicateforums($pid=0, $selitem="", $addselect=true, $depth="")
 {
-	global $db, $forumcache, $permissioncache, $mybb, $forumlist, $forumlistbits, $flist, $lang, $unexp, $templates;
+    global $db, $forumcache, $permissioncache, $mybb, $flist, $unexp;
 
-	$pid = (int)$pid;
-	$forumlist = '';
+    $pid = (int)$pid;
 
-	if(!is_array($forumcache))
-	{
-		// Get Forums
-		$query = $db->simple_select("forums", "*", "linkto = '' AND active!=0", array('order_by' => 'pid, disporder'));
-		while($forum = $db->fetch_array($query))
-		{
-			$forumcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
-		}
-	}
+    $forumlist = [];
+    $forumtree = [];
+    if (!is_array($forumcache)) {
+        // Get Forums
+        $query = $db->simple_select("forums", "*", "linkto = '' AND active!=0", array('order_by' => 'pid, disporder'));
+        while ($forum = $db->fetch_array($query)) {
+            $forumcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
+        }
+    }
 
-	if(!is_array($permissioncache))
-	{
-		$permissioncache = forum_permissions();
-	}
+    if (!is_array($permissioncache)) {
+        $permissioncache = forum_permissions();
+    }
 
-	if(is_array($forumcache[$pid]))
-	{
-		foreach($forumcache[$pid] as $key => $main)
-		{
-			foreach($main as $key => $forum)
-			{
-				$perms = $permissioncache[$forum['fid']];
-				if($perms['canview'] == 1 || $mybb->settings['hideprivateforums'] == 0)
-				{
-					$optionselected = '';
-					if(isset($flist[$forum['fid']]))
-					{
-						$optionselected = 'selected="selected"';
-						$selecteddone = "1";
-					}
+    if (is_array($forumcache[$pid])) {
+        foreach ($forumcache[$pid] as $key => $main) {
+            foreach ($main as $key => $forum) {
+                $perms = $permissioncache[$forum['fid']];
+                if ($perms['canview'] == 1 || $mybb->settings['hideprivateforums'] == 0) {
+                    $forum['selected'] = false;
+                    if (isset($flist[$forum['fid']])) {
+                        $forum['selected'] = true;
+                        $selecteddone = "1";
+                    }
 
-					if($forum['password'] == '' && !in_array($forum['fid'], $unexp) || $forum['password'] && isset($mybb->cookies['forumpass'][$forum['fid']]) && $mybb->cookies['forumpass'][$forum['fid']] === md5($mybb->user['uid'].$forum['password']))
-					{
-						eval("\$forumlistbits .= \"".$templates->get("misc_syndication_forumlist_forum")."\";");
-					}
+                    if ($forum['password'] == '' && !in_array($forum['fid'], $unexp) || $forum['password'] && isset($mybb->cookies['forumpass'][$forum['fid']]) && $mybb->cookies['forumpass'][$forum['fid']] === md5($mybb->user['uid'].$forum['password'])) {
+                        $forum['depth'] = $depth;
+                        $forumlist[] = $forum;
+                    }
 
-					if(!empty($forumcache[$forum['fid']]))
-					{
-						$newdepth = $depth."&nbsp;&nbsp;&nbsp;&nbsp;";
-						$forumlistbits .= makesyndicateforums($forum['fid'], '', 0, $newdepth);
-					}
-				}
-			}
-		}
-	}
+                    if (!empty($forumcache[$forum['fid']])) {
+                        $newdepth = $depth."&nbsp;&nbsp;&nbsp;&nbsp;";
+                        $forumtree = makesyndicateforums($forum['fid'], '', 0, $newdepth);
+                        $forumlist = array_merge($forumlist, $forumtree);
+                    }
+                }
+            }
+        }
+    }
 
-	if($addselect)
-	{
-		$addsel = '';
-		if(empty($selecteddone))
-		{
-			$addsel = ' selected="selected"';
-		}
-
-		eval("\$forumlist = \"".$templates->get("misc_syndication_forumlist")."\";");
-	}
-
-	return $forumlist;
+    return $forumlist;
 }
