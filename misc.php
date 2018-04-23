@@ -116,51 +116,47 @@ elseif($mybb->input['action'] == "clearpass")
 }
 elseif($mybb->input['action'] == "rules")
 {
-	if(isset($mybb->input['fid']))
-	{
-		$plugins->run_hooks("misc_rules_start");
+    if (isset($mybb->input['fid'])) {
+        $plugins->run_hooks("misc_rules_start");
 
-		$fid = $mybb->input['fid'];
+        $fid = $mybb->input['fid'];
+        $forum = get_forum($fid);
 
-		$forum = get_forum($fid);
-		if(!$forum || $forum['type'] != "f" || $forum['rules'] == '')
-		{
-			error($lang->error_invalidforum);
-		}
+        if (!$forum || $forum['type'] != "f" || $forum['rules'] == '') {
+            error($lang->error_invalidforum);
+        }
 
-		$forumpermissions = forum_permissions($forum['fid']);
-		if($forumpermissions['canview'] != 1)
-		{
-			error_no_permission();
-		}
+        $forumpermissions = forum_permissions($forum['fid']);
+        if ($forumpermissions['canview'] != 1) {
+            error_no_permission();
+        }
 
-		if(!$forum['rulestitle'])
-		{
-			$forum['rulestitle'] = $lang->sprintf($lang->forum_rules, $forum['name']);
-		}
+        if (!$forum['rulestitle']) {
+            $forum['rulestitle'] = $lang->sprintf($lang->forum_rules, $forum['name']);
+        }
 
-		require_once MYBB_ROOT."inc/class_parser.php";
-		$parser = new postParser();
-		$parser_options = array(
-			"allow_html" => 1,
-			"allow_mycode" => 1,
-			"allow_smilies" => 1,
-			"allow_imgcode" => 1,
-			"filter_badwords" => 1
-		);
+        require_once MYBB_ROOT."inc/class_parser.php";
+        $parser = new postParser();
+        $parser_options = array(
+            "allow_html" => 1,
+            "allow_mycode" => 1,
+            "allow_smilies" => 1,
+            "allow_imgcode" => 1,
+            "filter_badwords" => 1
+        );
 
-		$forum['rules'] = $parser->parse_message($forum['rules'], $parser_options);
+        $forum['rules'] = $parser->parse_message($forum['rules'], $parser_options);
 
-		// Make navigation
-		build_forum_breadcrumb($mybb->input['fid']);
-		add_breadcrumb($forum['rulestitle']);
+        // Make navigation
+        build_forum_breadcrumb($forum['fid']);
+        add_breadcrumb($forum['rulestitle']);
 
-		$plugins->run_hooks("misc_rules_end");
+        $plugins->run_hooks("misc_rules_end");
 
-		eval("\$rules = \"".$templates->get("misc_rules_forum")."\";");
-		output_page($rules);
-	}
-
+        output_page(\MyBB\template('misc/rules.twig', [
+            'forum' => $forum,
+        ]));
+    }
 }
 elseif($mybb->input['action'] == "do_helpsearch" && $mybb->request_method == "post")
 {
@@ -301,63 +297,39 @@ elseif($mybb->input['action'] == "helpresults")
 		$upper = $helpcount;
 	}
 	$multipage = multipage($helpcount['total'], $perpage, $page, "misc.php?action=helpresults&amp;sid='".htmlspecialchars_uni($mybb->get_input('sid'))."'");
-	$helpdoclist = '';
 
-	require_once MYBB_ROOT."inc/class_parser.php";
-	$parser = new postParser();
+    $helpdoclist = [];
 
-	$query = $db->query("
-		SELECT h.*, s.enabled
-		FROM ".TABLE_PREFIX."helpdocs h
-		LEFT JOIN ".TABLE_PREFIX."helpsections s ON (s.sid=h.sid)
-		WHERE h.hid IN(".$db->escape_string($search['querycache']).") AND h.enabled='1' AND s.enabled='1'
-		LIMIT {$start}, {$perpage}
-	");
-	while($helpdoc = $db->fetch_array($query))
-	{
-		$bgcolor = alt_trow();
+    require_once MYBB_ROOT."inc/class_parser.php";
+    $parser = new postParser();
 
-		if(my_strlen($helpdoc['name']) > 50)
-		{
-			$helpdoc['name'] = htmlspecialchars_uni(my_substr($helpdoc['name'], 0, 50)."...");
-		}
-		else
-		{
-			$helpdoc['name'] = htmlspecialchars_uni($helpdoc['name']);
-		}
+    $query = $db->query("
+        SELECT h.*, s.enabled
+        FROM " . TABLE_PREFIX . "helpdocs h
+        LEFT JOIN " . TABLE_PREFIX . "helpsections s ON (s.sid=h.sid)
+        WHERE h.hid IN(" . $db->escape_string($search['querycache']) . ") AND h.enabled='1' AND s.enabled='1'
+        LIMIT {$start}, {$perpage}
+    ");
+    while ($helpdoc = $db->fetch_array($query)) {
+        $parser_options = array(
+            'allow_html' => 1,
+            'allow_mycode' => 0,
+            'allow_smilies' => 0,
+            'allow_imgcode' => 0,
+            'filter_badwords' => 1
+        );
+        $helpdoc['helpdoc'] = my_strip_tags($parser->parse_message($helpdoc['document'], $parser_options));
 
-		$parser_options = array(
-			'allow_html' => 1,
-			'allow_mycode' => 0,
-			'allow_smilies' => 0,
-			'allow_imgcode' => 0,
-			'filter_badwords' => 1
-		);
-		$helpdoc['helpdoc'] = my_strip_tags($parser->parse_message($helpdoc['document'], $parser_options));
+        $plugins->run_hooks("misc_helpresults_bit");
+        $helpdoclist[] = $helpdoc;
+    }
 
-		if(my_strlen($helpdoc['helpdoc']) > 350)
-		{
-			$prev = my_substr($helpdoc['helpdoc'], 0, 350)."...";
-		}
-		else
-		{
-			$prev = $helpdoc['helpdoc'];
-		}
+    $plugins->run_hooks("misc_helpresults_end");
 
-		$plugins->run_hooks("misc_helpresults_bit");
-
-		eval("\$helpdoclist .= \"".$templates->get("misc_helpresults_bit")."\";");
-	}
-
-	if($db->num_rows($query) == 0)
-	{
-		eval("\$helpdoclist = \"".$templates->get("misc_helpresults_noresults")."\";");
-	}
-
-	$plugins->run_hooks("misc_helpresults_end");
-
-	eval("\$helpresults = \"".$templates->get("misc_helpresults")."\";");
-	output_page($helpresults);
+    output_page(\MyBB\template('misc/helpresults.twig', [
+        'helpdoclist' => $helpdoclist,
+        'highlight' => $highlight,
+    ]));
 }
 elseif($mybb->input['action'] == "help")
 {
@@ -369,148 +341,129 @@ elseif($mybb->input['action'] == "help")
 	$hid = $mybb->get_input('hid', MyBB::INPUT_INT);
 	add_breadcrumb($lang->nav_helpdocs, "misc.php?action=help");
 
-	if($hid)
-	{
-		$query = $db->query("
-			SELECT h.*, s.enabled AS section
-			FROM ".TABLE_PREFIX."helpdocs h
-			LEFT JOIN ".TABLE_PREFIX."helpsections s ON (s.sid=h.sid)
-			WHERE h.hid='{$hid}'
-		");
+    if ($hid) {
+        $query = $db->query("
+            SELECT h.*, s.enabled AS section
+            FROM " . TABLE_PREFIX . "helpdocs h
+            LEFT JOIN " . TABLE_PREFIX . "helpsections s ON (s.sid=h.sid)
+            WHERE h.hid = '{$hid}'
+        ");
 
-		$helpdoc = $db->fetch_array($query);
-		if($helpdoc['section'] != 0 && $helpdoc['enabled'] != 0)
-		{
-			$plugins->run_hooks("misc_help_helpdoc_start");
+        $helpdoc = $db->fetch_array($query);
+        if ($helpdoc['section'] != 0 && $helpdoc['enabled'] != 0) {
+            $plugins->run_hooks("misc_help_helpdoc_start");
 
-			// If we have incoming search terms to highlight - get it done (only if not using translation).
-			if(!empty($mybb->input['highlight']) && $helpdoc['usetranslation'] != 1)
-			{
-				require_once MYBB_ROOT."inc/class_parser.php";
-				$parser = new postParser();
+            // If we have incoming search terms to highlight - get it done (only if not using translation).
+            if (!empty($mybb->input['highlight']) && $helpdoc['usetranslation'] != 1) {
+                require_once MYBB_ROOT."inc/class_parser.php";
+                $parser = new postParser();
 
-				$highlight = $mybb->input['highlight'];
-				$helpdoc['name'] = $parser->highlight_message($helpdoc['name'], $highlight);
-				$helpdoc['document'] = $parser->highlight_message($helpdoc['document'], $highlight);
-			}
+                $highlight = $mybb->input['highlight'];
+                $helpdoc['name'] = $parser->highlight_message($helpdoc['name'], $highlight);
+                $helpdoc['document'] = $parser->highlight_message($helpdoc['document'], $highlight);
+            }
 
-			if($helpdoc['usetranslation'] == 1)
-			{
-				$langnamevar = "d".$helpdoc['hid']."_name";
-				$langdescvar = "d".$helpdoc['hid']."_desc";
-				$langdocvar = "d".$helpdoc['hid']."_document";
-				if($lang->$langnamevar)
-				{
-					$helpdoc['name'] = $lang->$langnamevar;
-				}
-				if($lang->$langdescvar)
-				{
-					$helpdoc['description'] = $lang->$langdescvar;
-				}
-				if($lang->$langdocvar)
-				{
-					$helpdoc['document'] = $lang->$langdocvar;
-				}
-			}
+            if ($helpdoc['usetranslation'] == 1) {
+                $langnamevar = "d".$helpdoc['hid']."_name";
+                $langdescvar = "d".$helpdoc['hid']."_desc";
+                $langdocvar = "d".$helpdoc['hid']."_document";
+                if ($lang->$langnamevar) {
+                    $helpdoc['name'] = $lang->$langnamevar;
+                }
 
-			if($helpdoc['hid'] == 3)
-			{
-				$helpdoc['document'] = $lang->sprintf($helpdoc['document'], $mybb->post_code);
-			}
+                if ($lang->$langdescvar) {
+                    $helpdoc['description'] = $lang->$langdescvar;
+                }
 
-			add_breadcrumb($helpdoc['name']);
+                if ($lang->$langdocvar) {
+                    $helpdoc['document'] = $lang->$langdocvar;
+                }
+            }
 
-			$plugins->run_hooks("misc_help_helpdoc_end");
+            if ($helpdoc['hid'] == 3) {
+                $helpdoc['document'] = $lang->sprintf($helpdoc['document'], $mybb->post_code);
+            }
 
-			eval("\$helppage = \"".$templates->get("misc_help_helpdoc")."\";");
-			output_page($helppage);
-		}
-		else
-		{
-			error($lang->error_invalidhelpdoc);
-		}
-	}
-	else
-	{
-		$plugins->run_hooks("misc_help_section_start");
+            add_breadcrumb($helpdoc['name']);
 
-		$query = $db->simple_select("helpdocs", "*", "", array('order_by' => 'sid, disporder'));
-		while($helpdoc = $db->fetch_array($query))
-		{
-			$helpdocs[$helpdoc['sid']][$helpdoc['disporder']][$helpdoc['hid']] = $helpdoc;
-		}
-		unset($helpdoc);
-		$sections = '';
-		$query = $db->simple_select("helpsections", "*", "enabled != 0", array('order_by' => 'disporder'));
-		while($section = $db->fetch_array($query))
-		{
-			if($section['usetranslation'] == 1)
-			{
-				$langnamevar = "s".$section['sid']."_name";
-				$langdescvar = "s".$section['sid']."_desc";
-				if($lang->$langnamevar)
-				{
-					$section['name'] = $lang->$langnamevar;
-				}
-				if($lang->$langdescvar)
-				{
-					$section['description'] = $lang->$langdescvar;
-				}
-			}
-			if(is_array($helpdocs[$section['sid']]))
-			{
-				$helpbits = '';
-				foreach($helpdocs[$section['sid']] as $key => $bit)
-				{
-					foreach($bit as $key => $helpdoc)
-					{
-						if($helpdoc['enabled'] != 0)
-						{
-							if($helpdoc['usetranslation'] == 1)
-							{
-								$langnamevar = "d".$helpdoc['hid'].'_name';
-								$langdescvar = "d".$helpdoc['hid'].'_desc';
-								if($lang->$langnamevar)
-								{
-									$helpdoc['name'] = $lang->$langnamevar;
-								}
-								if($lang->$langdescvar)
-								{
-									$helpdoc['description'] = $lang->$langdescvar;
-								}
-							}
-							$altbg = alt_trow();
-							eval("\$helpbits .= \"".$templates->get("misc_help_section_bit")."\";");
-						}
-					}
-					$expdisplay = '';
-					$sname = "sid_".$section['sid']."_c";
-					if(isset($collapsed[$sname]) && $collapsed[$sname] == "display: show;")
-					{
-						$expcolimage = "collapse_collapsed.png";
-						$expdisplay = "display: none;";
-						$expthead = " thead_collapsed";
-					}
-					else
-					{
-						$expcolimage = "collapse.png";
-						$expthead = "";
-					}
-				}
-				eval("\$sections .= \"".$templates->get("misc_help_section")."\";");
-			}
-		}
+            $plugins->run_hooks("misc_help_helpdoc_end");
 
-		if($mybb->settings['helpsearch'] == 1)
-		{
-			eval("\$search = \"".$templates->get("misc_help_search")."\";");
-		}
+            output_page(\MyBB\template('misc/help_helpdoc.twig', [
+                'helpdoc' => $helpdoc,
+            ]));
+        } else {
+            error($lang->error_invalidhelpdoc);
+        }
+    } else {
+        $plugins->run_hooks("misc_help_section_start");
 
-		$plugins->run_hooks("misc_help_section_end");
+        $query = $db->simple_select("helpdocs", "*", "", array('order_by' => 'sid, disporder'));
+        while ($helpdoc = $db->fetch_array($query)) {
+            $helpdocs[$helpdoc['sid']][$helpdoc['disporder']][$helpdoc['hid']] = $helpdoc;
+        }
 
-		eval("\$help = \"".$templates->get("misc_help")."\";");
-		output_page($help);
-	}
+        unset($helpdoc);
+
+        $sections = [];
+        $query = $db->simple_select("helpsections", "*", "enabled != 0", array('order_by' => 'disporder'));
+        while ($section = $db->fetch_array($query)) {
+            if ($section['usetranslation'] == 1) {
+                $langnamevar = "s".$section['sid']."_name";
+                $langdescvar = "s".$section['sid']."_desc";
+
+                if ($lang->$langnamevar) {
+                    $section['name'] = $lang->$langnamevar;
+                }
+
+                if ($lang->$langdescvar) {
+                    $section['description'] = $lang->$langdescvar;
+                }
+            }
+
+            if (is_array($helpdocs[$section['sid']])) {
+                $section['helpdocs'] = [];
+                foreach ($helpdocs[$section['sid']] as $key => $bit) {
+                    foreach ($bit as $key => $helpdoc) {
+                        if ($helpdoc['enabled'] != 0) {
+                            if ($helpdoc['usetranslation'] == 1) {
+                                $langnamevar = "d".$helpdoc['hid'].'_name';
+                                $langdescvar = "d".$helpdoc['hid'].'_desc';
+
+                                if ($lang->$langnamevar) {
+                                    $helpdoc['name'] = $lang->$langnamevar;
+                                }
+
+                                if ($lang->$langdescvar) {
+                                    $helpdoc['description'] = $lang->$langdescvar;
+                                }
+                            }
+
+                            $section['helpdocs'][] = $helpdoc;
+                        }
+                    }
+
+                    $sname = "sid_".$section['sid']."_c";
+                    if (isset($collapsed[$sname]) && $collapsed[$sname] == "display: show;") {
+                        $section['expcolimage'] = "collapse_collapsed.png";
+                        $section['expdisplay'] = "display: none;";
+                        $section['expthead'] = " thead_collapsed";
+                    } else {
+                        $section['expcolimage'] = "collapse.png";
+                        $section['expthead'] = '';
+                        $section['expdisplay'] = '';
+                    }
+                }
+
+                $sections[] = $section;
+            }
+        }
+
+        $plugins->run_hooks("misc_help_section_end");
+
+        output_page(\MyBB\template('misc/help.twig', [
+            'sections' => $sections,
+        ]));
+    }
 }
 elseif($mybb->input['action'] == "buddypopup")
 {
@@ -541,87 +494,52 @@ elseif($mybb->input['action'] == "buddypopup")
 		}
 	}
 
-	// Load Buddies
-	$buddies = '';
-	if($mybb->user['buddylist'] != "")
-	{
-		$buddys = array('online' => '', 'offline' => '');
-		$timecut = TIME_NOW - $mybb->settings['wolcutoff'];
+    // Load Buddies
+    $buddies['showlist'] = false;
+    if ($mybb->user['buddylist'] != "") {
+        $buddys = array('online' => [], 'offline' => []);
+        $timecut = TIME_NOW - $mybb->settings['wolcutoff'];
 
-		$query = $db->simple_select("users", "*", "uid IN ({$mybb->user['buddylist']})", array('order_by' => 'lastactive'));
+        $query = $db->simple_select("users", "*", "uid IN ({$mybb->user['buddylist']})", array('order_by' => 'lastactive'));
+        while ($buddy = $db->fetch_array($query)){
+            $buddy_name = format_name($buddy['username'], $buddy['usergroup'], $buddy['displaygroup']);
+            $buddy['profile_link'] = build_profile_link($buddy_name, $buddy['uid'], '_blank', 'if(window.opener) { window.opener.location = this.href; return false; }');
 
-		while($buddy = $db->fetch_array($query))
-		{
-			$buddy['username'] = htmlspecialchars_uni($buddy['username']);
-			$buddy_name = format_name($buddy['username'], $buddy['usergroup'], $buddy['displaygroup']);
-			$profile_link = build_profile_link($buddy_name, $buddy['uid'], '_blank', 'if(window.opener) { window.opener.location = this.href; return false; }');
+            $buddy['show_pm'] = false;
+            if ($mybb->user['receivepms'] != 0 && $buddy['receivepms'] != 0 && $groupscache[$buddy['usergroup']]['canusepms'] != 0) {
+                $buddy['show_pm'] = true;
+            }
 
-			$send_pm = '';
-			if($mybb->user['receivepms'] != 0 && $buddy['receivepms'] != 0 && $groupscache[$buddy['usergroup']]['canusepms'] != 0)
-			{
-				eval("\$send_pm = \"".$templates->get("misc_buddypopup_user_sendpm")."\";");
-			}
+            if ($buddy['lastactive']) {
+                $buddy['last_active'] = my_date('relative', $buddy['lastactive']);
+            }
 
-			if($buddy['lastactive'])
-			{
-				$last_active = $lang->sprintf($lang->last_active, my_date('relative', $buddy['lastactive']));
-			}
-			else
-			{
-				$last_active = $lang->sprintf($lang->last_active, $lang->never);
-			}
+            $buddy['avatar'] = format_avatar($buddy['avatar'], $buddy['avatardimensions'], '44x44');
 
-			$buddy['avatar'] = format_avatar($buddy['avatar'], $buddy['avatardimensions'], '44x44');
+            if ($buddy['lastactive'] > $timecut && ($buddy['invisible'] == 0 || $mybb->user['usergroup'] == 4) && $buddy['lastvisit'] != $buddy['lastactive']) {
+                $buddys['online'][] = $buddy;
+            } else {
+                $buddys['offline'][] = $buddy;
+            }
+        }
 
-			if($buddy['lastactive'] > $timecut && ($buddy['invisible'] == 0 || $mybb->user['usergroup'] == 4) && $buddy['lastvisit'] != $buddy['lastactive'])
-			{
-				$bonline_alt = alt_trow();
-				eval("\$buddys['online'] .= \"".$templates->get("misc_buddypopup_user_online")."\";");
-			}
-			else
-			{
-				$boffline_alt = alt_trow();
-				eval("\$buddys['offline'] .= \"".$templates->get("misc_buddypopup_user_offline")."\";");
-			}
-		}
+        $buddies['showlist'] = true;
+    }
 
-		$colspan = ' colspan="2"';
-		if(empty($buddys['online']))
-		{
-			$error = $lang->online_none;
-			eval("\$buddys['online'] = \"".$templates->get("misc_buddypopup_user_none")."\";");
-		}
+    $plugins->run_hooks("misc_buddypopup_end");
 
-		if(empty($buddys['offline']))
-		{
-			$error = $lang->offline_none;
-			eval("\$buddys['offline'] = \"".$templates->get("misc_buddypopup_user_none")."\";");
-		}
-
-		eval("\$buddies = \"".$templates->get("misc_buddypopup_user")."\";");
-	}
-	else
-	{
-		// No buddies? :(
-		$colspan = '';
-		$error = $lang->no_buddies;
-		eval("\$buddies = \"".$templates->get("misc_buddypopup_user_none")."\";");
-	}
-
-	$plugins->run_hooks("misc_buddypopup_end");
-
-	eval("\$buddylist = \"".$templates->get("misc_buddypopup", 1, 0)."\";");
-	echo $buddylist;
-	exit;
+    output_page(\MyBB\template('misc/buddypopup.twig', [
+        'buddies' => $buddies,
+        'buddys' => $buddys,
+    ]));
+    exit;
 }
 elseif($mybb->input['action'] == "whoposted")
 {
-	$numposts = 0;
-	$altbg = alt_trow();
-	$whoposted = '';
 	$tid = $mybb->get_input('tid', MyBB::INPUT_INT);
 	$thread = get_thread($tid);
 	$modal = $mybb->get_input('modal', MyBB::INPUT_INT);
+	$thread['numposts'] = 0;
 
 	// Make sure we are looking at a real thread here.
 	if(!$thread)
@@ -670,87 +588,81 @@ elseif($mybb->input['action'] == "whoposted")
 		error_no_permission();
 	}
 
-	// Check if this forum is password protected and we have a valid password
-	check_forum_password($forum['fid']);
+    // Check if this forum is password protected and we have a valid password
+    check_forum_password($forum['fid']);
 
-	if($mybb->get_input('sort') != 'username')
-	{
-		$sortsql = ' ORDER BY posts DESC';
-	}
-	else
-	{
-		$sortsql = ' ORDER BY p.username ASC';
-	}
-	$whoposted = '';
-	$query = $db->query("
-		SELECT COUNT(p.pid) AS posts, p.username AS postusername, u.uid, u.username, u.usergroup, u.displaygroup
-		FROM ".TABLE_PREFIX."posts p
-		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-		WHERE tid='".$tid."' AND $show_posts
-		GROUP BY u.uid, p.username, u.uid, u.username, u.usergroup, u.displaygroup
-		".$sortsql."
-	");
-	while($poster = $db->fetch_array($query))
-	{
-		if($poster['username'] == '')
-		{
-			$poster['username'] = $poster['postusername'];
-		}
-		$poster['username'] = htmlspecialchars_uni($poster['username']);
-		$poster['postusername'] = htmlspecialchars_uni($poster['postusername']);
-		$poster_name = format_name($poster['username'], $poster['usergroup'], $poster['displaygroup']);
-		if($modal)
-		{
-			$onclick = '';
-			if($poster['uid'])
-			{
-				$onclick = "opener.location.href='".get_profile_link($poster['uid'])."'; return false;";
-			}
-			$profile_link = build_profile_link($poster_name, $poster['uid'], '_blank', $onclick);
-		}
-		else
-		{
-			$profile_link = build_profile_link($poster_name, $poster['uid']);
-		}
-		$numposts += $poster['posts'];
-		eval("\$whoposted .= \"".$templates->get("misc_whoposted_poster")."\";");
-		$altbg = alt_trow();
-	}
-	$numposts = my_number_format($numposts);
-	$poster['posts'] = my_number_format($poster['posts']);
-	if($modal)
-	{
-		eval("\$whop = \"".$templates->get("misc_whoposted", 1, 0)."\";");
-		echo $whop;
-		exit;
-	}
-	else
-	{
-		require_once MYBB_ROOT."inc/class_parser.php";
-		$parser = new postParser;
+    if ($mybb->get_input('sort') != 'username') {
+        $sortsql = ' ORDER BY posts DESC';
+    } else {
+        $sortsql = ' ORDER BY p.username ASC';
+    }
 
-		// Get thread prefix
-		$breadcrumbprefix = '';
-		$threadprefix = array('prefix' => '');
-		if($thread['prefix'])
-		{
-			$threadprefix = build_prefixes($thread['prefix']);
-			if(!empty($threadprefix['displaystyle']))
-			{
-				$breadcrumbprefix = $threadprefix['displaystyle'].'&nbsp;';
-			}
-		}
+    $whoposted = [];
+    $query = $db->query("
+        SELECT COUNT(p.pid) AS posts, p.username AS postusername, u.uid, u.username, u.usergroup, u.displaygroup
+        FROM " . TABLE_PREFIX . "posts p
+        LEFT JOIN " . TABLE_PREFIX . "users u ON (u.uid=p.uid)
+        WHERE tid='".$tid."' AND $show_posts
+        GROUP BY u.uid, p.username, u.uid, u.username, u.usergroup, u.displaygroup
+        ".$sortsql."
+    ");
+    while ($poster = $db->fetch_array($query)) {
+        if ($poster['username'] == '') {
+            $poster['username'] = $poster['postusername'];
+        }
 
-		$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
+        $poster_name = format_name($poster['username'], $poster['usergroup'], $poster['displaygroup']);
+        if ($modal) {
+            $onclick = '';
+            if ($poster['uid']) {
+                $onclick = "opener.location.href='".get_profile_link($poster['uid'])."'; return false;";
+            }
 
-		// Build the navigation.
-		build_forum_breadcrumb($forum['fid']);
-		add_breadcrumb($breadcrumbprefix.$thread['subject'], get_thread_link($thread['tid']));
-		add_breadcrumb($lang->who_posted);
+            $poster['profile_link'] = build_profile_link($poster_name, $poster['uid'], '_blank', $onclick);
+        } else {
+            $poster['profile_link'] = build_profile_link($poster_name, $poster['uid']);
+        }
 
-		eval("\$whoposted = \"".$templates->get("misc_whoposted_page")."\";");
-		output_page($whoposted);
-	}
+        $thread['numposts'] += $poster['posts'];
+        $poster['posts'] = my_number_format($poster['posts']);
+
+        $whoposted[] = $poster;
+    }
+
+    $thread['numposts'] = my_number_format($thread['numposts']);
+
+    if ($modal) {
+        output_page(\MyBB\template('misc/whoposted_modal.twig', [
+            'thread' => $thread,
+            'whoposted' => $whoposted,
+        ]));
+        exit;
+    } else {
+        require_once MYBB_ROOT."inc/class_parser.php";
+        $parser = new postParser;
+
+        // Get thread prefix
+        $breadcrumbprefix = '';
+        $threadprefix = array('prefix' => '');
+        if ($thread['prefix']) {
+            $threadprefix = build_prefixes($thread['prefix']);
+            if (!empty($threadprefix['displaystyle'])) {
+                $breadcrumbprefix = $threadprefix['displaystyle'].'&nbsp;';
+            }
+        }
+
+        $thread['subject'] = $parser->parse_badwords($thread['subject']);
+
+        // Build the navigation.
+        build_forum_breadcrumb($forum['fid']);
+        add_breadcrumb($breadcrumbprefix.$thread['subject'], get_thread_link($thread['tid']));
+        add_breadcrumb($lang->who_posted);
+
+        output_page(\MyBB\template('misc/whoposted.twig', [
+            'thread' => $thread,
+            'whoposted' => $whoposted,
+        ]));
+    }
 }
 elseif($mybb->input['action'] == "smilies")
 {

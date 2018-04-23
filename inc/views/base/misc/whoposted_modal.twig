@@ -1,0 +1,20 @@
+<div class="modal">
+    <div style="overflow-y: auto; max-height: 400px;">
+        <table width="100%" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" border="0" align="center" class="tborder">
+            <tr>
+                <td colspan="2" class="thead"><strong>{{ lang.total_posts }} {{ thread.numposts }}</strong></td>
+            </tr>
+            <tr>
+                <td class="tcat"><span class="smalltext"><strong><a href="javascript:void(0)" onclick="MyBB.whoPosted({{ thread.tid }}, 'username'); return false;">{{ lang.user }}</a></strong></span></td>
+                <td class="tcat"><span class="smalltext"><strong><a href="javascript:void(0)" onclick="MyBB.whoPosted({{ thread.tid }}); return false;">{{ lang.num_posts }}</a></strong></span></td>
+            </tr>
+            {% for poster in whoposted %}
+                {% set row = alt_trow() %}
+                <tr>
+                    <td class="{{ row }}">{{ poster.profile_link|raw }}</td>
+                    <td class="{{ row }}">{{ poster.posts }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
