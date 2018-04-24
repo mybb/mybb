@@ -2282,7 +2282,6 @@ function install_done()
 		'lastvisit' => $now,
 		'website' => '',
 		'icq' => '',
-		'aim' => '',
 		'yahoo' => '',
 		'skype' =>'',
 		'google' =>'',
