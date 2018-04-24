@@ -1761,7 +1761,8 @@ function print_setting_peekers()
 		'new Peeker($("#setting_errorlogmedium"), $("#row_setting_errortypemedium"), /^(log|email|both)/, false)',
 		'new Peeker($("#setting_errorlogmedium"), $("#row_setting_errorloglocation"), /^(log|both)/, false)',
 		'new Peeker($(".setting_sigmycode"), $("#row_setting_sigcountmycode, #row_setting_sigimgcode"), 1, true)',
-		'new Peeker($(".setting_pmsallowmycode"), $("#row_setting_pmsallowimgcode, #row_setting_pmsallowvideocode"), 1, true)'
+		'new Peeker($(".setting_pmsallowmycode"), $("#row_setting_pmsallowimgcode, #row_setting_pmsallowvideocode"), 1, true)',
+		'new Peeker($(".setting_enableshowteam"), $("#row_setting_showaddlgroups, #row_setting_showgroupleaders"), 1, true)'
 	);
 
 	$peekers = $plugins->run_hooks("admin_settings_print_peekers", $peekers);

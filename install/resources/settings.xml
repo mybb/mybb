@@ -2518,4 +2518,30 @@ min=0]]></optionscode>
 			<isdefault>1</isdefault>
 		</setting>
 	</settinggroup>
+	<settinggroup name="forumteam" title="Forum Team" description="This section allows you to control various aspects of the forum team listing (showteam.php), such as aspects to consider while listing team members, and which features to enable or disable." disporder="29" isdefault="1">
+		<setting name="enableshowteam">
+			<title>Enable Forum Team Listing Functionality</title>
+			<description><![CDATA[If you wish to disable the forum team listing on your board, set this option to No.]]></description>
+			<disporder>1</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="showaddlgroups">
+			<title>Show Additional Groups</title>
+			<description><![CDATA[Whether the team list will populate considering additional groups as well.]]></description>
+			<disporder>1</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="showgroupleaders">
+			<title>Show Group Leaders</title>
+			<description><![CDATA[Include group leaders to show up in the team list.]]></description>
+			<disporder>1</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+	</settinggroup>
 </settings>

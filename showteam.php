@@ -17,15 +17,18 @@ require_once "./global.php";
 // Load global language phrases
 $lang->load('showteam');
 
+if($mybb->settings['enableshowteam'] == 0)
+{
+	error($lang->showteam_disabled);
+}
+
 add_breadcrumb($lang->nav_showteam);
 
 $plugins->run_hooks('showteam_start');
 
 $timecut = TIME_NOW - $mybb->settings['wolcutoff'];
 
-$usergroups = array();
-$moderators = array();
-$users = array();
+$usergroups = $moderators = $users = array();
 
 // Fetch the list of groups which are to be shown on the page
 $query = $db->simple_select("usergroups", "gid, title, usertitle", "showforumteam=1", array('order_by' => 'disporder'));
@@ -57,8 +60,11 @@ if($usergroups[6]['gid'])
 }
 
 // Now query the users of those specific groups
-$groups_in = implode(",", array_keys($usergroups));
+$visible_groups = array_keys($usergroups);
+
+$groups_in = implode(",", $visible_groups);
 $users_in = implode(",", array_keys($moderators));
+
 if(!$groups_in)
 {
 	$groups_in = 0;
@@ -69,7 +75,16 @@ if(!$users_in)
 }
 $forum_permissions = forum_permissions();
 
-$query = $db->simple_select("users", "uid, username, displaygroup, usergroup, ignorelist, hideemail, receivepms, lastactive, lastvisit, invisible, away", "displaygroup IN ($groups_in) OR (displaygroup='0' AND usergroup IN ($groups_in)) OR uid IN ($users_in)", array('order_by' => 'username'));
+$query_part = '';
+if($mybb->settings['showaddlgroups'])
+{
+	foreach($visible_groups as $visible_group)
+	{
+		$query_part .= "FIND_IN_SET('$visible_group',additionalgroups) OR ";
+	}
+}
+
+$query = $db->simple_select("users", "uid, username, displaygroup, usergroup, additionalgroups, ignorelist, hideemail, receivepms, lastactive, lastvisit, invisible, away", $query_part."displaygroup IN ($groups_in) OR (displaygroup='0' AND usergroup IN ($groups_in)) OR uid IN ($users_in)", array('order_by' => 'username'));
 while($user = $db->fetch_array($query))
 {
 	// If this user is a moderator
@@ -106,6 +121,18 @@ while($user = $db->fetch_array($query))
 	if($usergroups[$group] && $group != 6)
 	{
 		$usergroups[$group]['user_list'][$user['uid']] = $user;
+	}
+
+	if($mybb->settings['showaddlgroups'] && $user['additionalgroups'] != '')
+	{
+		$adgroups = explode(',', $user['additionalgroups']);
+		foreach($adgroups as $adgroup)
+		{
+			if(in_array($adgroup, $visible_groups))
+			{
+				$usergroups[$adgroup]['user_list'][$user['uid']] = $user;
+			}
+		}
 	}
 }
 
