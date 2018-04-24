@@ -22,12 +22,18 @@ $upgrade_detail = array(
 
 function upgrade43_dbchanges()
 {
-	global $output, $cache;
+	global $output, $db, $cache;
 
 	$output->print_header("Updating Database");
 
 	echo "<p>Performing necessary upgrade queries...</p>";
 	flush();
+
+	if($db->field_exists('users', 'aim'))
+	{
+		$db->drop_column('aim', 'users');
+	}
+	$db->delete_query("settings", "name='allowaimfield'");
 
 	$cache->delete("mybb_credits");
 

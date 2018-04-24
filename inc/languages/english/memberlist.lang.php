@@ -39,7 +39,6 @@ $l['search_criteria'] = "Search Criteria";
 $l['begins_with'] = "begins with";
 $l['username_contains'] = "contains";
 $l['search_website'] = "Website URL";
-$l['search_aim'] = "AIM Screen Name";
 $l['search_skype'] = "Skype Address";
 $l['search_google'] = "Google Hangouts Address";
 $l['search_yahoo'] = "Yahoo! Messenger Screen Name";

@@ -2587,7 +2587,6 @@ if($mybb->input['action'] == "do_editprofile")
 		"profile_fields_editable" => true,
 		"website" => $mybb->get_input('website'),
 		"icq" => $mybb->get_input('icq'),
-		"aim" => $mybb->get_input('aim'),
 		"yahoo" => $mybb->get_input('yahoo'),
 		"skype" => $mybb->get_input('skype'),
 		"google" => $mybb->get_input('google'),
@@ -2807,7 +2806,7 @@ if($mybb->input['action'] == "editprofile")
 	}
 
 	// Sanitize all input
-	foreach(array('usertitle', 'website', 'icq', 'aim', 'yahoo', 'skype', 'google', 'signature', 'birthday_day', 'birthday_month', 'birthday_year') as $field)
+	foreach(array('usertitle', 'website', 'icq', 'yahoo', 'skype', 'google', 'signature', 'birthday_day', 'birthday_month', 'birthday_year') as $field)
 	{
 		$mybb->input[$field] = htmlspecialchars_uni($mybb->get_input($field));
 	}
