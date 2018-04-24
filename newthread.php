@@ -1091,24 +1091,19 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			{
 				$post_captcha->build_captcha();
 			}
-			elseif(in_array($post_captcha->type, array(2, 4, 5)))
+			elseif(in_array($post_captcha->type, array(4, 5)))
 			{
 				$post_captcha->build_recaptcha();
 			}
-
-			if($post_captcha->html)
-			{
-				$captcha = $post_captcha->html;
-			}
 		}
-		else if($correct && (in_array($post_captcha->type, array(2, 4, 5))))
+		else if($correct && (in_array($post_captcha->type, array(4, 5))))
 		{
 			$post_captcha->build_recaptcha();
+		}
 
-			if($post_captcha->html)
-			{
-				$captcha = $post_captcha->html;
-			}
+		if($post_captcha->html)
+		{
+			$captcha = $post_captcha->html;
 		}
 	}
 

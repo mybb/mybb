@@ -468,43 +468,32 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 			$hide_captcha = true;
 		}
 
-		if($mybb->get_input('ajax', MyBB::INPUT_INT))
+		if($mybb->get_input('ajax', MyBB::INPUT_INT) && $post_captcha->type == 1)
 		{
-			if($post_captcha->type == 1)
+			$randomstr = random_str(5);
+			$imagehash = md5(random_str(12));
+
+			$imagearray = array(
+				"imagehash" => $imagehash,
+				"imagestring" => $randomstr,
+				"dateline" => TIME_NOW
+			);
+
+			$db->insert_query("captcha", $imagearray);
+
+			//header("Content-type: text/html; charset={$lang->settings['charset']}");
+			$data = '';
+			$data .= "<captcha>$imagehash";
+
+			if($hide_captcha)
 			{
-				$randomstr = random_str(5);
-				$imagehash = md5(random_str(12));
-
-				$imagearray = array(
-					"imagehash" => $imagehash,
-					"imagestring" => $randomstr,
-					"dateline" => TIME_NOW
-				);
-
-				$db->insert_query("captcha", $imagearray);
-
-				//header("Content-type: text/html; charset={$lang->settings['charset']}");
-				$data = '';
-				$data .= "<captcha>$imagehash";
-
-				if($hide_captcha)
-				{
-					$data .= "|$randomstr";
-				}
-
-				$data .= "</captcha>";
-
-				//header("Content-type: application/json; charset={$lang->settings['charset']}");
-				$json_data = array("data" => $data);
+				$data .= "|$randomstr";
 			}
-			else if($post_captcha->type == 2)
-			{
-				//header("Content-type: text/html; charset={$lang->settings['charset']}");
-				$data = "<captcha>reload</captcha>";
 
-				//header("Content-type: application/json; charset={$lang->settings['charset']}");
-				$json_data = array("data" => $data);
-			}
+			$data .= "</captcha>";
+
+			//header("Content-type: application/json; charset={$lang->settings['charset']}");
+			$json_data = array("data" => $data);
 		}
 	}
 
@@ -1252,24 +1241,19 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			{
 				$post_captcha->build_captcha();
 			}
-			elseif(in_array($post_captcha->type, array(2, 4, 5)))
+			elseif(in_array($post_captcha->type, array(4, 5)))
 			{
 				$post_captcha->build_recaptcha();
 			}
-
-			if($post_captcha->html)
-			{
-				$captcha = $post_captcha->html;
-			}
 		}
-		else if($correct && (in_array($post_captcha->type, array(2, 4, 5))))
+		else if($correct && (in_array($post_captcha->type, array(4, 5))))
 		{
 			$post_captcha->build_recaptcha();
+		}
 
-			if($post_captcha->html)
-			{
-				$captcha = $post_captcha->html;
-			}
+		if($post_captcha->html)
+		{
+			$captcha = $post_captcha->html;
 		}
 	}
 
