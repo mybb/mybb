@@ -4386,7 +4386,7 @@ $(".forumjump").change(function() {
 	<td class="tfoot" style="text-align: right">
 		<span class="smalltext">
 			{$logoutlink}
-			<a href="showteam.php">{$lang->forumteam}</a>
+			{$showteamlink}
 			{$statspage}
 		</span>
 	</td>
@@ -4396,7 +4396,9 @@ $(".forumjump").change(function() {
 <br />]]></template>
 		<template name="index_statspage" version="1800"><![CDATA[ |
 			<a href="stats.php">{$lang->forumstats}</a>]]></template>
-		<template name="index_logoutlink" version="1400"><![CDATA[<a href="member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}">{$lang->index_logout}</a> | ]]></template>
+		<template name="index_showteamlink" version="1816"><![CDATA[ |
+			<a href="showteam.php">{$lang->forumteam}</a>]]></template>
+		<template name="index_logoutlink" version="1816"><![CDATA[<a href="member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}">{$lang->index_logout}</a>]]></template>
 		<template name="index_stats" version="1400"><![CDATA[<tr><td class="tcat"><span class="smalltext"><strong>{$lang->boardstats}</strong></span></td></tr>
 <tr>
 <td class="trow1"><span class="smalltext">
