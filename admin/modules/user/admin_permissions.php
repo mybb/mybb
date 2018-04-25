@@ -446,6 +446,8 @@ if(!$mybb->input['action'])
 		");
 		while($admin = $db->fetch_array($query))
 		{
+			$perm_type = "default";
+
 			if($admin['permissions'] != "")
 			{
 				$perm_type = "user";
@@ -461,11 +463,6 @@ if(!$mybb->input['action'])
 						$perm_type = "group";
 						break;
 					}
-				}
-
-				if(!$group_permissions)
-				{
-					$perm_type = "default";
 				}
 			}
 
