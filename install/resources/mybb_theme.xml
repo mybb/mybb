@@ -11287,13 +11287,13 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
-		<template name="showteam_moderators" version="1813"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<template name="showteam_moderators" version="1816"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-<td class="thead" colspan="5"><strong>{$lang->moderators}</strong></td>
+<td class="thead" colspan="5"><strong>{$usergroup['title']}</strong></td>
 </tr>
 <tr>
 <td class="tcat"><span class="smalltext"><strong>{$lang->username}</strong></span></td>
-<td class="tcat"><span class="smalltext"><strong>{$lang->mod_forums}</strong></span></td>
+<td class="tcat"><span class="smalltext"><strong>{$modscope}</strong></span></td>
 <td class="tcat"><span class="smalltext"><strong>{$lang->lastvisit}</strong></span></td>
 <td class="tcat"><span class="smalltext"><strong>{$lang->email}</strong></span></td>
 <td class="tcat"><span class="smalltext"><strong>{$lang->pm}</strong></span></td>
@@ -11302,9 +11302,9 @@ if(use_xmlhttprequest == "1")
 </table>
 <br />]]></template>
 		<template name="showteam_moderators_forum" version="1813"><![CDATA[<a href="{$forum_url}">{$forum['name']}</a><br />]]></template>
-		<template name="showteam_moderators_mod" version="1800"><![CDATA[<tr>
+		<template name="showteam_moderators_mod" version="1816"><![CDATA[<tr>
 <td width="45%" class="{$bgcolor}"><img src="{$theme['imgdir']}/buddy_{$status}.png" title="{$lang->$status}" alt="{$lang->$status}" style="vertical-align: middle;" /><a href="{$user['profilelink']}"><strong>{$user['username']}</strong></a></td>
-<td width="30%" class="{$bgcolor}"><span class="smalltext">{$forumslist}</span></td>
+<td width="30%" class="{$bgcolor}"><span class="smalltext">{$scopelist}</span></td>
 <td width="15%" class="{$bgcolor}"><div class="postbit_buttons">{$user['lastvisit']}</div></td>
 <td width="5%" class="{$bgcolor}"><div class="postbit_buttons">{$emailcode}</div></td>
 <td width="5%" class="{$bgcolor}"><div class="postbit_buttons">{$pmcode}</div></td>
