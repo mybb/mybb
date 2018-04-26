@@ -1110,12 +1110,12 @@ class UserDataHandler extends DataHandler
 			"regdate" => (int)$user['regdate'],
 			"lastactive" => (int)$user['lastactive'],
 			"lastvisit" => (int)$user['lastvisit'],
-			"website" => $db->escape_string($user['website']),
+			"website" => $db->escape_string(htmlspecialchars_uni($user['website'])),
 			"icq" => (int)$user['icq'],
-			"aim" => $db->escape_string($user['aim']),
-			"yahoo" => $db->escape_string($user['yahoo']),
-			"skype" => $db->escape_string($user['skype']),
-			"google" => $db->escape_string($user['google']),
+			"aim" => $db->escape_string(htmlspecialchars_uni($user['aim'])),
+			"yahoo" => $db->escape_string(htmlspecialchars_uni($user['yahoo'])),
+			"skype" => $db->escape_string(htmlspecialchars_uni($user['skype'])),
+			"google" => $db->escape_string(htmlspecialchars_uni($user['google'])),
 			"birthday" => $user['bday'],
 			"signature" => $db->escape_string($user['signature']),
 			"allownotices" => (int)$user['options']['allownotices'],
@@ -1301,7 +1301,7 @@ class UserDataHandler extends DataHandler
 		}
 		if(isset($user['usertitle']))
 		{
-			$this->user_update_data['usertitle'] = $db->escape_string($user['usertitle']);
+			$this->user_update_data['usertitle'] = $db->escape_string(htmlspecialchars_uni($user['usertitle']));
 		}
 		if(isset($user['regdate']))
 		{
@@ -1321,7 +1321,7 @@ class UserDataHandler extends DataHandler
 		}
 		if(isset($user['website']))
 		{
-			$this->user_update_data['website'] = $db->escape_string($user['website']);
+			$this->user_update_data['website'] = $db->escape_string(htmlspecialchars_uni($user['website']));
 		}
 		if(isset($user['icq']))
 		{
@@ -1329,19 +1329,19 @@ class UserDataHandler extends DataHandler
 		}
 		if(isset($user['aim']))
 		{
-			$this->user_update_data['aim'] = $db->escape_string($user['aim']);
+			$this->user_update_data['aim'] = $db->escape_string(htmlspecialchars_uni($user['aim']));
 		}
 		if(isset($user['yahoo']))
 		{
-			$this->user_update_data['yahoo'] = $db->escape_string($user['yahoo']);
+			$this->user_update_data['yahoo'] = $db->escape_string(htmlspecialchars_uni($user['yahoo']));
 		}
 		if(isset($user['skype']))
 		{
-			$this->user_update_data['skype'] = $db->escape_string($user['skype']);
+			$this->user_update_data['skype'] = $db->escape_string(htmlspecialchars_uni($user['skype']));
 		}
 		if(isset($user['google']))
 		{
-			$this->user_update_data['google'] = $db->escape_string($user['google']);
+			$this->user_update_data['google'] = $db->escape_string(htmlspecialchars_uni($user['google']));
 		}
 		if(isset($user['bday']))
 		{
