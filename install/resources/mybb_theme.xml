@@ -5225,7 +5225,7 @@ if(use_xmlhttprequest == "1")
 		<p>{$lang->coppa_agreement_3}</p>
 	</td>
 </tr>]]></template>
-		<template name="member_register_coppa" version="1400"><![CDATA[<html>
+		<template name="member_register_coppa" version="1816"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->coppa_compliance}</title>
 {$headerinclude}
@@ -5279,7 +5279,7 @@ if(use_xmlhttprequest == "1")
 							</select>
 						</td>
 						<td>
-							<input type="text" class="textbox" size="4" maxlength="4" name="bday3" id="year" value="{$mybb->input['bday3']}" />
+							<input type="text" class="textbox" size="4" maxlength="4" name="bday3" id="year" value="{$birthday_year}" />
 						</td>
 					</tr>
 				</table>
@@ -6765,7 +6765,7 @@ if(use_xmlhttprequest == "1")
 </tr>]]></template>
 		<template name="modcp_banuser_lift" version="1801"><![CDATA[<div class="float_right"><a href="modcp.php?action=liftban&amp;uid={$banned['uid']}&amp;my_post_key={$mybb->post_code}">{$lang->lift_ban}</a></div>]]></template>
 		<template name="modcp_banuser_liftlist" version="1800"><![CDATA[<option value="{$time}"{$selected}>{$title}{$thattime}</option>]]></template>
-		<template name="modcp_editprofile" version="1800"><![CDATA[<html>
+		<template name="modcp_editprofile" version="1816"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_profile}</title>
 {$headerinclude}
@@ -6839,14 +6839,14 @@ if(use_xmlhttprequest == "1")
 												</select>
 											</td>
 											<td>
-												<input type="text" class="textbox" size="4" maxlength="4" name="birthday_year" value="{$mybb->input['birthday_year']}" />
+												<input type="text" class="textbox" size="4" maxlength="4" name="birthday_year" value="{$birthday_year}" />
 											</td>
 										</tr>
 										<tr>
 											<td colspan="3"><span class="smalltext">{$lang->website_url}</span></td>
 										</tr>
 										<tr>
-											<td colspan="3"><input type="text" class="textbox" name="website" size="25" maxlength="75" value="{$mybb->input['website']}" /></td>
+											<td colspan="3"><input type="text" class="textbox" name="website" size="25" maxlength="75" value="{$user_website}" /></td>
 										</tr>
 									</table>
 								</fieldset>
@@ -6890,7 +6890,7 @@ if(use_xmlhttprequest == "1")
 											<td><span class="smalltext">{$lang->icq_number}</span></td>
 										</tr>
 										<tr>
-											<td><input type="text" class="textbox" name="icq" size="25" value="{$mybb->input['icq']}" /></td>
+											<td><input type="text" class="textbox" name="icq" size="25" value="{$user_icq}" /></td>
 										</tr>
 										<tr>
 											<td><span class="smalltext">{$lang->aim_screenname}</span></td>
@@ -6902,19 +6902,19 @@ if(use_xmlhttprequest == "1")
 											<td><span class="smalltext">{$lang->skype_id}</span></td>
 										</tr>
 										<tr>
-											<td><input type="text" class="textbox" name="skype" size="25" value="{$mybb->input['skype']}" /></td>
+											<td><input type="text" class="textbox" name="skype" size="25" value="{$user_skype}" /></td>
 										</tr>
 										<tr>
 											<td><span class="smalltext">{$lang->google_id}</span></td>
 										</tr>
 										<tr>
-											<td><input type="text" class="textbox" name="google" size="25" value="{$mybb->input['google']}" /></td>
+											<td><input type="text" class="textbox" name="google" size="25" value="{$user_google}" /></td>
 										</tr>
 										<tr>
 											<td><span class="smalltext">{$lang->yahoo_id}</span></td>
 										</tr>
 										<tr>
-											<td><input type="text" class="textbox" name="yahoo" size="25" value="{$mybb->input['yahoo']}" /></td>
+											<td><input type="text" class="textbox" name="yahoo" size="25" value="{$user_yahoo}" /></td>
 										</tr>
 									</table>
 								</fieldset>
@@ -10873,17 +10873,17 @@ document.write('<br /><span class="smalltext"><a href="javascript:void(0)" oncli
 {$footer}
 </body>
 </html>]]></template>
-		<template name="reputation_add" version="1809"><![CDATA[<div class="modal">
-	<div style="overflow-y: auto; max-height: 400px;" class="modal_{$user['uid']}_{$mybb->input['pid']}">
+		<template name="reputation_add" version="1816"><![CDATA[<div class="modal">
+	<div style="overflow-y: auto; max-height: 400px;" class="modal_{$user['uid']}_{$reputation_pid}">
       <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 	<tr>
 		<td class="trow1" style="padding: 20px">
 			<strong>{$vote_title}</strong><br />{$post_rep_info}<br />
-          <form action="reputation.php" method="post" class="reputation_{$user['uid']}_{$mybb->input['pid']}" onsubmit="return MyBB.submitReputation({$user['uid']}, {$mybb->input['pid']});">
+          <form action="reputation.php" method="post" class="reputation_{$user['uid']}_{$reputation_pid}" onsubmit="return MyBB.submitReputation({$user['uid']}, {$reputation_pid});">
 				<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 				<input type="hidden" name="action" value="do_add" />
 				<input type="hidden" name="uid" value="{$user['uid']}" />
-				<input type="hidden" name="pid" value="{$mybb->input['pid']}" />
+				<input type="hidden" name="pid" value="{$reputation_pid}" />
 				<input type="hidden" name="rid" value="{$rid}" />
 				<input type="hidden" name="nomodal" value="1" />
 				<select name="reputation" id="reputation">
@@ -10906,7 +10906,7 @@ document.write('<br /><span class="smalltext"><a href="javascript:void(0)" oncli
 </table>
   </div>
 </div>]]></template>
-		<template name="reputation_add_delete" version="1809"><![CDATA[<input type="button" class="button" name="delete" value="{$lang->delete_vote}" onclick="return MyBB.submitReputation({$user['uid']}, {$mybb->input['pid']}, 1);" />]]></template>
+		<template name="reputation_add_delete" version="1816"><![CDATA[<input type="button" class="button" name="delete" value="{$lang->delete_vote}" onclick="return MyBB.submitReputation({$user['uid']}, {$reputation_pid}, 1);" />]]></template>
 		<template name="reputation_add_error" version="1800"><![CDATA[<div class="modal">
 	<div style="overflow-y: auto; max-height: 400px;">
       <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">

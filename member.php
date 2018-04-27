@@ -713,31 +713,31 @@ if($mybb->input['action'] == "register")
 		$bdaymonthsel[$number] = '';
 	}
 	$bdaymonthsel[$mybb->input['bday2']] = "selected=\"selected\"";
-	$mybb->input['bday3'] = $mybb->get_input('bday3', MyBB::INPUT_INT);
+	$birthday_year = $mybb->get_input('bday3', MyBB::INPUT_INT);
 
-	if($mybb->input['bday3'] == 0)
+	if($birthday_year == 0)
 	{
-		$mybb->input['bday3'] = '';
+		$birthday_year = '';
 	}
 
 	// Is COPPA checking enabled?
 	if($mybb->settings['coppa'] != "disabled" && !isset($mybb->input['step']))
 	{
 		// Just selected DOB, we check
-		if($mybb->input['bday1'] && $mybb->input['bday2'] && $mybb->input['bday3'])
+		if($mybb->input['bday1'] && $mybb->input['bday2'] && $birthday_year)
 		{
 			my_unsetcookie("coppauser");
 
-			$months = get_bdays($mybb->input['bday3']);
-			if($mybb->input['bday2'] < 1 || $mybb->input['bday2'] > 12 || $mybb->input['bday3'] < (date("Y")-100) || $mybb->input['bday3'] > date("Y") || $mybb->input['bday1'] > $months[$mybb->input['bday2']-1])
+			$months = get_bdays($birthday_year);
+			if($mybb->input['bday2'] < 1 || $mybb->input['bday2'] > 12 || $birthday_year < (date("Y")-100) || $birthday_year > date("Y") || $mybb->input['bday1'] > $months[$mybb->input['bday2']-1])
 			{
 				error($lang->error_invalid_birthday);
 			}
 
-			$bdaytime = @mktime(0, 0, 0, $mybb->input['bday2'], $mybb->input['bday1'], $mybb->input['bday3']);
+			$bdaytime = @mktime(0, 0, 0, $mybb->input['bday2'], $mybb->input['bday1'], $birthday_year);
 
 			// Store DOB in cookie so we can save it with the registration
-			my_setcookie("coppadob", "{$mybb->input['bday1']}-{$mybb->input['bday2']}-{$mybb->input['bday3']}", -1);
+			my_setcookie("coppadob", "{$mybb->input['bday1']}-{$mybb->input['bday2']}-{$birthday_year}", -1);
 
 			// User is <= 13, we mark as a coppa user
 			if($bdaytime >= mktime(0, 0, 0, my_date('n'), my_date('d'), my_date('Y')-13))

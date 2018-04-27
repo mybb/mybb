@@ -3276,6 +3276,13 @@ if($mybb->input['action'] == "editprofile")
 		$newtitle = '';
 	}
 
+	$birthday_year	= $mybb->input['birthday_year'];
+	$user_website	= $mybb->input['website'];
+	$user_icq		= $mybb->input['icq'];
+	$user_skype		= $mybb->input['skype'];
+	$user_google	= $mybb->input['google'];
+	$user_yahoo		= $mybb->input['yahoo'];
+
 	$plugins->run_hooks("modcp_editprofile_end");
 
 	eval("\$edituser = \"".$templates->get("modcp_editprofile")."\";");

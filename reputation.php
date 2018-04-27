@@ -424,6 +424,7 @@ if($mybb->input['action'] == "add")
 
 		if($mybb->usergroup['issupermod'] == 1 || ($mybb->usergroup['candeletereputations'] == 1 && $existing_reputation['adduid'] == $mybb->user['uid'] && $mybb->user['uid'] != 0))
 		{
+			$reputation_pid = $mybb->get_input('pid', MyBB::INPUT_INT);
 			eval("\$delete_button = \"".$templates->get("reputation_add_delete")."\";");
 		}
 	}
@@ -487,7 +488,7 @@ if($mybb->input['action'] == "add")
 			}
 		}
 
-		$mybb->input['pid'] = $mybb->get_input('pid', MyBB::INPUT_INT);
+		$reputation_pid = $mybb->get_input('pid', MyBB::INPUT_INT);
 
 		$plugins->run_hooks("reputation_add_end");
 		eval("\$reputation_add = \"".$templates->get("reputation_add", 1, 0)."\";");
