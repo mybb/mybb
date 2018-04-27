@@ -572,492 +572,395 @@ if(!$mybb->input['action'])
 		error($lang->reputations_disabled_group);
 	}
 
-	$user['username'] = htmlspecialchars_uni($user['username']);
-	$lang->nav_profile = $lang->sprintf($lang->nav_profile, $user['username']);
-	$lang->reputation_report = $lang->sprintf($lang->reputation_report, $user['username']);
+    $lang->nav_profile = $lang->sprintf($lang->nav_profile, $user['username']);
 
-	// Format the user name using the group username style
-	$username = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
+    // Format the user name using the group username style
+    $user['user_name'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 
-	// Set display group to their user group if they don't have a display group.
-	if(!$user['displaygroup'])
-	{
-		$user['displaygroup'] = $user['usergroup'];
-	}
+    // Set display group to their user group if they don't have a display group.
+    if (!$user['displaygroup']) {
+        $user['displaygroup'] = $user['usergroup'];
+    }
 
-	$usertitle = '';
+    // This user has a custom user title
+    if (trim($user['usertitle']) != '') {
+        $user['user_title'] = $user['usertitle'];
+    } elseif (trim($display_group['usertitle']) != '') {
+        // Using our display group's user title
+        $user['user_title'] = $display_group['usertitle'];
+    } else {
+        // Otherwise, fetch it from our titles table for the number of posts this user has
+        $usertitles = $cache->read('usertitles');
+        foreach ($usertitles as $title) {
+            if ($title['posts'] <= $user['postnum']) {
+                $user['user_title'] = $title['title'];
+                break;
+            }
+        }
 
-	// This user has a custom user title
-	if(trim($user['usertitle']) != '')
-	{
-		$usertitle = $user['usertitle'];
-	}
-	// Using our display group's user title
-	elseif(trim($display_group['usertitle']) != '')
-	{
-		$usertitle = $display_group['usertitle'];
-	}
-	// Otherwise, fetch it from our titles table for the number of posts this user has
-	else
-	{
-		$usertitles = $cache->read('usertitles');
-		foreach($usertitles as $title)
-		{
-			if($title['posts'] <= $user['postnum'])
-			{
-				$usertitle = $title['title'];
-				break;
-			}
-		}
-		unset($usertitles, $title);
-	}
-	
-	$usertitle = htmlspecialchars_uni($usertitle);
+        unset($usertitles, $title);
+    }
+    
+    // If the user has permission to add reputations - show the image
+    $user['show_add_reputation'] = false;
+    if ($mybb->usergroup['cangivereputations'] == 1 && $mybb->user['uid'] != $user['uid'] && ($mybb->settings['posrep'] || $mybb->settings['neurep'] || $mybb->settings['negrep'])) {
+        $user['show_add_reputation'] = true;
+    }
 
-	// If the user has permission to add reputations - show the image
-	if($mybb->usergroup['cangivereputations'] == 1 && $mybb->user['uid'] != $user['uid'] && ($mybb->settings['posrep'] || $mybb->settings['neurep'] || $mybb->settings['negrep']))
-	{
-		eval("\$add_reputation = \"".$templates->get("reputation_addlink")."\";");
-	}
-	else
-	{
-		$add_reputation = '';
-	}
+    // Build navigation menu
+    add_breadcrumb($lang->nav_profile, get_profile_link($user['uid']));
+    add_breadcrumb($lang->nav_reputation);
 
-	// Build navigation menu
-	add_breadcrumb($lang->nav_profile, get_profile_link($user['uid']));
-	add_breadcrumb($lang->nav_reputation);
+    // Check our specified conditionals for what type of reputations to show
+    $select['show'] = array('all' => false, 'positive' => false, 'neutral' => false, 'negative' => false);
+    switch ($mybb->get_input('show')) {
+        case "positive":
+            $s_url = "&show=positive";
+            $conditions = 'AND r.reputation>0';
+            $select['show']['positive'] = true;
+            break;
+        case "neutral":
+            $s_url = "&show=neutral";
+            $conditions = 'AND r.reputation=0';
+            $select['show']['neutral'] = true;
+            break;
+        case "negative":
+            $s_url = "&show=negative";
+            $conditions = 'AND r.reputation<0';
+            $select['show']['negative'] = true;
+            break;
+        default:
+            $s_url = '&show=all';
+            $conditions = '';
+            $select['show']['all'] = true;
+            break;
+    }
 
-	// Check our specified conditionals for what type of reputations to show
-	$show_selected = array('all' => '', 'positive' => '', 'neutral' => '', 'negative' => '');
-	switch($mybb->get_input('show'))
-	{
-		case "positive":
-			$s_url = "&show=positive";
-			$conditions = 'AND r.reputation>0';
-			$show_selected['positive'] = 'selected="selected"';
-			break;
-		case "neutral":
-			$s_url = "&show=neutral";
-			$conditions = 'AND r.reputation=0';
-			$show_selected['neutral'] = 'selected="selected"';
-			break;
-		case "negative":
-			$s_url = "&show=negative";
-			$conditions = 'AND r.reputation<0';
-			$show_selected['negative'] = 'selected="selected"';
-			break;
-		default:
-			$s_url = '&show=all';
-			$conditions = '';
-			$show_select['all'] = 'selected="selected"';
-			break;
-	}
+    // Check the sorting options for the reputation list
+    $select['sort'] = array('username' => false, 'last_updated' => false);
+    switch ($mybb->get_input('sort')) {
+        case "username":
+            $s_url .= "&sort=username";
+            $order = "u.username ASC";
+            $select['sort']['username'] = true;
+            break;
+        default:
+            $s_url .= '&sort=dateline';
+            $order = "r.dateline DESC";
+            $select['sort']['last_updated'] = true;
+            break;
+    }
 
-	// Check the sorting options for the reputation list
-	$sort_selected = array('username' => '', 'last_ipdated' => '');
-	switch($mybb->get_input('sort'))
-	{
-		case "username":
-			$s_url .= "&sort=username";
-			$order = "u.username ASC";
-			$sort_selected['username'] = 'selected="selected"';
-			break;
-		default:
-			$s_url .= '&sort=dateline';
-			$order = "r.dateline DESC";
-			$sort_selected['last_updated'] = 'selected="selected"';
-			break;
-	}
+    if (empty($mybb->input['show']) && empty($mybb->input['sort'])) {
+        $s_url = '';
+    }
 
-	if(empty($mybb->input['show']) && empty($mybb->input['sort']))
-	{
-		$s_url = '';
-	}
+    // Fetch the total number of reputations for this user
+    $query = $db->simple_select("reputation r", "COUNT(r.rid) AS reputation_count", "r.uid='{$user['uid']}' $conditions");
+    $reputation_count = $db->fetch_field($query, "reputation_count");
 
-	// Fetch the total number of reputations for this user
-	$query = $db->simple_select("reputation r", "COUNT(r.rid) AS reputation_count", "r.uid='{$user['uid']}' $conditions");
-	$reputation_count = $db->fetch_field($query, "reputation_count");
+    // If the user has no reputation, suspect 0...
+    if (!$user['reputation']) {
+        $user['reputation'] = 0;
+    }
 
-	// If the user has no reputation, suspect 0...
-	if(!$user['reputation'])
-	{
-		$user['reputation'] = 0;
-	}
+    // Quickly check to see if we're in sync...
+    $query = $db->simple_select("reputation", "SUM(reputation) AS reputation, COUNT(rid) AS total_reputation", "uid = '".$user['uid']."'");
+    $reputation = $db->fetch_array($query);
 
-	// Quickly check to see if we're in sync...
-	$query = $db->simple_select("reputation", "SUM(reputation) AS reputation, COUNT(rid) AS total_reputation", "uid = '".$user['uid']."'");
-	$reputation = $db->fetch_array($query);
+    $sync_reputation = (int)$reputation['reputation'];
+    $total_reputation = $reputation['total_reputation'];
 
-	$sync_reputation = (int)$reputation['reputation'];
-	$total_reputation = $reputation['total_reputation'];
+    if ($sync_reputation != $user['reputation']) {
+        // We're out of sync! Oh noes!
+        $db->update_query("users", array("reputation" => $sync_reputation), "uid = '".$user['uid']."'");
+        $user['reputation'] = $sync_reputation;
+    }
 
-	if($sync_reputation != $user['reputation'])
-	{
-		// We're out of sync! Oh noes!
-		$db->update_query("users", array("reputation" => $sync_reputation), "uid = '".$user['uid']."'");
-		$user['reputation'] = $sync_reputation;
-	}
+    // Set default count variables to 0
+    $positive_count = $negative_count = $neutral_count = 0;
+    $positive_week = $negative_week = $neutral_week = 0;
+    $positive_month = $negative_month = $neutral_month = 0;
+    $positive_6months = $negative_6months = $neutral_6months = 0;
 
-	// Set default count variables to 0
-	$positive_count = $negative_count = $neutral_count = 0;
-	$positive_week = $negative_week = $neutral_week = 0;
-	$positive_month = $negative_month = $neutral_month = 0;
-	$positive_6months = $negative_6months = $neutral_6months = 0;
+    // Unix timestamps for when this week, month and last 6 months started
+    $last_week = TIME_NOW-604800;
+    $last_month = TIME_NOW-2678400;
+    $last_6months = TIME_NOW-16070400;
 
-	// Unix timestamps for when this week, month and last 6 months started
-	$last_week = TIME_NOW-604800;
-	$last_month = TIME_NOW-2678400;
-	$last_6months = TIME_NOW-16070400;
+    // Query reputations for the "reputation card"
+    $query = $db->simple_select("reputation", "reputation, dateline", "uid='{$user['uid']}'");
+    while ($reputation_vote = $db->fetch_array($query)) {
+        // This is a positive reputation
+        if ($reputation_vote['reputation'] > 0) {
+            $positive_count++;
+            if ($reputation_vote['dateline'] >= $last_week) {
+                $positive_week++;
+            }
 
-	// Query reputations for the "reputation card"
-	$query = $db->simple_select("reputation", "reputation, dateline", "uid='{$user['uid']}'");
-	while($reputation_vote = $db->fetch_array($query))
-	{
-		// This is a positive reputation
-		if($reputation_vote['reputation'] > 0)
-		{
-			$positive_count++;
-			if($reputation_vote['dateline'] >= $last_week)
-			{
-				$positive_week++;
-			}
-			if($reputation_vote['dateline'] >= $last_month)
-			{
-				$positive_month++;
-			}
-			if($reputation_vote['dateline'] >= $last_6months)
-			{
-				$positive_6months++;
-			}
-		}
-		// Negative reputation given
-		else if($reputation_vote['reputation'] < 0)
-		{
-			$negative_count++;
-			if($reputation_vote['dateline'] >= $last_week)
-			{
-				$negative_week++;
-			}
-			if($reputation_vote['dateline'] >= $last_month)
-			{
-				$negative_month++;
-			}
-			if($reputation_vote['dateline'] >= $last_6months)
-			{
-				$negative_6months++;
-			}
-		}
-		// Neutral reputation given
-		else
-		{
-			$neutral_count++;
-			if($reputation_vote['dateline'] >= $last_week)
-			{
-				$neutral_week++;
-			}
-			if($reputation_vote['dateline'] >= $last_month)
-			{
-				$neutral_month++;
-			}
-			if($reputation_vote['dateline'] >= $last_6months)
-			{
-				$neutral_6months++;
-			}
-		}
-	}
-	
-	// Format all reputation numbers
-	$rep_total = my_number_format($user['reputation']);
-	$f_positive_count = my_number_format($positive_count);
-	$f_negative_count = my_number_format($negative_count);
-	$f_neutral_count = my_number_format($neutral_count);
-	$f_positive_week = my_number_format($positive_week);
-	$f_negative_week = my_number_format($negative_week);
-	$f_neutral_week = my_number_format($neutral_week);
-	$f_positive_month = my_number_format($positive_month);
-	$f_negative_month = my_number_format($negative_month);
-	$f_neutral_month = my_number_format($neutral_month);
-	$f_positive_6months = my_number_format($positive_6months);
-	$f_negative_6months = my_number_format($negative_6months);
-	$f_neutral_6months = my_number_format($neutral_6months);
-	
-	// Format the user's 'total' reputation
-	if($user['reputation'] < 0)
-	{
-		$total_class = "_minus";
-	}
-	elseif($user['reputation'] > 0)
-	{
-		$total_class = "_plus";
-	}
-	else
-	{
-		$total_class = "_neutral";
-	}
+            if ($reputation_vote['dateline'] >= $last_month) {
+                $positive_month++;
+            }
 
-	// Figure out how many reps have come from posts / 'general'
-	// Posts
-	$query = $db->simple_select("reputation", "COUNT(rid) AS rep_posts", "uid = '".$user['uid']."' AND pid > 0");
-	$rep_post_count = $db->fetch_field($query, "rep_posts");
-	$rep_posts = my_number_format($rep_post_count);
+            if ($reputation_vote['dateline'] >= $last_6months) {
+                $positive_6months++;
+            }
+        } elseif ($reputation_vote['reputation'] < 0) {
+            // Negative reputation given
+            $negative_count++;
+            if ($reputation_vote['dateline'] >= $last_week) {
+                $negative_week++;
+            }
 
-	// General
-	// We count how many reps in total, then subtract the reps from posts
-	$rep_members = my_number_format($total_reputation - $rep_post_count);
+            if ($reputation_vote['dateline'] >= $last_month){
+                $negative_month++;
+            }
 
-	// Is negative reputation disabled? If so, tell the user
-	if($mybb->settings['negrep'] == 0)
-	{
-		$neg_rep_info = $lang->neg_rep_disabled;
-	}
+            if ($reputation_vote['dateline'] >= $last_6months) {
+                $negative_6months++;
+            }
+        } else {
+            // Neutral reputation given
+            $neutral_count++;
+            if ($reputation_vote['dateline'] >= $last_week) {
+                $neutral_week++;
+            }
 
-	if($mybb->settings['posrep'] == 0)
-	{
-		$pos_rep_info = $lang->pos_rep_disabled;
-	}
+            if ($reputation_vote['dateline'] >= $last_month) {
+                $neutral_month++;
+            }
 
-	if($mybb->settings['neurep'] == 0)
-	{
-		$neu_rep_info = $lang->neu_rep_disabled;
-	}
+            if ($reputation_vote['dateline'] >= $last_6months) {
+                $neutral_6months++;
+            }
+        }
+    }
 
-	$perpage = (int)$mybb->settings['repsperpage'];
-	if($perpage < 1)
-	{
-		$perpage = 15;
-	}
+    // Format all reputation numbers
+    $user['rep_total'] = my_number_format($user['reputation']);
+    $user['positive_count'] = my_number_format($positive_count);
+    $user['negative_count'] = my_number_format($negative_count);
+    $user['neutral_count'] = my_number_format($neutral_count);
+    $user['positive_week'] = my_number_format($positive_week);
+    $user['negative_week'] = my_number_format($negative_week);
+    $user['neutral_week'] = my_number_format($neutral_week);
+    $user['positive_month'] = my_number_format($positive_month);
+    $user['negative_month'] = my_number_format($negative_month);
+    $user['neutral_month'] = my_number_format($neutral_month);
+    $user['positive_6months'] = my_number_format($positive_6months);
+    $user['negative_6months'] = my_number_format($negative_6months);
+    $user['neutral_6months'] = my_number_format($neutral_6months);
 
-	// Check if we're browsing a specific page of results
-	if($mybb->get_input('page', MyBB::INPUT_INT) > 0)
-	{
-		$page = $mybb->get_input('page', MyBB::INPUT_INT);
-		$start = ($page-1) * $perpage;
-		$pages = $reputation_count / $perpage;
-		$pages = ceil($pages);
-		if($page > $pages)
-		{
-			$start = 0;
-			$page = 1;
-		}
-	}
-	else
-	{
-		$start = 0;
-		$page = 1;
-	}
+    // Format the user's 'total' reputation
+    if ($user['reputation'] < 0) {
+        $user['total_class'] = "_minus";
+    } elseif ($user['reputation'] > 0) {
+        $user['total_class'] = "_plus";
+    } else {
+        $user['total_class'] = "_neutral";
+    }
 
-	$multipage = '';
+    // Figure out how many reps have come from posts / 'general'
+    // Posts
+    $query = $db->simple_select("reputation", "COUNT(rid) AS rep_posts", "uid = '".$user['uid']."' AND pid > 0");
+    $rep_post_count = $db->fetch_field($query, "rep_posts");
+    $user['rep_posts'] = my_number_format($rep_post_count);
 
-	// Build out multipage navigation
-	if($reputation_count > 0)
-	{
-		$multipage = multipage($reputation_count, $perpage, $page, "reputation.php?uid={$user['uid']}".$s_url);
-	}
+    // General
+    // We count how many reps in total, then subtract the reps from posts
+    $user['rep_members'] = my_number_format($total_reputation - $rep_post_count);
 
-	// Fetch the reputations which will be displayed on this page
-	$query = $db->query("
-		SELECT r.*, r.uid AS rated_uid, u.uid, u.username, u.reputation AS user_reputation, u.usergroup AS user_usergroup, u.displaygroup AS user_displaygroup
-		FROM ".TABLE_PREFIX."reputation r
-		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=r.adduid)
-		WHERE r.uid='{$user['uid']}' $conditions
-		ORDER BY $order
-		LIMIT $start, {$perpage}
-	");
+    $perpage = (int)$mybb->settings['repsperpage'];
+    if ($perpage < 1) {
+        $perpage = 15;
+    }
 
-	// Gather a list of items that have post reputation
-	$reputation_cache = $post_cache = $post_reputation = array();
+    // Check if we're browsing a specific page of results
+    if ($mybb->get_input('page', MyBB::INPUT_INT) > 0) {
+        $page = $mybb->get_input('page', MyBB::INPUT_INT);
+        $start = ($page-1) * $perpage;
+        $pages = $reputation_count / $perpage;
+        $pages = ceil($pages);
+        if ($page > $pages) {
+            $start = 0;
+            $page = 1;
+        }
+    } else {
+        $start = 0;
+        $page = 1;
+    }
 
-	while($reputation_vote = $db->fetch_array($query))
-	{
-		$reputation_cache[] = $reputation_vote;
+    $multipage = '';
 
-		// If this is a post, hold it and gather some information about it
-		if($reputation_vote['pid'] && !isset($post_cache[$reputation_vote['pid']]))
-		{
-			$post_cache[$reputation_vote['pid']] = $reputation_vote['pid'];
-		}
-	}
+    // Build out multipage navigation
+    if ($reputation_count > 0) {
+        $multipage = multipage($reputation_count, $perpage, $page, "reputation.php?uid={$user['uid']}".$s_url);
+    }
 
-	if(!empty($post_cache))
-	{
-		$pids = implode(',', $post_cache);
+    // Fetch the reputations which will be displayed on this page
+    $query = $db->query("
+        SELECT r.*, r.uid AS rated_uid, u.uid, u.username, u.reputation AS user_reputation, u.usergroup AS user_usergroup, u.displaygroup AS user_displaygroup
+        FROM " . TABLE_PREFIX . "reputation r
+        LEFT JOIN " . TABLE_PREFIX . "users u ON (u.uid=r.adduid)
+        WHERE r.uid='{$user['uid']}' {$conditions}
+        ORDER BY {$order}
+        LIMIT {$start}, {$perpage}
+    ");
 
-		$sql = array("p.pid IN ({$pids})");
+    // Gather a list of items that have post reputation
+    $reputation_cache = $post_cache = $post_reputation = array();
 
-		// get forums user cannot view
-		$unviewable = get_unviewable_forums(true);
-		if($unviewable)
-		{
-			$sql[] = "p.fid NOT IN ({$unviewable})";
-		}
+    while ($reputation_vote = $db->fetch_array($query)) {
+        $reputation_cache[] = $reputation_vote;
 
-		// get inactive forums
-		$inactive = get_inactive_forums();
-		if($inactive)
-		{
-			$sql[] = "p.fid NOT IN ({$inactive})";
-		}
+        // If this is a post, hold it and gather some information about it
+        if ($reputation_vote['pid'] && !isset($post_cache[$reputation_vote['pid']])) {
+            $post_cache[$reputation_vote['pid']] = $reputation_vote['pid'];
+        }
+    }
 
-		if(!$mybb->user['ismoderator'])
-		{
-			$sql[] = "p.visible='1'";
-			$sql[] = "t.visible='1'";
-		}
+    if (!empty($post_cache)) {
+        $pids = implode(',', $post_cache);
 
-		$sql = implode(' AND ', $sql);
+        $sql = array("p.pid IN ({$pids})");
 
-		$query = $db->query("
-			SELECT p.pid, p.uid, p.fid, p.visible, p.message, t.tid, t.subject, t.visible AS thread_visible
-			FROM ".TABLE_PREFIX."posts p
-			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-			WHERE {$sql}
-		");
+        // get forums user cannot view
+        $unviewable = get_unviewable_forums(true);
+        if ($unviewable) {
+            $sql[] = "p.fid NOT IN ({$unviewable})";
+        }
 
-		$forumpermissions = array();
+        // get inactive forums
+        $inactive = get_inactive_forums();
+        if ($inactive) {
+            $sql[] = "p.fid NOT IN ({$inactive})";
+        }
 
-		while($post = $db->fetch_array($query))
-		{
-			if(($post['visible'] == 0 || $post['thread_visible'] == 0) && !is_moderator($post['fid'], 'canviewunapprove'))
-			{
-				continue;
-			}
+        if (!$mybb->user['ismoderator']) {
+            $sql[] = "p.visible='1'";
+            $sql[] = "t.visible='1'";
+        }
 
-			if(($post['visible'] == -1 || $post['thread_visible'] == -1) && !is_moderator($post['fid'], 'canviewdeleted'))
-			{
-				continue;
-			}
+        $sql = implode(' AND ', $sql);
 
-			if(!isset($forumpermissions[$post['fid']]))
-			{
-				$forumpermissions[$post['fid']] = forum_permissions($post['fid']);
-			}
+        $query = $db->query("
+            SELECT p.pid, p.uid, p.fid, p.visible, p.message, t.tid, t.subject, t.visible AS thread_visible
+            FROM " . TABLE_PREFIX . "posts p
+            LEFT JOIN " . TABLE_PREFIX . "threads t ON (t.tid=p.tid)
+            WHERE {$sql}
+        ");
 
-			// Make sure we can view this post
-			if(isset($forumpermissions[$post['fid']]['canonlyviewownthreads']) && $forumpermissions[$post['fid']]['canonlyviewownthreads'] == 1 && $post['uid'] != $mybb->user['uid'])
-			{
-				continue;
-			}
+        $forumpermissions = array();
 
-			$post_reputation[$post['pid']] = $post;
-		}
-	}
+        while ($post = $db->fetch_array($query)) {
+            if (($post['visible'] == 0 || $post['thread_visible'] == 0) && !is_moderator($post['fid'], 'canviewunapprove')) {
+                continue;
+            }
 
-	$reputation_votes = '';
+            if (($post['visible'] == -1 || $post['thread_visible'] == -1) && !is_moderator($post['fid'], 'canviewdeleted')) {
+                continue;
+            }
 
-	foreach($reputation_cache as $reputation_vote)
-	{
-		// Get the reputation for the user who posted this comment
-		if($reputation_vote['adduid'] == 0)
-		{
-			$reputation_vote['user_reputation'] = 0;
-		}
+            if (!isset($forumpermissions[$post['fid']])) {
+                $forumpermissions[$post['fid']] = forum_permissions($post['fid']);
+            }
 
-		$reputation_vote['user_reputation'] = get_reputation($reputation_vote['user_reputation'], $reputation_vote['adduid']);
+            // Make sure we can view this post
+            if (isset($forumpermissions[$post['fid']]['canonlyviewownthreads']) && $forumpermissions[$post['fid']]['canonlyviewownthreads'] == 1 && $post['uid'] != $mybb->user['uid']) {
+                continue;
+            }
 
-		// Format the username of this poster
-		if(!$reputation_vote['username'])
-		{
-			$reputation_vote['username'] = $lang->na;
-			$reputation_vote['user_reputation'] = '';
-		}
-		else
-		{
-			$reputation_vote['username'] = format_name(htmlspecialchars_uni($reputation_vote['username']), $reputation_vote['user_usergroup'], $reputation_vote['user_displaygroup']);
-			$reputation_vote['username'] = build_profile_link($reputation_vote['username'], $reputation_vote['uid']);
-			$reputation_vote['user_reputation'] = "({$reputation_vote['user_reputation']})";
-		}
+            $post_reputation[$post['pid']] = $post;
+        }
+    }
 
-		$vote_reputation = (int)$reputation_vote['reputation'];
+    $reputation_votes = [];
 
-		// This is a negative reputation
-		if($vote_reputation < 0)
-		{
-			$status_class = "trow_reputation_negative";
-			$vote_type_class = "reputation_negative";
-			$vote_type = $lang->negative;
-		}
-		// This is a neutral reputation
-		else if($vote_reputation == 0)
-		{
-			$status_class = "trow_reputation_neutral";
-			$vote_type_class = "reputation_neutral";
-			$vote_type = $lang->neutral;
-		}
-		// Otherwise, this is a positive reputation
-		else
-		{
-			$vote_reputation = "+{$vote_reputation}";
-			$status_class = "trow_reputation_positive";
-			$vote_type_class = "reputation_positive";
-			$vote_type = $lang->positive;
-		}
+    foreach ($reputation_cache as $reputation_vote) {
+        // Get the reputation for the user who posted this comment
+        if ($reputation_vote['adduid'] == 0) {
+            $reputation_vote['user_reputation'] = 0;
+        }
 
-		$vote_reputation = "({$vote_reputation})";
+        $reputation_vote['user_reputation'] = get_reputation($reputation_vote['user_reputation'], $reputation_vote['adduid']);
 
-		// Format the date this reputation was last modified
-		$last_updated_date = my_date('relative', $reputation_vote['dateline']);
-		$last_updated = $lang->sprintf($lang->last_updated, $last_updated_date);
+        // Format the username of this poster
+        if (!$reputation_vote['username']) {
+            $reputation_vote['username'] = $lang->na;
+            $reputation_vote['user_reputation'] = '';
+        } else {
+            $reputation_vote['username'] = format_name(htmlspecialchars_uni($reputation_vote['username']), $reputation_vote['user_usergroup'], $reputation_vote['user_displaygroup']);
+            $reputation_vote['username'] = build_profile_link($reputation_vote['username'], $reputation_vote['uid']);
+            $reputation_vote['user_reputation'] = "({$reputation_vote['user_reputation']})";
+        }
 
-		$user['username'] = htmlspecialchars_uni($user['username']);
+        $reputation_vote['vote_reputation'] = (int)$reputation_vote['reputation'];
 
-		// Is this rating specific to a post?
-		$postrep_given = '';
-		if($reputation_vote['pid'])
-		{
-			$postrep_given = $lang->sprintf($lang->postrep_given_nolink, $user['username']);
-			if(isset($post_reputation[$reputation_vote['pid']]))
-			{
-				$thread_link = get_thread_link($post_reputation[$reputation_vote['pid']]['tid']);
-				$subject = htmlspecialchars_uni($parser->parse_badwords($post_reputation[$reputation_vote['pid']]['subject']));
+        // This is a negative reputation
+        if ($reputation_vote['vote_reputation'] < 0) {
+            $reputation_vote['status_class'] = "trow_reputation_negative";
+            $reputation_vote['vote_type_class'] = "reputation_negative";
+            $reputation_vote['vote_type'] = $lang->negative;
+        } elseif ($reputation_vote['vote_reputation'] == 0) {
+            // This is a neutral reputation
+            $reputation_vote['status_class'] = "trow_reputation_neutral";
+            $reputation_vote['vote_type_class'] = "reputation_neutral";
+            $reputation_vote['vote_type'] = $lang->neutral;
+        } else {
+            // Otherwise, this is a positive reputation
+            $reputation_vote['vote_reputation'] = "+{$reputation_vote['vote_reputation']}";
+            $reputation_vote['status_class'] = "trow_reputation_positive";
+            $reputation_vote['vote_type_class'] = "reputation_positive";
+            $reputation_vote['vote_type'] = $lang->positive;
+        }
 
-				$thread_link = $lang->sprintf($lang->postrep_given_thread, $thread_link, $subject);
-				$link = get_post_link($reputation_vote['pid'])."#pid{$reputation_vote['pid']}";
+        // Format the date this reputation was last modified
+        $reputation_vote['last_updated'] = my_date('relative', $reputation_vote['dateline']);
 
-				$postrep_given = $lang->sprintf($lang->postrep_given, $link, $user['username'], $thread_link);
-			}
-		}
+        // Is this rating specific to a post?
+        $reputation_vote['postrep_perm'] = false;
+        if ($reputation_vote['pid']) {
+            if (isset($post_reputation[$reputation_vote['pid']])) {
+                $reputation_vote['postrep_perm'] = true;
+                $thread_link = get_thread_link($post_reputation[$reputation_vote['pid']]['tid']);
+                $subject = $parser->parse_badwords($post_reputation[$reputation_vote['pid']]['subject']);
 
-		// Does the current user have permission to delete this reputation? Show delete link
-		$delete_link = '';
-		if($mybb->usergroup['issupermod'] == 1 || ($mybb->usergroup['candeletereputations'] == 1 && $reputation_vote['adduid'] == $mybb->user['uid'] && $mybb->user['uid'] != 0))
-		{
-			eval("\$delete_link = \"".$templates->get("reputation_vote_delete")."\";");
-		}
+                $reputation_vote['thread_link'] = $lang->sprintf($lang->postrep_given_thread, $thread_link, $subject);
+                $reputation_vote['post_link'] = get_post_link($reputation_vote['pid'])."#pid{$reputation_vote['pid']}";
+            }
+        }
 
-		$report_link = '';
-		if($mybb->user['uid'] != 0)
-		{
-			eval("\$report_link = \"".$templates->get("reputation_vote_report")."\";");
-		}
+        // Does the current user have permission to delete this reputation? Show delete link
+        $reputation_vote['can_delete'] = false;
+        if ($mybb->usergroup['issupermod'] == 1 || ($mybb->usergroup['candeletereputations'] == 1 && $reputation_vote['adduid'] == $mybb->user['uid'] && $mybb->user['uid'] != 0)) {
+            $reputation_vote['can_delete'] = true;
+        }
 
-		// Parse smilies in the reputation vote
-		$reputation_parser = array(
-			"allow_html" => 0,
-			"allow_mycode" => 0,
-			"allow_smilies" => 1,
-			"allow_imgcode" => 0,
-			"filter_badwords" => 1
-		);
+        // Parse smilies in the reputation vote
+        $reputation_parser = array(
+            "allow_html" => 0,
+            "allow_mycode" => 0,
+            "allow_smilies" => 1,
+            "allow_imgcode" => 0,
+            "filter_badwords" => 1
+        );
 
-		$reputation_vote['comments'] = $parser->parse_message($reputation_vote['comments'], $reputation_parser);
-		if($reputation_vote['comments'] == '')
-		{
-			$reputation_vote['comments'] = $lang->no_comment;
-		}
+        $reputation_vote['comments'] = $parser->parse_message($reputation_vote['comments'], $reputation_parser);
+        if ($reputation_vote['comments'] == '') {
+            $reputation_vote['comments'] = $lang->no_comment;
+        }
 
-		$plugins->run_hooks("reputation_vote");
+        $plugins->run_hooks("reputation_vote");
 
-		eval("\$reputation_votes .= \"".$templates->get("reputation_vote")."\";");
-	}
+        $reputation_votes[] = $reputation_vote;
+    }
 
-	// If we don't have any reputations display a nice message.
-	if(!$reputation_votes)
-	{
-		eval("\$reputation_votes = \"".$templates->get("reputation_no_votes")."\";");
-	}
+    $plugins->run_hooks("reputation_end");
 
-	$plugins->run_hooks("reputation_end");
-	eval("\$reputation = \"".$templates->get("reputation")."\";");
-	output_page($reputation);
+    output_page(\MyBB\template('reputation/reputation.twig', [
+        'user' => $user,
+        'multipage' => $multipage,
+        'reputation_votes' => $reputation_votes,
+        'select' => $select,
+    ]));
 }
