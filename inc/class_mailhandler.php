@@ -35,13 +35,6 @@ class MailHandler
 	public $from;
 
 	/**
-	 * Full from string including name in format "name" <email>
-	 *
-	 * @var string
-	 */
-	public $from_named;
-
-	/**
 	 * Who the email should return to.
 	 *
 	 * @var string
@@ -160,9 +153,15 @@ class MailHandler
 		}
 		else
 		{
-			$this->from = $this->get_from_email();
-			$this->from_named = '"'.$this->utf8_encode($mybb->settings['bbname']).'"';
-			$this->from_named .= " <".$this->from.">";
+			if($mybb->settings['mail_handler'] == 'smtp')
+			{
+				$this->from = $this->get_from_email();
+			}
+			else
+			{
+				$this->from = '"'.$this->utf8_encode($mybb->settings['bbname']).'"';
+				$this->from .= " <".$this->get_from_email().">";
+			}
 		}
 
 		if($return_email)
@@ -313,7 +312,7 @@ class MailHandler
 		global $mybb;
 
 		// Build mail headers
-		$this->headers .= "From: {$this->from_named}{$this->delimiter}";
+		$this->headers .= "From: {$this->from}{$this->delimiter}";
 
 		if($this->return_email)
 		{

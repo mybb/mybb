@@ -3959,7 +3959,6 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 		switch($type)
 		{
 			case "multiselect":
-				$selected_options = array();
 				if(!is_array($values[$field_name]))
 				{
 					$user_options = explode("\n", $values[$field_name]);
@@ -3969,7 +3968,7 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 					$user_options = $values[$field_name];
 				}
 
-				
+				$selected_options = array();
 				foreach($user_options as $val)
 				{
 					$selected_options[$val] = htmlspecialchars_uni($val);
@@ -4034,7 +4033,6 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 				}
 				break;
 			case "checkbox":
-				$select_options = array();
 				if(!is_array($values[$field_name]))
 				{
 					$user_options = explode("\n", $values[$field_name]);
@@ -4043,13 +4041,11 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 				{
 					$user_options = $values[$field_name];
 				}
-				
-				$selected_options = array();
 				foreach($user_options as $val)
 				{
 					$selected_options[$val] = $val;
 				}
-				
+				$select_options = array();
 				if($search == true)
 				{
 					$select_options[''] = $lang->na;
