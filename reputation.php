@@ -50,53 +50,34 @@ $mybb->input['action'] = $mybb->get_input('action');
 // has permission or not. This is done here to save duplicating the same code.
 if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 {
-	// This user doesn't have permission to give reputations.
-	if($mybb->usergroup['cangivereputations'] != 1)
-	{
-		$message = $lang->add_no_permission;
-		if($mybb->input['nomodal'])
-		{
-			eval("\$error = \"".$templates->get("reputation_add_error_nomodal", 1, 0)."\";");
-		}
-		else
-		{
-			eval("\$error = \"".$templates->get("reputation_add_error", 1, 0)."\";");
-		}
-		echo $error;
-		exit;
-	}
+    // This user doesn't have permission to give reputations.
+    if ($mybb->usergroup['cangivereputations'] != 1) {
+        $message = $lang->add_no_permission;
+    }
 
-	// The user we're trying to give a reputation to doesn't have permission to receive reps.
-	if($user_permissions['usereputationsystem'] != 1)
-	{
-		$message = $lang->add_disabled;
-		if($mybb->input['nomodal'])
-		{
-			eval("\$error = \"".$templates->get("reputation_add_error_nomodal", 1, 0)."\";");
-		}
-		else
-		{
-			eval("\$error = \"".$templates->get("reputation_add_error", 1, 0)."\";");
-		}
-		echo $error;
-		exit;
-	}
+    // The user we're trying to give a reputation to doesn't have permission to receive reps.
+    if ($user_permissions['usereputationsystem'] != 1) {
+        $message = $lang->add_disabled;
+    }
 
-	// Is this user trying to give themself a reputation?
-	if($uid == $mybb->user['uid'])
-	{
-		$message = $lang->add_yours;
-		if($mybb->input['nomodal'])
-		{
-			eval("\$error = \"".$templates->get("reputation_add_error_nomodal", 1, 0)."\";");
-		}
-		else
-		{
-			eval("\$error = \"".$templates->get("reputation_add_error", 1, 0)."\";");
-		}
-		echo $error;
-		exit;
-	}
+    // Is this user trying to give themself a reputation?
+    if ($uid == $mybb->user['uid']) {
+        $message = $lang->add_yours;
+    }
+
+    if (!empty($message)) {
+        if ($mybb->input['nomodal']) {
+            output_page(\MyBB\template('reputation/add_error_nomodal.twig', [
+                'message' => $message,
+            ]));
+            exit;
+        } else {
+            output_page(\MyBB\template('reputation/add_error.twig', [
+                'message' => $message,
+            ]));
+            exit;
+        }
+    }
 
 	// If a post has been given but post ratings have been disabled, set the post to 0. This will mean all subsequent code will think no post was given.
 	if($mybb->settings['postrep'] != 1)
@@ -213,19 +194,19 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 			}
 		}
 
-		if($message)
-		{
-			if($mybb->input['nomodal'])
-			{
-				eval('$error = "'.$templates->get("reputation_add_error_nomodal", 1, 0).'";');
-			}
-			else
-			{
-				eval('$error = "'.$templates->get("reputation_add_error", 1, 0).'";');
-			}
-			echo $error;
-			exit;
-		}
+        if (!empty($message)) {
+            if ($mybb->input['nomodal']) {
+                output_page(\MyBB\template('reputation/add_error_nomodal.twig', [
+                    'message' => $message,
+                ]));
+                exit;
+            } else {
+                output_page(\MyBB\template('reputation/add_error.twig', [
+                    'message' => $message,
+                ]));
+                exit;
+            }
+        }
 	}
 }
 
@@ -263,106 +244,54 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 		$reputation_value = $db->fetch_field($query, "reputation_count");
 
 		$db->update_query("users", array('reputation' => (int)$reputation_value), "uid='{$uid}'");
-		eval("\$error = \"".$templates->get("reputation_deleted", 1, 0)."\";");
-		echo $error;
-		exit;
+
+        output_page(\MyBB\template('reputation/deleted.twig'));
+        exit;
 	}
 
-	$mybb->input['comments'] = trim($mybb->get_input('comments')); // Trim whitespace to check for length
-	if(my_strlen($mybb->input['comments']) < $mybb->settings['minreplength'] && $mybb->get_input('pid', MyBB::INPUT_INT) == 0)
-	{
-		$message = $lang->add_no_comment;
-		if($mybb->input['nomodal'])
-		{
-			eval("\$error = \"".$templates->get("reputation_add_error_nomodal", 1, 0)."\";");
-		}
-		else
-		{
-			eval("\$error = \"".$templates->get("reputation_add_error", 1, 0)."\";");
-		}
-		echo $error;
-		exit;
-	}
+    $mybb->input['comments'] = trim($mybb->get_input('comments')); // Trim whitespace to check for length
+    if (my_strlen($mybb->input['comments']) < $mybb->settings['minreplength'] && $mybb->get_input('pid', MyBB::INPUT_INT) == 0) {
+        $message = $lang->add_no_comment;
+    }
 
-	// The power for the reputation they specified was invalid.
-	if($reputation > $mybb->usergroup['reputationpower'])
-	{
-		$message = $lang->add_invalidpower;
-		if($mybb->input['nomodal'])
-		{
-			eval("\$error = \"".$templates->get("reputation_add_error_nomodal", 1, 0)."\";");
-		}
-		else
-		{
-			eval("\$error = \"".$templates->get("reputation_add_error", 1, 0)."\";");
-		}
-		echo $error;
-		exit;
-	}
+    // The power for the reputation they specified was invalid.
+    if ($reputation > $mybb->usergroup['reputationpower']) {
+        $message = $lang->add_invalidpower;
+    }
 
-	// The user is trying to give a negative reputation, but negative reps have been disabled.
-	if($mybb->get_input('reputation', MyBB::INPUT_INT) < 0 && $mybb->settings['negrep'] != 1)
-	{
-		$message = $lang->add_negative_disabled;
-		if($mybb->input['nomodal'])
-		{
-			eval("\$error = \"".$templates->get("reputation_add_error_nomodal", 1, 0)."\";");
-		}
-		else
-		{
-			eval("\$error = \"".$templates->get("reputation_add_error", 1, 0)."\";");
-		}
-		echo $error;
-		exit;
-	}
+    // The user is trying to give a negative reputation, but negative reps have been disabled.
+    if ($mybb->get_input('reputation', MyBB::INPUT_INT) < 0 && $mybb->settings['negrep'] != 1) {
+        $message = $lang->add_negative_disabled;
+    }
 
-	// This user is trying to give a neutral reputation, but neutral reps have been disabled.
-	if($mybb->get_input('reputation', MyBB::INPUT_INT) == 0 && $mybb->settings['neurep'] != 1)
-	{
-		$message = $lang->add_neutral_disabled;
-		if($mybb->input['nomodal'])
-		{
-			eval("\$error = \"".$templates->get("reputation_add_error_nomodal", 1, 0)."\";");
-		}
-		else
-		{
-			eval("\$error = \"".$templates->get("reputation_add_error", 1, 0)."\";");
-		}
-		echo $error;
-		exit;
-	}
+    // This user is trying to give a neutral reputation, but neutral reps have been disabled.
+    if ($mybb->get_input('reputation', MyBB::INPUT_INT) == 0 && $mybb->settings['neurep'] != 1) {
+        $message = $lang->add_neutral_disabled;
+    }
 
-	// This user is trying to give a positive reputation, but positive reps have been disabled.
-	if($mybb->get_input('reputation', MyBB::INPUT_INT) > 0 && $mybb->settings['posrep'] != 1)
-	{
-		$message = $lang->add_positive_disabled;
-		if($mybb->input['nomodal'])
-		{
-			eval("\$error = \"".$templates->get("reputation_add_error_nomodal", 1, 0)."\";");
-		}
-		else
-		{
-			eval("\$error = \"".$templates->get("reputation_add_error", 1, 0)."\";");
-		}
-		echo $error;
-		exit;
-	}
+    // This user is trying to give a positive reputation, but positive reps have been disabled.
+    if ($mybb->get_input('reputation', MyBB::INPUT_INT) > 0 && $mybb->settings['posrep'] != 1) {
+        $message = $lang->add_positive_disabled;
+    }
 
-	// The length of the comment is too long
-	if(my_strlen($mybb->input['comments']) > $mybb->settings['maxreplength'])
-	{
-		$message = $lang->sprintf($lang->add_toolong, $mybb->settings['maxreplength']);
-		if($mybb->input['nomodal'])
-		{
-			eval("\$error = \"".$templates->get("reputation_add_error_nomodal", 1, 0)."\";");
-		}
-		else
-		{
-			eval("\$error = \"".$templates->get("reputation_add_error", 1, 0)."\";");
-		}
-		echo $error;
-		exit;
-	}
+    // The length of the comment is too long
+    if (my_strlen($mybb->input['comments']) > $mybb->settings['maxreplength']) {
+        $message = $lang->sprintf($lang->add_toolong, $mybb->settings['maxreplength']);
+    }
+
+    if (!empty($message)) {
+        if ($mybb->input['nomodal']) {
+            output_page(\MyBB\template('reputation/add_error_nomodal.twig', [
+                'message' => $message,
+            ]));
+            exit;
+        } else {
+            output_page(\MyBB\template('reputation/add_error.twig', [
+                'message' => $message,
+            ]));
+            exit;
+        }
+    }
 
 	// Build array of reputation data.
 	$reputation = array(
@@ -402,113 +331,67 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 		$db->update_query("users", array('reputation' => (int)$reputation_value), "uid='{$uid}'");
 	}
 
-	$plugins->run_hooks("reputation_do_add_end");
+    $plugins->run_hooks("reputation_do_add_end");
 
-	eval("\$reputation = \"".$templates->get("reputation_added", 1, 0)."\";");
-	echo $reputation;
-	exit;
+    output_page(\MyBB\template('reputation/added.twig'));
+    exit;
 }
 
 // Adding a new reputation
 if($mybb->input['action'] == "add")
 {
-	$plugins->run_hooks("reputation_add_start");
+    $plugins->run_hooks("reputation_add_start");
 
-	// If we have an existing reputation for this user, the user can modify or delete it.
-	$user['username'] = htmlspecialchars_uni($user['username']);
-	if(!empty($existing_reputation['uid']))
-	{
-		$vote_title = $lang->sprintf($lang->update_reputation_vote, $user['username']);
-		$vote_button = $lang->update_vote;
-		$comments = htmlspecialchars_uni($existing_reputation['comments']);
+    // If we have an existing reputation for this user, the user can modify or delete it.
+    if (!empty($existing_reputation['uid'])) {
+        $existing_reputation['show_delete'] = false;
+        if ($mybb->usergroup['issupermod'] == 1 || ($mybb->usergroup['candeletereputations'] == 1 && $existing_reputation['adduid'] == $mybb->user['uid'] && $mybb->user['uid'] != 0)) {
+            $existing_reputation['show_delete'] = true;
+        }
+    }
 
-		if($mybb->usergroup['issupermod'] == 1 || ($mybb->usergroup['candeletereputations'] == 1 && $existing_reputation['adduid'] == $mybb->user['uid'] && $mybb->user['uid'] != 0))
-		{
-			eval("\$delete_button = \"".$templates->get("reputation_add_delete")."\";");
-		}
-	}
-	// Otherwise we're adding an entirely new reputation for this user.
-	else
-	{
-		$vote_title = $lang->sprintf($lang->add_reputation_vote, $user['username']);
-		$vote_button = $lang->add_vote;
-		$comments = '';
-		$delete_button = '';
-	}
-	$lang->user_comments = $lang->sprintf($lang->user_comments, $user['username']);
+    // Draw the "power" options
+    if ($mybb->settings['negrep'] || $mybb->settings['neurep'] || $mybb->settings['posrep']) {
+        $vote_check = array();
 
-	if($mybb->get_input('pid', MyBB::INPUT_INT))
-	{
-		$post_rep_info = $lang->sprintf($lang->add_reputation_to_post, $user['username']);
-		$lang->user_comments = $lang->no_comment_needed;
-	}
-	else
-	{
-		$post_rep_info = '';
-	}
+        foreach (range(-$mybb->usergroup['reputationpower'], $mybb->usergroup['reputationpower']) as $value) {
+            $vote_check[$value] = false;
+        }
 
-	// Draw the "power" options
-	if($mybb->settings['negrep'] || $mybb->settings['neurep'] || $mybb->settings['posrep'])
-	{
-		$vote_check = array();
-		$positive_power = '';
-		$negative_power = '';
-		$reputationpower = (int)$mybb->usergroup['reputationpower'];
+        if (!empty($existing_reputation['uid']) && !$was_post) {
+            $vote_check[$existing_reputation['reputation']] = true;
+        }
 
-		foreach(range(-$mybb->usergroup['reputationpower'], $mybb->usergroup['reputationpower']) as $value)
-		{
-			$vote_check[$value] = '';
-		}
+        $vote_check['pid'] = $mybb->get_input('pid', MyBB::INPUT_INT);
+        $vote_check['rid'] = $rid;
 
-		if(!empty($existing_reputation['uid']) && !$was_post)
-		{
-			$vote_check[$existing_reputation['reputation']] = " selected=\"selected\"";
-		}
+        $plugins->run_hooks("reputation_add_end");
 
-		if($mybb->settings['neurep'])
-		{
-			$neutral_title = $lang->power_neutral;
-			eval("\$neutral_power = \"".$templates->get("reputation_add_neutral")."\";");
-		}
+        output_page(\MyBB\template('reputation/add.twig', [
+            'user' => $user,
+            'existing_reputation' => $existing_reputation,
+            'vote_check' => $vote_check,
+        ]));
+        exit;
+    } else {
+        $message = $lang->add_all_rep_disabled;
 
-		for($value = 1; $value <= $reputationpower; ++$value)
-		{
-			if($mybb->settings['posrep'])
-			{
-				$positive_title = $lang->sprintf($lang->power_positive, "+".$value);
-				eval("\$positive_power = \"".$templates->get("reputation_add_positive")."\";");
-			}
+        $plugins->run_hooks("reputation_add_end_error");
 
-			if($mybb->settings['negrep'])
-			{
-				$negative_title = $lang->sprintf($lang->power_negative, "-".$value);
-				$neg_value = "-{$value}";
-				eval("\$negative_power .= \"".$templates->get("reputation_add_negative")."\";");
-			}
-		}
-
-		$mybb->input['pid'] = $mybb->get_input('pid', MyBB::INPUT_INT);
-
-		$plugins->run_hooks("reputation_add_end");
-		eval("\$reputation_add = \"".$templates->get("reputation_add", 1, 0)."\";");
-	}
-	else
-	{
-		$message = $lang->add_all_rep_disabled;
-
-		$plugins->run_hooks("reputation_add_end_error");
-		if($mybb->input['nomodal'])
-		{
-			eval("\$error = \"".$templates->get("reputation_add_error_nomodal", 1, 0)."\";");
-		}
-		else
-		{
-			eval("\$error = \"".$templates->get("reputation_add_error", 1, 0)."\";");
-		}
-	}
-
-	echo $reputation_add;
-	exit;
+        if (!empty($message)) {
+            if ($mybb->input['nomodal']) {
+                output_page(\MyBB\template('reputation/add_error_nomodal.twig', [
+                    'message' => $message,
+                ]));
+                exit;
+            } else {
+                output_page(\MyBB\template('reputation/add_error.twig', [
+                    'message' => $message,
+                ]));
+                exit;
+            }
+        }
+    }
 }
 
 // Delete a specific reputation from a user.
