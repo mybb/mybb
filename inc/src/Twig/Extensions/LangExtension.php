@@ -2,6 +2,8 @@
 
 namespace MyBB\Twig\Extensions;
 
+use Twig\TwigFilter;
+
 /**
  * A Twig extension class to provide functionality related to translations.
  */
@@ -25,6 +27,7 @@ class LangExtension extends \Twig_Extension implements \Twig_Extension_GlobalsIn
     public function getFunctions()
     {
         return [
+            new \Twig_SimpleFunction('trans', [$this, 'trans']),
             new \Twig_SimpleFunction('trans', [$this, 'trans'], [
                 'is_safe' => ['html']
             ]),
@@ -54,5 +57,42 @@ class LangExtension extends \Twig_Extension implements \Twig_Extension_GlobalsIn
     public function trans(string $languageVariable, ...$params) : string
     {
         return $this->lang->sprintf($this->lang->$languageVariable, ...$params);
+    }
+
+    /**
+     * Report any custom filters
+     *
+     * @return array Twig\TwigFilter
+     */
+    public function getFilters()
+    {
+        return array(
+            new TwigFilter('lparse', array($this, 'lparseFilter')),
+        );
+    }
+
+    /**
+     * Language parse.
+     *
+     * @param string
+     *
+     * @return string Parsed langugae string
+     */
+    public function lparseFilter(string $contents)
+    {
+        $contents = preg_replace_callback("#<lang:([a-zA-Z0-9_]+)>#", array($this, 'lparseReplace'), $contents);
+        return $contents;
+    }
+
+    /**
+     * Callback for LangExtension::lparseFilter
+     *
+     * @param array
+     *
+     * @return string
+     */
+    public function lparseReplace(array $matches)
+    {
+        return $this->lang->{$matches[1]};
     }
 }
