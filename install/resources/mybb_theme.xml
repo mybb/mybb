@@ -6931,7 +6931,7 @@ if(use_xmlhttprequest == "1")
 {$moderateposts_info}
 	<tr>
 		<td width="35%">{$lang->modpost_length}</td>
-		<td><input type="text" name="modpost_time" value="{$mybb->input['modpost_time']}" class="textbox" style="width: 2em;" /> {$modpost_options}</td>
+		<td><input type="text" name="modpost_time" value="{$modpost_time}" class="textbox" style="width: 2em;" /> {$modpost_options}</td>
 	</tr>
 </table>
 </dd>
@@ -6947,7 +6947,7 @@ if(use_xmlhttprequest == "1")
 {$suspendposting_info}
 	<tr>
 		<td width="35%">{$lang->suspost_length}</td>
-		<td><input type="text" name="suspost_time" value="{$mybb->input['suspost_time']}" class="textbox" style="width: 2em;" /> {$suspost_options}</td>
+		<td><input type="text" name="suspost_time" value="{$suspost_time}" class="textbox" style="width: 2em;" /> {$suspost_options}</td>
 	</tr>
 </table>
 </dd>
@@ -7102,7 +7102,7 @@ if(use_xmlhttprequest == "1")
 	{$selection_options}
 </select>]]></template>
 		<template name="modcp_editprofile_select_option" version="1600"><![CDATA[<option value="{$key}" {$selected}>{$value}</option>]]></template>
-		<template name="modcp_editprofile_signature" version="1800"><![CDATA[<tr>
+		<template name="modcp_editprofile_signature" version="1816"><![CDATA[<tr>
 <td class="trow1" valign="top">
 <script type="text/javascript">
 <!--
@@ -7128,7 +7128,7 @@ if(use_xmlhttprequest == "1")
 {$suspendsignature_info}
 	<tr>
 		<td width="30%">{$lang->suspend_length}</td>
-		<td><input type="text" name="action_time" value="{$mybb->input['action_time']}" class="textbox" style="width: 2em;" /> {$action_options}</td>
+		<td><input type="text" name="action_time" value="{$action_time}" class="textbox" style="width: 2em;" /> {$action_options}</td>
 	</tr>
 </table>
 </dd>
@@ -7146,7 +7146,7 @@ if(use_xmlhttprequest == "1")
 		<template name="modcp_editprofile_suspensions_info" version="1600"><![CDATA[<tr>
 	<td colspan="2" class="smalltext"><em>{$suspension_info}</em></td>
 </tr>]]></template>
-		<template name="modcp_finduser" version="1813"><![CDATA[<html>
+		<template name="modcp_finduser" version="1816"><![CDATA[<html>
 <head>
 	<title>{$mybb->settings['bbname']} - {$lang->find_users}</title>
 {$headerinclude}
@@ -7179,7 +7179,7 @@ if(use_xmlhttprequest == "1")
 						</tr>
 						<tr>
 							<td class="trow1" width="25%"><strong>{$lang->username_contains}</strong></td>
-							<td class="trow1" width="75%"><input type="text" name="username" id="username" value="{$mybb->input['username']}" class="textbox" /></td>
+							<td class="trow1" width="75%"><input type="text" name="username" id="username" value="{$username}" class="textbox" /></td>
 						</tr>
 						<tr>
 							<td class="trow1" width="25%"><strong>{$lang->sort_by}</strong></td>
@@ -7848,7 +7848,7 @@ if(use_xmlhttprequest == "1")
 		<template name="modcp_nobanned" version="1613"><![CDATA[<tr>
 		<td class="trow1" align="center" colspan="4">{$lang->no_bans_ending}</td>
 </tr>]]></template>
-		<template name="modcp_warninglogs" version="1807"><![CDATA[<html>
+		<template name="modcp_warninglogs" version="1816"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->warning_logs}</title>
 {$headerinclude}
@@ -7883,15 +7883,15 @@ if(use_xmlhttprequest == "1")
 						</tr>
 						<tr>
 							<td class="trow1" width="25%"><strong>{$lang->filter_warned_user}</strong></td>
-							<td class="trow1" width="75%"><input type="text" name="filter[username]" id="username" value="{$mybb->input['filter']['username']}" class="textbox" /></td>
+							<td class="trow1" width="75%"><input type="text" name="filter[username]" id="username" value="{$filter_username}" class="textbox" /></td>
 						</tr>
 						<tr>
 							<td class="trow2" width="25%"><strong>{$lang->filter_issued_by}</strong></td>
-							<td class="trow2" width="75%"><input type="text" name="filter[mod_username]" value="{$mybb->input['filter']['mod_username']}" class="textbox" /></td>
+							<td class="trow2" width="75%"><input type="text" name="filter[mod_username]" value="{$filter_modusername}" class="textbox" /></td>
 						</tr>
 						<tr>
 							<td class="trow1" width="25%"><strong>{$lang->filter_reason}</strong></td>
-							<td class="trow1" width="75%"><input type="text" name="filter[reason]" value="{$mybb->input['filter']['reason']}" class="textbox" /></td>
+							<td class="trow1" width="75%"><input type="text" name="filter[reason]" value="{$filter_reason}" class="textbox" /></td>
 						</tr>
 						<tr>
 							<td class="trow2" width="25%"><strong>{$lang->sort_by}</strong></td>
@@ -8134,21 +8134,21 @@ if(use_xmlhttprequest == "1")
 <option value="12" {$datemonth['12']}>{$lang->december}</option>]]></template>
 		<template name="moderation_delayedmoderation_date_day" version="1809"><![CDATA[<option value="{$day}"{$selected}>{$day}</option>]]></template>
 		<template name="moderation_delayedmoderation_custommodtool" version="1600"><![CDATA[<dt><input type="radio" name="type" value="modtool_{$tool['tid']}" {$checked} id="type_modtool_{$tool['tid']}" onclick="toggleType();" /> <label for="type_modtool_{$tool['tid']}"><strong>{$tool['name']}</strong> <small>({$lang->custom})</small></label></dt>]]></template>
-		<template name="moderation_delayedmoderation_merge" version="1600"><![CDATA[<dt><input type="radio" name="type" value="merge" {$type_selected['merge']} id="type_merge" onclick="toggleType();" /> <label for="type_merge"><strong>{$lang->merge_threads}</strong></label></dt>
+		<template name="moderation_delayedmoderation_merge" version="1816"><![CDATA[<dt><input type="radio" name="type" value="merge" {$type_selected['merge']} id="type_merge" onclick="toggleType();" /> <label for="type_merge"><strong>{$lang->merge_threads}</strong></label></dt>
 <dd style="margin-top: 4px; width: 100%;" id="type_merge_expanded">
 	{$lang->new_subject}<br />
-	<input type="text" class="textbox" name="delayedmoderation[subject]" value="{$mybb->input['delayedmoderation']['subject']}" size="40" /><br />
+	<input type="text" class="textbox" name="delayedmoderation[subject]" value="{$delayedmoderation_subject}" size="40" /><br />
 	{$lang->thread_to_merge_with}<br />
-	<input type="text" class="textbox" name="delayedmoderation[threadurl]" value="{$mybb->input['delayedmoderation']['threadurl']}" size="40" />
+	<input type="text" class="textbox" name="delayedmoderation[threadurl]" value="{$delayedmoderation_threadurl}" size="40" />
 	<br /><span class="smalltext">{$lang->merge_with_note}</span>
 </dd>]]></template>
-		<template name="moderation_delayedmoderation_move" version="1600"><![CDATA[<br />
+		<template name="moderation_delayedmoderation_move" version="1816"><![CDATA[<br />
 {$lang->method}:<br />
 <label><input type="radio" class="radio" name="delayedmoderation[method]" value="move" {$method_selected['move']} />{$lang->method_move}</label><br />
-<label><input type="radio" class="radio" name="delayedmoderation[method]" value="redirect" {$method_selected['redirect']} />{$lang->method_move_redirect}</label> <input type="text" class="textbox" name="delayedmoderation[redirect_expire]" value="{$mybb->input['redirect_expire']}" size="3" /> {$lang->redirect_expire_note}<br />
+<label><input type="radio" class="radio" name="delayedmoderation[method]" value="redirect" {$method_selected['redirect']} />{$lang->method_move_redirect}</label> <input type="text" class="textbox" name="delayedmoderation[redirect_expire]" value="{$redirect_expire}" size="3" /> {$lang->redirect_expire_note}<br />
 <label><input type="radio" class="radio" name="delayedmoderation[method]" value="copy" {$method_selected['copy']} />{$lang->method_copy}</label><br />]]></template>
 		<template name="moderation_delayedmoderation_thread" version="1808"><![CDATA[<a href="{$thread['link']}">{$thread['subject']}</a>]]></template>
-		<template name="moderation_confirmation" version="1800"><![CDATA[<html>
+		<template name="moderation_confirmation" version="1816"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->confirm_execute_tool}</title>
 {$headerinclude}
@@ -8157,7 +8157,7 @@ if(use_xmlhttprequest == "1")
 {$header}
 <form action="moderation.php" method="post">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
-<input type="hidden" name="action" value="{$mybb->input['action']}" />
+<input type="hidden" name="action" value="{$action}" />
 <input type="hidden" name="modtype" value="{$modtype}" />
 <input type="hidden" name="tid" value="{$tid}" />
 <input type="hidden" name="pid" value="{$pid}" />
@@ -8595,7 +8595,7 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
-		<template name="moderation_purgespammer" version="1800"><![CDATA[<html>
+		<template name="moderation_purgespammer" version="1816"><![CDATA[<html>
 <head>
 <title>{$lang->purgespammer}</title>
 {$headerinclude}
@@ -8617,7 +8617,7 @@ if(use_xmlhttprequest == "1")
 <td class="tfoot" align="center"><input class="button" type="submit" value="{$lang->purgespammer_submit}" /></td>
 </tr>
 </table>
-<input type="hidden" name="uid" value="{$mybb->input['uid']}" />
+<input type="hidden" name="uid" value="{$uid}" />
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 </form>
 {$footer}
@@ -10250,7 +10250,7 @@ if(use_xmlhttprequest == "1")
 <td class="tcat" align="center" colspan="6" height="1"> </td>
 </tr>
     ]]></template>
-		<template name="private_move" version="1800"><![CDATA[<input type="hidden" value="{$mybb->input['fid']}" name="fromfid" />
+		<template name="private_move" version="1816"><![CDATA[<input type="hidden" value="{$from_fid}" name="fromfid" />
 <select name="fid">
 {$folderoplist_folder}
 </select>]]></template>
@@ -14017,7 +14017,7 @@ $(function() {
 	{$sourcemode}
 });
 </script>]]></template>
-		<template name="contact" version="1800"><![CDATA[<html>
+		<template name="contact" version="1816"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->contact}</title>
 {$headerinclude}
@@ -14033,15 +14033,15 @@ $(function() {
 		</tr>
 		<tr>
 		<td class="trow1" valign="top"><strong>{$lang->contact_subject}:</strong><br /><span class="smalltext">{$lang->contact_subject_desc}</span></td>
-		<td class="trow1"><input type="text" name="subject" class="textbox" size="49" value="{$mybb->input['subject']}" /></td>
+		<td class="trow1"><input type="text" name="subject" class="textbox" size="49" value="{$contact_subject}" /></td>
 		</tr>
 		<tr>
 		<td class="trow2" valign="top"><strong>{$lang->contact_message}:</strong><br /><span class="smalltext">{$lang->contact_message_desc}</span></td>
-		<td class="trow2"><textarea cols="50" rows="10" name="message" class="textarea" >{$mybb->input['message']}</textarea></td>
+		<td class="trow2"><textarea cols="50" rows="10" name="message" class="textarea" >{$contact_message}</textarea></td>
 		</tr>
 		<tr>
 		<td class="trow1" valign="top"><strong>{$lang->contact_email}:</strong><br /><span class="smalltext">{$lang->contact_email_desc}</span></td>
-		<td class="trow1"><input type="text" name="email" class="textbox" size="49" value="{$mybb->input['email']}" /></td>
+		<td class="trow1"><input type="text" name="email" class="textbox" size="49" value="{$user_email}" /></td>
 		</tr>
 		{$captcha}
 	</table>

@@ -2667,7 +2667,7 @@ if($mybb->input['action'] == "do_editprofile")
 		require_once MYBB_ROOT."inc/functions_warnings.php";
 		foreach($moderator_options as $option)
 		{
-			$mybb->input[$option['time']] = $mybb->get_input($option['time'], MyBB::INPUT_INT);
+			${$option['time']} = $mybb->get_input($option['time'], MyBB::INPUT_INT);
 			$mybb->input[$option['period']] = $mybb->get_input($option['period']);
 			if(empty($mybb->input[$option['action']]))
 			{
@@ -3201,9 +3201,10 @@ if($mybb->input['action'] == "editprofile")
 
 	$suspendsignature_info = $moderateposts_info = $suspendposting_info = '';
 	$action_options = $modpost_options = $suspost_options = '';
+	$modopts = array();
 	foreach($moderator_options as $option)
 	{
-		$mybb->input[$option['time']] = $mybb->get_input($option['time'], MyBB::INPUT_INT);
+		${$option['time']} = $mybb->get_input($option['time'], MyBB::INPUT_INT);
 		// Display the suspension info, if this user has this option suspended
 		if($user[$option['option']])
 		{
@@ -3429,6 +3430,7 @@ if($mybb->input['action'] == "finduser")
 
 	$plugins->run_hooks("modcp_finduser_end");
 
+	$username = $mybb->get_input('username');
 	eval("\$finduser = \"".$templates->get("modcp_finduser")."\";");
 	output_page($finduser);
 }
@@ -3645,6 +3647,10 @@ if($mybb->input['action'] == "warninglogs")
 	}
 
 	$plugins->run_hooks("modcp_warninglogs_end");
+
+	$filter_username = $mybb->input['filter']['username'];
+	$filter_modusername = $mybb->input['filter']['mod_username'];
+	$filter_reason = $mybb->input['filter']['reason'];
 
 	eval("\$warninglogs = \"".$templates->get("modcp_warninglogs")."\";");
 	output_page($warninglogs);

@@ -80,6 +80,8 @@ foreach($foldersexploded as $key => $folders)
 	eval("\$foldersearch_folder .= \"".$templates->get("private_jump_folders_folder")."\";");
 }
 
+$from_fid = $mybb->input['fid'];
+
 eval("\$folderjump = \"".$templates->get("private_jump_folders")."\";");
 eval("\$folderoplist = \"".$templates->get("private_move")."\";");
 eval("\$foldersearch = \"".$templates->get("private_advanced_search_folders")."\";");
