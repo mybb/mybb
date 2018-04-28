@@ -955,7 +955,7 @@ EOF;
 	// Is this user a COPPA user? We show a warning & activate link
 	if($user['coppauser'])
 	{
-		echo $lang->sprintf($lang->warning_coppa_user, $user['uid']);
+		echo $lang->sprintf($lang->warning_coppa_user, $user['uid'], $mybb->post_code);
 	}
 
 	$tabs = array(
