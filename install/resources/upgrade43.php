@@ -28,6 +28,7 @@ function upgrade43_dbchanges()
 	echo "<p>Performing necessary upgrade queries...</p>";
 	flush();
 
+	$db->update_query('settings', array('optionscode' => 'numeric\r\nmin=0'), "name IN ('avatarsize', 'loginattemptstimeout', 'maxattachments', 'maxmultipagelinks', 'maxpolloptions')");
 	$db->update_query('settings', array('optionscode' => 'select\r\n0=No CAPTCHA\r\n1=MyBB Default CAPTCHA\r\n4=NoCAPTCHA reCAPTCHA\r\n5=reCAPTCHA invisible'), "name='captchaimage'");
 
 	if($mybb->settings['captchaimage'] == 2)
