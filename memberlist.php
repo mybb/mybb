@@ -346,11 +346,21 @@ else
 		$user['profilelink'] = build_profile_link($user['username'], $user['uid']);
 
 		// Get the display usergroup
-		if(empty($user['displaygroup']))
+		if($user['usergroup'])
 		{
-			$user['displaygroup'] = $user['usergroup'];
+			$usergroup = usergroup_permissions($user['usergroup']);
 		}
-		$usergroup = $usergroups_cache[$user['displaygroup']];
+		else
+		{
+			$usergroup = usergroup_permissions(1);
+		}
+
+		$displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
+		$display_group = usergroup_displaygroup($user['displaygroup']);
+		if(is_array($display_group))
+		{
+			$usergroup = array_merge($usergroup, $display_group);
+		}
 
 		// Build referral?
 		if($mybb->settings['usereferrals'] == 1)

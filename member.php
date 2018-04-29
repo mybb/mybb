@@ -2050,6 +2050,14 @@ if($mybb->input['action'] == "profile")
 	// Get member's permissions
 	$memperms = user_permissions($memprofile['uid']);
 
+	// Set display group
+	$displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
+	$displaygroup = usergroup_displaygroup($memprofile['displaygroup']);
+	if(is_array($displaygroup))
+	{
+		$memperms = array_merge($memperms, $displaygroup);
+	}
+
 	$lang->nav_profile = $lang->sprintf($lang->nav_profile, $memprofile['username']);
 	add_breadcrumb($lang->nav_profile);
 
@@ -2335,22 +2343,6 @@ if($mybb->input['action'] == "profile")
 		$membdayage = '';
 	}
 
-	if(!$memprofile['displaygroup'])
-	{
-		$memprofile['displaygroup'] = $memprofile['usergroup'];
-	}
-
-	// Grab the following fields from the user's displaygroup
-	$displaygroupfields = array(
-		"title",
-		"usertitle",
-		"stars",
-		"starimage",
-		"image",
-		"usereputationsystem"
-	);
-	$displaygroup = usergroup_displaygroup($memprofile['displaygroup']);
-
 	// Get the user title for this user
 	unset($usertitle);
 	unset($stars);
@@ -2360,10 +2352,10 @@ if($mybb->input['action'] == "profile")
 		// User has custom user title
 		$usertitle = $memprofile['usertitle'];
 	}
-	elseif(trim($displaygroup['usertitle']) != '')
+	elseif(trim($memperms['usertitle']) != '')
 	{
 		// User has group title
-		$usertitle = $displaygroup['usertitle'];
+		$usertitle = $memperms['usertitle'];
 	}
 	else
 	{
@@ -2388,10 +2380,10 @@ if($mybb->input['action'] == "profile")
 
 	$usertitle = htmlspecialchars_uni($usertitle);
 
-	if($displaygroup['stars'] || $displaygroup['usertitle'])
+	if($memperms['stars'] || $memperms['usertitle'])
 	{
 		// Set the number of stars if display group has constant number of stars
-		$stars = $displaygroup['stars'];
+		$stars = $memperms['stars'];
 	}
 	elseif(!$stars)
 	{
@@ -2416,7 +2408,7 @@ if($mybb->input['action'] == "profile")
 	}
 
 	$groupimage = '';
-	if(!empty($displaygroup['image']))
+	if(!empty($memperms['image']))
 	{
 		if(!empty($mybb->user['language']))
 		{
@@ -2426,14 +2418,14 @@ if($mybb->input['action'] == "profile")
 		{
 			$language = $mybb->settings['bblanguage'];
 		}
-		$displaygroup['image'] = str_replace("{lang}", $language, $displaygroup['image']);
-		$displaygroup['image'] = str_replace("{theme}", $theme['imgdir'], $displaygroup['image']);
+		$memperms['image'] = str_replace("{lang}", $language, $memperms['image']);
+		$memperms['image'] = str_replace("{theme}", $theme['imgdir'], $memperms['image']);
 		eval("\$groupimage = \"".$templates->get("member_profile_groupimage")."\";");
 	}
 
 	if(empty($starimage))
 	{
-		$starimage = $displaygroup['starimage'];
+		$starimage = $memperms['starimage'];
 	}
 
 	if(!empty($starimage))
@@ -2517,7 +2509,7 @@ if($mybb->input['action'] == "profile")
 
 	// Fetch the reputation for this user
 	$reputation = '';
-	if($memperms['usereputationsystem'] == 1 && $displaygroup['usereputationsystem'] == 1 && $mybb->settings['enablereputation'] == 1)
+	if($memperms['usereputationsystem'] == 1 && $mybb->settings['enablereputation'] == 1)
 	{
 		$bg_color = alt_trow();
 		$reputation = get_reputation($memprofile['reputation']);

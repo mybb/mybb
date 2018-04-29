@@ -364,8 +364,10 @@ class session
 		// Gather a full permission set for this guest
 		$mybb->usergroup = usergroup_permissions($mybbgroups);
 		$mydisplaygroup = usergroup_displaygroup($mybb->user['displaygroup']);
-
-		$mybb->usergroup = array_merge($mybb->usergroup, $mydisplaygroup);
+		if(is_array($mydisplaygroup))
+		{
+			$mybb->usergroup = array_merge($mybb->usergroup, $mydisplaygroup);
+		}
 
 		// Update the online data.
 		if(!defined("NO_ONLINE") && !defined('IN_UPGRADE'))
@@ -424,7 +426,10 @@ class session
 		// Gather a full permission set for this spider.
 		$mybb->usergroup = usergroup_permissions($mybb->user['usergroup']);
 		$mydisplaygroup = usergroup_displaygroup($mybb->user['displaygroup']);
-		$mybb->usergroup = array_merge($mybb->usergroup, $mydisplaygroup);
+		if(is_array($mydisplaygroup))
+		{
+			$mybb->usergroup = array_merge($mybb->usergroup, $mydisplaygroup);
+		}
 
 		// Update spider last minute (only do so on two minute intervals - decrease load for quick spiders)
 		if($spider['lastvisit'] < TIME_NOW-120)
