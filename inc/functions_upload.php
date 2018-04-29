@@ -336,7 +336,7 @@ function upload_avatar($avatar=array(), $uid=0)
 	}
 
 	// Next check the file size
-	if(($avatar['size'] > ($mybb->settings['avatarsize']*1024) && $mybb->settings['avatarsize'] > 0) || $avatar['size'] > $allowed_mime_types[$avatar['type']] && !($mybb->settings['avatarsize'] > 0))
+	if(($mybb->settings['avatarsize'] > 0 && $avatar['size'] > ($mybb->settings['avatarsize']*1024)) && $avatar['size'] > ($allowed_mime_types[$avatar['type']]*1024))
 	{
 		delete_uploaded_file($avatarpath."/".$filename);
 		$ret['error'] = $lang->error_uploadsize;
