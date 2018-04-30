@@ -459,7 +459,8 @@ $plugins->run_hooks("showthread_start");
 // Show the entire thread (taking into account pagination).
 if($mybb->input['action'] == "thread")
 {
-	if($thread['firstpost'] == 0)
+	// This is a workaround to fix threads which data may get "corrupted" due to lag or other still unknown reasons
+	if($thread['firstpost'] == 0 || $thread['dateline'] == 0)
 	{
 		update_first_post($tid);
 	}
