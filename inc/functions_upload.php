@@ -432,7 +432,7 @@ function upload_attachment($attachment, $update_attachment=false)
 	// Check the size
 	if($attachment['size'] > $attachtype['maxsize']*1024 && $attachtype['maxsize'] != "")
 	{
-		$ret['error'] = $lang->sprintf($lang->error_attachsize, $attachtype['maxsize']);
+		$ret['error'] = $lang->sprintf($lang->error_attachsize, htmlspecialchars_uni($attachment['name']), $attachtype['maxsize']);
 		return $ret;
 	}
 
@@ -472,7 +472,7 @@ function upload_attachment($attachment, $update_attachment=false)
 			return $ret;
 		}
 
-		$ret['error'] = $lang->error_alreadyuploaded;
+		$ret['error'] = $lang->sprintf($lang->error_alreadyuploaded, htmlspecialchars_uni($attachment['name']));
 		return $ret;
 	}
 
@@ -679,18 +679,6 @@ function upload_attachment($attachment, $update_attachment=false)
 	return $ret;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 /**
  * Process adding attachment(s) when the "Add Attachment" button is pressed.
  *
@@ -701,7 +689,7 @@ function upload_attachment($attachment, $update_attachment=false)
  */
 function add_attachments($pid, $forumpermissions, $attachwhere, $action=false)
 {
-	global $db, $mybb, $editdraftpid;
+	global $db, $mybb, $editdraftpid, $lang;
 
 	$ret = array();
 
@@ -710,26 +698,16 @@ function add_attachments($pid, $forumpermissions, $attachwhere, $action=false)
 		$attachments = array();
 		$fields = array ('name', 'type', 'tmp_name', 'error', 'size');
 
-		if(is_array($_FILES['attachments']['name']))
+		$total = count($_FILES['attachments']['name']);
+
+		for($i=0; $i<$total; ++$i)
 		{
-			// Multi-attachments, make array of attachments from $_FILES
-			foreach($_FILES['attachments']['name'] as $key => $name)
+			foreach($fields as $field)
 			{
-				$attach1 = array();
-				foreach($fields as $field)
-				{
-					$attach1[$field] = $_FILES['attachments'][$field][$key];
-					$attachments[] = $attach1;
-				}
+				$attach1[$field] = $_FILES['attachments'][$field][$key];
+				$attachments[$i][$field] = $_FILES['attachments'][$field][$i];
 			}
 		}
-		else
-		{
-			// Single attachment in original-style non-array $_FILES['attachments'][$field], make a single element array of attachments for that
-			$attachments[] = $_FILES['attachments'];
-		}
-
-		usort($attachments, function($a, $b){ return strcmp($a['name'], $b['name']); });
 
 		foreach($attachments as $FILE)
 		{
@@ -775,22 +753,6 @@ function add_attachments($pid, $forumpermissions, $attachwhere, $action=false)
 
 	return $ret;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /**
  * Delete an uploaded file both from the relative path and the CDN path if a CDN is in use.
