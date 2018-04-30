@@ -5660,7 +5660,7 @@ if(use_xmlhttprequest == "1")
 			<option value="lastvisit"{$sort_selected['lastvisit']}>{$lang->sort_by_lastvisit}</option>
 			<option value="postnum"{$sort_selected['postnum']}>{$lang->sort_by_posts}</option>
 			<option value="threadnum"{$sort_selected['threadnum']}>{$lang->sort_by_threads}</option>
-			<option value="referrals"{$sort_selected['referrals']}>{$lang->sort_by_referrals}</option>
+			{$referrals_option}
 		</select>
 	</td>
 </tr>
@@ -5722,6 +5722,7 @@ if(use_xmlhttprequest == "1")
 </html>]]></template>
 		<template name="memberlist_referrals" version="1800"><![CDATA[<td class="tcat" width="10%" align="center"><span class="smalltext"><a href="{$sorturl}&amp;sort=referrals&amp;order=descending"><strong>{$lang->referrals}</strong></a> {$orderarrow['referrals']}</span></td>]]></template>
 		<template name="memberlist_referrals_bit" version="1600"><![CDATA[<td class="{$alt_bg}" align="center">{$user['referrals']}</td>]]></template>
+		<template name="memberlist_referrals_option" version="1816"><![CDATA[<option value="referrals"{$sort_selected['referrals']}>{$lang->sort_by_referrals}</option>]]></template>
 		<template name="memberlist_search" version="1810"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->search_member_list}</title>

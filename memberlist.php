@@ -56,6 +56,11 @@ if($mybb->get_input('action') == "search")
 			eval('$contact_fields[\''.$field.'\'] = "'.$templates->get('memberlist_search_contact_field').'";');
 		}
 	}
+	
+	if($mybb->settings['usereferrals'] == 1)
+	{
+		eval("\$referrals_option = \"".$templates->get("memberlist_referrals_option")."\";");
+	}
 
 	eval("\$search_page = \"".$templates->get("memberlist_search")."\";");
 	output_page($search_page);
@@ -102,7 +107,14 @@ else
 			$sort_field = "u.threadnum";
 			break;
 		case "referrals":
-			$sort_field = "u.referrals";
+			if($mybb->settings['usereferrals'] == 1)
+			{
+				$sort_field = "u.referrals";
+			}
+			else
+			{
+				$sort_field = "u.username";
+			}
 			break;
 		default:
 			$sort_field = "u.username";
@@ -356,6 +368,7 @@ else
 		if($mybb->settings['usereferrals'] == 1)
 		{
 			eval("\$referral_bit = \"".$templates->get("memberlist_referrals_bit")."\";");
+			eval("\$referrals_option = \"".$templates->get("memberlist_referrals_option")."\";");
 		}
 
 		$usergroup['groupimage'] = '';
