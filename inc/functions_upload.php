@@ -679,6 +679,119 @@ function upload_attachment($attachment, $update_attachment=false)
 	return $ret;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * Process adding attachment(s) when the "Add Attachment" button is pressed.
+ *
+ * @param int $pid The ID of the post.
+ * @param array $forumpermission The permissions for the forum.
+ * @param string $attachwhere Search string "pid='$pid'" or "posthash='".$db->escape_string($mybb->get_input('posthash'))."'"
+ * @param string $action Where called from: "newthread", "newreply", or "editpost"
+ */
+function add_attachments($pid, $forumpermissions, $attachwhere, $action=false)
+{
+	global $db, $mybb, $editdraftpid;
+
+	$ret = array();
+
+	if($forumpermissions['canpostattachments'])
+	{
+		$attachments = array();
+		$fields = array ('name', 'type', 'tmp_name', 'error', 'size');
+
+		if(is_array($_FILES['attachments']['name']))
+		{
+			// Multi-attachments, make array of attachments from $_FILES
+			foreach($_FILES['attachments']['name'] as $key => $name)
+			{
+				$attach1 = array();
+				foreach($fields as $field)
+				{
+					$attach1[$field] = $_FILES['attachments'][$field][$key];
+					$attachments[] = $attach1;
+				}
+			}
+		}
+		else
+		{
+			// Single attachment in original-style non-array $_FILES['attachments'][$field], make a single element array of attachments for that
+			$attachments[] = $_FILES['attachments'];
+		}
+
+		usort($attachments, function($a, $b){ return strcmp($a['name'], $b['name']); });
+
+		foreach($attachments as $FILE)
+		{
+			if(!empty($FILE['name']) && !empty($FILE['type']))
+			{
+				if($FILE['size'] > 0)
+				{
+					$query = $db->simple_select("attachments", "aid", "filename='".$db->escape_string($FILE['name'])."' AND {$attachwhere}");
+					$updateattach = $db->fetch_field($query, "aid");
+
+					$update_attachment = false;
+					if($action == "editpost")
+					{
+						if($updateattach > 0 && $mybb->get_input('updateattachment') && ($mybb->usergroup['caneditattachments'] || $forumpermissions['caneditattachments']))
+						{
+							$update_attachment = true;
+						}
+					}
+					else
+					{
+						if($updateattach > 0 && $mybb->get_input('updateattachment'))
+						{
+							$update_attachment = true;
+						}
+					}
+
+					$attachedfile = upload_attachment($FILE, $update_attachment);
+
+					if(!empty($attachedfile['error']))
+					{
+						$ret['errors'][] = $attachedfile['error'];
+						$mybb->input['action'] = $action;
+					}
+				}
+				else
+				{
+					$ret['errors'][] = $lang->sprintf($lang->error_uploadempty, htmlspecialchars_uni($FILE['name']));
+					$mybb->input['action'] = $action;
+				}
+			}
+		}
+	}
+
+	return $ret;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /**
  * Delete an uploaded file both from the relative path and the CDN path if a CDN is in use.
  *

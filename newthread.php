@@ -171,44 +171,18 @@ if($mybb->settings['enableattachments'] == 1 && !$mybb->get_input('attachmentaid
 		$attachwhere = "posthash='".$db->escape_string($mybb->get_input('posthash'))."'";
 	}
 
-	// If there's an attachment, check it and upload it
-	if($forumpermissions['canpostattachments'] != 0)
+	require_once MYBB_ROOT."inc/functions_upload.php";
+
+	$ret = add_attachments($pid, $forumpermissions, $attachwhere, "newthread");
+
+	if(!empty($ret['errors']))
 	{
-		if(!empty($_FILES['attachment']['name']) && !empty($_FILES['attachment']['type']))
-		{
-			if($_FILES['attachment']['size'] > 0)
-			{
-				$query = $db->simple_select("attachments", "aid", "filename='".$db->escape_string($_FILES['attachment']['name'])."' AND {$attachwhere}");
-				$updateattach = $db->fetch_field($query, "aid");
-
-				require_once MYBB_ROOT."inc/functions_upload.php";
-
-				$update_attachment = false;
-				if($updateattach > 0 && $mybb->get_input('updateattachment'))
-				{
-					$update_attachment = true;
-				}
-				$attachedfile = upload_attachment($_FILES['attachment'], $update_attachment);
-			}
-			else
-			{
-				$errors[] = $lang->error_uploadempty;
-				$mybb->input['action'] = "newthread";
-			}
-		}
-	}
-
-	// Error with attachments - should use new inline errors?
-	if(!empty($attachedfile['error']))
-	{
-		$errors[] = $attachedfile['error'];
-		$mybb->input['action'] = "newthread";
+		$errors = $ret['errors'];
 	}
 
 	// If we were dealing with an attachment but didn't click 'Post Thread', force the new thread page again.
 	if(!$mybb->get_input('submit'))
 	{
-		//$editdraftpid = "<input type=\"hidden\" name=\"pid\" value=\"$pid\" />";
 		$mybb->input['action'] = "newthread";
 	}
 }

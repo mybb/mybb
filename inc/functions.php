@@ -868,7 +868,7 @@ function inline_error($errors, $title="", $json_data=array())
 
 	foreach($errors as $error)
 	{
-		$errorlist .= "<li>".$error."</li>\n";
+		eval("\$errorlist .= \"".$templates->get("error_inline_item")."\";");
 	}
 
 	eval("\$errors = \"".$templates->get("error_inline")."\";");
