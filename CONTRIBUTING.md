@@ -18,6 +18,3 @@ If your Pull Request is for a new feature, that feature must be already confirme
 
 All changes made in Pull Requests must follow the [Development Standards](https://docs.mybb.com/1.8/development/standards/).
 If you need any help with sending your code contributions the [GitHub Help site](https://help.github.com) is a good place to start.
-
-## Code of Conduct
-Contributors to this project should understand and ensure they agree to the terms described in our Code of Conduct available at https://mybb.com/about/conduct/.
