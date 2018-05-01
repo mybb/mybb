@@ -436,7 +436,7 @@ else if($mybb->input['action'] == "edit_post")
 	$post = get_post($mybb->get_input('pid', MyBB::INPUT_INT));
 
 	// No result, die.
-	if(!$post)
+	if(!$post || $post['visible'] == -1)
 	{
 		xmlhttp_error($lang->post_doesnt_exist);
 	}

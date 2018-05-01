@@ -40,7 +40,13 @@ var Thread = {
 		var new_post_ids = new Array();
 		var quoted = Cookie.get("multiquote");
 		var is_new = true;
-		if(quoted)
+		if($("#pid" + pid).next("div.post").hasClass('deleted_post'))
+		{
+			$.jGrowl(lang.post_deleted_error, {theme:'jgrowl_error'});
+			var deleted = true;
+		}
+
+		if(quoted && !deleted)
 		{
 			var post_ids = quoted.split("|");
 
@@ -57,7 +63,7 @@ var Thread = {
 		}
 
 		var mquote_a = $("#multiquote_"+pid).closest('a')
-		if(is_new == true)
+		if(is_new == true && !deleted)
 		{
 			new_post_ids[new_post_ids.length] = pid;
 			mquote_a.removeClass('postbit_multiquote').addClass('postbit_multiquote_on');
@@ -270,6 +276,11 @@ var Thread = {
 				// Take pid out of the id attribute
 				id = $(this).attr('id');
 				pid = id.replace( /[^\d.]/g, '');
+				if($("#pid" + pid).next("div.post").hasClass('deleted_post'))
+				{
+					$.jGrowl(lang.post_deleted_error, {theme:'jgrowl_error'});
+					return false;
+				}
 
 				// Create a copy of the post
 				if($('#pid_' + pid + '_temp').length == 0)
@@ -470,9 +481,11 @@ var Thread = {
 								{
 									// Change CSS class of div 'post_[pid]'
 									$("#post_"+pid).addClass("unapproved_post deleted_post");
-
-									$("#quick_delete_" + pid).hide();
-									$("#quick_restore_" + pid).show();
+									if(json.first == 1)
+									{
+										$("#quick_reply_form, .thread_tools, .new_reply_button, .inline_rating").hide();
+										$("#moderator_options_selector option.option_mirage").attr("disabled","disabled");
+									}
 
 									$.jGrowl(lang.quick_delete_success, {theme:'jgrowl_success'});
 								}
@@ -543,9 +556,11 @@ var Thread = {
 							{
 								// Change CSS class of div 'post_[pid]'
 								$("#post_"+pid).removeClass("unapproved_post deleted_post");
-
-								$("#quick_delete_" + pid).show();
-								$("#quick_restore_" + pid).hide();
+								if(json.first == 1)
+								{
+									$("#quick_reply_form, .thread_tools, .new_reply_button, .inline_rating").show();
+									$("#moderator_options_selector option.option_mirage").removeAttr("disabled");
+								}
 
 								$.jGrowl(lang.quick_restore_success, {theme:'jgrowl_success'});
 							}
