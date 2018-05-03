@@ -191,6 +191,12 @@ class postParser
 			$message = $this->parse_mycode($message);
 		}
 
+		// Filter url codes, if disabled.
+		if($mybb->settings['allowlinkmycode'] != 1)
+		{
+			$message = preg_replace("#\[(\/)?url{1}(.*?)\]#i", "", $message);
+		}
+
 		// Parse Highlights
 		if(!empty($this->options['highlight']))
 		{
