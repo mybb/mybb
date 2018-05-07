@@ -53,7 +53,6 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 	}
 
 	$timesearch = TIME_NOW - (int)$mybb->settings['wolcutoff'];
-	$comma = '';
 	$query = $db->query("
 		SELECT s.sid, s.ip, s.uid, s.time, s.location, s.location1, u.username, u.invisible, u.usergroup, u.displaygroup
 		FROM ".TABLE_PREFIX."sessions s
@@ -64,7 +63,7 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 
 	$forum_viewers = $doneusers = array();
 	$membercount = $guestcount = $anoncount = $botcount = 0;
-	$onlinemembers = $comma = '';
+	$onlinemembers = $onlinebots = $comma = '';
 
 	// Fetch spiders
 	$spiders = $cache->read('spiders');
@@ -112,7 +111,7 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 		elseif(my_strpos($user['sid'], 'bot=') !== false && $spiders[$botkey])
 		{
 			// The user is a search bot.
-			$onlinemembers .= $comma.format_name($spiders[$botkey]['name'], $spiders[$botkey]['usergroup']);
+			$onlinebots .= $comma.format_name($spiders[$botkey]['name'], $spiders[$botkey]['usergroup']);
 			$comma = $lang->comma;
 			++$botcount;
 		}
@@ -127,6 +126,17 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 			++$forum_viewers[$user['location1']];
 		}
 	}
+ 
+	if(trim($onlinebots) == "" || trim($onlinemembers) == "")
+	{
+		$comma = "";
+	}
+	else
+	{
+		$comma = $lang->comma;
+	}
+
+	$onlinemembers = $onlinebots.$comma.$onlinemembers;
 
 	// Build the who's online bit on the index page.
 	$onlinecount = $membercount + $guestcount + $botcount;
