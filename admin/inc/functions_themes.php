@@ -538,16 +538,6 @@ function fix_css_urls_callback($matches)
 }
 
 /**
- * @param string $url
- *
- * @return string
- */
-function unfix_css_urls($url)
-{
-	return str_replace("../../../", "", $url);
-}
-
-/**
  * Build a theme based on the specified parameters.
  *
  * @param string $name The name of the theme
