@@ -36,6 +36,12 @@ function upgrade43_dbchanges()
 		$db->update_query('settings', "value=''", 'name IN (\'captchapublickey\', \'captchaprivatekey\''); // Clean out stored credential keys
 	}
 
+	if($db->field_exists('users', 'aim'))
+	{
+		$db->drop_column('aim', 'users');
+	}
+	$db->delete_query("settings", "name='allowaimfield'");
+	
 	$cache->delete("mybb_credits");
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
