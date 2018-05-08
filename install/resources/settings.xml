@@ -2452,15 +2452,6 @@ delete=Delete]]></optionscode>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
-		<setting name="allowaimfield">
-			<title>Allow AIM Screen Name To Usergroups</title>
-			<description><![CDATA[Select the usergroups which should be allowed to use the AIM Screen Name contact field.]]></description>
-			<disporder>2</disporder>
-			<optionscode><![CDATA[groupselect]]></optionscode>
-			<settingvalue><![CDATA[-1]]></settingvalue>
-			<isdefault>1</isdefault>
-			<helpkey></helpkey>
-		</setting>
 		<setting name="allowyahoofield">
 			<title>Allow Yahoo ID Field To Usergroups</title>
 			<description><![CDATA[Select the usergroups which should be allowed to use the Yahoo ID contact field.]]></description>
