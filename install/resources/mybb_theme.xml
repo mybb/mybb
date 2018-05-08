@@ -4914,7 +4914,7 @@ if(use_xmlhttprequest == "1")
 </fieldset>
 <br />]]></template>
 		<template name="member_profile_banned_remaining" version="1808"><![CDATA[<span class="{$banned_class}">({$timeremaining} {$lang->ban_remaining})</span>]]></template>
-		<template name="member_profile_contact_details" version="1804"><![CDATA[<br />
+		<template name="member_profile_contact_details" version="1816"><![CDATA[<br />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder tfixed">
 	<colgroup>
 	<col style="width: 30%;" />
@@ -4926,15 +4926,10 @@ if(use_xmlhttprequest == "1")
 	{$sendemail}
 	{$sendpm}
 	{$contact_fields['icq']}
-	{$contact_fields['aim']}
 	{$contact_fields['yahoo']}
 	{$contact_fields['skype']}
 	{$contact_fields['google']}
 </table>]]></template>
-		<template name="member_profile_contact_fields_aim" version="1809"><![CDATA[<tr>
-	<td class="{$bgcolors['aim']}"><strong>{$lang->aim_screenname}</strong></td>
-	<td class="{$bgcolors['aim']}"><a href="javascript:void(0)" onclick="MyBB.popupWindow('/misc.php?action=imcenter&amp;imtype=aim&amp;uid={$uid}&amp;modal=1'); return false;">{$memprofile['aim']}</a></td>
-</tr>]]></template>
 		<template name="member_profile_contact_fields_google" version="1800"><![CDATA[<tr>
 	<td class="{$bgcolors['google']}"><strong>{$lang->google_id}</strong></td>
 	<td class="{$bgcolors['google']}">{$memprofile['google']}</td>
@@ -5755,7 +5750,6 @@ if(use_xmlhttprequest == "1")
 		<input type="text" class="textbox" name="website" id="website" />
 	</td>
 </tr>
-{$contact_fields['aim']}
 {$contact_fields['skype']}
 {$contact_fields['google']}
 {$contact_fields['yahoo']}
@@ -6015,37 +6009,6 @@ if(use_xmlhttprequest == "1")
 		<template name="misc_helpresults_noresults" version="1800"><![CDATA[<tr>
 	<td class="trow1">{$lang->no_help_results}</td>
 </tr>]]></template>
-		<template name="misc_imcenter_aim" version="1800"><![CDATA[<div class="modal">
-<div style="overflow-y: auto; max-height: 400px;">
-<table width="100%" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" border="0" align="center" class="tborder">
-<tr>
-<td class="thead" align="center" colspan="2"><strong>{$user['username']} - {$lang->aim_center}</strong></td>
-</tr>
-<tr>
-<td class="tcat" align="center" colspan="2"><span class="smalltext"><strong>{$navigationbar}</strong></span></td>
-</tr>
-<tr>
-<td class="trow2">
-<!-- Begin AIM Remote -->
-<table align="center" cellspacing="0" cellpadding="0" border="0">
-<tr>
-<td align="center" style="white-space: nowrap"><a href="http://www.aim.com/"><img src="http://info.aol.co.uk/aim/remote/gr/aimver_man.gif" width="44" height="55" alt="{$lang->download_aim}" title="{$lang->download_aim}" /></a><img src="http://info.aol.co.uk/aim/remote/gr/aimver_topsm.gif" width="73" height="55" alt="{$lang->aim_remote}" title="{$lang->aim_remote}" /></td>
-</tr>
-<tr>
-<td align="center" style="white-space: nowrap"><a href="aim:goim?screenname={$user['aim']}&amp;message=Hi.+Are+you+there?"><img src="http://info.aol.co.uk/aim/remote/gr/aimver_im.gif" width="117" height="39" alt="{$lang->send_me_instant}" title="{$lang->send_me_instant}" /></a></td>
-</tr>
-<tr>
-<td align="center" style="white-space: nowrap"><a href="aim:addbuddy?screenname={$user['aim']}"><img src="http://info.aol.co.uk/aim/remote/gr/aimver_bud.gif" width="117" height="39" alt="{$lang->add_me_buddy_list}" title="{$lang->add_me_buddy_list}" /></a></td>
-</tr>
-<td align="center" style="white-space: nowrap"><a href="http://www.aim.com/"><img src="http://info.aol.co.uk/aim/remote/gr/aimver_botdow.gif" width="117" height="29" alt="{$lang->download_aol_im}" title="{$lang->download_aol_im}" /></a></td>
-</tr>
-</table>
-<!-- End AIM Remote -->
-</td>
-</tr>
-</table>
-</div>
-</div>]]></template>
 		<template name="misc_imcenter_error" version="1812"><![CDATA[<div class="modal">
 <div style="overflow-y: auto; max-height: 400px;">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
@@ -6892,12 +6855,6 @@ if(use_xmlhttprequest == "1")
 										</tr>
 										<tr>
 											<td><input type="text" class="textbox" name="icq" size="25" value="{$user_icq}" /></td>
-										</tr>
-										<tr>
-											<td><span class="smalltext">{$lang->aim_screenname}</span></td>
-										</tr>
-										<tr>
-											<td><input type="text" class="textbox" name="aim" size="25" value="{$mybb->input['aim']}" /></td>
 										</tr>
 										<tr>
 											<td><span class="smalltext">{$lang->skype_id}</span></td>
@@ -13202,12 +13159,11 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
-	<template name="usercp_profile_contact_fields" version="1805"><![CDATA[<br />
+	<template name="usercp_profile_contact_fields" version="1816"><![CDATA[<br />
 <fieldset class="trow2">
 <legend><strong>{$lang->additional_contact_details}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
 	{$contact_fields['icq']}
-	{$contact_fields['aim']}
 	{$contact_fields['yahoo']}
 	{$contact_fields['skype']}
 	{$contact_fields['google']}
