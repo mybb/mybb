@@ -28,6 +28,14 @@ function upgrade43_dbchanges()
 	echo "<p>Performing necessary upgrade queries...</p>";
 	flush();
 
+	$db->update_query('settings', array('optionscode' => 'select\r\n0=No CAPTCHA\r\n1=MyBB Default CAPTCHA\r\n4=NoCAPTCHA reCAPTCHA\r\n5=reCAPTCHA invisible'), "name='captchaimage'");
+
+	if($mybb->settings['captchaimage'] == 2)
+	{
+		$db->update_query('settings', array('value' => 1), "name='captchaimage'"); // Reset CAPTCHA to MyBB Default
+		$db->update_query('settings', "value=''", 'name IN (\'captchapublickey\', \'captchaprivatekey\''); // Clean out stored credential keys
+	}
+
 	if($db->field_exists('regex', 'badwords'))
 	{
 		$db->drop_column('badwords', 'regex');
@@ -42,6 +50,8 @@ function upgrade43_dbchanges()
 			$db->add_column("badwords", "regex", "tinyint(1) NOT NULL default '0'");
 			break;
 	}
+
+	$cache->delete("mybb_credits");
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("43_done");
