@@ -972,6 +972,10 @@ class UserDataHandler extends DataHandler
 		{
 			$this->verify_usertitle();
 		}
+		if($this->method == "insert" || array_key_exists('email', $user))
+		{
+			$this->verify_email();
+		}
 		if($this->method == "insert" || array_key_exists('password', $user))
 		{
 			$this->verify_password();
@@ -979,10 +983,6 @@ class UserDataHandler extends DataHandler
 		if($this->method == "insert" || array_key_exists('usergroup', $user))
 		{
 			$this->verify_usergroup();
-		}
-		if($this->method == "insert" || array_key_exists('email', $user))
-		{
-			$this->verify_email();
 		}
 		if($this->method == "insert" || array_key_exists('website', $user))
 		{
