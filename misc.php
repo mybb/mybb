@@ -717,44 +717,6 @@ elseif($mybb->input['action'] == "smilies")
         ]));
     }
 }
-elseif($mybb->input['action'] == "imcenter")
-{
-    $message = '';
-    $mybb->input['imtype'] = $mybb->get_input('imtype');
-    if ($mybb->input['imtype'] != "skype" && $mybb->input['imtype'] != "yahoo") {
-        $message = $lang->error_invalidimtype;
-    }
-
-    $uid = $mybb->get_input('uid', MyBB::INPUT_INT);
-    $user = get_user($uid);
-
-    if (!$user) {
-        $message = $lang->error_invaliduser;
-    }
-
-    if (empty($user[$mybb->input['imtype']])) {
-        $message = $lang->error_invalidimtype;
-    }
-
-    $settingkey = 'allow'.$mybb->input['imtype'].'field';
-    if (!is_member($mybb->settings[$settingkey], $user)) {
-        $message = $lang->error_nopermission_user_ajax;
-    }
-
-    if (!empty($message)) {
-        output_page(\MyBB\template('misc/imcenter_error.twig', [
-            'message' => $message,
-        ]));
-        exit;
-    }
-
-    $imtype = $mybb->input['imtype'];
-    output_page(\MyBB\template('misc/imcenter.twig', [
-        'imtype' => $imtype,
-        'user' => $user,
-    ]));
-    exit;
-}
 elseif($mybb->input['action'] == "syndication")
 {
     $plugins->run_hooks("misc_syndication_start");
