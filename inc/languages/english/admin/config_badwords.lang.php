@@ -16,6 +16,8 @@ $l['bad_word_desc'] = "Enter the word which you wish to be filtered. The '*' cha
 $l['bad_word_max'] = "A filtered word can't be longer than 100 characters.";
 $l['replacement'] = "Replacement";
 $l['replacement_desc'] = "Enter the string which will replace the filtered word (If this is blank, asterisks will be shown)";
+$l['regex'] = "Regular Expression";
+$l['regex_desc'] = "Treat the \"Word\" field as a regular expression.";
 $l['replacement_word_max'] = "A replacement word can't be longer than 100 characters.";
 $l['error_replacement_word_invalid'] = "A replacement word cannot be equivalent to it's word filter.";
 

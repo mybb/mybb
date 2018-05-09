@@ -59,6 +59,7 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 	{
 		$new_badword = array(
 			"badword" => $db->escape_string($mybb->input['badword']),
+			"regex" => $mybb->get_input('regex', 1),
 			"replacement" => $db->escape_string($mybb->input['replacement'])
 		);
 
@@ -155,6 +156,7 @@ if($mybb->input['action'] == "edit")
 		{
 			$updated_badword = array(
 				"badword" => $db->escape_string($mybb->input['badword']),
+				"regex" => $mybb->get_input('regex', 1),
 				"replacement" => $db->escape_string($mybb->input['replacement'])
 			);
 
@@ -198,6 +200,7 @@ if($mybb->input['action'] == "edit")
 	$form_container = new FormContainer($lang->edit_bad_word);
 	$form_container->output_row($lang->bad_word." <em>*</em>", $lang->bad_word_desc, $form->generate_text_box('badword', $badword_data['badword'], array('id' => 'badword')), 'badword');
 	$form_container->output_row($lang->replacement, $lang->replacement_desc, $form->generate_text_box('replacement', $badword_data['replacement'], array('id' => 'replacement')), 'replacement');
+	$form_container->output_row($lang->regex, $lang->regex_desc, $form->generate_yes_no_radio('regex', (int)$badword_data['regex'], array('id' => 'regex')), 'regex');
 	$form_container->end();
 	$buttons[] = $form->generate_submit_button($lang->save_bad_word);
 	$form->output_submit_wrapper($buttons);
@@ -228,6 +231,7 @@ if(!$mybb->input['action'])
 	$table = new Table;
 	$table->construct_header($lang->bad_word);
 	$table->construct_header($lang->replacement, array("width" => "50%"));
+	$table->construct_header($lang->regex, array("class" => "align_center", "width" => "20%"));
 	$table->construct_header($lang->controls, array("class" => "align_center", "width" => 150, "colspan" => 2));
 
 	$query = $db->simple_select("badwords", "*", "", array("order_by" => "badword", "order_dir" => "asc"));
@@ -239,8 +243,16 @@ if(!$mybb->input['action'])
 		{
 			$badword['replacement'] = '*****';
 		}
+
+		$regex = $lang->no;
+		if($badword['regex'])
+		{
+			$regex = $lang->yes;
+		}
+
 		$table->construct_cell($badword['badword']);
 		$table->construct_cell($badword['replacement']);
+		$table->construct_cell($regex, array("class" => "align_center"));
 		$table->construct_cell("<a href=\"index.php?module=config-badwords&amp;action=edit&amp;bid={$badword['bid']}\">{$lang->edit}</a>", array("class" => "align_center"));
 		$table->construct_cell("<a href=\"index.php?module=config-badwords&amp;action=delete&amp;bid={$badword['bid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_bad_word_deletion}');\">{$lang->delete}</a>", array("class" => "align_center"));
 		$table->construct_row();
@@ -259,6 +271,7 @@ if(!$mybb->input['action'])
 	$form_container = new FormContainer($lang->add_bad_word);
 	$form_container->output_row($lang->bad_word." <em>*</em>", $lang->bad_word_desc, $form->generate_text_box('badword', $mybb->input['badword'], array('id' => 'badword')), 'badword');
 	$form_container->output_row($lang->replacement, $lang->replacement_desc, $form->generate_text_box('replacement', $mybb->input['replacement'], array('id' => 'replacement')), 'replacement');
+	$form_container->output_row($lang->regex, $lang->regex_desc, $form->generate_yes_no_radio('regex', !$mybb->get_input('regex'), array('id' => 'regex')), 'regex');
 	$form_container->end();
 	$buttons[] = $form->generate_submit_button($lang->save_bad_word);
 	$form->output_submit_wrapper($buttons);
