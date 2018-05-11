@@ -225,7 +225,7 @@ email=Sent via Email and shown in the Mod CP]]></optionscode>
 			<description><![CDATA[Here you can set the number of next and previous page links to show in the pagination for threads or forums with more than one page of results. Set to 0 to disable the limitation.]]></description>
 			<disporder>10</disporder>
 			<optionscode><![CDATA[numeric
-min=1]]></optionscode>
+min=0]]></optionscode>
 			<settingvalue><![CDATA[5]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1158,7 +1158,7 @@ x=X]]></optionscode>
 			<description><![CDATA[Maximum file size (in kilobytes) of uploaded avatars. Set to 0 to disable the limitation.]]></description>
 			<disporder>14</disporder>
 			<optionscode><![CDATA[numeric
-min=1]]></optionscode>
+min=0]]></optionscode>
 			<settingvalue><![CDATA[25]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1375,7 +1375,7 @@ min=0]]></optionscode>
 			<description><![CDATA[The maximum number of options for polls that users can post. Set to 0 to disable the limitation.]]></description>
 			<disporder>18</disporder>
 			<optionscode><![CDATA[numeric
-min=2]]></optionscode>
+min=0]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1435,7 +1435,7 @@ min=0]]></optionscode>
 			<description><![CDATA[The maximum number of attachments a user is allowed to upload per post. Set to 0 to disable.]]></description>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[numeric
-min=1]]></optionscode>
+min=0]]></optionscode>
 			<settingvalue><![CDATA[5]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -2151,7 +2151,7 @@ min=0]]></optionscode>
 			<description><![CDATA[If the person trying to login reaches the max number of attempts, how long should they have to wait before being able to login again (in minutes)? Set to 0 to disable.]]></description>
 			<disporder>4</disporder>
 			<optionscode><![CDATA[numeric
-min=1]]></optionscode>
+min=0]]></optionscode>
 			<settingvalue><![CDATA[15]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
