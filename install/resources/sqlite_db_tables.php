@@ -953,7 +953,6 @@ $tables[] = "CREATE TABLE mybb_users (
 	lastpost int NOT NULL default '0',
 	website varchar(200) NOT NULL default '',
 	icq varchar(10) NOT NULL default '',
-	aim varchar(50) NOT NULL default '',
 	yahoo varchar(50) NOT NULL default '',
 	skype varchar(75) NOT NULL default '',
 	google varchar(75) NOT NULL default '',

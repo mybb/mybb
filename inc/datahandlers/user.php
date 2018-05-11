@@ -1092,7 +1092,7 @@ class UserDataHandler extends DataHandler
 
 		$user = &$this->data;
 
-		$array = array('postnum', 'threadnum', 'avatar', 'avatartype', 'additionalgroups', 'displaygroup', 'icq', 'aim', 'yahoo', 'skype', 'google', 'bday', 'signature', 'style', 'dateformat', 'timeformat', 'notepad');
+		$array = array('postnum', 'threadnum', 'avatar', 'avatartype', 'additionalgroups', 'displaygroup', 'icq', 'yahoo', 'skype', 'google', 'bday', 'signature', 'style', 'dateformat', 'timeformat', 'notepad');
 		foreach($array as $value)
 		{
 			if(!isset($user[$value]))
@@ -1120,7 +1120,6 @@ class UserDataHandler extends DataHandler
 			"lastvisit" => (int)$user['lastvisit'],
 			"website" => $db->escape_string($user['website']),
 			"icq" => (int)$user['icq'],
-			"aim" => $db->escape_string($user['aim']),
 			"yahoo" => $db->escape_string($user['yahoo']),
 			"skype" => $db->escape_string($user['skype']),
 			"google" => $db->escape_string($user['google']),
@@ -1334,10 +1333,6 @@ class UserDataHandler extends DataHandler
 		if(isset($user['icq']))
 		{
 			$this->user_update_data['icq'] = (int)$user['icq'];
-		}
-		if(isset($user['aim']))
-		{
-			$this->user_update_data['aim'] = $db->escape_string($user['aim']);
 		}
 		if(isset($user['yahoo']))
 		{
@@ -1752,7 +1747,6 @@ class UserDataHandler extends DataHandler
 			"website" => "",
 			"birthday" => "",
 			"icq" => "",
-			"aim" => "",
 			"yahoo" => "",
 			"skype" => "",
 			"google" => "",

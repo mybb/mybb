@@ -845,7 +845,7 @@ elseif($mybb->input['action'] == "smilies")
 elseif($mybb->input['action'] == "imcenter")
 {
 	$mybb->input['imtype'] = $mybb->get_input('imtype');
-	if($mybb->input['imtype'] != "aim" && $mybb->input['imtype'] != "skype" && $mybb->input['imtype'] != "yahoo")
+	if($mybb->input['imtype'] != "skype" && $mybb->input['imtype'] != "yahoo")
 	{
 		$message = $lang->error_invalidimtype;
 		eval("\$error = \"".$templates->get("misc_imcenter_error", 1, 0)."\";");
@@ -883,13 +883,6 @@ elseif($mybb->input['action'] == "imcenter")
 
 	// Build IM navigation bar
 	$navigationbar = $navsep = $imtype = $imtype_lang = '';
-	if(!empty($user['aim']) && is_member($mybb->settings['allowaimfield'], array('usergroup' => $user['usergroup'], 'additionalgroups' => $user['additionalgroups'])))
-	{
-		$imtype = "aim";
-		$imtype_lang = $lang->aol_im;
-		eval("\$navigationbar .= \"".$templates->get("misc_imcenter_nav")."\";");
-		$navsep = ' - ';
-	}
 	if(!empty($user['skype']) && is_member($mybb->settings['allowskypefield'], array('usergroup' => $user['usergroup'], 'additionalgroups' => $user['additionalgroups'])))
 	{
 		$imtype = "skype";
@@ -906,7 +899,6 @@ elseif($mybb->input['action'] == "imcenter")
 
 	$user['skype'] = htmlspecialchars_uni($user['skype']);
 	$user['yahoo'] = htmlspecialchars_uni($user['yahoo']);
-	$user['aim'] = htmlspecialchars_uni($user['aim']);
 
 	$user['username'] = htmlspecialchars_uni($user['username']);
 
