@@ -1489,7 +1489,7 @@ if($mybb->input['action'] == "resendactivation")
 		error($lang->error_alreadyactivated);
 	}
 
-	$query = $db->simple_select("awaitingactivation", "*", "uid='".$user['uid']."' AND type='b'");
+	$query = $db->simple_select("awaitingactivation", "*", "uid='".$mybb->user['uid']."' AND type='b'");
 	$activation = $db->fetch_array($query);
 
 	if($activation['validated'] == 1)
