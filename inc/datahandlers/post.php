@@ -1606,13 +1606,17 @@ class PostDataHandler extends DataHandler
 				$done_users = array();
 
 				// Queue up any forum subscription notices to users who are subscribed to this forum.
-				$excerpt = my_substr($thread['message'], 0, $mybb->settings['subscribeexcerpt']).$lang->emailbit_viewthread;
+				$excerpt = $thread['message'];
 
 				// Parse badwords
 				require_once MYBB_ROOT."inc/class_parser.php";
 				$parser = new postParser;
 				$excerpt = $parser->parse_badwords($excerpt);
-
+				$excerpt = $parser->text_parse_message($excerpt);
+				if(strlen($excerpt) > $mybb->settings['subscribeexcerpt'])
+				{
+					$excerpt = my_substr($excerpt, 0, $mybb->settings['subscribeexcerpt']).$lang->emailbit_viewthread;
+				}
 				$query = $db->query("
 					SELECT u.username, u.email, u.uid, u.language, u.loginkey, u.salt, u.regdate
 					FROM ".TABLE_PREFIX."forumsubscriptions fs
