@@ -854,7 +854,7 @@ $(document).ready(function() {
         $mybb->input['profile_fields'] = $mybb->get_input('profile_fields', MyBB::INPUT_ARRAY);
 
         // Custom profile fields baby!
-        $requiredfields = $customfields = [];
+        $requiredfields = $customfields = $contactfields = [];
 
         if ($mybb->settings['regtype'] == "verify" || $mybb->settings['regtype'] == "admin" || $mybb->settings['regtype'] == "both" || $mybb->get_input('coppa', MyBB::INPUT_INT) == 1) {
             $usergroup = 5;
@@ -1024,6 +1024,10 @@ $(document).ready(function() {
 
 					$requiredfields[] = $profilefield;
 				}
+				elseif($profilefield['contact'] == 1)
+				{
+					$contactfields[] = $profilefield;
+				}
 				else
 				{
 					$customfields[] = $profilefield;
@@ -1038,6 +1042,11 @@ $(document).ready(function() {
             $registration['showcustomfields'] = false;
             if (!empty($customfields)) {
                 $registration['showcustomfields'] = true;
+            }
+
+            $registration['showcontactfields'] = false;
+            if (!empty($contactfields)) {
+                $registration['showcontactfields'] = true;
             }
         }
 
@@ -1243,6 +1252,7 @@ $(document).ready(function() {
             'timezones' => $timezones,
             'requiredfields' => $requiredfields,
             'customfields' => $customfields,
+            'contactfields' => $contactfields,
             'languages' => $languages,
             'validator_javascript' => $validator_javascript,
         ]));
@@ -1929,19 +1939,6 @@ if($mybb->input['action'] == "profile")
         $memprofile['showpm'] = true;
     }
 
-    foreach (array('icq', 'aim', 'yahoo', 'skype', 'google') as $field) {
-        $contact_field[$field] = '';
-        $settingkey = 'allow'.$field.'field';
-        $templatekey = 'show'.$field;
-
-        $memprofile[$templatekey] = false;
-        if(!empty($memprofile[$field]) && is_member($mybb->settings[$settingkey], array('usergroup' => $memprofile['usergroup'], 'additionalgroups' => $memprofile['additionalgroups'])))
-        {
-            $memprofile['hascontacts'] = true;
-            $memprofile[$templatekey] = true;
-        }
-    }
-
     $memprofile['showsignature'] = false;
     if ($memprofile['signature'] && ($memprofile['suspendsignature'] == 0 || $memprofile['suspendsigtime'] < TIME_NOW) && !is_member($mybb->settings['hidesignatures']) && $memperms['canusesig'] && $memperms['canusesigxposts'] <= $memprofile['postnum']) {
         $memprofile['showsignature'] = true;
@@ -2261,7 +2258,7 @@ if($mybb->input['action'] == "profile")
     }
 
     $memprofile['profilefields'] = false;
-    $customfields = [];
+    $customfields = $contactfields = [];
 
     $query = $db->simple_select("userfields", "*", "ufid = '{$uid}'");
     $userfields = $db->fetch_array($query);
@@ -2281,7 +2278,7 @@ if($mybb->input['action'] == "profile")
             $field = "fid{$customfield['fid']}";
 
             if (!empty($userfields[$field])) {
-                $memprofile['profilefields'] = true;
+
                 $useropts = explode("\n", $userfields[$field]);
                 $customfield['ismulti'] = false;
                 if (is_array($useropts) && ($type == "multiselect" || $type == "checkbox")) {
@@ -2316,7 +2313,13 @@ if($mybb->input['action'] == "profile")
                     $customfield['value'] = $parser->parse_message($userfields[$field], $parser_options);
                 }
 
-                $customfields[] = $customfield;
+                if ($customfield['contact']) {
+                    $memprofile['hascontacts'] = true;
+                    $contactfields[] = $customfield;
+                } else {
+                    $memprofile['profilefields'] = true;
+                    $customfields[] = $customfield;
+                }
             }
         }
     }
@@ -2444,6 +2447,7 @@ if($mybb->input['action'] == "profile")
     output_page(\MyBB\template('member/profile.twig', [
         'memprofile' => $memprofile,
         'customfields' => $customfields,
+        'contactfields' => $contactfields,
     ]));
 }
 

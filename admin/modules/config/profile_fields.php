@@ -85,6 +85,7 @@ if($mybb->input['action'] == "add")
 				"name" => $db->escape_string($mybb->input['name']),
 				"description" => $db->escape_string($mybb->input['description']),
 				"disporder" => $mybb->get_input('disporder', MyBB::INPUT_INT),
+				"contact" => $mybb->get_input('contact', MyBB::INPUT_INT),
 				"type" => $db->escape_string($thing),
 				"regex" => $db->escape_string($mybb->input['regex']),
 				"length" => $mybb->get_input('length', MyBB::INPUT_INT),
@@ -169,6 +170,7 @@ if($mybb->input['action'] == "add")
 	else
 	{
 		$mybb->input['fieldtype'] = 'textbox';
+		$mybb->input['contact'] = 0;
 		$mybb->input['required'] = 0;
 		$mybb->input['registration'] = 0;
 		$mybb->input['editable'] = 1;
@@ -178,12 +180,12 @@ if($mybb->input['action'] == "add")
 
 	if(empty($mybb->input['viewableby']))
 	{
-		$mybb->input['viewableby'] = '';
+		$mybb->input['viewableby'] = -1;
 	}
 
 	if(empty($mybb->input['editableby']))
 	{
-		$mybb->input['editableby'] = '';
+		$mybb->input['editableby'] = -1;
 	}
 
 	$form_container = new FormContainer($lang->add_new_profile_field);
@@ -198,6 +200,7 @@ if($mybb->input['action'] == "add")
 		"checkbox" => $lang->checkbox
 	);
 	$form_container->output_row($lang->field_type." <em>*</em>", $lang->field_type_desc, $form->generate_select_box('fieldtype', $select_list, $mybb->input['fieldtype'], array('id' => 'fieldtype')), 'fieldtype');
+	$form_container->output_row($lang->contact_field." <em>*</em>", $lang->contact_field_desc, $form->generate_yes_no_radio('contact', $mybb->input['contact']));
 	$form_container->output_row($lang->field_regex, $lang->field_regex_desc, $form->generate_text_box('regex', $mybb->input['regex'], array('id' => 'regex')), 'regex', array(), array('id' => 'row_regex'));
 	$form_container->output_row($lang->maximum_length, $lang->maximum_length_desc, $form->generate_numeric_field('maxlength', $mybb->input['maxlength'], array('id' => 'maxlength', 'min' => 0)), 'maxlength', array(), array('id' => 'row_maxlength'));
 	$form_container->output_row($lang->field_length, $lang->field_length_desc, $form->generate_numeric_field('length', $mybb->input['length'], array('id' => 'length', 'min' => 0)), 'length', array(), array('id' => 'row_fieldlength'));
@@ -406,6 +409,7 @@ if($mybb->input['action'] == "edit")
 				"name" => $db->escape_string($mybb->input['name']),
 				"description" => $db->escape_string($mybb->input['description']),
 				"disporder" => $mybb->get_input('disporder', MyBB::INPUT_INT),
+				"contact" => $mybb->get_input('contact', MyBB::INPUT_INT),
 				"type" => $db->escape_string($type),
 				"regex" => $db->escape_string($mybb->input['regex']),
 				"length" => $mybb->get_input('length', MyBB::INPUT_INT),
@@ -514,6 +518,7 @@ if($mybb->input['action'] == "edit")
 		"checkbox" => $lang->checkbox
 	);
 	$form_container->output_row($lang->field_type." <em>*</em>", $lang->field_type_desc, $form->generate_select_box('fieldtype', $select_list, $mybb->input['fieldtype'], array('id' => 'fieldtype')), 'fieldtype');
+	$form_container->output_row($lang->contact_field." <em>*</em>", $lang->contact_field_desc, $form->generate_yes_no_radio('contact', $mybb->input['contact']));
 	$form_container->output_row($lang->field_regex, $lang->field_regex_desc, $form->generate_text_box('regex', $mybb->input['regex'], array('id' => 'regex')), 'regex', array(), array('id' => 'row_regex'));
 	$form_container->output_row($lang->maximum_length, $lang->maximum_length_desc, $form->generate_numeric_field('maxlength', $mybb->input['maxlength'], array('id' => 'maxlength', 'min' => 0)), 'maxlength', array(), array('id' => 'row_maxlength'));
 	$form_container->output_row($lang->field_length, $lang->field_length_desc, $form->generate_numeric_field('length', $mybb->input['length'], array('id' => 'length', 'min' => 0)), 'length', array(), array('id' => 'row_fieldlength'));
@@ -714,6 +719,7 @@ if(!$mybb->input['action'])
 
 	$table = new Table;
 	$table->construct_header($lang->name);
+	$table->construct_header($lang->contact, array("class" => "align_center"));
 	$table->construct_header($lang->required, array("class" => "align_center"));
 	$table->construct_header($lang->registration, array("class" => "align_center"));
 	$table->construct_header($lang->editable, array("class" => "align_center"));
@@ -724,6 +730,15 @@ if(!$mybb->input['action'])
 	$query = $db->simple_select("profilefields", "*", "", array('order_by' => 'disporder'));
 	while($field = $db->fetch_array($query))
 	{
+		if($field['contact'])
+		{
+			$contact = $lang->yes;
+		}
+		else
+		{
+			$contact = $lang->no;
+		}
+
 		if($field['required'])
 		{
 			$required = $lang->yes;
@@ -770,11 +785,12 @@ if(!$mybb->input['action'])
 		}
 
 		$table->construct_cell("<strong><a href=\"index.php?module=config-profile_fields&amp;action=edit&amp;fid={$field['fid']}\">".htmlspecialchars_uni($field['name'])."</a></strong><br /><small>".htmlspecialchars_uni($field['description'])."</small>", array('width' => '35%'));
-		$table->construct_cell($required, array("class" => "align_center", 'width' => '10%'));
-		$table->construct_cell($registration, array("class" => "align_center", 'width' => '10%'));
-		$table->construct_cell($editable, array("class" => "align_center", 'width' => '10%'));
-		$table->construct_cell($profile, array("class" => "align_center", 'width' => '10%'));
-		$table->construct_cell($postbit, array("class" => "align_center", 'width' => '10%')); 
+		$table->construct_cell($contact, array("class" => "align_center", 'width' => '5%'));
+		$table->construct_cell($required, array("class" => "align_center", 'width' => '5%'));
+		$table->construct_cell($registration, array("class" => "align_center", 'width' => '5%'));
+		$table->construct_cell($editable, array("class" => "align_center", 'width' => '5%'));
+		$table->construct_cell($profile, array("class" => "align_center", 'width' => '5%'));
+		$table->construct_cell($postbit, array("class" => "align_center", 'width' => '5%'));
 
 		$popup = new PopupMenu("field_{$field['fid']}", $lang->options);
 		$popup->add_item($lang->edit_field, "index.php?module=config-profile_fields&amp;action=edit&amp;fid={$field['fid']}");

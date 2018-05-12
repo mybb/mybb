@@ -29,6 +29,8 @@ $l['radio'] = "Radio Buttons";
 $l['checkbox'] = "Check Boxes";
 $l['field_type'] = "Field Type";
 $l['field_type_desc'] = "This is the field type that will be shown.";
+$l['contact_field'] = "Contact Field";
+$l['contact_field_desc'] = "Should this field be considered a contact field.";
 $l['field_regex'] = "Regular Expression";
 $l['field_regex_desc'] = "Enter a regular expression that should be matched from the user input. You must make sure the regular expression is valid and safe—no validation is performed. Empty for anything.<br />
 <strong>Example:</strong> ([a-z0-9_\- ,.+]+)";
@@ -56,6 +58,7 @@ $l['parse_allowimgcode'] = "Yes, allow [img] code in this profile field.";
 $l['parse_allowvideocode'] = "Yes, allow [video] code in this profile field.";
 $l['save_profile_field'] = "Save Profile Field";
 $l['name'] = "Name";
+$l['contact'] = "Contact?";
 $l['registration'] = "Registration?";
 $l['editable'] = "Editable?";
 $l['profile'] = "Profile?";

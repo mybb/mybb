@@ -1993,11 +1993,6 @@ if ($mybb->input['action'] == "do_editprofile") {
         "profile_fields" => $mybb->get_input('profile_fields', MyBB::INPUT_ARRAY),
         "profile_fields_editable" => true,
         "website" => $mybb->get_input('website'),
-        "icq" => $mybb->get_input('icq'),
-        "aim" => $mybb->get_input('aim'),
-        "yahoo" => $mybb->get_input('yahoo'),
-        "skype" => $mybb->get_input('skype'),
-        "google" => $mybb->get_input('google'),
         "signature" => $mybb->get_input('signature'),
         "usernotes" => $mybb->get_input('usernotes'),
         "away" => $away
@@ -2154,10 +2149,6 @@ if ($mybb->input['action'] == "editprofile") {
         $user['website'] = '';
     }
 
-    if ($user['icq'] != "0") {
-        $user['icq'] = (int)$user['icq'];
-    }
-
     if (!$errors) {
         $mybb->input = array_merge($user, $mybb->input);
         $birthday = explode('-', $user['birthday']);
@@ -2173,7 +2164,7 @@ if ($mybb->input['action'] == "editprofile") {
     }
 
     // Sanitize all input
-    foreach (array('usertitle', 'website', 'icq', 'aim', 'yahoo', 'skype', 'google', 'signature', 'birthday_day', 'birthday_month', 'birthday_year') as $field) {
+    foreach (array('usertitle', 'website', 'signature', 'birthday_day', 'birthday_month', 'birthday_year') as $field) {
         $mybb->input[$field] = htmlspecialchars_uni($mybb->get_input($field));
     }
 
@@ -2403,6 +2394,8 @@ if ($mybb->input['action'] == "editprofile") {
 
             if ($profilefield['required'] == 1) {
                 eval("\$requiredfields .= \"".$templates->get("usercp_profile_customfield")."\";");
+            } elseif ($profilefield['contact'] == 1) {
+                eval("\$contactfields .= \"".$templates->get("usercp_profile_customfield")."\";");
             } else {
                 eval("\$customfields .= \"".$templates->get("usercp_profile_customfield")."\";");
             }
