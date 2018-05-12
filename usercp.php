@@ -2538,7 +2538,7 @@ if ($mybb->input['action'] == "usergroups") {
         'leadinggroups' => $leadinggroups,
         'groupleader' => $groupleader,
         'groupsmemberof' => $groupsmemberof
-    ]);
+    ]));
 }
 
 if ($mybb->input['action'] == "attachments") {
