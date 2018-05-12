@@ -1456,10 +1456,11 @@ class postParser
 			return "[video={$video}]{$url}[/video]";
 		}
 
-		$id = htmlspecialchars_uni($id);
-
-		eval("\$video_code = \"".$templates->get("video_{$video}_embed")."\";");
-		return $video_code;
+		return \MyBB\template('parser/video.twig', [
+			'id' => $id,
+			'type' => $video,
+			'local' => $local
+		]);
 	}
 
 	/**
