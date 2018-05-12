@@ -131,145 +131,120 @@ switch ($mybb->input['action']) {
         break;
 }
 
-if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
-{
-	// Verify incoming POST request
-	verify_post_check($mybb->get_input('my_post_key'));
+if ($mybb->input['action'] == "do_profile" && $mybb->request_method == "post") {
+    // Verify incoming POST request
+    verify_post_check($mybb->get_input('my_post_key'));
 
-	$plugins->run_hooks("usercp_do_profile_start");
+    $plugins->run_hooks('usercp_do_profile_start');
 
-	if($mybb->get_input('away', MyBB::INPUT_INT) == 1 && $mybb->settings['allowaway'] != 0)
-	{
-		$awaydate = TIME_NOW;
-		if(!empty($mybb->input['awayday']))
-		{
-			// If the user has indicated that they will return on a specific day, but not month or year, assume it is current month and year
-			if(!$mybb->get_input('awaymonth', MyBB::INPUT_INT))
-			{
-				$mybb->input['awaymonth'] = my_date('n', $awaydate);
-			}
-			if(!$mybb->get_input('awayyear', MyBB::INPUT_INT))
-			{
-				$mybb->input['awayyear'] = my_date('Y', $awaydate);
-			}
+    if ($mybb->get_input('away', MyBB::INPUT_INT) == 1 && $mybb->settings['allowaway'] != 0) {
+        $awaydate = TIME_NOW;
+        if (!empty($mybb->input['awayday'])) {
+            // If the user has indicated that they will return on a specific day, but not month or year, assume it is current month and year
+            if (!$mybb->get_input('awaymonth', MyBB::INPUT_INT)) {
+                $mybb->input['awaymonth'] = my_date('n', $awaydate);
+            }
+            if (!$mybb->get_input('awayyear', MyBB::INPUT_INT)) {
+                $mybb->input['awayyear'] = my_date('Y', $awaydate);
+            }
 
-			$return_month = (int)substr($mybb->get_input('awaymonth'), 0, 2);
-			$return_day = (int)substr($mybb->get_input('awayday'), 0, 2);
-			$return_year = min((int)$mybb->get_input('awayyear'), 9999);
+            $return_month = (int)substr($mybb->get_input('awaymonth'), 0, 2);
+            $return_day = (int)substr($mybb->get_input('awayday'), 0, 2);
+            $return_year = min((int)$mybb->get_input('awayyear'), 9999);
 
-			// Check if return date is after the away date.
-			$returntimestamp = gmmktime(0, 0, 0, $return_month, $return_day, $return_year);
-			$awaytimestamp = gmmktime(0, 0, 0, my_date('n', $awaydate), my_date('j', $awaydate), my_date('Y', $awaydate));
-			if($return_year < my_date('Y', $awaydate) || ($returntimestamp < $awaytimestamp && $return_year == my_date('Y', $awaydate)))
-			{
-				error($lang->error_usercp_return_date_past);
-			}
+            // Check if return date is after the away date.
+            $returntimestamp = gmmktime(0, 0, 0, $return_month, $return_day, $return_year);
+            $awaytimestamp = gmmktime(0, 0, 0, my_date('n', $awaydate), my_date('j', $awaydate), my_date('Y', $awaydate));
+            if ($return_year < my_date('Y', $awaydate) || ($returntimestamp < $awaytimestamp && $return_year == my_date('Y', $awaydate))) {
+                error($lang->error_usercp_return_date_past);
+            }
 
-			$returndate = "{$return_day}-{$return_month}-{$return_year}";
-		}
-		else
-		{
-			$returndate = "";
-		}
-		$away = array(
-			"away" => 1,
-			"date" => $awaydate,
-			"returndate" => $returndate,
-			"awayreason" => $mybb->get_input('awayreason')
-		);
-	}
-	else
-	{
-		$away = array(
-			"away" => 0,
-			"date" => '',
-			"returndate" => '',
-			"awayreason" => ''
-		);
-	}
+            $returndate = "{$return_day}-{$return_month}-{$return_year}";
+        } else {
+            $returndate = "";
+        }
+        $away = array(
+            "away" => 1,
+            "date" => $awaydate,
+            "returndate" => $returndate,
+            "awayreason" => $mybb->get_input('awayreason')
+        );
+    } else {
+        $away = array(
+            "away" => 0,
+            "date" => '',
+            "returndate" => '',
+            "awayreason" => ''
+        );
+    }
 
-	$bday = array(
-		"day" => $mybb->get_input('bday1', MyBB::INPUT_INT),
-		"month" => $mybb->get_input('bday2', MyBB::INPUT_INT),
-		"year" => $mybb->get_input('bday3', MyBB::INPUT_INT)
-	);
+    $bday = array(
+        "day" => $mybb->get_input('bday1', MyBB::INPUT_INT),
+        "month" => $mybb->get_input('bday2', MyBB::INPUT_INT),
+        "year" => $mybb->get_input('bday3', MyBB::INPUT_INT)
+    );
 
-	// Set up user handler.
-	require_once MYBB_ROOT."inc/datahandlers/user.php";
-	$userhandler = new UserDataHandler("update");
+    // Set up user handler.
+    require_once MYBB_ROOT."inc/datahandlers/user.php";
+    $userhandler = new UserDataHandler("update");
 
-	$user = array(
-		"uid" => $mybb->user['uid'],
-		"postnum" => $mybb->user['postnum'],
-		"usergroup" => $mybb->user['usergroup'],
-		"additionalgroups" => $mybb->user['additionalgroups'],
-		"birthday" => $bday,
-		"birthdayprivacy" => $mybb->get_input('birthdayprivacy'),
-		"away" => $away,
-		"profile_fields" => $mybb->get_input('profile_fields', MyBB::INPUT_ARRAY)
-	);
-	foreach(array('icq', 'yahoo', 'skype', 'google') as $cfield)
-	{
-		$csetting = 'allow'.$cfield.'field';
-		if($mybb->settings[$csetting] == '')
-		{
-			continue;
-		}
+    $user = array(
+        "uid" => $mybb->user['uid'],
+        "postnum" => $mybb->user['postnum'],
+        "usergroup" => $mybb->user['usergroup'],
+        "additionalgroups" => $mybb->user['additionalgroups'],
+        "birthday" => $bday,
+        "birthdayprivacy" => $mybb->get_input('birthdayprivacy'),
+        "away" => $away,
+        "profile_fields" => $mybb->get_input('profile_fields', MyBB::INPUT_ARRAY)
+    );
+    foreach (array('icq', 'aim', 'yahoo', 'skype', 'google') as $cfield) {
+        $csetting = 'allow'.$cfield.'field';
+        if ($mybb->settings[$csetting] == '') {
+            continue;
+        }
 
-		if(!is_member($mybb->settings[$csetting]))
-		{
-			continue;
-		}
+        if (!is_member($mybb->settings[$csetting])) {
+            continue;
+        }
 
-		if($cfield == 'icq')
-		{
-			$user[$cfield] = $mybb->get_input($cfield, 1);
-		}
-		else
-		{
-			$user[$cfield] = $mybb->get_input($cfield);
-		}
-	}
+        if ($cfield == 'icq') {
+            $user[$cfield] = $mybb->get_input($cfield, 1);
+        } else {
+            $user[$cfield] = $mybb->get_input($cfield);
+        }
+    }
 
-	if($mybb->usergroup['canchangewebsite'] == 1)
-	{
-		$user['website'] = $mybb->get_input('website');
-	}
+    if ($mybb->usergroup['canchangewebsite'] == 1) {
+        $user['website'] = $mybb->get_input('website');
+    }
 
-	if($mybb->usergroup['cancustomtitle'] == 1)
-	{
-		if($mybb->get_input('usertitle') != '')
-		{
-			$user['usertitle'] = $mybb->get_input('usertitle');
-		}
-		elseif(!empty($mybb->input['reverttitle']))
-		{
-			$user['usertitle'] = '';
-		}
-	}
-	$userhandler->set_data($user);
+    if ($mybb->usergroup['cancustomtitle'] == 1) {
+        if ($mybb->get_input('usertitle') != '') {
+            $user['usertitle'] = $mybb->get_input('usertitle');
+        } elseif (!empty($mybb->input['reverttitle'])) {
+            $user['usertitle'] = '';
+        }
+    }
+    $userhandler->set_data($user);
 
-	if(!$userhandler->validate_user())
-	{
-		$errors = $userhandler->get_friendly_errors();
-		$raw_errors = $userhandler->get_errors();
+    if (!$userhandler->validate_user()) {
+        $errors = $userhandler->get_friendly_errors();
+        $raw_errors = $userhandler->get_errors();
 
-		// Set to stored value if invalid
-		if(array_key_exists("invalid_birthday_privacy", $raw_errors))
-		{
-			$mybb->input['birthdayprivacy'] = $mybb->user['birthdayprivacy'];
-		}
+        // Set to stored value if invalid
+        if (array_key_exists("invalid_birthday_privacy", $raw_errors)) {
+            $mybb->input['birthdayprivacy'] = $mybb->user['birthdayprivacy'];
+        }
 
-		$errors = inline_error($errors);
-		$mybb->input['action'] = "profile";
-	}
-	else
-	{
-		$userhandler->update_user();
+        $errors = inline_error($errors);
+        $mybb->input['action'] = "profile";
+    } else {
+        $userhandler->update_user();
 
-		$plugins->run_hooks("usercp_do_profile_end");
-		redirect("usercp.php?action=profile", $lang->redirect_profileupdated);
-	}
+        $plugins->run_hooks('usercp_do_profile_end');
+        redirect("usercp.php?action=profile", $lang->redirect_profileupdated);
+    }
 }
 
 if ($mybb->input['action'] == "profile") {
@@ -2479,8 +2454,6 @@ if ($mybb->input['action'] == "usergroups") {
     // Show listing of various group related things
 
     // List of groups this user is a leader of
-    $groupsledlist = '';
-
     switch ($db->type) {
         case "pgsql":
         case "sqlite":
@@ -2506,75 +2479,26 @@ if ($mybb->input['action'] == "usergroups") {
             ");
     }
 
+    $leadinggroups = [];
     while ($usergroup = $db->fetch_array($query)) {
-        $memberlistlink = $moderaterequestslink = '';
-        eval("\$memberlistlink = \"".$templates->get("usercp_usergroups_leader_usergroup_memberlist")."\";");
-        $usergroup['title'] = htmlspecialchars_uni($usergroup['title']);
-        if ($usergroup['type'] != 4) {
-            $usergroup['joinrequests'] = '--';
-        }
-        if ($usergroup['joinrequests'] > 0 && $usergroup['canmanagerequests'] == 1) {
-            eval("\$moderaterequestslink = \"".$templates->get("usercp_usergroups_leader_usergroup_moderaterequests")."\";");
-        }
         $groupleader[$usergroup['gid']] = 1;
-        $trow = alt_trow();
-        eval("\$groupsledlist .= \"".$templates->get("usercp_usergroups_leader_usergroup")."\";");
-    }
-    $leadinggroups = '';
-    if ($groupsledlist) {
-        eval("\$leadinggroups = \"".$templates->get("usercp_usergroups_leader")."\";");
+        $leadinggroups[] = $usergroup;
     }
 
     // Fetch the list of groups the member is in
     // Do the primary group first
-    $usergroup = $usergroups[$mybb->user['usergroup']];
-    $usergroup['title'] = htmlspecialchars_uni($usergroup['title']);
-    $usergroup['usertitle'] = htmlspecialchars_uni($usergroup['usertitle']);
-    $usergroup['description'] = htmlspecialchars_uni($usergroup['description']);
-    eval("\$leavelink = \"".$templates->get("usercp_usergroups_memberof_usergroup_leaveprimary")."\";");
-    $trow = alt_trow();
-    if ($usergroup['candisplaygroup'] == 1 && $usergroup['gid'] == $mybb->user['displaygroup']) {
-        eval("\$displaycode = \"".$templates->get("usercp_usergroups_memberof_usergroup_display")."\";");
-    } elseif ($usergroup['candisplaygroup'] == 1) {
-        eval("\$displaycode = \"".$templates->get("usercp_usergroups_memberof_usergroup_setdisplay")."\";");
-    } else {
-        $displaycode = '';
-    }
+    $groupsmemberof = [];
+    $usergroups[$mybb->user['usergroup']]['primary'] = 1;
+    $groupsmemberof[] = $usergroups[$mybb->user['usergroup']];
 
-    eval("\$memberoflist = \"".$templates->get("usercp_usergroups_memberof_usergroup")."\";");
-    $showmemberof = false;
     if ($mybb->user['additionalgroups']) {
+
         $query = $db->simple_select("usergroups", "*", "gid IN (".$mybb->user['additionalgroups'].") AND gid !='".$mybb->user['usergroup']."'", array('order_by' => 'title'));
         while ($usergroup = $db->fetch_array($query)) {
-            $showmemberof = true;
-
-            if (isset($groupleader[$usergroup['gid']])) {
-                eval("\$leavelink = \"".$templates->get("usercp_usergroups_memberof_usergroup_leaveleader")."\";");
-            } elseif ($usergroup['type'] != 4 && $usergroup['type'] != 3 && $usergroup['type'] != 5) {
-                eval("\$leavelink = \"".$templates->get("usercp_usergroups_memberof_usergroup_leaveother")."\";");
-            } else {
-                eval("\$leavelink = \"".$templates->get("usercp_usergroups_memberof_usergroup_leave")."\";");
-            }
-
-            $description = '';
-            $usergroup['title'] = htmlspecialchars_uni($usergroup['title']);
-            $usergroup['usertitle'] = htmlspecialchars_uni($usergroup['usertitle']);
-            if ($usergroup['description']) {
-                $usergroup['description'] = htmlspecialchars_uni($usergroup['description']);
-                eval("\$description = \"".$templates->get("usercp_usergroups_memberof_usergroup_description")."\";");
-            }
-            $trow = alt_trow();
-            if ($usergroup['candisplaygroup'] == 1 && $usergroup['gid'] == $mybb->user['displaygroup']) {
-                eval("\$displaycode = \"".$templates->get("usercp_usergroups_memberof_usergroup_display")."\";");
-            } elseif ($usergroup['candisplaygroup'] == 1) {
-                eval("\$displaycode = \"".$templates->get("usercp_usergroups_memberof_usergroup_setdisplay")."\";");
-            } else {
-                $displaycode = '';
-            }
-            eval("\$memberoflist .= \"".$templates->get("usercp_usergroups_memberof_usergroup")."\";");
+            $groupsmemberof[] = $usergroup;
         }
+
     }
-    eval("\$membergroups = \"".$templates->get("usercp_usergroups_memberof")."\";");
 
     // List of groups this user has applied for but has not been accepted in to
     $query = $db->simple_select("joinrequests", "*", "uid='".$mybb->user['uid']."'");
@@ -2588,63 +2512,37 @@ if ($mybb->input['action'] == "usergroups") {
         $existinggroups .= ",".$mybb->user['additionalgroups'];
     }
 
-    $joinablegroups = $joinablegrouplist = '';
+    $joinablegroups = [];
     $query = $db->simple_select("usergroups", "*", "(type='3' OR type='4' OR type='5') AND gid NOT IN ($existinggroups)", array('order_by' => 'title'));
     while ($usergroup = $db->fetch_array($query)) {
-        $trow = alt_trow();
-
-        $description = '';
-        $usergroup['title'] = htmlspecialchars_uni($usergroup['title']);
-        if ($usergroup['description']) {
-            $usergroup['description'] = htmlspecialchars_uni($usergroup['description']);
-            eval("\$description = \"".$templates->get("usercp_usergroups_joinable_usergroup_description")."\";");
-        }
-
-        // Moderating join requests?
-        if ($usergroup['type'] == 4) {
-            $conditions = $lang->usergroup_joins_moderated;
-        } elseif ($usergroup['type'] == 5) {
-            $conditions = $lang->usergroup_joins_invite;
-        } else {
-            $conditions = $lang->usergroup_joins_anyone;
-        }
-
         if (isset($appliedjoin[$usergroup['gid']]) && $usergroup['type'] != 5) {
-            $applydate = my_date('relative', $appliedjoin[$usergroup['gid']]);
-            $joinlink = $lang->sprintf($lang->join_group_applied, $applydate);
+            $usergroup['joinlink'] = $lang->sprintf($lang->join_group_applied, $applydate);
         } elseif (isset($appliedjoin[$usergroup['gid']]) && $usergroup['type'] == 5) {
-            $joinlink = $lang->sprintf($lang->pending_invitation, $usergroup['gid'], $mybb->post_code);
-        } elseif ($usergroup['type'] == 5) {
-            $joinlink = "--";
-        } else {
-            eval("\$joinlink = \"".$templates->get("usercp_usergroups_joinable_usergroup_join")."\";");
+            $usergroup['joinlink'] = $lang->sprintf($lang->pending_invitation, $usergroup['gid'], $mybb->post_code);
         }
 
-        $usergroupleaders = '';
+        $usergroup['leaders'] = [];
         if (!empty($groupleaders[$usergroup['gid']])) {
-            $comma = '';
-            $usergroupleaders = '';
             foreach ($groupleaders[$usergroup['gid']] as $leader) {
                 $leader['username'] = format_name(htmlspecialchars_uni($leader['username']), $leader['usergroup'], $leader['displaygroup']);
-                $usergroupleaders .= $comma.build_profile_link($leader['username'], $leader['uid']);
-                $comma = $lang->comma;
+                $usergroup['leaders'][$leader['uid']] = build_profile_link($leader['username'], $leader['uid']);
             }
-            $usergroupleaders = $lang->usergroup_leaders." ".$usergroupleaders;
         }
 
-        if (my_strpos($usergroupleaders, $mybb->user['username']) === false) {
+        if (!in_array(array_keys($usergroup['leaders']), $mybb->user['uid'])) {
             // User is already a leader of the group, so don't show as a "Join Group"
-            eval("\$joinablegrouplist .= \"".$templates->get("usercp_usergroups_joinable_usergroup")."\";");
+            $joinablegroups[] = $usergroup;
         }
-    }
-    if ($joinablegrouplist) {
-        eval("\$joinablegroups = \"".$templates->get("usercp_usergroups_joinable")."\";");
     }
 
     $plugins->run_hooks('usercp_usergroups_end');
 
-    eval("\$groupmemberships = \"".$templates->get("usercp_usergroups")."\";");
-    output_page($groupmemberships);
+    output_page(\MyBB\template('usercp/usergroups.twig', [
+        'joinablegroups' => $joinablegroups,
+        'leadinggroups' => $leadinggroups,
+        'groupleader' => $groupleader,
+        'groupsmemberof' => $groupsmemberof
+    ]));
 }
 
 if ($mybb->input['action'] == "attachments") {
