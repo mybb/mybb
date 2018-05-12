@@ -30,7 +30,7 @@ install:
 
 # Check for PHP syntax errors using PHP's -l flag
 before_script:
-  - '! find . -type f -name "*.php" -exec php -d error_reporting=32767 -l {} \; 2>&1 >&- | grep "^"'
+  - '! find . -type f \( -path inc/vendor \) -name "*.php" -exec php -d error_reporting=32767 -l {} \; 2>&1 >&- | grep "^"'
 
 script:
   - inc/vendor/bin/phpunit
