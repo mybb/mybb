@@ -56,8 +56,8 @@ if(($mybb->input['action'] == "editdraft" || $mybb->input['action'] == "do_newre
 	{
 		error($lang->error_post_noperms);
 	}
-	$pid = $post['pid'];
-	$tid = $post['tid'];
+	$pid = (int)$post['pid'];
+	$tid = (int)$post['tid'];
 	eval("\$editdraftpid = \"".$templates->get("newreply_draftinput")."\";");
 }
 
@@ -67,7 +67,7 @@ if(!$thread)
 {
 	error($lang->error_invalidthread);
 }
-$fid = $thread['fid'];
+$fid = (int)$thread['fid'];
 
 // Get forum info
 $forum = get_forum($fid);
@@ -939,7 +939,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 
 		$subscription_method = $mybb->user['subscriptionmethod'];
 
-		$query = $db->simple_select("threadsubscriptions", "tid, notification", "tid='".(int)$tid."' AND uid='".(int)$mybb->user['uid']."'");
+		$query = $db->simple_select("threadsubscriptions", "tid, notification", "tid='".$tid."' AND uid='".$mybb->user['uid']."'", array('limit' => 1));
 		$subscription = $db->fetch_array($query);
 
 		if($subscription['tid'])
