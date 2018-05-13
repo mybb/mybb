@@ -11553,7 +11553,7 @@ if(use_xmlhttprequest == "1")
 </script>]]></template>
 		<template name="showthread_moderationoptions_approve" version="1816"><![CDATA[<option class="option_mirage" value="approvethread">{$lang->approve_thread}</option>]]></template>
 		<template name="showthread_moderationoptions_custom" version="120"><![CDATA[<optgroup label="{$lang->custom_mod_tools}">{$customthreadtools}</optgroup>]]></template>
-		<template name="showthread_moderationoptions_custom_tool" version="120"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
+		<template name="showthread_moderationoptions_custom_tool" version="1816"><![CDATA[<option class="option_mirage" value="{$tool['tid']}">{$tool['name']}</option>]]></template>
 		<template name="showthread_moderationoptions_delete" version="1800"><![CDATA[<option value="deletethread">{$lang->delete_thread}</option>]]></template>
 		<template name="showthread_moderationoptions_deletepoll" version="1816"><![CDATA[<option class="option_mirage" value="deletepoll">{$lang->delete_poll}</option>]]></template>
 		<template name="showthread_moderationoptions_manage" version="1816"><![CDATA[<option class="option_mirage" value="move">{$lang->move_thread}</option>

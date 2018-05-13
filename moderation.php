@@ -3132,6 +3132,11 @@ switch($mybb->input['action'])
 			{
 				error_no_permission();
 			}
+			
+			if($thread['visible'] == -1)
+			{
+				error($lang->error_thread_deleted, $lang->error);
+			}
 
 			if(!empty($options['confirmation']) && empty($mybb->input['confirm']))
 			{
