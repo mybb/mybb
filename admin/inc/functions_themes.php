@@ -420,7 +420,6 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 		"theme" => $theme_directory
 	);
 	$stylesheet = parse_theme_variables($stylesheet, $theme_vars);
-	$stylesheet = preg_replace_callback("#url\((\"|'|)([^\"'\s]*?)\\1\)#", 'fix_css_urls_callback', $stylesheet);
 
 	$fp = @fopen(MYBB_ROOT . "{$theme_directory}/{$filename}", "wb");
 	if(!$fp)
@@ -510,6 +509,7 @@ function resync_stylesheet($stylesheet)
 	return false;
 }
 
+// Depreciated since MyBB 1.8.16
 /**
  * @param string $url
  *
@@ -527,6 +527,7 @@ function fix_css_urls($url)
 	}
 }
 
+// Depreciated since MyBB 1.8.16
 /**
  * @param array $matches Matches.
  *
@@ -535,6 +536,18 @@ function fix_css_urls($url)
 function fix_css_urls_callback($matches)
 {
 	return fix_css_urls($matches[2]);
+}
+
+// Depreciated since MyBB 1.8.16
+/**
+ * @param string $url
+ *
+ * @return string
+ *
+ */
+function unfix_css_urls($url)
+{
+	return str_replace("../../../", "", $url);
 }
 
 /**
