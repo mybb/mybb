@@ -187,12 +187,15 @@ class UserDataHandler extends DataHandler
 		}
 
 		// Has the user tried to use their email address or username as a password?
-		if($user['email'] === $user['password'] || $user['username'] === $user['password']
-			|| strpos($user['password'], $user['email']) !== false || strpos($user['password'], $user['username']) !== false
-			|| strpos($user['email'], $user['password']) !== false || strpos($user['username'], $user['password']) !== false)
+		if(!empty($user['email']) && !empty($user['username']))
 		{
-			$this->set_error('bad_password_security');
-			return false;
+			if($user['email'] === $user['password'] || $user['username'] === $user['password']
+				|| strpos($user['password'], $user['email']) !== false || strpos($user['password'], $user['username']) !== false
+				|| strpos($user['email'], $user['password']) !== false || strpos($user['username'], $user['password']) !== false)
+			{
+				$this->set_error('bad_password_security');
+				return false;
+			}
 		}
 
 		// See if the board has "require complex passwords" enabled.
@@ -972,10 +975,6 @@ class UserDataHandler extends DataHandler
 		{
 			$this->verify_usertitle();
 		}
-		if($this->method == "insert" || array_key_exists('email', $user))
-		{
-			$this->verify_email();
-		}
 		if($this->method == "insert" || array_key_exists('password', $user))
 		{
 			$this->verify_password();
@@ -983,6 +982,10 @@ class UserDataHandler extends DataHandler
 		if($this->method == "insert" || array_key_exists('usergroup', $user))
 		{
 			$this->verify_usergroup();
+		}
+		if($this->method == "insert" || array_key_exists('email', $user))
+		{
+			$this->verify_email();
 		}
 		if($this->method == "insert" || array_key_exists('website', $user))
 		{
