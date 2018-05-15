@@ -509,8 +509,8 @@ function resync_stylesheet($stylesheet)
 	return false;
 }
 
-// Depreciated since MyBB 1.8.16
 /**
+ * @deprecated
  * @param string $url
  *
  * @return string
@@ -527,8 +527,8 @@ function fix_css_urls($url)
 	}
 }
 
-// Depreciated since MyBB 1.8.16
 /**
+ * @deprecated
  * @param array $matches Matches.
  *
  * @return string
@@ -538,12 +538,11 @@ function fix_css_urls_callback($matches)
 	return fix_css_urls($matches[2]);
 }
 
-// Depreciated since MyBB 1.8.16
 /**
+ * @deprecated
  * @param string $url
  *
  * @return string
- *
  */
 function unfix_css_urls($url)
 {
