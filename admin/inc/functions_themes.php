@@ -403,7 +403,6 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 		"theme" => $theme_directory
 	);
 	$stylesheet = parse_theme_variables($stylesheet, $theme_vars);
-	$stylesheet = preg_replace_callback("#url\((\"|'|)([^\"'\s]*?)\\1\)#", 'fix_css_urls_callback', $stylesheet);
 
 	$fp = @fopen(MYBB_ROOT . "{$theme_directory}/{$filename}", "wb");
 	if(!$fp)
@@ -494,6 +493,7 @@ function resync_stylesheet($stylesheet)
 }
 
 /**
+ * @deprecated
  * @param string $url
  *
  * @return string
@@ -511,6 +511,7 @@ function fix_css_urls($url)
 }
 
 /**
+ * @deprecated
  * @param array $matches Matches.
  *
  * @return string
@@ -521,6 +522,7 @@ function fix_css_urls_callback($matches)
 }
 
 /**
+ * @deprecated
  * @param string $url
  *
  * @return string
