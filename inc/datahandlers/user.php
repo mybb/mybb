@@ -847,13 +847,14 @@ class UserDataHandler extends DataHandler
 				$this->set_error("missing_returndate");
 				return false;
 			}
-			elseif($returnday < 1 || $returnday > 31 // Valid date range
-			|| $returnmonth < 1 || $returnmonth > 12 // Valid month range
-			|| (in_array($returnmonth, array(4,6,9,11)) && $returnday > 30) // Valid date as per month ending
-			|| ($returnmonth == 2 && (((($returnyear % 4) == 0) && $returnday > 29) || (($returnyear % 4) != 0) && $returnday > 28))) // Valid Feb date considering leap year
+			else
 			{
-				$this->set_error("invalid_returndate");
-				return false;
+				$valid_date = valid_date($returnday, $returnmonth, $returnyear, $user['away']['date']);
+				if($valid_date != "valid")
+				{
+					$this->set_error($valid_date."_returndate");
+					return false;
+				}
 			}
 
 			// Validate the return date lengths

@@ -166,14 +166,6 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 			$return_day = (int)substr($mybb->get_input('awayday'), 0, 2);
 			$return_year = min((int)$mybb->get_input('awayyear'), 9999);
 
-			// Check if return date is after the away date.
-			$returntimestamp = gmmktime(0, 0, 0, $return_month, $return_day, $return_year);
-			$awaytimestamp = gmmktime(0, 0, 0, my_date('n', $awaydate), my_date('j', $awaydate), my_date('Y', $awaydate));
-			if($return_year < my_date('Y', $awaydate) || ($returntimestamp < $awaytimestamp && $return_year == my_date('Y', $awaydate)))
-			{
-				error($lang->error_usercp_return_date_past);
-			}
-
 			$returndate = "{$return_day}-{$return_month}-{$return_year}";
 		}
 		else
