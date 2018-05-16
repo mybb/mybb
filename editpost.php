@@ -49,7 +49,7 @@ else
 	$post = get_post($pid);
 }
 
-if(!$post)
+if(!$post || ($post['visible'] == -1 && $mybb->input['action'] != "restorepost"))
 {
 	error($lang->error_invalidpost);
 }
@@ -294,7 +294,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 					header("Content-type: application/json; charset={$lang->settings['charset']}");
 					if(is_moderator($fid, "canviewdeleted"))
 					{
-						echo json_encode(array("data" => '1'));
+						echo json_encode(array("data" => '1', "first" => '1'));
 					}
 					else
 					{
@@ -349,7 +349,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 					header("Content-type: application/json; charset={$lang->settings['charset']}");
 					if(is_moderator($fid, "canviewdeleted"))
 					{
-						echo json_encode(array("data" => '1'));
+						echo json_encode(array("data" => '1', "first" => '0'));
 					}
 					else
 					{
@@ -407,7 +407,7 @@ if($mybb->input['action'] == "restorepost" && $mybb->request_method == "post")
 				if($mybb->input['ajax'] == 1)
 				{
 					header("Content-type: application/json; charset={$lang->settings['charset']}");
-					echo json_encode(array("data" => '1'));
+					echo json_encode(array("data" => '1', "first" => '1'));
 				}
 				else
 				{
@@ -433,7 +433,7 @@ if($mybb->input['action'] == "restorepost" && $mybb->request_method == "post")
 				if($mybb->input['ajax'] == 1)
 				{
 					header("Content-type: application/json; charset={$lang->settings['charset']}");
-					echo json_encode(array("data" => '1'));
+					echo json_encode(array("data" => '1', "first" => '0'));
 				}
 				else
 				{

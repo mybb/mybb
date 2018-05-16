@@ -1869,7 +1869,7 @@ if($mybb->input['action'] == "do_addsubscription" && $mybb->get_input('type') !=
 	verify_post_check($mybb->get_input('my_post_key'));
 
 	$thread = get_thread($mybb->get_input('tid'));
-	if(!$thread)
+	if(!$thread || $thread['visible'] == -1)
 	{
 		error($lang->error_invalidthread);
 	}
@@ -1946,7 +1946,7 @@ if($mybb->input['action'] == "addsubscription")
 	else
 	{
 		$thread  = get_thread($mybb->get_input('tid', MyBB::INPUT_INT));
-		if(!$thread)
+		if(!$thread || $thread['visible'] == -1)
 		{
 			error($lang->error_invalidthread);
 		}
