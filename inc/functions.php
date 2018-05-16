@@ -561,7 +561,9 @@ function my_date($format, $stamp=0, $offset="", $ty=1, $adodb=false)
 function valid_date($day, $month, $year, $not_before = "", $not_after = "")
 {
 	$timestamp = gmmktime(0, 0, 0, $month, $day, $year);
-	if($day < 1 || $day > 31 || ($month == 2 && (((($year % 4) == 0) && $day > 29) || (($year % 4) != 0) && $day > 28)) || (in_array($month, array(4,6,9,11)) && $day > 30))
+	$leapyear = $year % 4 == 0 && ($year % 100 > 0 || $year % 400 == 0);
+	
+	if($day < 1 || $day > 31 || ($month == 2 && (($leapyear && $day > 29) || (!$leapyear && $day > 28))) || (in_array($month, array(4,6,9,11)) && $day > 30))
 	{
 		return 'invalid_date';
 	}
@@ -5441,6 +5443,7 @@ function get_weekday($month, $day, $year)
 /**
  * Workaround for date limitation in PHP to establish the day of a birthday (Provided by meme)
  *
+ * @deprecated Use valid_date();
  * @param int $in The year.
  * @return array The number of days in each month of that year
  */
