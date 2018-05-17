@@ -59,6 +59,8 @@ function upgrade43_dbchanges()
 		'isdefault'		=> 1
 	);
 
+	$db->insert_query('settings', $values);
+
 	$cache->delete("mybb_credits");
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
