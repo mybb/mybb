@@ -485,6 +485,7 @@ var Thread = {
 									{
 										$("#quick_reply_form, .thread_tools, .new_reply_button, .inline_rating").hide();
 										$("#moderator_options_selector option.option_mirage").attr("disabled","disabled");
+										$("#moderator_options_selector option[value='softdeletethread']").val("restorethread").text(lang.restore_thread);
 									}
 
 									$.jGrowl(lang.quick_delete_success, {theme:'jgrowl_success'});
@@ -560,6 +561,7 @@ var Thread = {
 								{
 									$("#quick_reply_form, .thread_tools, .new_reply_button, .inline_rating").show();
 									$("#moderator_options_selector option.option_mirage").removeAttr("disabled");
+									$("#moderator_options_selector option[value='restorethread']").val("softdeletethread").text(lang.softdelete_thread);
 								}
 
 								$.jGrowl(lang.quick_restore_success, {theme:'jgrowl_success'});
