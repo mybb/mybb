@@ -391,7 +391,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		if($mybb->settings['regtype'] != "randompass" && !isset($mybb->cookies['coppauser']))
 		{
 			// Log them in
-			my_setcookie("mybbuser", $user_info['uid']."_".$user_info['loginkey'], null, true);
+			my_setcookie("mybbuser", $user_info['uid']."_".$user_info['loginkey'], null, true, "lax");
 		}
 
 		if(isset($mybb->cookies['coppauser']))

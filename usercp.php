@@ -1292,7 +1292,7 @@ if($mybb->input['action'] == "do_password" && $mybb->request_method == "post")
 		else
 		{
 			$userhandler->update_user();
-			my_setcookie("mybbuser", $mybb->user['uid']."_".$userhandler->data['loginkey'], null, true);
+			my_setcookie("mybbuser", $mybb->user['uid']."_".$userhandler->data['loginkey'], null, true, "lax");
 
 			// Notify the user by email that their password has been changed
 			$mail_message = $lang->sprintf($lang->email_changepassword, $mybb->user['username'], $mybb->user['email'], $mybb->settings['bbname'], $mybb->settings['bburl']);

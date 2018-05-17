@@ -326,7 +326,7 @@ class LoginDataHandler extends DataHandler
 			$remember = -1;
 		}
 
-		my_setcookie("mybbuser", $user['uid']."_".$user['loginkey'], $remember, true);
+		my_setcookie("mybbuser", $user['uid']."_".$user['loginkey'], $remember, true, "lax");
 		
 		if($this->captcha !== false)
 		{
