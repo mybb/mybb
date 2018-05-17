@@ -1910,7 +1910,7 @@ function my_setcookie($name, $value="", $expires="", $httponly=false, $samesite=
 		$cookie .= "; HttpOnly";
 	}
 
-	if($samesite != "")
+	if($samesite != "" && $mybb->settings['cookiesamesiteflag'])
 	{
 		$samesite = strtolower($samesite);
 
