@@ -43,6 +43,22 @@ function upgrade43_dbchanges()
 	}
 	$db->delete_query("settings", "name='allowaimfield'");
 	
+	$db->update_query('settings', array('disporder' => 13), "name='cookiesecureflag'");
+	$db->update_query('settings', array('disporder' => 14), "name='showvernum'");
+	$db->update_query('settings', array('disporder' => 15), "name='mailingaddress'");
+	$db->update_query('settings', array('disporder' => 16), "name='faxno'");
+
+	$values = array(
+		'name'			=> 'cookiesamesiteflag',
+		'title'			=> 'SameSite Cookie Flag',
+		'description'	=> 'Authentication cookies will carry the SameSite flag to prevent CSRF attacks. Keep this disabled if you expect cross-origin POST requests.',
+		'optionscode'	=> 'yesno',
+		'value'			=> '1',
+		'disporder'		=> 12,
+		'gid'			=> 2,
+		'isdefault'		=> 1
+	);
+
 	$cache->delete("mybb_credits");
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
