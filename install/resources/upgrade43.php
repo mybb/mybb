@@ -37,29 +37,11 @@ function upgrade43_dbchanges()
 		$db->update_query('settings', "value=''", 'name IN (\'captchapublickey\', \'captchaprivatekey\''); // Clean out stored credential keys
 	}
 	
-	if($db->field_exists('users', 'aim'))
+	if($db->field_exists('aim', 'users'))
 	{
-		$db->drop_column('aim', 'users');
+		$db->drop_column('users', 'aim');
 	}
 	$db->delete_query("settings", "name='allowaimfield'");
-	
-	$db->update_query('settings', array('disporder' => 13), "name='cookiesecureflag'");
-	$db->update_query('settings', array('disporder' => 14), "name='showvernum'");
-	$db->update_query('settings', array('disporder' => 15), "name='mailingaddress'");
-	$db->update_query('settings', array('disporder' => 16), "name='faxno'");
-
-	$values = array(
-		'name'			=> 'cookiesamesiteflag',
-		'title'			=> 'SameSite Cookie Flag',
-		'description'	=> 'Authentication cookies will carry the SameSite flag to prevent CSRF attacks. Keep this disabled if you expect cross-origin POST requests.',
-		'optionscode'	=> 'yesno',
-		'value'			=> '1',
-		'disporder'		=> 12,
-		'gid'			=> 2,
-		'isdefault'		=> 1
-	);
-
-	$db->insert_query('settings', $values);
 
 	$cache->delete("mybb_credits");
 
