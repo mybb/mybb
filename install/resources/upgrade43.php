@@ -37,9 +37,9 @@ function upgrade43_dbchanges()
 		$db->update_query('settings', "value=''", 'name IN (\'captchapublickey\', \'captchaprivatekey\''); // Clean out stored credential keys
 	}
 	
-	if($db->field_exists('users', 'aim'))
+	if($db->field_exists('aim', 'users'))
 	{
-		$db->drop_column('aim', 'users');
+		$db->drop_column('users', 'aim');
 	}
 	$db->delete_query("settings", "name='allowaimfield'");
 	
