@@ -1603,7 +1603,7 @@ class postParser
 		}
 
 		$message = preg_replace("#[^\S\n\r]*\[\*\]\s*#", "</li>\n<li>", $message);
-		$message .= "</li>";
+		$message = preg_replace("#[^\S\n\r]*<\/li>\s*#", "", $message, 1)."</li>";
 
 		if($type)
 		{
