@@ -1,0 +1,14 @@
+{% set row = alt_trow() %}
+<tr>
+    <td class="{{ row }}">{{ warning.username_link|raw }}</td>
+    <td class="{{ row }}">{{ warning.title }} ({{ warning.points }})</td>
+    <td class="{{ row }}" align="center">{{ warning.issued_date }}</td>
+    <td class="{{ row }}" align="center">
+        {{ warning.expire_date }}
+        {% if warning.daterevoked %}
+            <br /><span class="smalltext"><strong>{{ lang.revoked }}</strong> {{ warning.revoked_date }}</span>
+        {% endif %}
+    </td>
+    <td class="{{ row }}">{{ warning.mod_username_link|raw }}</td>
+    <td class="{{ row }}" align="center"><a href="warnings.php?action=view&amp;wid={{ warning.wid }}">{{ lang.view }}</a></td>
+</tr>

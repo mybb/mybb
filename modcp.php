@@ -2690,6 +2690,7 @@ if ($mybb->input['action'] == "warninglogs") {
     } else {
         $mybb->input['filter']['username'] = '';
     }
+
     if (!empty($mybb->input['filter']['uid'])) {
         $search['uid'] = (int)$mybb->input['filter']['uid'];
         $where_sql .= " AND w.uid='{$search['uid']}'";
@@ -2700,6 +2701,7 @@ if ($mybb->input['action'] == "warninglogs") {
     } else {
         $mybb->input['filter']['uid'] = '';
     }
+
     if (!empty($mybb->input['filter']['mod_username'])) {
         $mod_user = get_user_by_username($mybb->input['filter']['mod_username']);
 
@@ -2708,6 +2710,7 @@ if ($mybb->input['action'] == "warninglogs") {
     } else {
         $mybb->input['filter']['mod_username'] = '';
     }
+
     if (!empty($mybb->input['filter']['mod_uid'])) {
         $search['mod_uid'] = (int)$mybb->input['filter']['mod_uid'];
         $where_sql .= " AND w.issuedby='{$search['mod_uid']}'";
@@ -2718,44 +2721,46 @@ if ($mybb->input['action'] == "warninglogs") {
     } else {
         $mybb->input['filter']['mod_uid'] = '';
     }
+
     if (!empty($mybb->input['filter']['reason'])) {
         $search['reason'] = $db->escape_string_like($mybb->input['filter']['reason']);
         $where_sql .= " AND (w.notes LIKE '%{$search['reason']}%' OR t.title LIKE '%{$search['reason']}%' OR w.title LIKE '%{$search['reason']}%')";
-        $mybb->input['filter']['reason'] = htmlspecialchars_uni($mybb->input['filter']['reason']);
     } else {
         $mybb->input['filter']['reason'] = '';
     }
-    $sortbysel = array('username' => '', 'expires' => '', 'issuedby' => '', 'dateline' => '');
+
+    $select['sortby'] = array('username' => false, 'expires' => false, 'issuedby' => false, 'dateline' => false);
     if (!isset($mybb->input['filter']['sortby'])) {
         $mybb->input['filter']['sortby'] = '';
     }
     switch ($mybb->input['filter']['sortby']) {
         case "username":
             $sortby = "u.username";
-            $sortbysel['username'] = ' selected="selected"';
+            $select['sortby']['username'] = true;
             break;
         case "expires":
             $sortby = "w.expires";
-            $sortbysel['expires'] = ' selected="selected"';
+            $select['sortby']['expires'] = true;
             break;
         case "issuedby":
             $sortby = "i.username";
-            $sortbysel['issuedby'] = ' selected="selected"';
+            $select['sortby']['issuedby'] = true;
             break;
         default: // "dateline"
             $sortby = "w.dateline";
-            $sortbysel['dateline'] = ' selected="selected"';
+            $select['sortby']['dateline'] = true;
     }
+
     if (!isset($mybb->input['filter']['order'])) {
         $mybb->input['filter']['order'] = '';
     }
     $order = $mybb->input['filter']['order'];
-    $ordersel = array('asc' => '', 'desc' => '');
+    $select['order'] = array('asc' => false, 'desc' => false);
     if ($order != "asc") {
         $order = "desc";
-        $ordersel['desc'] = ' selected="selected"';
+        $select['order']['desc'] = true;
     } else {
-        $ordersel['asc'] = ' selected="selected"';
+        $select['order']['asc'] = true;
     }
 
     $plugins->run_hooks('modcp_warninglogs_start');
@@ -2788,9 +2793,11 @@ if ($mybb->input['action'] == "warninglogs") {
             $url .= "&amp;filter[{$field}]={$value}";
         }
     }
+
     $multipage = multipage($total_warnings, $per_page, $page, $url);
 
     // The actual query
+    $warning_list = [];
     $sql = "
         SELECT
             w.wid, w.title as custom_title, w.points, w.dateline, w.issuedby, w.expires, w.expired, w.daterevoked, w.revokedby,
@@ -2808,46 +2815,50 @@ if ($mybb->input['action'] == "warninglogs") {
     ";
     $query = $db->query($sql);
 
-    $warning_list = '';
     while ($row = $db->fetch_array($query)) {
-        $trow = alt_trow();
-        $row['username'] = htmlspecialchars_uni($row['username']);
         $username = format_name($row['username'], $row['usergroup'], $row['displaygroup']);
-        $username_link = build_profile_link($username, $row['uid']);
-        $row['mod_username'] = htmlspecialchars_uni($row['mod_username']);
+        $row['username_link'] = build_profile_link($username, $row['uid']);
+
         $mod_username = format_name($row['mod_username'], $row['mod_usergroup'], $row['mod_displaygroup']);
-        $mod_username_link = build_profile_link($mod_username, $row['mod_uid']);
-        $issued_date = my_date('normal', $row['dateline']);
-        $revoked_text = '';
+        $row['mod_username_link'] = build_profile_link($mod_username, $row['mod_uid']);
+
+        $row['issued_date'] = my_date('normal', $row['dateline']);
+
         if ($row['daterevoked'] > 0) {
-            $revoked_date = my_date('relative', $row['daterevoked']);
-            eval("\$revoked_text = \"".$templates->get("modcp_warninglogs_warning_revoked")."\";");
+            $row['revoked_date'] = my_date('relative', $row['daterevoked']);
         }
-        if ($row['expires'] > 0) {
-            $expire_date = nice_time($row['expires']-TIME_NOW);
+
+        if ($row['expired'] == 1) {
+            $row['expire_date'] = $lang->expired;
+        } elseif ($row['expires'] > 0) {
+            $row['expire_date'] = nice_time($row['expires']-TIME_NOW);
         } else {
-            $expire_date = $lang->never;
+            $row['expire_date'] = $lang->never;
         }
-        $title = $row['title'];
+
         if (empty($row['title'])) {
-            $title = $row['custom_title'];
+            $row['title'] = $row['custom_title'];
         }
-        $title = htmlspecialchars_uni($title);
+
         if ($row['points'] >= 0) {
-            $points = '+'.$row['points'];
+            $row['points'] = '+'.$row['points'];
         }
 
-        eval("\$warning_list .= \"".$templates->get("modcp_warninglogs_warning")."\";");
-    }
-
-    if (!$warning_list) {
-        eval("\$warning_list = \"".$templates->get("modcp_warninglogs_nologs")."\";");
+        $warning_list[] = $row;
     }
 
     $plugins->run_hooks('modcp_warninglogs_end');
 
-    eval("\$warninglogs = \"".$templates->get("modcp_warninglogs")."\";");
-    output_page($warninglogs);
+    $select['username'] = $mybb->input['filter']['username'];
+    $select['mod_username'] = $mybb->input['filter']['mod_username'];
+    $select['reason'] = $mybb->input['filter']['reason'];
+    $select['per_page'] = $per_page;
+
+    output_page(\MyBB\template('modcp/warninglogs.twig', [
+        'multipage' => $multipage,
+        'select' => $select,
+        'warning_list' => $warning_list,
+    ]));
 }
 
 if ($mybb->input['action'] == "ipsearch") {
