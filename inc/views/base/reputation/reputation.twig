@@ -8,7 +8,7 @@
         var delete_reputation_confirm = "{{ lang.delete_reputation_confirm }}";
     // -->
     </script>
-	<script type="text/javascript" src="{{ asset_url('jscripts/report.js') }}"></script>
+    <script type="text/javascript" src="{{ asset_url('jscripts/report.js') }}"></script>
 {% endblock head %}
 
 {% block body %}
@@ -88,20 +88,20 @@
         {% endfor %}
         <tr>
             <td class="tfoot" align="right">
-            <form action="reputation.php" method="get">
-                <input type="hidden" name="uid" value="{{ user.uid }}" />
-                <select name="show">
-                    <option value="all"{% if select.show.all %} selected="selected"{% endif %}>{{ lang.show_all }}</option>
-                    <option value="positive"{% if select.show.positive %} selected="selected"{% endif %}>{{ lang.show_positive }}</option>
-                    <option value="neutral"{% if select.show.neutral %} selected="selected"{% endif %}>{{ lang.show_neutral }}</option>
-                    <option value="negative"{% if select.show.negative %} selected="selected"{% endif %}>{{ lang.show_negative }}</option>
-                </select>
-                <select name="sort">
-                    <option value="dateline"{% if select.sort.last_updated %} selected="selected"{% endif %}>{{ lang.sort_updated }}</option>
-                    <option value="username"{% if select.sort.username %} selected="selected"{% endif %}>{{ lang.sort_username }}</option>
-                </select>
-                <input type="submit" class="button" value="{{ lang.go }}" />
-            </form>
+                <form action="reputation.php" method="get">
+                    <input type="hidden" name="uid" value="{{ user.uid }}" />
+                    <select name="show">
+                        <option value="all"{% if select.show.all %} selected="selected"{% endif %}>{{ lang.show_all }}</option>
+                        <option value="positive"{% if select.show.positive %} selected="selected"{% endif %}>{{ lang.show_positive }}</option>
+                        <option value="neutral"{% if select.show.neutral %} selected="selected"{% endif %}>{{ lang.show_neutral }}</option>
+                        <option value="negative"{% if select.show.negative %} selected="selected"{% endif %}>{{ lang.show_negative }}</option>
+                    </select>
+                    <select name="sort">
+                        <option value="dateline"{% if select.sort.last_updated %} selected="selected"{% endif %}>{{ lang.sort_updated }}</option>
+                        <option value="username"{% if select.sort.username %} selected="selected"{% endif %}>{{ lang.sort_username }}</option>
+                    </select>
+                    <input type="submit" class="button" value="{{ lang.go }}" />
+                </form>
             </td>
         </tr>
     </table>
