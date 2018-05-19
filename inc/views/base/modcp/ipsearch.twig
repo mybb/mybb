@@ -1,0 +1,83 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ mybb.settings.bbname }} - {{ lang.ipsearch }}</title>
+{% endblock head %}
+
+{% block body %}
+    <table width="100%" border="0" align="center">
+        <tr>
+            {# To do: modcp_nav #}
+            <td valign="top">
+                {% if ipsearch.results %}
+                    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+                        <tr>
+                            <td class="thead" align="center" colspan="2">
+                                {% if ipsearch.info_link %}
+                                    <div class="float_right">
+                                        (<a href="modcp.php?action=iplookup&amp;ipaddress={{ ipsearch.ipaddress }}" onclick="MyBB.popupWindow('/modcp.php?action=iplookup&ipaddress={{ ipsearch.ipaddress_url }}&modal=1'); return false;">{{ lang.info_on_ip }}</a>
+                                        | <a href="http://www.stopforumspam.com/ipcheck/{{ ipsearch.ipaddress }}" target="_blank" rel="noopener">{{ lang.search_ip_sfs }}</a>)
+                                    </div>
+                                {% endif %}
+                                <div><strong>
+                                    {% if ipsearch.ipaddress %}
+                                        {{ trans('ipsearch_results', ipsearch.ipaddress) }}
+                                    {% else %}
+                                        {{ lang.ipsearch }}
+                                    {% endif %}
+                                </strong></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tcat" width="15%" align="center"><span class="smalltext"><strong>{{ lang.ipaddress }}</strong></span></td>
+                            <td class="tcat"><span class="smalltext"><strong>{{ lang.result }}</strong></span></td>
+                        </tr>
+                        {% for ipaddress in ipresults %}
+                            {% set row = alt_trow() %}
+                            <tr>
+                                <td class="{{ row }}" align="center">{{ ipaddress.ip }}</td>
+                                <td class="{{ row }}">
+                                    {% if ipaddress.type == 'regip' %}
+                                        <strong>{{ lang.ipresult_regip }}</strong> {{ ipaddress.profile_link|raw }}
+                                    {% elseif ipaddress.type == 'lastip' %}
+                                        <strong>{{ lang.ipresult_lastip }}</strong> {{ ipaddress.profile_link|raw }}
+                                    {% else %}
+                                        <strong>{{ lang.ipresult_post }}</strong> <a href="{{ ipaddress.postlink|raw }}">{{ ipaddress.subject }}</a> {{ lang.by }} {{ ipaddress.profilelink|raw }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td class="trow1" align="center" colspan="2">{{ lang.error_no_results }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                    {{ multipage|raw }}
+                    <br />
+                {% endif %}
+                <form action="modcp.php?action=ipsearch" method="post">
+                    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+                        <tr>
+                            <td class="thead" colspan="2"><strong>{{ lang.ipaddress_search }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td class="trow1" width="25%"><strong>{{ lang.ip_address }}</strong></td>
+                            <td class="trow1" width="75%"><input type="text" class="textbox" name="ipaddress" value="{{ ipsearch.ipaddress }}" size="30" /></td>
+                        </tr>
+                        <tr>
+                            <td class="trow1" width="25%" valign="top"><strong>{{ lang.options }}</strong></td>
+                            <td class="trow1" width="75%">
+                                <label><input type="checkbox" class="checkbox" name="search_users" value="1"{% if ipsearch.usersearch %} checked="checked"{% endif %} />{{ lang.search_users }}</label><br />
+                                <label><input type="checkbox" class="checkbox" name="search_posts" value="1"{% if ipsearch.postsearch %} checked="checked"{% endif %} />{{ lang.search_posts }}</label>
+                            </td>
+                        </tr>
+                    </table>
+                    <br />
+                    <div align="center">
+                        <input type="submit" class="button" value="{{ lang.find }}" />
+                    </div>
+                </form>
+            </td>
+        </tr>
+    </table>
+{% endblock body %}

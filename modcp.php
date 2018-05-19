@@ -2859,13 +2859,15 @@ if ($mybb->input['action'] == "ipsearch") {
 
     add_breadcrumb($lang->mcp_nav_ipsearch, "modcp.php?action=ipsearch");
 
+    $ipsearch['results'] = false;
     $mybb->input['ipaddress'] = $mybb->get_input('ipaddress');
     if ($mybb->input['ipaddress']) {
+        $ipsearch['results'] = true;
         if (!is_array($groupscache)) {
             $groupscache = $cache->read("usergroups");
         }
 
-        $ipaddressvalue = htmlspecialchars_uni($mybb->input['ipaddress']);
+        $ipsearch['ipaddress'] = $mybb->input['ipaddress'];
 
         $ip_range = fetch_ip_range($mybb->input['ipaddress']);
 
@@ -3009,36 +3011,36 @@ if ($mybb->input['action'] == "ipsearch") {
         $multipage = multipage($total_results, $perpage, $page, $page_url);
 
         $post_limit = $perpage;
-        $results = '';
+        $ipresults = [];
         if (isset($mybb->input['search_users']) && $user_results && $start <= $user_results) {
             $query = $db->simple_select('users', 'username, uid, regip, lastip', $user_ip_sql,
                     array('order_by' => 'regdate', 'order_dir' => 'DESC', 'limit_start' => $start, 'limit' => $perpage));
 
             while ($ipaddress = $db->fetch_array($query)) {
                 $result = false;
-                $ipaddress['username'] = htmlspecialchars_uni($ipaddress['username']);
-                $profile_link = build_profile_link($ipaddress['username'], $ipaddress['uid']);
-                $trow = alt_trow();
-                $ip = false;
+                $ipaddress['profile_link'] = build_profile_link($ipaddress['username'], $ipaddress['uid']);
+                $ipaddress['type'] = $ipaddress['ip'] = false;
                 if (is_array($ip_range)) {
                     if (strcmp($ip_range[0], $ipaddress['regip']) <= 0 && strcmp($ip_range[1], $ipaddress['regip']) >= 0) {
-                        eval("\$subject = \"".$templates->get("modcp_ipsearch_result_regip")."\";");
-                        $ip = my_inet_ntop($db->unescape_binary($ipaddress['regip']));
+                        $ipaddress['type'] = 'regip';
+                        $ipaddress['ip'] = my_inet_ntop($db->unescape_binary($ipaddress['regip']));
                     } elseif (strcmp($ip_range[0], $ipaddress['lastip']) <= 0 && strcmp($ip_range[1], $ipaddress['lastip']) >= 0) {
-                        eval("\$subject = \"".$templates->get("modcp_ipsearch_result_lastip")."\";");
-                        $ip = my_inet_ntop($db->unescape_binary($ipaddress['lastip']));
+                        $ipaddress['type'] = 'lastip';
+                        $ipaddress['ip'] = my_inet_ntop($db->unescape_binary($ipaddress['lastip']));
                     }
                 } elseif ($ipaddress['regip'] == $ip_range) {
-                    eval("\$subject = \"".$templates->get("modcp_ipsearch_result_regip")."\";");
-                    $ip = my_inet_ntop($db->unescape_binary($ipaddress['regip']));
+                    $ipaddress['type'] = 'regip';
+                    $ipaddress['ip'] = my_inet_ntop($db->unescape_binary($ipaddress['regip']));
                 } elseif ($ipaddress['lastip'] == $ip_range) {
-                    eval("\$subject = \"".$templates->get("modcp_ipsearch_result_lastip")."\";");
-                    $ip = my_inet_ntop($db->unescape_binary($ipaddress['lastip']));
+                    $ipaddress['type'] = 'lastip';
+                    $ipaddress['ip'] = my_inet_ntop($db->unescape_binary($ipaddress['lastip']));
                 }
-                if ($ip) {
-                    eval("\$results .= \"".$templates->get("modcp_ipsearch_result")."\";");
+
+                if ($ipaddress['ip']) {
+                    $ipresults[] = $ipaddress;
                     $result = true;
                 }
+
                 if ($result) {
                     --$post_limit;
                 }
@@ -3082,44 +3084,29 @@ if ($mybb->input['action'] == "ipsearch") {
                 unset($uids);
 
                 foreach ($ipaddresses as $ipaddress) {
-                    $ip = my_inet_ntop($db->unescape_binary($ipaddress['ipaddress']));
+                    $ipaddress['ip'] = my_inet_ntop($db->unescape_binary($ipaddress['ipaddress']));
                     if (!$ipaddress['username']) {
                         $ipaddress['username'] = $ipaddress['postusername']; // Guest username support
                     }
-                    $ipaddress['username'] = htmlspecialchars_uni($ipaddress['username']);
-                    $trow = alt_trow();
+
                     if (!$ipaddress['subject']) {
                         $ipaddress['subject'] = "RE: {$ipaddress['threadsubject']}";
                     }
 
                     $ipaddress['postlink'] = get_post_link($ipaddress['pid'], $ipaddress['tid']);
-                    $ipaddress['subject'] = htmlspecialchars_uni($parser->parse_badwords($ipaddress['subject']));
+                    $ipaddress['subject'] = $parser->parse_badwords($ipaddress['subject']);
                     $ipaddress['profilelink'] = build_profile_link($ipaddress['username'], $ipaddress['uid']);
 
-                    eval("\$subject = \"".$templates->get("modcp_ipsearch_result_post")."\";");
-                    eval("\$results .= \"".$templates->get("modcp_ipsearch_result")."\";");
+                    $ipresults[] = $ipaddress;
                 }
             }
         }
 
-        if (!$results) {
-            eval("\$results = \"".$templates->get("modcp_ipsearch_noresults")."\";");
-        }
-
-        if ($ipaddressvalue) {
-            $lang->ipsearch_results = $lang->sprintf($lang->ipsearch_results, $ipaddressvalue);
-        } else {
-            $lang->ipsearch_results = $lang->ipsearch;
-        }
-
-        $ipaddress = $ipaddress_url = $misc_info_link = '';
+        $ipsearch['info_link'] = false;
         if (!strstr($mybb->input['ipaddress'], "*") && !strstr($mybb->input['ipaddress'], "/")) {
-            $ipaddress = htmlspecialchars_uni($mybb->input['ipaddress']);
-            $ipaddress_url = urlencode($mybb->input['ipaddress']);
-            eval("\$misc_info_link = \"".$templates->get("modcp_ipsearch_results_information")."\";");
+            $ipsearch['info_link'] = true;
+            $ipsearch['ipaddress_url'] = urlencode($mybb->input['ipaddress']);
         }
-
-        eval("\$ipsearch_results = \"".$templates->get("modcp_ipsearch_results")."\";");
     }
 
     // Fetch filter options
@@ -3127,18 +3114,22 @@ if ($mybb->input['action'] == "ipsearch") {
         $mybb->input['search_posts'] = 1;
         $mybb->input['search_users'] = 1;
     }
-    $usersearchselect = $postsearchselect = '';
+
+    $ipsearch['usersearch'] = $ipsearch['postsearch'] = false;
     if (isset($mybb->input['search_posts'])) {
-        $postsearchselect = "checked=\"checked\"";
+        $ipsearch['postsearch'] = true;
     }
     if (isset($mybb->input['search_users'])) {
-        $usersearchselect = "checked=\"checked\"";
+        $ipsearch['usersearch'] = true;
     }
 
     $plugins->run_hooks('modcp_ipsearch_end');
 
-    eval("\$ipsearch = \"".$templates->get("modcp_ipsearch")."\";");
-    output_page($ipsearch);
+    output_page(\MyBB\template('modcp/ipsearch.twig', [
+        'ipsearch' => $ipsearch,
+        'multipage' => $multipage,
+        'ipresults' => $ipresults,
+    ]));
 }
 
 if ($mybb->input['action'] == "iplookup") {
@@ -3146,36 +3137,47 @@ if ($mybb->input['action'] == "iplookup") {
         error_no_permission();
     }
 
-    $mybb->input['ipaddress'] = $mybb->get_input('ipaddress');
-    $lang->ipaddress_misc_info = $lang->sprintf($lang->ipaddress_misc_info, htmlspecialchars_uni($mybb->input['ipaddress']));
-    $ipaddress_location = $lang->na;
-    $ipaddress_host_name = $lang->na;
-    $modcp_ipsearch_misc_info = '';
-    if (!strstr($mybb->input['ipaddress'], "*")) {
+    $modal = $mybb->get_input('modal', MyBB::INPUT_INT);
+    $ipaddress['ipaddress'] = $mybb->get_input('ipaddress');
+    $ipaddress['location'] = $ipaddress['host_name'] = $lang->na;
+
+    if(!$ipaddress['ipaddress'])
+    {
+        error($lang->error_missing_ipaddress);
+    }
+
+    if (!strstr($ipaddress['ipaddress'], "*")) {
         // Return GeoIP information if it is available to us
         if (function_exists('geoip_record_by_name')) {
-            $ip_record = @geoip_record_by_name($mybb->input['ipaddress']);
+            $ip_record = @geoip_record_by_name($ipaddress['ipaddress']);
             if ($ip_record) {
-                $ipaddress_location = htmlspecialchars_uni(utf8_encode($ip_record['country_name']));
+                $ipaddress['location'] = utf8_encode($ip_record['country_name']);
                 if ($ip_record['city']) {
-                    $ipaddress_location .= $lang->comma.htmlspecialchars_uni(utf8_encode($ip_record['city']));
+                    $ipaddress['location'] .= $lang->comma.utf8_encode($ip_record['city']);
                 }
             }
         }
 
-        $ipaddress_host_name = htmlspecialchars_uni(@gethostbyaddr($mybb->input['ipaddress']));
+        $ipaddress['host_name'] = @gethostbyaddr($ipaddress['ipaddress']);
 
         // gethostbyaddr returns the same ip on failure
-        if ($ipaddress_host_name == $mybb->input['ipaddress']) {
-            $ipaddress_host_name = $lang->na;
+        if ($ipaddress['host_name'] == $ipaddress['ipaddress']) {
+            $ipaddress['host_name'] = $lang->na;
         }
     }
 
     $plugins->run_hooks('modcp_iplookup_end');
 
-    eval("\$iplookup = \"".$templates->get('modcp_ipsearch_misc_info', 1, 0)."\";");
-    echo($iplookup);
-    exit;
+    if ($modal) {
+        output_page(\MyBB\template('modcp/iplookup_modal.twig', [
+            'ipaddress' => $ipaddress,
+        ]));
+        exit;
+    } else {
+        output_page(\MyBB\template('modcp/iplookup.twig', [
+            'ipaddress' => $ipaddress,
+        ]));
+    }
 }
 
 if ($mybb->input['action'] == "banning") {
