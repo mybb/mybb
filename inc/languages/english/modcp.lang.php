@@ -242,7 +242,6 @@ $l['filter_reason'] = "Reason contains:";
 $l['view'] = "View";
 $l['no_warning_logs'] = "There are no warning logs to view.";
 $l['revoked'] = "Revoked ";
-$l['expired'] = "Expired";
 $l['signature'] = "Signature";
 $l['suspend_signature'] = "<strong>Suspend this user's signature</strong>";
 $l['suspend_length'] = "Suspension length:";

@@ -22,7 +22,7 @@
                         <td class="tcat" width="1%" align="center"><span class="smalltext"><strong>{{ lang.details }}</strong></span></td>
                     </tr>
                     {% for warning in warning_list %}
-                        {% include 'modcp/warninglogs_logitem.twig' %}
+                        {% include 'modcp/warninglogs/item.twig' %}
                     {% else %}
                         <tr>
                             <td class="trow1" align="center" colspan="6">{{ lang.no_warning_logs }}</td>
