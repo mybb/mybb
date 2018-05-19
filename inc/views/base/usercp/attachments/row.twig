@@ -1,0 +1,28 @@
+{% set trow = alt_trow() %}
+<tr>
+    <td class="{{ trow }}" width="1">
+        {{ attachment.icon|raw }}
+    </td>
+    <td class="{{ trow }}" width="40%">
+        <a href="attachment.php?aid={{ attachment.aid }}" target="_blank">
+            {{ attachment.filename }}
+        </a>
+        <br />
+        <span class="smalltext">
+            {{ trans('attachment_size_downloads', attachment.size, attachment.downloads) }}
+        </span>
+    </td>
+    <td class="{{ trow }}">
+        <a href="{{ attachment.postlink }}#pid{{ attachment.pid }}">
+            {{ attachment.subject }}
+        </a>
+        <br />
+        <span class="smalltext">
+            {{ lang.attachment_thread }} <a href="{{ attachment.threadlink }}">{{ attachment.threadsubject }}</a>
+        </span>
+    </td>
+    <td class="{{ trow }}" align="center">{{ attachment.date|raw }}</td>
+    <td class="{{ trow }}" width="1">
+        <input type="checkbox" class="checkbox" name="attachments[{{ attachment.aid }}]" value="{{ attachment.aid }}" />
+    </td>
+</tr>
