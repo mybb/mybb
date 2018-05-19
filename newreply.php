@@ -56,8 +56,8 @@ if(($mybb->input['action'] == "editdraft" || $mybb->input['action'] == "do_newre
 	{
 		error($lang->error_post_noperms);
 	}
-	$pid = $post['pid'];
-	$tid = $post['tid'];
+	$pid = (int)$post['pid'];
+	$tid = (int)$post['tid'];
 	eval("\$editdraftpid = \"".$templates->get("newreply_draftinput")."\";");
 }
 
@@ -67,7 +67,7 @@ if(!$thread)
 {
 	error($lang->error_invalidthread);
 }
-$fid = $thread['fid'];
+$fid = (int)$thread['fid'];
 
 // Get forum info
 $forum = get_forum($fid);
@@ -936,15 +936,26 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		{
 			$postoptionschecked['signature'] = " checked=\"checked\"";
 		}
-		if($mybb->user['subscriptionmethod'] ==  1)
+
+		$subscription_method = $mybb->user['subscriptionmethod'];
+
+		$query = $db->simple_select("threadsubscriptions", "tid, notification", "tid='".$tid."' AND uid='".$mybb->user['uid']."'", array('limit' => 1));
+		$subscription = $db->fetch_array($query);
+
+		if($subscription['tid'])
+		{
+			$subscription_method = (int)$subscription['notification'] + 1;
+		}
+		
+		if($subscription_method ==  1)
 		{
 			$postoptions_subscriptionmethod_none = "checked=\"checked\"";
 		}
-		else if($mybb->user['subscriptionmethod'] == 2)
+		else if($subscription_method == 2)
 		{
 			$postoptions_subscriptionmethod_email = "checked=\"checked\"";
 		}
-		else if($mybb->user['subscriptionmethod'] == 3)
+		else if($subscription_method == 3)
 		{
 			$postoptions_subscriptionmethod_pm = "checked=\"checked\"";
 		}
