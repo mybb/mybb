@@ -78,6 +78,7 @@ $l['type'] = "Type";
 $l['number_awaiting'] = "Number Awaiting";
 $l['latest'] = "Latest";
 $l['ipsearch'] = "IP Search";
+$l['iplookup'] = "IP Lookup";
 $l['ipsearch_results'] = "IP Search Results for '{1}'";
 $l['ipaddress_search'] = "IP Address Search";
 $l['ipaddress_misc_info'] = "Misc. Information for '{1}'";
