@@ -1,0 +1,119 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ mybb.settings.bbname }} - {{ lang.warning_logs }}</title>
+{% endblock head %}
+
+{% block body %}
+    <table width="100%" border="0" align="center">
+        <tr>
+            {# To do: modcp_nav #}
+            <td valign="top">
+                <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+                    <tr>
+                        <td class="thead" align="center" colspan="6"><strong>{{ lang.warning_logs }}</strong></td>
+                    </tr>
+                    <tr>
+                        <td class="tcat" width="15%"><span class="smalltext"><strong>{{ lang.warned_user }}</strong></span></td>
+                        <td class="tcat" width="25%"><span class="smalltext"><strong>{{ lang.warning }}</strong></span></td>
+                        <td class="tcat" width="20%" align="center"><span class="smalltext"><strong>{{ lang.date_issued }}</strong></span></td>
+                        <td class="tcat" width="20%" align="center"><span class="smalltext"><strong>{{ lang.expires }}</strong></span></td>
+                        <td class="tcat" width="15%"><span class="smalltext"><strong>{{ lang.issued_by }}</strong></span></td>
+                        <td class="tcat" width="1%" align="center"><span class="smalltext"><strong>{{ lang.details }}</strong></span></td>
+                    </tr>
+                    {% for warning in warning_list %}
+                        {% include 'modcp/warninglogs/item.twig' %}
+                    {% else %}
+                        <tr>
+                            <td class="trow1" align="center" colspan="6">{{ lang.no_warning_logs }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+                {{ multipage|raw }}
+                <br />
+                <form action="modcp.php" method="get">
+                    <input type="hidden" name="action" value="warninglogs" />
+                    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+                        <tr>
+                            <td class="thead" colspan="2"><strong>{{ lang.filter_warning_logs }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td class="trow1" width="25%"><strong>{{ lang.filter_warned_user }}</strong></td>
+                            <td class="trow1" width="75%"><input type="text" name="filter[username]" id="username" value="{{ select.username }}" class="textbox" /></td>
+                        </tr>
+                        <tr>
+                            <td class="trow2" width="25%"><strong>{{ lang.filter_issued_by }}</strong></td>
+                            <td class="trow2" width="75%"><input type="text" name="filter[mod_username]" value="{{ select.mod_username }}" class="textbox" /></td>
+                        </tr>
+                        <tr>
+                            <td class="trow1" width="25%"><strong>{{ lang.filter_reason }}</strong></td>
+                            <td class="trow1" width="75%"><input type="text" name="filter[reason]" value="{{ select.reason }}" class="textbox" /></td>
+                        </tr>
+                        <tr>
+                            <td class="trow2" width="25%"><strong>{{ lang.sort_by }}</strong></td>
+                            <td class="trow2" width="75%">
+                                <select name="filter[sortby]">
+                                    <option value="username"{% if select.sortby.username %} selected="selected"{% endif %}>{{ lang.username }}</option>
+                                    <option value="issuedby"{% if select.sortby.issuedby %} selected="selected"{% endif %}>{{ lang.issued_by }}</option>
+                                    <option value="dateline"{% if select.sortby.dateline %} selected="selected"{% endif %}>{{ lang.issued_date }}</option>
+                                    <option value="expires"{% if select.sortby.expires %} selected="selected"{% endif %}>{{ lang.expiry_date }}</option>
+                                </select>
+                                {{ lang.in }}
+                                <select name="filter[order]">
+                                    <option value="asc"{% if select.order.asc %} selected="selected"{% endif %}>{{ lang.asc }}</option>
+                                    <option value="desc"{% if select.order.desc %} selected="selected"{% endif %}>{{ lang.desc }}</option>
+                                </select>
+                                {{ lang.order }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="trow1" width="25%"><strong>{{ lang.per_page }}</strong></td>
+                            <td class="trow1" width="75%"><input type="text" name="filter[per_page]" value="{{ select.per_page }}" class="textbox" /></td>
+                        </tr>
+                    </table>
+                    <br />
+                    <div align="center">
+                        <input type="submit" class="button" value="{{ lang.filter_warning_logs }}" />
+                    </div>
+                </form>
+            </td>
+        </tr>
+    </table>
+    <link rel="stylesheet" href="{{ asset_url('jscripts/select2/select2.css') }}">
+    <script type="text/javascript" src="{{ asset_url('jscripts/select2/select2.min.js') }}"></script>
+    <script type="text/javascript">
+    <!--
+    if({{ mybb.settings.use_xmlhttprequest }})
+    {
+        MyBB.select2();
+        $("#username").select2({
+            placeholder: "{{ lang.search_user }}",
+            minimumInputLength: 2,
+            multiple: false,
+            ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+                url: "xmlhttp.php?action=get_users",
+                dataType: 'json',
+                data: function (term, page) {
+                    return {
+                        query: term, // search term
+                    };
+                },
+                results: function (data, page) { // parse the results into the format expected by Select2.
+                    // since we are using custom formatting functions we do not need to alter remote JSON data
+                    return {results: data};
+                }
+            },
+            initSelection: function(element, callback) {
+                var value = $(element).val();
+                if (value !== "") {
+                    callback({
+                        id: value,
+                        text: value
+                    });
+                }
+            },
+        });
+    }
+    // -->
+    </script>
+{% endblock body %}
