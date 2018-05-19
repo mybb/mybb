@@ -2543,7 +2543,7 @@ if ($mybb->input['action'] == "usergroups") {
 
 if ($mybb->input['action'] == "attachments") {
     $plugins->run_hooks('usercp_attachments_start');
-    require_once MYBB_ROOT."inc/functions_upload.php";
+    require_once MYBB_ROOT.'inc/functions_upload.php';
 
     if ($mybb->settings['enableattachments'] == 0) {
         error($lang->attachments_disabled);
@@ -2575,26 +2575,25 @@ if ($mybb->input['action'] == "attachments") {
         LEFT JOIN ".TABLE_PREFIX."posts p ON (a.pid=p.pid)
         LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
         WHERE a.uid='".$mybb->user['uid']."'
-        ORDER BY p.dateline DESC LIMIT {$start}, {$perpage}
+        ORDER BY p.dateline DESC LIMIT {$perpage} OFFSET {$start}
     ");
+
+    $attachments = [];
 
     $bandwidth = $totaldownloads = 0;
     while ($attachment = $db->fetch_array($query)) {
         if ($attachment['dateline'] && $attachment['tid']) {
-            $attachment['subject'] = htmlspecialchars_uni($parser->parse_badwords($attachment['subject']));
+            $attachment['subject'] = $parser->parse_badwords($attachment['subject']);
             $attachment['postlink'] = get_post_link($attachment['pid'], $attachment['tid']);
             $attachment['threadlink'] = get_thread_link($attachment['tid']);
-            $attachment['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($attachment['threadsubject']));
+            $attachment['threadsubject'] = $parser->parse_badwords($attachment['threadsubject']);
 
-            $size = get_friendly_size($attachment['filesize']);
-            $icon = get_attachment_icon(get_extension($attachment['filename']));
-            $attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
+            $attachment['size'] = get_friendly_size($attachment['filesize']);
+            $attachment['icon'] = get_attachment_icon(get_extension($attachment['filename']));
 
-            $sizedownloads = $lang->sprintf($lang->attachment_size_downloads, $size, $attachment['downloads']);
-            $attachdate = my_date('relative', $attachment['dateline']);
-            $altbg = alt_trow();
+            $attachment['date'] = my_date('relative', $attachment['dateline']);
 
-            eval("\$attachments .= \"".$templates->get("usercp_attachments_attachment")."\";");
+            $attachments[] = $attachment;
 
             // Add to bandwidth total
             $bandwidth += ($attachment['filesize'] * $attachment['downloads']);
@@ -2605,7 +2604,7 @@ if ($mybb->input['action'] == "attachments") {
         }
     }
 
-    $query = $db->simple_select("attachments", "SUM(filesize) AS ausage, COUNT(aid) AS acount", "uid='".$mybb->user['uid']."'");
+    $query = $db->simple_select('attachments', 'SUM(filesize) AS ausage, COUNT(aid) AS acount', "uid='".$mybb->user['uid']."'");
     $usage = $db->fetch_array($query);
     $totalusage = $usage['ausage'];
     $totalattachments = $usage['acount'];
@@ -2624,14 +2623,22 @@ if ($mybb->input['action'] == "attachments") {
     $bandwidth = get_friendly_size($bandwidth);
 
     if (!$attachments) {
-        eval("\$attachments = \"".$templates->get("usercp_attachments_none")."\";");
         $usagenote = '';
     }
 
     $plugins->run_hooks('usercp_attachments_end');
 
-    eval("\$manageattachments = \"".$templates->get("usercp_attachments")."\";");
-    output_page($manageattachments);
+    output_page(\MyBB\template('usercp/attachments.twig', [
+        'attachments' => $attachments,
+        'usage_note' => $usagenote,
+        'multipage' => $multipage,
+        'total_attachments' => $totalattachments,
+        'friendly_usage' => $friendlyusage,
+        'percent' => $percent,
+        'attach_quota' => $attachquota,
+        'total_downloads' => $totaldownloads,
+        'bandwidth' => $bandwidth,
+    ]));
 }
 
 if ($mybb->input['action'] == "do_attachments" && $mybb->request_method == "post") {
