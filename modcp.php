@@ -780,11 +780,11 @@ if ($mybb->input['action'] == "modlogs") {
         }
     }
 
-    $multipage = multipage($postcount, $perpage, $page, $page_url);
-    $resultspages = '';
     if ($postcount > $perpage) {
-        eval("\$resultspages = \"".$templates->get("modcp_modlogs_multipage")."\";");
+        $multipage = multipage($postcount, $perpage, $page, $page_url);
     }
+
+    $modlogs = [];
     $query = $db->query("
         SELECT l.*, u.username, u.usergroup, u.displaygroup, t.subject AS tsubject, f.name AS fname, p.subject AS psubject
         FROM ".TABLE_PREFIX."moderatorlog l
@@ -796,67 +796,61 @@ if ($mybb->input['action'] == "modlogs") {
         ORDER BY {$sortby} {$order}
         LIMIT {$start}, {$perpage}
     ");
-    $results = '';
     while ($logitem = $db->fetch_array($query)) {
-        $information = '';
-        $logitem['action'] = htmlspecialchars_uni($logitem['action']);
-        $log_date = my_date('relative', $logitem['dateline']);
-        $trow = alt_trow();
+
+        $logitem['date'] = my_date('relative', $logitem['dateline']);
+
         if ($logitem['username']) {
-            $logitem['username'] = htmlspecialchars_uni($logitem['username']);
             $username = format_name($logitem['username'], $logitem['usergroup'], $logitem['displaygroup']);
             $logitem['profilelink'] = build_profile_link($username, $logitem['uid']);
         } else {
-            $username = $logitem['profilelink'] = $logitem['username'] = htmlspecialchars_uni($lang->na_deleted);
+            $username = $logitem['profilelink'] = $logitem['username'] = $lang->na_deleted;
         }
+
         $logitem['ipaddress'] = my_inet_ntop($db->unescape_binary($logitem['ipaddress']));
 
         if ($logitem['tsubject']) {
-            $logitem['tsubject'] = htmlspecialchars_uni($parser->parse_badwords($logitem['tsubject']));
-            $logitem['thread'] = get_thread_link($logitem['tid']);
-            eval("\$information .= \"".$templates->get("modcp_modlogs_result_thread")."\";");
+            $logitem['tsubject'] = $parser->parse_badwords($logitem['tsubject']);
+            $logitem['threadlink'] = get_thread_link($logitem['tid']);
         }
+
         if ($logitem['fname']) {
-            $logitem['forum'] = get_forum_link($logitem['fid']);
-            eval("\$information .= \"".$templates->get("modcp_modlogs_result_forum")."\";");
+            $logitem['forumlink'] = get_forum_link($logitem['fid']);
         }
+
         if ($logitem['psubject']) {
-            $logitem['psubject'] = htmlspecialchars_uni($parser->parse_badwords($logitem['psubject']));
-            $logitem['post'] = get_post_link($logitem['pid']);
-            eval("\$information .= \"".$templates->get("modcp_modlogs_result_post")."\";");
+            $logitem['psubject'] = $parser->parse_badwords($logitem['psubject']);
+            $logitem['postlink'] = get_post_link($logitem['pid']);
         }
 
         // Edited a user or managed announcement?
         if (!$logitem['tsubject'] || !$logitem['fname'] || !$logitem['psubject']) {
-            $data = my_unserialize($logitem['data']);
-            if (!empty($data['uid'])) {
-                $data['username'] = htmlspecialchars_uni($data['username']);
-                $information = $lang->sprintf($lang->edited_user_info, htmlspecialchars_uni($data['username']), get_profile_link($data['uid']));
+            $logitem['logdata'] = my_unserialize($logitem['data']);
+            if (!empty($logitem['logdata']['uid'])) {
+                $logitem['logdata']['profilelink'] = get_profile_link($logitem['logdata']['uid']);
             }
-            if (!empty($data['aid'])) {
-                $data['subject'] = htmlspecialchars_uni($parser->parse_badwords($data['subject']));
-                $data['announcement'] = get_announcement_link($data['aid']);
-                eval("\$information .= \"".$templates->get("modcp_modlogs_result_announcement")."\";");
+
+            if (!empty($logitem['logdata']['aid'])) {
+                $logitem['logdata']['subject'] = $parser->parse_badwords($logitem['logdata']['subject']);
+                $logitem['logdata']['announcement'] = get_announcement_link($logitem['logdata']['aid']);
             }
         }
 
         $plugins->run_hooks('modcp_modlogs_result');
 
-        eval("\$results .= \"".$templates->get("modcp_modlogs_result")."\";");
-    }
-
-    if (!$results) {
-        eval("\$results = \"".$templates->get("modcp_modlogs_noresults")."\";");
+        $modlogs[] = $logitem;
     }
 
     $plugins->run_hooks('modcp_modlogs_filter');
 
     // Fetch filter options
-    $sortbysel = array('username' => '', 'forum' => '', 'thread' => '', 'dateline' => '');
-    $sortbysel[$mybb->input['sortby']] = "selected=\"selected\"";
-    $ordersel = array('asc' => '', 'desc' => '');
-    $ordersel[$order] = "selected=\"selected\"";
-    $user_options = '';
+    $select['sortby'] = array('username' => '', 'forum' => '', 'thread' => '', 'dateline' => '');
+    $select['sortby'][$mybb->input['sortby']] = true;
+    $select['order'] = array('asc' => '', 'desc' => '');
+    $select['order'][$order] = true;
+    $select['perpage'] = $perpage;
+
+    $users = [];
     $query = $db->query("
         SELECT DISTINCT l.uid, u.username
         FROM ".TABLE_PREFIX."moderatorlog l
@@ -869,19 +863,23 @@ if ($mybb->input['action'] == "modlogs") {
             $user['username'] = $lang->na_deleted;
         }
 
-        $selected = '';
+        $user['selected'] = false;
         if ($mybb->get_input('uid', MyBB::INPUT_INT) == $user['uid']) {
-            $selected = " selected=\"selected\"";
+           $user['selected'] = true;
         }
 
-        $user['username'] = htmlspecialchars_uni($user['username']);
-        eval("\$user_options .= \"".$templates->get("modcp_modlogs_user")."\";");
+        $users[] = $user;
     }
 
     $forum_select = build_forum_jump("", $mybb->get_input('fid', MyBB::INPUT_INT), 1, '', 0, true, '', "fid");
 
-    eval("\$modlogs = \"".$templates->get("modcp_modlogs")."\";");
-    output_page($modlogs);
+    output_page(\MyBB\template('modcp/modlogs.twig', [
+        'multipage' => $multipage,
+        'modlogs' => $modlogs,
+        'select' => $select,
+        'users' => $users,
+        'forum_select' => $forum_select,
+    ]));
 }
 
 if ($mybb->input['action'] == "do_delete_announcement") {
