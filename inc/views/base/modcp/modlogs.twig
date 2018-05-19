@@ -21,7 +21,7 @@
                         <td class="tcat" align="center"><span class="smalltext"><strong>{{ lang.ip }}</strong></span></td>
                     </tr>
                     {% for logitem in modlogs %}
-                        {% include 'modcp/modlogs_logitem.twig' %}
+                        {% include 'modcp/modlogs/item.twig' %}
                     {% else %}
                         <tr>
                             <td class="trow1" align="center" colspan="5">{{ lang.error_no_results }}</td>
