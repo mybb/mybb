@@ -850,6 +850,15 @@ class UserDataHandler extends DataHandler
 				$this->set_error("missing_returndate");
 				return false;
 			}
+			else
+			{
+				$valid_date = valid_date($returnday, $returnmonth, $returnyear, $user['away']['date']);
+				if($valid_date != "valid")
+				{
+					$this->set_error($valid_date."_returndate");
+					return false;
+				}
+			}
 
 			// Validate the return date lengths
 			$user['away']['returndate'] = substr($returnday, 0, 2).'-'.substr($returnmonth, 0, 2).'-'.substr($returnyear, 0, 4);

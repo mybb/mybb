@@ -549,6 +549,44 @@ function my_date($format, $stamp=0, $offset="", $ty=1, $adodb=false)
 }
 
 /**
+ * Check the validity of a date alongwith range and return friendly error string.
+ *
+ * @param int $day The date to check
+ * @param int $month The month to check
+ * @param int $year The year to check
+ * @param int $not_before Lowest range unix timestamp
+ * @param int $not_after Highest range unix timestamp
+ * @return string The friendly error string or valid.
+ */
+function valid_date($day, $month, $year, $not_before = "", $not_after = "")
+{
+	$timestamp = gmmktime(0, 0, 0, $month, $day, $year);
+	$leapyear = $year % 4 == 0 && ($year % 100 > 0 || $year % 400 == 0);
+	
+	if($day < 1 || $day > 31 || ($month == 2 && (($leapyear && $day > 29) || (!$leapyear && $day > 28))) || (in_array($month, array(4,6,9,11)) && $day > 30))
+	{
+		return 'invalid_date';
+	}
+	elseif($month < 1 || $month > 12)
+	{
+		return 'invalid_month';
+	}
+	elseif($year < 1 || $year > 9999)
+	{
+		return 'invalid_year';
+	}
+	elseif(is_numeric($not_before) && $timestamp < $not_before)
+	{
+		return 'invalid_past';
+	}
+	elseif(is_numeric($not_after) && $timestamp > $not_after)
+	{
+		return 'invalid_future';
+	}
+	return "valid";
+}
+
+/**
  * Sends an email using PHP's mail function, formatting it appropriately.
  *
  * @param string $to Address the email should be addressed to.
@@ -5416,6 +5454,7 @@ function get_weekday($month, $day, $year)
 /**
  * Workaround for date limitation in PHP to establish the day of a birthday (Provided by meme)
  *
+ * @deprecated Use valid_date();
  * @param int $in The year.
  * @return array The number of days in each month of that year
  */
