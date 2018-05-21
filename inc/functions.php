@@ -1859,8 +1859,9 @@ function get_post_icons()
  * @param string $value The cookie value.
  * @param int|string $expires The timestamp of the expiry date.
  * @param boolean $httponly True if setting a HttpOnly cookie (supported by the majority of web browsers)
+ * @param string $samesite The samesite attribute to prevent CSRF.
  */
-function my_setcookie($name, $value="", $expires="", $httponly=false)
+function my_setcookie($name, $value="", $expires="", $httponly=false, $samesite="")
 {
 	global $mybb;
 
@@ -1907,6 +1908,16 @@ function my_setcookie($name, $value="", $expires="", $httponly=false)
 	if($httponly == true)
 	{
 		$cookie .= "; HttpOnly";
+	}
+
+	if($samesite != "" && $mybb->settings['cookiesamesiteflag'])
+	{
+		$samesite = strtolower($samesite);
+
+		if($samesite == "lax" || $samesite == "strict")
+		{
+			$cookie .= "; SameSite=".$samesite;
+		}
 	}
 
 	if($mybb->settings['cookiesecureflag'])

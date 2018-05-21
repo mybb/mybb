@@ -2367,7 +2367,7 @@ function install_done()
 	// Automatic Login
 	my_unsetcookie("sid");
 	my_unsetcookie("mybbuser");
-	my_setcookie('mybbuser', $uid.'_'.$loginkey, null, true);
+	my_setcookie('mybbuser', $uid.'_'.$loginkey, null, true, "lax");
 	ob_end_flush();
 
 	// Make fulltext columns if supported

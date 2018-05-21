@@ -207,7 +207,7 @@ else
 			}
 		}
 
-		my_setcookie("mybbuser", $user['uid']."_".$user['loginkey'], null, true);
+		my_setcookie("mybbuser", $user['uid']."_".$user['loginkey'], null, true, "lax");
 
 		header("Location: ./upgrade.php");
 	}

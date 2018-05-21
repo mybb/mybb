@@ -1094,9 +1094,16 @@ if($mybb->input['action'] == "edit")
 
 			foreach($colors as $color)
 			{
-				$color = explode("=", $color);
-
-				$properties['colors'][$color[0]] = $color[1];
+				$color = trim($color);
+				if(preg_match('/^[a-z0-9]+={1}[a-z0-9]+$/i', $color))
+				{
+					$color = explode("=", $color);
+					$properties['colors'][$color[0]] = $color[1];
+				}
+				else
+				{
+					$errors[] = $lang->sprintf($lang->error_invalid_color, $color);
+				}
 			}
 		}
 

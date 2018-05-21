@@ -852,22 +852,28 @@ class PostDataHandler extends DataHandler
 		else
 		{
 			// Automatic subscription to the thread
-			if($post['options']['subscriptionmethod'] != "" && $post['uid'] > 0)
+			if($post['uid'] > 0)
 			{
-				switch($post['options']['subscriptionmethod'])
-				{
-					case "pm":
-						$notification = 2;
-						break;
-					case "email":
-						$notification = 1;
-						break;
-					default:
-						$notification = 0;
-				}
-
 				require_once MYBB_ROOT."inc/functions_user.php";
-				add_subscribed_thread($post['tid'], $notification, $post['uid']);
+				if($post['options']['subscriptionmethod'] == "")
+				{
+					remove_subscribed_thread($post['tid'], $post['uid']);
+				}
+				else
+				{
+					switch($post['options']['subscriptionmethod'])
+					{
+						case "pm":
+							$notification = 2;
+							break;
+						case "email":
+							$notification = 1;
+							break;
+						default:
+							$notification = 0;
+					}
+					add_subscribed_thread($post['tid'], $notification, $post['uid']);
+				}
 			}
 
 			// Perform any selected moderation tools.
