@@ -1,0 +1,117 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ mybb.settings.bbname }} - {{ lang.ban_user }}</title>
+{% endblock head %}
+
+{% block body %}
+    <table width="100%" border="0" align="center">
+        <tr>
+            {# To do: modcp_nav #}
+            <td valign="top">
+                {{ errors|raw }}
+                <form action="modcp.php" method="post">
+                    <input type="hidden" name="action" value="do_banuser" />
+                    <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+                    <input type="hidden" name="uid" value="{{ banned.uid }}" />
+                        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+                            <tr>
+                                <td class="thead" colspan="2">
+                                    {% if banned.uid %}
+                                        <div class="float_right"><a href="modcp.php?action=liftban&amp;uid={{ banned.uid }}&amp;my_post_key={{ mybb.post_code }}">{{ lang.lift_ban }}</a></div>
+                                    {% endif %}
+                                    <strong>
+                                        {% if banned.uid %}
+                                            {{ lang.edit_ban }}
+                                        {% else %}
+                                            {{ lang.ban_user }}
+                                        {% endif %}
+                                    </strong>
+                                </td>
+                            </tr>
+                            {% if banned.uid %}
+                                <tr>
+                                    <td class="trow1" width="25%"><strong>{{ lang.ban_username }}</strong></td>
+                                    <td class="trow1" width="75%">{{ banned.username }}</td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td class="trow1" width="25%"><strong>{{ lang.ban_username }}</strong></td>
+                                    <td class="trow1" width="75%"><input type="text" class="textbox" name="username" id="username" value="{{ banned.username }}" size="25" /></td>
+                                </tr>
+                            {% endif %}
+                            <tr>
+                                <td class="trow2" width="25%"><strong>{{ lang.ban_reason }}</strong></td>
+                                <td class="trow2" width="75%"><textarea name="banreason" cols="60" rows="4" maxlength="255">{{ banned.reason }}</textarea></td>
+                            </tr>
+                            {% if banned.numgroups > 1 %}
+                                <tr>
+                                    <td class="trow1" width="25%"><strong>{{ lang.ban_movegroup }}</strong></td>
+                                    <td class="trow1" width="75%">
+                                        <select name="usergroup">
+                                            {% for group in bangroups %}
+                                                <option value="{{ group.gid }}"{% if group.selected %} selected="selected"{% endif %}>{{ group.title }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <input type="hidden" name="usergroup" value="{{ banned.banned_group }}" />
+                            {% endif %}
+                            <tr>
+                                <td class="trow2" width="25%"><strong>{{ lang.ban_liftafter }}</strong></td>
+                                <td class="trow2" width="75%">
+                                    <select name="liftafter">
+                                        {% for lifttime in liftlist %}
+                                            <option value="{{ lifttime.time }}"{% if lifttime.selected %} selected="selected"{% endif %}>{{ lifttime.title }}{% if lifttime.thattime %} ({{ lifttime.thattime }}){% endif %}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                            </tr>
+                        </table>
+                    <br />
+                    <div align="center">
+                        <input type="submit" class="button" name="updateban" value="{{ lang.ban }}" />
+                    </div>
+                </form>
+            </td>
+        </tr>
+    </table>
+    <link rel="stylesheet" href="{{ asset_url('jscripts/select2/select2.css') }}">
+    <script type="text/javascript" src="{{ asset_url('jscripts/select2/select2.min.js') }}"></script>
+    <script type="text/javascript">
+    <!--
+    if({{ mybb.settings.use_xmlhttprequest }})
+    {
+        MyBB.select2();
+        $("#username").select2({
+            placeholder: "{{ lang.search_user }}",
+            minimumInputLength: 2,
+            multiple: false,
+            ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+                url: "xmlhttp.php?action=get_users",
+                dataType: 'json',
+                data: function (term, page) {
+                    return {
+                        query: term, // search term
+                    };
+                },
+                results: function (data, page) { // parse the results into the format expected by Select2.
+                    // since we are using custom formatting functions we do not need to alter remote JSON data
+                    return {results: data};
+                }
+            },
+            initSelection: function(element, callback) {
+                var value = $(element).val();
+                if (value !== "") {
+                    callback({
+                        id: value,
+                        text: value
+                    });
+                }
+            },
+        });
+    }
+    // -->
+    </script>
+{% endblock body %}

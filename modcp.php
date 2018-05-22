@@ -3243,67 +3243,60 @@ if ($mybb->input['action'] == "banning") {
     ");
 
     // Get the banned users
-    $bannedusers = '';
+    $bannedusers = [];
     while ($banned = $db->fetch_array($query)) {
-        $banned['username'] = htmlspecialchars_uni($banned['username']);
-        $profile_link = build_profile_link($banned['username'], $banned['uid']);
+        $banned['profile_link'] = build_profile_link($banned['username'], $banned['uid']);
 
         // Only show the edit & lift links if current user created ban, or is super mod/admin
-        $edit_link = '';
+        $banned['show_edit_link'] = false;
         if ($mybb->user['uid'] == $banned['admin'] || !$banned['adminuser'] || $mybb->usergroup['issupermod'] == 1 || $mybb->usergroup['cancp'] == 1) {
-            eval("\$edit_link = \"".$templates->get("modcp_banning_edit")."\";");
+            $banned['show_edit_link'] = true;
         }
 
-        $admin_profile = build_profile_link(htmlspecialchars_uni($banned['adminuser']), $banned['admin']);
-
-        $trow = alt_trow();
+        $banned['admin_profile'] = build_profile_link($banned['adminuser'], $banned['admin']);
 
         if ($banned['reason']) {
-            $banned['reason'] = htmlspecialchars_uni($parser->parse_badwords($banned['reason']));
+            $banned['reason'] = $parser->parse_badwords($banned['reason']);
         } else {
             $banned['reason'] = $lang->na;
         }
 
         if ($banned['lifted'] == 'perm' || $banned['lifted'] == '' || $banned['bantime'] == 'perm' || $banned['bantime'] == '---') {
-            $banlength = $lang->permanent;
-            $timeremaining = $lang->na;
+            $banned['banlength'] = $lang->permanent;
+            $banned['ban_remaining'] = $lang->na;
+            $banned['banned_class'] = "normal_banned";
         } else {
-            $banlength = $bantimes[$banned['bantime']];
-            $remaining = $banned['lifted']-TIME_NOW;
+            $banned['banlength'] = $bantimes[$banned['bantime']];
+            $banned['remaining'] = $banned['lifted']-TIME_NOW;
 
-            $timeremaining = nice_time($remaining, array('short' => 1, 'seconds' => false))."";
+            $banned['timeremaining'] = nice_time($banned['remaining'], array('short' => 1, 'seconds' => false))."";
 
-            $banned_class = '';
-            $ban_remaining = "{$timeremaining} {$lang->ban_remaining}";
+            $banned['ban_remaining'] = "{$banned['timeremaining']} {$lang->ban_remaining}";
 
-            if ($remaining <= 0) {
-                $banned_class = "imminent_banned";
-                $ban_remaining = $lang->ban_ending_imminently;
+            if ($banned['remaining'] <= 0) {
+                $banned['banned_class'] = "imminent_banned";
+                $banned['ban_remaining'] = $lang->ban_ending_imminently;
             }
-            if ($remaining < 3600) {
-                $banned_class = "high_banned";
-            } elseif ($remaining < 86400) {
-                $banned_class = "moderate_banned";
-            } elseif ($remaining < 604800) {
-                $banned_class = "low_banned";
+            if ($banned['remaining'] < 3600) {
+                $banned['banned_class'] = "high_banned";
+            } elseif ($banned['remaining'] < 86400) {
+                $banned['banned_class'] = "moderate_banned";
+            } elseif ($banned['remaining'] < 604800) {
+                $banned['banned_class'] = "low_banned";
             } else {
-                $banned_class = "normal_banned";
+                $banned['banned_class'] = "normal_banned";
             }
-
-            eval('$timeremaining = "'.$templates->get('modcp_banning_remaining').'";');
         }
 
-        eval("\$bannedusers .= \"".$templates->get("modcp_banning_ban")."\";");
-    }
-
-    if (!$bannedusers) {
-        eval("\$bannedusers = \"".$templates->get("modcp_banning_nobanned")."\";");
+        $bannedusers[] = $banned;
     }
 
     $plugins->run_hooks('modcp_banning');
 
-    eval("\$bannedpage = \"".$templates->get("modcp_banning")."\";");
-    output_page($bannedpage);
+    output_page(\MyBB\template('modcp/banning.twig', [
+        'bannedusers' => $bannedusers,
+        'multipage' => $multipage,
+    ]));
 }
 
 if ($mybb->input['action'] == "liftban") {
@@ -3514,9 +3507,6 @@ if ($mybb->input['action'] == "banuser") {
 
     $plugins->run_hooks('modcp_banuser_start');
 
-    $banuser_username = '';
-    $banreason = '';
-
     // If incoming user ID, we are editing a ban
     if ($mybb->input['uid']) {
         $query = $db->query("
@@ -3527,12 +3517,8 @@ if ($mybb->input['action'] == "banuser") {
         ");
         $banned = $db->fetch_array($query);
         if ($banned['username']) {
-            $username = $banned['username'] = htmlspecialchars_uni($banned['username']);
-            $banreason = htmlspecialchars_uni($banned['reason']);
             $uid = $mybb->input['uid'];
             $user = get_user($banned['uid']);
-            $lang->ban_user = $lang->edit_ban; // Swap over lang variables
-            eval("\$banuser_username = \"".$templates->get("modcp_banuser_editusername")."\";");
         }
     }
 
@@ -3542,15 +3528,11 @@ if ($mybb->input['action'] == "banuser") {
     }
 
     // New ban!
-    if (!$banuser_username) {
-        if ($mybb->input['uid']) {
-            $user = get_user($mybb->input['uid']);
-            $user['username'] = htmlspecialchars_uni($user['username']);
-            $username = $user['username'];
-        } else {
-            $username = htmlspecialchars_uni($mybb->get_input('username'));
-        }
-        eval("\$banuser_username = \"".$templates->get("modcp_banuser_addusername")."\";");
+    if ($mybb->input['uid']) {
+        $user = get_user($mybb->input['uid']);
+        $banned['username'] = $user['username'];
+    } else {
+        $banned['username'] = $mybb->get_input('username');
     }
 
     // Coming back to this page from an error?
@@ -3561,18 +3543,20 @@ if ($mybb->input['action'] == "banuser") {
             "reason" => $mybb->get_input('reason'),
             "gid" => $mybb->get_input('gid', MyBB::INPUT_INT)
         );
-        $banreason = htmlspecialchars_uni($mybb->get_input('banreason'));
+
+        $banned['username'] = $mybb->get_input('username');
+        $banned['reason'] = $mybb->get_input('banreason');
     }
 
     // Generate the banned times dropdown
-    $liftlist = '';
+    $liftlist = [];
     foreach ($bantimes as $time => $title) {
-        $selected = '';
+        $lifttime['selected'] = false;
         if (isset($banned['bantime']) && $banned['bantime'] == $time) {
-            $selected = " selected=\"selected\"";
+            $lifttime['selected'] = true;
         }
 
-        $thattime = '';
+        $lifttime['thattime'] = '';
         if ($time != '---') {
             $dateline = TIME_NOW;
             if (isset($banned['dateline'])) {
@@ -3580,50 +3564,44 @@ if ($mybb->input['action'] == "banuser") {
             }
 
             $thatime = my_date("D, jS M Y @ {$mybb->settings['timeformat']}", ban_date2timestamp($time, $dateline));
-            $thattime = " ({$thatime})";
+            $lifttime['thattime'] = $thatime;
         }
 
-        eval("\$liftlist .= \"".$templates->get("modcp_banuser_liftlist")."\";");
+        $lifttime['time'] = $time;
+        $lifttime['title'] = $title;
+
+        $liftlist[] = $lifttime;
     }
 
-    $bangroup_option = $bangroups = '';
-    $numgroups = $banned_group = 0;
+    $bangroups = [];
+    $banned['numgroups'] = $banned['banned_group'] = 0;
     $groupscache = $cache->read("usergroups");
 
     foreach ($groupscache as $key => $group) {
         if ($group['isbannedgroup']) {
-            $selected = "";
+            $group['selected'] = false;
             if (isset($banned['gid']) && $banned['gid'] == $group['gid']) {
-                $selected = " selected=\"selected\"";
+                $group['selected'] = true;
             }
 
-            $group['title'] = htmlspecialchars_uni($group['title']);
-            eval("\$bangroup_option .= \"".$templates->get("modcp_banuser_bangroups_group")."\";");
-            $banned_group = $group['gid'];
-            ++$numgroups;
+            $bangroups[] = $group;
+            $banned['banned_group'] = $group['gid'];
+            ++$banned['numgroups'];
         }
     }
 
-    if ($numgroups == 0) {
+    if ($banned['numgroups'] == 0) {
         error($lang->no_banned_group);
-    } elseif ($numgroups > 1) {
-        eval("\$bangroups = \"".$templates->get("modcp_banuser_bangroups")."\";");
-    } else {
-        eval("\$bangroups = \"".$templates->get("modcp_banuser_bangroups_hidden")."\";");
-    }
-
-    if (!empty($banned['uid'])) {
-        eval("\$lift_link = \"".$templates->get("modcp_banuser_lift")."\";");
-        $uid = $banned['uid'];
-    } else {
-        $lift_link = '';
-        $uid = 0;
     }
 
     $plugins->run_hooks('modcp_banuser_end');
 
-    eval("\$banuser = \"".$templates->get("modcp_banuser")."\";");
-    output_page($banuser);
+    output_page(\MyBB\template('modcp/banuser.twig', [
+        'banned' => $banned,
+        'errors' => $errors,
+        'liftlist' => $liftlist,
+        'bangroups' => $bangroups,
+    ]));
 }
 
 if ($mybb->input['action'] == "do_modnotes") {
