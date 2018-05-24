@@ -637,7 +637,6 @@ class postParser
 
 				if($badword['regex'])
 				{
-					//_dump($badword['badword']);
 					$message = preg_replace('#'.$badword['badword'].'#is', $badword['replacement'], $message);
 				}
 				else

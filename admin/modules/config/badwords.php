@@ -59,7 +59,7 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 	{
 		$new_badword = array(
 			"badword" => $db->escape_string($mybb->input['badword']),
-			"regex" => $mybb->get_input('regex', 1),
+			"regex" => $mybb->get_input('regex', MyBB::INPUT_INT),
 			"replacement" => $db->escape_string($mybb->input['replacement'])
 		);
 
@@ -156,7 +156,7 @@ if($mybb->input['action'] == "edit")
 		{
 			$updated_badword = array(
 				"badword" => $db->escape_string($mybb->input['badword']),
-				"regex" => $mybb->get_input('regex', 1),
+				"regex" => $mybb->get_input('regex', MyBB::INPUT_INT),
 				"replacement" => $db->escape_string($mybb->input['replacement'])
 			);
 
