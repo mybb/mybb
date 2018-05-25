@@ -1,0 +1,57 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ mybb.settings.bbname }} - {{ lang.threads_awaiting_moderation }}</title>
+{% endblock head %}
+
+{% block body %}
+    <form action="modcp.php" method="post">
+        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+        <input type="hidden" name="action" value="do_modqueue" />
+        <table width="100%" border="0" align="center">
+            <tr>
+                {# To do: modcp_nav #}
+                <td valign="top">
+                    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+                        <tr>
+                            <td class="thead" colspan="3">
+                                <div class="float_right">
+                                    <strong>{{ lang.threads }}</strong>
+                                    {% if navlink.post %}
+                                         | <a href="modcp.php?action=modqueue&amp;type=posts">{{ lang.posts }}</a>
+                                    {% endif %}
+                                    {% if navlink.attachment %}
+                                         | <a href="modcp.php?action=modqueue&amp;type=attachments">{{ lang.attachments }}</a>
+                                    {% endif %}
+                                </div>
+                                <strong>{{ lang.threads_awaiting_moderation }}</strong>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tcat" width="50%"><span class="smalltext"><strong>{{ lang.subject }}</strong></span></td>
+                            <td class="tcat" align="center" width="25%"><span class="smalltext"><strong>{{ lang.author }}</strong></span></td>
+                            <td class="tcat" align="center" width="25%"><span class="smalltext"><strong>{{ lang.date }}</strong></span></td>
+                        </tr>
+                        {% for thread in threads %}
+                            {% include 'modcp/modqueue/thread.twig' %}
+                        {% else %}
+                            <tr>
+                                <td class="trow1" align="center" colspan="3">{{ lang.mod_queue_threads_empty }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                    {{ multipage|raw }}
+                    {% if threads %}
+                        <ul class="modqueue_mass">
+                            <li><a href="javascript:void(0)" class="mass_ignore" onclick="$('input.radio_ignore').each(function(){ $(this).prop('checked', true); }); return false;">{{ lang.mark_all_ignored }}</a></li>
+                            <li><a href="javascript:void(0)" class="mass_delete" onclick="$('input.radio_delete').each(function(){ $(this).prop('checked', true); }); return false;">{{ lang.mark_all_deletion }}</a></li>
+                            <li><a href="javascript:void(0)" class="mass_approve" onclick="$('input.radio_approve').each(function(){ $(this).prop('checked', true); }); return false;">{{ lang.mark_all_approved }}</a></li>
+                        </ul>
+                    {% endif %}
+                    <br />
+                    <div align="center"><input type="submit" class="button" name="reportsubmit" value="{{ lang.perform_actions }}" /></div>
+                </td>
+            </tr>
+        </table>
+    </form>
+{% endblock body %}

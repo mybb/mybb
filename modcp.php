@@ -1605,7 +1605,7 @@ if ($mybb->input['action'] == "modqueue") {
     }
 
     $mybb->input['type'] = $mybb->get_input('type');
-    $threadqueue = $postqueue = $attachmentqueue = '';
+    $threadqueue = $postqueue = $attachmentqueue = false;
     if ($mybb->input['type'] == "threads" || !$mybb->input['type'] && ($nummodqueuethreads > 0 || $mybb->usergroup['issupermod'] == 1)) {
         if ($nummodqueuethreads == 0 && $mybb->usergroup['issupermod'] != 1) {
             error($lang->you_cannot_moderate_threads);
@@ -1642,6 +1642,7 @@ if ($mybb->input['action'] == "modqueue") {
 
         $multipage = multipage($unapproved_threads, $perpage, $page, "modcp.php?action=modqueue&type=threads");
 
+        $threads = [];
         $query = $db->query("
             SELECT t.tid, t.dateline, t.fid, t.subject, t.username AS threadusername, p.message AS postmessage, u.username AS username, t.uid
             FROM ".TABLE_PREFIX."threads t
@@ -1651,34 +1652,28 @@ if ($mybb->input['action'] == "modqueue") {
             ORDER BY t.lastpost DESC
             LIMIT {$start}, {$perpage}
         ");
-        $threads = '';
         while ($thread = $db->fetch_array($query)) {
-            $altbg = alt_trow();
-            $thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
+            $thread['subject'] = $parser->parse_badwords($thread['subject']);
             $thread['threadlink'] = get_thread_link($thread['tid']);
-            $forum_link = get_forum_link($thread['fid']);
-            $forum_name = $forum_cache[$thread['fid']]['name'];
-            $threaddate = my_date('relative', $thread['dateline']);
+            $thread['forum_link'] = get_forum_link($thread['fid']);
+            $thread['forum_name'] = $forum_cache[$thread['fid']]['name'];
+            $thread['threaddate'] = my_date('relative', $thread['dateline']);
 
             if ($thread['username'] == "") {
                 if ($thread['threadusername'] != "") {
-                    $thread['threadusername'] = htmlspecialchars_uni($thread['threadusername']);
-                    $profile_link = $thread['threadusername'];
+                    $thread['profile_link'] = $thread['threadusername'];
                 } else {
-                    $profile_link = $lang->guest;
+                    $thread['profile_link'] = $lang->guest;
                 }
             } else {
-                $thread['username'] = htmlspecialchars_uni($thread['username']);
-                $profile_link = build_profile_link($thread['username'], $thread['uid']);
+                $thread['profile_link'] = build_profile_link($thread['username'], $thread['uid']);
             }
 
-            $thread['postmessage'] = nl2br(htmlspecialchars_uni($thread['postmessage']));
-            eval("\$forum = \"".$templates->get("modcp_modqueue_link_forum")."\";");
-            eval("\$threads .= \"".$templates->get("modcp_modqueue_threads_thread")."\";");
+            $threads[] = $thread;
         }
 
         if (!$threads && $mybb->input['type'] == "threads") {
-            eval("\$threads = \"".$templates->get("modcp_modqueue_threads_empty")."\";");
+            $threads = true;
         }
 
         if ($threads) {
@@ -1686,21 +1681,23 @@ if ($mybb->input['action'] == "modqueue") {
 
             $plugins->run_hooks('modcp_modqueue_threads_end');
 
+            $navlink['post'] = false;
             if ($nummodqueueposts > 0 || $mybb->usergroup['issupermod'] == 1) {
-                $navsep = " | ";
-                eval("\$post_link = \"".$templates->get("modcp_modqueue_post_link")."\";");
+                $navlink['post'] = true;
             }
 
+            $navlink['attachment'] = false;
             if ($mybb->settings['enableattachments'] == 1 && ($nummodqueueattach > 0 || $mybb->usergroup['issupermod'] == 1)) {
-                $navsep = " | ";
-                eval("\$attachment_link = \"".$templates->get("modcp_modqueue_attachment_link")."\";");
+                $navlink['attachment'] = true;
             }
 
-            eval("\$mass_controls = \"".$templates->get("modcp_modqueue_masscontrols")."\";");
-            eval("\$threadqueue = \"".$templates->get("modcp_modqueue_threads")."\";");
-            output_page($threadqueue);
+            $threadqueue = true;
+            output_page(\MyBB\template('modcp/modqueue_threads.twig', [
+                'threads' => $threads,
+                'multipage' => $multipage,
+                'navlink' => $navlink,
+            ]));
         }
-        $type = 'threads';
     }
 
     if ($mybb->input['type'] == "posts" || (!$mybb->input['type'] && !$threadqueue && ($nummodqueueposts > 0 || $mybb->usergroup['issupermod'] == 1))) {
@@ -1744,6 +1741,7 @@ if ($mybb->input['action'] == "modqueue") {
 
         $multipage = multipage($unapproved_posts, $perpage, $page, "modcp.php?action=modqueue&amp;type=posts");
 
+        $posts = [];
         $query = $db->query("
             SELECT p.pid, p.subject, p.message, p.username AS postusername, t.subject AS threadsubject, t.tid, u.username, p.uid, t.fid, p.dateline
             FROM  ".TABLE_PREFIX."posts p
@@ -1753,37 +1751,30 @@ if ($mybb->input['action'] == "modqueue") {
             ORDER BY p.dateline DESC
             LIMIT {$start}, {$perpage}
         ");
-        $posts = '';
         while ($post = $db->fetch_array($query)) {
-            $altbg = alt_trow();
-            $post['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($post['threadsubject']));
-            $post['subject'] = htmlspecialchars_uni($parser->parse_badwords($post['subject']));
+            $post['threadsubject'] = $parser->parse_badwords($post['threadsubject']);
+            $post['subject'] = $parser->parse_badwords($post['subject']);
             $post['threadlink'] = get_thread_link($post['tid']);
             $post['postlink'] = get_post_link($post['pid'], $post['tid']);
-            $forum_link = get_forum_link($post['fid']);
-            $forum_name = $forum_cache[$post['fid']]['name'];
-            $postdate = my_date('relative', $post['dateline']);
+            $post['forum_link'] = get_forum_link($post['fid']);
+            $post['forum_name'] = $forum_cache[$post['fid']]['name'];
+            $post['postdate'] = my_date('relative', $post['dateline']);
 
             if ($post['username'] == "") {
                 if ($post['postusername'] != "") {
-                    $post['postusername'] = htmlspecialchars_uni($post['postusername']);
-                    $profile_link = $post['postusername'];
+                    $post['profile_link'] = $post['postusername'];
                 } else {
-                    $profile_link = $lang->guest;
+                    $post['profile_link'] = $lang->guest;
                 }
             } else {
-                $post['username'] = htmlspecialchars_uni($post['username']);
-                $profile_link = build_profile_link($post['username'], $post['uid']);
+                $post['profile_link'] = build_profile_link($post['username'], $post['uid']);
             }
 
-            eval("\$thread = \"".$templates->get("modcp_modqueue_link_thread")."\";");
-            eval("\$forum = \"".$templates->get("modcp_modqueue_link_forum")."\";");
-            $post['message'] = nl2br(htmlspecialchars_uni($post['message']));
-            eval("\$posts .= \"".$templates->get("modcp_modqueue_posts_post")."\";");
+            $posts[] = $post;
         }
 
         if (!$posts && $mybb->input['type'] == "posts") {
-            eval("\$posts = \"".$templates->get("modcp_modqueue_posts_empty")."\";");
+            $posts = true;
         }
 
         if ($posts) {
@@ -1791,19 +1782,22 @@ if ($mybb->input['action'] == "modqueue") {
 
             $plugins->run_hooks('modcp_modqueue_posts_end');
 
+            $navlink['thread'] = false;
             if ($nummodqueuethreads > 0 || $mybb->usergroup['issupermod'] == 1) {
-                $navsep = " | ";
-                eval("\$thread_link = \"".$templates->get("modcp_modqueue_thread_link")."\";");
+                $navlink['thread'] = true;
             }
 
+            $navlink['attachment'] = false;
             if ($mybb->settings['enableattachments'] == 1 && ($nummodqueueattach > 0 || $mybb->usergroup['issupermod'] == 1)) {
-                $navsep = " | ";
-                eval("\$attachment_link = \"".$templates->get("modcp_modqueue_attachment_link")."\";");
+                $navlink['attachment'] = true;
             }
 
-            eval("\$mass_controls = \"".$templates->get("modcp_modqueue_masscontrols")."\";");
-            eval("\$postqueue = \"".$templates->get("modcp_modqueue_posts")."\";");
-            output_page($postqueue);
+            $postqueue = true;
+            output_page(\MyBB\template('modcp/modqueue_posts.twig', [
+                'posts' => $posts,
+                'multipage' => $multipage,
+                'navlink' => $navlink,
+            ]));
         }
     }
 
@@ -1851,6 +1845,7 @@ if ($mybb->input['action'] == "modqueue") {
 
         $multipage = multipage($unapproved_attachments, $perpage, $page, "modcp.php?action=modqueue&amp;type=attachments");
 
+        $attachments = [];
         $query = $db->query("
             SELECT a.*, p.subject AS postsubject, p.dateline, p.uid, u.username, t.tid, t.subject AS threadsubject
             FROM  ".TABLE_PREFIX."attachments a
@@ -1861,31 +1856,26 @@ if ($mybb->input['action'] == "modqueue") {
             ORDER BY a.dateuploaded DESC
             LIMIT {$start}, {$perpage}
         ");
-        $attachments = '';
         while ($attachment = $db->fetch_array($query)) {
-            $altbg = alt_trow();
-
             if (!$attachment['dateuploaded']) {
                 $attachment['dateuploaded'] = $attachment['dateline'];
             }
 
-            $attachdate = my_date('relative', $attachment['dateuploaded']);
+            $attachment['attachdate'] = my_date('relative', $attachment['dateuploaded']);
 
-            $attachment['postsubject'] = htmlspecialchars_uni($parser->parse_badwords($attachment['postsubject']));
-            $attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
-            $attachment['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($attachment['threadsubject']));
+            $attachment['postsubject'] = $parser->parse_badwords($attachment['postsubject']);
+            $attachment['threadsubject'] = $parser->parse_badwords($attachment['threadsubject']);
             $attachment['filesize'] = get_friendly_size($attachment['filesize']);
 
-            $link = get_post_link($attachment['pid'], $attachment['tid']) . "#pid{$attachment['pid']}";
-            $thread_link = get_thread_link($attachment['tid']);
-            $attachment['username'] = htmlspecialchars_uni($attachment['username']);
-            $profile_link = build_profile_link($attachment['username'], $attachment['uid']);
+            $attachment['link'] = get_post_link($attachment['pid'], $attachment['tid']) . "#pid{$attachment['pid']}";
+            $attachment['thread_link'] = get_thread_link($attachment['tid']);
+            $attachment['profile_link'] = build_profile_link($attachment['username'], $attachment['uid']);
 
-            eval("\$attachments .= \"".$templates->get("modcp_modqueue_attachments_attachment")."\";");
+            $attachments[] = $attachment;
         }
 
         if (!$attachments && $mybb->input['type'] == "attachments") {
-            eval("\$attachments = \"".$templates->get("modcp_modqueue_attachments_empty")."\";");
+            $attachments = true;
         }
 
         if ($attachments) {
@@ -1893,19 +1883,22 @@ if ($mybb->input['action'] == "modqueue") {
 
             $plugins->run_hooks('modcp_modqueue_attachments_end');
 
+            $navlink['thread'] = false;
             if ($nummodqueuethreads > 0 || $mybb->usergroup['issupermod'] == 1) {
-                eval("\$thread_link = \"".$templates->get("modcp_modqueue_thread_link")."\";");
-                $navsep = " | ";
+                $navlink['thread'] = true;
             }
 
+            $navlink['post'] = false;
             if ($nummodqueueposts > 0 || $mybb->usergroup['issupermod'] == 1) {
-                eval("\$post_link = \"".$templates->get("modcp_modqueue_post_link")."\";");
-                $navsep = " | ";
+                $navlink['post'] = true;
             }
 
-            eval("\$mass_controls = \"".$templates->get("modcp_modqueue_masscontrols")."\";");
-            eval("\$attachmentqueue = \"".$templates->get("modcp_modqueue_attachments")."\";");
-            output_page($attachmentqueue);
+            $attachmentqueue = true;
+            output_page(\MyBB\template('modcp/modqueue_attachments.twig', [
+                'attachments' => $attachments,
+                'multipage' => $multipage,
+                'navlink' => $navlink,
+            ]));
         }
     }
 
@@ -1915,8 +1908,7 @@ if ($mybb->input['action'] == "modqueue") {
 
         $plugins->run_hooks('modcp_modqueue_end');
 
-        eval("\$queue = \"".$templates->get("modcp_modqueue_empty")."\";");
-        output_page($queue);
+        output_page(\MyBB\template('modcp/modqueue_empty.twig'));
     }
 }
 
