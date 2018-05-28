@@ -4101,7 +4101,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 		<dl class="thread_legend smalltext">
 			<dd><span class="thread_status folder" title="{$lang->no_new_thread}">&nbsp;</span> {$lang->no_new_thread}</dd>
 			<dd><span class="thread_status dot_folder" title="{$lang->posts_by_you}">&nbsp;</span> {$lang->posts_by_you}</dd>
-			<dd><span class="thread_status lockfolder" title="{$lang->locked_thread}">&nbsp;</span> {$lang->locked_thread}</dd>
+			<dd><span class="thread_status lockfolder" title="{$lang->closed_thread}">&nbsp;</span> {$lang->closed_thread}</dd>
 		</dl>
 	</div>
 	<br class="clear" />
@@ -13343,7 +13343,7 @@ if(use_xmlhttprequest == "1")
 						<dl class="thread_legend smalltext">
 							<dd><span class="thread_status folder" title="{$lang->no_new_thread}">&nbsp;</span> {$lang->no_new_thread}</dd>
 							<dd><span class="thread_status dot_folder" title="{$lang->posts_by_you}">&nbsp;</span> {$lang->posts_by_you}</dd>
-							<dd><span class="thread_status lockfolder" title="{$lang->locked_thread}">&nbsp;</span> {$lang->locked_thread}</dd>
+							<dd><span class="thread_status lockfolder" title="{$lang->closed_thread}">&nbsp;</span> {$lang->closed_thread}</dd>
 						</dl>
 					</div>
 					<br class="clear" />
