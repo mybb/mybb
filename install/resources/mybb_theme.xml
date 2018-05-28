@@ -347,7 +347,7 @@ a:active {
 	background-position: 0 -10px;
 }
 
-.subforum_miniofflock {
+.subforum_minioffclose {
 	background-position: 0 -20px;
 }
 
