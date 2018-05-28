@@ -387,7 +387,7 @@ $l['icon_dot'] = "Contains posts by you. "; // The spaces for the icon labels ar
 $l['icon_no_new'] = "No new posts.";
 $l['icon_new'] = "New posts.";
 $l['icon_hot'] = " Hot thread.";
-$l['icon_lock'] = " Closed thread.";
+$l['icon_close'] = " Closed thread.";
 
 $l['buddylist_error'] = 'There was an error fetching the buddy list. ';
 
