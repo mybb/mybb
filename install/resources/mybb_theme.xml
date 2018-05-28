@@ -323,7 +323,7 @@ a:active {
 	background-position: 0 -30px;
 }
 
-.forum_offlock {
+.forum_offclose {
 	background-position: 0 -60px;
 }
 
