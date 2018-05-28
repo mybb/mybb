@@ -4354,8 +4354,8 @@ $(".forumjump").change(function() {
 	<dt><span class="forum_status forum_off" title="{$lang->no_new_posts}"></span></dt>
 	<dd>{$lang->no_new_posts}</dd>
 
-	<dt><span class="forum_status forum_offlock" title="{$lang->forum_locked}"></span></dt>
-	<dd>{$lang->forum_locked}</dd>
+	<dt><span class="forum_status forum_offlock" title="{$lang->forum_closed}"></span></dt>
+	<dd>{$lang->forum_closed}</dd>
 
 	<dt><span class="forum_status forum_offlink" title="{$lang->forum_redirect}"></span></dt>
 	<dd>{$lang->forum_redirect}</dd>
