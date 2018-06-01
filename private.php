@@ -593,307 +593,254 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "send")
 {
-	if($mybb->usergroup['cansendpms'] == 0)
-	{
-		error_no_permission();
-	}
+    if ($mybb->usergroup['cansendpms'] == 0) {
+        error_no_permission();
+    }
 
-	$plugins->run_hooks("private_send_start");
+    $plugins->run_hooks("private_send_start");
 
-	$smilieinserter = $codebuttons = '';
+    $smilieinserter = $codebuttons = '';
 
-	if($mybb->settings['bbcodeinserter'] != 0 && $mybb->settings['pmsallowmycode'] != 0 && $mybb->user['showcodebuttons'] != 0)
-	{
-		$codebuttons = build_mycode_inserter("message", $mybb->settings['pmsallowsmilies']);
-		if($mybb->settings['pmsallowsmilies'] != 0)
-		{
-			$smilieinserter = build_clickable_smilies();
-		}
-	}
+    if ($mybb->settings['bbcodeinserter'] != 0 && $mybb->settings['pmsallowmycode'] != 0 && $mybb->user['showcodebuttons'] != 0) {
+        $codebuttons = build_mycode_inserter("message", $mybb->settings['pmsallowsmilies']);
+        if ($mybb->settings['pmsallowsmilies'] != 0) {
+            $smilieinserter = build_clickable_smilies();
+        }
+    }
 
-	$lang->post_icon = $lang->message_icon;
+    $posticons = get_post_icons();
+    $sendpm['message'] = $parser->parse_badwords($mybb->get_input('message'));
+    $sendpm['subject'] = $parser->parse_badwords($mybb->get_input('subject'));
 
-	$posticons = get_post_icons();
-	$message = htmlspecialchars_uni($parser->parse_badwords($mybb->get_input('message')));
-	$subject = htmlspecialchars_uni($parser->parse_badwords($mybb->get_input('subject')));
+    $sendpm['options'] = array('signature' => false, 'disablesmilies' => false, 'savecopy' => false, 'readreceipt' => false);
 
-	$optionschecked = array('signature' => '', 'disablesmilies' => '', 'savecopy' => '', 'readreceipt' => '');
-	$to = $bcc = '';
+    if (!empty($mybb->input['preview']) || $send_errors) {
+        $options = $mybb->get_input('options', MyBB::INPUT_ARRAY);
+        if (isset($options['signature']) && $options['signature'] == 1) {
+            $sendpm['options']['signature'] = true;
+        }
 
-	if(!empty($mybb->input['preview']) || $send_errors)
-	{
-		$options = $mybb->get_input('options', MyBB::INPUT_ARRAY);
-		if(isset($options['signature']) && $options['signature'] == 1)
-		{
-			$optionschecked['signature'] = 'checked="checked"';
-		}
-		if(isset($options['disablesmilies']) && $options['disablesmilies'] == 1)
-		{
-			$optionschecked['disablesmilies'] = 'checked="checked"';
-		}
-		if(isset($options['savecopy']) && $options['savecopy'] != 0)
-		{
-			$optionschecked['savecopy'] = 'checked="checked"';
-		}
-		if(isset($options['readreceipt']) && $options['readreceipt'] != 0)
-		{
-			$optionschecked['readreceipt'] = 'checked="checked"';
-		}
-		$to = htmlspecialchars_uni($mybb->get_input('to'));
-		$bcc = htmlspecialchars_uni($mybb->get_input('bcc'));
-	}
+        if (isset($options['disablesmilies']) && $options['disablesmilies'] == 1) {
+            $sendpm['options']['disablesmilies'] = true;
+        }
 
-	$preview = '';
-	// Preview
-	if(!empty($mybb->input['preview']))
-	{
-		$options = $mybb->get_input('options', MyBB::INPUT_ARRAY);
-		$query = $db->query("
-			SELECT u.username AS userusername, u.*, f.*
-			FROM ".TABLE_PREFIX."users u
-			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
-			WHERE u.uid='".$mybb->user['uid']."'
-		");
+        if (isset($options['savecopy']) && $options['savecopy'] != 0) {
+            $sendpm['options']['savecopy'] = true;
+        }
 
-		$post = $db->fetch_array($query);
+        if (isset($options['readreceipt']) && $options['readreceipt'] != 0) {
+            $sendpm['options']['readreceipt'] = true;
+        }
 
-		$post['userusername'] = $mybb->user['username'];
-		$post['postusername'] = $mybb->user['username'];
-		$post['message'] = $mybb->get_input('message');
-		$post['subject'] = htmlspecialchars_uni($mybb->get_input('subject'));
-		$post['icon'] = $mybb->get_input('icon', MyBB::INPUT_INT);
-		if(!isset($options['disablesmilies']))
-		{
-			$options['disablesmilies'] = 0;
-		}
-		$post['smilieoff'] = $options['disablesmilies'];
-		$post['dateline'] = TIME_NOW;
+        $sendpm['to'] = $mybb->get_input('to');
+        $sendpm['bcc'] = $mybb->get_input('bcc');
+    }
 
-		if(!isset($options['signature']))
-		{
-			$post['includesig'] = 0;
-		}
-		else
-		{
-			$post['includesig'] = 1;
-		}
+    // Preview
+    $sendpm['preview'] = false;
+    if (!empty($mybb->input['preview'])) {
+        $sendpm['preview'] = true;
+        $options = $mybb->get_input('options', MyBB::INPUT_ARRAY);
+        $query = $db->query("
+            SELECT u.username AS userusername, u.*, f.*
+            FROM ".TABLE_PREFIX."users u
+            LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
+            WHERE u.uid='".$mybb->user['uid']."'
+        ");
 
-		// Merge usergroup data from the cache
-		$data_key = array(
-			'title' => 'grouptitle',
-			'usertitle' => 'groupusertitle',
-			'stars' => 'groupstars',
-			'starimage' => 'groupstarimage',
-			'image' => 'groupimage',
-			'namestyle' => 'namestyle',
-			'usereputationsystem' => 'usereputationsystem'
-		);
+        $post = $db->fetch_array($query);
 
-		foreach($data_key as $field => $key)
-		{
-			$post[$key] = $groupscache[$post['usergroup']][$field];
-		}
+        $post['userusername'] = $mybb->user['username'];
+        $post['postusername'] = $mybb->user['username'];
+        $post['message'] = $mybb->get_input('message');
+        $post['subject'] = htmlspecialchars_uni($mybb->get_input('subject'));
+        $post['icon'] = $mybb->get_input('icon', MyBB::INPUT_INT);
+        if (!isset($options['disablesmilies'])) {
+            $options['disablesmilies'] = 0;
+        }
 
-		$postbit = build_postbit($post, 2);
-		eval("\$preview = \"".$templates->get("previewpost")."\";");
-	}
-	else if(!$send_errors)
-	{
-		// New PM, so load default settings
-		if($mybb->user['signature'] != '')
-		{
-			$optionschecked['signature'] = 'checked="checked"';
-		}
-		if($mybb->usergroup['cantrackpms'] == 1)
-		{
-			$optionschecked['readreceipt'] = 'checked="checked"';
-		}
-		$optionschecked['savecopy'] = 'checked="checked"';
-	}
+        $post['smilieoff'] = $options['disablesmilies'];
+        $post['dateline'] = TIME_NOW;
 
-	// Draft, reply, forward
-	if($mybb->get_input('pmid') && empty($mybb->input['preview']) && !$send_errors)
-	{
-		$query = $db->query("
-			SELECT pm.*, u.username AS quotename
-			FROM ".TABLE_PREFIX."privatemessages pm
-			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.fromid)
-			WHERE pm.pmid='".$mybb->get_input('pmid', MyBB::INPUT_INT)."' AND pm.uid='{$mybb->user['uid']}'
-		");
+        if (!isset($options['signature'])) {
+            $post['includesig'] = 0;
+        } else {
+            $post['includesig'] = 1;
+        }
 
-		$pm = $db->fetch_array($query);
-		$message = htmlspecialchars_uni($parser->parse_badwords($pm['message']));
-		$subject = htmlspecialchars_uni($parser->parse_badwords($pm['subject']));
+        // Merge usergroup data from the cache
+        $data_key = array(
+            'title' => 'grouptitle',
+            'usertitle' => 'groupusertitle',
+            'stars' => 'groupstars',
+            'starimage' => 'groupstarimage',
+            'image' => 'groupimage',
+            'namestyle' => 'namestyle',
+            'usereputationsystem' => 'usereputationsystem'
+        );
 
-		if($pm['folder'] == "3")
-		{
-			// message saved in drafts
-			$mybb->input['uid'] = $pm['toid'];
+        foreach ($data_key as $field => $key) {
+            $post[$key] = $groupscache[$post['usergroup']][$field];
+        }
 
-			if($pm['includesig'] == 1)
-			{
-				$optionschecked['signature'] = 'checked="checked"';
-			}
-			if($pm['smilieoff'] == 1)
-			{
-				$optionschecked['disablesmilies'] = 'checked="checked"';
-			}
-			if($pm['receipt'])
-			{
-				$optionschecked['readreceipt'] = 'checked="checked"';
-			}
+        $postbit = build_postbit($post, 2);
+    } elseif (!$send_errors) {
+        // New PM, so load default settings
+        if ($mybb->user['signature'] != '') {
+            $sendpm['options']['signature'] = true;
+        }
 
-			// Get list of recipients
-			$recipients = my_unserialize($pm['recipients']);
-			$comma = $recipientids = '';
-			if(isset($recipients['to']) && is_array($recipients['to']))
-			{
-				foreach($recipients['to'] as $recipient)
-				{
-					$recipient_list['to'][] = $recipient;
-					$recipientids .= $comma.$recipient;
-					$comma = ',';
-				}
-			}
+        if ($mybb->usergroup['cantrackpms'] == 1) {
+            $sendpm['options']['readreceipt'] = true;
+        }
 
-			if(isset($recipients['bcc']) && is_array($recipients['bcc']))
-			{
-				foreach($recipients['bcc'] as $recipient)
-				{
-					$recipient_list['bcc'][] = $recipient;
-					$recipientids .= $comma.$recipient;
-					$comma = ',';
-				}
-			}
+        $sendpm['options']['savecopy'] = true;
+    }
 
-			if(!empty($recipientids))
-			{
-				$query = $db->simple_select("users", "uid, username", "uid IN ({$recipientids})");
-				while($user = $db->fetch_array($query))
-				{
-					if(isset($recipients['bcc']) && is_array($recipients['bcc']) && in_array($user['uid'], $recipient_list['bcc']))
-					{
-						$bcc .= htmlspecialchars_uni($user['username']).', ';
-					}
-					else
-					{
-						$to .= htmlspecialchars_uni($user['username']).', ';
-					}
-				}
-			}
-		}
-		else
-		{
-			// forward/reply
-			$subject = preg_replace("#(FW|RE):( *)#is", '', $subject);
-			$message = "[quote='{$pm['quotename']}']\n$message\n[/quote]";
-			$message = preg_replace('#^/me (.*)$#im', "* ".$pm['quotename']." \\1", $message);
+    // Draft, reply, forward
+    if ($mybb->get_input('pmid') && empty($mybb->input['preview']) && !$send_errors) {
+        $query = $db->query("
+            SELECT pm.*, u.username AS quotename
+            FROM ".TABLE_PREFIX."privatemessages pm
+            LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.fromid)
+            WHERE pm.pmid='".$mybb->get_input('pmid', MyBB::INPUT_INT)."' AND pm.uid='{$mybb->user['uid']}'
+        ");
 
-			require_once MYBB_ROOT."inc/functions_posting.php";
+        $pm = $db->fetch_array($query);
+        $sendpm['message'] = $parser->parse_badwords($pm['message']);
+        $sendpm['subject'] = $parser->parse_badwords($pm['subject']);
 
-			if($mybb->settings['maxpmquotedepth'] != '0')
-			{
-				$message = remove_message_quotes($message, $mybb->settings['maxpmquotedepth']);
-			}
+        if ($pm['folder'] == 3) {
+            // Message saved in drafts
+            $mybb->input['uid'] = $pm['toid'];
 
-			if($mybb->input['do'] == 'forward')
-			{
-				$subject = "Fw: $subject";
-			}
-			elseif($mybb->input['do'] == 'reply')
-			{
-				$subject = "Re: $subject";
-				$uid = $pm['fromid'];
-				if($mybb->user['uid'] == $uid)
-				{
-					$to = $mybb->user['username'];
-				}
-				else
-				{
-					$query = $db->simple_select('users', 'username', "uid='{$uid}'");
-					$to = $db->fetch_field($query, 'username');
-				}
-				$to = htmlspecialchars_uni($to);
-			}
-			else if($mybb->input['do'] == 'replyall')
-			{
-				$subject = "Re: $subject";
+            if ($pm['includesig'] == 1) {
+                $sendpm['options']['signature'] = true;
+            }
 
-				// Get list of recipients
-				$recipients = my_unserialize($pm['recipients']);
-				$recipientids = $pm['fromid'];
-				if(isset($recipients['to']) && is_array($recipients['to']))
-				{
-					foreach($recipients['to'] as $recipient)
-					{
-						if($recipient == $mybb->user['uid'])
-						{
-							continue;
-						}
-						$recipientids .= ','.$recipient;
-					}
-				}
-				$comma = '';
-				$query = $db->simple_select('users', 'uid, username', "uid IN ({$recipientids})");
-				while($user = $db->fetch_array($query))
-				{
-					$to .= $comma.htmlspecialchars_uni($user['username']);
-					$comma = $lang->comma;
-				}
-			}
-		}
-	}
+            if ($pm['smilieoff'] == 1) {
+                $sendpm['options']['disablesmilies'] = true;
+            }
 
-	// New PM with recipient preset
-	if($mybb->get_input('uid', MyBB::INPUT_INT) && empty($mybb->input['preview']))
-	{
-		$query = $db->simple_select('users', 'username', "uid='".$mybb->get_input('uid', MyBB::INPUT_INT)."'");
-		$to = htmlspecialchars_uni($db->fetch_field($query, 'username')).', ';
-	}
+            if ($pm['receipt']) {
+                $sendpm['options']['readreceipt'] = true;
+            }
 
-	$max_recipients = '';
-	if($mybb->usergroup['maxpmrecipients'] > 0)
-	{
-		$max_recipients = $lang->sprintf($lang->max_recipients, $mybb->usergroup['maxpmrecipients']);
-	}
+            // Get list of recipients
+            $recipients = my_unserialize($pm['recipients']);
+            $comma = $recipientids = '';
+            if (isset($recipients['to']) && is_array($recipients['to'])){
+                foreach ($recipients['to'] as $recipient) {
+                    $recipient_list['to'][] = $recipient;
+                    $recipientids .= $comma.$recipient;
+                    $comma = ',';
+                }
+            }
 
-	if($send_errors)
-	{
-		$to = htmlspecialchars_uni($mybb->get_input('to'));
-		$bcc = htmlspecialchars_uni($mybb->get_input('bcc'));
-	}
+            if (isset($recipients['bcc']) && is_array($recipients['bcc'])) {
+                foreach ($recipients['bcc'] as $recipient) {
+                    $recipient_list['bcc'][] = $recipient;
+                    $recipientids .= $comma.$recipient;
+                    $comma = ',';
+                }
+            }
 
-	// Load the auto complete javascript if it is enabled.
-	eval("\$autocompletejs = \"".$templates->get("private_send_autocomplete")."\";");
+            if (!empty($recipientids)) {
+                $query = $db->simple_select("users", "uid, username", "uid IN ({$recipientids})");
+                while ($user = $db->fetch_array($query)) {
+                    if (isset($recipients['bcc']) && is_array($recipients['bcc']) && in_array($user['uid'], $recipient_list['bcc'])) {
+                        $sendpm['bcc'] .= $user['username'].', ';
+                    } else {
+                        $sendpm['to'] .= $user['username'].', ';
+                    }
+                }
+            }
+        } else {
+            // Forward/Reply
+            $sendpm['subject'] = preg_replace("#(FW|RE):( *)#is", '', $sendpm['subject']);
+            $sendpm['message'] = "[quote='{$pm['quotename']}']\n{$sendpm['message']}\n[/quote]";
+            $sendpm['message'] = preg_replace('#^/me (.*)$#im', "* ".$pm['quotename']." \\1", $sendpm['message']);
 
-	$pmid = $mybb->get_input('pmid', MyBB::INPUT_INT);
-	$do = $mybb->get_input('do');
-	if($do != "forward" && $do != "reply" && $do != "replyall")
-	{
-		$do = '';
-	}
+            require_once MYBB_ROOT."inc/functions_posting.php";
 
-	$buddy_select_to = $buddy_select_bcc = '';
-	// See if it's actually worth showing the buddylist icon.
-	if($mybb->user['buddylist'] != '' && $mybb->settings['use_xmlhttprequest'] == 1)
-	{
-		$buddy_select = 'to';
-		eval("\$buddy_select_to = \"".$templates->get("private_send_buddyselect")."\";");
-		$buddy_select = 'bcc';
-		eval("\$buddy_select_bcc = \"".$templates->get("private_send_buddyselect")."\";");
-	}
+            if ($mybb->settings['maxpmquotedepth'] != '0') {
+                $sendpm['message'] = remove_message_quotes($sendpm['message'], $mybb->settings['maxpmquotedepth']);
+            }
 
-	// Hide tracking option if no permission
-	$private_send_tracking = '';
-	if($mybb->usergroup['cantrackpms'])
-	{
-		eval("\$private_send_tracking = \"".$templates->get("private_send_tracking")."\";");
-	}
+            if ($mybb->input['do'] == 'forward') {
+                $sendpm['subject'] = "Fw: {$sendpm['subject']}";
+            } elseif ($mybb->input['do'] == 'reply') {
+                $sendpm['subject'] = "Re: {$sendpm['subject']}";
+                $uid = $pm['fromid'];
+                if ($mybb->user['uid'] == $uid) {
+                    $sendpm['to'] = $mybb->user['username'];
+                } else {
+                    $query = $db->simple_select('users', 'username', "uid='{$uid}'");
+                    $sendpm['to'] = $db->fetch_field($query, 'username');
+                }
+            } elseif ($mybb->input['do'] == 'replyall') {
+                $sendpm['subject'] = "Re: {$sendpm['subject']}";
 
-	$plugins->run_hooks("private_send_end");
+                // Get list of recipients
+                $recipients = my_unserialize($pm['recipients']);
+                $recipientids = $pm['fromid'];
+                if (isset($recipients['to']) && is_array($recipients['to'])) {
+                    foreach ($recipients['to'] as $recipient) {
+                        if ($recipient == $mybb->user['uid']) {
+                            continue;
+                        }
 
-	eval("\$send = \"".$templates->get("private_send")."\";");
-	output_page($send);
+                        $recipientids .= ','.$recipient;
+                    }
+                }
+
+                $comma = '';
+                $query = $db->simple_select('users', 'uid, username', "uid IN ({$recipientids})");
+                while ($user = $db->fetch_array($query)) {
+                    $sendpm['to'] .= $comma.$user['username'];
+                    $comma = $lang->comma;
+                }
+            }
+        }
+    }
+
+    // New PM with recipient preset
+    if ($mybb->get_input('uid', MyBB::INPUT_INT) && empty($mybb->input['preview'])) {
+        $query = $db->simple_select('users', 'username', "uid='".$mybb->get_input('uid', MyBB::INPUT_INT)."'");
+        $sendpm['to'] = $db->fetch_field($query, 'username').', ';
+    }
+
+    if ($send_errors) {
+        $sendpm['to'] = $mybb->get_input('to');
+        $sendpm['bcc'] = $mybb->get_input('bcc');
+    }
+
+    $sendpm['pmid'] = $mybb->get_input('pmid', MyBB::INPUT_INT);
+    $sendpm['do'] = $mybb->get_input('do');
+    if ($sendpm['do'] != "forward" && $sendpm['do'] != "reply" && $sendpm['do'] != "replyall") {
+        $sendpm['do'] = '';
+    }
+
+    $sendpm['showposticons'] = false;
+    if (is_array($posticons)) {
+        $sendpm['showposticons'] = true;
+    }
+
+    $sendpm['emptyiconcheck'] = false;
+    if (empty($mybb->input['icon'])) {
+        $sendpm['emptyiconcheck'] = true;
+    }
+
+    $plugins->run_hooks("private_send_end");
+
+    output_page(\MyBB\template('private/send.twig', [
+        'sendpm' => $sendpm,
+        'send_errors' => $send_errors,
+        'smilieinserter' => $smilieinserter,
+        'codebuttons' => $codebuttons,
+        'postbit' => $postbit,
+        'posticons' => $posticons,
+    ]));
 }
 
 if($mybb->input['action'] == "read")
