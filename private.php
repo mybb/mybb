@@ -370,7 +370,6 @@ if($mybb->input['action'] == "results")
                     $message['tousers'][] = $user;
                 }
                 if (isset($recipients['bcc']) && is_array($recipients['bcc']) && count($recipients['bcc'])) {
-                    eval("\$bcc_users = \"".$templates->get("private_multiple_recipients_bcc")."\";");
                     foreach ($recipients['bcc'] as $uid) {
                         $user = $cached_users[$uid];
                         $user['profilelink'] = get_profile_link($uid);
@@ -845,257 +844,183 @@ if($mybb->input['action'] == "send")
 
 if($mybb->input['action'] == "read")
 {
-	$plugins->run_hooks("private_read");
+    $plugins->run_hooks("private_read_start");
 
-	$pmid = $mybb->get_input('pmid', MyBB::INPUT_INT);
+    $pmid = $mybb->get_input('pmid', MyBB::INPUT_INT);
 
-	$query = $db->query("
-		SELECT pm.*, u.*, f.*
-		FROM ".TABLE_PREFIX."privatemessages pm
-		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.fromid)
-		LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
-		WHERE pm.pmid='{$pmid}' AND pm.uid='".$mybb->user['uid']."'
-	");
-	$pm = $db->fetch_array($query);
+    $query = $db->query("
+        SELECT pm.*, u.*, f.*
+        FROM ".TABLE_PREFIX."privatemessages pm
+        LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.fromid)
+        LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
+        WHERE pm.pmid='{$pmid}' AND pm.uid='".$mybb->user['uid']."'
+    ");
+    $pm = $db->fetch_array($query);
 
-	if(!$pm)
-	{
-		error($lang->error_invalidpm);
-	}
+    if (!$pm) {
+        error($lang->error_invalidpm);
+    }
 
-	if($pm['folder'] == 3)
-	{
-		header("Location: private.php?action=send&pmid={$pm['pmid']}");
-		exit;
-	}
+    if ($pm['folder'] == 3) {
+        header("Location: private.php?action=send&pmid={$pm['pmid']}");
+        exit;
+    }
 
-	// If we've gotten a PM, attach the group info
-	$data_key = array(
-		'title' => 'grouptitle',
-		'usertitle' => 'groupusertitle',
-		'stars' => 'groupstars',
-		'starimage' => 'groupstarimage',
-		'image' => 'groupimage',
-		'namestyle' => 'namestyle'
-	);
+    // If we've gotten a PM, attach the group info
+    $data_key = array(
+        'title' => 'grouptitle',
+        'usertitle' => 'groupusertitle',
+        'stars' => 'groupstars',
+        'starimage' => 'groupstarimage',
+        'image' => 'groupimage',
+        'namestyle' => 'namestyle'
+    );
 
-	foreach($data_key as $field => $key)
-	{
-		$pm[$key] = $groupscache[$pm['usergroup']][$field];
-	}
+    foreach ($data_key as $field => $key) {
+        $pm[$key] = $groupscache[$pm['usergroup']][$field];
+    }
 
-	if($pm['receipt'] == 1)
-	{
-		if($mybb->usergroup['candenypmreceipts'] == 1 && $mybb->get_input('denyreceipt', MyBB::INPUT_INT) == 1)
-		{
-			$receiptadd = 0;
-		}
-		else
-		{
-			$receiptadd = 2;
-		}
-	}
+    if ($pm['receipt'] == 1) {
+        if ($mybb->usergroup['candenypmreceipts'] == 1 && $mybb->get_input('denyreceipt', MyBB::INPUT_INT) == 1) {
+            $receiptadd = 0;
+        } else {
+            $receiptadd = 2;
+        }
+    }
 
-	$action_time = '';
-	if($pm['status'] == 0)
-	{
-		$time = TIME_NOW;
-		$updatearray = array(
-			'status' => 1,
-			'readtime' => $time
-		);
+    $action_time = '';
+    if ($pm['status'] == 0) {
+        $time = TIME_NOW;
+        $updatearray = array(
+            'status' => 1,
+            'readtime' => $time
+        );
 
-		if(isset($receiptadd))
-		{
-			$updatearray['receipt'] = $receiptadd;
-		}
+        if (isset($receiptadd)) {
+            $updatearray['receipt'] = $receiptadd;
+        }
 
-		$db->update_query('privatemessages', $updatearray, "pmid='{$pmid}'");
+        $db->update_query('privatemessages', $updatearray, "pmid='{$pmid}'");
 
-		// Update the unread count - it has now changed.
-		update_pm_count($mybb->user['uid'], 6);
+        // Update the unread count - it has now changed.
+        update_pm_count($mybb->user['uid'], 6);
 
-		// Update PM notice value if this is our last unread PM
-		if($mybb->user['unreadpms']-1 <= 0 && $mybb->user['pmnotice'] == 2)
-		{
-			$updated_user = array(
-				"pmnotice" => 1
-			);
-			$db->update_query("users", $updated_user, "uid='{$mybb->user['uid']}'");
-		}
-	}
-	// Replied PM?
-	else if($pm['status'] == 3 && $pm['statustime'])
-	{
-		$reply_string = $lang->you_replied_on;
-		$reply_date = my_date('relative', $pm['statustime']);
+        // Update PM notice value if this is our last unread PM
+        if ($mybb->user['unreadpms']-1 <= 0 && $mybb->user['pmnotice'] == 2) {
+            $updated_user = array(
+                "pmnotice" => 1
+            );
+            $db->update_query("users", $updated_user, "uid='{$mybb->user['uid']}'");
+        }
+    } elseif ($pm['status'] == 3 && $pm['statustime']) {
+        // Replied PM?
+        $pm['reply_date'] = my_date('relative', $pm['statustime']);
 
-		if((TIME_NOW - $pm['statustime']) < 3600)
-		{
-			// Relative string for the first hour
-			$reply_string = $lang->you_replied;
-		}
+        if ((TIME_NOW - $pm['statustime']) < 3600) {
+            // Relative string for the first hour
+            $lang->you_replied_on = $lang->you_replied;
+        }
+    } elseif ($pm['status'] == 4 && $pm['statustime']) {
+        $pm['forward_date'] = my_date('relative', $pm['statustime']);
 
-		$actioned_on = $lang->sprintf($reply_string, $reply_date);
-		eval("\$action_time = \"".$templates->get("private_read_action")."\";");
-	}
-	else if($pm['status'] == 4 && $pm['statustime'])
-	{
-		$forward_string = $lang->you_forwarded_on;
-		$forward_date = my_date('relative', $pm['statustime']);
+        if ((TIME_NOW - $pm['statustime']) < 3600) {
+            $lang->you_forwarded_on = $lang->you_forwarded;
+        }
+    }
 
-		if((TIME_NOW - $pm['statustime']) < 3600)
-		{
-			$forward_string = $lang->you_forwarded;
-		}
+    $pm['userusername'] = $pm['username'];
+    $pm['subject'] = $parser->parse_badwords($pm['subject']);
 
-		$actioned_on = $lang->sprintf($forward_string, $forward_date);
-		eval("\$action_time = \"".$templates->get("private_read_action")."\";");
-	}
+    if ($pm['fromid'] == 0) {
+        $pm['username'] = $lang->mybb_engine;
+    }
 
-	$pm['userusername'] = $pm['username'];
-	$pm['subject'] = htmlspecialchars_uni($parser->parse_badwords($pm['subject']));
+    if (!$pm['username']) {
+        $pm['username'] = $lang->na;
+    }
 
-	if($pm['fromid'] == 0)
-	{
-		$pm['username'] = $lang->mybb_engine;
-	}
+    // Fetch the recipients for this message
+    $pm['recipients'] = my_unserialize($pm['recipients']);
 
-	if(!$pm['username'])
-	{
-		$pm['username'] = $lang->na;
-	}
+    if (is_array($pm['recipients']['to'])) {
+        $uid_sql = implode(',', $pm['recipients']['to']);
+    } else {
+        $uid_sql = $pm['toid'];
+        $pm['recipients']['to'] = array($pm['toid']);
+    }
 
-	// Fetch the recipients for this message
-	$pm['recipients'] = my_unserialize($pm['recipients']);
+    $show_bcc = 0;
 
-	if(is_array($pm['recipients']['to']))
-	{
-		$uid_sql = implode(',', $pm['recipients']['to']);
-	}
-	else
-	{
-		$uid_sql = $pm['toid'];
-		$pm['recipients']['to'] = array($pm['toid']);
-	}
+    // If we have any BCC recipients and this user is an Administrator, add them on to the query
+    if (isset($pm['recipients']['bcc']) && count($pm['recipients']['bcc']) > 0 && $mybb->usergroup['cancp'] == 1) {
+        $show_bcc = 1;
+        $uid_sql .= ','.implode(',', $pm['recipients']['bcc']);
+    }
 
-	$show_bcc = 0;
+    // Fetch recipient names from the database
+    $pm['bcc_recipients'] = $pm['to_recipients'] = $pm['bcc_form_val'] = array();
+    $query = $db->simple_select('users', 'uid, username', "uid IN ({$uid_sql})");
+    while ($recipient = $db->fetch_array($query)) {
+        // User is a BCC recipient
+        if ($show_bcc && in_array($recipient['uid'], $pm['recipients']['bcc'])) {
+            $pm['bcc_recipients'][] = build_profile_link($recipient['username'], $recipient['uid']);
+            $pm['bcc_form_val'][] = $recipient['username'];
+        } elseif (in_array($recipient['uid'], $pm['recipients']['to'])) {
+            // User is a normal recipient
+            $pm['to_recipients'][] = build_profile_link($recipient['username'], $recipient['uid']);
+        }
+    }
 
-	// If we have any BCC recipients and this user is an Administrator, add them on to the query
-	if(isset($pm['recipients']['bcc']) && count($pm['recipients']['bcc']) > 0 && $mybb->usergroup['cancp'] == 1)
-	{
-		$show_bcc = 1;
-		$uid_sql .= ','.implode(',', $pm['recipients']['bcc']);
-	}
+    if (count($pm['bcc_recipients']) > 0) {
+        $pm['bcc_form_val'] = implode(',', $pm['bcc_form_val']);
+    }
 
-	// Fetch recipient names from the database
-	$bcc_recipients = $to_recipients = $bcc_form_val = array();
-	$query = $db->simple_select('users', 'uid, username', "uid IN ({$uid_sql})");
-	while($recipient = $db->fetch_array($query))
-	{
-		// User is a BCC recipient
-		$recipient['username'] = htmlspecialchars_uni($recipient['username']);
-		if($show_bcc && in_array($recipient['uid'], $pm['recipients']['bcc']))
-		{
-			$bcc_recipients[] = build_profile_link($recipient['username'], $recipient['uid']);
-			$bcc_form_val[] = $recipient['username'];
-		}
-		// User is a normal recipient
-		else if(in_array($recipient['uid'], $pm['recipients']['to']))
-		{
-			$to_recipients[] = build_profile_link($recipient['username'], $recipient['uid']);
-		}
-	}
+    add_breadcrumb($pm['subject']);
+    $message = build_postbit($pm, 2);
 
-	$bcc = '';
-	if(count($bcc_recipients) > 0)
-	{
-		$bcc_recipients = implode(', ', $bcc_recipients);
-		$bcc_form_val = implode(',', $bcc_form_val);
-		eval("\$bcc = \"".$templates->get("private_read_bcc")."\";");
-	}
-	else
-	{
-		$bcc_form_val = '';
-	}
+    // Decide whether or not to show quick reply.
+    if ($mybb->settings['pmquickreply'] != 0 && $mybb->user['showquickreply'] != 0 && $mybb->usergroup['cansendpms'] != 0 && $pm['fromid'] != 0 && $pm['folder'] != 3) {
+        $pm['options'] = array('savecopy' => true);
+        if (!empty($mybb->user['signature'])) {
+            $pm['options']['signature'] = true;
+        }
 
-	$replyall = false;
-	if(count($to_recipients) > 1)
-	{
-		$replyall = true;
-	}
+        if ($mybb->usergroup['cantrackpms'] == 1) {
+            $pm['options']['readreceipt'] = true;
+        }
 
-	if(count($to_recipients) > 0)
-	{
-		$to_recipients = implode($lang->comma, $to_recipients);
-	}
-	else
-	{
-		$to_recipients = $lang->nobody;
-	}
+        require_once MYBB_ROOT.'inc/functions_posting.php';
 
-	eval("\$pm['subject_extra'] = \"".$templates->get("private_read_to")."\";");
+        $pm['quoted_message'] = array(
+            'message' => $parser->parse_badwords($pm['message']),
+            'username' => $pm['username'],
+            'quote_is_pm' => true
+        );
+        $pm['quoted_message'] = parse_quoted_message($pm['quoted_message']);
 
-	add_breadcrumb($pm['subject']);
-	$message = build_postbit($pm, 2);
+        if ($mybb->settings['maxpmquotedepth'] != 0) {
+            $pm['quoted_message'] = remove_message_quotes($pm['quoted_message'], $mybb->settings['maxpmquotedepth']);
+        }
 
-	// Decide whether or not to show quick reply.
-	$quickreply = '';
-	if($mybb->settings['pmquickreply'] != 0 && $mybb->user['showquickreply'] != 0 && $mybb->usergroup['cansendpms'] != 0 && $pm['fromid'] != 0 && $pm['folder'] != 3)
-	{
-		$trow = alt_trow();
+        $pm['sendsubject'] = preg_replace("#(FW|RE):( *)#is", '', $pm['subject']);
 
-		$optionschecked = array('savecopy' => 'checked="checked"');
-		if(!empty($mybb->user['signature']))
-		{
-			$optionschecked['signature'] = 'checked="checked"';
-		}
-		if($mybb->usergroup['cantrackpms'] == 1)
-		{
-			$optionschecked['readreceipt'] = 'checked="checked"';
-		}
+        if ($mybb->user['uid'] == $pm['fromid']) {
+            $pm['sendto'] = $mybb->user['username'];
+        } else {
+            $query = $db->simple_select('users', 'username', "uid='{$pm['fromid']}'");
+            $pm['sendto'] = $db->fetch_field($query, 'username');
+        }
+    }
 
-		require_once MYBB_ROOT.'inc/functions_posting.php';
+    $plugins->run_hooks("private_read_end");
 
-		$quoted_message = array(
-			'message' => htmlspecialchars_uni($parser->parse_badwords($pm['message'])),
-			'username' => $pm['username'],
-			'quote_is_pm' => true
-		);
-		$quoted_message = parse_quoted_message($quoted_message);
-
-		if($mybb->settings['maxpmquotedepth'] != '0')
-		{
-			$quoted_message = remove_message_quotes($quoted_message, $mybb->settings['maxpmquotedepth']);
-		}
-
-		$subject = preg_replace("#(FW|RE):( *)#is", '', $pm['subject']);
-
-		if($mybb->user['uid'] == $pm['fromid'])
-		{
-			$to = htmlspecialchars_uni($mybb->user['username']);
-		}
-		else
-		{
-			$query = $db->simple_select('users', 'username', "uid='{$pm['fromid']}'");
-			$to = htmlspecialchars_uni($db->fetch_field($query, 'username'));
-		}
-
-		$private_send_tracking = '';
-		if($mybb->usergroup['cantrackpms'])
-		{
-			$lang->options_read_receipt = $lang->quickreply_read_receipt;
-
-			eval("\$private_send_tracking = \"".$templates->get("private_send_tracking")."\";");
-		}
-
-		eval("\$quickreply = \"".$templates->get("private_quickreply")."\";");
-	}
-
-	$plugins->run_hooks("private_read_end");
-
-	eval("\$read = \"".$templates->get("private_read")."\";");
-	output_page($read);
+    output_page(\MyBB\template('private/read.twig', [
+        'pm' => $pm,
+        'message' => $message,
+        'collapsedthead' => $collapsedthead,
+        'collapsedimg' => $collapsedimg,
+        'collapsed' => $collapsed,
+    ]));
 }
 
 if($mybb->input['action'] == "tracking")
