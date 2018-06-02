@@ -157,7 +157,7 @@ while($user = $db->fetch_array($query))
 		$usergroups[6]['user_list'][$user['uid']] = $user;
 	}
 
-	if($mybb->settings['showgroupleaders'])
+	if($mybb->settings['showgroupleaders'] && isset($usergroups[0]['user_list']))
 	{
 		foreach($usergroups[0]['user_list'] as $uid => $userdetails)
 		{
