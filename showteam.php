@@ -85,11 +85,11 @@ if($mybb->settings['showaddlgroups'])
 	{
 		if($db->type == "pgsql")
 		{
-			$query_part .= "'$visible_group' = ANY (string_to_array(additionalgroups,',')) OR ";
+			$query_part .= "'$visible_group' = ANY (string_to_array(additionalgroups, ',')) OR ";
 		}
 		else
 		{
-			$query_part .= "FIND_IN_SET('$visible_group',additionalgroups) OR ";
+			$query_part .= "FIND_IN_SET('$visible_group', additionalgroups) OR ";
 		}
 	}
 }

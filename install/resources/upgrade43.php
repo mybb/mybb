@@ -86,6 +86,10 @@ function upgrade43_dbchanges()
 			'isdefault'		=> 1
 		)
 	);
+	
+	foreach ($valueset as $values) {
+		$db->insert_query('settings', $values);
+	}
 
 	if($db->field_exists('regex', 'badwords'))
 	{
