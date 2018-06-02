@@ -323,7 +323,7 @@ a:active {
 	background-position: 0 -30px;
 }
 
-.forum_offlock {
+.forum_offclose {
 	background-position: 0 -60px;
 }
 
@@ -347,7 +347,7 @@ a:active {
 	background-position: 0 -10px;
 }
 
-.subforum_miniofflock {
+.subforum_minioffclose {
 	background-position: 0 -20px;
 }
 
@@ -2212,11 +2212,11 @@ ul.thread_tools li.poll {
 	background-position: 0 -20px;
 }
 
-.thread_status.dot_hotlockfolder {
+.thread_status.dot_hotclosefolder {
 	background-position: 0 -40px;
 }
 
-.thread_status.dot_lockfolder {
+.thread_status.dot_closefolder {
 	background-position: 0 -60px;
 }
 
@@ -2228,11 +2228,11 @@ ul.thread_tools li.poll {
 	background-position: 0 -100px;
 }
 
-.thread_status.dot_newhotlockfolder {
+.thread_status.dot_newhotclosefolder {
 	background-position: 0 -120px;
 }
 
-.thread_status.dot_newlockfolder {
+.thread_status.dot_newclosefolder {
 	background-position: 0 -140px;
 }
 
@@ -2244,11 +2244,11 @@ ul.thread_tools li.poll {
 	background-position: 0 -180px;
 }
 
-.thread_status.hotlockfolder {
+.thread_status.hotclosefolder {
 	background-position: 0 -200px;
 }
 
-.thread_status.lockfolder {
+.thread_status.closefolder {
 	background-position: 0 -220px;
 }
 
@@ -2264,11 +2264,11 @@ ul.thread_tools li.poll {
 	background-position: 0 -280px;
 }
 
-.thread_status.newhotlockfolder {
+.thread_status.newhotclosefolder {
 	background-position: 0 -300px;
 }
 
-.thread_status.newlockfolder {
+.thread_status.newclosefolder {
 	background-position: 0 -320px;
 }]]></stylesheet>
 	<stylesheet name="css3.css" version="1811" disporder="7"><![CDATA[tr td.trow1:first-child,
@@ -4101,7 +4101,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 		<dl class="thread_legend smalltext">
 			<dd><span class="thread_status folder" title="{$lang->no_new_thread}">&nbsp;</span> {$lang->no_new_thread}</dd>
 			<dd><span class="thread_status dot_folder" title="{$lang->posts_by_you}">&nbsp;</span> {$lang->posts_by_you}</dd>
-			<dd><span class="thread_status lockfolder" title="{$lang->locked_thread}">&nbsp;</span> {$lang->locked_thread}</dd>
+			<dd><span class="thread_status closefolder" title="{$lang->closed_thread}">&nbsp;</span> {$lang->closed_thread}</dd>
 		</dl>
 	</div>
 	<br class="clear" />
@@ -4358,8 +4358,8 @@ $(".forumjump").change(function() {
 	<dt><span class="forum_status forum_off" title="{$lang->no_new_posts}"></span></dt>
 	<dd>{$lang->no_new_posts}</dd>
 
-	<dt><span class="forum_status forum_offlock" title="{$lang->forum_locked}"></span></dt>
-	<dd>{$lang->forum_locked}</dd>
+	<dt><span class="forum_status forum_offlock" title="{$lang->forum_closed}"></span></dt>
+	<dd>{$lang->forum_closed}</dd>
 
 	<dt><span class="forum_status forum_offlink" title="{$lang->forum_redirect}"></span></dt>
 	<dd>{$lang->forum_redirect}</dd>
@@ -13347,7 +13347,7 @@ if(use_xmlhttprequest == "1")
 						<dl class="thread_legend smalltext">
 							<dd><span class="thread_status folder" title="{$lang->no_new_thread}">&nbsp;</span> {$lang->no_new_thread}</dd>
 							<dd><span class="thread_status dot_folder" title="{$lang->posts_by_you}">&nbsp;</span> {$lang->posts_by_you}</dd>
-							<dd><span class="thread_status lockfolder" title="{$lang->locked_thread}">&nbsp;</span> {$lang->locked_thread}</dd>
+							<dd><span class="thread_status closefolder" title="{$lang->closed_thread}">&nbsp;</span> {$lang->closed_thread}</dd>
 						</dl>
 					</div>
 					<br class="clear" />
