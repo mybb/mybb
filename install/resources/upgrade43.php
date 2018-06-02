@@ -43,6 +43,21 @@ function upgrade43_dbchanges()
 	}
 	$db->delete_query("settings", "name='allowaimfield'");
 
+	if($db->field_exists('regex', 'badwords'))
+	{
+		$db->drop_column('badwords', 'regex');
+	}
+
+	switch($db->type)
+	{
+		case "pgsql":
+			$db->add_column("badwords", "regex", "smallint NOT NULL default '0'");
+			break;
+		default:
+			$db->add_column("badwords", "regex", "tinyint(1) NOT NULL default '0'");
+			break;
+	}
+
 	$cache->delete("mybb_credits");
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");

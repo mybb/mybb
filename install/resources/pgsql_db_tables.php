@@ -124,6 +124,7 @@ $tables[] = "CREATE TABLE mybb_awaitingactivation (
 $tables[] = "CREATE TABLE mybb_badwords (
   bid serial,
   badword varchar(100) NOT NULL default '',
+  regex smallint NOT NULL default '0',
   replacement varchar(100) NOT NULL default '',
   PRIMARY KEY (bid)
 );";

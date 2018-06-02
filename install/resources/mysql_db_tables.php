@@ -123,6 +123,7 @@ $tables[] = "CREATE TABLE mybb_awaitingactivation (
 $tables[] = "CREATE TABLE mybb_badwords (
   bid int unsigned NOT NULL auto_increment,
   badword varchar(100) NOT NULL default '',
+  regex tinyint(1) NOT NULL default '0',
   replacement varchar(100) NOT NULL default '',
   PRIMARY KEY (bid)
 ) ENGINE=MyISAM;";
