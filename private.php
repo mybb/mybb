@@ -1025,142 +1025,109 @@ if($mybb->input['action'] == "read")
 
 if($mybb->input['action'] == "tracking")
 {
-	if(!$mybb->usergroup['cantrackpms'])
-	{
-		error_no_permission();
-	}
+    if (!$mybb->usergroup['cantrackpms']) {
+        error_no_permission();
+    }
 
-	$plugins->run_hooks("private_tracking_start");
-	$readmessages = '';
-	$unreadmessages = '';
+    $plugins->run_hooks("private_tracking_start");
 
-	if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
-	{
-		$mybb->settings['postsperpage'] = 20;
-	}
+    if (!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1) {
+        $mybb->settings['postsperpage'] = 20;
+    }
 
-	// Figure out if we need to display multiple pages.
-	$perpage = $mybb->settings['postsperpage'];
+    // Figure out if we need to display multiple pages.
+    $perpage = $mybb->settings['postsperpage'];
 
-	$query = $db->simple_select("privatemessages", "COUNT(pmid) as readpms", "receipt='2' AND folder!='3' AND status!='0' AND fromid='".$mybb->user['uid']."'");
-	$postcount = $db->fetch_field($query, "readpms");
+    $query = $db->simple_select("privatemessages", "COUNT(pmid) as readpms", "receipt='2' AND folder!='3' AND status!='0' AND fromid='".$mybb->user['uid']."'");
+    $postcount = $db->fetch_field($query, "readpms");
 
-	$page = $mybb->get_input('read_page', MyBB::INPUT_INT);
-	$pages = $postcount / $perpage;
-	$pages = ceil($pages);
+    $page = $mybb->get_input('read_page', MyBB::INPUT_INT);
+    $pages = $postcount / $perpage;
+    $pages = ceil($pages);
 
-	if($mybb->get_input('read_page') == "last")
-	{
-		$page = $pages;
-	}
+    if ($mybb->get_input('read_page') == "last") {
+        $page = $pages;
+    }
 
-	if($page > $pages || $page <= 0)
-	{
-		$page = 1;
-	}
+    if ($page > $pages || $page <= 0) {
+        $page = 1;
+    }
 
-	if($page)
-	{
-		$start = ($page-1) * $perpage;
-	}
-	else
-	{
-		$start = 0;
-		$page = 1;
-	}
+    if ($page) {
+        $start = ($page-1) * $perpage;
+    } else {
+        $start = 0;
+        $page = 1;
+    }
 
-	$read_multipage = multipage($postcount, $perpage, $page, "private.php?action=tracking&amp;read_page={page}");
+    $read_multipage = multipage($postcount, $perpage, $page, "private.php?action=tracking&amp;read_page={page}");
 
-	$query = $db->query("
-		SELECT pm.pmid, pm.subject, pm.toid, pm.readtime, u.username as tousername
-		FROM ".TABLE_PREFIX."privatemessages pm
-		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.toid)
-		WHERE pm.receipt='2' AND pm.folder!='3'  AND pm.status!='0' AND pm.fromid='".$mybb->user['uid']."'
-		ORDER BY pm.readtime DESC
-		LIMIT {$start}, {$perpage}
-	");
-	while($readmessage = $db->fetch_array($query))
-	{
-		$readmessage['subject'] = htmlspecialchars_uni($parser->parse_badwords($readmessage['subject']));
-		$readmessage['tousername'] = htmlspecialchars_uni($readmessage['tousername']);
-		$readmessage['profilelink'] = build_profile_link($readmessage['tousername'], $readmessage['toid']);
-		$readdate = my_date('relative', $readmessage['readtime']);
-		eval("\$readmessages .= \"".$templates->get("private_tracking_readmessage")."\";");
-	}
+    $readmessages = [];
+    $query = $db->query("
+        SELECT pm.pmid, pm.subject, pm.toid, pm.readtime, u.username as tousername
+        FROM ".TABLE_PREFIX."privatemessages pm
+        LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.toid)
+        WHERE pm.receipt='2' AND pm.folder!='3'  AND pm.status!='0' AND pm.fromid='".$mybb->user['uid']."'
+        ORDER BY pm.readtime DESC
+        LIMIT {$start}, {$perpage}
+    ");
+    while ($readmessage = $db->fetch_array($query)) {
+        $readmessage['subject'] = $parser->parse_badwords($readmessage['subject']);
+        $readmessage['profilelink'] = build_profile_link($readmessage['tousername'], $readmessage['toid']);
+        $readmessage['readdate'] = my_date('relative', $readmessage['readtime']);
 
-	$stoptrackingread = '';
-	if(!empty($readmessages))
-	{
-		eval("\$stoptrackingread = \"".$templates->get("private_tracking_readmessage_stop")."\";");
-	}
+        $readmessages[] = $readmessage;
+    }
 
-	if(!$readmessages)
-	{
-		eval("\$readmessages = \"".$templates->get("private_tracking_nomessage")."\";");
-	}
+    $query = $db->simple_select("privatemessages", "COUNT(pmid) as unreadpms", "receipt='1' AND folder!='3' AND status='0' AND fromid='".$mybb->user['uid']."'");
+    $postcount = $db->fetch_field($query, "unreadpms");
 
-	$query = $db->simple_select("privatemessages", "COUNT(pmid) as unreadpms", "receipt='1' AND folder!='3' AND status='0' AND fromid='".$mybb->user['uid']."'");
-	$postcount = $db->fetch_field($query, "unreadpms");
+    $page = $mybb->get_input('unread_page', MyBB::INPUT_INT);
+    $pages = $postcount / $perpage;
+    $pages = ceil($pages);
 
-	$page = $mybb->get_input('unread_page', MyBB::INPUT_INT);
-	$pages = $postcount / $perpage;
-	$pages = ceil($pages);
+    if ($mybb->get_input('unread_page') == "last") {
+        $page = $pages;
+    }
 
-	if($mybb->get_input('unread_page') == "last")
-	{
-		$page = $pages;
-	}
+    if ($page > $pages || $page <= 0) {
+        $page = 1;
+    }
 
-	if($page > $pages || $page <= 0)
-	{
-		$page = 1;
-	}
+    if ($page) {
+        $start = ($page-1) * $perpage;
+    } else {
+        $start = 0;
+        $page = 1;
+    }
 
-	if($page)
-	{
-		$start = ($page-1) * $perpage;
-	}
-	else
-	{
-		$start = 0;
-		$page = 1;
-	}
+    $unread_multipage = multipage($postcount, $perpage, $page, "private.php?action=tracking&amp;unread_page={page}");
 
-	$unread_multipage = multipage($postcount, $perpage, $page, "private.php?action=tracking&amp;unread_page={page}");
+    $unreadmessages = [];
+    $query = $db->query("
+        SELECT pm.pmid, pm.subject, pm.toid, pm.dateline, u.username as tousername
+        FROM ".TABLE_PREFIX."privatemessages pm
+        LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.toid)
+        WHERE pm.receipt='1' AND pm.folder!='3' AND pm.status='0' AND pm.fromid='".$mybb->user['uid']."'
+        ORDER BY pm.dateline DESC
+        LIMIT {$start}, {$perpage}
+    ");
+    while ($unreadmessage = $db->fetch_array($query)) {
+        $unreadmessage['subject'] = $parser->parse_badwords($unreadmessage['subject']);
+        $unreadmessage['profilelink'] = build_profile_link($unreadmessage['tousername'], $unreadmessage['toid']);
+        $unreadmessage['senddate'] = my_date('relative', $unreadmessage['dateline']);
 
-	$query = $db->query("
-		SELECT pm.pmid, pm.subject, pm.toid, pm.dateline, u.username as tousername
-		FROM ".TABLE_PREFIX."privatemessages pm
-		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.toid)
-		WHERE pm.receipt='1' AND pm.folder!='3' AND pm.status='0' AND pm.fromid='".$mybb->user['uid']."'
-		ORDER BY pm.dateline DESC
-		LIMIT {$start}, {$perpage}
-	");
-	while($unreadmessage = $db->fetch_array($query))
-	{
-		$unreadmessage['subject'] = htmlspecialchars_uni($parser->parse_badwords($unreadmessage['subject']));
-		$unreadmessage['tousername'] = htmlspecialchars_uni($unreadmessage['tousername']);
-		$unreadmessage['profilelink'] = build_profile_link($unreadmessage['tousername'], $unreadmessage['toid']);
-		$senddate = my_date('relative', $unreadmessage['dateline']);
-		eval("\$unreadmessages .= \"".$templates->get("private_tracking_unreadmessage")."\";");
-	}
+        $unreadmessages[] = $unreadmessage;
+    }
 
-	$stoptrackingunread = '';
-	if(!empty($unreadmessages))
-	{
-		eval("\$stoptrackingunread = \"".$templates->get("private_tracking_unreadmessage_stop")."\";");
-	}
+    $plugins->run_hooks("private_tracking_end");
 
-	if(!$unreadmessages)
-	{
-		$lang->no_readmessages = $lang->no_unreadmessages;
-		eval("\$unreadmessages = \"".$templates->get("private_tracking_nomessage")."\";");
-	}
-
-	$plugins->run_hooks("private_tracking_end");
-
-	eval("\$tracking = \"".$templates->get("private_tracking")."\";");
-	output_page($tracking);
+    output_page(\MyBB\template('private/tracking.twig', [
+        'read_multipage' => $read_multipage,
+        'unread_multipage' => $unread_multipage,
+        'readmessages' => $readmessages,
+        'unreadmessages' => $unreadmessages,
+    ]));
 }
 
 if($mybb->input['action'] == "do_tracking" && $mybb->request_method == "post")
