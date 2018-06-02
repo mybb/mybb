@@ -323,7 +323,7 @@ a:active {
 	background-position: 0 -30px;
 }
 
-.forum_offlock {
+.forum_offclose {
 	background-position: 0 -60px;
 }
 
@@ -347,7 +347,7 @@ a:active {
 	background-position: 0 -10px;
 }
 
-.subforum_miniofflock {
+.subforum_minioffclose {
 	background-position: 0 -20px;
 }
 
@@ -2212,11 +2212,11 @@ ul.thread_tools li.poll {
 	background-position: 0 -20px;
 }
 
-.thread_status.dot_hotlockfolder {
+.thread_status.dot_hotclosefolder {
 	background-position: 0 -40px;
 }
 
-.thread_status.dot_lockfolder {
+.thread_status.dot_closefolder {
 	background-position: 0 -60px;
 }
 
@@ -2228,11 +2228,11 @@ ul.thread_tools li.poll {
 	background-position: 0 -100px;
 }
 
-.thread_status.dot_newhotlockfolder {
+.thread_status.dot_newhotclosefolder {
 	background-position: 0 -120px;
 }
 
-.thread_status.dot_newlockfolder {
+.thread_status.dot_newclosefolder {
 	background-position: 0 -140px;
 }
 
@@ -2244,11 +2244,11 @@ ul.thread_tools li.poll {
 	background-position: 0 -180px;
 }
 
-.thread_status.hotlockfolder {
+.thread_status.hotclosefolder {
 	background-position: 0 -200px;
 }
 
-.thread_status.lockfolder {
+.thread_status.closefolder {
 	background-position: 0 -220px;
 }
 
@@ -2264,11 +2264,11 @@ ul.thread_tools li.poll {
 	background-position: 0 -280px;
 }
 
-.thread_status.newhotlockfolder {
+.thread_status.newhotclosefolder {
 	background-position: 0 -300px;
 }
 
-.thread_status.newlockfolder {
+.thread_status.newclosefolder {
 	background-position: 0 -320px;
 }]]></stylesheet>
 	<stylesheet name="css3.css" version="1811" disporder="7"><![CDATA[tr td.trow1:first-child,
@@ -4101,7 +4101,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 		<dl class="thread_legend smalltext">
 			<dd><span class="thread_status folder" title="{$lang->no_new_thread}">&nbsp;</span> {$lang->no_new_thread}</dd>
 			<dd><span class="thread_status dot_folder" title="{$lang->posts_by_you}">&nbsp;</span> {$lang->posts_by_you}</dd>
-			<dd><span class="thread_status lockfolder" title="{$lang->locked_thread}">&nbsp;</span> {$lang->locked_thread}</dd>
+			<dd><span class="thread_status closefolder" title="{$lang->closed_thread}">&nbsp;</span> {$lang->closed_thread}</dd>
 		</dl>
 	</div>
 	<br class="clear" />
@@ -4265,7 +4265,7 @@ $(".forumjump").change(function() {
 							<input type="hidden" name="postthread" value="1" />
 						</fieldset>
 						</form>]]></template>
-		<template name="header_welcomeblock_guest" version="1804"><![CDATA[						<!-- Continuation of div(class="upper") as opened in the header template -->
+		<template name="header_welcomeblock_guest" version="1816"><![CDATA[						<!-- Continuation of div(class="upper") as opened in the header template -->
 						<span class="welcome">{$lang->welcome_guest} <a href="{$mybb->settings['bburl']}/member.php?action=login" onclick="$('#quick_login').modal({ fadeDuration: 250, keepelement: true, zIndex: (typeof modal_zindex !== 'undefined' ? modal_zindex : 9999) }); return false;" class="login">{$lang->welcome_login}</a> <a href="{$mybb->settings['bburl']}/member.php?action=register" class="register">{$lang->welcome_register}</a></span>
 					</div>
 				</div>
@@ -4278,34 +4278,38 @@ $(".forumjump").change(function() {
 							<tr>
 								<td class="thead" colspan="2"><strong>{$lang->login}</strong></td>
 							</tr>
-							<tr>
-								<td class="trow1" width="25%"><strong>{$login_username}</strong></td>
-								<td class="trow1"><input name="quick_username" id="quick_login_username" type="text" value="" class="textbox initial_focus" /></td>
-							</tr>
-							<tr>
-								<td class="trow2"><strong>{$lang->password}</strong></td>
-								<td class="trow2">
-									<input name="quick_password" id="quick_login_password" type="password" value="" class="textbox" /> <a href="{$mybb->settings['bburl']}/member.php?action=lostpw" class="lost_password">{$lang->lost_password}</a>
-								</td>
-							</tr>
-							<tr>
-								<td class="trow1">&nbsp;</td>
-								<td class="trow1 remember_me">
-									<input name="quick_remember" id="quick_login_remember" type="checkbox" value="yes" class="checkbox" checked="checked" />
-									<label for="quick_login_remember">{$lang->remember_me}</label>
-								</td>
-							</tr>
-							<tr>
-								<td class="trow2" colspan="2">
-									<div align="center"><input name="submit" type="submit" class="button" value="{$lang->login}" /></div>
-								</td>
-							</tr>
+							{$loginform}
 						</table>
 					</form>
 				</div>
 				<script type="text/javascript">
 					$("#quick_login input[name='url']").val($(location).attr('href'));
 				</script>]]></template>
+		<template name="header_welcomeblock_guest_login_modal" version="1816"><![CDATA[<tr>
+	<td class="trow1" width="25%"><strong>{$login_username}</strong></td>
+	<td class="trow1"><input name="quick_username" id="quick_login_username" type="text" value="" class="textbox initial_focus" /></td>
+</tr>
+<tr>
+	<td class="trow2"><strong>{$lang->password}</strong></td>
+	<td class="trow2">
+		<input name="quick_password" id="quick_login_password" type="password" value="" class="textbox" /> <a href="{$mybb->settings['bburl']}/member.php?action=lostpw" class="lost_password">{$lang->lost_password}</a>
+	</td>
+</tr>
+<tr>
+	<td class="trow1">&nbsp;</td>
+	<td class="trow1 remember_me">
+		<input name="quick_remember" id="quick_login_remember" type="checkbox" value="yes" class="checkbox" checked="checked" />
+		<label for="quick_login_remember">{$lang->remember_me}</label>
+	</td>
+</tr>
+<tr>
+	<td class="trow2" colspan="2">
+		<div align="center"><input name="submit" type="submit" class="button" value="{$lang->login}" /></div>
+	</td>
+</tr>]]></template>
+		<template name="header_welcomeblock_guest_login_modal_lockout" version="1816"><![CDATA[<tr>
+	<td class="trow1" colspan="2">{$lang->failed_login_wait}</td>
+</tr>]]></template>
 		<template name="header_welcomeblock_member" version="1809"><![CDATA[<!-- Continuation of div(class="upper") as opened in the header template -->
 	<span class="welcome">{$lang->welcome_back} <a href="{$mybb->settings['bburl']}/member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}" class="logout">{$lang->welcome_logout}</a></span>
 	</div>
@@ -4354,8 +4358,8 @@ $(".forumjump").change(function() {
 	<dt><span class="forum_status forum_off" title="{$lang->no_new_posts}"></span></dt>
 	<dd>{$lang->no_new_posts}</dd>
 
-	<dt><span class="forum_status forum_offlock" title="{$lang->forum_locked}"></span></dt>
-	<dd>{$lang->forum_locked}</dd>
+	<dt><span class="forum_status forum_offlock" title="{$lang->forum_closed}"></span></dt>
+	<dd>{$lang->forum_closed}</dd>
 
 	<dt><span class="forum_status forum_offlink" title="{$lang->forum_redirect}"></span></dt>
 	<dd>{$lang->forum_redirect}</dd>
@@ -4972,7 +4976,7 @@ if(use_xmlhttprequest == "1")
 </tr>]]></template>
 		<template name="member_profile_findposts" version="1807"><![CDATA[<br /><span class="smalltext">(<a href="search.php?action=finduser&amp;uid={$uid}">{$lang->find_posts}</a>)</span>]]></template>
 		<template name="member_profile_findthreads" version="1807"><![CDATA[<br /><span class="smalltext">(<a href="search.php?action=finduserthreads&amp;uid={$uid}">{$lang->find_threads}</a>)</span>]]></template>
-		<template name="member_profile_groupimage" version="120"><![CDATA[<img src="{$displaygroup['image']}" alt="{$usertitle}" title="{$usertitle}" /><br />]]></template>
+		<template name="member_profile_groupimage" version="120"><![CDATA[<img src="{$memperms['image']}" alt="{$usertitle}" title="{$usertitle}" /><br />]]></template>
 		<template name="member_profile_modoptions" version="1812"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%" class="tborder">
 <tr>
 <td colspan="2" class="thead"><strong>{$lang->mod_options}</strong></td>
@@ -13345,7 +13349,7 @@ if(use_xmlhttprequest == "1")
 						<dl class="thread_legend smalltext">
 							<dd><span class="thread_status folder" title="{$lang->no_new_thread}">&nbsp;</span> {$lang->no_new_thread}</dd>
 							<dd><span class="thread_status dot_folder" title="{$lang->posts_by_you}">&nbsp;</span> {$lang->posts_by_you}</dd>
-							<dd><span class="thread_status lockfolder" title="{$lang->locked_thread}">&nbsp;</span> {$lang->locked_thread}</dd>
+							<dd><span class="thread_status closefolder" title="{$lang->closed_thread}">&nbsp;</span> {$lang->closed_thread}</dd>
 						</dl>
 					</div>
 					<br class="clear" />

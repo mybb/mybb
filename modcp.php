@@ -2776,6 +2776,16 @@ if($mybb->input['action'] == "editprofile")
 		error_no_permission();
 	}
 
+	$userperms = user_permissions($user['uid']);
+
+	// Set display group
+	$displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
+	$display_group = usergroup_displaygroup($user['displaygroup']);
+	if(is_array($display_group))
+	{
+		$userperms = array_merge($userperms, $display_group);
+	}
+
 	if(!my_validate_url($user['website']))
 	{
 		$user['website'] = '';
@@ -2811,18 +2821,10 @@ if($mybb->input['action'] == "editprofile")
 		$mybb->input[$field] = htmlspecialchars_uni($mybb->get_input($field));
 	}
 
-	// Custom user title, check to see if we have a default group title
-	if(!$user['displaygroup'])
+	// Custom user title
+	if(!empty($userperms['usertitle']))
 	{
-		$user['displaygroup'] = $user['usergroup'];
-	}
-
-	$displaygroupfields = array('usertitle');
-	$display_group = usergroup_displaygroup($user['displaygroup']);
-
-	if(!empty($display_group['usertitle']))
-	{
-		$defaulttitle = htmlspecialchars_uni($display_group['usertitle']);
+		$defaulttitle = htmlspecialchars_uni($userperms['usertitle']);
 	}
 	else
 	{

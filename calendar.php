@@ -1445,17 +1445,20 @@ if($mybb->input['action'] == "event")
 	$event['description'] = $parser->parse_message($event['description'], $event_parser_options);
 
 	// Get the usergroup
-	if($event['username'])
+	if($event['usergroup'])
 	{
-		if(!$event['displaygroup'])
-		{
-			$event['displaygroup'] = $event['usergroup'];
-		}
-		$user_usergroup = $groupscache[$event['displaygroup']];
+		$user_usergroup = usergroup_permissions($event['usergroup']);
 	}
 	else
 	{
-		$user_usergroup = $groupscache[1];
+		$user_usergroup = usergroup_permissions(1);
+	}
+
+	$displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
+	$display_group = usergroup_displaygroup($event['displaygroup']);
+	if(is_array($display_group))
+	{
+		$user_usergroup = array_merge($user_usergroup, $display_group);
 	}
 
 	$titles_cache = $cache->read("usertitles");
@@ -1785,17 +1788,20 @@ if($mybb->input['action'] == "dayview")
 			$event['description'] = $parser->parse_message($event['description'], $event_parser_options);
 
 			// Get the usergroup
-			if($event['username'])
+			if($event['usergroup'])
 			{
-				if(!$event['displaygroup'])
-				{
-					$event['displaygroup'] = $event['usergroup'];
-				}
-				$user_usergroup = $groupscache[$event['displaygroup']];
+				$user_usergroup = usergroup_permissions($event['usergroup']);
 			}
 			else
 			{
-				$user_usergroup = $groupscache[1];
+				$user_usergroup = usergroup_permissions(1);
+			}
+
+			$displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
+			$display_group = usergroup_displaygroup($event['displaygroup']);
+			if(is_array($display_group))
+			{
+				$user_usergroup = array_merge($user_usergroup, $display_group);
 			}
 
 			$titles_cache = $cache->read("usertitles");

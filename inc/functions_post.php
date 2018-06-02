@@ -183,17 +183,21 @@ function build_postbit($post, $post_type=0)
 	$post['subject_title'] = $post['subject'];
 
 	// Get the usergroup
-	if($post['userusername'])
+	if($post['usergroup'])
 	{
-		if(!$post['displaygroup'])
-		{
-			$post['displaygroup'] = $post['usergroup'];
-		}
-		$usergroup = $groupscache[$post['displaygroup']];
+		$usergroup = usergroup_permissions($post['usergroup']);
 	}
 	else
 	{
-		$usergroup = $groupscache[1];
+		$usergroup = usergroup_permissions(1);
+	}
+
+	// Fetch display group data.
+	$displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
+	$displaygroup = usergroup_displaygroup($post['displaygroup']);
+	if(is_array($displaygroup))
+	{
+		$usergroup = array_merge($usergroup, $displaygroup);
 	}
 
 	if(!is_array($titlescache))

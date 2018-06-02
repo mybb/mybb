@@ -200,6 +200,12 @@ class postParser
 			$message = $this->parse_mycode($message);
 		}
 
+		// Filter url codes, if disabled.
+		if($mybb->settings['allowlinkmycode'] != 1)
+		{
+			$message = preg_replace("#\[(\/)?url{1}(.*?)\]#i", "", $message);
+		}
+
 		// Parse Highlights
 		if(!empty($this->options['highlight']))
 		{
@@ -644,11 +650,18 @@ class postParser
 					$badword['replacement'] = "*****";
 				}
 
-				// Take into account the position offset for our last replacement.
-				$badword['badword'] = str_replace('\*', '([a-zA-Z0-9_]{1})', preg_quote($badword['badword'], "#"));
+				if($badword['regex'])
+				{
+					$message = preg_replace('#'.$badword['badword'].'#is', $badword['replacement'], $message);
+				}
+				else
+				{
+					// Take into account the position offset for our last replacement.
+					$badword['badword'] = str_replace('\*', '([a-zA-Z0-9_\*]{1})', preg_quote($badword['badword'], "#"));
 
-				// Ensure we run the replacement enough times but not recursively (i.e. not while(preg_match..))
-				$message = preg_replace("#(^|\W)".$badword['badword']."(?=\W|$)#i", '\1'.$badword['replacement'], $message);
+					// Ensure we run the replacement enough times but not recursively (i.e. not while(preg_match..))
+					$message = preg_replace("#(^|\W)".$badword['badword']."(?=\W|$)#i", '\1'.$badword['replacement'], $message);
+				}
 			}
 		}
 		if(!empty($this->options['strip_tags']))

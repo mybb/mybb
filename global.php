@@ -450,7 +450,8 @@ $templatelist .= ",global_boardclosed_warning,global_bannedwarning,error_inline,
 $templatelist .= ",video_dailymotion_embed,video_facebook_embed,video_liveleak_embed,video_metacafe_embed,video_myspacetv_embed,video_veoh_embed,video_vimeo_embed,video_yahoo_embed,video_youtube_embed,debug_summary";
 $templatelist .= ",smilieinsert_row,smilieinsert_row_empty,smilieinsert,smilieinsert_getmore,smilieinsert_smilie,global_board_offline_modal,footer_themeselector,task_image,usercp_themeselector_option,php_warnings";
 $templatelist .= ",mycode_code,mycode_email,mycode_img,mycode_php,mycode_quote_post,mycode_size_int,mycode_url,global_no_permission_modal,global_boardclosed_reason,nav_dropdown,global_remote_avatar_notice";
-$templatelist .= ",header_welcomeblock_member_pms,header_welcomeblock_member_search,header_welcomeblock_guest,header_menu_calendar,header_menu_memberlist,global_dst_detection,header_quicksearch,smilie";
+$templatelist .= ",header_welcomeblock_member_pms,header_welcomeblock_member_search,header_welcomeblock_guest,header_welcomeblock_guest_login_modal,header_welcomeblock_guest_login_modal_lockout";
+$templatelist .= ",header_menu_calendar,header_menu_memberlist,global_dst_detection,header_quicksearch,smilie";
 $templates->cache($db->escape_string($templatelist));
 
 // Set the current date and time now
@@ -539,6 +540,23 @@ else
 			$login_username = $lang->login_username;
 			break;
 	}
+
+	if($mybb->cookies['lockoutexpiry'])
+	{
+		$secsleft = (int)($mybb->cookies['lockoutexpiry'] - TIME_NOW);
+		$hoursleft = floor($secsleft / 3600);
+		$minsleft = floor(($secsleft / 60) % 60);
+		$secsleft = floor($secsleft % 60);
+
+		$lang->failed_login_wait = $lang->sprintf($lang->failed_login_wait, $hoursleft, $minsleft, $secsleft);
+
+		eval('$loginform = "'.$templates->get('header_welcomeblock_guest_login_modal_lockout').'";');
+	}
+	else
+	{
+		eval('$loginform = "'.$templates->get('header_welcomeblock_guest_login_modal').'";');
+	}
+
 	eval('$welcomeblock = "'.$templates->get('header_welcomeblock_guest').'";');
 }
 

@@ -1,7 +1,7 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2014 MyBB Group, All Rights Reserved
+ * Copyright 2018 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
@@ -87,11 +87,28 @@ function upgrade43_dbchanges()
 		)
 	);
 
-	foreach ($valueset as $values) {
-		$db->insert_query('settings', $values);
+	if($db->field_exists('regex', 'badwords'))
+	{
+		$db->drop_column('badwords', 'regex');
 	}
-	
+
+	switch($db->type)
+	{
+		case "pgsql":
+			$db->add_column("badwords", "regex", "smallint NOT NULL default '0'");
+			break;
+		default:
+			$db->add_column("badwords", "regex", "tinyint(1) NOT NULL default '0'");
+			break;
+	}
+
 	$cache->delete("mybb_credits");
+
+	// Add lockout column
+	if(!$db->field_exists("users", "loginlockoutexpiry"))
+	{
+		$db->add_column("users", "loginlockoutexpiry", "int NOT NULL default '0'");
+	}
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("43_done");

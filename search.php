@@ -524,8 +524,8 @@ if($mybb->input['action'] == "results")
 			}
 			if($thread['closed'] == 1)
 			{
-				$folder .= "lock";
-				$folder_label .= $lang->icon_lock;
+				$folder .= "close";
+				$folder_label .= $lang->icon_close;
 			}
 			$folder .= "folder";
 
@@ -1019,8 +1019,8 @@ if($mybb->input['action'] == "results")
 			}
 			if($post['thread_closed'] == 1)
 			{
-				$folder .= "lock";
-				$folder_label .= $lang->icon_lock;
+				$folder .= "close";
+				$folder_label .= $lang->icon_close;
 			}
 			$folder .= "folder";
 

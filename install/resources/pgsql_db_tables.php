@@ -124,6 +124,7 @@ $tables[] = "CREATE TABLE mybb_awaitingactivation (
 $tables[] = "CREATE TABLE mybb_badwords (
   bid serial,
   badword varchar(100) NOT NULL default '',
+  regex smallint NOT NULL default '0',
   replacement varchar(100) NOT NULL default '',
   PRIMARY KEY (bid)
 );";
@@ -1091,7 +1092,8 @@ $tables[] = "CREATE TABLE mybb_users (
   suspendsigtime int NOT NULL default '0',
   coppauser smallint NOT NULL default '0',
   classicpostbit smallint NOT NULL default '0',
-  loginattempts smallint NOT NULL default '1',
+  loginattempts smallint NOT NULL default '0',
+  loginlockoutexpiry int NOT NULL default '0',
   usernotes text NOT NULL default '',
   sourceeditor smallint NOT NULL default '0',
   PRIMARY KEY (uid)
