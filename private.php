@@ -1216,41 +1216,30 @@ if($mybb->input['action'] == "stopalltracking")
 
 if($mybb->input['action'] == "folders")
 {
-	$plugins->run_hooks("private_folders_start");
+    $plugins->run_hooks("private_folders_start");
 
-	$folderlist = '';
-	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
-	foreach($foldersexploded as $key => $folders)
-	{
-		$folderinfo = explode("**", $folders, 2);
-		$foldername = $folderinfo[1];
-		$fid = $folderinfo[0];
-		$foldername = get_pm_folder_name($fid, $foldername);
+    $folderlist = [];
+    $foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
+    foreach ($foldersexploded as $key => $folders) {
+        $folderinfo = explode("**", $folders, 2);
+        $foldername = $folderinfo[1];
+        $folder['fid'] = $folderinfo[0];
+        $folder['foldername'] = get_pm_folder_name($folder['fid'], $foldername);
 
-		if($folderinfo[0] == "1" || $folderinfo[0] == "2" || $folderinfo[0] == "3" || $folderinfo[0] == "4")
-		{
-			$foldername2 = get_pm_folder_name($fid);
-			eval("\$folderlist .= \"".$templates->get("private_folders_folder_unremovable")."\";");
-			unset($name);
-		}
-		else
-		{
-			eval("\$folderlist .= \"".$templates->get("private_folders_folder")."\";");
-		}
-	}
+        $folder['default'] = false;
+        if ($folderinfo[0] == "1" || $folderinfo[0] == "2" || $folderinfo[0] == "3" || $folderinfo[0] == "4") {
+            $folder['default'] = true;
+            $folder['defaultname'] = get_pm_folder_name($folder['fid']);
+        }
 
-	$newfolders = '';
-	for($i = 1; $i <= 5; ++$i)
-	{
-		$fid = "new$i";
-		$foldername = '';
-		eval("\$newfolders .= \"".$templates->get("private_folders_folder")."\";");
-	}
+        $folderlist[] = $folder;
+    }
 
-	$plugins->run_hooks("private_folders_end");
+    $plugins->run_hooks("private_folders_end");
 
-	eval("\$folders = \"".$templates->get("private_folders")."\";");
-	output_page($folders);
+    output_page(\MyBB\template('private/folders.twig', [
+        'folderlist' => $folderlist,
+    ]));
 }
 
 if($mybb->input['action'] == "do_folders" && $mybb->request_method == "post")
@@ -1358,30 +1347,30 @@ if($mybb->input['action'] == "do_folders" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "empty")
 {
-	if($mybb->user['totalpms'] == 0)
-	{
-		error($lang->error_nopms);
-	}
+    if ($mybb->user['totalpms'] == 0) {
+        error($lang->error_nopms);
+    }
 
-	$plugins->run_hooks("private_empty_start");
+    $plugins->run_hooks("private_empty_start");
 
-	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
-	$folderlist = '';
-	foreach($foldersexploded as $key => $folders)
-	{
-		$folderinfo = explode("**", $folders, 2);
-		$fid = $folderinfo[0];
-		$foldername = get_pm_folder_name($fid, $folderinfo[1]);
-		$query = $db->simple_select("privatemessages", "COUNT(*) AS pmsinfolder", " folder='$fid' AND uid='".$mybb->user['uid']."'");
-		$thing = $db->fetch_array($query);
-		$foldercount = my_number_format($thing['pmsinfolder']);
-		eval("\$folderlist .= \"".$templates->get("private_empty_folder")."\";");
-	}
+    $foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
+    $folderlist = [];
+    foreach ($foldersexploded as $key => $folders) {
+        $folderinfo = explode("**", $folders, 2);
+        $folder['fid'] = $folderinfo[0];
+        $folder['foldername'] = get_pm_folder_name($folder['fid'], $folderinfo[1]);
+        $query = $db->simple_select("privatemessages", "COUNT(*) AS pmsinfolder", " folder='{$folder['fid']}' AND uid='{$mybb->user['uid']}'");
+        $thing = $db->fetch_array($query);
+        $folder['foldercount'] = my_number_format($thing['pmsinfolder']);
 
-	$plugins->run_hooks("private_empty_end");
+        $folderlist[] = $folder;
+    }
 
-	eval("\$folders = \"".$templates->get("private_empty")."\";");
-	output_page($folders);
+    $plugins->run_hooks("private_empty_end");
+
+    output_page(\MyBB\template('private/empty.twig', [
+        'folderlist' => $folderlist,
+    ]));
 }
 
 if($mybb->input['action'] == "do_empty" && $mybb->request_method == "post")
