@@ -17,15 +17,18 @@ require_once "./global.php";
 // Load global language phrases
 $lang->load('showteam');
 
+if($mybb->settings['enableshowteam'] == 0)
+{
+	error($lang->showteam_disabled);
+}
+
 add_breadcrumb($lang->nav_showteam);
 
 $plugins->run_hooks('showteam_start');
 
 $timecut = TIME_NOW - $mybb->settings['wolcutoff'];
 
-$usergroups = array();
-$moderators = array();
-$users = array();
+$usergroups = $moderators = $users = array();
 
 // Fetch the list of groups which are to be shown on the page
 $query = $db->simple_select("usergroups", "gid, title, usertitle", "showforumteam=1", array('order_by' => 'disporder'));
@@ -57,19 +60,85 @@ if($usergroups[6]['gid'])
 }
 
 // Now query the users of those specific groups
-$groups_in = implode(",", array_keys($usergroups));
+$visible_groups = array_keys($usergroups);
+
+$groups_in = implode(",", $visible_groups);
 $users_in = implode(",", array_keys($moderators));
+
 if(!$groups_in)
 {
 	$groups_in = 0;
 }
+
 if(!$users_in)
 {
 	$users_in = 0;
 }
-$forum_permissions = forum_permissions();
 
-$query = $db->simple_select("users", "uid, username, displaygroup, usergroup, ignorelist, hideemail, receivepms, lastactive, lastvisit, invisible, away", "displaygroup IN ($groups_in) OR (displaygroup='0' AND usergroup IN ($groups_in)) OR uid IN ($users_in)", array('order_by' => 'username'));
+$forum_permissions = forum_permissions();
+$query_part = '';
+
+// Include additional groups if set to
+if($mybb->settings['showaddlgroups'])
+{
+	foreach($visible_groups as $visible_group)
+	{
+		if($db->type == "pgsql")
+		{
+			$query_part .= "'$visible_group' = ANY (string_to_array(additionalgroups, ',')) OR ";
+		}
+		else
+		{
+			$query_part .= "FIND_IN_SET('$visible_group', additionalgroups) OR ";
+		}
+	}
+}
+
+// Include group leaders if set to
+if($mybb->settings['showgroupleaders'])
+{
+	$leaders = $leadlist = $leaderlist = array();
+
+	$query = $db->simple_select("groupleaders", "gid, uid");
+	while($leader = $db->fetch_array($query))
+	{
+		$leaders[$leader['uid']][] = $leader['gid'];
+	}
+
+	if(!empty($leaders))
+	{
+		foreach($leaders as $uid => $gid)
+		{
+			$leaderlist[$uid] = $gid;
+			$leadlist[] = implode(",", $gid);
+		}
+		$leadlist = implode(",", $leadlist);
+
+		$query = $db->simple_select("usergroups", "gid, title, namestyle", "gid IN ($leadlist)");
+		unset($leadlist);
+
+		while($leaded_group = $db->fetch_array($query))
+		{
+			$leaded_groups[$leaded_group['gid']] = str_replace("{username}",$leaded_group['title'], $leaded_group['namestyle']);
+		}
+
+		// Create virtual usergroup container for leaders
+		$usergroups[0] = array('gid' => 0, 'title' =>  $lang->group_leaders, 'usertitle' => $lang->group_leaders);
+		foreach($leaderlist as $uid => $leaded)
+		{
+			foreach($leaded as $gid){
+				$leadlist[] = $leaded_groups[$gid];
+			}
+			$usergroups[0]['user_list'][$uid]['leaded'] = implode(", ",$leadlist);
+			unset($leadlist);
+		}
+
+		$users_in = implode(",", array_keys(array_flip(explode(",", implode(",", array_keys($leaderlist)).",".$users_in))));
+	}
+}
+
+$query = $db->simple_select("users", "uid, username, displaygroup, usergroup, additionalgroups, ignorelist, hideemail, receivepms, lastactive, lastvisit, invisible, away", $query_part."displaygroup IN ($groups_in) OR (displaygroup='0' AND usergroup IN ($groups_in)) OR uid IN ($users_in)", array('order_by' => 'username'));
+
 while($user = $db->fetch_array($query))
 {
 	// If this user is a moderator
@@ -86,6 +155,18 @@ while($user = $db->fetch_array($query))
 		$user['forumlist'] = $forumlist;
 		$forumlist = '';
 		$usergroups[6]['user_list'][$user['uid']] = $user;
+	}
+
+	if($mybb->settings['showgroupleaders'] && isset($usergroups[0]['user_list']))
+	{
+		foreach($usergroups[0]['user_list'] as $uid => $userdetails)
+		{
+			if($user['uid'] == $uid)
+			{
+				$user['leaded'] = $usergroups[0]['user_list'][$uid]['leaded'];
+				$usergroups[0]['user_list'][$uid] = $user;
+			}
+		}
 	}
 
 	if($user['displaygroup'] == '6' || $user['usergroup'] == '6')
@@ -106,6 +187,18 @@ while($user = $db->fetch_array($query))
 	if($usergroups[$group] && $group != 6)
 	{
 		$usergroups[$group]['user_list'][$user['uid']] = $user;
+	}
+
+	if($mybb->settings['showaddlgroups'] && $user['additionalgroups'] != '')
+	{
+		$adgroups = explode(',', $user['additionalgroups']);
+		foreach($adgroups as $adgroup)
+		{
+			if(in_array($adgroup, $visible_groups))
+			{
+				$usergroups[$adgroup]['user_list'][$user['uid']] = $user;
+			}
+		}
 	}
 }
 
@@ -175,9 +268,9 @@ foreach($usergroups as $usergroup)
 		$plugins->run_hooks('showteam_user');
 
 		// If the current group is a moderator group
-		if($usergroup['gid'] == 6 && !empty($user['forumlist']))
+		if(($usergroup['gid'] == 0 && !empty($user['leaded'])) || ($usergroup['gid'] == 6 && !empty($user['forumlist'])))
 		{
-			$forumslist = $user['forumlist'];
+			$scopelist = $usergroup['gid'] == 0 ? $user['leaded'] : $user['forumlist'];
 			eval("\$modrows .= \"".$templates->get("showteam_moderators_mod")."\";");
 		}
 		else
@@ -186,8 +279,9 @@ foreach($usergroups as $usergroup)
 		}
 	}
 
-	if($modrows && $usergroup['gid'] == 6)
+	if($modrows && in_array($usergroup['gid'], [0,6]))
 	{
+		$modscope = $usergroup['gid'] == 6 ? $lang->mod_forums : $lang->mod_groups;
 		eval("\$grouplist .= \"".$templates->get("showteam_moderators")."\";");
 	}
 
