@@ -1767,11 +1767,9 @@ $do_captcha = $correct = false;
 $inline_errors = "";
 if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 {
-	$plugins->run_hooks("member_do_login_start");
-
-	// Is a fatal call if user has had too many tries
 	$errors = array();
-	$logins = login_attempt_check();
+
+	$plugins->run_hooks("member_do_login_start");
 
 	require_once MYBB_ROOT."inc/datahandlers/login.php";
 	$loginhandler = new LoginDataHandler("get");
@@ -1806,7 +1804,11 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		$mybb->input['action'] = "login";
 		$mybb->request_method = "get";
 
-		my_setcookie('loginattempts', $logins + 1);
+		$login_user = get_user_by_username($user['username'], array('fields' => 'uid'));
+
+		// Is a fatal call if user has had too many tries
+		$logins = login_attempt_check($login_user['uid']);
+
 		$db->update_query("users", array('loginattempts' => 'loginattempts+1'), "uid='".(int)$loginhandler->login_data['uid']."'", 1, true);
 
 		$errors = $loginhandler->get_friendly_errors();
@@ -1869,7 +1871,8 @@ if($mybb->input['action'] == "login")
 	}
 
 	// Checks to make sure the user can login; they haven't had too many tries at logging in.
-	// Is a fatal call if user has had too many tries
+	// Is a fatal call if user has had too many tries. This particular check uses cookies, as a uid is not set yet
+	// and we can't check loginattempts in the db
 	login_attempt_check();
 
 	// Redirect to the page where the user came from, but not if that was the login page.
