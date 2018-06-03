@@ -105,7 +105,7 @@ class PMDataHandler extends DataHandler
 		// If the length of message is beyond SQL limitation for 'text' field
 		else if(strlen($message) > 65535)
 		{
-			$this->set_error("message_too_long", array('65535', strlen($post['message'])));
+			$this->set_error("message_too_long", array('65535', strlen($message)));
 			return false;
 		}
 
