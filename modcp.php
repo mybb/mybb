@@ -4743,7 +4743,7 @@ if(!$mybb->input['action'])
 		$where = '';
 		if($tflist_modlog)
 		{
-			$where = "WHERE (t.fid <> 0 {$tflist_modlog}) OR (l.fid <> 0)";
+			$where = "WHERE (t.fid != 0 {$tflist_modlog}) OR (l.fid != 0)";
 		}
 
 		$query = $db->query("
