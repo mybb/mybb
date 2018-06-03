@@ -1534,33 +1534,29 @@ if($mybb->input['action'] == "delete")
 
 if($mybb->input['action'] == "export")
 {
-	if($mybb->user['totalpms'] == 0)
-	{
-		error($lang->error_nopms);
-	}
+    if ($mybb->user['totalpms'] == 0) {
+        error($lang->error_nopms);
+    }
 
-	$plugins->run_hooks("private_export_start");
+    $plugins->run_hooks("private_export_start");
 
-	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
-	$folder_name = $folder_id = '';
-	foreach($foldersexploded as $key => $folders)
-	{
-		$folderinfo = explode("**", $folders, 2);
-		$folderinfo[1] = get_pm_folder_name($folderinfo[0], $folderinfo[1]);
+    $foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
+    $folderlist = [];
+    foreach ($foldersexploded as $key => $folders) {
+        $folderinfo = explode("**", $folders, 2);
+        $folderinfo[1] = get_pm_folder_name($folderinfo[0], $folderinfo[1]);
 
-		$folder_id = $folderinfo[0];
-		$folder_name = $folderinfo[1];
+        $folder['id'] = $folderinfo[0];
+        $folder['name'] = $folderinfo[1];
 
-		eval("\$folderlist_folder .= \"".$templates->get("private_archive_folders_folder")."\";");
-	}
+        $folderlist[] = $folder;
+    }
 
-	eval("\$folderlist = \"".$templates->get("private_archive_folders")."\";");
+    $plugins->run_hooks("private_export_end");
 
-	$plugins->run_hooks("private_export_end");
-
-	eval("\$archive = \"".$templates->get("private_archive")."\";");
-
-	output_page($archive);
+    output_page(\MyBB\template('private/export.twig', [
+        'folderlist' => $folderlist,
+    ]));
 }
 
 if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
@@ -1647,192 +1643,173 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 			$wsql .= " AND pm.status!='0'";
 		}
 	}
-	$query = $db->query("
-		SELECT pm.*, fu.username AS fromusername, tu.username AS tousername
-		FROM ".TABLE_PREFIX."privatemessages pm
-		LEFT JOIN ".TABLE_PREFIX."users fu ON (fu.uid=pm.fromid)
-		LEFT JOIN ".TABLE_PREFIX."users tu ON (tu.uid=pm.toid)
-		WHERE $wsql AND pm.uid='".$mybb->user['uid']."'
-		ORDER BY pm.folder ASC, pm.dateline DESC
-	");
-	$numpms = $db->num_rows($query);
-	if(!$numpms)
-	{
-		error($lang->error_nopmsarchive);
-	}
 
-	$mybb->input['exporttype'] = $mybb->get_input('exporttype');
+    $query = $db->query("
+        SELECT pm.*, fu.username AS fromusername, tu.username AS tousername
+        FROM ".TABLE_PREFIX."privatemessages pm
+        LEFT JOIN ".TABLE_PREFIX."users fu ON (fu.uid=pm.fromid)
+        LEFT JOIN ".TABLE_PREFIX."users tu ON (tu.uid=pm.toid)
+        WHERE $wsql AND pm.uid='".$mybb->user['uid']."'
+        ORDER BY pm.folder ASC, pm.dateline DESC
+    ");
+    $numpms = $db->num_rows($query);
 
-	$pmsdownload = $ids = '';
-	while($message = $db->fetch_array($query))
-	{
-		if($message['folder'] == 2 || $message['folder'] == 3)
-		{ // Sent Items or Drafts Folder Check
-			if($message['toid'])
-			{
-				$tofromuid = $message['toid'];
-				if($mybb->input['exporttype'] == "txt")
-				{
-					$tofromusername = $message['tousername'];
-				}
-				else
-				{
-					$tofromusername = build_profile_link($message['tousername'], $tofromuid);
-				}
-			}
-			else
-			{
-				$tofromusername = $lang->not_sent;
-			}
-			$tofrom = $lang->to;
-		}
-		else
-		{
-			$tofromuid = $message['fromid'];
-			if($mybb->input['exporttype'] == "txt")
-			{
-				$tofromusername = $message['fromusername'];
-			}
-			else
-			{
-				$tofromusername = build_profile_link($message['fromusername'], $tofromuid);
-			}
+    if (!$numpms) {
+        error($lang->error_nopmsarchive);
+    }
 
-			if($tofromuid == 0)
-			{
-				$tofromusername = $lang->mybb_engine;
-			}
-			$tofrom = $lang->from;
-		}
+    $mybb->input['exporttype'] = $mybb->get_input('exporttype');
 
-		if($tofromuid == 0)
-		{
-			$message['fromusername'] = $lang->mybb_engine;
-		}
+    $pmsdownload = [];
+    $ids = '';
+    while ($message = $db->fetch_array($query)) {
+        if ($message['folder'] == 2 || $message['folder'] == 3) {
+            // Sent Items or Drafts Folder Check
+            if ($message['toid']) {
+                $tofromuid = $message['toid'];
+                if ($mybb->input['exporttype'] == "txt") {
+                    $message['tofromusername'] = $message['tousername'];
+                } else {
+                    $message['tofromusername'] = build_profile_link($message['tousername'], $tofromuid);
+                }
+            } else {
+                $message['tofromusername'] = $lang->not_sent;
+            }
 
-		if(!$message['toid'] && $message['folder'] == 3)
-		{
-			$message['tousername'] = $lang->not_sent;
-		}
+            $message['tofrom'] = $lang->to;
+        } else {
+            $tofromuid = $message['fromid'];
+            if ($mybb->input['exporttype'] == "txt") {
+                $message['tofromusername'] = $message['fromusername'];
+            } else {
+                $message['tofromusername'] = build_profile_link($message['fromusername'], $tofromuid);
+            }
 
-		$message['subject'] = $parser->parse_badwords($message['subject']);
-		if($message['folder'] != "3")
-		{
-			$senddate = my_date($mybb->settings['dateformat'], $message['dateline'], "", false);
-			$sendtime = my_date($mybb->settings['timeformat'], $message['dateline'], "", false);
-			$senddate .= " $lang->at $sendtime";
-		}
-		else
-		{
-			$senddate = $lang->not_sent;
-		}
+            if ($tofromuid == 0) {
+                $message['tofromusername'] = $lang->mybb_engine;
+            }
 
-		if($mybb->input['exporttype'] == "html")
-		{
-			$parser_options = array(
-				"allow_html" => $mybb->settings['pmsallowhtml'],
-				"allow_mycode" => $mybb->settings['pmsallowmycode'],
-				"allow_smilies" => 0,
-				"allow_imgcode" => $mybb->settings['pmsallowimgcode'],
-				"allow_videocode" => $mybb->settings['pmsallowvideocode'],
-				"me_username" => $mybb->user['username'],
-				"filter_badwords" => 1
-			);
+            $message['tofrom'] = $lang->from;
+        }
 
-			$message['message'] = $parser->parse_message($message['message'], $parser_options);
-			$message['subject'] = htmlspecialchars_uni($message['subject']);
-		}
+        if ($tofromuid == 0) {
+            $message['fromusername'] = $lang->mybb_engine;
+        }
 
-		if($mybb->input['exporttype'] == "txt" || $mybb->input['exporttype'] == "csv")
-		{
-			$message['message'] = str_replace("\r\n", "\n", $message['message']);
-			$message['message'] = str_replace("\n", "\r\n", $message['message']);
-		}
+        if (!$message['toid'] && $message['folder'] == 3) {
+            $message['tousername'] = $lang->not_sent;
+        }
 
-		if($mybb->input['exporttype'] == "csv")
-		{
-			$message['message'] = my_escape_csv($message['message']);
-			$message['subject'] = my_escape_csv($message['subject']);
-			$message['tousername'] = my_escape_csv($message['tousername']);
-			$message['fromusername'] = my_escape_csv($message['fromusername']);
-		}
+        $message['subject'] = $parser->parse_badwords($message['subject']);
+        if ($message['folder'] != 3) {
+            $message['senddate'] = my_date($mybb->settings['dateformat'], $message['dateline'], "", false);
+            $sendtime = my_date($mybb->settings['timeformat'], $message['dateline'], "", false);
+            $message['senddate'] .= " $lang->at $sendtime";
+        } else {
+            $message['senddate'] = $lang->not_sent;
+        }
 
-		if(empty($donefolder[$message['folder']]))
-		{
-			reset($foldersexploded);
-			foreach($foldersexploded as $key => $val)
-			{
-				$folderinfo = explode("**", $val, 2);
-				if($folderinfo[0] == $message['folder'])
-				{
-					$foldername = $folderinfo[1];
-					if($mybb->input['exporttype'] != "csv")
-					{
-						if($mybb->input['exporttype'] != "html")
-						{
-							$mybb->input['exporttype'] == "txt";
-						}
-						eval("\$pmsdownload .= \"".$templates->get("private_archive_".$mybb->input['exporttype']."_folderhead", 1, 0)."\";");
-					}
-					else
-					{
-						$foldername = my_escape_csv($folderinfo[1]);
-					}
-					$donefolder[$message['folder']] = 1;
-				}
-			}
-		}
+        if ($mybb->input['exporttype'] == "html") {
+            $parser_options = array(
+                "allow_html" => $mybb->settings['pmsallowhtml'],
+                "allow_mycode" => $mybb->settings['pmsallowmycode'],
+                "allow_smilies" => 0,
+                "allow_imgcode" => $mybb->settings['pmsallowimgcode'],
+                "allow_videocode" => $mybb->settings['pmsallowvideocode'],
+                "me_username" => $mybb->user['username'],
+                "filter_badwords" => 1
+            );
 
-		eval("\$pmsdownload .= \"".$templates->get("private_archive_".$mybb->input['exporttype']."_message", 1, 0)."\";");
-		$ids .= ",'{$message['pmid']}'";
-	}
+            $message['message'] = $parser->parse_message($message['message'], $parser_options);
+        }
 
-	if($mybb->input['exporttype'] == "html")
-	{
-		// Gather global stylesheet for HTML
-		$query = $db->simple_select("themestylesheets", "stylesheet", "sid = '1'", array('limit' => 1));
-		$css = $db->fetch_field($query, "stylesheet");
-	}
+        if ($mybb->input['exporttype'] == "txt" || $mybb->input['exporttype'] == "csv") {
+            $message['message'] = str_replace("\r\n", "\n", $message['message']);
+            $message['message'] = str_replace("\n", "\r\n", $message['message']);
+        }
 
-	$plugins->run_hooks("private_do_export_end");
+        if ($mybb->input['exporttype'] == "csv") {
+            $message['message'] = my_escape_csv($message['message']);
+            $message['subject'] = my_escape_csv($message['subject']);
+            $message['tousername'] = my_escape_csv($message['tousername']);
+            $message['fromusername'] = my_escape_csv($message['fromusername']);
+        }
 
-	eval("\$archived = \"".$templates->get("private_archive_".$mybb->input['exporttype'], 1, 0)."\";");
-	if($mybb->get_input('deletepms', MyBB::INPUT_INT) == 1)
-	{ // delete the archived pms
-		$db->delete_query("privatemessages", "pmid IN ('0'$ids)");
-		// Update PM count
-		update_pm_count();
-	}
+        if (empty($donefolder[$message['folder']])) {
+            reset($foldersexploded);
+            foreach ($foldersexploded as $key => $val) {
+                $message['isfolderheader'] = false;
+                $folderinfo = explode("**", $val, 2);
+                if ($folderinfo[0] == $message['folder']) {
+                    $message['foldername'] = $folderinfo[1];
+                    if ($mybb->input['exporttype'] != "csv") {
+                        if ($mybb->input['exporttype'] != "html") {
+                            $mybb->input['exporttype'] == "txt";
+                        }
 
-	if($mybb->input['exporttype'] == "html")
-	{
-		$filename = "pm-archive.html";
-		$contenttype = "text/html";
-	}
-	elseif($mybb->input['exporttype'] == "csv")
-	{
-		$filename = "pm-archive.csv";
-		$contenttype = "application/octet-stream";
-	}
-	else
-	{
-		$filename = "pm-archive.txt";
-		$contenttype = "text/plain";
-	}
+                        $message['isfolderheader'] = true;
+                        $pmsdownload[] = $message;
+                    } else {
+                        $message['foldername'] = my_escape_csv($folderinfo[1]);
+                    }
 
-	$archived = str_replace("\\\'","'",$archived);
-	header("Content-disposition: filename=$filename");
-	header("Content-type: ".$contenttype);
+                    $donefolder[$message['folder']] = 1;
+                }
+            }
+        }
 
-	if($mybb->input['exporttype'] == "html")
-	{
-		output_page($archived);
-	}
-	else
-	{
-		echo "\xEF\xBB\xBF"; // UTF-8 BOM
-		echo $archived;
-	}
+        $pmsdownload[] = $message;
+        $ids .= ",'{$message['pmid']}'";
+    }
+
+    if ($mybb->input['exporttype'] == "html") {
+        // Gather global stylesheet for HTML
+        $query = $db->simple_select("themestylesheets", "stylesheet", "sid = '1'", array('limit' => 1));
+        $css = $db->fetch_field($query, "stylesheet");
+    }
+
+    $plugins->run_hooks("private_do_export_end");
+
+    if ($mybb->get_input('deletepms', MyBB::INPUT_INT) == 1) {
+        // Delete the archived pms
+        $db->delete_query("privatemessages", "pmid IN ('0'$ids)");
+        // Update PM count
+        update_pm_count();
+    }
+
+    if ($mybb->input['exporttype'] == "html") {
+        $filename = "pm-archive.html";
+        $contenttype = "text/html";
+    } elseif ($mybb->input['exporttype'] == "csv") {
+        $filename = "pm-archive.csv";
+        $contenttype = "application/octet-stream";
+    } else {
+        $filename = "pm-archive.txt";
+        $contenttype = "text/plain";
+    }
+
+    $archived = str_replace("\\\'","'",$archived);
+    header("Content-disposition: filename=$filename");
+    header("Content-type: ".$contenttype);
+
+    if ($mybb->input['exporttype'] == "html") {
+        output_page(\MyBB\template('private/export/html.twig', [
+            'pmsdownload' => $pmsdownload,
+            'css' => $css,
+        ]));
+    } elseif ($mybb->input['exporttype'] == "csv") {
+        echo "\xEF\xBB\xBF"; // UTF-8 BOM
+        output_page(\MyBB\template('private/export/csv.twig', [
+            'pmsdownload' => $pmsdownload,
+        ]));
+        exit;
+    } else {
+        echo "\xEF\xBB\xBF"; // UTF-8 BOM
+        output_page(\MyBB\template('private/export/txt.twig', [
+            'pmsdownload' => $pmsdownload,
+        ]));
+        exit;
+    }
 }
 
 if(!$mybb->input['action'])

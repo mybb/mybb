@@ -1,0 +1,45 @@
+<html>
+	<head>
+		<title>{{ mybb.settings.bbname }} - {{ lang.private_messages_for }}</title>
+		<style type="text/css">{{ css|raw }}
+		* {text-align: left}</style>
+	</head>
+	<body>
+		<br />
+		<table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+			<tr>
+				<td class="thead" colspan="1"><span class="largetext"><strong>{{ lang.private_messages_for }}</strong></span></td>
+			</tr>
+            {% for message in pmsdownload %}
+				{% if message.isfolderheader %}
+					</table>
+					<br />
+					<table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+						<tr>
+							<td class="tcat" colspan="2"><strong>{{ lang.folder }} {{ message.foldername }}</strong></td>
+						</tr>
+				{% else %}
+					<tr>
+						<td class="trow1">
+							<strong>{{ lang.subject }} {{ message.subject }}</strong><br />
+							<em>{{ lang.to }} {{ message.tousername }}<br />{{ lang.from }} {{ message.fromusername }}<br />{{ lang.sent }} {{ message.senddate }}</em>
+						</td>
+					</tr>
+					<tr>
+						<td class="trow2">{{ message.message }}</td>
+					</tr>
+					<tr>
+						<td class="tcat" height="3"> </td>
+					</tr>
+				{% endif %}
+            {% endfor %}
+		</table>
+		<br />
+		<table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+			<tr>
+				<td class="trow1" colspan="1">{{ lang.exported_date }}<br /><a href="{{ mybb.settings.bburl }}">{{ mybb.settings.bbname }}</a></td>
+			</tr>
+		</table>
+	</body>
+</html>
+
