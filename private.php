@@ -1814,404 +1814,290 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 
 if(!$mybb->input['action'])
 {
-	$plugins->run_hooks("private_inbox");
+    $plugins->run_hooks("private_folder");
 
-	if(!$input['fid'] || !array_key_exists($input['fid'], $foldernames))
-	{
-		$input['fid'] = 1;
-	}
+    if (!$input['fid'] || !array_key_exists($input['fid'], $foldernames)) {
+        $input['fid'] = 1;
+    }
 
-	$folder = $input['fid'];
-	$foldername = $foldernames[$folder];
+    $private['folder'] = $folder = $input['fid'];
+    $private['foldername'] = $foldernames[$folder];
 
-	if($folder == 2 || $folder == 3)
-	{ // Sent Items Folder
-		$sender = $lang->sentto;
-	}
-	else
-	{
-		$sender = $lang->sender;
-	}
+    if ($folder == 2 || $folder == 3) {
+        // Sent Items or Drafts Folder
+        $private['sender'] = $lang->sentto;
+    } else {
+        $private['sender'] = $lang->sender;
+    }
 
-	$mybb->input['order'] = htmlspecialchars_uni($mybb->get_input('order'));
-	$ordersel = array('asc' => '', 'desc');
-	switch(my_strtolower($mybb->input['order']))
-	{
-		case "asc":
-			$sortordernow = "asc";
-			$ordersel['asc'] = "selected=\"selected\"";
-			$oppsort = $lang->desc;
-			$oppsortnext = "desc";
-			break;
-		default:
-			$sortordernow = "desc";
-			$ordersel['desc'] = "selected=\"selected\"";
-			$oppsort = $lang->asc;
-			$oppsortnext = "asc";
-			break;
-	}
+    $mybb->input['order'] = $mybb->get_input('order');
+    switch (my_strtolower($mybb->input['order'])) {
+        case "asc":
+            $sortordernow = "asc";
+            $private['oppsort'] = $lang->desc;
+            $private['oppsortnext'] = "desc";
+            break;
+        default:
+            $sortordernow = "desc";
+            $private['oppsort'] = $lang->asc;
+            $private['oppsortnext'] = "asc";
+            break;
+    }
 
-	// Sort by which field?
-	$sortby = htmlspecialchars_uni($mybb->get_input('sortby'));
-	switch($mybb->get_input('sortby'))
-	{
-		case "subject":
-			$sortfield = "subject";
-			break;
-		case "username":
-			$sortfield = "username";
-			break;
-		default:
-			$sortby = "dateline";
-			$sortfield = "dateline";
-			$mybb->input['sortby'] = "dateline";
-			break;
-	}
-	$orderarrow = $sortsel = array('subject' => '', 'username' => '', 'dateline' => '');
-	$sortsel[$sortby] = "selected=\"selected\"";
+    // Sort by which field?
+    $sortby = $mybb->get_input('sortby');
+    switch ($mybb->get_input('sortby')) {
+        case "subject":
+            $sortfield = "subject";
+            break;
+        case "username":
+            $sortfield = "username";
+            break;
+        default:
+            $sortby = "dateline";
+            $sortfield = "dateline";
+            $mybb->input['sortby'] = "dateline";
+            break;
+    }
 
-	eval("\$orderarrow['$sortby'] = \"".$templates->get("private_orderarrow")."\";");
+    $private['orderarrow'] = array('subject' => false, 'username' => false, 'dateline' => false);
+    $private['orderarrow'][$sortby] = true;
 
-	// Do Multi Pages
-	$query = $db->simple_select("privatemessages", "COUNT(*) AS total", "uid='".$mybb->user['uid']."' AND folder='$folder'");
-	$pmscount = $db->fetch_array($query);
+    // Do Multi Pages
+    $query = $db->simple_select("privatemessages", "COUNT(*) AS total", "uid='".$mybb->user['uid']."' AND folder='$folder'");
+    $pmscount = $db->fetch_array($query);
 
-	if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
-	{
-		$mybb->settings['threadsperpage'] = 20;
-	}
+    if (!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1) {
+        $mybb->settings['threadsperpage'] = 20;
+    }
 
-	$perpage = $mybb->settings['threadsperpage'];
-	$page = $mybb->get_input('page', MyBB::INPUT_INT);
+    $perpage = $mybb->settings['threadsperpage'];
+    $page = $mybb->get_input('page', MyBB::INPUT_INT);
 
-	if($page > 0)
-	{
-		$start = ($page-1) *$perpage;
-	}
-	else
-	{
-		$start = 0;
-		$page = 1;
-	}
+    if ($page > 0) {
+        $start = ($page-1) *$perpage;
+    } else {
+        $start = 0;
+        $page = 1;
+    }
 
-	$end = $start + $perpage;
-	$lower = $start+1;
-	$upper = $end;
+    $end = $start + $perpage;
+    $lower = $start+1;
+    $upper = $end;
 
-	if($upper > $pmscount)
-	{
-		$upper = $pmscount;
-	}
+    if ($upper > $pmscount) {
+        $upper = $pmscount;
+    }
 
-	if($mybb->input['order'] || ($sortby && $sortby != "dateline"))
-	{
-		$page_url = "private.php?fid={$folder}&sortby={$sortby}&order={$sortordernow}";
-	}
-	else
-	{
-		$page_url = "private.php?fid={$folder}";
-	}
+    if ($mybb->input['order'] || ($sortby && $sortby != "dateline")) {
+        $page_url = "private.php?fid={$folder}&sortby={$sortby}&order={$sortordernow}";
+    } else {
+        $page_url = "private.php?fid={$folder}";
+    }
 
-	$multipage = multipage($pmscount['total'], $perpage, $page, $page_url);
-	$messagelist = '';
+    $multipage = multipage($pmscount['total'], $perpage, $page, $page_url);
 
-	$icon_cache = $cache->read("posticons");
+    $icon_cache = $cache->read("posticons");
 
-	// Cache users in multiple recipients for sent & drafts folder
-	if($folder == 2 || $folder == 3)
-	{
-		if($sortfield == "username")
-		{
-			$u = "u.";
-		}
-		else
-		{
-			$u = "pm.";
-		}
+    // Cache users in multiple recipients for sent & drafts folder
+    if ($folder == 2 || $folder == 3) {
+        if ($sortfield == "username") {
+            $u = "u.";
+        } else {
+            $u = "pm.";
+        }
 
-		// Get all recipients into an array
-		$cached_users = $get_users = array();
-		$users_query = $db->query("
-			SELECT pm.recipients
-			FROM ".TABLE_PREFIX."privatemessages pm
-			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.toid)
-			WHERE pm.folder='{$folder}' AND pm.uid='{$mybb->user['uid']}'
-			ORDER BY {$u}{$sortfield} {$sortordernow}
-			LIMIT {$start}, {$perpage}
-		");
-		while($row = $db->fetch_array($users_query))
-		{
-			$recipients = my_unserialize($row['recipients']);
-			if(is_array($recipients['to']) && count($recipients['to']))
-			{
-				$get_users = array_merge($get_users, $recipients['to']);
-			}
+        // Get all recipients into an array
+        $cached_users = $get_users = array();
+        $users_query = $db->query("
+            SELECT pm.recipients
+            FROM ".TABLE_PREFIX."privatemessages pm
+            LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.toid)
+            WHERE pm.folder='{$folder}' AND pm.uid='{$mybb->user['uid']}'
+            ORDER BY {$u}{$sortfield} {$sortordernow}
+            LIMIT {$start}, {$perpage}
+        ");
+        while ($row = $db->fetch_array($users_query)) {
+            $recipients = my_unserialize($row['recipients']);
+            if (is_array($recipients['to']) && count($recipients['to'])) {
+                $get_users = array_merge($get_users, $recipients['to']);
+            }
 
-			if(isset($recipients['bcc']) && is_array($recipients['bcc']) && count($recipients['bcc']))
-			{
-				$get_users = array_merge($get_users, $recipients['bcc']);
-			}
-		}
+            if (isset($recipients['bcc']) && is_array($recipients['bcc']) && count($recipients['bcc'])) {
+                $get_users = array_merge($get_users, $recipients['bcc']);
+            }
+        }
 
-		$get_users = implode(',', array_unique($get_users));
+        $get_users = implode(',', array_unique($get_users));
 
-		// Grab info
-		if($get_users)
-		{
-			$users_query = $db->simple_select("users", "uid, username, usergroup, displaygroup", "uid IN ({$get_users})");
-			while($user = $db->fetch_array($users_query))
-			{
-				$cached_users[$user['uid']] = $user;
-			}
-		}
-	}
+        // Grab info
+        if ($get_users) {
+            $users_query = $db->simple_select("users", "uid, username, usergroup, displaygroup", "uid IN ({$get_users})");
+            while ($user = $db->fetch_array($users_query)) {
+                $cached_users[$user['uid']] = $user;
+            }
+        }
+    }
 
-	if($folder == 2 || $folder == 3)
-	{
-		if($sortfield == "username")
-		{
-			$pm = "tu.";
-		}
-		else
-		{
-			$pm = "pm.";
-		}
-	}
-	else
-	{
-		if($sortfield == "username")
-		{
-			$pm = "fu.";
-		}
-		else
-		{
-			$pm = "pm.";
-		}
-	}
+    if ($folder == 2 || $folder == 3) {
+        if ($sortfield == "username") {
+            $pm = "tu.";
+        } else {
+            $pm = "pm.";
+        }
+    } else {
+        if ($sortfield == "username") {
+            $pm = "fu.";
+        } else {
+            $pm = "pm.";
+        }
+    }
 
-	$query = $db->query("
-		SELECT pm.*, fu.username AS fromusername, tu.username as tousername
-		FROM ".TABLE_PREFIX."privatemessages pm
-		LEFT JOIN ".TABLE_PREFIX."users fu ON (fu.uid=pm.fromid)
-		LEFT JOIN ".TABLE_PREFIX."users tu ON (tu.uid=pm.toid)
-		WHERE pm.folder='$folder' AND pm.uid='".$mybb->user['uid']."'
-		ORDER BY {$pm}{$sortfield} {$sortordernow}
-		LIMIT $start, $perpage
-	");
+    $messagelist = [];
+    $query = $db->query("
+        SELECT pm.*, fu.username AS fromusername, tu.username as tousername
+        FROM ".TABLE_PREFIX."privatemessages pm
+        LEFT JOIN ".TABLE_PREFIX."users fu ON (fu.uid=pm.fromid)
+        LEFT JOIN ".TABLE_PREFIX."users tu ON (tu.uid=pm.toid)
+        WHERE pm.folder='$folder' AND pm.uid='".$mybb->user['uid']."'
+        ORDER BY {$pm}{$sortfield} {$sortordernow}
+        LIMIT $start, $perpage
+    ");
 
-	if($db->num_rows($query) > 0)
-	{
-		while($message = $db->fetch_array($query))
-		{
-			$msgalt = $msgstatus = '';
+    if ($db->num_rows($query) > 0) {
+        while ($message = $db->fetch_array($query)) {
+            // Determine Folder Icon
+            if ($message['status'] == 0) {
+                $message['msgstatus'] = 'new_pm';
+                $message['msgalt'] = $lang->new_pm;
+            } elseif ($message['status'] == 1) {
+                $message['msgstatus'] = 'old_pm';
+                $message['msgalt'] = $lang->old_pm;
+            } elseif ($message['status'] == 3) {
+                $message['msgstatus'] = 're_pm';
+                $message['msgalt'] = $lang->reply_pm;
+            } elseif ($message['status'] == 4) {
+                $message['msgstatus'] = 'fw_pm';
+                $message['msgalt'] = $lang->fwd_pm;
+            }
 
-			// Determine Folder Icon
-			if($message['status'] == 0)
-			{
-				$msgstatus = 'new_pm';
-				$msgalt = $lang->new_pm;
-			}
-			else if($message['status'] == 1)
-			{
-				$msgstatus = 'old_pm';
-				$msgalt = $lang->old_pm;
-			}
-			else if($message['status'] == 3)
-			{
-				$msgstatus = 're_pm';
-				$msgalt = $lang->reply_pm;
-			}
-			else if($message['status'] == 4)
-			{
-				$msgstatus = 'fw_pm';
-				$msgalt = $lang->fwd_pm;
-			}
+            $message['multiplerecipients'] = false;
+            if ($folder == 2 || $folder == 3) {
+                // Sent Items or Drafts Folder Check
+                $recipients = my_unserialize($message['recipients']);
+                if (count($recipients['to']) > 1 || (count($recipients['to']) == 1 && isset($recipients['bcc']) && count($recipients['bcc']) > 0)) {
+                    $message['multiplerecipients'] = true;
+                    $message['tousers'] = $message['bbcusers'] = [];
+                    foreach ($recipients['to'] as $uid) {
+                        $user = $cached_users[$uid];
+                        $user['profilelink'] = get_profile_link($uid);
+                        $user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
+                        $message['tousers'][] = $user;
+                    }
+                    if (isset($recipients['bcc']) && is_array($recipients['bcc']) && count($recipients['bcc'])) {
+                        foreach ($recipients['bcc'] as $uid) {
+                            $user = $cached_users[$uid];
+                            $user['profilelink'] = get_profile_link($uid);
+                            $user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
+                            $message['bbcusers'][] = $user;
+                        }
+                    }
+                } elseif ($message['toid']) {
+                    $message['tofromusername'] = $message['tousername'];
+                    $message['tofromuid'] = $message['toid'];
+                } else {
+                    $message['tofromusername'] = $lang->not_sent;
+                }
+            } else {
+                $message['tofromusername'] = $message['fromusername'];
+                $message['tofromuid'] = $message['fromid'];
+                if ($message['tofromuid'] == 0) {
+                    $message['tofromusername'] = $lang->mybb_engine;
+                }
 
-			$tofromuid = 0;
-			if($folder == 2 || $folder == 3)
-			{ // Sent Items or Drafts Folder Check
-				$recipients = my_unserialize($message['recipients']);
-				$to_users = $bcc_users = '';
-				if(count($recipients['to']) > 1 || (count($recipients['to']) == 1 && isset($recipients['bcc']) && count($recipients['bcc']) > 0))
-				{
-					foreach($recipients['to'] as $uid)
-					{
-						$profilelink = get_profile_link($uid);
-						$user = $cached_users[$uid];
-						$user['username'] = htmlspecialchars_uni($user['username']);
-						$username = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
-						if(!$user['username'])
-						{
-							$username = $lang->na;
-						}
-						eval("\$to_users .= \"".$templates->get("private_multiple_recipients_user")."\";");
-					}
-					if(isset($recipients['bcc']) && is_array($recipients['bcc']) && count($recipients['bcc']))
-					{
-						eval("\$bcc_users = \"".$templates->get("private_multiple_recipients_bcc")."\";");
-						foreach($recipients['bcc'] as $uid)
-						{
-							$profilelink = get_profile_link($uid);
-							$user = $cached_users[$uid];
-							$user['username'] = htmlspecialchars_uni($user['username']);
-							$username = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
-							if(!$user['username'])
-							{
-								$username = $lang->na;
-							}
-							eval("\$bcc_users .= \"".$templates->get("private_multiple_recipients_user")."\";");
-						}
-					}
+                if (!$message['tofromusername']) {
+                    $message['tofromuid'] = 0;
+                    $message['tofromusername'] = $lang->na;
+                }
+            }
 
-					eval("\$tofromusername = \"".$templates->get("private_multiple_recipients")."\";");
-				}
-				else if($message['toid'])
-				{
-					$tofromusername = htmlspecialchars_uni($message['tousername']);
-					$tofromuid = $message['toid'];
-				}
-				else
-				{
-					$tofromusername = $lang->not_sent;
-				}
-			}
-			else
-			{
-				$tofromusername = htmlspecialchars_uni($message['fromusername']);
-				$tofromuid = $message['fromid'];
-				if($tofromuid == 0)
-				{
-					$tofromusername = $lang->mybb_engine;
-				}
+            $message['username'] = build_profile_link($message['tofromusername'], $message['tofromuid']);
 
-				if(!$tofromusername)
-				{
-					$tofromuid = 0;
-					$tofromusername = $lang->na;
-				}
-			}
+            $message['denyreceipt'] = false;
+            if ($mybb->usergroup['candenypmreceipts'] == 1 && $message['receipt'] == 1 && $message['folder'] != 3 && $message['folder'] != 2) {
+                $message['denyreceipt'] = true;
+            }
 
-			$tofromusername = build_profile_link($tofromusername, $tofromuid);
+            $message['hasicon'] = false;
+            if ($message['icon'] > 0 && $icon_cache[$message['icon']]) {
+                $message['hasicon'] = true;
+                $icon = $icon_cache[$message['icon']];
+                $icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
+                $message['icon_path'] = $icon['path'];
+                $message['icon_name'] = $icon['name'];
+            }
 
-			if($mybb->usergroup['candenypmreceipts'] == 1 && $message['receipt'] == '1' && $message['folder'] != '3' && $message['folder'] != 2)
-			{
-				eval("\$denyreceipt = \"".$templates->get("private_messagebit_denyreceipt")."\";");
-			}
-			else
-			{
-				$denyreceipt = '';
-			}
+            if (!trim($message['subject'])) {
+                $message['subject'] = $lang->pm_no_subject;
+            }
 
-			if($message['icon'] > 0 && $icon_cache[$message['icon']])
-			{
-				$icon = $icon_cache[$message['icon']];
-				$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
-				$icon['path'] = htmlspecialchars_uni($icon['path']);
-				$icon['name'] = htmlspecialchars_uni($icon['name']);
-				eval("\$icon = \"".$templates->get("private_messagebit_icon")."\";");
-			}
-			else
-			{
-				$icon = '&#009;';
-			}
+            $message['subject'] = $parser->parse_badwords($message['subject']);
 
-			if(!trim($message['subject']))
-			{
-				$message['subject'] = $lang->pm_no_subject;
-			}
+            if ($message['folder'] != 3) {
+                $message['senddate'] = my_date('relative', $message['dateline']);
+            } else {
+                $message['senddate'] = $lang->not_sent;
+            }
 
-			$message['subject'] = htmlspecialchars_uni($parser->parse_badwords($message['subject']));
-			if($message['folder'] != "3")
-			{
-				$senddate = my_date('relative', $message['dateline']);
-			}
-			else
-			{
-				$senddate = $lang->not_sent;
-			}
+            $plugins->run_hooks("private_message");
 
-			$plugins->run_hooks("private_message");
+            $messagelist[] = $message;
+        }
+    }
 
-			eval("\$messagelist .= \"".$templates->get("private_messagebit")."\";");
-		}
-	}
-	else
-	{
-		eval("\$messagelist .= \"".$templates->get("private_nomessages")."\";");
-	}
+    if ($mybb->usergroup['pmquota'] != 0) {
+        $query = $db->simple_select("privatemessages", "COUNT(*) AS total", "uid='".$mybb->user['uid']."'");
+        $pmscount = $db->fetch_array($query);
+        if ($pmscount['total'] == 0) {
+            $private['spaceused'] = 0;
+        } else {
+            $private['spaceused'] = $pmscount['total'] / $mybb->usergroup['pmquota'] * 100;
+        }
 
-	$pmspacebar = '';
-	if($mybb->usergroup['pmquota'] != 0)
-	{
-		$query = $db->simple_select("privatemessages", "COUNT(*) AS total", "uid='".$mybb->user['uid']."'");
-		$pmscount = $db->fetch_array($query);
-		if($pmscount['total'] == 0)
-		{
-			$spaceused = 0;
-		}
-		else
-		{
-			$spaceused = $pmscount['total'] / $mybb->usergroup['pmquota'] * 100;
-		}
-		$spaceused2 = 100 - $spaceused;
-		$belowhalf = $overhalf = '';
-		if($spaceused <= "50")
-		{
-			$spaceused_severity = "low";
-			$belowhalf = round($spaceused, 0)."%";
-			if((int)$belowhalf > 100)
-			{
-				$belowhalf = "100%";
-			}
-		}
-		else
-		{
-			if($spaceused <= "75")
-			{
-				$spaceused_severity = "medium";
-			}
+        $private['spaceused2'] = 100 - $private['spaceused'];
+        if ($private['spaceused'] <= "50") {
+            $private['spaceused_severity'] = "low";
+            $private['belowhalf'] = round($private['spaceused'], 0)."%";
+            if ((int)$private['belowhalf'] > 100) {
+                $private['belowhalf'] = "100%";
+            }
+        } else {
+            if ($private['spaceused'] <= "75") {
+                $private['spaceused_severity'] = "medium";
+            } else {
+                $private['spaceused_severity'] = "high";
+            }
 
-			else
-			{
-				$spaceused_severity = "high";
-			}
-			
-			$overhalf = round($spaceused, 0)."%";
-			if((int)$overhalf > 100)
-			{
-				$overhalf = "100%";
-			}
-		}
+            $private['overhalf'] = round($private['spaceused'], 0)."%";
+            if ((int)$private['overhalf'] > 100) {
+                $private['overhalf'] = "100%";
+            }
+        }
 
-		if($spaceused > 100)
-		{
-			$spaceused = 100;
-			$spaceused2 = 0;
-		}
+        if ($private['spaceused'] > 100) {
+            $private['spaceused'] = 100;
+            $private['spaceused2'] = 0;
+        }
+    }
 
-		eval("\$pmspacebar = \"".$templates->get("private_pmspace")."\";");
-	}
+    $private['pmtotal'] = $pmscount['total'];
 
-	$composelink = '';
-	if($mybb->usergroup['cansendpms'] == 1)
-	{
-		eval("\$composelink = \"".$templates->get("private_composelink")."\";");
-	}
+    $plugins->run_hooks("private_end");
 
-	$emptyexportlink = '';
-	if($mybb->user['totalpms'] > 0)
-	{
-		eval("\$emptyexportlink = \"".$templates->get("private_emptyexportlink")."\";");
-	}
-
-	$limitwarning = '';
-	if($mybb->usergroup['pmquota'] != 0 && $pmscount['total'] >= $mybb->usergroup['pmquota'])
-	{
-		eval("\$limitwarning = \"".$templates->get("private_limitwarning")."\";");
-	}
-
-	$plugins->run_hooks("private_end");
-
-	eval("\$folder = \"".$templates->get("private")."\";");
-	output_page($folder);
+    output_page(\MyBB\template('private/private.twig', [
+        'private' => $private,
+        'messagelist' => $messagelist,
+        'multipage' => $multipage,
+        'folders' => $folders,
+    ]));
 }
