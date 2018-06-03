@@ -691,7 +691,7 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 				$votes[$i] = "0";
 			}
 			$voteslist .= $votes[$i];
-			$numvotes = $numvotes + $votes[$i];
+			$numvotes = (int)$numvotes + (int)$votes[$i];
 		}
 	}
 
