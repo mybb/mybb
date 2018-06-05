@@ -8716,8 +8716,8 @@ if(use_xmlhttprequest == "1")
 </table>
 </div>
 </div>]]></template>
-		<template name="multipage" version="1800"><![CDATA[<div class="pagination">
-<span class="pages">{$lang->multipage_pages}</span>
+		<template name="multipage" version="1816"><![CDATA[<div class="pagination">
+<span class="pages">{$multipage_pages}</span>
 {$prevpage}{$start}{$mppage}{$end}{$nextpage}{$jumptopage}
 </div>]]></template>
 		<template name="multipage_breadcrumb" version="1800"><![CDATA[<div id="breadcrumb_multipage_popup" class="pagination pagination_breadcrumb" style="display: none;">
