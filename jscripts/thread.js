@@ -40,10 +40,11 @@ var Thread = {
 		var new_post_ids = new Array();
 		var quoted = Cookie.get("multiquote");
 		var is_new = true;
+		var deleted = false;
 		if($("#pid" + pid).next("div.post").hasClass('deleted_post'))
 		{
 			$.jGrowl(lang.post_deleted_error, {theme:'jgrowl_error'});
-			var deleted = true;
+			deleted = true;
 		}
 
 		if(quoted && !deleted)
