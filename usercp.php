@@ -1451,7 +1451,7 @@ if ($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post") {
     $plugins->run_hooks('usercp_do_avatar_start');
     require_once MYBB_ROOT."inc/functions_upload.php";
 
-    $avatar_error = "";
+    $error = "";
 
     if(!empty($mybb->input['remove'])) // remove avatar
     {
@@ -1462,14 +1462,14 @@ if ($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post") {
         );
         $db->update_query("users", $updated_avatar, "uid='".$mybb->user['uid']."'");
         remove_avatars($mybb->user['uid']);
-    } elseif($_FILES['avatarupload']['name']) // upload avatar
+    } else if ($_FILES['avatarupload']['name']) // upload avatar
     {
         if ($mybb->usergroup['canuploadavatars'] == 0) {
             error_no_permission();
         }
         $avatar = upload_avatar();
         if ($avatar['error']) {
-            $avatar_error = $avatar['error'];
+            $error = $avatar['error'];
         } else {
             if ($avatar['width'] > 0 && $avatar['height'] > 0) {
                 $avatar_dimensions = $avatar['width']."|".$avatar['height'];
@@ -1481,7 +1481,7 @@ if ($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post") {
             );
             $db->update_query("users", $updated_avatar, "uid='".$mybb->user['uid']."'");
         }
-    } elseif($mybb->settings['allowremoteavatars']) // remote avatar
+    } else if ($mybb->settings['allowremoteavatars']) // remote avatar
     {
         $mybb->input['avatarurl'] = trim($mybb->get_input('avatarurl'));
         if (validate_email_format($mybb->input['avatarurl']) != false) {
@@ -1524,34 +1524,34 @@ if ($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post") {
             // Copy the avatar to the local server (work around remote URL access disabled for getimagesize)
             $file = fetch_remote_file($mybb->input['avatarurl']);
             if (!$file) {
-                $avatar_error = $lang->error_invalidavatarurl;
+                $error = $lang->error_invalidavatarurl;
             } else {
                 $tmp_name = $mybb->settings['avataruploadpath']."/remote_".md5(random_str());
                 $fp = @fopen($tmp_name, "wb");
                 if (!$fp) {
-                    $avatar_error = $lang->error_invalidavatarurl;
+                    $error = $lang->error_invalidavatarurl;
                 } else {
                     fwrite($fp, $file);
                     fclose($fp);
                     list($width, $height, $type) = @getimagesize($tmp_name);
                     @unlink($tmp_name);
                     if (!$type) {
-                        $avatar_error = $lang->error_invalidavatarurl;
+                        $error = $lang->error_invalidavatarurl;
                     }
                 }
             }
 
-            if (empty($avatar_error)) {
+            if (empty($error)) {
                 if ($width && $height && $mybb->settings['maxavatardims'] != "") {
                     list($maxwidth, $maxheight) = explode("x", my_strtolower($mybb->settings['maxavatardims']));
                     if (($maxwidth && $width > $maxwidth) || ($maxheight && $height > $maxheight)) {
                         $lang->error_avatartoobig = $lang->sprintf($lang->error_avatartoobig, $maxwidth, $maxheight);
-                        $avatar_error = $lang->error_avatartoobig;
+                        $error = $lang->error_avatartoobig;
                     }
                 }
             }
 
-            if (empty($avatar_error)) {
+            if (empty($error)) {
                 if ($width > 0 && $height > 0) {
                     $avatar_dimensions = (int)$width."|".(int)$height;
                 }
@@ -1566,75 +1566,50 @@ if ($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post") {
         }
     } else // remote avatar, but remote avatars are not allowed
     {
-        $avatar_error = $lang->error_remote_avatar_not_allowed;
+        $error = $lang->error_remote_avatar_not_allowed;
     }
 
-    if (empty($avatar_error)) {
+    if (empty($error)) {
         $plugins->run_hooks('usercp_do_avatar_end');
         redirect("usercp.php?action=avatar", $lang->redirect_avatarupdated);
     } else {
         $mybb->input['action'] = "avatar";
-        $avatar_error = inline_error($avatar_error);
+        $error = inline_error($error);
     }
 }
 
 if ($mybb->input['action'] == "avatar") {
     $plugins->run_hooks('usercp_avatar_start');
 
-    $avatarmsg = $avatarurl = '';
+    $avatarurl = '';
+    $extranotes = [];
 
     if ($mybb->user['avatartype'] == "upload" || stristr($mybb->user['avatar'], $mybb->settings['avataruploadpath'])) {
-        $avatarmsg = "<br /><strong>".$lang->already_uploaded_avatar."</strong>";
-    } elseif ($mybb->user['avatartype'] == "remote" || my_validate_url($mybb->user['avatar'])) {
-        $avatarmsg = "<br /><strong>".$lang->using_remote_avatar."</strong>";
+        $extranotes[] = $lang->already_uploaded_avatar;
+    } else if ($mybb->user['avatartype'] == "remote" || my_validate_url($mybb->user['avatar'])) {
+        $extranotes[] = $lang->using_remote_avatar;
         $avatarurl = htmlspecialchars_uni($mybb->user['avatar']);
     }
 
     $useravatar = format_avatar($mybb->user['avatar'], $mybb->user['avatardimensions'], '100x100');
-    eval("\$currentavatar = \"".$templates->get("usercp_avatar_current")."\";");
 
     if ($mybb->settings['maxavatardims'] != "") {
         list($maxwidth, $maxheight) = explode("x", my_strtolower($mybb->settings['maxavatardims']));
-        $lang->avatar_note .= "<br />".$lang->sprintf($lang->avatar_note_dimensions, $maxwidth, $maxheight);
+        $extranotes[] = $lang->sprintf($lang->avatar_note_dimensions, $maxwidth, $maxheight);
     }
 
     if ($mybb->settings['avatarsize']) {
         $maxsize = get_friendly_size($mybb->settings['avatarsize']*1024);
-        $lang->avatar_note .= "<br />".$lang->sprintf($lang->avatar_note_size, $maxsize);
-    }
-
-    $plugins->run_hooks('usercp_avatar_intermediate');
-
-    $auto_resize = '';
-    if ($mybb->settings['avatarresizing'] == "auto") {
-        eval("\$auto_resize = \"".$templates->get("usercp_avatar_auto_resize_auto")."\";");
-    } elseif ($mybb->settings['avatarresizing'] == "user") {
-        eval("\$auto_resize = \"".$templates->get("usercp_avatar_auto_resize_user")."\";");
-    }
-
-    $avatarupload = '';
-    if ($mybb->usergroup['canuploadavatars'] == 1) {
-        eval("\$avatarupload = \"".$templates->get("usercp_avatar_upload")."\";");
-    }
-
-    $avatar_remote = '';
-    if ($mybb->settings['allowremoteavatars'] == 1) {
-        eval("\$avatar_remote = \"".$templates->get("usercp_avatar_remote")."\";");
-    }
-
-    $removeavatar = '';
-    if (!empty($mybb->user['avatar'])) {
-        eval("\$removeavatar = \"".$templates->get("usercp_avatar_remove")."\";");
+        $extranotes[] = $lang->sprintf($lang->avatar_note_size, $maxsize);
     }
 
     $plugins->run_hooks('usercp_avatar_end');
 
-    if (!isset($avatar_error)) {
-        $avatar_error = '';
-    }
-
-    eval("\$avatar = \"".$templates->get("usercp_avatar")."\";");
-    output_page($avatar);
+    output_page(\MyBB\template('usercp/avatar.twig', [
+        'error' => $error,
+        'useravatar' => $useravatar,
+        'extranotes' => $extranotes
+    ]));
 }
 
 if ($mybb->input['action'] == "acceptrequest") {
