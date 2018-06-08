@@ -1,0 +1,9 @@
+<div class="error">
+    <p><em>{% if errors.title %}{{ errors.title }}{% else %}{{ lang.please_correct_errors }}{% endif %}</em></p>
+    <ul>
+        {% for error in errors.list %}
+            <li>{{ error }}</li>
+        {% endfor %}
+    </ul>
+</div>
+<br />
