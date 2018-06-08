@@ -1,0 +1,304 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ mybb.settings.bbname }} - {{ lang.edit_options }}</title>
+{% endblock head %}
+
+{% block body %}
+    <form action="usercp.php" method="post">
+        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+
+        <table width="100%" border="0" align="center">
+            <tr>
+                {# TODO: usercpnav #}
+                <td valign="top">
+
+                    {{ errors|raw }}
+
+                    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+                        <tr>
+                            <td class="thead" colspan="2"><strong>{{ lang.edit_options }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td width="50%" class="trow1" valign="top">
+                                <fieldset class="trow2">
+                                    <legend><strong>{{ lang.login_cookies_privacy }}</strong></legend>
+                                    <table cellspacing="0" cellpadding="2">
+                                        <tr>
+                                            <td valign="top" width="1"><input type="checkbox" class="checkbox" name="invisible" id="invisible" value="1"{% if user.invisible %} checked{% endif %} /></td>
+                                            <td><span class="smalltext"><label for="invisible">{{ lang.invisible_mode }}</label></span></td>
+                                        </tr>
+                                    </table>
+                                </fieldset>
+                                <br />
+                                <fieldset class="trow2">
+                                    <legend><strong>{{ lang.messaging_notification }}</strong></legend>
+                                    <table cellspacing="0" cellpadding="2">
+                                        <tr>
+                                            <td valign="top" width="1"><input type="checkbox" class="checkbox" name="allownotices" id="allownotices" value="1"{% if user.allownotices %} checked{% endif %} /></td>
+                                            <td><span class="smalltext"><label for="allownotices">{{ lang.allow_notices }}</label></span></td>
+                                        </tr>
+                                        <tr>
+                                            <td valign="top" width="1"><input type="checkbox" class="checkbox" name="hideemail" id="hideemail" value="1"{% if user.hideemail %} checked{% endif %} /></td>
+                                            <td><span class="smalltext"><label for="hideemail">{{ lang.allow_emails }}</label></span></td>
+                                        </tr>
+                                        {% if mybb.settings.enablepms and mybb.usergroup.canusepms %}
+                                            <tr>
+                                                <td valign="top" width="1"><input type="checkbox" class="checkbox" name="receivepms" id="receivepms" value="1"{% if user.receivepms %} checked{% endif %} /></td>
+                                                <td><span class="smalltext"><label for="receivepms">{{ lang.receive_pms }}</label></span></td>
+                                            </tr>
+                                            {% if mybb.settings.allowbuddyonly %}
+                                                <tr>
+                                                    <td valign="top" width="1"><input type="checkbox" class="checkbox" name="receivefrombuddy" id="receivefrombuddy" value="1"{% if user.receivefrombuddy %} checked{% endif %} /></td>
+                                                    <td><span class="smalltext"><label for="receivefrombuddy">{{ lang.receive_from_buddy }}</label></span></td>
+                                                </tr>
+                                            {% endif %}
+                                            <tr>
+                                                <td valign="top" width="1"><input type="checkbox" class="checkbox" name="pmnotice" id="pmnotice" value="1"{% if user.pmnotice %} checked{% endif %} /></td>
+                                                <td><span class="smalltext"><label for="pmnotice">{{ lang.pm_notice }}</label></span></td>
+                                            </tr>
+                                            <tr>
+                                                <td valign="top" width="1"><input type="checkbox" class="checkbox" name="pmnotify" id="pmnotify" value="1"{% if user.pmnotify %} checked{% endif %} /></td>
+                                                <td><span class="smalltext"><label for="pmnotify">{{ lang.pm_notify }}</label></span></td>
+                                            </tr>
+                                            <tr>
+                                                <td valign="top" width="1"><input type="checkbox" class="checkbox" name="buddyrequestspm" id="buddyrequestspm" value="1"{% if user.buddyrequestspm %} checked{% endif %} /></td>
+                                                <td><span class="smalltext"><label for="buddyrequestspm">{{ lang.buddyrequests_pm }}</label></span></td>
+                                            </tr>
+                                        {% endif %}
+                                        <tr>
+                                            <td valign="top" width="1"><input type="checkbox" class="checkbox" name="buddyrequestsauto" id="buddyrequestsauto" value="1"{% if user.buddyrequestsauto %} checked{% endif %} /></td>
+                                            <td><span class="smalltext"><label for="buddyrequestsauto">{{ lang.buddyrequests_auto }}</label></span></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2"><span class="smalltext"><label for="subscriptionmethod">{{ lang.subscription_method }}</label></span></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <select name="subscriptionmethod" id="subscriptionmethod">
+                                                    <option value="0"{% if user.subscriptionmethod not in [1, 2, 3] %} selected{% endif %}>{{ lang.no_auto_subscribe }}</option>
+                                                    <option value="1"{% if user.subscriptionmethod == 1 %} selected{% endif %}>{{ lang.no_subscribe }}</option>
+                                                    <option value="2"{% if user.subscriptionmethod == 2 %} selected{% endif %}>{{ lang.instant_email_subscribe }}</option>
+                                                    <option value="3"{% if user.subscriptionmethod == 3 %} selected{% endif %}>{{ lang.instant_pm_subscribe }}</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </fieldset>
+                                <br />
+                                <fieldset class="trow2">
+                                    <legend><strong>{{ lang.date_time_options }}</strong></legend>
+                                    <table cellspacing="0" cellpadding="2">
+                                        <tr>
+                                            <td><span class="smalltext">{{ lang.date_format }}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <select name="dateformat">
+                                                    <option value="0">{{ lang.use_default }}</option>
+                                                    {% for key, format in date_formats %}
+                                                        <option value="{{ key }}"{% if key == user.dateformat %} selected{% endif %}>{{ format }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="smalltext">{{ lang.time_format }}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <select name="timeformat">
+                                                    <option value="0">{{ lang.use_default }}</option>
+                                                    {% for key, format in time_formats %}
+                                                        <option value="{{ key }}"{% if key == user.dateformat %} selected{% endif %}>{{ format }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="smalltext">{{ lang.time_offset_desc }}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <select name="timezoneoffset">
+                                                    {% for timezone in timezones %}
+                                                        <option value="{{ timezone.timezone }}"{% if timezone.selected %} selected{% endif %}>{{ timezone.label }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="smalltext">{{ lang.dst_correction }}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <select name="dstcorrection">
+                                                    <option value="2"{% if user.dstcorrection == 2 %} selected{% endif %}>{{ lang.dst_correction_auto }}</option>
+                                                    <option value="1"{% if user.dstcorrection == 1 %} selected{% endif %}>{{ lang.dst_correction_enabled }}</option>
+                                                    <option value="0"{% if user.dstcorrection not in [1, 2] %} selected{% endif %}>{{ lang.dst_correction_disabled }}</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </fieldset>
+                            </td>
+                            <td width="50%" class="trow1" valign="top">
+                                <fieldset class="trow2">
+                                    <legend><strong>{{ lang.forum_display_options }}</strong></legend>
+                                    <table cellspacing="0" cellpadding="2">
+                                        {% if mybb.settings.usertppoptions %}
+                                            <tr>
+                                                <td colspan="2"><span class="smalltext">{{ lang.tpp }}</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2">
+                                                    <select name="tpp">
+                                                        <option value="">{{ lang.use_default }}</option>
+                                                        {% for key, val in mybb.settings.usertppoptions|split(',') %}
+                                                            <option value="{{ key }}"{% if key == user.tpp %} selected{% endif %}>{{ val }}{# TODO: lang->sprintf(lang->tpp_option, val) #}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                        {% endif %}
+                                        <tr>
+                                            <td><span class="smalltext">{{ lang.thread_view }}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <select name="daysprune">
+                                                    <option value="">{{ lang.use_default }}</option>
+                                                    {% for day in [1, 5, 10, 20, 50, 75, 100, 365, 9999] %}
+                                                        <option value="{{ day }}"{% if day == user.daysprune %} selected{% endif %}>
+                                                            {% if loop.first %}
+                                                                {{ lang.thread_view_lastday }}
+                                                            {% elseif day == 365 %}
+                                                                {{ lang.thread_view_year }}
+                                                            {% elseif day == 9999 %}
+                                                                {{ lang.thread_view_all }}
+                                                            {% else %}
+                                                                {{ attribute(lang, "thread_view_" ~ day ~ "days") }}
+                                                            {% endif %}
+                                                        </option>
+                                                    {% endfor %}
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </fieldset>
+                                <br />
+                                <fieldset class="trow2">
+                                    <legend><strong>{{ lang.thread_view_options }}</strong></legend>
+                                    <table cellspacing="0" cellpadding="2">
+                                        <tr>
+                                            <td valign="top" width="1"><input type="checkbox" class="checkbox" name="classicpostbit" id="classicpostbit" value="1"{% if user.classicpostbit %} checked{% endif %} /></td>
+                                            <td><span class="smalltext"><label for="classicpostbit">{{ lang.show_classic_postbit }}</label></span></td>
+                                        </tr>
+                                        <tr>
+                                            <td valign="top" width="1"><input type="checkbox" class="checkbox" name="showimages" id="showimages" value="1"{% if user.showimages %} checked{% endif %} /></td>
+                                            <td><span class="smalltext"><label for="showimages">{{ lang.show_images }}</label></span></td>
+                                        </tr>
+                                        <tr>
+                                            <td valign="top" width="1"><input type="checkbox" class="checkbox" name="showvideos" id="showvideos" value="1"{% if user.showvideos %} checked{% endif %} /></td>
+                                            <td><span class="smalltext"><label for="showvideos">{{ lang.show_videos }}</label></span></td>
+                                        </tr>
+                                        <tr>
+                                            <td valign="top" width="1"><input type="checkbox" class="checkbox" name="showsigs" id="showsigs" value="1"{% if user.showsigs %} checked{% endif %} /></td>
+                                            <td><span class="smalltext"><label for="showsigs">{{ lang.show_sigs }}</label></span></td>
+                                        </tr>
+                                        <tr>
+                                            <td valign="top" width="1"><input type="checkbox" class="checkbox" name="showavatars" id="showavatars" value="1"{% if user.showavatars %} checked{% endif %} /></td>
+                                            <td><span class="smalltext"><label for="showavatars">{{ lang.show_avatars }}</label></span></td>
+                                        </tr>
+                                        {% if mybb.settings.quickreply %}
+                                            <tr>
+                                                <td valign="top" width="1"><input type="checkbox" class="checkbox" name="showquickreply" id="showquickreply" value="1"{% if user.showquickreply %} checked{% endif %} /></td>
+                                                <td><span class="smalltext"><label for="showquickreply">{{ lang.show_quick_reply }}</label></span></td>
+                                            </tr>
+                                        {% endif %}
+                                        {% if mybb.settings.userpppoptions %}
+                                            <tr>
+                                                <td colspan="2"><span class="smalltext">{{ lang.ppp }}</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2">
+                                                    <select name="ppp">
+                                                        <option value="">{{ lang.use_default }}</option>
+                                                        {% for key, val in mybb.settings.userpppoptions|split(',') %}
+                                                            <option value="{{ key }}"{% if key == user.ppp %} selected{% endif %}>{{ val }}{# TODO: lang->sprintf(lang->ppp_option, val) #}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                        {% endif %}
+                                        <tr>
+                                            <td colspan="2"><span class="smalltext">{{ lang.thread_mode }}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <select name="threadmode">
+                                                    <option value="">{{ lang.use_default }}</option>
+                                                    <option value="linear"{% if user.threadmode == 'linear' %} selected{% endif %}>{{ lang.linear }}</option>
+                                                    <option value="threaded"{% if user.threadmode != 'linear' %} selected{% endif %}>{{ lang.threaded }}</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </fieldset>
+                                <br />
+                                <fieldset class="trow2">
+                                    <legend><strong>{{ lang.other_options }}</strong></legend>
+                                    <table cellspacing="0" cellpadding="2">
+                                        <tr>
+                                            <td valign="top" width="1"><input type="checkbox" class="checkbox" name="showredirect" id="showredirect" value="1"{% if user.showredirect %} checked{% endif %} /></td>
+                                            <td><span class="smalltext"><label for="showredirect">{{ lang.show_redirect }}</label></span></td>
+                                        </tr>
+                                        <tr>
+                                            <td valign="top" width="1"><input type="checkbox" class="checkbox" name="showcodebuttons" id="showcodebuttons" value="1"{% if user.showcodebuttons %} checked{% endif %} /></td>
+                                            <td><span class="smalltext"><label for="showcodebuttons">{{ lang.show_codebuttons }}</label></span></td>
+                                        </tr>
+                                        <tr>
+                                            <td valign="top" width="1"><input type="checkbox" class="checkbox" name="sourceeditor" id="sourceeditor" value="1"{% if user.sourceeditor %} checked{% endif %} /></td>
+                                            <td><span class="smalltext"><label for="sourceeditor">{{ lang.source_editor }}</label></span></td>
+                                        </tr>
+                                        {% if stylelist %}
+                                            <tr>
+                                                <td colspan="2"><span class="smalltext">{{ lang.style }}</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2">{{ stylelist|raw }}</td>
+                                            </tr>
+                                        {% endif %}
+                                        {% if languages|length > 1 %}
+                                            <tr>
+                                                <td colspan="2"><span class="smalltext">{{ lang.board_language }}:</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2">
+                                                    <select name="language">
+                                                        <option value="">{{ lang.use_default }}</option>
+                                                        <option value="0">-----------</option>
+                                                        {% for name, language in languages %}
+                                                            <option value="{{ name }}"{% if name == user.language %} selected{% endif %}>{{ language }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                        {% endif %}
+                                    </table>
+                                </fieldset>
+                            </td>
+                        </tr>
+                    </table>
+
+					<br />
+                    <div align="center">
+                        <input type="hidden" name="action" value="do_options" />
+                        <input type="submit" class="button" name="regsubmit" value="{{ lang.update_options }}" />
+                    </div>
+
+                </td>
+            </tr>
+        </table>
+    </form>
+{% endblock body %}
