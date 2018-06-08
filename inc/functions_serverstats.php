@@ -203,54 +203,11 @@ function build_server_stats($is_install=1, $prev_version='', $current_version=''
 	}
 
 	// Host URL & hostname
+	// Dropped fetching host details since v.1.8.16 as http://www.whoishostingthis.com API seems to be down and this info is not required by MyBB.
 	$info['hosturl'] = $info['hostname'] = "unknown/local";
 	if($_SERVER['HTTP_HOST'] == 'localhost')
-	{
-		$info['hosturl'] = $info['hostname'] = "localhost";
-	}
-
-	// Check the hosting company
-	if(strpos($_SERVER['HTTP_HOST'], ".") !== false)
-	{
-		$host_url = "http://www.whoishostingthis.com/".str_replace(array('http://', 'https://', 'www.'), '', $_SERVER['HTTP_HOST']);
-
-		$hosting = fetch_remote_file($host_url);
-
-		if($hosting)
-		{
-			preg_match('#We believe \<a href\="http:\/\/www.whoishostingthis.com\/linkout\/\?t\=[0-9]&url\=?([^"]*)" (title="([^"]*)" )target\=\_blank\>([^<]*)\<\/a\>#ism', $hosting, $matches);
-
-			$info['hosturl'] = "unknown/no-url";
-			if(isset($matches[1]) && strlen(trim($matches[1])) != 0 && strpos($matches[1], '.') !== false)
-			{
-				$info['hosturl'] = strtolower($matches[1]);
-			}
-			else if(isset($matches[3]) && strlen(trim($matches[3])) != 0 && strpos($matches[3], '.') !== false)
-			{
-				$info['hosturl'] = strtolower($matches[3]);
-			}
-
-			if(isset($matches[4]) && strlen(trim($matches[4])) != 0)
-			{
-				$info['hostname'] = $matches[4];
-			}
-			elseif(isset($matches[3]) && strlen(trim($matches[3])) != 0)
-			{
-				$info['hostname'] = $matches[3];
-			}
-			elseif(isset($matches[2]) && strlen(trim($matches[2])) != 0)
-			{
-				$info['hostname'] = str_replace(array('title=', '"'), '', $matches[2][0]);
-			}
-			elseif(strlen(trim($info['hosturl'])) != 0 && $info['hosturl'] != "unknown/no-url")
-			{
-				$info['hostname'] = $info['hosturl'];
-			}
-			else
-			{
-				$info['hostname'] = "unknown/no-name";
-			}
-		}
+	{	
+		$info['hosturl'] = $info['hostname'] = "localhost";	
 	}
 
 	if(isset($_SERVER['HTTP_USER_AGENT']))
