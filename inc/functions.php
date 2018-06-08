@@ -1141,7 +1141,7 @@ function multipage($count, $perpage, $page, $url, $breadcrumb=false)
 		eval("\$jumptopage = \"".$templates->get("multipage_jump_page")."\";");
 	}
 
-	$lang->multipage_pages = $lang->sprintf($lang->multipage_pages, $pages);
+	$multipage_pages = $lang->sprintf($lang->multipage_pages, $pages);
 
 	if($breadcrumb == true)
 	{
