@@ -8,7 +8,7 @@
                 <table width="100%" align="center" border="0" cellspacing="0" cellpadding="2" id="clickable_smilies">
                     {% for smilie in smilies %}
                         {% set remainder = (loop.index % mybb.settings.smilieinsertercols) %}
-                            <td>{# include 'parser/mycodes/smilie.twig' #}</td>
+                            <td>{% include 'parser/mycodes/smilie.twig' %}</td>
                         {% if (mybb.settings.smilieinsertercols > 0 and remainder == 0) or loop.last %}
                             {% if loop.last %}
                                     <td colspan="{{ remainder }}"></td>
