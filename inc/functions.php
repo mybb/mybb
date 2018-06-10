@@ -2861,6 +2861,8 @@ function build_mycode_inserter($bind="message", $smilies = true)
 function build_clickable_smilies()
 {
     global $cache, $smiliecache, $theme, $templates, $lang, $mybb, $smiliecount;
+    
+    $clickablesmilies = '';
 
     if ($mybb->settings['smilieinserter'] != 0 && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot']) {
         if (!$smiliecount) {
@@ -2883,19 +2885,13 @@ function build_clickable_smilies()
         if (is_array($smiliecache)) {
             reset($smiliecache);
 
-            $getmore = '';
             if ($mybb->settings['smilieinsertertot'] >= $smiliecount) {
                 $mybb->settings['smilieinsertertot'] = $smiliecount;
-            } elseif ($mybb->settings['smilieinsertertot'] < $smiliecount) {
-                $smiliecount = $mybb->settings['smilieinsertertot'];
-                eval("\$getmore = \"".$templates->get("smilieinsert_getmore")."\";");
             }
 
-            $smilies = '';
-            $counter = 0;
+            $smilies = [];
             $i = 0;
 
-            $extra_class = '';
             foreach ($smiliecache as $smilie) {
                 if ($i < $mybb->settings['smilieinsertertot'] && $smilie['showclickable'] != 0) {
                     $smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
@@ -2908,32 +2904,18 @@ function build_clickable_smilies()
 
                     $find = str_replace(array('\\', "'"), array('\\\\', "\'"), htmlspecialchars_uni($smilie['find']));
 
-                    $onclick = " onclick=\"MyBBEditor.insertText(' $find ');\"";
-                    $extra_class = ' smilie_pointer';
-                    eval('$smilie = "'.$templates->get('smilie', 1, 0).'";');
-                    eval("\$smilie_icons .= \"".$templates->get("smilieinsert_smilie")."\";");
+                    $smilie['onclick'] = " onclick=\"MyBBEditor.insertText(' $find ');\"";
+                    $smilie['extra_class'] = ' smilie_pointer';
                     ++$i;
-                    ++$counter;
-
-                    if ($counter == $mybb->settings['smilieinsertercols']) {
-                        $counter = 0;
-                        eval("\$smilies .= \"".$templates->get("smilieinsert_row")."\";");
-                        $smilie_icons = '';
-                    }
+                    $smilies[] = $smilie;
                 }
             }
 
-            if ($counter != 0) {
-                $colspan = $mybb->settings['smilieinsertercols'] - $counter;
-                eval("\$smilies .= \"".$templates->get("smilieinsert_row_empty")."\";");
-            }
-
-            eval("\$clickablesmilies = \"".$templates->get("smilieinsert")."\";");
-        } else {
-            $clickablesmilies = "";
+            $clickablesmilies = \MyBB\template('smilieinsert/main.twig', [
+                'smilies' => $smilies,
+                'smiliecount' => $smiliecount
+            ]);
         }
-    } else {
-        $clickablesmilies = "";
     }
 
     return $clickablesmilies;
