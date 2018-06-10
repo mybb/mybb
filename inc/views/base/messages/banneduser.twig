@@ -1,0 +1,7 @@
+{% extends 'messages/base.twig' %}
+
+{% block message %}
+    <strong>{{ lang.banned_warning }}</strong>
+    {{ lang.banned_warning2 }}: {{ options.extra.reason }}<br />
+    {{ lang.banned_warning3 }}: {{ options.extra.lift }}<br />
+{% endblock message %}
