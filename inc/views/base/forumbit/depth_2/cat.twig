@@ -1,0 +1,53 @@
+{% set bgcolor = alt_trow() %}
+<tr>
+    <td class="{{ bgcolor }}" align="center" width="1">
+        <span class="forum_status forum_{{ lightbulb.folder }} ajax_mark_read" title="{{ lightbulb.altonoff }}" id="mark_read_{{ forum.fid }}"></span>
+    </td>
+    <td class="{{ bgcolor }}">
+        <strong><a href="{{ forum.url }}">{{ forum.name }}</a></strong>
+        {# Forum viewers #}
+        {% if mybb.settings.showforumviewing != 0 and forum.viewers > 0 %}
+            <span class="smalltext">
+                {% if forum.viewers == 1 %}
+                    {{ lang.viewing_one }}
+                {% else %}
+                    {{ trans('viewing_multiple', forum.viewers) }}
+                {% endif %}
+            </span>
+        {% endif %}
+        <div class="smalltext">
+            {{ forum.description }}
+            {% block moderators %}{% endblock moderators %}
+            {{ subforums|raw }}
+        </div>
+    </td>
+    <td class="{{ bgcolor }}" align="center" style="white-space: nowrap">
+        {{ forum.fthreads }}
+        {% if forum.showunapproved %}
+            {% spaceless %}
+                <span title="
+                    {% if forum.unapprovedthreads == 1 %}
+                        {{ trans('forum_unapproved_thread_count', 1) }}
+                    {% else %}
+                        {{ trans('forum_unapproved_threads_count', forum.unapprovedthreads) }} {# TODO: my_number_format #}
+                    {% endif %}">({{ forum.unapprovedthreads }})</span>
+            {% endspaceless %}
+        {% endif %}
+    </td>
+    <td class="{{ bgcolor }}" align="center" style="white-space: nowrap">
+        {{ forum.fposts }}
+        {% if forum.showunapproved %}
+            {% spaceless %}
+                <span title="
+                    {% if forum.unapprovedposts == 1 %}
+                        {{ trans('forum_unapproved_post_count', 1) }}
+                    {% else %}
+                        {{ trans('forum_unapproved_posts_count', forum.unapprovedposts) }} {# TODO: my_number_format #}
+                    {% endif %}">({{ forum.unapprovedposts }})</span>
+            {% endspaceless %}
+        {% endif %}
+    </td>
+    <td class="{{ bgcolor }}" align="right" style="white-space: nowrap">
+        {{ lastpost|raw }}
+    </td>
+</tr>
