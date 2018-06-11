@@ -44,14 +44,14 @@
                     <li><a href="{{ mybb.settings.homeurl }}">{{ mybb.settings.homename }}</a></li>
                     <li><a href="#top">{{ lang.bottomlinks_returntop }}</a></li>
                     <li><a href="<archive_url>">{{ lang.bottomlinks_litemode }}</a></li>
-                    <li><a href="{{ mybb.settings.bburl }}/misc.php?action=markread{{ post_code_string }}">{{ lang.bottomlinks_markread }}</a></li>
+                    <li><a href="{{ mybb.settings.bburl }}/misc.php?action=markread{% if mybb.user.uid %}&amp;my_post_key={{ mybb.post_code }}{% endif %}">{{ lang.bottomlinks_markread }}</a></li>
                     <li><a href="{{ mybb.settings.bburl }}/misc.php?action=syndication">{{ lang.bottomlinks_syndication }}</a></li>
                 </ul>
             </div>
         </div>
         <div class="lower">
             <div class="wrapper">
-                <span id="current_time">{{ lang.welcome_current_time }}</span>
+                <span id="current_time">{{ lang.welcome_current_time|raw }}</span>
                 <span id="copyright">
                     <!-- MyBB is free software developed and maintained by a volunteer community.
                         It would be much appreciated by the MyBB Group if you left the full copyright and "powered by" notice intact,
@@ -65,7 +65,7 @@
             </div>
         </div>
     </div>
-    <!-- The following piece of code allows MyBB to run scheduled tasks. DO NOT REMOVE -->{{ task_image }}<!-- End task image code -->
+    <!-- The following piece of code allows MyBB to run scheduled tasks. DO NOT REMOVE -->{{ task_image }}<!-- End task image code. TODO: convert task_image template -->
     {% if mybb.settings.dst_correction %}
         {{ mybb.settings.dst_correction }}
     {% endif %}

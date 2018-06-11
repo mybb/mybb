@@ -638,12 +638,6 @@ if ($task_cache['nextrun'] <= TIME_NOW) {
     eval("\$task_image = \"".$templates->get("task_image")."\";");
 }
 
-// Post code
-$post_code_string = '';
-if ($mybb->user['uid']) {
-    $post_code_string = '&amp;my_post_key='.$mybb->post_code;
-}
-
 // Use a fictional setting to inject the footer code into Twig without creating an ad-hoc extension
 $mybb->settings['footer'] = [];
 
