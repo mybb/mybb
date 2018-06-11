@@ -4256,12 +4256,12 @@ function get_current_location($fields=false, $ignore=array(), $quick=false)
  */
 function build_theme_select($name, $selected=-1, $tid=0, $depth="", $usergroup_override=false, $footer=false, $count_override=false)
 {
-    global $db, $themeselect, $tcache, $lang, $mybb, $limit, $templates, $num_themes, $themeselect_option;
+    global $db, $themeselect, $tcache, $lang, $mybb, $limit, $templates, $num_themes, $themeselect_options;
 
     if ($tid == 0) {
         $tid = 1;
         $num_themes = 0;
-        $themeselect_option = '';
+        $themeselect_options = [];
 
         if (!isset($lang->use_default)) {
             $lang->use_default = $lang->lang_select_default;
@@ -4278,16 +4278,12 @@ function build_theme_select($name, $selected=-1, $tid=0, $depth="", $usergroup_o
 
     if (is_array($tcache[$tid])) {
         foreach ($tcache[$tid] as $theme) {
-            $sel = "";
             // Show theme if allowed, or if override is on
             if (is_member($theme['allowedgroups']) || $theme['allowedgroups'] == "all" || $usergroup_override == true) {
-                if ($theme['tid'] == $selected) {
-                    $sel = " selected=\"selected\"";
-                }
 
                 if ($theme['pid'] != 0) {
-                    $theme['name'] = htmlspecialchars_uni($theme['name']);
-                    eval("\$themeselect_option .= \"".$templates->get("usercp_themeselector_option")."\";");
+                    $theme['depth'] = $depth;
+                    $themeselect_options[] = $theme;
                     ++$num_themes;
                     $depthit = $depth."--";
                 }
@@ -4300,13 +4296,12 @@ function build_theme_select($name, $selected=-1, $tid=0, $depth="", $usergroup_o
     }
 
     if ($tid == 1 && ($num_themes > 1 || $count_override == true)) {
-        if ($footer == true) {
-            eval("\$themeselect = \"".$templates->get("footer_themeselector")."\";");
-        } else {
-            eval("\$themeselect = \"".$templates->get("usercp_themeselector")."\";");
-        }
-
-        return $themeselect;
+        return \MyBB\template('misc/themeselect.twig', [
+            'footer' => $footer,
+            'selected' => $selected,
+            'options' => $themeselect_options,
+            'name' => $name
+        ]);
     } else {
         return false;
     }

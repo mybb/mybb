@@ -155,7 +155,7 @@
                                                     <select name="tpp">
                                                         <option value="">{{ lang.use_default }}</option>
                                                         {% for key, val in mybb.settings.usertppoptions|split(',') %}
-                                                            <option value="{{ key }}"{% if key == user.tpp %} selected{% endif %}>{{ val }}{# TODO: lang->sprintf(lang->tpp_option, val) #}</option>
+                                                            <option value="{{ key }}"{% if key == user.tpp %} selected{% endif %}>{{ trans('tpp_option', val) }}</option>
                                                         {% endfor %}
                                                     </select>
                                                 </td>
@@ -225,7 +225,7 @@
                                                     <select name="ppp">
                                                         <option value="">{{ lang.use_default }}</option>
                                                         {% for key, val in mybb.settings.userpppoptions|split(',') %}
-                                                            <option value="{{ key }}"{% if key == user.ppp %} selected{% endif %}>{{ val }}{# TODO: lang->sprintf(lang->ppp_option, val) #}</option>
+                                                            <option value="{{ key }}"{% if key == user.ppp %} selected{% endif %}>{{ trans('ppp_option', val) }}</option>
                                                         {% endfor %}
                                                     </select>
                                                 </td>
