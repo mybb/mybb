@@ -1,3 +1,72 @@
+            <debugstuff>
         </div>
     </div>
+    <div id="footer">
+        <div class="upper">
+            <div class="wrapper">
+                {% if mybb.settings.footer.langselect is iterable %}
+                    <div class="language">
+                        <form method="post" action="{{ mybb.settings.footer.langselect.current_url.location }}" id="lang_select">
+                            <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+                            {% for name, field in mybb.input if name != 'language' and name is not iterable and value is not iterable and value %}
+                                <input type="hidden" name="{{ name }}" value="{{ value }}" />
+                            {% endfor %}
+                            <select name="language" onchange="MyBB.changeLanguage();">
+                                <optgroup label="{{ lang.select_language }}">
+                                    {% for key, language in mybb.settings.footer.langselect.options %}
+                                    	{{ language }}
+                                        <option value="{{ key }}"{% if lang.language == key %} selected{% endif %}>{{ language }}</option>
+                                    {% endfor %}
+                                </optgroup>
+                            </select>
+                            <input type="submit" class="button" value="{{ lang.go }}" />
+                        </form>
+                    </div>
+                {% endif %}
+                {% if mybb.settings.footer.themeselect is iterable %}
+                    <div class="theme">
+                        <form method="post" action="{{ mybb.settings.footer.themeselect.current_url.location }}" id="theme_select">
+                            <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+                            {% if mybb.settings.footer.themeselect.options %}
+                                {% for name, field in mybb.input if name != 'theme' and name is not iterable and value is not iterable and value %}
+                                    <input type="hidden" name="{{ name }}" value="{{ value }}" />
+                                {% endfor %}
+                            {% endif %}
+                            {{ mybb.settings.footer.themeselect.options|raw }}
+                            <input type="submit" class="button" value="{{ lang.go }}" />
+                        </form>
+                    </div>
+                {% endif %}
+                <ul class="menu bottom_links">
+                    {% if (mybb.settings.contactlink == "contact.php" and mybb.settings.contact and (mybb.settings.contact_guests != 1 and mybb.user.uid == 0 or mybb.user.uid > 0)) or mybb.settings.contactlink != "contact.php" %}
+                        <li><a href="{{ mybb.settings.contactlink }}">{{ lang.bottomlinks_contactus }}</a></li>
+                    {% endif %}
+                    <li><a href="{{ mybb.settings.homeurl }}">{{ mybb.settings.homename }}</a></li>
+                    <li><a href="#top">{{ lang.bottomlinks_returntop }}</a></li>
+                    <li><a href="<archive_url>">{{ lang.bottomlinks_litemode }}</a></li>
+                    <li><a href="{{ mybb.settings.bburl }}/misc.php?action=markread{{ post_code_string }}">{{ lang.bottomlinks_markread }}</a></li>
+                    <li><a href="{{ mybb.settings.bburl }}/misc.php?action=syndication">{{ lang.bottomlinks_syndication }}</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="lower">
+            <div class="wrapper">
+                <span id="current_time">{{ lang.welcome_current_time }}</span>
+                <span id="copyright">
+                    <!-- MyBB is free software developed and maintained by a volunteer community.
+                        It would be much appreciated by the MyBB Group if you left the full copyright and "powered by" notice intact,
+                        to show your support for MyBB.  If you choose to remove or modify the copyright below,
+                        you may be refused support on the MyBB Community Forums.
+
+                        This is free software, support us and we'll support you. -->
+                    {{ lang.powered_by }} <a href="https://mybb.com" target="_blank" rel="noopener">MyBB{% if mybb.settings.showvernum %} {{ mybb.version }}{% endif %}</a>, &copy; 2002-{{ "now"|date("Y") }} <a href="https://mybb.com" target="_blank" rel="noopener">MyBB Group</a>.
+                    <!-- End powered by -->
+                </span>
+            </div>
+        </div>
+    </div>
+    <!-- The following piece of code allows MyBB to run scheduled tasks. DO NOT REMOVE -->{{ task_image }}<!-- End task image code -->
+    {% if mybb.settings.dst_correction %}
+        {{ mybb.settings.dst_correction }}
+    {% endif %}
 </div>
