@@ -23,7 +23,7 @@
     </td>
     <td class="{{ bgcolor }}" align="center" style="white-space: nowrap">
         {{ forum.fthreads }}
-        {% if forum.showunapproved %}
+        {% if forum.showunapproved and forum.unapprovedthreads > 0 %}
             {% spaceless %}
                 <span title="
                     {% if forum.unapprovedthreads == 1 %}
@@ -36,7 +36,7 @@
     </td>
     <td class="{{ bgcolor }}" align="center" style="white-space: nowrap">
         {{ forum.fposts }}
-        {% if forum.showunapproved %}
+        {% if forum.showunapproved and forum.unapprovedposts > 0 %}
             {% spaceless %}
                 <span title="
                     {% if forum.unapprovedposts == 1 %}
