@@ -1040,31 +1040,20 @@ else if($mybb->input['action'] == "get_buddyselect")
 
 		$plugins->run_hooks("xmlhttp_get_buddyselect_start");
 
-		$timecut = TIME_NOW - $mybb->settings['wolcutoff'];
 		$query = $db->simple_select("users", "uid, username, usergroup, displaygroup, lastactive, lastvisit, invisible", "uid IN ({$mybb->user['buddylist']})", $query_options);
-		$online = array();
-		$offline = array();
+		$buddies = [];
 		while($buddy = $db->fetch_array($query))
 		{
-			$buddy['username'] = htmlspecialchars_uni($buddy['username']);
-			$buddy_name = format_name($buddy['username'], $buddy['usergroup'], $buddy['displaygroup']);
-			$profile_link = build_profile_link($buddy_name, $buddy['uid'], '_blank');
-			if($buddy['lastactive'] > $timecut && ($buddy['invisible'] == 0 || $mybb->user['usergroup'] == 4) && $buddy['lastvisit'] != $buddy['lastactive'])
-			{
-				eval("\$online[] = \"".$templates->get("xmlhttp_buddyselect_online")."\";");
-			}
-			else
-			{
-				eval("\$offline[] = \"".$templates->get("xmlhttp_buddyselect_offline")."\";");
-			}
+			$buddy['fusername'] = format_name(htmlspecialchars_uni($buddy['username']), $buddy['usergroup'], $buddy['displaygroup']);
+			$buddy['fusername'] = build_profile_link($buddy['fusername'], $buddy['uid'], '_blank');
+			$buddies[] = $buddy;
 		}
-		$online = implode("", $online);
-		$offline = implode("", $offline);
 
 		$plugins->run_hooks("xmlhttp_get_buddyselect_end");
 
-		eval("\$buddy_select = \"".$templates->get("xmlhttp_buddyselect")."\";");
-		echo $buddy_select;
+		echo \MyBB\template('xmlhttp/buddyselect.twig', [
+            'buddies' => $buddies
+        ]);
 	}
 	else
 	{

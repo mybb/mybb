@@ -1,0 +1,51 @@
+<table border="0" cellspacing="1" cellpadding="4" class="tborder" style="width: 300px;">
+    <thead>
+        <tr>
+            <td class="thead">
+                <div class="float_right" style="margin-top: 3px;">
+                    <span class="smalltext">
+                        <a href="javascript:void(0)" onclick="UserCP.closeBuddySelect(true); return false;">{{ lang.close }}</a>
+                    </span>
+                </div>
+                <div><strong>{{ lang.select_buddies }}</strong></div>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="trow1 smalltext">{{ lang.select_buddies_desc }}</td>
+        </tr>
+        <tr>
+            <td class="trow2">
+                <div style="height: 200px; overflow: auto;" >
+                    <table border="0" cellspacing="1" cellpadding="4" class="tborder" style="border: 0; width: 270px;" align="right">
+                        {% for buddy in buddies %}
+                            {% if buddy.lastactive > ('now'|date('U') - mybb.settings.wolcutoff) and (buddy.invisible == 0 or mybb.user.usergroup == 4) and buddy.lastvisit != buddy.lastactive %}
+                        		{% set status = 'online' %}
+                        	{% else %}
+                        		{% set status = 'offline' %}
+                        	{% endif %}
+                            <tr>
+                                <td class="trow1" onmouseover="this.className='trow2';" onmouseout="this.className='trow1';">
+                                    <label>
+                                        <input type="checkbox" style="vertical-align: middle;" id="checkbox_{{ buddy.uid }}" onclick="UserCP.selectBuddy('{{ buddy.uid }}', '{{ buddy.username }}');" /> <img src="{{ theme.imgdir }}/buddy_{{ status }}.png" alt="({{ attribute(lang, status) }})" title="{{ attribute(lang, status) }}" style="vertical-align: middle;" /> {{ buddy.fusername }}
+                                    </label>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="trow1">
+                <div class="smalltext"><strong>{{ lang.selected_recipients }}</strong></div>
+                <div id="buddyselect_buddies" class="smalltext" style="padding-left: 10px; height: 50px; overflow: auto;"></div>
+                <div style="text-align: right;">
+                    <input type="button" class="button" value="{{ lang.ok }}" onclick="UserCP.closeBuddySelect();" />
+                    <input type="button" class="button" value="{{ lang.cancel }}" onclick="UserCP.closeBuddySelect(true);" />
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
