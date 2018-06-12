@@ -1,7 +1,7 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bburl }} - {{ lang.manage_announcement }}</title>
+    <title>{{ mybb.settings.bbname }} - {{ lang.manage_announcement }}</title>
 {% endblock head %}
 
 {% block body %}
@@ -22,8 +22,9 @@
                         </tr>
                         {% if globalAnnouncements %}
                             {% for aid, announcement in globalAnnouncements %}
+                        		{% set bgcolor = alt_trow() %}
                                 <tr>
-                                    <td>
+                                    <td class="{{ bgcolor }}">
                                         {% if announcement.startdate > 'now'|date('U') or ('now'|date('U') > announcement.enddate and announcement.enddate) %}
                                             {% set title = lang.expired_announcement %}
                                         {% else %}
@@ -32,8 +33,8 @@
                                         <div class="subforumicon subforum_minioff" title="{{ title }}"></div>
                                         <a href="announcements.php?aid={{ aid }}">{{ announcement.subject }}</a>
                                     </td>
-                                    <td align="center"><a href="modcp.php?action=edit_announcement&amp;aid={{ aid }}">{{ lang.edit }}</a></td>
-                                    <td align="center"><a href="modcp.php?action=delete_announcement&amp;aid={{ aid }}">{{ lang.delete }}</a></td>
+                                    <td class="{{ bgcolor }}" align="center"><a href="modcp.php?action=edit_announcement&amp;aid={{ aid }}">{{ lang.edit }}</a></td>
+                                    <td class="{{ bgcolor }}" align="center"><a href="modcp.php?action=delete_announcement&amp;aid={{ aid }}">{{ lang.delete }}</a></td>
                                 </tr>
                             {% endfor %}
                         {% else %}

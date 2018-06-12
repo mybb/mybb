@@ -1,7 +1,7 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bburl }} - {{ lang.add_announcement }}</title>
+    <title>{{ mybb.settings.bbname }} - {{ lang.add_announcement }}</title>
 {% endblock head %}
 
 {% block body %}
@@ -14,19 +14,33 @@
                 {# Modcp nav #}
                 <td valign="top">
                     {{ errors|raw }}
-                    {# Preview post to be included when ready. Requires $postbit to be defined #} 
-                    {# include 'post/preview.twig' #}
+                    {# Preview #}
+                    {% if postbit %}
+                        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder tfixed clear no_bottom_border">
+                            <tr>
+                                <td class="thead"><strong>{{ lang.post_preview }}</strong></td>
+                            </tr>
+                            <tr>
+                                <td id="posts_container">
+                                    <div id="posts">
+                                        {{ postbit|raw }}
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <br />
+                    {% endif %}
                     <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
                         <tr>
                             <td class="thead" colspan="6"><strong>{{ lang.add_announcement }}</strong></td>
                         </tr>
                         <tr>
-                            <td valign="top" width="25%"><strong>{{ lang.title }}</strong></td>
-                            <td valign="top" width="75%"><input type="text" class="textbox" name="title" size="40" value="{{ announcement.subject }}" /></td>
+                            <td class="trow1" valign="top" width="25%"><strong>{{ lang.title }}</strong></td>
+                            <td class="trow1" valign="top" width="75%"><input type="text" class="textbox" name="title" size="40" value="{{ announcement.subject }}" /></td>
                         </tr>
                         <tr>
-                            <td colspan="1" valign="top" width="25%"><strong>{{ lang.start_date }}</strong></td>
-                            <td valign="top"  width="75%">
+                            <td class="trow2" colspan="1" valign="top" width="25%"><strong>{{ lang.start_date }}</strong></td>
+                            <td class="trow2" valign="top"  width="75%">
                                 <select name="starttime_day">
                                     {% for day in 1..31 %}
                                         <option value="{{ day }}"{% if mybb.input.starttime_day == day %} selected{% endif %}>{{ day }}</option>
@@ -42,8 +56,8 @@
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="1" valign="top" width="25%"><strong>{{ lang.end_date }}</strong></td>
-                            <td valign="top"  width="75%">
+                            <td class="trow1" colspan="1" valign="top" width="25%"><strong>{{ lang.end_date }}</strong></td>
+                            <td class="trow1" valign="top" width="75%">
                                 <input type="radio" name="endtime_type" value="1"{% if mybb.input.endtime_type != 2 or mybb.input.endtime_type is defined %} checked{% endif %} />
                                 <select name="endtime_day">
                                     {% for day in 1..31 %}
@@ -61,8 +75,8 @@
                             </td>
                         </tr>
                         <tr>
-                            <td valign="top" width="25%"><strong>{{ lang.announcement }}</strong><br />{{ smilieinserter|raw }}</td>
-                            <td valign="top" width="75%"><textarea id="message" name="message" rows="20" cols="70">{{ announcement.message }}</textarea>{{ codebuttons|raw }}</td>
+                            <td class="trow2" valign="top" width="25%"><strong>{{ lang.announcement }}</strong><br />{{ smilieinserter|raw }}</td>
+                            <td class="trow2" valign="top" width="75%"><textarea id="message" name="message" rows="20" cols="70">{{ announcement.message }}</textarea>{{ codebuttons|raw }}</td>
                         </tr>
                         {% if mybb.settings.announcementshtml %}
                             <tr>
@@ -78,8 +92,8 @@
                             </tr>
                         {% endif %}
                         <tr>
-                            <td valign="top" width="25%"><strong>{{ lang.allow_mycode }}</strong></td>
-                            <td valign="top" width="75%">
+                            <td class="trow2" valign="top" width="25%"><strong>{{ lang.allow_mycode }}</strong></td>
+                            <td class="trow2" valign="top" width="75%">
                                 <label>
                                     <input type="radio" name="allowmycode" value="1"{% if announcement.allowmycode %} checked{% endif %} /> {{ lang.yes }}
                                 </label>
@@ -89,8 +103,8 @@
                             </td>
                         </tr>
                         <tr>
-                            <td valign="top" width="25%"><strong>{{ lang.allow_smilies }}</strong></td>
-                            <td valign="top" width="75%">
+                            <td class="trow1" valign="top" width="25%"><strong>{{ lang.allow_smilies }}</strong></td>
+                            <td class="trow1" valign="top" width="75%">
                                 <label>
                                     <input type="radio" name="allowsmilies" value="1"{% if announcement.allowsmilies %} checked{% endif %} /> {{ lang.yes }}
                                 </label>
