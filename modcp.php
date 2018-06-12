@@ -2588,14 +2588,10 @@ if ($mybb->input['action'] == "finduser") {
         default:
             $sortby = "regdate";
     }
-    $sortbysel = array('lastvisit' => '', 'postnum' => '', 'username' => '', 'regdate' => '');
-    $sortbysel[$mybb->get_input('sortby')] = " selected=\"selected\"";
     $order = $mybb->get_input('order');
     if ($order != "asc") {
         $order = "desc";
     }
-    $ordersel = array('asc' => '', 'desc' => '');
-    $ordersel[$order] = " selected=\"selected\"";
 
     $query = $db->simple_select("users", "COUNT(uid) AS count", "1=1 {$where}");
     $user_count = $db->fetch_field($query, "count");
@@ -2637,38 +2633,21 @@ if ($mybb->input['action'] == "finduser") {
 
     // Fetch out results
     $query = $db->simple_select("users", "*", "1=1 {$where}", array("order_by" => $sortby, "order_dir" => $order, "limit" => $perpage, "limit_start" => $start));
-    $users = '';
+    $users = [];
     while ($user = $db->fetch_array($query)) {
-        $alt_row = alt_trow();
-        $user['username'] = htmlspecialchars_uni($user['username']);
         $user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
         $user['postnum'] = my_number_format($user['postnum']);
-        $regdate = my_date('relative', $user['regdate']);
 
-        if ($user['invisible'] == 1 && $mybb->usergroup['canviewwolinvis'] != 1 && $user['uid'] != $mybb->user['uid']) {
-            $lastdate = $lang->lastvisit_never;
-
-            if ($user['lastvisit']) {
-                // We have had at least some active time, hide it instead
-                $lastdate = $lang->lastvisit_hidden;
-            }
-        } else {
-            $lastdate = my_date('relative', $user['lastvisit']);
-        }
-
-        $usergroup = htmlspecialchars_uni($usergroups_cache[$user['usergroup']]['title']);
-        eval("\$users .= \"".$templates->get("modcp_finduser_user")."\";");
-    }
-
-    // No results?
-    if (!$users) {
-        eval("\$users = \"".$templates->get("modcp_finduser_noresults")."\";");
+        $user['ugroup'] = $usergroups_cache[$user['usergroup']]['title'];
+        $users[] = $user;
     }
 
     $plugins->run_hooks('modcp_finduser_end');
 
-    eval("\$finduser = \"".$templates->get("modcp_finduser")."\";");
-    output_page($finduser);
+    output_page(\MyBB\template('modcp/finduser.twig', [
+        'users' => $users,
+        'multipage' => $multipage
+    ]));
 }
 
 if ($mybb->input['action'] == "warninglogs") {
