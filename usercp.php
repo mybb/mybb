@@ -1420,28 +1420,14 @@ if($mybb->input['action'] == "addsubscription")
 		require_once MYBB_ROOT."inc/class_parser.php";
 		$parser = new postParser;
 		$thread['subject'] = $parser->parse_badwords($thread['subject']);
-		$thread['subject'] = htmlspecialchars_uni($thread['subject']);
 		$lang->subscribe_to_thread = $lang->sprintf($lang->subscribe_to_thread, $thread['subject']);
-
-		$notification_none_checked = $notification_email_checked = $notification_pm_checked = '';
-		if($mybb->user['subscriptionmethod'] == 1 || $mybb->user['subscriptionmethod'] == 0)
-		{
-			$notification_none_checked = "checked=\"checked\"";
-		}
-		else if($mybb->user['subscriptionmethod'] == 2)
-		{
-			$notification_email_checked = "checked=\"checked\"";
-		}
-		else if($mybb->user['subscriptionmethod'] == 3)
-		{
-			$notification_pm_checked = "checked=\"checked\"";
-		}
 
 		// Naming of the hook retained for backward compatibility while dropping usercp2.php
 		$plugins->run_hooks("usercp2_addsubscription_thread");
 
-		eval("\$add_subscription = \"".$templates->get("usercp_addsubscription_thread")."\";");
-		output_page($add_subscription);
+		output_page(\MyBB\template('usercp/subscribe_thread.twig', [
+            'thread' => $thread
+        ]));
 		exit;
 	}
 }
