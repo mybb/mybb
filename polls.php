@@ -24,12 +24,11 @@ $plugins->run_hooks("polls_start");
 
 if($mybb->user['uid'] != 0)
 {
-	$mybb->user['username'] = htmlspecialchars_uni($mybb->user['username']);
-	eval("\$loginbox = \"".$templates->get("changeuserbox")."\";");
+	$loginbox = \MyBB\template('misc/changeuserbox.twig');
 }
 else
 {
-	eval("\$loginbox = \"".$templates->get("loginbox")."\";");
+    $loginbox = \MyBB\template('misc/loginbox.twig');
 }
 
 $mybb->input['action'] = $mybb->get_input('action');

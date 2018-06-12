@@ -103,17 +103,6 @@ class captcha
 		if($template)
 		{
 			$this->captcha_template = $template;
-
-			if($this->type == 2)
-			{
-				$this->captcha_template .= "_recaptcha";
-			}
-			elseif($this->type == 4){
-				$this->captcha_template .= "_nocaptcha";
-			}
-			elseif($this->type == 5){
-				$this->captcha_template .= "_recaptcha_invisible";
-			}
 		}
 
 		// Work on which CAPTCHA we've got installed
@@ -160,7 +149,7 @@ class captcha
 	 */
 	function build_captcha($return = false)
 	{
-		global $db, $lang, $templates, $theme, $mybb;
+		global $db, $lang, $theme;
 
 		// This will build a MyBB CAPTCHA
 		$randomstr = random_str(5);
@@ -173,20 +162,20 @@ class captcha
 		);
 
 		$db->insert_query("captcha", $insert_array);
-		eval("\$this->html = \"".$templates->get($this->captcha_template)."\";");
-		//eval("\$this->html = \"".$templates->get("member_register_regimage")."\";");
+        $this->html = \MyBB\template('misc/captcha/' . $this->captcha_template . '.twig', [
+            'randomstr' => $randomstr,
+            'imagehash' => $imagehash
+        ]);
 	}
 
 	function build_recaptcha()
 	{
-		global $lang, $mybb, $templates;
+		global $mybb;
 
-		// This will build a reCAPTCHA
-		$server = $this->server;
-		$public_key = $mybb->settings['captchapublickey'];
-
-		eval("\$this->html = \"".$templates->get($this->captcha_template, 1, 0)."\";");
-		//eval("\$this->html = \"".$templates->get("member_register_regimage_recaptcha")."\";");
+        $this->html = \MyBB\template('misc/captcha/' . $this->captcha_template . '.twig', [
+            'server' => $this->server,
+            'type' => $this->type
+        ]);
 	}
 
 	/**
@@ -194,29 +183,19 @@ class captcha
 	 */
 	function build_hidden_captcha()
 	{
-		global $db, $mybb, $templates;
+		global $db, $mybb;
 
-		$field = array();
+		$fields = array();
 
 		if($this->type == 1)
 		{
 			// Names
-			$hash = "imagehash";
-			$string = "imagestring";
+			$fields['names']['hash'] = "imagehash";
+			$fields['names']['string'] = "imagestring";
 
 			// Values
-			$field['hash'] = $db->escape_string($mybb->input['imagehash']);
-			$field['string'] = $db->escape_string($mybb->input['imagestring']);
-		}
-		elseif($this->type == 2)
-		{
-			// Names
-			$hash = "recaptcha_challenge_field";
-			$string = "recaptcha_response_field";
-
-			// Values
-			$field['hash'] = $mybb->input['recaptcha_challenge_field'];
-			$field['string'] = $mybb->input['recaptcha_response_field'];
+			$fields['hash'] = $db->escape_string($mybb->input['imagehash']);
+			$fields['string'] = $db->escape_string($mybb->input['imagestring']);
 		}
 		elseif($this->type == 3)
 		{
@@ -224,8 +203,9 @@ class captcha
 			return '';
 		}
 
-		eval("\$this->html = \"".$templates->get("post_captcha_hidden")."\";");
-		return $this->html;
+		$this->html = \MyBB\template('misc/captcha/hidden.twig', [
+            'fields' => $fields
+        ]);
 	}
 
 	/**

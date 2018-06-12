@@ -1024,7 +1024,7 @@ if($mybb->input['action'] == "thread")
 		if($mybb->settings['captchaimage'] && !$mybb->user['uid'])
 		{
 			require_once MYBB_ROOT.'inc/class_captcha.php';
-			$post_captcha = new captcha(true, "post_captcha");
+			$post_captcha = new captcha(true, "post");
 
 			if($post_captcha->html)
 			{

@@ -270,7 +270,7 @@ $captcha = '';
 
 if($mybb->settings['captchaimage'] && !$mybb->user['uid'])
 {
-	$post_captcha = new captcha(true, "post_captcha");
+	$post_captcha = new captcha(true, "post");
 
 	if($post_captcha->html)
 	{
