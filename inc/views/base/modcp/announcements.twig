@@ -22,7 +22,7 @@
                         </tr>
                         {% if globalAnnouncements %}
                             {% for aid, announcement in globalAnnouncements %}
-                        		{% set bgcolor = alt_trow() %}
+                                {% set bgcolor = alt_trow() %}
                                 <tr>
                                     <td class="{{ bgcolor }}">
                                         {% if announcement.startdate > 'now'|date('U') or ('now'|date('U') > announcement.enddate and announcement.enddate) %}
@@ -55,9 +55,9 @@
                         <td class="tcat" width="200" colspan="2" align="center"><span class="smalltext"><strong>{{ lang.controls }}</strong></span></td>
                     </tr>
                     {% if forumAnnouncements %}
-                    	{{ forumAnnouncements|raw }}
+                        {{ forumAnnouncements|raw }}
                     {% else %}
-                    	<tr>
+                        <tr>
                             <td class="trow1" colspan="3">{$lang->no_forum_announcements}</td>
                         </tr>
                     {% endif %}
