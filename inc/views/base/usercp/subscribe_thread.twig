@@ -5,7 +5,7 @@
 {% endblock head %}
 
 {% block body %}
-    <form action="usercp2.php" method="post" name="input">
+    <form action="usercp.php" method="post" name="input">
         <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
         <input type="hidden" name="action" value="do_addsubscription" />
         <input type="hidden" name="tid" value="{{ thread.tid }}" />
