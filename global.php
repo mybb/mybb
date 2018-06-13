@@ -622,9 +622,6 @@ if ($mybb->settings['awactialert'] == 1 && $mybb->usergroup['cancp'] == 1) {
 }
 
 // Set up some of the default templates
-eval('$headerinclude = "'.$templates->get('headerinclude').'";');
-eval('$gobutton = "'.$templates->get('gobutton').'";');
-eval('$htmldoctype = "'.$templates->get('htmldoctype', 1, 0).'";');
 eval('$header = "'.$templates->get('header').'";');
 
 $copy_year = my_date('Y', TIME_NOW);
