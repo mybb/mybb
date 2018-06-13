@@ -2444,15 +2444,12 @@ function build_forum_jump($pid=0, $selitem=0, $addselect=1, $depth="", $showextr
                 $perms = $permissioncache[$forum['fid']];
 
                 if ($forum['fid'] != "0" && ($perms['canview'] != 0 || $mybb->settings['hideprivateforums'] == 0) && $forum['linkto'] == '' && ($forum['showinjump'] != 0 || $showall == true)) {
-                    $optionselected = "";
 
-                    if ($selitem == $forum['fid']) {
-                        $optionselected = 'selected="selected"';
-                    }
-
-                    $forum['name'] = htmlspecialchars_uni(strip_tags($forum['name']));
-
-                    eval("\$forumjumpbits .= \"".$templates->get("forumjump_bit")."\";");
+                    $forumjumpbits .= \MyBB\template('misc/forumjump_bit.twig', [
+                        'forum' => $forum,
+                        'selitem' => $selitem,
+                        'depth' => $depth
+                    ]);
 
                     if ($forum_cache[$forum['fid']]) {
                         $newdepth = $depth."--";
@@ -2464,19 +2461,21 @@ function build_forum_jump($pid=0, $selitem=0, $addselect=1, $depth="", $showextr
     }
 
     if ($addselect) {
-        if ($showextras == 0) {
-            $template = "special";
-        } else {
-            $template = "advanced";
-
+        if ($showextras != 0) {
             if (strpos(FORUM_URL, '.html') !== false) {
                 $forum_link = "'".str_replace('{fid}', "'+option+'", FORUM_URL)."'";
             } else {
                 $forum_link = "'".str_replace('{fid}', "'+option", FORUM_URL);
             }
         }
-
-        eval("\$forumjump = \"".$templates->get("forumjump_".$template)."\";");
+        
+        $forumjump = \MyBB\template('misc/forumjump.twig', [
+            'showextras' => $showextras,
+            'forumjumpbits' => $forumjumpbits,
+            'forum_link' => $forum_link,
+            'name' => $name,
+            'gobutton' => $gobutton
+        ]);
     }
 
     return $forumjump;
