@@ -4199,7 +4199,7 @@ function get_current_location($fields=false, $ignore=array(), $quick=false)
         if (!is_array($ignore)) {
             $ignore = array($ignore);
         }
-		$fields = [];
+        $fields = [];
         if (!empty($mybb->input)) {
             foreach ($mybb->input as $name => $value) {
                 if (in_array($name, $ignore) || is_array($name) || is_array($value)) {
