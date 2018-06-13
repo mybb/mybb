@@ -1,0 +1,37 @@
+<div style="margin:auto; width: 170px; margin-top: 20px;">
+    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder" width="150">
+        <tr>
+            <td class="thead"><span class="smalltext"><strong>{{ lang.smilieinsert }}</strong></span></td>
+        </tr>
+        <tr>
+            <td class="trow1">
+                <table width="100%" align="center" border="0" cellspacing="0" cellpadding="2" id="clickable_smilies">
+                    {% for smilie in smilies %}
+                        {% set remainder = (loop.index % mybb.settings.smilieinsertercols) %}
+                            <td>{% include 'parser/mycodes/smilie.twig' %}</td>
+                        {% if (mybb.settings.smilieinsertercols > 0 and remainder == 0) or loop.last %}
+                            {% if loop.last %}
+                                    <td colspan="{{ remainder }}"></td>
+                                </tr>
+                            {% else %}
+                                </tr>
+                                <tr>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </table>
+            </td>
+        </tr>
+        {% if mybb.settings.smilieinsertertot < smiliecount %}
+            <tr>
+                <td class="trow2" align="center">
+                    <span class="smalltext">
+                        <strong>
+                            [<a href="javascript:void(0)" onclick="MyBB.popupWindow('/misc.php?action=smilies&amp;popup=true&amp;editor=MyBBEditor&amp;modal=1'); return false;">{{ lang.smilieinsert_getmore }}</a>]
+                        </strong>
+                    </span>
+                </td>
+            </tr>
+        {% endif %}
+    </table>
+</div>
