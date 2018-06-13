@@ -20,32 +20,32 @@
                         <td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{{ lang.lastvisit }}</strong></span></td>
                         <td class="tcat" align="center" width="10%"><span class="smalltext"><strong>{{ lang.postnum }}</strong></span></td>
                     </tr>
-                    {% if users %}
-                        {% for user in users %}
-                            {% set bgcolor = alt_trow() %}
-                            <tr>
-                                <td class="{{ bgcolor }}">
-                                    <a href="modcp.php?action=editprofile&amp;uid={{ user.uid }}">{{ user.username|raw }}</a>
-                                </td>
-                                <td class="{{ bgcolor }}" align="center">{{ user.ugroup }}</td>
-                                <td class="{{ bgcolor }}" align="center">{{ user.regdate }}</td>
-                                <td class="{{ bgcolor }}" align="center">
-                                    {% if user.invisible == 1 and mybb.usergroup.canviewwolinvis != 1 and user.uid != mybb.user.uid %}
-                                        {% if user.lastvisit %}
-                                            {{ lang.lastvisit_hidden }}
-                                        {% else %}
-                                            {{ lang.lastvisit_never }}
-                                        {% endif %}
+                    {% for user in users %}
+                        {% set bgcolor = alt_trow() %}
+                        <tr>
+                            <td class="{{ bgcolor }}">
+                                <a href="modcp.php?action=editprofile&amp;uid={{ user.uid }}">{{ user.username|raw }}</a>
+                            </td>
+                            <td class="{{ bgcolor }}" align="center">{{ user.ugroup }}</td>
+                            <td class="{{ bgcolor }}" align="center">{{ user.regdate }}</td>
+                            <td class="{{ bgcolor }}" align="center">
+                                {% if user.invisible == 1 and mybb.usergroup.canviewwolinvis != 1 and user.uid != mybb.user.uid %}
+                                    {% if user.lastvisit %}
+                                        {{ lang.lastvisit_hidden }}
                                     {% else %}
-                                        {{ user.lastvisit }}{# TODO: my_date('relative') #}
+                                        {{ lang.lastvisit_never }}
                                     {% endif %}
-                                </td>
-                                <td class="{{ bgcolor }}" align="center">{{ user.postnum }}</td>
-                            </tr>
-                        {% endfor %}
+                                {% else %}
+                                    {{ user.lastvisit }}{# TODO: my_date('relative') #}
+                                {% endif %}
+                            </td>
+                            <td class="{{ bgcolor }}" align="center">{{ user.postnum }}</td>
+                        </tr>
                     {% else %}
-
-                    {% endif %}
+                        <tr>
+                            <td class="trow1" align="center" colspan="5">{{ lang.no_user_results }}</td>
+                        </tr>
+                    {% endfor %}
                 </table>
                 {{ multipage|raw }}
                 <br />
