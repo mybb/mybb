@@ -53,10 +53,13 @@ $mybb->input['action'] = $mybb->get_input('action');
 
 usercp_menu();
 
-$plugins->run_hooks('usercp_start');
-if ($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post") {
-    require_once MYBB_ROOT."inc/datahandlers/user.php";
-    $userhandler = new UserDataHandler();
+$server_http_referer = htmlentities($_SERVER['HTTP_REFERER']);
+
+$plugins->run_hooks("usercp_start");
+if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
+{
+	require_once MYBB_ROOT."inc/datahandlers/user.php";
+	$userhandler = new UserDataHandler();
 
     $data = array(
         'uid' => $mybb->user['uid'],
@@ -1301,35 +1304,275 @@ if ($mybb->input['action'] == 'forumsubscriptions') {
     ]));
 }
 
-if ($mybb->input['action'] == 'do_editsig' && $mybb->request_method == 'post') {
-    // Verify incoming POST request
-    verify_post_check($mybb->get_input('my_post_key'));
+if($mybb->input['action'] == "do_addsubscription" && $mybb->get_input('type') != "forum")
+{
+	// Verify incoming POST request
+	verify_post_check($mybb->get_input('my_post_key'));
 
-    $plugins->run_hooks('usercp_do_editsig_start');
+	$thread = get_thread($mybb->get_input('tid'));
+	if(!$thread)
+	{
+		error($lang->error_invalidthread);
+	}
 
-    // User currently has a suspended signature
-    if ($mybb->user['suspendsignature'] == 1 && $mybb->user['suspendsigtime'] > TIME_NOW) {
-        error_no_permission();
-    }
+	// Is the currently logged in user a moderator of this forum?
+	$ismod = is_moderator($thread['fid']);
 
-    if ($mybb->get_input('updateposts') == 'enable') {
-        $update_signature = [
-            "includesig" => 1,
-        ];
-        $db->update_query('posts', $update_signature, "uid='" . $mybb->user['uid'] . "'");
-    } elseif ($mybb->get_input('updateposts') == 'disable') {
-        $update_signature = [
-            'includesig' => 0,
-        ];
-        $db->update_query('posts', $update_signature, "uid='" . $mybb->user['uid'] . "'");
-    }
-    $new_signature = [
-        'signature' => $db->escape_string($mybb->get_input('signature')),
-    ];
-    $plugins->run_hooks('usercp_do_editsig_process');
-    $db->update_query('users', $new_signature, "uid='" . $mybb->user['uid'] . "'");
-    $plugins->run_hooks('usercp_do_editsig_end');
-    redirect('usercp.php?action=editsig', $lang->redirect_sigupdated);
+	// Make sure we are looking at a real thread here.
+	if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
+	{
+		error($lang->error_invalidthread);
+	}
+
+	$forumpermissions = forum_permissions($thread['fid']);
+	if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || (isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']))
+	{
+		error_no_permission();
+	}
+
+	// check if the forum requires a password to view. If so, we need to show a form to the user
+	check_forum_password($thread['fid']);
+
+	// Naming of the hook retained for backward compatibility while dropping usercp2.php
+	$plugins->run_hooks("usercp2_do_addsubscription");
+
+	add_subscribed_thread($thread['tid'], $mybb->get_input('notification', MyBB::INPUT_INT));
+
+	if($mybb->get_input('referrer'))
+	{
+		$url = htmlspecialchars_uni($mybb->get_input('referrer'));
+	}
+	else
+	{
+		$url = get_thread_link($thread['tid']);
+	}
+	redirect($url, $lang->redirect_subscriptionadded);
+}
+
+if($mybb->input['action'] == "addsubscription")
+{
+	// Verify incoming POST request
+	verify_post_check($mybb->get_input('my_post_key'));
+
+	if($mybb->get_input('type') == "forum")
+	{
+		$forum = get_forum($mybb->get_input('fid', MyBB::INPUT_INT));
+		if(!$forum)
+		{
+			error($lang->error_invalidforum);
+		}
+		$forumpermissions = forum_permissions($forum['fid']);
+		if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0)
+		{
+			error_no_permission();
+		}
+
+		// check if the forum requires a password to view. If so, we need to show a form to the user
+		check_forum_password($forum['fid']);
+
+		// Naming of the hook retained for backward compatibility while dropping usercp2.php
+		$plugins->run_hooks("usercp2_addsubscription_forum");
+
+		add_subscribed_forum($forum['fid']);
+		if($server_http_referer && $mybb->request_method != 'post')
+		{
+			$url = $server_http_referer;
+		}
+		else
+		{
+			$url = "index.php";
+		}
+		redirect($url, $lang->redirect_forumsubscriptionadded);
+	}
+	else
+	{
+		$thread  = get_thread($mybb->get_input('tid', MyBB::INPUT_INT));
+		if(!$thread)
+		{
+			error($lang->error_invalidthread);
+		}
+
+		// Is the currently logged in user a moderator of this forum?
+		$ismod = is_moderator($thread['fid']);
+
+		// Make sure we are looking at a real thread here.
+		if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
+		{
+			error($lang->error_invalidthread);
+		}
+
+		add_breadcrumb($lang->nav_subthreads, "usercp.php?action=subscriptions");
+		add_breadcrumb($lang->nav_addsubscription);
+
+		$forumpermissions = forum_permissions($thread['fid']);
+		if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || (isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']))
+		{
+			error_no_permission();
+		}
+
+		// check if the forum requires a password to view. If so, we need to show a form to the user
+		check_forum_password($thread['fid']);
+
+		$referrer = '';
+		if($server_http_referer)
+		{
+			$referrer = $server_http_referer;
+		}
+
+		require_once MYBB_ROOT."inc/class_parser.php";
+		$parser = new postParser;
+		$thread['subject'] = $parser->parse_badwords($thread['subject']);
+		$lang->subscribe_to_thread = $lang->sprintf($lang->subscribe_to_thread, $thread['subject']);
+
+		// Naming of the hook retained for backward compatibility while dropping usercp2.php
+		$plugins->run_hooks("usercp2_addsubscription_thread");
+
+		output_page(\MyBB\template('usercp/subscribe_thread.twig', [
+            'thread' => $thread
+        ]));
+		exit;
+	}
+}
+
+if($mybb->input['action'] == "removesubscription")
+{
+	// Verify incoming POST request
+	verify_post_check($mybb->get_input('my_post_key'));
+
+	if($mybb->get_input('type') == "forum")
+	{
+		$forum = get_forum($mybb->get_input('fid', MyBB::INPUT_INT));
+		if(!$forum)
+		{
+			error($lang->error_invalidforum);
+		}
+
+		// check if the forum requires a password to view. If so, we need to show a form to the user
+		check_forum_password($forum['fid']);
+
+		// Naming of the hook retained for backward compatibility while dropping usercp2.php
+		$plugins->run_hooks("usercp2_removesubscription_forum");
+
+		remove_subscribed_forum($forum['fid']);
+		if($server_http_referer && $mybb->request_method != 'post')
+		{
+			$url = $server_http_referer;
+		}
+		else
+		{
+			$url = "usercp.php?action=forumsubscriptions";
+		}
+		redirect($url, $lang->redirect_forumsubscriptionremoved);
+	}
+	else
+	{
+		$thread = get_thread($mybb->get_input('tid', MyBB::INPUT_INT));
+		if(!$thread)
+		{
+			error($lang->error_invalidthread);
+		}
+
+		// Is the currently logged in user a moderator of this forum?
+		$ismod = is_moderator($thread['fid']);
+
+		// Make sure we are looking at a real thread here.
+		if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
+		{
+			error($lang->error_invalidthread);
+		}
+
+		// check if the forum requires a password to view. If so, we need to show a form to the user
+		check_forum_password($thread['fid']);
+
+		// Naming of the hook retained for backward compatibility while dropping usercp2.php
+		$plugins->run_hooks("usercp2_removesubscription_thread");
+
+		remove_subscribed_thread($thread['tid']);
+		if($server_http_referer && $mybb->request_method != 'post')
+		{
+			$url = $server_http_referer;
+		}
+		else
+		{
+			$url = "usercp.php?action=subscriptions";
+		}
+		redirect($url, $lang->redirect_subscriptionremoved);
+	}
+}
+
+if($mybb->input['action'] == "removesubscriptions")
+{
+	// Verify incoming POST request
+	verify_post_check($mybb->get_input('my_post_key'));
+
+	if($mybb->get_input('type') == "forum")
+	{
+		// Naming of the hook retained for backward compatibility while dropping usercp2.php
+		$plugins->run_hooks("usercp2_removesubscriptions_forum");
+
+		$db->delete_query("forumsubscriptions", "uid='".$mybb->user['uid']."'");
+		if($server_http_referer)
+		{
+			$url = $server_http_referer;
+		}
+		else
+		{
+			$url = "usercp.php?action=forumsubscriptions";
+		}
+		redirect($url, $lang->redirect_forumsubscriptionsremoved);
+	}
+	else
+	{
+		// Naming of the hook retained for backward compatibility while dropping usercp2.php
+		$plugins->run_hooks("usercp2_removesubscriptions_thread");
+
+		$db->delete_query("threadsubscriptions", "uid='".$mybb->user['uid']."'");
+		if($server_http_referer)
+		{
+			$url = $server_http_referer;
+		}
+		else
+		{
+			$url = "usercp.php?action=subscriptions";
+		}
+		redirect($url, $lang->redirect_subscriptionsremoved);
+	}
+}
+
+if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
+{
+	// Verify incoming POST request
+	verify_post_check($mybb->get_input('my_post_key'));
+
+	$plugins->run_hooks("usercp_do_editsig_start");
+
+	// User currently has a suspended signature
+	if($mybb->user['suspendsignature'] == 1 && $mybb->user['suspendsigtime'] > TIME_NOW)
+	{
+		error_no_permission();
+	}
+
+	if($mybb->get_input('updateposts') == "enable")
+	{
+		$update_signature = array(
+			"includesig" => 1
+		);
+		$db->update_query("posts", $update_signature, "uid='".$mybb->user['uid']."'");
+	}
+	elseif($mybb->get_input('updateposts') == "disable")
+	{
+		$update_signature = array(
+			"includesig" => 0
+		);
+		$db->update_query("posts", $update_signature, "uid='".$mybb->user['uid']."'");
+	}
+	$new_signature = array(
+		"signature" => $db->escape_string($mybb->get_input('signature'))
+	);
+	$plugins->run_hooks("usercp_do_editsig_process");
+	$db->update_query("users", $new_signature, "uid='".$mybb->user['uid']."'");
+	$plugins->run_hooks("usercp_do_editsig_end");
+	redirect("usercp.php?action=editsig", $lang->redirect_sigupdated);
 }
 
 if ($mybb->input['action'] == 'editsig') {
