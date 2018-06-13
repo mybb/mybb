@@ -2902,9 +2902,8 @@ function build_clickable_smilies()
                     $temp = explode("\n", $smilie['find']); // assign to temporary variable for php 5.3 compatibility
                     $smilie['find'] = $temp[0];
 
-                    $find = str_replace(array('\\', "'"), array('\\\\', "\'"), htmlspecialchars_uni($smilie['find']));
-
-                    $smilie['onclick'] = $smilie['extra_class'] = true;
+                    $smilie['onclick'] = str_replace(array('\\', "'"), array('\\\\', "\'"), htmlspecialchars_uni($smilie['find']));
+                    $smilie['extra_class'] = true;
                     ++$i;
                     $smilies[] = $smilie;
                 }
