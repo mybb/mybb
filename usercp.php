@@ -1462,8 +1462,7 @@ if ($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post") {
         );
         $db->update_query("users", $updated_avatar, "uid='".$mybb->user['uid']."'");
         remove_avatars($mybb->user['uid']);
-    } else if ($_FILES['avatarupload']['name']) // upload avatar
-    {
+    } else if ($_FILES['avatarupload']['name']) { // upload avatar
         if ($mybb->usergroup['canuploadavatars'] == 0) {
             error_no_permission();
         }
@@ -1481,8 +1480,7 @@ if ($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post") {
             );
             $db->update_query("users", $updated_avatar, "uid='".$mybb->user['uid']."'");
         }
-    } else if ($mybb->settings['allowremoteavatars']) // remote avatar
-    {
+    } else if ($mybb->settings['allowremoteavatars']) { // remote avatar
         $mybb->input['avatarurl'] = trim($mybb->get_input('avatarurl'));
         if (validate_email_format($mybb->input['avatarurl']) != false) {
             // Gravatar
