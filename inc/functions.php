@@ -2904,8 +2904,7 @@ function build_clickable_smilies()
 
                     $find = str_replace(array('\\', "'"), array('\\\\', "\'"), htmlspecialchars_uni($smilie['find']));
 
-                    $smilie['onclick'] = " onclick=\"MyBBEditor.insertText(' $find ');\"";
-                    $smilie['extra_class'] = ' smilie_pointer';
+                    $smilie['onclick'] = $smilie['extra_class'] = true;
                     ++$i;
                     $smilies[] = $smilie;
                 }
