@@ -98,11 +98,13 @@ function fetch_forum_announcements($pid=0, $depth=1)
                 }
             }
 
+            $bgcolor = alt_trow();
             $announcements_forum .= \MyBB\template('modcp/announcements/forum.twig', [
                 'announcements' => $currentAnnouncements,
                 'depth' => $depth,
                 'forum' => $forum,
-                'moderate' => $moderate
+                'moderate' => $moderate,
+                'bgcolor' => $bgcolor
             ]);
 
             // Build the list for any sub forums of this forum

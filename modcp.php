@@ -1093,6 +1093,7 @@ if ($mybb->input['action'] == "new_announcement") {
         $announcement['allowhtml'] = $allowhtml;
         $announcement['allowmycode'] = $allowmycode;
         $announcement['allowsmilies'] = $allowsmilies;
+        $announcement['fid'] = $announcement_fid;
 
         $dates['start']['month'] = $mybb->input['starttime_month'];
         $dates['start']['year'] = $mybb->input['starttime_year'];
@@ -1116,7 +1117,8 @@ if ($mybb->input['action'] == "new_announcement") {
             'message' => '',
             'allowhtml' => 0,
             'allowmycode' => 1,
-            'allowsmilies' => 1
+            'allowsmilies' => 1,
+            'fid' => $announcement_fid
         );
 
         $dates['end']['year'] = $dates['start']['year']+1;
@@ -1125,8 +1127,8 @@ if ($mybb->input['action'] == "new_announcement") {
     // MyCode editor
     $codebuttons = build_mycode_inserter();
     $smilieinserter = build_clickable_smilies();
-    $postbit = '';
 
+    $postbit = '';
     if (isset($preview)) {
         $announcementarray = array(
             'aid' => 0,
