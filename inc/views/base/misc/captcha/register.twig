@@ -28,9 +28,9 @@
             target.attr('data-size', 'invisible');
 
             grecaptcha.render(target.get(0), {
-                    'sitekey': '{{ mybb.settings.captchapublickey }}',
-                    'callback': captchaOnSubmit
-                }, true);
+                'sitekey': '{{ mybb.settings.captchapublickey }}',
+                'callback': captchaOnSubmit
+            }, true);
 
         }
 
