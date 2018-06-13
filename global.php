@@ -624,14 +624,6 @@ if ($mybb->settings['awactialert'] == 1 && $mybb->usergroup['cancp'] == 1) {
 // Set up some of the default templates
 eval('$header = "'.$templates->get('header').'";');
 
-$copy_year = my_date('Y', TIME_NOW);
-
-// Are we showing version numbers in the footer?
-$mybbversion = '';
-if ($mybb->settings['showvernum'] == 1) {
-    $mybbversion = ' '.$mybb->version;
-}
-
 // Check to see if we have any tasks to run
 $task_image = '';
 $task_cache = $cache->read('tasks');
@@ -643,55 +635,29 @@ if ($task_cache['nextrun'] <= TIME_NOW) {
     eval("\$task_image = \"".$templates->get("task_image")."\";");
 }
 
-// Post code
-$post_code_string = '';
-if ($mybb->user['uid']) {
-    $post_code_string = '&amp;my_post_key='.$mybb->post_code;
-}
+// Use a fictional setting to inject the footer code into Twig without creating an ad-hoc extension
+$mybb->settings['footer'] = [];
 
 // Are we showing the quick language selection box?
-$lang_select = $lang_options = '';
 if ($mybb->settings['showlanguageselect'] != 0) {
-    $languages = $lang->get_languages();
+    $mybb->settings['footer']['langselect']['options'] = $lang->get_languages();
 
-    if (count($languages) > 1) {
-        foreach ($languages as $key => $language) {
-            $language = htmlspecialchars_uni($language);
-
-            // Current language matches
-            if ($lang->language == $key) {
-                $selected = " selected=\"selected\"";
-            } else {
-                $selected = '';
-            }
-
-            eval('$lang_options .= "'.$templates->get('footer_languageselect_option').'";');
-        }
-
-        $lang_redirect_url = get_current_location(true, 'language');
-        eval('$lang_select = "'.$templates->get('footer_languageselect').'";');
+    if (count($mybb->settings['footer']['langselect']) > 1) {
+        $mybb->settings['footer']['langselect']['current_url'] = get_current_location(true, 'language');
     }
 }
 
 // Are we showing the quick theme selection box?
-$theme_select = $theme_options = '';
 if ($mybb->settings['showthemeselect'] != 0) {
-    $theme_options = build_theme_select("theme", $mybb->user['style'], 0, '', false, true);
+    $mybb->settings['footer']['themeselect']['options'] = build_theme_select("theme", $mybb->user['style'], 0, '', false, true);
 
-    if (!empty($theme_options)) {
-        $theme_redirect_url = get_current_location(true, 'theme');
-        eval('$theme_select = "'.$templates->get('footer_themeselect').'";');
+    if (!empty($mybb->settings['footer']['themeselect']['options'])) {
+        $mybb->settings['footer']['themeselect']['current_url'] = get_current_location(true, 'theme');
     }
 }
 
-// If we use the contact form, show 'Contact Us' link when appropriate
-$contact_us = '';
-if (($mybb->settings['contactlink'] == "contact.php" && $mybb->settings['contact'] == 1 && ($mybb->settings['contact_guests'] != 1 && $mybb->user['uid'] == 0 || $mybb->user['uid'] > 0)) || $mybb->settings['contactlink'] != "contact.php") {
-    if (!my_validate_url($mybb->settings['contactlink'], true) && my_substr($mybb->settings['contactlink'], 0, 7) != 'mailto:') {
-        $mybb->settings['contactlink'] = $mybb->settings['bburl'].'/'.$mybb->settings['contactlink'];
-    }
-
-    eval('$contact_us = "'.$templates->get('footer_contactus').'";');
+if (!my_validate_url($mybb->settings['contactlink'], true) && my_substr($mybb->settings['contactlink'], 0, 7) != 'mailto:') {
+    $mybb->settings['contactlink'] = $mybb->settings['bburl'].'/'.$mybb->settings['contactlink'];
 }
 
 // DST Auto detection enabled?
@@ -700,8 +666,6 @@ if ($mybb->user['uid'] > 0 && $mybb->user['dstcorrection'] == 2) {
     $timezone = (float)$mybb->user['timezone'] + $mybb->user['dst'];
     eval('$auto_dst_detection = "'.$templates->get('global_dst_detection').'";');
 }
-
-eval('$footer = "'.$templates->get('footer').'";');
 
 // Add our main parts to the navigation
 $navbits = array();
