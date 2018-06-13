@@ -4178,19 +4178,18 @@ function get_current_location($fields=false, $ignore=array(), $quick=false)
         if (!is_array($ignore)) {
             $ignore = array($ignore);
         }
-
-        $form_html = '';
+        $fields = [];
         if (!empty($mybb->input)) {
             foreach ($mybb->input as $name => $value) {
                 if (in_array($name, $ignore) || is_array($name) || is_array($value)) {
                     continue;
                 }
 
-                $form_html .= "<input type=\"hidden\" name=\"".htmlspecialchars_uni($name)."\" value=\"".htmlspecialchars_uni($value)."\" />\n";
+                $fields[$name] = $value;
             }
         }
 
-        return array('location' => $location, 'form_html' => $form_html, 'form_method' => $mybb->request_method);
+        return array('location' => $location, 'fields' => $fields, 'form_method' => $mybb->request_method);
     } else {
         if (isset($_SERVER['QUERY_STRING'])) {
             $location .= "?".htmlspecialchars_uni($_SERVER['QUERY_STRING']);
