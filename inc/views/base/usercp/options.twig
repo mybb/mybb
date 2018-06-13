@@ -12,9 +12,7 @@
             <tr>
                 {# TODO: usercpnav #}
                 <td valign="top">
-
                     {{ errors|raw }}
-
                     <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
                         <tr>
                             <td class="thead" colspan="2"><strong>{{ lang.edit_options }}</strong></td>
@@ -269,7 +267,7 @@
                                                 <td colspan="2">{{ stylelist|raw }}</td>
                                             </tr>
                                         {% endif %}
-                                        {% if languages|length > 1 %}
+                                        {% if languages is not empty %}
                                             <tr>
                                                 <td colspan="2"><span class="smalltext">{{ lang.board_language }}:</span></td>
                                             </tr>
@@ -291,7 +289,7 @@
                         </tr>
                     </table>
 
-					<br />
+                    <br />
                     <div align="center">
                         <input type="hidden" name="action" value="do_options" />
                         <input type="submit" class="button" name="regsubmit" value="{{ lang.update_options }}" />
