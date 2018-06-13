@@ -21,10 +21,10 @@
                     <table border="0" cellspacing="1" cellpadding="4" class="tborder" style="border: 0; width: 270px;" align="right">
                         {% for buddy in buddies %}
                             {% if buddy.lastactive > ('now'|date('U') - mybb.settings.wolcutoff) and (buddy.invisible == 0 or mybb.user.usergroup == 4) and buddy.lastvisit != buddy.lastactive %}
-                        		{% set status = 'online' %}
-                        	{% else %}
-                        		{% set status = 'offline' %}
-                        	{% endif %}
+                                {% set status = 'online' %}
+                            {% else %}
+                                {% set status = 'offline' %}
+                            {% endif %}
                             <tr>
                                 <td class="trow1" onmouseover="this.className='trow2';" onmouseout="this.className='trow1';">
                                     <label>
