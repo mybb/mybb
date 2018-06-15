@@ -1813,7 +1813,7 @@ function get_post_icons()
 	$iconlist = '';
 	$no_icons_checked = " checked=\"checked\"";
 	// read post icons from cache, and sort them accordingly
-	$posticons_cache = $cache->read("posticons");
+	$posticons_cache = (array)$cache->read("posticons");
 	$posticons = array();
 	foreach($posticons_cache as $posticon)
 	{
