@@ -1,0 +1,58 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ mybb.settings.bbname }} - {{ lang.attachments_awaiting_moderation }}</title>
+{% endblock head %}
+
+{% block body %}
+    <form action="modcp.php" method="post">
+        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+        <input type="hidden" name="action" value="do_modqueue" />
+        <table width="100%" border="0" align="center">
+            <tr>
+                {# To do: modcp_nav #}
+                <td valign="top">
+                    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+                        <tr>
+                            <td class="thead" colspan="6">
+                                <div class="float_right">
+                                    {% if navlink.thread %}
+                                        <a href="modcp.php?action=modqueue&amp;type=threads">{{ lang.threads }}</a> | 
+                                    {% endif %}
+                                    {% if navlink.post %}
+                                        <a href="modcp.php?action=modqueue&amp;type=posts">{{ lang.posts }}</a> | 
+                                    {% endif %}
+                                    <strong>{{ lang.attachments }}</strong>
+                                </div>
+                                <strong>{{ lang.attachments_awaiting_moderation }}</strong>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tcat"><span class="smalltext"><strong>{{ lang.filename }}</strong></span></td>
+                            <td class="tcat" align="center" width="20%"><span class="smalltext"><strong>{{ lang.author }}</strong></span></td>
+                            <td class="tcat" align="center" width="20%"><span class="smalltext"><strong>{{ lang.date }}</strong></span></td>
+                            <td class="tcat" align="center" colspan="3"><span class="smalltext"><strong>{{ lang.controls }}</strong></span></td>
+                        </tr>
+                        {% for attachment in attachments %}
+                            {% include 'modcp/modqueue/attachment.twig' %}
+                        {% else %}
+                            <tr>
+                                <td class="trow1" align="center" colspan="6">{{ lang.mod_queue_attachments_empty }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                    {{ multipage|raw }}
+                    {% if attachments %}
+                        <ul class="modqueue_mass">
+                            <li><a href="javascript:void(0)" class="mass_ignore" onclick="$('input.radio_ignore').each(function(){ $(this).prop('checked', true); }); return false;">{{ lang.mark_all_ignored }}</a></li>
+                            <li><a href="javascript:void(0)" class="mass_delete" onclick="$('input.radio_delete').each(function(){ $(this).prop('checked', true); }); return false;">{{ lang.mark_all_deletion }}</a></li>
+                            <li><a href="javascript:void(0)" class="mass_approve" onclick="$('input.radio_approve').each(function(){ $(this).prop('checked', true); }); return false;">{{ lang.mark_all_approved }}</a></li>
+                        </ul>
+                    {% endif %}
+                    <br />
+                    <div align="center"><input type="submit" class="button" name="reportsubmit" value="{{ lang.perform_actions }}" /></div>
+                </td>
+            </tr>
+        </table>
+    </form>
+{% endblock body %}
