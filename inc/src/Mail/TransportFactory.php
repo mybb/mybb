@@ -48,8 +48,7 @@ class TransportFactory
             $port = 465;
         } else if (empty($settings['smtp_port']) && @ini_get('smtp_port')) {
             $port = (int) @ini_get('smtp_port');
-        } else if (!empty($settings['smtp_port']))
-        {
+        } else if (!empty($settings['smtp_port'])) {
             $port = (int) $settings['smtp_port'];
         }
 

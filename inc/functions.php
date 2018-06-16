@@ -475,7 +475,7 @@ function my_mail($to, $subject, $message, $from="", $charset="", $headers="", $k
     $mailer = \MyBB\app('mailer');
 
     $failedRecipients = [];
-    $numFailed = $mailer->send($message);
+    $numFailed = $mailer->send($message, $failedRecipients);
 
     // TODO: Handle failed recipients
 
