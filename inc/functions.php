@@ -450,39 +450,36 @@ function my_date($format, $stamp=0, $offset="", $ty=1, $adodb=false)
  */
 function my_mail($to, $subject, $message, $from="", $charset="", $headers="", $keep_alive=false, $format="text", $message_text="", $return_email="")
 {
-    global $mybb;
-    static $mail;
+    $headersArray = [];
+    $headers = trim($headers);
+    if (!empty($headers)) {
+        $headers = explode("\n", $headers);
 
-    // Does our object not exist? Create it
-    if (!is_object($mail)) {
-        require_once MYBB_ROOT."inc/class_mailhandler.php";
+        foreach ($headers as $header) {
+            $headerParts = explode(':', $header, 2);
 
-        if ($mybb->settings['mail_handler'] == 'smtp') {
-            require_once MYBB_ROOT."inc/mailhandlers/smtp.php";
-            $mail = new SmtpMail();
-        } else {
-            require_once MYBB_ROOT."inc/mailhandlers/php.php";
-            $mail = new PhpMail();
+            if (count($headerParts) === 2) {
+                $name = trim($headerParts[0]);
+                $value = trim($headerParts[1]);
+
+                $headersArray[$name] = $value;
+            }
         }
     }
 
-    // Using SMTP based mail
-    if ($mybb->settings['mail_handler'] == 'smtp') {
-        if ($keep_alive == true) {
-            $mail->keep_alive = true;
-        }
-    }
+    /** @var \MyBB\Mail\MessageBuilder $messageBuilder */
+    $messageBuilder = \MyBB\app(\MyBB\Mail\MessageBuilder::class);
+    $message = $messageBuilder->build($to, $subject, $from, $charset, $headersArray, $format, $message_text, $return_email);
 
-    // Using PHP based mail()
-    else {
-        if ($mybb->settings['mail_parameters'] != '') {
-            $mail->additional_parameters = $mybb->settings['mail_parameters'];
-        }
-    }
+    /** @var \Swift_Mailer $mailer */
+    $mailer = \MyBB\app('mailer');
 
-    // Build and send
-    $mail->build_message($to, $subject, $message, $from, $charset, $headers, $format, $message_text, $return_email);
-    return $mail->send();
+    $failedRecipients = [];
+    $numFailed = $mailer->send($message);
+
+    // TODO: Handle failed recipients
+
+    return $numFailed === 0;
 }
 
 /**

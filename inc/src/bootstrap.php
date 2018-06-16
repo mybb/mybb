@@ -5,6 +5,7 @@ namespace MyBB;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Router;
+use MyBB\Mail\TransportFactory;
 use MyBB\Twig\Extensions\LangExtension;
 use MyBB\Twig\Extensions\ThemeExtension;
 use Psr\Container\ContainerInterface;
@@ -98,8 +99,26 @@ $container->singleton(Router::class, function (ContainerInterface $container) {
 $container->alias(Router::class, 'router');
 
 // Request
-$container->bind(Request::class, function (ContainerInterface $container) {
+$container->bind(Request::class, function () {
     return Request::capture();
 });
 
 $container->alias(Request::class, 'request');
+
+// Mail transport
+$container->bind(\Swift_Transport::class, function (ContainerInterface $container) {
+    /** @var \MyBB $mybb */
+    $mybb = $container->get(\MyBB::class);
+
+    return TransportFactory::build($mybb->settings);
+});
+
+// Mailer, which is used to actually send emails
+$container->bind(\Swift_Mailer::class, function (ContainerInterface $container) {
+    /** @var \Swift_Transport $transport */
+   $transport = $container->get(\Swift_Transport::class);
+
+   return new \Swift_Mailer($transport);
+});
+
+$container->alias(\Swift_Mailer::class, 'mailer');
