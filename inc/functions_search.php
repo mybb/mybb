@@ -19,70 +19,60 @@
  */
 function make_searchable_forums($pid=0, $selitem=0, $addselect=1, $depth='')
 {
-	global $db, $pforumcache, $permissioncache, $mybb, $selecteddone, $forumlist, $forumlistbits, $theme, $templates, $lang, $forumpass;
-	$pid = (int)$pid;
+    global $db, $pforumcache, $permissioncache, $mybb, $selecteddone, $forumpass;
+    $pid = (int)$pid;
 
-	if(!is_array($pforumcache))
-	{
-		// Get Forums
-		$query = $db->simple_select("forums", "pid,disporder,fid,password,name", "linkto='' AND active!=0", array('order_by' => "pid, disporder"));
-		while($forum = $db->fetch_array($query))
-		{
-			$pforumcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
-		}
-	}
-	if(!is_array($permissioncache))
-	{
-		$permissioncache = forum_permissions();
-	}
-	if(is_array($pforumcache[$pid]))
-	{
-		foreach($pforumcache[$pid] as $key => $main)
-		{
-			foreach($main as $key => $forum)
-			{
-				$perms = $permissioncache[$forum['fid']];
-				if(($perms['canview'] == 1 || $mybb->settings['hideprivateforums'] == 0) && $perms['cansearch'] != 0)
-				{
-					if($selitem == $forum['fid'])
-					{
-						$optionselected = "selected";
-						$selecteddone = "1";
-					}
-					else
-					{
-						$optionselected = '';
-						$selecteddone = "0";
-					}
-					if($forum['password'] != '')
-					{
-						if($mybb->cookies['forumpass'][$forum['fid']] === md5($mybb->user['uid'].$forum['password']))
-						{
-							$pwverified = 1;
-						}
-						else
-						{
-							$pwverified = 0;
-						}
-					}
-					if(empty($forum['password']) || $pwverified == 1)
-					{
-						eval("\$forumlistbits .= \"".$templates->get("search_forumlist_forum")."\";");
-					}
-					if(!empty($pforumcache[$forum['fid']]))
-					{
-						$newdepth = $depth."&nbsp;&nbsp;&nbsp;&nbsp;";
-						$forumlistbits .= make_searchable_forums($forum['fid'], $selitem, 0, $newdepth);
-					}
-				}
-			}
-		}
-	}
-	if($addselect)
-	{
-		eval("\$forumlist = \"".$templates->get("search_forumlist")."\";");
-	}
-	return $forumlist;
+    if (!is_array($pforumcache)) {
+        // Get Forums
+        $query = $db->simple_select("forums", "pid,disporder,fid,password,name", "linkto='' AND active!=0", array('order_by' => "pid, disporder"));
+        while ($forum = $db->fetch_array($query)) {
+            $pforumcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
+        }
+    }
+
+    if (!is_array($permissioncache)) {
+        $permissioncache = forum_permissions();
+    }
+
+    $forums = [];
+    $forumtree = [];
+    if (is_array($pforumcache[$pid])) {
+        foreach ($pforumcache[$pid] as $key => $main) {
+            foreach ($main as $key => $forum) {
+                $perms = $permissioncache[$forum['fid']];
+                if (($perms['canview'] == 1 || $mybb->settings['hideprivateforums'] == 0) && $perms['cansearch'] != 0) {
+                    if ($selitem == $forum['fid']) {
+                        $optionselected = "selected";
+                        $selecteddone = "1";
+                    } else {
+                        $optionselected = '';
+                        $selecteddone = "0";
+                    }
+
+                    if ($forum['password'] != '') {
+                        if ($mybb->cookies['forumpass'][$forum['fid']] === md5($mybb->user['uid'].$forum['password'])) {
+                            $pwverified = 1;
+                        } else {
+                            $pwverified = 0;
+                        }
+                    }
+
+                    if (empty($forum['password']) || $pwverified == 1) {
+                        $forum['depth'] = $depth;
+                        $forumtree[] = $forum;
+                    }
+
+                    if (!empty($pforumcache[$forum['fid']])) {
+                        $newdepth = $depth."&nbsp;&nbsp;&nbsp;&nbsp;";
+                        $forums = make_searchable_forums($forum['fid'], $selitem, 0, $newdepth);
+                        $forumtree = array_merge($forumtree, $forums);
+                    }
+                }
+            }
+        }
+    }
+
+    return $forumtree;
 }
 
 /**

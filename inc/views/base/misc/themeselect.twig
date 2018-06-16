@@ -1,0 +1,14 @@
+<select name="{{ name }}"{% if footer %} onchange="MyBB.changeTheme();"{% endif %}>
+    {% if footer != true %}
+        <option value="0">{{ lang.use_default }}</option>
+        <option value="0">-----------</option>
+    {% else %}
+    	<optgroup label="{{ lang.select_theme }}">
+    {% endif %}
+        {% for option in options %}
+            <option value="{{ option.tid }}"{% if option.tid == selected %} selected {% endif %}>{{ option.depth }}{{ option.name }}</option>
+        {% endfor %}
+    {% if footer != true %}
+    	</optgroup>
+    {% endif %}
+</select>
