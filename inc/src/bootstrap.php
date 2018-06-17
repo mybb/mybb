@@ -116,9 +116,9 @@ $container->bind(\Swift_Transport::class, function (ContainerInterface $containe
 // Mailer, which is used to actually send emails
 $container->bind(\Swift_Mailer::class, function (ContainerInterface $container) {
     /** @var \Swift_Transport $transport */
-   $transport = $container->get(\Swift_Transport::class);
+    $transport = $container->get(\Swift_Transport::class);
 
-   return new \Swift_Mailer($transport);
+    return new \Swift_Mailer($transport);
 });
 
 $container->alias(\Swift_Mailer::class, 'mailer');

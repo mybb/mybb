@@ -50,13 +50,14 @@ class MessageBuilder
     /**
      * Build the to address from a string.
      *
-     * If the string is in the format `address <name>`, then the name will be extracted as the array value, with the address as its key.
+     * If the string is in the format `address <name>`, an array [address => name] will be returned.
      *
      * Otherwise, the returned array will only contain the address.
      *
      * @param string $to
      *
-     * @return array The to address as an array. If a name is associated, the array will be in the form [address => name].
+     * @return array The to address as an array.
+     * If a name is associated, the array will be in the form [address => name].
      */
     protected function buildTo(string $to): array
     {
@@ -78,7 +79,7 @@ class MessageBuilder
     /**
      * Build an email address/name pair based upon an optional string.
      *
-     * If the string is null or empty, the board's `returnemail` setting is used, or the `adminemail` if the `returnemail` is empty.
+     * If the string is null or empty, the board settings will be used to determine the address.
      *
      * The name is either the board name, or the name found in `$address` if it takes the form `email <name>`.
      *
@@ -136,10 +137,17 @@ class MessageBuilder
      *
      * @return \Swift_Message The created message object to send.
      */
-    public function build(string $to, string $subject, string $body, ?string $from = null,
-        ?string $charset = null, ?array $headers = null, string $format = MessageBuilder::FORMAT_PLAIN,
-        ?string $messageText = null, ?string $replyTo = null) : \Swift_Message
-    {
+    public function build(
+        string $to,
+        string $subject,
+        string $body,
+        ?string $from = null,
+        ?string $charset = null,
+        ?array $headers = null,
+        string $format = MessageBuilder::FORMAT_PLAIN,
+        ?string $messageText = null,
+        ?string $replyTo = null
+    ) : \Swift_Message {
         $message = (new \Swift_Message())
             ->setTo($this->buildTo($to))
             ->setFrom($this->buildAddressWithBoardFallback($from))

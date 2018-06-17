@@ -46,9 +46,9 @@ class TransportFactory
 
         if (empty($settings['smtp_port']) && !empty($protocol) && !@ini_get('smtp_port')) {
             $port = 465;
-        } else if (empty($settings['smtp_port']) && @ini_get('smtp_port')) {
+        } elseif (empty($settings['smtp_port']) && @ini_get('smtp_port')) {
             $port = (int) @ini_get('smtp_port');
-        } else if (!empty($settings['smtp_port'])) {
+        } elseif (!empty($settings['smtp_port'])) {
             $port = (int) $settings['smtp_port'];
         }
 
@@ -70,7 +70,7 @@ class TransportFactory
         $iniSendMailPath = @ini_get('sendmail_path');
         if (!empty($settings['sendmail_path'])) {
             $sendMailPath = $settings['sendmail_path'];
-        } else if (!empty($iniSendMailPath)) {
+        } elseif (!empty($iniSendMailPath)) {
             $sendMailPath = $iniSendMailPath;
         } else {
             $sendMailPath = '/usr/sbin/sendmail -bs';
