@@ -469,17 +469,17 @@ function my_mail($to, $subject, $message, $from="", $charset="", $headers="", $k
 
     /** @var \MyBB\Mail\MessageBuilder $messageBuilder */
     $messageBuilder = \MyBB\app(\MyBB\Mail\MessageBuilder::class);
-    $message = $messageBuilder->build($to, $subject, $from, $charset, $headersArray, $format, $message_text, $return_email);
+    $message = $messageBuilder->build($to, $subject, $message, $from, $charset, $headersArray, $format, $message_text, $return_email);
 
     /** @var \Swift_Mailer $mailer */
     $mailer = \MyBB\app('mailer');
 
     $failedRecipients = [];
-    $numFailed = $mailer->send($message, $failedRecipients);
+    $numSent = $mailer->send($message, $failedRecipients);
 
     // TODO: Handle failed recipients
 
-    return $numFailed === 0;
+    return $numSent > 0;
 }
 
 /**
