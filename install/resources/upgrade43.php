@@ -51,7 +51,7 @@ function upgrade43_dbchanges()
 		'isdefault'		=> 1
 	);
 
-	$gid = $db->insert_query('settinggroup', $values);
+	$gid = $db->insert_query('settinggroups', $values);
 	unset($values);
 
 	$valueset = array(
@@ -87,7 +87,8 @@ function upgrade43_dbchanges()
 		)
 	);
 	
-	foreach ($valueset as $values) {
+	foreach($valueset as $values)
+	{
 		$db->insert_query('settings', $values);
 	}
 
