@@ -110,7 +110,7 @@ function upgrade43_dbchanges()
 	$cache->delete("mybb_credits");
 
 	// Add lockout column
-	if(!$db->field_exists("users", "loginlockoutexpiry"))
+	if(!$db->field_exists("loginlockoutexpiry", "users"))
 	{
 		$db->add_column("users", "loginlockoutexpiry", "int NOT NULL default '0'");
 	}
