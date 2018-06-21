@@ -1968,9 +1968,9 @@ if ($mybb->input['action'] == "do_editprofile") {
     );
 
     $updated_user['birthday'] = array(
-        "day" => $mybb->get_input('birthday_day', MyBB::INPUT_INT),
-        "month" => $mybb->get_input('birthday_month', MyBB::INPUT_INT),
-        "year" => $mybb->get_input('birthday_year', MyBB::INPUT_INT)
+        "day" => $mybb->get_input('bday1', MyBB::INPUT_INT),
+        "month" => $mybb->get_input('bday2', MyBB::INPUT_INT),
+        "year" => $mybb->get_input('bday3', MyBB::INPUT_INT)
     );
 
     if (!empty($mybb->input['usertitle'])) {
@@ -2003,7 +2003,7 @@ if ($mybb->input['action'] == "do_editprofile") {
         }
 
         // Moderator "Options" (suspend signature, suspend/moderate posting)
-        $moderator_options = array(
+        $modoptions = array(
             1 => array(
                 "action" => "suspendsignature", // The moderator action we're performing
                 "period" => "action_period", // The time period we've selected from the dropdown box
@@ -2028,7 +2028,7 @@ if ($mybb->input['action'] == "do_editprofile") {
         );
 
         require_once MYBB_ROOT."inc/functions_warnings.php";
-        foreach ($moderator_options as $option) {
+        foreach ($modoptions as $option) {
             $mybb->input[$option['time']] = $mybb->get_input($option['time'], MyBB::INPUT_INT);
             $mybb->input[$option['period']] = $mybb->get_input($option['period']);
             if (empty($mybb->input[$option['action']])) {
@@ -2117,28 +2117,60 @@ if ($mybb->input['action'] == "editprofile") {
     if (!my_validate_url($user['website'])) {
         $user['website'] = '';
     }
+    
+    $user['icq'] = (int)$user['icq'];
 
-    if ($user['icq'] != "0") {
-        $user['icq'] = (int)$user['icq'];
+    if ($user['icq'] == 0) {
+        $user['icq'] = '';
     }
 
     if (!$errors) {
         $mybb->input = array_merge($user, $mybb->input);
-        $birthday = explode('-', $user['birthday']);
-        if (!isset($birthday[1])) {
-            $birthday[1] = '';
+        $bday = explode("-", $user['birthday']);
+        if (!isset($bday[1])) {
+            $bday[1] = 0;
         }
-        if (!isset($birthday[2])) {
-            $birthday[2] = '';
+        if (!isset($bday[2])) {
+            $bday[2] = '';
         }
-        list($mybb->input['birthday_day'], $mybb->input['birthday_month'], $mybb->input['birthday_year']) = $birthday;
+        list($mybb->input['bday1'], $mybb->input['bday2'], $mybb->input['bday3']) = $bday;
     } else {
         $errors = inline_error($errors);
+
+        $user = $mybb->input;
+        $bday = [];
+        $bday[0] = $mybb->get_input('bday1', MyBB::INPUT_INT);
+        $bday[1] = $mybb->get_input('bday2', MyBB::INPUT_INT);
+        $bday[2] = $mybb->get_input('bday3', MyBB::INPUT_INT);
+
+        $user['skype'] = htmlspecialchars_uni($user['skype']);
+        $user['google'] = htmlspecialchars_uni($user['google']);
+        $user['aim'] = htmlspecialchars_uni($user['aim']);
+        $user['yahoo'] = htmlspecialchars_uni($user['yahoo']);
+
+        $returndate = [];
+        $returndate[0] = $mybb->get_input('awayday', MyBB::INPUT_INT);
+        $returndate[1] = $mybb->get_input('awaymonth', MyBB::INPUT_INT);
+        $returndate[2] = $mybb->get_input('awayyear', MyBB::INPUT_INT);
+        $user['awayreason'] = htmlspecialchars_uni($mybb->get_input('awayreason'));
     }
 
     // Sanitize all input
-    foreach (array('usertitle', 'website', 'icq', 'aim', 'yahoo', 'skype', 'google', 'signature', 'birthday_day', 'birthday_month', 'birthday_year') as $field) {
+    foreach (array('usertitle', 'website', 'icq', 'aim', 'yahoo', 'skype', 'google', 'signature', 'bday1', 'bday2', 'bday3') as $field) {
         $mybb->input[$field] = htmlspecialchars_uni($mybb->get_input($field));
+    }
+
+    // Build contact fields labels
+    $contactFields = ['icq', 'aim', 'yahoo', 'skype', 'google'];
+    foreach ($contactFields as $key => $cfield) {
+        $csetting = 'allow'.$cfield.'field';
+        if ($mybb->settings[$csetting] == '') {
+            unset($contactFields[$key]);
+            continue;
+        }
+
+        $tempString = 'contact_field_' . $cfield;
+        $contactFields[$key] = $lang->$tempString;
     }
 
     // Custom user title, check to see if we have a default group title
@@ -2150,14 +2182,14 @@ if ($mybb->input['action'] == "editprofile") {
     $display_group = usergroup_displaygroup($user['displaygroup']);
 
     if (!empty($display_group['usertitle'])) {
-        $defaulttitle = htmlspecialchars_uni($display_group['usertitle']);
+        $user['defaulttitle'] = htmlspecialchars_uni($display_group['usertitle']);
     } else {
         // Go for post count title if a group default isn't set
         $usertitles = $cache->read('usertitles');
 
         foreach ($usertitles as $title) {
             if ($title['posts'] <= $user['postnum']) {
-                $defaulttitle = $title['title'];
+                $user['defaulttitle'] = $title['title'];
                 break;
             }
         }
@@ -2169,72 +2201,16 @@ if ($mybb->input['action'] == "editprofile") {
         $lang->current_custom_usertitle = '';
     }
 
-    $bdaydaysel = $selected = '';
-    for ($day = 1; $day <= 31; ++$day) {
-        if ($mybb->input['birthday_day'] == $day) {
-            $selected = "selected=\"selected\"";
-        } else {
-            $selected = '';
-        }
-
-        eval("\$bdaydaysel .= \"".$templates->get("usercp_profile_day")."\";");
-    }
-
-    $bdaymonthsel = array();
-    foreach (range(1, 12) as $month) {
-        $bdaymonthsel[$month] = '';
-    }
-    $bdaymonthsel[$mybb->input['birthday_month']] = 'selected="selected"';
-
     if ($mybb->settings['allowaway'] != 0) {
-        $awaycheck = array('', '');
-        if ($errors) {
-            if ($user['away'] == 1) {
-                $awaycheck[1] = "checked=\"checked\"";
-            } else {
-                $awaycheck[0] = "checked=\"checked\"";
-            }
-            $returndate = array();
-            $returndate[0] = $mybb->get_input('awayday');
-            $returndate[1] = $mybb->get_input('awaymonth');
-            $returndate[2] = $mybb->get_input('awayyear', MyBB::INPUT_INT);
-            $user['awayreason'] = htmlspecialchars_uni($mybb->get_input('awayreason'));
-        } else {
-            $user['awayreason'] = htmlspecialchars_uni($user['awayreason']);
-            if ($user['away'] == 1) {
-                $awaydate = my_date($mybb->settings['dateformat'], $user['awaydate']);
-                $awaycheck[1] = "checked=\"checked\"";
-                $awaynotice = $lang->sprintf($lang->away_notice_away, $awaydate);
-            } else {
-                $awaynotice = $lang->away_notice;
-                $awaycheck[0] = "checked=\"checked\"";
-            }
-            $returndate = explode("-", $user['returndate']);
+        if (!$returndate) {
+            $returndate = explode("-", $mybb->user['returndate']);
         }
-        $returndatesel = $selected = '';
-        for ($day = 1; $day <= 31; ++$day) {
-            if ($returndate[0] == $day) {
-                $selected = "selected=\"selected\"";
-            } else {
-                $selected = '';
-            }
-
-            eval("\$returndatesel .= \"".$templates->get("usercp_profile_day")."\";");
+        if (!isset($returndate[1])) {
+            $returndate[1] = 0;
         }
-
-        $returndatemonthsel = array();
-        foreach (range(1, 12) as $month) {
-            $returndatemonthsel[$month] = '';
-        }
-        if (isset($returndate[1])) {
-            $returndatemonthsel[$returndate[1]] = " selected=\"selected\"";
-        }
-
         if (!isset($returndate[2])) {
             $returndate[2] = '';
         }
-
-        eval("\$awaysection = \"".$templates->get("usercp_profile_away")."\";");
     }
 
     $plugins->run_hooks('modcp_editprofile_start');
@@ -2242,196 +2218,61 @@ if ($mybb->input['action'] == "editprofile") {
     // Fetch profile fields
     $query = $db->simple_select("userfields", "*", "ufid='{$user['uid']}'");
     $user_fields = $db->fetch_array($query);
+    if (count($user_fields) > 0) {
+        $user = array_merge($user, $user_fields);
+    }
 
-    $requiredfields = '';
-    $customfields = '';
+    $requiredfields = $customfields = [];
     $mybb->input['profile_fields'] = $mybb->get_input('profile_fields', MyBB::INPUT_ARRAY);
 
     $pfcache = $cache->read('profilefields');
-
+    
     if (is_array($pfcache)) {
         foreach ($pfcache as $profilefield) {
-            $userfield = $code = $select = $val = $options = $expoptions = $useropts = '';
-            $seloptions = array();
-            $profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
-            $profilefield['name'] = htmlspecialchars_uni($profilefield['name']);
-            $profilefield['description'] = htmlspecialchars_uni($profilefield['description']);
             $thing = explode("\n", $profilefield['type'], "2");
-            $type = $thing[0];
+            $profilefield['attributes']['type'] = $thing[0];
+            $profilefield['attributes']['options'] = [];
             if (isset($thing[1])) {
-                $options = $thing[1];
-            }
-            $field = "fid{$profilefield['fid']}";
-            if ($errors) {
-                if (isset($mybb->input['profile_fields'][$field])) {
-                    $userfield = $mybb->input['profile_fields'][$field];
-                }
-            } else {
-                $userfield = $user_fields[$field];
-            }
-            if ($type == "multiselect") {
-                if ($errors) {
-                    $useropts = $userfield;
-                } else {
-                    $useropts = explode("\n", $userfield);
-                }
-                if (is_array($useropts)) {
-                    foreach ($useropts as $key => $val) {
-                        $seloptions[$val] = $val;
-                    }
-                }
-                $expoptions = explode("\n", $options);
-                if (is_array($expoptions)) {
-                    foreach ($expoptions as $key => $val) {
-                        $val = trim($val);
-                        $val = str_replace("\n", "\\n", $val);
-
-                        $sel = "";
-                        if (isset($seloptions[$val]) && $val == $seloptions[$val]) {
-                            $sel = " selected=\"selected\"";
-                        }
-
-                        eval("\$select .= \"".$templates->get("usercp_profile_profilefields_select_option")."\";");
-                    }
-                    if (!$profilefield['length']) {
-                        $profilefield['length'] = 3;
-                    }
-
-                    eval("\$code = \"".$templates->get("usercp_profile_profilefields_multiselect")."\";");
-                }
-            } elseif ($type == "select") {
-                $expoptions = explode("\n", $options);
-                if (is_array($expoptions)) {
-                    foreach ($expoptions as $key => $val) {
-                        $val = trim($val);
-                        $val = str_replace("\n", "\\n", $val);
-                        $sel = "";
-                        if ($val == $userfield) {
-                            $sel = " selected=\"selected\"";
-                        }
-
-                        eval("\$select .= \"".$templates->get("usercp_profile_profilefields_select_option")."\";");
-                    }
-                    if (!$profilefield['length']) {
-                        $profilefield['length'] = 1;
-                    }
-
-                    eval("\$code = \"".$templates->get("usercp_profile_profilefields_select")."\";");
-                }
-            } elseif ($type == "radio") {
-                $expoptions = explode("\n", $options);
-                if (is_array($expoptions)) {
-                    foreach ($expoptions as $key => $val) {
-                        $checked = "";
-                        if ($val == $userfield) {
-                            $checked = " checked=\"checked\"";
-                        }
-
-                        eval("\$code .= \"".$templates->get("usercp_profile_profilefields_radio")."\";");
-                    }
-                }
-            } elseif ($type == "checkbox") {
-                if ($errors) {
-                    $useropts = $userfield;
-                } else {
-                    $useropts = explode("\n", $userfield);
-                }
-                if (is_array($useropts)) {
-                    foreach ($useropts as $key => $val) {
-                        $seloptions[$val] = $val;
-                    }
-                }
-                $expoptions = explode("\n", $options);
-                if (is_array($expoptions)) {
-                    foreach ($expoptions as $key => $val) {
-                        $checked = "";
-                        if (isset($seloptions[$val]) && $val == $seloptions[$val]) {
-                            $checked = " checked=\"checked\"";
-                        }
-
-                        eval("\$code .= \"".$templates->get("usercp_profile_profilefields_checkbox")."\";");
-                    }
-                }
-            } elseif ($type == "textarea") {
-                $value = htmlspecialchars_uni($userfield);
-                eval("\$code = \"".$templates->get("usercp_profile_profilefields_textarea")."\";");
-            } else {
-                $value = htmlspecialchars_uni($userfield);
-                $maxlength = "";
-                if ($profilefield['maxlength'] > 0) {
-                    $maxlength = " maxlength=\"{$profilefield['maxlength']}\"";
-                }
-
-                eval("\$code = \"".$templates->get("usercp_profile_profilefields_text")."\";");
+                $profilefield['attributes']['options'] = $thing[1];
             }
 
             if ($profilefield['required'] == 1) {
-                eval("\$requiredfields .= \"".$templates->get("usercp_profile_customfield")."\";");
+                $requiredfields[] = $profilefield;
             } else {
-                eval("\$customfields .= \"".$templates->get("usercp_profile_customfield")."\";");
+                $customfields[] = $profilefield;
             }
-            $altbg = alt_trow();
         }
-    }
-    if ($customfields) {
-        eval("\$customfields = \"".$templates->get("usercp_profile_profilefields")."\";");
     }
 
     $user['username'] = htmlspecialchars_uni($user['username']);
     $lang->edit_profile = $lang->sprintf($lang->edit_profile, $user['username']);
-    $profile_link = build_profile_link(format_name($user['username'], $user['usergroup'], $user['displaygroup']), $user['uid']);
+    $user['profilelink'] = build_profile_link(format_name($user['username'], $user['usergroup'], $user['displaygroup']), $user['uid']);
 
     $user['signature'] = htmlspecialchars_uni($user['signature']);
     $codebuttons = build_mycode_inserter("signature");
 
-    // Do we mark the suspend signature box?
-    if ($user['suspendsignature'] || ($mybb->get_input('suspendsignature', MyBB::INPUT_INT) && !empty($errors))) {
-        $checked = 1;
-        $checked_item = "checked=\"checked\"";
-    } else {
-        $checked = 0;
-        $checked_item = '';
-    }
-
-    // Do we mark the moderate posts box?
-    if ($user['moderateposts'] || ($mybb->get_input('moderateposting', MyBB::INPUT_INT) && !empty($errors))) {
-        $modpost_check = 1;
-        $modpost_checked = "checked=\"checked\"";
-    } else {
-        $modpost_check = 0;
-        $modpost_checked = '';
-    }
-
-    // Do we mark the suspend posts box?
-    if ($user['suspendposting'] || ($mybb->get_input('suspendposting', MyBB::INPUT_INT) && !empty($errors))) {
-        $suspost_check = 1;
-        $suspost_checked = "checked=\"checked\"";
-    } else {
-        $suspost_check = 0;
-        $suspost_checked = '';
-    }
-
-    $moderator_options = array(
-        1 => array(
-            "action" => "suspendsignature", // The input action for this option
-            "option" => "suspendsignature", // The field in the database that this option relates to
-            "time" => "action_time", // The time we've entered
-            "length" => "suspendsigtime", // The length of suspension field in the database
-            "select_option" => "action" // The name of the select box of this option
+    $modoptions = array(
+        array(
+            "action" => "moderateposting", // The input action for this option
+            "option" => "moderateposts", // The field in the database that this option relates to
+            "time" => "modpost_time", // The time we've entered
+            "length" => "moderationtime", // The length of suspension field in the database
+            "select_option" => "modpost", // The name of the select box of this option
+            "lang" => [
+                "title" => "moderate_posts",
+                "length" => "modpost_length"
+            ]
         ),
-        2 => array(
-            "action" => "moderateposting",
-            "option" => "moderateposts",
-            "time" => "modpost_time",
-            "length" => "moderationtime",
-            "select_option" => "modpost"
-        ),
-        3 => array(
+        array(
             "action" => "suspendposting",
             "option" => "suspendposting",
             "time" => "suspost_time",
             "length" => "suspensiontime",
-            "select_option" => "suspost"
+            "select_option" => "suspost",
+            "lang" => [
+                "title" => "suspend_posts",
+                "length" => "suspend_length"
+            ]
         )
     );
 
@@ -2443,65 +2284,6 @@ if ($mybb->input['action'] == "editprofile") {
         "never" => $lang->expire_permanent
     );
 
-    $suspendsignature_info = $moderateposts_info = $suspendposting_info = '';
-    $action_options = $modpost_options = $suspost_options = '';
-    foreach ($moderator_options as $option) {
-        $mybb->input[$option['time']] = $mybb->get_input($option['time'], MyBB::INPUT_INT);
-        // Display the suspension info, if this user has this option suspended
-        if ($user[$option['option']]) {
-            if ($user[$option['length']] == 0) {
-                // User has a permanent ban
-                $string = $option['option']."_perm";
-                $suspension_info = $lang->$string;
-            } else {
-                // User has a temporary (or limited) ban
-                $string = $option['option']."_for";
-                $for_date = my_date('relative', $user[$option['length']], '', 2);
-                $suspension_info = $lang->sprintf($lang->$string, $for_date);
-            }
-
-            switch ($option['option']) {
-                case "suspendsignature":
-                    eval("\$suspendsignature_info = \"".$templates->get("modcp_editprofile_suspensions_info")."\";");
-                    break;
-                case "moderateposts":
-                    eval("\$moderateposts_info = \"".$templates->get("modcp_editprofile_suspensions_info")."\";");
-                    break;
-                case "suspendposting":
-                    eval("\$suspendposting_info = \"".$templates->get("modcp_editprofile_suspensions_info")."\";");
-                    break;
-            }
-        }
-
-        // Generate the boxes for this option
-        $selection_options = '';
-        foreach ($periods as $key => $value) {
-            $string = $option['select_option']."_period";
-            if ($mybb->get_input($string) == $key) {
-                $selected = "selected=\"selected\"";
-            } else {
-                $selected = '';
-            }
-
-            eval("\$selection_options .= \"".$templates->get("modcp_editprofile_select_option")."\";");
-        }
-
-        $select_name = $option['select_option']."_period";
-        switch ($option['option']) {
-            case "suspendsignature":
-                eval("\$action_options = \"".$templates->get("modcp_editprofile_select")."\";");
-                break;
-            case "moderateposts":
-                eval("\$modpost_options = \"".$templates->get("modcp_editprofile_select")."\";");
-                break;
-            case "suspendposting":
-                eval("\$suspost_options = \"".$templates->get("modcp_editprofile_select")."\";");
-                break;
-        }
-    }
-
-    eval("\$suspend_signature = \"".$templates->get("modcp_editprofile_signature")."\";");
-
     $user['usernotes'] = htmlspecialchars_uni($user['usernotes']);
 
     if (!isset($newtitle)) {
@@ -2510,8 +2292,14 @@ if ($mybb->input['action'] == "editprofile") {
 
     $plugins->run_hooks('modcp_editprofile_end');
 
-    eval("\$edituser = \"".$templates->get("modcp_editprofile")."\";");
-    output_page($edituser);
+    output_page(\MyBB\template('modcp/editprofile.twig', [
+        'user' => $user,
+        'customFields' => $customfields,
+        'requiredFields' => $requiredfields,
+        'periods' => $periods,
+        'modOptions' => $modoptions,
+        'codebuttons' => $codebuttons
+    ]));
 }
 
 if ($mybb->input['action'] == "finduser") {
