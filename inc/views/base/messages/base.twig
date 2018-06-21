@@ -1,0 +1,4 @@
+<div class="{% if options.class %}{{ options.class }}{% else %}red_alert{% endif %}"{% if options.id %} id="{{ options.id }}"{% endif %}>
+    {% block message %}{% endblock message %}
+    <div>{{ options.message|raw }}</div>
+</div>

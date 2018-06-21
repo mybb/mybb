@@ -1,4 +1,7 @@
 <div id="container">
+    {% if mybb.settings.dst_correction %}
+    	{{ mybb.settings.dst_correction }}
+    {% endif %}
     <a name="top" id="top"></a>
     <div id="header">
         <div id="logo">
@@ -35,4 +38,11 @@
     </div>
     <div id="content">
         <div class="wrapper">
+            {% for template, options in headerMessages %}
+            	{% if template matches '/^\\d+$/' %}
+            		{% include 'messages/base.twig' %}
+            	{% else %}
+            		{% include 'messages/' ~ template ~ '.twig' %}
+            	{% endif %}
+            {% endfor %}
             <br />
