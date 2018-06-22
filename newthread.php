@@ -113,21 +113,13 @@ if($forum['allowpicons'] != 0)
 // If we have a currently logged in user then fetch the change user box.
 if($mybb->user['uid'] != 0)
 {
-	eval("\$loginbox = \"".$templates->get("changeuserbox")."\";");
+	$loginbox = \MyBB\template('misc/changeuserbox.twig');
 }
 
 // Otherwise we have a guest, determine the "username" and get the login box.
 else
 {
-	if(!isset($mybb->input['previewpost']) && $mybb->input['action'] != "do_newthread")
-	{
-		$username = '';
-	}
-	else
-	{
-		$username = htmlspecialchars_uni($mybb->get_input('username'));
-	}
-	eval("\$loginbox = \"".$templates->get("loginbox")."\";");
+	$loginbox = \MyBB\template('misc/loginbox.twig');
 }
 
 // If we're not performing a new thread insert and not editing a draft then we're posting a new thread.
@@ -931,7 +923,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	{
 		$correct = false;
 		require_once MYBB_ROOT.'inc/class_captcha.php';
-		$post_captcha = new captcha(false, "post_captcha");
+		$post_captcha = new captcha(false, "post");
 
 		if((!empty($mybb->input['previewpost']) || $hide_captcha == true) && $post_captcha->type == 1)
 		{
