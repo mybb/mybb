@@ -1,0 +1,95 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ mybb.settings.bbname }}</title>
+{% endblock head %}
+
+{% block body %}
+    {{ forums|raw }}
+    {% if (mybb.settings.showwol and mybb.usergroup.canviewonline) or mybb.settings.showindexstats or (mybb.settings.showbirthdays and birthdays|length > 0) %}
+    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+        <thead>
+            <tr>
+                <td class="thead{{ collapsedthead.boardstats }}">
+                    <div class="expcolimage"><img src="{{ theme.imgdir }}/collapse{{ collapsedimg.boardstats }}.png" id="boardstats_img" class="expander" alt="[-]" title="[-]" /></div>
+                    <div><strong>{{ lang.boardstats }}</strong></div>
+                </td>
+            </tr>
+        </thead>
+        <tbody style="{{ collapsed.boardstats_e }}" id="boardstats_e">
+            <tr>
+                <td class="tcat"><span class="smalltext"><strong>{{ lang.whos_online }}</strong> [<a href="online.php">{{ lang.complete_list }}</a>]</span></td>
+            </tr>
+            <tr>
+                <td class="trow1">
+                    <span class="smalltext">
+                        {{ lang.online_note }}<br />
+                        {% for user in users %}
+                            {{ user.profilelink|raw }}{% if loop.last != true %}{{ lang.comma }} {% endif %}
+                            {% if user.invisible == 1 and (mybb.usergroup.canviewwolinvis == 1 or user.uid == mybb.user.uid) %}*{% endif %}
+                        {% endfor %}
+                    </span>
+                </td>
+            </tr>
+            {% if birthdays or hiddencount %}
+            <tr>
+                <td class="tcat">
+                    <span class="smalltext"><strong>{{ lang.todays_birthdays }}</strong></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="trow1">
+                    {% spaceless %}
+                    <span class="smalltext">
+                        {% for user in birthdays %}
+                            {{ user.profilelink|raw }}{% if user.age %} ({{ user.age }}) {% endif %}{% if loop.last != true %}{{ lang.comma }} {% endif %}
+                        {% endfor %}
+                    </span>
+                    {% endspaceless %}{% if hiddencount %} - {{ hiddencount }} {{ lang.birthdayhidden }}{% endif %}
+                </td>
+            </tr>
+            {% endif %}
+            <tr>
+                <td class="tcat">
+                    <span class="smalltext"><strong>{{ lang.boardstats }}</strong></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="trow1">
+                    <span class="smalltext">
+                        {{ lang.stats_posts_threads }}<br />
+                        {{ lang.stats_numusers }}<br />
+                        {{ lang.stats_newestuser|raw }}<br />
+                        {{ lang.stats_mostonline|raw }}
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="tfoot" style="text-align: right">
+                    <span class="smalltext">
+                        {% if mybb.user.uid != 0 %}<a href="member.php?action=logout&amp;logoutkey={{ mybb.user.logoutkey }}">{{ lang.index_logout }}</a> | {% endif %}
+                        <a href="showteam.php">{{ lang.forumteam }}</a>
+                        {% if mybb.settings.statsenabled %} | <a href="stats.php">{{ lang.forumstats }}</a>{% endif %}
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <br />
+    {% endif %}
+    <dl class="forum_legend smalltext">
+        <dt><span class="forum_status forum_on" title="{{ lang.new_posts }}"></span></dt>
+        <dd>{{ lang.new_posts }}</dd>
+
+        <dt><span class="forum_status forum_off" title="{{ lang.no_new_posts }}"></span></dt>
+        <dd>{{ lang.no_new_posts }}</dd>
+
+        <dt><span class="forum_status forum_offlock" title="{{ lang.forum_locked }}"></span></dt>
+        <dd>{{ lang.forum_locked }}</dd>
+
+        <dt><span class="forum_status forum_offlink" title="{{ lang.forum_redirect }}"></span></dt>
+        <dd>{{ lang.forum_redirect }}</dd>
+    </dl>
+    <br class="clear" />
+
+{% endblock body %}
