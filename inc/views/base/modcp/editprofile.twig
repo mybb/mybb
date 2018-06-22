@@ -137,17 +137,12 @@
                                 {% if contactFields %}
                                     <br />
                                     <fieldset class="trow2">
-                                    <legend><strong>{{ lang.additional_contact_details }}</strong></legend>
-                                    <table cellspacing="0" cellpadding="{{ theme.tablespace }}">
-                                        {% for field, label in contactFields %}
-                                            <tr>
-                                                <td><label for="{{ field }}" class="smalltext">{{ label }}</label></td>
-                                            </tr>
-                                            <tr>
-                                                <td><input type="text" class="textbox" name="{{ field }}" size="25" value="{{ user[field] }}" /></td>
-                                            </tr>
-                                        {% endfor %}
-                                    </table>
+                                        <legend><strong>{{ lang.additional_contact_details }}</strong></legend>
+                                        <table cellspacing="0" cellpadding="{{ theme.tablespace }}">
+                                            {% for field in contactFields %}
+                                                {% include 'usercp/profilefield.twig' %}
+                                            {% endfor %}
+                                        </table>
                                     </fieldset>
                                 {% endif %}
                                 <br />

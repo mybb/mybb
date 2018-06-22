@@ -39,26 +39,7 @@ if($mybb->get_input('action') == "search")
 	$plugins->run_hooks("memberlist_search");
 	add_breadcrumb($lang->nav_memberlist_search);
 
-    $contact_fields = [];
-    foreach (array('aim', 'skype', 'google', 'yahoo', 'icq') as $field) {
-        $contact_field[$field] = '';
-        $settingkey = 'allow'.$field.'field';
-
-        if ($mybb->settings[$settingkey] != '' && is_member($mybb->settings[$settingkey], array('usergroup' => $mybb->usergroup['usergroup'], 'additionalgroups' => $mybb->usergroup['additionalgroups']))) {
-            $contact_field['field'] = $field;
-
-            $lang_string = 'search_'.$field;
-            $contact_field['lang_string'] = $lang->{$lang_string};
-
-            $contact_field['bgcolors'] = alt_trow();
-
-            $contact_fields[] = $contact_field;
-        }
-    }
-
-    output_page(\MyBB\template('memberlist/search.twig', [
-        'contact_fields' => $contact_fields,
-    ]));
+    output_page(\MyBB\template('memberlist/search.twig'));
 }
 else
 {
@@ -209,49 +190,6 @@ else
 	{
 		$search_query .= " AND u.website {$like} '%".$db->escape_string_like($memberlist['website'])."%'";
 		$memberlist['search_url'] .= "&website=".urlencode($memberlist['website']);
-	}
-
-	// Search by contact field input
-	foreach(array('aim', 'icq', 'google', 'skype', 'yahoo') as $cfield)
-	{
-		$csetting = 'allow'.$cfield.'field';
-		$mybb->input[$cfield] = trim($mybb->get_input($cfield));
-		if($mybb->input[$cfield] && $mybb->settings[$csetting] != '')
-		{
-			if($mybb->settings[$csetting] != -1)
-			{
-				$gids = explode(',', (string)$mybb->settings[$csetting]);
-
-				$search_query .= " AND (";
-				$or = '';
-				foreach($gids as $gid)
-				{
-					$gid = (int)$gid;
-					$search_query .= $or.'u.usergroup=\''.$gid.'\'';
-					switch($db->type)
-					{
-						case 'pgsql':
-						case 'sqlite':
-							$search_query .= " OR ','||u.additionalgroups||',' LIKE '%,{$gid},%'";
-							break;
-						default:
-							$search_query .= " OR CONCAT(',',u.additionalgroups,',') LIKE '%,{$gid},%'";
-							break;
-					}
-					$or = ' OR ';
-				}
-				$search_query .= ")";
-			}
-			if($cfield == 'icq')
-			{
-				$search_query .= " AND u.{$cfield} LIKE '%".(int)$mybb->input[$cfield]."%'";
-			}
-			else
-			{
-				$search_query .= " AND u.{$cfield} {$like} '%".$db->escape_string_like($mybb->input[$cfield])."%'";
-			}
-			$memberlist['search_url'] .= "&{$cfield}=".urlencode($mybb->input[$cfield]);
-		}
 	}
 
 	$usergroups_cache = $cache->read('usergroups');

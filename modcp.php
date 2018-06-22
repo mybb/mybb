@@ -1966,11 +1966,6 @@ if ($mybb->input['action'] == "do_editprofile") {
         "profile_fields" => $mybb->get_input('profile_fields', MyBB::INPUT_ARRAY),
         "profile_fields_editable" => true,
         "website" => $mybb->get_input('website'),
-        "icq" => $mybb->get_input('icq'),
-        "aim" => $mybb->get_input('aim'),
-        "yahoo" => $mybb->get_input('yahoo'),
-        "skype" => $mybb->get_input('skype'),
-        "google" => $mybb->get_input('google'),
         "signature" => $mybb->get_input('signature'),
         "usernotes" => $mybb->get_input('usernotes'),
         "away" => $away
@@ -2126,12 +2121,6 @@ if ($mybb->input['action'] == "editprofile") {
     if (!my_validate_url($user['website'])) {
         $user['website'] = '';
     }
-    
-    $user['icq'] = (int)$user['icq'];
-
-    if ($user['icq'] == 0) {
-        $user['icq'] = '';
-    }
 
     if (!$errors) {
         $mybb->input = array_merge($user, $mybb->input);
@@ -2152,11 +2141,6 @@ if ($mybb->input['action'] == "editprofile") {
         $bday[1] = $mybb->get_input('bday2', MyBB::INPUT_INT);
         $bday[2] = $mybb->get_input('bday3', MyBB::INPUT_INT);
 
-        $user['skype'] = htmlspecialchars_uni($user['skype']);
-        $user['google'] = htmlspecialchars_uni($user['google']);
-        $user['aim'] = htmlspecialchars_uni($user['aim']);
-        $user['yahoo'] = htmlspecialchars_uni($user['yahoo']);
-
         $returndate = [];
         $returndate[0] = $mybb->get_input('awayday', MyBB::INPUT_INT);
         $returndate[1] = $mybb->get_input('awaymonth', MyBB::INPUT_INT);
@@ -2165,21 +2149,8 @@ if ($mybb->input['action'] == "editprofile") {
     }
 
     // Sanitize all input
-    foreach (array('usertitle', 'website', 'icq', 'aim', 'yahoo', 'skype', 'google', 'signature', 'bday1', 'bday2', 'bday3') as $field) {
+    foreach (array('usertitle', 'website', 'signature', 'birthday_day', 'birthday_month', 'birthday_year') as $field) {
         $mybb->input[$field] = htmlspecialchars_uni($mybb->get_input($field));
-    }
-
-    // Build contact fields labels
-    $contactFields = ['icq', 'aim', 'yahoo', 'skype', 'google'];
-    foreach ($contactFields as $key => $cfield) {
-        $csetting = 'allow'.$cfield.'field';
-        if ($mybb->settings[$csetting] == '') {
-            unset($contactFields[$key]);
-            continue;
-        }
-
-        $tempString = 'contact_field_' . $cfield;
-        $contactFields[$key] = $lang->$tempString;
     }
 
     // Custom user title, check to see if we have a default group title
@@ -2231,7 +2202,7 @@ if ($mybb->input['action'] == "editprofile") {
         $user = array_merge($user, $user_fields);
     }
 
-    $requiredfields = $customfields = [];
+    $requiredfields = $customfields = $contactfields = [];
     $mybb->input['profile_fields'] = $mybb->get_input('profile_fields', MyBB::INPUT_ARRAY);
 
     $pfcache = $cache->read('profilefields');
@@ -2247,6 +2218,8 @@ if ($mybb->input['action'] == "editprofile") {
 
             if ($profilefield['required'] == 1) {
                 $requiredfields[] = $profilefield;
+            } elseif ($profilefield['contact'] == 1) {
+                $contactfields[] = $profilefield;
             } else {
                 $customfields[] = $profilefield;
             }
@@ -2305,6 +2278,7 @@ if ($mybb->input['action'] == "editprofile") {
         'user' => $user,
         'customFields' => $customfields,
         'requiredFields' => $requiredfields,
+        'contactFields' => $contactfields,
         'periods' => $periods,
         'modOptions' => $modoptions,
         'codebuttons' => $codebuttons

@@ -201,22 +201,6 @@ if ($mybb->input['action'] == "do_profile" && $mybb->request_method == "post") {
         "away" => $away,
         "profile_fields" => $mybb->get_input('profile_fields', MyBB::INPUT_ARRAY)
     );
-    foreach (array('icq', 'aim', 'yahoo', 'skype', 'google') as $cfield) {
-        $csetting = 'allow'.$cfield.'field';
-        if ($mybb->settings[$csetting] == '') {
-            continue;
-        }
-
-        if (!is_member($mybb->settings[$csetting])) {
-            continue;
-        }
-
-        if ($cfield == 'icq') {
-            $user[$cfield] = $mybb->get_input($cfield, 1);
-        } else {
-            $user[$cfield] = $mybb->get_input($cfield);
-        }
-    }
 
     if ($mybb->usergroup['canchangewebsite'] == 1) {
         $user['website'] = $mybb->get_input('website');
@@ -288,37 +272,20 @@ if ($mybb->input['action'] == "profile") {
         $user['website'] = htmlspecialchars_uni($user['website']);
     }
 
-    $user['icq'] = (int)$user['icq'];
-
-    if ($user['icq'] == 0) {
-        $user['icq'] = '';
-    }
-
-    $contactFields = ['icq', 'aim', 'yahoo', 'skype', 'google'];
-    foreach ($contactFields as $key => $cfield) {
-        $csetting = 'allow'.$cfield.'field';
-        if ($mybb->settings[$csetting] == '' || !is_member($mybb->settings[$csetting])) {
-            unset($contactFields[$key]);
-            continue;
-        }
-
-        $tempString = 'contact_field_' . $cfield;
-        $contactFields[$key] = $lang->$tempString;
-    }
-
     // Away informations
     if ($mybb->settings['allowaway'] != 0) {
-            $returndate = explode("-", $mybb->user['returndate']);
-            if (!isset($returndate[1])) {
-                $returndate[1] = 0;
-            }
-            if (!isset($returndate[2])) {
-                $returndate[2] = '';
-            }
+        $returndate = explode("-", $mybb->user['returndate']);
+        if (!isset($returndate[1])) {
+            $returndate[1] = 0;
+        }
+
+        if (!isset($returndate[2])) {
+            $returndate[2] = '';
+        }
     }
 
     // Custom profile fields baby!
-    $requiredfields = $customfields = [];
+    $requiredfields = $customfields = $contactfields = [];
     $mybb->input['profile_fields'] = $mybb->get_input('profile_fields', MyBB::INPUT_ARRAY);
 
     $pfcache = $cache->read('profilefields');
@@ -338,6 +305,8 @@ if ($mybb->input['action'] == "profile") {
 
             if ($profilefield['required'] == 1) {
                 $requiredfields[] = $profilefield;
+            } elseif ($profilefield['contact'] == 1) {
+                $contactfields[] = $profilefield;
             } else {
                 $customfields[] = $profilefield;
             }
@@ -368,7 +337,7 @@ if ($mybb->input['action'] == "profile") {
         'user' => $user,
         'bday' => $bday,
         'returndate' => $returndate,
-        'contactFields' => $contactFields
+        'contactFields' => $contactfields
     ]));
 }
 
