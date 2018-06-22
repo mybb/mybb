@@ -394,12 +394,15 @@ else {
     $lastvisit = $lang->lastvisit_never;
 }
 
+$headerMessages = [];
+
 $plugins->run_hooks('global_intermediate');
 
 // If the board is closed and we have a usergroup allowed to view the board when closed, then show board closed warning
-$bbclosedwarning = '';
 if ($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['canviewboardclosed'] == 1) {
-    eval('$bbclosedwarning = "'.$templates->get('global_boardclosed_warning').'";');
+    $headerMessages[] = [
+        'message' => $lang->bbclosed_warning
+    ];
 }
 
 // Load appropriate welcome block for the current logged in user
@@ -436,8 +439,10 @@ if ($mybb->user['uid'] != 0 && is_array($groupleaders) && array_key_exists($mybb
             $total_joinrequests = my_number_format($total_joinrequests);
             $lang->pending_joinrequests = $lang->sprintf($lang->pending_joinrequests, $total_joinrequests);
         }
-
-        eval('$pending_joinrequests = "'.$templates->get('global_pending_joinrequests').'";');
+        
+        $headerMessages[] = [
+            'message' => $lang->pending_joinrequests
+        ];
     }
 }
 
@@ -500,7 +505,9 @@ if ($mybb->settings['reportmethod'] == "db" && ($mybb->usergroup['cancp'] == 1 |
                     $lang->unread_reports = $lang->sprintf($lang->unread_reports, my_number_format($unread));
                 }
 
-                eval('$unreadreports = "'.$templates->get('global_unreadreports').'";');
+                $headerMessages[] = [
+                    'message' => $lang->unread_reports
+                ];
             }
         }
     }
@@ -521,30 +528,29 @@ if ($mybb->usergroup['isbannedgroup'] == 1) {
 
     if ($ban['uid']) {
         // Format their ban lift date and reason appropriately
-        $banlift = $lang->banned_lifted_never;
-        $reason = htmlspecialchars_uni($ban['reason']);
+        $ban['lift'] = $lang->banned_lifted_never;
 
         if ($ban['lifted'] > 0) {
-            $banlift = my_date('normal', $ban['lifted']);
+            $ban['lift'] = my_date('normal', $ban['lifted']);
         }
     }
 
-    if (empty($reason)) {
-        $reason = $lang->unknown;
+    if (empty($ban['reason'])) {
+        $ban['reason'] = $lang->unknown;
     }
 
-    if (empty($banlift)) {
-        $banlift = $lang->unknown;
+    if (empty($ban['lift'])) {
+        $ban['lift'] = $lang->unknown;
     }
 
-    // Display a nice warning to the user
-    eval('$bannedwarning = "'.$templates->get('global_bannedwarning').'";');
+    $headerMessages['banneduser'] = [
+        'extra' => $ban
+    ];
 }
 
 $lang->ajax_loading = str_replace("'", "\\'", $lang->ajax_loading);
 
 // Check if this user has a new private message.
-$pm_notice = '';
 if (isset($mybb->user['pmnotice']) && $mybb->user['pmnotice'] == 2 && $mybb->user['pms_unread'] > 0 && $mybb->settings['enablepms'] != 0 && $mybb->usergroup['canusepms'] != 0 && $mybb->usergroup['canview'] != 0 && ($current_page != "private.php" || $mybb->get_input('action') != "read")) {
     if (!isset($parser)) {
         require_once MYBB_ROOT.'inc/class_parser.php';
@@ -572,16 +578,18 @@ if (isset($mybb->user['pmnotice']) && $mybb->user['pmnotice'] == 2 && $mybb->use
     }
 
     if ($mybb->user['pms_unread'] == 1) {
-        $privatemessage_text = $lang->sprintf($lang->newpm_notice_one, $user_text, $mybb->settings['bburl'], $pm['pmid'], htmlspecialchars_uni($pm['subject']));
+        $headerMessages['pmnotice']['message'] = $lang->sprintf($lang->newpm_notice_one, $user_text, $mybb->settings['bburl'], $pm['pmid'], htmlspecialchars_uni($pm['subject']));
     } else {
-        $privatemessage_text = $lang->sprintf($lang->newpm_notice_multiple, $mybb->user['pms_unread'], $user_text, $mybb->settings['bburl'], $pm['pmid'], htmlspecialchars_uni($pm['subject']));
+        $headerMessages['pmnotice']['message'] = $lang->sprintf($lang->newpm_notice_multiple, $mybb->user['pms_unread'], $user_text, $mybb->settings['bburl'], $pm['pmid'], htmlspecialchars_uni($pm['subject']));
     }
-    eval('$pm_notice = "'.$templates->get('global_pm_alert').'";');
+    $headerMessages['pmnotice']['id'] = 'pm_notice';
+    $headerMessages['pmnotice']['class'] = 'pm_alert';
 }
 
-$remote_avatar_notice = '';
 if (($mybb->user['avatartype'] === 'remote' || $mybb->user['avatartype'] === 'gravatar') && !$mybb->settings['allowremoteavatars']) {
-    eval('$remote_avatar_notice = "'.$templates->get('global_remote_avatar_notice').'";');
+    $headerMessages[] = [
+        'message' => $lang->remote_avatar_disabled_default_avatar
+    ];
 }
 
 if ($mybb->settings['awactialert'] == 1 && $mybb->usergroup['cancp'] == 1) {
@@ -605,35 +613,22 @@ if ($mybb->settings['awactialert'] == 1 && $mybb->usergroup['cancp'] == 1) {
     }
 
     if ($awaitingusers > 0) {
+        $aamessage = [];
         if ($awaitingusers == 1) {
-            $awaiting_message = $lang->awaiting_message_single;
+            $aamessage['message'] = $lang->awaiting_message_single;
         } else {
-            $awaiting_message = $lang->sprintf($lang->awaiting_message_plural, $awaitingusers);
+            $aamessage['message'] = $lang->sprintf($lang->awaiting_message_plural, $awaitingusers);
         }
 
         if ($admincplink) {
-            $awaiting_message .= $lang->sprintf($lang->awaiting_message_link, $mybb->settings['bburl'], $admin_dir);
+            $aamessage['message'] .= $lang->sprintf($lang->awaiting_message_link, $mybb->settings['bburl'], $admin_dir);
         }
-
-        eval('$awaitingusers = "'.$templates->get('global_awaiting_activation').'";');
-    } else {
-        $awaitingusers = '';
+        $headerMessages[] = $aamessage;
     }
 }
 
 // Set up some of the default templates
-eval('$headerinclude = "'.$templates->get('headerinclude').'";');
-eval('$gobutton = "'.$templates->get('gobutton').'";');
-eval('$htmldoctype = "'.$templates->get('htmldoctype', 1, 0).'";');
 eval('$header = "'.$templates->get('header').'";');
-
-$copy_year = my_date('Y', TIME_NOW);
-
-// Are we showing version numbers in the footer?
-$mybbversion = '';
-if ($mybb->settings['showvernum'] == 1) {
-    $mybbversion = ' '.$mybb->version;
-}
 
 // Check to see if we have any tasks to run
 $task_image = '';
@@ -646,65 +641,38 @@ if ($task_cache['nextrun'] <= TIME_NOW) {
     eval("\$task_image = \"".$templates->get("task_image")."\";");
 }
 
-// Post code
-$post_code_string = '';
-if ($mybb->user['uid']) {
-    $post_code_string = '&amp;my_post_key='.$mybb->post_code;
-}
+// Use a fictional setting to inject the footer code into Twig without creating an ad-hoc extension
+$mybb->settings['footer'] = [];
 
 // Are we showing the quick language selection box?
-$lang_select = $lang_options = '';
 if ($mybb->settings['showlanguageselect'] != 0) {
-    $languages = $lang->get_languages();
+    $mybb->settings['footer']['langselect']['options'] = $lang->get_languages();
 
-    if (count($languages) > 1) {
-        foreach ($languages as $key => $language) {
-            $language = htmlspecialchars_uni($language);
-
-            // Current language matches
-            if ($lang->language == $key) {
-                $selected = " selected=\"selected\"";
-            } else {
-                $selected = '';
-            }
-
-            eval('$lang_options .= "'.$templates->get('footer_languageselect_option').'";');
-        }
-
-        $lang_redirect_url = get_current_location(true, 'language');
-        eval('$lang_select = "'.$templates->get('footer_languageselect').'";');
+    if (count($mybb->settings['footer']['langselect']) > 1) {
+        $mybb->settings['footer']['langselect']['current_url'] = get_current_location(true, 'language');
     }
 }
 
 // Are we showing the quick theme selection box?
-$theme_select = $theme_options = '';
 if ($mybb->settings['showthemeselect'] != 0) {
-    $theme_options = build_theme_select("theme", $mybb->user['style'], 0, '', false, true);
+    $mybb->settings['footer']['themeselect']['options'] = build_theme_select("theme", $mybb->user['style'], 0, '', false, true);
 
-    if (!empty($theme_options)) {
-        $theme_redirect_url = get_current_location(true, 'theme');
-        eval('$theme_select = "'.$templates->get('footer_themeselect').'";');
+    if (!empty($mybb->settings['footer']['themeselect']['options'])) {
+        $mybb->settings['footer']['themeselect']['current_url'] = get_current_location(true, 'theme');
     }
 }
 
-// If we use the contact form, show 'Contact Us' link when appropriate
-$contact_us = '';
-if (($mybb->settings['contactlink'] == "contact.php" && $mybb->settings['contact'] == 1 && ($mybb->settings['contact_guests'] != 1 && $mybb->user['uid'] == 0 || $mybb->user['uid'] > 0)) || $mybb->settings['contactlink'] != "contact.php") {
-    if (!my_validate_url($mybb->settings['contactlink'], true) && my_substr($mybb->settings['contactlink'], 0, 7) != 'mailto:') {
-        $mybb->settings['contactlink'] = $mybb->settings['bburl'].'/'.$mybb->settings['contactlink'];
-    }
-
-    eval('$contact_us = "'.$templates->get('footer_contactus').'";');
+if (!my_validate_url($mybb->settings['contactlink'], true) && my_substr($mybb->settings['contactlink'], 0, 7) != 'mailto:') {
+    $mybb->settings['contactlink'] = $mybb->settings['bburl'].'/'.$mybb->settings['contactlink'];
 }
 
 // DST Auto detection enabled?
-$auto_dst_detection = '';
 if ($mybb->user['uid'] > 0 && $mybb->user['dstcorrection'] == 2) {
     $timezone = (float)$mybb->user['timezone'] + $mybb->user['dst'];
-    eval('$auto_dst_detection = "'.$templates->get('global_dst_detection').'";');
+    $mybb->settings['dst_detection'] = \MyBB\template('messages/dst_detection.twig', [
+        'timezone' => $timezone
+    ]);
 }
-
-eval('$footer = "'.$templates->get('footer').'";');
 
 // Add our main parts to the navigation
 $navbits = array();
@@ -741,15 +709,12 @@ if ($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['canviewboardclosed'
         $mybb->settings['boardclosed_reason'] = $lang->boardclosed_reason;
     }
 
-    eval('$reason = "'.$templates->get('global_boardclosed_reason').'";');
-    $lang->error_boardclosed .= $reason;
+    $lang->error_boardclosed .= \MyBB\template('messages/boardclosed_reason.twig');
 
     if (!$mybb->get_input('modal')) {
         error($lang->error_boardclosed);
     } else {
-        $output = '';
-        eval('$output = "'.$templates->get('global_board_offline_modal', 1, 0).'";');
-        echo($output);
+        echo(\MyBB\template('modals/boardclosed.twig'));
     }
     exit;
 }
@@ -824,8 +789,7 @@ if ($mybb->usergroup['canview'] != 1) {
         if (!$mybb->get_input('modal')) {
             error_no_permission();
         } else {
-            eval('$output = "'.$templates->get('global_no_permission_modal', 1, 0).'";');
-            echo($output);
+            echo(\MyBB\template('modals/no_permission.twig'));
             exit;
         }
     }

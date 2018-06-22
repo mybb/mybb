@@ -649,6 +649,20 @@ function build_postbit($post, $post_type=0)
 		$attached = get_post_attachments($post['id'], $post);
 	}
 
+	$post['showbcc'] = false;
+	if ($post_type == 2) {
+		if (count($post['bcc_recipients']) > 0) {
+			$post['showbcc'] = true;
+			$post['bcc_recipients'] = implode(', ', $post['bcc_recipients']);
+		}
+
+		if (count($post['to_recipients']) > 0) {
+			$post['to_recipients'] = implode($lang->comma, $post['to_recipients']);
+		} else {
+			$post['to_recipients'] = $lang->nobody;
+		}
+	}
+
 	$post['showsig'] = false;
 	if (isset($post['includesig']) &&
 		$post['includesig'] != 0 &&

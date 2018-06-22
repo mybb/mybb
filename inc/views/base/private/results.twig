@@ -1,0 +1,74 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ mybb.settings.bbname }} - {{ lang.private_messaging }}</title>
+{% endblock head %}
+
+{% block body %}
+    <table width="100%" border="0" align="center">
+        <tr>
+            {# To do: usercpnav #}
+            <td valign="top">
+                <form action="private.php" method="post" name="pmForm">
+                    <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+                    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+                        <tr>
+                            <td class="thead" colspan="7">
+                                <div class="float_right">
+                                <input type="text" name="keywords" value="{{ lang.enter_keywords }}" onfocus="if(this.value == '{{ lang.enter_keywords }}') { this.value = ''; }" onblur="if(this.value=='') { this.value='{{ lang.enter_keywords }}'; }" class="textbox" size="25" />
+                                <input type="submit" class="button" name="quick_search" value="{{ lang.search_pms }}" />
+                                (<a href="private.php?action=advanced_search">{{ lang.advanced_search }}</a>)</div>
+                                <strong>{{ lang.pm_search_results }}</strong>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tcat" align="left" colspan="3"><span class="smalltext"><strong>{{ lang.message }}</strong></span></td>
+                            <td class="tcat" align="center" width="10%" style="white-space: nowrap"><span class="smalltext"><strong>{{ lang.sender }}</strong></span></td>
+                            <td class="tcat" align="center" width="10%" style="white-space: nowrap"><span class="smalltext"><strong>{{ lang.folder }}</strong></span></td>
+                            <td class="tcat" align="center" width="10%" style="white-space: nowrap"><span class="smalltext"><strong>{{ lang.date_sent }}</strong></span></td>
+                            <td class="tcat" align="center" width="1%" style="white-space: nowrap">
+                                <span class="smalltext"><input name="allbox" title="{{ lang.check_all }}" type="checkbox" class="checkbox checkall" value="{{ lang.check_all }}" /></span>
+                            </td>
+                        </tr>
+                        {% for message in messagelist %}
+                            {% include 'private/results/item.twig' %}
+                        {% else %}
+                            <tr>
+                                <td colspan="7" class="trow1">{{ lang.nomessages }}</td>
+                            </tr>
+                        {% endfor %}
+                        <tr>
+                            <td class="tfoot" align="right" colspan="7">
+                                <input type="submit" class="button" name="moveto" value="{{ lang.move_to }}" /> 
+                                <input type="hidden" value="{{ input.fid }}" name="fromfid" />
+                                <select name="fid">
+                                    {% for folder in folders %}
+                                        <option value="{{ folder.id }}"{% if folder.sel %} selected="selected"{% endif %}>{{ folder.name }}</option>
+                                    {% endfor %}
+                                </select>
+                                {{ lang.or }}
+                                <input type="submit" class="button" name="delete" value="{{ lang.delete }}" /> {{ lang.selected_messages }}
+                            </td>
+                        </tr>
+                    </table>
+                    <br />
+                    <div class="float_right">
+                        <span class="smalltext">
+                            <strong>
+                                {{ lang.jump_folder }}
+                                <select name="jumpto">
+                                    {% for folder in folders %}
+                                        <option value="{{ folder.id }}"{% if folder.sel %} selected="selected"{% endif %}>{{ folder.name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <input type="submit" class="button" name="hop" value="{{ lang.go }}" />
+                            </strong>
+                        </span>
+                    </div>
+                    <input type="hidden" name="action" value="do_stuff" />
+                </form>
+                <div class="float_left">{{ multipage|raw }}</div>
+            </td>
+        </tr>
+    </table>
+{% endblock body %}

@@ -1068,7 +1068,7 @@ $(document).ready(function() {
 		if($mybb->settings['captchaimage'])
 		{
 			require_once MYBB_ROOT.'inc/class_captcha.php';
-			$captcha = new captcha(true, "member_register_regimage");
+			$captcha = new captcha(true, "register");
 
 			if($captcha->html)
 			{
@@ -1762,7 +1762,7 @@ if($mybb->input['action'] == "login")
     // Show captcha image for guests if enabled and only if we have to do
     if ($mybb->settings['captchaimage'] && $do_captcha == true) {
         require_once MYBB_ROOT.'inc/class_captcha.php';
-        $login_captcha = new captcha(false, "post_captcha");
+        $login_captcha = new captcha(false, "post");
 
         if ($login_captcha->type == 1) {
             if (!$correct) {
@@ -2734,7 +2734,7 @@ if($mybb->input['action'] == "emailuser")
 	$captcha = '';
     if ($mybb->settings['captchaimage'] && $mybb->user['uid'] == 0) {
         require_once MYBB_ROOT.'inc/class_captcha.php';
-        $post_captcha = new captcha(true, "post_captcha");
+        $post_captcha = new captcha(true, "post");
 
         if ($post_captcha->html) {
             $captcha = $post_captcha->html;

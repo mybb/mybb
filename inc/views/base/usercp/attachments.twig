@@ -1,0 +1,99 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ mybb.settings.bburl }} - {{ lang.attachments_manager }}</title>
+{% endblock head %}
+
+{% block body %}
+    <form action="usercp.php" method="post" name="attachmentsmanager">
+        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+            <tr>
+                <td class="thead" colspan="5"><strong>{{ lang.attachments_manager }} {{ usage_note }}</strong></td>
+            </tr>
+            <tr>
+                <td class="tcat" colspan="2" width="40%">
+                    <span class="smalltext">
+                        <strong>{{ lang.attachments_attachment }}</strong>
+                    </span>
+                </td>
+                <td class="tcat" width="40%">
+                    <span class="smalltext">
+                        <strong>{{ lang.attachments_post }}</strong>
+                    </span>
+                </td>
+                <td class="tcat" align="center" width="20%">
+                    <span class="smalltext">
+                        <strong>{{ lang.date_uploaded }}</strong>
+                    </span>
+                </td>
+                <td class="tcat" width="1">
+                    <input type="checkbox" name="allbox" class="checkbox checkall" />
+                </td>
+            </tr>
+            {% for attachment in attachments %}
+                {% include 'usercp/attachments/row.twig' %}
+            {% else %}
+                <tr>
+                    <td class="trow1" align="center" colspan="5">
+                        {{ lang.no_attachments }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        <br />
+        <div align="center">
+            <input type="hidden" name="action" value="do_attachments" />
+            <input type="submit" class="button" value="{{ lang.delete_attachments }}" />
+        </div>
+    </form>
+    {{ multipage|raw }}
+    <br />
+    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+        <tr>
+            <td class="thead" colspan="2">
+                <strong>{{ lang.attachments_stats }}</strong>
+            </td>
+        </tr>
+        <tr>
+            <td class="trow1" width="40%">
+                <strong>{{ lang.attachstats_attachs }}</strong>
+            </td>
+            <td class="trow1" width="60%">
+                {{ total_attachments }}
+            </td>
+        </tr>
+        <tr>
+            <td class="trow2" width="40%">
+                <strong>{{ lang.attachstats_spaceused }}</strong>
+            </td>
+            <td class="trow2" width="60%">
+                {{ friendly_usage }} ({{ percent }})
+            </td>
+        </tr>
+        <tr>
+            <td class="trow1" width="40%">
+                <strong>{{ lang.attachstats_quota }}</strong>
+            </td>
+            <td class="trow1" width="60%">
+                {{ attach_quota }}
+            </td>
+        </tr>
+        <tr>
+            <td class="trow2" width="40%">
+                <strong>{{ lang.attachstats_totaldl }}</strong>
+            </td>
+            <td class="trow2" width="60%">
+                {{ total_downloads }}
+            </td>
+        </tr>
+        <tr>
+            <td class="trow1" width="40%">
+                <strong>{{ lang.attachstats_bandwidth }}</strong>
+            </td>
+            <td class="trow1" width="60%">
+                {{ bandwidth }}
+            </td>
+        </tr>
+    </table>
+{% endblock %}

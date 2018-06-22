@@ -1,0 +1,26 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{% if title %}{{ title }}{% else %}{{ mybb.settings.bbname }}{% endif %}</title>
+{% endblock head %}
+
+{% block body %}
+<table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+    <tr>
+        <td class="thead">
+            <span class="smalltext">
+                <strong>
+                    {% if title %}
+                        {{ title }}
+                    {% else %}
+                        {{ mybb.settings.bbname }}
+                    {% endif %}
+                </strong>
+            </span>
+        </td>
+    </tr>
+    <tr>
+        <td class="trow1">{% if error %}{{ error|raw }}{% else %}{{ lang.unknown_error }}{% endif %}</td>
+    </tr>
+</table>
+{% endblock body %}

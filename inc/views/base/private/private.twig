@@ -1,0 +1,135 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ mybb.settings.bbname }} - {{ lang.private_messaging }}</title>
+{% endblock head %}
+
+{% block body %} 
+    <table width="100%" border="0" align="center">
+        <tr>
+        {# To do: usercpnav #}
+            <td valign="top">
+                <fieldset>
+                    {% if mybb.usergroup.pmquota %}
+                        {% spaceless %}
+                            <span class="pmspace">
+                                <span class="pmspace_container">
+                                    <span class="pmspace_used {{ private.spaceused_severity }}" style="width: {{ private.spaceused }}px;">
+                                        <span class="pmspace_text">{{ private.overhalf }}&nbsp;</span>
+                                    </span>
+                                    <span class="pmspace_unused" style="width: {{ private.spaceused2 }}px;">
+                                        <span class="pmspace_text">{{ private.belowhalf }}&nbsp;</span>
+                                    </span>
+                                </span>
+                                {{ lang.pmspaceused }}
+                            </span>
+                        {% endspaceless %}
+                    {% endif %}
+                    <span class="smalltext">
+                        <a href="private.php">{{ lang.inbox }}</a>
+                        {% if mybb.usergroup.cansendpms %}
+                             | <a href="private.php?action=send">{{ lang.compose_message2 }}</a>
+                        {% endif %}
+                        | <a href="private.php?action=folders">{{ lang.manage_folders }}</a>
+                        {% if mybb.user.totalpms %}
+                             | <a href="private.php?action=empty">{{ lang.empty_folders2 }}</a>
+                             | <a href="private.php?action=export">{{ lang.export_messages2 }}</a>
+                        {% endif %}
+                    </span>
+                </fieldset>
+                <br />
+                {% if mybb.usergroup.pmquota and private.pmtotal >= mybb.usergroup.pmquota %}
+                    <div class="red_alert">
+                        <strong>{{ lang.reached_warning }}</strong><br />
+                        {{ lang.reached_warning2 }}
+                    </div>
+                {% endif %}
+                <form action="private.php" method="post" name="pmForm">
+                    <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+                    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+                        <tr>
+                            <td class="thead" colspan="6">
+                                <div class="float_right">
+                                    <input type="text" name="keywords" value="{{ lang.enter_keywords }}" onfocus="if(this.value == '{{ lang.enter_keywords }}') { this.value = ''; }" onblur="if(this.value=='') { this.value='{{ lang.enter_keywords }}'; }" class="textbox" size="25" />
+                                    <input type="submit" class="button" name="quick_search" value="{{ lang.search_pms }}" />
+                                    (<a href="private.php?action=advanced_search">{{ lang.advanced_search }}</a>)
+                                </div>
+                                <strong>{{ private.foldername }}</strong>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tcat" align="center" colspan="3">
+                                <span class="smalltext">
+                                    <strong>
+                                        <a href="private.php?fid={{ private.folder }}&amp;sortby=subject&amp;order=asc">{{ lang.message_title }}</a> 
+                                        {% if private.orderarrow.subject %}
+                                            <span class="smalltext">[<a href="private.php?fid={{ private.folder }}&amp;sortby=subject&amp;order={{ private.oppsortnext }}">{{ private.oppsort }}</a>]</span>
+                                        {% endif %}
+                                    </strong>
+                                </span>
+                            </td>
+                            <td class="tcat" align="center" width="30%" style="white-space: nowrap">
+                                <span class="smalltext">
+                                    <strong>
+                                        <a href="private.php?fid={{ private.folder }}&amp;sortby=username&amp;order=asc">{{ private.sender }}</a> 
+                                        {% if private.orderarrow.username %}
+                                            <span class="smalltext">[<a href="private.php?fid={{ private.folder }}&amp;sortby=username&amp;order={{ private.oppsortnext }}">{{ private.oppsort }}</a>]</span>
+                                        {% endif %}
+                                    </strong>
+                                </span>
+                            </td>
+                            <td class="tcat" align="right" width="20%" style="white-space: nowrap">
+                                <span class="smalltext">
+                                    <strong>
+                                        <a href="private.php?fid={{ private.folder }}&amp;sortby=dateline&amp;order=desc">{{ lang.date_sent }}</a> 
+                                        {% if private.orderarrow.dateline %}
+                                            <span class="smalltext">[<a href="private.php?fid={{ private.folder }}&amp;sortby=dateline&amp;order={{ private.oppsortnext }}">{{ private.oppsort }}</a>]</span>
+                                        {% endif %}
+                                    </strong>
+                                </span>
+                            </td>
+                            <td class="tcat" align="center" width="1%" style="white-space: nowrap">
+                                <span class="smalltext"><input name="allbox" title="{{ lang.check_all }}" type="checkbox" class="checkbox checkall" value="{{ lang.check_all }}" /></span>
+                            </td>
+                        </tr>
+                        {% for message in messagelist %}
+                            {% include 'private/private/item.twig' %}
+                        {% else %}
+                            <tr>
+                                <td colspan="6" class="trow1">{{ lang.nomessages }}</td>
+                            </tr>
+                        {% endfor %}
+                        <tr>
+                            <td class="tfoot" align="right" colspan="6">
+                                <input type="submit" class="button" name="moveto" value="{{ lang.move_to }}" />
+                                <select name="fid">
+                                    {% for folder in folders %}
+                                        <option value="{{ folder.id }}"{% if folder.sel %} selected="selected"{% endif %}>{{ folder.name }}</option>
+                                    {% endfor %}
+                                </select>
+                                {{ lang.or }}
+                                <input type="submit" class="button" name="delete" value="{{ lang.delete }}" /> {{ lang.selected_messages }}
+                            </td>
+                        </tr>
+                    </table>
+                    <br />
+                    <div class="float_right">
+                        <span class="smalltext">
+                            <strong>
+                                {{ lang.jump_folder }}
+                                <select name="jumpto">
+                                    {% for folder in folders %}
+                                        <option value="{{ folder.id }}"{% if folder.sel %} selected="selected"{% endif %}>{{ folder.name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <input type="submit" class="button" name="hop" value="{{ lang.go }}" />
+                            </strong>
+                        </span>
+                    </div>
+                    <input type="hidden" name="action" value="do_stuff" />
+                </form>
+                <div class="float_left">{{ multipage|raw }}</div>
+            </td>
+        </tr>
+    </table>
+{% endblock body %}

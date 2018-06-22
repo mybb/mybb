@@ -312,11 +312,11 @@ $l['smilieinsert'] = "Smilies";
 $l['smilieinsert_getmore'] = "get more";
 $l['on'] = "On";
 $l['off'] = "Off";
-$l['remote_avatar_disabled_default_avatar'] = "You are currently using a remote avatar, which has been disabled. The default avatar will be used instead.";
-$l['unread_report'] = "Moderator Notice: There is 1 unread report.";
-$l['unread_reports'] = "Moderator Notice: There are {1} unread reports.";
-$l['pending_joinrequest'] = "Group Leader Notice: You have 1 pending group membership join request.";
-$l['pending_joinrequests'] = "Group Leader Notice: You have {1} pending group membership join requests.";
+$l['remote_avatar_disabled_default_avatar'] = "<a href='usercp.php?action=avatar'>You are currently using a remote avatar, which has been disabled. The default avatar will be used instead.</a>";
+$l['unread_report'] = "<a href='modcp.php?action=reports'>Moderator Notice: There is 1 unread report.</a>";
+$l['unread_reports'] = "<a href='modcp.php?action=reports'>Moderator Notice: There are {1} unread reports.</a>";
+$l['pending_joinrequest'] = "<a href='usercp.php?action=usergroups'>Group Leader Notice: You have 1 pending group membership join request.</a>";
+$l['pending_joinrequests'] = "<a href='usercp.php?action=usergroups'>Group Leader Notice: You have {1} pending group membership join requests.</a>";
 
 $l['search_user'] = "Search for a user";
 

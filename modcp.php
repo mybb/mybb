@@ -344,16 +344,21 @@ if ($mybb->input['action'] == "reports") {
         $page = 1;
     }
 
-    $multipage = $reportspages = '';
+    $multipage = '';
     if ($postcount > $perpage) {
         $multipage = multipage($postcount, $perpage, $page, "modcp.php?action=reports");
-        eval("\$reportspages = \"".$templates->get("modcp_reports_multipage")."\";");
     }
 
     $plugins->run_hooks('modcp_reports_start');
 
     // Reports
-    $reports = '';
+    $reports = [];
+    $report['selectall'] = false;
+    $report['inlinecount'] = 0;
+
+    $reportedcontent = $cache->read("reportedcontent");
+    $reportcache = $usercache = $postcache = array();
+
     $query = $db->query("
         SELECT r.*, u.username, rr.title
         FROM ".TABLE_PREFIX."reportedcontent r
@@ -364,175 +369,156 @@ if ($mybb->input['action'] == "reports") {
         LIMIT {$start}, {$perpage}
     ");
 
-    if (!$db->num_rows($query)) {
-        // No unread reports
-        eval("\$reports = \"".$templates->get("modcp_reports_noreports")."\";");
-    } else {
-        $reportedcontent = $cache->read("reportedcontent");
-        $reportcache = $usercache = $postcache = array();
-
-        while ($report = $db->fetch_array($query)) {
-            if ($report['type'] == 'profile' || $report['type'] == 'reputation') {
-                // Profile UID is in ID
-                if (!isset($usercache[$report['id']])) {
-                    $usercache[$report['id']] = $report['id'];
-                }
-
-                // Reputation comment? The offender is the ID2
-                if ($report['type'] == 'reputation') {
-                    if (!isset($usercache[$report['id2']])) {
-                        $usercache[$report['id2']] = $report['id2'];
-                    }
-                    if (!isset($usercache[$report['id3']])) {
-                        // The user who was offended
-                        $usercache[$report['id3']] = $report['id3'];
-                    }
-                }
-            } elseif (!$report['type'] || $report['type'] == 'post') {
-                // This (should) be a post
-                $postcache[$report['id']] = $report['id'];
+    while ($report = $db->fetch_array($query)) {
+        if ($report['type'] == 'profile' || $report['type'] == 'reputation') {
+            // Profile UID is in ID
+            if (!isset($usercache[$report['id']])) {
+                $usercache[$report['id']] = $report['id'];
             }
 
-            // Lastpost info - is it missing (pre-1.8)?
-            $lastposter = $report['uid'];
-            if (!$report['lastreport']) {
-                // Last reporter is our first reporter
-                $report['lastreport'] = $report['dateline'];
-            }
-
-            if ($report['reporters']) {
-                $reporters = my_unserialize($report['reporters']);
-
-                if (is_array($reporters)) {
-                    $lastposter = end($reporters);
+            // Reputation comment? The offender is the ID2
+            if ($report['type'] == 'reputation') {
+                if (!isset($usercache[$report['id2']])) {
+                    $usercache[$report['id2']] = $report['id2'];
+                }
+                if (!isset($usercache[$report['id3']])) {
+                    // The user who was offended
+                    $usercache[$report['id3']] = $report['id3'];
                 }
             }
-
-            if (!isset($usercache[$lastposter])) {
-                $usercache[$lastposter] = $lastposter;
-            }
-
-            $report['lastreporter'] = $lastposter;
-            $reportcache[] = $report;
+        } elseif (!$report['type'] || $report['type'] == 'post') {
+            // This (should) be a post
+            $postcache[$report['id']] = $report['id'];
         }
 
-        // Report Center gets messy
-        // Find information about our users (because we don't log it when they file a report)
-        if (!empty($usercache)) {
-            $sql = implode(',', array_keys($usercache));
-            $query = $db->simple_select("users", "uid, username", "uid IN ({$sql})");
+        // Lastpost info - is it missing (pre-1.8)?
+        $lastposter = $report['uid'];
+        if (!$report['lastreport']) {
+            // Last reporter is our first reporter
+            $report['lastreport'] = $report['dateline'];
+        }
 
-            while ($user = $db->fetch_array($query)) {
-                $usercache[$user['uid']] = $user;
+        if ($report['reporters']) {
+            $reporters = my_unserialize($report['reporters']);
+
+            if (is_array($reporters)) {
+                $lastposter = end($reporters);
             }
         }
 
-        // Messy * 2
-        // Find out post information for our reported posts
-        if (!empty($postcache)) {
-            $sql = implode(',', array_keys($postcache));
-            $query = $db->query("
-                SELECT p.pid, p.uid, p.username, p.tid, t.subject
-                FROM ".TABLE_PREFIX."posts p
-                LEFT JOIN ".TABLE_PREFIX."threads t ON (p.tid = t.tid)
-                WHERE p.pid IN ({$sql})
-            ");
-
-            while ($post = $db->fetch_array($query)) {
-                $postcache[$post['pid']] = $post;
-            }
+        if (!isset($usercache[$lastposter])) {
+            $usercache[$lastposter] = $lastposter;
         }
 
-        $lang->page_selected = $lang->sprintf($lang->page_selected, count($reportcache));
-        $lang->select_all = $lang->sprintf($lang->select_all, (int)$report_count);
-        $lang->all_selected = $lang->sprintf($lang->all_selected, (int)$report_count);
-        eval("\$selectall = \"".$templates->get("modcp_reports_selectall")."\";");
+        $report['lastreporter'] = $lastposter;
+        $reportcache[] = $report;
+    }
 
-        $plugins->run_hooks('modcp_reports_intermediate');
+    // Report Center gets messy
+    // Find information about our users (because we don't log it when they file a report)
+    if (!empty($usercache)) {
+        $sql = implode(',', array_keys($usercache));
+        $query = $db->simple_select("users", "uid, username", "uid IN ({$sql})");
 
-        $inlinecount = 0;
-        // Now that we have all of the information needed, display the reports
-        foreach ($reportcache as $report) {
-            $trow = alt_trow();
-
-            if (!$report['type']) {
-                // Assume a post
-                $report['type'] = 'post';
-            }
-
-            // Report Information
-            $report_data = array();
-
-            switch ($report['type']) {
-                case 'post':
-                    $post = get_post_link($report['id'])."#pid{$report['id']}";
-                    $user = build_profile_link(htmlspecialchars_uni($postcache[$report['id']]['username']), $postcache[$report['id']]['uid']);
-                    $report_data['content'] = $lang->sprintf($lang->report_info_post, $post, $user);
-
-                    $thread_link = get_thread_link($postcache[$report['id']]['tid']);
-                    $thread_subject = htmlspecialchars_uni($parser->parse_badwords($postcache[$report['id']]['subject']));
-                    $report_data['content'] .= $lang->sprintf($lang->report_info_post_thread, $thread_link, $thread_subject);
-
-                    break;
-                case 'profile':
-                    $user = build_profile_link(htmlspecialchars_uni($usercache[$report['id']]['username']), $usercache[$report['id']]['uid']);
-                    $report_data['content'] = $lang->sprintf($lang->report_info_profile, $user);
-                    break;
-                case 'reputation':
-                    $reputation_link = "reputation.php?uid={$usercache[$report['id3']]['uid']}#rid{$report['id']}";
-                    $bad_user = build_profile_link(htmlspecialchars_uni($usercache[$report['id2']]['username']), $usercache[$report['id2']]['uid']);
-                    $report_data['content'] = $lang->sprintf($lang->report_info_reputation, $reputation_link, $bad_user);
-
-                    $good_user = build_profile_link(htmlspecialchars_uni($usercache[$report['id3']]['username']), $usercache[$report['id3']]['uid']);
-                    $report_data['content'] .= $lang->sprintf($lang->report_info_rep_profile, $good_user);
-                    break;
-            }
-
-            // Report reason and comment
-            if ($report['reasonid'] > 0) {
-                $reason = htmlspecialchars_uni($lang->parse($report['title']));
-
-                if (empty($report['reason'])) {
-                    eval("\$report_data['comment'] = \"".$templates->get("modcp_reports_report_comment")."\";");
-                } else {
-                    $comment = htmlspecialchars_uni($report['reason']);
-                    eval("\$report_data['comment'] = \"".$templates->get("modcp_reports_report_comment_extra")."\";");
-                }
-            } else {
-                $report_data['comment'] = $lang->na;
-            }
-
-            $report_reports = 1;
-            if ($report['reports']) {
-                $report_data['reports'] = my_number_format($report['reports']);
-            }
-
-            if ($report['lastreporter']) {
-                if (is_array($usercache[$report['lastreporter']])) {
-                    $lastreport_user = build_profile_link(htmlspecialchars_uni($usercache[$report['lastreporter']]['username']), $report['lastreporter']);
-                } elseif ($usercache[$report['lastreporter']] > 0) {
-                    $lastreport_user = htmlspecialchars_uni($lang->na_deleted);
-                }
-
-                $lastreport_date = my_date('relative', $report['lastreport']);
-                $report_data['lastreporter'] = $lang->sprintf($lang->report_info_lastreporter, $lastreport_date, $lastreport_user);
-            }
-
-            $inlinecheck = '';
-            if (isset($mybb->cookies['inlinereports']) && my_strpos($mybb->cookies['inlinereports'], "|{$report['rid']}|") !== false) {
-                $inlinecheck = " checked=\"checked\"";
-                ++$inlinecount;
-            }
-
-            $plugins->run_hooks('modcp_reports_report');
-            eval("\$reports .= \"".$templates->get("modcp_reports_report")."\";");
+        while ($user = $db->fetch_array($query)) {
+            $usercache[$user['uid']] = $user;
         }
+    }
+
+    // Messy * 2
+    // Find out post information for our reported posts
+    if (!empty($postcache)) {
+        $sql = implode(',', array_keys($postcache));
+        $query = $db->query("
+            SELECT p.pid, p.uid, p.username, p.tid, t.subject
+            FROM ".TABLE_PREFIX."posts p
+            LEFT JOIN ".TABLE_PREFIX."threads t ON (p.tid = t.tid)
+            WHERE p.pid IN ({$sql})
+        ");
+
+        while ($post = $db->fetch_array($query)) {
+            $postcache[$post['pid']] = $post;
+        }
+    }
+
+    $report['reportcache'] = count($reportcache);
+    $report['report_count'] = (int)$report_count;
+    $report['selectall'] = true;
+
+    $plugins->run_hooks('modcp_reports_intermediate');
+
+    // Now that we have all of the information needed, display the reports
+    foreach ($reportcache as $report) {
+        if (!$report['type']) {
+            // Assume a post
+            $report['type'] = 'post';
+        }
+
+        switch ($report['type']) {
+            case 'post':
+                $report_data['post'] = get_post_link($report['id'])."#pid{$report['id']}";
+                $report_data['user'] = build_profile_link($postcache[$report['id']]['username'], $postcache[$report['id']]['uid']);
+                $report_data['thread_link'] = get_thread_link($postcache[$report['id']]['tid']);
+                $report_data['thread_subject'] = $parser->parse_badwords($postcache[$report['id']]['subject']);
+                break;
+            case 'profile':
+                $report_data['profile_user'] = build_profile_link($usercache[$report['id']]['username'], $usercache[$report['id']]['uid']);
+                break;
+            case 'reputation':
+                $report_data['reputation_link'] = "reputation.php?uid={$usercache[$report['id3']]['uid']}#rid{$report['id']}";
+                $report_data['bad_user'] = build_profile_link($usercache[$report['id2']]['username'], $usercache[$report['id2']]['uid']);
+                $report_data['good_user'] = build_profile_link($usercache[$report['id3']]['username'], $usercache[$report['id3']]['uid']);
+                break;
+        }
+
+        $report_data['type'] = $report['type'];
+
+        // Report reason and comment
+        if ($report['reasonid'] > 0) {
+            $report_data['reason'] = $lang->parse($report['title']);
+            $report_data['comment'] = $report['reason'];
+        } else {
+            $report_data['reason'] = $lang->na;
+        }
+
+        $report_reports = 1;
+        if ($report['reports']) {
+            $report_data['reports'] = my_number_format($report['reports']);
+        }
+
+        if ($report['lastreporter']) {
+            if (is_array($usercache[$report['lastreporter']])) {
+                $lastreport_user = build_profile_link($usercache[$report['lastreporter']]['username'], $report['lastreporter']);
+            } elseif ($usercache[$report['lastreporter']] > 0) {
+                $lastreport_user = $lang->na_deleted;
+            }
+
+            $lastreport_date = my_date('relative', $report['lastreport']);
+            $report_data['lastreporter'] = $lang->sprintf($lang->report_info_lastreporter, $lastreport_date, $lastreport_user);
+        }
+
+        $report_data['checked'] = false;
+        if (isset($mybb->cookies['inlinereports']) && my_strpos($mybb->cookies['inlinereports'], "|{$report['rid']}|") !== false) {
+            $report_data['checked'] = true;
+            ++$report['inlinecount'];
+        }
+
+        $report_data['rid'] = $report['rid'];
+
+        $plugins->run_hooks('modcp_reports_report');
+
+        $reports[] = $report_data;
     }
 
     $plugins->run_hooks('modcp_reports_end');
 
-    eval("\$reportedcontent = \"".$templates->get("modcp_reports")."\";");
-    output_page($reportedcontent);
+    $report['page'] = $page;
+
+    output_page(\MyBB\template('modcp/reports.twig', [
+        'report' => $report,
+        'multipage' => $multipage,
+        'reports' => $reports,
+    ]));
 }
 
 if ($mybb->input['action'] == "allreports") {
@@ -601,15 +587,12 @@ if ($mybb->input['action'] == "allreports") {
     $upper = $start+$perpage;
 
     $multipage = multipage($postcount, $perpage, $page, "modcp.php?action=allreports");
-    $allreportspages = '';
-    if ($postcount > $perpage) {
-        eval("\$allreportspages = \"".$templates->get("modcp_reports_multipage")."\";");
-    }
 
     $plugins->run_hooks('modcp_allreports_start');
 
+    $allreports = [];
     $query = $db->query("
-        SELECT r.*, u.username, p.username AS postusername, up.uid AS postuid, t.subject AS threadsubject, prrep.username AS repusername, pr.username AS profileusername, rr.title
+        SELECT r.*, u.username, p.username AS postusername, up.uid AS postuid, t.subject AS threadsubject, prrep.username AS repusername, pr.username AS profileusername, rr.title, prrep2.username AS goodrepusername
         FROM ".TABLE_PREFIX."reportedcontent r
         LEFT JOIN ".TABLE_PREFIX."posts p ON (r.id=p.pid)
         LEFT JOIN ".TABLE_PREFIX."threads t ON (p.tid=t.tid)
@@ -617,69 +600,58 @@ if ($mybb->input['action'] == "allreports") {
         LEFT JOIN ".TABLE_PREFIX."users up ON (p.uid=up.uid)
         LEFT JOIN ".TABLE_PREFIX."users pr ON (pr.uid=r.id)
         LEFT JOIN ".TABLE_PREFIX."users prrep ON (prrep.uid=r.id2)
+        LEFT JOIN ".TABLE_PREFIX."users prrep2 ON (prrep2.uid=r.id3)
         LEFT JOIN ".TABLE_PREFIX."reportreasons rr ON (r.reasonid = rr.rid)
         {$wflist_reports}
         ORDER BY r.dateline DESC
         LIMIT {$start}, {$perpage}
     ");
 
-    $allreports = '';
-    if (!$db->num_rows($query)) {
-        eval("\$allreports = \"".$templates->get("modcp_reports_allnoreports")."\";");
-    } else {
-        while ($report = $db->fetch_array($query)) {
-            $trow = alt_trow();
-
-            if ($report['type'] == 'post') {
-                $post = get_post_link($report['id'])."#pid{$report['id']}";
-                $user = build_profile_link(htmlspecialchars_uni($report['postusername']), $report['postuid']);
-                $report_data['content'] = $lang->sprintf($lang->report_info_post, $post, $user);
-
-                $thread_link = get_thread_link($report['id2']);
-                $thread_subject = htmlspecialchars_uni($parser->parse_badwords($report['threadsubject']));
-                $report_data['content'] .= $lang->sprintf($lang->report_info_post_thread, $thread_link, $thread_subject);
-            } elseif ($report['type'] == 'profile') {
-                $user = build_profile_link(htmlspecialchars_uni($report['profileusername']), $report['id']);
-                $report_data['content'] = $lang->sprintf($lang->report_info_profile, $user);
-            } elseif ($report['type'] == 'reputation') {
-                $user = build_profile_link(htmlspecialchars_uni($report['repusername']), $report['id2']);
-                $reputation_link = "reputation.php?uid={$report['id3']}#rid{$report['id']}";
-                $report_data['content'] = $lang->sprintf($lang->report_info_reputation, $reputation_link, $user);
-            }
-
-            // Report reason and comment
-            if ($report['reasonid'] > 0) {
-                $reason = htmlspecialchars_uni($lang->parse($report['title']));
-
-                if (empty($report['reason'])) {
-                    eval("\$report_data['comment'] = \"".$templates->get("modcp_reports_report_comment")."\";");
-                } else {
-                    $comment = htmlspecialchars_uni($report['reason']);
-                    eval("\$report_data['comment'] = \"".$templates->get("modcp_reports_report_comment_extra")."\";");
-                }
-            } else {
-                $report_data['comment'] = $lang->na;
-            }
-
-            $report['reporterlink'] = get_profile_link($report['uid']);
-            if (!$report['username']) {
-                $report['username'] = $lang->na_deleted;
-                $report['reporterlink'] = $post;
-            }
-            $report['username'] = htmlspecialchars_uni($report['username']);
-
-            $report_data['reports'] = my_number_format($report['reports']);
-            $report_data['time'] = my_date('relative', $report['dateline']);
-
-            $plugins->run_hooks('modcp_allreports_report');
-            eval("\$allreports .= \"".$templates->get("modcp_reports_allreport")."\";");
+    while ($report = $db->fetch_array($query)) {
+        if ($report['type'] == 'post') {
+            $report_data['post'] = get_post_link($report['id'])."#pid{$report['id']}";
+            $report_data['user'] = build_profile_link($report['postusername'], $report['postuid']);
+            $report_data['thread_link'] = get_thread_link($report['id2']);
+            $report_data['thread_subject'] = $parser->parse_badwords($report['threadsubject']);
+        } elseif ($report['type'] == 'profile') {
+            $report_data['profile_user'] = build_profile_link($report['profileusername'], $report['id']);
+        } elseif ($report['type'] == 'reputation') {
+            $report_data['bad_user'] = build_profile_link($report['repusername'], $report['id2']);
+            $report_data['good_user'] = build_profile_link($report['goodrepusername'], $report['id3']);
+            $report_data['reputation_link'] = "reputation.php?uid={$report['id3']}#rid{$report['id']}";
         }
+
+        $report_data['type'] = $report['type'];
+
+        // Report reason and comment
+        if ($report['reasonid'] > 0) {
+            $report_data['reason'] = $lang->parse($report['title']);
+            $report_data['comment'] = $report['reason'];
+        } else {
+            $report_data['reason'] = $lang->na;
+        }
+
+        $report_data['reporterlink'] = get_profile_link($report['uid']);
+        $report_data['username'] = $report['username'];
+        if (!$report['username']) {
+            $report_data['username'] = $lang->na_deleted;
+            $report_data['reporterlink'] = $post;
+        }
+
+        $report_data['reports'] = my_number_format($report['reports']);
+        $report_data['time'] = my_date('relative', $report['dateline']);
+
+        $plugins->run_hooks('modcp_allreports_report');
+
+        $allreports[] = $report_data;
     }
 
     $plugins->run_hooks('modcp_allreports_end');
 
-    eval("\$allreportedcontent = \"".$templates->get("modcp_reports_allreports")."\";");
-    output_page($allreportedcontent);
+    output_page(\MyBB\template('modcp/allreports.twig', [
+        'multipage' => $multipage,
+        'allreports' => $allreports,
+    ]));
 }
 
 if ($mybb->input['action'] == "modlogs") {
@@ -780,11 +752,11 @@ if ($mybb->input['action'] == "modlogs") {
         }
     }
 
-    $multipage = multipage($postcount, $perpage, $page, $page_url);
-    $resultspages = '';
     if ($postcount > $perpage) {
-        eval("\$resultspages = \"".$templates->get("modcp_modlogs_multipage")."\";");
+        $multipage = multipage($postcount, $perpage, $page, $page_url);
     }
+
+    $modlogs = [];
     $query = $db->query("
         SELECT l.*, u.username, u.usergroup, u.displaygroup, t.subject AS tsubject, f.name AS fname, p.subject AS psubject
         FROM ".TABLE_PREFIX."moderatorlog l
@@ -796,67 +768,61 @@ if ($mybb->input['action'] == "modlogs") {
         ORDER BY {$sortby} {$order}
         LIMIT {$start}, {$perpage}
     ");
-    $results = '';
     while ($logitem = $db->fetch_array($query)) {
-        $information = '';
-        $logitem['action'] = htmlspecialchars_uni($logitem['action']);
-        $log_date = my_date('relative', $logitem['dateline']);
-        $trow = alt_trow();
+
+        $logitem['date'] = my_date('relative', $logitem['dateline']);
+
         if ($logitem['username']) {
-            $logitem['username'] = htmlspecialchars_uni($logitem['username']);
             $username = format_name($logitem['username'], $logitem['usergroup'], $logitem['displaygroup']);
             $logitem['profilelink'] = build_profile_link($username, $logitem['uid']);
         } else {
-            $username = $logitem['profilelink'] = $logitem['username'] = htmlspecialchars_uni($lang->na_deleted);
+            $username = $logitem['profilelink'] = $logitem['username'] = $lang->na_deleted;
         }
+
         $logitem['ipaddress'] = my_inet_ntop($db->unescape_binary($logitem['ipaddress']));
 
         if ($logitem['tsubject']) {
-            $logitem['tsubject'] = htmlspecialchars_uni($parser->parse_badwords($logitem['tsubject']));
-            $logitem['thread'] = get_thread_link($logitem['tid']);
-            eval("\$information .= \"".$templates->get("modcp_modlogs_result_thread")."\";");
+            $logitem['tsubject'] = $parser->parse_badwords($logitem['tsubject']);
+            $logitem['threadlink'] = get_thread_link($logitem['tid']);
         }
+
         if ($logitem['fname']) {
-            $logitem['forum'] = get_forum_link($logitem['fid']);
-            eval("\$information .= \"".$templates->get("modcp_modlogs_result_forum")."\";");
+            $logitem['forumlink'] = get_forum_link($logitem['fid']);
         }
+
         if ($logitem['psubject']) {
-            $logitem['psubject'] = htmlspecialchars_uni($parser->parse_badwords($logitem['psubject']));
-            $logitem['post'] = get_post_link($logitem['pid']);
-            eval("\$information .= \"".$templates->get("modcp_modlogs_result_post")."\";");
+            $logitem['psubject'] = $parser->parse_badwords($logitem['psubject']);
+            $logitem['postlink'] = get_post_link($logitem['pid']);
         }
 
         // Edited a user or managed announcement?
         if (!$logitem['tsubject'] || !$logitem['fname'] || !$logitem['psubject']) {
-            $data = my_unserialize($logitem['data']);
-            if (!empty($data['uid'])) {
-                $data['username'] = htmlspecialchars_uni($data['username']);
-                $information = $lang->sprintf($lang->edited_user_info, htmlspecialchars_uni($data['username']), get_profile_link($data['uid']));
+            $logitem['logdata'] = my_unserialize($logitem['data']);
+            if (!empty($logitem['logdata']['uid'])) {
+                $logitem['logdata']['profilelink'] = get_profile_link($logitem['logdata']['uid']);
             }
-            if (!empty($data['aid'])) {
-                $data['subject'] = htmlspecialchars_uni($parser->parse_badwords($data['subject']));
-                $data['announcement'] = get_announcement_link($data['aid']);
-                eval("\$information .= \"".$templates->get("modcp_modlogs_result_announcement")."\";");
+
+            if (!empty($logitem['logdata']['aid'])) {
+                $logitem['logdata']['subject'] = $parser->parse_badwords($logitem['logdata']['subject']);
+                $logitem['logdata']['announcement'] = get_announcement_link($logitem['logdata']['aid']);
             }
         }
 
         $plugins->run_hooks('modcp_modlogs_result');
 
-        eval("\$results .= \"".$templates->get("modcp_modlogs_result")."\";");
-    }
-
-    if (!$results) {
-        eval("\$results = \"".$templates->get("modcp_modlogs_noresults")."\";");
+        $modlogs[] = $logitem;
     }
 
     $plugins->run_hooks('modcp_modlogs_filter');
 
     // Fetch filter options
-    $sortbysel = array('username' => '', 'forum' => '', 'thread' => '', 'dateline' => '');
-    $sortbysel[$mybb->input['sortby']] = "selected=\"selected\"";
-    $ordersel = array('asc' => '', 'desc' => '');
-    $ordersel[$order] = "selected=\"selected\"";
-    $user_options = '';
+    $select['sortby'] = array('username' => '', 'forum' => '', 'thread' => '', 'dateline' => '');
+    $select['sortby'][$mybb->input['sortby']] = true;
+    $select['order'] = array('asc' => '', 'desc' => '');
+    $select['order'][$order] = true;
+    $select['perpage'] = $perpage;
+
+    $users = [];
     $query = $db->query("
         SELECT DISTINCT l.uid, u.username
         FROM ".TABLE_PREFIX."moderatorlog l
@@ -869,19 +835,23 @@ if ($mybb->input['action'] == "modlogs") {
             $user['username'] = $lang->na_deleted;
         }
 
-        $selected = '';
+        $user['selected'] = false;
         if ($mybb->get_input('uid', MyBB::INPUT_INT) == $user['uid']) {
-            $selected = " selected=\"selected\"";
+           $user['selected'] = true;
         }
 
-        $user['username'] = htmlspecialchars_uni($user['username']);
-        eval("\$user_options .= \"".$templates->get("modcp_modlogs_user")."\";");
+        $users[] = $user;
     }
 
     $forum_select = build_forum_jump("", $mybb->get_input('fid', MyBB::INPUT_INT), 1, '', 0, true, '', "fid");
 
-    eval("\$modlogs = \"".$templates->get("modcp_modlogs")."\";");
-    output_page($modlogs);
+    output_page(\MyBB\template('modcp/modlogs.twig', [
+        'multipage' => $multipage,
+        'modlogs' => $modlogs,
+        'select' => $select,
+        'users' => $users,
+        'forum_select' => $forum_select,
+    ]));
 }
 
 if ($mybb->input['action'] == "do_delete_announcement") {
@@ -1095,6 +1065,7 @@ if ($mybb->input['action'] == "new_announcement") {
         $announcement['allowhtml'] = $allowhtml;
         $announcement['allowmycode'] = $allowmycode;
         $announcement['allowsmilies'] = $allowsmilies;
+        $announcement['fid'] = $announcement_fid;
 
         $dates['start']['month'] = $mybb->input['starttime_month'];
         $dates['start']['year'] = $mybb->input['starttime_year'];
@@ -1118,7 +1089,8 @@ if ($mybb->input['action'] == "new_announcement") {
             'message' => '',
             'allowhtml' => 0,
             'allowmycode' => 1,
-            'allowsmilies' => 1
+            'allowsmilies' => 1,
+            'fid' => $announcement_fid
         );
 
         $dates['end']['year'] = $dates['start']['year']+1;
@@ -1127,8 +1099,8 @@ if ($mybb->input['action'] == "new_announcement") {
     // MyCode editor
     $codebuttons = build_mycode_inserter();
     $smilieinserter = build_clickable_smilies();
-    $postbit = '';
 
+    $postbit = '';
     if (isset($preview)) {
         $announcementarray = array(
             'aid' => 0,
@@ -1607,7 +1579,7 @@ if ($mybb->input['action'] == "modqueue") {
     }
 
     $mybb->input['type'] = $mybb->get_input('type');
-    $threadqueue = $postqueue = $attachmentqueue = '';
+    $threadqueue = $postqueue = $attachmentqueue = false;
     if ($mybb->input['type'] == "threads" || !$mybb->input['type'] && ($nummodqueuethreads > 0 || $mybb->usergroup['issupermod'] == 1)) {
         if ($nummodqueuethreads == 0 && $mybb->usergroup['issupermod'] != 1) {
             error($lang->you_cannot_moderate_threads);
@@ -1644,6 +1616,7 @@ if ($mybb->input['action'] == "modqueue") {
 
         $multipage = multipage($unapproved_threads, $perpage, $page, "modcp.php?action=modqueue&type=threads");
 
+        $threads = [];
         $query = $db->query("
             SELECT t.tid, t.dateline, t.fid, t.subject, t.username AS threadusername, p.message AS postmessage, u.username AS username, t.uid
             FROM ".TABLE_PREFIX."threads t
@@ -1653,34 +1626,28 @@ if ($mybb->input['action'] == "modqueue") {
             ORDER BY t.lastpost DESC
             LIMIT {$start}, {$perpage}
         ");
-        $threads = '';
         while ($thread = $db->fetch_array($query)) {
-            $altbg = alt_trow();
-            $thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
+            $thread['subject'] = $parser->parse_badwords($thread['subject']);
             $thread['threadlink'] = get_thread_link($thread['tid']);
-            $forum_link = get_forum_link($thread['fid']);
-            $forum_name = $forum_cache[$thread['fid']]['name'];
-            $threaddate = my_date('relative', $thread['dateline']);
+            $thread['forum_link'] = get_forum_link($thread['fid']);
+            $thread['forum_name'] = $forum_cache[$thread['fid']]['name'];
+            $thread['threaddate'] = my_date('relative', $thread['dateline']);
 
             if ($thread['username'] == "") {
                 if ($thread['threadusername'] != "") {
-                    $thread['threadusername'] = htmlspecialchars_uni($thread['threadusername']);
-                    $profile_link = $thread['threadusername'];
+                    $thread['profile_link'] = $thread['threadusername'];
                 } else {
-                    $profile_link = $lang->guest;
+                    $thread['profile_link'] = $lang->guest;
                 }
             } else {
-                $thread['username'] = htmlspecialchars_uni($thread['username']);
-                $profile_link = build_profile_link($thread['username'], $thread['uid']);
+                $thread['profile_link'] = build_profile_link($thread['username'], $thread['uid']);
             }
 
-            $thread['postmessage'] = nl2br(htmlspecialchars_uni($thread['postmessage']));
-            eval("\$forum = \"".$templates->get("modcp_modqueue_link_forum")."\";");
-            eval("\$threads .= \"".$templates->get("modcp_modqueue_threads_thread")."\";");
+            $threads[] = $thread;
         }
 
         if (!$threads && $mybb->input['type'] == "threads") {
-            eval("\$threads = \"".$templates->get("modcp_modqueue_threads_empty")."\";");
+            $threads = true;
         }
 
         if ($threads) {
@@ -1688,21 +1655,23 @@ if ($mybb->input['action'] == "modqueue") {
 
             $plugins->run_hooks('modcp_modqueue_threads_end');
 
+            $navlink['post'] = false;
             if ($nummodqueueposts > 0 || $mybb->usergroup['issupermod'] == 1) {
-                $navsep = " | ";
-                eval("\$post_link = \"".$templates->get("modcp_modqueue_post_link")."\";");
+                $navlink['post'] = true;
             }
 
+            $navlink['attachment'] = false;
             if ($mybb->settings['enableattachments'] == 1 && ($nummodqueueattach > 0 || $mybb->usergroup['issupermod'] == 1)) {
-                $navsep = " | ";
-                eval("\$attachment_link = \"".$templates->get("modcp_modqueue_attachment_link")."\";");
+                $navlink['attachment'] = true;
             }
 
-            eval("\$mass_controls = \"".$templates->get("modcp_modqueue_masscontrols")."\";");
-            eval("\$threadqueue = \"".$templates->get("modcp_modqueue_threads")."\";");
-            output_page($threadqueue);
+            $threadqueue = true;
+            output_page(\MyBB\template('modcp/modqueue_threads.twig', [
+                'threads' => $threads,
+                'multipage' => $multipage,
+                'navlink' => $navlink,
+            ]));
         }
-        $type = 'threads';
     }
 
     if ($mybb->input['type'] == "posts" || (!$mybb->input['type'] && !$threadqueue && ($nummodqueueposts > 0 || $mybb->usergroup['issupermod'] == 1))) {
@@ -1746,6 +1715,7 @@ if ($mybb->input['action'] == "modqueue") {
 
         $multipage = multipage($unapproved_posts, $perpage, $page, "modcp.php?action=modqueue&amp;type=posts");
 
+        $posts = [];
         $query = $db->query("
             SELECT p.pid, p.subject, p.message, p.username AS postusername, t.subject AS threadsubject, t.tid, u.username, p.uid, t.fid, p.dateline
             FROM  ".TABLE_PREFIX."posts p
@@ -1755,37 +1725,30 @@ if ($mybb->input['action'] == "modqueue") {
             ORDER BY p.dateline DESC
             LIMIT {$start}, {$perpage}
         ");
-        $posts = '';
         while ($post = $db->fetch_array($query)) {
-            $altbg = alt_trow();
-            $post['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($post['threadsubject']));
-            $post['subject'] = htmlspecialchars_uni($parser->parse_badwords($post['subject']));
+            $post['threadsubject'] = $parser->parse_badwords($post['threadsubject']);
+            $post['subject'] = $parser->parse_badwords($post['subject']);
             $post['threadlink'] = get_thread_link($post['tid']);
             $post['postlink'] = get_post_link($post['pid'], $post['tid']);
-            $forum_link = get_forum_link($post['fid']);
-            $forum_name = $forum_cache[$post['fid']]['name'];
-            $postdate = my_date('relative', $post['dateline']);
+            $post['forum_link'] = get_forum_link($post['fid']);
+            $post['forum_name'] = $forum_cache[$post['fid']]['name'];
+            $post['postdate'] = my_date('relative', $post['dateline']);
 
             if ($post['username'] == "") {
                 if ($post['postusername'] != "") {
-                    $post['postusername'] = htmlspecialchars_uni($post['postusername']);
-                    $profile_link = $post['postusername'];
+                    $post['profile_link'] = $post['postusername'];
                 } else {
-                    $profile_link = $lang->guest;
+                    $post['profile_link'] = $lang->guest;
                 }
             } else {
-                $post['username'] = htmlspecialchars_uni($post['username']);
-                $profile_link = build_profile_link($post['username'], $post['uid']);
+                $post['profile_link'] = build_profile_link($post['username'], $post['uid']);
             }
 
-            eval("\$thread = \"".$templates->get("modcp_modqueue_link_thread")."\";");
-            eval("\$forum = \"".$templates->get("modcp_modqueue_link_forum")."\";");
-            $post['message'] = nl2br(htmlspecialchars_uni($post['message']));
-            eval("\$posts .= \"".$templates->get("modcp_modqueue_posts_post")."\";");
+            $posts[] = $post;
         }
 
         if (!$posts && $mybb->input['type'] == "posts") {
-            eval("\$posts = \"".$templates->get("modcp_modqueue_posts_empty")."\";");
+            $posts = true;
         }
 
         if ($posts) {
@@ -1793,19 +1756,22 @@ if ($mybb->input['action'] == "modqueue") {
 
             $plugins->run_hooks('modcp_modqueue_posts_end');
 
+            $navlink['thread'] = false;
             if ($nummodqueuethreads > 0 || $mybb->usergroup['issupermod'] == 1) {
-                $navsep = " | ";
-                eval("\$thread_link = \"".$templates->get("modcp_modqueue_thread_link")."\";");
+                $navlink['thread'] = true;
             }
 
+            $navlink['attachment'] = false;
             if ($mybb->settings['enableattachments'] == 1 && ($nummodqueueattach > 0 || $mybb->usergroup['issupermod'] == 1)) {
-                $navsep = " | ";
-                eval("\$attachment_link = \"".$templates->get("modcp_modqueue_attachment_link")."\";");
+                $navlink['attachment'] = true;
             }
 
-            eval("\$mass_controls = \"".$templates->get("modcp_modqueue_masscontrols")."\";");
-            eval("\$postqueue = \"".$templates->get("modcp_modqueue_posts")."\";");
-            output_page($postqueue);
+            $postqueue = true;
+            output_page(\MyBB\template('modcp/modqueue_posts.twig', [
+                'posts' => $posts,
+                'multipage' => $multipage,
+                'navlink' => $navlink,
+            ]));
         }
     }
 
@@ -1853,6 +1819,7 @@ if ($mybb->input['action'] == "modqueue") {
 
         $multipage = multipage($unapproved_attachments, $perpage, $page, "modcp.php?action=modqueue&amp;type=attachments");
 
+        $attachments = [];
         $query = $db->query("
             SELECT a.*, p.subject AS postsubject, p.dateline, p.uid, u.username, t.tid, t.subject AS threadsubject
             FROM  ".TABLE_PREFIX."attachments a
@@ -1863,31 +1830,26 @@ if ($mybb->input['action'] == "modqueue") {
             ORDER BY a.dateuploaded DESC
             LIMIT {$start}, {$perpage}
         ");
-        $attachments = '';
         while ($attachment = $db->fetch_array($query)) {
-            $altbg = alt_trow();
-
             if (!$attachment['dateuploaded']) {
                 $attachment['dateuploaded'] = $attachment['dateline'];
             }
 
-            $attachdate = my_date('relative', $attachment['dateuploaded']);
+            $attachment['attachdate'] = my_date('relative', $attachment['dateuploaded']);
 
-            $attachment['postsubject'] = htmlspecialchars_uni($parser->parse_badwords($attachment['postsubject']));
-            $attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
-            $attachment['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($attachment['threadsubject']));
+            $attachment['postsubject'] = $parser->parse_badwords($attachment['postsubject']);
+            $attachment['threadsubject'] = $parser->parse_badwords($attachment['threadsubject']);
             $attachment['filesize'] = get_friendly_size($attachment['filesize']);
 
-            $link = get_post_link($attachment['pid'], $attachment['tid']) . "#pid{$attachment['pid']}";
-            $thread_link = get_thread_link($attachment['tid']);
-            $attachment['username'] = htmlspecialchars_uni($attachment['username']);
-            $profile_link = build_profile_link($attachment['username'], $attachment['uid']);
+            $attachment['link'] = get_post_link($attachment['pid'], $attachment['tid']) . "#pid{$attachment['pid']}";
+            $attachment['thread_link'] = get_thread_link($attachment['tid']);
+            $attachment['profile_link'] = build_profile_link($attachment['username'], $attachment['uid']);
 
-            eval("\$attachments .= \"".$templates->get("modcp_modqueue_attachments_attachment")."\";");
+            $attachments[] = $attachment;
         }
 
         if (!$attachments && $mybb->input['type'] == "attachments") {
-            eval("\$attachments = \"".$templates->get("modcp_modqueue_attachments_empty")."\";");
+            $attachments = true;
         }
 
         if ($attachments) {
@@ -1895,19 +1857,22 @@ if ($mybb->input['action'] == "modqueue") {
 
             $plugins->run_hooks('modcp_modqueue_attachments_end');
 
+            $navlink['thread'] = false;
             if ($nummodqueuethreads > 0 || $mybb->usergroup['issupermod'] == 1) {
-                eval("\$thread_link = \"".$templates->get("modcp_modqueue_thread_link")."\";");
-                $navsep = " | ";
+                $navlink['thread'] = true;
             }
 
+            $navlink['post'] = false;
             if ($nummodqueueposts > 0 || $mybb->usergroup['issupermod'] == 1) {
-                eval("\$post_link = \"".$templates->get("modcp_modqueue_post_link")."\";");
-                $navsep = " | ";
+                $navlink['post'] = true;
             }
 
-            eval("\$mass_controls = \"".$templates->get("modcp_modqueue_masscontrols")."\";");
-            eval("\$attachmentqueue = \"".$templates->get("modcp_modqueue_attachments")."\";");
-            output_page($attachmentqueue);
+            $attachmentqueue = true;
+            output_page(\MyBB\template('modcp/modqueue_attachments.twig', [
+                'attachments' => $attachments,
+                'multipage' => $multipage,
+                'navlink' => $navlink,
+            ]));
         }
     }
 
@@ -1917,8 +1882,7 @@ if ($mybb->input['action'] == "modqueue") {
 
         $plugins->run_hooks('modcp_modqueue_end');
 
-        eval("\$queue = \"".$templates->get("modcp_modqueue_empty")."\";");
-        output_page($queue);
+        output_page(\MyBB\template('modcp/modqueue_empty.twig'));
     }
 }
 
@@ -1999,9 +1963,9 @@ if ($mybb->input['action'] == "do_editprofile") {
     );
 
     $updated_user['birthday'] = array(
-        "day" => $mybb->get_input('birthday_day', MyBB::INPUT_INT),
-        "month" => $mybb->get_input('birthday_month', MyBB::INPUT_INT),
-        "year" => $mybb->get_input('birthday_year', MyBB::INPUT_INT)
+        "day" => $mybb->get_input('bday1', MyBB::INPUT_INT),
+        "month" => $mybb->get_input('bday2', MyBB::INPUT_INT),
+        "year" => $mybb->get_input('bday3', MyBB::INPUT_INT)
     );
 
     if (!empty($mybb->input['usertitle'])) {
@@ -2034,7 +1998,7 @@ if ($mybb->input['action'] == "do_editprofile") {
         }
 
         // Moderator "Options" (suspend signature, suspend/moderate posting)
-        $moderator_options = array(
+        $modoptions = array(
             1 => array(
                 "action" => "suspendsignature", // The moderator action we're performing
                 "period" => "action_period", // The time period we've selected from the dropdown box
@@ -2059,7 +2023,7 @@ if ($mybb->input['action'] == "do_editprofile") {
         );
 
         require_once MYBB_ROOT."inc/functions_warnings.php";
-        foreach ($moderator_options as $option) {
+        foreach ($modoptions as $option) {
             $mybb->input[$option['time']] = $mybb->get_input($option['time'], MyBB::INPUT_INT);
             $mybb->input[$option['period']] = $mybb->get_input($option['period']);
             if (empty($mybb->input[$option['action']])) {
@@ -2151,19 +2115,32 @@ if ($mybb->input['action'] == "editprofile") {
 
     if (!$errors) {
         $mybb->input = array_merge($user, $mybb->input);
-        $birthday = explode('-', $user['birthday']);
-        if (!isset($birthday[1])) {
-            $birthday[1] = '';
+        $bday = explode("-", $user['birthday']);
+        if (!isset($bday[1])) {
+            $bday[1] = 0;
         }
-        if (!isset($birthday[2])) {
-            $birthday[2] = '';
+        if (!isset($bday[2])) {
+            $bday[2] = '';
         }
-        list($mybb->input['birthday_day'], $mybb->input['birthday_month'], $mybb->input['birthday_year']) = $birthday;
+        list($mybb->input['bday1'], $mybb->input['bday2'], $mybb->input['bday3']) = $bday;
     } else {
         $errors = inline_error($errors);
+
+        $user = $mybb->input;
+        $bday = [];
+        $bday[0] = $mybb->get_input('bday1', MyBB::INPUT_INT);
+        $bday[1] = $mybb->get_input('bday2', MyBB::INPUT_INT);
+        $bday[2] = $mybb->get_input('bday3', MyBB::INPUT_INT);
+
+        $returndate = [];
+        $returndate[0] = $mybb->get_input('awayday', MyBB::INPUT_INT);
+        $returndate[1] = $mybb->get_input('awaymonth', MyBB::INPUT_INT);
+        $returndate[2] = $mybb->get_input('awayyear', MyBB::INPUT_INT);
+        $user['awayreason'] = htmlspecialchars_uni($mybb->get_input('awayreason'));
     }
 
     // Sanitize all input
+
     foreach (array('usertitle', 'website', 'signature', 'birthday_day', 'birthday_month', 'birthday_year') as $field) {
         $mybb->input[$field] = htmlspecialchars_uni($mybb->get_input($field));
     }
@@ -2177,14 +2154,14 @@ if ($mybb->input['action'] == "editprofile") {
     $display_group = usergroup_displaygroup($user['displaygroup']);
 
     if (!empty($display_group['usertitle'])) {
-        $defaulttitle = htmlspecialchars_uni($display_group['usertitle']);
+        $user['defaulttitle'] = htmlspecialchars_uni($display_group['usertitle']);
     } else {
         // Go for post count title if a group default isn't set
         $usertitles = $cache->read('usertitles');
 
         foreach ($usertitles as $title) {
             if ($title['posts'] <= $user['postnum']) {
-                $defaulttitle = $title['title'];
+                $user['defaulttitle'] = $title['title'];
                 break;
             }
         }
@@ -2196,72 +2173,16 @@ if ($mybb->input['action'] == "editprofile") {
         $lang->current_custom_usertitle = '';
     }
 
-    $bdaydaysel = $selected = '';
-    for ($day = 1; $day <= 31; ++$day) {
-        if ($mybb->input['birthday_day'] == $day) {
-            $selected = "selected=\"selected\"";
-        } else {
-            $selected = '';
-        }
-
-        eval("\$bdaydaysel .= \"".$templates->get("usercp_profile_day")."\";");
-    }
-
-    $bdaymonthsel = array();
-    foreach (range(1, 12) as $month) {
-        $bdaymonthsel[$month] = '';
-    }
-    $bdaymonthsel[$mybb->input['birthday_month']] = 'selected="selected"';
-
     if ($mybb->settings['allowaway'] != 0) {
-        $awaycheck = array('', '');
-        if ($errors) {
-            if ($user['away'] == 1) {
-                $awaycheck[1] = "checked=\"checked\"";
-            } else {
-                $awaycheck[0] = "checked=\"checked\"";
-            }
-            $returndate = array();
-            $returndate[0] = $mybb->get_input('awayday');
-            $returndate[1] = $mybb->get_input('awaymonth');
-            $returndate[2] = $mybb->get_input('awayyear', MyBB::INPUT_INT);
-            $user['awayreason'] = htmlspecialchars_uni($mybb->get_input('awayreason'));
-        } else {
-            $user['awayreason'] = htmlspecialchars_uni($user['awayreason']);
-            if ($user['away'] == 1) {
-                $awaydate = my_date($mybb->settings['dateformat'], $user['awaydate']);
-                $awaycheck[1] = "checked=\"checked\"";
-                $awaynotice = $lang->sprintf($lang->away_notice_away, $awaydate);
-            } else {
-                $awaynotice = $lang->away_notice;
-                $awaycheck[0] = "checked=\"checked\"";
-            }
-            $returndate = explode("-", $user['returndate']);
+        if (!$returndate) {
+            $returndate = explode("-", $mybb->user['returndate']);
         }
-        $returndatesel = $selected = '';
-        for ($day = 1; $day <= 31; ++$day) {
-            if ($returndate[0] == $day) {
-                $selected = "selected=\"selected\"";
-            } else {
-                $selected = '';
-            }
-
-            eval("\$returndatesel .= \"".$templates->get("usercp_profile_day")."\";");
+        if (!isset($returndate[1])) {
+            $returndate[1] = 0;
         }
-
-        $returndatemonthsel = array();
-        foreach (range(1, 12) as $month) {
-            $returndatemonthsel[$month] = '';
-        }
-        if (isset($returndate[1])) {
-            $returndatemonthsel[$returndate[1]] = " selected=\"selected\"";
-        }
-
         if (!isset($returndate[2])) {
             $returndate[2] = '';
         }
-
-        eval("\$awaysection = \"".$templates->get("usercp_profile_away")."\";");
     }
 
     $plugins->run_hooks('modcp_editprofile_start');
@@ -2269,198 +2190,63 @@ if ($mybb->input['action'] == "editprofile") {
     // Fetch profile fields
     $query = $db->simple_select("userfields", "*", "ufid='{$user['uid']}'");
     $user_fields = $db->fetch_array($query);
+    if (count($user_fields) > 0) {
+        $user = array_merge($user, $user_fields);
+    }
 
-    $requiredfields = '';
-    $customfields = '';
+    $requiredfields = $customfields = $contactfields = [];
     $mybb->input['profile_fields'] = $mybb->get_input('profile_fields', MyBB::INPUT_ARRAY);
 
     $pfcache = $cache->read('profilefields');
-
+    
     if (is_array($pfcache)) {
         foreach ($pfcache as $profilefield) {
-            $userfield = $code = $select = $val = $options = $expoptions = $useropts = '';
-            $seloptions = array();
-            $profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
-            $profilefield['name'] = htmlspecialchars_uni($profilefield['name']);
-            $profilefield['description'] = htmlspecialchars_uni($profilefield['description']);
             $thing = explode("\n", $profilefield['type'], "2");
-            $type = $thing[0];
+            $profilefield['attributes']['type'] = $thing[0];
+            $profilefield['attributes']['options'] = [];
             if (isset($thing[1])) {
-                $options = $thing[1];
-            }
-            $field = "fid{$profilefield['fid']}";
-            if ($errors) {
-                if (isset($mybb->input['profile_fields'][$field])) {
-                    $userfield = $mybb->input['profile_fields'][$field];
-                }
-            } else {
-                $userfield = $user_fields[$field];
-            }
-            if ($type == "multiselect") {
-                if ($errors) {
-                    $useropts = $userfield;
-                } else {
-                    $useropts = explode("\n", $userfield);
-                }
-                if (is_array($useropts)) {
-                    foreach ($useropts as $key => $val) {
-                        $seloptions[$val] = $val;
-                    }
-                }
-                $expoptions = explode("\n", $options);
-                if (is_array($expoptions)) {
-                    foreach ($expoptions as $key => $val) {
-                        $val = trim($val);
-                        $val = str_replace("\n", "\\n", $val);
-
-                        $sel = "";
-                        if (isset($seloptions[$val]) && $val == $seloptions[$val]) {
-                            $sel = " selected=\"selected\"";
-                        }
-
-                        eval("\$select .= \"".$templates->get("usercp_profile_profilefields_select_option")."\";");
-                    }
-                    if (!$profilefield['length']) {
-                        $profilefield['length'] = 3;
-                    }
-
-                    eval("\$code = \"".$templates->get("usercp_profile_profilefields_multiselect")."\";");
-                }
-            } elseif ($type == "select") {
-                $expoptions = explode("\n", $options);
-                if (is_array($expoptions)) {
-                    foreach ($expoptions as $key => $val) {
-                        $val = trim($val);
-                        $val = str_replace("\n", "\\n", $val);
-                        $sel = "";
-                        if ($val == $userfield) {
-                            $sel = " selected=\"selected\"";
-                        }
-
-                        eval("\$select .= \"".$templates->get("usercp_profile_profilefields_select_option")."\";");
-                    }
-                    if (!$profilefield['length']) {
-                        $profilefield['length'] = 1;
-                    }
-
-                    eval("\$code = \"".$templates->get("usercp_profile_profilefields_select")."\";");
-                }
-            } elseif ($type == "radio") {
-                $expoptions = explode("\n", $options);
-                if (is_array($expoptions)) {
-                    foreach ($expoptions as $key => $val) {
-                        $checked = "";
-                        if ($val == $userfield) {
-                            $checked = " checked=\"checked\"";
-                        }
-
-                        eval("\$code .= \"".$templates->get("usercp_profile_profilefields_radio")."\";");
-                    }
-                }
-            } elseif ($type == "checkbox") {
-                if ($errors) {
-                    $useropts = $userfield;
-                } else {
-                    $useropts = explode("\n", $userfield);
-                }
-                if (is_array($useropts)) {
-                    foreach ($useropts as $key => $val) {
-                        $seloptions[$val] = $val;
-                    }
-                }
-                $expoptions = explode("\n", $options);
-                if (is_array($expoptions)) {
-                    foreach ($expoptions as $key => $val) {
-                        $checked = "";
-                        if (isset($seloptions[$val]) && $val == $seloptions[$val]) {
-                            $checked = " checked=\"checked\"";
-                        }
-
-                        eval("\$code .= \"".$templates->get("usercp_profile_profilefields_checkbox")."\";");
-                    }
-                }
-            } elseif ($type == "textarea") {
-                $value = htmlspecialchars_uni($userfield);
-                eval("\$code = \"".$templates->get("usercp_profile_profilefields_textarea")."\";");
-            } else {
-                $value = htmlspecialchars_uni($userfield);
-                $maxlength = "";
-                if ($profilefield['maxlength'] > 0) {
-                    $maxlength = " maxlength=\"{$profilefield['maxlength']}\"";
-                }
-
-                eval("\$code = \"".$templates->get("usercp_profile_profilefields_text")."\";");
+                $profilefield['attributes']['options'] = $thing[1];
             }
 
             if ($profilefield['required'] == 1) {
-                eval("\$requiredfields .= \"".$templates->get("usercp_profile_customfield")."\";");
+				$requiredfields[] = $profilefield;
             } elseif ($profilefield['contact'] == 1) {
-                eval("\$contactfields .= \"".$templates->get("usercp_profile_customfield")."\";");
+                $contactfields[] = $profilefield;
             } else {
-                eval("\$customfields .= \"".$templates->get("usercp_profile_customfield")."\";");
+                $customfields[] = $profilefield;
             }
-            $altbg = alt_trow();
         }
-    }
-    if ($customfields) {
-        eval("\$customfields = \"".$templates->get("usercp_profile_profilefields")."\";");
     }
 
     $user['username'] = htmlspecialchars_uni($user['username']);
     $lang->edit_profile = $lang->sprintf($lang->edit_profile, $user['username']);
-    $profile_link = build_profile_link(format_name($user['username'], $user['usergroup'], $user['displaygroup']), $user['uid']);
+    $user['profilelink'] = build_profile_link(format_name($user['username'], $user['usergroup'], $user['displaygroup']), $user['uid']);
 
     $user['signature'] = htmlspecialchars_uni($user['signature']);
     $codebuttons = build_mycode_inserter("signature");
 
-    // Do we mark the suspend signature box?
-    if ($user['suspendsignature'] || ($mybb->get_input('suspendsignature', MyBB::INPUT_INT) && !empty($errors))) {
-        $checked = 1;
-        $checked_item = "checked=\"checked\"";
-    } else {
-        $checked = 0;
-        $checked_item = '';
-    }
-
-    // Do we mark the moderate posts box?
-    if ($user['moderateposts'] || ($mybb->get_input('moderateposting', MyBB::INPUT_INT) && !empty($errors))) {
-        $modpost_check = 1;
-        $modpost_checked = "checked=\"checked\"";
-    } else {
-        $modpost_check = 0;
-        $modpost_checked = '';
-    }
-
-    // Do we mark the suspend posts box?
-    if ($user['suspendposting'] || ($mybb->get_input('suspendposting', MyBB::INPUT_INT) && !empty($errors))) {
-        $suspost_check = 1;
-        $suspost_checked = "checked=\"checked\"";
-    } else {
-        $suspost_check = 0;
-        $suspost_checked = '';
-    }
-
-    $moderator_options = array(
-        1 => array(
-            "action" => "suspendsignature", // The input action for this option
-            "option" => "suspendsignature", // The field in the database that this option relates to
-            "time" => "action_time", // The time we've entered
-            "length" => "suspendsigtime", // The length of suspension field in the database
-            "select_option" => "action" // The name of the select box of this option
+    $modoptions = array(
+        array(
+            "action" => "moderateposting", // The input action for this option
+            "option" => "moderateposts", // The field in the database that this option relates to
+            "time" => "modpost_time", // The time we've entered
+            "length" => "moderationtime", // The length of suspension field in the database
+            "select_option" => "modpost", // The name of the select box of this option
+            "lang" => [
+                "title" => "moderate_posts",
+                "length" => "modpost_length"
+            ]
         ),
-        2 => array(
-            "action" => "moderateposting",
-            "option" => "moderateposts",
-            "time" => "modpost_time",
-            "length" => "moderationtime",
-            "select_option" => "modpost"
-        ),
-        3 => array(
+        array(
             "action" => "suspendposting",
             "option" => "suspendposting",
             "time" => "suspost_time",
             "length" => "suspensiontime",
-            "select_option" => "suspost"
+            "select_option" => "suspost",
+            "lang" => [
+                "title" => "suspend_posts",
+                "length" => "suspend_length"
+            ]
         )
     );
 
@@ -2472,65 +2258,6 @@ if ($mybb->input['action'] == "editprofile") {
         "never" => $lang->expire_permanent
     );
 
-    $suspendsignature_info = $moderateposts_info = $suspendposting_info = '';
-    $action_options = $modpost_options = $suspost_options = '';
-    foreach ($moderator_options as $option) {
-        $mybb->input[$option['time']] = $mybb->get_input($option['time'], MyBB::INPUT_INT);
-        // Display the suspension info, if this user has this option suspended
-        if ($user[$option['option']]) {
-            if ($user[$option['length']] == 0) {
-                // User has a permanent ban
-                $string = $option['option']."_perm";
-                $suspension_info = $lang->$string;
-            } else {
-                // User has a temporary (or limited) ban
-                $string = $option['option']."_for";
-                $for_date = my_date('relative', $user[$option['length']], '', 2);
-                $suspension_info = $lang->sprintf($lang->$string, $for_date);
-            }
-
-            switch ($option['option']) {
-                case "suspendsignature":
-                    eval("\$suspendsignature_info = \"".$templates->get("modcp_editprofile_suspensions_info")."\";");
-                    break;
-                case "moderateposts":
-                    eval("\$moderateposts_info = \"".$templates->get("modcp_editprofile_suspensions_info")."\";");
-                    break;
-                case "suspendposting":
-                    eval("\$suspendposting_info = \"".$templates->get("modcp_editprofile_suspensions_info")."\";");
-                    break;
-            }
-        }
-
-        // Generate the boxes for this option
-        $selection_options = '';
-        foreach ($periods as $key => $value) {
-            $string = $option['select_option']."_period";
-            if ($mybb->get_input($string) == $key) {
-                $selected = "selected=\"selected\"";
-            } else {
-                $selected = '';
-            }
-
-            eval("\$selection_options .= \"".$templates->get("modcp_editprofile_select_option")."\";");
-        }
-
-        $select_name = $option['select_option']."_period";
-        switch ($option['option']) {
-            case "suspendsignature":
-                eval("\$action_options = \"".$templates->get("modcp_editprofile_select")."\";");
-                break;
-            case "moderateposts":
-                eval("\$modpost_options = \"".$templates->get("modcp_editprofile_select")."\";");
-                break;
-            case "suspendposting":
-                eval("\$suspost_options = \"".$templates->get("modcp_editprofile_select")."\";");
-                break;
-        }
-    }
-
-    eval("\$suspend_signature = \"".$templates->get("modcp_editprofile_signature")."\";");
-
     $user['usernotes'] = htmlspecialchars_uni($user['usernotes']);
 
     if (!isset($newtitle)) {
@@ -2539,8 +2266,15 @@ if ($mybb->input['action'] == "editprofile") {
 
     $plugins->run_hooks('modcp_editprofile_end');
 
-    eval("\$edituser = \"".$templates->get("modcp_editprofile")."\";");
-    output_page($edituser);
+    output_page(\MyBB\template('modcp/editprofile.twig', [
+        'user' => $user,
+        'customFields' => $customfields,
+        'requiredFields' => $requiredfields,
+		'contactFields' => $contactfields,
+        'periods' => $periods,
+        'modOptions' => $modoptions,
+        'codebuttons' => $codebuttons
+    ]));
 }
 
 if ($mybb->input['action'] == "finduser") {
@@ -2583,14 +2317,10 @@ if ($mybb->input['action'] == "finduser") {
         default:
             $sortby = "regdate";
     }
-    $sortbysel = array('lastvisit' => '', 'postnum' => '', 'username' => '', 'regdate' => '');
-    $sortbysel[$mybb->get_input('sortby')] = " selected=\"selected\"";
     $order = $mybb->get_input('order');
     if ($order != "asc") {
         $order = "desc";
     }
-    $ordersel = array('asc' => '', 'desc' => '');
-    $ordersel[$order] = " selected=\"selected\"";
 
     $query = $db->simple_select("users", "COUNT(uid) AS count", "1=1 {$where}");
     $user_count = $db->fetch_field($query, "count");
@@ -2632,38 +2362,21 @@ if ($mybb->input['action'] == "finduser") {
 
     // Fetch out results
     $query = $db->simple_select("users", "*", "1=1 {$where}", array("order_by" => $sortby, "order_dir" => $order, "limit" => $perpage, "limit_start" => $start));
-    $users = '';
+    $users = [];
     while ($user = $db->fetch_array($query)) {
-        $alt_row = alt_trow();
-        $user['username'] = htmlspecialchars_uni($user['username']);
         $user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
         $user['postnum'] = my_number_format($user['postnum']);
-        $regdate = my_date('relative', $user['regdate']);
 
-        if ($user['invisible'] == 1 && $mybb->usergroup['canviewwolinvis'] != 1 && $user['uid'] != $mybb->user['uid']) {
-            $lastdate = $lang->lastvisit_never;
-
-            if ($user['lastvisit']) {
-                // We have had at least some active time, hide it instead
-                $lastdate = $lang->lastvisit_hidden;
-            }
-        } else {
-            $lastdate = my_date('relative', $user['lastvisit']);
-        }
-
-        $usergroup = htmlspecialchars_uni($usergroups_cache[$user['usergroup']]['title']);
-        eval("\$users .= \"".$templates->get("modcp_finduser_user")."\";");
-    }
-
-    // No results?
-    if (!$users) {
-        eval("\$users = \"".$templates->get("modcp_finduser_noresults")."\";");
+        $user['ugroup'] = $usergroups_cache[$user['usergroup']]['title'];
+        $users[] = $user;
     }
 
     $plugins->run_hooks('modcp_finduser_end');
 
-    eval("\$finduser = \"".$templates->get("modcp_finduser")."\";");
-    output_page($finduser);
+    output_page(\MyBB\template('modcp/finduser.twig', [
+        'users' => $users,
+        'multipage' => $multipage
+    ]));
 }
 
 if ($mybb->input['action'] == "warninglogs") {
@@ -2685,6 +2398,7 @@ if ($mybb->input['action'] == "warninglogs") {
     } else {
         $mybb->input['filter']['username'] = '';
     }
+
     if (!empty($mybb->input['filter']['uid'])) {
         $search['uid'] = (int)$mybb->input['filter']['uid'];
         $where_sql .= " AND w.uid='{$search['uid']}'";
@@ -2695,6 +2409,7 @@ if ($mybb->input['action'] == "warninglogs") {
     } else {
         $mybb->input['filter']['uid'] = '';
     }
+
     if (!empty($mybb->input['filter']['mod_username'])) {
         $mod_user = get_user_by_username($mybb->input['filter']['mod_username']);
 
@@ -2703,6 +2418,7 @@ if ($mybb->input['action'] == "warninglogs") {
     } else {
         $mybb->input['filter']['mod_username'] = '';
     }
+
     if (!empty($mybb->input['filter']['mod_uid'])) {
         $search['mod_uid'] = (int)$mybb->input['filter']['mod_uid'];
         $where_sql .= " AND w.issuedby='{$search['mod_uid']}'";
@@ -2713,44 +2429,46 @@ if ($mybb->input['action'] == "warninglogs") {
     } else {
         $mybb->input['filter']['mod_uid'] = '';
     }
+
     if (!empty($mybb->input['filter']['reason'])) {
         $search['reason'] = $db->escape_string_like($mybb->input['filter']['reason']);
         $where_sql .= " AND (w.notes LIKE '%{$search['reason']}%' OR t.title LIKE '%{$search['reason']}%' OR w.title LIKE '%{$search['reason']}%')";
-        $mybb->input['filter']['reason'] = htmlspecialchars_uni($mybb->input['filter']['reason']);
     } else {
         $mybb->input['filter']['reason'] = '';
     }
-    $sortbysel = array('username' => '', 'expires' => '', 'issuedby' => '', 'dateline' => '');
+
+    $select['sortby'] = array('username' => false, 'expires' => false, 'issuedby' => false, 'dateline' => false);
     if (!isset($mybb->input['filter']['sortby'])) {
         $mybb->input['filter']['sortby'] = '';
     }
     switch ($mybb->input['filter']['sortby']) {
         case "username":
             $sortby = "u.username";
-            $sortbysel['username'] = ' selected="selected"';
+            $select['sortby']['username'] = true;
             break;
         case "expires":
             $sortby = "w.expires";
-            $sortbysel['expires'] = ' selected="selected"';
+            $select['sortby']['expires'] = true;
             break;
         case "issuedby":
             $sortby = "i.username";
-            $sortbysel['issuedby'] = ' selected="selected"';
+            $select['sortby']['issuedby'] = true;
             break;
         default: // "dateline"
             $sortby = "w.dateline";
-            $sortbysel['dateline'] = ' selected="selected"';
+            $select['sortby']['dateline'] = true;
     }
+
     if (!isset($mybb->input['filter']['order'])) {
         $mybb->input['filter']['order'] = '';
     }
     $order = $mybb->input['filter']['order'];
-    $ordersel = array('asc' => '', 'desc' => '');
+    $select['order'] = array('asc' => false, 'desc' => false);
     if ($order != "asc") {
         $order = "desc";
-        $ordersel['desc'] = ' selected="selected"';
+        $select['order']['desc'] = true;
     } else {
-        $ordersel['asc'] = ' selected="selected"';
+        $select['order']['asc'] = true;
     }
 
     $plugins->run_hooks('modcp_warninglogs_start');
@@ -2783,9 +2501,11 @@ if ($mybb->input['action'] == "warninglogs") {
             $url .= "&amp;filter[{$field}]={$value}";
         }
     }
+
     $multipage = multipage($total_warnings, $per_page, $page, $url);
 
     // The actual query
+    $warning_list = [];
     $sql = "
         SELECT
             w.wid, w.title as custom_title, w.points, w.dateline, w.issuedby, w.expires, w.expired, w.daterevoked, w.revokedby,
@@ -2803,46 +2523,50 @@ if ($mybb->input['action'] == "warninglogs") {
     ";
     $query = $db->query($sql);
 
-    $warning_list = '';
     while ($row = $db->fetch_array($query)) {
-        $trow = alt_trow();
-        $row['username'] = htmlspecialchars_uni($row['username']);
         $username = format_name($row['username'], $row['usergroup'], $row['displaygroup']);
-        $username_link = build_profile_link($username, $row['uid']);
-        $row['mod_username'] = htmlspecialchars_uni($row['mod_username']);
+        $row['username_link'] = build_profile_link($username, $row['uid']);
+
         $mod_username = format_name($row['mod_username'], $row['mod_usergroup'], $row['mod_displaygroup']);
-        $mod_username_link = build_profile_link($mod_username, $row['mod_uid']);
-        $issued_date = my_date('normal', $row['dateline']);
-        $revoked_text = '';
+        $row['mod_username_link'] = build_profile_link($mod_username, $row['mod_uid']);
+
+        $row['issued_date'] = my_date('normal', $row['dateline']);
+
         if ($row['daterevoked'] > 0) {
-            $revoked_date = my_date('relative', $row['daterevoked']);
-            eval("\$revoked_text = \"".$templates->get("modcp_warninglogs_warning_revoked")."\";");
+            $row['revoked_date'] = my_date('relative', $row['daterevoked']);
         }
-        if ($row['expires'] > 0) {
-            $expire_date = nice_time($row['expires']-TIME_NOW);
+
+        if ($row['expired'] == 1) {
+            $row['expire_date'] = $lang->expired;
+        } elseif ($row['expires'] > 0) {
+            $row['expire_date'] = nice_time($row['expires']-TIME_NOW);
         } else {
-            $expire_date = $lang->never;
+            $row['expire_date'] = $lang->never;
         }
-        $title = $row['title'];
+
         if (empty($row['title'])) {
-            $title = $row['custom_title'];
+            $row['title'] = $row['custom_title'];
         }
-        $title = htmlspecialchars_uni($title);
+
         if ($row['points'] >= 0) {
-            $points = '+'.$row['points'];
+            $row['points'] = '+'.$row['points'];
         }
 
-        eval("\$warning_list .= \"".$templates->get("modcp_warninglogs_warning")."\";");
-    }
-
-    if (!$warning_list) {
-        eval("\$warning_list = \"".$templates->get("modcp_warninglogs_nologs")."\";");
+        $warning_list[] = $row;
     }
 
     $plugins->run_hooks('modcp_warninglogs_end');
 
-    eval("\$warninglogs = \"".$templates->get("modcp_warninglogs")."\";");
-    output_page($warninglogs);
+    $select['username'] = $mybb->input['filter']['username'];
+    $select['mod_username'] = $mybb->input['filter']['mod_username'];
+    $select['reason'] = $mybb->input['filter']['reason'];
+    $select['per_page'] = $per_page;
+
+    output_page(\MyBB\template('modcp/warninglogs.twig', [
+        'multipage' => $multipage,
+        'select' => $select,
+        'warning_list' => $warning_list,
+    ]));
 }
 
 if ($mybb->input['action'] == "ipsearch") {
@@ -2852,13 +2576,15 @@ if ($mybb->input['action'] == "ipsearch") {
 
     add_breadcrumb($lang->mcp_nav_ipsearch, "modcp.php?action=ipsearch");
 
+    $ipsearch['results'] = false;
     $mybb->input['ipaddress'] = $mybb->get_input('ipaddress');
     if ($mybb->input['ipaddress']) {
+        $ipsearch['results'] = true;
         if (!is_array($groupscache)) {
             $groupscache = $cache->read("usergroups");
         }
 
-        $ipaddressvalue = htmlspecialchars_uni($mybb->input['ipaddress']);
+        $ipsearch['ipaddress'] = $mybb->input['ipaddress'];
 
         $ip_range = fetch_ip_range($mybb->input['ipaddress']);
 
@@ -3002,36 +2728,36 @@ if ($mybb->input['action'] == "ipsearch") {
         $multipage = multipage($total_results, $perpage, $page, $page_url);
 
         $post_limit = $perpage;
-        $results = '';
+        $ipresults = [];
         if (isset($mybb->input['search_users']) && $user_results && $start <= $user_results) {
             $query = $db->simple_select('users', 'username, uid, regip, lastip', $user_ip_sql,
                     array('order_by' => 'regdate', 'order_dir' => 'DESC', 'limit_start' => $start, 'limit' => $perpage));
 
             while ($ipaddress = $db->fetch_array($query)) {
                 $result = false;
-                $ipaddress['username'] = htmlspecialchars_uni($ipaddress['username']);
-                $profile_link = build_profile_link($ipaddress['username'], $ipaddress['uid']);
-                $trow = alt_trow();
-                $ip = false;
+                $ipaddress['profile_link'] = build_profile_link($ipaddress['username'], $ipaddress['uid']);
+                $ipaddress['type'] = $ipaddress['ip'] = false;
                 if (is_array($ip_range)) {
                     if (strcmp($ip_range[0], $ipaddress['regip']) <= 0 && strcmp($ip_range[1], $ipaddress['regip']) >= 0) {
-                        eval("\$subject = \"".$templates->get("modcp_ipsearch_result_regip")."\";");
-                        $ip = my_inet_ntop($db->unescape_binary($ipaddress['regip']));
+                        $ipaddress['type'] = 'regip';
+                        $ipaddress['ip'] = my_inet_ntop($db->unescape_binary($ipaddress['regip']));
                     } elseif (strcmp($ip_range[0], $ipaddress['lastip']) <= 0 && strcmp($ip_range[1], $ipaddress['lastip']) >= 0) {
-                        eval("\$subject = \"".$templates->get("modcp_ipsearch_result_lastip")."\";");
-                        $ip = my_inet_ntop($db->unescape_binary($ipaddress['lastip']));
+                        $ipaddress['type'] = 'lastip';
+                        $ipaddress['ip'] = my_inet_ntop($db->unescape_binary($ipaddress['lastip']));
                     }
                 } elseif ($ipaddress['regip'] == $ip_range) {
-                    eval("\$subject = \"".$templates->get("modcp_ipsearch_result_regip")."\";");
-                    $ip = my_inet_ntop($db->unescape_binary($ipaddress['regip']));
+                    $ipaddress['type'] = 'regip';
+                    $ipaddress['ip'] = my_inet_ntop($db->unescape_binary($ipaddress['regip']));
                 } elseif ($ipaddress['lastip'] == $ip_range) {
-                    eval("\$subject = \"".$templates->get("modcp_ipsearch_result_lastip")."\";");
-                    $ip = my_inet_ntop($db->unescape_binary($ipaddress['lastip']));
+                    $ipaddress['type'] = 'lastip';
+                    $ipaddress['ip'] = my_inet_ntop($db->unescape_binary($ipaddress['lastip']));
                 }
-                if ($ip) {
-                    eval("\$results .= \"".$templates->get("modcp_ipsearch_result")."\";");
+
+                if ($ipaddress['ip']) {
+                    $ipresults[] = $ipaddress;
                     $result = true;
                 }
+
                 if ($result) {
                     --$post_limit;
                 }
@@ -3075,44 +2801,29 @@ if ($mybb->input['action'] == "ipsearch") {
                 unset($uids);
 
                 foreach ($ipaddresses as $ipaddress) {
-                    $ip = my_inet_ntop($db->unescape_binary($ipaddress['ipaddress']));
+                    $ipaddress['ip'] = my_inet_ntop($db->unescape_binary($ipaddress['ipaddress']));
                     if (!$ipaddress['username']) {
                         $ipaddress['username'] = $ipaddress['postusername']; // Guest username support
                     }
-                    $ipaddress['username'] = htmlspecialchars_uni($ipaddress['username']);
-                    $trow = alt_trow();
+
                     if (!$ipaddress['subject']) {
                         $ipaddress['subject'] = "RE: {$ipaddress['threadsubject']}";
                     }
 
                     $ipaddress['postlink'] = get_post_link($ipaddress['pid'], $ipaddress['tid']);
-                    $ipaddress['subject'] = htmlspecialchars_uni($parser->parse_badwords($ipaddress['subject']));
+                    $ipaddress['subject'] = $parser->parse_badwords($ipaddress['subject']);
                     $ipaddress['profilelink'] = build_profile_link($ipaddress['username'], $ipaddress['uid']);
 
-                    eval("\$subject = \"".$templates->get("modcp_ipsearch_result_post")."\";");
-                    eval("\$results .= \"".$templates->get("modcp_ipsearch_result")."\";");
+                    $ipresults[] = $ipaddress;
                 }
             }
         }
 
-        if (!$results) {
-            eval("\$results = \"".$templates->get("modcp_ipsearch_noresults")."\";");
-        }
-
-        if ($ipaddressvalue) {
-            $lang->ipsearch_results = $lang->sprintf($lang->ipsearch_results, $ipaddressvalue);
-        } else {
-            $lang->ipsearch_results = $lang->ipsearch;
-        }
-
-        $ipaddress = $ipaddress_url = $misc_info_link = '';
+        $ipsearch['info_link'] = false;
         if (!strstr($mybb->input['ipaddress'], "*") && !strstr($mybb->input['ipaddress'], "/")) {
-            $ipaddress = htmlspecialchars_uni($mybb->input['ipaddress']);
-            $ipaddress_url = urlencode($mybb->input['ipaddress']);
-            eval("\$misc_info_link = \"".$templates->get("modcp_ipsearch_results_information")."\";");
+            $ipsearch['info_link'] = true;
+            $ipsearch['ipaddress_url'] = urlencode($mybb->input['ipaddress']);
         }
-
-        eval("\$ipsearch_results = \"".$templates->get("modcp_ipsearch_results")."\";");
     }
 
     // Fetch filter options
@@ -3120,18 +2831,22 @@ if ($mybb->input['action'] == "ipsearch") {
         $mybb->input['search_posts'] = 1;
         $mybb->input['search_users'] = 1;
     }
-    $usersearchselect = $postsearchselect = '';
+
+    $ipsearch['usersearch'] = $ipsearch['postsearch'] = false;
     if (isset($mybb->input['search_posts'])) {
-        $postsearchselect = "checked=\"checked\"";
+        $ipsearch['postsearch'] = true;
     }
     if (isset($mybb->input['search_users'])) {
-        $usersearchselect = "checked=\"checked\"";
+        $ipsearch['usersearch'] = true;
     }
 
     $plugins->run_hooks('modcp_ipsearch_end');
 
-    eval("\$ipsearch = \"".$templates->get("modcp_ipsearch")."\";");
-    output_page($ipsearch);
+    output_page(\MyBB\template('modcp/ipsearch.twig', [
+        'ipsearch' => $ipsearch,
+        'multipage' => $multipage,
+        'ipresults' => $ipresults,
+    ]));
 }
 
 if ($mybb->input['action'] == "iplookup") {
@@ -3139,36 +2854,47 @@ if ($mybb->input['action'] == "iplookup") {
         error_no_permission();
     }
 
-    $mybb->input['ipaddress'] = $mybb->get_input('ipaddress');
-    $lang->ipaddress_misc_info = $lang->sprintf($lang->ipaddress_misc_info, htmlspecialchars_uni($mybb->input['ipaddress']));
-    $ipaddress_location = $lang->na;
-    $ipaddress_host_name = $lang->na;
-    $modcp_ipsearch_misc_info = '';
-    if (!strstr($mybb->input['ipaddress'], "*")) {
+    $modal = $mybb->get_input('modal', MyBB::INPUT_INT);
+    $ipaddress['ipaddress'] = $mybb->get_input('ipaddress');
+    $ipaddress['location'] = $ipaddress['host_name'] = $lang->na;
+
+    if(!$ipaddress['ipaddress'])
+    {
+        error($lang->error_missing_ipaddress);
+    }
+
+    if (!strstr($ipaddress['ipaddress'], "*")) {
         // Return GeoIP information if it is available to us
         if (function_exists('geoip_record_by_name')) {
-            $ip_record = @geoip_record_by_name($mybb->input['ipaddress']);
+            $ip_record = @geoip_record_by_name($ipaddress['ipaddress']);
             if ($ip_record) {
-                $ipaddress_location = htmlspecialchars_uni(utf8_encode($ip_record['country_name']));
+                $ipaddress['location'] = utf8_encode($ip_record['country_name']);
                 if ($ip_record['city']) {
-                    $ipaddress_location .= $lang->comma.htmlspecialchars_uni(utf8_encode($ip_record['city']));
+                    $ipaddress['location'] .= $lang->comma.utf8_encode($ip_record['city']);
                 }
             }
         }
 
-        $ipaddress_host_name = htmlspecialchars_uni(@gethostbyaddr($mybb->input['ipaddress']));
+        $ipaddress['host_name'] = @gethostbyaddr($ipaddress['ipaddress']);
 
         // gethostbyaddr returns the same ip on failure
-        if ($ipaddress_host_name == $mybb->input['ipaddress']) {
-            $ipaddress_host_name = $lang->na;
+        if ($ipaddress['host_name'] == $ipaddress['ipaddress']) {
+            $ipaddress['host_name'] = $lang->na;
         }
     }
 
     $plugins->run_hooks('modcp_iplookup_end');
 
-    eval("\$iplookup = \"".$templates->get('modcp_ipsearch_misc_info', 1, 0)."\";");
-    echo($iplookup);
-    exit;
+    if ($modal) {
+        output_page(\MyBB\template('modcp/iplookup_modal.twig', [
+            'ipaddress' => $ipaddress,
+        ]));
+        exit;
+    } else {
+        output_page(\MyBB\template('modcp/iplookup.twig', [
+            'ipaddress' => $ipaddress,
+        ]));
+    }
 }
 
 if ($mybb->input['action'] == "banning") {
@@ -3225,67 +2951,60 @@ if ($mybb->input['action'] == "banning") {
     ");
 
     // Get the banned users
-    $bannedusers = '';
+    $bannedusers = [];
     while ($banned = $db->fetch_array($query)) {
-        $banned['username'] = htmlspecialchars_uni($banned['username']);
-        $profile_link = build_profile_link($banned['username'], $banned['uid']);
+        $banned['profile_link'] = build_profile_link($banned['username'], $banned['uid']);
 
         // Only show the edit & lift links if current user created ban, or is super mod/admin
-        $edit_link = '';
+        $banned['show_edit_link'] = false;
         if ($mybb->user['uid'] == $banned['admin'] || !$banned['adminuser'] || $mybb->usergroup['issupermod'] == 1 || $mybb->usergroup['cancp'] == 1) {
-            eval("\$edit_link = \"".$templates->get("modcp_banning_edit")."\";");
+            $banned['show_edit_link'] = true;
         }
 
-        $admin_profile = build_profile_link(htmlspecialchars_uni($banned['adminuser']), $banned['admin']);
-
-        $trow = alt_trow();
+        $banned['admin_profile'] = build_profile_link($banned['adminuser'], $banned['admin']);
 
         if ($banned['reason']) {
-            $banned['reason'] = htmlspecialchars_uni($parser->parse_badwords($banned['reason']));
+            $banned['reason'] = $parser->parse_badwords($banned['reason']);
         } else {
             $banned['reason'] = $lang->na;
         }
 
         if ($banned['lifted'] == 'perm' || $banned['lifted'] == '' || $banned['bantime'] == 'perm' || $banned['bantime'] == '---') {
-            $banlength = $lang->permanent;
-            $timeremaining = $lang->na;
+            $banned['banlength'] = $lang->permanent;
+            $banned['ban_remaining'] = $lang->na;
+            $banned['banned_class'] = "normal_banned";
         } else {
-            $banlength = $bantimes[$banned['bantime']];
-            $remaining = $banned['lifted']-TIME_NOW;
+            $banned['banlength'] = $bantimes[$banned['bantime']];
+            $banned['remaining'] = $banned['lifted']-TIME_NOW;
 
-            $timeremaining = nice_time($remaining, array('short' => 1, 'seconds' => false))."";
+            $banned['timeremaining'] = nice_time($banned['remaining'], array('short' => 1, 'seconds' => false))."";
 
-            $banned_class = '';
-            $ban_remaining = "{$timeremaining} {$lang->ban_remaining}";
+            $banned['ban_remaining'] = "{$banned['timeremaining']} {$lang->ban_remaining}";
 
-            if ($remaining <= 0) {
-                $banned_class = "imminent_banned";
-                $ban_remaining = $lang->ban_ending_imminently;
+            if ($banned['remaining'] <= 0) {
+                $banned['banned_class'] = "imminent_banned";
+                $banned['ban_remaining'] = $lang->ban_ending_imminently;
             }
-            if ($remaining < 3600) {
-                $banned_class = "high_banned";
-            } elseif ($remaining < 86400) {
-                $banned_class = "moderate_banned";
-            } elseif ($remaining < 604800) {
-                $banned_class = "low_banned";
+            if ($banned['remaining'] < 3600) {
+                $banned['banned_class'] = "high_banned";
+            } elseif ($banned['remaining'] < 86400) {
+                $banned['banned_class'] = "moderate_banned";
+            } elseif ($banned['remaining'] < 604800) {
+                $banned['banned_class'] = "low_banned";
             } else {
-                $banned_class = "normal_banned";
+                $banned['banned_class'] = "normal_banned";
             }
-
-            eval('$timeremaining = "'.$templates->get('modcp_banning_remaining').'";');
         }
 
-        eval("\$bannedusers .= \"".$templates->get("modcp_banning_ban")."\";");
-    }
-
-    if (!$bannedusers) {
-        eval("\$bannedusers = \"".$templates->get("modcp_banning_nobanned")."\";");
+        $bannedusers[] = $banned;
     }
 
     $plugins->run_hooks('modcp_banning');
 
-    eval("\$bannedpage = \"".$templates->get("modcp_banning")."\";");
-    output_page($bannedpage);
+    output_page(\MyBB\template('modcp/banning.twig', [
+        'bannedusers' => $bannedusers,
+        'multipage' => $multipage,
+    ]));
 }
 
 if ($mybb->input['action'] == "liftban") {
@@ -3496,9 +3215,6 @@ if ($mybb->input['action'] == "banuser") {
 
     $plugins->run_hooks('modcp_banuser_start');
 
-    $banuser_username = '';
-    $banreason = '';
-
     // If incoming user ID, we are editing a ban
     if ($mybb->input['uid']) {
         $query = $db->query("
@@ -3509,12 +3225,8 @@ if ($mybb->input['action'] == "banuser") {
         ");
         $banned = $db->fetch_array($query);
         if ($banned['username']) {
-            $username = $banned['username'] = htmlspecialchars_uni($banned['username']);
-            $banreason = htmlspecialchars_uni($banned['reason']);
             $uid = $mybb->input['uid'];
             $user = get_user($banned['uid']);
-            $lang->ban_user = $lang->edit_ban; // Swap over lang variables
-            eval("\$banuser_username = \"".$templates->get("modcp_banuser_editusername")."\";");
         }
     }
 
@@ -3524,15 +3236,11 @@ if ($mybb->input['action'] == "banuser") {
     }
 
     // New ban!
-    if (!$banuser_username) {
-        if ($mybb->input['uid']) {
-            $user = get_user($mybb->input['uid']);
-            $user['username'] = htmlspecialchars_uni($user['username']);
-            $username = $user['username'];
-        } else {
-            $username = htmlspecialchars_uni($mybb->get_input('username'));
-        }
-        eval("\$banuser_username = \"".$templates->get("modcp_banuser_addusername")."\";");
+    if ($mybb->input['uid']) {
+        $user = get_user($mybb->input['uid']);
+        $banned['username'] = $user['username'];
+    } else {
+        $banned['username'] = $mybb->get_input('username');
     }
 
     // Coming back to this page from an error?
@@ -3543,18 +3251,20 @@ if ($mybb->input['action'] == "banuser") {
             "reason" => $mybb->get_input('reason'),
             "gid" => $mybb->get_input('gid', MyBB::INPUT_INT)
         );
-        $banreason = htmlspecialchars_uni($mybb->get_input('banreason'));
+
+        $banned['username'] = $mybb->get_input('username');
+        $banned['reason'] = $mybb->get_input('banreason');
     }
 
     // Generate the banned times dropdown
-    $liftlist = '';
+    $liftlist = [];
     foreach ($bantimes as $time => $title) {
-        $selected = '';
+        $lifttime['selected'] = false;
         if (isset($banned['bantime']) && $banned['bantime'] == $time) {
-            $selected = " selected=\"selected\"";
+            $lifttime['selected'] = true;
         }
 
-        $thattime = '';
+        $lifttime['thattime'] = '';
         if ($time != '---') {
             $dateline = TIME_NOW;
             if (isset($banned['dateline'])) {
@@ -3562,50 +3272,44 @@ if ($mybb->input['action'] == "banuser") {
             }
 
             $thatime = my_date("D, jS M Y @ {$mybb->settings['timeformat']}", ban_date2timestamp($time, $dateline));
-            $thattime = " ({$thatime})";
+            $lifttime['thattime'] = $thatime;
         }
 
-        eval("\$liftlist .= \"".$templates->get("modcp_banuser_liftlist")."\";");
+        $lifttime['time'] = $time;
+        $lifttime['title'] = $title;
+
+        $liftlist[] = $lifttime;
     }
 
-    $bangroup_option = $bangroups = '';
-    $numgroups = $banned_group = 0;
+    $bangroups = [];
+    $banned['numgroups'] = $banned['banned_group'] = 0;
     $groupscache = $cache->read("usergroups");
 
     foreach ($groupscache as $key => $group) {
         if ($group['isbannedgroup']) {
-            $selected = "";
+            $group['selected'] = false;
             if (isset($banned['gid']) && $banned['gid'] == $group['gid']) {
-                $selected = " selected=\"selected\"";
+                $group['selected'] = true;
             }
 
-            $group['title'] = htmlspecialchars_uni($group['title']);
-            eval("\$bangroup_option .= \"".$templates->get("modcp_banuser_bangroups_group")."\";");
-            $banned_group = $group['gid'];
-            ++$numgroups;
+            $bangroups[] = $group;
+            $banned['banned_group'] = $group['gid'];
+            ++$banned['numgroups'];
         }
     }
 
-    if ($numgroups == 0) {
+    if ($banned['numgroups'] == 0) {
         error($lang->no_banned_group);
-    } elseif ($numgroups > 1) {
-        eval("\$bangroups = \"".$templates->get("modcp_banuser_bangroups")."\";");
-    } else {
-        eval("\$bangroups = \"".$templates->get("modcp_banuser_bangroups_hidden")."\";");
-    }
-
-    if (!empty($banned['uid'])) {
-        eval("\$lift_link = \"".$templates->get("modcp_banuser_lift")."\";");
-        $uid = $banned['uid'];
-    } else {
-        $lift_link = '';
-        $uid = 0;
     }
 
     $plugins->run_hooks('modcp_banuser_end');
 
-    eval("\$banuser = \"".$templates->get("modcp_banuser")."\";");
-    output_page($banuser);
+    output_page(\MyBB\template('modcp/banuser.twig', [
+        'banned' => $banned,
+        'errors' => $errors,
+        'liftlist' => $liftlist,
+        'bangroups' => $bangroups,
+    ]));
 }
 
 if ($mybb->input['action'] == "do_modnotes") {

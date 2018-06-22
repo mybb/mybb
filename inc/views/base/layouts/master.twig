@@ -14,15 +14,55 @@
         <link rel="stylesheet" href="{{ stylesheet }}">
     {% endfor %}
 
+    <link rel="alternate" type="application/rss+xml" title="{{ lang.latest_threads }} (RSS 2.0)" href="{{ mybb.settings.bburl }}/syndication.php" />
+    <link rel="alternate" type="application/atom+xml" title="{{ lang.latest_threads }} (Atom 1.0)" href="{{ mybb.settings.bburl }}/syndication.php?type=atom1.0" />
+
     <script type="text/javascript" src="{{ asset_url('jscripts/jquery.js') }}"></script>
     <script type="text/javascript" src="{{ asset_url('jscripts/jquery.plugins.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset_url('jscripts/general.js') }}"></script>
+
+    <script type="text/javascript">
+    <!--
+        lang.unknown_error = "{{ lang.unknown_error }}";
+
+        lang.select2_match = "{{ lang.select2_match }}";
+        lang.select2_matches = "{{ lang.select2_matches }}";
+        lang.select2_nomatches = "{{ lang.select2_nomatches }}";
+        lang.select2_inputtooshort_single = "{{ lang.select2_inputtooshort_single }}";
+        lang.select2_inputtooshort_plural = "{{ lang.select2_inputtooshort_plural }}";
+        lang.select2_inputtoolong_single = "{{ lang.select2_inputtoolong_single }}";
+        lang.select2_inputtoolong_plural = "{{ lang.select2_inputtoolong_plural }}";
+        lang.select2_selectiontoobig_single = "{{ lang.select2_selectiontoobig_single }}";
+        lang.select2_selectiontoobig_plural = "{{ lang.select2_selectiontoobig_plural }}";
+        lang.select2_loadmore = "{{ lang.select2_loadmore }}";
+        lang.select2_searching = "{{ lang.select2_searching }}";
+
+        var cookieDomain = "{{ mybb.settings.cookiedomain }}";
+        var cookiePath = "{{ mybb.settings.cookiepath }}";
+        var cookiePrefix = "{{ mybb.settings.cookieprefix }}";
+        var cookieSecureFlag = "{{ mybb.settings.cookiesecureflag }}";
+        var deleteevent_confirm = "{{ lang.deleteevent_confirm }}";
+        var removeattach_confirm = "{{ lang.removeattach_confirm }}";
+        var loading_text = '{{ lang.ajax_loading }}';
+        var saving_changes = '{{ lang.saving_changes }}';
+        var use_xmlhttprequest = "{{ mybb.settings.use_xmlhttprequest }}";
+        var my_post_key = "{{ mybb.post_code }}";
+        var rootpath = "{{ mybb.settings.bburl }}";
+        var imagepath = "{{ theme.imgdir }}";
+        var yes_confirm = "{{ lang.yes }}";
+        var no_confirm = "{{ lang.no }}";
+        var MyBBEditor = null;
+        var spinner_image = "{{ theme.imgdir }}/spinner.gif";
+        var spinner = "<img src='" + spinner_image +"' alt='' />";
+        var modal_zindex = 9999;
+    // -->
+    </script>
 </head>
 <body>
-{% include 'partials/header.twig' %}
+{% block header %}{% include 'partials/header.twig' %}{% endblock %}
 
 {% block body %}{% endblock %}
 
-{% include 'partials/footer.twig' %}
+{% block footer %}{% include 'partials/footer.twig' %}{% endblock %}
 </body>
 </html>
