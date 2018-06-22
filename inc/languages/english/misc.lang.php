@@ -9,32 +9,18 @@ $l['nav_helpdocs'] = "Help Documents";
 $l['nav_smilies'] = "Smilie Listing";
 $l['nav_syndication'] = "Latest Thread Syndication (RSS)";
 
-$l['aol_im'] = "AOL IM";
-$l['skype'] = "Skype";
-$l['yahoo_im'] = "Yahoo IM";
-$l['skype_center'] = "Skype Center";
-$l['chat_on_skype'] = "Chat with {1} on Skype";
-$l['call_on_skype'] = "Call {1} on Skype";
-$l['yahoo_center'] = "Yahoo! Center";
-$l['aim_center'] = "AOL IM Center";
-
-$l['download_aim'] = "Download AIM";
-$l['aim_remote'] = "AIM Remote";
-$l['send_me_instant'] = "Send me an Instant Message";
 $l['add_me_buddy_list'] = "Add me to Your Buddy List";
-$l['add_remote_to_page'] = "Add Remote to Your Page";
-$l['download_aol_im'] = "Download AOL Instant Messenger";
 
 $l['buddy_list'] = "Buddy List";
 $l['online'] = "Online";
-$l['online_none'] = "<em>You have no online buddies</em>";
+$l['online_none'] = "You have no online buddies";
 $l['offline'] = "Offline";
-$l['offline_none'] = "<em>You have no offline buddies</em>";
+$l['offline_none'] = "You have no offline buddies";
 $l['delete_buddy'] = "X";
 $l['pm_buddy'] = "Send Private Message";
 $l['last_active'] = "<strong>Last Active:</strong> {1}";
 $l['close'] = "Close";
-$l['no_buddies'] = "<em>Your buddy list is currently empty. Use your User CP or visit a user profile to add users to your buddy list.</em>";
+$l['no_buddies'] = "Your buddy list is currently empty. Use your User CP or visit a user profile to add users to your buddy list.";
 
 $l['help_docs'] = "Help Documents";
 

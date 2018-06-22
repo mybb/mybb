@@ -1,0 +1,57 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ mybb.settings.bbname }} - {{ lang.syndication }}</title>
+{% endblock head %}
+
+{% block body %}
+    {% if syndication.feedurl %}
+        <table border="0" cellspacing="0" cellpadding="{{ theme.tablespace }}" width="100%">
+            <tr><td>
+                <strong>{{ lang.syndication_generated_url }}</strong>
+                <blockquote>
+                    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder"><tr><td class="trow1">
+                        {{ syndication.url }}
+                    </td></tr></table>
+                </blockquote>
+            </td></tr>
+        </table>
+        <br />
+    {% endif %}
+    <table border="0" cellspacing="0" cellpadding="{{ theme.tablespace }}" width="100%">
+        <tr><td>{{ lang.syndication_note|raw }}</td></tr>
+    </table>
+    <br />
+    <form method="post" action="misc.php?action=syndication">
+        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+            <tr>
+                <td class="thead" colspan="2"><strong>{{ lang.syndication }}</strong></td>
+            </tr>
+            <tr>
+                <td class="trow1" width="40%" valign="top"><strong>{{ lang.syndication_forum }}</strong><br /><span class="smalltext">{{ lang.syndication_forum_desc }}</span></td>
+                <td class="trow1" width="60%">
+                    <select name="forums[]" size="10" multiple="multiple">
+                        <option value="all"{% if syndication.allselected %} selected="selected"{% endif %}>{{ lang.syndicate_all_forums }}</option>
+                        <option value="all">----------------------</option>
+                        {% for forum in forums %}
+                            <option value="{{ forum.fid }}"{% if forum.selected %} selected="selected"{% endif %}>{{ forum.depth|raw }} {{ forum.name }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="trow2" width="40%" valign="top"><strong>{{ lang.syndication_version }}</strong><br /><span class="smalltext">{{ lang.syndication_version_desc }}</span></td>
+                <td class="trow2" width="60%">
+                    <input type="radio" class="radio" name="version" value="rss2.0"{% if syndication.rss2check %} checked="checked"{% endif %} />&nbsp;{{ lang.syndication_version_rss2 }}<br />
+                    <input type="radio" class="radio" name="version" value="atom1.0"{% if syndication.atom1check %} checked="checked"{% endif %} />&nbsp;{{ lang.syndication_version_atom1 }}
+                </td>
+            </tr>
+            <tr>
+                <td class="trow1" width="40%" valign="top"><strong>{{ lang.syndication_limit }}</strong><br /><span class="smalltext">{{ lang.syndication_limit_desc }}</span></td>
+                <td class="trow1" width="60%"><input type="text" class="textbox" name="limit" value="{{ syndication.limit }}" size="3" /> {{ lang.syndication_threads_time }}</td>
+            </tr>
+        </table>
+        <br />
+        <div align="center"><input type="submit" class="button" name="make" value="{{ lang.syndication_generate }}" /></div>
+    </form>
+{% endblock body %}
