@@ -1268,41 +1268,59 @@ function check_forum_password($fid, $pid=0, $return=false)
         }
     }
 
-    if (!empty($forum_cache[$fid]['password'])) {
-        $password = $forum_cache[$fid]['password'];
-        if (isset($mybb->input['pwverify']) && $pid == 0) {
-            if ($password === $mybb->get_input('pwverify')) {
-                my_setcookie("forumpass[$fid]", md5($mybb->user['uid'].$mybb->get_input('pwverify')), null, true);
-                $showform = false;
-            } else {
-                eval("\$pwnote = \"".$templates->get("forumdisplay_password_wrongpass")."\";");
-                $showform = true;
-            }
-        } else {
-            if (!$mybb->cookies['forumpass'][$fid] || ($mybb->cookies['forumpass'][$fid] && md5($mybb->user['uid'].$password) !== $mybb->cookies['forumpass'][$fid])) {
-                $showform = true;
-            } else {
-                $showform = false;
-            }
-        }
-    } else {
-        $showform = false;
-    }
+	if(!empty($forum_cache[$fid]['password']))
+	{
+		$password = $forum_cache[$fid]['password'];
+		if(isset($mybb->input['pwverify']) && $pid == 0)
+		{
+			if($password === $mybb->get_input('pwverify'))
+			{
+				my_setcookie("forumpass[$fid]", md5($mybb->user['uid'].$mybb->get_input('pwverify')), null, true);
+				$showform = false;
+			}
+			else
+			{
+                $pwnote = 1;
+				$showform = true;
+			}
+		}
+		else
+		{
+			if(!$mybb->cookies['forumpass'][$fid] || ($mybb->cookies['forumpass'][$fid] && md5($mybb->user['uid'].$password) !== $mybb->cookies['forumpass'][$fid]))
+			{
+				$showform = true;
+			}
+			else
+			{
+				$showform = false;
+			}
+		}
+	}
+	else
+	{
+		$showform = false;
+	}
 
     if ($return) {
         return $showform;
     }
 
-    if ($showform) {
-        if ($pid) {
-            header("Location: ".$mybb->settings['bburl']."/".get_forum_link($fid));
-        } else {
-            $_SERVER['REQUEST_URI'] = htmlspecialchars_uni($_SERVER['REQUEST_URI']);
-            eval("\$pwform = \"".$templates->get("forumdisplay_password")."\";");
-            output_page($pwform);
-        }
-        exit;
-    }
+	if($showform)
+	{
+		if($pid)
+		{
+			header("Location: ".$mybb->settings['bburl']."/".get_forum_link($fid));
+		}
+		else
+		{
+			$currentUrl = $_SERVER['REQUEST_URI'];
+			output_page(\MyBB\template('forumdisplay/password.twig', [
+                'pwnote' => $pwnote,
+                'currentUrl' => $currentUrl
+            ]));
+		}
+		exit;
+	}
 }
 
 /**
