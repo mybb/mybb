@@ -2163,9 +2163,9 @@ min=1]]></optionscode>
 			<description><![CDATA[The medium through which MyBB will send outgoing emails.]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[select
-mail=PHP mail
+sendmail=Sendmail
 smtp=SMTP mail]]></optionscode>
-			<settingvalue><![CDATA[mail]]></settingvalue>
+			<settingvalue><![CDATA[sendmail]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
 		<setting name="smtp_host">
@@ -2211,12 +2211,12 @@ smtp=SMTP mail]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
-		<setting name="mail_parameters">
-			<title>Additional Parameters for PHP's mail()</title>
-			<description><![CDATA[This setting allows you to set additional parameters for the PHP mail() function. Only used when 'PHP mail' is selected as Mail Handler. <a href="http://php.net/function.mail" target="_blank" rel="noopener">More information</a>]]></description>
+		<setting name="sendmail_path">
+			<title>Path to the sendmail command</title>
+			<description><![CDATA[This setting allows you to set a custom path to the sendmail command and any additional flags to use. Note that if the '-t' and '-bs' command line flags aren't included, '-bs' will be added.<br />Only required if 'Sendmail' is selected as Mail Handler.]]></description>
 			<disporder>7</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
-			<settingvalue><![CDATA[]]></settingvalue>
+			<settingvalue><![CDATA[/usr/sbin/sendmail -bs]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
 		<setting name="mail_logging">

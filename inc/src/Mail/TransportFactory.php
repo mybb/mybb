@@ -76,6 +76,11 @@ class TransportFactory
             $sendMailPath = '/usr/sbin/sendmail -bs';
         }
 
+        if (false === strpos($sendMailPath, ' -bs') && false === strpos($sendMailPath, ' -t')) {
+            // The sendmail transport requires either the -bs flag or the -t flag.
+            $sendMailPath .= ' -bs';
+        }
+
         return new \Swift_SendmailTransport($sendMailPath);
     }
 }
