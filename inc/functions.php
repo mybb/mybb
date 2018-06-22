@@ -39,30 +39,29 @@ function output_page($contents)
             $serverload = get_server_load();
 
             if (my_strpos(getenv("REQUEST_URI"), "?")) {
-                $debuglink = htmlspecialchars_uni(getenv("REQUEST_URI")) . "&amp;debug=1";
+                $debuglink = getenv("REQUEST_URI") . "&debug=1";
             } else {
-                $debuglink = htmlspecialchars_uni(getenv("REQUEST_URI")) . "?debug=1";
+                $debuglink = getenv("REQUEST_URI") . "?debug=1";
             }
 
             $memory_usage = get_memory_usage();
 
-            if ($memory_usage) {
-                $memory_usage = $lang->sprintf($lang->debug_memory_usage, get_friendly_size($memory_usage));
-            } else {
-                $memory_usage = '';
-            }
             // MySQLi is still MySQL, so present it that way to the user
             $database_server = $db->short_title;
 
             if ($database_server == 'MySQLi') {
                 $database_server = 'MySQL';
             }
-            $generated_in = $lang->sprintf($lang->debug_generated_in, $totaltime);
             $debug_weight = $lang->sprintf($lang->debug_weight, $percentphp, $percentsql, $database_server);
             $sql_queries = $lang->sprintf($lang->debug_sql_queries, $db->query_count);
-            $server_load = $lang->sprintf($lang->debug_server_load, $serverload);
 
-            eval("\$debugstuff = \"".$templates->get("debug_summary")."\";");
+            $debugstuff = \MyBB\template('misc/debugsummary.twig', [
+                'debug_weight' => $debug_weight,
+                'sql_queries' => $sql_queries,
+                'serverload' => $serverload,
+                'totaltime' => $totaltime,
+                'memory_usage' => get_friendly_size($memory_usage)
+            ]);
             $contents = str_replace("<debugstuff>", $debugstuff, $contents);
         }
 
@@ -816,10 +815,12 @@ function redirect($url, $message="", $title="", $force_redirect=false)
     // Show redirects only if both ACP and UCP settings are enabled, or ACP is enabled, and user is a guest, or they are forced.
     if ($force_redirect == true || ($mybb->settings['redirects'] == 1 && ($mybb->user['showredirect'] == 1 || !$mybb->user['uid']))) {
         $url = str_replace("&amp;", "&", $url);
-        $url = htmlspecialchars_uni($url);
 
-        eval("\$redirectpage = \"".$templates->get("redirect")."\";");
-        output_page($redirectpage);
+        output_page(\MyBB\template('misc/redirect.twig', [
+            'url' => $url,
+            'title' => $title,
+            'message' => $message
+        ]));
     } else {
         $url = htmlspecialchars_decode($url);
         $url = str_replace(array("\n","\r",";"), "", $url);
@@ -2739,13 +2740,14 @@ function build_mycode_inserter($bind="message", $smilies = true)
 
         $editor_language .= "}})(jQuery);";
 
+        $toolbar = [];
+
         if (defined("IN_ADMINCP")) {
             global $page;
             $codeinsert = $page->build_codebuttons_editor($bind, $editor_language, $smilies);
         } else {
             // Smilies
-            $emoticon = "";
-            $emoticons_enabled = "false";
+            $emoticons = [];
             if ($smilies) {
                 if (!$smiliecache) {
                     if (!isset($smilie_cache) || !is_array($smilie_cache)) {
@@ -2758,16 +2760,14 @@ function build_mycode_inserter($bind="message", $smilies = true)
                 }
 
                 if ($mybb->settings['smilieinserter'] && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'] && !empty($smiliecache)) {
-                    $emoticon = ",emoticon";
+                    $toolbar['emoticon'] = ",emoticon";
                 }
-                $emoticons_enabled = "true";
 
                 unset($smilie);
 
                 if (is_array($smiliecache)) {
                     reset($smiliecache);
 
-                    $dropdownsmilies = $moresmilies = $hiddensmilies = "";
                     $i = 0;
 
                     foreach ($smiliecache as $smilie) {
@@ -2782,70 +2782,69 @@ function build_mycode_inserter($bind="message", $smilies = true)
                         $image = str_replace(array('\\', '"'), array('\\\\', '\"'), $image);
 
                         if (!$mybb->settings['smilieinserter'] || !$mybb->settings['smilieinsertercols'] || !$mybb->settings['smilieinsertertot'] || !$smilie['showclickable']) {
-                            $hiddensmilies .= '"'.$find.'": "'.$image.'",';
+                            $emoticons['hidden'] .= '"'.$find.'": "'.$image.'",';
                         } elseif ($i < $mybb->settings['smilieinsertertot']) {
-                            $dropdownsmilies .= '"'.$find.'": "'.$image.'",';
+                            $emoticons['dropdown'] .= '"'.$find.'": "'.$image.'",';
                             ++$i;
                         } else {
-                            $moresmilies .= '"'.$find.'": "'.$image.'",';
+                            $emoticons['more'] .= '"'.$find.'": "'.$image.'",';
                         }
 
                         for ($j = 1; $j < $finds_count; ++$j) {
                             $find = str_replace(array('\\', '"'), array('\\\\', '\"'), htmlspecialchars_uni($finds[$j]));
-                            $hiddensmilies .= '"'.$find.'": "'.$image.'",';
+                            $emoticons['hidden'] .= '"'.$find.'": "'.$image.'",';
                         }
                     }
                 }
             }
 
-            $basic1 = $basic2 = $align = $font = $size = $color = $removeformat = $email = $link = $list = $code = $sourcemode = "";
-
             if ($mybb->settings['allowbasicmycode'] == 1) {
-                $basic1 = "bold,italic,underline,strike|";
-                $basic2 = "horizontalrule,";
+                $toolbar['basic1'] = "bold,italic,underline,strike|";
+                $toolbar['basic2'] = "horizontalrule,";
             }
 
             if ($mybb->settings['allowalignmycode'] == 1) {
-                $align = "left,center,right,justify|";
+                $toolbar['align'] = "left,center,right,justify|";
             }
 
             if ($mybb->settings['allowfontmycode'] == 1) {
-                $font = "font,";
+                $toolbar['font'] = "font,";
             }
 
             if ($mybb->settings['allowsizemycode'] == 1) {
-                $size = "size,";
+                $toolbar['size'] = "size,";
             }
 
             if ($mybb->settings['allowcolormycode'] == 1) {
-                $color = "color,";
+                $toolbar['color'] = "color,";
             }
 
             if ($mybb->settings['allowfontmycode'] == 1 || $mybb->settings['allowsizemycode'] == 1 || $mybb->settings['allowcolormycode'] == 1) {
-                $removeformat = "removeformat|";
+                $toolbar['removeformat'] = "removeformat|";
             }
 
             if ($mybb->settings['allowemailmycode'] == 1) {
-                $email = "email,";
+                $toolbar['email'] = "email,";
             }
 
             if ($mybb->settings['allowlinkmycode'] == 1) {
-                $link = "link,unlink";
+                $toolbar['link'] = "link,unlink";
             }
 
             if ($mybb->settings['allowlistmycode'] == 1) {
-                $list = "bulletlist,orderedlist|";
+                $toolbar['list'] = "bulletlist,orderedlist|";
             }
 
             if ($mybb->settings['allowcodemycode'] == 1) {
-                $code = "code,php,";
+                $toolbar['code'] = "code,php,";
             }
 
-            if ($mybb->user['sourceeditor'] == 1) {
-                $sourcemode = "MyBBEditor.sourceMode(true);";
-            }
-
-            eval("\$codeinsert = \"".$templates->get("codebuttons")."\";");
+            $codeinsert = \MyBB\template('misc/codebuttons.twig', [
+                'toolbar' => $toolbar,
+                'emoticons' => $emoticons,
+                'editor_language' => $editor_language,
+                'bind' => $bind
+            ]);
         }
     }
 
@@ -3415,7 +3414,7 @@ function get_attachment_icon($ext)
 
         $icon = $attach_icons_schemes[$ext];
 
-        $name = htmlspecialchars_uni($attachtypes[$ext]['name']);
+        $name = $attachtypes[$ext]['name'];
     } else {
         if (defined("IN_ADMINCP")) {
             $theme['imgdir'] = "../images";
@@ -3429,9 +3428,11 @@ function get_attachment_icon($ext)
         $name = $lang->unknown;
     }
 
-    $icon = htmlspecialchars_uni($icon);
-    eval("\$attachment_icon = \"".$templates->get("attachment_icon")."\";");
-    return $attachment_icon;
+    return \MyBB\template('misc/attachment_icon.twig', [
+        'ext' => $ext,
+        'icon' => $icon,
+        'name' => $name
+    ]);
 }
 
 /**

@@ -59,10 +59,10 @@
     </script>
 </head>
 <body>
-{% include 'partials/header.twig' %}
+{% block header %}{% include 'partials/header.twig' %}{% endblock %}
 
 {% block body %}{% endblock %}
 
-{% include 'partials/footer.twig' %}
+{% block footer %}{% include 'partials/footer.twig' %}{% endblock %}
 </body>
 </html>

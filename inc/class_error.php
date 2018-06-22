@@ -260,29 +260,9 @@ class errorHandler {
 			$lang->warnings = "The following warnings occurred:";
 		}
 
-		$template_exists = false;
-
-		if(!is_object($templates) || !method_exists($templates, 'get'))
-		{
-			if(@file_exists(MYBB_ROOT."inc/class_templates.php"))
-			{
-				@require_once MYBB_ROOT."inc/class_templates.php";
-				$templates = new templates;
-				$template_exists = true;
-			}
-		}
-		else
-		{
-			$template_exists = true;
-		}
-
-		$warning = '';
-		if($template_exists == true)
-		{
-			eval("\$warning = \"".$templates->get("php_warnings")."\";");
-		}
-
-		return $warning;
+		return \MyBB\template('misc/php_warnings.twig', [
+            'warnings' => $this->warnings
+        ]);
 	}
 
 	/**
