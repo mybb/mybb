@@ -318,24 +318,6 @@ class UserDataHandler extends DataHandler
 	}
 
 	/**
-	 * Verifies if an ICQ number is valid or not.
-	 *
-	 * @return boolean True when valid, false when invalid.
-	 */
-	function verify_icq()
-	{
-		$icq = &$this->data['icq'];
-
-		if($icq != '' && !is_numeric($icq))
-		{
-			$this->set_error("invalid_icq_number");
-			return false;
-		}
-		$icq = (int)$icq;
-		return true;
-	}
-
-	/**
 	* Verifies if a birthday is valid or not.
 	*
 	* @return boolean True when valid, false when invalid.
@@ -991,10 +973,6 @@ class UserDataHandler extends DataHandler
 		{
 			$this->verify_website();
 		}
-		if($this->method == "insert" || array_key_exists('icq', $user))
-		{
-			$this->verify_icq();
-		}
 		if($this->method == "insert" || (isset($user['birthday']) && is_array($user['birthday'])))
 		{
 			$this->verify_birthday();
@@ -1095,7 +1073,7 @@ class UserDataHandler extends DataHandler
 
 		$user = &$this->data;
 
-		$array = array('postnum', 'threadnum', 'avatar', 'avatartype', 'additionalgroups', 'displaygroup', 'icq', 'yahoo', 'skype', 'google', 'bday', 'signature', 'style', 'dateformat', 'timeformat', 'notepad');
+		$array = array('postnum', 'threadnum', 'avatar', 'avatartype', 'additionalgroups', 'displaygroup', 'bday', 'signature', 'style', 'dateformat', 'timeformat', 'notepad');
 		foreach($array as $value)
 		{
 			if(!isset($user[$value]))
@@ -1122,10 +1100,6 @@ class UserDataHandler extends DataHandler
 			"lastactive" => (int)$user['lastactive'],
 			"lastvisit" => (int)$user['lastvisit'],
 			"website" => $db->escape_string($user['website']),
-			"icq" => (int)$user['icq'],
-			"yahoo" => $db->escape_string($user['yahoo']),
-			"skype" => $db->escape_string($user['skype']),
-			"google" => $db->escape_string($user['google']),
 			"birthday" => $user['bday'],
 			"signature" => $db->escape_string($user['signature']),
 			"allownotices" => (int)$user['options']['allownotices'],
@@ -1333,22 +1307,7 @@ class UserDataHandler extends DataHandler
 		{
 			$this->user_update_data['website'] = $db->escape_string($user['website']);
 		}
-		if(isset($user['icq']))
-		{
-			$this->user_update_data['icq'] = (int)$user['icq'];
-		}
-		if(isset($user['yahoo']))
-		{
-			$this->user_update_data['yahoo'] = $db->escape_string($user['yahoo']);
-		}
-		if(isset($user['skype']))
-		{
-			$this->user_update_data['skype'] = $db->escape_string($user['skype']);
-		}
-		if(isset($user['google']))
-		{
-			$this->user_update_data['google'] = $db->escape_string($user['google']);
-		}
+
 		if(isset($user['bday']))
 		{
 			$this->user_update_data['birthday'] = $user['bday'];
@@ -1749,10 +1708,6 @@ class UserDataHandler extends DataHandler
 		$update = array(
 			"website" => "",
 			"birthday" => "",
-			"icq" => "",
-			"yahoo" => "",
-			"skype" => "",
-			"google" => "",
 			"usertitle" => "",
 			"away" => 0,
 			"awaydate" => 0,

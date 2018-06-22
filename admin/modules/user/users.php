@@ -372,7 +372,14 @@ if($mybb->input['action'] == "add")
 	$profile_fields = array();
 	while($profile_field = $db->fetch_array($query))
 	{
-		$profile_fields['required'][] = $profile_field;
+		if($profile_field['contact'] == 1)
+		{
+			$profile_fields['contact_required'][] = $profile_field;
+		}
+		else
+		{
+			$profile_fields['required'][] = $profile_field;
+		}
 	}
 
 	$page->add_breadcrumb_item($lang->create_user);
@@ -412,6 +419,7 @@ if($mybb->input['action'] == "add")
 	$form_container->output_row($lang->display_user_group." <em>*</em>", "", $form->generate_select_box('displaygroup', $display_group_options, $mybb->input['displaygroup'], array('id' => 'displaygroup')), 'displaygroup');
 
 	// Output custom profile fields - required
+	output_custom_profile_fields($profile_fields['contact_required'], $mybb->input['profile_fields'], $form_container, $form);
 	output_custom_profile_fields($profile_fields['required'], $mybb->input['profile_fields'], $form_container, $form);
 
 	$form_container->end();
@@ -511,10 +519,6 @@ if($mybb->input['action'] == "edit")
 			"profile_fields" => $mybb->input['profile_fields'],
 			"profile_fields_editable" => true,
 			"website" => $mybb->input['website'],
-			"icq" => $mybb->input['icq'],
-			"yahoo" => $mybb->input['yahoo'],
-			"skype" => $mybb->input['skype'],
-			"google" => $mybb->input['google'],
 			"birthday" => array(
 				"day" => $mybb->input['bday1'],
 				"month" => $mybb->input['bday2'],
@@ -917,11 +921,25 @@ if($mybb->input['action'] == "edit")
 	{
 		if($profile_field['required'] == 1)
 		{
-			$profile_fields['required'][] = $profile_field;
+			if($profile_field['contact'] == 1)
+			{
+				$profile_fields['contact_required'][] = $profile_field;
+			}
+			else
+			{
+				$profile_fields['required'][] = $profile_field;
+			}
 		}
 		else
 		{
-			$profile_fields['optional'][] = $profile_field;
+			if($profile_field['contact'] == 1)
+			{
+				$profile_fields['contact_optional'][] = $profile_field;
+			}
+			else
+			{
+				$profile_fields['optional'][] = $profile_field;
+			}
 		}
 	}
 
@@ -1149,22 +1167,34 @@ EOF;
 	$form_container->output_row($lang->post_count." <em>*</em>", "", $form->generate_numeric_field('postnum', $mybb->input['postnum'], array('id' => 'postnum', 'min' => 0)), 'postnum');
 	$form_container->output_row($lang->thread_count." <em>*</em>", "", $form->generate_numeric_field('threadnum', $mybb->input['threadnum'], array('id' => 'threadnum', 'min' => 0)), 'threadnum');
 
-	// Output custom profile fields - required
+	// Output custom profile fields and contact fields - required
 	if(!isset($profile_fields['required']))
 	{
 		$profile_fields['required'] = array();
 	}
+
+	if(!isset($profile_fields['contact_required']))
+	{
+		$profile_fields['contact_required'] = array();
+	}
+
+	output_custom_profile_fields($profile_fields['contact_required'], $mybb->input['profile_fields'], $form_container, $form);
 	output_custom_profile_fields($profile_fields['required'], $mybb->input['profile_fields'], $form_container, $form);
 
 	$form_container->end();
 
+	if(!empty($profile_fields['contact_optional']))
+	{
+		$form_container = new FormContainer($lang->contact_info.': '.htmlspecialchars_uni($user['username']));
+
+		output_custom_profile_fields($profile_fields['contact_optional'], $mybb->input['profile_fields'], $form_container, $form);
+
+		$form_container->end();
+	}
+
 	$form_container = new FormContainer($lang->optional_profile_info.': '.htmlspecialchars_uni($user['username']));
 	$form_container->output_row($lang->custom_user_title, $lang->custom_user_title_desc, $form->generate_text_box('usertitle', $mybb->input['usertitle'], array('id' => 'usertitle')), 'usertitle');
 	$form_container->output_row($lang->website, "", $form->generate_text_box('website', $mybb->input['website'], array('id' => 'website')), 'website');
-	$form_container->output_row($lang->icq_number, "", $form->generate_numeric_field('icq', $mybb->input['icq'], array('id' => 'icq', 'min' => 0)), 'icq');
-	$form_container->output_row($lang->yahoo_messanger_handle, "", $form->generate_text_box('yahoo', $mybb->input['yahoo'], array('id' => 'yahoo')), 'yahoo');
-	$form_container->output_row($lang->skype_handle, "", $form->generate_text_box('skype', $mybb->input['skype'], array('id' => 'skype')), 'skype');
-	$form_container->output_row($lang->google_handle, "", $form->generate_text_box('google', $mybb->input['google'], array('id' => 'google')), 'google');
 
 	// Birthday
 	$birthday_days = array(0 => '');
@@ -3235,7 +3265,7 @@ function build_users_view($view)
 	// Build the search SQL for users
 
 	// List of valid LIKE search fields
-	$user_like_fields = array("username", "email", "website", "icq", "yahoo", "skype", "google", "signature", "usertitle");
+	$user_like_fields = array("username", "email", "website", "signature", "usertitle");
 	foreach($user_like_fields as $search_field)
 	{
 		if(!empty($view['conditions'][$search_field]) && !$view['conditions'][$search_field.'_blank'])
@@ -4127,10 +4157,6 @@ function user_search_conditions($input=array(), &$form)
 	$form_container->output_row($lang->is_member_of_groups, $lang->additional_user_groups_desc, $form->generate_select_box('conditions[usergroup][]', $options, $input['conditions']['usergroup'], array('id' => 'usergroups', 'multiple' => true, 'size' => 5)), 'usergroups');
 
 	$form_container->output_row($lang->website_contains, "", $form->generate_text_box('conditions[website]', $input['conditions']['website'], array('id' => 'website'))." {$lang->or} ".$form->generate_check_box('conditions[website_blank]', 1, $lang->is_not_blank, array('id' => 'website_blank', 'checked' => $input['conditions']['website_blank'])), 'website');
-	$form_container->output_row($lang->icq_number_contains, "", $form->generate_text_box('conditions[icq]', $input['conditions']['icq'], array('id' => 'icq'))." {$lang->or} ".$form->generate_check_box('conditions[icq_blank]', 1, $lang->is_not_blank, array('id' => 'icq_blank', 'checked' => $input['conditions']['icq_blank'])), 'icq');
-	$form_container->output_row($lang->yahoo_contains, "", $form->generate_text_box('conditions[yahoo]', $input['conditions']['yahoo'], array('id' => 'yahoo'))." {$lang->or} ".$form->generate_check_box('conditions[yahoo_blank]', 1, $lang->is_not_blank, array('id' => 'yahoo_blank', 'checked' => $input['conditions']['yahoo_blank'])), 'yahoo');
-	$form_container->output_row($lang->skype_contains, "", $form->generate_text_box('conditions[skype]', $input['conditions']['skype'], array('id' => 'skype'))." {$lang->or} ".$form->generate_check_box('conditions[skype_blank]', 1, $lang->is_not_blank, array('id' => 'skype_blank', 'checked' => $input['conditions']['skype_blank'])), 'skype');
-	$form_container->output_row($lang->google_contains, "", $form->generate_text_box('conditions[google]', $input['conditions']['google'], array('id' => 'google'))." {$lang->or} ".$form->generate_check_box('conditions[google_blank]', 1, $lang->is_not_blank, array('id' => 'google_blank', 'checked' => $input['conditions']['google_blank'])), 'google');
 	$form_container->output_row($lang->signature_contains, "", $form->generate_text_box('conditions[signature]', $input['conditions']['signature'], array('id' => 'signature'))." {$lang->or} ".$form->generate_check_box('conditions[signature_blank]', 1, $lang->is_not_blank, array('id' => 'signature_blank', 'checked' => $input['conditions']['signature_blank'])), 'signature');
 	$form_container->output_row($lang->user_title_contains, "", $form->generate_text_box('conditions[usertitle]', $input['conditions']['usertitle'], array('id' => 'usertitle'))." {$lang->or} ".$form->generate_check_box('conditions[usertitle_blank]', 1, $lang->is_not_blank, array('id' => 'usertitle_blank', 'checked' => $input['conditions']['usertitle_blank'])), 'usertitle');
 	$greater_options = array(
@@ -4148,9 +4174,6 @@ function user_search_conditions($input=array(), &$form)
 
 	$form_container->end();
 
-	// Custom profile fields go here
-	$form_container = new FormContainer($lang->custom_profile_fields_match);
-
 	// Fetch custom profile fields
 	$query = $db->simple_select("profilefields", "*", "", array('order_by' => 'disporder'));
 
@@ -4159,13 +4182,38 @@ function user_search_conditions($input=array(), &$form)
 	{
 		if($profile_field['required'] == 1)
 		{
-			$profile_fields['required'][] = $profile_field;
+			if($profile_field['contact'] == 1)
+			{
+				$profile_fields['contact_required'][] = $profile_field;
+			}
+			else
+			{
+				$profile_fields['required'][] = $profile_field;
+			}
 		}
 		else
 		{
-			$profile_fields['optional'][] = $profile_field;
+			if($profile_field['contact'] == 1)
+			{
+				$profile_fields['contact_optional'][] = $profile_field;
+			}
+			else
+			{
+				$profile_fields['optional'][] = $profile_field;
+			}
 		}
 	}
+
+	// Contact fields go here
+	$form_container = new FormContainer($lang->contact_fields_match);
+
+	output_custom_profile_fields($profile_fields['contact_required'], $input['profile_fields'], $form_container, $form, true);
+	output_custom_profile_fields($profile_fields['contact_optional'], $input['profile_fields'], $form_container, $form, true);
+
+	$form_container->end();
+
+	// Custom profile fields go here
+	$form_container = new FormContainer($lang->custom_profile_fields_match);
 
 	output_custom_profile_fields($profile_fields['required'], $input['profile_fields'], $form_container, $form, true);
 	output_custom_profile_fields($profile_fields['optional'], $input['profile_fields'], $form_container, $form, true);
