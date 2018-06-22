@@ -902,7 +902,6 @@ if ($mybb->input['action'] == "subscriptions") {
                 $thread['folder_label'] .= $lang->icon_new;
                 $thread['new_class'] = "subject_new";
                 $thread['newpostlink'] = get_thread_link($thread['tid'], 0, "newpost");
-                $unreadpost = 1;
             } else {
                 $thread['folder_label'] .= $lang->icon_no_new;
                 $thread['new_class'] = "subject_old";
@@ -2686,23 +2685,15 @@ if (!$mybb->input['action']) {
         $percent = round($percent, 2);
     }
 
-    $colspan = 2;
     $lang->posts_day = $lang->sprintf($lang->posts_day, my_number_format($perday), $percent);
-    $regdate = my_date('relative', $mybb->user['regdate']);
+    $mybb->user['regdate'] = my_date('relative', $mybb->user['regdate']);
 
     $useravatar = format_avatar($mybb->user['avatar'], $mybb->user['avatardimensions'], '100x100');
-    $avatar_username = htmlspecialchars_uni($mybb->user['username']);
-    eval("\$avatar = \"".$templates->get("usercp_currentavatar")."\";");
 
-    $usergroup = htmlspecialchars_uni($groupscache[$mybb->user['usergroup']]['title']);
-    if ($mybb->user['usergroup'] == 5 && $mybb->settings['regtype'] != "admin") {
-        eval("\$usergroup .= \"".$templates->get("usercp_resendactivation")."\";");
-    }
     // Make reputations row
-    $reputations = '';
+    $reputation_link = '';
     if ($mybb->usergroup['usereputationsystem'] == 1 && $mybb->settings['enablereputation'] == 1) {
         $reputation_link = get_reputation($mybb->user['reputation']);
-        eval("\$reputation = \"".$templates->get("usercp_reputation")."\";");
     }
 
     $latest_warnings = '';
@@ -2726,7 +2717,7 @@ if (!$mybb->input['action']) {
             $warningshandler->expire_warnings();
 
             $lang->current_warning_level = $lang->sprintf($lang->current_warning_level, $warning_level, $mybb->user['warningpoints'], $mybb->settings['maxwarningpoints']);
-            $warnings = '';
+            $warnings = [];
             // Fetch latest warnings
             $query = $db->query("
                 SELECT w.*, t.title AS type_title, u.username, p.subject AS post_subject
@@ -2739,43 +2730,36 @@ if (!$mybb->input['action']) {
                 LIMIT 5
             ");
             while ($warning = $db->fetch_array($query)) {
-                $post_link = "";
                 if ($warning['post_subject']) {
                     $warning['post_subject'] = $parser->parse_badwords($warning['post_subject']);
                     $warning['post_subject'] = htmlspecialchars_uni($warning['post_subject']);
                     $warning['postlink'] = get_post_link($warning['pid']);
-                    eval("\$post_link .= \"".$templates->get("usercp_warnings_warning_post")."\";");
                 }
                 $warning['username'] = htmlspecialchars_uni($warning['username']);
-                $issuedby = build_profile_link($warning['username'], $warning['issuedby']);
-                $date_issued = my_date('relative', $warning['dateline']);
+                $warning['issuedby'] = build_profile_link($warning['username'], $warning['issuedby']);
+                $warning['dateissued'] = my_date('relative', $warning['dateline']);
                 if ($warning['type_title']) {
-                    $warning_type = $warning['type_title'];
+                    $warning['type'] = $warning['type_title'];
                 } else {
-                    $warning_type = $warning['title'];
+                    $warning['type'] = $warning['title'];
                 }
-                $warning_type = htmlspecialchars_uni($warning_type);
                 if ($warning['points'] > 0) {
                     $warning['points'] = "+{$warning['points']}";
                 }
-                $points = $lang->sprintf($lang->warning_points, $warning['points']);
+                $warning['points'] = $lang->sprintf($lang->warning_points, $warning['points']);
 
                 // Figure out expiration time
                 if ($warning['daterevoked']) {
-                    $expires = $lang->warning_revoked;
+                    $warning['expiration'] = $lang->warning_revoked;
                 } elseif ($warning['expired']) {
-                    $expires = $lang->already_expired;
+                    $warning['expiration'] = $lang->already_expired;
                 } elseif ($warning['expires'] == 0) {
-                    $expires = $lang->never;
+                    $warning['expiration'] = $lang->never;
                 } else {
-                    $expires = nice_time($warning['expires']-TIME_NOW);
+                    $warning['expiration'] = nice_time($warning['expires']-TIME_NOW);
                 }
 
-                $alt_bg = alt_trow();
-                eval("\$warnings .= \"".$templates->get("usercp_warnings_warning")."\";");
-            }
-            if ($warnings) {
-                eval("\$latest_warnings = \"".$templates->get("usercp_warnings")."\";");
+                $warnings[] = $warning;
             }
         }
     }
@@ -2787,20 +2771,8 @@ if (!$mybb->input['action']) {
     // Format post numbers
     $mybb->user['posts'] = my_number_format($mybb->user['postnum']);
 
-    // Build referral link
-    if ($mybb->settings['usereferrals'] == 1) {
-        $referral_link = $lang->sprintf($lang->referral_link, $settings['bburl'], $mybb->user['uid']);
-        eval("\$referral_info = \"".$templates->get("usercp_referrals")."\";");
-    }
-
-    // User Notepad
-    $plugins->run_hooks('usercp_notepad_start');
-    $mybb->user['notepad'] = htmlspecialchars_uni($mybb->user['notepad']);
-    eval("\$user_notepad = \"".$templates->get("usercp_notepad")."\";");
-    $plugins->run_hooks('usercp_notepad_end');
-
     // Thread Subscriptions with New Posts
-    $latest_subscribed = '';
+    $subscriptions = $latestsubscriptions = [];
     $query = $db->simple_select("threadsubscriptions", "sid", "uid = '".$mybb->user['uid']."'", array("limit" => 1));
     if ($db->num_rows($query)) {
         $visible = "AND t.visible != 0";
@@ -2853,12 +2825,7 @@ if (!$mybb->input['action']) {
                 $threadprefixes = build_prefixes();
 
                 foreach ($subscriptions as $thread) {
-                    $folder = '';
-                    $folder_label = '';
-                    $gotounread = '';
-
                     if ($thread['tid']) {
-                        $bgcolor = alt_trow();
                         $thread['subject'] = $parser->parse_badwords($thread['subject']);
                         $thread['subject'] = htmlspecialchars_uni($thread['subject']);
                         $thread['threadlink'] = get_thread_link($thread['tid']);
@@ -2866,68 +2833,49 @@ if (!$mybb->input['action']) {
 
                         // If this thread has a prefix...
                         if ($thread['prefix'] != 0 && !empty($threadprefixes[$thread['prefix']])) {
-                            $thread['displayprefix'] = $threadprefixes[$thread['prefix']]['displaystyle'].'&nbsp;';
+                            $thread['displayprefix'] = $threadprefixes[$thread['prefix']]['displaystyle'];
                         } else {
                             $thread['displayprefix'] = '';
                         }
 
-                        // Icons
-                        if ($thread['icon'] > 0 && isset($icon_cache[$thread['icon']])) {
+                        // Fetch the thread icon if we have one
+                        if ($thread['icon'] > 0 && $icon_cache[$thread['icon']]) {
                             $icon = $icon_cache[$thread['icon']];
                             $icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
-                            $icon['path'] = htmlspecialchars_uni($icon['path']);
-                            $icon['name'] = htmlspecialchars_uni($icon['name']);
-                            eval("\$icon = \"".$templates->get("usercp_subscriptions_thread_icon")."\";");
+                            $thread['icon'] = $icon;
                         } else {
-                            $icon = "&nbsp;";
+                            $thread['icon'] = "&nbsp;";
                         }
-
-                        if ($thread['doticon']) {
-                            $folder = "dot_";
-                            $folder_label .= $lang->icon_dot;
-                        }
+                        // Determine the folder
+                        $thread['folder'] = $thread['folder_label'] = $thread['class'] = '';
 
                         // Check to see which icon we display
                         if ($thread['lastread'] && $thread['lastread'] < $thread['lastpost']) {
-                            $folder .= "new";
-                            $folder_label .= $lang->icon_new;
-                            $new_class = "subject_new";
+                            $thread['folder'] .= "new";
+                            $thread['folder_label'] .= $lang->icon_new;
+                            $thread['new_class'] = "subject_new";
                             $thread['newpostlink'] = get_thread_link($thread['tid'], 0, "newpost");
-                            eval("\$gotounread = \"".$templates->get("forumdisplay_thread_gotounread")."\";");
                         } else {
-                            $folder_label .= $lang->icon_no_new;
-                            $new_class = "subject_old";
+                            $thread['folder_label'] .= $lang->icon_no_new;
+                            $thread['new_class'] = "subject_old";
                         }
 
-                        $folder .= "folder";
+                        $thread['folder'] .= "folder";
 
                         if ($thread['visible'] == 0) {
-                            $bgcolor = "trow_shaded";
+                            $thread['class'] = "trow_shaded";
                         }
 
-                        $lastpostdate = my_date('relative', $thread['lastpost']);
-                        $lastposteruid = $thread['lastposteruid'];
-                        if (!$lastposteruid && !$thread['lastposter']) {
-                            $lastposter = htmlspecialchars_uni($lang->guest);
-                        } else {
-                            $lastposter = htmlspecialchars_uni($thread['lastposter']);
-                        }
+                        $thread['lastpostdate'] = my_date('relative', $thread['lastpost']);
 
-                        if ($lastposteruid == 0) {
-                            $lastposterlink = $lastposter;
-                        } else {
-                            $lastposterlink = build_profile_link($lastposter, $lastposteruid);
-                        }
+                        $thread['lastposter'] = build_profile_link($thread['lastposter'], $thread['lastposteruid']);
 
                         $thread['replies'] = my_number_format($thread['replies']);
                         $thread['views'] = my_number_format($thread['views']);
-                        $thread['username'] = htmlspecialchars_uni($thread['username']);
                         $thread['author'] = build_profile_link($thread['username'], $thread['uid']);
-
-                        eval("\$latest_subscribed_threads .= \"".$templates->get("usercp_latest_subscribed_threads")."\";");
                     }
+                    $latestsubscriptions[] = $thread;
                 }
-                eval("\$latest_subscribed = \"".$templates->get("usercp_latest_subscribed")."\";");
             }
         }
     }
@@ -2960,7 +2908,7 @@ if (!$mybb->input['action']) {
     ");
 
     // Figure out whether we can view these threads...
-    $threadcache = [];
+    $threadcache = $latestthreads = [];
     $fpermissions = forum_permissions();
     while ($thread = $db->fetch_array($query)) {
         // Moderated, and not moderator?
@@ -2974,7 +2922,6 @@ if (!$mybb->input['action']) {
         }
     }
 
-    $latest_threads = '';
     if (!empty($threadcache)) {
         $tids = implode(",", array_keys($threadcache));
         $readforums = [];
@@ -3012,40 +2959,29 @@ if (!$mybb->input['action']) {
         $threadprefixes = build_prefixes();
 
         // Run the threads...
-        $latest_threads_threads = '';
         foreach ($threadcache as $thread) {
             if ($thread['tid']) {
-                $bgcolor = alt_trow();
-                $folder = '';
-                $folder_label = '';
-                $prefix = '';
-                $gotounread = '';
-                $isnew = 0;
-                $donenew = 0;
                 $lastread = 0;
 
                 // If this thread has a prefix...
                 if ($thread['prefix'] != 0) {
                     if (!empty($threadprefixes[$thread['prefix']])) {
-                        $thread['displayprefix'] = $threadprefixes[$thread['prefix']]['displaystyle'].'&nbsp;';
+                        $thread['displayprefix'] = $threadprefixes[$thread['prefix']]['displaystyle'];
                     }
                 } else {
                     $thread['displayprefix'] = '';
                 }
 
                 $thread['subject'] = $parser->parse_badwords($thread['subject']);
-                $thread['subject'] = htmlspecialchars_uni($thread['subject']);
                 $thread['threadlink'] = get_thread_link($thread['tid']);
                 $thread['lastpostlink'] = get_thread_link($thread['tid'], 0, "lastpost");
 
                 if ($thread['icon'] > 0 && $icon_cache[$thread['icon']]) {
                     $icon = $icon_cache[$thread['icon']];
                     $icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
-                    $icon['path'] = htmlspecialchars_uni($icon['path']);
-                    $icon['name'] = htmlspecialchars_uni($icon['name']);
-                    eval("\$icon = \"".$templates->get("usercp_subscriptions_thread_icon")."\";");
+                    $thread['icon'] = $icon;
                 } else {
-                    $icon = "&nbsp;";
+                    $thread['icon'] = "&nbsp;";
                 }
 
                 if ($mybb->settings['threadreadcut'] > 0) {
@@ -3057,11 +2993,11 @@ if (!$mybb->input['action']) {
                     }
                 }
 
+                $cutoff = 0;
                 if ($mybb->settings['threadreadcut'] > 0 && $thread['lastpost'] > $forum_read) {
                     $cutoff = TIME_NOW-$mybb->settings['threadreadcut']*60*60*24;
                 }
 
-                $cutoff = 0;
                 if ($thread['lastpost'] > $cutoff) {
                     if ($thread['lastread']) {
                         $lastread = $thread['lastread'];
@@ -3077,65 +3013,61 @@ if (!$mybb->input['action']) {
                     }
                 }
 
+                $thread['lastread'] = $lastread;
+
                 // Folder Icons
                 if ($thread['doticon']) {
-                    $folder = "dot_";
-                    $folder_label .= $lang->icon_dot;
+                    $thread['folder'] = "dot_";
+                    $thread['folder_label'] .= $lang->icon_dot;
                 }
 
                 if ($thread['lastpost'] > $lastread && $lastread) {
-                    $folder .= "new";
-                    $folder_label .= $lang->icon_new;
-                    $new_class = "subject_new";
+                    $thread['folder'] .= "new";
+                    $thread['folder_label'] .= $lang->icon_new;
+                    $thread['class'] = "subject_new";
                     $thread['newpostlink'] = get_thread_link($thread['tid'], 0, "newpost");
-                    eval("\$gotounread = \"".$templates->get("forumdisplay_thread_gotounread")."\";");
-                    $unreadpost = 1;
                 } else {
-                    $folder_label .= $lang->icon_no_new;
-                    $new_class = "subject_old";
+                    $thread['folder_label'] .= $lang->icon_no_new;
+                    $thread['class'] = "subject_old";
                 }
 
                 if ($thread['replies'] >= $mybb->settings['hottopic'] || $thread['views'] >= $mybb->settings['hottopicviews']) {
-                    $folder .= "hot";
-                    $folder_label .= $lang->icon_hot;
+                    $thread['folder'] .= "hot";
+                    $thread['folder_label'] .= $lang->icon_hot;
                 }
 
                 // Is our thread visible?
                 if ($thread['visible'] == 0) {
-                    $bgcolor = 'trow_shaded';
+                    $thread['class'] = 'trow_shaded';
                 }
 
                 if ($thread['closed'] == 1) {
-                    $folder .= "lock";
-                    $folder_label .= $lang->icon_lock;
+                    $thread['folder'] .= "lock";
+                    $thread['folder_label'] .= $lang->icon_lock;
                 }
 
-                $folder .= "folder";
+                $thread['folder'] .= "folder";
 
-                $lastpostdate = my_date('relative', $thread['lastpost']);
-                $lastposter = htmlspecialchars_uni($thread['lastposter']);
-                $lastposteruid = $thread['lastposteruid'];
+                $thread['lastpostdate'] = my_date('relative', $thread['lastpost']);
 
-                if ($lastposteruid == 0) {
-                    $lastposterlink = $lastposter;
-                } else {
-                    $lastposterlink = build_profile_link($lastposter, $lastposteruid);
-                }
+                $thread['lastposter'] = build_profile_link($thread['lastposter'], $thread['lastposteruid']);
 
                 $thread['replies'] = my_number_format($thread['replies']);
                 $thread['views'] = my_number_format($thread['views']);
-                $thread['username'] = htmlspecialchars_uni($thread['username']);
                 $thread['author'] = build_profile_link($thread['username'], $thread['uid']);
 
-                eval("\$latest_threads_threads .= \"".$templates->get("usercp_latest_threads_threads")."\";");
+                $latestthreads[] = $thread;
             }
         }
-
-        eval("\$latest_threads = \"".$templates->get("usercp_latest_threads")."\";");
     }
 
     $plugins->run_hooks('usercp_end');
 
-    eval("\$usercp = \"".$templates->get("usercp")."\";");
-    output_page($usercp);
+    output_page(\MyBB\template('usercp/home.twig', [
+        'useravatar' => $useravatar,
+        'groupscache' => $groupscache,
+        'reputation_link' => $reputation_link,
+        'latestsubscriptions' => $latestsubscriptions,
+        'latestthreads' => $latestthreads
+    ]));
 }
