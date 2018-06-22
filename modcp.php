@@ -57,11 +57,20 @@ $moderated_forums = array();
 if ($mybb->usergroup['issupermod'] != 1) {
     $query = $db->simple_select("moderators", "*", "(id='{$mybb->user['uid']}' AND isgroup = '0') OR (id IN ({$mybb->usergroup['all_usergroups']}) AND isgroup = '1')");
 
-    $numannouncements = $nummodqueuethreads = $nummodqueueposts = $nummodqueueattach = $numreportedposts = $nummodlogs = 0;
+    $counters = [
+        'announcements' => 0,
+        'modqueue' => [
+            'threads' => 0,
+            'posts' => 0,
+            'attachments' => 0
+        ],
+        'reportedposts' => 0,
+        'modlogs' => 0
+    ];
     while ($forum = $db->fetch_array($query)) {
         // For Announcements
         if ($forum['canmanageannouncements'] == 1) {
-            ++$numannouncements;
+            ++$counters['announcements'];
         }
 
         // For the Mod Queues
@@ -72,7 +81,7 @@ if ($mybb->usergroup['issupermod'] != 1) {
             if (!empty($children)) {
                 $flist_queue_threads .= ",'".implode("','", $children)."'";
             }
-            ++$nummodqueuethreads;
+            ++$counters['modqueue']['threads'];
         }
 
         if ($forum['canapproveunapproveposts'] == 1) {
@@ -82,7 +91,7 @@ if ($mybb->usergroup['issupermod'] != 1) {
             if (!empty($children)) {
                 $flist_queue_posts .= ",'".implode("','", $children)."'";
             }
-            ++$nummodqueueposts;
+            ++$counters['modqueue']['posts'];
         }
 
         if ($forum['canapproveunapproveattachs'] == 1) {
@@ -92,7 +101,7 @@ if ($mybb->usergroup['issupermod'] != 1) {
             if (!empty($children)) {
                 $flist_queue_attach .= ",'".implode("','", $children)."'";
             }
-            ++$nummodqueueattach;
+            ++$counters['modqueue']['attachments'];
         }
 
         // For Reported posts
@@ -103,7 +112,7 @@ if ($mybb->usergroup['issupermod'] != 1) {
             if (!empty($children)) {
                 $flist_reports .= ",'".implode("','", $children)."'";
             }
-            ++$numreportedposts;
+            ++$counters['reportedposts'];
         }
 
         // For the Mod Log
@@ -114,7 +123,7 @@ if ($mybb->usergroup['issupermod'] != 1) {
             if (!empty($children)) {
                 $flist_modlog .= ",'".implode("','", $children)."'";
             }
-            ++$nummodlogs;
+            ++$counters['modlogs'];
         }
 
         $flist .= ",'{$forum['fid']}'";
@@ -191,19 +200,19 @@ if (!isset($collapsed['modcpusers_e'])) {
 
 // Fetch the Mod CP menu
 $nav_announcements = $nav_modqueue = $nav_reportcenter = $nav_modlogs = $nav_editprofile = $nav_banning = $nav_warninglogs = $nav_ipsearch = $nav_forums_posts = $modcp_nav_users = '';
-if (($numannouncements > 0 || $mybb->usergroup['issupermod'] == 1) && $mybb->usergroup['canmanageannounce'] == 1) {
+if (($counters['announcements'] > 0 || $mybb->usergroup['issupermod'] == 1) && $mybb->usergroup['canmanageannounce'] == 1) {
     eval("\$nav_announcements = \"".$templates->get("modcp_nav_announcements")."\";");
 }
 
-if (($nummodqueuethreads > 0 || $nummodqueueposts > 0 || $nummodqueueattach > 0 || $mybb->usergroup['issupermod'] == 1) && $mybb->usergroup['canmanagemodqueue'] == 1) {
+if (($counters['modqueue']['threads'] > 0 || $counters['modqueue']['posts'] > 0 || $counters['modqueue']['attachments'] > 0 || $mybb->usergroup['issupermod'] == 1) && $mybb->usergroup['canmanagemodqueue'] == 1) {
     eval("\$nav_modqueue = \"".$templates->get("modcp_nav_modqueue")."\";");
 }
 
-if (($numreportedposts > 0 || $mybb->usergroup['issupermod'] == 1) && $mybb->usergroup['canmanagereportedcontent'] == 1) {
+if (($counters['reportedposts'] > 0 || $mybb->usergroup['issupermod'] == 1) && $mybb->usergroup['canmanagereportedcontent'] == 1) {
     eval("\$nav_reportcenter = \"".$templates->get("modcp_nav_reportcenter")."\";");
 }
 
-if (($nummodlogs > 0 || $mybb->usergroup['issupermod'] == 1) && $mybb->usergroup['canviewmodlogs'] == 1) {
+if (($counters['modlogs'] > 0 || $mybb->usergroup['issupermod'] == 1) && $mybb->usergroup['canviewmodlogs'] == 1) {
     eval("\$nav_modlogs = \"".$templates->get("modcp_nav_modlogs")."\";");
 }
 
@@ -299,7 +308,7 @@ if ($mybb->input['action'] == "reports") {
         error_no_permission();
     }
 
-    if ($numreportedposts == 0 && $mybb->usergroup['issupermod'] != 1) {
+    if ($counters['reportedposts'] == 0 && $mybb->usergroup['issupermod'] != 1) {
         error($lang->you_cannot_view_reported_posts);
     }
 
@@ -659,7 +668,7 @@ if ($mybb->input['action'] == "modlogs") {
         error_no_permission();
     }
 
-    if ($nummodlogs == 0 && $mybb->usergroup['issupermod'] != 1) {
+    if ($counters['modlogs'] == 0 && $mybb->usergroup['issupermod'] != 1) {
         error($lang->you_cannot_view_mod_logs);
     }
 
@@ -1426,7 +1435,7 @@ if ($mybb->input['action'] == "announcements") {
         error_no_permission();
     }
 
-    if ($numannouncements == 0 && $mybb->usergroup['issupermod'] != 1) {
+    if ($counters['announcements'] == 0 && $mybb->usergroup['issupermod'] != 1) {
         error($lang->you_cannot_manage_announcements);
     }
 
@@ -1574,14 +1583,14 @@ if ($mybb->input['action'] == "modqueue") {
         error_no_permission();
     }
 
-    if ($nummodqueuethreads == 0 && $nummodqueueposts == 0 && $nummodqueueattach == 0 && $mybb->usergroup['issupermod'] != 1) {
+    if ($counters['modqueue']['threads'] == 0 && $counters['modqueue']['posts'] == 0 && $counters['modqueue']['attachments'] == 0 && $mybb->usergroup['issupermod'] != 1) {
         error($lang->you_cannot_use_mod_queue);
     }
 
     $mybb->input['type'] = $mybb->get_input('type');
-    $threadqueue = $postqueue = $attachmentqueue = false;
-    if ($mybb->input['type'] == "threads" || !$mybb->input['type'] && ($nummodqueuethreads > 0 || $mybb->usergroup['issupermod'] == 1)) {
-        if ($nummodqueuethreads == 0 && $mybb->usergroup['issupermod'] != 1) {
+    $threadqueue = $postqueue = $attachmentqueue = '';
+    if ($mybb->input['type'] == "threads" || !$mybb->input['type'] && ($counters['modqueue']['threads'] > 0 || $mybb->usergroup['issupermod'] == 1)) {
+        if ($counters['modqueue']['threads'] == 0 && $mybb->usergroup['issupermod'] != 1) {
             error($lang->you_cannot_moderate_threads);
         }
 
@@ -1656,12 +1665,12 @@ if ($mybb->input['action'] == "modqueue") {
             $plugins->run_hooks('modcp_modqueue_threads_end');
 
             $navlink['post'] = false;
-            if ($nummodqueueposts > 0 || $mybb->usergroup['issupermod'] == 1) {
+            if ($counters['modqueue']['posts'] > 0 || $mybb->usergroup['issupermod'] == 1) {
                 $navlink['post'] = true;
             }
 
             $navlink['attachment'] = false;
-            if ($mybb->settings['enableattachments'] == 1 && ($nummodqueueattach > 0 || $mybb->usergroup['issupermod'] == 1)) {
+            if ($mybb->settings['enableattachments'] == 1 && ($counters['modqueue']['attachments'] > 0 || $mybb->usergroup['issupermod'] == 1)) {
                 $navlink['attachment'] = true;
             }
 
@@ -1674,8 +1683,8 @@ if ($mybb->input['action'] == "modqueue") {
         }
     }
 
-    if ($mybb->input['type'] == "posts" || (!$mybb->input['type'] && !$threadqueue && ($nummodqueueposts > 0 || $mybb->usergroup['issupermod'] == 1))) {
-        if ($nummodqueueposts == 0 && $mybb->usergroup['issupermod'] != 1) {
+    if ($mybb->input['type'] == "posts" || (!$mybb->input['type'] && !$threadqueue && ($counters['modqueue']['posts'] > 0 || $mybb->usergroup['issupermod'] == 1))) {
+        if ($counters['modqueue']['posts'] == 0 && $mybb->usergroup['issupermod'] != 1) {
             error($lang->you_cannot_moderate_posts);
         }
 
@@ -1757,12 +1766,12 @@ if ($mybb->input['action'] == "modqueue") {
             $plugins->run_hooks('modcp_modqueue_posts_end');
 
             $navlink['thread'] = false;
-            if ($nummodqueuethreads > 0 || $mybb->usergroup['issupermod'] == 1) {
+            if ($counters['modqueue']['threads'] > 0 || $mybb->usergroup['issupermod'] == 1) {
                 $navlink['thread'] = true;
             }
 
             $navlink['attachment'] = false;
-            if ($mybb->settings['enableattachments'] == 1 && ($nummodqueueattach > 0 || $mybb->usergroup['issupermod'] == 1)) {
+            if ($mybb->settings['enableattachments'] == 1 && ($counters['modqueue']['attachments'] > 0 || $mybb->usergroup['issupermod'] == 1)) {
                 $navlink['attachment'] = true;
             }
 
@@ -1775,12 +1784,12 @@ if ($mybb->input['action'] == "modqueue") {
         }
     }
 
-    if ($mybb->input['type'] == "attachments" || (!$mybb->input['type'] && !$postqueue && !$threadqueue && $mybb->settings['enableattachments'] == 1 && ($nummodqueueattach > 0 || $mybb->usergroup['issupermod'] == 1))) {
+    if ($mybb->input['type'] == "attachments" || (!$mybb->input['type'] && !$postqueue && !$threadqueue && $mybb->settings['enableattachments'] == 1 && ($counters['modqueue']['attachments'] > 0 || $mybb->usergroup['issupermod'] == 1))) {
         if ($mybb->settings['enableattachments'] == 0) {
             error($lang->attachments_disabled);
         }
 
-        if ($nummodqueueattach == 0 && $mybb->usergroup['issupermod'] != 1) {
+        if ($counters['modqueue']['attachments'] == 0 && $mybb->usergroup['issupermod'] != 1) {
             error($lang->you_cannot_moderate_attachments);
         }
 
@@ -1858,12 +1867,12 @@ if ($mybb->input['action'] == "modqueue") {
             $plugins->run_hooks('modcp_modqueue_attachments_end');
 
             $navlink['thread'] = false;
-            if ($nummodqueuethreads > 0 || $mybb->usergroup['issupermod'] == 1) {
+            if ($counters['modqueue']['threads'] > 0 || $mybb->usergroup['issupermod'] == 1) {
                 $navlink['thread'] = true;
             }
 
             $navlink['post'] = false;
-            if ($nummodqueueposts > 0 || $mybb->usergroup['issupermod'] == 1) {
+            if ($counters['modqueue']['posts'] > 0 || $mybb->usergroup['issupermod'] == 1) {
                 $navlink['post'] = true;
             }
 
@@ -3355,15 +3364,9 @@ if ($mybb->input['action'] == "do_modnotes") {
 }
 
 if (!$mybb->input['action']) {
-    $awaitingattachments = $awaitingposts = $awaitingthreads = $awaitingmoderation = '';
 
     if ($mybb->usergroup['canmanagemodqueue'] == 1) {
-        if ($mybb->settings['enableattachments'] == 1 && ($nummodqueueattach > 0 || $mybb->usergroup['issupermod'] == 1)) {
-            if ($nummodqueueposts > 0 || $mybb->usergroup['issupermod'] == 1) {
-                $bgcolor = "trow1";
-            } else {
-                $bgcolor = "trow2";
-            }
+        if ($mybb->settings['enableattachments'] == 1 && ($counters['modqueue']['attachments'] > 0 || $mybb->usergroup['issupermod'] == 1)) {
 
             $query = $db->query("
                 SELECT COUNT(aid) AS unapprovedattachments
@@ -3389,18 +3392,11 @@ if (!$mybb->input['action']) {
                 $attachment['username'] = htmlspecialchars_uni($attachment['username']);
                 $attachment['profilelink'] = build_profile_link($attachment['username'], $attachment['uid']);
                 $attachment['link'] = get_post_link($attachment['pid'], $attachment['tid']);
-                $attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
                 $unapproved_attachments = my_number_format($unapproved_attachments);
-
-                eval("\$latest_attachment = \"".$templates->get("modcp_lastattachment")."\";");
-            } else {
-                eval("\$latest_attachment = \"".$templates->get("modcp_awaitingmoderation_none")."\";");
             }
-
-            eval("\$awaitingattachments = \"".$templates->get("modcp_awaitingattachments")."\";");
         }
 
-        if ($nummodqueueposts > 0 || $mybb->usergroup['issupermod'] == 1) {
+        if ($counters['modqueue']['posts'] > 0 || $mybb->usergroup['issupermod'] == 1) {
             $query = $db->query("
                 SELECT COUNT(pid) AS unapprovedposts
                 FROM  ".TABLE_PREFIX."posts p
@@ -3430,16 +3426,10 @@ if (!$mybb->input['action']) {
                 $post['subject'] = htmlspecialchars_uni($post['subject']);
                 $post['fullsubject'] = htmlspecialchars_uni($post['fullsubject']);
                 $unapproved_posts = my_number_format($unapproved_posts);
-
-                eval("\$latest_post = \"".$templates->get("modcp_lastpost")."\";");
-            } else {
-                eval("\$latest_post = \"".$templates->get("modcp_awaitingmoderation_none")."\";");
             }
-
-            eval("\$awaitingposts = \"".$templates->get("modcp_awaitingposts")."\";");
         }
 
-        if ($nummodqueuethreads > 0 || $mybb->usergroup['issupermod'] == 1) {
+        if ($counters['modqueue']['threads'] > 0 || $mybb->usergroup['issupermod'] == 1) {
             $query = $db->simple_select("threads", "COUNT(tid) AS unapprovedthreads", "visible='0' {$flist_queue_threads}");
             $unapproved_threads = $db->fetch_field($query, "unapprovedthreads");
 
@@ -3457,22 +3447,11 @@ if (!$mybb->input['action']) {
                 $thread['subject'] = htmlspecialchars_uni($thread['subject']);
                 $thread['fullsubject'] = htmlspecialchars_uni($thread['fullsubject']);
                 $unapproved_threads = my_number_format($unapproved_threads);
-
-                eval("\$latest_thread = \"".$templates->get("modcp_lastthread")."\";");
-            } else {
-                eval("\$latest_thread = \"".$templates->get("modcp_awaitingmoderation_none")."\";");
             }
-
-            eval("\$awaitingthreads = \"".$templates->get("modcp_awaitingthreads")."\";");
-        }
-
-        if (!empty($awaitingattachments) || !empty($awaitingposts) || !empty($awaitingthreads)) {
-            eval("\$awaitingmoderation = \"".$templates->get("modcp_awaitingmoderation")."\";");
         }
     }
 
-    $latestfivemodactions = '';
-    if (($nummodlogs > 0 || $mybb->usergroup['issupermod'] == 1) && $mybb->usergroup['canviewmodlogs'] == 1) {
+    if (($counters['modlogs'] > 0 || $mybb->usergroup['issupermod'] == 1) && $mybb->usergroup['canviewmodlogs'] == 1) {
         $where = '';
         if ($tflist_modlog) {
             $where = "WHERE (t.fid <> 0 {$tflist_modlog}) OR (l.fid <> 0)";
@@ -3490,55 +3469,41 @@ if (!$mybb->input['action']) {
             LIMIT 5
         ");
 
-        $modlogresults = '';
+        $modlogs = [];
         while ($logitem = $db->fetch_array($query)) {
-            $information = '';
-            $logitem['action'] = htmlspecialchars_uni($logitem['action']);
-            $log_date = my_date('relative', $logitem['dateline']);
-            $trow = alt_trow();
-            $logitem['username'] = htmlspecialchars_uni($logitem['username']);
-            $username = format_name($logitem['username'], $logitem['usergroup'], $logitem['displaygroup']);
-            $logitem['profilelink'] = build_profile_link($username, $logitem['uid']);
+            $logitem['date'] = my_date('relative', $logitem['dateline']);
+            if ($logitem['username']) {
+                $username = format_name($logitem['username'], $logitem['usergroup'], $logitem['displaygroup']);
+                $logitem['profilelink'] = build_profile_link($username, $logitem['uid']);
+            } else {
+                $username = $logitem['profilelink'] = $logitem['username'] = $lang->na_deleted;
+            }
             $logitem['ipaddress'] = my_inet_ntop($db->unescape_binary($logitem['ipaddress']));
-
             if ($logitem['tsubject']) {
-                $logitem['tsubject'] = htmlspecialchars_uni($parser->parse_badwords($logitem['tsubject']));
-                $logitem['thread'] = get_thread_link($logitem['tid']);
-                eval("\$information .= \"".$templates->get("modcp_modlogs_result_thread")."\";");
+                $logitem['tsubject'] = $parser->parse_badwords($logitem['tsubject']);
+                $logitem['threadlink'] = get_thread_link($logitem['tid']);
             }
             if ($logitem['fname']) {
-                $logitem['forum'] = get_forum_link($logitem['fid']);
-                eval("\$information .= \"".$templates->get("modcp_modlogs_result_forum")."\";");
+                $logitem['forumlink'] = get_forum_link($logitem['fid']);
             }
             if ($logitem['psubject']) {
-                $logitem['psubject'] = htmlspecialchars_uni($parser->parse_badwords($logitem['psubject']));
-                $logitem['post'] = get_post_link($logitem['pid']);
-                eval("\$information .= \"".$templates->get("modcp_modlogs_result_post")."\";");
+                $logitem['psubject'] = $parser->parse_badwords($logitem['psubject']);
+                $logitem['postlink'] = get_post_link($logitem['pid']);
             }
-
             // Edited a user or managed announcement?
             if (!$logitem['tsubject'] || !$logitem['fname'] || !$logitem['psubject']) {
-                $data = my_unserialize($logitem['data']);
-                if ($data['uid']) {
-                    $information = $lang->sprintf($lang->edited_user_info, htmlspecialchars_uni($data['username']), get_profile_link($data['uid']));
+                $logitem['logdata'] = my_unserialize($logitem['data']);
+                if (!empty($logitem['logdata']['uid'])) {
+                    $logitem['logdata']['profilelink'] = get_profile_link($logitem['logdata']['uid']);
                 }
-                if ($data['aid']) {
-                    $data['subject'] = htmlspecialchars_uni($parser->parse_badwords($data['subject']));
-                    $data['announcement'] = get_announcement_link($data['aid']);
-                    eval("\$information .= \"".$templates->get("modcp_modlogs_result_announcement")."\";");
+                if (!empty($logitem['logdata']['aid'])) {
+                    $logitem['logdata']['subject'] = $parser->parse_badwords($logitem['logdata']['subject']);
+                    $logitem['logdata']['announcement'] = get_announcement_link($logitem['logdata']['aid']);
                 }
             }
-
             $plugins->run_hooks('modcp_modlogs_result');
-
-            eval("\$modlogresults .= \"".$templates->get("modcp_modlogs_result")."\";");
+            $modlogs[] = $logitem;
         }
-
-        if (!$modlogresults) {
-            eval("\$modlogresults = \"".$templates->get("modcp_modlogs_nologs")."\";");
-        }
-
-        eval("\$latestfivemodactions = \"".$templates->get("modcp_latestfivemodactions")."\";");
     }
 
     $query = $db->query("
@@ -3560,60 +3525,44 @@ if (!$mybb->input['action']) {
     }
 
     // Get the banned users
-    $bannedusers = '';
-    foreach ($banned_cache as $banned) {
-        $banned['username'] = htmlspecialchars_uni($banned['username']);
-        $profile_link = build_profile_link($banned['username'], $banned['uid']);
-
+    $bannedusers = [];
+    while ($banned = $db->fetch_array($query)) {
+        $banned['profile_link'] = build_profile_link($banned['username'], $banned['uid']);
         // Only show the edit & lift links if current user created ban, or is super mod/admin
-        $edit_link = '';
+        $banned['show_edit_link'] = false;
         if ($mybb->user['uid'] == $banned['admin'] || !$banned['adminuser'] || $mybb->usergroup['issupermod'] == 1 || $mybb->usergroup['cancp'] == 1) {
-            eval("\$edit_link = \"".$templates->get("modcp_banning_edit")."\";");
+            $banned['show_edit_link'] = true;
         }
-
-        $admin_profile = build_profile_link(htmlspecialchars_uni($banned['adminuser']), $banned['admin']);
-
-        $trow = alt_trow();
-
+        $banned['admin_profile'] = build_profile_link($banned['adminuser'], $banned['admin']);
         if ($banned['reason']) {
-            $banned['reason'] = htmlspecialchars_uni($parser->parse_badwords($banned['reason']));
+            $banned['reason'] = $parser->parse_badwords($banned['reason']);
         } else {
             $banned['reason'] = $lang->na;
         }
-
         if ($banned['lifted'] == 'perm' || $banned['lifted'] == '' || $banned['bantime'] == 'perm' || $banned['bantime'] == '---') {
-            $banlength = $lang->permanent;
-            $timeremaining = $lang->na;
+            $banned['banlength'] = $lang->permanent;
+            $banned['ban_remaining'] = $lang->na;
+            $banned['banned_class'] = "normal_banned";
         } else {
-            $banlength = $bantimes[$banned['bantime']];
-            $remaining = $banned['remaining'];
-
-            $timeremaining = nice_time($remaining, array('short' => 1, 'seconds' => false))."";
-
-            $banned_class = '';
-            $ban_remaining = "{$timeremaining} {$lang->ban_remaining}";
-
-            if ($remaining <= 0) {
-                $banned_class = "imminent_banned";
-                $ban_remaining = $lang->ban_ending_imminently;
-            } elseif ($remaining < 3600) {
-                $banned_class = "high_banned";
-            } elseif ($remaining < 86400) {
-                $banned_class = "moderate_banned";
-            } elseif ($remaining < 604800) {
-                $banned_class = "low_banned";
-            } else {
-                $banned_class = "normal_banned";
+            $banned['banlength'] = $bantimes[$banned['bantime']];
+            $banned['remaining'] = $banned['lifted']-TIME_NOW;
+            $banned['timeremaining'] = nice_time($banned['remaining'], array('short' => 1, 'seconds' => false))."";
+            $banned['ban_remaining'] = "{$banned['timeremaining']} {$lang->ban_remaining}";
+            if ($banned['remaining'] <= 0) {
+                $banned['banned_class'] = "imminent_banned";
+                $banned['ban_remaining'] = $lang->ban_ending_imminently;
             }
-
-            eval('$timeremaining = "'.$templates->get('modcp_banning_remaining').'";');
+            if ($banned['remaining'] < 3600) {
+                $banned['banned_class'] = "high_banned";
+            } elseif ($banned['remaining'] < 86400) {
+                $banned['banned_class'] = "moderate_banned";
+            } elseif ($banned['remaining'] < 604800) {
+                $banned['banned_class'] = "low_banned";
+            } else {
+                $banned['banned_class'] = "normal_banned";
+            }
         }
-
-        eval("\$bannedusers .= \"".$templates->get("modcp_banning_ban")."\";");
-    }
-
-    if (!$bannedusers) {
-        eval("\$bannedusers = \"".$templates->get("modcp_nobanned")."\";");
+        $bannedusers[] = $banned;
     }
 
     $modnotes = $cache->read("modnotes");
@@ -3621,6 +3570,13 @@ if (!$mybb->input['action']) {
 
     $plugins->run_hooks('modcp_end');
 
-    eval("\$modcp = \"".$templates->get("modcp")."\";");
-    output_page($modcp);
+    output_page(\MyBB\template('modcp/home.twig', [
+        'counters' => $counters,
+        'modlogs' => $modlogs,
+        'attachment' => $attachment,
+        'post' => $post,
+        'thread' => $thread,
+        'bannedusers' => $bannedusers,
+        'modnotes' => $modnotes
+    ]));
 }

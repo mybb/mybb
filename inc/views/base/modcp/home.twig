@@ -1,0 +1,171 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ mybb.settings.bbname }} - {{ lang.modcp }}</title>
+{% endblock head %}
+
+{% block body %}
+    <table width="100%" border="0" align="center">
+        <tr>
+            {# To do: modcp_nav #}
+            <td valign="top">
+                {# Latest resources in mod queue #}
+                {% if mybb.usergroup.canmanagemodqueue and (attachment or post or thread) %}
+                    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+                        <tr>
+                            <td class="thead" align="center" colspan="3"><strong>{{ lang.awaiting_moderation }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td class="tcat" width="23%"><span class="smalltext"><strong>{{ lang.type }}</strong></span></td>
+                            <td class="tcat" align="center" width="33%"><span class="smalltext"><strong>{{ lang.number_awaiting }}</strong></span></td>
+                            <td class="tcat" align="center" width="44%"><span class="smalltext"><strong>{{ lang.latest }}</strong></span></td>
+                        </tr>
+                        {# Attachment #}
+                        {% if mybb.settings.enableattachments and (counters.modqueue.attachments > 0 or mybb.usergroup.issupermod) %}
+                            <tr>
+                                <td><span class="smalltext"><strong>{{ lang.attachments }}</strong></span></td>
+                                <td align="center"><span class="smalltext">{{ unapproved_attachments }}</span></td>
+                                <td align="center">
+                                    <span class="smalltext">
+                                        {% if attachment.link %}
+                                            <span class="smalltext">
+                                                <a href="{{ attachment.link }}#pid{{ attachment.pid }}"><strong>{{ attachment.filename }}</strong></a><br />
+                                                {{ attachment.date }}<br />
+                                                {{ lang.by }} {{ attachment.profilelink|raw }}
+                                            </span>
+                                        {% else %}
+                                            <span style="text-align: center;">{{ lang.lastpost_never }}</span>
+                                        {% endif %}
+                                </td>
+                            </tr>
+                        {% endif %}
+                        {# Post #}
+                        {% if counters.modqueue.posts > 0 or mybb.usergroup.issupermod %}
+                            <tr>
+                                <td><span class="smalltext"><strong>{{ lang.posts }}</strong></span></td>
+                                <td align="center"><span class="smalltext">{{ unapproved_posts }}</span></td>
+                                <td align="center">
+                                    <span class="smalltext">
+                                        {% if post.link %}
+                                            <span class="smalltext">
+                                                <a href="{{ post.link }}#pid{{ post.pid }}" title="{{ post.fullsubject }}"><strong>{{ post.subject }}</strong></a><br />
+                                                {{ post.date }}<br />
+                                                {{ lang.by }} {{ post.profilelink|raw }}
+                                            </span>
+                                        {% else %}
+                                            <span style="text-align: center;">{{ lang.lastpost_never }}</span>
+                                        {% endif %}
+                                    </span>
+                                </td>
+                            </tr>
+                        {% endif %}
+                        {# Thread #}
+                        {% if counters.modqueue.threads > 0 or mybb.usergroup.issupermod %}
+                            <tr>
+                                <td><span class="smalltext"><strong>{{ lang.threads }}</strong></span></td>
+                                <td align="center"><span class="smalltext">{{ unapproved_threads }}</span></td>
+                                <td align="center">
+                                    <span class="smalltext">
+                                        {% if thread.link %}
+                                            <span class="smalltext">
+                                                <a href="{{ thread.link }}" title="{{ thread.fullsubject }}"><strong>{{ thread.subject }}</strong></a><br />
+                                                {{ thread.date }}<br />
+                                                {{ lang.by }} {{ thread.profilelink|raw }}
+                                            </span>
+                                        {% else %}
+                                            <span style="text-align: center;">{{ lang.lastpost_never }}</span>
+                                        {% endif %}
+                                    </span>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    </table>
+                    <br />
+                {% endif %}
+                {# Latest 5 mod actions #}
+                {% if (counters.modlogs > 0 or mybb.usergroup.issupermod) and mybb.usergroup.canviewmodlogs %}
+                    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+                        <tr>
+                            <td class="thead" align="center" colspan="5"><strong>{{ lang.modlogs }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td class="tcat"><span class="smalltext"><strong>{{ lang.username }}</strong></span></td>
+                            <td class="tcat" align="center"><span class="smalltext"><strong>{{ lang.date }}</strong></span></td>
+                            <td class="tcat" align="center"><span class="smalltext"><strong>{{ lang.action }}</strong></span></td>
+                            <td class="tcat" align="center"><span class="smalltext"><strong>{{ lang.information }}</strong></span></td>
+                            <td class="tcat" align="center"><span class="smalltext"><strong>{{ lang.ip }}</strong></span></td>
+                        </tr>
+                        {% for logitem in modlogs %}
+                            {% include 'modcp/modlogs/item.twig' %}
+                        {% else %}
+                            <tr>
+                                <td align="center" colspan="5">{{ lang.error_no_results }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                	<br />
+                {% endif %}
+                <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+                    <tr>
+                        <td class="thead" align="center" colspan="4"><strong>{{ lang.bans_ending_soon }}</strong></td>
+                    </tr>
+                    <tr>
+                        <td class="tcat" width="25%"><span class="smalltext"><strong>{{ lang.username }}</strong></span></td>
+                        <td class="tcat" align="center" width="30%"><span class="smalltext"><strong>{{ lang.reason }}</strong></span></td>
+                        <td class="tcat" align="center" width="25%"><span class="smalltext"><strong>{{ lang.ban_length }}</strong></span></td>
+                        <td class="tcat" align="center" width="20%"><span class="smalltext"><strong>{{ lang.ban_bannedby }}</strong></span></td>
+                    </tr>
+                    {% for banned in bannedusers %}
+                        <tr>
+                            <td>
+                                {{ banned.profile_link|raw }}
+                                 {% if banned.show_edit_link %}
+                                    <br /><span class="smalltext">
+                                        <a href="modcp.php?action=banuser&amp;uid={{ banned.uid }}">{{ lang.edit_ban }}</a>
+                                        | <a href="modcp.php?action=liftban&amp;uid={{ banned.uid }}&amp;my_post_key={{ mybb.post_code }}">{{ lang.lift_ban }}</a>
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td>{{ banned.reason }}</td>
+                            <td align="center">
+                                {{ banned.banlength }}<br />
+                                <span class="smalltext">
+                                    <span class="{{ banned.banned_class }}">
+                                        ({{ banned.ban_remaining }})
+                                    </span>
+                                </span>
+                            </td>
+                            <td align="center">{{ banned.admin_profile|raw }}</td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td align="center" colspan="4">{{ lang.no_banned }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+                <br />
+                <form action="modcp.php" method="post">
+                    <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+                    <input type="hidden" name="action" value="do_modnotes" />
+                    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+                        <tr>
+                            <td class="thead" align="center" colspan="1"><strong>{{ lang.moderator_notes }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td class="tcat"><span class="smalltext"><strong>{{ lang.notes_public_all }}</strong></span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <textarea name="modnotes" style="width: 99%; height: 200px;" rows="5" cols="45">{{ modnotes }}</textarea>
+                            </td>
+                        </tr>
+                    </table>
+                    <br />
+                    <div align="center">
+                        <input type="submit" class="button" name="notessubmit" value="{{ lang.save_notes }}" />
+                    </div>
+                </form>
+            </td>
+        </tr>
+    </table>
+{% endblock body %}
