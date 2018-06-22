@@ -1,0 +1,64 @@
+{% set class %}{{ thread.bgcolor }} {{ thread.classType }}{% endset %}
+<tr class="inline_row">
+    <td align="center" class="{{ class }}" width="2%"><span class="thread_status {{ thread.folder.value }}" title="{{ thread.folder.label }}">&nbsp;</span></td>
+    <td align="center" class="{{ class }}" width="2%">
+        {% if thread.icon and iconCache[thread.icon] %}
+            <img src="{{ iconCache[thread.icon].path }}" alt="{{ iconCache[thread.icon].name }}" title="{{ iconCache[thread.icon].name }}" />
+        {% endif %}
+    </td>
+    <td class="{{ class }}">
+        {# Attachment paperclip #}
+        {% if mybb.settings.enableattachments and thread.attachmentcount %}
+            <div class="float_right"><img src="{{ theme.imgdir }}/paperclip.png" alt="" title="{{ (thread.attachmentcount > 1) ? trans(lang.attachment_count_multiple, thread.attachmentcount) : lang.attachment_count }}" /></div>
+        {% endif %}
+        {# Title and author #}
+        <div>
+            <span>
+                {% if thread.poll %}
+                    {{ lang.poll_prefix }}
+                {% elseif thread.moved[0] == 'moved' %}
+                    {{ lang.moved_prefix }}
+                {% endif %}
+                {% if thread.unreadpost %}
+                    <a href="{{ thread.newpostlink }}"><img src="{{ theme.imgdir }}/jump.png" alt="{{ lang.goto_first_unread }}" title="{{ lang.goto_first_unread }}" /></a> 
+                {% endif %}
+                {% if thread.threadprefix %}{{ thread.threadprefix }} {% endif %}
+                <span class="{{ thread.inlineEditClass }} {{ thread.newclass }}" id="tid_{{ thread.tid }}">
+                    <a href="{{ thread.threadlink }}">{{ thread.subject }}</a>
+                </span>
+                {% if thread.posts > mybb.settings.postsperpage %}
+                    <span class="smalltext">({{ lang.pages }}
+                        {% for page in 1..(mybb.settings.maxmultipagelinks-1) %}
+                            <a href="{{ page_link }}">{{ page }}</a>
+                        {% endfor %}
+                        {% if thread.pages > mybb.settings.maxmultipagelinks %}... <a href="{{ page_link }}">{{ thread.pages }}</a>{% endif %}) {# page_link must be replaced with get_thread_link once its implemented in Twig #}
+                    </span>
+                {% endif %}
+            </span>
+            <div class="author smalltext">{{ thread.profilelink|raw }}</div>
+        </div>
+    </td>
+    <td align="center" class="{{ class }}"><a href="{{ mybb.settings.bburl }}/misc.php?action=whoposted&tid={{ thread.tid }}" onclick="MyBB.whoPosted({{ thread.tid }}); return false;">{{ thread.replies }}</a>
+        {% if thread.unapprovedposts and modpermissions.canviewunapprove %}
+            <span title="{{ (thread.unapprovedposts == 1) ? trans(lang.thread_unapproved_post_count, 1) : trans(lang.thread_unapproved_posts_count, thread.unapprovedposts) }}">
+                ({{ thread.unapprovedposts }})
+            </span>
+        {% endif %}
+    </td>
+    <td align="center" class="{{ class }}">{{ thread.views }}</td>
+
+    {% include 'forumdisplay/thread_rating.twig' %}
+
+    <td class="{{ class }}" style="white-space: nowrap; text-align: right;">
+        <span class="lastpost smalltext">{{ thread.lastpostdate|raw }}<br />
+            <a href="{{ thread.lastpostlink }}">{{ lang.lastpost }}</a>:
+            {% if thread.lastposteruid > 0 %}
+                {{ thread.lastposter|raw }}
+            {% else %}
+                {{ lang.guest }}
+            {% endif %}
+        </span>
+    </td>
+
+    {% include 'forumdisplay/thread_modbit.twig' %}
+</tr>
