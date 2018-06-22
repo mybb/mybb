@@ -1,0 +1,31 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ mybb.settings.bbname }} - {{ lang.smilies_listing }}</title>
+{% endblock head %}
+
+{% block body %}
+    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+        <tr>
+            <td class="thead" colspan="3"><strong>{{ lang.smilies_listing }}</strong></td>
+        </tr>
+        <tr>
+            <td class="tcat" colspan="2" align="center"><span class="smalltext"><strong>{{ lang.name }}</strong></span></td>
+            <td class="tcat"><span class="smalltext"><strong>{{ lang.abbreviation }}</strong></span></td>
+        </tr>
+        {% for smilie in smilies %}
+            {% set row = alt_trow() %}
+            <tr>
+                <td class="{{ row }}" style="width: 1px; text-align: center;">
+                    <img src="{{ smilie.image }}" alt="{{ smilie.name }}" title="{{ smilie.name }}" class="smilie smilie_{{ smilie.sid }}" />
+                </td>
+                <td class="{{ row }}">{{ smilie.name }}</td>
+                <td class="{{ row }}">{{ smilie.find|nl2br }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td class="trow1">{{ lang.no_smilies }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock body %}
