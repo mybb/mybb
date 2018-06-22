@@ -2140,7 +2140,6 @@ if ($mybb->input['action'] == "editprofile") {
     }
 
     // Sanitize all input
-
     foreach (array('usertitle', 'website', 'signature', 'birthday_day', 'birthday_month', 'birthday_year') as $field) {
         $mybb->input[$field] = htmlspecialchars_uni($mybb->get_input($field));
     }
@@ -2209,7 +2208,7 @@ if ($mybb->input['action'] == "editprofile") {
             }
 
             if ($profilefield['required'] == 1) {
-				$requiredfields[] = $profilefield;
+                $requiredfields[] = $profilefield;
             } elseif ($profilefield['contact'] == 1) {
                 $contactfields[] = $profilefield;
             } else {
