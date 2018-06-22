@@ -159,19 +159,11 @@ if($mybb->settings['bbcodeinserter'] != 0 && $forum['allowmycode'] != 0 && (!$my
 // Display a login box or change user box?
 if($mybb->user['uid'] != 0)
 {
-	eval("\$loginbox = \"".$templates->get("changeuserbox")."\";");
+	$loginbox = \MyBB\template('misc/changeuserbox.twig');
 }
 else
 {
-	if(empty($mybb->input['previewpost']) && $mybb->input['action'] != "do_newreply")
-	{
-		$username = '';
-	}
-	else
-	{
-		$username = htmlspecialchars_uni($mybb->get_input('username'));
-	}
-	eval("\$loginbox = \"".$templates->get("loginbox")."\";");
+    $loginbox = \MyBB\template('misc/loginbox.twig');
 }
 
 // Check to see if the thread is closed, and if the user is a mod.
@@ -453,7 +445,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 	if($mybb->settings['captchaimage'] && !$mybb->user['uid'])
 	{
 		require_once MYBB_ROOT.'inc/class_captcha.php';
-		$post_captcha = new captcha(false, "post_captcha");
+		$post_captcha = new captcha(false, "post");
 
 		if($post_captcha->validate_captcha() == false)
 		{
@@ -1118,7 +1110,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	{
 		$correct = false;
 		require_once MYBB_ROOT.'inc/class_captcha.php';
-		$post_captcha = new captcha(false, "post_captcha");
+		$post_captcha = new captcha(false, "post");
 
 		if((!empty($mybb->input['previewpost']) || $hide_captcha == true) && $post_captcha->type == 1)
 		{
