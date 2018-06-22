@@ -1,0 +1,12 @@
+{{ comma }}
+{% set forum_viewers %}
+    {% if forum.viewers == 1 %}
+        {{ lang.viewing_one }}
+    {% else %}
+        {{ trans('viewing_multiple', forum.viewers) }}
+    {% endif %}
+{% endset %}
+{% if mybb.settings.subforumsstatusicons %}
+    <div title="{{ lightbulb.altonoff }}" class="subforumicon subforum_mini{{ lightbulb.folder }} ajax_mark_read" id="mark_read_{{ forum.fid }}"></div>
+{% endif %}
+<a href="{{ forum.url }}" title="{{ forum_viewers }}">{{ forum.name }}</a>
