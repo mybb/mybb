@@ -100,7 +100,13 @@
 				<span class="edited_post">({{ post.editnote|raw }} {{ post.editedprofilelink|raw }}.{% if post.editreason %} <em>{{ lang.postbit_editreason }}: {{ post.editreason }}</em>{% endif %})</span>
 			{% endif %}
 			</span></span>
-		{{ post.subject_extra|raw }}
+			{% if post.is_pm %}
+				<br />
+				{{ lang.to }} {{ post.to_recipients|raw }}
+				{% if post.showbcc %}
+					<br />{{ lang.bcc }} {{ post.bcc_recipients|raw }}
+				{% endif %}
+			{% endif %}
 		</div>
 		<div class="post_body scaleimages" id="pid_{{ post.pid }}">
 			{{ post.message|raw }}
@@ -209,11 +215,12 @@
 				<a href="moderation.php?action=purgespammer&amp;uid={{ post.uid }}" title="{{ lang.postbit_purgespammer }}" class="postbit_purgespammer"><span>{{ lang.postbit_button_purgespammer }}</span></a>
 			{% endif %}
 			{% if post.is_pm %}
-				<a href="private.php?action=send&amp;pmid={{ post.pid }}&amp;do=reply" title="{{ lang.reply_title }}" class="postbit_reply_pm"><span>{{ lang.postbit_button_reply_pm }}</span></a>
+				<a href="private.php?action=send&amp;pmid={{ post.pmid }}&amp;do=reply" title="{{ lang.reply_title }}" class="postbit_reply_pm"><span>{{ lang.postbit_button_reply_pm }}</span></a>
 				{% if post.replyall %}
-					<a href="private.php?action=send&amp;pmid={{ post.pid }}&amp;do=replyall" title="{{ lang.reply_to_all }}" class="postbit_reply_all"><span>{{ lang.postbit_button_reply_all }}</span></a>
+					<a href="private.php?action=send&amp;pmid={{ post.pmid }}&amp;do=replyall" title="{{ lang.reply_to_all }}" class="postbit_reply_all"><span>{{ lang.postbit_button_reply_all }}</span></a>
 				{% endif %}
-				<a href="private.php?action=send&amp;pmid={{ post.pid }}&amp;do=forward" title="{{ lang.forward_title }}" class="postbit_forward_pm"><span>{{ lang.postbit_button_forward }}</span></a><a href="private.php?action=delete&amp;pmid={{ post.pid }}&amp;my_post_key={{ mybb.post_code }}" title="{{ lang.delete_title }}" class="postbit_delete_pm"><span>{{ lang.postbit_button_delete_pm }}</span></a>
+				<a href="private.php?action=send&amp;pmid={{ post.pmid }}&amp;do=forward" title="{{ lang.forward_title }}" class="postbit_forward_pm"><span>{{ lang.postbit_button_forward }}</span></a>
+				<a href="private.php?action=delete&amp;pmid={{ post.pmid }}&amp;my_post_key={{ mybb.post_code }}" title="{{ lang.delete_title }}" class="postbit_delete_pm"><span>{{ lang.postbit_button_delete_pm }}</span></a>
 			{% endif %}
 		</div>
 	</div>

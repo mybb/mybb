@@ -1,0 +1,4 @@
+{{ lang.export_date_sent }},{{ lang.export_folder }},{{ lang.export_subject }},{{ lang.export_to }},{{ lang.export_from }},{{ lang.export_message }}
+{% for message in pmsdownload %}
+    {{ message.senddate }},"{{ message.foldername }}","{{ message.subject }}","{{ message.tousername }}","{{ message.fromusername }}","{{ message.message }}"
+{% endfor %}

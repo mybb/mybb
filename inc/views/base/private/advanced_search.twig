@@ -1,0 +1,120 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ mybb.settings.bbname }} - {{ lang.advanced_private_message_search }}</title>
+{% endblock head %}
+
+{% block body %}
+    <form action="private.php" method="post" name="pmForm">
+        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+        <input type="hidden" name="action" value="do_search" />
+        <table width="100%" border="0" align="center">
+            <tr>
+                {# To do: usercpnav #}
+                <td valign="top">
+                    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+                        <tr>
+                            <td class="thead" colspan="2"><strong>{{ lang.advanced_private_message_search }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td class="tcat" colspan="2"><strong>{{ lang.search_criteria }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td class="trow1" width="20%"><strong><label for="keywords">{{ lang.keywords }}</label></strong></td>
+                            <td class="trow1">
+                                <input type="text" class="textbox" name="keywords" id="keywords" size="35" maxlength="250" />
+                                <br />
+                                <span class="smalltext">
+                                    <label><input type="checkbox" name="subject" checked="checked" value="1" /> {{ lang.search_in_subject }}</label><br />
+                                    <label><input type="checkbox" name="message" checked="checked" value="1" /> {{ lang.search_in_message }}</label>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="trow2"><strong><label for="sender">{{ lang.sender }}</label></strong></td>
+                            <td class="trow2"><input type="text" class="textbox" name="sender" id="sender" size="35" maxlength="250" /></td>
+                        </tr>
+                        <tr>
+                            <td class="trow1"><strong>{{ lang.message_status }}</strong></td>
+                            <td class="trow1 smalltext">
+                                <label><input type="checkbox" name="status[new]" checked="checked" value="1" /> {{ lang.message_status_new }}</label><br />
+                                <label><input type="checkbox" name="status[replied]" checked="checked" value="1" /> {{ lang.message_status_replied_to }}</label><br />
+                                <label><input type="checkbox" name="status[forwarded]" checked="checked" value="1" /> {{ lang.message_status_forwarded }}</label><br />
+                                <label><input type="checkbox" name="status[read]" checked="checked" value="1" /> {{ lang.message_status_read }}</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="trow2"><strong><label for="folder">{{ lang.folder }}</label></strong>
+                        </td>
+                            <td class="trow2">
+                                <select multiple="multiple" name="folder[]" id="folder">
+                                    <option selected="selected">{{ lang.all_folders }}</option>
+                                    {% for folder in folders %}
+                                        <option value="{{ folder.id }}"{% if folder.sel %} selected="selected"{% endif %}>{{ folder.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tcat" colspan="2"><strong>{{ lang.search_options }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td class="trow1" width="20%"><strong><label for="sort">{{ lang.sort_by }}</label></strong></td>
+
+                            <td class="trow1">
+                                <select name="sort" id="sort">
+                                    <option value="subject">{{ lang.sort_by_subject }}</option>
+                                    <option value="sender">{{ lang.sort_by_sender }}</option>
+                                    <option value="dateline" selected="selected">{{ lang.sort_by_date }}</option>
+                                </select><br />
+                                <span class="smalltext">
+                                    <input type="radio" class="radio" name="sortordr" id="order_asc" value="asc" /> <label for="order_asc">{{ lang.ascending_order }}</label><br />
+                                    <input type="radio" class="radio" name="sortordr" id="order_desc" checked="checked" value="desc" /> <label for="order_desc">{{ lang.descending_order }}</label>
+                                </span>
+                            </td>
+                        </tr>
+                    </table>
+                    <br />
+                    <div align="center"><input type="submit" value="{{ lang.search_private_messages }}" class="button" /></div>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <link rel="stylesheet" href="{{ asset_url('jscripts/select2/select2.css') }}">
+    <script type="text/javascript" src="{{ asset_url('jscripts/select2/select2.min.js') }}"></script>
+    <script type="text/javascript">
+    <!--
+    if({{ mybb.settings.use_xmlhttprequest }})
+    {
+        MyBB.select2();
+        $("#sender").select2({
+            placeholder: "{{ lang.search_user }}",
+            minimumInputLength: 2,
+            multiple: false,
+            ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+                url: "xmlhttp.php?action=get_users",
+                dataType: 'json',
+                data: function (term, page) {
+                    return {
+                        query: term, // search term
+                    };
+                },
+                results: function (data, page) { // parse the results into the format expected by Select2.
+                    // since we are using custom formatting functions we do not need to alter remote JSON data
+                    return {results: data};
+                }
+            },
+            initSelection: function(element, callback) {
+                var value = $(element).val();
+                if (value !== "") {
+                    callback({
+                        id: value,
+                        text: value
+                    });
+                }
+            }
+        });
+    }
+    // -->
+    </script>
+{% endblock body %}
