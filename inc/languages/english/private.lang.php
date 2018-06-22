@@ -197,5 +197,5 @@ $l['send_reply'] = "Send Reply";
 $l['quickreply_signature'] = "Signature";
 $l['quickreply_disable_smilies'] = "Disable Smilies";
 $l['quickreply_save_copy'] = "Save a Copy";
-$l['quickreply_read_receipt'] = "<strong>Request Read Receipt</strong>";
+$l['quickreply_read_receipt'] = "Request Read Receipt";
 
