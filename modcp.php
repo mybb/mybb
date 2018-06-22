@@ -2269,7 +2269,7 @@ if ($mybb->input['action'] == "editprofile") {
         'user' => $user,
         'customFields' => $customfields,
         'requiredFields' => $requiredfields,
-		'contactFields' => $contactfields,
+        'contactFields' => $contactfields,
         'periods' => $periods,
         'modOptions' => $modoptions,
         'codebuttons' => $codebuttons
