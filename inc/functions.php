@@ -39,7 +39,7 @@ function output_page($contents)
             $serverload = get_server_load();
 
             if (my_strpos(getenv("REQUEST_URI"), "?")) {
-                $debuglink = getenv("REQUEST_URI") . "&amp;debug=1";
+                $debuglink = getenv("REQUEST_URI") . "&debug=1";
             } else {
                 $debuglink = getenv("REQUEST_URI") . "?debug=1";
             }
