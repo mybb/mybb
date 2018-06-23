@@ -15,11 +15,11 @@ class CoreExtension extends \Twig_Extension
     private $lang;
 
     /**
-     * @var \pluginSystem $plugins
+     * @var ?\pluginSystem $plugins
      */
     private $plugins;
 
-    public function __construct(\MyBB $mybb, \MyLanguage $lang, \pluginSystem $plugins)
+    public function __construct(\MyBB $mybb, \MyLanguage $lang, ?\pluginSystem $plugins)
     {
         $this->mybb = $mybb;
         $this->lang = $lang;
@@ -245,6 +245,16 @@ class CoreExtension extends \Twig_Extension
                     $formattedDateString = $dateTime->format($format);
                 }
                 break;
+        }
+
+        if (!is_null($this->plugins)) {
+            $args = [
+                'dateTime' => &$dateTime,
+                'formattedDateString' => &$formattedDateString,
+                'formattedUsingSettings' => &$formattedUsingSettings,
+            ];
+
+            $this->plugins->run_hooks('my_date', $args);
         }
 
         return $environment->render('partials/time.twig', [
