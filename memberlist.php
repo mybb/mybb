@@ -312,6 +312,12 @@ else
 	if($page && $page > 0)
 	{
 		$start = ($page - 1) * $per_page;
+		$pages = ceil($num_users/$per_page);
+		if($page > $pages)
+		{
+			$start = 0;
+			$page = 1;
+		}
 	}
 	else
 	{
