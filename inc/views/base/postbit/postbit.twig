@@ -95,7 +95,7 @@
 			{% if post.showicon %}
 				<img src="{{ icon.path }}" alt="{{ icon.name }}" title="{{ icon.name }}" style="vertical-align: middle;" />&nbsp;
 			{% endif %}
-			<span class="post_date">{{ post.postdate|raw }} <span class="post_edit" id="edited_by_{{ post.pid }}">
+			<span class="post_date">{{ post.dateline|my_date }} <span class="post_edit" id="edited_by_{{ post.pid }}">
 			{% if post.editedmsg %}
 				<span class="edited_post">({{ post.editnote|raw }} {{ post.editedprofilelink|raw }}.{% if post.editreason %} <em>{{ lang.postbit_editreason }}: {{ post.editreason }}</em>{% endif %})</span>
 			{% endif %}
