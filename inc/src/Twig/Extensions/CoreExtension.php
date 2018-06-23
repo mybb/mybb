@@ -36,16 +36,37 @@ class CoreExtension extends \Twig_Extension
         ];
     }
 
-    public function myDate(\Twig_Environment $environment, $timestamp, string $format = 'relative',
-        string $offset = '', bool $useRelativeFormatting = true): string
-    {
+    /**
+     * Format a timestamp to a readable value.
+     *
+     * @param \Twig_Environment $environment twig environment to use to render the timestamp template.
+     * @param \DateTime|int|string|null $timestamp The timestamp to format. If empty, the current date will be used.
+     * @param string $format The format to use when formatting the timestamp. Defaults to 'relative'.
+     * @param string $offset The offset to use when formatting the timestamp.
+     * Defaults to using the user's settings or the board's settings if the user doesn't have a preference set.
+     * @param bool $useRelativeFormatting Whether to use relative formatting for the day: 'today' and 'yesterday'.
+     * Defaults to true.
+     *
+     * @return string The formatted timestamp, using the `partials/time.twig` template to wrap the timestamp.
+     *
+     * @throws \Twig_Error_Loader Thrown if the `partials/time.twig` template could not be loaded.
+     * @throws \Twig_Error_Runtime Thrown if an error occurs when rendering the `partials/time.twig` template.
+     * @throws \Twig_Error_Syntax Thrown if the `partials/time.twig` template contains invalid syntax.
+     */
+    public function myDate(
+        \Twig_Environment $environment,
+        $timestamp,
+        string $format = 'relative',
+        string $offset = '',
+        bool $useRelativeFormatting = true
+    ): string {
         if (is_numeric($timestamp)) {
             // timestamp is a numeric timestamp
             $dateTime = (new \DateTime())->setTimestamp($timestamp);
-        } else if (is_string($timestamp)) {
+        } elseif (is_string($timestamp)) {
             // timestamp string
             $dateTime = new \DateTime($timestamp);
-        } else if ($timestamp instanceof \DateTime) {
+        } elseif ($timestamp instanceof \DateTime) {
             // timestamp is already a DateTime
             $dateTime = $timestamp;
         } else {
@@ -54,7 +75,8 @@ class CoreExtension extends \Twig_Extension
         }
 
         if (!$offset && $offset != '0') {
-            if (isset($this->mybb->user['uid']) && $this->mybb->user['uid'] != 0 && isset($this->mybb->user['timezone'])) {
+            if (isset($this->mybb->user['uid']) && $this->mybb->user['uid'] != 0 &&
+                isset($this->mybb->user['timezone'])) {
                 $offset = $this->mybb->user['timezone'];
                 $dstCorrection = (bool)$this->mybb->user['dst'];
             } elseif (defined("IN_ADMINCP")) {
@@ -82,7 +104,8 @@ class CoreExtension extends \Twig_Extension
         }
 
         // Offset is a float, so now convert it into hour representation. Example: +9.5 becomes +09:30.
-        if (is_float($offset)) {
+        if (is_numeric($offset)) {
+            $offset = (float)$offset;
             $hours = floor($offset);
             $minutes = ($offset - $hours) * 60;
 
@@ -99,7 +122,8 @@ class CoreExtension extends \Twig_Extension
         /** @var ?\DateTime $dateToday */
         /** @var ?\DateTime $dateYesterday */
         $dateToday = $dateYesterday = null;
-        if ($useRelativeFormatting && ($format == $this->mybb->settings['dateformat'] || $format == 'relative' || $format == 'normal')) {
+        if ($useRelativeFormatting &&
+            ($format == $this->mybb->settings['dateformat'] || $format == 'relative' || $format == 'normal')) {
             $currentDateTime = new \DateTime('now', $timezone);
 
             $dateToday = \DateTime::createFromFormat('!Y-m-d', $currentDateTime->format('Y-m-d'), $timezone);
@@ -155,7 +179,7 @@ class CoreExtension extends \Twig_Extension
                         $relative['plural'],
                         $relative['suffix']
                     );
-                } else if ($useRelativeFormatting && abs($diff) < 43200) {
+                } elseif ($useRelativeFormatting && abs($diff) < 43200) {
                     // less than 12 hours ago
                     if ($diff < 0) {
                         $diff = abs($diff);
@@ -201,7 +225,7 @@ class CoreExtension extends \Twig_Extension
                 if ($useRelativeFormatting) {
                     if ($dateToday == $date) {
                         $formattedDateString = $this->lang->today;
-                    } else if ($dateYesterday == $date) {
+                    } elseif ($dateYesterday == $date) {
                         $formattedDateString = $this->lang->yesterday;
                     }
                 }
