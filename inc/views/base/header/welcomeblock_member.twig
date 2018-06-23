@@ -16,7 +16,7 @@
             {% endif %}
 
             {% if mybb.usergroup.cancp and mybb.config.hide_admin_links != 1 %}
-                <li><a href="{{ mybb.settings.bburl }}/{{ admin_dir }}/index.php" class="admincp">{{ lang.welcome_admin }}</a></li>
+                <li><a href="{{ mybb.settings.bburl }}/{{ mybb.config.admin_dir }}/index.php" class="admincp">{{ lang.welcome_admin }}</a></li>
             {% endif %}
         </ul>
         <ul class="menu user_links">
