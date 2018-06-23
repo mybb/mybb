@@ -34,7 +34,7 @@ function upgrade43_dbchanges()
 	if($mybb->settings['captchaimage'] == 2)
 	{
 		$db->update_query('settings', array('value' => 1), "name='captchaimage'"); // Reset CAPTCHA to MyBB Default
-		$db->update_query('settings', "value=''", 'name IN (\'captchapublickey\', \'captchaprivatekey\''); // Clean out stored credential keys
+		$db->update_query('settings', array('value' => ''), 'name IN (\'captchapublickey\', \'captchaprivatekey\''); // Clean out stored credential keys
 	}
 	
 	if($db->field_exists('aim', 'users'))
@@ -42,55 +42,6 @@ function upgrade43_dbchanges()
 		$db->drop_column('users', 'aim');
 	}
 	$db->delete_query("settings", "name='allowaimfield'");
-	
-	$values = array(
-		'name'			=> 'forumteam',
-		'title'			=> 'Forum Team',
-		'description'	=> 'This section allows you to control various aspects of the forum team listing (showteam.php), such as aspects to consider while listing team members, and which features to enable or disable.',
-		'disporder'		=> 29,
-		'isdefault'		=> 1
-	);
-
-	$gid = $db->insert_query('settinggroups', $values);
-	unset($values);
-
-	$valueset = array(
-		array(
-			'name'			=> 'enableshowteam',
-			'title'			=> 'Enable Forum Team Listing Functionality',
-			'description'	=> 'If you wish to disable the forum team listing on your board, set this option to No.',
-			'optionscode'	=> 'yesno',
-			'value'			=> '1',
-			'disporder'		=> 1,
-			'gid'			=> $gid,
-			'isdefault'		=> 1
-		),
-		array(
-			'name'			=> 'showaddlgroups',
-			'title'			=> 'Show Additional Groups',
-			'description'	=> 'Whether the team list will populate considering additional groups as well.',
-			'optionscode'	=> 'yesno',
-			'value'			=> '1',
-			'disporder'		=> 2,
-			'gid'			=> $gid,
-			'isdefault'		=> 1
-		),
-		array(
-			'name'			=> 'showgroupleaders',
-			'title'			=> 'Show Group Leaders',
-			'description'	=> 'Include group leaders to show up in the team list.',
-			'optionscode'	=> 'yesno',
-			'value'			=> '1',
-			'disporder'		=> 3,
-			'gid'			=> $gid,
-			'isdefault'		=> 1
-		)
-	);
-	
-	foreach($valueset as $values)
-	{
-		$db->insert_query('settings', $values);
-	}
 
 	if($db->field_exists('regex', 'badwords'))
 	{
