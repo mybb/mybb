@@ -88,7 +88,7 @@
                     <tr>
                         <td class="trow1"><strong>{{ lang.total_posts }}</strong></td>
                         <td class="trow1">
-                            {{ memprofile.postnum }} ({{ trans('ppd_percent_total', memprofile.ppd, memprofile.post_percent) }})
+                            {{ memprofile.postnum|my_number_format }} ({{ trans('ppd_percent_total', memprofile.ppd|my_number_format, memprofile.post_percent) }})
                             {% if mybb.usergroup.cansearch %}
                                 <br /><span class="smalltext">(<a href="search.php?action=finduser&amp;uid={{ memprofile.uid }}">{{ lang.find_posts }}</a>)</span>
                             {% endif %}
@@ -97,7 +97,7 @@
                     <tr>
                         <td class="trow2"><strong>{{ lang.total_threads }}</strong></td>
                         <td class="trow2">
-                            {{ memprofile.threadnum }} ({{ trans('tpd_percent_total', memprofile.tpd, memprofile.thread_percent) }})
+                            {{ memprofile.threadnum|my_number_format }} ({{ trans('tpd_percent_total', memprofile.tpd|my_number_format, memprofile.thread_percent) }})
                             {% if mybb.usergroup.cansearch %}
                                 <br /><span class="smalltext">(<a href="search.php?action=finduserthreads&amp;uid={{ memprofile.uid }}">{{ lang.find_threads }}</a>)</span>
                             {% endif %}

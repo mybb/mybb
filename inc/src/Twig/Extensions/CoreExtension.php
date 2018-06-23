@@ -29,10 +29,11 @@ class CoreExtension extends \Twig_Extension
     public function getFilters()
     {
         return [
-            new \Twig_Filter('my_date', [$this, 'myDate'], [
+            new \Twig_Filter('my_date', [$this, 'date'], [
                 'needs_environment' => true,
                 'is_safe' => ['html'],
             ]),
+            new \Twig_Filter('my_number_format', [$this, 'numberFormat']),
         ];
     }
 
@@ -53,7 +54,7 @@ class CoreExtension extends \Twig_Extension
      * @throws \Twig_Error_Runtime Thrown if an error occurs when rendering the `partials/time.twig` template.
      * @throws \Twig_Error_Syntax Thrown if the `partials/time.twig` template contains invalid syntax.
      */
-    public function myDate(
+    public function date(
         \Twig_Environment $environment,
         $timestamp,
         string $format = 'relative',
@@ -251,5 +252,43 @@ class CoreExtension extends \Twig_Extension
             'formatted_date' => $formattedDateString,
             'formatted_using_settings' => $formattedUsingSettings,
         ]);
+    }
+
+    /**
+     * Format a number according to settings.
+     *
+     * @param mixed $number The number to format.
+     *
+     * @return string The formatted numerical value.
+     */
+    public function numberFormat($number): string
+    {
+        if ($number == '-') {
+            return $number;
+        }
+        
+        if (is_int($number)) {
+            return number_format(
+                $number,
+                0,
+                $this->mybb->settings['decpoint'],
+                $this->mybb->settings['thousandssep']
+            );
+        } else {
+            $parts = explode('.', $number, 2);
+
+            if (count($parts) == 2) {
+                $decimals = my_strlen($parts[1]);
+            } else {
+                $decimals = 0;
+            }
+
+            return number_format(
+                (double)$number,
+                $decimals,
+                $this->mybb->settings['decpoint'],
+                $this->mybb->settings['thousandssep']
+            );
+        }
     }
 }
