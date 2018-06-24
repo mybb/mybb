@@ -134,6 +134,12 @@ if(!$mybb->input['action'])
 		echo "</fieldset>\n";
 
 		$total_rows = count($stats);
+		$pages = ceil($total_rows / $per_page);
+		if($mybb->input['page'] > $pages)
+		{
+			$mybb->input['page'] = 1;
+			$start = 0;
+		}
 
 		$table = new Table;
 		$table->construct_header($lang->date);

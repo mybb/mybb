@@ -706,10 +706,19 @@ if(!$mybb->input['action'])
 
 	$page->output_nav_tabs($sub_tabs, 'manage_smilies');
 
+	$query = $db->simple_select("smilies", "COUNT(sid) as smilies");
+	$total_rows = $db->fetch_field($query, "smilies");
+
 	$pagenum = $mybb->get_input('page', MyBB::INPUT_INT);
 	if($pagenum)
 	{
 		$start = ($pagenum-1) * 20;
+		$pages = ceil($total_rows / 20);
+		if($pagenum > $pages)
+		{
+			$start = 0;
+			$pagenum = 1;
+		}
 	}
 	else
 	{
@@ -753,9 +762,6 @@ if(!$mybb->input['action'])
 	}
 
 	$table->output($lang->manage_smilies);
-
-	$query = $db->simple_select("smilies", "COUNT(sid) as smilies");
-	$total_rows = $db->fetch_field($query, "smilies");
 
 	echo "<br />".draw_admin_pagination($pagenum, "20", $total_rows, "index.php?module=config-smilies&amp;page={page}");
 

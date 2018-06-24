@@ -279,12 +279,21 @@ if($mybb->input['action'] == "results")
 		$mybb->settings['threadsperpage'] = 20;
 	}
 
+	$query = $db->simple_select("privatemessages", "COUNT(*) AS total", "pmid IN(".$db->escape_string($search['querycache']).")");
+	$pmscount = $db->fetch_array($query);
+
 	// Work out pagination, which page we're at, as well as the limits.
 	$perpage = $mybb->settings['threadsperpage'];
 	$page = $mybb->get_input('page', MyBB::INPUT_INT);
 	if($page > 0)
 	{
 		$start = ($page-1) * $perpage;
+		$pages = ceil($pmscount['total'] / $perpage);
+		if($page > $pages)
+		{
+			$start = 0;
+			$page = 1;
+		}
 	}
 	else
 	{
@@ -303,9 +312,6 @@ if($mybb->input['action'] == "results")
 	}
 
 	// Do Multi Pages
-	$query = $db->simple_select("privatemessages", "COUNT(*) AS total", "pmid IN(".$db->escape_string($search['querycache']).")");
-	$pmscount = $db->fetch_array($query);
-
 	if($upper > $pmscount)
 	{
 		$upper = $pmscount;
@@ -2148,6 +2154,12 @@ if(!$mybb->input['action'])
 	if($page > 0)
 	{
 		$start = ($page-1) *$perpage;
+		$pages = ceil($pmscount['total'] / $perpage);
+		if($page > $pages)
+		{
+			$start = 0;
+			$page = 1;
+		}
 	}
 	else
 	{
