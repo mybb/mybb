@@ -238,7 +238,7 @@ var inlineModeration = {
 				var id = inlineCheck[1];
 				var changed = (element.prop('checked') != master.prop('checked'));
 
-				if ((master.is(':checked') && !element.is(':checked')) || (!master.is(':checked') && element.is(':checked')))
+				if (changed)
 				{
 					element.click();
 				}
