@@ -2538,7 +2538,7 @@ min=0]]></optionscode>
 		<setting name="showaddlgroups">
 			<title>Show Additional Groups</title>
 			<description><![CDATA[Whether the team list will populate considering additional groups as well.]]></description>
-			<disporder>1</disporder>
+			<disporder>2</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -2546,7 +2546,7 @@ min=0]]></optionscode>
 		<setting name="showgroupleaders">
 			<title>Show Group Leaders</title>
 			<description><![CDATA[Include group leaders to show up in the team list.]]></description>
-			<disporder>1</disporder>
+			<disporder>3</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
