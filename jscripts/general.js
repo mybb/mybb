@@ -566,6 +566,21 @@ var expandables = {
 
 	init: function()
 	{
+		var collapsed = Cookie.get('collapsed');
+		
+		if(collapsed)
+		{
+			saved = collapsed.split("|");
+
+			$.each(saved, function(intIndex, objValue)
+			{
+				if ($(objValue))
+				{
+					$(objValue).removeClass('collapse--not-collapsed').addClass('collapse--collapsed');
+				}
+			});
+		}
+
 		var expanders = $(".collapse");
 		if(expanders.length)
 		{
