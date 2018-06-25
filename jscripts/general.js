@@ -574,9 +574,9 @@ var expandables = {
 
 			$.each(saved, function(intIndex, objValue)
 			{
-				if ($(objValue))
+				if ($('#' + objValue))
 				{
-					$(objValue).removeClass('collapse--not-collapsed').addClass('collapse--collapsed');
+					$('#' + objValue).removeClass('collapse--not-collapsed').addClass('collapse--collapsed');
 				}
 			});
 		}
