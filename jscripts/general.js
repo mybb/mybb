@@ -622,6 +622,21 @@ var expandables = {
 		return true;
 	},
 
+	toggleAllCollapses: function(expanders, setting)
+	{
+		expanders.each(function()
+		{
+			if (setting === 'open' && $(this).hasClass('collapse--collapsed'))
+			{
+				$(this).removeClass('collapse--collapsed').addClass('collapse--not-collapsed');
+			}
+			else if (setting === 'close' && $(this).hasClass('collapse--not-collapsed'))
+			{
+				$(this).removeClass('collapse--not-collapsed').addClass('collapse--collapsed');
+			}
+		});
+	},
+
 	saveCollapsed: function(id, add)
 	{
 		var saved = [];
