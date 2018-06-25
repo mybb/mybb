@@ -238,11 +238,6 @@ var inlineModeration = {
 				var id = inlineCheck[1];
 				var changed = (element.prop('checked') != master.prop('checked'));
 
-				if (changed)
-				{
-					element.click();
-				}
-
 				var post = element.parents('.post');
 				var fieldset = element.parents('fieldset');
 				var thread = element.parents('.inline_row');
@@ -283,6 +278,8 @@ var inlineModeration = {
 
 				if(changed)
 				{
+					element.click();
+					
 					if(master.prop('checked') == true)
 					{
 						if(inlineIds.indexOf('ALL') == -1)
