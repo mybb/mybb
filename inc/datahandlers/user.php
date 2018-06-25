@@ -840,7 +840,7 @@ class UserDataHandler extends DataHandler
 			$reasonlength = my_strlen($user['away']['awayreason']);
 			if($reasonlength > 200)
 			{
-				$this->set_error("awayreason_too_long", array($reasonlength - 200));
+				$this->set_error("away_too_long", array($reasonlength - 200));
 				return false;
 			}
 
