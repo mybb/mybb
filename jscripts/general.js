@@ -566,88 +566,44 @@ var expandables = {
 
 	init: function()
 	{
-		var expanders = $(".expcolimage .expander");
+		var expanders = $(".collapse");
 		if(expanders.length)
 		{
 			expanders.each(function()
 			{
-        		var expander = $(this);
-				if(expander.attr("id") == false)
-				{
-					return;
-				}
+				var expander = $(this);
+				var expanderToggle = expander.find('.collapse__toggle').first();
 
-				expander.click(function()
+				$('body').on('click', expanderToggle, function()
 				{
-					controls = expander.attr("id").replace("_img", "");
-					expandables.expandCollapse(this, controls);
+					controls = expander.attr("id");
+					expandables.expandCollapse(expander, controls);
 				});
-
-				if(MyBB.browser == "ie")
-				{
-					expander.css("cursor", "hand");
-				}
-				else
-				{
-					expander.css("cursor", "pointer");
-				}
 			});
 		}
 	},
 
-	expandCollapse: function(e, controls)
+	expandCollapse: function(expander, controls)
 	{
-		element = $(e);
-
-		if(!element || controls == false)
+		if (expander.hasClass('collapse--collapsed'))
 		{
-			return false;
-		}
-		var expandedItem = $("#"+controls+"_e");
-		var collapsedItem = $("#"+controls+"_c");
+			expander.removeClass('collapse--collapsed').addClass('collapse--not-collapsed');
 
-		if(expandedItem.length && collapsedItem.length)
-		{
-			// Expanding
-			if(expandedItem.is(":hidden"))
+			if (controls)
 			{
-				expandedItem.toggle("fast");
-				collapsedItem.toggle("fast");
 				this.saveCollapsed(controls);
 			}
-			// Collapsing
-			else
+		}
+		else
+		{
+			expander.removeClass('collapse--not-collapsed').addClass('collapse--collapsed');
+
+			if (controls)
 			{
-				expandedItem.toggle("fast");
-				collapsedItem.toggle("fast");
 				this.saveCollapsed(controls, 1);
 			}
 		}
-		else if(expandedItem.length && !collapsedItem.length)
-		{
-			// Expanding
-			if(expandedItem.is(":hidden"))
-			{
-				expandedItem.toggle("fast");
-				element.attr("src", element.attr("src").replace(/collapse_collapsed\.(gif|jpg|jpeg|bmp|png)$/i, "collapse.$1"))
-									.attr("alt", "[-]")
-									.attr("title", "[-]");
-				element.parent().parent('td').removeClass('tcat_collapse_collapsed');
-				element.parent().parent('.thead').removeClass('thead_collapsed');
-				this.saveCollapsed(controls);
-			}
-			// Collapsing
-			else
-			{
-				expandedItem.toggle("fast");
-				element.attr("src", element.attr("src").replace(/collapse\.(gif|jpg|jpeg|bmp|png)$/i, "collapse_collapsed.$1"))
-									.attr("alt", "[+]")
-									.attr("title", "[+]");
-				element.parent().parent('td').addClass('tcat_collapse_collapsed');
-				element.parent().parent('.thead').addClass('thead_collapsed');
-				this.saveCollapsed(controls, 1);
-			}
-		}
+
 		return true;
 	},
 
