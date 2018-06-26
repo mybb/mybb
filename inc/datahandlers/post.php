@@ -284,17 +284,18 @@ class PostDataHandler extends DataHandler
 
 			if($limit > 0 || $dblimit > 0)
 			{
+				$is_moderator = is_moderator($post['fid'], "", $post['uid']);
 				// Consider minimum in user defined and database limit other than 0
 				if($limit > 0 && $dblimit > 0)
 				{
-					$limit = min($limit, $dblimit);
+					$limit = $is_moderator ? $dblimit : min($limit, $dblimit);
 				}
 				else
 				{
 					$limit = max($limit, $dblimit);
 				}
 
-				if(strlen($post['message']) > $limit && (!is_moderator($post['fid'], "", $post['uid']) || $limit == $dblimit))
+				if(strlen($post['message']) > $limit && (!$is_moderator || $limit == $dblimit))
 				{
 					$this->set_error("message_too_long", array($limit, strlen($post['message'])));
 					return false;
