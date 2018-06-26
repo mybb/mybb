@@ -326,8 +326,6 @@ class PostDataHandler extends DataHandler
 				return false;
 			}
 		}
-
-		// And if we've got a minimum message length do we meet that requirement too?
 		return true;
 	}
 
