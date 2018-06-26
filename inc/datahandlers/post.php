@@ -241,7 +241,7 @@ class PostDataHandler extends DataHandler
 	 */
 	function verify_message()
 	{
-		global $mybb;
+		global $db, $mybb;
 
 		$post = &$this->data;
 		$post['message'] = trim_blank_chrs($post['message']);
@@ -252,28 +252,60 @@ class PostDataHandler extends DataHandler
 			$this->set_error("missing_message");
 			return false;
 		}
-
-		// If this board has a maximum message length check if we're over it. Use strlen because SQL limits are in bytes
-		else if(strlen($post['message']) > $mybb->settings['maxmessagelength'] && $mybb->settings['maxmessagelength'] > 0 && !is_moderator($post['fid'], "", $post['uid']))
-		{
-			$this->set_error("message_too_long", array($mybb->settings['maxmessagelength'], strlen($post['message'])));
-			return false;
-		}
-
-		// If the length of message is beyond SQL limitation for 'text' field
-		else if(strlen($post['message']) > 65535)
-		{
-			$this->set_error("message_too_long", array('65535', strlen($post['message'])));
-			return false;
-		}
-
-		// And if we've got a minimum message length do we meet that requirement too?
 		else
 		{
+			$limit = (int)$mybb->settings['maxmessagelength'];
+			$dblimit = 0;
+
+			// If database is mysql or mysqli check field type and set max database limit
+			if(stripos($db->type, 'my') !== false)
+			{
+				$fields = $db->show_fields_from("posts");
+				$dblimit = reset(array_filter(array_map(function($field)
+				{
+					if($field['Field'] == 'message')
+					{
+						switch(strtolower($field['Type']))
+						{
+							case 'longtext':
+								return 4294967295;
+								break;
+							case 'mediumtext':
+								return 16777215;
+								break;
+							case 'text':
+							default:
+								return 65535;
+								break;
+						}
+					}
+				}, $fields)));
+			}
+
+			if($limit > 0 || $dblimit > 0)
+			{
+				// Consider minimum in user defined and database limit other than 0
+				if($limit > 0 && $dblimit > 0)
+				{
+					$limit = min($limit, $dblimit);
+				}
+				else
+				{
+					$limit = max($limit, $dblimit);
+				}
+
+				if(strlen($post['message']) > $limit && (!is_moderator($post['fid'], "", $post['uid']) || $limit == $dblimit))
+				{
+					$this->set_error("message_too_long", array($limit, strlen($post['message'])));
+					return false;
+				}
+			}
+
 			if(!isset($post['fid']))
 			{
 				$post['fid'] = 0;
 			}
+
 			if(!$mybb->settings['mycodemessagelength'])
 			{
 				// Check to see of the text is full of MyCode
@@ -294,6 +326,8 @@ class PostDataHandler extends DataHandler
 				return false;
 			}
 		}
+
+		// And if we've got a minimum message length do we meet that requirement too?
 		return true;
 	}
 
