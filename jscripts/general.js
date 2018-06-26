@@ -572,27 +572,32 @@ var expandables = {
 		{
 			saved = collapsed.split("|");
 
-			$.each(saved, function(intIndex, objValue)
+			for (var i = 0; i < saved.length; i++)
 			{
+				var objValue = saved[i];
+
 				if ($('#' + objValue))
 				{
 					$('#' + objValue).removeClass('collapse--not-collapsed').addClass('collapse--collapsed');
 				}
-			});
+			}
 		}
 
 		var expanders = $(".collapse");
-		if(expanders.length)
+		if (expanders.length)
 		{
 			expanders.each(function()
 			{
 				var expander = $(this);
-				var expanderToggle = expander.find('.collapse__toggle').first();
+				var expandToggle = expander.find('.collapse__toggle').first();
+				var control = expander.attr("id");
 
-				$('body').on('click', expanderToggle, function()
+				document.addEventListener('click', function(e)
 				{
-					controls = expander.attr("id");
-					expandables.expandCollapse(expander, controls);
+					if(e.target && e.target == expandToggle[0])
+					{
+						expandables.expandCollapse(expander, control);
+					}
 				});
 			});
 		}
