@@ -575,26 +575,26 @@ var expandables = {
 			for (var i = 0; i < saved.length; i++)
 			{
 				var objValue = saved[i];
+				var expander = document.getElementById(objValue);
 
-				if ($('#' + objValue))
+				if (expander)
 				{
-					$('#' + objValue).removeClass('collapse--not-collapsed').addClass('collapse--collapsed');
+					tools.removeClass(expander, 'collapse--not-collapsed');
+					tools.addClass(expander, 'collapse--collapsed');
 				}
 			}
 		}
 
-		var expanders = $(".collapse");
+		var expanders = document.querySelectorAll(".collapse");
 		if (expanders.length)
 		{
-			expanders.each(function()
-			{
-				var expander = $(this);
-				var expandToggle = expander.find('.collapse__toggle').first();
-				var control = expander.attr("id");
+			[].forEach.call(expanders, function(expander) {
+				var expandToggle = expander.querySelector('.collapse__toggle');
+				var control = expander.getAttribute('id');
 
 				document.addEventListener('click', function(e)
 				{
-					if(e.target && e.target == expandToggle[0])
+					if(e.target && e.target === expandToggle)
 					{
 						expandables.expandCollapse(expander, control);
 					}
@@ -605,9 +605,10 @@ var expandables = {
 
 	expandCollapse: function(expander, controls)
 	{
-		if (expander.hasClass('collapse--collapsed'))
+		if (tools.hasClass(expander, 'collapse--collapsed'))
 		{
-			expander.removeClass('collapse--collapsed').addClass('collapse--not-collapsed');
+			tools.removeClass(expander, 'collapse--collapsed');
+			tools.addClass(expander, 'collapse--not-collapsed');
 
 			if (controls)
 			{
@@ -616,7 +617,8 @@ var expandables = {
 		}
 		else
 		{
-			expander.removeClass('collapse--not-collapsed').addClass('collapse--collapsed');
+			tools.removeClass(expander, 'collapse--not-collapsed');
+			tools.addClass(expander, 'collapse--collapsed');
 
 			if (controls)
 			{
@@ -629,15 +631,17 @@ var expandables = {
 
 	toggleAllCollapses: function(expanders, setting)
 	{
-		expanders.each(function()
+		[].forEach.call(expanders, function(expander)
 		{
-			if (setting === 'open' && $(this).hasClass('collapse--collapsed'))
+			if (setting === 'open' && tools.hasClass(expander, 'collapse--collapsed'))
 			{
-				$(this).removeClass('collapse--collapsed').addClass('collapse--not-collapsed');
+				tools.removeClass(expander, 'collapse--collapsed');
+				tools.addClass(expander, 'collapse--not-collapsed');
 			}
-			else if (setting === 'close' && $(this).hasClass('collapse--not-collapsed'))
+			else if (setting === 'close' && tools.hasClass(expander, 'collapse--not-collapsed'))
 			{
-				$(this).removeClass('collapse--not-collapsed').addClass('collapse--collapsed');
+				tools.removeClass(expander, 'collapse--not-collapsed');
+				tools.addClass(expander, 'collapse--collapsed');
 			}
 		});
 	},
@@ -652,20 +656,39 @@ var expandables = {
 		{
 			saved = collapsed.split("|");
 
-			$.each(saved, function(intIndex, objValue)
+			for (var i = 0; i < saved.length; i++)
 			{
+				var objValue = saved[i];
+
 				if(objValue != id && objValue != "")
 				{
 					newCollapsed[newCollapsed.length] = objValue;
 				}
-			});
+			}
 		}
 
 		if(add == 1)
 		{
 			newCollapsed[newCollapsed.length] = id;
 		}
+		
 		Cookie.set('collapsed', newCollapsed.join("|"));
+	}
+};
+
+var tools = {
+	hasClass: function(el, className) {
+		return el.classList ? el.classList.contains(className) : new RegExp('\\b'+ className+'\\b').test(el.className);
+	},
+	
+	addClass: function(el, className) {
+		if (el.classList) el.classList.add(className);
+		else if (!hasClass(el, className)) el.className += ' ' + className;
+	},
+	
+	removeClass: function(el, className) {
+		if (el.classList) el.classList.remove(className);
+		else el.className = el.className.replace(new RegExp('\\b'+ className+'\\b', 'g'), '');
 	}
 };
 
