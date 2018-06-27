@@ -1235,13 +1235,8 @@ min=1]]></optionscode>
 		</setting>
 		<setting name="maxmessagelength">
 			<title>Maximum Message Length</title>
-			<description><![CDATA[The maximum number of characters (bytes) to allow in a message. A setting of 0 allows an unlimited length.
-<br />This should correlate with the message column type in the posts database table, and adjust accordingly. Below are the maximum lengths for each column type.
-<ul>
-	<li>TEXT: 65535 (default)</li>
-	<li>MEDIUMTEXT: 16777215</li>
-	<li>LONGTEXT: 4294967295</li>
-</ul>]]></description>
+			<description><![CDATA[The maximum number of characters (bytes) to allow in a message. Set 0 to allow maximum length permitted as per your database.
+<br />Tip: MySQL users (max: 65535) can change message field type manually from TEXT to MEDIUMTEXT (16777215) or LONGTEXT (4294967295) to obtain enhanced limit.]]></description>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[numeric
 min=0]]></optionscode>
