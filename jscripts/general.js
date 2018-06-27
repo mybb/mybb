@@ -693,7 +693,8 @@ var tools = {
 		}
 	},
 	
-	removeClass: function(el, className) {
+	removeClass: function(el, className)
+	{
 		if (el.classList) 
 		{
 			el.classList.remove(className);
