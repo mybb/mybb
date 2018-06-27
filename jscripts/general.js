@@ -11,7 +11,7 @@ var MyBB = {
 
 	pageLoaded: function()
 	{
-		Collapse.init();
+		Collapsible.init();
 
 		/* Create the Check All feature */
 		$('[name="allbox"]').each(function(key, value) {
@@ -562,7 +562,7 @@ var Cookie = {
 	}
 };
 
-var Collapse = {
+var Collapsible = {
 
 	init: function()
 	{
@@ -575,40 +575,40 @@ var Collapse = {
 			for (var i = 0; i < saved.length; i++)
 			{
 				var objValue = saved[i];
-				var expander = document.getElementById(objValue);
+				var savedCollapse = document.getElementById(objValue);
 
-				if (expander)
+				if (savedCollapse)
 				{
-					Tools.removeClass(expander, 'Collapse--not-collapsed');
-					Tools.addClass(expander, 'Collapse--collapsed');
+					Tools.removeClass(savedCollapse, 'collapse--not-collapsed');
+					Tools.addClass(savedCollapse, 'collapse--collapsed');
 				}
 			}
 		}
 
-		var expanders = document.querySelectorAll(".Collapse");
-		if (expanders.length)
+		var collapses = document.querySelectorAll(".collapse");
+		if (collapses.length)
 		{
-			[].forEach.call(expanders, function(expander) {
-				var expandToggle = expander.querySelector('.collapse__toggle');
-				var control = expander.getAttribute('id');
+			[].forEach.call(collapses, function(collapse) {
+				var toggle = collapse.querySelector('.collapse__toggle');
+				var control = collapse.getAttribute('id');
 
 				document.addEventListener('click', function(e)
 				{
-					if(e.target && e.target === expandToggle)
+					if(e.target && e.target === toggle)
 					{
-						Collapse.expandCollapse(expander, control);
+						Collapsible.expandCollapse(collapse, control);
 					}
 				});
 			});
 		}
 	},
 
-	expandCollapse: function(expander, controls)
+	expandCollapse: function(collapse, controls)
 	{
-		if (Tools.hasClass(expander, 'Collapse--collapsed'))
+		if (Tools.hasClass(collapse, 'collapse--collapsed'))
 		{
-			Tools.removeClass(expander, 'Collapse--collapsed');
-			Tools.addClass(expander, 'Collapse--not-collapsed');
+			Tools.removeClass(collapse, 'collapse--collapsed');
+			Tools.addClass(collapse, 'collapse--not-collapsed');
 
 			if (controls)
 			{
@@ -617,8 +617,8 @@ var Collapse = {
 		}
 		else
 		{
-			Tools.removeClass(expander, 'Collapse--not-collapsed');
-			Tools.addClass(expander, 'Collapse--collapsed');
+			Tools.removeClass(collapse, 'collapse--not-collapsed');
+			Tools.addClass(collapse, 'collapse--collapsed');
 
 			if (controls)
 			{
@@ -629,19 +629,19 @@ var Collapse = {
 		return true;
 	},
 
-	toggleAllCollapses: function(expanders, setting)
+	toggleAllCollapses: function(collapses, setting)
 	{
-		[].forEach.call(expanders, function(expander)
+		[].forEach.call(collapses, function(collapse)
 		{
-			if (setting === 'open' && Tools.hasClass(expander, 'Collapse--collapsed'))
+			if (setting === 'open' && Tools.hasClass(collapse, 'collapse--collapsed'))
 			{
-				Tools.removeClass(expander, 'Collapse--collapsed');
-				Tools.addClass(expander, 'Collapse--not-collapsed');
+				Tools.removeClass(collapse, 'collapse--collapsed');
+				Tools.addClass(collapse, 'collapse--not-collapsed');
 			}
-			else if (setting === 'close' && Tools.hasClass(expander, 'Collapse--not-collapsed'))
+			else if (setting === 'close' && Tools.hasClass(collapse, 'collapse--not-collapsed'))
 			{
-				Tools.removeClass(expander, 'Collapse--not-collapsed');
-				Tools.addClass(expander, 'Collapse--collapsed');
+				Tools.removeClass(collapse, 'collapse--not-collapsed');
+				Tools.addClass(collapse, 'collapse--collapsed');
 			}
 		});
 	},
