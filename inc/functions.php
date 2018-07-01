@@ -6441,9 +6441,10 @@ function login_attempt_check($uid = 0, $fatal = true)
 					"loginattempts" => 0,
 					"loginlockoutexpiry" => 0
 				), "uid='{$uid}'");
-
-				my_unsetcookie('lockoutexpiry');
 			}
+
+			// Wipe the cookie, no matter if a guest or a member
+			my_unsetcookie('lockoutexpiry');
 
 			return 0;
 		}
