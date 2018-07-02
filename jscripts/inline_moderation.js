@@ -237,7 +237,6 @@ var inlineModeration = {
 			{
 				var id = inlineCheck[1];
 				var changed = (element.prop('checked') != master.prop('checked'));
-				element.prop('checked', master.prop('checked'));
 
 				var post = element.parents('.post');
 				var fieldset = element.parents('fieldset');
@@ -279,6 +278,8 @@ var inlineModeration = {
 
 				if(changed)
 				{
+					element.click();
+					
 					if(master.prop('checked') == true)
 					{
 						if(inlineIds.indexOf('ALL') == -1)
