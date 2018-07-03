@@ -1,36 +1,79 @@
-<div class="upper">
-    <div class="wrapper">
-        {% include 'header/quicksearch.twig' %}
-        <span class="welcome">{{ lang.welcome_back|raw }} <a href="{{ mybb.settings.bburl }}/member.php?action=logout&amp;logoutkey={{ mybb.user.logoutkey }}" class="logout">{{ lang.welcome_logout }}</a></span>
-    </div>
-</div>
-<div class="lower">
-    <div class="wrapper">
-        <ul class="menu panel_links">
-            {% if mybb.usergroup.canusercp %}
-                <li><a href="{{ mybb.settings.bburl }}/usercp.php" class="usercp">{{ lang.welcome_usercp }}</a></li>
-            {% endif %}
-
-            {% if mybb.usergroup.canmodcp %}
-                <li><a href="{{ mybb.settings.bburl }}/modcp.php" class="modcp">{{ lang.welcome_modcp }}</a></li>
-            {% endif %}
-
-            {% if mybb.usergroup.cancp and mybb.config.hide_admin_links != 1 %}
-                <li><a href="{{ mybb.settings.bburl }}/{{ admin_dir }}/index.php" class="admincp">{{ lang.welcome_admin }}</a></li>
-            {% endif %}
-        </ul>
-        <ul class="menu user_links">
-            <li><a href="javascript:void(0)" onclick="MyBB.popupWindow('{{ mybb.settings.bburl }}/misc.php?action=buddypopup&modal=1', null, true); return false;">{{ lang.welcome_open_buddy_list }}</a></li>
-
-            {% if mybb.usergroup.cansearch %}
-                <li><a href="{{ mybb.settings.bburl }}/search.php?action=getnew">{{ lang.welcome_newposts }}</a></li>
-<li><a href="{{ mybb.settings.bburl }}/search.php?action=getdaily">{{ lang.welcome_todaysposts }}</a></li>
-            {% endif %}
-
-            {% if mybb.settings.enablepms and mybb.usergroup.canusepms %}
-                <li><a href="{{ mybb.settings.bburl }}/private.php">{{ lang.welcome_pms }}</a> {{ trans('welcome_pms_usage', mybb.user.pms_unread, mybb.user.pms_total) }}</li>
-            {% endif %}
-        </ul>
-    </div>
-    <br class="clear" />
-</div>
+<ul class="user-bar__links">
+	<input type="checkbox" class="user-bar__checkbox" id="show-user-dropdown">
+    <li class="user-bar__item user-bar__item--active-user">
+        <label for="show-user-dropdown" class="user-bar__link user-bar__link--dropdown">
+			<i class="user-bar__icon fas fa-user-circle"></i>
+            <span class="user-bar__text user-bar__text--username">{{ mybb.user.username }}</span>
+			<i class="user-bar__caret user-bar__caret--down fas fa-chevron-down"></i>
+			<i class="user-bar__caret user-bar__caret--up fas fa-chevron-up"></i>
+        </label>
+        <div class="user-bar__dropdown">
+            {# TO DO : LINK TO PROFILE #}
+            <a href="#" class="avatar-profile-link" title="{{ lang.welcome_my_profile }}"><img src="{% if mybb.user.avatar != '' %}{{ mybb.user.avatar }}{% else %}{{ asset_url('images/default_avatar.png') }}{% endif %}" alt="{{ lang.welcome_my_avatar }}" class="avatar my-avatar"/></a>
+			<p class="user-bar__username">{{ mybb.user.username }}</p>
+            <ul class="account-links">
+                {% if mybb.usergroup.canusercp %}
+                    <li class="account-links__item">
+                    	<a href="{{ mybb.settings.bburl }}/usercp.php" class="account-links__link">
+                    		<i class="account-links__icon fas fa-tachometer-alt fa-fw"></i>
+                    		<span class="account-links__text">{{ lang.welcome_usercp }}</span>
+                    	</a>
+                    </li>
+                {% endif %}
+                {% if mybb.usergroup.canmodcp %}
+                    <li class="account-links__item">
+                    	<a href="{{ mybb.settings.bburl }}/modcp.php" class="account-links__link">
+                    		<i class="account-links__icon fas fa-pencil-alt fa-fw"></i>
+                    		<span class="account-links__text">{{ lang.welcome_modcp }}</span>
+                    	</a>
+                    </li>
+                {% endif %}
+                {% if mybb.usergroup.cancp and mybb.config.hide_admin_links != 1 %}
+                    <li class="account-links__item">
+                        <a href="{{ mybb.settings.bburl }}/{{ mybb.config.admin_dir }}/index.php" class="account-links__link">
+                            <i class="account-links__icon fas fa-cog fa-fw"></i>
+                            <span class="account-links__text">{{ lang.welcome_admin }}</span>
+                        </a>
+                    </li>
+                {% endif %}
+                <li class="account-links__item">
+                    <a href="javascript:void(0)" onclick="MyBB.popupWindow('{{ mybb.settings.bburl }}/misc.php?action=buddypopup&modal=1', null, true); return false;" class="account-links__link">
+                        <i class="account-links__icon fas fa-heart fa-fw"></i>
+    					<span class="account-links__text">{{ lang.welcome_open_buddy_list }}</span>
+                    </a>
+                </li>
+                 <li class="account-links__item">
+                     <a href="{{ mybb.settings.bburl }}/member.php?action=logout&amp;logoutkey={{ mybb.user.logoutkey }}" class="account-links__link">
+                         <i class="account-links__icon fas fa-sign-out-alt fa-fw"></i>
+						<span class="account-links__text">{{ lang.welcome_logout }}</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </li>
+    {% if mybb.settings.enablepms and mybb.usergroup.canusepms %}
+        <li class="user-bar__item user-bar__item--messages">
+            <a href="{{ mybb.settings.bburl }}/private.php" class="user-bar__link">
+                <i class="user-bar__icon fas fa-envelope"></i>
+                <span class="user-bar__text">{{ lang.welcome_pms }}</span>
+                {% if mybb.user.pms_unread > 0 %}
+                <span class="user-bar__unread-count">{{ mybb.user.pms_unread }}</span>
+                {% endif %}
+            </a>
+        </li>
+    {% endif %}
+    {% if mybb.usergroup.cansearch %}
+        <li class="user-bar__item user-bar__item--new-posts">
+        	<a href="{{ mybb.settings.bburl }}/search.php?action=getnew" class="user-bar__link" title="{$lang->welcome_newposts}">
+        		<i class="user-bar__icon fas fa-comments"></i>
+        		<span class="user-bar__text">{{ lang.welcome_newposts }}</span>
+        	</a>
+        </li>
+        <li class="user-bar__item user-bar__item--todays-posts">
+        	<a href="{{ mybb.settings.bburl }}/search.php?action=getdaily" class="user-bar__link" title="{$lang->welcome_newposts}">
+        		<i class="user-bar__icon fas fa-calendar"></i>
+        		<span class="user-bar__text">{{ lang.welcome_todaysposts }}</span>
+        	</a>
+        </li>
+    {% endif %}
+</ul>
