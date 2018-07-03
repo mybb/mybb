@@ -1,4 +1,9 @@
-<div class="{% if options.class %}{{ options.class }}{% else %}red_alert{% endif %}"{% if options.id %} id="{{ options.id }}"{% endif %}>
-    {% block message %}{% endblock message %}
-    <div>{{ options.message|raw }}</div>
+<div class="alert {% if options.class %}{{ options.class }}{% else %}alert--danger{% endif %}"{% if options.id %} id="{{ options.id }}"{% endif %}>
+    {% block message_before %}
+        <i class="alert__icon fas fa-exclamation-triangle"></i>
+    {% endblock message_before %}
+    <div class="alert__message">
+        {{ options.message|raw }}
+    </div>
+    {% block message_after %}{% endblock message_after %}
 </div>

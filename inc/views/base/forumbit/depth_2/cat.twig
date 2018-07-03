@@ -1,53 +1,59 @@
-{% set bgcolor = alt_trow() %}
-<tr>
-    <td class="{{ bgcolor }}" align="center" width="1">
-        <span class="forum_status forum_{{ lightbulb.folder }} ajax_mark_read" title="{{ lightbulb.altonoff }}" id="mark_read_{{ forum.fid }}"></span>
-    </td>
-    <td class="{{ bgcolor }}">
-        <strong><a href="{{ forum.url }}">{{ forum.name }}</a></strong>
-        {# Forum viewers #}
-        {% if mybb.settings.showforumviewing != 0 and forum.viewers > 0 %}
-            <span class="smalltext">
-                {% if forum.viewers == 1 %}
-                    {{ lang.viewing_one }}
-                {% else %}
-                    {{ trans('viewing_multiple', forum.viewers) }}
-                {% endif %}
-            </span>
+<div class="row row--forum forum forum--{{ lightbulb.folder }}">
+	<div class="forum__info">
+        <span class="forum__status forum__status--{{ lightbulb.folder }} forum_{{ lightbulb.folder }} ajax_mark_read" title="{{ lightbulb.altonoff }}" id="mark_read_{{ forum.fid }}">
+        {% if lightbulb.folder == 'offlock' %}
+            <i class="fas fa-link"></i>
+        {% elseif lightbulb.folder == 'offlink' %}
+            <i class="fas fa-lock"></i>
+        {% else %}
+            <i class="fas fa-circle"></i>
         {% endif %}
-        <div class="smalltext">
-            {{ forum.description }}
-            {% block moderators %}{% endblock moderators %}
-            {{ subforums|raw }}
-        </div>
-    </td>
-    <td class="{{ bgcolor }}" align="center" style="white-space: nowrap">
-        {{ forum.fthreads }}
-        {% if forum.showunapproved and forum.unapprovedthreads > 0 %}
-            {% spaceless %}
-                <span title="
-                    {% if forum.unapprovedthreads == 1 %}
-                        {{ trans('forum_unapproved_thread_count', 1) }}
+        </span>
+		<h3 class="forum__title">
+            <a href="{{ forum.url }}">{{ forum.name }}</a>
+            <span class="forum__stats">
+				<span class="forum__count forum__count--threads">
+                    {{ forum.fthreads }}
+                    {% if forum.fthreads == 1 %}
+                        {{ lang.forum_count_thread }}
                     {% else %}
-                        {{ trans('forum_unapproved_threads_count', forum.unapprovedthreads) }} {# TODO: my_number_format #}
-                    {% endif %}">({{ forum.unapprovedthreads }})</span>
-            {% endspaceless %}
-        {% endif %}
-    </td>
-    <td class="{{ bgcolor }}" align="center" style="white-space: nowrap">
-        {{ forum.fposts }}
-        {% if forum.showunapproved and forum.unapprovedposts > 0 %}
-            {% spaceless %}
-                <span title="
-                    {% if forum.unapprovedposts == 1 %}
-                        {{ trans('forum_unapproved_post_count', 1) }}
+                        {{ lang.forum_count_threads }}
+                    {% endif %}
+                    {% if forum.showunapproved and forum.unapprovedthreads > 0 %}
+                        {% spaceless %}
+                            <span title="
+                                {% if forum.unapprovedthreads == 1 %}
+                                    {{ trans('forum_unapproved_thread_count', 1) }}
+                                {% else %}
+                                    {{ trans('forum_unapproved_threads_count', forum.unapprovedthreads) }} {# TODO: my_number_format #}
+                                {% endif %}">({{ forum.unapprovedthreads }})</span>
+                        {% endspaceless %}
+                    {% endif %}
+				</span>
+				<span class="forum__separator">&middot;</span>
+				<span class="forum__count--posts">
+                    {{ forum.fposts }}
+                    {% if forum.fposts == 1 %}
+                        {{ lang.forum_count_post }}
                     {% else %}
-                        {{ trans('forum_unapproved_posts_count', forum.unapprovedposts) }} {# TODO: my_number_format #}
-                    {% endif %}">({{ forum.unapprovedposts }})</span>
-            {% endspaceless %}
-        {% endif %}
-    </td>
-    <td class="{{ bgcolor }}" align="right" style="white-space: nowrap">
-        {{ lastpost|raw }}
-    </td>
-</tr>
+                        {{ lang.forum_count_posts }}
+                    {% endif %}
+                    {% if forum.showunapproved and forum.unapprovedposts > 0 %}
+                        {% spaceless %}
+                            <span title="
+                                {% if forum.unapprovedposts == 1 %}
+                                    {{ trans('forum_unapproved_post_count', 1) }}
+                                {% else %}
+                                    {{ trans('forum_unapproved_posts_count', forum.unapprovedposts) }} {# TODO: my_number_format #}
+                                {% endif %}">({{ forum.unapprovedposts }})</span>
+                        {% endspaceless %}
+                    {% endif %}
+				</span>
+			</span>
+        </h3>
+        <p class="forum__description">{{ forum.description }}</p>
+        {% block moderators %}{% endblock moderators %}
+        {{ subforums|raw }}
+    </div>
+    {{ lastpost|raw }}
+</div>

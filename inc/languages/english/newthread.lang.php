@@ -7,8 +7,9 @@
 
 $l['nav_newthread'] = "New Thread";
 $l['newthread_in'] = "New Thread in {1}";
-$l['post_new_thread'] = "Post a new Thread";
+$l['post_new_thread'] = "Post a New Thread";
 $l['thread_subject'] = "Thread Subject";
+$l['thread_subject_placeholder'] = "Thread subject...";
 $l['your_message'] = "Your Message:";
 $l['post_options'] = "Post Options:";
 $l['options_sig'] = "<b>Signature:</b> include your signature. (registered users only)";
@@ -51,4 +52,3 @@ $l['error_suspendedposting'] = "Your posting privileges are currently suspended 
 Suspension Date: {2}";
 $l['error_suspendedposting_temporal'] = "until {1}";
 $l['error_suspendedposting_permanent'] = "permanently";
-
