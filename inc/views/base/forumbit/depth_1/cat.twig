@@ -2,40 +2,19 @@
     {% set expcolhead = ' thead_collapsed' %}
     {% set expdisplay = 'display: none;' %}
 {% endif %}
-<table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-    <thead>
-        <tr>
-            <td class="thead{{ expcolhead }}" colspan="5">
-                <div class="expcolimage">
-                    {% if collapsed['cat_' ~ forum.fid ~ '_c'] == 'display: show;' %}
-                        <img src="{{ theme.imgdir }}/collapse_collapsed.png" id="cat_{{ forum.fid }}_img" class="expander" alt="[+]" title="[+]" />
-                    {% else %}
-                        <img src="{{ theme.imgdir }}/collapse.png" id="cat_{{ forum.fid }}_img" class="expander" alt="[-]" title="[-]" />
-                    {% endif %}
-                </div>
-                <div>
-                    <strong><a href="{{ forum.url }}">{{ forum.name }}</a></strong><br />
-                    <div class="smalltext">{{ forum.description }}</div>
-                </div>
-            </td>
-        </tr>
-    </thead>
-    <tbody style="{{ expdisplay }}" id="cat_{{ forum.fid }}_e">
-        <tr>
-            <td class="tcat" colspan="2">
-                <span class="smalltext"><strong>{{ lang.forumbit_forum }}</strong></span>
-            </td>
-            <td class="tcat" width="85" align="center" style="white-space: nowrap">
-                <span class="smalltext"><strong>{{ lang.forumbit_threads }}</strong></span>
-            </td>
-            <td class="tcat" width="85" align="center" style="white-space: nowrap">
-                <span class="smalltext"><strong>{{ lang.forumbit_posts }}</strong></span>
-            </td>
-            <td class="tcat" width="200" align="center">
-                <span class="smalltext"><strong>{{ lang.forumbit_lastpost }}</strong></span>
-            </td>
-        </tr>
+<section class="block">
+	<h2 class="title title--major">
+		<a href="{{ forum.url }}">{{ forum.name }}</a>
+        {{ forum.description }} {# TO DO : CATEGORY DESCRIPTION STYLE #}
+        {# TO DO : ADD BACK COLLAPSE/EXPAND
+        {% if collapsed['cat_' ~ forum.fid ~ '_c'] == 'display: show;' %}
+            <img src="{{ theme.imgdir }}/collapse_collapsed.png" id="cat_{{ forum.fid }}_img" class="expander" alt="[+]" title="[+]" />
+        {% else %}
+            <img src="{{ theme.imgdir }}/collapse.png" id="cat_{{ forum.fid }}_img" class="expander" alt="[-]" title="[-]" />
+        {% endif %}
+        #}
+    </h2>
+    <div class="forum-list forum-list--full-width">
         {{ sub_forums|raw }}
-    </tbody>
-</table>
-<br />
+    </div>
+</section>

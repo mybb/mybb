@@ -1,9 +1,5 @@
-<span class="smalltext">
-    <a href="{{ forum.last_post.link|raw }}" title="{{ forum.last_post.full_subject }}">
-        <strong>{{ forum.last_post.subject }}</strong>
-    </a>
-    <br />
-    {{ forum.last_post.date|raw }}
-    <br />
-    {{ lang.by }} {{ forum.last_post.profile_link|raw }}
-</span>
+<div class="forum__latest">
+	{# TO DO : LAST POST AVATAR <a href="{$forum['flp_lastpost']['profile']}" title="Last Post by {$forum['flp_lastpost']['username']}" class="avatar-profile-link"><img src="{$forum['flp_lastpost']['avatar']}" {$forum['flp_lastpost']['dimensions']} class="avatar" alt="" /></a> #}
+	<h4 class="forum__subject"><a href="{{ forum.last_post.link|raw }}" title="{{ forum.last_post.full_subject }}">{{ forum.last_post.subject }}</a></h4>
+	<p class="forum__date-author">{{ forum.last_post.date|raw }} {{ lang.by }} {{ forum.last_post.profile_link|raw }}</p>
+</div>

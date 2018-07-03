@@ -1,9 +1,9 @@
 {% extends 'messages/base.twig' %}
 
-{% block message %}
-    <div class="float_right">
-        <a href="{{ mybb.settings.bburl }}/private.php?action=dismiss_notice&amp;my_post_key={{ mybb.post_code }}" title="{{ lang.dismiss_notice }}" onclick="return MyBB.dismissPMNotice('{{ mybb.settings.bburl }}/')">
-            <img src="{{ theme.imgdir }}/dismiss_notice.png" alt="{{ lang.dismiss_notice }}" title="{{ lang.dismiss_notice }}" />
-        </a>
-    </div>
-{% endblock message %}
+{% block message_before %}
+    <i class="alert__icon fas fa-envelope"></i>
+{% endblock message_before %}
+
+{% block message_after %}
+    <span class="alert__dismiss"><a href="{{ mybb.settings.bburl }}/private.php?action=dismiss_notice&amp;my_post_key={{ mybb.post_code }}" title="{{ lang.dismiss_notice }}" onclick="return MyBB.dismissPMNotice('{{ mybb.settings.bburl }}/')" class="alert__dismiss__link"><i class="fas fa-times-circle" title="{$lang->dismiss_notice}"></i></a></span>
+{% endblock message_after %}
