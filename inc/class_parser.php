@@ -1803,4 +1803,39 @@ class postParser
 
 		return $message;
 	}
+
+	/**
+	 * Removes any MyCode from a string
+	 *
+	 * @param string $message The message to be parsed
+	 * @return string The parsed message.
+	 */
+	function remove_mycode($message)
+	{
+		$find = array(
+			"#\[quote\](.*?)\[\/quote\](\r\n?|\n?)#si",
+			"#\[quote=([\"']|&quot;|)(.*?)(?:\\1)(.*?)(?:[\"']|&quot;)?\](.*?)\[/quote\](\r\n?|\n?)#si",
+			"#\[php\](.*?)\[/php\](\r\n?|\n?)#is",
+			"#\[code\](.*?)\[/code\](\r\n?|\n?)#is",
+			"#\[(b|u|i|s|url|email|color|img)\](.*?)\[/\\1\]#is",
+			"#\[img=([1-9][0-9]*)x([1-9][0-9]*)\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is",
+			"#\[url=((?!javascript)[a-z]+?://)([^\r\n\"<]+?)\](.+?)\[/url\]#si",
+			"#\[url=((?!javascript:)[^\r\n\"<&\(\)]+?)\](.+?)\[/url\]#si",
+		);
+
+		$replace = array(
+			"$1",
+			"$4",
+			"$1",
+			"$1",
+			"$2",
+			"$4",
+			"$3 ($1$2)",
+			"$2 ($1)",
+		);
+
+		$message = preg_replace($find, $replace, $message);
+
+		return $message;
+	}
 }
