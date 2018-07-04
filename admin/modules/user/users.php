@@ -254,7 +254,7 @@ if($mybb->input['action'] == "activate_user")
 	my_mail($user['email'], $lang->sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']), $message);
 
 	// Log admin action
-	log_admin_action($user['uid'], htmlspecialchars_uni($user['username']));
+	log_admin_action($user['uid'], $user['username']);
 
 	if($mybb->input['from'] == "home")
 	{
@@ -359,7 +359,7 @@ if($mybb->input['action'] == "add")
 			$plugins->run_hooks("admin_user_users_add_commit");
 
 			// Log admin action
-			log_admin_action($user_info['uid'], htmlspecialchars_uni($user_info['username']));
+			log_admin_action($user_info['uid'], $user_info['username']);
 
 			flash_message($lang->success_user_created, 'success');
 			admin_redirect("index.php?module=user-users&action=edit&uid={$user_info['uid']}");
@@ -843,7 +843,7 @@ if($mybb->input['action'] == "edit")
 				}
 
 				// Log admin action
-				log_admin_action($user['uid'], htmlspecialchars_uni($mybb->input['username']));
+				log_admin_action($user['uid'], $mybb->input['username']);
 
 				flash_message($lang->success_user_updated, 'success');
 				admin_redirect("index.php?module=user-users");
@@ -1762,7 +1762,7 @@ if($mybb->input['action'] == "delete")
 
 		$plugins->run_hooks("admin_user_users_delete_commit_end");
 
-		log_admin_action($user['uid'], htmlspecialchars_uni($user['username']));
+		log_admin_action($user['uid'], $user['username']);
 
 		flash_message($lang->success_user_deleted, 'success');
 		admin_redirect("index.php?module=user-users");
@@ -1842,7 +1842,7 @@ if($mybb->input['action'] == "ipaddresses")
 	$user = $db->fetch_array($query);
 
 	// Log admin action
-	log_admin_action($user['uid'], htmlspecialchars_uni($user['username']));
+	log_admin_action($user['uid'], $user['username']);
 
 	$table = new Table;
 
@@ -2139,7 +2139,7 @@ if($mybb->input['action'] == "merge")
 			$cache->update_awaitingactivation();
 
 			// Log admin action
-			log_admin_action($source_user['uid'], htmlspecialchars_uni($source_user['username']), $destination_user['uid'], htmlspecialchars_uni($destination_user['username']));
+			log_admin_action($source_user['uid'], $source_user['username'], $destination_user['uid'], $destination_user['username']);
 
 			// Redirect!
 			$username = htmlspecialchars_uni($source_user['username']);

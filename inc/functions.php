@@ -1037,6 +1037,8 @@ function multipage($count, $perpage, $page, $url, $breadcrumb=false)
 		return '';
 	}
 
+	$page = (int)$page;
+
 	$url = str_replace("&amp;", "&", $url);
 	$url = htmlspecialchars_uni($url);
 

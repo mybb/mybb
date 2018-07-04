@@ -1093,8 +1093,8 @@ class postParser
 		}
 
 		// Fix some entities in URLs
-		$entities = array('$' => '%24', '&#36;' => '%24', '^' => '%5E', '`' => '%60', '[' => '%5B', ']' => '%5D', '{' => '%7B', '}' => '%7D', '"' => '%22', '<' => '%3C', '>' => '%3E', ' ' => '%20');
-		$url = str_replace(array_keys($entities), array_values($entities), $url);
+		$url = $this->encode_url($url);
+
 
 		$name = preg_replace("#&amp;\#([0-9]+);#si", "&#$1;", $name); // Fix & but allow unicode
 
@@ -1182,6 +1182,8 @@ class postParser
 			$width = " width=\"{$dimensions[0]}\"";
 			$height = " height=\"{$dimensions[1]}\"";
 		}
+
+		$url = $this->encode_url($url);
 
 		eval("\$mycode_img = \"".$templates->get("mycode_img", 1, 0)."\";");
 		return $mycode_img;
@@ -1352,8 +1354,14 @@ class postParser
 			return "[video={$video}]{$url}[/video]";
 		}
 
+		// Check URL is a valid URL first, as `parse_url` doesn't check validity.
+		if(false === filter_var($url, FILTER_VALIDATE_URL))
+		{
+            return "[video={$video}]{$url}[/video]";
+        }
+
 		$parsed_url = @parse_url(urldecode($url));
-		if($parsed_url == false)
+		if($parsed_url === false)
 		{
 			return "[video={$video}]{$url}[/video]";
 		}
@@ -1802,5 +1810,20 @@ class postParser
 		$message = $plugins->run_hooks("text_parse_message", $message);
 
 		return $message;
+	}
+
+	/**
+	 * Replaces certain characters with their entities in a URL.
+	 *
+	 * @param string $url The URL to be escaped.
+	 * @return string The escaped URL.
+	 */
+	function encode_url($url)
+	{
+		$entities = array('$' => '%24', '&#36;' => '%24', '^' => '%5E', '`' => '%60', '[' => '%5B', ']' => '%5D', '{' => '%7B', '}' => '%7D', '"' => '%22', '<' => '%3C', '>' => '%3E', ' ' => '%20');
+
+		$url = str_replace(array_keys($entities), array_values($entities), $url);
+
+		return $url;
 	}
 }

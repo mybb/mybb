@@ -1767,6 +1767,8 @@ $do_captcha = $correct = false;
 $inline_errors = "";
 if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 {
+    verify_post_check($mybb->get_input('my_post_key'));
+
 	$errors = array();
 
 	$plugins->run_hooks("member_do_login_start");

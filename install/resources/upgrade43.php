@@ -63,6 +63,28 @@ function upgrade43_dbchanges()
 		$db->add_column("users", "loginlockoutexpiry", "int NOT NULL default '0'");
 	}
 
+    // Unescape last 1000 admin logs
+    $query = $db->simple_select('adminlog', 'uid, ipaddress, dateline, data', "", array(
+        "order_by" => 'dateline',
+        "order_dir" => 'DESC',
+        "limit" => 1000
+    ));
+    while($row = $db->fetch_array($query))
+    {
+        $original = $row['data'];
+        $unescaped = htmlspecialchars_decode($original);
+
+        $uid = (int) $row['uid'];
+        $ip_address = $db->escape_binary($row['ip_address']);
+        $dateline = (int) $row['dateline'];
+
+        if ($unescaped !== $original) {
+            $db->update_query('adminlog', array(
+                'data' => $db->escape_string($unescaped),
+            ), "uid = '".$uid."' AND dateline = '".$dateline."' AND ipaddress = ".$ip_address);
+        }
+    }
+
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("43_done");
 }

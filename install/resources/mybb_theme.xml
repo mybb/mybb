@@ -4274,6 +4274,7 @@ $(".forumjump").change(function() {
 						<input name="action" type="hidden" value="do_login" />
 						<input name="url" type="hidden" value="" />
 						<input name="quick_login" type="hidden" value="1" />
+						<input name="my_post_key" type="hidden" value="{$mybb->post_code}" />
 						<table width="100%" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" border="0" class="tborder">
 							<tr>
 								<td class="thead" colspan="2"><strong>{$lang->login}</strong></td>
@@ -4755,7 +4756,7 @@ if(use_xmlhttprequest == "1")
 </tr>]]></template>
 		<template name="member_loggedin_notice" version="1800"><![CDATA[<fieldset class="align_right smalltext">{$lang->already_logged_in}</fieldset>
 <br />]]></template>
-		<template name="member_login" version="1611"><![CDATA[<html>
+		<template name="member_login" version="1816"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->login}</title>
 {$headerinclude}
@@ -4787,6 +4788,7 @@ if(use_xmlhttprequest == "1")
 <div align="center"><input type="submit" class="button" name="submit" value="{$lang->login}" /></div>
 <input type="hidden" name="action" value="do_login" />
 <input type="hidden" name="url" value="{$redirect_url}" />
+<input name="my_post_key" type="hidden" value="{$mybb->post_code}" />
 </form>
 {$footer}
 </body>
