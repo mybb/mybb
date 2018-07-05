@@ -31,7 +31,7 @@ function upgrade43_dbchanges()
 	if($mybb->settings['captchaimage'] == 2)
 	{
 		$db->update_query('settings', array('value' => 1), "name='captchaimage'"); // Reset CAPTCHA to MyBB Default
-		$db->update_query('settings', array('value' => ''), 'name IN (\'captchapublickey\', \'captchaprivatekey\''); // Clean out stored credential keys
+		$db->update_query('settings', array('value' => ''), 'name IN (\'captchapublickey\', \'captchaprivatekey\')'); // Clean out stored credential keys
 	}
 	
 	if($db->field_exists('aim', 'users'))
