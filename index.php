@@ -34,12 +34,22 @@ if($mybb->user['uid'] != 0)
 $showteamlink = '';
 if($mybb->settings['enableshowteam'] != 0)
 {
+	$show_team_link_separator = '';
+	if(!empty($logoutlink))
+	{
+		$show_team_link_separator = $lang->board_stats_link_separator;
+	}
+
 	eval('$showteamlink = "'.$templates->get('index_showteamlink').'";');
 }
 
 $statspage = '';
 if($mybb->settings['statsenabled'] != 0)
 {
+	if(!empty($logoutlink) || !empty($showteamlink))
+	{
+		$stats_page_separator = $lang->board_stats_link_separator;
+	}
 	eval('$statspage = "'.$templates->get('index_statspage').'";');
 }
 
