@@ -31,6 +31,12 @@ if($mybb->user['uid'] != 0)
 	eval('$logoutlink = "'.$templates->get('index_logoutlink').'";');
 }
 
+$showteamlink = '';
+if($mybb->settings['enableshowteam'] != 0)
+{
+	eval('$showteamlink = "'.$templates->get('index_showteamlink').'";');
+}
+
 $statspage = '';
 if($mybb->settings['statsenabled'] != 0)
 {
