@@ -34,11 +34,6 @@ if(!empty($mybb->input['type']))
 	$report_type = htmlspecialchars_uni($mybb->get_input('type'));
 }
 
-if(empty($permissions['canbereported']))
-{
-	$error = $lang->sprintf($lang->error_invalid_report, $report_type);
-}
-
 $report_title = $lang->report_content;
 $report_string = "report_reason_{$report_type}";
 
@@ -67,6 +62,7 @@ if($report_type == 'post')
 		$id = $post['pid'];
 		$id2 = $post['tid'];
 		$report_type_db = "(type = 'post' OR type = '')";
+		$checkid = $post['uid'];
 
 		// Check for a valid forum
 		$forum = get_forum($post['fid']);
@@ -97,10 +93,8 @@ else if($report_type == 'profile')
 	{
 		$verified = true;
 		$report_type_db = "type = 'profile'";
-
 		$id2 = $id3 = 0; // We don't use these on the profile
-		$id = $user['uid']; // id is the profile user
-		$permissions = user_permissions($user['uid']);
+		$id = $checkid = $user['uid']; // id is the profile user
 	}
 }
 else if($report_type == 'reputation')
@@ -116,13 +110,17 @@ else if($report_type == 'reputation')
 	{
 		$verified = true;
 		$reputation = $db->fetch_array($query);
-
 		$id = $reputation['rid']; // id is the reputation id
-		$id2 = $reputation['adduid']; // id2 is the user who gave the comment
+		$id2 = $checkid = $reputation['adduid']; // id2 is the user who gave the comment
 		$id3 = $reputation['uid']; // id3 is the user who received the comment
-
 		$report_type_db = "type = 'reputation'";
 	}
+}
+
+$permissions = user_permissions($checkid);
+if(empty($permissions['canbereported']))
+{
+	$error = $lang->sprintf($lang->error_invalid_report, $report_type);
 }
 
 $plugins->run_hooks("report_type");
