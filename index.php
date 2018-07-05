@@ -130,8 +130,16 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 		}
 	}
 
-	$comma = $lang->comma." ";
-	$onlinemembers = implode($comma, array_merge($onlinebots, $onlinemembers));
+	$onlinemembers = array_merge($onlinebots, $onlinemembers);
+	if(!empty($onlinemembers))
+	{
+		$comma = $lang->comma." ";
+		$onlinemembers = implode($comma, $onlinemembers);
+	}
+	else
+	{
+		$onlinemembers = "";
+	}
 
 	// Build the who's online bit on the index page.
 	$onlinecount = $membercount + $guestcount + $botcount;

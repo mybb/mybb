@@ -295,8 +295,16 @@ if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] !
 		}
 	}
 
-	$comma = $lang->comma." ";
-	$onlinemembers = implode($comma, array_merge($onlinebots, $onlinemembers));
+	$onlinemembers = array_merge($onlinebots, $onlinemembers);
+	if(!empty($onlinemembers))
+	{
+		$comma = $lang->comma." ";
+		$onlinemembers = implode($comma, $onlinemembers);
+	}
+	else
+	{
+		$onlinemembers = "";
+	}
 
 	$onlinecount = $membercount + $guestcount + $botcount;
 
