@@ -4399,8 +4399,8 @@ $(".forumjump").change(function() {
 </tbody>
 </table>
 <br />]]></template>
-		<template name="index_statspage" version="1816"><![CDATA[{$stats_page_separator}<a href="stats.php">{$lang->forumstats}</a>]]></template>
-		<template name="index_showteamlink" version="1816"><![CDATA[{$show_team_link_separator}<a href="showteam.php">{$lang->forumteam}</a>]]></template>
+		<template name="index_statspage" version="1817"><![CDATA[{$stats_page_separator}<a href="stats.php">{$lang->forumstats}</a>]]></template>
+		<template name="index_showteamlink" version="1817"><![CDATA[{$show_team_link_separator}<a href="showteam.php">{$lang->forumteam}</a>]]></template>
 		<template name="index_logoutlink" version="1816"><![CDATA[<a href="member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}">{$lang->index_logout}</a>]]></template>
 		<template name="index_stats" version="1400"><![CDATA[<tr><td class="tcat"><span class="smalltext"><strong>{$lang->boardstats}</strong></span></td></tr>
 <tr>
