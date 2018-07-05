@@ -4336,7 +4336,7 @@ $(".forumjump").change(function() {
 		<template name="header_welcomeblock_member_search" version="1809"><![CDATA[<li><a href="{$mybb->settings['bburl']}/search.php?action=getnew">{$lang->welcome_newposts}</a></li>
 <li><a href="{$mybb->settings['bburl']}/search.php?action=getdaily">{$lang->welcome_todaysposts}</a></li>]]></template>
 		<template name="header_welcomeblock_member_user" version="1809"><![CDATA[<li><a href="{$mybb->settings['bburl']}/usercp.php" class="usercp">{$lang->welcome_usercp}</a></li>]]></template>
-		<template name="index" version="1800"><![CDATA[<html>
+		<template name="index" version="1816"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']}</title>
 {$headerinclude}
@@ -13306,7 +13306,7 @@ if(use_xmlhttprequest == "1")
 {$referral_link}]]></template>
 		<template name="usercp_reputation" version="1600"><![CDATA[<strong>{$lang->reputation}</strong> {$reputation_link} [<a href="reputation.php?uid={$mybb->user['uid']}">{$lang->details}</a>]<br />]]></template>
 		<template name="usercp_resendactivation" version="1800"><![CDATA[<br />(<a href="member.php?action=resendactivation">{$lang->resend_activation}</a>)]]></template>
-		<template name="usercp_subscriptions" version="1813"><![CDATA[<html>
+		<template name="usercp_subscriptions" version="1816"><![CDATA[<html>
 <head>
 	<title>{$mybb->settings['bbname']} - {$lang->subscriptions}</title>
 	{$headerinclude}
