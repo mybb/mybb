@@ -2783,7 +2783,7 @@ if($mybb->input['action'] == "editprofile")
 	$display_group = usergroup_displaygroup($user['displaygroup']);
 	if(is_array($display_group))
 	{
-        $display_group = array_filter($display_group, 'is_not_null');
+		$display_group = array_filter($display_group, 'is_not_null');
 
 		$userperms = array_merge($userperms, $display_group);
 	}
