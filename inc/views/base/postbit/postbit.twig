@@ -28,11 +28,13 @@
 {% endif %}
 <a name="pid{{ post.pid }}" id="pid{{ post.pid }}"></a>
 <div class="post {{ post.unapproved_shade }}" style="{{ post.visibility }}" id="post_{{ post.pid }}">
-	<div class="post_meta">
+	<div class="post__meta">
+		{# Author avatar #}
 		{% if post.showavatar %}
 			<a href="{{ post.profilelink_plain|raw }}" class="avatar-profile-link"><img src="{{ post.useravatar.image }}" alt="" {{ post.useravatar.width_height|raw }} class="avatar" /></a>
 		{% endif %}
 
+		{# Author username #}
 		<h3 class="post__author">
 			{{ post.profilelink|raw }}
 			{% if post.onlinestatus == "online" %}
@@ -54,6 +56,44 @@
 			{% endif %}
 		</h3>
 
+		{# Post icon #}
+		{% if post.showicon %}
+			<img src="{{ icon.path }}" alt="{{ icon.name }}" title="{{ icon.name }}" style="vertical-align: middle;" />&nbsp;
+		{% endif %}
+
+		{# Post date & permalink #}
+		<a href="{{ post.postlink }}#pid{{ post.pid }}" title="{{ post.subject_title }}" class="post__date">{{ post.postdate|raw }}</a>
+
+		{# Inline moderation checkbox #}
+		{% if post.ismod %}
+			<input type="checkbox" class="checkbox post__inline-mod" name="inlinemod_{{ post.pid }}" id="inlinemod_{{ post.pid }}" value="1" style="vertical-align: middle; margin: -2px 0 0 5px;" {% if post.inlinechecked %}checked="checked"{% endif %}/>
+		{% endif %}
+
+		{# TO DO : CLEAN UP EDITED MESSAGE #}
+		{% if post.editedmsg %}
+			<a href="#" class="post__edit-log" title="" id="edited_by_{{ post.pid }}"><i class="fas fa-pencil-alt"></i></a>
+			<span class="edited_post" style="display: none;">({{ post.editnote|raw }} {{ post.editedprofilelink|raw }}.{% if post.editreason %} <em>{{ lang.postbit_editreason }}: {{ post.editreason }}</em>{% endif %})</span>
+		{% endif %}
+
+		{# IP address #}
+		{% if post.ipshow %}
+			{{ lang.postbit_ipaddress }} {{ post.ip }}
+		{% elseif post.iphide %}
+			<a href="moderation.php?action={{ post.action }}&amp;{{ post.idtype }}={{ post.id }}" onclick="MyBB.{{ post.javascript }}({{ post.id }}); return false;" title="{{ lang.postbit_ipaddress }}" class="post__ip-address"><i class="fas fa-globe"></i></a>
+		{% endif %}
+
+		{# Messenger information #}
+		{% if post.is_pm %}
+			<div class="post__messenger-meta">
+				{{ lang.to }} {{ post.to_recipients|raw }}
+				{% if post.showbcc %}
+					<br />{{ lang.bcc }} {{ post.bcc_recipients|raw }}
+				{% endif %}
+			</div>
+		{% endif %}
+
+
+		{# Currently not used #}
 
 			{#	{{ post.usertitle|raw }}<br />
 				{% if post.starimage and post.stars %}
@@ -99,78 +139,75 @@
 		</div>#}
 
 	</div>
-	<div class="post_content">
-		<div class="post_head">
-			<div class="float_right" style="vertical-align: top">
-				<strong><a href="{{ post.postlink }}#pid{{ post.pid }}" title="{{ post.subject_title }}">#{{ post.number }}</a></strong>{% if post.ismod %}<input type="checkbox" class="checkbox" name="inlinemod_{{ post.pid }}" id="inlinemod_{{ post.pid }}" value="1" style="vertical-align: middle; margin: -2px 0 0 5px;" {% if post.inlinechecked %}checked="checked"{% endif %}/>{% endif %}
-			</div>
-			{% if post.showicon %}
-				<img src="{{ icon.path }}" alt="{{ icon.name }}" title="{{ icon.name }}" style="vertical-align: middle;" />&nbsp;
-			{% endif %}
-			<span class="post_date">{{ post.postdate|raw }} <span class="post_edit" id="edited_by_{{ post.pid }}">
-			{% if post.editedmsg %}
-				<span class="edited_post">({{ post.editnote|raw }} {{ post.editedprofilelink|raw }}.{% if post.editreason %} <em>{{ lang.postbit_editreason }}: {{ post.editreason }}</em>{% endif %})</span>
-			{% endif %}
-			</span></span>
-			{% if post.is_pm %}
-				<br />
-				{{ lang.to }} {{ post.to_recipients|raw }}
-				{% if post.showbcc %}
-					<br />{{ lang.bcc }} {{ post.bcc_recipients|raw }}
-				{% endif %}
-			{% endif %}
-		</div>
-		<div class="post_body scaleimages" id="pid_{{ post.pid }}">
-			{{ post.message|raw }}
-		</div>
+	<div class="post__body post_body scaleimages" id="pid_{{ post.pid }}">
+		{% if post.poststatus %}
+			<span class="status_type">{{ post.status_type }}</span>
+		{% endif %}
+
+		{{ post.message|raw }}
+
 		{% if post.hasattachments %}
 			{% include 'postbit/postbit_attachments.twig' %}
 		{% endif %}
+
 		{% if post.showsig %}
-			<div class="signature scaleimages">
+			<div class="post__signature scaleimages">
 				{{ post.signature|raw }}
 			</div>
 		{% endif %}
-		<div class="post_meta" id="post_meta_{{ post.pid }}">
-			{% if post.ipshow %}
-				{{ lang.postbit_ipaddress }} {{ post.ip }}
-			{% elseif post.iphide %}
-				{{ lang.postbit_ipaddress }} <a href="moderation.php?action={{ post.action }}&amp;{{ post.idtype }}={{ post.id }}" onclick="MyBB.{{ post.javascript }}({{ post.id }}); return false;">{{ lang.postbit_ipaddress_logged }}</a>
-			{% endif %}
-			<div class="float_right">
-				{% if post.poststatus %}
-					<span class="status_type">{{ post.status_type }}</span>
-				{% endif %}
-			</div>
-		</div>
+
 		{% if post.can_edit %}
 			<div class="editreason" id="editreason_{{ post.pid }}_original" style="display: none;"><label for="editreason">{{ lang.postbit_editreason }}:</label> <input type="text" class="textbox" style="margin: 6px 0;" name="editreason" size="40" maxlength="150" id="quickedit_{{ post.pid }}_editreason_original" value="{{ post.editreason }}" /><br /></div>
 		{% endif %}
 	</div>
-	<div class="post_controls">
-		<div class="postbit_buttons author_buttons float_left">
-			{% if post.button_email %}
-				<a href="member.php?action=emailuser&amp;uid={{ post.uid }}" title="{{ lang.postbit_email }}" class="postbit_email"><span>{{ lang.postbit_button_email }}</span></a>
+	<div class="post__foot post__foot--controls">
+		<div class="post__controls post__controls--primary">
+			{# Restore button #}
+			{% if post.quick_restore %}
+				<a href="editpost.php?pid={{ post.pid }}" onclick="Thread.restorePost({{ post.pid }}); return false;" style="display: none;" id="quick_restore_{{ post.pid }}" title="{{ lang.postbit_quick_restore }}" class="post__control post__control--restore"><i class="post__control__icon fas fa-circle fa-fw"></i><span class="post__control__text">{{ lang.postbit_button_qrestore }}</span></a>
+<script type="text/javascript">
+// <!--
+	$('#quick_restore_{{ post.pid }}').css('display', '{{ post.quick_restore_display }}');
+// -->
+</script>
 			{% endif %}
-			{% if post.button_pm %}
-				<a href="private.php?action=send&amp;uid={{ post.uid }}" title="{{ lang.postbit_pm }}" class="postbit_pm"><span>{{ lang.postbit_button_pm }}</span></a>
+
+			{# Reply to post button #}
+			{% if post.button_quote %}
+				<a href="newreply.php?tid={{ post.tid }}&amp;replyto={{ post.pid }}" title="{{ lang.postbit_quote }}" class="post__control post__control--reply"><i class="post__control__icon fas fa-comments fa-fw"></i><span class="post__control__text">{{ lang.postbit_button_quote }}</span></a>
 			{% endif %}
-			{% if post.button_www %}
-				<a href="{{ post.website }}" target="_blank" rel="noopener" title="{{ lang.postbit_website }}" class="postbit_website"><span>{{ lang.postbit_button_website }}</span></a>
+
+			{# Multiquote button #}
+			{% if post.button_multiquote %}
+				<a href="javascript:void(0)" onclick="Thread.multiQuote({{ post.pid }}); return false;" style="display: none;" id="multiquote_link_{{ post.pid }}" title="{{ lang.postbit_multiquote }}" class="postbit_multiquote post__control post__control--quote"><i class="post__control__icon fas fa-quote-left fa-fw"></i><span id="multiquote_{{ post.pid }}" class="post__control__text">{{ lang.postbit_button_multiquote }}</span></a>
+<script type="text/javascript">
+//<!--
+	$('#multiquote_link_{{ post.pid }}').css("display", "");
+// -->
+</script>
 			{% endif %}
-			{% if post.button_find %}
-				<a href="search.php?action=finduser&amp;uid={{ post.uid }}" title="{{ lang.postbit_find }}" class="postbit_find"><span>{{ lang.postbit_button_find }}</span></a>
-			{% endif %}
+
+			{# Reputation button #}
 			{% if post.button_rep %}
-				<a href="javascript:void(0)" onclick="MyBB.reputation({{ post.uid }}, {{ post.pid }}); return false;" title="{{ lang.postbit_reputation_add }}" class="postbit_reputation_add"><span>{{ lang.postbit_button_reputation_add }}</span></a>
+				<a href="javascript:void(0)" onclick="MyBB.reputation({{ post.uid }}, {{ post.pid }}); return false;" title="{{ lang.postbit_reputation_add }}" class="post__control post__control--rate"><i class="post__control__icon fas fa-thumbs-up fa-fw"></i><span class="post__control__text">{{ lang.postbit_button_reputation_add }}</span></a>
+			{% endif %}
+
+			{# Messenger buttons #}
+			{% if post.is_pm %}
+				<a href="private.php?action=send&amp;pmid={{ post.pmid }}&amp;do=reply" title="{{ lang.reply_title }}" class="post__control post__control--reply"><i class="post__control__icon fas fa-reply fa-fw"></i><span class="post__control__text">{{ lang.postbit_button_reply_pm }}</span></a>
+				{% if post.replyall %}
+					<a href="private.php?action=send&amp;pmid={{ post.pmid }}&amp;do=replyall" title="{{ lang.reply_to_all }}" class="post__control post__control--reply-all"><i class="post__control__icon fas fa-reply-all fa-fw"></i><span class="post__control__text">{{ lang.postbit_button_reply_all }}</span></a>
+				{% endif %}
+				<a href="private.php?action=send&amp;pmid={{ post.pmid }}&amp;do=forward" title="{{ lang.forward_title }}" class="post__control post__control--forward"><i class="post__control__icon fas fa-share fa-fw"></i><span class="post__control__text">{{ lang.postbit_button_forward }}</span></a>
 			{% endif %}
 		</div>
-		<div class="postbit_buttons post_management_buttons float_right">
+		<div class="post__controls post__controls--secondary">
+			{# Edit button #}
 			{% if post.can_edit %}
 				{% if post.is_announcement %}
-					<a href="modcp.php?action=edit_announcement&amp;aid={{ post.aid }}" title="{{ lang.announcement_edit }}" class="postbit_edit"><span>{{ lang.postbit_button_edit }}</span></a>
+					<a href="modcp.php?action=edit_announcement&amp;aid={{ post.aid }}" title="{{ lang.announcement_edit }}" class="post__control post__control--edit"><i class="post__control__icon fas fa-pencil-alt fa-fw"></i><span class="post__control__text">{{ lang.postbit_button_edit }}</span></a>
 				{% else %}
-					<a href="editpost.php?pid={{ post.pid }}" id="edit_post_{{ post.pid }}" title="{{ lang.postbit_edit }}" class="postbit_edit"><span>{{ lang.postbit_button_edit }}</span></a>
+					<a href="editpost.php?pid={{ post.pid }}" id="edit_post_{{ post.pid }}" title="{{ lang.postbit_edit }}" class="post__control post__control--edit"><i class="post__control__icon fas fa-pencil-alt fa-fw"></i><span class="post__control__text">{{ lang.postbit_button_edit }}</span></a>
 					<div id="edit_post_{{ post.pid }}_popup" class="popup_menu" style="display: none;">
 						<div class="popup_item_container">
 							<a href="javascript:void(0)" class="popup_item quick_edit_button" id="quick_edit_post_{{ post.pid }}">{{ lang.postbit_quick_edit }}</a></div>
@@ -186,11 +223,13 @@
 </script>
 				{% endif %}
 			{% endif %}
+
+			{# Delete button #}
 			{% if post.quick_delete %}
 				{% if post.is_announcement %}
 					<a href="modcp.php?action=delete_announcement&amp;aid={{ post.aid }}&amp;my_post_key={{ mybb.post_code }}" onclick="MyBB.deleteAnnouncement(this); return false;" class="postbit_qdelete"><span>{{ lang.postbit_button_qdelete }}</span></a>
 				{% else %}
-					<a href="editpost.php?pid={{ post.pid }}" onclick="Thread.deletePost({{ post.pid }}); return false;" style="display: none;" id="quick_delete_{{ post.pid }}" title="{{ lang.postbit_quick_delete }}" class="postbit_qdelete"><span>{{ lang.postbit_button_qdelete }}</span></a>
+					<a href="editpost.php?pid={{ post.pid }}" onclick="Thread.deletePost({{ post.pid }}); return false;" style="display: none;" id="quick_delete_{{ post.pid }}" title="{{ lang.postbit_quick_delete }}" class="post__control post__control--delete"><i class="post__control__icon fas fa-trash fa-fw"></i><span class="post__control__text">{{ lang.postbit_button_qdelete }}</span></a>
 <script type="text/javascript">
 // <!--
 	$('#quick_delete_{{ post.pid }}').css('display', '{{ post.quick_delete_display }}');
@@ -198,41 +237,25 @@
 </script>
 				{% endif %}
 			{% endif %}
-			{% if post.quick_restore %}
-				<a href="editpost.php?pid={{ post.pid }}" onclick="Thread.restorePost({{ post.pid }}); return false;" style="display: none;" id="quick_restore_{{ post.pid }}" title="{{ lang.postbit_quick_restore }}" class="postbit_qrestore"><span>{{ lang.postbit_button_qrestore }}</span></a>
-<script type="text/javascript">
-// <!--
-	$('#quick_restore_{{ post.pid }}').css('display', '{{ post.quick_restore_display }}');
-// -->
-</script>
-			{% endif %}
-			{% if post.button_quote %}
-				<a href="newreply.php?tid={{ post.tid }}&amp;replyto={{ post.pid }}" title="{{ lang.postbit_quote }}" class="postbit_quote"><span>{{ lang.postbit_button_quote }}</span></a>
-			{% endif %}
-			{% if post.button_multiquote %}
-				<a href="javascript:void(0)" onclick="Thread.multiQuote({{ post.pid }}); return false;" style="display: none;" id="multiquote_link_{{ post.pid }}" title="{{ lang.postbit_multiquote }}" class="postbit_multiquote"><span id="multiquote_{{ post.pid }}">{{ lang.postbit_button_multiquote }}</span></a>
-<script type="text/javascript">
-//<!--
-	$('#multiquote_link_{{ post.pid }}').css("display", "");
-// -->
-</script>
-			{% endif %}
+
+			{# Report button #}
 			{% if post.button_report %}
-				<a href="javascript:void(0)" onclick="Report.reportPost({{ post.pid }}); return false;" title="{{ lang.postbit_report }}" class="postbit_report"><span>{{ lang.postbit_button_report }}</span></a>
+				<a href="javascript:void(0)" onclick="Report.reportPost({{ post.pid }}); return false;" title="{{ lang.postbit_report }}" class="post__control post__control--report"><i class="post__control__icon fas fa-flag fa-fw"></i><span class="post__control__text">{{ lang.postbit_button_report }}</span></a>
 			{% endif %}
+
+			{# Warn user button #}
 			{% if post.can_warn %}
-				<a href="warnings.php?action=warn&amp;uid={{ post.uid }}&amp;pid={{ post.pid }}" title="{{ lang.postbit_warn }}" class="postbit_warn"><span>{{ lang.postbit_button_warn }}</span></a>
+				<a href="warnings.php?action=warn&amp;uid={{ post.uid }}&amp;pid={{ post.pid }}" title="{{ lang.postbit_warn }}" class="post__control post__control--warn"><i class="post__control__icon fas fa-exclamation-triangle fa-fw"></i><span class="post__control__text">{{ lang.postbit_button_warn }}</span></a>
 			{% endif %}
+
+			{# Purge spammer button #}
 			{% if post.button_purgespammer %}
-				<a href="moderation.php?action=purgespammer&amp;uid={{ post.uid }}" title="{{ lang.postbit_purgespammer }}" class="postbit_purgespammer"><span>{{ lang.postbit_button_purgespammer }}</span></a>
+				<a href="moderation.php?action=purgespammer&amp;uid={{ post.uid }}" title="{{ lang.postbit_purgespammer }}" class="post__control post__control--purge-spammer"><i class="post__control__icon fas fa-gavel fa-fw"></i><span class="post__control__text">{{ lang.postbit_button_purgespammer }}</span></a>
 			{% endif %}
+
+			{# Delete PM button #}
 			{% if post.is_pm %}
-				<a href="private.php?action=send&amp;pmid={{ post.pmid }}&amp;do=reply" title="{{ lang.reply_title }}" class="postbit_reply_pm"><span>{{ lang.postbit_button_reply_pm }}</span></a>
-				{% if post.replyall %}
-					<a href="private.php?action=send&amp;pmid={{ post.pmid }}&amp;do=replyall" title="{{ lang.reply_to_all }}" class="postbit_reply_all"><span>{{ lang.postbit_button_reply_all }}</span></a>
-				{% endif %}
-				<a href="private.php?action=send&amp;pmid={{ post.pmid }}&amp;do=forward" title="{{ lang.forward_title }}" class="postbit_forward_pm"><span>{{ lang.postbit_button_forward }}</span></a>
-				<a href="private.php?action=delete&amp;pmid={{ post.pmid }}&amp;my_post_key={{ mybb.post_code }}" title="{{ lang.delete_title }}" class="postbit_delete_pm"><span>{{ lang.postbit_button_delete_pm }}</span></a>
+				<a href="private.php?action=delete&amp;pmid={{ post.pmid }}&amp;my_post_key={{ mybb.post_code }}" title="{{ lang.delete_title }}" class="post__control post__control--delete"><i class="post__control__icon fas fa-trash"></i><span class="post__control__text">{{ lang.postbit_button_delete_pm }}</span></a>
 			{% endif %}
 		</div>
 	</div>

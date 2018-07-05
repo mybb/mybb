@@ -3,29 +3,29 @@
 {% else %}
     <div class="pagination">
 {% endif %}
-    <span class="pages">{{ trans('multipage_pages', multipage.total_pages) }}</span>
+    <span class="pagination__pages">{{ trans('multipage_pages', multipage.total_pages) }}</span>
     {% if page > 1 %}
-        <a href="{{ multipage.previous_page_url|raw }}" class="pagination_previous">&laquo; {{ lang.previous }}</a>
+        <a href="{{ multipage.previous_page_url|raw }}" class="pagination__page pagination__page--previous"><i class="pagination__icon fas fa-chevron-left"></i> {{ lang.previous }}</a>
     {% endif %}
     {% if multipage.from > 1 %}
-        <a href="{{ multipage.start_page_url|raw }}" class="pagination_first">1</a> {{ lang.multipage_link_start }}
+        <a href="{{ multipage.start_page_url|raw }}" class="pagination__page pagination__page--first">1</a> {{ lang.multipage_link_start }}
     {% endif %}
     {% for pages in multipage.pages %}
         {% if pages.num == page %}
             {% if breadcrumb %}
-                <a href="{{ pages.page_url|raw }}" class="pagination_current">{{ pages.num }}</a>
+                <a href="{{ pages.page_url|raw }}" class="pagination__page pagination__page--active">{{ pages.num }}</a>
             {% else %}
-                <span class="pagination_current">{{ pages.num }}</span>
+                <span class="pagination__page pagination__page--active">{{ pages.num }}</span>
             {% endif %}
         {% else %}
-            <a href="{{ pages.page_url|raw }}" class="pagination_page">{{ pages.num }}</a>
+            <a href="{{ pages.page_url|raw }}" class="pagination__page">{{ pages.num }}</a>
         {% endif %}
     {% endfor %}
     {% if multipage.to < multipage.total_pages %}
-        {{ lang.multipage_link_end }} <a href="{{ multipage.end_page_url|raw }}" class="pagination_last">{{ multipage.total_pages }}</a>
+        {{ lang.multipage_link_end }} <a href="{{ multipage.end_page_url|raw }}" class="pagination__page pagination__page--last">{{ multipage.total_pages }}</a>
     {% endif %}
     {% if page < multipage.total_pages %}
-        <a href="{{ multipage.next_page_url|raw }}" class="pagination_next">{{ lang.next }} &raquo;</a>
+        <a href="{{ multipage.next_page_url|raw }}" class="pagination__page pagination__page--next">{{ lang.next }} <i class="pagination__icon fas fa-chevron-right"></i></a>
     {% endif %}
     {% if breadcrumb == false and mybb.settings.jumptopagemultipage and multipage.total_pages > ( mybb.settings.maxmultipagelinks + 1 ) %}
         <div class="popup_menu drop_go_page" style="display: none;">

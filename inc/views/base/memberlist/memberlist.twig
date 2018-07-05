@@ -5,130 +5,97 @@
 {% endblock head %}
 
 {% block body %}
-    {{ multipage|raw }}
-    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-        <tr>
-            <td class="thead" colspan="{{ memberlist.colspan }}">
-                <div class="float_right">
-                    {% for letter in 'A'..'Z' %}
-                        <a href="memberlist.php?letter={{ letter }}" style="padding: 5px;">{{ letter }}</a>
-                    {% endfor %}
-                </div>
-                <div><strong>{{ lang.member_list }}</strong></div>
-            </td>
-        </tr>
-        <tr>
-            <td class="tcat" width="1%">
-                <span class="smalltext"><strong>{{ lang.avatar }}</strong></span>
-            </td>
-            <td class="tcat">
-                <span class="smalltext">
-                    <a href="memberlist.php?perpage={{ mybb.input.perpage }}{{ memberlist.search_url }}&amp;sort=username&amp;order=ascending"><strong>{{ lang.username }}</strong></a> 
-                    {% if memberlist.orderarrow.username %}
-                        <span class="smalltext">[<a href="memberlist.php?perpage={{ mybb.input.perpage }}{{ memberlist.search_url }}&amp;sort=username&amp;order={{ memberlist.oppsortnext }}">{{ memberlist.oppsort }}</a>]</span>
-                    {% endif %}
-                </span>
-            </td>
-            <td class="tcat" width="15%" align="center">
-                <span class="smalltext">
-                    <a href="memberlist.php?perpage={{ mybb.input.perpage }}{{ memberlist.search_url }}&amp;sort=regdate&amp;order=ascending"><strong>{{ lang.joined }}</strong></a> 
-                    {% if memberlist.orderarrow.regdate %}
-                        <span class="smalltext">[<a href="memberlist.php?perpage={{ mybb.input.perpage }}{{ memberlist.search_url }}&amp;sort=regdate&amp;order={{ memberlist.oppsortnext }}">{{ memberlist.oppsort }}</a>]</span>
-                    {% endif %}
-                </span>
-            </td>
-            <td class="tcat" width="15%" align="center">
-                <span class="smalltext">
-                    <a href="memberlist.php?perpage={{ mybb.input.perpage }}{{ memberlist.search_url }}&amp;sort=lastvisit&amp;order=descending"><strong>{{ lang.lastvisit }}</strong></a> 
-                    {% if memberlist.orderarrow.lastvisit %}
-                        <span class="smalltext">[<a href="memberlist.php?perpage={{ mybb.input.perpage }}{{ memberlist.search_url }}&amp;sort=lastvisit&amp;order={{ memberlist.oppsortnext }}">{{ memberlist.oppsort }}</a>]</span>
-                    {% endif %}
-                </span>
-            </td>
-            <td class="tcat" width="10%" align="center">
-                <span class="smalltext">
-                    <a href="memberlist.php?perpage={{ mybb.input.perpage }}{{ memberlist.search_url }}&amp;sort=postnum&amp;order=descending"><strong>{{ lang.posts }}</strong></a> 
-                    {% if memberlist.orderarrow.postnum %}
-                        <span class="smalltext">[<a href="memberlist.php?perpage={{ mybb.input.perpage }}{{ memberlist.search_url }}&amp;sort=postnum&amp;order={{ memberlist.oppsortnext }}">{{ memberlist.oppsort }}</a>]</span>
-                    {% endif %}
-                </span>
-            </td>
-            <td class="tcat" width="10%" align="center">
-                <span class="smalltext">
-                    <a href="memberlist.php?perpage={{ mybb.input.perpage }}{{ memberlist.search_url }}&amp;sort=threadnum&amp;order=descending"><strong>{{ lang.threads }}</strong></a> 
-                    {% if memberlist.orderarrow.threadnum %}
-                        <span class="smalltext">[<a href="memberlist.php?perpage={{ mybb.input.perpage }}{{ memberlist.search_url }}&amp;sort=threadnum&amp;order={{ memberlist.oppsortnext }}">{{ memberlist.oppsort }}</a>]</span>
-                    {% endif %}
-                </span>
-            </td>
-            {% if mybb.settings.usereferrals %}
-                <td class="tcat" width="10%" align="center">
-                    <span class="smalltext">
-                        <a href="memberlist.php?perpage={{ mybb.input.perpage }}{{ memberlist.search_url }}&amp;sort=referrals&amp;order=descending"><strong>{{ lang.referrals }}</strong></a> 
-                        {% if memberlist.orderarrow.referrals %}
-                            <span class="smalltext">[<a href="memberlist.php?perpage={{ mybb.input.perpage }}{{ memberlist.search_url }}&amp;sort=referrals&amp;order={{ memberlist.oppsortnext }}">{{ memberlist.oppsort }}</a>]</span>
-                        {% endif %}
-                    </span>
-                </td>
-            {% endif %}
-        </tr>
-        {% for user in users %}
-            {% include 'memberlist/memberlist_row.twig' %}
-        {% else %}
-            <tr>
-                <td colspan="{{ memberlist.colspan }}" align="center" class="trow1">{{ lang.error_no_members|raw }}</td>
-            </tr>
-        {% endfor %}
-    </table>
-    <div class="float_right" style="padding-top: 4px;">
-        <a href="showteam.php"><strong>{{ lang.forumteam }}</strong></a>
-    </div>
-    {{ multipage|raw }}
-    <br class="clear" />
-    <br />
+    <div class="page-content">
+        <header class="page-header">
+            <h1 class="title title--page">{{ lang.member_list }}</h1>
+        </header>
+        <div class="page-controls page-controls--top">
+			<div class="page-buttons">
+				<a href="showteam.php" class="button button--secondary">
+					<i class="button__icon fas fa-address-book"></i>
+					<span class="button__text">{{ lang.forumteam }}</span>
+                </a>
+                <a href="#member-search" class="button">
+                    <i class="button__icon fas fa-search"></i>
+                    <span class="button__text">{{ lang.search_members }}</span>
+                </a>
+            </div>
+            {{ multipage|raw }}
+        </div>
+        <div class="container container--user-alphabet user-alphabet">
+            {% for letter in 'A'..'Z' %}
+                <a href="memberlist.php?letter={{ letter }}" class="user-alphabet__letter">{{ letter }}</a>
+            {% endfor %}
+        </div>
+        <div class="user-list">
+            {% for user in users %}
+                {% include 'memberlist/memberlist_row.twig' %}
+            {% else %}
+            <div class="alert alert--no-results">{{ lang.error_no_members|raw }}</div>
+            {% endfor %}
+        </div>
+        <div class="page-controls">
+            {{ multipage|raw }}
+        </div>
+
     <form method="post" action="memberlist.php">
-        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-            <tr>
-                <td class="thead" colspan="3">
-                    <div class="float_right">
-                        <strong><a href="memberlist.php?action=search">{{ lang.advanced_search }}</a></strong>
+        <section class="form" id="member-search">
+        	<div class="section section--form">
+        		<h3 class="title title--section">{{ lang.search_members }}</h3>
+                <div class="section__container">
+        			<div class="row row--form field">
+        				<h4 class="field__name"><label for="username">{{ lang.username }}</label></h4>
+                        <input type="text" class="" name="username" id="username" style="width: 99%; margin-top: 4px;" value="{{ memberlist.username }}" />
                     </div>
-                    <div><strong>{{ lang.search_members }}</strong></div>
-                </td>
-            </tr>
-            <tr>
-                <td class="tcat"><strong><label for="username">{{ lang.username }}</label></strong></td>
-                <td class="tcat"><strong><label for="website">{{ lang.website }}</label></strong></td>
-                <td class="tcat"><strong><label for="sort">{{ lang.sort_by }}</label></strong></td>
-            </tr>
-            <tr>
-                <td class="trow1" width="33%" style="vertical-align: top;">
-                    {{ lang.contains }}<br />
-                    <input type="text" class="textbox" name="username" id="username" style="width: 99%; margin-top: 4px;" value="{{ memberlist.username }}" />
-                </td>
-                <td class="trow1" width="33%" style="vertical-align: top;">
-                    {{ lang.contains }}<br />
-                    <input type="text" class="textbox" name="website" id="website" style="width: 99%; margin-top: 4px;" value="{{ memberlist.website }}" />
-                </td>
-                <td class="trow1" width="33%">
-                    <div class="smalltext" style="margin-bottom: 3px;">
-                        <input type="radio" class="radio" name="order" id="order_asc" value="ascending"{% if memberlist.order.ascending %} checked="checked"{% endif %} /> <label for="order_asc">{{ lang.order_asc }}</label>&nbsp;
-                        <input type="radio" class="radio" name="order" id="order_desc" value="descending"{% if memberlist.order.descending %} checked="checked"{% endif %} /> <label for="order_desc">{{ lang.order_desc }}</label>
+                    <div class="row row--form field">
+                        <h4 class="field__name"><label for="website">{{ lang.website }}</label></h4>
+                        <input type="text" class="textbox" name="website" id="website" style="width: 99%; margin-top: 4px;" value="{{ memberlist.website }}" />
                     </div>
-                    <select name="sort" id="sort" style="width: 99%;">
-                        <option value="username"{% if memberlist.sort.username %} selected="selected"{% endif %}>{{ lang.sort_by_username }}</option>
-                        <option value="regdate"{% if memberlist.sort.regdate %} selected="selected"{% endif %}>{{ lang.sort_by_regdate }}</option>
-                        <option value="lastvisit"{% if memberlist.sort.lastvisit %} selected="selected"{% endif %}>{{ lang.sort_by_lastvisit }}</option>
-                        <option value="postnum"{% if memberlist.sort.postnum %} selected="selected"{% endif %}>{{ lang.sort_by_posts }}</option>
-                        <option value="threadnum"{% if memberlist.sort.threadnum %} selected="selected"{% endif %}>{{ lang.sort_by_threads }}</option>
-                        {% if mybb.settings.usereferrals %}
-                            <option value="referrals"{% if memberlist.sort.referrals %} selected="selected"{% endif %}>{{ lang.sort_by_referrals }}</option>
-                        {% endif %}
-                    </select>
-                </td>
-            </tr>
-        </table>
-        <div align="center"><br /><input type="submit" class="button" name="submit" value="{{ lang.search }}" /></div>
+                </div>
+            </div>
+            <div class="section section--form">
+                <h3 class="title title--section"><label for="sort">{{ lang.sort_by }}</label></h3>
+        		<div class="section__container">
+        			<div class="row row--form field">
+        				<div class="select-field">
+        					<i class="select-field__icon fas fa-sort"></i>
+                            <select name="sort" id="sort" style="width: 99%;">
+                                <option value="username"{% if memberlist.sort.username %} selected="selected"{% endif %}>{{ lang.sort_by_username }}</option>
+                                <option value="regdate"{% if memberlist.sort.regdate %} selected="selected"{% endif %}>{{ lang.sort_by_regdate }}</option>
+                                <option value="lastvisit"{% if memberlist.sort.lastvisit %} selected="selected"{% endif %}>{{ lang.sort_by_lastvisit }}</option>
+                                <option value="postnum"{% if memberlist.sort.postnum %} selected="selected"{% endif %}>{{ lang.sort_by_posts }}</option>
+                                <option value="threadnum"{% if memberlist.sort.threadnum %} selected="selected"{% endif %}>{{ lang.sort_by_threads }}</option>
+                                {% if mybb.settings.usereferrals %}
+                                    <option value="referrals"{% if memberlist.sort.referrals %} selected="selected"{% endif %}>{{ lang.sort_by_referrals }}</option>
+                                {% endif %}
+                            </select>
+                        </div>
+                        <div class="field__block">
+                            <div class="segmented-control">
+        						<span class="segmented-control__option">
+        							<input type="radio" class="radio segmented-control__input" name="order" id="order_asc" value="ascending"{% if memberlist.order.ascending %} checked="checked"{% endif %} />
+        							<label class="segmented-control__button" for="order_asc">{{ lang.order_asc }}</label>
+        						</span>
+        						<span class="segmented-control__option">
+        							<input type="radio" class="radio segmented-control__input" name="order" id="order_desc" value="descending"{% if memberlist.order.descending %} checked="checked"{% endif %} />
+        							<label class="segmented-control__button" for="order_desc">{{ lang.order_desc }}</label>
+        						</span>
+        					</div>
+        				</div>
+                    </div>
+                </div>
+            </div>
+            <div class="form__submit">
+        		<button type="submit" class="button">
+        			<i class="button__icon fas fa-search"></i>
+        			<span class="button__text">{{ lang.search }}</span>
+        		</button>
+        		<a href="memberlist.php?action=search" class="button button--secondary">
+        			<i class="button__icon fas fa-cog"></i>
+        			<span class="button__text">{{ lang.advanced_search }}</span>
+        		</a>
+        	</div>
+        </section>
     </form>
 
     <link rel="stylesheet" href="{{ asset_url('jscripts/select2/select2.css') }}">
