@@ -31,12 +31,6 @@ if($mybb->user['uid'] != 0)
 	eval('$logoutlink = "'.$templates->get('index_logoutlink').'";');
 }
 
-$showteamlink = '';
-if($mybb->settings['enableshowteam'] != 0)
-{
-	eval('$showteamlink = "'.$templates->get('index_showteamlink').'";');
-}
-
 $statspage = '';
 if($mybb->settings['statsenabled'] != 0)
 {
@@ -67,9 +61,8 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 		ORDER BY {$order_by}, {$order_by2}
 	");
 
-	$forum_viewers = $doneusers = array();
+	$forum_viewers = $doneusers = $onlinemembers = $onlinebots = array();
 	$membercount = $guestcount = $anoncount = $botcount = 0;
-	$onlinemembers = $onlinebots = $comma = '';
 
 	// Fetch spiders
 	$spiders = $cache->read('spiders');
@@ -107,8 +100,7 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 					// Properly format the username and assign the template.
 					$user['username'] = format_name(htmlspecialchars_uni($user['username']), $user['usergroup'], $user['displaygroup']);
 					$user['profilelink'] = build_profile_link($user['username'], $user['uid']);
-					eval('$onlinemembers .= "'.$templates->get('index_whosonline_memberbit', 1, 0).'";');
-					$comma = $lang->comma;
+					eval('$onlinemembers[] = "'.$templates->get('index_whosonline_memberbit', 1, 0).'";');
 				}
 				// This user has been handled.
 				$doneusers[$user['uid']] = $user['time'];
@@ -117,8 +109,7 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 		elseif(my_strpos($user['sid'], 'bot=') !== false && $spiders[$botkey])
 		{
 			// The user is a search bot.
-			$onlinebots .= $comma.format_name($spiders[$botkey]['name'], $spiders[$botkey]['usergroup']);
-			$comma = $lang->comma;
+			$onlinebots[] = format_name($spiders[$botkey]['name'], $spiders[$botkey]['usergroup']);
 			++$botcount;
 		}
 		else
@@ -132,17 +123,9 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 			++$forum_viewers[$user['location1']];
 		}
 	}
- 
-	if(trim($onlinebots) == "" || trim($onlinemembers) == "")
-	{
-		$comma = "";
-	}
-	else
-	{
-		$comma = $lang->comma;
-	}
 
-	$onlinemembers = $onlinebots.$comma.$onlinemembers;
+	$comma = $lang->comma." ";
+	$onlinemembers = implode($comma, array_merge($onlinebots, $onlinemembers));
 
 	// Build the who's online bit on the index page.
 	$onlinecount = $membercount + $guestcount + $botcount;
