@@ -1458,6 +1458,8 @@ if($mybb->input['action'] == "event")
 	$display_group = usergroup_displaygroup($event['displaygroup']);
 	if(is_array($display_group))
 	{
+		$display_group = array_filter($display_group, 'is_not_null');
+
 		$user_usergroup = array_merge($user_usergroup, $display_group);
 	}
 
@@ -1801,6 +1803,8 @@ if($mybb->input['action'] == "dayview")
 			$display_group = usergroup_displaygroup($event['displaygroup']);
 			if(is_array($display_group))
 			{
+                $display_group = array_filter($display_group, 'is_not_null');
+
 				$user_usergroup = array_merge($user_usergroup, $display_group);
 			}
 

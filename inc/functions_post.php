@@ -197,6 +197,8 @@ function build_postbit($post, $post_type=0)
 	$displaygroup = usergroup_displaygroup($post['displaygroup']);
 	if(is_array($displaygroup))
 	{
+		$displaygroup = array_filter($displaygroup, 'is_not_null');
+
 		$usergroup = array_merge($usergroup, $displaygroup);
 	}
 

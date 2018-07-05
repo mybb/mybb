@@ -371,6 +371,8 @@ else
 		$display_group = usergroup_displaygroup($user['displaygroup']);
 		if(is_array($display_group))
 		{
+			$display_group = array_filter($display_group, 'is_not_null');
+
 			$usergroup = array_merge($usergroup, $display_group);
 		}
 

@@ -2060,6 +2060,8 @@ if($mybb->input['action'] == "profile")
 	$displaygroup = usergroup_displaygroup($memprofile['displaygroup']);
 	if(is_array($displaygroup))
 	{
+		$displaygroup = array_filter($displaygroup, 'is_not_null');
+
 		$memperms = array_merge($memperms, $displaygroup);
 	}
 
