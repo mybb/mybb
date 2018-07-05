@@ -3617,14 +3617,6 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 {$footer}
 </body>
 </html>]]></template>
-		<template name="error_attacherror" version="120"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder"><tr>
-<td class="thead"><strong>{$lang->error_attach_file}</strong></td>
-</tr>
-<tr>
-<td class="trow1">{$attachedfile['error']}</td>
-</tr>
-</table>
-<br />]]></template>
 		<template name="error_inline" version="120"><![CDATA[<div class="error">
 	<p><em>{$title}</em></p>
 	<ul>
@@ -3632,6 +3624,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 	</ul>
 </div>
 <br />]]></template>
+		<template name="error_inline_item" version="1816"><![CDATA[<li>{$error}</li>]]></template>
 		<template name="error_nopermission" version="1800"><![CDATA[{$lang->error_nopermission_guest_1}
 <ol>
 <li>{$lang->error_nopermission_guest_2}</li>
@@ -9424,7 +9417,7 @@ if(use_xmlhttprequest == "1")
 </tr>]]></template>
 		<template name="post_attachments_new" version="1807"><![CDATA[<tr>
 <td class="trow1" width="1"><img src="{$theme['imgdir']}/paperclip.png" alt="" /></td>
-<td class="trow1" style="white-space: nowrap"><strong>{$lang->new_attachment}</strong> <input type="file" name="attachment" size="30" class="fileupload" /></td>
+<td class="trow1" style="white-space: nowrap"><strong>{$lang->new_attachment}</strong> <input type="file" name="attachments[]" size="30" class="fileupload" multiple="multiple" /></td>
 <td class="trow1" style="white-space: nowrap" align="center">{$attach_update_options} {$attach_add_options}</td>
 </tr>]]></template>
 		<template name="post_attachments_update" version="1604"><![CDATA[<input type="submit" class="button" name="updateattachment" value="{$lang->update_attachment}" tabindex="12" />]]></template>

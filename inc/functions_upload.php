@@ -432,7 +432,7 @@ function upload_attachment($attachment, $update_attachment=false)
 	// Check the size
 	if($attachment['size'] > $attachtype['maxsize']*1024 && $attachtype['maxsize'] != "")
 	{
-		$ret['error'] = $lang->sprintf($lang->error_attachsize, $attachtype['maxsize']);
+		$ret['error'] = $lang->sprintf($lang->error_attachsize, htmlspecialchars_uni($attachment['name']), $attachtype['maxsize']);
 		return $ret;
 	}
 
@@ -472,7 +472,7 @@ function upload_attachment($attachment, $update_attachment=false)
 			return $ret;
 		}
 
-		$ret['error'] = $lang->error_alreadyuploaded;
+		$ret['error'] = $lang->sprintf($lang->error_alreadyuploaded, htmlspecialchars_uni($attachment['name']));
 		return $ret;
 	}
 
@@ -676,6 +676,81 @@ function upload_attachment($attachment, $update_attachment=false)
 		}
 	}
 	$ret['aid'] = $aid;
+	return $ret;
+}
+
+/**
+ * Process adding attachment(s) when the "Add Attachment" button is pressed.
+ *
+ * @param int $pid The ID of the post.
+ * @param array $forumpermission The permissions for the forum.
+ * @param string $attachwhere Search string "pid='$pid'" or "posthash='".$db->escape_string($mybb->get_input('posthash'))."'"
+ * @param string $action Where called from: "newthread", "newreply", or "editpost"
+ */
+function add_attachments($pid, $forumpermissions, $attachwhere, $action=false)
+{
+	global $db, $mybb, $editdraftpid, $lang;
+
+	$ret = array();
+
+	if($forumpermissions['canpostattachments'])
+	{
+		$attachments = array();
+		$fields = array ('name', 'type', 'tmp_name', 'error', 'size');
+
+		$total = count($_FILES['attachments']['name']);
+
+		for($i=0; $i<$total; ++$i)
+		{
+			foreach($fields as $field)
+			{
+				$attach1[$field] = $_FILES['attachments'][$field][$key];
+				$attachments[$i][$field] = $_FILES['attachments'][$field][$i];
+			}
+		}
+
+		foreach($attachments as $FILE)
+		{
+			if(!empty($FILE['name']) && !empty($FILE['type']))
+			{
+				if($FILE['size'] > 0)
+				{
+					$query = $db->simple_select("attachments", "aid", "filename='".$db->escape_string($FILE['name'])."' AND {$attachwhere}");
+					$updateattach = $db->fetch_field($query, "aid");
+
+					$update_attachment = false;
+					if($action == "editpost")
+					{
+						if($updateattach > 0 && $mybb->get_input('updateattachment') && ($mybb->usergroup['caneditattachments'] || $forumpermissions['caneditattachments']))
+						{
+							$update_attachment = true;
+						}
+					}
+					else
+					{
+						if($updateattach > 0 && $mybb->get_input('updateattachment'))
+						{
+							$update_attachment = true;
+						}
+					}
+
+					$attachedfile = upload_attachment($FILE, $update_attachment);
+
+					if(!empty($attachedfile['error']))
+					{
+						$ret['errors'][] = $attachedfile['error'];
+						$mybb->input['action'] = $action;
+					}
+				}
+				else
+				{
+					$ret['errors'][] = $lang->sprintf($lang->error_uploadempty, htmlspecialchars_uni($FILE['name']));
+					$mybb->input['action'] = $action;
+				}
+			}
+		}
+	}
+
 	return $ret;
 }
 
