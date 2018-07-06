@@ -289,6 +289,8 @@ class session
 		$mydisplaygroup = usergroup_displaygroup($mybb->user['displaygroup']);
 		if(is_array($mydisplaygroup))
 		{
+			$mydisplaygroup = array_filter($mydisplaygroup, 'is_not_null');
+
 			$mybb->usergroup = array_merge($mybb->usergroup, $mydisplaygroup);
 		}
 
@@ -366,6 +368,8 @@ class session
 		$mydisplaygroup = usergroup_displaygroup($mybb->user['displaygroup']);
 		if(is_array($mydisplaygroup))
 		{
+			$mydisplaygroup = array_filter($mydisplaygroup, 'is_not_null');
+
 			$mybb->usergroup = array_merge($mybb->usergroup, $mydisplaygroup);
 		}
 
@@ -428,6 +432,8 @@ class session
 		$mydisplaygroup = usergroup_displaygroup($mybb->user['displaygroup']);
 		if(is_array($mydisplaygroup))
 		{
+			$mydisplaygroup = array_filter($mydisplaygroup, 'is_not_null');
+
 			$mybb->usergroup = array_merge($mybb->usergroup, $mydisplaygroup);
 		}
 
