@@ -8820,15 +8820,3 @@ function my_escape_csv($string, $escape_active_content=true)
 
 	return $string;
 }
-
-/**
- * Test whether a value isn't null.
- *
- * @param mixed $value The value to test.
- *
- * @return bool Whether the value isn't equal to NULL.
- */
-function is_not_null($value)
-{
-	return !is_null($value);
-}

@@ -2057,11 +2057,15 @@ if($mybb->input['action'] == "profile")
 
 	// Set display group
 	$displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
+
+	if(!$memprofile['displaygroup'])
+	{
+		$memprofile['displaygroup'] = $memprofile['usergroup'];
+	}
+
 	$displaygroup = usergroup_displaygroup($memprofile['displaygroup']);
 	if(is_array($displaygroup))
 	{
-		$displaygroup = array_filter($displaygroup, 'is_not_null');
-
 		$memperms = array_merge($memperms, $displaygroup);
 	}
 
