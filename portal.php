@@ -263,7 +263,7 @@ if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] !
 			{
 				$key = $spiders[$botkey]['name'];
 			}
-            else
+			else
 			{
 				$key = $user['time'];
 			}
