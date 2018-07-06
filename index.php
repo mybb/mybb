@@ -149,7 +149,15 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 		}
 	}
 
-	ksort($onlinebots);
+	if($mybb->settings['wolorder'] == 'activity')
+	{
+		// activity ordering is DESC, username is ASC
+		krsort($onlinebots);
+	}
+	else
+	{
+		ksort($onlinebots);
+	}
 
 	$onlinemembers = array_merge($onlinebots, $onlinemembers);
 	if(!empty($onlinemembers))
