@@ -259,7 +259,16 @@ if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] !
 		elseif(my_strpos($user['sid'], 'bot=') !== false && $spiders[$botkey])
 		{
 			// The user is a search bot.
-			$onlinebots[] = format_name($spiders[$botkey]['name'], $spiders[$botkey]['usergroup']);
+			if($mybb->settings['wolorder'] == 'username')
+			{
+				$key = $spiders[$botkey]['name'];
+			}
+            else
+			{
+				$key = $user['time'];
+			}
+
+			$onlinebots[$key] = format_name($spiders[$botkey]['name'], $spiders[$botkey]['usergroup']);
 			++$botcount;
 		}
 		else
@@ -294,6 +303,8 @@ if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] !
 			}
 		}
 	}
+
+	ksort($onlinebots);
 
 	$onlinemembers = array_merge($onlinebots, $onlinemembers);
 	if(!empty($onlinemembers))
