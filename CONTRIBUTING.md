@@ -1,8 +1,8 @@
 ## Reporting issues
 
-**Issues in MyBB should only be reported in the forums.** Please report issues in the 1.8 series in the [1.8 Bugs and Issues](https://community.mybb.com/forum-157.html) forum. Note that issue reports for the 1.6 series are no longer accepted.
+Note that issue reports for the 1.6 series are no longer accepted.
 
-However you should check these forums and the issue tracker on GitHub to make sure the issue hasn't already been reported. These issues will be pushed to GitHub when a member of the MyBB Team is able to reproduce (confirm) that the issue exists. GitHub is not the place to report new issues. Only confirmed issues should be present on GitHub.
+You should check [1.8 Bugs and Issues](https://community.mybb.com/forum-157.html) forum and the issue tracker on GitHub to make sure the issue hasn't already been reported. These issues posted in the [1.8 Bugs and Issues] forum will be pushed to GitHub when a member of the MyBB Team is able to reproduce (confirm) that the issue exists. 
 
 ## Suggesting features
 
