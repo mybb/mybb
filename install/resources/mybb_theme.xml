@@ -4337,7 +4337,7 @@ $(".forumjump").change(function() {
 		<template name="header_welcomeblock_member_search" version="1809"><![CDATA[<li><a href="{$mybb->settings['bburl']}/search.php?action=getnew">{$lang->welcome_newposts}</a></li>
 <li><a href="{$mybb->settings['bburl']}/search.php?action=getdaily">{$lang->welcome_todaysposts}</a></li>]]></template>
 		<template name="header_welcomeblock_member_user" version="1809"><![CDATA[<li><a href="{$mybb->settings['bburl']}/usercp.php" class="usercp">{$lang->welcome_usercp}</a></li>]]></template>
-		<template name="index" version="1816"><![CDATA[<html>
+		<template name="index" version="1817"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']}</title>
 {$headerinclude}
@@ -4360,7 +4360,7 @@ $(".forumjump").change(function() {
 	<dt><span class="forum_status forum_off" title="{$lang->no_new_posts}"></span></dt>
 	<dd>{$lang->no_new_posts}</dd>
 
-	<dt><span class="forum_status forum_offlock" title="{$lang->forum_closed}"></span></dt>
+	<dt><span class="forum_status forum_offclose" title="{$lang->forum_closed}"></span></dt>
 	<dd>{$lang->forum_closed}</dd>
 
 	<dt><span class="forum_status forum_offlink" title="{$lang->forum_redirect}"></span></dt>
