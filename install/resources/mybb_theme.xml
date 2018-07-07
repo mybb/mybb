@@ -9366,9 +9366,9 @@ if(use_xmlhttprequest == "1")
 </td>
 </tr>
 </table><br />]]></template>
-		<template name="portal_welcome_guesttext" version="1817"><![CDATA[<span class="smalltext">{$lang->guest_welcome_registration}</span><br />
+		<template name="portal_welcome_guesttext" version="1816"><![CDATA[<span class="smalltext">{$lang->guest_welcome_registration}</span><br />
 <br />
-<form method="post" action="{$mybb->settings['bburl']}/member.php"><input type="hidden" name="action" value="do_login" /><input type="hidden" name="url" value="{$portal_url}" /><input name="my_post_key" type="hidden" value="{$mybb->post_code}" />
+<form method="post" action="{$mybb->settings['bburl']}/member.php"><input type="hidden" name="action" value="do_login" /><input type="hidden" name="url" value="{$portal_url}" />
 {$username}<br />&nbsp;&nbsp;<input type="text" class="textbox" name="username" value="" /><br /><br />
 {$lang->password}<br />&nbsp;&nbsp;<input type="password" class="textbox" name="password" value="" /><br /><br />
 <label title="{$lang->remember_me_desc}"><input type="checkbox" class="checkbox" name="remember" value="yes" /> {$lang->remember_me}</label><br /><br />
