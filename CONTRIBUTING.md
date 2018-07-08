@@ -2,7 +2,7 @@
 
 Note that issue reports for the 1.6 series are no longer accepted.
 
-You should check [1.8 Bugs and Issues](https://community.mybb.com/forum-157.html) forum and the issue tracker on GitHub to make sure the issue hasn't already been reported. These issues posted in the [1.8 Bugs and Issues] forum will be pushed to GitHub when a member of the MyBB Team is able to reproduce (confirm) that the issue exists. 
+You should check [1.8 Bugs and Issues](https://community.mybb.com/forum-157.html) forum and the issue tracker on GitHub to make sure the issue hasn't already been reported. These issues posted in the [1.8 Bugs and Issues](https://community.mybb.com/forum-157.html) forum will be pushed to GitHub when a member of the MyBB Team is able to reproduce (confirm) that the issue exists. 
 
 ## Suggesting features
 
