@@ -594,7 +594,7 @@ var Collapsible = {
 
 				document.addEventListener('click', function(e)
 				{
-					if(e.target && e.target === toggle)
+					if(e.target && (e.target === toggle || toggle.contains(e.target)))
 					{
 						Collapsible.expandCollapse(collapse, control);
 					}
