@@ -1210,10 +1210,10 @@ function user_permissions($uid=0)
 {
 	global $mybb, $cache, $groupscache, $user_cache;
 
-	// If no user id is specified, assume it is the current user
+	// Its a guest. Return the group permissions directly from cache
 	if($uid == 0)
 	{
-		$uid = $mybb->user['uid'];
+		return $groupscache[1];
 	}
 
 	// User id does not match current user, fetch permissions
