@@ -1203,7 +1203,7 @@ function fetch_page_url($url, $page)
 /**
  * Fetch the permissions for a specific user
  *
- * @param int $uid The user ID
+ * @param int $uid The user ID, if no user ID is provided then current user's ID will be considered.
  * @return array Array of user permissions for the specified user
  */
 function user_permissions($uid=null)
