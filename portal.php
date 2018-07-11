@@ -252,17 +252,7 @@ if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] !
 		// Create a key to test if this user is a search bot.
 		$botkey = my_strtolower(str_replace("bot=", '', $user['sid']));
 
-		if($user['uid'] == "0")
-		{
-			++$guestcount;
-		}
-		elseif(my_strpos($user['sid'], 'bot=') !== false && $spiders[$botkey])
-		{
-			// The user is a search bot.
-			$onlinebots[] = format_name($spiders[$botkey]['name'], $spiders[$botkey]['usergroup']);
-			++$botcount;
-		}
-		else
+		if($user['uid'] > 0)
 		{
 			if(empty($doneusers[$user['uid']]) || $doneusers[$user['uid']] < $user['time'])
 			{
@@ -293,6 +283,35 @@ if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] !
 				}
 			}
 		}
+		elseif(my_strpos($user['sid'], 'bot=') !== false && $spiders[$botkey])
+		{
+			// The user is a search bot.
+			if($mybb->settings['wolorder'] == 'username')
+			{
+				$key = $spiders[$botkey]['name'];
+			}
+			else
+			{
+				$key = $user['time'];
+			}
+
+			$onlinebots[$key] = format_name($spiders[$botkey]['name'], $spiders[$botkey]['usergroup']);
+			++$botcount;
+		}
+		else
+		{
+			++$guestcount;
+		}
+	}
+
+	if($mybb->settings['wolorder'] == 'activity')
+	{
+		// activity ordering is DESC, username is ASC
+		krsort($onlinebots);
+	}
+	else
+	{
+		ksort($onlinebots);
 	}
 
 	$onlinemembers = array_merge($onlinebots, $onlinemembers);

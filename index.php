@@ -124,8 +124,17 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 		}
 		elseif(my_strpos($user['sid'], 'bot=') !== false && $spiders[$botkey])
 		{
+			if($mybb->settings['wolorder'] == 'username')
+			{
+				$key = $spiders[$botkey]['name'];
+			}
+			else
+			{
+				$key = $user['time'];
+			}
+
 			// The user is a search bot.
-			$onlinebots[] = format_name($spiders[$botkey]['name'], $spiders[$botkey]['usergroup']);
+			$onlinebots[$key] = format_name($spiders[$botkey]['name'], $spiders[$botkey]['usergroup']);
 			++$botcount;
 		}
 		else
@@ -138,6 +147,16 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 		{
 			++$forum_viewers[$user['location1']];
 		}
+	}
+
+	if($mybb->settings['wolorder'] == 'activity')
+	{
+		// activity ordering is DESC, username is ASC
+		krsort($onlinebots);
+	}
+	else
+	{
+		ksort($onlinebots);
 	}
 
 	$onlinemembers = array_merge($onlinebots, $onlinemembers);
