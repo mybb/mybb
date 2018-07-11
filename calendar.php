@@ -1455,6 +1455,12 @@ if($mybb->input['action'] == "event")
 	}
 
 	$displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
+
+	if(!$event['displaygroup'])
+	{
+		$event['displaygroup'] = $event['usergroup'];
+	}
+
 	$display_group = usergroup_displaygroup($event['displaygroup']);
 	if(is_array($display_group))
 	{
@@ -1798,6 +1804,12 @@ if($mybb->input['action'] == "dayview")
 			}
 
 			$displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
+
+			if(!$event['displaygroup'])
+			{
+				$event['displaygroup'] = $event['usergroup'];
+			}
+
 			$display_group = usergroup_displaygroup($event['displaygroup']);
 			if(is_array($display_group))
 			{

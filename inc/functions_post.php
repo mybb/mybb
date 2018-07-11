@@ -194,6 +194,12 @@ function build_postbit($post, $post_type=0)
 
 	// Fetch display group data.
 	$displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
+
+	if(!$post['displaygroup'])
+	{
+		$post['displaygroup'] = $post['usergroup'];
+	}
+
 	$displaygroup = usergroup_displaygroup($post['displaygroup']);
 	if(is_array($displaygroup))
 	{

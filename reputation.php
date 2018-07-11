@@ -46,6 +46,12 @@ $user_permissions = user_permissions($uid);
 
 // Fetch display group properties.
 $displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
+
+if(!$user['displaygroup'])
+{
+	$user['displaygroup'] = $user['usergroup'];
+}
+
 $display_group = usergroup_displaygroup($user['displaygroup']);
 if(is_array($display_group))
 {
