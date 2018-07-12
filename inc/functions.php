@@ -1203,17 +1203,23 @@ function fetch_page_url($url, $page)
 /**
  * Fetch the permissions for a specific user
  *
- * @param int $uid The user ID
+ * @param int $uid The user ID, if no user ID is provided then current user's ID will be considered.
  * @return array Array of user permissions for the specified user
  */
-function user_permissions($uid=0)
+function user_permissions($uid=null)
 {
 	global $mybb, $cache, $groupscache, $user_cache;
 
 	// If no user id is specified, assume it is the current user
-	if($uid == 0)
+	if($uid === null)
 	{
 		$uid = $mybb->user['uid'];
+	}
+
+	// Its a guest. Return the group permissions directly from cache
+	if($uid == 0)
+	{
+		return $groupscache[1];
 	}
 
 	// User id does not match current user, fetch permissions
