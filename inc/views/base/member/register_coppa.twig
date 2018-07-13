@@ -5,62 +5,58 @@
 {% endblock head %}
 
 {% block body %}
+<div class="page-content page-content--centered">
+    <header class="page-header">
+        <h1 class="title title--page">{{ lang.coppa_compliance }}</h1>
+    </header>
     <form action="member.php" method="post">
-        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-            <tr>
-                <td class="thead"><strong>{{ mybb.settings.bbname }} - {{ lang.coppa_compliance }}</strong></td>
-            </tr>
-            <tr>
-                <td class="trow1">
+        <div class="block block--form form">
+            <section class="section section--form">
+                <div class="row row--form">
                     {{ lang.coppa_desc|raw }}
-                    <br /><br />
-                    <div style="width: 400px; margin: auto; margin-bottom: 15px;">
-                        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-                            <tr>
-                                <td colspan="1" class="thead"><strong>{{ lang.date_of_birth }}</strong></td>
-                            </tr>
-                            <tr>
-                                <td class="trow1">
-                                    <table cellpadding="4" border="0" align="center">
-                                        <tr>
-                                            <td class="smalltext"><label for="day">{{ lang.day }}:</label></td>
-                                            <td class="smalltext"><label for="month">{{ lang.month }}:</label></td>
-                                            <td class="smalltext"><label for="year">{{ lang.year }}:</label></td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <select name="bday1" id="day">
-                                                    <option value="">&nbsp;</option>
-                                                    {% for day in days %}
-                                                        <option value="{{ day.day }}"{% if day.selected %} selected="selected"{% endif %}>{{ day.day }}</option>
-                                                    {% endfor %}
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <select name="bday2" id="month">
-                                                    <option value="">&nbsp;</option>
-                                                    {% for month in months %}
-                                                        <option value="{{ month.month }}"{% if month.selected %} selected="selected"{% endif %}>{{ month.name }}</option>
-                                                    {% endfor %}
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <input type="text" class="textbox" size="4" maxlength="4" name="bday3" id="year" value="{{ year }}" />
-                                            </td>
-                                        </tr>
-                                    </table>
-                                    <div class="smalltext" style="text-align: center;">{{ lang.hide_dob }}</div>
-                                </td>
-                            </tr>
-                        </table>
+                </div>
+                <div class="row row--form field">
+                    <h3 class="field__name">{{ lang.date_of_birth }}</h3>
+                    <p class="field__description">{{ lang.hide_dob }}</p>
+                    <div class="date-field">
+                        <div class="date-field__item">
+                            <h4 class="date-field__name"><label for="day">{{ lang.day }}</label></h4>
+                            <div class="select-field">
+                                <i class="select-field__icon fas fa-sort"></i>
+                                <select name="bday1" id="day">
+                                    <option value="">&nbsp;</option>
+                                    {% for day in days %}
+                                        <option value="{{ day.day }}"{% if day.selected %} selected="selected"{% endif %}>{{ day.day }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="date-field__item">
+                            <h4 class="date-field__name"><label for="month">{{ lang.month }}</label></h4>
+                            <div class="select-field">
+                                <i class="select-field__icon fas fa-sort"></i>
+                                <select name="bday2" id="month">
+                                    <option value="">&nbsp;</option>
+                                    {% for month in months %}
+                                        <option value="{{ month.month }}"{% if month.selected %} selected="selected"{% endif %}>{{ month.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="date-field__item">
+                            <h4 class="date-field__name"><label for="year">{{ lang.year }}</label></h4>
+                            <input type="text" class="textbox textbox--small" size="4" maxlength="4" name="bday3" id="year" value="{{ year }}" />
+                        </div>
                     </div>
-                </td>
-            </tr>
-        </table>
-        <br />
-        <div align="center">
-            <input type="hidden" name="action" value="register" />
-            <input type="submit" class="button" name="agree" value="{{ lang.continue_registration }}" />
+                </div>
+            </section>
+            <div class="form__submit">
+                <button type="submit" class="button button--medium" name="agree">
+                    <span class="button__text">{{ lang.continue_registration }}</span>
+                    <i class="button__icon button__icon--after fas fa-arrow-right"></i>
+                </button>
+            </div>
         </div>
+        <input type="hidden" name="action" value="register" />
     </form>
 {% endblock body %}

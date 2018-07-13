@@ -1,12 +1,8 @@
 <div class="modal">
     <div style="overflow-y: auto; max-height: 400px;">
-        <table width="100%" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" border="0" align="center" class="tborder">
-            <tr>
-                <td colspan="2" class="thead"><strong>{{ lang.view_notes_for }}</strong></td>
-            </tr>
-            <tr>
-                <td class="trow1">{{ user.usernotes|raw }}</td>
-            </tr>
-        </table>
+        <section class="block">
+            <h1 class="title title--major">{{ lang.view_notes_for }}</h1>
+            <div class="block__content">{{ user.usernotes|raw }}</div>
+        </section>
     </div>
 </div>

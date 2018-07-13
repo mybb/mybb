@@ -5,26 +5,19 @@
 {% endblock head %}
 
 {% block body %}
-
-<table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder tfixed clear no_bottom_border">
-    <tr>
-        <td class="thead">
-            <strong>{{ lang.forum_announcement }}</strong>
-        </td>
-    </tr>
-    <tr>
-        <td id="posts_container">
-            <div id="posts">
+    <div class="page-content">
+        <header class="page-header">
+        	<h1 class="title title--page">{{ lang.forum_announcement }}</h1>
+        <header>
+        <div id="posts_container">
+            <section class="topic" id="posts">
                 {{ announcement|raw }}
-            </div>
-        </td>
-    </tr>
-</table>
-
-<script type="text/javascript">
-    $(".author_avatar img").error(function () {
-        $(this).unbind("error").closest('.author_avatar').remove();
-    });
-</script>
-
+            </section>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(".author_avatar img").error(function () {
+            $(this).unbind("error").closest('.author_avatar').remove();
+        });
+    </script>
 {% endblock body %}

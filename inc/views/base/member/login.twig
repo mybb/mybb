@@ -5,34 +5,44 @@
 {% endblock head %}
 
 {% block body %}
-    {{ inline_errors|raw }}
-    {% if mybb.user.uid %}
-        <fieldset class="align_right smalltext">{{ lang.already_logged_in|raw }}</fieldset>
-        <br />
-    {% endif %}
-    <form action="member.php" method="post">
-        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-            <tr>
-                <td class="thead" colspan="2"><strong>{{ lang.login }}</strong></td>
-            </tr>
-            <tr>
-                <td class="trow1"><strong><label for="username">{{ lang.username }}</label></strong></td>
-                <td class="trow1"><input type="text" class="textbox" name="username" size="25" style="width: 200px;" id="username" value="{{ login.username }}" /></td>
-            </tr>
-            <tr>
-                <td class="trow2"><strong><label for="password">{{ lang.password }}</label></strong><br /><span class="smalltext">{{ lang.pw_note }}</span></td>
-                <td class="trow2"><input type="password" class="textbox" name="password" size="25" style="width: 200px;" id="password" value="{{ login.password }}" /> (<a href="member.php?action=lostpw">{{ lang.lostpw_note }}</a>)</td>
-            </tr>
-            <tr>
-                <td class="trow1" colspan="2" align="center"><label title="{{ lang.remember_me_desc }}"><input type="checkbox" class="checkbox" name="remember" checked="checked" value="yes" /> {{ lang.remember_me }}</label></td>
-            </tr>
-            {{ captcha|raw }}
-        </table>
-        <br />
-        <div align="center">
+    <div class="page-content page-content--centered">
+        <header class="page-header">
+            <h1 class="title title--page">{{ lang.login }}</h1>
+       </header>
+        {{ inline_errors|raw }}
+        {% if mybb.user.uid %}
+            <div class="alert">
+                <div class="alert__message">{{ lang.already_logged_in|raw }}</div>
+            </div>
+        {% endif %}
+        <form action="member.php" method="post">
+            <section class="block block--form form">
+                <div class="section section--form">
+                    <div class="row row--form field">
+                        <h3 class="field__name"><label for="username">{{ lang.username }}</label></h3>
+                        <input type="text" class="textbox" name="username" id="username" value="{{ login.username }}" required autofocus>
+                    </div>
+                    <div class="row row--form field">
+                        <h3 class="field__name"><label for="password">{{ lang.password }}</label></h3>
+                        <p class="field__description"><a href="member.php?action=lostpw">{{ lang.lostpw_note }}</a></p>
+                        <input type="password" class="textbox" name="password" id="password" value="{{ login.password }}" required>
+                    </div>
+                    <div class="row row--form field">
+                        <p class="option-field option-field--compact">
+                            <label title="{{ lang.remember_me_desc }}"><input type="checkbox" class="checkbox" name="remember" checked="checked" value="yes" /> {{ lang.remember_me }}</label>
+                        </p>
+                    </div>
+                    {{ captcha|raw }}
+                </div>
+                <div class="form__submit">
+                    <button type="submit" class="button button--big" tabindex="3">
+    					<i class="button__icon fas fa-sign-in-alt"></i>
+    					<span class="button__text">{{ lang.login }}</span>
+    				</button>
+                </div>
+            </section>
             <input type="hidden" name="action" value="do_login" />
             <input type="hidden" name="url" value="{{ login.redirect_url }}" />
-            <input type="submit" class="button" name="submit" value="{{ lang.login }}" />
-        </div>
-    </form>
+        </form>
+    </div>
 {% endblock body %}

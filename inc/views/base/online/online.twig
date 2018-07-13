@@ -9,58 +9,82 @@
 {% endblock head %}
 
 {% block body %}
-    {{ multipage|raw }}
+    <div class="page-content">
+        <header class="page-header">
+            <h1 class="title title--page">{{ lang.users_online }}</h1>
+        </header>
+        <div class="page-controls page-controls--top">
+            {{ multipage|raw }}
+        </div>
+        <div class="sort-results">
+            <span class="sort-results__text">{{ lang.sort_results }}</span>
+            <a href="online.php?sortby=username" class="button button--basic">
+                <i class="button__icon fas fa-user"></i>
+                <span class="button__text">{{ lang.on_username }}</span>
+            </a>
+            <a href="online.php?sortby=time" class="button button--basic">
+                <i class="button__icon fas fa-clock"></i>
+                <span class="button__text">{{ lang.time }}</span>
+            </a>
+            <a href="online.php?sortby=location" class="button button--basic">
+                <i class="button__icon fas fa-globe"></i>
+                <span class="button__text">{{ lang.location }}</span>
+            </a>
+        </div>
+        <div class="user-list">
+            {% for user in online_users %}
+                <div class="user-list__user">
+                    <h2 class="user-list__username">{{ user.online_name|raw }}</h2>
+                    <ul class="list list--stats list--user">
+                        <li class="list__item">
+                            <span class="list__field">{{ lang.location }}</span>
+                            <span class="list__value">{{ user.location|raw }}</span>
+                        </li>
+                        <li class="list__item">
+                            <span class="list__field">{{ lang.time }}</span>
+                            <span class="list__value">{{ user.online_time}}</span>
+                        </li>
+                        {% if mybb.usergroup.canviewonlineips %}
+                            <li class="list__item">
+                            	<span class="list__field">{{ lang.ip }}</span>
+                            	<span class="list__value">
+                                    {{ user.ip }}
+                                    {% if mybb.usergroup.canmodcp and mybb.usergroup.canuseipsearch %}
+                                        <a href="modcp.php?action=ipsearch&amp;ipaddress={{ user.ip }}&amp;search_users=1">
+                                            {{ lang.lookup }}
+                                        </a>
+                                    {% endif %}
+                                </span>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="page-controls">
+            {{ multipage|raw }}
+            <div class="page-buttons">
+				<a href="online.php?action=today" class="button button--basic">
+					<i class="button__icon fas fa-calendar"></i>
+					<span class="button__text">{{ lang.online_today }}</span>
+				</a>
+				<a href="online.php" class="button button--basic">
+					<i class="button__icon fas fa-sync"></i>
+					<span class="button__text">{{ lang.refresh_page }}</span>
+				</a>
+			</div>
+        </div>
+
     <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
         <tr>
-            <td class="thead" colspan="3"><strong>{{ lang.users_online }}</strong></td>
-        </tr>
-        <tr>
             <td class="tcat" align="center">
-                <a href="online.php?sortby=username">
-                    <span class="smalltext"><strong>{{ lang.on_username }}</strong></span>
-                </a>
+
             </td>
             <td class="tcat" align="center">
-                <a href="online.php?sortby=time">
-                    <span class="smalltext"><strong>{{ lang.time }}</strong></span>
-                </a>
+
             </td>
             <td class="tcat" width="50%">
-                <a href="online.php?sortby=location">
-                    <span class="smalltext"><strong>{{ lang.location }}</strong></span>
-                </a>
-            </td>
-        </tr>
-        {% for user in online_users %}
-            <tr>
-                <td class="trow1">
-                    {{ user.online_name|raw }}
 
-                    {% if mybb.usergroup.canviewonlineips %}
-                        <br/>
-                        <span class="smalltext">
-                            {{ lang.ip }} {{ user.ip }}
-
-                            {% if mybb.usergroup.canmodcp and mybb.usergroup.canuseipsearch %}
-                                <a href="modcp.php?action=ipsearch&amp;ipaddress={{ user.ip }}&amp;search_users=1">
-                                    {{ lang.lookup }}
-                                </a>
-                            {% endif %}
-                        </span>
-                    {% endif %}
-                </td>
-                <td align="center" class="trow2">{{ user.online_time }}</td>
-                <td class="trow1" width="50%">{{ user.location|raw }}</td>
-            </tr>
-        {% endfor %}
-        <tr>
-            <td class="tfoot" colspan="3" align="right">
-                <span class="smalltext">
-                    <strong>
-                        <a href="online.php?action=today">{{ lang.online_today }}</a> |
-                        <a href="online.php">{{ lang.refresh_page }}</a>
-                    </strong>
-                </span>
             </td>
         </tr>
     </table>

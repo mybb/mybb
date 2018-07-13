@@ -6,321 +6,317 @@
 {% endblock head %}
 
 {% block body %}
-    <fieldset>
-        <table width="100%" cellspacing="0" cellpadding="0" border="0">
-            <tr>
-                <td width="75%">
-                    <span class="largetext"><strong>{{ memprofile.formattedname|raw }}</strong></span><br />
-                    <span class="smalltext">
-                        ({{ memprofile.user_title }})<br />
-                        {% if memprofile.groupimage %}
-                            <img src="{{ memprofile.groupimage }}" alt="{{ memprofile.user_title }}" title="{{ memprofile.user_title }}" /><br />
+    <div class="profile">
+        <header class="page-header profile__header">
+            {% if memprofile.useravatar %}
+                <img src="{{ memprofile.avatar_image }}" alt="" {{ memprofile.avatar_width_height }} class="avatar" />
+            {% endif %}
+            <h1 class="profile__username">{{ memprofile.formattedname|raw }}</h1>
+            <p class="profile__usertitle">{{ memprofile.user_title }}</p>
+            {% if memprofile.groupimage %}
+                <img src="{{ memprofile.groupimage }}" alt="{{ memprofile.user_title }}" title="{{ memprofile.user_title }}" /><br />
+            {% endif %}
+            {% if memprofile.starimage and memprofile.stars %}
+                {% spaceless %}
+                    {% for star in range(1, memprofile.stars) %}
+                        <img src="{{ memprofile.starimage }}" border="0" alt="*" />
+                    {% endfor %}
+                {% endspaceless %}
+            {% endif %}
+        </header>
+        <div class="page-controls">
+            <div class="page-buttons">
+                {% if memprofile.showoptions %}
+                    {% if memprofile.showbuddy %}
+                        {% if memprofile.onbuddylist %}
+                            <a href="usercp.php?action=do_editlists&amp;delete={{ memprofile.uid }}&amp;my_post_key={{ mybb.post_code }}" class="button button--secondary button--half-width remove_buddy_button">
+                                <i class="button__icon far fa-heart"></i>
+                                <span class="button__text">{{ lang.remove_from_buddy_list }}</span>
+                            </a>
+                        {% else %}
+                            <a href="usercp.php?action=do_editlists&amp;add_username={{ memprofile.username }}&amp;my_post_key={{ mybb.post_code }}" class="button button--secondary button--half-width add_buddy_button">
+                                <i class="button__icon fas fa-heart"></i>
+                                <span class="button__text">{{ lang.add_to_buddy_list }}</span>
+                            </a>
                         {% endif %}
-                        {% if memprofile.starimage and memprofile.stars %}
-                            {% spaceless %}
-                                {% for star in range(1, memprofile.stars) %}
-                                    <img src="{{ memprofile.starimage }}" border="0" alt="*" />
-                                {% endfor %}
-                            {% endspaceless %}
+                    {% endif %}
+                    {% if memprofile.showignore %}
+                        {% if memprofile.onignorelist %}
+                            <a href="usercp.php?action=do_editlists&amp;manage=ignored&amp;delete={{ memprofile.uid }}&amp;my_post_key={{ mybb.post_code }}" class="button button--secondary button--half-width remove_ignore_button">
+                                <i class="button__icon fas fa-shield-alt"></i>
+                                <span class="button__text">{{ lang.remove_from_ignore_list }}</span>
+                            </a>
+                        {% else %}
+                            <a href="usercp.php?action=do_editlists&amp;manage=ignored&amp;add_username={{ memprofile.username }}&amp;my_post_key={{ mybb.post_code }}" class="button button--secondary button--half-width add_ignore_button">
+                                <i class="button__icon fas fa-shield-alt"></i>
+                                <span class="button__text">{{ lang.add_to_ignore_list }}</span>
+                            </a>
                         {% endif %}
-                        <br />
-                        <br />
-                        <strong>{{ lang.registration_date }}</strong> {{ memprofile.memregdate|raw }}<br />
-                        <strong>{{ lang.date_of_birth }}</strong> {{ memprofile.membday }} {{ memprofile.membdayage }}<br />
-                        <strong>{{ lang.local_time }}</strong> {{ trans('local_time_format', memprofile.memlocaldate, memprofile.memlocaltime) }}<br />
-                        <strong>{{ lang.postbit_status }}</strong> 
+                    {% endif %}
+                    {% if memprofile.showreport %}
+                        <a href="javascript:Report.reportUser({{ memprofile.uid }});" class="button button--secondary button--half-width report_user_button">
+                            <i class="button__icon fas fa-flag"></i>
+                            <span class="button__text">{{ lang.report_user }}</span>
+                        </a>
+                    {% endif %}
+                {% endif %}
+                {% if memprofile.showpm %}
+                    <a href="private.php?action=send&amp;uid={{ memprofile.uid }}" class="button button--half-width">
+                        <i class="button__icon fas fa-envelope"></i>
+                        <span class="button__text">{{ lang.send_message }}</span>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="page-content page-content--sidebar profile__content">
+            {% if memprofile.away %}
+                <section class="container container--away-note">
+                    <h3 class="title title--container">{{ trans('away_note', memprofile.username) }}</h3>
+                    <p>{{ lang.away_reason }} {{ memprofile.awayreason }}</p>
+                    <p>{{ lang.away_since }} {{ memprofile.awaydate }} &mdash; {{ lang.away_returns }} {{ memprofile.returndate }}</p>
+                </section>
+            {% endif %}
+            {% if memprofile.banned %}
+                <section class="container container--ban-note">
+                    <h3 class="title title--container">{{ lang.ban_note }}</h3>
+                    <p>{{ lang.banned_warning2 }}: {{ memprofile.banned_reason }}</p>
+                    <p>
+                        <strong>{{ lang.ban_by }}:</strong> {{ memprofile.banned_adminuser|raw }} &mdash; <strong>{{ lang.ban_length }}:</strong> {{ memprofile.banlength }}
+                        {% if memprofile.perm_ban %}
+                            {{ lang.na }}
+                        {% else %}
+                            <span class="{{ memprofile.banned_class }}">({{ memprofile.timeremaining }} {{ lang.ban_remaining }})</span>
+                        {% endif %}
+                    </p>
+                </section>
+            {% endif %}
+            {% if memprofile.showsignature %}
+                <section class="block">
+                    <h2 class="title title--major">{{ trans('users_signature', memprofile.username) }}</h2>
+                    <div class="row row--profile-field profile-field">
+                        <div class="profile-field__value scaleimages">
+                            {{ memprofile.signature|raw }}
+                        </div>
+                    </div>
+                </section>
+            {% endif %}
+            <section class="block">
+				<h3 class="title title--major">{{ trans('users_forum_info', memprofile.username) }}</h3>
+                <div class="row row--profile-field profile-field">
+					<h4 class="profile-field__name">{{ lang.total_posts }}</h4>
+					<p class="profile-field__value">
+                        {{ memprofile.postnum }} ({{ trans('ppd_percent_total', memprofile.ppd, memprofile.post_percent) }})
+                        {% if mybb.usergroup.cansearch %}
+                            <br />(<a href="search.php?action=finduser&amp;uid={{ memprofile.uid }}">{{ lang.find_posts }}</a>)
+                        {% endif %}
+                    </p>
+				</div>
+                <div class="row row--profile-field profile-field">
+					<h4 class="profile-field__name">{{ lang.total_threads }}</h4>
+					<p class="profile-field__value">
+                        {{ memprofile.threadnum }} ({{ trans('tpd_percent_total', memprofile.tpd, memprofile.thread_percent) }})
+                        {% if mybb.usergroup.cansearch %}
+                            <br />(<a href="search.php?action=finduserthreads&amp;uid={{ memprofile.uid }}">{{ lang.find_threads }}</a>)
+                        {% endif %}
+                    </p>
+				</div>
+                {% if memprofile.showreputation %}
+                    <div class="row row--profile-field profile-field">
+    					<h4 class="profile-field__name">{{ lang.reputation }}</h4>
+    					<p class="profile-field__value">
+                            {{ memprofile.reputation|raw }} [<a href="reputation.php?uid={{ memprofile.uid }}">{{ lang.reputation_details }}</a>]
+                            {% if memprofile.showvote %}
+                                [<a href="javascript:void(0)" onclick="MyBB.reputation({{ memprofile.uid }}); return false;">{{ lang.reputation_vote }}</a>]
+                            {% endif %}
+                        </p>
+    				</div>
+                {% endif %}
+                {% if mybb.settings.usereferrals %}
+                    <div class="row row--profile-field profile-field">
+    					<h4 class="profile-field__name">{{ lang.members_referred }}</h4>
+    					<p class="profile-field__value">{{ memprofile.referrals }}</p>
+    				</div>
+                {% endif %}
+                {% if memprofile.showwarning %}
+                    <div class="row row--profile-field profile-field">
+    					<h4 class="profile-field__name">{{ lang.warning_level }}</h4>
+    					<p class="profile-field__value">
+                            <a href="{{ memprofile.warning_link }}">{{ memprofile.warning_level|raw }}</a>
+                            {% if memprofile.warn_user %}
+                                [<a href="warnings.php?action=warn&amp;uid={{ memprofile.uid }}">{{ lang.warn }}</a>]
+                            {% endif %}
+                        </p>
+    				</div>
+                {% endif %}
+                <div class="row row--profile-field profile-field">
+					<h4 class="profile-field__name">{{ lang.timeonline }}</h4>
+					<p class="profile-field__value">{{ memprofile.time_online }}</p>
+				</div>
+                <div class="row row--profile-field profile-field">
+					<h4 class="profile-field__name">{{ lang.postbit_status }}</h4>
+					<p class="profile-field__value">
                         {% if memprofile.isonline %}
                             <a href="online.php"><span class="online" style="font-weight: bold;">{{ lang.postbit_status_online }}</span></a> ({{ memprofile.online_location|raw }} @ {{ memprofile.online_location_time }})
                         {% else %}
                             <span class="offline" style="font-weight: bold;">{{ lang.postbit_status_offline }}</span>
                         {% endif %}
-                    </span>
-                </td>
-                <td width="25%" align="right" valign="middle">
-                    {% if memprofile.useravatar %}
-                        <img src="{{ memprofile.avatar_image }}" alt="" {{ memprofile.avatar_width_height }} />
-                    {% endif %}
-                </td>
-            </tr>
-        </table>
-    </fieldset>
-    <br />
-    {% if memprofile.away %}
-        <fieldset>
-            <legend><strong>{{ trans('away_note', memprofile.username) }}</strong></legend>
-            <em>{{ lang.away_reason }} {{ memprofile.awayreason }}</em><br />
-            <span class="smalltext">{{ lang.away_since }} {{ memprofile.awaydate }} &mdash; {{ lang.away_returns }} {{ memprofile.returndate }}</span>
-        </fieldset>
-        <br />
-    {% endif %}
-    {% if memprofile.banned %}
-        <fieldset>
-            <legend><strong>{{ lang.ban_note }}</strong></legend>
-            <em>{{ lang.banned_warning2 }}: {{ memprofile.banned_reason }}</em><br />
-            <span class="smalltext">
-                <strong>{{ lang.ban_by }}:</strong> {{ memprofile.banned_adminuser|raw }} &mdash; <strong>{{ lang.ban_length }}:</strong> {{ memprofile.banlength }} 
-                <span class="smalltext">
-                    {% if memprofile.perm_ban %}
-                        {{ lang.na }}
-                    {% else %}
-                        <span class="{{ memprofile.banned_class }}">({{ memprofile.timeremaining }} {{ lang.ban_remaining }})</span>
-                    {% endif %}
-                </span>
-            </span>
-        </fieldset>
-        <br />
-    {% endif %}
-    <table width="100%" cellspacing="0" cellpadding="0" border="0" align="center">
-        <tr>
-            <td width="50%" valign="top">
-                <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-                    <tr>
-                        <td colspan="2" class="thead"><strong>{{ trans('users_forum_info', memprofile.username) }}</strong></td>
-                    </tr>
-                    <tr>
-                        <td class="trow1" style="width: 30%;"><strong>{{ lang.joined }}</strong></td>
-                        <td class="trow1">{{ memprofile.memregdate|raw }}</td>
-                    </tr>
-                    <tr>
-                        <td class="trow2"><strong>{{ lang.lastvisit }}</strong></td>
-                        <td class="trow2">{{ memprofile.last_active|raw }}</td>
-                    </tr>
-                    <tr>
-                        <td class="trow1"><strong>{{ lang.total_posts }}</strong></td>
-                        <td class="trow1">
-                            {{ memprofile.postnum }} ({{ trans('ppd_percent_total', memprofile.ppd, memprofile.post_percent) }})
-                            {% if mybb.usergroup.cansearch %}
-                                <br /><span class="smalltext">(<a href="search.php?action=finduser&amp;uid={{ memprofile.uid }}">{{ lang.find_posts }}</a>)</span>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="trow2"><strong>{{ lang.total_threads }}</strong></td>
-                        <td class="trow2">
-                            {{ memprofile.threadnum }} ({{ trans('tpd_percent_total', memprofile.tpd, memprofile.thread_percent) }})
-                            {% if mybb.usergroup.cansearch %}
-                                <br /><span class="smalltext">(<a href="search.php?action=finduserthreads&amp;uid={{ memprofile.uid }}">{{ lang.find_threads }}</a>)</span>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="trow1"><strong>{{ lang.timeonline }}</strong></td>
-                        <td class="trow1">{{ memprofile.time_online }}</td>
-                    </tr>
-                    {% if mybb.settings.usereferrals %}
-                        <tr>
-                            <td class="trow2"><strong>{{ lang.members_referred }}</strong></td>
-                            <td class="trow2">{{ memprofile.referrals }}</td>
-                        </tr>
-                    {% endif %}
-                    {% if memprofile.showreputation %}
-                        <tr>
-                            <td class="trow1"><strong>{{ lang.reputation }}</strong></td>
-                            <td class="trow1">
-                                {{ memprofile.reputation|raw }} [<a href="reputation.php?uid={{ memprofile.uid }}">{{ lang.reputation_details }}</a>] 
-                                {% if memprofile.showvote %}
-                                    [<a href="javascript:void(0)" onclick="MyBB.reputation({{ memprofile.uid }}); return false;">{{ lang.reputation_vote }}</a>]
-                                {% endif %}
-                            </td>
-                        </tr>
-                    {% endif %}
-                    {% if memprofile.showwarning %}
-                        <tr>
-                            <td class="trow2"><strong>{{ lang.warning_level }}</strong></td>
-                            <td class="trow2">
-                                <a href="{{ memprofile.warning_link }}">{{ memprofile.warning_level|raw }}</a> 
-                                {% if memprofile.warn_user %}
-                                    [<a href="warnings.php?action=warn&amp;uid={{ memprofile.uid }}">{{ lang.warn }}</a>]
-                                {% endif %}
-                            </td>
-                        </tr>
-                    {% endif %}
-                </table>
-                {% if memprofile.hascontacts %}
-                    {% set row = alt_trow() %}
-                    <br />
-                    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder tfixed">
-                        <colgroup>
-                            <col style="width: 30%;" />
-                        </colgroup>
-                        <tr>
-                            <td colspan="2" class="thead"><strong>{{ trans('users_contact_details', memprofile.username) }}</strong></td>
-                        </tr>
-                        {% if memprofile.showwebsite %}
-                            <tr>
-                                <td class="{{ row }}"><strong>{{ lang.homepage }}</strong></td>
-                                <td class="{{ row }}"><a href="{{ memprofile.website }}" target="_blank" rel="noopener">{{ memprofile.website }}</a></td>
-                            </tr>
-                        {% endif %}
-                        {% if memprofile.showemail %}
-                            <tr>
-                                <td class="{{ row }}"><strong>{{ lang.email }}</strong></td>
-                                <td class="{{ row }}"><a href="member.php?action=emailuser&amp;uid={{ memprofile.uid }}">{{ trans('send_user_email', memprofile.username) }}</a></td>
-                            </tr>
-                        {% endif %}
-                        {% if memprofile.showpm %}
-                            <tr>
-                                <td class="{{ row }}"><strong>{{ lang.pm }}</strong></td>
-                                <td class="{{ row }}"><a href="private.php?action=send&amp;uid={{ memprofile.uid }}">{{ trans('send_pm', memprofile.username) }}</a></td>
-                            </tr>
-                        {% endif %}
-                        {% for customfield in contactfields %}
-                            <tr>
-                                <td class="trow1"><strong>{{ customfield.name }}:</strong></td>
-                                <td class="trow1 scaleimages">
-                                    {% if customfield.ismulti %}
-                                        <ul style="margin: 0; padding-left: 15px;">
-                                            {% for value in customfield.value %}
-                                                <li style="margin-left: 0;">{{ value }}</li>
-                                            {% endfor %}
-                                        </ul>
-                                    {% else %}
-                                        {{ customfield.value|raw }}
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </table>
-                {% endif %}
-            </td>
-            <td>&nbsp;&nbsp;</td>
-            <td width="50%" valign="top">
-                {% if memprofile.profilefields %}
-                    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder tfixed">
-                        <colgroup>
-                            <col style="width: 30%;" />
-                        </colgroup>
-                        <tr>
-                            <td colspan="2" class="thead"><strong>{{ trans('users_additional_info', memprofile.username) }}</strong></td>
-                        </tr>
-                        {% for customfield in customfields %}
-                            <tr>
-                                <td class="trow1"><strong>{{ customfield.name }}:</strong></td>
-                                <td class="trow1 scaleimages">
-                                    {% if customfield.ismulti %}
-                                        <ul style="margin: 0; padding-left: 15px;">
-                                            {% for value in customfield.value %}
-                                                <li style="margin-left: 0;">{{ value }}</li>
-                                            {% endfor %}
-                                        </ul>
-                                    {% else %}
-                                        {{ customfield.value|raw }}
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </table>
-                    <br />
-                {% endif %}
-                {% if memprofile.showsignature %}
-                    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder tfixed">
-                        <tr>
-                            <td class="thead"><strong>{{ trans('users_signature', memprofile.username) }}</strong></td>
-                        </tr>
-                        <tr>
-                            <td class="trow1 scaleimages">{{ memprofile.signature|raw }}</td>
-                        </tr>
-                    </table>
-                    <br />
-                {% endif %}
-                {% if memprofile.showmodoptions %}
-                    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" width="100%" class="tborder">
-                        <tr>
-                            <td colspan="2" class="thead"><strong>{{ lang.mod_options }}</strong></td>
-                        </tr>
-                        {% if mybb.usergroup.canuseipsearch %}
-                            <tr>
-                                <td class="trow1">
-                                    <strong>{{ lang.registration_ip }}</strong> {{ memprofile.regip }}<br />
-                                    <strong>{{ lang.last_known_ip }}</strong> {{ memprofile.lastip }}
-                                </td>
-                            </tr>
-                        {% endif %}
-                        {% if memprofile.showmanageuser %}
-                            <tr>
-                                <td class="trow1">
-                                    <ul>
-                                        {% if memprofile.showeditprofile %}
-                                            <li><a href="{{ mybb.settings.bburl }}/modcp.php?action=editprofile&amp;uid={{ memprofile.uid }}">{{ lang.edit_in_mcp }}</a></li>
-                                        {% endif %}
-                                        {% if memprofile.showbanuser %}
-                                            <li><a href="{{ mybb.settings.bburl }}/modcp.php?action=banuser&amp;uid={{ memprofile.uid }}">{{ lang.ban_in_mcp }}</a></li>
-                                        {% endif %}
-                                        {% if memprofile.showpurgespammer %}
-                                            <li><a href="{{ mybb.settings.bburl }}/moderation.php?action=purgespammer&amp;uid={{ memprofile.uid }}">{{ lang.purgespammer }}</a></li>
-                                        {% endif %}
+                    </p>
+				</div>
+            </section>
+            {% if memprofile.profilefields %}
+                <section class="block">
+                    <h3 class="title title--major">{{ trans('users_additional_info', memprofile.username) }}</h3>
+                    {% for customfield in customfields %}
+                        <div class="row row--profile-field profile-field">
+                            <h4 class="profile-field__name">{{ customfield.name }}:</h4>
+                            <p class="profile-field__value scaleimages">
+                                {% if customfield.ismulti %}
+                                    <ul style="margin: 0; padding-left: 15px;">
+                                        {% for value in customfield.value %}
+                                            <li style="margin-left: 0;">{{ value }}</li>
+                                        {% endfor %}
                                     </ul>
-                                </td>
-                            </tr>
-                        {% endif %}
-                        <tr>
-                            <td class="trow2">
-                                {% if memprofile.usernotes %}
-                                    {% if memprofile.usernotes|length > 100 %}
-                                        {{ memprofile.usernotes|slice(0, 100)|nl2br }}... [<a href="javascript:void(0)" onclick="MyBB.viewNotes({{ memprofile.uid }}); return false;">{{ lang.view_all_notes }}</a>]
-                                    {% else %}
-                                        {{ memprofile.usernotes|nl2br }}
-                                    {% endif %}
                                 {% else %}
-                                    {{ lang.no_usernotes }}
+                                    {{ customfield.value|raw }}
                                 {% endif %}
-                                <br />
-                                {% if memprofile.showeditprofile %}
-                                    <a href="{{ mybb.settings.bburl }}/modcp.php?action=editprofile&amp;uid={{ memprofile.uid }}#usernotes">{{ lang.edit_usernotes }}</a>
-                                {% endif %}
-                            </td>
-                        </tr>
-                    </table>
-                    <br />
-                {% endif %}
-                {% if memprofile.showadminoptions %}
-                    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" width="100%" class="tborder">
-                        <tr>
-                            <td colspan="2" class="thead"><strong>{{ lang.admin_options }}</strong></td>
-                        </tr>
-                        <tr>
-                            <td class="trow1">
-                                <ul>
-                                    <li><a href="{{ mybb.settings.bburl }}/{{ memprofile.admin_dir }}/index.php?module=user-users&amp;action=edit&amp;uid={{ memprofile.uid }}">{{ lang.admin_edit_in_acp }}</a></li>
-                                    <li><a href="{{ mybb.settings.bburl }}/{{ memprofile.admin_dir }}/index.php?module=user-banning&amp;uid={{ memprofile.uid }}">{{ lang.admin_ban_in_acp }}</a></li>
-                                </ul>
-                            </td>
-                        </tr>
-                    </table>
-                    <br />
-                {% endif %}
-                {% if memprofile.showoptions %}
-                    <div style="text-align: center">
-                        {% if memprofile.showbuddy %}
-                            {% if memprofile.onbuddylist %}
-                                <a href="usercp.php?action=do_editlists&amp;delete={{ memprofile.uid }}&amp;my_post_key={{ mybb.post_code }}" class="button small_button remove_buddy_button">
-                                    <span>{{ lang.remove_from_buddy_list }}</span>
-                                </a>
+                            </p>
+                        </div>
+                    {% endfor %}
+                </section>
+            {% endif %}
+
+            {% if memprofile.showmodoptions %}
+                <section class="block">
+                    <h3 class="title title--major">{{ lang.mod_options }}</h3>
+                    {% if mybb.usergroup.canuseipsearch %}
+                        <div class="row row--profile-field profile-field">
+                            <h4 class="profile-field__name">{{ lang.registration_ip }}</h4>
+                            <p class="profile-field__value">{{ memprofile.regip }}</p>
+                        </div>
+                        <div class="row row--profile-field profile-field">
+                            <h4 class="profile-field__name">{{ lang.last_known_ip }}</h4>
+                            <p class="profile-field__value">{{ memprofile.lastip }}</p>
+                        </div>
+                    {% endif %}
+                    <div class="row">
+                        {% if memprofile.usernotes %}
+                            {% if memprofile.usernotes|length > 100 %}
+                                {{ memprofile.usernotes|slice(0, 100)|nl2br }}... [<a href="javascript:void(0)" onclick="MyBB.viewNotes({{ memprofile.uid }}); return false;">{{ lang.view_all_notes }}</a>]
                             {% else %}
-                                <a href="usercp.php?action=do_editlists&amp;add_username={{ memprofile.username }}&amp;my_post_key={{ mybb.post_code }}" class="button small_button add_buddy_button">
-                                    <span>{{ lang.add_to_buddy_list }}</span>
-                                </a>
+                                {{ memprofile.usernotes|nl2br }}
                             {% endif %}
-                        {% endif %}
-                        {% if memprofile.showignore %}
-                            {% if memprofile.onignorelist %}
-                                <a href="usercp.php?action=do_editlists&amp;manage=ignored&amp;delete={{ memprofile.uid }}&amp;my_post_key={{ mybb.post_code }}" class="button small_button remove_ignore_button">
-                                    <span>{{ lang.remove_from_ignore_list }}</span>
-                                </a>
-                            {% else %}
-                                <a href="usercp.php?action=do_editlists&amp;manage=ignored&amp;add_username={{ memprofile.username }}&amp;my_post_key={{ mybb.post_code }}" class="button small_button add_ignore_button">
-                                    <span>{{ lang.add_to_ignore_list }}</span>
-                                </a>
-                            {% endif %}
-                        {% endif %}
-                        {% if memprofile.showreport %}
-                            <a href="javascript:Report.reportUser({{ memprofile.uid }});" class="button small_button report_user_button">
-                                <span>{{ lang.report_user }}</span>
-                            </a>
+                        {% else %}
+                            {{ lang.no_usernotes }}
                         {% endif %}
                     </div>
-                {% endif %}
-            </td>
-        </tr>
-    </table>
+                    {% if memprofile.showmanageuser %}
+                        <div class="row">
+                            {% if memprofile.showeditprofile %}
+                                <a href="{{ mybb.settings.bburl }}/modcp.php?action=editprofile&amp;uid={{ memprofile.uid }}#usernotes" class="button button--inline button--basic">
+                                    <i class="button__icon fas fa-edit"></i>
+                                    <span class="button__text">{{ lang.edit_usernotes }}</span>
+                                </a>
+                                <a href="{{ mybb.settings.bburl }}/modcp.php?action=editprofile&amp;uid={{ memprofile.uid }}" class="button button--inline button--basic">
+                                    <i class="button__icon fas fa-pencil-alt"></i>
+                                    <span class="button__text">{{ lang.edit_in_mcp }}</span>
+                                </a>
+                            {% endif %}
+                            {% if memprofile.showbanuser %}
+                                <a href="{{ mybb.settings.bburl }}/modcp.php?action=banuser&amp;uid={{ memprofile.uid }}" class="button button--inline button--basic">
+                                    <i class="button__icon fas fa-gavel"></i>
+                                    <span class="button__text">{{ lang.ban_in_mcp }}</span>
+                                </a>
+                            {% endif %}
+                            {% if memprofile.showpurgespammer %}
+                                <a href="{{ mybb.settings.bburl }}/moderation.php?action=purgespammer&amp;uid={{ memprofile.uid }}" class="button button--inline button--basic">
+                                    <i class="button__icon fas fa-user-slash"></i>
+                                    <span class="button__text">{{ lang.purgespammer }}</a>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </section>
+            {% endif %}
+            {% if memprofile.showadminoptions %}
+                <section class="block">
+                    <h3 class="title title--major">{{ lang.admin_options }}</h3>
+                    <div class="row">
+                        <a href="{{ mybb.settings.bburl }}/{{ memprofile.admin_dir }}/index.php?module=user-users&amp;action=edit&amp;uid={{ memprofile.uid }}" class="button button--inline button--basic">
+                            <i class="button__icon fas fa-pencil-alt"></i>
+                            <span class="button__text">{{ lang.admin_edit_in_acp }}</span>
+                        </a>
+                        <a href="{{ mybb.settings.bburl }}/{{ memprofile.admin_dir }}/index.php?module=user-banning&amp;uid={{ memprofile.uid }}" class="button button--inline button--basic">
+                            <i class="button__icon fas fa-gavel"></i>
+                            <span class="button__text">{{ lang.admin_ban_in_acp }}</span>
+                        </a>
+                    </div>
+                </section>
+            {% endif %}
+        </div>
+        <aside class="page-sidebar">
+            <section class="block block--sidebar">
+				<h1 class="title title--sidebar">{{ trans('about_user', memprofile.username) }}</h1>
+                <ul class="list list--divided list--stats">
+					<li class="list__item">
+						<span class="list__field">{{ lang.joined }}</span>
+						<span class="list__value">{{ memprofile.memregdate|raw }}</span>
+					</li>
+                    <li class="list__item">
+						<span class="list__field">{{ lang.lastvisit }}</span>
+						<span class="list__value">{{ memprofile.last_active|raw }}</span>
+					</li>
+                    <li class="list__item">
+						<span class="list__field">{{ lang.date_of_birth }}</span>
+						<span class="list__value">{{ memprofile.membday }} {{ memprofile.membdayage }}</span>
+					</li>
+                    <li class="list__item">
+						<span class="list__field">{{ lang.local_time }}</span>
+						<span class="list__value">{{ trans('local_time_format', memprofile.memlocaldate, memprofile.memlocaltime) }}</span>
+					</li>
+                </ul>
+            </section>
+
+            {% if memprofile.hascontacts %}
+                <section class="block block--sidebar">
+                    <h2 class="title title--sidebar">{{ trans('users_contact_details', memprofile.username) }}</h2>
+                    <ul class="list list--divided list--stats">
+                        {% if memprofile.showwebsite %}
+                            <li class="list__item">
+                                <span class="list__field">{{ lang.homepage }}</span>
+        						<span class="list__value"><a href="{{ memprofile.website }}" target="_blank" rel="noopener">{{ memprofile.website }}</a></span>
+                            </li>
+                        {% endif %}
+                        {% if memprofile.showemail %}
+                            <li class="list__item">
+                                <span class="list__field">{{ lang.email }}</span>
+        						<span class="list__value"><a href="member.php?action=emailuser&amp;uid={{ memprofile.uid }}">{{ trans('send_user_email', memprofile.username) }}</a></span>
+                            </li>
+                        {% endif %}
+                        {% if memprofile.showpm %}
+                            <li class="list__item">
+                                <span class="list__field">{{ lang.pm }}</span>
+        						<span class="list__value"><a href="private.php?action=send&amp;uid={{ memprofile.uid }}">{{ trans('send_pm', memprofile.username) }}</a></span>
+                            </li>
+                        {% endif %}
+                        {% for customfield in contactfields %}
+                            <li class="list__item">
+                                <span class="list__field">{{ customfield.name }}:</span>
+                                <span class="list__value">
+                                    {% if customfield.ismulti %}
+                                        <ul style="margin: 0; padding-left: 15px;">
+                                            {% for value in customfield.value %}
+                                                <li style="margin-left: 0;">{{ value }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% else %}
+                                        {{ customfield.value|raw }}
+                                    {% endif %}
+                                </span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </section>
+            {% endif %}
+        </aside>
+    </div>
 {% endblock body %}

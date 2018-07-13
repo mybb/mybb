@@ -1,43 +1,37 @@
-<tr>
-    <td>
-        {{ field.name }}
-        <br />
-        <span class="smalltext">{{ field.description }}</span>
-    </td>
-</tr>
-<tr>
-    <td>
-        {% if field.type_multiselect %}
-            <select name="profile_fields[{{ field.field }}][]" size="{{ field.length }}" multiple="multiple">
-                {% for fieldselect in field.select %}
-                    <option value="{{ fieldselect.value }}"{% if fieldselect.selected %} selected="selected"{% endif %}>{{ fieldselect.value }}</option>
-                {% endfor %}
-            </select>
-        {% endif %}
-        {% if field.type_select %}
+<div class="row row--form field">
+    <h3 class="field__name">{{ field.name }}</h3>
+    <p class="field__description">{{ field.description }}</p>
+    {% if field.type_multiselect %}
+        <select name="profile_fields[{{ field.field }}][]" size="{{ field.length }}" multiple="multiple">
+            {% for fieldselect in field.select %}
+                <option value="{{ fieldselect.value }}"{% if fieldselect.selected %} selected="selected"{% endif %}>{{ fieldselect.value }}</option>
+            {% endfor %}
+        </select>
+    {% endif %}
+    {% if field.type_select %}
+        <div class="select-field">
+            <i class="select-field__icon fas fa-sort"></i>
             <select name="profile_fields[{{ field.field }}]" size="{{ field.length }}">
                 {% for fieldselect in field.select %}
                     <option value="{{ fieldselect.value }}"{% if fieldselect.selected %} selected="selected"{% endif %}>{{ fieldselect.value }}</option>
                 {% endfor %}
             </select>
-        {% endif %}
-        {% if field.type_radio %}
-            {% for radio in field.radio %}
-                <input type="radio" class="radio" name="profile_fields[{{ field.field }}]" value="{{ radio.value }}"{% if radio.checked %} checked="checked"{% endif %} />
-                <span class="smalltext">{{ radio.value }}</span><br />
-            {% endfor %}
-        {% endif %}
-        {% if field.type_checkbox %}
-            {% for checkbox in field.checkbox %}
-                <input type="checkbox" class="checkbox" name="profile_fields[{{ field.field }}][]" value="{{ checkbox.value }}"{% if checkbox.checked %} checked="checked"{% endif %} />
-                <span class="smalltext">{{ checkbox.value }}</span><br />
-            {% endfor %}
-        {% endif %}
-        {% if field.type_textarea %}
-            <textarea name="profile_fields[{{ field.field }}]" rows="6" cols="30" style="width: 95%">{{ field.value }}</textarea>
-        {% endif %}
-        {% if field.type_text %}
-            <input type="text" name="profile_fields[{{ field.field }}]" class="textbox" size="{{ field.length }}"{% if field.maxlength %} maxlength="{{ field.maxlength }}"{% endif %} value="{{ field.value }}" />
-        {% endif %}
-    </td>
-</tr>
+        </div>
+    {% endif %}
+    {% if field.type_radio %}
+        {% for radio in field.radio %}
+            <p class="option-field option-field--compact"><label><input type="radio" class="radio" name="profile_fields[{{ field.field }}]" value="{{ radio.value }}"{% if radio.checked %} checked="checked"{% endif %} /> {{ radio.value }}</label></p>
+        {% endfor %}
+    {% endif %}
+    {% if field.type_checkbox %}
+        {% for checkbox in field.checkbox %}
+            <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="profile_fields[{{ field.field }}][]" value="{{ checkbox.value }}"{% if checkbox.checked %} checked="checked"{% endif %} /> {{ checkbox.value }}</label></p>
+        {% endfor %}
+    {% endif %}
+    {% if field.type_textarea %}
+        <textarea name="profile_fields[{{ field.field }}]" rows="6" cols="30">{{ field.value }}</textarea>
+    {% endif %}
+    {% if field.type_text %}
+        <input type="text" name="profile_fields[{{ field.field }}]" class="textbox" size="{{ field.length }}"{% if field.maxlength %} maxlength="{{ field.maxlength }}"{% endif %} value="{{ field.value }}" />
+    {% endif %}
+</div>

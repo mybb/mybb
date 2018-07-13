@@ -5,20 +5,26 @@
 {% endblock head %}
 
 {% block body %}
-    <form action="member.php" method="post">
-        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-            <tr>
-                <td class="thead" colspan="2"><strong>{{ lang.resend_activation }}</strong></td>
-            </tr>
-            <tr>
-                <td class="trow1" width="40%"><strong><label for="email">{{ lang.email_address }}</label></strong></td>
-                <td class="trow1" width="60%"><input type="text" class="textbox" name="email" id="email" /></td>
-            </tr>
-        </table>
-        <br />
-        <div align="center">
+    <div class="page-content page-content--centered">
+        <header class="page-header">
+            <h1 class="title title--page">{{ lang.resend_activation }}</h1>
+        </header>
+        <form action="member.php" method="post">
+            <div class="block block--form form">
+                <section class="section section--form">
+                    <div class="row row--form field">
+                        <h3 class="field__name"><label for="email">{{ lang.email_address }}</label></h3>
+                        <input type="text" class="textbox" name="email" id="email" />
+                    </div>
+                </section>
+                <div class="form__submit">
+                    <button type="submit" class="button button--medium" tabindex="3">
+    					<i class="button__icon fas fa-sync-alt"></i>
+    					<span class="button__text">{{ lang.request_activation }}</span>
+    				</button>
+                </div>
+            </div>
             <input type="hidden" name="action" value="do_resendactivation" />
-            <input type="submit" class="button" value="{{ lang.request_activation }}" />
-        </div>
-    </form>
+        </form>
+    </div>
 {% endblock body %}
