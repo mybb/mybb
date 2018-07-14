@@ -13,6 +13,11 @@ matrix:
     - php: 7.2
     - php: 7.2
       env: setup=lowest
+    - php: nightly
+    - php: nightly
+      env: setup=lowest
+  allow_failures:
+    - php: nightly
 
 sudo: false
 
@@ -35,3 +40,4 @@ before_script:
 script:
   - inc/vendor/bin/phpunit
   - inc/vendor/bin/phpcs
+  - composer validate --strict
