@@ -957,9 +957,9 @@ class postParser
         }
 
         if (!empty($this->options['nofollow_on'])) {
-            $link['rel'] = " rel=\"noopener nofollow\"";
+            $link['rel'] = "noopener nofollow";
         } else {
-            $link['rel'] = " rel=\"noopener\"";
+            $link['rel'] = "noopener";
         }
 
         // Fix some entities in URLs
@@ -1010,7 +1010,6 @@ class postParser
      */
     function mycode_parse_img($url, $dimensions=array(), $align='')
     {
-        global $lang;
         $image = [];
         $image['url'] = trim($url);
         $image['url'] = str_replace("\n", "", $image['url']);
@@ -1021,10 +1020,8 @@ class postParser
         }
 
         $image['css_align'] = '';
-        if ($align == "right") {
-            $image['css_align'] = ' style="float: right;"';
-        } elseif ($align == "left") {
-            $image['css_align'] = ' style="float: left;"';
+        if ($align == 'left' || $align == 'right') {
+            $image['css_align'] = $align;
         }
 
         if ($align) {
@@ -1036,13 +1033,11 @@ class postParser
         if (my_strlen($image['alt']) > 55) {
             $image['alt'] = my_substr($image['alt'], 0, 40).'...'.my_substr($image['alt'], -10);
         }
-        $image['alt'] = htmlspecialchars_uni($image['alt']);
 
-        $image['alt'] = $lang->sprintf($lang->posted_image, $image['alt']);
         $image['width'] = $image['height'] = '';
         if (isset($dimensions[0]) && $dimensions[0] > 0 && isset($dimensions[1]) && $dimensions[1] > 0) {
-            $image['width'] = " width=\"{$dimensions[0]}\"";
-            $image['height'] = " height=\"{$dimensions[1]}\"";
+            $image['width'] = $dimensions[0];
+            $image['height'] = $dimensions[1];
         }
 
         $image['url'] = $this->encode_url($image['url']);
