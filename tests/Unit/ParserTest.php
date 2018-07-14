@@ -168,7 +168,7 @@ test<br />
                 "[align={$alignment}]test[/align]" => "<div style=\"text-align: {$alignment};\" class=\"mycode_align\">test</div>",
                 "[align={$alignment}]
 test
-[/align]" => "<div style=\"text-align: {$alignment};\" class=\"mycode_align\"><br />
+[/align]" => "<div style=\"text-align: {$alignment};\" class=\"mycode_align\">
 test<br />
 </div>",
             ];
