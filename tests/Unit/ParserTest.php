@@ -25,6 +25,18 @@ class ParserTest extends TestCase
             ->andReturn(
                 str_replace("\\'", "'", addslashes('<span style="font-size: {$size}pt;" class="mycode_size">{$text}</span>'))
             );
+
+        $templatesMock->shouldReceive('get')
+            ->withArgs(['mycode_url', 1, 0])
+            ->andReturn(
+                str_replace("\\'", "'", addslashes('<a href="{$url}" target="_blank"{$rel} class="mycode_url">{$name}</a>'))
+            );
+
+        $templatesMock->shouldReceive('get')
+            ->withArgs(['mycode_img', 1, 0])
+            ->andReturn(
+                str_replace("\\'", "'", addslashes('<img src="{$url}"{$width}{$height} alt="{$alt}"{$css_align} class="mycode_img" />'))
+            );
     }
 
     protected function setUp()
@@ -300,6 +312,60 @@ test<br />
             foreach ($tests as $input => $expected) {
                 $actual = $this->parser->parse_message($input, [
                     'allow_mycode' => true,
+                ]);
+
+                $this->assertEquals($expected, $actual);
+            }
+        }
+    }
+
+    public function testSimpleImgMyCodesWithImagesAllowed()
+    {
+        $images = [
+            'https://example.com/some_image.jpg' => 'some_image.jpg',
+            'http://example.com/some_image.png' => 'some_image.png',
+        ];
+
+        foreach ($images as $imageUrl => $imageName) {
+            $tests = [
+                "[img]{$imageUrl}[/img]" => "<img src=\"{$imageUrl}\" alt=\"[Image: {$imageName}]\" class=\"mycode_img\" />",
+                "[img=50x50]{$imageUrl}[/img]" => "<img src=\"{$imageUrl}\" width=\"50\" height=\"50\" alt=\"[Image: {$imageName}]\" class=\"mycode_img\" />",
+                "[img align=left]{$imageUrl}[/img]" => "<img src=\"{$imageUrl}\" alt=\"[Image: {$imageName}]\" style=\"float: left;\" class=\"mycode_img\" /><br class=\"clear\" />",
+                "[img align=right]{$imageUrl}[/img]" => "<img src=\"{$imageUrl}\" alt=\"[Image: {$imageName}]\" style=\"float: right;\" class=\"mycode_img\" /><br class=\"clear\" />",
+                "[img=50x50 align=left]{$imageUrl}[/img]" => "<img src=\"{$imageUrl}\" width=\"50\" height=\"50\" alt=\"[Image: {$imageName}]\" style=\"float: left;\" class=\"mycode_img\" /><br class=\"clear\" />",
+            ];
+
+            foreach ($tests as $input => $expected) {
+                $actual = $this->parser->parse_message($input, [
+                    'allow_mycode' => true,
+                    'allow_imgcode' => true,
+                ]);
+
+                $this->assertEquals($expected, $actual);
+            }
+        }
+    }
+
+    public function testSimpleImgMyCodesWithImagesNotAllowed()
+    {
+        $images = [
+            'https://example.com/some_image.jpg' => 'some_image.jpg',
+            'http://example.com/some_image.png' => 'some_image.png',
+        ];
+
+        foreach ($images as $imageUrl => $imageName) {
+            $tests = [
+                "[img]{$imageUrl}[/img]" => "[Image: <a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" class=\"mycode_url\"><a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" class=\"mycode_url\">{$imageUrl}</a></a>]",
+                "[img=50x50]{$imageUrl}[/img]" => "[Image: <a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" class=\"mycode_url\"><a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" class=\"mycode_url\">{$imageUrl}</a></a>]",
+                "[img align=left]{$imageUrl}[/img]" => "[Image: <a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" class=\"mycode_url\"><a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" class=\"mycode_url\">{$imageUrl}</a></a>]",
+                "[img align=right]{$imageUrl}[/img]" => "[Image: <a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" class=\"mycode_url\"><a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" class=\"mycode_url\">{$imageUrl}</a></a>]",
+                "[img=50x50 align=left]{$imageUrl}[/img]" => "[Image: <a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" class=\"mycode_url\"><a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" class=\"mycode_url\">{$imageUrl}</a></a>]",
+            ];
+
+            foreach ($tests as $input => $expected) {
+                $actual = $this->parser->parse_message($input, [
+                    'allow_mycode' => true,
+                    'allow_imgcode' => false,
                 ]);
 
                 $this->assertEquals($expected, $actual);
