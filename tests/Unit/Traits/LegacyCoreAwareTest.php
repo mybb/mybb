@@ -53,8 +53,11 @@ trait LegacyCoreAwareTest
 
         $GLOBALS['mybb']->cache = &$GLOBALS['cache'];
 
-        $templatesMock = \Mockery::mock('templates');
+        $templatesMock = \Mockery::mock(\templates::class);
         $GLOBALS['templates'] = $templatesMock;
+
+        $dbMock = \Mockery::mock(\DB_Base::class);
+        $GLOBALS['db'] = $dbMock;
 
         require_once __DIR__ . '/../../../inc/functions.php';
     }
