@@ -122,18 +122,21 @@ if($mybb->input['action'] == "edit")
 	{
 		foreach($mybb->input['permissions'] as $module => $actions)
 		{
-			$no_access = 0;
-			foreach($actions as $action => $access)
+			if(is_array($actions))
 			{
-				if($access == 0)
+				$no_access = 0;
+				foreach($actions as $action => $access)
 				{
-					++$no_access;
+					if($access == 0)
+					{
+						++$no_access;
+					}
 				}
-			}
-			// User can't access any actions in this module - just disallow it completely
-			if($no_access == count($actions))
-			{
-				unset($mybb->input['permissions'][$module]);
+				// User can't access any actions in this module - just disallow it completely
+				if($no_access == count($actions))
+				{
+					unset($mybb->input['permissions'][$module]);
+				}
 			}
 		}
 

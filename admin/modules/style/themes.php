@@ -584,7 +584,7 @@ if($mybb->input['action'] == "export")
 		$inherited_load[] = $mybb->input['tid'];
 		$inherited_load = array_unique($inherited_load);
 
-		$inherited_themes = array();
+		$inherited_themes = $theme_stylesheets = array();
 		if(count($inherited_load) > 0)
 		{
 			$query = $db->simple_select("themes", "tid, name", "tid IN (".implode(",", $inherited_load).")");
@@ -592,12 +592,7 @@ if($mybb->input['action'] == "export")
 			{
 				$inherited_themes[$inherited_theme['tid']] = $inherited_theme['name'];
 			}
-		}
 
-		$theme_stylesheets = array();
-
-		if(count($inherited_load) > 0)
-		{
 			$query = $db->simple_select("themestylesheets", "*", "tid IN (".implode(",", $inherited_load).")", array('order_by' => 'tid', 'order_dir' => 'desc'));
 			while($theme_stylesheet = $db->fetch_array($query))
 			{
@@ -1245,7 +1240,7 @@ if($mybb->input['action'] == "edit")
 	$inherited_load[] = $mybb->input['tid'];
 	$inherited_load = array_unique($inherited_load);
 
-	$inherited_themes = array();
+	$inherited_themes = $theme_stylesheets = array();
 	if(count($inherited_load) > 0)
 	{
 		$query = $db->simple_select("themes", "tid, name", "tid IN (".implode(",", $inherited_load).")");
@@ -1253,12 +1248,7 @@ if($mybb->input['action'] == "edit")
 		{
 			$inherited_themes[$inherited_theme['tid']] = $inherited_theme['name'];
 		}
-	}
 
-	$theme_stylesheets = array();
-
-	if(count($inherited_load) > 0)
-	{
 		$query = $db->simple_select("themestylesheets", "*", "", array('order_by' => 'sid DESC, tid', 'order_dir' => 'desc'));
 		while($theme_stylesheet = $db->fetch_array($query))
 		{

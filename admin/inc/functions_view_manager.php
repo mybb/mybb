@@ -363,7 +363,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 
 		$form_container->output_row($lang->set_as_default_view, "", $form->generate_yes_no_radio("isdefault", $mybb->input['isdefault'], array('yes' => 1, 'no' => 0)));
 
-		if(count($sort_options) > 0)
+		if(is_array($sort_options) && count($sort_options) > 0)
 		{
 			$sort_directions = array(
 				"asc" => $lang->ascending,
