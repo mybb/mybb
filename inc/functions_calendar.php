@@ -514,7 +514,7 @@ function get_events($calendar, $start, $end, $unapproved=0, $private=1)
 					}
 					else if(!$first)
 					{
-						if(!isset($events_cache[$day_date]))
+						if(!isset($events_cache[$day_date]) || !is_array($events_cache[$day_date]))
 						{
 							$events_cache[$day_date] = array();
 						}

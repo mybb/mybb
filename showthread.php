@@ -897,7 +897,11 @@ if($mybb->input['action'] == "thread")
             WHERE p.tid='$tid'
             $visible
             ORDER BY p.dateline
-        ");
+		");
+		if(!is_array($postsdone))
+		{
+			$postsdone = array();
+		}
         while($post = $db->fetch_array($query))
         {
             if(!$postsdone[$post['pid']])
