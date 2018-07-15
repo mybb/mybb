@@ -126,21 +126,10 @@ if(isset($forumpermissions['canonlyreplyownthreads']) && $forumpermissions['cano
 	error_no_permission();
 }
 
-// Coming from quick reply? Set some defaults
-if($mybb->get_input('method') == "quickreply")
+// Coming from quick reply and not a preview call? Set subscription method
+if($mybb->get_input('method') == "quickreply" && !isset($mybb->input['previewpost']))
 {
-	if($mybb->user['subscriptionmethod'] == 1)
-	{
-		$mybb->input['postoptions']['subscriptionmethod'] = "none";
-	}
-	else if($mybb->user['subscriptionmethod'] == 2)
-	{
-		$mybb->input['postoptions']['subscriptionmethod'] = "email";
-	}
-	else if($mybb->user['subscriptionmethod'] == 3)
-	{
-		$mybb->input['postoptions']['subscriptionmethod'] = "pm";
-	}
+	$mybb->input['postoptions']['subscriptionmethod'] = get_subscription_method($mybb->get_input('pid', MyBB::INPUT_INT));
 }
 
 // Check if this forum is password protected and we have a valid password
@@ -878,26 +867,11 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		{
 			$postoptionschecked['signature'] = " checked=\"checked\"";
 		}
-		if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "none")
-		{
-			$postoptions_subscriptionmethod_none = "checked=\"checked\"";
-		}
-		else if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "email")
-		{
-			$postoptions_subscriptionmethod_email = "checked=\"checked\"";
-		}
-		else if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "pm")
-		{
-			$postoptions_subscriptionmethod_pm = "checked=\"checked\"";
-		}
-		else
-		{
-			$postoptions_subscriptionmethod_dont = "checked=\"checked\"";
-		}
 		if(isset($postoptions['disablesmilies']) && $postoptions['disablesmilies'] == 1)
 		{
 			$postoptionschecked['disablesmilies'] = " checked=\"checked\"";
 		}
+		$subscription_method = get_subscription_method($tid, $postoptions);
 		$subject = $mybb->input['subject'];
 	}
 	elseif($mybb->input['action'] == "editdraft" && $mybb->user['uid'])
@@ -912,22 +886,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		{
 			$postoptionschecked['disablesmilies'] = " checked=\"checked\"";
 		}
-		if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "none")
-		{
-			$postoptions_subscriptionmethod_none = "checked=\"checked\"";
-		}
-		else if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "email")
-		{
-			$postoptions_subscriptionmethod_email = "checked=\"checked\"";
-		}
-		else if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "pm")
-		{
-			$postoptions_subscriptionmethod_pm = "checked=\"checked\"";
-		}
-		else
-		{
-			$postoptions_subscriptionmethod_dont = "checked=\"checked\"";
-		}
+		$subscription_method = get_subscription_method($tid); // Subscription method doesn't get saved in drafts
 		$mybb->input['icon'] = $post['icon'];
 	}
 	else
@@ -936,34 +895,9 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		{
 			$postoptionschecked['signature'] = " checked=\"checked\"";
 		}
-
-		$subscription_method = $mybb->user['subscriptionmethod'];
-
-		$query = $db->simple_select("threadsubscriptions", "tid, notification", "tid='".$tid."' AND uid='".$mybb->user['uid']."'", array('limit' => 1));
-		$subscription = $db->fetch_array($query);
-
-		if($subscription['tid'])
-		{
-			$subscription_method = (int)$subscription['notification'] + 1;
-		}
-		
-		if($subscription_method ==  1)
-		{
-			$postoptions_subscriptionmethod_none = "checked=\"checked\"";
-		}
-		else if($subscription_method == 2)
-		{
-			$postoptions_subscriptionmethod_email = "checked=\"checked\"";
-		}
-		else if($subscription_method == 3)
-		{
-			$postoptions_subscriptionmethod_pm = "checked=\"checked\"";
-		}
-		else
-		{
-			$postoptions_subscriptionmethod_dont = "checked=\"checked\"";
-		}
+		$subscription_method = get_subscription_method($tid);
 	}
+	${'postoptions_subscriptionmethod_'.$subscription_method} = "checked=\"checked\"";
 
 	if($forum['allowpicons'] != 0)
 	{
