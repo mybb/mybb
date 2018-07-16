@@ -4,7 +4,7 @@
     <td align="center" class="{{ class }}" width="2%"><span class="thread_status {{ thread.folder.value }}" title="{{ thread.folder.label }}">&nbsp;</span></td>
     <td align="center" class="{{ class }}" width="2%">
         {% if thread.icon and iconCache[thread.icon] %}
-            <img src="{{ iconCache[thread.icon].path|replace('{theme}', theme.imgdir) }}" alt="{{ iconCache[thread.icon].name }}" title="{{ iconCache[thread.icon].name }}" />
+            <img src="{{ iconCache[thread.icon].path }}" alt="{{ iconCache[thread.icon].name }}" title="{{ iconCache[thread.icon].name }}" />
         {% endif %}
     </td>
     <td class="{{ class }}">
@@ -49,7 +49,7 @@
         {% endif %}
         {% if thread.unapprovedposts and modpermissions.canviewunapprove %}
             <span title="{{ (thread.unapprovedposts == 1) ? trans(lang.thread_unapproved_post_count, 1) : trans(lang.thread_unapproved_posts_count, thread.unapprovedposts) }}">
-                ({{ thread.unapprovedposts }}){# my_number_format hardcoded, might be worth creating a Twig function #}
+                ({{ thread.unapprovedposts|my_number_format }})
             </span>
         {% endif %}
     </td>

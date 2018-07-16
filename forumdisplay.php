@@ -78,7 +78,7 @@ if ($mybb->user['uid'] == 0) {
         $forumsread = my_unserialize($mybb->cookies['mybb']['forumread']);
     }
 
-     if(is_array($forumsread) && empty($forumsread))
+     if (is_array($forumsread) && empty($forumsread))
      {
          if (isset($mybb->cookies['mybb']['readallforums'])) {
             $forumsread[$fid] = $mybb->cookies['mybb']['lastvisit'];
@@ -481,7 +481,7 @@ if ($upper > $threadcount) {
 }
 
 // Assemble page URL
-if($mybb->input['sortby'] || $mybb->input['order'] || $mybb->input['datecut'] || $mybb->input['prefix']) // Ugly URL
+if ($mybb->input['sortby'] || $mybb->input['order'] || $mybb->input['datecut'] || $mybb->input['prefix']) // Ugly URL
 {
     $page_url = str_replace("{fid}", $fid, FORUM_URL_PAGED);
 
@@ -572,11 +572,11 @@ if ($has_announcements == true) {
 
     while ($announcement = $db->fetch_array($query)) {
         if ($announcement['startdate'] > $mybb->user['lastvisit'] && !$cookie[$announcement['aid']]) {
-            $thread['newclass'] = ' class="subject_new"';
-            $thread['folder']['value'] = "newfolder";
+            $thread['newclass'] = 'subject_new';
+            $thread['folder']['value'] = 'newfolder';
         } else {
-            $thread['newclass'] = ' class="subject_old"';
-            $thread['folder']['value'] = "folder";
+            $thread['newclass'] = 'subject_old';
+            $thread['folder']['value'] = 'folder';
         }
 
         // Mmm, eat those announcement cookies if they're older than our last visit
@@ -634,6 +634,8 @@ if ($fpermissions['canviewthreads'] != 0) {
         if ($thread['numratings'] > 0 && $ratings == false) {
             $ratings = true; // Looks for ratings in the forum
         }
+
+        $icon_cache[$thread['icon']]['path'] = str_replace('{theme}', $theme['imgdir'], $icon_cache[$thread['icon']]['path']);
 
         // If this is a moved thread - set the tid for participation marking and thread read marking to that of the moved thread
         if (substr($thread['closed'], 0, 5) == "moved") {
@@ -783,7 +785,7 @@ if (!empty($threadCache) && is_array($threadCache)) {
             $thread['pages'] = ceil($thread['pages']);
         }
 
-        if($modpermissions['ismod'] && isset($mybb->cookies[$inlinecookie]) && my_strpos($mybb->cookies[$inlinecookie], "|{$thread['tid']}|") !== false)
+        if ($modpermissions['ismod'] && isset($mybb->cookies[$inlinecookie]) && my_strpos($mybb->cookies[$inlinecookie], "|{$thread['tid']}|") !== false)
         {
             $thread['modChecked'] = true;
             ++$inlinecount;
