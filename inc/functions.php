@@ -3452,7 +3452,7 @@ function build_mycode_inserter($bind="message", $smilies = true)
  *
  * @return string Predefined / updated subscription method of the thread for the user
  */
-function get_subscription_method($tid = 0, $postoptions = [])
+function get_subscription_method($tid = 0, $postoptions = array())
 {
 	global $mybb;
 
