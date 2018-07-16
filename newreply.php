@@ -129,7 +129,7 @@ if(isset($forumpermissions['canonlyreplyownthreads']) && $forumpermissions['cano
 // Coming from quick reply and not a preview call? Set subscription method
 if($mybb->get_input('method') == "quickreply" && !isset($mybb->input['previewpost']))
 {
-	$mybb->input['postoptions']['subscriptionmethod'] = get_subscription_method($mybb->get_input('pid', MyBB::INPUT_INT));
+	$mybb->input['postoptions']['subscriptionmethod'] = get_subscription_method($mybb->get_input('tid', MyBB::INPUT_INT));
 }
 
 // Check if this forum is password protected and we have a valid password
