@@ -892,11 +892,11 @@ if($mybb->input['action'] == "thread")
 
 		// Build the threaded post display tree.
 		$query = $db->query("
-            SELECT p.username, p.uid, p.pid, p.replyto, p.subject, p.dateline
-            FROM ".TABLE_PREFIX."posts p
-            WHERE p.tid='$tid'
-            $visible
-            ORDER BY p.dateline
+			SELECT p.username, p.uid, p.pid, p.replyto, p.subject, p.dateline
+			FROM ".TABLE_PREFIX."posts p
+			WHERE p.tid='$tid'
+			$visible
+			ORDER BY p.dateline
 		");
 		if(!is_array($postsdone))
 		{
