@@ -90,6 +90,12 @@ $lang->set_language($mybb->settings['bblanguage']);
 $lang->load('global');
 $lang->load('messages');
 
+// Wipe lockout cookie if enough time has passed
+if($mybb->cookies['lockoutexpiry'] && $mybb->cookies['lockoutexpiry'] < TIME_NOW)
+{
+	my_unsetcookie('lockoutexpiry');
+}
+
 // Run global_start plugin hook now that the basics are set up
 $plugins->run_hooks('global_start');
 
