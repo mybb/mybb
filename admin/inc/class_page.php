@@ -470,11 +470,11 @@ EOF;
 				break;
 		}
 
-       	$_SERVER['PHP_SELF'] = htmlspecialchars_uni($_SERVER['PHP_SELF']);
+       	$this_file = htmlspecialchars_uni($_SERVER['SCRIPT_NAME']);
 
 		$login_page .= <<<EOF
 		<p>{$login_lang_string}</p>
-		<form method="post" action="{$_SERVER['PHP_SELF']}{$query_string}">
+		<form method="post" action="{$this_file}{$query_string}">
 		<div class="form_container">
 
 			<div class="label"{$login_label_width}><label for="username">{$lang_username}</label></div>
