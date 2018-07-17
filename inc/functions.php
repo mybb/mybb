@@ -18,6 +18,7 @@ function output_page($contents)
 	global $db, $lang, $theme, $templates, $plugins, $mybb;
 	global $debug, $templatecache, $templatelist, $maintimer, $globaltime, $parsetime;
 
+	$contents = $plugins->run_hooks("pre_parse_page", $contents);
 	$contents = parse_page($contents);
 	$totaltime = format_time_duration($maintimer->stop());
 	$contents = $plugins->run_hooks("pre_output_page", $contents);
