@@ -279,7 +279,7 @@ foreach($usergroups as $usergroup)
 		}
 	}
 
-	if($modrows && in_array($usergroup['gid'], [0,6]))
+	if($modrows && in_array($usergroup['gid'], array(0,6)))
 	{
 		$modscope = $usergroup['gid'] == 6 ? $lang->mod_forums : $lang->mod_groups;
 		eval("\$grouplist .= \"".$templates->get("showteam_moderators")."\";");
