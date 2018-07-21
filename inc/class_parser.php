@@ -1495,7 +1495,7 @@ class postParser
 
 		$id = htmlspecialchars_uni($id);
 
-		eval("\$video_code = \"".$templates->get("video_{$video}_embed")."\";");
+		eval("\$video_code = \"".$templates->get("video_{$video}_embed", 1, 0)."\";");
 		return $video_code;
 	}
 
