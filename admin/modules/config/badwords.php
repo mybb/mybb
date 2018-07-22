@@ -47,6 +47,12 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 		}
 	}
 
+	// Check validity of defined regular expression
+	if($mybb->get_input('regex', MyBB::INPUT_INT) && (@preg_match('#'.trim($mybb->input['badword']).'#is', null) === false))
+	{
+		$errors[] = $lang->error_invalid_regex;
+	}
+
 	$badword = str_replace('\*', '([a-zA-Z0-9_]{1})', preg_quote($mybb->input['badword'], "#"));
 
 	// Don't allow certain badword replacements to be added if it would cause an infinite recursive loop.
