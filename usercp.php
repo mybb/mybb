@@ -2333,7 +2333,7 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 			}
 
 			// Because Gravatars are square, hijack the width
-			list($maxwidth, $maxheight) = explode("x", my_strtolower($mybb->settings['maxavatardims']));
+			list($maxwidth, $maxheight) = preg_split('/[|x]/', my_strtolower($mybb->settings['maxavatardims']));
 			$maxheight = (int)$maxwidth;
 
 			// Rating?
@@ -2391,7 +2391,7 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 			{
 				if($width && $height && $mybb->settings['maxavatardims'] != "")
 				{
-					list($maxwidth, $maxheight) = explode("x", my_strtolower($mybb->settings['maxavatardims']));
+					list($maxwidth, $maxheight) = preg_split('/[|x]/', my_strtolower($mybb->settings['maxavatardims']));
 					if(($maxwidth && $width > $maxwidth) || ($maxheight && $height > $maxheight))
 					{
 						$lang->error_avatartoobig = $lang->sprintf($lang->error_avatartoobig, $maxwidth, $maxheight);
@@ -2454,7 +2454,7 @@ if($mybb->input['action'] == "avatar")
 
 	if($mybb->settings['maxavatardims'] != "")
 	{
-		list($maxwidth, $maxheight) = explode("x", my_strtolower($mybb->settings['maxavatardims']));
+		list($maxwidth, $maxheight) = preg_split('/[|x]/', my_strtolower($mybb->settings['maxavatardims']));
 		$lang->avatar_note .= "<br />".$lang->sprintf($lang->avatar_note_dimensions, $maxwidth, $maxheight);
 	}
 

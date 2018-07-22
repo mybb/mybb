@@ -3174,11 +3174,11 @@ function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
 
 	if($dimensions)
 	{
-		$dimensions = explode("|", $dimensions);
+		$dimensions = preg_split('/[|x]/', $dimensions);
 
 		if($dimensions[0] && $dimensions[1])
 		{
-			list($max_width, $max_height) = explode('x', $max_dimensions);
+			list($max_width, $max_height) = preg_split('/[|x]/', $max_dimensions);
 
 			if(!empty($max_dimensions) && ($dimensions[0] > $max_width || $dimensions[1] > $max_height))
 			{

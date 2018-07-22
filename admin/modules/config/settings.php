@@ -929,6 +929,30 @@ if($mybb->input['action'] == "change")
 			$lang->success_settings_updated .= $lang->sprintf($lang->success_settings_updated_hiddencaptchaimage, htmlspecialchars_uni($mybb->input['upsetting']['hiddencaptchaimagefield']), htmlspecialchars_uni($wrong_value));
 		}
 
+		// Validate avatar dimension inputs
+		$gid = (int)$mybb->input['gid'];
+		$dimfields = array(
+			8 => array('postmaxavatarsize'),
+			10 => array('useravatardims', 'maxavatardims'),
+			13 => array('memberlistmaxavatarsize')
+		);
+		if(in_array($gid, array_keys($dimfields)))
+		{
+			foreach($dimfields[$gid] as $field)
+			{
+				if(preg_match("/\b\d+[|x]{1}\d+\b/i", $mybb->input['upsetting'][$field]) || ($field == 'maxavatardims' && trim($mybb->input['upsetting'][$field]) == ""))
+				{
+					// If pipe (|) is used normalize to 'x'
+					$mybb->input['upsetting'][$field] = str_replace('|', 'x', my_strtolower($mybb->input['upsetting'][$field]));
+				}
+				else
+				{
+					flash_message($lang->sprintf($lang->error_format_dimension, $lang->{'error_field_'.$field}), 'error');
+					admin_redirect("index.php?module=config-settings&action=change&gid=".$gid);
+				}
+			}
+		}
+
 		// Have we opted for a reCAPTCHA and not set a public/private key?
 		if((isset($mybb->input['upsetting']['captchaimage']) && in_array($mybb->input['upsetting']['captchaimage'], array(4, 5)) && (!$mybb->input['upsetting']['captchaprivatekey'] || !$mybb->input['upsetting']['captchapublickey']))
 		   || (in_array($mybb->settings['captchaimage'], array(4, 5)) && (!$mybb->settings['captchaprivatekey'] || !$mybb->settings['captchapublickey'])))
