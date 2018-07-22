@@ -1,61 +1,72 @@
 <div class="modal">
     <div style="overflow-y: auto; max-height: 400px;" class="modal_{{ user.uid }}_{{ vote_check.pid }}">
-        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-            <tr>
-                <td class="trow1" style="padding: 20px">
-                    <strong>
-                        {% if existing_reputation.uid %}
-                            {{ trans('update_reputation_vote', user.username) }}
-                        {% else %}
-                            {{ trans('add_reputation_vote', user.username) }}
-                        {% endif %}
-                    </strong><br />
-                    {% if vote_check.pid %}
-                        {{ trans('add_reputation_to_post', user.username) }}
+        <form action="reputation.php" method="post" class="reputation_{{ user.uid }}_{{ vote_check.pid }}" onsubmit="return MyBB.submitReputation({{ user.uid }}, {{ vote_check.pid }});">
+            <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+            <input type="hidden" name="action" value="do_add" />
+            <input type="hidden" name="uid" value="{{ user.uid }}" />
+            <input type="hidden" name="pid" value="{{ vote_check.pid }}" />
+            <input type="hidden" name="rid" value="{{ vote_check.rid }}" />
+            <input type="hidden" name="nomodal" value="1" />
+            <section class="block block--modal">
+                <h2 class="title title--modal">
+                    {% if existing_reputation.uid %}
+                        {{ trans('update_reputation_vote', user.username) }}
+                    {% else %}
+                        {{ trans('add_reputation_vote', user.username) }}
                     {% endif %}
-                    <br />
-                    <form action="reputation.php" method="post" class="reputation_{{ user.uid }}_{{ vote_check.pid }}" onsubmit="return MyBB.submitReputation({{ user.uid }}, {{ vote_check.pid }});">
-                        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-                        <input type="hidden" name="action" value="do_add" />
-                        <input type="hidden" name="uid" value="{{ user.uid }}" />
-                        <input type="hidden" name="pid" value="{{ vote_check.pid }}" />
-                        <input type="hidden" name="rid" value="{{ vote_check.rid }}" />
-                        <input type="hidden" name="nomodal" value="1" />
-                        <select name="reputation" id="reputation">
-                            {% if mybb.settings.posrep %}
-                                {% for power in range(mybb.usergroup.reputationpower, 1) %}
-                                    <option value="{{ power }}" class="reputation_positive" onclick="$('#reputation').attr('class', 'reputation_positive');"{% if vote_check.power %} selected="selected"{% endif %}>{{ trans('power_positive', power) }}</option>
-                                {% endfor %}
-                            {% endif %}
-                            {% if mybb.settings.neurep %}
-                                <option value="0" class="reputation_neutral" onclick="$('#reputation').attr('class', 'reputation_neutral');"{% if vote_check.0 %} selected="selected"{% endif %}>{{ lang.power_neutral }}</option>
-                            {% endif %}
-                            {% if mybb.settings.negrep %}
-                                {% for power in range(1, mybb.usergroup.reputationpower) %}
-                                    <option value="-{{ power }}" class="reputation_negative" onclick="$('#reputation').attr('class', 'reputation_negative');"{% if vote_check.power %} selected="selected"{% endif %}>{{ trans('power_negative', -power) }}</option>
-                                {% endfor %}
-                            {% endif %}
-                        </select>
-                        <br /><br />
-                        <span class="smalltext">
-                            {% if vote_check.pid %}
-                                {{ lang.no_comment_needed|raw }}
-                            {% else %}
-                                {{ trans('user_comments', user.username) }}
-                            {% endif %}
-                        </span>
-                        <br />
-                        <input type="text" class="textbox" name="comments" size="35" maxlength="250" value="{{ existing_reputation.comments }}" style="width: 95%" />
-                        <br /><br />
-                        <div style="text-align: center;">
-                            <input type="submit" class="button" value="{% if existing_reputation.uid %}{{ lang.update_vote }}{% else %}{{ lang.add_vote }}{% endif %}" />
-                            {% if existing_reputation.show_delete %}
-                                <input type="button" class="button" name="delete" value="{{ lang.delete_vote }}" onclick="return MyBB.submitReputation({{ user.uid }}, {{ vote_check.pid }}, 1);" />
-                            {% endif %}
+                </h2>
+                <div class="form form--modal">
+    				<div class="section section--form">
+                        {% if vote_check.pid %}
+                            <div class="row row--form">{{ trans('add_reputation_to_post', user.username) }}</div>
+                        {% endif %}
+                        <div class="row row--form field">
+                            <h3 class="field__name visually-hidden"><label for="reputation">{{ lang.rating }}</label></h3>
+                            <div class="select-field">
+                                <i class="select-field__icon fas fa-sort"></i>
+                                <select name="reputation" id="reputation">
+                                    {% if mybb.settings.posrep %}
+                                        {% for power in range(mybb.usergroup.reputationpower, 1) %}
+                                            <option value="{{ power }}" class="reputation_positive" onclick="$('#reputation').attr('class', 'reputation_positive');"{% if vote_check.power %} selected="selected"{% endif %}>{{ trans('power_positive', power) }}</option>
+                                        {% endfor %}
+                                    {% endif %}
+                                    {% if mybb.settings.neurep %}
+                                        <option value="0" class="reputation_neutral" onclick="$('#reputation').attr('class', 'reputation_neutral');"{% if vote_check.0 %} selected="selected"{% endif %}>{{ lang.power_neutral }}</option>
+                                    {% endif %}
+                                    {% if mybb.settings.negrep %}
+                                        {% for power in range(1, mybb.usergroup.reputationpower) %}
+                                            <option value="-{{ power }}" class="reputation_negative" onclick="$('#reputation').attr('class', 'reputation_negative');"{% if vote_check.power %} selected="selected"{% endif %}>{{ trans('power_negative', -power) }}</option>
+                                        {% endfor %}
+                                    {% endif %}
+                                </select>
+                            </div>
                         </div>
-                    </form>
-                </td>
-            </tr>
-        </table>
+                        <div class="row row--form field">
+                            <h3 class="field__name visually-hidden"><label for="comments">{{ lang.comment }}</label></h3>
+                            <p class="field__description">
+                                {% if vote_check.pid %}
+                                    {{ lang.no_comment_needed|raw }}
+                                {% else %}
+                                    {{ trans('user_comments', user.username) }}
+                                {% endif %}
+                            </p>
+                            <input type="text" class="textbox" name="comments" id="comments" size="35" maxlength="250" value="{{ existing_reputation.comments }}" />
+                        </div>
+                    </div>
+                    <div class="form__submit">
+                        <button type="submit" class="button button--medium">
+        					<i class="button__icon fas fa-thumbs-up"></i>
+        					<span class="button__text">{% if existing_reputation.uid %}{{ lang.update_vote }}{% else %}{{ lang.add_vote }}{% endif %}</span>
+        				</button>
+                        {% if existing_reputation.show_delete %}
+                            <button class="button button--medium button--secondary" name="delete" value="delete" onclick="return MyBB.submitReputation({{ user.uid }}, {{ vote_check.pid }}, 1);">
+                                <i class="button__icon fas fa-trash"></i>
+            					<span class="button__text">{{ lang.delete_vote }}</span>
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </section>
+        </form>
     </div>
 </div>

@@ -11,43 +11,39 @@
         <input name="action" type="hidden" value="do_login" />
         <input name="url" type="hidden" value="" />
         <input name="quick_login" type="hidden" value="1" />
-        <table width="100%" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" border="0" class="tborder">
-            <tr>
-                <td class="thead" colspan="2"><strong>{{ lang.login }}</strong></td>
-            </tr>
-            <tr>
-                <td class="trow1" width="25%">
-                    <strong>
-                        {% if mybb.settings.username_method == 1 %}
-                            {{ lang.login_username1 }}
-                        {% elseif mybb.settings.username_method == 2 %}
-                            {{ lang.login_username2 }}
-                        {% else %}
-                            {{ lang.login_username }}
-                        {% endif %}
-                    </strong>
-                </td>
-                <td class="trow1"><input name="quick_username" id="quick_login_username" type="text" value="" class="textbox initial_focus" /></td>
-            </tr>
-            <tr>
-                <td class="trow2"><strong>{{ lang.password }}</strong></td>
-                <td class="trow2">
-                    <input name="quick_password" id="quick_login_password" type="password" value="" class="textbox" /> <a href="{{ mybb.settings.bburl }}/member.php?action=lostpw" class="lost_password">{{ lang.lost_password }}</a>
-                </td>
-            </tr>
-            <tr>
-                <td class="trow1">&nbsp;</td>
-                <td class="trow1 remember_me">
-                    <input name="quick_remember" id="quick_login_remember" type="checkbox" value="yes" class="checkbox" checked="checked" />
-                    <label for="quick_login_remember">{{ lang.remember_me }}</label>
-                </td>
-            </tr>
-            <tr>
-                <td class="trow2" colspan="2">
-                    <div align="center"><input name="submit" type="submit" class="button" value="{{ lang.login }}" /></div>
-                </td>
-            </tr>
-        </table>
+		<section class="block block--modal">
+			<h2 class="title title--modal">{{ lang.login }}</h2>
+			<div class="form form--modal">
+				<div class="section section--form">
+					<div class="row row--form field">
+						<h3 class="field__name"><label for="quick_login_username">
+							{% if mybb.settings.username_method == 1 %}
+	                            {{ lang.login_username1 }}
+	                        {% elseif mybb.settings.username_method == 2 %}
+	                            {{ lang.login_username2 }}
+	                        {% else %}
+	                            {{ lang.login_username }}
+	                        {% endif %}
+						</label></h3>
+						<input name="quick_username" id="quick_login_username" type="text" value="" class="textbox initial_focus" />
+					</div>
+					<div class="row row--form field">
+						<h3 class="field__name"><label for="quick_login_password">{{ lang.password }}</label></h3>
+						<p class="field__description"><a href="{{ mybb.settings.bburl }}/member.php?action=lostpw">{{ lang.lost_password }}</a></p>
+						<input name="quick_password" id="quick_login_password" type="password" value="" class="textbox" />
+					</div>
+					<div class="row row--form field">
+						<p class="option-field option-field--compact"><label><input name="quick_remember" id="quick_login_remember" type="checkbox" value="yes" class="checkbox" checked="checked" /> {{ lang.remember_me }}</label></p>
+					</div>
+				</div>
+				<div class="form__submit">
+					<button type="submit" class="button button--medium">
+    					<i class="button__icon fas fa-sign-in-alt"></i>
+    					<span class="button__text">{{ lang.login }}</span>
+    				</button>
+				</div>
+            </div>
+		</section>
     </form>
 </div>
 <script type="text/javascript">

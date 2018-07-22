@@ -45,6 +45,8 @@ $l['add_reputation_to_post'] = "This reputation is for {1}'s post.<br />";
 $l['neg_rep_disabled'] = "<span class=\"smalltext\">* - <em>Negative reputation is currently disabled</em></span>";
 $l['pos_rep_disabled'] = "<span class=\"smalltext\">* - <em>Positive reputation is currently disabled</em></span>";
 $l['neu_rep_disabled'] = "<span class=\"smalltext\">* - <em>Neutral reputation is currently disabled</em></span>";
+$l['rating'] = "Rating";
+$l['comment'] = "Comment";
 $l['no_comment_needed'] = "You're adding reputation because of this user's post, which is linked in their profile. A comment isn't needed, but if you want to leave one, please enter it below.<br />";
 $l['no_comment'] = "[No comment]";
 $l['vote_added'] = "Rating Added";
