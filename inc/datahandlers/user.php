@@ -1828,7 +1828,8 @@ class UserDataHandler extends DataHandler
 
 		if($mybb->settings['sigcountmycode'] == 0)
 		{
-			$parsed_sig = $parser->text_parse_message($this->data['signature']);
+			// Consider only the visible characters
+			$parsed_sig = strip_tags($parsed_sig);
 		}
 		else
 		{
