@@ -3456,7 +3456,7 @@ function get_subscription_method($tid = 0, $postoptions = array())
 {
 	global $mybb;
 
-	$subscription_methods = ['dont', 'none', 'email', 'pm']; // Define methods
+	$subscription_methods = array('dont', 'none', 'email', 'pm'); // Define methods
 	$subscription_method = (int)$mybb->user['subscriptionmethod']; // Set user default
 
 	// If no user default method available then reset method
