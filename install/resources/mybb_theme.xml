@@ -4419,7 +4419,7 @@ $(".forumjump").change(function() {
 <tr>
 <td class="trow1"><span class="smalltext">{$lang->online_note}<br />{$onlinemembers}</span></td>
 </tr>]]></template>
-		<template name="index_whosonline_memberbit" version="1400"><![CDATA[{$comma}{$user['profilelink']}{$invisiblemark}]]></template>
+		<template name="index_whosonline_memberbit" version="1818"><![CDATA[{$user['profilelink']}{$invisiblemark}]]></template>
 		<template name="managegroup" version="1813"><![CDATA[<html>
 <head>
 	<title>{$mybb->settings['bbname']} - {$lang->members_of}</title>
@@ -9393,7 +9393,7 @@ if(use_xmlhttprequest == "1")
 </tr>
 </table>
 <br />]]></template>
-		<template name="portal_whosonline_memberbit" version="1400"><![CDATA[{$comma}<a href="{$mybb->settings['bburl']}/{$user['profilelink']}">{$user['username']}</a>{$invisiblemark}]]></template>
+		<template name="portal_whosonline_memberbit" version="1818"><![CDATA[<a href="{$mybb->settings['bburl']}/{$user['profilelink']}">{$user['username']}</a>{$invisiblemark}]]></template>
 		<template name="post_attachments" version="120"><![CDATA[<br />
 			<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
