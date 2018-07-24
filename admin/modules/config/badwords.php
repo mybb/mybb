@@ -52,7 +52,7 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 	if($mybb->get_input('regex', MyBB::INPUT_INT))
 	{
 		// Check validity of defined regular expression
-		if((@preg_match('#'.trim($mybb->input['badword']).'#is', null) === false))
+		if((@preg_match('#'.$badword.'#is', null) === false))
 		{
 			$errors[] = $lang->error_invalid_regex;
 		}
@@ -65,7 +65,7 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 			$parser = new postParser;
 		}
 	
-		$badword = $parser->generate_regex($mybb->input['badword']);
+		$badword = $parser->generate_regex($badword);
 	}
 
 	// Don't allow certain badword replacements to be added if it would cause an infinite recursive loop.
@@ -77,7 +77,7 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 	if(!$errors)
 	{
 		$new_badword = array(
-			"badword" => $db->escape_string($mybb->input['badword']),
+			"badword" => $db->escape_string($badword),
 			"regex" => $mybb->get_input('regex', MyBB::INPUT_INT),
 			"replacement" => $db->escape_string($mybb->input['replacement'])
 		);
@@ -87,7 +87,7 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 		$plugins->run_hooks("admin_config_badwords_add_commit");
 
 		// Log admin action
-		log_admin_action($bid, $mybb->input['badword']);
+		log_admin_action($bid, $badword);
 
 		$cache->update_badwords();
 		flash_message($lang->success_added_bad_word, 'success');

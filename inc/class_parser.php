@@ -649,7 +649,7 @@ class postParser
 				{
 					$badword['replacement'] = "*****";
 				}
-				
+
 				if(!$badword['regex'])
 				{
 					$badword['badword'] = $this->generate_regex($badword['badword']);
