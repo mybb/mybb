@@ -649,40 +649,10 @@ class postParser
 				{
 					$badword['replacement'] = "*****";
 				}
-
+				
 				if(!$badword['regex'])
 				{
-					$bad_word = $badword['badword'];
-
-					// Neutralize multiple adjacent wildcards and generate pattern
-					$ptrn = array('/[\*]{1}[\+]+/', '/[\+]+[\*]{1}/', '/[\*]+/');
-					$rplc = array('*', '*', '[^\s\n]*');
-					$bad_word = preg_replace($ptrn, $rplc, $bad_word);
-					
-					// Count + and generate pattern
-					$bad_word = explode('+', $bad_word);
-					$trap = "";
-					$plus = 0;
-					foreach($bad_word as $bad_piece)
-					{
-						if($bad_piece)
-						{
-							$trap .= $plus ? '[^\s\n]{'.$plus.'}'.$bad_piece : $bad_piece;
-							$plus = 1;
-						}
-						else
-						{
-							$plus++;
-						}
-					}
-					
-					// Handle trailing +
-					if($plus > 1)
-					{
-						$trap .= '[^\s\n]{'.($plus-1).'}';
-					}
-					
-					$badword['badword'] = $trap;
+					$badword['badword'] = $this->generate_regex($badword['badword']);
 				}
 
 				$message = preg_replace('#'.$badword['badword'].'#is', $badword['replacement'], $message);
@@ -693,6 +663,50 @@ class postParser
 			$message = strip_tags($message);
 		}
 		return $message;
+	}
+
+	/**
+	 * Generates REGEX patterns based on user defined badword string.
+	 *
+	 * @param string $badword The word defined to replace.
+	 * @return string The regex pattern to match the word or null on error.
+	 */
+	function generate_regex($bad_word = "")
+	{
+		if($bad_word == "")
+		{
+			return;
+		}
+
+		// Neutralize multiple adjacent wildcards and generate pattern
+		$ptrn = array('/[\*]{1}[\+]+/', '/[\+]+[\*]{1}/', '/[\*]+/');
+		$rplc = array('*', '*', '[^\s\n]*');
+		$bad_word = preg_replace($ptrn, $rplc, $bad_word);
+		
+		// Count + and generate pattern
+		$bad_word = explode('+', $bad_word);
+		$trap = "";
+		$plus = 0;
+		foreach($bad_word as $bad_piece)
+		{
+			if($bad_piece)
+			{
+				$trap .= $plus ? '[^\s\n]{'.$plus.'}'.$bad_piece : $bad_piece;
+				$plus = 1;
+			}
+			else
+			{
+				$plus++;
+			}
+		}
+		
+		// Handle trailing +
+		if($plus > 1)
+		{
+			$trap .= '[^\s\n]{'.($plus-1).'}';
+		}
+		
+		return $trap;
 	}
 
 	/**

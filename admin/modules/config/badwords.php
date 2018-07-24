@@ -47,16 +47,29 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 		}
 	}
 
-	// Check validity of defined regular expression
-	if($mybb->get_input('regex', MyBB::INPUT_INT) && (@preg_match('#'.trim($mybb->input['badword']).'#is', null) === false))
+	$badword = trim($mybb->input['badword']);
+
+	if($mybb->get_input('regex', MyBB::INPUT_INT))
 	{
-		$errors[] = $lang->error_invalid_regex;
+		// Check validity of defined regular expression
+		if((@preg_match('#'.trim($mybb->input['badword']).'#is', null) === false))
+		{
+			$errors[] = $lang->error_invalid_regex;
+		}
+	}
+	else
+	{
+		if(!is_object($parser))
+		{
+			require_once MYBB_ROOT."inc/class_parser.php";
+			$parser = new postParser;
+		}
+	
+		$badword = $parser->generate_regex($mybb->input['badword']);
 	}
 
-	$badword = str_replace('\*', '([a-zA-Z0-9_]{1})', preg_quote($mybb->input['badword'], "#"));
-
 	// Don't allow certain badword replacements to be added if it would cause an infinite recursive loop.
-	if(strlen($mybb->input['badword']) == strlen($mybb->input['replacement']) && preg_match("#(^|\W)".$badword."(\W|$)#i", $mybb->input['replacement']))
+	if(@preg_match('#'.$badword.'#is', $mybb->input['replacement']))
 	{
 		$errors[] = $lang->error_replacement_word_invalid;
 	}
