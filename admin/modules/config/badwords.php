@@ -77,7 +77,7 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 	if(!$errors)
 	{
 		$new_badword = array(
-			"badword" => $db->escape_string($badword),
+			"badword" => $db->escape_string($mybb->input['badword']),
 			"regex" => $mybb->get_input('regex', MyBB::INPUT_INT),
 			"replacement" => $db->escape_string($mybb->input['replacement'])
 		);
@@ -87,7 +87,7 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 		$plugins->run_hooks("admin_config_badwords_add_commit");
 
 		// Log admin action
-		log_admin_action($bid, $badword);
+		log_admin_action($bid, $mybb->input['badword']);
 
 		$cache->update_badwords();
 		flash_message($lang->success_added_bad_word, 'success');
