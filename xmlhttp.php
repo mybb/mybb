@@ -281,6 +281,9 @@ if($mybb->input['action'] == "get_users")
 		}
 	}
 
+	// Filter out duplicates, if any, from recursive array data
+	$data = array_intersect_key($data, array_unique(array_map('serialize', $data)));
+
 	$plugins->run_hooks("xmlhttp_get_users_end");
 
 	echo json_encode($data);
