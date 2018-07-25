@@ -653,22 +653,8 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			$newthread['postoptions']['disablesmilies'] = true;
 		}
 
-		if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "none")
-		{
-			$newthread['subscriptionmethod']['none'] = true;
-		}
-		else if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "email")
-		{
-			$newthread['subscriptionmethod']['email'] = true;
-		}
-		else if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "pm")
-		{
-			$newthread['subscriptionmethod']['pm'] = true;
-		}
-		else
-		{
-			$newthread['subscriptionmethod']['dont'] = true;
-		}
+		$subscription_method = get_subscription_method($tid, $postoptions);
+		$newthread['subscriptionmethod'][$subscription_method] = true;
 
 		if($mybb->get_input('postpoll', MyBB::INPUT_INT) == 1)
 		{
@@ -700,22 +686,8 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			$posticons = get_post_icons();
 		}
 
-		if($postoptions['subscriptionmethod'] == "none")
-		{
-			$newthread['subscriptionmethod']['none'] = true;
-		}
-		else if($postoptions['subscriptionmethod'] == "email")
-		{
-			$newthread['subscriptionmethod']['email'] = true;
-		}
-		else if($postoptions['subscriptionmethod'] == "pm")
-		{
-			$newthread['subscriptionmethod']['pm'] = true;
-		}
-		else
-		{
-			$newthread['subscriptionmethod']['dont'] = true;
-		}
+		$subscription_method = get_subscription_method($tid); // Subscription method doesn't get saved in drafts
+		$newthread['subscriptionmethod'][$subscription_method] = true;
 	}
 	else
 	{
@@ -725,22 +697,8 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			$newthread['postoptions']['signature'] = true;
 		}
 
-		if($mybb->user['subscriptionmethod'] == 1)
-		{
-			$newthread['subscriptionmethod']['none'] = true;
-		}
-		else if($mybb->user['subscriptionmethod'] == 2)
-		{
-			$newthread['subscriptionmethod']['email'] = true;
-		}
-		else if($mybb->user['subscriptionmethod'] == 3)
-		{
-			$newthread['subscriptionmethod']['pm'] = true;
-		}
-		else
-		{
-			$newthread['subscriptionmethod']['dont'] = true;
-		}
+		$subscription_method = get_subscription_method($tid); // Fresh thread, let the function set the appropriate method
+		$newthread['subscriptionmethod'][$subscription_method] = true;
 
 		$newthread['numpolloptions'] = 2;
 	}

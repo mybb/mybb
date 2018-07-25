@@ -127,21 +127,10 @@ if(isset($forumpermissions['canonlyreplyownthreads']) && $forumpermissions['cano
 	error_no_permission();
 }
 
-// Coming from quick reply? Set some defaults
-if($mybb->get_input('method') == "quickreply")
+// Coming from quick reply and not a preview call? Set subscription method
+if($mybb->get_input('method') == "quickreply" && !isset($mybb->input['previewpost']))
 {
-	if($mybb->user['subscriptionmethod'] == 1)
-	{
-		$mybb->input['postoptions']['subscriptionmethod'] = "none";
-	}
-	else if($mybb->user['subscriptionmethod'] == 2)
-	{
-		$mybb->input['postoptions']['subscriptionmethod'] = "email";
-	}
-	else if($mybb->user['subscriptionmethod'] == 3)
-	{
-		$mybb->input['postoptions']['subscriptionmethod'] = "pm";
-	}
+	$mybb->input['postoptions']['subscriptionmethod'] = get_subscription_method($mybb->get_input('tid', MyBB::INPUT_INT));
 }
 
 // Check if this forum is password protected and we have a valid password
@@ -888,23 +877,8 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			$newreply['postoptions']['disablesmilies'] = true;
 		}
 
-		if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "none")
-		{
-			$newreply['subscriptionmethod']['none'] = true;
-		}
-		else if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "email")
-		{
-			$newreply['subscriptionmethod']['email'] = true;
-		}
-		else if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "pm")
-		{
-			$newreply['subscriptionmethod']['pm'] = true;
-		}
-		else
-		{
-			$newreply['subscriptionmethod']['dont'] = true;
-		}
-
+		$subscription_method = get_subscription_method($tid, $postoptions);
+        $newreply['subscriptionmethod'][$subscription_method] = true;
 		$newreply['subject'] = $mybb->input['subject'];
 	}
 	else if($mybb->input['action'] == "editdraft" && $mybb->user['uid'])
@@ -922,23 +896,8 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			$newreply['postoptions']['disablesmilies'] = true;
 		}
 
-		if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "none")
-		{
-			$newreply['subscriptionmethod']['none'] = true;
-		}
-		else if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "email")
-		{
-			$newreply['subscriptionmethod']['email'] = true;
-		}
-		else if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "pm")
-		{
-			$newreply['subscriptionmethod']['pm'] = true;
-		}
-		else
-		{
-			$newreply['subscriptionmethod']['dont'] = true;
-		}
-
+		$subscription_method = get_subscription_method($tid); // Subscription method doesn't get saved in drafts
+        $newreply['subscriptionmethod'][$subscription_method] = true;
 		$mybb->input['icon'] = $post['icon'];
 	}
 	else
@@ -948,23 +907,10 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			$newreply['postoptions']['signature'] = true;
 		}
 
-		if($mybb->user['subscriptionmethod'] == 1)
-		{
-			$newreply['subscriptionmethod']['none'] = true;
-		}
-		else if($mybb->user['subscriptionmethod'] == 2)
-		{
-			$newreply['subscriptionmethod']['email'] = true;
-		}
-		else if($mybb->user['subscriptionmethod'] == 3)
-		{
-			$newreply['subscriptionmethod']['pm'] = true;
-		}
-		else
-		{
-			$newreply['subscriptionmethod']['dont'] = true;
-		}
+		$subscription_method = get_subscription_method($tid);
+        $newreply['subscriptionmethod'][$subscription_method] = true;
 	}
+	${'postoptions_subscriptionmethod_'.$subscription_method} = "checked=\"checked\"";
 
 	if($forum['allowpicons'] != 0)
 	{
