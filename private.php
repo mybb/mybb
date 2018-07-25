@@ -705,8 +705,8 @@ if($mybb->input['action'] == "send")
 		{
 			$optionschecked['readreceipt'] = 'checked="checked"';
 		}
-		$to = htmlspecialchars_uni(implode(', ',array_unique(array_map('trim', explode(',', $mybb->get_input('to'))))));
-		$bcc = htmlspecialchars_uni(implode(', ',array_unique(array_map('trim', explode(',', $mybb->get_input('bcc'))))));
+		$to = htmlspecialchars_uni(implode(', ', array_unique(array_map('trim', explode(',', $mybb->get_input('to'))))));
+		$bcc = htmlspecialchars_uni(implode(', ', array_unique(array_map('trim', explode(',', $mybb->get_input('bcc'))))));
 	}
 
 	$preview = '';
@@ -925,8 +925,8 @@ if($mybb->input['action'] == "send")
 
 	if($send_errors)
 	{
-		$to = htmlspecialchars_uni(implode(', ',array_unique(array_map('trim', explode(',', $mybb->get_input('to'))))));
-		$bcc = htmlspecialchars_uni(implode(', ',array_unique(array_map('trim', explode(',', $mybb->get_input('bcc'))))));
+		$to = htmlspecialchars_uni(implode(', ', array_unique(array_map('trim', explode(',', $mybb->get_input('to'))))));
+		$bcc = htmlspecialchars_uni(implode(', ', array_unique(array_map('trim', explode(',', $mybb->get_input('bcc'))))));
 	}
 
 	// Load the auto complete javascript if it is enabled.
