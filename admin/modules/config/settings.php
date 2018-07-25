@@ -940,15 +940,18 @@ if($mybb->input['action'] == "change")
 		{
 			foreach($dimfields[$gid] as $field)
 			{
-				if(preg_match("/\b\d+[|x]{1}\d+\b/i", $mybb->input['upsetting'][$field]) || ($field == 'maxavatardims' && trim($mybb->input['upsetting'][$field]) == ""))
+				if(trim($mybb->input['upsetting'][$field]) != "")
 				{
-					// If pipe (|) is used normalize to 'x'
-					$mybb->input['upsetting'][$field] = str_replace('|', 'x', my_strtolower($mybb->input['upsetting'][$field]));
-				}
-				else
-				{
-					flash_message($lang->sprintf($lang->error_format_dimension, $lang->{'error_field_'.$field}), 'error');
-					admin_redirect("index.php?module=config-settings&action=change&gid=".$gid);
+					if(preg_match("/\b\d+[|x]{1}\d+\b/i", $mybb->input['upsetting'][$field]))
+					{
+						// If pipe (|) is used normalize to 'x'
+						$mybb->input['upsetting'][$field] = str_replace('|', 'x', my_strtolower($mybb->input['upsetting'][$field]));
+					}
+					else
+					{
+						flash_message($lang->sprintf($lang->error_format_dimension, $lang->{'error_field_'.$field}), 'error');
+						admin_redirect("index.php?module=config-settings&action=change&gid=".$gid);
+					}
 				}
 			}
 		}
