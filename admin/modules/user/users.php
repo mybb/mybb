@@ -3773,7 +3773,7 @@ function build_users_view($view)
 	}
 
 	$built_view .= '
-<script type="text/javascript" src="'.$mybb->settings['bburl'].'/jscripts/inline_moderation.js?ver=1800"></script>
+<script type="text/javascript" src="'.$mybb->settings['bburl'].'/jscripts/inline_moderation.js?ver=1818"></script>
 <form action="index.php?module=user-users" method="post">
 <input type="hidden" name="my_post_key" value="'.$mybb->post_code.'" />
 <input type="hidden" name="action" value="inline_edit" />
