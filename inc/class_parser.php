@@ -923,7 +923,7 @@ class postParser
 
 		if($text_only == true)
 		{
-			return empty($this->options['signature_parse']) ? "\n{$lang->code}\n--\n$code\n--\n" : $code;
+			return empty($this->options['signature_parse']) ? "\n{$lang->code}\n--\n{$code}\n--\n" : $code;
 		}
 
 		// Clean the string before parsing.
@@ -971,7 +971,7 @@ class postParser
 
 		if($text_only == true)
 		{
-			return empty($this->options['signature_parse']) ? "\n{$lang->php_code}\n--\n$str\n--\n" : $str;
+			return empty($this->options['signature_parse']) ? "\n{$lang->php_code}\n--\n{$str}\n--\n" : $str;
 		}
 
 		// Clean the string before parsing except tab spaces.
