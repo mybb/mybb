@@ -3448,6 +3448,53 @@ function build_mycode_inserter($bind="message", $smilies = true)
 }
 
 /**
+ * @param int $tid
+ * @param array $postoptions The options carried with form submit
+ *
+ * @return string Predefined / updated subscription method of the thread for the user
+ */
+function get_subscription_method($tid = 0, $postoptions = array())
+{
+	global $mybb;
+
+	$subscription_methods = array('dont', 'none', 'email', 'pm'); // Define methods
+	$subscription_method = (int)$mybb->user['subscriptionmethod']; // Set user default
+
+	// If no user default method available then reset method
+	if(!$subscription_method)
+	{
+		$subscription_method = 0;
+	}
+
+	// Return user default if no thread id available, in case
+	if(!(int)$tid || (int)$tid <= 0)
+	{
+		return $subscription_methods[$subscription_method];
+	}
+
+	// If method not predefined set using data from database
+	if(isset($postoptions['subscriptionmethod']))
+	{
+		$method = trim($postoptions['subscriptionmethod']);
+		return (in_array($method, $subscription_methods)) ? $method : $subscription_methods[0];
+	}
+	else
+	{
+		global $db;
+
+		$query = $db->simple_select("threadsubscriptions", "tid, notification", "tid='".(int)$tid."' AND uid='".$mybb->user['uid']."'", array('limit' => 1));
+		$subscription = $db->fetch_array($query);
+
+		if($subscription['tid'])
+		{
+			$subscription_method = (int)$subscription['notification'] + 1;
+		}
+	}
+	
+	return $subscription_methods[$subscription_method];
+}
+
+/**
  * Build the javascript clickable smilie inserter
  *
  * @return string The clickable smilies list
