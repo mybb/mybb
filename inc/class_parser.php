@@ -1374,7 +1374,7 @@ class postParser
 
 		if($video == "liveleak")
 		{
-			// The query part can start with any alphabet, but only 'i' works for embed
+			// The query part can start with any alphabet, but set only 'i' to catch in index key later
 			$parsed_url['query'] = "i".substr($parsed_url['query'], 1);
 		}
 
