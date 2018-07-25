@@ -10,13 +10,15 @@
            <h1 class="title title--page">{{ lang.lost_pw_form }}</h1>
        </header>
        <form action="member.php" method="post">
+           {{ errors|raw }}
            <div class="block block--form form">
                <section class="section section--form">
                    <div class="row row--form field">
                        <h3 class="field__name"><label for="email">{{ lang.email_address }}</label></h3>
-                       <input type="text" class="textbox" name="email" id="email" />
+                       <input type="text" class="textbox" name="email" id="email" value="{{ email }}" />
                    </div>
                </section>
+               {{ captcha|raw }}
                <div class="form__submit">
                    <button type="submit" class="button button--medium">
                        {{ include('partials/icon.twig', {icon: 'key', class: 'button__icon'}, with_context = false) }}

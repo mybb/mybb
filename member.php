@@ -1573,18 +1573,27 @@ if($mybb->input['action'] == "do_resendactivation" && $mybb->request_method == "
 	}
 }
 
-if($mybb->input['action'] == "lostpw")
-{
-	$plugins->run_hooks("member_lostpw");
-
-	output_page(\MyBB\template('member/lostpw.twig'));
-}
-
 if($mybb->input['action'] == "do_lostpw" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("member_do_lostpw_start");
 
-	$email = $db->escape_string($email);
+	$errors = array();
+
+	if($mybb->settings['captchaimage'])
+	{
+		require_once MYBB_ROOT.'inc/class_captcha.php';
+		$captcha = new captcha;
+
+		if($captcha->validate_captcha() == false)
+		{
+			// CAPTCHA validation failed
+			foreach($captcha->get_errors() as $error)
+			{
+				$errors[] = $error;
+			}
+		}
+	}
+
 	$query = $db->simple_select("users", "*", "email='".$db->escape_string($mybb->get_input('email'))."'");
 	$numusers = $db->num_rows($query);
 	if($numusers < 1)
@@ -1593,44 +1602,87 @@ if($mybb->input['action'] == "do_lostpw" && $mybb->request_method == "post")
 	}
 	else
 	{
-		while($user = $db->fetch_array($query))
+		if(count($errors) == 0)
 		{
-			$db->delete_query("awaitingactivation", "uid='{$user['uid']}' AND type='p'");
-			$user['activationcode'] = random_str(30);
-			$now = TIME_NOW;
-			$uid = $user['uid'];
-			$awaitingarray = array(
-				"uid" => $user['uid'],
-				"dateline" => TIME_NOW,
-				"code" => $user['activationcode'],
-				"type" => "p"
-			);
-			$db->insert_query("awaitingactivation", $awaitingarray);
-			$username = $user['username'];
-			$email = $user['email'];
-			$activationcode = $user['activationcode'];
-			$emailsubject = $lang->sprintf($lang->emailsubject_lostpw, $mybb->settings['bbname']);
-			switch($mybb->settings['username_method'])
+			while($user = $db->fetch_array($query))
 			{
-				case 0:
-					$emailmessage = $lang->sprintf($lang->email_lostpw, $username, $mybb->settings['bbname'], $mybb->settings['bburl'], $uid, $activationcode);
-					break;
-				case 1:
-					$emailmessage = $lang->sprintf($lang->email_lostpw1, $username, $mybb->settings['bbname'], $mybb->settings['bburl'], $uid, $activationcode);
-					break;
-				case 2:
-					$emailmessage = $lang->sprintf($lang->email_lostpw2, $username, $mybb->settings['bbname'], $mybb->settings['bburl'], $uid, $activationcode);
-					break;
-				default:
-					$emailmessage = $lang->sprintf($lang->email_lostpw, $username, $mybb->settings['bbname'], $mybb->settings['bburl'], $uid, $activationcode);
-					break;
+				$db->delete_query("awaitingactivation", "uid='{$user['uid']}' AND type='p'");
+				$user['activationcode'] = random_str(30);
+				$now = TIME_NOW;
+				$uid = $user['uid'];
+				$awaitingarray = array(
+					"uid" => $user['uid'],
+					"dateline" => TIME_NOW,
+					"code" => $user['activationcode'],
+					"type" => "p"
+				);
+				$db->insert_query("awaitingactivation", $awaitingarray);
+				$username = $user['username'];
+				$email = $user['email'];
+				$activationcode = $user['activationcode'];
+				$emailsubject = $lang->sprintf($lang->emailsubject_lostpw, $mybb->settings['bbname']);
+				switch($mybb->settings['username_method'])
+				{
+					case 0:
+						$emailmessage = $lang->sprintf($lang->email_lostpw, $username, $mybb->settings['bbname'], $mybb->settings['bburl'], $uid, $activationcode);
+						break;
+					case 1:
+						$emailmessage = $lang->sprintf($lang->email_lostpw1, $username, $mybb->settings['bbname'], $mybb->settings['bburl'], $uid, $activationcode);
+						break;
+					case 2:
+						$emailmessage = $lang->sprintf($lang->email_lostpw2, $username, $mybb->settings['bbname'], $mybb->settings['bburl'], $uid, $activationcode);
+						break;
+					default:
+						$emailmessage = $lang->sprintf($lang->email_lostpw, $username, $mybb->settings['bbname'], $mybb->settings['bburl'], $uid, $activationcode);
+						break;
+				}
+				my_mail($email, $emailsubject, $emailmessage);
 			}
-			my_mail($email, $emailsubject, $emailmessage);
+
+			$plugins->run_hooks("member_do_lostpw_end");
+
+			redirect("index.php", $lang->redirect_lostpwsent, "", true);
+		}
+		else
+		{
+			$mybb->input['action'] = "lostpw";
 		}
 	}
-	$plugins->run_hooks("member_do_lostpw_end");
+}
 
-	redirect("index.php", $lang->redirect_lostpwsent, "", true);
+if($mybb->input['action'] == "lostpw")
+{
+	$plugins->run_hooks("member_lostpw");
+
+	$captcha = '';
+	// Generate CAPTCHA?
+	if($mybb->settings['captchaimage'])
+	{
+		require_once MYBB_ROOT.'inc/class_captcha.php';
+		$post_captcha = new captcha(true, "post");
+
+		if($post_captcha->html)
+		{
+			$captcha = $post_captcha->html;
+		}
+	}
+
+	if(isset($errors) && count($errors) > 0)
+	{
+		$errors = inline_error($errors);
+		$email = $mybb->get_input('email');
+	}
+	else
+	{
+		$errors = '';
+		$email = '';
+	}
+
+	output_page(\MyBB\template('member/lostpw.twig', [
+			'captcha' => $captcha,
+			'errors' => $errors,
+			'email' => $email,
+    ]));
 }
 
 if($mybb->input['action'] == "resetpassword")
