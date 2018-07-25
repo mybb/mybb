@@ -940,9 +940,9 @@ if($mybb->input['action'] == "change")
 		{
 			foreach($dimfields[$gid] as $field)
 			{
-				if(trim($mybb->input['upsetting'][$field]) != "")
+				if(isset($mybb->input['upsetting'][$field]))
 				{
-					if(preg_match("/\b\d+[|x]{1}\d+\b/i", $mybb->input['upsetting'][$field]))
+					if(preg_match("/\b\d+[|x]{1}\d+\b/i", $mybb->input['upsetting'][$field]) || ($field == 'maxavatardims' && trim($mybb->input['upsetting'][$field]) == ""))
 					{
 						// If pipe (|) is used normalize to 'x'
 						$mybb->input['upsetting'][$field] = str_replace('|', 'x', my_strtolower($mybb->input['upsetting'][$field]));
