@@ -485,7 +485,7 @@ $(document).ready(function($) {
 						break;
 					case 'metacafe':
 						matches = content.match(/metacafe\.com\/watch\/([^\/]+)/);
-						url     = matches ? 'http://www.metacafe.com/embed/' + matches[1] : false;
+						url     = matches ? 'http://www.metacafe.com/embed/' + matches[1] + '/' : false;
 						break;
 					case 'veoh':
 						matches = content.match(/veoh\.com\/watch\/([^\/]+)/);
