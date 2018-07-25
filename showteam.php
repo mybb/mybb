@@ -87,6 +87,10 @@ if($mybb->settings['showaddlgroups'])
 		{
 			$query_part .= "'$visible_group' = ANY (string_to_array(additionalgroups, ',')) OR ";
 		}
+		else if($db->type == "sqlite")
+		{
+			$query_part .= "'$visible_group' IN (additionalgroups) OR ";
+		}
 		else
 		{
 			$query_part .= "FIND_IN_SET('$visible_group', additionalgroups) OR ";
