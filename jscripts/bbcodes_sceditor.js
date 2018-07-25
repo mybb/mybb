@@ -480,7 +480,7 @@ $(document).ready(function($) {
 						url     = matches ? 'https://www.facebook.com/video/embed?video_id=' + matches[1] : false;
 						break;
 					case 'liveleak':
-						matches = content.match(/liveleak\.com\/(?:view\?[a-z]{1}=)([^\/]+)/);
+						matches = content.match(/liveleak\.com\/(?:view\?[a-z]=)([^\/]+)/);
 						url     = matches ? 'http://www.liveleak.com/ll_embed?i=' + matches[1] : false;
 						break;
 					case 'metacafe':
