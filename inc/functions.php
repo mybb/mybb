@@ -3275,7 +3275,7 @@ function build_mycode_inserter($bind="message", $smilies = true)
 			"editor_invalidyoutube" => "Invalid YouTube video",
 			"editor_dailymotion" => "Dailymotion",
 			"editor_metacafe" => "MetaCafe",
-			"editor_veoh" => "Veoh",
+			"editor_mixer" => "Mixer",
 			"editor_vimeo" => "Vimeo",
 			"editor_youtube" => "Youtube",
 			"editor_facebook" => "Facebook",
