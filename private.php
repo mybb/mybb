@@ -530,6 +530,7 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 
 	// Attempt to see if this PM is a duplicate or not
 	$to = array_map("trim", explode(",", $mybb->get_input('to')));
+	$to = array_unique($to); // Filter out any duplicates
 	$to_escaped = implode("','", array_map(array($db, 'escape_string'), array_map('my_strtolower', $to)));
 	$time_cutoff = TIME_NOW - (5 * 60 * 60);
 	$query = $db->query("
@@ -677,8 +678,8 @@ if($mybb->input['action'] == "send")
 			$sendpm['options']['readreceipt'] = true;
 		}
 
-		$sendpm['to'] = $mybb->get_input('to');
-		$sendpm['bcc'] = $mybb->get_input('bcc');
+		$sendpm['to'] = implode(', ', array_unique(array_map('trim', explode(',', $mybb->get_input('to')))));
+		$sendpm['bcc'] = implode(', ', array_unique(array_map('trim', explode(',', $mybb->get_input('bcc')))));
 	}
 
 	// Preview
@@ -897,8 +898,8 @@ if($mybb->input['action'] == "send")
 
 	if($send_errors)
 	{
-		$sendpm['to'] = $mybb->get_input('to');
-		$sendpm['bcc'] = $mybb->get_input('bcc');
+		$sendpm['to'] = implode(', ', array_unique(array_map('trim', explode(',', $mybb->get_input('to')))));
+		$sendpm['bcc'] = implode(', ', array_unique(array_map('trim', explode(',', $mybb->get_input('bcc')))));
 	}
 
 	$sendpm['pmid'] = $mybb->get_input('pmid', MyBB::INPUT_INT);

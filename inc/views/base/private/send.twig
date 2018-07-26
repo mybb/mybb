@@ -171,7 +171,7 @@
                 }
             },
             initSelection: function(element, callback) {
-                var query = $(element).val();
+                var query = $(element).val().replace(', ', ',');
                 if (query !== "") {
                     var newqueries = [];
                     exp_queries = query.split(",");

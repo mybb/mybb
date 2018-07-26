@@ -10485,7 +10485,7 @@ if(use_xmlhttprequest == "1")
 </script>
 </body>
 </html>]]></template>
-		<template name="private_send_autocomplete" version="1807"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1807">
+		<template name="private_send_autocomplete" version="1818"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1807">
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js?ver=1806"></script>
 <script type="text/javascript">
 <!--
@@ -10511,7 +10511,7 @@ if(use_xmlhttprequest == "1")
 			}
 		},
 		initSelection: function(element, callback) {
-			var query = $(element).val();
+			var query = $(element).val().replace(', ', ',');
 			if (query !== "") {
 				var newqueries = [];
 				exp_queries = query.split(",");
