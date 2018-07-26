@@ -1423,8 +1423,8 @@ class postParser
 					$id = $path[3]; // https://www.facebook.com/fds/videos/123/
 				}
 				break;
-			case "veoh":
-				$id = $path[2]; // http://www.veoh.com/watch/123
+			case "mixer":
+				$id = $path[1]; // https://mixer.com/streamer
 				break;
 			case "liveleak":
 				$id = $input['i']; // http://www.liveleak.com/view?i=123
