@@ -29,4 +29,4 @@ Do not use the form if you notice your browser displays HTTPS warnings, or anyth
 
 You can also reach us at security@mybb.com for security concerns, however we recommend using Private Inquiries for best feedback.
 
-Open [**mybb.com/security**](https://mybb.com/get-involved/security/#composing-a-good-report) with complete instructions on how to report vulnerabilities to maximize the efficiency, help MyBB secure users as soon as possible and receive recognition. You will also learn what issues we are looking after, how to limit harm to other people and what the disclosure process will look like.
+Open [**mybb.com/security**](https://mybb.com/get-involved/security/#composing-a-good-report) with complete instructions on how to report vulnerabilities to maximize the efficiency, help MyBB secure users as soon as possible and receive recognition. You will also learn what issues we look after, how to limit harm to other people and what the disclosure process will look like.
