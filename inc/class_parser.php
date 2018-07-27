@@ -650,18 +650,12 @@ class postParser
 					$badword['replacement'] = "*****";
 				}
 
-				if($badword['regex'])
+				if(!$badword['regex'])
 				{
-					$message = preg_replace('#'.$badword['badword'].'#is', $badword['replacement'], $message);
+					$badword['badword'] = $this->generate_regex($badword['badword']);
 				}
-				else
-				{
-					// Take into account the position offset for our last replacement.
-					$badword['badword'] = str_replace('\*', '([a-zA-Z0-9_\*]{1})', preg_quote($badword['badword'], "#"));
 
-					// Ensure we run the replacement enough times but not recursively (i.e. not while(preg_match..))
-					$message = preg_replace("#(^|\W)".$badword['badword']."(?=\W|$)#i", '\1'.$badword['replacement'], $message);
-				}
+				$message = preg_replace('#'.$badword['badword'].'#is', $badword['replacement'], $message);
 			}
 		}
 		if(!empty($this->options['strip_tags']))
@@ -669,6 +663,50 @@ class postParser
 			$message = strip_tags($message);
 		}
 		return $message;
+	}
+
+	/**
+	 * Generates REGEX patterns based on user defined badword string.
+	 *
+	 * @param string $badword The word defined to replace.
+	 * @return string The regex pattern to match the word or null on error.
+	 */
+	function generate_regex($bad_word = "")
+	{
+		if($bad_word == "")
+		{
+			return;
+		}
+
+		// Neutralize multiple adjacent wildcards and generate pattern
+		$ptrn = array('/[\*]{1}[\+]+/', '/[\+]+[\*]{1}/', '/[\*]+/');
+		$rplc = array('*', '*', '[^\s\n]*');
+		$bad_word = preg_replace($ptrn, $rplc, $bad_word);
+		
+		// Count + and generate pattern
+		$bad_word = explode('+', $bad_word);
+		$trap = "";
+		$plus = 0;
+		foreach($bad_word as $bad_piece)
+		{
+			if($bad_piece)
+			{
+				$trap .= $plus ? '[^\s\n]{'.$plus.'}'.$bad_piece : $bad_piece;
+				$plus = 1;
+			}
+			else
+			{
+				$plus++;
+			}
+		}
+		
+		// Handle trailing +
+		if($plus > 1)
+		{
+			$trap .= '[^\s\n]{'.($plus-1).'}';
+		}
+		
+		return $trap;
 	}
 
 	/**

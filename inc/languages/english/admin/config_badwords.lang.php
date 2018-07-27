@@ -12,10 +12,10 @@ $l['bad_word_filters'] = "Word Filters";
 $l['bad_word_filters_desc'] = "This feature allows you to manage a listing of words or phrases which are automatically replaced in posts on your forum. It is useful for replacing swear words and such.";
 
 $l['bad_word'] = "Word";
-$l['bad_word_desc'] = "Enter the word which you wish to be filtered. The '*' character represents any single character (a-zA-Z0-9_).";
+$l['bad_word_desc'] = "Enter the word which you wish to be filtered. The '*' symbol represents any number of characters and the '+' symbol represents any single character (other than space and new line).";
 $l['bad_word_max'] = "A filtered word can't be longer than 100 characters.";
 $l['replacement'] = "Replacement";
-$l['replacement_desc'] = "Enter the string which will replace the filtered word (If this is blank, asterisks will be shown)";
+$l['replacement_desc'] = "Enter the string which will replace the filtered word (If this is blank, asterisks will be shown).";
 $l['regex'] = "Regular Expression";
 $l['regex_desc'] = "Treat the \"Word\" field as a regular expression.";
 $l['replacement_word_max'] = "A replacement word can't be longer than 100 characters.";
