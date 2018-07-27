@@ -803,7 +803,7 @@ class postParser
 		}
 		else
 		{
-			$replace = "\n{$lang->quote}\n--\n$1\n--\n";
+			$replace = empty($this->options['signature_parse']) ? "\n{$lang->quote}\n--\n$1\n--\n" : "$1";
 			$replace_callback = array($this, 'mycode_parse_post_quotes_callback2');
 		}
 
@@ -961,7 +961,7 @@ class postParser
 
 		if($text_only == true)
 		{
-			return "\n{$lang->code}\n--\n{$code}\n--\n";
+			return empty($this->options['signature_parse']) ? "\n{$lang->code}\n--\n{$code}\n--\n" : $code;
 		}
 
 		// Clean the string before parsing.
@@ -1009,7 +1009,7 @@ class postParser
 
 		if($text_only == true)
 		{
-			return "\n{$lang->php_code}\n--\n$str\n--\n";
+			return empty($this->options['signature_parse']) ? "\n{$lang->php_code}\n--\n{$str}\n--\n" : $str;
 		}
 
 		// Clean the string before parsing except tab spaces.
@@ -1789,6 +1789,13 @@ class postParser
 		if(empty($this->options))
 		{
 			$this->options = $options;
+		}
+		else
+		{
+			foreach($options as $option_name => $option_value)
+			{
+				$this->options[$option_name] = $option_value;
+			}
 		}
 
 		// Filter bad words if requested.
