@@ -645,7 +645,7 @@ if($mybb->input['action'] == "edit")
 						}
 
 						// Because Gravatars are square, hijack the width
-						list($maxwidth, $maxheight) = explode("x", my_strtolower($mybb->settings['maxavatardims']));
+						list($maxwidth, $maxheight) = preg_split('/[|x]/', my_strtolower($mybb->settings['maxavatardims']));
 
 						$s = "?s={$maxwidth}";
 						$maxheight = (int)$maxwidth;
@@ -693,7 +693,7 @@ if($mybb->input['action'] == "edit")
 						{
 							if($width && $height && $mybb->settings['maxavatardims'] != "")
 							{
-								list($maxwidth, $maxheight) = explode("x", my_strtolower($mybb->settings['maxavatardims']));
+								list($maxwidth, $maxheight) = preg_split('/[|x]/', my_strtolower($mybb->settings['maxavatardims']));
 								if(($maxwidth && $width > $maxwidth) || ($maxheight && $height > $maxheight))
 								{
 									$lang->error_avatartoobig = $lang->sprintf($lang->error_avatartoobig, $maxwidth, $maxheight);
@@ -977,13 +977,13 @@ EOF;
 	$table->construct_header($lang->general_account_stats, array('colspan' => '2', 'class' => 'align_center'));
 
 	// Avatar
-	$avatar_dimensions = explode("|", $user['avatardimensions']);
+	$avatar_dimensions = preg_split('/[|x]/', $user['avatardimensions']);
 	if($user['avatar'] && (my_strpos($user['avatar'], '://') === false || $mybb->settings['allowremoteavatars']))
 	{
 		if($user['avatardimensions'])
 		{
 			require_once MYBB_ROOT."inc/functions_image.php";
-			list($width, $height) = explode("|", $user['avatardimensions']);
+			list($width, $height) = preg_split('/[|x]/', $user['avatardimensions']);
 			$scaled_dimensions = scale_image($width, $height, 120, 120);
 		}
 		else
@@ -1513,7 +1513,7 @@ EOF;
 
 	if($mybb->settings['maxavatardims'] != "")
 	{
-		list($max_width, $max_height) = explode("x", my_strtolower($mybb->settings['maxavatardims']));
+		list($max_width, $max_height) = preg_split('/[|x]/', my_strtolower($mybb->settings['maxavatardims']));
 		$max_size = "<br />{$lang->max_dimensions_are} {$max_width}x{$max_height}";
 	}
 

@@ -250,7 +250,7 @@ function upload_avatar($avatar=array(), $uid=0)
 	// Check avatar dimensions
 	if($mybb->settings['maxavatardims'] != '')
 	{
-		list($maxwidth, $maxheight) = @explode("x", $mybb->settings['maxavatardims']);
+		list($maxwidth, $maxheight) = @preg_split('/[|x]/', $mybb->settings['maxavatardims']);
 		if(($maxwidth && $img_dimensions[0] > $maxwidth) || ($maxheight && $img_dimensions[1] > $maxheight))
 		{
 			// Automatic resizing enabled?

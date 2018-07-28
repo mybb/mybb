@@ -68,6 +68,11 @@ $l['settings_search'] = "Search For Settings";
 $l['confirm_setting_group_deletion'] = "Are you sure you wish to delete this setting group?";
 $l['confirm_setting_deletion'] = "Are you sure you wish to delete this setting?";
 
+$l['error_format_dimension'] = "Defined {1} format is invalid.";
+$l['error_field_postmaxavatarsize'] = "Maximum Avatar Dimensions";
+$l['error_field_useravatardims'] = "Default Avatar Dimensions";
+$l['error_field_maxavatardims'] = "Maximum Avatar Dimensions";
+$l['error_field_memberlistmaxavatarsize'] = "Maximum Display Avatar Dimensions";
 $l['error_missing_title'] = "You did not enter a title for this setting";
 $l['error_missing_group_title'] = "You did not enter a title for this setting group";
 $l['error_invalid_gid'] = "You did not select a valid group to place this setting in";

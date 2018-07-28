@@ -737,7 +737,7 @@ min=0]]></optionscode>
 		</setting>
 		<setting name="postmaxavatarsize">
 			<title>Maximum Avatar Dimensions in Posts</title>
-			<description><![CDATA[The maximum dimensions for avatars when being displayed in a post. If an avatar is too large, it will automatically be scaled down.]]></description>
+			<description><![CDATA[The maximum dimensions for avatars when being displayed in a post (width and height separated by 'x' or '|') . If an avatar is too large, it will automatically be scaled down.]]></description>
 			<disporder>4</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[55x55]]></settingvalue>
@@ -1128,7 +1128,7 @@ min=0]]></optionscode>
 		</setting>
 		<setting name="useravatardims">
 			<title>Default Avatar Dimensions</title>
-			<description><![CDATA[The dimensions of the default avatar; width by height (e.g. 40|40).]]></description>
+			<description><![CDATA[The dimensions of the default avatar; width and height separated by 'x' or '|' (e.g. 40|40 or 40x40).]]></description>
 			<disporder>11</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[100|100]]></settingvalue>
@@ -1155,7 +1155,7 @@ x=X]]></optionscode>
 		</setting>
 		<setting name="maxavatardims">
 			<title>Maximum Avatar Dimensions</title>
-			<description><![CDATA[The maximum dimensions that an avatar can be, in the format of width<b>x</b>height. If this is left blank then there will be no dimension restriction.]]></description>
+			<description><![CDATA[The maximum dimensions that an avatar can be, width and height separated by 'x' or '|'. If this is left blank then there will be no dimension restriction.]]></description>
 			<disporder>13</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[100x100]]></settingvalue>
@@ -1514,7 +1514,7 @@ descending=Descending]]></optionscode>
 		</setting>
 		<setting name="memberlistmaxavatarsize">
 			<title>Maximum Display Avatar Dimensions</title>
-			<description><![CDATA[The maximum dimensions for avatars when being displayed in the member list. If an avatar is too large, it will automatically be scaled down.]]></description>
+			<description><![CDATA[The maximum dimensions for avatars when being displayed in the member list, width & height separated by 'x' or '|'. If an avatar is too large, it will automatically be scaled down.]]></description>
 			<disporder>5</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[70x70]]></settingvalue>
