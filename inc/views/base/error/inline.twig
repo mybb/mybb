@@ -4,7 +4,7 @@
 		<h2 class="alert__title">{% if errors.title %}{{ errors.title }}{% else %}{{ lang.please_correct_errors }}{% endif %}</h2>
         <ul class="alert__list">
             {% for error in errors.list %}
-                <li>{{ error }}</li>
+                <li>{{ error|raw }}</li>
             {% endfor %}
         </ul>
     </div>

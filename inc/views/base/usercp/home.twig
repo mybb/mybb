@@ -1,176 +1,218 @@
-{% extends 'layouts/master.twig' %}
+{% extends 'layouts/account.twig' %}
 
 {% block head %}
     <title>{{ mybb.settings.bbname }} - {{ lang.user_cp }}</title>
 {% endblock head %}
 
-{% block body %}
-    <table width="100%" border="0" align="center">
-        <tr>
-            {# TODO: usercp_nav #}
-            <td valign="top">
-                <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-                    <tr>
-                        <td class="thead" colspan="2"><strong>{{ lang.account_summary }}</strong></td>
-                    </tr>
-                    <tr>
-                        <td class="trow1" valign="top" align="center" width="1">
-                            <div class="usercp_container">
-                                <img src="{{ useravatar.image }}" alt="{{ mybb.user.username }}" title="{{ mybb.user.username }}" {{ useravatar.width_height }} />
-                            </div>
-                        </td>
-                        <td class="trow2">
-                            <span class="largetext">{{ username }}</span><br />
-                            <strong>{{ lang.postnum }}</strong> <a href="search.php?action=finduser&amp;uid={{ mybb.user.uid }}">{{ mybb.user.posts }}</a> {{ lang.posts_day }}<br />
-                            {% if mybb.usergroup.usereputationsystem and mybb.settings.enablereputation %}
-                                <strong>{{ lang.reputation }}</strong> {{ reputation_link|raw }} [<a href="reputation.php?uid={{ mybb.user.uid }}">{{ lang.details }}</a>]<br />
-                            {% endif %}
-                            <strong>{{ lang.email }}</strong> {{ mybb.user.email }}<br />
-                            <strong>{{ lang.registration_date }}</strong> {{ mybb.user.regdate }}<br />
-                            <strong>{{ lang.primary_usergroup }}</strong> {{ groupscache[mybb.user.usergroup].title }}
-                            {% if mybb.user.usergroup == 5 and mybb.settings.regtype != 'admin' %}
-                                <br />(<a href="member.php?action=resendactivation">{{ lang.resend_activation }}</a>)
-                            {% endif %}<br />
-                            {% if mybb.settings.usereferrals %}
-                                <strong>{{ lang.members_referred }}</strong> {{ mybb.user.referrals }}<br />
-                                {{ trans('referral_link', mybb.settings.bburl, mybb.user.uid) }}
-                            {% endif %}
-                        </td>
-                    </tr>
-                </table>
-                {# Latest subscribed #}
-                {% if latestsubscriptions %}
-                    <br />
-                    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-                        <tr>
-                            <td class="thead" colspan="6">
-                                <div class="float_right">
-                                    <a href="usercp.php?action=subscriptions"><strong>{{ lang.view_all_subscriptions }}</strong></a>
-                                </div>
-                                <strong>{{ lang.new_thread_subscriptions }}</strong>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="tcat" colspan="3"><span class="smalltext"><strong>{{ lang.thread }} / {{ lang.author }}</strong></span></td>
-                            <td class="tcat" align="center" width="75"><span class="smalltext"><strong>{{ lang.replies }}</strong></span></td>
-                            <td class="tcat" align="center" width="75"><span class="smalltext"><strong>{{ lang.views }}</strong></span></td>
-                            <td class="tcat" align="center" width="200"><span class="smalltext"><strong>{{ lang.lastpost }}</strong></span></td>
-                        </tr>
-                        {% for thread in latestsubscriptions %}
-                            <tr>
-                                <td class="{{ thread.class }}" align="center" width="2%"><span class="thread_status {{ thread.folder }}" title="{{ thread.folder_label }}">&nbsp;</span></td>
-                                <td class="{{ thread.class }}" align="center" width="2%">{{ icon }}</td>
-                                <td class="{{ thread.class }}">
-                                    {% if thread.lastread and thread.lastpost > thread.lastread %}<a href="{{ thread.newpostlink }}"><img src="{{ theme.imgdir }}/jump.png" alt="{{ lang.goto_first_unread }}" title="{{ lang.goto_first_unread }}" /></a>{% endif %}
-                                    {{ thread.displayprefix }} <a href="{{ thread.threadlink }}" class="{{ thread.new_class }}">{{ thread.subject }}</a><br />
-                                    <span class="smalltext">{{ thread.author|raw }}</span>
-                                </td>
-                                <td class="{{ thread.class }}" align="center"><a href="{{ mybb.settings.bburl }}/misc.php?action=whoposted&tid={{ thread.tid }}" onclick="MyBB.whoPosted({{ thread.tid }}); return false;">{{ thread.replies }}</a></td>
-                                <td class="{{ thread.class }}" align="center">{{ thread.views }}</td>
-                                <td class="{{ thread.class }}" style="white-space: nowrap">
-                                    <span class="smalltext">
-                                        {{ thread.lastpostdate|raw }}<br />
-                                        <a href="{{ thread.lastpostlink }}">{{ lang.lastpost }}</a>: {% if thread.lastposteruid == 0 %}{{ lang.guest }}{% else %}{{ thread.lastposter|raw }}{% endif %}
-                                    </span>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </table>
-                {% endif %}
-                {# Latest threads #}
-                {% if latestthreads %}
-                    <br />
-                    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-                        <tr>
-                            <td class="thead" colspan="6">
-                                <div class="float_right">
-                                    <a href="search.php?action=finduserthreads&amp;uid={{ mybb.user.uid }}"><strong>{{ lang.find_all_threads }}</strong></a>
-                                </div>
-                                <strong>{{ lang.latest_threads }}</strong>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="tcat" colspan="3"><span class="smalltext"><strong>{{ lang.thread }} / {{ lang.author }}</strong></span></td>
-                            <td class="tcat" align="center" width="75"><span class="smalltext"><strong>{{ lang.replies }}</strong></span></td>
-                            <td class="tcat" align="center" width="75"><span class="smalltext"><strong>{{ lang.views }}</strong></span></td>
-                            <td class="tcat" align="center" width="200"><span class="smalltext"><strong>{{ lang.lastpost }}</strong></span></td>
-                        </tr>
-                        {% for thread in latestthreads %}
-                            <tr>
-                                <td class="{{ thread.class }}" align="center" width="2%"><span class="thread_status {{ thread.folder }}" title="{{ thread.folder_label }}">&nbsp;</span></td>
-                                <td class="{{ thread.class }}" align="center" width="2%">{{ icon }}</td>
-                                <td class="{{ thread.class }}">
-                                    {% if thread.lastread and thread.lastpost > thread.lastread %}<a href="{{ thread.newpostlink }}"><img src="{{ theme.imgdir }}/jump.png" alt="{{ lang.goto_first_unread }}" title="{{ lang.goto_first_unread }}" /></a>{% endif %}
-                                    {{ thread.displayprefix }} <a href="{{ thread.threadlink }}" class="{{ thread.new_class }}">{{ thread.subject }}</a><br />
-                                    <span class="smalltext">{{ thread.author|raw }}</span>
-                                </td>
-                                <td class="{{ thread.class }}" align="center"><a href="{{ mybb.settings.bburl }}/misc.php?action=whoposted&tid={{ thread.tid }}" onclick="MyBB.whoPosted({{ thread.tid }}); return false;">{{ thread.replies }}</a></td>
-                                <td class="{{ thread.class }}" align="center">{{ thread.views }}</td>
-                                <td class="{{ thread.class }}" style="white-space: nowrap">
-                                    <span class="smalltext">
-                                        {{ thread.lastpostdate|raw }}<br />
-                                        <a href="{{ thread.lastpostlink }}">{{ lang.lastpost }}</a>: {% if thread.lastposteruid == 0 %}{{ lang.guest }}{% else %}{{ thread.lastposter|raw }}{% endif %}
-                                    </span>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </table>
-                {% endif %}
-                {# Warnings #}
-                {% if warnings %}
-                    <br />
-                    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-                        <thead>
-                            <tr>
-                                <td class="thead" colspan="4">
-                                    <div class="float_right">{{ lang.current_warning_level }}</div>
-                                    <div><strong>{{ lang.latest_warnings }}</strong></div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="tcat"><span class="smalltext"><strong>{{ lang.warning }}</strong></span></td>
-                                <td class="tcat" width="20%" align="center"><span class="smalltext"><strong>{{ lang.date_issued }}</strong></span></td>
-                                <td class="tcat" width="20%" align="center"><span class="smalltext"><strong>{{ lang.expiry_date }}</strong></span></td>
-                                <td class="tcat" width="20%" align="center"><span class="smalltext"><strong>{{ lang.issued_by }}</strong></span></td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for warning in warnings %}
-                                <tr>
-                                    <td class="{{ alt_bg }}">
-                                        {{ warning.type }} {{ warning.points }}
-                                        {% if warning.post_subject %}
-                                            <br /><small>{{ lang.warning_for_post }} <a href="{{ warning.postlink }}">{{ warning.post_subject }}</a></small>
-                                        {% endif %}
-                                    </td>
-                                    <td class="{{ alt_bg }}" align="center">{{ warning.dateissued }}</td>
-                                    <td class="{{ alt_bg }}" align="center">{{ expires }}</td>
-                                    <td class="{{ alt_bg }}" align="center">{{ warning.issuedby }}</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                {% endif %}
-                <br />
-                <form action="usercp.php" method="post">
-                    <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-                    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-                        <tr>
-                            <td class="thead"><strong>{{ lang.personal_notepad }}</strong></td>
-                        </tr>
-                        <tr>
-                            <td align="center" class="trow1" width="100%">
-                            <textarea name="notepad" cols="1" rows="10" class="usercp_notepad">{{ mybb.user.notepad }}</textarea>
-                            </td>
-                        </tr>
-                    </table>
-                    <br />
-                    <div align="center">
-                        <input type="hidden" name="action" value="do_notepad" />
-                        <input type="submit" class="button" name="submit" value="{{ lang.update_notepad }}" />
+{% block accountHeader %}
+    <header class="page-header">
+        <h1 class="title title--page">{{ lang.account_summary }}</h1>
+    </header>
+{% endblock accountHeader %}
+
+{% block accountBody %}
+    <section class="block block--container account__dashboard">
+        <a href="#" class="avatar-profile-link"><img src="{{ useravatar.image }}" alt="{{ mybb.user.username }}" title="{{ mybb.user.username }}" {{ useravatar.width_height }} class="avatar" /></a>
+        <ul class="list list--divided list--stats">
+			<li class="list__item title">{{ username|raw }}</li>
+            <li class="list__item">
+				<span class="list__field">{{ lang.postnum }}</span>
+				<span class="list__value"><a href="search.php?action=finduser&amp;uid={{ mybb.user.uid }}">{{ mybb.user.posts }}</a> {{ lang.posts_day }}</span>
+			</li>
+            {% if mybb.usergroup.usereputationsystem and mybb.settings.enablereputation %}
+                <li class="list__item">
+                	<span class="list__field">{{ lang.reputation }}</span>
+                	<span class="list__value">{{ reputation_link|raw }} [<a href="reputation.php?uid={{ mybb.user.uid }}">{{ lang.details }}</a>]</span>
+                </li>
+            {% endif %}
+            <li class="list__item">
+                <span class="list__field">{{ lang.email }}</span>
+                <span class="list__value">{{ mybb.user.email }}</span>
+            </li>
+            <li class="list__item">
+                <span class="list__field">{{ lang.registration_date }}</span>
+                <span class="list__value">{{ mybb.user.regdate }}</span>
+            </li>
+            <li class="list__item">
+                <span class="list__field">{{ lang.primary_usergroup }}</span>
+                <span class="list__value">{{ groupscache[mybb.user.usergroup].title }} {% if mybb.user.usergroup == 5 and mybb.settings.regtype != 'admin' %}(<a href="member.php?action=resendactivation">{{ lang.resend_activation }}</a>){% endif %}</span>
+            </li>
+            {% if mybb.settings.usereferrals %}
+                <li class="list__item">
+                    <span class="list__field">{{ lang.members_referred }}</span>
+                    <span class="list__value"> {{ mybb.user.referrals }}<br />
+                    {{ trans('referral_link', mybb.settings.bburl, mybb.user.uid) }}</span>
+                </li>
+            {% endif %}
+        </ul>
+    </section>
+    {# Latest subscribed #}
+    {% if latestsubscriptions %}
+        <section class="block">
+            <h1 class="title title--major title">{{ lang.new_thread_subscriptions }}</h1>
+            <div class="thread-list thread-list--compact">
+        		<div class="sort-threads sort-threads--alt">
+        			<div class="sort-threads__column sort-threads__column--primary">
+        				{{ lang.thread }}<span class="sort-threads__author"> &mdash; {{ lang.author }}</span>
+        			</div>
+        			<div class="sort-threads__column sort-threads__column--replies">
+        				{{ lang.replies }}
+        			</div>
+        			<div class="sort-threads__column sort-threads__column--latest">
+        				{{ lang.lastpost }}
+        			</div>
+        		</div>
+                {% for thread in latestsubscriptions %}
+                    {# TO DO : {{ thread.folder }} {{ thread.folder_label }} #}
+                    <div class="row row--thread thread {{ thread.class }}">
+                        <div class="thread__column thread__column--primary">
+                            <h3 class="thread__title {$new_class}">
+                                {{ thread.displayprefix }}
+                                <a href="{{ thread.threadlink }}" class="{{ thread.new_class }}">{{ thread.subject }}</a>
+                                {% if thread.lastread and thread.lastpost > thread.lastread %}<a href="{{ thread.newpostlink }}" class="thread__status"><i class="fas fa-circle" title="{{ lang.goto_first_unread }}"></i></a>{% endif %}
+                                <span class="thread__icons">
+                                    {{ icon }}
+                                </span>
+                            </h3>
+                            <p class="thread__author">{{ lang.by }} {{ thread.author|raw }}</p>
+                        </div>
+                        <div class="thread__column thread__column--replies">
+                            <p class="thread__replies" title="{{ lang.replies }}: {{ thread.replies }} &middot; {{ lang.views }}: {{ thread.views }}">
+                                <a href="{{ mybb.settings.bburl }}/misc.php?action=whoposted&tid={{ thread.tid }}" onclick="MyBB.whoPosted({{ thread.tid }}); return false;" class="thread__replies__count">{{ thread.replies }}</a>
+                                <span class="thread__replies__text">{% if thread.replies == 1 %}{{ lang.reply }}{% else %}{{ lang.replies }}{% endif %}</span>
+                            </p>
+                        </div>
+                        <div class="thread__column thread__column--latest">
+                            <p class="thread__latest-post">
+                                <span class="thread__latest-post__text">{{ lang.lastpost_by }}</span>
+                                <span class="thread__latest-post__author">
+                                    {% if thread.lastposteruid == 0 %}{{ lang.guest }}{% else %}{{ thread.lastposter|raw }}{% endif %}
+                                </span>
+                                <a href="{{ thread.lastpostlink }}" class="thread__latest-post__date">{{ thread.lastpostdate|raw }}</a>
+                            </p>
+                        </div>
                     </div>
-                </form>
-            </td>
-        </tr>
-    </table>
-{% endblock body %}
+                {% endfor %}
+            </div>
+            <div class="block__footer-link">
+    			<a href="usercp.php?action=subscriptions">
+    				<i class="icon fas fa-plus-square"></i>
+    				{{ lang.view_all_subscriptions }}
+    			</a>
+    		</div>
+        </section>
+    {% endif %}
+
+    {# Latest threads #}
+    {% if latestthreads %}
+        <section class="block">
+            <h1 class="title title--major title">{{ lang.latest_threads }}</h1>
+            <div class="thread-list thread-list--compact">
+                <div class="sort-threads sort-threads--alt">
+                    <div class="sort-threads__column sort-threads__column--primary">
+                        {{ lang.thread }}<span class="sort-threads__author"> &mdash; {{ lang.author }}</span>
+                    </div>
+                    <div class="sort-threads__column sort-threads__column--replies">
+                        {{ lang.replies }}
+                    </div>
+                    <div class="sort-threads__column sort-threads__column--latest">
+                        {{ lang.lastpost }}
+                    </div>
+                </div>
+                {% for thread in latestthreads %}
+                    {# TO DO : {{ thread.folder }} {{ thread.folder_label }} #}
+                    <div class="row row--thread thread {{ thread.class }}">
+                        <div class="thread__column thread__column--primary">
+                            <h3 class="thread__title {$new_class}">
+                                {{ thread.displayprefix }}
+                                <a href="{{ thread.threadlink }}" class="{{ thread.new_class }}">{{ thread.subject }}</a>
+                                {% if thread.lastread and thread.lastpost > thread.lastread %}<a href="{{ thread.newpostlink }}" class="thread__status"><i class="fas fa-circle" title="{{ lang.goto_first_unread }}"></i></a>{% endif %}
+                                <span class="thread__icons">
+                                    {{ icon }}
+                                </span>
+                            </h3>
+                            <p class="thread__author">{{ lang.by }} {{ thread.author|raw }}</p>
+                        </div>
+                        <div class="thread__column thread__column--replies">
+                            <p class="thread__replies" title="{{ lang.replies }}: {{ thread.replies }} &middot; {{ lang.views }}: {{ thread.views }}">
+                                <a href="{{ mybb.settings.bburl }}/misc.php?action=whoposted&tid={{ thread.tid }}" onclick="MyBB.whoPosted({{ thread.tid }}); return false;" class="thread__replies__count">{{ thread.replies }}</a>
+                                <span class="thread__replies__text">{% if thread.replies == 1 %}{{ lang.reply }}{% else %}{{ lang.replies }}{% endif %}</span>
+                            </p>
+                        </div>
+                        <div class="thread__column thread__column--latest">
+                            <p class="thread__latest-post">
+                                <span class="thread__latest-post__text">{{ lang.lastpost_by }}</span>
+                                <span class="thread__latest-post__author">
+                                    {% if thread.lastposteruid == 0 %}{{ lang.guest }}{% else %}{{ thread.lastposter|raw }}{% endif %}
+                                </span>
+                                <a href="{{ thread.lastpostlink }}" class="thread__latest-post__date">{{ thread.lastpostdate|raw }}</a>
+                            </p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="block__footer-link">
+    			<a href="search.php?action=finduserthreads&amp;uid={{ mybb.user.uid }}">
+    				<i class="icon fas fa-comments"></i>
+    				{{ lang.find_all_threads }}
+    			</a>
+    		</div>
+        </section>
+    {% endif %}
+
+    {# Warnings #}
+    {% if warnings %}
+        <br />
+        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+            <thead>
+                <tr>
+                    <td class="thead" colspan="4">
+                        <div class="float_right">{{ lang.current_warning_level }}</div>
+                        <div><strong>{{ lang.latest_warnings }}</strong></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tcat"><span class="smalltext"><strong>{{ lang.warning }}</strong></span></td>
+                    <td class="tcat" width="20%" align="center"><span class="smalltext"><strong>{{ lang.date_issued }}</strong></span></td>
+                    <td class="tcat" width="20%" align="center"><span class="smalltext"><strong>{{ lang.expiry_date }}</strong></span></td>
+                    <td class="tcat" width="20%" align="center"><span class="smalltext"><strong>{{ lang.issued_by }}</strong></span></td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for warning in warnings %}
+                    <tr>
+                        <td class="{{ alt_bg }}">
+                            {{ warning.type }} {{ warning.points }}
+                            {% if warning.post_subject %}
+                                <br /><small>{{ lang.warning_for_post }} <a href="{{ warning.postlink }}">{{ warning.post_subject }}</a></small>
+                            {% endif %}
+                        </td>
+                        <td class="{{ alt_bg }}" align="center">{{ warning.dateissued }}</td>
+                        <td class="{{ alt_bg }}" align="center">{{ expires }}</td>
+                        <td class="{{ alt_bg }}" align="center">{{ warning.issuedby }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+    <section class="block block--form form">
+        <form action="usercp.php" method="post">
+            <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+            <div class="section section--form">
+                <div class="row row--form field">
+                    <h3 class="field__name"><label for="notepad">{{ lang.personal_notepad }}</label></h3>
+                    <textarea name="notepad" cols="1" rows="10" id="notepad" class="usercp_notepad">{{ mybb.user.notepad }}</textarea>
+                </div>
+            </div>
+            <div class="form__submit">
+            	<input type="hidden" name="action" value="do_notepad" />
+            	<button type="submit" class="button" name="submit">
+            		<i class="button__icon fas fa-sticky-note"></i>
+            		<span class="button__text">{{ lang.update_notepad }}</span>
+                </button>
+            </div>
+        </form>
+    </section>
+
+{% endblock accountBody %}

@@ -3032,6 +3032,7 @@ if (!$mybb->input['action']) {
 
     output_page(\MyBB\template('usercp/home.twig', [
         'useravatar' => $useravatar,
+        'username' => $username,
         'groupscache' => $groupscache,
         'reputation_link' => $reputation_link,
         'latestsubscriptions' => $latestsubscriptions,

@@ -12,9 +12,11 @@ $l['nopermission'] = "Sorry, but you do not have permission to view threads in t
 $l['search_forum'] = "Search this Forum:";
 $l['thread'] = "Thread";
 $l['author'] = "Author";
+$l['reply'] = "Reply";
 $l['replies'] = "Replies";
 $l['views'] = "Views";
 $l['lastpost'] = "Last Post";
+$l['lastpost_by'] = "Last post by";
 $l['rating'] = "Rating";
 $l['prefix'] = "Prefix:";
 $l['prefix_all'] = "Prefix: Any/No Prefix";
@@ -48,6 +50,7 @@ $l['posts_by_you'] = "Contains Posts by You";
 $l['no_new_thread'] = "No New Posts";
 $l['hot_thread'] = "Hot Thread (No New)";
 $l['locked_thread'] = "Locked Thread";
+$l['by'] = "by";
 $l['goto_first_unread'] = "Go to first unread post";
 $l['pages'] = "Pages:";
 $l['pages_last'] = "last";
@@ -99,4 +102,3 @@ $l['deleted_thread'] = "Deleted Thread";
 $l['error_containsnoforums'] = "Sorry, but the forum you are currently viewing does not contain any child forums.";
 
 $l['inline_edit_description'] = '(Click and hold to edit)';
-

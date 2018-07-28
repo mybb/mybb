@@ -22,11 +22,13 @@
                         {{ usergroup.users }} [<a href="managegroup.php?gid={{ usergroup.gid }}">{{ lang.view_members }}</a>]
                     </td>
                     <td align="center">
+                        {# something is wrong here #}
                         {% if usergroup.type != 4 %}
                             --
                         {% else %}
                             {{ usergroup.joinrequests }}
                         {% endif %}
+                        {# end something is wrong here #}
                         {% if usergroup.joinrequests > 0 and usergroup.canmanagerequests %}
                             [<a href="managegroup.php?action=joinrequests&amp;gid={{ usergroup.gid }}">{{ lang.view_requests }}</a>]
                         {% endif %}
@@ -67,7 +69,7 @@
                         </span><br />
                         {% if usergroup.leaders %}
                             <span class="smalltext">
-                                {{ lang.usergroup_leaders }} 
+                                {{ lang.usergroup_leaders }}
                                 {% for leader in usergroup.leaders %}
                                     {{ leader }}{% if not loop.last %}{{ lang.comma }} {% endif %}
                                 {% endfor %}
