@@ -136,8 +136,6 @@ $l['instant_email_subscribe'] = "Subscribe and receive email notification of new
 $l['instant_pm_subscribe'] = "Subscribe and receive PM notification of new replies";
 $l['options'] = "Options";
 
-$l['today_rel'] = "<span title=\"{1}\">Today</span>";
-$l['yesterday_rel'] = "<span title=\"{1}\">Yesterday</span>";
 $l['today'] = "Today";
 $l['yesterday'] = "Yesterday";
 $l['error'] = "Board Message";
@@ -356,7 +354,7 @@ $l['seconds_short'] = "s";
 $l['rel_in'] = "In ";
 $l['rel_ago'] = "ago";
 $l['rel_less_than'] = "Less than ";
-$l['rel_time'] = "<span title=\"{5}{6}\">{1}{2} {3} {4}</span>";
+$l['rel_time'] = "{1}{2} {3} {4}";
 $l['rel_minutes_single'] = "minute";
 $l['rel_minutes_plural'] = "minutes";
 $l['rel_hours_single'] = "hour";
