@@ -2340,12 +2340,7 @@ if($mybb->input['action'] == "profile")
         }
     }
 
-    $memprofile['postnum'] = my_number_format($memprofile['postnum']);
-    $memprofile['ppd'] = my_number_format($ppd);
     $memprofile['post_percent'] = $post_percent;
-
-    $memprofile['threadnum'] = my_number_format($memprofile['threadnum']);
-    $memprofile['tpd'] = my_number_format($tpd);
     $memprofile['thread_percent'] = $thread_percent;
 
     $memprofile['formattedname'] = format_name($memprofile['username'], $memprofile['usergroup'], $memprofile['displaygroup']);
