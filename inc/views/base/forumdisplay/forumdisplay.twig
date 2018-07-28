@@ -119,7 +119,7 @@
                         <span class="smalltext">
                             <strong>
                                 <a href="misc.php?action=markread&amp;fid={{ foruminfo.fid }}{{ post_code_string }}">{{ lang.markforum_read }}</a> | 
-                                <a href="usercp2.php?action={{ subAction }}subscription&amp;type=forum&amp;fid={{ foruminfo.fid }}&amp;my_post_key={{ mybb.post_code }}">{% if subAction == 'add' %}{{ lang.subscribe_forum }}{% else %}{{ lang.unsubscribe_forum }}{% endif %}</a>
+                                <a href="usercp.php?action={{ subAction }}subscription&amp;type=forum&amp;fid={{ foruminfo.fid }}&amp;my_post_key={{ mybb.post_code }}">{% if subAction == 'add' %}{{ lang.subscribe_forum }}{% else %}{{ lang.unsubscribe_forum }}{% endif %}</a>
                                 {% if foruminfo.password %}
                                     | <a href="misc.php?action=clearpass&amp;fid={{ foruminfo.fid }}&amp;my_post_key={{ mybb.post_code }}">{{ lang.clear_stored_password }}</a>
                                 {% endif %}
