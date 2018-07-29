@@ -261,24 +261,19 @@ class PostDataHandler extends DataHandler
 			if(stripos($db->type, 'my') !== false)
 			{
 				$fields = $db->show_fields_from("posts");
-				foreach($fields as $field)
+				$type = $fields[array_search('message', array_column($fields, 'Field'))]['Type'];
+				switch(strtolower($type))
 				{
-					if($field['Field'] == 'message')
-					{
-						switch(strtolower($field['Type']))
-						{
-							case 'longtext':
-								$dblimit = 4294967295;
-								break;
-							case 'mediumtext':
-								$dblimit = 16777215;
-								break;
-							case 'text':
-							default:
-								$dblimit = 65535;
-								break;
-						}
-					}
+					case 'longtext':
+						$limit = 4294967295;
+						break;
+					case 'mediumtext':
+						$limit = 16777215;
+						break;
+					case 'text':
+					default:
+						$limit = 65535;
+						break;
 				}
 			}
 
