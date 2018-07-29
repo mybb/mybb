@@ -265,14 +265,14 @@ class PostDataHandler extends DataHandler
 				switch(strtolower($type))
 				{
 					case 'longtext':
-						$limit = 4294967295;
+						$dblimit = 4294967295;
 						break;
 					case 'mediumtext':
-						$limit = 16777215;
+						$dblimit = 16777215;
 						break;
 					case 'text':
 					default:
-						$limit = 65535;
+						$dblimit = 65535;
 						break;
 				}
 			}
