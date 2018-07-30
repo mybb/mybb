@@ -14,10 +14,10 @@ if(!$working_dir)
 	$working_dir = '.';
 }
 
+$shutdown_queries = $shutdown_functions = array();
+
 // Load main MyBB core file which begins all of the magic
 require_once $working_dir.'/inc/init.php';
-
-$shutdown_queries = $shutdown_functions = array();
 
 // Read the usergroups cache as well as the moderators cache
 $groupscache = $cache->read('usergroups');
