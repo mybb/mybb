@@ -101,6 +101,14 @@ class PMDataHandler extends DataHandler
 			$this->set_error("missing_message");
 			return false;
 		}
+
+		// If the length of message is beyond SQL limitation for 'text' field
+		else if(strlen($message) > 65535)
+		{
+			$this->set_error("message_too_long", array('65535', strlen($message)));
+			return false;
+		}
+
 		return true;
 	}
 
@@ -301,7 +309,7 @@ class PMDataHandler extends DataHandler
 				}
 
 				// Is the recipient only allowing private messages from their buddy list?
-				if($mybb->settings['allowbuddyonly'] == 1 && $user['receivefrombuddy'] == 1 && !empty($user['buddylist']) && strpos(','.$user['buddylist'].',', ','.$pm['fromid'].',') === false)
+				if(empty($pm['saveasdraft']) && $mybb->settings['allowbuddyonly'] == 1 && $user['receivefrombuddy'] == 1 && !empty($user['buddylist']) && strpos(','.$user['buddylist'].',', ','.$pm['fromid'].',') === false)
 				{
 					$this->set_error('recipient_has_buddy_only', array(htmlspecialchars_uni($user['username'])));
 				}

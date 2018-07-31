@@ -135,7 +135,7 @@ if($mybb->input['action'] == "add")
 			$cache->update_mycode();
 
 			// Log admin action
-			log_admin_action($cid, htmlspecialchars_uni($mybb->input['title']));
+			log_admin_action($cid, $mybb->input['title']);
 
 			flash_message($lang->success_added_mycode, 'success');
 			admin_redirect('index.php?module=config-mycode');
@@ -269,7 +269,7 @@ if($mybb->input['action'] == "edit")
 			$cache->update_mycode();
 
 			// Log admin action
-			log_admin_action($mycode['cid'], htmlspecialchars_uni($mybb->input['title']));
+			log_admin_action($mycode['cid'], $mybb->input['title']);
 
 			flash_message($lang->success_updated_mycode, 'success');
 			admin_redirect('index.php?module=config-mycode');
@@ -368,7 +368,7 @@ if($mybb->input['action'] == "delete")
 		$cache->update_mycode();
 
 		// Log admin action
-		log_admin_action($mycode['cid'], htmlspecialchars_uni($mycode['title']));
+		log_admin_action($mycode['cid'], $mycode['title']);
 
 		flash_message($lang->success_deleted_mycode, 'success');
 		admin_redirect("index.php?module=config-mycode");

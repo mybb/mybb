@@ -81,7 +81,7 @@ if($mybb->input['action'] == "add")
 			$cache->update_smilies();
 
 			// Log admin action
-			log_admin_action($sid, htmlspecialchars_uni($mybb->input['name']));
+			log_admin_action($sid, $mybb->input['name']);
 
 			flash_message($lang->success_smilie_added, 'success');
 			admin_redirect("index.php?module=config-smilies");
@@ -217,7 +217,7 @@ if($mybb->input['action'] == "edit")
 			$cache->update_smilies();
 
 			// Log admin action
-			log_admin_action($smilie['sid'], htmlspecialchars_uni($mybb->input['name']));
+			log_admin_action($smilie['sid'], $mybb->input['name']);
 
 			flash_message($lang->success_smilie_updated, 'success');
 			admin_redirect("index.php?module=config-smilies");
@@ -298,7 +298,7 @@ if($mybb->input['action'] == "delete")
 		$cache->update_smilies();
 
 		// Log admin action
-		log_admin_action($smilie['sid'], htmlspecialchars_uni($smilie['name']));
+		log_admin_action($smilie['sid'], $smilie['name']);
 
 		flash_message($lang->success_smilie_updated, 'success');
 		admin_redirect("index.php?module=config-smilies");

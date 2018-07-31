@@ -44,6 +44,20 @@ if(!$user)
 }
 $user_permissions = user_permissions($uid);
 
+// Fetch display group properties.
+$displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
+
+if(!$user['displaygroup'])
+{
+	$user['displaygroup'] = $user['usergroup'];
+}
+
+$display_group = usergroup_displaygroup($user['displaygroup']);
+if(is_array($display_group))
+{
+	$user_permissions = array_merge($user_permissions, $display_group);
+}
+
 $mybb->input['action'] = $mybb->get_input('action');
 
 // Here we perform our validation when adding a reputation to see if the user
@@ -424,6 +438,7 @@ if($mybb->input['action'] == "add")
 
 		if($mybb->usergroup['issupermod'] == 1 || ($mybb->usergroup['candeletereputations'] == 1 && $existing_reputation['adduid'] == $mybb->user['uid'] && $mybb->user['uid'] != 0))
 		{
+			$reputation_pid = $mybb->get_input('pid', MyBB::INPUT_INT);
 			eval("\$delete_button = \"".$templates->get("reputation_add_delete")."\";");
 		}
 	}
@@ -487,7 +502,7 @@ if($mybb->input['action'] == "add")
 			}
 		}
 
-		$mybb->input['pid'] = $mybb->get_input('pid', MyBB::INPUT_INT);
+		$reputation_pid = $mybb->get_input('pid', MyBB::INPUT_INT);
 
 		$plugins->run_hooks("reputation_add_end");
 		eval("\$reputation_add = \"".$templates->get("reputation_add", 1, 0)."\";");
@@ -556,17 +571,7 @@ if(!$mybb->input['action'])
 		error_no_permission();
 	}
 
-	// Set display group to their user group if they don't have a display group.
-	if(!$user['displaygroup'])
-	{
-		$user['displaygroup'] = $user['usergroup'];
-	}
-
-	// Fetch display group properties.
-	$displaygroupfields = array('title', 'description', 'namestyle', 'usertitle', 'stars', 'starimage', 'image', 'usereputationsystem');
-	$display_group = usergroup_displaygroup($user['displaygroup']);
-
-	if($user_permissions['usereputationsystem'] != 1 || $display_group['title'] && $display_group['usereputationsystem'] == 0)
+	if($user_permissions['usereputationsystem'] != 1)
 	{
 		// Group has reputation disabled or user has a display group that has reputation disabled
 		error($lang->reputations_disabled_group);
@@ -578,12 +583,6 @@ if(!$mybb->input['action'])
 
 	// Format the user name using the group username style
 	$username = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
-
-	// Set display group to their user group if they don't have a display group.
-	if(!$user['displaygroup'])
-	{
-		$user['displaygroup'] = $user['usergroup'];
-	}
 
 	$usertitle = '';
 

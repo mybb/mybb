@@ -122,7 +122,7 @@ $l['success_view_deleted'] = "The selected administration view has been deleted 
 
 $l['confirm_view_deletion'] = "Are you sure you want to delete the selected view?";
 
-$l['warning_coppa_user'] = "<p class=\"alert\"><strong>Warning: </strong> This user is awaiting COPPA validation. <a href=\"index.php?module=user-users&amp;action=activate_user&amp;uid={1}\">Activate Account</a></p>";
+$l['warning_coppa_user'] = "<p class=\"alert\"><strong>Warning: </strong> This user is awaiting COPPA validation. <a href=\"index.php?module=user-users&amp;action=activate_user&amp;uid={1}&amp;my_post_key={2}\">Activate Account</a></p>";
 
 $l['required_profile_info'] = "Required Profile Information";
 $l['password'] = "Password";
@@ -159,7 +159,6 @@ $l['custom_user_title'] = "Custom User Title";
 $l['custom_user_title_desc'] = "If empty, the group user title will be used";
 $l['website'] = "Website";
 $l['icq_number'] = "ICQ Number";
-$l['aim_handle'] = "AIM Handle";
 $l['yahoo_messanger_handle'] = "Yahoo! Messenger Handle";
 $l['skype_handle'] = "Skype Handle";
 $l['google_handle'] = "Google Hangouts Handle";
@@ -343,7 +342,6 @@ $l['email_address_contains'] = "Email address contains";
 $l['is_member_of_groups'] = "Is member of one or more of these user groups";
 $l['website_contains'] = "Website contains";
 $l['icq_number_contains'] = "ICQ number contains";
-$l['aim_handle_contains'] = "AIM handle contains";
 $l['yahoo_contains'] = "Yahoo! Messenger handle contains";
 $l['skype_contains'] = "Skype handle contains";
 $l['google_contains'] = "Google Hangouts handle contains";

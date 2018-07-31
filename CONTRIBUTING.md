@@ -1,8 +1,8 @@
 ## Reporting issues
 
-**Issues in MyBB should only be reported in the forums.** Please report issues in the 1.8 series in the [1.8 Bugs and Issues](https://community.mybb.com/forum-157.html) forum. Note that issue reports for the 1.6 series are no longer accepted.
+Note that issue reports for the 1.6 series are no longer accepted.
 
-However you should check these forums and the issue tracker on GitHub to make sure the issue hasn't already been reported. These issues will be pushed to GitHub when a member of the MyBB Team is able to reproduce (confirm) that the issue exists. GitHub is not the place to report new issues. Only confirmed issues should be present on GitHub.
+You should check [1.8 Bugs and Issues](https://community.mybb.com/forum-157.html) forum and the issue tracker on GitHub to make sure the issue hasn't already been reported. These issues posted in the [1.8 Bugs and Issues](https://community.mybb.com/forum-157.html) forum will be pushed to GitHub when a member of the MyBB Team is able to reproduce (confirm) that the issue exists. 
 
 ## Suggesting features
 
@@ -18,6 +18,3 @@ If your Pull Request is for a new feature, that feature must be already confirme
 
 All changes made in Pull Requests must follow the [Development Standards](https://docs.mybb.com/1.8/development/standards/).
 If you need any help with sending your code contributions the [GitHub Help site](https://help.github.com) is a good place to start.
-
-## Code of Conduct
-Contributors to this project should understand and ensure they agree to the terms described in our Code of Conduct available at https://mybb.com/about/conduct/.

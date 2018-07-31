@@ -40,7 +40,7 @@ if($mybb->get_input('action') == "search")
 	add_breadcrumb($lang->nav_memberlist_search);
 
 	$contact_fields = array();
-	foreach(array('aim', 'skype', 'google', 'yahoo', 'icq') as $field)
+	foreach(array('skype', 'google', 'yahoo', 'icq') as $field)
 	{
 		$contact_fields[$field] = '';
 		$settingkey = 'allow'.$field.'field';
@@ -55,6 +55,11 @@ if($mybb->get_input('action') == "search")
 			$bgcolors[$field] = alt_trow();
 			eval('$contact_fields[\''.$field.'\'] = "'.$templates->get('memberlist_search_contact_field').'";');
 		}
+	}
+
+	if($mybb->settings['usereferrals'] == 1)
+	{
+		eval("\$referrals_option = \"".$templates->get("memberlist_referrals_option")."\";");
 	}
 
 	eval("\$search_page = \"".$templates->get("memberlist_search")."\";");
@@ -102,7 +107,14 @@ else
 			$sort_field = "u.threadnum";
 			break;
 		case "referrals":
-			$sort_field = "u.referrals";
+			if($mybb->settings['usereferrals'] == 1)
+			{
+				$sort_field = "u.referrals";
+			}
+			else
+			{
+				$sort_field = "u.username";
+			}
 			break;
 		default:
 			$sort_field = "u.username";
@@ -214,7 +226,7 @@ else
 	}
 
 	// Search by contact field input
-	foreach(array('aim', 'icq', 'google', 'skype', 'yahoo') as $cfield)
+	foreach(array('icq', 'google', 'skype', 'yahoo') as $cfield)
 	{
 		$csetting = 'allow'.$cfield.'field';
 		$mybb->input[$cfield] = trim($mybb->get_input($cfield));
@@ -346,16 +358,33 @@ else
 		$user['profilelink'] = build_profile_link($user['username'], $user['uid']);
 
 		// Get the display usergroup
-		if(empty($user['displaygroup']))
+		if($user['usergroup'])
+		{
+			$usergroup = usergroup_permissions($user['usergroup']);
+		}
+		else
+		{
+			$usergroup = usergroup_permissions(1);
+		}
+
+		$displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
+
+		if(!$user['displaygroup'])
 		{
 			$user['displaygroup'] = $user['usergroup'];
 		}
-		$usergroup = $usergroups_cache[$user['displaygroup']];
+
+		$display_group = usergroup_displaygroup($user['displaygroup']);
+		if(is_array($display_group))
+		{
+			$usergroup = array_merge($usergroup, $display_group);
+		}
 
 		// Build referral?
 		if($mybb->settings['usereferrals'] == 1)
 		{
 			eval("\$referral_bit = \"".$templates->get("memberlist_referrals_bit")."\";");
+			eval("\$referrals_option = \"".$templates->get("memberlist_referrals_option")."\";");
 		}
 
 		$usergroup['groupimage'] = '';

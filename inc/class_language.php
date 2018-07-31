@@ -74,16 +74,16 @@ class MyLanguage
 	 * @param string $language The language to use.
 	 * @param string $area The area to set the language for.
 	 */
-	function set_language($language="english", $area="user")
+	function set_language($language="", $area="user")
 	{
 		global $mybb;
 
 		$language = preg_replace("#[^a-z0-9\-_]#i", "", $language);
 
-		// Default language is English.
+		// Use the board's default language
 		if($language == "")
 		{
-			$language = "english";
+			$language = $mybb->settings['bblanguage'];
 		}
 
 		// Check if the language exists.

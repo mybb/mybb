@@ -56,8 +56,8 @@ if(($mybb->input['action'] == "editdraft" || $mybb->input['action'] == "do_newre
 	{
 		error($lang->error_post_noperms);
 	}
-	$pid = $post['pid'];
-	$tid = $post['tid'];
+	$pid = (int)$post['pid'];
+	$tid = (int)$post['tid'];
 	eval("\$editdraftpid = \"".$templates->get("newreply_draftinput")."\";");
 }
 
@@ -67,7 +67,7 @@ if(!$thread)
 {
 	error($lang->error_invalidthread);
 }
-$fid = $thread['fid'];
+$fid = (int)$thread['fid'];
 
 // Get forum info
 $forum = get_forum($fid);
@@ -126,21 +126,10 @@ if(isset($forumpermissions['canonlyreplyownthreads']) && $forumpermissions['cano
 	error_no_permission();
 }
 
-// Coming from quick reply? Set some defaults
-if($mybb->get_input('method') == "quickreply")
+// Coming from quick reply and not a preview call? Set subscription method
+if($mybb->get_input('method') == "quickreply" && !isset($mybb->input['previewpost']))
 {
-	if($mybb->user['subscriptionmethod'] == 1)
-	{
-		$mybb->input['postoptions']['subscriptionmethod'] = "none";
-	}
-	else if($mybb->user['subscriptionmethod'] == 2)
-	{
-		$mybb->input['postoptions']['subscriptionmethod'] = "email";
-	}
-	else if($mybb->user['subscriptionmethod'] == 3)
-	{
-		$mybb->input['postoptions']['subscriptionmethod'] = "pm";
-	}
+	$mybb->input['postoptions']['subscriptionmethod'] = get_subscription_method($mybb->get_input('tid', MyBB::INPUT_INT));
 }
 
 // Check if this forum is password protected and we have a valid password
@@ -344,7 +333,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 	}
 	if(!$mybb->get_input('savedraft'))
 	{
-		$query = $db->simple_select("posts p", "p.pid, p.visible", "{$user_check} AND p.tid='{$thread['tid']}' AND p.subject='".$db->escape_string($mybb->get_input('subject'))."' AND p.message='".$db->escape_string($mybb->get_input('message'))."' AND p.visible != '-2' AND p.dateline>".(TIME_NOW-600));
+		$query = $db->simple_select("posts p", "p.pid, p.visible", "{$user_check} AND p.tid='{$thread['tid']}' AND p.subject='".$db->escape_string($mybb->get_input('subject'))."' AND p.message='".$db->escape_string($mybb->get_input('message'))."' AND p.visible > -1 AND p.dateline>".(TIME_NOW-600));
 		$duplicate_check = $db->fetch_field($query, "pid");
 		if($duplicate_check)
 		{
@@ -854,26 +843,11 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		{
 			$postoptionschecked['signature'] = " checked=\"checked\"";
 		}
-		if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "none")
-		{
-			$postoptions_subscriptionmethod_none = "checked=\"checked\"";
-		}
-		else if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "email")
-		{
-			$postoptions_subscriptionmethod_email = "checked=\"checked\"";
-		}
-		else if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "pm")
-		{
-			$postoptions_subscriptionmethod_pm = "checked=\"checked\"";
-		}
-		else
-		{
-			$postoptions_subscriptionmethod_dont = "checked=\"checked\"";
-		}
 		if(isset($postoptions['disablesmilies']) && $postoptions['disablesmilies'] == 1)
 		{
 			$postoptionschecked['disablesmilies'] = " checked=\"checked\"";
 		}
+		$subscription_method = get_subscription_method($tid, $postoptions);
 		$subject = $mybb->input['subject'];
 	}
 	elseif($mybb->input['action'] == "editdraft" && $mybb->user['uid'])
@@ -888,22 +862,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		{
 			$postoptionschecked['disablesmilies'] = " checked=\"checked\"";
 		}
-		if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "none")
-		{
-			$postoptions_subscriptionmethod_none = "checked=\"checked\"";
-		}
-		else if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "email")
-		{
-			$postoptions_subscriptionmethod_email = "checked=\"checked\"";
-		}
-		else if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "pm")
-		{
-			$postoptions_subscriptionmethod_pm = "checked=\"checked\"";
-		}
-		else
-		{
-			$postoptions_subscriptionmethod_dont = "checked=\"checked\"";
-		}
+		$subscription_method = get_subscription_method($tid); // Subscription method doesn't get saved in drafts
 		$mybb->input['icon'] = $post['icon'];
 	}
 	else
@@ -912,23 +871,9 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		{
 			$postoptionschecked['signature'] = " checked=\"checked\"";
 		}
-		if($mybb->user['subscriptionmethod'] ==  1)
-		{
-			$postoptions_subscriptionmethod_none = "checked=\"checked\"";
-		}
-		else if($mybb->user['subscriptionmethod'] == 2)
-		{
-			$postoptions_subscriptionmethod_email = "checked=\"checked\"";
-		}
-		else if($mybb->user['subscriptionmethod'] == 3)
-		{
-			$postoptions_subscriptionmethod_pm = "checked=\"checked\"";
-		}
-		else
-		{
-			$postoptions_subscriptionmethod_dont = "checked=\"checked\"";
-		}
+		$subscription_method = get_subscription_method($tid);
 	}
+	${'postoptions_subscriptionmethod_'.$subscription_method} = "checked=\"checked\"";
 
 	if($forum['allowpicons'] != 0)
 	{

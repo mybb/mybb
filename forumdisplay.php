@@ -611,29 +611,9 @@ if(isset($fpermissions['canonlyviewownthreads']) && $fpermissions['canonlyviewow
 
 if($fpermissions['canviewthreads'] != 0)
 {
-	// How many posts are there?
-	if(($datecut > 0 && $datecut != 9999) || isset($fpermissions['canonlyviewownthreads']) && $fpermissions['canonlyviewownthreads'] == 1)
-	{
-		$query = $db->simple_select("threads", "COUNT(tid) AS threads", "fid = '$fid' $useronly $visibleonly $datecutsql $prefixsql");
-		$threadcount = $db->fetch_field($query, "threads");
-	}
-	else
-	{
-		$query = $db->simple_select("forums", "threads, unapprovedthreads, deletedthreads", "fid = '{$fid}'", array('limit' => 1));
-		$forum_threads = $db->fetch_array($query);
-		$threadcount = $forum_threads['threads'];
-		if($ismod == true)
-		{
-			$threadcount += $forum_threads['unapprovedthreads'] + $forum_threads['deletedthreads'];
-		}
-
-		// If we have 0 threads double check there aren't any "moved" threads
-		if($threadcount == 0)
-		{
-			$query = $db->simple_select("threads", "COUNT(tid) AS threads", "fid = '$fid' $useronly $visibleonly", array('limit' => 1));
-			$threadcount = $db->fetch_field($query, "threads");
-		}
-	}
+	// How many threads are there?
+	$query = $db->simple_select("threads", "COUNT(tid) AS threads", "fid = '$fid' $useronly $visibleonly $datecutsql $prefixsql");
+	$threadcount = $db->fetch_field($query, "threads");
 }
 
 // How many pages are there?
@@ -1264,8 +1244,8 @@ if(!empty($threadcache) && is_array($threadcache))
 
 		if($thread['closed'] == 1)
 		{
-			$folder .= "lock";
-			$folder_label .= $lang->icon_lock;
+			$folder .= "close";
+			$folder_label .= $lang->icon_close;
 		}
 
 		if($moved[0] == "moved")

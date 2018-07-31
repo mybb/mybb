@@ -107,10 +107,18 @@
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="cookiesamesiteflag">
+			<title>SameSite Cookie Flag</title>
+			<description><![CDATA[Authentication cookies will carry the SameSite flag to prevent CSRF attacks. Keep this disabled if you expect cross-origin POST requests.]]></description>
+			<disporder>12</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 		<setting name="cookiesecureflag">
 			<title>Secure Cookie Flag</title>
 			<description><![CDATA[Cookies can be set with the Secure flag to prevent them from being sent over unencrypted connections. You should enable this setting only if your forum works correctly under HTTPS.]]></description>
-			<disporder>12</disporder>
+			<disporder>13</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -118,7 +126,7 @@
 		<setting name="showvernum">
 			<title>Show Version Numbers</title>
 			<description><![CDATA[Allows you to turn off the public display of version numbers in MyBB.]]></description>
-			<disporder>13</disporder>
+			<disporder>14</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -126,7 +134,7 @@
 		<setting name="mailingaddress">
 			<title>Mailing Address</title>
 			<description><![CDATA[If you have a mailing address, enter it here. This is shown on the COPPA compliance form.]]></description>
-			<disporder>14</disporder>
+			<disporder>15</disporder>
 			<optionscode><![CDATA[textarea]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -134,7 +142,7 @@
 		<setting name="faxno">
 			<title>Contact Fax No</title>
 			<description><![CDATA[If you have a fax number, enter it here. This is shown on the COPPA compliance form.]]></description>
-			<disporder>15</disporder>
+			<disporder>16</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -225,7 +233,7 @@ email=Sent via Email and shown in the Mod CP]]></optionscode>
 			<description><![CDATA[Here you can set the number of next and previous page links to show in the pagination for threads or forums with more than one page of results. Set to 0 to disable the limitation.]]></description>
 			<disporder>10</disporder>
 			<optionscode><![CDATA[numeric
-min=1]]></optionscode>
+min=0]]></optionscode>
 			<settingvalue><![CDATA[5]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -729,7 +737,7 @@ min=0]]></optionscode>
 		</setting>
 		<setting name="postmaxavatarsize">
 			<title>Maximum Avatar Dimensions in Posts</title>
-			<description><![CDATA[The maximum dimensions for avatars when being displayed in a post. If an avatar is too large, it will automatically be scaled down.]]></description>
+			<description><![CDATA[The maximum dimensions for avatars when being displayed in a post (width and height separated by 'x' or '|') . If an avatar is too large, it will automatically be scaled down.]]></description>
 			<disporder>4</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[55x55]]></settingvalue>
@@ -1120,7 +1128,7 @@ min=0]]></optionscode>
 		</setting>
 		<setting name="useravatardims">
 			<title>Default Avatar Dimensions</title>
-			<description><![CDATA[The dimensions of the default avatar; width by height (e.g. 40|40).]]></description>
+			<description><![CDATA[The dimensions of the default avatar; width and height separated by 'x' or '|' (e.g. 40|40 or 40x40).]]></description>
 			<disporder>11</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[100|100]]></settingvalue>
@@ -1147,7 +1155,7 @@ x=X]]></optionscode>
 		</setting>
 		<setting name="maxavatardims">
 			<title>Maximum Avatar Dimensions</title>
-			<description><![CDATA[The maximum dimensions that an avatar can be, in the format of width<b>x</b>height. If this is left blank then there will be no dimension restriction.]]></description>
+			<description><![CDATA[The maximum dimensions that an avatar can be, width and height separated by 'x' or '|'. If this is left blank then there will be no dimension restriction.]]></description>
 			<disporder>13</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[100x100]]></settingvalue>
@@ -1158,7 +1166,7 @@ x=X]]></optionscode>
 			<description><![CDATA[Maximum file size (in kilobytes) of uploaded avatars. Set to 0 to disable the limitation.]]></description>
 			<disporder>14</disporder>
 			<optionscode><![CDATA[numeric
-min=1]]></optionscode>
+min=0]]></optionscode>
 			<settingvalue><![CDATA[25]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1227,13 +1235,8 @@ min=1]]></optionscode>
 		</setting>
 		<setting name="maxmessagelength">
 			<title>Maximum Message Length</title>
-			<description><![CDATA[The maximum number of characters (bytes) to allow in a message. A setting of 0 allows an unlimited length.
-<br />This should correlate with the message column type in the posts database table, and adjust accordingly. Below are the maximum lengths for each column type.
-<ul>
-	<li>TEXT: 65535 (default)</li>
-	<li>MEDIUMTEXT: 16777215</li>
-	<li>LONGTEXT: 4294967295</li>
-</ul>]]></description>
+			<description><![CDATA[The maximum number of characters (bytes) to allow in a message. Set 0 to allow maximum length permitted as per your database.
+<br />Tip: MySQL users (max: 65535) can change message field type manually from TEXT to MEDIUMTEXT (16777215) or LONGTEXT (4294967295) to obtain enhanced limit.]]></description>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[numeric
 min=0]]></optionscode>
@@ -1375,7 +1378,7 @@ min=0]]></optionscode>
 			<description><![CDATA[The maximum number of options for polls that users can post. Set to 0 to disable the limitation.]]></description>
 			<disporder>18</disporder>
 			<optionscode><![CDATA[numeric
-min=2]]></optionscode>
+min=0]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1435,7 +1438,7 @@ min=0]]></optionscode>
 			<description><![CDATA[The maximum number of attachments a user is allowed to upload per post. Set to 0 to disable.]]></description>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[numeric
-min=1]]></optionscode>
+min=0]]></optionscode>
 			<settingvalue><![CDATA[5]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1511,7 +1514,7 @@ descending=Descending]]></optionscode>
 		</setting>
 		<setting name="memberlistmaxavatarsize">
 			<title>Maximum Display Avatar Dimensions</title>
-			<description><![CDATA[The maximum dimensions for avatars when being displayed in the member list. If an avatar is too large, it will automatically be scaled down.]]></description>
+			<description><![CDATA[The maximum dimensions for avatars when being displayed in the member list, width & height separated by 'x' or '|'. If an avatar is too large, it will automatically be scaled down.]]></description>
 			<disporder>5</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[70x70]]></settingvalue>
@@ -2151,7 +2154,7 @@ min=0]]></optionscode>
 			<description><![CDATA[If the person trying to login reaches the max number of attempts, how long should they have to wait before being able to login again (in minutes)? Set to 0 to disable.]]></description>
 			<disporder>4</disporder>
 			<optionscode><![CDATA[numeric
-min=1]]></optionscode>
+min=0]]></optionscode>
 			<settingvalue><![CDATA[15]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -2452,19 +2455,10 @@ delete=Delete]]></optionscode>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
-		<setting name="allowaimfield">
-			<title>Allow AIM Screen Name To Usergroups</title>
-			<description><![CDATA[Select the usergroups which should be allowed to use the AIM Screen Name contact field.]]></description>
-			<disporder>2</disporder>
-			<optionscode><![CDATA[groupselect]]></optionscode>
-			<settingvalue><![CDATA[-1]]></settingvalue>
-			<isdefault>1</isdefault>
-			<helpkey></helpkey>
-		</setting>
 		<setting name="allowyahoofield">
 			<title>Allow Yahoo ID Field To Usergroups</title>
 			<description><![CDATA[Select the usergroups which should be allowed to use the Yahoo ID contact field.]]></description>
-			<disporder>3</disporder>
+			<disporder>2</disporder>
 			<optionscode><![CDATA[groupselect]]></optionscode>
 			<settingvalue><![CDATA[-1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -2473,7 +2467,7 @@ delete=Delete]]></optionscode>
 		<setting name="allowskypefield">
 			<title>Allow Skype ID Field To Usergroups</title>
 			<description><![CDATA[Select the usergroups which should be allowed to use the Skype ID contact field.]]></description>
-			<disporder>4</disporder>
+			<disporder>3</disporder>
 			<optionscode><![CDATA[groupselect]]></optionscode>
 			<settingvalue><![CDATA[-1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -2482,7 +2476,7 @@ delete=Delete]]></optionscode>
 		<setting name="allowgooglefield">
 			<title>Allow Google Hangouts ID Field To Usergroups</title>
 			<description><![CDATA[Select the usergroups which should be allowed to use the Google Hangouts ID contact field.]]></description>
-			<disporder>5</disporder>
+			<disporder>4</disporder>
 			<optionscode><![CDATA[groupselect]]></optionscode>
 			<settingvalue><![CDATA[-1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -2522,6 +2516,32 @@ min=0]]></optionscode>
 			<title>Show Top Referrer on Statistics Page</title>
 			<description><![CDATA[Do you want to show the top referrer on the stats.php page? This adds an additional query.]]></description>
 			<disporder>4</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+	</settinggroup>
+	<settinggroup name="forumteam" title="Forum Team" description="This section allows you to control various aspects of the forum team listing (showteam.php), such as aspects to consider while listing team members, and which features to enable or disable." disporder="29" isdefault="1">
+		<setting name="enableshowteam">
+			<title>Enable Forum Team Listing Functionality</title>
+			<description><![CDATA[If you wish to disable the forum team listing on your board, set this option to No.]]></description>
+			<disporder>1</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="showaddlgroups">
+			<title>Show Additional Groups</title>
+			<description><![CDATA[Whether the team list will populate considering additional groups as well.]]></description>
+			<disporder>2</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="showgroupleaders">
+			<title>Show Group Leaders</title>
+			<description><![CDATA[Include group leaders to show up in the team list.]]></description>
+			<disporder>3</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>

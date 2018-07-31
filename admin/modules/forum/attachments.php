@@ -229,18 +229,18 @@ if($mybb->input['action'] == "delete_orphans" && $mybb->request_method == "post"
 	// Deleting specific attachments from uploads directory
 	if(is_array($mybb->input['orphaned_files']))
 	{
-		/**
-		 * @param string $string
-		 *
-		 * @return string
-		 */
-		function clean_filename($string)
-		{
-			return str_replace(array(".."), "", $string);
-		}
-		$mybb->input['orphaned_files'] = array_map("clean_filename", $mybb->input['orphaned_files']);
 		foreach($mybb->input['orphaned_files'] as $file)
 		{
+			$file = str_replace('..', '', $file);
+			$path = MYBB_ROOT.$mybb->settings['uploadspath']."/".$file;
+			$real_path = realpath($path);
+
+			if($real_path === false || strpos(str_replace('\\', '/', $real_path), str_replace('\\', '/', realpath(MYBB_ROOT)).'/') !== 0 || $real_path == realpath(MYBB_ROOT.'install/lock'))
+			{
+				$error_count++;
+				continue;
+			}
+
 			if(!@unlink(MYBB_ROOT.$mybb->settings['uploadspath']."/".$file))
 			{
 				$error_count++;

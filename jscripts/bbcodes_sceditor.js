@@ -461,7 +461,7 @@ $(document).ready(function($) {
 					facebook: '<iframe src="{url}" width="625" height="350" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>',
 					liveleak: '<iframe width="500" height="300" src="{url}" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>',
 					metacafe: '<iframe src="{url}" width="440" height="248" frameborder=0 data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>',
-					veoh: '<iframe src="{url}" width="410" height="341" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>',
+					mixer: '<iframe allowfullscreen="true" src="{url}" width="620" height="349" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>',
 					vimeo: '<iframe src="{url}" width="500" height="281" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>',
 					youtube: '<iframe width="560" height="315" src="{url}" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>',
 					twitch: '<iframe src="{url}" frameborder="0" scrolling="no" height="378" width="620" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>'
@@ -480,16 +480,16 @@ $(document).ready(function($) {
 						url     = matches ? 'https://www.facebook.com/video/embed?video_id=' + matches[1] : false;
 						break;
 					case 'liveleak':
-						matches = content.match(/liveleak\.com\/(?:view\?i=)([^\/]+)/);
+						matches = content.match(/liveleak\.com\/(?:view\?[a-z]=)([^\/]+)/);
 						url     = matches ? 'http://www.liveleak.com/ll_embed?i=' + matches[1] : false;
 						break;
 					case 'metacafe':
 						matches = content.match(/metacafe\.com\/watch\/([^\/]+)/);
-						url     = matches ? 'http://www.metacafe.com/embed/' + matches[1] : false;
+						url     = matches ? 'http://www.metacafe.com/embed/' + matches[1] + '/' : false;
 						break;
-					case 'veoh':
-						matches = content.match(/veoh\.com\/watch\/([^\/]+)/);
-						url     = matches ? '//www.veoh.com/swf/webplayer/WebPlayer.swf?videoAutoPlay=0&permalinkId=' + matches[1] : false;
+					case 'mixer':
+						matches = content.match(/mixer\.com\/([^\/]+)/);
+						url     = matches ? '//mixer.com/embed/player/' + matches[1] + "?disableLowLatency=1" : false;
 						break;
 					case 'vimeo':
 						matches = content.match(/vimeo.com\/(\d+)($|\/)/);
@@ -531,7 +531,7 @@ $(document).ready(function($) {
 						'<option value="facebook">' + editor._('Facebook') + '</option>' +
 						'<option value="liveleak">' + editor._('LiveLeak') + '</option>' +
 						'<option value="metacafe">' + editor._('MetaCafe') + '</option>' +
-						'<option value="veoh">' + editor._('Veoh') + '</option>' +
+						'<option value="mixer">' + editor._('Mixer') + '</option>' +
 						'<option value="vimeo">' + editor._('Vimeo') + '</option>' +
 						'<option value="youtube">' + editor._('Youtube') + '</option>' +
 						'<option value="twitch">' + editor._('Twitch') + '</option>' +

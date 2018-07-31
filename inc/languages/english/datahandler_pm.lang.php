@@ -9,6 +9,7 @@ $l['pmdata_too_long_subject'] = 'The subject of your private message is too long
 $l['pmdata_code_no_subject'] = '[no subject]';
 $l['pmdata_missing_subject'] = 'You did not enter a subject for your message. Please enter a subject.';
 $l['pmdata_missing_message'] = 'You did not enter a message to be sent. Please enter a message.';
+$l['pmdata_message_too_long'] = 'The message is too long. Please enter a message shorter than {1} characters (currently {2}).';
 $l['pmdata_invalid_recipients'] = "One or more of the recipients you specified are not registered usernames. Invalid recipients: {1}";
 $l['pmdata_no_recipients'] = "You did not enter any recipients to send this message to. You must enter at least one username in the 'to' field.";
 $l['pmdata_too_many_recipients'] = "You are only allowed to send messages to {1} users at a time.";

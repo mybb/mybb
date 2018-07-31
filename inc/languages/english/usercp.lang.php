@@ -209,7 +209,6 @@ $l['profile_optional'] = "Optional Fields";
 $l['website_url'] = "Your Website URL:";
 $l['birthdate'] = "Birthdate:";
 $l['contact_field_icq'] = "ICQ Number:";
-$l['contact_field_aim'] = "AIM Screen Name:";
 $l['contact_field_yahoo'] = "Yahoo ID:";
 $l['contact_field_skype'] = "Skype ID:";
 $l['contact_field_google'] = "Google Hangouts ID:";
@@ -383,12 +382,12 @@ $l['new_hot_thread'] = "Hot Thread (New)";
 $l['posts_by_you'] = "Contains Posts by You";
 $l['no_new_thread'] = "No New Posts";
 $l['hot_thread'] = "Hot Thread (No New)";
-$l['locked_thread'] = "Locked Thread";
+$l['closed_thread'] = "Closed Thread";
 $l['icon_dot'] = "Contains posts by you. "; // The spaces for the icon labels are strategically placed so that there should be no extra space at the beginning or end of the resulting label and that spaces separate each 'status' ;)
 $l['icon_no_new'] = "No new posts.";
 $l['icon_new'] = "New posts.";
 $l['icon_hot'] = " Hot thread.";
-$l['icon_lock'] = " Locked thread.";
+$l['icon_close'] = " Closed thread.";
 
 $l['buddylist_error'] = 'There was an error fetching the buddy list. ';
 

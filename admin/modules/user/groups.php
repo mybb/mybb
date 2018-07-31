@@ -200,13 +200,13 @@ if($mybb->input['action'] == "join_requests")
 				join_usergroup($uid, $group['gid']);
 			}
 			// Log admin action
-			log_admin_action("approve", htmlspecialchars_uni($group['title']), $group['gid']);
+			log_admin_action("approve", $group['title'], $group['gid']);
 			$message = $lang->success_selected_requests_approved;
 		}
 		else
 		{
 			// Log admin action
-			log_admin_action("deny", htmlspecialchars_uni($group['title']), $group['gid']);
+			log_admin_action("deny", $group['title'], $group['gid']);
 			$message = $lang->success_selected_requests_denied;
 		}
 
@@ -365,7 +365,7 @@ if($mybb->input['action'] == "add_leader" && $mybb->request_method == "post")
 		$cache->update_groupleaders();
 
 		// Log admin action
-		log_admin_action($user['uid'], htmlspecialchars_uni($user['username']), $group['gid'], htmlspecialchars_uni($group['title']));
+		log_admin_action($user['uid'], $user['username'], $group['gid'], $group['title']);
 
 		$username = htmlspecialchars_uni($user['username']);
 		flash_message("{$username} ".$lang->success_user_made_leader, 'success');
@@ -573,7 +573,7 @@ if($mybb->input['action'] == "delete_leader")
 		$cache->update_groupleaders();
 
 		// Log admin action
-		log_admin_action($leader['uid'], htmlspecialchars_uni($leader['username']), $group['gid'], htmlspecialchars_uni($group['title']));
+		log_admin_action($leader['uid'], $leader['username'], $group['gid'], $group['title']);
 
 		flash_message($lang->success_group_leader_deleted, 'success');
 		admin_redirect("index.php?module=user-groups&action=leaders&gid={$group['gid']}");
@@ -620,7 +620,7 @@ if($mybb->input['action'] == "edit_leader")
 		$cache->update_groupleaders();
 
 		// Log admin action
-		log_admin_action($leader['uid'], htmlspecialchars_uni($leader['username']), $group['gid'], htmlspecialchars_uni($group['title']));
+		log_admin_action($leader['uid'], $leader['username'], $group['gid'], $group['title']);
 
 		flash_message($lang->success_group_leader_updated, 'success');
 		admin_redirect("index.php?module=user-groups&action=leaders&gid={$group['gid']}");
@@ -741,7 +741,7 @@ if($mybb->input['action'] == "add")
 			$cache->update_forumpermissions();
 
 			// Log admin action
-			log_admin_action($gid, htmlspecialchars_uni($mybb->input['title']));
+			log_admin_action($gid, $mybb->input['title']);
 
 			$groups = $cache->read('usergroups');
 			$grouptitles = array_column($groups, 'title');
@@ -971,7 +971,7 @@ if($mybb->input['action'] == "edit")
 			$cache->update_forumpermissions();
 
 			// Log admin action
-			log_admin_action($usergroup['gid'], htmlspecialchars_uni($mybb->input['title']));
+			log_admin_action($usergroup['gid'], $mybb->input['title']);
 
 			$groups = $cache->read('usergroups');
 			$grouptitles = array_column($groups, 'title');
@@ -1342,7 +1342,7 @@ if($mybb->input['action'] == "delete")
 		$cache->update_banned();
 
 		// Log admin action
-		log_admin_action($usergroup['gid'], htmlspecialchars_uni($usergroup['title']));
+		log_admin_action($usergroup['gid'], $usergroup['title']);
 
 		flash_message($lang->success_group_deleted, 'success');
 		admin_redirect("index.php?module=user-groups");

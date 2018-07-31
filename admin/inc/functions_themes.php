@@ -330,23 +330,6 @@ function import_theme_xml($xml, $options=array())
 			"stylesheets" => $db->escape_string(my_serialize($theme_stylesheets))
 		);
 
-		if(is_array($properties['disporder']))
-		{
-			asort($properties['disporder'], SORT_NUMERIC);
-
-			// Because inherited stylesheets can mess this up
-			$loop = 1;
-			$orders = array();
-			foreach($properties['disporder'] as $filename => $order)
-			{
-				$orders[$filename] = $loop;
-				++$loop;
-			}
-
-			$properties['disporder'] = $orders;
-			$updated_theme['properties'] = $db->escape_string(my_serialize($properties));
-		}
-
 		$db->update_query("themes", $updated_theme, "tid='{$theme_id}'");
 	}
 
@@ -511,6 +494,7 @@ function resync_stylesheet($stylesheet)
 }
 
 /**
+ * @deprecated
  * @param string $url
  *
  * @return string
@@ -538,6 +522,7 @@ function fix_css_urls_callback($matches)
 }
 
 /**
+ * @deprecated
  * @param string $url
  *
  * @return string

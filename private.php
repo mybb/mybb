@@ -80,6 +80,8 @@ foreach($foldersexploded as $key => $folders)
 	eval("\$foldersearch_folder .= \"".$templates->get("private_jump_folders_folder")."\";");
 }
 
+$from_fid = $mybb->input['fid'];
+
 eval("\$folderjump = \"".$templates->get("private_jump_folders")."\";");
 eval("\$folderoplist = \"".$templates->get("private_move")."\";");
 eval("\$foldersearch = \"".$templates->get("private_advanced_search_folders")."\";");
@@ -556,6 +558,7 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 
 	// Attempt to see if this PM is a duplicate or not
 	$to = array_map("trim", explode(",", $mybb->get_input('to')));
+	$to = array_unique($to); // Filter out any duplicates
 	$to_escaped = implode("','", array_map(array($db, 'escape_string'), array_map('my_strtolower', $to)));
 	$time_cutoff = TIME_NOW - (5 * 60 * 60);
 	$query = $db->query("
@@ -702,8 +705,8 @@ if($mybb->input['action'] == "send")
 		{
 			$optionschecked['readreceipt'] = 'checked="checked"';
 		}
-		$to = htmlspecialchars_uni($mybb->get_input('to'));
-		$bcc = htmlspecialchars_uni($mybb->get_input('bcc'));
+		$to = htmlspecialchars_uni(implode(', ', array_unique(array_map('trim', explode(',', $mybb->get_input('to'))))));
+		$bcc = htmlspecialchars_uni(implode(', ', array_unique(array_map('trim', explode(',', $mybb->get_input('bcc'))))));
 	}
 
 	$preview = '';
@@ -922,8 +925,8 @@ if($mybb->input['action'] == "send")
 
 	if($send_errors)
 	{
-		$to = htmlspecialchars_uni($mybb->get_input('to'));
-		$bcc = htmlspecialchars_uni($mybb->get_input('bcc'));
+		$to = htmlspecialchars_uni(implode(', ', array_unique(array_map('trim', explode(',', $mybb->get_input('to'))))));
+		$bcc = htmlspecialchars_uni(implode(', ', array_unique(array_map('trim', explode(',', $mybb->get_input('bcc'))))));
 	}
 
 	// Load the auto complete javascript if it is enabled.

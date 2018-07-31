@@ -601,6 +601,8 @@ switch($mybb->input['action'])
 		{
 			$lang->threads = $lang->thread;
 			$thread['link'] = get_thread_link($tid);
+			$delayedmoderation_subject = $mybb->input['delayedmoderation']['subject'];
+			$delayedmoderation_threadurl = $mybb->input['delayedmoderation']['threadurl'];
 			eval("\$threads = \"".$templates->get("moderation_delayedmoderation_thread")."\";");
 			eval("\$moderation_delayedmoderation_merge = \"".$templates->get("moderation_delayedmoderation_merge")."\";");
 		}
@@ -623,7 +625,7 @@ switch($mybb->input['action'])
 			$threads = $lang->sprintf($lang->threads_selected, count($tids));
 			$moderation_delayedmoderation_merge = '';
 		}
-		$mybb->input['redirect_expire'] = $mybb->get_input('redirect_expire');
+		$redirect_expire = $mybb->get_input('redirect_expire');
 		eval("\$moderation_delayedmoderation_move = \"".$templates->get("moderation_delayedmoderation_move")."\";");
 
 		// Generate form elements for date form
@@ -2927,7 +2929,7 @@ switch($mybb->input['action'])
 			error_no_permission();
 		}
 
-		$uid = $mybb->input['uid'];
+		$uid = $mybb->get_input('uid', MyBB::INPUT_INT);
 		$user = get_user($uid);
 		if(!$user['uid'] || !purgespammer_show($user['postnum'], $user['usergroup'], $user['uid']))
 		{
@@ -3066,6 +3068,7 @@ switch($mybb->input['action'])
 
 				$lang->confirm_execute_tool_desc = $lang->sprintf($lang->confirm_execute_tool_desc, htmlspecialchars_uni($tool['name']));
 
+				$action = $mybb->input['action'];
 				$modtype = $mybb->get_input('modtype');
 				$inlinetype = $mybb->get_input('inlinetype');
 				$searchid = $mybb->get_input('searchid');
