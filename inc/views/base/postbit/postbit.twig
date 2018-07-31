@@ -62,7 +62,7 @@
 		{% endif %}
 
 		{# Post date & permalink #}
-		<a href="{{ post.postlink }}#pid{{ post.pid }}" title="{{ post.subject_title }}" class="post__date">{{ post.postdate|raw }}</a>
+		<a href="{{ post.postlink }}#pid{{ post.pid }}" title="{{ post.subject_title }}" class="post__date">{{ post.dateline|my_date }}</a>
 
 		{# Inline moderation checkbox #}
 		{% if post.ismod %}
