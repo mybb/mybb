@@ -8494,3 +8494,28 @@ function my_escape_csv($string, $escape_active_content = true)
 
 	return $string;
 }
+
+// Fallback function for 'array_column', PHP < 5.5.0 compatibility
+if(!function_exists('array_column'))
+{
+	function array_column($input, $column_key)
+	{
+		$values = array();
+ 		if(!is_array($input))
+		{
+			$input = array($input);
+		}
+ 		foreach($input as $val)
+		{
+			if(is_array($val) && isset($val[$column_key]))
+			{
+				$values[] = $val[$column_key];
+			}
+			elseif(is_object($val) && isset($val->$column_key))
+			{
+				$values[] = $val->$column_key;
+			}
+		}
+ 		return $values;
+	}
+}
