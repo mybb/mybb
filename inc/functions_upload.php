@@ -701,7 +701,8 @@ function add_attachments($pid, $forumpermissions, $attachwhere, $action=false)
 		$fields = array ('name', 'type', 'tmp_name', 'error', 'size');
 
 		$total = isset($_FILES['attachments']['name']) ? count($_FILES['attachments']['name']) : 0;
-
+		$filenames = "";
+		$delim = "";
 		for($i=0; $i<$total; ++$i)
 		{
 			foreach($fields as $field)
@@ -709,6 +710,22 @@ function add_attachments($pid, $forumpermissions, $attachwhere, $action=false)
 				$attach1[$field] = $_FILES['attachments'][$field][$key];
 				$attachments[$i][$field] = $_FILES['attachments'][$field][$i];
 			}
+
+			$FILE = $attachments[$i];
+			if(!empty($FILE['name']) && !empty($FILE['type']) && $FILE['size'] > 0)
+			{
+				$filenames .= $delim . "'" . $db->escape_string($FILE['name']) . "'";
+				$delim = ",";
+			}
+
+		}
+
+		$query = $db->simple_select("attachments", "filename, aid", "{$attachwhere} AND `filename` IN (".$filenames.")");
+
+		$aid = array();
+		while ($row = $db->fetch_array($query))
+		{
+			$aid[$row['filename']] = $row['aid'];
 		}
 
 		foreach($attachments as $FILE)
@@ -717,20 +734,20 @@ function add_attachments($pid, $forumpermissions, $attachwhere, $action=false)
 			{
 				if($FILE['size'] > 0)
 				{
-					$query = $db->simple_select("attachments", "aid", "filename='".$db->escape_string($FILE['name'])."' AND {$attachwhere}");
-					$updateattach = $db->fetch_field($query, "aid");
+					$filename = $db->escape_string($FILE['name']);
+					$exists = isset($aid[$filename]);
 
 					$update_attachment = false;
 					if($action == "editpost")
 					{
-						if($updateattach > 0 && $mybb->get_input('updateattachment') && ($mybb->usergroup['caneditattachments'] || $forumpermissions['caneditattachments']))
+						if($exists && $mybb->get_input('updateattachment') && ($mybb->usergroup['caneditattachments'] || $forumpermissions['caneditattachments']))
 						{
 							$update_attachment = true;
 						}
 					}
 					else
 					{
-						if($updateattach > 0 && $mybb->get_input('updateattachment'))
+						if($exists && $mybb->get_input('updateattachment'))
 						{
 							$update_attachment = true;
 						}

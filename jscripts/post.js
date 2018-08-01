@@ -122,8 +122,6 @@ var Post = {
 
 	initAttachments: function()
 	{
-		var fileUpload = $("input[type='file']");
-		fileUpload.attr("multiple","multiple");
 		$('form').on('submit', Post.checkAttachments);
 	},
 
