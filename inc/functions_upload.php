@@ -686,6 +686,8 @@ function upload_attachment($attachment, $update_attachment=false)
  * @param array $forumpermission The permissions for the forum.
  * @param string $attachwhere Search string "pid='$pid'" or "posthash='".$db->escape_string($mybb->get_input('posthash'))."'"
  * @param string $action Where called from: "newthread", "newreply", or "editpost"
+ *
+ * @return array Array of errors if any, empty array otherwise
  */
 function add_attachments($pid, $forumpermissions, $attachwhere, $action=false)
 {
@@ -698,7 +700,7 @@ function add_attachments($pid, $forumpermissions, $attachwhere, $action=false)
 		$attachments = array();
 		$fields = array ('name', 'type', 'tmp_name', 'error', 'size');
 
-		$total = count($_FILES['attachments']['name']);
+		$total = isset($_FILES['attachments']['name']) ? count($_FILES['attachments']['name']) : 0;
 
 		for($i=0; $i<$total; ++$i)
 		{

@@ -1,7 +1,8 @@
 var Post = {
 	init: function()
 	{
-		$(document).ready(function(){
+		$(document).ready(function()
+		{
 			Post.initAttachments();
 		});
 	},
@@ -130,24 +131,30 @@ var Post = {
 	{
 		var files = $("input[type='file']");
 		var file = files.get(0);
-		if (!file) 
+		if (!file)
+		{
 			return true;
+		}
 
-		if (file.files.length > php_max_file_uploads && php_max_file_uploads != 0){
+		if (file.files.length > php_max_file_uploads && php_max_file_uploads != 0)
+		{
 			alert(lang.attachment_too_many_files.replace('{1}', php_max_file_uploads));
 			file.value="";
 			return false;
 		}
 
 		var totalSize = 0;
-		files.each(function() {
-			for (var i = 0; i < this.files.length; i++) {
+		files.each(function()
+		{
+			for (var i = 0; i < this.files.length; i++)
+			{
 				totalSize += this.files[i].size;
 			}
 		});
 
-		if (totalSize > php_max_upload_size && php_max_upload_size > 0) {
-			var php_max_upload_size_pretty = Math.round(php_max_upload_size / 1e4)/1e2;
+		if (totalSize > php_max_upload_size && php_max_upload_size > 0)
+		{
+			var php_max_upload_size_pretty = Math.round(php_max_upload_size / 1e4) / 1e2;
 			alert(lang.attachment_too_big_upload.replace('{1}', php_max_upload_size_pretty));
 			file.value="";
 			return false;

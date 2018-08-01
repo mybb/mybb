@@ -1029,20 +1029,22 @@ function get_post_attachments($id, &$post)
  * @param string $val Human-readable value
  */
 function return_bytes($val) {
-    $val = trim($val);
-    if ($val == "")
-    	return 0;
+	$val = trim($val);
+	if ($val == "")
+	{
+		return 0;
+	}
 
-    $last = strtolower($val[strlen($val)-1]);
-    switch($last) {
-        // The 'G' modifier is available since PHP 5.1.0
-        case 'g':
-            $val *= 1024;
-        case 'm':
-            $val *= 1024;
-        case 'k':
-            $val *= 1024;
-    }
+	$last = strtolower($val[strlen($val)-1]);
+	switch($last)
+	{
+		case 'g':
+			$val *= 1024;
+		case 'm':
+			$val *= 1024;
+		case 'k':
+			$val *= 1024;
+	}
 
-    return intval($val);
+	return intval($val);
 }

@@ -3517,7 +3517,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 		<template name="calendar_weekview_prevlink" version="1813"><![CDATA[<a href="{$prev_link}">&laquo; {$lang->previous_week}</a>]]></template>
 		<template name="calendar_year" version="1800"><![CDATA[<option value="{$year}" {$selected}>{$year}</option>]]></template>
 		<template name="calendar_year_sel" version="1800"><![CDATA[<option value="{$year_sel}">{$year_sel}</option>]]></template>
-		<template name="editpost" version="1813"><![CDATA[<html>
+		<template name="editpost" version="1818"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_post}</title>
 {$headerinclude}
@@ -3624,7 +3624,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 	</ul>
 </div>
 <br />]]></template>
-		<template name="error_inline_item" version="1816"><![CDATA[<li>{$error}</li>]]></template>
+		<template name="error_inline_item" version="1818"><![CDATA[<li>{$error}</li>]]></template>
 		<template name="error_nopermission" version="1817"><![CDATA[{$lang->error_nopermission_guest_1}
 <ol>
 <li>{$lang->error_nopermission_guest_2}</li>
@@ -8768,7 +8768,7 @@ if(use_xmlhttprequest == "1")
 		<template name="nav_dropdown" version="1800"><![CDATA[ <img src="{$theme['imgdir']}/arrow_down.png" alt="v" title="" class="pagination_breadcrumb_link" id="breadcrumb_multipage" />{$multipage}]]></template>
 		<template name="nav_sep" version="1800"><![CDATA[&rsaquo;]]></template>
 		<template name="nav_sep_active" version="1800"><![CDATA[<br /><img src="{$theme['imgdir']}/nav_bit.png" alt="" />]]></template>
-		<template name="newreply" version="1813"><![CDATA[<html>
+		<template name="newreply" version="1818"><![CDATA[<html>
 <head>
 <title>{$lang->post_reply_to}</title>
 {$headerinclude}
@@ -8870,7 +8870,7 @@ if(use_xmlhttprequest == "1")
 {$reviewmessage}
 </td>
 </tr>]]></template>
-		<template name="newthread" version="1813"><![CDATA[<html>
+		<template name="newthread" version="1818"><![CDATA[<html>
 <head>
 <title>{$lang->newthread_in}</title>
 {$headerinclude}
@@ -9416,9 +9416,9 @@ if(use_xmlhttprequest == "1")
 <td class="trow_shaded" style="white-space: nowrap"><em><a href="attachment.php?aid={$attachment['aid']}" target="_blank">{$attachment['filename']}</a> ({$attachment['size']})</em></td>
 <td class="trow_shaded" style="white-space: nowrap; text-align: center;">{$attach_mod_options} <input type="submit" class="button" name="rem" value="{$lang->remove_attachment}" onclick="return Post.removeAttachment({$attachment['aid']});" /> {$postinsert}</td>
 </tr>]]></template>
-		<template name="post_attachments_new" version="1807"><![CDATA[<tr>
+		<template name="post_attachments_new" version="1818"><![CDATA[<tr>
 <td class="trow1" width="1"><img src="{$theme['imgdir']}/paperclip.png" alt="" /></td>
-<td class="trow1" style="white-space: nowrap"><strong>{$lang->new_attachment}</strong> <input type="file" name="attachments[]" size="30" class="fileupload" multiple="multiple" /></td>
+<td class="trow1" style="white-space: nowrap"><strong>{$lang->new_attachment}</strong> <input type="file" name="attachments[]" size="30" class="fileupload" /></td>
 <td class="trow1" style="white-space: nowrap" align="center">{$attach_update_options} {$attach_add_options}</td>
 </tr>]]></template>
 		<template name="post_attachments_update" version="1604"><![CDATA[<input type="submit" class="button" name="updateattachment" value="{$lang->update_attachment}" tabindex="12" />]]></template>

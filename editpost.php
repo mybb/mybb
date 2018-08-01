@@ -194,6 +194,15 @@ if($mybb->settings['enableattachments'] == 1 && !$mybb->get_input('attachmentaid
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
 
+	if($pid)
+	{
+		$attachwhere = "pid='{$pid}'";
+	}
+	else
+	{
+		$attachwhere = "posthash='".$db->escape_string($mybb->get_input('posthash'))."'";
+	}
+
 	$ret = add_attachments($pid, $forumpermissions, $attachwhere, "editpost");
 
 	if(!empty($ret['errors']))
@@ -202,7 +211,7 @@ if($mybb->settings['enableattachments'] == 1 && !$mybb->get_input('attachmentaid
 	}
 
 	// Do we have attachment errors?
-	if(count($errors) > 0)
+	if(!empty($errors))
 	{
 		$attacherror = inline_error($errors);
 	}
