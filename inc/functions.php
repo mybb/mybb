@@ -611,25 +611,33 @@ function my_mail($to, $subject, $message, $from="", $charset="", $headers="", $k
 
 /**
  * Generates a unique code for POST requests to prevent XSS/CSRF attacks
+ * The code changes every 3 hours and may be valid for up to 12 hours.
  *
+ * @param int $older_code generate an older code (see verify_post_check())
  * @return string The generated code
  */
-function generate_post_check()
+function generate_post_check($older_code=0)
 {
 	global $mybb, $session;
+
+	// rotate post code every three hours
+	$interval = 3 * 60 * 60;
+	$rotation = floor(TIME_NOW / $interval) - $older_code;
+
 	if($mybb->user['uid'])
 	{
-		return md5($mybb->user['loginkey'].$mybb->user['salt'].$mybb->user['regdate']);
+		return md5($rotation.$mybb->user['loginkey'].$mybb->user['salt'].$mybb->user['regdate'].$mybb->settings['internal']['encryption_key']);
 	}
 	// Guests get a special string
 	else
 	{
-		return md5($session->useragent.$mybb->config['database']['username'].$mybb->settings['internal']['encryption_key']);
+		return md5($rotation.$session->useragent.$mybb->config['database']['username'].$mybb->settings['internal']['encryption_key']);
 	}
 }
 
 /**
  * Verifies a POST check code is valid, if not shows an error (silently returns false on silent parameter)
+ * The code changes every 3 hours and may be valid for up to 12 hours.
  *
  * @param string $code The incoming POST check code
  * @param boolean $silent Silent mode or not (silent mode will not show the error to the user but returns false)
@@ -638,7 +646,11 @@ function generate_post_check()
 function verify_post_check($code, $silent=false)
 {
 	global $lang;
-	if(generate_post_check() !== $code)
+
+	if(generate_post_check() !== $code
+	   && generate_post_check(1) !== $code  // it's an older code, sir
+	   && generate_post_check(2) !== $code  //    but it checks out
+	   && generate_post_check(3) !== $code)
 	{
 		if($silent == true)
 		{
