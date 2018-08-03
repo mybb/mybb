@@ -3506,6 +3506,12 @@ function build_users_view($view)
 		if($mybb->input['page'])
 		{
 			$start = ($mybb->input['page'] - 1) * $view['perpage'];
+			$pages = ceil($num_results / $view['perpage']);
+			if($mybb->input['page'] > $pages)
+			{
+				$start = 0;
+				$mybb->input['page'] = 1;
+			}
 		}
 		else
 		{

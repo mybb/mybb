@@ -2946,6 +2946,10 @@ if($mybb->input['action'] == "attachments")
 
 	$attachments = '';
 
+	$query = $db->simple_select("attachments", "SUM(filesize) AS ausage, COUNT(aid) AS acount", "uid='".$mybb->user['uid']."'");
+	$usage = $db->fetch_array($query);
+	$totalattachments = $usage['acount'];
+
 	// Pagination
 	if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
 	{
@@ -2957,7 +2961,13 @@ if($mybb->input['action'] == "attachments")
 
 	if($page > 0)
 	{
-		$start = ($page - 1) * $perpage;
+		$start = ($page-1) * $perpage;
+		$pages = ceil($totalattachments / $perpage);
+		if($page > $pages)
+		{
+			$start = 0;
+			$page = 1;
+		}
 	}
 	else
 	{
@@ -3010,7 +3020,6 @@ if($mybb->input['action'] == "attachments")
 	$query = $db->simple_select('attachments', 'SUM(filesize) AS ausage, COUNT(aid) AS acount', "uid='".$mybb->user['uid']."'");
 	$usage = $db->fetch_array($query);
 	$totalusage = $usage['ausage'];
-	$totalattachments = $usage['acount'];
 	$friendlyusage = get_friendly_size((int)$totalusage);
 	if($mybb->usergroup['attachquota'])
 	{

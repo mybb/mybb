@@ -241,7 +241,6 @@ else
 	{
 		$start = ($page - 1) * $per_page;
 		$pages = ceil($num_users / $per_page);
-
 		if($page > $pages)
 		{
 			$start = 0;
