@@ -269,12 +269,21 @@ elseif($mybb->input['action'] == "helpresults")
 		$mybb->settings['threadsperpage'] = 20;
 	}
 
+	$query = $db->simple_select("helpdocs", "COUNT(*) AS total", "hid IN(".$db->escape_string($search['querycache']).")");
+	$helpcount = $db->fetch_field($query, "total");
+
 	// Work out pagination, which page we're at, as well as the limits.
 	$perpage = $mybb->settings['threadsperpage'];
 	$page = $mybb->get_input('page', MyBB::INPUT_INT);
 	if($page > 0)
 	{
 		$start = ($page-1) * $perpage;
+		$pages = ceil($helpcount / $perpage);
+		if($pages > $page)
+		{
+			$start = 0;
+			$page = 1;
+		}
 	}
 	else
 	{
@@ -293,14 +302,11 @@ elseif($mybb->input['action'] == "helpresults")
 	}
 
 	// Do Multi Pages
-	$query = $db->simple_select("helpdocs", "COUNT(*) AS total", "hid IN(".$db->escape_string($search['querycache']).")");
-	$helpcount = $db->fetch_array($query);
-
 	if($upper > $helpcount)
 	{
 		$upper = $helpcount;
 	}
-	$multipage = multipage($helpcount['total'], $perpage, $page, "misc.php?action=helpresults&amp;sid='".htmlspecialchars_uni($mybb->get_input('sid'))."'");
+	$multipage = multipage($helpcount, $perpage, $page, "misc.php?action=helpresults&amp;sid='".htmlspecialchars_uni($mybb->get_input('sid'))."'");
 	$helpdoclist = '';
 
 	require_once MYBB_ROOT."inc/class_parser.php";

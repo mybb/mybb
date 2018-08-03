@@ -3578,6 +3578,12 @@ if($mybb->input['action'] == "warninglogs")
 		$per_page = (int)$mybb->input['filter']['per_page'];
 	}
 	$start = ($page-1) * $per_page;
+	$pages = ceil($total_warning / $per_page);
+	if($page > $pages)
+	{
+		$start = 0;
+		$page = 1;
+	}
 	// Build the base URL for pagination links
 	$url = 'modcp.php?action=warninglogs';
 	if(is_array($mybb->input['filter']) && count($mybb->input['filter']))

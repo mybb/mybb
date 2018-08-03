@@ -119,6 +119,9 @@ if($mybb->input['action'] == "view")
 
 if(!$mybb->input['action'])
 {
+	$query = $db->simple_select("maillogs l", "COUNT(l.mid) as logs", "1=1 {$additional_sql_criteria}");
+	$total_rows = $db->fetch_field($query, "logs");
+
 	if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
 	{
 		$mybb->settings['threadsperpage'] = 20;
@@ -135,6 +138,12 @@ if(!$mybb->input['action'])
 	{
 		$mybb->input['page'] = $mybb->get_input('page', MyBB::INPUT_INT);
 		$start = ($mybb->input['page']*$per_page)-$per_page;
+		$pages = ceil($total_rows / $per_page);
+		if($mybb->input['page'] > $pages)
+		{
+			$mybb->input['page'] = 1;
+			$start = 0;
+		}
 	}
 	else
 	{
@@ -409,9 +418,6 @@ if(!$mybb->input['action'])
 	}
 
 	$form->end();
-
-	$query = $db->simple_select("maillogs l", "COUNT(l.mid) as logs", "1=1 {$additional_sql_criteria}");
-	$total_rows = $db->fetch_field($query, "logs");
 
 	echo "<br />".draw_admin_pagination($mybb->input['page'], $per_page, $total_rows, "index.php?module=tools-maillogs&amp;page={page}{$additional_criteria}");
 
