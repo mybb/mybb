@@ -755,7 +755,7 @@ class Moderation
 	 * @param int $tid Thread ID (Set to 0 if posts from multiple threads are selected)
 	 * @return int ID of the post into which all other posts are merged
 	 */
-	function merge_posts($pids, $tid=0, $sep="new_line")
+	function merge_posts($pids=array(), $tid=0, $sep="new_line")
 	{
 		global $db, $plugins;
 

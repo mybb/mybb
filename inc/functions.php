@@ -1969,8 +1969,7 @@ function _safe_unserialize($str)
 		return false;
 	}
 
-	$stack = array();
-	$expected = array();
+	$stack = $list = $expected = array();
 
 	/*
      * states:
@@ -3411,7 +3410,7 @@ function get_subscription_method($tid = 0, $postoptions = array())
 			$subscription_method = (int)$subscription['notification'] + 1;
 		}
 	}
-	
+
 	return $subscription_methods[$subscription_method];
 }
 
@@ -4145,6 +4144,76 @@ function fix_mktime($format, $year)
 	$format = str_replace("y", my_substr($year, -2), $format);
 
 	return $format;
+}
+
+/**
+ * Build the breadcrumb navigation trail from the specified items
+ *
+ * @return string The formatted breadcrumb navigation trail
+ */
+function build_breadcrumb()
+{
+	global $nav, $navbits, $templates, $theme, $lang, $mybb;
+
+	eval("\$navsep = \"".$templates->get("nav_sep")."\";");
+
+	$i = 0;
+	$activesep = '';
+
+	if(is_array($navbits))
+	{
+		reset($navbits);
+		foreach($navbits as $key => $navbit)
+		{
+			if(isset($navbits[$key+1]))
+			{
+				if(isset($navbits[$key+2]))
+				{
+					$sep = $navsep;
+				}
+				else
+				{
+					$sep = "";
+				}
+
+				$multipage = null;
+				$multipage_dropdown = null;
+				if(!empty($navbit['multipage']))
+				{
+					if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
+					{
+						$mybb->settings['threadsperpage'] = 20;
+					}
+
+					$multipage = multipage($navbit['multipage']['num_threads'], $mybb->settings['threadsperpage'], $navbit['multipage']['current_page'], $navbit['multipage']['url'], true);
+					if($multipage)
+					{
+						++$i;
+						eval("\$multipage_dropdown = \"".$templates->get("nav_dropdown")."\";");
+						$sep = $multipage_dropdown.$sep;
+					}
+				}
+
+				// Replace page 1 URLs
+				$navbit['url'] = str_replace("-page-1.html", ".html", $navbit['url']);
+				$navbit['url'] = preg_replace("/&amp;page=1$/", "", $navbit['url']);
+
+				eval("\$nav .= \"".$templates->get("nav_bit")."\";");
+			}
+		}
+		$navsize = count($navbits);
+		$navbit = $navbits[$navsize-1];
+	}
+
+	if($nav)
+	{
+		eval("\$activesep = \"".$templates->get("nav_sep_active")."\";");
+	}
+
+	eval("\$activebit = \"".$templates->get("nav_bit_active")."\";");
+	eval("\$donenav = \"".$templates->get("nav")."\";");
+
+	return $donenav;
 }
 
 /**
@@ -7262,7 +7331,7 @@ function my_rmdir_recursive($path, $ignore = array())
  * @param array $array The array of forums
  * @return integer The number of sub forums
  */
-function subforums_count($array)
+function subforums_count($array=array())
 {
 	$count = 0;
 	foreach($array as $array2)

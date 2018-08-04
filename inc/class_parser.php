@@ -143,6 +143,7 @@ class postParser
 		}
 
 		// If MyCode needs to be replaced, first filter out [code] and [php] tags.
+		$code_matches = array();
 		if(!empty($this->options['allow_mycode']) && $mybb->settings['allowcodemycode'] == 1)
 		{
 			// This code is reserved and could break codes
@@ -1565,12 +1566,12 @@ class postParser
 	}
 
 	/**
-	 * Parses URLs automatically.
-	 *
-	 * @param array $matches Matches
-	 * @return string The parsed message.
-	 */
-	function mycode_auto_url_callback($matches)
+	* Parses URLs automatically.
+	*
+	* @param array $matches Matches
+	* @return string The parsed message.
+	*/
+	function mycode_auto_url_callback($matches=array())
 	{
 		$external = '';
 		// Allow links like http://en.wikipedia.org/wiki/PHP_(disambiguation) but detect mismatching braces

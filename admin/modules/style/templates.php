@@ -1869,7 +1869,7 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 			$table->construct_cell("<a href=\"index.php?module=style-templates&amp;sid={$sid}{$group['expand_str']}#group_{$group['gid']}\">{$expand}</a>", array("class" => "align_center"));
 			$table->construct_row(array("class" => "alt_row", "id" => "group_".$group['gid'], "name" => "group_".$group['gid']));
 
-			if(isset($group['templates']) && count($group['templates']) > 0)
+			if(isset($group['templates']) && is_array($group['templates']) && count($group['templates']) > 0)
 			{
 				$templates = $group['templates'];
 				ksort($templates);
