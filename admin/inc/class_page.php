@@ -917,6 +917,10 @@ EOF;
 			if(!$smiliecount)
 			{
 				$smilie_cache = $cache->read("smilies");
+				if(!is_array($smilie_cache))
+				{
+					$smilie_cache = array();
+				}
 				$smiliecount = count($smilie_cache);
 			}
 

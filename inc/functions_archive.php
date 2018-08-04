@@ -106,9 +106,9 @@ function archive_navigation()
 				$nav .= "<a href=\"".$navbit['url']."\">".$navbit['name']."</a>$sep";
 			}
 		}
+		$navsize = count($navbits);
+		$navbit = $navbits[$navsize-1];
 	}
-	$navsize = count($navbits);
-	$navbit = $navbits[$navsize-1];
 	if(!empty($nav))
 	{
 		$activesep = $navsep;

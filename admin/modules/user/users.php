@@ -2467,7 +2467,7 @@ if($mybb->input['action'] == "inline_edit")
 				$to_update_count = count($to_update);
 				$lang->inline_activated = $lang->sprintf($lang->inline_activated, my_number_format($to_update_count));
 
-				if($to_update_count != count($selected))
+				if(is_array($selected) && $to_update_count != count($selected))
 				{
 					// The update count is different to how many we selected!
 					$not_updated_count = count($selected) - $to_update_count;
@@ -2950,6 +2950,7 @@ if($mybb->input['action'] == "inline_edit")
 
 				// Do the usergroup update for all those selected
 				// If the a selected user is a super admin, don't update that user
+				$users_to_update = array();
 				foreach($selected as $user)
 				{
 					if(!is_super_admin($user))
@@ -2959,7 +2960,7 @@ if($mybb->input['action'] == "inline_edit")
 				}
 
 				$to_update_count = count($users_to_update);
-				if($to_update_count > 0 && is_array($users_to_update))
+				if($to_update_count > 0)
 				{
 					// Update the users in the database
 					$sql = implode(",", $users_to_update);
@@ -4279,7 +4280,10 @@ function merge_thread_ratings($source_uid, $destination_uid)
 	{
 		foreach($decrement_list as $tid => $ratings)
 		{
-			$db->update_query('threads', array('numratings' => 'numratings-'.count($ratings), 'totalratings' => 'totalratings-'.array_sum($ratings)), "tid='{$tid}'", 1, true);
+			if(is_array($ratings))
+			{
+				$db->update_query('threads', array('numratings' => 'numratings-'.count($ratings), 'totalratings' => 'totalratings-'.array_sum($ratings)), "tid='{$tid}'", 1, true);
+			}
 		}
 	}
 }
