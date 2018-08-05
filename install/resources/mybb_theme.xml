@@ -3632,7 +3632,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 	</ul>
 </div>
 <br />]]></template>
-		<template name="error_nopermission" version="1817"><![CDATA[{$lang->error_nopermission_guest_1}
+		<template name="error_nopermission" version="1818"><![CDATA[{$lang->error_nopermission_guest_1}
 <ol>
 <li>{$lang->error_nopermission_guest_2}</li>
 <li>{$lang->error_nopermission_guest_3}</li>
