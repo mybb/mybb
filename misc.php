@@ -1099,7 +1099,7 @@ function makesyndicateforums($pid=0, $selitem="", $addselect=true, $depth="")
 						$selecteddone = "1";
 					}
 
-					if($forum['password'] == '' && !in_array($forum['fid'], $unexp) || $forum['password'] && isset($mybb->cookies['forumpass'][$forum['fid']]) && $mybb->cookies['forumpass'][$forum['fid']] === md5($mybb->user['uid'].$forum['password']))
+					if($forum['password'] == '' && !in_array($forum['fid'], $unexp) || $forum['password'] && isset($mybb->cookies['forumpass'][$forum['fid']]) && my_hash_equals($mybb->cookies['forumpass'][$forum['fid']], md5($mybb->user['uid'].$forum['password'])))
 					{
 						eval("\$forumlistbits .= \"".$templates->get("misc_syndication_forumlist_forum")."\";");
 					}
