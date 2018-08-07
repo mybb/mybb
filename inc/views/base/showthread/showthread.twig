@@ -162,12 +162,12 @@
                 {% endif %}
                 {% if mybb.user.uid %}
                     {% if thread.issubscribed %}
-                        <a href="usercp2.php?action=removesubscription&amp;tid={{ thread.tid }}&amp;my_post_key={{ mybb.post_code }}" class="button button--secondary button--medium button--full-width subscribe--remove">
+                        <a href="usercp.php?action=removesubscription&amp;tid={{ thread.tid }}&amp;my_post_key={{ mybb.post_code }}" class="button button--secondary button--medium button--full-width subscribe--remove">
                             <i class="button__icon fas fa-minus"></i>
                             <span class="button__text">{{ lang.unsubscribe_thread }}</span>
                         </a>
                     {% else %}
-                        <a href="usercp2.php?action=addsubscription&amp;tid={{ thread.tid }}&amp;my_post_key={{ mybb.post_code }}" class="button button--secondary button--medium button--full-width subscribe--add">
+                        <a href="usercp.php?action=addsubscription&amp;tid={{ thread.tid }}&amp;my_post_key={{ mybb.post_code }}" class="button button--secondary button--medium button--full-width subscribe--add">
                             <i class="button__icon fas fa-plus"></i>
                             <span class="button__text">{{ lang.subscribe_thread }}</span>
                         </a>

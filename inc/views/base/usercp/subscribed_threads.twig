@@ -18,85 +18,52 @@
     <form action="usercp.php" method="post" name="input">
         <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
         <input type="hidden" name="action" value="do_subscriptions" />
-        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-            <tr>
-                <td class="thead" colspan="7"><strong>{{ lang.subscriptions }} ({{ thread_count }})</strong></td>
-            </tr>
-            <tr>
-                <td width="66%" colspan="3" class="tcat">
-                    <span class="smalltext">
-                        <strong>{{ lang.thread }}</strong>
-                    </span>
-                </td>
-                <td class="tcat" align="center" width="7%">
-                    <span class="smalltext">
-                        <strong>{{ lang.replies }}</strong>
-                    </span>
-                </td>
-                <td class="tcat" align="center" width="7%">
-                    <span class="smalltext">
-                        <strong>{{ lang.views }}</strong>
-                    </span>
-                </td>
-                <td class="tcat" align="center" width="200">
-                    <span class="smalltext">
-                        <strong>{{ lang.lastpost }}</strong>
-                    </span>
-                </td>
-                <td class="tcat" align="center" width="1">
-                    <input name="allbox" title="Select All" type="checkbox" class="checkbox checkall" value="1" />
-                </td>
-            </tr>
 
-            {% for thread in threads %}
-                {% include 'usercp/subscribed_threads/row.twig' %}
-            {% else %}
-                <tr>
-                    <td class="trow1" colspan="7">{{ lang.no_thread_subscriptions|raw }}</td>
-                </tr>
-            {% endfor %}
+        <div class="thread-list thread-list--compact">
+			<div class="sort-threads">
+				<div class="sort-threads__column sort-threads__column--primary">
+					{{ lang.thread }}
+				</div>
+				<div class="sort-threads__column sort-threads__column--replies">
+					{{ lang.replies }}
+				</div>
+				<div class="sort-threads__column sort-threads__column--latest">
+					{{ lang.lastpost }}
+				</div>
+				<div class="sort-threads__column sort-threads__column--checkbox">
+					<input name="allbox" title="{{ lang.selectall }}" type="checkbox" class="checkbox checkall" value="1" />
+				</div>
+			</div>
+			<div class="thread-list__container">
+                {% for thread in threads %}
+                    {% include 'usercp/subscribed_threads/row.twig' %}
+                {% else %}
+                    <div class="alert alert--no-results alert--aligned-block">{{ lang.no_thread_subscriptions|raw }}</div>
+                {% endfor %}
+            </div>
+            <div class="sort-results">
+                <h3 class="sort-results__title">{{ lang.with_selected }}</h3>
+                <div class="select-field">
+                    <i class="select-field__icon fas fa-sort"></i>
+                    <select name="do" id="do">
+                        <option value="delete">{{ lang.delete_subscriptions }}</option>
+                        <option value="no_notification">{{ lang.update_no_notification }}</option>
+                        <option value="email_notification">{{ lang.update_email_notification }}</option>
+                        <option value="pm_notification">{{ lang.update_pm_notification }}</option>
+                    </select>
+                </div>
+                <input type="submit" class="button button--inline" value="{{ lang.go }}" />
+            </div>
+        </div>
 
-            <tr>
-                <td class="tfoot" colspan="7">
-                    <div class="float_right">
-                        <label for="do"><strong>{{ lang.with_selected }}</strong></label>
-                        <select name="do" id="do">
-                            <option value="delete">{{ lang.delete_subscriptions }}</option>
-                            <option value="no_notification">{{ lang.update_no_notification }}</option>
-                            <option value="email_notification">{{ lang.update_email_notification }}</option>
-                            <option value="pm_notification">{{ lang.update_pm_notification }}</option>
-                        </select>
-                        <input type="submit" class="button" value="{{ lang.go }}" />
-                    </div>
-                    <div>
-                        <strong>
-                            <a href="usercp2.php?action=removesubscriptions&amp;my_post_key={{ mybb.post_code }}">
-                                {{ lang.remove_all_subscriptions }}
-                            </a>
-                        </strong>
-                    </div>
-                </td>
-            </tr>
-        </table>
+        <div class="page-controls">
+            <div class="page-buttons">
+                <a href="usercp2.php?action=removesubscriptions&amp;my_post_key={{ mybb.post_code }}" class="button">
+                    <i class="button__icon fas fa-trash-alt"></i>
+                    <span class="button__text">{{ lang.remove_all_subscriptions }}</span>
+                </a>
+            </div>
+        </div>
+        {{ multipage|raw }}
     </form>
-    {{ multipage|raw }}
-    <br />
-    <div class="float_left">
-        <div class="float_left">
-            <dl class="thread_legend smalltext">
-                <dd><span class="thread_status newfolder" title="{{ lang.new_posts_thread }}">&nbsp;</span> {{ lang.new_posts_thread }}</dd>
-                <dd><span class="thread_status newhotfolder" title="{{ lang.new_hot_thread }}">&nbsp;</span> {{ lang.new_hot_thread }}</dd>
-                <dd><span class="thread_status hotfolder" title="{{ lang.hot_thread }}">&nbsp;</span> {{ lang.hot_thread }}</dd>
-            </dl>
-        </div>
-
-        <div class="float_left">
-            <dl class="thread_legend smalltext">
-                <dd><span class="thread_status folder" title="{{ lang.no_new_thread }}">&nbsp;</span> {{ lang.no_new_thread }}</dd>
-                <dd><span class="thread_status dot_folder" title="{{ lang.posts_by_you }}">&nbsp;</span> {{ lang.posts_by_you }}</dd>
-                <dd><span class="thread_status lockfolder" title="{{ lang.locked_thread }}">&nbsp;</span> {{ lang.locked_thread }}</dd>
-            </dl>
-        </div>
-        <br class="clear" />
-    </div>
 {% endblock accountBody %}

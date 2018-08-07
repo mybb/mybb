@@ -50,7 +50,7 @@
         		<span class="section-menu__text">{{ lang.nav_drafts }}</span>
         	</a>
         </li>
-        <li class="section-menu__item section-menu__item--subscriptions{% if mybb.input.action == 'subscriptions' or mybb.input.action == 'forumsubscriptions' %} section-menu__item--active{% endif %}">
+        <li class="section-menu__item section-menu__item--subscriptions{% if mybb.input.action == 'subscriptions' or mybb.input.action == 'forumsubscriptions' or mybb.input.action == 'addsubscription' %} section-menu__item--active{% endif %}">
         	<a href="usercp.php?action=subscriptions" class="section-menu__link">
         		<i class="section-menu__icon fas fa-plus fa-fw"></i>
         		<span class="section-menu__text">{{ lang.nav_subscriptions }}</span>
