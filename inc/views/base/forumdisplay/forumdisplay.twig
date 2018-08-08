@@ -177,12 +177,12 @@
                                 <div class="thread__column thread__column--primary">
                                     <span class="thread__status thread__status--announcement"><i class="fas fa-bullhorn"></i></span>
                                     <h3 class="thread__title"><a href="{{ announcement.announcementlink }}"{{ new_class }}>{{ announcement.subject }}</a></h3>
-                                    <p class="thread__author">{{ lang.by }} {{ announcement.profilelink }}</p>
+                                    <p class="thread__author">{{ lang.by }} {{ announcement.profilelink|raw }}</p>
                                 </div>
                                 <div class="thread__column thread__column--replies">&nbsp;</div>
                                 <div class="thread__column thread__column--latest">
                             		<p class="thread__latest-post">
-                            			<a href="{{ announcement.announcementlink }}" class="thread__latest-post__date">{{ postdate }}</a></a>
+                            			<a href="{{ announcement.announcementlink }}" class="thread__latest-post__date">{{ announcement.postdate }}</a></a>
                             		</p>
                             	</div>
                                 {% if modpermissions.ismod %}
