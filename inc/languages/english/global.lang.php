@@ -38,8 +38,8 @@ $l['welcome_current_time'] = "<strong>Current time:</strong> {1}";
 $l['welcome_my_avatar'] = "My Avatar";
 $l['welcome_my_profile'] = "Go to My Profile";
 
-$l['moved_prefix'] = "Moved:";
-$l['poll_prefix'] = "Poll:";
+$l['moved_prefix'] = "Moved";
+$l['poll_prefix'] = "Poll";
 
 $l['forumbit_announcements'] = "Announcements";
 $l['forumbit_stickies'] = "Important Threads";
@@ -53,6 +53,7 @@ $l['no_new_posts'] = "Forum Contains No New Posts";
 $l['click_mark_read'] = "Click to mark this forum as read";
 $l['forum_locked'] = "Forum is Locked";
 $l['forum_redirect'] = "Redirect Forum";
+$l['lastpost_by'] = "Last post by";
 $l['lastpost_never'] = "Never";
 $l['viewing_one'] = " (1 user browsing)";
 $l['viewing_multiple'] = " ({1} users browsing)";

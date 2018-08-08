@@ -16,8 +16,8 @@
 	</div>
 	<div class="thread__column thread__column--replies">
 		<p class="thread__replies" title="{$lang->replies}: {{ thread.replies }} &middot; {{ lang.views }}: {{ thread.views }}">
-			<a href="{{ mybb.settings.bburl }}/misc.php?action=whoposted&amp;tid={{ thread.tid }}" onclick="MyBB.whoPosted({{ thread.tid }}); return false;" class="thread__replies__count">{{ thread.replies }}</a>
-			<span class="thread__replies__text">{% if thread.replies == 1 %}{{ lang.reply }}{% else %}{{ lang.replies }}{% endif %}</span>
+			<a href="{{ mybb.settings.bburl }}/misc.php?action=whoposted&amp;tid={{ thread.tid }}" onclick="MyBB.whoPosted({{ thread.tid }}); return false;" class="thread__reply-count">{{ thread.replies }}</a>
+			<span class="thread__reply-legend">{% if thread.replies == 1 %}{{ lang.reply }}{% else %}{{ lang.replies }}{% endif %}</span>
 		</p>
 	</div>
 	<div class="thread__column thread__column--latest">

@@ -180,12 +180,12 @@
                             <span class="button__text">{{ lang.new_reply }}</span>
                         </a>
                     {% elseif thread.canmodreply %}
-                        <a href="newreply.php?tid={{ thread.tid }}" class="button button--danger">
+                        <a href="newreply.php?tid={{ thread.tid }}" class="button button--medium button--danger">
                             <i class="button__icon fas fa-lock"></i>
                             <span class="button__text">{{ lang.thread_closed }}</span>
                         </a>
                     {% else %}
-                        <a href="showthread.php?tid={{ thread.tid }}" class="button button--danger">
+                        <a href="showthread.php?tid={{ thread.tid }}" class="button button--medium button--danger">
                             <i class="button__icon fas fa-lock"></i>
                             <span class="button__text">{{ lang.thread_closed }}</span>
                         </a>

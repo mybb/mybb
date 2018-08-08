@@ -22,10 +22,11 @@ $l['prefix'] = "Prefix:";
 $l['prefix_all'] = "Prefix: Any/No Prefix";
 $l['prefix_any'] = "Prefix: Any Prefix";
 $l['prefix_none'] = "Prefix: No Prefix";
-$l['markforum_read'] = "Mark this forum read";
-$l['subscribe_forum'] = "Subscribe to this forum";
-$l['unsubscribe_forum'] = "Unsubscribe from this forum";
-$l['clear_stored_password'] = "Clear stored forum password";
+$l['markforum_read'] = "Mark Read";
+$l['subscribe_forum'] = "Subscribe";
+$l['unsubscribe_forum'] = "Unsubscribe";
+$l['clear_stored_password'] = "Clear Password";
+$l['sort_threads'] = "Sort Threads";
 $l['sort_by_subject'] = "Sort by: Subject";
 $l['sort_by_lastpost'] = "Sort by: Last Post";
 $l['sort_by_starter'] = "Sort by: Author";
@@ -98,6 +99,7 @@ $l['all_selected'] = "All <strong>{1}</strong> threads in this forum are selecte
 $l['select_all'] = "Select all <strong>{1}</strong> threads in this forum.";
 $l['clear_selection'] = "Clear Selection.";
 $l['deleted_thread'] = "Deleted Thread";
+$l['sticky'] = "Sticky Thread";
 
 $l['error_containsnoforums'] = "Sorry, but the forum you are currently viewing does not contain any child forums.";
 

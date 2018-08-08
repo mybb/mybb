@@ -1,78 +1,105 @@
 {% set class %}{{ thread.bgcolor }} forumdisplay_{% if thread.sticky %}sticky{% else %}regular{% endif %}{% endset %}
 {% set moved = (thread.moved[0] == 'moved') %}
-<tr class="inline_row">
-    <td align="center" class="{{ class }}" width="2%"><span class="thread_status {{ thread.folder.value }}" title="{{ thread.folder.label }}">&nbsp;</span></td>
-    <td align="center" class="{{ class }}" width="2%">
-        {% if thread.icon and iconCache[thread.icon] %}
-            <img src="{{ iconCache[thread.icon].path }}" alt="{{ iconCache[thread.icon].name }}" title="{{ iconCache[thread.icon].name }}" />
-        {% endif %}
-    </td>
-    <td class="{{ class }}">
-        {# Attachment paperclip #}
-        {% if mybb.settings.enableattachments and thread.attachmentcount %}
-            <div class="float_right"><img src="{{ theme.imgdir }}/paperclip.png" alt="" title="{{ (thread.attachmentcount > 1) ? trans(lang.attachment_count_multiple, thread.attachmentcount) : lang.attachment_count }}" /></div>
-        {% endif %}
-        {# Title and author #}
-        <div>
-            <span>
+
+{# TO DO: THREAD RATINGS #}
+{# {% include 'forumdisplay/thread_rating.twig' %} #}
+
+<div class="row row--thread thread {{ class }} inline_row {% if thread.unreadpost and moved != true %}thread--unread{% endif %}">
+    <div class="thread__column thread__column--primary">
+		<h3 class="thread__title">
+            {# Thread prefix #}
+            {% if thread.threadprefix %}
+                {{ thread.threadprefix }}
+            {% endif %}
+
+            {# Moved / Poll prefix #}
+
+
+            {# Thread title #}
+            <span class="{{ thread.inlineEditClass }} {{ thread.newclass }}" id="tid_{{ thread.tid }}">
+                <a href="{{ thread.threadlink }}">{{ thread.subject }}</a>
+            </span>
+
+            {# Go to unread link #}
+            {% if thread.unreadpost and moved != true %}
+                <a href="{{ thread.newpostlink }}" class="thread__status"><i class="fas fa-circle" title="{{ lang.goto_first_unread }}"></i></a>
+            {% endif %}
+
+            {# Thread status icons #}
+            <span class="thread__icons">
+
+                {# <span class="thread_status {{ thread.folder.value }}" title="{{ thread.folder.label }}">&nbsp;</span> #}
+
+                {# Attachment paperclip #}
+                {% if mybb.settings.enableattachments and thread.attachmentcount %}
+                    <i class="thread__icon fas fa-paperclip fa-fw" title="{{ (thread.attachmentcount > 1) ? trans(lang.attachment_count_multiple, thread.attachmentcount) : lang.attachment_count }}"></i>
+                {% endif %}
+
+                {# Closed #}
+                {% if thread.closed and moved != true %}
+                    <i class="thread__icon fas fa-lock fa-fw" title="{{ lang.closed }}"></i>
+                {% endif %}
+
+                {# Sticky #}
+                {% if thread.sticky %}
+                    <i class="thread__icon thread__icon--sticky fas fa-thumbtack fa-fw" title="{{ lang.sticky }}"></i>
+                {% endif %}
+
+                {# Moved #}
+                {% if moved %}
+                    <i class="thread__icon fas fa-arrow-right fa-fw" title="{{ lang.moved_prefix }}"></i>
+                {% endif %}
+
+                {# Poll #}
                 {% if thread.poll %}
-                    {{ lang.poll_prefix }}
-                {% elseif moved %}
-                    {{ lang.moved_prefix }}
+                    <i class="thread__icon fas fa-check-square fa-fw" title="{{ lang.poll_prefix }}"></i>
                 {% endif %}
-                {% if thread.unreadpost and moved != true %}
-                    <a href="{{ thread.newpostlink }}"><img src="{{ theme.imgdir }}/jump.png" alt="{{ lang.goto_first_unread }}" title="{{ lang.goto_first_unread }}" /></a> 
+
+                {# Thread icon #}
+                {% if thread.icon and iconCache[thread.icon] %}
+                    <span class="thread__icon"><img src="{{ iconCache[thread.icon].path }}" alt="{{ iconCache[thread.icon].name }}" title="{{ iconCache[thread.icon].name }}" /></span>
                 {% endif %}
-                {% if thread.threadprefix %}{{ thread.threadprefix }} {% endif %}
-                <span class="{{ thread.inlineEditClass }} {{ thread.newclass }}" id="tid_{{ thread.tid }}">
-                    <a href="{{ thread.threadlink }}">{{ thread.subject }}</a>
-                </span>
-                {% if thread.posts > mybb.settings.postsperpage %}
-                    <span class="smalltext">
-                        ({{ lang.pages }}
-                        {% set pagesStop = (thread.pages > mybb.settings.maxmultipagelinks) ? mybb.settings.maxmultipagelinks : thread.pages %}
-                        {% for page in 1..pagesStop %}
-                            <a href="{{ page_link }}">{{ page }}</a>{# TODO: page_link to be replaced when get_thread_link is adapted to Twig #}
-                        {% endfor %}
-                        {% if thread.pages > mybb.settings.maxmultipagelinks %}... <a href="{{ thread.threadlink }}">{{ thread.pages }}</a>{% endif %})
+            </span>
+        </h3>
+        {% if thread.posts > mybb.settings.postsperpage %}
+            <span class="thread__pages">
+                <span class="thread__page-legend">{{ lang.pages }}</span>
+                {% set pagesStop = (thread.pages > mybb.settings.maxmultipagelinks) ? mybb.settings.maxmultipagelinks : thread.pages %}
+                {% for page in 1..pagesStop %}
+                    <a href="{{ page_link }}" class="thread__page-link">{{ page }}</a>{# TODO: page_link to be replaced when get_thread_link is adapted to Twig #}
+                {% endfor %}
+                {% if thread.pages > mybb.settings.maxmultipagelinks %}... <a href="{{ thread.threadlink }}" class="thread__page-link">{{ thread.pages }}</a>{% endif %}
+            </span>
+        {% endif %}
+        <p class="thread__author">{{ lang.by }} {{ thread.profilelink|raw }}</p>
+    </div>
+    {% if moved %}
+        <div class="thread__column thread__column--replies">&nbsp;</div>
+    {% else %}
+        <div class="thread__column thread__column--replies">
+            <p class="thread__replies">
+                <a href="{{ mybb.settings.bburl }}/misc.php?action=whoposted&tid={{ thread.tid }}" onclick="MyBB.whoPosted({{ thread.tid }}); return false;" title="{{ lang.replies }}: {{ thread.replies }} &middot; {{ lang.views }}: {{ thread.views }}" class="thread__reply-count">{{ thread.replies }}</a>
+                {% if thread.unapprovedposts and modpermissions.canviewunapprove %}
+                    <span class="thread__unapproved-replies" title="{{ (thread.unapprovedposts == 1) ? trans(lang.thread_unapproved_post_count, 1) : trans(lang.thread_unapproved_posts_count, thread.unapprovedposts) }}">
+                        {{ thread.unapprovedposts|my_number_format }}
                     </span>
                 {% endif %}
-            </span>
-            <div class="author smalltext">{{ thread.profilelink|raw }}</div>
+                <span class="thread__reply-legend">{% if thread.replies == 1 %}{{ lang.reply }}{% else %}{{ lang.replies }}{% endif %}</span>
+            </p>
         </div>
-    </td>
-    <td align="center" class="{{ class }}">
-        {% if moved %}
-            -
-        {% else %}
-            <a href="{{ mybb.settings.bburl }}/misc.php?action=whoposted&tid={{ thread.tid }}" onclick="MyBB.whoPosted({{ thread.tid }}); return false;">{{ thread.replies }}</a>
-        {% endif %}
-        {% if thread.unapprovedposts and modpermissions.canviewunapprove %}
-            <span title="{{ (thread.unapprovedposts == 1) ? trans(lang.thread_unapproved_post_count, 1) : trans(lang.thread_unapproved_posts_count, thread.unapprovedposts) }}">
-                ({{ thread.unapprovedposts|my_number_format }})
+    {% endif %}
+    <div class="thread__column thread__column--latest">
+        <p class="thread__latest-post">
+            <span class="thread__latest-post__text">{{ lang.lastpost_by }}</span>
+            <span class="thread__latest-post__author">
+                {% if thread.lastposteruid > 0 %}
+                    {{ thread.lastposter|raw }}
+                {% else %}
+                    {{ lang.guest }}
+                {% endif %}
             </span>
-        {% endif %}
-    </td>
-    <td align="center" class="{{ class }}">
-        {% if moved %}
-            -
-        {% else %}
-            {{ thread.views }}
-        {% endif %}
-    </td>
-
-    {% include 'forumdisplay/thread_rating.twig' %}
-
-    <td class="{{ class }}" style="white-space: nowrap; text-align: right;">
-        <span class="lastpost smalltext">{{ thread.lastpostdate|raw }}<br />
-            <a href="{{ thread.lastpostlink }}">{{ lang.lastpost }}</a>:
-            {% if thread.lastposteruid > 0 %}
-                {{ thread.lastposter|raw }}
-            {% else %}
-                {{ lang.guest }}
-            {% endif %}
-        </span>
-    </td>
-
+            <a href="{{ thread.lastpostlink }}" class="thread__latest-post__date">{{ thread.lastpostdate|raw }}</a>
+        </p>
+    </div>
     {% include 'forumdisplay/thread_modbit.twig' %}
-</tr>
+</div>
