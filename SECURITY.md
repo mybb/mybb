@@ -4,7 +4,7 @@
 
 - maintain the server software up to date (through dedicated and experienced administrators or managed hosting),
 - always keep MyBB and extensions up to date (running updates no later than 7 days after release is recommended) &mdash; [**subscribe to official channels**](https://mybb.com/download/verifying/#latest-version-information) to immediately get notified of new versions of MyBB,
-- follow recommendations on secure filesystem setup, HTTPS support, Two-Factor Authentication (2FA) available at [here](https://docs.mybb.com/1.8/administration/security/), also including the [**main security guide**](https://docs.mybb.com/1.8/administration/security/protection/).
+- follow recommendations on secure filesystem setup, HTTPS support, Two-Factor Authentication (2FA) available [here](https://docs.mybb.com/1.8/administration/security/), including the [**general security guide**](https://docs.mybb.com/1.8/administration/security/protection/).
 
 ## Known Security Issues
 
