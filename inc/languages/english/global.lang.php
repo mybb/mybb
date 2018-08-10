@@ -137,6 +137,8 @@ $l['instant_email_subscribe'] = "Subscribe and receive email notification of new
 $l['instant_pm_subscribe'] = "Subscribe and receive PM notification of new replies";
 $l['options'] = "Options";
 
+$l['today_rel'] = "<span title=\"{1}\">Today</span>";
+$l['yesterday_rel'] = "<span title=\"{1}\">Yesterday</span>";
 $l['today'] = "Today";
 $l['yesterday'] = "Yesterday";
 $l['error'] = "Board Message";
