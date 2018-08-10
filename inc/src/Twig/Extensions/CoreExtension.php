@@ -211,7 +211,7 @@ class CoreExtension extends \Twig_Extension
                         if ($dateToday == $date) {
                             $formattedDateString = $this->lang->today;
                         } elseif ($dateYesterday == $date) {
-                            $formattedDateString = $this->lang->yeserday;
+                            $formattedDateString = $this->lang->yesterday;
                         }
                     }
 
