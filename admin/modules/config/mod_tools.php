@@ -177,7 +177,7 @@ if($mybb->input['action'] == "edit_thread_tool")
 			$forum_checked[1] = '';
 			$forum_checked[2] = "checked=\"checked\"";
 
-			if(count($mybb->input['forum_1_forums']) < 1)
+			if(is_array($mybb->input['forum_1_forums']) && count($mybb->input['forum_1_forums']) < 1)
 			{
 				$errors[] = $lang->error_no_forums_selected;
 			}
@@ -195,7 +195,7 @@ if($mybb->input['action'] == "edit_thread_tool")
 			$group_checked[1] = '';
 			$group_checked[2] = "checked=\"checked\"";
 
-			if(count($mybb->input['group_1_groups']) < 1)
+			if(is_array($mybb->input['group_1_groups']) && count($mybb->input['group_1_groups']) < 1)
 			{
 				$errors[] = $lang->error_no_groups_selected;
 			}
@@ -680,7 +680,7 @@ if($mybb->input['action'] == "add_thread_tool")
 			$forum_checked[1] = '';
 			$forum_checked[2] = "checked=\"checked\"";
 
-			if(count($mybb->input['forum_1_forums']) < 1)
+			if(is_array($mybb->input['forum_1_forums']) && count($mybb->input['forum_1_forums']) < 1)
 			{
 				$errors[] = $lang->error_no_forums_selected;
 			}
@@ -698,7 +698,7 @@ if($mybb->input['action'] == "add_thread_tool")
 			$group_checked[1] = '';
 			$group_checked[2] = "checked=\"checked\"";
 
-			if(count($mybb->input['group_1_groups']) < 1)
+			if(is_array($mybb->input['group_1_groups']) && count($mybb->input['group_1_groups']) < 1)
 			{
 				$errors[] = $lang->error_no_groups_selected;
 			}
@@ -1157,7 +1157,7 @@ if($mybb->input['action'] == "edit_post_tool")
 
 		if($mybb->input['forum_type'] == 2)
 		{
-			if(count($mybb->input['forum_1_forums']) < 1)
+			if(is_array($mybb->input['forum_1_forums']) && count($mybb->input['forum_1_forums']) < 1)
 			{
 				$errors[] = $lang->error_no_forums_selected;
 			}
@@ -1169,7 +1169,7 @@ if($mybb->input['action'] == "edit_post_tool")
 
 		if($mybb->input['group_type'] == 2)
 		{
-			if(count($mybb->input['group_1_groups']) < 1)
+			if(is_array($mybb->input['group_1_groups']) && count($mybb->input['group_1_groups']) < 1)
 			{
 				$errors[] = $lang->error_no_groups_selected;
 			}
@@ -1763,7 +1763,7 @@ if($mybb->input['action'] == "add_post_tool")
 			$forum_checked[1] = '';
 			$forum_checked[2] = "checked=\"checked\"";
 
-			if(count($mybb->input['forum_1_forums']) < 1)
+			if(is_array($mybb->input['forum_1_forums']) && count($mybb->input['forum_1_forums']) < 1)
 			{
 				$errors[] = $lang->error_no_forums_selected;
 			}
@@ -1781,7 +1781,7 @@ if($mybb->input['action'] == "add_post_tool")
 			$group_checked[1] = '';
 			$group_checked[2] = "checked=\"checked\"";
 
-			if(count($mybb->input['group_1_groups']) < 1)
+			if(is_array($mybb->input['group_1_groups']) && count($mybb->input['group_1_groups']) < 1)
 			{
 				$errors[] = $lang->error_no_groups_selected;
 			}

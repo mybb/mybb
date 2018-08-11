@@ -2042,8 +2042,7 @@ function _safe_unserialize($str)
 		return false;
 	}
 
-	$stack = array();
-	$expected = array();
+	$stack = $list = $expected = array();
 
 	/*
 	 * states:
@@ -4385,11 +4384,9 @@ function build_breadcrumb()
 				eval("\$nav .= \"".$templates->get("nav_bit")."\";");
 			}
 		}
+		$navsize = count($navbits);
+		$navbit = $navbits[$navsize-1];
 	}
-
-	$activesep = '';
-	$navsize = count($navbits);
-	$navbit = $navbits[$navsize-1];
 
 	if($nav)
 	{
@@ -7647,7 +7644,7 @@ function my_rmdir_recursive($path, $ignore=array())
  * @param array $array The array of forums
  * @return integer The number of sub forums
  */
-function subforums_count($array)
+function subforums_count($array=array())
 {
 	$count = 0;
 	foreach($array as $array2)

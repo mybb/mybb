@@ -345,6 +345,12 @@ if(!$mybb->input['action'])
 		$per_page = (int)$mybb->input['filter']['per_page'];
 	}
 	$start = ($view_page-1) * $per_page;
+	$pages = ceil($total_warnings / $per_page);
+	if($view_page > $pages)
+	{
+		$start = 0;
+		$view_page = 1;
+	}
 	// Build the base URL for pagination links
 	$url = 'index.php?module=tools-warninglog';
 	if(is_array($mybb->input['filter']) && count($mybb->input['filter']))

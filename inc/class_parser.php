@@ -141,6 +141,7 @@ class postParser
 		}
 
 		// If MyCode needs to be replaced, first filter out [code] and [php] tags.
+		$code_matches = array();
 		if(!empty($this->options['allow_mycode']) && $mybb->settings['allowcodemycode'] == 1)
 		{
 			// This code is reserved and could break codes
@@ -1608,7 +1609,7 @@ class postParser
 	* @param array $matches Matches
 	* @return string The parsed message.
 	*/
-	function mycode_auto_url_callback($matches)
+	function mycode_auto_url_callback($matches=array())
 	{
 		// If we matched a preexisting link (the part of the regexes in mycode_auto_url() before the pipe symbol),
 		// then simply return it - we don't create links within existing links.

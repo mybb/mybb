@@ -106,9 +106,9 @@ function archive_navigation()
 				$nav .= "<a href=\"".$navbit['url']."\">".$navbit['name']."</a>$sep";
 			}
 		}
+		$navsize = count($navbits);
+		$navbit = $navbits[$navsize-1];
 	}
-	$navsize = count($navbits);
-	$navbit = $navbits[$navsize-1];
 	if(!empty($nav))
 	{
 		$activesep = $navsep;
@@ -261,7 +261,7 @@ function check_forum_password_archive($fid, $pid=0)
 	$password = $forum_cache[$fid]['password'];
 	if($password)
 	{
-		if(!$mybb->cookies['forumpass'][$fid] || ($mybb->cookies['forumpass'][$fid] && md5($mybb->user['uid'].$password) !== $mybb->cookies['forumpass'][$fid]))
+		if(!$mybb->cookies['forumpass'][$fid] || ($mybb->cookies['forumpass'][$fid] && !my_hash_equals(md5($mybb->user['uid'].$password), $mybb->cookies['forumpass'][$fid])))
 		{
 			archive_error_no_permission();
 		}

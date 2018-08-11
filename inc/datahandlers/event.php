@@ -318,7 +318,7 @@ class EventDataHandler extends DataHandler
 					$this->set_error("invalid_repeat_week_interval");
 					return false;
 				}
-				if(count($event['repeats']['days']) == 0)
+				if(is_array($event['repeats']['days']) && count($event['repeats']['days']) == 0)
 				{
 					$this->set_error("invalid_repeat_weekly_days");
 					return false;

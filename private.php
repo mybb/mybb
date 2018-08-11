@@ -279,12 +279,21 @@ if($mybb->input['action'] == "results")
 		$mybb->settings['threadsperpage'] = 20;
 	}
 
+	$query = $db->simple_select("privatemessages", "COUNT(*) AS total", "pmid IN(".$db->escape_string($search['querycache']).")");
+	$pmscount = $db->fetch_field($query, "total");
+
 	// Work out pagination, which page we're at, as well as the limits.
 	$perpage = $mybb->settings['threadsperpage'];
 	$page = $mybb->get_input('page', MyBB::INPUT_INT);
 	if($page > 0)
 	{
 		$start = ($page-1) * $perpage;
+		$pages = ceil($pmscount / $perpage);
+		if($page > $pages)
+		{
+			$start = 0;
+			$page = 1;
+		}
 	}
 	else
 	{
@@ -303,14 +312,11 @@ if($mybb->input['action'] == "results")
 	}
 
 	// Do Multi Pages
-	$query = $db->simple_select("privatemessages", "COUNT(*) AS total", "pmid IN(".$db->escape_string($search['querycache']).")");
-	$pmscount = $db->fetch_array($query);
-
 	if($upper > $pmscount)
 	{
 		$upper = $pmscount;
 	}
-	$multipage = multipage($pmscount['total'], $perpage, $page, "private.php?action=results&amp;sid=".htmlspecialchars_uni($mybb->get_input('sid'))."&amp;sortby={$sortby}&amp;order={$order}");
+	$multipage = multipage($pmscount, $perpage, $page, "private.php?action=results&amp;sid=".htmlspecialchars_uni($mybb->get_input('sid'))."&amp;sortby={$sortby}&amp;order={$order}");
 	$messagelist = '';
 
 	$icon_cache = $cache->read("posticons");
@@ -2136,7 +2142,7 @@ if(!$mybb->input['action'])
 
 	// Do Multi Pages
 	$query = $db->simple_select("privatemessages", "COUNT(*) AS total", "uid='".$mybb->user['uid']."' AND folder='$folder'");
-	$pmscount = $db->fetch_array($query);
+	$pmscount = $db->fetch_field($query, "total");
 
 	if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
 	{
@@ -2149,6 +2155,12 @@ if(!$mybb->input['action'])
 	if($page > 0)
 	{
 		$start = ($page-1) *$perpage;
+		$pages = ceil($pmscount / $perpage);
+		if($page > $pages)
+		{
+			$start = 0;
+			$page = 1;
+		}
 	}
 	else
 	{
@@ -2174,7 +2186,7 @@ if(!$mybb->input['action'])
 		$page_url = "private.php?fid={$folder}";
 	}
 
-	$multipage = multipage($pmscount['total'], $perpage, $page, $page_url);
+	$multipage = multipage($pmscount, $perpage, $page, $page_url);
 	$messagelist = '';
 
 	$icon_cache = $cache->read("posticons");

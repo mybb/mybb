@@ -392,7 +392,7 @@ class DefaultForm
 	 * @param array $options Array of options for the select box (multiple, class, id, size)
 	 * @return string The select box.
 	 */
-	function generate_select_box($name, $option_list, $selected=array(), $options=array())
+	function generate_select_box($name, $option_list=array(), $selected=array(), $options=array())
 	{
 		if(!isset($options['multiple']))
 		{

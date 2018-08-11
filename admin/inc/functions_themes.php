@@ -623,6 +623,8 @@ function build_new_theme($name, $properties=null, $parent=1)
 		);
 		$properties['logo'] = parse_theme_variables($properties['logo'], $theme_vars);
 	}
+	
+	$updated_theme = array();
 	if(!empty($stylesheets))
 	{
 		$updated_theme['stylesheets'] = $db->escape_string(my_serialize($stylesheets));

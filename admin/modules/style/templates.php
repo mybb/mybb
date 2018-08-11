@@ -1324,7 +1324,7 @@ LEGEND;
 		FROM ".TABLE_PREFIX."templates t
 		LEFT JOIN ".TABLE_PREFIX."templates m ON (m.title=t.title AND m.sid=-2 AND m.version > t.version)
 		WHERE t.sid > 0 AND m.template != t.template
-		ORDER BY t.sid ASC, title ASC
+		ORDER BY t.sid ASC, t.title ASC
 	");
 	while($template = $db->fetch_array($query))
 	{
@@ -1869,7 +1869,7 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 			$table->construct_cell("<a href=\"index.php?module=style-templates&amp;sid={$sid}{$group['expand_str']}#group_{$group['gid']}\">{$expand}</a>", array("class" => "align_center"));
 			$table->construct_row(array("class" => "alt_row", "id" => "group_".$group['gid'], "name" => "group_".$group['gid']));
 
-			if(isset($group['templates']) && count($group['templates']) > 0)
+			if(isset($group['templates']) && is_array($group['templates']) && count($group['templates']) > 0)
 			{
 				$templates = $group['templates'];
 				ksort($templates);
