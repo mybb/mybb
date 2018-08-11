@@ -198,38 +198,22 @@ if($mybb->settings['enableattachments'] == 1 && !$mybb->get_input('attachmentaid
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
 
-	// If there's an attachment, check it and upload it
-	if($forumpermissions['canpostattachments'] != 0)
+	if($pid)
 	{
-		// If attachment exists..
-		if(!empty($_FILES['attachment']['name']) && !empty($_FILES['attachment']['type']))
-		{
-			if($_FILES['attachment']['size'] > 0)
-			{
-				$query = $db->simple_select("attachments", "aid",
-					"filename='".$db->escape_string($_FILES['attachment']['name'])."' AND pid='{$pid}'");
-				$updateattach = $db->fetch_field($query, "aid");
-
-				$update_attachment = false;
-				if($updateattach > 0 && $mybb->get_input('updateattachment'))
-				{
-					$update_attachment = true;
-				}
-				$attachedfile = upload_attachment($_FILES['attachment'], $update_attachment);
-			}
-			else
-			{
-				$post_errors = $lang->error_uploadempty;
-				$post_errors = inline_error($post_errors);
-				$mybb->input['action'] = "editpost";
-			}
-		}
+		$attachwhere = "pid='{$pid}'";
+	}
+	else
+	{
+		$attachwhere = "posthash='".$db->escape_string($mybb->get_input('posthash'))."'";
 	}
 
-	if(!empty($attachedfile['error']))
+	$ret = add_attachments($pid, $forumpermissions, $attachwhere, "editpost");
+
+
+	if(!empty($ret['errors']))
 	{
-		$post_errors = $attachedfile['error'];
-		$post_errors = inline_error($post_errors);
+		$post_errors = $lang->error_uploadempty;
+		$post_errors = inline_error($ret['errors']);
 		$mybb->input['action'] = "editpost";
 	}
 
@@ -932,6 +916,24 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		}
 	}
 
+	$php_max_upload_filesize = return_bytes(ini_get('max_upload_filesize'));
+	$php_post_max_size = return_bytes(ini_get('post_max_size'));
+
+	if ($php_max_upload_filesize != 0 && $php_post_max_size != 0)
+	{
+		$php_max_upload_size = min($php_max_upload_filesize, $php_post_max_size);
+	}
+	else
+	{
+		$php_max_upload_size = max($php_max_upload_filesize, $php_post_max_size);
+	}
+
+	$php_max_file_uploads = (int)ini_get('max_file_uploads');
+	$post_javascript = \MyBB\template('misc/post_javascript.twig', [
+		'php_max_upload_size' => $php_max_upload_size,
+        'php_max_file_uploads' => $php_max_file_uploads,
+	]);
+
 	$plugins->run_hooks("editpost_end");
 
 	$forum['name'] = strip_tags($forum['name']);
@@ -968,5 +970,6 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		'attachments' => $attachments,
 		'prefixes' => $prefixes,
 		'posticons' => $posticons,
+        'post_javascript' => $post_javascript,
 	]));
 }

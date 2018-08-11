@@ -57,7 +57,7 @@
         <div class="row row--form field">
             <h3 class="field__name">{{ lang.new_attachment }}</h3>
             <div class="file-wrapper">
-                <input type="file" name="attachment" size="30" class="fileupload" />
+                <input type="file" name="attachments[]" size="30" class="fileupload" multiple="multiple" />
             </div>
             {% if composepost.showattachadd %}
                 <button type="submit" class="button button--full-width" name="newattachment" value="new">

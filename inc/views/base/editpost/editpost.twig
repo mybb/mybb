@@ -5,7 +5,7 @@
 {% endblock head %}
 
 {% block jscripts %}
-    <script type="text/javascript" src="{{ asset_url('jscripts/post.js') }}"></script>
+    {{ post_javascript|raw }}
 {% endblock jscripts %}
 
 {# let the editpost variable be used in shared twig templates #}
