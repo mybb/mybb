@@ -3072,7 +3072,7 @@ function build_forum_prefix_select($fid, $selected_pid=0)
     }
 
     // Go through each of our prefixes and decide which ones we can use
-    $prefixes = array();
+    $prefixes = [];
     foreach ($prefix_cache as $prefix) {
         if ($prefix['forums'] != "-1") {
             // Decide whether this prefix can be used in our forum
@@ -3092,29 +3092,27 @@ function build_forum_prefix_select($fid, $selected_pid=0)
         return '';
     }
 
-    $default_selected = array();
-    $selected_pid = (int)$selected_pid;
+    $default = [
+        [
+            'prefix' => $lang->prefix_all,
+            'pid' => 0
+        ],
+        [
+            'prefix' => $lang->prefix_none,
+            'pid' => -1
+        ],
+        [
+            'prefix' => $lang->prefix_any,
+            'pid' => -2
+        ]
+    ];
 
-    if ($selected_pid == 0) {
-        $default_selected['all'] = ' selected="selected"';
-    } elseif ($selected_pid == -1) {
-        $default_selected['none'] = ' selected="selected"';
-    } elseif ($selected_pid == -2) {
-        $default_selected['any'] = ' selected="selected"';
-    }
+    $prefixes = array_merge($default, $prefixes);
 
-    foreach ($prefixes as $prefix) {
-        $selected = '';
-        if ($prefix['pid'] == $selected_pid) {
-            $selected = ' selected="selected"';
-        }
-
-        $prefix['prefix'] = htmlspecialchars_uni($prefix['prefix']);
-        eval('$prefixselect_prefix .= "'.$templates->get("forumdisplay_threadlist_prefixes_prefix").'";');
-    }
-
-    eval('$prefixselect = "'.$templates->get("forumdisplay_threadlist_prefixes").'";');
-    return $prefixselect;
+    return \MyBB\template('forumdisplay/threadlist_prefixes.twig', [
+        'prefixes' => $prefixes,
+        'selected' => (int)$selected_pid
+    ]);
 }
 
 /**
@@ -3234,26 +3232,10 @@ function log_moderator_action($data, $action="")
  */
 function get_reputation($reputation, $uid=0)
 {
-    global $theme, $templates;
-
-    $display_reputation = $reputation_class = '';
-    if ($reputation < 0) {
-        $reputation_class = "reputation_negative";
-    } elseif ($reputation > 0) {
-        $reputation_class = "reputation_positive";
-    } else {
-        $reputation_class = "reputation_neutral";
-    }
-
-    $reputation = my_number_format($reputation);
-
-    if ($uid != 0) {
-        eval("\$display_reputation = \"".$templates->get("postbit_reputation_formatted_link")."\";");
-    } else {
-        eval("\$display_reputation = \"".$templates->get("postbit_reputation_formatted")."\";");
-    }
-
-    return $display_reputation;
+    return \MyBB\template('postbit/reputation.twig', [
+        'uid' => (int)$uid,
+        'reputation' => $reputation
+    ]);
 }
 
 /**
@@ -3264,21 +3246,9 @@ function get_reputation($reputation, $uid=0)
  */
 function get_colored_warning_level($level)
 {
-    global $templates;
-
-    $warning_class = '';
-    if ($level >= 80) {
-        $warning_class = "high_warning";
-    } elseif ($level >= 50) {
-        $warning_class = "moderate_warning";
-    } elseif ($level >= 25) {
-        $warning_class = "low_warning";
-    } else {
-        $warning_class = "normal_warning";
-    }
-
-    eval("\$level = \"".$templates->get("postbit_warninglevel_formatted")."\";");
-    return $level;
+    return \MyBB\template('postbit/warninglevel.twig', [
+        'level' => $level
+    ]);
 }
 
 /**

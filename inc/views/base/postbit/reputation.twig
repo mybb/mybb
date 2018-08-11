@@ -1,0 +1,14 @@
+{% set class %}
+    {% if reputation < 0 %}
+        reputation_negative
+    {% elseif reputation > 0 %}
+        reputation_positive
+    {% else %}
+        reputation_neutral
+    {% endif %}
+{% endset %}
+{% if uid > 0 %}
+    <a href="reputation.php?uid={{ uid }}"><strong class="{{ class }}">{{ reputation|my_number_format }}</strong></a>
+{% else %}
+    <strong class="{{ class }}">{{ reputation|my_number_format }}</strong>
+{% endif %}
