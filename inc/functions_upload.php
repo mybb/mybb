@@ -720,7 +720,7 @@ function add_attachments($pid, $forumpermissions, $attachwhere, $action=false)
 
 		}
 
-		$query = $db->simple_select("attachments", "filename, aid", "{$attachwhere} AND `filename` IN (".$filenames.")");
+		$query = $db->simple_select("attachments", "filename, aid", "{$attachwhere} AND filename IN (".$filenames.")");
 
 		$aid = array();
 		while ($row = $db->fetch_array($query))
