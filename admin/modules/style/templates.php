@@ -1324,7 +1324,7 @@ LEGEND;
 		FROM ".TABLE_PREFIX."templates t
 		LEFT JOIN ".TABLE_PREFIX."templates m ON (m.title=t.title AND m.sid=-2 AND m.version > t.version)
 		WHERE t.sid > 0 AND m.template != t.template
-		ORDER BY t.sid ASC, title ASC
+		ORDER BY t.sid ASC, t.title ASC
 	");
 	while($template = $db->fetch_array($query))
 	{
