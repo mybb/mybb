@@ -1366,9 +1366,9 @@ if(!empty($threadcache) && is_array($threadcache))
 					foreach($gids as $gid)
 					{
 						$gid = (int)$gid;
-						$gidswhere .= " OR CONCAT(',',groups,',') LIKE '%,{$gid},%'";
+						$gidswhere .= " OR CONCAT(',',`groups`,',') LIKE '%,{$gid},%'";
 					}
-					$query = $db->simple_select("modtools", 'tid, name', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='') AND (groups='' OR CONCAT(',',groups,',') LIKE '%,-1,%'{$gidswhere}) AND type = 't'");
+					$query = $db->simple_select("modtools", 'tid, name', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='') AND (`groups`='' OR CONCAT(',',`groups`,',') LIKE '%,-1,%'{$gidswhere}) AND type = 't'");
 					break;
 			}
 
