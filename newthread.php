@@ -14,7 +14,7 @@ define('THIS_SCRIPT', 'newthread.php');
 $templatelist = "newthread,previewpost,loginbox,changeuserbox,newthread_postpoll,posticons,codebuttons,postbit,post_attachments_attachment_unapproved,newreply_modoptions_close,newreply_modoptions_stick";
 $templatelist .= ",newthread_disablesmilies,post_attachments_new,post_attachments,post_savedraftbutton,post_subscription_method,post_attachments_attachment_remove,postbit_warninglevel_formatted,postbit_icon";
 $templatelist .= ",forumdisplay_rules,forumdisplay_rules_link,post_attachments_attachment_postinsert,post_attachments_attachment,newthread_signature,post_prefixselect_prefix,post_prefixselect_single,posticons_icon";
-$templatelist .= ",post_captcha_hidden,post_captcha_recaptcha_invisible,post_captcha_nocaptcha,postbit_gotopost,newthread_postoptions,post_attachments_add,post_attachments_viewlink";
+$templatelist .= ",post_captcha_hidden,post_captcha_recaptcha_invisible,post_captcha_nocaptcha,post_javascript,postbit_gotopost,newthread_postoptions,post_attachments_add,post_attachments_viewlink";
 $templatelist .= ",postbit_avatar,postbit_find,postbit_pm,postbit_rep_button,postbit_www,postbit_email,postbit_reputation,postbit_warn,postbit_warninglevel,postbit_author_user,postbit_author_guest,post_captcha";
 $templatelist .= ",postbit_signature,postbit_classic,postbit_attachments_thumbnails_thumbnail,postbit_attachments_images_image,postbit_attachments_attachment,postbit_attachments_attachment_unapproved";
 $templatelist .= ",postbit_attachments_thumbnails,postbit_attachments_images,postbit_attachments,postbit_reputation_formatted_link,post_attachments_update,postbit_offline,newreply_modoptions,newthread_multiquote_external";
@@ -171,44 +171,18 @@ if($mybb->settings['enableattachments'] == 1 && !$mybb->get_input('attachmentaid
 		$attachwhere = "posthash='".$db->escape_string($mybb->get_input('posthash'))."'";
 	}
 
-	// If there's an attachment, check it and upload it
-	if($forumpermissions['canpostattachments'] != 0)
+	require_once MYBB_ROOT."inc/functions_upload.php";
+
+	$ret = add_attachments($pid, $forumpermissions, $attachwhere, "newthread");
+
+	if(!empty($ret['errors']))
 	{
-		if(!empty($_FILES['attachment']['name']) && !empty($_FILES['attachment']['type']))
-		{
-			if($_FILES['attachment']['size'] > 0)
-			{
-				$query = $db->simple_select("attachments", "aid", "filename='".$db->escape_string($_FILES['attachment']['name'])."' AND {$attachwhere}");
-				$updateattach = $db->fetch_field($query, "aid");
-
-				require_once MYBB_ROOT."inc/functions_upload.php";
-
-				$update_attachment = false;
-				if($updateattach > 0 && $mybb->get_input('updateattachment'))
-				{
-					$update_attachment = true;
-				}
-				$attachedfile = upload_attachment($_FILES['attachment'], $update_attachment);
-			}
-			else
-			{
-				$errors[] = $lang->error_uploadempty;
-				$mybb->input['action'] = "newthread";
-			}
-		}
-	}
-
-	// Error with attachments - should use new inline errors?
-	if(!empty($attachedfile['error']))
-	{
-		$errors[] = $attachedfile['error'];
-		$mybb->input['action'] = "newthread";
+		$errors = $ret['errors'];
 	}
 
 	// If we were dealing with an attachment but didn't click 'Post Thread', force the new thread page again.
 	if(!$mybb->get_input('submit'))
 	{
-		//$editdraftpid = "<input type=\"hidden\" name=\"pid\" value=\"$pid\" />";
 		$mybb->input['action'] = "newthread";
 	}
 }
@@ -1131,6 +1105,21 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
 		}
 	}
+
+	$php_max_upload_filesize = return_bytes(ini_get('max_upload_filesize'));
+	$php_post_max_size = return_bytes(ini_get('post_max_size'));
+
+	if ($php_max_upload_filesize != 0 && $php_post_max_size != 0)
+	{
+		$php_max_upload_size = min($php_max_upload_filesize, $php_post_max_size);
+	}
+	else
+	{
+		$php_max_upload_size = max($php_max_upload_filesize, $php_post_max_size);
+	}
+
+	$php_max_file_uploads = (int)ini_get('max_file_uploads');
+	eval("\$post_javascript = \"".$templates->get("post_javascript")."\";");
 
 	$plugins->run_hooks("newthread_end");
 
