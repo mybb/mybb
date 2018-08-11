@@ -1334,7 +1334,9 @@ class DB_MySQLi implements DB_Base
 	 */
 	function drop_column($table, $column)
 	{
-		return $this->write_query("ALTER TABLE {$this->table_prefix}{$table} DROP {$column}");
+		$column = trim($column, '`');
+
+		return $this->write_query("ALTER TABLE {$this->table_prefix}{$table} DROP `{$column}`");
 	}
 
 	/**
@@ -1347,7 +1349,9 @@ class DB_MySQLi implements DB_Base
 	 */
 	function add_column($table, $column, $definition)
 	{
-		return $this->write_query("ALTER TABLE {$this->table_prefix}{$table} ADD {$column} {$definition}");
+		$column = trim($column, '`');
+
+		return $this->write_query("ALTER TABLE {$this->table_prefix}{$table} ADD `{$column}` {$definition}");
 	}
 
 	/**
@@ -1360,7 +1364,9 @@ class DB_MySQLi implements DB_Base
 	 */
 	function modify_column($table, $column, $new_definition)
 	{
-		return $this->write_query("ALTER TABLE {$this->table_prefix}{$table} MODIFY {$column} {$new_definition}");
+		$column = trim($column, '`');
+
+		return $this->write_query("ALTER TABLE {$this->table_prefix}{$table} MODIFY `{$column}` {$new_definition}");
 	}
 
 	/**
@@ -1374,7 +1380,10 @@ class DB_MySQLi implements DB_Base
 	 */
 	function rename_column($table, $old_column, $new_column, $new_definition)
 	{
-		return $this->write_query("ALTER TABLE {$this->table_prefix}{$table} CHANGE {$old_column} {$new_column} {$new_definition}");
+		$old_column = trim($old_column, '`');
+		$new_column = trim($new_column, '`');
+
+		return $this->write_query("ALTER TABLE {$this->table_prefix}{$table} CHANGE `{$old_column}` `{$new_column}` {$new_definition}");
 	}
 
 	/**
