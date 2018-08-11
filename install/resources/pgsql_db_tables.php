@@ -903,6 +903,9 @@ $tables[] = "CREATE TABLE mybb_userfields (
   fid1 text NOT NULL default '',
   fid2 text NOT NULL default '',
   fid3 text NOT NULL default '',
+  fid4 text NOT NULL default '',
+  fid5 text NOT NULL default '',
+  fid6 text NOT NULL default '',
   PRIMARY KEY (ufid)
 );";
 $query = $db->write_query("SELECT column_name
