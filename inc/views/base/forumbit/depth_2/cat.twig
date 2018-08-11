@@ -2,9 +2,9 @@
 	<div class="forum__info">
         <span class="forum__status forum__status--{{ lightbulb.folder }} forum_{{ lightbulb.folder }} ajax_mark_read" title="{{ lightbulb.altonoff }}" id="mark_read_{{ forum.fid }}">
         {% if lightbulb.folder == 'offlock' %}
-            <i class="fas fa-link"></i>
-        {% elseif lightbulb.folder == 'offlink' %}
             <i class="fas fa-lock"></i>
+        {% elseif lightbulb.folder == 'offlink' %}
+            <i class="fas fa-link"></i>
         {% else %}
             <i class="fas fa-circle"></i>
         {% endif %}
