@@ -3531,59 +3531,28 @@ function fix_mktime($format, $year)
  */
 function build_breadcrumb()
 {
-    global $nav, $navbits, $templates, $theme, $lang, $mybb;
-
-    eval("\$navsep = \"".$templates->get("nav_sep")."\";");
-
-    $i = 0;
-    $activesep = '';
+    global $nav, $navbits, $theme, $lang, $mybb;
 
     if (is_array($navbits)) {
-        reset($navbits);
         foreach ($navbits as $key => $navbit) {
-            if (isset($navbits[$key+1])) {
-                if (isset($navbits[$key+2])) {
-                    $sep = $navsep;
-                } else {
-                    $sep = "";
+            if (!empty($navbit['multipage'])) {
+                if (!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1) {
+                    $mybb->settings['threadsperpage'] = 20;
                 }
 
-                $multipage = null;
-                $multipage_dropdown = null;
-                if (!empty($navbit['multipage'])) {
-                    if (!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1) {
-                        $mybb->settings['threadsperpage'] = 20;
-                    }
-
-                    $multipage = multipage($navbit['multipage']['num_threads'], $mybb->settings['threadsperpage'], $navbit['multipage']['current_page'], $navbit['multipage']['url'], true);
-                    if ($multipage) {
-                        ++$i;
-                        eval("\$multipage_dropdown = \"".$templates->get("nav_dropdown")."\";");
-                        $sep = $multipage_dropdown.$sep;
-                    }
-                }
-
-                // Replace page 1 URLs
-                $navbit['url'] = str_replace("-page-1.html", ".html", $navbit['url']);
-                $navbit['url'] = preg_replace("/&amp;page=1$/", "", $navbit['url']);
-
-                eval("\$nav .= \"".$templates->get("nav_bit")."\";");
+                $navbit['pagination'] = multipage($navbit['multipage']['num_threads'], $mybb->settings['threadsperpage'], $navbit['multipage']['current_page'], $navbit['multipage']['url'], true);
             }
+
+            // Replace page 1 URLs
+            $navbit['url'] = str_replace("-page-1.html", ".html", $navbit['url']);
+            $navbit['url'] = preg_replace("/&amp;page=1$/", "", $navbit['url']);
+            $navbits[$key] = $navbit;
         }
     }
 
-    $activesep = '';
-    $navsize = count($navbits);
-    $navbit = $navbits[$navsize-1];
-
-    if ($nav) {
-        eval("\$activesep = \"".$templates->get("nav_sep_active")."\";");
-    }
-
-    eval("\$activebit = \"".$templates->get("nav_bit_active")."\";");
-    eval("\$donenav = \"".$templates->get("nav")."\";");
-
-    return $donenav;
+    return \MyBB\template('partials/breadcrumb.twig', [
+        'navbits' => $navbits
+    ]);
 }
 
 /**
