@@ -952,6 +952,9 @@ $tables[] = "CREATE TABLE mybb_userfields (
   fid1 text NOT NULL,
   fid2 text NOT NULL,
   fid3 text NOT NULL,
+  fid4 text NOT NULL,
+  fid5 text NOT NULL,
+  fid6 text NOT NULL,
   PRIMARY KEY (ufid)
 ) ENGINE=MyISAM;";
 
