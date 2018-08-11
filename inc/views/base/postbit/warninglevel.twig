@@ -1,0 +1,12 @@
+{% set class %}
+    {% if level >= 80 %}
+        high_warning
+    {% elseif level >= 50 %}
+        moderate_warning
+    {% elseif level >= 25 %}
+        low_warning
+    {% else %}
+        normal_warning
+    {% endif %}
+{% endset %}
+<span class="{{ class }}">{{ level }}%</span>
