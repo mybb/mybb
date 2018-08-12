@@ -35,6 +35,11 @@ if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $i
 	error($lang->error_invalidthread);
 }
 
+if($thread['visible'] == -1)
+{
+	error($lang->thread_doesnt_exist);
+}
+
 if($thread['uid'] == $mybb->user['uid'])
 {
 	error($lang->error_cannotrateownthread);

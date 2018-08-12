@@ -51,7 +51,7 @@ if($mybb->input['action'] == "newpoll")
 	$plugins->run_hooks("polls_newpoll_start");
 
 	$thread = get_thread($mybb->get_input('tid', MyBB::INPUT_INT));
-	if(!$thread)
+	if(!$thread || $thread['visible'] == -1)
 	{
 		error($lang->error_invalidthread);
 	}

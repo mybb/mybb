@@ -20,6 +20,9 @@
         lang.quick_restore_error = "{{ lang.quick_restore_error }}";
         lang.quick_restore_success = "{{ lang.quick_restore_success }}";
         lang.editreason = "{{ lang.postbit_editreason }}";
+        lang.post_deleted_error = "{{ lang.post_deleted_error }}";
+        lang.softdelete_thread = "{{ lang.soft_delete_thread }}";
+        lang.restore_thread = "{{ lang.restore_thread }}";
     // -->
     </script>
     <script type="text/javascript" src="{{ asset_url('jscripts/report.js') }}" defer></script>
@@ -212,8 +215,8 @@
                 // -->
                 </script>
                 <script type="text/javascript" src="{{ asset_url('jscripts/rating.js') }}"></script>
-                <strong class="float_left" style="padding-right: 10px;">{{ lang.thread_rating }}</strong>
                 <div class="inline_rating">
+                    <strong class="float_left" style="padding-right: 10px;">{{ lang.thread_rating }}</strong>
                     <ul class="star_rating{{ thread.not_rated }}" id="rating_thread_{{ thread.tid }}">
                         <li style="width: {{ thread.width }}%" class="current_rating" id="current_rating_{{ thread.tid }}">{{ trans('rating_average', thread.numratings, thread.averagerating) }}</li>
                         <li><a class="one_star" title="{{ lang.one_star }}" href="./ratethread.php?tid={{ thread.tid }}&amp;rating=1&amp;my_post_key={{ mybb.post_code }}">1</a></li>
@@ -504,5 +507,13 @@
                 });
             </script>
         </footer>
+	<script type="text/javascript">
+		var thread_deleted = "{{ thread_deleted }}";
+		if(thread_deleted == "1")
+		{
+			$("#quick_reply_form, .new_reply_button, .thread_tools, .inline_rating").hide();
+			$("#moderator_options_selector option.option_mirage").attr("disabled","disabled");
+		}
+	</script>
     </div>
 {% endblock body %}

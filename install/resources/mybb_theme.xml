@@ -1338,6 +1338,20 @@ div.error ul {
 	background-position: 0 -320px;
 }
 
+.postbit_qrestore,
+.status_type{
+	display:none!important;
+}
+
+.deleted_post .postbit_qrestore,
+.deleted_post .status_type{
+	display:inline!important;
+}
+
+.deleted_post .postbit_mirage{
+	display:none!important;
+}
+
 a.button:link,
 a.button:hover,
 a.button:visited,
@@ -9677,7 +9691,7 @@ if(use_xmlhttprequest == "1")
 		<em>{$lang->postbit_post_deleted}</em>
 	</div>
 </div>]]></template>
-		<template name="postbit_edit" version="1809"><![CDATA[<a href="editpost.php?pid={$post['pid']}" id="edit_post_{$post['pid']}" title="{$lang->postbit_edit}" class="postbit_edit"><span>{$lang->postbit_button_edit}</span></a>
+		<template name="postbit_edit" version="1818"><![CDATA[<a href="editpost.php?pid={$post['pid']}" id="edit_post_{$post['pid']}" title="{$lang->postbit_edit}" class="postbit_edit postbit_mirage"><span>{$lang->postbit_button_edit}</span></a>
 <div id="edit_post_{$post['pid']}_popup" class="popup_menu" style="display: none;"><div class="popup_item_container"><a href="javascript:void(0)" class="popup_item quick_edit_button" id="quick_edit_post_{$post['pid']}">{$lang->postbit_quick_edit}</a></div><div class="popup_item_container"><a href="editpost.php?pid={$post['pid']}" class="popup_item">{$lang->postbit_full_edit}</a></div></div>
 <script type="text/javascript">
 // <!--
@@ -9712,7 +9726,7 @@ if(use_xmlhttprequest == "1")
 		<template name="postbit_inlinecheck" version="1800"><![CDATA[<input type="checkbox" class="checkbox" name="inlinemod_{$post['pid']}" id="inlinemod_{$post['pid']}" value="1" style="vertical-align: middle; margin: -2px 0 0 5px;" {$inlinecheck}  />]]></template>
 		<template name="postbit_iplogged_hiden" version="1815"><![CDATA[{$lang->postbit_ipaddress} <a href="moderation.php?action={$action}&amp;{$idtype}={$post[$idtype]}" onclick="MyBB.{$javascript}({$post[$idtype]}); return false;">{$lang->postbit_ipaddress_logged}</a>]]></template>
 		<template name="postbit_iplogged_show" version="1800"><![CDATA[{$lang->postbit_ipaddress} {$ipaddress}]]></template>
-		<template name="postbit_multiquote" version="1809"><![CDATA[<a href="javascript:void(0)" onclick="Thread.multiQuote({$post['pid']}); return false;" style="display: none;" id="multiquote_link_{$post['pid']}" title="{$lang->postbit_multiquote}" class="postbit_multiquote"><span id="multiquote_{$post['pid']}">{$lang->postbit_button_multiquote}</span></a>
+		<template name="postbit_multiquote" version="1818"><![CDATA[<a href="javascript:void(0)" onclick="Thread.multiQuote({$post['pid']}); return false;" style="display: none;" id="multiquote_link_{$post['pid']}" title="{$lang->postbit_multiquote}" class="postbit_multiquote postbit_mirage"><span id="multiquote_{$post['pid']}">{$lang->postbit_button_multiquote}</span></a>
 <script type="text/javascript">
 //<!--
 	$('#multiquote_link_{$post['pid']}').css("display", "");
@@ -9730,19 +9744,9 @@ if(use_xmlhttprequest == "1")
 {$post['fieldvalue_option']}
 </ul>]]></template>
 		<template name="postbit_profilefield_multiselect_value" version="1800"><![CDATA[<li style="margin-left: 0;">{$val}</li>]]></template>
-		<template name="postbit_quickdelete" version="1800"><![CDATA[<a href="editpost.php?pid={$post['pid']}" onclick="Thread.deletePost({$post['pid']}); return false;" style="display: none;" id="quick_delete_{$post['pid']}" title="{$postbit_qdelete}" class="postbit_qdelete"><span>{$lang->postbit_button_qdelete}</span></a>
-<script type="text/javascript">
-// <!--
-	$('#quick_delete_{$post['pid']}').css('display', '{$display}');
-// -->
-</script>]]></template>
-		<template name="postbit_quickrestore" version="1800"><![CDATA[<a href="editpost.php?pid={$post['pid']}" onclick="Thread.restorePost({$post['pid']}); return false;" style="display: none;" id="quick_restore_{$post['pid']}" title="{$postbit_qrestore}" class="postbit_qrestore"><span>{$lang->postbit_button_qrestore}</span></a>
-<script type="text/javascript">
-// <!--
-	$('#quick_restore_{$post['pid']}').css('display', '{$display}');
-// -->
-</script>]]></template>
-		<template name="postbit_quote" version="1800"><![CDATA[<a href="newreply.php?tid={$tid}&amp;replyto={$post['pid']}" title="{$lang->postbit_quote}" class="postbit_quote"><span>{$lang->postbit_button_quote}</span></a>]]></template>
+		<template name="postbit_quickdelete" version="1818"><![CDATA[<a href="editpost.php?pid={$post['pid']}" onclick="Thread.deletePost({$post['pid']}); return false;" id="quick_delete_{$post['pid']}" title="{$postbit_qdelete}" class="postbit_qdelete postbit_mirage"><span>{$lang->postbit_button_qdelete}</span></a>]]></template>
+		<template name="postbit_quickrestore" version="1818"><![CDATA[<a href="editpost.php?pid={$post['pid']}" onclick="Thread.restorePost({$post['pid']}); return false;" id="quick_restore_{$post['pid']}" title="{$postbit_qrestore}" class="postbit_qrestore"><span>{$lang->postbit_button_qrestore}</span></a>]]></template>
+		<template name="postbit_quote" version="1818"><![CDATA[<a href="newreply.php?tid={$tid}&amp;replyto={$post['pid']}" title="{$lang->postbit_quote}" class="postbit_quote postbit_mirage"><span>{$lang->postbit_button_quote}</span></a>]]></template>
 		<template name="postbit_rep_button" version="1809"><![CDATA[<a href="javascript:void(0)" onclick="MyBB.reputation({$post['uid']},{$post['pid']}); return false;" title="{$lang->postbit_reputation_add}" class="postbit_reputation_add"><span>{$lang->postbit_button_reputation_add}</span></a>]]></template>
 		<template name="postbit_reply_pm" version="1800"><![CDATA[<a href="private.php?action=send&amp;pmid={$id}&amp;do=reply" title="{$lang->reply_title}" class="postbit_reply_pm"><span>{$lang->postbit_button_reply_pm}</span></a>]]></template>
 		<template name="postbit_replyall_pm" version="1480"><![CDATA[<a href="private.php?action=send&amp;pmid={$id}&amp;do=replyall" title="{$lang->reply_to_all}" class="postbit_reply_all"><span>{$lang->postbit_button_reply_all}</span></a>]]></template>
@@ -11340,7 +11344,7 @@ if(use_xmlhttprequest == "1")
 <td width="5%" class="{$bgcolor}"><div class="postbit_buttons">{$emailcode}</div></td>
 <td width="5%" class="{$bgcolor}"><div class="postbit_buttons">{$pmcode}</div></td>
 </tr>]]></template>
-		<template name="showthread" version="1813"><![CDATA[<html>
+		<template name="showthread" version="1818"><![CDATA[<html>
 <head>
 <title>{$thread['subject']}</title>
 {$headerinclude}
@@ -11359,6 +11363,9 @@ if(use_xmlhttprequest == "1")
 	lang.quick_restore_error = "{$lang->quick_restore_error}";
 	lang.quick_restore_success = "{$lang->quick_restore_success}";
 	lang.editreason = "{$lang->postbit_editreason}";
+	lang.post_deleted_error = "{$lang->post_deleted_error}";
+	lang.softdelete_thread = "{$lang->soft_delete_thread}";
+	lang.restore_thread = "{$lang->restore_thread}";
 // -->
 </script>
 <!-- jeditable (jquery) -->
@@ -11415,7 +11422,7 @@ if(use_xmlhttprequest == "1")
 	<br />
 	<div class="float_left">
 		<ul class="thread_tools">
-			<li class="printable"><a href="printthread.php?tid={$tid}">{$lang->view_printable}</a></li>
+			{$printthread}
 			{$sendthread}
 			{$addremovesubscription}
 			{$addpoll}
@@ -11442,6 +11449,12 @@ if(use_xmlhttprequest == "1")
 		$(".author_avatar img").error(function () {
 			$(this).unbind("error").closest('.author_avatar').remove();
 		});
+		var thread_deleted = "{$thread_deleted}";
+		if(thread_deleted == "1")
+		{
+			$("#quick_reply_form, .new_reply_button, .thread_tools, .inline_rating").hide();
+			$("#moderator_options_selector option.option_mirage").attr("disabled","disabled");
+		}
 	</script>
 </body>
 </html>]]></template>
@@ -11515,17 +11528,17 @@ if(use_xmlhttprequest == "1")
 	})
 //-->
 </script>]]></template>
-		<template name="showthread_moderationoptions_approve" version="1808"><![CDATA[<option value="approvethread">{$lang->approve_thread}</option>]]></template>
+		<template name="showthread_moderationoptions_approve" version="1818"><![CDATA[<option class="option_mirage" value="approvethread">{$lang->approve_thread}</option>]]></template>
 		<template name="showthread_moderationoptions_custom" version="120"><![CDATA[<optgroup label="{$lang->custom_mod_tools}">{$customthreadtools}</optgroup>]]></template>
-		<template name="showthread_moderationoptions_custom_tool" version="120"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
+		<template name="showthread_moderationoptions_custom_tool" version="1818"><![CDATA[<option class="option_mirage" value="{$tool['tid']}">{$tool['name']}</option>]]></template>
 		<template name="showthread_moderationoptions_delete" version="1800"><![CDATA[<option value="deletethread">{$lang->delete_thread}</option>]]></template>
-		<template name="showthread_moderationoptions_deletepoll" version="1800"><![CDATA[<option value="deletepoll">{$lang->delete_poll}</option>]]></template>
-		<template name="showthread_moderationoptions_manage" version="1800"><![CDATA[<option value="move">{$lang->move_thread}</option>
-<option value="split">{$lang->split_thread}</option>
-<option value="merge">{$lang->merge_threads}</option>
-<option value="removeredirects">{$lang->remove_redirects}</option>
-<option value="removesubscriptions">{$lang->remove_subscriptions}</option>]]></template>
-		<template name="showthread_moderationoptions_openclose" version="1800"><![CDATA[<option value="openclosethread">{$lang->open_close_thread}</option>]]></template>
+		<template name="showthread_moderationoptions_deletepoll" version="1818"><![CDATA[<option class="option_mirage" value="deletepoll">{$lang->delete_poll}</option>]]></template>
+		<template name="showthread_moderationoptions_manage" version="1818"><![CDATA[<option class="option_mirage" value="move">{$lang->move_thread}</option>
+<option class="option_mirage" value="split">{$lang->split_thread}</option>
+<option class="option_mirage" value="merge">{$lang->merge_threads}</option>
+<option class="option_mirage" value="removeredirects">{$lang->remove_redirects}</option>
+<option class="option_mirage" value="removesubscriptions">{$lang->remove_subscriptions}</option>]]></template>
+		<template name="showthread_moderationoptions_openclose" version="1818"><![CDATA[<option class="option_mirage" value="openclosethread">{$lang->open_close_thread}</option>]]></template>
 		<template name="showthread_moderationoptions_restore" version="1804"><![CDATA[<option value="restorethread">{$lang->restore_thread}</option>]]></template>
 		<template name="showthread_moderationoptions_softdelete" version="1804"><![CDATA[<option value="softdeletethread">{$lang->soft_delete_thread}</option>]]></template>
 		<template name="showthread_moderationoptions_standard" version="1800"><![CDATA[<optgroup label="{$lang->standard_mod_tools}">
@@ -11538,9 +11551,9 @@ if(use_xmlhttprequest == "1")
 {$managethread}
 {$approveunapprovethread}
 </optgroup>]]></template>
-		<template name="showthread_moderationoptions_stickunstick" version="1800"><![CDATA[<option value="stick">{$lang->stick_unstick_thread}</option>]]></template>
+		<template name="showthread_moderationoptions_stickunstick" version="1818"><![CDATA[<option class="option_mirage" value="stick">{$lang->stick_unstick_thread}</option>]]></template>
 		<template name="showthread_moderationoptions_threadnotes" version="1800"><![CDATA[<option value="threadnotes" selected="selected">{$lang->thread_notes}</option>]]></template>
-		<template name="showthread_moderationoptions_unapprove" version="1808"><![CDATA[<option value="unapprovethread">{$lang->unapprove_thread}</option>]]></template>
+		<template name="showthread_moderationoptions_unapprove" version="1818"><![CDATA[<option class="option_mirage" value="unapprovethread">{$lang->unapprove_thread}</option>]]></template>
 		<template name="showthread_newreply" version="1800"><![CDATA[<a href="newreply.php?tid={$tid}" class="button new_reply_button"><span>{$lang->new_reply}</span></a>&nbsp;]]></template>
 		<template name="showthread_newreply_closed" version="1800"><![CDATA[<a href="newreply.php?tid={$tid}" class="button closed_button"><span>{$lang->thread_closed}</span></a>&nbsp;]]></template>
 		<template name="showthread_newthread" version="1800"><![CDATA[<a href="newthread.php?fid={$fid}" class="button new_thread_button"><span>{$lang->post_thread}</span></a>&nbsp;]]></template>
@@ -11609,6 +11622,7 @@ if(use_xmlhttprequest == "1")
 </table>
 <br />]]></template>
 		<template name="showthread_poll_undovote" version="1800"><![CDATA[ [<a href="polls.php?action=do_undovote&amp;pid={$poll['pid']}&amp;my_post_key={$mybb->post_code}">{$lang->undo_vote}</a>]]]></template>
+		<template name="showthread_printthread" version="1818"><![CDATA[<li class="printable"><a href="printthread.php?tid={$tid}">{$lang->view_printable}</a></li>]]></template>
 		<template name="showthread_quickreply" version="1816"><![CDATA[
 <div id="quickreply_spinner" class="showthread_spinner" style="display: none"><img src="{$theme['imgdir']}/spinner.gif" /></div>
 <br />
@@ -11662,15 +11676,15 @@ if(use_xmlhttprequest == "1")
 		<template name="showthread_quickreply_options_close" version="1800"><![CDATA[<br /><label><input type="checkbox" class="checkbox" name="modoptions[closethread]" value="1"{$closelinkch} />&nbsp;<strong>{$lang->close_thread}</strong></label>]]></template>
 		<template name="showthread_quickreply_options_signature" version="1800"><![CDATA[<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="1" {$postoptionschecked['signature']} />&nbsp;<strong>{$lang->signature}</strong></label><br />]]></template>
 		<template name="showthread_quickreply_options_stick" version="1800"><![CDATA[<br /><label><input type="checkbox" class="checkbox" name="modoptions[stickthread]" value="1"{$stickch} />&nbsp;<strong>{$lang->stick_thread}</strong></label>]]></template>
-		<template name="showthread_ratethread" version="1808"><![CDATA[<div style="margin-top: 6px; padding-right: 10px;" class="float_right">
+		<template name="showthread_ratethread" version="1818"><![CDATA[<div style="margin-top: 6px; padding-right: 10px;" class="float_right">
 		<script type="text/javascript">
 		<!--
 			lang.ratings_update_error = "{$lang->ratings_update_error}";
 		// -->
 		</script>
 		<script type="text/javascript" src="{$mybb->asset_url}/jscripts/rating.js?ver=1808"></script>
-		<strong class="float_left" style="padding-right: 10px;">{$lang->thread_rating}</strong>
 		<div class="inline_rating">
+			<strong class="float_left" style="padding-right: 10px;">{$lang->thread_rating}</strong>
 			<ul class="star_rating{$not_rated}" id="rating_thread_{$thread['tid']}">
 				<li style="width: {$thread['width']}%" class="current_rating" id="current_rating_{$thread['tid']}">{$ratingvotesav}</li>
 				<li><a class="one_star" title="{$lang->one_star}" href="./ratethread.php?tid={$thread['tid']}&amp;rating=1&amp;my_post_key={$mybb->post_code}">1</a></li>

@@ -1367,6 +1367,11 @@ if($mybb->input['action'] == "thread")
 		}
 	}
 
+	if($thread['visible'] == -1 )
+	{
+		$thread_deleted = 1;
+	}
+
 	$plugins->run_hooks("showthread_end");
 
 	$thread['pid'] = $pid;
@@ -1387,6 +1392,7 @@ if($mybb->input['action'] == "thread")
 		'collapsedthead' => $collapsedthead,
 		'collapsedimg' => $collapsedimg,
 		'collapsed' => $collapsed,
+		'thread_deleted' => $thread_deleted,
 	]));
 }
 
