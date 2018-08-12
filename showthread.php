@@ -1455,6 +1455,8 @@ if($mybb->input['action'] == "thread")
 		}
 	}
 
+	eval("\$printthread = \"".$templates->get("showthread_printthread")."\";");
+
 	// Display 'send thread' link if permissions allow
 	$sendthread = '';
 	if($mybb->usergroup['cansendemail'] == 1)
@@ -1573,6 +1575,11 @@ if($mybb->input['action'] == "thread")
 		}
 
 		eval("\$usersbrowsing = \"".$templates->get("showthread_usersbrowsing")."\";");
+	}
+
+	if($thread['visible'] == -1 )
+	{
+		$thread_deleted = 1;
 	}
 
 	$plugins->run_hooks("showthread_end");
