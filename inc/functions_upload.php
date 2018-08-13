@@ -699,6 +699,7 @@ function add_attachments($pid, $forumpermissions, $attachwhere, $action=false)
 	{
 		$attachments = array();
 		$fields = array ('name', 'type', 'tmp_name', 'error', 'size');
+		$aid = array();
 
 		$total = isset($_FILES['attachments']['name']) ? count($_FILES['attachments']['name']) : 0;
 		$filenames = "";
@@ -717,15 +718,16 @@ function add_attachments($pid, $forumpermissions, $attachwhere, $action=false)
 				$filenames .= $delim . "'" . $db->escape_string($FILE['name']) . "'";
 				$delim = ",";
 			}
-
 		}
 
-		$query = $db->simple_select("attachments", "filename, aid", "{$attachwhere} AND filename IN (".$filenames.")");
-
-		$aid = array();
-		while ($row = $db->fetch_array($query))
+		if ($filenames != '')
 		{
-			$aid[$row['filename']] = $row['aid'];
+			$query = $db->simple_select("attachments", "filename", "{$attachwhere} AND filename IN (".$filenames.")");
+
+			while ($row = $db->fetch_array($query))
+			{
+				$aid[$row['filename']] = true;
+			}
 		}
 
 		foreach($attachments as $FILE)
@@ -735,7 +737,7 @@ function add_attachments($pid, $forumpermissions, $attachwhere, $action=false)
 				if($FILE['size'] > 0)
 				{
 					$filename = $db->escape_string($FILE['name']);
-					$exists = isset($aid[$filename]);
+					$exists = $aid[$filename];
 
 					$update_attachment = false;
 					if($action == "editpost")
