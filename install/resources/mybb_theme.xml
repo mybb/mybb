@@ -5581,7 +5581,7 @@ if(use_xmlhttprequest == "1")
 </table>
 </div>
 </div>]]></template>
-		<template name="memberlist" version="1808"><![CDATA[<html>
+		<template name="memberlist" version="1818"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->member_list}</title>
 {$headerinclude}
@@ -5619,6 +5619,16 @@ if(use_xmlhttprequest == "1")
 		<a href="memberlist.php?username_match=begins&amp;username={$lang->x}" style="padding: 5px;">{$lang->x}</a>
 		<a href="memberlist.php?username_match=begins&amp;username={$lang->y}" style="padding: 5px;">{$lang->y}</a>
 		<a href="memberlist.php?username_match=begins&amp;username={$lang->z}" style="padding: 5px;">{$lang->z}</a>
+		<a href="memberlist.php?username_match=begins&amp;username={$lang->1}" style="padding: 5px;">{$lang->1}</a>
+		<a href="memberlist.php?username_match=begins&amp;username={$lang->2}" style="padding: 5px;">{$lang->2}</a>
+		<a href="memberlist.php?username_match=begins&amp;username={$lang->3}" style="padding: 5px;">{$lang->3}</a>
+		<a href="memberlist.php?username_match=begins&amp;username={$lang->4}" style="padding: 5px;">{$lang->4}</a>
+		<a href="memberlist.php?username_match=begins&amp;username={$lang->5}" style="padding: 5px;">{$lang->5}</a>
+		<a href="memberlist.php?username_match=begins&amp;username={$lang->6}" style="padding: 5px;">{$lang->6}</a>
+		<a href="memberlist.php?username_match=begins&amp;username={$lang->7}" style="padding: 5px;">{$lang->7}</a>
+		<a href="memberlist.php?username_match=begins&amp;username={$lang->8}" style="padding: 5px;">{$lang->8}</a>
+		<a href="memberlist.php?username_match=begins&amp;username={$lang->9}" style="padding: 5px;">{$lang->9}</a>
+		<a href="memberlist.php?username_match=begins&amp;username={$lang->0}" style="padding: 5px;">{$lang->0}</a>
 	</div>
 	<div><strong>{$lang->member_list}</strong></div></td>
 </tr>
