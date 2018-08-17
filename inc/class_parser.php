@@ -680,7 +680,7 @@ class postParser
 		}
 
 		// Neutralize multiple adjacent wildcards and generate pattern
-		$ptrn = array('/\*[\+]+/', '/[\+]+\*/', '/[\*]+/');
+		$ptrn = array('/\*\++/', '/\++\*/', '/\*+/');
 		$rplc = array('*', '*', '[^\s\n]*');
 		$bad_word = preg_replace($ptrn, $rplc, $bad_word);
 		
