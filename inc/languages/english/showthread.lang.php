@@ -86,6 +86,7 @@ $l['inline_post_moderation'] = "Inline Post Moderation:";
 $l['inline_go'] = "Go";
 $l['clear'] = "Clear";
 $l['thread_closed'] = "Thread Closed";
+$l['thread_closed_message'] = "This thread is closed to new replies.";
 $l['no_subject'] = "No subject";
 $l['error_nonextnewest'] = "There are no threads that are newer than the one you were previously viewing.";
 $l['error_nonextoldest'] = "There are no threads that are older than the one you were previously viewing.";

@@ -228,6 +228,13 @@
             {{ multipage|raw }}
         </div>
 
+        {% if thread.closed %}
+            <div class="thread-closed">
+                <i class="thread-closed__icon fas fa-lock"></i>
+                <span class="thread-closed__message">{{ lang.thread_closed_message }}</span>
+            </div>
+        {% endif %}
+
         {% if thread.showquickreply %}
             <div id="quickreply_spinner" class="spinner spinner--quick-reply" style="display: none"><span class="spinner__icon"><i class="spinner__icon fas fa-sync fa-spin"></i></span></div>
             {% if thread.showmodnotice %}
