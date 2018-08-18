@@ -5581,7 +5581,7 @@ if(use_xmlhttprequest == "1")
 </table>
 </div>
 </div>]]></template>
-		<template name="memberlist" version="1818"><![CDATA[<html>
+		<template name="memberlist" version="1819"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->member_list}</title>
 {$headerinclude}
@@ -5592,7 +5592,8 @@ if(use_xmlhttprequest == "1")
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="{$colspan}">
-	<div class="float_right">
+	<span><strong>{$lang->member_list}</strong></span>
+	<div class="float_right smalltext">
 		<a href="memberlist.php?username_match=begins&amp;username={$lang->a}" style="padding: 5px;">{$lang->a}</a>
 		<a href="memberlist.php?username_match=begins&amp;username={$lang->b}" style="padding: 5px;">{$lang->b}</a>
 		<a href="memberlist.php?username_match=begins&amp;username={$lang->c}" style="padding: 5px;">{$lang->c}</a>
@@ -5619,6 +5620,8 @@ if(use_xmlhttprequest == "1")
 		<a href="memberlist.php?username_match=begins&amp;username={$lang->x}" style="padding: 5px;">{$lang->x}</a>
 		<a href="memberlist.php?username_match=begins&amp;username={$lang->y}" style="padding: 5px;">{$lang->y}</a>
 		<a href="memberlist.php?username_match=begins&amp;username={$lang->z}" style="padding: 5px;">{$lang->z}</a>
+	</div><br />
+	<div class="float_right smalltext">
 		<a href="memberlist.php?username_match=begins&amp;username={$lang->1}" style="padding: 5px;">{$lang->1}</a>
 		<a href="memberlist.php?username_match=begins&amp;username={$lang->2}" style="padding: 5px;">{$lang->2}</a>
 		<a href="memberlist.php?username_match=begins&amp;username={$lang->3}" style="padding: 5px;">{$lang->3}</a>
@@ -5630,7 +5633,7 @@ if(use_xmlhttprequest == "1")
 		<a href="memberlist.php?username_match=begins&amp;username={$lang->9}" style="padding: 5px;">{$lang->9}</a>
 		<a href="memberlist.php?username_match=begins&amp;username={$lang->0}" style="padding: 5px;">{$lang->0}</a>
 	</div>
-	<div><strong>{$lang->member_list}</strong></div></td>
+</td>
 </tr>
 <tr>
 <td class="tcat" width="1%"><span class="smalltext"><strong>{$lang->avatar}</strong></span></td>
