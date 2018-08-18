@@ -1,28 +1,42 @@
 {% if post.isignored %}
-	<div class="ignored_post" id="ignored_post_{{ post.pid }}">
-		<div class="ignored_post_author"><strong><span class="largetext">{{ post.profilelink|raw }}</span></strong></div>
-		<div class="ignored_post_message">
-			<div class="show_ignored_post float_right" style="vertical-align: top;" id="show_ignored_link_{{ post.pid }}"><a href="javascript:void(0)" onclick="Thread.showIgnoredPost({{ post.pid }}); return false;" class="button small_button"><span>{{ lang.postbit_show_ignored_post }}</span></a></div>
-	<script type="text/javascript">
-	<!--
-		$('#show_ignored_link_{{ post.pid }}').show();
-	// -->
-	</script>
+	<div class="post post--message ignored_post" id="ignored_post_{{ post.pid }}">
+		<div class="post__meta">
+			<h3 class="post__author">{{ post.profilelink|raw }}</h3>
+		</div>
+		<div class="post__body post__body--message post_body">
 			{{ post.ignored_message|raw }}
+			<div class="post--message__button" id="show_ignored_link_{{ post.pid }}">
+				<a href="javascript:void(0)" onclick="Thread.showIgnoredPost({{ post.pid }}); return false;" class="button">
+					<i class="button__icon fas fa-eye"></i>
+					<span class="button__text">{{ lang.postbit_show_ignored_post }}</span>
+				</a>
+			</div>
+			<script type="text/javascript">
+			<!--
+				$('#show_ignored_link_{{ post.pid }}').show();
+			// -->
+			</script>
 		</div>
 	</div>
 {% endif %}
 {% if post.isdeleted %}
-	<div class="deleted_post_collapsed" id="deleted_post_{{ post.pid }}">
-		<div class="deleted_post_author"><strong><span class="largetext">{{ post.profilelink|raw }}</span></strong></div>
-		<div class="deleted_post_message">
-			<div class="show_deleted_post float_right" style="vertical-align: top;" id="show_deleted_link_{{ post.pid }}"><a href="javascript:void(0)" onclick="Thread.showDeletedPost({{ post.pid }}); return false;" class="button small_button"><span>{{ lang.postbit_show_ignored_post }}</span></a></div>
-	<script type="text/javascript">
-	<!--
-		$('#show_deleted_link_{{ post.pid }}').show();
-	// -->
-	</script>
+	<div class="post post--message deleted_post_collapsed" id="deleted_post_{{ post.pid }}">
+		<div class="post__meta">
+			<h3 class="post__author">{{ post.profilelink|raw }}</h3>
+		</div>
+		<div class="post__body post__body--message post_body">
 			{{ post.deleted_message }}
+			<div class="post--message__button" id="show_deleted_link_{{ post.pid }}">
+				<a href="javascript:void(0)" onclick="Thread.showDeletedPost({{ post.pid }}); return false;" class="button">
+					<i class="button__icon fas fa-eye"></i>
+					<span class="button__text">{{ lang.postbit_show_ignored_post }}</span>
+				</a>
+			</div>
+			<script type="text/javascript">
+			<!--
+				$('#show_deleted_link_{{ post.pid }}').show();
+			// -->
+			</script>
 		</div>
 	</div>
 {% endif %}
@@ -161,7 +175,7 @@
 		{% endif %}
 	</div>
 	<div class="post__foot post__foot--controls">
-		<div class="post__controls post__controls--primary">
+		<div class="post-controls post-controls--primary">
 			{# Restore button #}
 			{% if post.quick_restore %}
 				<a href="editpost.php?pid={{ post.pid }}" onclick="Thread.restorePost({{ post.pid }}); return false;" style="display: none;" id="quick_restore_{{ post.pid }}" title="{{ lang.postbit_quick_restore }}" class="post-control post-control--restore"><i class="post-control__icon fas fa-circle fa-fw"></i><span class="post-control__text">{{ lang.postbit_button_qrestore }}</span></a>
