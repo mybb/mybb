@@ -50,7 +50,7 @@ $container->singleton(BreadcrumbManager::class, function (ContainerInterface $co
     $mybb = $container[\MyBB::class];
 
     return new BreadcrumbManager(
-        $mybb->settings['bbname_orig'],
+        $mybb->settings['bbname'],
         $mybb->settings['bburl']
     );
 });

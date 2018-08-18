@@ -26,9 +26,12 @@ class CoreExtension extends \Twig_Extension
      */
     protected $breadcrumbManager;
 
-    public function __construct(\MyBB $mybb, \MyLanguage $lang, ?\pluginSystem $plugins,
-        BreadcrumbManager $breadcrumbManager)
-    {
+    public function __construct(
+        \MyBB $mybb,
+        \MyLanguage $lang,
+        ?\pluginSystem $plugins,
+        BreadcrumbManager $breadcrumbManager
+    ) {
         $this->mybb = $mybb;
         $this->lang = $lang;
         $this->plugins = $plugins;

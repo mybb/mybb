@@ -53,6 +53,18 @@ class BreadcrumbManager implements \IteratorAggregate
     }
 
     /**
+     * Get the raw breadcrumb items.
+     *
+     * The breadcrumbs are returned by reference, allowing them to be manually edited by plugins and elsewhere.
+     *
+     * @return array
+     */
+    public function &getBreadcrumbs(): array
+    {
+        return $this->breadcrumbs;
+    }
+
+    /**
      * Add a breadcrumb menu item to the list.
      *
      * @param string $name The name of the item to add.
