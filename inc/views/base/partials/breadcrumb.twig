@@ -1,0 +1,20 @@
+<div class="navigation">
+    {% for bit in navbits %}
+    	{# Pagination #}
+        {% if bit.pagination %}
+            <img src="{{ theme.imgdir }}/arrow_down.png" alt="v" title="" class="pagination_breadcrumb_link" id="breadcrumb_multipage" />{{ bit.pagination|raw }}
+        {% endif %}
+        {# Separator #}
+        {% if loop.first != true and loop.last != true %}
+            &rsaquo;
+        {% elseif loop.last %}
+            <br /><img src="{{ theme.imgdir }}/nav_bit.png" alt="" />
+        {% endif %}
+        {# Breadcrumb bit #}
+        {% if loop.last %}
+            <span class="active">{{ bit.name }}</span>
+        {% else %}
+            <a href="{{ bit.url }}">{{ bit.name }}</a>
+        {% endif %}
+    {% endfor %}
+</div>
