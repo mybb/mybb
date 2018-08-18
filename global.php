@@ -15,7 +15,6 @@ if (!$working_dir) {
 
 // Load main MyBB core file which begins all of the magic
 require_once $working_dir.'/inc/init.php';
-require_once $working_dir.'/inc/src/bootstrap.php';
 
 $shutdown_queries = $shutdown_functions = array();
 

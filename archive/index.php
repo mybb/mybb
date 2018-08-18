@@ -112,7 +112,7 @@ switch($action)
 		check_forum_password_archive($forum['fid']);
 
 		// Build the navigation
-		build_forum_breadcrumb($forum['fid'], 1);
+		build_forum_breadcrumb($forum['fid']);
 		add_breadcrumb($thread['subject']);
 
 		archive_header($thread['subject'], $thread['subject'], $mybb->settings['bburl']."/".get_thread_link($thread['tid'], $page));
@@ -253,7 +253,7 @@ switch($action)
 		$threadcount = $db->fetch_field($query, "threads");
 
 		// Build the navigation
-		build_forum_breadcrumb($forum['fid'], 1);
+		build_forum_breadcrumb($forum['fid']);
 
 		// No threads and not a category? Error!
 		if($forum['type'] != 'c')
