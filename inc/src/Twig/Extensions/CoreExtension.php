@@ -2,28 +2,37 @@
 
 namespace MyBB\Twig\Extensions;
 
+use MyBB\Utilities\BreadcrumbManager;
+
 class CoreExtension extends \Twig_Extension
 {
     /**
      * @var \MyBB $mybb
      */
-    private $mybb;
+    protected $mybb;
 
     /**
      * @var \MyLanguage $lang
      */
-    private $lang;
+    protected $lang;
 
     /**
      * @var ?\pluginSystem $plugins
      */
-    private $plugins;
+    protected $plugins;
 
-    public function __construct(\MyBB $mybb, \MyLanguage $lang, ?\pluginSystem $plugins)
+    /**
+     * @var BreadcrumbManager $breadcrumbManager
+     */
+    protected $breadcrumbManager;
+
+    public function __construct(\MyBB $mybb, \MyLanguage $lang, ?\pluginSystem $plugins,
+        BreadcrumbManager $breadcrumbManager)
     {
         $this->mybb = $mybb;
         $this->lang = $lang;
         $this->plugins = $plugins;
+        $this->breadcrumbManager = $breadcrumbManager;
     }
 
     public function getFilters()
@@ -34,13 +43,28 @@ class CoreExtension extends \Twig_Extension
                 'is_safe' => ['html'],
             ]),
             new \Twig_Filter('my_number_format', [$this, 'numberFormat']),
+            new \Twig_Filter('remove_page_one', [$this, 'removePageOne']),
+        ];
+    }
+
+    public function getFunctions()
+    {
+        return [
+            new \Twig_Function(
+                'build_breadcrumb_navigation',
+                [$this, 'buildBreadcrumbNavigation'],
+                [
+                    'needs_environment' => true,
+                    'is_safe' => ['html'],
+                ]
+            ),
         ];
     }
 
     /**
      * Format a timestamp to a readable value.
      *
-     * @param \Twig_Environment $environment twig environment to use to render the timestamp template.
+     * @param \Twig_Environment $environment Twig environment to use to render the timestamp template.
      * @param \DateTime|int|string|null $timestamp The timestamp to format. If empty, the current date will be used.
      * @param string $format The format to use when formatting the timestamp. Defaults to 'relative'.
      * @param string $offset The offset to use when formatting the timestamp.
@@ -300,5 +324,38 @@ class CoreExtension extends \Twig_Extension
                 $this->mybb->settings['thousandssep']
             );
         }
+    }
+
+    /**
+     * Build the breadcrumb navigation.
+     *
+     * @param \Twig_Environment $twig wig environment to use to render the breadcrumb template.
+     *
+     * @return string The formatted breadcrumb navigation trail.
+     *
+     * @throws \Twig_Error_Loader Thrown if the `partials/breadcrumb.twig` template could not be loaded.
+     * @throws \Twig_Error_Runtime Thrown if an error occurs when rendering the `partials/breadcrumb.twig` template.
+     * @throws \Twig_Error_Syntax Thrown if the `partials/breadcrumb.twig` template contains invalid syntax.
+     */
+    public function buildBreadcrumbNavigation(\Twig_Environment $twig): string
+    {
+        return $twig->render('partials/breadcrumb.twig', [
+            'breadcrumbs' => $this->breadcrumbManager,
+        ]);
+    }
+
+    /**
+     * If $url has a page parameter and the page is page 1, remove the page parameter.
+     *
+     * @param string $url The URL to check.
+     *
+     * @return string The cleaned URL.
+     */
+    public function removePageOne(string $url): string
+    {
+        $url = str_replace('-page-1.html', '.html', $url);
+        $url = str_replace('/&amp;page=1$/', '', $url);
+
+        return $url;
     }
 }

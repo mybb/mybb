@@ -674,11 +674,6 @@ if ($mybb->user['uid'] > 0 && $mybb->user['dstcorrection'] == 2) {
     ]);
 }
 
-// Add our main parts to the navigation
-$navbits = array();
-$navbits[0]['name'] = $mybb->settings['bbname_orig'];
-$navbits[0]['url'] = $mybb->settings['bburl'].'/index.php';
-
 // Set the link to the archive.
 $archive_url = build_archive_link();
 

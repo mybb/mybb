@@ -1,20 +1,27 @@
 <div class="navigation">
-    {% for bit in navbits %}
-    	{# Pagination #}
-        {% if bit.pagination %}
-            <img src="{{ theme.imgdir }}/arrow_down.png" alt="v" title="" class="pagination_breadcrumb_link" id="breadcrumb_multipage" />{{ bit.pagination|raw }}
+    {% for crumb in breadcrumbs %}
+        {% if crumb.multipage is not empty %}
+            {% if not mybb.settings.threadsperpage or mybb.settings.threadsperpage < 1 %}
+                {% set perPage = 20 %}
+            {% else %}
+                {% set perPage = mybb.settings.threadsperpage %}
+            {% endif %}
+
+            {# TODO: multipage() function once it is implemented in Twig... #}
         {% endif %}
+
         {# Separator #}
         {% if loop.first != true and loop.last != true %}
             &rsaquo;
         {% elseif loop.last %}
             <br /><img src="{{ theme.imgdir }}/nav_bit.png" alt="" />
         {% endif %}
+
         {# Breadcrumb bit #}
         {% if loop.last %}
-            <span class="active">{{ bit.name }}</span>
+            <span class="active">{{ crumb.name }}</span>
         {% else %}
-            <a href="{{ bit.url }}">{{ bit.name }}</a>
+            <a href="{{ crumb.url|remove_page_one }}">{{ crumb.name }}</a>
         {% endif %}
     {% endfor %}
 </div>

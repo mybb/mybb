@@ -69,4 +69,4 @@
                         {% include 'messages/' ~ template ~ '.twig' %}
                     {% endif %}
                 {% endfor %}
-                <navigation>
+                {{ build_breadcrumb_navigation() }}
