@@ -1918,16 +1918,13 @@ if($mybb->input['action'] == "merge")
 
 	if($mybb->request_method == "post")
 	{
-		$source_user = get_user_by_username($mybb->input['source_username'], array('fields' => '*'));
-		if(!$source_user['uid'])
+		foreach(array('source', 'destination') as $target)
 		{
-			$errors[] = $lang->error_invalid_user_source;
-		}
-
-		$destination_user = get_user_by_username($mybb->input['destination_username'], array('fields' => '*'));
-		if(!$destination_user['uid'])
-		{
-			$errors[] = $lang->error_invalid_user_destination;
+			${$target.'_user'} = get_user_by_username($mybb->input[$target.'_username'], array('fields' => '*'));
+			if(!${$target.'_user'}['uid'])
+			{
+				$errors[] = $lang->{'error_invalid_user_'.$target};
+			}
 		}
 
 		// If we're not a super admin and we're merging a source super admin or a destination super admin then dissallow this action
@@ -1937,7 +1934,7 @@ if($mybb->input['action'] == "merge")
 			admin_redirect("index.php?module=user-users");
 		}
 
-		if($source_user['uid'] == $destination_user['uid'])
+		if($source_user['uid'] == $destination_user['uid'] && !empty($source_user['uid']))
 		{
 			$errors[] = $lang->error_cannot_merge_same_account;
 		}
@@ -1978,6 +1975,10 @@ if($mybb->input['action'] == "merge")
 
 			// Banning
 			$db->update_query("banned", array('admin' => $destination_user['uid']), "admin = '{$source_user['uid']}'");
+
+			// Carry over referrals
+			$db->update_query("users", array("referrer" => ((int)$source_user['referrer'] + (int)$destination_user['referrer'])), "uid='{$destination_user['uid']}'");
+			$db->update_query("users", array("referrals" => ((int)$source_user['referrals'] + (int)$destination_user['referrals'])), "uid='{$destination_user['uid']}'");
 
 			// Merging Reputation
 			// First, let's change all the details over to our new user...
