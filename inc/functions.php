@@ -3494,38 +3494,6 @@ function fix_mktime($format, $year)
 }
 
 /**
- * Build the breadcrumb navigation trail from the specified items
- *
- * @return string The formatted breadcrumb navigation trail
- */
-function build_breadcrumb()
-{
-    global $nav, $navbits, $theme, $lang, $mybb;
-
-    /** @var \MyBB\Utilities\BreadcrumbManager $breadcrumbManager */
-    $breadcrumbManager = \MyBB\app(\MyBB\Utilities\BreadcrumbManager::class);
-
-    foreach ($breadcrumbManager as $key => $navbit) {
-        if (!empty($navbit['multipage'])) {
-            if (!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1) {
-                $mybb->settings['threadsperpage'] = 20;
-            }
-
-            $navbit['pagination'] = multipage($navbit['multipage']['num_threads'], $mybb->settings['threadsperpage'], $navbit['multipage']['current_page'], $navbit['multipage']['url'], true);
-        }
-
-        // Replace page 1 URLs
-        $navbit['url'] = str_replace("-page-1.html", ".html", $navbit['url']);
-        $navbit['url'] = preg_replace("/&amp;page=1$/", "", $navbit['url']);
-        $navbits[$key] = $navbit;
-    }
-
-    return \MyBB\template('partials/breadcrumb.twig', [
-        'navbits' => $breadcrumbManager,
-    ]);
-}
-
-/**
  * Add a breadcrumb menu item to the list.
  *
  * @param string $name The name of the item to add
@@ -3539,7 +3507,7 @@ function add_breadcrumb($name, $url="")
 }
 
 /**
- * Build the forum breadcrumb nagiation (the navigation to a specific forum including all parent forums)
+ * Build the forum breadcrumb navigation (the navigation to a specific forum including all parent forums)
  *
  * @param int $fid The forum ID to build the navigation for
  * @param array $multipage The multipage drop down array of information

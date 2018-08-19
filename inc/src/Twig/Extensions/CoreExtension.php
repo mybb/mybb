@@ -61,6 +61,14 @@ class CoreExtension extends \Twig_Extension
                     'is_safe' => ['html'],
                 ]
             ),
+            new \Twig_Function(
+                'multi_page',
+                [$this, 'buildMultiPage'],
+                [
+                    'needs_environment' => true,
+                    'is_safe' => ['html'],
+                ]
+            )
         ];
     }
 
@@ -332,7 +340,7 @@ class CoreExtension extends \Twig_Extension
     /**
      * Build the breadcrumb navigation.
      *
-     * @param \Twig_Environment $twig wig environment to use to render the breadcrumb template.
+     * @param \Twig_Environment $twig Twig environment to use to render the breadcrumb template.
      *
      * @return string The formatted breadcrumb navigation trail.
      *
@@ -360,5 +368,119 @@ class CoreExtension extends \Twig_Extension
         $url = str_replace('/&amp;page=1$/', '', $url);
 
         return $url;
+    }
+
+    /**
+     * Generate a listing of pages for a resource.
+     *
+     * @param \Twig_Environment $twig Twig environment to use to render the pagination template.
+     * @param int $count The total number of items.
+     * @param int $perpage The number of items to be shown per page.
+     * @param int $page The current page number.
+     * @param string $url The URL format to use for page links.
+     * If {page} is specified, the value will be replaced with the page #.
+     * @param boolean $breadcrumb Whether or not the multipage is being shown in the navigation breadcrumb.
+     *
+     * @return string The generated pagination links.
+     *
+     * @throws \Twig_Error_Loader Thrown if the `partials/multipage.twig` template could not be loaded.
+     * @throws \Twig_Error_Runtime Thrown if an error occurs when rendering the `partials/multipage.twig` template.
+     * @throws \Twig_Error_Syntax Thrown if the `partials/multipage.twig` template contains invalid syntax.
+     */
+    public function buildMultiPage(
+        \Twig_Environment $twig,
+        int $count,
+        int $perPage,
+        int $page,
+        string $url,
+        bool $breadcrumb = false
+    ): string {
+        if ($count <= $perPage) {
+            return '';
+        }
+
+        $url = str_replace("&amp;", "&", $url);
+        $url = htmlspecialchars_uni($url);
+
+        $numPages = ceil($count / $perPage);
+        $multiPage = [];
+
+
+        if ($page > 1) {
+            $prev = $page - 1;
+            $multiPage['previous_page_url'] = fetch_page_url($url, $prev);
+        }
+
+        // Maximum number of "page bits" to show
+        if (!$this->mybb->settings['maxmultipagelinks']) {
+            $this->mybb->settings['maxmultipagelinks'] = 5;
+        }
+
+        $from = $page - floor($this->mybb->settings['maxmultipagelinks'] / 2);
+        $to = $page + floor($this->mybb->settings['maxmultipagelinks'] / 2);
+
+        if ($from <= 0) {
+            $from = 1;
+            $to = $from + $this->mybb->settings['maxmultipagelinks'] - 1;
+        }
+
+        if ($to > $numPages) {
+            $to = $numPages;
+            $from = $numPages - $this->mybb->settings['maxmultipagelinks']+1;
+            if ($from <= 0) {
+                $from = 1;
+            }
+        }
+
+        if ($to == 0) {
+            $to = $numPages;
+        }
+
+        $multiPage['from'] = $from;
+        $multiPage['to'] = $to;
+        $multiPage['total_pages'] = $numPages;
+
+        if ($from > 1) {
+            if ($from - 1 == 1) {
+                $this->lang->multipage_link_start = '';
+            }
+
+            $multiPage['start_page_url'] = fetch_page_url($url, 1);
+        }
+
+        $multiPage['pages'] = [];
+        for ($pageNum = $from; $pageNum <= $to; ++$pageNum) {
+            $pageFor['num'] = $pageNum;
+            $pageFor['page_url'] = fetch_page_url($url, $pageNum);
+
+            $multiPage['pages'][] = $pageFor;
+        }
+
+        if ($to < $numPages) {
+            if ($to + 1 == $numPages) {
+                $this->lang->multipage_link_end = '';
+            }
+
+            $multiPage['end_page_url'] = fetch_page_url($url, $numPages);
+        }
+
+        if ($page < $numPages) {
+            $next = $page + 1;
+            $multiPage['next_page_url'] = fetch_page_url($url, $next);
+        }
+
+        if ($breadcrumb == false &&
+            $numPages > ($this->mybb->settings['maxmultipagelinks'] + 1) &&
+            $this->mybb->settings['jumptopagemultipage'] == 1) {
+            // When the 2nd parameter is set to 1, fetch_page_url thinks it's the first page and removes it from the
+            // URL as it's unnecessary
+            $multiPage['jump_url'] = fetch_page_url($url, 1);
+        }
+
+        return $twig->render('partials/multipage.twig', [
+            'multipage' => $multiPage,
+            'page' => $page,
+            'breadcrumb' => $breadcrumb,
+        ]);
     }
 }
