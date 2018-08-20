@@ -582,6 +582,7 @@ if($mybb->input['action'] == "profile")
 			}
 			elseif($type == "radio")
 			{
+				$userfield = htmlspecialchars_uni($userfield);
 				$expoptions = explode("\n", $options);
 				if(is_array($expoptions))
 				{
@@ -599,6 +600,7 @@ if($mybb->input['action'] == "profile")
 			}
 			elseif($type == "checkbox")
 			{
+				$userfield = htmlspecialchars_uni($userfield);
 				if($errors)
 				{
 					$useropts = $userfield;
