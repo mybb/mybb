@@ -20,9 +20,9 @@
         lang.editreason = "{{ lang.postbit_editreason }}";
     // -->
     </script>
-    <script type="text/javascript" src="{{ asset_url('jscripts/report.js') }}"></script>
-    <script type="text/javascript" src="{{ asset_url('jscripts/jeditable/jeditable.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset_url('jscripts/thread.js') }}"></script>
+    <script type="text/javascript" src="{{ asset_url('jscripts/report.js') }}" defer></script>
+    <script type="text/javascript" src="{{ asset_url('jscripts/jeditable/jeditable.min.js') }}" defer></script>
+    <script type="text/javascript" src="{{ asset_url('jscripts/thread.js') }}" defer></script>
 {% endblock head %}
 
 {% block body %}
@@ -32,159 +32,172 @@
             <h1 class="title title--page">{{ thread.threadprefix|raw }}{{ thread.subject }}</h1>
         </header>
 
+        {# Thread moderator notes #}
         {% if modpermissions.ismod and thread.notes %}
-            <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder tfixed">
-                <thead>
-                    <tr>
-                        <td class="thead{{ collapsedthead.threadnotes }}">
-                            <div class="expcolimage"><img src="{{ theme.imgdir }}/collapse{{ collapsedimg.threadnotes }}.png" id="threadnotes_img" class="expander" alt="[-]" title="[-]" /></div>
-                            <div><span class="smalltext"><strong>{{ lang.view_thread_notes }}</strong></span></div>
-                        </td>
-                    </tr>
-                </thead>
-                <tbody style="{{ collapsed.threadnotes_e }}" id="threadnotes_e">
-                    <tr>
-                        <td class="trow1">
-                            {% if thread.notes|length > 200 %}
-                                {{ thread.notes|slice(0, 200)|nl2br }}... [<a href="javascript:void(0)" onclick="Thread.viewNotes({{ thread.tid }}); return false;">{{ lang.view_all_notes }}</a>]
-                            {% else %}
-                                {{ thread.notes|nl2br }}
-                            {% endif %}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <br />
-        {% endif %}
-        {% if thread.poll %}
-            {% if poll.alreadyvoted or poll.showresults or poll.nopermission %}
-                <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder tfixed">
-                    <colgroup>
-                        <col style="width: 35%" />
-                        <col style="width: 50%" />
-                        <col style="width: 7%" />
-                    </colgroup>
-                    <tr>
-                        <td class="thead" colspan="4" style="text-align: center;">
-                            <strong>{{ lang.poll }} {{ poll.question }}</strong><br />
-                            <span class="smalltext">
-                            {% if poll.alreadyvoted %}
-                                {{ lang.already_voted }}
-                                {% if mybb.usergroup.canundovotes %}
-                                     [<a href="polls.php?action=do_undovote&amp;pid={{ poll.pid }}&amp;my_post_key={{ mybb.post_code }}">{{ lang.undo_vote }}</a>]
-                                {% endif %}
-                            {% elseif poll.nopermission %}
-                                {{ lang.no_voting_permission }}
-                            {% else %}
-                                {{ lang.poll_closed }}
-                            {% endif %}
-                            </span>
-                        </td>
-                    </tr>
-                    {% for option in poll.polloptions %}
-                        <tr>
-                            <td class="{{ option.row }} scaleimages" style="text-align: right;">{{ option.option|raw }}{{ option.votestar }}</td>
-                            <td class="{{ option.row }}"><div class="pollbar" style="width: {{ option.imagewidth }}%" title="{{ option.percent }}%"><span class="percent">{{ option.percent }}%</span></div></td>
-                            <td class="{{ option.row }}" style="text-align: center;">{{ option.votes }}</td>
-                            <td class="{{ option.row }}" style="text-align: center;">{{ option.percent }}%</td>
-                        </tr>
-                    {% endfor %}
-                    <tr>
-                        <td class="tfoot" colspan="2" style="text-align: right;"><strong>{{ lang.total }}</strong></td>
-                        <td class="tfoot" style="text-align: center;"><strong>{{ trans('total_votes', poll.totalvotes) }}</strong></td>
-                        <td class="tfoot" style="text-align: center;"><strong>{{ poll.totpercent }}</strong></td>
-                    </tr>
-                </table>
-                <table cellspacing="0" cellpadding="2" border="0" style="width: 100%; text-align: center;">
-                    <tr>
-                        <td style="text-align: left;"><span class="smalltext">{{ lang.you_voted }}</span></td>
-                        <td style="text-align: right;">
-                            <span class="smalltext">
-                                [ <a href="polls.php?action=showresults&amp;pid={{ poll.pid }}">{{ lang.show_results }}</a>
-                                {% if modpermissions.canmanagepolls %}
-                                     | <a href="polls.php?action=editpoll&amp;pid={{ poll.pid }}">{{ lang.edit_poll }}</a>
-                                {% endif %}
-                                ]
-                            </span>
-                        </td>
-                    </tr>
-                </table>
-                <br />
+        <section class="container">
+            <h4 class="container__title">{{ lang.view_thread_notes }}</h4>
+            {% if thread.notes|length > 200 %}
+                {{ thread.notes|slice(0, 200)|nl2br }}... [<a href="javascript:void(0)" onclick="Thread.viewNotes({{ thread.tid }}); return false;">{{ lang.view_all_notes }}</a>]
             {% else %}
-                <form action="polls.php" method="post">
-                    <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-                    <input type="hidden" name="action" value="vote" />
-                    <input type="hidden" name="pid" value="{{ poll.pid }}" />
-                    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder tfixed">
-                        <colgroup>
-                            <col style="width: 3%;" />
-                        </colgroup>
-                        <tr>
-                            <td colspan="2" class="thead" style="text-align: center;"><strong>{{ lang.poll }} {{ poll.question }}</strong></td>
-                        </tr>
+                {{ thread.notes|nl2br }}
+            {% endif %}
+        </section>
+        {% endif %}
+
+        {# Thread has a poll #}
+        {% if thread.poll %}
+
+            {# Show poll results - user has already voted, poll is closed, or user does not have permission to vote #}
+            {% if poll.alreadyvoted or poll.showresults or poll.nopermission %}
+                <div class="poll block">
+                    <h1 class="title title--major poll__question"><span class="poll__tag">{{ lang.poll }}</span> {{ poll.question }}</h1>
+                    {% if poll.alreadyvoted %}
+                        <div class="poll__row poll__row--information">{{ lang.already_voted }}</div>
+                    {% elseif poll.nopermission %}
+                        <div class="poll__row poll__row--information">
+                            {{ lang.no_voting_permission }}
+                        </div>
+                    {% else %}
+                        <div class="poll__row poll__row--information">
+                            {{ lang.poll_closed }}
+                        </div>
+                    {% endif %}
+                    <div class="poll__options">
                         {% for option in poll.polloptions %}
-                            {% if poll.multiple %}
-                                <tr>
-                                    <td class="trow1" style="text-align: center;"><input type="checkbox" class="checkbox" name="option[{{ option.number }}]" id="option_{{ option.number }}" value="1" /></td>
-                                    <td class="trow2 scaleimages">{{ option.option|raw }}</td>
-                                </tr>
-                            {% else %}
-                                <tr>
-                                    <td class="trow1" style="text-align: center;"><input type="radio" class="radio" name="option" id="option_{{ option.number }}" value="{{ option.number }}" /></td>
-                                    <td class="trow2 scaleimages">{{ option.option|raw }}</td>
-                                </tr>
-                            {% endif %}
+                            <div class="poll__row">
+                                <div class="poll__option">
+                                    {{ option.option|raw }}
+                                    {% if option.votestar == '*' %}
+                                        <i class="poll__your-vote fas fa-check-square" title="{{ lang.you_voted }}"></i>
+                                    {% endif %}
+                                </div>
+                                <div class="poll__count">{{ option.votes }} ({{ option.percent }}%)</div>
+                                <div class="poll__votes">
+                                    <div class="poll__bar" style="width:  {{ option.imagewidth }}%" title="{{ option.percent }}%"></div>
+                                </div>
+                            </div>
                         {% endfor %}
-                    </table>
-                    <table style="width: 100%; text-align: center;">
-                        <tr>
-                            <td style="text-align: left;"><input type="submit" class="button" value="{{ lang.vote }}" /></td>
-                            <td style="vertical-align: top; text-align: right;">
-                                <span class="smalltext">
-                                    [ <a href="polls.php?action=showresults&amp;pid={{ poll.pid }}">{{ lang.show_results }}</a>
-                                    {% if poll.showeditpoll %}
-                                         | <a href="polls.php?action=editpoll&amp;pid={{ poll.pid }}">{{ lang.edit_poll }}</a>
-                                    {% endif %}
-                                    ]
-                                </span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">
-                                <span class="smalltext">
-                                    {% if poll.timeout %}
-                                        {{ trans('poll_closes', poll.dateformat, poll.expiretime) }}
-                                    {% endif %}
-                                </span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">
-                                <span class="smalltext">
-                                    {% if poll.public %}
-                                        {{ lang.public_note }}
-                                    {% endif %}
-                                </span>
-                            </td>
-                        </tr>
-                    </table>
-                </form>
+                    </div>
+                    <div class="poll__vote">
+                        <a href="polls.php?action=showresults&amp;pid={{ poll.pid }}" class="button button--secondary">
+                			<i class="button__icon fas fa-align-left"></i>
+                			<span class="button__text">{{ lang.show_results }}</span>
+                		</a>
+                        {% if modpermissions.canmanagepolls %}
+                            <a href="polls.php?action=editpoll&amp;pid={{ poll.pid }}" class="button button--secondary">
+                                <i class="button__icon fas fa-pencil-alt"></i>
+                                <span class="button__text">{{ lang.edit_poll }}</span>
+                            </a>
+                        {% endif %}
+                        {% if poll.alreadyvoted and mybb.usergroup.canundovotes %}
+                            <a href="polls.php?action=do_undovote&amp;pid={{ poll.pid }}&amp;my_post_key={{ mybb.post_code }}" class="button button--secondary">
+                                <i class="button__icon fas fa-undo"></i>
+                                <span class="button__text">{{ lang.undo_vote }}</span>
+                            </a>
+                        {% endif %}
+                        <span class="poll__total">
+                            {{ lang.total_votes }}
+                            {{ poll.totalvotes }}
+                            ({{ poll.totpercent }})
+                        </span>
+                    </div>
+                </div>
+
+            {# Otherwise, allow user to vote #}
+            {% else %}
+                <section class="poll block">
+                    <form action="polls.php" method="post">
+                        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+                        <input type="hidden" name="action" value="vote" />
+                        <input type="hidden" name="pid" value="{{ poll.pid }}" />
+                        <h1 class="title title--major poll__question"><span class="poll__tag">{{ lang.poll }}</span> {{ poll.question }}</h1>
+                        {% if poll.timeout %}
+                            <div class="poll__row poll__row--information">{{ trans('poll_closes', poll.dateformat, poll.expiretime) }}</div>
+                        {% endif %}
+
+                        {% if poll.public %}
+                            <div class="poll__row poll__row--information">{{ lang.public_note|raw }}</div>
+                        {% endif %}
+                        <div class="poll__options">
+                            {% for option in poll.polloptions %}
+                                {% if poll.multiple %}
+                                    <div class="poll__row poll__row--cast-vote">
+                                        <label><input type="checkbox" class="checkbox poll__input" name="option[{{ option.number }}]" id="option_{{ option.number }}" value="1" /> {{ option.option|raw }}</label>
+                                    </div>
+                                {% else %}
+                                    <div class="poll__row poll__row--cast-vote">
+                                        <label><input type="radio" class="radio poll__input" name="option" id="option_{{ option.number }}" value="{{ option.number }}" /> {{ option.option|raw }}</label>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <div class="poll__vote">
+                            <button type="submit" class="button">
+                                <i class="button__icon fas fa-check-square"></i>
+                                <span class="button__text">{{ lang.vote }}</span>
+                            </button>
+                            <a href="polls.php?action=showresults&amp;pid={{ poll.pid }}" class="button button--secondary">
+                    			<i class="button__icon fas fa-align-left"></i>
+                    			<span class="button__text">{{ lang.show_results }}</span>
+                    		</a>
+
+                            {% if modpermissions.canmanagepolls %}
+                                <a href="polls.php?action=editpoll&amp;pid={{ poll.pid }}" class="button button--secondary">
+                                	<i class="button__icon fas fa-pencil-alt"></i>
+                                	<span class="button__text">{{ lang.edit_poll }}</span>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </form>
+                </section>
             {% endif %}
         {% endif %}
-        <div class="float_left">
-            {{ multipage|raw }}
-        </div>
-        <div class="float_right">
-            {% if forum.open and forum.type == 'f' %}
-                {% if thread.canfullreply %}
-                    <a href="newreply.php?tid={{ thread.tid }}" class="button new_reply_button"><span>{{ lang.new_reply }}</span></a>&nbsp;
-                {% elseif thread.canmodreply %}
-                    <a href="newreply.php?tid={{ thread.tid }}" class="button closed_button"><span>{{ lang.thread_closed }}</span></a>&nbsp;
-                {% else %}
-                    <a href="showthread.php?tid={{ thread.tid }}" class="button closed_button"><span>{{ lang.thread_closed }}</span></a>&nbsp;
+        <div class="page-controls page-controls--top">
+			<div class="page-buttons">
+                {% if modpermissions.canmanagethreads and thread.notes %}
+                    <a href="moderation.php?action=threadnotes&amp;modtype=thread&amp;tid={{ thread.tid }}" class="button button--basic button--full-width">
+                    	<i class="button__icon far fa-file-alt"></i>
+                    	<span class="button__text">>{{ lang.view_thread_notes }}</span>
+                    </a>
                 {% endif %}
-            {% endif %}
+                {% if mybb.user.uid %}
+                    {% if thread.issubscribed %}
+                        <a href="usercp.php?action=removesubscription&amp;tid={{ thread.tid }}&amp;my_post_key={{ mybb.post_code }}" class="button button--secondary button--medium button--full-width subscribe--remove">
+                            <i class="button__icon fas fa-minus"></i>
+                            <span class="button__text">{{ lang.unsubscribe_thread }}</span>
+                        </a>
+                    {% else %}
+                        <a href="usercp.php?action=addsubscription&amp;tid={{ thread.tid }}&amp;my_post_key={{ mybb.post_code }}" class="button button--secondary button--medium button--full-width subscribe--add">
+                            <i class="button__icon fas fa-plus"></i>
+                            <span class="button__text">{{ lang.subscribe_thread }}</span>
+                        </a>
+                    {% endif %}
+                {% endif %}
+                {% if forum.open and forum.type == 'f' and forumpermissions.canpostreplys != 0 %}
+                    {% if thread.canfullreply %}
+                        <a href="newreply.php?tid={{ thread.tid }}" class="button button--medium button--full-width">
+                            <i class="button__icon fas fa-comment"></i>
+                            <span class="button__text">{{ lang.new_reply }}</span>
+                        </a>
+                    {% elseif thread.canmodreply %}
+                        <a href="newreply.php?tid={{ thread.tid }}" class="button button--medium button--danger">
+                            <i class="button__icon fas fa-lock"></i>
+                            <span class="button__text">{{ lang.thread_closed }}</span>
+                        </a>
+                    {% else %}
+                        <a href="showthread.php?tid={{ thread.tid }}" class="button button--medium button--danger">
+                            <i class="button__icon fas fa-lock"></i>
+                            <span class="button__text">{{ lang.thread_closed }}</span>
+                        </a>
+                    {% endif %}
+                {% endif %}
+            </div>
+
+			<div class="thread-pagination thread-pagination--top">
+                {{ multipage|raw }}
+            </div>
         </div>
+
         {% if mybb.settings.allowthreadratings and forum.allowtratings %}
             <div style="margin-top: 6px; padding-right: 10px;" class="float_right">
                 <script type="text/javascript">
@@ -207,116 +220,105 @@
             </div>
         {% endif %}
 
-        <a href="javascript:void(0)" id="thread_modes">{{ lang.thread_modes }}</a>
-        {% if modpermissions.canmanagethreads and thread.notes %}
-            | <a href="moderation.php?action=threadnotes&amp;modtype=thread&amp;tid={{ thread.tid }}">{{ lang.view_thread_notes }}</a>
-        {% endif %}
-
         <section class="post-list" id="posts">
             {{ posts|raw }}
         </section>
 
-
-
-                    {% if forumpermissions.cansearch %}
-                        <div class="float_right">
-                            <form action="search.php" method="post">
-                                <input type="hidden" name="action" value="thread" />
-                                <input type="hidden" name="tid" value="{{ thread.tid }}" />
-                                <input type="text" name="keywords" value="{{ lang.enter_keywords }}" onfocus="if(this.value == '{{ lang.enter_keywords }}') { this.value = ''; }" onblur="if(this.value=='') { this.value='{{ lang.enter_keywords }}'; }" class="textbox" size="25" />
-                                <input type="submit" class="button" value="{{ lang.search_thread }}" />
-                            </form>
-                        </div>
-                    {% endif %}
-                    <div>
-                        <strong>&laquo; <a href="{{ thread.next_oldest_link|raw }}">{{ lang.next_oldest }}</a> | <a href="{{ thread.next_newest_link|raw }}">{{ lang.next_newest }}</a> &raquo;</strong>
-                    </div>
-                </td>
-            </tr>
-        </table>
-        <div class="float_left">
+        <div class="thread-pagination thread-pagination--bottom">
             {{ multipage|raw }}
         </div>
-        <div style="padding-top: 4px;" class="float_right">
-            {% if forum.open and forum.type == 'f' %}
-                {% if thread.canfullreply %}
-                    <a href="newreply.php?tid={{ thread.tid }}" class="button new_reply_button"><span>{{ lang.new_reply }}</span></a>&nbsp;
-                {% elseif thread.canmodreply %}
-                    <a href="newreply.php?tid={{ thread.tid }}" class="button closed_button"><span>{{ lang.thread_closed }}</span></a>&nbsp;
-                {% else %}
-                    <a href="showthread.php?tid={{ thread.tid }}" class="button closed_button"><span>{{ lang.thread_closed }}</span></a>&nbsp;
-                {% endif %}
-            {% endif %}
-        </div>
-        <br class="clear" />
+
+        {% if thread.closed %}
+            <div class="thread-closed">
+                <i class="thread-closed__icon fas fa-lock"></i>
+                <span class="thread-closed__message">{{ lang.thread_closed_message }}</span>
+            </div>
+        {% endif %}
+
         {% if thread.showquickreply %}
-            <div id="quickreply_spinner" class="showthread_spinner" style="display: none"><img src="{{ theme.imgdir }}/spinner.gif" /></div>
-            <br />
+            <div id="quickreply_spinner" class="spinner spinner--quick-reply" style="display: none"><span class="spinner__icon"><i class="spinner__icon fas fa-sync fa-spin"></i></span></div>
             {% if thread.showmodnotice %}
-                <div class="pm_alert">
+                <div class="alert alert--danger">
                     {{ thread.moderation_text }}
                 </div>
             {% endif %}
-            <form method="post" action="newreply.php?tid={{ thread.tid }}&amp;processed=1" name="quick_reply_form" id="quick_reply_form">
-                <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-                <input type="hidden" name="subject" value="RE: {{ thread.reply_subject }}" />
-                <input type="hidden" name="action" value="do_newreply" />
-                <input type="hidden" name="posthash" value="{{ thread.posthash }}" id="posthash" />
-                <input type="hidden" name="quoted_ids" value="" id="quoted_ids" />
-                <input type="hidden" name="lastpid" id="lastpid" value="{{ thread.last_pid }}" />
-                <input type="hidden" name="from_page" value="{{ thread.page }}" />
-                <input type="hidden" name="tid" value="{{ thread.tid }}" />
-                <input type="hidden" name="method" value="quickreply" />
-                <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-                    <thead>
-                        <tr>
-                            <td class="thead{{ collapsedthead.quickreply }}" colspan="2">
-                                <div class="expcolimage"><img src="{{ theme.imgdir }}/collapse{{ collapsedimg.quickreply }}.png" id="quickreply_img" class="expander" alt="[-]" title="[-]" /></div>
-                                <div><strong>{{ lang.quick_reply }}</strong></div>
-                            </td>
-                        </tr>
-                    </thead>
-                    <tbody style="{{ collapsed.quickreply_e }}" id="quickreply_e">
-                        <tr>
-                            <td class="{{ thread.quickreplyrow }}" valign="top" width="22%">
-                                <strong>{{ lang.message }}</strong><br />
-                                <span class="smalltext">{{ lang.message_note }}<br /><br />
-                                    {% if mybb.usergroup.canusesig and mybb.user.suspendsignature != 1 %}
-                                        <label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="1"{% if thread.postoptions.signature %} checked="checked"{% endif %} />&nbsp;<strong>{{ lang.signature }}</strong></label><br />
-                                    {% endif %}
-                                    {% if forum.allowsmilies %}
-                                        <label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="1" />&nbsp;<strong>{{ lang.disable_smilies }}</strong></label>
-                                    {% endif %}
-                                    {% if modpermissions.canopenclosethreads %}
-                                        <br /><label><input type="checkbox" class="checkbox" name="modoptions[closethread]" value="1"{% if thread.closed %} checked="checked"{% endif %} />&nbsp;<strong>{{ lang.close_thread }}</strong></label>
-                                    {% endif %}
-                                    {% if modpermissions.canstickunstickthreads %}
-                                        <br /><label><input type="checkbox" class="checkbox" name="modoptions[stickthread]" value="1"{% if thread.sticky %} checked="checked"{% endif %} />&nbsp;<strong>{{ lang.stick_thread }}</strong></label>
-                                    {% endif %}
-                                </span>
-                            </td>
-                            <td class="{{ thread.quickreplyrow }}">
-                                <div style="width: 95%">
-                                    <textarea style="width: 100%; padding: 4px; margin: 0;" rows="8" cols="80" name="message" id="message" tabindex="1"></textarea>
-                                </div>
-                                <div class="editor_control_bar" style="width: 95%; padding: 4px; margin-top: 3px; display: none;" id="quickreply_multiquote">
-                                    <span class="smalltext">
-                                        {{ lang.quickreply_multiquote_selected }} <a href="./newreply.php?tid={{ thread.tid }}&amp;load_all_quotes=1" onclick="return Thread.loadMultiQuoted();">{{ lang.quickreply_multiquote_now }}</a> {{ lang.or }} <a href="javascript:void(0)" onclick="Thread.clearMultiQuoted(); return false;">{{ lang.quickreply_multiquote_deselect }}</a>.
-                                    </span>
-                                </div>
-                            </td>
-                        </tr>
-                        {{ captcha|raw }}
-                        <tr>
-                            <td colspan="2" align="center" class="tfoot">
-                                <input type="submit" class="button" value="{{ lang.post_reply }}" tabindex="2" accesskey="s" id="quick_reply_submit" />
-                                <input type="submit" class="button" name="previewpost" value="{{ lang.preview_post }}" tabindex="3" />
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </form>
+            <div class="post post--reply post--quick-reply compose compose--quick-reply quick-reply" id="post-reply">
+                <form method="post" action="newreply.php?tid={{ thread.tid }}&amp;processed=1" name="quick_reply_form" id="quick_reply_form">
+                    <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+                    <input type="hidden" name="subject" value="RE: {{ thread.reply_subject }}" />
+                    <input type="hidden" name="action" value="do_newreply" />
+                    <input type="hidden" name="posthash" value="{{ thread.posthash }}" id="posthash" />
+                    <input type="hidden" name="quoted_ids" value="" id="quoted_ids" />
+                    <input type="hidden" name="lastpid" id="lastpid" value="{{ thread.last_pid }}" />
+                    <input type="hidden" name="from_page" value="{{ thread.page }}" />
+                    <input type="hidden" name="tid" value="{{ thread.tid }}" />
+                    <input type="hidden" name="method" value="quickreply" />
+                    <div class="post__meta">
+                        {# TO DO : LINK TO PROFILE #}
+                        <a href="#" class="avatar-profile-link" title="{{ lang.welcome_my_profile }}"><img src="{% if mybb.user.avatar != '' %}{{ mybb.user.avatar }}{% else %}{{ asset_url('images/default_avatar.png') }}{% endif %}" alt="{{ lang.welcome_my_avatar }}" class="avatar my-avatar"/></a>
+                        {# TO DO : USER PROFILE LINK #}
+                        <h3 class="post__author"><a href="#">{{ mybb.user.username }}</a></h3>
+                        <span class="post__date">{{ lang.quick_reply }}</span>
+                    </div>
+                    <div class="post__body">
+                        <textarea class="textarea" rows="8" cols="80" name="message" id="message" tabindex="1" placeholder="{{ lang.quick_reply_message }}"></textarea>
+                    </div>
+                    <div class="editor_control_bar" style="display: none;" id="quickreply_multiquote">
+                        {{ lang.quickreply_multiquote_selected }} <a href="./newreply.php?tid={{ thread.tid }}&amp;load_all_quotes=1" onclick="return Thread.loadMultiQuoted();">{{ lang.quickreply_multiquote_now }}</a> {{ lang.or }} <a href="javascript:void(0)" onclick="Thread.clearMultiQuoted(); return false;">{{ lang.quickreply_multiquote_deselect }}</a>.
+                    </div>
+                    {% if (mybb.usergroup.canusesig and mybb.user.suspendsignature != 1) or forum.allowsmilies or modpermissions.canopenclosethreads or modpermissions.canstickunstickthreads %}
+                        <input type="checkbox" class="compose__checkbox" id="show-quick-reply-options">
+                        <div class="quick-reply__options">
+                            {% if mybb.usergroup.canusesig and mybb.user.suspendsignature != 1 %}
+                                <label class="quick-reply__option"><input type="checkbox" class="checkbox quick-reply__checkbox" name="postoptions[signature]" value="1"{% if thread.postoptions.signature %} checked="checked"{% endif %} /> {{ lang.signature }}</label>
+                            {% endif %}
+                            {% if forum.allowsmilies %}
+                                <label class="quick-reply__option"><input type="checkbox" class="checkbox quick-reply__checkbox" name="postoptions[disablesmilies]" value="1" /> {{ lang.disable_smilies }} </label>
+                            {% endif %}
+                            {% if modpermissions.canopenclosethreads %}
+                                <label class="quick-reply__option"><input type="checkbox" class="checkbox quick-reply__checkbox" name="modoptions[closethread]" value="1"{% if thread.closed %} checked="checked"{% endif %} /> {{ lang.close_thread }}</label>
+                            {% endif %}
+                            {% if modpermissions.canstickunstickthreads %}
+                                <label class="quick-reply__option"><input type="checkbox" class="checkbox quick-reply__checkbox" name="modoptions[stickthread]" value="1"{% if thread.sticky %} checked="checked"{% endif %} /> {{ lang.stick_thread }}</label>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                    {{ captcha|raw }}
+                    <div class="post__foot">
+                		<button type="submit" class="button" tabindex="2" accesskey="s" id="quick_reply_submit">
+                			<i class="button__icon fas fa-comment"></i>
+                			<span class="button__text">{{ lang.post_reply }}</span>
+                		</button>
+                        {% if (mybb.usergroup.canusesig and mybb.user.suspendsignature != 1) or forum.allowsmilies or modpermissions.canopenclosethreads or modpermissions.canstickunstickthreads %}
+                    		<label for="show-quick-reply-options" class="button button--basic">
+                    			<i class="button__icon fas fa-cog"></i>
+                    			<span class="button__text">{{ lang.options }}</span>
+                    		</label>
+                        {% endif %}
+                		<button type="submit" class="button button--basic" name="previewpost" value="preview" tabindex="3">
+                			<i class="button__icon fas fa-pencil-alt"></i>
+                			<span class="button__text">{{ lang.preview_post }}</span>
+                		</button>
+                	</div>
+                </form>
+            </div>
         {% endif %}
+
+        {% if forumpermissions.cansearch %}
+            <div class="float_right">
+                <form action="search.php" method="post">
+                    <input type="hidden" name="action" value="thread" />
+                    <input type="hidden" name="tid" value="{{ thread.tid }}" />
+                    <input type="text" name="keywords" value="{{ lang.enter_keywords }}" onfocus="if(this.value == '{{ lang.enter_keywords }}') { this.value = ''; }" onblur="if(this.value=='') { this.value='{{ lang.enter_keywords }}'; }" class="textbox" size="25" />
+                    <input type="submit" class="button" value="{{ lang.search_thread }}" />
+                </form>
+            </div>
+        {% endif %}
+
+        <div class="container">
+            &laquo; <a href="{{ thread.next_oldest_link|raw }}">{{ lang.next_oldest }}</a> | <a href="{{ thread.next_newest_link|raw }}">{{ lang.next_newest }}</a> &raquo;
+        </div>
+
         {% if thread.showthreaded %}
             <br />
             <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
@@ -375,35 +377,47 @@
                 {% endfor %}
             </table>
         {% endif %}
-        <br />
-        <div class="float_left">
-            <ul class="thread_tools">
-                <li class="printable"><a href="printthread.php?tid={{ thread.tid }}">{{ lang.view_printable }}</a></li>
-                {% if mybb.usergroup.cansendemail %}
-                    <li class="sendthread"><a href="sendthread.php?tid={{ thread.tid }}">{{ lang.send_thread }}</a></li>
+
+        <div class="page-controls">
+			<div class="page-buttons">
+                {% if thread.showthreaded %}
+                    <a href="showthread.php?mode=linear&amp;tid={{ thread.tid }}&amp;pid={{ thread.pid }}#pid{{ thread.pid }}" class="button button--basic">
+                        <i class="button__icon fas fa-th-list"></i>
+                        <span class="button__text">{{ lang.linear }}</span>
+                    </a>
+                {% else %}
+                    <a href="showthread.php?mode=threaded&amp;tid={{ thread.tid }}&amp;pid={{ thread.pid }}#pid{{ thread.pid }}" class="button button--basic">
+                        <i class="button__icon fas fa-list"></i>
+                        <span class="button__text">{{ lang.threaded }}</span>
+                    </a>
                 {% endif %}
-                {% if mybb.user.uid %}
-                    {% if thread.issubscribed %}
-                        <li class="subscription_remove"><a href="usercp2.php?action=removesubscription&amp;tid={{ thread.tid }}&amp;my_post_key={{ mybb.post_code }}">{{ lang.unsubscribe_thread }}</a></li>
-                    {% else %}
-                        <li class="subscription_add"><a href="usercp2.php?action=addsubscription&amp;tid={{ thread.tid }}&amp;my_post_key={{ mybb.post_code }}">{{ lang.subscribe_thread }}</a></li>
-                    {% endif %}
+                <a href="printthread.php?tid={{ thread.tid }}" class="button button--basic">
+					<i class="button__icon fas fa-print"></i>
+                    <span class="button__text">{{ lang.view_printable }}</span>
+                </a>
+                {% if mybb.usergroup.cansendemail %}
+                    <a href="sendthread.php?tid={{ thread.tid }}" class="button button--basic">
+                        <i class="button__icon fas fa-share"></i>
+                        <span class="button__text">{{ lang.send_thread }}</span>
+                    </a>
                 {% endif %}
                 {% if thread.addpoll %}
-                    <li class="poll"><a href="polls.php?action=newpoll&amp;tid={{ thread.tid }}">{{ lang.add_poll_to_thread }}</a></li>
+                    <a href="polls.php?action=newpoll&amp;tid={{ thread.tid }}" class="button button--basic">
+                        <i class="button__icon fas fa-plus-circle"></i>
+                        <span class="button__text">{{ lang.add_poll_to_thread }}</span>
+                    </a>
                 {% endif %}
-            </ul>
+            </div>
         </div>
+
         <div class="float_right" style="text-align: right;">
             {% if modpermissions.ismod and thread.showmodoptions %}
                 {% include 'showthread/inlinemoderation.twig' %}
             {% endif %}
             {{ forumjump|raw }}
         </div>
-        <br class="clear" />
         {% if mybb.settings.browsingthisthread %}
-            <br />
-            <span class="smalltext">
+            <div class="container container--small container--users-browsing">
                 {{ lang.users_browsing_thread }}
                     {% for user in onlinemembers %}
                         <a href="{{ user.profilelink|raw }}" title="{{ lang.users_browsing_thread_reading }} ({{ user.reading }})">{{ user.username|raw }}</a>{{ user.invisiblemark }}{% if not loop.last %}{{ lang.comma }}{% endif %}
@@ -420,17 +434,9 @@
                     {% if thread.guestcount %}
                         {{ trans('users_browsing_thread_guests', thread.guestcount) }}
                     {% endif %}
-            </span>
-            <br />
+            </div>
         {% endif %}
-        <div id="thread_modes_popup" class="popup_menu" style="display: none;">
-            <div class="popup_item_container">
-                <a href="showthread.php?mode=linear&amp;tid={{ thread.tid }}&amp;pid={{ thread.pid }}#pid{{ thread.pid }}" class="popup_item">{{ lang.linear }}</a>
-            </div>
-            <div class="popup_item_container">
-                <a href="showthread.php?mode=threaded&amp;tid={{ thread.tid }}&amp;pid={{ thread.pid }}#pid{{ thread.pid }}" class="popup_item">{{ lang.threaded }}</a>
-            </div>
-        </div>
+
         <script type="text/javascript">
         // <!--
             if(use_xmlhttprequest == "1")

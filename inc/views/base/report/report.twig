@@ -6,28 +6,28 @@
 		<input type="hidden" name="type" value="{{ report.type }}" />
 		<input type="hidden" name="pid" value="{{ report.id }}" />
 		<input type="hidden" name="no_modal" value="1" />
-		<table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-			<tr>
-				<td class="thead" colspan="2"><strong>{{ report.title }}</strong></td>
-			</tr>
-			<tr>
-				<td class="tcat" colspan="2">{{ lang.report_to_mod }}</td>
-			</tr>
-			{% if report.has_errors %}
-				<tr>
-					<td colspan="2" class="trow1">{{ report.error|raw }}</td>
-				</tr>
-			{% elseif report.is_duplicate %}
-				<tr>
-					<td class="trow1">{{ lang.error_report_duplicate }}</td>
-				</tr>
-				<tr>
-					<td class="tfoot"><input type="submit" class="button" value="{{ report.title }}" /></td>
-				</tr>
-			{% else %}
-				{% include 'report/report_reasons.twig' %}
-			{% endif %}
-		</table>
+        <section class="block block--modal">
+            <h2 class="title title--modal{% if report.has_errors or report.is_duplicate %} title--danger{% endif %}">{{ report.title }}</h2>
+            <div class="form form--modal">
+				<div class="section section--form">
+        			{% if report.has_errors %}
+        				<div class="row row--form">{{ report.error|raw }}</div>
+        			{% elseif report.is_duplicate %}
+        				<div class="row row--form">{{ lang.error_report_duplicate }}</div>
+        			{% else %}
+        				{% include 'report/report_reasons.twig' %}
+        			{% endif %}
+                </div>
+                {% if report.has_errors == false %}
+                <div class="form__submit">
+                    <button type="submit" class="button button--medium">
+    					<i class="button__icon fas fa-flag"></i>
+    					<span class="button__text">{{ report.title }}</span>
+    				</button>
+                </div>
+                {% endif %}
+            </div>
+        </section>
 	</form>
 
 <script type="text/javascript">

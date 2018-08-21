@@ -567,7 +567,7 @@ var Collapsible = {
 	init: function()
 	{
 		var collapsed = Cookie.get('collapsed');
-		
+
 		if(collapsed)
 		{
 			saved = collapsed.split("|");
@@ -671,7 +671,7 @@ var Collapsible = {
 		{
 			newCollapsed[newCollapsed.length] = id;
 		}
-		
+
 		Cookie.set('collapsed', newCollapsed.join("|"));
 	}
 };
@@ -681,7 +681,7 @@ var Tools = {
 	{
 		return el.classList ? el.classList.contains(className) : new RegExp('\\b'+ className+'\\b').test(el.className);
 	},
-	
+
 	addClass: function(el, className)
 	{
 		if (el.classList) {
@@ -692,10 +692,10 @@ var Tools = {
 			el.className += ' ' + className;
 		}
 	},
-	
+
 	removeClass: function(el, className)
 	{
-		if (el.classList) 
+		if (el.classList)
 		{
 			el.classList.remove(className);
 		}

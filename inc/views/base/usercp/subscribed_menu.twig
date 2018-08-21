@@ -1,0 +1,8 @@
+<ul class="page-tabs">
+    <li class="page-tabs__item{% if mybb.input.action == 'subscriptions' %} page-tabs__item--active{% endif %}">
+        <a href="usercp.php?action=subscriptions" class="page-tabs__link"><i class="fas fa-comment"></i> {{ lang.nav_subthreads }}</a>
+    </li>
+    <li class="page-tabs__item{% if mybb.input.action == 'forumsubscriptions' %} page-tabs__item--active{% endif %}">
+        <a href="usercp.php?action=forumsubscriptions" class="page-tabs__link"><i class="fas fa-comments"></i> {{ lang.nav_forumsubscriptions }}</a>
+    </li>
+</ul>

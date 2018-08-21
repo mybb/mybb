@@ -5,35 +5,51 @@
 {% endblock head %}
 
 {% block body %}
-    <form action="moderation.php" method="post">
-        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-            <tr>
-                <td class="thead" colspan="2"><strong>{{ lang.merge_posts }}</strong></td>
-            </tr>
-            {{ loginbox|raw }}
-            <tr>
-                <td class="trow2"><strong>{{ lang.post_separator }}</strong></td>
-                <td class="trow2">
-                    <label><input type="radio" class="radio" name="sep" value="hr" checked="checked" />&nbsp;{{ lang.horizontal_rule }}</label><br />
-                    <label><input type="radio" class="radio" name="sep" value="new_line" />&nbsp;{{ lang.new_line }}</label>
-                </td>
-            </tr>
-            {% for post in postlist %}
-                {% set row = alt_trow() %}
-                <tr>
-                    <td class="tcat" colspan="2"><span class="smalltext"><strong>{{ lang.posted_by }} {{ post.username }} - {{ post.postdate|raw }}</strong></span></td>
-                </tr>
-                <tr>
-                    <td class="{{ row }}" valign="top" align="center" width="1"><input type="checkbox" class="checkbox" checked="checked" name="mergepost[{{ post.pid }}]" value="1" /></td>
-                    <td class="{{ row }}">{{ post.message|raw }}</td>
-                </tr>
-            {% endfor %}
-        </table>
-        <br />
-        <div align="center"><input type="submit" class="button" name="submit" value="{{ lang.merge_posts }}" /></div>
-        <input type="hidden" name="action" value="do_multimergeposts" />
-        <input type="hidden" name="tid" value="{{ thread.tid }}" />
-        <input type="hidden" name="url" value="{{ return_url }}" />
-    </form>
+    <div class="page-content">
+        <header class="page-header">
+            <h1 class="title title--page">{{ lang.merge_posts }}</h1>
+            <p class="description">{{ lang.merge_posts_note }}</p>
+        </header>
+        <form action="moderation.php" method="post">
+            <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+            <section class="block block--form form">
+                {{ loginbox|raw }}
+                <div class="section section--form">
+                    <h3 class="title title--section">{{ lang.merge_options }}</h3>
+                    <div class="section__container">
+                        <div class="row row--form field">
+                            <h4 class="field__name">{{ lang.post_separator }}</h4>
+                            <p class="option-field option-field--compact"><label><input type="radio" class="radio" name="sep" value="hr" checked="checked" /> {{ lang.horizontal_rule }}</label></p>
+                            <p class="option-field option-field--compact"><label><input type="radio" class="radio" name="sep" value="new_line" /> {{ lang.new_line }}</label></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="section section--form">
+                    <h3 class="title title--section">{{ lang.posts_to_merge }}</h3>
+                    <div class="section__container">
+                        {% for post in postlist %}
+                            <div class="row row--form field">
+                                <div class="option-field">
+                                    <input type="checkbox" class="option-field__name checkbox" checked="checked" name="mergepost[{{ post.pid }}]" id="mergepost_{{ post.pid }}" value="1" />
+                                    <h4 class="option-field__name option-field__name--light"><label for="mergepost_{{ post.pid }}">{{ lang.posted_by }} {{ post.username }} - {{ post.postdate|raw }}</label></h4>
+                                    <div class="option-field__description">
+                                        {{ post.message|raw }}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="form__submit">
+                    <button type="submit" class="button button--medium">
+                        <i class="button__icon fas fa-compress"></i>
+                        <span class="button__text">{{ lang.merge_posts }}</span>
+                    </button>
+                </div>
+            </section>
+            <input type="hidden" name="action" value="do_multimergeposts" />
+            <input type="hidden" name="tid" value="{{ thread.tid }}" />
+            <input type="hidden" name="url" value="{{ return_url }}" />
+        </form>
+    </div>
 {% endblock body %}

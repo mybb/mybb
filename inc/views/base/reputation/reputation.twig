@@ -12,98 +12,118 @@
 {% endblock head %}
 
 {% block body %}
-    {% if user.show_add_reputation %}
-        <div class="float_right" style="padding-bottom: 4px;">
-            <a href="javascript:void(0)" onclick="MyBB.reputation({{ user.uid }}); return false;" class="button rate_user_button"><span>{{ lang.rate_user }}</span></a>
-        </div>
-    {% endif %}
-    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder clear">
-        <tr>
-            <td class="thead"><strong>{{ trans('reputation_report', user.username) }}</strong></td>
-        </tr>
-        <tr>
-            <td class="tcat"><strong>{{ lang.summary }}</strong></td>
-        </tr>
-        <tr>
-            <td class="trow1">
-                <table width="100%" cellspacing="0" cellpadding="0" border="0">
-                    <tr>
-                        <td>
-                            <span class="largetext"><strong>{{ user.user_name|raw }}</strong></span><br />
-                            <span class="smalltext">
-                                ({{ user.user_title }})<br />
-                                <br />
-                                <strong>{{ lang.total_reputation }}:</strong> <span class="repbox {{ user.total_class }}">{{ user.rep_total }}</span><br /><br />
-                                <strong>{{ lang.reputation_members }} {{ user.rep_members }}</strong><br />
-                                <strong>{{ lang.reputation_posts }} {{ user.rep_posts }}</strong>
-                            </span>
-                        </td>
-                        <td align="right" style="width: 300px;">
-                            <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder trow2">
-                                <tr>
-                                    <td>&nbsp;</td>
-                                    <td><span class="smalltext reputation_positive">{{ lang.positive_count }}</span></td>
-                                    <td><span class="smalltext reputation_neutral">{{ lang.neutral_count }}</span></td>
-                                    <td><span class="smalltext reputation_negative">{{ lang.negative_count }}</span></td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align: right;"><span class="smalltext">{{ lang.last_week }}</span></td>
-                                    <td style="text-align: center;"><span class="smalltext">{{ user.positive_week }}</span></td>
-                                    <td style="text-align: center;"><span class="smalltext">{{ user.neutral_week }}</span></td>
-                                    <td style="text-align: center;"><span class="smalltext">{{ user.negative_week }}</span></td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align: right;"><span class="smalltext">{{ lang.last_month }}</span></td>
-                                    <td style="text-align: center;"><span class="smalltext">{{ user.positive_month }}</span></td>
-                                    <td style="text-align: center;"><span class="smalltext">{{ user.neutral_month }}</span></td>
-                                    <td style="text-align: center;"><span class="smalltext">{{ user.negative_month }}</span></td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align: right;"><span class="smalltext">{{ lang.last_6months }}</span></td>
-                                    <td style="text-align: center;"><span class="smalltext">{{ user.positive_6months }}</span></td>
-                                    <td style="text-align: center;"><span class="smalltext">{{ user.neutral_6months }}</span></td>
-                                    <td style="text-align: center;"><span class="smalltext">{{ user.negative_6months }}</span></td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align: right;"><span class="smalltext">{{ lang.all_time }}</span></td>
-                                    <td style="text-align: center;"><span class="smalltext">{{ user.positive_count }}</span></td>
-                                    <td style="text-align: center;"><span class="smalltext">{{ user.neutral_count }}</span></td>
-                                    <td style="text-align: center;"><span class="smalltext">{{ user.negative_count }}</span></td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-        <tr>
-            <td class="tcat"><strong>{{ lang.comments }}</strong></td>
-        </tr>
-        {% for reputation_vote in reputation_votes %}
-            {% include 'reputation/reputation_vote.twig' %}
-        {% else %}
-            <tr>
-                <td class="trow1" style="text-align: center;">{{ lang.no_reputation_votes }}</td>
-            </tr>
-        {% endfor %}
-        <tr>
-            <td class="tfoot" align="right">
+    <div class="page-content">
+        <header class="page-header">
+            <h1 class="title title--page">{{ trans('reputation_report', user.username) }}</h1>
+        </header>
+        {% if user.show_add_reputation %}
+            <div class="page-controls page-controls--top">
+                <div class="page-buttons">
+                    <a href="javascript:void(0)" onclick="MyBB.reputation({{ user.uid }}); return false;" class="button button--full-width">
+                        <i class="button__icon fas fa-thumbs-up"></i>
+                        <span class="button__text">{{ lang.rate_user }}</span>
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+        <section class="block block--container">
+            <h1 class="title visually-hidden">{{ lang.summary }}</h1>
+            <div class="reputation-summary">
+                <div class="reputation-summary__block reputation-summary__block--stats">
+                    <ul class="list list--stats">
+                        <li class="list__item">
+                            <h2 class="title">{{ user.user_name|raw }}</h2>
+                            {{ user.user_title }}
+                        </li>
+                        <li class="list__item">
+                            <span class="list__field">{{ lang.total_reputation }}</span>
+                            <span class="list__value"><span class="repbox {{ user.total_class }}">{{ user.rep_total }}</span></span>
+                        </li>
+                        <li class="list__item">
+                            <span class="list__field">{{ lang.reputation_members }}</span>
+                            <span class="list__value">{{ user.rep_members }}</span>
+                        </li>
+                        <li class="list__item">
+                            <span class="list__field">{{ lang.reputation_posts }}</span>
+                            <span class="list__value">{{ user.rep_posts }}</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="reputation-summary__block reputation-summary__block--counts">
+                    <table class="reputation-table" cellspacing="0" cellpadding="0">
+                        <tr class="reputation-table__row reputation-table__row--header">
+                            <td class="reputation-table__cell">&nbsp;</td>
+                            <td class="reputation-table__cell"><span class="reputation_positive">{{ lang.positive_count }}</span></td>
+                            <td class="reputation-table__cell"><span class="reputation_neutral">{{ lang.neutral_count }}</span></td>
+                            <td class="reputation-table__cell"><span class="reputation_negative">{{ lang.negative_count }}</span></td>
+                        </tr>
+                        <tr class="reputation-table__row">
+                            <td class="reputation-table__cell reputation-table__cell--legend">{{ lang.last_week }}</td>
+                            <td class="reputation-table__cell reputation-table__cell--count">{{ user.positive_week }}</td>
+                            <td class="reputation-table__cell reputation-table__cell--count">{{ user.neutral_week }}</td>
+                            <td class="reputation-table__cell reputation-table__cell--count">{{ user.negative_week }}</td>
+                        </tr>
+                        <tr class="reputation-table__row">
+                            <td class="reputation-table__cell reputation-table__cell--legend">{{ lang.last_month }}</td>
+                            <td class="reputation-table__cell reputation-table__cell--count">{{ user.positive_month }}</td>
+                            <td class="reputation-table__cell reputation-table__cell--count">{{ user.neutral_month }}</td>
+                            <td class="reputation-table__cell reputation-table__cell--count">{{ user.negative_month }}</td>
+                        </tr>
+                        <tr class="reputation-table__row">
+                            <td class="reputation-table__cell reputation-table__cell--legend">{{ lang.last_6months }}</td>
+                            <td class="reputation-table__cell reputation-table__cell--count">{{ user.positive_6months }}</td>
+                            <td class="reputation-table__cell reputation-table__cell--count">{{ user.neutral_6months }}</td>
+                            <td class="reputation-table__cell reputation-table__cell--count">{{ user.negative_6months }}</td>
+                        </tr>
+                        <tr class="reputation-table__row reputation-table__row--footer">
+                            <td class="reputation-table__cell reputation-table__cell--legend">{{ lang.all_time }}</td>
+                            <td class="reputation-table__cell reputation-table__cell--count">{{ user.positive_count }}</td>
+                            <td class="reputation-table__cell reputation-table__cell--count">{{ user.neutral_count }}</td>
+                            <td class="reputation-table__cell reputation-table__cell--count">{{ user.negative_count }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+        <section class="block">
+            <h1 class="title title--major">{{ lang.comments }}</h1>
+            <div class="reputation-ratings">
+                {% for reputation_vote in reputation_votes %}
+                    {% include 'reputation/reputation_vote.twig' %}
+                {% else %}
+                    <div class="alert alert--no-results">{{ lang.no_reputation_votes }}</div>
+                {% endfor %}
+            </div>
+            <div class="sort-results">
                 <form action="reputation.php" method="get">
                     <input type="hidden" name="uid" value="{{ user.uid }}" />
-                    <select name="show">
-                        <option value="all"{% if select.show.all %} selected="selected"{% endif %}>{{ lang.show_all }}</option>
-                        <option value="positive"{% if select.show.positive %} selected="selected"{% endif %}>{{ lang.show_positive }}</option>
-                        <option value="neutral"{% if select.show.neutral %} selected="selected"{% endif %}>{{ lang.show_neutral }}</option>
-                        <option value="negative"{% if select.show.negative %} selected="selected"{% endif %}>{{ lang.show_negative }}</option>
-                    </select>
-                    <select name="sort">
-                        <option value="dateline"{% if select.sort.last_updated %} selected="selected"{% endif %}>{{ lang.sort_updated }}</option>
-                        <option value="username"{% if select.sort.username %} selected="selected"{% endif %}>{{ lang.sort_username }}</option>
-                    </select>
-                    <input type="submit" class="button" value="{{ lang.go }}" />
+                    <div class="select-field">
+                        <i class="select-field__icon fas fa-sort"></i>
+                        <select name="show">
+                            <option value="all"{% if select.show.all %} selected="selected"{% endif %}>{{ lang.show_all }}</option>
+                            <option value="positive"{% if select.show.positive %} selected="selected"{% endif %}>{{ lang.show_positive }}</option>
+                            <option value="neutral"{% if select.show.neutral %} selected="selected"{% endif %}>{{ lang.show_neutral }}</option>
+                            <option value="negative"{% if select.show.negative %} selected="selected"{% endif %}>{{ lang.show_negative }}</option>
+                        </select>
+                    </div>
+                    <div class="select-field">
+                        <i class="select-field__icon fas fa-sort"></i>
+                        <select name="sort">
+                            <option value="dateline"{% if select.sort.last_updated %} selected="selected"{% endif %}>{{ lang.sort_updated }}</option>
+                            <option value="username"{% if select.sort.username %} selected="selected"{% endif %}>{{ lang.sort_username }}</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="button button--inline">
+                        <i class="button__icon fas fa-random"></i>
+                        <span class="button__text">{{ lang.sort_ratings }}</span>
+                    </button>
                 </form>
+            </div>
+        </section>
+        <tr>
+            <td class="tfoot" align="right">
+
             </td>
         </tr>
-    </table>
     {{ multipage|raw }}
 {% endblock body %}

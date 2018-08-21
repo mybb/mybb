@@ -86,6 +86,13 @@
             							</label>
                                     {% endif %}
 
+                                    {% if newthread.showpollbox %}
+            							<label for="show-post-poll" class="button button--basic compose__option-button--poll">
+            								<i class="button__icon fas fa-plus-circle"></i>
+            								<span class="button__text">{{ lang.add_poll }}</span>
+            							</label>
+                                    {% endif %}
+
                                     {% if mybb.user.uid %}
                                         <button type="submit" name="savedraft" value="draft" class="button button--basic">
                                             <i class="button__icon far fa-file"></i>

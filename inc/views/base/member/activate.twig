@@ -5,24 +5,30 @@
 {% endblock head %}
 
 {% block body %}
-    <form action="member.php" method="post">
-        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-            <tr>
-                <td class="thead" colspan="2"><strong>{{ lang.activate_account }}</strong></td>
-            </tr>
-            <tr>
-                <td class="trow1" width="30%"><strong><label for="username">{{ lang.username }}</label></strong></td>
-                <td class="trow1"><input type="text" class="textbox" name="username" id="username" value="{{ activate.username }}" /></td>
-            </tr>
-            <tr>
-                <td class="trow1" width="30%"><strong><label for="code">{{ lang.activation_code }}</label></strong></td>
-                <td class="trow1"><input type="text" class="textbox" name="code" id="code" value="{{ activate.code }}" /></td>
-            </tr>
-        </table>
-        <br />
-        <div align="center">
+    <div class="page-content page-content--centered">
+        <header class="page-header">
+           <h1 class="title title--page">{{ lang.activate_account }}</h1>
+       </header>
+        <form action="member.php" method="post">
+            <div class="block block--form form">
+                <section class="section section--form">
+                    <div class="row row--form field">
+                        <h3 class="field__name"><label for="username">{{ lang.username }}</label></h3>
+                        <input type="text" class="textbox" name="username" id="username" value="{{ activate.username }}" />
+                    </div>
+                    <div class="row row--form field">
+                        <h3 class="field__name"><label for="code">{{ lang.activation_code }}</label></h3>
+                        <input type="text" class="textbox" name="code" id="code" value="{{ activate.code }}" />
+                    </div>
+                </section>
+                <div class="form__submit">
+                    <button type="submit" name="regsubmit" class="button button--medium">
+                        <i class="button__icon fas fa-check"></i>
+                        <span class="button__text">{{ lang.activate_account }}</span>
+                    </button>
+                </div>
+            </div>
             <input type="hidden" name="action" value="activate" />
-            <input type="submit" class="button" name="regsubmit" value="{{ lang.activate_account }}" />
-        </div>
-    </form>
+        </form>
+    </div>
 {% endblock body %}

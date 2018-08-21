@@ -1,5 +1,5 @@
 {% if modpermissions.ismod %}
-    <td class="{{ class }}" align="center" style="white-space: nowrap">
-        <input type="checkbox" class="checkbox" name="inlinemod_{{ thread.tid }}" id="inlinemod_{{ thread.tid }}" value="1"{% if thread.modChecked %} checked{% endif %} />
-    </td>
+    <div class="thread__column thread__column--checkbox">
+    	<input type="checkbox" class="checkbox" name="inlinemod_{{ thread.tid }}" id="inlinemod_{{ thread.tid }}" value="1"{% if thread.modChecked %} checked{% endif %}  />
+    </div>
 {% endif %}

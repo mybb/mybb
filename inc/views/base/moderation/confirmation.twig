@@ -5,27 +5,31 @@
 {% endblock head %}
 
 {% block body %}
-    <form action="moderation.php" method="post">
-        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-        <input type="hidden" name="action" value="{{ confirm.action }}" />
-        <input type="hidden" name="modtype" value="{{ confirm.modtype }}" />
-        <input type="hidden" name="tid" value="{{ confirm.tid }}" />
-        <input type="hidden" name="pid" value="{{ confirm.pid }}" />
-        <input type="hidden" name="fid" value="{{ confirm.fid }}" />
-        <input type="hidden" name="confirm" value="1" />
-        <input type="hidden" name="inlinetype" value="{{ confirm.inlinetype }}" />
-        <input type="hidden" name="searchid" value="{{ confirm.searchid }}" />
-        <input type="hidden" name="url" value="{{ confirm.url }}" />
-        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-            <tr>
-                <td class="thead" colspan="2"><strong>{{ confirm.subject }} - {{ lang.confirm_execute_tool }}</strong></td>
-            </tr>
-            <tr>
-                <td class="trow1" colspan="2" align="center">{{ lang.confirm_execute_tool_desc|raw }}</td>
-            </tr>
-            {{ loginbox|raw }}
-        </table>
-        <br />
-        <div align="center"><input type="submit" class="button" name="submit" value="{{ lang.confirm_execute_tool }}" /></div>
-    </form>
+    <div class="page-content">
+        <header class="page-header">
+            <h1 class="title title--page">{{ confirm.subject }} - {{ lang.confirm_execute_tool }}</h1>
+            <p class="description">{{ lang.confirm_execute_tool_desc|raw }}</p>
+        </header>
+        <form action="moderation.php" method="post">
+            <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+            <input type="hidden" name="action" value="{{ confirm.action }}" />
+            <input type="hidden" name="modtype" value="{{ confirm.modtype }}" />
+            <input type="hidden" name="tid" value="{{ confirm.tid }}" />
+            <input type="hidden" name="pid" value="{{ confirm.pid }}" />
+            <input type="hidden" name="fid" value="{{ confirm.fid }}" />
+            <input type="hidden" name="confirm" value="1" />
+            <input type="hidden" name="inlinetype" value="{{ confirm.inlinetype }}" />
+            <input type="hidden" name="searchid" value="{{ confirm.searchid }}" />
+            <input type="hidden" name="url" value="{{ confirm.url }}" />
+            <section class="block block--form form">
+                {{ loginbox|raw }}
+                <div class="form__submit">
+                    <button type="submit" class="button button--medium">
+                        <i class="button__icon fas fa-arrow-right"></i>
+                        <span class="button__text">{{ lang.confirm_execute_tool }}</span>
+                    </button>
+                </div>
+            </section>
+        </form>
+    </div>
 {% endblock body %}

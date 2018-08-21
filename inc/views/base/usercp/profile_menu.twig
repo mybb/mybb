@@ -1,0 +1,24 @@
+<ul class="page-tabs">
+    <li class="page-tabs__item{% if mybb.input.action == 'profile' %} page-tabs__item--active{% endif %}">
+        <a href="usercp.php?action=profile" class="page-tabs__link"><i class="fas fa-user"></i> {{ lang.nav_profile }}</a>
+    </li>
+    <li class="page-tabs__item{% if mybb.input.action == 'avatar' %} page-tabs__item--active{% endif %}">
+        <a href="usercp.php?action=avatar" class="page-tabs__link"><i class="fas fa-image"></i> {{ lang.nav_avatar }}</a>
+    </li>
+    {# TO DO: need to check if user can change signature #}
+        <li class="page-tabs__item{% if mybb.input.action == 'editsig' %} page-tabs__item--active{% endif %}">
+            <a href="usercp.php?action=editsig" class="page-tabs__link"><i class="fas fa-edit"></i> {{ lang.nav_editsig }}</a>
+        </li>
+    {# #}
+    {% if mybb.usergroup.canchangename %}
+        <li class="page-tabs__item{% if mybb.input.action == 'changename' %} page-tabs__item--active{% endif %}">
+            <a href="usercp.php?action=changename" class="page-tabs__link"><i class="fas fa-user-circle"></i> {{ lang.nav_changename }}</a>
+        </li>
+    {% endif %}
+    <li class="page-tabs__item{% if mybb.input.action == 'email' %} page-tabs__item--active{% endif %}">
+        <a href="usercp.php?action=email" class="page-tabs__link"><i class="fas fa-at"></i> {{ lang.nav_email }}</a>
+    </li>
+    <li class="page-tabs__item{% if mybb.input.action == 'password' %} page-tabs__item--active{% endif %}">
+        <a href="usercp.php?action=password" class="page-tabs__link"><i class="fas fa-key"></i> {{ lang.nav_password }}</a>
+    </li>
+</ul>

@@ -27,6 +27,6 @@
     </script>
 {% else %}
     <select name="{{ name }}">
-        {{ forumjumpbits }}
+        {{ forumjumpbits|raw }}
     </select>
 {% endif %}

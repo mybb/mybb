@@ -5,30 +5,41 @@
 {% endblock head %}
 
 {% block body %}
-    <form action="moderation.php" method="post">
-        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-            <tr>
-                <td class="thead" colspan="2"><strong>{{ lang.split_thread }}</strong></td>
-            </tr>
-            <tr>
-                <td class="tcat" colspan="2"><span class="smalltext"><strong>{{ lang.new_thread_info }}</strong></span></td>
-            </tr>
-            {{ loginbox|raw }}
-            <tr>
-                <td class="trow2"><strong>{{ lang.new_subject }}</strong></td>
-                <td class="trow2"><input type="text" class="textbox" name="newsubject" value="{{ lang.split_thread_subject }} {{ thread.subject }}" size="50" /></td>
-            </tr>
-            <tr>
-                <td class="trow1"><strong>{{ lang.new_forum }}</strong></td>
-                <td class="trow1">{{ forumselect|raw }}</td>
-            </tr>
-        </table>
-        <br />
-        <div align="center"><input type="submit" class="button" name="submit" value="{{ lang.split_thread }}" /></div>
-        <input type="hidden" name="action" value="do_multisplitposts" />
-        <input type="hidden" name="tid" value="{{ thread.tid }}" />
-        <input type="hidden" name="posts" value="{{ inlineids }}" />
-        <input type="hidden" name="url" value="{{ return_url }}" />
-    </form>
+    <div class="page-content">
+        <header class="page-header">
+            <h1 class="title title--page">{{ lang.split_thread }}</h1>
+        </header>
+        <form action="moderation.php" method="post">
+            <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+            <section class="block block--form form">
+                {{ loginbox|raw }}
+                <div class="section section--form">
+                    <h2 class="title title--section">{{ lang.new_thread_info }}</h2>
+                    <div class="section__container">
+                        <div class="row row--form field">
+                            <h3 class="field__name"><label for="newsubject">{{ lang.new_subject }}</label></h3>
+                            <input type="text" class="textbox" name="newsubject" id="newsubject" value="{{ lang.split_thread_subject }} {{ thread.subject }}" size="50" />
+                        </div>
+                        <div class="row row--form field">
+                            <h3 class="field__name">{{ lang.new_forum }}</h3>
+                            <div class="select-field">
+                                <i class="select-field__icon fas fa-sort"></i>
+                                {{ forumselect|raw }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form__submit">
+                    <button type="submit" class="button button--medium">
+                        <i class="button__icon fas fa-arrow-alt-circle-right"></i>
+                        <span class="button__text">{{ lang.split_thread }}</span>
+                    </button>
+                </div>
+            </section>
+            <input type="hidden" name="action" value="do_multisplitposts" />
+            <input type="hidden" name="tid" value="{{ thread.tid }}" />
+            <input type="hidden" name="posts" value="{{ inlineids }}" />
+            <input type="hidden" name="url" value="{{ return_url }}" />
+        </form>
+    </div>
 {% endblock body %}

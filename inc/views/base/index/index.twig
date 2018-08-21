@@ -9,46 +9,50 @@
 
     {% if (mybb.settings.showwol and mybb.usergroup.canviewonline) or mybb.settings.showindexstats or (mybb.settings.showbirthdays and birthdays|length > 0) %}
     <section class="board-statistics">
-        <div class="board-statistics__section">
-        	<h3 class="board-statistics__title">
-        		<i class="board-statistics__icon fas fa-users fa-fw"></i>
-        		<a href="online.php">{{ lang.whos_online }}</a>
-        	</h3>
-        	<p class="board-statistics__body board-statistics__body--active-note">{{ lang.online_note }}</p>
-        	<p class="board-statistics__body board-statistics__body--members">
-                {% for user in users %}
-                    {{ user.profilelink|raw }}{% if loop.last != true %}{{ lang.comma }} {% endif %}
-                    {% if user.invisible == 1 and (mybb.usergroup.canviewwolinvis == 1 or user.uid == mybb.user.uid) %}*{% endif %}
-                {% endfor %}
-            </p>
-        </div>
-        {% if birthdays or hiddencount %}
-        <div class="board-statistics__section">
-        	<h3 class="board-statistics__title">
-        		<i class="board-statistics__icon fas fa-birthday-cake fa-fw"></i>
-                {{ lang.todays_birthdays }}
-            </h3>
-            <p class="board-statistics__body">
-                {% spaceless %}
-                    {% for user in birthdays %}
-                        {{ user.profilelink|raw }}{% if user.age %} ({{ user.age }}) {% endif %}{% if loop.last != true %}{{ lang.comma }} {% endif %}
+        {% if (mybb.settings.showwol and mybb.usergroup.canviewonline) %}
+            <div class="board-statistics__section">
+            	<h3 class="board-statistics__title">
+            		<i class="board-statistics__icon fas fa-users fa-fw"></i>
+            		<a href="online.php">{{ lang.whos_online }}</a>
+            	</h3>
+            	<p class="board-statistics__body board-statistics__body--active-note">{{ lang.online_note }}</p>
+            	<p class="board-statistics__body board-statistics__body--members">
+                    {% for user in users %}
+                        {{ user.profilelink|raw }}{% if loop.last != true %}{{ lang.comma }} {% endif %}
+                        {% if user.invisible == 1 and (mybb.usergroup.canviewwolinvis == 1 or user.uid == mybb.user.uid) %}*{% endif %}
                     {% endfor %}
-                {% endspaceless %}{% if hiddencount %} - {{ hiddencount }} {{ lang.birthdayhidden }}{% endif %}
-            </p>
-        </div>
+                </p>
+            </div>
         {% endif %}
-        <div class="board-statistics__section">
-        	<h3 class="board-statistics__title">
-        		<i class="board-statistics__icon fas fa-chart-bar fa-fw"></i>
-        		<a href="stats.php">{{ lang.boardstats }}</a>
-            </h3>
-            <p class="board-statistics__body">
-                {{ lang.stats_posts_threads }}<br />
-                {{ lang.stats_numusers }}<br />
-                {{ lang.stats_newestuser|raw }}<br />
-                {{ lang.stats_mostonline|raw }}
-            </p>
-        </div>
+        {% if birthdays or hiddencount %}
+            <div class="board-statistics__section">
+            	<h3 class="board-statistics__title">
+            		<i class="board-statistics__icon fas fa-birthday-cake fa-fw"></i>
+                    {{ lang.todays_birthdays }}
+                </h3>
+                <p class="board-statistics__body">
+                    {% spaceless %}
+                        {% for user in birthdays %}
+                            {{ user.profilelink|raw }}{% if user.age %} ({{ user.age }}) {% endif %}{% if loop.last != true %}{{ lang.comma }} {% endif %}
+                        {% endfor %}
+                    {% endspaceless %}{% if hiddencount %} - {{ hiddencount }} {{ lang.birthdayhidden }}{% endif %}
+                </p>
+            </div>
+        {% endif %}
+        {% if mybb.settings.showindexstats %}
+            <div class="board-statistics__section">
+            	<h3 class="board-statistics__title">
+            		<i class="board-statistics__icon fas fa-chart-bar fa-fw"></i>
+            		<a href="stats.php">{{ lang.boardstats }}</a>
+                </h3>
+                <p class="board-statistics__body">
+                    {{ lang.stats_posts_threads }}<br />
+                    {{ lang.stats_numusers }}<br />
+                    {{ lang.stats_newestuser|raw }}<br />
+                    {{ lang.stats_mostonline|raw }}
+                </p>
+            </div>
+        {% endif %}
     </section>
     {% endif %}
     <div class="page-controls">

@@ -5,22 +5,13 @@
 {% endblock head %}
 
 {% block body %}
-<table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-    <tr>
-        <td class="thead">
-            <span class="smalltext">
-                <strong>
-                    {% if title %}
-                        {{ title }}
-                    {% else %}
-                        {{ mybb.settings.bbname }}
-                    {% endif %}
-                </strong>
-            </span>
-        </td>
-    </tr>
-    <tr>
-        <td class="trow1">{% if error %}{{ error|raw }}{% else %}{{ lang.unknown_error }}{% endif %}</td>
-    </tr>
-</table>
+<div class="page-content">
+    <div class="alert alert--danger">
+    	<i class="alert__icon fas fa-exclamation-triangle"></i>
+    	<div class="alert__message">
+    		{% if title %}<h2 class="alert__title">{{ title }}</h2>{% endif %}
+            <p class="alert__description">{% if error %}{{ error|raw }}{% else %}{{ lang.unknown_error }}{% endif %}</p>
+        </div>
+    </div>
+</div>
 {% endblock body %}

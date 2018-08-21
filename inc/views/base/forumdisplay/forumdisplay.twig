@@ -24,328 +24,294 @@
 {% block body %}
     {% set displayRating = (mybb.settings.allowthreadratings and foruminfo.allowtratings and fpermissions.canviewthreads) ? true : false %}
 
-    {# Moderated by #}
-    {% if moderators %}
-        <span class="smalltext">{{ lang.moderated_by }}
-            <strong>
-                {% for moderator in moderators.users %}
-                    <a href="{{ moderator.profilelink }}">{{ moderator.username }}</a>{% if loop.last == false %}{{ lang.comma }} {% endif %}
-                {% endfor %}
-                {% if moderators.groups %}{{ lang.comma }} {% endif %}
-                {% for moderator in moderators.groups %}
-                    {{ moderator.title }}{% if loop.last == false %}{{ lang.comma }} {% endif %}
-                {% endfor %}
-            </strong>
-        </span>
-        <br />
-    {% endif %}
+    <div class="page-content">
+        <header class="page-header">
+            <h1 class="title title--page">{{ foruminfo.name }}</h1>
+            {% if foruminfo.description %}
+                <p class="description">{{ foruminfo.description }}</p>
+            {% endif %}
+        </header>
 
-    {# Users browsing #}
-    {% if mybb.settings.browsingthisforum %}
-        <span class="smalltext">{{ lang.users_browsing_forum }}
-            {% for user in usersBrowsing %}
-                {% if user.profilelink %}
-                    {{ user.profilelink|raw }}{% if user.invisible %}*{% endif %}{% if loop.last == false %}{{ lang.comma }} {% endif %}
+        {# Moderated by #}
+        {% if moderators %}
+            <p>{{ lang.moderated_by }}
+                <strong>
+                    {% for moderator in moderators.users %}
+                        <a href="{{ moderator.profilelink }}">{{ moderator.username }}</a>{% if loop.last == false %}{{ lang.comma }} {% endif %}
+                    {% endfor %}
+                    {% if moderators.groups %}{{ lang.comma }} {% endif %}
+                    {% for moderator in moderators.groups %}
+                        {{ moderator.title }}{% if loop.last == false %}{{ lang.comma }} {% endif %}
+                    {% endfor %}
+                </strong>
+            </p>
+        {% endif %}
+
+        {# Forum rules #}
+        {% if foruminfo.rulestype and foruminfo.rules %}
+            <section class="container container--forum-rules">
+                {% if foruminfo.rulestype == 2 %}
+                    <h4 class="title title--container">{{ foruminfo.rulestitle|default(trans('forum_rules', foruminfo.name)) }}</h4>
+                    {{ foruminfo.rules }}
+                {% else %}
+                    <strong><a href="misc.php?action=rules&amp;fid={{ foruminfo.fid }}">{{ foruminfo.rulestitle|default(trans('forum_rules', foruminfo.name)) }}</a></strong>
                 {% endif %}
-            {% endfor %}
+            </section>
+        {% endif %}
 
-            {% if usersBrowsingCounter.invisible and mybb.usergroup.canviewwolinvis != 1 %}
-                {% if usersBrowsing %}{{ lang.comma }} {% endif %}{{ trans('users_browsing_forum_guests', usersBrowsingCounter.guests) }}
-            {% endif %}
+        {# Subforums #}
+        {% if subforums %}
+            <section class="block">
+                <h2 class="title title--major">{{ trans('sub_forums_in', foruminfo.name) }}</h2>
+                <div class="forum-list forum-list--full-width">
+                    {{ subforums|raw }}
+                </div>
+            </section>
+        {% endif %}
 
-            {% if usersBrowsingCounter.guests %}
-                {% if usersBrowsing or (usersBrowsingCounter.invisible and mybb.usergroup.canviewwolinvis != 1) %}{{ lang.comma }} {% endif %}{{ trans('users_browsing_forum_guests', usersBrowsingCounter.guests) }}
-            {% endif %}
-        </span>
-        <br />
-    {% endif %}
-
-    {# Forum rules #}
-    {% if foruminfo.rulestype and foruminfo.rules %}
-        <br />
-        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder tfixed">
-            <tr>
-                <td class="thead">
-                    {% if foruminfo.rulestype == 2 %}
-                        <strong>{{ foruminfo.rulestitle|default(trans('forum_rules', foruminfo.name)) }}</strong>
-                    {% else %}
-                        <a href="misc.php?action=rules&amp;fid={{ foruminfo.fid }}">{{ foruminfo.rulestitle|default(trans('forum_rules', foruminfo.name)) }}</a>
-                    {% endif %}
-                </td>
-            </tr>
-            <tr>
-                <td class="trow1 scaleimages"><span class="smalltext">{{ foruminfo.rules }}</span></td>
-            </tr>
-        </table>
-        <br />
-    {% endif %}
-
-    {# Subforums #}
-    {% if subforums %}
-        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-            <tr>
-                <td class="thead" colspan="5" align="center"><strong>{{ trans('sub_forums_in', foruminfo.name) }}</strong></td>
-            </tr>
-            <tr>
-                <td class="tcat" width="2%">&nbsp;</td>
-                <td class="tcat" width="59%"><span class="smalltext"><strong>{{ lang.forumbit_forum }}</strong></span></td>
-                <td class="tcat" width="7%" align="center" style="white-space: nowrap"><span class="smalltext"><strong>{{ lang.forumbit_threads }}</strong></span></td>
-                <td class="tcat" width="7%" align="center" style="white-space: nowrap"><span class="smalltext"><strong>{{ lang.forumbit_posts }}</strong></span></td>
-                <td class="tcat" width="15%" align="center"><span class="smalltext"><strong>{{ lang.forumbit_lastpost }}</strong></span></td>
-            </tr>
-            {{ subforums|raw }}
-        </table>
-        <br />
-    {% endif %}
-
-    {% if foruminfo.type == 'f' and foruminfo.open and fpermissions.canpostthreads and mybb.user.suspendposting is not empty %}
-        {% set newthread %}
-            <a href="newthread.php?fid={{ foruminfo.fid }}" class="button new_thread_button"><span>{{ lang.post_thread }}</span></a>
-        {% endset %}
-    {% endif %}
-
-    {% if foruminfo.type != 'c' %}
-        <div class="float_left">
-            {{ multipage|raw }}
-        </div>
-        <div class="float_right">
-            {{ newthread }}
-        </div>
-        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder clear">
-            {# Header #}
-            <tr>
-                <td class="thead" colspan="{{ colspan }}">
-                    <div class="float_right">
-                        <span class="smalltext">
-                            <strong>
-                                <a href="misc.php?action=markread&amp;fid={{ foruminfo.fid }}{{ post_code_string }}">{{ lang.markforum_read }}</a> | 
-                                <a href="usercp.php?action={{ subAction }}subscription&amp;type=forum&amp;fid={{ foruminfo.fid }}&amp;my_post_key={{ mybb.post_code }}">{% if subAction == 'add' %}{{ lang.subscribe_forum }}{% else %}{{ lang.unsubscribe_forum }}{% endif %}</a>
-                                {% if foruminfo.password %}
-                                    | <a href="misc.php?action=clearpass&amp;fid={{ foruminfo.fid }}&amp;my_post_key={{ mybb.post_code }}">{{ lang.clear_stored_password }}</a>
-                                {% endif %}
-                            </strong>
-                        </span>
-                    </div>
-                    <div>
-                        <strong>{{ foruminfo.name }}</strong>
-                    </div>
-                </td>
-            </tr>
-
-            {# Sorting #}
-            {% set ascDesc %}
-                <span class="smalltext">[<a href="{{ sorting.url }}&amp;sortby={{ sorting.by }}&amp;order={{ sorting.oppsortnext }}">{{ sorting.oppsort }}</a>]</span>
+        {% if foruminfo.type == 'f' and foruminfo.open and fpermissions.canpostthreads and mybb.user.suspendposting is not empty %}
+            {% set newthread %}
+                <a href="newthread.php?fid={{ foruminfo.fid }}" class="button button--medium button--full-width">
+                    <i class="button__icon fas fa-pencil-alt"></i>
+                    <span class="button__text">{{ lang.post_thread }}</span>
+                </a>
             {% endset %}
-            <tr>
-                <td class="tcat" colspan="3" width="66%">
-                    <span class="smalltext">
-                        <strong>
-                            <a href="{{ sorting.url }}&amp;sortby=subject&amp;order=asc">{{ lang.thread }}</a>
-                            {% if sorting.by == 'subject' %}{{ ascDesc }}{% endif %} / <a href="{{ sorting.url }}&amp;sortby=starter&amp;order=asc">{{ lang.author }}</a>
-                            {% if sorting.by == 'starter' %}{{ ascDesc }}{% endif %}
-                        </strong>
+        {% endif %}
+
+        {% if foruminfo.type != 'c' %}
+            <div class="page-controls page-controls--top">
+                <div class="page-buttons">
+                    <a href="misc.php?action=markread&amp;fid={{ foruminfo.fid }}{{ post_code_string }}" class="button button--medium button--secondary button--half-width">
+                        <i class="button__icon fas fa-dot-circle"></i>
+                        <span class="button__text">{{ lang.markforum_read }}</span>
+                    </a>
+                    <a href="usercp.php?action={{ subAction }}subscription&amp;type=forum&amp;fid={{ foruminfo.fid }}&amp;my_post_key={{ mybb.post_code }}" class="button button--medium button--secondary button--half-width">
+                        {% if subAction == 'add' %}
+                            <i class="button__icon fas fa-plus"></i>
+                            <span class="button__text">{{ lang.subscribe_forum }}</span>
+                        {% else %}
+                            <i class="button__icon fas fa-minus"></i>
+                            <span class="button__text">{{ lang.unsubscribe_forum }}</span>
+                        {% endif %}
+                    </a>
+                    {% if foruminfo.password %}
+                        <a href="misc.php?action=clearpass&amp;fid={{ foruminfo.fid }}&amp;my_post_key={{ mybb.post_code }}" class="button button--medium button--secondary button--full-width">
+                            <i class="button__icon fas fa-key"></i>
+                            {{ lang.clear_stored_password }}</a>
+                    {% endif %}
+                    {{ newthread }}
+                </div>
+                {{ multipage|raw }}
+            </div>
+            <section class="thread-list">
+                {# Sorting #}
+                {% set ascDesc %}
+                    <span class="sort-threads__order">
+                        <a href="{{ sorting.url }}&amp;sortby={{ sorting.by }}&amp;order={{ sorting.oppsortnext }}">
+                            {% if sorting.oppsortnext == 'asc' %}
+                                <i class="fas fa-chevron-circle-up" title="{{ sorting.oppsort }}"></i>
+                            {% else %}
+                                <i class="fas fa-chevron-circle-down" title="{{ sorting.oppsort }}"></i>
+                            {% endif %}
+                        </a>
                     </span>
-                </td>
-                <td class="tcat" align="center" width="7%">
-                    <span class="smalltext">
-                        <strong>
-                            <a href="{{ sorting.url }}&amp;sortby=replies&amp;order=desc">{{ lang.replies }}</a>
-                            {% if sorting.by == 'replies' %}{{ ascDesc }}{% endif %}
-                        </strong>
-                    </span>
-                </td>
-                <td class="tcat" align="center" width="7%">
-                    <span class="smalltext">
-                        <strong>
-                            <a href="{{ sorting.url }}&amp;sortby=views&amp;order=desc">{{ lang.views }}</a>
-                            {% if sorting.by == 'views' %}{{ ascDesc }}{% endif %}
-                        </strong>
-                    </span>
-                </td>
-                {% if displayRating %}
-                    <td class="tcat" align="center" width="80">
-                        <span class="smalltext">
-                            <strong>
-                                <a href="{{ sorting.url }}&amp;sortby=rating&amp;order=desc">{{ lang.rating }}</a>
-                                {% if sorting.by == 'rating' %}{{ ascDesc }}{% endif %}
-                            </strong>
+                {% endset %}
+
+            	<div class="sort-threads">
+            		<div class="sort-threads__column sort-threads__column--primary">
+            			<a href="{{ sorting.url }}&amp;sortby=subject&amp;order=asc" class="sort-threads__link">{{ lang.thread }}</a> {% if sorting.by == 'subject' %}{{ ascDesc }}{% endif %}
+                        <span class="sort-threads__author"> &mdash; <a href="{{ sorting.url }}&amp;sortby=starter&amp;order=asc" class="sort-threads__link">{{ lang.author }}</a> {% if sorting.by == 'starter' %}{{ ascDesc }}{% endif %}</span>
+            		</div>
+            		<div class="sort-threads__column sort-threads__column--replies">
+            			<a href="{{ sorting.url }}&amp;sortby=replies&amp;order=desc" class="sort-threads__link">{{ lang.replies }}</a> {% if sorting.by == 'replies' %}{{ ascDesc }}{% endif %}
+            		</div>
+            		<div class="sort-threads__column sort-threads__column--latest">
+            			<a href="{{ sorting.url }}&amp;sortby=lastpost&amp;order=desc" class="sort-threads__link">{{ lang.lastpost }}</a> {% if sorting.by == 'lastpost' %}{{ ascDesc }}{% endif %}
+            		</div>
+                    {% if modpermissions.ismod %}
+                        <span class="sort-threads__column sort-threads__column--checkbox">
+                            <input type="checkbox" name="allbox" onclick="inlineModeration.checkAll(this)" />
                         </span>
-                        <script type="text/javascript" src="{{ mybb.asset_url }}/jscripts/rating.js?ver=1808"></script>
-                        <script type="text/javascript">
-                        <!--
-                            lang.stars = new Array();
-                            lang.stars[1] = "{{ lang.one_star }}";
-                            lang.stars[2] = "{{ lang.two_stars }}";
-                            lang.stars[3] = "{{ lang.three_stars }}";
-                            lang.stars[4] = "{{ lang.four_stars }}";
-                            lang.stars[5] = "{{ lang.five_stars }}";
-                            lang.ratings_update_error = "{{ lang.ratings_update_error }}";
-                        // -->
-                        </script>
-                    </td>
+                    {% endif %}
+            	</div>
+
+                    {% if displayRating %}
+                        {#<td class="tcat" align="center" width="80">
+                            <span class="smalltext">
+                                <strong>
+                                    <a href="{{ sorting.url }}&amp;sortby=rating&amp;order=desc">{{ lang.rating }}</a>
+                                    {% if sorting.by == 'rating' %}{{ ascDesc }}{% endif %}
+                                </strong>
+                            </span>
+                            <script type="text/javascript" src="{{ mybb.asset_url }}/jscripts/rating.js?ver=1808"></script>
+                            <script type="text/javascript">
+                            <!--
+                                lang.stars = new Array();
+                                lang.stars[1] = "{{ lang.one_star }}";
+                                lang.stars[2] = "{{ lang.two_stars }}";
+                                lang.stars[3] = "{{ lang.three_stars }}";
+                                lang.stars[4] = "{{ lang.four_stars }}";
+                                lang.stars[5] = "{{ lang.five_stars }}";
+                                lang.ratings_update_error = "{{ lang.ratings_update_error }}";
+                            // -->
+                            </script>
+                        </td> #}
+                    {% endif %}
+
+                {# Select all #}
+                {% if modpermissions.ismod and threadcount > perpage %}
+                    <div class="thread-list__select-all" id="selectAllrow">
+                    	{{ trans('page_selected', threadCache|length) }} <a href="javascript:void(0)" onclick='inlineModeration.selectAll(); return false;'>{{ trans('select_all', threadcount) }}</a>
+                    </div>
+                    <div class="thread-list__select-all" id="allSelectedrow">
+                    	{{ trans('all_selected', treadcount) }} <a href="javascript:void(0)" onclick='inlineModeration.clearChecked(); return false;'>{{ lang.clear_selection }}</a>
+                    </div>
                 {% endif %}
-                <td class="tcat" align="right" width="20%">
-                    <span class="smalltext">
-                        <strong>
-                            <a href="{{ sorting.url }}&amp;sortby=lastpost&amp;order=desc">{{ lang.lastpost }}</a>
-                            {% if sorting.by == 'lastpost' %}{{ ascDesc }}{% endif %}
-                        </strong>
-                    </span>
-                </td>
-                {% if modpermissions.ismod %}
-                    <td class="tcat" align="center" width="1"><input type="checkbox" name="allbox" onclick="inlineModeration.checkAll(this)" /></td>
+
+                {# Announcements #}
+                {% if announcements %}
+                    <div class="thread-list__announcements">
+                        <h2 class="visually-hidden">{{ lang.forum_announcements }}</h2>
+                        {% for announcement in announcements %}
+                            <div class="row row--thread row--announcement thread thread--announcement thread--{{ folder }}">
+                                <div class="thread__column thread__column--primary">
+                                    <span class="thread__status thread__status--announcement"><i class="fas fa-bullhorn"></i></span>
+                                    <h3 class="thread__title"><a href="{{ announcement.announcementlink }}"{{ new_class }}>{{ announcement.subject }}</a></h3>
+                                    <p class="thread__author">{{ lang.by }} {{ announcement.profilelink|raw }}</p>
+                                </div>
+                                <div class="thread__column thread__column--replies">&nbsp;</div>
+                                <div class="thread__column thread__column--latest">
+                            		<p class="thread__latest-post">
+                            			<a href="{{ announcement.announcementlink }}" class="thread__latest-post__date">{{ announcement.postdate }}</a></a>
+                            		</p>
+                            	</div>
+                                {% if modpermissions.ismod %}
+                                    <span class="thread__column thread__column--moderation"></span>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
                 {% endif %}
-            </tr>
 
-            {# Select all #}
-            {% if modpermissions.ismod and threadcount > perpage %}
-                <tr id="selectAllrow" class="hiddenrow">
-                    <td colspan="8" class="selectall">{{ trans('page_selected', threadCache|length) }} <a href="javascript:void(0)" onclick='inlineModeration.selectAll(); return false;'>{{ trans('select_all', threadcount) }}</a></td>
-                </tr>
-                <tr id="allSelectedrow" class="hiddenrow">
-                    <td colspan="8" class="selectall">{{ trans('all_selected', treadcount) }} <a href="javascript:void(0)" onclick='inlineModeration.clearChecked(); return false;'>{{ lang.clear_selection }}</a></td>
-                </tr>
-            {% endif %}
-
-            {# Announcements #}
-            {% if announcements %}
-                <tr>
-                    <td class="trow_sep" colspan="{{ colspan }}">{{ lang.forum_announcements }}</td>
-                </tr>
-                {% for announcement in announcements %}
-                    <tr>
-                        <td align="center" class="{{ bgcolor }} forumdisplay_announcement" width="2%"><span class="thread_status {{ folder }}">&nbsp;</span></td>
-                        <td align="center" class="{{ bgcolor }} forumdisplay_announcement" width="2%">&nbsp;</td>
-                        <td class="{{ bgcolor }} forumdisplay_announcement">
-                            <a href="{{ announcement.announcementlink }}"{{ new_class }}>{{ announcement.subject }}</a>
-                            <div class="author smalltext">{{ announcement.profilelink }}</div>
-                        </td>
-                        <td align="center" class="{{ bgcolor }} forumdisplay_announcement">-</td>
-                        <td align="center" class="{{ bgcolor }} forumdisplay_announcement">-</td>
-                        {% if displayRating %}
-                            <td class="{{ bgcolor }} forumdisplay_announcement" align="center">-</td>
-                        {% endif %}
-                        <td class="{{ bgcolor }} forumdisplay_announcement" style="white-space: nowrap; text-align: right"><span class="smalltext">{{ postdate }}</span></td>
-                        {% if modpermissions.ismod %}
-                            <td align="center" class="{{ bgcolor }} forumdisplay_announcement">-</td>
-                        {% endif %}
-                    </tr>
-                {% endfor %}
-            {% endif %}
-
-            {# Threads – errors #}
-            {% if fpermissions.canviewthreads != 1 or threadcount is empty %}
-                <tr>
-                    <td colspan="{{ colspan }}" class="trow1">
+                {# Threads – errors #}
+                {% if fpermissions.canviewthreads != 1 or threadcount is empty %}
+                    <div class="alert alert--no-results">
                         {% if fpermissions.canviewthreads != 1 %}
                             {{ lang.nopermission }}
                         {% elseif threadcount is empty %}
                             {{ lang.nothreads }}
                         {% endif %}
-                    </td>
-                </tr>
-            {% else %}
-                {% for thread in threadCache %}
-                    {# Separators #}
-                    {% if thread.sticky and stickySepAdded != true %}
-                        <tr>
-                            <td class="trow_sep" colspan="{{ colspan }}">{{ lang.sticky_threads }}</td>
-                        </tr>
-                        {% set stickySepAdded = true %}
-                    {% elseif normalSepAdded != true %}
-                        <tr>
-                            <td class="trow_sep" colspan="{{ colspan }}">{{ lang.normal_threads }}</td>
-                        </tr>
-                        {% set normalSepAdded = true %}
-                    {% endif %}
-                    {# Threads – no errors #}
-                    {% if fpermissions.canviewdeletionnotice and thread.visible == -1 and modpermissions.canviewdeleted != 1 %}
-                        {% include 'forumdisplay/thread_deleted.twig' %}
-                    {% else %}
-                        {% include 'forumdisplay/thread.twig' %}
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
+                    </div>
+                {% else %}
+                    <div class="thread-list__container">
+                        {% for thread in threadCache %}
+                            {# Separators #}
+                            {% if thread.sticky and stickySepAdded != true %}
+                                <div class="thread-list__sticky-threads">
+                                    <h2 class="visually-hidden">{{ lang.sticky_threads }}</h2>
+                                {% set stickySepAdded = true %}
+                            {% elseif normalSepAdded != true %}
+                                </div>
+                                <div class="thread-list__normal-threads">
+                                    <h2 class="visually-hidden">{{ lang.normal_threads }}</h2>
+                                {% set normalSepAdded = true %}
+                            {% endif %}
+                            {# Threads – no errors #}
+                            {% if fpermissions.canviewdeletionnotice and thread.visible == -1 and modpermissions.canviewdeleted != 1 %}
+                                {% include 'forumdisplay/thread_deleted.twig' %}
+                            {% else %}
+                                {% include 'forumdisplay/thread.twig' %}
+                            {% endif %}
+                        {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
 
-            {# Threadlist footer #}
-            <tr>
-                <td class="tfoot" align="right" colspan="{{ colspan }}">
+                {# Threadlist footer #}
+                <div class="sort-results">
                     <form action="forumdisplay.php" method="get">
                         <input type="hidden" name="fid" value="{{ foruminfo.fid }}" />
-                        <select name="sortby">
-                            {% for field in ['subject', 'lastpost', 'starter', 'started', 'replies', 'views'] %}
-                                <option value="{{ field }}"{% if mybb.input[field] %} selected{% endif %}>{{ attribute(lang, 'sort_by_' ~ field) }}</option>
-                            {% endfor %}
-                            {% if displayRating %}
-                                <option value="rating"{% if mybb.input.rating %} selected{% endif %}>{{ lang.sort_by_rating }}</option>
-                            {% endif %}
-                        </select>
-                        <select name="order">
-                            {% for field in ['asc', 'desc'] %}
-                                <option value="{{ field }}"{% if mybb.input[field] %} selected{% endif %}>{{ attribute(lang, 'sort_order_' ~ field) }}</option>
-                            {% endfor %}
-                        </select>
-                        <select name="datecut">
-                            <option value="1"{% if mybb.input[1] %} selected{% endif %}>{{ lang.datelimit_1day }}</option>
-                            {% for field in [5, 10, 20, 50, 75, 100] %}
-                                <option value="{{ field }}"{% if mybb.input[field] %} selected{% endif %}>{{ attribute(lang, 'datelimit_' ~ field ~ 'days') }}</option>
-                            {% endfor %}
-                            <option value="365"{% if mybb.input[365] %} selected{% endif %}>{{ lang.datelimit_lastyear }}</option>
-                            <option value="9999"{% if mybb.input[9999] %} selected{% endif %}>{{ lang.datelimit_beginning }}</option>
-                        </select>
+                        <h3 class="sort-results__title visually-hidden">{{ lang.sort_threads }}</h3>
+                        <div class="select-field">
+	                        <i class="select-field__icon fas fa-sort"></i>
+                            <select name="sortby">
+                                {% for field in ['subject', 'lastpost', 'starter', 'started', 'replies', 'views'] %}
+                                    <option value="{{ field }}"{% if mybb.input[field] %} selected{% endif %}>{{ attribute(lang, 'sort_by_' ~ field) }}</option>
+                                {% endfor %}
+                                {% if displayRating %}
+                                    <option value="rating"{% if mybb.input.rating %} selected{% endif %}>{{ lang.sort_by_rating }}</option>
+                                {% endif %}
+                            </select>
+                        </div>
+                        <div class="select-field">
+	                        <i class="select-field__icon fas fa-sort"></i>
+                            <select name="order">
+                                {% for field in ['asc', 'desc'] %}
+                                    <option value="{{ field }}"{% if mybb.input[field] %} selected{% endif %}>{{ attribute(lang, 'sort_order_' ~ field) }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="select-field">
+	                        <i class="select-field__icon fas fa-sort"></i>
+                            <select name="datecut">
+                                <option value="1"{% if mybb.input[1] %} selected{% endif %}>{{ lang.datelimit_1day }}</option>
+                                {% for field in [5, 10, 20, 50, 75, 100] %}
+                                    <option value="{{ field }}"{% if mybb.input[field] %} selected{% endif %}>{{ attribute(lang, 'datelimit_' ~ field ~ 'days') }}</option>
+                                {% endfor %}
+                                <option value="365"{% if mybb.input[365] %} selected{% endif %}>{{ lang.datelimit_lastyear }}</option>
+                                <option value="9999"{% if mybb.input[9999] %} selected{% endif %}>{{ lang.datelimit_beginning }}</option>
+                            </select>
+                        </div>
                         {{ prefixselect|raw }}
-                        {{ gobutton|raw }}
+                        <button type="submit" class="button button--inline">
+            				<i class="button__icon fas fa-random"></i>
+            				<span class="button__text">{{ lang.sort_threads }}</span>
+            			</button>
+                        </form>
+                    </div>
+                </section>
+
+                {{ multipage|raw }}
+
+            {# Forum jump, inline moderation, search #}
+            <div class="float_right" style="text-align: right;">
+                {% if modpermissions.ismod %}
+                    {% include 'forumdisplay/inlinemoderation.twig' %}
+                {% endif %}
+
+                {% if fpermissions.cansearch and foruminfo.type == 'f' %}
+                    <form action="search.php" method="post">
+                        <span class="smalltext"><strong>{{ lang.search_forum }}</strong></span>
+                        <input type="text" class="textbox" name="keywords" /> {{ gobutton|raw }}
+                        <input type="hidden" name="action" value="do_search" />
+                        <input type="hidden" name="forums" value="{{ foruminfo.fid }}" />
+                        <input type="hidden" name="postthread" value="1" />
                     </form>
-                </td>
-            </tr>
-        </table>
-        <div class="float_left">
-            {{ multipage|raw }}
-        </div>
-        <div class="float_right" style="margin-top: 4px;">
-            {{ newthread }}
-        </div>
-        <br class="clear" />
-        <br />
-
-        {# Legend #}
-        <div class="float_left">
-            <div class="float_left">
-                <dl class="thread_legend smalltext">
-                    <dd><span class="thread_status newfolder" title="{{ lang.new_thread }}">&nbsp;</span> {{ lang.new_thread }}</dd>
-                    <dd><span class="thread_status newhotfolder" title="{{ lang.new_hot_thread }}">&nbsp;</span> {{ lang.new_hot_thread }}</dd>
-                    <dd><span class="thread_status hotfolder" title="{{ lang.hot_thread }}">&nbsp;</span> {{ lang.hot_thread }}</dd>
-                </dl>
+                    <br />
+                {% endif %}
             </div>
-            <div class="float_left">
-                <dl class="thread_legend smalltext">
-                    <dd><span class="thread_status folder" title="{{ lang.no_new_thread }}">&nbsp;</span> {{ lang.no_new_thread }}</dd>
-                    <dd><span class="thread_status dot_folder" title="{{ lang.posts_by_you }}">&nbsp;</span> {{ lang.posts_by_you }}</dd>
-                    <dd><span class="thread_status lockfolder" title="{{ lang.locked_thread }}">&nbsp;</span> {{ lang.locked_thread }}</dd>
-                </dl>
-            </div>
-            <br class="clear" />
-        </div>
 
-        {# Forum jump, inline moderation, search #}
-        <div class="float_right" style="text-align: right;">
-            {% if modpermissions.ismod %}
-                {% include 'forumdisplay/inlinemoderation.twig' %}
+
+            {# Users browsing #}
+            {% if mybb.settings.browsingthisforum %}
+                <div class="container container--small container--users-browsing">{{ lang.users_browsing_forum }}
+                    {% for user in usersBrowsing %}
+                        {% if user.profilelink %}
+                            {{ user.profilelink|raw }}{% if user.invisible %}*{% endif %}{% if loop.last == false %}{{ lang.comma }} {% endif %}
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if usersBrowsingCounter.invisible and mybb.usergroup.canviewwolinvis != 1 %}
+                        {% if usersBrowsing %}{{ lang.comma }} {% endif %}{{ trans('users_browsing_forum_guests', usersBrowsingCounter.guests) }}
+                    {% endif %}
+
+                    {% if usersBrowsingCounter.guests %}
+                        {% if usersBrowsing or (usersBrowsingCounter.invisible and mybb.usergroup.canviewwolinvis != 1) %}{{ lang.comma }} {% endif %}{{ trans('users_browsing_forum_guests', usersBrowsingCounter.guests) }}
+                    {% endif %}
+                </div>
             {% endif %}
-
-            {% if fpermissions.cansearch and foruminfo.type == 'f' %}
-                <form action="search.php" method="post">
-                    <span class="smalltext"><strong>{{ lang.search_forum }}</strong></span>
-                    <input type="text" class="textbox" name="keywords" /> {{ gobutton|raw }}
-                    <input type="hidden" name="action" value="do_search" />
-                    <input type="hidden" name="forums" value="{{ foruminfo.fid }}" />
-                    <input type="hidden" name="postthread" value="1" />
-                </form>
-                <br />
-            {% endif %}
-
             {{ forumjump|raw }}
         </div>
-        <br class="clear" />
-    {% endif %}
+        {% endif %}
+    </div>
 {% endblock body %}

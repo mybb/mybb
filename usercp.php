@@ -433,6 +433,8 @@ if ($mybb->input['action'] == "options") {
     output_page(\MyBB\template('usercp/options.twig', [
         'errors' => $errors,
         'user' => $user,
+        'date_formats' => $date_formats,
+        'time_formats' => $time_formats,
         'timezones' => $timezones,
         'languages' => $languages,
         'stylelist' => $stylelist
@@ -3032,6 +3034,7 @@ if (!$mybb->input['action']) {
 
     output_page(\MyBB\template('usercp/home.twig', [
         'useravatar' => $useravatar,
+        'username' => $username,
         'groupscache' => $groupscache,
         'reputation_link' => $reputation_link,
         'latestsubscriptions' => $latestsubscriptions,

@@ -5,22 +5,26 @@
 {% endblock head %}
 
 {% block body %}
-    <form action="moderation.php" method="post">
-        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-            <tr>
-                <td class="thead" colspan="2"><strong>{{ lang.delete_threads }}</strong></td>
-            </tr>
-            <tr>
-                <td class="trow1" colspan="2" align="center">{{ lang.confirm_delete_threads }}</td>
-            </tr>
-            {{ loginbox|raw }}
-        </table>
-        <br />
-        <div align="center"><input type="submit" class="button" name="submit" value="{{ lang.delete_threads }}" /></div>
-        <input type="hidden" name="action" value="do_multideletethreads" />
-        <input type="hidden" name="fid" value="{{ forum.fid }}" />
-        <input type="hidden" name="threads" value="{{ inlineids }}" />
-        <input type="hidden" name="url" value="{{ return_url }}" />
-    </form>
+    <div class="page-content">
+        <header class="page-header">
+            <h1 class="title title--page">{{ lang.delete_threads }}</h1>
+            <p class="description">{{ lang.confirm_delete_threads }}</p>
+        </header>
+        <form action="moderation.php" method="post">
+            <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+            <section class="block block--form form">
+                {{ loginbox|raw }}
+                <div class="form__submit">
+                    <button type="submit" class="button button--medium">
+                        <i class="button__icon fas fa-trash"></i>
+                        <span class="button__text">{{ lang.delete_threads }}</span>
+                    </button>
+                </div>
+            </section>
+            <input type="hidden" name="action" value="do_multideletethreads" />
+            <input type="hidden" name="fid" value="{{ forum.fid }}" />
+            <input type="hidden" name="threads" value="{{ inlineids }}" />
+            <input type="hidden" name="url" value="{{ return_url }}" />
+        </form>
+    </div>
 {% endblock body %}
