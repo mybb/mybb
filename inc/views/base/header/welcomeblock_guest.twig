@@ -25,12 +25,12 @@
 	                            {{ lang.login_username }}
 	                        {% endif %}
 						</label></h3>
-						<input name="quick_username" id="quick_login_username" type="text" value="" class="textbox initial_focus" />
+						<input name="quick_username" id="quick_login_username" type="text" value="" class="textbox initial_focus" tabindex="1" />
 					</div>
 					<div class="row row--form field">
 						<h3 class="field__name"><label for="quick_login_password">{{ lang.password }}</label></h3>
 						<p class="field__description"><a href="{{ mybb.settings.bburl }}/member.php?action=lostpw">{{ lang.lost_password }}</a></p>
-						<input name="quick_password" id="quick_login_password" type="password" value="" class="textbox" />
+						<input name="quick_password" id="quick_login_password" type="password" value="" class="textbox" tabindex="2" />
 					</div>
 					<div class="row row--form field">
 						<p class="option-field option-field--compact"><label><input name="quick_remember" id="quick_login_remember" type="checkbox" value="yes" class="checkbox" checked="checked" /> {{ lang.remember_me }}</label></p>

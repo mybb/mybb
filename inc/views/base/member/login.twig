@@ -20,12 +20,12 @@
                 <div class="section section--form">
                     <div class="row row--form field">
                         <h3 class="field__name"><label for="username">{{ lang.username }}</label></h3>
-                        <input type="text" class="textbox" name="username" id="username" value="{{ login.username }}" required autofocus>
+                        <input type="text" class="textbox" name="username" id="username" value="{{ login.username }}" tabindex="1" required autofocus>
                     </div>
                     <div class="row row--form field">
                         <h3 class="field__name"><label for="password">{{ lang.password }}</label></h3>
                         <p class="field__description"><a href="member.php?action=lostpw">{{ lang.lostpw_note }}</a></p>
-                        <input type="password" class="textbox" name="password" id="password" value="{{ login.password }}" required>
+                        <input type="password" class="textbox" name="password" id="password" value="{{ login.password }}" tabindex="2" required>
                     </div>
                     <div class="row row--form field">
                         <p class="option-field option-field--compact">
@@ -35,7 +35,7 @@
                     {{ captcha|raw }}
                 </div>
                 <div class="form__submit">
-                    <button type="submit" class="button button--big" tabindex="3">
+                    <button type="submit" class="button button--big">
     					<i class="button__icon fas fa-sign-in-alt"></i>
     					<span class="button__text">{{ lang.login }}</span>
     				</button>

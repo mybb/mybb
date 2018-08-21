@@ -31,7 +31,7 @@
                             <div class="row row--form field">
                                 <div class="option-field">
                                     <input type="checkbox" class="option-field__name checkbox" checked="checked" name="mergepost[{{ post.pid }}]" id="mergepost_{{ post.pid }}" value="1" />
-                                    <h4 class="option-field__name"><label for="mergepost_{{ post.pid }}">{{ lang.posted_by }} {{ post.username }} - {{ post.postdate|raw }}</label></h4>
+                                    <h4 class="option-field__name option-field__name--light"><label for="mergepost_{{ post.pid }}">{{ lang.posted_by }} {{ post.username }} - {{ post.postdate|raw }}</label></h4>
                                     <div class="option-field__description">
                                         {{ post.message|raw }}
                                     </div>
