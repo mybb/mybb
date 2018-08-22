@@ -1212,7 +1212,7 @@ class postParser
 		{
 			$alt = my_substr($alt, 0, 40).'...'.my_substr($alt, -10);
 		}
-		$alt = htmlspecialchars_uni($alt);
+		$alt = $this->encode_url($alt);
 
 		$alt = $lang->sprintf($lang->posted_image, $alt);
 		$width = $height = '';
