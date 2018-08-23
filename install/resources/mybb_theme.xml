@@ -1338,18 +1338,10 @@ div.error ul {
 	background-position: 0 -320px;
 }
 
-.postbit_qrestore,
-.status_type{
-	display:none!important;
-}
-
-.deleted_post .postbit_qrestore,
-.deleted_post .status_type{
-	display:inline!important;
-}
-
-.deleted_post .postbit_mirage{
-	display:none!important;
+.post:not(.deleted_post) .postbit_qrestore,
+.post:not(.deleted_post) .status_type,
+.post.deleted_post .postbit_mirage {
+    display: none;
 }
 
 a.button:link,
