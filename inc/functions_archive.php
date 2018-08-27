@@ -84,38 +84,25 @@ function archive_header($title="", $fulltitle="", $fullurl="")
  */
 function archive_navigation()
 {
-	global $navbits, $mybb, $lang;
+    /** @var \MyBB\Utilities\BreadcrumbManager $breadcrumbManager */
+    $breadcrumbManager = \MyBB\app(\MyBB\Utilities\BreadcrumbManager::class);
 
-	$navsep = " &gt; ";
-	$nav = $activesep = '';
-	if(is_array($navbits))
-	{
-		reset($navbits);
-		foreach($navbits as $key => $navbit)
-		{
-			if(!empty($navbits[$key+1]))
-			{
-				if(!empty($navbits[$key+2]))
-				{
-					$sep = $navsep;
-				}
-				else
-				{
-					$sep = "";
-				}
-				$nav .= "<a href=\"".$navbit['url']."\">".$navbit['name']."</a>$sep";
-			}
-		}
-	}
-	$navsize = count($navbits);
-	$navbit = $navbits[$navsize-1];
-	if(!empty($nav))
-	{
-		$activesep = $navsep;
-	}
-	$nav .= $activesep.$navbit['name'];
+    $nav = '';
+    $sep = '';
 
-	return $nav;
+    for ($i = 0; $i < $breadcrumbManager->count(); $i++) {
+        $nav .= $sep;
+
+        if ($i < $breadcrumbManager->count() - 1) {
+            $nav .= '<a href="'. $breadcrumbManager[$i]['url'] .'">'. $breadcrumbManager[$i]['name'] .'</a>';
+        } else {
+            $nav .= $breadcrumbManager[$i]['name'];
+        }
+
+        $sep = ' &gt; ';
+    }
+
+    return $nav;
 }
 
 /**
