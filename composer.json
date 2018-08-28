@@ -25,7 +25,8 @@
         "illuminate/container": "^5.5",
         "illuminate/events": "^5.5",
         "illuminate/routing": "^5.5",
-        "twig/twig": "^2.4"
+        "twig/twig": "^2.4",
+        "tinymce/tinymce": "^4.8.2"
     },
     "require-dev": {
         "mockery/mockery": "^1.0",
