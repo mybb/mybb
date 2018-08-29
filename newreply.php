@@ -873,7 +873,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		}
 		$subscription_method = get_subscription_method($tid);
 	}
-	${$subscription_method.'subscribe'} = "checked=\"checked\"";
+	${$subscription_method.'subscribe'} = "checked=\"checked\" ";
 
 	if($forum['allowpicons'] != 0)
 	{
