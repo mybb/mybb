@@ -832,7 +832,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	$message = htmlspecialchars_uni($message);
 
 	$postoptionschecked = array('signature' => '', 'disablesmilies' => '');
-	$postoptions_subscriptionmethod_dont = $postoptions_subscriptionmethod_none = $postoptions_subscriptionmethod_email = $postoptions_subscriptionmethod_pm = '';
+	$subscribe = $nonesubscribe = $emailsubscribe = $pmsubscribe = '';
 
 	// Set up the post options.
 	if(!empty($mybb->input['previewpost']) || $reply_errors != '')
@@ -873,7 +873,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		}
 		$subscription_method = get_subscription_method($tid);
 	}
-	${'postoptions_subscriptionmethod_'.$subscription_method} = "checked=\"checked\"";
+	${$subscription_method.'subscribe'} = "checked=\"checked\"";
 
 	if($forum['allowpicons'] != 0)
 	{
