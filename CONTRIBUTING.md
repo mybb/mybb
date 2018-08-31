@@ -80,3 +80,11 @@ For MyBB 1.8, the base branch for Pull Requests is `feature`. For more recent ve
 4. **Create a Pull Request** to the main repository's base branch from your head branch.
 
    Use imperative mood in the title and reference the Issue ID in the content (e.g. _#123_). If possible, use the `Fix #ID Issue title` format (e.g. _Fix #123 Wrong error message_).
+
+   Include a [closing keyword](https://help.github.com/articles/closing-issues-using-keywords/) for each resolved Issue at the beginning of the Pull Request's description, e.g.
+   ```
+   Resolves #123
+   Resolves #345
+
+   Replaced Anvil::push() with Anvil::fall().
+   ```
