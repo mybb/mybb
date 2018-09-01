@@ -5,53 +5,60 @@
 {% endblock head %}
 
 {% block body %}
-    {% if syndication.feedurl %}
-        <table border="0" cellspacing="0" cellpadding="{{ theme.tablespace }}" width="100%">
-            <tr><td>
-                <strong>{{ lang.syndication_generated_url }}</strong>
-                <blockquote>
-                    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder"><tr><td class="trow1">
-                        {{ syndication.url }}
-                    </td></tr></table>
-                </blockquote>
-            </td></tr>
-        </table>
-        <br />
-    {% endif %}
-    <table border="0" cellspacing="0" cellpadding="{{ theme.tablespace }}" width="100%">
-        <tr><td>{{ lang.syndication_note|raw }}</td></tr>
-    </table>
-    <br />
-    <form method="post" action="misc.php?action=syndication">
-        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-            <tr>
-                <td class="thead" colspan="2"><strong>{{ lang.syndication }}</strong></td>
-            </tr>
-            <tr>
-                <td class="trow1" width="40%" valign="top"><strong>{{ lang.syndication_forum }}</strong><br /><span class="smalltext">{{ lang.syndication_forum_desc }}</span></td>
-                <td class="trow1" width="60%">
-                    <select name="forums[]" size="10" multiple="multiple">
-                        <option value="all"{% if syndication.allselected %} selected="selected"{% endif %}>{{ lang.syndicate_all_forums }}</option>
-                        <option value="all">----------------------</option>
-                        {% for forum in forums %}
-                            <option value="{{ forum.fid }}"{% if forum.selected %} selected="selected"{% endif %}>{{ forum.depth|raw }} {{ forum.name }}</option>
-                        {% endfor %}
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td class="trow2" width="40%" valign="top"><strong>{{ lang.syndication_version }}</strong><br /><span class="smalltext">{{ lang.syndication_version_desc }}</span></td>
-                <td class="trow2" width="60%">
-                    <input type="radio" class="radio" name="version" value="rss2.0"{% if syndication.rss2check %} checked="checked"{% endif %} />&nbsp;{{ lang.syndication_version_rss2 }}<br />
-                    <input type="radio" class="radio" name="version" value="atom1.0"{% if syndication.atom1check %} checked="checked"{% endif %} />&nbsp;{{ lang.syndication_version_atom1 }}
-                </td>
-            </tr>
-            <tr>
-                <td class="trow1" width="40%" valign="top"><strong>{{ lang.syndication_limit }}</strong><br /><span class="smalltext">{{ lang.syndication_limit_desc }}</span></td>
-                <td class="trow1" width="60%"><input type="text" class="textbox" name="limit" value="{{ syndication.limit }}" size="3" /> {{ lang.syndication_threads_time }}</td>
-            </tr>
-        </table>
-        <br />
-        <div align="center"><input type="submit" class="button" name="make" value="{{ lang.syndication_generate }}" /></div>
-    </form>
+    <div class="page-content">
+        <div class="page-header">
+    		<h1 class="title title--page">{{ lang.syndication }}</h1>
+            <p class="description">{{ lang.syndication_note|raw }}</p>
+        </div>
+
+        {% if syndication.feedurl %}
+            <div class="container">
+                <h2 class="title title--container">{{ lang.syndication_generated_url }}</h2>
+                {{ syndication.url }}
+            </div>
+        {% endif %}
+
+        <form method="post" action="misc.php?action=syndication">
+            <div class="block block--form form">
+                <div class="section section--form">
+                    <div class="row row--form field">
+                        <h3 class="field__name">{{ lang.syndication_forum }}</h3>
+                        <p class="field__description">{{ lang.syndication_forum_desc }}</p>
+                        <select name="forums[]" size="10" multiple="multiple">
+                            <option value="all"{% if syndication.allselected %} selected="selected"{% endif %}>{{ lang.syndicate_all_forums }}</option>
+                            <option value="all">----------------------</option>
+                            {% for forum in forums %}
+                                <option value="{{ forum.fid }}"{% if forum.selected %} selected="selected"{% endif %}>{{ forum.depth|raw }} {{ forum.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="row row--form field">
+                        <h3 class="field__name">{{ lang.syndication_version }}</h3>
+                        <p class="field__description">{{ lang.syndication_version_desc }}</p>
+                        <span class="segmented-control">
+                            <span class="segmented-control__option">
+                                <input type="radio" class="radio segmented-control__input" name="version" id="version_rss2" value="rss2.0"{% if syndication.rss2check %} checked="checked"{% endif %} />
+                                <label for="version_rss2" class="segmented-control__button">{{ lang.syndication_version_rss2 }}</label>
+                            </span>
+                            <span class="segmented-control__option">
+                                <input type="radio" class="radio segmented-control__input" name="version" id="version_atom1" value="atom1.0"{% if syndication.atom1check %} checked="checked"{% endif %} />
+                                <label for="version_atom1" class="segmented-control__button">{{ lang.syndication_version_atom1 }}</label>
+                            </span>
+                        </span>
+                    </div>
+                    <div class="row row--form field">
+                        <h3 class="field__name"><label for="rss_limit">{{ lang.syndication_limit }}</label></h3>
+                        <p class="field__description">{{ lang.syndication_limit_desc }}</p>
+                        <input type="text" class="textbox textbox--small" name="limit" id="rss_limit" value="{{ syndication.limit }}" size="3" /> {{ lang.syndication_threads_time }}
+                    </div>
+                </div>
+                <div class="form__submit">
+                    <button class="button button--medium">
+                        <i class="button__icon fas fa-rss-square"></i>
+                        <span class="button__text">{{ lang.syndication_generate }}</span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
 {% endblock body %}
