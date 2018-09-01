@@ -1,0 +1,27 @@
+<div class="user-list__user">
+    {# TO DO: User Profile Link #}
+    <a href="#" class="avatar-profile-link">
+        <img src="{{ buddy.avatar.image }}" alt="" {{ buddy.avatar.width_height|raw }} class="avatar" />
+    </a>
+    {% if buddy.show_pm %}
+        <a href="private.php?action=send&amp;uid={{ buddy.uid }}" target="_blank" onclick="window.opener.location.href=this.href; return false;" class="user-list__shortcut" title="{{ lang.pm_buddy }}">
+            <i class="button__icon fas fa-envelope"></i>
+            <span class="visually-hidden">{{ lang.pm_buddy }}</span>
+        </a>
+    {% endif %}
+    <h4 class="user-list__username">
+        {{ buddy.profile_link|raw }}
+    </h4>
+    <ul class="list list--stats list--user">
+        <li class="list__item">
+            <span class="list__field">{{ lang.last_active }}</span>
+            <span class="list__value">
+                {% if buddy.lastactive %}
+                    {{ buddy.last_active }}
+                {% else %}
+                    {{ lang.never }}
+                {% endif %}
+            </span>
+        </li>
+    </ul>
+</div>

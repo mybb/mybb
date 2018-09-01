@@ -18,7 +18,7 @@ $l['offline'] = "Offline";
 $l['offline_none'] = "You have no offline buddies";
 $l['delete_buddy'] = "X";
 $l['pm_buddy'] = "Send Private Message";
-$l['last_active'] = "<strong>Last Active:</strong> {1}";
+$l['last_active'] = "Last Active";
 $l['close'] = "Close";
 $l['no_buddies'] = "Your buddy list is currently empty. Use your User CP or visit a user profile to add users to your buddy list.";
 
