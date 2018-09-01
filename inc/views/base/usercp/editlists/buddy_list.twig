@@ -1,5 +1,5 @@
 {% for user in buddyList %}
     {% include 'usercp/editlists/user.twig' %}
 {% else %}
-    <li>{{ lang.buddy_list_empty }}</li>
+    <li class="buddy-ignore-list__empty alert alert--no-results">{{ lang.buddy_list_empty }}</li>
 {% endfor %}
