@@ -365,7 +365,7 @@ class CoreExtension extends \Twig_Extension
     public function removePageOne(string $url): string
     {
         $url = str_replace('-page-1.html', '.html', $url);
-        $url = str_replace('/&amp;page=1$/', '', $url);
+        $url = preg_replace('/&amp;page=1$/', '', $url);
 
         return $url;
     }

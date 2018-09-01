@@ -22,7 +22,7 @@
         {% if loop.last %}
             <span class="active">{{ crumb.name }}</span>
         {% else %}
-            <a href="{{ crumb.url|remove_page_one }}">{{ crumb.name }}</a>
+            <a href="{{ crumb.url|remove_page_one|raw }}">{{ crumb.name }}</a>
         {% endif %}
     {% endfor %}
 </div>

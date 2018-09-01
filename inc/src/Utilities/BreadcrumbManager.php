@@ -95,11 +95,9 @@ class BreadcrumbManager implements \IteratorAggregate, \ArrayAccess
     public function buildForumBreadcrumb(int $fid, array $multiPage = [])
     {
         if (empty($this->forumCache)) {
-            // TODO: We want to eradicate globals eventually, but for now this is the best way to do this
             // NOTE: The below call to `cache_forums` will not rebuild the cache if it already exists -
             //  it is simply used here to ensure it exists.
-            cache_forums();
-            $forumCache = $GLOBALS['forum_cache'];
+            $forumCache = cache_forums();
 
             foreach ($forumCache as $key => $val) {
                 $this->forumCache[$val['fid']][$val['pid']] = $val;
@@ -110,7 +108,7 @@ class BreadcrumbManager implements \IteratorAggregate, \ArrayAccess
             foreach ($this->forumCache[$fid] as $key => $forumNav) {
                 if ($fid == $forumNav['fid']) {
                     if (!empty($this->forumCache[$forumNav['pid']])) {
-                        build_forum_breadcrumb($forumNav['pid']);
+                        $this->buildForumBreadcrumb((int) $forumNav['pid']);
                     }
 
                     $newEntry = [
