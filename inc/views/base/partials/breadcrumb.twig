@@ -14,7 +14,7 @@
         {# Separator #}
         {% if loop.first != true and loop.last != true %}
             &rsaquo;
-        {% elseif loop.last %}
+        {% elseif loop.last and loop.length > 1 %}
             <br /><img src="{{ theme.imgdir }}/nav_bit.png" alt="" />
         {% endif %}
 
