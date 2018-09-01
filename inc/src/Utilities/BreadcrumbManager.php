@@ -7,7 +7,7 @@ use Traversable;
 /**
  * The breadcrumb manager manages breadcrumb navigation.
  */
-class BreadcrumbManager implements \IteratorAggregate, \ArrayAccess
+class BreadcrumbManager implements \IteratorAggregate, \ArrayAccess, \Countable
 {
     /**
      * The root URL to the site.
