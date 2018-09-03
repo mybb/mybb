@@ -5509,13 +5509,14 @@ if(use_xmlhttprequest == "1")
 </table>
 </fieldset>]]></template>
 		<template name="member_register_stylebit" version="120"><![CDATA[<option value="{$style['sid']}">{$style['name']}</option>]]></template>
-		<template name="member_resendactivation" version="120"><![CDATA[<html>
+		<template name="member_resendactivation" version="1819"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->resend_activation}</title>
 {$headerinclude}
 </head>
 <body>
 {$header}
+{$errors}
 <form action="member.php" method="post">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
@@ -5523,8 +5524,9 @@ if(use_xmlhttprequest == "1")
 </tr>
 <tr>
 <td class="trow1" width="40%"><strong>{$lang->email_address}</strong></td>
-<td class="trow1" width="60%"><input type="text" class="textbox" name="email" /></td>
+<td class="trow1" width="60%"><input type="text" class="textbox" name="email" value="{$email}" /></td>
 </tr>
+{$captcha}
 </table>
 <br />
 <div align="center"><input type="submit" class="button" value="{$lang->request_activation}" /></div>
