@@ -9543,7 +9543,7 @@ if(use_xmlhttprequest == "1")
 {$prefixselect_prefix}
 </select>]]></template>
 		<template name="post_savedraftbutton" version="120"><![CDATA[&nbsp;<input type="submit" class="button" name="savedraft" value="{$lang->save_draft}" />]]></template>
-		<template name="post_subscription_method" version="1818"><![CDATA[<tr>
+		<template name="post_subscription_method" version="1819"><![CDATA[<tr>
 <td class="{$bgcolor}" valign="top"><strong>{$lang->thread_subscription_method}</strong><br />
 <span class="smalltext">{$lang->thread_subscription_method_desc}</span></td>
 <td class="{$bgcolor} smalltext">
