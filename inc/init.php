@@ -306,3 +306,4 @@ $time_formats = array(
 	3 => "H:i"
 );
 
+require_once __DIR__.'/src/bootstrap.php';

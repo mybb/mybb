@@ -36,6 +36,7 @@ trait LegacyCoreAwareTest
 
         $GLOBALS['mybb']->settings = [
             'bburl' => 'http://example.com',
+            'bbname' => 'Test Board',
         ];
 
         $cacheHandler = \Mockery::mock('CacheHandlerInterface');
