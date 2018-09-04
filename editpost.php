@@ -245,6 +245,14 @@ if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid'
 		$db->update_query("attachments", $update_sql, "aid='{$mybb->input['attachmentaid']}'");
 		update_thread_counters($post['tid'], array('attachmentcount' => "-1"));
 	}
+
+	if($mybb->input['ajax'] == 1)
+	{
+		header("Content-type: application/json; charset={$lang->settings['charset']}");
+		echo json_encode(array("success" => true));
+		exit();
+	}
+
 	if(!isset($mybb->input['submit']))
 	{
 		$mybb->input['action'] = "editpost";
