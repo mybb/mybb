@@ -143,7 +143,7 @@ class FeedGenerator
 					$this->xml .= "\t\t<updated>{$item['updated']}</updated>\n";
 					$this->xml .= "\t\t<link rel=\"alternate\" type=\"text/html\" href=\"{$item['link']}\" />\n";
 					$this->xml .= "\t\t<id>{$item['link']}</id>\n";
-					$this->xml .= "\t\t<title type=\"html\" xml:space=\"preserve\"><![CDATA[".$this->sanitize_content($item['title'])."]]></title>\n";
+					$this->xml .= "\t\t<title xml:space=\"preserve\"><![CDATA[".$this->sanitize_content($item['title'])."]]></title>\n";
 					$this->xml .= "\t\t<content type=\"html\" xml:space=\"preserve\" xml:base=\"{$item['link']}\"><![CDATA[".$this->sanitize_content($item['description'])."]]></content>\n";
 					$this->xml .= "\t\t<draft xmlns=\"http://purl.org/atom-blog/ns#\">false</draft>\n";
 					$this->xml .= "\t</entry>\n";

@@ -680,7 +680,7 @@ class postParser
 		}
 
 		// Neutralize multiple adjacent wildcards and generate pattern
-		$ptrn = array('/[\*]{1}[\+]+/', '/[\+]+[\*]{1}/', '/[\*]+/');
+		$ptrn = array('/\*\++/', '/\++\*/', '/\*+/');
 		$rplc = array('*', '*', '[^\s\n]*');
 		$bad_word = preg_replace($ptrn, $rplc, $bad_word);
 		
@@ -707,7 +707,7 @@ class postParser
 			$trap .= '[^\s\n]{'.($plus-1).'}';
 		}
 		
-		return $trap;
+		return '\b'.$trap.'\b';
 	}
 
 	/**
@@ -1212,7 +1212,7 @@ class postParser
 		{
 			$alt = my_substr($alt, 0, 40).'...'.my_substr($alt, -10);
 		}
-		$alt = htmlspecialchars_uni($alt);
+		$alt = $this->encode_url($alt);
 
 		$alt = $lang->sprintf($lang->posted_image, $alt);
 		$width = $height = '';
