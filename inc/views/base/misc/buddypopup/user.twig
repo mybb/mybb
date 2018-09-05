@@ -17,7 +17,7 @@
             <span class="list__field">{{ lang.last_active }}</span>
             <span class="list__value">
                 {% if buddy.lastactive %}
-                    {{ buddy.last_active }}
+                    {{ buddy.last_active|raw }}
                 {% else %}
                     {{ lang.never }}
                 {% endif %}
