@@ -15,30 +15,45 @@
     </div>
     <div class="page-sidebar">
         {% if mybb.settings.portal_showwelcome %}
-            <section class="block block--sidebar">
-                <h2 class="title title--sidebar">{{ lang.welcome }}</h2>
-                        {% if mybb.user.uid %}
-                            <ul class="list list--divided list--stats">
-                                <li class="list__item">{{ lang.member_welcome_lastvisit }} {{ portal.lastvisit|raw }}
-                                <li class="list__item">{{ lang.new_announcements }}</li>
-                                <li class="list__item">{{ lang.new_threads }}</li>
-                                <li class="list__item">{{ lang.new_posts }}</li>
-                            </ul>
-                        {% else %}
-                            <span class="smalltext">{{ lang.guest_welcome_registration|raw }}</span><br />
-                            <br />
-                            <form method="post" action="{{ mybb.settings.bburl }}/member.php">
-                                <input type="hidden" name="action" value="do_login" />
-                                <input type="hidden" name="url" value="{{ portal.portal_url }}" />
-                                {{ portal.username }}<br />&nbsp;&nbsp;<input type="text" class="textbox" name="username" value="" /><br /><br />
-                                {{ lang.password }}<br />&nbsp;&nbsp;<input type="password" class="textbox" name="password" value="" /><br /><br />
-                                <label title="{{ lang.remember_me_desc }}"><input type="checkbox" class="checkbox" name="remember" value="yes" /> {{ lang.remember_me }}</label><br /><br />
-                                <br /><input type="submit" class="button" name="loginsubmit" value="{{ lang.login }}" />
-                            </form>
-                        {% endif %}
-                    </td>
-                </tr>
-            </section>
+            {% if mybb.user.uid %}
+                <section class="block block--sidebar">
+                    <h2 class="title title--sidebar">{{ lang.welcome }}</h2>
+                    <ul class="list list--divided list--stats">
+                        <li class="list__item">{{ lang.member_welcome_lastvisit }} {{ portal.lastvisit|raw }}
+                        <li class="list__item">{{ lang.new_announcements }}</li>
+                        <li class="list__item">{{ lang.new_threads }}</li>
+                        <li class="list__item">{{ lang.new_posts }}</li>
+                    </ul>
+                </section>
+            {% else %}
+                <section class="block block--form block--sidebar form">
+                    <form method="post" action="{{ mybb.settings.bburl }}/member.php">
+                        <input type="hidden" name="action" value="do_login" />
+                        <input type="hidden" name="url" value="{{ portal.portal_url }}" />
+                        <h2 class="title title--sidebar">{{ lang.welcome }}</h2>
+                        <div class="section section--form">
+                            <div class="row row--form">{{ lang.guest_welcome_registration|raw }}</div>
+                            <div class="row row--form field">
+                                <h3 class="field__name"><label for="portal_username">{{ portal.username }}</label></h3>
+                                <input type="text" class="textbox" name="username" id="portal_username" value="" />
+                            </div>
+                            <div class="row row--form field">
+                                <h3 class="field__name"><label for="portal_password">{{ lang.password }}</label></h3>
+                                <input type="password" class="textbox" name="password" id="portal_password" value="" />
+                            </div>
+                            <div class="row row--form field">
+                                <p class="option-field option-field--compact"><label title="{{ lang.remember_me_desc }}"><input type="checkbox" class="checkbox" name="remember" value="yes" /> {{ lang.remember_me }}</label></p>
+                            </div>
+                        </div>
+                        <div class="form__submit">
+                            <button type="submit" name="loginsubmit" class="button button--medium">
+            					<i class="button__icon fas fa-sign-in-alt"></i>
+            					<span class="button__text">{{ lang.login }}</span>
+            				</button>
+                        </div>
+                    </form>
+                </section>
+            {% endif %}
         {% endif %}
         {% if portal.showpms %}
             <section class="block block--sidebar">
