@@ -738,11 +738,6 @@ elseif($mybb->input['action'] == "smilies")
 			$extra_class = ' smilie_pointer';
 			foreach($smilies_cache as $smilie)
 			{
-				if($smilie['showclickable'] != 1)
-				{
-					continue;
-				}
-
 				$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
 				$smilie['image'] = $mybb->get_asset_url($smilie['image']);
 
@@ -769,11 +764,6 @@ elseif($mybb->input['action'] == "smilies")
 		{
 			foreach($smilies_cache as $smilie)
 			{
-				if($smilie['showclickable'] != 1)
-				{
-					continue;
-				}
-
 				$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
 				$smilie['image'] = $mybb->get_asset_url($smilie['image']);
 
