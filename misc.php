@@ -776,10 +776,6 @@ elseif($mybb->input['action'] == "smilies")
 			$extra_class = ' smilie_pointer';
 			foreach($smilies_cache as $smilie)
 			{
-				if($smilie['showclickable'] != 1)
-				{
-					continue;
-				}
 				$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
 				$smilie['image'] = htmlspecialchars_uni($mybb->get_asset_url($smilie['image']));
 				$smilie['name'] = htmlspecialchars_uni($smilie['name']);
@@ -832,10 +828,6 @@ elseif($mybb->input['action'] == "smilies")
 			$extra_class = $onclick = '';
 			foreach($smilies_cache as $smilie)
 			{
-				if($smilie['showclickable'] != 1)
-				{
-					continue;
-				}
 				$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
 				$smilie['image'] = htmlspecialchars_uni($mybb->get_asset_url($smilie['image']));
 				$smilie['name'] = htmlspecialchars_uni($smilie['name']);
