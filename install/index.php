@@ -106,7 +106,7 @@ if(function_exists('pg_connect'))
 		'title' => 'PostgreSQL',
 		'short_title' => 'PostgreSQL',
 		'structure_file' => 'pgsql_db_tables.php',
-		'population_file' => 'mysql_db_inserts.php'
+		'population_file' => 'pgsql_db_inserts.php'
 	);
 }
 
@@ -120,7 +120,7 @@ if(class_exists('PDO'))
 			'title' => 'SQLite 3',
 			'short_title' => 'SQLite',
 			'structure_file' => 'sqlite_db_tables.php',
-			'population_file' => 'mysql_db_inserts.php'
+			'population_file' => 'pgsql_db_inserts.php'
 		);
 	}
 }
@@ -1667,7 +1667,7 @@ function create_tables()
  */
 function populate_tables()
 {
-	global $output, $lang;
+	global $output, $lang, $dboptions;
 
 	require MYBB_ROOT.'inc/config.php';
 	$db = db_connection($config);
