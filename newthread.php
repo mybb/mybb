@@ -610,7 +610,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	}
 
 	$postoptionschecked = array('signature' => '', 'disablesmilies' => '');
-	$postoptions_subscriptionmethod_dont = $postoptions_subscriptionmethod_none = $postoptions_subscriptionmethod_email = $postoptions_subscriptionmethod_pm = '';
+	$subscribe = $nonesubscribe = $emailsubscribe = $pmsubscribe = '';
 	$postpollchecked = '';
 
 	// Check the various post options if we're
@@ -671,7 +671,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		$numpolloptions = "2";
 	}
 
-	${'postoptions_subscriptionmethod_'.$subscription_method} = "checked=\"checked\"";
+	${$subscription_method.'subscribe'} = "checked=\"checked\" ";
 	$preview = '';
 
 	// If we're previewing a post then generate the preview.

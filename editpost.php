@@ -672,7 +672,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		$post_errors = '';
 	}
 
-	$postoptions_subscriptionmethod_dont = $postoptions_subscriptionmethod_none = $postoptions_subscriptionmethod_email = $postoptions_subscriptionmethod_pm = '';
+	$subscribe = $nonesubscribe = $emailsubscribe = $pmsubscribe = '';
 	$postoptionschecked = array('signature' => '', 'disablesmilies' => '');
 
 	if(!empty($mybb->input['previewpost']) || $post_errors)
@@ -739,27 +739,13 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 				$postoptionschecked['signature'] = " checked=\"checked\"";
 			}
 
-			if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "none")
-			{
-				$postoptions_subscriptionmethod_none = "checked=\"checked\"";
-			}
-			else if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "email")
-			{
-				$postoptions_subscriptionmethod_email = "checked=\"checked\"";
-			}
-			else if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "pm")
-			{
-				$postoptions_subscriptionmethod_pm = "checked=\"checked\"";
-			}
-			else
-			{
-				$postoptions_subscriptionmethod_dont = "checked=\"checked\"";
-			}
-
 			if(isset($postoptions['disablesmilies']) && $postoptions['disablesmilies'] == 1)
 			{
 				$postoptionschecked['disablesmilies'] = " checked=\"checked\"";
 			}
+			
+			$subscription_method = get_subscription_method($tid, $postoptions);
+			${$subscription_method.'subscribe'} = "checked=\"checked\" ";
 		}
 	}
 
@@ -822,28 +808,8 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 			$postoptionschecked['disablesmilies'] = " checked=\"checked\"";
 		}
 
-		$query = $db->simple_select("threadsubscriptions", "notification", "tid='{$tid}' AND uid='{$mybb->user['uid']}'");
-		if($db->num_rows($query) > 0)
-		{
-			$notification = $db->fetch_field($query, 'notification');
-
-			if($notification ==  0)
-			{
-				$postoptions_subscriptionmethod_none = "checked=\"checked\"";
-			}
-			else if($notification == 1)
-			{
-				$postoptions_subscriptionmethod_email = "checked=\"checked\"";
-			}
-			else if($notification == 2)
-			{
-				$postoptions_subscriptionmethod_pm = "checked=\"checked\"";
-			}
-			else
-			{
-				$postoptions_subscriptionmethod_dont = "checked=\"checked\"";
-			}
-		}
+		$subscription_method = get_subscription_method($tid, $postoptions);
+		${$subscription_method.'subscribe'} = "checked=\"checked\" ";
 	}
 
 	// Generate thread prefix selector if this is the first post of the thread
