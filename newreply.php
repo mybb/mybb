@@ -886,7 +886,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		$subscription_method = get_subscription_method($tid);
         $newreply['subscriptionmethod'][$subscription_method] = true;
 	}
-	${'postoptions_subscriptionmethod_'.$subscription_method} = "checked=\"checked\"";
+	${$subscription_method.'subscribe'} = "checked=\"checked\" ";
 
 	if($forum['allowpicons'] != 0)
 	{

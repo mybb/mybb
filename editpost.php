@@ -742,22 +742,8 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 				$editpost['postoptions']['disablesmilies'] = true;
 			}
 
-			if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "none")
-			{
-				$editpost['subscriptionmethod']['none'] = true;
-			}
-			elseif(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "email")
-			{
-				$editpost['subscriptionmethod']['email'] = true;
-			}
-			elseif(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "pm")
-			{
-				$editpost['subscriptionmethod']['pm'] = true;
-			}
-			else
-			{
-				$editpost['subscriptionmethod']['dont'] = true;
-			}
+			$subscription_method = get_subscription_method($tid, $postoptions);
+            $editpost['subscriptionmethod'][$subscription_method] = true;
 		}
 	}
 
@@ -818,29 +804,8 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 			$editpost['postoptions']['disablesmilies'] = true;
 		}
 
-		$query = $db->simple_select("threadsubscriptions", "notification",
-			"tid='{$tid}' AND uid='{$mybb->user['uid']}'");
-		if($db->num_rows($query) > 0)
-		{
-			$notification = $db->fetch_field($query, 'notification');
-
-			if($notification == 0)
-			{
-				$editpost['subscriptionmethod']['none'] = true;
-			}
-			elseif($notification == 1)
-			{
-				$editpost['subscriptionmethod']['email'] = true;
-			}
-			elseif($notification == 2)
-			{
-				$editpost['subscriptionmethod']['pm'] = true;
-			}
-			else
-			{
-				$editpost['subscriptionmethod']['dont'] = true;
-			}
-		}
+		$subscription_method = get_subscription_method($tid, $postoptions);
+        $editpost['subscriptionmethod'][$subscription_method] = true;
 	}
 
 	// Generate thread prefix selector if this is the first post of the thread
