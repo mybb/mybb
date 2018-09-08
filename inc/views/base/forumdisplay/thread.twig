@@ -12,9 +12,6 @@
                 {{ thread.threadprefix }}
             {% endif %}
 
-            {# Moved / Poll prefix #}
-
-
             {# Thread title #}
             <span class="{{ thread.inlineEditClass }} {{ thread.newclass }}" id="tid_{{ thread.tid }}">
                 <a href="{{ thread.threadlink }}">{{ thread.subject }}</a>
@@ -29,6 +26,9 @@
             <span class="thread__icons">
 
                 {# <span class="thread_status {{ thread.folder.value }}" title="{{ thread.folder.label }}">&nbsp;</span> #}
+
+                {# TO DO: Contains posts by you #}
+                {# TO DO: Hot thread? #}
 
                 {# Attachment paperclip #}
                 {% if mybb.settings.enableattachments and thread.attachmentcount %}
@@ -78,7 +78,7 @@
     {% else %}
         <div class="thread__column thread__column--replies">
             <p class="thread__replies">
-                <a href="{{ mybb.settings.bburl }}/misc.php?action=whoposted&tid={{ thread.tid }}" onclick="MyBB.whoPosted({{ thread.tid }}); return false;" title="{{ lang.replies }}: {{ thread.replies }} &middot; {{ lang.views }}: {{ thread.views }}" class="thread__reply-count">{{ thread.replies }}</a>
+                <a href="{{ mybb.settings.bburl }}/misc.php?action=whoposted&amp;tid={{ thread.tid }}" onclick="MyBB.whoPosted({{ thread.tid }}); return false;" title="{{ lang.replies }}: {{ thread.replies }} &middot; {{ lang.views }}: {{ thread.views }}" class="thread__reply-count">{{ thread.replies }}</a>
                 {% if thread.unapprovedposts and modpermissions.canviewunapprove %}
                     <span class="thread__unapproved-replies" title="{{ (thread.unapprovedposts == 1) ? trans(lang.thread_unapproved_post_count, 1) : trans(lang.thread_unapproved_posts_count, thread.unapprovedposts) }}">
                         {{ thread.unapprovedposts|my_number_format }}

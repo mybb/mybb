@@ -5,117 +5,89 @@
 {% endblock head %}
 
 {% block body %}
-    <table width="100%" align="center" border="0">
-        <tr>
-            <td align="right" valign="top">{{ multipage|raw }}</td>
-        </tr>
-    </table>
-    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-        <tr>
-            <td colspan="8" class="thead"><strong>{{ lang.search_results }}</strong></td>
-        </tr>
-        <tr>
-            <td class="tcat" align="center" colspan="3" width="56%">
-                <span class="smalltext">
-                    <strong>
-                        <a href="search.php?action=results&amp;sid={{ results.sid }}&amp;sortby=subject&amp;order=asc">{{ lang.thread }}</a>
-                        {% if results.orderarrow.subject %}
-                            <span class="smalltext">[<a href="{{ results.sorturl|raw }}&amp;sortby=subject&amp;order={{ results.oppsortnext }}">{{ results.oppsort }}</a>]</span>
+    <div class="page-content">
+        <header class="page-header">
+            <h1 class="title title--page">{{ lang.search_results }}</h1>
+        </header>
+        <div class="page-controls page-controls--top">{{ multipage|raw }}</div>
+        <section class="thread-list">
+            {% set ascDesc %}
+                <span class="sort-threads__order">
+                    <a href="{{ results.sorturl|raw }}&amp;sortby={{ results.sortby }}&amp;order={{ results.oppsortnext }}">
+                        {% if results.oppsort == 'asc' %}
+                            <i class="fas fa-chevron-circle-up" title="{{ results.oppsort }}"></i>
+                        {% else %}
+                            <i class="fas fa-chevron-circle-down" title="{{ results.oppsort }}"></i>
                         {% endif %}
-                    </strong> / 
-                    <strong>
-                        <a href="search.php?action=results&amp;sid={{ results.sid }}&amp;sortby=starter&amp;order=asc">{{ lang.author }}</a> 
-                        {% if results.orderarrow.starter %}
-                            <span class="smalltext">[<a href="{{ results.sorturl|raw }}&amp;sortby=starter&amp;order={{ results.oppsortnext }}">{{ results.oppsort }}</a>]</span>
-                        {% endif %}
-                    </strong>
+                    </a>
                 </span>
-            </td>
-            <td class="tcat" align="center" width="14%">
-                <span class="smalltext"><strong>
-                    <a href="search.php?action=results&amp;sid={{ results.sid }}&amp;sortby=forum&amp;order=asc">{{ lang.forum }}</a> 
-                    {% if results.orderarrow.forum %}
-                        <span class="smalltext">[<a href="{{ results.sorturl|raw }}&amp;sortby=forum&amp;order={{ results.oppsortnext }}">{{ results.oppsort }}</a>]</span>
-                    {% endif %}
-                </strong></span>
-            </td>
-            <td class="tcat" align="center">
-                <span class="smalltext"><strong>
-                    <a href="search.php?action=results&amp;sid={{ results.sid }}&amp;sortby=replies&amp;order=desc">{{ lang.replies }}</a> 
-                    {% if results.orderarrow.replies %}
-                        <span class="smalltext">[<a href="{{ results.sorturl|raw }}&amp;sortby=replies&amp;order={{ results.oppsortnext }}">{{ results.oppsort }}</a>]</span>
-                    {% endif %}
-                </strong></span>
-            </td>
-            <td class="tcat" align="center">
-                <span class="smalltext"><strong>
-                    <a href="search.php?action=results&amp;sid={{ results.sid }}&amp;sortby=views&amp;order=desc">{{ lang.views }}</a> 
-                    {% if results.orderarrow.views %}
-                        <span class="smalltext">[<a href="{{ results.sorturl|raw }}&amp;sortby=views&amp;order={{ results.oppsortnext }}">{{ results.oppsort }}</a>]</span>
-                    {% endif %}
-                </strong></span>
-            </td>
-            <td class="tcat" align="center" width="200">
-                <span class="smalltext"><strong>
-                    <a href="search.php?action=results&amp;sid={{ results.sid }}&amp;sortby=lastpost&amp;order=desc">{{ lang.lastpost }}</a> 
-                    {% if results.orderarrow.lastpost %}
-                        <span class="smalltext">[<a href="{{ results.sorturl|raw }}&amp;sortby=lastpost&amp;order={{ results.oppsortnext }}">{{ results.oppsort }}</a>]</span>
-                    {% endif %}
-                </strong></span>
-            </td>
-            {% if results.show_inline_moderation %}
-                <td class="tcat" align="center" width="1"><input type="checkbox" name="allbox" onclick="inlineModeration.checkAll(this);" /></td>
-            {% elseif results.show_mod_empty %}
-                <td class="tcat" align="center" width="1"></td>
-            {% endif %}
-        </tr>
-        {% if results.show_inline_moderation %}
-            <tr id="selectAllrow" class="hiddenrow">
-                <td colspan="8" class="selectall">{{ lang.page_selected }} <a href="javascript:void(0)" onclick='inlineModeration.selectAll(); return false;'>{{ lang.select_all }}</a></td>
-            </tr>
-            <tr id="allSelectedrow" class="hiddenrow">
-                <td colspan="8" class="selectall">{{ lang.all_selected }} <a href="javascript:void(0)" onclick='inlineModeration.clearChecked(); return false;'>{{ lang.clear_selection }}</a></td>
-            </tr>
-        {% endif %}
-        {% for thread in threads %}
-            {% include 'search/results_threads_row.twig' %}
-        {% endfor %}
-    </table>
-    <table width="100%" align="center" border="0">
-        <tr>
-            <td align="left" valign="top">{{ multipage|raw }}</td>
-            <td align="right" valign="top">
+            {% endset %}
+            <div class="sort-threads">
+                <div class="sort-threads__column sort-threads__column--primary">
+                    <a href="search.php?action=results&amp;sid={{ results.sid }}&amp;sortby=subject&amp;order=asc" class="sort-threads__link">{{ lang.thread }}</a> {% if results.orderarrow.subject %}{{ ascDesc }}{% endif %}
+                    <span class="sort-threads__author"> &mdash; <a href="search.php?action=results&amp;sid={{ results.sid }}&amp;sortby=starter&amp;order=asc" class="sort-threads__link">{{ lang.author }}</a> {% if results.orderarrow.starter %}{{ ascDesc }}{% endif %}</span>
+                    <span class="sort-threads__forum"> &mdash; <a href="search.php?action=results&amp;sid={{ results.sid }}&amp;sortby=forum&amp;order=asc" class="sort-threads__link">{{ lang.forum }}</a> {% if results.orderarrow.forum %}{{ ascDesc }}{% endif %}</span>
+                </div>
+                <div class="sort-threads__column sort-threads__column--replies">
+                    <a href="search.php?action=results&amp;sid={{ results.sid }}&amp;sortby=replies&amp;order=desc" class="sort-threads__link">{{ lang.replies }}</a> {% if results.orderarrow.forum %}{{ ascDesc }}{% endif %}
+                </div>
+                <div class="sort-threads__column sort-threads__column--latest">
+                    <a href="search.php?action=results&amp;sid={{ results.sid }}&amp;sortby=lastpost&amp;order=desc" class="sort-threads__link">{{ lang.lastpost }}</a> {% if results.orderarrow.lastpost %}{{ ascDesc }}{% endif %}
+                </div>
                 {% if results.show_inline_moderation %}
+                    <span class="sort-threads__column sort-threads__column--checkbox">
+                        <input type="checkbox" name="allbox" onclick="inlineModeration.checkAll(this);" />
+                    </span>
+                {% endif %}
+            </div>
+            {% if results.show_inline_moderation %}
+                <div class="thread-list__select-all" id="selectAllrow">
+                    {{ lang.page_selected }} <a href="javascript:void(0)" onclick='inlineModeration.selectAll(); return false;'>{{ lang.select_all }}</a>
+                </div>
+                <div class="thread-list__select-all" id="allSelectedrow">
+                    {{ lang.all_selected }} <a href="javascript:void(0)" onclick='inlineModeration.clearChecked(); return false;'>{{ lang.clear_selection }}</a>
+                </div>
+            {% endif %}
+            <div class="thread-list__container">
+                {% for thread in threads %}
+                    {% include 'search/results_threads_row.twig' %}
+                {% endfor %}
+            </div>
+            {% if results.show_inline_moderation %}
+                <div class="sort-results">
+                    <h3 class="sort-results__title">{{ lang.inline_thread_moderation }}</h3>
                     <script type="text/javascript" src="{{ mybb.asset_url }}/jscripts/inline_moderation.js?ver=1813"></script>
                     <form action="moderation.php" method="post">
                         <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
                         <input type="hidden" name="fid" value="0" />
                         <input type="hidden" name="searchid" value="{{ results.sid }}" />
                         <input type="hidden" name="modtype" value="inlinethread" />
-                        <span class="smalltext"><strong>{{ lang.inline_thread_moderation }}</strong></span>
-                        <select name="action">
-                            <optgroup label="{{ lang.standard_mod_tools }}">
-                                <option value="multiclosethreads">{{ lang.close_threads }}</option>
-                                <option value="multiopenthreads">{{ lang.open_threads }}</option>
-                                <option value="multistickthreads">{{ lang.stick_threads }}</option>
-                                <option value="multiunstickthreads">{{ lang.unstick_threads }}</option>
-                                <option value="multisoftdeletethreads">{{ lang.soft_delete_threads }}</option>
-                                <option value="multirestorethreads">{{ lang.restore_threads }}</option>
-                                <option value="multideletethreads">{{ lang.delete_threads }}</option>
-                                <option value="multimovethreads">{{ lang.move_threads }}</option>
-                                <option value="multiapprovethreads">{{ lang.approve_threads }}</option>
-                                <option value="multiunapprovethreads">{{ lang.unapprove_threads }}</option>
-                            </optgroup>
-                            {% if results.show_inline_moderation %}
-                                <optgroup label="{{ lang.custom_mod_tools }}">
-                                    {% for tool in results.customthreadtools %}
-                                        <option value="{{ tool.tid }}">{{ tool.name }}</option>
-                                    {% endfor %}
+                        <div class="select-field">
+                            <i class="select-field__icon fas fa-sort"></i>
+                            <select name="action">
+                                <optgroup label="{{ lang.standard_mod_tools }}">
+                                    <option value="multiclosethreads">{{ lang.close_threads }}</option>
+                                    <option value="multiopenthreads">{{ lang.open_threads }}</option>
+                                    <option value="multistickthreads">{{ lang.stick_threads }}</option>
+                                    <option value="multiunstickthreads">{{ lang.unstick_threads }}</option>
+                                    <option value="multisoftdeletethreads">{{ lang.soft_delete_threads }}</option>
+                                    <option value="multirestorethreads">{{ lang.restore_threads }}</option>
+                                    <option value="multideletethreads">{{ lang.delete_threads }}</option>
+                                    <option value="multimovethreads">{{ lang.move_threads }}</option>
+                                    <option value="multiapprovethreads">{{ lang.approve_threads }}</option>
+                                    <option value="multiunapprovethreads">{{ lang.unapprove_threads }}</option>
                                 </optgroup>
-                            {% endif %}
-                        </select>
-                        <input type="submit" class="button" name="go" value="{{ lang.inline_go }} ({{ results.inlinecount }})" id="inline_go" />&nbsp;
-                        <input type="button" onclick="inlineModeration.clearChecked();" value="{{ lang.clear }}" class="button" />
+                                {% if results.show_inline_moderation %}
+                                    <optgroup label="{{ lang.custom_mod_tools }}">
+                                        {% for tool in results.customthreadtools %}
+                                            <option value="{{ tool.tid }}">{{ tool.name }}</option>
+                                        {% endfor %}
+                                    </optgroup>
+                                {% endif %}
+                            </select>
+                        </div>
+                        <input type="submit" class="button button--inline" name="go" value="{{ lang.inline_go }} ({{ results.inlinecount }})" id="inline_go" /> {# TO DO: Change to button with icon (JS for counter must be fixed first) #}
+                        <input type="button" onclick="inlineModeration.clearChecked();" value="{{ lang.clear }}" class="button button--secondary button--inline" />
                         <input type="hidden" name="url" value="{{ results.return_url }}" />
                         <input type="hidden" name="inlinetype" value="search" />
                     </form>
@@ -127,9 +99,10 @@
                         var inlineId = '{{ results.sid }}';
                     // -->
                     </script>
-                    <br />
-                {% endif %}
-            </td>
-        </tr>
-    </table>
+                </div>
+            {% endif %}
+        </section>
+
+        {{ multipage|raw }}
+    </div>
 {% endblock body %}

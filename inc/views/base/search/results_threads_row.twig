@@ -2,60 +2,88 @@
     {% set row = 'trow_shaded' %}
 {% elseif thread.visible == -1 %}
     {% set row = 'trow_shaded trow_deleted' %}
-{% else %}
-    {% set row = alt_trow() %}
 {% endif %}
-<tr class="inline_row">
-    <td align="center" class="{{ row }}" width="2%"><span class="thread_status {{ thread.folder }}" title="{{ thread.folder_label }}">&nbsp;</span></td>
-    <td align="center" class="{{ row }}" width="2%">
-        {% if thread.hasicon %}
-            <img src="{{ thread.icon_path }}" alt="{{ thread.icon_name }}" title="{{ thread.icon_name }}" /> 
-        {% else %}
-            &nbsp;
-        {% endif %}
-    </td>
-    <td class="{{ row }}">
-        {% if mybb.settings.enableattachments and thread.attachmentcount %}
-            <div class="float_right"><img src="{{ theme.imgdir }}/paperclip.png" alt="" title="{{ thread.attachment_count }}" /></div>
-        {% endif %}
-        <div>
-            <span>
+<div class="row row--thread thread {{ row }} inline_row {% if thread.unread %}thread--unread{% endif %}">
+    <div class="thread__column thread__column--primary">
+		<h3 class="thread__title">
+            {# Thread prefix #}
+            {% if thread.threadprefix %}
+                {{ thread.threadprefix }}
+            {% endif %}
+
+            {# Thread title #}
+            <span class="{% if thread.editable_subject %}subject_editable {% endif %}{{ thread.new_class }}" id="tid_{{ thread.tid }}">
+                <a href="{{ thread.thread_link|raw }}">{{ thread.subject }}</a>
+            </span>
+
+            {# Go to unread link #}
+            {% if thread.unread %}
+                <a href="{{ thread.newpostlink|raw }}" class="thread__status"><i class="fas fa-circle" title="{{ lang.goto_first_unread }}"></i></a>
+            {% endif %}
+
+            {# Thread status icons #}
+            <span class="thread__icons">
+                {# Attachment paperclip #}
+                {% if mybb.settings.enableattachments and thread.attachmentcount %}
+                    <i class="thread__icon fas fa-paperclip fa-fw" title="{{ thread.attachment_count }}"></i>
+                {% endif %}
+
+                {# Closed #}
+                {% if thread.closed  %}
+                    <i class="thread__icon fas fa-lock fa-fw" title="{{ lang.closed }}"></i>
+                {% endif %}
+
+                {# Sticky #}
+                {% if thread.sticky %}
+                    <i class="thread__icon thread__icon--sticky fas fa-thumbtack fa-fw" title="{{ lang.sticky }}"></i>
+                {% endif %}
+
+                {# Poll #}
                 {% if thread.poll %}
-                    {{ lang.poll_prefix }} 
+                    <i class="thread__icon fas fa-check-square fa-fw" title="{{ lang.poll_prefix }}"></i>
                 {% endif %}
-                {% if thread.unread %}
-                    <a href="{{ thread.newpostlink|raw }}"><img src="{{ theme.imgdir }}/jump.png" alt="{{ lang.goto_first_unread }}" title="{{ lang.goto_first_unread }}" /></a> 
-                {% endif %}
-                {{ thread.threadprefix }}<a href="{{ thread.thread_link|raw }}" class="{% if thread.editable_subject %}subject_editable {% endif %}{{ thread.new_class }}" id="tid_{{ thread.tid }}">{{ thread.subject }}</a>
-                {% if thread.posts > mybb.settings.postsperpage %}
-                    <span class="smalltext">
-                    ({{ lang.pages }} 
-                    {% for page in thread.multipage %}
-                        <a href="{{ page.page_link|raw }}">{{ page.page }}</a> 
-                    {% endfor %}
-                    {% if thread.posts > mybb.settings.maxmultipagelinks %}
-                        ... <a href="{{ thread.page_link|raw }}">{{ thread.pages }}</a>
-                    {% endif %}
-                    )</span>
+
+                {# Thread icon #}
+                {% if thread.hasicon %}
+                    <span class="thread__icon"><img src="{{ thread.icon_path }}" alt="{{ thread.icon_name }}" title="{{ thread.icon_name }}" /></span>
                 {% endif %}
             </span>
-            <div class="author smalltext">{{ thread.profilelink|raw }}</div>
-        </div>
-    </td>
-    <td class="{{ row }}"><a href="{{ thread.forumlink_link }}">{{ thread.forumlink_name }}</a></td>
-    <td align="center" class="{{ row }}"><a href="{{ mybb.settings.bburl }}/misc.php?action=whoposted&amp;tid={{ thread.tid }}" onclick="MyBB.whoPosted({{ thread.tid }}); return false;">{{ thread.replies }}</a></td>
-    <td align="center" class="{{ row }}">{{ thread.views }}</td>
-    <td class="{{ row }}" style="white-space: nowrap">
-        <span class="smalltext">
-            {{ thread.lastpostdate|raw }}<br />
-            <a href="{{ thread.lastpostlink|raw }}">{{ lang.lastpost }}</a>: {{ thread.lastposterlink|raw }}
-        </span>
-    </td>
+        </h3>
+
+        {# Thread page jump #}
+        {% if thread.posts > mybb.settings.postsperpage %}
+            <span class="thread__pages">
+                <span class="thread__page-legend">{{ lang.pages }}</span>
+                {% for page in thread.multipage %}
+                    <a href="{{ page.page_link|raw }}" class="thread__page-link">{{ page.page }}</a>
+                {% endfor %}
+                {% if thread.pages > mybb.settings.maxmultipagelinks %}... <a href="{{ thread.page_link|raw }}" class="thread__page-link">{{ thread.pages }}</a>{% endif %}
+            </span>
+        {% endif %}
+
+        {# Thread author #}
+        <p class="thread__author thread__forum">{{ lang.by }} {{ thread.profilelink|raw }} {{ lang.in }} <a href="{{ thread.forumlink_link }}">{{ thread.forumlink_name }}</a></p>
+    </div>
+    <div class="thread__column thread__column--replies">
+        <p class="thread__replies">
+            <a href="{{ mybb.settings.bburl }}/misc.php?action=whoposted&amp;tid={{ thread.tid }}" onclick="MyBB.whoPosted({{ thread.tid }}); return false;" title="{{ lang.replies }}: {{ thread.replies }} &middot; {{ lang.views }}: {{ thread.views }}" class="thread__reply-count">{{ thread.replies }}</a>
+            <span class="thread__reply-legend">{% if thread.replies == 1 %}{{ lang.reply }}{% else %}{{ lang.replies }}{% endif %}</span>
+        </p>
+    </div>
+    <div class="thread__column thread__column--latest">
+        {# TO DO: LAST POST AVATAR #}
+        <p class="thread__latest-post">
+            <span class="thread__latest-post__text">{{ lang.lastpost_by }}</span>
+            <a href="#" title="" class="avatar-profile-link"><img src="{{ asset_url('images/default_avatar.png') }}" class="avatar" alt="" /></a>
+            <span class="thread__latest-post__author">
+                {{ thread.lastposterlink|raw }}
+            </span>
+            <a href="{{ thread.lastpostlink|raw }}" class="thread__latest-post__date">{{ thread.lastpostdate|raw }}</a>
+        </p>
+    </div>
     {% if thread.show_mod_checkbox %}
-        <td class="{{ row }}" align="center" style="white-space: nowrap">
-            <input type="checkbox" class="checkbox" name="inlinemod_{{ thread.tid }}" id="inlinemod_{{ thread.tid }}" value="1" style="vertical-align: middle;" {% if thread.checked %} checked="checked"{% endif %}  />
-        </td>
-    {% elseif thread.show_mod_nocheck %}
-        <td class="{{ row }}" align="center" style="white-space: nowrap">&nbsp;</td>
+    <div class="thread__column thread__column--checkbox">
+        <input type="checkbox" class="checkbox" name="inlinemod_{{ thread.tid }}" id="inlinemod_{{ thread.tid }}" value="1"{% if thread.checked %} checked{% endif %}  />
+    </div>
     {% endif %}
-</tr>
+</div>
