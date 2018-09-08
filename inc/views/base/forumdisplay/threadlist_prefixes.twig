@@ -1,0 +1,8 @@
+<select name="prefix">
+    {% for prefix in prefixes %}
+        <option value="{{ prefix.pid }}"{% if prefix.pid == selected %} selected="selected"{% endif %}>
+            {% if prefix.pid not in [0, -1, -2] %}{{ lang.prefix }} {% endif %}
+            {{ prefix.prefix }}
+        </option>
+    {% endfor %}
+</select>

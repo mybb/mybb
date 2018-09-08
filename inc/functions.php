@@ -250,7 +250,6 @@ function parse_page($contents)
 {
     global $lang, $theme, $mybb, $archive_url, $error_handler;
 
-    $contents = str_replace('<navigation>', build_breadcrumb(), $contents);
     $contents = str_replace('<archive_url>', $archive_url, $contents);
 
     if ($error_handler->warnings) {
@@ -3058,7 +3057,7 @@ function build_forum_prefix_select($fid, $selected_pid=0)
     }
 
     // Go through each of our prefixes and decide which ones we can use
-    $prefixes = array();
+    $prefixes = [];
     foreach ($prefix_cache as $prefix) {
         if ($prefix['forums'] != "-1") {
             // Decide whether this prefix can be used in our forum
@@ -3078,29 +3077,27 @@ function build_forum_prefix_select($fid, $selected_pid=0)
         return '';
     }
 
-    $default_selected = array();
-    $selected_pid = (int)$selected_pid;
+    $default = [
+        [
+            'prefix' => $lang->prefix_all,
+            'pid' => 0
+        ],
+        [
+            'prefix' => $lang->prefix_none,
+            'pid' => -1
+        ],
+        [
+            'prefix' => $lang->prefix_any,
+            'pid' => -2
+        ]
+    ];
 
-    if ($selected_pid == 0) {
-        $default_selected['all'] = ' selected="selected"';
-    } elseif ($selected_pid == -1) {
-        $default_selected['none'] = ' selected="selected"';
-    } elseif ($selected_pid == -2) {
-        $default_selected['any'] = ' selected="selected"';
-    }
+    $prefixes = array_merge($default, $prefixes);
 
-    foreach ($prefixes as $prefix) {
-        $selected = '';
-        if ($prefix['pid'] == $selected_pid) {
-            $selected = ' selected="selected"';
-        }
-
-        $prefix['prefix'] = htmlspecialchars_uni($prefix['prefix']);
-        eval('$prefixselect_prefix .= "'.$templates->get("forumdisplay_threadlist_prefixes_prefix").'";');
-    }
-
-    eval('$prefixselect = "'.$templates->get("forumdisplay_threadlist_prefixes").'";');
-    return $prefixselect;
+    return \MyBB\template('forumdisplay/threadlist_prefixes.twig', [
+        'prefixes' => $prefixes,
+        'selected' => (int)$selected_pid
+    ]);
 }
 
 /**
@@ -3220,26 +3217,10 @@ function log_moderator_action($data, $action="")
  */
 function get_reputation($reputation, $uid=0)
 {
-    global $theme, $templates;
-
-    $display_reputation = $reputation_class = '';
-    if ($reputation < 0) {
-        $reputation_class = "reputation_negative";
-    } elseif ($reputation > 0) {
-        $reputation_class = "reputation_positive";
-    } else {
-        $reputation_class = "reputation_neutral";
-    }
-
-    $reputation = my_number_format($reputation);
-
-    if ($uid != 0) {
-        eval("\$display_reputation = \"".$templates->get("postbit_reputation_formatted_link")."\";");
-    } else {
-        eval("\$display_reputation = \"".$templates->get("postbit_reputation_formatted")."\";");
-    }
-
-    return $display_reputation;
+    return \MyBB\template('postbit/reputation.twig', [
+        'uid' => (int)$uid,
+        'reputation' => $reputation
+    ]);
 }
 
 /**
@@ -3250,21 +3231,9 @@ function get_reputation($reputation, $uid=0)
  */
 function get_colored_warning_level($level)
 {
-    global $templates;
-
-    $warning_class = '';
-    if ($level >= 80) {
-        $warning_class = "high_warning";
-    } elseif ($level >= 50) {
-        $warning_class = "moderate_warning";
-    } elseif ($level >= 25) {
-        $warning_class = "low_warning";
-    } else {
-        $warning_class = "normal_warning";
-    }
-
-    eval("\$level = \"".$templates->get("postbit_warninglevel_formatted")."\";");
-    return $level;
+    return \MyBB\template('postbit/warninglevel.twig', [
+        'level' => $level
+    ]);
 }
 
 /**
@@ -3525,68 +3494,6 @@ function fix_mktime($format, $year)
 }
 
 /**
- * Build the breadcrumb navigation trail from the specified items
- *
- * @return string The formatted breadcrumb navigation trail
- */
-function build_breadcrumb()
-{
-    global $nav, $navbits, $templates, $theme, $lang, $mybb;
-
-    eval("\$navsep = \"".$templates->get("nav_sep")."\";");
-
-    $i = 0;
-    $activesep = '';
-
-    if (is_array($navbits)) {
-        reset($navbits);
-        foreach ($navbits as $key => $navbit) {
-            if (isset($navbits[$key+1])) {
-                if (isset($navbits[$key+2])) {
-                    $sep = $navsep;
-                } else {
-                    $sep = "";
-                }
-
-                $multipage = null;
-                $multipage_dropdown = null;
-                if (!empty($navbit['multipage'])) {
-                    if (!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1) {
-                        $mybb->settings['threadsperpage'] = 20;
-                    }
-
-                    $multipage = multipage($navbit['multipage']['num_threads'], $mybb->settings['threadsperpage'], $navbit['multipage']['current_page'], $navbit['multipage']['url'], true);
-                    if ($multipage) {
-                        ++$i;
-                        eval("\$multipage_dropdown = \"".$templates->get("nav_dropdown")."\";");
-                        $sep = $multipage_dropdown.$sep;
-                    }
-                }
-
-                // Replace page 1 URLs
-                $navbit['url'] = str_replace("-page-1.html", ".html", $navbit['url']);
-                $navbit['url'] = preg_replace("/&amp;page=1$/", "", $navbit['url']);
-
-                eval("\$nav .= \"".$templates->get("nav_bit")."\";");
-            }
-        }
-    }
-
-    $activesep = '';
-    $navsize = count($navbits);
-    $navbit = $navbits[$navsize-1];
-
-    if ($nav) {
-        eval("\$activesep = \"".$templates->get("nav_sep_active")."\";");
-    }
-
-    eval("\$activebit = \"".$templates->get("nav_bit_active")."\";");
-    eval("\$donenav = \"".$templates->get("nav")."\";");
-
-    return $donenav;
-}
-
-/**
  * Add a breadcrumb menu item to the list.
  *
  * @param string $name The name of the item to add
@@ -3594,15 +3501,13 @@ function build_breadcrumb()
  */
 function add_breadcrumb($name, $url="")
 {
-    global $navbits;
-
-    $navsize = count($navbits);
-    $navbits[$navsize]['name'] = $name;
-    $navbits[$navsize]['url'] = $url;
+    /** @var \MyBB\Utilities\BreadcrumbManager $breadcrumbManager */
+    $breadcrumbManager = \MyBB\app(\MyBB\Utilities\BreadcrumbManager::class);
+    $breadcrumbManager->addBreadcrumb($name, $url);
 }
 
 /**
- * Build the forum breadcrumb nagiation (the navigation to a specific forum including all parent forums)
+ * Build the forum breadcrumb navigation (the navigation to a specific forum including all parent forums)
  *
  * @param int $fid The forum ID to build the navigation for
  * @param array $multipage The multipage drop down array of information
@@ -3610,47 +3515,9 @@ function add_breadcrumb($name, $url="")
  */
 function build_forum_breadcrumb($fid, $multipage=array())
 {
-    global $pforumcache, $currentitem, $forum_cache, $navbits, $lang, $base_url, $archiveurl;
-
-    if (!$pforumcache) {
-        if (!is_array($forum_cache)) {
-            cache_forums();
-        }
-
-        foreach ($forum_cache as $key => $val) {
-            $pforumcache[$val['fid']][$val['pid']] = $val;
-        }
-    }
-
-    if (is_array($pforumcache[$fid])) {
-        foreach ($pforumcache[$fid] as $key => $forumnav) {
-            if ($fid == $forumnav['fid']) {
-                if (!empty($pforumcache[$forumnav['pid']])) {
-                    build_forum_breadcrumb($forumnav['pid']);
-                }
-
-                $navsize = count($navbits);
-                // Convert & to &amp;
-                $navbits[$navsize]['name'] = preg_replace("#&(?!\#[0-9]+;)#si", "&amp;", $forumnav['name']);
-
-                if (defined("IN_ARCHIVE")) {
-                    // Set up link to forum in breadcrumb.
-                    if ($pforumcache[$fid][$forumnav['pid']]['type'] == 'f' || $pforumcache[$fid][$forumnav['pid']]['type'] == 'c') {
-                        $navbits[$navsize]['url'] = "{$base_url}forum-".$forumnav['fid'].".html";
-                    } else {
-                        $navbits[$navsize]['url'] = $archiveurl."/index.php";
-                    }
-                } elseif (!empty($multipage)) {
-                    $navbits[$navsize]['url'] = get_forum_link($forumnav['fid'], $multipage['current_page']);
-
-                    $navbits[$navsize]['multipage'] = $multipage;
-                    $navbits[$navsize]['multipage']['url'] = str_replace('{fid}', $forumnav['fid'], FORUM_URL_PAGED);
-                } else {
-                    $navbits[$navsize]['url'] = get_forum_link($forumnav['fid']);
-                }
-            }
-        }
-    }
+    /** @var \MyBB\Utilities\BreadcrumbManager $breadcrumbManager */
+    $breadcrumbManager = \MyBB\app(\MyBB\Utilities\BreadcrumbManager::class);
+    $breadcrumbManager->buildForumBreadcrumb($fid, $multipage);
 
     return 1;
 }
@@ -3660,16 +3527,9 @@ function build_forum_breadcrumb($fid, $multipage=array())
  */
 function reset_breadcrumb()
 {
-    global $navbits;
-
-    $newnav[0]['name'] = $navbits[0]['name'];
-    $newnav[0]['url'] = $navbits[0]['url'];
-    if (!empty($navbits[0]['options'])) {
-        $newnav[0]['options'] = $navbits[0]['options'];
-    }
-
-    unset($GLOBALS['navbits']);
-    $GLOBALS['navbits'] = $newnav;
+    /** @var \MyBB\Utilities\BreadcrumbManager $breadcrumbManager */
+    $breadcrumbManager = \MyBB\app(\MyBB\Utilities\BreadcrumbManager::class);
+    $breadcrumbManager->reset();
 }
 
 /**

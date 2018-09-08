@@ -1,0 +1,28 @@
+<div class="navigation">
+    {% for crumb in breadcrumbs %}
+        {% if crumb.multipage is not empty %}
+            {% if not mybb.settings.threadsperpage or mybb.settings.threadsperpage < 1 %}
+                {% set perPage = 20 %}
+            {% else %}
+                {% set perPage = mybb.settings.threadsperpage %}
+            {% endif %}
+
+            {{ multi_page(crumb.multipage.num_threads, mybb.settings.threadsperpage,
+                crumb.multipage.current_page, crumb.multipage.url, true) }}
+        {% endif %}
+
+        {# Separator #}
+        {% if loop.first != true and loop.last != true %}
+            &rsaquo;
+        {% elseif loop.last and loop.length > 1 %}
+            <br /><img src="{{ theme.imgdir }}/nav_bit.png" alt="" />
+        {% endif %}
+
+        {# Breadcrumb bit #}
+        {% if loop.last %}
+            <span class="active">{{ crumb.name }}</span>
+        {% else %}
+            <a href="{{ crumb.url|remove_page_one|raw }}">{{ crumb.name }}</a>
+        {% endif %}
+    {% endfor %}
+</div>
