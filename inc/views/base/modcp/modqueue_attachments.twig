@@ -1,10 +1,10 @@
-{% extends 'layouts/master.twig' %}
+{% extends 'layouts/moderation.twig' %}
 
 {% block head %}
     <title>{{ mybb.settings.bbname }} - {{ lang.attachments_awaiting_moderation }}</title>
 {% endblock head %}
 
-{% block body %}
+{% block moderationBody %}
     <form action="modcp.php" method="post">
         <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
         <input type="hidden" name="action" value="do_modqueue" />
@@ -17,10 +17,10 @@
                             <td class="thead" colspan="6">
                                 <div class="float_right">
                                     {% if navlink.thread %}
-                                        <a href="modcp.php?action=modqueue&amp;type=threads">{{ lang.threads }}</a> | 
+                                        <a href="modcp.php?action=modqueue&amp;type=threads">{{ lang.threads }}</a> |
                                     {% endif %}
                                     {% if navlink.post %}
-                                        <a href="modcp.php?action=modqueue&amp;type=posts">{{ lang.posts }}</a> | 
+                                        <a href="modcp.php?action=modqueue&amp;type=posts">{{ lang.posts }}</a> |
                                     {% endif %}
                                     <strong>{{ lang.attachments }}</strong>
                                 </div>
@@ -55,4 +55,4 @@
             </tr>
         </table>
     </form>
-{% endblock body %}
+{% endblock moderationBody %}

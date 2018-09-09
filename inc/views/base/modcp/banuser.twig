@@ -1,10 +1,10 @@
-{% extends 'layouts/master.twig' %}
+{% extends 'layouts/moderation.twig' %}
 
 {% block head %}
     <title>{{ mybb.settings.bbname }} - {{ lang.ban_user }}</title>
 {% endblock head %}
 
-{% block body %}
+{% block moderationBody %}
     <table width="100%" border="0" align="center">
         <tr>
             {# To do: modcp_nav #}
@@ -114,4 +114,4 @@
     }
     // -->
     </script>
-{% endblock body %}
+{% endblock moderationBody %}

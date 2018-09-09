@@ -1,10 +1,10 @@
-{% extends 'layouts/master.twig' %}
+{% extends 'layouts/moderation.twig' %}
 
 {% block head %}
     <title>{{ mybb.settings.bbname }} - {{ lang.modlogs }}</title>
 {% endblock head %}
 
-{% block body %}
+{% block moderationBody %}
     <table width="100%" border="0" align="center">
         <tr>
             {# To do: modcp_nav #}
@@ -87,4 +87,4 @@
             </td>
         </tr>
     </table>
-{% endblock body %}
+{% endblock moderationBody %}

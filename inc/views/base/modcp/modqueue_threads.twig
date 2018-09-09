@@ -1,10 +1,10 @@
-{% extends 'layouts/master.twig' %}
+{% extends 'layouts/moderation.twig' %}
 
 {% block head %}
     <title>{{ mybb.settings.bbname }} - {{ lang.threads_awaiting_moderation }}</title>
 {% endblock head %}
 
-{% block body %}
+{% block moderationBody %}
     <form action="modcp.php" method="post">
         <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
         <input type="hidden" name="action" value="do_modqueue" />
@@ -54,4 +54,4 @@
             </tr>
         </table>
     </form>
-{% endblock body %}
+{% endblock moderationBody %}

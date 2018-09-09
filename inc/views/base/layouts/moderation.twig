@@ -1,0 +1,94 @@
+{% extends 'layouts/master.twig' %}
+
+{% block body %}
+
+{% block moderationHeader %}{% endblock moderationHeader %}
+
+<nav class="section-menu">
+	<ul class="section-menu__links sidebar-navigation">
+		<li class="section-menu__item section-menu__item--home{% if mybb.input.action == '' %} section-menu__item--active{% endif %}">
+			<a href="modcp.php" class="section-menu__link">
+				<i class="section-menu__icon fas fa-home fa-fw"></i>
+				<span class="section-menu__text">{{ lang.mcp_nav_home }}</span>
+			</a>
+		</li>
+		{# TO DO : `counters` needs to be passed to template #}
+		{% if (counters.announcements > 0 or mybb.usergroup.issupermod) and mybb.usergroup.canmanageannounce %}
+			<li class="section-menu__item section-menu__item--announcements{% if mybb.input.action == 'announcements' %} section-menu__item--active{% endif %}">
+				<a href="modcp.php?action=announcements" class="section-menu__link">
+					<i class="section-menu__icon fas fa-bullhorn fa-fw"></i>
+					<span class="section-menu__text">{{ lang.mcp_nav_announcements }}</span>
+				</a>
+			</li>
+		{% endif %}
+
+		{% if (counters.modqueue.threads > 0 or counters.modqueue.posts > 0 or counters.modqueue.attachments > 0 or mybb.usergroup.issupermod) and mybb.usergroup.canmanagemodqueue %}
+			<li class="section-menu__item section-menu__item--mod-queue{% if mybb.input.action == 'modqueue' %} section-menu__item--active{% endif %}">
+				<a href="modcp.php?action=modqueue" class="section-menu__link">
+					<i class="section-menu__icon fas fa-pencil-alt fa-fw"></i>
+					<span class="section-menu__text">{{ lang.mcp_nav_modqueue }}</span>
+				</a>
+			</li>
+		{% endif %}
+
+		{% if (counters.reportedposts > 0 or mybb.usergroup.issupermod) and mybb.usergroup.canmanagereportedcontent %}
+			<li class="section-menu__item section-menu__item--reports{% if mybb.input.action == 'reports' or mybb.input.action == 'allreports' %} section-menu__item--active{% endif %}">
+				<a href="modcp.php?action=reports" class="section-menu__link">
+					<i class="section-menu__icon fas fa-flag fa-fw"></i>
+					<span class="section-menu__text">{{ lang.mcp_nav_report_center }}</span>
+				</a>
+			</li>
+		{% endif %}
+
+		{% if (counters.modlogs > 0 or mybb.usergroup.issupermod) and mybb.usergroup.canviewmodlogs %}
+			<li class="section-menu__item section-menu__item--mod-logs{% if mybb.input.action == 'modlogs' %} section-menu__item--active{% endif %}">
+				<a href="modcp.php?action=modlogs" class="section-menu__link">
+					<i class="section-menu__icon fas fa-file-alt fa-fw"></i>
+					<span class="section-menu__text">{{ lang.mcp_nav_modlogs }}</span>
+				</a>
+			</li>
+		{% endif %}
+
+		{% if mybb.usergroup.caneditprofiles %}
+			<li class="section-menu__item section-menu__item--edit-profile{% if mybb.input.action == 'finduser' or mybb.input.action == 'editprofile' %} section-menu__item--active{% endif %}">
+				<a href="modcp.php?action=finduser" class="section-menu__link">
+					<i class="section-menu__icon fas fa-user fa-fw"></i>
+					<span class="section-menu__text">{{ lang.mcp_nav_editprofile }}</span>
+				</a>
+			</li>
+		{% endif %}
+
+		{% if mybb.usergroup.canbanusers %}
+			<li class="section-menu__item section-menu__item--banning{% if mybb.input.action == 'banning' or mybb.input.action == 'banuser' %} section-menu__item--active{% endif %}">
+				<a href="modcp.php?action=banning" class="section-menu__link">
+					<i class="section-menu__icon fas fa-ban fa-fw"></i>
+					<span class="section-menu__text">{{ lang.mcp_nav_banning }}</span>
+				</a>
+			</li>
+		{% endif %}
+
+		{% if mybb.usergroup.canviewwarnlogs %}
+			<li class="section-menu__item section-menu__item--warning-logs{% if mybb.input.action == 'warninglogs' %} section-menu__item--active{% endif %}">
+				<a href="modcp.php?action=warninglogs" class="section-menu__link">
+					<i class="section-menu__icon fas fa-exclamation-triangle fa-fw"></i>
+					<span class="section-menu__text">{{ lang.mcp_nav_warninglogs }}</span>
+				</a>
+			</li>
+		{% endif %}
+
+		{% if mybb.usergroup.canuseipsearch %}
+			<li class="section-menu__item section-menu__item--ip-search{% if mybb.input.action == 'ipsearch' or mybb.input.action == 'iplookup' %} section-menu__item--active{% endif %}">
+				<a href="modcp.php?action=ipsearch" class="section-menu__link">
+					<i class="section-menu__icon fas fa-globe fa-fw"></i>
+					<span class="section-menu__text">{{ lang.mcp_nav_ipsearch }}</span>
+				</a>
+			</li>
+		{% endif %}
+	</ul>
+</nav>
+
+<div class="page-content page-content--menu">
+    {% block moderationBody %}{% endblock moderationBody %}
+</div>
+
+{% endblock body %}
