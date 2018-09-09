@@ -7,6 +7,9 @@
 {% endblock head %}
 
 {% block body %}
+    <header class="page-header">
+        <h1 class="title title--page">{{ lang.nav_portal }}</h1>
+    </header>
     <div class="page-content page-content--sidebar">
         {% for announcement in announcements %}
             {% include 'portal/portal_announcement.twig' %}
