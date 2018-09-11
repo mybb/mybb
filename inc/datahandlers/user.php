@@ -1261,7 +1261,7 @@ class UserDataHandler extends DataHandler
 		}
 		if(isset($user['email']))
 		{
-			$this->user_update_data['email'] = $user['email'];
+			$this->user_update_data['email'] = $db->escape_string($user['email']);
 		}
 		if(isset($user['postnum']))
 		{

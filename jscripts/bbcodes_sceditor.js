@@ -514,7 +514,7 @@ $(document).ready(function($) {
 				}
 			}
 
-			return token.val + content + (token.closing ? token.closing.val : '');
+			return $.sceditor.escapeEntities(token.val + content + (token.closing ? token.closing.val : ''));
 		}
 	});
 
