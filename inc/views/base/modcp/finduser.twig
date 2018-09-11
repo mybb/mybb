@@ -64,12 +64,11 @@
                 <h2 class="title title--section">{{ lang.sort_by }}</h2>
                 <div class="section__container">
                     <div class="row row--form field">
-                        {{ mybb.input.sortby }}
                         <div class="select-field">
                             <i class="select-field__icon fas fa-sort"></i>
                             <select name="sortby">
                                 <option value="username"{% if mybb.input.sortby == 'username' %} selected{% endif %}>{{ lang.sortby_username }}</option>
-                                <option value="regdate"{% if mybb.input.sortby == 'regdate' %} selected{% endif %}>{{ lang.sortby_regdate }}</option>
+                                <option value="regdate"{% if mybb.input.sortby == 'regdate' or mybb.input.sortby == '' %} selected{% endif %}>{{ lang.sortby_regdate }}</option>
                                 <option value="lastvisit"{% if mybb.input.sortby == 'lastvisit' %} selected{% endif %}>{{ lang.sortby_lastvisit }}</option>
                                 <option value="postnum"{% if mybb.input.sortby == 'postnum' %} selected{% endif %}>{{ lang.sortby_postnum }}</option>
                             </select>
@@ -89,18 +88,14 @@
                     </div>
                 </div>
             </div>
+            <div class="form__submit">
+                <button type="submit" class="button button--medium">
+                    <i class="button__icon fas fa-search"></i>
+                    <span class="button__text">{{ lang.find_users }}</span>
+                </button>
+            </div>
         </section>
-                            </td>
-                        </tr>
-                    </table>
-                    <br />
-                    <div align="center">
-                        <input type="submit" class="button" value="{{ lang.find_users }}" />
-                    </div>
-                </form>
-            </td>
-        </tr>
-    </table>
+    </form>
     <link rel="stylesheet" href="{{ mybb.asset_url }}/jscripts/select2/select2.css?ver=1807" />
     <script type="text/javascript" src="{{ mybb.asset_url }}/jscripts/select2/select2.min.js?ver=1806"></script>
     <script type="text/javascript">

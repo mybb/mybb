@@ -2206,7 +2206,7 @@ if ($mybb->input['action'] == "editprofile") {
     $mybb->input['profile_fields'] = $mybb->get_input('profile_fields', MyBB::INPUT_ARRAY);
 
     $pfcache = $cache->read('profilefields');
-    
+
     if (is_array($pfcache)) {
         foreach ($pfcache as $profilefield) {
             $thing = explode("\n", $profilefield['type'], "2");
@@ -2980,7 +2980,7 @@ if ($mybb->input['action'] == "banning") {
         if ($banned['lifted'] == 'perm' || $banned['lifted'] == '' || $banned['bantime'] == 'perm' || $banned['bantime'] == '---') {
             $banned['banlength'] = $lang->permanent;
             $banned['ban_remaining'] = $lang->na;
-            $banned['banned_class'] = "normal_banned";
+            $banned['banned_class'] = "normal";
         } else {
             $banned['banlength'] = $bantimes[$banned['bantime']];
             $banned['remaining'] = $banned['lifted']-TIME_NOW;
@@ -2990,17 +2990,17 @@ if ($mybb->input['action'] == "banning") {
             $banned['ban_remaining'] = "{$banned['timeremaining']} {$lang->ban_remaining}";
 
             if ($banned['remaining'] <= 0) {
-                $banned['banned_class'] = "imminent_banned";
+                $banned['banned_class'] = "imminent";
                 $banned['ban_remaining'] = $lang->ban_ending_imminently;
             }
             if ($banned['remaining'] < 3600) {
-                $banned['banned_class'] = "high_banned";
+                $banned['banned_class'] = "high";
             } elseif ($banned['remaining'] < 86400) {
-                $banned['banned_class'] = "moderate_banned";
+                $banned['banned_class'] = "moderate";
             } elseif ($banned['remaining'] < 604800) {
-                $banned['banned_class'] = "low_banned";
+                $banned['banned_class'] = "low";
             } else {
-                $banned['banned_class'] = "normal_banned";
+                $banned['banned_class'] = "normal";
             }
         }
 
@@ -3516,24 +3516,24 @@ if (!$mybb->input['action']) {
         if ($banned['lifted'] == 'perm' || $banned['lifted'] == '' || $banned['bantime'] == 'perm' || $banned['bantime'] == '---') {
             $banned['banlength'] = $lang->permanent;
             $banned['ban_remaining'] = $lang->na;
-            $banned['banned_class'] = "normal_banned";
+            $banned['banned_class'] = "normal";
         } else {
             $banned['banlength'] = $bantimes[$banned['bantime']];
             $banned['remaining'] = $banned['lifted']-TIME_NOW;
             $banned['timeremaining'] = nice_time($banned['remaining'], array('short' => 1, 'seconds' => false))."";
             $banned['ban_remaining'] = "{$banned['timeremaining']} {$lang->ban_remaining}";
             if ($banned['remaining'] <= 0) {
-                $banned['banned_class'] = "imminent_banned";
+                $banned['banned_class'] = "imminent";
                 $banned['ban_remaining'] = $lang->ban_ending_imminently;
             }
             if ($banned['remaining'] < 3600) {
-                $banned['banned_class'] = "high_banned";
+                $banned['banned_class'] = "high";
             } elseif ($banned['remaining'] < 86400) {
-                $banned['banned_class'] = "moderate_banned";
+                $banned['banned_class'] = "moderate";
             } elseif ($banned['remaining'] < 604800) {
-                $banned['banned_class'] = "low_banned";
+                $banned['banned_class'] = "low";
             } else {
-                $banned['banned_class'] = "normal_banned";
+                $banned['banned_class'] = "normal";
             }
         }
         $bannedusers[] = $banned;

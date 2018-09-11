@@ -4,54 +4,57 @@
     <title>{{ mybb.settings.bbname }} - {{ lang.ban_banned }}</title>
 {% endblock head %}
 
+{% block moderationHeader %}
+    <header class="page-header">
+        <h1 class="title title--page">{{ lang.ban_banned }}</h1>
+    </header>
+{% endblock %}
+
 {% block moderationBody %}
-    <table width="100%" border="0" align="center">
-        <tr>
-            {# To do: modcp_nav #}
-            <td valign="top">
-                <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-                    <tr>
-                        <td class="thead" colspan="4">
-                            <div class="float_right"><a href="modcp.php?action=banuser">{{ lang.ban_user }}</a></div>
-                        <strong>{{ lang.ban_banned }}</strong></td>
-                    </tr>
-                    <tr>
-                        <td class="tcat" width="25%"><span class="smalltext"><strong>{{ lang.username }}</strong></span></td>
-                        <td class="tcat" align="center" width="30%"><span class="smalltext"><strong>{{ lang.reason }}</strong></span></td>
-                        <td class="tcat" align="center" width="25%"><span class="smalltext"><strong>{{ lang.ban_length }}</strong></span></td>
-                        <td class="tcat" align="center" width="20%"><span class="smalltext"><strong>{{ lang.ban_bannedby }}</strong></span></td>
-                    </tr>
-                    {% for banned in bannedusers %}
-                        {% set row = alt_trow() %}
-                        <tr>
-                            <td class="{{ row }}">
-                                {{ banned.profile_link|raw }}
-                                 {% if banned.show_edit_link %}
-                                    <br /><span class="smalltext">
-                                        <a href="modcp.php?action=banuser&amp;uid={{ banned.uid }}">{{ lang.edit_ban }}</a>
-                                        | <a href="modcp.php?action=liftban&amp;uid={{ banned.uid }}&amp;my_post_key={{ mybb.post_code }}">{{ lang.lift_ban }}</a>
-                                    </span>
-                                {% endif %}
-                            </td>
-                            <td class="{{ row }}">{{ banned.reason }}</td>
-                            <td class="{{ row }}" align="center">
-                                {{ banned.banlength }}<br />
-                                <span class="smalltext">
-                                    <span class="{{ banned.banned_class }}">
-                                        ({{ banned.ban_remaining }})
-                                    </span>
-                                </span>
-                            </td>
-                            <td class="{{ row }}" align="center">{{ banned.admin_profile|raw }}</td>
-                        </tr>
-                    {% else %}
-                        <tr>
-                            <td class="trow1" align="center" colspan="4">{{ lang.no_banned }}</td>
-                        </tr>
-                    {% endfor %}
-                </table>
-                {{ multipage|raw }}
-            </td>
-        </tr>
-    </table>
+    <div class="page-controls">
+        <div class="page-buttons">
+            <a href="modcp.php?action=banuser" class="button">
+                <i class="button__icon fas fa-ban"></i>
+                <span class="button__text">{{ lang.ban_user }}</span>
+            </a>
+        </div>
+    </div>
+    <div class="user-list">
+        {% for banned in bannedusers %}
+            <div class="user-list__user">
+                <h2 class="user-list__username">{{ banned.profile_link|raw }}</h2>
+                <ul class="list list--stats list--user">
+                    <li class="list__item">
+                        <span class="list__field">{{ lang.reason }}</span>
+                        <span class="list__value">{{ banned.reason }}</span>
+                    </li>
+                    <li class="list__item">
+                        <span class="list__field">{{ lang.ban_length }}</span>
+                        <span class="list__value">
+                            {{ banned.banlength }} <span class="ban-duration ban-duration--{{ banned.banned_class }}">({{ banned.ban_remaining }})</span>
+                        </span>
+                    </li>
+                    <li class="list__item">
+                        <span class="list__field">{{ lang.ban_bannedby }}</span>
+                        <span class="list__value">{{ banned.admin_profile|raw }}</span>
+                    </li>
+                </ul>
+                {% if banned.show_edit_link %}
+                    <div class="user-list__buttons">
+                        <a href="modcp.php?action=banuser&amp;uid={{ banned.uid }}" class="button button--secondary button--small">
+                            <i class="button__icon fas fa-pencil-alt"></i>
+                            <span class="button__text">{{ lang.edit_ban }}</span>
+                        </a>
+                        <a href="modcp.php?action=liftban&amp;uid={{ banned.uid }}&amp;my_post_key={{ mybb.post_code }}" class="button button--secondary button--small button--danger">
+                            <i class="button__icon fas fa-times"></i>
+                            <span class="button__text">{{ lang.lift_ban }}</span>
+                        </a>
+                    </div>
+               {% endif %}
+            </div>
+        {% else %}
+            <div class="alert alert--no-results alert--no-results-container">{{ lang.no_banned }}</div>
+        {% endfor %}
+    </div>
+    {{ multipage|raw }}
 {% endblock moderationBody %}
