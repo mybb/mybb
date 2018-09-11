@@ -1197,7 +1197,50 @@ if($mybb->input['action'] == "do_email" && $mybb->request_method == "post")
 		}
 		else
 		{
-			if($mybb->user['usergroup'] != "5" && $mybb->usergroup['cancp'] != 1 && $mybb->settings['regtype'] != "verify")
+			$activation = false;
+			// Checking for pending activations for non-activated accounts
+			if($mybb->user['usergroup'] == 5 && ($mybb->settings['regtype'] == "verify" || $mybb->settings['regtype'] == "both"))
+			{
+				$query = $db->simple_select("awaitingactivation", "*", "uid='".$mybb->user['uid']."' AND (type='r' OR type='b')");
+				$activation = $db->fetch_array($query);
+			}
+			if($activation)
+			{
+				$userhandler->update_user();
+
+				$db->delete_query("awaitingactivation", "uid='".$mybb->user['uid']."'");
+
+				// Send new activation mail for non-activated accounts
+				$activationcode = random_str();
+				$activationarray = array(
+					"uid" => $mybb->user['uid'],
+					"dateline" => TIME_NOW,
+					"code" => $activationcode,
+					"type" => $activation['type']
+				);
+				$db->insert_query("awaitingactivation", $activationarray);
+				$emailsubject = $lang->sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']);
+				switch($mybb->settings['username_method'])
+				{
+					case 0:
+						$emailmessage = $lang->sprintf($lang->email_activateaccount, $mybb->user['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $mybb->user['uid'], $activationcode);
+						break;
+					case 1:
+						$emailmessage = $lang->sprintf($lang->email_activateaccount1, $mybb->user['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $mybb->user['uid'], $activationcode);
+						break;
+					case 2:
+						$emailmessage = $lang->sprintf($lang->email_activateaccount2, $mybb->user['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $mybb->user['uid'], $activationcode);
+						break;
+					default:
+						$emailmessage = $lang->sprintf($lang->email_activateaccount, $mybb->user['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $mybb->user['uid'], $activationcode);
+						break;
+				}
+				my_mail($mybb->user['email'], $emailsubject, $emailmessage);
+
+				$plugins->run_hooks("usercp_do_email_changed");
+				redirect("usercp.php?action=email", $lang->redirect_emailupdated);
+			}
+			elseif($mybb->usergroup['cancp'] != 1 && ($mybb->settings['regtype'] == "verify" || $mybb->settings['regtype'] == "both"))
 			{
 				$uid = $mybb->user['uid'];
 				$username = $mybb->user['username'];
@@ -3734,6 +3777,19 @@ if($mybb->input['action'] == "attachments")
 		error($lang->attachments_disabled);
 	}
 
+	// Get unviewable forums
+	$f_perm_sql = '';
+	$unviewable_forums = get_unviewable_forums(true);
+	$inactiveforums = get_inactive_forums();
+	if($unviewable_forums)
+	{
+		$f_perm_sql = " AND t.fid NOT IN ($unviewable_forums)";
+	}
+	if($inactiveforums)
+	{
+		$f_perm_sql .= " AND t.fid NOT IN ($inactiveforums)";
+	}
+
 	$attachments = '';
 
 	$query = $db->simple_select("attachments", "SUM(filesize) AS ausage, COUNT(aid) AS acount", "uid='".$mybb->user['uid']."'");
@@ -3773,7 +3829,7 @@ if($mybb->input['action'] == "attachments")
 		FROM ".TABLE_PREFIX."attachments a
 		LEFT JOIN ".TABLE_PREFIX."posts p ON (a.pid=p.pid)
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-		WHERE a.uid='".$mybb->user['uid']."'
+		WHERE a.uid='".$mybb->user['uid']."' {$f_perm_sql}
 		ORDER BY p.dateline DESC LIMIT {$start}, {$perpage}
 	");
 
@@ -3849,8 +3905,29 @@ if($mybb->input['action'] == "do_attachments" && $mybb->request_method == "post"
 	{
 		error($lang->no_attachments_selected);
 	}
+
+	// Get unviewable forums
+	$f_perm_sql = '';
+	$unviewable_forums = get_unviewable_forums(true);
+	$inactiveforums = get_inactive_forums();
+	if($unviewable_forums)
+	{
+		$f_perm_sql = " AND p.fid NOT IN ($unviewable_forums)";
+	}
+	if($inactiveforums)
+	{
+		$f_perm_sql .= " AND p.fid NOT IN ($inactiveforums)";
+	}
+
 	$aids = implode(',', array_map('intval', $mybb->input['attachments']));
-	$query = $db->simple_select("attachments", "*", "aid IN ($aids) AND uid='".$mybb->user['uid']."'");
+
+	$query = $db->query("
+		SELECT a.*, p.fid
+		FROM ".TABLE_PREFIX."attachments a
+		LEFT JOIN ".TABLE_PREFIX."posts p ON (a.pid=p.pid)
+		WHERE aid IN ({$aids}) AND a.uid={$mybb->user['uid']} {$f_perm_sql}
+	");
+
 	while($attachment = $db->fetch_array($query))
 	{
 		remove_attachment($attachment['pid'], '', $attachment['aid']);
