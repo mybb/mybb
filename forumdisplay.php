@@ -55,8 +55,6 @@ if (!$foruminfo) {
     error($lang->error_invalidforum);
 }
 
-$archive_url = build_archive_link("forum", $fid);
-
 $currentitem = $fid;
 build_forum_breadcrumb($fid);
 $parentlist = $foruminfo['parentlist'];
