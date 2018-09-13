@@ -109,31 +109,31 @@ if($mybb->input['action'] == "version_check")
 
 	$updated_cache['news'] = array();
 
-	require_once MYBB_ROOT . '/inc/class_parser.php';
-	$post_parser = new postParser();
-
 	if($feed_parser->error == '')
 	{
 		foreach($feed_parser->items as $item)
 		{
+			require_once MYBB_ROOT . '/inc/class_parser.php';
+			$post_parser = new postParser();
+
+			$description = $item['description'];
+			$content = $item['content'];
+
+			$description = $post_parser->parse_message($description, array(
+					'allow_html' => true,
+				)
+			);
+
+			$content = $post_parser->parse_message($content, array(
+					'allow_html' => true,
+				)
+			);
+
+			$description = preg_replace('#<img(.*)/>#', '', $description);
+			$content = preg_replace('#<img(.*)/>#', '', $content);
+
 			if(!isset($updated_cache['news'][2]))
 			{
-				$description = $item['description'];
-				$content = $item['content'];
-
-				$description = $post_parser->parse_message($description, array(
-						'allow_html' => true,
-					)
-				);
-
-				$content = $post_parser->parse_message($content, array(
-						'allow_html' => true,
-					)
-				);
-
-				$description = preg_replace('#<img(.*)/>#', '', $description);
-				$content = preg_replace('#<img(.*)/>#', '', $content);
-
 				$updated_cache['news'][] = array(
 					'title' => htmlspecialchars_uni($item['title']),
 					'description' => $description,
