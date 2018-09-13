@@ -248,9 +248,7 @@ function send_mail_queue($count=10)
  */
 function parse_page($contents)
 {
-    global $lang, $theme, $mybb, $archive_url, $error_handler;
-
-    $contents = str_replace('<archive_url>', $archive_url, $contents);
+    global $lang, $theme, $mybb, $error_handler;
 
     if ($error_handler->warnings) {
         $contents = str_replace("<body>", "<body>\n".$error_handler->show_warnings(), $contents);
@@ -3550,42 +3548,6 @@ function reset_breadcrumb()
     /** @var \MyBB\Utilities\BreadcrumbManager $breadcrumbManager */
     $breadcrumbManager = \MyBB\app(\MyBB\Utilities\BreadcrumbManager::class);
     $breadcrumbManager->reset();
-}
-
-/**
- * Builds a URL to an archive mode page
- *
- * @param string $type The type of page (thread|announcement|forum)
- * @param int $id The ID of the item
- * @return string The URL
- */
-function build_archive_link($type="", $id=0)
-{
-    global $mybb;
-
-    // If the server OS is not Windows and not Apache or the PHP is running as a CGI or we have defined ARCHIVE_QUERY_STRINGS, use query strings - DIRECTORY_SEPARATOR checks if running windows
-    //if ((DIRECTORY_SEPARATOR == '\\' && is_numeric(stripos($_SERVER['SERVER_SOFTWARE'], "apache")) == false) || is_numeric(stripos(SAPI_NAME, "cgi")) !== false || defined("ARCHIVE_QUERY_STRINGS"))
-    if($mybb->settings['seourls_archive'] == 1) {
-        $base_url = $mybb->settings['bburl']."/archive/index.php/";
-    } else {
-        $base_url = $mybb->settings['bburl']."/archive/index.php?";
-    }
-
-    switch ($type) {
-        case "thread":
-            $url = "{$base_url}thread-{$id}.html";
-            break;
-        case "announcement":
-            $url = "{$base_url}announcement-{$id}.html";
-            break;
-        case "forum":
-            $url = "{$base_url}forum-{$id}.html";
-            break;
-        default:
-            $url = $mybb->settings['bburl']."/archive/index.php";
-    }
-
-    return $url;
 }
 
 /**
