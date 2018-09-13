@@ -111,11 +111,11 @@ if($mybb->input['action'] == "version_check")
 
 	if($feed_parser->error == '')
 	{
+		require_once MYBB_ROOT . '/inc/class_parser.php';
+		$post_parser = new postParser();
+
 		foreach($feed_parser->items as $item)
 		{
-			require_once MYBB_ROOT . '/inc/class_parser.php';
-			$post_parser = new postParser();
-
 			$description = $item['description'];
 			$content = $item['content'];
 
