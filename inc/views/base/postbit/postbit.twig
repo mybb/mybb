@@ -241,7 +241,7 @@
 			{# Delete button #}
 			{% if post.quick_delete %}
 				{% if post.is_announcement %}
-					<a href="modcp.php?action=delete_announcement&amp;aid={{ post.aid }}&amp;my_post_key={{ mybb.post_code }}" onclick="MyBB.deleteAnnouncement(this); return false;" class="postbit_qdelete"><span>{{ lang.postbit_button_qdelete }}</span></a>
+					<a href="modcp.php?action=delete_announcement&amp;aid={{ post.aid }}&amp;my_post_key={{ mybb.post_code }}" onclick="MyBB.deleteAnnouncement(this); return false;" class="post-control post-control--delete"><i class="post-control__icon fas fa-trash fa-fw"></i><span class="post-control__text">{{ lang.postbit_button_qdelete }}</span></a>
 				{% else %}
 					<a href="editpost.php?pid={{ post.pid }}" onclick="Thread.deletePost({{ post.pid }}); return false;" style="display: none;" id="quick_delete_{{ post.pid }}" title="{{ lang.postbit_quick_delete }}" class="post-control post-control--delete"><i class="post-control__icon fas fa-trash fa-fw"></i><span class="post-control__text">{{ lang.postbit_button_qdelete }}</span></a>
 <script type="text/javascript">

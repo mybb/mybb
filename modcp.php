@@ -1323,7 +1323,9 @@ if ($mybb->input['action'] == "edit_announcement") {
         $announcement['startdate'] = TIME_NOW;
     }
 
+    $announcement['endtime_type'] = 1;
     if (!$announcement['enddate']) {
+        $announcement['endtime_type'] = 2;
         $makeshift_time = TIME_NOW;
         if ($announcement['startdate']) {
             $makeshift_time = $announcement['startdate'];

@@ -14,7 +14,7 @@
 		</li>
 		{# TO DO : `counters` needs to be passed to template #}
 		{% if (counters.announcements > 0 or mybb.usergroup.issupermod) and mybb.usergroup.canmanageannounce %}
-			<li class="section-menu__item section-menu__item--announcements{% if mybb.input.action == 'announcements' %} section-menu__item--active{% endif %}">
+			<li class="section-menu__item section-menu__item--announcements{% if mybb.input.action == 'announcements' or mybb.input.action == 'new_announcement' or mybb.input.action == 'edit_announcement' or mybb.input.action == 'delete_announcement' %} section-menu__item--active{% endif %}">
 				<a href="modcp.php?action=announcements" class="section-menu__link">
 					<i class="section-menu__icon fas fa-bullhorn fa-fw"></i>
 					<span class="section-menu__text">{{ lang.mcp_nav_announcements }}</span>

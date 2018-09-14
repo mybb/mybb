@@ -4,65 +4,61 @@
     <title>{{ mybb.settings.bbname }} - {{ lang.manage_announcement }}</title>
 {% endblock head %}
 
+{% block moderationHeader %}
+    <header class="page-header">
+        <h1 class="title title--page">{{ lang.manage_announcement }}</h1>
+    </header>
+{% endblock %}
+
 {% block moderationBody %}
-    <table width="100%" border="0" align="center">
-        <tr>
-            {# Modcp nav #}
-            <td valign="top">
-
-                {# Global announcements #}
-                {% if mybb.usergroup.issupermod %}
-                    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-                        <tr>
-                            <td class="thead" colspan="3"><div class="float_right"><a href="modcp.php?action=new_announcement&amp;fid=-1">{{ lang.add_global_announcement }}</a></div><strong>{{ lang.global_announcements }}</strong></td>
-                        </tr>
-                        <tr>
-                            <td class="tcat"><span class="smalltext"><strong>{{ lang.announcement }}</strong></span></td>
-                            <td class="tcat" width="200" colspan="2" align="center"><span class="smalltext"><strong>{{ lang.controls }}</strong></span></td>
-                        </tr>
-                        {% if globalAnnouncements %}
-                            {% for aid, announcement in globalAnnouncements %}
-                                {% set bgcolor = alt_trow() %}
-                                <tr>
-                                    <td class="{{ bgcolor }}">
-                                        {% if announcement.startdate > 'now'|date('U') or ('now'|date('U') > announcement.enddate and announcement.enddate) %}
-                                            {% set title = lang.expired_announcement %}
-                                        {% else %}
-                                            {% set title = lang.active_announcement %}
-                                        {% endif %}
-                                        <div class="subforumicon subforum_minioff" title="{{ title }}"></div>
-                                        <a href="announcements.php?aid={{ aid }}">{{ announcement.subject }}</a>
-                                    </td>
-                                    <td class="{{ bgcolor }}" align="center"><a href="modcp.php?action=edit_announcement&amp;aid={{ aid }}">{{ lang.edit }}</a></td>
-                                    <td class="{{ bgcolor }}" align="center"><a href="modcp.php?action=delete_announcement&amp;aid={{ aid }}">{{ lang.delete }}</a></td>
-                                </tr>
-                            {% endfor %}
+    {# Global announcements #}
+    {% if mybb.usergroup.issupermod %}
+        <div class="page-controls">
+        	<div class="page-buttons">
+        		<a href="modcp.php?action=new_announcement&amp;fid=-1" class="button button--medium button--full-width">
+        			<i class="button__icon fas fa-plus"></i>
+        			<span class="button__text">{{ lang.add_global_announcement }}</span>
+        		</a>
+        	</div>
+        </div>
+        <section class="block">
+        	<h1 class="title title--major">{{ lang.global_announcements }}</h1>
+            {% for aid, announcement in globalAnnouncements %}
+                <div class="row row--simple-columns">
+                    <div class="row__primary">
+                        {% if announcement.startdate > 'now'|date('U') or ('now'|date('U') > announcement.enddate and announcement.enddate) %}
+                            {% set title = lang.expired_announcement %}
+                            {% set class = 'expired' %}
                         {% else %}
-                            <tr>
-                                <td class="trow1" colspan="3">{{ lang.no_global_announcements }}</td>
-                            </tr>
+                            {% set title = lang.active_announcement %}
+                            {% set class = 'active' %}
                         {% endif %}
-                    </table>
-                    <br />
-                {% endif %}
+                        <i class="icon icon--small fas fa-circle" title="{{ title }}"></i>
+                        <a href="announcements.php?aid={{ aid }}">{{ announcement.subject }}</a>
+                    </div>
+                    <div class="row__controls">
+                        <a href="modcp.php?action=edit_announcement&amp;aid={{ aid }}" class="button button--secondary button--small">
+                            <i class="button__icon fas fa-pencil-alt"></i>
+                            <span class="button__text">{{ lang.edit }}</span>
+                        </a>
+                        <a href="modcp.php?action=delete_announcement&amp;aid={{ aid }}" class="button button--secondary button--danger button--small">
+                            <i class="button__icon fas fa-trash"></i>
+                            <span class="button__text">{{ lang.delete }}</span>
+                        </a>
+                    </div>
+                </div>
+            {% else %}
+                <div class="alert alert--no-results">{{ lang.no_global_announcements }}</div>
+            {% endfor %}
+        </section>
+    {% endif %}
 
-                <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-                    <tr>
-                        <td class="thead" colspan="3"><strong>{{ lang.forum_announcements }}</strong></td>
-                    </tr>
-                    <tr>
-                        <td class="tcat"><span class="smalltext"><strong>{{ lang.announcement }}</strong></span></td>
-                        <td class="tcat" width="200" colspan="2" align="center"><span class="smalltext"><strong>{{ lang.controls }}</strong></span></td>
-                    </tr>
-                    {% if forumAnnouncements %}
-                        {{ forumAnnouncements|raw }}
-                    {% else %}
-                        <tr>
-                            <td class="trow1" colspan="3">{$lang->no_forum_announcements}</td>
-                        </tr>
-                    {% endif %}
-                </table>
-            </td>
-        </tr>
-    </table>
+    <section class="block">
+		<h1 class="title title--major">{{ lang.forum_announcements }}</h1>
+        {% if forumAnnouncements %}
+            {{ forumAnnouncements|raw }}
+        {% else %}
+            <div class="alert alert--no-results">{{ lang.no_forum_announcements }}</div>
+        {% endif %}
+    </section>
 {% endblock moderationBody %}

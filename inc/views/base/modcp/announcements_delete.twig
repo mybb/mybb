@@ -1,32 +1,33 @@
-{% extends 'layouts/master.twig' %}
+{% extends 'layouts/moderation.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bburl }} - {{ lang.delete_announcement }}</title>
+    <title>{{ mybb.settings.bbname }} - {{ lang.delete_announcement }}</title>
 {% endblock head %}
 
-{% block body %}
+{% block moderationHeader %}
+    <header class="page-header">
+        <h1 class="title title--page">{{ lang.delete_announcement }} - {{ announcement.subject }}</h1>
+
+    </header>
+{% endblock moderationHeader %}
+
+{% block moderationBody %}
     <form action="modcp.php" method="post" enctype="multipart/form-data">
         <input type="hidden" name="action" value="do_delete_announcement" />
         <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
         <input type="hidden" name="aid" value="{{ announcement.aid }}" />
-        <table width="100%" border="0" align="center">
-            <tr>
-                {# Modcp nav #}
-                <td valign="top">
-                    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-                        <tr>
-                            <td class="thead" colspan="2"><strong>{{ announcement.subject }} - {{ lang.delete_announcement }}</strong></td>
-                        </tr>
-                        <tr>
-                            <td class="trow1" colspan="2" align="center">{{ lang.confirm_delete_announcement }}</td>
-                        </tr>
-                    </table>
-                    <br />
-                    <div align="center">
-                        <input type="submit" class="button" name="submit" value="{{ lang.delete_announcement }}" />
-                    </div>
-                </td>
-            </tr>
-        </table>
+        <section class="block block--form form">
+            <div class="section section--form">
+                <div class="row row--form">
+                    {{ lang.confirm_delete_announcement }}
+                </div>
+            </div>
+            <div class="form__submit">
+                <button type="submit" class="button button--medium button--danger">
+                    <i class="button__icon fas fa-trash"></i>
+                    <span class="button__text">{{ lang.delete_announcement }}</span>
+                </button>
+            </div>
+        </section>
     </form>
-{% endblock body %}
+{% endblock moderationBody %}

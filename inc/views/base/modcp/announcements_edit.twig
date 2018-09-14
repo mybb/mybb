@@ -1,114 +1,183 @@
-{% extends 'layouts/master.twig' %}
+{% extends 'layouts/moderation.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bburl }} - {{ lang.edit_announcement }}</title>
+    <title>{{ mybb.settings.bbname }} - {{ lang.edit_announcement }}</title>
 {% endblock head %}
 
-{% block body %}
+{% block moderationHeader %}
+    <header class="page-header">
+        <h1 class="title title--page">{{ lang.edit_announcement }}</h1>
+    </header>
+{% endblock %}
+
+{% block moderationBody %}
     <form action="modcp.php" method="post" enctype="multipart/form-data">
         <input type="hidden" name="action" value="do_edit_announcement" />
         <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
         <input type="hidden" name="fid" value="{{ announcement.fid }}" />
         <input type="hidden" name="aid" value="{{ announcement.aid }}" />
-        <table width="100%" border="0" align="center">
-            <tr>
-                {# Modcp nav #}
-                <td valign="top">
-                    {{ errors|raw }}
-                    {# Preview post to be included when ready. Requires $postbit to be defined #} 
-                    {# include 'post/preview.twig' #}
-                    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-                        <tr>
-                            <td class="thead" colspan="6"><strong>{{ lang.add_announcement }}</strong></td>
-                        </tr>
-                        <tr>
-                            <td valign="top" width="25%"><strong>{{ lang.title }}</strong></td>
-                            <td valign="top" width="75%"><input type="text" class="textbox" name="title" size="40" value="{{ announcement.subject }}" /></td>
-                        </tr>
-                        <tr>
-                            <td colspan="1" valign="top" width="25%"><strong>{{ lang.start_date }}</strong></td>
-                            <td valign="top"  width="75%">
-                                <select name="starttime_day">
+
+        {{ errors|raw }}
+
+        {# Preview #}
+        {% if postbit %}
+            <section class="block block--container">
+                <h1 class="title title--major title--separation">{{ lang.post_preview }}</h1>
+                <div id="posts_container">
+                    <div id="posts">
+                        {{ postbit|raw }}
+                    </div>
+                </div>
+            </section>
+        {% endif %}
+
+        <section class="block block--form form">
+            <div class="section section--form">
+                <div class="row row--form field">
+                    <h3 class="field__name"><label for="title">{{ lang.title }}</label></h3>
+                    <input type="text" class="textbox" name="title" id="title" size="40" value="{{ announcement.subject }}" />
+                </div>
+                <div class="row row--form field">
+                    <h3 class="field__name">{{ lang.start_date }}</h3>
+                    <div class="date-field">
+                        <div class="date-field__item">
+                            <h4 class="date-field__name"><label for="starttime_day">{{ lang.day }}</label></h4>
+                            <div class="select-field">
+                                <i class="select-field__icon fas fa-sort"></i>
+                                <select name="starttime_day" id="starttime_day">
                                     {% for day in 1..31 %}
-                                        <option value="{{ day }}"{% if mybb.input.starttime_day == day %} selected{% endif %}>{{ day }}</option>
+                                        <option value="{{ day }}"{% if dates.start.day == day %} selected{% endif %}>{{ day }}</option>
                                     {% endfor %}
                                 </select>
-                                <select name="starttime_month">
+                            </div>
+                        </div>
+                        <div class="date-field__item">
+                            <h4 class="date-field__name"><label for="starttime_month">{{ lang.month }}</label></h4>
+                            <div class="select-field">
+                                <i class="select-field__icon fas fa-sort"></i>
+                                <select name="starttime_month" id="starttime_month">
                                     {% for month in 1..12 %}
                                         <option value="{{ month }}"{% if dates.start.month == month %} selected{% endif %}>{{ attribute(lang, 'month_' ~ month) }}</option>
                                     {% endfor %}
                                 </select>
-                                <input type="text" name="starttime_year" value="{{ dates.start.year }}" size="4" maxlength="4" class="textbox" />
-                                 - {{ lang.time }} <input type="text" name="starttime_time" value="{{ dates.start.time }}" size="10" class="textbox" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="1" valign="top" width="25%"><strong>{{ lang.end_date }}</strong></td>
-                            <td valign="top"  width="75%">
-                                <input type="radio" name="endtime_type" value="1"{% if (mybb.input.endtime_type != 2 and errors is empty) or (errors and announcement.enddate != 0) or announcement.enddate %} checked{% endif %} />
-                                <select name="endtime_day">
-                                    {% for day in 1..31 %}
-                                        <option value="{{ day }}"{% if mybb.input.endtime_day == day %} selected{% endif %}>{{ day }}</option>
-                                    {% endfor %}
-                                </select>
-                                <select name="endtime_month">
-                                    {% for month in 1..12 %}
-                                        <option value="{{ month }}"{% if dates.end.month == month %} selected{% endif %}>{{ attribute(lang, 'month_' ~ month) }}</option>
-                                    {% endfor %}
-                                </select>
-                                <input type="text" name="endtime_year" value="{{ dates.end.year }}" size="4" maxlength="4" class="textbox" />
-                                 - {{ lang.time }} <input type="text" name="endtime_time" value="{{ dates.end.time }}" size="10" class="textbox" />
-                                <br /><input type="radio" name="endtime_type" value="2"{% if (mybb.input.endtime_type == 2 and errors) or (errors is empty and announcement.enddate == 0) or announcement.enddate is empty %} checked{% endif %} /> {{ lang.never }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td valign="top" width="25%"><strong>{{ lang.announcement }}</strong><br />{{ smilieinserter|raw }}</td>
-                            <td valign="top" width="75%"><textarea id="message" name="message" rows="20" cols="70">{{ announcement.message }}</textarea>{{ codebuttons|raw }}</td>
-                        </tr>
-                        {% if mybb.settings.announcementshtml %}
-                            <tr>
-                                <td class="trow1" valign="top" width="25%"><strong>{{ lang.allow_html }}</strong></td>
-                                <td class="trow1" valign="top" width="75%">
-                                    <label>
-                                        <input type="radio" name="allowhtml" value="1"{% if announcement.allowhtml %} checked{% endif %} /> {{ lang.yes }}
-                                    </label>
-                                    <label>
-                                        <input type="radio" name="allowhtml" value="0"{% if announcement.allowhtml == 0 %} checked{% endif %} /> {{ lang.no }}
-                                    </label>
-                                </td>
-                            </tr>
-                        {% endif %}
-                        <tr>
-                            <td valign="top" width="25%"><strong>{{ lang.allow_mycode }}</strong></td>
-                            <td valign="top" width="75%">
-                                <label>
-                                    <input type="radio" name="allowmycode" value="1"{% if announcement.allowmycode %} checked{% endif %} /> {{ lang.yes }}
-                                </label>
-                                <label>
-                                    <input type="radio" name="allowmycode" value="0"{% if announcement.allowmycode == 0 %} checked{% endif %} /> {{ lang.no }}
-                                </label>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td valign="top" width="25%"><strong>{{ lang.allow_smilies }}</strong></td>
-                            <td valign="top" width="75%">
-                                <label>
-                                    <input type="radio" name="allowsmilies" value="1"{% if announcement.allowsmilies %} checked{% endif %} /> {{ lang.yes }}
-                                </label>
-                                <label>
-                                    <input type="radio" name="allowsmilies" value="0"{% if announcement.allowsmilies == 0 %} checked{% endif %} /> {{ lang.no }}
-                                </label>
-                            </td>
-                        </tr>
-                    </table>
-                    <br />
-                    <div align="center">
-                        <input type="submit" class="button" name="{{ lang.edit_announcement }}" value="{{ lang.edit_announcement }}" />
-                        <input type="submit" class="button" name="preview" value="{{ lang.preview }}" />
+                            </div>
+                        </div>
+                        <div class="date-field__item">
+                            <h4 class="date-field__name"><label for="starttime_year">{{ lang.year }}</label></h4>
+                            <input type="text" name="starttime_year" id="starttime_year" value="{{ dates.start.year }}" size="4" maxlength="4" class="textbox textbox--small" />
+                        </div>
+                        <div class="date-field__item">
+                            <h4 class="date-field__name"><label for="starttime_time">{{ lang.time }}</label></h4>
+                            <input type="text" name="starttime_time" id="starttime_time" value="{{ dates.start.time }}" size="10" class="textbox textbox--medium" />
+                        </div>
                     </div>
-                </td>
-            </tr>
-        </table>
+                </div>
+                <div class="row row--form field">
+                    <h3 class="field__name">{{ lang.end_date }}</h3>
+                    <div class="option-field">
+                        <input type="radio" class="option-field__input" name="endtime_type" id="endtime_type_date" value="1"{% if (mybb.input.endtime_type != 2 and errors) or (errors is empty and announcement.endtime_type == 1) %} checked{% endif %} />
+                        <h4 class="option-field__name option-field__name--light"><label for="endtime_type_date">{{ lang.end_date_option }}</label></h4>
+                        <div class="date-field option-field__field">
+                            <div class="date-field__item">
+                                <h4 class="date-field__name"><label for="endtime_day">{{ lang.day }}</label></h4>
+                                <div class="select-field">
+                                    <i class="select-field__icon fas fa-sort"></i>
+                                    <select name="endtime_day" id="endtime_day">
+                                        {% for day in 1..31 %}
+                                            <option value="{{ day }}"{% if mybb.input.endtime_day == day %} selected{% endif %}>{{ day }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="date-field__item">
+                                <h4 class="date-field__name"><label for="endtime_month">{{ lang.month }}</label></h4>
+                                <div class="select-field">
+                                    <i class="select-field__icon fas fa-sort"></i>
+                                    <select name="endtime_month" id="endtime_month">
+                                        {% for month in 1..12 %}
+                                            <option value="{{ month }}"{% if dates.end.month == month %} selected{% endif %}>{{ attribute(lang, 'month_' ~ month) }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="date-field__item">
+                                <h4 class="date-field__name"><label for="endtime_year">{{ lang.year }}</label></h4>
+                                <input type="text" name="endtime_year" id="endtime_year" value="{{ dates.end.year }}" size="4" maxlength="4" class="textbox textbox--small" />
+                            </div>
+                            <div class="date-field__item">
+                                <h4 class="date-field__name"><label for="endtime_time">{{ lang.time }}</label></h4>
+                                <input type="text" name="endtime_time" id="endtime_time" value="{{ dates.end.time }}" size="10" class="textbox textbox--medium" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="option-field">
+                        <input type="radio" class="option-field__input" name="endtime_type" id="endtime_type_never" value="2"{% if (mybb.input.endtime_type == 2 and errors) or (errors is empty and announcement.endtime_type == 2) %} checked{% endif %} />
+                        <h4 class="option-field__name option-field__name--light"><label for="endtime_type_never">{{ lang.never }}</label></h4>
+                    </div>
+                </div>
+                <div class="row row--form field compose">
+					<h3 class="field__name"><label for="message">{{ lang.announcement }}</label></h3>
+					<div class="compose__container">
+						<div class="compose__message">
+							<textarea id="message" name="message" rows="20" cols="70">{{ announcement.message }}</textarea>
+                            {{ codebuttons|raw }}
+						</div>
+						{{ smilieinserter|raw }}
+					</div>
+				</div>
+                {% if mybb.settings.announcementshtml %}
+                    <div class="row row--form field">
+                    	<h3 class="field__name">{{ lang.allow_html }}</h3>
+                    	<div class="segmented-control">
+                    		<span class="segmented-control__option">
+                    			<input type="radio" class="radio segmented-control__input" name="allowhtml" id="allowhtml_1" value="1"{% if announcement.allowhtml %} checked{% endif %} />
+                    			<label class="segmented-control__button" for="allowhtml_1">{{ lang.yes }}</label>
+                    		</span>
+                    		<span class="segmented-control__option">
+                    			<input type="radio" class="radio segmented-control__input" name="allowhtml" id="allowhtml_0" value="0" {% if announcement.allowhtml == 0 %} checked{% endif %} />
+                    			<label class="segmented-control__button" for="allowhtml_0">{{ lang.no }}</label>
+                    		</span>
+                    	</div>
+                    </div>
+                {% endif %}
+                <div class="row row--form field">
+					<h3 class="field__name">{{ lang.allow_mycode }}</h3>
+					<div class="segmented-control">
+						<span class="segmented-control__option">
+							<input type="radio" class="radio segmented-control__input" name="allowmycode" id="allowmycode_1" value="1"{% if announcement.allowmycode %} checked{% endif %} />
+							<label class="segmented-control__button" for="allowmycode_1">{{ lang.yes }}</label>
+						</span>
+						<span class="segmented-control__option">
+							<input type="radio" class="radio segmented-control__input" name="allowmycode" id="allowmycode_0" value="0"{% if announcement.allowmycode == 0 %} checked{% endif %} />
+							<label class="segmented-control__button" for="allowmycode_0">{{ lang.no }}</label>
+						</span>
+					</div>
+				</div>
+                <div class="row row--form field">
+					<h3 class="field__name">{{ lang.allow_smilies }}</h3>
+					<div class="segmented-control">
+						<span class="segmented-control__option">
+							<input type="radio" class="radio segmented-control__input" name="allowsmilies" id="allowsmilies_1" value="1"{% if announcement.allowsmilies %} checked{% endif %} />
+							<label class="segmented-control__button" for="allowsmilies_1">{{ lang.yes }}</label>
+						</span>
+						<span class="segmented-control__option">
+							<input type="radio" class="radio segmented-control__input" name="allowsmilies" id="allowsmilies_0" value="0" {% if announcement.allowsmilies == 0 %} checked{% endif %} />
+							<label class="segmented-control__button" for="allowsmilies_0">{{ lang.no }}</label>
+						</span>
+					</div>
+				</div>
+            </div>
+            <div class="form__submit">
+				<button type="submit" class="button button--medium">
+					<i class="button__icon fas fa-bullhorn"></i>
+					<span class="button__text">{{ lang.edit_announcement }}</span>
+				</button>
+				<button type="submit" class="button button--secondary button--medium" name="preview" value="preview">
+					<i class="button__icon fas fa-edit"></i>
+					<span class="button__text">{{ lang.preview }}</span>
+				</button>
+			</div>
+        </section>
     </form>
 
     <script type="text/javascript">
@@ -116,4 +185,4 @@
             $(this).unbind("error").closest('.author_avatar').remove();
         });
     </script>
-{% endblock body %}
+{% endblock moderationBody %}
