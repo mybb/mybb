@@ -40,7 +40,7 @@ if($mybb->get_input('action') == "search")
 	add_breadcrumb($lang->nav_memberlist_search);
 
 	$contact_fields = array();
-	foreach(array('aim', 'skype', 'google', 'yahoo', 'icq') as $field)
+	foreach(array('skype', 'google', 'yahoo', 'icq') as $field)
 	{
 		$contact_fields[$field] = '';
 		$settingkey = 'allow'.$field.'field';
@@ -55,6 +55,11 @@ if($mybb->get_input('action') == "search")
 			$bgcolors[$field] = alt_trow();
 			eval('$contact_fields[\''.$field.'\'] = "'.$templates->get('memberlist_search_contact_field').'";');
 		}
+	}
+
+	if($mybb->settings['usereferrals'] == 1)
+	{
+		eval("\$referrals_option = \"".$templates->get("memberlist_referrals_option")."\";");
 	}
 
 	eval("\$search_page = \"".$templates->get("memberlist_search")."\";");
@@ -102,7 +107,14 @@ else
 			$sort_field = "u.threadnum";
 			break;
 		case "referrals":
-			$sort_field = "u.referrals";
+			if($mybb->settings['usereferrals'] == 1)
+			{
+				$sort_field = "u.referrals";
+			}
+			else
+			{
+				$sort_field = "u.username";
+			}
 			break;
 		default:
 			$sort_field = "u.username";
@@ -158,6 +170,16 @@ else
 	$search_query = '1=1';
 	$search_url = "";
 
+	switch($db->type)
+	{
+		// PostgreSQL's LIKE is case sensitive
+		case "pgsql":
+			$like = "ILIKE";
+			break;
+		default:
+			$like = "LIKE";
+	}
+
 	// Limiting results to a certain letter
 	if(isset($mybb->input['letter']))
 	{
@@ -168,7 +190,7 @@ else
 		}
 		else if(strlen($letter) == 1)
 		{
-			$search_query .= " AND u.username LIKE '".$db->escape_string_like($letter)."%'";
+			$search_query .= " AND u.username {$like} '".$db->escape_string_like($letter)."%'";
 		}
 		$search_url .= "&letter={$letter}";
 	}
@@ -182,13 +204,13 @@ else
 		// Name begins with
 		if($mybb->input['username_match'] == "begins")
 		{
-			$search_query .= " AND u.username LIKE '".$username_like_query."%'";
+			$search_query .= " AND u.username {$like} '".$username_like_query."%'";
 			$search_url .= "&username_match=begins";
 		}
 		// Just contains
 		else
 		{
-			$search_query .= " AND u.username LIKE '%".$username_like_query."%'";
+			$search_query .= " AND u.username {$like} '%".$username_like_query."%'";
 		}
 
 		$search_url .= "&username=".urlencode($search_username);
@@ -199,12 +221,12 @@ else
 	$search_website = htmlspecialchars_uni($mybb->input['website']);
 	if(trim($mybb->input['website']))
 	{
-		$search_query .= " AND u.website LIKE '%".$db->escape_string_like($mybb->input['website'])."%'";
+		$search_query .= " AND u.website {$like} '%".$db->escape_string_like($mybb->input['website'])."%'";
 		$search_url .= "&website=".urlencode($mybb->input['website']);
 	}
 
 	// Search by contact field input
-	foreach(array('aim', 'icq', 'google', 'skype', 'yahoo') as $cfield)
+	foreach(array('icq', 'google', 'skype', 'yahoo') as $cfield)
 	{
 		$csetting = 'allow'.$cfield.'field';
 		$mybb->input[$cfield] = trim($mybb->get_input($cfield));
@@ -240,7 +262,7 @@ else
 			}
 			else
 			{
-				$search_query .= " AND u.{$cfield} LIKE '%".$db->escape_string_like($mybb->input[$cfield])."%'";
+				$search_query .= " AND u.{$cfield} {$like} '%".$db->escape_string_like($mybb->input[$cfield])."%'";
 			}
 			$search_url .= "&{$cfield}=".urlencode($mybb->input[$cfield]);
 		}
@@ -290,6 +312,12 @@ else
 	if($page && $page > 0)
 	{
 		$start = ($page - 1) * $per_page;
+		$pages = ceil($num_users / $per_page);
+		if($page > $pages)
+		{
+			$start = 0;
+			$page = 1;
+		}
 	}
 	else
 	{
@@ -336,16 +364,33 @@ else
 		$user['profilelink'] = build_profile_link($user['username'], $user['uid']);
 
 		// Get the display usergroup
-		if(empty($user['displaygroup']))
+		if($user['usergroup'])
+		{
+			$usergroup = usergroup_permissions($user['usergroup']);
+		}
+		else
+		{
+			$usergroup = usergroup_permissions(1);
+		}
+
+		$displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
+
+		if(!$user['displaygroup'])
 		{
 			$user['displaygroup'] = $user['usergroup'];
 		}
-		$usergroup = $usergroups_cache[$user['displaygroup']];
+
+		$display_group = usergroup_displaygroup($user['displaygroup']);
+		if(is_array($display_group))
+		{
+			$usergroup = array_merge($usergroup, $display_group);
+		}
 
 		// Build referral?
 		if($mybb->settings['usereferrals'] == 1)
 		{
 			eval("\$referral_bit = \"".$templates->get("memberlist_referrals_bit")."\";");
+			eval("\$referrals_option = \"".$templates->get("memberlist_referrals_option")."\";");
 		}
 
 		$usergroup['groupimage'] = '';

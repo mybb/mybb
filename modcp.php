@@ -58,7 +58,7 @@ $flist_queue_attach = $wflist_reports = $tflist_reports = $flist_reports = $tfli
 $moderated_forums = array();
 if($mybb->usergroup['issupermod'] != 1)
 {
-	$query = $db->simple_select("moderators", "*", "(id='{$mybb->user['uid']}' AND isgroup = '0') OR (id='{$mybb->user['usergroup']}' AND isgroup = '1')");
+	$query = $db->simple_select("moderators", "*", "(id='{$mybb->user['uid']}' AND isgroup = '0') OR (id IN ({$mybb->usergroup['all_usergroups']}) AND isgroup = '1')");
 
 	$numannouncements = $nummodqueuethreads = $nummodqueueposts = $nummodqueueattach = $numreportedposts = $nummodlogs = 0;
 	while($forum = $db->fetch_array($query))
@@ -263,11 +263,13 @@ $plugins->run_hooks("modcp_nav");
 
 if(!empty($nav_announcements) || !empty($nav_modqueue) || !empty($nav_reportcenter) || !empty($nav_modlogs))
 {
+	$expaltext = (in_array("modcpforums", $collapse)) ? "[+]" : "[-]";
 	eval("\$modcp_nav_forums_posts = \"".$templates->get("modcp_nav_forums_posts")."\";");
 }
 
 if(!empty($nav_editprofile) || !empty($nav_banning) || !empty($nav_warninglogs) || !empty($nav_ipsearch))
 {
+	$expaltext = (in_array("modcpusers", $collapse)) ? "[+]" : "[-]";
 	eval("\$modcp_nav_users = \"".$templates->get("modcp_nav_users")."\";");
 }
 
@@ -2585,7 +2587,6 @@ if($mybb->input['action'] == "do_editprofile")
 		"profile_fields_editable" => true,
 		"website" => $mybb->get_input('website'),
 		"icq" => $mybb->get_input('icq'),
-		"aim" => $mybb->get_input('aim'),
 		"yahoo" => $mybb->get_input('yahoo'),
 		"skype" => $mybb->get_input('skype'),
 		"google" => $mybb->get_input('google'),
@@ -2665,7 +2666,7 @@ if($mybb->input['action'] == "do_editprofile")
 		require_once MYBB_ROOT."inc/functions_warnings.php";
 		foreach($moderator_options as $option)
 		{
-			$mybb->input[$option['time']] = $mybb->get_input($option['time'], MyBB::INPUT_INT);
+			${$option['time']} = $mybb->get_input($option['time'], MyBB::INPUT_INT);
 			$mybb->input[$option['period']] = $mybb->get_input($option['period']);
 			if(empty($mybb->input[$option['action']]))
 			{
@@ -2775,6 +2776,22 @@ if($mybb->input['action'] == "editprofile")
 		error_no_permission();
 	}
 
+	$userperms = user_permissions($user['uid']);
+
+	// Set display group
+	$displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
+
+	if(!$user['displaygroup'])
+	{
+		$user['displaygroup'] = $user['usergroup'];
+	}
+
+	$display_group = usergroup_displaygroup($user['displaygroup']);
+	if(is_array($display_group))
+	{
+		$userperms = array_merge($userperms, $display_group);
+	}
+
 	if(!my_validate_url($user['website']))
 	{
 		$user['website'] = '';
@@ -2805,23 +2822,15 @@ if($mybb->input['action'] == "editprofile")
 	}
 
 	// Sanitize all input
-	foreach(array('usertitle', 'website', 'icq', 'aim', 'yahoo', 'skype', 'google', 'signature', 'birthday_day', 'birthday_month', 'birthday_year') as $field)
+	foreach(array('usertitle', 'website', 'icq', 'yahoo', 'skype', 'google', 'signature', 'birthday_day', 'birthday_month', 'birthday_year') as $field)
 	{
 		$mybb->input[$field] = htmlspecialchars_uni($mybb->get_input($field));
 	}
 
-	// Custom user title, check to see if we have a default group title
-	if(!$user['displaygroup'])
+	// Custom user title
+	if(!empty($userperms['usertitle']))
 	{
-		$user['displaygroup'] = $user['usergroup'];
-	}
-
-	$displaygroupfields = array('usertitle');
-	$display_group = usergroup_displaygroup($user['displaygroup']);
-
-	if(!empty($display_group['usertitle']))
-	{
-		$defaulttitle = htmlspecialchars_uni($display_group['usertitle']);
+		$defaulttitle = htmlspecialchars_uni($userperms['usertitle']);
 	}
 	else
 	{
@@ -3199,9 +3208,10 @@ if($mybb->input['action'] == "editprofile")
 
 	$suspendsignature_info = $moderateposts_info = $suspendposting_info = '';
 	$action_options = $modpost_options = $suspost_options = '';
+	$modopts = array();
 	foreach($moderator_options as $option)
 	{
-		$mybb->input[$option['time']] = $mybb->get_input($option['time'], MyBB::INPUT_INT);
+		${$option['time']} = $mybb->get_input($option['time'], MyBB::INPUT_INT);
 		// Display the suspension info, if this user has this option suspended
 		if($user[$option['option']])
 		{
@@ -3273,6 +3283,13 @@ if($mybb->input['action'] == "editprofile")
 	{
 		$newtitle = '';
 	}
+
+	$birthday_year = $mybb->input['birthday_year'];
+	$user_website = $mybb->input['website'];
+	$user_icq = $mybb->input['icq'];
+	$user_skype = $mybb->input['skype'];
+	$user_google = $mybb->input['google'];
+	$user_yahoo = $mybb->input['yahoo'];
 
 	$plugins->run_hooks("modcp_editprofile_end");
 
@@ -3420,6 +3437,7 @@ if($mybb->input['action'] == "finduser")
 
 	$plugins->run_hooks("modcp_finduser_end");
 
+	$username = $mybb->get_input('username');
 	eval("\$finduser = \"".$templates->get("modcp_finduser")."\";");
 	output_page($finduser);
 }
@@ -3560,6 +3578,12 @@ if($mybb->input['action'] == "warninglogs")
 		$per_page = (int)$mybb->input['filter']['per_page'];
 	}
 	$start = ($page-1) * $per_page;
+	$pages = ceil($total_warning / $per_page);
+	if($page > $pages)
+	{
+		$start = 0;
+		$page = 1;
+	}
 	// Build the base URL for pagination links
 	$url = 'modcp.php?action=warninglogs';
 	if(is_array($mybb->input['filter']) && count($mybb->input['filter']))
@@ -3636,6 +3660,10 @@ if($mybb->input['action'] == "warninglogs")
 	}
 
 	$plugins->run_hooks("modcp_warninglogs_end");
+
+	$filter_username = $mybb->input['filter']['username'];
+	$filter_modusername = $mybb->input['filter']['mod_username'];
+	$filter_reason = $mybb->input['filter']['reason'];
 
 	eval("\$warninglogs = \"".$templates->get("modcp_warninglogs")."\";");
 	output_page($warninglogs);
@@ -4266,6 +4294,8 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 			error_no_permission();
 		}
 	}
+
+	$errors = array();
 
 	// Creating a new ban
 	if(!$existing_ban)

@@ -102,7 +102,7 @@ $template_sets[-1] = $lang->global_templates;
 $query = $db->simple_select("templatesets", "*", "", array('order_by' => 'title', 'order_dir' => 'ASC'));
 while($template_set = $db->fetch_array($query))
 {
-	$template_sets[$template_set['sid']] = $template_set['title'];
+	$template_sets[$template_set['sid']] = htmlspecialchars_uni($template_set['title']);
 }
 
 $plugins->run_hooks("admin_style_templates");
@@ -157,7 +157,7 @@ if($mybb->input['action'] == "add_set")
 	$form = new Form("index.php?module=style-templates&amp;action=add_set", "post", "add_set");
 
 	$form_container = new FormContainer($lang->add_set);
-	$form_container->output_row($lang->title, "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
+	$form_container->output_row($lang->title, "", $form->generate_text_box('title', htmlspecialchars_uni($mybb->input['title']), array('id' => 'title')), 'title');
 	$form_container->end();
 
 	$buttons = array();
@@ -808,7 +808,7 @@ if($mybb->input['action'] == "edit_template_group")
 
 				$db->update_query('templategroups', $update_array, "gid = '{$template_group['gid']}'");
 
-				log_admin_action($template_group['gid'], htmlspecialchars_uni($title));
+				log_admin_action($template_group['gid'], $title);
 				flash_message($lang->success_template_group_saved, 'success');
 				admin_redirect("index.php?module=style-templates&amp;sid={$sid}");
 			}
@@ -1324,7 +1324,7 @@ LEGEND;
 		FROM ".TABLE_PREFIX."templates t
 		LEFT JOIN ".TABLE_PREFIX."templates m ON (m.title=t.title AND m.sid=-2 AND m.version > t.version)
 		WHERE t.sid > 0 AND m.template != t.template
-		ORDER BY t.sid ASC, title ASC
+		ORDER BY t.sid ASC, t.title ASC
 	");
 	while($template = $db->fetch_array($query))
 	{
@@ -1335,7 +1335,7 @@ LEGEND;
 	{
 		if(!$done_set[$sid])
 		{
-			$table->construct_header($templatesets[$sid]['title'], array("colspan" => 2));
+			$table->construct_header(htmlspecialchars_uni($templatesets[$sid]['title']), array("colspan" => 2));
 
 			$done_set[$sid] = 1;
 			++$count;
@@ -1400,7 +1400,7 @@ if($mybb->input['action'] == "delete_template_group")
 		$plugins->run_hooks("admin_style_template_group_delete_commit");
 
 		// Log admin action
-		log_admin_action($template_group['gid'], htmlspecialchars_uni($template_group['title']));
+		log_admin_action($template_group['gid'], $template_group['title']);
 
 		flash_message($lang->success_template_group_deleted, 'success');
 		admin_redirect("index.php?module=style-templates&amp;sid={$sid}");
@@ -1869,7 +1869,7 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 			$table->construct_cell("<a href=\"index.php?module=style-templates&amp;sid={$sid}{$group['expand_str']}#group_{$group['gid']}\">{$expand}</a>", array("class" => "align_center"));
 			$table->construct_row(array("class" => "alt_row", "id" => "group_".$group['gid'], "name" => "group_".$group['gid']));
 
-			if(isset($group['templates']) && count($group['templates']) > 0)
+			if(isset($group['templates']) && is_array($group['templates']) && count($group['templates']) > 0)
 			{
 				$templates = $group['templates'];
 				ksort($templates);
@@ -2003,6 +2003,8 @@ if(!$mybb->input['action'])
 
 			$actions = $popup->fetch();
 		}
+
+		$set['title'] = htmlspecialchars_uni($set['title']);
 
 		$table->construct_cell("<strong><a href=\"index.php?module=style-templates&amp;sid={$set['sid']}\">{$set['title']}</a></strong><br /><small>{$used_by_note}</small>");
 		$table->construct_cell($actions, array("class" => "align_center"));

@@ -44,7 +44,7 @@ var MyBB = {
 			mark_read_imgs.each(function()
 			{
 				var element = $(this);
-				if(element.hasClass('forum_off') || element.hasClass('forum_offlock') || element.hasClass('forum_offlink') || element.hasClass('subforum_minioff') || element.hasClass('subforum_miniofflock') || element.hasClass('subforum_miniofflink') || (element.attr("title") && element.attr("title") == lang.no_new_posts)) return;
+				if(element.hasClass('forum_off') || element.hasClass('forum_offclose') || element.hasClass('forum_offlink') || element.hasClass('subforum_minioff') || element.hasClass('subforum_minioffclose') || element.hasClass('subforum_miniofflink') || (element.attr("title") && element.attr("title") == lang.no_new_posts)) return;
 
 				element.click(function()
 				{
@@ -164,6 +164,16 @@ var MyBB = {
 	viewNotes: function(uid)
 	{
 		MyBB.popupWindow("/member.php?action=viewnotes&uid="+uid+"&modal=1");
+	},
+
+	getIP: function(pid)
+	{
+		MyBB.popupWindow("/moderation.php?action=getip&pid="+pid+"&modal=1");
+	},
+
+	getPMIP: function(pmid)
+	{
+		MyBB.popupWindow("/moderation.php?action=getpmip&pmid="+pmid+"&modal=1");
 	},
 
 	deleteReputation: function(uid, rid)

@@ -125,7 +125,7 @@ function get_unsearchable_forums($pid=0, $first=1)
 		$pwverified = 1;
 		if($forum['password'] != '')
 		{
-			if($mybb->cookies['forumpass'][$forum['fid']] !== md5($mybb->user['uid'].$forum['password']))
+			if(!isset($mybb->cookies['forumpass'][$forum['fid']]) || !my_hash_equals($mybb->cookies['forumpass'][$forum['fid']], md5($mybb->user['uid'].$forum['password'])))
 			{
 				$pwverified = 0;
 			}
@@ -698,6 +698,13 @@ function privatemessage_perform_search_mysql($search)
 		$statussql = implode("OR", $statussql);
 		$searchsql .= $statussql.")";
 	}
+
+	$limitsql = "";
+	if((int)$mybb->settings['searchhardlimit'] > 0)
+	{
+		$limitsql = " LIMIT ".(int)$mybb->settings['searchhardlimit'];
+	}
+	$searchsql .= $limitsql;
 
 	// Run the search
 	$pms = array();

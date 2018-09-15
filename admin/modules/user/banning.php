@@ -40,6 +40,7 @@ $sub_tabs['emails'] = array(
 
 // Fetch banned groups
 $query = $db->simple_select("usergroups", "gid,title", "isbannedgroup=1", array('order_by' => 'title'));
+$banned_groups = array();
 while($group = $db->fetch_array($query))
 {
 	$banned_groups[$group['gid']] = $group['title'];
@@ -99,7 +100,7 @@ if($mybb->input['action'] == "prune")
 		$cache->update_reportedcontent();
 
 		// Log admin action
-		log_admin_action($user['uid'], htmlspecialchars_uni($user['username']));
+		log_admin_action($user['uid'], $user['username']);
 
 		flash_message($lang->success_pruned, 'success');
 		admin_redirect("index.php?module=user-banning");
@@ -154,7 +155,7 @@ if($mybb->input['action'] == "lift")
 		$cache->update_moderators();
 
 		// Log admin action
-		log_admin_action($ban['uid'], htmlspecialchars_uni($user['username']));
+		log_admin_action($ban['uid'], $user['username']);
 
 		flash_message($lang->success_ban_lifted, 'success');
 		admin_redirect("index.php?module=user-banning");
@@ -241,7 +242,7 @@ if($mybb->input['action'] == "edit")
 			$cache->update_banned();
 
 			// Log admin action
-			log_admin_action($ban['uid'], htmlspecialchars_uni($user['username']));
+			log_admin_action($ban['uid'], $user['username']);
 
 			flash_message($lang->success_ban_updated, 'success');
 			admin_redirect("index.php?module=user-banning");
@@ -405,7 +406,7 @@ if(!$mybb->input['action'])
 				$cache->update_banned();
 
 				// Log admin action
-				log_admin_action($user['uid'], htmlspecialchars_uni($user['username']), $lifted);
+				log_admin_action($user['uid'], $user['username'], $lifted);
 
 				flash_message($lang->success_banned, 'success');
 				admin_redirect("index.php?module=user-banning");

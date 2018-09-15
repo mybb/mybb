@@ -80,6 +80,8 @@ foreach($foldersexploded as $key => $folders)
 	eval("\$foldersearch_folder .= \"".$templates->get("private_jump_folders_folder")."\";");
 }
 
+$from_fid = $mybb->input['fid'];
+
 eval("\$folderjump = \"".$templates->get("private_jump_folders")."\";");
 eval("\$folderoplist = \"".$templates->get("private_move")."\";");
 eval("\$foldersearch = \"".$templates->get("private_advanced_search_folders")."\";");
@@ -277,12 +279,21 @@ if($mybb->input['action'] == "results")
 		$mybb->settings['threadsperpage'] = 20;
 	}
 
+	$query = $db->simple_select("privatemessages", "COUNT(*) AS total", "pmid IN(".$db->escape_string($search['querycache']).")");
+	$pmscount = $db->fetch_field($query, "total");
+
 	// Work out pagination, which page we're at, as well as the limits.
 	$perpage = $mybb->settings['threadsperpage'];
 	$page = $mybb->get_input('page', MyBB::INPUT_INT);
 	if($page > 0)
 	{
 		$start = ($page-1) * $perpage;
+		$pages = ceil($pmscount / $perpage);
+		if($page > $pages)
+		{
+			$start = 0;
+			$page = 1;
+		}
 	}
 	else
 	{
@@ -301,14 +312,11 @@ if($mybb->input['action'] == "results")
 	}
 
 	// Do Multi Pages
-	$query = $db->simple_select("privatemessages", "COUNT(*) AS total", "pmid IN(".$db->escape_string($search['querycache']).")");
-	$pmscount = $db->fetch_array($query);
-
 	if($upper > $pmscount)
 	{
 		$upper = $pmscount;
 	}
-	$multipage = multipage($pmscount['total'], $perpage, $page, "private.php?action=results&amp;sid=".htmlspecialchars_uni($mybb->get_input('sid'))."&amp;sortby={$sortby}&amp;order={$order}");
+	$multipage = multipage($pmscount, $perpage, $page, "private.php?action=results&amp;sid=".htmlspecialchars_uni($mybb->get_input('sid'))."&amp;sortby={$sortby}&amp;order={$order}");
 	$messagelist = '';
 
 	$icon_cache = $cache->read("posticons");
@@ -556,6 +564,7 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 
 	// Attempt to see if this PM is a duplicate or not
 	$to = array_map("trim", explode(",", $mybb->get_input('to')));
+	$to = array_unique($to); // Filter out any duplicates
 	$to_escaped = implode("','", array_map(array($db, 'escape_string'), array_map('my_strtolower', $to)));
 	$time_cutoff = TIME_NOW - (5 * 60 * 60);
 	$query = $db->query("
@@ -702,8 +711,8 @@ if($mybb->input['action'] == "send")
 		{
 			$optionschecked['readreceipt'] = 'checked="checked"';
 		}
-		$to = htmlspecialchars_uni($mybb->get_input('to'));
-		$bcc = htmlspecialchars_uni($mybb->get_input('bcc'));
+		$to = htmlspecialchars_uni(implode(', ', array_unique(array_map('trim', explode(',', $mybb->get_input('to'))))));
+		$bcc = htmlspecialchars_uni(implode(', ', array_unique(array_map('trim', explode(',', $mybb->get_input('bcc'))))));
 	}
 
 	$preview = '';
@@ -922,8 +931,8 @@ if($mybb->input['action'] == "send")
 
 	if($send_errors)
 	{
-		$to = htmlspecialchars_uni($mybb->get_input('to'));
-		$bcc = htmlspecialchars_uni($mybb->get_input('bcc'));
+		$to = htmlspecialchars_uni(implode(', ', array_unique(array_map('trim', explode(',', $mybb->get_input('to'))))));
+		$bcc = htmlspecialchars_uni(implode(', ', array_unique(array_map('trim', explode(',', $mybb->get_input('bcc'))))));
 	}
 
 	// Load the auto complete javascript if it is enabled.
@@ -1204,7 +1213,8 @@ if($mybb->input['action'] == "read")
 
 			eval("\$private_send_tracking = \"".$templates->get("private_send_tracking")."\";");
 		}
-
+		
+		$expaltext = (in_array("quickreply", $collapse)) ? "[+]" : "[-]";
 		eval("\$quickreply = \"".$templates->get("private_quickreply")."\";");
 	}
 
@@ -2132,7 +2142,7 @@ if(!$mybb->input['action'])
 
 	// Do Multi Pages
 	$query = $db->simple_select("privatemessages", "COUNT(*) AS total", "uid='".$mybb->user['uid']."' AND folder='$folder'");
-	$pmscount = $db->fetch_array($query);
+	$pmscount = $db->fetch_field($query, "total");
 
 	if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
 	{
@@ -2145,6 +2155,12 @@ if(!$mybb->input['action'])
 	if($page > 0)
 	{
 		$start = ($page-1) *$perpage;
+		$pages = ceil($pmscount / $perpage);
+		if($page > $pages)
+		{
+			$start = 0;
+			$page = 1;
+		}
 	}
 	else
 	{
@@ -2170,7 +2186,7 @@ if(!$mybb->input['action'])
 		$page_url = "private.php?fid={$folder}";
 	}
 
-	$multipage = multipage($pmscount['total'], $perpage, $page, $page_url);
+	$multipage = multipage($pmscount, $perpage, $page, $page_url);
 	$messagelist = '';
 
 	$icon_cache = $cache->read("posticons");
@@ -2290,7 +2306,7 @@ if(!$mybb->input['action'])
 			{ // Sent Items or Drafts Folder Check
 				$recipients = my_unserialize($message['recipients']);
 				$to_users = $bcc_users = '';
-				if(count($recipients['to']) > 1 || (count($recipients['to']) == 1 && isset($recipients['bcc']) && count($recipients['bcc']) > 0))
+				if(isset($recipients['to']) && count($recipients['to']) > 1 || (isset($recipients['to']) && count($recipients['to']) == 1 && isset($recipients['bcc']) && count($recipients['bcc']) > 0))
 				{
 					foreach($recipients['to'] as $uid)
 					{

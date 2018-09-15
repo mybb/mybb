@@ -122,18 +122,21 @@ if($mybb->input['action'] == "edit")
 	{
 		foreach($mybb->input['permissions'] as $module => $actions)
 		{
-			$no_access = 0;
-			foreach($actions as $action => $access)
+			if(is_array($actions))
 			{
-				if($access == 0)
+				$no_access = 0;
+				foreach($actions as $action => $access)
 				{
-					++$no_access;
+					if($access == 0)
+					{
+						++$no_access;
+					}
 				}
-			}
-			// User can't access any actions in this module - just disallow it completely
-			if($no_access == count($actions))
-			{
-				unset($mybb->input['permissions'][$module]);
+				// User can't access any actions in this module - just disallow it completely
+				if($no_access == count($actions))
+				{
+					unset($mybb->input['permissions'][$module]);
+				}
 			}
 		}
 
@@ -339,6 +342,9 @@ if($mybb->input['action'] == "group")
 			$perm_type = "default";
 		}
 		$uid = -$group['gid'];
+
+		$group['title'] = htmlspecialchars_uni($group['title']);
+
 		$table->construct_cell("<div class=\"float_right\"><img src=\"styles/{$page->style}/images/icons/{$perm_type}.png\" title=\"{$lang->permissions_type_group}\" alt=\"{$perm_type}\" /></div><div><strong><a href=\"index.php?module=user-admin_permissions&amp;action=edit&amp;uid={$uid}\" title=\"{$lang->edit_group}\">{$group['title']}</a></strong><br /></div>");
 
 		if($group['permissions'] != "")
@@ -443,6 +449,8 @@ if(!$mybb->input['action'])
 		");
 		while($admin = $db->fetch_array($query))
 		{
+			$perm_type = "default";
+			
 			if($admin['permissions'] != "")
 			{
 				$perm_type = "user";
@@ -459,11 +467,6 @@ if(!$mybb->input['action'])
 						break;
 					}
 				}
-
-				if(!$group_permissions)
-				{
-					$perm_type = "default";
-				}
 			}
 
 			$usergroup_list = array();
@@ -472,7 +475,7 @@ if(!$mybb->input['action'])
 			// Primary usergroup?
 			if($usergroups[$admin['usergroup']]['cancp'] == 1)
 			{
-				$usergroup_list[] = "<i>".$usergroups[$admin['usergroup']]['title']."</i>";
+				$usergroup_list[] = "<i>".htmlspecialchars_uni($usergroups[$admin['usergroup']]['title'])."</i>";
 			}
 
 			// Secondary usergroups?
@@ -483,7 +486,7 @@ if(!$mybb->input['action'])
 				{
 					if($usergroups[$gid]['cancp'] == 1)
 					{
-						$usergroup_list[] = $usergroups[$gid]['title'];
+						$usergroup_list[] = htmlspecialchars_uni($usergroups[$gid]['title']);
 					}
 				}
 			}

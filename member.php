@@ -16,13 +16,13 @@ define("ALLOWABLE_PAGE", "register,do_register,login,do_login,logout,lostpw,do_l
 $nosession['avatar'] = 1;
 
 $templatelist = "member_register,member_register_hiddencaptcha,member_register_coppa,member_register_agreement_coppa,member_register_agreement,member_register_customfield,member_register_requiredfields,member_profile_findthreads";
-$templatelist .= ",member_loggedin_notice,member_profile_away,member_register_regimage,member_register_regimage_recaptcha,member_register_regimage_recaptcha_invisible,member_register_regimage_nocaptcha,post_captcha_hidden,post_captcha,post_captcha_recaptcha,member_register_referrer";
+$templatelist .= ",member_loggedin_notice,member_profile_away,member_register_regimage,member_register_regimage_recaptcha_invisible,member_register_regimage_nocaptcha,post_captcha_hidden,post_captcha,member_register_referrer";
 $templatelist .= ",member_profile_email,member_profile_offline,member_profile_reputation,member_profile_warn,member_profile_warninglevel,member_profile_customfields_field,member_profile_customfields,member_profile_adminoptions,member_profile";
 $templatelist .= ",member_profile_signature,member_profile_avatar,member_profile_groupimage,member_profile_referrals,member_profile_website,member_profile_reputation_vote,member_activate,member_lostpw,member_register_additionalfields";
 $templatelist .= ",member_profile_modoptions_manageuser,member_profile_modoptions_editprofile,member_profile_modoptions_banuser,member_profile_modoptions_viewnotes,member_profile_modoptions_editnotes,member_profile_modoptions_purgespammer";
 $templatelist .= ",usercp_profile_profilefields_select_option,usercp_profile_profilefields_multiselect,usercp_profile_profilefields_select,usercp_profile_profilefields_textarea,usercp_profile_profilefields_radio,member_viewnotes";
 $templatelist .= ",member_register_question,member_register_question_refresh,usercp_options_timezone,usercp_options_timezone_option,usercp_options_language_option,member_profile_customfields_field_multi_item,member_profile_customfields_field_multi";
-$templatelist .= ",member_profile_contact_fields_aim,member_profile_contact_fields_google,member_profile_contact_fields_icq,member_profile_contact_fields_skype,member_profile_contact_fields_yahoo,member_profile_pm,member_profile_contact_details";
+$templatelist .= ",member_profile_contact_fields_google,member_profile_contact_fields_icq,member_profile_contact_fields_skype,member_profile_contact_fields_yahoo,member_profile_pm,member_profile_contact_details";
 $templatelist .= ",member_profile_banned_remaining,member_profile_addremove,member_emailuser_guest,member_register_day,usercp_options_tppselect_option,postbit_warninglevel_formatted,member_profile_userstar,member_profile_findposts";
 $templatelist .= ",usercp_options_tppselect,usercp_options_pppselect,member_resetpassword,member_login,member_profile_online,usercp_options_pppselect_option,postbit_reputation_formatted,member_emailuser,usercp_profile_profilefields_text";
 $templatelist .= ",member_profile_modoptions_ipaddress,member_profile_modoptions,member_profile_banned,member_register_language,member_resendactivation,usercp_profile_profilefields_checkbox,member_register_password,member_coppa_form";
@@ -391,7 +391,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		if($mybb->settings['regtype'] != "randompass" && !isset($mybb->cookies['coppauser']))
 		{
 			// Log them in
-			my_setcookie("mybbuser", $user_info['uid']."_".$user_info['loginkey'], null, true);
+			my_setcookie("mybbuser", $user_info['uid']."_".$user_info['loginkey'], null, true, "lax");
 		}
 
 		if(isset($mybb->cookies['coppauser']))
@@ -713,31 +713,31 @@ if($mybb->input['action'] == "register")
 		$bdaymonthsel[$number] = '';
 	}
 	$bdaymonthsel[$mybb->input['bday2']] = "selected=\"selected\"";
-	$mybb->input['bday3'] = $mybb->get_input('bday3', MyBB::INPUT_INT);
+	$birthday_year = $mybb->get_input('bday3', MyBB::INPUT_INT);
 
-	if($mybb->input['bday3'] == 0)
+	if($birthday_year == 0)
 	{
-		$mybb->input['bday3'] = '';
+		$birthday_year = '';
 	}
 
 	// Is COPPA checking enabled?
 	if($mybb->settings['coppa'] != "disabled" && !isset($mybb->input['step']))
 	{
 		// Just selected DOB, we check
-		if($mybb->input['bday1'] && $mybb->input['bday2'] && $mybb->input['bday3'])
+		if($mybb->input['bday1'] && $mybb->input['bday2'] && $birthday_year)
 		{
 			my_unsetcookie("coppauser");
 
-			$months = get_bdays($mybb->input['bday3']);
-			if($mybb->input['bday2'] < 1 || $mybb->input['bday2'] > 12 || $mybb->input['bday3'] < (date("Y")-100) || $mybb->input['bday3'] > date("Y") || $mybb->input['bday1'] > $months[$mybb->input['bday2']-1])
+			$months = get_bdays($birthday_year);
+			if($mybb->input['bday2'] < 1 || $mybb->input['bday2'] > 12 || $birthday_year < (date("Y")-100) || $birthday_year > date("Y") || $mybb->input['bday1'] > $months[$mybb->input['bday2']-1])
 			{
 				error($lang->error_invalid_birthday);
 			}
 
-			$bdaytime = @mktime(0, 0, 0, $mybb->input['bday2'], $mybb->input['bday1'], $mybb->input['bday3']);
+			$bdaytime = @mktime(0, 0, 0, $mybb->input['bday2'], $mybb->input['bday1'], $birthday_year);
 
 			// Store DOB in cookie so we can save it with the registration
-			my_setcookie("coppadob", "{$mybb->input['bday1']}-{$mybb->input['bday2']}-{$mybb->input['bday3']}", -1);
+			my_setcookie("coppadob", "{$mybb->input['bday1']}-{$mybb->input['bday2']}-{$birthday_year}", -1);
 
 			// User is <= 13, we mark as a coppa user
 			if($bdaytime >= mktime(0, 0, 0, my_date('n'), my_date('d'), my_date('Y')-13))
@@ -754,6 +754,7 @@ if($mybb->input['action'] == "register")
 
 			my_unsetcookie("coppauser");
 
+			$coppa_desc = $mybb->settings['coppa'] == 'deny' ? $lang->coppa_desc_for_deny : $lang->coppa_desc;
 			eval("\$coppa = \"".$templates->get("member_register_coppa")."\";");
 			output_page($coppa);
 			exit;
@@ -1219,6 +1220,9 @@ $(document).ready(function() {
 			{
 				$question = $db->fetch_array($query);
 
+				$question['question'] = htmlspecialchars_uni($question['question']);
+				$question['sid'] = htmlspecialchars_uni($question['sid']);
+
 				$refresh = '';
 				// Total questions
 				$q = $db->simple_select('questions', 'COUNT(qid) as num', 'active=1');
@@ -1485,7 +1489,7 @@ if($mybb->input['action'] == "resendactivation")
 		error($lang->error_alreadyactivated);
 	}
 
-	$query = $db->simple_select("awaitingactivation", "*", "uid='".$user['uid']."' AND type='b'");
+	$query = $db->simple_select("awaitingactivation", "*", "uid='".$mybb->user['uid']."' AND type='b'");
 	$activation = $db->fetch_array($query);
 
 	if($activation['validated'] == 1)
@@ -1570,17 +1574,26 @@ if($mybb->input['action'] == "do_resendactivation" && $mybb->request_method == "
 	}
 }
 
-if($mybb->input['action'] == "lostpw")
-{
-	$plugins->run_hooks("member_lostpw");
-
-	eval("\$lostpw = \"".$templates->get("member_lostpw")."\";");
-	output_page($lostpw);
-}
-
 if($mybb->input['action'] == "do_lostpw" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("member_do_lostpw_start");
+
+	$errors = array();
+
+	if($mybb->settings['captchaimage'])
+	{
+		require_once MYBB_ROOT.'inc/class_captcha.php';
+		$captcha = new captcha;
+
+		if($captcha->validate_captcha() == false)
+		{
+			// CAPTCHA validation failed
+			foreach($captcha->get_errors() as $error)
+			{
+				$errors[] = $error;
+			}
+		}
+	}
 
 	$email = $db->escape_string($email);
 	$query = $db->simple_select("users", "*", "email='".$db->escape_string($mybb->get_input('email'))."'");
@@ -1591,44 +1604,84 @@ if($mybb->input['action'] == "do_lostpw" && $mybb->request_method == "post")
 	}
 	else
 	{
-		while($user = $db->fetch_array($query))
+		if(count($errors) == 0)
 		{
-			$db->delete_query("awaitingactivation", "uid='{$user['uid']}' AND type='p'");
-			$user['activationcode'] = random_str(30);
-			$now = TIME_NOW;
-			$uid = $user['uid'];
-			$awaitingarray = array(
-				"uid" => $user['uid'],
-				"dateline" => TIME_NOW,
-				"code" => $user['activationcode'],
-				"type" => "p"
-			);
-			$db->insert_query("awaitingactivation", $awaitingarray);
-			$username = $user['username'];
-			$email = $user['email'];
-			$activationcode = $user['activationcode'];
-			$emailsubject = $lang->sprintf($lang->emailsubject_lostpw, $mybb->settings['bbname']);
-			switch($mybb->settings['username_method'])
+			while($user = $db->fetch_array($query))
 			{
-				case 0:
-					$emailmessage = $lang->sprintf($lang->email_lostpw, $username, $mybb->settings['bbname'], $mybb->settings['bburl'], $uid, $activationcode);
-					break;
-				case 1:
-					$emailmessage = $lang->sprintf($lang->email_lostpw1, $username, $mybb->settings['bbname'], $mybb->settings['bburl'], $uid, $activationcode);
-					break;
-				case 2:
-					$emailmessage = $lang->sprintf($lang->email_lostpw2, $username, $mybb->settings['bbname'], $mybb->settings['bburl'], $uid, $activationcode);
-					break;
-				default:
-					$emailmessage = $lang->sprintf($lang->email_lostpw, $username, $mybb->settings['bbname'], $mybb->settings['bburl'], $uid, $activationcode);
-					break;
+				$db->delete_query("awaitingactivation", "uid='{$user['uid']}' AND type='p'");
+				$user['activationcode'] = random_str(30);
+				$now = TIME_NOW;
+				$uid = $user['uid'];
+				$awaitingarray = array(
+					"uid" => $user['uid'],
+					"dateline" => TIME_NOW,
+					"code" => $user['activationcode'],
+					"type" => "p"
+				);
+				$db->insert_query("awaitingactivation", $awaitingarray);
+				$username = $user['username'];
+				$email = $user['email'];
+				$activationcode = $user['activationcode'];
+				$emailsubject = $lang->sprintf($lang->emailsubject_lostpw, $mybb->settings['bbname']);
+				switch($mybb->settings['username_method'])
+				{
+					case 0:
+						$emailmessage = $lang->sprintf($lang->email_lostpw, $username, $mybb->settings['bbname'], $mybb->settings['bburl'], $uid, $activationcode);
+						break;
+					case 1:
+						$emailmessage = $lang->sprintf($lang->email_lostpw1, $username, $mybb->settings['bbname'], $mybb->settings['bburl'], $uid, $activationcode);
+						break;
+					case 2:
+						$emailmessage = $lang->sprintf($lang->email_lostpw2, $username, $mybb->settings['bbname'], $mybb->settings['bburl'], $uid, $activationcode);
+						break;
+					default:
+						$emailmessage = $lang->sprintf($lang->email_lostpw, $username, $mybb->settings['bbname'], $mybb->settings['bburl'], $uid, $activationcode);
+						break;
+				}
+				my_mail($email, $emailsubject, $emailmessage);
 			}
-			my_mail($email, $emailsubject, $emailmessage);
+
+			$plugins->run_hooks("member_do_lostpw_end");
+
+			redirect("index.php", $lang->redirect_lostpwsent, "", true);
+		}
+		else
+		{
+			$mybb->input['action'] = "lostpw";
 		}
 	}
-	$plugins->run_hooks("member_do_lostpw_end");
+}
 
-	redirect("index.php", $lang->redirect_lostpwsent, "", true);
+if($mybb->input['action'] == "lostpw")
+{
+	$plugins->run_hooks("member_lostpw");
+
+	$captcha = '';
+	// Generate CAPTCHA?
+	if($mybb->settings['captchaimage'])
+	{
+		require_once MYBB_ROOT.'inc/class_captcha.php';
+		$post_captcha = new captcha(true, "post_captcha");
+
+		if($post_captcha->html)
+		{
+			$captcha = $post_captcha->html;
+		}
+	}
+
+	if(isset($errors) && count($errors) > 0)
+	{
+		$errors = inline_error($errors);
+		$email = htmlspecialchars_uni($mybb->get_input('email'));
+	}
+	else
+	{
+		$errors = '';
+		$email = '';
+	}
+
+	eval("\$lostpw = \"".$templates->get("member_lostpw")."\";");
+	output_page($lostpw);
 }
 
 if($mybb->input['action'] == "resetpassword")
@@ -1763,11 +1816,11 @@ $do_captcha = $correct = false;
 $inline_errors = "";
 if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 {
-	$plugins->run_hooks("member_do_login_start");
+    verify_post_check($mybb->get_input('my_post_key'));
 
-	// Is a fatal call if user has had too many tries
 	$errors = array();
-	$logins = login_attempt_check();
+
+	$plugins->run_hooks("member_do_login_start");
 
 	require_once MYBB_ROOT."inc/datahandlers/login.php";
 	$loginhandler = new LoginDataHandler("get");
@@ -1802,7 +1855,11 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		$mybb->input['action'] = "login";
 		$mybb->request_method = "get";
 
-		my_setcookie('loginattempts', $logins + 1);
+		$login_user = get_user_by_username($user['username'], array('fields' => 'uid'));
+
+		// Is a fatal call if user has had too many tries
+		$logins = login_attempt_check($login_user['uid']);
+
 		$db->update_query("users", array('loginattempts' => 'loginattempts+1'), "uid='".(int)$loginhandler->login_data['uid']."'", 1, true);
 
 		$errors = $loginhandler->get_friendly_errors();
@@ -1865,7 +1922,8 @@ if($mybb->input['action'] == "login")
 	}
 
 	// Checks to make sure the user can login; they haven't had too many tries at logging in.
-	// Is a fatal call if user has had too many tries
+	// Is a fatal call if user has had too many tries. This particular check uses cookies, as a uid is not set yet
+	// and we can't check loginattempts in the db
 	login_attempt_check();
 
 	// Redirect to the page where the user came from, but not if that was the login page.
@@ -2046,6 +2104,20 @@ if($mybb->input['action'] == "profile")
 	// Get member's permissions
 	$memperms = user_permissions($memprofile['uid']);
 
+	// Set display group
+	$displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
+
+	if(!$memprofile['displaygroup'])
+	{
+		$memprofile['displaygroup'] = $memprofile['usergroup'];
+	}
+
+	$displaygroup = usergroup_displaygroup($memprofile['displaygroup']);
+	if(is_array($displaygroup))
+	{
+		$memperms = array_merge($memperms, $displaygroup);
+	}
+
 	$lang->nav_profile = $lang->sprintf($lang->nav_profile, $memprofile['username']);
 	add_breadcrumb($lang->nav_profile);
 
@@ -2083,7 +2155,7 @@ if($mybb->input['action'] == "profile")
 
 	$contact_fields = array();
 	$any_contact_field = false;
-	foreach(array('icq', 'aim', 'yahoo', 'skype', 'google') as $field)
+	foreach(array('icq', 'yahoo', 'skype', 'google') as $field)
 	{
 		$contact_fields[$field] = '';
 		$settingkey = 'allow'.$field.'field';
@@ -2331,22 +2403,6 @@ if($mybb->input['action'] == "profile")
 		$membdayage = '';
 	}
 
-	if(!$memprofile['displaygroup'])
-	{
-		$memprofile['displaygroup'] = $memprofile['usergroup'];
-	}
-
-	// Grab the following fields from the user's displaygroup
-	$displaygroupfields = array(
-		"title",
-		"usertitle",
-		"stars",
-		"starimage",
-		"image",
-		"usereputationsystem"
-	);
-	$displaygroup = usergroup_displaygroup($memprofile['displaygroup']);
-
 	// Get the user title for this user
 	unset($usertitle);
 	unset($stars);
@@ -2356,10 +2412,10 @@ if($mybb->input['action'] == "profile")
 		// User has custom user title
 		$usertitle = $memprofile['usertitle'];
 	}
-	elseif(trim($displaygroup['usertitle']) != '')
+	elseif(trim($memperms['usertitle']) != '')
 	{
 		// User has group title
-		$usertitle = $displaygroup['usertitle'];
+		$usertitle = $memperms['usertitle'];
 	}
 	else
 	{
@@ -2384,10 +2440,10 @@ if($mybb->input['action'] == "profile")
 
 	$usertitle = htmlspecialchars_uni($usertitle);
 
-	if($displaygroup['stars'] || $displaygroup['usertitle'])
+	if($memperms['stars'] || $memperms['usertitle'])
 	{
 		// Set the number of stars if display group has constant number of stars
-		$stars = $displaygroup['stars'];
+		$stars = $memperms['stars'];
 	}
 	elseif(!$stars)
 	{
@@ -2412,7 +2468,7 @@ if($mybb->input['action'] == "profile")
 	}
 
 	$groupimage = '';
-	if(!empty($displaygroup['image']))
+	if(!empty($memperms['image']))
 	{
 		if(!empty($mybb->user['language']))
 		{
@@ -2422,14 +2478,14 @@ if($mybb->input['action'] == "profile")
 		{
 			$language = $mybb->settings['bblanguage'];
 		}
-		$displaygroup['image'] = str_replace("{lang}", $language, $displaygroup['image']);
-		$displaygroup['image'] = str_replace("{theme}", $theme['imgdir'], $displaygroup['image']);
+		$memperms['image'] = str_replace("{lang}", $language, $memperms['image']);
+		$memperms['image'] = str_replace("{theme}", $theme['imgdir'], $memperms['image']);
 		eval("\$groupimage = \"".$templates->get("member_profile_groupimage")."\";");
 	}
 
 	if(empty($starimage))
 	{
-		$starimage = $displaygroup['starimage'];
+		$starimage = $memperms['starimage'];
 	}
 
 	if(!empty($starimage))
@@ -2513,7 +2569,7 @@ if($mybb->input['action'] == "profile")
 
 	// Fetch the reputation for this user
 	$reputation = '';
-	if($memperms['usereputationsystem'] == 1 && $displaygroup['usereputationsystem'] == 1 && $mybb->settings['enablereputation'] == 1)
+	if($memperms['usereputationsystem'] == 1 && $mybb->settings['enablereputation'] == 1)
 	{
 		$bg_color = alt_trow();
 		$reputation = get_reputation($memprofile['reputation']);

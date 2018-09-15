@@ -14,7 +14,7 @@ $l['error_invalidpworusername'] = "You have entered an invalid username/password
 $l['error_invalidpworusername1'] = "You have entered an invalid email/password combination. <br /><br />If you have forgotten your password please <a href=\"member.php?action=lostpw\">retrieve a new one</a>.";
 $l['error_invalidpworusername2'] = "You have entered an invalid username/password or email/password combination. <br /><br />If you have forgotten your password please <a href=\"member.php?action=lostpw\">retrieve a new one</a>.";
 $l['error_incompletefields'] = "It appears you have left one or more required fields blank. Please go back and enter the required fields.";
-$l['error_alreadyuploaded'] = "This post already contains an attachment with the same name. Please rename the file and upload it again. Alternatively you may click \"Update Attachment\".";
+$l['error_alreadyuploaded'] = "This post already contains an attachment with the name \"{1}\". Please rename the file and upload it again. Alternatively you may click \"Update Attachment\".";
 $l['error_alreadyuploaded_perm'] = "This post already contains an attachment with the same name. Please either remove the existing file or rename the file and upload it again.";
 $l['error_nomessage'] = "Sorry, we cannot proceed because you did not enter a valid message. Please go back and do so.";
 $l['error_invalidemail'] = "You did not enter a valid email address.";
@@ -28,8 +28,8 @@ $l['error_invalidattachment'] = "The specified attachment does not exist.";
 $l['error_invalidforum'] = "Invalid forum";
 $l['error_closedinvalidforum'] = "You may not post in this forum because either the forum is closed, it is a redirect to another webpage, or it is a category.";
 $l['error_attachtype'] = "The type of file that you attached is not allowed. Please remove the attachment or choose a different type.";
-$l['error_attachsize'] = "The file you attached is too large. The maximum size for that type of file is {1} kilobytes.";
-$l['error_uploadempty'] = "The file specified is empty.";
+$l['error_attachsize'] = "The file \"{1}\" is too large. The maximum size for that type of file is {2} kilobytes.";
+$l['error_uploadempty'] = "The \"{1}\" file is empty.";
 $l['error_uploadsize'] = "The size of the uploaded file is too large.";
 $l['error_uploadfailed'] = "The file upload failed. Please choose a valid file and try again. ";
 $l['error_uploadfailed_detail'] = "Error details: ";
@@ -272,7 +272,7 @@ Thank you,
 Unsubscription Information:
 
 If you would not like to receive any more notifications of new threads in this forum, visit the following URL in your browser:
-{7}/usercp2.php?action=removesubscription&type=forum&fid={9}&my_post_key={10}
+{7}/usercp.php?action=removesubscription&type=forum&fid={9}&my_post_key={10}
 
 ------------------------------------------";
 
@@ -348,7 +348,7 @@ Thank you,
 Unsubscription Information:
 
 If you would not like to receive any more notifications of replies to this thread, visit the following URL in your browser:
-{6}/usercp2.php?action=removesubscription&tid={8}&my_post_key={9}
+{6}/usercp.php?action=removesubscription&tid={8}&my_post_key={9}
 
 ------------------------------------------";
 $l['email_reachedpmquota'] = "{1},
@@ -493,7 +493,7 @@ There may also be other replies to this thread but you will not receive anymore 
 Unsubscription Information:
 
 If you would not like to receive any more notifications of replies to this thread, visit the following URL in your browser:
-[url]{5}/usercp2.php?action=removesubscription&tid={7}&my_post_key={8}[/url]
+[url]{5}/usercp.php?action=removesubscription&tid={7}&my_post_key={8}[/url]
 
 ------------------------------------------";
 

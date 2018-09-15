@@ -79,7 +79,10 @@ if($mybb->input['action'] == "add")
 			$errors[] = $lang->error_missing_description;
 		}
 
-		if(!file_exists(MYBB_ROOT."inc/tasks/".$mybb->input['file'].".php"))
+		$file = $mybb->get_input('file');
+		$file = basename($file, '.php');
+
+		if(!file_exists(MYBB_ROOT."inc/tasks/".$file.".php"))
 		{
 			$errors[] = $lang->error_invalid_task_file;
 		}
@@ -126,7 +129,7 @@ if($mybb->input['action'] == "add")
 			$new_task = array(
 				"title" => $db->escape_string($mybb->input['title']),
 				"description" => $db->escape_string($mybb->input['description']),
-				"file" => $db->escape_string($mybb->input['file']),
+				"file" => $db->escape_string($file),
 				"minute" => $db->escape_string($mybb->input['minute']),
 				"hour" => $db->escape_string($mybb->input['hour']),
 				"day" => $db->escape_string($mybb->input['day']),
@@ -144,7 +147,7 @@ if($mybb->input['action'] == "add")
 			$cache->update_tasks();
 
 			// Log admin action
-			log_admin_action($tid, htmlspecialchars_uni($mybb->input['title']));
+			log_admin_action($tid, $mybb->input['title']);
 
 			flash_message($lang->success_task_created, 'success');
 			admin_redirect("index.php?module=tools-tasks");
@@ -271,7 +274,10 @@ if($mybb->input['action'] == "edit")
 			$errors[] = $lang->error_missing_description;
 		}
 
-		if(!file_exists(MYBB_ROOT."inc/tasks/".$mybb->input['file'].".php"))
+        $file = $mybb->get_input('file');
+        $file = basename($file, '.php');
+
+		if(!file_exists(MYBB_ROOT."inc/tasks/".$file.".php"))
 		{
 			$errors[] = $lang->error_invalid_task_file;
 		}
@@ -326,7 +332,7 @@ if($mybb->input['action'] == "edit")
 			$updated_task = array(
 				"title" => $db->escape_string($mybb->input['title']),
 				"description" => $db->escape_string($mybb->input['description']),
-				"file" => $db->escape_string($mybb->input['file']),
+				"file" => $db->escape_string($file),
 				"minute" => $db->escape_string($mybb->input['minute']),
 				"hour" => $db->escape_string($mybb->input['hour']),
 				"day" => $db->escape_string($mybb->input['day']),
@@ -345,7 +351,7 @@ if($mybb->input['action'] == "edit")
 			$cache->update_tasks();
 
 			// Log admin action
-			log_admin_action($task['tid'], htmlspecialchars_uni($mybb->input['title']));
+			log_admin_action($task['tid'], $mybb->input['title']);
 
 			flash_message($lang->success_task_updated, 'success');
 
@@ -480,7 +486,7 @@ if($mybb->input['action'] == "delete")
 		$cache->update_tasks();
 
 		// Log admin action
-		log_admin_action($task['tid'], htmlspecialchars_uni($task['title']));
+		log_admin_action($task['tid'], $task['title']);
 
 		flash_message($lang->success_task_deleted, 'success');
 		admin_redirect("index.php?module=tools-tasks");
@@ -538,7 +544,7 @@ if($mybb->input['action'] == "enable" || $mybb->input['action'] == "disable")
 				$cache->update_tasks();
 
 				// Log admin action
-				log_admin_action($task['tid'], htmlspecialchars_uni($task['title']), $mybb->input['action']);
+				log_admin_action($task['tid'], $task['title'], $mybb->input['action']);
 
 				flash_message($lang->success_task_enabled, 'success');
 				admin_redirect("index.php?module=tools-tasks");
@@ -558,7 +564,7 @@ if($mybb->input['action'] == "enable" || $mybb->input['action'] == "disable")
 			$cache->update_tasks();
 
 			// Log admin action
-			log_admin_action($task['tid'], htmlspecialchars_uni($task['title']), $mybb->input['action']);
+			log_admin_action($task['tid'], $task['title'], $mybb->input['action']);
 
 			flash_message($lang->success_task_enabled, 'success');
 			admin_redirect("index.php?module=tools-tasks");
@@ -573,7 +579,7 @@ if($mybb->input['action'] == "enable" || $mybb->input['action'] == "disable")
 		$cache->update_tasks();
 
 		// Log admin action
-		log_admin_action($task['tid'], htmlspecialchars_uni($task['title']), htmlspecialchars_uni($mybb->input['action']));
+		log_admin_action($task['tid'], $task['title'], $mybb->input['action']);
 
 		flash_message($lang->success_task_disabled, 'success');
 		admin_redirect("index.php?module=tools-tasks");
@@ -608,7 +614,7 @@ if($mybb->input['action'] == "run")
 	$plugins->run_hooks("admin_tools_tasks_run_commit");
 
 	// Log admin action
-	log_admin_action($task['tid'], htmlspecialchars_uni($task['title']));
+	log_admin_action($task['tid'], $task['title']);
 
 	flash_message($lang->success_task_run, 'success');
 	admin_redirect("index.php?module=tools-tasks");

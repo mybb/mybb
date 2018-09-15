@@ -14,14 +14,14 @@ class MyBB {
 	 *
 	 * @var string
 	 */
-	public $version = "1.8.14";
+	public $version = "1.8.19";
 
 	/**
 	 * The version code of MyBB we're running.
 	 *
 	 * @var integer
 	 */
-	public $version_code = 1814;
+	public $version_code = 1819;
 
 	/**
 	 * The current working directory.
@@ -161,6 +161,7 @@ class MyBB {
 		'adminsessions' => array('ip' => true),
 		'maillogs' => array('ipaddress' => true),
 		'moderatorlog' => array('ipaddress' => true),
+		'pollvotes' => array('ipaddress' => true),
 		'posts' => array('ipaddress' => true),
 		'privatemessages' => array('ipaddress' => true),
 		'searchlog' => array('ipaddress' => true),
@@ -598,7 +599,7 @@ class MyBB {
  */
 
 $grouppermignore = array("gid", "type", "title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
-$groupzerogreater = array("pmquota", "maxpmrecipients", "maxreputationsday", "attachquota", "maxemails", "maxwarningsday", "maxposts", "edittimelimit", "canusesigxposts", "maxreputationsperuser", "maxreputationsperthread", "emailfloodtime");
+$groupzerogreater = array("pmquota", "maxpmrecipients", "maxreputationsday", "attachquota", "maxemails", "maxposts", "edittimelimit", "maxreputationsperuser", "maxreputationsperthread", "emailfloodtime");
 $displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
 
 // These are fields in the usergroups table that are also forum permission specific.

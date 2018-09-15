@@ -254,7 +254,7 @@ if($mybb->input['action'] == "activate_user")
 	my_mail($user['email'], $lang->sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']), $message);
 
 	// Log admin action
-	log_admin_action($user['uid'], htmlspecialchars_uni($user['username']));
+	log_admin_action($user['uid'], $user['username']);
 
 	if($mybb->input['from'] == "home")
 	{
@@ -359,7 +359,7 @@ if($mybb->input['action'] == "add")
 			$plugins->run_hooks("admin_user_users_add_commit");
 
 			// Log admin action
-			log_admin_action($user_info['uid'], htmlspecialchars_uni($user_info['username']));
+			log_admin_action($user_info['uid'], $user_info['username']);
 
 			flash_message($lang->success_user_created, 'success');
 			admin_redirect("index.php?module=user-users&action=edit&uid={$user_info['uid']}");
@@ -512,7 +512,6 @@ if($mybb->input['action'] == "edit")
 			"profile_fields_editable" => true,
 			"website" => $mybb->input['website'],
 			"icq" => $mybb->input['icq'],
-			"aim" => $mybb->input['aim'],
 			"yahoo" => $mybb->input['yahoo'],
 			"skype" => $mybb->input['skype'],
 			"google" => $mybb->input['google'],
@@ -646,7 +645,7 @@ if($mybb->input['action'] == "edit")
 						}
 
 						// Because Gravatars are square, hijack the width
-						list($maxwidth, $maxheight) = explode("x", my_strtolower($mybb->settings['maxavatardims']));
+						list($maxwidth, $maxheight) = preg_split('/[|x]/', my_strtolower($mybb->settings['maxavatardims']));
 
 						$s = "?s={$maxwidth}";
 						$maxheight = (int)$maxwidth;
@@ -694,7 +693,7 @@ if($mybb->input['action'] == "edit")
 						{
 							if($width && $height && $mybb->settings['maxavatardims'] != "")
 							{
-								list($maxwidth, $maxheight) = explode("x", my_strtolower($mybb->settings['maxavatardims']));
+								list($maxwidth, $maxheight) = preg_split('/[|x]/', my_strtolower($mybb->settings['maxavatardims']));
 								if(($maxwidth && $width > $maxwidth) || ($maxheight && $height > $maxheight))
 								{
 									$lang->error_avatartoobig = $lang->sprintf($lang->error_avatartoobig, $maxwidth, $maxheight);
@@ -844,7 +843,7 @@ if($mybb->input['action'] == "edit")
 				}
 
 				// Log admin action
-				log_admin_action($user['uid'], htmlspecialchars_uni($mybb->input['username']));
+				log_admin_action($user['uid'], $mybb->input['username']);
 
 				flash_message($lang->success_user_updated, 'success');
 				admin_redirect("index.php?module=user-users");
@@ -932,7 +931,7 @@ if($mybb->input['action'] == "edit")
 
 	<link rel="stylesheet" href="../jscripts/sceditor/editor_themes/mybb.css" type="text/css" media="all" />
 	<script type="text/javascript" src="../jscripts/sceditor/jquery.sceditor.bbcode.min.js?ver=1805"></script>
-	<script type="text/javascript" src="../jscripts/bbcodes_sceditor.js?ver=1808"></script>
+	<script type="text/javascript" src="../jscripts/bbcodes_sceditor.js?ver=1819"></script>
 	<script type="text/javascript" src="../jscripts/sceditor/editor_plugins/undo.js?ver=1805"></script>
 EOF;
 	$page->output_header($lang->edit_user);
@@ -955,7 +954,7 @@ EOF;
 	// Is this user a COPPA user? We show a warning & activate link
 	if($user['coppauser'])
 	{
-		echo $lang->sprintf($lang->warning_coppa_user, $user['uid']);
+		echo $lang->sprintf($lang->warning_coppa_user, $user['uid'], $mybb->post_code);
 	}
 
 	$tabs = array(
@@ -978,13 +977,13 @@ EOF;
 	$table->construct_header($lang->general_account_stats, array('colspan' => '2', 'class' => 'align_center'));
 
 	// Avatar
-	$avatar_dimensions = explode("|", $user['avatardimensions']);
+	$avatar_dimensions = preg_split('/[|x]/', $user['avatardimensions']);
 	if($user['avatar'] && (my_strpos($user['avatar'], '://') === false || $mybb->settings['allowremoteavatars']))
 	{
 		if($user['avatardimensions'])
 		{
 			require_once MYBB_ROOT."inc/functions_image.php";
-			list($width, $height) = explode("|", $user['avatardimensions']);
+			list($width, $height) = preg_split('/[|x]/', $user['avatardimensions']);
 			$scaled_dimensions = scale_image($width, $height, 120, 120);
 		}
 		else
@@ -1163,7 +1162,6 @@ EOF;
 	$form_container->output_row($lang->custom_user_title, $lang->custom_user_title_desc, $form->generate_text_box('usertitle', $mybb->input['usertitle'], array('id' => 'usertitle')), 'usertitle');
 	$form_container->output_row($lang->website, "", $form->generate_text_box('website', $mybb->input['website'], array('id' => 'website')), 'website');
 	$form_container->output_row($lang->icq_number, "", $form->generate_numeric_field('icq', $mybb->input['icq'], array('id' => 'icq', 'min' => 0)), 'icq');
-	$form_container->output_row($lang->aim_handle, "", $form->generate_text_box('aim', $mybb->input['aim'], array('id' => 'aim')), 'aim');
 	$form_container->output_row($lang->yahoo_messanger_handle, "", $form->generate_text_box('yahoo', $mybb->input['yahoo'], array('id' => 'yahoo')), 'yahoo');
 	$form_container->output_row($lang->skype_handle, "", $form->generate_text_box('skype', $mybb->input['skype'], array('id' => 'skype')), 'skype');
 	$form_container->output_row($lang->google_handle, "", $form->generate_text_box('google', $mybb->input['google'], array('id' => 'google')), 'google');
@@ -1254,7 +1252,7 @@ EOF;
 		$form->generate_check_box("pmnotify", 1, $lang->email_notify_new_pms, array("checked" => $mybb->input['pmnotify'])),
 		$form->generate_check_box("buddyrequestspm", 1, $lang->buddy_requests_pm, array("checked" => $mybb->input['buddyrequestspm'])),
 		$form->generate_check_box("buddyrequestsauto", 1, $lang->buddy_requests_auto, array("checked" => $mybb->input['buddyrequestsauto'])),
-		"<label for=\"subscriptionmethod\">{$lang->default_thread_subscription_mode}:</label><br />".$form->generate_select_box("subscriptionmethod", array($lang->do_not_subscribe, $lang->no_email_notification, $lang->instant_email_notification), $mybb->input['subscriptionmethod'], array('id' => 'subscriptionmethod'))
+		"<label for=\"subscriptionmethod\">{$lang->default_thread_subscription_mode}:</label><br />".$form->generate_select_box("subscriptionmethod", array($lang->do_not_subscribe, $lang->no_notification, $lang->instant_email_notification, $lang->instant_pm_notification), $mybb->input['subscriptionmethod'], array('id' => 'subscriptionmethod'))
 	);
 	$form_container->output_row($lang->messaging_and_notification, "", "<div class=\"user_settings_bit\">".implode("</div><div class=\"user_settings_bit\">", $messaging_options)."</div>");
 
@@ -1515,7 +1513,7 @@ EOF;
 
 	if($mybb->settings['maxavatardims'] != "")
 	{
-		list($max_width, $max_height) = explode("x", my_strtolower($mybb->settings['maxavatardims']));
+		list($max_width, $max_height) = preg_split('/[|x]/', my_strtolower($mybb->settings['maxavatardims']));
 		$max_size = "<br />{$lang->max_dimensions_are} {$max_width}x{$max_height}";
 	}
 
@@ -1764,7 +1762,7 @@ if($mybb->input['action'] == "delete")
 
 		$plugins->run_hooks("admin_user_users_delete_commit_end");
 
-		log_admin_action($user['uid'], htmlspecialchars_uni($user['username']));
+		log_admin_action($user['uid'], $user['username']);
 
 		flash_message($lang->success_user_deleted, 'success');
 		admin_redirect("index.php?module=user-users");
@@ -1844,7 +1842,7 @@ if($mybb->input['action'] == "ipaddresses")
 	$user = $db->fetch_array($query);
 
 	// Log admin action
-	log_admin_action($user['uid'], htmlspecialchars_uni($user['username']));
+	log_admin_action($user['uid'], $user['username']);
 
 	$table = new Table;
 
@@ -2141,7 +2139,7 @@ if($mybb->input['action'] == "merge")
 			$cache->update_awaitingactivation();
 
 			// Log admin action
-			log_admin_action($source_user['uid'], htmlspecialchars_uni($source_user['username']), $destination_user['uid'], htmlspecialchars_uni($destination_user['username']));
+			log_admin_action($source_user['uid'], $source_user['username'], $destination_user['uid'], $destination_user['username']);
 
 			// Redirect!
 			$username = htmlspecialchars_uni($source_user['username']);
@@ -2469,7 +2467,7 @@ if($mybb->input['action'] == "inline_edit")
 				$to_update_count = count($to_update);
 				$lang->inline_activated = $lang->sprintf($lang->inline_activated, my_number_format($to_update_count));
 
-				if($to_update_count != count($selected))
+				if(is_array($selected) && $to_update_count != count($selected))
 				{
 					// The update count is different to how many we selected!
 					$not_updated_count = count($selected) - $to_update_count;
@@ -2952,6 +2950,7 @@ if($mybb->input['action'] == "inline_edit")
 
 				// Do the usergroup update for all those selected
 				// If the a selected user is a super admin, don't update that user
+				$users_to_update = array();
 				foreach($selected as $user)
 				{
 					if(!is_super_admin($user))
@@ -2961,7 +2960,7 @@ if($mybb->input['action'] == "inline_edit")
 				}
 
 				$to_update_count = count($users_to_update);
-				if($to_update_count > 0 && is_array($users_to_update))
+				if($to_update_count > 0)
 				{
 					// Update the users in the database
 					$sql = implode(",", $users_to_update);
@@ -3237,7 +3236,7 @@ function build_users_view($view)
 	// Build the search SQL for users
 
 	// List of valid LIKE search fields
-	$user_like_fields = array("username", "email", "website", "icq", "aim", "yahoo", "skype", "google", "signature", "usertitle");
+	$user_like_fields = array("username", "email", "website", "icq", "yahoo", "skype", "google", "signature", "usertitle");
 	foreach($user_like_fields as $search_field)
 	{
 		if(!empty($view['conditions'][$search_field]) && !$view['conditions'][$search_field.'_blank'])
@@ -3478,6 +3477,12 @@ function build_users_view($view)
 		if($mybb->input['page'])
 		{
 			$start = ($mybb->input['page'] - 1) * $view['perpage'];
+			$pages = ceil($num_results / $view['perpage']);
+			if($mybb->input['page'] > $pages)
+			{
+				$start = 0;
+				$mybb->input['page'] = 1;
+			}
 		}
 		else
 		{
@@ -3775,7 +3780,7 @@ function build_users_view($view)
 	}
 
 	$built_view .= '
-<script type="text/javascript" src="'.$mybb->settings['bburl'].'/jscripts/inline_moderation.js?ver=1800"></script>
+<script type="text/javascript" src="'.$mybb->settings['bburl'].'/jscripts/inline_moderation.js?ver=1818"></script>
 <form action="index.php?module=user-users" method="post">
 <input type="hidden" name="my_post_key" value="'.$mybb->post_code.'" />
 <input type="hidden" name="action" value="inline_edit" />
@@ -4130,7 +4135,6 @@ function user_search_conditions($input=array(), &$form)
 
 	$form_container->output_row($lang->website_contains, "", $form->generate_text_box('conditions[website]', $input['conditions']['website'], array('id' => 'website'))." {$lang->or} ".$form->generate_check_box('conditions[website_blank]', 1, $lang->is_not_blank, array('id' => 'website_blank', 'checked' => $input['conditions']['website_blank'])), 'website');
 	$form_container->output_row($lang->icq_number_contains, "", $form->generate_text_box('conditions[icq]', $input['conditions']['icq'], array('id' => 'icq'))." {$lang->or} ".$form->generate_check_box('conditions[icq_blank]', 1, $lang->is_not_blank, array('id' => 'icq_blank', 'checked' => $input['conditions']['icq_blank'])), 'icq');
-	$form_container->output_row($lang->aim_handle_contains, "", $form->generate_text_box('conditions[aim]', $input['conditions']['aim'], array('id' => 'aim'))." {$lang->or} ".$form->generate_check_box('conditions[aim_blank]', 1, $lang->is_not_blank, array('id' => 'aim_blank', 'checked' => $input['conditions']['aim_blank'])), 'aim');
 	$form_container->output_row($lang->yahoo_contains, "", $form->generate_text_box('conditions[yahoo]', $input['conditions']['yahoo'], array('id' => 'yahoo'))." {$lang->or} ".$form->generate_check_box('conditions[yahoo_blank]', 1, $lang->is_not_blank, array('id' => 'yahoo_blank', 'checked' => $input['conditions']['yahoo_blank'])), 'yahoo');
 	$form_container->output_row($lang->skype_contains, "", $form->generate_text_box('conditions[skype]', $input['conditions']['skype'], array('id' => 'skype'))." {$lang->or} ".$form->generate_check_box('conditions[skype_blank]', 1, $lang->is_not_blank, array('id' => 'skype_blank', 'checked' => $input['conditions']['skype_blank'])), 'skype');
 	$form_container->output_row($lang->google_contains, "", $form->generate_text_box('conditions[google]', $input['conditions']['google'], array('id' => 'google'))." {$lang->or} ".$form->generate_check_box('conditions[google_blank]', 1, $lang->is_not_blank, array('id' => 'google_blank', 'checked' => $input['conditions']['google_blank'])), 'google');
@@ -4276,7 +4280,10 @@ function merge_thread_ratings($source_uid, $destination_uid)
 	{
 		foreach($decrement_list as $tid => $ratings)
 		{
-			$db->update_query('threads', array('numratings' => 'numratings-'.count($ratings), 'totalratings' => 'totalratings-'.array_sum($ratings)), "tid='{$tid}'", 1, true);
+			if(is_array($ratings))
+			{
+				$db->update_query('threads', array('numratings' => 'numratings-'.count($ratings), 'totalratings' => 'totalratings-'.array_sum($ratings)), "tid='{$tid}'", 1, true);
+			}
 		}
 	}
 }

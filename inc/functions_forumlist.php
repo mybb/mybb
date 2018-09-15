@@ -142,10 +142,13 @@ function build_forumbits($pid=0, $depth=1)
 				);
 			}
 
-			if($forum['password'] != '' && $mybb->cookies['forumpass'][$forum['fid']] !== md5($mybb->user['uid'].$forum['password']))
+			if($forum['password'])
 			{
-			    $hideinfo = true;
-			    $showlockicon = 1;
+				if(!isset($mybb->cookies['forumpass'][$forum['fid']]) || !my_hash_equals($mybb->cookies['forumpass'][$forum['fid']], md5($mybb->user['uid'].$forum['password'])))
+				{
+					$hideinfo = true;
+					$showlockicon = 1;
+				}
 			}
 
 			// Fetch subforums of this forum
@@ -484,11 +487,11 @@ function get_forum_lightbulb($forum, $lastpost, $locked=0)
 		$folder = "offlink";
 		$altonoff = $lang->forum_redirect;
 	}
-	// This forum is closed, so override the folder icon with the "offlock" icon.
+	// This forum is closed, so override the folder icon with the "offclose" icon.
 	elseif($forum['open'] == 0 || $locked)
 	{
-		$folder = "offlock";
-		$altonoff = $lang->forum_locked;
+		$folder = "offclose";
+		$altonoff = $lang->forum_closed;
 	}
 	else
 	{

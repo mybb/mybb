@@ -112,6 +112,7 @@ $tables[] = "CREATE TABLE mybb_awaitingactivation (
 $tables[] = "CREATE TABLE mybb_badwords (
 	bid INTEGER PRIMARY KEY,
 	badword varchar(100) NOT NULL default '',
+	regex tinyint(1) NOT NULL default '0',
 	replacement varchar(100) NOT NULL default ''
 );";
 
@@ -468,7 +469,8 @@ $tables[] = "CREATE TABLE mybb_pollvotes (
 	pid int NOT NULL default '0',
 	uid int NOT NULL default '0',
 	voteoption smallint NOT NULL default '0',
-	dateline int NOT NULL default '0'
+	dateline int NOT NULL default '0',
+	ipaddress blob(16) NOT NULL default ''
 );";
 
 $tables[] = "CREATE TABLE mybb_posts (
@@ -952,7 +954,6 @@ $tables[] = "CREATE TABLE mybb_users (
 	lastpost int NOT NULL default '0',
 	website varchar(200) NOT NULL default '',
 	icq varchar(10) NOT NULL default '',
-	aim varchar(50) NOT NULL default '',
 	yahoo varchar(50) NOT NULL default '',
 	skype varchar(75) NOT NULL default '',
 	google varchar(75) NOT NULL default '',
@@ -1012,7 +1013,8 @@ $tables[] = "CREATE TABLE mybb_users (
 	suspendsigtime int NOT NULL default '0',
 	coppauser tinyint(1) NOT NULL default '0',
 	classicpostbit tinyint(1) NOT NULL default '0',
-	loginattempts smallint(2) NOT NULL default '1',
+	loginattempts smallint(2) NOT NULL default '0',
+	loginlockoutexpiry int NOT NULL default '0',
 	usernotes TEXT NOT NULL,
 	sourceeditor tinyint(1) NOT NULL default '0'
 );";

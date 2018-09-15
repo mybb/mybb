@@ -578,6 +578,11 @@ function get_admin_log_action($logitem)
 	$plugin_array = array('logitem' => &$logitem, 'lang_string' => &$lang_string);
 	$plugins->run_hooks("admin_tools_get_admin_log_action", $plugin_array);
 
+    foreach($logitem['data'] as $key => $value)
+    {
+        $logitem['data'][$key] = htmlspecialchars_uni($value);
+    }
+
 	if(isset($lang->$lang_string))
 	{
 		array_unshift($logitem['data'], $lang->$lang_string); // First parameter for sprintf is the format string

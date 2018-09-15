@@ -56,7 +56,7 @@ require_once MYBB_ROOT.'inc/class_xml.php';
 require_once MYBB_ROOT.'inc/functions_user.php';
 require_once MYBB_ROOT.'inc/class_language.php';
 $lang = new MyLanguage();
-$lang->set_path(MYBB_ROOT.'install/resources');
+$lang->set_path(INSTALL_ROOT.'resources');
 $lang->load('language');
 
 // Load DB interface
@@ -106,7 +106,7 @@ if(function_exists('pg_connect'))
 		'title' => 'PostgreSQL',
 		'short_title' => 'PostgreSQL',
 		'structure_file' => 'pgsql_db_tables.php',
-		'population_file' => 'mysql_db_inserts.php'
+		'population_file' => 'pgsql_db_inserts.php'
 	);
 }
 
@@ -120,7 +120,7 @@ if(class_exists('PDO'))
 			'title' => 'SQLite 3',
 			'short_title' => 'SQLite',
 			'structure_file' => 'sqlite_db_tables.php',
-			'population_file' => 'mysql_db_inserts.php'
+			'population_file' => 'pgsql_db_inserts.php'
 		);
 	}
 }
@@ -1667,7 +1667,7 @@ function create_tables()
  */
 function populate_tables()
 {
-	global $output, $lang;
+	global $output, $lang, $dboptions;
 
 	require MYBB_ROOT.'inc/config.php';
 	$db = db_connection($config);
@@ -2282,7 +2282,6 @@ function install_done()
 		'lastvisit' => $now,
 		'website' => '',
 		'icq' => '',
-		'aim' => '',
 		'yahoo' => '',
 		'skype' =>'',
 		'google' =>'',
@@ -2368,7 +2367,7 @@ function install_done()
 	// Automatic Login
 	my_unsetcookie("sid");
 	my_unsetcookie("mybbuser");
-	my_setcookie('mybbuser', $uid.'_'.$loginkey, null, true);
+	my_setcookie('mybbuser', $uid.'_'.$loginkey, null, true, "lax");
 	ob_end_flush();
 
 	// Make fulltext columns if supported

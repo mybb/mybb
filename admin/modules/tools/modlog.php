@@ -281,7 +281,7 @@ if(!$mybb->input['action'])
 			}
 		}
 
-		$plugins->run_hooks("admin_tools_modlog_modlogs_result")
+		$plugins->run_hooks("admin_tools_modlog_modlogs_result");
 
 		$table->construct_cell($logitem['profilelink']);
 		$table->construct_cell($logitem['dateline'], array("class" => "align_center"));

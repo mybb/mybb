@@ -14,10 +14,10 @@ if(!$working_dir)
 	$working_dir = '.';
 }
 
+$shutdown_queries = $shutdown_functions = array();
+
 // Load main MyBB core file which begins all of the magic
 require_once $working_dir.'/inc/init.php';
-
-$shutdown_queries = $shutdown_functions = array();
 
 // Read the usergroups cache as well as the moderators cache
 $groupscache = $cache->read('usergroups');
@@ -27,11 +27,6 @@ if(!is_array($groupscache))
 {
 	$cache->update_usergroups();
 	$groupscache = $cache->read('usergroups');
-}
-
-if(!defined('THIS_SCRIPT'))
-{
-	define('THIS_SCRIPT', '');
 }
 
 $current_page = my_strtolower(basename(THIS_SCRIPT));
@@ -94,6 +89,12 @@ else if(!isset($mybb->settings['bblanguage']))
 $lang->set_language($mybb->settings['bblanguage']);
 $lang->load('global');
 $lang->load('messages');
+
+// Wipe lockout cookie if enough time has passed
+if($mybb->cookies['lockoutexpiry'] && $mybb->cookies['lockoutexpiry'] < TIME_NOW)
+{
+	my_unsetcookie('lockoutexpiry');
+}
 
 // Run global_start plugin hook now that the basics are set up
 $plugins->run_hooks('global_start');
@@ -451,11 +452,12 @@ else
 
 $templatelist .= "headerinclude,header,footer,gobutton,htmldoctype,header_welcomeblock_member,header_welcomeblock_member_user,header_welcomeblock_member_moderator,header_welcomeblock_member_admin,error";
 $templatelist .= ",global_pending_joinrequests,global_awaiting_activation,nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active,footer_languageselect,footer_themeselect,global_unreadreports,footer_contactus";
-$templatelist .= ",global_boardclosed_warning,global_bannedwarning,error_inline,error_nopermission_loggedin,error_nopermission,global_pm_alert,header_menu_search,header_menu_portal,redirect,footer_languageselect_option";
-$templatelist .= ",video_dailymotion_embed,video_facebook_embed,video_liveleak_embed,video_metacafe_embed,video_myspacetv_embed,video_veoh_embed,video_vimeo_embed,video_yahoo_embed,video_youtube_embed,debug_summary";
+$templatelist .= ",global_boardclosed_warning,global_bannedwarning,error_inline,error_inline_item,error_nopermission_loggedin,error_nopermission,global_pm_alert,header_menu_search,header_menu_portal,redirect,footer_languageselect_option";
+$templatelist .= ",video_dailymotion_embed,video_facebook_embed,video_liveleak_embed,video_metacafe_embed,video_myspacetv_embed,video_mixer_embed,video_vimeo_embed,video_yahoo_embed,video_youtube_embed,debug_summary";
 $templatelist .= ",smilieinsert_row,smilieinsert_row_empty,smilieinsert,smilieinsert_getmore,smilieinsert_smilie,global_board_offline_modal,footer_themeselector,task_image,usercp_themeselector_option,php_warnings";
 $templatelist .= ",mycode_code,mycode_email,mycode_img,mycode_php,mycode_quote_post,mycode_size_int,mycode_url,global_no_permission_modal,global_boardclosed_reason,nav_dropdown,global_remote_avatar_notice";
-$templatelist .= ",header_welcomeblock_member_pms,header_welcomeblock_member_search,header_welcomeblock_guest,header_menu_calendar,header_menu_memberlist,global_dst_detection,header_quicksearch,smilie";
+$templatelist .= ",header_welcomeblock_member_pms,header_welcomeblock_member_search,header_welcomeblock_guest,header_welcomeblock_guest_login_modal,header_welcomeblock_guest_login_modal_lockout";
+$templatelist .= ",header_menu_calendar,header_menu_memberlist,global_dst_detection,header_quicksearch,smilie";
 $templates->cache($db->escape_string($templatelist));
 
 // Set the current date and time now
@@ -544,6 +546,23 @@ else
 			$login_username = $lang->login_username;
 			break;
 	}
+
+	if($mybb->cookies['lockoutexpiry'])
+	{
+		$secsleft = (int)($mybb->cookies['lockoutexpiry'] - TIME_NOW);
+		$hoursleft = floor($secsleft / 3600);
+		$minsleft = floor(($secsleft / 60) % 60);
+		$secsleft = floor($secsleft % 60);
+
+		$lang->failed_login_wait = $lang->sprintf($lang->failed_login_wait, $hoursleft, $minsleft, $secsleft);
+
+		eval('$loginform = "'.$templates->get('header_welcomeblock_guest_login_modal_lockout').'";');
+	}
+	else
+	{
+		eval('$loginform = "'.$templates->get('header_welcomeblock_guest_login_modal').'";');
+	}
+
 	eval('$welcomeblock = "'.$templates->get('header_welcomeblock_guest').'";');
 }
 
@@ -576,6 +595,7 @@ $groupleaders = $cache->read('groupleaders');
 if($mybb->user['uid'] != 0 && is_array($groupleaders) && array_key_exists($mybb->user['uid'], $groupleaders))
 {
 	$groupleader = $groupleaders[$mybb->user['uid']];
+	$showjoinnotice = false;
 
 	$gids = "'0'";
 	foreach($groupleader as $user)
@@ -586,25 +606,33 @@ if($mybb->user['uid'] != 0 && is_array($groupleaders) && array_key_exists($mybb-
 		}
 
 		$user['gid'] = (int)$user['gid'];
-		$gids .= ",'{$user['gid']}'";
+
+		if(!empty($groupscache[$user['gid']]['joinable']) && $groupscache[$user['gid']]['joinable'] == 1)
+		{
+			$showjoinnotice = true;
+			$gids .= ",'{$user['gid']}'";
+		}
 	}
 
-	$query = $db->simple_select('joinrequests', 'COUNT(uid) as total', "gid IN ({$gids}) AND invite='0'");
-	$total_joinrequests = $db->fetch_field($query, 'total');
-
-	if($total_joinrequests > 0)
+	if($showjoinnotice)
 	{
-		if($total_joinrequests == 1)
-		{
-			$lang->pending_joinrequests = $lang->pending_joinrequest;
-		}
-		else
-		{
-			$total_joinrequests = my_number_format($total_joinrequests);
-			$lang->pending_joinrequests = $lang->sprintf($lang->pending_joinrequests, $total_joinrequests);
-		}
+		$query = $db->simple_select('joinrequests', 'COUNT(uid) as total', "gid IN ({$gids}) AND invite='0'");
+		$total_joinrequests = $db->fetch_field($query, 'total');
 
-		eval('$pending_joinrequests = "'.$templates->get('global_pending_joinrequests').'";');
+		if($total_joinrequests > 0)
+		{
+			if($total_joinrequests == 1)
+			{
+				$lang->pending_joinrequests = $lang->pending_joinrequest;
+			}
+			else
+			{
+				$total_joinrequests = my_number_format($total_joinrequests);
+				$lang->pending_joinrequests = $lang->sprintf($lang->pending_joinrequests, $total_joinrequests);
+			}
+
+			eval('$pending_joinrequests = "'.$templates->get('global_pending_joinrequests').'";');
+		}
 	}
 }
 
@@ -1111,19 +1139,13 @@ if(!empty($mybb->cookies['collapsed']))
 	$colcookie = $mybb->cookies['collapsed'];
 }
 
-// set up collapsable items (to automatically show them us expanded)
-$collapsed = array('boardstats' => '', 'boardstats_e' => '', 'quickreply' => '', 'quickreply_e' => '');
-$collapsedimg = $collapsed;
+$collapse = $collapsed = $collapsedimg = array();
 
 if($colcookie)
 {
-	$col = explode("|", $colcookie);
-	if(!is_array($col))
-	{
-		$col[0] = $colcookie; // only one item
-	}
-	unset($collapsed);
-	foreach($col as $key => $val)
+	// Preserve and don't unset $collapse, will be needed globally throughout many pages
+	$collapse = explode("|", $colcookie);
+	foreach($collapse as $val)
 	{
 		$ex = $val."_e";
 		$co = $val."_c";

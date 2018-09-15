@@ -111,12 +111,21 @@ if(!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_user_awaiting_activation_start");
 
+	$query = $db->simple_select("users", "COUNT(uid) AS users", "usergroup='5'");
+	$total_rows = $db->fetch_field($query, "users");
+
 	$per_page = 20;
 
 	if($mybb->input['page'] && $mybb->input['page'] > 1)
 	{
 		$mybb->input['page'] = $mybb->get_input('page', MyBB::INPUT_INT);
 		$start = ($mybb->input['page']*$per_page)-$per_page;
+		$pages = ceil($total_rows / $per_page);
+		if($mybb->input['page'] > $pages)
+		{
+			$mybb->input['page'] = 1;
+			$start = 0;
+		}
 	}
 	else
 	{
@@ -203,9 +212,6 @@ if(!$mybb->input['action'])
 	}
 
 	$form->end();
-
-	$query = $db->simple_select("users", "COUNT(uid) AS users", "usergroup='5'");
-	$total_rows = $db->fetch_field($query, "users");
 
 	echo "<br />".draw_admin_pagination($mybb->input['page'], $per_page, $total_rows, "index.php?module=user-awaiting_activation&amp;page={page}");
 

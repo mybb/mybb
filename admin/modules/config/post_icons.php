@@ -48,7 +48,7 @@ if($mybb->input['action'] == "add")
 			$cache->update_posticons();
 
 			// Log admin action
-			log_admin_action($iid, htmlspecialchars_uni($mybb->input['name']));
+			log_admin_action($iid, $mybb->input['name']);
 
 			flash_message($lang->success_post_icon_added, 'success');
 			admin_redirect('index.php?module=config-post_icons');
@@ -338,7 +338,7 @@ if($mybb->input['action'] == "edit")
 			$cache->update_posticons();
 
 			// Log admin action
-			log_admin_action($icon['iid'], htmlspecialchars_uni($mybb->input['name']));
+			log_admin_action($icon['iid'], $mybb->input['name']);
 
 			flash_message($lang->success_post_icon_updated, 'success');
 			admin_redirect('index.php?module=config-post_icons');
@@ -410,7 +410,7 @@ if($mybb->input['action'] == "delete")
 		$cache->update_posticons();
 
 		// Log admin action
-		log_admin_action($icon['iid'], htmlspecialchars_uni($icon['name']));
+		log_admin_action($icon['iid'], $icon['name']);
 
 		flash_message($lang->success_post_icon_deleted, 'success');
 		admin_redirect("index.php?module=config-post_icons");
@@ -445,10 +445,19 @@ if(!$mybb->input['action'])
 
 	$page->output_nav_tabs($sub_tabs, 'manage_icons');
 
+	$query = $db->simple_select("icons", "COUNT(iid) AS icons");
+	$total_rows = $db->fetch_field($query, "icons");
+
 	$pagenum = $mybb->get_input('page', MyBB::INPUT_INT);
 	if($pagenum)
 	{
 		$start = ($pagenum - 1) * 20;
+		$pages = ceil($total_rows / 20);
+		if($pagenum > $pages)
+		{
+			$start = 0;
+			$pagenum = 1;
+		}
 	}
 	else
 	{
@@ -489,9 +498,6 @@ if(!$mybb->input['action'])
 	}
 
 	$table->output($lang->manage_post_icons);
-
-	$query = $db->simple_select("icons", "COUNT(iid) AS icons");
-	$total_rows = $db->fetch_field($query, "icons");
 
 	echo "<br />".draw_admin_pagination($pagenum, "20", $total_rows, "index.php?module=config-post_icons&amp;page={page}");
 

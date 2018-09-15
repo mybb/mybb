@@ -379,7 +379,7 @@ if($mybb->input['action'] == "edit")
 	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
 	while($usergroup = $db->fetch_array($query))
 	{
-		$options[(int)$usergroup['gid']] = $usergroup['title'];
+		$options[(int)$usergroup['gid']] = htmlspecialchars_uni($usergroup['title']);
 	}
 
 	$form_container->output_row($lang->orig_user_group." <em>*</em>", $lang->orig_user_group_desc, $form->generate_select_box('originalusergroup[]', $options, $mybb->input['originalusergroup'], array('id' => 'originalusergroup', 'multiple' => true, 'size' => 5)), 'originalusergroup');
@@ -603,7 +603,7 @@ if($mybb->input['action'] == "add")
 	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
 	while($usergroup = $db->fetch_array($query))
 	{
-		$options[(int)$usergroup['gid']] = $usergroup['title'];
+		$options[(int)$usergroup['gid']] = htmlspecialchars_uni($usergroup['title']);
 	}
 
 	$form_container->output_row($lang->orig_user_group." <em>*</em>", $lang->orig_user_group_desc, $form->generate_select_box('originalusergroup[]', $options, $mybb->input['originalusergroup'], array('id' => 'originalusergroup', 'multiple' => true, 'size' => 5)), 'originalusergroup');
@@ -635,10 +635,19 @@ if($mybb->input['action'] == "logs")
 {
 	$plugins->run_hooks("admin_user_group_promotions_logs");
 
+	$query = $db->simple_select("promotionlogs", "COUNT(plid) as promotionlogs");
+	$total_rows = $db->fetch_field($query, "promotionlogs");
+
 	if($mybb->get_input('page', MyBB::INPUT_INT) > 1)
 	{
 		$mybb->input['page'] = $mybb->get_input('page', MyBB::INPUT_INT);
 		$start = ($mybb->input['page']*20)-20;
+		$pages = ceil($total_rows / 20);
+		if($mybb->input['page'] > $pages)
+		{
+			$mybb->input['page'] = 1;
+			$start = 0;
+		}
 	}
 	else
 	{
@@ -705,9 +714,6 @@ if($mybb->input['action'] == "logs")
 	}
 
 	$table->output($lang->promotion_logs);
-
-	$query = $db->simple_select("promotionlogs", "COUNT(plid) as promotionlogs");
-	$total_rows = $db->fetch_field($query, "promotionlogs");
 
 	echo "<br />".draw_admin_pagination($mybb->input['page'], "20", $total_rows, "index.php?module=user-group_promotions&amp;action=logs&amp;page={page}");
 

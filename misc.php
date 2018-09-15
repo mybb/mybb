@@ -269,12 +269,21 @@ elseif($mybb->input['action'] == "helpresults")
 		$mybb->settings['threadsperpage'] = 20;
 	}
 
+	$query = $db->simple_select("helpdocs", "COUNT(*) AS total", "hid IN(".$db->escape_string($search['querycache']).")");
+	$helpcount = $db->fetch_field($query, "total");
+
 	// Work out pagination, which page we're at, as well as the limits.
 	$perpage = $mybb->settings['threadsperpage'];
 	$page = $mybb->get_input('page', MyBB::INPUT_INT);
 	if($page > 0)
 	{
 		$start = ($page-1) * $perpage;
+		$pages = ceil($helpcount / $perpage);
+		if($pages > $page)
+		{
+			$start = 0;
+			$page = 1;
+		}
 	}
 	else
 	{
@@ -293,14 +302,11 @@ elseif($mybb->input['action'] == "helpresults")
 	}
 
 	// Do Multi Pages
-	$query = $db->simple_select("helpdocs", "COUNT(*) AS total", "hid IN(".$db->escape_string($search['querycache']).")");
-	$helpcount = $db->fetch_array($query);
-
 	if($upper > $helpcount)
 	{
 		$upper = $helpcount;
 	}
-	$multipage = multipage($helpcount['total'], $perpage, $page, "misc.php?action=helpresults&amp;sid='".htmlspecialchars_uni($mybb->get_input('sid'))."'");
+	$multipage = multipage($helpcount, $perpage, $page, "misc.php?action=helpresults&amp;sid='".htmlspecialchars_uni($mybb->get_input('sid'))."'");
 	$helpdoclist = '';
 
 	require_once MYBB_ROOT."inc/class_parser.php";
@@ -333,7 +339,7 @@ elseif($mybb->input['action'] == "helpresults")
 			'allow_imgcode' => 0,
 			'filter_badwords' => 1
 		);
-		$helpdoc['helpdoc'] = my_strip_tags($parser->parse_message($helpdoc['document'], $parser_options));
+		$helpdoc['helpdoc'] = $parser->parse_message($helpdoc['document'], $parser_options);
 
 		if(my_strlen($helpdoc['helpdoc']) > 350)
 		{
@@ -490,11 +496,13 @@ elseif($mybb->input['action'] == "help")
 						$expcolimage = "collapse_collapsed.png";
 						$expdisplay = "display: none;";
 						$expthead = " thead_collapsed";
+						$expaltext = "[+]";
 					}
 					else
 					{
 						$expcolimage = "collapse.png";
 						$expthead = "";
+						$expaltext = "[-]";
 					}
 				}
 				eval("\$sections .= \"".$templates->get("misc_help_section")."\";");
@@ -843,7 +851,7 @@ elseif($mybb->input['action'] == "smilies")
 elseif($mybb->input['action'] == "imcenter")
 {
 	$mybb->input['imtype'] = $mybb->get_input('imtype');
-	if($mybb->input['imtype'] != "aim" && $mybb->input['imtype'] != "skype" && $mybb->input['imtype'] != "yahoo")
+	if($mybb->input['imtype'] != "skype" && $mybb->input['imtype'] != "yahoo")
 	{
 		$message = $lang->error_invalidimtype;
 		eval("\$error = \"".$templates->get("misc_imcenter_error", 1, 0)."\";");
@@ -881,13 +889,6 @@ elseif($mybb->input['action'] == "imcenter")
 
 	// Build IM navigation bar
 	$navigationbar = $navsep = $imtype = $imtype_lang = '';
-	if(!empty($user['aim']) && is_member($mybb->settings['allowaimfield'], array('usergroup' => $user['usergroup'], 'additionalgroups' => $user['additionalgroups'])))
-	{
-		$imtype = "aim";
-		$imtype_lang = $lang->aol_im;
-		eval("\$navigationbar .= \"".$templates->get("misc_imcenter_nav")."\";");
-		$navsep = ' - ';
-	}
 	if(!empty($user['skype']) && is_member($mybb->settings['allowskypefield'], array('usergroup' => $user['usergroup'], 'additionalgroups' => $user['additionalgroups'])))
 	{
 		$imtype = "skype";
@@ -904,7 +905,6 @@ elseif($mybb->input['action'] == "imcenter")
 
 	$user['skype'] = htmlspecialchars_uni($user['skype']);
 	$user['yahoo'] = htmlspecialchars_uni($user['yahoo']);
-	$user['aim'] = htmlspecialchars_uni($user['aim']);
 
 	$user['username'] = htmlspecialchars_uni($user['username']);
 
@@ -1091,7 +1091,7 @@ function makesyndicateforums($pid=0, $selitem="", $addselect=true, $depth="")
 						$selecteddone = "1";
 					}
 
-					if($forum['password'] == '' && !in_array($forum['fid'], $unexp) || $forum['password'] && isset($mybb->cookies['forumpass'][$forum['fid']]) && $mybb->cookies['forumpass'][$forum['fid']] === md5($mybb->user['uid'].$forum['password']))
+					if($forum['password'] == '' && !in_array($forum['fid'], $unexp) || $forum['password'] && isset($mybb->cookies['forumpass'][$forum['fid']]) && my_hash_equals($mybb->cookies['forumpass'][$forum['fid']], md5($mybb->user['uid'].$forum['password'])))
 					{
 						eval("\$forumlistbits .= \"".$templates->get("misc_syndication_forumlist_forum")."\";");
 					}

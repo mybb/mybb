@@ -101,7 +101,7 @@ class XMLParser {
 	 * @param int $i Internal counter
 	 * @return array Array of child nodes
 	 */
-	function get_children($vals, &$i)
+	function get_children($vals=array(), &$i)
 	{
 		$children = array();
 
@@ -171,7 +171,7 @@ function kill_tags($array)
 			// if the array no longer has any key/val sets
 			// and therefore is at the deepest level, then
 			// store the string value
-			if(count($array[$key]) <= 0)
+			if(is_array($array[$key]) && count($array[$key]) <= 0)
 			{
 				$array[$key] = $val['value'];
 			}

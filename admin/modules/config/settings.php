@@ -929,9 +929,36 @@ if($mybb->input['action'] == "change")
 			$lang->success_settings_updated .= $lang->sprintf($lang->success_settings_updated_hiddencaptchaimage, htmlspecialchars_uni($mybb->input['upsetting']['hiddencaptchaimagefield']), htmlspecialchars_uni($wrong_value));
 		}
 
+		// Validate avatar dimension inputs
+		$gid = (int)$mybb->input['gid'];
+		$dimfields = array(
+			8 => array('postmaxavatarsize'),
+			10 => array('useravatardims', 'maxavatardims'),
+			13 => array('memberlistmaxavatarsize')
+		);
+		if(in_array($gid, array_keys($dimfields)))
+		{
+			foreach($dimfields[$gid] as $field)
+			{
+				if(isset($mybb->input['upsetting'][$field]))
+				{
+					if(preg_match("/\b\d+[|x]{1}\d+\b/i", $mybb->input['upsetting'][$field]) || ($field == 'maxavatardims' && trim($mybb->input['upsetting'][$field]) == ""))
+					{
+						// If pipe (|) is used normalize to 'x'
+						$mybb->input['upsetting'][$field] = str_replace('|', 'x', my_strtolower($mybb->input['upsetting'][$field]));
+					}
+					else
+					{
+						flash_message($lang->sprintf($lang->error_format_dimension, $lang->{'error_field_'.$field}), 'error');
+						admin_redirect("index.php?module=config-settings&action=change&gid=".$gid);
+					}
+				}
+			}
+		}
+
 		// Have we opted for a reCAPTCHA and not set a public/private key?
-		if((isset($mybb->input['upsetting']['captchaimage']) && in_array($mybb->input['upsetting']['captchaimage'], array(2, 4)) && (!$mybb->input['upsetting']['captchaprivatekey'] || !$mybb->input['upsetting']['captchapublickey']))
-		|| (in_array($mybb->settings['captchaimage'], array(2, 4)) && (!$mybb->settings['captchaprivatekey'] || !$mybb->settings['captchapublickey'])))
+		if((isset($mybb->input['upsetting']['captchaimage']) && in_array($mybb->input['upsetting']['captchaimage'], array(4, 5)) && (!$mybb->input['upsetting']['captchaprivatekey'] || !$mybb->input['upsetting']['captchapublickey']))
+		   || (in_array($mybb->settings['captchaimage'], array(4, 5)) && (!$mybb->settings['captchaprivatekey'] || !$mybb->settings['captchapublickey'])))
 		{
 			$mybb->input['upsetting']['captchaimage'] = 1;
 			$lang->success_settings_updated .= $lang->success_settings_updated_captchaimage;
@@ -1082,7 +1109,7 @@ if($mybb->input['action'] == "change")
 		{
 			my_unsetcookie("adminsid");
 			$mybb->settings['cookieprefix'] = $mybb->input['upsetting']['cookieprefix'];
-			my_setcookie("adminsid", $admin_session['sid'], '', true);
+			my_setcookie("adminsid", $admin_session['sid'], '', true, "lax");
 		}
 
 		if(isset($mybb->input['upsetting']['statstopreferrer']) && $mybb->input['upsetting']['statstopreferrer'] != $mybb->settings['statstopreferrer'])
@@ -1158,10 +1185,6 @@ if($mybb->input['action'] == "change")
 			$page->add_breadcrumb_item($lang->settings_search);
 			$page->output_header($lang->board_settings." - {$lang->settings_search}");
 		}
-
-		$form = new Form("index.php?module=config-settings&amp;action=change", "post", "change");
-
-		echo $form->generate_hidden_field("gid", $group['gid']);
 	}
 	elseif($mybb->input['gid'])
 	{
@@ -1198,10 +1221,6 @@ if($mybb->input['action'] == "change")
 		// Page header
 		$page->add_breadcrumb_item($groupinfo['title']);
 		$page->output_header($lang->board_settings." - {$groupinfo['title']}");
-
-		$form = new Form("index.php?module=config-settings&amp;action=change", "post", "change");
-
-		echo $form->generate_hidden_field("gid", $groupinfo['gid']);
 	}
 	else
 	{
@@ -1228,14 +1247,14 @@ if($mybb->input['action'] == "change")
 		// Page header
 		$page->add_breadcrumb_item($lang->show_all_settings);
 		$page->output_header($lang->board_settings." - {$lang->show_all_settings}");
-
-		$form = new Form("index.php?module=config-settings&amp;action=change", "post", "change");
 	}
 
-	// Build rest of page
-	$buttons[] = $form->generate_submit_button($lang->save_settings);
+	// Build individual forms as per settings group
 	foreach($cache_groups as $groupinfo)
 	{
+		$form = new Form("index.php?module=config-settings&amp;action=change", "post", "change");
+		echo $form->generate_hidden_field("gid", $groupinfo['gid']);
+		$buttons = array($form->generate_submit_button($lang->save_settings));
 		$group_lang_var = "setting_group_{$groupinfo['name']}";
 		if(isset($lang->$group_lang_var))
 		{
@@ -1522,9 +1541,9 @@ if($mybb->input['action'] == "change")
 		$form_container->end();
 
 		$form->output_submit_wrapper($buttons);
+		$form->end();
 		echo '<br />';
 	}
-	$form->end();
 
 	print_setting_peekers();
 
@@ -1740,7 +1759,7 @@ function print_setting_peekers()
 		'new Peeker($(".setting_smilieinserter"), $("#row_setting_smilieinsertertot, #row_setting_smilieinsertercols"), 1, true)',
 		'new Peeker($("#setting_mail_handler"), $("#row_setting_smtp_host, #row_setting_smtp_port, #row_setting_smtp_user, #row_setting_smtp_pass, #row_setting_secure_smtp"), "smtp", false)',
 		'new Peeker($("#setting_mail_handler"), $("#row_setting_mail_parameters"), "mail", false)',
-		'new Peeker($("#setting_captchaimage"), $("#row_setting_captchapublickey, #row_setting_captchaprivatekey"), /(2|4|5)/, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_captchapublickey, #row_setting_captchaprivatekey"), /(4|5)/, false)',
 		'new Peeker($(".setting_contact"), $("#row_setting_contact_guests, #row_setting_contact_badwords, #row_setting_contact_maxsubjectlength, #row_setting_contact_minmessagelength, #row_setting_contact_maxmessagelength"), 1, true)',
 		'new Peeker($(".setting_enablepruning"), $("#row_setting_enableprunebyposts, #row_setting_pruneunactived, #row_setting_prunethreads"), 1, true)',
 		'new Peeker($(".setting_enableprunebyposts"), $("#row_setting_prunepostcount, #row_setting_dayspruneregistered, #row_setting_prunepostcountall"), 1, true)',
@@ -1761,7 +1780,8 @@ function print_setting_peekers()
 		'new Peeker($("#setting_errorlogmedium"), $("#row_setting_errortypemedium"), /^(log|email|both)/, false)',
 		'new Peeker($("#setting_errorlogmedium"), $("#row_setting_errorloglocation"), /^(log|both)/, false)',
 		'new Peeker($(".setting_sigmycode"), $("#row_setting_sigcountmycode, #row_setting_sigimgcode"), 1, true)',
-		'new Peeker($(".setting_pmsallowmycode"), $("#row_setting_pmsallowimgcode, #row_setting_pmsallowvideocode"), 1, true)'
+		'new Peeker($(".setting_pmsallowmycode"), $("#row_setting_pmsallowimgcode, #row_setting_pmsallowvideocode"), 1, true)',
+		'new Peeker($(".setting_enableshowteam"), $("#row_setting_showaddlgroups, #row_setting_showgroupleaders"), 1, true)'
 	);
 
 	$peekers = $plugins->run_hooks("admin_settings_print_peekers", $peekers);

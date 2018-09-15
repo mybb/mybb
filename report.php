@@ -55,20 +55,21 @@ if($report_type == 'post')
 
 	if(!$post)
 	{
-		$error = $lang->error_invalid_report;
+		$error = $lang->sprintf($lang->error_invalid_report, $report_type);
 	}
 	else
 	{
 		$id = $post['pid'];
 		$id2 = $post['tid'];
 		$report_type_db = "(type = 'post' OR type = '')";
+		$checkid = $post['uid'];
 
 		// Check for a valid forum
 		$forum = get_forum($post['fid']);
 
 		if(!isset($forum['fid']))
 		{
-			$error = $lang->error_invalid_report;
+			$error = $lang->sprintf($lang->error_invalid_report, $report_type);
 		}
 		else
 		{
@@ -86,23 +87,14 @@ else if($report_type == 'profile')
 
 	if(!isset($user['uid']))
 	{
-		$error = $lang->error_invalid_report;
+		$error = $lang->sprintf($lang->error_invalid_report, $report_type);
 	}
 	else
 	{
+		$verified = true;
+		$report_type_db = "type = 'profile'";
 		$id2 = $id3 = 0; // We don't use these on the profile
-		$id = $user['uid']; // id is the profile user
-		$permissions = user_permissions($user['uid']);
-
-		if(empty($permissions['canbereported']))
-		{
-			$error = $lang->error_invalid_report;
-		}
-		else
-		{
-			$verified = true;
-			$report_type_db = "type = 'profile'";
-		}
+		$id = $checkid = $user['uid']; // id is the profile user
 	}
 }
 else if($report_type == 'reputation')
@@ -112,19 +104,23 @@ else if($report_type == 'reputation')
 
 	if(!$db->num_rows($query))
 	{
-		$error = $lang->error_invalid_report;
+		$error = $lang->sprintf($lang->error_invalid_report, $report_type);
 	}
 	else
 	{
 		$verified = true;
 		$reputation = $db->fetch_array($query);
-
 		$id = $reputation['rid']; // id is the reputation id
-		$id2 = $reputation['adduid']; // id2 is the user who gave the comment
+		$id2 = $checkid = $reputation['adduid']; // id2 is the user who gave the comment
 		$id3 = $reputation['uid']; // id3 is the user who received the comment
-
 		$report_type_db = "type = 'reputation'";
 	}
+}
+
+$permissions = user_permissions($checkid);
+if(empty($permissions['canbereported']))
+{
+	$error = $lang->sprintf($lang->error_invalid_report, $report_type);
 }
 
 $plugins->run_hooks("report_type");
@@ -184,7 +180,7 @@ if(empty($error) && $verified == true && $mybb->input['action'] == "do_report" &
 
 		if(!$db->num_rows($query))
 		{
-			$error = $lang->error_invalid_report_reason;
+			$error = $lang->sprintf($lang->error_invalid_report, $report_type);
 			$verified = false;
 		}
 		else
@@ -235,7 +231,7 @@ if(!empty($error) || $verified == false)
 
 	if($verified == false && empty($error))
 	{
-		$error = $lang->error_invalid_report;
+		$error = $lang->sprintf($lang->error_invalid_report, $report_type);
 	}
 }
 

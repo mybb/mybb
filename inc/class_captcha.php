@@ -104,31 +104,18 @@ class captcha
 		{
 			$this->captcha_template = $template;
 
-			if($this->type == 2)
+			if($this->type == 4)
 			{
-				$this->captcha_template .= "_recaptcha";
-			}
-			elseif($this->type == 4){
 				$this->captcha_template .= "_nocaptcha";
 			}
-			elseif($this->type == 5){
+			elseif($this->type == 5)
+			{
 				$this->captcha_template .= "_recaptcha_invisible";
 			}
 		}
 
 		// Work on which CAPTCHA we've got installed
-		if($this->type == 2 && $mybb->settings['captchapublickey'] && $mybb->settings['captchaprivatekey'])
-		{
-			// We want to use reCAPTCHA, set the server options
-			$this->server = "//www.google.com/recaptcha/api";
-			$this->verify_server = "www.google.com";
-
-			if($build == true)
-			{
-				$this->build_recaptcha();
-			}
-		}
-		elseif(in_array($this->type, array(4, 5)) && $mybb->settings['captchapublickey'] && $mybb->settings['captchaprivatekey'])
+		if(in_array($this->type, array(4, 5)) && $mybb->settings['captchapublickey'] && $mybb->settings['captchaprivatekey'])
 		{
 			// We want to use noCAPTCHA or reCAPTCHA invisible, set the server options
 			$this->server = "//www.google.com/recaptcha/api.js";
@@ -208,16 +195,6 @@ class captcha
 			$field['hash'] = $db->escape_string($mybb->input['imagehash']);
 			$field['string'] = $db->escape_string($mybb->input['imagestring']);
 		}
-		elseif($this->type == 2)
-		{
-			// Names
-			$hash = "recaptcha_challenge_field";
-			$string = "recaptcha_response_field";
-
-			// Values
-			$field['hash'] = $mybb->input['recaptcha_challenge_field'];
-			$field['string'] = $mybb->input['recaptcha_response_field'];
-		}
 		elseif($this->type == 3)
 		{
 			// Are You a Human can't be built as a hidden captcha
@@ -261,63 +238,6 @@ class captcha
 			{
 				$this->set_error($lang->invalid_captcha_verify);
 				$db->delete_query("captcha", "imagehash = '{$imagehash}'");
-			}
-		}
-		elseif($this->type == 2)
-		{
-			$challenge = $mybb->input['recaptcha_challenge_field'];
-			$response = $mybb->input['recaptcha_response_field'];
-
-			if(!$challenge || strlen($challenge) == 0 || !$response || strlen($response) == 0)
-			{
-				$this->set_error($lang->invalid_captcha);
-			}
-			else
-			{
-				// We have a reCAPTCHA to handle
-				$data = $this->_qsencode(array(
-					'privatekey' => $mybb->settings['captchaprivatekey'],
-					'remoteip' => $session->ipaddress,
-					'challenge' => $challenge,
-					'response' => $response
-				));
-
-				// Contact Google and see if our reCAPTCHA was successful
-				$http_request  = "POST /recaptcha/api/verify HTTP/1.0\r\n";
-				$http_request .= "Host: $this->verify_server\r\n";
-				$http_request .= "Content-Type: application/x-www-form-urlencoded;\r\n";
-				$http_request .= "Content-Length: ".strlen($data)."\r\n";
-				$http_request .= "User-Agent: reCAPTCHA/PHP\r\n";
-				$http_request .= "\r\n";
-				$http_request .= $data;
-
-				$fs = @fsockopen($this->verify_server, 80, $errno, $errstr, 10);
-
-				if($fs == false)
-				{
-					$this->set_error($lang->invalid_captcha_transmit);
-				}
-				else
-				{
-					// We connected, but is it correct?
-					fwrite($fs, $http_request);
-
-					while(!feof($fs))
-					{
-						$response .= fgets($fs, 1160);
-					}
-
-					fclose($fs);
-
-					$response = explode("\r\n\r\n", $response, 2);
-					$answer = explode("\n", $response[1]);
-
-					if(trim($answer[0]) != 'true')
-					{
-						// We got it wrong! Oh no...
-						$this->set_error($lang->invalid_captcha_verify);
-					}
-				}
 			}
 		}
 		elseif(in_array($this->type, array(4, 5)))

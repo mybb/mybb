@@ -14,8 +14,8 @@ define('THIS_SCRIPT', 'newreply.php');
 $templatelist = "newreply,previewpost,loginbox,changeuserbox,posticons,newreply_threadreview,newreply_threadreview_post,forumdisplay_rules_link,newreply_multiquote_external,post_attachments_add,post_subscription_method";
 $templatelist .= ",codebuttons,post_attachments_new,post_attachments,post_savedraftbutton,newreply_modoptions,newreply_threadreview_more,postbit_online,postbit_pm,newreply_disablesmilies_hidden,post_attachments_update";
 $templatelist .= ",postbit_warninglevel,postbit_author_user,postbit_edit,postbit_quickdelete,postbit_inlinecheck,postbit_posturl,postbit_quote,postbit_multiquote,newreply_modoptions_close,newreply_modoptions_stick";
-$templatelist .= ",post_attachments_attachment_postinsert,post_attachments_attachment_remove,post_attachments_attachment_unapproved,post_attachments_attachment,postbit_attachments_attachment,newreply_signature";
-$templatelist .= ",post_captcha_recaptcha_invisible,post_captcha_hidden,post_captcha,post_captcha_recaptcha,post_captcha_nocaptcha,postbit_groupimage,postbit_attachments,newreply_postoptions";
+$templatelist .= ",post_attachments_attachment_postinsert,post_attachments_attachment_remove,post_attachments_attachment_unapproved,post_attachments_attachment,post_attachments_viewlink,postbit_attachments_attachment,newreply_signature";
+$templatelist .= ",post_captcha_recaptcha_invisible,post_captcha_hidden,post_captcha,post_captcha_nocaptcha,post_javascript,postbit_groupimage,postbit_attachments,newreply_postoptions";
 $templatelist .= ",postbit_rep_button,postbit_author_guest,postbit_signature,postbit_classic,postbit_attachments_thumbnails_thumbnailpostbit_attachments_images_image,postbit_attachments_attachment_unapproved";
 $templatelist .= ",postbit_attachments_thumbnails,postbit_attachments_images,postbit_gotopost,forumdisplay_password_wrongpass,forumdisplay_password,posticons_icon,attachment_icon,postbit_reputation_formatted_link";
 $templatelist .= ",global_moderation_notice,newreply_disablesmilies,postbit_userstar,newreply_draftinput,postbit_avatar,forumdisplay_rules,postbit_offline,postbit_find,postbit_warninglevel_formatted,postbit_ignored";
@@ -56,8 +56,8 @@ if(($mybb->input['action'] == "editdraft" || $mybb->input['action'] == "do_newre
 	{
 		error($lang->error_post_noperms);
 	}
-	$pid = $post['pid'];
-	$tid = $post['tid'];
+	$pid = (int)$post['pid'];
+	$tid = (int)$post['tid'];
 	eval("\$editdraftpid = \"".$templates->get("newreply_draftinput")."\";");
 }
 
@@ -67,7 +67,7 @@ if(!$thread)
 {
 	error($lang->error_invalidthread);
 }
-$fid = $thread['fid'];
+$fid = (int)$thread['fid'];
 
 // Get forum info
 $forum = get_forum($fid);
@@ -126,21 +126,10 @@ if(isset($forumpermissions['canonlyreplyownthreads']) && $forumpermissions['cano
 	error_no_permission();
 }
 
-// Coming from quick reply? Set some defaults
-if($mybb->get_input('method') == "quickreply")
+// Coming from quick reply and not a preview call? Set subscription method
+if($mybb->get_input('method') == "quickreply" && !isset($mybb->input['previewpost']))
 {
-	if($mybb->user['subscriptionmethod'] == 1)
-	{
-		$mybb->input['postoptions']['subscriptionmethod'] = "none";
-	}
-	else if($mybb->user['subscriptionmethod'] == 2)
-	{
-		$mybb->input['postoptions']['subscriptionmethod'] = "email";
-	}
-	else if($mybb->user['subscriptionmethod'] == 3)
-	{
-		$mybb->input['postoptions']['subscriptionmethod'] = "pm";
-	}
+	$mybb->input['postoptions']['subscriptionmethod'] = get_subscription_method($mybb->get_input('tid', MyBB::INPUT_INT));
 }
 
 // Check if this forum is password protected and we have a valid password
@@ -203,7 +192,7 @@ if(!$mybb->get_input('posthash') && !$pid)
 
 if((empty($_POST) && empty($_FILES)) && $mybb->get_input('processed', MyBB::INPUT_INT) == 1)
 {
-	error($lang->error_cannot_upload_php_post);
+	error($lang->error_empty_post_input);
 }
 
 $errors = array();
@@ -222,40 +211,16 @@ if($mybb->settings['enableattachments'] == 1 && !$mybb->get_input('attachmentaid
 		$attachwhere = "posthash='".$db->escape_string($mybb->get_input('posthash'))."'";
 	}
 
-	// If there's an attachment, check it and upload it
-	if($forumpermissions['canpostattachments'] != 0)
+	require_once MYBB_ROOT."inc/functions_upload.php";
+
+	$ret = add_attachments($pid, $forumpermissions, $attachwhere, "newreply");
+
+	if(!empty($ret['errors']))
 	{
-		// If attachment exists..
-		if(!empty($_FILES['attachment']['name']) && !empty($_FILES['attachment']['type']))
-		{
-			if($_FILES['attachment']['size'] > 0)
-			{
-				$query = $db->simple_select("attachments", "aid", "filename='".$db->escape_string($_FILES['attachment']['name'])."' AND {$attachwhere}");
-				$updateattach = $db->fetch_field($query, "aid");
-
-				require_once MYBB_ROOT."inc/functions_upload.php";
-
-				$update_attachment = false;
-				if($updateattach > 0 && $mybb->get_input('updateattachment'))
-				{
-					$update_attachment = true;
-				}
-				$attachedfile = upload_attachment($_FILES['attachment'], $update_attachment);
-			}
-			else
-			{
-				$errors[] = $lang->error_uploadempty;
-				$mybb->input['action'] = "newreply";
-			}
-		}
+		$errors = $ret['errors'];
 	}
 
-	if(!empty($attachedfile['error']))
-	{
-		$errors[] = $attachedfile['error'];
-		$mybb->input['action'] = "newreply";
-	}
-
+	// If we were dealing with an attachment but didn't click 'Post Reply', force the new reply page again.
 	if(!$mybb->get_input('submit'))
 	{
 		eval("\$editdraftpid = \"".$templates->get("newreply_draftinput")."\";");
@@ -368,7 +333,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 	}
 	if(!$mybb->get_input('savedraft'))
 	{
-		$query = $db->simple_select("posts p", "p.pid, p.visible", "{$user_check} AND p.tid='{$thread['tid']}' AND p.subject='".$db->escape_string($mybb->get_input('subject'))."' AND p.message='".$db->escape_string($mybb->get_input('message'))."' AND p.visible != '-2' AND p.dateline>".(TIME_NOW-600));
+		$query = $db->simple_select("posts p", "p.pid, p.visible", "{$user_check} AND p.tid='{$thread['tid']}' AND p.subject='".$db->escape_string($mybb->get_input('subject'))."' AND p.message='".$db->escape_string($mybb->get_input('message'))."' AND p.visible > -1 AND p.dateline>".(TIME_NOW-600));
 		$duplicate_check = $db->fetch_field($query, "pid");
 		if($duplicate_check)
 		{
@@ -468,43 +433,32 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 			$hide_captcha = true;
 		}
 
-		if($mybb->get_input('ajax', MyBB::INPUT_INT))
+		if($mybb->get_input('ajax', MyBB::INPUT_INT) && $post_captcha->type == 1)
 		{
-			if($post_captcha->type == 1)
+			$randomstr = random_str(5);
+			$imagehash = md5(random_str(12));
+
+			$imagearray = array(
+				"imagehash" => $imagehash,
+				"imagestring" => $randomstr,
+				"dateline" => TIME_NOW
+			);
+
+			$db->insert_query("captcha", $imagearray);
+
+			//header("Content-type: text/html; charset={$lang->settings['charset']}");
+			$data = '';
+			$data .= "<captcha>$imagehash";
+
+			if($hide_captcha)
 			{
-				$randomstr = random_str(5);
-				$imagehash = md5(random_str(12));
-
-				$imagearray = array(
-					"imagehash" => $imagehash,
-					"imagestring" => $randomstr,
-					"dateline" => TIME_NOW
-				);
-
-				$db->insert_query("captcha", $imagearray);
-
-				//header("Content-type: text/html; charset={$lang->settings['charset']}");
-				$data = '';
-				$data .= "<captcha>$imagehash";
-
-				if($hide_captcha)
-				{
-					$data .= "|$randomstr";
-				}
-
-				$data .= "</captcha>";
-
-				//header("Content-type: application/json; charset={$lang->settings['charset']}");
-				$json_data = array("data" => $data);
+				$data .= "|$randomstr";
 			}
-			else if($post_captcha->type == 2)
-			{
-				//header("Content-type: text/html; charset={$lang->settings['charset']}");
-				$data = "<captcha>reload</captcha>";
 
-				//header("Content-type: application/json; charset={$lang->settings['charset']}");
-				$json_data = array("data" => $data);
-			}
+			$data .= "</captcha>";
+
+			//header("Content-type: application/json; charset={$lang->settings['charset']}");
+			$json_data = array("data" => $data);
 		}
 	}
 
@@ -878,7 +832,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	$message = htmlspecialchars_uni($message);
 
 	$postoptionschecked = array('signature' => '', 'disablesmilies' => '');
-	$postoptions_subscriptionmethod_dont = $postoptions_subscriptionmethod_none = $postoptions_subscriptionmethod_email = $postoptions_subscriptionmethod_pm = '';
+	$subscribe = $nonesubscribe = $emailsubscribe = $pmsubscribe = '';
 
 	// Set up the post options.
 	if(!empty($mybb->input['previewpost']) || $reply_errors != '')
@@ -889,26 +843,11 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		{
 			$postoptionschecked['signature'] = " checked=\"checked\"";
 		}
-		if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "none")
-		{
-			$postoptions_subscriptionmethod_none = "checked=\"checked\"";
-		}
-		else if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "email")
-		{
-			$postoptions_subscriptionmethod_email = "checked=\"checked\"";
-		}
-		else if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "pm")
-		{
-			$postoptions_subscriptionmethod_pm = "checked=\"checked\"";
-		}
-		else
-		{
-			$postoptions_subscriptionmethod_dont = "checked=\"checked\"";
-		}
 		if(isset($postoptions['disablesmilies']) && $postoptions['disablesmilies'] == 1)
 		{
 			$postoptionschecked['disablesmilies'] = " checked=\"checked\"";
 		}
+		$subscription_method = get_subscription_method($tid, $postoptions);
 		$subject = $mybb->input['subject'];
 	}
 	elseif($mybb->input['action'] == "editdraft" && $mybb->user['uid'])
@@ -923,22 +862,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		{
 			$postoptionschecked['disablesmilies'] = " checked=\"checked\"";
 		}
-		if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "none")
-		{
-			$postoptions_subscriptionmethod_none = "checked=\"checked\"";
-		}
-		else if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "email")
-		{
-			$postoptions_subscriptionmethod_email = "checked=\"checked\"";
-		}
-		else if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "pm")
-		{
-			$postoptions_subscriptionmethod_pm = "checked=\"checked\"";
-		}
-		else
-		{
-			$postoptions_subscriptionmethod_dont = "checked=\"checked\"";
-		}
+		$subscription_method = get_subscription_method($tid); // Subscription method doesn't get saved in drafts
 		$mybb->input['icon'] = $post['icon'];
 	}
 	else
@@ -947,23 +871,9 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		{
 			$postoptionschecked['signature'] = " checked=\"checked\"";
 		}
-		if($mybb->user['subscriptionmethod'] ==  1)
-		{
-			$postoptions_subscriptionmethod_none = "checked=\"checked\"";
-		}
-		else if($mybb->user['subscriptionmethod'] == 2)
-		{
-			$postoptions_subscriptionmethod_email = "checked=\"checked\"";
-		}
-		else if($mybb->user['subscriptionmethod'] == 3)
-		{
-			$postoptions_subscriptionmethod_pm = "checked=\"checked\"";
-		}
-		else
-		{
-			$postoptions_subscriptionmethod_dont = "checked=\"checked\"";
-		}
+		$subscription_method = get_subscription_method($tid);
 	}
+	${$subscription_method.'subscribe'} = "checked=\"checked\" ";
 
 	if($forum['allowpicons'] != 0)
 	{
@@ -1189,9 +1099,18 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			$friendlyquota = get_friendly_size($mybb->usergroup['attachquota']*1024);
 		}
 
-		$friendlyusage = get_friendly_size($usage['ausage']);
-		$lang->attach_quota = $lang->sprintf($lang->attach_quota, $friendlyusage, $friendlyquota);
-
+		$lang->attach_quota = $lang->sprintf($lang->attach_quota, $friendlyquota);
+		if($usage['ausage'] !== NULL)
+		{
+			$friendlyusage = get_friendly_size($usage['ausage']);
+			$lang->attach_usage = $lang->sprintf($lang->attach_usage, $friendlyusage);
+			eval("\$link_viewattachments = \"".$templates->get("post_attachments_viewlink")."\";");
+		}
+		else
+		{
+			$lang->attach_usage = "";
+		}
+		
 		if($mybb->settings['maxattachments'] == 0 || ($mybb->settings['maxattachments'] != 0 && $attachcount < $mybb->settings['maxattachments']) && !$noshowattach)
 		{
 			eval("\$attach_add_options = \"".$templates->get("post_attachments_add")."\";");
@@ -1243,24 +1162,19 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			{
 				$post_captcha->build_captcha();
 			}
-			elseif(in_array($post_captcha->type, array(2, 4, 5)))
+			elseif(in_array($post_captcha->type, array(4, 5)))
 			{
 				$post_captcha->build_recaptcha();
 			}
-
-			if($post_captcha->html)
-			{
-				$captcha = $post_captcha->html;
-			}
 		}
-		else if($correct && (in_array($post_captcha->type, array(2, 4, 5))))
+		else if($correct && (in_array($post_captcha->type, array(4, 5))))
 		{
 			$post_captcha->build_recaptcha();
+		}
 
-			if($post_captcha->html)
-			{
-				$captcha = $post_captcha->html;
-			}
+		if($post_captcha->html)
+		{
+			$captcha = $post_captcha->html;
 		}
 	}
 
@@ -1531,6 +1445,21 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
 		}
 	}
+
+	$php_max_upload_filesize = return_bytes(ini_get('max_upload_filesize'));
+	$php_post_max_size = return_bytes(ini_get('post_max_size'));
+
+	if ($php_max_upload_filesize != 0 && $php_post_max_size != 0)
+	{
+		$php_max_upload_size = min($php_max_upload_filesize, $php_post_max_size);
+	}
+	else
+	{
+		$php_max_upload_size = max($php_max_upload_filesize, $php_post_max_size);
+	}
+
+	$php_max_file_uploads = (int)ini_get('max_file_uploads');
+	eval("\$post_javascript = \"".$templates->get("post_javascript")."\";");
 
 	$plugins->run_hooks("newreply_end");
 

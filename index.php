@@ -31,9 +31,25 @@ if($mybb->user['uid'] != 0)
 	eval('$logoutlink = "'.$templates->get('index_logoutlink').'";');
 }
 
+$showteamlink = '';
+if($mybb->settings['enableshowteam'] != 0)
+{
+	$show_team_link_separator = '';
+	if(!empty($logoutlink))
+	{
+		$show_team_link_separator = $lang->board_stats_link_separator;
+	}
+
+	eval('$showteamlink = "'.$templates->get('index_showteamlink').'";');
+}
+
 $statspage = '';
 if($mybb->settings['statsenabled'] != 0)
 {
+	if(!empty($logoutlink) || !empty($showteamlink))
+	{
+		$stats_page_separator = $lang->board_stats_link_separator;
+	}
 	eval('$statspage = "'.$templates->get('index_statspage').'";');
 }
 
@@ -53,7 +69,6 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 	}
 
 	$timesearch = TIME_NOW - (int)$mybb->settings['wolcutoff'];
-	$comma = '';
 	$query = $db->query("
 		SELECT s.sid, s.ip, s.uid, s.time, s.location, s.location1, u.username, u.invisible, u.usergroup, u.displaygroup
 		FROM ".TABLE_PREFIX."sessions s
@@ -62,9 +77,8 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 		ORDER BY {$order_by}, {$order_by2}
 	");
 
-	$forum_viewers = $doneusers = array();
+	$forum_viewers = $doneusers = $onlinemembers = $onlinebots = array();
 	$membercount = $guestcount = $anoncount = $botcount = 0;
-	$onlinemembers = $comma = '';
 
 	// Fetch spiders
 	$spiders = $cache->read('spiders');
@@ -102,8 +116,7 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 					// Properly format the username and assign the template.
 					$user['username'] = format_name(htmlspecialchars_uni($user['username']), $user['usergroup'], $user['displaygroup']);
 					$user['profilelink'] = build_profile_link($user['username'], $user['uid']);
-					eval('$onlinemembers .= "'.$templates->get('index_whosonline_memberbit', 1, 0).'";');
-					$comma = $lang->comma;
+					eval('$onlinemembers[] = "'.$templates->get('index_whosonline_memberbit', 1, 0).'";');
 				}
 				// This user has been handled.
 				$doneusers[$user['uid']] = $user['time'];
@@ -111,9 +124,17 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 		}
 		elseif(my_strpos($user['sid'], 'bot=') !== false && $spiders[$botkey])
 		{
+			if($mybb->settings['wolorder'] == 'username')
+			{
+				$key = $spiders[$botkey]['name'];
+			}
+			else
+			{
+				$key = $user['time'];
+			}
+
 			// The user is a search bot.
-			$onlinemembers .= $comma.format_name($spiders[$botkey]['name'], $spiders[$botkey]['usergroup']);
-			$comma = $lang->comma;
+			$onlinebots[$key] = format_name($spiders[$botkey]['name'], $spiders[$botkey]['usergroup']);
 			++$botcount;
 		}
 		else
@@ -126,6 +147,27 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 		{
 			++$forum_viewers[$user['location1']];
 		}
+	}
+
+	if($mybb->settings['wolorder'] == 'activity')
+	{
+		// activity ordering is DESC, username is ASC
+		krsort($onlinebots);
+	}
+	else
+	{
+		ksort($onlinebots);
+	}
+
+	$onlinemembers = array_merge($onlinebots, $onlinemembers);
+	if(!empty($onlinemembers))
+	{
+		$comma = $lang->comma." ";
+		$onlinemembers = implode($comma, $onlinemembers);
+	}
+	else
+	{
+		$onlinemembers = "";
 	}
 
 	// Build the who's online bit on the index page.
@@ -317,7 +359,8 @@ if(($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0) |
 		// Load the stats cache.
 		$stats = $cache->read('stats');
 	}
-
+	
+	$expaltext = (in_array("boardstats", $collapse)) ? "[+]" : "[-]";
 	eval('$boardstats = "'.$templates->get('index_boardstats').'";');
 }
 

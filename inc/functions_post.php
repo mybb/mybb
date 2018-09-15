@@ -183,17 +183,27 @@ function build_postbit($post, $post_type=0)
 	$post['subject_title'] = $post['subject'];
 
 	// Get the usergroup
-	if($post['userusername'])
+	if($post['usergroup'])
 	{
-		if(!$post['displaygroup'])
-		{
-			$post['displaygroup'] = $post['usergroup'];
-		}
-		$usergroup = $groupscache[$post['displaygroup']];
+		$usergroup = usergroup_permissions($post['usergroup']);
 	}
 	else
 	{
-		$usergroup = $groupscache[1];
+		$usergroup = usergroup_permissions(1);
+	}
+
+	// Fetch display group data.
+	$displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
+
+	if(!$post['displaygroup'])
+	{
+		$post['displaygroup'] = $post['usergroup'];
+	}
+
+	$displaygroup = usergroup_displaygroup($post['displaygroup']);
+	if(is_array($displaygroup))
+	{
+		$usergroup = array_merge($usergroup, $displaygroup);
 	}
 
 	if(!is_array($titlescache))
@@ -703,10 +713,14 @@ function build_postbit($post, $post_type=0)
 			else if($show_ips == "hide" && (is_moderator($fid, "canviewips") || $mybb->usergroup['issupermod']))
 			{
 				$action = 'getip';
+				$javascript = 'getIP';
+
 				if($post_type == 2)
 				{
 					$action = 'getpmip';
+					$javascript = 'getPMIP';
 				}
+
 				eval("\$post['iplogged'] = \"".$templates->get("postbit_iplogged_hiden")."\";");
 			}
 		}
@@ -1006,4 +1020,31 @@ function get_post_attachments($id, &$post)
 			eval("\$post['attachments'] = \"".$templates->get("postbit_attachments")."\";");
 		}
 	}
+}
+
+/**
+ * Returns bytes count from human readable string
+ * Used to parse ini_get human-readable values to int
+ *
+ * @param string $val Human-readable value
+ */
+function return_bytes($val) {
+	$val = trim($val);
+	if ($val == "")
+	{
+		return 0;
+	}
+
+	$last = strtolower($val[strlen($val)-1]);
+	switch($last)
+	{
+		case 'g':
+			$val *= 1024;
+		case 'm':
+			$val *= 1024;
+		case 'k':
+			$val *= 1024;
+	}
+
+	return intval($val);
 }

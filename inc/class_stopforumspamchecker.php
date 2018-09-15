@@ -85,7 +85,7 @@ class StopForumSpamChecker
 	public function is_user_a_spammer($username = '', $email = '', $ip_address = '')
 	{
 		$is_spammer = false;
-		$confidence = 0;
+		$checknum = $confidence = 0;
 
 		if(!filter_var($email, FILTER_VALIDATE_EMAIL))
 		{
@@ -123,17 +123,25 @@ class StopForumSpamChecker
 			{
 				if($this->check_usernames && $result_json->username->appears)
 				{
+					$checknum++;
 					$confidence += $result_json->username->confidence;
 				}
 
 				if($this->check_emails && $result_json->email->appears)
 				{
+					$checknum++;
 					$confidence += $result_json->email->confidence;
 				}
 
 				if($this->check_ips && $result_json->ip->appears)
 				{
+					$checknum++;
 					$confidence += $result_json->ip->confidence;
+				}
+				
+				if($checknum > 0 && $confidence)
+				{
+					$confidence = $confidence / $checknum;
 				}
 
 				if($confidence > $this->min_weighting_before_spam)

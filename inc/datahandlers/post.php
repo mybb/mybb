@@ -241,7 +241,7 @@ class PostDataHandler extends DataHandler
 	 */
 	function verify_message()
 	{
-		global $mybb;
+		global $db, $mybb;
 
 		$post = &$this->data;
 		$post['message'] = trim_blank_chrs($post['message']);
@@ -252,21 +252,56 @@ class PostDataHandler extends DataHandler
 			$this->set_error("missing_message");
 			return false;
 		}
-
-		// If this board has a maximum message length check if we're over it. Use strlen because SQL limits are in bytes
-		else if(strlen($post['message']) > $mybb->settings['maxmessagelength'] && $mybb->settings['maxmessagelength'] > 0 && !is_moderator($post['fid'], "", $post['uid']))
-		{
-			$this->set_error("message_too_long", array($mybb->settings['maxmessagelength'], strlen($post['message'])));
-			return false;
-		}
-
-		// And if we've got a minimum message length do we meet that requirement too?
 		else
 		{
+			$limit = (int)$mybb->settings['maxmessagelength'];
+			$dblimit = 0;
+
+			// If database is mysql or mysqli check field type and set max database limit
+			if(stripos($db->type, 'my') !== false)
+			{
+				$fields = $db->show_fields_from("posts");
+				$type = $fields[array_search('message', array_column($fields, 'Field'))]['Type'];
+				switch(strtolower($type))
+				{
+					case 'longtext':
+						$dblimit = 4294967295;
+						break;
+					case 'mediumtext':
+						$dblimit = 16777215;
+						break;
+					case 'text':
+					default:
+						$dblimit = 65535;
+						break;
+				}
+			}
+
+			if($limit > 0 || $dblimit > 0)
+			{
+				$is_moderator = is_moderator($post['fid'], "", $post['uid']);
+				// Consider minimum in user defined and database limit other than 0
+				if($limit > 0 && $dblimit > 0)
+				{
+					$limit = $is_moderator ? $dblimit : min($limit, $dblimit);
+				}
+				else
+				{
+					$limit = max($limit, $dblimit);
+				}
+
+				if(strlen($post['message']) > $limit && (!$is_moderator || $limit == $dblimit))
+				{
+					$this->set_error("message_too_long", array($limit, strlen($post['message'])));
+					return false;
+				}
+			}
+
 			if(!isset($post['fid']))
 			{
 				$post['fid'] = 0;
 			}
+
 			if(!$mybb->settings['mycodemessagelength'])
 			{
 				// Check to see of the text is full of MyCode
@@ -852,22 +887,28 @@ class PostDataHandler extends DataHandler
 		else
 		{
 			// Automatic subscription to the thread
-			if($post['options']['subscriptionmethod'] != "" && $post['uid'] > 0)
+			if($post['uid'] > 0)
 			{
-				switch($post['options']['subscriptionmethod'])
-				{
-					case "pm":
-						$notification = 2;
-						break;
-					case "email":
-						$notification = 1;
-						break;
-					default:
-						$notification = 0;
-				}
-
 				require_once MYBB_ROOT."inc/functions_user.php";
-				add_subscribed_thread($post['tid'], $notification, $post['uid']);
+				if($post['options']['subscriptionmethod'] == "")
+				{
+					remove_subscribed_thread($post['tid'], $post['uid']);
+				}
+				else
+				{
+					switch($post['options']['subscriptionmethod'])
+					{
+						case "pm":
+							$notification = 2;
+							break;
+						case "email":
+							$notification = 1;
+							break;
+						default:
+							$notification = 0;
+					}
+					add_subscribed_thread($post['tid'], $notification, $post['uid']);
+				}
 			}
 
 			// Perform any selected moderation tools.
@@ -1606,13 +1647,17 @@ class PostDataHandler extends DataHandler
 				$done_users = array();
 
 				// Queue up any forum subscription notices to users who are subscribed to this forum.
-				$excerpt = my_substr($thread['message'], 0, $mybb->settings['subscribeexcerpt']).$lang->emailbit_viewthread;
+				$excerpt = $thread['message'];
 
 				// Parse badwords
 				require_once MYBB_ROOT."inc/class_parser.php";
 				$parser = new postParser;
 				$excerpt = $parser->parse_badwords($excerpt);
-
+				$excerpt = $parser->text_parse_message($excerpt);
+				if(strlen($excerpt) > $mybb->settings['subscribeexcerpt'])
+				{
+					$excerpt = my_substr($excerpt, 0, $mybb->settings['subscribeexcerpt']).$lang->emailbit_viewthread;
+				}
 				$query = $db->query("
 					SELECT u.username, u.email, u.uid, u.language, u.loginkey, u.salt, u.regdate
 					FROM ".TABLE_PREFIX."forumsubscriptions fs

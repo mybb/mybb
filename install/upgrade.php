@@ -51,7 +51,7 @@ require_once MYBB_ROOT."inc/class_xml.php";
 require_once MYBB_ROOT.'inc/class_language.php';
 
 $lang = new MyLanguage();
-$lang->set_path(MYBB_ROOT.'install/resources/');
+$lang->set_path(INSTALL_ROOT.'resources/');
 $lang->load('language');
 
 // If we're upgrading from an SQLite installation, make sure we still work.
@@ -207,7 +207,7 @@ else
 			}
 		}
 
-		my_setcookie("mybbuser", $user['uid']."_".$user['loginkey'], null, true);
+		my_setcookie("mybbuser", $user['uid']."_".$user['loginkey'], null, true, "lax");
 
 		header("Location: ./upgrade.php");
 	}

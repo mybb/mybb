@@ -19,7 +19,7 @@ $templatelist .= ",postbit_inlinecheck,showthread_inlinemoderation,postbit_attac
 $templatelist .= ",showthread_usersbrowsing,showthread_usersbrowsing_user,showthread_poll_option,showthread_poll,showthread_quickreply_options_signature,showthread_threaded_bitactive,showthread_threaded_bit,postbit_attachments_attachment_unapproved";
 $templatelist .= ",showthread_moderationoptions_openclose,showthread_moderationoptions_stickunstick,showthread_moderationoptions_delete,showthread_moderationoptions_threadnotes,showthread_moderationoptions_manage,showthread_moderationoptions_deletepoll";
 $templatelist .= ",postbit_userstar,postbit_reputation_formatted_link,postbit_warninglevel_formatted,postbit_quickrestore,forumdisplay_password,forumdisplay_password_wrongpass,postbit_purgespammer,showthread_inlinemoderation_approve,forumdisplay_thread_icon";
-$templatelist .= ",showthread_moderationoptions_softdelete,showthread_moderationoptions_restore,post_captcha,post_captcha_recaptcha,post_captcha_recaptcha_invisible,post_captcha_nocaptcha,showthread_moderationoptions,showthread_inlinemoderation_standard,showthread_inlinemoderation_manage";
+$templatelist .= ",showthread_moderationoptions_softdelete,showthread_moderationoptions_restore,post_captcha,post_captcha_recaptcha_invisible,post_captcha_nocaptcha,showthread_moderationoptions,showthread_inlinemoderation_standard,showthread_inlinemoderation_manage";
 $templatelist .= ",showthread_ratethread,postbit_posturl,postbit_icon,postbit_editedby_editreason,attachment_icon,global_moderation_notice,showthread_poll_option_multiple,postbit_gotopost,postbit_rep_button,postbit_warninglevel,showthread_threadnoteslink";
 $templatelist .= ",showthread_moderationoptions_approve,showthread_moderationoptions_unapprove,showthread_inlinemoderation_delete,showthread_moderationoptions_standard,showthread_quickreply_options_close,showthread_inlinemoderation_custom,showthread_search";
 $templatelist .= ",postbit_profilefield_multiselect_value,postbit_profilefield_multiselect,showthread_subscription,postbit_deleted_member,postbit_away,postbit_warn,postbit_classic,postbit_reputation,postbit_deleted,postbit_offline,postbit_online,postbit_signature";
@@ -459,7 +459,8 @@ $plugins->run_hooks("showthread_start");
 // Show the entire thread (taking into account pagination).
 if($mybb->input['action'] == "thread")
 {
-	if($thread['firstpost'] == 0)
+	// This is a workaround to fix threads which data may get "corrupted" due to lag or other still unknown reasons
+	if($thread['firstpost'] == 0 || $thread['dateline'] == 0)
 	{
 		update_first_post($tid);
 	}
@@ -487,23 +488,23 @@ if($mybb->input['action'] == "thread")
 			$nopermission = 1;
 		}
 
-		// If the user is not a guest, check if he already voted.
-		if($mybb->user['uid'] != 0)
+		// Check if the user has voted before...
+		if($mybb->user['uid'])
 		{
-			$query = $db->simple_select("pollvotes", "*", "uid='".$mybb->user['uid']."' AND pid='".$poll['pid']."'");
-			while($votecheck = $db->fetch_array($query))
-			{
-				$alreadyvoted = 1;
-				$votedfor[$votecheck['voteoption']] = 1;
-			}
+			$user_check = "uid='{$mybb->user['uid']}'";
 		}
 		else
 		{
-			if(isset($mybb->cookies['pollvotes'][$poll['pid']]) && $mybb->cookies['pollvotes'][$poll['pid']] !== "")
-			{
-				$alreadyvoted = 1;
-			}
+			$user_check = "uid='0' AND ipaddress=".$db->escape_binary($session->packedip);
 		}
+
+		$query = $db->simple_select("pollvotes", "*", "{$user_check} AND pid='".$poll['pid']."'");
+		while($votecheck = $db->fetch_array($query))
+		{
+			$alreadyvoted = 1;
+			$votedfor[$votecheck['voteoption']] = 1;
+		}
+
 		$optionsarray = explode("||~|~||", $poll['options']);
 		$votesarray = explode("||~|~||", $poll['votes']);
 		$poll['question'] = htmlspecialchars_uni($poll['question']);
@@ -607,9 +608,10 @@ if($mybb->input['action'] == "thread")
 			{
 				$pollstatus = $lang->already_voted;
 
+				$undovote = '';
 				if($mybb->usergroup['canundovotes'] == 1)
 				{
-					eval("\$pollstatus .= \"".$templates->get("showthread_poll_undovote")."\";");
+					eval("\$undovote = \"".$templates->get("showthread_poll_undovote")."\";");
 				}
 			}
 			elseif($nopermission)
@@ -620,6 +622,7 @@ if($mybb->input['action'] == "thread")
 			{
 				$pollstatus = $lang->poll_closed;
 			}
+
 			$lang->total_votes = $lang->sprintf($lang->total_votes, $totalvotes);
 			eval("\$pollbox = \"".$templates->get("showthread_poll_results")."\";");
 			$plugins->run_hooks("showthread_poll_results");
@@ -887,14 +890,18 @@ if($mybb->input['action'] == "thread")
 			}
 		}
 
-		// Build the threaded post display tree.
-		$query = $db->query("
+        // Build the threaded post display tree.
+        $query = $db->query("
             SELECT p.username, p.uid, p.pid, p.replyto, p.subject, p.dateline
             FROM ".TABLE_PREFIX."posts p
             WHERE p.tid='$tid'
             $visible
             ORDER BY p.dateline
         ");
+        if(!is_array($postsdone))
+        {
+            $postsdone = array();
+        }
         while($post = $db->fetch_array($query))
         {
             if(!$postsdone[$post['pid']])
@@ -933,7 +940,7 @@ if($mybb->input['action'] == "thread")
 		if(!empty($mybb->input['pid']))
 		{
 			$post = get_post($mybb->input['pid']);
-			if(empty($post) || ($post['visible'] == 0 && !is_moderator($post['fid'], 'canviewunapprove')) || ($post['visible'] == -1 && !is_moderator($post['fid'], 'canviewdeleted')))
+			if(empty($post) || ($post['visible'] == 0 && !is_moderator($post['fid'], 'canviewunapprove')) || ($post['visible'] == -1 && !is_moderator($post['fid'], 'canviewdeleted') && $forumpermissions['canviewdeletionnotice'] == 0))
 			{
 				$footer .= '<script type="text/javascript">$(document).ready(function() { $.jGrowl(\''.$lang->error_invalidpost.'\', {theme: \'jgrowl_error\'}); });</script>';
 			}
@@ -1270,7 +1277,8 @@ if($mybb->input['action'] == "thread")
 			}
 		}
 
-	    $posthash = md5($mybb->user['uid'].random_str());
+	    	$posthash = md5($mybb->user['uid'].random_str());
+		$expaltext = (in_array("quickreply", $collapse)) ? "[+]" : "[-]";
 		eval("\$quickreply = \"".$templates->get("showthread_quickreply")."\";");
 	}
 
@@ -1292,6 +1300,7 @@ if($mybb->input['action'] == "thread")
 				$thread['notes'] = my_substr($thread['notes'], 0, 200)."... {$viewnotes}";
 			}
 
+			$expaltext = (in_array("threadnotes", $collapse)) ? "[+]" : "[-]";
 			eval("\$threadnotesbox = \"".$templates->get("showthread_threadnotes")."\";");
 		}
 
@@ -1315,14 +1324,15 @@ if($mybb->input['action'] == "thread")
 					foreach($gids as $gid)
 					{
 						$gid = (int)$gid;
-						$gidswhere .= " OR CONCAT(',',groups,',') LIKE '%,{$gid},%'";
+						$gidswhere .= " OR CONCAT(',',`groups`,',') LIKE '%,{$gid},%'";
 					}
-					$query = $db->simple_select("modtools", 'tid, name, type', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='') AND (groups='' OR CONCAT(',',groups,',') LIKE '%,-1,%'{$gidswhere})");
+					$query = $db->simple_select("modtools", 'tid, name, type', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='') AND (`groups`='' OR CONCAT(',',`groups`,',') LIKE '%,-1,%'{$gidswhere})");
 					break;
 			}
 
 			while($tool = $db->fetch_array($query))
 			{
+				$tool['name'] = htmlspecialchars_uni($tool['name']);
 				if($tool['type'] == 'p')
 				{
 					eval("\$customposttools .= \"".$templates->get("showthread_inlinemoderation_custom_tool")."\";");
@@ -1445,6 +1455,8 @@ if($mybb->input['action'] == "thread")
 		}
 	}
 
+	eval("\$printthread = \"".$templates->get("showthread_printthread")."\";");
+
 	// Display 'send thread' link if permissions allow
 	$sendthread = '';
 	if($mybb->usergroup['cansendemail'] == 1)
@@ -1563,6 +1575,11 @@ if($mybb->input['action'] == "thread")
 		}
 
 		eval("\$usersbrowsing = \"".$templates->get("showthread_usersbrowsing")."\";");
+	}
+
+	if($thread['visible'] == -1 )
+	{
+		$thread_deleted = 1;
 	}
 
 	$plugins->run_hooks("showthread_end");

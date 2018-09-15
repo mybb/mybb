@@ -32,7 +32,7 @@ class CustomModeration extends Moderation
 		global $db;
 
 		// Get tool info
-		$query = $db->simple_select("modtools", "*", 'tid="'.(int)$tool_id.'"');
+		$query = $db->simple_select("modtools", "*", 'tid='.(int)$tool_id);
 		$tool = $db->fetch_array($query);
 		if(!$tool['tid'])
 		{
@@ -57,7 +57,7 @@ class CustomModeration extends Moderation
 		global $db;
 
 		// Get tool info
-		$query = $db->simple_select("modtools", '*', 'tid="'.(int)$tool_id.'"');
+		$query = $db->simple_select("modtools", '*', 'tid='.(int)$tool_id);
 		$tool = $db->fetch_array($query);
 		if(!$tool['tid'])
 		{
@@ -103,7 +103,7 @@ class CustomModeration extends Moderation
 	 * @param array|int $tid Thread IDs (in order of dateline ascending). Only the first one will be used
 	 * @return boolean true
 	 */
-	function execute_post_moderation($post_options, $pids, $tid)
+	function execute_post_moderation($post_options=array(), $pids=array(), $tid)
 	{
 		global $db, $mybb, $lang;
 
@@ -268,7 +268,7 @@ class CustomModeration extends Moderation
 	 * @param array Thread IDs. Only the first one will be used, but it needs to be an array
 	 * @return boolean true
 	 */
-	function execute_thread_moderation($thread_options, $tids)
+	function execute_thread_moderation($thread_options=array(), $tids=array())
 	{
 		global $db, $mybb;
 

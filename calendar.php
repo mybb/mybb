@@ -1445,17 +1445,26 @@ if($mybb->input['action'] == "event")
 	$event['description'] = $parser->parse_message($event['description'], $event_parser_options);
 
 	// Get the usergroup
-	if($event['username'])
+	if($event['usergroup'])
 	{
-		if(!$event['displaygroup'])
-		{
-			$event['displaygroup'] = $event['usergroup'];
-		}
-		$user_usergroup = $groupscache[$event['displaygroup']];
+		$user_usergroup = usergroup_permissions($event['usergroup']);
 	}
 	else
 	{
-		$user_usergroup = $groupscache[1];
+		$user_usergroup = usergroup_permissions(1);
+	}
+
+	$displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
+
+	if(!$event['displaygroup'])
+	{
+		$event['displaygroup'] = $event['usergroup'];
+	}
+
+	$display_group = usergroup_displaygroup($event['displaygroup']);
+	if(is_array($display_group))
+	{
+		$user_usergroup = array_merge($user_usergroup, $display_group);
 	}
 
 	$titles_cache = $cache->read("usertitles");
@@ -1665,7 +1674,7 @@ if($mybb->input['action'] == "dayview")
 	}
 
 	// Incoming year?
-	if(isset($mybb->input['year']) && $mybb->get_input('year', MyBB::INPUT_INT) <= my_date("Y")+5)
+	if(isset($mybb->input['year']) && $mybb->get_input('year', MyBB::INPUT_INT) <= my_date("Y")+5 && $mybb->get_input('year', MyBB::INPUT_INT) >= 1901)
 	{
 		$year = $mybb->get_input('year', MyBB::INPUT_INT);
 	}
@@ -1785,17 +1794,26 @@ if($mybb->input['action'] == "dayview")
 			$event['description'] = $parser->parse_message($event['description'], $event_parser_options);
 
 			// Get the usergroup
-			if($event['username'])
+			if($event['usergroup'])
 			{
-				if(!$event['displaygroup'])
-				{
-					$event['displaygroup'] = $event['usergroup'];
-				}
-				$user_usergroup = $groupscache[$event['displaygroup']];
+				$user_usergroup = usergroup_permissions($event['usergroup']);
 			}
 			else
 			{
-				$user_usergroup = $groupscache[1];
+				$user_usergroup = usergroup_permissions(1);
+			}
+
+			$displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
+
+			if(!$event['displaygroup'])
+			{
+				$event['displaygroup'] = $event['usergroup'];
+			}
+
+			$display_group = usergroup_displaygroup($event['displaygroup']);
+			if(is_array($display_group))
+			{
+				$user_usergroup = array_merge($user_usergroup, $display_group);
 			}
 
 			$titles_cache = $cache->read("usertitles");
@@ -2029,10 +2047,10 @@ if($mybb->input['action'] == "weekview")
 	else
 	{
 		$mybb->input['week'] = (int)str_replace("n", "-", $mybb->get_input('week'));
-		// No negative years please ;)
-		if($mybb->input['week'] < -62167219200)
+		// Nothing before 1901 please ;)
+		if($mybb->input['week'] < -2177625600)
 		{
-			$mybb->input['week'] = -62167219200;
+			$mybb->input['week'] = -2177625600;
 		}
 	}
 

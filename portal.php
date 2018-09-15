@@ -233,10 +233,8 @@ if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] !
 	}
 
 	$timesearch = TIME_NOW - $mybb->settings['wolcutoff'];
-	$comma = '';
 	$guestcount = $membercount = $botcount = $anoncount = 0;
-	$onlinemembers = '';
-	$doneusers = array();
+	$doneusers = $onlinemembers = $onlinebots = array();
 	$query = $db->query("
 		SELECT s.sid, s.ip, s.uid, s.time, s.location, u.username, u.invisible, u.usergroup, u.displaygroup
 		FROM ".TABLE_PREFIX."sessions s
@@ -244,24 +242,17 @@ if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] !
 		WHERE s.time>'$timesearch'
 		ORDER BY {$order_by}, {$order_by2}
 	");
+
+	// Fetch spiders
+	$spiders = $cache->read('spiders');
+
 	while($user = $db->fetch_array($query))
 	{
 
 		// Create a key to test if this user is a search bot.
 		$botkey = my_strtolower(str_replace("bot=", '', $user['sid']));
 
-		if($user['uid'] == "0")
-		{
-			++$guestcount;
-		}
-		elseif(my_strpos($user['sid'], "bot=") !== false && $session->bots[$botkey])
-		{
-			// The user is a search bot.
-			$onlinemembers .= $comma.format_name($session->bots[$botkey], $session->botgroup);
-			$comma = $lang->comma;
-			++$botcount;
-		}
-		else
+		if($user['uid'] > 0)
 		{
 			if(empty($doneusers[$user['uid']]) || $doneusers[$user['uid']] < $user['time'])
 			{
@@ -288,11 +279,50 @@ if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] !
 				{
 					$user['username'] = format_name(htmlspecialchars_uni($user['username']), $user['usergroup'], $user['displaygroup']);
 					$user['profilelink'] = get_profile_link($user['uid']);
-					eval("\$onlinemembers .= \"".$templates->get("portal_whosonline_memberbit", 1, 0)."\";");
-					$comma = $lang->comma;
+					eval("\$onlinemembers[] = \"".$templates->get("portal_whosonline_memberbit", 1, 0)."\";");
 				}
 			}
 		}
+		elseif(my_strpos($user['sid'], 'bot=') !== false && $spiders[$botkey])
+		{
+			// The user is a search bot.
+			if($mybb->settings['wolorder'] == 'username')
+			{
+				$key = $spiders[$botkey]['name'];
+			}
+			else
+			{
+				$key = $user['time'];
+			}
+
+			$onlinebots[$key] = format_name($spiders[$botkey]['name'], $spiders[$botkey]['usergroup']);
+			++$botcount;
+		}
+		else
+		{
+			++$guestcount;
+		}
+	}
+
+	if($mybb->settings['wolorder'] == 'activity')
+	{
+		// activity ordering is DESC, username is ASC
+		krsort($onlinebots);
+	}
+	else
+	{
+		ksort($onlinebots);
+	}
+
+	$onlinemembers = array_merge($onlinebots, $onlinemembers);
+	if(!empty($onlinemembers))
+	{
+		$comma = $lang->comma." ";
+		$onlinemembers = implode($comma, $onlinemembers);
+	}
+	else
+	{
+		$onlinemembers = "";
 	}
 
 	$onlinecount = $membercount + $guestcount + $botcount;

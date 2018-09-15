@@ -250,40 +250,6 @@ function verify_user_password($user, $password)
 }
 
 /**
- * Performs a timing attack safe string comparison.
- *
- * @param string $known_string The first string to be compared.
- * @param string $user_string The second, user-supplied string to be compared.
- * @return bool Result of the comparison.
- */
-function my_hash_equals($known_string, $user_string)
-{
-	if(version_compare(PHP_VERSION, '5.6.0', '>='))
-	{
-		return hash_equals($known_string, $user_string);
-	}
-	else
-	{
-		$known_string_length = my_strlen($known_string);
-		$user_string_length = my_strlen($user_string);
-
-		if($user_string_length != $known_string_length)
-		{
-			return false;
-		}
-
-		$result = 0;
-
-		for($i = 0; $i < $known_string_length; $i++)
-		{
-			$result |= ord($known_string[$i]) ^ ord($user_string[$i]);
-		}
-
-		return $result === 0;
-	}
-}
-
-/**
  * Generates a random salt
  *
  * @return string The salt.
@@ -521,8 +487,9 @@ function usercp_menu()
  */
 function usercp_menu_messenger()
 {
-	global $db, $mybb, $templates, $theme, $usercpmenu, $lang, $collapsed, $collapsedimg;
+	global $db, $mybb, $templates, $theme, $usercpmenu, $lang, $collapse, $collapsed, $collapsedimg;
 
+	$expaltext = (in_array("usercppms", $collapse)) ? "[+]" : "[-]";
 	$usercp_nav_messenger = $templates->get("usercp_nav_messenger");
 	// Hide tracking link if no permission
 	$tracking = '';
@@ -583,7 +550,7 @@ function usercp_menu_messenger()
  */
 function usercp_menu_profile()
 {
-	global $db, $mybb, $templates, $theme, $usercpmenu, $lang, $collapsed, $collapsedimg;
+	global $db, $mybb, $templates, $theme, $usercpmenu, $lang, $collapse, $collapsed, $collapsedimg;
 
 	$changenameop = '';
 	if($mybb->usergroup['canchangename'] != 0)
@@ -610,6 +577,7 @@ function usercp_menu_profile()
 		$collapsed['usercpprofile_e'] = '';
 	}
 
+	$expaltext = (in_array("usercpprofile", $collapse)) ? "[+]" : "[-]";
 	eval("\$usercpmenu .= \"".$templates->get("usercp_nav_profile")."\";");
 }
 
@@ -619,7 +587,7 @@ function usercp_menu_profile()
  */
 function usercp_menu_misc()
 {
-	global $db, $mybb, $templates, $theme, $usercpmenu, $lang, $collapsed, $collapsedimg;
+	global $db, $mybb, $templates, $theme, $usercpmenu, $lang, $collapse, $collapsed, $collapsedimg;
 
 	$draftstart = $draftend = '';
 	$draftcount = $lang->ucp_nav_drafts;
@@ -648,6 +616,7 @@ function usercp_menu_misc()
 	}
 
 	$profile_link = get_profile_link($mybb->user['uid']);
+	$expaltext = (in_array("usercpmisc", $collapse)) ? "[+]" : "[-]";
 	eval("\$usercpmenu .= \"".$templates->get("usercp_nav_misc")."\";");
 }
 

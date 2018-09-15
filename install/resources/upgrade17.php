@@ -368,7 +368,7 @@ function upgrade17_dbchanges4()
 				prefix varchar(120) NOT NULL default '',
 				displaystyle varchar(200) NOT NULL default '',
 				forums text NOT NULL,
-				groups text NOT NULL,
+				`groups` text NOT NULL,
 				PRIMARY KEY(pid)
 			) ENGINE=MyISAM;");
 			$db->write_query("CREATE TABLE ".TABLE_PREFIX."delayedmoderation (

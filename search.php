@@ -90,7 +90,7 @@ if($mybb->input['action'] == "results")
 			}
 			break;
 		case "forum":
-			$sortfield = "t.fid";
+			$sortfield = "f.name";
 			break;
 		case "starter":
 			if($search['resulttype'] == "threads")
@@ -341,6 +341,13 @@ if($mybb->input['action'] == "results")
 			$permsql .= " AND t.fid NOT IN ($inactiveforums)";
 		}
 
+		$pages = ceil($threadcount / $perpage);
+		if($page > $pages)
+		{
+			$start = 0;
+			$page = 1;
+		}
+
 		// Begin selecting matching threads, cache them.
 		$sqlarray = array(
 			'order_by' => $sortfield,
@@ -352,6 +359,7 @@ if($mybb->input['action'] == "results")
 			SELECT t.*, u.username AS userusername
 			FROM ".TABLE_PREFIX."threads t
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)
+			LEFT JOIN ".TABLE_PREFIX."forums f ON (t.fid=f.fid)
 			WHERE $where_conditions AND {$unapproved_where} {$permsql} AND t.closed NOT LIKE 'moved|%'
 			ORDER BY $sortfield $order
 			LIMIT $start, $perpage
@@ -523,8 +531,8 @@ if($mybb->input['action'] == "results")
 			}
 			if($thread['closed'] == 1)
 			{
-				$folder .= "lock";
-				$folder_label .= $lang->icon_lock;
+				$folder .= "close";
+				$folder_label .= $lang->icon_close;
 			}
 			$folder .= "folder";
 
@@ -707,6 +715,7 @@ if($mybb->input['action'] == "results")
 
 			while($tool = $db->fetch_array($query))
 			{
+				$tool['name'] = htmlspecialchars_uni($tool['name']);
 				eval("\$customthreadtools .= \"".$templates->get("search_results_threads_inlinemoderation_custom_tool")."\";");
 			}
 			// Build inline moderation dropdown
@@ -883,11 +892,19 @@ if($mybb->input['action'] == "results")
 
 		$results = '';
 
+		$pages = ceil($postcount / $perpage);
+		if($page > $pages)
+		{
+			$start = 0;
+			$page = 1;
+		}
+
 		$query = $db->query("
 			SELECT p.*, u.username AS userusername, t.subject AS thread_subject, t.replies AS thread_replies, t.views AS thread_views, t.lastpost AS thread_lastpost, t.closed AS thread_closed, t.uid as thread_uid
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
+			LEFT JOIN ".TABLE_PREFIX."forums f ON (t.fid=f.fid)
 			WHERE p.pid IN (".$db->escape_string($search['posts']).")
 			ORDER BY $sortfield $order
 			LIMIT $start, $perpage
@@ -1016,8 +1033,8 @@ if($mybb->input['action'] == "results")
 			}
 			if($post['thread_closed'] == 1)
 			{
-				$folder .= "lock";
-				$folder_label .= $lang->icon_lock;
+				$folder .= "close";
+				$folder_label .= $lang->icon_close;
 			}
 			$folder .= "folder";
 
@@ -1303,17 +1320,17 @@ elseif($mybb->input['action'] == "finduser")
 }
 elseif($mybb->input['action'] == "finduserthreads")
 {
-	$where_sql = "t.uid='".$mybb->get_input('uid', MyBB::INPUT_INT)."'";
+	$where_sql = "uid='".$mybb->get_input('uid', MyBB::INPUT_INT)."'";
 
 	$unsearchforums = get_unsearchable_forums();
 	if($unsearchforums)
 	{
-		$where_sql .= " AND t.fid NOT IN ($unsearchforums)";
+		$where_sql .= " AND fid NOT IN ($unsearchforums)";
 	}
 	$inactiveforums = get_inactive_forums();
 	if($inactiveforums)
 	{
-		$where_sql .= " AND t.fid NOT IN ($inactiveforums)";
+		$where_sql .= " AND fid NOT IN ($inactiveforums)";
 	}
 
 	$permsql = "";
@@ -1330,7 +1347,16 @@ elseif($mybb->input['action'] == "finduserthreads")
 	}
 	if(!empty($onlyusfids))
 	{
-		$where_sql .= "AND ((t.fid IN(".implode(',', $onlyusfids).") AND t.uid='{$mybb->user['uid']}') OR t.fid NOT IN(".implode(',', $onlyusfids)."))";
+		$where_sql .= "AND ((fid IN(".implode(',', $onlyusfids).") AND uid='{$mybb->user['uid']}') OR fid NOT IN(".implode(',', $onlyusfids)."))";
+	}
+
+	$tids = '';
+	$comma = '';
+	$query = $db->simple_select("threads", "tid", $where_sql);
+	while($tid = $db->fetch_field($query, "tid"))
+	{
+			$tids .= $comma.$tid;
+			$comma = ',';
 	}
 
 	$sid = md5(uniqid(microtime(), true));
@@ -1339,7 +1365,7 @@ elseif($mybb->input['action'] == "finduserthreads")
 		"uid" => $mybb->user['uid'],
 		"dateline" => TIME_NOW,
 		"ipaddress" => $db->escape_binary($session->packedip),
-		"threads" => '',
+		"threads" => $db->escape_string($tids),
 		"posts" => '',
 		"resulttype" => "threads",
 		"querycache" => $db->escape_string($where_sql),
@@ -1352,11 +1378,11 @@ elseif($mybb->input['action'] == "finduserthreads")
 elseif($mybb->input['action'] == "getnew")
 {
 
-	$where_sql = "t.lastpost >= '".(int)$mybb->user['lastvisit']."'";
+	$where_sql = "lastpost >= '".(int)$mybb->user['lastvisit']."'";
 
 	if($mybb->get_input('fid', MyBB::INPUT_INT))
 	{
-		$where_sql .= " AND t.fid='".$mybb->get_input('fid', MyBB::INPUT_INT)."'";
+		$where_sql .= " AND fid='".$mybb->get_input('fid', MyBB::INPUT_INT)."'";
 	}
 	else if($mybb->get_input('fids'))
 	{
@@ -1368,19 +1394,19 @@ elseif($mybb->input['action'] == "getnew")
 
 		if(!empty($fids))
 		{
-			$where_sql .= " AND t.fid IN (".implode(',', $fids).")";
+			$where_sql .= " AND fid IN (".implode(',', $fids).")";
 		}
 	}
 
 	$unsearchforums = get_unsearchable_forums();
 	if($unsearchforums)
 	{
-		$where_sql .= " AND t.fid NOT IN ($unsearchforums)";
+		$where_sql .= " AND fid NOT IN ($unsearchforums)";
 	}
 	$inactiveforums = get_inactive_forums();
 	if($inactiveforums)
 	{
-		$where_sql .= " AND t.fid NOT IN ($inactiveforums)";
+		$where_sql .= " AND fid NOT IN ($inactiveforums)";
 	}
 
 	$permsql = "";
@@ -1397,7 +1423,16 @@ elseif($mybb->input['action'] == "getnew")
 	}
 	if(!empty($onlyusfids))
 	{
-		$where_sql .= "AND ((t.fid IN(".implode(',', $onlyusfids).") AND t.uid='{$mybb->user['uid']}') OR t.fid NOT IN(".implode(',', $onlyusfids)."))";
+		$where_sql .= "AND ((fid IN(".implode(',', $onlyusfids).") AND uid='{$mybb->user['uid']}') OR fid NOT IN(".implode(',', $onlyusfids)."))";
+	}
+	
+	$tids = '';
+	$comma = '';
+	$query = $db->simple_select("threads", "tid", $where_sql);
+	while($tid = $db->fetch_field($query, "tid"))
+	{
+			$tids .= $comma.$tid;
+			$comma = ',';
 	}
 
 	$sid = md5(uniqid(microtime(), true));
@@ -1406,7 +1441,7 @@ elseif($mybb->input['action'] == "getnew")
 		"uid" => $mybb->user['uid'],
 		"dateline" => TIME_NOW,
 		"ipaddress" => $db->escape_binary($session->packedip),
-		"threads" => '',
+		"threads" => $db->escape_string($tids),
 		"posts" => '',
 		"resulttype" => "threads",
 		"querycache" => $db->escape_string($where_sql),
@@ -1429,11 +1464,11 @@ elseif($mybb->input['action'] == "getdaily")
 	}
 	$datecut = TIME_NOW-(86400*$days);
 
-	$where_sql = "t.lastpost >='".$datecut."'";
+	$where_sql = "lastpost >='".$datecut."'";
 
 	if($mybb->get_input('fid', MyBB::INPUT_INT))
 	{
-		$where_sql .= " AND t.fid='".$mybb->get_input('fid', MyBB::INPUT_INT)."'";
+		$where_sql .= " AND fid='".$mybb->get_input('fid', MyBB::INPUT_INT)."'";
 	}
 	else if($mybb->get_input('fids'))
 	{
@@ -1445,19 +1480,19 @@ elseif($mybb->input['action'] == "getdaily")
 
 		if(!empty($fids))
 		{
-			$where_sql .= " AND t.fid IN (".implode(',', $fids).")";
+			$where_sql .= " AND fid IN (".implode(',', $fids).")";
 		}
 	}
 
 	$unsearchforums = get_unsearchable_forums();
 	if($unsearchforums)
 	{
-		$where_sql .= " AND t.fid NOT IN ($unsearchforums)";
+		$where_sql .= " AND fid NOT IN ($unsearchforums)";
 	}
 	$inactiveforums = get_inactive_forums();
 	if($inactiveforums)
 	{
-		$where_sql .= " AND t.fid NOT IN ($inactiveforums)";
+		$where_sql .= " AND fid NOT IN ($inactiveforums)";
 	}
 
 	$permsql = "";
@@ -1474,16 +1509,25 @@ elseif($mybb->input['action'] == "getdaily")
 	}
 	if(!empty($onlyusfids))
 	{
-		$where_sql .= "AND ((t.fid IN(".implode(',', $onlyusfids).") AND t.uid='{$mybb->user['uid']}') OR t.fid NOT IN(".implode(',', $onlyusfids)."))";
+		$where_sql .= "AND ((fid IN(".implode(',', $onlyusfids).") AND uid='{$mybb->user['uid']}') OR fid NOT IN(".implode(',', $onlyusfids)."))";
 	}
 
+	$tids = '';
+	$comma = '';
+	$query = $db->simple_select("threads", "tid", $where_sql);
+	while($tid = $db->fetch_field($query, "tid"))
+	{
+			$tids .= $comma.$tid;
+			$comma = ',';
+	}
+	
 	$sid = md5(uniqid(microtime(), true));
 	$searcharray = array(
 		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],
 		"dateline" => TIME_NOW,
 		"ipaddress" => $db->escape_binary($session->packedip),
-		"threads" => '',
+		"threads" => $db->escape_string($tids),
 		"posts" => '',
 		"resulttype" => "threads",
 		"querycache" => $db->escape_string($where_sql),

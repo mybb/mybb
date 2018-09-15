@@ -35,6 +35,11 @@ if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $i
 	error($lang->error_invalidthread);
 }
 
+if($thread['visible'] == -1)
+{
+	error($lang->thread_doesnt_exist);
+}
+
 if($thread['uid'] == $mybb->user['uid'])
 {
 	error($lang->error_cannotrateownthread);
@@ -48,13 +53,6 @@ if($forumpermissions['canview'] == 0 || $forumpermissions['canratethreads'] == 0
 
 // Get forum info
 $fid = $thread['fid'];
-$forum = get_forum($fid);
-if(!$forum)
-{
-	error($lang->error_invalidforum);
-}
-
-// Get forum info
 $forum = get_forum($fid);
 if(!$forum)
 {

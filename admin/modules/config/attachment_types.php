@@ -99,7 +99,7 @@ if($mybb->input['action'] == "add")
 			$plugins->run_hooks("admin_config_attachment_types_add_commit");
 
 			// Log admin action
-			log_admin_action($atid, htmlspecialchars_uni($mybb->input['extension']));
+			log_admin_action($atid, $mybb->input['extension']);
 
 			$cache->update_attachtypes();
 
@@ -383,7 +383,7 @@ if($mybb->input['action'] == "edit")
 			$db->update_query("attachtypes", $updated_type, "atid='{$attachment_type['atid']}'");
 
 			// Log admin action
-			log_admin_action($attachment_type['atid'], htmlspecialchars_uni($mybb->input['extension']));
+			log_admin_action($attachment_type['atid'], $mybb->input['extension']);
 
 			$cache->update_attachtypes();
 
@@ -605,7 +605,7 @@ if($mybb->input['action'] == "delete")
 		$cache->update_attachtypes();
 
 		// Log admin action
-		log_admin_action($attachment_type['atid'], htmlspecialchars_uni($attachment_type['extension']));
+		log_admin_action($attachment_type['atid'], $attachment_type['extension']);
 
 		flash_message($lang->success_attachment_type_deleted, 'success');
 		admin_redirect("index.php?module=config-attachment_types");
@@ -652,7 +652,7 @@ if($mybb->input['action'] == 'toggle_status')
 	$cache->update_attachtypes();
 
 	// Log admin action
-	log_admin_action($atid, htmlspecialchars_uni($attachment_type['extension']), $update_array['enabled']);
+	log_admin_action($atid, $attachment_type['extension'], $update_array['enabled']);
 
 	flash_message($phrase, 'success');
 	admin_redirect('index.php?module=config-attachment_types');
@@ -717,6 +717,8 @@ if(!$mybb->input['action'])
 			$phrase = $lang->enable;
 			$icon = "off.png\" alt=\"({$lang->alt_disabled})\" title=\"{$lang->alt_disabled}";
 		}
+
+		$attachment_type['extension'] = htmlspecialchars_uni($attachment_type['extension']);
 
 		$table->construct_cell($attachment_type['icon'], array("width" => 1));
 		$table->construct_cell("<strong>.{$attachment_type['extension']}</strong>");

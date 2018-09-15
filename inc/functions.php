@@ -18,6 +18,7 @@ function output_page($contents)
 	global $db, $lang, $theme, $templates, $plugins, $mybb;
 	global $debug, $templatecache, $templatelist, $maintimer, $globaltime, $parsetime;
 
+	$contents = $plugins->run_hooks("pre_parse_page", $contents);
 	$contents = parse_page($contents);
 	$totaltime = format_time_duration($maintimer->stop());
 	$contents = $plugins->run_hooks("pre_output_page", $contents);
@@ -868,7 +869,7 @@ function inline_error($errors, $title="", $json_data=array())
 
 	foreach($errors as $error)
 	{
-		$errorlist .= "<li>".$error."</li>\n";
+		eval("\$errorlist .= \"".$templates->get("error_inline_item")."\";");
 	}
 
 	eval("\$errors = \"".$templates->get("error_inline")."\";");
@@ -1037,6 +1038,8 @@ function multipage($count, $perpage, $page, $url, $breadcrumb=false)
 		return '';
 	}
 
+	$page = (int)$page;
+
 	$url = str_replace("&amp;", "&", $url);
 	$url = htmlspecialchars_uni($url);
 
@@ -1141,7 +1144,7 @@ function multipage($count, $perpage, $page, $url, $breadcrumb=false)
 		eval("\$jumptopage = \"".$templates->get("multipage_jump_page")."\";");
 	}
 
-	$lang->multipage_pages = $lang->sprintf($lang->multipage_pages, $pages);
+	$multipage_pages = $lang->sprintf($lang->multipage_pages, $pages);
 
 	if($breadcrumb == true)
 	{
@@ -1201,17 +1204,23 @@ function fetch_page_url($url, $page)
 /**
  * Fetch the permissions for a specific user
  *
- * @param int $uid The user ID
+ * @param int $uid The user ID, if no user ID is provided then current user's ID will be considered.
  * @return array Array of user permissions for the specified user
  */
-function user_permissions($uid=0)
+function user_permissions($uid=null)
 {
 	global $mybb, $cache, $groupscache, $user_cache;
 
 	// If no user id is specified, assume it is the current user
-	if($uid == 0)
+	if($uid === null)
 	{
 		$uid = $mybb->user['uid'];
+	}
+
+	// Its a guest. Return the group permissions directly from cache
+	if($uid == 0)
+	{
+		return $groupscache[1];
 	}
 
 	// User id does not match current user, fetch permissions
@@ -1813,7 +1822,7 @@ function get_post_icons()
 	$iconlist = '';
 	$no_icons_checked = " checked=\"checked\"";
 	// read post icons from cache, and sort them accordingly
-	$posticons_cache = $cache->read("posticons");
+	$posticons_cache = (array)$cache->read("posticons");
 	$posticons = array();
 	foreach($posticons_cache as $posticon)
 	{
@@ -1859,8 +1868,9 @@ function get_post_icons()
  * @param string $value The cookie value.
  * @param int|string $expires The timestamp of the expiry date.
  * @param boolean $httponly True if setting a HttpOnly cookie (supported by the majority of web browsers)
+ * @param string $samesite The samesite attribute to prevent CSRF.
  */
-function my_setcookie($name, $value="", $expires="", $httponly=false)
+function my_setcookie($name, $value="", $expires="", $httponly=false, $samesite="")
 {
 	global $mybb;
 
@@ -1907,6 +1917,16 @@ function my_setcookie($name, $value="", $expires="", $httponly=false)
 	if($httponly == true)
 	{
 		$cookie .= "; HttpOnly";
+	}
+
+	if($samesite != "" && $mybb->settings['cookiesamesiteflag'])
+	{
+		$samesite = strtolower($samesite);
+
+		if($samesite == "lax" || $samesite == "strict")
+		{
+			$cookie .= "; SameSite=".$samesite;
+		}
 	}
 
 	if($mybb->settings['cookiesecureflag'])
@@ -2022,8 +2042,7 @@ function _safe_unserialize($str)
 		return false;
 	}
 
-	$stack = array();
-	$expected = array();
+	$stack = $list = $expected = array();
 
 	/*
 	 * states:
@@ -3050,30 +3069,46 @@ function random_str($length=8, $complex=false)
  */
 function format_name($username, $usergroup, $displaygroup=0)
 {
-	global $groupscache, $cache;
+	global $groupscache, $cache, $plugins;
 
-	if(!is_array($groupscache))
+	static $formattednames = array();
+
+	if(!isset($formattednames[$username]))
 	{
-		$groupscache = $cache->read("usergroups");
-	}
+		if(!is_array($groupscache))
+		{
+			$groupscache = $cache->read("usergroups");
+		}
 
-	if($displaygroup != 0)
-	{
-		$usergroup = $displaygroup;
-	}
+		if($displaygroup != 0)
+		{
+			$usergroup = $displaygroup;
+		}
 
-	$ugroup = $groupscache[$usergroup];
-	$format = $ugroup['namestyle'];
-	$userin = substr_count($format, "{username}");
-
-	if($userin == 0)
-	{
 		$format = "{username}";
+
+		if(isset($groupscache[$usergroup]))
+		{
+			$ugroup = $groupscache[$usergroup];
+
+			if(strpos($ugroup['namestyle'], "{username}") !== false)
+			{
+				$format = $ugroup['namestyle'];
+			}
+		}
+
+		$format = stripslashes($format);
+
+		$parameters = compact('username', 'usergroup', 'displaygroup', 'format');
+
+		$parameters = $plugins->run_hooks('format_name', $parameters);
+
+		$format = $parameters['format'];
+
+		$formattednames[$username] = str_replace("{username}", $username, $format);
 	}
 
-	$format = stripslashes($format);
-
-	return str_replace("{username}", $username, $format);
+	return $formattednames[$username];
 }
 
 /**
@@ -3138,11 +3173,11 @@ function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
 
 	if($dimensions)
 	{
-		$dimensions = explode("|", $dimensions);
+		$dimensions = preg_split('/[|x]/', $dimensions);
 
 		if($dimensions[0] && $dimensions[1])
 		{
-			list($max_width, $max_height) = explode('x', $max_dimensions);
+			list($max_width, $max_height) = preg_split('/[|x]/', $max_dimensions);
 
 			if(!empty($max_dimensions) && ($dimensions[0] > $max_width || $dimensions[1] > $max_height))
 			{
@@ -3239,7 +3274,7 @@ function build_mycode_inserter($bind="message", $smilies = true)
 			"editor_invalidyoutube" => "Invalid YouTube video",
 			"editor_dailymotion" => "Dailymotion",
 			"editor_metacafe" => "MetaCafe",
-			"editor_veoh" => "Veoh",
+			"editor_mixer" => "Mixer",
 			"editor_vimeo" => "Vimeo",
 			"editor_youtube" => "Youtube",
 			"editor_facebook" => "Facebook",
@@ -3409,6 +3444,53 @@ function build_mycode_inserter($bind="message", $smilies = true)
 	}
 
 	return $codeinsert;
+}
+
+/**
+ * @param int $tid
+ * @param array $postoptions The options carried with form submit
+ *
+ * @return string Predefined / updated subscription method of the thread for the user
+ */
+function get_subscription_method($tid = 0, $postoptions = array())
+{
+	global $mybb;
+
+	$subscription_methods = array('', 'none', 'email', 'pm'); // Define methods
+	$subscription_method = (int)$mybb->user['subscriptionmethod']; // Set user default
+
+	// If no user default method available then reset method
+	if(!$subscription_method)
+	{
+		$subscription_method = 0;
+	}
+
+	// Return user default if no thread id available, in case
+	if(!(int)$tid || (int)$tid <= 0)
+	{
+		return $subscription_methods[$subscription_method];
+	}
+
+	// If method not predefined set using data from database
+	if(isset($postoptions['subscriptionmethod']))
+	{
+		$method = trim($postoptions['subscriptionmethod']);
+		return (in_array($method, $subscription_methods)) ? $method : $subscription_methods[0];
+	}
+	else
+	{
+		global $db;
+
+		$query = $db->simple_select("threadsubscriptions", "tid, notification", "tid='".(int)$tid."' AND uid='".$mybb->user['uid']."'", array('limit' => 1));
+		$subscription = $db->fetch_array($query);
+
+		if($subscription['tid'])
+		{
+			$subscription_method = (int)$subscription['notification'] + 1;
+		}
+	}
+	
+	return $subscription_methods[$subscription_method];
 }
 
 /**
@@ -4302,11 +4384,9 @@ function build_breadcrumb()
 				eval("\$nav .= \"".$templates->get("nav_bit")."\";");
 			}
 		}
+		$navsize = count($navbits);
+		$navbit = $navbits[$navsize-1];
 	}
-
-	$activesep = '';
-	$navsize = count($navbits);
-	$navbit = $navbits[$navsize-1];
 
 	if($nav)
 	{
@@ -5451,7 +5531,6 @@ function format_bdays($display, $bm, $bd, $by, $wd)
 		$lang->month_12
 	);
 
-
 	// This needs to be in this specific order
 	$find = array(
 		'm',
@@ -6331,92 +6410,101 @@ function get_inactive_forums()
  * @param bool $fatal (Optional) Stop execution if it finds an error with the login. Default is True
  * @return bool|int Number of logins when success, false if failed.
  */
-function login_attempt_check($fatal = true)
+function login_attempt_check($uid = 0, $fatal = true)
 {
-	global $mybb, $lang, $session, $db;
+	global $mybb, $lang, $db;
 
-	if($mybb->settings['failedlogincount'] == 0)
+	$attempts = array();
+	$uid = (int)$uid;
+	$now = TIME_NOW;
+
+	// Get this user's login attempts and eventual lockout, if a uid is provided
+	if($uid > 0)
 	{
-		return 1;
-	}
-	// Note: Number of logins is defaulted to 1, because using 0 seems to clear cookie data. Not really a problem as long as we account for 1 being default.
+		$query = $db->simple_select("users", "loginattempts, loginlockoutexpiry", "uid='{$uid}'", 1);
+		$attempts = $db->fetch_array($query);
 
-	// Use cookie if possible, otherwise use session
-	// Find better solution to prevent clearing cookies
-	$loginattempts = 0;
-	$failedlogin = 0;
-
-	if(!empty($mybb->cookies['loginattempts']))
-	{
-		$loginattempts = $mybb->cookies['loginattempts'];
-	}
-
-	if(!empty($mybb->cookies['failedlogin']))
-	{
-		$failedlogin = $mybb->cookies['failedlogin'];
-	}
-
-	// Work out if the user has had more than the allowed number of login attempts
-	if($loginattempts > $mybb->settings['failedlogincount'])
-	{
-		// If so, then we need to work out if they can try to login again
-		// Some maths to work out how long they have left and display it to them
-		$now = TIME_NOW;
-
-		if(empty($mybb->cookies['failedlogin']))
+		if($attempts['loginattempts'] <= 0)
 		{
-			$failedtime = $now;
+			return 0;
+		}
+	}
+	// This user has a cookie lockout, show waiting time
+	elseif($mybb->cookies['lockoutexpiry'] && $mybb->cookies['lockoutexpiry'] > $now)
+	{	
+		if($fatal)
+		{
+			$secsleft = (int)($mybb->cookies['lockoutexpiry'] - $now);
+			$hoursleft = floor($secsleft / 3600);
+			$minsleft = floor(($secsleft / 60) % 60);
+			$secsleft = floor($secsleft % 60);
+
+			error($lang->sprintf($lang->failed_login_wait, $hoursleft, $minsleft, $secsleft));
+		}
+
+		return false;
+	}
+
+	if($mybb->settings['failedlogincount'] > 0 && $attempts['loginattempts'] >= $mybb->settings['failedlogincount'])
+	{
+		// Set the expiry dateline if not set yet
+		if($attempts['loginlockoutexpiry'] == 0)
+		{
+			$attempts['loginlockoutexpiry'] = $now + ((int)$mybb->settings['failedlogintime'] * 60);
+
+			// Add a cookie lockout. This is used to prevent access to the login page immediately.
+			// A deep lockout is issued if he tries to login into a locked out account
+			my_setcookie('lockoutexpiry', $attempts['loginlockoutexpiry']);
+
+			$db->update_query("users", array(
+				"loginlockoutexpiry" => $attempts['loginlockoutexpiry']
+			), "uid='{$uid}'");
+		}
+
+		if(empty($mybb->cookies['lockoutexpiry']))
+		{
+			$failedtime = $attempts['loginlockoutexpiry'];
 		}
 		else
 		{
-			$failedtime = $mybb->cookies['failedlogin'];
+			$failedtime = $mybb->cookies['lockoutexpiry'];
 		}
 
-		$secondsleft = $mybb->settings['failedlogintime'] * 60 + $failedtime - $now;
-		$hoursleft = floor($secondsleft / 3600);
-		$minsleft = floor(($secondsleft / 60) % 60);
-		$secsleft = floor($secondsleft % 60);
-
-		// This value will be empty the first time the user doesn't login in, set it
-		if(empty($failedlogin))
-		{
-			my_setcookie('failedlogin', $now);
+		// Are we still locked out?
+		if($attempts['loginlockoutexpiry'] > $now)
+		{	
 			if($fatal)
 			{
+				$secsleft = (int)($attempts['loginlockoutexpiry'] - $now);
+				$hoursleft = floor($secsleft / 3600);
+				$minsleft = floor(($secsleft / 60) % 60);
+				$secsleft = floor($secsleft % 60);
+
 				error($lang->sprintf($lang->failed_login_wait, $hoursleft, $minsleft, $secsleft));
 			}
 
 			return false;
 		}
+		// Unlock if enough time has passed
+		else {
 
-		// Work out if the user has waited long enough before letting them login again
-		if($mybb->cookies['failedlogin'] < ($now - $mybb->settings['failedlogintime'] * 60))
-		{
-			my_setcookie('loginattempts', 1);
-			my_unsetcookie('failedlogin');
-			if($mybb->user['uid'] != 0)
+			if($uid > 0)
 			{
-				$update_array = array(
-					'loginattempts' => 1
-				);
-				$db->update_query("users", $update_array, "uid = '{$mybb->user['uid']}'");
-			}
-			return 1;
-		}
-		// Not waited long enough
-		else if($mybb->cookies['failedlogin'] > ($now - $mybb->settings['failedlogintime'] * 60))
-		{
-			if($fatal)
-			{
-				error($lang->sprintf($lang->failed_login_wait, $hoursleft, $minsleft, $secsleft));
+				$db->update_query("users", array(
+					"loginattempts" => 0,
+					"loginlockoutexpiry" => 0
+				), "uid='{$uid}'");
 			}
 
-			return false;
+			// Wipe the cookie, no matter if a guest or a member
+			my_unsetcookie('lockoutexpiry');
+
+			return 0;
 		}
 	}
 
 	// User can attempt another login
-	return $loginattempts;
+	return $attempts['loginattempts'];
 }
 
 /**
@@ -7556,7 +7644,7 @@ function my_rmdir_recursive($path, $ignore=array())
  * @param array $array The array of forums
  * @return integer The number of sub forums
  */
-function subforums_count($array)
+function subforums_count($array=array())
 {
 	$count = 0;
 	foreach($array as $array2)
@@ -7838,7 +7926,6 @@ function get_execution_time()
 
 	$time = microtime(true);
 
-
 	// Just starting timer, init and return
 	if(!$time_start)
 	{
@@ -7908,17 +7995,17 @@ function verify_files($path=MYBB_ROOT, $count=0)
 				{
 					$filename = $path."/".$file;
 					$handle = fopen($filename, "rb");
-					$contents = '';
+					$hashingContext = hash_init('sha512');
 					while(!feof($handle))
 					{
-						$contents .= fread($handle, 8192);
+						hash_update($hashingContext, fread($handle, 8192));
 					}
 					fclose($handle);
 
-					$md5 = md5($contents);
+					$checksum = hash_final($hashingContext);
 
 					// Does it match any of our hashes (unix/windows new lines taken into consideration with the hashes)
-					if(!in_array($md5, $checksums[$file_path]))
+					if(!in_array($checksum, $checksums[$file_path]))
 					{
 						$bad_verify_files[] = array("status" => "changed", "path" => $file_path);
 					}
@@ -8567,7 +8654,6 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 	}
 
 	$pm['options'] = array(
-		"signature" => 0,
 		"disablesmilies" => 0,
 		"savecopy" => 0,
 		"readreceipt" => 0
@@ -8729,6 +8815,7 @@ function my_validate_url($url, $relative_path=false, $allow_local=false)
 /**
  * Strip html tags from string, also removes <script> and <style> contents.
  *
+ * @deprecated
  * @param  string $string         String to stripe
  * @param  string $allowable_tags Allowed html tags
  *
@@ -8783,4 +8870,63 @@ function my_escape_csv($string, $escape_active_content=true)
 	$string = str_replace('"', '""', $string);
 
 	return $string;
+}
+
+// Fallback function for 'array_column', PHP < 5.5.0 compatibility
+if(!function_exists('array_column'))
+{
+	function array_column($input, $column_key)
+	{
+		$values = array();
+ 		if(!is_array($input))
+		{
+			$input = array($input);
+		}
+ 		foreach($input as $val)
+		{
+			if(is_array($val) && isset($val[$column_key]))
+			{
+				$values[] = $val[$column_key];
+			}
+			elseif(is_object($val) && isset($val->$column_key))
+			{
+				$values[] = $val->$column_key;
+			}
+		}
+ 		return $values;
+	}
+}
+
+/**
+ * Performs a timing attack safe string comparison.
+ *
+ * @param string $known_string The first string to be compared.
+ * @param string $user_string The second, user-supplied string to be compared.
+ * @return bool Result of the comparison.
+ */
+function my_hash_equals($known_string, $user_string)
+{
+	if(version_compare(PHP_VERSION, '5.6.0', '>='))
+	{
+		return hash_equals($known_string, $user_string);
+	}
+	else
+	{
+		$known_string_length = my_strlen($known_string);
+		$user_string_length = my_strlen($user_string);
+
+		if($user_string_length != $known_string_length)
+		{
+			return false;
+		}
+
+		$result = 0;
+
+		for($i = 0; $i < $known_string_length; $i++)
+		{
+			$result |= ord($known_string[$i]) ^ ord($user_string[$i]);
+		}
+
+		return $result === 0;
+	}
 }

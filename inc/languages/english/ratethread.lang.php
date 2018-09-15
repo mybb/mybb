@@ -10,6 +10,7 @@ $l['redirect_threadrated'] = "Thank you, the thread has been rated successfully.
 $l['error_invalidrating'] = "You have selected an invalid rating for this thread. Please go back and try again.";
 $l['error_alreadyratedthread'] = "Sorry, but you have already rated this thread.";
 $l['error_cannotrateownthread'] = "Sorry, you cannot rate your own thread.";
+$l['thread_doesnt_exist'] = "You can not rate a thread which does not exist.";
 
 $l['rating_votes_average'] = "{1} Vote(s) - {2} out of 5 in Average";
 $l['one_star'] = "1 star out of 5";

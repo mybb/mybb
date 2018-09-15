@@ -187,12 +187,15 @@ class UserDataHandler extends DataHandler
 		}
 
 		// Has the user tried to use their email address or username as a password?
-		if($user['email'] === $user['password'] || $user['username'] === $user['password']
-			|| strpos($user['password'], $user['email']) !== false || strpos($user['password'], $user['username']) !== false
-			|| strpos($user['email'], $user['password']) !== false || strpos($user['username'], $user['password']) !== false)
+		if(!empty($user['email']) && !empty($user['username']))
 		{
-			$this->set_error('bad_password_security');
-			return false;
+			if($user['email'] === $user['password'] || $user['username'] === $user['password']
+				|| strpos($user['password'], $user['email']) !== false || strpos($user['password'], $user['username']) !== false
+				|| strpos($user['email'], $user['password']) !== false || strpos($user['username'], $user['password']) !== false)
+			{
+				$this->set_error('bad_password_security');
+				return false;
+			}
 		}
 
 		// See if the board has "require complex passwords" enabled.
@@ -378,7 +381,7 @@ class UserDataHandler extends DataHandler
 			$this->set_error("invalid_birthday");
 			return false;
 		}
-		else if($birthday['year'] == date("Y"))
+		elseif($birthday['year'] == date("Y"))
 		{
 			// Error if birth date is in future
 			if($birthday['month'] > date("m") || ($birthday['month'] == date("m") && $birthday['day'] > date("d")))
@@ -683,7 +686,7 @@ class UserDataHandler extends DataHandler
 		{
 			$options['dst'] = 1;
 		}
-		else if($options['dstcorrection'] == 0)
+		elseif($options['dstcorrection'] == 0)
 		{
 			$options['dst'] = 0;
 		}
@@ -831,8 +834,16 @@ class UserDataHandler extends DataHandler
 			$user['away']['awayreason'] = '';
 			return true;
 		}
-		else if($user['away']['returndate'])
+		elseif($user['away']['returndate'])
 		{
+			// Validate the awayreason length, since the db holds 200 chars for this field
+			$reasonlength = my_strlen($user['away']['awayreason']);
+			if($reasonlength > 200)
+			{
+				$this->set_error("away_too_long", array($reasonlength - 200));
+				return false;
+			}
+
 			list($returnday, $returnmonth, $returnyear) = explode('-', $user['away']['returndate']);
 			if(!$returnday || !$returnmonth || !$returnyear)
 			{
@@ -1084,7 +1095,7 @@ class UserDataHandler extends DataHandler
 
 		$user = &$this->data;
 
-		$array = array('postnum', 'threadnum', 'avatar', 'avatartype', 'additionalgroups', 'displaygroup', 'icq', 'aim', 'yahoo', 'skype', 'google', 'bday', 'signature', 'style', 'dateformat', 'timeformat', 'notepad');
+		$array = array('postnum', 'threadnum', 'avatar', 'avatartype', 'additionalgroups', 'displaygroup', 'icq', 'yahoo', 'skype', 'google', 'bday', 'signature', 'style', 'dateformat', 'timeformat', 'notepad');
 		foreach($array as $value)
 		{
 			if(!isset($user[$value]))
@@ -1112,7 +1123,6 @@ class UserDataHandler extends DataHandler
 			"lastvisit" => (int)$user['lastvisit'],
 			"website" => $db->escape_string($user['website']),
 			"icq" => (int)$user['icq'],
-			"aim" => $db->escape_string($user['aim']),
 			"yahoo" => $db->escape_string($user['yahoo']),
 			"skype" => $db->escape_string($user['skype']),
 			"google" => $db->escape_string($user['google']),
@@ -1172,7 +1182,7 @@ class UserDataHandler extends DataHandler
 		{
 			$this->user_insert_data['dst'] = 1;
 		}
-		else if($user['options']['dstcorrection'] == 0)
+		elseif($user['options']['dstcorrection'] == 0)
 		{
 			$this->user_insert_data['dst'] = 0;
 		}
@@ -1272,7 +1282,7 @@ class UserDataHandler extends DataHandler
 		}
 		if(isset($user['email']))
 		{
-			$this->user_update_data['email'] = $user['email'];
+			$this->user_update_data['email'] = $db->escape_string($user['email']);
 		}
 		if(isset($user['postnum']))
 		{
@@ -1326,10 +1336,6 @@ class UserDataHandler extends DataHandler
 		if(isset($user['icq']))
 		{
 			$this->user_update_data['icq'] = (int)$user['icq'];
-		}
-		if(isset($user['aim']))
-		{
-			$this->user_update_data['aim'] = $db->escape_string($user['aim']);
 		}
 		if(isset($user['yahoo']))
 		{
@@ -1744,7 +1750,6 @@ class UserDataHandler extends DataHandler
 			"website" => "",
 			"birthday" => "",
 			"icq" => "",
-			"aim" => "",
 			"yahoo" => "",
 			"skype" => "",
 			"google" => "",
@@ -1823,7 +1828,7 @@ class UserDataHandler extends DataHandler
 
 		if($mybb->settings['sigcountmycode'] == 0)
 		{
-			$parsed_sig = $parser->text_parse_message($this->data['signature']);
+			$parsed_sig = $parser->text_parse_message($this->data['signature'], array('signature_parse' => '1'));
 		}
 		else
 		{
