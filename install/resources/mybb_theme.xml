@@ -4820,6 +4820,9 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
+		<template name="member_no_referrals" version="1820"><![CDATA[<tr>
+	<td class="trow1" colspan="2">{$lang->member_no_referrals}</td>
+</tr>]]></template>
 		<template name="member_profile" version="1807"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->profile}</title>
@@ -5022,9 +5025,9 @@ if(use_xmlhttprequest == "1")
 	<td class="{$bgcolor}"><strong>{$lang->pm}</strong></td>
 	<td class="{$bgcolor}"><a href="private.php?action=send&amp;uid={$memprofile['uid']}">{$lang->send_pm}</a></td>
 </tr>]]></template>
-		<template name="member_profile_referrals" version="1600"><![CDATA[<tr>
-<td class="{$bg_color}"><strong>{$lang->members_referred}</strong></td>
-<td class="{$bg_color}">{$memprofile['referrals']}</td>
+		<template name="member_profile_referrals" version="1820"><![CDATA[<tr>
+	<td class="{$bg_color}"><strong>{$lang->members_referred}</strong></td>
+	<td class="{$bg_color}">{$memprofile['referrals']}</td>
 </tr>]]></template>
 		<template name="member_profile_reputation" version="1600"><![CDATA[<tr>
 	<td class="{$bg_color}"><strong>{$lang->reputation}</strong></td>
@@ -5050,6 +5053,58 @@ if(use_xmlhttprequest == "1")
 	<td class="{$bgcolor}"><strong>{$lang->homepage}</strong></td>
 	<td class="{$bgcolor}"><a href="{$memprofile['website']}" target="_blank" rel="noopener">{$memprofile['website']}</a></td>
 </tr>]]></template>
+		<template name="member_referral_row" version="1820"><![CDATA[	<tr class="{$bg_color}">
+		<td>{$username}</td>
+		<td style="text-align: right;">{$regdate}</td>
+	</tr>]]></template>
+		<template name="member_referrals" version="1820"><![CDATA[<html>
+<head>
+<title>{$mybb->settings['bbname']} - {$lang->nav_referrals}</title>
+{$headerinclude}
+</head>
+<body>
+	{$header}
+	<div class="float_left">
+		{$multipage}
+	</div>
+	<br style="clear: left;" />
+	<br />
+	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+	<tr>
+	<td class="thead" colspan="5"><strong>{$lang->referrals}</strong></td>
+	</tr>
+	<tr>
+	<td class="tcat"><span class="smalltext"><strong>{$lang->username}</strong></span></td>
+	<td style="text-align: right;" class="tcat"><span class="smalltext"><strong>{$lang->referral_date}</strong></span></td>
+	</tr>
+	{$referral_rows}
+	</table>
+	<br />
+	<div class="float_left">
+		{$multipage}
+	</div>
+	{$footer}
+</body>
+</html>]]></template>
+		<template name="member_referrals_link" version="1820"><![CDATA[<a href="{$mybb->settings['bburl']}/member.php?action=referrals&amp;uid={$uid}" id="referrer_{$uid}" class="referralLink">{$referral_count}</a>]]></template>
+		<template name="member_referrals_popup" version="1820"><![CDATA[<div class="modal">
+	<div style="overflow-y: auto; max-height: 400px;" class="referral_modal_{$uid}">
+		<table width="100%" border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+			<tr>
+				<td class="thead" colspan="5"><strong>{$lang->referrals}</strong></td>
+			</tr>
+			<tr>
+				<table width="100%" border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+					<tr>
+						<td class="tcat"><span class="smalltext"><strong>{$lang->username}</strong></span></td>
+						<td style="text-align: right;" class="tcat"><span class="smalltext"><strong>{$lang->referral_date}</strong></span></td>
+					</tr>
+					{$referral_rows}
+				</table>
+			</tr>
+		</table>
+	</div>
+</div>]]></template>
 		<template name="member_register" version="1813"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->registration}</title>

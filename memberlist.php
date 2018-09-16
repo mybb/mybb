@@ -389,6 +389,13 @@ else
 		// Build referral?
 		if($mybb->settings['usereferrals'] == 1)
 		{
+			$referral_count = (int) $user['referrals'];
+			if($referral_count > 0)
+			{
+				$uid = (int) $user['uid'];
+				eval("\$user['referrals'] = \"".$templates->get('member_referrals_link')."\";");
+			}
+
 			eval("\$referral_bit = \"".$templates->get("memberlist_referrals_bit")."\";");
 			eval("\$referrals_option = \"".$templates->get("memberlist_referrals_option")."\";");
 		}

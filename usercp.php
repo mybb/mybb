@@ -4108,6 +4108,14 @@ if(!$mybb->input['action'])
 	if($mybb->settings['usereferrals'] == 1)
 	{
 		$referral_link = $lang->sprintf($lang->referral_link, $settings['bburl'], $mybb->user['uid']);
+
+		$referral_count = (int) $mybb->user['referrals'];
+		if($referral_count > 0)
+		{
+			$uid = (int) $mybb->user['uid'];
+			eval("\$mybb->user['referrals'] = \"".$templates->get('member_referrals_link')."\";");
+		}
+
 		eval("\$referral_info = \"".$templates->get("usercp_referrals")."\";");
 	}
 
