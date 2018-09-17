@@ -3197,7 +3197,7 @@ if($mybb->input['action'] == 'referrals')
 {
 	$plugins->run_hooks('member_referrals_start');
 
-	$uid = $mybb->get_input('uid');
+	$uid = $mybb->get_input('uid', MyBB::INPUT_INT);
 	if(!$uid)
 	{
 		error($lang->referrals_no_user_specified);
