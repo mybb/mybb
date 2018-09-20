@@ -36,7 +36,9 @@
         {# TO DO: POST AVATAR #}
         <p class="thread__latest-post">
             <span class="thread__latest-post__text">{{ lang.posted_by }}</span>
-            <a href="#" title="" class="avatar-profile-link"><img src="{{ asset_url('images/default_avatar.png') }}" class="avatar" alt="" /></a>
+            <a href="#" title="" class="avatar-profile-link">
+                {% include 'partials/default_avatar.twig' %}
+            </a>
             <span class="thread__latest-post__author">
                 {{ post.profilelink|raw }}
             </span>

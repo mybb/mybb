@@ -9,7 +9,14 @@
         </label>
         <div class="user-bar__dropdown">
             {# TO DO : LINK TO PROFILE #}
-            <a href="#" class="avatar-profile-link" title="{{ lang.welcome_my_profile }}"><img src="{% if mybb.user.avatar != '' %}{{ mybb.user.avatar }}{% else %}{{ asset_url('images/default_avatar.png') }}{% endif %}" alt="{{ lang.welcome_my_avatar }}" class="avatar my-avatar"/></a>
+            <a href="#" class="avatar-profile-link" title="{{ lang.welcome_my_profile }}">
+				{% if mybb.user.avatar != '' %}
+					<img src="{{ mybb.user.avatar }}" alt="{{ lang.welcome_my_avatar }}" class="avatar my-avatar"/>
+				{% else %}
+					{% include 'partials/default_avatar.twig' %}
+				{% endif %}
+			</a>
+
 			<p class="user-bar__username">{{ mybb.user.username }}</p>
             <ul class="account-links">
                 {% if mybb.usergroup.canusercp %}

@@ -1,11 +1,12 @@
 <div class="user-list__user">
-    {% if user.avatar %}
-        {# TO DO: USER PROFILE LINK #}
-        <a href="#" class="avatar-profile-link"><img src="{{ user.avatar_image }}" alt="" {{ user.avatar_width_height }} class="avatar" /></a>
-    {% else %}
-        {# TO DO: USER PROFILE LINK #}
-        <a href="#" class="avatar-profile-link"><img src="{{ asset_url('images/default_avatar.png') }}" alt="" class="avatar" /></a>
-    {% endif %}
+    {# TO DO: USER PROFILE LINK #}
+    <a href="#" class="avatar-profile-link">
+        {% if user.avatar %}
+            <img src="{{ user.avatar_image }}" alt="" {{ user.avatar_width_height }} class="avatar" />
+        {% else %}
+            {% include 'partials/default_avatar.twig' %}
+        {% endif %}
+    </a>
     <h2 class="user-list__username">{{ user.profilelink|raw }}</h2>
 	<p class="user-list__user-title">{{ user.usertitle }}</p>
     {# TO DO: USER GROUP IMAGES, STARS #}

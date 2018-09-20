@@ -45,7 +45,13 @@
 	<div class="post__meta">
 		{# Author avatar #}
 		{% if post.showavatar %}
-			<a href="{{ post.profilelink_plain|raw }}" class="avatar-profile-link"><img src="{{ post.useravatar.image }}" alt="" {{ post.useravatar.width_height|raw }} class="avatar" /></a>
+			<a href="{{ post.profilelink_plain|raw }}" class="avatar-profile-link">
+				{% if post.avatar %}
+					<img src="{{ post.useravatar.image }}" alt="" {{ post.useravatar.width_height|raw }} class="avatar" />
+				{% else %}
+					{% include 'partials/default_avatar.twig' %}
+				{% endif %}
+			</a>
 		{% endif %}
 
 		{# Author username #}
