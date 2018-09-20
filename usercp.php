@@ -3038,6 +3038,7 @@ if (!$mybb->input['action']) {
         'groupscache' => $groupscache,
         'reputation_link' => $reputation_link,
         'latestsubscriptions' => $latestsubscriptions,
-        'latestthreads' => $latestthreads
+        'latestthreads' => $latestthreads,
+        'warnings' => $warnings
     ]));
 }
