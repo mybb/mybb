@@ -28,12 +28,12 @@
                     <div class="row__primary">
                         {% if announcement.startdate > 'now'|date('U') or ('now'|date('U') > announcement.enddate and announcement.enddate) %}
                             {% set title = lang.expired_announcement %}
-                            {% set class = 'expired' %}
+                            {% set class = 'subdued' %}
                         {% else %}
                             {% set title = lang.active_announcement %}
-                            {% set class = 'active' %}
+                            {% set class = 'primary' %}
                         {% endif %}
-                        <i class="icon icon--small fas fa-circle" title="{{ title }}"></i>
+                        <i class="icon icon--announcement icon--{{ class }} fas fa-circle" title="{{ title }}"></i>
                         <a href="announcements.php?aid={{ aid }}">{{ announcement.subject }}</a>
                     </div>
                     <div class="row__controls">
