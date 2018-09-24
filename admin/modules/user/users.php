@@ -1229,8 +1229,6 @@ EOF;
 	// ACCOUNT SETTINGS
 	//
 
-	// Plugin hook note - we should add hooks in above each output_row for the below so users can add their own options to each group :>
-
 	echo "<div id=\"tab_settings\">\n";
 	$form_container = new FormContainer($lang->account_settings.': '.htmlspecialchars_uni($user['username']));
 	$login_options = array(
@@ -1254,6 +1252,11 @@ EOF;
 		$form->generate_check_box("buddyrequestsauto", 1, $lang->buddy_requests_auto, array("checked" => $mybb->input['buddyrequestsauto'])),
 		"<label for=\"subscriptionmethod\">{$lang->default_thread_subscription_mode}:</label><br />".$form->generate_select_box("subscriptionmethod", array($lang->do_not_subscribe, $lang->no_notification, $lang->instant_email_notification, $lang->instant_pm_notification), $mybb->input['subscriptionmethod'], array('id' => 'subscriptionmethod'))
 	);
+
+	// Allow plugins to add messaging options
+	$messaging_options = $plugins->run_hooks('admin_user_users_edit_messaging_options', $messaging_options);
+
+	// Output messaging options
 	$form_container->output_row($lang->messaging_and_notification, "", "<div class=\"user_settings_bit\">".implode("</div><div class=\"user_settings_bit\">", $messaging_options)."</div>");
 
 	$date_format_options = array($lang->use_default);
@@ -1274,6 +1277,11 @@ EOF;
 		"<label for=\"timezone\">{$lang->time_zone}:</label><br />".build_timezone_select("timezone", $mybb->input['timezone']),
 		"<label for=\"dstcorrection\">{$lang->daylight_savings_time_correction}:</label><br />".$form->generate_select_box("dstcorrection", array(2 => $lang->automatically_detect, 1 => $lang->always_use_dst_correction, 0 => $lang->never_use_dst_correction), $mybb->input['dstcorrection'], array('id' => 'dstcorrection'))
 	);
+
+	// Allow plugins to add date options
+	$date_options = $plugins->run_hooks('admin_user_users_edit_date_options', $date_options);
+
+	// Output date options
 	$form_container->output_row($lang->date_and_time_options, "", "<div class=\"user_settings_bit\">".implode("</div><div class=\"user_settings_bit\">", $date_options)."</div>");
 
 
@@ -1308,6 +1316,11 @@ EOF;
 		"<label for=\"tpp\">{$lang->threads_per_page}:</label><br />".$form->generate_select_box("tpp", $tpp_options, $mybb->input['tpp'], array('id' => 'tpp')),
 		"<label for=\"daysprune\">{$lang->default_thread_age_view}:</label><br />".$form->generate_select_box("daysprune", $thread_age_options, $mybb->input['daysprune'], array('id' => 'daysprune'))
 	);
+
+	// Allow plugins to add forum options
+	$forum_options = $plugins->run_hooks('admin_user_users_edit_forum_options', $forum_options);
+
+	// Output forum options
 	$form_container->output_row($lang->forum_display_options, "", "<div class=\"user_settings_bit\">".implode("</div><div class=\"user_settings_bit\">", $forum_options)."</div>");
 
 	$ppp_options = array($lang->use_default);
@@ -1334,6 +1347,11 @@ EOF;
 		"<label for=\"ppp\">{$lang->posts_per_page}:</label><br />".$form->generate_select_box("ppp", $ppp_options, $mybb->input['ppp'], array('id' => 'ppp')),
 		"<label for=\"threadmode\">{$lang->default_thread_view_mode}:</label><br />".$form->generate_select_box("threadmode", array("" => $lang->use_default, "linear" => $lang->linear_mode, "threaded" => $lang->threaded_mode), $mybb->input['threadmode'], array('id' => 'threadmode'))
 	);
+
+	// Allow plugins to add thread options
+	$thread_options = $plugins->run_hooks('admin_user_users_edit_thread_options', $thread_options);
+
+	// Output thread options
 	$form_container->output_row($lang->thread_view_options, "", "<div class=\"user_settings_bit\">".implode("</div><div class=\"user_settings_bit\">", $thread_options)."</div>");
 
 	$languages = array_merge(array('' => $lang->use_default), $lang->get_languages());
@@ -1345,6 +1363,11 @@ EOF;
 		"<label for=\"style\">{$lang->theme}:</label><br />".build_theme_select("style", $mybb->input['style'], 0, "", true, false, true),
 		"<label for=\"language\">{$lang->board_language}:</label><br />".$form->generate_select_box("language", $languages, $mybb->input['language'], array('id' => 'language'))
 	);
+
+	// Allow plugins to add other options
+	$other_options = $plugins->run_hooks('admin_user_users_edit_other_options', $other_options);
+
+	// Output other options
 	$form_container->output_row($lang->other_options, "", "<div class=\"user_settings_bit\">".implode("</div><div class=\"user_settings_bit\">", $other_options)."</div>");
 
 	$form_container->end();
@@ -3974,7 +3997,7 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 					$user_options = $values[$field_name];
 				}
 
-				
+
 				foreach($user_options as $val)
 				{
 					$selected_options[$val] = htmlspecialchars_uni($val);
@@ -4048,13 +4071,13 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 				{
 					$user_options = $values[$field_name];
 				}
-				
+
 				$selected_options = array();
 				foreach($user_options as $val)
 				{
 					$selected_options[$val] = $val;
 				}
-				
+
 				if($search == true)
 				{
 					$select_options[''] = $lang->na;
