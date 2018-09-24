@@ -5509,7 +5509,7 @@ if(use_xmlhttprequest == "1")
 </table>
 </fieldset>]]></template>
 		<template name="member_register_stylebit" version="120"><![CDATA[<option value="{$style['sid']}">{$style['name']}</option>]]></template>
-		<template name="member_resendactivation" version="1819"><![CDATA[<html>
+		<template name="member_resendactivation" version="1820"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->resend_activation}</title>
 {$headerinclude}
