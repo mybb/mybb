@@ -1499,7 +1499,9 @@ if($mybb->input['action'] == "resendactivation")
 
 	$plugins->run_hooks("member_resendactivation_end");
 
-	output_page(\MyBB\template('member/resendactivation.twig'));
+	output_page(\MyBB\template('member/resendactivation.twig', [
+		'email' => $email,
+    ]));
 }
 
 if($mybb->input['action'] == "do_resendactivation" && $mybb->request_method == "post")
