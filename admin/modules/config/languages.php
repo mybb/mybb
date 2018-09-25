@@ -749,7 +749,7 @@ if($mybb->input['action'] == "edit")
 				unset($l);
 
 				$icon_issues = "<span class='langeditor_ok' title='".$lang->issues_ok."'></span>";
-				if(count($editvars_right >0))
+				if(count($editvars_right) >0)
 				{
 					$icon_issues = "<span class='langeditor_nothingtocompare' title='".$lang->issues_nothingtocompare."'></span>";
 				}
@@ -904,7 +904,7 @@ if($mybb->input['action'] == "edit")
 					unset($l);
 
 					$icon_issues = "<span class='langeditor_ok' title='".$lang->issues_ok."'></span>";
-					if(count($editvars_right >0))
+					if(count($editvars_right) >0)
 					{
 						$icon_issues = "<span class='langeditor_nothingtocompare' title='".$lang->issues_nothingtocompare."'></span>";
 					}
