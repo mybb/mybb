@@ -969,10 +969,6 @@ function perform_search_mysql($search)
 	global $mybb, $db, $lang, $cache;
 
 	$keywords = clean_keywords($search['keywords']);
-	if(!$keywords && !$search['author'])
-	{
-		error($lang->error_nosearchterms);
-	}
 
 	if($mybb->settings['minsearchword'] < 1)
 	{
@@ -1397,12 +1393,6 @@ function perform_search_mysql($search)
 function perform_search_mysql_ft($search)
 {
 	global $mybb, $db, $lang;
-
-	$keywords = clean_keywords_ft($search['keywords']);
-	if(!$keywords && !$search['author'])
-	{
-		error($lang->error_nosearchterms);
-	}
 
 	// Attempt to determine minimum word length from MySQL for fulltext searches
 	$query = $db->query("SHOW VARIABLES LIKE 'ft_min_word_len';");
