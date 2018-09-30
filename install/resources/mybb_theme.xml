@@ -10937,7 +10937,7 @@ document.write('<br /><span class="smalltext"><a href="javascript:void(0)" oncli
 			<a href="javascript:void(0)" onclick="Report.reportReputation({$reputation_vote['rid']}); return false;" class="postbit_report"><span>{$lang->report_vote}</span></a>
 		</div>]]>
 		</template>
-		<template name="search" version="1807"><![CDATA[<html>
+		<template name="search" version="1820"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->search}</title>
 {$headerinclude}
@@ -11003,6 +11003,8 @@ document.write('<br /><span class="smalltext"><a href="javascript:void(0)" oncli
 <option value="lastpost">{$lang->sort_lastpost}</option>
 <option value="starter">{$lang->sort_author}</option>
 <option value="forum">{$lang->sort_forum}</option>
+<option value="views">{$lang->sort_views}</option>
+<option value="replies">{$lang->sort_replies}</option>
 </select> {$lang->sort_in} <input type="radio" class="radio" name="sortordr" value="asc" />{$lang->sort_asc} <input type="radio" class="radio" name="sortordr" value="desc" checked="checked" />{$lang->sort_desc} {$lang->sort_order}
 </td>
 </tr>
