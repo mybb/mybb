@@ -1,5 +1,4 @@
 {% set class %}{{ thread.bgcolor }} forumdisplay_{% if thread.sticky %}sticky{% else %}regular{% endif %}{% endset %}
-{% set moved = (thread.moved[0] == 'moved') %}
 <tr class="inline_row">
     <td align="center" class="{{ class }}" width="2%"><span class="thread_status {{ thread.folder.value }}" title="{{ thread.folder.label }}">&nbsp;</span></td>
     <td align="center" class="{{ class }}" width="2%">
@@ -17,10 +16,10 @@
             <span>
                 {% if thread.poll %}
                     {{ lang.poll_prefix }}
-                {% elseif moved %}
+                {% elseif thread.moved %}
                     {{ lang.moved_prefix }}
                 {% endif %}
-                {% if thread.unreadpost and moved != true %}
+                {% if thread.unreadpost and thread.moved = 0 %}
                     <a href="{{ thread.newpostlink }}"><img src="{{ theme.imgdir }}/jump.png" alt="{{ lang.goto_first_unread }}" title="{{ lang.goto_first_unread }}" /></a> 
                 {% endif %}
                 {% if thread.threadprefix %}{{ thread.threadprefix }} {% endif %}
@@ -42,7 +41,7 @@
         </div>
     </td>
     <td align="center" class="{{ class }}">
-        {% if moved %}
+        {% if thread.moved %}
             -
         {% else %}
             <a href="{{ mybb.settings.bburl }}/misc.php?action=whoposted&tid={{ thread.tid }}" onclick="MyBB.whoPosted({{ thread.tid }}); return false;">{{ thread.replies }}</a>
@@ -54,7 +53,7 @@
         {% endif %}
     </td>
     <td align="center" class="{{ class }}">
-        {% if moved %}
+        {% if thread.moved %}
             -
         {% else %}
             {{ thread.views }}

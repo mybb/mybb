@@ -20,7 +20,7 @@ $upgrade_detail = array(
 
 @set_time_limit(0);
 
-function upgrade44_dbchanges()
+function upgrade48_dbchanges()
 {
 	global $db, $output;
 
@@ -48,10 +48,10 @@ function upgrade44_dbchanges()
 	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("44_dbchanges2");
+	$output->print_footer("48_dbchanges2");
 }
 
-function upgrade44_dbchanges2()
+function upgrade48_dbchanges2()
 {
 	global $db, $output;
 
@@ -77,10 +77,10 @@ function upgrade44_dbchanges2()
 	}
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("44_dbchanges3");
+	$output->print_footer("48_dbchanges3");
 }
 
-function upgrade44_dbchanges3()
+function upgrade48_dbchanges3()
 {
 	global $db, $output;
 
@@ -100,5 +100,5 @@ function upgrade44_dbchanges3()
 	}
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("44_done");
+	$output->print_footer("48_done");
 }

@@ -540,72 +540,8 @@ if ($mybb->settings['allowthreadratings'] != 0 && $foruminfo['allowtratings'] !=
     $colspan = 6;
 }
 
-<<<<<<< HEAD
-$tids = $threadcache = array();
-$icon_cache = $cache->read("posticons");
-
-if($fpermissions['canviewthreads'] != 0)
-{
-	$plugins->run_hooks("forumdisplay_get_threads");
-
-	// Start Getting Threads
-	$query = $db->query("
-		SELECT t.*, {$ratingadd}t.username AS threadusername, u.username
-		FROM ".TABLE_PREFIX."threads t
-		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
-		WHERE t.fid='$fid' $tuseronly $tvisibleonly $datecutsql2 $prefixsql2
-		ORDER BY t.sticky DESC, {$t}{$sortfield} $sortordernow $sortfield2
-		LIMIT $start, $perpage
-	");
-
-	$ratings = false;
-	$moved_threads = array();
-	while($thread = $db->fetch_array($query))
-	{
-		$threadcache[$thread['tid']] = $thread;
-
-		if($thread['numratings'] > 0 && $ratings == false)
-		{
-			$ratings = true; // Looks for ratings in the forum
-		}
-
-		// If this is a moved thread - set the tid for participation marking and thread read marking to that of the moved thread
-		if($thread['moved'] != 0)
-		{
-			$tid = $thread['moved'];
-			if(!isset($tids[$tid]))
-			{
-				$moved_threads[$tid] = $thread['tid'];
-				$tids[$thread['tid']] = $tid;
-			}
-		}
-		// Otherwise - set it to the plain thread ID
-		else
-		{
-			$tids[$thread['tid']] = $thread['tid'];
-			if(isset($moved_threads[$thread['tid']]))
-			{
-				unset($moved_threads[$thread['tid']]);
-			}
-		}
-	}
-
-	if($mybb->settings['allowthreadratings'] != 0 && $foruminfo['allowtratings'] != 0 && $mybb->user['uid'] && !empty($threadcache) && $ratings == true)
-	{
-		// Check if we've rated threads on this page
-		// Guests get the pleasure of not being ID'd, but will be checked when they try and rate
-		$imp = implode(",", array_keys($threadcache));
-		$query = $db->simple_select("threadratings", "tid, uid", "tid IN ({$imp}) AND uid = '{$mybb->user['uid']}'");
-
-		while($rating = $db->fetch_array($query))
-		{
-			$threadcache[$rating['tid']]['rated'] = 1;
-		}
-	}
-=======
 if ($modpermissions['ismod']) {
     ++$colspan;
->>>>>>> upstream/develop/1.9
 }
 
 // Get Announcements
@@ -700,8 +636,8 @@ if ($fpermissions['canviewthreads'] != 0) {
         $icon_cache[$thread['icon']]['path'] = str_replace('{theme}', $theme['imgdir'], $icon_cache[$thread['icon']]['path']);
 
         // If this is a moved thread - set the tid for participation marking and thread read marking to that of the moved thread
-        if (substr($thread['closed'], 0, 5) == "moved") {
-            $tid = substr($thread['closed'], 6);
+        if ($thread['moved'] != 0) {
+            $tid = $thread['moved'];
             if (!isset($tids[$tid])) {
                 $moved_threads[$tid] = $thread['tid'];
                 $tids[$thread['tid']] = $tid;
@@ -746,504 +682,6 @@ if ($mybb->settings['dotfolders'] != 0 && $mybb->user['uid'] && !empty($threadCa
 }
 
 // Read threads
-<<<<<<< HEAD
-if($mybb->user['uid'] && $mybb->settings['threadreadcut'] > 0 && !empty($threadcache))
-{
-	$query = $db->simple_select("threadsread", "*", "uid='{$mybb->user['uid']}' AND tid IN ({$tids})");
-	while($readthread = $db->fetch_array($query))
-	{
-		if(!empty($moved_threads[$readthread['tid']]))
-		{
-	 		$readthread['tid'] = $moved_threads[$readthread['tid']];
-	 	}
-		if($threadcache[$readthread['tid']])
-		{
-	 		$threadcache[$readthread['tid']]['lastread'] = $readthread['dateline'];
-		}
-	}
-}
-
-if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'])
-{
-	$query = $db->simple_select("forumsread", "dateline", "fid='{$fid}' AND uid='{$mybb->user['uid']}'");
-	$forum_read = $db->fetch_field($query, "dateline");
-
-	$read_cutoff = TIME_NOW-$mybb->settings['threadreadcut']*60*60*24;
-	if($forum_read == 0 || $forum_read < $read_cutoff)
-	{
-		$forum_read = $read_cutoff;
-	}
-}
-else
-{
-	$forum_read = my_get_array_cookie("forumread", $fid);
-
-	if(isset($mybb->cookies['mybb']['readallforums']) && !$forum_read)
-	{
-		$forum_read = $mybb->cookies['mybb']['lastvisit'];
-	}
-}
-
-$unreadpost = 0;
-$threads = '';
-if(!empty($threadcache) && is_array($threadcache))
-{
-	if(!$mybb->settings['maxmultipagelinks'])
-	{
-		$mybb->settings['maxmultipagelinks'] = 5;
-	}
-
-	if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
-	{
-		$mybb->settings['postsperpage'] = 20;
-	}
-
-	foreach($threadcache as $thread)
-	{
-		$plugins->run_hooks("forumdisplay_thread");
-
-		if($thread['visible'] == 0)
-		{
-			$bgcolor = "trow_shaded";
-		}
-		elseif($thread['visible'] == -1 && is_moderator($fid, "canviewdeleted"))
-		{
-			$bgcolor = "trow_shaded trow_deleted";
-		}
-		else
-		{
-			$bgcolor = alt_trow();
-		}
-
-		if($thread['sticky'] == 1)
-		{
-			$thread_type_class = " forumdisplay_sticky";
-		}
-		else
-		{
-			$thread_type_class = " forumdisplay_regular";
-		}
-
-		$folder = '';
-		$prefix = '';
-
-		$thread['author'] = $thread['uid'];
-		if(!$thread['username'])
-		{
-			if(!$thread['threadusername'])
-			{
-				$thread['username'] = $thread['profilelink'] = htmlspecialchars_uni($lang->guest);
-			}
-			else
-			{
-				$thread['username'] = $thread['profilelink'] = htmlspecialchars_uni($thread['threadusername']);
-			}
-		}
-		else
-		{
-			$thread['username'] = htmlspecialchars_uni($thread['username']);
-			$thread['profilelink'] = build_profile_link($thread['username'], $thread['uid']);
-		}
-
-		// If this thread has a prefix, insert a space between prefix and subject
-		$thread['threadprefix'] = $threadprefix = '';
-		if($thread['prefix'] != 0)
-		{
-			$threadprefix = build_prefixes($thread['prefix']);
-			if(!empty($threadprefix))
-			{
-				$thread['threadprefix'] = $threadprefix['displaystyle'].'&nbsp;';
-			}
-		}
-
-		$thread['subject'] = $parser->parse_badwords($thread['subject']);
-		$thread['subject'] = htmlspecialchars_uni($thread['subject']);
-
-		if($thread['icon'] > 0 && $icon_cache[$thread['icon']])
-		{
-			$icon = $icon_cache[$thread['icon']];
-			$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
-			$icon['path'] = htmlspecialchars_uni($icon['path']);
-			$icon['name'] = htmlspecialchars_uni($icon['name']);
-			eval("\$icon = \"".$templates->get("forumdisplay_thread_icon")."\";");
-		}
-		else
-		{
-			$icon = "&nbsp;";
-		}
-
-		$prefix = '';
-		if($thread['poll'])
-		{
-			$prefix = $lang->poll_prefix;
-		}
-
-		if($thread['sticky'] == "1" && !isset($donestickysep))
-		{
-			eval("\$threads .= \"".$templates->get("forumdisplay_sticky_sep")."\";");
-			$shownormalsep = true;
-			$donestickysep = true;
-		}
-		else if($thread['sticky'] == 0 && !empty($shownormalsep))
-		{
-			eval("\$threads .= \"".$templates->get("forumdisplay_threads_sep")."\";");
-			$shownormalsep = false;
-		}
-
-		$rating = '';
-		if($mybb->settings['allowthreadratings'] != 0 && $foruminfo['allowtratings'] != 0)
-		{
-			if($thread['moved'] != 0 || ($fpermissions['canviewdeletionnotice'] != 0 && $thread['visible'] == -1))
-			{
-				eval("\$rating = \"".$templates->get("forumdisplay_thread_rating_moved")."\";");
-			}
-			else
-			{
-				$thread['averagerating'] = (float)round($thread['averagerating'], 2);
-				$thread['width'] = (int)round($thread['averagerating'])*20;
-				$thread['numratings'] = (int)$thread['numratings'];
-
-				$not_rated = '';
-				if(!isset($thread['rated']) || empty($thread['rated']))
-				{
-					$not_rated = ' star_rating_notrated';
-				}
-
-				$ratingvotesav = $lang->sprintf($lang->rating_votes_average, $thread['numratings'], $thread['averagerating']);
-				eval("\$rating = \"".$templates->get("forumdisplay_thread_rating")."\";");
-			}
-		}
-
-		$thread['pages'] = 0;
-		$thread['multipage'] = '';
-		$threadpages = '';
-		$morelink = '';
-		$thread['posts'] = $thread['replies'] + 1;
-		if(is_moderator($fid, "canviewdeleted") == true || is_moderator($fid, "canviewunapprove") == true)
-		{
-			if(is_moderator($fid, "canviewdeleted") == true)
-			{
-				$thread['posts'] += $thread['deletedposts'];
-			}
-			if(is_moderator($fid, "canviewunapprove") == true)
-			{
-				$thread['posts'] += $thread['unapprovedposts'];
-			}
-		}
-		elseif($fpermissions['canviewdeletionnotice'] != 0)
-		{
-			$thread['posts'] += $thread['deletedposts'];
-		}
-
-		if($thread['posts'] > $mybb->settings['postsperpage'])
-		{
-			$thread['pages'] = $thread['posts'] / $mybb->settings['postsperpage'];
-			$thread['pages'] = ceil($thread['pages']);
-
-			if($thread['pages'] > $mybb->settings['maxmultipagelinks'])
-			{
-				$pagesstop = $mybb->settings['maxmultipagelinks'] - 1;
-				$page_link = get_thread_link($thread['tid'], $thread['pages']);
-				eval("\$morelink = \"".$templates->get("forumdisplay_thread_multipage_more")."\";");
-			}
-			else
-			{
-				$pagesstop = $thread['pages'];
-			}
-
-			for($i = 1; $i <= $pagesstop; ++$i)
-			{
-				$page_link = get_thread_link($thread['tid'], $i);
-				eval("\$threadpages .= \"".$templates->get("forumdisplay_thread_multipage_page")."\";");
-			}
-
-			eval("\$thread['multipage'] = \"".$templates->get("forumdisplay_thread_multipage")."\";");
-		}
-		else
-		{
-			$threadpages = '';
-			$morelink = '';
-			$thread['multipage'] = '';
-		}
-
-		if($ismod)
-		{
-			if(isset($mybb->cookies[$inlinecookie]) && my_strpos($mybb->cookies[$inlinecookie], "|{$thread['tid']}|") !== false)
-			{
-				$inlinecheck = "checked=\"checked\"";
-				++$inlinecount;
-			}
-			else
-			{
-				$inlinecheck = '';
-			}
-
-			$multitid = $thread['tid'];
-			eval("\$modbit = \"".$templates->get("forumdisplay_thread_modbit")."\";");
-		}
-		else
-		{
-			$modbit = '';
-		}
-
-		if($thread['moved'] != 0)
-		{
-			$prefix = $lang->moved_prefix;
-			$thread['tid'] = $thread['moved'];
-			$thread['replies'] = "-";
-			$thread['views'] = "-";
-		}
-
-		$thread['threadlink'] = get_thread_link($thread['tid']);
-		$thread['lastpostlink'] = get_thread_link($thread['tid'], 0, "lastpost");
-
-		// Determine the folder
-		$folder = '';
-		$folder_label = '';
-
-		if(isset($thread['doticon']))
-		{
-			$folder = "dot_";
-			$folder_label .= $lang->icon_dot;
-		}
-
-		$gotounread = '';
-		$isnew = 0;
-		$donenew = 0;
-
-		if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'] && $thread['lastpost'] > $forum_read)
-		{
-			if(!empty($thread['lastread']))
-			{
-				$last_read = $thread['lastread'];
-			}
-			else
-			{
-				$last_read = $read_cutoff;
-			}
-		}
-		else
-		{
-			$last_read = my_get_array_cookie("threadread", $thread['tid']);
-		}
-
-		if($forum_read > $last_read)
-		{
-			$last_read = $forum_read;
-		}
-
-		if($thread['lastpost'] > $last_read && $thread['moved'] == 0)
-		{
-			$folder .= "new";
-			$folder_label .= $lang->icon_new;
-			$new_class = "subject_new";
-			$thread['newpostlink'] = get_thread_link($thread['tid'], 0, "newpost");
-			eval("\$gotounread = \"".$templates->get("forumdisplay_thread_gotounread")."\";");
-			$unreadpost = 1;
-		}
-		else
-		{
-			$folder_label .= $lang->icon_no_new;
-			$new_class = "subject_old";
-		}
-
-		if($thread['replies'] >= $mybb->settings['hottopic'] || $thread['views'] >= $mybb->settings['hottopicviews'])
-		{
-			$folder .= "hot";
-			$folder_label .= $lang->icon_hot;
-		}
-
-		if($thread['closed'] == 1)
-		{
-			$folder .= "lock";
-			$folder_label .= $lang->icon_lock;
-		}
-
-		if($thread['moved'] != 0)
-		{
-			$folder = "move";
-			$gotounread = '';
-		}
-
-		$folder .= "folder";
-
-		$inline_edit_tid = $thread['tid'];
-
-		// If this user is the author of the thread and it is not closed or they are a moderator, they can edit
-		$inline_edit_class = '';
-		if(($thread['uid'] == $mybb->user['uid'] && $thread['closed'] != 1 && $mybb->user['uid'] != 0 && $can_edit_titles == 1) || $ismod == true)
-		{
-			$inline_edit_class = "subject_editable";
-		}
-
-
-		$lastposteruid = $thread['lastposteruid'];
-		if(!$lastposteruid && !$thread['lastposter'])
-		{
-			$lastposter = htmlspecialchars_uni($lang->guest);
-		}
-		else
-		{
-			$lastposter = htmlspecialchars_uni($thread['lastposter']);
-		}
-		$lastpostdate = my_date('relative', $thread['lastpost']);
-
-		// Don't link to guest's profiles (they have no profile).
-		if($lastposteruid == 0)
-		{
-			$lastposterlink = $lastposter;
-		}
-		else
-		{
-			$lastposterlink = build_profile_link($lastposter, $lastposteruid);
-		}
-
-		$thread['replies'] = my_number_format($thread['replies']);
-		$thread['views'] = my_number_format($thread['views']);
-
-		// Threads and posts requiring moderation
-		if($thread['unapprovedposts'] > 0 && is_moderator($fid, "canviewunapprove"))
-		{
-			if($thread['unapprovedposts'] > 1)
-			{
-				$unapproved_posts_count = $lang->sprintf($lang->thread_unapproved_posts_count, $thread['unapprovedposts']);
-			}
-			else
-			{
-				$unapproved_posts_count = $lang->sprintf($lang->thread_unapproved_post_count, 1);
-			}
-
-			$thread['unapprovedposts'] = my_number_format($thread['unapprovedposts']);
-			eval("\$unapproved_posts = \"".$templates->get("forumdisplay_thread_unapproved_posts")."\";");
-		}
-		else
-		{
-			$unapproved_posts = '';
-		}
-
-		// If this thread has 1 or more attachments show the papperclip
-		if($mybb->settings['enableattachments'] == 1 && $thread['attachmentcount'] > 0)
-		{
-			if($thread['attachmentcount'] > 1)
-			{
-				$attachment_count = $lang->sprintf($lang->attachment_count_multiple, $thread['attachmentcount']);
-			}
-			else
-			{
-				$attachment_count = $lang->attachment_count;
-			}
-
-			eval("\$attachment_count = \"".$templates->get("forumdisplay_thread_attachment_count")."\";");
-		}
-		else
-		{
-			$attachment_count = '';
-		}
-
-		$plugins->run_hooks("forumdisplay_thread_end");
-
-		if($fpermissions['canviewdeletionnotice'] != 0 && $thread['visible'] == -1 && !is_moderator($fid, "canviewdeleted"))
-		{
-			eval("\$threads .= \"".$templates->get("forumdisplay_thread_deleted")."\";");
-		}
-		else
-		{
-			eval("\$threads .= \"".$templates->get("forumdisplay_thread")."\";");
-		}
-	}
-
-	$customthreadtools = $standardthreadtools = '';
-	if($ismod)
-	{
-		if(is_moderator($fid, "canusecustomtools") && $has_modtools == true)
-		{
-			$gids = explode(',', $mybb->user['additionalgroups']);
-			$gids[] = $mybb->user['usergroup'];
-			$gids = array_filter(array_unique($gids));
-
-			$gidswhere = '';
-			switch($db->type)
-			{
-				case "pgsql":
-				case "sqlite":
-					foreach($gids as $gid)
-					{
-						$gid = (int)$gid;
-						$gidswhere .= " OR ','||groups||',' LIKE '%,{$gid},%'";
-					}
-					$query = $db->simple_select("modtools", 'tid, name', "(','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%' OR forums='') AND (groups='' OR ','||groups||',' LIKE '%,-1,%'{$gidswhere}) AND type = 't'");
-					break;
-				default:
-					foreach($gids as $gid)
-					{
-						$gid = (int)$gid;
-						$gidswhere .= " OR CONCAT(',',groups,',') LIKE '%,{$gid},%'";
-					}
-					$query = $db->simple_select("modtools", 'tid, name', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='') AND (groups='' OR CONCAT(',',groups,',') LIKE '%,-1,%'{$gidswhere}) AND type = 't'");
-					break;
-			}
-
-			while($tool = $db->fetch_array($query))
-			{
-				$tool['name'] = htmlspecialchars_uni($tool['name']);
-				eval("\$customthreadtools .= \"".$templates->get("forumdisplay_inlinemoderation_custom_tool")."\";");
-			}
-
-			if($customthreadtools)
-			{
-				eval("\$customthreadtools = \"".$templates->get("forumdisplay_inlinemoderation_custom")."\";");
-			}
-		}
-
-		$inlinemodopenclose = $inlinemodstickunstick = $inlinemodsoftdelete = $inlinemodrestore = $inlinemoddelete = $inlinemodmanage = $inlinemodapproveunapprove = '';
-
-		if(is_moderator($fid, "canopenclosethreads"))
-		{
-			eval("\$inlinemodopenclose = \"".$templates->get("forumdisplay_inlinemoderation_openclose")."\";");
-		}
-
-		if(is_moderator($fid, "canstickunstickthreads"))
-		{
-			eval("\$inlinemodstickunstick = \"".$templates->get("forumdisplay_inlinemoderation_stickunstick")."\";");
-		}
-
-		if(is_moderator($fid, "cansoftdeletethreads"))
-		{
-			eval("\$inlinemodsoftdelete = \"".$templates->get("forumdisplay_inlinemoderation_softdelete")."\";");
-		}
-
-		if(is_moderator($fid, "canrestorethreads"))
-		{
-			eval("\$inlinemodrestore = \"".$templates->get("forumdisplay_inlinemoderation_restore")."\";");
-		}
-
-		if(is_moderator($fid, "candeletethreads"))
-		{
-			eval("\$inlinemoddelete = \"".$templates->get("forumdisplay_inlinemoderation_delete")."\";");
-		}
-
-		if(is_moderator($fid, "canmanagethreads"))
-		{
-			eval("\$inlinemodmanage = \"".$templates->get("forumdisplay_inlinemoderation_manage")."\";");
-		}
-
-		if(is_moderator($fid, "canapproveunapprovethreads"))
-		{
-			eval("\$inlinemodapproveunapprove = \"".$templates->get("forumdisplay_inlinemoderation_approveunapprove")."\";");
-		}
-
-		if(!empty($inlinemodopenclose) || !empty($inlinemodstickunstick) || !empty($inlinemodsoftdelete) || !empty($inlinemodrestore) || !empty($inlinemoddelete) || !empty($inlinemodmanage) || !empty($inlinemodapproveunapprove))
-		{
-			eval("\$standardthreadtools = \"".$templates->get("forumdisplay_inlinemoderation_standard")."\";");
-		}
-
-		// Only show inline mod menu if there's options to show
-		if(!empty($standardthreadtools) || !empty($customthreadtools))
-		{
-			eval("\$inlinemod = \"".$templates->get("forumdisplay_inlinemoderation")."\";");
-		}
-	}
-=======
 if ($mybb->user['uid'] && $mybb->settings['threadreadcut'] > 0 && !empty($threadCache)) {
     $query = $db->simple_select("threadsread", "*", "uid='{$mybb->user['uid']}' AND tid IN ({$tids})");
     while ($readthread = $db->fetch_array($query)) {
@@ -1284,8 +722,6 @@ if (!empty($threadCache) && is_array($threadCache)) {
     foreach ($threadCache as $k => $thread) {
         $plugins->run_hooks('forumdisplay_thread');
 
-        $thread['moved'] = explode("|", $thread['closed']);
-
         if ($thread['visible'] == 0) {
             $thread['bgcolor'] = "trow_shaded";
         } elseif ($thread['visible'] == -1 && $modpermissions["canviewdeleted"]) {
@@ -1317,7 +753,7 @@ if (!empty($threadCache) && is_array($threadCache)) {
         $thread['subject'] = $parser->parse_badwords($thread['subject']);
 
         if ($mybb->settings['allowthreadratings'] != 0 && $foruminfo['allowtratings'] != 0) {
-            if ($thread['moved'][0] == "moved" || ($fpermissions['canviewdeletionnotice'] != 0 && $thread['visible'] == -1)) {
+            if ($thread['moved'] != 0 || ($fpermissions['canviewdeletionnotice'] != 0 && $thread['visible'] == -1)) {
                 $thread['rating'] = 'moved';
             } else {
                 $thread['averagerating'] = (float)round($thread['averagerating'], 2);
@@ -1351,8 +787,8 @@ if (!empty($threadCache) && is_array($threadCache)) {
             ++$inlinecount;
         }
 
-        if ($thread['moved'][0] == "moved") {
-            $thread['tid'] = $thread['moved'][1];
+        if ($thread['moved'] != 0) {
+            $thread['tid'] = $thread['moved'];
         }
 
         $thread['threadlink'] = get_thread_link($thread['tid']);
@@ -1379,7 +815,7 @@ if (!empty($threadCache) && is_array($threadCache)) {
             $last_read = $forum_read;
         }
 
-        if ($thread['lastpost'] > $last_read && $thread['moved'][0] != "moved") {
+        if ($thread['lastpost'] > $last_read && $thread['moved'] == 0) {
             $thread['unreadpost'] = true;
             $thread['folder']['value'] .= "new";
             $thread['folder']['label'] .= $lang->icon_new;
@@ -1400,7 +836,7 @@ if (!empty($threadCache) && is_array($threadCache)) {
             $thread['folder']['label'] .= $lang->icon_lock;
         }
 
-        if ($thread['moved'][0] == "moved") {
+        if ($thread['moved'] != 0) {
             $thread['folder']['value'] = "move";
         }
 
@@ -1458,7 +894,6 @@ if (!empty($threadCache) && is_array($threadCache)) {
             $customTools[] = $tool;
         }
     }
->>>>>>> upstream/develop/1.9
 }
 
 // If there are no unread threads in this forum and no unread child forums - mark it as read
