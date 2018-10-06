@@ -38,6 +38,18 @@ class CoreExtension extends \Twig_Extension
         $this->breadcrumbManager = $breadcrumbManager;
     }
 
+    /**
+     * Returns a list of global variables to add to the existing list.
+     *
+     * @return array An array of global variables
+     */
+    public function getGlobals()
+    {
+        return [
+            'mybb' => $this->mybb,
+        ];
+    }
+
     public function getFilters()
     {
         return [
