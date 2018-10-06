@@ -637,15 +637,27 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     public function registerCoreContainerAliases()
     {
         $aliases = [
-            'app' => [Application::class, \Illuminate\Contracts\Container\Container::class, \Illuminate\Contracts\Foundation\Application::class,  \Psr\Container\ContainerInterface::class],
+            'app' => [
+                Application::class,
+                \Illuminate\Contracts\Container\Container::class,
+                \Illuminate\Contracts\Foundation\Application::class,
+                \Psr\Container\ContainerInterface::class
+            ],
             'events' => [\Illuminate\Events\Dispatcher::class, \Illuminate\Contracts\Events\Dispatcher::class],
             'files' => [\Illuminate\Filesystem\Filesystem::class],
-            'filesystem' => [\Illuminate\Filesystem\FilesystemManager::class, \Illuminate\Contracts\Filesystem\Factory::class],
+            'filesystem' => [
+                \Illuminate\Filesystem\FilesystemManager::class,
+                \Illuminate\Contracts\Filesystem\Factory::class
+            ],
             'filesystem.disk' => [\Illuminate\Contracts\Filesystem\Filesystem::class],
             'filesystem.cloud' => [\Illuminate\Contracts\Filesystem\Cloud::class],
             'redirect' => [\Illuminate\Routing\Redirector::class],
             'request' => [\Illuminate\Http\Request::class, \Symfony\Component\HttpFoundation\Request::class],
-            'router' => [\Illuminate\Routing\Router::class, \Illuminate\Contracts\Routing\Registrar::class, \Illuminate\Contracts\Routing\BindingRegistrar::class],
+            'router' => [
+                \Illuminate\Routing\Router::class,
+                \Illuminate\Contracts\Routing\Registrar::class,
+                \Illuminate\Contracts\Routing\BindingRegistrar::class
+            ],
             'url' => [\Illuminate\Routing\UrlGenerator::class, \Illuminate\Contracts\Routing\UrlGenerator::class],
         ];
 
