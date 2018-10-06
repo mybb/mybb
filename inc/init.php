@@ -75,7 +75,7 @@ if($not_installed !== false)
 {
 	if(file_exists(MYBB_ROOT."install/index.php"))
 	{
-		if(defined("IN_ARCHIVE") || defined("IN_ADMINCP"))
+		if(defined("IN_ADMINCP"))
 		{
 			header("Location: ../install/index.php");
 			exit;
@@ -300,3 +300,4 @@ $time_formats = array(
 	3 => "H:i"
 );
 
+require_once __DIR__.'/src/bootstrap.php';

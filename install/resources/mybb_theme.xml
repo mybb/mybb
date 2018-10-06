@@ -6905,36 +6905,7 @@ if(use_xmlhttprequest == "1")
 								<fieldset class="trow2">
 									<legend><strong>{$lang->additional_contact_details}</strong></legend>
 									<table cellspacing="0" cellpadding="{$theme['tablespace']}">
-										<tr>
-											<td><span class="smalltext">{$lang->icq_number}</span></td>
-										</tr>
-										<tr>
-											<td><input type="text" class="textbox" name="icq" size="25" value="{$mybb->input['icq']}" /></td>
-										</tr>
-										<tr>
-											<td><span class="smalltext">{$lang->aim_screenname}</span></td>
-										</tr>
-										<tr>
-											<td><input type="text" class="textbox" name="aim" size="25" value="{$mybb->input['aim']}" /></td>
-										</tr>
-										<tr>
-											<td><span class="smalltext">{$lang->skype_id}</span></td>
-										</tr>
-										<tr>
-											<td><input type="text" class="textbox" name="skype" size="25" value="{$mybb->input['skype']}" /></td>
-										</tr>
-										<tr>
-											<td><span class="smalltext">{$lang->google_id}</span></td>
-										</tr>
-										<tr>
-											<td><input type="text" class="textbox" name="google" size="25" value="{$mybb->input['google']}" /></td>
-										</tr>
-										<tr>
-											<td><span class="smalltext">{$lang->yahoo_id}</span></td>
-										</tr>
-										<tr>
-											<td><input type="text" class="textbox" name="yahoo" size="25" value="{$mybb->input['yahoo']}" /></td>
-										</tr>
+										{$contactfields}
 									</table>
 								</fieldset>
 								<br />

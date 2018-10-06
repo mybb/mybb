@@ -20,6 +20,7 @@ $l['options_emailnotify'] = "<strong>Email Notification:</strong> receive an ema
 $l['options_disablesmilies'] = "<strong>Disable Smilies:</strong> disable smilies from showing in this post.";
 $l['preview_post'] = "Preview Post";
 $l['update_post'] = "Update Post";
+$l['add_poll'] = "Add Poll";
 $l['poll'] = "Poll:";
 $l['poll_desc'] = "Optionally you may attach a poll to this thread.";
 $l['poll_check'] = "I want to post a poll";

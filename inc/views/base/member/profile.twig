@@ -88,7 +88,7 @@
                     <tr>
                         <td class="trow1"><strong>{{ lang.total_posts }}</strong></td>
                         <td class="trow1">
-                            {{ memprofile.postnum }} ({{ trans('ppd_percent_total', memprofile.ppd, memprofile.post_percent) }})
+                            {{ memprofile.postnum|my_number_format }} ({{ trans('ppd_percent_total', memprofile.ppd|my_number_format, memprofile.post_percent) }})
                             {% if mybb.usergroup.cansearch %}
                                 <br /><span class="smalltext">(<a href="search.php?action=finduser&amp;uid={{ memprofile.uid }}">{{ lang.find_posts }}</a>)</span>
                             {% endif %}
@@ -97,7 +97,7 @@
                     <tr>
                         <td class="trow2"><strong>{{ lang.total_threads }}</strong></td>
                         <td class="trow2">
-                            {{ memprofile.threadnum }} ({{ trans('tpd_percent_total', memprofile.tpd, memprofile.thread_percent) }})
+                            {{ memprofile.threadnum|my_number_format }} ({{ trans('tpd_percent_total', memprofile.tpd|my_number_format, memprofile.thread_percent) }})
                             {% if mybb.usergroup.cansearch %}
                                 <br /><span class="smalltext">(<a href="search.php?action=finduserthreads&amp;uid={{ memprofile.uid }}">{{ lang.find_threads }}</a>)</span>
                             {% endif %}
@@ -164,42 +164,22 @@
                                 <td class="{{ row }}"><a href="private.php?action=send&amp;uid={{ memprofile.uid }}">{{ trans('send_pm', memprofile.username) }}</a></td>
                             </tr>
                         {% endif %}
-                        {% if memprofile.showicq %}
+                        {% for customfield in contactfields %}
                             <tr>
-                                <td class="{{ row }}"><strong>{{ lang.icq_number }}</strong></td>
-                                <td class="{{ row }}">{{ memprofile.icq }}</td>
-                            </tr>
-                        {% endif %}
-                        {% if memprofile.showaim %}
-                            <tr>
-                                <td class="{{ row }}"><strong>{{ lang.aim_screenname }}</strong></td>
-                                <td class="{{ row }}">
-                                    <a href="javascript:void(0)" onclick="MyBB.popupWindow('/misc.php?action=imcenter&amp;imtype=aim&amp;uid={{ memprofile.uid }}&amp;modal=1'); return false;">{{ memprofile.aim }}</a>
+                                <td class="trow1"><strong>{{ customfield.name }}:</strong></td>
+                                <td class="trow1 scaleimages">
+                                    {% if customfield.ismulti %}
+                                        <ul style="margin: 0; padding-left: 15px;">
+                                            {% for value in customfield.value %}
+                                                <li style="margin-left: 0;">{{ value }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% else %}
+                                        {{ customfield.value|raw }}
+                                    {% endif %}
                                 </td>
                             </tr>
-                        {% endif %}
-                        {% if memprofile.showyahoo %}
-                            <tr>
-                                <td class="{{ row }}"><strong>{{ lang.yahoo_id }}</strong></td>
-                                <td class="{{ row }}">
-                                    <a href="javascript:void(0)" onclick="MyBB.popupWindow('/misc.php?action=imcenter&amp;imtype=yahoo&amp;uid={{ memprofile.uid }}&amp;modal=1'); return false;">{{ memprofile.yahoo }}</a>
-                                </td>
-                            </tr>
-                        {% endif %}
-                        {% if memprofile.showskype %}
-                            <tr>
-                                <td class="{{ row }}"><strong>{{ lang.skype_id }}</strong></td>
-                                <td class="{{ row }}">
-                                    <a href="javascript:void(0)" onclick="MyBB.popupWindow('/misc.php?action=imcenter&amp;imtype=skype&amp;uid={{ memprofile.uid }}&amp;modal=1'); return false;">{{ memprofile.skype }}</a>
-                                </td>
-                            </tr>
-                        {% endif %}
-                        {% if memprofile.showgoogle %}
-                            <tr>
-                                <td class="{{ row }}"><strong>{{ lang.google_id }}</strong></td>
-                                <td class="{{ row }}">{{ memprofile.google }}</td>
-                            </tr>
-                        {% endif %}
+                        {% endfor %}
                     </table>
                 {% endif %}
             </td>

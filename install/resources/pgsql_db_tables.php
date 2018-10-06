@@ -557,6 +557,7 @@ $tables[] = "CREATE TABLE mybb_profilefields (
   name varchar(100) NOT NULL default '',
   description text NOT NULL default '',
   disporder smallint NOT NULL default '0',
+  contact smallint NOT NULL default '0',
   type text NOT NULL default '',
   regex text NOT NULL default '',
   length smallint NOT NULL default '0',
@@ -903,6 +904,9 @@ $tables[] = "CREATE TABLE mybb_userfields (
   fid1 text NOT NULL default '',
   fid2 text NOT NULL default '',
   fid3 text NOT NULL default '',
+  fid4 text NOT NULL default '',
+  fid5 text NOT NULL default '',
+  fid6 text NOT NULL default '',
   PRIMARY KEY (ufid)
 );";
 $query = $db->write_query("SELECT column_name
@@ -1032,11 +1036,6 @@ $tables[] = "CREATE TABLE mybb_users (
   lastvisit int NOT NULL default '0',
   lastpost int NOT NULL default '0',
   website varchar(200) NOT NULL default '',
-  icq varchar(10) NOT NULL default '',
-  aim varchar(50) NOT NULL default '',
-  yahoo varchar(50) NOT NULL default '',
-  skype varchar(75) NOT NULL default '',
-  google varchar(75) NOT NULL default '',
   birthday varchar(15) NOT NULL default '',
   birthdayprivacy varchar(4) NOT NULL default 'all',
   signature text NOT NULL default '',

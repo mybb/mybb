@@ -1,0 +1,64 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ mybb.settings.bbname }} - {{ lang.help_docs }}</title>
+{% endblock head %}
+
+{% block body %}
+    {% for section in sections %}
+        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder clear">
+            <thead>
+                <tr>
+                    <td class="thead{{ section.expthead }}">
+                        <div class="expcolimage">
+                            <img src="{{ theme.imgdir }}/{{ section.expcolimage }}" id="sid_{{ section.sid }}_img" class="expander" alt="[-]" title="[-]" /></div>
+                            <div><strong>{{ section.name }}</strong>
+                        </div>
+                    </td>
+                </tr>
+            </thead>
+            <tbody style="{{ section.expdisplay }}" id="sid_{{ section.sid }}_e">
+                <tr>
+                    <td class="tcat"><span class="smalltext"><strong>{{ section.description }}</strong></span></td>
+                </tr>
+                {% for helpdoc in section.helpdocs %}
+                    {% set row = alt_trow() %}
+                    <tr>
+                        <td width="100%" class="{{ row }}">
+                            <strong><a href="misc.php?action=help&amp;hid={{ helpdoc.hid }}">{{ helpdoc.name }}</a></strong><br />
+                            <span class="smalltext">{{ helpdoc.description }}</span>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <br />
+    {% endfor %}
+    {% if mybb.settings.helpsearch %}
+        <br />
+        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+            <tr>
+                <td class="thead" colspan="3"><strong>{{ lang.search }}</strong></td>
+            </tr>
+            <tr>
+                <td class="trow1">
+                    <form action="misc.php" method="post">
+                        <div class="float_left" style="padding-top: 5px;">
+                            <input type="text" name="keywords" value="{{ lang.enter_keywords }}" onfocus="if(this.value == '{{ lang.enter_keywords }}') { this.value = ''; }" onblur="if(this.value=='') { this.value='{{ lang.enter_keywords }}'; }" class="textbox" size="25" />
+                        </div>
+                        <div class="float_left" style="padding-left: 20px;">
+                            <span class="smalltext">
+                                <label><input name="name" checked="checked" value="1" type="checkbox"> {{ lang.search_by_name }}</label><br />
+                                <label><input name="document" checked="checked" value="1" type="checkbox"> {{ lang.search_by_document }}</label>
+                            </span>
+                        </div>
+                        <div class="float_left" style="padding-left: 20px; padding-top: 5px;">
+                            <input type="hidden" name="action" value="do_helpsearch" />
+                            <input type="submit" class="button" name="submit" value="{{ lang.search_help_documents }}" />
+                        </div>
+                    </form>
+                </td>
+            </tr>
+        </table>
+    {% endif %}
+{% endblock body %}

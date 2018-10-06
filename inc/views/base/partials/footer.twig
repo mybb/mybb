@@ -1,67 +1,116 @@
-            <debugstuff>
+            </div>
         </div>
     </div>
-    <div id="footer">
-        <div class="upper">
-            <div class="wrapper">
-                {% if mybb.settings.footer.langselect is iterable %}
+    <footer class="footer">
+        <div class="wrapper wrapper--footer">
+            <div class="footer__selectors">
+                {% if mybb.settings.footer.langselect is iterable and mybb.settings.footer.langselect|length > 1 %}
                     <div class="language">
                         <form method="post" action="{{ mybb.settings.footer.langselect.current_url.location }}" id="lang_select">
                             <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
                             {% for name, field in mybb.input if name != 'language' and name is not iterable and value is not iterable and value %}
                                 <input type="hidden" name="{{ name }}" value="{{ value }}" />
                             {% endfor %}
-                            <select name="language" onchange="MyBB.changeLanguage();">
-                                <optgroup label="{{ lang.select_language }}">
-                                    {% for key, language in mybb.settings.footer.langselect.options %}
-                                    	{{ language }}
-                                        <option value="{{ key }}"{% if lang.language == key %} selected{% endif %}>{{ language }}</option>
-                                    {% endfor %}
-                                </optgroup>
-                            </select>
+                            <div class="select-field">
+                        		<i class="select-field__icon fas fa-sort"></i>
+                                <select name="language" onchange="MyBB.changeLanguage();">
+                                    <optgroup label="{{ lang.select_language }}">
+                                        {% for key, language in mybb.settings.footer.langselect.options %}
+                                        	{{ language }}
+                                            <option value="{{ key }}"{% if lang.language == key %} selected{% endif %}>{{ language }}</option>
+                                        {% endfor %}
+                                    </optgroup>
+                                </select>
+                            </div>
                             <input type="submit" class="button" value="{{ lang.go }}" />
                         </form>
                     </div>
                 {% endif %}
-                {% if mybb.settings.footer.themeselect is iterable %}
+
+                {% if mybb.settings.footer.themeselect is iterable and mybb.settings.footer.themeselect|length > 1 %}
                     <div class="theme">
-                        <form method="post" action="{{ mybb.settings.footer.themeselect.current_url.location }}" id="theme_select">
+                        <form method="post" action="{{ mybb.settings.footer.themeselect.current_url }}" id="theme_select">
                             <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
                             {% if mybb.settings.footer.themeselect.options %}
                                 {% for name, field in mybb.input if name != 'theme' and name is not iterable and value is not iterable and value %}
                                     <input type="hidden" name="{{ name }}" value="{{ value }}" />
                                 {% endfor %}
                             {% endif %}
-                            {{ mybb.settings.footer.themeselect.options|raw }}
+                            <div class="select-field">
+                            	<i class="select-field__icon fas fa-sort"></i>
+                                {{ mybb.settings.footer.themeselect.options|raw }}
+                            </div>
                             <input type="submit" class="button" value="{{ lang.go }}" />
                         </form>
                     </div>
                 {% endif %}
-                <ul class="menu bottom_links">
-                    {% if (mybb.settings.contactlink == "contact.php" and mybb.settings.contact and (mybb.settings.contact_guests != 1 and mybb.user.uid == 0 or mybb.user.uid > 0)) or mybb.settings.contactlink != "contact.php" %}
-                        <li><a href="{{ mybb.settings.contactlink }}">{{ lang.bottomlinks_contactus }}</a></li>
-                    {% endif %}
-                    <li><a href="{{ mybb.settings.homeurl }}">{{ mybb.settings.homename }}</a></li>
-                    <li><a href="#top">{{ lang.bottomlinks_returntop }}</a></li>
-                    <li><a href="<archive_url>">{{ lang.bottomlinks_litemode }}</a></li>
-                    <li><a href="{{ mybb.settings.bburl }}/misc.php?action=markread{% if mybb.user.uid %}&amp;my_post_key={{ mybb.post_code }}{% endif %}">{{ lang.bottomlinks_markread }}</a></li>
-                    <li><a href="{{ mybb.settings.bburl }}/misc.php?action=syndication">{{ lang.bottomlinks_syndication }}</a></li>
-                </ul>
             </div>
+            <debugstuff>
         </div>
-        <div class="lower">
-            <div class="wrapper">
-                <span id="current_time">{{ lang.welcome_current_time|raw }}</span>
-                <span id="copyright">
+        <div class="footer__navigation">
+    		<div class="wrapper">
+    			<nav class="footer-menu">
+    				<ul class="footer-menu__links">
+                        {% if (mybb.settings.contactlink == "contact.php" and mybb.settings.contact and (mybb.settings.contact_guests != 1 and mybb.user.uid == 0 or mybb.user.uid > 0)) or mybb.settings.contactlink != "contact.php" %}
+                            <li class="footer-menu__item">
+                            	<a href="{{ mybb.settings.contactlink }}" class="footer-menu__link">
+                            		<i class="footer-menu__icon fas fa-envelope"></i>
+                            		<span class="footer-menu__text">{{ lang.bottomlinks_contactus }}</span>
+                            	</a>
+                            </li>
+                        {% endif %}
+                        <li class="footer-menu__item">
+    						<a href="{{ mybb.settings.homeurl }}" class="footer-menu__link">
+    							<i class="footer-menu__icon fas fa-home"></i>
+    							<span class="footer-menu__text">{{ mybb.settings.homename }}</span>
+    						</a>
+    					</li>
+    					<li class="footer-menu__item">
+    						<a href="#top" class="footer-menu__link">
+    							<i class="footer-menu__icon fas fa-arrow-up"></i>
+    							<span class="footer-menu__text">{{ lang.bottomlinks_returntop }}</span>
+    						</a>
+    					</li>
+    					<li class="footer-menu__item">
+    						<a href="<archive_url>" class="footer-menu__link">
+    							<i class="footer-menu__icon far fa-file-alt"></i>
+    							<span class="footer-menu__text">{{ lang.bottomlinks_litemode }}</span>
+    						</a>
+    					</li>
+    					<li class="footer-menu__item">
+    						<a href="{{ mybb.settings.bburl }}/misc.php?action=markread{% if mybb.user.uid %}&amp;my_post_key={{ mybb.post_code }}{% endif %}" class="footer-menu__link">
+    							<i class="footer-menu__icon fas fa-dot-circle"></i>
+    							<span class="footer-menu__text">{{ lang.bottomlinks_markread }}</span>
+    						</a>
+    					</li>
+    					<li class="footer-menu__item">
+    						<a href="{{ mybb.settings.bburl }}/misc.php?action=syndication" class="footer-menu__link">
+    							<i class="footer-menu__icon fas fa-rss-square"></i>
+    							<span class="footer-menu__text">{{ lang.bottomlinks_syndication }}</span>
+    						</a>
+    					</li>
+                        <li class="footer-menu__item">
+    						<a href="{{ mybb.settings.bburl }}/misc.php?action=help" class="footer-menu__link">
+    							<i class="footer-menu__icon fas fa-question-circle"></i>
+    							<span class="footer-menu__text">{{ lang.bottomlinks_help }}</span>
+    						</a>
+    					</li>
+                    </ul>
+    			</nav>
+    		</div>
+    	</div>
+    	<div class="footer__copyright">
+    		<div class="wrapper">
+    			<p class="powered-by">
                     <!-- MyBB is free software developed and maintained by a volunteer community.
                         It would be much appreciated by the MyBB Group if you left the full copyright and "powered by" notice intact,
                         to show your support for MyBB.  If you choose to remove or modify the copyright below,
                         you may be refused support on the MyBB Community Forums.
 
                         This is free software, support us and we'll support you. -->
-                    {{ lang.powered_by }} <a href="https://mybb.com" target="_blank" rel="noopener">MyBB{% if mybb.settings.showvernum %} {{ mybb.version }}{% endif %}</a>, &copy; 2002-{{ "now"|date("Y") }} <a href="https://mybb.com" target="_blank" rel="noopener">MyBB Group</a>.
+                    {{ lang.powered_by }} <a href="https://mybb.com" rel="noopener" class="powered-by__link" title="{{ lang.powered_by_desc }}">MyBB{% if mybb.settings.showvernum %} {{ mybb.version }}{% endif %}</a>
                     <!-- End powered by -->
-                </span>
+                </p>
             </div>
         </div>
     </div>

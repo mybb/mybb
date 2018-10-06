@@ -11,7 +11,7 @@ var MyBB = {
 
 	pageLoaded: function()
 	{
-		expandables.init();
+		Collapsible.init();
 
 		/* Create the Check All feature */
 		$('[name="allbox"]').each(function(key, value) {
@@ -562,93 +562,88 @@ var Cookie = {
 	}
 };
 
-var expandables = {
+var Collapsible = {
 
 	init: function()
 	{
-		var expanders = $(".expcolimage .expander");
-		if(expanders.length)
+		var collapsed = Cookie.get('collapsed');
+		
+		if(collapsed)
 		{
-			expanders.each(function()
+			saved = collapsed.split("|");
+
+			for (var i = 0; i < saved.length; i++)
 			{
-        		var expander = $(this);
-				if(expander.attr("id") == false)
-				{
-					return;
-				}
+				var objValue = saved[i];
+				var savedCollapse = document.getElementById(objValue);
 
-				expander.click(function()
+				if (savedCollapse)
 				{
-					controls = expander.attr("id").replace("_img", "");
-					expandables.expandCollapse(this, controls);
+					Tools.removeClass(savedCollapse, 'collapse--not-collapsed');
+					Tools.addClass(savedCollapse, 'collapse--collapsed');
+				}
+			}
+		}
+
+		var collapses = document.querySelectorAll(".collapse");
+		if (collapses.length)
+		{
+			[].forEach.call(collapses, function(collapse) {
+				var toggle = collapse.querySelector('.collapse__toggle');
+				var control = collapse.getAttribute('id');
+
+				document.addEventListener('click', function(e)
+				{
+					if(e.target && (e.target === toggle || toggle.contains(e.target)))
+					{
+						Collapsible.expandCollapse(collapse, control);
+					}
 				});
-
-				if(MyBB.browser == "ie")
-				{
-					expander.css("cursor", "hand");
-				}
-				else
-				{
-					expander.css("cursor", "pointer");
-				}
 			});
 		}
 	},
 
-	expandCollapse: function(e, controls)
+	expandCollapse: function(collapse, controls)
 	{
-		element = $(e);
-
-		if(!element || controls == false)
+		if (Tools.hasClass(collapse, 'collapse--collapsed'))
 		{
-			return false;
-		}
-		var expandedItem = $("#"+controls+"_e");
-		var collapsedItem = $("#"+controls+"_c");
+			Tools.removeClass(collapse, 'collapse--collapsed');
+			Tools.addClass(collapse, 'collapse--not-collapsed');
 
-		if(expandedItem.length && collapsedItem.length)
-		{
-			// Expanding
-			if(expandedItem.is(":hidden"))
+			if (controls)
 			{
-				expandedItem.toggle("fast");
-				collapsedItem.toggle("fast");
 				this.saveCollapsed(controls);
 			}
-			// Collapsing
-			else
+		}
+		else
+		{
+			Tools.removeClass(collapse, 'collapse--not-collapsed');
+			Tools.addClass(collapse, 'collapse--collapsed');
+
+			if (controls)
 			{
-				expandedItem.toggle("fast");
-				collapsedItem.toggle("fast");
 				this.saveCollapsed(controls, 1);
 			}
 		}
-		else if(expandedItem.length && !collapsedItem.length)
-		{
-			// Expanding
-			if(expandedItem.is(":hidden"))
-			{
-				expandedItem.toggle("fast");
-				element.attr("src", element.attr("src").replace(/collapse_collapsed\.(gif|jpg|jpeg|bmp|png)$/i, "collapse.$1"))
-									.attr("alt", "[-]")
-									.attr("title", "[-]");
-				element.parent().parent('td').removeClass('tcat_collapse_collapsed');
-				element.parent().parent('.thead').removeClass('thead_collapsed');
-				this.saveCollapsed(controls);
-			}
-			// Collapsing
-			else
-			{
-				expandedItem.toggle("fast");
-				element.attr("src", element.attr("src").replace(/collapse\.(gif|jpg|jpeg|bmp|png)$/i, "collapse_collapsed.$1"))
-									.attr("alt", "[+]")
-									.attr("title", "[+]");
-				element.parent().parent('td').addClass('tcat_collapse_collapsed');
-				element.parent().parent('.thead').addClass('thead_collapsed');
-				this.saveCollapsed(controls, 1);
-			}
-		}
+
 		return true;
+	},
+
+	toggleAllCollapses: function(collapses, setting)
+	{
+		[].forEach.call(collapses, function(collapse)
+		{
+			if (setting === 'open' && Tools.hasClass(collapse, 'collapse--collapsed'))
+			{
+				Tools.removeClass(collapse, 'collapse--collapsed');
+				Tools.addClass(collapse, 'collapse--not-collapsed');
+			}
+			else if (setting === 'close' && Tools.hasClass(collapse, 'collapse--not-collapsed'))
+			{
+				Tools.removeClass(collapse, 'collapse--not-collapsed');
+				Tools.addClass(collapse, 'collapse--collapsed');
+			}
+		});
 	},
 
 	saveCollapsed: function(id, add)
@@ -661,20 +656,53 @@ var expandables = {
 		{
 			saved = collapsed.split("|");
 
-			$.each(saved, function(intIndex, objValue)
+			for (var i = 0; i < saved.length; i++)
 			{
+				var objValue = saved[i];
+
 				if(objValue != id && objValue != "")
 				{
 					newCollapsed[newCollapsed.length] = objValue;
 				}
-			});
+			}
 		}
 
 		if(add == 1)
 		{
 			newCollapsed[newCollapsed.length] = id;
 		}
+		
 		Cookie.set('collapsed', newCollapsed.join("|"));
+	}
+};
+
+var Tools = {
+	hasClass: function(el, className)
+	{
+		return el.classList ? el.classList.contains(className) : new RegExp('\\b'+ className+'\\b').test(el.className);
+	},
+	
+	addClass: function(el, className)
+	{
+		if (el.classList) {
+			el.classList.add(className);
+		}
+		else if (!hasClass(el, className))
+		{
+			el.className += ' ' + className;
+		}
+	},
+	
+	removeClass: function(el, className)
+	{
+		if (el.classList) 
+		{
+			el.classList.remove(className);
+		}
+		else
+		{
+			el.className = el.className.replace(new RegExp('\\b'+ className+'\\b', 'g'), '');
+		}
 	}
 };
 

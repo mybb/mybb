@@ -39,30 +39,29 @@ function output_page($contents)
             $serverload = get_server_load();
 
             if (my_strpos(getenv("REQUEST_URI"), "?")) {
-                $debuglink = htmlspecialchars_uni(getenv("REQUEST_URI")) . "&amp;debug=1";
+                $debuglink = getenv("REQUEST_URI") . "&debug=1";
             } else {
-                $debuglink = htmlspecialchars_uni(getenv("REQUEST_URI")) . "?debug=1";
+                $debuglink = getenv("REQUEST_URI") . "?debug=1";
             }
 
             $memory_usage = get_memory_usage();
 
-            if ($memory_usage) {
-                $memory_usage = $lang->sprintf($lang->debug_memory_usage, get_friendly_size($memory_usage));
-            } else {
-                $memory_usage = '';
-            }
             // MySQLi is still MySQL, so present it that way to the user
             $database_server = $db->short_title;
 
             if ($database_server == 'MySQLi') {
                 $database_server = 'MySQL';
             }
-            $generated_in = $lang->sprintf($lang->debug_generated_in, $totaltime);
             $debug_weight = $lang->sprintf($lang->debug_weight, $percentphp, $percentsql, $database_server);
             $sql_queries = $lang->sprintf($lang->debug_sql_queries, $db->query_count);
-            $server_load = $lang->sprintf($lang->debug_server_load, $serverload);
 
-            eval("\$debugstuff = \"".$templates->get("debug_summary")."\";");
+            $debugstuff = \MyBB\template('misc/debugsummary.twig', [
+                'debug_weight' => $debug_weight,
+                'sql_queries' => $sql_queries,
+                'serverload' => $serverload,
+                'totaltime' => $totaltime,
+                'memory_usage' => get_friendly_size($memory_usage)
+            ]);
             $contents = str_replace("<debugstuff>", $debugstuff, $contents);
         }
 
@@ -249,10 +248,7 @@ function send_mail_queue($count=10)
  */
 function parse_page($contents)
 {
-    global $lang, $theme, $mybb, $archive_url, $error_handler;
-
-    $contents = str_replace('<navigation>', build_breadcrumb(), $contents);
-    $contents = str_replace('<archive_url>', $archive_url, $contents);
+    global $lang, $theme, $mybb, $error_handler;
 
     if ($error_handler->warnings) {
         $contents = str_replace("<body>", "<body>\n".$error_handler->show_warnings(), $contents);
@@ -816,10 +812,12 @@ function redirect($url, $message="", $title="", $force_redirect=false)
     // Show redirects only if both ACP and UCP settings are enabled, or ACP is enabled, and user is a guest, or they are forced.
     if ($force_redirect == true || ($mybb->settings['redirects'] == 1 && ($mybb->user['showredirect'] == 1 || !$mybb->user['uid']))) {
         $url = str_replace("&amp;", "&", $url);
-        $url = htmlspecialchars_uni($url);
 
-        eval("\$redirectpage = \"".$templates->get("redirect")."\";");
-        output_page($redirectpage);
+        output_page(\MyBB\template('misc/redirect.twig', [
+            'url' => $url,
+            'title' => $title,
+            'message' => $message
+        ]));
     } else {
         $url = htmlspecialchars_decode($url);
         $url = str_replace(array("\n","\r",";"), "", $url);
@@ -1267,41 +1265,59 @@ function check_forum_password($fid, $pid=0, $return=false)
         }
     }
 
-    if (!empty($forum_cache[$fid]['password'])) {
-        $password = $forum_cache[$fid]['password'];
-        if (isset($mybb->input['pwverify']) && $pid == 0) {
-            if ($password === $mybb->get_input('pwverify')) {
-                my_setcookie("forumpass[$fid]", md5($mybb->user['uid'].$mybb->get_input('pwverify')), null, true);
-                $showform = false;
-            } else {
-                eval("\$pwnote = \"".$templates->get("forumdisplay_password_wrongpass")."\";");
-                $showform = true;
-            }
-        } else {
-            if (!$mybb->cookies['forumpass'][$fid] || ($mybb->cookies['forumpass'][$fid] && md5($mybb->user['uid'].$password) !== $mybb->cookies['forumpass'][$fid])) {
-                $showform = true;
-            } else {
-                $showform = false;
-            }
-        }
-    } else {
-        $showform = false;
-    }
+	if(!empty($forum_cache[$fid]['password']))
+	{
+		$password = $forum_cache[$fid]['password'];
+		if(isset($mybb->input['pwverify']) && $pid == 0)
+		{
+			if($password === $mybb->get_input('pwverify'))
+			{
+				my_setcookie("forumpass[$fid]", md5($mybb->user['uid'].$mybb->get_input('pwverify')), null, true);
+				$showform = false;
+			}
+			else
+			{
+                $pwnote = 1;
+				$showform = true;
+			}
+		}
+		else
+		{
+			if(!$mybb->cookies['forumpass'][$fid] || ($mybb->cookies['forumpass'][$fid] && md5($mybb->user['uid'].$password) !== $mybb->cookies['forumpass'][$fid]))
+			{
+				$showform = true;
+			}
+			else
+			{
+				$showform = false;
+			}
+		}
+	}
+	else
+	{
+		$showform = false;
+	}
 
     if ($return) {
         return $showform;
     }
 
-    if ($showform) {
-        if ($pid) {
-            header("Location: ".$mybb->settings['bburl']."/".get_forum_link($fid));
-        } else {
-            $_SERVER['REQUEST_URI'] = htmlspecialchars_uni($_SERVER['REQUEST_URI']);
-            eval("\$pwform = \"".$templates->get("forumdisplay_password")."\";");
-            output_page($pwform);
-        }
-        exit;
-    }
+	if($showform)
+	{
+		if($pid)
+		{
+			header("Location: ".$mybb->settings['bburl']."/".get_forum_link($fid));
+		}
+		else
+		{
+			$currentUrl = $_SERVER['REQUEST_URI'];
+			output_page(\MyBB\template('forumdisplay/password.twig', [
+                'pwnote' => $pwnote,
+                'currentUrl' => $currentUrl
+            ]));
+		}
+		exit;
+	}
 }
 
 /**
@@ -2739,13 +2755,14 @@ function build_mycode_inserter($bind="message", $smilies = true)
 
         $editor_language .= "}})(jQuery);";
 
+        $toolbar = [];
+
         if (defined("IN_ADMINCP")) {
             global $page;
             $codeinsert = $page->build_codebuttons_editor($bind, $editor_language, $smilies);
         } else {
             // Smilies
-            $emoticon = "";
-            $emoticons_enabled = "false";
+            $emoticons = [];
             if ($smilies) {
                 if (!$smiliecache) {
                     if (!isset($smilie_cache) || !is_array($smilie_cache)) {
@@ -2758,16 +2775,14 @@ function build_mycode_inserter($bind="message", $smilies = true)
                 }
 
                 if ($mybb->settings['smilieinserter'] && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'] && !empty($smiliecache)) {
-                    $emoticon = ",emoticon";
+                    $toolbar['emoticon'] = ",emoticon";
                 }
-                $emoticons_enabled = "true";
 
                 unset($smilie);
 
                 if (is_array($smiliecache)) {
                     reset($smiliecache);
 
-                    $dropdownsmilies = $moresmilies = $hiddensmilies = "";
                     $i = 0;
 
                     foreach ($smiliecache as $smilie) {
@@ -2782,70 +2797,69 @@ function build_mycode_inserter($bind="message", $smilies = true)
                         $image = str_replace(array('\\', '"'), array('\\\\', '\"'), $image);
 
                         if (!$mybb->settings['smilieinserter'] || !$mybb->settings['smilieinsertercols'] || !$mybb->settings['smilieinsertertot'] || !$smilie['showclickable']) {
-                            $hiddensmilies .= '"'.$find.'": "'.$image.'",';
+                            $emoticons['hidden'] .= '"'.$find.'": "'.$image.'",';
                         } elseif ($i < $mybb->settings['smilieinsertertot']) {
-                            $dropdownsmilies .= '"'.$find.'": "'.$image.'",';
+                            $emoticons['dropdown'] .= '"'.$find.'": "'.$image.'",';
                             ++$i;
                         } else {
-                            $moresmilies .= '"'.$find.'": "'.$image.'",';
+                            $emoticons['more'] .= '"'.$find.'": "'.$image.'",';
                         }
 
                         for ($j = 1; $j < $finds_count; ++$j) {
                             $find = str_replace(array('\\', '"'), array('\\\\', '\"'), htmlspecialchars_uni($finds[$j]));
-                            $hiddensmilies .= '"'.$find.'": "'.$image.'",';
+                            $emoticons['hidden'] .= '"'.$find.'": "'.$image.'",';
                         }
                     }
                 }
             }
 
-            $basic1 = $basic2 = $align = $font = $size = $color = $removeformat = $email = $link = $list = $code = $sourcemode = "";
-
             if ($mybb->settings['allowbasicmycode'] == 1) {
-                $basic1 = "bold,italic,underline,strike|";
-                $basic2 = "horizontalrule,";
+                $toolbar['basic1'] = "bold,italic,underline,strike|";
+                $toolbar['basic2'] = "horizontalrule,";
             }
 
             if ($mybb->settings['allowalignmycode'] == 1) {
-                $align = "left,center,right,justify|";
+                $toolbar['align'] = "left,center,right,justify|";
             }
 
             if ($mybb->settings['allowfontmycode'] == 1) {
-                $font = "font,";
+                $toolbar['font'] = "font,";
             }
 
             if ($mybb->settings['allowsizemycode'] == 1) {
-                $size = "size,";
+                $toolbar['size'] = "size,";
             }
 
             if ($mybb->settings['allowcolormycode'] == 1) {
-                $color = "color,";
+                $toolbar['color'] = "color,";
             }
 
             if ($mybb->settings['allowfontmycode'] == 1 || $mybb->settings['allowsizemycode'] == 1 || $mybb->settings['allowcolormycode'] == 1) {
-                $removeformat = "removeformat|";
+                $toolbar['removeformat'] = "removeformat|";
             }
 
             if ($mybb->settings['allowemailmycode'] == 1) {
-                $email = "email,";
+                $toolbar['email'] = "email,";
             }
 
             if ($mybb->settings['allowlinkmycode'] == 1) {
-                $link = "link,unlink";
+                $toolbar['link'] = "link,unlink";
             }
 
             if ($mybb->settings['allowlistmycode'] == 1) {
-                $list = "bulletlist,orderedlist|";
+                $toolbar['list'] = "bulletlist,orderedlist|";
             }
 
             if ($mybb->settings['allowcodemycode'] == 1) {
-                $code = "code,php,";
+                $toolbar['code'] = "code,php,";
             }
 
-            if ($mybb->user['sourceeditor'] == 1) {
-                $sourcemode = "MyBBEditor.sourceMode(true);";
-            }
-
-            eval("\$codeinsert = \"".$templates->get("codebuttons")."\";");
+            $codeinsert = \MyBB\template('misc/codebuttons.twig', [
+                'toolbar' => $toolbar,
+                'emoticons' => $emoticons,
+                'editor_language' => $editor_language,
+                'bind' => $bind
+            ]);
         }
     }
 
@@ -3041,7 +3055,7 @@ function build_forum_prefix_select($fid, $selected_pid=0)
     }
 
     // Go through each of our prefixes and decide which ones we can use
-    $prefixes = array();
+    $prefixes = [];
     foreach ($prefix_cache as $prefix) {
         if ($prefix['forums'] != "-1") {
             // Decide whether this prefix can be used in our forum
@@ -3061,29 +3075,27 @@ function build_forum_prefix_select($fid, $selected_pid=0)
         return '';
     }
 
-    $default_selected = array();
-    $selected_pid = (int)$selected_pid;
+    $default = [
+        [
+            'prefix' => $lang->prefix_all,
+            'pid' => 0
+        ],
+        [
+            'prefix' => $lang->prefix_none,
+            'pid' => -1
+        ],
+        [
+            'prefix' => $lang->prefix_any,
+            'pid' => -2
+        ]
+    ];
 
-    if ($selected_pid == 0) {
-        $default_selected['all'] = ' selected="selected"';
-    } elseif ($selected_pid == -1) {
-        $default_selected['none'] = ' selected="selected"';
-    } elseif ($selected_pid == -2) {
-        $default_selected['any'] = ' selected="selected"';
-    }
+    $prefixes = array_merge($default, $prefixes);
 
-    foreach ($prefixes as $prefix) {
-        $selected = '';
-        if ($prefix['pid'] == $selected_pid) {
-            $selected = ' selected="selected"';
-        }
-
-        $prefix['prefix'] = htmlspecialchars_uni($prefix['prefix']);
-        eval('$prefixselect_prefix .= "'.$templates->get("forumdisplay_threadlist_prefixes_prefix").'";');
-    }
-
-    eval('$prefixselect = "'.$templates->get("forumdisplay_threadlist_prefixes").'";');
-    return $prefixselect;
+    return \MyBB\template('forumdisplay/threadlist_prefixes.twig', [
+        'prefixes' => $prefixes,
+        'selected' => (int)$selected_pid
+    ]);
 }
 
 /**
@@ -3203,26 +3215,10 @@ function log_moderator_action($data, $action="")
  */
 function get_reputation($reputation, $uid=0)
 {
-    global $theme, $templates;
-
-    $display_reputation = $reputation_class = '';
-    if ($reputation < 0) {
-        $reputation_class = "reputation_negative";
-    } elseif ($reputation > 0) {
-        $reputation_class = "reputation_positive";
-    } else {
-        $reputation_class = "reputation_neutral";
-    }
-
-    $reputation = my_number_format($reputation);
-
-    if ($uid != 0) {
-        eval("\$display_reputation = \"".$templates->get("postbit_reputation_formatted_link")."\";");
-    } else {
-        eval("\$display_reputation = \"".$templates->get("postbit_reputation_formatted")."\";");
-    }
-
-    return $display_reputation;
+    return \MyBB\template('postbit/reputation.twig', [
+        'uid' => (int)$uid,
+        'reputation' => $reputation
+    ]);
 }
 
 /**
@@ -3233,21 +3229,9 @@ function get_reputation($reputation, $uid=0)
  */
 function get_colored_warning_level($level)
 {
-    global $templates;
-
-    $warning_class = '';
-    if ($level >= 80) {
-        $warning_class = "high_warning";
-    } elseif ($level >= 50) {
-        $warning_class = "moderate_warning";
-    } elseif ($level >= 25) {
-        $warning_class = "low_warning";
-    } else {
-        $warning_class = "normal_warning";
-    }
-
-    eval("\$level = \"".$templates->get("postbit_warninglevel_formatted")."\";");
-    return $level;
+    return \MyBB\template('postbit/warninglevel.twig', [
+        'level' => $level
+    ]);
 }
 
 /**
@@ -3415,7 +3399,7 @@ function get_attachment_icon($ext)
 
         $icon = $attach_icons_schemes[$ext];
 
-        $name = htmlspecialchars_uni($attachtypes[$ext]['name']);
+        $name = $attachtypes[$ext]['name'];
     } else {
         if (defined("IN_ADMINCP")) {
             $theme['imgdir'] = "../images";
@@ -3429,9 +3413,11 @@ function get_attachment_icon($ext)
         $name = $lang->unknown;
     }
 
-    $icon = htmlspecialchars_uni($icon);
-    eval("\$attachment_icon = \"".$templates->get("attachment_icon")."\";");
-    return $attachment_icon;
+    return \MyBB\template('misc/attachment_icon.twig', [
+        'ext' => $ext,
+        'icon' => $icon,
+        'name' => $name
+    ]);
 }
 
 /**
@@ -3506,68 +3492,6 @@ function fix_mktime($format, $year)
 }
 
 /**
- * Build the breadcrumb navigation trail from the specified items
- *
- * @return string The formatted breadcrumb navigation trail
- */
-function build_breadcrumb()
-{
-    global $nav, $navbits, $templates, $theme, $lang, $mybb;
-
-    eval("\$navsep = \"".$templates->get("nav_sep")."\";");
-
-    $i = 0;
-    $activesep = '';
-
-    if (is_array($navbits)) {
-        reset($navbits);
-        foreach ($navbits as $key => $navbit) {
-            if (isset($navbits[$key+1])) {
-                if (isset($navbits[$key+2])) {
-                    $sep = $navsep;
-                } else {
-                    $sep = "";
-                }
-
-                $multipage = null;
-                $multipage_dropdown = null;
-                if (!empty($navbit['multipage'])) {
-                    if (!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1) {
-                        $mybb->settings['threadsperpage'] = 20;
-                    }
-
-                    $multipage = multipage($navbit['multipage']['num_threads'], $mybb->settings['threadsperpage'], $navbit['multipage']['current_page'], $navbit['multipage']['url'], true);
-                    if ($multipage) {
-                        ++$i;
-                        eval("\$multipage_dropdown = \"".$templates->get("nav_dropdown")."\";");
-                        $sep = $multipage_dropdown.$sep;
-                    }
-                }
-
-                // Replace page 1 URLs
-                $navbit['url'] = str_replace("-page-1.html", ".html", $navbit['url']);
-                $navbit['url'] = preg_replace("/&amp;page=1$/", "", $navbit['url']);
-
-                eval("\$nav .= \"".$templates->get("nav_bit")."\";");
-            }
-        }
-    }
-
-    $activesep = '';
-    $navsize = count($navbits);
-    $navbit = $navbits[$navsize-1];
-
-    if ($nav) {
-        eval("\$activesep = \"".$templates->get("nav_sep_active")."\";");
-    }
-
-    eval("\$activebit = \"".$templates->get("nav_bit_active")."\";");
-    eval("\$donenav = \"".$templates->get("nav")."\";");
-
-    return $donenav;
-}
-
-/**
  * Add a breadcrumb menu item to the list.
  *
  * @param string $name The name of the item to add
@@ -3575,15 +3499,13 @@ function build_breadcrumb()
  */
 function add_breadcrumb($name, $url="")
 {
-    global $navbits;
-
-    $navsize = count($navbits);
-    $navbits[$navsize]['name'] = $name;
-    $navbits[$navsize]['url'] = $url;
+    /** @var \MyBB\Utilities\BreadcrumbManager $breadcrumbManager */
+    $breadcrumbManager = \MyBB\app(\MyBB\Utilities\BreadcrumbManager::class);
+    $breadcrumbManager->addBreadcrumb($name, $url);
 }
 
 /**
- * Build the forum breadcrumb nagiation (the navigation to a specific forum including all parent forums)
+ * Build the forum breadcrumb navigation (the navigation to a specific forum including all parent forums)
  *
  * @param int $fid The forum ID to build the navigation for
  * @param array $multipage The multipage drop down array of information
@@ -3591,47 +3513,9 @@ function add_breadcrumb($name, $url="")
  */
 function build_forum_breadcrumb($fid, $multipage=array())
 {
-    global $pforumcache, $currentitem, $forum_cache, $navbits, $lang, $base_url, $archiveurl;
-
-    if (!$pforumcache) {
-        if (!is_array($forum_cache)) {
-            cache_forums();
-        }
-
-        foreach ($forum_cache as $key => $val) {
-            $pforumcache[$val['fid']][$val['pid']] = $val;
-        }
-    }
-
-    if (is_array($pforumcache[$fid])) {
-        foreach ($pforumcache[$fid] as $key => $forumnav) {
-            if ($fid == $forumnav['fid']) {
-                if (!empty($pforumcache[$forumnav['pid']])) {
-                    build_forum_breadcrumb($forumnav['pid']);
-                }
-
-                $navsize = count($navbits);
-                // Convert & to &amp;
-                $navbits[$navsize]['name'] = preg_replace("#&(?!\#[0-9]+;)#si", "&amp;", $forumnav['name']);
-
-                if (defined("IN_ARCHIVE")) {
-                    // Set up link to forum in breadcrumb.
-                    if ($pforumcache[$fid][$forumnav['pid']]['type'] == 'f' || $pforumcache[$fid][$forumnav['pid']]['type'] == 'c') {
-                        $navbits[$navsize]['url'] = "{$base_url}forum-".$forumnav['fid'].".html";
-                    } else {
-                        $navbits[$navsize]['url'] = $archiveurl."/index.php";
-                    }
-                } elseif (!empty($multipage)) {
-                    $navbits[$navsize]['url'] = get_forum_link($forumnav['fid'], $multipage['current_page']);
-
-                    $navbits[$navsize]['multipage'] = $multipage;
-                    $navbits[$navsize]['multipage']['url'] = str_replace('{fid}', $forumnav['fid'], FORUM_URL_PAGED);
-                } else {
-                    $navbits[$navsize]['url'] = get_forum_link($forumnav['fid']);
-                }
-            }
-        }
-    }
+    /** @var \MyBB\Utilities\BreadcrumbManager $breadcrumbManager */
+    $breadcrumbManager = \MyBB\app(\MyBB\Utilities\BreadcrumbManager::class);
+    $breadcrumbManager->buildForumBreadcrumb($fid, $multipage);
 
     return 1;
 }
@@ -3641,52 +3525,9 @@ function build_forum_breadcrumb($fid, $multipage=array())
  */
 function reset_breadcrumb()
 {
-    global $navbits;
-
-    $newnav[0]['name'] = $navbits[0]['name'];
-    $newnav[0]['url'] = $navbits[0]['url'];
-    if (!empty($navbits[0]['options'])) {
-        $newnav[0]['options'] = $navbits[0]['options'];
-    }
-
-    unset($GLOBALS['navbits']);
-    $GLOBALS['navbits'] = $newnav;
-}
-
-/**
- * Builds a URL to an archive mode page
- *
- * @param string $type The type of page (thread|announcement|forum)
- * @param int $id The ID of the item
- * @return string The URL
- */
-function build_archive_link($type="", $id=0)
-{
-    global $mybb;
-
-    // If the server OS is not Windows and not Apache or the PHP is running as a CGI or we have defined ARCHIVE_QUERY_STRINGS, use query strings - DIRECTORY_SEPARATOR checks if running windows
-    //if ((DIRECTORY_SEPARATOR == '\\' && is_numeric(stripos($_SERVER['SERVER_SOFTWARE'], "apache")) == false) || is_numeric(stripos(SAPI_NAME, "cgi")) !== false || defined("ARCHIVE_QUERY_STRINGS"))
-    if($mybb->settings['seourls_archive'] == 1) {
-        $base_url = $mybb->settings['bburl']."/archive/index.php/";
-    } else {
-        $base_url = $mybb->settings['bburl']."/archive/index.php?";
-    }
-
-    switch ($type) {
-        case "thread":
-            $url = "{$base_url}thread-{$id}.html";
-            break;
-        case "announcement":
-            $url = "{$base_url}announcement-{$id}.html";
-            break;
-        case "forum":
-            $url = "{$base_url}forum-{$id}.html";
-            break;
-        default:
-            $url = $mybb->settings['bburl']."/archive/index.php";
-    }
-
-    return $url;
+    /** @var \MyBB\Utilities\BreadcrumbManager $breadcrumbManager */
+    $breadcrumbManager = \MyBB\app(\MyBB\Utilities\BreadcrumbManager::class);
+    $breadcrumbManager->reset();
 }
 
 /**

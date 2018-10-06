@@ -1,0 +1,20 @@
+{% if collapsed['cat_' ~ forum.fid ~ '_c'] == 'display: show;' %}
+    {% set expcolhead = ' thead_collapsed' %}
+    {% set expdisplay = 'display: none;' %}
+{% endif %}
+<section class="block">
+	<h2 class="title title--major">
+		<a href="{{ forum.url }}">{{ forum.name }}</a>
+        {{ forum.description }} {# TO DO : CATEGORY DESCRIPTION STYLE #}
+        {# TO DO : ADD BACK COLLAPSE/EXPAND
+        {% if collapsed['cat_' ~ forum.fid ~ '_c'] == 'display: show;' %}
+            <img src="{{ theme.imgdir }}/collapse_collapsed.png" id="cat_{{ forum.fid }}_img" class="expander" alt="[+]" title="[+]" />
+        {% else %}
+            <img src="{{ theme.imgdir }}/collapse.png" id="cat_{{ forum.fid }}_img" class="expander" alt="[-]" title="[-]" />
+        {% endif %}
+        #}
+    </h2>
+    <div class="forum-list forum-list--full-width">
+        {{ sub_forums|raw }}
+    </div>
+</section>

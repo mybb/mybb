@@ -1,0 +1,9 @@
+{% extends 'messages/base.twig' %}
+
+{% block message_before %}
+    <div class="alert__container">
+        <p class="alert__message">{{ lang.banned_warning }}</p>
+        <p class="alert__message">{{ lang.banned_warning2 }}: {{ options.extra.reason }}</p>
+        <p class="alert__message">{{ lang.banned_warning3 }}: {{ options.extra.lift }}</p>
+    </div>
+{% endblock message_before %}

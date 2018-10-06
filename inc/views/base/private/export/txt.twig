@@ -1,0 +1,20 @@
+<pre>
+{{ lang.private_messages_for }}
+({{ lang.exported_date }})
+
+{% for message in pmsdownload %}
+    {% if message.isfolderheader %}
+        #######################################################################
+        {{ lang.folder }} {{ message.foldername }}
+        #######################################################################
+    {% else %}
+        {{ lang.subject }} {{ message.subject }}
+        {{ message.tofrom }} {{ message.tofromusername }}
+        {{ lang.sent }} {{ message.senddate }}
+        ------------------------------------------------------------------------
+        {{ message.message }}
+        ------------------------------------------------------------------------
+
+    {% endif %}
+{% endfor %}
+</pre>

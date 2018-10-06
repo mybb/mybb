@@ -854,7 +854,7 @@ $(document).ready(function() {
         $mybb->input['profile_fields'] = $mybb->get_input('profile_fields', MyBB::INPUT_ARRAY);
 
         // Custom profile fields baby!
-        $requiredfields = $customfields = [];
+        $requiredfields = $customfields = $contactfields = [];
 
         if ($mybb->settings['regtype'] == "verify" || $mybb->settings['regtype'] == "admin" || $mybb->settings['regtype'] == "both" || $mybb->get_input('coppa', MyBB::INPUT_INT) == 1) {
             $usergroup = 5;
@@ -1024,6 +1024,10 @@ $(document).ready(function() {
 
 					$requiredfields[] = $profilefield;
 				}
+				elseif($profilefield['contact'] == 1)
+				{
+					$contactfields[] = $profilefield;
+				}
 				else
 				{
 					$customfields[] = $profilefield;
@@ -1038,6 +1042,11 @@ $(document).ready(function() {
             $registration['showcustomfields'] = false;
             if (!empty($customfields)) {
                 $registration['showcustomfields'] = true;
+            }
+
+            $registration['showcontactfields'] = false;
+            if (!empty($contactfields)) {
+                $registration['showcontactfields'] = true;
             }
         }
 
@@ -1059,7 +1068,7 @@ $(document).ready(function() {
 		if($mybb->settings['captchaimage'])
 		{
 			require_once MYBB_ROOT.'inc/class_captcha.php';
-			$captcha = new captcha(true, "member_register_regimage");
+			$captcha = new captcha(true, "register");
 
 			if($captcha->html)
 			{
@@ -1243,6 +1252,7 @@ $(document).ready(function() {
             'timezones' => $timezones,
             'requiredfields' => $requiredfields,
             'customfields' => $customfields,
+            'contactfields' => $contactfields,
             'languages' => $languages,
             'validator_javascript' => $validator_javascript,
         ]));
@@ -1752,7 +1762,7 @@ if($mybb->input['action'] == "login")
     // Show captcha image for guests if enabled and only if we have to do
     if ($mybb->settings['captchaimage'] && $do_captcha == true) {
         require_once MYBB_ROOT.'inc/class_captcha.php';
-        $login_captcha = new captcha(false, "post_captcha");
+        $login_captcha = new captcha(false, "post");
 
         if ($login_captcha->type == 1) {
             if (!$correct) {
@@ -1927,19 +1937,6 @@ if($mybb->input['action'] == "profile")
     if ($mybb->settings['enablepms'] != 0 && (($memprofile['receivepms'] != 0 && $memperms['canusepms'] != 0 && my_strpos(",".$memprofile['ignorelist'].",", ",".$mybb->user['uid'].",") === false) || $mybb->usergroup['canoverridepm'] == 1)) {
         $memprofile['hascontacts'] = true;
         $memprofile['showpm'] = true;
-    }
-
-    foreach (array('icq', 'aim', 'yahoo', 'skype', 'google') as $field) {
-        $contact_field[$field] = '';
-        $settingkey = 'allow'.$field.'field';
-        $templatekey = 'show'.$field;
-
-        $memprofile[$templatekey] = false;
-        if(!empty($memprofile[$field]) && is_member($mybb->settings[$settingkey], array('usergroup' => $memprofile['usergroup'], 'additionalgroups' => $memprofile['additionalgroups'])))
-        {
-            $memprofile['hascontacts'] = true;
-            $memprofile[$templatekey] = true;
-        }
     }
 
     $memprofile['showsignature'] = false;
@@ -2261,7 +2258,7 @@ if($mybb->input['action'] == "profile")
     }
 
     $memprofile['profilefields'] = false;
-    $customfields = [];
+    $customfields = $contactfields = [];
 
     $query = $db->simple_select("userfields", "*", "ufid = '{$uid}'");
     $userfields = $db->fetch_array($query);
@@ -2281,7 +2278,7 @@ if($mybb->input['action'] == "profile")
             $field = "fid{$customfield['fid']}";
 
             if (!empty($userfields[$field])) {
-                $memprofile['profilefields'] = true;
+
                 $useropts = explode("\n", $userfields[$field]);
                 $customfield['ismulti'] = false;
                 if (is_array($useropts) && ($type == "multiselect" || $type == "checkbox")) {
@@ -2316,17 +2313,18 @@ if($mybb->input['action'] == "profile")
                     $customfield['value'] = $parser->parse_message($userfields[$field], $parser_options);
                 }
 
-                $customfields[] = $customfield;
+                if ($customfield['contact']) {
+                    $memprofile['hascontacts'] = true;
+                    $contactfields[] = $customfield;
+                } else {
+                    $memprofile['profilefields'] = true;
+                    $customfields[] = $customfield;
+                }
             }
         }
     }
 
-    $memprofile['postnum'] = my_number_format($memprofile['postnum']);
-    $memprofile['ppd'] = my_number_format($ppd);
     $memprofile['post_percent'] = $post_percent;
-
-    $memprofile['threadnum'] = my_number_format($memprofile['threadnum']);
-    $memprofile['tpd'] = my_number_format($tpd);
     $memprofile['thread_percent'] = $thread_percent;
 
     $memprofile['formattedname'] = format_name($memprofile['username'], $memprofile['usergroup'], $memprofile['displaygroup']);
@@ -2444,6 +2442,7 @@ if($mybb->input['action'] == "profile")
     output_page(\MyBB\template('member/profile.twig', [
         'memprofile' => $memprofile,
         'customfields' => $customfields,
+        'contactfields' => $contactfields,
     ]));
 }
 
@@ -2730,7 +2729,7 @@ if($mybb->input['action'] == "emailuser")
 	$captcha = '';
     if ($mybb->settings['captchaimage'] && $mybb->user['uid'] == 0) {
         require_once MYBB_ROOT.'inc/class_captcha.php';
-        $post_captcha = new captcha(true, "post_captcha");
+        $post_captcha = new captcha(true, "post");
 
         if ($post_captcha->html) {
             $captcha = $post_captcha->html;

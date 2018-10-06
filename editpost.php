@@ -453,7 +453,7 @@ if (!$mybb->input['action'] || $mybb->input['action'] == "editpost") {
         $posticons = get_post_icons();
     }
 
-    eval("\$loginbox = \"".$templates->get("changeuserbox")."\";");
+    $loginbox = \MyBB\template('misc/changeuserbox.twig');
 
     $editpost['showdelete'] = false;
     // Can we delete posts?

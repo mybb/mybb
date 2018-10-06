@@ -1,0 +1,89 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ lang.viewing_pm }} {{ pm.subject }}</title>
+{% endblock head %}
+
+{% block body %}
+    <table width="100%" border="0" align="center">
+        <tr>
+            {# To do: usercpnav #}
+            <td style="vertical-align: top;">
+                <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder tfixed clear no_bottom_border">
+                    <tr>
+                        <td class="thead"><strong>{{ pm.subject }}</strong></td>
+                    </tr>
+                    {% if pm.status == 3 and pm.statustime %}
+                        <tr>
+                            <td class="tcat" align="center"><strong>{{ trans('you_replied_on', pm.reply_date) }}</strong></td>
+                        </tr>
+                    {% elseif pm.status == 4 and pm.statustime %}
+                        <tr>
+                            <td class="tcat" align="center"><strong>{{ trans('you_forwarded_on', pm.forward_date) }}</strong></td>
+                        </tr>
+                    {% endif %}
+                    <tr>
+                        <td id="posts_container">
+                            <div id="posts">
+                                {{ message|raw }}
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                {% if mybb.settings.pmquickreply and mybb.user.showquickreply and mybb.usergroup.cansendpms and pm.fromid != 0 and pm.folder != 3 %}
+                    <br />
+                    <form action="private.php" method="post" name="input">
+                        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+                        <input type="hidden" name="to" value="{{ pm.sendto }}" />
+                        <input type="hidden" name="bcc" value="{{ pm.bcc_form_val }}" />
+                        <input type="hidden" name="subject" value="Re: {{ pm.sendsubject }}" />
+                        <input type="hidden" name="action" value="do_send" />
+                        <input type="hidden" name="pmid" value="{{ pm.pmid }}" />
+                        <input type="hidden" name="do" value="reply" />
+                        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+                            <thead>
+                                <tr>
+                                    <td class="thead{{ collapsedthead.quickreply }}" colspan="2">
+                                        <div class="expcolimage"><img src="{{ theme.imgdir }}/collapse{{ collapsedimg.quickreply }}.png" id="quickreply_img" class="expander" alt="[-]" title="[-]" /></div>
+                                        <div><strong>{{ lang.quick_reply }}</strong></div>
+                                    </td>
+                                </tr>
+                            </thead>
+                            <tbody style="{{ collapsed.quickreply_e }}" id="quickreply_e">
+                                <tr>
+                                  <td class="trow1" valign="top" width="22%">
+                                        <strong>{{ lang.message }}</strong><br />
+                                        <span class="smalltext">{{ lang.message_note }}<br /><br />
+                                            <label><input type="checkbox" class="checkbox" name="options[signature]" value="1"{% if pm.options.signature %} checked="checked"{% endif %} />&nbsp;<strong>{{ lang.quickreply_signature }}</strong></label><br />
+                                            <label><input type="checkbox" class="checkbox" name="options[disablesmilies]" value="1"{% if pm.options.disablesmilies %} checked="checked"{% endif %} />&nbsp;<strong>{{ lang.quickreply_disable_smilies }}</strong></label><br />
+                                            <label><input type="checkbox" class="checkbox" name="options[savecopy]" value="1"{% if pm.options.savecopy %} checked="checked"{% endif %} />&nbsp;<strong>{{ lang.quickreply_save_copy }}</strong></label>
+                                            {% if mybb.usergroup.cantrackpms %}
+                                                <br /><label><input type="checkbox" class="checkbox" name="options[readreceipt]" value="1" tabindex="8"{% if pm.options.readreceipt %} checked="checked"{% endif %} />&nbsp;<strong>{{ lang.quickreply_read_receipt }}</strong></label>
+                                            {% endif %}
+                                        </span>
+                                    </td>
+                                    <td class="trow2">
+                                        <div style="width: 95%">
+                                            <textarea style="width: 100%; padding: 4px; margin: 0;" rows="8" cols="80" name="message" id="message" tabindex="1">{{ pm.quoted_message }}</textarea>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" align="center" class="tfoot">
+                                        <input type="submit" class="button" value="{{ lang.send_message }}" tabindex="2" accesskey="s" /> 
+                                        <input type="submit" class="button" name="preview" value="{{ lang.preview }}" tabindex="3" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </form>
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+    <script type="text/javascript">
+        $(".author_avatar img").error(function () {
+            $(this).unbind("error").closest('.author_avatar').remove();
+        });
+    </script>
+{% endblock body %}

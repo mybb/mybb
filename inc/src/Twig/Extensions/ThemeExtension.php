@@ -54,6 +54,7 @@ class ThemeExtension extends \Twig_Extension implements \Twig_Extension_GlobalsI
     {
         return [
             'theme' => $GLOBALS['theme'],
+            'headerMessages' => isset($GLOBALS['headerMessages']) ? $GLOBALS['headerMessages'] : [],
         ];
     }
 

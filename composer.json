@@ -7,7 +7,7 @@
         "community"
     ],
     "homepage": "https://mybb.com",
-    "license": "LGPL-3.0",
+    "license": "LGPL-3.0-only",
     "authors": [
         {
             "name": "MyBB Group",
@@ -21,14 +21,13 @@
         "issues": "https://github.com/mybb/mybb/issues"
     },
     "require": {
-        "php": "^7.0",
+        "php": "^7.1",
         "illuminate/container": "^5.5",
         "illuminate/events": "^5.5",
         "illuminate/routing": "^5.5",
         "twig/twig": "^2.4"
     },
     "require-dev": {
-        "php": "^7.1",
         "mockery/mockery": "^1.0",
         "phpspec/phpspec": "^4.3",
         "phpunit/phpunit": "^7.0",

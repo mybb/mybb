@@ -1,0 +1,6 @@
+<tr>
+    <td class="trow2"><strong>{{ lang.username }}</strong></td>
+    <td class="trow2">
+        <input type="text" class="textbox" name="username" size="30" value="{% if mybb.input.previewpost and mybb.input.action not in ["do_newreply", "do_newthread"] %}{% else %}{{ mybb.input.username }}{% endif %}" />
+    </td>
+</tr>

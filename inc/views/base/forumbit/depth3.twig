@@ -1,0 +1,8 @@
+<li class="forum__subforum">
+    {% if mybb.settings.subforumsstatusicons %}
+    <span title="{{ lightbulb.altonoff }}" class="forum__subforum__status subforumicon subforum_{{ lightbulb.folder }} ajax_mark_read" id="mark_read_{{ forum.fid }}">
+        <i class="fas fa-circle"></i>
+    </span>
+    {% endif %}
+    <a href="{{ forum.url }}">{{ forum.name }}</a>
+</li>

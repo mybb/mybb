@@ -185,8 +185,6 @@ if(isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canon
 	error_no_permission();
 }
 
-$archive_url = build_archive_link("thread", $tid);
-
 // Does the thread belong to a valid forum?
 $forum = get_forum($fid);
 if(!$forum || $forum['type'] != "f")
@@ -1024,7 +1022,7 @@ if($mybb->input['action'] == "thread")
 		if($mybb->settings['captchaimage'] && !$mybb->user['uid'])
 		{
 			require_once MYBB_ROOT.'inc/class_captcha.php';
-			$post_captcha = new captcha(true, "post_captcha");
+			$post_captcha = new captcha(true, "post");
 
 			if($post_captcha->html)
 			{

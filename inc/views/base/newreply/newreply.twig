@@ -5,259 +5,211 @@
     <script type="text/javascript" src="{{ asset_url('jscripts/post.js') }}"></script>
 {% endblock head %}
 
+{# let the newreply variable be used in shared twig templates #}
+{% set composepost = newreply %}
+
 {% block body %}
-    {% if newreply.preview %}
-        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder tfixed clear no_bottom_border">
-            <tr>
-                <td class="thead"><strong>{{ lang.post_preview }}</strong></td>
-            </tr>
-            <tr>
-                <td id="posts_container">
+    <div class="page-content">
+        <header class="page-header">
+            <h1 class="title title--page">{{ trans('post_reply_to', thread.subject) }}</h1>
+        </header>
+        {% if newreply.preview %}
+            <section class="block block--container">
+                <h1 class="title title--major title--separation">{{ lang.post_preview }}</h1>
+                <div id="posts_container">
                     <div id="posts">
                         {{ postbit|raw }}
                     </div>
-                </td>
-            </tr>
-        </table>
-        <br />
-    {% endif %}
-    {{ reply_errors|raw }}
-    {% if newreply.showmodnotice %}
-        <div class="pm_alert">
-            {{ newreply.moderation_text }}
-        </div>
-    {% endif %}
-    <form action="newreply.php?tid={{ thread.tid }}&amp;processed=1" method="post" enctype="multipart/form-data" name="input">
-        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-            <tr>
-                <td class="thead" colspan="2"><strong>{{ lang.post_new_reply }}</strong></td>
-            </tr>
-            <tr>
-                <td class="tcat" colspan="2"><span class="smalltext"><strong>{{ trans('reply_to', thread.subject) }}</strong></span></td>
-            </tr>
-            {{ loginbox|raw }}
-            <tr>
-                <td class="trow2" width="20%"><strong><label for="subject">{{ lang.post_subject }}</label></strong></td>
-                <td class="trow2"><input type="text" class="textbox" name="subject" size="40" maxlength="85" id="subject" value="{{ newreply.subject }}" tabindex="1" /></td>
-            </tr>
-            {% if newreply.showposticons %}
-                <tr>
-                    <td class="trow1" style="vertical-align: top">
-                        <strong>{{ lang.post_icon }}</strong>
-                        <span class="smalltext">
-                            <label class="posticons_label"><input type="radio" class="radio" name="icon" value="-1"{% if newreply.emptyiconcheck %} checked="checked"{% endif %} />{{ lang.no_post_icon }}</label>
-                        </span>
-                    </td>
-                    <td class="trow1" valign="top">
-                        {% for posticon in posticons %}
-                            <label class="posticons_label">
-                                <input type="radio" name="icon" value="{{ posticon.iid }}"{% if posticon.checked %} checked="checked"{% endif %} /> 
-                                <img src="{{ posticon.path }}" alt="{{ posticon.name }}" title="{{ posticon.name }}" />
-                            </label>
-                        {% endfor %}
-                    </td>
-                </tr>
-            {% endif %}
-            <tr>
-                <td class="trow2" valign="top"><strong><label for="message">{{ lang.your_message }}</label></strong><br />{{ smilieinserter|raw }}</td>
-                <td class="trow2">
-                    <textarea id="message" name="message" rows="20" cols="70" tabindex="2" >{{ newreply.message }}</textarea>
-                    {{ codebuttons|raw }}
-                    {% if newreply.multiquote %}
-                        <div id="multiquote_unloaded">
-                            <span class="smalltext">
-                                {{ newreply.multiquote_text }} <a href="./newreply.php?tid={{ thread.tid }}" onclick="return Post.loadMultiQuoted();">{{ newreply.multiquote_quote }}</a>, 
-                                <a href="javascript:void(0)" onclick="Post.clearMultiQuoted(); return false;">{{ newreply.multiquote_deselect }}</a>
-                            </span>
+                </div>
+            </section>
+        {% endif %}
+        {{ reply_errors|raw }}
+        {% if newreply.showmodnotice %}
+            <div class="alert alert--red-alert">
+                <i class="alert__icon fas fa-exclamation-triangle"></i>
+                <div class="alert__message">{{ newreply.moderation_text }}</div>
+            </div>
+        {% endif %}
+        <form action="newreply.php?tid={{ thread.tid }}&amp;processed=1" method="post" enctype="multipart/form-data" name="input">
+            <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+            <div class="form form--compose compose">
+				<input type="checkbox" class="compose__checkbox" id="show-post-options">
+				<input type="checkbox" class="compose__checkbox" id="show-attachments"{% if newreply.showattachments and attachments|length > 0 %} checked="checked"{% endif %}>
+                <section class="section section--form compose__primary-section">
+                    <div class="row row--form field">
+                        <h3 class="field__name visually-hidden"><label for="subject">{{ lang.post_subject }}</h3>
+                        <input type="text" class="textbox textbox--subject" name="subject" size="40" maxlength="85" id="subject" value="{{ newreply.subject }}" tabindex="1" />
+                    </div>
+                    {{ loginbox|raw }}
+
+                    {% if newreply.showposticons %}
+                        {% set emptyiconcheck = newreply.emptyiconcheck %}
+                        {% include 'misc/posticons.twig' %}
+                    {% endif %}
+
+                    <div class="row row--form field">
+                        <h3 class="field__name visually-hidden"><label for="message">{{ lang.your_message }}</label></h3>
+    					<div class="compose__container">
+    						<div class="compose__message">
+    							<textarea name="message" id="message" rows="20" cols="70" tabindex="3">{{ newreply.message }}</textarea>
+                                {{ codebuttons|raw }}
+                                {% if newreply.multiquote %}
+                                    <div id="multiquote_unloaded">
+                                        {{ newreply.multiquote_text }} <a href="./newreply.php?tid={{ thread.tid }}" onclick="return Post.loadMultiQuoted();">{{ newreply.multiquote_quote }}</a>,
+                                        <a href="javascript:void(0)" onclick="Post.clearMultiQuoted(); return false;">{{ newreply.multiquote_deselect }}</a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            {{ smilieinserter|raw }}
                         </div>
-                    {% endif %}
-                </td>
-            </tr>
-            {% if newreply.showpostoptions %}
-                <tr>
-                    <td class="trow1" valign="top"><strong>{{ lang.post_options }}</strong></td>
-                    <td class="trow1">
-                        <span class="smalltext">
-                            {% if newreply.showsignature %}
-                                <label>
-                                    <input type="checkbox" class="checkbox" name="postoptions[signature]" value="1" tabindex="6"{% if newreply.postoptions.signature %} checked="checked"{% endif %} /> {{ lang.options_sig|raw }}
-                                </label><br />
+                        <div class="compose__option-buttons">
+							{% if newreply.showpostoptions %}
+    							<label for="show-post-options" class="button button--basic compose__option-button--options">
+    								<i class="button__icon fas fa-cog"></i>
+    								<span class="button__text">{{ lang.options }}</span>
+    							</label>
                             {% endif %}
-                            {% if newreply.showdisablesmilies %}
-                                <label>
-                                    <input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="1" tabindex="9"{% if newreply.postoptions.disablesmilies %} checked="checked"{% endif %} /> {{ lang.options_disablesmilies|raw }}
-                                </label>
+
+                            {% if newreply.showattachments %}
+    							<label for="show-attachments" class="button button--basic compose__option-button--attachments">
+    								<i class="button__icon fas fa-paperclip"></i>
+    								<span class="button__text">{{ lang.upload_attachments }}</span>
+    							</label>
                             {% endif %}
-                        </span>
-                    </td>
-                </tr>
-            {% endif %}
-            {% if newreply.showmodoptions %}
-                <tr>
-                    <td class="trow2" valign="top"><strong>{{ lang.mod_options }}</strong></td>
-                    <td class="trow2">
-                        <span class="smalltext">
-                            {% if newreply.showcloseoption %}
-                                <label>
-                                    <input type="checkbox" class="checkbox" name="modoptions[closethread]" value="1"{% if newreply.modoptions.closethread %} checked="checked"{% endif %} />&nbsp;{{ lang.close_thread|raw }}
-                                </label><br />
+
+                            {% if mybb.user.uid %}
+                                <button type="submit" name="savedraft" value="draft" class="button button--basic">
+                                    <i class="button__icon far fa-file"></i>
+                                    <span class="button__text">{{ lang.save_draft }}</span>
+                                </button>
                             {% endif %}
-                            {% if newreply.showstickoption %}
-                                <label>
-                                    <input type="checkbox" class="checkbox" name="modoptions[stickthread]" value="1"{% if newreply.modoptions.stickthread %} checked="checked"{% endif %} />&nbsp;{{ lang.stick_thread|raw }}
-                                </label>
-                            {% endif %}
-                        </span>
-                    </td>
-                </tr>
-            {% endif %}
-            {% if mybb.user.uid %}
-                <tr>
-                    <td class="trow1" valign="top">
-                        <strong>{{ lang.thread_subscription_method }}</strong><br />
-                        <span class="smalltext">{{ lang.thread_subscription_method_desc }}</span>
-                    </td>
-                    <td class="trow1 smalltext">
-                        <label>
-                            <input type="radio" name="postoptions[subscriptionmethod]" value="" style="vertical-align: middle;"{% if newreply.subscriptionmethod.dont %} checked="checked"{% endif %} /> {{ lang.no_subscribe }}
-                        </label><br />
-                        <label>
-                            <input type="radio" name="postoptions[subscriptionmethod]" value="none" style="vertical-align: middle;"{% if newreply.subscriptionmethod.none %} checked="checked"{% endif %} /> {{ lang.no_subscribe_notification }}
-                        </label><br />
-                        <label>
-                            <input type="radio" name="postoptions[subscriptionmethod]" value="email" style="vertical-align: middle;"{% if newreply.subscriptionmethod.email %} checked="checked"{% endif %} /> {{ lang.instant_email_subscribe }}
-                        </label><br />
-                        <label>
-                            <input type="radio" name="postoptions[subscriptionmethod]" value="pm" style="vertical-align: middle;"{% if newreply.subscriptionmethod.pm %} checked="checked"{% endif %} /> {{ lang.instant_pm_subscribe }}
-                        </label><br />
-                    </td>
-                </tr>
-            {% endif %}
-            {{ captcha|raw }}
-        </table>
-        {% if newreply.showattachments %}
-            <br />
-            <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-                <tr>
-                    <td class="thead" colspan="3"><strong>{{ lang.attachments }}</strong></td>
-                </tr>
-                <tr>
-                    <td class="tcat smalltext" colspan="3">{{ trans('attach_quota', newreply.friendlyusage, newreply.friendlyquota) }} <a href="usercp.php?action=attachments">{{ lang.view_attachments }}</a></td>
-                </tr>
-                {% if newreply.showattachoptions %}
-                    <tr>
-                        <td class="trow1" width="1"><img src="{{ theme.imgdir }}/paperclip.png" alt="" /></td>
-                        <td class="trow1" style="white-space: nowrap"><strong>{{ lang.new_attachment }}</strong> <input type="file" name="attachment" size="30" class="fileupload" /></td>
-                        <td class="trow1" style="white-space: nowrap" align="center">
-                            {% if newreply.showattachupdate %}
-                                <input type="submit" class="button" name="updateattachment" value="{{ lang.update_attachment }}" tabindex="12" />
-                            {% endif %}
-                            {% if newreply.showattachadd %}
-                                <input type="submit" class="button" name="newattachment" value="{{ lang.add_attachment }}" tabindex="13" />
-                            {% endif %}
-                        </td>
-                    </tr>
-                {% endif %}
-                {% for attachment in attachments %}
-                    {% if attachment.visible %}
-                        <tr>
-                            <td class="trow2" width="1" align="center">{{ attachment.icon|raw }}</td>
-                            <td class="trow2" width="60%" style="white-space: nowrap">{{ attachment.filename }} ({{ attachment.size }})</td>
-                            <td class="trow2" style="white-space: nowrap; text-align: center;">
-                                <input type="submit" class="button" name="rem" value="{{ lang.remove_attachment }}" onclick="return Post.removeAttachment({{ attachment.aid }});" /> 
-                                {% if attachment.showinsert %}
-                                    <input type="button" class="button" name="insert" value="{{ lang.insert_attachment_post }}" onclick="$('#message').sceditor('instance').insertText('[attachment={{ attachment.aid }}]'); return false;" />
+
+							<button type="submit" name="previewpost" value="preview" class="button button--basic">
+								<i class="button__icon fas fa-edit"></i>
+								<span class="button__text">{{ lang.preview_post }}</span>
+							</button>
+						</div>
+                    </div>
+                </section>
+
+                {% if newreply.showpostoptions %}
+                    <section class="section section--form compose__hidden-section compose__hidden-section--options">
+                    	<h2 class="title title--section">{{ lang.post_options }}</h2>
+                    	<div class="section__container">
+                    		<div class="row row--form field">
+                                {% if newreply.showsignature %}
+                                    <p class="option-field option-field--compact">
+                                        <label>
+                                            <input type="checkbox" class="checkbox" name="postoptions[signature]" value="1" tabindex="6"{% if newreply.postoptions.signature %} checked="checked"{% endif %} />
+                                            {{ lang.options_sig|raw }}
+                                        </label>
+                                    </p>
                                 {% endif %}
-                            </td>
-                        </tr>
+                                {% if newreply.showdisablesmilies %}
+                                    <p class="option-field option-field--compact">
+                                        <label>
+                                            <input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="1" tabindex="9"{% if newreply.postoptions.disablesmilies %} checked="checked"{% endif %} />
+                                            {{ lang.options_disablesmilies|raw }}
+                                        </label>
+                                    </p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </section>
+                {% endif %}
+
+                {% if newreply.showmodoptions %}
+                    <section class="section section--form compose__hidden-section compose__hidden-section--options">
+                        <h2 class="title title--section">{{ lang.mod_options }}</h2>
+                        <div class="section__container">
+                              <div class="row row--form field">
+                                 {% if newreply.showcloseoption %}
+                                    <p class="option-field option-field--compact">
+                                        <label>
+                                            <input type="checkbox" class="checkbox" name="modoptions[closethread]" value="1"{% if newreply.modoptions.closethread %} checked="checked"{% endif %} />
+                                            {{ lang.close_thread|raw }}
+                                        </label>
+                                    </p>
+                                {% endif %}
+                                {% if newreply.showstickoption %}
+                                    <p class="option-field option-field--compact">
+                                        <label>
+                                            <input type="checkbox" class="checkbox" name="modoptions[stickthread]" value="1"{% if newreply.modoptions.stickthread %} checked="checked"{% endif %} />
+                                            {{ lang.stick_thread|raw }}
+                                        </label>
+                                    </p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </section>
+                {% endif %}
+
+                {% if mybb.user.uid %}
+                    {% include 'misc/subscriptionmethod.twig' %}
+                {% endif %}
+
+                {{ captcha|raw }}
+
+                {% if newreply.showattachments %}
+                    {% include 'misc/attachments.twig' %}
+                {% endif %}
+
+                <div class="form__submit">
+					<button type="submit" class="button button--big" name="submit" tabindex="3" accesskey="s">
+						<i class="button__icon fas fa-comment"></i>
+						<span class="button__text">{{ lang.post_reply }}</span>
+					</button>
+				</div>
+                <input type="hidden" name="action" value="do_newreply" />
+                <input type="hidden" name="replyto" value="{{ newreply.replyto }}" />
+                <input type="hidden" name="posthash" value="{{ newreply.posthash }}" />
+                <input type="hidden" name="attachmentaid" value="" />
+                <input type="hidden" name="attachmentact" value="" />
+                <input type="hidden" name="quoted_ids" value="{{ newreply.quoted_ids }}" />
+                <input type="hidden" name="tid" value="{{ thread.tid }}" />
+                {% if newreply.isdraft %}
+                    <input type="hidden" name="pid" value="{{ newreply.pid }}" />
+                {% endif %}
+            </div>
+        </form>
+        {% if newreply.showforumrules %}
+            {% if forum.rulestype == 2 %}
+                <section class="container">
+                    <a href="misc.php?action=rules&amp;fid={{ forum.fid }}">{{ forum.rulestitle }}</a>
+                </section>
+            {% else %}
+            <section class="container">
+                <h4 class="container__title">{{ forum.rulestitle }}</h4>
+                <div class="scaleimages">{{ forum.rules|raw }}</div>
+            </section>
+            {% endif %}
+        {% endif %}
+
+        {% if mybb.settings.threadreview %}
+            <section class="block">
+                <h2 class="title title--major">{{ lang.thread_review }}</h2>
+                {% for post in posts %}
+                    {% if post.visible == 1 %}
+                        {% set row = alt_trow() %}
                     {% else %}
-                        <tr>
-                            <td class="trow_shaded" width="1" align="center">{{ attachment.icon|raw }}</td>
-                            <td class="trow_shaded" style="white-space: nowrap"><em><a href="attachment.php?aid={{ attachment.aid }}" target="_blank">{{ attachment.filename }}</a> ({{ attachment.size }})</em></td>
-                            <td class="trow_shaded" style="white-space: nowrap; text-align: center;">
-                                <input type="submit" class="button" name="rem" value="{{ lang.remove_attachment }}" onclick="return Post.removeAttachment({{ attachment.aid }});" />
-                                {% if attachment.showinsert %}
-                                    <input type="button" class="button" name="insert" value="{{ lang.insert_attachment_post }}" onclick="$('#message').sceditor('instance').insertText('[attachment={{ attachment.aid }}]'); return false;" />
-                                {% endif %}
-                            </td>
-                        </tr>
+                        {% set row = 'trow_shaded' %}
                     {% endif %}
+                    <div class="row">
+                        <h2 class="title title--minor">{{ lang.posted_by }} {{ post.username }} - {{ post.postdate|raw }}</h2>
+                        <div class="block__content scaleimages">
+                            {{ post.message|raw }}
+                        </div>
+                    </div>
                 {% endfor %}
-            </table>
-        {% endif %}
-        <br />
-        <div align="center">
-            <input type="submit" class="button" name="submit" value="{{ lang.post_reply }}" tabindex="3" accesskey="s" /> 
-            <input type="submit" class="button" name="previewpost" value="{{ lang.preview_post }}" tabindex="4" />
-            {% if mybb.user.uid %}
-                <input type="submit" class="button" name="savedraft" value="{{ lang.save_draft }}" />
-            {% endif %}
-            <input type="hidden" name="action" value="do_newreply" />
-            <input type="hidden" name="replyto" value="{{ newreply.replyto }}" />
-            <input type="hidden" name="posthash" value="{{ newreply.posthash }}" />
-            <input type="hidden" name="attachmentaid" value="" />
-            <input type="hidden" name="attachmentact" value="" />
-            <input type="hidden" name="quoted_ids" value="{{ newreply.quoted_ids }}" />
-            <input type="hidden" name="tid" value="{{ thread.tid }}" />
-            {% if newreply.isdraft %}
-                <input type="hidden" name="pid" value="{{ newreply.pid }}" />
-            {% endif %}
-        </div>
-    </form>
-    {% if newreply.showforumrules %}
-        {% if forum.rulestype == 2 %}
-            <br />
-            <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-                <tr>
-                    <td class="trow1"><strong><a href="misc.php?action=rules&amp;fid={{ forum.fid }}">{{ forum.rulestitle }}</a></strong></td>
-                </tr>
-            </table>
-            <br />
-        {% else %}
-            <br />
-            <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder tfixed">
-                <tr>
-                    <td class="thead"><strong>{{ forum.rulestitle }}</strong></td>
-                </tr>
-                <tr>
-                    <td class="trow1 scaleimages"><span class="smalltext">{{ forum.rules|raw }}</span></td>
-                </tr>
-            </table>
-            <br />
-        {% endif %}
-    {% endif %}
-    {% if mybb.settings.threadreview %}
-        <br />
-        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder tfixed">
-            <tr>
-                <td class="thead" style="text-align: center;"><strong>{{ lang.thread_review }}</strong></td>
-            </tr>
-            {% for post in posts %}
-                {% if post.visible == 1 %}
-                    {% set row = alt_trow() %}
-                {% else %}
-                    {% set row = 'trow_shaded' %}
+                {% if newreply.showmore %}
+                    <div class="block__footer-link">{{ lang.thread_review_more|raw }}</div>
                 {% endif %}
-                <tr>
-                    <td class="tcat"><span class="smalltext"><strong>{{ lang.posted_by }} {{ post.username }} - {{ post.postdate|raw }}</strong></span></td>
-                </tr>
-                <tr>
-                    <td class="{{ row }} scaleimages">
-                        {{ post.message|raw }}
-                    </td>
-                </tr>
-            {% endfor %}
-            {% if newreply.showmore %}
-                <tr>
-                    <td class="thead" align="center"><span class="smalltext"><strong>{{ lang.thread_review_more|raw }}</strong></span></td>
-                </tr>
-            {% endif %}
-        </table>
-    {% endif %}
-    <script type="text/javascript">
-        $(".author_avatar img").error(function () {
-            $(this).unbind("error").closest('.author_avatar').remove();
-        });
-    </script>
+            </section>
+        {% endif %}
+        <script type="text/javascript">
+            $(".author_avatar img").error(function () {
+                $(this).unbind("error").closest('.author_avatar').remove();
+            });
+        </script>
+    </div>
 {% endblock body %}

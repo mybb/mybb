@@ -1,0 +1,11 @@
+{% set class %}{{ thread.bgcolor }} {{ thread.classType }}{% endset %}
+<tr class="inline_row">
+    <td align="center" class="{{ class }}" width="2%"><span class="thread_status {{ folder }}" title="{{ folder_label }}">&nbsp;</span></td>
+    <td align="center" class="{{ class }}" width="2%">&nbsp;</td>
+    <td class="{{ class }}"><em>{{ lang.deleted_thread }}</em></td>
+    <td align="center" class="{{ class }}">-</td>
+    <td align="center" class="{{ class }}">-</td>
+    {% include 'forumdisplay/thread_rating.twig' %}
+    <td class="{{ class }}" style="white-space: nowrap; text-align: right;">-</td>
+    {% include 'forumdisplay/thread_modbit.twig' %}
+</tr>

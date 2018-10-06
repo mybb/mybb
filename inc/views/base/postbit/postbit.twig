@@ -27,25 +27,35 @@
 	</div>
 {% endif %}
 <a name="pid{{ post.pid }}" id="pid{{ post.pid }}"></a>
-<div class="post classic {{ post.unapproved_shade }}" style="{{ post.visibility }}" id="post_{{ post.pid }}">
-	<div class="post_author scaleimages">
+<div class="post {{ post.unapproved_shade }}" style="{{ post.visibility }}" id="post_{{ post.pid }}">
+	<div class="post_meta">
 		{% if post.showavatar %}
-			<div class="author_avatar">
-				<a href="{{ post.profilelink_plain|raw }}"><img src="{{ post.useravatar.image }}" alt="" {{ post.useravatar.width_height|raw }} /></a>
-			</div>
+			<a href="{{ post.profilelink_plain|raw }}" class="avatar-profile-link"><img src="{{ post.useravatar.image }}" alt="" {{ post.useravatar.width_height|raw }} class="avatar" /></a>
 		{% endif %}
-		<div class="author_information">
-			<strong><span class="largetext">{{ post.profilelink|raw }}</span></strong> 
+
+		<h3 class="post__author">
+			{{ post.profilelink|raw }}
 			{% if post.onlinestatus == "online" %}
-				<a href="online.php" title="{{ lang.postbit_status_online }}"><img src="{{ theme.imgdir }}/buddy_online.png" border="0" alt="{{ lang.postbit_status_online }}" class="buddy_status" /></a>
+				<span class="user-status user-status--online">
+					<a href="online.php" title="{{ lang.postbit_status_online }}" class="user-status__link">
+						<i class="user-status__icon fas fa-dot-circle" title="{{ lang.postbit_status_online }}"></i>
+					</a>
+				</span>
 			{% elseif post.onlinestatus == "away" %}
-				<a href="{{ post.profilelink_plain|raw }}" title="{{ lang.postbit_status_away }}"><img src="{{ theme.imgdir }}/buddy_away.png" border="0" alt="{{ lang.postbit_status_away }}" class="buddy_status" /></a>
+				<span class="user-status user-status--away">
+					<a href="{{ post.profilelink_plain|raw }}" title="{{ lang.postbit_status_away }}" class="user-status__link">
+						<i class="user-status__icon fas fa-dot-circle" title="{{ lang.postbit_status_away }}"></i>
+					</a>
+				</span>
 			{% else %}
-				<img src="{{ theme.imgdir }}/buddy_offline.png" title="{{ lang.postbit_status_offline }}" alt="{{ lang.postbit_status_offline }}" class="buddy_status" />
+				<span class="user-status user-status--offline">
+					<i class="user-status__icon fas fa-dot-circle" title="{{ lang.postbit_status_offline }}"></i>
+				</span>
 			{% endif %}
-			<br />
-			<span class="smalltext">
-				{{ post.usertitle|raw }}<br />
+		</h3>
+
+
+			{#	{{ post.usertitle|raw }}<br />
 				{% if post.starimage and post.stars %}
 					{% spaceless %}
 						{% for star in range(1, post.stars) %}
@@ -57,9 +67,10 @@
 				{% if post.groupimage %}
 					<img src="{{ usergroup.image }}" alt="{{ usergroup.title }}" title="{{ usergroup.title }}" /><br />
 				{% endif %}
-			</span>
-		</div>
-		<div class="author_statistics">
+
+				#}
+
+		{#
 			{% if post.isguest %}
 				&nbsp;
 			{% else %}
@@ -70,7 +81,7 @@
 					<br />{{ lang.postbit_reputation }} {{ post.userreputation|raw }}
 				{% endif %}
 				{% for field in post.profile_fields %}
-					<br />{{ field.name }}: 
+					<br />{{ field.name }}:
 					{% if field.multi and field.useropts %}
 						<ul style="margin: 0; padding-left: 15px;">
 						{% for val in field.useropts %}
@@ -85,7 +96,8 @@
 					<br />{{ lang.postbit_warning_level }} <a href="{{ post.warning_link }}">{{ post.warning_level|raw }}</a>
 				{% endif %}
 			{% endif %}
-		</div>
+		</div>#}
+
 	</div>
 	<div class="post_content">
 		<div class="post_head">
@@ -95,12 +107,18 @@
 			{% if post.showicon %}
 				<img src="{{ icon.path }}" alt="{{ icon.name }}" title="{{ icon.name }}" style="vertical-align: middle;" />&nbsp;
 			{% endif %}
-			<span class="post_date">{{ post.postdate|raw }} <span class="post_edit" id="edited_by_{{ post.pid }}">
+			<span class="post_date">{{ post.dateline|my_date }} <span class="post_edit" id="edited_by_{{ post.pid }}">
 			{% if post.editedmsg %}
 				<span class="edited_post">({{ post.editnote|raw }} {{ post.editedprofilelink|raw }}.{% if post.editreason %} <em>{{ lang.postbit_editreason }}: {{ post.editreason }}</em>{% endif %})</span>
 			{% endif %}
 			</span></span>
-		{{ post.subject_extra|raw }}
+			{% if post.is_pm %}
+				<br />
+				{{ lang.to }} {{ post.to_recipients|raw }}
+				{% if post.showbcc %}
+					<br />{{ lang.bcc }} {{ post.bcc_recipients|raw }}
+				{% endif %}
+			{% endif %}
 		</div>
 		<div class="post_body scaleimages" id="pid_{{ post.pid }}">
 			{{ post.message|raw }}
@@ -209,11 +227,12 @@
 				<a href="moderation.php?action=purgespammer&amp;uid={{ post.uid }}" title="{{ lang.postbit_purgespammer }}" class="postbit_purgespammer"><span>{{ lang.postbit_button_purgespammer }}</span></a>
 			{% endif %}
 			{% if post.is_pm %}
-				<a href="private.php?action=send&amp;pmid={{ post.pid }}&amp;do=reply" title="{{ lang.reply_title }}" class="postbit_reply_pm"><span>{{ lang.postbit_button_reply_pm }}</span></a>
+				<a href="private.php?action=send&amp;pmid={{ post.pmid }}&amp;do=reply" title="{{ lang.reply_title }}" class="postbit_reply_pm"><span>{{ lang.postbit_button_reply_pm }}</span></a>
 				{% if post.replyall %}
-					<a href="private.php?action=send&amp;pmid={{ post.pid }}&amp;do=replyall" title="{{ lang.reply_to_all }}" class="postbit_reply_all"><span>{{ lang.postbit_button_reply_all }}</span></a>
+					<a href="private.php?action=send&amp;pmid={{ post.pmid }}&amp;do=replyall" title="{{ lang.reply_to_all }}" class="postbit_reply_all"><span>{{ lang.postbit_button_reply_all }}</span></a>
 				{% endif %}
-				<a href="private.php?action=send&amp;pmid={{ post.pid }}&amp;do=forward" title="{{ lang.forward_title }}" class="postbit_forward_pm"><span>{{ lang.postbit_button_forward }}</span></a><a href="private.php?action=delete&amp;pmid={{ post.pid }}&amp;my_post_key={{ mybb.post_code }}" title="{{ lang.delete_title }}" class="postbit_delete_pm"><span>{{ lang.postbit_button_delete_pm }}</span></a>
+				<a href="private.php?action=send&amp;pmid={{ post.pmid }}&amp;do=forward" title="{{ lang.forward_title }}" class="postbit_forward_pm"><span>{{ lang.postbit_button_forward }}</span></a>
+				<a href="private.php?action=delete&amp;pmid={{ post.pmid }}&amp;my_post_key={{ mybb.post_code }}" title="{{ lang.delete_title }}" class="postbit_delete_pm"><span>{{ lang.postbit_button_delete_pm }}</span></a>
 			{% endif %}
 		</div>
 	</div>

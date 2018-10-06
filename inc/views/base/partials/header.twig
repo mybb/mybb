@@ -1,38 +1,72 @@
 <div id="container">
+    {% if mybb.settings.dst_correction %}
+    	{{ mybb.settings.dst_correction }}
+    {% endif %}
     <a name="top" id="top"></a>
-    <div id="header">
-        <div id="logo">
-            <div class="wrapper">
-                <a href="{{ mybb.settings.bburl }}/index.php">
-                    <img src="{{ theme.logo }}" alt="{{ mybb.settings.bburl }}" title="{{ mybb.settings.bburl }}" />
+
+    <header class="header">
+        <div class="wrapper wrapper--header">
+            <h1 class="header__title">
+                <a href="{{ mybb.settings.bburl }}/index.php" class="logo logo--light  header__title__logo">
+                    <span class="logo__icon">
+                        {% include 'partials/logo.svg' %}
+                    </span>
+                    <span class="logo__text">{{ mybb.settings.bbname }}</span>
                 </a>
-                <ul class="menu top_links">
+            </h1>
+            <label class="menu-button" for="show-mobile-menu"><span class="menu-button__icon"><i class="fas fa-bars"></i></span></label>
+            <label class="menu-close-button menu-close-button--hide" for="show-mobile-menu"><span class="menu-close-button__icon"><i class="far fa-times-circle"></i></span></label>
+            <input type="checkbox" class="header__checkbox" id="show-mobile-menu">
+            <nav class="main-menu">
+                <ul class="main-menu__links">
                     {% spaceless %}
                     {% if mybb.settings.portal %}
-                        <li><a href="{{ mybb.settings.bburl }}/portal.php" class="portal">{{ lang.toplinks_portal }}</a></li>
-                    {% endif %}
-                    {% if mybb.usergroup.cansearch %}
-                        <li><a href="{{ mybb.settings.bburl }}/search.php" class="search">{{ lang.toplinks_search }}</a></li>
+                        <li class="main-menu__item">
+                        	<a href="{{ mybb.settings.bburl }}/portal.php" class="main-menu__link">
+                        		<i class="main-menu__icon fas fa-newspaper fa-fw"></i>
+                        		<span class="main-menu__text">{{ lang.toplinks_portal }}</span>
+                        	</a>
+                        </li>
                     {% endif %}
                     {% if mybb.settings.enablememberlist and mybb.usergroup.canviewmemberlist %}
-                        <li><a href="{{ mybb.settings.bburl }}/memberlist.php" class="memberlist">{{ lang.toplinks_memberlist }}</a></li>
+                        <li class="main-menu__item">
+                            <a href="{{ mybb.settings.bburl }}/memberlist.php" class="main-menu__link">
+                                <i class="main-menu__icon fas fa-users fa-fw"></i>
+                                <span class="main-menu__text">{{ lang.toplinks_memberlist }}</span>
+                            </a>
+                        </li>
                     {% endif %}
                     {% if mybb.settings.enablecalendar and mybb.usergroup.canviewcalendar %}
-                        <li><a href="{{ mybb.settings.bburl }}/calendar.php" class="calendar">{{ lang.toplinks_calendar }}</a></li>
+                        <li class="main-menu__item">
+                            <a href="{{ mybb.settings.bburl }}/calendar.php" class="main-menu__link">
+                                <i class="main-menu__icon fas fa-calendar-alt fa-fw"></i>
+                                <span class="main-menu__text">{{ lang.toplinks_calendar }}</span>
+                            </a>
+                        </li>
                     {% endif %}
-                    <li><a href="{{ mybb.settings.bburl }}/misc.php?action=help" class="help">{{ lang.toplinks_help }}</a></li>
                     {% endspaceless %}
                 </ul>
-            </div>
-        </div>
-        <div id="panel">
+           </nav>
+       </div>
+   </header>
+	<nav class="user-bar">
+		<div class="wrapper wrapper--user-bar">
             {% if mybb.user.uid > 0 %}
                 {% include 'header/welcomeblock_member.twig' %}
             {% else %}
                 {% include 'header/welcomeblock_guest.twig' %}
             {% endif %}
+            {% include 'header/quicksearch.twig' %}
         </div>
-    </div>
-    <div id="content">
-        <div class="wrapper">
-            <br />
+	</nav>
+    <div class="main">
+    	<div class="wrapper wrapper--main">
+    		<div id="content">
+                {% for template, options in headerMessages %}
+                    {% if template matches '/^\\d+$/' %}
+                        {% include 'messages/base.twig' %}
+                    {% else %}
+                        {% include 'messages/' ~ template ~ '.twig' %}
+                    {% endif %}
+                {% endfor %}
+                {{ build_breadcrumb_navigation() }}

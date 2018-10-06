@@ -518,6 +518,7 @@ $tables[] = "CREATE TABLE mybb_profilefields (
 	name varchar(100) NOT NULL default '',
 	description TEXT NOT NULL,
 	disporder smallint NOT NULL default '0',
+	contact tinyint(1) NOT NULL default '0',
 	type TEXT NOT NULL,
 	regex TEXT NOT NULL,
 	length smallint NOT NULL default '0',
@@ -836,7 +837,10 @@ $tables[] = "CREATE TABLE mybb_userfields (
 	ufid int NOT NULL default '0',
 	fid1 TEXT NOT NULL,
 	fid2 TEXT NOT NULL,
-	fid3 TEXT NOT NULL
+	fid3 TEXT NOT NULL,
+	fid4 TEXT NOT NULL,
+	fid5 TEXT NOT NULL,
+	fid6 TEXT NOT NULL
 );";
 
 $tables[] = "CREATE TABLE mybb_usergroups (
@@ -953,11 +957,6 @@ $tables[] = "CREATE TABLE mybb_users (
 	lastvisit int NOT NULL default '0',
 	lastpost int NOT NULL default '0',
 	website varchar(200) NOT NULL default '',
-	icq varchar(10) NOT NULL default '',
-	aim varchar(50) NOT NULL default '',
-	yahoo varchar(50) NOT NULL default '',
-	skype varchar(75) NOT NULL default '',
-	google varchar(75) NOT NULL default '',
 	birthday varchar(15) NOT NULL default '',
 	birthdayprivacy varchar(4) NOT NULL default 'all',
 	signature TEXT NOT NULL,

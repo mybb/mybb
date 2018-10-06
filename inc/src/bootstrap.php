@@ -5,8 +5,10 @@ namespace MyBB;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Router;
+use MyBB\Twig\Extensions\CoreExtension;
 use MyBB\Twig\Extensions\LangExtension;
 use MyBB\Twig\Extensions\ThemeExtension;
+use MyBB\Utilities\BreadcrumbManager;
 use Psr\Container\ContainerInterface;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -42,6 +44,19 @@ $container->singleton(\MyLanguage::class, function () {
 
 $container->alias(\MyLanguage::class, 'lang');
 
+// Breadcrumb
+$container->singleton(BreadcrumbManager::class, function (ContainerInterface $container) {
+    /** @var \MyBB $mybb */
+    $mybb = $container[\MyBB::class];
+
+    return new BreadcrumbManager(
+        $mybb->settings['bbname'],
+        $mybb->settings['bburl']
+    );
+});
+
+$container->alias(BreadcrumbManager::class, 'breadcrumbs');
+
 // Twig
 $container->singleton(\Twig_Environment::class, function (ContainerInterface $container) {
     if (defined('IN_ADMINCP')) {
@@ -71,8 +86,21 @@ $container->singleton(\Twig_Environment::class, function (ContainerInterface $co
         'cache' => __DIR__ . '/../../cache/views',
     ]);
 
-    $env->addExtension(new ThemeExtension($container->get(\MyBB::class), $container->get(\DB_Base::class)));
-    $env->addExtension(new LangExtension($container->get(\MyLanguage::class)));
+    /** @var \MyBB $mybb */
+    $mybb = $container->get(\MyBB::class);
+    /** @var \MyLanguage $lang */
+    $lang = $container->get(\MyLanguage::class);
+
+    $env->addExtension(
+        new CoreExtension(
+            $mybb,
+            $lang,
+            $container[\pluginSystem::class],
+            $container[BreadcrumbManager::class]
+        )
+    );
+    $env->addExtension(new ThemeExtension($mybb, $container->get(\DB_Base::class)));
+    $env->addExtension(new LangExtension($lang));
 
     $plugins->run_hooks('twig_environment_env', $env);
 
