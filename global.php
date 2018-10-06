@@ -673,9 +673,6 @@ if ($mybb->user['uid'] > 0 && $mybb->user['dstcorrection'] == 2) {
     ]);
 }
 
-// Set the link to the archive.
-$archive_url = build_archive_link();
-
 // Check banned ip addresses
 if (is_banned_ip($session->ipaddress, true)) {
     if ($mybb->user['uid']) {
