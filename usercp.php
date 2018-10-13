@@ -4185,6 +4185,7 @@ if(!$mybb->input['action'])
 
 				foreach($subscriptions as $thread)
 				{
+					$plugins->run_hooks("usercp_thread_subscriptions_thread");
 					$folder = '';
 					$folder_label = '';
 					$gotounread = '';
@@ -4377,6 +4378,7 @@ if(!$mybb->input['action'])
 		$latest_threads_threads = '';
 		foreach($threadcache as $thread)
 		{
+			$plugins->run_hooks("usercp_latest_threads_thread"); 
 			if($thread['tid'])
 			{
 				$bgcolor = alt_trow();
