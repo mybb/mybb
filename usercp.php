@@ -3375,6 +3375,8 @@ if(!$mybb->input['action'])
 
 				foreach($subscriptions as $thread)
 				{
+					$plugins->run_hooks("usercp_thread_subscriptions_thread");
+
 					if($thread['tid'])
 					{
 						$thread['subject'] = $parser->parse_badwords($thread['subject']);
@@ -3536,6 +3538,7 @@ if(!$mybb->input['action'])
 		// Run the threads...
 		foreach($threadcache as $thread)
 		{
+			$plugins->run_hooks("usercp_latest_threads_thread");
 			if($thread['tid'])
 			{
 				$lastread = 0;
