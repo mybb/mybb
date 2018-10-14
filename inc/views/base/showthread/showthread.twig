@@ -34,7 +34,7 @@
     <div class="page-content">
         <header class="page-header">
             {% if thread.prefix %}
-                <span class="tag tag--float tag--thread-prefix tag--thread-prefix-{{ thread.prefix }}">{{ thread.threadprefix|raw }}</span>
+                <span class="tag tag--float tag--thread-prefix tag--thread-prefix-{{ thread.prefix }}">{{ thread.displayprefix|raw }}</span>
             {% endif %}
             <h1 class="title title--page">{{ thread.subject }}</h1>
         </header>
