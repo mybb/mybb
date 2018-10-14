@@ -11344,7 +11344,7 @@ if(use_xmlhttprequest == "1")
 <td width="5%" class="{$bgcolor}"><div class="postbit_buttons">{$emailcode}</div></td>
 <td width="5%" class="{$bgcolor}"><div class="postbit_buttons">{$pmcode}</div></td>
 </tr>]]></template>
-		<template name="showthread" version="1819"><![CDATA[<html>
+		<template name="showthread" version="1820"><![CDATA[<html>
 <head>
 <title>{$thread['subject']}</title>
 {$headerinclude}
