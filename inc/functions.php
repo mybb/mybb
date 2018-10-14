@@ -8934,19 +8934,20 @@ function my_hash_equals($known_string, $user_string)
 /**
  * Retrieves all referrals for a specified user
  *
- * @param init uid
+ * @param int uid
  * @param int start position
  * @param int total entries
  * @param bool false (default) only return display info, true for all info
- * @return bool Result of the comparison.
+ * @return array
  */
 function get_user_referrals($uid, $start=0, $limit=0, $full=false)
 {
 	global $db;
 
 	$referrals = $query_options = array();
+	$uid = (int) $uid;
 
-	if((int) $uid === 0)
+	if($uid === 0)
 	{
 		return $referrals;
 	}
