@@ -22,9 +22,9 @@
     },
     "require": {
         "php": "^7.1",
-        "illuminate/container": "^5.5",
-        "illuminate/events": "^5.5",
-        "illuminate/routing": "^5.5",
+        "illuminate/container": "^5.7",
+        "illuminate/events": "^5.7",
+        "illuminate/routing": "^5.7",
         "twig/twig": "^2.4"
     },
     "require-dev": {
