@@ -11340,7 +11340,7 @@ if(use_xmlhttprequest == "1")
 <td width="5%" class="{$bgcolor}"><div class="postbit_buttons">{$emailcode}</div></td>
 <td width="5%" class="{$bgcolor}"><div class="postbit_buttons">{$pmcode}</div></td>
 </tr>]]></template>
-		<template name="showthread" version="1818"><![CDATA[<html>
+		<template name="showthread" version="1820"><![CDATA[<html>
 <head>
 <title>{$thread['subject']}</title>
 {$headerinclude}
@@ -11387,7 +11387,7 @@ if(use_xmlhttprequest == "1")
 					<span class="smalltext"><strong><a href="javascript:void(0)" id="thread_modes">{$lang->thread_modes}</a>{$threadnoteslink}</strong></span>
 				</div>
 				<div>
-					<strong>{$thread['threadprefix']}{$thread['subject']}</strong>
+					<strong>{$thread['displayprefix']}{$thread['subject']}</strong>
 				</div>
 			</td>
 		</tr>
