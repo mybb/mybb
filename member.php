@@ -2614,7 +2614,13 @@ if($mybb->input['action'] == "profile")
 	{
 		$bg_color = alt_trow();
 
-		eval("\$referrals = \"".$templates->get("member_profile_referrals")."\";");
+		$uid = (int) $memprofile['uid'];
+		$referral_count = $memprofile['referrals'];
+		if ($referral_count > 0) {
+			eval("\$memprofile['referrals'] = \"".$templates->get('member_referrals_link')."\";");
+		}
+
+		eval("\$referrals = \"".$templates->get('member_profile_referrals')."\";");
 	}
 
 	// Fetch the reputation for this user
@@ -3235,6 +3241,84 @@ if($mybb->input['action'] == "emailuser")
 
 	eval("\$emailuser = \"".$templates->get("member_emailuser")."\";");
 	output_page($emailuser);
+}
+
+if($mybb->input['action'] == 'referrals')
+{
+	$plugins->run_hooks('member_referrals_start');
+
+	$uid = $mybb->get_input('uid', MyBB::INPUT_INT);
+	if(!$uid)
+	{
+		error($lang->referrals_no_user_specified);
+	}
+
+	$user = get_user($uid);
+
+	$lang->nav_referrals = $lang->sprintf($lang->nav_referrals, $user['username']);
+	add_breadcrumb($lang->nav_referrals);
+
+	$query = $db->simple_select('users', 'COUNT(uid) AS total', "referrer='{$uid}'");
+	$referral_count = $db->fetch_field($query, 'total');
+
+	$bg_color = 'trow1';
+
+	if($referral_count == 0)
+	{
+		eval("\$referral_rows = \"".$templates->get('member_no_referrals')."\";");
+	}
+	else
+	{
+		// Figure out if we need to display multiple pages.
+		$perpage = 20;
+		if ((int) $mybb->settings['referralsperpage']) {
+			$perpage = (int) $mybb->settings['referralsperpage'];
+		}
+
+		$page = 1;
+		if($mybb->get_input('page', MyBB::INPUT_INT))
+		{
+			$page = $mybb->get_input('page', MyBB::INPUT_INT);
+		}
+
+		$pages = ceil($referral_count / $perpage);
+
+		if($page > $pages || $page <= 0)
+		{
+			$page = 1;
+		}
+
+		if($page)
+		{
+			$start = ($page-1) * $perpage;
+		}
+		else
+		{
+			$start = 0;
+			$page = 1;
+		}
+
+		$multipage = multipage($referral_count, $perpage, $page, "member.php?action=referrals&amp;uid={$uid}");
+
+		foreach(get_user_referrals($uid, $start, $perpage) as $referral)
+		{
+			// Format user name link
+			$username = htmlspecialchars_uni($referral['username']);
+			$username = format_name($username, $referral['usergroup'], $referral['displaygroup']);
+			$username = build_profile_link($username, $referral['uid']);
+
+			$regdate = my_date('normal', $referral['regdate']);
+
+			eval("\$referral_rows .= \"".$templates->get('member_referral_row')."\";");
+
+			$bg_color = alt_trow();
+		}
+	}
+
+	$plugins->run_hooks('member_referrals_end');
+
+	eval("\$referrals = \"".$templates->get("member_referrals")."\";");
+	output_page($referrals);
 }
 
 if(!$mybb->input['action'])
