@@ -38,7 +38,7 @@
         {% if mybb.settings.usereferrals %}
             <li class="list__item">
                 <span class="list__field">{{ lang.referrals }}</span>
-                <span class="list__value">{{ user.referrals }}</span>
+                <span class="list__value">{{ user.referrals|raw }}</span>
             </li>
         {% endif %}
     </ul>

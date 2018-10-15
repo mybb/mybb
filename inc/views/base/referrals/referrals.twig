@@ -1,0 +1,35 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ trans('nav_referrals', user.username) }} - {{ mybb.settings.bbname }}</title>
+{% endblock head %}
+
+{% block body %}
+    <div class="page-content">
+        <header class="page-header">
+            <h1 class="title title--page">{{ trans('nav_referrals', user.username) }}</h1>
+        </header>
+
+        <section class="block block--container">
+            <h1 class="title visually-hidden">{{ lang.referrals }}</h1>
+        {% if referral_count <= 0 %}
+            {{ lang.member_no_referrals }}
+        {% else %}
+            <table border="0">
+            <tr class="visually-hidden">
+            <td><span class="smalltext"><strong>{{ lang.username }}</strong></span></td>
+            <td style="text-align: right;" class="tcat"><span class="smalltext"><strong>{{ lang.referral_date }}</strong></span></td>
+            </tr>
+            {% for referral in referrals %}
+                <tr style="width: 100%">
+                <td>{{ referral.username|raw }}</td>
+                <td style="width: 100%; text-align: right;">{{ referral.regdate|raw }}</td>
+                </tr>
+            {% endfor %}
+            </table>
+        {% endif %}
+        </section>
+
+        {{ multipage|raw }}
+    </div>
+{% endblock body %}

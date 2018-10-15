@@ -74,6 +74,8 @@ var MyBB = {
 				$("body").css("overflow", "auto");
 			});
 		}
+
+		$("a.referralLink").click(MyBB.showReferrals);
 	},
 
 	popupWindow: function(url, options, root)
@@ -458,6 +460,28 @@ var MyBB = {
 		});
 
 		return false;
+	},
+
+	showReferrals: function(e)
+	{
+		var idPieces, uid;
+
+		e.preventDefault();
+		
+		if(typeof this.id == "undefined")
+		{
+			return false;
+		}
+
+		idPieces = this.id.split("_");
+		uid = parseInt(idPieces[idPieces.length - 1], 10);
+
+		if(uid <= 0)
+		{
+			return false;
+		}
+
+		MyBB.popupWindow("/xmlhttp.php?action=get_referrals&uid="+uid);
 	},
 
 	// Fixes https://github.com/mybb/mybb/issues/1232

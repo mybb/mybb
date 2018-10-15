@@ -1060,6 +1060,41 @@ else if($mybb->input['action'] == "get_buddyselect")
 		xmlhttp_error($lang->buddylist_error);
 	}
 }
+else if($mybb->input['action'] == 'get_referrals')
+{
+	$lang->load('member');
+	$uid = $mybb->get_input('uid', MYBB::INPUT_INT);
+
+	if (!$uid) {
+		xmlhttp_error($lang->referrals_no_user_specified);
+	}
+
+	$referrals = get_user_referrals($uid);
+    $referral_count = count($referrals);
+
+	foreach($referrals as &$referral)
+	{
+		// Format user name link
+		$username = htmlspecialchars_uni($referral['username']);
+		$username = format_name($username, $referral['usergroup'], $referral['displaygroup']);
+		$username = build_profile_link($username, $referral['uid']);
+
+		$regdate = my_date('normal', $referral['regdate']);
+
+		$referral['username'] = $username;
+		$referral['regdate'] = $regdate;
+	}
+	unset($referral);
+
+	$plugins->run_hooks('xmlhttp_referrals_end');
+
+	// Send our headers and output.
+	header("Content-type: text/plain; charset={$charset}");
+	echo \MyBB\template('referrals/referrals_popup.twig', [
+		'referral_count' => $referral_count,
+		'referrals' => $referrals,
+	]);
+}
 
 /**
  * Spits an XML Http based error message back to the browser

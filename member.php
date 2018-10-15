@@ -2486,6 +2486,17 @@ if($mybb->input['action'] == "profile")
 		$memprofile['time_online'] = $lang->timeonline_hidden;
 	}
 
+	// Build Referral
+	if($mybb->settings['usereferrals'] == 1)
+	{
+		$uid = (int) $memprofile['uid'];
+		$referral_count = $memprofile['referrals'];
+		$memprofile['referrals_link'] = \MyBB\template('referrals/referrals_link.twig', [
+			'uid' => $uid,
+			'referral_count' => $referral_count,
+		]);
+	}
+
 	// Fetch the reputation for this user
 	$memprofile['showreputation'] = false;
 	if($memperms['usereputationsystem'] == 1 && $displaygroup['usereputationsystem'] == 1 && $mybb->settings['enablereputation'] == 1)
@@ -3068,6 +3079,84 @@ if($mybb->input['action'] == "emailuser")
 		'errors' => $errors,
 		'captcha' => $captcha,
 		'email' => $email,
+	]));
+}
+
+if($mybb->input['action'] == 'referrals')
+{
+	$plugins->run_hooks('member_referrals_start');
+
+	$uid = $mybb->get_input('uid', MyBB::INPUT_INT);
+	if(!$uid)
+	{
+		error($lang->referrals_no_user_specified);
+	}
+
+	$user = get_user($uid);
+
+	$lang->nav_referrals = $lang->sprintf($lang->nav_referrals, $user['username']);
+	add_breadcrumb($lang->nav_referrals);
+
+	$query = $db->simple_select('users', 'COUNT(uid) AS total', "referrer='{$uid}'");
+	$referral_count = $db->fetch_field($query, 'total');
+
+	$bg_color = 'trow1';
+
+	if($referral_count > 0)
+	{
+		// Figure out if we need to display multiple pages.
+		$perpage = 20;
+		if ((int) $mybb->settings['referralsperpage']) {
+			$perpage = (int) $mybb->settings['referralsperpage'];
+		}
+
+		$page = 1;
+		if($mybb->get_input('page', MyBB::INPUT_INT))
+		{
+			$page = $mybb->get_input('page', MyBB::INPUT_INT);
+		}
+
+		$pages = ceil($referral_count / $perpage);
+
+		if($page > $pages || $page <= 0)
+		{
+			$page = 1;
+		}
+
+		if($page)
+		{
+			$start = ($page-1) * $perpage;
+		}
+		else
+		{
+			$start = 0;
+			$page = 1;
+		}
+
+		$multipage = multipage($referral_count, $perpage, $page, "member.php?action=referrals&amp;uid={$uid}");
+
+        $referrals = array();
+		foreach(get_user_referrals($uid, $start, $perpage) as $referral)
+		{
+			$username = htmlspecialchars_uni($referral['username']);
+			$username = format_name($username, $referral['usergroup'], $referral['displaygroup']);
+			$username = build_profile_link($username, $referral['uid']);
+
+			$regdate = my_date('normal', $referral['regdate']);
+
+			$referral['username'] = $username;
+			$referral['regdate'] = $regdate;
+
+			$referrals[] = $referral;
+        }
+	}
+
+	$plugins->run_hooks('member_referrals_end');
+
+	output_page(\MyBB\template('referrals/referrals.twig', [
+		'referral_count' => $referral_count,
+		'referrals' => $referrals,
+		'multipage' => $multipage,
 	]));
 }
 

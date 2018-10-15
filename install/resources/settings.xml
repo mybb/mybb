@@ -959,10 +959,18 @@ min=0]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="referralsperpage">
+			<title>Referrals Per Page</title>
+			<description><![CDATA[The number of members to show per page on the referral list.]]></description>
+			<disporder>17</disporder>
+			<optionscode><![CDATA[numeric]]></optionscode>
+			<settingvalue><![CDATA[20]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 		<setting name="coppa">
 			<title>COPPA Compliance</title>
 			<description><![CDATA[If you wish to enable <a href="http://www.coppa.org/comply.htm">COPPA</a> support on your forums, please select the registration allowance below.]]></description>
-			<disporder>17</disporder>
+			<disporder>18</disporder>
 			<optionscode><![CDATA[select
 enabled=Enabled
 deny=Deny users under the age of 13
@@ -974,7 +982,7 @@ disabled=Disable this feature]]></optionscode>
 			<title>Allowed Login Methods</title>
 			<description><![CDATA[The login methods you wish to allow for the username field. Username only, Email only, or allow both.
 <br />To allow email as a valid login method, no users are allowed to share email addresses.]]></description>
-			<disporder>18</disporder>
+			<disporder>19</disporder>
 			<optionscode><![CDATA[select
 0=Username Only
 1=Email Only
@@ -985,7 +993,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="failedcaptchalogincount">
 			<title>Number of failed logins before verification required</title>
 			<description><![CDATA[The number of times to allow someone to attempt to login before required to enter a CAPTCHA verification. Set to 0 to disable]]></description>
-			<disporder>19</disporder>
+			<disporder>20</disporder>
 			<optionscode><![CDATA[numeric
 min=0]]></optionscode>
 			<settingvalue><![CDATA[3]]></settingvalue>
@@ -994,7 +1002,7 @@ min=0]]></optionscode>
 		<setting name="failedlogincount">
 			<title>Number of times to allow failed logins</title>
 			<description><![CDATA[The number of times to allow someone to attempt to login. Set to 0 to disable.]]></description>
-			<disporder>20</disporder>
+			<disporder>21</disporder>
 			<optionscode><![CDATA[numeric
 min=0]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
@@ -1003,7 +1011,7 @@ min=0]]></optionscode>
 		<setting name="failedlogintime">
 			<title>Time between failed logins</title>
 			<description><![CDATA[The amount of time (in minutes) before someone can try to login again, after they have failed to login the first time. Used if value above is not 0.]]></description>
-			<disporder>21</disporder>
+			<disporder>22</disporder>
 			<optionscode><![CDATA[numeric
 min=0]]></optionscode>
 			<settingvalue><![CDATA[15]]></settingvalue>
@@ -1012,7 +1020,7 @@ min=0]]></optionscode>
 		<setting name="failedlogintext">
 			<title>Display number of failed logins</title>
 			<description><![CDATA[Do you wish to display a line of text telling the user how many more login attempts they have?]]></description>
-			<disporder>22</disporder>
+			<disporder>23</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1020,7 +1028,7 @@ min=0]]></optionscode>
 		<setting name="regtime">
 			<title>Minimum Registration Time</title>
 			<description><![CDATA[The minimum time in seconds a user must take to fill out the registration form. Used to prevent automated bot signups. Setting this to 0 to disables the function.]]></description>
-			<disporder>23</disporder>
+			<disporder>24</disporder>
 			<optionscode><![CDATA[numeric
 min=0]]></optionscode>
 			<settingvalue><![CDATA[15]]></settingvalue>
@@ -1029,7 +1037,7 @@ min=0]]></optionscode>
 		<setting name="securityquestion">
 			<title>Show Security Question</title>
 			<description><![CDATA[Do you wish to show a question that users must answer when registering?]]></description>
-			<disporder>24</disporder>
+			<disporder>25</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>

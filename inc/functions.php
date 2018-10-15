@@ -8622,3 +8622,50 @@ function my_hash_equals($known_string, $user_string)
 		return $result === 0;
 	}
 }
+
+/**
+ * Retrieves all referrals for a specified user
+ *
+ * @param int uid
+ * @param int start position
+ * @param int total entries
+ * @param bool false (default) only return display info, true for all info
+ * @return array
+ */
+function get_user_referrals($uid, $start=0, $limit=0, $full=false)
+{
+	global $db;
+
+	$referrals = $query_options = array();
+	$uid = (int) $uid;
+
+	if($uid === 0)
+	{
+		return $referrals;
+	}
+
+	if($start && $limit)
+	{
+		$query_options['limit_start'] = $start;
+	}
+
+	if($limit)
+	{
+		$query_options['limit'] = $limit;
+	}
+
+	$fields = 'uid, username, usergroup, displaygroup, regdate';
+	if($full === true)
+	{
+		$fields = '*';
+	}
+
+	$query = $db->simple_select('users', $fields, "referrer='{$uid}'", $query_options);
+
+	while($referral = $db->fetch_array($query))
+	{
+		$referrals[] = $referral;
+	}
+
+	return $referrals;
+}

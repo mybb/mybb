@@ -314,6 +314,20 @@ else
 			$usergroup = array_merge($usergroup, $display_group);
 		}
 
+		// Build referral?
+		if($mybb->settings['usereferrals'] == 1)
+		{
+			$referral_count = (int) $user['referrals'];
+			if($referral_count > 0)
+			{
+				$uid = (int) $user['uid'];
+ 				$user['referrals'] = \MyBB\template('referrals/referrals_link.twig', [
+					'uid' => $uid,
+ 					'referral_count' => $referral_count,
+ 				]);
+			}
+		}
+
 		$user['groupimage'] = false;
 		// Work out the usergroup/title stuff
 		if(!empty($usergroup['image']))

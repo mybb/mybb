@@ -12,7 +12,13 @@ $l['nav_lostpw'] = "Lost Password Recovery";
 $l['nav_resetpassword'] = "Reset Password";
 $l['nav_login'] = "Login";
 $l['nav_emailuser'] = "Email User";
+$l['nav_referrals'] = "Users Referred by {1}";
 $l['nav_profile'] = "Profile of {1}";
+
+$l['referrals'] = 'Referrals';
+$l['referral_date'] = 'Referral Date:';
+$l['referrals_no_user_specified'] = 'No user specified.';
+$l['member_no_referrals'] = 'No referrals for this user.';
 
 $l['tpp_option'] = "Show {1} threads per page";
 $l['ppp_option'] = "Show {1} posts per page";

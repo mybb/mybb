@@ -163,7 +163,7 @@
                 {% if mybb.settings.usereferrals %}
                     <div class="row row--profile-field profile-field">
                         <h4 class="profile-field__name">{{ lang.members_referred }}</h4>
-                        <p class="profile-field__value">{{ memprofile.referrals }}</p>
+                        <p class="profile-field__value">{{ memprofile.referrals_link|raw }}</p>
                     </div>
                 {% endif %}
                 {% if memprofile.showwarning %}

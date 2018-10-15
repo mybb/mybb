@@ -1,0 +1,27 @@
+<div class="modal">
+	<div style="overflow-y: auto; max-height: 400px;" class="referral_modal_{{ uid }}">
+		<table width="100%" border="0">
+			<tr>
+				<td class="thead" colspan="5"><strong>{{ lang.referrals }}</strong></td>
+			</tr>
+			<tr>
+			{% if referral_count <= 0 %}
+				{{ lang.member_no_referrals }}
+			{% else %}
+				<table width="100%" border="0">
+					<tr>
+						<td><span class="smalltext"><strong>{{ lang.username }}</strong></span></td>
+						<td style="text-align: right;"><span class="smalltext"><strong>{{ lang.referral_date }}</strong></span></td>
+					</tr>
+					{% for referral in referrals %}
+						<tr style="width: 100%">
+						<td>{{ referral.username|raw }}</td>
+						<td style="width: 100%; text-align: right;">{{ referral.regdate|raw }}</td>
+						</tr>
+					{% endfor %}
+				</table>
+			{% endif %}
+			</tr>
+		</table>
+	</div>
+</div>
