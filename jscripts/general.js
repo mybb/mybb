@@ -17,17 +17,28 @@ var MyBB = {
 		$('[name="allbox"]').each(function(key, value) {
 			var allbox = this;
 			var checked = $(this).is(':checked');
-			var checkboxes = $(this).closest('form').find(':checkbox');
+			var checkboxes = $(this).closest('form').find(':checkbox').not('[name="allbox"]');
+
 			checkboxes.change(function() {
 				if(checked && !$(this).prop('checked'))
 				{
 					checked = false;
-					$(allbox).prop('checked', checked);
+					$(allbox).trigger('change', ['item']);
 				}
 			});
-			$(this).change(function() {
+
+			$(this).on('change', function(event, origin) {
 				checked = $(this).is(':checked');
-				checkboxes.prop('checked', checked);
+
+				if(typeof(origin) == "undefined")
+				{
+					checkboxes.each(function() {
+						if(checked != $(this).is(':checked'))
+						{
+							$(this).prop('checked', checked).change();
+						}
+					});
+				}
 			});
 		});
 
