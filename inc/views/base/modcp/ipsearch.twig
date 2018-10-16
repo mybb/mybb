@@ -36,7 +36,7 @@
             </h1>
             {% for ipaddress in ipresults %}
                 <div class="row row--simple-columns">
-                	<div>
+                	<div class="row__primary">
                         {% if ipaddress.type == 'regip' %}
                             <strong>{{ lang.ipresult_regip }}</strong> {{ ipaddress.profile_link|raw }}
                         {% elseif ipaddress.type == 'lastip' %}
@@ -45,7 +45,7 @@
                             <strong>{{ lang.ipresult_post }}</strong> <a href="{{ ipaddress.postlink|raw }}">{{ ipaddress.subject }}</a> {{ lang.by }} {{ ipaddress.profilelink|raw }}
                         {% endif %}
                     </div>
-                    <div>{{ ipaddress.ip }}</div>
+                    <div class="row__secondary">{{ ipaddress.ip }}</div>
                 </div>
             {% else %}
                 <div class="alert alert--no-results">{{ lang.error_no_results }}</div>

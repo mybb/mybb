@@ -50,18 +50,19 @@ $l['redirect_modnotes'] = "The moderator notes have been updated.";
 
 $l['for'] = "For";
 $l['report_info'] = "Reported Content";
-$l['report_type'] = "Report Reason";
-$l['report_count'] = "# of Reports";
+$l['report_type'] = "Reason";
+$l['report_count_report'] = "report";
+$l['report_count_reports'] = "reports";
 $l['report_lastpost'] = "Last Reported";
 
 $l['report_reason_other'] = "Other Reason";
 
-$l['report_info_post'] = "A <a href=\"{1}\">Post</a> by {2}";
-$l['report_info_post_thread'] = "<br /><span class=\"smalltext\">In <a href=\"{1}\">{2}</a></span>";
+$l['report_info_post'] = "<a href=\"{1}\">Post</a> by {2}";
+$l['report_info_post_thread'] = "in <a href=\"{1}\">{2}</a>";
 $l['report_info_profile'] = "Profile of {1}";
 $l['report_info_reputation'] = "<a href=\"{1}\">Reputation</a> from {2}";
-$l['report_info_rep_profile'] = "<br /><span class=\"smalltext\">On {1}'s profile</span>";
-$l['report_info_lastreporter'] = "{1}<br />by {2}";
+$l['report_info_rep_profile'] = "on {1}'s profile";
+$l['report_info_lastreporter'] = "Last reported by";
 
 $l['page_selected'] = "All <strong>{1}</strong> unread reports on this page are selected.";
 $l['all_selected'] = "All <strong>{1}</strong> unread reports are selected.";

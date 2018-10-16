@@ -224,16 +224,31 @@
             {{ posts|raw }}
         </section>
 
-        <div class="thread-pagination thread-pagination--bottom">
-            {{ multipage|raw }}
-        </div>
-
-        {% if thread.closed %}
-            <div class="thread-closed">
-                <i class="thread-closed__icon fas fa-lock"></i>
-                <span class="thread-closed__message">{{ lang.thread_closed_message }}</span>
+        <div class="page-controls page-controls--bottom">
+            <div class="thread-pagination thread-pagination--bottom">
+                {{ multipage|raw }}
             </div>
-        {% endif %}
+            <div class="page-buttons">
+                {% if forum.open and forum.type == 'f' and forumpermissions.canpostreplys != 0 %}
+                    {% if thread.canfullreply %}
+                        <a href="newreply.php?tid={{ thread.tid }}" class="button button--medium button--full-width">
+                            <i class="button__icon fas fa-comment"></i>
+                            <span class="button__text">{{ lang.new_reply }}</span>
+                        </a>
+                    {% elseif thread.canmodreply %}
+                        <a href="newreply.php?tid={{ thread.tid }}" class="button button--medium button--danger">
+                            <i class="button__icon fas fa-lock"></i>
+                            <span class="button__text">{{ lang.thread_closed }}</span>
+                        </a>
+                    {% else %}
+                        <a href="showthread.php?tid={{ thread.tid }}" class="button button--medium button--danger">
+                            <i class="button__icon fas fa-lock"></i>
+                            <span class="button__text">{{ lang.thread_closed }}</span>
+                        </a>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
 
         {% if thread.showquickreply %}
             <div id="quickreply_spinner" class="spinner spinner--quick-reply" style="display: none"><span class="spinner__icon"><i class="spinner__icon fas fa-sync fa-spin"></i></span></div>
@@ -304,151 +319,159 @@
             </div>
         {% endif %}
 
-        {% if forumpermissions.cansearch %}
-            <div class="float_right">
-                <form action="search.php" method="post">
-                    <input type="hidden" name="action" value="thread" />
-                    <input type="hidden" name="tid" value="{{ thread.tid }}" />
-                    <input type="text" name="keywords" value="{{ lang.enter_keywords }}" onfocus="if(this.value == '{{ lang.enter_keywords }}') { this.value = ''; }" onblur="if(this.value=='') { this.value='{{ lang.enter_keywords }}'; }" class="textbox" size="25" />
-                    <input type="submit" class="button" value="{{ lang.search_thread }}" />
-                </form>
+        <footer class="page-footer">
+            <div class="row row--simple-columns">
+                {% if forumpermissions.cansearch %}
+                <div class="thread-search">
+                    <form action="search.php" method="post">
+                        <input type="hidden" name="action" value="thread" />
+                        <input type="hidden" name="tid" value="{{ thread.tid }}" />
+                        <input type="text" name="keywords" value="{{ lang.enter_keywords }}" onfocus="if(this.value == '{{ lang.enter_keywords }}') { this.value = ''; }" onblur="if(this.value=='') { this.value='{{ lang.enter_keywords }}'; }" class="textbox textbox--large" size="25" />
+                        <button type="submit" class="button button--inline">
+                            <i class="button__icon fas fa-search"></i>
+                            <span class="button__text">{{ lang.search_thread }}</span>
+                        </button>
+                    </form>
+                </div>
+                {% endif %}
+                <div>
+                    &laquo; <a href="{{ thread.next_oldest_link|raw }}">{{ lang.next_oldest }}</a> | <a href="{{ thread.next_newest_link|raw }}">{{ lang.next_newest }}</a> &raquo;
+                </div>
             </div>
-        {% endif %}
 
-        <div class="container">
-            &laquo; <a href="{{ thread.next_oldest_link|raw }}">{{ lang.next_oldest }}</a> | <a href="{{ thread.next_newest_link|raw }}">{{ lang.next_newest }}</a> &raquo;
-        </div>
-
-        {% if thread.showthreaded %}
-            <br />
-            <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-                <tr>
-                    <td class="thead"><span class="smalltext"><strong>{{ lang.messages_in_thread }}</strong></span></td>
-                </tr>
-                <tr>
-                    <td class="trow1">
-                        {% for post in threadedbits %}
-                            {% if post.bitactive %}
-                                <div style="margin-left: {{ post.indentsize }}px;">
-                                    <strong>{{ post.subject }}</strong> <span class="smalltext">- {{ lang.by }} {{ post.profilelink|raw }} - {{ post.postdate|raw }}</span>
-                                </div>
-                            {% else %}
-                                <div style="margin-left: {{ post.indentsize }}px;">
-                                    <a href="showthread.php?tid={{ thread.tid }}&amp;pid={{ post.pid }}&amp;mode=threaded">{{ post.subject }}</a> <span class="smalltext">- {{ lang.by }} {{ post.profilelink|raw }} - {{ post.postdate|raw }}</span>
-                                </div>
-                            {% endif %}
-                        {% endfor %}
-                    </td>
-                </tr>
-            </table>
-        {% endif %}
-        {% if mybb.settings.showsimilarthreads and thread.similarthreads %}
-            <br />
-            <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-                <tr>
-                    <td class="thead" align="center" colspan="6"><strong>{{ lang.similar_threads }}</strong></td>
-                </tr>
-                <tr>
-                    <td class="tcat" align="center" colspan="2"><span class="smalltext"><strong>{{ lang.thread }}</strong></span></td>
-                    <td class="tcat" align="center"><span class="smalltext"><strong>{{ lang.author }}</strong></span></td>
-                    <td class="tcat" align="center"><span class="smalltext"><strong>{{ lang.replies }}</strong></span></td>
-                    <td class="tcat" align="center"><span class="smalltext"><strong>{{ lang.views }}</strong></span></td>
-                    <td class="tcat" align="center"><span class="smalltext"><strong>{{ lang.lastpost }}</strong></span></td>
-                </tr>
-                {% for similar_thread in similarthreads %}
-                    {% set row = alt_trow() %}
-                    <tr>
-                        <td align="center" class="{{ row }}" width="2%">
-                            {% if similar_thread.hasicon %}
-                                <img src="{{ similar_thread.icon_path }}" alt="{{ similar_thread.icon_name }}" title="{{ similar_thread.icon_name }}" />
-                            {% else %}
-                                &nbsp;
-                            {% endif %}
-                        </td>
-                        <td class="{{ row }}">{{ similar_thread.threadprefix|raw }}<a href="{{ similar_thread.threadlink|raw }}">{{ similar_thread.subject }}</a></td>
-                        <td align="center" class="{{ row }}">{{ similar_thread.profilelink|raw }}</td>
-                        <td align="center" class="{{ row }}"><a href="{{ mybb.settings.bburl }}/misc.php?action=whoposted&amp;tid={{ similar_thread.tid }}" onclick="MyBB.whoPosted({{ similar_thread.tid }}); return false;">{{ similar_thread.replies }}</a></td>
-                        <td align="center" class="{{ row }}">{{ similar_thread.views }}</td>
-                        <td class="{{ row }}" style="white-space: nowrap">
-                            <span class="smalltext">{{ similar_thread.lastpostdate|raw }}<br />
-                            <a href="{{ similar_thread.lastpostlink|raw }}">{{ lang.lastpost }}</a>: {{ similar_thread.lastposterlink|raw }}</span>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </table>
-        {% endif %}
-
-        <div class="page-controls">
-			<div class="page-buttons">
-                {% if thread.showthreaded %}
-                    <a href="showthread.php?mode=linear&amp;tid={{ thread.tid }}&amp;pid={{ thread.pid }}#pid{{ thread.pid }}" class="button button--basic">
-                        <i class="button__icon fas fa-th-list"></i>
-                        <span class="button__text">{{ lang.linear }}</span>
-                    </a>
-                {% else %}
-                    <a href="showthread.php?mode=threaded&amp;tid={{ thread.tid }}&amp;pid={{ thread.pid }}#pid{{ thread.pid }}" class="button button--basic">
-                        <i class="button__icon fas fa-list"></i>
-                        <span class="button__text">{{ lang.threaded }}</span>
-                    </a>
-                {% endif %}
-                <a href="printthread.php?tid={{ thread.tid }}" class="button button--basic">
-					<i class="button__icon fas fa-print"></i>
-                    <span class="button__text">{{ lang.view_printable }}</span>
-                </a>
-                {% if mybb.usergroup.cansendemail %}
-                    <a href="sendthread.php?tid={{ thread.tid }}" class="button button--basic">
-                        <i class="button__icon fas fa-share"></i>
-                        <span class="button__text">{{ lang.send_thread }}</span>
-                    </a>
-                {% endif %}
-                {% if thread.addpoll %}
-                    <a href="polls.php?action=newpoll&amp;tid={{ thread.tid }}" class="button button--basic">
-                        <i class="button__icon fas fa-plus-circle"></i>
-                        <span class="button__text">{{ lang.add_poll_to_thread }}</span>
-                    </a>
-                {% endif %}
-            </div>
-        </div>
-
-        <div class="float_right" style="text-align: right;">
             {% if modpermissions.ismod and thread.showmodoptions %}
                 {% include 'showthread/inlinemoderation.twig' %}
             {% endif %}
-            {{ forumjump|raw }}
-        </div>
-        {% if mybb.settings.browsingthisthread %}
-            <div class="container container--small container--users-browsing">
-                {{ lang.users_browsing_thread }}
-                    {% for user in onlinemembers %}
-                        <a href="{{ user.profilelink|raw }}" title="{{ lang.users_browsing_thread_reading }} ({{ user.reading }})">{{ user.username|raw }}</a>{{ user.invisiblemark }}{% if not loop.last %}{{ lang.comma }}{% endif %}
-                    {% endfor %}
-                    {% if thread.inviscount and thread.onlinemembers %}
-                        {{ lang.comma }}
-                    {% endif %}
-                    {% if thread.inviscount and mybb.usergroup.canviewwolinvis %}
-                        {{ trans('users_browsing_forum_invis', thread.inviscount) }}
-                    {% endif %}
-                    {% if (thread.inviscount and thread.guestcount) or (thread.onlinemembers and thread.guestcount) %}
-                        {{ lang.comma }}
-                    {% endif %}
-                    {% if thread.guestcount %}
-                        {{ trans('users_browsing_thread_guests', thread.guestcount) }}
-                    {% endif %}
-            </div>
-        {% endif %}
 
-        <script type="text/javascript">
-        // <!--
-            if(use_xmlhttprequest == "1")
-            {
-                $("#thread_modes").popupMenu();
-            }
-        // -->
-        </script>
-        <script type="text/javascript">
-            $(".author_avatar img").error(function () {
-                $(this).unbind("error").closest('.author_avatar').remove();
-            });
-        </script>
+            {% if thread.showthreaded %}
+                <br />
+                <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+                    <tr>
+                        <td class="thead"><span class="smalltext"><strong>{{ lang.messages_in_thread }}</strong></span></td>
+                    </tr>
+                    <tr>
+                        <td class="trow1">
+                            {% for post in threadedbits %}
+                                {% if post.bitactive %}
+                                    <div style="margin-left: {{ post.indentsize }}px;">
+                                        <strong>{{ post.subject }}</strong> <span class="smalltext">- {{ lang.by }} {{ post.profilelink|raw }} - {{ post.postdate|raw }}</span>
+                                    </div>
+                                {% else %}
+                                    <div style="margin-left: {{ post.indentsize }}px;">
+                                        <a href="showthread.php?tid={{ thread.tid }}&amp;pid={{ post.pid }}&amp;mode=threaded">{{ post.subject }}</a> <span class="smalltext">- {{ lang.by }} {{ post.profilelink|raw }} - {{ post.postdate|raw }}</span>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </td>
+                    </tr>
+                </table>
+            {% endif %}
+            {% if mybb.settings.showsimilarthreads and thread.similarthreads %}
+                <br />
+                <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+                    <tr>
+                        <td class="thead" align="center" colspan="6"><strong>{{ lang.similar_threads }}</strong></td>
+                    </tr>
+                    <tr>
+                        <td class="tcat" align="center" colspan="2"><span class="smalltext"><strong>{{ lang.thread }}</strong></span></td>
+                        <td class="tcat" align="center"><span class="smalltext"><strong>{{ lang.author }}</strong></span></td>
+                        <td class="tcat" align="center"><span class="smalltext"><strong>{{ lang.replies }}</strong></span></td>
+                        <td class="tcat" align="center"><span class="smalltext"><strong>{{ lang.views }}</strong></span></td>
+                        <td class="tcat" align="center"><span class="smalltext"><strong>{{ lang.lastpost }}</strong></span></td>
+                    </tr>
+                    {% for similar_thread in similarthreads %}
+                        {% set row = alt_trow() %}
+                        <tr>
+                            <td align="center" class="{{ row }}" width="2%">
+                                {% if similar_thread.hasicon %}
+                                    <img src="{{ similar_thread.icon_path }}" alt="{{ similar_thread.icon_name }}" title="{{ similar_thread.icon_name }}" />
+                                {% else %}
+                                    &nbsp;
+                                {% endif %}
+                            </td>
+                            <td class="{{ row }}">{{ similar_thread.threadprefix|raw }}<a href="{{ similar_thread.threadlink|raw }}">{{ similar_thread.subject }}</a></td>
+                            <td align="center" class="{{ row }}">{{ similar_thread.profilelink|raw }}</td>
+                            <td align="center" class="{{ row }}"><a href="{{ mybb.settings.bburl }}/misc.php?action=whoposted&amp;tid={{ similar_thread.tid }}" onclick="MyBB.whoPosted({{ similar_thread.tid }}); return false;">{{ similar_thread.replies }}</a></td>
+                            <td align="center" class="{{ row }}">{{ similar_thread.views }}</td>
+                            <td class="{{ row }}" style="white-space: nowrap">
+                                <span class="smalltext">{{ similar_thread.lastpostdate|raw }}<br />
+                                <a href="{{ similar_thread.lastpostlink|raw }}">{{ lang.lastpost }}</a>: {{ similar_thread.lastposterlink|raw }}</span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% endif %}
+
+            <div class="page-controls">
+    			<div class="page-buttons">
+                    {% if thread.showthreaded %}
+                        <a href="showthread.php?mode=linear&amp;tid={{ thread.tid }}&amp;pid={{ thread.pid }}#pid{{ thread.pid }}" class="button button--basic">
+                            <i class="button__icon fas fa-th-list"></i>
+                            <span class="button__text">{{ lang.linear }}</span>
+                        </a>
+                    {% else %}
+                        <a href="showthread.php?mode=threaded&amp;tid={{ thread.tid }}&amp;pid={{ thread.pid }}#pid{{ thread.pid }}" class="button button--basic">
+                            <i class="button__icon fas fa-list"></i>
+                            <span class="button__text">{{ lang.threaded }}</span>
+                        </a>
+                    {% endif %}
+                    <a href="printthread.php?tid={{ thread.tid }}" class="button button--basic">
+    					<i class="button__icon fas fa-print"></i>
+                        <span class="button__text">{{ lang.view_printable }}</span>
+                    </a>
+                    {% if mybb.usergroup.cansendemail %}
+                        <a href="sendthread.php?tid={{ thread.tid }}" class="button button--basic">
+                            <i class="button__icon fas fa-share"></i>
+                            <span class="button__text">{{ lang.send_thread }}</span>
+                        </a>
+                    {% endif %}
+                    {% if thread.addpoll %}
+                        <a href="polls.php?action=newpoll&amp;tid={{ thread.tid }}" class="button button--basic">
+                            <i class="button__icon fas fa-plus-circle"></i>
+                            <span class="button__text">{{ lang.add_poll_to_thread }}</span>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if mybb.settings.browsingthisthread %}
+                <div class="container container--small container--users-browsing">
+                    {{ lang.users_browsing_thread }}
+                        {% for user in onlinemembers %}
+                            <a href="{{ user.profilelink|raw }}" title="{{ lang.users_browsing_thread_reading }} ({{ user.reading }})">{{ user.username|raw }}</a>{{ user.invisiblemark }}{% if not loop.last %}{{ lang.comma }}{% endif %}
+                        {% endfor %}
+                        {% if thread.inviscount and thread.onlinemembers %}
+                            {{ lang.comma }}
+                        {% endif %}
+                        {% if thread.inviscount and mybb.usergroup.canviewwolinvis %}
+                            {{ trans('users_browsing_forum_invis', thread.inviscount) }}
+                        {% endif %}
+                        {% if (thread.inviscount and thread.guestcount) or (thread.onlinemembers and thread.guestcount) %}
+                            {{ lang.comma }}
+                        {% endif %}
+                        {% if thread.guestcount %}
+                            {{ trans('users_browsing_thread_guests', thread.guestcount) }}
+                        {% endif %}
+                </div>
+            {% endif %}
+
+            <div class="float_right" style="text-align: right;">
+                {{ forumjump|raw }}
+            </div>
+
+            <script type="text/javascript">
+            // <!--
+                if(use_xmlhttprequest == "1")
+                {
+                    $("#thread_modes").popupMenu();
+                }
+            // -->
+            </script>
+            <script type="text/javascript">
+                $(".author_avatar img").error(function () {
+                    $(this).unbind("error").closest('.author_avatar').remove();
+                });
+            </script>
+        </footer>
     </div>
 {% endblock body %}

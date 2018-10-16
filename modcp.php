@@ -497,13 +497,12 @@ if ($mybb->input['action'] == "reports") {
 
         if ($report['lastreporter']) {
             if (is_array($usercache[$report['lastreporter']])) {
-                $lastreport_user = build_profile_link($usercache[$report['lastreporter']]['username'], $report['lastreporter']);
+                $report_data['lastreport_user'] = build_profile_link($usercache[$report['lastreporter']]['username'], $report['lastreporter']);
             } elseif ($usercache[$report['lastreporter']] > 0) {
-                $lastreport_user = $lang->na_deleted;
+                $report_data['lastreport_user'] = $lang->na_deleted;
             }
 
-            $lastreport_date = my_date('relative', $report['lastreport']);
-            $report_data['lastreporter'] = $lang->sprintf($lang->report_info_lastreporter, $lastreport_date, $lastreport_user);
+            $report_data['lastreport_date'] = $report['lastreport'];
         }
 
         $report_data['checked'] = false;

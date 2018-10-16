@@ -1,43 +1,36 @@
-{% extends 'layouts/master.twig' %}
+{% extends 'layouts/account.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bburl }} - {{ lang.drafts }}</title>
+    <title>{{ mybb.settings.bbname }} - {{ lang.drafts }}</title>
 {% endblock head %}
 
-{% block body %}
+{% block accountHeader %}
+<header class="page-header">
+    <h1 class="title title--page">{{ lang.drafts }}</h1>
+</header>
+{% endblock accountHeader %}
+
+{% block accountBody %}
     <form action="usercp.php" method="post">
         <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-        <table width="100%" border="0" align="center">
-            <tr>
-                {# TODO: usercpnav #}
-                <td valign="top">
-                    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-                        <tr>
-                            {# TODO: my_number_format for draftCount #}
-                            <td class="thead" colspan="4"><strong>{{ trans('drafts_count', draftCount) }}</strong></td>
-                        </tr>
-                        <tr>
-                            <td width="66%" class="tcat"><span class="smalltext"><strong>{{ lang.draft_title }}</strong></span></td>
-                            <td class="tcat" align="center" width="20%"><span class="smalltext"><strong>{{ lang.draft_saved }}</strong></span></td>
-                            <td class="tcat" align="center" width="20%"><span class="smalltext"><strong>{{ lang.draft_options }}</strong></span></td>
-                            <td class="tcat" align="center" width="1"><input type="checkbox" name="allbox" class="checkbox checkall" /></td>
-                        </tr>
+        <section class="block">
+            <div class="container container--small container--adjacent">
+                <div class="select-all">
+                    <input type="checkbox" name="allbox" class="checkbox checkall" />
+                </div>
+            </div>
+            <div class="results">
+                {% for draft in drafts %}
+                    {% include 'usercp/drafts/row.twig' %}
+                {% else %}
+                    <div class="alert alert--no-results alert--aligned-block">{{ lang.no_drafts|raw }}</div>
+                {% endfor %}
+            </div>
+            <div class="sort-results">
+                <input type="hidden" name="action" value="do_drafts" />
+                <input type="submit" class="button" name="draftman" value="{{ lang.delete_drafts }}"{% if not deleteDraftsEnabled %} disabled{% endif %} />
+            </div>
+        </section>
 
-                        {% for draft in drafts %}
-                            {% include 'usercp/drafts/row.twig' %}
-                        {% else %}
-                            <tr>
-                                <td class="trow1" colspan="7">{{ lang.no_drafts|raw }}</td>
-                            </tr>
-                        {% endfor %}
-                    </table>
-                    <br />
-                    <div align="center">
-                        <input type="hidden" name="action" value="do_drafts" />
-                        <input type="submit" class="button" name="draftman" value="{{ lang.delete_drafts }}"{% if not deleteDraftsEnabled %} disabled{% endif %} />
-                    </div>
-                </td>
-            </tr>
-        </table>
     </form>
-{% endblock body %}
+{% endblock accountBody %}

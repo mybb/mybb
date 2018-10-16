@@ -4,57 +4,54 @@
     <title>{{ mybb.settings.bbname }} - {{ lang.report_center }}</title>
 {% endblock head %}
 
+{% block moderationHeader %}
+    <header class="page-header">
+        <h1 class="title title--page">{{ lang.report_center }}</h1>
+    </header>
+{% endblock %}
+
 {% block moderationBody %}
     <form action="modcp.php" method="post">
         <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
         <input type="hidden" name="page" value="{{ report.page }}" />
-        <table width="100%" border="0" align="center">
-            <tr>
-            {# To do: modcp_nav #}
-                <td valign="top">
-                    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-                        <tr>
-                            <td class="thead" colspan="5"><strong>{{ lang.report_center }}</strong></td>
-                        </tr>
-                        <tr>
-                            <td class="tcat" width="35%"><span class="smalltext"><strong>{{ lang.report_info }}</strong></span></td>
-                            <td class="tcat" align="left" width="25%"><span class="smalltext"><strong>{{ lang.report_type }}</strong></span></td>
-                            <td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{{ lang.report_count }}</strong></span></td>
-                            <td class="tcat" align="right" width="20%"><span class="smalltext"><strong>{{ lang.report_lastpost }}</strong></span></td>
-                            <td class="tcat" align="center" width="5%"><input type="checkbox" name="allbox" onclick="inlineReports.checkAll(this);" /></td>
-                        </tr>
-                        {% if report.selectall %}
-                            <tr id="selectAllrow" class="hiddenrow">
-                                <td colspan="5" class="selectall">
-                                    {{ trans('page_selected', report.reportcache) }} <a href="javascript:void(0)" onclick='inlineReports.selectAll(); return false;'>{{ trans('select_all', report.report_count) }}</a>
-                                </td>
-                            </tr>
-                            <tr id="allSelectedrow" class="hiddenrow">
-                                <td colspan="5" class="selectall">
-                                    {{ trans('all_selected', report.report_count) }} <a href="javascript:void(0)" onclick='inlineReports.clearChecked(); return false;'>{{ lang.clear_selection }}</a>
-                                </td>
-                            </tr>
-                        {% endif %}
-                        {% for report in reports %}
-                            {% include 'modcp/reports/item.twig' %}
-                        {% else %}
-                            <tr>
-                                <td class="trow1" align="center" colspan="5">{{ lang.no_reports }}</td>
-                            </tr>
-                        {% endfor %}
-                        <tr>
-                            <td class="tfoot" colspan="5" align="right"><span class="smalltext"><strong><a href="modcp.php?action=allreports">{{ lang.view_all_reports }}</a></strong></span></td>
-                        </tr>
-                    </table>
-                    {{ multipage|raw }}
-                    <br />
-                    <div align="center">
-                        <input type="hidden" name="action" value="do_reports" />
-                        <input type="submit" id="inline_read" class="button" name="reportsubmit" value="{{ lang.mark_read }} ({{ report.inlinecount }})" />
-                    </div>
-                </td>
-            </tr>
-        </table>
+        <input type="hidden" name="action" value="do_reports" />
+        <section class="block">
+            <div class="container container--small container--adjacent">
+                <div class="select-all">
+                    <input type="checkbox" name="allbox" onclick="inlineReports.checkAll(this);" />
+                </div>
+            </div>
+            {% if report.selectall %}
+                <tr id="selectAllrow" class="hiddenrow">
+                    <td colspan="5" class="selectall">
+                        {{ trans('page_selected', report.reportcache) }} <a href="javascript:void(0)" onclick='inlineReports.selectAll(); return false;'>{{ trans('select_all', report.report_count) }}</a>
+                    </td>
+                </tr>
+                <tr id="allSelectedrow" class="hiddenrow">
+                    <td colspan="5" class="selectall">
+                        {{ trans('all_selected', report.report_count) }} <a href="javascript:void(0)" onclick='inlineReports.clearChecked(); return false;'>{{ lang.clear_selection }}</a>
+                    </td>
+                </tr>
+            {% endif %}
+            <div class="results">
+                {% for report in reports %}
+                    {% include 'modcp/reports/item.twig' %}
+                {% else %}
+                    <div class="alert alert--no-results">{{ lang.no_reports }}</div>
+                {% endfor %}
+            </div>
+            <div class="sort-results">
+                <button type="submit" id="inline_read" class="button" name="reportsubmit">
+                    <i class="button__icon fas fa-check"></i>
+                    <span class="button__text">{{ lang.mark_read }} ({{ report.inlinecount }})</span>
+                </button>
+                <a href="modcp.php?action=allreports" class="button button--secondary">
+                    <i class="button__icon fas fa-flag"></i>
+                    <span class="button__text">{{ lang.view_all_reports }}</span>
+                </a>
+            </div>
+        </section>
+        {{ multipage|raw }}
     </form>
     <script type="text/javascript">
     <!--

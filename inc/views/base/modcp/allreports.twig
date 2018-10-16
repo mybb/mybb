@@ -4,32 +4,19 @@
     <title>{{ mybb.settings.bbname }} - {{ lang.all_reports }}</title>
 {% endblock head %}
 
+{% block moderationHeader %}
+    <header class="page-header">
+        <h1 class="title title--page">{{ lang.all_reports }}</h1>
+    </header>
+{% endblock moderationHeader %}
+
 {% block moderationBody %}
-    <table width="100%" border="0" align="center">
-        <tr>
-            {# To do: modcp_nav #}
-            <td valign="top">
-                <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-                    <tr>
-                        <td class="thead" align="center" colspan="6"><strong>{{ lang.all_reports }}</strong></td>
-                    </tr>
-                    <tr>
-                        <td class="tcat" width="30%"><span class="smalltext"><strong>{{ lang.report_info }}</strong></span></td>
-                        <td class="tcat" width="20%"><span class="smalltext"><strong>{{ lang.report_type }}</strong></span></td>
-                        <td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{{ lang.reporter }}</strong></span></td>
-                        <td class="tcat" align="center" width="10%"><span class="smalltext"><strong>{{ lang.report_count }}</strong></span></td>
-                        <td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{{ lang.report_time }}</strong></span></td>
-                    </tr>
-                    {% for report in allreports %}
-                        {% include 'modcp/allreports/item.twig' %}
-                    {% else %}
-                        <tr>
-                            <td class="trow1" align="center" colspan="5">{{ lang.no_reports }}</td>
-                        </tr>
-                    {% endfor %}
-                </table>
-                {{ multipage|raw }}
-            </td>
-        </tr>
-    </table>
+    <section class="block">
+        {% for report in allreports %}
+            {% include 'modcp/allreports/item.twig' %}
+        {% else %}
+            <div class="alert alert--no-results alert--no-results-container">{{ lang.no_reports }}</div>
+        {% endfor %}
+    </section>
+    {{ multipage|raw }}
 {% endblock moderationBody %}

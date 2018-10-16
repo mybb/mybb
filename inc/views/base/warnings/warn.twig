@@ -5,188 +5,203 @@
 {% endblock head %}
 
 {% block body %}
-{% if warnings %}
-    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-        <thead>
-            <tr>
-                <td class="thead" colspan="5">
-                    <div><strong>{{ lang.existing_post_warnings }}</strong></div>
-                </td>
-            </tr>
-            <tr>
-                <td class="tcat"><span class="smalltext"><strong>{{ lang.warning }}</strong></span></td>
-                <td class="tcat" width="20%" align="center"><span class="smalltext"><strong>{{ lang.date_issued }}</strong></span></td>
-                <td class="tcat" width="20%" align="center"><span class="smalltext"><strong>{{ lang.expiry_date }}</strong></span></td>
-                <td class="tcat" width="20%" align="center"><span class="smalltext"><strong>{{ lang.issued_by }}</strong></span></td>
-                <td class="tcat" width="1" align="center"><span class="smalltext"><strong>{{ lang.details }}</strong></span></td>
-            </tr>
-        </thead>
-        <tbody>
-        {% for warning in warnings %}
-            {% include 'warnings/warning_row.twig' %}
-        {% endfor %}
-        </tbody>
-    </table>
-    <br />
-{% endif %}
-{{ warn_errors|raw }}
-<form action="warnings.php" method="post" name="input">
-    <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-    <input type="hidden" name="action" value="do_warn" />
-    <input type="hidden" name="uid" value="{{ user.uid }}" />
-    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder clear">
-        <tr>
-            <td class="thead" colspan="2"><strong>{{ lang.warn_user }}</strong></td>
-        </tr>
-        <tr>
-            <td class="tcat" colspan="2"><span class="smalltext"><strong>{{ lang.warn_user_desc }}</strong></span></td>
-        </tr>
-        <tr>
-            <td class="trow1" style="width: 20%;"><strong>{{ lang.username }}</strong></td>
-            <td class="trow1">{{ user.user_link|raw }}</td>
-        </tr>
-        {% if post.pid %}
-            <tr>
-                <td width="20%" class="trow2"><strong>{{ lang.post }}</strong></td>
-                <td class="trow2"><input type="hidden" name="pid" value="{{ post.pid }}" /><a href="{{ post.link }}">{{ post.subject }}</a></td>
-            </tr>
+    <div class="page-content">
+        <header class="page-header">
+            <h1 class="title title--page">{{ lang.warn_user }}</h1>
+            <p class="description">{{ lang.warn_user_desc }}</p>
+        </header>
+        {% if warnings %}
+            <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
+                <thead>
+                    <tr>
+                        <td class="thead" colspan="5">
+                            <div><strong>{{ lang.existing_post_warnings }}</strong></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tcat"><span class="smalltext"><strong>{{ lang.warning }}</strong></span></td>
+                        <td class="tcat" width="20%" align="center"><span class="smalltext"><strong>{{ lang.date_issued }}</strong></span></td>
+                        <td class="tcat" width="20%" align="center"><span class="smalltext"><strong>{{ lang.expiry_date }}</strong></span></td>
+                        <td class="tcat" width="20%" align="center"><span class="smalltext"><strong>{{ lang.issued_by }}</strong></span></td>
+                        <td class="tcat" width="1" align="center"><span class="smalltext"><strong>{{ lang.details }}</strong></span></td>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for warning in warnings %}
+                    {% include 'warnings/warning_row.twig' %}
+                {% endfor %}
+                </tbody>
+            </table>
+            <br />
         {% endif %}
-        <tr>
-            <td class="trow1" style="width: 20%; vertical-align: top;"><strong><label for="notes">{{ lang.warning_note }}</label></strong></td>
-            <td class="trow1"><textarea name="notes" id="notes" cols="60" rows="4">{{ type_checked.notes }}</textarea></td>
-        </tr>
-        <tr>
-            <td class="trow2" style="width: 20%; vertical-align: top;"><strong>{{ lang.warning_type }}</strong></td>
-            <td class="trow2">
-                <script type="text/javascript">
-                // <!--
-                    function checkType(id)
-                    {
-                        var checked = '';
-
-                      $('.types_check').each(function(e, val)
-                        {
-                            if($(this).prop('checked') == true)
-                            {
-                                checked = $(this).val();
-                            }
-                        });
-                        $('.types').each(function(e)
-                        {
-                            $(this).hide();
-                        });
-                        if($('#type_'+checked))
-                        {
-                            $('#type_'+checked).show();
-                        }
-                    }
-                // -->
-                </script>
-                <dl style="margin-top: 0; margin-bottom: 0; width: 100%;">
-                    {% for type in types %}
-                        <dt><label style="display: block;"><input type="radio" name="type" value="{{ type.tid }}" {{ type_checked.tid }} class="types_check" onclick="checkType();" style="vertical-align: middle;" /> <strong>{{ type.title }}</strong> {{ trans('warning_points', type.points) }}</label></dt>
-                        <dd style="margin-top: 4px;" id="type_{{ type.tid }}" class="types">
-                            <div class="smalltext">{{ lang.new_warning_level }}</div>
-                            <div class="tborder float_left" style="width: 150px; margin: 0; padding: 1px;">
-                                <div class="trow1 float_left" style="width: {{ user.currentlevel }}%;">&nbsp;</div>
-                                <div class="trow2 float_left" style="width: {{ type.level_diff }}%;">&nbsp;</div>
+        {{ warn_errors|raw }}
+        <form action="warnings.php" method="post" name="input">
+            <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+            <input type="hidden" name="action" value="do_warn" />
+            <input type="hidden" name="uid" value="{{ user.uid }}" />
+            <div class="block block--form form">
+                <section class="section section--form">
+                    <h2 class="title title--section">{{ lang.warn_user }}</h2>
+                    <div class="section__container">
+                        <div class="row row--form field">
+                            <h3 class="field__name">{{ lang.username }}</h3>
+                            <p class="field__value">{{ user.user_link|raw }}</p>
+                        </div>
+                        {% if post.pid %}
+                            <div class="row row--form field">
+                                <h3 class="field__name">{{ lang.post }}</h3>
+                                <p class="field__value"><input type="hidden" name="pid" value="{{ post.pid }}" /><a href="{{ post.link }}">{{ post.subject }}</a></p>
                             </div>
-                            <div class="float_left" style="padding-left: 10px; font-weight: bold;">{{ type.new_warning_level }}%</div><br style="clear: left;" />
-                            {% if type.action %}
-                                <div class="smalltext" style="clear: left; padding-top: 4px;">{{ lang.result }}<br />{{ type.action.friendly_action }}</div>
-                            {% endif %}
-                        </dd>
-                    {% endfor %}
-                    {% if mybb.settings.allowcustomwarnings %}
-                        <dt><label style="display: block;"><input type="radio" name="type" value="custom" {{ type_checked.custom }} class="types_check" onclick="checkType();" style="vertical-align: middle;" /> <strong>{{ lang.custom }}</strong></label></dt>
-                        <dd style="margin-top: 4px;" id="type_custom" class="types">
-                            <table>
-                            <tr>
-                                <td class="smalltext">{{ lang.reason }}</td>
-                                <td class="smalltext">{{ lang.points }}</td>
-                            </tr>
-                            <tr>
-                                <td><input type="text" class="textbox" name="custom_reason" size="50" maxlength="120" value="{{ type_checked.custom_reason }}" /></td>
-                                <td><input type="text" class="textbox" name="custom_points" size="2" value="{{ type_checked.custom_points }}" /></td>
-                            </tr>
-                            <tr>
-                                <td class="smalltext" colspan="2" style="padding-top: 4px;">{{ lang.expires }}</td>
-                            </tr>
-                            <tr>
-                                <td colspan="2">
-                                    <input type="text" class="textbox" name="expires" size="2" value="{{ type_checked.expires }}" />
-                                    <select name="expires_period">
-                                        <option value="hours" {{ type_checked.hours }}>{{ lang.hour_or_hours }}</option>
-                                        <option value="days" {{ type_checked.days }}>{{ lang.day_or_days }}</option>
-                                        <option value="weeks" {{ type_checked.weeks }}>{{ lang.week_or_weeks }}</option>
-                                        <option value="months" {{ type_checked.months }}>{{ lang.month_or_months }}</option>
-                                        <option value="never" {{ type_checked.never }}>{{ lang.never }}</option>
-                                    </select>
-                                </td>
-                            </tr>
-                            </table>
-                        </dd>
-                    {% endif %}
-                </dl>
-                <script type="text/javascript">
-                // <!--
-                    checkType();
-                // -->
-                </script>
-            </td>
-        </tr>
-        {% if pm.haspermission == true %}
-            <tr>
-                <td width="20%" class="trow1" valign="top">
-                    <strong>{{ lang.send_pm }}</strong>
-                </td>
-                <td class="trow1">
-                    <script type="text/javascript">
-                    // <!--
-                        function togglePM()
-                        {
-                            if($('#send_pm').prop('checked') == true)
-                            {
-                                $('#pm_input').show();
-                                $('#pm_smilie_insert').show();
-                            }
-                            else
-                            {
-                                $('#pm_input').hide();
-                            }
-                        }
-                    // -->
-                    </script>
-                    <label style="display: block;"><input type="checkbox" class="checkbox" value="1" name="send_pm" id="send_pm" onclick="togglePM();" style="vertical-align: middle;" {{ type_checked.send_pm_checked }} /> {{ lang.send_user_warning_pm }}</label>
-                    <table id="pm_input" cellpadding="{{ theme.tablespace }}">
-                        <tr>
-                            <td><strong>{{ lang.send_pm_subject }}</strong></td>
-                            <td><input type="text" class="textbox" name="pm_subject" size="40" maxlength="85" value="{{ type_checked.pm_subject }}" /></td>
-                        </tr>
-                        <tr>
-                            <td valign="top"><strong>{{ lang.send_pm_message }}</strong></td>
-                            <td><textarea name="pm_message" id="message" rows="20" cols="70">{{ type_checked.message }}</textarea>
-                            {{ pm.codebuttons|raw }}</td>
-                        </tr>
-                        {% if mybb.settings.allowanonwarningpms %}
-                            <tr>
-                                <td><strong>{{ lang.send_pm_options }}</strong></td>
-                                <td><label><input type="checkbox" class="checkbox" name="pm_anonymous" value="1"{{ pm.anonymous_checked }} />&nbsp;{{ lang.send_pm_options_anonymous|raw }}</label></td>
-                            </tr>
                         {% endif %}
-                    </table>
-                    <script type="text/javascript">
-                    <!--
-                    $(document).ready(function() {
-                        togglePM();
-                    });
-                    // -->
-                    </script>
-                </td>
-            </tr>
-        {% endif %}
-    </table>
-    <br />
-    <div style="text-align: center;"><input type="submit" class="button" value="{{ lang.warn_user }}" /></div>
-</form>
+                        <div class="row row--form field">
+                            <h3 class="field__name"><label for="notes">{{ lang.warning_note }}</label></h3>
+                            <textarea class="textarea" name="notes" id="notes" cols="60" rows="4">{{ type_checked.notes }}</textarea>
+                        </div>
+                        <div class="row row--form field">
+                            <h3 class="field__name">{{ lang.warning_type }}</h3>
+                            <script type="text/javascript">
+                            // <!--
+                                function checkType(id)
+                                {
+                                    var checked = '';
+
+                                  $('.option-field__input--types').each(function(e, val)
+                                    {
+                                        if($(this).prop('checked') == true)
+                                        {
+                                            checked = $(this).val();
+                                        }
+                                    });
+                                    $('.types').each(function(e)
+                                    {
+                                        $(this).hide();
+                                    });
+                                    if($('#type_'+checked))
+                                    {
+                                        $('#type_'+checked).show();
+                                    }
+                                }
+                            // -->
+                            </script>
+                            {% for type in types %}
+                                <div class="option-field">
+                                    <input type="radio" class="option-field__input option-field__input--types" name="type" id="type_input_{{ type.tid }}" value="{{ type.tid }}" {{ type_checked.tid }} onclick="checkType();" />
+                                    <h4 class="option-field__name"><label for="type_input_{{ type.tid }}">{{ type.title }} {{ trans('warning_points', type.points) }}</label></h4>
+                                    <div style="margin-top: 4px;" id="type_{{ type.tid }}" class="types">
+                                        <div class="smalltext">{{ lang.new_warning_level }}</div>
+                                        <div class="tborder float_left" style="width: 150px; margin: 0; padding: 1px;">
+                                            <div class="trow1 float_left" style="width: {{ user.currentlevel }}%;">&nbsp;</div>
+                                            <div class="trow2 float_left" style="width: {{ type.level_diff }}%;">&nbsp;</div>
+                                        </div>
+                                        <div class="float_left" style="padding-left: 10px; font-weight: bold;">{{ type.new_warning_level }}%</div><br style="clear: left;" />
+                                        {% if type.action %}
+                                            <div class="smalltext" style="clear: left; padding-top: 4px;">{{ lang.result }}<br />{{ type.action.friendly_action }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            {% if mybb.settings.allowcustomwarnings %}
+                                <div class="option-field">
+                                    <input type="radio" class="option-field__input option-field__input--types" name="type" id="type_input_custom" value="custom" {{ type_checked.custom }} class="types_check" onclick="checkType();" />
+                                    <h4 class="option-field__name"><label for="type_input_custom">{{ lang.custom }}</label></h4>
+                                    <div id="type_custom" class="types">
+                                        
+                                        <table>
+                                        <tr>
+                                            <td class="smalltext">{{ lang.reason }}</td>
+                                            <td class="smalltext">{{ lang.points }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><input type="text" class="textbox" name="custom_reason" size="50" maxlength="120" value="{{ type_checked.custom_reason }}" /></td>
+                                            <td><input type="text" class="textbox" name="custom_points" size="2" value="{{ type_checked.custom_points }}" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="smalltext" colspan="2" style="padding-top: 4px;">{{ lang.expires }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <input type="text" class="textbox" name="expires" size="2" value="{{ type_checked.expires }}" />
+                                                <select name="expires_period">
+                                                    <option value="hours" {{ type_checked.hours }}>{{ lang.hour_or_hours }}</option>
+                                                    <option value="days" {{ type_checked.days }}>{{ lang.day_or_days }}</option>
+                                                    <option value="weeks" {{ type_checked.weeks }}>{{ lang.week_or_weeks }}</option>
+                                                    <option value="months" {{ type_checked.months }}>{{ lang.month_or_months }}</option>
+                                                    <option value="never" {{ type_checked.never }}>{{ lang.never }}</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            <script type="text/javascript">
+                            // <!--
+                                checkType();
+                            // -->
+                            </script>
+                        </div>
+                    </div>
+                </section>
+                {% if pm.haspermission == true %}
+                    <section class="section section--form">
+                        <h2 class="title title--section">{{ lang.send_pm }}</h2>
+                        <div class="section__container">
+                            <div class="row row--form row--no-border field">
+                                <p class="option-field option-field--compact">
+                                    <label><input type="checkbox" class="checkbox" value="1" name="send_pm" id="send_pm" onclick="togglePM();" style="vertical-align: middle;" {{ type_checked.send_pm_checked }} /> {{ lang.send_user_warning_pm }}</label>
+                                </p>
+                            </div>
+                            <script type="text/javascript">
+                            // <!--
+                                function togglePM()
+                                {
+                                    if($('#send_pm').prop('checked') == true)
+                                    {
+                                        $('#pm_input').show();
+                                        $('#pm_smilie_insert').show();
+                                    }
+                                    else
+                                    {
+                                        $('#pm_input').hide();
+                                    }
+                                }
+                            // -->
+                            </script>
+
+                            <div id="pm_input">
+                                <div class="row row--form row--border-top field">
+                                    <h3 class="field__name"><label for="pm_subject">{{ lang.send_pm_subject }}</label></h3>
+                                    <input type="text" class="textbox" name="pm_subject" size="40" maxlength="85" value="{{ type_checked.pm_subject }}" />
+                                </div>
+                                <div class="row row--form {% if mybb.settings.allowanonwarningpms == false %}row--no-border{% endif %} field">
+                                    <h3 class="field__name"><label for="message">{{ lang.send_pm_message }}</label></h3>
+                                    <textarea name="pm_message" id="message" rows="20" cols="70">{{ type_checked.message }}</textarea>
+                                    {{ pm.codebuttons|raw }}
+                                </div>
+                                {% if mybb.settings.allowanonwarningpms %}
+                                    <div class="row row--form field">
+                                        <h3 class="field__name">{{ lang.send_pm_options }}</h3>
+                                        <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="pm_anonymous" value="1"{{ pm.anonymous_checked }} />&nbsp;{{ lang.send_pm_options_anonymous|raw }}</label></p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <script type="text/javascript">
+                            <!--
+                            $(document).ready(function() {
+                                togglePM();
+                            });
+                            // -->
+                            </script>
+                        </div>
+                    </section>
+                {% endif %}
+                <div class="form__submit">
+                    <button type="submit" class="button button--medimu">
+                        <i class="button__icon fas fa-exclamation-triangle"></i>
+                        <span class="button__text">{{ lang.warn_user }}</span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
 {% endblock body %}

@@ -4,20 +4,12 @@
     <title>{{ mybb.settings.bbname }} - {{ lang.mod_queue }}</title>
 {% endblock head %}
 
+{% block moderationHeader %}
+    <header class="page-header">
+        <h1 class="title title--page">{{ lang.mod_queue }}</h1>
+    </header>
+{% endblock moderationHeader %}
+
 {% block moderationBody %}
-    <table width="100%" border="0" align="center">
-        <tr>
-            {# To do: modcp_nav #}
-            <td valign="top">
-                <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-                    <tr>
-                        <td class="thead"><strong>{{ lang.mod_queue }}</strong></td>
-                    </tr>
-                    <tr>
-                        <td class="trow1" align="center">{{ lang.mod_queue_empty }}</td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
+    <div class="alert alert--no-results alert--no-results-container">{{ lang.mod_queue_empty }}</div>
 {% endblock moderationBody %}
