@@ -335,7 +335,14 @@
                 </div>
                 {% endif %}
                 <div>
-                    &laquo; <a href="{{ thread.next_oldest_link|raw }}">{{ lang.next_oldest }}</a> | <a href="{{ thread.next_newest_link|raw }}">{{ lang.next_newest }}</a> &raquo;
+                    <a href="{{ thread.next_oldest_link|raw }}" class="button button--basic">
+                        <i class="button__icon fas fa-angle-double-left"></i>
+                        <span class="button__text">{{ lang.next_oldest }}</span>
+                    </a>
+                    <a href="{{ thread.next_newest_link|raw }}" class="button button--basic">
+                        <span class="button__text">{{ lang.next_newest }}</span>
+                        <i class="button__icon button__icon--after fas fa-angle-double-right"></i>
+                    </a>
                 </div>
             </div>
 
@@ -437,21 +444,21 @@
             {% if mybb.settings.browsingthisthread %}
                 <div class="container container--small container--users-browsing">
                     {{ lang.users_browsing_thread }}
-                        {% for user in onlinemembers %}
-                            <a href="{{ user.profilelink|raw }}" title="{{ lang.users_browsing_thread_reading }} ({{ user.reading }})">{{ user.username|raw }}</a>{{ user.invisiblemark }}{% if not loop.last %}{{ lang.comma }}{% endif %}
-                        {% endfor %}
-                        {% if thread.inviscount and thread.onlinemembers %}
-                            {{ lang.comma }}
-                        {% endif %}
-                        {% if thread.inviscount and mybb.usergroup.canviewwolinvis %}
-                            {{ trans('users_browsing_forum_invis', thread.inviscount) }}
-                        {% endif %}
-                        {% if (thread.inviscount and thread.guestcount) or (thread.onlinemembers and thread.guestcount) %}
-                            {{ lang.comma }}
-                        {% endif %}
-                        {% if thread.guestcount %}
-                            {{ trans('users_browsing_thread_guests', thread.guestcount) }}
-                        {% endif %}
+                    {% for user in onlinemembers %}
+                        <a href="{{ user.profilelink|raw }}" title="{{ lang.users_browsing_thread_reading }} ({{ user.reading }})">{{ user.username|raw }}</a>{{ user.invisiblemark }}{% if not loop.last %}{{ lang.comma }}{% endif %}
+                    {% endfor %}
+                    {% if thread.inviscount and thread.onlinemembers %}
+                        {{ lang.comma }}
+                    {% endif %}
+                    {% if thread.inviscount and mybb.usergroup.canviewwolinvis %}
+                        {{ trans('users_browsing_forum_invis', thread.inviscount) }}
+                    {% endif %}
+                    {% if (thread.inviscount and thread.guestcount) or (thread.onlinemembers and thread.guestcount) %}
+                        {{ lang.comma }}
+                    {% endif %}
+                    {% if thread.guestcount %}
+                        {{ trans('users_browsing_thread_guests', thread.guestcount) }}
+                    {% endif %}
                 </div>
             {% endif %}
 

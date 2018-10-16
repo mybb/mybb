@@ -22,16 +22,12 @@
                 </div>
             </div>
             {% if report.selectall %}
-                <tr id="selectAllrow" class="hiddenrow">
-                    <td colspan="5" class="selectall">
-                        {{ trans('page_selected', report.reportcache) }} <a href="javascript:void(0)" onclick='inlineReports.selectAll(); return false;'>{{ trans('select_all', report.report_count) }}</a>
-                    </td>
-                </tr>
-                <tr id="allSelectedrow" class="hiddenrow">
-                    <td colspan="5" class="selectall">
-                        {{ trans('all_selected', report.report_count) }} <a href="javascript:void(0)" onclick='inlineReports.clearChecked(); return false;'>{{ lang.clear_selection }}</a>
-                    </td>
-                </tr>
+                <div class="thread-list__select-all" id="selectAllrow">
+                    {{ trans('page_selected', report.reportcache) }} <a href="javascript:void(0)" onclick='inlineReports.selectAll(); return false;'>{{ trans('select_all', report.report_count) }}</a>
+                </div>
+                <div class="thread-list__select-all" id="allSelectedrow">
+                    {{ trans('all_selected', report.report_count) }} <a href="javascript:void(0)" onclick='inlineReports.clearChecked(); return false;'>{{ lang.clear_selection }}</a>
+                </div>
             {% endif %}
             <div class="results">
                 {% for report in reports %}
