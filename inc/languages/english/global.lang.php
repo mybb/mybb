@@ -286,6 +286,7 @@ $l['postbit_post_unapproved'] = "This post is awaiting approval.";
 $l['postbit_thread_deleted'] = "This thread has been deleted.";
 $l['postbit_thread_unapproved'] = "This thread is awaiting approval.";
 $l['postbit_deleted_post_user'] = "This post by {1} has been deleted.";
+$l['postbit_post_options'] = "Post Options";
 
 $l['postbit_button_reputation_add'] = 'Rate';
 $l['postbit_button_website'] = 'Website';
