@@ -220,9 +220,17 @@
 				{% endif %}
 				<a href="private.php?action=send&amp;pmid={{ post.pmid }}&amp;do=forward" title="{{ lang.forward_title }}" class="post-control post-control--forward"><i class="post-control__icon fas fa-share fa-fw"></i><span class="post-control__text">{{ lang.postbit_button_forward }}</span></a>
 			{% endif %}
+
+			{% if post.is_announcement and post.can_edit %}
+				<a href="modcp.php?action=edit_announcement&amp;aid={{ post.aid }}" title="{{ lang.announcement_edit }}" class="post-control post-control--edit"><i class="post-control__icon fas fa-pencil-alt fa-fw"></i><span class="post-control__text">{{ lang.postbit_button_edit }}</span></a>
+			{% endif %}
+
+			{% if post.is_announcement and post.quick_delete %}
+				<a href="modcp.php?action=delete_announcement&amp;aid={{ post.aid }}&amp;my_post_key={{ mybb.post_code }}" onclick="MyBB.deleteAnnouncement(this); return false;" class="post-control post-control--delete"><i class="post-control__icon fas fa-trash fa-fw"></i><span class="post-control__text">{{ lang.postbit_button_qdelete }}</span></a>
+			{% endif %}
 		</div>
 		<div class="post-controls post-controls--secondary post-options">
-			{% if post.can_edit or post.quick_delete or post.button_report or post.can_warn or post.button_purgespammer %}
+			{% if post.is_announcement != true and (post.can_edit or post.quick_delete or post.button_report or post.can_warn or post.button_purgespammer) %}
 				<input type="checkbox" class="post-options__checkbox" id="post_options_{{ post.pid }}">
 				<label for="post_options_{{ post.pid }}" class="post-control post-control--options post-options__control" title="{{ lang.postbit_post_options }}">
 					<i class="post-control__icon fas fa-ellipsis-v fa-fw"></i>
@@ -231,41 +239,34 @@
 				<span class="post-options__list" id="post_options2_{{ post.pid }}">
 					{# Edit button #}
 					{% if post.can_edit %}
-						{% if post.is_announcement %}
-							<a href="modcp.php?action=edit_announcement&amp;aid={{ post.aid }}" title="{{ lang.announcement_edit }}" class="post-control post-control--edit"><i class="post-control__icon fas fa-pencil-alt fa-fw"></i><span class="post-control__text">{{ lang.postbit_button_edit }}</span></a>
-						{% else %}
-							<a href="javascript:void(0)" class="post-control post-control--quick-edit quick_edit_button" id="quick_edit_post_{{ post.pid }}"><i class="post-control__icon fas fa-pencil-alt fa-fw"></i><span class="post-control__text">{{ lang.postbit_quick_edit }}</span></a>
-							<a href="editpost.php?pid={{ post.pid }}" class="post-control post-control--full-edit"><i class="post-control__icon fas fa-edit fa-fw"></i><span class="post-control__text">{{ lang.postbit_full_edit }}</span></a>
 
-							{# <a href="editpost.php?pid={{ post.pid }}" id="edit_post_{{ post.pid }}" title="{{ lang.postbit_edit }}" class="post-control post-control--edit"><i class="post-control__icon fas fa-pencil-alt fa-fw"></i><span class="post-control__text">{{ lang.postbit_button_edit }}</span></a>
-							<div id="edit_post_{{ post.pid }}_popup" class="popup_menu" style="display: none;">
-								<div class="popup_item_container">
-									<a href="javascript:void(0)" class="popup_item quick_edit_button" id="quick_edit_post_{{ post.pid }}">{{ lang.postbit_quick_edit }}</a></div>
-									<div class="popup_item_container"><a href="editpost.php?pid={{ post.pid }}" class="popup_item">{{ lang.postbit_full_edit }}</a>
-								</div>
+						<a href="javascript:void(0)" class="post-control post-control--quick-edit quick_edit_button" id="quick_edit_post_{{ post.pid }}"><i class="post-control__icon fas fa-pencil-alt fa-fw"></i><span class="post-control__text">{{ lang.postbit_quick_edit }}</span></a>
+						<a href="editpost.php?pid={{ post.pid }}" class="post-control post-control--full-edit"><i class="post-control__icon fas fa-edit fa-fw"></i><span class="post-control__text">{{ lang.postbit_full_edit }}</span></a>
+
+						{# <a href="editpost.php?pid={{ post.pid }}" id="edit_post_{{ post.pid }}" title="{{ lang.postbit_edit }}" class="post-control post-control--edit"><i class="post-control__icon fas fa-pencil-alt fa-fw"></i><span class="post-control__text">{{ lang.postbit_button_edit }}</span></a>
+						<div id="edit_post_{{ post.pid }}_popup" class="popup_menu" style="display: none;">
+							<div class="popup_item_container">
+								<a href="javascript:void(0)" class="popup_item quick_edit_button" id="quick_edit_post_{{ post.pid }}">{{ lang.postbit_quick_edit }}</a></div>
+								<div class="popup_item_container"><a href="editpost.php?pid={{ post.pid }}" class="popup_item">{{ lang.postbit_full_edit }}</a>
 							</div>
-		<script type="text/javascript">
-		// <!--
-			if (use_xmlhttprequest == "1") {
-				$("#edit_post_{{ post.pid }}").popupMenu();
-			}
-		// -->
-		</script>#}
-						{% endif %}
+						</div>
+	<script type="text/javascript">
+	// <!--
+		if (use_xmlhttprequest == "1") {
+			$("#edit_post_{{ post.pid }}").popupMenu();
+		}
+	// -->
+	</script>#}
 					{% endif %}
 
 					{# Delete button #}
 					{% if post.quick_delete %}
-						{% if post.is_announcement %}
-							<a href="modcp.php?action=delete_announcement&amp;aid={{ post.aid }}&amp;my_post_key={{ mybb.post_code }}" onclick="MyBB.deleteAnnouncement(this); return false;" class="post-control post-control--delete"><i class="post-control__icon fas fa-trash fa-fw"></i><span class="post-control__text">{{ lang.postbit_button_qdelete }}</span></a>
-						{% else %}
-							<a href="editpost.php?pid={{ post.pid }}" onclick="Thread.deletePost({{ post.pid }}); return false;" style="display: none;" id="quick_delete_{{ post.pid }}" title="{{ lang.postbit_quick_delete }}" class="post-control post-control--delete"><i class="post-control__icon fas fa-trash fa-fw"></i><span class="post-control__text">{{ lang.postbit_button_qdelete }}</span></a>
+						<a href="editpost.php?pid={{ post.pid }}" onclick="Thread.deletePost({{ post.pid }}); return false;" style="display: none;" id="quick_delete_{{ post.pid }}" title="{{ lang.postbit_quick_delete }}" class="post-control post-control--delete"><i class="post-control__icon fas fa-trash fa-fw"></i><span class="post-control__text">{{ lang.postbit_button_qdelete }}</span></a>
 <script type="text/javascript">
 // <!--
 	$('#quick_delete_{{ post.pid }}').css('display', '{{ post.quick_delete_display }}');
 // -->
 </script>
-						{% endif %}
 					{% endif %}
 
 					{# Report button #}
