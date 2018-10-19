@@ -257,6 +257,22 @@
                     {{ thread.moderation_text }}
                 </div>
             {% endif %}
+            <div class="editor_control_bar editor_control_bar--quick-reply" style="display: none;" id="quickreply_multiquote">
+                <h3 class="editor_control_bar__title">
+                    <i class="editor_control_bar__icon fas fa-quote-left"></i>
+                    {{ lang.quickreply_multiquote_selected }}
+                </h3>
+                <div class="editor_control_bar__buttons">
+                    <a href="./newreply.php?tid={{ thread.tid }}&amp;load_all_quotes=1" onclick="return Thread.loadMultiQuoted();" class="button button--small">
+                        <i class="button__icon fas fa-quote-left"></i>
+                        <span class="button__text">{{ lang.quickreply_multiquote_now }}</span>
+                    </a>
+                    <a href="javascript:void(0)" onclick="Thread.clearMultiQuoted(); return false;" class="button button--secondary button--small">
+                        <i class="button__icon fas fa-times"></i>
+                        <span class="button__text">{{ lang.quickreply_multiquote_deselect }}</span>
+                    </a>
+                </div>
+            </div>
             <div class="post post--reply post--quick-reply compose compose--quick-reply quick-reply" id="post-reply">
                 <form method="post" action="newreply.php?tid={{ thread.tid }}&amp;processed=1" name="quick_reply_form" id="quick_reply_form">
                     <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
@@ -277,9 +293,6 @@
                     </div>
                     <div class="post__body">
                         <textarea class="textarea" rows="8" cols="80" name="message" id="message" tabindex="1" placeholder="{{ lang.quick_reply_message }}"></textarea>
-                    </div>
-                    <div class="editor_control_bar" style="display: none;" id="quickreply_multiquote">
-                        {{ lang.quickreply_multiquote_selected }} <a href="./newreply.php?tid={{ thread.tid }}&amp;load_all_quotes=1" onclick="return Thread.loadMultiQuoted();">{{ lang.quickreply_multiquote_now }}</a> {{ lang.or }} <a href="javascript:void(0)" onclick="Thread.clearMultiQuoted(); return false;">{{ lang.quickreply_multiquote_deselect }}</a>.
                     </div>
                     {% if (mybb.usergroup.canusesig and mybb.user.suspendsignature != 1) or forum.allowsmilies or modpermissions.canopenclosethreads or modpermissions.canstickunstickthreads %}
                         <input type="checkbox" class="compose__checkbox" id="show-quick-reply-options">

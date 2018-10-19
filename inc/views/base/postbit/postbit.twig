@@ -194,7 +194,7 @@
 
 			{# Reply to post button #}
 			{% if post.button_quote %}
-				<a href="newreply.php?tid={{ post.tid }}&amp;replyto={{ post.pid }}" title="{{ lang.postbit_quote }}" class="post-control post-control--reply"><i class="post-control__icon fas fa-comments fa-fw"></i><span class="post-control__text">{{ lang.postbit_button_quote }}</span></a>
+				{# <a href="newreply.php?tid={{ post.tid }}&amp;replyto={{ post.pid }}" title="{{ lang.postbit_quote }}" class="post-control post-control--reply"><i class="post-control__icon fas fa-comments fa-fw"></i><span class="post-control__text">{{ lang.postbit_button_quote }}</span></a>#}
 			{% endif %}
 
 			{# Multiquote button #}
@@ -230,6 +230,9 @@
 			{% endif %}
 		</div>
 		<div class="post-controls post-controls--secondary post-options">
+			{% if post.can_edit %}
+				<a href="javascript:void(0)" class="post-control post-control--quick-edit quick_edit_button" id="quick_edit_post_{{ post.pid }}" title="{{ lang.postbit_quick_edit }}"><i class="post-control__icon fas fa-pencil-alt fa-fw"></i><span class="post-control__text">{{ lang.postbit_button_edit }}</span></a>
+			{% endif %}
 			{% if post.is_announcement != true and (post.can_edit or post.quick_delete or post.button_report or post.can_warn or post.button_purgespammer) %}
 				<input type="checkbox" class="post-options__checkbox" id="post_options_{{ post.pid }}">
 				<label for="post_options_{{ post.pid }}" class="post-control post-control--options post-options__control" title="{{ lang.postbit_post_options }}">
@@ -239,8 +242,6 @@
 				<span class="post-options__list" id="post_options2_{{ post.pid }}">
 					{# Edit button #}
 					{% if post.can_edit %}
-
-						<a href="javascript:void(0)" class="post-control post-control--quick-edit quick_edit_button" id="quick_edit_post_{{ post.pid }}"><i class="post-control__icon fas fa-pencil-alt fa-fw"></i><span class="post-control__text">{{ lang.postbit_quick_edit }}</span></a>
 						<a href="editpost.php?pid={{ post.pid }}" class="post-control post-control--full-edit"><i class="post-control__icon fas fa-edit fa-fw"></i><span class="post-control__text">{{ lang.postbit_full_edit }}</span></a>
 
 						{# <a href="editpost.php?pid={{ post.pid }}" id="edit_post_{{ post.pid }}" title="{{ lang.postbit_edit }}" class="post-control post-control--edit"><i class="post-control__icon fas fa-pencil-alt fa-fw"></i><span class="post-control__text">{{ lang.postbit_button_edit }}</span></a>
