@@ -1677,6 +1677,7 @@ if ($mybb->input['action'] == "modqueue") {
 
             $threadqueue = true;
             output_page(\MyBB\template('modcp/modqueue_threads.twig', [
+                'threadqueue' => $threadqueue,
                 'threads' => $threads,
                 'multipage' => $multipage,
                 'navlink' => $navlink,
@@ -1778,6 +1779,7 @@ if ($mybb->input['action'] == "modqueue") {
 
             $postqueue = true;
             output_page(\MyBB\template('modcp/modqueue_posts.twig', [
+                'postqueue' => $postqueue,
                 'posts' => $posts,
                 'multipage' => $multipage,
                 'navlink' => $navlink,
@@ -1879,6 +1881,7 @@ if ($mybb->input['action'] == "modqueue") {
 
             $attachmentqueue = true;
             output_page(\MyBB\template('modcp/modqueue_attachments.twig', [
+                'attachmentqueue' => $attachmentqueue,
                 'attachments' => $attachments,
                 'multipage' => $multipage,
                 'navlink' => $navlink,

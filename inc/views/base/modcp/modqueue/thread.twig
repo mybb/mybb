@@ -1,21 +1,38 @@
-{% set row = alt_trow() %}
-<tr>
-    <td class="{{ row }}"><a href="{{ thread.threadlink }}">{{ thread.subject }}</a></td>
-    <td class="{{ row }}" align="center">{{ thread.profile_link|raw }}</td>
-    <td align="center" class="{{ row }}">{{ thread.threaddate|raw }}</td>
-</tr>
-<tr>
-    <td class="{{ row }}" colspan="3">
-        <div class="modqueue_message">
-            <div class="float_right modqueue_controls">
-                <label class="label_radio_ignore"><input type="radio" class="radio radio_ignore" name="threads[{{ thread.tid }}]" value="ignore" checked="checked" /> {{ lang.ignore }}</label>
-                <label class="label_radio_delete"><input type="radio" class="radio radio_delete" name="threads[{{ thread.tid }}]" value="delete" /> {{ lang.delete }}</label>
-                <label class="label_radio_approve"><input type="radio" class="radio radio_approve" name="threads[{{ thread.tid }}]" value="approve" /> {{ lang.approve }}</label>
-            </div>
-            <div class="modqueue_meta">
-                <strong>{{ lang.meta_forum }} <a href="{{ thread.forum_link }}">{{ thread.forum_name }}</a></strong><br />
-            </div>
-            {{ thread.postmessage|nl2br }}
+<div class="row mod-queue">
+    <div class="mod-queue__header">
+        <div class="mod-queue__header-section">
+            <h2 class="mod-queue__subject"><a href="{{ thread.threadlink }}">{{ thread.subject }}</a></h2>
+            <div class="mod-queue__author">{{ lang.by }} {{ thread.profile_link|raw }}</div>
+            <div class="mod-queue__date">{{ thread.threaddate|raw }}</div>
+            <div class="mod-queue__forum">{{ lang.meta_forum }} <a href="{{ thread.forum_link }}">{{ thread.forum_name }}</a></div>
         </div>
-    </td>
-</tr>
+        <div class="mod-queue__header-section">
+            <div class="segmented-control">
+                <span class="segmented-control__option">
+                    <input type="radio" class="radio radio_ignore segmented-control__input" name="threads[{{ thread.tid }}]" id="thread_ignore_{{ thread.tid }}" value="ignore" checked />
+                    <label class="segmented-control__button" for="thread_ignore_{{ thread.tid }}">
+                        <i class="segmented-control__icon fas fa-minus-circle"></i>
+                        <span class="segmented-control__text">{{ lang.ignore }}</span>
+                    </label>
+                </span>
+                <span class="segmented-control__option">
+                    <input type="radio" class="radio radio_delete segmented-control__input" name="threads[{{ thread.tid }}]" id="thread_delete_{{ thread.tid }}" value="delete" />
+                    <label class="segmented-control__button" for="thread_delete_{{ thread.tid }}">
+                        <i class="segmented-control__icon fas fa-trash"></i>
+                        <span class="segmented-control__text">{{ lang.delete }}</span>
+                    </label>
+                </span>
+                <span class="segmented-control__option">
+                    <input type="radio" class="radio radio_approve segmented-control__input" name="threads[{{ thread.tid }}]" id="thread_approve_{{ thread.tid }}" value="approve" />
+                    <label class="segmented-control__button" for="thread_approve_{{ thread.tid }}">
+                        <i class="segmented-control__icon fas fa-check"></i>
+                        <span class="segmented-control__text">{{ lang.approve }}</span>
+                    </label>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="mod-queue__message">
+        {{ thread.postmessage|nl2br }}
+    </div>
+</div>

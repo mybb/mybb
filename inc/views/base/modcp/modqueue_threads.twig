@@ -4,54 +4,50 @@
     <title>{{ mybb.settings.bbname }} - {{ lang.threads_awaiting_moderation }}</title>
 {% endblock head %}
 
+{% set results = true %}
+
+{% block moderationHeader %}
+    <header class="page-header">
+        <h1 class="title title--page">{{ lang.mod_queue }}</h1>
+    </header>
+{% endblock moderationHeader %}
+
 {% block moderationBody %}
+    {% include 'modcp/modqueue/menu.twig' %}
     <form action="modcp.php" method="post">
         <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
         <input type="hidden" name="action" value="do_modqueue" />
-        <table width="100%" border="0" align="center">
-            <tr>
-                {# To do: modcp_nav #}
-                <td valign="top">
-                    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-                        <tr>
-                            <td class="thead" colspan="3">
-                                <div class="float_right">
-                                    <strong>{{ lang.threads }}</strong>
-                                    {% if navlink.post %}
-                                         | <a href="modcp.php?action=modqueue&amp;type=posts">{{ lang.posts }}</a>
-                                    {% endif %}
-                                    {% if navlink.attachment %}
-                                         | <a href="modcp.php?action=modqueue&amp;type=attachments">{{ lang.attachments }}</a>
-                                    {% endif %}
-                                </div>
-                                <strong>{{ lang.threads_awaiting_moderation }}</strong>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="tcat" width="50%"><span class="smalltext"><strong>{{ lang.subject }}</strong></span></td>
-                            <td class="tcat" align="center" width="25%"><span class="smalltext"><strong>{{ lang.author }}</strong></span></td>
-                            <td class="tcat" align="center" width="25%"><span class="smalltext"><strong>{{ lang.date }}</strong></span></td>
-                        </tr>
-                        {% for thread in threads %}
-                            {% include 'modcp/modqueue/thread.twig' %}
-                        {% else %}
-                            <tr>
-                                <td class="trow1" align="center" colspan="3">{{ lang.mod_queue_threads_empty }}</td>
-                            </tr>
-                        {% endfor %}
-                    </table>
-                    {{ multipage|raw }}
-                    {% if threads %}
-                        <ul class="modqueue_mass">
-                            <li><a href="javascript:void(0)" class="mass_ignore" onclick="$('input.radio_ignore').each(function(){ $(this).prop('checked', true); }); return false;">{{ lang.mark_all_ignored }}</a></li>
-                            <li><a href="javascript:void(0)" class="mass_delete" onclick="$('input.radio_delete').each(function(){ $(this).prop('checked', true); }); return false;">{{ lang.mark_all_deletion }}</a></li>
-                            <li><a href="javascript:void(0)" class="mass_approve" onclick="$('input.radio_approve').each(function(){ $(this).prop('checked', true); }); return false;">{{ lang.mark_all_approved }}</a></li>
-                        </ul>
-                    {% endif %}
-                    <br />
-                    <div align="center"><input type="submit" class="button" name="reportsubmit" value="{{ lang.perform_actions }}" /></div>
-                </td>
-            </tr>
-        </table>
+        <section class="block">
+            <h1 class="title title--major">{{ lang.threads_awaiting_moderation }}</h1>
+            {% for thread in threads %}
+                {% include 'modcp/modqueue/thread.twig' %}
+            {% else %}
+                {% set results = false %}
+                <div class="alert alert--no-results">{{ lang.mod_queue_threads_empty }}</div>
+            {% endfor %}
+            {% if results %}
+                <div class="mod-queue__mass-controls">
+                    <a href="javascript:void(0)" onclick="$('input.radio_ignore').each(function(){ $(this).prop('checked', true); }); return false;" class="button button--basic mass_ignore">
+                        <i class="button__icon fas fa-minus-circle"></i>
+                        <span class="button__text">{{ lang.mark_all_ignored }}</span>
+                    </a>
+                    <a href="javascript:void(0)" onclick="$('input.radio_delete').each(function(){ $(this).prop('checked', true); }); return false;" class="button button--basic mass_delete">
+                        <i class="button__icon fas fa-trash"></i>
+                        <span class="button__text">{{ lang.mark_all_deletion }}</span>
+                    </a>
+                    <a href="javascript:void(0)" onclick="$('input.radio_approve').each(function(){ $(this).prop('checked', true); }); return false;" class="button button--basic mass_approve">
+                        <i class="button__icon fas fa-check"></i>
+                        <span class="button__text">{{ lang.mark_all_approved }}</span>
+                    </a>
+                </div>
+                <div class="sort-results">
+                    <button type="submit" class="button button--medium">
+                        <i class="button__icon fas fa-arrow-circle-right"></i>
+                        <span class="button__text">{{ lang.perform_actions }}</span>
+                    </button>
+                </div>
+            {% endif %}
+        </section>
+        {{ multipage|raw }}
     </form>
 {% endblock moderationBody %}
