@@ -4,87 +4,89 @@
     <title>{{ mybb.settings.bbname }} - {{ lang.modlogs }}</title>
 {% endblock head %}
 
+{% block moderationHeader %}
+    <header class="page-header">
+        <h1 class="title title--page">{{ lang.modlogs }}</h1>
+    </header>
+{% endblock %}
+
 {% block moderationBody %}
-    <table width="100%" border="0" align="center">
-        <tr>
-            {# To do: modcp_nav #}
-            <td valign="top">
-                <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-                    <tr>
-                        <td class="thead" align="center" colspan="5"><strong>{{ lang.modlogs }}</strong></td>
-                    </tr>
-                    <tr>
-                        <td class="tcat"><span class="smalltext"><strong>{{ lang.username }}</strong></span></td>
-                        <td class="tcat" align="center"><span class="smalltext"><strong>{{ lang.date }}</strong></span></td>
-                        <td class="tcat" align="center"><span class="smalltext"><strong>{{ lang.action }}</strong></span></td>
-                        <td class="tcat" align="center"><span class="smalltext"><strong>{{ lang.information }}</strong></span></td>
-                        <td class="tcat" align="center"><span class="smalltext"><strong>{{ lang.ip }}</strong></span></td>
-                    </tr>
-                    {% for logitem in modlogs %}
-                        {% include 'modcp/modlogs/item.twig' %}
-                    {% else %}
-                        <tr>
-                            <td class="trow1" align="center" colspan="5">{{ lang.error_no_results }}</td>
-                        </tr>
-                    {% endfor %}
-                    {% if multipage %}
-                        <tr>
-                            <td class="tfoot" colspan="5"><span class="smalltext"> {{ multipage|raw }}</span></td>
-                        </tr>
-                    {% endif %}
-                </table>
-                <br />
-                <form action="modcp.php?action=modlogs" method="post">
-                    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-                        <tr>
-                            <td class="thead" colspan="2"><strong>{{ lang.filter_modlogs }}</strong></td>
-                        </tr>
-                        <tr>
-                            <td class="trow1" width="25%"><strong>{{ lang.forum }}</strong></td>
-                            <td class="trow1" width="75%">
-                                {{ forum_select|raw }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="trow1" width="25%"><strong>{{ lang.from_moderator }}</strong></td>
-                            <td class="trow1" width="75%">
-                                <select name="uid">
-                                    <option value="">{{ lang.all_moderators }}</option>
-                                    <option value="">----------</option>
-                                    {% for user in users %}
-                                        <option value="{{ user.uid }}"{% if user.selected %} selected="selected"{% endif %}>{{ user.username }}</option>
-                                    {% endfor %}
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="trow1" width="25%"><strong>{{ lang.sort_by }}</strong></td>
-                            <td class="trow1" width="75%">
-                                <select name="sortby">
-                                    <option value="dateline"{% if select.sortby.dateline %} selected="selected"{% endif %}>{{ lang.date }}</option>
-                                    <option value="username"{% if select.sortby.username %} selected="selected"{% endif %}>{{ lang.username }}</option>
-                                    <option value="forum"{% if select.sortby.forum %} selected="selected"{% endif %}>{{ lang.forum_name }}</option>
-                                    <option value="thread"{% if select.sortby.thread %} selected="selected"{% endif %}>{{ lang.thread_subject }}</option>
-                                </select>
-                                {{ lang.in }}
-                                <select name="order">
-                                    <option value="asc"{% if select.order.asc %} selected="selected"{% endif %}>{{ lang.asc }}</option>
-                                    <option value="desc"{% if select.order.desc %} selected="selected"{% endif %}>{{ lang.desc }}</option>
-                                </select>
-                                {{ lang.order }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="trow1" width="25%"><strong>{{ lang.per_page }}</strong></td>
-                            <td class="trow1" width="75%"><input type="text" name="perpage" value="{{ select.perpage }}" size="4" class="textbox" /></td>
-                        </tr>
-                    </table>
-                    <br />
-                    <div align="center">
-                        <input type="submit" class="button" value="{{ lang.filter_logs }}" />
+    <section class="block">
+        {% for logitem in modlogs %}
+            {% include 'modcp/modlogs/item.twig' %}
+        {% else %}
+            <div class="alert alert--no-results alert--no-results-container">{{ lang.error_no_results }}</div>
+        {% endfor %}
+    </section>
+    {% if multipage %}
+        {{ multipage|raw }}
+    {% endif %}
+
+    <form action="modcp.php?action=modlogs" method="post">
+        <section class="block block--form form">
+            <div class="section section--form">
+                <h2 class="title title--section">{{ lang.filter_modlogs }}</h2>
+                <div class="section__container">
+                    <div class="row row--form field">
+                        <h3 class="field__name">{{ lang.forum }}</h3>
+                        <div class="select-field">
+                            <i class="select-field__icon fas fa-sort"></i>
+                            {{ forum_select|raw }}
+                        </div>
                     </div>
-                </form>
-            </td>
-        </tr>
-    </table>
+                    <div class="row row--form field">
+                        <h3 class="field__name"><label for="from_moderator">{{ lang.from_moderator }}</label></h3>
+                        <div class="select-field">
+                            <i class="select-field__icon fas fa-sort"></i>
+                            <select name="uid" id="from_moderator">
+                                <option value="">{{ lang.all_moderators }}</option>
+                                <option value="">----------</option>
+                                {% for user in users %}
+                                    <option value="{{ user.uid }}"{% if user.selected %} selected="selected"{% endif %}>{{ user.username }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="section section--form">
+                <h2 class="title title--section">{{ lang.sort_by }}</h2>
+                <div class="section__container">
+                    <div class="row row--form field">
+                        <div class="select-field">
+                            <i class="select-field__icon fas fa-sort"></i>
+                            <select name="sortby">
+                                <option value="dateline"{% if select.sortby.dateline %} selected="selected"{% endif %}>{{ lang.sortby_date }}</option>
+                                <option value="username"{% if select.sortby.username %} selected="selected"{% endif %}>{{ lang.sortby_username }}</option>
+                                <option value="forum"{% if select.sortby.forum %} selected="selected"{% endif %}>{{ lang.sortby_forum_name }}</option>
+                                <option value="thread"{% if select.sortby.thread %} selected="selected"{% endif %}>{{ lang.sortby_thread_subject }}</option>
+                            </select>
+                        </div>
+                        <div class="field__block">
+                            <div class="segmented-control">
+                                <span class="segmented-control__option">
+                                    <input type="radio" class="radio segmented-control__input" name="order" id="order_asc" value="asc"{% if select.order.asc %} checked{% endif %} />
+                                    <label class="segmented-control__button" for="order_asc">{{ lang.asc }} {{ lang.order }}</label>
+                                </span>
+                                <span class="segmented-control__option">
+                                    <input type="radio" class="radio segmented-control__input" name="order" id="order_desc" value="desc"{% if select.order.desc %} checked{% endif %} />
+                                    <label class="segmented-control__button" for="order_desc">{{ lang.desc }} {{ lang.order }}</label>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row row--form field">
+                        <h3 class="field__name"><label for="perpage">{{ lang.per_page }}</label></h3>
+                        <input type="text" name="perpage" id="perpage" value="{{ select.perpage }}" size="4" class="textbox textbox--small" />
+                    </div>
+                </div>
+            </div>
+            <div class="form__submit">
+                <button type="submit" class="button button--medium">
+                    <i class="button__icon fas fa-filter"></i>
+                    <span class="button__text">{{ lang.filter_logs }}</span>
+                </button>
+            </div>
+        </section>
+    </form>
 {% endblock moderationBody %}
