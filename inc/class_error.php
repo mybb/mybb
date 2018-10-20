@@ -331,6 +331,20 @@ class errorHandler {
 		// Do not log something that might be executable
 		$message = str_replace('<?', '< ?', $message);
 
+		if(function_exists('debug_backtrace'))
+		{
+			ob_start();
+			debug_print_backtrace();
+			$trace = ob_get_contents();
+			ob_end_clean();
+
+			$back_trace = "\t<back_trace>{$trace}</back_trace>\n";
+		}
+		else
+		{
+			$back_trace = '';
+		}
+
 		$error_data = "<error>\n";
 		$error_data .= "\t<dateline>".TIME_NOW."</dateline>\n";
 		$error_data .= "\t<script>".$file."</script>\n";
@@ -338,6 +352,7 @@ class errorHandler {
 		$error_data .= "\t<type>".$type."</type>\n";
 		$error_data .= "\t<friendly_type>".$this->error_types[$type]."</friendly_type>\n";
 		$error_data .= "\t<message>".$message."</message>\n";
+		$error_data .= $back_trace;
 		$error_data .= "</error>\n\n";
 
 		if(trim($mybb->settings['errorloglocation']) != "")
@@ -373,7 +388,21 @@ class errorHandler {
 			$message = "SQL Error: {$message['error_no']} - {$message['error']}\nQuery: {$message['query']}";
 		}
 
-		$message = "Your copy of MyBB running on {$mybb->settings['bbname']} ({$mybb->settings['bburl']}) has experienced an error. Details of the error include:\n---\nType: $type\nFile: $file (Line no. $line)\nMessage\n$message";
+		if(function_exists('debug_backtrace'))
+		{
+			ob_start();
+			debug_print_backtrace();
+			$trace = ob_get_contents();
+			ob_end_clean();
+
+			$back_trace = "\nBack Trace: {$trace}";
+		}
+		else
+		{
+			$back_trace = '';
+		}
+
+		$message = "Your copy of MyBB running on {$mybb->settings['bbname']} ({$mybb->settings['bburl']}) has experienced an error. Details of the error include:\n---\nType: $type\nFile: $file (Line no. $line)\nMessage\n$message{$back_trace}";
 
 		@my_mail($mybb->settings['adminemail'], "MyBB error on {$mybb->settings['bbname']}", $message, $mybb->settings['adminemail']);
 
