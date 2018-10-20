@@ -1,14 +1,30 @@
-{% set row = alt_trow() %}
-<tr>
-    <td class="{{ row }}">{{ warning.username_link|raw }}</td>
-    <td class="{{ row }}">{{ warning.title }} ({{ warning.points }})</td>
-    <td class="{{ row }}" align="center">{{ warning.issued_date }}</td>
-    <td class="{{ row }}" align="center">
-        {{ warning.expire_date }}
+<div class="row row--simple-columns warning-log">
+    <div class="row__primary">
+        <div class="warning-log__username">{{ warning.username_link|raw }}</div>
+        <div class="warning-log__warning">{{ warning.title }} ({{ warning.points }})</div>
         {% if warning.daterevoked %}
-            <br /><span class="smalltext"><strong>{{ lang.revoked }}</strong> {{ warning.revoked_date }}</span>
+            <div class="warning-log__revoked-date"><span class="warning-log__revoked">{{ lang.revoked }}</span> {{ warning.revoked_date }}</div>
+        {% else %}
+            {% if warning.expired %}
+                <div class="warning-log__expiry-date warning-log__expiry-date--expired">
+                    {{ warning.expire_date }}
+                </div>
+            {% else %}
+                <div class="warning-log__expiry-date">
+                    {{ lang.expires }}
+                    {{ warning.expire_date }}
+                </div>
+            {% endif %}
         {% endif %}
-    </td>
-    <td class="{{ row }}">{{ warning.mod_username_link|raw }}</td>
-    <td class="{{ row }}" align="center"><a href="warnings.php?action=view&amp;wid={{ warning.wid }}">{{ lang.view }}</a></td>
-</tr>
+    </div>
+    <div class="row__secondary">
+        <div class="warning-log__details">
+            <a href="warnings.php?action=view&amp;wid={{ warning.wid }}" class="button">
+                <i class="button__icon fas fa-info-circle"></i>
+                <span class="button__text">{{ lang.view }}</span>
+            </a>
+        </div>
+        <div class="warning-log__issued_by">{{ lang.issued_by }} {{ warning.mod_username_link|raw }}</div>
+        <div class="warning-log__issued-date">{{ warning.issued_date }}</div>
+    </div>
+</div>

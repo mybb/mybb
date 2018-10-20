@@ -1,11 +1,11 @@
-<div class="row row--simple-columns mod-logs">
+<div class="row row--simple-columns mod-log">
     <div class="row__primary">
-        <div class="mod-logs__user">{{ logitem.profilelink|raw }}</div>
-        <div class="mod-logs__action">{{ logitem.action }}</div>
-        <div class="mod-logs__date">{{ logitem.date|raw }}</div>
+        <div class="mod-log__user">{{ logitem.profilelink|raw }}</div>
+        <div class="mod-log__action">{{ logitem.action }}</div>
+        <div class="mod-log__date">{{ logitem.date|raw }}</div>
     </div>
-    <div class="row__secondary mod-logs--information">
-        <ul class="list list--stats list--mod-logs">
+    <div class="row__secondary mod-log--information">
+        <ul class="list list--stats list--mod-log">
             {% if logitem.tsubject %}
                 <li class="list__item">
                     <span class="list__field">{{ lang.thread }}</span>
