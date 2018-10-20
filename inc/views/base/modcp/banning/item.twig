@@ -1,0 +1,31 @@
+<div class="user-list__user">
+    <h2 class="user-list__username">{{ banned.profile_link|raw }}</h2>
+    <ul class="list list--stats list--user">
+        <li class="list__item">
+            <span class="list__field">{{ lang.reason }}</span>
+            <span class="list__value">{{ banned.reason }}</span>
+        </li>
+        <li class="list__item">
+            <span class="list__field">{{ lang.ban_length }}</span>
+            <span class="list__value">
+                {{ banned.banlength }} <span class="ban-duration ban-duration--{{ banned.banned_class }}">({{ banned.ban_remaining }})</span>
+            </span>
+        </li>
+        <li class="list__item">
+            <span class="list__field">{{ lang.ban_bannedby }}</span>
+            <span class="list__value">{{ banned.admin_profile|raw }}</span>
+        </li>
+    </ul>
+    {% if banned.show_edit_link %}
+        <div class="user-list__buttons">
+            <a href="modcp.php?action=banuser&amp;uid={{ banned.uid }}" class="button button--secondary button--small">
+                <i class="button__icon fas fa-pencil-alt"></i>
+                <span class="button__text">{{ lang.edit_ban }}</span>
+            </a>
+            <a href="modcp.php?action=liftban&amp;uid={{ banned.uid }}&amp;my_post_key={{ mybb.post_code }}" class="button button--secondary button--small button--danger">
+                <i class="button__icon fas fa-times"></i>
+                <span class="button__text">{{ lang.lift_ban }}</span>
+            </a>
+        </div>
+   {% endif %}
+</div>
