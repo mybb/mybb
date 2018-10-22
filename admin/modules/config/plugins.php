@@ -253,6 +253,8 @@ if($mybb->input['action'] == "check")
 		admin_redirect("index.php?module=config-plugins");
 	}
 
+	$contents = trim($contents);
+
 	$parser = new XMLParser($contents);
 	$tree = $parser->get_tree();
 
