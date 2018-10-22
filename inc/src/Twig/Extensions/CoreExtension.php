@@ -506,9 +506,9 @@ class CoreExtension extends \Twig_Extension
 
     public function renderAvatar(
         \Twig_Environment $twig,
-        string $url = '',
-        string $dimensions = '',
-        string $alt = ''
+        ?string $url = '',
+        ?string $dimensions = '',
+        ?string $alt = ''
     ): string {
         // TODO: cache of avatars
         $resolvedUrl = '';
@@ -526,7 +526,7 @@ class CoreExtension extends \Twig_Extension
         }
 
         if (!empty($dimensions)) {
-            $dimensionParts = preg_split('#\||x', $dimensions, 2);
+            $dimensionParts = preg_split('#\||x#', $dimensions, 2);
 
             if (count($dimensionParts) === 2) {
                 $resolvedDimensions['x'] = (int) $dimensionParts[0];

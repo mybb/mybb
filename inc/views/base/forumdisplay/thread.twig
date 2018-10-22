@@ -64,6 +64,8 @@
     {% include 'forumdisplay/thread_rating.twig' %}
 
     <td class="{{ class }}" style="white-space: nowrap; text-align: right;">
+        {{ render_avatar(url=thread.last_poster_avatar, dimensions=thread.last_poster_avatar_dimensions,
+            alt=thread.last_poster_name) }}
         <span class="lastpost smalltext">{{ thread.lastpostdate|raw }}<br />
             <a href="{{ thread.lastpostlink }}">{{ lang.lastpost }}</a>:
             {% if thread.lastposteruid > 0 %}
