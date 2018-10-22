@@ -1,0 +1,6 @@
+{% spaceless %}
+<img src="{{ url }}" {% if dimensions.x %} width="{{ dimensions.x }}"{% endif %}
+    {% if dimensions.y %} height="{{ dimensions.y }}"{% endif %}
+    {% if alt %}alt="{{ alt }}"{% endif %}
+    class="avatar" />
+{% endspaceless %}
