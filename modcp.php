@@ -3550,6 +3550,9 @@ if (!$mybb->input['action']) {
 
     output_page(\MyBB\template('modcp/home.twig', [
         'counters' => $counters,
+        'unapproved_attachments' => $unapproved_attachments,
+        'unapproved_posts' => $unapproved_posts,
+        'unapproved_threads' => $unapproved_threads,
         'modlogs' => $modlogs,
         'attachment' => $attachment,
         'post' => $post,

@@ -3,7 +3,7 @@
         <div class="warning-log__username">{{ warning.username_link|raw }}</div>
         <div class="warning-log__warning">{{ warning.title }} ({{ warning.points }})</div>
         {% if warning.daterevoked %}
-            <div class="warning-log__revoked-date"><span class="warning-log__revoked">{{ lang.revoked }}</span> {{ warning.revoked_date }}</div>
+            <div class="warning-log__revoked-date"><span class="warning-log__revoked">{{ lang.revoked }}</span> {{ warning.revoked_date|raw }}</div>
         {% else %}
             {% if warning.expired %}
                 <div class="warning-log__expiry-date warning-log__expiry-date--expired">

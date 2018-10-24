@@ -15,72 +15,60 @@
     {% if mybb.usergroup.canmanagemodqueue and (attachment or post or thread) %}
         <section class="block">
             <h1 class="title title--major">{{ lang.awaiting_moderation }}</h1>
-            <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-                <tr>
-                    <td class="tcat" width="23%"><span class="smalltext"><strong>{{ lang.type }}</strong></span></td>
-                    <td class="tcat" align="center" width="33%"><span class="smalltext"><strong>{{ lang.number_awaiting }}</strong></span></td>
-                    <td class="tcat" align="center" width="44%"><span class="smalltext"><strong>{{ lang.latest }}</strong></span></td>
-                </tr>
-                {# Attachment #}
-                {% if mybb.settings.enableattachments and (counters.modqueue.attachments > 0 or mybb.usergroup.issupermod) %}
-                    <tr>
-                        <td><span class="smalltext"><strong>{{ lang.attachments }}</strong></span></td>
-                        <td align="center"><span class="smalltext">{{ unapproved_attachments }}</span></td>
-                        <td align="center">
-                            <span class="smalltext">
-                                {% if attachment.link %}
-                                    <span class="smalltext">
-                                        <a href="{{ attachment.link }}#pid{{ attachment.pid }}"><strong>{{ attachment.filename }}</strong></a><br />
-                                        {{ attachment.date }}<br />
-                                        {{ lang.by }} {{ attachment.profilelink|raw }}
-                                    </span>
-                                {% else %}
-                                    <span style="text-align: center;">{{ lang.lastpost_never }}</span>
-                                {% endif %}
-                        </td>
-                    </tr>
-                {% endif %}
-                {# Post #}
-                {% if counters.modqueue.posts > 0 or mybb.usergroup.issupermod %}
-                    <tr>
-                        <td><span class="smalltext"><strong>{{ lang.posts }}</strong></span></td>
-                        <td align="center"><span class="smalltext">{{ unapproved_posts }}</span></td>
-                        <td align="center">
-                            <span class="smalltext">
-                                {% if post.link %}
-                                    <span class="smalltext">
-                                        <a href="{{ post.link }}#pid{{ post.pid }}" title="{{ post.fullsubject }}"><strong>{{ post.subject }}</strong></a><br />
-                                        {{ post.date }}<br />
-                                        {{ lang.by }} {{ post.profilelink|raw }}
-                                    </span>
-                                {% else %}
-                                    <span style="text-align: center;">{{ lang.lastpost_never }}</span>
-                                {% endif %}
-                            </span>
-                        </td>
-                    </tr>
-                {% endif %}
-                {# Thread #}
-                {% if counters.modqueue.threads > 0 or mybb.usergroup.issupermod %}
-                    <tr>
-                        <td><span class="smalltext"><strong>{{ lang.threads }}</strong></span></td>
-                        <td align="center"><span class="smalltext">{{ unapproved_threads }}</span></td>
-                        <td align="center">
-                            <span class="smalltext">
-                                {% if thread.link %}
-                                    <span class="smalltext">
-                                        <a href="{{ thread.link }}" title="{{ thread.fullsubject }}"><strong>{{ thread.subject }}</strong></a><br />
-                                        {{ thread.date }}<br />
-                                        {{ lang.by }} {{ thread.profilelink|raw }}
-                                    </span>
-                                {% else %}
-                                    <span style="text-align: center;">{{ lang.lastpost_never }}</span>
-                                {% endif %}
-                            </span>
-                        </td>
-                    </tr>
-                {% endif %}
-            </table>
+            {# Thread #}
+            {% if counters.modqueue.threads > 0 or mybb.usergroup.issupermod %}
+                <div class="row row--simple-columns awaiting-moderation">
+                    <div class="row__primary awaiting-moderation__type">
+                        <h3 class="awaiting-moderation__title"><a href="modcp.php?action=modqueue&amp;type=threads">{{ lang.threads }}</a></h3>
+                        <p class="awaiting-moderation__count">{{ unapproved_threads }} {{ lang.number_awaiting }}</p>
+                    </div>
+                    <div class="row__secondary awaiting-moderation__latest">
+                        <span class="awaiting-moderation__latest-title">{{ lang.latest }}</span>
+                        {% if thread.link %}
+                            <a href="{{ thread.link }}" title="{{ thread.fullsubject }}"><strong>{{ thread.subject }}</strong></a><br />
+                            {{ thread.date }} {{ lang.by }} {{ thread.profilelink|raw }}
+                        {% else %}
+                            {{ lang.none }}
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+            {# Post #}
+            {% if counters.modqueue.posts > 0 or mybb.usergroup.issupermod %}
+                <div class="row row--simple-columns awaiting-moderation">
+                    <div class="row__primary awaiting-moderation__type">
+                        <h3 class="awaiting-moderation__title"><a href="modcp.php?action=modqueue&amp;type=posts">{{ lang.posts }}</a></h3>
+                        <p class="awaiting-moderation__count">{{ unapproved_posts }} {{ lang.number_awaiting }}</p>
+                    </div>
+                    <div class="row__secondary awaiting-moderation__latest">
+                        <span class="awaiting-moderation__latest-title">{{ lang.latest }}</span>
+                        {% if post.link %}
+                            <a href="{{ post.link }}#pid{{ post.pid }}" title="{{ post.fullsubject }}"><strong>{{ post.subject }}</strong></a><br />
+                            {{ post.date }} {{ lang.by }} {{ post.profilelink|raw }}
+                        {% else %}
+                            {{ lang.none }}
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+            {# Attachment #}
+            {% if mybb.settings.enableattachments and (counters.modqueue.attachments > 0 or mybb.usergroup.issupermod) %}
+                <div class="row row--simple-columns awaiting-moderation">
+                    <div class="row__primary awaiting-moderation__type">
+                        <h3 class="awaiting-moderation__title"><a href="modcp.php?action=modqueue&amp;type=attachments">{{ lang.attachments }}</a></h3>
+                        <p class="awaiting-moderation__count">{{ unapproved_attachments }} {{ lang.number_awaiting }}</p>
+                    </div>
+                    <div class="row__secondary awaiting-moderation__latest">
+                        <span class="awaiting-moderation__latest-title">{{ lang.latest }}</span>
+                        {% if attachment.link %}
+                            <a href="{{ attachment.link }}#pid{{ attachment.pid }}"><strong>{{ attachment.filename }}</strong></a><br />
+                            {{ attachment.date }} {{ lang.by }} {{ attachment.profilelink|raw }}
+                        {% else %}
+                            {{ lang.none }}
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
         </section>
     {% endif %}
 
