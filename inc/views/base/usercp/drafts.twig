@@ -28,7 +28,10 @@
             </div>
             <div class="sort-results">
                 <input type="hidden" name="action" value="do_drafts" />
-                <input type="submit" class="button" name="draftman" value="{{ lang.delete_drafts }}"{% if not deleteDraftsEnabled %} disabled{% endif %} />
+                <button type="submit" name="draftman" class="button"{% if not deleteDraftsEnabled %} disabled{% endif %}>
+                    <i class="button__icon fas fa-trash"></i>
+                    <span class="button__text">{{ lang.delete_drafts }}</span>
+                </button>
             </div>
         </section>
 
