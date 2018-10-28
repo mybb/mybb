@@ -4,11 +4,19 @@
     <title>{{ mybb.settings.bbname }} - {{ lang.warning_details }}</title>
 {% endblock head %}
 
+{% if warning.status == lang.warning_active %}
+    {% set tag = 'tag--good' %}
+{% elseif warning.status == lang.already_expired or warning.status == lang.warning_revoked %}
+    {% set tag = 'tag--medium' %}
+{% else %}
+    {% set tag = '' %}
+{% endif %}
+
 {% block body %}
     <div class="page-content">
         <header class="page-header">
+            <span class="tag tag--float {{ tag }}">{{ warning.status }}</span>
             <h1 class="title title--page">{{ lang.warning_details }}</h1>
-            {{ warning.status }}
         </header>
         <div class="block block--container">
             <ul class="list list--divided list--stats">

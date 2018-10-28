@@ -87,16 +87,18 @@
                                 <div class="option-field">
                                     <input type="radio" class="option-field__input option-field__input--types" name="type" id="type_input_{{ type.tid }}" value="{{ type.tid }}" {{ type_checked.tid }} onclick="checkType();" />
                                     <h4 class="option-field__name"><label for="type_input_{{ type.tid }}">{{ type.title }} {{ trans('warning_points', type.points) }}</label></h4>
-                                    <div style="margin-top: 4px;" id="type_{{ type.tid }}" class="types">
-                                        <div class="smalltext">{{ lang.new_warning_level }}</div>
-                                        <div class="tborder float_left" style="width: 150px; margin: 0; padding: 1px;">
-                                            <div class="trow1 float_left" style="width: {{ user.currentlevel }}%;">&nbsp;</div>
-                                            <div class="trow2 float_left" style="width: {{ type.level_diff }}%;">&nbsp;</div>
+                                    <div id="type_{{ type.tid }}" class="types section section--inline">
+                                        <div class="row row--form field">
+                                            <h5 class="field__name">{{ lang.new_warning_level }} {{ type.new_warning_level }}%</h5>
+                                            <div class="warning-level">
+                                                <div class="warning-level__bar warning-level__bar--total" style="width: {{ user.currentlevel + type.level_diff }}%">
+                                                    <div class="warning-level__bar warning-level__bar--current" style="width: {{ (user.currentlevel / (user.currentlevel + type.level_diff)) * 100 }}%"></div>
+                                                </div>
+                                            </div>
+                                            {% if type.action %}
+                                                <p class="field__description field__description--below">{{ lang.result }} {{ type.action.friendly_action }}</p>
+                                            {% endif %}
                                         </div>
-                                        <div class="float_left" style="padding-left: 10px; font-weight: bold;">{{ type.new_warning_level }}%</div><br style="clear: left;" />
-                                        {% if type.action %}
-                                            <div class="smalltext" style="clear: left; padding-top: 4px;">{{ lang.result }}<br />{{ type.action.friendly_action }}</div>
-                                        {% endif %}
                                     </div>
                                 </div>
                             {% endfor %}
@@ -104,23 +106,20 @@
                                 <div class="option-field">
                                     <input type="radio" class="option-field__input option-field__input--types" name="type" id="type_input_custom" value="custom" {{ type_checked.custom }} class="types_check" onclick="checkType();" />
                                     <h4 class="option-field__name"><label for="type_input_custom">{{ lang.custom }}</label></h4>
-                                    <div id="type_custom" class="types">
-                                        
-                                        <table>
-                                        <tr>
-                                            <td class="smalltext">{{ lang.reason }}</td>
-                                            <td class="smalltext">{{ lang.points }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><input type="text" class="textbox" name="custom_reason" size="50" maxlength="120" value="{{ type_checked.custom_reason }}" /></td>
-                                            <td><input type="text" class="textbox" name="custom_points" size="2" value="{{ type_checked.custom_points }}" /></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="smalltext" colspan="2" style="padding-top: 4px;">{{ lang.expires }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="2">
-                                                <input type="text" class="textbox" name="expires" size="2" value="{{ type_checked.expires }}" />
+                                    <div id="type_custom" class="types section section--inline">
+                                        <div class="row row--form field">
+                                            <h5 class="field__name"><label for="custom_reason">{{ lang.reason }}</label></h5>
+                                            <input type="text" class="textbox" name="custom_reason" id="custom_reason" maxlength="120" value="{{ type_checked.custom_reason }}" />
+                                        </div>
+                                        <div class="row row--form field">
+                                            <h5 class="field__name"><label for="custom_points">{{ lang.points }}</label></h5>
+                                            <input type="text" class="textbox textbox--small" name="custom_points" id="custom_points" value="{{ type_checked.custom_points }}" />
+                                        </div>
+                                        <div class="row row--form field">
+                                            <h5 class="field__name"><label for="custom_expires">{{ lang.expires }}</label></h5>
+                                            <input type="text" class="textbox textbox--small" name="expires" size="2" value="{{ type_checked.expires }}" />
+                                            <div class="select-field">
+                                                <i class="select-field__icon fas fa-sort"></i>
                                                 <select name="expires_period">
                                                     <option value="hours" {{ type_checked.hours }}>{{ lang.hour_or_hours }}</option>
                                                     <option value="days" {{ type_checked.days }}>{{ lang.day_or_days }}</option>
@@ -128,9 +127,8 @@
                                                     <option value="months" {{ type_checked.months }}>{{ lang.month_or_months }}</option>
                                                     <option value="never" {{ type_checked.never }}>{{ lang.never }}</option>
                                                 </select>
-                                            </td>
-                                        </tr>
-                                        </table>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             {% endif %}

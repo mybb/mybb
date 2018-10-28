@@ -12,6 +12,9 @@
             <h1 class="title title--page">{{ lang.warning_log }}</h1>
             {% if warning_level > 0 %}
                 <p class="page-description">{{ trans('current_warning_level', warning_level, user.warningpoints, mybb.settings.maxwarningpoints)|raw }}</p>
+                <div class="warning-level">
+                    <div class="warning-level__bar warning-level__bar--current" style="width: {{ warning_level }}%;"></div>
+                </div>
             {% endif %}
         </header>
         {{ multipage|raw }}
