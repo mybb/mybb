@@ -13,71 +13,69 @@
         {{ display_errors|raw }}
         <section class="block block--form">
             <h2 class="title title--major">{{ lang.delayed_mod_queue }}</h2>
-            <div class="results">
-                {% for delayedmod in delayedmods %}
-                    <div class="row row--simple-columns mod-log mod-log--delayed">
-                        <div class="row__primary">
-                            <div class="mod-log__user">{{ delayedmod.profilelink|raw }}</div>
-                            <div class="mod-log__action">{{ delayedmod.action }}</div>
-                            <div class="mod-log__date">{{ delayedmod.dateline|raw }}</div>
-                        </div>
-                        <div class="row__secondary mod-log--information">
-                            <ul class="list list--stats list--mod-log">
-                                {% if delayedmod.thread_single %}
-                                    <li class="list__item">
-                                        <span class="list__field">{{ lang.thread }}</span>
-                                        <span class="list__value"><a href="{{ delayedmod.threadlink }}">{{ delayedmod.threadsubject }}</a></span>
-                                    </li>
-                                {% endif %}
-                                {% if delayedmod.thread_multiple %}
-                                    <li class="list__item">
-                                        <span class="list__field">{{ lang.thread }}</span>
-                                        <span class="list__value">{{ lang.multiple_threads }}</span>
-                                    </li>
-                                {% endif %}
-                                {% if delayedmod.forum %}
-                                    <li class="list__item">
-                                        <span class="list__field">{{ lang.forum }}</span>
-                                        <span class="list__value"><a href="{{ delayedmod.link }}">{{ delayedmod.fname }}</a></span>
-                                    </li>
-                                {% endif %}
-                                {% if delayedmod.new_forum %}
-                                    <li class="list__item">
-                                        <span class="list__field">{{ lang.new_forum }}</span>
-                                        <span class="list__value"><a href="{{ delayedmod.new_link }}">{{ delayedmod.new_name }}</a></span>
-                                    </li>
-                                {% endif %}
-                                {% if delayedmod.redirect %}
-                                    <li class="list__item">
-                                        <span class="list__field">{{ lang.leave_redirect_for }}</span>
-                                        <span class="list__value">{{ delayedmod.redirect_expire }}</span>
-                                    </li>
-                                {% endif %}
-                                {% if delayedmod.merge %}
-                                    <li class="list__item">
-                                        <span class="list__field">{{ lang.new_subject }}</span>
-                                        <span class="list__value">{{ delayedmod.subject }}</span>
-                                    </li>
-                                    <li class="list__item">
-                                        <span class="list__field">{{ lang.thread_to_merge_with }}</span>
-                                        <span class="list__value"><a href="{{ delayedmod.threadurl }}">{{ delayedmod.threadurl }}</a></span>
-                                    </li>
-                                {% endif %}
-                            </ul>
-                        </div>
-                        <div class="row__controls">
-                            <a href="moderation.php?action=cancel_delayedmoderation&amp;tid={{ delayed.tid }}&amp;fid={{ delayed.fid }}&amp;did={{ delayedmod.did }}&amp;my_post_key={{ mybb.post_code }}" class="button button--danger">
-                                <i class="button__icon fas fa-times"></i>
-                                <span class="button__text">{{ lang.cancel }}</span>
-                            </a>
-                        </div>
+            {% for delayedmod in delayedmods %}
+                <div class="row row--simple-columns mod-log mod-log--delayed">
+                    <div class="row__primary">
+                        <div class="mod-log__user">{{ delayedmod.profilelink|raw }}</div>
+                        <div class="mod-log__action">{{ delayedmod.action }}</div>
+                        <div class="mod-log__date">{{ delayedmod.dateline|raw }}</div>
                     </div>
-                {% else %}
-                    <div class="alert alert--no-results">{{ lang.no_delayed_mods }}</div>
-                {% endfor %}
-            </div>
+                    <div class="row__secondary mod-log--information">
+                        <ul class="list list--stats list--mod-log">
+                            {% if delayedmod.thread_single %}
+                                <li class="list__item">
+                                    <span class="list__field">{{ lang.thread }}</span>
+                                    <span class="list__value"><a href="{{ delayedmod.threadlink }}">{{ delayedmod.threadsubject }}</a></span>
+                                </li>
+                            {% endif %}
+                            {% if delayedmod.thread_multiple %}
+                                <li class="list__item">
+                                    <span class="list__field">{{ lang.thread }}</span>
+                                    <span class="list__value">{{ lang.multiple_threads }}</span>
+                                </li>
+                            {% endif %}
+                            {% if delayedmod.forum %}
+                                <li class="list__item">
+                                    <span class="list__field">{{ lang.forum }}</span>
+                                    <span class="list__value"><a href="{{ delayedmod.link }}">{{ delayedmod.fname }}</a></span>
+                                </li>
+                            {% endif %}
+                            {% if delayedmod.new_forum %}
+                                <li class="list__item">
+                                    <span class="list__field">{{ lang.new_forum }}</span>
+                                    <span class="list__value"><a href="{{ delayedmod.new_link }}">{{ delayedmod.new_name }}</a></span>
+                                </li>
+                            {% endif %}
+                            {% if delayedmod.redirect %}
+                                <li class="list__item">
+                                    <span class="list__field">{{ lang.leave_redirect_for }}</span>
+                                    <span class="list__value">{{ delayedmod.redirect_expire }}</span>
+                                </li>
+                            {% endif %}
+                            {% if delayedmod.merge %}
+                                <li class="list__item">
+                                    <span class="list__field">{{ lang.new_subject }}</span>
+                                    <span class="list__value">{{ delayedmod.subject }}</span>
+                                </li>
+                                <li class="list__item">
+                                    <span class="list__field">{{ lang.thread_to_merge_with }}</span>
+                                    <span class="list__value"><a href="{{ delayedmod.threadurl }}">{{ delayedmod.threadurl }}</a></span>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    <div class="row__controls">
+                        <a href="moderation.php?action=cancel_delayedmoderation&amp;tid={{ delayed.tid }}&amp;fid={{ delayed.fid }}&amp;did={{ delayedmod.did }}&amp;my_post_key={{ mybb.post_code }}" class="button button--danger">
+                            <i class="button__icon fas fa-times"></i>
+                            <span class="button__text">{{ lang.cancel }}</span>
+                        </a>
+                    </div>
+                </div>
+            {% else %}
+                <div class="alert alert--no-results">{{ lang.no_delayed_mods }}</div>
+            {% endfor %}
         </section>
-        
+
         <form action="moderation.php" method="post">
             <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
             <input type="hidden" name="action" value="do_delayedmoderation" />
