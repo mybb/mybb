@@ -1185,8 +1185,8 @@ if($mybb->input['action'] == "do_email" && $mybb->request_method == "post")
 
 		$user = array(
 			"uid" => $mybb->user['uid'],
-			"email" => $mybb->get_input('email'),
-			"email2" => $mybb->get_input('email2')
+			"email" => trim($mybb->get_input('email')),
+			"email2" => trim($mybb->get_input('email2'))
 		);
 
 		$userhandler->set_data($user);
