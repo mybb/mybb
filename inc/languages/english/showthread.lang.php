@@ -23,7 +23,7 @@ $l['unsubscribe_thread'] = "Unsubscribe";
 $l['add_poll_to_thread'] = "Add Poll";
 $l['moderation_options'] = "Moderation Options:";
 $l['delayed_moderation'] = "Delayed Moderation";
-$l['thread_notes'] = "Edit / View Thread Notes";
+$l['thread_notes'] = "Thread Notes";
 $l['open_close_thread'] = "Open / Close Thread";
 $l['approve_thread'] = "Approve Thread";
 $l['unapprove_thread'] = "Unapprove Thread";
@@ -96,7 +96,7 @@ $l['or'] ="or";
 $l['quickreply_multiquote_deselect'] = "Deselect all";
 $l['search_thread'] = "Search Thread";
 $l['enter_keywords'] = "Enter Keywords";
-$l['view_thread_notes'] = "Thread Notes";
+$l['edit_thread_notes'] = "Edit Thread Notes";
 $l['view_all_notes'] = "View All Notes";
 
 $l['save_changes'] = 'Save Changes';

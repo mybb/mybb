@@ -35,9 +35,13 @@
         {# Thread moderator notes #}
         {% if modpermissions.ismod and thread.notes %}
         <section class="container">
-            <h4 class="container__title">{{ lang.view_thread_notes }}</h4>
+            <h4 class="title title--container">{{ lang.thread_notes }}</h4>
             {% if thread.notes|length > 200 %}
-                {{ thread.notes|slice(0, 200)|nl2br }}... [<a href="javascript:void(0)" onclick="Thread.viewNotes({{ thread.tid }}); return false;">{{ lang.view_all_notes }}</a>]
+                {{ thread.notes|slice(0, 200)|nl2br }}...
+                <a href="javascript:void(0)" onclick="Thread.viewNotes({{ thread.tid }}); return false;" class="button button--basic">
+                    <i class="button__icon far fa-file-alt"></i>
+                    <span class="button__text">{{ lang.view_all_notes }}</span>
+                </a>
             {% else %}
                 {{ thread.notes|nl2br }}
             {% endif %}
@@ -157,7 +161,7 @@
                 {% if modpermissions.canmanagethreads and thread.notes %}
                     <a href="moderation.php?action=threadnotes&amp;modtype=thread&amp;tid={{ thread.tid }}" class="button button--basic button--full-width">
                     	<i class="button__icon far fa-file-alt"></i>
-                    	<span class="button__text">>{{ lang.view_thread_notes }}</span>
+                    	<span class="button__text">{{ lang.edit_thread_notes }}</span>
                     </a>
                 {% endif %}
                 {% if mybb.user.uid %}
