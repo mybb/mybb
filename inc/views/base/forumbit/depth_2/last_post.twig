@@ -4,5 +4,6 @@
 		{% include 'partials/default_avatar.twig' %}
 	</a>
 	<h4 class="forum__subject"><a href="{{ forum.last_post.link|raw }}" title="{{ forum.last_post.full_subject }}">{{ forum.last_post.subject }}</a></h4>
-	<p class="forum__date-author">{{ forum.last_post.date|raw }} {{ lang.by }} {{ forum.last_post.profile_link|raw }}</p>
+	<p class="forum__date">{{ forum.last_post.date|raw }}</p>
+	<p class="forum__author">{{ lang.by }} {{ forum.last_post.profile_link|raw }}</p>
 </div>
