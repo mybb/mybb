@@ -226,7 +226,7 @@ $l['editor_insertvideo'] = "Insert a video";
 $l['editor_maximize'] = "Maximize";
 
 $l['quote'] = "Quote:";
-$l['wrote'] = "Wrote:";
+$l['wrote'] = "wrote:";
 $l['code'] = "Code:";
 $l['php_code'] = "PHP Code:";
 $l['posted_image'] = "[Image: {1}]";
