@@ -1,32 +1,50 @@
+{# NOT USED
+
+   Can be shown on forum display or show thread by adding
+       {{ forumjump|raw }}
+   to forumdisplay.twig or showthread.twig
+
+#}
 {% if showextras %}
-    <form action="forumdisplay.php" method="get">
-        <span class="smalltext"><strong>{{ lang.forumjump }}</strong></span>
-        <select name="{{ name }}" class="forumjump">
-            <option value="-4">{{ lang.forumjump_pms }}</option>
-            <option value="-3">{{ lang.forumjump_usercp }}</option>
-            <option value="-5">{{ lang.forumjump_wol }}</option>
-            <option value="-2">{{ lang.forumjump_search }}</option>
-            <option value="-1">{{ lang.forumjump_home }}</option>
+    <section class="container">
+        <form action="forumdisplay.php" method="get">
+            <h2 class="title title--container">{{ lang.forumjump }}</h2>
+            <div class="select-field">
+                <i class="select-field__icon fas fa-sort"></i>
+                <select name="{{ name }}" class="forumjump">
+                    <option value="-4">{{ lang.forumjump_pms }}</option>
+                    <option value="-3">{{ lang.forumjump_usercp }}</option>
+                    <option value="-5">{{ lang.forumjump_wol }}</option>
+                    <option value="-2">{{ lang.forumjump_search }}</option>
+                    <option value="-1">{{ lang.forumjump_home }}</option>
+                    {{ forumjumpbits|raw }}
+                </select>
+            </div>
+            <button type="submit" class="button button--inline">
+                <i class="button__icon fas fa-arrow-right"></i>
+                <span class="button__text">{{ lang.go }}</span>
+            </button>
+        </form>
+        <script type="text/javascript">
+            $(".forumjump").change(function() {
+                var option = $(this).val();
+
+                if(option < 0)
+                {
+                    window.location = 'forumdisplay.php?fid='+option;
+                }
+                else
+                {
+                    window.location = {{ forum_link }};
+                }
+            });
+        </script>
+    </section>
+{% else %}
+    <div class="select-field">
+        <i class="select-field__icon fas fa-sort"></i>
+        <select name="{{ name }}">
             {{ forumjumpbits|raw }}
         </select>
-        {{ gobutton|raw }}
-    </form>
-    <script type="text/javascript">
-        $(".forumjump").change(function() {
-            var option = $(this).val();
-
-            if(option < 0)
-            {
-                window.location = 'forumdisplay.php?fid='+option;
-            }
-            else
-            {
-                window.location = {{ forum_link }};
-            }
-        });
-    </script>
-{% else %}
-    <select name="{{ name }}">
-        {{ forumjumpbits|raw }}
-    </select>
+    </div>
 {% endif %}

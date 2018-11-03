@@ -30,6 +30,18 @@
                 <div class="alert__message">{{ newreply.moderation_text }}</div>
             </div>
         {% endif %}
+        {% if newreply.showforumrules %}
+            {% if forum.rulestype == 2 %}
+                <section class="container">
+                    <a href="misc.php?action=rules&amp;fid={{ forum.fid }}">{{ forum.rulestitle }}</a>
+                </section>
+            {% else %}
+            <section class="container">
+                <h4 class="title title--container">{{ forum.rulestitle }}</h4>
+                <div class="scaleimages">{{ forum.rules|raw }}</div>
+            </section>
+            {% endif %}
+        {% endif %}
         <form action="newreply.php?tid={{ thread.tid }}&amp;processed=1" method="post" enctype="multipart/form-data" name="input">
             <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
             <div class="form form--compose compose">
@@ -172,18 +184,6 @@
                 {% endif %}
             </div>
         </form>
-        {% if newreply.showforumrules %}
-            {% if forum.rulestype == 2 %}
-                <section class="container">
-                    <a href="misc.php?action=rules&amp;fid={{ forum.fid }}">{{ forum.rulestitle }}</a>
-                </section>
-            {% else %}
-            <section class="container">
-                <h4 class="container__title">{{ forum.rulestitle }}</h4>
-                <div class="scaleimages">{{ forum.rules|raw }}</div>
-            </section>
-            {% endif %}
-        {% endif %}
 
         {% if mybb.settings.threadreview %}
             <section class="block">

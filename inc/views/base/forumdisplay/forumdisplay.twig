@@ -51,10 +51,10 @@
         {% if foruminfo.rulestype and foruminfo.rules %}
             <section class="container container--forum-rules">
                 {% if foruminfo.rulestype == 2 %}
+                    <strong><a href="misc.php?action=rules&amp;fid={{ foruminfo.fid }}">{{ foruminfo.rulestitle|default(trans('forum_rules', foruminfo.name)) }}</a></strong>
+                {% else %}
                     <h4 class="title title--container">{{ foruminfo.rulestitle|default(trans('forum_rules', foruminfo.name)) }}</h4>
                     {{ foruminfo.rules }}
-                {% else %}
-                    <strong><a href="misc.php?action=rules&amp;fid={{ foruminfo.fid }}">{{ foruminfo.rulestitle|default(trans('forum_rules', foruminfo.name)) }}</a></strong>
                 {% endif %}
             </section>
         {% endif %}
@@ -310,7 +310,6 @@
                     {% endif %}
                 </div>
             {% endif %}
-            {{ forumjump|raw }}
         </div>
         {% endif %}
     </div>

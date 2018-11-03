@@ -5,27 +5,25 @@
 {% endblock head %}
 
 {% block body %}
-    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-        <tr>
-            <td class="thead" colspan="3"><strong>{{ lang.smilies_listing }}</strong></td>
-        </tr>
-        <tr>
-            <td class="tcat" colspan="2" align="center"><span class="smalltext"><strong>{{ lang.name }}</strong></span></td>
-            <td class="tcat"><span class="smalltext"><strong>{{ lang.abbreviation }}</strong></span></td>
-        </tr>
-        {% for smilie in smilies %}
-            {% set row = alt_trow() %}
-            <tr>
-                <td class="{{ row }}" style="width: 1px; text-align: center;">
-                    <img src="{{ smilie.image }}" alt="{{ smilie.name }}" title="{{ smilie.name }}" class="smilie smilie_{{ smilie.sid }}" />
-                </td>
-                <td class="{{ row }}">{{ smilie.name }}</td>
-                <td class="{{ row }}">{{ smilie.find|nl2br }}</td>
-            </tr>
-        {% else %}
-            <tr>
-                <td class="trow1">{{ lang.no_smilies }}</td>
-            </tr>
-        {% endfor %}
-    </table>
+    <div class="page-content page-content--centered">
+        <header class="page-header">
+            <h1 class="title title--page">{{ lang.smilies_listing }}</h1>
+        </header>
+
+        <section class="block smilie-list">
+            <div class="container container--adjacent container--simple-columns smilie-list__legend">
+                <div class="container__primary smilie-list__name">{{ lang.name }}</div>
+                <div class="container__secondary smilie-list__replace">{{ lang.abbreviation }}</div>
+            </div>
+            {% for smilie in smilies %}
+                <div class="row row--simple-columns smilie-list__item">
+                    <div class="smilie-list__smilie"><img src="{{ smilie.image }}" alt="{{ smilie.name }}" title="{{ smilie.name }}" class="smilie smilie_{{ smilie.sid }}" /></div>
+                    <div class="row__primary smilie-list__name">{{ smilie.name }}</div>
+                    <div class="row__secondary smilie-list__replace">{{ smilie.find|nl2br }}</div>
+                </div>
+            {% else %}
+                <div class="alert alert--no-results">{{ lang.no_smilies }}</div>
+            {% endfor %}
+        </section>
+    </div>
 {% endblock body %}

@@ -1,6 +1,4 @@
-<tr>
-    <td class="trow2"><strong>{{ lang.username }}</strong></td>
-    <td class="trow2">
-        <input type="text" class="textbox" name="username" size="30" value="{% if mybb.input.previewpost and mybb.input.action not in ["do_newreply", "do_newthread"] %}{% else %}{{ mybb.input.username }}{% endif %}" />
-    </td>
-</tr>
+<div class="row row--form field">
+    <h3 class="field__name"><label for="username">{{ lang.username }}</label></h3>
+    <input type="text" class="textbox" name="username" id="username" size="30" value="{% if mybb.input.previewpost and mybb.input.action not in ["do_newreply", "do_newthread"] %}{% else %}{{ mybb.input.username }}{% endif %}" />
+</div>

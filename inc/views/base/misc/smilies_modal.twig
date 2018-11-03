@@ -1,27 +1,18 @@
 <div class="modal">
     <div style="overflow-y: auto; max-height: 400px;" class="modal">
-        <table width="100%" border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-            <tr>
-                <td class="thead" colspan="4"><strong>{{ lang.smilies_listing }}</strong></td>
-            </tr>
-            <tr>
-                <td class="tcat" colspan="4"><span class="smalltext">{{ lang.click_to_add }}</span></td>
-            </tr>
-            {% for smilie_row in smilies %}
-                <tr>
-                    {% for smilie in smilie_row %}
-                        {% set row = alt_trow() %}
-                        <td class="{{ row }}" align="center">
-                            <img src="{{ smilie.image }}" alt="{{ smilie.name }}" title="{{ smilie.name }}" class="smilie smilie_{{ smilie.sid }} smilie_pointer" onclick="MyBBEditor.insertText(' {{ smilie.smilie_insert }} ');" />
-                        </td>
-                        <td class="{{ row }}">{{ smilie.find }}</td>
-                    {% endfor %}
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="2" class="trow1">{{ lang.no_smilies }}</td>
-                </tr>
-            {% endfor %}
-        </table>
+        <section class="block block--modal">
+    		<h1 class="title title--modal">{{ lang.smilies_listing }}</h1>
+            <div class="block__content smilie-list">
+                <div class="row">{{ lang.click_to_add }}</div>
+                {% for smilie in smilies %}
+                    <div class="row row--simple-columns smilie-list__item">
+                        <div class="smilie-list__smilie"><img src="{{ smilie.image }}" alt="{{ smilie.name }}" title="{{ smilie.name }}" class="smilie smilie_{{ smilie.sid }} smilie_pointer" onclick="MyBBEditor.insertText(' {{ smilie.smilie_insert }} ');" /></div>
+                        <div class="row__primary smilie-list__replace smilie-list__replace--no-name">{{ smilie.find }}</div>
+                    </div>
+                {% else %}
+                    <div class="alert alert--no-results">{{ lang.no_smilies }}</div>
+                {% endfor %}
+            </div>
+        </section>
     </div>
 </div>

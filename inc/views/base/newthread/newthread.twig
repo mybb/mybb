@@ -30,6 +30,16 @@
                 <div class="alert__message">{{ newthread.moderation_text }}</div>
             </div>
         {% endif %}
+        {% if newthread.showforumrules %}
+            {% if forum.rulestype == 2 %}
+                <section class="container"><a href="misc.php?action=rules&amp;fid={{ forum.fid }}">{{ forum.rulestitle }}</a></section>
+            {% else %}
+                <section class="container">
+                    <h4 class="title title--container">{{ forum.rulestitle }}</h4>
+                    <div class="scaleimages">{{ forum.rules|raw }}</div>
+                </section>
+            {% endif %}
+        {% endif %}
         <form action="newthread.php?fid={{ forum.fid }}&amp;processed=1" method="post" enctype="multipart/form-data" name="input">
             <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
             <div class="form form--compose compose">
@@ -193,16 +203,6 @@
                 <input type="hidden" name="pid" value="{{ newthread.pid }}" />
             {% endif %}
         </form>
-        {% if newthread.showforumrules %}
-            {% if forum.rulestype == 2 %}
-                <section class="container"><a href="misc.php?action=rules&amp;fid={{ forum.fid }}">{{ forum.rulestitle }}</a></section>
-            {% else %}
-                <section class="container">
-                    <h4 class="container__title">{{ forum.rulestitle }}</h4>
-                    <div class="scaleimages">{{ forum.rules|raw }}</div>
-                </section>
-            {% endif %}
-        {% endif %}
         <script type="text/javascript">
             $(".author_avatar img").error(function () {
                 $(this).unbind("error").closest('.author_avatar').remove();
