@@ -1,42 +1,63 @@
-<tr>
-    <td align="center" class="trow1" width="1%"><img src="{{ theme.imgdir }}/{{ message.msgstatus }}.png" alt="{{ message.msgalt }}" title="{{ message.msgalt }}" /></td>
-    <td align="center" class="trow2" width="1%">
-        {% if message.hasicon %}
-            <img src="{{ message.icon_path }}" alt="{{ message.icon_name }}" title="{{ message.icon_name }}" /> 
-        {% else %}
-            &nbsp;
-        {% endif %}
-    </td>
-    <td class="trow1" width="35%">
-        <a class="{{ message.msgstatus }}" href="private.php?action=read&amp;pmid={{ message.pmid }}">{{ message.subject }}</a>
-        {% if message.denyreceipt %}
-             <span class="smalltext"><a href="private.php?action=read&amp;pmid={{ message.pmid }}&amp;denyreceipt=1">{{ lang.deny_receipt }}</a></span>
-        {% endif %}
-    </td>
-    <td align="center" class="trow2">
-        {% if message.multiplerecipients %}
-            <a href="private.php?action=read&amp;pmid={{ message.pmid }}" id="private_message_{{ message.pmid }}">{{ lang.multiple_recipients }}</a>
-            <div id="private_message_{{ message.pmid }}_popup" class="popup_menu" style="display: none;">
-                <div class="tcat"><strong>{{ lang.to }}</strong></div>
-                {% for user in messages.tousers %}
-                    <div class="popup_item_container"><a href="{{ user.profilelink|raw }}" class="popup_item">{{ user.username|raw }}</a></div>
-                {% endfor %}
-                {% if message.bbcusers %}
-                    <div class="tcat"><strong>{{ lang.bcc }}</strong></div>
+<div class="row row--message message message--{{ message.msgstatus }}">
+	<div class="message__column message__column--primary">
+        {# TO DO: Message avatar #}
+        <a href="#" title="" class="avatar-profile-link">
+            {% include 'partials/default_avatar.twig' %}
+        </a>
+		<h3 class="message__subject">
+			<a class="{{ message.msgstatus }}" href="private.php?action=read&amp;pmid={{ message.pmid }}">{{ message.subject }}</a>
+            {% if message.denyreceipt %}
+                 <span class="message__deny-receipt"><a href="private.php?action=read&amp;pmid={{ message.pmid }}&amp;denyreceipt=1">{{ lang.deny_receipt }}</a></span>
+            {% endif %}
+			<span class="message__icons">
+                {% if message.hasicon %}
+                    <span class="message__icon"><img src="{{ message.icon_path }}" alt="{{ message.icon_name }}" title="{{ message.icon_name }}" /></span>
                 {% endif %}
-                {% for user in messages.bbcusers %}
-                    <div class="popup_item_container"><a href="{{ user.profilelink|raw }}" class="popup_item">{{ user.username|raw }}</a></div>
-                {% endfor %}
-            </div>
-            <script type="text/javascript">
-            <!--
-                $("#private_message_{{ message.pmid }}").popupMenu();
-            // -->
-            </script>
-        {% else %}
-            {{ message.username|raw }}
-        {% endif %}
-    </td>
-    <td class="trow1" align="right" style="white-space: nowrap"><span class="smalltext">{{ message.senddate|raw }}</span></td>
-    <td class="trow2" align="center"><input type="checkbox" class="checkbox" name="check[{{ message.pmid }}]" value="1" /></td>
-</tr>
+                {% if message.msgstatus == 'new_pm' %}
+                    <i class="message__icon message__icon--new_pm fas fa-envelope" title=""></i>
+                {% elseif message.msgstatus == 're_pm' %}
+                    <i class="message__icon message__icon--re_pm fas fa-reply" title=""></i>
+                {% elseif message.msgstatus == 'fw_pm' %}
+                    <i class="message__icon message__icon--fw_pm fas fa-share" title=""></i>
+                {% endif %}
+			</span>
+		</h3>
+		<p class="message__username">
+            {% if message.folder == 2 or message.folder == 3 %}
+                <span class="message__label message__label--to">{{ lang.to }}</span>
+            {% else %}
+                <span class="message__label message__label--from">{{ lang.from }}</span>
+            {% endif %}
+            {# TO DO: Multiple recipients dropdown #}
+            {% if message.multiplerecipients %}
+                <a href="private.php?action=read&amp;pmid={{ message.pmid }}" id="private_message_{{ message.pmid }}">{{ lang.multiple_recipients|raw }}</a>
+                <div id="private_message_{{ message.pmid }}_popup" class="popup_menu" style="display: none;">
+                    <div class="tcat"><strong>{{ lang.to }}</strong></div>
+                    {% for user in messages.tousers %}
+                        <div class="popup_item_container"><a href="{{ user.profilelink|raw }}" class="popup_item">{{ user.username|raw }}</a></div>
+                    {% endfor %}
+                    {% if message.bbcusers %}
+                        <div class="tcat"><strong>{{ lang.bcc }}</strong></div>
+                    {% endif %}
+                    {% for user in messages.bbcusers %}
+                        <div class="popup_item_container"><a href="{{ user.profilelink|raw }}" class="popup_item">{{ user.username|raw }}</a></div>
+                    {% endfor %}
+                </div>
+                <script type="text/javascript">
+                <!--
+                    $("#private_message_{{ message.pmid }}").popupMenu();
+                // -->
+                </script>
+            {% else %}
+                {{ message.username|raw }}
+            {% endif %}
+        </p>
+	</div>
+	<div class="message__column message__column--date">
+		<span class="visually-hidden">{{ lang.date_sent }}</span>
+		<span class="message__date">{{ message.senddate|raw }}</span>
+	</div>
+	<div class="message__column message__column--checkbox">
+		<input type="checkbox" class="checkbox" name="check[{{ message.pmid }}]" value="1" />
+	</div>
+</div>

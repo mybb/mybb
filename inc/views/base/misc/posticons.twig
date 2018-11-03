@@ -2,7 +2,7 @@
 	<h3 class="field__name visually-hidden">{{ lang.post_icon }}</h3>
     <div class="segmented-control segmented-control--buttons segmented-control--alt">
         <span class="segmented-control__option">
-            <input type="radio" class="radio segmented-control__input" id="noposticon" name="icon" value="-1"{% if composepost.emptyiconcheck %} checked="checked"{% endif %} />
+            <input type="radio" class="radio segmented-control__input" id="noposticon" name="icon" value="-1"{% if composepost.emptyiconcheck or emptyiconcheck %} checked="checked"{% endif %} />
             <label for="noposticon" class="segmented-control__button">{{ lang.no_post_icon }}</label>
         </span>
         {% for posticon in posticons %}

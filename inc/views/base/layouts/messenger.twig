@@ -1,0 +1,49 @@
+{% extends 'layouts/master.twig' %}
+
+{% block body %}
+
+{% block messengerHeader %}{% endblock messengerHeader %}
+
+<nav class="section-menu">
+	<ul class="section-menu__links sidebar-navigation">
+		{% if mybb.usergroup.cansendpms %}
+			<li class="section-menu__item section-menu__item--messenger-compose{% if mybb.input.action == 'send' %} section-menu__item--active{% endif %}">
+				<a href="private.php?action=send" class="section-menu__link">
+					<i class="section-menu__icon fas fa-edit fa-fw"></i>
+					<span class="section-menu__text">{{ lang.ucp_nav_compose }}</span>
+				</a>
+			</li>
+		{% endif %}
+		{# FOLDERS #}
+		{# <li class="section-menu__item section-menu__item--messenger-folder section-menu__item--folder-{$folder_id}">
+			<a href="private.php?fid={$folder_id}" class="section-menu__link">
+				<i class="section-menu__icon section-menu__icon--folder section-menu__icon--folder-0 far fa-folder fa-fw"></i>
+				<i class="section-menu__icon section-menu__icon--folder section-menu__icon--folder-1 fas fa-inbox fa-fw"></i>
+				<i class="section-menu__icon section-menu__icon--folder section-menu__icon--folder-2 fas fa-paper-plane fa-fw"></i>
+				<i class="section-menu__icon section-menu__icon--folder section-menu__icon--folder-3 far fa-file fa-fw"></i>
+				<i class="section-menu__icon section-menu__icon--folder section-menu__icon--folder-4 fas fa-trash fa-fw"></i>
+				<span class="section-menu__text">{$folder_name}</span>
+			</a>
+		</li> #}
+		{% if mybb.usergroup.cantrackpms %}
+			<li class="section-menu__item section-menu__item--messenger-tracking{% if mybb.input.action == 'tracking' %} section-menu__item--active{% endif %}">
+				<a href="private.php?action=tracking" class="section-menu__link">
+					<i class="section-menu__icon fas fa-bell fa-fw"></i>
+					<span class="section-menu__text">{{ lang.ucp_nav_tracking }}</span>
+				</a>
+			</li>
+		{% endif %}
+		<li class="section-menu__item section-menu__item--messenger-edit-folders{% if mybb.input.action == 'folders' %} section-menu__item--active{% endif %}">
+			<a href="private.php?action=folders" class="section-menu__link">
+				<i class="section-menu__icon far fa-folder-open fa-fw"></i>
+				<span class="section-menu__text">{{ lang.ucp_nav_edit_folders }}</span>
+			</a>
+		</li>
+	</ul>
+</nav>
+
+<div class="page-content page-content--menu messenger">
+    {% block messengerBody %}{% endblock messengerBody %}
+</div>
+
+{% endblock body %}

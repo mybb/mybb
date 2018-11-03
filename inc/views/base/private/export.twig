@@ -1,70 +1,70 @@
-{% extends 'layouts/master.twig' %}
+{% extends 'layouts/messenger.twig' %}
 
 {% block head %}
     <title>{{ mybb.settings.bbname }} - {{ lang.archive_messages }}</title>
 {% endblock head %}
 
-{% block body %}             
+{% block messengerHeader %}
+    <header class="page-header">
+        <h1 class="title title--page">{{ lang.archive_messages }}</h1>
+    </header>
+{% endblock messengerHeader %}
+
+{% block messengerBody %}
     <form action="private.php" method="post">
         <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-        <table width="100%" border="0" align="center">
-            <tr>
-            {# To do: usercpnav #}
-                <td valign="top">
-                    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-                        <tr>
-                            <td class="thead" colspan="2"><strong>{{ lang.archive_messages }}</strong></td>
-                        </tr>
-                        <tr>
-                            <td class="tcat" colspan="2"><span class="smalltext">{{ lang.archive_note }}</span></td>
-                        </tr>
-                        <tr>
-                            <td class="trow1" valign="top" width="30%"><strong>{{ lang.folders }}</strong></td>
-                            <td class="trow1">
-                                <select name="exportfolders[]" multiple="multiple">
-                                    <option value="all" selected="selected">{{ lang.all_folders }}</option>
-                                    {% for folder in folderlist %}
-                                        <option value="{{ folder.id }}">{{ folder.name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="trow2" valign="top" width="30%"><strong>{{ lang.date_limit }}</strong></td>
-                            <td class="trow2">
-                                <select name="dayway">
-                                    <option value="older">{{ lang.date_limit_older }}</option>
-                                    <option value="newer">{{ lang.date_limit_newer }}</option>
-                                    <option value="disregard">{{ lang.date_limit_disregard }}</option>
-                                </select> 
-                                <input type="text" class="textbox" name="daycut" value="30" size="3" maxlength="4" /> {{ lang.date_limit_days }}</td>
-                        </tr>
-                        <tr>
-                            <td class="trow1" valign="top" width="30%"><strong>{{ lang.export_unread }}</strong></td>
-                            <td class="trow1">
-                                <input type="radio" class="radio" name="exportunread" value="1" /> {{ lang.yes }} <input type="radio" class="radio" name="exportunread" value="0" checked="checked" /> {{ lang.no }} 
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="trow2" valign="top" width="30%"><strong>{{ lang.delete_archived }}</strong><br /><span class="smalltext">{{ lang.delete_archived_note }}</span></td>
-                            <td class="trow2"><input type="radio" class="radio" name="deletepms" value="1" /> {{ lang.yes }} <input type="radio" class="radio" name="deletepms" value="0" checked="checked" /> {{ lang.no }} </td>
-                        </tr>
-                        <tr>
-                            <td class="trow1" valign="top" width="30%"><strong>{{ lang.export_format }}</strong><br /><span class="smalltext">{{ lang.export_format_note }}</span></td>
-                            <td class="trow1">
-                                <input type="radio" class="radio" name="exporttype" value="html" checked="checked" /> {{ lang.export_html }}<br />
-                                <input type="radio" class="radio" name="exporttype" value="txt" /> {{ lang.export_txt }}<br />
-                                <input type="radio" class="radio" name="exporttype" value="csv" /> {{ lang.export_csv }}
-                            </td>
-                        </tr>
-                    </table>
-                    <br />
-                    <div align="center">
-                        <input type="hidden" name="action" value="do_export" />
-                        <input type="submit" class="button" name="submit" value="{{ lang.archive_messages }}" />
+        <div class="block block--form form">
+			<section class="section section--form">
+				<div class="row row--form field">{{ lang.archive_note }}</div>
+                <div class="row row--form field">
+					<h3 class="field__name">{{ lang.folders }}</h3>
+                    <select name="exportfolders[]" multiple="multiple">
+                        <option value="all" selected="selected">{{ lang.all_folders }}</option>
+                        {% for folder in folderlist %}
+                            <option value="{{ folder.id }}">{{ folder.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="row row--form field">
+					<h3 class="field__name">{{ lang.date_limit }}</h3>
+                    <div class="select-field">
+                        <i class="select-field__icon fas fa-sort"></i>
+                        <select name="dayway">
+                            <option value="older">{{ lang.date_limit_older }}</option>
+                            <option value="newer">{{ lang.date_limit_newer }}</option>
+                            <option value="disregard">{{ lang.date_limit_disregard }}</option>
+                        </select>
                     </div>
-                </td>
-            </tr>
-        </table>
+                    <input type="text" class="textbox textbox--small" name="daycut" value="30" maxlength="4" /> {{ lang.date_limit_days }}
+                </div>
+                <div class="row row--form field">
+					<div class="option-field">
+						<input type="checkbox" name="exportunread" id="exportunread" value="1" />
+						<h4 class="option-field__name"><label for="exportunread">{{ lang.export_unread }}</label></h4>
+					</div>
+				</div>
+                <div class="row row--form field">
+					<div class="option-field">
+						<input type="checkbox" name="deletepms" id="deletepms" value="1" />
+						<h4 class="option-field__name"><label for="deletepms">{{ lang.delete_archived }}</label></h4>
+						<p class="option-field__description"><label for="notification_none">{{ lang.delete_archived_note }}</label></p>
+					</div>
+				</div>
+                <div class="row row--form field">
+					<h3 class="field__name">{{ lang.export_format }}</h3>
+					<p class="field__description">{{ lang.export_format_note }}</p>
+					<p class="option-field option-field--compact"><label><input type="radio" name="exporttype" checked="checked" value="html" /> {{ lang.export_html }}</label></p>
+					<p class="option-field option-field--compact"><label><input type="radio" name="exporttype" value="txt" /> {{ lang.export_txt }}</label></p>
+					<p class="option-field option-field--compact"><label><input type="radio" name="exporttype" value="csv" /> {{ lang.export_csv }}</label></p>
+				</div>
+            </section>
+            <div class="form__submit">
+                <button type="submit" class="button button--medium" name="submit">
+                    <i class="button__icon fas fa-download"></i>
+                    <span class="button__text">{{ lang.archive_messages }}</span>
+                </button>
+            </div>
+        </div>
+        <input type="hidden" name="action" value="do_export" />
     </form>
-{% endblock body %}
+{% endblock messengerBody %}

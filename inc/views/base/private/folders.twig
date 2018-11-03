@@ -1,55 +1,51 @@
-{% extends 'layouts/master.twig' %}
+{% extends 'layouts/messenger.twig' %}
 
 {% block head %}
     <title>{{ mybb.settings.bbname }} - {{ lang.pm_folders }}</title>
 {% endblock head %}
 
-{% block body %}
+{% block messengerHeader %}
+    <header class="page-header">
+        <h1 class="title title--page">{{ lang.pm_folders }}</h1>
+    </header>
+{% endblock messengerHeader %}
+
+{% block messengerBody %}
     <form action="private.php" method="post">
         <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-        <table width="100%" border="0" align="center">
-            <tr>
-                {# To do: usercpnav #}
-                <td valign="top">
-                    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-                        <tr>
-                            <td class="thead"><strong>{{ lang.existing_folders }}</strong></td>
-                        </tr>
-                        <tr>
-                            <td class="trow1"><span class="smalltext">{{ lang.edit_folder_note|raw }}</span></td>
-                        </tr>
-                        {% for folder in folderlist %}
-                            <tr>
-                                <td class="trow1">
-                                    <input type="text" class="textbox" name="folder[{{ folder.fid }}]" size="25" value="{{ folder.foldername }}" maxlength="30" /> 
-                                    {% if folder.default %}
-                                        <span class="smalltext">({{ folder.defaultname }} - {{ lang.cannot_be_removed }})</span>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </table>
-                    <br />
-                    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-                        <tr>
-                            <td class="thead"><strong>{{ lang.new_folders }}</strong></td>
-                        </tr>
-                        <tr>
-                            <td class="trow1"><span class="smalltext">{{ lang.add_folders_note }}</span></td>
-                        </tr>
-                        {% for fid in 1..5 %}
-                            <tr>
-                                <td class="trow1"><input type="text" class="textbox" name="folder[new{{ fid }}]" size="25" value="" maxlength="30" /></td>
-                            </tr>
-                        {% endfor %}
-                    </table>
-                    <br />
-                    <div align="center">
-                        <input type="hidden" name="action" value="do_folders" />
-                        <input type="submit" class="button" name="submit" value="{{ lang.update_folders }}" />
-                    </div>
-                </td>
-            </tr>
-        </table>
+        <div class="block block--form form">
+            <section class="section section--form">
+				<h2 class="title title--section">{{ lang.existing_folders }}</h2>
+                <div class="section__container">
+					<div class="row row--form field">{{ lang.edit_folder_note|raw }}</div>
+                    {% for folder in folderlist %}
+                        <div class="row row--form field">
+                            <input type="text" class="textbox" name="folder[{{ folder.fid }}]" value="{{ folder.foldername }}" maxlength="30" />
+                            {% if folder.default %}
+                                <p class="field__description field__description--below">({{ folder.defaultname }} - {{ lang.cannot_be_removed }})</p>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
+            <section class="section section--form">
+                <h2 class="title title--section">{{ lang.new_folders }}</h2>
+                <div class="section__container">
+                    <div class="row row--form field">{{ lang.add_folders_note }}</div>
+                    {% for fid in 1..5 %}
+                        <div class="row row--form field">
+                            <input type="text" class="textbox" name="folder[new{{ fid }}]" value="" maxlength="30" />
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
+            <div class="form__submit">
+				<button type="submit" class="button button--medium" name="submit" tabindex="4" accesskey="s">
+					<i class="button__icon far fa-folder-open"></i>
+					<span class="button__text">{{ lang.update_folders }}</span>
+				</button>
+			</div>
+        </div>
+        <input type="hidden" name="action" value="do_folders" />
     </form>
-{% endblock body %}
+{% endblock messengerBody %}
