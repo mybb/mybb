@@ -15,16 +15,24 @@
 			</li>
 		{% endif %}
 		{# FOLDERS #}
-		{# <li class="section-menu__item section-menu__item--messenger-folder section-menu__item--folder-{$folder_id}">
-			<a href="private.php?fid={$folder_id}" class="section-menu__link">
-				<i class="section-menu__icon section-menu__icon--folder section-menu__icon--folder-0 far fa-folder fa-fw"></i>
-				<i class="section-menu__icon section-menu__icon--folder section-menu__icon--folder-1 fas fa-inbox fa-fw"></i>
-				<i class="section-menu__icon section-menu__icon--folder section-menu__icon--folder-2 fas fa-paper-plane fa-fw"></i>
-				<i class="section-menu__icon section-menu__icon--folder section-menu__icon--folder-3 far fa-file fa-fw"></i>
-				<i class="section-menu__icon section-menu__icon--folder section-menu__icon--folder-4 fas fa-trash fa-fw"></i>
-				<span class="section-menu__text">{$folder_name}</span>
-			</a>
-		</li> #}
+		{% for folder in folders %}
+			<li class="section-menu__item section-menu__item--messenger-folder section-menu__item--folder-{{ folder.id }} {% if mybb.input.fid == folder.id or (mybb.input.fid == '' and mybb.input.action == '' and folder.id == 1) %} section-menu__item--active{% endif %}">
+				<a href="private.php?fid={{ folder.id }}" class="section-menu__link">
+					{% if folder.id == 1 %}
+						<i class="section-menu__icon section-menu__icon--folder fas fa-inbox fa-fw"></i>
+					{% elseif folder.id == 2 %}
+						<i class="section-menu__icon section-menu__icon--folder fas fa-paper-plane fa-fw"></i>
+					{% elseif folder.id == 3 %}
+						<i class="section-menu__icon section-menu__icon--folder far fa-file fa-fw"></i>
+					{% elseif folder.id == 4 %}
+						<i class="section-menu__icon section-menu__icon--folder fas fa-trash fa-fw"></i>
+					{% else %}
+						<i class="section-menu__icon section-menu__icon--folder far fa-folder fa-fw"></i>
+					{% endif %}
+					<span class="section-menu__text">{{ folder.name }}</span>
+				</a>
+			</li>
+		{% endfor %}
 		{% if mybb.usergroup.cantrackpms %}
 			<li class="section-menu__item section-menu__item--messenger-tracking{% if mybb.input.action == 'tracking' %} section-menu__item--active{% endif %}">
 				<a href="private.php?action=tracking" class="section-menu__link">
