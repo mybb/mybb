@@ -135,182 +135,189 @@
                     {% endif %}
             	</div>
 
-                    {% if displayRating %}
-                        {#<td class="tcat" align="center" width="80">
-                            <span class="smalltext">
-                                <strong>
-                                    <a href="{{ sorting.url }}&amp;sortby=rating&amp;order=desc">{{ lang.rating }}</a>
-                                    {% if sorting.by == 'rating' %}{{ ascDesc }}{% endif %}
-                                </strong>
-                            </span>
-                            <script type="text/javascript" src="{{ mybb.asset_url }}/jscripts/rating.js?ver=1808"></script>
-                            <script type="text/javascript">
-                            <!--
-                                lang.stars = new Array();
-                                lang.stars[1] = "{{ lang.one_star }}";
-                                lang.stars[2] = "{{ lang.two_stars }}";
-                                lang.stars[3] = "{{ lang.three_stars }}";
-                                lang.stars[4] = "{{ lang.four_stars }}";
-                                lang.stars[5] = "{{ lang.five_stars }}";
-                                lang.ratings_update_error = "{{ lang.ratings_update_error }}";
-                            // -->
-                            </script>
-                        </td> #}
-                    {% endif %}
-
-                {# Select all #}
-                {% if modpermissions.ismod and threadcount > perpage %}
-                    <div class="thread-list__select-all" id="selectAllrow">
-                    	{{ trans('page_selected', threadCache|length) }} <a href="javascript:void(0)" onclick='inlineModeration.selectAll(); return false;'>{{ trans('select_all', threadcount) }}</a>
-                    </div>
-                    <div class="thread-list__select-all" id="allSelectedrow">
-                    	{{ trans('all_selected', treadcount) }} <a href="javascript:void(0)" onclick='inlineModeration.clearChecked(); return false;'>{{ lang.clear_selection }}</a>
-                    </div>
+                {% if displayRating %}
+                    {#<td class="tcat" align="center" width="80">
+                        <span class="smalltext">
+                            <strong>
+                                <a href="{{ sorting.url }}&amp;sortby=rating&amp;order=desc">{{ lang.rating }}</a>
+                                {% if sorting.by == 'rating' %}{{ ascDesc }}{% endif %}
+                            </strong>
+                        </span>
+                        <script type="text/javascript" src="{{ mybb.asset_url }}/jscripts/rating.js?ver=1808"></script>
+                        <script type="text/javascript">
+                        <!--
+                            lang.stars = new Array();
+                            lang.stars[1] = "{{ lang.one_star }}";
+                            lang.stars[2] = "{{ lang.two_stars }}";
+                            lang.stars[3] = "{{ lang.three_stars }}";
+                            lang.stars[4] = "{{ lang.four_stars }}";
+                            lang.stars[5] = "{{ lang.five_stars }}";
+                            lang.ratings_update_error = "{{ lang.ratings_update_error }}";
+                        // -->
+                        </script>
+                    </td> #}
                 {% endif %}
 
-                {# Announcements #}
-                {% if announcements %}
-                    <div class="thread-list__announcements">
-                        <h2 class="visually-hidden">{{ lang.forum_announcements }}</h2>
-                        {% for announcement in announcements %}
-                            <div class="row row--thread row--announcement thread thread--announcement thread--{{ folder }}">
-                                <div class="thread__column thread__column--primary">
-                                    <span class="thread__status thread__status--announcement"><i class="fas fa-bullhorn"></i></span>
-                                    <h3 class="thread__title"><a href="{{ announcement.announcementlink }}"{{ new_class }}>{{ announcement.subject }}</a></h3>
-                                    <p class="thread__author">{{ lang.by }} {{ announcement.profilelink|raw }}</p>
-                                </div>
-                                <div class="thread__column thread__column--replies">&nbsp;</div>
-                                <div class="thread__column thread__column--latest">
-                            		<p class="thread__latest-post">
-                            			<a href="{{ announcement.announcementlink }}" class="thread__latest-post__date">{{ announcement.postdate }}</a></a>
-                            		</p>
-                            	</div>
-                                {% if modpermissions.ismod %}
-                                    <span class="thread__column thread__column--moderation"></span>
-                                {% endif %}
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-
-                {# Threads – errors #}
-                {% if fpermissions.canviewthreads != 1 or threadcount is empty %}
-                    <div class="alert alert--no-results">
-                        {% if fpermissions.canviewthreads != 1 %}
-                            {{ lang.nopermission }}
-                        {% elseif threadcount is empty %}
-                            {{ lang.nothreads }}
-                        {% endif %}
-                    </div>
-                {% else %}
-                    <div class="thread-list__container">
-                        {% for thread in threadCache %}
-                            {# Separators #}
-                            {% if thread.sticky and stickySepAdded != true %}
-                                <div class="thread-list__sticky-threads">
-                                    <h2 class="visually-hidden">{{ lang.sticky_threads }}</h2>
-                                {% set stickySepAdded = true %}
-                            {% elseif normalSepAdded != true %}
-                                </div>
-                                <div class="thread-list__normal-threads">
-                                    <h2 class="visually-hidden">{{ lang.normal_threads }}</h2>
-                                {% set normalSepAdded = true %}
-                            {% endif %}
-                            {# Threads – no errors #}
-                            {% if fpermissions.canviewdeletionnotice and thread.visible == -1 and modpermissions.canviewdeleted != 1 %}
-                                {% include 'forumdisplay/thread_deleted.twig' %}
-                            {% else %}
-                                {% include 'forumdisplay/thread.twig' %}
-                            {% endif %}
-                        {% endfor %}
-                        </div>
-                    </div>
-                {% endif %}
-
-                {# Threadlist footer #}
-                <div class="sort-results">
-                    <form action="forumdisplay.php" method="get">
-                        <input type="hidden" name="fid" value="{{ foruminfo.fid }}" />
-                        <h3 class="sort-results__title visually-hidden">{{ lang.sort_threads }}</h3>
-                        <div class="select-field">
-	                        <i class="select-field__icon fas fa-sort"></i>
-                            <select name="sortby">
-                                {% for field in ['subject', 'lastpost', 'starter', 'started', 'replies', 'views'] %}
-                                    <option value="{{ field }}"{% if mybb.input[field] %} selected{% endif %}>{{ attribute(lang, 'sort_by_' ~ field) }}</option>
-                                {% endfor %}
-                                {% if displayRating %}
-                                    <option value="rating"{% if mybb.input.rating %} selected{% endif %}>{{ lang.sort_by_rating }}</option>
-                                {% endif %}
-                            </select>
-                        </div>
-                        <div class="select-field">
-	                        <i class="select-field__icon fas fa-sort"></i>
-                            <select name="order">
-                                {% for field in ['asc', 'desc'] %}
-                                    <option value="{{ field }}"{% if mybb.input[field] %} selected{% endif %}>{{ attribute(lang, 'sort_order_' ~ field) }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="select-field">
-	                        <i class="select-field__icon fas fa-sort"></i>
-                            <select name="datecut">
-                                <option value="1"{% if mybb.input[1] %} selected{% endif %}>{{ lang.datelimit_1day }}</option>
-                                {% for field in [5, 10, 20, 50, 75, 100] %}
-                                    <option value="{{ field }}"{% if mybb.input[field] %} selected{% endif %}>{{ attribute(lang, 'datelimit_' ~ field ~ 'days') }}</option>
-                                {% endfor %}
-                                <option value="365"{% if mybb.input[365] %} selected{% endif %}>{{ lang.datelimit_lastyear }}</option>
-                                <option value="9999"{% if mybb.input[9999] %} selected{% endif %}>{{ lang.datelimit_beginning }}</option>
-                            </select>
-                        </div>
-                        {{ prefixselect|raw }}
-                        <button type="submit" class="button button--inline">
-            				<i class="button__icon fas fa-random"></i>
-            				<span class="button__text">{{ lang.sort_threads }}</span>
-            			</button>
-                        </form>
-                    </div>
-                </section>
-
-                {{ multipage|raw }}
-
-            {# Forum jump, inline moderation, search #}
-            <div class="float_right" style="text-align: right;">
-                {% if modpermissions.ismod %}
-                    {% include 'forumdisplay/inlinemoderation.twig' %}
-                {% endif %}
-
-                {% if fpermissions.cansearch and foruminfo.type == 'f' %}
-                    <form action="search.php" method="post">
-                        <span class="smalltext"><strong>{{ lang.search_forum }}</strong></span>
-                        <input type="text" class="textbox" name="keywords" /> {{ gobutton|raw }}
-                        <input type="hidden" name="action" value="do_search" />
-                        <input type="hidden" name="forums" value="{{ foruminfo.fid }}" />
-                        <input type="hidden" name="postthread" value="1" />
-                    </form>
-                    <br />
-                {% endif %}
-            </div>
-
-
-            {# Users browsing #}
-            {% if mybb.settings.browsingthisforum %}
-                <div class="container container--small container--users-browsing">{{ lang.users_browsing_forum }}
-                    {% for user in usersBrowsing %}
-                        {% if user.profilelink %}
-                            {{ user.profilelink|raw }}{% if user.invisible %}*{% endif %}{% if loop.last == false %}{{ lang.comma }} {% endif %}
-                        {% endif %}
-                    {% endfor %}
-
-                    {% if usersBrowsingCounter.invisible and mybb.usergroup.canviewwolinvis != 1 %}
-                        {% if usersBrowsing %}{{ lang.comma }} {% endif %}{{ trans('users_browsing_forum_guests', usersBrowsingCounter.guests) }}
-                    {% endif %}
-
-                    {% if usersBrowsingCounter.guests %}
-                        {% if usersBrowsing or (usersBrowsingCounter.invisible and mybb.usergroup.canviewwolinvis != 1) %}{{ lang.comma }} {% endif %}{{ trans('users_browsing_forum_guests', usersBrowsingCounter.guests) }}
-                    {% endif %}
+            {# Select all #}
+            {% if modpermissions.ismod and threadcount > perpage %}
+                <div class="thread-list__select-all" id="selectAllrow">
+                	{{ trans('page_selected', threadCache|length) }} <a href="javascript:void(0)" onclick='inlineModeration.selectAll(); return false;'>{{ trans('select_all', threadcount) }}</a>
+                </div>
+                <div class="thread-list__select-all" id="allSelectedrow">
+                	{{ trans('all_selected', treadcount) }} <a href="javascript:void(0)" onclick='inlineModeration.clearChecked(); return false;'>{{ lang.clear_selection }}</a>
                 </div>
             {% endif %}
-        </div>
+
+            {# Announcements #}
+            {% if announcements %}
+                <div class="thread-list__announcements">
+                    <h2 class="visually-hidden">{{ lang.forum_announcements }}</h2>
+                    {% for announcement in announcements %}
+                        <div class="row row--thread row--announcement thread thread--announcement thread--{{ folder }}">
+                            <div class="thread__column thread__column--primary">
+                                <span class="thread__status thread__status--announcement"><i class="fas fa-bullhorn"></i></span>
+                                <h3 class="thread__title"><a href="{{ announcement.announcementlink }}"{{ new_class }}>{{ announcement.subject }}</a></h3>
+                                <p class="thread__author">{{ lang.by }} {{ announcement.profilelink|raw }}</p>
+                            </div>
+                            <div class="thread__column thread__column--replies">&nbsp;</div>
+                            <div class="thread__column thread__column--latest">
+                        		<p class="thread__latest-post">
+                        			<a href="{{ announcement.announcementlink }}" class="thread__latest-post__date">{{ announcement.postdate }}</a></a>
+                        		</p>
+                        	</div>
+                            {% if modpermissions.ismod %}
+                                <span class="thread__column thread__column--moderation"></span>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {# Threads – errors #}
+            {% if fpermissions.canviewthreads != 1 or threadcount is empty %}
+                <div class="alert alert--no-results">
+                    {% if fpermissions.canviewthreads != 1 %}
+                        {{ lang.nopermission }}
+                    {% elseif threadcount is empty %}
+                        {{ lang.nothreads }}
+                    {% endif %}
+                </div>
+            {% else %}
+                <div class="thread-list__container">
+                    {% for thread in threadCache %}
+                        {# Separators #}
+                        {% if thread.sticky and stickySepAdded != true %}
+                            <div class="thread-list__sticky-threads">
+                                <h2 class="visually-hidden">{{ lang.sticky_threads }}</h2>
+                            {% set stickySepAdded = true %}
+                        {% elseif normalSepAdded != true %}
+                            </div>
+                            <div class="thread-list__normal-threads">
+                                <h2 class="visually-hidden">{{ lang.normal_threads }}</h2>
+                            {% set normalSepAdded = true %}
+                        {% endif %}
+                        {# Threads – no errors #}
+                        {% if fpermissions.canviewdeletionnotice and thread.visible == -1 and modpermissions.canviewdeleted != 1 %}
+                            {% include 'forumdisplay/thread_deleted.twig' %}
+                        {% else %}
+                            {% include 'forumdisplay/thread.twig' %}
+                        {% endif %}
+                    {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            {# Threadlist footer #}
+            <div class="sort-results">
+                <form action="forumdisplay.php" method="get">
+                    <input type="hidden" name="fid" value="{{ foruminfo.fid }}" />
+                    <h3 class="sort-results__title visually-hidden">{{ lang.sort_threads }}</h3>
+                    <div class="select-field">
+                        <i class="select-field__icon fas fa-sort"></i>
+                        <select name="sortby">
+                            {% for field in ['subject', 'lastpost', 'starter', 'started', 'replies', 'views'] %}
+                                <option value="{{ field }}"{% if mybb.input[field] %} selected{% endif %}>{{ attribute(lang, 'sort_by_' ~ field) }}</option>
+                            {% endfor %}
+                            {% if displayRating %}
+                                <option value="rating"{% if mybb.input.rating %} selected{% endif %}>{{ lang.sort_by_rating }}</option>
+                            {% endif %}
+                        </select>
+                    </div>
+                    <div class="select-field">
+                        <i class="select-field__icon fas fa-sort"></i>
+                        <select name="order">
+                            {% for field in ['asc', 'desc'] %}
+                                <option value="{{ field }}"{% if mybb.input[field] %} selected{% endif %}>{{ attribute(lang, 'sort_order_' ~ field) }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="select-field">
+                        <i class="select-field__icon fas fa-sort"></i>
+                        <select name="datecut">
+                            <option value="1"{% if mybb.input[1] %} selected{% endif %}>{{ lang.datelimit_1day }}</option>
+                            {% for field in [5, 10, 20, 50, 75, 100] %}
+                                <option value="{{ field }}"{% if mybb.input[field] %} selected{% endif %}>{{ attribute(lang, 'datelimit_' ~ field ~ 'days') }}</option>
+                            {% endfor %}
+                            <option value="365"{% if mybb.input[365] %} selected{% endif %}>{{ lang.datelimit_lastyear }}</option>
+                            <option value="9999"{% if mybb.input[9999] %} selected{% endif %}>{{ lang.datelimit_beginning }}</option>
+                        </select>
+                    </div>
+                    {{ prefixselect|raw }}
+                    <button type="submit" class="button button--inline">
+        				<i class="button__icon fas fa-random"></i>
+        				<span class="button__text">{{ lang.sort_threads }}</span>
+        			</button>
+                    </form>
+                </div>
+            </section>
+
+            {{ multipage|raw }}
+
+            <footer class="page-footer">
+                <div class="row row--no-border row--simple-columns">
+                    {# Search #}
+                    {% if fpermissions.cansearch and foruminfo.type == 'f' %}
+                        <div class="forum-search">
+                            <h2 class="title title--legend {% if not modpermissions.ismod %}visually-hidden{% endif %}">{{ lang.search_forum }}</h2>
+                            <form action="search.php" method="post">
+                                <input type="text" name="keywords" placeholder="{{ lang.enter_keywords }}" class="textbox textbox--large" />
+                                <input type="hidden" name="action" value="do_search" />
+                                <input type="hidden" name="forums" value="{{ foruminfo.fid }}" />
+                                <input type="hidden" name="postthread" value="1" />
+                                <button type="submit" class="button button--inline">
+                                    <i class="button__icon fas fa-search"></i>
+                                    <span class="button__text">{{ lang.search_forum }}</span>
+                                </button>
+                            </form>
+                        </div>
+                    {% endif %}
+
+                    {# Inline moderation #}
+                    {% if modpermissions.ismod %}
+                        {% include 'forumdisplay/inlinemoderation.twig' %}
+                    {% endif %}
+                </div>
+
+                {# Users browsing #}
+                {% if mybb.settings.browsingthisforum %}
+                    <div class="container container--small container--users-browsing">{{ lang.users_browsing_forum }}
+                        {% for user in usersBrowsing %}
+                            {% if user.profilelink %}
+                                {{ user.profilelink|raw }}{% if user.invisible %}*{% endif %}{% if loop.last == false %}{{ lang.comma }} {% endif %}
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if usersBrowsingCounter.invisible and mybb.usergroup.canviewwolinvis != 1 %}
+                            {% if usersBrowsing %}{{ lang.comma }} {% endif %}{{ trans('users_browsing_forum_guests', usersBrowsingCounter.guests) }}
+                        {% endif %}
+
+                        {% if usersBrowsingCounter.guests %}
+                            {% if usersBrowsing or (usersBrowsingCounter.invisible and mybb.usergroup.canviewwolinvis != 1) %}{{ lang.comma }} {% endif %}{{ trans('users_browsing_forum_guests', usersBrowsingCounter.guests) }}
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </footer>
+
         {% endif %}
     </div>
 {% endblock body %}

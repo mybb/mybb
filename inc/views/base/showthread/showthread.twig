@@ -337,7 +337,7 @@
         {% endif %}
 
         <footer class="page-footer">
-            <div class="row row--simple-columns">
+            <div class="row row--simple-columns thread-actions">
                 {% if forumpermissions.cansearch %}
                 <div class="thread-search">
                     <form action="search.php" method="post">
@@ -351,7 +351,7 @@
                     </form>
                 </div>
                 {% endif %}
-                <div>
+                <div class="thread-nav">
                     <a href="{{ thread.next_oldest_link|raw }}" class="button button--basic">
                         <i class="button__icon fas fa-angle-double-left"></i>
                         <span class="button__text">{{ lang.next_oldest }}</span>
@@ -364,7 +364,7 @@
             </div>
 
             {% if modpermissions.ismod and thread.showmodoptions %}
-                {% include 'showthread/inlinemoderation.twig' %}
+                {% include 'showthread/moderation.twig' %}
             {% endif %}
 
             {% if thread.showthreaded %}

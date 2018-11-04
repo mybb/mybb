@@ -46,7 +46,7 @@ var inlineModeration = {
 						{
 							thread.addClass('trow_selected');
 						}
-						
+
 						if(fieldset.length)
 						{
 							fieldset.addClass('inline_selected');
@@ -208,7 +208,7 @@ var inlineModeration = {
 			$(this).removeClass('inline_selected');
 		});
 
-		$('#inline_go').val(go_text+' (0)');
+		$('#inline_go').html(go_text+' (0)');
 		Cookie.unset(inlineModeration.cookieName);
 		Cookie.unset(inlineModeration.cookieName + '_removed');
 
@@ -263,7 +263,7 @@ var inlineModeration = {
 						thread.removeClass('trow_selected');
 					}
 				}
-				
+
 				if(fieldset.length)
 				{
 					if(master.prop('checked') == true)
@@ -279,7 +279,7 @@ var inlineModeration = {
 				if(changed)
 				{
 					element.click();
-					
+
 					if(master.prop('checked') == true)
 					{
 						if(inlineIds.indexOf('ALL') == -1)
@@ -387,7 +387,7 @@ var inlineModeration = {
 		{
 			count = 0;
 		}
-		$('#inline_go').val(go_text+' ('+count+')');
+		$('#inline_go').html(go_text+' ('+count+')');
 		if(count == 0)
 		{
 			inlineModeration.clearChecked();

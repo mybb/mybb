@@ -260,6 +260,11 @@
 	</script>#}
 					{% endif %}
 
+					{# Delete PM button #}
+					{% if post.is_pm %}
+						<a href="private.php?action=delete&amp;pmid={{ post.pmid }}&amp;my_post_key={{ mybb.post_code }}" title="{{ lang.delete_title }}" class="post-control post-control--delete"><i class="post-control__icon fas fa-trash fa-fw"></i><span class="post-control__text">{{ lang.postbit_button_delete_pm }}</span></a>
+					{% endif %}
+
 					{# Delete button #}
 					{% if post.quick_delete %}
 						<a href="editpost.php?pid={{ post.pid }}" onclick="Thread.deletePost({{ post.pid }}); return false;" style="display: none;" id="quick_delete_{{ post.pid }}" title="{{ lang.postbit_quick_delete }}" class="post-control post-control--delete"><i class="post-control__icon fas fa-trash fa-fw"></i><span class="post-control__text">{{ lang.postbit_button_qdelete }}</span></a>
@@ -285,11 +290,6 @@
 						<a href="moderation.php?action=purgespammer&amp;uid={{ post.uid }}" title="{{ lang.postbit_purgespammer }}" class="post-control post-control--purge-spammer"><i class="post-control__icon fas fa-gavel fa-fw"></i><span class="post-control__text">{{ lang.postbit_button_purgespammer }}</span></a>
 					{% endif %}
 				</span>
-			{% endif %}
-
-			{# Delete PM button #}
-			{% if post.is_pm %}
-				<a href="private.php?action=delete&amp;pmid={{ post.pmid }}&amp;my_post_key={{ mybb.post_code }}" title="{{ lang.delete_title }}" class="post-control post-control--delete"><i class="post-control__icon fas fa-trash"></i><span class="post-control__text">{{ lang.postbit_button_delete_pm }}</span></a>
 			{% endif %}
 		</div>
 	</div>
