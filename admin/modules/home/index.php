@@ -53,18 +53,7 @@ if($mybb->input['action'] == "version_check")
 	$page->output_header($lang->version_check);
 	$page->output_nav_tabs($sub_tabs, 'version_check');
 
-	// We do this because there is some weird symbols that show up in the xml file for unknown reasons
-	$pos = strpos($contents, "<");
-	if($pos > 1)
-	{
-		$contents = substr($contents, $pos);
-	}
-
-	$pos = strpos(strrev($contents), ">");
-	if($pos > 1)
-	{
-		$contents = substr($contents, 0, (-1) * ($pos-1));
-	}
+	$contents = trim($contents);
 
 	$parser = new XMLParser($contents);
 	$tree = $parser->get_tree();
