@@ -182,6 +182,7 @@ $l['ban_bannedby'] = "Banned By";
 $l['ban_movegroup'] = "Move to Banned Group:";
 $l['ban_liftafter'] = "Lift Ban After:";
 $l['no_banned'] = "There are currently no banned users.";
+$l['no_banned_soon'] = "There are no bans expiring soon.";
 $l['no_banned_group'] = "There are currently no banned groups.";
 $l['redirect_banuser'] = "The user has successfully been banned.";
 $l['redirect_banuser_updated'] = "The user's ban has successfully been updated.";
