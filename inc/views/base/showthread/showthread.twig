@@ -39,7 +39,7 @@
             {% if thread.notes|length > 200 %}
                 {{ thread.notes|slice(0, 200)|nl2br }}...
                 <a href="javascript:void(0)" onclick="Thread.viewNotes({{ thread.tid }}); return false;" class="button button--basic">
-                    <i class="button__icon far fa-file-alt"></i>
+                    <i class="button__icon fas fa-file-alt"></i>
                     <span class="button__text">{{ lang.view_all_notes }}</span>
                 </a>
             {% else %}
@@ -160,7 +160,7 @@
 			<div class="page-buttons">
                 {% if modpermissions.canmanagethreads and thread.notes %}
                     <a href="moderation.php?action=threadnotes&amp;modtype=thread&amp;tid={{ thread.tid }}" class="button button--basic button--full-width">
-                    	<i class="button__icon far fa-file-alt"></i>
+                    	<i class="button__icon fas fa-file-alt"></i>
                     	<span class="button__text">{{ lang.edit_thread_notes }}</span>
                     </a>
                 {% endif %}

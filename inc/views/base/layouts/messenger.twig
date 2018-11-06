@@ -23,11 +23,11 @@
 					{% elseif folder.id == 2 %}
 						<i class="section-menu__icon section-menu__icon--folder fas fa-paper-plane fa-fw"></i>
 					{% elseif folder.id == 3 %}
-						<i class="section-menu__icon section-menu__icon--folder far fa-file fa-fw"></i>
+						<i class="section-menu__icon section-menu__icon--folder fas fa-file fa-fw"></i>
 					{% elseif folder.id == 4 %}
 						<i class="section-menu__icon section-menu__icon--folder fas fa-trash fa-fw"></i>
 					{% else %}
-						<i class="section-menu__icon section-menu__icon--folder far fa-folder fa-fw"></i>
+						<i class="section-menu__icon section-menu__icon--folder fas fa-folder fa-fw"></i>
 					{% endif %}
 					<span class="section-menu__text">{{ folder.name }}</span>
 				</a>
@@ -43,7 +43,7 @@
 		{% endif %}
 		<li class="section-menu__item section-menu__item--messenger-edit-folders{% if mybb.input.action == 'folders' %} section-menu__item--active{% endif %}">
 			<a href="private.php?action=folders" class="section-menu__link">
-				<i class="section-menu__icon far fa-folder-open fa-fw"></i>
+				<i class="section-menu__icon fas fa-folder-open fa-fw"></i>
 				<span class="section-menu__text">{{ lang.ucp_nav_edit_folders }}</span>
 			</a>
 		</li>
