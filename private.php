@@ -973,7 +973,9 @@ if($mybb->input['action'] == "read")
 
     if (count($pm['bcc_recipients']) > 0) {
         $pm['bcc_form_val'] = implode(',', $pm['bcc_form_val']);
-    }
+    } else {
+		$pm['bcc_form_val'] = '';
+	}
 
     add_breadcrumb($pm['subject']);
     $message = build_postbit($pm, 2);
