@@ -679,9 +679,9 @@ class postParser
 			return;
 		}
 
-		// Neutralize multiple adjacent wildcards and generate pattern
-		$ptrn = array('/\*\++/', '/\++\*/', '/\*+/');
-		$rplc = array('*', '*', '[^\s\n]*');
+		// Neutralize escape character, regex operators, multiple adjacent wildcards and generate pattern
+		$ptrn = array('/\\\\/', '/([\[\^\$\.\|\?\(\)\{\}]{1})/', '/\*\++/', '/\++\*/', '/\*+/');
+		$rplc = array('\\\\\\\\','\\\\${1}', '*', '*', '[^\s\n]*');
 		$bad_word = preg_replace($ptrn, $rplc, $bad_word);
 		
 		// Count + and generate pattern
@@ -707,7 +707,7 @@ class postParser
 			$trap .= '[^\s\n]{'.($plus-1).'}';
 		}
 		
-		return '\b'.$trap.'\b';
+		return '[\b\B]{0}'.$trap.'[\b\B]{0}';
 	}
 
 	/**
