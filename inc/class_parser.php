@@ -1133,9 +1133,7 @@ class postParser
 
 		// Fix some entities in URLs
 		$url = $this->encode_url($url);
-
-
-		$name = preg_replace("#&amp;\#([0-9]+);#si", "&#$1;", $name); // Fix & but allow unicode
+		$name = $this->parse_badwords(preg_replace("#&amp;\#([0-9]+);#si", "&#$1;", $name)); // Fix & but allow unicode, filter bad words
 
 		eval("\$mycode_url = \"".$templates->get("mycode_url", 1, 0)."\";");
 		return $mycode_url;
