@@ -903,7 +903,7 @@ if($mybb->input['action'] == "read")
         $db->update_query('privatemessages', $updatearray, "pmid='{$pmid}'");
 
         // Update the unread count - it has now changed.
-        update_pm_count($mybb->user['uid'], 6);
+        $mybb->user['pms_unread'] = update_pm_count($mybb->user['uid'], 6)['unreadpms'];
 
         // Update PM notice value if this is our last unread PM
         if ($mybb->user['unreadpms']-1 <= 0 && $mybb->user['pmnotice'] == 2) {
