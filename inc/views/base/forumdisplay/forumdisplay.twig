@@ -28,7 +28,7 @@
         <header class="page-header">
             <h1 class="title title--page">{{ foruminfo.name }}</h1>
             {% if foruminfo.description %}
-                <p class="description">{{ foruminfo.description }}</p>
+                <p class="description">{{ foruminfo.description|raw }}</p>
             {% endif %}
         </header>
 
