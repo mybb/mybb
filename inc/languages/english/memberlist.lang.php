@@ -38,6 +38,7 @@ $l['search_member_list'] = "Search Member List";
 $l['search_criteria'] = "Search Criteria";
 $l['begins_with'] = "begins with";
 $l['username_contains'] = "contains";
+$l['username_exact'] = "exactly";
 $l['search_website'] = "Website URL";
 $l['search_skype'] = "Skype Address";
 $l['search_google'] = "Google Hangouts Address";

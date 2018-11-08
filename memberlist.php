@@ -183,9 +183,15 @@ else
 			$memberlist['search_url'] .= "&username_match=begins";
 		}
 		// Just contains
-		else
+		else if($mybb->input['username_match'] == "contains")
 		{
 			$search_query .= " AND u.username {$like} '%".$username_like_query."%'";
+			$search_url .= "&username_match=contains";
+		}
+		// Exact
+		else
+		{
+			$search_query .= " AND u.username='{$username_like_query}'";
 		}
 
 		$memberlist['search_url'] .= "&username=".urlencode($memberlist['username']);
