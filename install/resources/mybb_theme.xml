@@ -5786,7 +5786,7 @@ if(use_xmlhttprequest == "1")
 		<template name="memberlist_referrals" version="1800"><![CDATA[<td class="tcat" width="10%" align="center"><span class="smalltext"><a href="{$sorturl}&amp;sort=referrals&amp;order=descending"><strong>{$lang->referrals}</strong></a> {$orderarrow['referrals']}</span></td>]]></template>
 		<template name="memberlist_referrals_bit" version="1600"><![CDATA[<td class="{$alt_bg}" align="center">{$user['referrals']}</td>]]></template>
 		<template name="memberlist_referrals_option" version="1816"><![CDATA[<option value="referrals"{$sort_selected['referrals']}>{$lang->sort_by_referrals}</option>]]></template>
-		<template name="memberlist_search" version="1816"><![CDATA[<html>
+		<template name="memberlist_search" version="1820"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->search_member_list}</title>
 {$headerinclude}
@@ -5807,6 +5807,7 @@ if(use_xmlhttprequest == "1")
 		<select name="username_match">
 			<option value="begins">{$lang->begins_with}</option>
 			<option value="contains">{$lang->username_contains}</option>
+			<option value="exact">{$lang->username_exact}</option>
 		</select>
 		&nbsp;
 		<input type="text" class="textbox" name="username" id="username" />
