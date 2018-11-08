@@ -1900,7 +1900,7 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 						$template['pretty_title'] = "<span style=\"color: blue;\">{$template['title']}</span>";
 					}
 
-					$table->construct_cell("<span style=\"padding: 20px;\"><a href=\"index.php?module=style-templates&amp;action=edit_template&amp;title=".urlencode($template['title'])."&amp;sid={$sid}{$expand_str}\" >{$template['pretty_title']}</a></span>");
+					$table->construct_cell("<span style=\"padding-left: 20px;\"><a href=\"index.php?module=style-templates&amp;action=edit_template&amp;title=".urlencode($template['title'])."&amp;sid={$sid}{$expand_str}\" >{$template['pretty_title']}</a></span>");
 					$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 
 					$table->construct_row();
