@@ -3,7 +3,7 @@
         <span class="forum__status forum__status--{{ lightbulb.folder }} forum_{{ lightbulb.folder }} ajax_mark_read" title="{{ lightbulb.altonoff }}" id="mark_read_{{ forum.fid }}">
         {% if lightbulb.folder == 'offlock' %}
             <i class="fas fa-lock"></i>
-        {% elseif lightbulb.folder == 'offlink' %}
+        {% elseif forum.linkto != '' %}
             <i class="fas fa-link"></i>
         {% else %}
             <i class="fas fa-circle"></i>
@@ -16,7 +16,7 @@
         {% block moderators %}{% endblock moderators %}
         {% include 'forumbit/subforums.twig' %}
     </div>
-	{% if forum.linkto == '' %}
+	{% if forum.linkto == '' and (forum.password == '' and lightbulb.folder != 'offlock') %}
 		<div class="forum__stat forum__stat--thread-count">
 			<span class="forum__count forum__count--threads">
 				{{ forum.fthreads }}
@@ -64,5 +64,7 @@
 			</span>
 		</div>
 	{% endif %}
-    {{ lastpost|raw }}
+	{% if forum.password == '' and lightbulb.folder != 'offlock' %}
+    	{{ lastpost|raw }}
+	{% endif %}
 </div>
