@@ -4,7 +4,7 @@
 {# TO DO: THREAD RATINGS #}
 {# {% include 'forumdisplay/thread_rating.twig' %} #}
 
-<div class="row row--thread thread {{ class }} inline_row {% if thread.unreadpost and moved != true %}thread--unread{% endif %}">
+<div class="row row--thread thread {{ class }} inline_row {% if thread.unreadpost and moved != true %}thread--unread{% endif %} {% if modpermissions.ismod %}thread--moderator{% endif %}">
     <div class="thread__column thread__column--primary">
 		<h3 class="thread__title">
             {# Thread prefix #}
