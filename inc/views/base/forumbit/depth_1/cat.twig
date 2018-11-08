@@ -6,7 +6,7 @@
 	<div class="title title--major title--nested">
 		<h2 class="title__name"><a href="{{ forum.url }}">{{ forum.name }}</a></h2>
         {% if forum.description %}
-            <p class="title__description">{{ forum.description }}</p>
+            <p class="title__description">{{ forum.description|raw }}</p>
         {% endif %}
         <span class="collapse__toggle">
             <i class="collapse__icon collapse__icon--collapse fas fa-minus-square"></i>

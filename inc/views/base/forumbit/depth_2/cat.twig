@@ -11,7 +11,7 @@
         </span>
 		<h3 class="forum__title"><a href="{{ forum.url }}">{{ forum.name }}</a></h3>
 		{% if forum.description %}
-        	<p class="forum__description">{{ forum.description }}</p>
+        	<p class="forum__description">{{ forum.description|raw }}</p>
 		{% endif %}
         {% block moderators %}{% endblock moderators %}
         {% include 'forumbit/subforums.twig' %}
