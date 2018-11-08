@@ -16,7 +16,7 @@
         {% block moderators %}{% endblock moderators %}
         {% include 'forumbit/subforums.twig' %}
     </div>
-	{% if forum.linkto == '' and (forum.password == '' and lightbulb.folder != 'offlock') %}
+	{% if forum.linkto == '' and (forum.password == '' or lightbulb.folder != 'offlock') %}
 		<div class="forum__stat forum__stat--thread-count">
 			<span class="forum__count forum__count--threads">
 				{{ forum.fthreads }}
@@ -64,7 +64,7 @@
 			</span>
 		</div>
 	{% endif %}
-	{% if forum.password == '' and lightbulb.folder != 'offlock' %}
+	{% if forum.password == '' or lightbulb.folder != 'offlock' %}
     	{{ lastpost|raw }}
 	{% endif %}
 </div>
