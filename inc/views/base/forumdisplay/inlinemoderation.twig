@@ -1,69 +1,71 @@
-{% set standardTools %}
-    {% if modpermissions.canopenclosethreads %}
-        <option value="multiopenthreads">{{ lang.open_threads }}</option>
-        <option value="multiclosethreads">{{ lang.close_threads }}</option>
+<div class="inline-moderation forum-tools__item">
+    {% set standardTools %}
+        {% if modpermissions.canopenclosethreads %}
+            <option value="multiopenthreads">{{ lang.open_threads }}</option>
+            <option value="multiclosethreads">{{ lang.close_threads }}</option>
+        {% endif %}
+        {% if modpermissions.canstickunstickthreads %}
+            <option value="multistickthreads">{{ lang.stick_threads }}</option>
+            <option value="multiunstickthreads">{{ lang.unstick_threads }}</option>
+        {% endif %}
+        {% if modpermissions.cansoftdelete %}
+            <option value="multisoftdeletethreads">{{ lang.soft_delete_threads }}</option>
+        {% endif %}
+        {% if modpermissions.canrestorethreads %}
+            <option value="multirestorethreads">{{ lang.restore_threads }}</option>
+        {% endif %}
+        {% if modpermissions.candeletethreads %}
+            <option value="multideletethreads">{{ lang.delete_threads }}</option>
+        {% endif %}
+        {% if modpermissions.canmanagethreads %}
+            <option value="multimovethreads">{{ lang.move_threads }}</option>
+        {% endif %}
+        {% if modpermissions.canapproveunapprovethreads %}
+            <option value="multiapprovethreads">{{ lang.approve_threads }}</option>
+            <option value="multiunapprovethreads">{{ lang.unapprove_threads }}</option>
+        {% endif %}
+    {% endset %}
+    {% if standardTools|trim or customTools %}
+        <script type="text/javascript" src="{{ mybb.asset_url }}/jscripts/inline_moderation.js?ver=1813"></script>
+        <form action="moderation.php" method="post">
+            <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+            <input type="hidden" name="fid" value="{{ foruminfo.fid }}" />
+            <input type="hidden" name="modtype" value="inlinethread" />
+            <h2 class="title title--legend">{{ lang.inline_thread_moderation }}</h2>
+            <div class="select-field">
+                <i class="select-field__icon fas fa-sort"></i>
+                <select name="action">
+                    <option value="delayedmoderation">{{ lang.delayed_moderation }}</option>
+                    {% if modpermissions.canusecustomtools and hasModTools and customTools %}
+                        <optgroup label="{{ lang.custom_mod_tools }}">
+                            {% for tool in customTools %}
+                                <option value="{{ tool.tid }}">{{ tool.name }}</option>
+                            {% endfor %}
+                        </optgroup>
+                    {% endif %}
+                    {% if standardTools|trim %}
+                        <optgroup label="{{ lang.standard_mod_tools }}">
+                            {{ standardTools }}
+                        </optgroup>
+                    {% endif %}
+                </select>
+            </div>
+            <button type="submit" name="go" class="button button--inline">
+                <i class="button__icon fas fa-arrow-right"></i>
+                <span class="button__text" id="inline_go">{{ lang.go }} ({{ inlinecount }})</span>
+            </button>
+            <button type="button" class="button button--secondary button--inline" onclick="inlineModeration.clearChecked();">
+                <i class="button__icon fas fa-times"></i>
+                <span class="button__text">{{ lang.clear }}</span>
+            </button>
+        </form>
+        <script type="text/javascript">
+        <!--
+            var go_text = "{{ lang.inline_go }}";
+            var all_text = "{{ threadcount }}";
+            var inlineType = "forum";
+            var inlineId = {{ foruminfo.fid }};
+        // -->
+        </script>
     {% endif %}
-    {% if modpermissions.canstickunstickthreads %}
-        <option value="multistickthreads">{{ lang.stick_threads }}</option>
-        <option value="multiunstickthreads">{{ lang.unstick_threads }}</option>
-    {% endif %}
-    {% if modpermissions.cansoftdelete %}
-        <option value="multisoftdeletethreads">{{ lang.soft_delete_threads }}</option>
-    {% endif %}
-    {% if modpermissions.canrestorethreads %}
-        <option value="multirestorethreads">{{ lang.restore_threads }}</option>
-    {% endif %}
-    {% if modpermissions.candeletethreads %}
-        <option value="multideletethreads">{{ lang.delete_threads }}</option>
-    {% endif %}
-    {% if modpermissions.canmanagethreads %}
-        <option value="multimovethreads">{{ lang.move_threads }}</option>
-    {% endif %}
-    {% if modpermissions.canapproveunapprovethreads %}
-        <option value="multiapprovethreads">{{ lang.approve_threads }}</option>
-        <option value="multiunapprovethreads">{{ lang.unapprove_threads }}</option>
-    {% endif %}
-{% endset %}
-{% if standardTools|trim or customTools %}
-    <script type="text/javascript" src="{{ mybb.asset_url }}/jscripts/inline_moderation.js?ver=1813"></script>
-    <form action="moderation.php" method="post">
-        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-        <input type="hidden" name="fid" value="{{ foruminfo.fid }}" />
-        <input type="hidden" name="modtype" value="inlinethread" />
-        <h2 class="title title--legend">{{ lang.inline_thread_moderation }}</h2>
-        <div class="select-field">
-            <i class="select-field__icon fas fa-sort"></i>
-            <select name="action">
-                <option value="delayedmoderation">{{ lang.delayed_moderation }}</option>
-                {% if modpermissions.canusecustomtools and hasModTools and customTools %}
-                    <optgroup label="{{ lang.custom_mod_tools }}">
-                        {% for tool in customTools %}
-                            <option value="{{ tool.tid }}">{{ tool.name }}</option>
-                        {% endfor %}
-                    </optgroup>
-                {% endif %}
-                {% if standardTools|trim %}
-                    <optgroup label="{{ lang.standard_mod_tools }}">
-                        {{ standardTools }}
-                    </optgroup>
-                {% endif %}
-            </select>
-        </div>
-        <button type="submit" name="go" class="button button--inline">
-            <i class="button__icon fas fa-arrow-right"></i>
-            <span class="button__text" id="inline_go">{{ lang.go }} ({{ inlinecount }})</span>
-        </button>
-        <button type="button" class="button button--secondary button--inline" onclick="inlineModeration.clearChecked();">
-            <i class="button__icon fas fa-times"></i>
-            <span class="button__text">{{ lang.clear }}</span>
-        </button>
-    </form>
-    <script type="text/javascript">
-    <!--
-        var go_text = "{{ lang.inline_go }}";
-        var all_text = "{{ threadcount }}";
-        var inlineType = "forum";
-        var inlineId = {{ foruminfo.fid }};
-    // -->
-    </script>
-{% endif %}
+</div>

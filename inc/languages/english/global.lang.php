@@ -65,8 +65,8 @@ $l['by'] = "by";
 $l['more_subforums'] = "and {1} more";
 
 $l['password_required'] = "Password Required";
-$l['forum_password_note'] = "The administrator has required it so that a password is required for access to this forum.";
-$l['enter_password_below'] = "Please enter the password below:";
+$l['forum_password_note'] = "You must enter this forum's password to gain access";
+$l['enter_password_below'] = "Enter the forum password";
 $l['verify_forum_password'] = "Verify Forum Password";
 $l['wrong_forum_password'] = "The password you entered is incorrect. Please try again.";
 

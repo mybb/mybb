@@ -4,12 +4,12 @@
 {# TO DO: THREAD RATINGS #}
 {# {% include 'forumdisplay/thread_rating.twig' %} #}
 
-<div class="row row--thread thread {{ class }} inline_row {% if thread.unreadpost and moved != true %}thread--unread{% endif %} {% if modpermissions.ismod %}thread--moderator{% endif %}">
+<div class="row row--thread thread {{ class }} inline_row{% if thread.unreadpost and moved != true %} thread--unread{% endif %}{% if thread.sticky %} thread--sticky{% endif %}{% if modpermissions.ismod %} thread--moderator{% endif %}">
     <div class="thread__column thread__column--primary">
 		<h3 class="thread__title">
             {# Thread prefix #}
             {% if thread.threadprefix %}
-                {{ thread.threadprefix }}
+                <span class="tag tag--thread-prefix-{{ thread.prefix }}">{{ thread.threadprefix }}</span>
             {% endif %}
 
             {# Thread title #}

@@ -173,22 +173,7 @@
                 <div class="thread-list__announcements">
                     <h2 class="visually-hidden">{{ lang.forum_announcements }}</h2>
                     {% for announcement in announcements %}
-                        <div class="row row--thread row--announcement thread thread--announcement thread--{{ folder }}">
-                            <div class="thread__column thread__column--primary">
-                                <span class="thread__status thread__status--announcement"><i class="fas fa-bullhorn"></i></span>
-                                <h3 class="thread__title"><a href="{{ announcement.announcementlink }}"{{ new_class }}>{{ announcement.subject }}</a></h3>
-                                <p class="thread__author">{{ lang.by }} {{ announcement.profilelink|raw }}</p>
-                            </div>
-                            <div class="thread__column thread__column--replies">&nbsp;</div>
-                            <div class="thread__column thread__column--latest">
-                        		<p class="thread__latest-post">
-                        			<a href="{{ announcement.announcementlink }}" class="thread__latest-post__date">{{ announcement.postdate }}</a></a>
-                        		</p>
-                        	</div>
-                            {% if modpermissions.ismod %}
-                                <span class="thread__column thread__column--checkbox"></span>
-                            {% endif %}
-                        </div>
+                        {% include 'forumdisplay/announcement.twig' %}
                     {% endfor %}
                 </div>
             {% endif %}
@@ -205,25 +190,41 @@
             {% else %}
                 <div class="thread-list__container">
                     {% for thread in threadCache %}
-                        {# Separators #}
+                        {# Sticky thread separator #}
                         {% if thread.sticky and stickySepAdded != true %}
                             <div class="thread-list__sticky-threads">
                                 <h2 class="visually-hidden">{{ lang.sticky_threads }}</h2>
                             {% set stickySepAdded = true %}
-                        {% elseif normalSepAdded != true %}
-                            </div>
+
+                        {# Normal thread separator #}
+                        {% elseif not thread.sticky and normalSepAdded != true %}
+                            {# Close sticky section if open #}
+                            {% if stickySepAdded %}
+                                </div>
+                            {% endif %}
+
+                            {# Begin normal thread section #}
                             <div class="thread-list__normal-threads">
                                 <h2 class="visually-hidden">{{ lang.normal_threads }}</h2>
                             {% set normalSepAdded = true %}
                         {% endif %}
+
                         {# Threads – no errors #}
                         {% if fpermissions.canviewdeletionnotice and thread.visible == -1 and modpermissions.canviewdeleted != 1 %}
                             {% include 'forumdisplay/thread_deleted.twig' %}
                         {% else %}
                             {% include 'forumdisplay/thread.twig' %}
                         {% endif %}
+
+                    {# No threads #}
+                    {% else %}
+                        <div class="alert alert--no-results">{{ lang.nothreads }}</div>
                     {% endfor %}
-                    </div>
+
+                    {# Close sticky or normal thread section #}
+                    {% if stickySepAdded or normalSepAdded %}
+                        </div>
+                    {% endif %}
                 </div>
             {% endif %}
 
@@ -254,12 +255,12 @@
                     <div class="select-field">
                         <i class="select-field__icon fas fa-sort"></i>
                         <select name="datecut">
-                            <option value="1"{% if mybb.input[1] %} selected{% endif %}>{{ lang.datelimit_1day }}</option>
+                            <option value="1"{% if mybb.input.datecut == 1 %} selected{% endif %}>{{ lang.datelimit_1day }}</option>
                             {% for field in [5, 10, 20, 50, 75, 100] %}
-                                <option value="{{ field }}"{% if mybb.input[field] %} selected{% endif %}>{{ attribute(lang, 'datelimit_' ~ field ~ 'days') }}</option>
+                                <option value="{{ field }}"{% if mybb.input.datecut == field %} selected{% endif %}>{{ attribute(lang, 'datelimit_' ~ field ~ 'days') }}</option>
                             {% endfor %}
-                            <option value="365"{% if mybb.input[365] %} selected{% endif %}>{{ lang.datelimit_lastyear }}</option>
-                            <option value="9999"{% if mybb.input[9999] %} selected{% endif %}>{{ lang.datelimit_beginning }}</option>
+                            <option value="365"{% if mybb.input.datecut == 365 %} selected{% endif %}>{{ lang.datelimit_lastyear }}</option>
+                            <option value="9999"{% if mybb.input.datecut == 9999 or mybb.input.datecut == '' %} selected{% endif %}>{{ lang.datelimit_beginning }}</option>
                         </select>
                     </div>
                     {{ prefixselect|raw }}
@@ -274,10 +275,10 @@
             {{ multipage|raw }}
 
             <footer class="page-footer">
-                <div class="row row--no-border row--simple-columns">
+                <div class="row row--no-border row--simple-columns forum-tools">
                     {# Search #}
                     {% if fpermissions.cansearch and foruminfo.type == 'f' %}
-                        <div class="forum-search">
+                        <div class="forum-search forum-tools__item">
                             <h2 class="title title--legend {% if not modpermissions.ismod %}visually-hidden{% endif %}">{{ lang.search_forum }}</h2>
                             <form action="search.php" method="post">
                                 <input type="text" name="keywords" placeholder="{{ lang.enter_keywords }}" class="textbox textbox--large" />
