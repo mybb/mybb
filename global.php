@@ -636,7 +636,7 @@ if($mybb->user['uid'] != 0 && is_array($groupleaders) && array_key_exists($mybb-
 	}
 }
 
-$modnotice = $unreadreports = '';
+$modnotice = '';
 // This user is a moderator, super moderator or administrator
 if($mybb->settings['reportmethod'] == "db" && ($mybb->usergroup['cancp'] == 1 || ($mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanagereportedcontent'] == 1)))
 {
