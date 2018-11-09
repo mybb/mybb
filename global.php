@@ -715,7 +715,7 @@ if($mybb->settings['reportmethod'] == "db" && ($mybb->usergroup['cancp'] == 1 ||
 					$lang->unread_reports = $lang->sprintf($lang->unread_reports, my_number_format($unread));
 				}
 				
-				eval('$moderation_queue[] = "'.$templates->get('global_unreadreports').'";');
+				eval('$moderation_queue[] = "'.$templates->get('global_unreadreports', 1, 0).'";');
 			}
 		}
 	}
@@ -752,7 +752,7 @@ if($can_access_moderationqueue || ($mybb->user['ismoderator'] && $mybb->usergrou
 				$modqueue_message = $lang->sprintf($lang->{'unapproved_'.$modqueue_type}, my_number_format(${'unapproved_'.$modqueue_type}));
 			}
 
-			eval('$moderation_queue[] = "'.$templates->get('global_modqueue').'";');
+			eval('$moderation_queue[] = "'.$templates->get('global_modqueue', 1, 0).'";');
 		}
 	}
 }
@@ -760,7 +760,7 @@ if($can_access_moderationqueue || ($mybb->user['ismoderator'] && $mybb->usergrou
 if(count($moderation_queue))
 {
 	$moderation_queue = $lang->sprintf($lang->mod_notice, implode($lang->comma, $moderation_queue));
-	$moderation_queue = substr_replace($moderation_queue, $lang->and, strrpos($moderation_queue, $lang->comma), strlen($lang->comma));
+	$moderation_queue = substr_replace($moderation_queue, ' '.$lang->and.' ', strrpos($moderation_queue, $lang->comma), strlen($lang->comma));
 
 	eval('$modnotice = "'.$templates->get('global_modqueue_notice').'";');
 }
