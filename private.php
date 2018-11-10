@@ -905,9 +905,9 @@ if($mybb->input['action'] == "read")
         // Update the unread count - it has now changed.
         $pmcount = update_pm_count($mybb->user['uid'], 6);
 
-		if(is_array($pmcount) && isset($pmcount['unreadpms'])) {
-			$mybb->user['pms_unread'] = $pmcount['unreadpms'];
-		}
+        if(is_array($pmcount) && isset($pmcount['unreadpms'])) {
+        $mybb->user['pms_unread'] = $pmcount['unreadpms'];
+        }
 
         // Update PM notice value if this is our last unread PM
         if ($mybb->user['unreadpms']-1 <= 0 && $mybb->user['pmnotice'] == 2) {
@@ -978,7 +978,7 @@ if($mybb->input['action'] == "read")
     if (count($pm['bcc_recipients']) > 0) {
         $pm['bcc_form_val'] = implode(',', $pm['bcc_form_val']);
     } else {
-		$pm['bcc_form_val'] = '';
+        $pm['bcc_form_val'] = '';
 	}
 
     add_breadcrumb($pm['subject']);
