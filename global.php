@@ -637,6 +637,8 @@ if($mybb->user['uid'] != 0 && is_array($groupleaders) && array_key_exists($mybb-
 }
 
 $modnotice = '';
+$moderation_queue = array();
+
 // This user is a moderator, super moderator or administrator
 if($mybb->settings['reportmethod'] == "db" && ($mybb->usergroup['cancp'] == 1 || ($mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanagereportedcontent'] == 1)))
 {
@@ -676,7 +678,6 @@ if($mybb->settings['reportmethod'] == "db" && ($mybb->usergroup['cancp'] == 1 ||
 		$can_access_moderationqueue = false;
 	}
 
-	$moderation_queue = array();
 	if($can_access_moderationqueue || ($mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanagereportedcontent'] == 1))
 	{
 		// Read the reported content cache
@@ -720,6 +721,7 @@ if($mybb->settings['reportmethod'] == "db" && ($mybb->usergroup['cancp'] == 1 ||
 		}
 	}
 }
+
 // Get awaiting moderation queue stats
 if($can_access_moderationqueue || ($mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanagemodqueue'] == 1))
 {
@@ -757,7 +759,7 @@ if($can_access_moderationqueue || ($mybb->user['ismoderator'] && $mybb->usergrou
 	}
 }
 
-if(count($moderation_queue))
+if(!empty($moderation_queue))
 {
 	$moderation_queue = $lang->sprintf($lang->mod_notice, implode($lang->comma, $moderation_queue));
 	$moderation_queue = substr_replace($moderation_queue, ' '.$lang->and.' ', strrpos($moderation_queue, $lang->comma), strlen($lang->comma));
