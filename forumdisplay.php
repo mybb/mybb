@@ -845,6 +845,12 @@ if($fpermissions['canviewthreads'] != 0)
 {
 	$plugins->run_hooks("forumdisplay_get_threads");
 
+	// Allow viewing unapproved threads for logged in users
+	if($mybb->user['uid'] && $mybb->settings['showselfunapproved'])
+	{
+		$tvisibleonly .= " OR (t.fid='$fid' AND t.uid=".$mybb->user['uid'].")";
+	}
+
 	// Start Getting Threads
 	$query = $db->query("
 		SELECT t.*, {$ratingadd}t.username AS threadusername, u.username
