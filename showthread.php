@@ -146,7 +146,7 @@ else
 if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] == 0 && !is_moderator($fid, "canviewunapprove")) || ($thread['visible'] == -1 && !is_moderator($fid, "canviewdeleted")))
 {
 	// Allow viewing own unapproved thread
-	if (!($mybb->user['uid'] && $mybb->settings['showselfunapproved'] && $thread['visible'] == 0 && ($thread['uid'] == $mybb->user['uid'])))
+	if (!($mybb->user['uid'] && $mybb->settings['showownunapproved'] && $thread['visible'] == 0 && ($thread['uid'] == $mybb->user['uid'])))
 	{
 		error($lang->error_invalidthread);
 	}
@@ -1061,7 +1061,7 @@ if($mybb->input['action'] == "thread")
         $multipage = multipage($postcount, $perpage, $page, str_replace("{tid}", $tid, THREAD_URL_PAGED.$highlight.$threadmode));
 		
 		// Allow originator to see own unapproved posts
-		if($mybb->user['uid'] && $mybb->settings['showselfunapproved'])
+		if($mybb->user['uid'] && $mybb->settings['showownunapproved'])
 		{
 			$visible .= " OR (p.tid='$tid' AND p.visible='0' AND p.uid=".$mybb->user['uid'].")";
 		}
