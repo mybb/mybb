@@ -80,7 +80,7 @@ class CoreExtension extends \Twig_Extension
                     'needs_environment' => true,
                     'is_safe' => ['html'],
                 ]
-            )
+            ),
         ];
     }
 
@@ -387,7 +387,7 @@ class CoreExtension extends \Twig_Extension
      *
      * @param \Twig_Environment $twig Twig environment to use to render the pagination template.
      * @param int $count The total number of items.
-     * @param int $perpage The number of items to be shown per page.
+     * @param int $perPage The number of items to be shown per page.
      * @param int $page The current page number.
      * @param string $url The URL format to use for page links.
      * If {page} is specified, the value will be replaced with the page #.
