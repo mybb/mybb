@@ -6,6 +6,7 @@ use Illuminate\Contracts\Container\Container;
 use MyBB\Twig\Extensions\CoreExtension;
 use MyBB\Twig\Extensions\LangExtension;
 use MyBB\Twig\Extensions\ThemeExtension;
+use MyBB\Twig\Extensions\UrlExtension;
 use MyBB\Utilities\BreadcrumbManager;
 
 /** @property \MyBB\Application $app */
@@ -35,6 +36,10 @@ class ServiceProvider extends \MyBB\ServiceProvider
             return new LangExtension(
                 $container->make(\MyLanguage::class)
             );
+        });
+
+        $this->app->bind(UrlExtension::class, function () {
+            return new UrlExtension();
         });
 
         $this->app->bind(\Twig_LoaderInterface::class, function () {
@@ -74,6 +79,7 @@ class ServiceProvider extends \MyBB\ServiceProvider
             $env->addExtension($container->make(CoreExtension::class));
             $env->addExtension($container->make(ThemeExtension::class));
             $env->addExtension($container->make(LangExtension::class));
+            $env->addExtension($container->make(UrlExtension::class));
 
             return $env;
         });
@@ -85,6 +91,7 @@ class ServiceProvider extends \MyBB\ServiceProvider
             CoreExtension::class,
             ThemeExtension::class,
             LangExtension::class,
+            UrlExtension::class,
             \Twig_LoaderInterface::class,
         ];
     }
