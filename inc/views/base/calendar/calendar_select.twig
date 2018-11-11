@@ -1,38 +1,58 @@
-<td align="right">
-    <span class="smalltext"><strong>{{ lang.jump_month }}</strong></span>
-    <select name="month">
-        <option value="{{ calendar.month }}">{{ calendar.currentmonth }}</option>
-        <option value="{{ calendar.month }}">----------</option>
-        <option value="1">{{ lang.alt_month_1 }}</option>
-        <option value="2">{{ lang.alt_month_2 }}</option>
-        <option value="3">{{ lang.alt_month_3 }}</option>
-        <option value="4">{{ lang.alt_month_4 }}</option>
-        <option value="5">{{ lang.alt_month_5 }}</option>
-        <option value="6">{{ lang.alt_month_6 }}</option>
-        <option value="7">{{ lang.alt_month_7 }}</option>
-        <option value="8">{{ lang.alt_month_8 }}</option>
-        <option value="9">{{ lang.alt_month_9 }}</option>
-        <option value="10">{{ lang.alt_month_10 }}</option>
-        <option value="11">{{ lang.alt_month_11 }}</option>
-        <option value="12">{{ lang.alt_month_12 }}</option>
-    </select>
-    <select name="year">
-        <option value="{{ calendar.year }}">{{ calendar.year }}</option>
-        <option value="{{ calendar.year }}">----------</option>
-        {% for year in years %}
-            <option value="{{ year }}">{{ year }}</option>
-        {% endfor %}
-    </select>
-    <input type="submit" class="button" value="{{ lang.go }}" />
-    <br />
+<form action="calendar.php" method="post">
+    <div class="row row--simple-columns page-tools">
+        <div class="page-tools__item">
+        <h2 class="title title--legend">{{ lang.jump_month }}</h2>
+        <div class="select-field">
+            <i class="select-field__icon fas fa-sort"></i>
+            <select name="month">
+                <option value="{{ calendar.month }}">{{ calendar.currentmonth }}</option>
+                <option value="{{ calendar.month }}">----------</option>
+                <option value="1">{{ lang.alt_month_1 }}</option>
+                <option value="2">{{ lang.alt_month_2 }}</option>
+                <option value="3">{{ lang.alt_month_3 }}</option>
+                <option value="4">{{ lang.alt_month_4 }}</option>
+                <option value="5">{{ lang.alt_month_5 }}</option>
+                <option value="6">{{ lang.alt_month_6 }}</option>
+                <option value="7">{{ lang.alt_month_7 }}</option>
+                <option value="8">{{ lang.alt_month_8 }}</option>
+                <option value="9">{{ lang.alt_month_9 }}</option>
+                <option value="10">{{ lang.alt_month_10 }}</option>
+                <option value="11">{{ lang.alt_month_11 }}</option>
+                <option value="12">{{ lang.alt_month_12 }}</option>
+            </select>
+        </div>
+        <div class="select-field">
+            <i class="select-field__icon fas fa-sort"></i>
+            <select name="year">
+                <option value="{{ calendar.year }}">{{ calendar.year }}</option>
+                <option value="{{ calendar.year }}">----------</option>
+                {% for year in years %}
+                    <option value="{{ year }}">{{ year }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="button button--inline">
+            <i class="button__icon fas fa-arrow-right"></i>
+            <span class="button__text">{{ lang.go }}</span>
+        </button>
+    </div>
+
     {% if calendar_jump %}
-        <br />
-        <span class="smalltext"><strong>{{ lang.jump_to_calendar }}</strong></span>
-        <select name="calendar">
-            {% for calendar in calendar_jump %}
-                <option value="{{ calendar.cid }}"{% if calendar.selected %} selected="selected"{% endif %}>{{ calendar.name }}</option>
-            {% endfor %}
-        </select>
-        <input type="submit" class="button" value="{{ lang.go }}" />
+        <div class="page-tools__item">
+            <h2 class="title title--legend">{{ lang.jump_to_calendar }}</h2>
+            <div class="select-field">
+                <i class="select-field__icon fas fa-sort"></i>
+                <select name="calendar">
+                    {% for calendar in calendar_jump %}
+                        <option value="{{ calendar.cid }}"{% if calendar.selected %} selected="selected"{% endif %}>{{ calendar.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="button button--inline">
+                <i class="button__icon fas fa-arrow-right"></i>
+                <span class="button__text">{{ lang.go }}</span>
+            </button>
+        </div>
     {% endif %}
-</td>
+    </div>
+</form>

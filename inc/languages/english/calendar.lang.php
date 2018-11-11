@@ -35,6 +35,8 @@ $l['calendar'] = "Calendar";
 
 $l['jump_month'] ="Jump to month:";
 
+$l['go_week'] = "Go to Week";
+
 $l['birthdays_on_day'] = "Birthdays on {1}";
 $l['birthdayhidden'] = "Hidden";
 
@@ -57,7 +59,7 @@ $l['birthdays'] = "Birthdays";
 $l['event_author'] = "Event Author:";
 $l['edit_event'] = "Edit Event";
 $l['view_event'] = "View Event";
-$l['no_events'] = "This day does not have any events associated with it.<p><a href=\"calendar.php?action=addevent&amp;calendar={1}&amp;day={2}&amp;month={3}&amp;year={4}\">Post an Event</a>.</p>";
+$l['no_events'] = "This day does not have any events associated with it.";
 $l['years_old'] = "{1} Years Old";
 $l['alt_edit'] = "Edit this event";
 $l['alt_delete'] = "Delete this event";
@@ -121,6 +123,7 @@ $l['year_or_years'] = "year(s)";
 $l['of'] = "of";
 $l['move_to_calendar'] = "Move to Calendar:";
 $l['weekly_overview'] = "Weekly Overview";
+$l['through'] = "through";
 $l['previous_week'] = "Previous Week";
 $l['next_week'] = "Next Week";
 $l['first'] = "First";

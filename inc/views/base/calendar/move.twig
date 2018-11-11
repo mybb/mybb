@@ -5,26 +5,35 @@
 {% endblock head %}
 
 {% block body %}
-    <form action="calendar.php" method="post" name="input">
-        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder clear">
-            <tr>
-                <td colspan="2" width="100%" class="thead"><strong>{{ lang.move_event }}: {{ event.name }}</strong></td>
-            </tr>
-            <tr>
-                <td width="20%" class="trow1"><strong>{{ lang.move_to_calendar }}</strong></td>
-                <td class="trow1">
-                    <select name="new_calendar">
-                        {% for calendar in calendar_select %}
-                            <option value="{{ calendar.cid }}">{{ calendar.name }}</option>
-                        {% endfor %}
-                    </select>
-                </td>
-            </tr>
-        </table>
-        <br />
-        <input type="hidden" name="action" value="do_move" />
-        <input type="hidden" name="eid" value="{{ event.eid }}" />
-        <div align="center"><input type="submit" class="button" value="{{ lang.move_event }}" /></div>
-    </form>
+    <div class="page-content">
+        <header class="page-header">
+            <h1 class="title title--page">{{ lang.move_event }}</h1>
+        </header>
+        <form action="calendar.php" method="post" name="input">
+            <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+            <section class="block block--form form">
+                <div class="section section--form">
+                    <div class="row row--form field">
+                        <h3 class="field__name"><label for="new_calendar">{{ lang.move_to_calendar }}</label></h3>
+                        <div class="select-field">
+                            <i class="select-field__icon fas fa-sort"></i>
+                            <select name="new_calendar">
+                                {% for calendar in calendar_select %}
+                                    <option value="{{ calendar.cid }}">{{ calendar.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form__submit">
+                    <button class="button button--medium" type="submit">
+                        <i class="button__icon fas fa-arrow-right"></i>
+                        <span class="button__text">{{ lang.move_event }}</span>
+                    </button>
+                </div>
+            </section>
+            <input type="hidden" name="action" value="do_move" />
+            <input type="hidden" name="eid" value="{{ event.eid }}" />
+        </form>
+    </div>
 {% endblock body %}

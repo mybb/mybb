@@ -275,10 +275,10 @@
             {{ multipage|raw }}
 
             <footer class="page-footer">
-                <div class="row row--no-border row--simple-columns forum-tools">
+                <div class="row row--no-border row--simple-columns page-tools">
                     {# Search #}
                     {% if fpermissions.cansearch and foruminfo.type == 'f' %}
-                        <div class="forum-search forum-tools__item">
+                        <div class="forum-search page-tools__item">
                             <h2 class="title title--legend {% if not modpermissions.ismod %}visually-hidden{% endif %}">{{ lang.search_forum }}</h2>
                             <form action="search.php" method="post">
                                 <input type="text" name="keywords" placeholder="{{ lang.enter_keywords }}" class="textbox textbox--large" />

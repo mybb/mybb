@@ -5,114 +5,99 @@
 {% endblock head %}
 
 {% block body %}
-    <table border="0" cellspacing="0" cellpadding="0">
-        <tr>
-            <td width="100%">
-                <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-                    <thead>
-                        <tr>
-                            <td class="thead" colspan="2">
-                                <div class="float_right">
-                                    {% if calendar.prev_week_link %}
-                                        <a href="{{ calendar.prev_week_link|raw }}">&laquo; {{ lang.previous_week }}</a>
-                                    {% endif %}
-                                    {% if calendar.sep %}
-                                     | 
-                                    {% endif %}
-                                    {% if calendar.next_week_link %}
-                                        <a href="{{ calendar.next_week_link|raw }}">{{ lang.next_week }} &raquo;</a>
-                                    {% endif %}
-                                </div>
-                                <div><strong>{{ lang.weekly_overview }} ({{ calendar.friendly_week_from }} - {{ calendar.friendly_week_to }})</strong></div>
-                            </td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for weekday in weekdays %}
-                            <tr>
-                                <td class="tcat" colspan="2"><strong>{{ weekday.month }} {{ weekday.year }}</strong></td>
-                            </tr>
-                            {% for day in weekday.days %}
-                                {% if day.weekday_month == weekday.monthnum %}
-                                    <tr>
-                                        <td class="trow_sep" colspan="2">{{ day.weekday_name }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="trow2{{ day.day_shaded }}" style="text-align: center; padding: 8px;"><span class="largetext">{{ day.weekday_day }}</span></td>
-                                        <td class="trow1" width="100%">
-                                            {% if day.bday_count > 0 %}
-                                                <a href="{{ day.calendar_link|raw }}">{{ day.bday_count }} {{ day.birthday_lang }}</a><br />
-                                            {% endif %}
-                                            {% for event in day.events %}
-                                                <a href="{{ event.eventlink|raw }}" class="{{ event.event_class }}" title="{{ event.fullname }}">{{ event.fullname }}</a>
-                                                {% if event.time_period %}
-                                                    <span class="smalltext"> ({{ event.time_period }})</span>
-                                                {% endif %}
-                                                <br />
-                                            {% endfor %}
-                                        </td>
-                                    </tr>
+    <header class="page-header">
+        <h1 class="title title--page">{{ lang.weekly_overview }}</h1>
+        <p class="page-description">{{ calendar.friendly_week_from }} {{ lang.through }} {{ calendar.friendly_week_to }}</p>
+    </header>
+    <div class="page-controls page-controls--top">
+        <div class="calendar-nav">
+            {% if calendar.prev_week_link %}
+                <a href="{{ calendar.prev_week_link|raw }}" class="button button--basic">
+                    <i class="button__icon fas fa-angle-left"></i>
+                    <span class="button__text">{{ lang.previous_week }}</span>
+                </a>
+            {% endif %}
+            {% if calendar.next_week_link %}
+                <a href="{{ calendar.next_week_link|raw }}" class="button button--basic">
+                    <span class="button__text">{{ lang.next_week }}</span>
+                    <i class="button__icon button__icon--after fas fa-angle-right"></i>
+                </a>
+            {% endif %}
+        </div>
+        <div class="page-buttons">
+            {% if calendar_permissions.canaddevents %}
+                <a href="calendar.php?action=addevent&amp;calendar={{ calendar.cid }}" class="button button--half-width">
+                    <i class="button__icon fas fa-calendar-plus"></i>
+                    <span class="button__text">{{ lang.add_public_event }}</span>
+                </a>
+                <a href="calendar.php?action=addevent&amp;calendar={{ calendar.cid }}&amp;private=1" class="button button--half-width">
+                    <i class="button__icon fas fa-calendar-plus"></i>
+                    <span class="button__text">{{ lang.add_private_event }}</span>
+                </a>
+            {% endif %}
+        </div>
+    </div>
+    <div class="page-content page-content--sidebar">
+        <div class="calendar calendar--week">
+            {% for weekday in weekdays %}
+                <div class="calendar__week">
+                    <h2 class="title title--major">{{ weekday.month }} {{ weekday.year }}</h2>
+                    {% for day in weekday.days %}
+                        {% if day.weekday_month == weekday.monthnum %}
+                            <div class="calendar__day {{ day.day_shaded }}">
+                                <span class="calendar__day-of-week">{{ day.weekday_name }}</span>
+                                <h2 class="calendar__day-heading">{{ day.weekday_day }}</h2>
+                                {% if day.bday_count > 0 %}
+                                    <p class="calendar__event"><a href="{{ day.calendar_link|raw }}" class="calendar__event-link calendar__event-link--birthdays">{{ day.bday_count }} {{ day.birthday_lang }} <i class="calendar__event-icon fas fa-birthday-cake"></i></a></p>
                                 {% endif %}
-                            {% endfor %}
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </td>
-            <td style="padding-left: 10px; vertical-align: top;">
-                {% for mini_calendar in mini_calendars %}
-                    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder" style="width: 180px;">
-                        <thead>
-                            <tr>
-                                <td class="thead" colspan="8">
-                                    <strong><a href="{{ mini_calendar.month_link|raw }}">{{ mini_calendar.month }} {{ mini_calendar.year }}</a></strong>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="tcat">&nbsp;</td>
-                                {% for weekday_header in mini_calendar.weekday_headers %}
-                                    <td class="tcat" align="center" width="14%"><strong>{{ weekday_header }}</strong></td>
+                                {% for event in day.events %}
+                                    <p class="calendar__event">
+                                        <a href="{{ event.eventlink|raw }}" class="calendar__event-link {{ event.event_class }}" title="{{ event.fullname }}">{{ event.fullname }} {% if event.time_period %}<span class="calendar__event-time-period">({{ event.time_period }})</span>{% endif %}</a>
+                                    </p>
                                 {% endfor %}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for week in mini_calendar.week %}
-                                <tr>
-                                    <td class="tcat" align="center" width="1"><a href="{{ week.week_link|raw }}">&raquo;</a></td>
-                                    {% for day in week.days %}
-                                        <td class="{{ day.day_class }}" valign="middle" align="center">
-                                            {% if day.link %}
-                                                <a href="{{ day.link|raw }}">{{ day.day }}</a>
-                                            {% else %}
-                                                {{ day.day }}
-                                            {% endif %}
-                                        </td>
-                                    {% endfor %}
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                    <br />
-                {% endfor %}
-            </td>
-        </tr>
-    </table>
-    <br />
-    <form action="calendar.php" method="post">
-        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-            <tr>
-                <td class="trow1">
-                    <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="page-sidebar">
+        {% for mini_calendar in mini_calendars %}
+            <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder" style="width: 180px;">
+                <thead>
+                    <tr>
+                        <td class="thead" colspan="8">
+                            <strong><a href="{{ mini_calendar.month_link|raw }}">{{ mini_calendar.month }} {{ mini_calendar.year }}</a></strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tcat">&nbsp;</td>
+                        {% for weekday_header in mini_calendar.weekday_headers %}
+                            <td class="tcat" align="center" width="14%"><strong>{{ weekday_header }}</strong></td>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for week in mini_calendar.week %}
                         <tr>
-                            <td valign="top">
-                                {% if calendar_permissions.canaddevents %}
-                                    <a href="calendar.php?action=addevent&amp;calendar={{ calendar.cid }}">{{ lang.add_public_event }}</a> | <a href="calendar.php?action=addevent&amp;calendar={{ calendar.cid }}&amp;private=1">{{ lang.add_private_event }}</a>
-                                {% endif %}
-                            </td>
-                            {% include 'calendar/calendar_select.twig' %}
+                            <td class="tcat" align="center" width="1"><a href="{{ week.week_link|raw }}">&raquo;</a></td>
+                            {% for day in week.days %}
+                                <td class="{{ day.day_class }}" valign="middle" align="center">
+                                    {% if day.link %}
+                                        <a href="{{ day.link|raw }}">{{ day.day }}</a>
+                                    {% else %}
+                                        {{ day.day }}
+                                    {% endif %}
+                                </td>
+                            {% endfor %}
                         </tr>
-                    </table>
-                </td>
-            </tr>
-        </table>
-    </form>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endfor %}
+    </div>
+    <footer class="page-footer">
+        {% include 'calendar/calendar_select.twig' %}
+    </footer>
 {% endblock body %}

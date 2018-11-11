@@ -1,5 +1,5 @@
-<div class="row row--simple-columns thread-moderation">
-    <div class="thread-moderation__item thread-moderation__item--thread">
+<div class="row row--simple-columns thread-moderation page-tools">
+    <div class="page-tools__item thread-moderation__thread">
         <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;" id="moderator_options">
             <input type="hidden" name="modtype" value="thread" />
             <input type="hidden" name="tid" value="{{ thread.tid }}" />
@@ -64,7 +64,7 @@
         </form>
     </div>
     {% if thread.showinlinemodoptions %}
-        <div class="thread-moderation__item thread-moderation__item--inline">
+        <div class="page-tools__item thread-moderation__inline">
             <script type="text/javascript" src="{{ asset_url('jscripts/inline_moderation.js') }}"></script>
             <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;" id="inlinemoderation_options">
                 <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
