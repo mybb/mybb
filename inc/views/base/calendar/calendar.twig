@@ -49,7 +49,7 @@
                     {% set i = 0 %}
                     <div class="calendar__week">
                         <div class="calendar__week-shortcut">
-                            <a href="{{ week.week_link|raw }}" class="calendar__week-link button button--basic">
+                            <a href="{{ week.week_link|raw }}" class="calendar__week-link button button--basic" title="{{ lang.go_week }}">
                                 <i class="button__icon fas fa-angle-double-right"></i>
                                 <span class="button__text">{{ lang.go_week }}</span>
                             </a>
@@ -76,10 +76,7 @@
             </div>
         </div>
         <footer class="page-footer">
-            
-                    {% include 'calendar/calendar_select.twig' %}
-                </div>
-            </form>
+            {% include 'calendar/calendar_select.twig' %}
         </footer>
     </div>
 {% endblock body %}

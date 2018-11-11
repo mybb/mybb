@@ -64,37 +64,34 @@
     </div>
     <div class="page-sidebar">
         {% for mini_calendar in mini_calendars %}
-            <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder" style="width: 180px;">
-                <thead>
-                    <tr>
-                        <td class="thead" colspan="8">
-                            <strong><a href="{{ mini_calendar.month_link|raw }}">{{ mini_calendar.month }} {{ mini_calendar.year }}</a></strong>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="tcat">&nbsp;</td>
-                        {% for weekday_header in mini_calendar.weekday_headers %}
-                            <td class="tcat" align="center" width="14%"><strong>{{ weekday_header }}</strong></td>
-                        {% endfor %}
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for week in mini_calendar.week %}
-                        <tr>
-                            <td class="tcat" align="center" width="1"><a href="{{ week.week_link|raw }}">&raquo;</a></td>
-                            {% for day in week.days %}
-                                <td class="{{ day.day_class }}" valign="middle" align="center">
-                                    {% if day.link %}
-                                        <a href="{{ day.link|raw }}">{{ day.day }}</a>
-                                    {% else %}
-                                        {{ day.day }}
-                                    {% endif %}
-                                </td>
-                            {% endfor %}
-                        </tr>
+            <section class="mini-calendar block block--sidebar">
+                <h1 class="title title--sidebar"><a href="{{ mini_calendar.month_link|raw }}">{{ mini_calendar.month }} {{ mini_calendar.year }}</a></h1>
+                <div class="mini-calendar__days-of-week">
+                    <span class="mini-calendar__week-shortcut"></span>
+                    {% for weekday_header in mini_calendar.weekday_headers %}
+                        <span class="mini-calendar__day-of-week-heading">{{ weekday_header }}</span>
                     {% endfor %}
-                </tbody>
-            </table>
+                </div>
+                {% for week in mini_calendar.week %}
+                    <div class="mini-calendar__week">
+                        <span class="mini-calendar__week-shortcut">
+                            <a href="{{ week.week_link|raw }}" class="calendar__week-link button button--basic" title="{{ lang.go_week }}">
+                                <i class="button__icon fas fa-angle-double-right"></i>
+                                <span class="button__text">{{ lang.go_week }}</span>
+                            </a>
+                        </span>
+                        {% for day in week.days %}
+                            <span class="mini-calendar__day {{ day.day_class }}">
+                                {% if day.link %}
+                                    <a href="{{ day.link|raw }}" class="mini-calendar__day-link">{{ day.day }}</a>
+                                {% else %}
+                                    {{ day.day }}
+                                {% endif %}
+                            </span>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </section>
         {% endfor %}
     </div>
     <footer class="page-footer">
