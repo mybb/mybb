@@ -315,8 +315,15 @@ $l['smilieinsert_getmore'] = "get more";
 $l['on'] = "On";
 $l['off'] = "Off";
 $l['remote_avatar_disabled_default_avatar'] = "You are currently using a remote avatar, which has been disabled. The default avatar will be used instead.";
-$l['unread_report'] = "Moderator Notice: There is 1 unread report.";
-$l['unread_reports'] = "Moderator Notice: There are {1} unread reports.";
+$l['mod_notice'] = "Awaiting Moderation: {1}.";
+$l['unapproved_thread'] = "1 unapproved thread";
+$l['unapproved_threads'] = "{1} unapproved threads";
+$l['unapproved_post'] = "1 unapproved post";
+$l['unapproved_posts'] = "{1} unapproved posts";
+$l['unapproved_attachment'] = "1 unapproved attachment";
+$l['unapproved_attachments'] = "{1} unapproved attachments";
+$l['unread_report'] = "1 unread report";
+$l['unread_reports'] = "{1} unread reports";
 $l['pending_joinrequest'] = "Group Leader Notice: You have 1 pending group membership join request.";
 $l['pending_joinrequests'] = "Group Leader Notice: You have {1} pending group membership join requests.";
 
