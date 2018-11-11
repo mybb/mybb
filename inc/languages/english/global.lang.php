@@ -326,11 +326,18 @@ $l['smilieinsert'] = "Smilies";
 $l['smilieinsert_getmore'] = "Get More";
 $l['on'] = "On";
 $l['off'] = "Off";
-$l['remote_avatar_disabled_default_avatar'] = "<a href='usercp.php?action=avatar'>You are currently using a remote avatar, which has been disabled. The default avatar will be used instead.</a>";
-$l['unread_report'] = "<a href='modcp.php?action=reports'>Moderator Notice: There is 1 unread report.</a>";
-$l['unread_reports'] = "<a href='modcp.php?action=reports'>Moderator Notice: There are {1} unread reports.</a>";
-$l['pending_joinrequest'] = "<a href='usercp.php?action=usergroups'>Group Leader Notice: You have 1 pending group membership join request.</a>";
-$l['pending_joinrequests'] = "<a href='usercp.php?action=usergroups'>Group Leader Notice: You have {1} pending group membership join requests.</a>";
+$l['remote_avatar_disabled_default_avatar'] = "You are currently using a remote avatar, which has been disabled. The default avatar will be used instead.";
+$l['mod_notice'] = "Awaiting Moderation: {1}.";
+$l['unapproved_thread'] = "1 unapproved thread";
+$l['unapproved_threads'] = "{1} unapproved threads";
+$l['unapproved_post'] = "1 unapproved post";
+$l['unapproved_posts'] = "{1} unapproved posts";
+$l['unapproved_attachment'] = "1 unapproved attachment";
+$l['unapproved_attachments'] = "{1} unapproved attachments";
+$l['unread_report'] = "1 unread report";
+$l['unread_reports'] = "{1} unread reports";
+$l['pending_joinrequest'] = "Group Leader Notice: You have 1 pending group membership join request.";
+$l['pending_joinrequests'] = "Group Leader Notice: You have {1} pending group membership join requests.";
 
 $l['search_user'] = "Search for a user";
 

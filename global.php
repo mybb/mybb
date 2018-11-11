@@ -540,7 +540,9 @@ if($mybb->user['uid'] != 0 && is_array($groupleaders) && array_key_exists($mybb-
 	}
 }
 
-$unreadreports = '';
+$modnotice = '';
+$moderation_queue = array();
+
 // This user is a moderator, super moderator or administrator
 if($mybb->settings['reportmethod'] == "db" && ($mybb->usergroup['cancp'] == 1 || ($mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanagereportedcontent'] == 1)))
 {
@@ -624,6 +626,56 @@ if($mybb->settings['reportmethod'] == "db" && ($mybb->usergroup['cancp'] == 1 ||
 			}
 		}
 	}
+}
+
+// Get awaiting moderation queue stats
+if($can_access_moderationqueue || ($mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanagemodqueue'] == 1))
+{
+	$unapproved_posts = $unapproved_threads = 0;
+	$query = $db->simple_select("posts", "replyto", "visible = 0");
+	while($unapproved = $db->fetch_array($query))
+	{
+		if($unapproved["replyto"] == 0){
+			$unapproved_threads++;
+		} else {
+			$unapproved_posts++;
+		}
+	}
+
+	$query = $db->simple_select("attachments", "COUNT(aid) AS unapprovedattachments", "visible=0");
+	$unapproved_attachments = $db->fetch_field($query, "unapprovedattachments");
+
+	$modqueue_types = array('threads', 'posts', 'attachments');
+
+	foreach($modqueue_types as $modqueue_type)
+	{
+		if(!empty(${'unapproved_'.$modqueue_type}))
+		{
+			if(${'unapproved_'.$modqueue_type} == 1)
+			{
+				$modqueue_message = $lang->{'unapproved_'.substr($modqueue_type, 0, -1)};
+			}
+			else
+			{
+				$modqueue_message = $lang->sprintf($lang->{'unapproved_'.$modqueue_type}, my_number_format(${'unapproved_'.$modqueue_type}));
+			}
+
+			$headerMessage[] = [
+				'message' => \MyBB\template('misc/modqueue_link.twig', [
+					'modqueue_type' => $modqueue_type,
+					'modqueue_message' => $modqueue_message,
+				]),
+			];
+		}
+	}
+}
+
+if(!empty($moderation_queue))
+{
+	$moderation_queue = $lang->sprintf($lang->mod_notice, implode($lang->comma, $moderation_queue));
+	$moderation_queue = substr_replace($moderation_queue, ' '.$lang->and.' ', strrpos($moderation_queue, $lang->comma), strlen($lang->comma));
+
+	eval('$modnotice = "'.$templates->get('global_modqueue_notice').'";');
 }
 
 // Got a character set?
