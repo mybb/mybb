@@ -22,8 +22,7 @@
                         {{ usergroup.users }} [<a href="managegroup.php?gid={{ usergroup.gid }}">{{ lang.view_members }}</a>]
                     </td>
                     <td align="center">
-                        {# something is wrong here #}
-                        {% if usergroup.type != 4 %}
+                        {% if usergroup.type != 4 %}
                             --
                         {% else %}
                             {{ usergroup.joinrequests }}
