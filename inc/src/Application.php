@@ -25,7 +25,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     const VERSION = '1.9.0-alpha.1';
 
     /**
-     * The base path for the Laravel installation.
+     * The base path for the MyBB installation.
      *
      * @var string
      */
@@ -690,7 +690,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
-     * Get the base path of the Laravel installation.
+     * Get the base path of the MyBB installation.
      *
      * @return string
      */
