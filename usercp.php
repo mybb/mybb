@@ -2372,8 +2372,12 @@ if ($mybb->input['action'] == "usergroups") {
             exit;
         } elseif ($usergroup['type'] == 4) {
             $joingroup = $mybb->get_input('joingroup', MyBB::INPUT_INT);
-            eval("\$joinpage = \"".$templates->get("usercp_usergroups_joingroup")."\";");
-            output_page($joinpage);
+
+            output_page(\MyBB\template('usercp/joingroup.twig', [
+                'usergroup' => $usergroup,
+                'joingroup' => $joingroup,
+            ]));
+
             exit;
         } else {
             join_usergroup($mybb->user['uid'], $mybb->get_input('joingroup', MyBB::INPUT_INT));
@@ -2469,9 +2473,10 @@ if ($mybb->input['action'] == "usergroups") {
     $query = $db->simple_select("usergroups", "*", "(type='3' OR type='4' OR type='5') AND gid NOT IN ($existinggroups)", array('order_by' => 'title'));
     while ($usergroup = $db->fetch_array($query)) {
         if (isset($appliedjoin[$usergroup['gid']]) && $usergroup['type'] != 5) {
+            $applydate = my_date('relative', $appliedjoin[$usergroup['gid']]);
             $usergroup['joinlink'] = $lang->sprintf($lang->join_group_applied, $applydate);
         } elseif (isset($appliedjoin[$usergroup['gid']]) && $usergroup['type'] == 5) {
-            $usergroup['joinlink'] = $lang->sprintf($lang->pending_invitation, $usergroup['gid'], $mybb->post_code);
+            $usergroup['invited'] = true;
         }
 
         $usergroup['leaders'] = [];
@@ -2482,7 +2487,7 @@ if ($mybb->input['action'] == "usergroups") {
             }
         }
 
-        if (!in_array(array_keys($usergroup['leaders']), $mybb->user['uid'])) {
+        if (!in_array($mybb->user['uid'], array_keys($usergroup['leaders']))) {
             // User is already a leader of the group, so don't show as a "Join Group"
             $joinablegroups[] = $usergroup;
         }

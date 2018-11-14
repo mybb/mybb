@@ -1,0 +1,39 @@
+{% extends 'layouts/account.twig' %}
+
+{% block head %}
+    <title>{{ mybb.settings.bbname }} - {{ lang.request_join_usergroup }}</title>
+{% endblock head %}
+
+{% block accountHeader %}
+    <header class="page-header">
+        <h1 class="title title--page">{{ lang.request_join_usergroup }}</h1>
+        <p class="page-description">{{ lang.join_group_moderate_note }}</p>
+    </header>
+{% endblock accountHeader %}
+
+{% block accountBody %}
+    <form action="usercp.php" method="post">
+        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+        <section class="block block--form form">
+            <div class="section section--form">
+                <div class="row row--form field">
+                    <h3 class="field__name">{{ lang.user_group }}</h3>
+                    <p class="field__value">{{ usergroup.title }}</p>
+                </div>
+                <div class="row row--form field">
+                    <h3 class="field__name"><label for="reason">{{ lang.join_reason }}</label></h3>
+                    <input type="text" class="textbox" name="reason" value="" size="50" />
+                </div>
+            </div>
+            <div class="form__submit">
+                <button type="submit" class="button button--medium">
+                    <i class="button__icon fas fa-user-plus"></i>
+                    <span class="button__text">{{ lang.send_join_request }}</span>
+                </button>
+            </div>
+        </section>
+        <input type="hidden" name="action" value="usergroups" />
+        <input type="hidden" name="joingroup" value="{{ joingroup }}" />
+        <input type="hidden" name="do" value="joingroup" />
+    </form>
+{% endblock accountBody %}

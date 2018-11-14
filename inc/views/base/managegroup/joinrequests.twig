@@ -5,33 +5,57 @@
 {% endblock head %}
 
 {% block body %}
-    <form method="post" action="managegroup.php">
-        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-        <input type="hidden" name="action" value="do_joinrequests" />
-        <input type="hidden" name="gid" value="{{ usergroup.gid }}" />
-        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-            <tr>
-                <td class="thead" colspan="6"><strong>{{ trans('join_requests_title', usergroup.title) }}</strong></td>
-            </tr>
-            <tr>
-                <td class="tcat" width="30%"><strong>{{ lang.user_name }}</strong></td>
-                <td class="tcat" align="center" width="40%"><strong>{{ lang.reason }}</strong></td>
-                <td class="tcat" align="center" width="10%"><strong>{{ lang.accept }}</strong></td>
-                <td class="tcat" align="center" width="10%"><strong>{{ lang.ignore }}</strong></td>
-                <td class="tcat" align="center" width="10%"><strong>{{ lang.decline }}</strong></td>
-            </tr>
-            {% for user in users %}
-                {% set row = alt_trow() %}
-                <tr>
-                    <td class="{{ row }}">{{ user.profilelink|raw }}</td>
-                    <td class="{{ row }}" align="center">{{ user.reason }}</td>
-                    <td class="{{ row }}" align="center"><input type="radio" class="radio" name="request[{{ user.uid }}]" value="accept" /></td>
-                    <td class="{{ row }}" align="center"><input type="radio" class="radio" name="request[{{ user.uid }}]" value="ignore" checked="checked" /></td>
-                    <td class="{{ row }}" align="center"><input type="radio" class="radio" name="request[{{ user.uid }}]" value="decline" /></td>
-                </tr>
-            {% endfor %}
-        </table>
-        <br />
-        <div align="center"><input type="submit" class="button" value="{{ lang.action_requests }}" /></div>
-    </form>
+    <div class="page-content">
+        <header class="page-header">
+            <h1 class="title title--page">{{ trans('join_requests_title', usergroup.title) }}</h1>
+        </header>
+        <form method="post" action="managegroup.php">
+            <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+            <input type="hidden" name="action" value="do_joinrequests" />
+            <input type="hidden" name="gid" value="{{ usergroup.gid }}" />
+            <section class="block">
+                <div class="results">
+                    {% for user in users %}
+                        <div class="row row--simple-columns join-request">
+                            <div class="row__primary">
+                                <h2 class="join-request__username">{{ user.profilelink|raw }}</h2>
+                                <p class="join-request__reason">{{ lang.reason }}: {{ user.reason }}</p>
+                            </div>
+                            <div class="row__controls">
+                                <div class="segmented-control">
+                                    <span class="segmented-control__option">
+                                        <input type="radio" class="radio radio_ignore segmented-control__input" name="request[{{ user.uid }}]" id="request_ignore_{{ user.uid }}" value="ignore" checked="checked" />
+                                        <label class="segmented-control__button" for="request_ignore_{{ user.uid }}">
+                                            <i class="segmented-control__icon fas fa-minus-circle"></i>
+                                            <span class="segmented-control__text">{{ lang.ignore }}</span>
+                                        </label>
+                                    </span>
+                                    <span class="segmented-control__option">
+                                        <input type="radio" class="radio radio_accept segmented-control__input" name="request[{{ user.uid }}]" id="request_accept_{{ user.uid }}" value="accept" />
+                                        <label class="segmented-control__button" for="request_accept_{{ user.uid }}">
+                                            <i class="segmented-control__icon fas fa-check"></i>
+                                            <span class="segmented-control__text">{{ lang.accept }}</span>
+                                        </label>
+                                    </span>
+                                    <span class="segmented-control__option">
+                                        <input type="radio" class="radio radio_decline segmented-control__input" name="request[{{ user.uid }}]" id="request_decline_{{ user.uid }}" value="decline" />
+                                        <label class="segmented-control__button" for="request_decline_{{ user.uid }}">
+                                            <i class="segmented-control__icon fas fa-times"></i>
+                                            <span class="segmented-control__text">{{ lang.decline }}</span>
+                                        </label>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="sort-results">
+                    <button type="submit" class="button button--medium">
+                        <i class="button__icon fas fa-users-cog"></i>
+                        <span class="button__text">{{ lang.action_requests }}</span>
+                    </button>
+                </div>
+            </section>
+        </form>
+    </div>
 {% endblock body %}
