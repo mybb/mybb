@@ -1,7 +1,7 @@
 <div class="modal">
-    <div style="overflow-y: auto; max-height: 400px;">
-        <section class="block block--modal">
-            <h1 class="title title--modal">{{ lang.total_posts }} {{ thread.numposts }}</h1>
+    <section class="block block--modal">
+        <h1 class="title title--modal">{{ lang.total_posts }} {{ thread.numposts }}</h1>
+        <div class="modal__content">
             <div class="block__content who-posted">
                 <div class="container container--modal container--adjacent container--simple-columns who-posted__legend">
                     <div class="who-posted__username"><a href="javascript:void(0)" onclick="MyBB.whoPosted({{ thread.tid }}, 'username'); return false;">{{ lang.user }}</a></div>
@@ -14,6 +14,6 @@
                     </div>
                 {% endfor %}
             </div>
-        </section>
-    </div>
+        </div>
+    </section>
 </div>

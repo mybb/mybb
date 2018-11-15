@@ -95,7 +95,7 @@ $l['quickreply_multiquote_now'] = "Quote now";
 $l['or'] ="or";
 $l['quickreply_multiquote_deselect'] = "Deselect all";
 $l['search_thread'] = "Search Thread";
-$l['enter_keywords'] = "Enter Keywords";
+$l['enter_keywords'] = "Enter Keywords...";
 $l['edit_thread_notes'] = "Edit Thread Notes";
 $l['view_all_notes'] = "View All Notes";
 

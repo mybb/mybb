@@ -339,11 +339,11 @@
         <footer class="page-footer">
             <div class="row row--simple-columns thread-actions">
                 {% if forumpermissions.cansearch %}
-                <div class="thread-search">
+                <div class="thread-search inline-form">
                     <form action="search.php" method="post">
                         <input type="hidden" name="action" value="thread" />
                         <input type="hidden" name="tid" value="{{ thread.tid }}" />
-                        <input type="text" name="keywords" value="{{ lang.enter_keywords }}" onfocus="if(this.value == '{{ lang.enter_keywords }}') { this.value = ''; }" onblur="if(this.value=='') { this.value='{{ lang.enter_keywords }}'; }" class="textbox textbox--large" size="25" />
+                        <input type="text" name="keywords" placeholder="{{ lang.enter_keywords }}" class="textbox textbox--large" size="25" />
                         <button type="submit" class="button button--inline">
                             <i class="button__icon fas fa-search"></i>
                             <span class="button__text">{{ lang.search_thread }}</span>

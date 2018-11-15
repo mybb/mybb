@@ -1,7 +1,7 @@
 <div class="modal">
-    <div style="overflow-y: auto; max-height: 400px;">
-        <section class="block block--modal">
-			<h2 class="title title--modal">{{ lang.buddy_list }}</h2>
+    <section class="block block--modal">
+        <h2 class="title title--modal">{{ lang.buddy_list }}</h2>
+        <div class="modal__content">
             {% if buddies.showlist %}
                 <div class="block__content">
                     <h3 class="title title--minor">{{ lang.online }}</h3>
@@ -24,6 +24,6 @@
             {% else %}
                 <div class="alert alert--no-results">{{ lang.no_buddies }}</div>
             {% endif %}
-        </section>
-    </div>
+        </div>
+    </section>
 </div>

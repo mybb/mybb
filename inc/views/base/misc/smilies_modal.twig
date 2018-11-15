@@ -1,7 +1,7 @@
 <div class="modal">
-    <div style="overflow-y: auto; max-height: 400px;" class="modal">
-        <section class="block block--modal">
-    		<h1 class="title title--modal">{{ lang.smilies_listing }}</h1>
+    <section class="block block--modal">
+        <h1 class="title title--modal">{{ lang.smilies_listing }}</h1>
+        <div class="modal__content">
             <div class="block__content smilie-list">
                 <div class="row">{{ lang.click_to_add }}</div>
                 {% for smilie in smilies %}
@@ -13,6 +13,6 @@
                     <div class="alert alert--no-results">{{ lang.no_smilies }}</div>
                 {% endfor %}
             </div>
-        </section>
-    </div>
+        </div>
+    </section>
 </div>

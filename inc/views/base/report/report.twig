@@ -1,5 +1,5 @@
 <div class="modal">
-  <div style="overflow-y: auto; max-height: 400px;" class="modal_{{ report.id }}">
+  <div class="modal_{{ report.id }}">
 	<form action="report.php" method="post" class="reportData_{{ report.id }}" onsubmit="return Report.submitReport({{ report.id }});">
 		<input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
 		<input type="hidden" name="action" value="do_report" />
@@ -8,24 +8,26 @@
 		<input type="hidden" name="no_modal" value="1" />
         <section class="block block--modal">
             <h2 class="title title--modal{% if report.has_errors or report.is_duplicate %} title--danger{% endif %}">{{ report.title }}</h2>
-            <div class="form form--modal">
-				<div class="section section--form">
-        			{% if report.has_errors %}
-        				<div class="row row--form">{{ report.error|raw }}</div>
-        			{% elseif report.is_duplicate %}
-        				<div class="row row--form">{{ lang.error_report_duplicate }}</div>
-        			{% else %}
-        				{% include 'report/report_reasons.twig' %}
-        			{% endif %}
+            <div class="modal__content">
+                <div class="form form--modal">
+    				<div class="section section--form">
+            			{% if report.has_errors %}
+            				<div class="row row--form">{{ report.error|raw }}</div>
+            			{% elseif report.is_duplicate %}
+            				<div class="row row--form">{{ lang.error_report_duplicate }}</div>
+            			{% else %}
+            				{% include 'report/report_reasons.twig' %}
+            			{% endif %}
+                    </div>
+                    {% if report.has_errors == false %}
+                    <div class="form__submit">
+                        <button type="submit" class="button button--medium">
+        					<i class="button__icon fas fa-flag"></i>
+        					<span class="button__text">{{ report.title }}</span>
+        				</button>
+                    </div>
+                    {% endif %}
                 </div>
-                {% if report.has_errors == false %}
-                <div class="form__submit">
-                    <button type="submit" class="button button--medium">
-    					<i class="button__icon fas fa-flag"></i>
-    					<span class="button__text">{{ report.title }}</span>
-    				</button>
-                </div>
-                {% endif %}
             </div>
         </section>
 	</form>
