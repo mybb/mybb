@@ -1,10 +1,14 @@
-{% set class %}{{ thread.bgcolor }} forumdisplay_{% if thread.sticky %}sticky{% else %}regular{% endif %}{% endset %}
 {% set moved = (thread.moved[0] == 'moved') %}
 
 {# TO DO: THREAD RATINGS #}
 {# {% include 'forumdisplay/thread_rating.twig' %} #}
 
-<div class="row row--thread thread {{ class }} inline_row{% if thread.unreadpost and moved != true %} thread--unread{% endif %}{% if thread.sticky %} thread--sticky{% endif %}{% if modpermissions.ismod %} thread--moderator{% endif %}">
+<div class="row row--thread thread inline_row
+    {% if thread.unreadpost and moved != true %} thread--unread{% endif %}
+    {% if thread.sticky %} thread--sticky{% endif %}
+    {% if modpermissions.ismod %} thread--moderator{% endif %}
+    {% if thread.visible == -1 and modpermissions.canviewdeleted %} thread--deleted{% endif %}
+    {% if thread.visible == 0 %} thread--awaiting-approval{% endif %}">
     <div class="thread__column thread__column--primary">
 		<h3 class="thread__title">
             {# Thread prefix #}
@@ -16,6 +20,15 @@
             <span class="{{ thread.inlineEditClass }} {{ thread.newclass }}" id="tid_{{ thread.tid }}">
                 <a href="{{ thread.threadlink }}">{{ thread.subject }}</a>
             </span>
+
+            {# Deleted thread #}
+            {% if thread.visible == -1 %}
+                <span class="tag tag--thread-status tag--deleted">{{ lang.deleted_thread }}</span>
+            {% endif %}
+
+            {% if thread.visible == 0 %}
+                <span class="tag tag--thread-status tag--awaiting-approval">{{ lang.awaiting_approval }}</span>
+            {% endif %}
 
             {# Go to unread link #}
             {% if thread.unreadpost and moved != true %}

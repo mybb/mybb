@@ -100,6 +100,7 @@ $l['all_selected'] = "All <strong>{1}</strong> threads in this forum are selecte
 $l['select_all'] = "Select all <strong>{1}</strong> threads in this forum.";
 $l['clear_selection'] = "Clear Selection.";
 $l['deleted_thread'] = "Deleted Thread";
+$l['awaiting_approval'] = "Awaiting Approval";
 $l['sticky'] = "Sticky Thread";
 
 $l['error_containsnoforums'] = "Sorry, but the forum you are currently viewing does not contain any child forums.";

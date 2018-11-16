@@ -1,3 +1,5 @@
+<a name="pid{{ post.pid }}" id="pid{{ post.pid }}"></a>
+{# Ignored post #}
 {% if post.isignored %}
 	<div class="post post--message ignored_post" id="ignored_post_{{ post.pid }}">
 		<div class="post__meta">
@@ -19,6 +21,8 @@
 		</div>
 	</div>
 {% endif %}
+
+{# Deleted post #}
 {% if post.isdeleted %}
 	<div class="post post--message deleted_post_collapsed" id="deleted_post_{{ post.pid }}">
 		<div class="post__meta">
@@ -40,7 +44,8 @@
 		</div>
 	</div>
 {% endif %}
-<a name="pid{{ post.pid }}" id="pid{{ post.pid }}"></a>
+
+{# Post bit #}
 <div class="post {{ post.unapproved_shade }}" style="{{ post.visibility }}" id="post_{{ post.pid }}">
 	<div class="post__meta">
 		{# Author avatar #}
@@ -57,6 +62,7 @@
 		{# Author username #}
 		<h3 class="post__author">
 			{{ post.profilelink|raw }}
+			{# Online status #}
 			{% if post.onlinestatus == "online" %}
 				<span class="user-status user-status--online">
 					<a href="online.php" title="{{ lang.postbit_status_online }}" class="user-status__link">
@@ -112,7 +118,6 @@
 			</div>
 		{% endif %}
 
-
 		{# Currently not used #}
 
 			{#	{{ post.usertitle|raw }}<br />
@@ -159,30 +164,41 @@
 		</div>#}
 
 	</div>
+
+	{# Post body #}
 	<div class="post__body post_body scaleimages" id="pid_{{ post.pid }}">
+		{# Post unapproved or deleted message #}
 		{% if post.poststatus %}
-			<span class="status_type">{{ post.status_type }}</span>
+			<div class="post__status">
+				<span class="tag tag--post-status{% if post.isdeleted %} tag--deleted{% endif %}{% if post.visible == 0 %} tag--awaiting-approval{% endif %}">{{ post.status_type }}</span>
+			</div>
 		{% endif %}
 
+		{# Post message #}
 		{{ post.message|raw }}
 
+		{# Attachments #}
 		{% if post.hasattachments %}
 			{% include 'postbit/postbit_attachments.twig' %}
 		{% endif %}
 
+		{# Signature #}
 		{% if post.showsig %}
 			<div class="post__signature scaleimages">
 				{{ post.signature|raw }}
 			</div>
 		{% endif %}
 
+		{# Edit reason #}
 		{% if post.can_edit %}
 			<div class="editreason" id="editreason_{{ post.pid }}_original" style="display: none;"><label for="editreason">{{ lang.postbit_editreason }}:</label> <input type="text" class="textbox" style="margin: 6px 0;" name="editreason" size="40" maxlength="150" id="quickedit_{{ post.pid }}_editreason_original" value="{{ post.editreason }}" /><br /></div>
 		{% endif %}
 	</div>
+
+	{# Post controls #}
 	<div class="post__foot post__foot--controls">
 		<div class="post-controls post-controls--primary">
-			{# Restore button #}
+			{# Restore button (for deleted posts) #}
 			{% if post.quick_restore %}
 				<a href="editpost.php?pid={{ post.pid }}" onclick="Thread.restorePost({{ post.pid }}); return false;" style="display: none;" id="quick_restore_{{ post.pid }}" title="{{ lang.postbit_quick_restore }}" class="post-control post-control--restore"><i class="post-control__icon fas fa-circle fa-fw"></i><span class="post-control__text">{{ lang.postbit_button_qrestore }}</span></a>
 <script type="text/javascript">
@@ -243,21 +259,6 @@
 					{# Edit button #}
 					{% if post.can_edit %}
 						<a href="editpost.php?pid={{ post.pid }}" class="post-control post-control--full-edit"><i class="post-control__icon fas fa-edit fa-fw"></i><span class="post-control__text">{{ lang.postbit_full_edit }}</span></a>
-
-						{# <a href="editpost.php?pid={{ post.pid }}" id="edit_post_{{ post.pid }}" title="{{ lang.postbit_edit }}" class="post-control post-control--edit"><i class="post-control__icon fas fa-pencil-alt fa-fw"></i><span class="post-control__text">{{ lang.postbit_button_edit }}</span></a>
-						<div id="edit_post_{{ post.pid }}_popup" class="popup_menu" style="display: none;">
-							<div class="popup_item_container">
-								<a href="javascript:void(0)" class="popup_item quick_edit_button" id="quick_edit_post_{{ post.pid }}">{{ lang.postbit_quick_edit }}</a></div>
-								<div class="popup_item_container"><a href="editpost.php?pid={{ post.pid }}" class="popup_item">{{ lang.postbit_full_edit }}</a>
-							</div>
-						</div>
-	<script type="text/javascript">
-	// <!--
-		if (use_xmlhttprequest == "1") {
-			$("#edit_post_{{ post.pid }}").popupMenu();
-		}
-	// -->
-	</script>#}
 					{% endif %}
 
 					{# Delete PM button #}
