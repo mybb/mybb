@@ -254,7 +254,7 @@
             </div>
         </div>
 
-        {% if thread.showquickreply %}
+        {% if thread.showquickreply and thread.visible >= 0 %}
             <div id="quickreply_spinner" class="spinner spinner--quick-reply" style="display: none"><span class="spinner__icon"><i class="spinner__icon fas fa-sync fa-spin"></i></span></div>
             {% if thread.showmodnotice %}
                 <div class="alert alert--danger">
