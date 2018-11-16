@@ -64,15 +64,20 @@
                 <section class="section section--form compose__primary-section{% if mybb.settings.alloweditreason %} compose__primary-section--padding{% endif %}">
 					<div class="row row--form field">
                         <h3 class="field__name visually-hidden"><label for="subject">{{ lang.subject }}</h3>
-                        {% if editpost.showprefixes %}
-                            <select name="threadprefix">
-                                <option value="0">{{ lang.no_prefix }}</option>
-                                {% for prefix in prefixes %}
-                                    <option value="{{ prefix.pid }}"{% if prefix.selected %} selected="selected"{% endif %}>{{ prefix.prefix }}</option>
-                                {% endfor %}
-                            </select>
-                        {% endif %}
-                        <input type="text" class="textbox textbox--subject" name="subject" size="40" maxlength="85" id="subject" value="{{ editpost.subject }}" tabindex="1" />
+                        <div class="compose__subject">
+                            {% if editpost.showprefixes %}
+                                <div class="select-field select-field--subject">
+                                    <i class="select-field__icon fas fa-sort"></i>
+                                    <select name="threadprefix">
+                                        <option value="0">{{ lang.no_prefix }}</option>
+                                        {% for prefix in prefixes %}
+                                            <option value="{{ prefix.pid }}"{% if prefix.selected %} selected="selected"{% endif %}>{{ prefix.prefix }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            {% endif %}
+                            <input type="text" class="textbox textbox--subject" name="subject" size="40" maxlength="85" id="subject" value="{{ editpost.subject }}" tabindex="1" />
+                        </div>
                     </div>
 
                     {% if editpost.showposticons %}

@@ -29,7 +29,10 @@
 
     <div class="page-content">
         <header class="page-header">
-            <h1 class="title title--page">{{ thread.threadprefix|raw }}{{ thread.subject }}</h1>
+            {% if thread.prefix %}
+                <span class="tag tag--float tag--thread-prefix tag--thread-prefix-{{ thread.prefix }}">{{ thread.threadprefix|raw }}</span>
+            {% endif %}
+            <h1 class="title title--page">{{ thread.subject }}</h1>
         </header>
 
         {# Thread moderator notes #}
