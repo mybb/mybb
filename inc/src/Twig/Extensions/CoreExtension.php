@@ -88,7 +88,7 @@ class CoreExtension extends \Twig_Extension
                     'needs_environment' => true,
                     'is_safe' => ['html'],
                 ]
-            )
+            ),
         ];
     }
 
