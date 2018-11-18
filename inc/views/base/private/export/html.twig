@@ -22,7 +22,11 @@
                     <tr>
                         <td class="trow1">
                             <strong>{{ lang.subject }} {{ message.subject }}</strong><br />
-                            <em>{{ lang.to }} {{ message.tousername }}<br />{{ lang.from }} {{ message.fromusername }}<br />{{ lang.sent }} {{ message.senddate }}</em>
+                            <em>
+                                {{ lang.to }} {{ render_avatar(url=message.to_avatar, alt=message.tousername) }} {{ message.tousername }}<br />
+                                {{ lang.from }} {{ render_avatar(url=message.from_avatar, alt=message.fromusername) }} {{ message.fromusername }}<br />
+                                {{ lang.sent }} {{ message.senddate }}
+                            </em>
                         </td>
                     </tr>
                     <tr>
