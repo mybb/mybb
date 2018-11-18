@@ -3,8 +3,9 @@
 namespace MyBB\Twig\Extensions;
 
 use MyBB\Utilities\BreadcrumbManager;
+use Twig\Extension\GlobalsInterface;
 
-class CoreExtension extends \Twig_Extension
+class CoreExtension extends \Twig_Extension implements GlobalsInterface
 {
     /**
      * @var \MyBB $mybb
