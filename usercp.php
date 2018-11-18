@@ -2748,10 +2748,11 @@ if (!$mybb->input['action']) {
         }
 
         $query = $db->query("
-            SELECT s.*, t.*, t.username AS threadusername, u.username
+            SELECT s.*, t.*, t.username AS threadusername, u.username, last_poster.avatar as last_poster_avatar
             FROM ".TABLE_PREFIX."threadsubscriptions s
             LEFT JOIN ".TABLE_PREFIX."threads t ON (s.tid=t.tid)
             LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
+            LEFT JOIN ".TABLE_PREFIX."users last_poster ON (t.lastposteruid=last_poster.uid)
             WHERE s.uid='".$mybb->user['uid']."' {$visible}
             ORDER BY t.lastpost DESC
             LIMIT 0, 10
@@ -2835,6 +2836,7 @@ if (!$mybb->input['action']) {
 
                         $thread['lastpostdate'] = my_date('relative', $thread['lastpost']);
 
+                        $thread['last_poster_name'] = $thread['lastposter'];
                         $thread['lastposter'] = build_profile_link($thread['lastposter'], $thread['lastposteruid']);
 
                         $thread['replies'] = my_number_format($thread['replies']);
@@ -2866,9 +2868,10 @@ if (!$mybb->input['action']) {
     }
 
     $query = $db->query("
-        SELECT t.*, t.username AS threadusername, u.username
+        SELECT t.*, t.username AS threadusername, u.username, last_poster.avatar as last_poster_avatar
         FROM ".TABLE_PREFIX."threads t
         LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
+        LEFT JOIN ".TABLE_PREFIX."users last_poster ON (t.lastposteruid=last_poster.uid)
         WHERE t.uid='".$mybb->user['uid']."' AND t.firstpost != 0 AND t.visible >= 0 {$visible}{$f_perm_sql}
         ORDER BY t.lastpost DESC
         LIMIT 0, 5
@@ -3017,6 +3020,7 @@ if (!$mybb->input['action']) {
 
                 $thread['lastpostdate'] = my_date('relative', $thread['lastpost']);
 
+                $thread['last_poster_name'] = $thread['lastposter'];
                 $thread['lastposter'] = build_profile_link($thread['lastposter'], $thread['lastposteruid']);
 
                 $thread['replies'] = my_number_format($thread['replies']);
