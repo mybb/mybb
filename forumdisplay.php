@@ -191,7 +191,7 @@ if ($mybb->settings['browsingthisforum'] != 0) {
     $usersBrowsingCounter = [];
 
     $query = $db->query("
-        SELECT s.ip, s.uid, u.username, s.time, u.invisible, u.usergroup, u.usergroup, u.displaygroup
+        SELECT s.ip, s.uid, u.username, u.avatar, s.time, u.invisible, u.usergroup, u.usergroup, u.displaygroup
         FROM ".TABLE_PREFIX."sessions s
         LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
         WHERE s.time > '$timecut' AND location1='$fid' AND nopermission != 1
@@ -617,7 +617,7 @@ if ($fpermissions['canviewthreads'] != 0) {
 
     // Start Getting Threads
     $query = $db->query("
-        SELECT t.*, {$ratingadd}t.username AS threadusername, u.username, 
+        SELECT t.*, {$ratingadd}t.username AS threadusername, u.username, u.avatar,
           lastposter.avatar AS last_poster_avatar
         FROM ".TABLE_PREFIX."threads t
         LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
