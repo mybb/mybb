@@ -22,6 +22,8 @@
         {{ thread.views }}
     </td>
     <td class="{{ thread.bg_colour }}" style="white-space: nowrap">
+        {{ render_avatar(url=thread.last_poster_avatar, alt=thread.last_poster_name) }}
+
         <span class="smalltext">{{ thread.last_post_date|raw }}<br />
         <a href="{{ thread.lastpostlink }}">{{ lang.lastpost }}</a>: {{ thread.last_poster_link|raw }}</span>
     </td>

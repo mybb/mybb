@@ -718,10 +718,11 @@ if ($mybb->input['action'] == "subscriptions") {
 
     // Fetch subscriptions
     $query = $db->query("
-        SELECT s.*, t.*, t.username AS threadusername, u.username
+        SELECT s.*, t.*, t.username AS threadusername, u.username, last_poster.avatar as last_poster_avatar
         FROM " . TABLE_PREFIX . "threadsubscriptions s
         LEFT JOIN " . TABLE_PREFIX . "threads t ON (s.tid=t.tid)
         LEFT JOIN " . TABLE_PREFIX . "users u ON (u.uid = t.uid)
+        LEFT JOIN ".TABLE_PREFIX."users last_poster ON (t.lastposteruid=last_poster.uid)
         WHERE s.uid='" . $mybb->user['uid'] . "' and t.visible >= 0 {$visible}
         ORDER BY t.lastpost DESC
         LIMIT $start, $perpage
@@ -893,12 +894,12 @@ if ($mybb->input['action'] == "subscriptions") {
 
             // Build last post info
             $thread['last_post_date'] = my_date('relative', $thread['lastpost']);
+            $lastposteruid = $thread['lastposteruid'];
             if (!$lastposteruid && !$thread['lastposter']) {
                 $lastposter = htmlspecialchars_uni($lang->guest);
             } else {
                 $lastposter = htmlspecialchars_uni($thread['lastposter']);
             }
-            $lastposteruid = $thread['lastposteruid'];
 
             // Don't link to guest's profiles (they have no profile).
             if ($lastposteruid == 0) {
@@ -906,6 +907,8 @@ if ($mybb->input['action'] == "subscriptions") {
             } else {
                 $thread['last_poster_link'] = build_profile_link($lastposter, $lastposteruid);
             }
+
+            $thread['last_poster_name'] = $lastposter;
 
             $thread['replies'] = my_number_format($thread['replies']);
             $thread['views'] = my_number_format($thread['views']);
@@ -961,11 +964,12 @@ if ($mybb->input['action'] == 'forumsubscriptions') {
     require_once MYBB_ROOT . 'inc/functions_forumlist.php';
 
     $query = $db->query("
-        SELECT fs.*, f.*, t.subject AS lastpostsubject, fr.dateline AS lastread
+        SELECT fs.*, f.*, t.subject AS lastpostsubject, fr.dateline AS lastread, last_poster.avatar as last_poster_avatar
         FROM " . TABLE_PREFIX . "forumsubscriptions fs
         LEFT JOIN " . TABLE_PREFIX . "forums f ON (f.fid = fs.fid)
         LEFT JOIN " . TABLE_PREFIX . "threads t ON (t.tid = f.lastposttid)
         LEFT JOIN " . TABLE_PREFIX . "forumsread fr ON (fr.fid=f.fid AND fr.uid='{$mybb->user['uid']}')
+        LEFT JOIN ".TABLE_PREFIX."users last_poster ON (t.lastposteruid=last_poster.uid)
         WHERE f.type='f' AND fs.uid='{$mybb->user['uid']}'
         ORDER BY f.name ASC
     ");
@@ -1022,6 +1026,8 @@ if ($mybb->input['action'] == 'forumsubscriptions') {
                 'subject' => $lastpost_subject,
                 'date' => my_date('relative', $forum['lastpost']),
                 'profile_link' => $lastpost_profilelink,
+                'last_poster_avatar_url' => $forum['last_poster_avatar'],
+                'lastposter' => $lastposter,
             ];
         }
 
