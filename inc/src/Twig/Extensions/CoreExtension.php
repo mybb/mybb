@@ -507,42 +507,18 @@ class CoreExtension extends \Twig_Extension
     public function renderAvatar(
         \Twig_Environment $twig,
         ?string $url = '',
-        ?string $dimensions = '',
         ?string $alt = ''
     ): string {
-        // TODO: cache of avatars
-        $resolvedUrl = '';
-        $resolvedDimensions = [];
-        $resolvedAlt = '';
-
         $url = trim($url);
-        $dimensions = trim($dimensions);
         $alt = trim($alt);
 
         if (empty($url)) {
-            // TODO: use default avatar
-        } else {
-            $resolvedUrl = $url;
-        }
-
-        if (!empty($dimensions)) {
-            $dimensionParts = preg_split('#\||x#', $dimensions, 2);
-
-            if (count($dimensionParts) === 2) {
-                $resolvedDimensions['x'] = (int) $dimensionParts[0];
-                $resolvedDimensions['y'] = (int) $dimensionParts[1];
-            }
-        }
-        // TODO: default dimensions
-
-        if (!empty($alt)) {
-            $resolvedAlt = $alt;
+            return $twig->render('partials/default_avatar.twig');
         }
 
         return $twig->render('partials/avatar.twig', [
-            'url' => $resolvedUrl,
-            'dimensions' => $resolvedDimensions,
-            'alt' => $resolvedAlt,
+            'url' => $url,
+            'alt' => $alt,
         ]);
     }
 }

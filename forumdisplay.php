@@ -89,7 +89,7 @@ if ($mybb->user['uid'] == 0) {
 } else {
     // Build a forum cache from the database
     $query = $db->query("
-        SELECT f.*, fr.dateline AS lastread, u.avatar, u.avatardimensions, u.avatartype
+        SELECT f.*, fr.dateline AS lastread, u.avatar
         FROM ".TABLE_PREFIX."forums f
         LEFT JOIN ".TABLE_PREFIX."forumsread fr ON (fr.fid=f.fid AND fr.uid='{$mybb->user['uid']}')
         LEFT JOIN ".TABLE_PREFIX."users u ON (f.lastposteruid = u.uid)
@@ -556,7 +556,7 @@ if ($has_announcements == true) {
     $sql = build_parent_list($fid, "fid", "OR", $parentlist);
     $time = TIME_NOW;
     $query = $db->query("
-        SELECT a.*, u.username, u.avatar, u.avatardimensions, u.avatartype
+        SELECT a.*, u.username, u.avatar
         FROM ".TABLE_PREFIX."announcements a
         LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=a.uid)
         WHERE a.startdate<='$time' AND (a.enddate>='$time' OR a.enddate='0') AND ($sql OR fid='-1')
@@ -618,8 +618,7 @@ if ($fpermissions['canviewthreads'] != 0) {
     // Start Getting Threads
     $query = $db->query("
         SELECT t.*, {$ratingadd}t.username AS threadusername, u.username, 
-          lastposter.avatar AS last_poster_avatar, lastposter.avatardimensions AS last_poster_avatar_dimensions, 
-          lastposter.avatartype AS last_poster_avatar_type
+          lastposter.avatar AS last_poster_avatar
         FROM ".TABLE_PREFIX."threads t
         LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
         LEFT JOIN ".TABLE_PREFIX."users lastposter ON (lastposter.uid = t.lastposteruid)
