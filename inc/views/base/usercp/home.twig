@@ -69,6 +69,14 @@
                                 <td class="{{ thread.class }}" align="center">{{ thread.views }}</td>
                                 <td class="{{ thread.class }}" style="white-space: nowrap">
                                     <span class="smalltext">
+                                        {% if thread.lastposteruid == 0 %}
+                                            {% set last_poster_name = lang.guest %}
+                                        {% else %}
+                                            {% set last_poster_name = thread.last_poster_name %}
+                                        {% endif %}
+
+                                        {{ render_avatar(url=thread.last_poster_avatar, alt=last_poster_name) }}
+
                                         {{ thread.lastpostdate|raw }}<br />
                                         <a href="{{ thread.lastpostlink }}">{{ lang.lastpost }}</a>: {% if thread.lastposteruid == 0 %}{{ lang.guest }}{% else %}{{ thread.lastposter|raw }}{% endif %}
                                     </span>
@@ -108,6 +116,14 @@
                                 <td class="{{ thread.class }}" align="center">{{ thread.views }}</td>
                                 <td class="{{ thread.class }}" style="white-space: nowrap">
                                     <span class="smalltext">
+                                        {% if thread.lastposteruid == 0 %}
+                                            {% set last_poster_name = lang.guest %}
+                                        {% else %}
+                                            {% set last_poster_name = thread.last_poster_name %}
+                                        {% endif %}
+
+                                        {{ render_avatar(url=thread.last_poster_avatar, alt=last_poster_name) }}
+
                                         {{ thread.lastpostdate|raw }}<br />
                                         <a href="{{ thread.lastpostlink }}">{{ lang.lastpost }}</a>: {% if thread.lastposteruid == 0 %}{{ lang.guest }}{% else %}{{ thread.lastposter|raw }}{% endif %}
                                     </span>

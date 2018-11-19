@@ -3,8 +3,9 @@
 namespace MyBB\Twig\Extensions;
 
 use MyBB\Utilities\BreadcrumbManager;
+use Twig\Extension\GlobalsInterface;
 
-class CoreExtension extends \Twig_Extension
+class CoreExtension extends \Twig_Extension implements GlobalsInterface
 {
     /**
      * @var \MyBB $mybb
@@ -76,6 +77,14 @@ class CoreExtension extends \Twig_Extension
             new \Twig_Function(
                 'multi_page',
                 [$this, 'buildMultiPage'],
+                [
+                    'needs_environment' => true,
+                    'is_safe' => ['html'],
+                ]
+            ),
+            new \Twig_SimpleFunction(
+                'render_avatar',
+                [$this, 'renderAvatar'],
                 [
                     'needs_environment' => true,
                     'is_safe' => ['html'],
@@ -493,6 +502,24 @@ class CoreExtension extends \Twig_Extension
             'multipage' => $multiPage,
             'page' => $page,
             'breadcrumb' => $breadcrumb,
+        ]);
+    }
+
+    public function renderAvatar(
+        \Twig_Environment $twig,
+        ?string $url = '',
+        ?string $alt = ''
+    ): string {
+        $url = trim($url);
+        $alt = trim($alt);
+
+        if (empty($url)) {
+            return $twig->render('partials/default_avatar.twig');
+        }
+
+        return $twig->render('partials/avatar.twig', [
+            'url' => $url,
+            'alt' => $alt,
         ]);
     }
 }

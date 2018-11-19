@@ -25,7 +25,11 @@
             {{ post.message|slice(0, 200) }}{% if post.message|length > 200 %}...{% endif %}
         </em></span></td></tr></table>
     </td>
-    <td align="center" class="{{ row }}">{{ post.profilelink|raw }}</td>
+    <td align="center" class="{{ row }}">
+        {{ render_avatar(url=post.user_avatar, alt=post.username) }}
+
+        {{ post.profilelink|raw }}
+    </td>
     <td class="{{ row }}"><a href="{{ post.forumlink_link }}">{{ post.forumlink_name }}</a></td>
     <td align="center" class="{{ row }}"><a href="{{ mybb.settings.bburl }}/misc.php?action=whoposted&amp;tid={{ post.tid }}" onclick="MyBB.whoPosted({{ post.tid }}); return false;">{{ post.thread_replies }}</a></td>
     <td align="center" class="{{ row }}">{{ post.thread_views }}</td>
