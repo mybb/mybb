@@ -33,12 +33,9 @@
         </p>
     </div>
     <div class="thread__column thread__column--latest">
-        {# TO DO: POST AVATAR #}
         <p class="thread__latest-post">
             <span class="thread__latest-post__text">{{ lang.posted_by }}</span>
-            <a href="#" title="" class="avatar-profile-link">
-                {% include 'partials/default_avatar.twig' %}
-            </a>
+            {{ render_avatar(url=post.user_avatar, alt=post.username) }}
             <span class="thread__latest-post__author">
                 {{ post.profilelink|raw }}
             </span>

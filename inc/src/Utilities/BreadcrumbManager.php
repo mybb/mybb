@@ -42,6 +42,8 @@ class BreadcrumbManager implements \IteratorAggregate, \ArrayAccess, \Countable
     {
         $this->boardUrl = $boardUrl;
 
+        $boardUrl = rtrim($boardUrl, '/');
+
         $this->breadcrumbs = [
             [
                 'name' => $boardName,
@@ -115,15 +117,7 @@ class BreadcrumbManager implements \IteratorAggregate, \ArrayAccess, \Countable
                         'name' => preg_replace("#&(?!\#[0-9]+;)#si", "&amp;", $forumNav['name']),
                     ];
 
-                    if (defined("IN_ARCHIVE")) {
-                        // Set up link to forum in breadcrumb.
-                        if ($this->forumCache[$fid][$forumNav['pid']]['type'] == 'f' ||
-                            $this->forumCache[$fid][$forumNav['pid']]['type'] == 'c') {
-                            $newEntry['url'] = "forum-{$forumNav['fid']}.html";
-                        } else {
-                            $newEntry['url'] = $this->boardUrl.'/archive/index.php';
-                        }
-                    } elseif (!empty($multiPage)) {
+                    if (!empty($multiPage)) {
                         $newEntry['url'] = get_forum_link($forumNav['fid'], $multiPage['current_page']);
                         $newEntry['multipage'] = $multiPage;
                         $newEntry['multipage']['url'] = str_replace('{fid}', $forumNav['fid'], FORUM_URL_PAGED);

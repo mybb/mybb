@@ -324,7 +324,7 @@ if($mybb->input['action'] == "results")
 
     // Grab info
     if ($get_users) {
-        $users_query = $db->simple_select("users", "uid, username, usergroup, displaygroup", "uid IN ({$get_users})");
+        $users_query = $db->simple_select("users", "uid, username, usergroup, displaygroup, avatar", "uid IN ({$get_users})");
         while ($user = $db->fetch_array($users_query)) {
             $cached_users[$user['uid']] = $user;
         }
@@ -332,7 +332,7 @@ if($mybb->input['action'] == "results")
 
     $messagelist = [];
     $query = $db->query("
-        SELECT pm.*, fu.username AS fromusername, tu.username as tousername
+        SELECT pm.*, fu.username AS fromusername, fu.avatar AS from_avatar, tu.username as tousername, tu.avatar as to_avatar
         FROM ".TABLE_PREFIX."privatemessages pm
         LEFT JOIN ".TABLE_PREFIX."users fu ON (fu.uid=pm.fromid)
         LEFT JOIN ".TABLE_PREFIX."users tu ON (tu.uid=pm.toid)
@@ -366,6 +366,7 @@ if($mybb->input['action'] == "results")
                 foreach ($recipients['to'] as $uid) {
                     $user = $cached_users[$uid];
                     $user['profilelink'] = get_profile_link($uid);
+                    $user['username_raw'] = $user['username'];
                     $user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
                     $message['tousers'][] = $user;
                 }
@@ -373,6 +374,7 @@ if($mybb->input['action'] == "results")
                     foreach ($recipients['bcc'] as $uid) {
                         $user = $cached_users[$uid];
                         $user['profilelink'] = get_profile_link($uid);
+                        $user['username_raw'] = $user['username'];
                         $user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
                         $message['bbcusers'][] = $user;
                     }
@@ -380,8 +382,10 @@ if($mybb->input['action'] == "results")
             } elseif ($message['toid']) {
                 $message['tofromusername'] = $message['tousername'];
                 $message['tofromuid'] = $message['toid'];
+                $message['to_from_avatar'] = $message['to_avatar'];
             } else {
                 $message['tofromusername'] = $lang->not_sent;
+                $message['to_from_avatar'] = '';
             }
         } else {
             $message['tofromusername'] = $message['fromusername'];
@@ -389,8 +393,11 @@ if($mybb->input['action'] == "results")
             if ($message['tofromuid'] == 0) {
                 $message['tofromusername'] = $lang->mybb_engine;
             }
+            $message['to_from_avatar'] = $message['from_avatar'];
         }
 
+        $message['avatar'] = $message['to_from_avatar'];
+        $message['username_raw'] = $message['tofromusername'];
         $message['username'] = build_profile_link($message['tofromusername'], $message['tofromuid']);
 
         $message['hasicon'] = false;
@@ -1070,7 +1077,7 @@ if($mybb->input['action'] == "tracking")
 
     $readmessages = [];
     $query = $db->query("
-        SELECT pm.pmid, pm.subject, pm.toid, pm.readtime, u.username as tousername
+        SELECT pm.pmid, pm.subject, pm.toid, pm.readtime, u.username as tousername, u.avatar as to_avatar
         FROM ".TABLE_PREFIX."privatemessages pm
         LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.toid)
         WHERE pm.receipt='2' AND pm.folder!='3'  AND pm.status!='0' AND pm.fromid='".$mybb->user['uid']."'
@@ -1111,7 +1118,7 @@ if($mybb->input['action'] == "tracking")
 
     $unreadmessages = [];
     $query = $db->query("
-        SELECT pm.pmid, pm.subject, pm.toid, pm.dateline, u.username as tousername
+        SELECT pm.pmid, pm.subject, pm.toid, pm.dateline, u.username as tousername, u.avatar as to_avatar
         FROM ".TABLE_PREFIX."privatemessages pm
         LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.toid)
         WHERE pm.receipt='1' AND pm.folder!='3' AND pm.status='0' AND pm.fromid='".$mybb->user['uid']."'
@@ -1651,7 +1658,7 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 	}
 
     $query = $db->query("
-        SELECT pm.*, fu.username AS fromusername, tu.username AS tousername
+        SELECT pm.*, fu.username AS fromusername, fu.avatar AS from_avatar, tu.username AS tousername, tu.avatar AS to_avatar
         FROM ".TABLE_PREFIX."privatemessages pm
         LEFT JOIN ".TABLE_PREFIX."users fu ON (fu.uid=pm.fromid)
         LEFT JOIN ".TABLE_PREFIX."users tu ON (tu.uid=pm.toid)
@@ -1938,7 +1945,7 @@ if(!$mybb->input['action'])
 
         // Grab info
         if ($get_users) {
-            $users_query = $db->simple_select("users", "uid, username, usergroup, displaygroup", "uid IN ({$get_users})");
+            $users_query = $db->simple_select("users", "uid, username, usergroup, displaygroup, avatar", "uid IN ({$get_users})");
             while ($user = $db->fetch_array($users_query)) {
                 $cached_users[$user['uid']] = $user;
             }
@@ -1961,7 +1968,7 @@ if(!$mybb->input['action'])
 
     $messagelist = [];
     $query = $db->query("
-        SELECT pm.*, fu.username AS fromusername, tu.username as tousername
+        SELECT pm.*, fu.username AS fromusername, fu.avatar AS from_avatar, tu.username AS tousername, tu.avatar AS to_avatar
         FROM ".TABLE_PREFIX."privatemessages pm
         LEFT JOIN ".TABLE_PREFIX."users fu ON (fu.uid=pm.fromid)
         LEFT JOIN ".TABLE_PREFIX."users tu ON (tu.uid=pm.toid)
@@ -1997,6 +2004,7 @@ if(!$mybb->input['action'])
                     foreach ($recipients['to'] as $uid) {
                         $user = $cached_users[$uid];
                         $user['profilelink'] = get_profile_link($uid);
+                        $user['username_raw'] = $user['username'];
                         $user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
                         $message['tousers'][] = $user;
                     }
@@ -2004,17 +2012,20 @@ if(!$mybb->input['action'])
                         foreach ($recipients['bcc'] as $uid) {
                             $user = $cached_users[$uid];
                             $user['profilelink'] = get_profile_link($uid);
+                            $user['username_raw'] = $user['username'];
                             $user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
                             $message['bbcusers'][] = $user;
                         }
                     }
                 } elseif ($message['toid']) {
+                    $message['to_from_avatar'] = $message['to_avatar'];
                     $message['tofromusername'] = $message['tousername'];
                     $message['tofromuid'] = $message['toid'];
                 } else {
                     $message['tofromusername'] = $lang->not_sent;
                 }
             } else {
+                $message['to_from_avatar'] = $message['from_avatar'];
                 $message['tofromusername'] = $message['fromusername'];
                 $message['tofromuid'] = $message['fromid'];
                 if ($message['tofromuid'] == 0) {
@@ -2027,6 +2038,8 @@ if(!$mybb->input['action'])
                 }
             }
 
+            $message['username_raw'] = $message['tofromusername'];
+            $message['avatar'] = $message['to_from_avatar'];
             $message['username'] = build_profile_link($message['tofromusername'], $message['tofromuid']);
 
             $message['denyreceipt'] = false;

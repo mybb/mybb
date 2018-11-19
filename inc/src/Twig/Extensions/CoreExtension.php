@@ -3,8 +3,9 @@
 namespace MyBB\Twig\Extensions;
 
 use MyBB\Utilities\BreadcrumbManager;
+use Twig\Extension\GlobalsInterface;
 
-class CoreExtension extends \Twig_Extension
+class CoreExtension extends \Twig_Extension implements GlobalsInterface
 {
     /**
      * @var \MyBB $mybb
@@ -38,6 +39,18 @@ class CoreExtension extends \Twig_Extension
         $this->breadcrumbManager = $breadcrumbManager;
     }
 
+    /**
+     * Returns a list of global variables to add to the existing list.
+     *
+     * @return array An array of global variables
+     */
+    public function getGlobals()
+    {
+        return [
+            'mybb' => $this->mybb,
+        ];
+    }
+
     public function getFilters()
     {
         return [
@@ -68,7 +81,15 @@ class CoreExtension extends \Twig_Extension
                     'needs_environment' => true,
                     'is_safe' => ['html'],
                 ]
-            )
+            ),
+            new \Twig_SimpleFunction(
+                'render_avatar',
+                [$this, 'renderAvatar'],
+                [
+                    'needs_environment' => true,
+                    'is_safe' => ['html'],
+                ]
+            ),
         ];
     }
 
@@ -375,7 +396,7 @@ class CoreExtension extends \Twig_Extension
      *
      * @param \Twig_Environment $twig Twig environment to use to render the pagination template.
      * @param int $count The total number of items.
-     * @param int $perpage The number of items to be shown per page.
+     * @param int $perPage The number of items to be shown per page.
      * @param int $page The current page number.
      * @param string $url The URL format to use for page links.
      * If {page} is specified, the value will be replaced with the page #.
@@ -481,6 +502,24 @@ class CoreExtension extends \Twig_Extension
             'multipage' => $multiPage,
             'page' => $page,
             'breadcrumb' => $breadcrumb,
+        ]);
+    }
+
+    public function renderAvatar(
+        \Twig_Environment $twig,
+        ?string $url = '',
+        ?string $alt = ''
+    ): string {
+        $url = trim($url);
+        $alt = trim($alt);
+
+        if (empty($url)) {
+            return $twig->render('partials/default_avatar.twig');
+        }
+
+        return $twig->render('partials/avatar.twig', [
+            'url' => $url,
+            'alt' => $alt,
         ]);
     }
 }

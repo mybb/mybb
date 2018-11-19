@@ -731,11 +731,7 @@ class postParser
         if ((int)$match[1]) {
             $pid = (int)$match[1];
             $quote['url'] = $mybb->settings['bburl']."/".get_post_link($pid)."#pid$pid";
-            if (defined("IN_ARCHIVE")) {
-                $linkback = " <a href=\"{$quote['url']}\">[ -> ]</a>";
-            } else {
-                $quote['linkback'] = true;
-            }
+            $quote['linkback'] = true;
 
             $quote['username'] = preg_replace("#(?:&quot;|\"|')? pid=(?:&quot;|\"|')?[0-9]+[\"']?(?:&quot;|\"|')?#i", '', $quote['username']);
             $delete_quote = false;

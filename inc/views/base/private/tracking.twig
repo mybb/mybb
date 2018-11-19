@@ -26,7 +26,8 @@
     		</div>
             <div class="message-list__container">
                 {% for unreadmessage in unreadmessages %}
-                    <div class="row row--message message message--no-avatar">
+                    <div class="row row--message message">
+                        {{ render_avatar(url=unreadmessage.to_avatar, alt=unreadmessage.tousername ) }}
                     	<div class="message__column message__column--primary">
                     		<h3 class="message__subject">{{ unreadmessage.subject }}</h3>
                     		<p class="message__username">{{ unreadmessage.profilelink|raw }}</p>
@@ -69,7 +70,8 @@
     		</div>
             <div class="message-list__container">
                 {% for readmessage in readmessages %}
-                    <div class="row row--message message message--no-avatar">
+                    <div class="row row--message message">
+                        {{ render_avatar(url=readmessage.to_avatar, alt=readmessage.tousername ) }}
                     	<div class="message__column message__column--primary">
                     		<h3 class="message__subject">{{ readmessage.subject }}</h3>
                     		<p class="message__username">{{ readmessage.profilelink|raw }}</p>

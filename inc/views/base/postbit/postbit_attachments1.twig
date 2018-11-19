@@ -1,0 +1,31 @@
+<div class="attachments">
+	<h4 class="attachments__title">{{ lang.postbit_attachments }}</h4>
+
+	{% if attached.thumbs %}
+		{% set tcount = 0 %}
+		<span class="smalltext"><strong>{{ lang.postbit_attachments_thumbnails }}</strong></span><br />
+		{% for thumb in attached.thumbs %}
+			{% include 'postbit/postbit_attached_thumbnail.twig' %}
+			{% if tcount == 5 %}
+				{% set tcount = 0 %}
+			{% endif %}
+			{% set tcount = tcount + 1 %}
+		{% endfor %}
+	{% endif %}
+
+	{% if attached.images %}
+		<span class="smalltext"><strong>{{ lang.postbit_attachments_images }}</strong></span><br />
+		{% for image in attached.images %}
+			{% include 'postbit/postbit_attached_image.twig' %}
+		{% endfor %}
+	{% endif %}
+
+	{% for attachment in attached.attachments %}
+		{% include 'postbit/postbit_attachment.twig' %}
+	{% endfor %}
+
+	{% if post.showunapproved %}
+		<strong>{{ lang.postbit_unapproved_attachment_language }}</strong>
+	{% endif %}
+</div>
+<!-- -->

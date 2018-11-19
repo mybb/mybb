@@ -343,9 +343,10 @@ if($mybb->input['action'] == "results")
 			'limit' => $perpage
 		);
 		$query = $db->query("
-			SELECT t.*, u.username AS userusername
+			SELECT t.*, u.username AS userusername, u.avatar AS user_avatar, last_poster.avatar AS last_poster_avatar
 			FROM ".TABLE_PREFIX."threads t
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)
+			LEFT JOIN ".TABLE_PREFIX."users last_poster ON (t.lastposteruid = u.uid)
 			WHERE $where_conditions AND {$unapproved_where} {$permsql} AND t.closed NOT LIKE 'moved|%'
 			ORDER BY $sortfield $order
 			LIMIT $start, $perpage
@@ -782,7 +783,7 @@ if($mybb->input['action'] == "results")
         $posts = [];
 
         $query = $db->query("
-            SELECT p.*, u.username AS userusername, t.subject AS thread_subject, t.replies AS thread_replies, t.views AS thread_views, t.lastpost AS thread_lastpost, t.closed AS thread_closed, t.uid as thread_uid
+            SELECT p.*, u.username AS userusername, u.avatar AS user_avatar, t.subject AS thread_subject, t.replies AS thread_replies, t.views AS thread_views, t.lastpost AS thread_lastpost, t.closed AS thread_closed, t.uid as thread_uid
             FROM " . TABLE_PREFIX . "posts p
             LEFT JOIN " . TABLE_PREFIX . "threads t ON (t.tid=p.tid)
             LEFT JOIN " . TABLE_PREFIX . "users u ON (u.uid=p.uid)

@@ -5,6 +5,8 @@
 {% endif %}
 <div class="row row--thread thread {{ row }} inline_row {% if thread.unread %}thread--unread{% endif %}">
     <div class="thread__column thread__column--primary">
+        {# Not used: thread starter avatar #}
+        {# {{ render_avatar(url=thread.user_avatar, alt=thread.username) }} #}
 		<h3 class="thread__title">
             {# Thread prefix #}
             {% if thread.threadprefix %}
@@ -71,12 +73,9 @@
         </p>
     </div>
     <div class="thread__column thread__column--latest">
-        {# TO DO: LAST POST AVATAR #}
         <p class="thread__latest-post">
             <span class="thread__latest-post__text">{{ lang.lastpost_by }}</span>
-            <a href="#" title="" class="avatar-profile-link">
-                {% include 'partials/default_avatar.twig' %}
-            </a>
+            {{ render_avatar(url=thread.last_poster_avatar, alt=thread.lastposter) }}
             <span class="thread__latest-post__author">
                 {{ thread.lastposterlink|raw }}
             </span>

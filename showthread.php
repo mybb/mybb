@@ -185,8 +185,6 @@ if(isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canon
 	error_no_permission();
 }
 
-$archive_url = build_archive_link("thread", $tid);
-
 // Does the thread belong to a valid forum?
 $forum = get_forum($fid);
 if(!$forum || $forum['type'] != "f")

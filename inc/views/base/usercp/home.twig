@@ -83,6 +83,7 @@
                             </p>
                         </div>
                         <div class="thread__column thread__column--latest">
+                            {{ render_avatar(url=thread.last_poster_avatar, alt=last_poster_name) }}
                             <p class="thread__latest-post">
                                 <span class="thread__latest-post__text">{{ lang.lastpost_by }}</span>
                                 <span class="thread__latest-post__author">
@@ -140,6 +141,7 @@
                             </p>
                         </div>
                         <div class="thread__column thread__column--latest">
+                            {{ render_avatar(url=thread.last_poster_avatar, alt=last_poster_name) }}
                             <p class="thread__latest-post">
                                 <span class="thread__latest-post__text">{{ lang.lastpost_by }}</span>
                                 <span class="thread__latest-post__author">

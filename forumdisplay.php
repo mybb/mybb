@@ -55,8 +55,6 @@ if (!$foruminfo) {
     error($lang->error_invalidforum);
 }
 
-$archive_url = build_archive_link("forum", $fid);
-
 $currentitem = $fid;
 build_forum_breadcrumb($fid);
 $parentlist = $foruminfo['parentlist'];
@@ -91,9 +89,10 @@ if ($mybb->user['uid'] == 0) {
 } else {
     // Build a forum cache from the database
     $query = $db->query("
-        SELECT f.*, fr.dateline AS lastread
+        SELECT f.*, fr.dateline AS lastread, u.avatar
         FROM ".TABLE_PREFIX."forums f
         LEFT JOIN ".TABLE_PREFIX."forumsread fr ON (fr.fid=f.fid AND fr.uid='{$mybb->user['uid']}')
+        LEFT JOIN ".TABLE_PREFIX."users u ON (f.lastposteruid = u.uid)
         WHERE f.active != 0
         ORDER BY pid, disporder
     ");
@@ -192,7 +191,7 @@ if ($mybb->settings['browsingthisforum'] != 0) {
     $usersBrowsingCounter = [];
 
     $query = $db->query("
-        SELECT s.ip, s.uid, u.username, s.time, u.invisible, u.usergroup, u.usergroup, u.displaygroup
+        SELECT s.ip, s.uid, u.username, u.avatar, s.time, u.invisible, u.usergroup, u.usergroup, u.displaygroup
         FROM ".TABLE_PREFIX."sessions s
         LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
         WHERE s.time > '$timecut' AND location1='$fid' AND nopermission != 1
@@ -557,7 +556,7 @@ if ($has_announcements == true) {
     $sql = build_parent_list($fid, "fid", "OR", $parentlist);
     $time = TIME_NOW;
     $query = $db->query("
-        SELECT a.*, u.username
+        SELECT a.*, u.username, u.avatar
         FROM ".TABLE_PREFIX."announcements a
         LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=a.uid)
         WHERE a.startdate<='$time' AND (a.enddate>='$time' OR a.enddate='0') AND ($sql OR fid='-1')
@@ -618,9 +617,11 @@ if ($fpermissions['canviewthreads'] != 0) {
 
     // Start Getting Threads
     $query = $db->query("
-        SELECT t.*, {$ratingadd}t.username AS threadusername, u.username
+        SELECT t.*, {$ratingadd}t.username AS threadusername, u.username, u.avatar,
+          lastposter.avatar AS last_poster_avatar
         FROM ".TABLE_PREFIX."threads t
         LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
+        LEFT JOIN ".TABLE_PREFIX."users lastposter ON (lastposter.uid = t.lastposteruid)
         WHERE t.fid='$fid' $tuseronly $tvisibleonly $datecutsql2 $prefixsql2
         ORDER BY t.sticky DESC, {$t}{$sortfield} {$sorting['sortordernow']} $sortfield2
         LIMIT $start, $perpage
@@ -852,6 +853,8 @@ if (!empty($threadCache) && is_array($threadCache)) {
         }
 
         $thread['lastpostdate'] = my_date('relative', $thread['lastpost']);
+
+        $thread['last_poster_name'] = $thread['lastposter'];
 
         if ($thread['lastposteruid'] > 0) {
             $thread['lastposter'] = build_profile_link($thread['lastposter'], $thread['lastposteruid']);

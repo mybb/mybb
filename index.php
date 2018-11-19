@@ -245,7 +245,13 @@ if (!isset($stats) || isset($stats) && !is_array($stats)) {
 
 if ($mybb->user['uid'] == 0) {
     // Build a forum cache.
-    $query = $db->simple_select('forums', '*', 'active!=0', array('order_by' => 'pid, disporder'));
+    $query = $db->query("
+        SELECT f.*, u.avatar
+        FROM ".TABLE_PREFIX."forums f
+        LEFT JOIN ".TABLE_PREFIX."users u ON (f.lastposteruid = u.uid)
+        WHERE f.active != 0
+        ORDER BY pid, disporder
+    ");
 
     $forumsread = array();
     if (isset($mybb->cookies['mybb']['forumread'])) {
@@ -255,9 +261,10 @@ if ($mybb->user['uid'] == 0) {
 else {
     // Build a forum cache.
     $query = $db->query("
-        SELECT f.*, fr.dateline AS lastread
+        SELECT f.*, fr.dateline AS lastread, u.avatar
         FROM ".TABLE_PREFIX."forums f
         LEFT JOIN ".TABLE_PREFIX."forumsread fr ON (fr.fid = f.fid AND fr.uid = '{$mybb->user['uid']}')
+        LEFT JOIN ".TABLE_PREFIX."users u ON (f.lastposteruid = u.uid)
         WHERE f.active != 0
         ORDER BY pid, disporder
     ");

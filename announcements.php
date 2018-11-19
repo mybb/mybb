@@ -57,8 +57,6 @@ if ($fid > 0) {
 }
 add_breadcrumb($lang->nav_announcements);
 
-$archive_url = build_archive_link('announcement', $aid);
-
 // Get announcement info
 $time = TIME_NOW;
 
