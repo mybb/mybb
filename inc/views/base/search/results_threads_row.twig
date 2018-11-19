@@ -39,7 +39,11 @@
                     )</span>
                 {% endif %}
             </span>
-            <div class="author smalltext">{{ thread.profilelink|raw }}</div>
+            <div class="author smalltext">
+                {{ render_avatar(url=thread.user_avatar, alt=thread.username) }}
+
+                {{ thread.profilelink|raw }}
+            </div>
         </div>
     </td>
     <td class="{{ row }}"><a href="{{ thread.forumlink_link }}">{{ thread.forumlink_name }}</a></td>
@@ -47,6 +51,8 @@
     <td align="center" class="{{ row }}">{{ thread.views }}</td>
     <td class="{{ row }}" style="white-space: nowrap">
         <span class="smalltext">
+            {{ render_avatar(url=thread.last_poster_avatar, alt=thread.lastposter) }}
+
             {{ thread.lastpostdate|raw }}<br />
             <a href="{{ thread.lastpostlink|raw }}">{{ lang.lastpost }}</a>: {{ thread.lastposterlink|raw }}
         </span>

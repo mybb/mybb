@@ -81,6 +81,9 @@ class ServiceProvider extends \MyBB\ServiceProvider
             $env->addExtension($container->make(LangExtension::class));
             $env->addExtension($container->make(UrlExtension::class));
 
+            // TODO: this shouldn't be registered in live environments
+            $env->addExtension(new \Twig_Extension_Debug());
+
             return $env;
         });
     }
