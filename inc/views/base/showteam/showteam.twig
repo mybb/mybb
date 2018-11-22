@@ -27,6 +27,8 @@
                     {% else %}
                         <td width="75%" class="{{ row }}">
                     {% endif %}
+                        {{ render_avatar(url=user.avatar, alt=user.username_raw) }}
+
                         <img src="{{ theme.imgdir }}/buddy_{{ user.status }}.png" title="{{ user.statuslang }}" alt="{{ user.statuslang }}" style="vertical-align: middle;" />
                         <a href="{{ user.profilelink|raw }}"><strong>{{ user.username|raw }}</strong></a>
                     </td>
