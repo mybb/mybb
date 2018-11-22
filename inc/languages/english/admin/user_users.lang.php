@@ -15,7 +15,7 @@ $l['find_users_desc'] = "Here you can search for users of your forum. The fewer 
 $l['create_user'] = "Create New User";
 $l['create_user_desc'] = "Here you can create a new user.";
 $l['merge_users'] = "Merge Users";
-$l['merge_users_desc'] = "Here you can merge two user accounts in to one. The \"Source Account\" will  be merged in to the \"Destination Account\" leaving <strong>only</strong> the destination account. The source accounts posts, threads, private messages, calendar events, post count and buddy list will be merged in to the destination account.<br /><span style=\"font-size: 15px;\">Please be aware that this process cannot be undone.</span>";
+$l['merge_users_desc'] = "Here you can merge two user accounts into one. The \"Source Account\" will  be merged into the \"Destination Account\" leaving <strong>only</strong> the destination account. The source accounts posts, threads, private messages, calendar events, post count and buddy list will be merged into the destination account.<br /><span style=\"font-size: 15px;\">Please be aware that this process cannot be undone.</span>";
 $l['edit_user'] = "Edit User";
 $l['edit_user_desc'] = "Here you can edit this users profile, settings, and signature; see general statistics; and visit other pages for further information relating to this user.";
 $l['show_referrers'] = "Show Referrers";
@@ -114,7 +114,7 @@ $l['success_activated'] = "The selected user has been activated successfully.";
 $l['success_user_created'] = "The user has been created successfully.";
 $l['success_user_updated'] = "The selected user has been updated successfully.";
 $l['success_user_deleted'] = "The selected user has been deleted successfully.";
-$l['success_merged'] = "has successfully been merged in to";
+$l['success_merged'] = "has successfully been merged into";
 $l['succuss_view_set_as_default'] = "The selected administration view has been set as your default successfully";
 $l['success_view_created'] = "The administration view has been created successfully.";
 $l['success_view_updated'] = "The selected administration view has been updated successfully.";
@@ -306,9 +306,9 @@ $l['ban_ip'] = "Ban IP";
 $l['ip_address_for'] = "IP Addresses for";
 
 $l['source_account'] = "Source Account";
-$l['source_account_desc'] = "This is the account that will be merged in to the destination account. It will be removed after this process.";
+$l['source_account_desc'] = "This is the account that will be merged into the destination account. It will be removed after this process.";
 $l['destination_account'] = "Destination Account";
-$l['destination_account_desc'] = "This is the account that the source account will be merged in to. It will remain after this process.";
+$l['destination_account_desc'] = "This is the account that the source account will be merged into. It will remain after this process.";
 $l['merge_user_accounts'] = "Merge User Accounts";
 
 $l['display_options'] = "Display Options";
