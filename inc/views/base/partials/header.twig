@@ -14,8 +14,8 @@
                     <span class="logo__text">{{ mybb.settings.bbname }}</span>
                 </a>
             </h1>
-            <label class="menu-button" for="show-mobile-menu"><span class="menu-button__icon"><i class="fas fa-bars"></i></span></label>
-            <label class="menu-close-button menu-close-button--hide" for="show-mobile-menu"><span class="menu-close-button__icon"><i class="fas fa-times-circle"></i></span></label>
+            <label class="menu-button" for="show-mobile-menu"><span class="menu-button__icon">{{ include('partials/icon.twig', {icon: 'bars'}, with_context = false) }}</span></label>
+            <label class="menu-close-button menu-close-button--hide" for="show-mobile-menu"><span class="menu-close-button__icon">{{ include('partials/icon.twig', {icon: 'times-circle'}, with_context = false) }}</span></label>
             <input type="checkbox" class="header__checkbox" id="show-mobile-menu">
             <nav class="main-menu">
                 <ul class="main-menu__links">
@@ -23,7 +23,7 @@
                     {% if mybb.settings.portal %}
                         <li class="main-menu__item">
                         	<a href="{{ mybb.settings.bburl }}/portal.php" class="main-menu__link">
-                        		<i class="main-menu__icon fas fa-newspaper fa-fw"></i>
+                                {{ include('partials/icon.twig', {icon: 'newspaper', class: 'main-menu__icon fa-fw'}, with_context = false) }}
                         		<span class="main-menu__text">{{ lang.toplinks_portal }}</span>
                         	</a>
                         </li>
@@ -31,7 +31,7 @@
                     {% if mybb.settings.enablememberlist and mybb.usergroup.canviewmemberlist %}
                         <li class="main-menu__item">
                             <a href="{{ mybb.settings.bburl }}/memberlist.php" class="main-menu__link">
-                                <i class="main-menu__icon fas fa-users fa-fw"></i>
+                                {{ include('partials/icon.twig', {icon: 'users', class: 'main-menu__icon fa-fw'}, with_context = false) }}
                                 <span class="main-menu__text">{{ lang.toplinks_memberlist }}</span>
                             </a>
                         </li>
@@ -39,7 +39,7 @@
                     {% if mybb.settings.enablecalendar and mybb.usergroup.canviewcalendar %}
                         <li class="main-menu__item">
                             <a href="{{ mybb.settings.bburl }}/calendar.php" class="main-menu__link">
-                                <i class="main-menu__icon fas fa-calendar-alt fa-fw"></i>
+                                {{ include('partials/icon.twig', {icon: 'calendar-alt', class: 'main-menu__icon fa-fw'}, with_context = false) }}
                                 <span class="main-menu__text">{{ lang.toplinks_calendar }}</span>
                             </a>
                         </li>

@@ -332,7 +332,7 @@ class CoreExtension extends \Twig_Extension implements GlobalsInterface
         if ($number == '-') {
             return $number;
         }
-        
+
         if (is_int($number)) {
             return number_format(
                 $number,
@@ -508,18 +508,23 @@ class CoreExtension extends \Twig_Extension implements GlobalsInterface
     public function renderAvatar(
         \Twig_Environment $twig,
         ?string $url = '',
-        ?string $alt = ''
+        ?string $alt = '',
+        ?string $class = ''
     ): string {
         $url = trim($url);
         $alt = trim($alt);
+        $class = trim($class);
 
         if (empty($url)) {
-            return $twig->render('partials/default_avatar.twig');
+            return $twig->render('partials/default_avatar.twig', [
+                'class' => $class,
+            ]);
         }
 
         return $twig->render('partials/avatar.twig', [
             'url' => $url,
             'alt' => $alt,
+            'class' => $class,
         ]);
     }
 }

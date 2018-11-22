@@ -1,6 +1,8 @@
 <div class="row row--message message message--{{ message.msgstatus }}">
 	<div class="message__column message__column--primary">
-        {{ render_avatar(url=message.avatar, alt=message.username_raw) }}
+        <a href="{{ get_profile_link(message.uid) }}" class="avatar-profile-link">
+			{{ render_avatar(url=message.avatar, alt=message.username_raw, class='avatar--smallest') }}
+		</a>
 		<h3 class="message__subject">
 			<a class="{{ message.msgstatus }}" href="private.php?action=read&amp;pmid={{ message.pmid }}">{{ message.subject }}</a>
             {% if message.denyreceipt %}

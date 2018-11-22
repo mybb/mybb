@@ -4,7 +4,7 @@
 	<div class="thread__column thread__column--primary">
 		<h3 class="thread__title {$new_class}">
             {% if thread.threadprefix %}
-                {{ thread.threadprefix|raw }}
+                <span class="tag tag--thread-prefix tag--thread-prefix-{{ thread.prefix }}">{{ thread.threadprefix|raw }}</span>
             {% endif %}
 			<a href="{{ thread.threadlink }}" class="{{ thread.new_class }}">{{ thread.subject }}</a>
             {% if thread.lastread and thread.lastpost > thread.lastread %}<a href="{{ thread.newpostlink }}" class="thread__status"><i class="fas fa-circle" title="{{ lang.goto_first_unread }}"></i></a>{% endif %}
@@ -21,9 +21,11 @@
 		</p>
 	</div>
 	<div class="thread__column thread__column--latest">
-		{{ render_avatar(url=thread.last_poster_avatar, alt=thread.last_poster_name) }}
 		<p class="thread__latest-post">
 			<span class="thread__latest-post__text">{{ lang.lastpost_by }}</span>
+			<a href="{{ get_profile_link(thread.lastposteruid) }}" class="avatar-profile-link">
+				{{ render_avatar(url=thread.last_poster_avatar, alt=thread.last_poster_name, class='avatar--smallest') }}
+			</a>
 			<span class="thread__latest-post__author">
 				{{ thread.last_poster_link|raw }}
 			</span>

@@ -13,7 +13,7 @@
 		<h3 class="thread__title">
             {# Thread prefix #}
             {% if thread.threadprefix %}
-                <span class="tag tag--thread-prefix tag--thread-prefix-{{ thread.prefix }}">{{ thread.threadprefix }}</span>
+                <span class="tag tag--thread-prefix tag--thread-prefix-{{ thread.prefix }}">{{ thread.threadprefix|raw }}</span>
             {% endif %}
 
             {# Thread title #}
@@ -104,7 +104,9 @@
     <div class="thread__column thread__column--latest">
         <p class="thread__latest-post">
             <span class="thread__latest-post__text">{{ lang.lastpost_by }}</span>
-            {{ render_avatar(url=thread.last_poster_avatar, alt=thread.last_poster_name) }}
+            <a href="{{ get_profile_link(thread.lastposteruid) }}" class="avatar-profile-link">
+                {{ render_avatar(url=thread.last_poster_avatar, alt=thread.last_poster_name, class='avatar--smallest') }}
+            </a>
             <span class="thread__latest-post__author">
                 {% if thread.lastposteruid > 0 %}
                     {{ thread.lastposter|raw }}

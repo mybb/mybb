@@ -12,7 +12,7 @@
 
 {% block accountBody %}
     <section class="block block--container account-dashboard">
-        <a href="#" class="avatar-profile-link"><img src="{{ useravatar.image }}" alt="{{ mybb.user.username }}" title="{{ mybb.user.username }}" {{ useravatar.width_height }} class="avatar" /></a>
+        <a href="{{ get_profile_link(mybb.user.uid) }}" class="avatar-profile-link"><img src="{{ useravatar.image }}" alt="{{ mybb.user.username }}" title="{{ mybb.user.username }}" {{ useravatar.width_height }} class="avatar" /></a>
         <ul class="list list--divided list--stats">
 			<li class="list__item title">{{ username|raw }}</li>
             <li class="list__item">
@@ -67,7 +67,9 @@
                     <div class="row row--thread thread {{ thread.class }}">
                         <div class="thread__column thread__column--primary">
                             <h3 class="thread__title {$new_class}">
-                                {{ thread.displayprefix }}
+                                {% if thread.displayprefix %}
+                                    <span class="tag tag--thread-prefix tag--thread-prefix-{{ thread.prefix }}">{{ thread.displayprefix|raw }}</span>
+                                {% endif %}
                                 <a href="{{ thread.threadlink }}" class="{{ thread.new_class }}">{{ thread.subject }}</a>
                                 {% if thread.lastread and thread.lastpost > thread.lastread %}<a href="{{ thread.newpostlink }}" class="thread__status"><i class="fas fa-circle" title="{{ lang.goto_first_unread }}"></i></a>{% endif %}
                                 <span class="thread__icons">
@@ -83,9 +85,11 @@
                             </p>
                         </div>
                         <div class="thread__column thread__column--latest">
-                            {{ render_avatar(url=thread.last_poster_avatar, alt=last_poster_name) }}
                             <p class="thread__latest-post">
                                 <span class="thread__latest-post__text">{{ lang.lastpost_by }}</span>
+                                <a href="{{ get_profile_link(thread.lastposteruid) }}" class="avatar-profile-link">
+                                    {{ render_avatar(url=thread.last_poster_avatar, alt=last_poster_name, class='avatar--smallest') }}
+                                </a>
                                 <span class="thread__latest-post__author">
                                     {% if thread.lastposteruid == 0 %}{{ lang.guest }}{% else %}{{ thread.lastposter|raw }}{% endif %}
                                 </span>
@@ -107,7 +111,7 @@
     {# Latest threads #}
     {% if latestthreads %}
         <section class="block">
-            <h1 class="title title--major title">{{ lang.latest_threads }}</h1>
+            <h1 class="title title--major">{{ lang.latest_threads }}</h1>
             <div class="thread-list thread-list--compact">
                 <div class="sort-threads sort-threads--alt">
                     <div class="sort-threads__column sort-threads__column--primary">
@@ -125,7 +129,9 @@
                     <div class="row row--thread thread {{ thread.class }}">
                         <div class="thread__column thread__column--primary">
                             <h3 class="thread__title {$new_class}">
-                                {{ thread.displayprefix }}
+                                {% if thread.displayprefix %}
+                                    <span class="tag tag--thread-prefix tag--thread-prefix-{{ thread.prefix }}">{{ thread.displayprefix|raw }}</span>
+                                {% endif %}
                                 <a href="{{ thread.threadlink }}" class="{{ thread.new_class }}">{{ thread.subject }}</a>
                                 {% if thread.lastread and thread.lastpost > thread.lastread %}<a href="{{ thread.newpostlink }}" class="thread__status"><i class="fas fa-circle" title="{{ lang.goto_first_unread }}"></i></a>{% endif %}
                                 <span class="thread__icons">
@@ -141,9 +147,11 @@
                             </p>
                         </div>
                         <div class="thread__column thread__column--latest">
-                            {{ render_avatar(url=thread.last_poster_avatar, alt=last_poster_name) }}
                             <p class="thread__latest-post">
                                 <span class="thread__latest-post__text">{{ lang.lastpost_by }}</span>
+                                <a href="{{ get_profile_link(thread.lastposteruid) }}" class="avatar-profile-link">
+                                    {{ render_avatar(url=thread.last_poster_avatar, alt=last_poster_name, class='avatar--smallest') }}
+                                </a>
                                 <span class="thread__latest-post__author">
                                     {% if thread.lastposteruid == 0 %}{{ lang.guest }}{% else %}{{ thread.lastposter|raw }}{% endif %}
                                 </span>
@@ -164,38 +172,27 @@
 
     {# Warnings #}
     {% if warnings %}
-        <br />
-        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-            <thead>
-                <tr>
-                    <td class="thead" colspan="4">
-                        <div class="float_right">{{ lang.current_warning_level }}</div>
-                        <div><strong>{{ lang.latest_warnings }}</strong></div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="tcat"><span class="smalltext"><strong>{{ lang.warning }}</strong></span></td>
-                    <td class="tcat" width="20%" align="center"><span class="smalltext"><strong>{{ lang.date_issued }}</strong></span></td>
-                    <td class="tcat" width="20%" align="center"><span class="smalltext"><strong>{{ lang.expiry_date }}</strong></span></td>
-                    <td class="tcat" width="20%" align="center"><span class="smalltext"><strong>{{ lang.issued_by }}</strong></span></td>
-                </tr>
-            </thead>
-            <tbody>
-                {% for warning in warnings %}
-                    <tr>
-                        <td class="{{ alt_bg }}">
-                            {{ warning.type }} {{ warning.points }}
-                            {% if warning.post_subject %}
-                                <br /><small>{{ lang.warning_for_post }} <a href="{{ warning.postlink }}">{{ warning.post_subject }}</a></small>
-                            {% endif %}
-                        </td>
-                        <td class="{{ alt_bg }}" align="center">{{ warning.dateissued }}</td>
-                        <td class="{{ alt_bg }}" align="center">{{ expires }}</td>
-                        <td class="{{ alt_bg }}" align="center">{{ warning.issuedby }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <section class="block">
+            <h1 class="title title--major">{{ lang.latest_warnings }} {{ lang.current_warning_level }}</h1>
+            {% for warning in warnings %}
+                <div class="row row--simple-columns warning-log">
+                    <div class="row__primary">
+                        <div class="warning-log__warning">{{ warning.type }} {{ warning.points }}</div>
+                        {% if warning.post_subject %}
+                            <div class="warning-log__post">{{ lang.warning_for_post }} <a href="{{ warning.postlink }}">{{ warning.post_subject }}</a></div>
+                        {% endif %}
+                        <div class="warning-log__expiry-date">
+                            {{ lang.expires }}:
+                            {{ expires }}
+                        </div>
+                    </div>
+                    <div class="row__secondary">
+                        <div class="warning-log__issued_by">{{ lang.issued_by }} {{ warning.issuedby|raw }}</div>
+                        <div class="warning-log__issued-date">{{ warning.date_issued|raw }}</div>
+                    </div>
+                </div>
+            {% endfor %}
+        </section>
     {% endif %}
 
     <section class="block block--form form">

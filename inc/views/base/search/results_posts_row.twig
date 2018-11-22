@@ -35,7 +35,9 @@
     <div class="thread__column thread__column--latest">
         <p class="thread__latest-post">
             <span class="thread__latest-post__text">{{ lang.posted_by }}</span>
-            {{ render_avatar(url=post.user_avatar, alt=post.username) }}
+            <a href="{{ get_profile_link(post.uid) }}" class="avatar-profile-link">
+                {{ render_avatar(url=post.user_avatar, alt=post.username, class='avatar--smallest') }}
+            </a>
             <span class="thread__latest-post__author">
                 {{ post.profilelink|raw }}
             </span>

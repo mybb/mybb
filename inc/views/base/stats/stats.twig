@@ -5,74 +5,107 @@
 {% endblock head %}
 
 {% block body %}
-    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-        <tr>
-            <td class="thead" colspan="2"><strong>{{ lang.board_stats }}</strong></td>
-        </tr>
-        <tr>
-            <td class="tcat" width="50%"><strong>{{ lang.totals }}</strong></td>
-            <td class="tcat" width="50%"><strong>{{ lang.averages }}</strong></td>
-        </tr>
-        <tr>
-            <td class="trow1" valign="top">
-                {{ lang.posts }} <strong>{{ stats.numposts }}</strong><br/>
-                {{ lang.threads }} <strong>{{ stats.numthreads }}</strong><br/>
-                {{ lang.members }} <strong>{{ stats.numusers }}</strong>
-            </td>
-            <td class="trow1" rowspan="3" valign="top">
-                {{ lang.ppd }} <strong>{{ stats.posts_perday }}</strong><br/>
-                {{ lang.tpd }} <strong>{{ stats.threads_perday }}</strong><br/>
-                {{ lang.mpd }} <strong>{{ stats.members_perday }}</strong><br/>
-                {{ lang.ppm }} <strong>{{ stats.posts_permember }}</strong><br/>
-                {{ lang.tpm }} <strong>{{ stats.threads_permember }}</strong><br/>
-                {{ lang.rpt }} <strong>{{ stats.replies_perthread }}</strong>
-            </td>
-        </tr>
-        <tr>
-            <td class="tcat" valign="top"><strong>{{ lang.general }}</strong></td>
-        </tr>
-        <tr>
-            <td class="trow1">
-                {{ lang.newest_member }} {{ stats.newest_user|raw }}<br/>
-                {{ lang.members_posted }} <strong>{{ stats.have_posted_percent }}</strong><br/>
-                {{ lang.todays_top_poster|raw }}<br/>
+    <header class="page-header">
+        <h1 class="title title--page">{{ lang.board_stats }}</h1>
+    </header>
 
-                {% if top_forum %}
-                    {% set forum_link = '<a href="' ~ top_forum.link ~ '">' ~ top_forum.name ~ '</a>' %}
-                    {{ trans('popular_forum', forum_link, top_forum.posts, top_forum.threads)|raw }}<br/>
-                {% else %}
-                    {{ trans('popular_forum', lang.none, lang.no, lang.no)|raw }}<br/>
-                {% endif %}
-
-                {{ top_referer|raw ?: '' }}
-            </td>
-        </tr>
-    </table>
-
-    <br/>
-    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-        <tr>
-            <td class="thead" colspan="2"><strong>{{ lang.most_popular }}</strong></td>
-        </tr>
-        <tr>
-            <td class="tcat" width="50%"><strong>{{ lang.most_replied_threads }}</strong></td>
-            <td class="tcat" width="50%"><strong>{{ lang.most_viewed_threads }}</strong></td>
-        </tr>
-        <tr>
-            <td class="trow1" valign="top">
-                {% for thread in most_replied_to_threads %}
+    {# list threads needs some polish#}
+    <div class="page-content page-content--sidebar">
+        <h2 class="title title--major">{{ lang.most_replied_threads }}</h2>
+        <section class="block">
+            {% for thread in most_replied_to_threads %}
+                <div class="row">
                     <a href="{{ thread.link }}"><strong>{{ thread.subject }}</strong></a>
                     ({{ thread.replies }} {{ lang.replies }})
-                    <br/>
-                {% endfor %}
-            </td>
-            <td class="trow1" valign="top">
-                {% for thread in most_viewed_threads %}
+                </div>
+            {% endfor %}
+        </section>
+
+        <h2 class="title title--major">{{ lang.most_viewed_threads }}</h2>
+        <section class="block">
+            {% for thread in most_viewed_threads %}
+                <div class="row">
                     <a href="{{ thread.link }}"><strong>{{ thread.subject }}</strong></a>
                     ({{ thread.views }} {{ lang.views }})
-                    <br/>
-                {% endfor %}
-            </td>
-        </tr>
-    </table>
+                </div>
+            {% endfor %}
+        </section>
+    </div>
+
+    <div class="page-sidebar">
+        <section class="block block--sidebar">
+            <h1 class="title title--sidebar">{{ lang.totals }}</h1>
+            <ul class="list list--divided list--stats">
+                <li class="list__item">
+                    <span class="list__field">{{ lang.posts }}</span>
+                    <span class="list__value">{{ stats.numposts }}</span>
+                </li>
+                <li class="list__item">
+                    <span class="list__field">{{ lang.threads }}</span>
+                    <span class="list__value">{{ stats.numthreads }}</span>
+                </li>
+                <li class="list__item">
+                    <span class="list__field">{{ lang.members }}</span>
+                    <span class="list__value">{{ stats.numusers }}</span>
+                </li>
+            </ul>
+        </section>
+
+        <section class="block block--sidebar">
+            <h1 class="title title--sidebar">{{ lang.general }}</h1>
+            <ul class="list list--divided list--stats">
+                <li class="list__item">
+                    <span class="list__field">{{ lang.newest_member }}</span>
+                    <span class="list__value">{{ stats.newest_user|raw }}</span>
+                </li>
+                <li class="list__item">
+                    <span class="list__field">{{ lang.members_posted }}</span>
+                    <span class="list__value">{{ stats.have_posted_percent }}</span>
+                </li>
+                <li class="list__item">
+                    {{ lang.todays_top_poster|raw }}
+                </li>
+                <li class="list__item">
+                    {% if top_forum %}
+                        {% set forum_link = '<a href="' ~ top_forum.link ~ '">' ~ top_forum.name ~ '</a>' %}
+                        {{ trans('popular_forum', forum_link, top_forum.posts, top_forum.threads)|raw }}<br/>
+                    {% else %}
+                        {{ trans('popular_forum', lang.none, lang.no, lang.no)|raw }}<br/>
+                    {% endif %}
+
+                    {{ top_referer|raw ?: '' }}
+                </li>
+            </ul>
+        </section>
+
+        <section class="block block--sidebar">
+            <h1 class="title title--sidebar">{{ lang.averages }}</h1>
+            <ul class="list list--divided list--stats">
+                <li class="list__item">
+                    <span class="list__field">{{ lang.ppd }}</span>
+                    <span class="list__value">{{ stats.posts_perday }}</span>
+                </li>
+                <li class="list__item">
+                    <span class="list__field">{{ lang.tpd }}</span>
+                    <span class="list__value">{{ stats.threads_perday }}</span>
+                </li>
+                <li class="list__item">
+                    <span class="list__field">{{ lang.mpd }}</span>
+                    <span class="list__value">{{ stats.members_perday }}</span>
+                </li>
+                <li class="list__item">
+                    <span class="list__field">{{ lang.ppm }}</span>
+                    <span class="list__value">{{ stats.posts_permember }}</span>
+                </li>
+                <li class="list__item">
+                    <span class="list__field">{{ lang.tpm }}</span>
+                    <span class="list__value">{{ stats.threads_permember }}</span>
+                </li>
+                <li class="list__item">
+                    <span class="list__field">{{ lang.rpt }}</span>
+                    <span class="list__value">{{ stats.replies_perthread }}</span>
+                </li>
+            </ul>
+        </section>
+    </div>
 {% endblock body %}
