@@ -137,7 +137,7 @@ if($mybb->settings['showgroupleaders'])
 	}
 }
 
-$query = $db->simple_select("users", "uid, username, displaygroup, usergroup, ignorelist, hideemail, receivepms, lastactive, lastvisit, invisible, away", "displaygroup IN ($groups_in) OR (displaygroup='0' AND usergroup IN ($groups_in)) OR uid IN ($users_in)", array('order_by' => 'username'));
+$query = $db->simple_select("users", "uid, username, displaygroup, usergroup, ignorelist, hideemail, receivepms, lastactive, lastvisit, invisible, away, avatar", "displaygroup IN ($groups_in) OR (displaygroup='0' AND usergroup IN ($groups_in)) OR uid IN ($users_in)", array('order_by' => 'username'));
 while ($user = $db->fetch_array($query)) {
     // If this user is a moderator
     if (isset($moderators[$user['uid']])) {
@@ -179,6 +179,7 @@ foreach ($usergroups as $usergroup) {
     }
 
     foreach ($usergroup['user_list'] as $user) {
+        $user['username_raw'] = $user['username'];
         $user['username'] = format_name(htmlspecialchars_uni($user['username']), $user['usergroup'], $user['displaygroup']);
         $user['profilelink'] = get_profile_link($user['uid']);
 
