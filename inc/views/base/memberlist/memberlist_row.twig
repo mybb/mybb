@@ -1,11 +1,6 @@
 <div class="user-list__user">
-    {# TO DO: USER PROFILE LINK #}
-    <a href="#" class="avatar-profile-link">
-        {% if user.avatar %}
-            <img src="{{ user.avatar_image }}" alt="" {{ user.avatar_width_height }} class="avatar" />
-        {% else %}
-            {% include 'partials/default_avatar.twig' %}
-        {% endif %}
+    <a href="{{ get_profile_link(user.uid) }}" class="avatar-profile-link">
+        {{ render_avatar(url=user.avatar, alt=user.username_raw, class='avatar--large') }}
     </a>
     <h2 class="user-list__username">{{ user.profilelink|raw }}</h2>
 	<p class="user-list__user-title">{{ user.usertitle }}</p>
