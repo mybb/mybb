@@ -15,6 +15,9 @@
                 <div class="user-list user-list--has-title">
                     {% for user in usergroup.users %}
                         <div class="user-list__user">
+                            <a href="{{ get_profile_link(user.uid) }}" class="avatar-profile-link">
+                                {{ render_avatar(url=user.avatar, alt=user.username_raw, class='avatar--medium') }}
+                            </a>
                             <h2 class="user-list__username">
                                 <a href="{{ user.profilelink|raw }}">{{ user.username|raw }}</a>
                                 <span class="user-status user-status--{{ user.status }}">
