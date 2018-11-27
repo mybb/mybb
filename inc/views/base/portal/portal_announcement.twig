@@ -5,8 +5,10 @@
     <div class="post">
         <div class="post__meta">
             {% if announcement.useravatar %}
-                {# TO DO: Author profile link #}
-                <a href="#" class="avatar-profile-link"><img src="{{ announcement.avatar_image }}" alt="" {{ announcement.avatar_width_height|raw }} class="avatar" /></a>
+                <a href="{{ get_profile_link(announcement.uid )}}" class="avatar-profile-link">
+                    {# TO DO: fix default avatar #}
+                    {{ render_avatar(url=announcement.avatar_image, alt=announcement.username) }}
+                </a>
             {% endif %}
             <h3 class="post__author">
     			{{ announcement.profilelink|raw }}

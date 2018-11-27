@@ -23,7 +23,9 @@
                 <h2 class="title title--section">{{ lang.current_avatar }}</h2>
                 <div class="section__container change-avatar">
                     <div class="row row--form field">
-                        <span class="avatar-container"><img src="{{ useravatar.image }}" alt="{{ mybb.user.username }}" title="{{ mybb.user.username }}" {{ useravatar.width_height|raw }} class="avatar" /></span>
+                        <span class="avatar-container">
+                            {{ render_avatar(url=mybb.user.avatar, alt=mybb.user.username) }}
+                        </span>
                         <p class="change-avatar__description">{{ lang.avatar_note }}</p>
                         {% for note in extranotes %}
                             <p class="change-avatar__description">{{ note }}</p>

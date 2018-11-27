@@ -33,10 +33,11 @@
                 <input type="hidden" name="pmid" value="{{ pm.pmid }}" />
                 <input type="hidden" name="do" value="reply" />
                 <div class="post__meta">
-                    {# TO DO : LINK TO PROFILE #}
-                    <a href="#" class="avatar-profile-link" title="{{ lang.welcome_my_profile }}"><img src="{% if mybb.user.avatar != '' %}{{ mybb.user.avatar }}{% else %}{{ asset_url('images/default_avatar.png') }}{% endif %}" alt="{{ lang.welcome_my_avatar }}" class="avatar my-avatar"/></a>
-                    {# TO DO : USER PROFILE LINK #}
-                    <h3 class="post__author"><a href="#">{{ mybb.user.username }}</a></h3>
+                    <a href="{{ get_profile_link(mybb.user.uid) }}" class="avatar-profile-link" title="{{ lang.welcome_my_profile }}">
+                        {{ render_avatar(url=mybb.user.avatar, alt=lang.welcome_my_avatar) }}
+                    </a>
+                    {# TO DO: username styling #}
+                    <h3 class="post__author"><a href="{{ get_profile_link(mybb.user.uid) }}">{{ mybb.user.username }}</a></h3>
                     <span class="post__date">{{ lang.quick_reply }}</span>
                 </div>
                 <div class="post__body">
