@@ -11,7 +11,7 @@
 {% endblock accountHeader %}
 
 {% block accountBody %}
-    <form action="usercp.php" method="post">
+    <form action="usercp.php" method="post" enctype="multipart/form-data">
         <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
 
         {% include 'usercp/profile_menu.twig' %}
