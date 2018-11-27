@@ -1,7 +1,12 @@
 <blockquote class="post__quote quote">
     <cite class="quote__cite">
         {% if delete_quote == false %}<span class="quote__date">{{ quote.date|raw }}</span>{% endif %}
-        {{ quote.username }} {{ lang.wrote }}{% if quote.linkback %} <a href="{{ quote.url }}" class="quote__jump"><i class="icon icon--subdued icon--link fas fa-share"></i></a>{% endif %}
+        {{ quote.username }} {{ lang.wrote }}
+        {% if quote.linkback %}
+            <a href="{{ quote.url }}" class="quote__jump">
+                {{ include('partials/icon.twig', {icon: 'level-up-alt', class: 'icon icon--subdued icon--link'}, with_context = false) }}
+            </a>
+        {% endif %}
     </cite>
     {{ quote.message|raw }}
 </blockquote>

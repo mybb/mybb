@@ -1,7 +1,7 @@
 <form action="{{ mybb.settings.bburl }}/search.php" method="post" id="search" class="global-search">
 	<input type="checkbox" id="show-mobile-search" class="global-search__checkbox">
-	<label for="show-mobile-search" class="global-search__mobile-search-button"><i class="fas fa-search"></i></label>
-	<label for="show-mobile-search" class="global-search__mobile-search-close-button"><i class="fas fa-times-circle"></i></label>
+	<label for="show-mobile-search" class="global-search__mobile-search-button">{{ include('partials/icon.twig', {icon: 'search'}, with_context = false) }}</label>
+	<label for="show-mobile-search" class="global-search__mobile-search-close-button">{{ include('partials/icon.twig', {icon: 'times-circle'}, with_context = false) }}</label>
 	<input type="hidden" name="action" value="do_search" />
 	<input type="hidden" name="postthread" value="1" />
 	<div class="global-search__container">
@@ -9,10 +9,12 @@
 			<input type="text" name="keywords" placeholder="{{ lang.toplinks_search }}..." value="" class="global-search__field" />
 			<span class="global-search__controls">
 				<button type="submit" class="global-search__submit">
-					<i class="fas fa-search"></i>
+					{{ include('partials/icon.twig', {icon: 'search'}, with_context = false) }}
 					<span class="visually-hidden">{{ lang.search_button }}</span>
 				</button>
-				<a href="{{ mybb.settings.bburl }}/search.php" class="global-search__advanced" title="{{ lang.advanced_search }}"><i class="fas fa-cog"></i><span class="visually-hidden">{{ lang.advanced_search }}</span></a>
+				<a href="{{ mybb.settings.bburl }}/search.php" class="global-search__advanced" title="{{ lang.advanced_search }}">
+					{{ include('partials/icon.twig', {icon: 'cog'}, with_context = false) }}
+					<span class="visually-hidden">{{ lang.advanced_search }}</span></a>
 			</span>
 		</label>
 	</div>

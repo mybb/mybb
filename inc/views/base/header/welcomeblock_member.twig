@@ -4,8 +4,8 @@
         <label for="show-user-dropdown" class="user-bar__link user-bar__link--dropdown">
 			{{ include('partials/icon.twig', {icon: 'user-circle', class: 'user-bar__icon'}, with_context = false) }}
             <span class="user-bar__text user-bar__text--username">{{ mybb.user.username }}</span>
-			<i class="user-bar__caret user-bar__caret--down fas fa-chevron-down"></i>
-			<i class="user-bar__caret user-bar__caret--up fas fa-chevron-up"></i>
+			{{ include('partials/icon.twig', {icon: 'chevron-down', class: 'user-bar__caret user-bar__caret--down fa-fw'}, with_context = false) }}
+			{{ include('partials/icon.twig', {icon: 'chevron-up', class: 'user-bar__caret user-bar__caret--up fa-fw'}, with_context = false) }}
         </label>
         <div class="user-bar__dropdown">
             <a href="{{ get_profile_link(mybb.user.uid) }}" class="avatar-profile-link" title="{{ lang.welcome_my_profile }}">
