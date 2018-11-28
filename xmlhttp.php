@@ -483,8 +483,8 @@ else if($mybb->input['action'] == "edit_post")
 			$lang->edit_time_limit = $lang->sprintf($lang->edit_time_limit, $mybb->usergroup['edittimelimit']);
 			xmlhttp_error($lang->edit_time_limit);
 		}
-		// User can't edit unapproved post
-		if($post['visible'] == 0)
+		// User can't edit unapproved post unless permitted for own
+		if($post['visible'] == 0 && !($mybb->settings['showownunapproved'] && $post['uid'] == $mybb->user['uid']))
 		{
 			xmlhttp_error($lang->post_moderation);
 		}
@@ -745,7 +745,11 @@ else if($mybb->input['action'] == "get_multiquoted")
 			(in_array($quoted_post['fid'], $onlyusfids) && (!$mybb->user['uid'] || $quoted_post['thread_uid'] != $mybb->user['uid']))
 		)
 		{
-			continue;
+			// Allow quoting from own unapproved post
+			if($quoted_post['visible'] == 0 && !($mybb->settings['showownunapproved'] && $quoted_post['uid'] == $mybb->user['uid']))
+			{
+				continue;
+			}
 		}
 
 		$message .= parse_quoted_message($quoted_post, false);
