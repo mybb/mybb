@@ -72,7 +72,10 @@ $forum = get_forum($fid);
 if($thread['visible'] == 0 && !is_moderator($fid, "canviewunapprove") || $thread['visible'] == -1 && !is_moderator($fid,
 		"canviewdeleted") || ($thread['visible'] < -1 && $thread['uid'] != $mybb->user['uid']))
 {
-	error($lang->error_invalidthread);
+	if($thread['visible'] == 0 && !($mybb->settings['showownunapproved'] && $thread['uid'] == $mybb->user['uid']))
+	{
+		error($lang->error_invalidthread);
+	}
 }
 if(!$forum || $forum['type'] != "f")
 {
@@ -134,8 +137,8 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 		{
 			error_no_permission();
 		}
-		// User can't delete unapproved post
-		if($post['visible'] == 0)
+		// User can't delete unapproved post unless allowed for own
+		if($post['visible'] == 0 && !($mybb->settings['showownunapproved'] && $post['uid'] == $mybb->user['uid']))
 		{
 			error_no_permission();
 		}
@@ -177,7 +180,7 @@ else
 			error($lang->edit_time_limit);
 		}
 		// User can't edit unapproved post
-		if($post['visible'] == 0 || $post['visible'] == -1)
+		if(($post['visible'] == 0 && !($mybb->settings['showownunapproved'] && $post['uid'] == $mybb->user['uid'])) || $post['visible'] == -1)
 		{
 			error_no_permission();
 		}
