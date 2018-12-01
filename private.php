@@ -42,10 +42,23 @@ if($mybb->user['uid'] == '/' || $mybb->user['uid'] == 0 || $mybb->usergroup['can
 	error_no_permission();
 }
 
+$update = false;
 if(!$mybb->user['pmfolders'])
 {
-	$mybb->user['pmfolders'] = "1**$%%$2**$%%$3**$%%$4**";
+	$update = true;
+	$mybb->user['pmfolders'] = "0**$%%$1**$%%$2**$%%$3**$%%$4**";
+}
+elseif ((int)my_substr($mybb->user['pmfolders'], 0, 1) != 0)
+{
+	// Old folder structure. Need to update
+	// Since MyBB 1.8.20 fid[0] represents 'Inbox' and fid[1] represents 'Unread'
+	$update = true;
+	$mybb->user['pmfolders'] = '0'. ltrim(str_replace("$%%$2**", "$%%$1**$%%$2**", $mybb->user['pmfolders']), '1');
+}
 
+// Folder structure update required?
+if($update)
+{
 	$sql_array = array(
 		 "pmfolders" => $mybb->user['pmfolders']
 	);
@@ -2086,10 +2099,11 @@ if(!$mybb->input['action'])
 
 	if(!$mybb->input['fid'] || !array_key_exists($mybb->input['fid'], $foldernames))
 	{
-		$mybb->input['fid'] = 1;
+		$mybb->input['fid'] = 0;
 	}
 
-	$folder = $mybb->input['fid'];
+	$fid = (int)$mybb->input['fid'];
+	$folder = !$fid ? 1 : $fid;
 	$foldername = $foldernames[$folder];
 
 	if($folder == 2 || $folder == 3)
@@ -2179,15 +2193,15 @@ if(!$mybb->input['action'])
 
 	if($mybb->input['order'] || ($sortby && $sortby != "dateline"))
 	{
-		$page_url = "private.php?fid={$folder}&sortby={$sortby}&order={$sortordernow}";
+		$page_url = "private.php?fid={$fid}&sortby={$sortby}&order={$sortordernow}";
 	}
 	else
 	{
-		$page_url = "private.php?fid={$folder}";
+		$page_url = "private.php?fid={$fid}";
 	}
 
 	$multipage = multipage($pmscount, $perpage, $page, $page_url);
-	$messagelist = '';
+	$selective = $messagelist = '';
 
 	$icon_cache = $cache->read("posticons");
 
@@ -2253,6 +2267,11 @@ if(!$mybb->input['action'])
 	}
 	else
 	{
+		if($fid == 1)
+		{
+			$selective = ' AND pm.status="0"';
+		}
+
 		if($sortfield == "username")
 		{
 			$pm = "fu.";
@@ -2268,7 +2287,7 @@ if(!$mybb->input['action'])
 		FROM ".TABLE_PREFIX."privatemessages pm
 		LEFT JOIN ".TABLE_PREFIX."users fu ON (fu.uid=pm.fromid)
 		LEFT JOIN ".TABLE_PREFIX."users tu ON (tu.uid=pm.toid)
-		WHERE pm.folder='$folder' AND pm.uid='".$mybb->user['uid']."'
+		WHERE pm.folder='$folder' AND pm.uid='".$mybb->user['uid']."'{$selective}
 		ORDER BY {$pm}{$sortfield} {$sortordernow}
 		LIMIT $start, $perpage
 	");
