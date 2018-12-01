@@ -13,7 +13,6 @@ $l['forum_unapproved_posts_count'] = "There are currently {1} unapproved posts i
 $l['forum_unapproved_post_count'] = "There is currently 1 unapproved post in this forum.";
 $l['forum_unapproved_threads_count'] = "There is currently {1} unapproved threads in this forum.";
 $l['forum_unapproved_thread_count'] = "There is currently 1 unapproved thread in this forum.";
-$l['forumteam'] = "Forum Team";
 $l['forumstats'] = "Forum Statistics";
 $l['todays_birthdays'] = "Today's Birthdays";
 $l['birthdayhidden'] = "Hidden";

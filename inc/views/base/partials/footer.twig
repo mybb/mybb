@@ -51,6 +51,13 @@
             <div class="wrapper">
                 <nav class="footer-menu">
                     <ul class="footer-menu__links">
+                        {% if (mybb.settings.enableshowteam) %}
+                            <li class="footer-menu__item">
+                                <a href="showteam.php" class="footer-menu__link">
+                                    <span class="footer-menu__text">{{ lang.bottomlinks_forumteam }}</span>
+                                </a>
+                            </li>
+                        {% endif %}
                         {% if (mybb.settings.contactlink == "contact.php" and mybb.settings.contact and (mybb.settings.contact_guests != 1 and mybb.user.uid == 0 or mybb.user.uid > 0)) or mybb.settings.contactlink != "contact.php" %}
                             <li class="footer-menu__item">
                                 <a href="{{ mybb.settings.contactlink }}" class="footer-menu__link">
