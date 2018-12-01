@@ -2110,7 +2110,7 @@ if(!$mybb->input['action'])
 
 	$fid = (int)$mybb->input['fid'];
 	$folder = !$fid ? 1 : $fid;
-	$foldername = $foldernames[$folder];
+	$foldername = $foldernames[$fid];
 
 	if($folder == 2 || $folder == 3)
 	{ // Sent Items Folder
