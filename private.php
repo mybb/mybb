@@ -1535,7 +1535,7 @@ if($mybb->input['action'] == "do_folders" && $mybb->request_method == "post")
 				}
 			}
 
-			if($val != '' && trim($val) == '' && !is_numeric($key))
+			if($val != '' && trim($val) == '' && !(is_numeric($key) && $key <= 4))
 			{
 				// If the name only contains whitespace and it's not a default folder, print an error
 				error($lang->error_emptypmfoldername);
