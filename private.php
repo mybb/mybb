@@ -1474,7 +1474,7 @@ if($mybb->input['action'] == "folders")
 		$fid = $folderinfo[0];
 		$foldername = get_pm_folder_name($fid, $foldername);
 
-		if($folderinfo[0] == "1" || $folderinfo[0] == "2" || $folderinfo[0] == "3" || $folderinfo[0] == "4")
+		if((int)$folderinfo[0] < 5)
 		{
 			$foldername2 = get_pm_folder_name($fid);
 			eval("\$folderlist .= \"".$templates->get("private_folders_folder_unremovable")."\";");
@@ -1531,8 +1531,14 @@ if($mybb->input['action'] == "do_folders" && $mybb->request_method == "post")
 				// Use default language strings if empty or value is language string
 				switch($fid)
 				{
-					case 1:
+					case 0:
 						if($val == $lang->folder_inbox || trim($val) == '')
+						{
+							$val = '';
+						}
+						break;
+					case 1:
+						if($val == $lang->folder_unread || trim($val) == '')
 						{
 							$val = '';
 						}
