@@ -12,7 +12,7 @@ define('IN_MYBB', 1);
 define('THIS_SCRIPT', 'index.php');
 
 $templatelist = "index,index_whosonline,index_whosonline_memberbit,forumbit_depth1_cat,forumbit_depth2_cat,forumbit_depth2_forum,forumbit_depth1_forum_lastpost,forumbit_depth2_forum_lastpost,forumbit_moderators";
-$templatelist .= ",index_birthdays_birthday,index_birthdays,index_logoutlink,index_showteamlink,index_statspage,index_stats,forumbit_depth3,forumbit_depth3_statusicon,index_boardstats,forumbit_depth2_forum_lastpost_never,forumbit_depth2_forum_viewers";
+$templatelist .= ",index_birthdays_birthday,index_birthdays,index_logoutlink,index_statspage,index_stats,forumbit_depth3,forumbit_depth3_statusicon,index_boardstats,forumbit_depth2_forum_lastpost_never,forumbit_depth2_forum_viewers";
 $templatelist .= ",forumbit_moderators_group,forumbit_moderators_user,forumbit_depth2_forum_lastpost_hidden,forumbit_subforums,forumbit_depth2_forum_unapproved_posts,forumbit_depth2_forum_unapproved_threads";
 
 require_once './global.php';
@@ -29,18 +29,6 @@ $logoutlink = '';
 if($mybb->user['uid'] != 0)
 {
 	eval('$logoutlink = "'.$templates->get('index_logoutlink').'";');
-}
-
-$showteamlink = '';
-if($mybb->settings['enableshowteam'] != 0)
-{
-	$show_team_link_separator = '';
-	if(!empty($logoutlink))
-	{
-		$show_team_link_separator = $lang->board_stats_link_separator;
-	}
-
-	eval('$showteamlink = "'.$templates->get('index_showteamlink').'";');
 }
 
 $statspage = '';
