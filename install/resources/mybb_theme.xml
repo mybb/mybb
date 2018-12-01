@@ -9874,7 +9874,7 @@ img { max-width: 100%; height: auto; }
 {$usercpnav}
 <td valign="top">
 <fieldset>
-  {$pmspacebar}<span class="smalltext"><a href="private.php">{$lang->inbox}</a>{$composelink} | <a  href="private.php?action=folders">{$lang->manage_folders}</a>{$emptyexportlink}</span>
+  {$pmspacebar}<span class="smalltext"><a href="private.php">{$foldername}</a>{$composelink} | <a  href="private.php?action=folders">{$lang->manage_folders}</a>{$emptyexportlink}</span>
 </fieldset>
 <br />
 {$limitwarning}
