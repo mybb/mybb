@@ -1529,48 +1529,19 @@ if($mybb->input['action'] == "do_folders" && $mybb->request_method == "post")
 
 				$fid = (int)$key;
 				// Use default language strings if empty or value is language string
-				switch($fid)
+				if($val == get_pm_folder_name($fid) || trim($val) == '')
 				{
-					case 0:
-						if($val == $lang->folder_inbox || trim($val) == '')
-						{
-							$val = '';
-						}
-						break;
-					case 1:
-						if($val == $lang->folder_unread || trim($val) == '')
-						{
-							$val = '';
-						}
-						break;
-					case 2:
-						if($val == $lang->folder_sent_items || trim($val) == '')
-						{
-							$val = '';
-						}
-						break;
-					case 3:
-						if($val == $lang->folder_drafts || trim($val) == '')
-						{
-							$val = '';
-						}
-						break;
-					case 4:
-						if($val == $lang->folder_trash || trim($val) == '')
-						{
-							$val = '';
-						}
-						break;
+					$val = '';
 				}
 			}
 
-			if($val != '' && trim($val) == '' && !($key >= 1 && $key <= 4))
+			if($val != '' && trim($val) == '' && !is_numeric($key))
 			{
 				// If the name only contains whitespace and it's not a default folder, print an error
 				error($lang->error_emptypmfoldername);
 			}
 
-			if($val != '' || ($key >= 1 && $key <= 4))
+			if($val != '' || (is_numeric($key) && $key <= 4))
 			{
 				// If there is a name or if this is a default folder, save it
 				$foldername = $db->escape_string(htmlspecialchars_uni($val));
