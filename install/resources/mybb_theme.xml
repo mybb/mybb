@@ -2420,7 +2420,7 @@ div.error {
 }]]></stylesheet>
 	</stylesheets>
 	<templates>
-		<template name="announcement" version="1804"><![CDATA[<html>
+		<template name="announcement" version="1820"><![CDATA[<html>
 <head>
 <title>{$lang->forum_announcement}</title>
 {$headerinclude}
@@ -2441,11 +2441,6 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 </td></tr>
 </table>
 {$footer}
-<script type="text/javascript">
-	$(".author_avatar img").error(function () {
-		$(this).unbind("error").closest('.author_avatar').remove();
-	});
-</script>
 </body>
 </html>]]></template>
 		<template name="announcement_edit" version="1800"><![CDATA[<a href="modcp.php?action=edit_announcement&amp;aid={$post['aid']}" title="{$lang->announcement_edit}" class="postbit_edit"><span>{$lang->postbit_button_edit}</span></a>]]></template>
@@ -3523,7 +3518,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 		<template name="calendar_weekview_prevlink" version="1813"><![CDATA[<a href="{$prev_link}">&laquo; {$lang->previous_week}</a>]]></template>
 		<template name="calendar_year" version="1800"><![CDATA[<option value="{$year}" {$selected}>{$year}</option>]]></template>
 		<template name="calendar_year_sel" version="1800"><![CDATA[<option value="{$year_sel}">{$year_sel}</option>]]></template>
-		<template name="editpost" version="1818"><![CDATA[<html>
+		<template name="editpost" version="1820"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_post}</title>
 {$headerinclude}
@@ -3568,11 +3563,6 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 <input type="hidden" name="attachmentact" value="" />
 </form>
 {$footer}
-<script type="text/javascript">
-	$(".author_avatar img").error(function () {
-		$(this).unbind("error").closest('.author_avatar').remove();
-	});
-</script>
 </body>
 </html>]]></template>
 		<template name="editpost_delete" version="1800"><![CDATA[<form action="editpost.php" method="post" name="editpost">
@@ -6404,7 +6394,7 @@ if(use_xmlhttprequest == "1")
 	{$footer}
 </body>
 </html>]]></template>
-		<template name="modcp_announcements_edit" version="1813"><![CDATA[<html>
+		<template name="modcp_announcements_edit" version="1820"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_announcement}</title>
 {$headerinclude}
@@ -6486,11 +6476,6 @@ if(use_xmlhttprequest == "1")
 		</table>
 	</form>
 	{$footer}
-	<script type="text/javascript">
-		$(".author_avatar img").error(function () {
-			$(this).unbind("error").closest('.author_avatar').remove();
-		});
-	</script>
 </body>
 </html>]]></template>
 		<template name="modcp_announcements_forum" version="1400"><![CDATA[					<tr>
@@ -6540,7 +6525,7 @@ if(use_xmlhttprequest == "1")
 							<td class="trow1" valign="top" width="25%"><strong>{$lang->allow_html}</strong></td>
 							<td class="trow1" valign="top" width="75%"><label><input type="radio" name="allowhtml" value="1"{$html_sel['yes']} />&nbsp;{$lang->yes}</label> &nbsp;&nbsp;<label><input type="radio" name="allowhtml" value="0"{$html_sel['no']} />&nbsp;{$lang->no}</label></td>
 						</tr>]]></template>
-		<template name="modcp_announcements_new" version="1813"><![CDATA[<html>
+		<template name="modcp_announcements_new" version="1820"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->add_announcement}</title>
 {$headerinclude}
@@ -6621,11 +6606,6 @@ if(use_xmlhttprequest == "1")
 		</table>
 	</form>
 	{$footer}
-	<script type="text/javascript">
-		$(".author_avatar img").error(function () {
-			$(this).unbind("error").closest('.author_avatar').remove();
-		});
-	</script>
 </body>
 </html>]]></template>
 		<template name="modcp_awaitingattachments" version="1800"><![CDATA[<tr>
@@ -8837,7 +8817,7 @@ if(use_xmlhttprequest == "1")
 		<template name="nav_dropdown" version="1800"><![CDATA[ <img src="{$theme['imgdir']}/arrow_down.png" alt="v" title="" class="pagination_breadcrumb_link" id="breadcrumb_multipage" />{$multipage}]]></template>
 		<template name="nav_sep" version="1800"><![CDATA[&rsaquo;]]></template>
 		<template name="nav_sep_active" version="1800"><![CDATA[<br /><img src="{$theme['imgdir']}/nav_bit.png" alt="" />]]></template>
-		<template name="newreply" version="1818"><![CDATA[<html>
+		<template name="newreply" version="1820"><![CDATA[<html>
 <head>
 <title>{$lang->post_reply_to}</title>
 {$headerinclude}
@@ -8893,11 +8873,6 @@ if(use_xmlhttprequest == "1")
 {$forumrules}
 {$threadreview}
 {$footer}
-<script type="text/javascript">
-	$(".author_avatar img").error(function () {
-		$(this).unbind("error").closest('.author_avatar').remove();
-	});
-</script>
 </body>
 </html>]]></template>
 		<template name="newreply_disablesmilies" version="1809"><![CDATA[<label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="1" tabindex="9"{$postoptionschecked['disablesmilies']} /> {$lang->options_disablesmilies}</label>]]></template>
@@ -8939,7 +8914,7 @@ if(use_xmlhttprequest == "1")
 {$reviewmessage}
 </td>
 </tr>]]></template>
-		<template name="newthread" version="1818"><![CDATA[<html>
+		<template name="newthread" version="1820"><![CDATA[<html>
 <head>
 <title>{$lang->newthread_in}</title>
 {$headerinclude}
@@ -8990,11 +8965,6 @@ if(use_xmlhttprequest == "1")
 </form>
 {$forumrules}
 {$footer}
-<script type="text/javascript">
-	$(".author_avatar img").error(function () {
-		$(this).unbind("error").closest('.author_avatar').remove();
-	});
-</script>
 </body>
 </html>]]></template>
 		<template name="newthread_disablesmilies" version="1809"><![CDATA[<label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="1" tabindex="9"{$postoptionschecked['disablesmilies']} /> {$lang->options_disablesmilies}</label>]]></template>
@@ -10338,7 +10308,7 @@ if(use_xmlhttprequest == "1")
 		</tbody>
 	</table>
 </form>]]></template>
-		<template name="private_read" version="1800"><![CDATA[<html>
+		<template name="private_read" version="1820"><![CDATA[<html>
 <head>
 <title>{$lang->viewing_pm} {$pm['subject']}</title>
 {$headerinclude}
@@ -10367,11 +10337,6 @@ if(use_xmlhttprequest == "1")
 </tr>
 </table>
 {$footer}
-<script type="text/javascript">
-	$(".author_avatar img").error(function () {
-		$(this).unbind("error").closest('.author_avatar').remove();
-	});
-</script>
 </body>
 </html>]]></template>
 		<template name="private_read_action" version="1400"><![CDATA[<tr>
@@ -10448,7 +10413,7 @@ if(use_xmlhttprequest == "1")
 		<template name="private_search_results_nomessages" version="1600"><![CDATA[<tr>
 <td colspan="7" class="trow1">{$lang->nomessages}</td>
 </tr>]]></template>
-		<template name="private_send" version="1809"><![CDATA[<html>
+		<template name="private_send" version="1820"><![CDATA[<html>
 <head>
 <title>{$lang->compose_pm}</title>
 {$headerinclude}
@@ -10539,11 +10504,6 @@ if(use_xmlhttprequest == "1")
 // -->
 </script>
 {$autocompletejs}
-<script type="text/javascript">
-	$(".author_avatar img").error(function () {
-		$(this).unbind("error").closest('.author_avatar').remove();
-	});
-</script>
 </body>
 </html>]]></template>
 		<template name="private_send_autocomplete" version="1818"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css?ver=1807">
@@ -11500,9 +11460,6 @@ if(use_xmlhttprequest == "1")
 	// -->
 	</script>
 	<script type="text/javascript">
-		$(".author_avatar img").error(function () {
-			$(this).unbind("error").closest('.author_avatar').remove();
-		});
 		var thread_deleted = "{$thread_deleted}";
 		if(thread_deleted == "1")
 		{
@@ -14097,7 +14054,7 @@ $(function() {
 <link rel="alternate" type="application/atom+xml" title="{$lang->latest_threads} (Atom 1.0)" href="{$mybb->settings['bburl']}/syndication.php?type=atom1.0" />
 <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.js?ver=1813"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.js?ver=1820"></script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.plugins.min.js?ver=1813"></script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/general.js?ver=1820"></script>
 
