@@ -45,7 +45,7 @@ class ServiceProvider extends \MyBB\ServiceProvider
         $this->app->bind(\Twig_LoaderInterface::class, function () {
             if (defined('IN_ADMINCP')) {
                 $paths = [
-                    __DIR__ . '/../../views/admin',
+                    __DIR__ . '/../../views/admin/base',
                 ];
             } else {
                 // TODO: views for the current theme, it's parent, it's parent's parent, etc. should be here
