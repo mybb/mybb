@@ -246,10 +246,10 @@
 			{% endif %}
 		</div>
 		<div class="post-controls post-controls--secondary post-options">
-			{% if post.can_edit %}
+			{% if not post.is_announcement and post.can_edit %}
 				<a href="javascript:void(0)" class="post-control post-control--quick-edit quick_edit_button" id="quick_edit_post_{{ post.pid }}" title="{{ lang.postbit_quick_edit }}"><i class="post-control__icon fas fa-pencil-alt fa-fw"></i><span class="post-control__text">{{ lang.postbit_button_edit }}</span></a>
 			{% endif %}
-			{% if post.is_announcement != true and (post.can_edit or post.quick_delete or post.button_report or post.can_warn or post.button_purgespammer) %}
+			{% if not post.is_announcement and (post.can_edit or post.quick_delete or post.button_report or post.can_warn or post.button_purgespammer) %}
 				<input type="checkbox" class="post-options__checkbox" id="post_options_{{ post.pid }}">
 				<label for="post_options_{{ post.pid }}" class="post-control post-control--options post-options__control" title="{{ lang.postbit_post_options }}">
 					<i class="post-control__icon fas fa-ellipsis-v fa-fw"></i>
