@@ -3578,7 +3578,7 @@ if($mybb->input['action'] == "warninglogs")
 		$per_page = (int)$mybb->input['filter']['per_page'];
 	}
 	$start = ($page-1) * $per_page;
-	$pages = ceil($total_warning / $per_page);
+	$pages = ceil($total_warnings / $per_page);
 	if($page > $pages)
 	{
 		$start = 0;

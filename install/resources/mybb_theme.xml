@@ -3672,7 +3672,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 </ol>
 <br />
 {$lang->error_nopermission_user_username}]]></template>
-		<template name="footer" version="1813"><![CDATA[<debugstuff>
+		<template name="footer" version="1820"><![CDATA[<debugstuff>
 	</div>
 </div>
 <div id="footer">
@@ -3681,6 +3681,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 			{$lang_select}
 			{$theme_select}
 			<ul class="menu bottom_links">
+				{$showteamlink}
 				{$contact_us}
 				<li><a href="{$mybb->settings['homeurl']}">{$mybb->settings['homename']}</a></li>
 				<li><a href="#top">{$lang->bottomlinks_returntop}</a></li>
@@ -3709,6 +3710,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 <!-- The following piece of code allows MyBB to run scheduled tasks. DO NOT REMOVE -->{$task_image}<!-- End task image code -->
 {$auto_dst_detection}
 </div>]]></template>
+		<template name="footer_showteamlink" version="1820"><![CDATA[<li><a href="showteam.php">{$lang->bottomlinks_forumteam}</a></li>]]></template>
 		<template name="footer_contactus" version="1800"><![CDATA[<li><a href="{$mybb->settings['contactlink']}">{$lang->bottomlinks_contactus}</a></li>]]></template>
 		<template name="footer_languageselect" version="1811"><![CDATA[<div class="language">
 <form method="POST" action="{$lang_redirect_url['location']}" id="lang_select">
@@ -4218,10 +4220,12 @@ $(".forumjump").change(function() {
 	<div>{$privatemessage_text}</div>
 </div>]]></template>
 		<template name="global_remote_avatar_notice" version="1809"><![CDATA[<div class="red_alert"><a href="{$mybb->settings['bburl']}/usercp.php?action=avatar">{$lang->remote_avatar_disabled_default_avatar}</a></div>]]></template>
-		<template name="global_unreadreports" version="1800"><![CDATA[<div class="red_alert"><a href="{$mybb->settings['bburl']}/modcp.php?action=reports">{$lang->unread_reports}</a></div>]]></template>
+		<template name="global_unreadreports" version="1820"><![CDATA[<a href="{$mybb->settings['bburl']}/modcp.php?action=reports">{$lang->unread_reports}</a>]]></template>
 		<template name="global_moderation_notice" version="1800"><![CDATA[<div class="pm_alert">{$moderation_text}</div>]]></template>
+		<template name="global_modqueue" version="1820"><![CDATA[<a href="{$mybb->settings['bburl']}/modcp.php?action=modqueue&type={$modqueue_type}">{$modqueue_message}</a>]]></template>
+		<template name="global_modqueue_notice" version="1820"><![CDATA[<div class="red_alert">{$moderation_queue}</div>]]></template>
 		<template name="global_awaiting_activation" version="1800"><![CDATA[<div class="red_alert">{$awaiting_message}</div>]]></template>
-		<template name="header" version="1809"><![CDATA[<div id="container">
+		<template name="header" version="1820"><![CDATA[<div id="container">
 		<a name="top" id="top"></a>
 		<div id="header">
 			<div id="logo">
@@ -4251,7 +4255,7 @@ $(".forumjump").change(function() {
 				{$remote_avatar_notice}
 				{$bannedwarning}
 				{$bbclosedwarning}
-				{$unreadreports}
+				{$modnotice}
 				{$pending_joinrequests}
 				{$awaitingusers}
 				<navigation>
@@ -4377,7 +4381,7 @@ $(".forumjump").change(function() {
 <td class="trow1"><span class="smalltext">{$bdays}</span></td>
 </tr>]]></template>
 		<template name="index_birthdays_birthday" version="1400"><![CDATA[{$comma}{$bdayuser['profilelink']}{$age}]]></template>
-		<template name="index_boardstats" version="1816"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<template name="index_boardstats" version="1820"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <thead>
 <tr>
 <td class="thead{$collapsedthead['boardstats']}">
@@ -4394,7 +4398,6 @@ $(".forumjump").change(function() {
 	<td class="tfoot" style="text-align: right">
 		<span class="smalltext">
 			{$logoutlink}
-			{$showteamlink}
 			{$statspage}
 		</span>
 	</td>
@@ -4403,7 +4406,6 @@ $(".forumjump").change(function() {
 </table>
 <br />]]></template>
 		<template name="index_statspage" version="1817"><![CDATA[{$stats_page_separator}<a href="stats.php">{$lang->forumstats}</a>]]></template>
-		<template name="index_showteamlink" version="1817"><![CDATA[{$show_team_link_separator}<a href="showteam.php">{$lang->forumteam}</a>]]></template>
 		<template name="index_logoutlink" version="1816"><![CDATA[<a href="member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}">{$lang->index_logout}</a>]]></template>
 		<template name="index_stats" version="1400"><![CDATA[<tr><td class="tcat"><span class="smalltext"><strong>{$lang->boardstats}</strong></span></td></tr>
 <tr>
@@ -4820,6 +4822,9 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
+		<template name="member_no_referrals" version="1820"><![CDATA[<tr>
+	<td class="trow1" colspan="2">{$lang->member_no_referrals}</td>
+</tr>]]></template>
 		<template name="member_profile" version="1807"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->profile}</title>
@@ -5022,9 +5027,9 @@ if(use_xmlhttprequest == "1")
 	<td class="{$bgcolor}"><strong>{$lang->pm}</strong></td>
 	<td class="{$bgcolor}"><a href="private.php?action=send&amp;uid={$memprofile['uid']}">{$lang->send_pm}</a></td>
 </tr>]]></template>
-		<template name="member_profile_referrals" version="1600"><![CDATA[<tr>
-<td class="{$bg_color}"><strong>{$lang->members_referred}</strong></td>
-<td class="{$bg_color}">{$memprofile['referrals']}</td>
+		<template name="member_profile_referrals" version="1820"><![CDATA[<tr>
+	<td class="{$bg_color}"><strong>{$lang->members_referred}</strong></td>
+	<td class="{$bg_color}">{$memprofile['referrals']}</td>
 </tr>]]></template>
 		<template name="member_profile_reputation" version="1600"><![CDATA[<tr>
 	<td class="{$bg_color}"><strong>{$lang->reputation}</strong></td>
@@ -5050,6 +5055,58 @@ if(use_xmlhttprequest == "1")
 	<td class="{$bgcolor}"><strong>{$lang->homepage}</strong></td>
 	<td class="{$bgcolor}"><a href="{$memprofile['website']}" target="_blank" rel="noopener">{$memprofile['website']}</a></td>
 </tr>]]></template>
+		<template name="member_referral_row" version="1820"><![CDATA[	<tr class="{$bg_color}">
+		<td>{$username}</td>
+		<td style="text-align: right;">{$regdate}</td>
+	</tr>]]></template>
+		<template name="member_referrals" version="1820"><![CDATA[<html>
+<head>
+<title>{$mybb->settings['bbname']} - {$lang->nav_referrals}</title>
+{$headerinclude}
+</head>
+<body>
+	{$header}
+	<div class="float_left">
+		{$multipage}
+	</div>
+	<br style="clear: left;" />
+	<br />
+	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+	<tr>
+	<td class="thead" colspan="5"><strong>{$lang->referrals}</strong></td>
+	</tr>
+	<tr>
+	<td class="tcat"><span class="smalltext"><strong>{$lang->username}</strong></span></td>
+	<td style="text-align: right;" class="tcat"><span class="smalltext"><strong>{$lang->referral_date}</strong></span></td>
+	</tr>
+	{$referral_rows}
+	</table>
+	<br />
+	<div class="float_left">
+		{$multipage}
+	</div>
+	{$footer}
+</body>
+</html>]]></template>
+		<template name="member_referrals_link" version="1820"><![CDATA[<a href="{$mybb->settings['bburl']}/member.php?action=referrals&amp;uid={$uid}" id="referrer_{$uid}" class="referralLink">{$referral_count}</a>]]></template>
+		<template name="member_referrals_popup" version="1820"><![CDATA[<div class="modal">
+	<div style="overflow-y: auto; max-height: 400px;" class="referral_modal_{$uid}">
+		<table width="100%" border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+			<tr>
+				<td class="thead" colspan="5"><strong>{$lang->referrals}</strong></td>
+			</tr>
+			<tr>
+				<table width="100%" border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+					<tr>
+						<td class="tcat"><span class="smalltext"><strong>{$lang->username}</strong></span></td>
+						<td style="text-align: right;" class="tcat"><span class="smalltext"><strong>{$lang->referral_date}</strong></span></td>
+					</tr>
+					{$referral_rows}
+				</table>
+			</tr>
+		</table>
+	</div>
+</div>]]></template>
 		<template name="member_register" version="1813"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->registration}</title>
@@ -5731,7 +5788,7 @@ if(use_xmlhttprequest == "1")
 		<template name="memberlist_referrals" version="1800"><![CDATA[<td class="tcat" width="10%" align="center"><span class="smalltext"><a href="{$sorturl}&amp;sort=referrals&amp;order=descending"><strong>{$lang->referrals}</strong></a> {$orderarrow['referrals']}</span></td>]]></template>
 		<template name="memberlist_referrals_bit" version="1600"><![CDATA[<td class="{$alt_bg}" align="center">{$user['referrals']}</td>]]></template>
 		<template name="memberlist_referrals_option" version="1816"><![CDATA[<option value="referrals"{$sort_selected['referrals']}>{$lang->sort_by_referrals}</option>]]></template>
-		<template name="memberlist_search" version="1816"><![CDATA[<html>
+		<template name="memberlist_search" version="1820"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->search_member_list}</title>
 {$headerinclude}
@@ -5752,6 +5809,7 @@ if(use_xmlhttprequest == "1")
 		<select name="username_match">
 			<option value="begins">{$lang->begins_with}</option>
 			<option value="contains">{$lang->username_contains}</option>
+			<option value="exact">{$lang->username_exact}</option>
 		</select>
 		&nbsp;
 		<input type="text" class="textbox" name="username" id="username" />
@@ -11354,7 +11412,7 @@ if(use_xmlhttprequest == "1")
 <td width="5%" class="{$bgcolor}"><div class="postbit_buttons">{$emailcode}</div></td>
 <td width="5%" class="{$bgcolor}"><div class="postbit_buttons">{$pmcode}</div></td>
 </tr>]]></template>
-		<template name="showthread" version="1818"><![CDATA[<html>
+		<template name="showthread" version="1820"><![CDATA[<html>
 <head>
 <title>{$thread['subject']}</title>
 {$headerinclude}
@@ -11401,7 +11459,7 @@ if(use_xmlhttprequest == "1")
 					<span class="smalltext"><strong><a href="javascript:void(0)" id="thread_modes">{$lang->thread_modes}</a>{$threadnoteslink}</strong></span>
 				</div>
 				<div>
-					<strong>{$thread['threadprefix']}{$thread['subject']}</strong>
+					<strong>{$thread['displayprefix']}{$thread['subject']}</strong>
 				</div>
 			</td>
 		</tr>
@@ -14055,7 +14113,7 @@ $(function() {
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.js?ver=1813"></script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.plugins.min.js?ver=1821"></script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/general.js?ver=1817"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/general.js?ver=1820"></script>
 
 {$stylesheets}
 <script type="text/javascript">

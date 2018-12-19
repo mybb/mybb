@@ -208,9 +208,15 @@ else
 			$search_url .= "&username_match=begins";
 		}
 		// Just contains
-		else
+		else if($mybb->input['username_match'] == "contains")
 		{
 			$search_query .= " AND u.username {$like} '%".$username_like_query."%'";
+			$search_url .= "&username_match=contains";
+		}
+		// Exact
+		else
+		{
+			$search_query .= " AND u.username='{$username_like_query}'";
 		}
 
 		$search_url .= "&username=".urlencode($search_username);
@@ -389,6 +395,13 @@ else
 		// Build referral?
 		if($mybb->settings['usereferrals'] == 1)
 		{
+			$referral_count = (int) $user['referrals'];
+			if($referral_count > 0)
+			{
+				$uid = (int) $user['uid'];
+				eval("\$user['referrals'] = \"".$templates->get('member_referrals_link')."\";");
+			}
+
 			eval("\$referral_bit = \"".$templates->get("memberlist_referrals_bit")."\";");
 			eval("\$referrals_option = \"".$templates->get("memberlist_referrals_option")."\";");
 		}

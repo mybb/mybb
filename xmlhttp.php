@@ -483,8 +483,8 @@ else if($mybb->input['action'] == "edit_post")
 			$lang->edit_time_limit = $lang->sprintf($lang->edit_time_limit, $mybb->usergroup['edittimelimit']);
 			xmlhttp_error($lang->edit_time_limit);
 		}
-		// User can't edit unapproved post
-		if($post['visible'] == 0)
+		// User can't edit unapproved post unless permitted for own
+		if($post['visible'] == 0 && !($mybb->settings['showownunapproved'] && $post['uid'] == $mybb->user['uid']))
 		{
 			xmlhttp_error($lang->post_moderation);
 		}
@@ -745,7 +745,11 @@ else if($mybb->input['action'] == "get_multiquoted")
 			(in_array($quoted_post['fid'], $onlyusfids) && (!$mybb->user['uid'] || $quoted_post['thread_uid'] != $mybb->user['uid']))
 		)
 		{
-			continue;
+			// Allow quoting from own unapproved post
+			if($quoted_post['visible'] == 0 && !($mybb->settings['showownunapproved'] && $quoted_post['uid'] == $mybb->user['uid']))
+			{
+				continue;
+			}
 		}
 
 		$message .= parse_quoted_message($quoted_post, false);
@@ -1070,6 +1074,43 @@ else if($mybb->input['action'] == "get_buddyselect")
 	{
 		xmlhttp_error($lang->buddylist_error);
 	}
+}
+else if($mybb->input['action'] == 'get_referrals')
+{
+	$lang->load('member');
+	$uid = $mybb->get_input('uid', MYBB::INPUT_INT);
+
+	if (!$uid) {
+		xmlhttp_error($lang->referrals_no_user_specified);
+	}
+
+	$referrals = get_user_referrals($uid);
+
+	if (empty($referrals)) {
+		eval("\$referral_rows = \"".$templates->get('member_no_referrals')."\";");
+	} else {
+		foreach($referrals as $referral)
+		{
+			// Format user name link
+			$username = htmlspecialchars_uni($referral['username']);
+			$username = format_name($username, $referral['usergroup'], $referral['displaygroup']);
+			$username = build_profile_link($username, $referral['uid']);
+
+			$regdate = my_date('normal', $referral['regdate']);
+
+			eval("\$referral_rows .= \"".$templates->get('member_referral_row')."\";");
+
+			$bg_color = alt_trow();
+		}
+	}
+
+	$plugins->run_hooks('xmlhttp_referrals_end');
+
+	eval("\$referrals = \"".$templates->get('member_referrals_popup', 1, 0)."\";");
+
+	// Send our headers and output.
+	header("Content-type: text/plain; charset={$charset}");
+	echo $referrals;
 }
 
 /**

@@ -1145,18 +1145,41 @@ if($mybb->input['action'] == "change")
 		// Search for settings
 		$search = $db->escape_string_like($mybb->input['search']);
 		$query = $db->query("
-			SELECT s.*
+			SELECT s.* , g.name as gname, g.title as gtitle, g.description as gdescription
 			FROM ".TABLE_PREFIX."settings s
 			LEFT JOIN ".TABLE_PREFIX."settinggroups g ON(s.gid=g.gid)
-			WHERE s.name LIKE '%{$search}%' OR s.title LIKE '%{$search}%' OR s.description LIKE '%{$search}%' OR g.name LIKE '%{$search}%' OR g.title LIKE '%{$search}%' OR g.description LIKE '%{$search}%'
 			ORDER BY s.disporder
 		");
 		while($setting = $db->fetch_array($query))
 		{
-			$cache_settings[$setting['gid']][$setting['sid']] = $setting;
+			$lang_var = "setting_{$setting['name']}";
+			if(isset($lang->$lang_var))
+			{
+				$setting["title"] = $lang->$lang_var;
+			}
+			$lang_var = "setting_{$setting['name']}_desc";
+			if(isset($lang->$lang_var))
+			{
+				$setting["description"] = $lang->$lang_var;
+			}
+			$lang_var = "setting_group_{$setting['gname']}";
+			if(isset($lang->$lang_var))
+			{
+				$setting["gtitle"] = $lang->$lang_var;
+			}
+			$lang_var = "setting_group_{$setting['gname']}_desc";
+			if(isset($lang->$lang_var))
+			{
+				$setting["gdescription"] = $lang->$lang_var;
+			}
+			$lang_var = $setting["title"] . " " . $setting["description"] . " " . $setting["gtitle"] . " " . $setting["gdescription"];
+			$search = mb_convert_encoding($search, mb_detect_encoding($setting["title"], "auto"));
+			if (mb_stripos($lang_var, $search))
+			{
+				$cache_settings[$setting['gid']][$setting['sid']] = $setting;
+			}
 		}
-
-		if(!$db->num_rows($query))
+		if(!count($cache_settings))
 		{
 			if(isset($mybb->input['ajax_search']))
 			{
@@ -1781,7 +1804,8 @@ function print_setting_peekers()
 		'new Peeker($("#setting_errorlogmedium"), $("#row_setting_errorloglocation"), /^(log|both)/, false)',
 		'new Peeker($(".setting_sigmycode"), $("#row_setting_sigcountmycode, #row_setting_sigimgcode"), 1, true)',
 		'new Peeker($(".setting_pmsallowmycode"), $("#row_setting_pmsallowimgcode, #row_setting_pmsallowvideocode"), 1, true)',
-		'new Peeker($(".setting_enableshowteam"), $("#row_setting_showaddlgroups, #row_setting_showgroupleaders"), 1, true)'
+		'new Peeker($(".setting_enableshowteam"), $("#row_setting_showaddlgroups, #row_setting_showgroupleaders"), 1, true)',
+		'new Peeker($(".setting_usereferrals"), $("#row_setting_referralsperpage"), 1, true)',
 	);
 
 	$peekers = $plugins->run_hooks("admin_settings_print_peekers", $peekers);

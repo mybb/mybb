@@ -88,11 +88,17 @@ $forumpermissions = forum_permissions($fid);
 // See if everything is valid up to here.
 if(isset($post) && (($post['visible'] == 0 && !is_moderator($fid, "canviewunapprove")) || ($post['visible'] < 0 && $post['uid'] != $mybb->user['uid'])))
 {
-	error($lang->error_invalidpost);
+	if($post['visible'] == 0 && !($mybb->settings['showownunapproved'] && $post['uid'] == $mybb->user['uid']))
+	{
+		error($lang->error_invalidpost);
+	}
 }
 if(($thread['visible'] == 0 && !is_moderator($fid, "canviewunapprove")) || $thread['visible'] < 0)
 {
-	error($lang->error_invalidthread);
+	if($thread['visible'] == 0 && !($mybb->settings['showownunapproved'] && $thread['uid'] == $mybb->user['uid']))
+	{
+		error($lang->error_invalidthread);
+	}
 }
 if($forum['open'] == 0 || $forum['type'] != "f")
 {
@@ -1186,7 +1192,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			$mybb->settings['postsperpage'] = 20;
 		}
 
-		if(is_moderator($fid, "canviewunapprove"))
+		if(is_moderator($fid, "canviewunapprove") || $mybb->settings['showownunapproved'])
 		{
 			$visibility = "(visible='1' OR visible='0')";
 		}

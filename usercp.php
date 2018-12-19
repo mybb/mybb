@@ -4108,6 +4108,14 @@ if(!$mybb->input['action'])
 	if($mybb->settings['usereferrals'] == 1)
 	{
 		$referral_link = $lang->sprintf($lang->referral_link, $settings['bburl'], $mybb->user['uid']);
+
+		$referral_count = (int) $mybb->user['referrals'];
+		if($referral_count > 0)
+		{
+			$uid = (int) $mybb->user['uid'];
+			eval("\$mybb->user['referrals'] = \"".$templates->get('member_referrals_link')."\";");
+		}
+
 		eval("\$referral_info = \"".$templates->get("usercp_referrals")."\";");
 	}
 
@@ -4185,6 +4193,7 @@ if(!$mybb->input['action'])
 
 				foreach($subscriptions as $thread)
 				{
+					$plugins->run_hooks("usercp_thread_subscriptions_thread");
 					$folder = '';
 					$folder_label = '';
 					$gotounread = '';
@@ -4377,6 +4386,7 @@ if(!$mybb->input['action'])
 		$latest_threads_threads = '';
 		foreach($threadcache as $thread)
 		{
+			$plugins->run_hooks("usercp_latest_threads_thread"); 
 			if($thread['tid'])
 			{
 				$bgcolor = alt_trow();

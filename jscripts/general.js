@@ -17,17 +17,28 @@ var MyBB = {
 		$('[name="allbox"]').each(function(key, value) {
 			var allbox = this;
 			var checked = $(this).is(':checked');
-			var checkboxes = $(this).closest('form').find(':checkbox');
+			var checkboxes = $(this).closest('form').find(':checkbox').not('[name="allbox"]');
+
 			checkboxes.change(function() {
 				if(checked && !$(this).prop('checked'))
 				{
 					checked = false;
-					$(allbox).prop('checked', checked);
+					$(allbox).trigger('change', ['item']);
 				}
 			});
-			$(this).change(function() {
+
+			$(this).on('change', function(event, origin) {
 				checked = $(this).is(':checked');
-				checkboxes.prop('checked', checked);
+
+				if(typeof(origin) == "undefined")
+				{
+					checkboxes.each(function() {
+						if(checked != $(this).is(':checked'))
+						{
+							$(this).prop('checked', checked).change();
+						}
+					});
+				}
 			});
 		});
 
@@ -74,6 +85,8 @@ var MyBB = {
 				$("body").css("overflow", "auto");
 			});
 		}
+
+		$("a.referralLink").click(MyBB.showReferrals);
 	},
 
 	popupWindow: function(url, options, root)
@@ -458,6 +471,28 @@ var MyBB = {
 		});
 
 		return false;
+	},
+
+	showReferrals: function(e)
+	{
+		var idPieces, uid;
+
+		e.preventDefault();
+		
+		if(typeof this.id == "undefined")
+		{
+			return false;
+		}
+
+		idPieces = this.id.split("_");
+		uid = parseInt(idPieces[idPieces.length - 1], 10);
+
+		if(uid <= 0)
+		{
+			return false;
+		}
+
+		MyBB.popupWindow("/xmlhttp.php?action=get_referrals&uid="+uid);
 	},
 
 	// Fixes https://github.com/mybb/mybb/issues/1232
