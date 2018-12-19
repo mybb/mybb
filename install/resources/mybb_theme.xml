@@ -9575,14 +9575,14 @@ if(use_xmlhttprequest == "1")
 </table>
 </td>
 </tr>]]></template>
-		<template name="post_javascript" version="1818"><![CDATA[
+		<template name="post_javascript" version="1821"><![CDATA[
 			<script type="text/javascript">
 				lang.attachment_too_many_files = "{$lang->attachment_too_many_files}";
 				lang.attachment_too_big_upload = "{$lang->attachment_too_big_upload}";
 				php_max_upload_size = {$php_max_upload_size};
 				php_max_file_uploads = {$php_max_file_uploads};
 			</script>
-			<script type="text/javascript" src="{$mybb->asset_url}/jscripts/post.js?ver=1818"></script>
+			<script type="text/javascript" src="{$mybb->asset_url}/jscripts/post.js?ver=1821"></script>
 			]]></template>
 		<template name="post_prefixselect_multiple" version="1800"><![CDATA[<select name="threadprefix[]" multiple="multiple" size="5">
 <option value="any"{$any_selected}>{$lang->any_prefix}</option>
@@ -10723,7 +10723,7 @@ document.write('<br /><span class="smalltext"><a href="javascript:void(0)" oncli
 		</table>
 	</div>
 </div>]]></template>
-		<template name="modal_button" version="1821"><![CDATA[<input type="submit" class="button" value="__title__"/>]]></template>
+		<template name="modal_button" version="1821"><![CDATA[<input type="submit" class="button" value="__title__"/>&nbsp;]]></template>
 		<template name="report" version="1809"><![CDATA[<div class="modal">
   <div style="overflow-y: auto; max-height: 400px;" class="modal_{$id}">
   <form action="report.php" method="post" class="reportData_{$id}" onsubmit="return Report.submitReport({$id});">
@@ -11412,7 +11412,7 @@ if(use_xmlhttprequest == "1")
 <td width="5%" class="{$bgcolor}"><div class="postbit_buttons">{$emailcode}</div></td>
 <td width="5%" class="{$bgcolor}"><div class="postbit_buttons">{$pmcode}</div></td>
 </tr>]]></template>
-		<template name="showthread" version="1820"><![CDATA[<html>
+		<template name="showthread" version="1821"><![CDATA[<html>
 <head>
 <title>{$thread['subject']}</title>
 {$headerinclude}
@@ -11439,7 +11439,7 @@ if(use_xmlhttprequest == "1")
 <!-- jeditable (jquery) -->
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/report.js?ver=1804"></script>
 <script src="{$mybb->asset_url}/jscripts/jeditable/jeditable.min.js"></script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/thread.js?ver=1813"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/thread.js?ver=1821"></script>
 </head>
 <body>
 	{$header}
@@ -12277,11 +12277,11 @@ if(use_xmlhttprequest == "1")
 		{$lang->no_requests}
 	</td>
 </tr>]]></template>
-		<template name="usercp_editlists" version="1808"><![CDATA[<html>
+		<template name="usercp_editlists" version="1821"><![CDATA[<html>
 <head>
 	<title>{$mybb->settings['bbname']} - {$lang->edit_lists}</title>
 	{$headerinclude}
-	<script type="text/javascript" src="{$mybb->asset_url}/jscripts/usercp.js?ver=1808"></script>
+	<script type="text/javascript" src="{$mybb->asset_url}/jscripts/usercp.js?ver=1821"></script>
 	<script type="text/javascript">
 		lang.remove_buddy = '{$lang->confirm_remove_buddy}';
 		lang.remove_ignored = '{$lang->confirm_remove_ignored}';
@@ -14112,8 +14112,8 @@ $(function() {
 <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.js?ver=1813"></script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.plugins.js?ver=1821"></script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/general.js?ver=1820"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.plugins.min.js?ver=1821"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/general.js?ver=1821"></script>
 
 {$stylesheets}
 <script type="text/javascript">
