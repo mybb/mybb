@@ -453,7 +453,7 @@ var Thread = {
 
 	deletePost: function(pid)
 	{
-		$.prompt(quickdelete_confirm, {
+		MyBB.prompt(quickdelete_confirm, {
 			buttons:[
 					{title: yes_confirm, value: true},
 					{title: no_confirm, value: false}
@@ -532,7 +532,7 @@ var Thread = {
 
 	restorePost: function(pid)
 	{
-		$.prompt(quickrestore_confirm, {
+		MyBB.prompt(quickrestore_confirm, {
 			buttons:[
 					{title: yes_confirm, value: true},
 					{title: no_confirm, value: false}

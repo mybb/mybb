@@ -101,9 +101,44 @@ var MyBB = {
 		});
 	},
 
+	prompt: function(message, options)
+	{
+		var defaults = { fadeDuration: 250, zIndex: (typeof modal_zindex !== 'undefined' ? modal_zindex : 9999) };
+		var buttonsText = '';
+
+		for (var i in options.buttons)
+		{
+			buttonsText += templates.modal_button.replace('__title__', options.buttons[i].title);
+		}
+
+		var html = templates.modal.replace('__buttons__', buttonsText).replace('__message__', message);
+		var modal = $(html);
+		modal.modal($.extend(defaults, options));
+		var buttons = modal.find('.modal_buttons > .button');
+		buttons.click(function(e)
+		{
+			e.preventDefault();
+			var index = $(this).index();
+			if (options.submit(e, options.buttons[index].value) == false)
+				return;
+
+			$.modal.close();
+		});
+
+		if (buttons[0])
+		{
+			modal.on($.modal.OPEN, function()
+			{
+				buttons[0].focus();
+			});
+		}
+
+		return modal;
+	},
+
 	deleteEvent: function(eid)
 	{
-		$.prompt(deleteevent_confirm, {
+		MyBB.prompt(deleteevent_confirm, {
 			buttons:[
 					{title: yes_confirm, value: true},
 					{title: no_confirm, value: false}
@@ -191,7 +226,7 @@ var MyBB = {
 
 	deleteReputation: function(uid, rid)
 	{
-		$.prompt(delete_reputation_confirm, {
+		MyBB.prompt(delete_reputation_confirm, {
 			buttons:[
 					{title: yes_confirm, value: true},
 					{title: no_confirm, value: false}
@@ -457,7 +492,7 @@ var MyBB = {
 
 	deleteAnnouncement: function(data)
 	{
-		$.prompt(announcement_quickdelete_confirm, {
+		MyBB.prompt(announcement_quickdelete_confirm, {
 			buttons:[
 					{title: yes_confirm, value: true},
 					{title: no_confirm, value: false}

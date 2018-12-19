@@ -234,7 +234,7 @@ var UserCP = {
 			var message = lang.remove_buddy;
 		}
 
-		$.prompt(message, {
+		MyBB.prompt(message, {
 			buttons:[
 					{title: yes_confirm, value: true},
 					{title: no_confirm, value: false}

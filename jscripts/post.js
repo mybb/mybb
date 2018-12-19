@@ -94,7 +94,7 @@ var Post = {
 	
 	removeAttachment: function(aid)
 	{
-		$.prompt(removeattach_confirm, {
+		MyBB.prompt(removeattach_confirm, {
 			buttons:[
 					{title: yes_confirm, value: true},
 					{title: no_confirm, value: false}
