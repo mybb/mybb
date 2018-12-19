@@ -595,10 +595,10 @@
 		var defaults = { fadeDuration: 250, zIndex: (typeof modal_zindex !== 'undefined' ? modal_zindex : 9999) };
 		var buttonsText = '';
 		for (var i in options.buttons) {
-			buttonsText += MyBB.templates.modal_button.replace('__title__', options.buttons[i].title);
+			buttonsText += templates.modal_button.replace('__title__', options.buttons[i].title);
 		}
-		var html = MyBB.templates.modal;
-		var modal = $(html.replace('__buttons__', buttonsText).replace('__message__', message));
+		var html = templates.modal.replace('__buttons__', buttonsText).replace('__message__', message);
+		var modal = $(html);
 		modal.modal($.extend(defaults, options));
 		var buttons = modal.find('.modal_buttons > .button');
 		buttons.click(function(e) {

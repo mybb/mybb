@@ -10711,7 +10711,7 @@ document.write('<br /><span class="smalltext"><a href="javascript:void(0)" oncli
 <td class="tfoot" align="right" colspan="5"><strong><input type="submit" class="button" name="stoptrackingunread" value="{$lang->stop_tracking}" /> / <input type="submit" class="button" name="cancel" value="{$lang->delete}" /> {$lang->selected_messages}</strong></td>
 </tr>]]></template>
 		<template name="modal" version="1821"><![CDATA[<div class="modal">
-	<div style="overflow-y: auto; max-height: 400px;" class="modal_6">
+	<div style="overflow-y: auto; max-height: 400px;">
 		<table border="0" cellspacing="0" cellpadding="5" class="tborder">
 			<tr>
 				<td class="thead" colspan="2"><strong>__message__</strong></td>
@@ -14112,7 +14112,7 @@ $(function() {
 <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.js?ver=1813"></script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.plugins.min.js?ver=1821"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.plugins.js?ver=1821"></script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/general.js?ver=1820"></script>
 
 {$stylesheets}
@@ -14131,6 +14131,11 @@ $(function() {
 	lang.select2_selectiontoobig_plural = "{$lang->select2_selectiontoobig_plural}";
 	lang.select2_loadmore = "{$lang->select2_loadmore}";
 	lang.select2_searching = "{$lang->select2_searching}";
+
+	var templates = {
+		modal: '{$jsTemplates['modal']}',
+		modal_button: '{$jsTemplates['modal_button']}'
+	};
 
 	var cookieDomain = "{$mybb->settings['cookiedomain']}";
 	var cookiePath = "{$mybb->settings['cookiepath']}";
