@@ -44,7 +44,7 @@ if($thread_limit > 50)
 }
 else if(!$thread_limit || $thread_limit < 0)
 {
-	$thread_limit = 20;
+	$thread_limit = 15;
 }
 
 // Syndicate a specific forum or all viewable?
