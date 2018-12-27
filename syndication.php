@@ -190,7 +190,7 @@ if(!empty($firstposts))
 		}
 	}
 
-	$query = $db->simple_select("posts", "message, edittime, tid, fid, pid", $firstpostlist, array('order_by' => 'dateline', 'order_dir' => 'desc'));
+	$query = $db->simple_select("posts", "message, edittime, tid, uid, username, fid, pid", $firstpostlist, array('order_by' => 'dateline', 'order_dir' => 'desc'));
 	while($post = $db->fetch_array($query))
 	{
 		$parser_options = array(
@@ -227,6 +227,7 @@ if(!empty($firstposts))
 
 		$items[$post['tid']]['description'] = $parsed_message;
 		$items[$post['tid']]['updated'] = $post['edittime'];
+		$items[$post['tid']]['author'] = '<a href="'.$mybb->settings['bburl'].'/member.php?action=profile&uid='.$post['uid'].'">'.$post['username'].'</a>';
 		$feedgenerator->add_item($items[$post['tid']]);
 	}
 }
