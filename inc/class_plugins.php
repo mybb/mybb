@@ -27,7 +27,7 @@ class pluginSystem
      */
     function load()
     {
-        global $cache;
+        global $cache, $plugins;
 
         $pluginList = $cache->read("plugins");
         if (!empty($pluginList['active']) && is_array($pluginList['active'])) {
