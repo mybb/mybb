@@ -78,7 +78,7 @@ var MyBB = {
 
 	popupWindow: function(url, options, root)
 	{
-		if(!options) options = { fadeDuration: 250, closeText: '<i class="close-modal__icon fa fa-times"></i><span class="close-modal__text">Close</span>', zIndex: (typeof modal_zindex !== 'undefined' ? modal_zindex : 9999) }
+		if(!options) options = { fadeDuration: 250, closeText: modal_close, zIndex: (typeof modal_zindex !== 'undefined' ? modal_zindex : 9999) }
 		if(root != true)
 			url = rootpath + url;
 

@@ -1,6 +1,6 @@
 <ul class="user-bar__links">
 	<li class="user-bar__item user-bar__item--log-in">
-		<a href="{{ mybb.settings.bburl }}/member.php?action=login" class="user-bar__link" onclick="$('#quick_login').modal({ fadeDuration: 250, keepelement: true, zIndex: (typeof modal_zindex !== 'undefined' ? modal_zindex : 9999) }); return false;">{{ include('partials/icon.twig', {icon: 'sign-in-alt', class: 'user-bar__icon'}, with_context = false) }} {{ lang.welcome_login }}</a>
+		<a href="{{ mybb.settings.bburl }}/member.php?action=login" class="user-bar__link" onclick="$('#quick_login').modal({ fadeDuration: 250, closeText: modal_close, keepelement: true, zIndex: (typeof modal_zindex !== 'undefined' ? modal_zindex : 9999) }); return false;">{{ include('partials/icon.twig', {icon: 'sign-in-alt', class: 'user-bar__icon'}, with_context = false) }} {{ lang.welcome_login }}</a>
 	</li>
 	<li class="user-bar__item user-bar__item--sign-up">
 		<a href="{{ mybb.settings.bburl }}/member.php?action=register" class="user-bar__link">{{ include('partials/icon.twig', {icon: 'user', class: 'user-bar__icon'}, with_context = false) }} {{ lang.welcome_register }}</a>

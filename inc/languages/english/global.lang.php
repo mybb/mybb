@@ -119,6 +119,8 @@ $l['date'] = "Date";
 
 $l['nobody'] = "Nobody";
 
+$l['close'] = "Close";
+
 $l['attachments'] = "Attachments";
 $l['attachments_desc'] = "Optionally you may attach one or more attachments to this post. Please select the file on the right and click 'Add Attachment' to upload it.";
 $l['remove_attachment'] = "Remove";
