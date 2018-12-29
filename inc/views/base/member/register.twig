@@ -11,8 +11,8 @@
 			<h1 class="title title--page">{{ lang.registration }}</h1>
 		</header>
         <form action="member.php" method="post" id="registration_form">
-            <input type="text" class="visually-hidden" value="" name="regcheck1" />
-            <input type="text" class="visually-hidden" value="true" name="regcheck2" />
+            <input type="text" class="hidden" value="" name="regcheck1" />
+            <input type="text" class="hidden" value="true" name="regcheck2" />
             {{ regerrors|raw }}
             <div class="block block--form form">
                 <section class="section section--form">
@@ -150,8 +150,8 @@
                 <section class="section section--form">
                     <h2 class="title title--section">{{ lang.account_prefs }}</h2>
                     <div class="section__container">
-                        {# Remove the `visually-hidden` class from each of the following rows to show them on registration page #}
-                        <div class="visually-hidden row row--form field">
+                        {# Remove the `hidden` class from each of the following rows to show them on registration page #}
+                        <div class="hidden row row--form field">
                             <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="allownotices" id="allownotices" value="1"{% if select.allownotices %} checked="checked"{% endif %} /> {{ lang.allow_notices }}</label></p>
                             <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="hideemail" id="hideemail" value="1"{% if select.hideemail %} checked="checked"{% endif %} /> {{ lang.hide_email }}</label></p>
                             <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="receivepms" id="receivepms" value="1"{% if select.receivepms %} checked="checked"{% endif %} /> {{ lang.receive_pms }}</label></p>
@@ -159,7 +159,7 @@
                             <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="pmnotify" id="pmnotify" value="1"{% if select.pmnotify %} checked="checked"{% endif %} /> {{ lang.email_notify_newpm }}</label></p>
                             <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="invisible" id="invisible" value="1"{% if select.invisible %} checked="checked"{% endif %} /> {{ lang.invisible_mode }}</label></p>
                         </div>
-                        <div class="visually-hidden row row--form field">
+                        <div class="hidden row row--form field">
                             <h3 class="field__name"><label for="subscriptionmethod">{{ lang.subscription_method }}</label></h3>
                             <div class="select-field">
                                 <i class="select-field__icon fas fa-sort"></i>
@@ -172,7 +172,7 @@
                             </div>
                         </div>
                         {% if registration.showlanguages %}
-                            <div class="visually-hidden row row--form field">
+                            <div class="hidden row row--form field">
                                 <h3 class="field__name"><label for="language">{{ lang.lang_select }}</label></h3>
                                 <p class="field__description">{{ lang.lang_select_desc }}</p>
                                 <div class="select-field">
@@ -201,7 +201,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="visually-hidden row row--form field">
+                        <div class="hidden row row--form field">
                             <h3 class="field__name"><label for="dstcorrection">{{ lang.dst_correction }}</label></h3>
                             <div class="select-field">
                                 <i class="select-field__icon fas fa-sort"></i>
