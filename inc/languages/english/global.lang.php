@@ -61,7 +61,8 @@ $l['lastpost_no_posts'] = "No posts yet";
 $l['viewing_one'] = " (1 user browsing)";
 $l['viewing_multiple'] = " ({1} users browsing)";
 $l['by'] = "by";
-$l['more_subforums'] = "and {1} more";
+$l['more_subforums_single'] = "1 more subforum";
+$l['more_subforums_multiple'] = "{1} more subforums";
 
 $l['password_required'] = "Password Required";
 $l['forum_password_note'] = "You must enter this forum's password to gain access";

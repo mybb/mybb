@@ -35,6 +35,7 @@ function build_forumbits($pid=0, $depth=1)
 	$parent_counters['viewers'] = 0;
 	$forum_list = $comma = '';
 	$donecount = 0;
+	$more_count = 0;
 
 	// Foreach of the forums in this parent
 	foreach($fcache[$pid] as $parent)
@@ -272,7 +273,10 @@ SQL;
 				{
 					if(subforums_count($fcache[$pid]) > $donecount)
 					{
-						$forum_list .= $comma.$lang->sprintf($lang->more_subforums, (subforums_count($fcache[$pid]) - $donecount));
+						$more_count = subforums_count($fcache[$pid]) - $donecount;
+						$forum_list .= \MyBB\template('forumbit/subforums_more.twig', [
+							'more_count' => $more_count
+						]);
 					}
 				}
 				continue;
