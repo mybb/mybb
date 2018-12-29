@@ -81,7 +81,7 @@
         {% if foruminfo.type != 'c' %}
             <div class="page-controls page-controls--top">
                 <div class="page-buttons">
-                    <a href="misc.php?action=markread&amp;fid={{ foruminfo.fid }}{{ post_code_string }}" class="button button--medium button--secondary button--half-width">
+                    <a href="misc.php?action=markread&amp;fid={{ foruminfo.fid }}{% if mybb.user.uid %}&amp;my_post_key={{ mybb.post_code }}{% endif %}" class="button button--medium button--secondary button--half-width">
                         <i class="button__icon fas fa-dot-circle"></i>
                         <span class="button__text">{{ lang.markforum_read }}</span>
                     </a>
