@@ -1,7 +1,7 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ trans('profile', memprofile.username) }}</title>
+    <title>{{ trans('profile', memprofile.username) }} - {{ mybb.settings.bbname }}</title>
     <script type="text/javascript" src="{{ asset_url('jscripts/report.js') }}"></script>
 {% endblock head %}
 
