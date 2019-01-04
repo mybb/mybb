@@ -1,6 +1,6 @@
 // This was taken from the SCEditor plugin for MyBB
 
-$(document).ready(function($) {
+$(function($) {
 	'use strict';
 
 	var $document = $(document);

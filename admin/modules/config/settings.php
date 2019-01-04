@@ -440,7 +440,7 @@ if($mybb->input['action'] == "add")
 
 	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1804"></script>
 	<script type="text/javascript">
-		$(document).ready(function() {
+		$(function() {
 			new Peeker($("#type"), $("#row_extra"), /^(select|radio|checkbox|php)$/, false);
 		});
 		// Add a star to the extra row since the "extra" is required if the box is shown
@@ -658,7 +658,7 @@ if($mybb->input['action'] == "edit")
 
 	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1804"></script>
 	<script type="text/javascript">
-		$(document).ready(function() {
+		$(function() {
 			new Peeker($("#type"), $("#row_extra"), /^(select|radio|checkbox|php)$/, false);
 		});
 		// Add a star to the extra row since the "extra" is required if the box is shown
@@ -1747,7 +1747,7 @@ EOF;
 <script type="text/javascript" src="./jscripts/search.js?ver=1808"></script>
 <script type="text/javascript">
 //<!--
-$(document).ready(function(){
+$(function(){
 	SettingSearch.init("'.$lang->settings_search.'","'.$lang->error_ajax_unknown.'");
 });
 //-->
@@ -1814,7 +1814,7 @@ function print_setting_peekers()
 
 	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1804"></script>
 	<script type="text/javascript">
-		$(document).ready(function() {
+		$(function() {
 			' . $setting_peekers . '
 		});
 	</script>';

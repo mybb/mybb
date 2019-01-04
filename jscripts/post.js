@@ -1,7 +1,7 @@
 var Post = {
 	init: function()
 	{
-		$(document).ready(function()
+		$(function()
 		{
 			Post.initAttachments();
 		});
