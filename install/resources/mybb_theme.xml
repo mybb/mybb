@@ -5632,7 +5632,7 @@ if(use_xmlhttprequest == "1")
 </table>
 </div>
 </div>]]></template>
-		<template name="memberlist" version="1808"><![CDATA[<html>
+		<template name="memberlist" version="1820"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->member_list}</title>
 {$headerinclude}
@@ -5684,9 +5684,6 @@ if(use_xmlhttprequest == "1")
 </tr>
 {$users}
 </table>
-<div class="float_right" style="padding-top: 4px;">
-	<a href="showteam.php"><strong>{$lang->forumteam}</strong></a>
-</div>
 {$multipage}
 <br class="clear" />
 <br />
