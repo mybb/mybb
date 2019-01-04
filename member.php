@@ -2126,14 +2126,14 @@ if($mybb->input['action'] == "profile")
 	}
 
 	$memprofile['showemail'] = false;
-	if($memprofile['hideemail'] != 1 && (my_strpos(",".$memprofile['ignorelist'].",", ",".$mybb->user['uid'].",") === false || $mybb->usergroup['cansendemailoverride'] != 0))
+	if($mybb->usergroup['cansendemail'] == 1 && $memprofile['hideemail'] != 1 && (my_strpos(",".$memprofile['ignorelist'].",", ",".$mybb->user['uid'].",") === false || $mybb->usergroup['cansendemailoverride'] != 0))
 	{
 		$memprofile['hascontacts'] = true;
 		$memprofile['showemail'] = true;
 	}
 
 	$memprofile['showpm'] = false;
-	if($mybb->settings['enablepms'] != 0 && (($memprofile['receivepms'] != 0 && $memperms['canusepms'] != 0 && my_strpos(",".$memprofile['ignorelist'].",", ",".$mybb->user['uid'].",") === false) || $mybb->usergroup['canoverridepm'] == 1))
+	if($mybb->settings['enablepms'] != 0 && $mybb->usergroup['canusepms'] == 1 && (($memprofile['receivepms'] != 0 && $memperms['canusepms'] != 0 && my_strpos(",".$memprofile['ignorelist'].",", ",".$mybb->user['uid'].",") === false) || $mybb->usergroup['canoverridepm'] == 1))
 	{
 		$memprofile['hascontacts'] = true;
 		$memprofile['showpm'] = true;
