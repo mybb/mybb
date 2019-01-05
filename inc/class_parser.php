@@ -666,9 +666,9 @@ class postParser
 			return;
 		}
 
-		// Neutralize multiple adjacent wildcards and generate pattern
-		$ptrn = array('/\*\++/', '/\++\*/', '/\*+/');
-		$rplc = array('*', '*', '[^\s\n]*');
+		// Neutralize escape character, regex operators, multiple adjacent wildcards and generate pattern
+		$ptrn = array('/\\\\/', '/([\[\^\$\.\|\?\(\)\{\}]{1})/', '/\*\++/', '/\++\*/', '/\*+/');
+		$rplc = array('\\\\\\\\','\\\\${1}', '*', '*', '[^\s\n]*');
 		$bad_word = preg_replace($ptrn, $rplc, $bad_word);
 
 		// Count + and generate pattern
@@ -694,7 +694,7 @@ class postParser
 			$trap .= '[^\s\n]{'.($plus-1).'}';
 		}
 
-		return '\b'.$trap.'\b';
+		return '[\b\B]{0}'.$trap.'[\b\B]{0}';
 	}
 
 	/**
@@ -1111,7 +1111,7 @@ class postParser
 		// Fix some entities in URLs
 		$link['url'] = $this->encode_url($url);
 
-		$link['name'] = preg_replace("#&amp;\#([0-9]+);#si", "&#$1;", $name); // Fix & but allow unicode
+		$link['name'] = $this->parse_badwords(preg_replace("#&amp;\#([0-9]+);#si", "&#$1;", $name)); // Fix & but allow unicode, filter bad words
 
 		return template('parser/mycodes/url.twig', [
 			'link' => $link
