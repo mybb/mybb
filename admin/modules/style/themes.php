@@ -1988,7 +1988,7 @@ if($mybb->input['action'] == "stylesheet_properties")
 
 	echo <<<EOF
 
-	<script type="text/javascript" src="./jscripts/theme_properties.js"></script>
+	<script type="text/javascript" src="./jscripts/theme_properties.js?ver=1820"></script>
 	<script type="text/javascript">
 	<!---
 	themeProperties.setup('{$count}');
@@ -2253,7 +2253,7 @@ if($mybb->input['action'] == "edit_stylesheet" && (!isset($mybb->input['mode']) 
 	echo '<script type="text/javascript" src="./jscripts/themes.js?ver=1808"></script>';
 	echo '<script type="text/javascript">
 
-$(document).ready(function() {
+$(function() {
 //<![CDATA[
 	ThemeSelector.init("./index.php?module=style-themes&action=xmlhttp_stylesheet", "./index.php?module=style-themes&action=edit_stylesheet", $("#selector"), $("#stylesheet"), "'.htmlspecialchars_uni($mybb->input['file']).'", $("#selector_form"), "'.$mybb->input['tid'].'");
 	lang.saving = "'.$lang->saving.'";
@@ -2896,7 +2896,7 @@ if($mybb->input['action'] == "add_stylesheet")
 	}
 
 	echo '<script type="text/javascript" src="./jscripts/themes.js?ver=1808"></script>';
-	echo '<script type="text/javascript" src="./jscripts/theme_properties.js"></script>';
+	echo '<script type="text/javascript" src="./jscripts/theme_properties.js?ver=1820"></script>';
 	echo '<script type="text/javascript">
 $(function() {
 //<![CDATA[

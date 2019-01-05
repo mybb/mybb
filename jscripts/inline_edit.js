@@ -3,7 +3,7 @@ var inlineEditor = {
 
 	init: function()
 	{
-		$(document).ready(function()
+		$(function()
 		{
 			inlineEditor.bindSubjects();
 		});

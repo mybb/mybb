@@ -791,7 +791,7 @@ if($mybb->input['action'] == "register")
 		}
 
 		$validator_javascript = "<script type=\"text/javascript\">
-$(document).ready(function() {
+$(function() {
 	$('#registration_form').validate({
 		rules: {
 			username: {

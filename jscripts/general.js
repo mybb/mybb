@@ -87,6 +87,13 @@ var MyBB = {
 		}
 
 		$("a.referralLink").click(MyBB.showReferrals);
+
+		if($('.author_avatar').length)
+		{
+			$(".author_avatar img").on('error', function () {
+				$(this).unbind("error").closest('.author_avatar').remove();
+			});
+		}
 	},
 
 	popupWindow: function(url, options, root)

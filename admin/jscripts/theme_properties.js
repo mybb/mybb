@@ -78,7 +78,7 @@ var themeProperties = (function() {
 		}
 	}
 
-	$(document).ready(init);
+	$(init);
 
 	// the only public method
 	return {

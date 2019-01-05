@@ -1,7 +1,7 @@
 var Report = {
 	init: function()
 	{
-		$(document).ready(function(){
+		$(function(){
 		});
 	},
 
