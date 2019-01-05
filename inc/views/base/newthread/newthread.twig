@@ -211,10 +211,5 @@
                 <input type="hidden" name="pid" value="{{ newthread.pid }}" />
             {% endif %}
         </form>
-        <script type="text/javascript">
-            $(".author_avatar img").error(function () {
-                $(this).unbind("error").closest('.author_avatar').remove();
-            });
-        </script>
     </div>
 {% endblock body %}

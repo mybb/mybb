@@ -590,7 +590,7 @@ if($mybb->input['action'] == "permissions")
 		<script src=\"jscripts/tabs.js\" type=\"text/javascript\"></script>\n
 		<script type=\"text/javascript\">
 <!--
-$(document).ready(function() {
+$(function() {
 	$(\"#modal_form\").on(\"click\", \"#savePermissions\", function(e) {
 		e.preventDefault();
 		
