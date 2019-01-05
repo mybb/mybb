@@ -1,7 +1,7 @@
 var Thread = {
 	init: function()
 	{
-		$(document).ready(function(){
+		$(function(){
 			Thread.quickEdit();
 			Thread.initQuickReply();
 			Thread.initMultiQuote();
