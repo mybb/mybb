@@ -9441,7 +9441,7 @@ if(use_xmlhttprequest == "1")
 </table>]]></template>
 		<template name="post_attachments_add" version="1614"><![CDATA[<input type="submit" class="button" name="newattachment" value="{$lang->add_attachment}" tabindex="13" />]]></template>
 		<template name="post_attachments_viewlink" version="1816"><![CDATA[<a href="usercp.php?action=attachments">{$lang->view_attachments}</a>]]></template>
-		<template name="post_attachments_attachment" version="1807"><![CDATA[<tr>
+		<template name="post_attachments_attachment" version="1820"><![CDATA[<tr id="attachment_{$attachment['aid']}">
 <td class="trow2" width="1" align="center">{$attachment['icon']}</td>
 <td class="trow2" width="60%" style="white-space: nowrap">{$attachment['filename']} ({$attachment['size']})</td>
 <td class="trow2" style="white-space: nowrap; text-align: center;">{$attach_mod_options} {$attach_rem_options} {$postinsert}</td>

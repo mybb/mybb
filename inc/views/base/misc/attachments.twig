@@ -6,7 +6,7 @@
         </div>
         {% for attachment in attachments %}
             {% if attachment.visible %}
-                <div class="row row--form field uploaded-attachment">
+                <div class="row row--form field uploaded-attachment" id="attachment_{{ attachment.aid }}">
                     <div class="uploaded-attachment__details">
                         <span class="uploaded-attachment__icon">{{ attachment.icon|raw }}</span>
                         <span class="uploaded-attachment__file-name">{{ attachment.filename }}</span>
