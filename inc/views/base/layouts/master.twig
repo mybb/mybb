@@ -43,6 +43,11 @@
         lang.select2_loadmore = "{{ lang.select2_loadmore }}";
         lang.select2_searching = "{{ lang.select2_searching }}";
 
+        var templates = {
+            modal: '{{ jsTemplates.modal|raw }}',
+            modal_button: '{{ jsTemplates.modal_button|raw }}'
+        };
+
         var cookieDomain = "{{ mybb.settings.cookiedomain }}";
         var cookiePath = "{{ mybb.settings.cookiepath }}";
         var cookiePrefix = "{{ mybb.settings.cookieprefix }}";

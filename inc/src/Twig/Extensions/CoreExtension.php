@@ -53,8 +53,11 @@ class CoreExtension extends AbstractExtension implements GlobalsInterface
      */
     public function getGlobals()
     {
+        global $jsTemplates;
+
         return [
             'mybb' => $this->mybb,
+            'jsTemplates' => $jsTemplates,
         ];
     }
 
