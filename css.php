@@ -22,13 +22,14 @@ if(!empty($stylesheets))
 	$stylesheet_list = implode(', ', array_map('intval', $stylesheets));
 
 	$content = '';
+	$prefix = TABLE_PREFIX;
 
 	switch($db->type)
 	{
 		case 'pgsql':
 		case 'sqlite':
 			$sql = <<<SQL
-SELECT stylesheet FROM themestylesheets
+SELECT stylesheet FROM {$prefix}themestylesheets
   WHERE sid IN ({$stylesheet_list})
   ORDER BY CASE sid
 SQL;
@@ -46,7 +47,7 @@ SQL;
 			break;
 		default:
 			$sql = <<<SQL
-SELECT stylesheet FROM themestylesheets
+SELECT stylesheet FROM {$prefix}themestylesheets
   WHERE sid IN ({$stylesheet_list})
   ORDER BY FIELD(sid, {$stylesheet_list});
 SQL;
