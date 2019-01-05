@@ -5019,8 +5019,7 @@ if(use_xmlhttprequest == "1")
 <ul>
 {$editprofile}
 {$banuser}
-{$editban}
-{$liftban}
+{$manageban}
 {$purgespammer}
 </ul>
 </td>
