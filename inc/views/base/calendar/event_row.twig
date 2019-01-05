@@ -27,20 +27,37 @@
             <div class="post__foot post__foot--controls">
                 {% if event.can_edit == true %}
                 <div class="post-controls post-controls--primary">
-                    <a href="calendar.php?action=editevent&amp;eid={{ event.eid }}" class="post-control post-control--edit"><i class="post-control__icon fas fa-edit fa-fw"></i><span class="post-control__text">{{ lang.postbit_button_edit }}</span></a>
-                    <a href="javascript:void(0)" onclick="MyBB.deleteEvent({{ event.eid }}); return false;" class="post-control post-control--delete"><i class="post-control__icon fas fa-trash fa-fw"></i><span class="post-control__text">{{ lang.postbit_button_qdelete }}</span></a>
+                    <a href="calendar.php?action=editevent&amp;eid={{ event.eid }}" class="post-control post-control--edit">
+                        {{ include('partials/icon.twig', {icon: 'edit', class: 'post-control__icon fa-fw'}, with_context = false) }}
+                        <span class="post-control__text">{{ lang.postbit_button_edit }}</span>
+                    </a>
+                    <a href="javascript:void(0)" onclick="MyBB.deleteEvent({{ event.eid }}); return false;" class="post-control post-control--delete">
+                        {{ include('partials/icon.twig', {icon: 'trash', class: 'post-control__icon fa-fw'}, with_context = false) }}
+                        <span class="post-control__text">{{ lang.postbit_button_qdelete }}</span>
+                    </a>
                 </div>
                 {% endif %}
                 {% if calendar_permissions.canmoderateevents %}
                     <div class="post-controls post-controls--secondary post-options">
                         <input type="checkbox" class="post-options__checkbox" id="post_options_{{ event.eid }}">
                         <label for="post_options_{{ event.eid }}" class="post-control post-control--options post-options__control" title="{{ lang.moderator_options }}">
-                            <i class="post-control__icon fas fa-ellipsis-v fa-fw"></i>
+                            {{ include('partials/icon.twig', {icon: 'ellipsis-v', class: 'post-control__icon fa-fw'}, with_context = false) }}
                             <span class="visually-hidden">{{ lang.moderator_options }}</span>
                         </label>
                         <span class="post-options__list" id="post_options2_{{ event.eid }}">
-                            <a href="calendar.php?action={{ event.approve_value }}&amp;eid={{ event.eid }}&amp;my_post_key={{ mybb.post_code }}" title="{{ event.approve }}" class="post-control post-control--{{ event.approve_value }}"><i class="post-control__icon fas {% if event.approve_value == 'approve' %}fa-check{% else %}fa-times{% endif %} fa-fw"></i><span class="post-control__text">{{ event.approve }}</span></a>
-                            <a href="calendar.php?action=move&amp;eid={{ event.eid }}&amp;my_post_key={{ mybb.post_code }}" title="{{ lang.move_event }}" class="post-control post-control--move"><i class="post-control__icon fas fa-arrow-right fa-fw"></i><span class="post-control__text">{{ lang.move_event }}</span></a>
+                            <a href="calendar.php?action={{ event.approve_value }}&amp;eid={{ event.eid }}&amp;my_post_key={{ mybb.post_code }}" title="{{ event.approve }}" class="post-control post-control--{{ event.approve_value }}">
+                                {% if event.approve_value == 'approve' %}
+                                    {% set approve_icon = 'check' %}
+                                {% else %}
+                                    {% set approve_icon = 'times' %}
+                                {% endif %}
+                                {{ include('partials/icon.twig', {icon: approve_icon, class: 'post-control__icon fa-fw'}, with_context = false) }}
+                                <span class="post-control__text">{{ event.approve }}</span>
+                            </a>
+                            <a href="calendar.php?action=move&amp;eid={{ event.eid }}&amp;my_post_key={{ mybb.post_code }}" title="{{ lang.move_event }}" class="post-control post-control--move">
+                                {{ include('partials/icon.twig', {icon: 'arrow-right', class: 'post-control__icon fa-fw'}, with_context = false) }}
+                                <span class="post-control__text">{{ lang.move_event }}</span>
+                            </a>
                         </span>
                     </div>
                 {% endif %}

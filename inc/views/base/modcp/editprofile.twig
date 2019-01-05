@@ -1,7 +1,7 @@
 {% extends 'layouts/moderation.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.edit_profile }}</title>
+    <title>{{ lang.edit_profile }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block moderationHeader %}
@@ -42,7 +42,7 @@
                             <div class="date-field__item">
                                 <h4 class="date-field__name"><label for="bday_day">{{ lang.day }}</label></h4>
                                 <div class="select-field">
-                                    <i class="select-field__icon fas fa-sort"></i>
+                                    {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                     <select name="bday1" id="bday_day">
                                         <option value="">&nbsp;</option>
                                         {% for day in 1..31 %}
@@ -54,7 +54,7 @@
                             <div class="date-field__item">
                                 <h4 class="date-field__name"><label for="bday_month">{{ lang.month }}</label></h4>
                                 <div class="select-field">
-                                    <i class="select-field__icon fas fa-sort"></i>
+                                    {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                     <select name="bday2" id="bday_month">
                                         <option value="">&nbsp;</option>
                                         {% for month in 1..12 %}
@@ -149,7 +149,7 @@
                                 <div class="date-field__item">
                                     <h4 class="date-field__name"><label for="away_day">{{ lang.day }}</label></h4>
                                     <div class="select-field">
-                                        <i class="select-field__icon fas fa-sort"></i>
+                                        {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                         <select name="awayday" id="away_day">
                                             <option value="">&nbsp;</option>
                                             {% for day in 1..31 %}
@@ -161,7 +161,7 @@
                                 <div class="date-field__item">
                                     <h4 class="date-field__name"><label for="away_month">{{ lang.month }}</label></h4>
                                     <div class="select-field">
-                                        <i class="select-field__icon fas fa-sort"></i>
+                                        {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                         <select name="awaymonth" id="away_month">
                                             <option value="">&nbsp;</option>
                                             {% for month in 1..12 %}
@@ -207,7 +207,7 @@
                                 &nbsp;
                                 <input type="text" name="suspost_time" value="{{ mybb.input.action_time }}" class="textbox textbox--small" />
                                 <div class="select-field">
-                                    <i class="select-field__icon fas fa-sort"></i>
+                                    {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                     <select name="suspost_period">
                                         {% for key, value in periods %}
                                             <option value="{{ key }}"{% if key == mybb.input.action_period %} selected{% endif %}>{{ value }}</option>
@@ -243,7 +243,7 @@
                                     {{ attribute(lang, opt.lang.length) }}&nbsp;
                                     <input type="text" name="{{ opt.time }}" value="{{ mybb.input[opt.time] }}" class="textbox textbox--small" />
                                     <div class="select-field">
-                                        <i class="select-field__icon fas fa-sort"></i>
+                                        {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                         <select name="{{ opt.select_option }}_period">
                                             {% for key, value in periods %}
                                                 <option value="{{ key }}"{% if key == mybb.input[opt.select_option ~ '_period'] %} selected{% endif %}>{{ value }}</option>
@@ -262,7 +262,7 @@
             </section>
             <div class="form__submit">
                 <button class="button button--medium">
-                    <i class="button__icon fas fa-user"></i>
+                    {{ include('partials/icon.twig', {icon: 'user', class: 'button__icon'}, with_context = false) }}
                     <span class="button__text">{{ lang.update_profile }}</span>
                 </button>
             </div>

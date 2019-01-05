@@ -5,7 +5,7 @@
     </div>
     <div class="buddy-request__buttons">
         <a href="{{ mybb.settings.bburl }}/usercp.php?action=cancelrequest&amp;id={{ request.id }}&amp;my_post_key={{ mybb.post_code }}" class="button button--small button--danger">
-            <i class="button__icon fas fa-times"></i>
+            {{ include('partials/icon.twig', {icon: 'times', class: 'button__icon'}, with_context = false) }}
             <span class="button__text">{{ lang.cancel }}</span>
         </a>
     </div>

@@ -1,6 +1,8 @@
 <div class="row row--thread row--announcement thread thread--announcement thread--{{ folder }}">
     <div class="thread__column thread__column--primary">
-        <span class="thread__status thread__status--announcement"><i class="fas fa-bullhorn"></i></span>
+        <span class="thread__status thread__status--announcement">
+            {{ include('partials/icon.twig', {icon: 'bullhorn', class: ''}, with_context = false) }}
+        </span>
         <h3 class="thread__title"><a href="{{ announcement.announcementlink }}"{{ new_class }}>{{ announcement.subject }}</a></h3>
         <p class="thread__author">{{ lang.by }} {{ announcement.profilelink|raw }}</p>
     </div>

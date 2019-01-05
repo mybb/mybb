@@ -1,7 +1,7 @@
 {% extends 'layouts/moderation.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {% if banned.uid %}{{ lang.edit_ban }}{% else %}{{ lang.ban_user }}{% endif %}</title>
+    <title>{% if banned.uid %}{{ lang.edit_ban }}{% else %}{{ lang.ban_user }}{% endif %} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block moderationHeader %}
@@ -20,20 +20,20 @@
     {{ errors|raw }}
     {% if banned.uid %}
         <div class="page-controls">
-    		<div class="page-buttons">
+            <div class="page-buttons">
                 <a href="modcp.php?action=liftban&amp;uid={{ banned.uid }}&amp;my_post_key={{ mybb.post_code }}" class="button button--danger">
-                	<i class="button__icon fas fa-times"></i>
-                	<span class="button__text">{{ lang.lift_ban }}</span>
+                    {{ include('partials/icon.twig', {icon: 'times', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.lift_ban }}</span>
                 </a>
-    		</div>
-    	</div>
+            </div>
+        </div>
     {% endif %}
     <form action="modcp.php" method="post">
         <input type="hidden" name="action" value="do_banuser" />
         <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
         <input type="hidden" name="uid" value="{{ banned.uid }}" />
         <section class="block block--form form">
-			<div class="section section--form">
+            <div class="section section--form">
                 {% if banned.uid %}
                     <div class="row row--form field">
                         <h3 class="field__name">{{ lang.ban_username }}</h3>
@@ -53,7 +53,7 @@
                     <div class="row row--form field">
                         <h3 class="field__name"><label for="usergroup">{{ lang.ban_movegroup }}</strong></td>
                         <div class="select-field">
-                            <i class="select-field__icon fas fa-sort"></i>
+                            {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                             <select name="usergroup" id="usergroup">
                                 {% for group in bangroups %}
                                     <option value="{{ group.gid }}"{% if group.selected %} selected="selected"{% endif %}>{{ group.title }}</option>
@@ -67,7 +67,7 @@
                 <div class="row row--form field">
                     <h3 class="field__name"><label for="liftafter">{{ lang.ban_liftafter }}</label></h3>
                     <div class="select-field">
-                        <i class="select-field__icon fas fa-sort"></i>
+                        {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                         <select name="liftafter" id="liftafter">
                             {% for lifttime in liftlist %}
                                 <option value="{{ lifttime.time }}"{% if lifttime.selected %} selected="selected"{% endif %}>{{ lifttime.title }}{% if lifttime.thattime %} ({{ lifttime.thattime }}){% endif %}</option>
@@ -77,11 +77,11 @@
                 </div>
             </div>
             <div class="form__submit">
-				<button type="submit" class="button button--big" name="updateban">
-					<i class="button__icon fas fa-ban"></i>
-					<span class="button__text">{{ lang.ban }}</span>
-				</button>
-			</div>
+                <button type="submit" class="button button--big" name="updateban">
+                    {{ include('partials/icon.twig', {icon: 'ban', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.ban }}</span>
+                </button>
+            </div>
         </section>
     </form>
     <link rel="stylesheet" href="{{ asset_url('jscripts/select2/select2.css') }}">

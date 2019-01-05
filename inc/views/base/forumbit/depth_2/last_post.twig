@@ -1,8 +1,8 @@
 <div class="forum__latest">
-	<a href="{{ get_profile_link(forum.last_post.lastposteruid) }}" class="avatar-profile-link">
-		{{ render_avatar(url=forum.last_post.last_poster_avatar_url, alt=forum.last_post.lastposter, class='avatar--small') }}
-	</a>
-	<h4 class="forum__subject"><a href="{{ forum.last_post.link|raw }}" title="{{ forum.last_post.full_subject }}">{{ forum.last_post.subject }}</a></h4>
-	<p class="forum__date">{{ forum.last_post.date|raw }}</p>
-	<p class="forum__author">{{ lang.by }} {{ forum.last_post.profile_link|raw }}</p>
+    <a href="{{ get_profile_link(forum.last_post.lastposteruid) }}" class="avatar-profile-link">
+        {{ render_avatar(url=forum.last_post.last_poster_avatar_url, alt=forum.last_post.lastposter, class='avatar--small') }}
+    </a>
+    <h4 class="forum__subject"><a href="{{ forum.last_post.link|raw }}" title="{{ forum.last_post.full_subject }}">{{ forum.last_post.subject }}</a></h4>
+    <p class="forum__date">{{ forum.last_post.date|raw }}</p>
+    <p class="forum__author">{{ lang.by }} {{ forum.last_post.profile_link|raw }}</p>
 </div>

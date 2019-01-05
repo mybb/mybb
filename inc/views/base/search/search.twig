@@ -1,7 +1,7 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.search }}</title>
+    <title>{{ lang.search }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block body %}
@@ -57,7 +57,7 @@
                     <div class="section__container">
                         <div class="row row--form field">
                             <div class="select-field">
-								<i class="select-field__icon fas fa-sort"></i>
+                            {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                 <select name="findthreadst">
                                     <option value="1">{{ lang.threads_at_least }}</option>
                                     <option value="2">{{ lang.threads_at_most }}</option>
@@ -69,7 +69,7 @@
                         </div>
                         <div class="row row--form field">
                             <div class="select-field">
-                                <i class="select-field__icon fas fa-sort"></i>
+                                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                 <select name="postdate">
                                     <option value="0">{{ lang.find_anydate }}</option>
                                     <option value="1">{{ lang.find_yesterday }}</option>
@@ -97,7 +97,7 @@
                         {% if search.showprefixes %}
                             <div class="row row--form field">
                                 <div class="select-field">
-                                    <i class="select-field__icon fas fa-sort"></i>
+                                    {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                     <select name="threadprefix[]" multiple="multiple" size="5">
                                         <option value="any">{{ lang.any_prefix }}</option>
                                         <option value="0">{{ lang.no_prefix }}</option>
@@ -111,7 +111,7 @@
                         <div class="row row--form field">
                             <h3 class="field__name"><label for="sortby">{{ lang.sort_by }}</label></h3>
                             <div class="select-field">
-                                <i class="select-field__icon fas fa-sort"></i>
+                                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                 <select name="sortby" id="sortby">
                                     <option value="lastpost">{{ lang.sort_lastpost }}</option>
                                     <option value="starter">{{ lang.sort_author }}</option>
@@ -122,7 +122,7 @@
                         <div class="row row--form field">
                             <h3 class="field__name">{{ lang.sort_order }}</h3>
                             <span class="segmented-control">
-								<span class="segmented-control__option">
+                                <span class="segmented-control__option">
                                     <input type="radio" class="radio segmented-control__input" name="sortordr" id="sortordr_asc" value="asc" />
                                     <label for="sortordr_asc" class="segmented-control__button">{{ lang.sort_asc }}</label>
                                 </span>
@@ -135,15 +135,15 @@
                         <div class="row row--form field">
                             <h3 class="field__name">{{ lang.show_results_as }}</h3>
                             <span class="segmented-control">
-								<span class="segmented-control__option">
+                                <span class="segmented-control__option">
                                     <input type="radio" class="radio segmented-control__input" name="showresults" id="showresults_threads" value="threads" checked="checked" />
-									<label for="showresults_threads" class="segmented-control__button">{{ lang.show_results_threads }}</label>
-								</span>
-								<span class="segmented-control__option">
-									<input type="radio" class="segmented-control__input radio" name="showresults" id="showresults_posts" value="posts" />
-									<label for="showresults_posts" class="segmented-control__button">{{ lang.show_results_posts }}</label>
-								</span>
-							</span>
+                                    <label for="showresults_threads" class="segmented-control__button">{{ lang.show_results_threads }}</label>
+                                </span>
+                                <span class="segmented-control__option">
+                                    <input type="radio" class="segmented-control__input radio" name="showresults" id="showresults_posts" value="posts" />
+                                    <label for="showresults_posts" class="segmented-control__button">{{ lang.show_results_posts }}</label>
+                                </span>
+                            </span>
                         </div>
                     </div>
                 </section>
@@ -152,7 +152,7 @@
                         <h2 class="title title--section"><label for="visible">{{ lang.mod_options }}</label></h2>
                         <div class="section__container">
                             <div class="select-field">
-                                <i class="select-field__icon fas fa-sort"></i>
+                                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                 <select name="visible">
                                     <option value="">{{ lang.display_all }}</option>
                                     <option value="1">{{ lang.display_only_approved }}</option>
@@ -165,9 +165,9 @@
                 {% endif %}
                 <div class="form__submit">
                     <button type="submit" class="button button--big" name="submit">
-						<i class="button__icon fas fa-search"></i>
-						<span class="button__text">{{ lang.search }}</span>
-					</button>
+                        {{ include('partials/icon.twig', {icon: 'search', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.search }}</span>
+                    </button>
                 </div>
             </div>
         </form>

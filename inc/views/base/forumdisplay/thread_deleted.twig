@@ -1,29 +1,29 @@
 {% set class %}{{ thread.bgcolor }} {{ thread.classType }}{% endset %}
 <div class="row row--thread thread {{ class }} inline_row {% if thread.unreadpost and moved != true %}thread--unread{% endif %} {% if modpermissions.ismod %}thread--moderator{% endif %}">
     <div class="thread__column thread__column--primary">
-		<h3 class="thread__title">
+        <h3 class="thread__title">
             <span class="tag">{{ lang.deleted_thread }}</span>
 
             {# Thread status icons #}
             <span class="thread__icons">
                 {# Closed #}
                 {% if thread.closed and moved != true %}
-                    <i class="thread__icon fas fa-lock fa-fw" title="{{ lang.closed }}"></i>
+                    {{ include('partials/icon.twig', {icon: 'lock', class: 'thread__icon fa-fw', title: lang.closed}, with_context = false) }}
                 {% endif %}
 
                 {# Sticky #}
                 {% if thread.sticky %}
-                    <i class="thread__icon thread__icon--sticky fas fa-thumbtack fa-fw" title="{{ lang.sticky }}"></i>
+                    {{ include('partials/icon.twig', {icon: 'thumbtack', class: 'thread__icon thread__icon--sticky fa-fw', title: lang.sticky}, with_context = false) }}
                 {% endif %}
 
                 {# Moved #}
                 {% if moved %}
-                    <i class="thread__icon fas fa-arrow-right fa-fw" title="{{ lang.moved_prefix }}"></i>
+                    {{ include('partials/icon.twig', {icon: 'arrow-right', class: 'thread__icon fa-fw', title: lang.moved_prefix}, with_context = false) }}
                 {% endif %}
 
                 {# Poll #}
                 {% if thread.poll %}
-                    <i class="thread__icon fas fa-check-square fa-fw" title="{{ lang.poll_prefix }}"></i>
+                    {{ include('partials/icon.twig', {icon: 'check-square', class: 'thread__icon fa-fw', title: lang.poll_prefix}, with_context = false) }}
                 {% endif %}
             </span>
         </h3>

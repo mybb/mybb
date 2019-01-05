@@ -1,7 +1,7 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ thread.subject }}</title>
+    <title>{{ thread.subject }} - {{ mybb.settings.bbname }}</title>
 
     <script type="text/javascript">
     <!--
@@ -26,7 +26,6 @@
 {% endblock head %}
 
 {% block body %}
-
     <div class="page-content">
         <header class="page-header">
             {% if thread.prefix %}
@@ -42,7 +41,7 @@
             {% if thread.notes|length > 200 %}
                 {{ thread.notes|slice(0, 200)|nl2br }}...
                 <a href="javascript:void(0)" onclick="Thread.viewNotes({{ thread.tid }}); return false;" class="button button--basic">
-                    <i class="button__icon fas fa-file-alt"></i>
+                    {{ include('partials/icon.twig', {icon: 'file-alt', class: 'button__icon'}, with_context = false) }}
                     <span class="button__text">{{ lang.view_all_notes }}</span>
                 </a>
             {% else %}
@@ -75,30 +74,30 @@
                                 <div class="poll__option">
                                     {{ option.option|raw }}
                                     {% if option.votestar == '*' %}
-                                        <i class="poll__your-vote fas fa-check-square" title="{{ lang.you_voted }}"></i>
+                                        {{ include('partials/icon.twig', {icon: 'check-square', class: 'poll__your-vote', title: lang.you_voted}, with_context = false) }}
                                     {% endif %}
                                 </div>
                                 <div class="poll__count">{{ option.votes }} ({{ option.percent }}%)</div>
                                 <div class="poll__votes">
-                                    <div class="poll__bar" style="width:  {{ option.imagewidth }}%" title="{{ option.percent }}%"></div>
+                                    <div class="poll__bar" style="width: {{ option.imagewidth }}%" title="{{ option.percent }}%"></div>
                                 </div>
                             </div>
                         {% endfor %}
                     </div>
                     <div class="poll__vote">
                         <a href="polls.php?action=showresults&amp;pid={{ poll.pid }}" class="button button--secondary">
-                			<i class="button__icon fas fa-align-left"></i>
-                			<span class="button__text">{{ lang.show_results }}</span>
-                		</a>
+                            {{ include('partials/icon.twig', {icon: 'align-left', class: 'button__icon'}, with_context = false) }}
+                            <span class="button__text">{{ lang.show_results }}</span>
+                        </a>
                         {% if modpermissions.canmanagepolls %}
                             <a href="polls.php?action=editpoll&amp;pid={{ poll.pid }}" class="button button--secondary">
-                                <i class="button__icon fas fa-pencil-alt"></i>
+                                {{ include('partials/icon.twig', {icon: 'pencil-alt', class: 'button__icon'}, with_context = false) }}
                                 <span class="button__text">{{ lang.edit_poll }}</span>
                             </a>
                         {% endif %}
                         {% if poll.alreadyvoted and mybb.usergroup.canundovotes %}
                             <a href="polls.php?action=do_undovote&amp;pid={{ poll.pid }}&amp;my_post_key={{ mybb.post_code }}" class="button button--secondary">
-                                <i class="button__icon fas fa-undo"></i>
+                                {{ include('partials/icon.twig', {icon: 'undo', class: 'button__icon'}, with_context = false) }}
                                 <span class="button__text">{{ lang.undo_vote }}</span>
                             </a>
                         {% endif %}
@@ -140,18 +139,17 @@
                         </div>
                         <div class="poll__vote">
                             <button type="submit" class="button">
-                                <i class="button__icon fas fa-check-square"></i>
+                                {{ include('partials/icon.twig', {icon: 'check-square', class: 'button__icon'}, with_context = false) }}
                                 <span class="button__text">{{ lang.vote }}</span>
                             </button>
                             <a href="polls.php?action=showresults&amp;pid={{ poll.pid }}" class="button button--secondary">
-                    			<i class="button__icon fas fa-align-left"></i>
-                    			<span class="button__text">{{ lang.show_results }}</span>
-                    		</a>
-
+                                {{ include('partials/icon.twig', {icon: 'align-left', class: 'button__icon'}, with_context = false) }}
+                                <span class="button__text">{{ lang.show_results }}</span>
+                            </a>
                             {% if modpermissions.canmanagepolls %}
                                 <a href="polls.php?action=editpoll&amp;pid={{ poll.pid }}" class="button button--secondary">
-                                	<i class="button__icon fas fa-pencil-alt"></i>
-                                	<span class="button__text">{{ lang.edit_poll }}</span>
+                                    {{ include('partials/icon.twig', {icon: 'pencil-alt', class: 'button__icon'}, with_context = false) }}
+                                    <span class="button__text">{{ lang.edit_poll }}</span>
                                 </a>
                             {% endif %}
                         </div>
@@ -160,22 +158,22 @@
             {% endif %}
         {% endif %}
         <div class="page-controls page-controls--top">
-			<div class="page-buttons">
+            <div class="page-buttons">
                 {% if modpermissions.canmanagethreads and thread.notes %}
                     <a href="moderation.php?action=threadnotes&amp;modtype=thread&amp;tid={{ thread.tid }}" class="button button--basic button--full-width">
-                    	<i class="button__icon fas fa-file-alt"></i>
-                    	<span class="button__text">{{ lang.edit_thread_notes }}</span>
+                        {{ include('partials/icon.twig', {icon: 'file-alt', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.edit_thread_notes }}</span>
                     </a>
                 {% endif %}
                 {% if mybb.user.uid %}
                     {% if thread.issubscribed %}
                         <a href="usercp.php?action=removesubscription&amp;tid={{ thread.tid }}&amp;my_post_key={{ mybb.post_code }}" class="button button--secondary button--medium button--full-width subscribe--remove">
-                            <i class="button__icon fas fa-minus"></i>
+                            {{ include('partials/icon.twig', {icon: 'minus', class: 'button__icon'}, with_context = false) }}
                             <span class="button__text">{{ lang.unsubscribe_thread }}</span>
                         </a>
                     {% else %}
                         <a href="usercp.php?action=addsubscription&amp;tid={{ thread.tid }}&amp;my_post_key={{ mybb.post_code }}" class="button button--secondary button--medium button--full-width subscribe--add">
-                            <i class="button__icon fas fa-plus"></i>
+                            {{ include('partials/icon.twig', {icon: 'plus', class: 'button__icon'}, with_context = false) }}
                             <span class="button__text">{{ lang.subscribe_thread }}</span>
                         </a>
                     {% endif %}
@@ -183,24 +181,23 @@
                 {% if forum.open and forum.type == 'f' and forumpermissions.canpostreplys != 0 %}
                     {% if thread.canfullreply %}
                         <a href="newreply.php?tid={{ thread.tid }}" class="button button--medium button--full-width">
-                            <i class="button__icon fas fa-comment"></i>
+                            {{ include('partials/icon.twig', {icon: 'comment', class: 'button__icon'}, with_context = false) }}
                             <span class="button__text">{{ lang.new_reply }}</span>
                         </a>
                     {% elseif thread.canmodreply %}
                         <a href="newreply.php?tid={{ thread.tid }}" class="button button--medium button--danger">
-                            <i class="button__icon fas fa-lock"></i>
+                            {{ include('partials/icon.twig', {icon: 'lock', class: 'button__icon'}, with_context = false) }}
                             <span class="button__text">{{ lang.thread_closed }}</span>
                         </a>
                     {% else %}
                         <a href="showthread.php?tid={{ thread.tid }}" class="button button--medium button--danger">
-                            <i class="button__icon fas fa-lock"></i>
+                            {{ include('partials/icon.twig', {icon: 'lock', class: 'button__icon'}, with_context = false) }}
                             <span class="button__text">{{ lang.thread_closed }}</span>
                         </a>
                     {% endif %}
                 {% endif %}
             </div>
-
-			<div class="thread-pagination thread-pagination--top">
+            <div class="thread-pagination thread-pagination--top">
                 {{ multipage|raw }}
             </div>
         </div>
@@ -239,17 +236,17 @@
                 {% if forum.open and forum.type == 'f' and forumpermissions.canpostreplys != 0 %}
                     {% if thread.canfullreply %}
                         <a href="newreply.php?tid={{ thread.tid }}" class="button button--medium button--full-width">
-                            <i class="button__icon fas fa-comment"></i>
+                            {{ include('partials/icon.twig', {icon: 'comment', class: 'button__icon'}, with_context = false) }}
                             <span class="button__text">{{ lang.new_reply }}</span>
                         </a>
                     {% elseif thread.canmodreply %}
                         <a href="newreply.php?tid={{ thread.tid }}" class="button button--medium button--danger">
-                            <i class="button__icon fas fa-lock"></i>
+                            {{ include('partials/icon.twig', {icon: 'lock', class: 'button__icon'}, with_context = false) }}
                             <span class="button__text">{{ lang.thread_closed }}</span>
                         </a>
                     {% else %}
                         <a href="showthread.php?tid={{ thread.tid }}" class="button button--medium button--danger">
-                            <i class="button__icon fas fa-lock"></i>
+                            {{ include('partials/icon.twig', {icon: 'lock', class: 'button__icon'}, with_context = false) }}
                             <span class="button__text">{{ lang.thread_closed }}</span>
                         </a>
                     {% endif %}
@@ -258,7 +255,7 @@
         </div>
 
         {% if thread.showquickreply and thread.visible >= 0 %}
-            <div id="quickreply_spinner" class="spinner spinner--quick-reply" style="display: none"><span class="spinner__icon"><i class="spinner__icon fas fa-sync fa-spin"></i></span></div>
+            <div id="quickreply_spinner" class="spinner spinner--quick-reply" style="display: none"><span class="spinner__icon">{{ include('partials/icon.twig', {icon: 'sync', class: 'spinner__icon fa-spin'}, with_context = false) }}</span></div>
             {% if thread.showmodnotice %}
                 <div class="alert alert--danger">
                     {{ thread.moderation_text }}
@@ -266,16 +263,16 @@
             {% endif %}
             <div class="editor_control_bar editor_control_bar--quick-reply" style="display: none;" id="quickreply_multiquote">
                 <h3 class="editor_control_bar__title">
-                    <i class="editor_control_bar__icon fas fa-quote-left"></i>
+                    {{ include('partials/icon.twig', {icon: 'quote-left', class: 'editor_control_bar__icon'}, with_context = false) }}
                     {{ lang.quickreply_multiquote_selected }}
                 </h3>
                 <div class="editor_control_bar__buttons">
                     <a href="./newreply.php?tid={{ thread.tid }}&amp;load_all_quotes=1" onclick="return Thread.loadMultiQuoted();" class="button button--small">
-                        <i class="button__icon fas fa-quote-left"></i>
+                        {{ include('partials/icon.twig', {icon: 'quote-left', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.quickreply_multiquote_now }}</span>
                     </a>
                     <a href="javascript:void(0)" onclick="Thread.clearMultiQuoted(); return false;" class="button button--secondary button--small">
-                        <i class="button__icon fas fa-times"></i>
+                        {{ include('partials/icon.twig', {icon: 'times', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.quickreply_multiquote_deselect }}</span>
                     </a>
                 </div>
@@ -321,21 +318,21 @@
                     {% endif %}
                     {{ captcha|raw }}
                     <div class="post__foot">
-                		<button type="submit" class="button" tabindex="2" accesskey="s" id="quick_reply_submit">
-                			<i class="button__icon fas fa-comment"></i>
-                			<span class="button__text">{{ lang.post_reply }}</span>
-                		</button>
+                        <button type="submit" class="button" tabindex="2" accesskey="s" id="quick_reply_submit">
+                            {{ include('partials/icon.twig', {icon: 'comment', class: 'button__icon'}, with_context = false) }}
+                            <span class="button__text">{{ lang.post_reply }}</span>
+                        </button>
                         {% if (mybb.usergroup.canusesig and mybb.user.suspendsignature != 1) or forum.allowsmilies or modpermissions.canopenclosethreads or modpermissions.canstickunstickthreads %}
-                    		<label for="show-quick-reply-options" class="button button--basic">
-                    			<i class="button__icon fas fa-cog"></i>
-                    			<span class="button__text">{{ lang.options }}</span>
-                    		</label>
+                            <label for="show-quick-reply-options" class="button button--basic">
+                                {{ include('partials/icon.twig', {icon: 'cog', class: 'button__icon'}, with_context = false) }}
+                                <span class="button__text">{{ lang.options }}</span>
+                            </label>
                         {% endif %}
-                		<button type="submit" class="button button--basic" name="previewpost" value="preview" tabindex="3">
-                			<i class="button__icon fas fa-pencil-alt"></i>
-                			<span class="button__text">{{ lang.preview_post }}</span>
-                		</button>
-                	</div>
+                        <button type="submit" class="button button--basic" name="previewpost" value="preview" tabindex="3">
+                            {{ include('partials/icon.twig', {icon: 'pencil-alt', class: 'button__icon'}, with_context = false) }}
+                            <span class="button__text">{{ lang.preview_post }}</span>
+                        </button>
+                    </div>
                 </form>
             </div>
         {% endif %}
@@ -349,7 +346,7 @@
                         <input type="hidden" name="tid" value="{{ thread.tid }}" />
                         <input type="text" name="keywords" placeholder="{{ lang.enter_keywords }}" class="textbox textbox--large" size="25" />
                         <button type="submit" class="button button--inline">
-                            <i class="button__icon fas fa-search"></i>
+                            {{ include('partials/icon.twig', {icon: 'search', class: 'button__icon'}, with_context = false) }}
                             <span class="button__text">{{ lang.search_thread }}</span>
                         </button>
                     </form>
@@ -357,12 +354,12 @@
                 {% endif %}
                 <div class="thread-nav">
                     <a href="{{ thread.next_oldest_link|raw }}" class="button button--basic">
-                        <i class="button__icon fas fa-angle-double-left"></i>
+                        {{ include('partials/icon.twig', {icon: 'angle-double-left', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.next_oldest }}</span>
                     </a>
                     <a href="{{ thread.next_newest_link|raw }}" class="button button--basic">
                         <span class="button__text">{{ lang.next_newest }}</span>
-                        <i class="button__icon button__icon--after fas fa-angle-double-right"></i>
+                        {{ include('partials/icon.twig', {icon: 'angle-double-right', class: 'button__icon button__icon--after'}, with_context = false) }}
                     </a>
                 </div>
             </div>
@@ -431,31 +428,31 @@
             {% endif %}
 
             <div class="page-controls">
-    			<div class="page-buttons">
+                <div class="page-buttons">
                     {% if thread.showthreaded %}
                         <a href="showthread.php?mode=linear&amp;tid={{ thread.tid }}&amp;pid={{ thread.pid }}#pid{{ thread.pid }}" class="button button--basic">
-                            <i class="button__icon fas fa-th-list"></i>
+                            {{ include('partials/icon.twig', {icon: 'th-list', class: 'button__icon'}, with_context = false) }}
                             <span class="button__text">{{ lang.linear }}</span>
                         </a>
                     {% else %}
                         <a href="showthread.php?mode=threaded&amp;tid={{ thread.tid }}&amp;pid={{ thread.pid }}#pid{{ thread.pid }}" class="button button--basic">
-                            <i class="button__icon fas fa-list"></i>
+                            {{ include('partials/icon.twig', {icon: 'fa-list', class: 'button__icon'}, with_context = false) }}
                             <span class="button__text">{{ lang.threaded }}</span>
                         </a>
                     {% endif %}
                     <a href="printthread.php?tid={{ thread.tid }}" class="button button--basic">
-    					<i class="button__icon fas fa-print"></i>
+                        {{ include('partials/icon.twig', {icon: 'print', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.view_printable }}</span>
                     </a>
                     {% if mybb.usergroup.cansendemail %}
                         <a href="sendthread.php?tid={{ thread.tid }}" class="button button--basic">
-                            <i class="button__icon fas fa-share"></i>
+                            {{ include('partials/icon.twig', {icon: 'share', class: 'button__icon'}, with_context = false) }}
                             <span class="button__text">{{ lang.send_thread }}</span>
                         </a>
                     {% endif %}
                     {% if thread.addpoll %}
                         <a href="polls.php?action=newpoll&amp;tid={{ thread.tid }}" class="button button--basic">
-                            <i class="button__icon fas fa-plus-circle"></i>
+                            {{ include('partials/icon.twig', {icon: 'plus-circle', class: 'button__icon'}, with_context = false) }}
                             <span class="button__text">{{ lang.add_poll_to_thread }}</span>
                         </a>
                     {% endif %}

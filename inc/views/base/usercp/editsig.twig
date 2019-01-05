@@ -1,7 +1,7 @@
 {% extends 'layouts/account.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.edit_sig }}</title>
+    <title>{{ lang.edit_sig }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block accountHeader %}
@@ -19,44 +19,44 @@
         {{ error|raw }}
 
         <div class="block block--form form">
-			<section class="section section--form">
+            <section class="section section--form">
                 {% if not sig is empty and showSig %}
                     <div class="row row--form field">
                         <h3 class="field__name">{{ attribute(lang, showSigType) }}</h3>
                         <div class="scaleimages">{{ sigPreview|raw }}</div>
                     </div>
                 {% endif %}
-				<div class="row row--form field">
-					<h3 class="field__name">{{ lang.edit_sig }}</h3>
-					<p class="field__description">{{ lang.edit_sig_note }}</p>
+                <div class="row row--form field">
+                    <h3 class="field__name">{{ lang.edit_sig }}</h3>
+                    <p class="field__description">{{ lang.edit_sig_note }}</p>
                     <textarea rows="10" cols="70" id="signature" name="signature">{{ sig }}</textarea>
                     {{ codeButtons|raw }}
                     <p class="field__description field__description--below">{{ lang.edit_sig_note2|raw }}</p>
-				</div>
-				<div class="row row--form field">
-					<div class="option-field option-field--compact">
-						<label><input type="radio" class="radio" name="updateposts" value="enable" /> {{ lang.enable_sig_posts }}</label>
-					</div>
-					<div class="option-field option-field--compact">
-						<label><input type="radio" class="radio" name="updateposts" value="disable" /> {{ lang.disable_sig_posts }}</label>
-					</div>
-					<div class="option-field option-field--compact">
-						<label><input type="radio" class="radio" name="updateposts" value="0" checked="checked" /> {{ lang.leave_sig_settings }}</label>
-					</div>
-				</div>
-			</section>
-			<div class="form__submit">
-				<input type="hidden" name="action" value="do_editsig" />
-				<button type="submit" class="button button--medium" name="submit">
-					<i class="button__icon fas fa-bullseye"></i>
-					<span class="button__text">{{ lang.update_sig }}</span>
-				</button>
-				<button type="submit" class="button button--medium button--secondary" name="preview" value="preview">
-					<i class="button__icon fas fa-edit"></i>
-					<span class="button__text">{{ lang.preview }}</span>
-				</button>
-			</div>
-		</div>
+                </div>
+                <div class="row row--form field">
+                    <div class="option-field option-field--compact">
+                        <label><input type="radio" class="radio" name="updateposts" value="enable" /> {{ lang.enable_sig_posts }}</label>
+                    </div>
+                    <div class="option-field option-field--compact">
+                        <label><input type="radio" class="radio" name="updateposts" value="disable" /> {{ lang.disable_sig_posts }}</label>
+                    </div>
+                    <div class="option-field option-field--compact">
+                        <label><input type="radio" class="radio" name="updateposts" value="0" checked="checked" /> {{ lang.leave_sig_settings }}</label>
+                    </div>
+                </div>
+            </section>
+            <div class="form__submit">
+                <input type="hidden" name="action" value="do_editsig" />
+                <button type="submit" class="button button--medium" name="submit">
+                    {{ include('partials/icon.twig', {icon: 'bullseye', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.update_sig }}</span>
+                </button>
+                <button type="submit" class="button button--medium button--secondary" name="preview" value="preview">
+                    {{ include('partials/icon.twig', {icon: 'edit', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.preview }}</span>
+                </button>
+            </div>
+        </div>
         <input type="hidden" name="action" value="do_editsig" />
     </form>
 {% endblock accountBody %}

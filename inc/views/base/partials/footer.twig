@@ -12,7 +12,7 @@
                                 <input type="hidden" name="{{ name }}" value="{{ value }}" />
                             {% endfor %}
                             <div class="select-field">
-                        		<i class="select-field__icon fas fa-sort"></i>
+                                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                 <select name="language" onchange="MyBB.changeLanguage();">
                                     <optgroup label="{{ lang.select_language }}">
                                         {% for key, language in mybb.settings.footer.langselect.options %}
@@ -37,7 +37,7 @@
                                 {% endfor %}
                             {% endif %}
                             <div class="select-field">
-                            	<i class="select-field__icon fas fa-sort"></i>
+                                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                 {{ mybb.settings.footer.themeselect.options|raw }}
                             </div>
                             <input type="submit" class="button" value="{{ lang.go }}" />
@@ -48,54 +48,54 @@
             <debugstuff>
         </div>
         <div class="footer__navigation">
-    		<div class="wrapper">
-    			<nav class="footer-menu">
-    				<ul class="footer-menu__links">
+            <div class="wrapper">
+                <nav class="footer-menu">
+                    <ul class="footer-menu__links">
                         {% if (mybb.settings.contactlink == "contact.php" and mybb.settings.contact and (mybb.settings.contact_guests != 1 and mybb.user.uid == 0 or mybb.user.uid > 0)) or mybb.settings.contactlink != "contact.php" %}
                             <li class="footer-menu__item">
-                            	<a href="{{ mybb.settings.contactlink }}" class="footer-menu__link">
-                            		<i class="footer-menu__icon fas fa-envelope"></i>
-                            		<span class="footer-menu__text">{{ lang.bottomlinks_contactus }}</span>
-                            	</a>
+                                <a href="{{ mybb.settings.contactlink }}" class="footer-menu__link">
+                                    {{ include('partials/icon.twig', {icon: 'envelope', class: 'footer-menu__icon'}, with_context = false) }}
+                                    <span class="footer-menu__text">{{ lang.bottomlinks_contactus }}</span>
+                                </a>
                             </li>
                         {% endif %}
                         <li class="footer-menu__item">
-    						<a href="{{ mybb.settings.homeurl }}" class="footer-menu__link">
-    							<i class="footer-menu__icon fas fa-home"></i>
-    							<span class="footer-menu__text">{{ mybb.settings.homename }}</span>
-    						</a>
-    					</li>
-    					<li class="footer-menu__item">
-    						<a href="#top" class="footer-menu__link">
-    							<i class="footer-menu__icon fas fa-arrow-up"></i>
-    							<span class="footer-menu__text">{{ lang.bottomlinks_returntop }}</span>
-    						</a>
-    					</li>
-    					<li class="footer-menu__item">
-    						<a href="{{ mybb.settings.bburl }}/misc.php?action=markread{% if mybb.user.uid %}&amp;my_post_key={{ mybb.post_code }}{% endif %}" class="footer-menu__link">
-    							<i class="footer-menu__icon fas fa-dot-circle"></i>
-    							<span class="footer-menu__text">{{ lang.bottomlinks_markread }}</span>
-    						</a>
-    					</li>
-    					<li class="footer-menu__item">
-    						<a href="{{ mybb.settings.bburl }}/misc.php?action=syndication" class="footer-menu__link">
-    							<i class="footer-menu__icon fas fa-rss-square"></i>
-    							<span class="footer-menu__text">{{ lang.bottomlinks_syndication }}</span>
-    						</a>
-    					</li>
+                            <a href="{{ mybb.settings.homeurl }}" class="footer-menu__link">
+                                {{ include('partials/icon.twig', {icon: 'home', class: 'footer-menu__icon'}, with_context = false) }}
+                                <span class="footer-menu__text">{{ mybb.settings.homename }}</span>
+                            </a>
+                        </li>
                         <li class="footer-menu__item">
-    						<a href="{{ mybb.settings.bburl }}/misc.php?action=help" class="footer-menu__link">
-    							<i class="footer-menu__icon fas fa-question-circle"></i>
-    							<span class="footer-menu__text">{{ lang.bottomlinks_help }}</span>
-    						</a>
-    					</li>
+                            <a href="#top" class="footer-menu__link">
+                                {{ include('partials/icon.twig', {icon: 'arrow-up', class: 'footer-menu__icon'}, with_context = false) }}
+                                <span class="footer-menu__text">{{ lang.bottomlinks_returntop }}</span>
+                            </a>
+                        </li>
+                        <li class="footer-menu__item">
+                            <a href="{{ mybb.settings.bburl }}/misc.php?action=markread{% if mybb.user.uid %}&amp;my_post_key={{ mybb.post_code }}{% endif %}" class="footer-menu__link">
+                                {{ include('partials/icon.twig', {icon: 'dot-circle', class: 'footer-menu__icon'}, with_context = false) }}
+                                <span class="footer-menu__text">{{ lang.bottomlinks_markread }}</span>
+                            </a>
+                        </li>
+                        <li class="footer-menu__item">
+                            <a href="{{ mybb.settings.bburl }}/misc.php?action=syndication" class="footer-menu__link">
+                                {{ include('partials/icon.twig', {icon: 'rss-square', class: 'footer-menu__icon'}, with_context = false) }}
+                                <span class="footer-menu__text">{{ lang.bottomlinks_syndication }}</span>
+                            </a>
+                        </li>
+                        <li class="footer-menu__item">
+                            <a href="{{ mybb.settings.bburl }}/misc.php?action=help" class="footer-menu__link">
+                                {{ include('partials/icon.twig', {icon: 'question-circle', class: 'footer-menu__icon'}, with_context = false) }}
+                                <span class="footer-menu__text">{{ lang.bottomlinks_help }}</span>
+                            </a>
+                        </li>
                     </ul>
-    			</nav>
-    		</div>
-    	</div>
-    	<div class="footer__copyright">
-    		<div class="wrapper">
-    			<p class="powered-by">
+                </nav>
+            </div>
+        </div>
+        <div class="footer__copyright">
+            <div class="wrapper">
+                <p class="powered-by">
                     <!-- MyBB is free software developed and maintained by a volunteer community.
                         It would be much appreciated by the MyBB Group if you left the full copyright and "powered by" notice intact,
                         to show your support for MyBB.  If you choose to remove or modify the copyright below,

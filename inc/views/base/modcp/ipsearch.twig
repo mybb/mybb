@@ -1,7 +1,7 @@
 {% extends 'layouts/moderation.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.ipsearch }}</title>
+    <title>{{ lang.ipsearch }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block moderationHeader %}
@@ -16,11 +16,11 @@
             <div class="page-controls">
                 <div class="page-buttons">
                     <a href="modcp.php?action=iplookup&amp;ipaddress={{ ipsearch.ipaddress }}" onclick="MyBB.popupWindow('/modcp.php?action=iplookup&ipaddress={{ ipaddress_url }}&modal=1'); return false;" class="button button--basic">
-                        <i class="button__icon fas fa-info-circle"></i>
+                        {{ include('partials/icon.twig', {icon: 'info-circle', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.info_on_ip }}</span>
                     </a>
                     <a href="http://www.stopforumspam.com/ipcheck/{{ ipsearch.ipaddress }}" target="_blank" rel="noopener" class="button button--basic">
-                        <i class="button__icon fas fa-hand-paper"></i>
+                        {{ include('partials/icon.twig', {icon: 'hand-paper', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.search_ip_sfs }}</span>
                     </a>
                 </div>
@@ -56,11 +56,11 @@
 
     <form action="modcp.php?action=ipsearch" method="post">
         <section class="block block--form form">
-			<div class="section section--form">
+            <div class="section section--form">
                 <h2 class="title title--section">{{ lang.ipaddress_search }}</h2>
                 <div class="section__container">
-    				<div class="row row--form field">
-    					<h3 class="field__name"><label for="ipaddress">{{ lang.ip_address }}</label></h3>
+                    <div class="row row--form field">
+                        <h3 class="field__name"><label for="ipaddress">{{ lang.ip_address }}</label></h3>
                         <input type="text" class="textbox" name="ipaddress" id="ipaddress" value="{{ ipsearch.ipaddress }}" size="30" />
                     </div>
                 </div>
@@ -69,20 +69,21 @@
                 <h2 class="title title--section">{{ lang.options }}</h2>
                 <div class="section__container">
                     <div class="row row--form field">
-    					<p class="option-field option-field--compact">
-    						<label><input type="checkbox" class="checkbox" name="search_users" value="1"{% if ipsearch.usersearch %} checked{% endif %} />{{ lang.search_users }}</label></p>
-    					<p class="option-field option-field--compact">
-    						<label><input type="checkbox" class="checkbox" name="search_posts" value="1"{% if ipsearch.postsearch %} checked{% endif %} />{{ lang.search_posts }}</label>
-    					</p>
-    				</div>
+                        <p class="option-field option-field--compact">
+                            <label><input type="checkbox" class="checkbox" name="search_users" value="1"{% if ipsearch.usersearch %} checked{% endif %} />{{ lang.search_users }}</label>
+                        </p>
+                        <p class="option-field option-field--compact">
+                            <label><input type="checkbox" class="checkbox" name="search_posts" value="1"{% if ipsearch.postsearch %} checked{% endif %} />{{ lang.search_posts }}</label>
+                        </p>
+                    </div>
                 </div>
             </div>
             <div class="form__submit">
-				<button type="submit" class="button button--medium">
-					<i class="button__icon fas fa-search"></i>
-					<span class="button__text">{{ lang.find }}</span>
-				</button>
-			</div>
+                <button type="submit" class="button button--medium">
+                {{ include('partials/icon.twig', {icon: 'search', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.find }}</span>
+                </button>
+            </div>
         </section>
     </form>
 {% endblock moderationBody %}

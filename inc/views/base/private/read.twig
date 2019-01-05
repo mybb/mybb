@@ -1,7 +1,7 @@
 {% extends 'layouts/messenger.twig' %}
 
 {% block head %}
-    <title>{{ lang.viewing_pm }} {{ pm.subject }}</title>
+    <title>{{ lang.viewing_pm }} {{ pm.subject }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block messengerHeader %}
@@ -53,19 +53,19 @@
                     {% endif %}
                 </div>
                 <div class="post__foot">
-            		<button type="submit" class="button" tabindex="2" accesskey="s" id="quick_reply_submit">
-            			<i class="button__icon fas fa-paper-plane"></i>
-            			<span class="button__text">{{ lang.send_message }}</span>
-            		</button>
-            		<label for="show-quick-reply-options" class="button button--basic">
-            			<i class="button__icon fas fa-cog"></i>
-            			<span class="button__text">{{ lang.options }}</span>
-            		</label>
-            		<button type="submit" class="button button--basic" name="preview" value="preview" tabindex="3">
-            			<i class="button__icon fas fa-pencil-alt"></i>
-            			<span class="button__text">{{ lang.preview }}</span>
-            		</button>
-            	</div>
+                    <button type="submit" class="button" tabindex="2" accesskey="s" id="quick_reply_submit">
+                        {{ include('partials/icon.twig', {icon: 'paper-plane', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.send_message }}</span>
+                    </button>
+                    <label for="show-quick-reply-options" class="button button--basic">
+                        {{ include('partials/icon.twig', {icon: 'cog', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.options }}</span>
+                    </label>
+                    <button type="submit" class="button button--basic" name="preview" value="preview" tabindex="3">
+                        {{ include('partials/icon.twig', {icon: 'pencil-alt', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.preview }}</span>
+                    </button>
+                </div>
             </form>
         </div>
     {% endif %}

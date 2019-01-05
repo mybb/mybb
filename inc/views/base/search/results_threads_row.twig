@@ -20,29 +20,31 @@
 
             {# Go to unread link #}
             {% if thread.unread %}
-                <a href="{{ thread.newpostlink|raw }}" class="thread__status"><i class="fas fa-circle" title="{{ lang.goto_first_unread }}"></i></a>
+                <a href="{{ thread.newpostlink|raw }}" class="thread__status">
+                    {{ include('partials/icon.twig', {icon: 'circle', class: '', title: lang.goto_first_unread}, with_context = false) }}
+                </a>
             {% endif %}
 
             {# Thread status icons #}
             <span class="thread__icons">
                 {# Attachment paperclip #}
                 {% if mybb.settings.enableattachments and thread.attachmentcount %}
-                    <i class="thread__icon fas fa-paperclip fa-fw" title="{{ thread.attachment_count }}"></i>
+                    {{ include('partials/icon.twig', {icon: 'paperclip', class: 'thread__icon fa-fw', title: thread.attachmentcount}, with_context = false) }}
                 {% endif %}
 
                 {# Closed #}
                 {% if thread.closed  %}
-                    <i class="thread__icon fas fa-lock fa-fw" title="{{ lang.closed }}"></i>
+                    {{ include('partials/icon.twig', {icon: 'lock', class: 'thread__icon fa-fw', title: lang.closed}, with_context = false) }}
                 {% endif %}
 
                 {# Sticky #}
                 {% if thread.sticky %}
-                    <i class="thread__icon thread__icon--sticky fas fa-thumbtack fa-fw" title="{{ lang.sticky }}"></i>
+                    {{ include('partials/icon.twig', {icon: 'thumbtack', class: 'thread__icon thread__icon--sticky fa-fw', title: lang.sticky}, with_context = false) }}
                 {% endif %}
 
                 {# Poll #}
                 {% if thread.poll %}
-                    <i class="thread__icon fas fa-check-square fa-fw" title="{{ lang.poll_prefix }}"></i>
+                    {{ include('partials/icon.twig', {icon: 'check-square', class: 'thread__icon fa-fw', title: lang.poll_prefix}, with_context = false) }}
                 {% endif %}
 
                 {# Thread icon #}

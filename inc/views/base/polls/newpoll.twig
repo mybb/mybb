@@ -1,23 +1,23 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.post_new_poll }}</title>
+    <title>{{ lang.post_new_poll }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block body %}
     <div class="page-content">
-		<header class="page-header">
-			<h1 class="title title--page">{{ lang.post_new_poll }}</h1>
-		</header>
+        <header class="page-header">
+            <h1 class="title title--page">{{ lang.post_new_poll }}</h1>
+        </header>
         <form action="polls.php" method="post">
             <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
             <div class="form">
-				<section class="section section--form">
-					<h2 class="title title--section">{{ lang.poll_details }}</h2>
-					<div class="section__container">
+                <section class="section section--form">
+                    <h2 class="title title--section">{{ lang.poll_details }}</h2>
+                    <div class="section__container">
                         {{ loginbox|raw }}
                         <div class="row row--form field">
-        					<h3 class="field__name"><label for="question">{{ lang.question }}</label></h3>
+                            <h3 class="field__name"><label for="question">{{ lang.question }}</label></h3>
                             <input type="text" class="textbox" name="question" id="question" size="40" maxlength="240" value="{{ select.question }}" />
                         </div>
                         <div class="row row--form field">
@@ -28,10 +28,10 @@
                     </div>
                 </section>
                 <section class="section section--form">
-					<h2 class="title title--section">{{ lang.poll_options }}</h2>
+                    <h2 class="title title--section">{{ lang.poll_options }}</h2>
                     <div class="section__container">
-						<div class="row row--form field">
-							<p class="field__description">{{ lang.poll_options_note }}</p>
+                        <div class="row row--form field">
+                            <p class="field__description">{{ lang.poll_options_note }}</p>
                         </div>
                         {% for option in optionbits %}
                             <div class="row row--form field">
@@ -49,7 +49,7 @@
                             <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="postoptions[public]" value="1"{% if select.postoptions.public %} checked="checked"{% endif %} /> {{ lang.option_public|raw }}</label></p>
                         </div>
                         <div class="row row--form field" id="maxOptions" style="display: none">
-							<h3 class="field__name"><label for="maxoptionsfield">{{ lang.option_multiple_maxoptions }}</h3>
+                            <h3 class="field__name"><label for="maxoptionsfield">{{ lang.option_multiple_maxoptions }}</h3>
                             <input type="text" class="textbox textbox--small" name="maxoptions" id="maxoptionsfield" value="{{ select.maxoptions }}" />
                         </div>
                         <script type="text/javascript">
@@ -68,18 +68,18 @@
                         // -->
                         </script>
                         <div class="row row--form field">
-    						<h3 class="field__name"><label for="timeout">{{ lang.poll_timeout }}</label></h3>
+                            <h3 class="field__name"><label for="timeout">{{ lang.poll_timeout }}</label></h3>
                             <p class="field__description">{{ lang.timeout_note }}</p>
                             <input type="text" class="textbox textbox--small" name="timeout" id="timeout" value="{{ select.timeout }}" /> {{ lang.days }}
                         </div>
                     </div>
                 </section>
                 <div class="form__submit">
-    				<button type="submit" class="button button--big" name="submit">
-    					<i class="button__icon fas fa-plus-circle"></i>
-    					<span class="button__text">{{ lang.post_new_poll }}</span>
-    				</button>
-    			</div>
+                    <button type="submit" class="button button--big" name="submit">
+                        {{ include('partials/icon.twig', {icon: 'plus-circle', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.post_new_poll }}</span>
+                    </button>
+                </div>
             </div>
             <input type="hidden" name="action" value="do_newpoll" />
             <input type="hidden" name="tid" value="{{ thread.tid }}" />

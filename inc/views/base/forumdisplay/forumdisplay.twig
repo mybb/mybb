@@ -72,7 +72,7 @@
         {% if foruminfo.type == 'f' and foruminfo.open and fpermissions.canpostthreads and mybb.user.suspendposting is not empty %}
             {% set newthread %}
                 <a href="newthread.php?fid={{ foruminfo.fid }}" class="button button--medium button--full-width">
-                    <i class="button__icon fas fa-pencil-alt"></i>
+                    {{ include('partials/icon.twig', {icon: 'pencil-alt', class: 'button__icon'}, with_context = false) }}
                     <span class="button__text">{{ lang.post_thread }}</span>
                 </a>
             {% endset %}
@@ -82,21 +82,21 @@
             <div class="page-controls page-controls--top">
                 <div class="page-buttons">
                     <a href="misc.php?action=markread&amp;fid={{ foruminfo.fid }}{% if mybb.user.uid %}&amp;my_post_key={{ mybb.post_code }}{% endif %}" class="button button--medium button--secondary button--half-width">
-                        <i class="button__icon fas fa-dot-circle"></i>
+                        {{ include('partials/icon.twig', {icon: 'dot-circle', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.markforum_read }}</span>
                     </a>
                     <a href="usercp.php?action={{ subAction }}subscription&amp;type=forum&amp;fid={{ foruminfo.fid }}&amp;my_post_key={{ mybb.post_code }}" class="button button--medium button--secondary button--half-width">
                         {% if subAction == 'add' %}
-                            <i class="button__icon fas fa-plus"></i>
+                            {{ include('partials/icon.twig', {icon: 'plus', class: 'button__icon'}, with_context = false) }}
                             <span class="button__text">{{ lang.subscribe_forum }}</span>
                         {% else %}
-                            <i class="button__icon fas fa-minus"></i>
+                            {{ include('partials/icon.twig', {icon: 'minus', class: 'button__icon'}, with_context = false) }}
                             <span class="button__text">{{ lang.unsubscribe_forum }}</span>
                         {% endif %}
                     </a>
                     {% if foruminfo.password %}
                         <a href="misc.php?action=clearpass&amp;fid={{ foruminfo.fid }}&amp;my_post_key={{ mybb.post_code }}" class="button button--medium button--secondary button--full-width">
-                            <i class="button__icon fas fa-key"></i>
+                            {{ include('partials/icon.twig', {icon: 'key', class: 'button__icon'}, with_context = false) }}
                             {{ lang.clear_stored_password }}</a>
                     {% endif %}
                     {{ newthread }}
@@ -109,9 +109,9 @@
                     <span class="sort-threads__order">
                         <a href="{{ sorting.url }}&amp;sortby={{ sorting.by }}&amp;order={{ sorting.oppsortnext }}">
                             {% if sorting.oppsortnext == 'asc' %}
-                                <i class="fas fa-chevron-circle-up" title="{{ sorting.oppsort }}"></i>
+                                {{ include('partials/icon.twig', {icon: 'chevron-circle-up', class: '', title: sorting.oppsort}, with_context = false) }}
                             {% else %}
-                                <i class="fas fa-chevron-circle-down" title="{{ sorting.oppsort }}"></i>
+                                {{ include('partials/icon.twig', {icon: 'chevron-circle-down', class: '', title: sorting.oppsort}, with_context = false) }}
                             {% endif %}
                         </a>
                     </span>
@@ -234,7 +234,7 @@
                     <input type="hidden" name="fid" value="{{ foruminfo.fid }}" />
                     <h3 class="sort-results__title visually-hidden">{{ lang.sort_threads }}</h3>
                     <div class="select-field">
-                        <i class="select-field__icon fas fa-sort"></i>
+                        {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                         <select name="sortby">
                             {% for field in ['subject', 'lastpost', 'starter', 'started', 'replies', 'views'] %}
                                 <option value="{{ field }}"{% if mybb.input[field] %} selected{% endif %}>{{ attribute(lang, 'sort_by_' ~ field) }}</option>
@@ -245,7 +245,7 @@
                         </select>
                     </div>
                     <div class="select-field">
-                        <i class="select-field__icon fas fa-sort"></i>
+                        {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                         <select name="order">
                             {% for field in ['asc', 'desc'] %}
                                 <option value="{{ field }}"{% if mybb.input[field] %} selected{% endif %}>{{ attribute(lang, 'sort_order_' ~ field) }}</option>
@@ -253,7 +253,7 @@
                         </select>
                     </div>
                     <div class="select-field">
-                        <i class="select-field__icon fas fa-sort"></i>
+                        {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                         <select name="datecut">
                             <option value="1"{% if mybb.input.datecut == 1 %} selected{% endif %}>{{ lang.datelimit_1day }}</option>
                             {% for field in [5, 10, 20, 50, 75, 100] %}
@@ -265,7 +265,7 @@
                     </div>
                     {{ prefixselect|raw }}
                     <button type="submit" class="button button--inline">
-        				<i class="button__icon fas fa-random"></i>
+                        {{ include('partials/icon.twig', {icon: 'random', class: 'button__icon'}, with_context = false) }}
         				<span class="button__text">{{ lang.sort_threads }}</span>
         			</button>
                     </form>
@@ -286,7 +286,7 @@
                                 <input type="hidden" name="forums" value="{{ foruminfo.fid }}" />
                                 <input type="hidden" name="postthread" value="1" />
                                 <button type="submit" class="button button--inline">
-                                    <i class="button__icon fas fa-search"></i>
+                                    {{ include('partials/icon.twig', {icon: 'search', class: 'button__icon'}, with_context = false) }}
                                     <span class="button__text">{{ lang.search_forum }}</span>
                                 </button>
                             </form>

@@ -1,7 +1,7 @@
 {% extends 'layouts/moderation.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.modlogs }}</title>
+    <title>{{ lang.modlogs }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block moderationHeader %}
@@ -30,14 +30,14 @@
                     <div class="row row--form field">
                         <h3 class="field__name">{{ lang.forum }}</h3>
                         <div class="select-field">
-                            <i class="select-field__icon fas fa-sort"></i>
+                            {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                             {{ forum_select|raw }}
                         </div>
                     </div>
                     <div class="row row--form field">
                         <h3 class="field__name"><label for="from_moderator">{{ lang.from_moderator }}</label></h3>
                         <div class="select-field">
-                            <i class="select-field__icon fas fa-sort"></i>
+                            {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                             <select name="uid" id="from_moderator">
                                 <option value="">{{ lang.all_moderators }}</option>
                                 <option value="">----------</option>
@@ -54,7 +54,7 @@
                 <div class="section__container">
                     <div class="row row--form field">
                         <div class="select-field">
-                            <i class="select-field__icon fas fa-sort"></i>
+                            {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                             <select name="sortby">
                                 <option value="dateline"{% if select.sortby.dateline %} selected="selected"{% endif %}>{{ lang.sortby_date }}</option>
                                 <option value="username"{% if select.sortby.username %} selected="selected"{% endif %}>{{ lang.sortby_username }}</option>
@@ -83,7 +83,7 @@
             </div>
             <div class="form__submit">
                 <button type="submit" class="button button--medium">
-                    <i class="button__icon fas fa-filter"></i>
+                    {{ include('partials/icon.twig', {icon: 'filter', class: 'button__icon'}, with_context = false) }}
                     <span class="button__text">{{ lang.filter_logs }}</span>
                 </button>
             </div>

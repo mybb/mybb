@@ -1,5 +1,5 @@
 <div class="row row--form field">
-	<h3 class="field__name visually-hidden">{{ lang.post_icon }}</h3>
+    <h3 class="field__name visually-hidden">{{ lang.post_icon }}</h3>
     <div class="segmented-control segmented-control--buttons segmented-control--alt">
         <span class="segmented-control__option">
             <input type="radio" class="radio segmented-control__input" id="noposticon" name="icon" value="-1"{% if composepost.emptyiconcheck or emptyiconcheck %} checked="checked"{% endif %} />
@@ -7,8 +7,8 @@
         </span>
         {% for posticon in posticons %}
             <span class="segmented-control__option">
-            	<input type="radio" class="radio segmented-control__input" name="icon" id="posticon{{ posticon.iid }}" value="{{ posticon.iid }}"{% if posticon.checked %} checked="checked"{% endif %} />
-            	<label for="posticon{{ posticon.iid }}" class="segmented-control__button"><img src="{{ posticon.path }}" alt="{{ posticon.name }}" title="{{ posticon.name }}" /></label>
+                <input type="radio" class="radio segmented-control__input" name="icon" id="posticon{{ posticon.iid }}" value="{{ posticon.iid }}"{% if posticon.checked %} checked="checked"{% endif %} />
+                <label for="posticon{{ posticon.iid }}" class="segmented-control__button"><img src="{{ posticon.path }}" alt="{{ posticon.name }}" title="{{ posticon.name }}" /></label>
             </span>
         {% endfor %}
     </div>

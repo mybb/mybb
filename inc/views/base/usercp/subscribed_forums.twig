@@ -1,7 +1,7 @@
 {% extends 'layouts/account.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bburl }} - {{ lang.forum_subscriptions }}</title>
+    <title>{{ lang.forum_subscriptions }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block accountHeader %}
@@ -15,7 +15,7 @@
     {% include 'usercp/subscribed_menu.twig' %}
 
     <section class="block block--container">
-		<div class="forum-list forum-list--full-width">
+        <div class="forum-list forum-list--full-width">
         {% for forum in forums %}
             {% include 'usercp/subscribed_forums/row.twig' %}
         {% else %}

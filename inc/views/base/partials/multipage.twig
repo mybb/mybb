@@ -5,7 +5,10 @@
 {% endif %}
     <span class="pagination__pages">{{ trans('multipage_pages', multipage.total_pages) }}</span>
     {% if page > 1 %}
-        <a href="{{ multipage.previous_page_url|raw }}" class="pagination__page pagination__page--previous"><i class="pagination__icon fas fa-chevron-left"></i> {{ lang.previous }}</a>
+        <a href="{{ multipage.previous_page_url|raw }}" class="pagination__page pagination__page--previous">
+            {{ include('partials/icon.twig', {icon: 'chevron-left', class: 'pagination__icon'}, with_context = false) }}
+            {{ lang.previous }}
+        </a>
     {% endif %}
     {% if multipage.from > 1 %}
         <a href="{{ multipage.start_page_url|raw }}" class="pagination__page pagination__page--first">1</a> {{ lang.multipage_link_start }}
@@ -25,7 +28,10 @@
         {{ lang.multipage_link_end }} <a href="{{ multipage.end_page_url|raw }}" class="pagination__page pagination__page--last">{{ multipage.total_pages }}</a>
     {% endif %}
     {% if page < multipage.total_pages %}
-        <a href="{{ multipage.next_page_url|raw }}" class="pagination__page pagination__page--next">{{ lang.next }} <i class="pagination__icon fas fa-chevron-right"></i></a>
+        <a href="{{ multipage.next_page_url|raw }}" class="pagination__page pagination__page--next">
+            {{ lang.next }}
+            {{ include('partials/icon.twig', {icon: 'chevron-right', class: 'pagination__icon'}, with_context = false) }}
+        </a>
     {% endif %}
     {% if breadcrumb == false and mybb.settings.jumptopagemultipage and multipage.total_pages > ( mybb.settings.maxmultipagelinks + 1 ) %}
         <div class="popup_menu drop_go_page" style="display: none;">

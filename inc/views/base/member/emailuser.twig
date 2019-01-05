@@ -1,7 +1,7 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.email_user }}</title>
+    <title>{{ lang.email_user }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block body %}
@@ -38,9 +38,9 @@
                 {{ captcha|raw }}
                 <div class="form__submit">
                     <button type="submit" class="button button--medium" tabindex="3">
-    					<i class="button__icon fas fa-envelope"></i>
-    					<span class="button__text">{{ lang.send_email }}</span>
-    				</button>
+                        {{ include('partials/icon.twig', {icon: 'envelope', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.send_email }}</span>
+                    </button>
                 </div>
             </div>
             <input type="hidden" name="action" value="do_emailuser" />

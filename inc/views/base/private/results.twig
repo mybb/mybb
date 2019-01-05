@@ -1,7 +1,7 @@
 {% extends 'layouts/messenger.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.pm_search_results }}</title>
+    <title>{{ lang.pm_search_results }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block messengerHeader %}
@@ -15,27 +15,29 @@
     <form action="private.php" method="post" name="pmForm">
         <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
         <div class="messenger__search">
-			<input type="text" name="keywords" placeholder="{{ lang.enter_keywords }}" class="textbox textbox--large" size="25" />
-			<button type="submit" class="button button--inline" name="quick_search" value="search">
-				<i class="button__icon fas fa-search"></i>
-				<span class="button__text">{{ lang.search_pms }}</span>
-			</button>
-			<a href="private.php?action=advanced_search" class="messenger__advanced-search button button--basic button--inline">
-				<i class="button__icon fas fa-cog"></i>
-				<span class="button__text">{{ lang.advanced_search }}</span>
-			</a>
-		</div>
+            <input type="text" name="keywords" placeholder="{{ lang.enter_keywords }}" class="textbox textbox--large" size="25" />
+            <button type="submit" class="button button--inline" name="quick_search" value="search">
+                {{ include('partials/icon.twig', {icon: 'search', class: 'button__icon'}, with_context = false) }}
+                <span class="button__text">{{ lang.search_pms }}</span>
+            </button>
+            <a href="private.php?action=advanced_search" class="messenger__advanced-search button button--basic button--inline">
+                {{ include('partials/icon.twig', {icon: 'cog', class: 'button__icon'}, with_context = false) }}
+                <span class="button__text">{{ lang.advanced_search }}</span>
+            </a>
+        </div>
         <section class="message-list">
-			<h2 class="visually-hidden">{{ lang.pm_search_results }}</h2>
-			<div class="sort-messages sort-messages--no-avatar">
-				<div class="sort-messages__column sort-messages__column--primary">
-					{{ lang.message }} &mdash; {{ lang.sender }} &mdash; {{ lang.folder }}
-				</div>
-				<div class="sort-messages__column sort-messages__column--date">
-					{{ lang.date_sent }}
-				</div>
-				<div class="sort-messages__column sort-messages__column--checkbox messages-list__select-all"><input name="allbox" title="{{ lang.check_all }}" type="checkbox" class="checkbox checkall" value="{{ lang.check_all }}" /></div>
-			</div>
+            <h2 class="visually-hidden">{{ lang.pm_search_results }}</h2>
+            <div class="sort-messages sort-messages--no-avatar">
+                <div class="sort-messages__column sort-messages__column--primary">
+                    {{ lang.message }} &mdash; {{ lang.sender }} &mdash; {{ lang.folder }}
+                </div>
+                <div class="sort-messages__column sort-messages__column--date">
+                    {{ lang.date_sent }}
+                </div>
+                <div class="sort-messages__column sort-messages__column--checkbox messages-list__select-all">
+                    <input name="allbox" title="{{ lang.check_all }}" type="checkbox" class="checkbox checkall" value="{{ lang.check_all }}" />
+                </div>
+            </div>
             <div class="message-list__container">
                 {% for message in messagelist %}
                     {% include 'private/results/item.twig' %}
@@ -44,25 +46,25 @@
                 {% endfor %}
             </div>
             <div class="sort-results">
-				<button type="submit" class="button button--inline" name="moveto" value="move">
-					<i class="button__icon fas fa-arrow-right"></i>
-					<span class="button__text">{{ lang.move_to }}</span>
-				</button>
+                <button type="submit" class="button button--inline" name="moveto" value="move">
+                    {{ include('partials/icon.twig', {icon: 'arrow-right', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.move_to }}</span>
+                </button>
                 <div class="select-field">
-                    <i class="select-field__icon fas fa-sort"></i>
+                    {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                     <select name="fid">
                         {% for folder in folders %}
                             <option value="{{ folder.id }}"{% if folder.sel %} selected="selected"{% endif %}>{{ folder.name }}</option>
                         {% endfor %}
                     </select>
                 </div>
-				<span class="sort-results__text">{{ lang.or }}</span>
-				<button type="submit" class="button button--inline" name="delete" value="delete">
-					<i class="button__icon fas fa-trash"></i>
-					<span class="button__text">{{ lang.delete }}</span>
-				</button>
-				<span class="sort-results__text">{{ lang.selected_messages }}</span>
-			</div>
+                <span class="sort-results__text">{{ lang.or }}</span>
+                <button type="submit" class="button button--inline" name="delete" value="delete">
+                    {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.delete }}</span>
+                </button>
+                <span class="sort-results__text">{{ lang.selected_messages }}</span>
+            </div>
         </section>
         <input type="hidden" name="action" value="do_stuff" />
     </form>

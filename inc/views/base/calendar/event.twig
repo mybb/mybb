@@ -1,7 +1,7 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.calendar }} - {{ event.name }}</title>
+    <title>{{ lang.calendar }} - {{ event.name }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block body %}
@@ -13,11 +13,11 @@
             <div class="page-buttons">
                 {% if calendar_permissions.canaddevents %}
                     <a href="calendar.php?action=addevent&amp;calendar={{ calendar.cid }}" class="button button--half-width">
-                        <i class="button__icon fas fa-calendar-plus"></i>
+                        {{ include('partials/icon.twig', {icon: 'calendar-plus', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.add_public_event }}</span>
                     </a>
                     <a href="calendar.php?action=addevent&amp;calendar={{ calendar.cid }}&amp;private=1" class="button button--half-width">
-                        <i class="button__icon fas fa-calendar-plus"></i>
+                        {{ include('partials/icon.twig', {icon: 'calendar-plus', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.add_private_event }}</span>
                     </a>
                 {% endif %}

@@ -6,7 +6,7 @@
             <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
             <h2 class="title title--legend">{{ lang.moderation_options }}</h2>
             <div class="select-field">
-                <i class="select-field__icon fas fa-sort"></i>
+                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                 <select name="action" id="moderator_options_selector">
                     <option value="delayedmoderation">{{ lang.delayed_moderation }}</option>
                     {% if thread.showstandardtools %}
@@ -58,7 +58,7 @@
                 </select>
             </div>
             <button type="submit" class="button button--inline">
-                <i class="button__icon fas fa-arrow-right"></i>
+                {{ include('partials/icon.twig', {icon: 'arrow-right', class: 'button__icon'}, with_context = false) }}
                 <span class="button__text">{{ lang.go }}</span>
             </button>
         </form>
@@ -72,7 +72,7 @@
                 <input type="hidden" name="modtype" value="inlinepost" />
                 <h2 class="title title--legend">{{ lang.inline_post_moderation }}</h2>
                 <div class="select-field">
-                    <i class="select-field__icon fas fa-sort"></i>
+                    {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                     <select name="action" id="inlinemoderation_options_selector">
                         {% if thread.showstandardposttools %}
                             <optgroup label="{{ lang.standard_mod_tools }}">
@@ -106,11 +106,11 @@
                     </select>
                 </div>
                 <button type="submit" name="go" class="button button--inline">
-                    <i class="button__icon fas fa-arrow-right"></i>
+                    {{ include('partials/icon.twig', {icon: 'arrow-right', class: 'button__icon'}, with_context = false) }}
                     <span class="button__text" id="inline_go">{{ lang.go }} ({{ thread.inlinecount }})</span>
                 </button>
                 <button type="button" class="button button--secondary button--inline" onclick="inlineModeration.clearChecked();">
-                    <i class="button__icon fas fa-times"></i>
+                    {{ include('partials/icon.twig', {icon: 'times', class: 'button__icon'}, with_context = false) }}
                     <span class="button__text">{{ lang.clear }}</span>
                 </button>
             </form>

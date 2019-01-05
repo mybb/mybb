@@ -5,49 +5,49 @@
 {% block messengerHeader %}{% endblock messengerHeader %}
 
 <nav class="section-menu">
-	<ul class="section-menu__links sidebar-navigation">
-		{% if mybb.usergroup.cansendpms %}
-			<li class="section-menu__item section-menu__item--messenger-compose{% if mybb.input.action == 'send' %} section-menu__item--active{% endif %}">
-				<a href="private.php?action=send" class="section-menu__link">
-					{{ include('partials/icon.twig', {icon: 'edit', class: 'section-menu__icon fa-fw'}, with_context = false) }}
-					<span class="section-menu__text">{{ lang.ucp_nav_compose }}</span>
-				</a>
-			</li>
-		{% endif %}
-		{# FOLDERS #}
-		{% for folder in folders %}
-			<li class="section-menu__item section-menu__item--messenger-folder section-menu__item--folder-{{ folder.id }} {% if mybb.input.fid == folder.id or (mybb.input.fid == '' and mybb.input.action == '' and folder.id == 1) %} section-menu__item--active{% endif %}">
-				<a href="private.php?fid={{ folder.id }}" class="section-menu__link">
-					{% if folder.id == 1 %}
-						{{ include('partials/icon.twig', {icon: 'inbox', class: 'section-menu__icon section-menu__icon--folder fa-fw'}, with_context = false) }}
-					{% elseif folder.id == 2 %}
-						{{ include('partials/icon.twig', {icon: 'paper-plane', class: 'section-menu__icon section-menu__icon--folder fa-fw'}, with_context = false) }}
-					{% elseif folder.id == 3 %}
-						{{ include('partials/icon.twig', {icon: 'file', class: 'section-menu__icon section-menu__icon--folder fa-fw'}, with_context = false) }}
-					{% elseif folder.id == 4 %}
-						{{ include('partials/icon.twig', {icon: 'trash', class: 'section-menu__icon section-menu__icon--folder fa-fw'}, with_context = false) }}
-					{% else %}
-						{{ include('partials/icon.twig', {icon: 'folder', class: 'section-menu__icon section-menu__icon--folder fa-fw'}, with_context = false) }}
-					{% endif %}
-					<span class="section-menu__text">{{ folder.name }}</span>
-				</a>
-			</li>
-		{% endfor %}
-		{% if mybb.usergroup.cantrackpms %}
-			<li class="section-menu__item section-menu__item--messenger-tracking{% if mybb.input.action == 'tracking' %} section-menu__item--active{% endif %}">
-				<a href="private.php?action=tracking" class="section-menu__link">
-					{{ include('partials/icon.twig', {icon: 'bell', class: 'section-menu__icon fa-fw'}, with_context = false) }}
-					<span class="section-menu__text">{{ lang.ucp_nav_tracking }}</span>
-				</a>
-			</li>
-		{% endif %}
-		<li class="section-menu__item section-menu__item--messenger-edit-folders{% if mybb.input.action == 'folders' %} section-menu__item--active{% endif %}">
-			<a href="private.php?action=folders" class="section-menu__link">
-				{{ include('partials/icon.twig', {icon: 'folder-open', class: 'section-menu__icon fa-fw'}, with_context = false) }}
-				<span class="section-menu__text">{{ lang.ucp_nav_edit_folders }}</span>
-			</a>
-		</li>
-	</ul>
+    <ul class="section-menu__links sidebar-navigation">
+        {% if mybb.usergroup.cansendpms %}
+            <li class="section-menu__item section-menu__item--messenger-compose{% if mybb.input.action == 'send' %} section-menu__item--active{% endif %}">
+                <a href="private.php?action=send" class="section-menu__link">
+                    {{ include('partials/icon.twig', {icon: 'edit', class: 'section-menu__icon fa-fw'}, with_context = false) }}
+                    <span class="section-menu__text">{{ lang.ucp_nav_compose }}</span>
+                </a>
+            </li>
+        {% endif %}
+        {# FOLDERS #}
+        {% for folder in folders %}
+            <li class="section-menu__item section-menu__item--messenger-folder section-menu__item--folder-{{ folder.id }} {% if mybb.input.fid == folder.id or (mybb.input.fid == '' and mybb.input.action == '' and folder.id == 1) %} section-menu__item--active{% endif %}">
+                <a href="private.php?fid={{ folder.id }}" class="section-menu__link">
+                    {% if folder.id == 1 %}
+                        {{ include('partials/icon.twig', {icon: 'inbox', class: 'section-menu__icon section-menu__icon--folder fa-fw'}, with_context = false) }}
+                    {% elseif folder.id == 2 %}
+                        {{ include('partials/icon.twig', {icon: 'paper-plane', class: 'section-menu__icon section-menu__icon--folder fa-fw'}, with_context = false) }}
+                    {% elseif folder.id == 3 %}
+                        {{ include('partials/icon.twig', {icon: 'file', class: 'section-menu__icon section-menu__icon--folder fa-fw'}, with_context = false) }}
+                    {% elseif folder.id == 4 %}
+                        {{ include('partials/icon.twig', {icon: 'trash', class: 'section-menu__icon section-menu__icon--folder fa-fw'}, with_context = false) }}
+                    {% else %}
+                        {{ include('partials/icon.twig', {icon: 'folder', class: 'section-menu__icon section-menu__icon--folder fa-fw'}, with_context = false) }}
+                    {% endif %}
+                    <span class="section-menu__text">{{ folder.name }}</span>
+                </a>
+            </li>
+        {% endfor %}
+        {% if mybb.usergroup.cantrackpms %}
+            <li class="section-menu__item section-menu__item--messenger-tracking{% if mybb.input.action == 'tracking' %} section-menu__item--active{% endif %}">
+                <a href="private.php?action=tracking" class="section-menu__link">
+                    {{ include('partials/icon.twig', {icon: 'bell', class: 'section-menu__icon fa-fw'}, with_context = false) }}
+                    <span class="section-menu__text">{{ lang.ucp_nav_tracking }}</span>
+                </a>
+            </li>
+        {% endif %}
+        <li class="section-menu__item section-menu__item--messenger-edit-folders{% if mybb.input.action == 'folders' %} section-menu__item--active{% endif %}">
+            <a href="private.php?action=folders" class="section-menu__link">
+                {{ include('partials/icon.twig', {icon: 'folder-open', class: 'section-menu__icon fa-fw'}, with_context = false) }}
+                <span class="section-menu__text">{{ lang.ucp_nav_edit_folders }}</span>
+            </a>
+        </li>
+    </ul>
 </nav>
 
 <div class="page-content page-content--menu messenger">

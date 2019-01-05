@@ -1,24 +1,24 @@
 <div class="row row--forum forum">
-	<div class="forum__info">
-		<span class="forum__status forum__status--{{ forum.light_bulb_folder }}">
+    <div class="forum__info">
+        <span class="forum__status forum__status--{{ forum.light_bulb_folder }}">
             {% if lightbulb.folder == 'offlock' %}
-                <i class="fas fa-link"></i>
+                {{ include('partials/icon.twig', {icon: 'lock', class: 'fa-fw'}, with_context = false) }}
             {% elseif lightbulb.folder == 'offlink' %}
-                <i class="fas fa-lock"></i>
+                {{ include('partials/icon.twig', {icon: 'link', class: 'fa-fw'}, with_context = false) }}
             {% else %}
-                <i class="fas fa-circle"></i>
+                {{ include('partials/icon.twig', {icon: 'circle', class: 'fa-fw'}, with_context = false) }}
             {% endif %}
-		</span>
-		<h3 class="forum__title"><a href="{{ forum.url }}">{{ forum.name }}</a></h3>
-		<a href="usercp.php?action=removesubscription&amp;type=forum&amp;fid={{ forum.fid }}&amp;my_post_key={{ mybb.post_code }}" class="button button--secondary button--small">
-			<i class="button__icon fas fa-trash-alt"></i>
-			<span class="button__text">{{ lang.unsubscribe }}</span>
-		</a>
-		<a href="newthread.php?fid={{ forum.fid }}" class="button button--secondary button--small">
-			<i class="button__icon fas fa-pencil-alt"></i>
-			<span class="button__text">{{ lang.new_thread }}</span>
-		</a>
-	</div>
+        </span>
+        <h3 class="forum__title"><a href="{{ forum.url }}">{{ forum.name }}</a></h3>
+        <a href="usercp.php?action=removesubscription&amp;type=forum&amp;fid={{ forum.fid }}&amp;my_post_key={{ mybb.post_code }}" class="button button--secondary button--small">
+            {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}
+            <span class="button__text">{{ lang.unsubscribe }}</span>
+        </a>
+        <a href="newthread.php?fid={{ forum.fid }}" class="button button--secondary button--small">
+            {{ include('partials/icon.twig', {icon: 'pencil-alt', class: 'button__icon'}, with_context = false) }}
+            <span class="button__text">{{ lang.new_thread }}</span>
+        </a>
+    </div>
     {% if forum.lastpost == 0 %}
         {% include 'forumbit/depth_2/last_post_never.twig' %}
     {% elseif forum.lastpost_hidden %}

@@ -1,12 +1,12 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.forum_team }}</title>
+    <title>{{ lang.forum_team }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block body %}
     <div class="page-header">
-		<h1 class="title title--page">{{ lang.forum_team }}</h1>
+        <h1 class="title title--page">{{ lang.forum_team }}</h1>
     </div>
     <div class="page-content">
         {% for usergroup in usergrouplist %}
@@ -21,7 +21,7 @@
                             <h2 class="user-list__username">
                                 <a href="{{ user.profilelink|raw }}">{{ user.username|raw }}</a>
                                 <span class="user-status user-status--{{ user.status }}">
-                                    <i class="user-status__icon fas fa-dot-circle" title="{{ user.statuslang }}"></i>
+                                    {{ include('partials/icon.twig', {icon: 'dot-circle', class: 'user-status__icon', title: user.statuslang}, with_context = false) }}
                                 </span>
                             </h2>
                             <ul class="list list--stats list--user">
@@ -43,13 +43,13 @@
                             <div class="user-list__buttons">
                                 {% if user.showemail %}
                                     <a href="member.php?action=emailuser&amp;uid={{ user.uid }}" title="{{ lang.postbit_email }}" class="button button--secondary button--small">
-                                        <i class="button__icon fas fa-at"></i>
+                                        {{ include('partials/icon.twig', {icon: 'at', class: 'button__icon'}, with_context = false) }}
                                         <span class="button__text">{{ lang.postbit_button_email }}</span>
                                     </a>
                                 {% endif %}
                                 {% if user.showpm %}
                                     <a href="private.php?action=send&amp;uid={{ user.uid }}" title="{{ lang.postbit_pm }}" class="button button--secondary button--small">
-                                        <i class="button__icon fas fa-envelope"></i>
+                                        {{ include('partials/icon.twig', {icon: 'envelope', class: 'button__icon'}, with_context = false) }}
                                         <span class="button__text">{{ lang.postbit_button_pm }}</span>
                                     </a>
                                 {% endif %}
@@ -57,6 +57,7 @@
                         </div>
                     {% endfor %}
                 </div>
-            {% endfor %}
-        </div>
+            </section>
+        {% endfor %}
+    </div>
 {% endblock body %}

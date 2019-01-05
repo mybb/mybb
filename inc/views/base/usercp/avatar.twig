@@ -1,7 +1,7 @@
 {% extends 'layouts/account.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.change_avatar }}</title>
+    <title>{{ lang.change_avatar }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block accountHeader %}
@@ -67,12 +67,12 @@
             {% endif %}
             <div class="form__submit">
                 <button type="submit" class="button button--medium" name="submit">
-    				<i class="button__icon fas fa-image"></i>
-    				<span class="button__text">{{ lang.change_avatar }}</span>
-    			</button>
+                    {{ include('partials/icon.twig', {icon: 'image', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.change_avatar }}</span>
+                </button>
                 {% if mybb.user.avatar %}
                     <button type="submit" class="button button--medium button--secondary" name="remove" value="remove">
-                        <i class="button__icon fas fa-times"></i>
+                        {{ include('partials/icon.twig', {icon: 'times', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.remove_avatar }}</span>
                     </button>
                 {% endif %}

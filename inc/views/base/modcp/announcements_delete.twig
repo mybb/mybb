@@ -1,7 +1,7 @@
 {% extends 'layouts/moderation.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.delete_announcement }}</title>
+    <title>{{ lang.delete_announcement }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block moderationHeader %}
@@ -24,7 +24,7 @@
             </div>
             <div class="form__submit">
                 <button type="submit" class="button button--medium button--danger">
-                    <i class="button__icon fas fa-trash"></i>
+                    {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}
                     <span class="button__text">{{ lang.delete_announcement }}</span>
                 </button>
             </div>

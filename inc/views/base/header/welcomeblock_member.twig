@@ -1,33 +1,32 @@
 <ul class="user-bar__links">
-	<input type="checkbox" class="user-bar__checkbox" id="show-user-dropdown">
+    <input type="checkbox" class="user-bar__checkbox" id="show-user-dropdown">
     <li class="user-bar__item user-bar__item--active-user">
         <label for="show-user-dropdown" class="user-bar__link user-bar__link--dropdown">
-			{{ include('partials/icon.twig', {icon: 'user-circle', class: 'user-bar__icon'}, with_context = false) }}
+            {{ include('partials/icon.twig', {icon: 'user-circle', class: 'user-bar__icon'}, with_context = false) }}
             <span class="user-bar__text user-bar__text--username">{{ mybb.user.username }}</span>
-			{{ include('partials/icon.twig', {icon: 'chevron-down', class: 'user-bar__caret user-bar__caret--down fa-fw'}, with_context = false) }}
-			{{ include('partials/icon.twig', {icon: 'chevron-up', class: 'user-bar__caret user-bar__caret--up fa-fw'}, with_context = false) }}
+            {{ include('partials/icon.twig', {icon: 'chevron-down', class: 'user-bar__caret user-bar__caret--down fa-fw'}, with_context = false) }}
+            {{ include('partials/icon.twig', {icon: 'chevron-up', class: 'user-bar__caret user-bar__caret--up fa-fw'}, with_context = false) }}
         </label>
         <div class="user-bar__dropdown">
             <a href="{{ get_profile_link(mybb.user.uid) }}" class="avatar-profile-link" title="{{ lang.welcome_my_profile }}">
-				{{ render_avatar(url=mybb.user.avatar, alt=lang.welcome_my_avatar, class='my-avatar avatar--medium')}}
-			</a>
-
-			<p class="user-bar__username">{{ mybb.user.username }}</p>
+                {{ render_avatar(url=mybb.user.avatar, alt=lang.welcome_my_avatar, class='my-avatar avatar--medium')}}
+            </a>
+            <p class="user-bar__username">{{ mybb.user.username }}</p>
             <ul class="account-links">
                 {% if mybb.usergroup.canusercp %}
                     <li class="account-links__item">
-                    	<a href="{{ mybb.settings.bburl }}/usercp.php" class="account-links__link">
-							{{ include('partials/icon.twig', {icon: 'tachometer-alt', class: 'account-links__icon fa-fw'}, with_context = false) }}
-                    		<span class="account-links__text">{{ lang.welcome_usercp }}</span>
-                    	</a>
+                        <a href="{{ mybb.settings.bburl }}/usercp.php" class="account-links__link">
+                            {{ include('partials/icon.twig', {icon: 'tachometer-alt', class: 'account-links__icon fa-fw'}, with_context = false) }}
+                            <span class="account-links__text">{{ lang.welcome_usercp }}</span>
+                        </a>
                     </li>
                 {% endif %}
                 {% if mybb.usergroup.canmodcp %}
                     <li class="account-links__item">
-                    	<a href="{{ mybb.settings.bburl }}/modcp.php" class="account-links__link">
-                    		{{ include('partials/icon.twig', {icon: 'pencil-alt', class: 'account-links__icon fa-fw'}, with_context = false) }}
-                    		<span class="account-links__text">{{ lang.welcome_modcp }}</span>
-                    	</a>
+                        <a href="{{ mybb.settings.bburl }}/modcp.php" class="account-links__link">
+                            {{ include('partials/icon.twig', {icon: 'pencil-alt', class: 'account-links__icon fa-fw'}, with_context = false) }}
+                            <span class="account-links__text">{{ lang.welcome_modcp }}</span>
+                        </a>
                     </li>
                 {% endif %}
                 {% if mybb.usergroup.cancp and mybb.config.hide_admin_links != 1 %}
@@ -40,14 +39,14 @@
                 {% endif %}
                 <li class="account-links__item">
                     <a href="javascript:void(0)" onclick="MyBB.popupWindow('{{ mybb.settings.bburl }}/misc.php?action=buddypopup&modal=1', null, true); return false;" class="account-links__link">
-						{{ include('partials/icon.twig', {icon: 'heart', class: 'account-links__icon fa-fw'}, with_context = false) }}
-    					<span class="account-links__text">{{ lang.welcome_open_buddy_list }}</span>
+                        {{ include('partials/icon.twig', {icon: 'heart', class: 'account-links__icon fa-fw'}, with_context = false) }}
+                        <span class="account-links__text">{{ lang.welcome_open_buddy_list }}</span>
                     </a>
                 </li>
                  <li class="account-links__item">
                      <a href="{{ mybb.settings.bburl }}/member.php?action=logout&amp;logoutkey={{ mybb.user.logoutkey }}" class="account-links__link">
                          {{ include('partials/icon.twig', {icon: 'sign-out-alt', class: 'account-links__icon fa-fw'}, with_context = false) }}
-						<span class="account-links__text">{{ lang.welcome_logout }}</span>
+                         <span class="account-links__text">{{ lang.welcome_logout }}</span>
                     </a>
                 </li>
             </ul>
@@ -56,7 +55,7 @@
     {% if mybb.settings.enablepms and mybb.usergroup.canusepms %}
         <li class="user-bar__item user-bar__item--messages">
             <a href="{{ mybb.settings.bburl }}/private.php" class="user-bar__link">
-				{{ include('partials/icon.twig', {icon: 'envelope', class: 'user-bar__icon'}, with_context = false) }}
+                {{ include('partials/icon.twig', {icon: 'envelope', class: 'user-bar__icon'}, with_context = false) }}
                 <span class="user-bar__text">{{ lang.welcome_pms }}</span>
                 {% if mybb.user.pms_unread > 0 %}
                 <span class="user-bar__unread-count">{{ mybb.user.pms_unread }}</span>
@@ -66,16 +65,16 @@
     {% endif %}
     {% if mybb.usergroup.cansearch %}
         <li class="user-bar__item user-bar__item--new-posts">
-        	<a href="{{ mybb.settings.bburl }}/search.php?action=getnew" class="user-bar__link" title="{{ lang.welcome_newposts }}">
-				{{ include('partials/icon.twig', {icon: 'comments', class: 'user-bar__icon'}, with_context = false) }}
-        		<span class="user-bar__text">{{ lang.welcome_newposts }}</span>
-        	</a>
+            <a href="{{ mybb.settings.bburl }}/search.php?action=getnew" class="user-bar__link" title="{{ lang.welcome_newposts }}">
+                {{ include('partials/icon.twig', {icon: 'comments', class: 'user-bar__icon'}, with_context = false) }}
+                <span class="user-bar__text">{{ lang.welcome_newposts }}</span>
+            </a>
         </li>
         <li class="user-bar__item user-bar__item--todays-posts">
-        	<a href="{{ mybb.settings.bburl }}/search.php?action=getdaily" class="user-bar__link" title="{{ lang.welcome_newposts }}">
-				{{ include('partials/icon.twig', {icon: 'calendar', class: 'user-bar__icon'}, with_context = false) }}
-        		<span class="user-bar__text">{{ lang.welcome_todaysposts }}</span>
-        	</a>
+            <a href="{{ mybb.settings.bburl }}/search.php?action=getdaily" class="user-bar__link" title="{{ lang.welcome_newposts }}">
+                {{ include('partials/icon.twig', {icon: 'calendar', class: 'user-bar__icon'}, with_context = false) }}
+                <span class="user-bar__text">{{ lang.welcome_todaysposts }}</span>
+            </a>
         </li>
     {% endif %}
 </ul>

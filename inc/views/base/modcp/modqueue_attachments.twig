@@ -1,7 +1,7 @@
 {% extends 'layouts/moderation.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.attachments_awaiting_moderation }}</title>
+    <title>{{ lang.attachments_awaiting_moderation }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% set results = true %}
@@ -28,21 +28,21 @@
             {% if results %}
                 <div class="mod-queue__mass-controls">
                     <a href="javascript:void(0)" onclick="$('input.radio_ignore').each(function(){ $(this).prop('checked', true); }); return false;" class="button button--basic mass_ignore">
-                        <i class="button__icon fas fa-minus-circle"></i>
+                        {{ include('partials/icon.twig', {icon: 'minus-circle', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.mark_all_ignored }}</span>
                     </a>
                     <a href="javascript:void(0)" onclick="$('input.radio_delete').each(function(){ $(this).prop('checked', true); }); return false;" class="button button--basic mass_delete">
-                        <i class="button__icon fas fa-trash"></i>
+                        {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.mark_all_deletion }}</span>
                     </a>
                     <a href="javascript:void(0)" onclick="$('input.radio_approve').each(function(){ $(this).prop('checked', true); }); return false;" class="button button--basic mass_approve">
-                        <i class="button__icon fas fa-check"></i>
+                        {{ include('partials/icon.twig', {icon: 'check', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.mark_all_approved }}</span>
                     </a>
                 </div>
                 <div class="sort-results">
                     <button type="submit" class="button button--medium">
-                        <i class="button__icon fas fa-arrow-circle-right"></i>
+                        {{ include('partials/icon.twig', {icon: 'arrow-circle-right', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.perform_actions }}</span>
                     </button>
                 </div>

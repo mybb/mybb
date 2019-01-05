@@ -1,7 +1,7 @@
 {% extends 'layouts/account.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.request_join_usergroup }}</title>
+    <title>{{ lang.request_join_usergroup }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block accountHeader %}
@@ -27,7 +27,7 @@
             </div>
             <div class="form__submit">
                 <button type="submit" class="button button--medium">
-                    <i class="button__icon fas fa-user-plus"></i>
+                    {{ include('partials/icon.twig', {icon: 'user-plus', class: 'button__icon'}, with_context = false) }}
                     <span class="button__text">{{ lang.send_join_request }}</span>
                 </button>
             </div>

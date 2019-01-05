@@ -1,7 +1,7 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ trans('reputation_report', user.username) }}</title>
+    <title>{{ trans('reputation_report', user.username) }} - {{ mybb.settings.bbname }}</title>
 
     <script type="text/javascript">
     <!--
@@ -20,7 +20,7 @@
             <div class="page-controls page-controls--top">
                 <div class="page-buttons">
                     <a href="javascript:void(0)" onclick="MyBB.reputation({{ user.uid }}); return false;" class="button button--full-width">
-                        <i class="button__icon fas fa-thumbs-up"></i>
+                        {{ include('partials/icon.twig', {icon: 'thumbs-up', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.rate_user }}</span>
                     </a>
                 </div>
@@ -98,7 +98,7 @@
                 <form action="reputation.php" method="get">
                     <input type="hidden" name="uid" value="{{ user.uid }}" />
                     <div class="select-field">
-                        <i class="select-field__icon fas fa-sort"></i>
+                        {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                         <select name="show">
                             <option value="all"{% if select.show.all %} selected="selected"{% endif %}>{{ lang.show_all }}</option>
                             <option value="positive"{% if select.show.positive %} selected="selected"{% endif %}>{{ lang.show_positive }}</option>
@@ -107,23 +107,19 @@
                         </select>
                     </div>
                     <div class="select-field">
-                        <i class="select-field__icon fas fa-sort"></i>
+                        {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                         <select name="sort">
                             <option value="dateline"{% if select.sort.last_updated %} selected="selected"{% endif %}>{{ lang.sort_updated }}</option>
                             <option value="username"{% if select.sort.username %} selected="selected"{% endif %}>{{ lang.sort_username }}</option>
                         </select>
                     </div>
                     <button type="submit" class="button button--inline">
-                        <i class="button__icon fas fa-random"></i>
+                        {{ include('partials/icon.twig', {icon: 'random', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.sort_ratings }}</span>
                     </button>
                 </form>
             </div>
         </section>
-        <tr>
-            <td class="tfoot" align="right">
-
-            </td>
-        </tr>
-    {{ multipage|raw }}
+        {{ multipage|raw }}
+    </div>
 {% endblock body %}

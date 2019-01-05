@@ -1,7 +1,7 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.calendar }} - {{ lang.edit_event }}</title>
+    <title>{{ lang.calendar }} - {{ lang.edit_event }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block body %}
@@ -22,7 +22,7 @@
                 </div>
                 <div class="form__submit">
                     <button type="submit" class="button button--medium" name="submit">
-                        <i class="button__icon fas fa-trash"></i>
+                        {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.delete_now }}</span>
                     </button>
                 </div>
@@ -80,7 +80,7 @@
                                         <div class="date-field__item">
                                             <h4 class="date-field__name">{{ lang.day }}</h4>
                                             <div class="select-field">
-                                                <i class="select-field__icon fas fa-sort"></i>
+                                                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                                 <select name="single_day">
                                                     {% for day in days %}
                                                         <option value="{{ day.day }}"{% if day.single_day %} selected="selected"{% endif %}>{{ day.day }}</option>
@@ -91,7 +91,7 @@
                                         <div class="date-field__item">
                                             <h4 class="date-field__name">{{ lang.month }}</h4>
                                             <div class="select-field">
-                                                <i class="select-field__icon fas fa-sort"></i>
+                                                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                                 <select name="single_month">
                                                     {% for month in months %}
                                                         <option value="{{ month.month }}"{% if month.single_month %} selected="selected"{% endif %}>{{ month.name }}</option>
@@ -102,7 +102,7 @@
                                         <div class="date-field__item">
                                             <h4 class="date-field__name">{{ lang.year }}</h4>
                                             <div class="select-field">
-                                                <i class="select-field__icon fas fa-sort"></i>
+                                                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                                 <select name="single_year">
                                                     {% for year in years %}
                                                         <option value="{{ year.year }}"{% if year.single_year %} selected="selected"{% endif %}>{{ year.year }}</option>
@@ -124,7 +124,7 @@
                                         <div class="date-field__item">
                                             <h4 class="date-field__name">{{ lang.day }}</h4>
                                             <div class="select-field">
-                                                <i class="select-field__icon fas fa-sort"></i>
+                                                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                                 <select name="start_day">
                                                     {% for day in days %}
                                                         <option value="{{ day.day }}"{% if day.start_day %} selected="selected"{% endif %}>{{ day.day }}</option>
@@ -135,7 +135,7 @@
                                         <div class="date-field__item">
                                             <h4 class="date-field__name">{{ lang.month }}</h4>
                                             <div class="select-field">
-                                                <i class="select-field__icon fas fa-sort"></i>
+                                                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                                 <select name="start_month">
                                                     {% for month in months %}
                                                         <option value="{{ month.month }}"{% if month.start_month %} selected="selected"{% endif %}>{{ month.name }}</option>
@@ -146,7 +146,7 @@
                                         <div class="date-field__item">
                                             <h4 class="date-field__name">{{ lang.year }}</h4>
                                             <div class="select-field">
-                                                <i class="select-field__icon fas fa-sort"></i>
+                                                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                                 <select name="start_year">
                                                     {% for year in years %}
                                                         <option value="{{ year.year }}"{% if year.start_year %} selected="selected"{% endif %}>{{ year.year }}</option>
@@ -166,7 +166,7 @@
                                         <div class="date-field__item">
                                             <h4 class="date-field__name">{{ lang.day }}</h4>
                                             <div class="select-field">
-                                                <i class="select-field__icon fas fa-sort"></i>
+                                                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                                 <select name="end_day">
                                                     {% for day in days %}
                                                         <option value="{{ day.day }}"{% if day.end_day %} selected="selected"{% endif %}>{{ day.day }}</option>
@@ -177,7 +177,7 @@
                                         <div class="date-field__item">
                                             <h4 class="date-field__name">{{ lang.month }}</h4>
                                             <div class="select-field">
-                                                <i class="select-field__icon fas fa-sort"></i>
+                                                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                                 <select name="end_month">
                                                     {% for month in months %}
                                                         <option value="{{ month.month }}"{% if month.end_month %} selected="selected"{% endif %}>{{ month.name }}</option>
@@ -188,7 +188,7 @@
                                         <div class="date-field__item">
                                             <h4 class="date-field__name">{{ lang.year }}</h4>
                                             <div class="select-field">
-                                                <i class="select-field__icon fas fa-sort"></i>
+                                                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                                 <select name="end_year">
                                                     {% for year in years %}
                                                         <option value="{{ year.year }}"{% if year.end_year %} selected="selected"{% endif %}>{{ year.year }}</option>
@@ -205,7 +205,7 @@
                                 <div class="row row--form field">
                                     <h3 class="field__name">{{ lang.timezone }}</h3>
                                     <div class="select-field">
-                                        <i class="select-field__icon fas fa-sort"></i>
+                                        {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                         <select name="timezone" id="timezone">
                                             {% for timezone in timezones %}
                                                 <option value="{{ timezone.timezone }}"{% if timezone.selected %} selected{% endif %}>{{ timezone.label }}</option>
@@ -219,7 +219,7 @@
                                 <div class="row row--form field">
                                     <h3 class="field__name">{{ lang.repeats }}</h3>
                                     <div class="select-field">
-                                        <i class="select-field__icon fas fa-sort"></i>
+                                        {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                         <select name="repeats" id="repeats" onchange="toggleRepeats();">
                                             <option value="0">{{ lang.does_not_repeat }}</option>
                                             <option value="1"{% if select.repeats_sel.1 %} selected="selected"{% endif %}>{{ lang.repeats_daily }}</option>
@@ -258,7 +258,7 @@
                                             <div class="option-field option-field--compact">
                                                 <label><input type="radio" name="repeats_4_type" id="repeats_4_type_2" value="2" {% if select.repeats_4_type.2 %} checked="checked"{% endif %} />{{ lang.repeats_on_the }}</label>
                                                 <div class="select-field select-field--short select-field--inline">
-                                                    <i class="select-field__icon fas fa-sort"></i>
+                                                    {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                                     <select name="repeats_4_occurance" onfocus="$('#repeats_4_type_2').prop('checked', true);">
                                                         <option value="1"{% if select.repeats_4_occurance.1 %} selected="selected"{% endif %}>{{ lang.first }}</option>
                                                         <option value="2"{% if select.repeats_4_occurance.2 %} selected="selected"{% endif %}>{{ lang.second }}</option>
@@ -268,7 +268,7 @@
                                                     </select>
                                                 </div>
                                                 <div class="select-field select-field--short select-field--inline">
-                                                    <i class="select-field__icon fas fa-sort"></i>
+                                                    {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                                     <select name="repeats_4_weekday" onfocus="$('#repeats_4_type_2').prop('checked', true);">
                                                         <option value="0"{% if select.repeats_4_weekday.0 %} selected="selected"{% endif %}>{{ lang.sunday }}</option>
                                                         <option value="1"{% if select.repeats_4_weekday.1 %} selected="selected"{% endif %}>{{ lang.monday }}</option>
@@ -291,7 +291,7 @@
                                                 {{ lang.repeats_on }}</label>
                                                 <input type="text" class="textbox textbox--short textbox--inline" name="repeats_5_day" onfocus="$('#repeats_5_type_1').prop('checked', true);" value="{{ select.repeats_5_day }}" size="2" />
                                                 <div class="select-field select-field--short select-field--inline">
-                                                    <i class="select-field__icon fas fa-sort"></i>
+                                                    {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                                     <select name="repeats_5_month" onfocus="$('#repeats_5_type_1').prop('checked', true);" >
                                                         {% for month in months %}
                                                             <option value="{{ month.month }}"{% if month.repeats_5_month %} selected="selected"{% endif %}>{{ month.name }}</option>
@@ -305,7 +305,7 @@
                                                 <input type="radio" name="repeats_5_type" value="2" id="repeats_5_type_2" {% if select.repeats_5_type.2 %} checked="checked"{% endif %} />
                                                 {{ lang.repeats_on_the }}</label>
                                                 <div class="select-field select-field--short select-field--inline">
-                                                    <i class="select-field__icon fas fa-sort"></i>
+                                                    {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                                     <select name="repeats_5_occurance" onfocus="$('#repeats_5_type_2').prop('checked', true);" >
                                                         <option value="1"{% if select.repeats_5_occurance.1 %} selected="selected"{% endif %}>{{ lang.first }}</option>
                                                         <option value="2"{% if select.repeats_5_occurance.2 %} selected="selected"{% endif %}>{{ lang.second }}</option>
@@ -315,7 +315,7 @@
                                                     </select>
                                                 </div>
                                                 <div class="select-field select-field--short select-field--inline">
-                                                    <i class="select-field__icon fas fa-sort"></i>
+                                                    {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                                     <select name="repeats_5_weekday" onfocus="$('#repeats_5_type_2').prop('checked', true);" >
                                                         <option value="0"{% if select.repeats_5_weekday.0 %} selected="selected"{% endif %}>{{ lang.sunday }}</option>
                                                         <option value="1"{% if select.repeats_5_weekday.1 %} selected="selected"{% endif %}>{{ lang.monday }}</option>
@@ -328,7 +328,7 @@
                                                 </div>
                                                 {{ lang.of }}
                                                 <div class="select-field select-field--short select-field--inline">
-                                                    <i class="select-field__icon fas fa-sort"></i>
+                                                    {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                                     <select name="repeats_5_month2" onfocus="$('#repeats_5_type_2').prop('checked', true);" >
                                                         {% for month in months %}
                                                             <option value="{{ month.month }}"{% if month.repeats_5_month2 %} selected="selected"{% endif %}>{{ month.name }}</option>
@@ -367,7 +367,7 @@
                 </section>
                 <div class="form__submit">
                     <button type="submit" class="button button--medium">
-                        <i class="button__icon fas fa-calendar-plus"></i>
+                        {{ include('partials/icon.twig', {icon: 'calendar-plus', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.edit_event }}</span>
                     </button>
                 </div>

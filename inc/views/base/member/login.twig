@@ -1,7 +1,7 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.login }}</title>
+    <title>{{ lang.login }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block body %}
@@ -36,9 +36,9 @@
                 </div>
                 <div class="form__submit">
                     <button type="submit" class="button button--big">
-    					<i class="button__icon fas fa-sign-in-alt"></i>
-    					<span class="button__text">{{ lang.login }}</span>
-    				</button>
+                        {{ include('partials/icon.twig', {icon: 'sign-in-alt', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.login }}</span>
+                    </button>
                 </div>
             </section>
             <input type="hidden" name="action" value="do_login" />

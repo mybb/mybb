@@ -1,7 +1,7 @@
 {% extends 'layouts/account.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.edit_profile }}</title>
+    <title>{{ lang.edit_profile }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block accountHeader %}
@@ -70,7 +70,7 @@
                             <div class="date-field__item">
                                 <h4 class="date-field__name"><label for="bday_day">{{ lang.day }}</label></h4>
                                 <div class="select-field">
-                                    <i class="select-field__icon fas fa-sort"></i>
+                                    {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                     <select name="bday1" id="bday_day">
                                         <option value="">&nbsp;</option>
                                         {% for day in 1..31 %}
@@ -82,7 +82,7 @@
                             <div class="date-field__item">
                                 <h4 class="date-field__name"><label for="bday_month">{{ lang.month }}</label></h4>
                                 <div class="select-field">
-                                    <i class="select-field__icon fas fa-sort"></i>
+                                    {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                     <select name="bday2" id="bday_month">
                                         <option value="">&nbsp;</option>
                                         {% for month in 1..12 %}
@@ -101,7 +101,7 @@
                     <div class="row row--form field">
                         <h3 class="field__name"><label for="birthdayprivacy">{{ lang.birthdayprivacy }}</label></h3>
                         <div class="select-field">
-                            <i class="select-field__icon fas fa-sort"></i>
+                            {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                             <select name="birthdayprivacy" id="birthdayprivacy">
                                 <option value="all"{% if user.birthdayprivacy == 'all' or user.birthdayprivacy is empty %} selected{% endif %}>{{ lang.birthdayprivacyall }}</option>
                                 <option value="none"{% if user.birthdayprivacy == 'none' %} selected{% endif %}>{{ lang.birthdayprivacynone }}</option>
@@ -147,15 +147,15 @@
                         <div class="row row--form field">
                             <h3 class="field__name">{{ lang.away_status }}</h3>
                             <div class="segmented-control">
-                				<span class="segmented-control__option">
-                					<input type="radio" class="radio segmented-control__input" name="away" id="away_1" value="1"{% if mybb.user.away %} checked{% endif %} />
-                					<label class="segmented-control__button" for="away_1">{{ lang.im_away }}</label>
-                				</span>
-                				<span class="segmented-control__option">
-                					<input type="radio" class="radio segmented-control__input" name="away" id="away_0" value="0"{% if mybb.user.away == 0 %} checked{% endif %} />
-                					<label class="segmented-control__button" for="away_0">{{ lang.im_here }}</label>
-                				</span>
-                			</div>
+                                <span class="segmented-control__option">
+                                    <input type="radio" class="radio segmented-control__input" name="away" id="away_1" value="1"{% if mybb.user.away %} checked{% endif %} />
+                                    <label class="segmented-control__button" for="away_1">{{ lang.im_away }}</label>
+                                </span>
+                                <span class="segmented-control__option">
+                                    <input type="radio" class="radio segmented-control__input" name="away" id="away_0" value="0"{% if mybb.user.away == 0 %} checked{% endif %} />
+                                    <label class="segmented-control__button" for="away_0">{{ lang.im_here }}</label>
+                                </span>
+                            </div>
                         </div>
                         <div class="row row--form field">
                             <h3 class="field__name"><label for="awayreason">{{ lang.away_reason }}</label></h3>
@@ -167,7 +167,7 @@
                                 <div class="date-field__item">
                                     <h4 class="date-field__name"><label for="away_day">{{ lang.day }}</label></h4>
                                     <div class="select-field">
-                                        <i class="select-field__icon fas fa-sort"></i>
+                                        {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                         <select name="awayday" id="away_day">
                                             <option value="">&nbsp;</option>
                                             {% for day in 1..31 %}
@@ -179,7 +179,7 @@
                                 <div class="date-field__item">
                                     <h4 class="date-field__name"><label for="away_month">{{ lang.month }}</label></h4>
                                     <div class="select-field">
-                                        <i class="select-field__icon fas fa-sort"></i>
+                                        {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                         <select name="awaymonth" id="away_month">
                                             <option value="">&nbsp;</option>
                                             {% for month in 1..12 %}
@@ -199,11 +199,11 @@
                 </section>
             {% endif %}
             <div class="form__submit">
-    			<button type="submit" class="button button--medium" name="regsubmit">
-    				<i class="button__icon fas fa-user"></i>
-    				<span class="button__text">{{ lang.update_profile }}</span>
-    			</button>
-    		</div>
+                <button type="submit" class="button button--medium" name="regsubmit">
+                    {{ include('partials/icon.twig', {icon: 'user', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.update_profile }}</span>
+                </button>
+            </div>
         </div>
         <input type="hidden" name="action" value="do_profile" />
     </form>

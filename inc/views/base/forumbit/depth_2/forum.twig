@@ -1,17 +1,17 @@
 {% extends 'forumbit/depth_2/cat.twig' %}
 
 {% block moderators %}
-	{% if moderators %}
+    {% if moderators %}
         <p class="forum__moderators">
-			{{ lang.forumbit_moderated_by }}
-	        {% for moderator in moderators %}
-	            {% if loop.last != true %}{{ lang.comma }} {% endif %}
-	            {% if moderator.type == 'group' %}
-	                {{ moderator.title }}
-	            {% elseif moderator.type == 'user' %}
-	                <a href="{{ moderator.profilelink }}">{{ moderator.username }}</a>
-	            {% endif %}
-	        {% endfor %}
-		</p>
+            {{ lang.forumbit_moderated_by }}
+            {% for moderator in moderators %}
+                {% if loop.last != true %}{{ lang.comma }} {% endif %}
+                {% if moderator.type == 'group' %}
+                    {{ moderator.title }}
+                {% elseif moderator.type == 'user' %}
+                    <a href="{{ moderator.profilelink }}">{{ moderator.username }}</a>
+                {% endif %}
+            {% endfor %}
+        </p>
     {% endif %}
 {% endblock moderators %}

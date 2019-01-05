@@ -11,11 +11,11 @@
                 </a>
             {% endif %}
             <h3 class="post__author">
-    			{{ announcement.profilelink|raw }}
+                {{ announcement.profilelink|raw }}
             </h3>
             {% if announcement.hasicon %}
-    			<img src="{{ announcement.icon_path }}" alt="{{ announcement.icon_name }}" title="{{ announcement.icon_name }}" />
-    		{% endif %}
+                <img src="{{ announcement.icon_path }}" alt="{{ announcement.icon_name }}" title="{{ announcement.icon_name }}" />
+            {% endif %}
             <a href="{{ mybb.settings.bburl }}/{{ announcement.threadlink }}" class="post__date">{{ announcement.date|raw }}</a>
         </div>
 
@@ -30,11 +30,11 @@
 
         <div class="post__foot">
             <a href="{{ mybb.settings.bburl }}/{{ announcement.forumlink }}" class="post-control post-control--forum">
-                <i class="post-control__icon fas fa-folder fa-fw"></i>
+                {{ include('partials/icon.twig', {icon: 'folder', class: 'post-control__icon fa-fw'}, with_context = false) }}
                 <span class="post-control__text">{{ lang.posted_in }} {{ announcement.forumname }}</span>
             </a>
             <a href="{{ mybb.settings.bburl }}/{{ announcement.threadlink }}" class="post-control post-control--replies">
-                <i class="post-control__icon fas fa-comments fa-fw"></i>
+                {{ include('partials/icon.twig', {icon: 'comments', class: 'post-control__icon fa-fw'}, with_context = false) }}
                 <span class="post-control__text">
                     {% if announcement.replies %}
                         {{ announcement.replies }}

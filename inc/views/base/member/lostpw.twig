@@ -1,7 +1,7 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.lost_pw }}</title>
+    <title>{{ lang.lost_pw }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block body %}
@@ -19,7 +19,7 @@
                </section>
                <div class="form__submit">
                    <button type="submit" class="button button--medium">
-                       <i class="button__icon fas fa-key"></i>
+                       {{ include('partials/icon.twig', {icon: 'key', class: 'button__icon'}, with_context = false) }}
                        <span class="button__text">{{ lang.request_user_pass }}</span>
                    </button>
                </div>

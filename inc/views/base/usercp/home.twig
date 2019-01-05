@@ -1,7 +1,7 @@
 {% extends 'layouts/account.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.user_cp }}</title>
+    <title>{{ lang.user_cp }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block accountHeader %}
@@ -14,15 +14,15 @@
     <section class="block block--container account-dashboard">
         <a href="{{ get_profile_link(mybb.user.uid) }}" class="avatar-profile-link"><img src="{{ useravatar.image }}" alt="{{ mybb.user.username }}" title="{{ mybb.user.username }}" {{ useravatar.width_height }} class="avatar" /></a>
         <ul class="list list--divided list--stats">
-			<li class="list__item title">{{ username|raw }}</li>
+            <li class="list__item title">{{ username|raw }}</li>
             <li class="list__item">
-				<span class="list__field">{{ lang.postnum }}</span>
-				<span class="list__value"><a href="search.php?action=finduser&amp;uid={{ mybb.user.uid }}">{{ mybb.user.posts }}</a> {{ lang.posts_day }}</span>
-			</li>
+                <span class="list__field">{{ lang.postnum }}</span>
+                <span class="list__value"><a href="search.php?action=finduser&amp;uid={{ mybb.user.uid }}">{{ mybb.user.posts }}</a> {{ lang.posts_day }}</span>
+            </li>
             {% if mybb.usergroup.usereputationsystem and mybb.settings.enablereputation %}
                 <li class="list__item">
-                	<span class="list__field">{{ lang.reputation }}</span>
-                	<span class="list__value">{{ reputation_link|raw }} [<a href="reputation.php?uid={{ mybb.user.uid }}">{{ lang.details }}</a>]</span>
+                    <span class="list__field">{{ lang.reputation }}</span>
+                    <span class="list__value">{{ reputation_link|raw }} [<a href="reputation.php?uid={{ mybb.user.uid }}">{{ lang.details }}</a>]</span>
                 </li>
             {% endif %}
             <li class="list__item">
@@ -51,17 +51,17 @@
         <section class="block">
             <h1 class="title title--major title">{{ lang.new_thread_subscriptions }}</h1>
             <div class="thread-list thread-list--compact">
-        		<div class="sort-threads sort-threads--alt">
-        			<div class="sort-threads__column sort-threads__column--primary">
-        				{{ lang.thread }}<span class="sort-threads__author"> &mdash; {{ lang.author }}</span>
-        			</div>
-        			<div class="sort-threads__column sort-threads__column--replies">
-        				{{ lang.replies }}
-        			</div>
-        			<div class="sort-threads__column sort-threads__column--latest">
-        				{{ lang.lastpost }}
-        			</div>
-        		</div>
+            <div class="sort-threads sort-threads--alt">
+                <div class="sort-threads__column sort-threads__column--primary">
+                    {{ lang.thread }}<span class="sort-threads__author"> &mdash; {{ lang.author }}</span>
+                </div>
+                <div class="sort-threads__column sort-threads__column--replies">
+                    {{ lang.replies }}
+                </div>
+                <div class="sort-threads__column sort-threads__column--latest">
+                    {{ lang.lastpost }}
+                </div>
+            </div>
                 {% for thread in latestsubscriptions %}
                     {# TO DO : {{ thread.folder }} {{ thread.folder_label }} #}
                     <div class="row row--thread thread {{ thread.class }}">
@@ -71,7 +71,11 @@
                                     <span class="tag tag--thread-prefix tag--thread-prefix-{{ thread.prefix }}">{{ thread.displayprefix|raw }}</span>
                                 {% endif %}
                                 <a href="{{ thread.threadlink }}" class="{{ thread.new_class }}">{{ thread.subject }}</a>
-                                {% if thread.lastread and thread.lastpost > thread.lastread %}<a href="{{ thread.newpostlink }}" class="thread__status"><i class="fas fa-circle" title="{{ lang.goto_first_unread }}"></i></a>{% endif %}
+                                {% if thread.lastread and thread.lastpost > thread.lastread %}
+                                    <a href="{{ thread.newpostlink }}" class="thread__status">
+                                        {{ include('partials/icon.twig', {icon: 'circle', class: '', title: lang.goto_first_unread}, with_context = false) }}
+                                    </a>
+                                {% endif %}
                                 <span class="thread__icons">
                                     {{ icon }}
                                 </span>
@@ -100,11 +104,11 @@
                 {% endfor %}
             </div>
             <div class="block__footer-link">
-    			<a href="usercp.php?action=subscriptions">
-    				<i class="icon fas fa-plus-square"></i>
-    				{{ lang.view_all_subscriptions }}
-    			</a>
-    		</div>
+                <a href="usercp.php?action=subscriptions">
+                    {{ include('partials/icon.twig', {icon: 'plus-square', class: 'icon'}, with_context = false) }}
+                    {{ lang.view_all_subscriptions }}
+                </a>
+            </div>
         </section>
     {% endif %}
 
@@ -133,7 +137,11 @@
                                     <span class="tag tag--thread-prefix tag--thread-prefix-{{ thread.prefix }}">{{ thread.displayprefix|raw }}</span>
                                 {% endif %}
                                 <a href="{{ thread.threadlink }}" class="{{ thread.new_class }}">{{ thread.subject }}</a>
-                                {% if thread.lastread and thread.lastpost > thread.lastread %}<a href="{{ thread.newpostlink }}" class="thread__status"><i class="fas fa-circle" title="{{ lang.goto_first_unread }}"></i></a>{% endif %}
+                                {% if thread.lastread and thread.lastpost > thread.lastread %}
+                                    <a href="{{ thread.newpostlink }}" class="thread__status">
+                                        {{ include('partials/icon.twig', {icon: 'circle', class: '', title: lang.goto_first_unread}, with_context = false) }}
+                                    </a>
+                                {% endif %}
                                 <span class="thread__icons">
                                     {{ icon }}
                                 </span>
@@ -162,11 +170,11 @@
                 {% endfor %}
             </div>
             <div class="block__footer-link">
-    			<a href="search.php?action=finduserthreads&amp;uid={{ mybb.user.uid }}">
-    				<i class="icon fas fa-comments"></i>
-    				{{ lang.find_all_threads }}
-    			</a>
-    		</div>
+                <a href="search.php?action=finduserthreads&amp;uid={{ mybb.user.uid }}">
+                    {{ include('partials/icon.twig', {icon: 'comments', class: 'icon'}, with_context = false) }}
+                    {{ lang.find_all_threads }}
+                </a>
+            </div>
         </section>
     {% endif %}
 
@@ -205,10 +213,10 @@
                 </div>
             </div>
             <div class="form__submit">
-            	<input type="hidden" name="action" value="do_notepad" />
-            	<button type="submit" class="button" name="submit">
-            		<i class="button__icon fas fa-sticky-note"></i>
-            		<span class="button__text">{{ lang.update_notepad }}</span>
+                <input type="hidden" name="action" value="do_notepad" />
+                <button type="submit" class="button" name="submit">
+                    {{ include('partials/icon.twig', {icon: 'sticky-note', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.update_notepad }}</span>
                 </button>
             </div>
         </form>

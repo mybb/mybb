@@ -1,7 +1,7 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.users_online }}</title>
+    <title>{{ lang.users_online }} - {{ mybb.settings.bbname }}</title>
 
     {% if mybb.settings.refreshwol > 0 %}
         <meta http-equiv="refresh" content="{{ mybb.settings.refreshwol * 60 }};URL=online.php{{ refresh_string }}"/>
@@ -19,15 +19,15 @@
         <div class="sort-results">
             <span class="sort-results__text">{{ lang.sort_results }}</span>
             <a href="online.php?sortby=username" class="button button--basic">
-                <i class="button__icon fas fa-user"></i>
+                {{ include('partials/icon.twig', {icon: 'user', class: 'button__icon'}, with_context = false) }}
                 <span class="button__text">{{ lang.on_username }}</span>
             </a>
             <a href="online.php?sortby=time" class="button button--basic">
-                <i class="button__icon fas fa-clock"></i>
+                {{ include('partials/icon.twig', {icon: 'clock', class: 'button__icon'}, with_context = false) }}
                 <span class="button__text">{{ lang.time }}</span>
             </a>
             <a href="online.php?sortby=location" class="button button--basic">
-                <i class="button__icon fas fa-globe"></i>
+                {{ include('partials/icon.twig', {icon: 'globe', class: 'button__icon'}, with_context = false) }}
                 <span class="button__text">{{ lang.location }}</span>
             </a>
         </div>
@@ -46,8 +46,8 @@
                         </li>
                         {% if mybb.usergroup.canviewonlineips %}
                             <li class="list__item">
-                            	<span class="list__field">{{ lang.ip }}</span>
-                            	<span class="list__value">
+                                <span class="list__field">{{ lang.ip }}</span>
+                                <span class="list__value">
                                     {{ user.ip }}
                                     {% if mybb.usergroup.canmodcp and mybb.usergroup.canuseipsearch %}
                                         <a href="modcp.php?action=ipsearch&amp;ipaddress={{ user.ip }}&amp;search_users=1">
@@ -64,30 +64,15 @@
         <div class="page-controls">
             {{ multipage|raw }}
             <div class="page-buttons">
-				<a href="online.php?action=today" class="button button--basic">
-					<i class="button__icon fas fa-calendar"></i>
-					<span class="button__text">{{ lang.online_today }}</span>
-				</a>
-				<a href="online.php" class="button button--basic">
-					<i class="button__icon fas fa-sync"></i>
-					<span class="button__text">{{ lang.refresh_page }}</span>
-				</a>
-			</div>
+                <a href="online.php?action=today" class="button button--basic">
+                    {{ include('partials/icon.twig', {icon: 'calendar', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.online_today }}</span>
+                </a>
+                <a href="online.php" class="button button--basic">
+                    {{ include('partials/icon.twig', {icon: 'sync', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.refresh_page }}</span>
+                </a>
+            </div>
         </div>
-
-    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-        <tr>
-            <td class="tcat" align="center">
-
-            </td>
-            <td class="tcat" align="center">
-
-            </td>
-            <td class="tcat" width="50%">
-
-            </td>
-        </tr>
-    </table>
-    <br/>
-    {{ multipage|raw }}
+    </div>
 {% endblock body %}

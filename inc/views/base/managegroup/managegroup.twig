@@ -1,7 +1,7 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ trans('members_of', usergroup.title) }}</title>
+    <title>{{ trans('members_of', usergroup.title) }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block body %}
@@ -12,7 +12,7 @@
         </header>
     {% if usergroup.pendingrequests %}
         <div class="alert alert--danger">
-            <i class="alert__icon fas fa-exclamation-triangle"></i>
+            {{ include('partials/icon.twig', {icon: 'exclamation-triangle', class: 'alert__icon'}, with_context = false) }}
             <div class="alert__message">
                 <h2 class="alert__title"><a href="managegroup.php?action=joinrequests&amp;gid={{ usergroup.gid }}">{{ lang.pending_requests }}</a></h2>
                 <p class="alert__description">{{ trans('num_requests_pending', usergroup.num_requests) }}</p>
@@ -57,13 +57,13 @@
                         <div class="user-list__buttons">
                             {% if user.showemail %}
                                 <a href="member.php?action=emailuser&amp;uid={{ user.uid }}" title="{{ lang.postbit_email }}" class="button button--secondary button--small">
-                                    <i class="button__icon fas fa-at"></i>
+                                    {{ include('partials/icon.twig', {icon: 'at', class: 'button__icon'}, with_context = false) }}
                                     <span class="button__text">{{ lang.postbit_button_email }}</span>
                                 </a>
                             {% endif %}
                             {% if user.showpm %}
                                 <a href="private.php?action=send&amp;uid={{ user.uid }}" title="{{ lang.postbit_pm }}" class="button button--secondary button--small">
-                                    <i class="button__icon fas fa-envelope"></i>
+                                    {{ include('partials/icon.twig', {icon: 'envelope', class: 'button__icon'}, with_context = false) }}
                                     <span class="button__text">{{ lang.postbit_button_pm }}</span>
                                 </a>
                             {% endif %}
@@ -76,7 +76,7 @@
             {% if groupleader.canmanagemembers %}
                 <div class="sort-results">
                     <button type="submit" class="button">
-                        <i class="button__icon fas fa-user-minus"></i>
+                        {{ include('partials/icon.twig', {icon: 'user-minus', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.remove_selected }}</span>
                     </button>
                 </div>
@@ -100,7 +100,7 @@
             </div>
             <div class="form__submit">
                 <button type="submit" class="button button--medium">
-                    <i class="button__icon fas fa-user-plus"></i>
+                    {{ include('partials/icon.twig', {icon: 'user-plus', class: 'button__icon'}, with_context = false) }}
                     <span class="button__text">{{ lang.add_member_submit }}</span>
                 </button>
             </div>
@@ -161,7 +161,7 @@
                 </div>
                 <div class="form__submit">
                     <button type="submit" class="button button--medium">
-                        <i class="button__icon fas fa-user-plus"></i>
+                        {{ include('partials/icon.twig', {icon: 'user-plus', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.invite_member_submit }}</span>
                     </button>
                 </div>

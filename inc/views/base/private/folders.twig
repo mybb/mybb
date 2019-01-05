@@ -1,7 +1,7 @@
 {% extends 'layouts/messenger.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.pm_folders }}</title>
+    <title>{{ lang.pm_folders }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block messengerHeader %}
@@ -15,9 +15,9 @@
         <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
         <div class="block block--form form">
             <section class="section section--form">
-				<h2 class="title title--section">{{ lang.existing_folders }}</h2>
+                <h2 class="title title--section">{{ lang.existing_folders }}</h2>
                 <div class="section__container">
-					<div class="row row--form field">{{ lang.edit_folder_note|raw }}</div>
+                    <div class="row row--form field">{{ lang.edit_folder_note|raw }}</div>
                     {% for folder in folderlist %}
                         <div class="row row--form field">
                             <input type="text" class="textbox" name="folder[{{ folder.fid }}]" value="{{ folder.foldername }}" maxlength="30" />
@@ -40,11 +40,11 @@
                 </div>
             </section>
             <div class="form__submit">
-				<button type="submit" class="button button--medium" name="submit" tabindex="4" accesskey="s">
-					<i class="button__icon fas fa-folder-open"></i>
-					<span class="button__text">{{ lang.update_folders }}</span>
-				</button>
-			</div>
+                <button type="submit" class="button button--medium" name="submit" tabindex="4" accesskey="s">
+                    {{ include('partials/icon.twig', {icon: 'folder-open', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.update_folders }}</span>
+                </button>
+            </div>
         </div>
         <input type="hidden" name="action" value="do_folders" />
     </form>

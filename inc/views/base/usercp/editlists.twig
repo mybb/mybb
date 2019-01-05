@@ -1,7 +1,7 @@
 {% extends 'layouts/account.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.edit_lists }}</title>
+    <title>{{ lang.edit_lists }} - {{ mybb.settings.bbname }}</title>
     {# TO DO: FIX JS #}
     {# <script type="text/javascript" src="{{ asset_url('jscripts/usercp.js') }}" defer></script> #}
 {% endblock head %}
@@ -33,7 +33,7 @@
                                     <input type="text" name="add_username" id="buddy_add_username" class="textbox" />
                                 </div>
                                 <button type="submit" class="button button--inline inline-text-field__button" id="buddy_submit">
-                                    <i class="button__icon fas fa-plus-circle"></i>
+                                    {{ include('partials/icon.twig', {icon: 'plus-circle', class: 'button__icon'}, with_context = false) }}
                                     <span class="button__text">{{ lang.add_to_buddies }}</span>
                                 </button>
                             </div>
@@ -122,7 +122,7 @@
                                     <input type="text" name="add_username" id="ignored_add_username" class="textbox" />
                                 </div>
                                 <button type="submit" class="button button--inline inline-text-field__button" id="ignored_submit">
-                                    <i class="button__icon fas fa-plus-circle"></i>
+                                    {{ include('partials/icon.twig', {icon: 'plus-circle', class: 'button__icon'}, with_context = false) }}
                                     <span class="button__text">{{ lang.ignore_users }}</span>
                                 </button>
                             </div>

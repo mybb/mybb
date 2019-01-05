@@ -1,7 +1,7 @@
 {% extends 'layouts/account.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.subscriptions }}</title>
+    <title>{{ lang.subscriptions }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block accountHeader %}
@@ -18,23 +18,22 @@
     <form action="usercp.php" method="post" name="input">
         <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
         <input type="hidden" name="action" value="do_subscriptions" />
-
         <div class="thread-list thread-list--compact">
-			<div class="sort-threads">
-				<div class="sort-threads__column sort-threads__column--primary">
-					{{ lang.thread }}
-				</div>
-				<div class="sort-threads__column sort-threads__column--replies">
-					{{ lang.replies }}
-				</div>
-				<div class="sort-threads__column sort-threads__column--latest">
-					{{ lang.lastpost }}
-				</div>
-				<div class="sort-threads__column sort-threads__column--checkbox">
-					<input name="allbox" title="{{ lang.selectall }}" type="checkbox" class="checkbox checkall" value="1" />
-				</div>
-			</div>
-			<div class="thread-list__container">
+            <div class="sort-threads">
+                <div class="sort-threads__column sort-threads__column--primary">
+                    {{ lang.thread }}
+                </div>
+                <div class="sort-threads__column sort-threads__column--replies">
+                    {{ lang.replies }}
+                </div>
+                <div class="sort-threads__column sort-threads__column--latest">
+                    {{ lang.lastpost }}
+                </div>
+                <div class="sort-threads__column sort-threads__column--checkbox">
+                    <input name="allbox" title="{{ lang.selectall }}" type="checkbox" class="checkbox checkall" value="1" />
+                </div>
+            </div>
+            <div class="thread-list__container">
                 {% for thread in threads %}
                     {% include 'usercp/subscribed_threads/row.twig' %}
                 {% else %}
@@ -44,7 +43,7 @@
             <div class="sort-results">
                 <h3 class="sort-results__title">{{ lang.with_selected }}</h3>
                 <div class="select-field">
-                    <i class="select-field__icon fas fa-sort"></i>
+                    {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                     <select name="do" id="do">
                         <option value="delete">{{ lang.delete_subscriptions }}</option>
                         <option value="no_notification">{{ lang.update_no_notification }}</option>
@@ -55,11 +54,10 @@
                 <input type="submit" class="button button--inline" value="{{ lang.go }}" />
             </div>
         </div>
-
         <div class="page-controls">
             <div class="page-buttons">
                 <a href="usercp2.php?action=removesubscriptions&amp;my_post_key={{ mybb.post_code }}" class="button">
-                    <i class="button__icon fas fa-trash-alt"></i>
+                    {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}
                     <span class="button__text">{{ lang.remove_all_subscriptions }}</span>
                 </a>
             </div>

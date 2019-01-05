@@ -1,7 +1,7 @@
 {% extends 'layouts/moderation.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.modcp }}</title>
+    <title>{{ lang.modcp }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block moderationHeader %}
@@ -105,10 +105,10 @@
                 </div>
             </div>
             <div class="form__submit">
-            	<input type="hidden" name="action" value="do_notepad" />
-            	<button type="submit" class="button" name="submit">
-            		<i class="button__icon fas fa-sticky-note"></i>
-            		<span class="button__text">{{ lang.save_notes }}</span>
+                <input type="hidden" name="action" value="do_notepad" />
+                <button type="submit" class="button" name="submit">
+                    {{ include('partials/icon.twig', {icon: 'sticky-note', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.save_notes }}</span>
                 </button>
             </div>
         </section>

@@ -1,7 +1,7 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.resend_activation }}</title>
+    <title>{{ lang.resend_activation }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block body %}
@@ -19,9 +19,9 @@
                 </section>
                 <div class="form__submit">
                     <button type="submit" class="button button--medium" tabindex="3">
-    					<i class="button__icon fas fa-sync-alt"></i>
-    					<span class="button__text">{{ lang.request_activation }}</span>
-    				</button>
+                        {{ include('partials/icon.twig', {icon: 'sync-alt', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.request_activation }}</span>
+                    </button>
                 </div>
             </div>
             <input type="hidden" name="action" value="do_resendactivation" />

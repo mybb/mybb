@@ -1,7 +1,7 @@
 {% extends 'layouts/account.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.email }}</title>
+    <title>{{ lang.email }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block accountHeader %}
@@ -20,33 +20,33 @@
 
         <div class="block block--form form">
             <section class="section section--form">
-				<h2 class="title title--section">{{ lang.change_email }}</h2>
-				<div class="section__container">
-					<div class="row row--form field">
-						<h3 class="field__name"><label for="new-email">{{ lang.new_email }}</label></h3>
-						<input type="text" class="textbox" name="email" id="new-email" size="25" maxlength="150" value="{{ email }}" />
-					</div>
-					<div class="row row--form field">
-						<h3 class="field__name"><label for="confirm-email">{{ lang.confirm_email }}</label></h3>
-						<input type="text" class="textbox" name="email2" id="confirm-email" size="25" maxlength="150" value="{{ email2 }}" />
-					</div>
+                <h2 class="title title--section">{{ lang.change_email }}</h2>
+                <div class="section__container">
+                    <div class="row row--form field">
+                        <h3 class="field__name"><label for="new-email">{{ lang.new_email }}</label></h3>
+                        <input type="text" class="textbox" name="email" id="new-email" size="25" maxlength="150" value="{{ email }}" />
+                    </div>
+                    <div class="row row--form field">
+                        <h3 class="field__name"><label for="confirm-email">{{ lang.confirm_email }}</label></h3>
+                        <input type="text" class="textbox" name="email2" id="confirm-email" size="25" maxlength="150" value="{{ email2 }}" />
+                    </div>
                 </div>
             </section>
             <section class="section section--form">
                 <h2 class="title title--section">{{ lang.password_confirmation }}</h2>
                 <div class="section__container">
-					<div class="row row--form field">
-						<h3 class="field__name"><label for="password">{{ lang.current_password }}</label></h3>
-						<input type="password" class="textbox" name="password" id="password" size="25" />
-					</div>
-				</div>
-			</section>
-			<div class="form__submit">
-				<button type="submit" class="button button--medium" name="submit">
-					<i class="button__icon fas fa-at"></i>
-					<span class="button__text">{{ lang.update_email }}</span>
-				</button>
-			</div>
+                    <div class="row row--form field">
+                        <h3 class="field__name"><label for="password">{{ lang.current_password }}</label></h3>
+                        <input type="password" class="textbox" name="password" id="password" size="25" />
+                    </div>
+                </div>
+            </section>
+            <div class="form__submit">
+                <button type="submit" class="button button--medium" name="submit">
+                    {{ include('partials/icon.twig', {icon: 'at', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.update_email }}</span>
+                </button>
+            </div>
         </div>
         <input type="hidden" name="action" value="do_email" />
     </form>

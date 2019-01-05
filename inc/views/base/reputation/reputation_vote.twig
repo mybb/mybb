@@ -20,13 +20,13 @@
     <div class="reputation-rating__controls">
         {% if mybb.user.uid %}
             <a href="javascript:void(0)" onclick="Report.reportReputation({{ reputation_vote.rid }}); return false;" class="post-control post-control--report">
-                <i class="post-control__icon fas fa-flag"></i>
+                {{ include('partials/icon.twig', {icon: 'flag', class: 'post-control__icon'}, with_context = false) }}
                 <span class="post-control__text">{{ lang.report_vote }}</span>
             </a>
         {% endif %}
         {% if reputation_vote.can_delete %}
             <a href="reputation.php?action=delete&amp;uid={{ reputation_vote.rated_uid }}&amp;rid={{ reputation_vote.rid }}&amp;my_post_key={{ mybb.post_code }}" onclick="MyBB.deleteReputation({{ reputation_vote.rated_uid }}, {{ reputation_vote.rid }}); return false;" class="post-control post-control--delete">
-                <i class="post-control__icon fas fa-trash"></i>
+                {{ include('partials/icon.twig', {icon: 'trash', class: 'post-control__icon'}, with_context = false) }}
                 <span class="post-control__text">{{ lang.delete_vote }}</span>
             </a>
         {% endif %}

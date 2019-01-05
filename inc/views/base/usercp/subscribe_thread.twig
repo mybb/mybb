@@ -1,7 +1,7 @@
 {% extends 'layouts/account.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.subscribe_to_thread }}</title>
+    <title>{{ lang.subscribe_to_thread }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block accountHeader %}
@@ -15,36 +15,35 @@
         <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
         <input type="hidden" name="action" value="do_addsubscription" />
         <input type="hidden" name="tid" value="{{ thread.tid }}" />
-
         <div class="form">
-			<div class="section section--form">
-				<h2 class="title title--section">{{ lang.notification_method }}</h2>
-				<div class="section__container">
-					<div class="row row--form field">
-						<div class="option-field">
-							<input type="radio" name="notification" id="notification_none" value="0"{% if mybb.user.subscriptionmethod in [0, 1] %} checked{% endif %} />
-							<h4 class="option-field__name"><label for="notification_none">{{ lang.no_notification }}</label></h4>
-							<p class="option-field__description"><label for="notification_none">{{ lang.no_notification_desc }}</label></p>
-						</div>
-						<div class="option-field">
-							<input type="radio" name="notification" id="notification_email" value="1"{% if mybb.user.subscriptionmethod == 2 %} checked{% endif %} />
-							<h4 class="option-field__name"><label for="notification_email">{{ lang.email_notification }}</label></h4>
-							<p class="option-field__description"><label for="notification_email">{{ lang.email_notification_desc }}</label></p>
-						</div>
-						<div class="option-field">
-							<input type="radio" name="notification" id="notification_pm" value="2"{% if mybb.user.subscriptionmethod == 3 %} checked{% endif %} />
-							<h4 class="option-field__name"><label for="notification_pm">{{ lang.pm_notification }}</label></h4>
-							<p class="option-field__description">{{ lang.pm_notification_desc }}</p>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="form__submit">
-				<button type="submit" class="button button--big" name="submit" tabindex="3" accesskey="s">
-					<i class="button__icon fas fa-plus"></i>
-					<span class="button__text">{{ lang.do_subscribe }}</span>
-				</button>
-			</div>
-		</div>
+            <div class="section section--form">
+                <h2 class="title title--section">{{ lang.notification_method }}</h2>
+                <div class="section__container">
+                    <div class="row row--form field">
+                        <div class="option-field">
+                            <input type="radio" name="notification" id="notification_none" value="0"{% if mybb.user.subscriptionmethod in [0, 1] %} checked{% endif %} />
+                            <h4 class="option-field__name"><label for="notification_none">{{ lang.no_notification }}</label></h4>
+                            <p class="option-field__description"><label for="notification_none">{{ lang.no_notification_desc }}</label></p>
+                        </div>
+                        <div class="option-field">
+                            <input type="radio" name="notification" id="notification_email" value="1"{% if mybb.user.subscriptionmethod == 2 %} checked{% endif %} />
+                            <h4 class="option-field__name"><label for="notification_email">{{ lang.email_notification }}</label></h4>
+                            <p class="option-field__description"><label for="notification_email">{{ lang.email_notification_desc }}</label></p>
+                        </div>
+                        <div class="option-field">
+                            <input type="radio" name="notification" id="notification_pm" value="2"{% if mybb.user.subscriptionmethod == 3 %} checked{% endif %} />
+                            <h4 class="option-field__name"><label for="notification_pm">{{ lang.pm_notification }}</label></h4>
+                            <p class="option-field__description">{{ lang.pm_notification_desc }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form__submit">
+                <button type="submit" class="button button--big" name="submit" tabindex="3" accesskey="s">
+                    {{ include('partials/icon.twig', {icon: 'plus', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.do_subscribe }}</span>
+                </button>
+            </div>
+        </div>
     </form>
 {% endblock accountBody %}

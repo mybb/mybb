@@ -1,7 +1,7 @@
 {% extends 'layouts/moderation.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.report_center }}</title>
+    <title>{{ lang.report_center }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block moderationHeader %}
@@ -38,11 +38,11 @@
             </div>
             <div class="sort-results">
                 <button type="submit" id="inline_read" class="button" name="reportsubmit">
-                    <i class="button__icon fas fa-check"></i>
+                    {{ include('partials/icon.twig', {icon: 'check', class: 'button__icon'}, with_context = false) }}
                     <span class="button__text">{{ lang.mark_read }} ({{ report.inlinecount }})</span>
                 </button>
                 <a href="modcp.php?action=allreports" class="button button--secondary">
-                    <i class="button__icon fas fa-flag"></i>
+                    {{ include('partials/icon.twig', {icon: 'flag', class: 'button__icon'}, with_context = false) }}
                     <span class="button__text">{{ lang.view_all_reports }}</span>
                 </a>
             </div>

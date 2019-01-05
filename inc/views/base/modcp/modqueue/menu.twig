@@ -1,17 +1,17 @@
 <ul class="page-tabs">
     {% if navlink.thread or threadqueue %}
         <li class="page-tabs__item{% if threadqueue %} page-tabs__item--active{% endif %}">
-            <a href="modcp.php?action=modqueue&amp;type=threads" class="page-tabs__link"><i class="fas fa-comments"></i> {{ lang.threads }}</a>
+            <a href="modcp.php?action=modqueue&amp;type=threads" class="page-tabs__link">{{ include('partials/icon.twig', {icon: 'comments', class: ''}, with_context = false) }} {{ lang.threads }}</a>
         </li>
     {% endif %}
     {% if navlink.post or postqueue %}
         <li class="page-tabs__item{% if postqueue %} page-tabs__item--active{% endif %}">
-            <a href="modcp.php?action=modqueue&amp;type=posts" class="page-tabs__link"><i class="fas fa-comment"></i> {{ lang.posts }}</a>
+            <a href="modcp.php?action=modqueue&amp;type=posts" class="page-tabs__link">{{ include('partials/icon.twig', {icon: 'comment', class: ''}, with_context = false) }} {{ lang.posts }}</a>
         </li>
     {% endif %}
     {% if navlink.attachment or attachmentqueue %}
         <li class="page-tabs__item{% if attachmentqueue %} page-tabs__item--active{% endif %}">
-            <a href="modcp.php?action=modqueue&amp;type=attachments" class="page-tabs__link"><i class="fas fa-paperclip"></i> {{ lang.attachments }}</a>
+            <a href="modcp.php?action=modqueue&amp;type=attachments" class="page-tabs__link">{{ include('partials/icon.twig', {icon: 'paperclip', class: ''}, with_context = false) }} {{ lang.attachments }}</a>
         </li>
     {% endif %}
 </ul>

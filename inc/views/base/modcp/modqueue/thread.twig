@@ -11,21 +11,21 @@
                 <span class="segmented-control__option">
                     <input type="radio" class="radio radio_ignore segmented-control__input" name="threads[{{ thread.tid }}]" id="thread_ignore_{{ thread.tid }}" value="ignore" checked />
                     <label class="segmented-control__button" for="thread_ignore_{{ thread.tid }}">
-                        <i class="segmented-control__icon fas fa-minus-circle"></i>
+                        {{ include('partials/icon.twig', {icon: 'minus-circle', class: 'segmented-control__icon'}, with_context = false) }}
                         <span class="segmented-control__text">{{ lang.ignore }}</span>
                     </label>
                 </span>
                 <span class="segmented-control__option">
                     <input type="radio" class="radio radio_delete segmented-control__input" name="threads[{{ thread.tid }}]" id="thread_delete_{{ thread.tid }}" value="delete" />
                     <label class="segmented-control__button" for="thread_delete_{{ thread.tid }}">
-                        <i class="segmented-control__icon fas fa-trash"></i>
+                        {{ include('partials/icon.twig', {icon: 'trash', class: 'segmented-control__icon'}, with_context = false) }}
                         <span class="segmented-control__text">{{ lang.delete }}</span>
                     </label>
                 </span>
                 <span class="segmented-control__option">
                     <input type="radio" class="radio radio_approve segmented-control__input" name="threads[{{ thread.tid }}]" id="thread_approve_{{ thread.tid }}" value="approve" />
                     <label class="segmented-control__button" for="thread_approve_{{ thread.tid }}">
-                        <i class="segmented-control__icon fas fa-check"></i>
+                        {{ include('partials/icon.twig', {icon: 'check', class: 'segmented-control__icon'}, with_context = false) }}
                         <span class="segmented-control__text">{{ lang.approve }}</span>
                     </label>
                 </span>

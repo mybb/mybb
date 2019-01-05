@@ -10,7 +10,7 @@
     {% endif %}
     {% if field.type_select %}
         <div class="select-field">
-            <i class="select-field__icon fas fa-sort"></i>
+            {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
             <select name="profile_fields[{{ field.field }}]" size="{{ field.length }}">
                 {% for fieldselect in field.select %}
                     <option value="{{ fieldselect.value }}"{% if fieldselect.selected %} selected="selected"{% endif %}>{{ fieldselect.value }}</option>

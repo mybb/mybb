@@ -1,7 +1,7 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.coppa_compliance }}</title>
+    <title>{{ lang.coppa_compliance }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block body %}
@@ -22,7 +22,7 @@
                         <div class="date-field__item">
                             <h4 class="date-field__name"><label for="day">{{ lang.day }}</label></h4>
                             <div class="select-field">
-                                <i class="select-field__icon fas fa-sort"></i>
+                                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                 <select name="bday1" id="day">
                                     <option value="">&nbsp;</option>
                                     {% for day in days %}
@@ -34,7 +34,7 @@
                         <div class="date-field__item">
                             <h4 class="date-field__name"><label for="month">{{ lang.month }}</label></h4>
                             <div class="select-field">
-                                <i class="select-field__icon fas fa-sort"></i>
+                                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                 <select name="bday2" id="month">
                                     <option value="">&nbsp;</option>
                                     {% for month in months %}
@@ -53,7 +53,7 @@
             <div class="form__submit">
                 <button type="submit" class="button button--medium" name="agree">
                     <span class="button__text">{{ lang.continue_registration }}</span>
-                    <i class="button__icon button__icon--after fas fa-arrow-right"></i>
+                    {{ include('partials/icon.twig', {icon: 'arrow-right', class: 'button__icon button__icon--after'}, with_context = false) }}
                 </button>
             </div>
         </div>

@@ -1,7 +1,7 @@
 {% extends 'layouts/moderation.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.manage_announcement }}</title>
+    <title>{{ lang.manage_announcement }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block moderationHeader %}
@@ -14,15 +14,15 @@
     {# Global announcements #}
     {% if mybb.usergroup.issupermod %}
         <div class="page-controls">
-        	<div class="page-buttons">
-        		<a href="modcp.php?action=new_announcement&amp;fid=-1" class="button button--medium button--full-width">
-        			<i class="button__icon fas fa-plus"></i>
-        			<span class="button__text">{{ lang.add_global_announcement }}</span>
-        		</a>
-        	</div>
+            <div class="page-buttons">
+                <a href="modcp.php?action=new_announcement&amp;fid=-1" class="button button--medium button--full-width">
+                    {{ include('partials/icon.twig', {icon: 'plus', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.add_global_announcement }}</span>
+                </a>
+            </div>
         </div>
         <section class="block">
-        	<h1 class="title title--major">{{ lang.global_announcements }}</h1>
+            <h1 class="title title--major">{{ lang.global_announcements }}</h1>
             {% for aid, announcement in globalAnnouncements %}
                 <div class="row row--simple-columns">
                     <div class="row__primary">
@@ -33,16 +33,16 @@
                             {% set title = lang.active_announcement %}
                             {% set class = 'primary' %}
                         {% endif %}
-                        <i class="icon icon--announcement icon--{{ class }} fas fa-circle" title="{{ title }}"></i>
+                        {{ include('partials/icon.twig', {icon: 'circle', class: 'icon icon--announcement icon--' ~ class, title: title}, with_context = false) }}
                         <a href="announcements.php?aid={{ aid }}">{{ announcement.subject }}</a>
                     </div>
                     <div class="row__controls">
                         <a href="modcp.php?action=edit_announcement&amp;aid={{ aid }}" class="button button--secondary button--small">
-                            <i class="button__icon fas fa-pencil-alt"></i>
+                            {{ include('partials/icon.twig', {icon: 'pencil-alt', class: 'button__icon'}, with_context = false) }}
                             <span class="button__text">{{ lang.edit }}</span>
                         </a>
                         <a href="modcp.php?action=delete_announcement&amp;aid={{ aid }}" class="button button--secondary button--danger button--small">
-                            <i class="button__icon fas fa-trash"></i>
+                            {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}
                             <span class="button__text">{{ lang.delete }}</span>
                         </a>
                     </div>
@@ -54,7 +54,7 @@
     {% endif %}
 
     <section class="block">
-		<h1 class="title title--major">{{ lang.forum_announcements }}</h1>
+        <h1 class="title title--major">{{ lang.forum_announcements }}</h1>
         {% if forumAnnouncements %}
             {{ forumAnnouncements|raw }}
         {% else %}

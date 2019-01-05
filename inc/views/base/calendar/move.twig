@@ -1,7 +1,7 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.calendar }} - {{ lang.move_event }}</title>
+    <title>{{ lang.calendar }} - {{ lang.move_event }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block body %}
@@ -16,7 +16,7 @@
                     <div class="row row--form field">
                         <h3 class="field__name"><label for="new_calendar">{{ lang.move_to_calendar }}</label></h3>
                         <div class="select-field">
-                            <i class="select-field__icon fas fa-sort"></i>
+                            {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                             <select name="new_calendar">
                                 {% for calendar in calendar_select %}
                                     <option value="{{ calendar.cid }}">{{ calendar.name }}</option>
@@ -27,7 +27,7 @@
                 </div>
                 <div class="form__submit">
                     <button class="button button--medium" type="submit">
-                        <i class="button__icon fas fa-arrow-right"></i>
+                        {{ include('partials/icon.twig', {icon: 'arrow-right', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.move_event }}</span>
                     </button>
                 </div>

@@ -1,6 +1,6 @@
 <div id="container">
     {% if mybb.settings.dst_correction %}
-    	{{ mybb.settings.dst_correction }}
+        {{ mybb.settings.dst_correction }}
     {% endif %}
     <a name="top" id="top"></a>
 
@@ -22,10 +22,10 @@
                     {% spaceless %}
                     {% if mybb.settings.portal %}
                         <li class="main-menu__item">
-                        	<a href="{{ mybb.settings.bburl }}/portal.php" class="main-menu__link">
+                            <a href="{{ mybb.settings.bburl }}/portal.php" class="main-menu__link">
                                 {{ include('partials/icon.twig', {icon: 'newspaper', class: 'main-menu__icon fa-fw'}, with_context = false) }}
-                        		<span class="main-menu__text">{{ lang.toplinks_portal }}</span>
-                        	</a>
+                                <span class="main-menu__text">{{ lang.toplinks_portal }}</span>
+                            </a>
                         </li>
                     {% endif %}
                     {% if mybb.settings.enablememberlist and mybb.usergroup.canviewmemberlist %}
@@ -49,8 +49,8 @@
            </nav>
        </div>
    </header>
-	<nav class="user-bar">
-		<div class="wrapper wrapper--user-bar">
+   <nav class="user-bar">
+       <div class="wrapper wrapper--user-bar">
             {% if mybb.user.uid > 0 %}
                 {% include 'header/welcomeblock_member.twig' %}
             {% else %}
@@ -58,10 +58,10 @@
             {% endif %}
             {% include 'header/quicksearch.twig' %}
         </div>
-	</nav>
+    </nav>
     <div class="main">
-    	<div class="wrapper wrapper--main">
-    		<div id="content">
+        <div class="wrapper wrapper--main">
+            <div id="content">
                 {% for template, options in headerMessages %}
                     {% if template matches '/^\\d+$/' %}
                         {% include 'messages/base.twig' %}

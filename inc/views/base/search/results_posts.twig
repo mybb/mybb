@@ -1,7 +1,7 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.search_results }}</title>
+    <title>{{ lang.search_results }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block body %}
@@ -16,9 +16,9 @@
             <span class="sort-threads__order">
                 <a href="{{ results.sorturl|raw }}&amp;sortby={{ results.sortby }}&amp;order={{ results.oppsortnext }}">
                     {% if results.oppsort == 'asc' %}
-                        <i class="fas fa-chevron-circle-up" title="{{ results.oppsort }}"></i>
+                        {{ include('partials/icon.twig', {icon: 'chevron-circle-up', class: '', title: results.oppsort}, with_context = false) }}
                     {% else %}
-                        <i class="fas fa-chevron-circle-down" title="{{ results.oppsort }}"></i>
+                        {{ include('partials/icon.twig', {icon: 'chevron-circle-down', class: '', title: results.oppsort}, with_context = false) }}
                     {% endif %}
                 </a>
             </span>
@@ -65,7 +65,7 @@
                     <input type="hidden" name="searchid" value="{{ results.sid }}" />
                     <input type="hidden" name="modtype" value="inlinepost" />
                     <div class="select-field">
-                        <i class="select-field__icon fas fa-sort"></i>
+                        {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                         <select name="action">
                             <optgroup label="{{ lang.standard_mod_tools }}">
                                 <option value="multisoftdeleteposts">{{ lang.inline_soft_delete_posts }}</option>

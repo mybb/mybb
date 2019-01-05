@@ -1,23 +1,23 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.search_member_list }}</title>
+    <title>{{ lang.search_member_list }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block body %}
     <div class="page-content">
-		<header class="page-header">
-			<h1 class="title title--page">{{ lang.search_member_list }}</h1>
+        <header class="page-header">
+            <h1 class="title title--page">{{ lang.search_member_list }}</h1>
         </header>
         <form method="post" action="memberlist.php">
             <div class="form">
-				<section class="section section--form">
-					<h2 class="title title--section">{{ lang.search_criteria }}</h2>
+                <section class="section section--form">
+                    <h2 class="title title--section">{{ lang.search_criteria }}</h2>
                     <div class="section__container">
-						<div class="row row--form field">
-							<h3 class="field__name"><label for="username">{{ lang.username }}</label></h3>
+                        <div class="row row--form field">
+                            <h3 class="field__name"><label for="username">{{ lang.username }}</label></h3>
                             <div class="select-field">
-                                <i class="select-field__icon fas fa-sort"></i>
+                                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                 <select name="username_match">
                                     <option value="begins">{{ lang.begins_with }}</option>
                                     <option value="contains">{{ lang.username_contains }}</option>
@@ -26,12 +26,12 @@
                             <input type="text" class="" name="username" id="username" />
                         </div>
                         <div class="row row--form field">
-							<h3 class="field__name"><label for="website">{{ lang.search_website }}</label></h3>
+                            <h3 class="field__name"><label for="website">{{ lang.search_website }}</label></h3>
                             <input type="text" class="textbox" name="website" id="website" />
                         </div>
                         {% for contact_field in contact_fields %}
                             <div class="row row--form field">
-                	           <h3 class="field__name"><label for="{{ contact_field.field }}">{{ contact_field.lang_string }}</label></h3>
+                                <h3 class="field__name"><label for="{{ contact_field.field }}">{{ contact_field.lang_string }}</label></h3>
                                <input type="text" class="textbox" name="{{ contact_field.field }}" id="{{ contact_field.field }}" />
                            </div>
                         {% endfor %}
@@ -41,9 +41,9 @@
                     <h2 class="title title--section">{{ lang.search_options }}</h2>
                     <div class="section__container">
                         <div class="row row--form field">
-							<h3 class="field__name"><label for="sort">{{ lang.sort_by }}</label></h3>
+                            <h3 class="field__name"><label for="sort">{{ lang.sort_by }}</label></h3>
                             <div class="select-field">
-                                <i class="select-field__icon fas fa-sort"></i>
+                                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                 <select name="sort" id="sort">
                                     <option value="username">{{ lang.sort_by_username }}</option>
                                     <option value="regdate">{{ lang.sort_by_regdate }}</option>
@@ -55,27 +55,27 @@
                             </div>
                             <div class="field__block">
                                 <div class="segmented-control">
-            						<span class="segmented-control__option">
-            							<input type="radio" class="radio segmented-control__input" name="order" id="order_asc" value="ascending" checked="checked" />
-            							<label class="segmented-control__button" for="order_asc">{{ lang.order_asc }}</label>
-            						</span>
-            						<span class="segmented-control__option">
-            							<input type="radio" class="radio segmented-control__input" name="order" id="order_desc" value="descending" />
-            							<label class="segmented-control__button" for="order_desc">{{ lang.order_desc }}</label>
-            						</span>
-            					</div>
-            				</div>
+                                    <span class="segmented-control__option">
+                                        <input type="radio" class="radio segmented-control__input" name="order" id="order_asc" value="ascending" checked="checked" />
+                                        <label class="segmented-control__button" for="order_asc">{{ lang.order_asc }}</label>
+                                    </span>
+                                    <span class="segmented-control__option">
+                                        <input type="radio" class="radio segmented-control__input" name="order" id="order_desc" value="descending" />
+                                        <label class="segmented-control__button" for="order_desc">{{ lang.order_desc }}</label>
+                                    </span>
+                                </div>
+                            </div>
                         </div>
                         <div class="row row--form field">
-							<h3 class="field__name"><label for="perpage">{{ lang.per_page }}</label></h3>
+                            <h3 class="field__name"><label for="perpage">{{ lang.per_page }}</label></h3>
                             <input type="text" class="textbox" size="4" name="perpage" id="perpage" value="15" />
                         </div>
                     </div>
                 </section>
                 <div class="form__submit">
-            		<button type="submit" class="button button--medium">
-            			<i class="button__icon fas fa-search"></i>
-            			<span class="button__text">{{ lang.search }}</span>
+                    <button type="submit" class="button button--medium">
+                        {{ include('partials/icon.twig', {icon: 'search', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.search }}</span>
                     </button>
                 </div>
             </div>

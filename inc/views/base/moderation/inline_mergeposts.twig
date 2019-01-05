@@ -1,7 +1,7 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.merge_posts }}</title>
+    <title>{{ lang.merge_posts }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block body %}
@@ -41,7 +41,7 @@
                 </div>
                 <div class="form__submit">
                     <button type="submit" class="button button--medium">
-                        <i class="button__icon fas fa-compress"></i>
+                        {{ include('partials/icon.twig', {icon: 'compress', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.merge_posts }}</span>
                     </button>
                 </div>

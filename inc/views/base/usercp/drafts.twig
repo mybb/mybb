@@ -1,7 +1,7 @@
 {% extends 'layouts/account.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.drafts }}</title>
+    <title>{{ lang.drafts }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block accountHeader %}
@@ -29,11 +29,10 @@
             <div class="sort-results">
                 <input type="hidden" name="action" value="do_drafts" />
                 <button type="submit" name="draftman" class="button"{% if not deleteDraftsEnabled %} disabled{% endif %}>
-                    <i class="button__icon fas fa-trash"></i>
+                    {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}
                     <span class="button__text">{{ lang.delete_drafts }}</span>
                 </button>
             </div>
         </section>
-
     </form>
 {% endblock accountBody %}

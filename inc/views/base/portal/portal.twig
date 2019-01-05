@@ -50,9 +50,9 @@
                         </div>
                         <div class="form__submit">
                             <button type="submit" name="loginsubmit" class="button button--medium">
-            					<i class="button__icon fas fa-sign-in-alt"></i>
-            					<span class="button__text">{{ lang.login }}</span>
-            				</button>
+                                {{ include('partials/icon.twig', {icon: 'sign-in-alt', class: 'button__icon'}, with_context = false) }}
+                                <span class="button__text">{{ lang.login }}</span>
+                            </button>
                         </div>
                     </form>
                 </section>

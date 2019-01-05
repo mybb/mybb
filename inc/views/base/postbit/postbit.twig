@@ -1,297 +1,344 @@
 <a name="pid{{ post.pid }}" id="pid{{ post.pid }}"></a>
 {# Ignored post #}
 {% if post.isignored %}
-	<div class="post post--message ignored_post" id="ignored_post_{{ post.pid }}">
-		<div class="post__meta">
-			<h3 class="post__author">{{ post.profilelink|raw }}</h3>
-		</div>
-		<div class="post__body post__body--message post_body">
-			{{ post.ignored_message|raw }}
-			<div class="post--message__button" id="show_ignored_link_{{ post.pid }}">
-				<a href="javascript:void(0)" onclick="Thread.showIgnoredPost({{ post.pid }}); return false;" class="button">
-					<i class="button__icon fas fa-eye"></i>
-					<span class="button__text">{{ lang.postbit_show_ignored_post }}</span>
-				</a>
-			</div>
-			<script type="text/javascript">
-			<!--
-				$('#show_ignored_link_{{ post.pid }}').show();
-			// -->
-			</script>
-		</div>
-	</div>
+    <div class="post post--message ignored_post" id="ignored_post_{{ post.pid }}">
+        <div class="post__meta">
+            <h3 class="post__author">{{ post.profilelink|raw }}</h3>
+        </div>
+        <div class="post__body post__body--message post_body">
+            {{ post.ignored_message|raw }}
+            <div class="post--message__button" id="show_ignored_link_{{ post.pid }}">
+                <a href="javascript:void(0)" onclick="Thread.showIgnoredPost({{ post.pid }}); return false;" class="button">
+                    {{ include('partials/icon.twig', {icon: 'eye', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.postbit_show_ignored_post }}</span>
+                </a>
+            </div>
+            <script type="text/javascript">
+            <!--
+                $('#show_ignored_link_{{ post.pid }}').show();
+            // -->
+            </script>
+        </div>
+    </div>
 {% endif %}
 
 {# Deleted post #}
 {% if post.isdeleted %}
-	<div class="post post--message deleted_post_collapsed" id="deleted_post_{{ post.pid }}">
-		<div class="post__meta">
-			<h3 class="post__author">{{ post.profilelink|raw }}</h3>
-		</div>
-		<div class="post__body post__body--message post_body" id="deleted_post{{ post.pid }}">
-			{{ post.deleted_message }}
-			<div class="post--message__button" id="show_deleted_link_{{ post.pid }}">
-				<a href="javascript:void(0)" onclick="Thread.showDeletedPost({{ post.pid }}); return false;" class="button">
-					<i class="button__icon fas fa-eye"></i>
-					<span class="button__text">{{ lang.postbit_show_ignored_post }}</span>
-				</a>
-			</div>
-			<script type="text/javascript">
-			<!--
-				$('#show_deleted_link_{{ post.pid }}').show();
-			// -->
-			</script>
-		</div>
-	</div>
+    <div class="post post--message deleted_post_collapsed" id="deleted_post_{{ post.pid }}">
+        <div class="post__meta">
+            <h3 class="post__author">{{ post.profilelink|raw }}</h3>
+        </div>
+        <div class="post__body post__body--message post_body" id="deleted_post{{ post.pid }}">
+            {{ post.deleted_message }}
+            <div class="post--message__button" id="show_deleted_link_{{ post.pid }}">
+                <a href="javascript:void(0)" onclick="Thread.showDeletedPost({{ post.pid }}); return false;" class="button">
+                    {{ include('partials/icon.twig', {icon: 'eye', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.postbit_show_ignored_post }}</span>
+                </a>
+            </div>
+            <script type="text/javascript">
+            <!--
+                $('#show_deleted_link_{{ post.pid }}').show();
+            // -->
+            </script>
+        </div>
+    </div>
 {% endif %}
 
 {# Post bit #}
 <div class="post {{ post.unapproved_shade }}" style="{{ post.visibility }}" id="post_{{ post.pid }}">
-	<div class="post__meta">
-		{# Author avatar #}
-		{% if post.showavatar %}
-			<a href="{{ post.profilelink_plain|raw }}" class="avatar-profile-link">
-				{% if post.avatar %}
-					<img src="{{ post.useravatar.image }}" alt="" {{ post.useravatar.width_height|raw }} class="avatar" />
-				{% else %}
-					{% include 'partials/default_avatar.twig' %}
-				{% endif %}
-			</a>
-		{% endif %}
+    <div class="post__meta">
+        {# Author avatar #}
+        {% if post.showavatar %}
+            <a href="{{ post.profilelink_plain|raw }}" class="avatar-profile-link">
+                {% if post.avatar %}
+                    <img src="{{ post.useravatar.image }}" alt="" {{ post.useravatar.width_height|raw }} class="avatar" />
+                {% else %}
+                    {% include 'partials/default_avatar.twig' %}
+                {% endif %}
+            </a>
+        {% endif %}
 
-		{# Author username #}
-		<h3 class="post__author">
-			{{ post.profilelink|raw }}
-			{# Online status #}
-			{% if post.onlinestatus == "online" %}
-				<span class="user-status user-status--online">
-					<a href="online.php" title="{{ lang.postbit_status_online }}" class="user-status__link">
-						<i class="user-status__icon fas fa-dot-circle" title="{{ lang.postbit_status_online }}"></i>
-					</a>
-				</span>
-			{% elseif post.onlinestatus == "away" %}
-				<span class="user-status user-status--away">
-					<a href="{{ post.profilelink_plain|raw }}" title="{{ lang.postbit_status_away }}" class="user-status__link">
-						<i class="user-status__icon fas fa-dot-circle" title="{{ lang.postbit_status_away }}"></i>
-					</a>
-				</span>
-			{% else %}
-				<span class="user-status user-status--offline">
-					<i class="user-status__icon fas fa-dot-circle" title="{{ lang.postbit_status_offline }}"></i>
-				</span>
-			{% endif %}
-		</h3>
+        {# Author username #}
+        <h3 class="post__author">
+            {{ post.profilelink|raw }}
+            {# Online status #}
+            {% if post.onlinestatus == "online" %}
+                <span class="user-status user-status--online">
+                    <a href="online.php" title="{{ lang.postbit_status_online }}" class="user-status__link">
+                        {{ include('partials/icon.twig', {icon: 'dot-circle', class: 'user-status__icon', title: lang.postbit_status_online}, with_context = false) }}
+                    </a>
+                </span>
+            {% elseif post.onlinestatus == "away" %}
+                <span class="user-status user-status--away">
+                    <a href="{{ post.profilelink_plain|raw }}" title="{{ lang.postbit_status_away }}" class="user-status__link">
+                        {{ include('partials/icon.twig', {icon: 'dot-circle', class: 'user-status__icon', title: lang.postbit_status_away}, with_context = false) }}
+                    </a>
+                </span>
+            {% else %}
+                <span class="user-status user-status--offline">
+                    {{ include('partials/icon.twig', {icon: 'dot-circle', class: 'user-status__icon', title: lang.postbit_status_offline}, with_context = false) }}
+                </span>
+            {% endif %}
+        </h3>
 
-		{# Post icon #}
-		{% if post.showicon %}
-			<img src="{{ icon.path }}" alt="{{ icon.name }}" title="{{ icon.name }}" style="vertical-align: middle;" />&nbsp;
-		{% endif %}
+        {# Post icon #}
+        {% if post.showicon %}
+            <img src="{{ icon.path }}" alt="{{ icon.name }}" title="{{ icon.name }}" style="vertical-align: middle;" />&nbsp;
+        {% endif %}
 
-		{# Post date & permalink #}
-		<a href="{{ post.postlink }}#pid{{ post.pid }}" title="{{ post.subject_title }}" class="post__date">{{ post.dateline|my_date }}</a>
+        {# Post date & permalink #}
+        <a href="{{ post.postlink }}#pid{{ post.pid }}" title="{{ post.subject_title }}" class="post__date">{{ post.dateline|my_date }}</a>
 
-		{# Inline moderation checkbox #}
-		{% if post.ismod %}
-			<input type="checkbox" class="checkbox post__inline-mod" name="inlinemod_{{ post.pid }}" id="inlinemod_{{ post.pid }}" value="1" {% if post.inlinechecked %}checked="checked"{% endif %}/>
-		{% endif %}
+        {# Inline moderation checkbox #}
+        {% if post.ismod %}
+            <input type="checkbox" class="checkbox post__inline-mod" name="inlinemod_{{ post.pid }}" id="inlinemod_{{ post.pid }}" value="1" {% if post.inlinechecked %}checked="checked"{% endif %}/>
+        {% endif %}
 
-		{# TO DO : CLEAN UP EDITED MESSAGE #}
-		{% if post.editedmsg %}
-			<a href="#" class="post__edit-log" title="" id="edited_by_{{ post.pid }}"><i class="fas fa-pencil-alt"></i></a>
-			<span class="edited_post" style="display: none;">({{ post.editnote|raw }} {{ post.editedprofilelink|raw }}.{% if post.editreason %} <em>{{ lang.postbit_editreason }}: {{ post.editreason }}</em>{% endif %})</span>
-		{% endif %}
+        {# TO DO : CLEAN UP EDITED MESSAGE #}
+        {% if post.editedmsg %}
+            <a href="#" class="post__edit-log" title="" id="edited_by_{{ post.pid }}">{{ include('partials/icon.twig', {icon: 'pencil-alt', class: ''}, with_context = false) }}</a>
+            <span class="edited_post" style="display: none;">({{ post.editnote|raw }} {{ post.editedprofilelink|raw }}.{% if post.editreason %} <em>{{ lang.postbit_editreason }}: {{ post.editreason }}</em>{% endif %})</span>
+        {% endif %}
 
-		{# IP address #}
-		{% if post.ipshow %}
-			{{ lang.postbit_ipaddress }} {{ post.ip }}
-		{% elseif post.iphide %}
-			<a href="moderation.php?action={{ post.action }}&amp;{{ post.idtype }}={{ post.id }}" onclick="MyBB.{{ post.javascript }}({{ post.id }}); return false;" title="{{ lang.postbit_ipaddress }}" class="post__ip-address"><i class="fas fa-globe"></i></a>
-		{% endif %}
+        {# IP address #}
+        {% if post.ipshow %}
+            {{ lang.postbit_ipaddress }} {{ post.ip }}
+        {% elseif post.iphide %}
+            <a href="moderation.php?action={{ post.action }}&amp;{{ post.idtype }}={{ post.id }}" onclick="MyBB.{{ post.javascript }}({{ post.id }}); return false;" class="post__ip-address">
+                {{ include('partials/icon.twig', {icon: 'globe', class: 'button__icon', title: lang.postbit_ipaddress}, with_context = false) }}
+            </a>
+        {% endif %}
 
-		{# Messenger information #}
-		{% if post.is_pm %}
-			<div class="post__messenger-meta">
-				{{ lang.to }} {{ post.to_recipients|raw }}
-				{% if post.showbcc %}
-					<br />{{ lang.bcc }} {{ post.bcc_recipients|raw }}
-				{% endif %}
-			</div>
-		{% endif %}
+        {# Messenger information #}
+        {% if post.is_pm %}
+            <div class="post__messenger-meta">
+                {{ lang.to }} {{ post.to_recipients|raw }}
+                {% if post.showbcc %}
+                    <br />{{ lang.bcc }} {{ post.bcc_recipients|raw }}
+                {% endif %}
+            </div>
+        {% endif %}
 
-		{# Currently not used #}
+        {# Currently not used #}
 
-			{#	{{ post.usertitle|raw }}<br />
-				{% if post.starimage and post.stars %}
-					{% spaceless %}
-						{% for star in range(1, post.stars) %}
-							<img src="{{ post.starimage }}" border="0" alt="*" />
-						{% endfor %}
-					{% endspaceless %}
-					<br />
-				{% endif %}
-				{% if post.groupimage %}
-					<img src="{{ usergroup.image }}" alt="{{ usergroup.title }}" title="{{ usergroup.title }}" /><br />
-				{% endif %}
+        {#	{{ post.usertitle|raw }}<br />
+        	{% if post.starimage and post.stars %}
+        		{% spaceless %}
+        			{% for star in range(1, post.stars) %}
+        				<img src="{{ post.starimage }}" border="0" alt="*" />
+        			{% endfor %}
+        		{% endspaceless %}
+        		<br />
+        	{% endif %}
+        	{% if post.groupimage %}
+        		<img src="{{ usergroup.image }}" alt="{{ usergroup.title }}" title="{{ usergroup.title }}" /><br />
+        	{% endif %}
 
-				#}
+        	#}
 
-		{#
-			{% if post.isguest %}
-				&nbsp;
-			{% else %}
-				{{ lang.postbit_posts }} {{ post.postnum }}<br />
-				{{ lang.postbit_threads }} {{ post.threadnum }}<br />
-				{{ lang.postbit_joined }} {{ post.userregdate }}
-				{% if post.replink %}
-					<br />{{ lang.postbit_reputation }} {{ post.userreputation|raw }}
-				{% endif %}
-				{% for field in post.profile_fields %}
-					<br />{{ field.name }}:
-					{% if field.multi and field.useropts %}
-						<ul style="margin: 0; padding-left: 15px;">
-						{% for val in field.useropts %}
-							<li style="margin-left: 0;">{{ val }}</li>
-						{% endfor %}
-						</ul>
-					{% else %}
-						{{ field.value }}
-					{% endif %}
-				{% endfor %}
-				{% if post.can_warn %}
-					<br />{{ lang.postbit_warning_level }} <a href="{{ post.warning_link }}">{{ post.warning_level|raw }}</a>
-				{% endif %}
-			{% endif %}
-		</div>#}
+        {#
+        	{% if post.isguest %}
+        		&nbsp;
+        	{% else %}
+        		{{ lang.postbit_posts }} {{ post.postnum }}<br />
+        		{{ lang.postbit_threads }} {{ post.threadnum }}<br />
+        		{{ lang.postbit_joined }} {{ post.userregdate }}
+        		{% if post.replink %}
+        			<br />{{ lang.postbit_reputation }} {{ post.userreputation|raw }}
+        		{% endif %}
+        		{% for field in post.profile_fields %}
+        			<br />{{ field.name }}:
+        			{% if field.multi and field.useropts %}
+        				<ul style="margin: 0; padding-left: 15px;">
+        				{% for val in field.useropts %}
+        					<li style="margin-left: 0;">{{ val }}</li>
+        				{% endfor %}
+        				</ul>
+        			{% else %}
+        				{{ field.value }}
+        			{% endif %}
+        		{% endfor %}
+        		{% if post.can_warn %}
+        			<br />{{ lang.postbit_warning_level }} <a href="{{ post.warning_link }}">{{ post.warning_level|raw }}</a>
+        		{% endif %}
+        	{% endif %}
+        </div>#}
 
-	</div>
+    </div>
 
-	{# Post body #}
-	<div class="post__body post_body scaleimages" id="pid_{{ post.pid }}">
-		{# Post unapproved or deleted message #}
-		{% if post.poststatus %}
-			<div class="post__status">
-				<span class="tag tag--post-status{% if post.isdeleted %} tag--deleted{% endif %}{% if post.visible == 0 %} tag--awaiting-approval{% endif %}">{{ post.status_type }}</span>
-			</div>
-		{% endif %}
+    {# Post body #}
+    <div class="post__body post_body scaleimages" id="pid_{{ post.pid }}">
+        {# Post unapproved or deleted message #}
+        {% if post.poststatus %}
+            <div class="post__status">
+                <span class="tag tag--post-status{% if post.isdeleted %} tag--deleted{% endif %}{% if post.visible == 0 %} tag--awaiting-approval{% endif %}">{{ post.status_type }}</span>
+            </div>
+        {% endif %}
 
-		{# Post message #}
-		{{ post.message|raw }}
+        {# Post message #}
+        {{ post.message|raw }}
 
-		{# Attachments #}
-		{% if post.hasattachments %}
-			{% include 'postbit/postbit_attachments.twig' %}
-		{% endif %}
+        {# Attachments #}
+        {% if post.hasattachments %}
+            {% include 'postbit/postbit_attachments.twig' %}
+        {% endif %}
 
-		{# Signature #}
-		{% if post.showsig %}
-			<div class="post__signature scaleimages">
-				{{ post.signature|raw }}
-			</div>
-		{% endif %}
+        {# Signature #}
+        {% if post.showsig %}
+            <div class="post__signature scaleimages">
+                {{ post.signature|raw }}
+            </div>
+        {% endif %}
 
-		{# Edit reason #}
-		{% if post.can_edit %}
-			<div class="editreason" id="editreason_{{ post.pid }}_original" style="display: none;"><label for="editreason">{{ lang.postbit_editreason }}:</label> <input type="text" class="textbox" style="margin: 6px 0;" name="editreason" size="40" maxlength="150" id="quickedit_{{ post.pid }}_editreason_original" value="{{ post.editreason }}" /><br /></div>
-		{% endif %}
-	</div>
+        {# Edit reason #}
+        {% if post.can_edit %}
+            <div class="editreason" id="editreason_{{ post.pid }}_original" style="display: none;"><label for="editreason">{{ lang.postbit_editreason }}:</label> <input type="text" class="textbox" style="margin: 6px 0;" name="editreason" size="40" maxlength="150" id="quickedit_{{ post.pid }}_editreason_original" value="{{ post.editreason }}" /><br /></div>
+        {% endif %}
+    </div>
 
-	{# Post controls #}
-	<div class="post__foot post__foot--controls">
-		<div class="post-controls post-controls--primary">
-			{# Restore button (for deleted posts) #}
-			{% if post.quick_restore %}
-				<a href="editpost.php?pid={{ post.pid }}" onclick="Thread.restorePost({{ post.pid }}); return false;" style="display: none;" id="quick_restore_{{ post.pid }}" title="{{ lang.postbit_quick_restore }}" class="post-control post-control--restore"><i class="post-control__icon fas fa-circle fa-fw"></i><span class="post-control__text">{{ lang.postbit_button_qrestore }}</span></a>
+    {# Post controls #}
+    <div class="post__foot post__foot--controls">
+        <div class="post-controls post-controls--primary">
+            {# Restore button (for deleted posts) #}
+            {% if post.quick_restore %}
+                <a href="editpost.php?pid={{ post.pid }}" onclick="Thread.restorePost({{ post.pid }}); return false;" style="display: none;" id="quick_restore_{{ post.pid }}" title="{{ lang.postbit_quick_restore }}" class="post-control post-control--restore">
+                    {{ include('partials/icon.twig', {icon: 'circle', class: 'post-control__icon fa-fw'}, with_context = false) }}
+                    <span class="post-control__text">{{ lang.postbit_button_qrestore }}</span>
+                </a>
 <script type="text/javascript">
 // <!--
-	$('#quick_restore_{{ post.pid }}').css('display', '{{ post.quick_restore_display }}');
+    $('#quick_restore_{{ post.pid }}').css('display', '{{ post.quick_restore_display }}');
 // -->
 </script>
-			{% endif %}
+            {% endif %}
 
-			{# Reply to post button #}
-			{% if post.button_quote %}
-				{# <a href="newreply.php?tid={{ post.tid }}&amp;replyto={{ post.pid }}" title="{{ lang.postbit_quote }}" class="post-control post-control--reply"><i class="post-control__icon fas fa-comments fa-fw"></i><span class="post-control__text">{{ lang.postbit_button_quote }}</span></a>#}
-			{% endif %}
+            {# Reply to post button #}
+            {% if post.button_quote %}
+                {# <a href="newreply.php?tid={{ post.tid }}&amp;replyto={{ post.pid }}" title="{{ lang.postbit_quote }}" class="post-control post-control--reply">{{ include('partials/icon.twig', {icon: 'comments', class: 'post-control__icon fa-fw'}, with_context = false) }}</i><span class="post-control__text">{{ lang.postbit_button_quote }}</span></a>#}
+            {% endif %}
 
-			{# Multiquote button #}
-			{% if post.button_multiquote %}
-				<a href="javascript:void(0)" onclick="Thread.multiQuote({{ post.pid }}); return false;" style="display: none;" id="multiquote_link_{{ post.pid }}" title="{{ lang.postbit_multiquote }}" class="postbit_multiquote post-control post-control--quote"><i class="post-control__icon fas fa-quote-left fa-fw"></i><span id="multiquote_{{ post.pid }}" class="post-control__text">{{ lang.postbit_button_multiquote }}</span></a>
+            {# Multiquote button #}
+            {% if post.button_multiquote %}
+                <a href="javascript:void(0)" onclick="Thread.multiQuote({{ post.pid }}); return false;" style="display: none;" id="multiquote_link_{{ post.pid }}" title="{{ lang.postbit_multiquote }}" class="postbit_multiquote post-control post-control--quote">
+                    {{ include('partials/icon.twig', {icon: 'quote-left', class: 'post-control__icon fa-fw'}, with_context = false) }}
+                    <span id="multiquote_{{ post.pid }}" class="post-control__text">{{ lang.postbit_button_multiquote }}</span>
+                </a>
 <script type="text/javascript">
 //<!--
-	$('#multiquote_link_{{ post.pid }}').css("display", "");
+    $('#multiquote_link_{{ post.pid }}').css("display", "");
 // -->
 </script>
-			{% endif %}
+            {% endif %}
 
-			{# Reputation button #}
-			{% if post.button_rep %}
-				<a href="javascript:void(0)" onclick="MyBB.reputation({{ post.uid }}, {{ post.pid }}); return false;" title="{{ lang.postbit_reputation_add }}" class="post-control post-control--rate"><i class="post-control__icon fas fa-thumbs-up fa-fw"></i><span class="post-control__text">{{ lang.postbit_button_reputation_add }}</span></a>
-			{% endif %}
+            {# Reputation button #}
+            {% if post.button_rep %}
+                <a href="javascript:void(0)" onclick="MyBB.reputation({{ post.uid }}, {{ post.pid }}); return false;" title="{{ lang.postbit_reputation_add }}" class="post-control post-control--rate">
+                    {{ include('partials/icon.twig', {icon: 'thumbs-up', class: 'post-control__icon fa-fw'}, with_context = false) }}
+                    <span class="post-control__text">{{ lang.postbit_button_reputation_add }}</span>
+                </a>
+            {% endif %}
 
-			{# Messenger buttons #}
-			{% if post.is_pm %}
-				<a href="private.php?action=send&amp;pmid={{ post.pmid }}&amp;do=reply" title="{{ lang.reply_title }}" class="post-control post-control--reply"><i class="post-control__icon fas fa-reply fa-fw"></i><span class="post-control__text">{{ lang.postbit_button_reply_pm }}</span></a>
-				{% if post.replyall %}
-					<a href="private.php?action=send&amp;pmid={{ post.pmid }}&amp;do=replyall" title="{{ lang.reply_to_all }}" class="post-control post-control--reply-all"><i class="post-control__icon fas fa-reply-all fa-fw"></i><span class="post-control__text">{{ lang.postbit_button_reply_all }}</span></a>
-				{% endif %}
-				<a href="private.php?action=send&amp;pmid={{ post.pmid }}&amp;do=forward" title="{{ lang.forward_title }}" class="post-control post-control--forward"><i class="post-control__icon fas fa-share fa-fw"></i><span class="post-control__text">{{ lang.postbit_button_forward }}</span></a>
-			{% endif %}
+            {# Messenger buttons #}
+            {% if post.is_pm %}
+                <a href="private.php?action=send&amp;pmid={{ post.pmid }}&amp;do=reply" title="{{ lang.reply_title }}" class="post-control post-control--reply">
+                    {{ include('partials/icon.twig', {icon: 'reply', class: 'post-control__icon fa-fw'}, with_context = false) }}
+                    <span class="post-control__text">{{ lang.postbit_button_reply_pm }}</span>
+                </a>
+                {% if post.replyall %}
+                    <a href="private.php?action=send&amp;pmid={{ post.pmid }}&amp;do=replyall" title="{{ lang.reply_to_all }}" class="post-control post-control--reply-all">
+                        {{ include('partials/icon.twig', {icon: 'reply-all', class: 'post-control__icon fa-fw'}, with_context = false) }}
+                        <span class="post-control__text">{{ lang.postbit_button_reply_all }}</span>
+                    </a>
+                {% endif %}
+                <a href="private.php?action=send&amp;pmid={{ post.pmid }}&amp;do=forward" title="{{ lang.forward_title }}" class="post-control post-control--forward">
+                    {{ include('partials/icon.twig', {icon: 'share', class: 'post-control__icon fa-fw'}, with_context = false) }}
+                    <span class="post-control__text">{{ lang.postbit_button_forward }}</span>
+                </a>
+            {% endif %}
 
-			{% if post.is_announcement and post.can_edit %}
-				<a href="modcp.php?action=edit_announcement&amp;aid={{ post.aid }}" title="{{ lang.announcement_edit }}" class="post-control post-control--edit"><i class="post-control__icon fas fa-pencil-alt fa-fw"></i><span class="post-control__text">{{ lang.postbit_button_edit }}</span></a>
-			{% endif %}
+            {% if post.is_announcement and post.can_edit %}
+                <a href="modcp.php?action=edit_announcement&amp;aid={{ post.aid }}" title="{{ lang.announcement_edit }}" class="post-control post-control--edit">
+                    {{ include('partials/icon.twig', {icon: 'pencil-alt', class: 'post-control__icon fa-fw'}, with_context = false) }}
+                    <span class="post-control__text">{{ lang.postbit_button_edit }}</span>
+                </a>
+            {% endif %}
 
-			{% if post.is_announcement and post.quick_delete %}
-				<a href="modcp.php?action=delete_announcement&amp;aid={{ post.aid }}&amp;my_post_key={{ mybb.post_code }}" onclick="MyBB.deleteAnnouncement(this); return false;" class="post-control post-control--delete"><i class="post-control__icon fas fa-trash fa-fw"></i><span class="post-control__text">{{ lang.postbit_button_qdelete }}</span></a>
-			{% endif %}
-		</div>
-		<div class="post-controls post-controls--secondary post-options">
-			{% if not post.is_announcement and post.can_edit %}
-				<a href="javascript:void(0)" class="post-control post-control--quick-edit quick_edit_button" id="quick_edit_post_{{ post.pid }}" title="{{ lang.postbit_quick_edit }}"><i class="post-control__icon fas fa-pencil-alt fa-fw"></i><span class="post-control__text">{{ lang.postbit_button_edit }}</span></a>
-			{% endif %}
-			{% if not post.is_announcement and (post.can_edit or post.quick_delete or post.button_report or post.can_warn or post.button_purgespammer) %}
-				<input type="checkbox" class="post-options__checkbox" id="post_options_{{ post.pid }}">
-				<label for="post_options_{{ post.pid }}" class="post-control post-control--options post-options__control" title="{{ lang.postbit_post_options }}">
-					<i class="post-control__icon fas fa-ellipsis-v fa-fw"></i>
-					<span class="visually-hidden">{{ lang.postbit_post_options }}</span>
-				</label>
-				<span class="post-options__list" id="post_options2_{{ post.pid }}">
-					{# Edit button #}
-					{% if post.can_edit %}
-						<a href="editpost.php?pid={{ post.pid }}" class="post-control post-control--full-edit"><i class="post-control__icon fas fa-edit fa-fw"></i><span class="post-control__text">{{ lang.postbit_full_edit }}</span></a>
-					{% endif %}
+            {% if post.is_announcement and post.quick_delete %}
+                <a href="modcp.php?action=delete_announcement&amp;aid={{ post.aid }}&amp;my_post_key={{ mybb.post_code }}" onclick="MyBB.deleteAnnouncement(this); return false;" class="post-control post-control--delete">
+                    {{ include('partials/icon.twig', {icon: 'trash', class: 'post-control__icon fa-fw'}, with_context = false) }}
+                    <span class="post-control__text">{{ lang.postbit_button_qdelete }}</span>
+                </a>
+            {% endif %}
+        </div>
+        <div class="post-controls post-controls--secondary post-options">
+            {% if not post.is_announcement and post.can_edit %}
+                <a href="javascript:void(0)" class="post-control post-control--quick-edit quick_edit_button" id="quick_edit_post_{{ post.pid }}" title="{{ lang.postbit_quick_edit }}">
+                    {{ include('partials/icon.twig', {icon: 'pencil-alt', class: 'post-control__icon fa-fw'}, with_context = false) }}
+                    <span class="post-control__text">{{ lang.postbit_button_edit }}</span>
+                </a>
+            {% endif %}
+            {% if not post.is_announcement and (post.can_edit or post.quick_delete or post.button_report or post.can_warn or post.button_purgespammer) %}
+                <input type="checkbox" class="post-options__checkbox" id="post_options_{{ post.pid }}">
+                <label for="post_options_{{ post.pid }}" class="post-control post-control--options post-options__control" title="{{ lang.postbit_post_options }}">
+                    {{ include('partials/icon.twig', {icon: 'ellipsis-v', class: 'post-control__icon fa-fw'}, with_context = false) }}
+                    <span class="visually-hidden">{{ lang.postbit_post_options }}</span>
+                </label>
+                <span class="post-options__list" id="post_options2_{{ post.pid }}">
+                    {# Edit button #}
+                    {% if post.can_edit %}
+                        <a href="editpost.php?pid={{ post.pid }}" class="post-control post-control--full-edit">
+                            {{ include('partials/icon.twig', {icon: 'edit', class: 'post-control__icon fa-fw'}, with_context = false) }}
+                            <span class="post-control__text">{{ lang.postbit_full_edit }}</span>
+                        </a>
+                    {% endif %}
 
-					{# Delete PM button #}
-					{% if post.is_pm %}
-						<a href="private.php?action=delete&amp;pmid={{ post.pmid }}&amp;my_post_key={{ mybb.post_code }}" title="{{ lang.delete_title }}" class="post-control post-control--delete"><i class="post-control__icon fas fa-trash fa-fw"></i><span class="post-control__text">{{ lang.postbit_button_delete_pm }}</span></a>
-					{% endif %}
+                    {# Delete PM button #}
+                    {% if post.is_pm %}
+                        <a href="private.php?action=delete&amp;pmid={{ post.pmid }}&amp;my_post_key={{ mybb.post_code }}" title="{{ lang.delete_title }}" class="post-control post-control--delete">
+                            {{ include('partials/icon.twig', {icon: 'trash', class: 'post-control__icon fa-fw'}, with_context = false) }}
+                            <span class="post-control__text">{{ lang.postbit_button_delete_pm }}</span>
+                        </a>
+                    {% endif %}
 
-					{# Delete button #}
-					{% if post.quick_delete %}
-						<a href="editpost.php?pid={{ post.pid }}" onclick="Thread.deletePost({{ post.pid }}); return false;" style="display: none;" id="quick_delete_{{ post.pid }}" title="{{ lang.postbit_quick_delete }}" class="post-control post-control--delete"><i class="post-control__icon fas fa-trash fa-fw"></i><span class="post-control__text">{{ lang.postbit_button_qdelete }}</span></a>
-<script type="text/javascript">
-// <!--
-	$('#quick_delete_{{ post.pid }}').css('display', '{{ post.quick_delete_display }}');
-// -->
-</script>
-					{% endif %}
+                    {# Delete button #}
+                    {% if post.quick_delete %}
+                        <a href="editpost.php?pid={{ post.pid }}" onclick="Thread.deletePost({{ post.pid }}); return false;" style="display: none;" id="quick_delete_{{ post.pid }}" title="{{ lang.postbit_quick_delete }}" class="post-control post-control--delete">
+                            {{ include('partials/icon.twig', {icon: 'trash', class: 'post-control__icon fa-fw'}, with_context = false) }}
+                            <span class="post-control__text">{{ lang.postbit_button_qdelete }}</span>
+                        </a>
+    <script type="text/javascript">
+    // <!--
+        $('#quick_delete_{{ post.pid }}').css('display', '{{ post.quick_delete_display }}');
+    // -->
+    </script>
+                    {% endif %}
 
-					{# Report button #}
-					{% if post.button_report %}
-						<a href="javascript:void(0)" onclick="Report.reportPost({{ post.pid }}); return false;" title="{{ lang.postbit_report }}" class="post-control post-control--report"><i class="post-control__icon fas fa-flag fa-fw"></i><span class="post-control__text">{{ lang.postbit_button_report }}</span></a>
-					{% endif %}
+                    {# Report button #}
+                    {% if post.button_report %}
+                        <a href="javascript:void(0)" onclick="Report.reportPost({{ post.pid }}); return false;" title="{{ lang.postbit_report }}" class="post-control post-control--report">
+                            {{ include('partials/icon.twig', {icon: 'flag', class: 'post-control__icon fa-fw'}, with_context = false) }}
+                            <span class="post-control__text">{{ lang.postbit_button_report }}</span>
+                        </a>
+                    {% endif %}
 
-					{# Warn user button #}
-					{% if post.can_warn %}
-						<a href="warnings.php?action=warn&amp;uid={{ post.uid }}&amp;pid={{ post.pid }}" title="{{ lang.postbit_warn }}" class="post-control post-control--warn"><i class="post-control__icon fas fa-exclamation-triangle fa-fw"></i><span class="post-control__text">{{ lang.postbit_button_warn }}</span></a>
-					{% endif %}
+                    {# Warn user button #}
+                    {% if post.can_warn %}
+                        <a href="warnings.php?action=warn&amp;uid={{ post.uid }}&amp;pid={{ post.pid }}" title="{{ lang.postbit_warn }}" class="post-control post-control--warn">
+                            {{ include('partials/icon.twig', {icon: 'exclamation-triangle', class: 'post-control__icon fa-fw'}, with_context = false) }}
+                            <span class="post-control__text">{{ lang.postbit_button_warn }}</span>
+                        </a>
+                    {% endif %}
 
-					{# Purge spammer button #}
-					{% if post.button_purgespammer %}
-						<a href="moderation.php?action=purgespammer&amp;uid={{ post.uid }}" title="{{ lang.postbit_purgespammer }}" class="post-control post-control--purge-spammer"><i class="post-control__icon fas fa-gavel fa-fw"></i><span class="post-control__text">{{ lang.postbit_button_purgespammer }}</span></a>
-					{% endif %}
-				</span>
-			{% endif %}
-		</div>
-	</div>
+                    {# Purge spammer button #}
+                    {% if post.button_purgespammer %}
+                        <a href="moderation.php?action=purgespammer&amp;uid={{ post.uid }}" title="{{ lang.postbit_purgespammer }}" class="post-control post-control--purge-spammer">
+                            {{ include('partials/icon.twig', {icon: 'gavel', class: 'post-control__icon fa-fw'}, with_context = false) }}
+                            <span class="post-control__text">{{ lang.postbit_button_purgespammer }}</span>
+                        </a>
+                    {% endif %}
+                </span>
+            {% endif %}
+        </div>
+    </div>
 </div>

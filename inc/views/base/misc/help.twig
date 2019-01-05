@@ -1,7 +1,7 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.help_docs }}</title>
+    <title>{{ lang.help_docs }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block body %}
@@ -12,11 +12,11 @@
         {% for section in sections %}
             <section class="block collapse {% if section.expdisplay == 'display: show;' %}collapse--collapsed{% else %}collapse--not-collapsed{% endif %}" id="sid_{{ section.sid }}_img">
                 <div class="title title--major title--nested">
-            		<h1 class="title__name">{{ section.name }}</h1>
+                    <h1 class="title__name">{{ section.name }}</h1>
                     <p class="title__description">{{ section.description }}</p>
                     <span class="collapse__toggle">
-                        <i class="collapse__icon collapse__icon--collapse fas fa-minus-square"></i>
-                        <i class="collapse__icon collapse__icon--expand fas fa-plus-square"></i>
+                        {{ include('partials/icon.twig', {icon: 'minus-square', class: 'collapse__icon collapse__icon--collapse'}, with_context = false) }}
+                        {{ include('partials/icon.twig', {icon: 'plus-square', class: 'collapse__icon collapse__icon--expand'}, with_context = false) }}
                     </span>
                 </div>
                 <div class="collapse__content">
@@ -48,7 +48,7 @@
                     </div>
                     <div class="form__submit">
                         <button type="submit" class="button">
-                            <i class="button__icon fas fa-search"></i>
+                            {{ include('partials/icon.twig', {icon: 'search', class: 'button__icon'}, with_context = false) }}
                             <span class="button__text">{{ lang.search_help_documents }}</span>
                         </button>
                     </div>

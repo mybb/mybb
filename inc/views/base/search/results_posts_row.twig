@@ -5,11 +5,13 @@
 {% endif %}
 <div class="row row--thread thread {{ row }} inline_row">
     <div class="thread__column thread__column--primary">
-		<h3 class="thread__title">
+        <h3 class="thread__title">
             <a href="{{ post.post_url|raw }}#pid{{ post.pid }}">{{ lang.post }}</a> {{ lang.in }} <a href="{{ post.thread_url|raw }}">{{ post.thread_subject }}</a>
 
             {% if post.unread %}
-                <a href="{{ post.post_url|raw }}#pid{{ post.pid }}" class="thread__status"><i class="fas fa-circle" title="{{ lang.goto_post }}"></i></a>
+                <a href="{{ post.post_url|raw }}#pid{{ post.pid }}" class="thread__status">
+                    {{ include('partials/icon.twig', {icon: 'circle', class: '', title: lang.goto_post }, with_context = false) }}
+                </a>
             {% endif %}
 
             {% if post.hasicon %}

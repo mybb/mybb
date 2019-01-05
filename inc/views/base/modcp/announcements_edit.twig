@@ -1,7 +1,7 @@
 {% extends 'layouts/moderation.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.edit_announcement }}</title>
+    <title>{{ lang.edit_announcement }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block moderationHeader %}
@@ -43,7 +43,7 @@
                         <div class="date-field__item">
                             <h4 class="date-field__name"><label for="starttime_day">{{ lang.day }}</label></h4>
                             <div class="select-field">
-                                <i class="select-field__icon fas fa-sort"></i>
+                                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                 <select name="starttime_day" id="starttime_day">
                                     {% for day in 1..31 %}
                                         <option value="{{ day }}"{% if dates.start.day == day %} selected{% endif %}>{{ day }}</option>
@@ -54,7 +54,7 @@
                         <div class="date-field__item">
                             <h4 class="date-field__name"><label for="starttime_month">{{ lang.month }}</label></h4>
                             <div class="select-field">
-                                <i class="select-field__icon fas fa-sort"></i>
+                                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                 <select name="starttime_month" id="starttime_month">
                                     {% for month in 1..12 %}
                                         <option value="{{ month }}"{% if dates.start.month == month %} selected{% endif %}>{{ attribute(lang, 'month_' ~ month) }}</option>
@@ -81,7 +81,7 @@
                             <div class="date-field__item">
                                 <h4 class="date-field__name"><label for="endtime_day">{{ lang.day }}</label></h4>
                                 <div class="select-field">
-                                    <i class="select-field__icon fas fa-sort"></i>
+                                    {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                     <select name="endtime_day" id="endtime_day">
                                         {% for day in 1..31 %}
                                             <option value="{{ day }}"{% if mybb.input.endtime_day == day %} selected{% endif %}>{{ day }}</option>
@@ -92,7 +92,7 @@
                             <div class="date-field__item">
                                 <h4 class="date-field__name"><label for="endtime_month">{{ lang.month }}</label></h4>
                                 <div class="select-field">
-                                    <i class="select-field__icon fas fa-sort"></i>
+                                    {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                     <select name="endtime_month" id="endtime_month">
                                         {% for month in 1..12 %}
                                             <option value="{{ month }}"{% if dates.end.month == month %} selected{% endif %}>{{ attribute(lang, 'month_' ~ month) }}</option>
@@ -169,11 +169,11 @@
             </div>
             <div class="form__submit">
 				<button type="submit" class="button button--medium">
-					<i class="button__icon fas fa-bullhorn"></i>
+                    {{ include('partials/icon.twig', {icon: 'bullhorn', class: 'button__icon'}, with_context = false) }}
 					<span class="button__text">{{ lang.edit_announcement }}</span>
 				</button>
 				<button type="submit" class="button button--secondary button--medium" name="preview" value="preview">
-					<i class="button__icon fas fa-edit"></i>
+                    {{ include('partials/icon.twig', {icon: 'edit', class: 'button__icon'}, with_context = false) }}
 					<span class="button__text">{{ lang.preview }}</span>
 				</button>
 			</div>

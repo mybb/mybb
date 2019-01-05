@@ -37,7 +37,7 @@
 
     {% elseif attributes.type == 'select' %}
         <div class="select-field">
-            <i class="select-field__icon fas fa-sort"></i>
+            {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
             <select name="profile_fields[{{ fieldName }}]" id="profile_fields_{{ fieldName }}" size="{{ field.length|default('1') }}">
                 {% for option in options %}
                     {% set option = option|trim|replace({'\n': '\\n'}) %}

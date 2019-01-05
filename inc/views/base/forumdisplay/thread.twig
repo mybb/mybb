@@ -10,7 +10,7 @@
     {% if thread.visible == -1 and modpermissions.canviewdeleted %} thread--deleted{% endif %}
     {% if thread.visible == 0 %} thread--awaiting-approval{% endif %}">
     <div class="thread__column thread__column--primary">
-		<h3 class="thread__title">
+        <h3 class="thread__title">
             {# Thread prefix #}
             {% if thread.threadprefix %}
                 <span class="tag tag--thread-prefix tag--thread-prefix-{{ thread.prefix }}">{{ thread.threadprefix|raw }}</span>
@@ -32,7 +32,9 @@
 
             {# Go to unread link #}
             {% if thread.unreadpost and moved != true %}
-                <a href="{{ thread.newpostlink }}" class="thread__status"><i class="fas fa-circle" title="{{ lang.goto_first_unread }}"></i></a>
+                <a href="{{ thread.newpostlink }}" class="thread__status">
+                    {{ include('partials/icon.twig', {icon: 'circle', class: '', title: lang.goto_first_unread}, with_context = false) }}
+                </a>
             {% endif %}
 
             {# Thread status icons #}
@@ -45,27 +47,28 @@
 
                 {# Attachment paperclip #}
                 {% if mybb.settings.enableattachments and thread.attachmentcount %}
-                    <i class="thread__icon fas fa-paperclip fa-fw" title="{{ (thread.attachmentcount > 1) ? trans(lang.attachment_count_multiple, thread.attachmentcount) : lang.attachment_count }}"></i>
+                    {% set attachment_title = (thread.attachmentcount > 1) ? trans(lang.attachment_count_multiple, thread.attachmentcount) : lang.attachment_count %}
+                    {{ include('partials/icon.twig', {icon: 'paperclip', class: 'thread__icon fa-fw', title: attachment_title}, with_context = false) }}
                 {% endif %}
 
                 {# Closed #}
                 {% if thread.closed and moved != true %}
-                    <i class="thread__icon fas fa-lock fa-fw" title="{{ lang.closed }}"></i>
+                    {{ include('partials/icon.twig', {icon: 'lock', class: 'thread__icon fa-fw', title: lang.closed}, with_context = false) }}
                 {% endif %}
 
                 {# Sticky #}
                 {% if thread.sticky %}
-                    <i class="thread__icon thread__icon--sticky fas fa-thumbtack fa-fw" title="{{ lang.sticky }}"></i>
+                    {{ include('partials/icon.twig', {icon: 'thumbtack', class: 'thread__icon thread__icon--sticky fa-fw', title: lang.sticky}, with_context = false) }}
                 {% endif %}
 
                 {# Moved #}
                 {% if moved %}
-                    <i class="thread__icon fas fa-arrow-right fa-fw" title="{{ lang.moved_prefix }}"></i>
+                    {{ include('partials/icon.twig', {icon: 'arrow-right', class: 'thread__icon fa-fw', title: lang.moved_prefix}, with_context = false) }}
                 {% endif %}
 
                 {# Poll #}
                 {% if thread.poll %}
-                    <i class="thread__icon fas fa-check-square fa-fw" title="{{ lang.poll_prefix }}"></i>
+                    {{ include('partials/icon.twig', {icon: 'check-square', class: 'thread__icon fa-fw', title: lang.poll_prefix}, with_context = false) }}
                 {% endif %}
 
                 {# Thread icon #}

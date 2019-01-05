@@ -1,7 +1,7 @@
 {% extends 'layouts/messenger.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.advanced_private_message_search }}</title>
+    <title>{{ lang.advanced_private_message_search }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block messengerHeader %}
@@ -15,79 +15,79 @@
         <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
         <input type="hidden" name="action" value="do_search" />
         <div class="block block--form form">
-			<section class="section section--form">
-				<h2 class="title title--section">{{ lang.search_criteria }}</h2>
-				<div class="section__container">
-					<div class="row row--form field">
-						<h3 class="field__name"><label for="keywords">{{ lang.keywords }}</label></h3>
-						<input type="text" class="textbox" name="keywords" id="keywords" maxlength="250" />
-						<p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="subject" value="1" checked="checked" /> {{ lang.search_in_subject }}</label></p>
-						<p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="message" value="1" /> {{ lang.search_in_message }}</label></p>
-					</div>
-					<div class="row row--form field">
-						<h3 class="field__name"><label for="sender">{{ lang.sender }}</label></h3>
-						<input type="text" class="user-select-field" name="sender" id="sender" maxlength="250" />
-					</div>
-					<div class="row row--form field">
-						<h3 class="field__name">{{ lang.message_status }}</h3>
-						<p class="option-field option-field--compact"><label><input type="checkbox" name="status[new]" checked="checked" value="1" /> {{ lang.message_status_new }}</label></p>
-						<p class="option-field option-field--compact"><label><input type="checkbox" name="status[replied]" checked="checked" value="1" /> {{ lang.message_status_replied_to }}</label></p>
-						<p class="option-field option-field--compact"><label><input type="checkbox" name="status[forwarded]" checked="checked" value="1" /> {{ lang.message_status_forwarded }}</label></p>
-						<p class="option-field option-field--compact"><label><input type="checkbox" name="status[read]" checked="checked" value="1" /> {{ lang.message_status_read }}</label></p>
-					</div>
-					<div class="row row--form field">
-						<h3 class="field__name"><label for="folder">{{ lang.folder }}</label></h3>
+            <section class="section section--form">
+                <h2 class="title title--section">{{ lang.search_criteria }}</h2>
+                <div class="section__container">
+                    <div class="row row--form field">
+                        <h3 class="field__name"><label for="keywords">{{ lang.keywords }}</label></h3>
+                        <input type="text" class="textbox" name="keywords" id="keywords" maxlength="250" />
+                        <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="subject" value="1" checked="checked" /> {{ lang.search_in_subject }}</label></p>
+                        <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="message" value="1" /> {{ lang.search_in_message }}</label></p>
+                    </div>
+                    <div class="row row--form field">
+                        <h3 class="field__name"><label for="sender">{{ lang.sender }}</label></h3>
+                        <input type="text" class="user-select-field" name="sender" id="sender" maxlength="250" />
+                    </div>
+                    <div class="row row--form field">
+                        <h3 class="field__name">{{ lang.message_status }}</h3>
+                        <p class="option-field option-field--compact"><label><input type="checkbox" name="status[new]" checked="checked" value="1" /> {{ lang.message_status_new }}</label></p>
+                        <p class="option-field option-field--compact"><label><input type="checkbox" name="status[replied]" checked="checked" value="1" /> {{ lang.message_status_replied_to }}</label></p>
+                        <p class="option-field option-field--compact"><label><input type="checkbox" name="status[forwarded]" checked="checked" value="1" /> {{ lang.message_status_forwarded }}</label></p>
+                        <p class="option-field option-field--compact"><label><input type="checkbox" name="status[read]" checked="checked" value="1" /> {{ lang.message_status_read }}</label></p>
+                    </div>
+                    <div class="row row--form field">
+                        <h3 class="field__name"><label for="folder">{{ lang.folder }}</label></h3>
                         <select multiple="multiple" name="folder[]" id="folder">
                             <option selected="selected">{{ lang.all_folders }}</option>
                             {% for folder in folders %}
                                 <option value="{{ folder.id }}"{% if folder.sel %} selected="selected"{% endif %}>{{ folder.name }}</option>
                             {% endfor %}
                         </select>
-					</div>
-				</div>
-			</section>
-			<section class="section section--form">
-				<h2 class="title title--section">{{ lang.search_options }}</h2>
-				<div class="section__container">
-					<div class="row row--form field">
-						<h3 class="field__name">{{ lang.sort_by }}</h3>
-						<span class="segmented-control">
-							<span class="segmented-control__option">
-								<input type="radio" class="radio segmented-control__input" name="sort" id="sort_subject" value="subject" />
-								<label for="sort_subject" class="segmented-control__button">{{ lang.sort_by_subject }}</label>
-							</span>
-							<span class="segmented-control__option">
-								<input type="radio" class="radio segmented-control__input" name="sort" id="sort_sender" value="sender" />
-								<label for="sort_sender" class="segmented-control__button">{{ lang.sort_by_sender }}</label>
-							</span>
-							<span class="segmented-control__option">
-								<input type="radio" class="radio segmented-control__input" name="sort" id="sort_dateline" value="dateline" checked="checked" />
-								<label for="sort_dateline" class="segmented-control__button">{{ lang.sort_by_date }}</label>
-							</span>
-						</span>
-					</div>
-					<div class="row row--form field">
-						<h3 class="field__name">{{ lang.sort_order }}</h3>
-						<span class="segmented-control">
-							<span class="segmented-control__option">
-								<input type="radio" class="radio segmented-control__input" name="sortordr" id="sortorder_asc" value="asc" />
-								<label for="sortorder_asc" class="segmented-control__button">{{ lang.ascending_order }}</label>
-							</span>
-							<span class="segmented-control__option">
-								<input type="radio" class="radio segmented-control__input" name="sortordr" id="sortorder_desc" value="desc" checked="checked" />
-								<label for="sortorder_desc" class="segmented-control__button">{{ lang.descending_order }}</label>
-							</span>
-						</span>
-					</div>
-				</div>
-			</section>
-			<div class="form__submit">
-				<button type="submit" class="button button--medium" name="submit" tabindex="4" accesskey="s">
-					<i class="button__icon fas fa-search"></i>
-					<span class="button__text">{{ lang.search_private_messages }}</span>
-				</button>
-			</div>
-		</div>
+                    </div>
+                </div>
+            </section>
+            <section class="section section--form">
+                <h2 class="title title--section">{{ lang.search_options }}</h2>
+                <div class="section__container">
+                    <div class="row row--form field">
+                        <h3 class="field__name">{{ lang.sort_by }}</h3>
+                        <span class="segmented-control">
+                            <span class="segmented-control__option">
+                                <input type="radio" class="radio segmented-control__input" name="sort" id="sort_subject" value="subject" />
+                                <label for="sort_subject" class="segmented-control__button">{{ lang.sort_by_subject }}</label>
+                            </span>
+                            <span class="segmented-control__option">
+                                <input type="radio" class="radio segmented-control__input" name="sort" id="sort_sender" value="sender" />
+                                <label for="sort_sender" class="segmented-control__button">{{ lang.sort_by_sender }}</label>
+                            </span>
+                            <span class="segmented-control__option">
+                                <input type="radio" class="radio segmented-control__input" name="sort" id="sort_dateline" value="dateline" checked="checked" />
+                                <label for="sort_dateline" class="segmented-control__button">{{ lang.sort_by_date }}</label>
+                            </span>
+                        </span>
+                    </div>
+                    <div class="row row--form field">
+                        <h3 class="field__name">{{ lang.sort_order }}</h3>
+                        <span class="segmented-control">
+                            <span class="segmented-control__option">
+                                <input type="radio" class="radio segmented-control__input" name="sortordr" id="sortorder_asc" value="asc" />
+                                <label for="sortorder_asc" class="segmented-control__button">{{ lang.ascending_order }}</label>
+                            </span>
+                            <span class="segmented-control__option">
+                                <input type="radio" class="radio segmented-control__input" name="sortordr" id="sortorder_desc" value="desc" checked="checked" />
+                                <label for="sortorder_desc" class="segmented-control__button">{{ lang.descending_order }}</label>
+                            </span>
+                        </span>
+                    </div>
+                </div>
+            </section>
+            <div class="form__submit">
+                <button type="submit" class="button button--medium" name="submit" tabindex="4" accesskey="s">
+                    {{ include('partials/icon.twig', {icon: 'search', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.search_private_messages }}</span>
+                </button>
+            </div>
+        </div>
     </form>
     <link rel="stylesheet" href="{{ asset_url('jscripts/select2/select2.css') }}">
     <script type="text/javascript" src="{{ asset_url('jscripts/select2/select2.min.js') }}"></script>

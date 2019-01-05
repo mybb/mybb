@@ -1,7 +1,7 @@
 {% extends 'layouts/account.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.group_memberships }}</title>
+    <title>{{ lang.group_memberships }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block accountHeader %}
@@ -26,12 +26,12 @@
                     <div class="row__controls">
                         {% if usergroup.joinrequests > 0 and usergroup.canmanagerequests %}
                             <a href="managegroup.php?action=joinrequests&amp;gid={{ usergroup.gid }}" class="button button--small button--secondary">
-                                <i class="button__icon fas fa-users-cog"></i>
+                                {{ include('partials/icon.twig', {icon: 'users-cog', class: 'button__icon'}, with_context = false) }}
                                 <span class="button__text">{{ lang.view_requests }}</span>
                             </a>
                         {% endif %}
                         <a href="managegroup.php?gid={{ usergroup.gid }}" class="button button--small button--secondary">
-                            <i class="button__icon fas fa-users"></i>
+                            {{ include('partials/icon.twig', {icon: 'users', class: 'button__icon'}, with_context = false) }}
                             <span class="button__text">{{ lang.view_members }}</span>
                         </a>
                     </div>
@@ -77,13 +77,13 @@
                     <div class="row__controls">
                         {% if usergroup.invited %}
                             <a href="usercp.php?action=usergroups&amp;acceptinvite={{ usergroup.gid }}&amp;my_post_key={{ mybb.post_code }}" class="button button--small button--success">
-                                <i class="button__icon fas fa-check"></i>
+                                {{ include('partials/icon.twig', {icon: 'check', class: 'button__icon'}, with_context = false) }}
                                 <span class="button__text">{{ lang.accept_invite }}</span>
                             </a>
                         {% endif %}
                         {% if not usergroup.joinlink and not usergroup.invited and usergroup.type != 5 %}
                             <a href="usercp.php?action=usergroups&amp;joingroup={{ usergroup.gid }}&amp;my_post_key={{ mybb.post_code }}" class="button button--small button--secondary">
-                                <i class="button__icon fas fa-user-plus"></i>
+                                {{ include('partials/icon.twig', {icon: 'user-plus', class: 'button__icon'}, with_context = false) }}
                                 <span class="button__text">{{ lang.join_group }}</span>
                             </a>
                         {% endif %}
@@ -120,13 +120,13 @@
                     <div class="row__controls">
                         {% if usergroup.candisplaygroup and usergroup.gid != mybb.user.displaygroup %}
                             <a href="usercp.php?action=usergroups&amp;displaygroup={{ usergroup.gid }}&amp;my_post_key={{ mybb.post_code }}" class="button button--small button--secondary">
-                                <i class="button__icon fas fa-user-edit"></i>
+                                {{ include('partials/icon.twig', {icon: 'user-edit', class: 'button__icon'}, with_context = false) }}
                                 <span class="button__text">{{ lang.set_as_display_group }}</span>
                             </a>
                         {% endif %}
                         {% if not usergroup.primary and not groupleader[usergroup.gid] and usergroup.type in [3, 4, 5] %}
                             <a href="usercp.php?action=usergroups&amp;leavegroup={{ usergroup.gid }}&amp;my_post_key={{ mybb.post_code }}" class="button button--small button--danger">
-                                <i class="button__icon fas fa-sign-out-alt"></i>
+                                {{ include('partials/icon.twig', {icon: 'sign-out-alt', class: 'button__icon'}, with_context = false) }}
                                 <span class="button__text">{{ lang.usergroup_leave }}</span>
                             </a>
                         {% endif %}

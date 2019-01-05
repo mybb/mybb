@@ -17,14 +17,14 @@
                 </h2>
                 <div class="modal__content">
                     <div class="form form--modal">
-        				<div class="section section--form">
+                        <div class="section section--form">
                             {% if vote_check.pid %}
                                 <div class="row row--form">{{ trans('add_reputation_to_post', user.username) }}</div>
                             {% endif %}
                             <div class="row row--form field">
                                 <h3 class="field__name visually-hidden"><label for="reputation">{{ lang.rating }}</label></h3>
                                 <div class="select-field">
-                                    <i class="select-field__icon fas fa-sort"></i>
+                                    {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                     <select name="reputation" id="reputation">
                                         {% if mybb.settings.posrep %}
                                             {% for power in range(mybb.usergroup.reputationpower, 1) %}
@@ -56,13 +56,13 @@
                         </div>
                         <div class="form__submit">
                             <button type="submit" class="button button--medium">
-            					<i class="button__icon fas fa-thumbs-up"></i>
-            					<span class="button__text">{% if existing_reputation.uid %}{{ lang.update_vote }}{% else %}{{ lang.add_vote }}{% endif %}</span>
-            				</button>
+                                {{ include('partials/icon.twig', {icon: 'thumbs-up', class: 'button__icon'}, with_context = false) }}
+                                <span class="button__text">{% if existing_reputation.uid %}{{ lang.update_vote }}{% else %}{{ lang.add_vote }}{% endif %}</span>
+                            </button>
                             {% if existing_reputation.show_delete %}
                                 <button class="button button--medium button--secondary" name="delete" value="delete" onclick="return MyBB.submitReputation({{ user.uid }}, {{ vote_check.pid }}, 1);">
-                                    <i class="button__icon fas fa-trash"></i>
-                					<span class="button__text">{{ lang.delete_vote }}</span>
+                                    {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}
+                                    <span class="button__text">{{ lang.delete_vote }}</span>
                                 </button>
                             {% endif %}
                         </div>

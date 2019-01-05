@@ -1,7 +1,7 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.calendar }}</title>
+    <title>{{ lang.calendar }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block body %}
@@ -13,25 +13,25 @@
             <div class="calendar-nav">
                 {% if calendar.prev_link %}
                     <a href="{{ calendar.prev_link|raw }}" class="button button--basic">
-                        <i class="button__icon fas fa-angle-left"></i>
+                        {{ include('partials/icon.twig', {icon: 'angle-left', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ calendar.prev_month_name }} {{ calendar.prev_month_year }}</span>
                     </a>
                 {% endif %}
                 {% if calendar.next_link %}
                     <a href="{{ calendar.next_link|raw }}" class="button button--basic">
                         <span class="button__text">{{ calendar.next_month_name }} {{ calendar.next_month_year }}</span>
-                        <i class="button__icon button__icon--after fas fa-angle-right"></i>
+                        {{ include('partials/icon.twig', {icon: 'angle-right', class: 'button__icon button__icon--after'}, with_context = false) }}
                     </a>
                 {% endif %}
             </div>
             <div class="page-buttons">
                 {% if calendar_permissions.canaddevents %}
                     <a href="calendar.php?action=addevent&amp;calendar={{ calendar.cid }}" class="button button--half-width">
-                        <i class="button__icon fas fa-calendar-plus"></i>
+                        {{ include('partials/icon.twig', {icon: 'calendar-plus', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.add_public_event }}</span>
                     </a>
                     <a href="calendar.php?action=addevent&amp;calendar={{ calendar.cid }}&amp;private=1" class="button button--half-width">
-                        <i class="button__icon fas fa-calendar-plus"></i>
+                        {{ include('partials/icon.twig', {icon: 'calendar-plus', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.add_private_event }}</span>
                     </a>
                 {% endif %}
@@ -50,7 +50,7 @@
                     <div class="calendar__week">
                         <div class="calendar__week-shortcut">
                             <a href="{{ week.week_link|raw }}" class="calendar__week-link button button--basic" title="{{ lang.go_week }}">
-                                <i class="button__icon fas fa-angle-double-right"></i>
+                                {{ include('partials/icon.twig', {icon: 'angle-double-right', class: 'button__icon'}, with_context = false) }}
                                 <span class="button__text">{{ lang.go_week }}</span>
                             </a>
                         </div>
@@ -59,10 +59,10 @@
                                 <span class="calendar__day-of-week">{{ weekday_headers[i] }}</span>
                                 <h2 class="calendar__day-heading"><a href="{{ day.day_link|raw }}" class="calendar__day-link"><span class="calendar__month">{{ day.month }}</span> {{ day.day }}</a></h2>
                                 {% if day.bday_count > 0 %}
-                                     <p class="calendar__event"><a href="{{ day.calendar_link|raw }}" class="calendar__event-link calendar__event-link--birthdays">{{ day.bday_count }} {{ day.birthday_lang }} <i class="calendar__event-icon fas fa-birthday-cake"></i></a></p>
+                                     <p class="calendar__event"><a href="{{ day.calendar_link|raw }}" class="calendar__event-link calendar__event-link--birthdays">{{ day.bday_count }} {{ day.birthday_lang }} {{ include('partials/icon.twig', {icon: 'birthday-cake', class: 'calendar__event-icon'}, with_context = false) }}</a></p>
                                 {% endif %}
                                 {% if day.eventlimit == true %}
-                                    <p class="calendar__event"><a href="{{ calendar.link }}" class="calendar__event-link calendar__event-link--multiple">{{ day.total_events }} {{ day.event_lang }} <i class="calendar__event-icon fas fa-calendar"></i></a></p>
+                                    <p class="calendar__event"><a href="{{ calendar.link }}" class="calendar__event-link calendar__event-link--multiple">{{ day.total_events }} {{ day.event_lang }} {{ include('partials/icon.twig', {icon: 'calendar', class: 'calendar__event-icon'}, with_context = false) }}</a></p>
                                 {% else %}
                                     {% for event in day.events %}
                                         <p class="calendar__event {{ event.event_class }}"><a href="{{ event.eventlink|raw }}" title="{{ event.fullname }}" class="calendar__event-link">{{ event.name }}</a></p>

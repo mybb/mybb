@@ -1,49 +1,49 @@
 <ul class="user-bar__links">
-	<li class="user-bar__item user-bar__item--log-in">
-		<a href="{{ mybb.settings.bburl }}/member.php?action=login" class="user-bar__link" onclick="$('#quick_login').modal({ fadeDuration: 250, closeText: modal_close, keepelement: true, zIndex: (typeof modal_zindex !== 'undefined' ? modal_zindex : 9999) }); return false;">{{ include('partials/icon.twig', {icon: 'sign-in-alt', class: 'user-bar__icon'}, with_context = false) }} {{ lang.welcome_login }}</a>
-	</li>
-	<li class="user-bar__item user-bar__item--sign-up">
-		<a href="{{ mybb.settings.bburl }}/member.php?action=register" class="user-bar__link">{{ include('partials/icon.twig', {icon: 'user', class: 'user-bar__icon'}, with_context = false) }} {{ lang.welcome_register }}</a>
-	</li>
+    <li class="user-bar__item user-bar__item--log-in">
+        <a href="{{ mybb.settings.bburl }}/member.php?action=login" class="user-bar__link" onclick="$('#quick_login').modal({ fadeDuration: 250, closeText: modal_close, keepelement: true, zIndex: (typeof modal_zindex !== 'undefined' ? modal_zindex : 9999) }); return false;">{{ include('partials/icon.twig', {icon: 'sign-in-alt', class: 'user-bar__icon'}, with_context = false) }} {{ lang.welcome_login }}</a>
+    </li>
+    <li class="user-bar__item user-bar__item--sign-up">
+        <a href="{{ mybb.settings.bburl }}/member.php?action=register" class="user-bar__link">{{ include('partials/icon.twig', {icon: 'user', class: 'user-bar__icon'}, with_context = false) }} {{ lang.welcome_register }}</a>
+    </li>
 </ul>
 <div class="modal" id="quick_login" style="display: none;">
     <form method="post" action="{{ mybb.settings.bburl }}/member.php">
         <input name="action" type="hidden" value="do_login" />
         <input name="url" type="hidden" value="" />
         <input name="quick_login" type="hidden" value="1" />
-		<section class="block block--modal">
-			<h2 class="title title--modal">{{ lang.login }}</h2>
-			<div class="form form--modal">
-				<div class="section section--form">
-					<div class="row row--form field">
-						<h3 class="field__name"><label for="quick_login_username">
-							{% if mybb.settings.username_method == 1 %}
-	                            {{ lang.login_username1 }}
-	                        {% elseif mybb.settings.username_method == 2 %}
-	                            {{ lang.login_username2 }}
-	                        {% else %}
-	                            {{ lang.login_username }}
-	                        {% endif %}
-						</label></h3>
-						<input name="quick_username" id="quick_login_username" type="text" value="" class="textbox initial_focus" tabindex="1" />
-					</div>
-					<div class="row row--form field">
-						<h3 class="field__name"><label for="quick_login_password">{{ lang.password }}</label></h3>
-						<p class="field__description"><a href="{{ mybb.settings.bburl }}/member.php?action=lostpw">{{ lang.lost_password }}</a></p>
-						<input name="quick_password" id="quick_login_password" type="password" value="" class="textbox" tabindex="2" />
-					</div>
-					<div class="row row--form field">
-						<p class="option-field option-field--compact"><label><input name="quick_remember" id="quick_login_remember" type="checkbox" value="yes" class="checkbox" checked="checked" /> {{ lang.remember_me }}</label></p>
-					</div>
-				</div>
-				<div class="form__submit">
-					<button type="submit" class="button button--medium">
-						{{ include('partials/icon.twig', {icon: 'sign-in-alt', class: 'button__icon'}, with_context = false) }}
-    					<span class="button__text">{{ lang.login }}</span>
-    				</button>
-				</div>
+        <section class="block block--modal">
+            <h2 class="title title--modal">{{ lang.login }}</h2>
+            <div class="form form--modal">
+                <div class="section section--form">
+                    <div class="row row--form field">
+                        <h3 class="field__name"><label for="quick_login_username">
+                            {% if mybb.settings.username_method == 1 %}
+                                    {{ lang.login_username1 }}
+                                {% elseif mybb.settings.username_method == 2 %}
+                                    {{ lang.login_username2 }}
+                                {% else %}
+                                    {{ lang.login_username }}
+                            {% endif %}
+                        </label></h3>
+                        <input name="quick_username" id="quick_login_username" type="text" value="" class="textbox initial_focus" tabindex="1" />
+                    </div>
+                    <div class="row row--form field">
+                        <h3 class="field__name"><label for="quick_login_password">{{ lang.password }}</label></h3>
+                        <p class="field__description"><a href="{{ mybb.settings.bburl }}/member.php?action=lostpw">{{ lang.lost_password }}</a></p>
+                        <input name="quick_password" id="quick_login_password" type="password" value="" class="textbox" tabindex="2" />
+                    </div>
+                    <div class="row row--form field">
+                        <p class="option-field option-field--compact"><label><input name="quick_remember" id="quick_login_remember" type="checkbox" value="yes" class="checkbox" checked="checked" /> {{ lang.remember_me }}</label></p>
+                    </div>
+                </div>
+                <div class="form__submit">
+                    <button type="submit" class="button button--medium">
+                        {{ include('partials/icon.twig', {icon: 'sign-in-alt', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.login }}</span>
+                    </button>
+                </div>
             </div>
-		</section>
+        </section>
     </form>
 </div>
 <script type="text/javascript">

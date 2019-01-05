@@ -3,7 +3,7 @@
         <div class="page-tools__item">
         <h2 class="title title--legend">{{ lang.jump_month }}</h2>
         <div class="select-field">
-            <i class="select-field__icon fas fa-sort"></i>
+            {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
             <select name="month">
                 <option value="{{ calendar.month }}">{{ calendar.currentmonth }}</option>
                 <option value="{{ calendar.month }}">----------</option>
@@ -22,7 +22,7 @@
             </select>
         </div>
         <div class="select-field">
-            <i class="select-field__icon fas fa-sort"></i>
+            {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
             <select name="year">
                 <option value="{{ calendar.year }}">{{ calendar.year }}</option>
                 <option value="{{ calendar.year }}">----------</option>
@@ -32,7 +32,7 @@
             </select>
         </div>
         <button type="submit" class="button button--inline">
-            <i class="button__icon fas fa-arrow-right"></i>
+            {{ include('partials/icon.twig', {icon: 'arrow-right', class: 'button__icon'}, with_context = false) }}
             <span class="button__text">{{ lang.go }}</span>
         </button>
     </div>
@@ -41,7 +41,7 @@
         <div class="page-tools__item">
             <h2 class="title title--legend">{{ lang.jump_to_calendar }}</h2>
             <div class="select-field">
-                <i class="select-field__icon fas fa-sort"></i>
+                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                 <select name="calendar">
                     {% for calendar in calendar_jump %}
                         <option value="{{ calendar.cid }}"{% if calendar.selected %} selected="selected"{% endif %}>{{ calendar.name }}</option>
@@ -49,7 +49,7 @@
                 </select>
             </div>
             <button type="submit" class="button button--inline">
-                <i class="button__icon fas fa-arrow-right"></i>
+                {{ include('partials/icon.twig', {icon: 'arrow-right', class: 'button__icon'}, with_context = false) }}
                 <span class="button__text">{{ lang.go }}</span>
             </button>
         </div>

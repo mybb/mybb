@@ -19,11 +19,11 @@
     {% if banned.show_edit_link %}
         <div class="user-list__buttons">
             <a href="modcp.php?action=banuser&amp;uid={{ banned.uid }}" class="button button--secondary button--small">
-                <i class="button__icon fas fa-pencil-alt"></i>
+                {{ include('partials/icon.twig', {icon: 'pencil-alt', class: 'button__icon'}, with_context = false) }}
                 <span class="button__text">{{ lang.edit_ban }}</span>
             </a>
             <a href="modcp.php?action=liftban&amp;uid={{ banned.uid }}&amp;my_post_key={{ mybb.post_code }}" class="button button--secondary button--small button--danger">
-                <i class="button__icon fas fa-times"></i>
+                {{ include('partials/icon.twig', {icon: 'times', class: 'button__icon'}, with_context = false) }}
                 <span class="button__text">{{ lang.lift_ban }}</span>
             </a>
         </div>

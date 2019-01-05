@@ -1,25 +1,25 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.registration }}</title>
+    <title>{{ lang.registration }} - {{ mybb.settings.bbname }}</title>
     <script type="text/javascript" src="{{ asset_url('jscripts/validate/jquery.validate.min.js') }}" defer></script>
 {% endblock head %}
 
 {% block body %}
     <div class="page-content">
-		<header class="page-header">
-			<h1 class="title title--page">{{ lang.registration }}</h1>
-		</header>
+        <header class="page-header">
+            <h1 class="title title--page">{{ lang.registration }}</h1>
+        </header>
         <form action="member.php" method="post" id="registration_form">
             <input type="text" class="hidden" value="" name="regcheck1" />
             <input type="text" class="hidden" value="true" name="regcheck2" />
             {{ regerrors|raw }}
             <div class="block block--form form">
                 <section class="section section--form">
-    				<h2 class="title title--section">{{ lang.account_details }}</h2>
+                    <h2 class="title title--section">{{ lang.account_details }}</h2>
                     <div class="section__container">
-    					<div class="row row--form field">
-    						<h3 class="field__name"><label for="username">{{ lang.username }}</label></h3>
+                        <div class="row row--form field">
+                            <h3 class="field__name"><label for="username">{{ lang.username }}</label></h3>
                             <input type="text" class="textbox" name="username" id="username" value="{{ select.username }}" />
                         </div>
                         {% if registration.showpassword %}
@@ -40,10 +40,10 @@
                             </div>
                         {% endif %}
                         <div class="row row--form field">
-    						<h3 class="field__name"><label for="email">{{ lang.email }}</label></h3>
+                            <h3 class="field__name"><label for="email">{{ lang.email }}</label></h3>
                             <p class="field__description">{{ lang.confirm_email_desc }}</p>
                             <div class="confirm-field">
-    							<div class="confirm-field__field">
+                                <div class="confirm-field__field">
                                     <h4 class="visually-hidden"><label for="email">{{ lang.email }}</label></h4>
                                     <input type="text" class="textbox" name="email" id="email" maxlength="50" value="{{ select.email }}" />
                                 </div>
@@ -162,7 +162,7 @@
                         <div class="hidden row row--form field">
                             <h3 class="field__name"><label for="subscriptionmethod">{{ lang.subscription_method }}</label></h3>
                             <div class="select-field">
-                                <i class="select-field__icon fas fa-sort"></i>
+                                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                 <select name="subscriptionmethod" id="subscriptionmethod">
                                     <option value="0"{% if select.subscriptionmethod.none %} selected="selected"{% endif %}>{{ lang.no_auto_subscribe }}</option>
                                     <option value="1"{% if select.subscriptionmethod.no %} selected="selected"{% endif %}>{{ lang.no_subscribe }}</option>
@@ -176,7 +176,7 @@
                                 <h3 class="field__name"><label for="language">{{ lang.lang_select }}</label></h3>
                                 <p class="field__description">{{ lang.lang_select_desc }}</p>
                                 <div class="select-field">
-                                    <i class="select-field__icon fas fa-sort"></i>
+                                    {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                     <select name="language" id="language">
                                         <option value="">{{ lang.lang_select_default }}</option>
                                         <option value="">-----------</option>
@@ -192,7 +192,7 @@
                                 <h3 class="field__name"><label for="timezoneoffset">{{ lang.time_offset|raw }}</label></h3>
                                 <p class="field__description">{{ lang.time_offset_desc }}</p>
                                 <div class="select-field">
-                                    <i class="select-field__icon fas fa-sort"></i>
+                                    {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                     <select name="timezoneoffset" id="timezoneoffset">
                                         {% for timezone in timezones %}
                                             <option value="{{ timezone.timezone }}"{% if timezone.selected %} selected="selected"{% endif %}>{{ timezone.label }}</option>
@@ -204,7 +204,7 @@
                         <div class="hidden row row--form field">
                             <h3 class="field__name"><label for="dstcorrection">{{ lang.dst_correction }}</label></h3>
                             <div class="select-field">
-                                <i class="select-field__icon fas fa-sort"></i>
+                                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                 <select name="dstcorrection" id="dstcorrection">
                                     <option value="2"{% if select.dst.auto %} selected="selected"{% endif %}>{{ lang.dst_correction_auto }}</option>
                                     <option value="1"{% if select.dst.enabled %} selected="selected"{% endif %}>{{ lang.dst_correction_enabled }}</option>
@@ -236,7 +236,7 @@
                                     <!--
                                         if(use_xmlhttprequest == "1")
                                         {
-                                            document.write('<button class="button button--inline" tabindex="10000" name="refresh" onclick="return question.refresh();"><i class="button__icon fas fa-sync-alt"></i><span class="button__text">{{ lang.refresh }}</span></button>');
+                                            document.write('<button class="button button--inline" tabindex="10000" name="refresh" onclick="return question.refresh();">{% spaceless %}{{ include('partials/icon.twig', {icon: 'sync-alt', class: 'button__icon'}, with_context = false) }}{% endspaceless %}<span class="button__text">{{ lang.refresh }}</span></button>');
                                         }
                                     // -->
                                     </script>
@@ -248,9 +248,9 @@
                 {% endif %}
                 <div class="form__submit">
                     <button type="submit" class="button button--medium" name="regsubmit">
-    					<i class="button__icon fas fa-user"></i>
-    					<span class="button__text">{{ lang.submit_registration }}</span>
-    				</button>
+                        {{ include('partials/icon.twig', {icon: 'user', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.submit_registration }}</span>
+                    </button>
                 </div>
             </div>
             <input type="hidden" name="regtime" value="{{ registration.time }}" />

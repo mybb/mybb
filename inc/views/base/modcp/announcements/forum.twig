@@ -1,35 +1,35 @@
 <div class="row row--simple-columns">
-	<div class="row__primary" style="padding-left: {{ 40*(depth - 1) }}px;"><strong>{{ forum.name }}</strong></div>
-	<div class="row__controls">
+    <div class="row__primary" style="padding-left: {{ 40*(depth - 1) }}px;"><strong>{{ forum.name }}</strong></div>
+    <div class="row__controls">
         {% if moderate %}
-    		<a href="modcp.php?action=new_announcement&amp;fid={{ forum.fid }}" class="button button--small">
-    			<i class="button__icon fas fa-plus"></i>
-    			<span class="button__text">{{ lang.add_announcement }}</span>
-    		</a>
+            <a href="modcp.php?action=new_announcement&amp;fid={{ forum.fid }}" class="button button--small">
+                {{ include('partials/icon.twig', {icon: 'plus', class: 'button__icon'}, with_context = false) }}
+                <span class="button__text">{{ lang.add_announcement }}</span>
+            </a>
         {% endif %}
-	</div>
+    </div>
 </div>
 {% for aid, announcement in announcements %}
     <div class="row row--simple-columns">
         <div class="row__primary" style="padding-left: {{ 40*(depth - 1) }}px;">
-			{% if announcement.startdate > 'now'|date('U') or ('now'|date('U') > announcement.enddate and announcement.enddate) %}
-				{% set title = lang.expired_announcement %}
-				{% set class = 'subdued' %}
-			{% else %}
-				{% set title = lang.active_announcement %}
-				{% set class = 'primary' %}
-			{% endif %}
-			<i class="icon icon--announcement icon--{{ class }} fas fa-circle" title="{{ title }}"></i>
+            {% if announcement.startdate > 'now'|date('U') or ('now'|date('U') > announcement.enddate and announcement.enddate) %}
+                {% set title = lang.expired_announcement %}
+                {% set class = 'subdued' %}
+            {% else %}
+                {% set title = lang.active_announcement %}
+                {% set class = 'primary' %}
+            {% endif %}
+            {{ include('partials/icon.twig', {icon: 'circle', class: 'icon icon--announcement icon--' ~ class, title: title}, with_context = false) }}
             {# <div class="subforumicon subforum_minioff" title="{{ lang[announcement.icon ~ '_announcement'] }}"></div> #}
             <a href="announcements.php?aid={{ aid }}">{{ announcement.subject }}</a>
         </div>
         <div class="row__controls">
             <a href="modcp.php?action=edit_announcement&amp;aid={{ aid }}" class="button button--secondary button--small">
-                <i class="button__icon fas fa-pencil-alt"></i>
+                {{ include('partials/icon.twig', {icon: 'pencil-alt', class: 'button__icon'}, with_context = false) }}
                 <span class="button__text">{{ lang.edit }}</span>
             </a>
             <a href="modcp.php?action=delete_announcement&amp;aid={{ aid }}" class="button button--secondary button--small">
-                <i class="button__icon fas fa-trash"></i>
+                {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}
                 <span class="button__text">{{ lang.delete }}</span>
             </a>
         </div>

@@ -1,7 +1,7 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.delete_poll }}</title>
+    <title>{{ lang.delete_poll }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block body %}
@@ -14,7 +14,7 @@
             <section class="block block--form form">
                 <div class="form__submit">
                     <button type="submit" class="button button--medium">
-                        <i class="button__icon fas fa-trash"></i>
+                        {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.delete_poll }}</span>
                     </button>
                 </div>

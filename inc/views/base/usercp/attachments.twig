@@ -1,7 +1,7 @@
 {% extends 'layouts/account.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.attachments_manager }}</title>
+    <title>{{ lang.attachments_manager }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block accountHeader %}
@@ -30,7 +30,7 @@
             <div class="sort-results">
                 <input type="hidden" name="action" value="do_attachments" />
                 <button type="submit" class="button">
-                    <i class="button__icon fas fa-trash"></i>
+                    {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}
                     <span class="button__text">{{ lang.delete_attachments }}</span>
                 </button>
             </div>

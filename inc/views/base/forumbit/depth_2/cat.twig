@@ -1,70 +1,68 @@
 <div class="row row--forum forum forum--{{ lightbulb.folder }}">
-	<div class="forum__info">
+    <div class="forum__info">
         <span class="forum__status forum__status--{{ lightbulb.folder }} forum_{{ lightbulb.folder }} ajax_mark_read" title="{{ lightbulb.altonoff }}" id="mark_read_{{ forum.fid }}">
         {% if lightbulb.folder == 'offlock' %}
-            <i class="fas fa-lock"></i>
+            {{ include('partials/icon.twig', {icon: 'lock', class: ''}, with_context = false) }}
         {% elseif forum.linkto != '' %}
-            <i class="fas fa-link"></i>
+            {{ include('partials/icon.twig', {icon: 'link', class: ''}, with_context = false) }}
         {% else %}
-            <i class="fas fa-circle"></i>
+            {{ include('partials/icon.twig', {icon: 'circle', class: ''}, with_context = false) }}
         {% endif %}
         </span>
-		<h3 class="forum__title"><a href="{{ forum.url }}">{{ forum.name }}</a></h3>
-		{% if forum.description %}
-        	<p class="forum__description">{{ forum.description|raw }}</p>
-		{% endif %}
+        <h3 class="forum__title"><a href="{{ forum.url }}">{{ forum.name }}</a></h3>
+        {% if forum.description %}
+            <p class="forum__description">{{ forum.description|raw }}</p>
+        {% endif %}
         {% block moderators %}{% endblock moderators %}
         {% include 'forumbit/subforums.twig' %}
     </div>
-	{% if forum.linkto == '' and (forum.password == '' or lightbulb.folder != 'offlock') %}
-		<div class="forum__stat forum__stat--thread-count">
-			<span class="forum__count forum__count--threads">
-				{{ forum.fthreads }}
-				{% if forum.showunapproved and forum.unapprovedthreads > 0 %}
-					{% spaceless %}
-						<span class="forum__unapproved-count forum__unapproved-count--threads" title="
-							{% if forum.unapprovedthreads == 1 %}
-								{{ trans('forum_unapproved_thread_count', 1) }}
-							{% else %}
-								{{ trans('forum_unapproved_threads_count', forum.unapprovedthreads) }} {# TODO: my_number_format #}
-							{% endif %}">{{ forum.unapprovedthreads }}</span>
-					{% endspaceless %}
-				{% endif %}
-			</span>
-			<span class="forum__count-legend">
-				{% if forum.fthreads == 1 %}
-					{{ lang.forum_count_thread }}
-				{% else %}
-					{{ lang.forum_count_threads }}
-				{% endif %}
-			</span>
-		</div>
-		<div class="forum__stat forum__stat--post-count">
-			<span class="forum__count forum__count--posts">
-				{{ forum.fposts }}
-				{% if forum.showunapproved and forum.unapprovedposts > 0 %}
-					{% spaceless %}
-						<span class="forum__unapproved-count forum__unapproved-count--posts" title="
-							{% if forum.unapprovedposts == 1 %}
-								{{ trans('forum_unapproved_post_count', 1) }}
-							{% else %}
-								{{ trans('forum_unapproved_posts_count', forum.unapprovedposts) }} {# TODO: my_number_format #}
-							{% endif %}">{{ forum.unapprovedposts }}</span>
-					{% endspaceless %}
-				{% endif %}
-			</span>
-			<span class="forum__count-legend">
-				{% if forum.fposts == 1 %}
-					{{ lang.forum_count_post }}
-				{% else %}
-					{{ lang.forum_count_posts }}
-				{% endif %}
-			</span>
-
-			</span>
-		</div>
-	{% endif %}
-	{% if forum.password == '' or lightbulb.folder != 'offlock' %}
-    	{{ lastpost|raw }}
-	{% endif %}
+    {% if forum.linkto == '' and (forum.password == '' or lightbulb.folder != 'offlock') %}
+    <div class="forum__stat forum__stat--thread-count">
+        <span class="forum__count forum__count--threads">
+            {{ forum.fthreads }}
+            {% if forum.showunapproved and forum.unapprovedthreads > 0 %}
+                {% spaceless %}
+                    <span class="forum__unapproved-count forum__unapproved-count--threads" title="
+                    {% if forum.unapprovedthreads == 1 %}
+                        {{ trans('forum_unapproved_thread_count', 1) }}
+                    {% else %}
+                        {{ trans('forum_unapproved_threads_count', forum.unapprovedthreads) }} {# TODO: my_number_format #}
+                    {% endif %}">{{ forum.unapprovedthreads }}</span>
+                {% endspaceless %}
+            {% endif %}
+        </span>
+        <span class="forum__count-legend">
+            {% if forum.fthreads == 1 %}
+                {{ lang.forum_count_thread }}
+            {% else %}
+                {{ lang.forum_count_threads }}
+            {% endif %}
+        </span>
+    </div>
+    <div class="forum__stat forum__stat--post-count">
+        <span class="forum__count forum__count--posts">
+            {{ forum.fposts }}
+            {% if forum.showunapproved and forum.unapprovedposts > 0 %}
+                {% spaceless %}
+                    <span class="forum__unapproved-count forum__unapproved-count--posts" title="
+                    {% if forum.unapprovedposts == 1 %}
+                        {{ trans('forum_unapproved_post_count', 1) }}
+                    {% else %}
+                        {{ trans('forum_unapproved_posts_count', forum.unapprovedposts) }} {# TODO: my_number_format #}
+                    {% endif %}">{{ forum.unapprovedposts }}</span>
+                {% endspaceless %}
+            {% endif %}
+        </span>
+        <span class="forum__count-legend">
+            {% if forum.fposts == 1 %}
+                {{ lang.forum_count_post }}
+            {% else %}
+                {{ lang.forum_count_posts }}
+            {% endif %}
+        </span>
+    </div>
+    {% endif %}
+    {% if forum.password == '' or lightbulb.folder != 'offlock' %}
+        {{ lastpost|raw }}
+    {% endif %}
 </div>

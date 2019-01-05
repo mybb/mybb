@@ -1,27 +1,27 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.online_today }}</title>
+    <title>{{ lang.online_today }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block body %}
     <div class="page-content">
         <header class="page-header">
-    		<h1 class="title title--page">{{ online_today|raw }}</h1>
-    	</header>
+            <h1 class="title title--page">{{ online_today|raw }}</h1>
+        </header>
         <div class="page-controls">
             {{ multipage|raw }}
         </div>
         <div class="user-list">
             {% for user in online_today_users %}
                 <div class="user-list__user">
-                	<h2 class="user-list__username">{{ user.profilelink|raw }}{{ user.invisible ? '*' : '' }}</h2>
-                	<ul class="list list--stats list--user">
-                		<li class="list__item">
-                			<span class="list__field">{{ lang.time }}</span>
-                			<span class="list__value">{{ user.onlinetime }}</span>
-                		</li>
-                	</ul>
+                    <h2 class="user-list__username">{{ user.profilelink|raw }}{{ user.invisible ? '*' : '' }}</h2>
+                    <ul class="list list--stats list--user">
+                        <li class="list__item">
+                            <span class="list__field">{{ lang.time }}</span>
+                            <span class="list__value">{{ user.onlinetime }}</span>
+                        </li>
+                    </ul>
                 </div>
             {% endfor %}
         </div>

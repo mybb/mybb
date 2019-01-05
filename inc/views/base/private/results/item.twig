@@ -1,29 +1,29 @@
 <div class="row row--message message message--{{ message.msgstatus }}">
-	<div class="message__column message__column--primary">
-		{% if not message.multiplerecipients %}
-			<a href="{{ get_profile_link(message.uid) }}" class="avatar-profile-link">
-				{{ render_avatar(url=message.avatar, alt=message.username_raw, class='avatar--smallest') }}
-			</a>
-		{% endif %}
-		<h3 class="message__subject">
-			<a class="{{ message.msgstatus }}" href="private.php?action=read&amp;pmid={{ message.pmid }}">{{ message.subject }}</a>
+    <div class="message__column message__column--primary">
+        {% if not message.multiplerecipients %}
+            <a href="{{ get_profile_link(message.uid) }}" class="avatar-profile-link">
+                {{ render_avatar(url=message.avatar, alt=message.username_raw, class='avatar--smallest') }}
+            </a>
+        {% endif %}
+        <h3 class="message__subject">
+            <a class="{{ message.msgstatus }}" href="private.php?action=read&amp;pmid={{ message.pmid }}">{{ message.subject }}</a>
             {% if message.denyreceipt %}
                  <span class="message__deny-receipt"><a href="private.php?action=read&amp;pmid={{ message.pmid }}&amp;denyreceipt=1">{{ lang.deny_receipt }}</a></span>
             {% endif %}
-			<span class="message__icons">
+            <span class="message__icons">
                 {% if message.hasicon %}
                     <span class="message__icon"><img src="{{ message.icon_path }}" alt="{{ message.icon_name }}" title="{{ message.icon_name }}" /></span>
                 {% endif %}
                 {% if message.msgstatus == 'new_pm' %}
-                    <i class="message__icon message__icon--new_pm fas fa-envelope" title=""></i>
+                    {{ include('partials/icon.twig', {icon: 'envelope', class: 'message__icon message__icon--new_pm'}, with_context = false) }}
                 {% elseif message.msgstatus == 're_pm' %}
-                    <i class="message__icon message__icon--re_pm fas fa-reply" title=""></i>
+                    {{ include('partials/icon.twig', {icon: 'reply', class: 'message__icon message__icon--re_pm'}, with_context = false) }}
                 {% elseif message.msgstatus == 'fw_pm' %}
-                    <i class="message__icon message__icon--fw_pm fas fa-share" title=""></i>
+                    {{ include('partials/icon.twig', {icon: 'share', class: 'message__icon message__icon--fw_pm'}, with_context = false) }}
                 {% endif %}
-			</span>
-		</h3>
-		<p class="message__username">
+            </span>
+        </h3>
+        <p class="message__username">
             {% if message.folder == 2 or message.folder == 3 %}
                 <span class="message__label message__label--to">{{ lang.to }}</span>
             {% else %}
@@ -57,12 +57,12 @@
             <span class="message__label message__label--in">{{ lang.in }}</span>
             <a href="private.php?fid={{ message.folder }}">{{ message.foldername }}</a>
         </p>
-	</div>
-	<div class="message__column message__column--date">
-		<span class="visually-hidden">{{ lang.date_sent }}</span>
-		<span class="message__date">{{ message.senddate|raw }}</span>
-	</div>
-	<div class="message__column message__column--checkbox">
-		<input type="checkbox" class="checkbox" name="check[{{ message.pmid }}]" value="1" />
-	</div>
+    </div>
+    <div class="message__column message__column--date">
+        <span class="visually-hidden">{{ lang.date_sent }}</span>
+        <span class="message__date">{{ message.senddate|raw }}</span>
+    </div>
+    <div class="message__column message__column--checkbox">
+        <input type="checkbox" class="checkbox" name="check[{{ message.pmid }}]" value="1" />
+    </div>
 </div>

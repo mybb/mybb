@@ -1,7 +1,7 @@
 {% extends 'layouts/messenger.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.pm_tracking }}</title>
+    <title>{{ lang.pm_tracking }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block messengerHeader %}
@@ -20,22 +20,22 @@
             <input type="hidden" name="action" value="do_tracking" />
             <h1 class="title title--major">{{ lang.unread_messages }}</h1>
             <div class="sort-messages sort-messages--alt sort-messages--no-avatar">
-    			<div class="sort-messages__column sort-messages__column--primary">{{ lang.message_title }} &mdash; {{ lang.sentto }}</div>
-    			<div class="sort-messages__column sort-messages__column--date">{{ lang.datesent }}</div>
-    			<div class="sort-messages__column sort-messages__column--checkbox"><input type="checkbox" class="checkbox checkall" name="allbox" /></div>
-    		</div>
+                <div class="sort-messages__column sort-messages__column--primary">{{ lang.message_title }} &mdash; {{ lang.sentto }}</div>
+                <div class="sort-messages__column sort-messages__column--date">{{ lang.datesent }}</div>
+                <div class="sort-messages__column sort-messages__column--checkbox"><input type="checkbox" class="checkbox checkall" name="allbox" /></div>
+            </div>
             <div class="message-list__container">
                 {% for unreadmessage in unreadmessages %}
                     <div class="row row--message message">
-                    	<div class="message__column message__column--primary">
+                        <div class="message__column message__column--primary">
                             <a href="{{ get_profile_link(unreadmessage.toid) }}" class="avatar-profile-link">
                                 {{ render_avatar(url=unreadmessage.to_avatar, alt=unreadmessage.tousername, class='avatar--smallest' ) }}
                             </a>
-                    		<h3 class="message__subject">{{ unreadmessage.subject }}</h3>
-                    		<p class="message__username">{{ unreadmessage.profilelink|raw }}</p>
-                    	</div>
-                    	<div class="message__column message__column--date message__date">{{ unreadmessage.senddate|raw }}</div>
-                    	<div class="message__column message__column--checkbox"><input type="checkbox" class="checkbox" name="unreadcheck[{{ unreadmessage.pmid }}]" value="1" /></div>
+                            <h3 class="message__subject">{{ unreadmessage.subject }}</h3>
+                            <p class="message__username">{{ unreadmessage.profilelink|raw }}</p>
+                        </div>
+                        <div class="message__column message__column--date message__date">{{ unreadmessage.senddate|raw }}</div>
+                        <div class="message__column message__column--checkbox"><input type="checkbox" class="checkbox" name="unreadcheck[{{ unreadmessage.pmid }}]" value="1" /></div>
                     </div>
                 {% else %}
                     <div class="alert alert--no-results">{{ lang.no_unreadmessages }}</div>
@@ -43,16 +43,16 @@
             </div>
             {% if unreadmessages %}
                 <div class="sort-results">
-                	<button type="submit" class="button" name="stoptrackingunread" value="stop">
-                		<i class="button__icon fas fa-ban"></i>
-                		<span class="button__text">{{ lang.stop_tracking }}</span>
-                	</button>
-                	<span class="sort-results__text">{{ lang.or }}</span>
-                	<button type="submit" class="button" name="cancel" value="cancel">
-                		<i class="button__icon fas fa-trash"></i>
-                		<span class="button__text">{{ lang.delete }}</span>
-                	</button>
-                	<span class="sort-results__text">{{ lang.selected_messages }}</span>
+                    <button type="submit" class="button" name="stoptrackingunread" value="stop">
+                        {{ include('partials/icon.twig', {icon: 'ban', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.stop_tracking }}</span>
+                    </button>
+                    <span class="sort-results__text">{{ lang.or }}</span>
+                    <button type="submit" class="button" name="cancel" value="cancel">
+                        {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.delete }}</span>
+                    </button>
+                    <span class="sort-results__text">{{ lang.selected_messages }}</span>
                 </div>
             {% endif %}
         </form>
@@ -66,37 +66,37 @@
             <input type="hidden" name="action" value="do_tracking" />
             <h1 class="title title--major">{{ lang.read_messages }}</h1>
             <div class="sort-messages sort-messages--alt sort-messages--no-avatar">
-    			<div class="sort-messages__column sort-messages__column--primary">{{ lang.message_title }} &mdash; {{ lang.sentto }}</div>
-    			<div class="sort-messages__column sort-messages__column--date">{{ lang.datesent }}</div>
-    			<div class="sort-messages__column sort-messages__column--checkbox"><input type="checkbox" class="checkbox checkall" name="allbox" /></div>
-    		</div>
+                <div class="sort-messages__column sort-messages__column--primary">{{ lang.message_title }} &mdash; {{ lang.sentto }}</div>
+                <div class="sort-messages__column sort-messages__column--date">{{ lang.datesent }}</div>
+                <div class="sort-messages__column sort-messages__column--checkbox"><input type="checkbox" class="checkbox checkall" name="allbox" /></div>
+            </div>
             <div class="message-list__container">
                 {% for readmessage in readmessages %}
                     <div class="row row--message message">
-                    	<div class="message__column message__column--primary">
+                        <div class="message__column message__column--primary">
                             <a href="{{ get_profile_link(readmessage.toid) }}" class="avatar-profile-link">
                                 {{ render_avatar(url=readmessage.to_avatar, alt=readmessage.tousername, class='avatar--smallest' ) }}
                             </a>
-                    		<h3 class="message__subject">{{ readmessage.subject }}</h3>
-                    		<p class="message__username">{{ readmessage.profilelink|raw }}</p>
-                    	</div>
-                    	<div class="message__column message__column--date message__date">{{ readmessage.readdate|raw }}</div>
-                    	<div class="message__column message__column--checkbox"><input type="checkbox" class="checkbox" name="readcheck[{{ readmessage.pmid }}]" value="1" /></div>
+                            <h3 class="message__subject">{{ readmessage.subject }}</h3>
+                            <p class="message__username">{{ readmessage.profilelink|raw }}</p>
+                        </div>
+                        <div class="message__column message__column--date message__date">{{ readmessage.readdate|raw }}</div>
+                        <div class="message__column message__column--checkbox"><input type="checkbox" class="checkbox" name="readcheck[{{ readmessage.pmid }}]" value="1" /></div>
                     </div>
                 {% else %}
                     <div class="alert alert--no-results">{{ lang.no_readmessages }}</div>
                 {% endfor %}
                 {% if readmessages %}
                     <div class="sort-results">
-                    	<button type="submit" class="button button--inline" name="stoptracking" value="stop">
-                    		<i class="button__icon fas fa-ban"></i>
-                    		<span class="button__text">{{ lang.stop_tracking }}</span>
-                    	</button>
-                    	<span class="sort-results__text">{{ lang.selected_messages }} {{ lang.or }}</span>
-                    	<a href="private.php?action=stopalltracking&amp;my_post_key={{ mybb.post_code }}" class="button button--inline">
-                    		<i class="button__icon fas fa-times"></i>
-                    		<span class="button__text">{{ lang.stop_tracking_all }}</span>
-                    	</a>
+                        <button type="submit" class="button button--inline" name="stoptracking" value="stop">
+                            {{ include('partials/icon.twig', {icon: 'ban', class: 'button__icon'}, with_context = false) }}
+                            <span class="button__text">{{ lang.stop_tracking }}</span>
+                        </button>
+                        <span class="sort-results__text">{{ lang.selected_messages }} {{ lang.or }}</span>
+                        <a href="private.php?action=stopalltracking&amp;my_post_key={{ mybb.post_code }}" class="button button--inline">
+                            {{ include('partials/icon.twig', {icon: 'times', class: 'button__icon'}, with_context = false) }}
+                            <span class="button__text">{{ lang.stop_tracking_all }}</span>
+                        </a>
                     </div>
                 {% endif %}
             </table>

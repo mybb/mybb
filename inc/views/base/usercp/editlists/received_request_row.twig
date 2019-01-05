@@ -5,11 +5,11 @@
     </div>
     <div class="buddy-request__buttons">
         <a href="{{ mybb.settings.bburl }}/usercp.php?action=acceptrequest&amp;id={{ request.id }}&amp;my_post_key={{ mybb.post_code }}" class="button button--small button--success">
-            <i class="button__icon fas fa-check"></i>
+            {{ include('partials/icon.twig', {icon: 'check', class: 'button__icon'}, with_context = false) }}
             <span class="button__text">{{ lang.accept }}</span>
         </a>
         <a href="{{ mybb.settings.bburl }}/usercp.php?action=declinerequest&amp;id={{ request.id }}&amp;my_post_key={{ mybb.post_code }}" class="button button--small button--danger">
-            <i class="button__icon fas fa-times"></i>
+            {{ include('partials/icon.twig', {icon: 'times', class: 'button__icon'}, with_context = false) }}
             <span class="button__text">{{ lang.decline }}</span>
         </a>
     </div>

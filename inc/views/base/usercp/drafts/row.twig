@@ -14,7 +14,7 @@
     </div>
     <div class="draft__button">
         <a href="{{ draft.editurl|raw }}" class="button button--small">
-            <i class="button__icon fas fa-pencil-alt"></i>
+            {{ include('partials/icon.twig', {icon: 'pencil-alt', class: 'button__icon'}, with_context = false) }}
             <span class="button__text">{{ lang.edit_draft }}</span>
         </a>
         <input type="checkbox" class="checkbox" name="deletedraft[{{ draft.id }}]" value="{{ draft.type }}" />

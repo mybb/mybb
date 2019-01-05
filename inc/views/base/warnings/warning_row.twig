@@ -12,7 +12,7 @@
     <div class="row__secondary">
         <div class="warning-log__details">
             <a href="warnings.php?action=view&amp;wid={{ warning.wid }}" class="button">
-                <i class="button__icon fas fa-info-circle"></i>
+                {{ include('partials/icon.twig', {icon: 'info-circle', class: 'button__icon'}, with_context = false) }}
                 <span class="button__text">{{ lang.view }}</span>
             </a>
         </div>

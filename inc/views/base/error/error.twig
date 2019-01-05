@@ -7,9 +7,9 @@
 {% block body %}
 <div class="page-content">
     <div class="alert alert--danger">
-    	<i class="alert__icon fas fa-exclamation-triangle"></i>
-    	<div class="alert__message">
-    		{% if title %}<h2 class="alert__title">{{ title }}</h2>{% endif %}
+        {{ include('partials/icon.twig', {icon: 'exclamation-triangle', class: 'alert__icon'}, with_context = false) }}
+        <div class="alert__message">
+            {% if title %}<h2 class="alert__title">{{ title }}</h2>{% endif %}
             <p class="alert__description">{% if error %}{{ error|raw }}{% else %}{{ lang.unknown_error }}{% endif %}</p>
         </div>
     </div>

@@ -1,7 +1,7 @@
 {% extends 'layouts/moderation.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.warning_logs }}</title>
+    <title>{{ lang.warning_logs }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block moderationHeader %}
@@ -44,7 +44,7 @@
                 <div class="section__container">
                     <div class="row row--form field">
                         <div class="select-field">
-                            <i class="select-field__icon fas fa-sort"></i>
+                            {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                             <select name="filter[sortby]">
                                 <option value="username"{% if select.sortby.username %} selected="selected"{% endif %}>{{ lang.sortby_username }}</option>
                                 <option value="issuedby"{% if select.sortby.issuedby %} selected="selected"{% endif %}>{{ lang.sortby_issued_by }}</option>
@@ -73,7 +73,7 @@
             </div>
             <div class="form__submit">
                 <button type="submit" class="button button--medium">
-                    <i class="button__icon fas fa-filter"></i>
+                    {{ include('partials/icon.twig', {icon: 'filter', class: 'button__icon'}, with_context = false) }}
                     <span class="button__text">{{ lang.filter_warning_logs }}</span>
                 </button>
             </div>

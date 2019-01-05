@@ -1,7 +1,7 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.poll_results }}</title>
+    <title>{{ lang.poll_results }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block body %}
@@ -9,15 +9,15 @@
         <header class="page-header">
             <h1 class="title title--page">{{ lang.poll_results }}</h1>
         </header>
-		<div class="poll block">
-			<h1 class="title title--major poll__question">{{ poll.question }}</h1>
+        <div class="poll block">
+            <h1 class="title title--major poll__question">{{ poll.question }}</h1>
             <div class="poll__options">
                 {% for polloption in polloptions %}
                     <div class="poll__row">
                        <div class="poll__option">
                            {{ polloption.option|raw }}
                            {% if polloption.votestar == '*' %}
-                               <i class="poll__your-vote fas fa-check-square" title="{{ lang.you_voted }}"></i>
+                                {{ include('partials/icon.twig', {icon: 'check-square', class: 'poll__your-vote', title: lang.you_voted}, with_context = false) }}
                            {% endif %}
                        </div>
                        <div class="poll__count">
@@ -34,7 +34,7 @@
                 {% endfor %}
             </div>
             <div class="poll__vote">
-				<span class="poll__total">
+                <span class="poll__total">
                     {{ lang.poll_total }}
                     {{ poll.numvotes }}
                     ({{ poll.totpercent }})

@@ -1,78 +1,78 @@
 {% extends 'layouts/messenger.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.private_messaging }}</title>
+    <title>{{ lang.private_messaging }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block messengerHeader %}
     <header class="page-header">
-		<h1 class="title title--page">{{ private.foldername }}</h1>
+        <h1 class="title title--page">{{ private.foldername }}</h1>
     </header>
 {% endblock messengerHeader %}
 
 {% block messengerBody %}
     {% if mybb.usergroup.pmquota and private.pmtotal >= mybb.usergroup.pmquota %}
         <section class="alert alert--danger">
-        	<i class="alert__icon fas fa-exclamation-triangle"></i>
-        	<div class="alert__message">
-        		<h1 class="alert__title">{{ lang.reached_warning }}</h1>
-        		<p class="alert__description">{{ lang.reached_warning2 }}</p>
-        	</div>
+            {{ include('partials/icon.twig', {icon: 'exclamation-triangle', class: 'alert__icon'}, with_context = false) }}
+            <div class="alert__message">
+                <h1 class="alert__title">{{ lang.reached_warning }}</h1>
+                <p class="alert__description">{{ lang.reached_warning2 }}</p>
+            </div>
         </section>
     {% endif %}
     <form action="private.php" method="post" name="pmForm">
         <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
         <div class="messenger__search">
-			<input type="text" name="keywords" placeholder="{{ lang.enter_keywords }}" class="textbox textbox--large" size="25" />
-			<button type="submit" class="button button--inline" name="quick_search" value="search">
-				<i class="button__icon fas fa-search"></i>
-				<span class="button__text">{{ lang.search_pms }}</span>
-			</button>
-			<a href="private.php?action=advanced_search" class="messenger__advanced-search button button--basic button--inline">
-				<i class="button__icon fas fa-cog"></i>
-				<span class="button__text">{{ lang.advanced_search }}</span>
-			</a>
-		</div>
+            <input type="text" name="keywords" placeholder="{{ lang.enter_keywords }}" class="textbox textbox--large" size="25" />
+            <button type="submit" class="button button--inline" name="quick_search" value="search">
+                {{ include('partials/icon.twig', {icon: 'search', class: 'button__icon'}, with_context = false) }}
+                <span class="button__text">{{ lang.search_pms }}</span>
+            </button>
+            <a href="private.php?action=advanced_search" class="messenger__advanced-search button button--basic button--inline">
+                {{ include('partials/icon.twig', {icon: 'cog', class: 'button__icon'}, with_context = false) }}
+                <span class="button__text">{{ lang.advanced_search }}</span>
+            </a>
+        </div>
         <section class="message-list">
             <h2 class="visually-hidden">{{ private.foldername }}</h2>
             {% set ascDesc %}
                 <span class="sort-threads__order">
                     <a href="private.php?fid={{ private.folder }}&amp;sortby={{ sortby }}&amp;order={{ private.oppsortnext }}" class="sort-messages__link">
                         {% if private.oppsortnext == 'asc' %}
-                            <i class="fas fa-chevron-circle-up" title="{{ private.oppsort }}"></i>
+                            {{ include('partials/icon.twig', {icon: 'chevron-circle-up', class: '', title: private.oppsort}, with_context = false) }}
                         {% else %}
-                            <i class="fas fa-chevron-circle-down" title="{{ private.oppsort }}"></i>
+                            {{ include('partials/icon.twig', {icon: 'chevron-circle-down', class: '', title: private.oppsort}, with_context = false) }}
                         {% endif %}
                     </a>
                 </span>
             {% endset %}
             <div class="sort-messages">
-				<div class="sort-messages__column sort-messages__column--primary">
+                <div class="sort-messages__column sort-messages__column--primary">
                     <a href="private.php?fid={{ private.folder }}&amp;sortby=subject&amp;order=asc" class="sort-messages__link">{{ lang.message_title }}</a>
                     {% if private.orderarrow.subject %}
                         {% set sortby = 'subject' %}
                         {{ ascDesc }}
-                        <span class="smalltext">[<a href="private.php?fid={{ private.folder }}&amp;sortby=subject&amp;order={{ private.oppsortnext }}">{{ private.oppsort }}</a>]</span>
+                        <a href="private.php?fid={{ private.folder }}&amp;sortby=subject&amp;order={{ private.oppsortnext }}" class="sort-messages__link">{{ private.oppsort }}</a>
                     {% endif %}
-					<span class="sort-messages__username">
+                    <span class="sort-messages__username">
                         &mdash; <a href="private.php?fid={{ private.folder }}&amp;sortby=username&amp;order=asc" class="sort-messages__link">{{ private.sender }}</a>
                         {% if private.orderarrow.username %}
                             {% set sortby = 'username' %}
                             {{ ascDesc }}
                         {% endif %}
                     </span>
-				</div>
-				<div class="sort-messages__column sort-messages__column--date">
+                </div>
+                <div class="sort-messages__column sort-messages__column--date">
                     <a href="private.php?fid={{ private.folder }}&amp;sortby=dateline&amp;order=desc" class="sort-messages__link">{{ lang.date_sent }}</a>
                     {% if private.orderarrow.dateline %}
                         {% set sortby = 'dateline' %}
                         {{ ascDesc }}
                     {% endif %}
-				</div>
-				<div class="sort-messages__column sort-messages__column--checkbox messages-list__select-all">
+                </div>
+                <div class="sort-messages__column sort-messages__column--checkbox messages-list__select-all">
                     <input name="allbox" title="{{ lang.check_all }}" type="checkbox" class="checkbox checkall" value="{{ lang.check_all }}" />
                 </div>
-			</div>
+            </div>
             <div class="message-list__container">
                 {% for message in messagelist %}
                     {% include 'private/private/item.twig' %}
@@ -81,25 +81,25 @@
                 {% endfor %}
             </div>
             <div class="sort-results">
-				<button type="submit" class="button button--inline" name="moveto" value="move">
-					<i class="button__icon fas fa-arrow-right"></i>
-					<span class="button__text">{{ lang.move_to }}</span>
-				</button>
+                <button type="submit" class="button button--inline" name="moveto" value="move">
+                    {{ include('partials/icon.twig', {icon: 'arrow-right', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.move_to }}</span>
+                </button>
                 <div class="select-field">
-                    <i class="select-field__icon fas fa-sort"></i>
+                    {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                     <select name="fid">
                         {% for folder in folders %}
                             <option value="{{ folder.id }}"{% if folder.sel %} selected="selected"{% endif %}>{{ folder.name }}</option>
                         {% endfor %}
                     </select>
                 </div>
-				<span class="sort-results__text">{{ lang.or }}</span>
-				<button type="submit" class="button button--inline" name="delete" value="delete">
-					<i class="button__icon fas fa-trash"></i>
-					<span class="button__text">{{ lang.delete }}</span>
-				</button>
-				<span class="sort-results__text">{{ lang.selected_messages }}</span>
-			</div>
+                <span class="sort-results__text">{{ lang.or }}</span>
+                <button type="submit" class="button button--inline" name="delete" value="delete">
+                    {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.delete }}</span>
+                </button>
+                <span class="sort-results__text">{{ lang.selected_messages }}</span>
+            </div>
         </section>
         <input type="hidden" name="action" value="do_stuff" />
     </form>
@@ -122,21 +122,21 @@
     {% endif %}
 
     <div class="page-controls">
-		<div class="page-buttons">
-			<a href="private.php?action=folders" class="button button--basic button--inline">
-				<i class="button__icon fas fa-folder-open"></i>
-				<span class="button__text">{{ lang.manage_folders }}</span>
-			</a>
+        <div class="page-buttons">
+            <a href="private.php?action=folders" class="button button--basic button--inline">
+                {{ include('partials/icon.twig', {icon: 'folder-open', class: 'button__icon'}, with_context = false) }}
+                <span class="button__text">{{ lang.manage_folders }}</span>
+            </a>
             {% if mybb.user.totalpms %}
                 <a href="private.php?action=empty" class="button button--basic button--inline">
-                	<i class="button__icon fas fa-trash"></i>
-                	<span class="button__text">{{ lang.empty_folders2 }}</span>
+                    {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.empty_folders2 }}</span>
                 </a>
                 <a href="private.php?action=export" class="button button--basic button--inline">
-                	<i class="button__icon fas fa-download"></i>
-                	<span class="button__text">{{ lang.export_messages2 }}</span>
+                    {{ include('partials/icon.twig', {icon: 'download', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.export_messages2 }}</span>
                 </a>
             {% endif %}
-		</div>
-	</div>
+        </div>
+    </div>
 {% endblock messengerBody %}

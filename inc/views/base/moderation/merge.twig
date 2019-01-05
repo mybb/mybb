@@ -1,7 +1,7 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.merge_threads }}</title>
+    <title>{{ lang.merge_threads }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block body %}
@@ -25,7 +25,7 @@
                 </div>
                 <div class="form__submit">
                     <button type="submit" class="button button--medium">
-                        <i class="button__icon fas fa-arrow-alt-circle-right"></i>
+                        {{ include('partials/icon.twig', {icon: 'arrow-alt-circle-right', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.merge_threads }}</span>
                     </button>
                 </div>

@@ -1,7 +1,7 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.warning_details }}</title>
+    <title>{{ lang.warning_details }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% if warning.status == lang.warning_active %}
@@ -90,7 +90,7 @@
                     </div>
                     <div class="form__submit">
                         <button class="button button--medium" type="submit">
-                            <i class="button__icon fas fa-times"></i>
+                            {{ include('partials/icon.twig', {icon: 'times', class: 'button__icon'}, with_context = false) }}
                             <span class="button__text">{{ lang.revoke_warning }}</span>
                         </button>
                     </div>

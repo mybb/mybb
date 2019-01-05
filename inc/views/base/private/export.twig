@@ -1,7 +1,7 @@
 {% extends 'layouts/messenger.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.archive_messages }}</title>
+    <title>{{ lang.archive_messages }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block messengerHeader %}
@@ -14,10 +14,10 @@
     <form action="private.php" method="post">
         <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
         <div class="block block--form form">
-			<section class="section section--form">
-				<div class="row row--form field">{{ lang.archive_note }}</div>
+            <section class="section section--form">
+                <div class="row row--form field">{{ lang.archive_note }}</div>
                 <div class="row row--form field">
-					<h3 class="field__name">{{ lang.folders }}</h3>
+                    <h3 class="field__name">{{ lang.folders }}</h3>
                     <select name="exportfolders[]" multiple="multiple">
                         <option value="all" selected="selected">{{ lang.all_folders }}</option>
                         {% for folder in folderlist %}
@@ -26,9 +26,9 @@
                     </select>
                 </div>
                 <div class="row row--form field">
-					<h3 class="field__name">{{ lang.date_limit }}</h3>
+                    <h3 class="field__name">{{ lang.date_limit }}</h3>
                     <div class="select-field">
-                        <i class="select-field__icon fas fa-sort"></i>
+                        {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                         <select name="dayway">
                             <option value="older">{{ lang.date_limit_older }}</option>
                             <option value="newer">{{ lang.date_limit_newer }}</option>
@@ -38,29 +38,29 @@
                     <input type="text" class="textbox textbox--small" name="daycut" value="30" maxlength="4" /> {{ lang.date_limit_days }}
                 </div>
                 <div class="row row--form field">
-					<div class="option-field">
-						<input type="checkbox" name="exportunread" id="exportunread" value="1" />
-						<h4 class="option-field__name"><label for="exportunread">{{ lang.export_unread }}</label></h4>
-					</div>
-				</div>
+                    <div class="option-field">
+                        <input type="checkbox" name="exportunread" id="exportunread" value="1" />
+                        <h4 class="option-field__name"><label for="exportunread">{{ lang.export_unread }}</label></h4>
+                    </div>
+                </div>
                 <div class="row row--form field">
-					<div class="option-field">
-						<input type="checkbox" name="deletepms" id="deletepms" value="1" />
-						<h4 class="option-field__name"><label for="deletepms">{{ lang.delete_archived }}</label></h4>
-						<p class="option-field__description"><label for="notification_none">{{ lang.delete_archived_note }}</label></p>
-					</div>
-				</div>
+                    <div class="option-field">
+                        <input type="checkbox" name="deletepms" id="deletepms" value="1" />
+                        <h4 class="option-field__name"><label for="deletepms">{{ lang.delete_archived }}</label></h4>
+                        <p class="option-field__description"><label for="notification_none">{{ lang.delete_archived_note }}</label></p>
+                    </div>
+                </div>
                 <div class="row row--form field">
-					<h3 class="field__name">{{ lang.export_format }}</h3>
-					<p class="field__description">{{ lang.export_format_note }}</p>
-					<p class="option-field option-field--compact"><label><input type="radio" name="exporttype" checked="checked" value="html" /> {{ lang.export_html }}</label></p>
-					<p class="option-field option-field--compact"><label><input type="radio" name="exporttype" value="txt" /> {{ lang.export_txt }}</label></p>
-					<p class="option-field option-field--compact"><label><input type="radio" name="exporttype" value="csv" /> {{ lang.export_csv }}</label></p>
-				</div>
+                    <h3 class="field__name">{{ lang.export_format }}</h3>
+                    <p class="field__description">{{ lang.export_format_note }}</p>
+                    <p class="option-field option-field--compact"><label><input type="radio" name="exporttype" checked="checked" value="html" /> {{ lang.export_html }}</label></p>
+                    <p class="option-field option-field--compact"><label><input type="radio" name="exporttype" value="txt" /> {{ lang.export_txt }}</label></p>
+                    <p class="option-field option-field--compact"><label><input type="radio" name="exporttype" value="csv" /> {{ lang.export_csv }}</label></p>
+                </div>
             </section>
             <div class="form__submit">
                 <button type="submit" class="button button--medium" name="submit">
-                    <i class="button__icon fas fa-download"></i>
+                    {{ include('partials/icon.twig', {icon: 'download', class: 'button__icon'}, with_context = false) }}
                     <span class="button__text">{{ lang.archive_messages }}</span>
                 </button>
             </div>

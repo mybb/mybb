@@ -1,7 +1,7 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ trans('join_requests_title', usergroup.title) }}</title>
+    <title>{{ trans('join_requests_title', usergroup.title) }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block body %}
@@ -26,21 +26,21 @@
                                     <span class="segmented-control__option">
                                         <input type="radio" class="radio radio_ignore segmented-control__input" name="request[{{ user.uid }}]" id="request_ignore_{{ user.uid }}" value="ignore" checked="checked" />
                                         <label class="segmented-control__button" for="request_ignore_{{ user.uid }}">
-                                            <i class="segmented-control__icon fas fa-minus-circle"></i>
+                                            {{ include('partials/icon.twig', {icon: 'minus-circle', class: 'segmented-control__icon'}, with_context = false) }}
                                             <span class="segmented-control__text">{{ lang.ignore }}</span>
                                         </label>
                                     </span>
                                     <span class="segmented-control__option">
                                         <input type="radio" class="radio radio_accept segmented-control__input" name="request[{{ user.uid }}]" id="request_accept_{{ user.uid }}" value="accept" />
                                         <label class="segmented-control__button" for="request_accept_{{ user.uid }}">
-                                            <i class="segmented-control__icon fas fa-check"></i>
+                                            {{ include('partials/icon.twig', {icon: 'check', class: 'segmented-control__icon'}, with_context = false) }}
                                             <span class="segmented-control__text">{{ lang.accept }}</span>
                                         </label>
                                     </span>
                                     <span class="segmented-control__option">
                                         <input type="radio" class="radio radio_decline segmented-control__input" name="request[{{ user.uid }}]" id="request_decline_{{ user.uid }}" value="decline" />
                                         <label class="segmented-control__button" for="request_decline_{{ user.uid }}">
-                                            <i class="segmented-control__icon fas fa-times"></i>
+                                            {{ include('partials/icon.twig', {icon: 'times', class: 'segmented-control__icon'}, with_context = false) }}
                                             <span class="segmented-control__text">{{ lang.decline }}</span>
                                         </label>
                                     </span>
@@ -51,7 +51,7 @@
                 </div>
                 <div class="sort-results">
                     <button type="submit" class="button button--medium">
-                        <i class="button__icon fas fa-users-cog"></i>
+                        {{ include('partials/icon.twig', {icon: 'cog', class: 'button__icon'}, with_context = false) }}
                         <span class="button__text">{{ lang.action_requests }}</span>
                     </button>
                 </div>

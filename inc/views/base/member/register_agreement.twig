@@ -1,7 +1,7 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.agreement }}</title>
+    <title>{{ lang.agreement }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block body %}
@@ -30,9 +30,9 @@
                 </div>
                 <div class="form__submit">
                     <button type="submit" class="button button--medium" name="agree">
-    					<i class="button__icon fas fa-check"></i>
-    					<span class="button__text">{{ lang.i_agree }}</span>
-    				</button>
+                        {{ include('partials/icon.twig', {icon: 'check', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.i_agree }}</span>
+                    </button>
                 </div>
             </section>
             <input type="hidden" name="step" value="agreement" />

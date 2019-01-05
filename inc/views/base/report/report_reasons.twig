@@ -1,16 +1,16 @@
 <div class="row row--form">{{ lang.report_to_mod }}</div>
 <div class="row row--form field">
-	<h3 class="field__name"><label for="report_reason">{{ lang.report_reason }}</label></h3>
-	<div class="select-field">
-		<i class="select-field__icon fas fa-sort"></i>
-		<select name="reason" id="report_reason">
-			{% for reason in report.reasons %}
-				<option value="{{ reason.rid }}" data-extra="{{ reason.extra }}">{{ reason.title }}</option>
-			{% endfor %}
-		</select>
-	</div>
-	<div id="reason" class="field">
-		<p class="field__description field__description--below">{{ lang.report_reason_other_description }}</p>
-		<input type="text" class="textbox" name="comment" size="40" maxlength="250" />
-	</div>
+    <h3 class="field__name"><label for="report_reason">{{ lang.report_reason }}</label></h3>
+    <div class="select-field">
+        {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
+        <select name="reason" id="report_reason">
+            {% for reason in report.reasons %}
+                <option value="{{ reason.rid }}" data-extra="{{ reason.extra }}">{{ reason.title }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div id="reason" class="field">
+        <p class="field__description field__description--below">{{ lang.report_reason_other_description }}</p>
+        <input type="text" class="textbox" name="comment" size="40" maxlength="250" />
+    </div>
 </div>

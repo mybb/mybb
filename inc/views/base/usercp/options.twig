@@ -1,7 +1,7 @@
 {% extends 'layouts/account.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.edit_options }}</title>
+    <title>{{ lang.edit_options }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block accountHeader %}
@@ -28,12 +28,11 @@
             <section class="section section--form">
                 <h2 class="title title--section">{{ lang.messaging_notification }}</h2>
                 <div class="section__container">
-                	<div class="row row--form field">
-                		<p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="allownotices" id="allownotices" value="1"{% if user.allownotices %} checked{% endif %} /> {{ lang.allow_notices }}</label></p>
-                		<p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="hideemail" id="hideemail" value="1"{% if user.hideemail %} checked{% endif %} /> {{ lang.allow_emails }}</label></p>
+                    <div class="row row--form field">
+                        <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="allownotices" id="allownotices" value="1"{% if user.allownotices %} checked{% endif %} /> {{ lang.allow_notices }}</label></p>
+                        <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="hideemail" id="hideemail" value="1"{% if user.hideemail %} checked{% endif %} /> {{ lang.allow_emails }}</label></p>
                         {% if mybb.settings.enablepms and mybb.usergroup.canusepms %}
                             <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="receivepms" id="receivepms" value="1"{% if user.receivepms %} checked{% endif %} /> {{ lang.receive_pms }}</label></p>
-                            </tr>
                             {% if mybb.settings.allowbuddyonly %}
                                 <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="receivefrombuddy" id="receivefrombuddy" value="1"{% if user.receivefrombuddy %} checked{% endif %} /> {{ lang.receive_from_buddy }}</label></p>
                             {% endif %}
@@ -41,84 +40,84 @@
                             <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="pmnotify" id="pmnotify" value="1"{% if user.pmnotify %} checked{% endif %} /> {{ lang.pm_notify }}</label></p>
                             <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="buddyrequestspm" id="buddyrequestspm" value="1"{% if user.buddyrequestspm %} checked{% endif %} /> {{ lang.buddyrequests_pm }}</label></p>
                         {% endif %}
-                		<p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="buddyrequestsauto" id="buddyrequestsauto" value="1"{% if user.buddyrequestsauto %} checked{% endif %} /> {{ lang.buddyrequests_auto }}</label></p>
-                	</div>
-                	<div class="row row--form field">
-                		<h3 class="field__name"><label for="subscriptionmethod">{{ lang.subscription_method }}</label></h3>
-                		<div class="select-field">
-                			<i class="select-field__icon fas fa-sort"></i>
+                        <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="buddyrequestsauto" id="buddyrequestsauto" value="1"{% if user.buddyrequestsauto %} checked{% endif %} /> {{ lang.buddyrequests_auto }}</label></p>
+                    </div>
+                    <div class="row row--form field">
+                        <h3 class="field__name"><label for="subscriptionmethod">{{ lang.subscription_method }}</label></h3>
+                        <div class="select-field">
+                            {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                             <select name="subscriptionmethod" id="subscriptionmethod">
                                 <option value="0"{% if user.subscriptionmethod not in [1, 2, 3] %} selected{% endif %}>{{ lang.no_auto_subscribe }}</option>
                                 <option value="1"{% if user.subscriptionmethod == 1 %} selected{% endif %}>{{ lang.no_subscribe }}</option>
                                 <option value="2"{% if user.subscriptionmethod == 2 %} selected{% endif %}>{{ lang.instant_email_subscribe }}</option>
                                 <option value="3"{% if user.subscriptionmethod == 3 %} selected{% endif %}>{{ lang.instant_pm_subscribe }}</option>
                             </select>
-                		</div>
-                	</div>
+                        </div>
+                    </div>
                 </div>
             </section>
             <section class="section section--form">
-    			<h2 class="title title--section">{{ lang.date_time_options }}</h2>
-    			<div class="section__container">
-    				<div class="row row--form field">
-    					<h3 class="field__name"><label for="dateformat">{{ lang.date_format }}</label></h3>
-    					<div class="select-field">
-    						<i class="select-field__icon fas fa-sort"></i>
-    						<select name="dateformat">
-    							<option value="0">{{ lang.use_default }}</option>
+                <h2 class="title title--section">{{ lang.date_time_options }}</h2>
+                <div class="section__container">
+                    <div class="row row--form field">
+                        <h3 class="field__name"><label for="dateformat">{{ lang.date_format }}</label></h3>
+                        <div class="select-field">
+                            {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
+                            <select name="dateformat">
+                                <option value="0">{{ lang.use_default }}</option>
                                 {% for key, format in date_formats %}
                                     {# TO DO : FIX FORMAT OUTPUT #}
                                     <option value="{{ key }}"{% if key == user.dateformat %} selected{% endif %}>{{ format }}</option>
                                 {% endfor %}
-    						</select>
-    					</div>
-    				</div>
-    				<div class="row row--form field">
-    					<h3 class="field__name"><label for="timeformat">{{ lang.time_format }}</label></h3>
-    					<div class="select-field">
-    						<i class="select-field__icon fas fa-sort"></i>
-    						<select name="timeformat">
-    							<option value="0">{{ lang.use_default }}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row row--form field">
+                        <h3 class="field__name"><label for="timeformat">{{ lang.time_format }}</label></h3>
+                        <div class="select-field">
+                            {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
+                            <select name="timeformat">
+                                <option value="0">{{ lang.use_default }}</option>
                                 {% for key, format in time_formats %}
                                     {# TO DO : FIX FORMAT OUTPUT #}
                                     <option value="{{ key }}"{% if key == user.timeformat %} selected{% endif %}>{{ format }}</option>
                                 {% endfor %}
-    						</select>
-    					</div>
-    				</div>
-    				<div class="row row--form field">
-    					<h3 class="field__name"><label for="timezone">{{ lang.time_offset|raw }}</label></h3>
-    					<p class="field__description">{{ lang.time_offset_desc }}</p>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row row--form field">
+                        <h3 class="field__name"><label for="timezone">{{ lang.time_offset|raw }}</label></h3>
+                        <p class="field__description">{{ lang.time_offset_desc }}</p>
                         <div class="select-field">
-    						<i class="select-field__icon fas fa-sort"></i>
+                        {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                             <select name="timezoneoffset" id="timezone">
                                 {% for timezone in timezones %}
                                     <option value="{{ timezone.timezone }}"{% if timezone.selected %} selected{% endif %}>{{ timezone.label }}</option>
                                 {% endfor %}
                             </select>
                         </div>
-    				</div>
-    				<div class="row row--form field">
-    					<h3 class="field__name">{{ lang.dst_correction }}</h3>
-    					<div class="select-field">
-    						<i class="select-field__icon fas fa-sort"></i>
+                    </div>
+                    <div class="row row--form field">
+                        <h3 class="field__name">{{ lang.dst_correction }}</h3>
+                        <div class="select-field">
+                        {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                             <select name="dstcorrection">
                                 <option value="2"{% if user.dstcorrection == 2 %} selected{% endif %}>{{ lang.dst_correction_auto }}</option>
                                 <option value="1"{% if user.dstcorrection == 1 %} selected{% endif %}>{{ lang.dst_correction_enabled }}</option>
                                 <option value="0"{% if user.dstcorrection not in [1, 2] %} selected{% endif %}>{{ lang.dst_correction_disabled }}</option>
                             </select>
-    					</div>
-    				</div>
-    			</div>
-    		</section>
+                        </div>
+                    </div>
+                </div>
+            </section>
             <section class="section section--form">
-    			<h2 class="title title--section">{{ lang.forum_display_options }}</h2>
-    			<div class="section__container">
+                <h2 class="title title--section">{{ lang.forum_display_options }}</h2>
+                <div class="section__container">
                     {% if mybb.settings.usertppoptions %}
                         <div class="row row--form field">
                             <h3 class="field__name"><label for="tpp">{{ lang.tpp }}</label></h3>
                             <div class="select-field">
-                                <i class="select-field__icon fas fa-sort"></i>
+                                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                 <select name="tpp" id="tpp">
                                     <option value="">{{ lang.use_default }}</option>
                                     {% for key, val in mybb.settings.usertppoptions|split(',') %}
@@ -128,11 +127,11 @@
                             </div>
                         </div>
                     {% endif %}
-    				<div class="row row--form field">
-    					<h3 class="field__name">{{ lang.thread_view }}</h3>
-    					<div class="select-field">
-    						<i class="select-field__icon fas fa-sort"></i>
-    						<select name="daysprune" id="daysprune">
+                    <div class="row row--form field">
+                        <h3 class="field__name">{{ lang.thread_view }}</h3>
+                        <div class="select-field">
+                            {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
+                            <select name="daysprune" id="daysprune">
                                 <option value="">{{ lang.use_default }}</option>
                                 {% for day in [1, 5, 10, 20, 50, 75, 100, 365, 9999] %}
                                     <option value="{{ day }}"{% if day == user.daysprune %} selected{% endif %}>
@@ -147,29 +146,29 @@
                                         {% endif %}
                                     </option>
                                 {% endfor %}
-    						</select>
-    					</div>
-    				</div>
-    			</div>
-    		</section>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </section>
             <section class="section section--form">
-    			<h2 class="title title--section">{{ lang.thread_view_options }}</h2>
-    			<div class="section__container">
-    				<div class="row row--form field">
+                <h2 class="title title--section">{{ lang.thread_view_options }}</h2>
+                <div class="section__container">
+                    <div class="row row--form field">
                         {# TO DO: REMOVE USER SETTING?  <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="classicpostbit" id="classicpostbit" value="1"{% if user.classicpostbit %} checked{% endif %} /> {{ lang.show_classic_postbit }}</label></p> #}
                         <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="showimages" id="showimages" value="1"{% if user.showimages %} checked{% endif %} /> {{ lang.show_images }}</label></p>
                         <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="showvideos" id="showvideos" value="1"{% if user.showvideos %} checked{% endif %} /> {{ lang.show_videos }}</label></p>
                         <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="showsigs" id="showsigs" value="1"{% if user.showsigs %} checked{% endif %} /> {{ lang.show_sigs }}</label></p>
-    					<p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="showavatars" id="showavatars" value="1"{% if user.showavatars %} checked{% endif %} /> {{ lang.show_avatars }}</label></p>
+                        <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="showavatars" id="showavatars" value="1"{% if user.showavatars %} checked{% endif %} /> {{ lang.show_avatars }}</label></p>
                         {% if mybb.settings.quickreply %}
                             <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="showquickreply" id="showquickreply" value="1"{% if user.showquickreply %} checked{% endif %} /> {{ lang.show_quick_reply }}</label></p>
                         {% endif %}
-    				</div>
+                    </div>
                     {% if mybb.settings.userpppoptions %}
                         <div class="row row--form field">
                             <h3 class="field__name"><label for="ppp">{{ lang.ppp }}</label></h3>
                             <div class="select-field">
-        						<i class="select-field__icon fas fa-sort"></i>
+                                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                 <select name="ppp" id="ppp">
                                     <option value="">{{ lang.use_default }}</option>
                                     {% for key, val in mybb.settings.userpppoptions|split(',') %}
@@ -179,32 +178,32 @@
                             </div>
                         </div>
                     {% endif %}
-    				<div class="row row--form field">
-    					<h3 class="field__name"><label for="threadmode">{{ lang.thread_mode }}</label></h3>
-    					<div class="select-field">
-    						<i class="select-field__icon fas fa-sort"></i>
+                    <div class="row row--form field">
+                        <h3 class="field__name"><label for="threadmode">{{ lang.thread_mode }}</label></h3>
+                        <div class="select-field">
+                            {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                             <select name="threadmode" id="threadmode">
                                 <option value="">{{ lang.use_default }}</option>
                                 <option value="linear"{% if user.threadmode == 'linear' %} selected{% endif %}>{{ lang.linear }}</option>
                                 <option value="threaded"{% if user.threadmode != 'linear' %} selected{% endif %}>{{ lang.threaded }}</option>
                             </select>
-    					</div>
-    				</div>
-    			</div>
-    		</section>
+                        </div>
+                    </div>
+                </div>
+            </section>
             <section class="section section--form">
-    			<h2 class="title title--section">{{ lang.other_options }}</h2>
-    			<div class="section__container">
-    				<div class="row row--form field">
-    					<p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="showredirect" id="showredirect" value="1"{% if user.showredirect %} checked{% endif %} /> {{ lang.show_redirect }}</label></p>
-    					<p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="showcodebuttons" id="showcodebuttons" value="1"{% if user.showcodebuttons %} checked{% endif %} /> {{ lang.show_codebuttons }}</label></p>
-    					<p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="sourceeditor" id="sourceeditor" value="1"{% if user.sourceeditor %} checked{% endif %} /> {{ lang.source_editor }}</label></p>
-    				</div>
+                <h2 class="title title--section">{{ lang.other_options }}</h2>
+                <div class="section__container">
+                    <div class="row row--form field">
+                        <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="showredirect" id="showredirect" value="1"{% if user.showredirect %} checked{% endif %} /> {{ lang.show_redirect }}</label></p>
+                        <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="showcodebuttons" id="showcodebuttons" value="1"{% if user.showcodebuttons %} checked{% endif %} /> {{ lang.show_codebuttons }}</label></p>
+                        <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="sourceeditor" id="sourceeditor" value="1"{% if user.sourceeditor %} checked{% endif %} /> {{ lang.source_editor }}</label></p>
+                    </div>
                     {% if stylelist %}
                         <div class="row row--form field">
                             <h3 class="field__name">{{ lang.style }}</h3>
                             <div class="select-field">
-                                <i class="select-field__icon fas fa-sort"></i>
+                                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                 {{ stylelist|raw }}
                             </div>
                         </div>
@@ -213,7 +212,7 @@
                         <div class="row row--form field">
                             <h3 class="field__name">{{ lang.board_language }}</h3>
                             <div class="select-field">
-                                <i class="select-field__icon fas fa-sort"></i>
+                                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                 <select name="language">
                                     <option value="">{{ lang.use_default }}</option>
                                     <option value="0">-----------</option>
@@ -224,15 +223,15 @@
                             </div>
                         </div>
                     {% endif %}
-    			</div>
-    		</section>
+                </div>
+            </section>
             <div class="form__submit">
-    			<input type="hidden" name="action" value="do_options" />
-    			<button type="submit" class="button button--medium" name="regsubmit">
-    				<i class="button__icon fas fa-sliders-h"></i>
-    				<span class="button__text">{{ lang.update_options }}</span>
-    			</button>
-    		</div>
+                <input type="hidden" name="action" value="do_options" />
+                <button type="submit" class="button button--medium" name="regsubmit">
+                    {{ include('partials/icon.twig', {icon: 'sliders-h', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.update_options }}</span>
+                </button>
+            </div>
         </div>
         <input type="hidden" name="action" value="do_options" />
     </form>

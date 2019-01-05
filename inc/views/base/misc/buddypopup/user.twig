@@ -4,7 +4,7 @@
     </a>
     {% if buddy.show_pm %}
         <a href="private.php?action=send&amp;uid={{ buddy.uid }}" target="_blank" onclick="window.opener.location.href=this.href; return false;" class="user-list__shortcut" title="{{ lang.pm_buddy }}">
-            <i class="button__icon fas fa-envelope"></i>
+            {{ include('partials/icon.twig', {icon: 'envelope', class: 'button__icon'}, with_context = false) }}
             <span class="visually-hidden">{{ lang.pm_buddy }}</span>
         </a>
     {% endif %}

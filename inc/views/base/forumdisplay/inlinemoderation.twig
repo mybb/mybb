@@ -33,7 +33,7 @@
             <input type="hidden" name="modtype" value="inlinethread" />
             <h2 class="title title--legend">{{ lang.inline_thread_moderation }}</h2>
             <div class="select-field">
-                <i class="select-field__icon fas fa-sort"></i>
+                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                 <select name="action">
                     <option value="delayedmoderation">{{ lang.delayed_moderation }}</option>
                     {% if modpermissions.canusecustomtools and hasModTools and customTools %}
@@ -51,11 +51,11 @@
                 </select>
             </div>
             <button type="submit" name="go" class="button button--inline">
-                <i class="button__icon fas fa-arrow-right"></i>
+                {{ include('partials/icon.twig', {icon: 'arrow-right', class: 'button__icon'}, with_context = false) }}
                 <span class="button__text" id="inline_go">{{ lang.go }} ({{ inlinecount }})</span>
             </button>
             <button type="button" class="button button--secondary button--inline" onclick="inlineModeration.clearChecked();">
-                <i class="button__icon fas fa-times"></i>
+                {{ include('partials/icon.twig', {icon: 'times', class: 'button__icon'}, with_context = false) }}
                 <span class="button__text">{{ lang.clear }}</span>
             </button>
         </form>

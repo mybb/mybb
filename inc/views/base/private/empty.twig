@@ -1,7 +1,7 @@
 {% extends 'layouts/messenger.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.empty_folders }}</title>
+    <title>{{ lang.empty_folders }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block messengerHeader %}
@@ -14,10 +14,10 @@
     <form action="private.php" method="post">
         <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
         <div class="block block--form form">
-			<section class="section section--form">
-				<div class="row row--form field">{{ lang.empty_note|raw }}</div>
+            <section class="section section--form">
+                <div class="row row--form field">{{ lang.empty_note|raw }}</div>
                 <div class="row row--form field">
-					<h3 class="field__name">{{ lang.empty_these_folders }}</h3>
+                    <h3 class="field__name">{{ lang.empty_these_folders }}</h3>
                     {% for folder in folderlist %}
                         <div class="option-field option-field--compact">
                             <label>
@@ -29,17 +29,17 @@
                     {% endfor %}
                 </div>
                 <div class="row row--form field">
-					<p class="option-field option-field--compact">
-						<label><input type="checkbox" class="checkbox" name="keepunread" value="1" checked="checked" /> {{ lang.keep_unread }}</label>
-					</p>
-				</div>
+                    <p class="option-field option-field--compact">
+                        <label><input type="checkbox" class="checkbox" name="keepunread" value="1" checked="checked" /> {{ lang.keep_unread }}</label>
+                    </p>
+                </div>
             </section>
             <div class="form__submit">
-				<button type="submit" class="button button--medium" name="submit">
-					<i class="button__icon fas fa-trash"></i>
-					<span class="button__text">{{ lang.delete }}</span>
-				</button>
-			</div>
+                <button type="submit" class="button button--medium" name="submit">
+                    {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.delete }}</span>
+                </button>
+            </div>
         </div>
         <input type="hidden" name="action" value="do_empty" />
     </form>

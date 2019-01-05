@@ -1,7 +1,7 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.member_list }}</title>
+    <title>{{ lang.member_list }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block body %}
@@ -10,13 +10,13 @@
             <h1 class="title title--page">{{ lang.member_list }}</h1>
         </header>
         <div class="page-controls page-controls--top">
-			<div class="page-buttons">
-				<a href="showteam.php" class="button button--secondary">
-					<i class="button__icon fas fa-address-book"></i>
-					<span class="button__text">{{ lang.forumteam }}</span>
+            <div class="page-buttons">
+                <a href="showteam.php" class="button button--secondary">
+                    {{ include('partials/icon.twig', {icon: 'address-book', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.forumteam }}</span>
                 </a>
                 <a href="#member-search" class="button">
-                    <i class="button__icon fas fa-search"></i>
+                    {{ include('partials/icon.twig', {icon: 'search', class: 'button__icon'}, with_context = false) }}
                     <span class="button__text">{{ lang.search_members }}</span>
                 </a>
             </div>
@@ -40,11 +40,11 @@
 
     <form method="post" action="memberlist.php">
         <section class="form" id="member-search">
-        	<div class="section section--form">
-        		<h3 class="title title--section">{{ lang.search_members }}</h3>
+            <div class="section section--form">
+                <h3 class="title title--section">{{ lang.search_members }}</h3>
                 <div class="section__container">
-        			<div class="row row--form field">
-        				<h4 class="field__name"><label for="username">{{ lang.username }}</label></h4>
+                    <div class="row row--form field">
+                        <h4 class="field__name"><label for="username">{{ lang.username }}</label></h4>
                         <input type="text" class="" name="username" id="username" style="width: 99%; margin-top: 4px;" value="{{ memberlist.username }}" />
                     </div>
                     <div class="row row--form field">
@@ -55,10 +55,10 @@
             </div>
             <div class="section section--form">
                 <h3 class="title title--section"><label for="sort">{{ lang.sort_by }}</label></h3>
-        		<div class="section__container">
-        			<div class="row row--form field">
-        				<div class="select-field">
-        					<i class="select-field__icon fas fa-sort"></i>
+                <div class="section__container">
+                    <div class="row row--form field">
+                        <div class="select-field">
+                            {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                             <select name="sort" id="sort" style="width: 99%;">
                                 <option value="username"{% if memberlist.sort.username %} selected="selected"{% endif %}>{{ lang.sort_by_username }}</option>
                                 <option value="regdate"{% if memberlist.sort.regdate %} selected="selected"{% endif %}>{{ lang.sort_by_regdate }}</option>
@@ -72,29 +72,29 @@
                         </div>
                         <div class="field__block">
                             <div class="segmented-control">
-        						<span class="segmented-control__option">
-        							<input type="radio" class="radio segmented-control__input" name="order" id="order_asc" value="ascending"{% if memberlist.order.ascending %} checked="checked"{% endif %} />
-        							<label class="segmented-control__button" for="order_asc">{{ lang.order_asc }}</label>
-        						</span>
-        						<span class="segmented-control__option">
-        							<input type="radio" class="radio segmented-control__input" name="order" id="order_desc" value="descending"{% if memberlist.order.descending %} checked="checked"{% endif %} />
-        							<label class="segmented-control__button" for="order_desc">{{ lang.order_desc }}</label>
-        						</span>
-        					</div>
-        				</div>
+                                <span class="segmented-control__option">
+                                    <input type="radio" class="radio segmented-control__input" name="order" id="order_asc" value="ascending"{% if memberlist.order.ascending %} checked="checked"{% endif %} />
+                                    <label class="segmented-control__button" for="order_asc">{{ lang.order_asc }}</label>
+                                </span>
+                                <span class="segmented-control__option">
+                                    <input type="radio" class="radio segmented-control__input" name="order" id="order_desc" value="descending"{% if memberlist.order.descending %} checked="checked"{% endif %} />
+                                    <label class="segmented-control__button" for="order_desc">{{ lang.order_desc }}</label>
+                                </span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="form__submit">
-        		<button type="submit" class="button">
-        			<i class="button__icon fas fa-search"></i>
-        			<span class="button__text">{{ lang.search }}</span>
-        		</button>
-        		<a href="memberlist.php?action=search" class="button button--secondary">
-        			<i class="button__icon fas fa-cog"></i>
-        			<span class="button__text">{{ lang.advanced_search }}</span>
-        		</a>
-        	</div>
+                <button type="submit" class="button">
+                    {{ include('partials/icon.twig', {icon: 'search', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.search }}</span>
+                </button>
+                <a href="memberlist.php?action=search" class="button button--secondary">
+                    {{ include('partials/icon.twig', {icon: 'cog', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.advanced_search }}</span>
+                </a>
+            </div>
         </section>
     </form>
 
