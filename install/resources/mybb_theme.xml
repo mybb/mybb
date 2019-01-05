@@ -5003,6 +5003,8 @@ if(use_xmlhttprequest == "1")
 </table>
 <br />]]></template>
 		<template name="member_profile_modoptions_banuser" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/modcp.php?action=banuser&amp;uid={$uid}">{$lang->ban_in_mcp}</a></li>]]></template>
+		<template name="member_profile_modoptions_manageban" version="1820"><![CDATA[<li><a href="{$mybb->settings['bburl']}/modcp.php?action=banuser&amp;uid={$uid}">{$lang->edit_ban_in_mcp}</a></li>
+<li><a href="{$mybb->settings['bburl']}/modcp.php?action=liftban&amp;uid={$uid}&amp;my_post_key={$mybb->post_code}">{$lang->lift_ban_in_mcp}</a></li>]]></template>
 		<template name="member_profile_modoptions_editnotes" version="1800"><![CDATA[<a href="{$mybb->settings['bburl']}/modcp.php?action=editprofile&amp;uid={$uid}#usernotes">{$lang->edit_usernotes}</a>]]></template>
 		<template name="member_profile_modoptions_editprofile" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/modcp.php?action=editprofile&amp;uid={$uid}">{$lang->edit_in_mcp}</a></li>]]></template>
 		<template name="member_profile_modoptions_ipaddress" version="1812"><![CDATA[<tr>
@@ -5012,11 +5014,13 @@ if(use_xmlhttprequest == "1")
 </td>
 </tr>]]></template>
 		<template name="member_profile_modoptions_purgespammer" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/moderation.php?action=purgespammer&amp;uid={$uid}">{$lang->purgespammer}</a></li>]]></template>
-		<template name="member_profile_modoptions_manageuser" version="1800"><![CDATA[<tr>
+		<template name="member_profile_modoptions_manageuser" version="1820"><![CDATA[<tr>
 <td class="trow1">
 <ul>
 {$editprofile}
 {$banuser}
+{$editban}
+{$liftban}
 {$purgespammer}
 </ul>
 </td>

@@ -26,6 +26,7 @@ $templatelist .= ",member_profile_contact_fields_google,member_profile_contact_f
 $templatelist .= ",member_profile_banned_remaining,member_profile_addremove,member_emailuser_guest,member_register_day,usercp_options_tppselect_option,postbit_warninglevel_formatted,member_profile_userstar,member_profile_findposts";
 $templatelist .= ",usercp_options_tppselect,usercp_options_pppselect,member_resetpassword,member_login,member_profile_online,usercp_options_pppselect_option,postbit_reputation_formatted,member_emailuser,usercp_profile_profilefields_text";
 $templatelist .= ",member_profile_modoptions_ipaddress,member_profile_modoptions,member_profile_banned,member_register_language,member_resendactivation,usercp_profile_profilefields_checkbox,member_register_password,member_coppa_form";
+$templatelist .= ",member_profile_modoptions_manageban";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -2827,7 +2828,7 @@ if($mybb->input['action'] == "profile")
 		eval("\$adminoptions = \"".$templates->get("member_profile_adminoptions")."\";");
 	}
 
-	$modoptions = $viewnotes = $editnotes = $editprofile = $banuser = $manageuser = '';
+	$modoptions = $viewnotes = $editnotes = $editprofile = $banuser = $manageban = $manageuser = '';
 	$can_purge_spammer = purgespammer_show($memprofile['postnum'], $memprofile['usergroup'], $memprofile['uid']);
 	if($mybb->usergroup['canmodcp'] == 1 || $can_purge_spammer)
 	{
@@ -2862,7 +2863,14 @@ if($mybb->input['action'] == "profile")
 
 		if($mybb->usergroup['canbanusers'] == 1 && (!$memban['uid'] || $memban['uid'] && ($mybb->user['uid'] == $memban['admin']) || $mybb->usergroup['issupermod'] == 1 || $mybb->usergroup['cancp'] == 1))
 		{
-			eval("\$banuser = \"".$templates->get("member_profile_modoptions_banuser")."\";");
+			if($memperms['isbannedgroup'] == 1 && $mybb->usergroup['canbanusers'] == 1)
+			{
+				eval("\$manageban = \"".$templates->get("member_profile_modoptions_manageban")."\";");
+			}
+			else
+			{
+				eval("\$banuser = \"".$templates->get("member_profile_modoptions_banuser")."\";");
+			}
 		}
 
 		if($can_purge_spammer)
@@ -2870,7 +2878,7 @@ if($mybb->input['action'] == "profile")
 			eval("\$purgespammer = \"".$templates->get('member_profile_modoptions_purgespammer')."\";");
 		}
 
-		if(!empty($editprofile) || !empty($banuser) || !empty($purgespammer))
+		if(!empty($editprofile) || !empty($banuser) || !empty($manageban) || !empty($purgespammer))
 		{
 			eval("\$manageuser = \"".$templates->get("member_profile_modoptions_manageuser")."\";");
 		}
