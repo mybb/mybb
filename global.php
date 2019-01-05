@@ -457,7 +457,7 @@ $templatelist .= ",video_dailymotion_embed,video_facebook_embed,video_liveleak_e
 $templatelist .= ",smilieinsert_row,smilieinsert_row_empty,smilieinsert,smilieinsert_getmore,smilieinsert_smilie,global_board_offline_modal,footer_showteamlink,footer_themeselector,task_image,usercp_themeselector_option,php_warnings";
 $templatelist .= ",mycode_code,mycode_email,mycode_img,mycode_php,mycode_quote_post,mycode_size_int,mycode_url,global_no_permission_modal,global_boardclosed_reason,nav_dropdown,global_remote_avatar_notice";
 $templatelist .= ",header_welcomeblock_member_pms,header_welcomeblock_member_search,header_welcomeblock_guest,header_welcomeblock_guest_login_modal,header_welcomeblock_guest_login_modal_lockout";
-$templatelist .= ",header_menu_calendar,header_menu_memberlist,global_dst_detection,header_quicksearch,smilie";
+$templatelist .= ",header_menu_calendar,header_menu_memberlist,global_dst_detection,header_quicksearch,smilie,modal,modal_button";
 $templates->cache($db->escape_string($templatelist));
 
 // Set the current date and time now
@@ -910,6 +910,12 @@ if($mybb->settings['awactialert'] == 1 && $mybb->usergroup['cancp'] == 1)
 	{
 		$awaitingusers = '';
 	}
+}
+
+$jsTemplates = array();
+foreach (array('modal', 'modal_button') as $template) {
+	eval('$jsTemplates["'.$template.'"] = "'.$templates->get($template, 1, 0).'";');
+	$jsTemplates[$template] = str_replace("\n", "\\\n", addslashes($jsTemplates[$template]));
 }
 
 // Set up some of the default templates
