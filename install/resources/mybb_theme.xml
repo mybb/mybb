@@ -6192,7 +6192,7 @@ if(use_xmlhttprequest == "1")
 <td class="{$class}">{$smilie['name']}</td>
 <td class="{$class}">{$smilie['find']}</td>
 </tr>]]></template>
-		<template name="misc_syndication" version="120"><![CDATA[<html>
+		<template name="misc_syndication" version="1820"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->syndication}</title>
 {$headerinclude}
@@ -6215,7 +6215,7 @@ if(use_xmlhttprequest == "1")
 </tr>
 <tr>
 <td class="trow2" width="40%" valign="top"><strong>{$lang->syndication_version}</strong><br /><span class="smalltext">{$lang->syndication_version_desc}</span></td>
-<td class="trow2" width="60%"><input type="radio" class="radio" name="version" value="rss2.0" {$rss2check} />&nbsp;{$lang->syndication_version_rss2}<br /><input type="radio" class="radio" name="version" value="atom1.0" {$atom1check} />&nbsp;{$lang->syndication_version_atom1}</td>
+<td class="trow2" width="60%"><input type="radio" class="radio" name="version" value="rss2.0" {$rss2check} />&nbsp;{$lang->syndication_version_rss2}<br /><input type="radio" class="radio" name="version" value="atom1.0" {$atom1check} />&nbsp;{$lang->syndication_version_atom1}<br /><input type="radio" class="radio" name="version" value="json" {$json1check} />&nbsp;{$lang->syndication_version_json1}</td>
 </tr>
 <tr>
 <td class="trow1" width="40%" valign="top"><strong>{$lang->syndication_limit}</strong><br /><span class="smalltext">{$lang->syndication_limit_desc}</span></td>

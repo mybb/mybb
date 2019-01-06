@@ -227,7 +227,7 @@ if(!empty($firstposts))
 
 		$items[$post['tid']]['description'] = $parsed_message;
 		$items[$post['tid']]['updated'] = $post['edittime'];
-		$items[$post['tid']]['author'] = '<a href="'.$mybb->settings['bburl'].'/member.php?action=profile&uid='.$post['uid'].'">'.$post['username'].'</a>';
+		$items[$post['tid']]['author'] = array("uid" => $post['uid'], "name" => $post['username']);
 		$feedgenerator->add_item($items[$post['tid']]);
 	}
 }

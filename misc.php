@@ -950,8 +950,13 @@ elseif($mybb->input['action'] == "syndication")
 	}
 
 	// If there is no version in the input, check the default (RSS2.0).
-	$atom1check = $rss2check = "";
-	if($version == "atom1.0")
+	$json1check = $atom1check = $rss2check = "";
+	if($version == "json")
+	{
+		$json1check = "checked=\"checked\"";
+		$urlquery[] = "type=".$version;
+	}
+	elseif($version == "atom1.0")
 	{
 		$atom1check = "checked=\"checked\"";
 		$urlquery[] = "type=".$version;
