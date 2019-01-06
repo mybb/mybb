@@ -42,10 +42,23 @@ if($mybb->user['uid'] == '/' || $mybb->user['uid'] == 0 || $mybb->usergroup['can
 	error_no_permission();
 }
 
+$update = false;
 if(!$mybb->user['pmfolders'])
 {
-	$mybb->user['pmfolders'] = "1**$%%$2**$%%$3**$%%$4**";
+	$update = true;
+	$mybb->user['pmfolders'] = "0**$%%$1**$%%$2**$%%$3**$%%$4**";
+}
+elseif ((int)my_substr($mybb->user['pmfolders'], 0, 1) != 0)
+{
+	// Old folder structure. Need to update
+	// Since MyBB 1.8.20 fid[0] represents 'Inbox' and fid[1] represents 'Unread'
+	$update = true;
+	$mybb->user['pmfolders'] = '0'. ltrim(str_replace("$%%$2**", "$%%$1**$%%$2**", $mybb->user['pmfolders']), '1');
+}
 
+// Folder structure update required?
+if($update)
+{
 	$sql_array = array(
 		"pmfolders" => $mybb->user['pmfolders']
 	);
@@ -1382,7 +1395,7 @@ if($mybb->input['action'] == "folders")
 		$folder['foldername'] = get_pm_folder_name($folder['fid'], $foldername);
 
 		$folder['default'] = false;
-		if($folderinfo[0] == "1" || $folderinfo[0] == "2" || $folderinfo[0] == "3" || $folderinfo[0] == "4")
+		if((int)$folderinfo[0] < 5)
 		{
 			$folder['default'] = true;
 			$folder['defaultname'] = get_pm_folder_name($folder['fid']);
@@ -1427,42 +1440,19 @@ if($mybb->input['action'] == "do_folders" && $mybb->request_method == "post")
 
 				$fid = (int)$key;
 				// Use default language strings if empty or value is language string
-				switch($fid)
+				if($val == get_pm_folder_name($fid) || trim($val) == '')
 				{
-					case 1:
-						if($val == $lang->folder_inbox || trim($val) == '')
-						{
-							$val = '';
-						}
-						break;
-					case 2:
-						if($val == $lang->folder_sent_items || trim($val) == '')
-						{
-							$val = '';
-						}
-						break;
-					case 3:
-						if($val == $lang->folder_drafts || trim($val) == '')
-						{
-							$val = '';
-						}
-						break;
-					case 4:
-						if($val == $lang->folder_trash || trim($val) == '')
-						{
-							$val = '';
-						}
-						break;
+					$val = '';
 				}
 			}
 
-			if($val != '' && trim($val) == '' && !($key >= 1 && $key <= 4))
+			if($val != '' && trim($val) == '' && !(is_numeric($key) && $key <= 4))
 			{
 				// If the name only contains whitespace and it's not a default folder, print an error
 				error($lang->error_emptypmfoldername);
 			}
 
-			if($val != '' || ($key >= 1 && $key <= 4))
+			if($val != '' || (is_numeric($key) && $key <= 4))
 			{
 				// If there is a name or if this is a default folder, save it
 				$foldername = $db->escape_string(htmlspecialchars_uni($val));
@@ -2023,10 +2013,10 @@ if(!$mybb->input['action'])
 		$input['fid'] = 1;
 	}
 
-	$private['folder'] = $folder = $input['fid'];
+	$private['folder'] = $folder = $fid = $input['fid'];
 	$private['foldername'] = $foldernames[$folder];
 
-	if($folder == 2 || $folder == 3)
+	if($private['folder'] == 2 || $private['folder'] == 3)
 	{
 		// Sent Items or Drafts Folder
 		$private['sender'] = $lang->sentto;
@@ -2110,14 +2100,16 @@ if(!$mybb->input['action'])
 
 	if($mybb->input['order'] || ($sortby && $sortby != "dateline"))
 	{
-		$page_url = "private.php?fid={$folder}&sortby={$sortby}&order={$sortordernow}";
+		$page_url = "private.php?fid={$input['fid']}&sortby={$sortby}&order={$sortordernow}";
 	}
 	else
 	{
-		$page_url = "private.php?fid={$folder}";
+		$page_url = "private.php?fid={$input['fid']}";
 	}
 
 	$multipage = multipage($pmscount, $perpage, $page, $page_url);
+	$selective = '';
+	$messagelist = [];
 
 	$icon_cache = $cache->read("posticons");
 
@@ -2183,6 +2175,11 @@ if(!$mybb->input['action'])
 	}
 	else
 	{
+		if($fid == 1)
+		{
+			$selective = ' AND pm.status="0"';
+		}
+
 		if($sortfield == "username")
 		{
 			$pm = "fu.";
@@ -2199,7 +2196,7 @@ if(!$mybb->input['action'])
         FROM ".TABLE_PREFIX."privatemessages pm
         LEFT JOIN ".TABLE_PREFIX."users fu ON (fu.uid=pm.fromid)
         LEFT JOIN ".TABLE_PREFIX."users tu ON (tu.uid=pm.toid)
-        WHERE pm.folder='$folder' AND pm.uid='".$mybb->user['uid']."'
+        WHERE pm.folder='$folder' AND pm.uid='".$mybb->user['uid']."'{$selective}
         ORDER BY {$pm}{$sortfield} {$sortordernow}
         LIMIT $start, $perpage
     ");

@@ -428,6 +428,7 @@ $l['removeattach_confirm'] = "Are you sure you want to remove the selected attac
 $l['latest_threads'] = "Latest Threads";
 
 $l['folder_inbox'] = "Inbox";
+$l['folder_unread'] = "Unread";
 $l['folder_sent_items'] = "Sent Items";
 $l['folder_drafts'] = "Drafts";
 $l['folder_trash'] = "Trash Can";

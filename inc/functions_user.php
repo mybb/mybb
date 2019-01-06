@@ -757,8 +757,11 @@ function get_pm_folder_name($fid, $name="")
 
 	switch($fid)
 	{
-		case 1:
+		case 0:
 			return $lang->folder_inbox;
+			break;
+		case 1:
+			return $lang->folder_unread;
 			break;
 		case 2:
 			return $lang->folder_sent_items;
