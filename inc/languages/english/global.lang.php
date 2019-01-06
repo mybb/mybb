@@ -146,8 +146,8 @@ $l['multipage_last'] = "Last";
 $l['multipage_first'] = "First";
 $l['multipage_next'] = "Next";
 $l['multipage_previous'] = "Previous";
-$l['multipage_link_start'] = " ...";
-$l['multipage_link_end'] = "... ";
+$l['multipage_link_start'] = " …";
+$l['multipage_link_end'] = "… ";
 $l['multipage_jump'] = "Jump to page";
 
 $l['editor_bold'] = "Bold";
@@ -433,8 +433,8 @@ $l['error_database_repair'] = "MyBB is automatically repairing a crashed table."
 $l['unknown_user_trigger'] = "An unknown error has been triggered.";
 $l['warnings'] = "The following warnings occurred:";
 
-$l['ajax_loading'] = "Loading. <br />Please Wait..";
-$l['saving_changes'] = "Saving changes..";
+$l['ajax_loading'] = "Loading. <br />Please Wait…";
+$l['saving_changes'] = "Saving changes…";
 $l['refresh'] = "Refresh";
 $l['select_language'] = "Quick Language Select";
 $l['select_theme'] = "Quick Theme Select";
