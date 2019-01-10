@@ -386,14 +386,7 @@ if(!empty($theme_stylesheets) && is_array($theme['disporder']))
 
 if(!empty($css_php_script_stylesheets))
 {
-	$sheet = $mybb->settings['bburl'] . '/css.php?';
-
-	$sep = '';
-	foreach($css_php_script_stylesheets as $sid)
-	{
-		$sheet .= $sep . 'stylesheet[]=' . (int) $sid;
-		$sep = '&amp;';
-	}
+	$sheet = $mybb->settings['bburl'] . '/css.php?' . http_build_query(['stylesheet' => $css_php_script_stylesheets]);
 
 	$stylesheets .= "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$sheet}\" />\n";
 }
