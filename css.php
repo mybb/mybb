@@ -60,14 +60,14 @@ SQL;
 	{
 		$stylesheet = $row['stylesheet'];
 
-		$plugins->run_hooks('css_start');
+		$plugins->run_hooks('css_start', $stylesheet);
 
 		if(!empty($mybb->settings['minifycss']))
 		{
 			$stylesheet = minify_stylesheet($stylesheet);
 		}
 
-		$plugins->run_hooks('css_end');
+		$plugins->run_hooks('css_end', $stylesheet);
 
 		$content .= $stylesheet;
 	}
