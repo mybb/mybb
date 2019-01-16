@@ -355,7 +355,7 @@ foreach($stylesheet_scripts as $stylesheet_script)
 					$id = (int)my_substr($query_string, 11);
 					$query = $db->simple_select("themestylesheets", "name", "sid={$id}");
 					$real_name = $db->fetch_field($query, "name");
-					$theme_stylesheets[$real_name] = "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$stylesheet_url}\" />\n";
+					$theme_stylesheets[$real_name] = $id;
 				}
 				else
 				{
@@ -369,15 +369,33 @@ foreach($stylesheet_scripts as $stylesheet_script)
 }
 unset($actions);
 
+$css_php_script_stylesheets = array();
+
 if(!empty($theme_stylesheets) && is_array($theme['disporder']))
 {
 	foreach($theme['disporder'] as $style_name => $order)
 	{
 		if(!empty($theme_stylesheets[$style_name]))
 		{
-			$stylesheets .= $theme_stylesheets[$style_name];
+			if(is_int($theme_stylesheets[$style_name]))
+			{
+				$css_php_script_stylesheets[] = $theme_stylesheets[$style_name];
+			}
+			else
+			{
+				$stylesheets .= $theme_stylesheets[$style_name];
+			}
 		}
 	}
+}
+
+if(!empty($css_php_script_stylesheets))
+{
+	$sheet = $mybb->settings['bburl'] . '/css.php?' . http_build_query(array(
+		'stylesheet' => $css_php_script_stylesheets
+		));
+
+	$stylesheets .= "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$sheet}\" />\n";
 }
 
 // Are we linking to a remote theme server?
