@@ -26,6 +26,7 @@ $templatelist .= ",member_profile_contact_fields_google,member_profile_contact_f
 $templatelist .= ",member_profile_banned_remaining,member_profile_addremove,member_emailuser_guest,member_register_day,usercp_options_tppselect_option,postbit_warninglevel_formatted,member_profile_userstar,member_profile_findposts";
 $templatelist .= ",usercp_options_tppselect,usercp_options_pppselect,member_resetpassword,member_login,member_profile_online,usercp_options_pppselect_option,postbit_reputation_formatted,member_emailuser,usercp_profile_profilefields_text";
 $templatelist .= ",member_profile_modoptions_ipaddress,member_profile_modoptions,member_profile_banned,member_register_language,member_resendactivation,usercp_profile_profilefields_checkbox,member_register_password,member_coppa_form";
+$templatelist .= ",member_profile_modoptions_manageban";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -2126,14 +2127,14 @@ if($mybb->input['action'] == "profile")
 	}
 
 	$memprofile['showemail'] = false;
-	if($mybb->usergroup['cansendemail'] == 1 && $memprofile['hideemail'] != 1 && (my_strpos(",".$memprofile['ignorelist'].",", ",".$mybb->user['uid'].",") === false || $mybb->usergroup['cansendemailoverride'] != 0))
+	if($mybb->usergroup['cansendemail'] == 1 && $uid != $mybb->user['uid'] && $memprofile['hideemail'] != 1 && (my_strpos(",".$memprofile['ignorelist'].",", ",".$mybb->user['uid'].",") === false || $mybb->usergroup['cansendemailoverride'] != 0))
 	{
 		$memprofile['hascontacts'] = true;
 		$memprofile['showemail'] = true;
 	}
 
 	$memprofile['showpm'] = false;
-	if($mybb->settings['enablepms'] != 0 && $mybb->usergroup['canusepms'] == 1 && (($memprofile['receivepms'] != 0 && $memperms['canusepms'] != 0 && my_strpos(",".$memprofile['ignorelist'].",", ",".$mybb->user['uid'].",") === false) || $mybb->usergroup['canoverridepm'] == 1))
+	if($mybb->settings['enablepms'] != 0 && $uid != $mybb->user['uid'] && $mybb->usergroup['canusepms'] == 1 && (($memprofile['receivepms'] != 0 && $memperms['canusepms'] != 0 && my_strpos(",".$memprofile['ignorelist'].",", ",".$mybb->user['uid'].",") === false) || $mybb->usergroup['canoverridepm'] == 1))
 	{
 		$memprofile['hascontacts'] = true;
 		$memprofile['showpm'] = true;

@@ -350,8 +350,7 @@ function build_postbit($post, $post_type=0)
 			$post['button_find'] = true;
 		}
 
-		if($mybb->settings['enablepms'] == 1 &&
-			(($post['receivepms'] != 0 && $usergroup['canusepms'] != 0 && $mybb->usergroup['cansendpms'] == 1 && my_strpos(','.$post['ignorelist'].',', ','.$mybb->user['uid'].',') === false) || $mybb->usergroup['canoverridepm'] == 1))
+		if($mybb->settings['enablepms'] == 1 && $post['uid'] != $mybb->user['uid'] && (($post['receivepms'] != 0 && $usergroup['canusepms'] != 0 && $mybb->usergroup['cansendpms'] == 1 && my_strpos(",".$post['ignorelist'].",", ",".$mybb->user['uid'].",") === false) || $mybb->usergroup['canoverridepm'] == 1))
 		{
 			$post['button_pm'] = true;
 		}
@@ -384,8 +383,7 @@ function build_postbit($post, $post_type=0)
 		}
 
 		$post['button_email'] = false;
-		if($post['hideemail'] != 1 &&
-			$mybb->usergroup['cansendemail'] == 1)
+		if($post['hideemail'] != 1 && $post['uid'] != $mybb->user['uid'] && $mybb->usergroup['cansendemail'] == 1)
 		{
 			$post['button_email'] = true;
 		}
