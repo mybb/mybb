@@ -103,33 +103,58 @@
             {% endif %}
             <section class="block">
                 <h3 class="title title--major">{{ trans('users_forum_info', memprofile.username) }}</h3>
-                <div class="row row--profile-field profile-field">
-                    <h4 class="profile-field__name">{{ lang.total_posts }}</h4>
-                    <p class="profile-field__value">
-                        {{ memprofile.postnum|my_number_format }} ({{ trans('ppd_percent_total', memprofile.ppd|my_number_format, memprofile.post_percent) }})
-                        {% if mybb.usergroup.cansearch %}
-                            <br />(<a href="search.php?action=finduser&amp;uid={{ memprofile.uid }}">{{ lang.find_posts }}</a>)
-                        {% endif %}
-                    </p>
+                <div class="row row--simple-columns">
+                    <div class="row__primary profile-field">
+                        <h4 class="profile-field__name">{{ lang.total_posts }}</h4>
+                        <p class="profile-field__value">
+                            {{ memprofile.postnum|my_number_format }} ({{ trans('ppd_percent_total', memprofile.ppd|my_number_format, memprofile.post_percent) }})
+                        </p>
+                    </div>
+                    {% if mybb.usergroup.cansearch %}
+                        <div class="row__secondary">
+                            <a href="search.php?action=finduser&amp;uid={{ memprofile.uid }}" class="button button--basic">
+                                {{ include('partials/icon.twig', {icon: 'search', class: 'button__icon'}, with_context = false) }}
+                                <span class="button__text">{{ lang.find_posts }}</span>
+                            </a>
+                        </div>
+                    {% endif %}
                 </div>
-                <div class="row row--profile-field profile-field">
-                    <h4 class="profile-field__name">{{ lang.total_threads }}</h4>
-                    <p class="profile-field__value">
-                        {{ memprofile.threadnum|my_number_format }} ({{ trans('tpd_percent_total', memprofile.tpd|my_number_format, memprofile.thread_percent) }})
-                        {% if mybb.usergroup.cansearch %}
-                            <br />(<a href="search.php?action=finduserthreads&amp;uid={{ memprofile.uid }}">{{ lang.find_threads }}</a>)
-                        {% endif %}
-                    </p>
+                <div class="row row--simple-columns">
+                    <div class="row__primary profile-field">
+                        <h4 class="profile-field__name">{{ lang.total_threads }}</h4>
+                        <p class="profile-field__value">
+                            {{ memprofile.threadnum|my_number_format }} ({{ trans('tpd_percent_total', memprofile.tpd|my_number_format, memprofile.thread_percent) }})
+                        </p>
+                    </div>
+                    {% if mybb.usergroup.cansearch %}
+                        <div class="row__secondary">
+                            <a href="search.php?action=finduserthreads&amp;uid={{ memprofile.uid }}" class="button button--basic">
+                                {{ include('partials/icon.twig', {icon: 'search', class: 'button__icon'}, with_context = false) }}
+                                <span class="button__text">{{ lang.find_threads }}</span>
+                            </a>
+                        </div>
+                    {% endif %}
                 </div>
                 {% if memprofile.showreputation %}
-                    <div class="row row--profile-field profile-field">
-                        <h4 class="profile-field__name">{{ lang.reputation }}</h4>
-                        <p class="profile-field__value">
-                            {{ memprofile.reputation|raw }} [<a href="reputation.php?uid={{ memprofile.uid }}">{{ lang.reputation_details }}</a>]
+                    <div class="row row--simple-columns">
+                        <div class="row__primary profile-field">
+                            <h4 class="profile-field__name">{{ lang.reputation }}</h4>
+                            <p class="profile-field__value">
+                                <a href="reputation.php?uid={{ memprofile.uid }}"{{ memprofile.reputation|raw }}</a>
+                            </p>
+                        </div>
+                        <div class="row__secondary">
+                            <a href="reputation.php?uid={{ memprofile.uid }}" class="button button--basic">
+                                {{ include('partials/icon.twig', {icon: 'info-circle', class: 'button__icon'}, with_context = false) }}
+                                <span class="button__text">{{ lang.reputation_details }}</span>
+                            </a>
                             {% if memprofile.showvote %}
-                                [<a href="javascript:void(0)" onclick="MyBB.reputation({{ memprofile.uid }}); return false;">{{ lang.reputation_vote }}</a>]
+                                <a href="javascript:void(0)" onclick="MyBB.reputation({{ memprofile.uid }}); return false;" class="button button--basic">
+                                    {{ include('partials/icon.twig', {icon: 'thumbs-up', class: 'button__icon'}, with_context = false) }}
+                                    <span class="button__text">{{ lang.reputation_vote }}</span>
+                                </a>
                             {% endif %}
-                        </p>
+                        </div>
                     </div>
                 {% endif %}
                 {% if mybb.settings.usereferrals %}
@@ -139,14 +164,21 @@
                     </div>
                 {% endif %}
                 {% if memprofile.showwarning %}
-                    <div class="row row--profile-field profile-field">
-                        <h4 class="profile-field__name">{{ lang.warning_level }}</h4>
-                        <p class="profile-field__value">
-                            <a href="{{ memprofile.warning_link }}">{{ memprofile.warning_level|raw }}</a>
-                            {% if memprofile.warn_user %}
-                                [<a href="warnings.php?action=warn&amp;uid={{ memprofile.uid }}">{{ lang.warn }}</a>]
-                            {% endif %}
-                        </p>
+                    <div class="row row--simple-columns">
+                        <div class="row__primary profile-field">
+                            <h4 class="profile-field__name">{{ lang.warning_level }}</h4>
+                            <p class="profile-field__value">
+                                <a href="{{ memprofile.warning_link }}">{{ memprofile.warning_level|raw }}</a>
+                            </p>
+                        </div>
+                        {% if memprofile.warn_user %}
+                            <div class="row__secondary">
+                                <a href="warnings.php?action=warn&amp;uid={{ memprofile.uid }}" class="button button--basic">
+                                    {{ include('partials/icon.twig', {icon: 'exclamation-triangle', class: 'button__icon'}, with_context = false) }}
+                                    <span class="button__text">{{ lang.warn }}</span>
+                                </a>
+                            </div>
+                        {% endif %}
                     </div>
                 {% endif %}
                 <div class="row row--profile-field profile-field">
