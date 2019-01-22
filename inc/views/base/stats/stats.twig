@@ -14,9 +14,9 @@
         <h2 class="title title--major">{{ lang.most_replied_threads }}</h2>
         <section class="block">
             {% for thread in most_replied_to_threads %}
-                <div class="row">
-                    <a href="{{ thread.link }}"><strong>{{ thread.subject }}</strong></a>
-                    ({{ thread.replies }} {{ lang.replies }})
+                <div class="row row--simple-columns">
+                    <div class="row__primary"><a href="{{ thread.link }}"><strong>{{ thread.subject }}</strong></a></div>
+                    <div class="row__secondary">{{ thread.replies }} {{ lang.replies }}</div>
                 </div>
             {% endfor %}
         </section>
@@ -24,9 +24,9 @@
         <h2 class="title title--major">{{ lang.most_viewed_threads }}</h2>
         <section class="block">
             {% for thread in most_viewed_threads %}
-                <div class="row">
-                    <a href="{{ thread.link }}"><strong>{{ thread.subject }}</strong></a>
-                    ({{ thread.views }} {{ lang.views }})
+                <div class="row row--simple-columns">
+                    <div class="row__primary"><a href="{{ thread.link }}"><strong>{{ thread.subject }}</strong></a></div>
+                    <div class="row__secondary">{{ thread.views }} {{ lang.views }}</div>
                 </div>
             {% endfor %}
         </section>
@@ -63,18 +63,28 @@
                     <span class="list__value">{{ stats.have_posted_percent }}</span>
                 </li>
                 <li class="list__item">
-                    {{ lang.todays_top_poster|raw }}
+                    <span class="list__field">{{ lang.todays_top_poster }}</span>
+                    <span class="list__value">{{ trans('todays_top_poster_value', stats.top_poster, stats.top_poster_posts) }}</span>
                 </li>
                 <li class="list__item">
-                    {% if top_forum %}
-                        {% set forum_link = '<a href="' ~ top_forum.link ~ '">' ~ top_forum.name ~ '</a>' %}
-                        {{ trans('popular_forum', forum_link, top_forum.posts, top_forum.threads)|raw }}<br/>
-                    {% else %}
-                        {{ trans('popular_forum', lang.none, lang.no, lang.no)|raw }}<br/>
-                    {% endif %}
-
-                    {{ top_referer|raw ?: '' }}
+                    <span class="list__field">{{ lang.popular_forum }}</span>
+                    <span class="list__value">
+                        {% if top_forum %}
+                            {% set forum_link = '<a href="' ~ top_forum.link ~ '">' ~ top_forum.name ~ '</a>' %}
+                            {{ trans('popular_forum_value', forum_link, top_forum.posts, top_forum.threads) }}<br/>
+                        {% else %}
+                            {{ trans('popular_forum_value', lang.none, lang.no, lang.no) }}<br/>
+                        {% endif %}
+                    </span>
                 </li>
+                {% if stats.top_referrer_user %}
+                    <li class="list__item">
+                        <span class="list__field">{{ lang.top_referrer }}</span>
+                        <span class="list__value">
+                            {{ trans('top_referrer_value', stats.top_referrer_user, stats.top_referrer_count) }}
+                        </span>
+                    </li>
+                {% endif %}
             </ul>
         </section>
 
