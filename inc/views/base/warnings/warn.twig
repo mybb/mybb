@@ -11,28 +11,12 @@
             <p class="page-description">{{ lang.warn_user_desc }}</p>
         </header>
         {% if warnings %}
-            <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-                <thead>
-                    <tr>
-                        <td class="thead" colspan="5">
-                            <div><strong>{{ lang.existing_post_warnings }}</strong></div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="tcat"><span class="smalltext"><strong>{{ lang.warning }}</strong></span></td>
-                        <td class="tcat" width="20%" align="center"><span class="smalltext"><strong>{{ lang.date_issued }}</strong></span></td>
-                        <td class="tcat" width="20%" align="center"><span class="smalltext"><strong>{{ lang.expiry_date }}</strong></span></td>
-                        <td class="tcat" width="20%" align="center"><span class="smalltext"><strong>{{ lang.issued_by }}</strong></span></td>
-                        <td class="tcat" width="1" align="center"><span class="smalltext"><strong>{{ lang.details }}</strong></span></td>
-                    </tr>
-                </thead>
-                <tbody>
+            <section class="block">
+                <h1 class="title title--major">{{ lang.existing_post_warnings }}</h1>
                 {% for warning in warnings %}
                     {% include 'warnings/warning_row.twig' %}
                 {% endfor %}
-                </tbody>
-            </table>
-            <br />
+            </section>
         {% endif %}
         {{ warn_errors|raw }}
         <form action="warnings.php" method="post" name="input">
