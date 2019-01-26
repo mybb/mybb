@@ -10,8 +10,9 @@
         {{ include('partials/icon.twig', {icon: 'exclamation-triangle', class: 'alert__icon'}, with_context = false) }}
         <div class="alert__message">
             {% if title %}<h2 class="alert__title">{{ title }}</h2>{% endif %}
-            <p class="alert__description">{% if error %}{{ error|raw }}{% else %}{{ lang.unknown_error }}{% endif %}</p>
+            <p class="alert__description">{% if error_message %}{{ error_message|raw }}{% else %}{{ lang.unknown_error }}{% endif %}</p>
         </div>
     </div>
+    {% if error_page %}{{ error_page|raw }}{% endif %}
 </div>
 {% endblock body %}

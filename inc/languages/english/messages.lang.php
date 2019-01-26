@@ -50,6 +50,7 @@ $l['error_nousername'] = "You did not enter a username.";
 $l['error_invalidusername'] = "The username you have entered appears to be invalid.";
 $l['error_invalidpassword'] = "The password you entered is incorrect. If you have forgotten your password, click <a href=\"member.php?action=lostpw\">here</a>. Otherwise, go back and try again.";
 $l['error_postflooding'] = "We are sorry but we cannot process your post. The administrator has specified you are only allowed to post once every {1} seconds.";
+$l['error_nopermission'] = "You cannot access this page";
 $l['error_nopermission_guest_1'] = "You are either not logged in or do not have permission to view this page. This could be because one of the following reasons:";
 $l['error_nopermission_guest_2'] = "You are not logged in or registered. Please use the form at the bottom of this page to login.";
 $l['error_nopermission_guest_3'] = "You do not have permission to access this page. Are you trying to access administrative pages or a resource that you shouldn't be?  Check in the forum rules that you are allowed to perform this action.";

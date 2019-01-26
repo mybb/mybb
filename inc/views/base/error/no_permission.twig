@@ -1,36 +1,41 @@
-{{ lang.error_nopermission_guest_1 }}
-<ol>
-    <li>{{ lang.error_nopermission_guest_2 }}</li>
-    <li>{{ lang.error_nopermission_guest_3 }}</li>
-    <li>{{ lang.error_nopermission_guest_4 }}{% if mybb.user.uid %} (<a href="member.php?action=resendactivation">{{ lang.error_nopermission_user_resendactivation }}</a>){% endif %}</li>
-    <li>{{ lang.error_nopermission_guest_5 }}</li>
-</ol>
-
 {% if mybb.user.uid > 0 %}
-    <br />
     {{ trans('error_nopermission_user_username', mybb.user.username) }}
 {% else %}
 
     <form action="member.php" method="post">
+        <section class="block block--form form">
+            <div class="section section--form">
+                <h1 class="title title--section">{{ lang.login }}</h1>
+                <div class="section__container">
+                    <div class="row row--form field">
+                        <h3 class="field__name"><label for="username">{{ lang.username }}</label></h3>
+                        <input type="text" class="textbox" name="username" id="username" value="{{ login.username }}" tabindex="1" required autofocus>
+                    </div>
+                    <div class="row row--form field">
+                        <h3 class="field__name"><label for="password">{{ lang.password }}</label></h3>
+                        <p class="field__description"><a href="member.php?action=lostpw">{{ lang.forgot_password }}</a></p>
+                        <input type="password" class="textbox" name="password" id="password" value="{{ login.password }}" tabindex="2" required>
+                    </div>
+                    <div class="row row--form field">
+                        <p class="option-field option-field--compact">
+                            <label title="{{ lang.remember_me_desc }}"><input type="checkbox" class="checkbox" name="remember" checked="checked" value="yes" /> {{ lang.remember_me }}</label>
+                        </p>
+                    </div>
+                </div>
+                {{ captcha|raw }}
+            </div>
+            <div class="form__submit">
+                <button type="submit" class="button button--big">
+                    {{ include('partials/icon.twig', {icon: 'sign-in-alt', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.login }}</span>
+                </button>
+                <a href="member.php?action=register" class="button button--basic">
+                    {{ include('partials/icon.twig', {icon: 'user', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.need_reg }}</span>
+                </a>
+            </div>
+        </section>
         <input type="hidden" name="action" value="do_login" />
         <input type="hidden" name="url" value="{{ redirect_url }}" />
-        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-            <tr>
-                <td class="thead" colspan="2"><span class="smalltext"><strong>{{ lang.login }}</strong></span></td>
-            </tr>
-            <tr>
-                <td class="trow1"><strong>{{ username }}</strong></td>
-                <td class="trow1"><input type="text" class="textbox" name="username" tabindex="1" /></td>
-            </tr>
-            <tr>
-                <td class="trow2"><strong>{{ lang.password }}</strong></td>
-                <td class="trow2"><input type="password" class="textbox" name="password" tabindex="2" /></td>
-            </tr>
-            <tr>
-                <td class="trow2" colspan="2"><span class="smalltext float_right" style="padding-top: 3px;"><a href="member.php?action=register">{{ lang.need_reg }}</a> | <a href="member.php?action=lostpw">{{ lang.forgot_password }}</a>&nbsp;</span>&nbsp;<input type="submit" class="button" value="{{ lang.login }}" tabindex="3" /></td>
-            </tr>
-        </table>
     </form>
-    <br />
-
 {% endif %}
