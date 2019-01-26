@@ -1,5 +1,8 @@
 {% if mybb.user.uid > 0 %}
-    {{ trans('error_nopermission_user_username', mybb.user.username) }}
+    <div class="alert">
+        {{ include('partials/icon.twig', {icon: 'user', class: 'alert__icon'}, with_context = false) }}
+        <p class="alert__message">{{ trans('error_nopermission_user_username', mybb.user.username) }}</p>
+    </div>
 {% else %}
 
     <form action="member.php" method="post">
