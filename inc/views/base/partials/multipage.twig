@@ -36,11 +36,14 @@
     {% if breadcrumb == false and mybb.settings.jumptopagemultipage and multipage.total_pages > ( mybb.settings.maxmultipagelinks + 1 ) %}
         <div class="popup_menu drop_go_page" style="display: none;">
             <form action="{{ multipage.jump_url }}" method="post">
-                <label for="page">{{ lang.multipage_jump }}:</label> <input type="text" class="textbox" name="page" value="{{ page }}" size="4" />
-                <input type="submit" class="button" value="{{ lang.go }}" />
+                <input type="text" class="textbox textbox--small textbox--no-margin" name="page" value="{{ page }}" size="4" />
+                <button type="submit" class="button button--inline">
+                    {{ include('partials/icon.twig', {icon: 'arrow-right', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.multipage_jump }}</span>
+                </button>
             </form>
         </div>
-        <a href="javascript:void(0)" class="go_page" title="{{ lang.multipage_jump }}"><img src="{{ theme.imgdir }}/arrow_down.png" alt="{{ lang.multipage_jump }}" /></a>&nbsp;
+        <a href="javascript:void(0)" class="go_page" title="{{ lang.multipage_jump }}">{{ include('partials/icon.twig', {icon: 'chevron-down', class: 'pagination__icon', title: lang.multipage_jump}, with_context = false) }}</a>&nbsp;
         <script type="text/javascript">
             var go_page = 'go_page_' + $(".go_page").length;
             $(".go_page").last().attr('id', go_page);
