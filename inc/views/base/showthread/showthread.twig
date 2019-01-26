@@ -436,7 +436,7 @@
                         </a>
                     {% else %}
                         <a href="showthread.php?mode=threaded&amp;tid={{ thread.tid }}&amp;pid={{ thread.pid }}#pid{{ thread.pid }}" class="button button--basic">
-                            {{ include('partials/icon.twig', {icon: 'fa-list', class: 'button__icon'}, with_context = false) }}
+                            {{ include('partials/icon.twig', {icon: 'list', class: 'button__icon'}, with_context = false) }}
                             <span class="button__text">{{ lang.threaded }}</span>
                         </a>
                     {% endif %}
