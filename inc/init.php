@@ -227,6 +227,8 @@ if(!defined("IN_INSTALL") && !defined("IN_UPGRADE") && $version['version_code'] 
 	}
 }
 
+require_once __DIR__.'/src/bootstrap.php';
+
 // Load plugins
 if(!defined("NO_PLUGINS") && !($mybb->settings['no_plugins'] == 1))
 {
@@ -299,5 +301,3 @@ $time_formats = array(
 	2 => "h:i A",
 	3 => "H:i"
 );
-
-require_once __DIR__.'/src/bootstrap.php';
