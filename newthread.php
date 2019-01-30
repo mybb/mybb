@@ -190,6 +190,13 @@ if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid'
 	{
 		$mybb->input['action'] = "newthread";
 	}
+
+	if($mybb->get_input('ajax', MyBB::INPUT_INT) == 1)
+	{
+		header("Content-type: application/json; charset={$lang->settings['charset']}");
+		echo json_encode(array("success" => true));
+		exit();
+	}
 }
 
 $thread_errors = "";
