@@ -249,7 +249,7 @@ if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid'
 		update_thread_counters($post['tid'], array('attachmentcount' => "-1"));
 	}
 
-	if($mybb->input['ajax'] == 1)
+	if($mybb->get_input('ajax', MyBB::INPUT_INT) == 1)
 	{
 		header("Content-type: application/json; charset={$lang->settings['charset']}");
 		echo json_encode(array("success" => true));
