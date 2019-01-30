@@ -24,7 +24,7 @@
                         </div>
                         {% if registration.showpassword %}
                             <div class="row row--form field">
-                                <h3 class="field__name"><label for="password"><label for="password">{{ lang.password }}</label></h3>
+                                <h3 class="field__name"><label for="password"><label for="password">{{ lang.password|raw }}</label></h3>
                                 <p class="field__description">{{ lang.confirm_password_desc }}</p>
                                 <div class="confirm-field">
                                     <div class="confirm-field__field">
