@@ -254,6 +254,27 @@
             </div>
         </div>
 
+        {% if thread.showthreaded %}
+            <section class="block">
+                <h1 class="title title--major">{{ lang.messages_in_thread }}</h1>
+                <div class="threaded-mode">
+                    {% for post in threadedbits %}
+                        {% if post.bitactive %}
+                            <div class="threaded-mode__post threaded-mode__post--active" style="margin-left: {{ post.indentsize }}px;">
+                                <span class="threaded-mode__date">{{ post.postdate|raw }}</span>
+                                <span class="threaded-mode__author">{{ lang.by }} {{ post.profilelink|raw }}</span>
+                            </div>
+                        {% else %}
+                            <div class="threaded-mode__post" style="margin-left: {{ post.indentsize }}px;">
+                                <span class="threaded-mode__date"><a href="showthread.php?tid={{ thread.tid }}&amp;pid={{ post.pid }}&amp;mode=threaded">{{ post.postdate|raw }}</a></span>
+                                <span class="threaded-mode__author">{{ lang.by }} {{ post.profilelink|raw }}</span>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </section>
+        {% endif %}
+
         {% if thread.showquickreply and thread.visible >= 0 %}
             <div id="quickreply_spinner" class="spinner spinner--quick-reply" style="display: none"><span class="spinner__icon">{{ include('partials/icon.twig', {icon: 'sync', class: 'spinner__icon fa-spin'}, with_context = false) }}</span></div>
             {% if thread.showmodnotice %}
@@ -368,63 +389,58 @@
                 {% include 'showthread/moderation.twig' %}
             {% endif %}
 
-            {% if thread.showthreaded %}
-                <br />
-                <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-                    <tr>
-                        <td class="thead"><span class="smalltext"><strong>{{ lang.messages_in_thread }}</strong></span></td>
-                    </tr>
-                    <tr>
-                        <td class="trow1">
-                            {% for post in threadedbits %}
-                                {% if post.bitactive %}
-                                    <div style="margin-left: {{ post.indentsize }}px;">
-                                        <strong>{{ post.subject }}</strong> <span class="smalltext">- {{ lang.by }} {{ post.profilelink|raw }} - {{ post.postdate|raw }}</span>
-                                    </div>
-                                {% else %}
-                                    <div style="margin-left: {{ post.indentsize }}px;">
-                                        <a href="showthread.php?tid={{ thread.tid }}&amp;pid={{ post.pid }}&amp;mode=threaded">{{ post.subject }}</a> <span class="smalltext">- {{ lang.by }} {{ post.profilelink|raw }} - {{ post.postdate|raw }}</span>
-                                    </div>
-                                {% endif %}
-                            {% endfor %}
-                        </td>
-                    </tr>
-                </table>
-            {% endif %}
             {% if mybb.settings.showsimilarthreads and thread.similarthreads %}
-                <br />
-                <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-                    <tr>
-                        <td class="thead" align="center" colspan="6"><strong>{{ lang.similar_threads }}</strong></td>
-                    </tr>
-                    <tr>
-                        <td class="tcat" align="center" colspan="2"><span class="smalltext"><strong>{{ lang.thread }}</strong></span></td>
-                        <td class="tcat" align="center"><span class="smalltext"><strong>{{ lang.author }}</strong></span></td>
-                        <td class="tcat" align="center"><span class="smalltext"><strong>{{ lang.replies }}</strong></span></td>
-                        <td class="tcat" align="center"><span class="smalltext"><strong>{{ lang.views }}</strong></span></td>
-                        <td class="tcat" align="center"><span class="smalltext"><strong>{{ lang.lastpost }}</strong></span></td>
-                    </tr>
-                    {% for similar_thread in similarthreads %}
-                        {% set row = alt_trow() %}
-                        <tr>
-                            <td align="center" class="{{ row }}" width="2%">
-                                {% if similar_thread.hasicon %}
-                                    <img src="{{ similar_thread.icon_path }}" alt="{{ similar_thread.icon_name }}" title="{{ similar_thread.icon_name }}" />
-                                {% else %}
-                                    &nbsp;
-                                {% endif %}
-                            </td>
-                            <td class="{{ row }}">{{ similar_thread.threadprefix|raw }}<a href="{{ similar_thread.threadlink|raw }}">{{ similar_thread.subject }}</a></td>
-                            <td align="center" class="{{ row }}">{{ similar_thread.profilelink|raw }}</td>
-                            <td align="center" class="{{ row }}"><a href="{{ mybb.settings.bburl }}/misc.php?action=whoposted&amp;tid={{ similar_thread.tid }}" onclick="MyBB.whoPosted({{ similar_thread.tid }}); return false;">{{ similar_thread.replies }}</a></td>
-                            <td align="center" class="{{ row }}">{{ similar_thread.views }}</td>
-                            <td class="{{ row }}" style="white-space: nowrap">
-                                <span class="smalltext">{{ similar_thread.lastpostdate|raw }}<br />
-                                <a href="{{ similar_thread.lastpostlink|raw }}">{{ lang.lastpost }}</a>: {{ similar_thread.lastposterlink|raw }}</span>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </table>
+                <br>
+                <section class="block">
+                    <h1 class="title title--major">{{ lang.similar_threads }}</h1>
+                    <div class="thread-list thread-list--compact thread-list--no-footer">
+                        <div class="sort-threads sort-threads--alt">
+                            <div class="sort-threads__column sort-threads__column--primary">
+                                {{ lang.thread }}<span class="sort-threads__author"> &mdash; {{ lang.author }}</span>
+                            </div>
+                            <div class="sort-threads__column sort-threads__column--replies">
+                                {{ lang.replies }}
+                            </div>
+                            <div class="sort-threads__column sort-threads__column--latest">
+                                {{ lang.lastpost }}
+                            </div>
+                        </div>
+
+                        {% for similar_thread in similarthreads %}
+                            <div class="row row--thread thread {{ thread.class }}">
+                                <div class="thread__column thread__column--primary">
+                                    <h3 class="thread__title {$new_class}">
+                                        {% if similar_thread.threadprefix %}
+                                            <span class="tag tag--thread-prefix tag--thread-prefix-{{ similar_thread.prefix }}">{{ similar_thread.threadprefix|raw }}</span>
+                                        {% endif %}
+                                        <a href="{{ similar_thread.threadlink|raw }}">{{ similar_thread.subject }}</a>
+                                        <span class="thread__icons">
+                                            {% if similar_thread.hasicon %}
+                                                <img src="{{ similar_thread.icon_path }}" alt="{{ similar_thread.icon_name }}" title="{{ similar_thread.icon_name }}" />
+                                            {% endif %}
+                                        </span>
+                                    </h3>
+                                    <p class="thread__author">{{ lang.by }} {{ similar_thread.profilelink|raw }}</p>
+                                </div>
+                                <div class="thread__column thread__column--replies">
+                                    <p class="thread__replies" title="{{ lang.replies }}: {{ thread.replies }} &middot; {{ lang.views }}: {{ thread.views }}">
+                                        <a href="{{ mybb.settings.bburl }}/misc.php?action=whoposted&amp;tid={{ similar_thread.tid }}" onclick="MyBB.whoPosted({{ similar_thread.tid }}); return false;" class="thread__reply-count">{{ similar_thread.replies }}</a>
+                                        <span class="thread__reply-legend">{% if thread.replies == 1 %}{{ lang.reply }}{% else %}{{ lang.replies }}{% endif %}</span>
+                                    </p>
+                                </div>
+                                <div class="thread__column thread__column--latest">
+                                    <p class="thread__latest-post">
+                                        <span class="thread__latest-post__text">{{ lang.lastpost_by }}</span>
+                                        <span class="thread__latest-post__author">
+                                            {{ similar_thread.lastposterlink|raw }}
+                                        </span>
+                                        <a href="{{ similar_thread.lastpostlink|raw }}" class="thread__latest-post__date">{{ similar_thread.lastpostdate|raw }}</a>
+                                    </p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </section>
             {% endif %}
 
             <div class="page-controls">
@@ -480,14 +496,6 @@
                 </div>
             {% endif %}
 
-            <script type="text/javascript">
-            // <!--
-                if(use_xmlhttprequest == "1")
-                {
-                    $("#thread_modes").popupMenu();
-                }
-            // -->
-            </script>
             <script type="text/javascript">
                 $(".author_avatar img").error(function () {
                     $(this).unbind("error").closest('.author_avatar').remove();

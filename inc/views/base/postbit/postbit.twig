@@ -214,6 +214,7 @@
             {% endif %}
 
             {# Reply to post button #}
+            {# TO DO : Show reply button in threaded mode #}
             {% if post.button_quote %}
                 {# <a href="newreply.php?tid={{ post.tid }}&amp;replyto={{ post.pid }}" title="{{ lang.postbit_quote }}" class="post-control post-control--reply">{{ include('partials/icon.twig', {icon: 'comments', class: 'post-control__icon fa-fw'}, with_context = false) }}</i><span class="post-control__text">{{ lang.postbit_button_quote }}</span></a>#}
             {% endif %}
