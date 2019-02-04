@@ -27,9 +27,29 @@
 
             {# Thread status icons #}
             <span class="thread__icons">
+                {# Thread icon #}
+                {% if thread.hasicon %}
+                    <span class="thread__icon"><img src="{{ thread.icon_path }}" alt="{{ thread.icon_name }}" title="{{ thread.icon_name }}" /></span>
+                {% endif %}
+
+                {# Contains posts by you #}
+                {% if 'dot' in thread.folder.value %}
+                    {{ include('partials/icon.twig', {icon: 'user-circle', class: 'thread__icon fa-fw', title: lang.posts_by_you}, with_context = false) }}
+                {% endif %}
+
                 {# Attachment paperclip #}
                 {% if mybb.settings.enableattachments and thread.attachmentcount %}
                     {{ include('partials/icon.twig', {icon: 'paperclip', class: 'thread__icon fa-fw', title: thread.attachmentcount}, with_context = false) }}
+                {% endif %}
+
+                {# Hot thread #}
+                {% if 'hot' in thread.folder.value %}
+                    {{ include('partials/icon.twig', {icon: 'fire', class: 'thread__icon fa-fw', title: lang.hot}, with_context = false) }}
+                {% endif %}
+
+                {# Poll #}
+                {% if thread.poll %}
+                    {{ include('partials/icon.twig', {icon: 'check-square', class: 'thread__icon fa-fw', title: lang.poll_prefix}, with_context = false) }}
                 {% endif %}
 
                 {# Closed #}
@@ -40,16 +60,6 @@
                 {# Sticky #}
                 {% if thread.sticky %}
                     {{ include('partials/icon.twig', {icon: 'thumbtack', class: 'thread__icon thread__icon--sticky fa-fw', title: lang.sticky}, with_context = false) }}
-                {% endif %}
-
-                {# Poll #}
-                {% if thread.poll %}
-                    {{ include('partials/icon.twig', {icon: 'check-square', class: 'thread__icon fa-fw', title: lang.poll_prefix}, with_context = false) }}
-                {% endif %}
-
-                {# Thread icon #}
-                {% if thread.hasicon %}
-                    <span class="thread__icon"><img src="{{ thread.icon_path }}" alt="{{ thread.icon_name }}" title="{{ thread.icon_name }}" /></span>
                 {% endif %}
             </span>
         </h3>

@@ -39,16 +39,35 @@
 
             {# Thread status icons #}
             <span class="thread__icons">
+                {# Thread icon #}
+                {% if thread.icon and iconCache[thread.icon] %}
+                    <span class="thread__icon"><img src="{{ iconCache[thread.icon].path }}" alt="{{ iconCache[thread.icon].name }}" title="{{ iconCache[thread.icon].name }}" /></span>
+                {% endif %}
 
-                {# <span class="thread_status {{ thread.folder.value }}" title="{{ thread.folder.label }}">&nbsp;</span> #}
-
-                {# TO DO: Contains posts by you #}
-                {# TO DO: Hot thread? #}
+                {# Contains posts by you #}
+                {% if 'dot' in thread.folder.value %}
+                    {{ include('partials/icon.twig', {icon: 'user-circle', class: 'thread__icon fa-fw', title: lang.posts_by_you}, with_context = false) }}
+                {% endif %}
 
                 {# Attachment paperclip #}
                 {% if mybb.settings.enableattachments and thread.attachmentcount %}
                     {% set attachment_title = (thread.attachmentcount > 1) ? trans(lang.attachment_count_multiple, thread.attachmentcount) : lang.attachment_count %}
                     {{ include('partials/icon.twig', {icon: 'paperclip', class: 'thread__icon fa-fw', title: attachment_title}, with_context = false) }}
+                {% endif %}
+
+                {# Hot thread #}
+                {% if 'hot' in thread.folder.value %}
+                    {{ include('partials/icon.twig', {icon: 'fire', class: 'thread__icon fa-fw', title: lang.hot}, with_context = false) }}
+                {% endif %}
+
+                {# Poll #}
+                {% if thread.poll %}
+                    {{ include('partials/icon.twig', {icon: 'check-square', class: 'thread__icon fa-fw', title: lang.poll_prefix}, with_context = false) }}
+                {% endif %}
+
+                {# Moved #}
+                {% if moved %}
+                    {{ include('partials/icon.twig', {icon: 'arrow-right', class: 'thread__icon fa-fw', title: lang.moved_prefix}, with_context = false) }}
                 {% endif %}
 
                 {# Closed #}
@@ -59,21 +78,6 @@
                 {# Sticky #}
                 {% if thread.sticky %}
                     {{ include('partials/icon.twig', {icon: 'thumbtack', class: 'thread__icon thread__icon--sticky fa-fw', title: lang.sticky}, with_context = false) }}
-                {% endif %}
-
-                {# Moved #}
-                {% if moved %}
-                    {{ include('partials/icon.twig', {icon: 'arrow-right', class: 'thread__icon fa-fw', title: lang.moved_prefix}, with_context = false) }}
-                {% endif %}
-
-                {# Poll #}
-                {% if thread.poll %}
-                    {{ include('partials/icon.twig', {icon: 'check-square', class: 'thread__icon fa-fw', title: lang.poll_prefix}, with_context = false) }}
-                {% endif %}
-
-                {# Thread icon #}
-                {% if thread.icon and iconCache[thread.icon] %}
-                    <span class="thread__icon"><img src="{{ iconCache[thread.icon].path }}" alt="{{ iconCache[thread.icon].name }}" title="{{ iconCache[thread.icon].name }}" /></span>
                 {% endif %}
             </span>
         </h3>

@@ -51,6 +51,7 @@ $l['new_hot_thread'] = "Hot Thread (New)";
 $l['posts_by_you'] = "Contains Posts by You";
 $l['no_new_thread'] = "No New Posts";
 $l['hot_thread'] = "Hot Thread (No New)";
+$l['hot'] = "Hot Thread";
 $l['locked_thread'] = "Locked Thread";
 $l['by'] = "by";
 $l['goto_first_unread'] = "Go to first unread post";
