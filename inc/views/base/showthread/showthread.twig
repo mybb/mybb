@@ -2,7 +2,9 @@
 
 {% block head %}
     <title>{{ thread.subject }} - {{ mybb.settings.bbname }}</title>
+{% endblock head %}
 
+{% block jscripts %}
     <script type="text/javascript">
     <!--
         var quickdelete_confirm = "{{ lang.quickdelete_confirm }}";
@@ -23,7 +25,7 @@
     <script type="text/javascript" src="{{ asset_url('jscripts/report.js') }}" defer></script>
     <script type="text/javascript" src="{{ asset_url('jscripts/jeditable/jeditable.min.js') }}" defer></script>
     <script type="text/javascript" src="{{ asset_url('jscripts/thread.js') }}" defer></script>
-{% endblock head %}
+{% endblock jscripts %}
 
 {% block body %}
     <div class="page-content">

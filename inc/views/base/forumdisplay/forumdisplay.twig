@@ -7,7 +7,9 @@
         <link rel="alternate" type="application/rss+xml" title="{{ trans('rss_discovery_forum', foruminfo.name|striptags) }} (RSS 2.0)" href="{{ mybb.settings.bburl }}/syndication.php?fid={{ foruminfo.fid }}" />
         <link rel="alternate" type="application/atom+xml" title="{{ lang.rss_discovery_forum }} (Atom 1.0)" href="{{ mybb.settings.bburl }}/syndication.php?type=atom1.0&amp;fid={{ foruminfo.fid }}" />
     {% endif %}
+{% endblock head %}
 
+{% block jscripts %}
     <script type="text/javascript">
     <!--
         lang.no_new_posts = "{{ lang.no_new_posts }}";
@@ -19,7 +21,7 @@
     <!-- jeditable (jquery) -->
     <script type="text/javascript" src="{{ mybb.asset_url }}/jscripts/jeditable/jeditable.min.js"></script>
     <script type="text/javascript" src="{{ mybb.asset_url }}/jscripts/inline_edit.js?ver=1808"></script>
-{% endblock head %}
+{% endblock jscripts %}
 
 {% block body %}
     {% set displayRating = (mybb.settings.allowthreadratings and foruminfo.allowtratings and fpermissions.canviewthreads) ? true : false %}

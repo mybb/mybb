@@ -4,6 +4,10 @@
     <title>{{ lang.report_center }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
+{% block jscripts %}
+    <script type="text/javascript" src="{{ asset_url('jscripts/inline_reports.js') }}"></script>
+{% endblock jscripts %}
+
 {% block moderationHeader %}
     <header class="page-header">
         <h1 class="title title--page">{{ lang.report_center }}</h1>
@@ -37,9 +41,9 @@
                 {% endfor %}
             </div>
             <div class="sort-results">
-                <button type="submit" id="inline_read" class="button" name="reportsubmit">
+                <button type="submit" class="button" name="reportsubmit">
                     {{ include('partials/icon.twig', {icon: 'check', class: 'button__icon'}, with_context = false) }}
-                    <span class="button__text">{{ lang.mark_read }} ({{ report.inlinecount }})</span>
+                    <span class="button__text" id="inline_read">{{ lang.mark_read }} ({{ report.inlinecount }})</span>
                 </button>
                 <a href="modcp.php?action=allreports" class="button button--secondary">
                     {{ include('partials/icon.twig', {icon: 'flag', class: 'button__icon'}, with_context = false) }}

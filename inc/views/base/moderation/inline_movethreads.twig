@@ -15,10 +15,7 @@
                 <div class="section section--form">
                     <div class="row row--form field">
                         <h3 class="field__name">{{ lang.new_forum }}</h3>
-                        <div class="select-field">
-                            {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
-                            {{ forumselect|raw }}
-                        </div>
+                        {{ forumselect|raw }}
                     </div>
                 </div>
                 <div class="form__submit">

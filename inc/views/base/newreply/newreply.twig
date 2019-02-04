@@ -2,8 +2,11 @@
 
 {% block head %}
     <title>{{ trans('post_reply_to', thread.subject) }} - {{ mybb.settings.bbname }}</title>
-    <script type="text/javascript" src="{{ asset_url('jscripts/post.js') }}"></script>
 {% endblock head %}
+
+{% block jscripts %}
+    <script type="text/javascript" src="{{ asset_url('jscripts/post.js') }}"></script>
+{% endblock jscripts %}
 
 {# let the newreply variable be used in shared twig templates #}
 {% set composepost = newreply %}

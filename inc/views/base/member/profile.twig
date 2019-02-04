@@ -2,8 +2,11 @@
 
 {% block head %}
     <title>{{ trans('profile', memprofile.username) }} - {{ mybb.settings.bbname }}</title>
-    <script type="text/javascript" src="{{ asset_url('jscripts/report.js') }}"></script>
 {% endblock head %}
+
+{% block jscripts %}
+    <script type="text/javascript" src="{{ asset_url('jscripts/report.js') }}"></script>
+{% endblock jscripts %}
 
 {% block body %}
     <div class="profile">
