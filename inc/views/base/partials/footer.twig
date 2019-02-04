@@ -96,19 +96,23 @@
         <div class="footer__copyright">
             <div class="wrapper">
                 <p class="powered-by">
-                    <!-- MyBB is free software developed and maintained by a volunteer community.
-                        It would be much appreciated by the MyBB Group if you left the full copyright and "powered by" notice intact,
-                        to show your support for MyBB.  If you choose to remove or modify the copyright below,
-                        you may be refused support on the MyBB Community Forums.
+                    {# MyBB is free software developed and maintained by a volunteer community.
 
-                        This is free software, support us and we'll support you. -->
+                       We would appreciate it if you left the full "powered by" notice below
+                       intact to show your support for MyBB.
+
+                       If you choose to remove or modify the powered by notice below, you may
+                       be refused support on the MyBB Community Forums.
+
+                       This is free software; support us and we'll support you.
+                    #}
                     {{ lang.powered_by }} <a href="https://mybb.com" rel="noopener" class="powered-by__link" title="{{ lang.powered_by_desc }}">MyBB{% if mybb.settings.showvernum %} {{ mybb.version }}{% endif %}</a>
-                    <!-- End powered by -->
+                    {# End powered by #}
                 </p>
             </div>
         </div>
     </div>
-    <!-- The following piece of code allows MyBB to run scheduled tasks. DO NOT REMOVE -->{{ task_image }}<!-- End task image code. TODO: convert task_image template -->
+    {# The following piece of code allows MyBB to run scheduled tasks. DO NOT REMOVE #}{{ task_image }}{# End task image code. TODO: convert task_image template #}
     {% if mybb.settings.dst_correction %}
         {{ mybb.settings.dst_correction }}
     {% endif %}
