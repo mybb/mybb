@@ -201,16 +201,24 @@ function create_password($password, $salt = false, $user = false)
 	}
 	else
 	{
+		// salt may be needed in mechanisms other than passwords
 		if(!$salt)
 		{
 			$salt = generate_salt();
 		}
 
-		$hash = md5(md5($salt).md5($password));
+		$hashManager = \MyBB\app('hash');
+
+		$driverName = $hashManager->getDefaultDriver();
+
+		$hash = $hashManager->driver($driverName)->make($password, [
+			'salt' => $salt,
+		]);
 
 		$fields = array(
-			'salt' => $salt,
 			'password' => $hash,
+			'salt' => $salt,
+			'password_algorithm' => $driverName,
 		);
 	}
 
@@ -243,10 +251,29 @@ function verify_user_password($user, $password)
 	}
 	else
 	{
-		$password_fields = create_password($password, $user['salt'], $user);
+		$hashDriver = \MyBB\app('hash')->driver($parameters['user']['password_algorithm']);
 
-		return my_hash_equals($user['password'], $password_fields['password']);
+		return $hashDriver->check($parameters['password'], $parameters['user']['password'], [
+			'salt' => $user['salt'],
+		]);
 	}
+}
+
+/**
+ * Returns whether stored user's password needs to be rehashed.
+ *
+ * @param array $user An array containing password-related data.
+ * @return bool Whether or not the password should be rehashed.
+ */
+function user_password_needs_rehash($user)
+{
+	$defaultHashDriver = \MyBB\app('hash')->getDefaultDriver();
+
+	// prevent downgrading to old md5-based algorithm
+	return $defaultHashDriver != 'mybb' && (
+		$user['password_algorithm'] != $defaultHashDriver ||
+		\MyBB\app('hash')->driver($user['password_algorithm'])->needsRehash($user['password'])
+	);
 }
 
 /**

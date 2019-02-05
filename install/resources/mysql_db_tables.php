@@ -1054,7 +1054,8 @@ $tables[] = "CREATE TABLE mybb_usergroups (
 $tables[] = "CREATE TABLE mybb_users (
   uid int unsigned NOT NULL auto_increment,
   username varchar(120) NOT NULL default '',
-  password varchar(120) NOT NULL default '',
+  password varchar(500) NOT NULL default '',
+  password_algorithm varchar(30) NOT NULL default '',
   salt varchar(10) NOT NULL default '',
   loginkey varchar(50) NOT NULL default '',
   email varchar(220) NOT NULL default '',
