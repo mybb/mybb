@@ -207,6 +207,7 @@ function create_password($password, $salt = false, $user = false)
 			$salt = generate_salt();
 		}
 
+		/** @var Illuminate\Hashing\HashManager $hashManager */
 		$hashManager = \MyBB\app('hash');
 
 		$driverName = $hashManager->getDefaultDriver();
@@ -251,6 +252,7 @@ function verify_user_password($user, $password)
 	}
 	else
 	{
+		/** @var Illuminate\Contracts\Hashing\Hasher $hashDriver */
 		$hashDriver = \MyBB\app('hash')->driver($parameters['user']['password_algorithm']);
 
 		return $hashDriver->check($parameters['password'], $parameters['user']['password'], [
@@ -267,12 +269,15 @@ function verify_user_password($user, $password)
  */
 function user_password_needs_rehash($user)
 {
-	$defaultHashDriver = \MyBB\app('hash')->getDefaultDriver();
+	$defaultHashDriverName = \MyBB\app('hash')->getDefaultDriver();
+
+	/** @var Illuminate\Contracts\Hashing\Hasher $hashDriver */
+	$hashDriver = \MyBB\app('hash')->driver($user['password_algorithm']);
 
 	// prevent downgrading to old md5-based algorithm
-	return $defaultHashDriver != 'mybb' && (
-		$user['password_algorithm'] != $defaultHashDriver ||
-		\MyBB\app('hash')->driver($user['password_algorithm'])->needsRehash($user['password'])
+	return $defaultHashDriverName != 'mybb' && (
+		$user['password_algorithm'] != $defaultHashDriverName ||
+		$hashDriver->needsRehash($user['password'])
 	);
 }
 
