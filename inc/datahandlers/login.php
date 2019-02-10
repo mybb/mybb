@@ -333,6 +333,11 @@ class LoginDataHandler extends DataHandler
 			$this->captcha->invalidate_captcha();
 		}
 
+		if (user_password_needs_rehash($user)) {
+			$data = create_password($this->data['password']);
+			$db->update_query('users', $data, 'uid=' . (int)$user['uid']);
+		}
+
 		$plugins->run_hooks('datahandler_login_complete_end', $this);
 
 		return true;

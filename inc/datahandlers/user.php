@@ -1085,6 +1085,7 @@ class UserDataHandler extends DataHandler
 		$this->user_insert_data = array(
 			"username" => $db->escape_string($user['username']),
 			"password" => $user['password'],
+			"password_algorithm" => $user['password_algorithm'],
 			"salt" => $user['salt'],
 			"loginkey" => $user['loginkey'],
 			"email" => $db->escape_string($user['email']),
@@ -1245,6 +1246,10 @@ class UserDataHandler extends DataHandler
 		if(isset($user['password']))
 		{
 			$this->user_update_data['password'] = $user['password'];
+		}
+		if(isset($user['password_algorithm']))
+		{
+			$this->user_update_data['password_algorithm'] = $user['password_algorithm'];
 		}
 		if(isset($user['salt']))
 		{
