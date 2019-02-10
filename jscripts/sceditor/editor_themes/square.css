@@ -24,7 +24,7 @@
  */
 div.sceditor-grip,
 .sceditor-button div {
-  background-image: url('famfamfam.png');
+  background-image: url("famfamfam.png");
   background-repeat: no-repeat;
   width: 16px;
   height: 16px;
@@ -83,73 +83,79 @@ div.sceditor-grip,
 .sceditor-button-paste div {
   background-position: 0px -272px;
 }
-.sceditor-button-orderedlist div {
+.sceditor-button-outdent div {
   background-position: 0px -288px;
 }
-.sceditor-button-maximize div {
+.sceditor-button-orderedlist div {
   background-position: 0px -304px;
 }
-.sceditor-button-ltr div {
+.sceditor-button-maximize div {
   background-position: 0px -320px;
 }
-.sceditor-button-left div {
+.sceditor-button-ltr div {
   background-position: 0px -336px;
 }
-.sceditor-button-justify div {
+.sceditor-button-left div {
   background-position: 0px -352px;
 }
-.sceditor-button-italic div {
+.sceditor-button-justify div {
   background-position: 0px -368px;
 }
-.sceditor-button-image div {
+.sceditor-button-italic div {
   background-position: 0px -384px;
 }
-.sceditor-button-horizontalrule div {
+.sceditor-button-indent div {
   background-position: 0px -400px;
 }
-.sceditor-button-format div {
+.sceditor-button-image div {
   background-position: 0px -416px;
 }
-.sceditor-button-font div {
+.sceditor-button-horizontalrule div {
   background-position: 0px -432px;
 }
-.sceditor-button-emoticon div {
+.sceditor-button-format div {
   background-position: 0px -448px;
 }
-.sceditor-button-email div {
+.sceditor-button-font div {
   background-position: 0px -464px;
 }
-.sceditor-button-date div {
+.sceditor-button-emoticon div {
   background-position: 0px -480px;
 }
-.sceditor-button-cut div {
+.sceditor-button-email div {
   background-position: 0px -496px;
 }
-.sceditor-button-copy div {
+.sceditor-button-date div {
   background-position: 0px -512px;
 }
-.sceditor-button-color div {
+.sceditor-button-cut div {
   background-position: 0px -528px;
 }
-.sceditor-button-code div {
+.sceditor-button-copy div {
   background-position: 0px -544px;
 }
-.sceditor-button-center div {
+.sceditor-button-color div {
   background-position: 0px -560px;
 }
-.sceditor-button-bulletlist div {
+.sceditor-button-code div {
   background-position: 0px -576px;
 }
-.sceditor-button-bold div {
+.sceditor-button-center div {
   background-position: 0px -592px;
 }
-div.sceditor-grip {
+.sceditor-button-bulletlist div {
   background-position: 0px -608px;
+}
+.sceditor-button-bold div {
+  background-position: 0px -624px;
+}
+div.sceditor-grip {
+  background-position: 0px -640px;
   width: 10px;
   height: 10px;
 }
 .rtl div.sceditor-grip {
-  background-position: 0px -618px;
+  background-position: 0px -650px;
   width: 10px;
   height: 10px;
 }
@@ -177,16 +183,15 @@ div.sceditor-grip {
   color: #222;
   line-height: 1;
   font-weight: bold;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
   border-radius: 4px;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
   background-clip: padding-box;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  width: 100% !important;
+}
+.sceditor-container *,
+.sceditor-container *:before,
+.sceditor-container *:after {
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
 }
 .sceditor-container,
 .sceditor-container div,
@@ -209,10 +214,6 @@ div.sceditor-dropdown div {
   resize: none;
   background: #fff;
   display: block;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  width: 99% !important;
 }
 div.sceditor-resize-cover {
   position: absolute;
@@ -248,11 +249,7 @@ div.sceditor-grip {
   left: 0;
   height: 100% !important;
   width: 100% !important;
-  -webkit-border-radius: 0;
-  -moz-border-radius: 0;
   border-radius: 0;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
   background-clip: padding-box;
   z-index: 2000;
 }
@@ -271,11 +268,7 @@ body.sceditor-maximize {
   display: none;
 }
 .sceditor-maximize div.sceditor-toolbar {
-  -webkit-border-radius: 0;
-  -moz-border-radius: 0;
   border-radius: 0;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
   background-clip: padding-box;
 }
 /**
@@ -289,14 +282,8 @@ div.sceditor-dropdown {
   z-index: 4000;
   padding: 10px;
   line-height: 1;
-  -webkit-border-radius: 2px;
-  -moz-border-radius: 2px;
   border-radius: 2px;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
   background-clip: padding-box;
-  -webkit-box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.2);
-  -moz-box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.2);
   box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.2);
 }
 div.sceditor-dropdown a,
@@ -320,11 +307,7 @@ div.sceditor-dropdown textarea {
   border: 1px solid #ccc;
   border-top-color: #888;
   margin: 0 0 .75em;
-  -webkit-border-radius: 1px;
-  -moz-border-radius: 1px;
   border-radius: 1px;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
   background-clip: padding-box;
 }
 div.sceditor-dropdown textarea {
@@ -334,8 +317,6 @@ div.sceditor-dropdown input:focus,
 div.sceditor-dropdown textarea:focus {
   border-color: #aaa;
   border-top-color: #666;
-  -webkit-box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.1);
   box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.1);
 }
 div.sceditor-dropdown .button {
@@ -344,19 +325,13 @@ div.sceditor-dropdown .button {
   padding: 6px 12px;
   background: #ececec;
   border: solid 1px #ccc;
-  -webkit-border-radius: 2px;
-  -moz-border-radius: 2px;
   border-radius: 2px;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
   background-clip: padding-box;
   cursor: pointer;
   margin: .3em 0 0;
 }
 div.sceditor-dropdown .button:hover {
   background: #f3f3f3;
-  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
-  -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
 }
 div.sceditor-font-picker,
@@ -425,15 +400,8 @@ div.sceditor-toolbar {
   border-bottom: 1px solid #c0c0c0;
   line-height: 0;
   text-align: left;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
-  -webkit-border-radius: 3px 3px 0 0;
-  -moz-border-radius: 3px 3px 0 0;
   border-radius: 3px 3px 0 0;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
   background-clip: padding-box;
 }
 div.sceditor-group {
@@ -442,11 +410,7 @@ div.sceditor-group {
   margin: 1px 5px 1px 0;
   padding: 1px;
   border-bottom: 1px solid #aaa;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
   border-radius: 3px;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
   background-clip: padding-box;
 }
 .ie6 div.sceditor-group,
@@ -460,14 +424,9 @@ div.sceditor-group {
   padding: 3px 5px;
   width: 16px;
   height: 20px;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
   border-radius: 3px;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
   background-clip: padding-box;
   /* Needed for Safari 5? */
-
   text-indent: -9999px;
 }
 .ie .sceditor-button {
@@ -492,21 +451,15 @@ div.sceditor-group {
 .sceditor-button:active,
 .sceditor-button.active {
   background: #fff;
-  -webkit-box-shadow: inset 1px 1px 0 rgba(0,0,0,0.3), inset -1px 0 rgba(0,0,0,0.3), inset 0 -1px 0 rgba(0,0,0,0.2);
-  -moz-box-shadow: inset 1px 1px 0 rgba(0,0,0,0.3), inset -1px 0 rgba(0,0,0,0.3), inset 0 -1px 0 rgba(0,0,0,0.2);
   box-shadow: inset 1px 1px 0 rgba(0,0,0,0.3), inset -1px 0 rgba(0,0,0,0.3), inset 0 -1px 0 rgba(0,0,0,0.2);
 }
 .sceditor-button:active {
   background: #fff;
-  -webkit-box-shadow: inset 1px 1px 0 rgba(0,0,0,0.3), inset -1px 0 rgba(0,0,0,0.3), inset 0 -1px 0 rgba(0,0,0,0.2), inset 0 0 8px rgba(0,0,0,0.3);
-  -moz-box-shadow: inset 1px 1px 0 rgba(0,0,0,0.3), inset -1px 0 rgba(0,0,0,0.3), inset 0 -1px 0 rgba(0,0,0,0.2), inset 0 0 8px rgba(0,0,0,0.3);
   box-shadow: inset 1px 1px 0 rgba(0,0,0,0.3), inset -1px 0 rgba(0,0,0,0.3), inset 0 -1px 0 rgba(0,0,0,0.2), inset 0 0 8px rgba(0,0,0,0.3);
 }
 .sceditor-button.disabled:hover {
   background: inherit;
   cursor: default;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
   box-shadow: none;
 }
 .sceditor-button,
@@ -561,11 +514,7 @@ div.sceditor-group {
 }
 .sceditor-container {
   border: 1px solid #d6d6d6;
-  -webkit-border-radius: 0;
-  -moz-border-radius: 0;
   border-radius: 0;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
   background-clip: padding-box;
 }
 .sceditor-container textarea {
@@ -578,20 +527,12 @@ div.sceditor-group {
 div.sceditor-toolbar,
 div.sceditor-group {
   background: #f2f2f2;
-  background: -moz-linear-gradient(top, #f2f2f2 0%, #dddddd 89%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f2f2f2), color-stop(89%, #dddddd));
-  background: -webkit-linear-gradient(top, #f2f2f2 0%, #dddddd 89%);
-  background: -o-linear-gradient(top, #f2f2f2 0%, #dddddd 89%);
-  background: -ms-linear-gradient(top, #f2f2f2 0%, #dddddd 89%);
   background: linear-gradient(to bottom, #f2f2f2 0%, #dddddd 89%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f2f2f2', endColorstr='#dddddd', GradientType=0);
 }
 div.sceditor-toolbar {
   padding: 0;
   border-bottom: 1px solid #bbb;
-  -moz-background-size: 100% 32px;
-  -o-background-size: 100% 32px;
-  -webkit-background-size: 100% 32px;
   background-size: 100% 32px;
 }
 div.sceditor-group {
@@ -600,11 +541,7 @@ div.sceditor-group {
   border: 0;
   border-right: 1px solid #ccc;
   border-left: 1px solid #eaeaea;
-  -webkit-border-radius: 0;
-  -moz-border-radius: 0;
   border-radius: 0;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
   background-clip: padding-box;
 }
 div.sceditor-group:last-child {
@@ -617,11 +554,7 @@ div.sceditor-group:first-child {
   height: 16px;
   padding: 5px;
   margin: 1px;
-  -webkit-border-radius: 0;
-  -moz-border-radius: 0;
   border-radius: 0;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
   background-clip: padding-box;
 }
 .sceditor-button div {
@@ -653,16 +586,4 @@ div.sceditor-group:first-child {
 .sceditor-button.active:hover {
   background: #f8f8f8;
   border: 1px solid #ddd;
-}
-
-/* Additional buttons (for MyBB) */
-.sceditor-button-video div  {
-    
-  background-image: url(video.png);
-    
-}
-.sceditor-button-php div  {
-    
-  background-image: url(php.png);
-    
 }

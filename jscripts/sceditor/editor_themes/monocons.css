@@ -9,8 +9,8 @@
  */
 @font-face {
   font-family: 'Monocons';
-  src: url('monocons/monocons.eot');
-  src: url('monocons/monocons.eot?#iefix') format('embedded-opentype'), url('monocons/monocons.ttf') format('truetype');
+  src: url('monocons//monocons.eot');
+  src: url('monocons//monocons.eot?#iefix') format('embedded-opentype'), url('monocons//monocons.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
@@ -290,16 +290,15 @@ div.sceditor-grip:before {
   color: #222;
   line-height: 1;
   font-weight: bold;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
   border-radius: 4px;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
   background-clip: padding-box;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  width: 100% !important;
+}
+.sceditor-container *,
+.sceditor-container *:before,
+.sceditor-container *:after {
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
 }
 .sceditor-container,
 .sceditor-container div,
@@ -322,10 +321,6 @@ div.sceditor-dropdown div {
   resize: none;
   background: #fff;
   display: block;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  width: 99% !important;
 }
 div.sceditor-resize-cover {
   position: absolute;
@@ -361,11 +356,7 @@ div.sceditor-grip {
   left: 0;
   height: 100% !important;
   width: 100% !important;
-  -webkit-border-radius: 0;
-  -moz-border-radius: 0;
   border-radius: 0;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
   background-clip: padding-box;
   z-index: 2000;
 }
@@ -384,11 +375,7 @@ body.sceditor-maximize {
   display: none;
 }
 .sceditor-maximize div.sceditor-toolbar {
-  -webkit-border-radius: 0;
-  -moz-border-radius: 0;
   border-radius: 0;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
   background-clip: padding-box;
 }
 /**
@@ -402,14 +389,8 @@ div.sceditor-dropdown {
   z-index: 4000;
   padding: 10px;
   line-height: 1;
-  -webkit-border-radius: 2px;
-  -moz-border-radius: 2px;
   border-radius: 2px;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
   background-clip: padding-box;
-  -webkit-box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.2);
-  -moz-box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.2);
   box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.2);
 }
 div.sceditor-dropdown a,
@@ -433,11 +414,7 @@ div.sceditor-dropdown textarea {
   border: 1px solid #ccc;
   border-top-color: #888;
   margin: 0 0 .75em;
-  -webkit-border-radius: 1px;
-  -moz-border-radius: 1px;
   border-radius: 1px;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
   background-clip: padding-box;
 }
 div.sceditor-dropdown textarea {
@@ -447,8 +424,6 @@ div.sceditor-dropdown input:focus,
 div.sceditor-dropdown textarea:focus {
   border-color: #aaa;
   border-top-color: #666;
-  -webkit-box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.1);
   box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.1);
 }
 div.sceditor-dropdown .button {
@@ -457,19 +432,13 @@ div.sceditor-dropdown .button {
   padding: 6px 12px;
   background: #ececec;
   border: solid 1px #ccc;
-  -webkit-border-radius: 2px;
-  -moz-border-radius: 2px;
   border-radius: 2px;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
   background-clip: padding-box;
   cursor: pointer;
   margin: .3em 0 0;
 }
 div.sceditor-dropdown .button:hover {
   background: #f3f3f3;
-  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
-  -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
 }
 div.sceditor-font-picker,
@@ -538,15 +507,8 @@ div.sceditor-toolbar {
   border-bottom: 1px solid #c0c0c0;
   line-height: 0;
   text-align: left;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
-  -webkit-border-radius: 3px 3px 0 0;
-  -moz-border-radius: 3px 3px 0 0;
   border-radius: 3px 3px 0 0;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
   background-clip: padding-box;
 }
 div.sceditor-group {
@@ -555,11 +517,7 @@ div.sceditor-group {
   margin: 1px 5px 1px 0;
   padding: 1px;
   border-bottom: 1px solid #aaa;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
   border-radius: 3px;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
   background-clip: padding-box;
 }
 .ie6 div.sceditor-group,
@@ -573,14 +531,9 @@ div.sceditor-group {
   padding: 3px 5px;
   width: 16px;
   height: 20px;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
   border-radius: 3px;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
   background-clip: padding-box;
   /* Needed for Safari 5? */
-
   text-indent: -9999px;
 }
 .ie .sceditor-button {
@@ -605,21 +558,15 @@ div.sceditor-group {
 .sceditor-button:active,
 .sceditor-button.active {
   background: #fff;
-  -webkit-box-shadow: inset 1px 1px 0 rgba(0,0,0,0.3), inset -1px 0 rgba(0,0,0,0.3), inset 0 -1px 0 rgba(0,0,0,0.2);
-  -moz-box-shadow: inset 1px 1px 0 rgba(0,0,0,0.3), inset -1px 0 rgba(0,0,0,0.3), inset 0 -1px 0 rgba(0,0,0,0.2);
   box-shadow: inset 1px 1px 0 rgba(0,0,0,0.3), inset -1px 0 rgba(0,0,0,0.3), inset 0 -1px 0 rgba(0,0,0,0.2);
 }
 .sceditor-button:active {
   background: #fff;
-  -webkit-box-shadow: inset 1px 1px 0 rgba(0,0,0,0.3), inset -1px 0 rgba(0,0,0,0.3), inset 0 -1px 0 rgba(0,0,0,0.2), inset 0 0 8px rgba(0,0,0,0.3);
-  -moz-box-shadow: inset 1px 1px 0 rgba(0,0,0,0.3), inset -1px 0 rgba(0,0,0,0.3), inset 0 -1px 0 rgba(0,0,0,0.2), inset 0 0 8px rgba(0,0,0,0.3);
   box-shadow: inset 1px 1px 0 rgba(0,0,0,0.3), inset -1px 0 rgba(0,0,0,0.3), inset 0 -1px 0 rgba(0,0,0,0.2), inset 0 0 8px rgba(0,0,0,0.3);
 }
 .sceditor-button.disabled:hover {
   background: inherit;
   cursor: default;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
   box-shadow: none;
 }
 .sceditor-button,
@@ -693,27 +640,4 @@ div.sceditor-grip:before {
   display: block;
   color: #333;
   text-shadow: 0 1px #fff;
-}
-
-/* Additonal buttons (for MyBB) */
-.sceditor-button-video div  { 
-	*zoom: expression(this.runtimeStyle['zoom'] = '1', this.innerHTML = '\e000');  
-}
-
-.sceditor-button-video div:before {
-	content: "\e000";
-}
-
-.sceditor-button-php div  {
-	*zoom: expression(this.runtimeStyle['zoom'] = '0', this.innerHTML = '\24C5');
-}
-
-.sceditor-button-php div:before {
-	content: "\24C5";
-	font-size: 17px;
-	line-height: 0.85;
-}
-
-.sceditor-button-php:hover {
-	text-decoration: none;
 }
