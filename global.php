@@ -779,8 +779,16 @@ if($can_access_moderationqueue || ($mybb->user['ismoderator'] && $mybb->usergrou
 
 if(!empty($moderation_queue))
 {
-	$moderation_queue = $lang->sprintf($lang->mod_notice, implode($lang->comma, $moderation_queue));
-	$moderation_queue = substr_replace($moderation_queue, ' '.$lang->and.' ', strrpos($moderation_queue, $lang->comma), strlen($lang->comma));
+	$moderation_queue_last = array_pop($moderation_queue);
+	if(empty($moderation_queue))
+	{
+		$moderation_queue = $moderation_queue_last;
+	}
+	else
+	{
+		$moderation_queue = implode($lang->comma, $moderation_queue).' '.$lang->and.' '.$moderation_queue_last;
+	}
+	$moderation_queue = $lang->sprintf($lang->mod_notice, $moderation_queue);
 
 	eval('$modnotice = "'.$templates->get('global_modqueue_notice').'";');
 }
