@@ -4,7 +4,7 @@ html {
 }
 
 .sceditor-button div, div.sceditor-grip {
-    background-image: url(famfamfam.png);
+    background-image: url("famfamfam.png");
     width: 16px;
     height: 16px;
     background-repeat: no-repeat;
@@ -101,57 +101,57 @@ html {
 }
 .sceditor-button-orderedlist div  {
     
-  background-position:  0px -288px;
+  background-position:  0px -304px;
     
 }
 .sceditor-button-maximize div  {
     
-  background-position:  0px -304px;
+  background-position:  0px -320px;
     
 }
 .sceditor-button-ltr div  {
     
-  background-position:  0px -320px;
+  background-position:  0px -336px;
     
 }
 .sceditor-button-left div  {
     
-  background-position:  0px -336px;
+  background-position:  0px -352px;
     
 }
 .sceditor-button-justify div  {
     
-  background-position:  0px -352px;
+  background-position:  0px -368px;
     
 }
 .sceditor-button-italic div  {
     
-  background-position:  0px -368px;
+  background-position:  0px -384px;
     
 }
 .sceditor-button-image div  {
     
-  background-position:  0px -384px;
+  background-position:  0px -416px;
     
 }
 .sceditor-button-horizontalrule div  {
     
-  background-position:  0px -400px;
+  background-position:  0px -432px;
     
 }
 .sceditor-button-format div  {
     
-  background-position:  0px -416px;
+  background-position:  0px -448px;
     
 }
 .sceditor-button-font div  {
     
-  background-position:  0px -432px;
+  background-position:  0px -464px;
     
 }
 .sceditor-button-emoticon div  {
     
-  background-position:  0px -448px;
+  background-position:  0px -480px;
     
 }
 .sceditor-emoticons img {
@@ -159,52 +159,52 @@ html {
 }
 .sceditor-button-email div  {
     
-  background-position:  0px -464px;
+  background-position:  0px -496px;
     
 }
 .sceditor-button-date div  {
     
-  background-position:  0px -480px;
+  background-position:  0px -512px;
     
 }
 .sceditor-button-cut div  {
     
-  background-position:  0px -496px;
+  background-position:  0px -528px;
     
 }
 .sceditor-button-copy div  {
     
-  background-position:  0px -512px;
+  background-position:  0px -544px;
     
 }
 .sceditor-button-color div  {
     
-  background-position:  0px -528px;
+  background-position:  0px -560px;
     
 }
 .sceditor-button-code div  {
     
-  background-position:  0px -544px;
+  background-position:  0px -576px;
     
 }
 .sceditor-button-center div  {
     
-  background-position:  0px -560px;
+  background-position:  0px -592px;
     
 }
 .sceditor-button-bulletlist div  {
     
-  background-position:  0px -576px;
+  background-position:  0px -608px;
     
 }
 .sceditor-button-bold div  {
     
-  background-position:  0px -592px;
+  background-position:  0px -624px;
     
 }
 div.sceditor-grip  {
     
-  background-position:  0px -608px;
+  background-position:  0px -640px;
     
   width:  10px;
     
@@ -213,7 +213,7 @@ div.sceditor-grip  {
 }
 .rtl div.sceditor-grip  {
     
-  background-position:  0px -618px;
+  background-position:  0px -656px;
     
   width:  10px;
     

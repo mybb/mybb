@@ -19,7 +19,7 @@
  */
 div.sceditor-grip,
 .sceditor-button div {
-  background-image: url('famfamfam.png');
+  background-image: url("famfamfam.png");
   background-repeat: no-repeat;
   width: 16px;
   height: 16px;
@@ -78,73 +78,79 @@ div.sceditor-grip,
 .sceditor-button-paste div {
   background-position: 0px -272px;
 }
-.sceditor-button-orderedlist div {
+.sceditor-button-outdent div {
   background-position: 0px -288px;
 }
-.sceditor-button-maximize div {
+.sceditor-button-orderedlist div {
   background-position: 0px -304px;
 }
-.sceditor-button-ltr div {
+.sceditor-button-maximize div {
   background-position: 0px -320px;
 }
-.sceditor-button-left div {
+.sceditor-button-ltr div {
   background-position: 0px -336px;
 }
-.sceditor-button-justify div {
+.sceditor-button-left div {
   background-position: 0px -352px;
 }
-.sceditor-button-italic div {
+.sceditor-button-justify div {
   background-position: 0px -368px;
 }
-.sceditor-button-image div {
+.sceditor-button-italic div {
   background-position: 0px -384px;
 }
-.sceditor-button-horizontalrule div {
+.sceditor-button-indent div {
   background-position: 0px -400px;
 }
-.sceditor-button-format div {
+.sceditor-button-image div {
   background-position: 0px -416px;
 }
-.sceditor-button-font div {
+.sceditor-button-horizontalrule div {
   background-position: 0px -432px;
 }
-.sceditor-button-emoticon div {
+.sceditor-button-format div {
   background-position: 0px -448px;
 }
-.sceditor-button-email div {
+.sceditor-button-font div {
   background-position: 0px -464px;
 }
-.sceditor-button-date div {
+.sceditor-button-emoticon div {
   background-position: 0px -480px;
 }
-.sceditor-button-cut div {
+.sceditor-button-email div {
   background-position: 0px -496px;
 }
-.sceditor-button-copy div {
+.sceditor-button-date div {
   background-position: 0px -512px;
 }
-.sceditor-button-color div {
+.sceditor-button-cut div {
   background-position: 0px -528px;
 }
-.sceditor-button-code div {
+.sceditor-button-copy div {
   background-position: 0px -544px;
 }
-.sceditor-button-center div {
+.sceditor-button-color div {
   background-position: 0px -560px;
 }
-.sceditor-button-bulletlist div {
+.sceditor-button-code div {
   background-position: 0px -576px;
 }
-.sceditor-button-bold div {
+.sceditor-button-center div {
   background-position: 0px -592px;
 }
-div.sceditor-grip {
+.sceditor-button-bulletlist div {
   background-position: 0px -608px;
+}
+.sceditor-button-bold div {
+  background-position: 0px -624px;
+}
+div.sceditor-grip {
+  background-position: 0px -640px;
   width: 10px;
   height: 10px;
 }
 .rtl div.sceditor-grip {
-  background-position: 0px -618px;
+  background-position: 0px -650px;
   width: 10px;
   height: 10px;
 }
@@ -172,16 +178,15 @@ div.sceditor-grip {
   color: #222;
   line-height: 1;
   font-weight: bold;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
   border-radius: 4px;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
   background-clip: padding-box;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  width: 100% !important;
+}
+.sceditor-container *,
+.sceditor-container *:before,
+.sceditor-container *:after {
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
 }
 .sceditor-container,
 .sceditor-container div,
@@ -204,10 +209,6 @@ div.sceditor-dropdown div {
   resize: none;
   background: #fff;
   display: block;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  width: 99% !important;
 }
 div.sceditor-resize-cover {
   position: absolute;
@@ -243,11 +244,7 @@ div.sceditor-grip {
   left: 0;
   height: 100% !important;
   width: 100% !important;
-  -webkit-border-radius: 0;
-  -moz-border-radius: 0;
   border-radius: 0;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
   background-clip: padding-box;
   z-index: 2000;
 }
@@ -266,11 +263,7 @@ body.sceditor-maximize {
   display: none;
 }
 .sceditor-maximize div.sceditor-toolbar {
-  -webkit-border-radius: 0;
-  -moz-border-radius: 0;
   border-radius: 0;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
   background-clip: padding-box;
 }
 /**
@@ -284,14 +277,8 @@ div.sceditor-dropdown {
   z-index: 4000;
   padding: 10px;
   line-height: 1;
-  -webkit-border-radius: 2px;
-  -moz-border-radius: 2px;
   border-radius: 2px;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
   background-clip: padding-box;
-  -webkit-box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.2);
-  -moz-box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.2);
   box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.2);
 }
 div.sceditor-dropdown a,
@@ -315,11 +302,7 @@ div.sceditor-dropdown textarea {
   border: 1px solid #ccc;
   border-top-color: #888;
   margin: 0 0 .75em;
-  -webkit-border-radius: 1px;
-  -moz-border-radius: 1px;
   border-radius: 1px;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
   background-clip: padding-box;
 }
 div.sceditor-dropdown textarea {
@@ -329,8 +312,6 @@ div.sceditor-dropdown input:focus,
 div.sceditor-dropdown textarea:focus {
   border-color: #aaa;
   border-top-color: #666;
-  -webkit-box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.1);
   box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.1);
 }
 div.sceditor-dropdown .button {
@@ -339,19 +320,13 @@ div.sceditor-dropdown .button {
   padding: 6px 12px;
   background: #ececec;
   border: solid 1px #ccc;
-  -webkit-border-radius: 2px;
-  -moz-border-radius: 2px;
   border-radius: 2px;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
   background-clip: padding-box;
   cursor: pointer;
   margin: .3em 0 0;
 }
 div.sceditor-dropdown .button:hover {
   background: #f3f3f3;
-  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
-  -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
 }
 div.sceditor-font-picker,
@@ -420,15 +395,8 @@ div.sceditor-toolbar {
   border-bottom: 1px solid #c0c0c0;
   line-height: 0;
   text-align: left;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
-  -webkit-border-radius: 3px 3px 0 0;
-  -moz-border-radius: 3px 3px 0 0;
   border-radius: 3px 3px 0 0;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
   background-clip: padding-box;
 }
 div.sceditor-group {
@@ -437,11 +405,7 @@ div.sceditor-group {
   margin: 1px 5px 1px 0;
   padding: 1px;
   border-bottom: 1px solid #aaa;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
   border-radius: 3px;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
   background-clip: padding-box;
 }
 .ie6 div.sceditor-group,
@@ -455,14 +419,9 @@ div.sceditor-group {
   padding: 3px 5px;
   width: 16px;
   height: 20px;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
   border-radius: 3px;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
   background-clip: padding-box;
   /* Needed for Safari 5? */
-
   text-indent: -9999px;
 }
 .ie .sceditor-button {
@@ -487,21 +446,15 @@ div.sceditor-group {
 .sceditor-button:active,
 .sceditor-button.active {
   background: #fff;
-  -webkit-box-shadow: inset 1px 1px 0 rgba(0,0,0,0.3), inset -1px 0 rgba(0,0,0,0.3), inset 0 -1px 0 rgba(0,0,0,0.2);
-  -moz-box-shadow: inset 1px 1px 0 rgba(0,0,0,0.3), inset -1px 0 rgba(0,0,0,0.3), inset 0 -1px 0 rgba(0,0,0,0.2);
   box-shadow: inset 1px 1px 0 rgba(0,0,0,0.3), inset -1px 0 rgba(0,0,0,0.3), inset 0 -1px 0 rgba(0,0,0,0.2);
 }
 .sceditor-button:active {
   background: #fff;
-  -webkit-box-shadow: inset 1px 1px 0 rgba(0,0,0,0.3), inset -1px 0 rgba(0,0,0,0.3), inset 0 -1px 0 rgba(0,0,0,0.2), inset 0 0 8px rgba(0,0,0,0.3);
-  -moz-box-shadow: inset 1px 1px 0 rgba(0,0,0,0.3), inset -1px 0 rgba(0,0,0,0.3), inset 0 -1px 0 rgba(0,0,0,0.2), inset 0 0 8px rgba(0,0,0,0.3);
   box-shadow: inset 1px 1px 0 rgba(0,0,0,0.3), inset -1px 0 rgba(0,0,0,0.3), inset 0 -1px 0 rgba(0,0,0,0.2), inset 0 0 8px rgba(0,0,0,0.3);
 }
 .sceditor-button.disabled:hover {
   background: inherit;
   cursor: default;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
   box-shadow: none;
 }
 .sceditor-button,
@@ -563,11 +516,6 @@ div.sceditor-group {
 div.sceditor-toolbar {
   border-bottom: 1px solid #95a9c3;
   background: #dee8f5;
-  background: -moz-linear-gradient(top, #dee8f5 0%, #c7d8ed 29%, #ccdcee 61%, #c0d8ef 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #dee8f5), color-stop(29%, #c7d8ed), color-stop(61%, #ccdcee), color-stop(100%, #c0d8ef));
-  background: -webkit-linear-gradient(top, #dee8f5 0%, #c7d8ed 29%, #ccdcee 61%, #c0d8ef 100%);
-  background: -o-linear-gradient(top, #dee8f5 0%, #c7d8ed 29%, #ccdcee 61%, #c0d8ef 100%);
-  background: -ms-linear-gradient(top, #dee8f5 0%, #c7d8ed 29%, #ccdcee 61%, #c0d8ef 100%);
   background: linear-gradient(to bottom, #dee8f5 0%, #c7d8ed 29%, #ccdcee 61%, #c0d8ef 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#dee8f5', endColorstr='#c0d8ef', GradientType=0);
 }
@@ -580,11 +528,6 @@ div.sceditor-group {
   background: transparent;
   padding: 0;
   background: #cadcf0;
-  background: -moz-linear-gradient(top, #cadcf0 24%, #bcd0e9 38%, #d0e1f7 99%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(24%, #cadcf0), color-stop(38%, #bcd0e9), color-stop(99%, #d0e1f7));
-  background: -webkit-linear-gradient(top, #cadcf0 24%, #bcd0e9 38%, #d0e1f7 99%);
-  background: -o-linear-gradient(top, #cadcf0 24%, #bcd0e9 38%, #d0e1f7 99%);
-  background: -ms-linear-gradient(top, #cadcf0 24%, #bcd0e9 38%, #d0e1f7 99%);
   background: linear-gradient(to bottom, #cadcf0 24%, #bcd0e9 38%, #d0e1f7 99%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#cadcf0', endColorstr='#d0e1f7', GradientType=0);
 }
@@ -595,30 +538,16 @@ div.sceditor-group {
 .sceditor-button {
   height: 16px;
   padding: 3px 4px;
-  -webkit-border-radius: 0;
-  -moz-border-radius: 0;
   border-radius: 0;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
   background-clip: padding-box;
-  -webkit-box-shadow: inset 0 1px #d5e3f1, inset 0 -1px #e3edfb, inset 1px 0 #cddcef, inset -1px 0 #b8ceea;
-  -moz-box-shadow: inset 0 1px #d5e3f1, inset 0 -1px #e3edfb, inset 1px 0 #cddcef, inset -1px 0 #b8ceea;
   box-shadow: inset 0 1px #d5e3f1, inset 0 -1px #e3edfb, inset 1px 0 #cddcef, inset -1px 0 #b8ceea;
 }
 .sceditor-button:first-child {
-  -webkit-border-radius: 4px 0 0 4px;
-  -moz-border-radius: 4px 0 0 4px;
   border-radius: 4px 0 0 4px;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
   background-clip: padding-box;
 }
 .sceditor-button:last-child {
-  -webkit-border-radius: 0 4px 4px 0;
-  -moz-border-radius: 0 4px 4px 0;
   border-radius: 0 4px 4px 0;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
   background-clip: padding-box;
 }
 .sceditor-button div {
@@ -629,15 +558,8 @@ div.sceditor-group {
 }
 .sceditor-button.active {
   background: #fbdbb5;
-  background: -moz-linear-gradient(top, #fbdbb5 11%, #feb456 29%, #fdeb9f 99%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(11%, #fbdbb5), color-stop(29%, #feb456), color-stop(99%, #fdeb9f));
-  background: -webkit-linear-gradient(top, #fbdbb5 11%, #feb456 29%, #fdeb9f 99%);
-  background: -o-linear-gradient(top, #fbdbb5 11%, #feb456 29%, #fdeb9f 99%);
-  background: -ms-linear-gradient(top, #fbdbb5 11%, #feb456 29%, #fdeb9f 99%);
-  background: linear-gradient(top, #fbdbb5 11%, #feb456 29%, #fdeb9f 99%);
+  background: linear-gradient(to bottom, #fbdbb5 11%, #feb456 29%, #fdeb9f 99%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fbdbb5', endColorstr='#fdeb9f', GradientType=0);
-  -webkit-box-shadow: inset 0 1px #ebd1b4, inset 0 -1px #ffe47f, inset -1px 0 #b8ceea;
-  -moz-box-shadow: inset 0 1px #ebd1b4, inset 0 -1px #ffe47f, inset -1px 0 #b8ceea;
   box-shadow: inset 0 1px #ebd1b4, inset 0 -1px #ffe47f, inset -1px 0 #b8ceea;
 }
 .ie9 .sceditor-button.active {
@@ -645,15 +567,8 @@ div.sceditor-group {
 }
 .sceditor-button:hover {
   background: #fef7d5;
-  background: -moz-linear-gradient(top, #fef7d5 0%, #fae5a9 42%, #ffd048 42%, #ffe59f 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #fef7d5), color-stop(42%, #fae5a9), color-stop(42%, #ffd048), color-stop(100%, #ffe59f));
-  background: -webkit-linear-gradient(top, #fef7d5 0%, #fae5a9 42%, #ffd048 42%, #ffe59f 100%);
-  background: -o-linear-gradient(top, #fef7d5 0%, #fae5a9 42%, #ffd048 42%, #ffe59f 100%);
-  background: -ms-linear-gradient(top, #fef7d5 0%, #fae5a9 42%, #ffd048 42%, #ffe59f 100%);
   background: linear-gradient(to bottom, #fef7d5 0%, #fae5a9 42%, #ffd048 42%, #ffe59f 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fef7d5', endColorstr='#ffe59f', GradientType=0);
-  -webkit-box-shadow: inset 0 1px #fffbe8, inset -1px 0 #ffefc4, inset 0 -1px #fff9cc;
-  -moz-box-shadow: inset 0 1px #fffbe8, inset -1px 0 #ffefc4, inset 0 -1px #fff9cc;
   box-shadow: inset 0 1px #fffbe8, inset -1px 0 #ffefc4, inset 0 -1px #fff9cc;
 }
 .ie9 .sceditor-button:hover {
@@ -661,15 +576,8 @@ div.sceditor-group {
 }
 .sceditor-button:active {
   background: #e7a66d;
-  background: -moz-linear-gradient(top, #e7a66d 0%, #fcb16d 1%, #ff8d05 42%, #ffc450 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #e7a66d), color-stop(1%, #fcb16d), color-stop(42%, #ff8d05), color-stop(100%, #ffc450));
-  background: -webkit-linear-gradient(top, #e7a66d 0%, #fcb16d 1%, #ff8d05 42%, #ffc450 100%);
-  background: -o-linear-gradient(top, #e7a66d 0%, #fcb16d 1%, #ff8d05 42%, #ffc450 100%);
-  background: -ms-linear-gradient(top, #e7a66d 0%, #fcb16d 1%, #ff8d05 42%, #ffc450 100%);
   background: linear-gradient(to bottom, #e7a66d 0%, #fcb16d 1%, #ff8d05 42%, #ffc450 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#e7a66d', endColorstr='#ffc450', GradientType=0);
-  -webkit-box-shadow: inset 0 1px 1px #7b6645, inset 0 -1px #d19c33;
-  -moz-box-shadow: inset 0 1px 1px #7b6645, inset 0 -1px #d19c33;
   box-shadow: inset 0 1px 1px #7b6645, inset 0 -1px #d19c33;
 }
 .ie9 .sceditor-button:active {
@@ -677,29 +585,10 @@ div.sceditor-group {
 }
 .sceditor-button.active:hover {
   background: #dba368;
-  background: -moz-linear-gradient(top, #dba368 0%, #ffbd79 4%, #fea335 34%, #ffc64c 66%, #fee069 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #dba368), color-stop(4%, #ffbd79), color-stop(34%, #fea335), color-stop(66%, #ffc64c), color-stop(100%, #fee069));
-  background: -webkit-linear-gradient(top, #dba368 0%, #ffbd79 4%, #fea335 34%, #ffc64c 66%, #fee069 100%);
-  background: -o-linear-gradient(top, #dba368 0%, #ffbd79 4%, #fea335 34%, #ffc64c 66%, #fee069 100%);
-  background: -ms-linear-gradient(top, #dba368 0%, #ffbd79 4%, #fea335 34%, #ffc64c 66%, #fee069 100%);
   background: linear-gradient(to bottom, #dba368 0%, #ffbd79 4%, #fea335 34%, #ffc64c 66%, #fee069 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#dba368', endColorstr='#fee069', GradientType=0);
-  -webkit-box-shadow: inset 0 1px 1px #9e8255, inset 0 -1px #fcce6b;
-  -moz-box-shadow: inset 0 1px 1px #9e8255, inset 0 -1px #fcce6b;
   box-shadow: inset 0 1px 1px #9e8255, inset 0 -1px #fcce6b;
 }
 .ie9 .sceditor-button.active:hover {
   background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2RiYTM2OCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjQlIiBzdG9wLWNvbG9yPSIjZmZiZDc5IiBzdG9wLW9wYWNpdHk9IjEiLz4KICAgIDxzdG9wIG9mZnNldD0iMzQlIiBzdG9wLWNvbG9yPSIjZmVhMzM1IiBzdG9wLW9wYWNpdHk9IjEiLz4KICAgIDxzdG9wIG9mZnNldD0iNjYlIiBzdG9wLWNvbG9yPSIjZmZjNjRjIiBzdG9wLW9wYWNpdHk9IjEiLz4KICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2ZlZTA2OSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgPC9saW5lYXJHcmFkaWVudD4KICA8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2dyYWQtdWNnZy1nZW5lcmF0ZWQpIiAvPgo8L3N2Zz4=);
-}
-
-/* Additional buttons (for MyBB) */
-.sceditor-button-video div  {
-    
-  background-image: url(video.png);
-    
-}
-.sceditor-button-php div  {
-    
-  background-image: url(php.png);
-    
 }
