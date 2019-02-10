@@ -139,9 +139,13 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
 
         $this->register(new RoutingServiceProvider($this));
 
+        $this->register(new Config\ServiceProvider($this));
+
         $this->register(new CoreServiceProvider($this));
 
         $this->registerDeferredProvider(new Twig\ServiceProvider($this));
+
+        $this->registerDeferredProvider(new Hashing\ServiceProvider($this));
     }
 
     /**
