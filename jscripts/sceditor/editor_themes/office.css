@@ -614,3 +614,11 @@ div.sceditor-group {
   padding: 20px;
   box-shadow: 1px 1px 5px #293a52;
 }
+
+/* Additional buttons (for MyBB) */
+.sceditor-button-video div  {
+  background-image: url(video.png);
+}
+.sceditor-button-php div  {
+  background-image: url(php.png);
+}

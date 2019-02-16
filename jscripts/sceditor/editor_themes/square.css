@@ -587,3 +587,11 @@ div.sceditor-group:first-child {
   background: #f8f8f8;
   border: 1px solid #ddd;
 }
+
+/* Additional buttons (for MyBB) */
+.sceditor-button-video div  {
+  background-image: url(video.png);
+}
+.sceditor-button-php div  {
+  background-image: url(php.png);
+}
