@@ -576,3 +576,11 @@ div.sceditor-group {
 .sceditor-button div {
   margin: 0;
 }
+
+/* Additional buttons (for MyBB) */
+.sceditor-button-video div  {
+  background-image: url(video.png);
+}
+.sceditor-button-php div  {
+  background-image: url(php.png);
+}
