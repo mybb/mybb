@@ -1,4 +1,4 @@
-[![MyBB](https://raw.github.com/mybb/mybb/feature/images/logo.png "MyBB")](https://mybb.com "MyBB")
+[![MyBB](https://raw.githubusercontent.com/mybb/mybb/feature/images/logo.png "MyBB")](https://mybb.com "MyBB")
 
 [![Backers on Open Collective](https://opencollective.com/mybb/backers/badge.svg)](#backers)
  [![Sponsors on Open Collective](https://opencollective.com/mybb/sponsors/badge.svg)](#sponsors)
