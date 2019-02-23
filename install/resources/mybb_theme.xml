@@ -7564,7 +7564,7 @@ if(use_xmlhttprequest == "1")
 	<li><a href="javascript:void(0)" class="mass_delete" onclick="$('input.radio_delete').each(function(){ $(this).prop('checked', true); }); return false;">{$lang->mark_all_deletion}</a></li>
 	<li><a href="javascript:void(0)" class="mass_approve" onclick="$('input.radio_approve').each(function(){ $(this).prop('checked', true); }); return false;">{$lang->mark_all_approved}</a></li>
 </ul>]]></template>
-		<template name="modcp_modqueue_posts" version="1800"><![CDATA[<html>
+		<template name="modcp_modqueue_posts" version="1820"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->posts_awaiting_moderation}</title>
 {$headerinclude}
@@ -7578,7 +7578,7 @@ if(use_xmlhttprequest == "1")
 <tr>
 {$modcp_nav}
 <td valign="top">
-	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder tfixed">
 		<tr>
 			<td class="thead" colspan="3">
 				<div class="float_right">
@@ -7631,7 +7631,7 @@ if(use_xmlhttprequest == "1")
 				</td>
 			</tr>]]></template>
 		<template name="modcp_modqueue_post_link" version="1800"><![CDATA[{$navsep}<a href="modcp.php?action=modqueue&amp;type=posts">{$lang->posts}</a>]]></template>
-		<template name="modcp_modqueue_threads" version="1800"><![CDATA[<html>
+		<template name="modcp_modqueue_threads" version="1820"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->threads_awaiting_moderation}</title>
 {$headerinclude}
@@ -7645,7 +7645,7 @@ if(use_xmlhttprequest == "1")
 <tr>
 {$modcp_nav}
 <td valign="top">
-	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder tfixed">
 		<tr>
 			<td class="thead" colspan="3">
 				<div class="float_right">
