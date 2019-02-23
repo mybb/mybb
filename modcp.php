@@ -2187,7 +2187,6 @@ if($mybb->input['action'] == "modqueue")
 			ORDER BY t.lastpost DESC
 			LIMIT {$start}, {$perpage}
 		");
-
 		$threads = '';
 		while($thread = $db->fetch_array($query))
 		{
@@ -2216,33 +2215,7 @@ if($mybb->input['action'] == "modqueue")
 				$profile_link = build_profile_link($thread['username'], $thread['uid']);
 			}
 
-			if(isset($forum_cache[$thread['fid']]))
-			{
-				$forum_settings = $forum_cache[$thread['fid']];
-
-				$parser_options = array(
-					'allow_html' => $forum_settings['allowhtml'],
-					'allow_mycode' => $forum_settings['allowmycode'],
-					'allow_smilies' => $forum_settings['allowsmilies'],
-					'allow_imgcode' => $forum_settings['allowimgcode'],
-					'allow_videocode' => $forum_settings['allowvideocode'],
-				);
-			}
-			else
-			{
-				$parser_options = array(
-					'allow_html' => 0,
-					'allow_mycode' => 1,
-					'allow_smilies' => 1,
-					'allow_imgcode' => 1,
-					'allow_videocode' => 1,
-				);
-			}
-
-			$parser_options['me_username'] = $thread['username'];
-			$parser_options['filter_badwords'] = 1;
-
-			$thread['postmessage'] = $parser->parse_message($thread['postmessage'], $parser_options);
+			$thread['postmessage'] = nl2br(htmlspecialchars_uni($thread['postmessage']));
 			eval("\$forum = \"".$templates->get("modcp_modqueue_link_forum")."\";");
 			eval("\$threads .= \"".$templates->get("modcp_modqueue_threads_thread")."\";");
 		}
@@ -2335,7 +2308,6 @@ if($mybb->input['action'] == "modqueue")
 			ORDER BY p.dateline DESC
 			LIMIT {$start}, {$perpage}
 		");
-
 		$posts = '';
 		while($post = $db->fetch_array($query))
 		{
@@ -2366,35 +2338,9 @@ if($mybb->input['action'] == "modqueue")
 				$profile_link = build_profile_link($post['username'], $post['uid']);
 			}
 
-			if(isset($forum_cache[$post['fid']]))
-			{
-				$forum_settings = $forum_cache[$post['fid']];
-
-				$parser_options = array(
-					'allow_html' => $forum_settings['allowhtml'],
-					'allow_mycode' => $forum_settings['allowmycode'],
-					'allow_smilies' => $forum_settings['allowsmilies'],
-					'allow_imgcode' => $forum_settings['allowimgcode'],
-					'allow_videocode' => $forum_settings['allowvideocode'],
-				);
-			}
-			else
-			{
-				$parser_options = array(
-					'allow_html' => 0,
-					'allow_mycode' => 1,
-					'allow_smilies' => 1,
-					'allow_imgcode' => 1,
-					'allow_videocode' => 1,
-				);
-			}
-
-			$parser_options['me_username'] = $post['username'];
-			$parser_options['filter_badwords'] = 1;
-
 			eval("\$thread = \"".$templates->get("modcp_modqueue_link_thread")."\";");
 			eval("\$forum = \"".$templates->get("modcp_modqueue_link_forum")."\";");
-			$post['message'] = $parser->parse_message($post['message'], $parser_options);
+			$post['message'] = nl2br(htmlspecialchars_uni($post['message']));
 			eval("\$posts .= \"".$templates->get("modcp_modqueue_posts_post")."\";");
 		}
 
