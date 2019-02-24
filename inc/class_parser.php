@@ -707,7 +707,7 @@ class postParser
 			$trap .= '[^\s\n]{'.($plus-1).'}';
 		}
 		
-		return '[\b\B]{0}'.$trap.'[\b\B]{0}';
+		return '\b'.$trap.'\b';
 	}
 
 	/**
