@@ -13999,6 +13999,7 @@ opt_editor = {
 	style: "{$mybb->asset_url}/jscripts/sceditor/textarea_styles/jquery.sceditor.{$theme['editortheme']}?ver=1820",
 	rtl: {$lang->settings['rtl']},
 	locale: "mybblang",
+	width: "100%",
 	enablePasteFiltering: true,
 	autoUpdate: true,
 	emoticonsEnabled: {$emoticons_enabled},
