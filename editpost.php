@@ -49,7 +49,7 @@ else
 	$post = get_post($pid);
 }
 
-if(!$post || ($post['visible'] == -1 && $mybb->input['action'] != "restorepost"))
+if(!$post)
 {
 	error($lang->error_invalidpost);
 }
@@ -68,6 +68,11 @@ $thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subje
 // Get forum info
 $fid = $post['fid'];
 $forum = get_forum($fid);
+
+if($post['visible'] == -1 && $mybb->input['action'] != "restorepost" && !is_moderator($fid, "canviewdeleted"))
+{
+	error($lang->error_invalidpost);
+}
 
 if($thread['visible'] == 0 && !is_moderator($fid, "canviewunapprove") || $thread['visible'] == -1 && !is_moderator($fid, "canviewdeleted") || ($thread['visible'] < -1 && $thread['uid'] != $mybb->user['uid']))
 {
