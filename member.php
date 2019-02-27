@@ -1805,9 +1805,9 @@ if($mybb->input['action'] == "resetpassword")
 
 		$activate['code'] = $mybb->get_input('code');
 
-		if(!isset($user['username']))
+		if(!isset($mybb->input['username']))
 		{
-			$user['username'] = '';
+			$input_username = '';
 		}
 
 		$activate['username'] = $user['username'];

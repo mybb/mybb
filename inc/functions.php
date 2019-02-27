@@ -597,7 +597,7 @@ function generate_post_check()
 	// Guests get a special string
 	else
 	{
-		return md5($session->useragent.$mybb->config['database']['username'].$mybb->settings['internal']['encryption_key']);
+		return md5($session->sid.$mybb->config['database']['username'].$mybb->settings['internal']['encryption_key']);
 	}
 }
 
