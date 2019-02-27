@@ -3437,7 +3437,7 @@ if($mybb->input['action'] == "finduser")
 
 	$plugins->run_hooks("modcp_finduser_end");
 
-	$username = $mybb->get_input('username');
+	$username = htmlspecialchars_uni($mybb->get_input('username'));
 	eval("\$finduser = \"".$templates->get("modcp_finduser")."\";");
 	output_page($finduser);
 }

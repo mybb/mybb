@@ -1457,8 +1457,12 @@ if($mybb->input['action'] == "edit")
 				// It's a file:
 				++$count;
 
+				$name = htmlspecialchars_uni($name);
+
 				if($actions[0] != "global")
 				{
+					$actions = array_map('htmlspecialchars_uni', $actions);
+
 					$name = "{$name} ({$lang->actions}: ".implode(',', $actions).")";
 				}
 
@@ -1680,7 +1684,10 @@ if($mybb->input['action'] == "stylesheet_properties")
 		if(get_extension($mybb->input['name']) != "css")
 		{
 			// Does not end with '.css'
-			$errors[] = $lang->sprintf($lang->error_missing_stylesheet_extension, $mybb->input['name']);
+			$errors[] = $lang->sprintf(
+				$lang->error_missing_stylesheet_extension,
+				htmlspecialchars_uni($mybb->input['name'])
+			);
 		}
 
 		if(!$errors)

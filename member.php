@@ -1850,13 +1850,13 @@ if($mybb->input['action'] == "resetpassword")
 				break;
 		}
 
-		$code = $mybb->get_input('code');
+		$code = htmlspecialchars_uni($mybb->get_input('code'));
 
-		if(!isset($user['username']))
+		if(!isset($mybb->input['username']))
 		{
-			$user['username'] = '';
+			$input_username = '';
 		}
-		$user['username'] = htmlspecialchars_uni($user['username']);
+		$input_username = htmlspecialchars_uni($mybb->input['username']);
 
 		eval("\$activate = \"".$templates->get("member_resetpassword")."\";");
 		output_page($activate);
