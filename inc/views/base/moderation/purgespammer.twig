@@ -1,24 +1,27 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.purgespammer }}</title>
+    <title>{{ lang.purgespammer }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block body %}
-    <form method="post" action="moderation.php">
-        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-            <tr>
-                <td class="thead"><strong>{{ lang.purgespammer_purge }}</strong></td>
-            </tr>
-            <tr>
-                <td class="trow1">{{ lang.purgespammer_purge_desc }}</td>
-            </tr>
-            <tr>
-                <td class="tfoot" align="center"><input class="button" type="submit" value="{{ lang.purgespammer_submit }}" /></td>
-            </tr>
-        </table>
-        <input type="hidden" name="action" value="do_purgespammer" />
-        <input type="hidden" name="uid" value="{{ user.uid }}" />
-    </form>
+    <div class="page-content">
+        <header class="page-header">
+            <h1 class="title title--page">{{ lang.purgespammer_purge }}</h1>
+            <p class="page-description">{{ lang.purgespammer_purge_desc }}</p>
+        </header>
+        <form method="post" action="moderation.php">
+            <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+            <section class="block block--form form">
+                <div class="form__submit">
+                    <button type="submit" class="button button--medium">
+                        {{ include('partials/icon.twig', {icon: 'gavel', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.purgespammer_submit }}</span>
+                    </button>
+                </div>
+            </section>
+            <input type="hidden" name="action" value="do_purgespammer" />
+            <input type="hidden" name="uid" value="{{ user.uid }}" />
+        </form>
+    </div>
 {% endblock body %}

@@ -1,33 +1,42 @@
-<tr>
-    <td align="center" class="{{ thread.bg_colour }}" width="2%">
-        <span class="thread_status {{ thread.folder }}" title="{{ thread.folder_label }}">&nbsp;</span>
-    </td>
-    <td align="center" class="{{ thread.bg_colour }}" width="2%">
-        <img src="{{ thread.icon.path }}" alt="{{ thread.icon.name }}" title="{{ thread.icon.name }}" />
-    </td>
-    <td class="{{ thread.bg_colour }}">
-        <a href="{{ thread.newpostlink }}"><img src="{{ theme.imgdir }}/jump.png" alt="{{ lang.goto_first_unread }}" title="{{ lang.goto_first_unread }}" /></a>
-        {% if thread.threadprefix %}
-            {{ thread.threadprefix|raw }}&nbsp;
-        {% endif %}
-        <a href="{{ thread.threadlink }}" class="{{ thread.new_class }}">{{ thread.subject }}</a><br />
-        <span class="smalltext">{{ lang.notification_method }} {{ thread.notification_type }}</span>
-    </td>
-    <td align="center" class="{{ thread.bg_colour }}">
-        <a href="{{ mybb.settings.bburl }}/misc.php?action=whoposted&amp;tid={{ thread.tid }}" onclick="MyBB.whoPosted({{ thread.tid }}); return false;">
-            {{ thread.replies }}
-        </a>
-    </td>
-    <td align="center" class="{{ thread.bg_colour }}">
-        {{ thread.views }}
-    </td>
-    <td class="{{ thread.bg_colour }}" style="white-space: nowrap">
-        {{ render_avatar(url=thread.last_poster_avatar, alt=thread.last_poster_name) }}
-
-        <span class="smalltext">{{ thread.last_post_date|raw }}<br />
-        <a href="{{ thread.lastpostlink }}">{{ lang.lastpost }}</a>: {{ thread.last_poster_link|raw }}</span>
-    </td>
-    <td class="{{ thread.bg_colour }}" align="center">
+{# TO DO: FOLDER STATUS ICONS #}
+{# <span class="thread_status {{ thread.folder }}" title="{{ thread.folder_label }}">&nbsp;</span> #}
+<div class="row row--thread thread">
+    <div class="thread__column thread__column--primary">
+        <h3 class="thread__title {$new_class}">
+            {% if thread.threadprefix %}
+                <span class="tag tag--thread-prefix tag--thread-prefix-{{ thread.prefix }}">{{ thread.threadprefix|raw }}</span>
+            {% endif %}
+            <a href="{{ thread.threadlink }}" class="{{ thread.new_class }}">{{ thread.subject }}</a>
+            {% if thread.lastread and thread.lastpost > thread.lastread %}
+                <a href="{{ thread.newpostlink }}" class="thread__status">
+                    {{ include('partials/icon.twig', {icon: 'circle', class: '', title: lang.goto_first_unread}, with_context = false) }}
+                </a>
+            {% endif %}
+            <span class="thread__icons">
+                <img src="{{ thread.icon.path }}" alt="{{ thread.icon.name }}" title="{{ thread.icon.name }}" />
+            </span>
+        </h3>
+        <p class="thread__notification">{{ lang.notification_method }} {{ thread.notification_type }}</p>
+    </div>
+    <div class="thread__column thread__column--replies">
+        <p class="thread__replies" title="{$lang->replies}: {{ thread.replies }} &middot; {{ lang.views }}: {{ thread.views }}">
+            <a href="{{ mybb.settings.bburl }}/misc.php?action=whoposted&amp;tid={{ thread.tid }}" onclick="MyBB.whoPosted({{ thread.tid }}); return false;" class="thread__reply-count">{{ thread.replies }}</a>
+            <span class="thread__reply-legend">{% if thread.replies == 1 %}{{ lang.reply }}{% else %}{{ lang.replies }}{% endif %}</span>
+        </p>
+    </div>
+    <div class="thread__column thread__column--latest">
+        <p class="thread__latest-post">
+            <span class="thread__latest-post__text">{{ lang.lastpost_by }}</span>
+            <a href="{{ get_profile_link(thread.lastposteruid) }}" class="avatar-profile-link">
+                {{ render_avatar(url=thread.last_poster_avatar, alt=thread.last_poster_name, class='avatar--smallest') }}
+            </a>
+            <span class="thread__latest-post__author">
+                {{ thread.last_poster_link|raw }}
+            </span>
+            <a href="{{ thread.lastpostlink }}" class="thread__latest-post__date">{{ thread.last_post_date|raw }}</a>
+        </p>
+    </div>
+    <div class="thread__column thread__column--checkbox">
         <input type="checkbox" class="checkbox" name="check[{{ thread.tid }}]" value="{{ thread.tid }}" />
-    </td>
-</tr>
+    </div>
+</div>

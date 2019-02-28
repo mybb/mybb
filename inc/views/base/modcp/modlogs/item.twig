@@ -1,24 +1,45 @@
-{% set row = alt_trow() %}
-<tr>
-    <td class="{{ row }}" valign="top">{{ logitem.profilelink|raw }}</td>
-    <td class="{{ row }}" align="center" valign="top">{{ logitem.date|raw }}</td>
-    <td class="{{ row }}" align="center" valign="top">{{ logitem.action }}</td>
-    <td class="{{ row }}" align="center" valign="top">
-        {% if logitem.tsubject %}
-            <strong>{{ lang.thread }}:</strong> <a href="{{ logitem.threadlink }}" target="_blank">{{ logitem.tsubject }}</a><br />
-        {% endif %}
-        {% if logitem.fname %}
-            <strong>{{ lang.forum }}:</strong> <a href="{{ logitem.forumlink }}" target="_blank">{{ logitem.fname }}</a><br />
-        {% endif %}
-        {% if logitem.psubject %}
-            <strong>{{ lang.post }}:</strong> <a href="{{ logitem.postlink }}#pid{{ logitem.pid }}">{{ logitem.psubject }}</a>
-        {% endif %}
-        {% if logitem.logdata.uid %}
-            {{ trans('edited_user_info', logitem.logdata.username, logitem.logdata.profilelink) }}
-        {% endif %}
-        {% if logitem.logdata.aid %}
-            <strong>{{ lang.announcement }}:</strong> <a href="{{ logitem.logdata.announcement }}" target="_blank">{{ logitem.logdata.subject }}</a>
-        {% endif %}
-    </td>
-    <td class="{{ row }}" align="center" valign="top">{{ logitem.ipaddress }}</td>
-</tr>
+<div class="row row--simple-columns mod-log">
+    <div class="row__primary">
+        <div class="mod-log__user">{{ logitem.profilelink|raw }}</div>
+        <div class="mod-log__action">{{ logitem.action }}</div>
+        <div class="mod-log__date">{{ logitem.date|raw }}</div>
+    </div>
+    <div class="row__secondary mod-log--information">
+        <ul class="list list--stats list--mod-log">
+            {% if logitem.tsubject %}
+                <li class="list__item">
+                    <span class="list__field">{{ lang.thread }}</span>
+                    <span class="list__value"><a href="{{ logitem.threadlink }}" target="_blank">{{ logitem.tsubject }}</a></span>
+                </li>
+            {% endif %}
+            {% if logitem.fname %}
+                <li class="list__item">
+                    <span class="list__field">{{ lang.forum }}</span>
+                    <span class="list__value"><a href="{{ logitem.forumlink }}" target="_blank">{{ logitem.fname }}</a></span>
+                </li>
+            {% endif %}
+            {% if logitem.psubject %}
+                <li class="list__item">
+                    <span class="list__field">{{ lang.post }}</span>
+                    <span class="list__value"><a href="{{ logitem.postlink }}#pid{{ logitem.pid }}">{{ logitem.psubject }}</a></span>
+                </li>
+            {% endif %}
+            {% if logitem.logdata.uid %}
+                <li class="list__item">
+                    <span class="list__field">{{ lang.edited_user_legend }}</span>
+                    <span class="list__value">{{ trans('edited_user_info', logitem.logdata.username, logitem.logdata.profilelink) }}</span>
+                </li>
+            {% endif %}
+            {% if logitem.logdata.aid %}
+                <li class="list__item">
+                    <span class="list__field">{{ lang.announcement }}</span>
+                    <span class="list__value"><a href="{{ logitem.logdata.announcement }}" target="_blank">{{ logitem.logdata.subject }}</a></span>
+                </li>
+            {% endif %}
+            <li class="list__item">
+                <span class="list__field">{{ lang.ip }}</span>
+                <span class="list__value">{{ logitem.ipaddress }}</span>
+            </li>
+        </ul>
+    </div>
+</div>

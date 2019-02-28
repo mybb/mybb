@@ -1,42 +1,50 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.email_user }}</title>
+    <title>{{ lang.email_user }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block body %}
-    {{ errors|raw }}
-    <form action="member.php" method="post" name="input">
-        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-            <tr>
-                <td colspan="2" width="100%" class="thead"><strong>{{ lang.email_user }}</strong></td>
-            </tr>
-            {% if email.guest %}
-                <tr>
-                    <td width="40%" class="trow2"><strong><label for="fromname">{{ lang.your_name }}</label></strong><br /><span class="smalltext">{{ lang.name_note }}</span></td>
-                    <td width="60%" class="trow2"><input type="text" class="textbox" size="50" name="fromname" id="fromname" value="{{ email.fromname }}" /></td>
-                </tr>
-                <tr>
-                    <td width="40%" class="trow1"><strong><label for="fromemail">{{ lang.your_email }}</label></strong><br /><span class="smalltext">{{ lang.email_note }}</span></td>
-                    <td width="60%" class="trow1"><input type="text" class="textbox" size="50" name="fromemail" id="fromemail" value="{{ email.fromemail }}" /></td>
-                </tr>
-            {% endif %}
-            <tr>
-                <td width="40%" class="trow2"><strong><label for="subject">{{ lang.email_subject }}</label></strong></td>
-                <td width="60%" class="trow2"><input type="text" class="textbox" size="50" name="subject" id="subject" value="{{ email.subject }}" /></td>
-            </tr>
-            <tr>
-                <td valign="top" width="40%" class="trow1"><strong><label for="message">{{ lang.email_message }}</label></strong></td>
-                <td width="60%" class="trow1"><textarea cols="50" rows="10" name="message" id="message">{{ email.message }}</textarea></td>
-            </tr>
-            {{ captcha|raw }}
-        </table>
-        <br />
-        <div align="center">
+    <div class="page-content">
+        <header class="page-header">
+            <h1 class="title title--page">{{ lang.email_user }}</h1>
+        </header>
+        {{ errors|raw }}
+        <form action="member.php" method="post" name="input">
+            <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+            <div class="block block--form form">
+                <section class="section section--form">
+                    {% if email.guest %}
+                        <div class="row row--form field">
+                            <h3 class="field__name"><label for="fromname">{{ lang.your_name }}</label></h3>
+                            <p class="field__description">{{ lang.name_note }}</p>
+                            <input type="text" class="textbox" size="50" name="fromname" id="fromname" value="{{ email.fromname }}" />
+                        </div>
+                        <div class="row row--form field">
+                            <h3 class="field__name"><label for="fromemail">{{ lang.your_email }}</label></h3>
+                            <p class="field__description">{{ lang.email_note }}</p>
+                            <input type="text" class="textbox" size="50" name="fromemail" id="fromemail" value="{{ email.fromemail }}" />
+                        </div>
+                    {% endif %}
+                    <div class="row row--form field">
+                        <h3 class="field__name"><label for="subject">{{ lang.email_subject }}</label></h3>
+                        <input type="text" class="textbox" size="50" name="subject" id="subject" value="{{ email.subject }}" />
+                    </div>
+                    <div class="row row--form field">
+                        <h3 class="field__name"><label for="message">{{ lang.email_message }}</label></h3>
+                        <textarea cols="50" rows="10" name="message" id="message">{{ email.message }}</textarea>
+                    </div>
+                </section>
+                {{ captcha|raw }}
+                <div class="form__submit">
+                    <button type="submit" class="button button--medium" tabindex="3">
+                        {{ include('partials/icon.twig', {icon: 'envelope', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.send_email }}</span>
+                    </button>
+                </div>
+            </div>
             <input type="hidden" name="action" value="do_emailuser" />
             <input type="hidden" name="uid" value="{{ email.uid }}" />
-            <input type="submit" class="button" value="{{ lang.send_email }}" />
-        </div>
-    </form>
+        </form>
+    </div>
 {% endblock body %}

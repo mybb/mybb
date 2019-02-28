@@ -1,62 +1,64 @@
-{% extends 'layouts/master.twig' %}
+{% extends 'layouts/account.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bburl }} - {{ lang.group_memberships }}</title>
+    <title>{{ lang.group_memberships }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
-{% block body %}
+{% block accountHeader %}
+    <header class="page-header">
+        <h1 class="title title--page">{{ lang.group_memberships }}</h1>
+    </header>
+{% endblock accountHeader %}
+
+{% block accountBody %}
     {% if leadinggroups %}
-        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-            <tr>
-                <td class="thead" colspan="3"><strong>{{ lang.usergroups_leader }}</strong></td>
-            </tr>
-            <tr>
-                <td class="tcat" width="36%"><strong><span class="smalltext">{{ lang.usergroups_usergroup }}</span></strong></td>
-                <td class="tcat" align="center" width="32%"><strong><span class="smalltext">{{ lang.usergroup_members }}</span></strong></td>
-                <td class="tcat" align="center" width="32%"><strong><span class="smalltext">{{ lang.join_requests }}</span></strong></td>
-            </tr>
+        <section class="block">
+            <h1 class="title title--major">{{ lang.usergroups_leader }}</h1>
             {% for usergroup in leadinggroups %}
-                <tr>
-                    <td><strong>{{ usergroup.title }}</strong></td>
-                    <td align="center">
-                        {{ usergroup.users }} [<a href="managegroup.php?gid={{ usergroup.gid }}">{{ lang.view_members }}</a>]
-                    </td>
-                    <td align="center">
-                        {% if usergroup.type != 4 %}
-                            --
-                        {% else %}
-                            {{ usergroup.joinrequests }}
+                <div class="row row--simple-columns user-group">
+                    <div class="row__primary">
+                        <h2 class="user-group__name">{{ usergroup.title }}</h2>
+                        <p class="user-group__description">{{ lang.usergroup_members }}: {{ usergroup.users }}</p>
+                        {% if usergroup.type == 4 %}
+                            <p class="user-group__description">{{ lang.join_requests }}: {{usergroup.joinrequests }}</p>
                         {% endif %}
+                    </div>
+                    <div class="row__controls">
                         {% if usergroup.joinrequests > 0 and usergroup.canmanagerequests %}
-                            [<a href="managegroup.php?action=joinrequests&amp;gid={{ usergroup.gid }}">{{ lang.view_requests }}</a>]
+                            <a href="managegroup.php?action=joinrequests&amp;gid={{ usergroup.gid }}" class="button button--small button--secondary">
+                                {{ include('partials/icon.twig', {icon: 'users-cog', class: 'button__icon'}, with_context = false) }}
+                                <span class="button__text">{{ lang.view_requests }}</span>
+                            </a>
                         {% endif %}
-                    </td>
-                </tr>
+                        <a href="managegroup.php?gid={{ usergroup.gid }}" class="button button--small button--secondary">
+                            {{ include('partials/icon.twig', {icon: 'users', class: 'button__icon'}, with_context = false) }}
+                            <span class="button__text">{{ lang.view_members }}</span>
+                        </a>
+                    </div>
+                </div>
             {% endfor %}
-        </table>
-        <br />
+        </section>
     {% endif %}
 
     {% if joinablegroups %}
-        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-            <tr>
-                <td class="thead" colspan="3"><strong>{{ lang.usergroups_joinable }}</strong></td>
-            </tr>
-            <tr>
-                <td class="tcat" width="36%"><strong><span class="smalltext">{{ lang.usergroups_usergroup }}</span></strong></td>
-                <td class="tcat" align="center" width="32%"><strong><span class="smalltext">{{ lang.join_conditions }}</span></strong></td>
-                <td class="tcat" align="center" width="32%"><strong><span class="smalltext">{{ lang.join_group }}</span></strong></td>
-            </tr>
+        <section class="block">
+            <h1 class="title title--major">{{ lang.usergroups_joinable }}</h1>
             {% for usergroup in joinablegroups %}
-                <tr>
-                    <td>
-                        <strong>{{ usergroup.title }}</strong>
+                <div class="row row--simple-columns user-group">
+                    <div class="row__primary">
+                        <h2 class="user-group__name">{{ usergroup.title }}</h2>
                         {% if usergroup.description %}
-                            <br /><span class="smalltext">{{ usergroup.description }}</span>
+                            <p class="user-group__description">{{ usergroup.description }}</p>
                         {% endif %}
-                    </td>
-                    <td>
-                        <span class="smalltext">
+                        {% if usergroup.leaders %}
+                            <p class="user-group__leaders">
+                                {{ lang.usergroup_leaders }}
+                                {% for leader in usergroup.leaders %}
+                                    {{ leader|raw }}{% if not loop.last %}{{ lang.comma }} {% endif %}
+                                {% endfor %}
+                            </p>
+                        {% endif %}
+                        <p class="user-group__message">
                             {% if usergroup.type == 4 %}
                                 {{ lang.usergroup_joins_moderated }}
                             {% elseif usergroup.type == 5 %}
@@ -64,69 +66,73 @@
                             {% else %}
                                 {{ lang.usergroup_joins_anyone }}
                             {% endif %}
-                        </span><br />
-                        {% if usergroup.leaders %}
-                            <span class="smalltext">
-                                {{ lang.usergroup_leaders }} 
-                                {% for leader in usergroup.leaders %}
-                                    {{ leader }}{% if not loop.last %}{{ lang.comma }} {% endif %}
-                                {% endfor %}
-                            </span>
+                            {% if usergroup.joinlink %}
+                                {{ usergroup.joinlink|raw }}
+                            {% endif %}
+                            {% if usergroup.invited %}
+                                {{ lang.pending_invitation }}
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div class="row__controls">
+                        {% if usergroup.invited %}
+                            <a href="usercp.php?action=usergroups&amp;acceptinvite={{ usergroup.gid }}&amp;my_post_key={{ mybb.post_code }}" class="button button--small button--success">
+                                {{ include('partials/icon.twig', {icon: 'check', class: 'button__icon'}, with_context = false) }}
+                                <span class="button__text">{{ lang.accept_invite }}</span>
+                            </a>
                         {% endif %}
-                    </td>
-                    <td align="center">
-                        {% if usergroup.joinlink %}
-                            {{ usergroup.joinlink }}
-                        {% elseif usergroup.type == 5 %}
-                            --
-                        {% else %}
-                            <a href="usercp.php?action=usergroups&amp;joingroup={{ usergroup.gid }}&amp;my_post_key={{ mybb.post_code }}">{{ lang.join_group }}</a>
+                        {% if not usergroup.joinlink and not usergroup.invited and usergroup.type != 5 %}
+                            <a href="usercp.php?action=usergroups&amp;joingroup={{ usergroup.gid }}&amp;my_post_key={{ mybb.post_code }}" class="button button--small button--secondary">
+                                {{ include('partials/icon.twig', {icon: 'user-plus', class: 'button__icon'}, with_context = false) }}
+                                <span class="button__text">{{ lang.join_group }}</span>
+                            </a>
                         {% endif %}
-                    </td>
-                </tr>
+                    </div>
+                </div>
             {% endfor %}
-        </table>
-        <br />
+        </section>
     {% endif %}
 
     {% if groupsmemberof %}
-        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-            <tr>
-                <td class="thead" colspan="3"><strong>{{ lang.usergroups_memberof }}</strong></td>
-            </tr>
-            <tr>
-                <td class="tcat" width="35%"><strong><span class="smalltext">{{ lang.usergroups_usergroup }}</span></strong></td>
-                <td class="tcat" align="center" width="32%"><strong><span class="smalltext">{{ lang.usertitle }}</span></strong></td>
-                <td class="tcat" align="center" width="32%"><strong><span class="smalltext">{{ lang.usergroup_leave }}</span></strong></td>
-            </tr>
+        <section class="block">
+            <h1 class="title title--major">{{ lang.usergroups_memberof }}</h1>
             {% for usergroup in groupsmemberof %}
-                <tr>
-                    <td>
-                        <strong>{{ usergroup.title }}</strong>
+                <div class="row row--simple-columns user-group">
+                    <div class="row__primary">
+                        <h2 class="user-group__name">{{ usergroup.title }}</h2>
                         {% if usergroup.candisplaygroup and usergroup.gid == mybb.user.displaygroup %}
-                            ({{ lang.display_group }})
-                        {% elseif usergroup.candisplaygroup %}
-                            (<a href="usercp.php?action=usergroups&amp;displaygroup={{ usergroup.gid }}&amp;my_post_key={{ mybb.post_code }}">{{ lang.set_as_display_group }}</a>)
+                            <span class="user-group__display-group">({{ lang.display_group }})</span>
                         {% endif %}
                         {% if usergroup.description %}
-                            <br /><span class="smalltext">{{ usergroup.description }}</span>
+                            <p class="user-group__description">{{ usergroup.description }}</p>
                         {% endif %}
-                    </td>
-                    <td align="center">{{ usergroup.usertitle }}</td>
-                    <td align="center">
+                        {% if usergroup.usertitle %}
+                            <p class="user-group__user-title">{{ lang.usertitle }}: {{ usergroup.usertitle }}</p>
+                        {% endif %}
                         {% if usergroup.primary %}
-                            <span class="smalltext">{{ lang.usergroup_leave_primary }}</span>
+                            <p class="user-group__message">{{ lang.usergroup_leave_primary }}</p>
                         {% elseif groupleader[usergroup.gid] %}
-                            <span class="smalltext">{{ lang.usergroup_leave_leader }}</span>
+                            <p class="user-group__message">{{ lang.usergroup_leave_leader }}</p>
                         {% elseif usergroup.type not in [3, 4, 5] %}
-                            <span class="smalltext">{{ lang.usergroup_cannot_leave }}</span>
-                        {% else %}
-                            <a href="usercp.php?action=usergroups&amp;leavegroup={{ usergroup.gid }}&amp;my_post_key={{ mybb.post_code }}">{{ lang.usergroup_leave }}</a>
+                            <p class="user-group__message">{{ lang.usergroup_cannot_leave }}</p>
                         {% endif %}
-                    </td>
-                </tr>
+                    </div>
+                    <div class="row__controls">
+                        {% if usergroup.candisplaygroup and usergroup.gid != mybb.user.displaygroup %}
+                            <a href="usercp.php?action=usergroups&amp;displaygroup={{ usergroup.gid }}&amp;my_post_key={{ mybb.post_code }}" class="button button--small button--secondary">
+                                {{ include('partials/icon.twig', {icon: 'user-edit', class: 'button__icon'}, with_context = false) }}
+                                <span class="button__text">{{ lang.set_as_display_group }}</span>
+                            </a>
+                        {% endif %}
+                        {% if not usergroup.primary and not groupleader[usergroup.gid] and usergroup.type in [3, 4, 5] %}
+                            <a href="usercp.php?action=usergroups&amp;leavegroup={{ usergroup.gid }}&amp;my_post_key={{ mybb.post_code }}" class="button button--small button--danger">
+                                {{ include('partials/icon.twig', {icon: 'sign-out-alt', class: 'button__icon'}, with_context = false) }}
+                                <span class="button__text">{{ lang.usergroup_leave }}</span>
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
             {% endfor %}
-        </table>
-        <br />
+        </section>
     {% endif %}
-{% endblock body %}
+{% endblock accountBody %}

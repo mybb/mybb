@@ -1,31 +1,22 @@
-{% set row = alt_trow() %}
-{% if warning.active == 1 %}
-    <tr>
-        <td class="trow_sep" colspan="5">{{ lang.active_warnings }}</td>
-    </tr>
-{% endif %}
-{% if warning.active == 2 %}
-    <tr>
-        <td class="trow_sep" colspan="5">{{ lang.expired_warnings }}</td>
-    </tr>
-{% endif %}
-<tr>
-    <td class="{{ row }}">
-        {{ warning.warning_type }} {{ trans('warning_points', warning.points) }}
+<div class="row row--simple-columns warning-log">
+    <div class="row__primary">
+        <div class="warning-log__warning">{{ warning.warning_type }} {{ trans('warning_points', warning.points) }}</div>
         {% if warning.post_subject %}
-            <br /><small>{{ lang.warning_for_post }} <a href="{{ warning.post_link|raw }}#pid{{ warning.pid }}">{{ warning.post_subject }}</a></small>
+            <div class="warning-log__post">{{ lang.warning_for_post }} <a href="{{ warning.post_link|raw }}#pid{{ warning.pid }}">{{ warning.post_subject }}</a></div>
         {% endif %}
-    </td>
-    <td class="{{ row }}" style="text-align: center;">
-        {{ warning.date_issued|raw }}
-    </td>
-    <td class="{{ row }}" style="text-align: center;">
-        {{ warning.expires }}
-    </td>
-    <td class="{{ row }}" style="text-align: center;">
-        {{ warning.issuedby|raw }}
-    </td>
-    <td class="{{ row }}" style="text-align: center;">
-        <a href="warnings.php?action=view&amp;wid={{ warning.wid }}">{{ lang.view }}</a>
-    </td>
-</tr>
+        <div class="warning-log__expiry-date">
+            {{ lang.expires }}:
+            {{ warning.expires }}
+        </div>
+    </div>
+    <div class="row__secondary">
+        <div class="warning-log__details">
+            <a href="warnings.php?action=view&amp;wid={{ warning.wid }}" class="button">
+                {{ include('partials/icon.twig', {icon: 'info-circle', class: 'button__icon'}, with_context = false) }}
+                <span class="button__text">{{ lang.view }}</span>
+            </a>
+        </div>
+        <div class="warning-log__issued_by">{{ lang.issued_by }} {{ warning.issuedby|raw }}</div>
+        <div class="warning-log__issued-date">{{ warning.date_issued|raw }}</div>
+    </div>
+</div>

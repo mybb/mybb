@@ -1,7 +1,9 @@
 <a name="pid{{ post.pid }}" id="pid{{ post.pid }}"></a>
-<div class="post deleted_post_hidden" id="post_{{ post.pid }}">
-	<div class="deleted_post_author"><strong><span class="largetext">{{ post.profilelink|raw }}</span></strong></div>
-	<div class="post_content">
-		<em>{{ lang.postbit_post_deleted }}</em>
+<div class="post post--message" id="post_{{ post.pid }}">
+	<div class="post__meta">
+		<h3 class="post__author">{{ post.profilelink|raw }}</h3>
+	</div>
+	<div class="post__body post__body--message post_body" id="deleted_post{{ post.pid }}">
+		{{ lang.postbit_post_deleted }}
 	</div>
 </div>

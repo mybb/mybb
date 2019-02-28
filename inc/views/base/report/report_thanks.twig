@@ -1,11 +1,8 @@
-<table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-	<tr>
-		<td class="thead"><strong>{{ report.title }}</strong></td>
-	</tr>
-	<tr>
-		<td class="tcat">{{ lang.report_to_mod }}</td>
-	</tr>
-	<tr>
-		<td class="trow1">{{ lang.success_report_voted|raw }}</td>
-	</tr>
-</table>
+<section class="block block--modal">
+    <h2 class="title title--modal title--success">{{ report.title }}</h2>
+    <div class="form form--modal">
+        <div class="section section--form">
+            <div class="row row--form">{{ lang.success_report_voted|raw }}</div>
+        </div>
+    </div>
+</section>

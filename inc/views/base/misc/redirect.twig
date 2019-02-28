@@ -7,28 +7,12 @@
 
 {% block header %}{% endblock header %}
 {% block body %}
-    <br />
-    <br />
-    <br />
-    <br />
-    <div style="margin: auto auto; width: {{ lang.redirect_width }}" align="center">
-        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-            <tr>
-                <td class="thead"><strong>{{ title }}</strong></td>
-            </tr>
-            <tr>
-                <td class="trow1" align="center">
-                    <p>{{ message|raw }}</p>
-                </td>
-            </tr>
-            <tr>
-                <td class="trow2" align="right">
-                    <a href="{{ url }}">
-                        <span class="smalltext">{{ lang.click_no_wait }}</span>
-                    </a>
-                </td>
-            </tr>
-        </table>
+    <div class="redirect" style="width: {{ lang.redirect_width }}">
+        <h1 class="redirect__title">{{ title }}</h1>
+        <div class="redirect__message">{{ message|raw }}</div>
+        <div class="redirect__link">
+            <a href="{{ url }}">{{ lang.click_no_wait }}</a>
+        </div>
     </div>
 {% endblock body %}
 {% block footer %}{% endblock footer %}
