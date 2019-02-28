@@ -78,7 +78,7 @@ var MyBB = {
 
 	popupWindow: function(url, options, root)
 	{
-		if(!options) options = { fadeDuration: 250, zIndex: (typeof modal_zindex !== 'undefined' ? modal_zindex : 9999) }
+		if(!options) options = { fadeDuration: 250, closeText: modal_close, zIndex: (typeof modal_zindex !== 'undefined' ? modal_zindex : 9999) }
 		if(root != true)
 			url = rootpath + url;
 
@@ -567,7 +567,7 @@ var Collapsible = {
 	init: function()
 	{
 		var collapsed = Cookie.get('collapsed');
-		
+
 		if(collapsed)
 		{
 			saved = collapsed.split("|");
@@ -671,7 +671,7 @@ var Collapsible = {
 		{
 			newCollapsed[newCollapsed.length] = id;
 		}
-		
+
 		Cookie.set('collapsed', newCollapsed.join("|"));
 	}
 };
@@ -681,7 +681,7 @@ var Tools = {
 	{
 		return el.classList ? el.classList.contains(className) : new RegExp('\\b'+ className+'\\b').test(el.className);
 	},
-	
+
 	addClass: function(el, className)
 	{
 		if (el.classList) {
@@ -692,10 +692,10 @@ var Tools = {
 			el.className += ' ' + className;
 		}
 	},
-	
+
 	removeClass: function(el, className)
 	{
-		if (el.classList) 
+		if (el.classList)
 		{
 			el.classList.remove(className);
 		}

@@ -1,38 +1,45 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.warning_log }}</title>
+    <title>{{ lang.warning_log }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
+{% set has_active = false %}
+
 {% block body %}
-    {{ multipage|raw }}
-    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-        <thead>
-            <tr>
-                <td class="thead" colspan="5">
-                    {% if warning_level > 0 %}
-                        <div class="float_right">{{ trans('current_warning_level', warning_level, user.warningpoints, mybb.settings.maxwarningpoints)|raw }}</div>
-                    {% endif %}
-                    <div><strong>{{ lang.warning_log }}</strong></div>
-                </td>
-            </tr>
-            <tr>
-                <td class="tcat"><span class="smalltext"><strong>{{ lang.warning }}</strong></span></td>
-                <td class="tcat" width="20%" align="center"><span class="smalltext"><strong>{{ lang.date_issued }}</strong></span></td>
-                <td class="tcat" width="20%" align="center"><span class="smalltext"><strong>{{ lang.expiry_date }}</strong></span></td>
-                <td class="tcat" width="20%" align="center"><span class="smalltext"><strong>{{ lang.issued_by }}</strong></span></td>
-                <td class="tcat" width="1" align="center"><span class="smalltext"><strong>{{ lang.details }}</strong></span></td>
-            </tr>
-        </thead>
-        <tbody>
+    <div class="page-content">
+        <header class="page-header">
+            <h1 class="title title--page">{{ lang.warning_log }}</h1>
+            {% if warning_level > 0 %}
+                <p class="page-description">{{ trans('current_warning_level', warning_level, user.warningpoints, mybb.settings.maxwarningpoints)|raw }}</p>
+                <div class="warning-level">
+                    <div class="warning-level__bar warning-level__bar--current" style="width: {{ warning_level }}%;"></div>
+                </div>
+            {% endif %}
+        </header>
+        {{ multipage|raw }}
+
+        <section class="block">
             {% for warning in warnings %}
+                {% if warning.active == 1 %}
+                    <h1 class="title title--major">{{ lang.active_warnings }}</h1>
+                    {% set has_active = true %}
+                {% endif %}
+                {% if warning.active == 2 %}
+                    {# Show separate section block if there are both active and expired warnings #}
+                    {% if has_active %}
+                        </section>
+                        <section class="block">
+                    {% endif %}
+                    <h1 class="title title--major">{{ lang.expired_warnings }}</h1>
+                {% endif %}
+
                 {% include 'warnings/warning_row.twig' %}
             {% else %}
-                <tr>
-                    <td class="trow1" colspan="5" align="center">{{ lang.no_warnings }}</td>
-                </tr>
+                <div class="alert alert--no-results alert--no-results-container">{{ lang.no_warnings }}</div>
             {% endfor %}
-        </tbody>
-    </table>
-    {{ multipage|raw }}
+        </section>
+
+        {{ multipage|raw }}
+    </div>
 {% endblock body %}

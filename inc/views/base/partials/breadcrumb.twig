@@ -1,4 +1,4 @@
-<div class="navigation">
+<div class="breadcrumb">
     {% for crumb in breadcrumbs %}
         {% if crumb.multipage is not empty %}
             {% if not mybb.settings.threadsperpage or mybb.settings.threadsperpage < 1 %}
@@ -13,16 +13,19 @@
 
         {# Separator #}
         {% if loop.first != true and loop.last != true %}
-            &rsaquo;
+            {# Not used #}
         {% elseif loop.last and loop.length > 1 %}
-            <br /><img src="{{ theme.imgdir }}/nav_bit.png" alt="" />
+            {# Not used #}
         {% endif %}
 
         {# Breadcrumb bit #}
         {% if loop.last %}
-            <span class="active">{{ crumb.name }}</span>
+            <span class="active visually-hidden">{{ crumb.name }}</span>
         {% else %}
-            <a href="{{ crumb.url|remove_page_one|raw }}">{{ crumb.name }}</a>
+            <a href="{{ crumb.url|remove_page_one|raw }}" class="breadcrumb__link">
+                <span class="breadcrumb__text">{{ crumb.name }}</span>
+                {{ include('partials/icon.twig', {icon: 'chevron-right', class: 'breadcrumb__separator'}, with_context = false) }}
+            </a>
         {% endif %}
     {% endfor %}
 </div>

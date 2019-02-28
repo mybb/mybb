@@ -1,50 +1,27 @@
-{% extends 'layouts/master.twig' %}
+{% extends 'layouts/account.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bburl }} - {{ lang.forum_subscriptions }}</title>
+    <title>{{ lang.forum_subscriptions }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
-{% block body %}
-    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-        <thead>
-            <tr>
-                <td class="thead" colspan="5">
-                    <strong>{{ lang.forum_subscriptions }}</strong>
-                </td>
-            </tr>
-            <tr>
-                <td class="tcat" valign="bottom" colspan="2">
-                    <span class="smalltext">
-                        <strong>{{ lang.forum }}</strong>
-                    </span>
-                </td>
-                <td class="tcat" valign="bottom" style="white-space: nowrap; text-align: center;" width="85">
-                    <span class="smalltext">
-                        <strong>{{ lang.posts }}</strong>
-                    </span>
-                </td>
-                <td class="tcat" valign="bottom" style="white-space: nowrap; text-align: center;" width="85">
-                    <span class="smalltext">
-                        <strong>{{ lang.threads }}</strong>
-                    </span>
-                </td>
-                <td class="tcat" valign="bottom" align="center" width="200px">
-                    <span class="smalltext">
-                        <strong>{{ lang.lastpost }}</strong>
-                    </span>
-                </td>
-            </tr>
-        </thead>
-        <tbody>
-            {% for forum in forums %}
-                {% include 'usercp/subscribed_forums/row.twig' %}
-            {% else %}
-                <tr>
-                    <td class="trow1" colspan="5">
-                        {{ lang.no_forum_subscriptions|raw }}
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-{% endblock body %}
+{% block accountHeader %}
+    <header class="page-header">
+        <h1 class="title title--page">{{ lang.forum_subscriptions }}</h1>
+    </header>
+{% endblock accountHeader %}
+
+{% block accountBody %}
+
+    {% include 'usercp/subscribed_menu.twig' %}
+
+    <section class="block block--container">
+        <div class="forum-list forum-list--full-width">
+        {% for forum in forums %}
+            {% include 'usercp/subscribed_forums/row.twig' %}
+        {% else %}
+            <div class="alert alert--no-results alert--aligned-block">
+                {{ lang.no_forum_subscriptions|raw }}
+            </div>
+        {% endfor %}
+    </section>
+{% endblock accountBody %}

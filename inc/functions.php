@@ -637,27 +637,28 @@ function get_child_list($fid)
  * @param string $error The error message to be shown
  * @param string $title The title of the message shown in the title of the page and the error table
  */
-function error($error="", $title="")
+function error($error_message="", $title="", $error_page="")
 {
     global $db, $lang, $mybb, $plugins;
 
-    $error = $plugins->run_hooks("error", $error);
+    $error_message = $plugins->run_hooks("error", $error_message);
 
     // AJAX error message?
     if ($mybb->get_input('ajax', MyBB::INPUT_INT)) {
         // Send our headers.
         @header("Content-type: application/json; charset={$lang->settings['charset']}");
-        echo json_encode(array("errors" => array($error)));
+        echo json_encode(array("errors" => array($error_message)));
         exit;
     }
 
     $timenow = my_date('relative', TIME_NOW);
     reset_breadcrumb();
     add_breadcrumb($lang->error);
-    
+
     output_page(\MyBB\template('error/error.twig', [
         'title' => $title,
-        'error' => $error
+        'error_message' => $error_message,
+        'error_page' => $error_page,
     ]));
 
     exit;
@@ -755,12 +756,14 @@ function error_no_permission()
         }
     }
 
-    $errorpage = \MyBB\template('error/no_permission.twig', [
+    $error_message = \MyBB\template('error/no_permission_message.twig');
+
+    $error_page = \MyBB\template('error/no_permission.twig', [
         'username' => $username,
         'redirect_url' => $redirect_url
     ]);
 
-    error($errorpage);
+    error($error_message, $lang->error_nopermission, $error_page);
 }
 
 /**
@@ -2484,7 +2487,7 @@ function build_forum_jump($pid=0, $selitem=0, $addselect=1, $depth="", $showextr
                 $forum_link = "'".str_replace('{fid}', "'+option", FORUM_URL);
             }
         }
-        
+
         $forumjump = \MyBB\template('misc/forumjump.twig', [
             'showextras' => $showextras,
             'forumjumpbits' => $forumjumpbits,
@@ -2894,7 +2897,7 @@ function build_mycode_inserter($bind="message", $smilies = true)
 function build_clickable_smilies()
 {
     global $cache, $smiliecache, $theme, $templates, $lang, $mybb, $smiliecount;
-    
+
     $clickablesmilies = '';
 
     if ($mybb->settings['smilieinserter'] != 0 && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot']) {

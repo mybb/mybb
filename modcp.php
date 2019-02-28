@@ -497,13 +497,12 @@ if ($mybb->input['action'] == "reports") {
 
         if ($report['lastreporter']) {
             if (is_array($usercache[$report['lastreporter']])) {
-                $lastreport_user = build_profile_link($usercache[$report['lastreporter']]['username'], $report['lastreporter']);
+                $report_data['lastreport_user'] = build_profile_link($usercache[$report['lastreporter']]['username'], $report['lastreporter']);
             } elseif ($usercache[$report['lastreporter']] > 0) {
-                $lastreport_user = $lang->na_deleted;
+                $report_data['lastreport_user'] = $lang->na_deleted;
             }
 
-            $lastreport_date = my_date('relative', $report['lastreport']);
-            $report_data['lastreporter'] = $lang->sprintf($lang->report_info_lastreporter, $lastreport_date, $lastreport_user);
+            $report_data['lastreport_date'] = $report['lastreport'];
         }
 
         $report_data['checked'] = false;
@@ -1323,7 +1322,9 @@ if ($mybb->input['action'] == "edit_announcement") {
         $announcement['startdate'] = TIME_NOW;
     }
 
+    $announcement['endtime_type'] = 1;
     if (!$announcement['enddate']) {
+        $announcement['endtime_type'] = 2;
         $makeshift_time = TIME_NOW;
         if ($announcement['startdate']) {
             $makeshift_time = $announcement['startdate'];
@@ -1676,6 +1677,7 @@ if ($mybb->input['action'] == "modqueue") {
 
             $threadqueue = true;
             output_page(\MyBB\template('modcp/modqueue_threads.twig', [
+                'threadqueue' => $threadqueue,
                 'threads' => $threads,
                 'multipage' => $multipage,
                 'navlink' => $navlink,
@@ -1777,6 +1779,7 @@ if ($mybb->input['action'] == "modqueue") {
 
             $postqueue = true;
             output_page(\MyBB\template('modcp/modqueue_posts.twig', [
+                'postqueue' => $postqueue,
                 'posts' => $posts,
                 'multipage' => $multipage,
                 'navlink' => $navlink,
@@ -1878,6 +1881,7 @@ if ($mybb->input['action'] == "modqueue") {
 
             $attachmentqueue = true;
             output_page(\MyBB\template('modcp/modqueue_attachments.twig', [
+                'attachmentqueue' => $attachmentqueue,
                 'attachments' => $attachments,
                 'multipage' => $multipage,
                 'navlink' => $navlink,
@@ -2206,7 +2210,7 @@ if ($mybb->input['action'] == "editprofile") {
     $mybb->input['profile_fields'] = $mybb->get_input('profile_fields', MyBB::INPUT_ARRAY);
 
     $pfcache = $cache->read('profilefields');
-    
+
     if (is_array($pfcache)) {
         foreach ($pfcache as $profilefield) {
             $thing = explode("\n", $profilefield['type'], "2");
@@ -2980,7 +2984,7 @@ if ($mybb->input['action'] == "banning") {
         if ($banned['lifted'] == 'perm' || $banned['lifted'] == '' || $banned['bantime'] == 'perm' || $banned['bantime'] == '---') {
             $banned['banlength'] = $lang->permanent;
             $banned['ban_remaining'] = $lang->na;
-            $banned['banned_class'] = "normal_banned";
+            $banned['banned_class'] = "normal";
         } else {
             $banned['banlength'] = $bantimes[$banned['bantime']];
             $banned['remaining'] = $banned['lifted']-TIME_NOW;
@@ -2990,17 +2994,17 @@ if ($mybb->input['action'] == "banning") {
             $banned['ban_remaining'] = "{$banned['timeremaining']} {$lang->ban_remaining}";
 
             if ($banned['remaining'] <= 0) {
-                $banned['banned_class'] = "imminent_banned";
+                $banned['banned_class'] = "imminent";
                 $banned['ban_remaining'] = $lang->ban_ending_imminently;
             }
             if ($banned['remaining'] < 3600) {
-                $banned['banned_class'] = "high_banned";
+                $banned['banned_class'] = "high";
             } elseif ($banned['remaining'] < 86400) {
-                $banned['banned_class'] = "moderate_banned";
+                $banned['banned_class'] = "moderate";
             } elseif ($banned['remaining'] < 604800) {
-                $banned['banned_class'] = "low_banned";
+                $banned['banned_class'] = "low";
             } else {
-                $banned['banned_class'] = "normal_banned";
+                $banned['banned_class'] = "normal";
             }
         }
 
@@ -3516,24 +3520,24 @@ if (!$mybb->input['action']) {
         if ($banned['lifted'] == 'perm' || $banned['lifted'] == '' || $banned['bantime'] == 'perm' || $banned['bantime'] == '---') {
             $banned['banlength'] = $lang->permanent;
             $banned['ban_remaining'] = $lang->na;
-            $banned['banned_class'] = "normal_banned";
+            $banned['banned_class'] = "normal";
         } else {
             $banned['banlength'] = $bantimes[$banned['bantime']];
             $banned['remaining'] = $banned['lifted']-TIME_NOW;
             $banned['timeremaining'] = nice_time($banned['remaining'], array('short' => 1, 'seconds' => false))."";
             $banned['ban_remaining'] = "{$banned['timeremaining']} {$lang->ban_remaining}";
             if ($banned['remaining'] <= 0) {
-                $banned['banned_class'] = "imminent_banned";
+                $banned['banned_class'] = "imminent";
                 $banned['ban_remaining'] = $lang->ban_ending_imminently;
             }
             if ($banned['remaining'] < 3600) {
-                $banned['banned_class'] = "high_banned";
+                $banned['banned_class'] = "high";
             } elseif ($banned['remaining'] < 86400) {
-                $banned['banned_class'] = "moderate_banned";
+                $banned['banned_class'] = "moderate";
             } elseif ($banned['remaining'] < 604800) {
-                $banned['banned_class'] = "low_banned";
+                $banned['banned_class'] = "low";
             } else {
-                $banned['banned_class'] = "normal_banned";
+                $banned['banned_class'] = "normal";
             }
         }
         $bannedusers[] = $banned;
@@ -3546,6 +3550,9 @@ if (!$mybb->input['action']) {
 
     output_page(\MyBB\template('modcp/home.twig', [
         'counters' => $counters,
+        'unapproved_attachments' => $unapproved_attachments,
+        'unapproved_posts' => $unapproved_posts,
+        'unapproved_threads' => $unapproved_threads,
         'modlogs' => $modlogs,
         'attachment' => $attachment,
         'post' => $post,

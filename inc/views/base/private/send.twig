@@ -1,128 +1,129 @@
-{% extends 'layouts/master.twig' %}
+{% extends 'layouts/messenger.twig' %}
 
 {% block head %}
-    <title>{{ lang.compose_pm }}</title>
-    <script type="text/javascript" src="{{ asset_url('jscripts/usercp.js') }}"></script>
+    <title>{{ lang.compose_pm }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
-{% block body %}
+{% block jscripts %}
+    <script type="text/javascript" src="{{ asset_url('jscripts/usercp.js') }}"></script>
+{% endblock jscripts %}
+
+{% block messengerHeader %}
+    <header class="page-header">
+        <h1 class="title title--page">{{ lang.compose_pm }}</h1>
+    </header>
+{% endblock messengerHeader %}
+
+{% block messengerBody %}
     <form action="private.php" method="post" name="input">
         <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-        <table width="100%" border="0" align="center">
-            <tr>
-                {# To do: usercpnav #}
-                <td valign="top">
-                    {% if sendpm.preview %}
-                        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder tfixed clear no_bottom_border">
-                            <tr>
-                                <td class="thead"><strong>{{ lang.post_preview }}</strong></td>
-                            </tr>
-                            <tr>
-                                <td id="posts_container">
-                                    <div id="posts">
-                                        {{ postbit|raw }}
-                                    </div>
-                                </td>
-                            </tr>
-                        </table>
-                        <br />
-                    {% endif %}
-                    {{ send_errors|raw }}
-                    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-                        <tr>
-                            <td class="thead" colspan="2"><strong>{{ lang.compose_pm }}</strong></td>
-                        </tr>
-                        <tr>
-                            <td class="trow1" valign="top" width="200"><strong>{{ lang.compose_to }}</strong>
-                                <script type="text/javascript">
-                                <!--
-                                    document.write('(<a href="javascript:void(0)" onclick="showBcc(); return false;" title="{{ lang.compose_bcc_show_title }}">{{ lang.compose_bcc_show }}<\/a>)');
-                                // -->
-                                </script>
-                                <br /><span class="smalltext">
-                                    {{ lang.separate_names }}
-                                    {% if mybb.user.buddylist and mybb.settings.use_xmlhttprequest %}
-                                        <script type="text/javascript"><!--
-                                        document.write('<br /><span class="smalltext"><a href="javascript:void(0)" onclick="UserCP.openBuddySelect(\'to\'); return false;">
-                                        <img src="{{ theme.imgdir }}/buddies.png" alt="" style="vertical-align: middle;" alt="" title="{{ lang.select_from_buddies }}" /> {{ lang.select_from_buddies }}</a></span>');
-                                        // --></script>
-                                    {% endif %}
-                                </span>
-                            </td>
-                            <td class="trow1" valign="top">
-                                <textarea name="to" id="to" rows="2" cols="38" tabindex="1" style="width: 450px;">{{ sendpm.to }}</textarea>
-                                {% if mybb.usergroup.maxpmrecipients %}
-                                    {{ trans('max_recipients', mybb.usergroup.maxpmrecipients) }}
-                                {% endif %}
-                            </td>
-                        </tr>
-                        <tr id="bcc_area">
-                            <td class="trow2" valign="top">
-                                <strong>{{ lang.compose_bcc }}</strong>
-                                {% if mybb.user.buddylist and mybb.settings.use_xmlhttprequest %}
-                                    <script type="text/javascript"><!--
-                                    document.write('<br /><span class="smalltext"><a href="javascript:void(0)" onclick="UserCP.openBuddySelect(\'bcc\'); return false;">
-                                    <img src="{{ theme.imgdir }}/buddies.png" alt="" style="vertical-align: middle;" alt="" title="{{ lang.select_from_buddies }}" /> {{ lang.select_from_buddies }}</a></span>');
-                                    // --></script>
-                                {% endif %}
-                            </td>
-                            <td class="trow2"><textarea name="bcc" id="bcc" rows="2" cols="38" tabindex="1" style="width: 450px;">{{ sendpm.bcc }}</textarea></td>
-                        </tr>
-                        <tr>
-                            <td class="trow1"><strong>{{ lang.compose_subject }}</strong></td>
-                            <td class="trow1"><input type="text" class="textbox" name="subject" size="40" maxlength="85" value="{{ sendpm.subject }}" tabindex="3" /></td>
-                        </tr>
-                        {% if sendpm.showposticons %}
-                            <tr>
-                                <td class="trow1" style="vertical-align: top">
-                                    <strong>{{ lang.message_icon }}</strong>
-                                    <span class="smalltext">
-                                        <label class="posticons_label"><input type="radio" class="radio" name="icon" value="-1"{% if sendpm.emptyiconcheck %} checked="checked"{% endif %} />{{ lang.no_post_icon }}</label>
-                                    </span>
-                                </td>
-                                <td class="trow1" valign="top">
-                                    {% for posticon in posticons %}
-                                        <label class="posticons_label">
-                                            <input type="radio" name="icon" value="{{ posticon.iid }}"{% if posticon.checked %} checked="checked"{% endif %} /> 
-                                            <img src="{{ posticon.path }}" alt="{{ posticon.name }}" title="{{ posticon.name }}" />
-                                        </label>
-                                    {% endfor %}
-                                </td>
-                            </tr>
-                        {% endif %}
-                        <tr>
-                            <td class="trow2" valign="top"><strong>{{ lang.compose_message }}</strong>{{ smilieinserter|raw }}</td>
-                            <td class="trow2">
-                                <textarea name="message" id="message" rows="20" cols="70" tabindex="4">{{ sendpm.message }}</textarea>
-                                {{ codebuttons|raw }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="trow1" valign="top"><strong>{{ lang.compose_options }}</strong></td>
-                            <td class="trow1">
-                                <span class="smalltext">
-                                    <label><input type="checkbox" class="checkbox" name="options[signature]" value="1" tabindex="5"{% if sendpm.options.signature %} checked="checked"{% endif %} />{{ lang.options_sig|raw }}</label><br />
-                                    <label><input type="checkbox" class="checkbox" name="options[disablesmilies]" value="1" tabindex="6"{% if sendpm.options.disablesmilies %} checked="checked"{% endif %} />{{ lang.options_disable_smilies|raw }}</label><br />
-                                    <label><input type="checkbox" class="checkbox" name="options[savecopy]" value="1" tabindex="7"{% if sendpm.options.savecopy %} checked="checked"{% endif %} />{{ lang.options_save_copy|raw }}</label>
-                                    {% if mybb.usergroup.cantrackpms %}
-                                        <br /><label><input type="checkbox" class="checkbox" name="options[readreceipt]" value="1" tabindex="8"{% if sendpm.options.readreceipt %} checked="checked"{% endif %} />{{ lang.options_read_receipt|raw }}</label>
-                                    {% endif %}
-                                </span>
-                            </td>
-                        </tr>
-                    </table>
-                    <br />
-                    <input type="hidden" name="action" value="do_send" />
-                    <input type="hidden" name="pmid" value="{{ sendpm.pmid }}" />
-                    <input type="hidden" name="do" value="{{ sendpm.do }}" />
-                    <div style="text-align: center;">
-                        <input type="submit" class="button" name="submit" value="{{ lang.send_message }}" tabindex="9" accesskey="s" />
-                        <input type="submit" class="button" name="saveasdraft" value="{{ lang.save_draft }}" tabindex="10" />
-                        <input type="submit" class="button" name="preview" value="{{ lang.preview }}" tabindex="11" />
+        {% if sendpm.preview %}
+            <section class="block block--container">
+                <h1 class="title title--major title--separation">{{ lang.post_preview }}</h1>
+                <div id="posts_container">
+                    <div id="posts">
+                        {{ postbit|raw }}
                     </div>
-                </td>
-            </tr>
-        </table>
+                </div>
+            </section>
+        {% endif %}
+        {{ send_errors|raw }}
+        <div class="form form--compose compose">
+            <input type="checkbox" class="compose__checkbox" id="show-post-options">
+            <section class="section section--form compose__recipients">
+                <h2 class="title title--section">
+                    {{ lang.compose_to }}
+                    <script type="text/javascript">
+                    <!--
+                        document.write('(<a href="javascript:void(0)" onclick="showBcc(); return false;" title="{{ lang.compose_bcc_show_title }}">{{ lang.compose_bcc_show }}<\/a>)');
+                    // -->
+                    </script>
+                </h2>
+                <div class="section__container">
+                    <div class="row row--form row--no-border field">
+                        <textarea name="to" id="to" rows="2" cols="38" tabindex="1" style="width: 450px;">{{ sendpm.to }}</textarea>
+                        <p class="field__description field__description--below">
+                            {{ lang.separate_names }}
+                            {% if mybb.user.buddylist and mybb.settings.use_xmlhttprequest %}
+                                <script type="text/javascript"><!--
+                                document.write('<br /><span class="smalltext"><a href="javascript:void(0)" onclick="UserCP.openBuddySelect(\'to\'); return false;">
+                                <img src="{{ theme.imgdir }}/buddies.png" alt="" style="vertical-align: middle;" alt="" title="{{ lang.select_from_buddies }}" /> {{ lang.select_from_buddies }}</a></span>');
+                                // --></script>
+                            {% endif %}
+                            {% if mybb.usergroup.maxpmrecipients %}
+                                {{ trans('max_recipients', mybb.usergroup.maxpmrecipients) }}
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div class="row row--form field" id="bcc_area">
+                        <h3 class="field__name">{{ lang.compose_bcc }}</h3>
+                        <textarea name="bcc" id="bcc" rows="2" cols="38" tabindex="1" style="width: 450px;">{{ sendpm.bcc }}</textarea>
+                        <p class="field__description field__description--below">
+                            {% if mybb.user.buddylist and mybb.settings.use_xmlhttprequest %}
+                                <script type="text/javascript"><!--
+                                document.write('<br /><span class="smalltext"><a href="javascript:void(0)" onclick="UserCP.openBuddySelect(\'bcc\'); return false;">
+                                <img src="{{ theme.imgdir }}/buddies.png" alt="" style="vertical-align: middle;" alt="" title="{{ lang.select_from_buddies }}" /> {{ lang.select_from_buddies }}</a></span>');
+                                // --></script>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </section>
+            <section class="section section--form compose__primary-section">
+                <div class="row row--form field">
+                    <input type="text" class="textbox textbox--subject" name="subject" size="40" maxlength="85" value="{{ sendpm.subject }}" placeholder="{{ lang.compose_subject }}" tabindex="1" />
+                </div>
+                {% if sendpm.showposticons %}
+                    {% set emptyiconcheck = sendpm.emptyiconcheck %}
+                    {% include 'misc/posticons.twig' %}
+                {% endif %}
+                <div class="row row--form field">
+                    <div class="compose__container">
+                        <div class="compose__message">
+                            <textarea name="message" id="message" rows="20" cols="70" tabindex="4">{{ sendpm.message }}</textarea>
+                            {{ codebuttons|raw }}
+                        </div>
+                        {{ smilieinserter|raw }}
+                    </div>
+                    <div class="compose__option-buttons">
+                        <label for="show-post-options" class="button button--basic compose__option-button--options">
+                            {{ include('partials/icon.twig', {icon: 'cog', class: 'button__icon'}, with_context = false) }}
+                            <span class="button__text">{{ lang.options }}</span>
+                        </label>
+                        <button type="submit" name="saveasdraft" value="draft" class="button button--basic">
+                            {{ include('partials/icon.twig', {icon: 'file', class: 'button__icon'}, with_context = false) }}
+                            <span class="button__text">{{ lang.save_draft }}</span>
+                        </button>
+                        <button type="submit" name="preview" value="preview" class="button button--basic">
+                            {{ include('partials/icon.twig', {icon: 'edit', class: 'button__icon'}, with_context = false) }}
+                            <span class="button__text">{{ lang.preview }}</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+            <section class="section section--form compose__hidden-section compose__hidden-section--options">
+                <h2 class="title title--section">{{ lang.compose_options }}</h2>
+                <div class="section__container">
+                    <div class="row row--form field">
+                        <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="options[signature]" value="1" tabindex="5"{% if sendpm.options.signature %} checked="checked"{% endif %} /> {{ lang.options_sig|raw }}</label></p>
+                        <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="options[disablesmilies]" value="1" tabindex="6"{% if sendpm.options.disablesmilies %} checked="checked"{% endif %} /> {{ lang.options_disable_smilies|raw }}</label></p>
+                        <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="options[savecopy]" value="1" tabindex="7"{% if sendpm.options.savecopy %} checked="checked"{% endif %} /> {{ lang.options_save_copy|raw }}</label></p>
+                        {% if mybb.usergroup.cantrackpms %}
+                            <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="options[readreceipt]" value="1" tabindex="8"{% if sendpm.options.readreceipt %} checked="checked"{% endif %} /> {{ lang.options_read_receipt|raw }}</label></p>
+                        {% endif %}
+                    </div>
+                </div>
+            </section>
+            <div class="form__submit">
+                <button type="submit" class="button button--big" name="submit" tabindex="4" accesskey="s">
+                    {{ include('partials/icon.twig', {icon: 'paper-plane', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.send_message }}</span>
+                </button>
+            </div>
+        </div>
+        <input type="hidden" name="action" value="do_send" />
+        <input type="hidden" name="pmid" value="{{ sendpm.pmid }}" />
+        <input type="hidden" name="do" value="{{ sendpm.do }}" />
     </form>
     <script type="text/javascript">
     <!--
@@ -234,4 +235,4 @@
             $(this).unbind("error").closest('.author_avatar').remove();
         });
     </script>
-{% endblock body %}
+{% endblock messengerBody %}

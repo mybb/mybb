@@ -1,0 +1,138 @@
+<div class="row thread-moderation page-tools">
+    <div class="page-tools__item thread-moderation__thread">
+        <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;" id="moderator_options">
+            <input type="hidden" name="modtype" value="thread" />
+            <input type="hidden" name="tid" value="{{ thread.tid }}" />
+            <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+            <h2 class="title title--legend">{{ lang.moderation_options }}</h2>
+            <div class="select-field">
+                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
+                <select name="action" id="moderator_options_selector">
+                    <option value="delayedmoderation">{{ lang.delayed_moderation }}</option>
+                    {% if thread.showstandardtools %}
+                        <optgroup label="{{ lang.standard_mod_tools }}">
+                        {% if modpermissions.canmanagethreads %}
+                            <option value="threadnotes" selected="selected">{{ lang.thread_notes }}</option>
+                        {% endif %}
+                        {% if modpermissions.canopenclosethreads %}
+                            <option value="openclosethread">{{ lang.open_close_thread }}</option>
+                        {% endif %}
+                        {% if thread.visible != -1 and modpermissions.cansoftdeletethreads %}
+                            <option value="softdeletethread">{{ lang.soft_delete_thread }}</option>
+                        {% endif %}
+                        {% if thread.visible == -1 and modpermissions.canrestorethreads %}
+                            <option value="restorethread">{{ lang.restore_thread }}</option>
+                        {% endif %}
+                        {% if modpermissions.candeletethreads %}
+                            <option value="deletethread">{{ lang.delete_thread }}</option>
+                        {% endif %}
+                        {% if thread.poll and modpermissions.canmanagepolls %}
+                            <option value="deletepoll">{{ lang.delete_poll }}</option>
+                        {% endif %}
+                        {% if modpermissions.canstickunstickthreads %}
+                            <option value="stick">{{ lang.stick_unstick_thread }}</option>
+                        {% endif %}
+                        {% if modpermissions.canmanagethreads %}
+                            <option value="move">{{ lang.move_thread }}</option>
+                            <option value="split">{{ lang.split_thread }}</option>
+                            <option value="merge">{{ lang.merge_threads }}</option>
+                            <option value="removeredirects">{{ lang.remove_redirects }}</option>
+                            <option value="removesubscriptions">{{ lang.remove_subscriptions }}</option>
+                        {% endif %}
+                        {% if modpermissions.canapproveunapprovethreads %}
+                            {% if thread.visible %}
+                                <option value="unapprovethread">{{ lang.unapprove_thread }}</option>
+                            {% else %}
+                                <option value="approvethread">{{ lang.approve_thread }}</option>
+                            {% endif %}
+                        {% endif %}
+                        </optgroup>
+                    {% endif %}
+                    {% if thread.showcustomthreadtools %}
+                        <optgroup label="{{ lang.custom_mod_tools }}">
+                            {% for tool in thread.customthreadtools %}
+                                <option value="{{ tool.tid }}">{{ tool.name }}</option>
+                            {% endfor %}
+                        </optgroup>
+                    {% endif %}
+                </select>
+            </div>
+            <button type="submit" class="button button--inline">
+                {{ include('partials/icon.twig', {icon: 'arrow-right', class: 'button__icon'}, with_context = false) }}
+                <span class="button__text">{{ lang.go }}</span>
+            </button>
+        </form>
+    </div>
+    {% if thread.showinlinemodoptions %}
+        <div class="page-tools__item thread-moderation__inline">
+            <script type="text/javascript" src="{{ asset_url('jscripts/inline_moderation.js') }}"></script>
+            <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;" id="inlinemoderation_options">
+                <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+                <input type="hidden" name="tid" value="{{ thread.tid }}" />
+                <input type="hidden" name="modtype" value="inlinepost" />
+                <h2 class="title title--legend">{{ lang.inline_post_moderation }}</h2>
+                <div class="select-field">
+                    {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
+                    <select name="action" id="inlinemoderation_options_selector">
+                        {% if thread.showstandardposttools %}
+                            <optgroup label="{{ lang.standard_mod_tools }}">
+                                {% if modpermissions.cansoftdeleteposts %}
+                                    <option value="multisoftdeleteposts">{{ lang.inline_soft_delete_posts }}</option>
+                                {% endif %}
+                                {% if modpermissions.canrestoreposts %}
+                                    <option value="multirestoreposts">{{ lang.inline_restore_posts }}</option>
+                                {% endif %}
+                                {% if modpermissions.candeleteposts %}
+                                    <option value="multideleteposts">{{ lang.inline_delete_posts }}</option>
+                                {% endif %}
+                                {% if modpermissions.canmanagethreads %}
+                                    <option value="multimergeposts">{{ lang.inline_merge_posts }}</option>
+                                    <option value="multisplitposts">{{ lang.inline_split_posts }}</option>
+                                    <option value="multimoveposts">{{ lang.inline_move_posts }}</option>
+                                {% endif %}
+                                {% if modpermissions.canapproveunapproveposts %}
+                                    <option value="multiapproveposts">{{ lang.inline_approve_posts }}</option>
+                                    <option value="multiunapproveposts">{{ lang.inline_unapprove_posts }}</option>
+                                {% endif %}
+                            </optgroup>
+                        {% endif %}
+                        {% if thread.showcustomposttools %}
+                            <optgroup label="{{ lang.custom_mod_tools }}">
+                                {% for tool in thread.customposttools %}
+                                    <option value="{{ tool.tid }}">{{ tool.name }}</option>
+                                {% endfor %}
+                            </optgroup>
+                        {% endif %}
+                    </select>
+                </div>
+                <button type="submit" name="go" class="button button--inline">
+                    {{ include('partials/icon.twig', {icon: 'arrow-right', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text" id="inline_go">{{ lang.go }} ({{ thread.inlinecount }})</span>
+                </button>
+                <button type="button" class="button button--secondary button--inline" onclick="inlineModeration.clearChecked();">
+                    {{ include('partials/icon.twig', {icon: 'times', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.clear }}</span>
+                </button>
+            </form>
+            <script type="text/javascript">
+            <!--
+                var go_text = "{{ lang.inline_go }}";
+                var all_text = "{{ thread.threadcount }}";
+                var inlineType = "thread";
+                var inlineId = {{ thread.tid }};
+
+                $("#inlinemoderation_options_selector").change(function() {
+                    $("#inlinemoderation_options").submit();
+                })
+            // -->
+            </script>
+        </div>
+    {% endif %}
+</div>
+<script type="text/javascript">
+<!--
+    $("#moderator_options_selector").change(function() {
+        $("#moderator_options").submit();
+    })
+//-->
+</script>

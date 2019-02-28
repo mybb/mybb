@@ -1,9 +1,12 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ trans('post_reply_to', thread.subject) }}</title>
-    <script type="text/javascript" src="{{ asset_url('jscripts/post.js') }}"></script>
+    <title>{{ trans('post_reply_to', thread.subject) }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
+
+{% block jscripts %}
+    <script type="text/javascript" src="{{ asset_url('jscripts/post.js') }}"></script>
+{% endblock jscripts %}
 
 {# let the newreply variable be used in shared twig templates #}
 {% set composepost = newreply %}
@@ -26,15 +29,27 @@
         {{ reply_errors|raw }}
         {% if newreply.showmodnotice %}
             <div class="alert alert--red-alert">
-                <i class="alert__icon fas fa-exclamation-triangle"></i>
+                {{ include('partials/icon.twig', {icon: 'exclamation-triangle', class: 'alert__icon'}, with_context = false) }}
                 <div class="alert__message">{{ newreply.moderation_text }}</div>
             </div>
+        {% endif %}
+        {% if newreply.showforumrules %}
+            {% if forum.rulestype == 2 %}
+                <section class="container">
+                    <a href="misc.php?action=rules&amp;fid={{ forum.fid }}">{{ forum.rulestitle }}</a>
+                </section>
+            {% else %}
+            <section class="container">
+                <h4 class="title title--container">{{ forum.rulestitle }}</h4>
+                <div class="scaleimages">{{ forum.rules|raw }}</div>
+            </section>
+            {% endif %}
         {% endif %}
         <form action="newreply.php?tid={{ thread.tid }}&amp;processed=1" method="post" enctype="multipart/form-data" name="input">
             <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
             <div class="form form--compose compose">
-				<input type="checkbox" class="compose__checkbox" id="show-post-options">
-				<input type="checkbox" class="compose__checkbox" id="show-attachments"{% if newreply.showattachments and attachments|length > 0 %} checked="checked"{% endif %}>
+                <input type="checkbox" class="compose__checkbox" id="show-post-options">
+                <input type="checkbox" class="compose__checkbox" id="show-attachments"{% if newreply.showattachments and attachments|length > 0 %} checked="checked"{% endif %}>
                 <section class="section section--form compose__primary-section">
                     <div class="row row--form field">
                         <h3 class="field__name visually-hidden"><label for="subject">{{ lang.post_subject }}</h3>
@@ -49,9 +64,9 @@
 
                     <div class="row row--form field">
                         <h3 class="field__name visually-hidden"><label for="message">{{ lang.your_message }}</label></h3>
-    					<div class="compose__container">
-    						<div class="compose__message">
-    							<textarea name="message" id="message" rows="20" cols="70" tabindex="3">{{ newreply.message }}</textarea>
+                        <div class="compose__container">
+                            <div class="compose__message">
+                                <textarea name="message" id="message" rows="20" cols="70" tabindex="3">{{ newreply.message }}</textarea>
                                 {{ codebuttons|raw }}
                                 {% if newreply.multiquote %}
                                     <div id="multiquote_unloaded">
@@ -63,32 +78,32 @@
                             {{ smilieinserter|raw }}
                         </div>
                         <div class="compose__option-buttons">
-							{% if newreply.showpostoptions %}
-    							<label for="show-post-options" class="button button--basic compose__option-button--options">
-    								<i class="button__icon fas fa-cog"></i>
-    								<span class="button__text">{{ lang.options }}</span>
-    							</label>
+                            {% if newreply.showpostoptions %}
+                                <label for="show-post-options" class="button button--basic compose__option-button--options">
+                                    {{ include('partials/icon.twig', {icon: 'cog', class: 'button__icon'}, with_context = false) }}
+                                    <span class="button__text">{{ lang.options }}</span>
+                                </label>
                             {% endif %}
 
                             {% if newreply.showattachments %}
-    							<label for="show-attachments" class="button button--basic compose__option-button--attachments">
-    								<i class="button__icon fas fa-paperclip"></i>
-    								<span class="button__text">{{ lang.upload_attachments }}</span>
-    							</label>
+                                <label for="show-attachments" class="button button--basic compose__option-button--attachments">
+                                    {{ include('partials/icon.twig', {icon: 'paperclip', class: 'button__icon'}, with_context = false) }}
+                                    <span class="button__text">{{ lang.upload_attachments }}</span>
+                                </label>
                             {% endif %}
 
                             {% if mybb.user.uid %}
                                 <button type="submit" name="savedraft" value="draft" class="button button--basic">
-                                    <i class="button__icon far fa-file"></i>
+                                    {{ include('partials/icon.twig', {icon: 'file', class: 'button__icon'}, with_context = false) }}
                                     <span class="button__text">{{ lang.save_draft }}</span>
                                 </button>
                             {% endif %}
 
-							<button type="submit" name="previewpost" value="preview" class="button button--basic">
-								<i class="button__icon fas fa-edit"></i>
-								<span class="button__text">{{ lang.preview_post }}</span>
-							</button>
-						</div>
+                            <button type="submit" name="previewpost" value="preview" class="button button--basic">
+                                {{ include('partials/icon.twig', {icon: 'edit', class: 'button__icon'}, with_context = false) }}
+                                <span class="button__text">{{ lang.preview_post }}</span>
+                            </button>
+                        </div>
                     </div>
                 </section>
 
@@ -155,11 +170,11 @@
                 {% endif %}
 
                 <div class="form__submit">
-					<button type="submit" class="button button--big" name="submit" tabindex="3" accesskey="s">
-						<i class="button__icon fas fa-comment"></i>
-						<span class="button__text">{{ lang.post_reply }}</span>
-					</button>
-				</div>
+                    <button type="submit" class="button button--big" name="submit" tabindex="3" accesskey="s">
+                        {{ include('partials/icon.twig', {icon: 'comment', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.post_reply }}</span>
+                    </button>
+                </div>
                 <input type="hidden" name="action" value="do_newreply" />
                 <input type="hidden" name="replyto" value="{{ newreply.replyto }}" />
                 <input type="hidden" name="posthash" value="{{ newreply.posthash }}" />
@@ -172,18 +187,6 @@
                 {% endif %}
             </div>
         </form>
-        {% if newreply.showforumrules %}
-            {% if forum.rulestype == 2 %}
-                <section class="container">
-                    <a href="misc.php?action=rules&amp;fid={{ forum.fid }}">{{ forum.rulestitle }}</a>
-                </section>
-            {% else %}
-            <section class="container">
-                <h4 class="container__title">{{ forum.rulestitle }}</h4>
-                <div class="scaleimages">{{ forum.rules|raw }}</div>
-            </section>
-            {% endif %}
-        {% endif %}
 
         {% if mybb.settings.threadreview %}
             <section class="block">

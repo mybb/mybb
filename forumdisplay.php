@@ -571,7 +571,7 @@ if ($has_announcements == true) {
         $announcement['announcementlink'] = get_announcement_link($announcement['aid']);
         $announcement['subject'] = $parser->parse_badwords($announcement['subject']);
         $announcement['subject'] = htmlspecialchars_uni($announcement['subject']);
-        $postdate = my_date('relative', $announcement['startdate']);
+        $announcement['postdate'] = my_date('relative', $announcement['startdate']);
 
         $announcement['username'] = htmlspecialchars_uni($announcement['username']);
 
@@ -924,6 +924,7 @@ output_page(\MyBB\template('forumdisplay/forumdisplay.twig', [
     'subAction' => $subAction,
     'multipage' => $multipage,
     'threadcount' => $threadcount,
+    'announcements' => $announcements,
     'threadCache' => $threadCache,
     'perpage' => $perpage,
     'prefixselect' => $prefixselect,

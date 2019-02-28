@@ -1,20 +1,19 @@
 <div class="modal">
-    <div style="overflow-y: auto; max-height: 400px;">
-        <table width="100%" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" border="0" align="center" class="tborder">
-            <tr>
-                <td colspan="2" class="thead"><strong>{{ lang.total_posts }} {{ thread.numposts }}</strong></td>
-            </tr>
-            <tr>
-                <td class="tcat"><span class="smalltext"><strong><a href="javascript:void(0)" onclick="MyBB.whoPosted({{ thread.tid }}, 'username'); return false;">{{ lang.user }}</a></strong></span></td>
-                <td class="tcat"><span class="smalltext"><strong><a href="javascript:void(0)" onclick="MyBB.whoPosted({{ thread.tid }}); return false;">{{ lang.num_posts }}</a></strong></span></td>
-            </tr>
-            {% for poster in whoposted %}
-                {% set row = alt_trow() %}
-                <tr>
-                    <td class="{{ row }}">{{ poster.profile_link|raw }}</td>
-                    <td class="{{ row }}">{{ poster.posts }}</td>
-                </tr>
-            {% endfor %}
-        </table>
-    </div>
+    <section class="block block--modal">
+        <h1 class="title title--modal">{{ lang.total_posts }} {{ thread.numposts }}</h1>
+        <div class="modal__content">
+            <div class="block__content who-posted">
+                <div class="container container--modal container--adjacent container--simple-columns who-posted__legend">
+                    <div class="who-posted__username"><a href="javascript:void(0)" onclick="MyBB.whoPosted({{ thread.tid }}, 'username'); return false;">{{ lang.user }}</a></div>
+                    <div class="who-posted__count"><a href="javascript:void(0)" onclick="MyBB.whoPosted({{ thread.tid }}); return false;">{{ lang.num_posts }}</a></div>
+                </div>
+                {% for poster in whoposted %}
+                    <div class="row row--simple-columns who-posted__user">
+                        <div class="row__primary who-posted__username">{{ poster.profile_link|raw }}</div>
+                        <div class="row__secondary who-posted__count">{{ poster.posts }}</div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
 </div>

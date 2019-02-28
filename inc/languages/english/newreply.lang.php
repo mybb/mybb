@@ -10,15 +10,15 @@ $l['nav_newreply'] = "Post Reply";
 $l['post_reply_to'] = "Post Reply to {1}";
 $l['post_new_reply'] = "Post a New Reply";
 $l['reply_to'] = "Reply to thread: {1}";
-$l['post_subject'] = "Post Subject:";
-$l['your_message'] = "Your Message:";
-$l['post_options'] = "Post Options:";
+$l['post_subject'] = "Post Subject";
+$l['your_message'] = "Your Message";
+$l['post_options'] = "Post Options";
 $l['options_sig'] = "<strong>Signature:</strong> include your signature. (registered users only)";
 $l['options_emailnotify'] = "<strong>Email Notification:</strong> receive an email whenever there is a new reply. (registered users only)";
 $l['options_disablesmilies'] = "<strong>Disable Smilies:</strong> disable smilies from showing in this post.";
 $l['post_reply'] = "Post Reply";
 $l['preview_post'] = "Preview Post";
-$l['mod_options'] ="Moderator Options:";
+$l['mod_options'] ="Moderator Options";
 $l['close_thread'] = "<strong>Close Thread</strong>: prevent further posting in this thread.";
 $l['stick_thread'] = "<strong>Stick Thread:</strong> stick this thread to the top of the forum.";
 $l['forum_rules'] = "{1} - Rules";
@@ -50,4 +50,3 @@ $l['error_suspendedposting'] = "Your posting privileges are currently suspended 
 Suspension Date: {2}";
 $l['error_suspendedposting_temporal'] = "until {1}";
 $l['error_suspendedposting_permanent'] = "permanently";
-

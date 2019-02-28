@@ -2,43 +2,53 @@
     {% set row = 'trow_shaded' %}
 {% elseif post.visible == -1 %}
     {% set row = 'trow_shaded trow_deleted' %}
-{% else %}
-    {% set row = alt_trow() %}
 {% endif %}
-<tr class="inline_row">
-    <td align="center" class="{{ row }}" width="2%"><span class="thread_status {{ post.folder }}" title="{{ post.folder_label }}">&nbsp;</span></td>
-    <td align="center" class="{{ row }}" width="2%">
-        {% if post.hasicon %}
-            <img src="{{ post.icon_path }}" alt="{{ post.icon_name }}" title="{{ post.icon_name }}" /> 
-        {% else %}
-            &nbsp;
-        {% endif %}
-    </td>
-    <td class="{{ row }}">
-        <span class="smalltext">
-            {{ lang.post_thread }} <a href="{{ post.thread_url|raw }}">{{ post.thread_subject }}</a><br />
-            {{ lang.post_subject }} <a href="{{ post.post_url|raw }}#pid{{ post.pid }}">
-                {{ post.subject|slice(0, 50) }}{% if post.subject|length > 50 %}...{% endif %}
-            </a>
-        </span><br />
-        <table width="100%"><tr><td><span class="smalltext"><em>
-            {{ post.message|slice(0, 200) }}{% if post.message|length > 200 %}...{% endif %}
-        </em></span></td></tr></table>
-    </td>
-    <td align="center" class="{{ row }}">
-        {{ render_avatar(url=post.user_avatar, alt=post.username) }}
+<div class="row row--thread thread {{ row }} inline_row">
+    <div class="thread__column thread__column--primary">
+        <h3 class="thread__title">
+            <a href="{{ post.post_url|raw }}#pid{{ post.pid }}">{{ lang.post }}</a> {{ lang.in }} <a href="{{ post.thread_url|raw }}">{{ post.thread_subject }}</a>
 
-        {{ post.profilelink|raw }}
-    </td>
-    <td class="{{ row }}"><a href="{{ post.forumlink_link }}">{{ post.forumlink_name }}</a></td>
-    <td align="center" class="{{ row }}"><a href="{{ mybb.settings.bburl }}/misc.php?action=whoposted&amp;tid={{ post.tid }}" onclick="MyBB.whoPosted({{ post.tid }}); return false;">{{ post.thread_replies }}</a></td>
-    <td align="center" class="{{ row }}">{{ post.thread_views }}</td>
-    <td class="{{ row }}" style="white-space: nowrap; text-align: center;"><span class="smalltext">{{ post.posted|raw }}</span></td>
+            {% if post.unread %}
+                <a href="{{ post.post_url|raw }}#pid{{ post.pid }}" class="thread__status">
+                    {{ include('partials/icon.twig', {icon: 'circle', class: '', title: lang.goto_post }, with_context = false) }}
+                </a>
+            {% endif %}
+
+            {% if post.hasicon %}
+                <span class="thread__icons">
+                    <span class="thread__icon">
+                        <img src="{{ post.icon_path }}" alt="{{ post.icon_name }}" title="{{ post.icon_name }}" />
+                    </span>
+                </span>
+            {% endif %}
+        </h3>
+
+        <p class="thread__forum">{{ lang.post_forum }} <a href="{{ post.forumlink_link }}">{{ post.forumlink_name }}</a></p>
+        <div class="thread__message">
+            {{ post.message|slice(0, 200) }}{% if post.message|length > 200 %}...{% endif %}
+        </div>
+    </div>
+    <div class="thread__column thread__column--replies">
+        <p class="thread__replies">
+            <a href="{{ mybb.settings.bburl }}/misc.php?action=whoposted&amp;tid={{ post.tid }}" onclick="MyBB.whoPosted({{ post.tid }}); return false;" title="{{ lang.replies }}: {{ post.thread_replies }} &middot; {{ lang.views }}: {{ post.thread_views }}" class="thread__reply-count">{{ post.thread_replies }}</a>
+            <span class="thread__reply-legend">{% if post.thread_replies == 1 %}{{ lang.reply }}{% else %}{{ lang.replies2 }}{% endif %}</span>
+        </p>
+    </div>
+    <div class="thread__column thread__column--latest">
+        <p class="thread__latest-post">
+            <span class="thread__latest-post__text">{{ lang.posted_by }}</span>
+            <a href="{{ get_profile_link(post.uid) }}" class="avatar-profile-link">
+                {{ render_avatar(url=post.user_avatar, alt=post.username, class='avatar--smallest') }}
+            </a>
+            <span class="thread__latest-post__author">
+                {{ post.profilelink|raw }}
+            </span>
+            <a href="{{ post.post_url|raw }}#pid{{ post.pid }}" class="thread__latest-post__date">{{ post.posted|raw }}</a>
+        </p>
+    </div>
     {% if post.show_mod_checkbox %}
-        <td class="{{ row }}" align="center" style="white-space: nowrap">
-            <input type="checkbox" class="checkbox" name="inlinemod_{{ post.pid }}" id="inlinemod_{{ post.pid }}" value="1" style="vertical-align: middle;" {% if post.checked %} checked="checked"{% endif %}  />
-        </td>
-    {% elseif post.show_mod_nocheck %}
-        <td class="{{ row }}" align="center" style="white-space: nowrap">&nbsp;</td>
+    <div class="thread__column thread__column--checkbox">
+        <input type="checkbox" class="checkbox" name="inlinemod_{{ post.pid }}" id="inlinemod_{{ post.pid }}" value="1"{% if post.checked %} checked{% endif %} />
+    </div>
     {% endif %}
-</tr>
+</div>

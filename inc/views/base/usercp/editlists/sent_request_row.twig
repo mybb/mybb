@@ -1,13 +1,12 @@
-<tr>
-    <td class="{{ row }}">
-        {{ request.username|raw }}
-    </td>
-    <td class="{{ row }}">
-        {{ request.date|raw }}
-    </td>
-    <td class="{{ row }}">
-        <a href="{{ mybb.settings.bburl }}/usercp.php?action=cancelrequest&amp;id={{ request.id }}&amp;my_post_key={{ mybb.post_code }}">
-            {{ lang.cancel }}
+<div class="row row--simple-columns buddy-request">
+    <div class="buddy-request__info">
+        <h3 class="buddy-request__username">{{ request.username|raw }}</h3>
+        <span class="buddy-request__date">{{ request.date|raw }}</span>
+    </div>
+    <div class="buddy-request__buttons">
+        <a href="{{ mybb.settings.bburl }}/usercp.php?action=cancelrequest&amp;id={{ request.id }}&amp;my_post_key={{ mybb.post_code }}" class="button button--small button--danger">
+            {{ include('partials/icon.twig', {icon: 'times', class: 'button__icon'}, with_context = false) }}
+            <span class="button__text">{{ lang.cancel }}</span>
         </a>
-    </td>
-</tr>
+    </div>
+</div>

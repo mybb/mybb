@@ -1,149 +1,225 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.calendar }} - {{ lang.edit_event }}</title>
+    <title>{{ lang.calendar }} - {{ lang.edit_event }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block body %}
-    {{ event_errors|raw }}
-    <form action="calendar.php" method="post">
-        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-            <tr>
-                <td class="thead" colspan="3"><strong>{{ lang.delete_event }}</strong></td>
-            </tr>
-            <tr>
-                <td class="trow1" style="white-space: nowrap"><input type="checkbox" class="checkbox" name="delete" value="1" tabindex="9" /> <strong>{{ lang.delete_q }}</strong></td>
-                <td class="trow1" width="100%">{{ lang.delete_1 }}<br /><span class="smalltext">{{ lang.delete_2|raw }}</span></td>
-                <td class="trow1"><input type="submit" class="button" name="submit" value="{{ lang.delete_now }}" tabindex="10" /></td>
-            </tr>
-        </table>
-        <input type="hidden" name="action" value="do_deleteevent" />
-        <input type="hidden" name="eid" value="{{ event.eid }}" />
-    </form>
-    <br />
-    <form action="calendar.php" method="post" name="input">
-        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder clear">
-            <tr>
-                <td colspan="2" width="100%" class="thead"><strong>{{ lang.edit_event }}</strong></td>
-            </tr>
-            <tr>
-                <td width="20%" class="trow1"><strong>{{ lang.event_name }}</strong></td>
-                <td class="trow1"><input type="text" class="textbox" size="50" name="name" maxlength="120" value="{{ select.name }}"/></td>
-            </tr>
-            <tr>
-                <td class="trow2" style="vertical-align: top;"><strong>{{ lang.event_date }}</strong></td>
-                <td class="trow1">
-                    <script type="text/javascript">
-                    <!--
-                        function toggleType()
-                        {
-                            if($("#type_single").prop("checked"))
+    <div class="page-content">
+        <header class="page-header">
+            <h1 class="title title--page">{{ lang.edit_event }}</h1>
+        </header>
+        {{ event_errors|raw }}
+        <form action="calendar.php" method="post">
+            <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+            <div class="form form--alt form--delete">
+                <div class="option-field option-field--single">
+                    <input type="checkbox" class="checkbox" name="delete" id="deleteevent" value="1" tabindex="9" />
+                    <h3 class="option-field__name"><label for="deleteevent">{{ lang.delete_q }}</label></h3>
+                    <p class="option-field__description">
+                        <label for="deletepost">{{ lang.delete_1 }}<br />{{ lang.delete_2|raw }}</label>
+                    </p>
+                </div>
+                <div class="form__submit">
+                    <button type="submit" class="button button--medium" name="submit">
+                        {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.delete_now }}</span>
+                    </button>
+                </div>
+            </div>
+            <input type="hidden" name="action" value="do_deleteevent" />
+            <input type="hidden" name="eid" value="{{ event.eid }}" />
+        </form>
+        <form action="calendar.php" method="post" name="input">
+            <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+            <div class="block block--form form form--compose compose">
+                <section class="section section--form">
+                    <div class="row row--form field">
+                        <h2 class="field__name"><label for="event_name">{{ lang.event_name }}</label></h2>
+                        <input type="text" class="textbox" name="name" id="event_name" maxlength="120" value="{{ select.name }}"/>
+                    </div>
+                    <div class="row row--form field">
+                        <h2 class="field__name">{{ lang.event_date }}</h2>
+                        <script type="text/javascript">
+                        <!--
+                            function toggleType()
                             {
-                                $("#ranged_selects").hide();
-                                $("#single_selects").show();
+                                if($("#type_single").prop("checked"))
+                                {
+                                    $("#ranged_selects").hide();
+                                    $("#single_selects").show();
+                                }
+                                else
+                                {
+                                    $("#single_selects").hide();
+                                    $("#ranged_selects").show();
+                                    toggleRepeats();
+                                }
                             }
-                            else
-                            {
-                                $("#single_selects").hide();
-                                $("#ranged_selects").show();
-                                toggleRepeats();
-                            }
-                        }
 
-                        function toggleRepeats()
-                        {
-                            var repeats = $("#repeats").get(0).selectedIndex;
-                            $(".repeats_type").each(function()
+                            function toggleRepeats()
                             {
-                                $(this).hide();
-                            });
-                            if($("#repeats_type_"+repeats).length > 0)
-                            {
-                                $("#repeats_type_"+repeats).show();
+                                var repeats = $("#repeats").get(0).selectedIndex;
+                                $(".repeats_type").each(function()
+                                {
+                                    $(this).hide();
+                                });
+                                if($("#repeats_type_"+repeats).length > 0)
+                                {
+                                    $("#repeats_type_"+repeats).show();
+                                }
                             }
-                        }
-                    // -->
-                    </script>
-                    <dl style="margin-top: 0; margin-bottom: 0; width: 100%;">
-                        <dt><input type="radio" name="type" value="single"{% if select.type_single %} checked="checked"{% endif %} id="type_single" onclick="toggleType();" /> <label for="type_single"><strong>{{ lang.type_single }}</strong></label></dt>
-                        <dd style="margin-top: 4px;" id="single_selects">
-                            <select name="single_day">
-                                {% for day in days %}
-                                    <option value="{{ day.day }}"{% if day.single_day %} selected="selected"{% endif %}>{{ day.day }}</option>
-                                {% endfor %}
-                            </select>
-                            &nbsp;
-                            <select name="single_month">
-                                {% for month in months %}
-                                    <option value="{{ month.month }}"{% if month.single_month %} selected="selected"{% endif %}>{{ month.name }}</option>
-                                {% endfor %}
-                            </select>
-                            &nbsp;
-                            <select name="single_year">
-                                {% for year in years %}
-                                    <option value="{{ year.year }}"{% if year.single_year %} selected="selected"{% endif %}>{{ year.year }}</option>
-                                {% endfor %}
-                            </select>
-                        </dd>
-                        <dt><input type="radio" name="type" value="ranged"{% if select.type_ranged %} checked="checked"{% endif %} id="type_ranged" onclick="toggleType();" /> <label for="type_ranged"><strong>{{ lang.type_ranged }}</strong></label></dt>
-                        <dd style="margin-top: 4px; width: 100%;" id="ranged_selects">
-                            <table width="100%">
-                                <tr>
-                                    <td class="smalltext" style="padding: 4px; text-align: right;">{{ lang.start_time }}</td>
-                                    <td style="padding: 4px;">
-                                        <select name="start_day">
-                                            {% for day in days %}
-                                                <option value="{{ day.day }}"{% if day.start_day %} selected="selected"{% endif %}>{{ day.day }}</option>
+                        // -->
+                        </script>
+                        <div class="option-field">
+                            <input type="radio" name="type" value="single"{% if select.type_single %} checked="checked"{% endif %} id="type_single" onclick="toggleType();" class="option-field__input" />
+                            <h3 class="option-field__name"><label for="type_single">{{ lang.type_single }}</label></h3>
+                            <div class="section section--inline" id="single_selects">
+                                <div class="row row--form field">
+                                    <div class="date-field">
+                                        <div class="date-field__item">
+                                            <h4 class="date-field__name">{{ lang.day }}</h4>
+                                            <div class="select-field">
+                                                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
+                                                <select name="single_day">
+                                                    {% for day in days %}
+                                                        <option value="{{ day.day }}"{% if day.single_day %} selected="selected"{% endif %}>{{ day.day }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="date-field__item">
+                                            <h4 class="date-field__name">{{ lang.month }}</h4>
+                                            <div class="select-field">
+                                                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
+                                                <select name="single_month">
+                                                    {% for month in months %}
+                                                        <option value="{{ month.month }}"{% if month.single_month %} selected="selected"{% endif %}>{{ month.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="date-field__item">
+                                            <h4 class="date-field__name">{{ lang.year }}</h4>
+                                            <div class="select-field">
+                                                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
+                                                <select name="single_year">
+                                                    {% for year in years %}
+                                                        <option value="{{ year.year }}"{% if year.single_year %} selected="selected"{% endif %}>{{ year.year }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="option-field">
+                            <input type="radio" name="type" value="ranged"{% if select.type_ranged %} checked="checked"{% endif %} id="type_ranged" onclick="toggleType();" class="option-field__input" />
+                            <h3 class="option-field__name"><label for="type_ranged">{{ lang.type_ranged }}</label></h3>
+                            <div class="section section--inline" id="ranged_selects">
+                                <div class="row row--form field">
+                                    <h5 class="field__name">{{ lang.start_time }}</h5>
+                                    <div class="date-field">
+                                        <div class="date-field__item">
+                                            <h4 class="date-field__name">{{ lang.day }}</h4>
+                                            <div class="select-field">
+                                                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
+                                                <select name="start_day">
+                                                    {% for day in days %}
+                                                        <option value="{{ day.day }}"{% if day.start_day %} selected="selected"{% endif %}>{{ day.day }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="date-field__item">
+                                            <h4 class="date-field__name">{{ lang.month }}</h4>
+                                            <div class="select-field">
+                                                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
+                                                <select name="start_month">
+                                                    {% for month in months %}
+                                                        <option value="{{ month.month }}"{% if month.start_month %} selected="selected"{% endif %}>{{ month.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="date-field__item">
+                                            <h4 class="date-field__name">{{ lang.year }}</h4>
+                                            <div class="select-field">
+                                                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
+                                                <select name="start_year">
+                                                    {% for year in years %}
+                                                        <option value="{{ year.year }}"{% if year.start_year %} selected="selected"{% endif %}>{{ year.year }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="date-field__item">
+                                            <h4 class="date-field__name">{{ lang.enter_time }}</h4>
+                                            <input type="text" class="textbox textbox--small" name="start_time" value="{{ select.start_time }}" size="7" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row row--form field">
+                                    <h3 class="field__name">{{ lang.end_time }}</h3>
+                                    <div class="date-field">
+                                        <div class="date-field__item">
+                                            <h4 class="date-field__name">{{ lang.day }}</h4>
+                                            <div class="select-field">
+                                                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
+                                                <select name="end_day">
+                                                    {% for day in days %}
+                                                        <option value="{{ day.day }}"{% if day.end_day %} selected="selected"{% endif %}>{{ day.day }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="date-field__item">
+                                            <h4 class="date-field__name">{{ lang.month }}</h4>
+                                            <div class="select-field">
+                                                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
+                                                <select name="end_month">
+                                                    {% for month in months %}
+                                                        <option value="{{ month.month }}"{% if month.end_month %} selected="selected"{% endif %}>{{ month.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="date-field__item">
+                                            <h4 class="date-field__name">{{ lang.year }}</h4>
+                                            <div class="select-field">
+                                                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
+                                                <select name="end_year">
+                                                    {% for year in years %}
+                                                        <option value="{{ year.year }}"{% if year.end_year %} selected="selected"{% endif %}>{{ year.year }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="date-field__item">
+                                            <h4 class="date-field__name">{{ lang.enter_time }}</h4>
+                                            <input type="text" class="textbox textbox--small" name="end_time" value="{{ select.end_time }}" size="7" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row row--form field">
+                                    <h3 class="field__name">{{ lang.timezone }}</h3>
+                                    <div class="select-field">
+                                        {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
+                                        <select name="timezone" id="timezone">
+                                            {% for timezone in timezones %}
+                                                <option value="{{ timezone.timezone }}"{% if timezone.selected %} selected{% endif %}>{{ timezone.label }}</option>
                                             {% endfor %}
                                         </select>
-                                        <select name="start_month">
-                                            {% for month in months %}
-                                                <option value="{{ month.month }}"{% if month.start_month %} selected="selected"{% endif %}>{{ month.name }}</option>
-                                            {% endfor %}
-                                        </select>
-                                        <select name="start_year">
-                                            {% for year in years %}
-                                                <option value="{{ year.year }}"{% if year.start_year %} selected="selected"{% endif %}>{{ year.year }}</option>
-                                            {% endfor %}
-                                        </select>
-                                        <span class="smalltext">&nbsp;&nbsp;&nbsp;{{ lang.enter_time }}</span>
-                                        <input type="text" class="textbox" name="start_time" value="{{ select.start_time }}" size="7" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="smalltext" style="padding: 4px; text-align: right;">{{ lang.end_time }}</td>
-                                    <td style="padding: 4px;">
-                                        <select name="end_day">
-                                            {% for day in days %}
-                                                <option value="{{ day.day }}"{% if day.end_day %} selected="selected"{% endif %}>{{ day.day }}</option>
-                                            {% endfor %}
-                                        </select>
-                                        <select name="end_month">
-                                            {% for month in months %}
-                                                <option value="{{ month.month }}"{% if month.end_month %} selected="selected"{% endif %}>{{ month.name }}</option>
-                                            {% endfor %}
-                                        </select>
-                                        <select name="end_year">
-                                            {% for year in years %}
-                                                <option value="{{ year.year }}"{% if year.end_year %} selected="selected"{% endif %}>{{ year.year }}</option>
-                                            {% endfor %}
-                                        </select>
-                                        <span class="smalltext">&nbsp;&nbsp;&nbsp;{{ lang.enter_time }}</span>
-                                        <input type="text" class="textbox" name="end_time" value="{{ select.end_time }}" size="7" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="smalltext" style="padding: 4px; text-align: right; vertical-align: top;">{{ lang.timezone }}</td>
-                                    <td style="padding: 4px;">
-                                        {{ timezones|raw }}<br />
-                                        <label class="smalltext" style="display: block; padding-top: 4px;"><input type="checkbox" name="ignoretimezone" value="1"{% if select.ignore_timezone %} checked="checked"{% endif %} style="vertical-align: middle;" /> {{ lang.ignore_timezone|raw }} </label>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="smalltext" style="padding: 4px; text-align: right; vertical-align:top;">{{ lang.repeats }}</td>
-                                    <td class="smalltext" style="padding: 4px;">
+                                    </div>
+                                    <p class="option-field option-field--compact">
+                                        <label class="smalltext"><input type="checkbox" name="ignoretimezone" value="1"{% if select.ignore_timezone %} checked="checked"{% endif %} style="vertical-align: middle;" /> {{ lang.ignore_timezone|raw }} </label>
+                                    </p>
+                                </div>
+                                <div class="row row--form field">
+                                    <h3 class="field__name">{{ lang.repeats }}</h3>
+                                    <div class="select-field">
+                                        {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                         <select name="repeats" id="repeats" onchange="toggleRepeats();">
                                             <option value="0">{{ lang.does_not_repeat }}</option>
                                             <option value="1"{% if select.repeats_sel.1 %} selected="selected"{% endif %}>{{ lang.repeats_daily }}</option>
@@ -152,127 +228,152 @@
                                             <option value="4"{% if select.repeats_sel.4 %} selected="selected"{% endif %}>{{ lang.repeats_monthly }}</option>
                                             <option value="5"{% if select.repeats_sel.5 %} selected="selected"{% endif %}>{{ lang.repeats_yearly }}</option>
                                         </select>
-                                        <div class="repeats_type" id="repeats_type_1" style="padding: 4px;">
-                                            {{ lang.repeats_every }}
-                                            <input type="text" class="textbox" name="repeats_1_days" value="{{ select.repeats_1_days }}" size="2" /> {{ lang.day_or_days }}
+                                    </div>
+                                    <div class="section section--inline repeats_type" id="repeats_type_1">
+                                        <div class="row row--form field">
+                                            <h4 class="field__name">{{ lang.repeats_every }}</h4>
+                                            <input type="text" class="textbox textbox--small" name="repeats_1_days" value="{{ select.repeats_1_days }}" size="2" /> {{ lang.day_or_days }}
                                         </div>
-                                        <div class="repeats_type" id="repeats_type_3" style="padding: 4px;">
-                                            {{ lang.repeats_every }}
-                                            <input type="text" class="textbox" name="repeats_3_weeks" value="{{ select.repeats_3_weeks }}" size="2" /> {{ lang.week_or_weeks_on }}
-                                            <br />
-                                            <table style="padding: 4px;">
-                                                <tr>
-                                                    <td style="padding: 2px;" class="smalltext"><label><input type="checkbox" name="repeats_3_days[0]" value="1"{% if select.repeats_3_days.0 %} checked="checked"{% endif %} style="vertical-align: middle;" /> {{ lang.sunday }}</label></td>
-                                                    <td style="padding: 2px;" class="smalltext"><label><input type="checkbox" name="repeats_3_days[1]" value="1"{% if select.repeats_3_days.1 %} checked="checked"{% endif %} style="vertical-align: middle;" /> {{ lang.monday }}</label></td>
-                                                    <td style="padding: 2px;" class="smalltext"><label><input type="checkbox" name="repeats_3_days[2]" value="1"{% if select.repeats_3_days.2 %} checked="checked"{% endif %} style="vertical-align: middle;" /> {{ lang.tuesday }}</label></td>
-                                                    <td style="padding: 2px;" class="smalltext"><label><input type="checkbox" name="repeats_3_days[3]" value="1"{% if select.repeats_3_days.3 %} checked="checked"{% endif %} style="vertical-align: middle;" /> {{ lang.wednesday }}</label></td>
-                                                </tr>
-                                                <tr>
-                                                    <td style="padding: 2px;" class="smalltext"><label><input type="checkbox" name="repeats_3_days[4]" value="1"{% if select.repeats_3_days.4 %} checked="checked"{% endif %} style="vertical-align: middle;" /> {{ lang.thursday }}</label></td>
-                                                    <td style="padding: 2px;" class="smalltext"><label><input type="checkbox" name="repeats_3_days[5]" value="1"{% if select.repeats_3_days.5 %} checked="checked"{% endif %} style="vertical-align: middle;" /> {{ lang.friday }}</label></td>
-                                                    <td style="padding: 2px;" class="smalltext" colspan="2"><label><input type="checkbox" name="repeats_3_days[6]" value="1"{% if select.repeats_3_days.6 %} checked="checked"{% endif %} style="vertical-align: middle;" /> {{ lang.saturday }}</label></td>
-                                                </tr>
-                                            </table>
+                                    </div>
+                                    <div class="section section--inline repeats_type" id="repeats_type_3">
+                                        <div class="row row--form field">
+                                            <h4 class="field__name">{{ lang.repeats_every }}</h4>
+                                            <input type="text" class="textbox textbox--small" name="repeats_3_weeks" value="{{ select.repeats_3_weeks }}" size="2" /> {{ lang.week_or_weeks_on }}
+                                            <p class="option-field option-field--compact"><label><input type="checkbox" name="repeats_3_days[0]" value="1"{% if select.repeats_3_days.0 %} checked="checked"{% endif %} style="vertical-align: middle;" /> {{ lang.sunday }}</label></p>
+                                            <p class="option-field option-field--compact"><label><input type="checkbox" name="repeats_3_days[1]" value="1"{% if select.repeats_3_days.1 %} checked="checked"{% endif %} style="vertical-align: middle;" /> {{ lang.monday }}</label></p>
+                                            <p class="option-field option-field--compact"><label><input type="checkbox" name="repeats_3_days[2]" value="1"{% if select.repeats_3_days.2 %} checked="checked"{% endif %} style="vertical-align: middle;" /> {{ lang.tuesday }}</label></p>
+                                            <p class="option-field option-field--compact"><label><input type="checkbox" name="repeats_3_days[3]" value="1"{% if select.repeats_3_days.3 %} checked="checked"{% endif %} style="vertical-align: middle;" /> {{ lang.wednesday }}</label></p>
+                                            <p class="option-field option-field--compact"><label><input type="checkbox" name="repeats_3_days[4]" value="1"{% if select.repeats_3_days.4 %} checked="checked"{% endif %} style="vertical-align: middle;" /> {{ lang.thursday }}</label></p>
+                                            <p class="option-field option-field--compact"><label><input type="checkbox" name="repeats_3_days[5]" value="1"{% if select.repeats_3_days.5 %} checked="checked"{% endif %} style="vertical-align: middle;" /> {{ lang.friday }}</label></p>
+                                            <p class="option-field option-field--compact"><label><input type="checkbox" name="repeats_3_days[6]" value="1"{% if select.repeats_3_days.6 %} checked="checked"{% endif %} style="vertical-align: middle;" /> {{ lang.saturday }}</label></p>
                                         </div>
-                                        <div class="repeats_type" id="repeats_type_4" style="padding: 4px;">
-                                            <div class="smalltext"><label>
-                                                <input type="radio" name="repeats_4_type" id="repeats_4_type_1" value="1" style="vertical-align: middle;"{% if select.repeats_4_type.1 %} checked="checked"{% endif %} />
-                                                {{ lang.repeats_on_day }}</label>
-                                                <input type="text" class="textbox" name="repeats_4_day" value="{{ select.repeats_4_day }}" onfocus="$('#repeats_4_type_1').prop('checked', true);" size="2" /> {{ lang.of_every }} <input type="text" class="textbox" name="repeats_4_months" value="{{ select.repeats_4_months }}" size="2" onfocus="$('#repeats_4_type_1').prop('checked', true);" /> {{ lang.month_or_months }}
+                                    </div>
+                                    <div class="section section--inline repeats_type" id="repeats_type_4">
+                                        <div class="row row--form field">
+                                            <div class="option-field option-field--compact">
+                                                <label><input type="radio" name="repeats_4_type" id="repeats_4_type_1" value="1" {% if select.repeats_4_type.1 %} checked="checked"{% endif %} /> {{ lang.repeats_on_day }}</label>
+                                                <input type="text" class="textbox textbox--short textbox--inline" name="repeats_4_day" value="{{ select.repeats_4_day }}" onfocus="$('#repeats_4_type_1').prop('checked', true);" size="2" /> {{ lang.of_every }}
+                                                <input type="text" class="textbox textbox--short textbox--inline" name="repeats_4_months" value="{{ select.repeats_4_months }}" size="2" onfocus="$('#repeats_4_type_1').prop('checked', true);" /> {{ lang.month_or_months }}
                                             </div>
-                                            <div class="smalltext" style="margin-top: 5px;"><label>
-                                                <input type="radio" name="repeats_4_type" id="repeats_4_type_2" value="2" style="vertical-align: middle;"{% if select.repeats_4_type.2 %} checked="checked"{% endif %} />
-                                                {{ lang.repeats_on_the }}</label>
-                                                <select name="repeats_4_occurance" onfocus="$('#repeats_4_type_2').prop('checked', true);">
-                                                    <option value="1"{% if select.repeats_4_occurance.1 %} selected="selected"{% endif %}>{{ lang.first }}</option>
-                                                    <option value="2"{% if select.repeats_4_occurance.2 %} selected="selected"{% endif %}>{{ lang.second }}</option>
-                                                    <option value="3"{% if select.repeats_4_occurance.3 %} selected="selected"{% endif %}>{{ lang.third }}</option>
-                                                    <option value="4"{% if select.repeats_4_occurance.4 %} selected="selected"{% endif %}>{{ lang.fourth }}</option>
-                                                    <option value="last"{% if select.repeats_4_occurance.last %} selected="selected"{% endif %}>{{ lang.last }}</option>
-                                                </select>
-                                                <select name="repeats_4_weekday" onfocus="$('#repeats_4_type_2').prop('checked', true);">
-                                                    <option value="0"{% if select.repeats_4_weekday.0 %} selected="selected"{% endif %}>{{ lang.sunday }}</option>
-                                                    <option value="1"{% if select.repeats_4_weekday.1 %} selected="selected"{% endif %}>{{ lang.monday }}</option>
-                                                    <option value="2"{% if select.repeats_4_weekday.2 %} selected="selected"{% endif %}>{{ lang.tuesday }}</option>
-                                                    <option value="3"{% if select.repeats_4_weekday.3 %} selected="selected"{% endif %}>{{ lang.wednesday }}</option>
-                                                    <option value="4"{% if select.repeats_4_weekday.4 %} selected="selected"{% endif %}>{{ lang.thursday }}</option>
-                                                    <option value="5"{% if select.repeats_4_weekday.5 %} selected="selected"{% endif %}>{{ lang.friday }}</option>
-                                                    <option value="6"{% if select.repeats_4_weekday.6 %} selected="selected"{% endif %}>{{ lang.saturday }}</option>
-                                                </select>
+                                            <div class="option-field option-field--compact">
+                                                <label><input type="radio" name="repeats_4_type" id="repeats_4_type_2" value="2" {% if select.repeats_4_type.2 %} checked="checked"{% endif %} />{{ lang.repeats_on_the }}</label>
+                                                <div class="select-field select-field--short select-field--inline">
+                                                    {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
+                                                    <select name="repeats_4_occurance" onfocus="$('#repeats_4_type_2').prop('checked', true);">
+                                                        <option value="1"{% if select.repeats_4_occurance.1 %} selected="selected"{% endif %}>{{ lang.first }}</option>
+                                                        <option value="2"{% if select.repeats_4_occurance.2 %} selected="selected"{% endif %}>{{ lang.second }}</option>
+                                                        <option value="3"{% if select.repeats_4_occurance.3 %} selected="selected"{% endif %}>{{ lang.third }}</option>
+                                                        <option value="4"{% if select.repeats_4_occurance.4 %} selected="selected"{% endif %}>{{ lang.fourth }}</option>
+                                                        <option value="last"{% if select.repeats_4_occurance.last %} selected="selected"{% endif %}>{{ lang.last }}</option>
+                                                    </select>
+                                                </div>
+                                                <div class="select-field select-field--short select-field--inline">
+                                                    {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
+                                                    <select name="repeats_4_weekday" onfocus="$('#repeats_4_type_2').prop('checked', true);">
+                                                        <option value="0"{% if select.repeats_4_weekday.0 %} selected="selected"{% endif %}>{{ lang.sunday }}</option>
+                                                        <option value="1"{% if select.repeats_4_weekday.1 %} selected="selected"{% endif %}>{{ lang.monday }}</option>
+                                                        <option value="2"{% if select.repeats_4_weekday.2 %} selected="selected"{% endif %}>{{ lang.tuesday }}</option>
+                                                        <option value="3"{% if select.repeats_4_weekday.3 %} selected="selected"{% endif %}>{{ lang.wednesday }}</option>
+                                                        <option value="4"{% if select.repeats_4_weekday.4 %} selected="selected"{% endif %}>{{ lang.thursday }}</option>
+                                                        <option value="5"{% if select.repeats_4_weekday.5 %} selected="selected"{% endif %}>{{ lang.friday }}</option>
+                                                        <option value="6"{% if select.repeats_4_weekday.6 %} selected="selected"{% endif %}>{{ lang.saturday }}</option>
+                                                    </select>
+                                                </div>
                                                 {{ lang.of_every }}
-                                                <input type="text" class="textbox" name="repeats_4_months2" value="{{ select.repeats_4_months2 }}" size="2" onfocus="$('#repeats_4_type_2').prop('checked', true);" /> {{ lang.month_or_months }}
+                                                <input type="text" class="textbox textbox--short textbox--inline" name="repeats_4_months2" value="{{ select.repeats_4_months2 }}" size="2" onfocus="$('#repeats_4_type_2').prop('checked', true);" /> {{ lang.month_or_months }}
                                             </div>
                                         </div>
-                                        <div class="repeats_type" id="repeats_type_5" style="padding: 4px;">
-                                            <div class="smalltext"><label>
-                                                <input type="radio" name="repeats_5_type" value="1" id="repeats_5_type_1" style="vertical-align: middle;"{% if select.repeats_5_type.1 %} checked="checked"{% endif %} />
+                                    </div>
+                                    <div class="section section--inline repeats_type" id="repeats_type_5">
+                                        <div class="row row--form field">
+                                            <div class="option-field option-field--compact"><label>
+                                                <input type="radio" name="repeats_5_type" value="1" id="repeats_5_type_1" {% if select.repeats_5_type.1 %} checked="checked"{% endif %} />
                                                 {{ lang.repeats_on }}</label>
-                                                <input type="text" class="textbox" name="repeats_5_day" onfocus="$('#repeats_5_type_1').prop('checked', true);" value="{{ select.repeats_5_day }}" size="2" />
-                                                <select name="repeats_5_month" onfocus="$('#repeats_5_type_1').prop('checked', true);" >
-                                                    {% for month in months %}
-                                                        <option value="{{ month.month }}"{% if month.repeats_5_month %} selected="selected"{% endif %}>{{ month.name }}</option>
-                                                    {% endfor %}
-                                                </select>
+                                                <input type="text" class="textbox textbox--short textbox--inline" name="repeats_5_day" onfocus="$('#repeats_5_type_1').prop('checked', true);" value="{{ select.repeats_5_day }}" size="2" />
+                                                <div class="select-field select-field--short select-field--inline">
+                                                    {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
+                                                    <select name="repeats_5_month" onfocus="$('#repeats_5_type_1').prop('checked', true);" >
+                                                        {% for month in months %}
+                                                            <option value="{{ month.month }}"{% if month.repeats_5_month %} selected="selected"{% endif %}>{{ month.name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
                                                 {{ lang.every }}
-                                                <input type="text" class="textbox" name="repeats_5_years" value="{{ select.repeats_5_years }}" onfocus="$('#repeats_5_type_1').prop('checked', true);" size="2" /> {{ lang.year_or_years }}
+                                                <input type="text" class="textbox textbox--short textbox--inline" name="repeats_5_years" value="{{ select.repeats_5_years }}" onfocus="$('#repeats_5_type_1').prop('checked', true);" size="2" /> {{ lang.year_or_years }}
                                             </div>
-                                            <div class="smalltext" style="margin-top: 5px;"><label>
-                                                <input type="radio" name="repeats_5_type" value="2" id="repeats_5_type_2" style="vertical-align: middle;"{% if select.repeats_5_type.2 %} checked="checked"{% endif %} />
+                                            <div class="option-field option-field--compact"><label>
+                                                <input type="radio" name="repeats_5_type" value="2" id="repeats_5_type_2" {% if select.repeats_5_type.2 %} checked="checked"{% endif %} />
                                                 {{ lang.repeats_on_the }}</label>
-                                                <select name="repeats_5_occurance" onfocus="$('#repeats_5_type_2').prop('checked', true);" >
-                                                    <option value="1"{% if select.repeats_5_occurance.1 %} selected="selected"{% endif %}>{{ lang.first }}</option>
-                                                    <option value="2"{% if select.repeats_5_occurance.2 %} selected="selected"{% endif %}>{{ lang.second }}</option>
-                                                    <option value="3"{% if select.repeats_5_occurance.3 %} selected="selected"{% endif %}>{{ lang.third }}</option>
-                                                    <option value="4"{% if select.repeats_5_occurance.4 %} selected="selected"{% endif %}>{{ lang.fourth }}</option>
-                                                    <option value="last"{% if select.repeats_5_occurance.last %} selected="selected"{% endif %}>{{ lang.last }}</option>
-                                                </select>
-                                                <select name="repeats_5_weekday" onfocus="$('#repeats_5_type_2').prop('checked', true);" >
-                                                    <option value="0"{% if select.repeats_5_weekday.0 %} selected="selected"{% endif %}>{{ lang.sunday }}</option>
-                                                    <option value="1"{% if select.repeats_5_weekday.1 %} selected="selected"{% endif %}>{{ lang.monday }}</option>
-                                                    <option value="2"{% if select.repeats_5_weekday.2 %} selected="selected"{% endif %}>{{ lang.tuesday }}</option>
-                                                    <option value="3"{% if select.repeats_5_weekday.3 %} selected="selected"{% endif %}>{{ lang.wednesday }}</option>
-                                                    <option value="4"{% if select.repeats_5_weekday.4 %} selected="selected"{% endif %}>{{ lang.thursday }}</option>
-                                                    <option value="5"{% if select.repeats_5_weekday.5 %} selected="selected"{% endif %}>{{ lang.friday }}</option>
-                                                    <option value="6"{% if select.repeats_5_weekday.6 %} selected="selected"{% endif %}>{{ lang.saturday }}</option>
-                                                </select>
+                                                <div class="select-field select-field--short select-field--inline">
+                                                    {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
+                                                    <select name="repeats_5_occurance" onfocus="$('#repeats_5_type_2').prop('checked', true);" >
+                                                        <option value="1"{% if select.repeats_5_occurance.1 %} selected="selected"{% endif %}>{{ lang.first }}</option>
+                                                        <option value="2"{% if select.repeats_5_occurance.2 %} selected="selected"{% endif %}>{{ lang.second }}</option>
+                                                        <option value="3"{% if select.repeats_5_occurance.3 %} selected="selected"{% endif %}>{{ lang.third }}</option>
+                                                        <option value="4"{% if select.repeats_5_occurance.4 %} selected="selected"{% endif %}>{{ lang.fourth }}</option>
+                                                        <option value="last"{% if select.repeats_5_occurance.last %} selected="selected"{% endif %}>{{ lang.last }}</option>
+                                                    </select>
+                                                </div>
+                                                <div class="select-field select-field--short select-field--inline">
+                                                    {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
+                                                    <select name="repeats_5_weekday" onfocus="$('#repeats_5_type_2').prop('checked', true);" >
+                                                        <option value="0"{% if select.repeats_5_weekday.0 %} selected="selected"{% endif %}>{{ lang.sunday }}</option>
+                                                        <option value="1"{% if select.repeats_5_weekday.1 %} selected="selected"{% endif %}>{{ lang.monday }}</option>
+                                                        <option value="2"{% if select.repeats_5_weekday.2 %} selected="selected"{% endif %}>{{ lang.tuesday }}</option>
+                                                        <option value="3"{% if select.repeats_5_weekday.3 %} selected="selected"{% endif %}>{{ lang.wednesday }}</option>
+                                                        <option value="4"{% if select.repeats_5_weekday.4 %} selected="selected"{% endif %}>{{ lang.thursday }}</option>
+                                                        <option value="5"{% if select.repeats_5_weekday.5 %} selected="selected"{% endif %}>{{ lang.friday }}</option>
+                                                        <option value="6"{% if select.repeats_5_weekday.6 %} selected="selected"{% endif %}>{{ lang.saturday }}</option>
+                                                    </select>
+                                                </div>
                                                 {{ lang.of }}
-                                                <select name="repeats_5_month2" onfocus="$('#repeats_5_type_2').prop('checked', true);" >
-                                                    {% for month in months %}
-                                                        <option value="{{ month.month }}"{% if month.repeats_5_month2 %} selected="selected"{% endif %}>{{ month.name }}</option>
-                                                    {% endfor %}
-                                                </select>
+                                                <div class="select-field select-field--short select-field--inline">
+                                                    {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
+                                                    <select name="repeats_5_month2" onfocus="$('#repeats_5_type_2').prop('checked', true);" >
+                                                        {% for month in months %}
+                                                            <option value="{{ month.month }}"{% if month.repeats_5_month2 %} selected="selected"{% endif %}>{{ month.name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
                                                 {{ lang.every }}
-                                                <input type="text" class="textbox" name="repeats_5_years2" value="{{ select.repeats_5_years2 }}" size="2" onfocus="$('#repeats_5_type_2').prop('checked', true);" /> {{ lang.year_or_years }}
+                                                <input type="text" class="textbox textbox--short textbox--inline" name="repeats_5_years2" value="{{ select.repeats_5_years2 }}" size="2" onfocus="$('#repeats_5_type_2').prop('checked', true);" /> {{ lang.year_or_years }}
                                             </div>
                                         </div>
-                                    </td>
-                                </tr>
-                            </table>
-                        </dd>
-                    </dl>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <script type="text/javascript">
                     <!--
                         toggleType();
                         toggleRepeats();
                     // -->
                     </script>
-                </td>
-            </tr>
-            <tr>
-                <td valign="top" width="20%" class="trow1"><strong>{{ lang.event_details }}</strong>{{ smilieinserter|raw }}</td>
-                <td class="trow1"><textarea name="description" id="message" rows="20" cols="70">{{ select.description }}</textarea>
-                {{ codebuttons|raw }}</td>
-            </tr>
-            <tr>
-                <td width="20%" class="trow2"><strong>{{ lang.event_options }}</strong></td>
-                <td class="trow2">
-                    <input type="checkbox" class="checkbox" name="private" value="1"{% if select.privatecheck %} checked="checked"{% endif %} /><span class="smalltext">{{ lang.private_option|raw }}</span><br />
-                </td>
-            </tr>
-        </table>
-        <br />
-        <input type="hidden" name="action" value="do_editevent" />
-        <input type="hidden" name="eid" value="{{ event.eid }}" />
-        <div align="center"><input type="submit" class="button" value="{{ lang.edit_event }}" /></div>
-    </form>
+                    <div class="row row--form field">
+                        <h2 class="field__name">{{ lang.event_details }}</h2>
+                        <div class="compose__container">
+                            <div class="compose__message">
+                                <textarea name="description" id="message" rows="20" cols="70">{{ select.description }}</textarea>
+                                {{ codebuttons|raw }}
+                            </div>
+                            {{ smilieinserter|raw }}
+                        </div>
+                    </div>
+                    <div class="row row--form field">
+                        <h2 class="field__name">{{ lang.event_options }}</h2>
+                        <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="private" value="1"{% if select.privatecheck %} checked="checked"{% endif %} /> {{ lang.private_option|raw }}</label></p>
+                    </div>
+                </section>
+                <div class="form__submit">
+                    <button type="submit" class="button button--medium">
+                        {{ include('partials/icon.twig', {icon: 'calendar-plus', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.edit_event }}</span>
+                    </button>
+                </div>
+            </div>
+            <input type="hidden" name="action" value="do_editevent" />
+            <input type="hidden" name="eid" value="{{ event.eid }}" />
+        </form>
+    </div>
 {% endblock body %}

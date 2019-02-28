@@ -1,12 +1,10 @@
 <div class="modal">
     <div style="overflow-y: auto; max-height: 400px;">
-        <table width="100%" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" border="0" align="center" class="tborder">
-            <tr>
-                <td colspan="2" class="thead"><strong>{{ trans('view_notes_for', thread.subject) }}</strong></td>
-            </tr>
-            <tr>
-                <td class="trow1">{{ thread.notes|nl2br }}</td>
-            </tr>
-        </table>
+        <section class="block block--modal">
+            <h1 class="title title--modal">{{ trans('view_notes_for', thread.subject) }}</h1>
+            <div class="block__content block__content--text">
+                {{ thread.notes|nl2br }}
+            </div>
+        </section>
     </div>
 </div>

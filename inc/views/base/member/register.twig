@@ -1,297 +1,265 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.registration }}</title>
-    <script type="text/javascript" src="{{ asset_url('jscripts/validate/jquery.validate.min.js') }}"></script>
+    <title>{{ lang.registration }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
+{% block jscripts %}
+    <script type="text/javascript" src="{{ asset_url('jscripts/validate/jquery.validate.min.js') }}" defer></script>
+{% endblock jscripts %}
+
 {% block body %}
-    <form action="member.php" method="post" id="registration_form">
-        <input type="text" style="visibility: hidden;" value="" name="regcheck1" />
-        <input type="text" style="visibility: hidden;" value="true" name="regcheck2" />
-        {{ regerrors|raw }}
-        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-            <tr>
-                <td class="thead" colspan="2"><strong>{{ lang.registration }}</strong></td>
-            </tr>
-            <tr>
-                <td width="50%" class="trow1" valign="top">
-                    <fieldset class="trow2">
-                        <legend><strong>{{ lang.account_details }}</strong></legend>
-                        <table cellspacing="0" cellpadding="{{ theme.tablespace }}" width="100%">
-                            <tr>
-                                <td colspan="2"><span class="smalltext"><label for="username">{{ lang.username }}</label></span></td>
-                            </tr>
-                            <tr>
-                                <td colspan="2"><input type="text" class="textbox" name="username" id="username" style="width: 100%" value="{{ select.username }}" /></td>
-                            </tr>
-                            {% if registration.showpassword %}
-                                <tr>
-                                    <td width="50%" valign="top"><span class="smalltext"><label for="password">{{ lang.password }}</label></span></td>
-                                    <td width="50%" valign="top"><span class="smalltext"><label for="password2">{{ lang.confirm_password }}</label></span></td>
-                                </tr>
-                                <tr>
-                                    <td width="50%" valign="top"><input type="password" class="textbox" name="password" id="password" style="width: 100%" /></td>
-                                    <td width="50%" valign="top"><input type="password" class="textbox" name="password2" id="password2" style="width: 100%" /></td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2" style="display: none;" id="password_status">&nbsp;</td>
-                                </tr>
-                            {% endif %}
-                            <tr>
-                                <td width="50%" valign="top"><span class="smalltext"><label for="email">{{ lang.email }}</label></span></td>
-                                <td width="50%" valign="top"><span class="smalltext"><label for="email2">{{ lang.confirm_email }}</label></span></td>
-                            </tr>
-                            <tr>
-                                <td width="50%" valign="top"><input type="text" class="textbox" name="email" id="email" style="width: 100%" maxlength="50" value="{{ select.email }}" /></td>
-                                <td width="50%" valign="top"><input type="text" class="textbox" name="email2" id="email2" style="width: 100%" maxlength="50" value="{{ select.email2 }}" /></td>
-                            </tr>
-                            <tr>
-                                <td colspan="2" style="display: none;" id="email_status">&nbsp;</td>
-                            </tr>
-                            {% if mybb.settings.hiddencaptchaimage %}
-                                <tr style="display: none;">
-                                    <td colspan="2" id="{{ mybb.settings.hiddencaptchaimagefield }}_status">
-                                        {{ lang.leave_this_field_empty }} <input type="text" class="textbox" name="{{ mybb.settings.hiddencaptchaimagefield }}" id="{{ mybb.settings.hiddencaptchaimagefield }}" style="width: 100%" maxlength="50" value="" />
-                                    </td>
-                                </tr>
-                            {% endif %}
-                        </table>
-                    </fieldset>
-                    {% if registration.showrequiredfields %}
-                        <br />
-                        <fieldset class="trow2">
-                            <legend><strong>{{ lang.required_info }}</strong></legend>
-                            <table cellspacing="0" cellpadding="{{ theme.tablespace }}">
-                                {% for field in requiredfields %}
-                                    {% include 'member/register_profilefield.twig' %}
-                                {% endfor %}
-                            </table>
-                        </fieldset>
-                    {% endif %}
-                    {% if registration.showcustomfields %}
-                        <br />
-                        <fieldset class="trow2">
-                            <legend><strong>{{ lang.additional_info }}</strong></legend>
-                            <table cellspacing="0" cellpadding="{{ theme.tablespace }}">
-                                {% for field in customfields %}
-                                    {% include 'member/register_profilefield.twig' %}
-                                {% endfor %}
-                            </table>
-                        </fieldset>
-                    {% endif %}
-                    {% if registration.showcontactfields %}
-                        <br />
-                        <fieldset class="trow2">
-                            <legend><strong>{{ lang.contact_info }}</strong></legend>
-                            <table cellspacing="0" cellpadding="{{ theme.tablespace }}">
-                                {% for field in contactfields %}
-                                    {% include 'member/register_profilefield.twig' %}
-                                {% endfor %}
-                            </table>
-                        </fieldset>
-                    {% endif %}
-                    {% if registration.showreferrer %}
-                        <br />
-                        <fieldset class="trow2">
-                            <legend><strong>{{ lang.referrer }}</strong></legend>
-                            <table cellspacing="0" cellpadding="{{ theme.tablespace }}">
-                                <tr>
-                                    <td><span class="smalltext"><label for="referrer">{{ lang.referrer_desc }}</label></span></td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <input type="text" class="textbox" name="referrername" id="referrer" value="{{ select.referrername }}" style="width: 100%;" />
-                                    </td>
-                                </tr>
-                            </table>
-                        </fieldset>
-                        <link rel="stylesheet" href="{{ mybb.asset_url }}/jscripts/select2/select2.css">
-                        <script type="text/javascript" src="{{ asset_url('jscripts/select2/select2.min.js') }}"></script>
-                        <script type="text/javascript">
-                        <!--
-                        if(use_xmlhttprequest == "1")
-                        {
-                            MyBB.select2();
-                            $("#referrer").select2({
-                                placeholder: "{{ lang.search_user }}",
-                                minimumInputLength: 2,
-                                multiple: false,
-                                ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
-                                    url: "xmlhttp.php?action=get_users",
-                                    dataType: 'json',
-                                    data: function (term, page) {
-                                        return {
-                                            query: term, // search term
-                                        };
-                                    },
-                                    results: function (data, page) { // parse the results into the format expected by Select2.
-                                        // since we are using custom formatting functions we do not need to alter remote JSON data
-                                        return {results: data};
-                                    }
+    <div class="page-content">
+        <header class="page-header">
+            <h1 class="title title--page">{{ lang.registration }}</h1>
+        </header>
+        <form action="member.php" method="post" id="registration_form">
+            <input type="text" class="hidden" value="" name="regcheck1" />
+            <input type="text" class="hidden" value="true" name="regcheck2" />
+            {{ regerrors|raw }}
+            <div class="block block--form form">
+                <section class="section section--form">
+                    <h2 class="title title--section">{{ lang.account_details }}</h2>
+                    <div class="section__container">
+                        <div class="row row--form field">
+                            <h3 class="field__name"><label for="username">{{ lang.username }}</label></h3>
+                            <input type="text" class="textbox" name="username" id="username" value="{{ select.username }}" />
+                        </div>
+                        {% if registration.showpassword %}
+                            <div class="row row--form field">
+                                <h3 class="field__name"><label for="password"><label for="password">{{ lang.password|raw }}</label></h3>
+                                <p class="field__description">{{ lang.confirm_password_desc }}</p>
+                                <div class="confirm-field">
+                                    <div class="confirm-field__field">
+                                        <h4 class="visually-hidden"><label for="password">{{ lang.password }}</label></h4>
+                                        <input type="password" class="textbox" name="password" id="password" />
+                                    </div>
+                                    <div class="confirm-field__field">
+                                        <h4 class="visually-hidden"><label for="password2">{{ lang.confirm_password }}</label></h4>
+                                        <input type="password" class="textbox" name="password2" id="password2" />
+                                    </div>
+                                </div>
+                                <div style="display: none;" id="password_status">&nbsp;</div>
+                            </div>
+                        {% endif %}
+                        <div class="row row--form field">
+                            <h3 class="field__name"><label for="email">{{ lang.email }}</label></h3>
+                            <p class="field__description">{{ lang.confirm_email_desc }}</p>
+                            <div class="confirm-field">
+                                <div class="confirm-field__field">
+                                    <h4 class="visually-hidden"><label for="email">{{ lang.email }}</label></h4>
+                                    <input type="text" class="textbox" name="email" id="email" maxlength="50" value="{{ select.email }}" />
+                                </div>
+                                <div class="confirm-field__field">
+                                    <h4 class="visually-hidden"><label for="email2">{{ lang.confirm_email }}</label></h4>
+                                    <input type="text" class="textbox" name="email2" id="email2" maxlength="50" value="{{ select.email2 }}" />
+                                </div>
+                            </div>
+                            <div style="display: none;" id="email_status">&nbsp;</div>
+                        </div>
+                        {% if mybb.settings.hiddencaptchaimage %}
+                            <div class="row row--form field" style="display: none;">
+                                <div id="{{ mybb.settings.hiddencaptchaimagefield }}_status">
+                                    <h3 class="field__name"><label for="{{ mybb.settings.hiddencaptchaimagefield }}">{{ lang.leave_this_field_empty }}</label></h3>
+                                    <input type="text" class="textbox" name="{{ mybb.settings.hiddencaptchaimagefield }}" id="{{ mybb.settings.hiddencaptchaimagefield }}" maxlength="50" value="" />
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </section>
+
+                {% if registration.showrequiredfields %}
+                    <section class="section section--form">
+                        <h2 class="title title--section">{{ lang.required_info }}</h2>
+                        <div class="section__container">
+                            {% for field in requiredfields %}
+                                {% include 'member/register_profilefield.twig' %}
+                            {% endfor %}
+                        </div>
+                    </section>
+                {% endif %}
+
+                {% if registration.showcustomfields %}
+                    <section class="section section--form">
+                        <h2 class="title title--section">{{ lang.additional_info }}</h2>
+                        <div class="section__container">
+                            {% for field in customfields %}
+                                {% include 'member/register_profilefield.twig' %}
+                            {% endfor %}
+                        </div>
+                    </section>
+                {% endif %}
+
+                {% if registration.showcontactfields %}
+                    <section class="section section--form">
+                        <h2 class="title title--section">{{ lang.contact_info }}</h2>
+                        <div class="section__container">
+                            {% for field in contactfields %}
+                                {% include 'member/register_profilefield.twig' %}
+                            {% endfor %}
+                        </div>
+                    </section>
+                {% endif %}
+
+                {% if registration.showreferrer %}
+                    <section class="section section--form">
+                        <h2 class="title title--section">{{ lang.referrer }}</h2>
+                        <div class="section__container">
+                            <div class="row row--form field">
+                                <p class="field__description"><label for="referrer">{{ lang.referrer_desc }}</label></p>
+                                <input type="text" class="" name="referrername" id="referrer" value="{{ select.referrername }}" />
+                            </div>
+                        </div>
+                    </section>
+                    <link rel="stylesheet" href="{{ mybb.asset_url }}/jscripts/select2/select2.css">
+                    <script type="text/javascript" src="{{ asset_url('jscripts/select2/select2.min.js') }}"></script>
+                    <script type="text/javascript">
+                    <!--
+                    if(use_xmlhttprequest == "1")
+                    {
+                        MyBB.select2();
+                        $("#referrer").select2({
+                            placeholder: "{{ lang.search_user }}",
+                            minimumInputLength: 2,
+                            multiple: false,
+                            ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+                                url: "xmlhttp.php?action=get_users",
+                                dataType: 'json',
+                                data: function (term, page) {
+                                    return {
+                                        query: term, // search term
+                                    };
                                 },
-                                initSelection: function(element, callback) {
-                                    var value = $(element).val();
-                                    if (value !== "") {
-                                        callback({
-                                            id: value,
-                                            text: value
-                                        });
-                                    }
-                                },
-                            });
-                        }
-                        // -->
-                        </script>
-                    {% endif %}
-                    {{ registration.regimage|raw }}
-                    {% if registration.showquestion %}
-                        <br />
-                        <fieldset class="trow2">
-                            <script type="text/javascript">
-                            <!--
-                                lang.question_fetch_failure = "{{ lang.question_fetch_failure }}";
-                            // -->
-                            </script>
-                            <script type="text/javascript" src="{{ asset_url('jscripts/question.js') }}"></script>
-                            <legend><strong>{{ lang.security_question }}</strong></legend>
-                            <table cellspacing="0" cellpadding="{{ theme.tablespace }}">
-                                <tr>
-                                    <td colspan="2"><span class="smalltext">{{ lang.question_note }}</span></td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2"><br /><span class="smalltext" id="question" style="font-weight:bold;">{{ registration.question }}</span></td>
-                                </tr>
-                                <tr>
-                                    <td width="60%">
-                                        <input type="text" class="textbox" name="answer" value="" id="answer" style="width: 70%;" />
-                                        <input type="hidden" name="question_id" value="{{ registration.questionsid }}" id="question_id" />
-                                    </td>
-                                    <td width="40%">
-                                        {% if registration.questionrefresh %}
-                                            <script type="text/javascript">
-                                            <!--
-                                                if(use_xmlhttprequest == "1")
-                                                {
-                                                    document.write('<input type="button" class="button" tabindex="10000" name="refresh" value="{{ lang.refresh }}" onclick="return question.refresh();" \/>');
-                                                }
-                                            // -->
-                                            </script>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td id="answer_status"  style="display: none;" colspan="2">&nbsp;</td>
-                                </tr>
-                            </table>
-                        </fieldset>
-                    {% endif %}
-                </td>
-                <td width="50%" class="trow1" valign="top">
-                    <fieldset class="trow2">
-                        <legend><strong>{{ lang.account_prefs }}</strong></legend>
-                        <table cellspacing="0" cellpadding="{{ theme.tablespace }}" width="100%">
-                            <tr>
-                                <td valign="top" width="1"><input type="checkbox" class="checkbox" name="allownotices" id="allownotices" value="1"{% if select.allownotices %} checked="checked"{% endif %} /></td>
-                                <td valign="top"><span class="smalltext"><label for="allownotices">{{ lang.allow_notices }}</label></span></td>
-                            </tr>
-                            <tr>
-                                <td valign="top" width="1"><input type="checkbox" class="checkbox" name="hideemail" id="hideemail" value="1"{% if select.hideemail %} checked="checked"{% endif %} /></td>
-                                <td valign="top"><span class="smalltext"><label for="hideemail">{{ lang.hide_email }}</label></span></td>
-                            </tr>
-                            <tr>
-                                <td valign="top" width="1"><input type="checkbox" class="checkbox" name="receivepms" id="receivepms" value="1"{% if select.receivepms %} checked="checked"{% endif %} /></td>
-                                <td valign="top"><span class="smalltext"><label for="receivepms">{{ lang.receive_pms }}</label></span></td>
-                            </tr>
-                            <tr>
-                                <td valign="top" width="1"><input type="checkbox" class="checkbox" name="pmnotice" id="pmnotice" value="1"{% if select.pmnotice %} checked="checked"{% endif %} /></td>
-                                <td valign="top"><span class="smalltext"><label for="pmnotice">{{ lang.pm_notice }}</label></span></td>
-                            </tr>
-                            <tr>
-                                <td valign="top" width="1"><input type="checkbox" class="checkbox" name="pmnotify" id="pmnotify" value="1"{% if select.pmnotify %} checked="checked"{% endif %} /></td>
-                                <td valign="top"><span class="smalltext"><label for="pmnotify">{{ lang.email_notify_newpm }}</label></span></td>
-                            </tr>
-                            <tr>
-                                <td valign="top" width="1"><input type="checkbox" class="checkbox" name="invisible" id="invisible" value="1"{% if select.invisible %} checked="checked"{% endif %} /></td>
-                                <td valign="top"><span class="smalltext"><label for="invisible">{{ lang.invisible_mode }}</label></span></td>
-                            </tr>
-                            <tr>
-                                <td colspan="2"><span class="smalltext"><label for="subscriptionmethod">{{ lang.subscription_method }}</label></span></td>
-                            </tr>
-                            <tr>
-                                <td colspan="2">
-                                    <select name="subscriptionmethod" id="subscriptionmethod">
-                                        <option value="0"{% if select.subscriptionmethod.none %} selected="selected"{% endif %}>{{ lang.no_auto_subscribe }}</option>
-                                        <option value="1"{% if select.subscriptionmethod.no %} selected="selected"{% endif %}>{{ lang.no_subscribe }}</option>
-                                        <option value="2"{% if select.subscriptionmethod.email %} selected="selected"{% endif %}>{{ lang.instant_email_subscribe }}</option>
-                                        <option value="3"{% if select.subscriptionmethod.pm %} selected="selected"{% endif %}>{{ lang.instant_pm_subscribe }}</option>
+                                results: function (data, page) { // parse the results into the format expected by Select2.
+                                    // since we are using custom formatting functions we do not need to alter remote JSON data
+                                    return {results: data};
+                                }
+                            },
+                            initSelection: function(element, callback) {
+                                var value = $(element).val();
+                                if (value !== "") {
+                                    callback({
+                                        id: value,
+                                        text: value
+                                    });
+                                }
+                            },
+                        });
+                    }
+                    // -->
+                    </script>
+                {% endif %}
+
+                <section class="section section--form">
+                    <h2 class="title title--section">{{ lang.account_prefs }}</h2>
+                    <div class="section__container">
+                        {# Remove the `hidden` class from each of the following rows to show them on registration page #}
+                        <div class="hidden row row--form field">
+                            <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="allownotices" id="allownotices" value="1"{% if select.allownotices %} checked="checked"{% endif %} /> {{ lang.allow_notices }}</label></p>
+                            <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="hideemail" id="hideemail" value="1"{% if select.hideemail %} checked="checked"{% endif %} /> {{ lang.hide_email }}</label></p>
+                            <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="receivepms" id="receivepms" value="1"{% if select.receivepms %} checked="checked"{% endif %} /> {{ lang.receive_pms }}</label></p>
+                            <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="pmnotice" id="pmnotice" value="1"{% if select.pmnotice %} checked="checked"{% endif %} /> {{ lang.pm_notice }}</label></p>
+                            <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="pmnotify" id="pmnotify" value="1"{% if select.pmnotify %} checked="checked"{% endif %} /> {{ lang.email_notify_newpm }}</label></p>
+                            <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="invisible" id="invisible" value="1"{% if select.invisible %} checked="checked"{% endif %} /> {{ lang.invisible_mode }}</label></p>
+                        </div>
+                        <div class="hidden row row--form field">
+                            <h3 class="field__name"><label for="subscriptionmethod">{{ lang.subscription_method }}</label></h3>
+                            <div class="select-field">
+                                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
+                                <select name="subscriptionmethod" id="subscriptionmethod">
+                                    <option value="0"{% if select.subscriptionmethod.none %} selected="selected"{% endif %}>{{ lang.no_auto_subscribe }}</option>
+                                    <option value="1"{% if select.subscriptionmethod.no %} selected="selected"{% endif %}>{{ lang.no_subscribe }}</option>
+                                    <option value="2"{% if select.subscriptionmethod.email %} selected="selected"{% endif %}>{{ lang.instant_email_subscribe }}</option>
+                                    <option value="3"{% if select.subscriptionmethod.pm %} selected="selected"{% endif %}>{{ lang.instant_pm_subscribe }}</option>
+                                </select>
+                            </div>
+                        </div>
+                        {% if registration.showlanguages %}
+                            <div class="hidden row row--form field">
+                                <h3 class="field__name"><label for="language">{{ lang.lang_select }}</label></h3>
+                                <p class="field__description">{{ lang.lang_select_desc }}</p>
+                                <div class="select-field">
+                                    {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
+                                    <select name="language" id="language">
+                                        <option value="">{{ lang.lang_select_default }}</option>
+                                        <option value="">-----------</option>
+                                        {% for language in languages %}
+                                            <option value="{{ language.name }}"{% if language.selected %} selected="selected"{% endif %}>{{ language.language }}</option>
+                                        {% endfor %}
                                     </select>
-                                </td>
-                            </tr>
-                        </table>
-                    </fieldset>
-                    <br />
-                    <fieldset class="trow2">
-                        <legend><strong><label for="timezoneoffset">{{ lang.time_offset|raw }}</label></strong></legend>
-                        <table cellspacing="0" cellpadding="{{ theme.tablespace }}" width="100%">
-                            <tr>
-                                <td><span class="smalltext">{{ lang.time_offset_desc }}</span></td>
-                            </tr>
-                            <tr>
-                                <td>
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div>{# extra <div> allows this row to be styled as if it is the first & last row, as all other rows are hidden #}
+                            <div class="row row--form field">
+                                <h3 class="field__name"><label for="timezoneoffset">{{ lang.time_offset|raw }}</label></h3>
+                                <p class="field__description">{{ lang.time_offset_desc }}</p>
+                                <div class="select-field">
+                                    {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
                                     <select name="timezoneoffset" id="timezoneoffset">
                                         {% for timezone in timezones %}
                                             <option value="{{ timezone.timezone }}"{% if timezone.selected %} selected="selected"{% endif %}>{{ timezone.label }}</option>
                                         {% endfor %}
                                     </select>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><span class="smalltext">{{ lang.dst_correction }}</span></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <select name="dstcorrection">
-                                        <option value="2"{% if select.dst.auto %} selected="selected"{% endif %}>{{ lang.dst_correction_auto }}</option>
-                                        <option value="1"{% if select.dst.enabled %} selected="selected"{% endif %}>{{ lang.dst_correction_enabled }}</option>
-                                        <option value="0"{% if select.dst.disabled %} selected="selected"{% endif %}>{{ lang.dst_correction_disabled }}</option>
-                                    </select>
-                                </td>
-                            </tr>
-                        </table>
-                    </fieldset>
-                    {% if registration.showlanguages %}
-                        <br />
-                        <fieldset class="trow2">
-                            <legend><strong><label for="language">{{ lang.lang_select }}</label></strong></legend>
-                            <table cellspacing="0" cellpadding="{{ theme.tablespace }}" width="100%">
-                                <tr>
-                                    <td colspan="2"><span class="smalltext">{{ lang.lang_select_desc }}</span></td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <select name="language" id="language">
-                                            <option value="">{{ lang.lang_select_default }}</option>
-                                            <option value="">-----------</option>
-                                            {% for language in languages %}
-                                                <option value="{{ language.name }}"{% if language.selected %} selected="selected"{% endif %}>{{ language.language }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </td>
-                                </tr>
-                            </table>
-                        </fieldset>
-                    {% endif %}
-                </td>
-            </tr>
-        </table>
-        <br />
-        <div align="center">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hidden row row--form field">
+                            <h3 class="field__name"><label for="dstcorrection">{{ lang.dst_correction }}</label></h3>
+                            <div class="select-field">
+                                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
+                                <select name="dstcorrection" id="dstcorrection">
+                                    <option value="2"{% if select.dst.auto %} selected="selected"{% endif %}>{{ lang.dst_correction_auto }}</option>
+                                    <option value="1"{% if select.dst.enabled %} selected="selected"{% endif %}>{{ lang.dst_correction_enabled }}</option>
+                                    <option value="0"{% if select.dst.disabled %} selected="selected"{% endif %}>{{ lang.dst_correction_disabled }}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                {{ registration.regimage|raw }}
+
+                {% if registration.showquestion %}
+                    <section class="section section--form">
+                        <h2 class="title title--section">{{ lang.security_question }}</h2>
+                        <div class="section__container">
+                            <div class="row row--form field">
+                                <script type="text/javascript">
+                                <!--
+                                    lang.question_fetch_failure = "{{ lang.question_fetch_failure }}";
+                                // -->
+                                </script>
+                                <script type="text/javascript" src="{{ asset_url('jscripts/question.js') }}"></script>
+                                <p class="field__description">{{ lang.question_note }}</p>
+                                <h2 class="field__name" id="question"><label for="answer">{{ registration.question }}</label></h2>
+                                <input type="text" class="textbox textbox--large" name="answer" value="" id="answer" />
+                                <input type="hidden" name="question_id" value="{{ registration.questionsid }}" id="question_id" />
+                                {% if registration.questionrefresh %}
+                                    <script type="text/javascript">
+                                    <!--
+                                        if(use_xmlhttprequest == "1")
+                                        {
+                                            document.write('<button class="button button--inline" tabindex="10000" name="refresh" onclick="return question.refresh();">{% spaceless %}{{ include('partials/icon.twig', {icon: 'sync-alt', class: 'button__icon'}, with_context = false) }}{% endspaceless %}<span class="button__text">{{ lang.refresh }}</span></button>');
+                                        }
+                                    // -->
+                                    </script>
+                                {% endif %}
+                                <div id="answer_status"  style="display: none;" colspan="2">&nbsp;</div>
+                            </div>
+                        </div>
+                    </section>
+                {% endif %}
+                <div class="form__submit">
+                    <button type="submit" class="button button--medium" name="regsubmit">
+                        {{ include('partials/icon.twig', {icon: 'user', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.submit_registration }}</span>
+                    </button>
+                </div>
+            </div>
             <input type="hidden" name="regtime" value="{{ registration.time }}" />
             <input type="hidden" name="step" value="registration" />
             <input type="hidden" name="action" value="do_register" />
-            <input type="submit" class="button" name="regsubmit" value="{{ lang.submit_registration }}" />
-        </div>
-    </form>
-    {{ validator_javascript|raw }}
+        </form>
+        {{ validator_javascript|raw }}
+    </div>
 {% endblock body %}

@@ -1,59 +1,53 @@
-<table cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-    <tr>
-        <td class="thead">
-            <strong>
-                {% if announcement.hasicon %}
-                    <img src="{{ announcement.icon_path }}" alt="{{ announcement.icon_name }}" title="{{ announcement.icon_name }}" /> 
-                {% else %}
-                    &nbsp;
-                {% endif %}
-                <a href="{{ mybb.settings.bburl }}/{{ announcement.threadlink }}">{{ announcement.subject }}</a>
-            </strong>
-        </td>
-    </tr>
-    <tr>
-        <td class="trow2" align="right">
-            <span class="smalltext">
-                {{ lang.posted_by }} {{ announcement.profilelink|raw }}  - {{ announcement.date|raw }} - {{ lang.forum }} <a href="{{ mybb.settings.bburl }}/{{ announcement.forumlink }}">{{ announcement.forumname }}</a> 
-                {% if announcement.replies %}
-                    - <a href="{{ mybb.settings.bburl }}/{{ announcement.threadlink }}">{{ lang.replies }}</a> ({{ announcement.replies }})
-                {% else %}
-                    - {{ lang.no_replies }}
-                {% endif %}
-            </span>
-        </td>
-    </tr>
-    <tr>
-        <td class="trow1">
-            <table border="0" cellpadding="{{ theme.tablespace }}" class="tfixed" style="width: 100%;">
-                <tr>
-                    {% if announcement.useravatar %}
-                        <td class="trow1" style="text-align: center; vertical-align: top;" {{ announcement.avatar_width_height|raw }}>
-                            <img src="{{ announcement.avatar_image }}" alt="" {{ announcement.avatar_width_height|raw }} />
-                        </td>
-                    {% endif %}
-                    <td class="trow1 scaleimages">
-                        <p>
-                            {{ announcement.message|raw }}
-                        </p>
-                        {% if announcement.hasattachments %}
-                            {% set attached = announcement.attached %}
-                            {% include 'postbit/postbit_attachments.twig' %}
+<section class="block">
+    <h1 class="title title--major title--separation">
+        <a href="{{ mybb.settings.bburl }}/{{ announcement.threadlink }}">{{ announcement.subject }}</a>
+    </h1>
+    <div class="post">
+        <div class="post__meta">
+            {% if announcement.useravatar %}
+                <a href="{{ get_profile_link(announcement.uid )}}" class="avatar-profile-link">
+                    {# TO DO: fix default avatar #}
+                    {{ render_avatar(url=announcement.avatar_image, alt=announcement.username) }}
+                </a>
+            {% endif %}
+            <h3 class="post__author">
+                {{ announcement.profilelink|raw }}
+            </h3>
+            {% if announcement.hasicon %}
+                <img src="{{ announcement.icon_path }}" alt="{{ announcement.icon_name }}" title="{{ announcement.icon_name }}" />
+            {% endif %}
+            <a href="{{ mybb.settings.bburl }}/{{ announcement.threadlink }}" class="post__date">{{ announcement.date|raw }}</a>
+        </div>
+
+        <div class="post__body">
+            {{ announcement.message|raw }}
+
+            {% if announcement.hasattachments %}
+                {% set attached = announcement.attached %}
+                {% include 'postbit/postbit_attachments.twig' %}
+            {% endif %}
+        </div>
+
+        <div class="post__foot">
+            <a href="{{ mybb.settings.bburl }}/{{ announcement.forumlink }}" class="post-control post-control--forum">
+                {{ include('partials/icon.twig', {icon: 'folder', class: 'post-control__icon fa-fw'}, with_context = false) }}
+                <span class="post-control__text">{{ lang.posted_in }} {{ announcement.forumname }}</span>
+            </a>
+            <a href="{{ mybb.settings.bburl }}/{{ announcement.threadlink }}" class="post-control post-control--replies">
+                {{ include('partials/icon.twig', {icon: 'comments', class: 'post-control__icon fa-fw'}, with_context = false) }}
+                <span class="post-control__text">
+                    {% if announcement.replies %}
+                        {{ announcement.replies }}
+                        {% if announcement.replies == 1 %}
+                            {{ lang.reply }}
+                        {% else %}
+                            {{ lang.replies }}
                         {% endif %}
-                    </td>
-                </tr>
-                <tr>
-                    <td align="right" colspan="2" valign="bottom">
-                        <span class="smalltext">
-                            <a href="{{ mybb.settings.bburl }}/printthread.php?tid={{ announcement.tid }}"><img src="{{ theme.imgdir }}/printable.png" alt="{{ lang.print_this_item }}" title="{{ lang.print_this_item }}" /></a>
-                            {% if mybb.usergroup.cansendemail %}
-                                &nbsp;<a href="{{ mybb.settings.bburl }}/sendthread.php?tid={{ announcement.tid }}"><img src="{{ theme.imgdir }}/send.png" alt="{{ lang.send_to_friend }}" title="{{ lang.send_to_friend }}" /></a>
-                            {% endif %}
-                        </span>
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-</table>
-<br />
+                    {% else %}
+                        {{ lang.no_replies }}
+                    {% endif %}
+                </span>
+            </a>
+        </div>
+    </div>
+</section>

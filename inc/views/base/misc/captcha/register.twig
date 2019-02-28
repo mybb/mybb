@@ -1,20 +1,16 @@
 {# NoCAPTCHA #}
 {% if type == 4 %}
-    <br />
-    <fieldset class="trow2">
-        <legend><strong>{{ lang.human_verification }}</strong></legend>
-        <table cellspacing="0" cellpadding="{{ theme.tablespace }}">
-            <tr>
-                <td><span class="smalltext">{{ lang.verification_note_nocaptcha }}</span></td>
-            </tr>
-            <tr>
-                <td><script type="text/javascript" src="{{ server }}"></script><div class="g-recaptcha" data-sitekey="{{ mybb.settings.captchapublickey }}"></div></td>
-            </tr>
-        </table>
-    </fieldset>
+<section class="section section--form">
+    <h2 class="title title--section">{{ lang.human_verification }}</h2>
+    <div class="section__container">
+        <div class="row row--form field">
+            <p class="field__description">{{ lang.verification_note_nocaptcha }}</p>
+            <script type="text/javascript" src="{{ server }}"></script><div class="g-recaptcha" data-sitekey="{{ mybb.settings.captchapublickey }}"></div>
+        </div>
+    </div>
+</section>
 {# ReCAPTCHA v2 #}
 {% elseif type == 5 %}
-    <br />
     <script src="{{ server }}?onload=captchaOnloadCallback&render=explicit" async defer></script>
     <script type="text/javascript">
 
@@ -24,7 +20,7 @@
 
         var captchaOnloadCallback = function() {
 
-            var target = $('input[name="regsubmit"]');
+            var target = $('button[name="regsubmit"]');
             target.attr('data-size', 'invisible');
 
             grecaptcha.render(target.get(0), {
@@ -37,42 +33,37 @@
     </script>
 {# MyBB Captcha #}
 {% else %}
-    <br />
-    <fieldset class="trow2">
-        <script type="text/javascript">
-        <!--
-            lang.captcha_fetch_failure = "{{ lang.captcha_fetch_failure }}";
-        // -->
-        </script>
-        <script type="text/javascript" src="{{ mybb.asset_url }}/jscripts/captcha.js?ver=1808"></script>
-        <legend><strong>{{ lang.image_verification }}</strong></legend>
-        <table cellspacing="0" cellpadding="{{ theme.tablespace }}">
-            <tr>
-                <td>
-                    <span class="smalltext">{{ lang.verification_note }}</span>
-                </td>
-                <td rowspan="2" align="center">
-                    <img src="captcha.php?action=regimage&amp;imagehash={{ imagehash }}" alt="{{ lang.image_verification }}" title="{{ lang.image_verification }}" id="captcha_img" /><br />
-                    <span style="color: red;" class="smalltext">{{ lang.verification_subnote }}</span>
+    <section class="section section--form">
+        <h2 class="title title--section">{{ lang.image_verification }}</h2>
+        <div class="section__container">
+            <div class="row row--form field">
+                <script type="text/javascript">
+                <!--
+                    lang.captcha_fetch_failure = "{{ lang.captcha_fetch_failure }}";
+                // -->
+                </script>
+                <script type="text/javascript" src="{{ mybb.asset_url }}/jscripts/captcha.js?ver=1808"></script>
+                <p class="field__description">{{ lang.verification_note }}</p>
+                <div class="field__block">
+                    <img src="captcha.php?action=regimage&amp;imagehash={{ imagehash }}" alt="{{ lang.image_verification }}" title="{{ lang.image_verification }}" id="captcha_img" />
+                </div>
+                <div class="field__block">
+                    <p class="field__description">{{ lang.verification_subnote }}</p>
+                </div>
+                <div class="field__block">
+                    <input type="text" class="textbox textbox--large" name="imagestring" value="" id="imagestring" />
                     <script type="text/javascript">
                     <!--
                         if(use_xmlhttprequest == "1")
                         {
-                            document.write('<br \/><br \/><input type="button" class="button" tabindex="10000" name="refresh" value="{{ lang.refresh }}" onclick="return captcha.refresh();" \/>');
+                            document.write('<button class="button button--inline" tabindex="10000" name="refresh" onclick="return captcha.refresh();">{% spaceless %}{{ include('partials/icon.twig', {icon: 'sync-alt', class: 'button__icon'}, with_context = false) }}{% endspaceless %}<span class="button__text">{{ lang.refresh }}</span></button>');
                         }
                     // -->
                     </script>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <input type="text" class="textbox" name="imagestring" value="" id="imagestring" style="width: 100%;" />
                     <input type="hidden" name="imagehash" value="{{ imagehash }}" id="imagehash" />
-                </td>
-            </tr>
-            <tr>
-                <td id="imagestring_status"  style="display: none;" colspan="2">&nbsp;</td>
-            </tr>
-        </table>
-    </fieldset>
+                    <div id="imagestring_status"  style="display: none;" colspan="2">&nbsp;</div>
+                </div>
+            </div>
+        </div>
+    </section>
 {% endif %}
