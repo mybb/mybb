@@ -1,26 +1,16 @@
 {# NoCAPTCHA #}
 {% if type == 4 %}
-    <tr id="captcha_trow">
-        <td class="trow1" valign="top"><strong>{{ lang.human_verification }}</strong></td>
-        <td class="trow1">
-            <table style="width: 300px; padding: 4px;">
-                <tr>
-                    <td>
-                        <span class="smalltext">{{ lang.verification_note_nocaptcha }}</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <script type="text/javascript" src="{{ server }}"></script>
-                        <div class="g-recaptcha" data-sitekey="{{ mybb.settings.captchapublickey }}"></div>
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
+    <section class="section section--form" id="captcha_trow">
+        <h2 class="title title--section">{{ lang.human_verification }}</h2>
+        <div class="section__container">
+            <div class="row row--form field">
+                <p class="field__description">{{ lang.verification_note_nocaptcha }}</p>
+                <script type="text/javascript" src="{{ server }}"></script><div class="g-recaptcha" data-sitekey="{{ mybb.settings.captchapublickey }}"></div>
+            </div>
+        </div>
+    </section>
 {# ReCAPTCHA v2 #}
 {% elseif type == 5 %}
-    <br />
     <script src="{{ server }}?onload=captchaOnloadCallback&render=explicit" async defer></script>
     <script type="text/javascript">
 
@@ -57,39 +47,37 @@
     </script>
 {# MyBB Captcha #}
 {% else %}
-    <tr id="captcha_trow">
-        <td class="trow1" valign="top" width="350">
-            <strong>{{ lang.image_verification }}</strong><br />
-            <span class="smalltext">{{ lang.verification_note }}</span>
-        </td>
-        <td class="trow1">
-            <script type="text/javascript">
-            <!--
-                lang.captcha_fetch_failure = "{{ lang.captcha_fetch_failure }}";
-            // -->
-            </script>
-            <script type="text/javascript" src="{{ mybb.asset_url }}/jscripts/captcha.js?ver=1808"></script>
-            <table style="width: 300px; padding: 4px;">
-                <tr>
-                    <td style="vertical-align: middle;">
-                        <img src="{{ mybb.settings.bburl }}/captcha.php?imagehash={{ imagehash }}" alt="{{ lang.image_verification }}" title="{{ lang.image_verification }}" id="captcha_img" /><br />
-                        <span style="color: red;" class="smalltext">{{ lang.verification_subnote }}</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <input type="text" class="textbox" name="imagestring" value="" id="imagestring" size="16" /><input type="hidden" name="imagehash" value="{{ imagehash }}" id="imagehash" />
-                        <script type="text/javascript">
-                        <!--
-                            if(use_xmlhttprequest == "1")
-                            {
-                                document.write('<input type="button" class="button" name="refresh" value="{{ lang.refresh }}" onclick="return captcha.refresh();" \/>');
-                            }
-                        // -->
-                        </script>
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
+    <section class="section section--form" id="captcha_trow">
+        <h2 class="title title--section">{{ lang.image_verification }}</h2>
+        <div class="section__container">
+            <div class="row row--form field">
+                <script type="text/javascript">
+                <!--
+                    lang.captcha_fetch_failure = "{{ lang.captcha_fetch_failure }}";
+                // -->
+                </script>
+                <script type="text/javascript" src="{{ mybb.asset_url }}/jscripts/captcha.js?ver=1808"></script>
+                <p class="field__description">{{ lang.verification_note }}</p>
+                <div class="field__block">
+                    <img src="{{ mybb.settings.bburl }}/captcha.php?imagehash={{ imagehash }}" alt="{{ lang.image_verification }}" title="{{ lang.image_verification }}" id="captcha_img" />
+                </div>
+                <div class="field__block">
+                    <p class="field__description">{{ lang.verification_subnote }}</p>
+                </div>
+                <div class="field__block">
+                    <input type="text" class="textbox textbox--large" name="imagestring" value="" id="imagestring" />
+                    <script type="text/javascript">
+                    <!--
+                        if(use_xmlhttprequest == "1")
+                        {
+                            document.write('<button class="button button--inline" name="refresh" onclick="return captcha.refresh();">{% spaceless %}{{ include('partials/icon.twig', {icon: 'sync-alt', class: 'button__icon'}, with_context = false) }}{% endspaceless %}<span class="button__text">{{ lang.refresh }}</span></button>');
+                        }
+                    // -->
+                    </script>
+                    <input type="hidden" name="imagehash" value="{{ imagehash }}" id="imagehash" />
+                    <div id="imagestring_status"  style="display: none;" colspan="2">&nbsp;</div>
+                </div>
+            </div>
+        </div>
+    </section>
 {% endif %}

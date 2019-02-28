@@ -1,46 +1,46 @@
-{% extends 'layouts/master.twig' %}
+{% extends 'layouts/messenger.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.empty_folders }}</title>
+    <title>{{ lang.empty_folders }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
-{% block body %}
+{% block messengerHeader %}
+    <header class="page-header">
+        <h1 class="title title--page">{{ lang.empty_folders }}</h1>
+    </header>
+{% endblock messengerHeader %}
+
+{% block messengerBody %}
     <form action="private.php" method="post">
         <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-        <table width="100%" border="0" align="center">
-            <tr>
-                {# To do: usercpnav #}
-                <td valign="top">
-                    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-                        <tr>
-                            <td class="thead" colspan="3"><strong>{{ lang.empty_folders }}</strong></td>
-                        </tr>
-                        <tr>
-                            <td class="trow1" colspan="3"><span class="smalltext">{{ lang.empty_note|raw }}</span></td>
-                        </tr>
-                        <tr>
-                            <td class="tcat" align="center"><strong>{{ lang.export_folder }}</strong></td>
-                            <td class="tcat" align="center"><strong>{{ lang.num_messages }}</strong></td>
-                            <td class="tcat" align="center"><strong>{{ lang.empty_q }}</strong></td>
-                        </tr>
-                        {% for folder in folderlist %}
-                            <tr>
-                                <td class="trow1"><strong>{{ folder.foldername }}</strong></td>
-                                <td class="trow1" align="center">{{ folder.foldercount }}</td>
-                                <td class="trow1" align="center"><input type="checkbox" class="checkbox" name="empty[{{ folder.fid }}]" value="1" /></td>
-                            </tr>
-                        {% endfor %}
-                        <tr>
-                            <td class="trow2" align="center" colspan="3"><input type="checkbox" class="checkbox" name="keepunread" value="1" checked="checked" /><strong>{{ lang.keep_unread }}</strong></td>
-                        </tr>
-                    </table>
-                    <br />
-                    <div align="center">
-                        <input type="hidden" name="action" value="do_empty" />
-                        <input type="submit" class="button" name="submit" value="{{ lang.delete }}" />
-                    </div>
-                </td>
-            </tr>
-        </table>
+        <div class="block block--form form">
+            <section class="section section--form">
+                <div class="row row--form field">{{ lang.empty_note|raw }}</div>
+                <div class="row row--form field">
+                    <h3 class="field__name">{{ lang.empty_these_folders }}</h3>
+                    {% for folder in folderlist %}
+                        <div class="option-field option-field--compact">
+                            <label>
+                                <input type="checkbox" class="option-field__input checkbox" name="empty[{{ folder.fid }}]" value="1" />
+                                <span class="option-field__name option-field__name--inline">{{ folder.foldername }}</span>
+                                <span class="option-field__description option-field__description--inline">({{ folder.foldercount }} {% if folder.foldercount == 1 %}{{ lang.empty_message }}{% else %}{{ lang.empty_messages }}{% endif %})</span>
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="row row--form field">
+                    <p class="option-field option-field--compact">
+                        <label><input type="checkbox" class="checkbox" name="keepunread" value="1" checked="checked" /> {{ lang.keep_unread }}</label>
+                    </p>
+                </div>
+            </section>
+            <div class="form__submit">
+                <button type="submit" class="button button--medium" name="submit">
+                    {{ include('partials/icon.twig', {icon: 'trash', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.delete }}</span>
+                </button>
+            </div>
+        </div>
+        <input type="hidden" name="action" value="do_empty" />
     </form>
-{% endblock body %}
+{% endblock messengerBody %}

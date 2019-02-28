@@ -1,24 +1,30 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.lost_pw }}</title>
+    <title>{{ lang.lost_pw }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block body %}
-    <form action="member.php" method="post">
-        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-            <tr>
-                <td class="thead" colspan="2"><strong>{{ lang.lost_pw_form }}</strong></td>
-            </tr>
-            <tr>
-                <td class="trow1" width="40%"><strong><label for="email">{{ lang.email_address }}</label></strong></td>
-                <td class="trow1" width="60%"><input type="text" class="textbox" name="email" id="email" /></td>
-            </tr>
-        </table>
-        <br />
-        <div align="center">
+    <div class="page-content page-content--centered">
+        <header class="page-header">
+           <h1 class="title title--page">{{ lang.lost_pw_form }}</h1>
+       </header>
+       <form action="member.php" method="post">
+           <div class="block block--form form">
+               <section class="section section--form">
+                   <div class="row row--form field">
+                       <h3 class="field__name"><label for="email">{{ lang.email_address }}</label></h3>
+                       <input type="text" class="textbox" name="email" id="email" />
+                   </div>
+               </section>
+               <div class="form__submit">
+                   <button type="submit" class="button button--medium">
+                       {{ include('partials/icon.twig', {icon: 'key', class: 'button__icon'}, with_context = false) }}
+                       <span class="button__text">{{ lang.request_user_pass }}</span>
+                   </button>
+               </div>
+           </div>
             <input type="hidden" name="action" value="do_lostpw" />
-            <input type="submit" class="button" value="{{ lang.request_user_pass }}" />
-        </div>
-    </form>
+        </form>
+    </div>
 {% endblock body %}

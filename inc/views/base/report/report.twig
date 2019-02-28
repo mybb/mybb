@@ -1,50 +1,52 @@
 <div class="modal">
-  <div style="overflow-y: auto; max-height: 400px;" class="modal_{{ report.id }}">
-	<form action="report.php" method="post" class="reportData_{{ report.id }}" onsubmit="return Report.submitReport({{ report.id }});">
-		<input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-		<input type="hidden" name="action" value="do_report" />
-		<input type="hidden" name="type" value="{{ report.type }}" />
-		<input type="hidden" name="pid" value="{{ report.id }}" />
-		<input type="hidden" name="no_modal" value="1" />
-		<table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-			<tr>
-				<td class="thead" colspan="2"><strong>{{ report.title }}</strong></td>
-			</tr>
-			<tr>
-				<td class="tcat" colspan="2">{{ lang.report_to_mod }}</td>
-			</tr>
-			{% if report.has_errors %}
-				<tr>
-					<td colspan="2" class="trow1">{{ report.error|raw }}</td>
-				</tr>
-			{% elseif report.is_duplicate %}
-				<tr>
-					<td class="trow1">{{ lang.error_report_duplicate }}</td>
-				</tr>
-				<tr>
-					<td class="tfoot"><input type="submit" class="button" value="{{ report.title }}" /></td>
-				</tr>
-			{% else %}
-				{% include 'report/report_reasons.twig' %}
-			{% endif %}
-		</table>
-	</form>
+    <div class="modal_{{ report.id }}">
+        <form action="report.php" method="post" class="reportData_{{ report.id }}" onsubmit="return Report.submitReport({{ report.id }});">
+            <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+            <input type="hidden" name="action" value="do_report" />
+            <input type="hidden" name="type" value="{{ report.type }}" />
+            <input type="hidden" name="pid" value="{{ report.id }}" />
+            <input type="hidden" name="no_modal" value="1" />
+            <section class="block block--modal">
+                <h2 class="title title--modal{% if report.has_errors or report.is_duplicate %} title--danger{% endif %}">{{ report.title }}</h2>
+                <div class="modal__content">
+                    <div class="form form--modal">
+                        <div class="section section--form">
+                        {% if report.has_errors %}
+                            <div class="row row--form">{{ report.error|raw }}</div>
+                        {% elseif report.is_duplicate %}
+                            <div class="row row--form">{{ lang.error_report_duplicate }}</div>
+                        {% else %}
+                            {% include 'report/report_reasons.twig' %}
+                        {% endif %}
+                    </div>
+                    {% if report.has_errors == false %}
+                    <div class="form__submit">
+                        <button type="submit" class="button button--medium">
+                            {{ include('partials/icon.twig', {icon: 'flag', class: 'button__icon'}, with_context = false) }}
+                            <span class="button__text">{{ report.title }}</span>
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+    </form>
 
 <script type="text/javascript">
 <!--
-	if ($("#report_reason option:selected").attr('data-extra') != 1) {
-		$("#reason").hide();
-	}
+    if ($("#report_reason option:selected").attr('data-extra') != 1) {
+        $("#reason").hide();
+    }
 
-	$("#report_reason").change(function() {
-		if ($(this).find("option:selected").attr('data-extra') == 1) {
-			$("#reason").show();
-			return;
-		}
+    $("#report_reason").change(function() {
+        if ($(this).find("option:selected").attr('data-extra') == 1) {
+            $("#reason").show();
+            return;
+        }
 
-		$("#reason").hide();
-	});
+        $("#reason").hide();
+    });
 // -->
 </script>
-	</div>
+    </div>
 </div>

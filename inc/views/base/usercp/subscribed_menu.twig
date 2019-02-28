@@ -1,0 +1,13 @@
+<ul class="page-tabs">
+    <li class="page-tabs__item{% if mybb.input.action == 'subscriptions' %} page-tabs__item--active{% endif %}">
+        <a href="usercp.php?action=subscriptions" class="page-tabs__link">
+            {{ include('partials/icon.twig', {icon: 'comment', class: ''}, with_context = false) }}
+            {{ lang.nav_subthreads }}</a>
+    </li>
+    <li class="page-tabs__item{% if mybb.input.action == 'forumsubscriptions' %} page-tabs__item--active{% endif %}">
+        <a href="usercp.php?action=forumsubscriptions" class="page-tabs__link">
+            {{ include('partials/icon.twig', {icon: 'comments', class: 'button__icon'}, with_context = false) }}
+            {{ lang.nav_forumsubscriptions }}
+        </a>
+    </li>
+</ul>

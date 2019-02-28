@@ -10,7 +10,7 @@ $l['nav_warning_log'] = "Warning Log";
 $l['nav_add_warning'] = "Warn User";
 $l['nav_view_warning'] = "Warning Details";
 
-$l['warning_for_post'] = ".. Post:";
+$l['warning_for_post'] = "Post:";
 $l['already_expired'] = "Expired";
 $l['details_username'] = "Username";
 $l['warning_active'] = "Active";
@@ -26,26 +26,26 @@ $l['warning_points'] = "({1} points)";
 $l['no_warnings'] = "This user has not received any warnings or they've all been removed.";
 $l['warn_user'] = "Warn User";
 $l['post'] = "Post:";
-$l['warning_note'] = "Administrative Notes:";
+$l['warning_note'] = "Administrative Notes";
 $l['details_warning_note'] = "Administrative Notes";
-$l['warning_type'] = "Warning Type:";
+$l['warning_type'] = "Warning Type";
 $l['custom'] = "Custom Reason";
-$l['reason'] = "Reason:";
-$l['points'] = "Points:";
+$l['reason'] = "Reason";
+$l['points'] = "Points";
 $l['details_reason'] = "Reason";
 $l['warn_user_desc'] = "Here you can increase the warning level of this user if they've violated one or more rules.";
-$l['send_pm'] = "Notify User:";
+$l['send_pm'] = "Notify User";
 $l['send_user_warning_pm'] = "Send this user a private message notifying them of this warning.";
-$l['send_pm_subject'] = "Subject:";
+$l['send_pm_subject'] = "Subject";
 $l['warning_pm_subject'] = "You have received a warning.";
-$l['send_pm_message'] = "Message:";
+$l['send_pm_message'] = "Message";
 $l['warning_pm_message'] = "Dear {1}
 
 You have received a warning from the staff of {2}.
 --
 
 --";
-$l['send_pm_options'] = "Options:";
+$l['send_pm_options'] = "Options";
 $l['send_pm_options_anonymous'] = "<strong>Anonymous PM</strong>: send this private message as an anonymous user.";
 $l['expiration_never'] = "permanently";
 $l['expiration_hours'] = "hours";
@@ -66,7 +66,7 @@ $l['current_warning_level'] = "Current warning level: <strong>{1}%</strong> ({2}
 $l['warning_details'] = "Warning Details";
 $l['revoke_warning'] = "Revoke this Warning";
 $l['revoke_warning_desc'] = "To revoke this warning please enter a reason below. This will not remove any bans or suspensions imposed by this warning.";
-$l['warning_is_revoked'] = "This Warning has been revoked";
+$l['warning_is_revoked'] = "This warning has been revoked";
 $l['revoked_by'] = "Revoked By";
 $l['date_revoked'] = "Date Revoked";
 $l['warning_already_revoked'] = "This warning has already been revoked.";
@@ -82,7 +82,7 @@ $l['hour_or_hours'] = "Hour(s)";
 $l['day_or_days'] = "Day(s)";
 $l['week_or_weeks'] = "Week(s)";
 $l['month_or_months'] = "Month(s)";
-$l['expires'] = "Expires:";
+$l['expires'] = "Expires";
 $l['new_warning_level'] = "New warning level:";
 $l['error_cant_warn_user'] = "You do not have permission to warn this user.";
 $l['existing_post_warnings'] = "Existing Warnings for this Post";

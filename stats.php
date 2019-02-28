@@ -158,12 +158,11 @@ if (!empty($forum['fid'])) {
 if ($mybb->settings['statstopreferrer'] == 1 && isset($statistics['top_referrer']['uid'])) {
     // Only show this if we have anything more the 0 referrals
     if ($statistics['top_referrer']['referrals'] > 0) {
-        $toprefuser   = build_profile_link(htmlspecialchars_uni($statistics['top_referrer']['username']),
+        $stats['top_referrer_user'] = build_profile_link(htmlspecialchars_uni($statistics['top_referrer']['username']),
             $statistics['top_referrer']['uid']);
-        $top_referrer = $lang->sprintf($lang->top_referrer, $toprefuser,
-            my_number_format($statistics['top_referrer']['referrals']));
+        $stats['top_referrer_count'] = my_number_format($statistics['top_referrer']['referrals']);
     } else {
-        $top_referrer = false;
+        $stats['$top_referrer_user'] = false;
     }
 }
 
@@ -186,7 +185,8 @@ if ( ! isset($statistics['top_poster']['uid'])) {
 $posters                      = $statistics['posters'];
 $stats['have_posted_percent'] = my_number_format(round((($posters / $stats['numusers']) * 100), 2)) . "%";
 
-$lang->todays_top_poster = $lang->sprintf($lang->todays_top_poster, $topposter, my_number_format($topposterposts));
+$stats['top_poster'] = $topposter;
+$stats['top_poster_posts'] = my_number_format($topposterposts);
 
 $stats['numposts']    = my_number_format($stats['numposts']);
 $stats['numthreads']  = my_number_format($stats['numthreads']);

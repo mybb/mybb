@@ -1,9 +1,13 @@
 {% extends 'messages/base.twig' %}
 
 {% block message_before %}
-    <i class="alert__icon fas fa-envelope"></i>
+    {{ include('partials/icon.twig', {icon: 'envelope', class: 'alert__icon'}, with_context = false) }}
 {% endblock message_before %}
 
 {% block message_after %}
-    <span class="alert__dismiss"><a href="{{ mybb.settings.bburl }}/private.php?action=dismiss_notice&amp;my_post_key={{ mybb.post_code }}" title="{{ lang.dismiss_notice }}" onclick="return MyBB.dismissPMNotice('{{ mybb.settings.bburl }}/')" class="alert__dismiss__link"><i class="fas fa-times-circle" title="{$lang->dismiss_notice}"></i></a></span>
+    <span class="alert__dismiss">
+        <a href="{{ mybb.settings.bburl }}/private.php?action=dismiss_notice&amp;my_post_key={{ mybb.post_code }}" title="{{ lang.dismiss_notice }}" onclick="return MyBB.dismissPMNotice('{{ mybb.settings.bburl }}/')" class="alert__dismiss__link">
+            {{ include('partials/icon.twig', {icon: 'times-circle', class: '', title: lang.dismiss_notice}, with_context = false) }}
+        </a>
+    </span>
 {% endblock message_after %}

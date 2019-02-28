@@ -1,60 +1,49 @@
-{% extends 'layouts/master.twig' %}
+{% extends 'layouts/account.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bburl }} - {{ lang.change_username }}</title>
+    <title>{{ lang.change_username }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
-{% block body %}
+{% block accountHeader %}
+    <header class="page-header">
+        <h1 class="title title--page">{{ lang.change_username }}</h1>
+    </header>
+{% endblock accountHeader %}
+
+{% block accountBody %}
     <form action="usercp.php" method="post">
         <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
 
+        {% include 'usercp/profile_menu.twig' %}
+
         {{ errors|raw }}
 
-        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-            <thead>
-            <tr>
-                <th class="thead" colspan="2">
-                    <strong>{{ lang.change_username }}</strong>
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td class="tcat" colspan="2">
-                        <strong>{{ lang.password_confirmation }}</strong>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="trow1" width="40%">
-                        <label for="password">
-                            <strong>{{ lang.current_password }}</strong>
-                        </label>
-                    </td>
-                    <td class="trow1" width="60%">
-                        <input type="password" class="textbox" id="password" name="password" size="25" />
-                    </td>
-                </tr>
-                <tr>
-                    <td class="tcat" colspan="2">
-                        <strong>{{ lang.change_username }}</strong>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="trow2" width="40%">
-                        <label for="username">
-                            <strong>{{ lang.new_username }}</strong>
-                        </label>
-                    </td>
-                    <td class="trow2" width="60%">
-                        <input type="text" class="textbox" id="username" name="username" size="25" maxlength="{{ mybb.settings.maxnamelength }}" />
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <br />
-        <div align="center">
-            <input type="hidden" name="action" value="do_changename" />
-            <input type="submit" class="button" name="submit" value="{{ lang.update_username }}" />
+        <div class="block block--form form">
+            <section class="section section--form">
+                <h2 class="title title--section">{{ lang.change_username }}</h2>
+                <div class="section__container">
+                    <div class="row row--form field">
+                        <h3 class="field__name"><label for="new-username">{{ lang.new_username }}</label></h3>
+                        <input type="text" class="textbox" name="username" id="new-username" size="25" maxlength="{{ mybb.settings.maxnamelength }}" />
+                    </div>
+                </div>
+            </section>
+            <section class="section section--form">
+                <h2 class="title title--section">{{ lang.password_confirmation }}</h2>
+                <div class="section__container">
+                    <div class="row row--form field">
+                        <h3 class="field__name"><label for="password">{{ lang.current_password }}</label></h3>
+                        <input type="password" class="textbox" name="password" id="password" size="25" />
+                    </div>
+                </div>
+            </section>
+            <div class="form__submit">
+                <button type="submit" class="button button--medium" name="submit">
+                    {{ include('partials/icon.twig', {icon: 'user-circle', class: 'button__icon'}, with_context = false) }}
+                    <span class="button__text">{{ lang.update_username }}</span>
+                </button>
+            </div>
         </div>
+        <input type="hidden" name="action" value="do_changename" />
     </form>
-{% endblock body %}
+{% endblock accountBody %}

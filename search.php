@@ -163,6 +163,7 @@ if($mybb->input['action'] == "results")
 
     $results['orderarrow'] = array('replies' => '', 'views' => '', 'subject' => '', 'forum' => '', 'starter' => '', 'lastpost' => '', 'dateline' => '');
     $results['orderarrow'][$sortby] = true;
+	$results['sortby'] = $sortby;
     $results['sorturl'] = "search.php?action=results&amp;sid={$sid}";
 
 	// Read some caches we will be using
@@ -1236,7 +1237,7 @@ elseif($mybb->input['action'] == "getnew")
 	{
 		$where_sql .= "AND ((fid IN(".implode(',', $onlyusfids).") AND uid='{$mybb->user['uid']}') OR fid NOT IN(".implode(',', $onlyusfids)."))";
 	}
-	
+
 	$tids = '';
 	$comma = '';
 	$query = $db->simple_select("threads", "tid", $where_sql);
@@ -1331,7 +1332,7 @@ elseif($mybb->input['action'] == "getdaily")
 			$tids .= $comma.$tid;
 			$comma = ',';
 	}
-	
+
 	$sid = md5(uniqid(microtime(), true));
 	$searcharray = array(
 		"sid" => $db->escape_string($sid),

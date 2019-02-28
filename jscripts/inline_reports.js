@@ -172,7 +172,7 @@ var inlineReports = {
 			$(this).removeClass('trow_selected');
 		});
 
-		$('#inline_read').val(mark_read_text+' (0)');
+		$('#inline_read').html(mark_read_text+' (0)');
 		Cookie.unset(inlineReports.cookieName);
 		Cookie.unset(inlineReports.cookieName + '_removed');
 
@@ -325,7 +325,7 @@ var inlineReports = {
 		{
 			count = 0;
 		}
-		$('#inline_read').val(mark_read_text+' ('+count+')');
+		$('#inline_read').html(mark_read_text+' ('+count+')');
 		if(count == 0)
 		{
 			inlineReports.clearChecked();

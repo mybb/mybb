@@ -1,26 +1,35 @@
-{% set row = alt_trow() %}
-<tr class="inline_row">
-    <td class="{{ row }}">
-        {% if report.type == 'reputation' %}
-            {{ trans('report_info_reputation', report.reputation_link, report.bad_user) }}
-            {{ trans('report_info_rep_profile', report.good_user) }}
-        {% elseif report.type == 'profile' %}
-            {{ trans('report_info_profile', report.profile_user) }}
-        {% elseif report.type == 'post' %}
-            {{ trans('report_info_post', report.post, report.user) }}
-            {{ trans('report_info_post_thread', report.thread_link, report.thread_subject) }}
-        {% endif %}
-    </td>
-    <td class="{{ row }}" align="left">
-        {% if report.comment %}
-            {{ report.reason }}: {{ report.comment }}
-        {% else %}
-            {{ report.reason }}
-        {% endif %}
-    </td>
-    <td class="{{ row }}" align="center">{{ report.reports }}</td>
-    <td class="{{ row }} smalltext" align="right">{{ report.lastreporter|raw }}</td>
-    <td class="{{ row }}" align="center">
+<div class="row row--simple-columns inline_row report">
+    <div class="row__primary">
+        <div class="report__content">
+            {% if report.type == 'reputation' %}
+                {{ trans('report_info_reputation', report.reputation_link, report.bad_user) }}
+                {{ trans('report_info_rep_profile', report.good_user) }}
+            {% elseif report.type == 'profile' %}
+                {{ trans('report_info_profile', report.profile_user) }}
+            {% elseif report.type == 'post' %}
+                {{ trans('report_info_post', report.post, report.user) }}
+                {{ trans('report_info_post_thread', report.thread_link, report.thread_subject) }}
+            {% endif %}
+        </div>
+        <div class="report__reason">
+            {% if report.comment %}
+                {{ report.reason }}: {{ report.comment }}
+            {% else %}
+                {{ report.reason }}
+            {% endif %}
+        </div>
+    </div>
+    <div class="row__secondary">
+        <div class="report__count">
+            {{ report.reports }} {% if report.reports == 1 %}{{ lang.report_count_report }}{% else %}{{ lang.report_count_reports }}{% endif %}
+        </div>
+        <div class="report__last-reporter">
+            {{ lang.report_info_lastreporter }}
+            <span class="report__last-report-user">{{ report.lastreport_user|raw }}</span>
+            <span class="report__last-report-date">{{ report.lastreport_date|my_date }}</span>
+        </div>
+    </div>
+    <div class="row__select-control">
         <input type="checkbox" class="checkbox" name="reports[]" id="reports_{{ report.rid }}" value="{{ report.rid }}"{% if report.checked %} checked="checked"{% endif %} />
-    </td>
-</tr>
+    </div>
+</div>

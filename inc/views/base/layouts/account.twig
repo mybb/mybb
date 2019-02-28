@@ -1,0 +1,66 @@
+{% extends 'layouts/master.twig' %}
+
+{% block body %}
+
+{% block accountHeader %}{% endblock accountHeader %}
+
+<nav class="section-menu">
+    <ul class="section-menu__links sidebar-navigation">
+        <li class="section-menu__item section-menu__item--dashboard{% if mybb.input.action == '' %} section-menu__item--active{% endif %}">
+             <a href="usercp.php" class="section-menu__link">
+                 {{ include('partials/icon.twig', {icon: 'tachometer-alt', class: 'section-menu__icon fa-fw'}, with_context = false) }}
+                 <span class="section-menu__text">{{ lang.nav_dashboard }}</span>
+             </a>
+        </li>
+        <li class="section-menu__item section-menu__item--profile{% if mybb.input.action == 'profile' or mybb.input.action == 'avatar' or mybb.input.action == 'editsig' or mybb.input.action == 'changename' or mybb.input.action == 'email' or mybb.input.action == 'password' %} section-menu__item--active{% endif %}">
+            <a href="usercp.php?action=profile" class="section-menu__link">
+                {{ include('partials/icon.twig', {icon: 'user', class: 'section-menu__icon fa-fw'}, with_context = false) }}
+                <span class="section-menu__text">{{ lang.nav_profile }}</span>
+            </a>
+        </li>
+        <li class="section-menu__item section-menu__item--preferences{% if mybb.input.action == 'options' %} section-menu__item--active{% endif %}">
+            <a href="usercp.php?action=options" class="section-menu__link">
+                {{ include('partials/icon.twig', {icon: 'sliders-h', class: 'section-menu__icon fa-fw'}, with_context = false) }}
+                <span class="section-menu__text">{{ lang.nav_options }}</span>
+            </a>
+        </li>
+        <li class="section-menu__item section-menu__item--groups{% if mybb.input.action == 'usergroups' %} section-menu__item--active{% endif %}">
+            <a href="usercp.php?action=usergroups" class="section-menu__link">
+                {{ include('partials/icon.twig', {icon: 'users', class: 'section-menu__icon fa-fw'}, with_context = false) }}
+                <span class="section-menu__text">{{ lang.nav_groups }}</span>
+            </a>
+        </li>
+        <li class="section-menu__item section-menu__item--buddy-ignore{% if mybb.input.action == 'editlists' %} section-menu__item--active{% endif %}">
+            <a href="usercp.php?action=editlists" class="section-menu__link">
+                {{ include('partials/icon.twig', {icon: 'heart', class: 'section-menu__icon fa-fw'}, with_context = false) }}
+                <span class="section-menu__text">{{ lang.nav_editlists }}</span>
+            </a>
+        </li>
+        {% if mybb.settings.enableattachments %}
+        <li class="section-menu__item section-menu__item--attachments{% if mybb.input.action == 'attachments' %} section-menu__item--active{% endif %}">
+            <a href="usercp.php?action=attachments" class="section-menu__link">
+                {{ include('partials/icon.twig', {icon: 'paperclip', class: 'section-menu__icon fa-fw'}, with_context = false) }}
+                <span class="section-menu__text">{{ lang.nav_attachments }}</span>
+            </a>
+        </li>
+        {% endif %}
+        <li class="section-menu__item section-menu__item--drafts{% if mybb.input.action == 'drafts' %} section-menu__item--active{% endif %}">
+            <a href="usercp.php?action=drafts" class="section-menu__link">
+                {{ include('partials/icon.twig', {icon: 'file', class: 'section-menu__icon fa-fw'}, with_context = false) }}
+                <span class="section-menu__text">{{ lang.nav_drafts }}</span>
+            </a>
+        </li>
+        <li class="section-menu__item section-menu__item--subscriptions{% if mybb.input.action == 'subscriptions' or mybb.input.action == 'forumsubscriptions' or mybb.input.action == 'addsubscription' %} section-menu__item--active{% endif %}">
+            <a href="usercp.php?action=subscriptions" class="section-menu__link">
+                {{ include('partials/icon.twig', {icon: 'plus', class: 'section-menu__icon fa-fw'}, with_context = false) }}
+                <span class="section-menu__text">{{ lang.nav_subscriptions }}</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<div class="page-content page-content--menu">
+    {% block accountBody %}{% endblock accountBody %}
+</div>
+
+{% endblock body %}

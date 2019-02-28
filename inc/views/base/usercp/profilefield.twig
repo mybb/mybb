@@ -17,49 +17,50 @@
     {% set options = attributes.options %}
 {% endif %}
 
-<tr>
-    <td>
-        <span>{{ field.name }}</span>:<br />
-        <span class="smalltext">{{ field.description }}</span>
-    </td>
-</tr>
-<tr>
-    <td>
-        {% if attributes.type == 'multiselect' and options %}
-            <select name="profile_fields[{{ fieldName }}][]" size="{{ field.length|default('3') }}" multiple="multiple">
-                {% for option in options %}
-                    {% set option = option|trim|replace({'\n': '\\n'}) %}
-                    <option value="{{ option }}"{% if option in activeCheck %} selected{% endif %}>{{ option }}</option>
-                {% endfor %}
-            </select>
-
-        {% elseif attributes.type == 'select' %}
-            <select name="profile_fields[{{ fieldName }}]" size="{{ field.length|default('1') }}">
-                {% for option in options %}
-                    {% set option = option|trim|replace({'\n': '\\n'}) %}
-                    <option value="{{ option }}"{% if option in activeCheck %} selected{% endif %}>{{ option }}</option>
-                {% endfor %}
-            </select>
-
-        {% elseif attributes.type == 'radio' %}
-            {% for option in options %}
-                <input type="radio" class="radio" name="profile_fields[{{ fieldName }}]" value="{{ option }}"{% if option in activeCheck %} checked{% endif %} />
-                <span class="smalltext">{{ option }}</span>
-            {% endfor %}
-
-        {% elseif attributes.type == 'checkbox' %}
-            {% for option in options %}
-                <input type="checkbox" class="checkbox" name="profile_fields[{{ fieldName }}][]" value="{{ option }}"{% if option in activeCheck %} checked{% endif %} />
-                   <span class="smalltext">{{ option }}</span><br />
-            {% endfor %}
-
-        {% elseif attributes.type == 'textarea' %}
-            <textarea name="profile_fields[{{ fieldName }}]" rows="6" cols="30" style="width: 95%">{{ userfield }}</textarea>
-
+<div class="row row--form field">
+    <h3 class="field__name">
+        {% if attributes.type == 'radio' or attributes.type == 'checkbox' %}
+            {{ field.name }}
         {% else %}
-            <input type="text" name="profile_fields[{{ fieldName }}]" class="textbox" size="{{ field.length }}"{% if field.maxlength %} maxlength="{{ field.maxlength }}"{% endif %} value="{{ userfield }}" />
-
+            <label for="profile_fields_{{ fieldName }}">{{ field.name }}</label>
         {% endif %}
+    </h3>
+    <p class="field__description">{{ field.description }}</p>
 
-    </td>
-</tr>
+    {% if attributes.type == 'multiselect' and options %}
+        <select name="profile_fields[{{ fieldName }}][]" id="profile_fields_{{ fieldName }}" size="{{ field.length|default('3') }}" multiple="multiple">
+            {% for option in options %}
+                {% set option = option|trim|replace({'\n': '\\n'}) %}
+                <option value="{{ option }}"{% if option in activeCheck %} selected{% endif %}>{{ option }}</option>
+            {% endfor %}
+        </select>
+
+    {% elseif attributes.type == 'select' %}
+        <div class="select-field">
+            {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
+            <select name="profile_fields[{{ fieldName }}]" id="profile_fields_{{ fieldName }}" size="{{ field.length|default('1') }}">
+                {% for option in options %}
+                    {% set option = option|trim|replace({'\n': '\\n'}) %}
+                    <option value="{{ option }}"{% if option in activeCheck %} selected{% endif %}>{{ option }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+    {% elseif attributes.type == 'radio' %}
+        {% for option in options %}
+            <p class="option-field option-field--compact"><label><input type="radio" class="radio" name="profile_fields[{{ fieldName }}]" value="{{ option }}"{% if option in activeCheck %} checked{% endif %} /> {{ option }}</label></p>
+        {% endfor %}
+
+    {% elseif attributes.type == 'checkbox' %}
+        {% for option in options %}
+            <p class="option-field option-field--compact"><label><input type="checkbox" class="checkbox" name="profile_fields[{{ fieldName }}][]" value="{{ option }}"{% if option in activeCheck %} checked{% endif %} /> {{ option }}</label></p>
+        {% endfor %}
+
+    {% elseif attributes.type == 'textarea' %}
+        <textarea name="profile_fields[{{ fieldName }}]" id="profile_fields_{{ fieldName }}" rows="6" cols="30">{{ userfield }}</textarea>
+
+    {% else %}
+        <input type="text" name="profile_fields[{{ fieldName }}]" id="profile_fields_{{ fieldName }}" class="textbox" size="{{ field.length }}"{% if field.maxlength %} maxlength="{{ field.maxlength }}"{% endif %} value="{{ userfield }}" />
+
+    {% endif %}
+</div>

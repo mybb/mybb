@@ -288,6 +288,7 @@ else
     while($user = $db->fetch_array($query)) {
         $user = $plugins->run_hooks("memberlist_user", $user);
 
+        $user['username_raw'] = $user['username'];
         $user['username'] = format_name(htmlspecialchars_uni($user['username']), $user['usergroup'], $user['displaygroup']);
 
         $user['profilelink'] = build_profile_link($user['username'], $user['uid']);
