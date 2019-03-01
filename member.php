@@ -1227,7 +1227,7 @@ $(document).ready(function() {
 					"allow_smilies" => 1,
 					"allow_imgcode" => 1,
 					"allow_videocode" => 1,
-					"filter_badwords" => 0,
+					"filter_badwords" => 1,
 					"me_username" => 0,
 					"shorten_urls" => 0,
 					"highlight" => 0,

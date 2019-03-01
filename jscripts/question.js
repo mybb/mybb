@@ -29,7 +29,7 @@ var question = {
 		}
 		else if(json.question && json.sid)
 		{
-			$("#question").text(json.question);
+			$("#question").html(json.question);
 			$("#question_id").val(json.sid);
 		}
 
