@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace MyBB;
 
@@ -88,9 +89,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     protected $deferredServices = [];
 
     /**
-     * Create a new Illuminate application instance.
-     *
-     * @param  string|null  $basePath
+     * @inheritdoc
      */
     public function __construct(?string $basePath = null)
     {
@@ -106,9 +105,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
-     * Get the version number of the application.
-     *
-     * @return string
+     * @inheritdoc
      */
     public function version()
     {
@@ -116,9 +113,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
-     * Register the basic bindings into the container.
-     *
-     * @return void
+     * @inheritdoc
      */
     protected function registerBaseBindings()
     {
@@ -129,9 +124,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
-     * Register all of the base service providers.
-     *
-     * @return void
+     * @inheritdoc
      */
     protected function registerBaseServiceProviders()
     {
@@ -149,10 +142,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
-     * Run the given array of bootstrap classes.
-     *
-     * @param  array  $bootstrappers
-     * @return void
+     * @inheritdoc
      */
     public function bootstrapWith(array $bootstrappers)
     {
@@ -168,11 +158,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
-     * Register a callback to run before a bootstrapper.
-     *
-     * @param  string  $bootstrapper
-     * @param  \Closure  $callback
-     * @return void
+     * @inheritdoc
      */
     public function beforeBootstrapping(string $bootstrapper, \Closure $callback)
     {
@@ -180,11 +166,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
-     * Register a callback to run after a bootstrapper.
-     *
-     * @param  string  $bootstrapper
-     * @param  \Closure  $callback
-     * @return void
+     * @inheritdoc
      */
     public function afterBootstrapping(string $bootstrapper, \Closure $callback)
     {
@@ -192,9 +174,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
-     * Determine if the application has been bootstrapped before.
-     *
-     * @return bool
+     * @inheritdoc
      */
     public function hasBeenBootstrapped()
     {
@@ -202,10 +182,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
-     * Set the base path for the application.
-     *
-     * @param  string  $basePath
-     * @return $this
+     * @inheritdoc
      */
     public function setBasePath(?string $basePath)
     {
@@ -215,14 +192,12 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
-     * Get or check the current application environment.
-     *
-     * @return string|bool
+     * @inheritdoc
      */
-    public function environment()
+    public function environment(...$environments)
     {
-        if (func_num_args() > 0) {
-            $patterns = is_array(func_get_arg(0)) ? func_get_arg(0) : func_get_args();
+        if (count($environments) > 0) {
+            $patterns = is_array($environments[0]) ? $environments[0] : $environments;
 
             return Str::is($patterns, $this['env']);
         }
@@ -231,9 +206,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
-     * Determine if application is in local environment.
-     *
-     * @return bool
+     * @inheritdoc
      */
     public function isLocal()
     {
@@ -241,9 +214,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
-     * Determine if the application is running in the console.
-     *
-     * @return bool
+     * @inheritdoc
      */
     public function runningInConsole()
     {
@@ -251,9 +222,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
-     * Determine if the application is running unit tests.
-     *
-     * @return bool
+     * @inheritdoc
      */
     public function runningUnitTests()
     {
@@ -261,9 +230,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
-     * Register all of the configured providers.
-     *
-     * @return void
+     * @inheritdoc
      */
     public function registerConfiguredProviders()
     {
@@ -271,12 +238,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
-     * Register a service provider with the application.
-     *
-     * @param  \Illuminate\Support\ServiceProvider|string  $provider
-     * @param  bool   $force
-     *
-     * @return \Illuminate\Support\ServiceProvider
+     * @inheritdoc
      */
     public function register($provider, $force = false)
     {
@@ -308,10 +270,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
-     * Get the registered service provider instance if it exists.
-     *
-     * @param  \Illuminate\Support\ServiceProvider|string  $provider
-     * @return \Illuminate\Support\ServiceProvider|null
+     * @inheritdoc
      */
     public function getProvider($provider)
     {
@@ -319,10 +278,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
-     * Get the registered service provider instances if any exist.
-     *
-     * @param  \Illuminate\Support\ServiceProvider|string  $provider
-     * @return array
+     * @inheritdoc
      */
     public function getProviders($provider)
     {
@@ -334,10 +290,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
-     * Resolve a service provider instance from the class name.
-     *
-     * @param  string  $provider
-     * @return \Illuminate\Support\ServiceProvider
+     * @inheritdoc
      */
     public function resolveProvider($provider)
     {
@@ -345,10 +298,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
-     * Mark the given provider as registered.
-     *
-     * @param  \Illuminate\Support\ServiceProvider  $provider
-     * @return void
+     * @inheritdoc
      */
     protected function markAsRegistered($provider)
     {
@@ -358,9 +308,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
-     * Load and boot all of the remaining deferred providers.
-     *
-     * @return void
+     * @inheritdoc
      */
     public function loadDeferredProviders()
     {
@@ -375,10 +323,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
-     * Load the provider for a deferred service.
-     *
-     * @param  string  $service
-     * @return void
+     * @inheritdoc
      */
     public function loadDeferredProvider($service)
     {
@@ -397,11 +342,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
-     * Register a deferred provider and service.
-     *
-     * @param  string  $provider
-     * @param  string|null  $service
-     * @return void
+     * @inheritdoc
      */
     public function registerDeferredProvider($provider, $service = null)
     {
@@ -422,13 +363,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
-     * Resolve the given type from the container.
-     *
-     * (Overriding Container::make)
-     *
-     * @param  string  $abstract
-     * @param  array  $parameters
-     * @return mixed
+     * @inheritdoc
      */
     public function make($abstract, array $parameters = [])
     {
@@ -442,12 +377,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
-     * Determine if the given abstract type has been bound.
-     *
-     * (Overriding Container::bound)
-     *
-     * @param  string  $abstract
-     * @return bool
+     * @inheritdoc
      */
     public function bound($abstract)
     {
@@ -455,9 +385,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
-     * Determine if the application has booted.
-     *
-     * @return bool
+     * @inheritdoc
      */
     public function isBooted()
     {
@@ -465,9 +393,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
-     * Boot the application's service providers.
-     *
-     * @return void
+     * @inheritdoc
      */
     public function boot()
     {
@@ -490,11 +416,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
-     * Boot the given service provider.
-     *
-     * @param  \Illuminate\Support\ServiceProvider  $provider
-     *
-     * @return mixed
+     * @inheritdoc
      */
     protected function bootProvider(ServiceProvider $provider)
     {
@@ -506,10 +428,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
-     * Register a new boot listener.
-     *
-     * @param  mixed  $callback
-     * @return void
+     * @inheritdoc
      */
     public function booting($callback)
     {
@@ -517,10 +436,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
-     * Register a new "booted" listener.
-     *
-     * @param  mixed  $callback
-     * @return void
+     * @inheritdoc
      */
     public function booted($callback)
     {
@@ -532,10 +448,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
-     * Call the booting callbacks for the application.
-     *
-     * @param  array  $callbacks
-     * @return void
+     * @inheritdoc
      */
     protected function fireAppCallbacks(array $callbacks)
     {
@@ -545,9 +458,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
-     * Determine if the application is currently down for maintenance.
-     *
-     * @return bool
+     * @inheritdoc
      */
     public function isDownForMaintenance()
     {
@@ -556,10 +467,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
-     * Register a terminating callback with the application.
-     *
-     * @param  \Closure  $callback
-     * @return $this
+     * @inheritdoc
      */
     public function terminating(\Closure $callback)
     {
@@ -569,9 +477,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
-     * Terminate the application.
-     *
-     * @return void
+     * @inheritdoc
      */
     public function terminate()
     {
@@ -581,9 +487,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
-     * Get the service providers that have been loaded.
-     *
-     * @return array
+     * @inheritdoc
      */
     public function getLoadedProviders()
     {
@@ -591,9 +495,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
-     * Get the application's deferred services.
-     *
-     * @return array
+     * @inheritdoc
      */
     public function getDeferredServices()
     {
@@ -601,10 +503,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
-     * Set the application's deferred services.
-     *
-     * @param  array  $services
-     * @return void
+     * @inheritdoc
      */
     public function setDeferredServices(array $services)
     {
@@ -612,10 +511,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
-     * Add an array of services to the application's deferred services.
-     *
-     * @param  array  $services
-     * @return void
+     * @inheritdoc
      */
     public function addDeferredServices(array $services)
     {
@@ -623,10 +519,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
-     * Determine if the given service is a deferred service.
-     *
-     * @param  string  $service
-     * @return bool
+     * @inheritdoc
      */
     public function isDeferredService($service)
     {
@@ -634,9 +527,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
-     * Register the core class aliases in the container.
-     *
-     * @return void
+     * @inheritdoc
      */
     public function registerCoreContainerAliases()
     {
@@ -673,9 +564,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
-     * Flush the container of all bindings and resolved instances.
-     *
-     * @return void
+     * @inheritdoc
      */
     public function flush()
     {
@@ -694,9 +583,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
-     * Get the base path of the MyBB installation.
-     *
-     * @return string
+     * @inheritdoc
      */
     public function basePath()
     {
@@ -704,9 +591,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
-     * Get the path to the cached services.php file.
-     *
-     * @return string
+     * @inheritdoc
      */
     public function getCachedServicesPath()
     {
@@ -714,9 +599,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
     }
 
     /**
-     * Get the path to the cached packages.php file.
-     *
-     * @return string
+     * @inheritdoc
      */
     public function getCachedPackagesPath()
     {
