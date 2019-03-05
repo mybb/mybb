@@ -10,15 +10,18 @@ class PluginSystem
      *
      * @var array
      */
-    private $hooks;
+    protected $hooks;
 
     /**
      * The current hook which we're in (if any)
      *
      * @var string
      */
-    private $currentHook;
+    protected $currentHook;
 
+    /**
+     * Create a new plugin system instance.
+     */
     public function __construct()
     {
         $this->hooks = [];
@@ -70,11 +73,6 @@ class PluginSystem
      */
     public function addHook(string $hook, callable $function, int $priority = 10, ?string $file = ""): bool
     {
-        if (!is_callable($function)) {
-            // $function isn't a valid callable, can't add hook
-            return false;
-        }
-
         $methodRepresentation = $this->getStringRepresentationForCallable($function);
 
         // Check to see if we already have this hook running at this priority
@@ -114,10 +112,14 @@ class PluginSystem
             // Closure
 
             return spl_object_hash($function);
-        } else {
+        } elseif (is_string($function)) {
             // Function name string
 
             return $function;
+        } else {
+            $type = typeOf($function);
+
+            throw new \InvalidArgumentException("Invalid function type: {$type}");
         }
     }
 
@@ -171,10 +173,6 @@ class PluginSystem
      */
     public function removeHook(string $hook, callable $function, int $priority = 10): bool
     {
-        if (!is_callable($function)) {
-            return false;
-        }
-
         $methodRepresentation = $this->getStringRepresentationForCallable($function);
 
         if (isset($this->hooks[$hook][$priority][$methodRepresentation])) {
