@@ -34,7 +34,7 @@ if($mybb->user['uid'] != 0)
 $statspage = '';
 if($mybb->settings['statsenabled'] != 0)
 {
-	if(!empty($logoutlink) || !empty($showteamlink))
+	if(!empty($logoutlink))
 	{
 		$stats_page_separator = $lang->board_stats_link_separator;
 	}
