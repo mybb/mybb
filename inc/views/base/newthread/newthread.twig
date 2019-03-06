@@ -1,9 +1,12 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ trans('newthread_in', forum.name) }}</title>
-    <script type="text/javascript" src="{{ asset_url('jscripts/post.js') }}"></script>
+    <title>{{ trans('newthread_in', forum.name) }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
+
+{% block jscripts %}
+    <script type="text/javascript" src="{{ asset_url('jscripts/post.js') }}"></script>
+{% endblock jscripts %}
 
 {# let the newthread variable be used in shared twig templates #}
 {% set composepost = newthread %}
@@ -26,30 +29,45 @@
         {{ thread_errors|raw }}
         {% if newthread.showmodnotice %}
             <div class="alert alert--red-alert">
-                <i class="alert__icon fas fa-exclamation-triangle"></i>
+                {{ include('partials/icon.twig', {icon: 'exclamation-triangle', class: 'alert__icon'}, with_context = false) }}
                 <div class="alert__message">{{ newthread.moderation_text }}</div>
             </div>
+        {% endif %}
+        {% if newthread.showforumrules %}
+            {% if forum.rulestype == 2 %}
+                <section class="container"><a href="misc.php?action=rules&amp;fid={{ forum.fid }}">{{ forum.rulestitle }}</a></section>
+            {% else %}
+                <section class="container">
+                    <h4 class="title title--container">{{ forum.rulestitle }}</h4>
+                    <div class="scaleimages">{{ forum.rules|raw }}</div>
+                </section>
+            {% endif %}
         {% endif %}
         <form action="newthread.php?fid={{ forum.fid }}&amp;processed=1" method="post" enctype="multipart/form-data" name="input">
             <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
             <div class="form form--compose compose">
-				<input type="checkbox" class="compose__checkbox" id="show-post-options">
+                <input type="checkbox" class="compose__checkbox" id="show-post-options">
                 {% if newthread.showpollbox %}
                     <input type="checkbox" class="compose__checkbox" id="show-post-poll">
                 {% endif %}
-				<input type="checkbox" class="compose__checkbox" id="show-attachments"{% if newthread.showattachments and attachments|length > 0 %} checked="checked"{% endif %}>
+                <input type="checkbox" class="compose__checkbox" id="show-attachments"{% if newthread.showattachments and attachments|length > 0 %} checked="checked"{% endif %}>
                 <section class="section section--form compose__primary-section">
                     <div class="row row--form field">
                         <h3 class="field__name visually-hidden"><label for="subject">{{ lang.post_subject }}</h3>
-                        {% if newthread.showprefixes %}
-                            <select name="threadprefix">
-                                <option value="0">{{ lang.no_prefix }}</option>
-                                {% for prefix in prefixes %}
-                                    <option value="{{ prefix.pid }}"{% if prefix.selected %} selected="selected"{% endif %}>{{ prefix.prefix }}</option>
-                                {% endfor %}
-                            </select>
-                        {% endif %}
-                        <input type="text" class="textbox textbox--subject" name="subject" size="40" maxlength="85" id="subject" placeholder="{{ lang.thread_subject_placeholder }}" value="{{ newthread.subject }}" tabindex="1" />
+                        <div class="compose__subject">
+                            {% if newthread.showprefixes %}
+                                <div class="select-field select-field--subject">
+                                    {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
+                                    <select name="threadprefix">
+                                        <option value="0">{{ lang.no_prefix }}</option>
+                                        {% for prefix in prefixes %}
+                                            <option value="{{ prefix.pid }}"{% if prefix.selected %} selected="selected"{% endif %}>{{ prefix.prefix }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            {% endif %}
+                            <input type="text" class="textbox textbox--subject" name="subject" maxlength="85" id="subject" placeholder="{{ lang.thread_subject_placeholder }}" value="{{ newthread.subject }}" tabindex="1" />
+                        </div>
                     </div>
                     {{ loginbox|raw }}
 
@@ -72,32 +90,39 @@
                                     </div>
                                 {% endif %}
                                 <div class="compose__option-buttons">
-        							{% if newthread.showpostoptions %}
-            							<label for="show-post-options" class="button button--basic compose__option-button--options">
-            								<i class="button__icon fas fa-cog"></i>
-            								<span class="button__text">{{ lang.options }}</span>
-            							</label>
+                                    {% if newthread.showpostoptions %}
+                                        <label for="show-post-options" class="button button--basic compose__option-button--options">
+                                            {{ include('partials/icon.twig', {icon: 'cog', class: 'button__icon'}, with_context = false) }}
+                                            <span class="button__text">{{ lang.options }}</span>
+                                        </label>
                                     {% endif %}
 
                                     {% if newthread.showattachments %}
-            							<label for="show-attachments" class="button button--basic compose__option-button--attachments">
-            								<i class="button__icon fas fa-paperclip"></i>
-            								<span class="button__text">{{ lang.upload_attachments }}</span>
-            							</label>
+                                        <label for="show-attachments" class="button button--basic compose__option-button--attachments">
+                                            {{ include('partials/icon.twig', {icon: 'paperclip', class: 'button__icon'}, with_context = false) }}
+                                            <span class="button__text">{{ lang.upload_attachments }}</span>
+                                        </label>
+                                    {% endif %}
+
+                                    {% if newthread.showpollbox %}
+                                        <label for="show-post-poll" class="button button--basic compose__option-button--poll">
+                                            {{ include('partials/icon.twig', {icon: 'plus-circle', class: 'button__icon'}, with_context = false) }}
+                                            <span class="button__text">{{ lang.add_poll }}</span>
+                                        </label>
                                     {% endif %}
 
                                     {% if mybb.user.uid %}
                                         <button type="submit" name="savedraft" value="draft" class="button button--basic">
-                                            <i class="button__icon far fa-file"></i>
+                                            {{ include('partials/icon.twig', {icon: 'file', class: 'button__icon'}, with_context = false) }}
                                             <span class="button__text">{{ lang.save_draft }}</span>
                                         </button>
                                     {% endif %}
 
-        							<button type="submit" name="previewpost" value="preview" class="button button--basic">
-        								<i class="button__icon fas fa-edit"></i>
-        								<span class="button__text">{{ lang.preview_post }}</span>
-        							</button>
-        						</div>
+                                    <button type="submit" name="previewpost" value="preview" class="button button--basic">
+                                        {{ include('partials/icon.twig', {icon: 'edit', class: 'button__icon'}, with_context = false) }}
+                                        <span class="button__text">{{ lang.preview_post }}</span>
+                                    </button>
+                                </div>
                             </div>
                             {{ smilieinserter|raw }}
                         </div>
@@ -171,7 +196,7 @@
 
             <div class="form__submit">
                 <button type="submit" class="button button--big" name="submit" tabindex="3" accesskey="s">
-                    <i class="button__icon fas fa-comment"></i>
+                    {{ include('partials/icon.twig', {icon: 'comment', class: 'button__icon'}, with_context = false) }}
                     <span class="button__text">{{ lang.post_thread }}</span>
                 </button>
             </div>
@@ -186,16 +211,6 @@
                 <input type="hidden" name="pid" value="{{ newthread.pid }}" />
             {% endif %}
         </form>
-        {% if newthread.showforumrules %}
-            {% if forum.rulestype == 2 %}
-                <section class="container"><a href="misc.php?action=rules&amp;fid={{ forum.fid }}">{{ forum.rulestitle }}</a></section>
-            {% else %}
-                <section class="container">
-                    <h4 class="container__title">{{ forum.rulestitle }}</h4>
-                    <div class="scaleimages">{{ forum.rules|raw }}</div>
-                </section>
-            {% endif %}
-        {% endif %}
         <script type="text/javascript">
             $(".author_avatar img").error(function () {
                 $(this).unbind("error").closest('.author_avatar').remove();

@@ -1,28 +1,34 @@
-<tr>
-    <td class="trow1 {{ reputation_vote.status_class }}" id="rid{{ reputation_vote.rid }}">
-        {% if mybb.user.uid %}
-            <div class="float_right postbit_buttons">
-                <a href="javascript:void(0)" onclick="Report.reportReputation({{ reputation_vote.rid }}); return false;" class="postbit_report"><span>{{ lang.report_vote }}</span></a>
-            </div>
-        {% endif %}
-        {% if reputation_vote.can_delete %}
-            <div class="float_right postbit_buttons">
-                <a href="reputation.php?action=delete&amp;uid={{ reputation_vote.rated_uid }}&amp;rid={{ reputation_vote.rid }}&amp;my_post_key={{ mybb.post_code }}" onclick="MyBB.deleteReputation({{ reputation_vote.rated_uid }}, {{ reputation_vote.rid }}); return false;" class="postbit_qdelete">
-                    <span>{{ lang.delete_vote }}</span>
-                </a>
-            </div>
-        {% endif %}
-        {{ reputation_vote.username|raw }} 
-        <span class="smalltext">{{ reputation_vote.user_reputation|raw }} - {{ trans('last_updated', reputation_vote.last_updated) }}<br />
+<div class="reputation-rating {{ reputation_vote.status_class }}" id="rid{{ reputation_vote.rid }}">
+    <div class="reputation-rating__meta">
+        {{ reputation_vote.username|raw }}
+        <span class="reputation-rating__user-rep">{{ reputation_vote.user_reputation|raw }}</span>
+        <span class="reputation-rating__date">{{ trans('last_updated', reputation_vote.last_updated) }}</span>
             {% if reputation_vote.pid %}
-                {% if reputation_vote.postrep_perm %}
-                    {{ trans('postrep_given', reputation_vote.post_link, user.username, reputation_vote.thread_link) }}
-                {% else %}
-                    {{ trans('postrep_given_nolink', user.username) }}
-                {% endif %}
+                <span class="reputation-rating__link">
+                    {% if reputation_vote.postrep_perm %}
+                        {{ trans('postrep_given', reputation_vote.post_link, user.username, reputation_vote.thread_link) }}
+                    {% else %}
+                        {{ trans('postrep_given_nolink', user.username) }}
+                    {% endif %}
+                </span>
             {% endif %}
         </span>
-        <br />
+    </div>
+    <div class="reputation-rating__comment">
         <strong class="{{ reputation_vote.vote_type_class }}">{{ reputation_vote.vote_type }} ({{ reputation_vote.vote_reputation }}):</strong> {{ reputation_vote.comments|raw }}
-    </td>
-</tr>
+    </div>
+    <div class="reputation-rating__controls">
+        {% if mybb.user.uid %}
+            <a href="javascript:void(0)" onclick="Report.reportReputation({{ reputation_vote.rid }}); return false;" class="post-control post-control--report">
+                {{ include('partials/icon.twig', {icon: 'flag', class: 'post-control__icon'}, with_context = false) }}
+                <span class="post-control__text">{{ lang.report_vote }}</span>
+            </a>
+        {% endif %}
+        {% if reputation_vote.can_delete %}
+            <a href="reputation.php?action=delete&amp;uid={{ reputation_vote.rated_uid }}&amp;rid={{ reputation_vote.rid }}&amp;my_post_key={{ mybb.post_code }}" onclick="MyBB.deleteReputation({{ reputation_vote.rated_uid }}, {{ reputation_vote.rid }}); return false;" class="post-control post-control--delete">
+                {{ include('partials/icon.twig', {icon: 'trash', class: 'post-control__icon'}, with_context = false) }}
+                <span class="post-control__text">{{ lang.delete_vote }}</span>
+            </a>
+        {% endif %}
+    </div>
+</div>

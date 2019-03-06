@@ -1,89 +1,77 @@
-{% extends 'layouts/master.twig' %}
+{% extends 'layouts/messenger.twig' %}
 
 {% block head %}
-    <title>{{ lang.viewing_pm }} {{ pm.subject }}</title>
+    <title>{{ lang.viewing_pm }} {{ pm.subject }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
-{% block body %}
-    <table width="100%" border="0" align="center">
-        <tr>
-            {# To do: usercpnav #}
-            <td style="vertical-align: top;">
-                <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder tfixed clear no_bottom_border">
-                    <tr>
-                        <td class="thead"><strong>{{ pm.subject }}</strong></td>
-                    </tr>
-                    {% if pm.status == 3 and pm.statustime %}
-                        <tr>
-                            <td class="tcat" align="center"><strong>{{ trans('you_replied_on', pm.reply_date) }}</strong></td>
-                        </tr>
-                    {% elseif pm.status == 4 and pm.statustime %}
-                        <tr>
-                            <td class="tcat" align="center"><strong>{{ trans('you_forwarded_on', pm.forward_date) }}</strong></td>
-                        </tr>
+{% block messengerHeader %}
+    <header class="page-header">
+        <h1 class="title title--page">{{ pm.subject }}</h1>
+    </header>
+{% endblock messengerHeader %}
+
+{% block messengerBody %}
+    {% if pm.status == 3 and pm.statustime %}
+        <div class="container container--small">{{ trans('you_replied_on', pm.reply_date) }}</div>
+    {% elseif pm.status == 4 and pm.statustime %}
+        <div class="container container--small">{{ trans('you_forwarded_on', pm.forward_date) }}</div>
+    {% endif %}
+    <div id="posts_container">
+        <div id="posts">
+            {{ message|raw }}
+        </div>
+    </div>
+
+    {% if mybb.settings.pmquickreply and mybb.user.showquickreply and mybb.usergroup.cansendpms and pm.fromid != 0 and pm.folder != 3 %}
+        <div class="post post--reply post--quick-reply compose compose--quick-reply quick-reply" id="post-reply">
+            <form action="private.php" method="post" name="input">
+                <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+                <input type="hidden" name="to" value="{{ pm.sendto }}" />
+                <input type="hidden" name="bcc" value="{{ pm.bcc_form_val }}" />
+                <input type="hidden" name="subject" value="Re: {{ pm.sendsubject }}" />
+                <input type="hidden" name="action" value="do_send" />
+                <input type="hidden" name="pmid" value="{{ pm.pmid }}" />
+                <input type="hidden" name="do" value="reply" />
+                <div class="post__meta">
+                    <a href="{{ get_profile_link(mybb.user.uid) }}" class="avatar-profile-link" title="{{ lang.welcome_my_profile }}">
+                        {{ render_avatar(url=mybb.user.avatar, alt=lang.welcome_my_avatar) }}
+                    </a>
+                    {# TO DO: username styling #}
+                    <h3 class="post__author"><a href="{{ get_profile_link(mybb.user.uid) }}">{{ mybb.user.username }}</a></h3>
+                    <span class="post__date">{{ lang.quick_reply }}</span>
+                </div>
+                <div class="post__body">
+                    <textarea rows="8" cols="80" name="message" id="message" tabindex="1" placeholder="{{ lang.compose_your_message }}">{{ pm.quoted_message }}</textarea>
+                </div>
+                <input type="checkbox" class="compose__checkbox" id="show-quick-reply-options">
+                <div class="quick-reply__options">
+                    <label class="quick-reply__option"><input type="checkbox" class="checkbox" name="options[signature]" value="1"{% if pm.options.signature %} checked="checked"{% endif %} /> {{ lang.quickreply_signature }}</label>
+                    <label class="quick-reply__option"><input type="checkbox" class="checkbox" name="options[disablesmilies]" value="1"{% if pm.options.disablesmilies %} checked="checked"{% endif %} /> {{ lang.quickreply_disable_smilies }}</label>
+                    <label class="quick-reply__option"><input type="checkbox" class="checkbox" name="options[savecopy]" value="1"{% if pm.options.savecopy %} checked="checked"{% endif %} /> {{ lang.quickreply_save_copy }}</label>
+                    {% if mybb.usergroup.cantrackpms %}
+                        <label class="quick-reply__option"><input type="checkbox" class="checkbox" name="options[readreceipt]" value="1" tabindex="8"{% if pm.options.readreceipt %} checked="checked"{% endif %} /> {{ lang.quickreply_read_receipt }}</label>
                     {% endif %}
-                    <tr>
-                        <td id="posts_container">
-                            <div id="posts">
-                                {{ message|raw }}
-                            </div>
-                        </td>
-                    </tr>
-                </table>
-                {% if mybb.settings.pmquickreply and mybb.user.showquickreply and mybb.usergroup.cansendpms and pm.fromid != 0 and pm.folder != 3 %}
-                    <br />
-                    <form action="private.php" method="post" name="input">
-                        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-                        <input type="hidden" name="to" value="{{ pm.sendto }}" />
-                        <input type="hidden" name="bcc" value="{{ pm.bcc_form_val }}" />
-                        <input type="hidden" name="subject" value="Re: {{ pm.sendsubject }}" />
-                        <input type="hidden" name="action" value="do_send" />
-                        <input type="hidden" name="pmid" value="{{ pm.pmid }}" />
-                        <input type="hidden" name="do" value="reply" />
-                        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-                            <thead>
-                                <tr>
-                                    <td class="thead{{ collapsedthead.quickreply }}" colspan="2">
-                                        <div class="expcolimage"><img src="{{ theme.imgdir }}/collapse{{ collapsedimg.quickreply }}.png" id="quickreply_img" class="expander" alt="[-]" title="[-]" /></div>
-                                        <div><strong>{{ lang.quick_reply }}</strong></div>
-                                    </td>
-                                </tr>
-                            </thead>
-                            <tbody style="{{ collapsed.quickreply_e }}" id="quickreply_e">
-                                <tr>
-                                  <td class="trow1" valign="top" width="22%">
-                                        <strong>{{ lang.message }}</strong><br />
-                                        <span class="smalltext">{{ lang.message_note }}<br /><br />
-                                            <label><input type="checkbox" class="checkbox" name="options[signature]" value="1"{% if pm.options.signature %} checked="checked"{% endif %} />&nbsp;<strong>{{ lang.quickreply_signature }}</strong></label><br />
-                                            <label><input type="checkbox" class="checkbox" name="options[disablesmilies]" value="1"{% if pm.options.disablesmilies %} checked="checked"{% endif %} />&nbsp;<strong>{{ lang.quickreply_disable_smilies }}</strong></label><br />
-                                            <label><input type="checkbox" class="checkbox" name="options[savecopy]" value="1"{% if pm.options.savecopy %} checked="checked"{% endif %} />&nbsp;<strong>{{ lang.quickreply_save_copy }}</strong></label>
-                                            {% if mybb.usergroup.cantrackpms %}
-                                                <br /><label><input type="checkbox" class="checkbox" name="options[readreceipt]" value="1" tabindex="8"{% if pm.options.readreceipt %} checked="checked"{% endif %} />&nbsp;<strong>{{ lang.quickreply_read_receipt }}</strong></label>
-                                            {% endif %}
-                                        </span>
-                                    </td>
-                                    <td class="trow2">
-                                        <div style="width: 95%">
-                                            <textarea style="width: 100%; padding: 4px; margin: 0;" rows="8" cols="80" name="message" id="message" tabindex="1">{{ pm.quoted_message }}</textarea>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2" align="center" class="tfoot">
-                                        <input type="submit" class="button" value="{{ lang.send_message }}" tabindex="2" accesskey="s" /> 
-                                        <input type="submit" class="button" name="preview" value="{{ lang.preview }}" tabindex="3" />
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </form>
-                {% endif %}
-            </td>
-        </tr>
-    </table>
+                </div>
+                <div class="post__foot">
+                    <button type="submit" class="button" tabindex="2" accesskey="s" id="quick_reply_submit">
+                        {{ include('partials/icon.twig', {icon: 'paper-plane', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.send_message }}</span>
+                    </button>
+                    <label for="show-quick-reply-options" class="button button--basic">
+                        {{ include('partials/icon.twig', {icon: 'cog', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.options }}</span>
+                    </label>
+                    <button type="submit" class="button button--basic" name="preview" value="preview" tabindex="3">
+                        {{ include('partials/icon.twig', {icon: 'pencil-alt', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.preview }}</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    {% endif %}
     <script type="text/javascript">
         $(".author_avatar img").error(function () {
             $(this).unbind("error").closest('.author_avatar').remove();
         });
     </script>
-{% endblock body %}
+{% endblock messengerBody %}

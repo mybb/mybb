@@ -6,24 +6,28 @@
  */
 
 $l['post_thread'] = "Post Thread";
-$l['moderated_by'] = "Moderated By:";
+$l['moderated_by'] = "Moderated by:";
 $l['nothreads'] = "Sorry, but there are currently no threads in this forum with the specified date and time limiting options.";
 $l['nopermission'] = "Sorry, but you do not have permission to view threads in this forum.";
-$l['search_forum'] = "Search this Forum:";
+$l['search_forum'] = "Search Forum";
+$l['enter_keywords'] = "Enter Keywords...";
 $l['thread'] = "Thread";
 $l['author'] = "Author";
+$l['reply'] = "Reply";
 $l['replies'] = "Replies";
 $l['views'] = "Views";
 $l['lastpost'] = "Last Post";
+$l['lastpost_by'] = "Last post by";
 $l['rating'] = "Rating";
 $l['prefix'] = "Prefix:";
 $l['prefix_all'] = "Prefix: Any/No Prefix";
 $l['prefix_any'] = "Prefix: Any Prefix";
 $l['prefix_none'] = "Prefix: No Prefix";
-$l['markforum_read'] = "Mark this forum read";
-$l['subscribe_forum'] = "Subscribe to this forum";
-$l['unsubscribe_forum'] = "Unsubscribe from this forum";
-$l['clear_stored_password'] = "Clear stored forum password";
+$l['markforum_read'] = "Mark Read";
+$l['subscribe_forum'] = "Subscribe";
+$l['unsubscribe_forum'] = "Unsubscribe";
+$l['clear_stored_password'] = "Clear Password";
+$l['sort_threads'] = "Sort Threads";
 $l['sort_by_subject'] = "Sort by: Subject";
 $l['sort_by_lastpost'] = "Sort by: Last Post";
 $l['sort_by_starter'] = "Sort by: Author";
@@ -47,7 +51,9 @@ $l['new_hot_thread'] = "Hot Thread (New)";
 $l['posts_by_you'] = "Contains Posts by You";
 $l['no_new_thread'] = "No New Posts";
 $l['hot_thread'] = "Hot Thread (No New)";
+$l['hot'] = "Hot Thread";
 $l['locked_thread'] = "Locked Thread";
+$l['by'] = "by";
 $l['goto_first_unread'] = "Go to first unread post";
 $l['pages'] = "Pages:";
 $l['pages_last'] = "last";
@@ -55,7 +61,7 @@ $l['users_browsing_forum'] = "Users browsing this forum:";
 $l['users_browsing_forum_guests'] = "{1} Guest(s)";
 $l['users_browsing_forum_invis'] = "{1} Invisible User(s)";
 $l['delayed_moderation'] = "Delayed Moderation";
-$l['inline_thread_moderation'] = "Inline Thread Moderation:";
+$l['inline_thread_moderation'] = "Inline Thread Moderation";
 $l['close_threads'] = "Close Threads";
 $l['open_threads'] = "Open Threads";
 $l['stick_threads'] = "Stick Threads";
@@ -95,8 +101,9 @@ $l['all_selected'] = "All <strong>{1}</strong> threads in this forum are selecte
 $l['select_all'] = "Select all <strong>{1}</strong> threads in this forum.";
 $l['clear_selection'] = "Clear Selection.";
 $l['deleted_thread'] = "Deleted Thread";
+$l['awaiting_approval'] = "Awaiting Approval";
+$l['sticky'] = "Sticky Thread";
 
 $l['error_containsnoforums'] = "Sorry, but the forum you are currently viewing does not contain any child forums.";
 
 $l['inline_edit_description'] = '(Click and hold to edit)';
-

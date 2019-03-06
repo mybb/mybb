@@ -2329,6 +2329,7 @@ if(!$mybb->input['action'])
             }
 
             $day_bit['day'] = $day;
+            $day_bit['month'] = $monthnames[$calendar_month];
             $days[] = $day_bit;
             ++$day;
         }

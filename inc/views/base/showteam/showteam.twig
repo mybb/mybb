@@ -1,62 +1,63 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.forum_team }}</title>
+    <title>{{ lang.forum_team }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block body %}
-    {% for usergroup in usergrouplist %}
-        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-            <tr>
-                <td class="thead" colspan="5"><strong>{{ usergroup.title }}</strong></td>
-            </tr>
-            <tr>
-                <td class="tcat"><span class="smalltext"><strong>{{ lang.username }}</strong></span></td>
-                {% if usergroup.gid == 6 %}
-                    <td class="tcat"><span class="smalltext"><strong>{{ lang.mod_forums }}</strong></span></td>
-                {% endif %}
-                <td class="tcat"><span class="smalltext"><strong>{{ lang.lastvisit }}</strong></span></td>
-                <td class="tcat"><span class="smalltext"><strong>{{ lang.email }}</strong></span></td>
-                <td class="tcat"><span class="smalltext"><strong>{{ lang.pm }}</strong></span></td>
-            </tr>
-            {% for user in usergroup.users %}
-                {% set row = alt_trow() %}
-                <tr>
-                    {% if usergroup.gid == 6 %}
-                        <td width="45%" class="{{ row }}">
-                    {% else %}
-                        <td width="75%" class="{{ row }}">
-                    {% endif %}
-                        <img src="{{ theme.imgdir }}/buddy_{{ user.status }}.png" title="{{ user.statuslang }}" alt="{{ user.statuslang }}" style="vertical-align: middle;" />
-                        <a href="{{ user.profilelink|raw }}"><strong>{{ user.username|raw }}</strong></a>
-                    </td>
-                    {% if usergroup.gid == 6 %}
-                        <td width="30%" class="{{ row }}">
-                            <span class="smalltext">
-                                {% for forum in user.forumlist %}
-                                    <a href="{{ forum.url }}">{{ forum.name }}</a><br />
-                                {% endfor %}
-                            </span>
-                        </td>
-                    {% endif %}
-                    <td width="15%" class="{{ row }}">{{ user.lastvisit|raw }}</td>
-                    <td width="5%" class="{{ row }}">
-                        <div class="postbit_buttons">
-                            {% if user.showemail %}
-                                <a href="member.php?action=emailuser&amp;uid={{ user.uid }}" title="{{ lang.postbit_email }}" class="postbit_email"><span>{{ lang.postbit_button_email }}</span></a>
-                            {% endif %}
+    <div class="page-header">
+        <h1 class="title title--page">{{ lang.forum_team }}</h1>
+    </div>
+    <div class="page-content">
+        {% for usergroup in usergrouplist %}
+            <section class="block">
+                <h1 class="title title--major">{{ usergroup.title }}</h1>
+                <div class="user-list user-list--has-title">
+                    {% for user in usergroup.users %}
+                        <div class="user-list__user">
+                            <a href="{{ get_profile_link(user.uid) }}" class="avatar-profile-link">
+                                {{ render_avatar(url=user.avatar, alt=user.username_raw, class='avatar--medium') }}
+                            </a>
+                            <h2 class="user-list__username">
+                                <a href="{{ user.profilelink|raw }}">{{ user.username|raw }}</a>
+                                <span class="user-status user-status--{{ user.status }}">
+                                    {{ include('partials/icon.twig', {icon: 'dot-circle', class: 'user-status__icon', title: user.statuslang}, with_context = false) }}
+                                </span>
+                            </h2>
+                            <ul class="list list--stats list--user">
+                                <li class="list__item">
+                                    <span class="list__field">{{ lang.lastvisit }}</span>
+                                    <span class="list__value">{{ user.lastvisit|raw }}</span>
+                                </li>
+                                {% if usergroup.gid == 6 %}
+                                    <li class="list__item">
+                                        <span class="list__field">{{ lang.mod_forums }}</span>
+                                        <span class="list__value commas">
+                                            {% for forum in user.forumlist %}
+                                                <span><a href="{{ forum.url }}">{{ forum.name }}</a></span>
+                                            {% endfor %}
+                                        </span>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                            <div class="user-list__buttons">
+                                {% if user.showemail %}
+                                    <a href="member.php?action=emailuser&amp;uid={{ user.uid }}" title="{{ lang.postbit_email }}" class="button button--secondary button--small">
+                                        {{ include('partials/icon.twig', {icon: 'at', class: 'button__icon'}, with_context = false) }}
+                                        <span class="button__text">{{ lang.postbit_button_email }}</span>
+                                    </a>
+                                {% endif %}
+                                {% if user.showpm %}
+                                    <a href="private.php?action=send&amp;uid={{ user.uid }}" title="{{ lang.postbit_pm }}" class="button button--secondary button--small">
+                                        {{ include('partials/icon.twig', {icon: 'envelope', class: 'button__icon'}, with_context = false) }}
+                                        <span class="button__text">{{ lang.postbit_button_pm }}</span>
+                                    </a>
+                                {% endif %}
+                            </div>
                         </div>
-                    </td>
-                    <td width="5%" class="{{ row }}">
-                        <div class="postbit_buttons">
-                            {% if user.showpm %}
-                                <a href="private.php?action=send&amp;uid={{ user.uid }}" title="{{ lang.postbit_pm }}" class="postbit_pm"><span>{{ lang.postbit_button_pm }}</span></a>
-                            {% endif %}
-                        </div>
-                    </td>
-                </tr>
-            {% endfor %}
-        </table>
-        <br />
-    {% endfor %}
+                    {% endfor %}
+                </div>
+            </section>
+        {% endfor %}
+    </div>
 {% endblock body %}

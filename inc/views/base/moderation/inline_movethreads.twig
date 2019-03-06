@@ -1,27 +1,34 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.move_threads }}</title>
+    <title>{{ lang.move_threads }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block body %}
-    <form action="moderation.php" method="post">
-        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-            <tr>
-                <td class="thead" colspan="2"><strong>{{ lang.move_threads }}</strong></td>
-            </tr>
-            {{ loginbox|raw }}
-            <tr>
-                <td class="trow1"><strong>{{ lang.new_forum }}</strong></td>
-                <td class="trow2">{{ forumselect|raw }}</td>
-            </tr>
-        </table>
-        <br />
-        <div align="center"><input type="submit" class="button" name="submit" value="{{ lang.move_threads }}" /></div>
-        <input type="hidden" name="action" value="do_multimovethreads" />
-        <input type="hidden" name="fid" value="{{ forum.fid }}" />
-        <input type="hidden" name="threads" value="{{ inlineids }}" />
-        <input type="hidden" name="url" value="{{ return_url }}" />
-    </form>
+    <div class="page-content">
+        <header class="page-header">
+            <h1 class="title title--page">{{ lang.move_threads }}</h1>
+        </header>
+        <form action="moderation.php" method="post">
+            <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+            <section class="block block--form form">
+                <div class="section section--form">
+                    <div class="row row--form field">
+                        <h3 class="field__name">{{ lang.new_forum }}</h3>
+                        {{ forumselect|raw }}
+                    </div>
+                </div>
+                <div class="form__submit">
+                    <button type="submit" class="button button--medium">
+                        {{ include('partials/icon.twig', {icon: 'arrow-right', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.move_threads }}</span>
+                    </button>
+                </div>
+            </section>
+            <input type="hidden" name="action" value="do_multimovethreads" />
+            <input type="hidden" name="fid" value="{{ forum.fid }}" />
+            <input type="hidden" name="threads" value="{{ inlineids }}" />
+            <input type="hidden" name="url" value="{{ return_url }}" />
+        </form>
+    </div>
 {% endblock body %}

@@ -35,6 +35,7 @@ function build_forumbits($pid=0, $depth=1)
 	$parent_counters['viewers'] = 0;
 	$forum_list = $comma = '';
 	$donecount = 0;
+	$more_count = 0;
 
 	// Foreach of the forums in this parent
 	foreach($fcache[$pid] as $parent)
@@ -94,7 +95,16 @@ function build_forumbits($pid=0, $depth=1)
 					if(!empty($fids))
 					{
 						$fids = implode(',', $fids);
-						$query = $db->simple_select("threads", "tid, fid, subject, lastpost, lastposter, lastposteruid", "uid = '{$mybb->user['uid']}' AND fid IN ({$fids}) AND visible != '-2'", array("order_by" => "lastpost", "order_dir" => "desc"));
+
+						$prefix = TABLE_PREFIX;
+						$query = <<<SQL
+SELECT tid, fid, subject, lastpost, lastposter, lastposteruid, avatar
+  FROM {$prefix}threads LEFT JOIN {$prefix}users ON ({$prefix}threads.lastposteruid = {$prefix}users.uid
+  WHERE {$prefix}threads.uid = '{$mybb->user['uid']}' AND fid IN ({$fids}) AND visible != '-2'
+  ORDER BY lastpost DESC;
+SQL;
+
+						$query = $db->query($query);
 
 						while($thread = $db->fetch_array($query))
 						{
@@ -263,7 +273,10 @@ function build_forumbits($pid=0, $depth=1)
 				{
 					if(subforums_count($fcache[$pid]) > $donecount)
 					{
-						$forum_list .= $comma.$lang->sprintf($lang->more_subforums, (subforums_count($fcache[$pid]) - $donecount));
+						$more_count = subforums_count($fcache[$pid]) - $donecount;
+						$forum_list .= \MyBB\template('forumbit/subforums_more.twig', [
+							'more_count' => $more_count
+						]);
 					}
 				}
 				continue;
@@ -292,6 +305,9 @@ function build_forumbits($pid=0, $depth=1)
 					{
 						$forum['last_post']['subject'] = my_substr($forum['last_post']['subject'], 0, 25)."...";
 					}
+
+                    // Last poster avatar
+                    $forum['last_post']['last_poster_avatar_url'] = $forum['avatar'];
 
 					// Call lastpost template
 					if($depth != 1)

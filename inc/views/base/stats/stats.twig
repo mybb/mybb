@@ -1,0 +1,121 @@
+{% extends 'layouts/master.twig' %}
+
+{% block head %}
+    <title>{{ lang.board_stats }} - {{ mybb.settings.bbname }}</title>
+{% endblock head %}
+
+{% block body %}
+    <header class="page-header">
+        <h1 class="title title--page">{{ lang.board_stats }}</h1>
+    </header>
+
+    {# list threads needs some polish#}
+    <div class="page-content page-content--sidebar">
+        <h2 class="title title--major">{{ lang.most_replied_threads }}</h2>
+        <section class="block">
+            {% for thread in most_replied_to_threads %}
+                <div class="row row--simple-columns">
+                    <div class="row__primary"><a href="{{ thread.link }}"><strong>{{ thread.subject }}</strong></a></div>
+                    <div class="row__secondary">{{ thread.replies }} {{ lang.replies }}</div>
+                </div>
+            {% endfor %}
+        </section>
+
+        <h2 class="title title--major">{{ lang.most_viewed_threads }}</h2>
+        <section class="block">
+            {% for thread in most_viewed_threads %}
+                <div class="row row--simple-columns">
+                    <div class="row__primary"><a href="{{ thread.link }}"><strong>{{ thread.subject }}</strong></a></div>
+                    <div class="row__secondary">{{ thread.views }} {{ lang.views }}</div>
+                </div>
+            {% endfor %}
+        </section>
+    </div>
+
+    <div class="page-sidebar">
+        <section class="block block--sidebar">
+            <h1 class="title title--sidebar">{{ lang.totals }}</h1>
+            <ul class="list list--divided list--stats">
+                <li class="list__item">
+                    <span class="list__field">{{ lang.posts }}</span>
+                    <span class="list__value">{{ stats.numposts }}</span>
+                </li>
+                <li class="list__item">
+                    <span class="list__field">{{ lang.threads }}</span>
+                    <span class="list__value">{{ stats.numthreads }}</span>
+                </li>
+                <li class="list__item">
+                    <span class="list__field">{{ lang.members }}</span>
+                    <span class="list__value">{{ stats.numusers }}</span>
+                </li>
+            </ul>
+        </section>
+
+        <section class="block block--sidebar">
+            <h1 class="title title--sidebar">{{ lang.general }}</h1>
+            <ul class="list list--divided list--stats">
+                <li class="list__item">
+                    <span class="list__field">{{ lang.newest_member }}</span>
+                    <span class="list__value">{{ stats.newest_user|raw }}</span>
+                </li>
+                <li class="list__item">
+                    <span class="list__field">{{ lang.members_posted }}</span>
+                    <span class="list__value">{{ stats.have_posted_percent }}</span>
+                </li>
+                <li class="list__item">
+                    <span class="list__field">{{ lang.todays_top_poster }}</span>
+                    <span class="list__value">{{ trans('todays_top_poster_value', stats.top_poster, stats.top_poster_posts) }}</span>
+                </li>
+                <li class="list__item">
+                    <span class="list__field">{{ lang.popular_forum }}</span>
+                    <span class="list__value">
+                        {% if top_forum %}
+                            {% set forum_link = '<a href="' ~ top_forum.link ~ '">' ~ top_forum.name ~ '</a>' %}
+                            {{ trans('popular_forum_value', forum_link, top_forum.posts, top_forum.threads) }}<br/>
+                        {% else %}
+                            {{ trans('popular_forum_value', lang.none, lang.no, lang.no) }}<br/>
+                        {% endif %}
+                    </span>
+                </li>
+                {% if stats.top_referrer_user %}
+                    <li class="list__item">
+                        <span class="list__field">{{ lang.top_referrer }}</span>
+                        <span class="list__value">
+                            {{ trans('top_referrer_value', stats.top_referrer_user, stats.top_referrer_count) }}
+                        </span>
+                    </li>
+                {% endif %}
+            </ul>
+        </section>
+
+        <section class="block block--sidebar">
+            <h1 class="title title--sidebar">{{ lang.averages }}</h1>
+            <ul class="list list--divided list--stats">
+                <li class="list__item">
+                    <span class="list__field">{{ lang.ppd }}</span>
+                    <span class="list__value">{{ stats.posts_perday }}</span>
+                </li>
+                <li class="list__item">
+                    <span class="list__field">{{ lang.tpd }}</span>
+                    <span class="list__value">{{ stats.threads_perday }}</span>
+                </li>
+                <li class="list__item">
+                    <span class="list__field">{{ lang.mpd }}</span>
+                    <span class="list__value">{{ stats.members_perday }}</span>
+                </li>
+                <li class="list__item">
+                    <span class="list__field">{{ lang.ppm }}</span>
+                    <span class="list__value">{{ stats.posts_permember }}</span>
+                </li>
+                <li class="list__item">
+                    <span class="list__field">{{ lang.tpm }}</span>
+                    <span class="list__value">{{ stats.threads_permember }}</span>
+                </li>
+                <li class="list__item">
+                    <span class="list__field">{{ lang.rpt }}</span>
+                    <span class="list__value">{{ stats.replies_perthread }}</span>
+                </li>
+            </ul>
+        </section>
+    </div>
+{% endblock body %}

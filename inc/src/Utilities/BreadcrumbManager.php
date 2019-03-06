@@ -42,6 +42,8 @@ class BreadcrumbManager implements \IteratorAggregate, \ArrayAccess, \Countable
     {
         $this->boardUrl = $boardUrl;
 
+        $boardUrl = rtrim($boardUrl, '/');
+
         $this->breadcrumbs = [
             [
                 'name' => $boardName,

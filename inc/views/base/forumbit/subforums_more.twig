@@ -1,0 +1,7 @@
+<li class="forum__subforum">
+    {% if more_count == 1 %}
+        {{ lang.more_subforums_single }}
+    {% else %}
+        {{ trans('more_subforums_multiple', more_count) }}
+    {% endif %}
+</li>

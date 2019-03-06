@@ -81,6 +81,7 @@ $l['sending_thread'] = "Sending a thread to a friend";
 $l['page'] = "Page";
 $l['users_online'] = "Who's Online";
 $l['on_username'] = "Username";
+$l['sort_results'] = "Sort results by:";
 $l['time'] = "Time";
 $l['location'] = "Location";
 $l['online_today'] = "Who Was Online Today";

@@ -670,7 +670,6 @@ elseif($mybb->input['action'] == "smilies")
     if (!empty($mybb->input['popup']) && !empty($mybb->input['editor'])){
         // make small popup list of smilies
         $editor = preg_replace('#([^a-zA-Z0-9_-]+)#', '', $mybb->get_input('editor'));
-        $e = 1;
         $smilies_cache = $cache->read("smilies");
 
         if (is_array($smilies_cache)) {
@@ -685,14 +684,7 @@ elseif($mybb->input['action'] == "smilies")
 
                 $smilie['smilie_insert'] = str_replace(array('\\', "'"), array('\\\\', "\'"), $smilie['find']);
 
-                $smilies_row[] = $smilie;
-                if ($e == 2) {
-                    $smilies[] = $smilies_row;
-                    $smilies_row = '';
-                    $e = 1;
-                } else {
-                    $e = 2;
-                }
+                $smilies[] = $smilie;
             }
         }
 

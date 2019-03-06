@@ -1,226 +1,279 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.delayed_moderation }}</title>
+    <title>{{ lang.delayed_moderation }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block body %}
-    {{ display_errors|raw }}
-    <br />
-    <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-        <tr>
-            <td class="thead" colspan="5"><strong>{{ lang.delayed_mod_queue }}</strong></td>
-        </tr>
-        <tr>
-            <td class="tcat" align="center"><strong>{{ lang.mod_username }}</strong></td>
-            <td class="tcat" align="center"><strong>{{ lang.days_to_perform_action }}</strong></td>
-            <td class="tcat" align="center"><strong>{{ lang.mod_actions }}</strong></td>
-            <td class="tcat" align="center"><strong>{{ lang.mod_information }}</strong></td>
-            <td class="tcat" align="center"><strong>{{ lang.actions }}</strong></td>
-        </tr>
-        {% for delayedmod in delayedmods %}
-            {% set row = alt_trow() %}
-            <tr>
-                <td class="{{ row }}" align="center">{{ delayedmod.profilelink|raw }}</td>
-                <td class="{{ row }}" align="center">{{ delayedmod.dateline|raw }}</td>
-                <td class="{{ row }}" align="center">{{ delayedmod.action }}</td>
-                <td class="{{ row }}">
-                    {% if delayedmod.thread_single %}
-                        <strong>{{ lang.thread }}</strong> <a href="{{ delayedmod.threadlink }}">{{ delayedmod.threadsubject }}</a><br />
-                    {% endif %}
-                    {% if delayedmod.thread_multiple %}
-                        <strong>{{ lang.thread }}</strong> {{ lang.multiple_threads }}<br />
-                    {% endif %}
-                    {% if delayedmod.forum %}
-                        <strong>{{ lang.forum }}</strong> <a href="{{ delayedmod.link }}">{{ delayedmod.fname }}</a><br />
-                    {% endif %}
-                    {% if delayedmod.new_forum %}
-                        <strong>{{ lang.new_forum }}</strong> <a href="{{ delayedmod.new_link }}">{{ delayedmod.new_name }}</a><br />
-                    {% endif %}
-                    {% if delayedmod.redirect %}
-                        <strong>{{ lang.leave_redirect_for }}</strong> {{ delayedmod.redirect_expire }}<br />
-                    {% endif %}
-                    {% if delayedmod.merge %}
-                        <strong>{{ lang.new_subject }}</strong> {{ delayedmod.subject }}<br />
-                        <strong>{{ lang.thread_to_merge_with }}</strong> <a href="{{ delayedmod.threadurl }}">{{ delayedmod.threadurl }}</a><br />
-                    {% endif %}
-                </td>
-                <td class="{{ row }}" align="center">
-                    <a href="moderation.php?action=cancel_delayedmoderation&amp;tid={{ delayed.tid }}&amp;fid={{ delayed.fid }}&amp;did={{ delayedmod.did }}&amp;my_post_key={{ mybb.post_code }}">{{ lang.cancel }}</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td class="trow1" colspan="5">{{ lang.no_delayed_mods }}</td>
-            </tr>
-        {% endfor %}
-    </table>
-    <br />
-    <form action="moderation.php" method="post">
-        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-        <input type="hidden" name="action" value="do_delayedmoderation" />
-        <input type="hidden" name="url" value="{{ delayed.url }}" />
-        <input type="hidden" name="tid" value="{{ delayed.tid }}" />
-        <input type="hidden" name="fid" value="{{ delayed.fid }}" />
-        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-            <tr>
-                <td class="thead" colspan="2"><strong>{{ lang.delayed_moderation }}</strong></td>
-            </tr>
-            <tr>
-                <td class="tcat" colspan="2"><strong>{{ lang.delayed_moderation_desc }}</strong></td>
-            </tr>
-            {{ loginbox|raw }}
-            <tr>
-                {% if delayed.singlethread %}
-                    <td class="trow1"><strong>{{ lang.thread }}</strong></td>
-                    <td class="trow2"><a href="{{ delayed.threadlink }}">{{ delayed.threadsubject }}</a></td>
-                {% else %}
-                    <td class="trow1"><strong>{{ lang.threads }}</strong></td>
-                    <td class="trow2">{{ trans('threads_selected', delayed.threadcount) }}</td>
-                {% endif %}
-            </tr>
-            <tr>
-                <td class="trow1"><strong>{{ lang.run_moderation_time }}</strong></td>
-                <td class="trow2">
-                    <select name="date_day">
-                        {% for day in days %}
-                            <option value="{{ day.day }}"{% if day.selected %} selected="selected"{% endif %}>{{ day.day }}</option>
-                        {% endfor %}
-                    </select>
-                    &nbsp;
-                    <select name="date_month">
-                        {% for month in months %}
-                            <option value="{{ month.month }}"{% if month.selected %} selected="selected"{% endif %}>{{ month.name }}</option>
-                        {% endfor %}
-                    </select>
-                    &nbsp;
-                    <input type="text" name="date_year" value="{{ delayed.dateyear }}" size="4" maxlength="4" class="textbox" />
-                     - {{ lang.time }} <input type="text" name="date_time" value="{{ delayed.datetime }}" size="10" class="textbox" />
-                </td>
-            </tr>
-            <tr>
-                <td class="trow1" style="vertical-align: top;"><strong>{{ lang.moderation_action }}</strong></td>
-                <td class="trow2">
-                    <script type="text/javascript">
-                    <!--
-                        function toggleType()
-                        {
-                            if($('#type_merge'))
-                            {
-                                if($('#type_movecopythread').prop('checked') == true)
+    <div class="page-content">
+        <header class="page-header">
+            <h1 class="title title--page">{{ lang.delayed_moderation }}</h1>
+            <p class="page-description">{{ lang.delayed_moderation_desc }}</p>
+        </header>
+        {{ display_errors|raw }}
+        <section class="block block--form">
+            <h2 class="title title--major">{{ lang.delayed_mod_queue }}</h2>
+            {% for delayedmod in delayedmods %}
+                <div class="row row--simple-columns mod-log mod-log--delayed">
+                    <div class="row__primary">
+                        <div class="mod-log__user">{{ delayedmod.profilelink|raw }}</div>
+                        <div class="mod-log__action">{{ delayedmod.action }}</div>
+                        <div class="mod-log__date">{{ delayedmod.dateline|raw }}</div>
+                    </div>
+                    <div class="row__secondary mod-log--information">
+                        <ul class="list list--stats list--mod-log">
+                            {% if delayedmod.thread_single %}
+                                <li class="list__item">
+                                    <span class="list__field">{{ lang.thread }}</span>
+                                    <span class="list__value"><a href="{{ delayedmod.threadlink }}">{{ delayedmod.threadsubject }}</a></span>
+                                </li>
+                            {% endif %}
+                            {% if delayedmod.thread_multiple %}
+                                <li class="list__item">
+                                    <span class="list__field">{{ lang.thread }}</span>
+                                    <span class="list__value">{{ lang.multiple_threads }}</span>
+                                </li>
+                            {% endif %}
+                            {% if delayedmod.forum %}
+                                <li class="list__item">
+                                    <span class="list__field">{{ lang.forum }}</span>
+                                    <span class="list__value"><a href="{{ delayedmod.link }}">{{ delayedmod.fname }}</a></span>
+                                </li>
+                            {% endif %}
+                            {% if delayedmod.new_forum %}
+                                <li class="list__item">
+                                    <span class="list__field">{{ lang.new_forum }}</span>
+                                    <span class="list__value"><a href="{{ delayedmod.new_link }}">{{ delayedmod.new_name }}</a></span>
+                                </li>
+                            {% endif %}
+                            {% if delayedmod.redirect %}
+                                <li class="list__item">
+                                    <span class="list__field">{{ lang.leave_redirect_for }}</span>
+                                    <span class="list__value">{{ delayedmod.redirect_expire }}</span>
+                                </li>
+                            {% endif %}
+                            {% if delayedmod.merge %}
+                                <li class="list__item">
+                                    <span class="list__field">{{ lang.new_subject }}</span>
+                                    <span class="list__value">{{ delayedmod.subject }}</span>
+                                </li>
+                                <li class="list__item">
+                                    <span class="list__field">{{ lang.thread_to_merge_with }}</span>
+                                    <span class="list__value"><a href="{{ delayedmod.threadurl }}">{{ delayedmod.threadurl }}</a></span>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    <div class="row__controls">
+                        <a href="moderation.php?action=cancel_delayedmoderation&amp;tid={{ delayed.tid }}&amp;fid={{ delayed.fid }}&amp;did={{ delayedmod.did }}&amp;my_post_key={{ mybb.post_code }}" class="button button--danger">
+                            {{ include('partials/icon.twig', {icon: 'times', class: 'button__icon'}, with_context = false) }}
+                            <span class="button__text">{{ lang.cancel }}</span>
+                        </a>
+                    </div>
+                </div>
+            {% else %}
+                <div class="alert alert--no-results">{{ lang.no_delayed_mods }}</div>
+            {% endfor %}
+        </section>
+
+        <form action="moderation.php" method="post">
+            <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+            <input type="hidden" name="action" value="do_delayedmoderation" />
+            <input type="hidden" name="url" value="{{ delayed.url }}" />
+            <input type="hidden" name="tid" value="{{ delayed.tid }}" />
+            <input type="hidden" name="fid" value="{{ delayed.fid }}" />
+            <section class="block block--form">
+                <h2 class="title title--major title--form">{{ lang.delayed_moderation }}</h2>
+
+                <div class="form">
+                    <div class="section section--form">
+                        <div class="row row--form field">
+                            {% if delayed.singlethread %}
+                                <h3 class="field__name">{{ lang.thread }}</h3>
+                                <p><a href="{{ delayed.threadlink }}">{{ delayed.threadsubject }}</a></p>
+                            {% else %}
+                                <h3 class="field__name">{{ lang.threads }}</h3>
+                                <p>{{ trans('threads_selected', delayed.threadcount) }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="row row--form field">
+                            <h3 class="field__name">{{ lang.run_moderation_time }}</h3>
+                            <div class="date-field">
+                                <div class="date-field__item">
+                                    <h4 class="date-field__name">{{ lang.day }}</h4>
+                                    <div class="select-field">
+                                        {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
+                                        <select name="date_day">
+                                            {% for day in days %}
+                                                <option value="{{ day.day }}"{% if day.selected %} selected="selected"{% endif %}>{{ day.day }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="date-field__item">
+                                    <h4 class="date-field__name">{{ lang.month }}</h4>
+                                    <div class="select-field">
+                                        {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
+                                        <select name="date_month">
+                                            {% for month in months %}
+                                                <option value="{{ month.month }}"{% if month.selected %} selected="selected"{% endif %}>{{ month.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="date-field__item">
+                                    <h4 class="date-field__name">{{ lang.year }}</h4>
+                                    <input type="text" name="date_year" value="{{ delayed.dateyear }}" size="4" maxlength="4" class="textbox" />
+                                </div>
+                                <div class="date-field__item">
+                                    <h4 class="date-field__name">{{ lang.time }}</h4>
+                                    <input type="text" name="date_time" value="{{ delayed.datetime }}" size="10" class="textbox" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row row--form field">
+                            <h3 class="field__name">{{ lang.moderation_action }}</h3>
+                            <script type="text/javascript">
+                            <!--
+                                function toggleType()
                                 {
-                                    $('#type_merge_expanded').hide();
-                                    $('#type_movecopythread_expanded').show();
+                                    if($('#type_merge'))
+                                    {
+                                        if($('#type_movecopythread').prop('checked') == true)
+                                        {
+                                            $('#type_merge_expanded').hide();
+                                            $('#type_movecopythread_expanded').show();
+                                        }
+                                        else if($('#type_merge').prop('checked') == true)
+                                        {
+                                            $('#type_movecopythread_expanded').hide();
+                                            $('#type_merge_expanded').show();
+                                        }
+                                        else
+                                        {
+                                            $('#type_movecopythread_expanded').hide();
+                                            $('#type_merge_expanded').hide();
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if($('#type_movecopythread').prop('checked') == true)
+                                        {
+                                            $('#type_movecopythread_expanded').show();
+                                        }
+                                        else
+                                        {
+                                            $('#type_movecopythread_expanded').hide();
+                                        }
+                                    }
                                 }
-                                else if($('#type_merge').prop('checked') == true)
-                                {
-                                    $('#type_movecopythread_expanded').hide();
-                                    $('#type_merge_expanded').show();
-                                }
-                                else
-                                {
-                                    $('#type_movecopythread_expanded').hide();
-                                    $('#type_merge_expanded').hide();
-                                }
-                            }
-                            else
-                            {
-                                if($('#type_movecopythread').prop('checked') == true)
-                                {
-                                    $('#type_movecopythread_expanded').show();
-                                }
-                                else
-                                {
-                                    $('#type_movecopythread_expanded').hide();
-                                }
-                            }
-                        }
-                    // -->
-                    </script>
-                    <dl style="margin-top: 0; margin-bottom: 0; width: 100%;">
-                        {% if delayed.openclose %}
-                            <dt>
-                                <input type="radio" name="type" value="openclosethread"{% if delayed.type_selected.openclosethread %} checked="checked"{% endif %} id="type_openclosethread" onclick="toggleType();" /> 
-                                <label for="type_openclosethread"><strong>{{ lang.open_close_thread }}</strong></label>
-                            </dt>
-                        {% endif %}
-                        {% if delayed.softdeleterestore %}
-                            <dt>
-                                <input type="radio" name="type" value="softdeleterestorethread"{% if delayed.type_selected.softdeleterestorethread %} checked="checked"{% endif %} id="type_softdeleterestorethread" onclick="toggleType();" /> 
-                                <label for="type_softdeleterestorethread"><strong>{{ lang.softdelete_restore_thread }}</strong></label>
-                            </dt>
-                        {% endif %}
-                        {% if delayed.delete %}
-                            <dt>
-                                <input type="radio" name="type" value="deletethread"{% if delayed.type_selected.deletethread %} checked="checked"{% endif %} id="type_deletethread" onclick="toggleType();" /> 
-                                <label for="type_deletethread"><strong>{{ lang.delete_thread }}</strong></label>
-                            </dt>
-                        {% endif %}
-                        {% if delayed.stickunstick %}
-                            <dt>
-                                <input type="radio" name="type" value="stick"{% if delayed.type_selected.stick %} checked="checked"{% endif %} id="type_stick_unstick_thread" onclick="toggleType();" /> 
-                                <label for="type_stick_unstick_thread"><strong>{{ lang.stick_unstick_thread }}</strong></label>
-                            </dt>
-                        {% endif %}
-                            <dt>
-                                <input type="radio" name="type" value="move"{% if delayed.type_selected.move %} checked="checked"{% endif %} id="type_movecopythread" onclick="toggleType();" /> 
-                                <label for="type_movecopythread"><strong>{{ lang.move_copy_thread }}</strong></label>
-                            </dt>
-                            <dd style="margin-top: 4px;" id="type_movecopythread_expanded">
-                                {{ lang.new_forum }}<br />
-                                {{ forumselect|raw }}
-                                <br />
-                                {{ lang.method }}:<br />
-                                <label><input type="radio" class="radio" name="delayedmoderation[method]" value="move"{% if delayed.method_selected.move %} checked="checked"{% endif %} />{{ lang.method_move }}</label><br />
-                                <label>
-                                    <input type="radio" class="radio" name="delayedmoderation[method]" value="redirect"{% if delayed.method_selected.redirect %} checked="checked"{% endif %} />{{ lang.method_move_redirect }} 
-                                    <input type="text" class="textbox" name="delayedmoderation[redirect_expire]" value="{{ delayed.delayedmoderation.redirect_expire }}" size="3" /> {{ lang.redirect_expire_note }}
-                                </label><br />
-                                <label><input type="radio" class="radio" name="delayedmoderation[method]" value="copy"{% if delayed.method_selected.copy %} checked="checked"{% endif %} />{{ lang.method_copy }}</label><br />
-                            </dd>
-                        {% if delayed.singlethread %}
-                            <dt>
-                                <input type="radio" name="type" value="merge"{% if delayed.type_selected.merge %} checked="checked"{% endif %} id="type_merge" onclick="toggleType();" /> 
-                                <label for="type_merge"><strong>{{ lang.merge_threads }}</strong></label>
-                            </dt>
-                            <dd style="margin-top: 4px; width: 100%;" id="type_merge_expanded">
-                                {{ lang.new_subject }}<br />
-                                <input type="text" class="textbox" name="delayedmoderation[subject]" value="{{ delayed.delayedmoderation.subject }}" size="40" /><br />
-                                {{ lang.thread_to_merge_with }}<br />
-                                <input type="text" class="textbox" name="delayedmoderation[threadurl]" value="{{ delayed.delayedmoderation.threadurl }}" size="40" />
-                                <br /><span class="smalltext">{{ lang.merge_with_note }}</span>
-                            </dd>
-                        {% endif %}
-                        <dt>
-                            <input type="radio" name="type" value="removeredirects"{% if delayed.type_selected.removeredirects %} checked="checked"{% endif %} id="type_removeredirects" onclick="toggleType();" /> 
-                            <label for="type_removeredirects"><strong>{{ lang.remove_redirects }}</strong></label>
-                        </dt>
-                        <dt>
-                            <input type="radio" name="type" value="removesubscriptions"{% if delayed.type_selected.removesubscriptions %} checked="checked"{% endif %} id="type_removesubscriptions" onclick="toggleType();" /> 
-                            <label for="type_removesubscriptions"><strong>{{ lang.remove_subscriptions }}</strong></label>
-                        </dt>
-                        {% if delayed.approveunapprove %}
-                            <dt>
-                                <input type="radio" name="type" value="approveunapprovethread"{% if delayed.type_selected.approveunapprovethread %} checked="checked"{% endif %} id="type_approveunapprovethread" onclick="toggleType();" /> 
-                                <label for="type_approveunapprovethread"><strong>{{ lang.approve_unapprove_thread }}</strong></label>
-                            </dt>
-                        {% endif %}
-                        {% for tool in customtools %}
-                            <dt>
-                                <input type="radio" name="type" value="modtool_{{ tool.tid }}"{% if tool.selected %} checked="checked"{% endif %} id="type_modtool_{{ tool.tid }}" onclick="toggleType();" /> 
-                                <label for="type_modtool_{{ tool.tid }}"><strong>{{ tool.name }}</strong> <small>({{ lang.custom }})</small></label>
-                            </dt>
-                        {% endfor %}
-                    </dl>
-                    <script type="text/javascript">
-                    <!--
-                        toggleType();
-                    // -->
-                    </script>
-                </td>
-            </tr>
-        </table>
-        <br />
-        <div align="center"><input type="submit" class="button" value="{{ lang.save_delayed_moderation }}" /></div>
-    </form>
+                            // -->
+                            </script>
+
+                                {% if delayed.openclose %}
+                                    <div class="option-field">
+                                        <input type="radio" class="radio option-field__input" name="type" value="openclosethread"{% if delayed.type_selected.openclosethread %} checked="checked"{% endif %} id="type_openclosethread" onclick="toggleType();" />
+                                        <h4 class="option-field__name"><label for="type_openclosethread">{{ lang.open_close_thread }}</label></h4>
+                                    </div>
+                            {% endif %}
+                            {% if delayed.softdeleterestore %}
+                                <div class="option-field">
+                                    <input type="radio" class="radio option-field__input" name="type" value="softdeleterestorethread"{% if delayed.type_selected.softdeleterestorethread %} checked="checked"{% endif %} id="type_softdeleterestorethread" onclick="toggleType();" />
+                                    <h4 class="option-field__name"><label for="type_softdeleterestorethread">{{ lang.softdelete_restore_thread }}</label></h4>
+                                </div>
+                            {% endif %}
+                            {% if delayed.delete %}
+                                <div class="option-field">
+                                    <input type="radio" class="radio option-field__input" name="type" value="deletethread"{% if delayed.type_selected.deletethread %} checked="checked"{% endif %} id="type_deletethread" onclick="toggleType();" />
+                                    <h4 class="option-field__name"><label for="type_deletethread">{{ lang.delete_thread }}</label></h4>
+                                </div>
+                            {% endif %}
+                            {% if delayed.stickunstick %}
+                                <div class="option-field">
+                                    <input type="radio" class="radio option-field__input" name="type" value="stick"{% if delayed.type_selected.stick %} checked="checked"{% endif %} id="type_stick_unstick_thread" onclick="toggleType();" />
+                                    <h4 class="option-field__name"><label for="type_stick_unstick_thread">{{ lang.stick_unstick_thread }}</label></h4>
+                                </div>
+                            {% endif %}
+                                <div class="option-field">
+                                    <input type="radio" class="radio option-field__input" name="type" value="move"{% if delayed.type_selected.move %} checked="checked"{% endif %} id="type_movecopythread" onclick="toggleType();" />
+                                    <h4 class="option-field__name"><label for="type_movecopythread">{{ lang.move_copy_thread }}</label></h4>
+                                    <div class="section section--inline" id="type_movecopythread_expanded">
+                                        <div class="row row--form field">
+                                            <h5 class="field__name">{{ lang.new_forum }}</h5>
+                                            <div class="select-field">
+                                                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
+                                                {{ forumselect|raw }}
+                                            </div>
+                                        </div>
+                                        <div class="row row--form field">
+                                            <h5 class="field__name">{{ lang.method }}</h5>
+                                            <div class="option-field">
+                                                <input type="radio" class="radio" name="delayedmoderation[method]" value="move"{% if delayed.method_selected.move %} checked="checked"{% endif %} id="method_move" />
+                                                <h6 class="option-field__name option-field__name--light"><label for="method_move">{{ lang.method_move }}</label></h6>
+                                            </div>
+                                            <div class="option-field">
+                                                <input type="radio" class="radio" name="delayedmoderation[method]" value="redirect"{% if delayed.method_selected.redirect %} checked="checked"{% endif %} id="method_redirect" />
+                                                <h6 class="option-field__name option-field__name--light"><label for="method_redirect">{{ lang.method_move_redirect }}</label> &nbsp;<label><input type="text" class="textbox textbox--small textbox--short" name="redirect_expire" size="3" /> {{ lang.method_move_redirect_days }}</label></h6>
+                                                <p class="option-field__description">{{ lang.redirect_expire_note }}</p>
+                                            </div>
+                                            <div class="option-field">
+                                                <input type="radio" class="radio" name="delayedmoderation[method]" value="copy"{% if delayed.method_selected.copy %} checked="checked"{% endif %} id="method_copy" />
+                                                <h6 class="option-field__name option-field__name--light"><label for="method_copy">{{ lang.method_copy }}</label></h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% if delayed.singlethread %}
+                                <div class="option-field">
+                                    <input type="radio" class="radio option-field__input" name="type" value="merge"{% if delayed.type_selected.merge %} checked="checked"{% endif %} id="type_merge" onclick="toggleType();" />
+                                    <h4 class="option-field__name"><label for="type_merge">{{ lang.merge_threads }}</label></h4>
+                                    <div class="section section--inline" id="type_merge_expanded">
+                                        <div class="row row--form field">
+                                            <h5 class="field__name"><label for="delayedmoderation_subject">{{ lang.new_subject }}</label></h5>
+                                            <input type="text" class="textbox" name="delayedmoderation[subject]" id="delayedmoderation_subject" value="{{ delayed.delayedmoderation.subject }}" size="40" />
+                                        </div>
+                                        <div class="row row--form field">
+                                            <h5 class="field__name"><label for="delayedmoderation_threadurl">{{ lang.thread_to_merge_with }}</label></h5>
+                                            <p class="field__description">{{ lang.merge_with_note }}</p>
+                                            <input type="text" class="textbox" name="delayedmoderation[threadurl]" id="delayedmoderation_threadurl" value="{{ delayed.delayedmoderation.threadurl }}" size="40" />
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            <div class="option-field">
+                                <input type="radio" class="radio option-field__input" name="type" value="removeredirects"{% if delayed.type_selected.removeredirects %} checked="checked"{% endif %} id="type_removeredirects" onclick="toggleType();" />
+                                <h4 class="option-field__name"><label for="type_removeredirects"><strong>{{ lang.remove_redirects }}</strong></label></h4>
+                            </div>
+                            <div class="option-field">
+                                <input type="radio" class="radio option-field__input" name="type" value="removesubscriptions"{% if delayed.type_selected.removesubscriptions %} checked="checked"{% endif %} id="type_removesubscriptions" onclick="toggleType();" />
+                                <h4 class="option-field__name"><label for="type_removesubscriptions">{{ lang.remove_subscriptions }}</label></h4>
+                            </div>
+                            {% if delayed.approveunapprove %}
+                                <div class="option-field">
+                                    <input type="radio" class="radio option-field__input" name="type" value="approveunapprovethread"{% if delayed.type_selected.approveunapprovethread %} checked="checked"{% endif %} id="type_approveunapprovethread" onclick="toggleType();" />
+                                    <h4 class="option-field__name"><label for="type_approveunapprovethread">{{ lang.approve_unapprove_thread }}</label></h4>
+                                </div>
+                            {% endif %}
+                            {% for tool in customtools %}
+                                <div class="option-field">
+                                    <input type="radio" class="radio option-field__input" name="type" value="modtool_{{ tool.tid }}"{% if tool.selected %} checked="checked"{% endif %} id="type_modtool_{{ tool.tid }}" onclick="toggleType();" />
+                                    <h4 class="option-field__name"><label for="type_modtool_{{ tool.tid }}">{{ tool.name }} <small>({{ lang.custom }})</small></label></h4>
+                                </div>
+                            {% endfor %}
+                        <script type="text/javascript">
+                        <!--
+                            toggleType();
+                        // -->
+                        </script>
+                    </div>
+                </div>
+                <div class="form__submit">
+                    <button type="submit" class="button button--medium">
+                        {{ include('partials/icon.twig', {icon: 'arrow-alt-circle-right', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.save_delayed_moderation }}</span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
 {% endblock body %}

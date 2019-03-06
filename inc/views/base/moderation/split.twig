@@ -1,48 +1,58 @@
 {% extends 'layouts/master.twig' %}
 
 {% block head %}
-    <title>{{ mybb.settings.bbname }} - {{ lang.split_thread }}</title>
+    <title>{{ lang.split_thread }} - {{ mybb.settings.bbname }}</title>
 {% endblock head %}
 
 {% block body %}
-    <form action="moderation.php" method="post">
-        <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
-        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-            <tr>
-                <td class="thead" colspan="2"><strong>{{ lang.split_thread }}</strong></td>
-            </tr>
-            <tr>
-                <td class="tcat" colspan="2"><span class="smalltext"><strong>{{ lang.new_thread_info }}</strong></span></td>
-            </tr>
-            {{ loginbox|raw }}
-            <tr>
-                <td class="trow2"><strong>{{ lang.new_subject }}</strong></td>
-                <td class="trow2"><input type="text" class="textbox" name="newsubject" value="{{ lang.split_thread_subject }} {{ thread.subject }}" size="50" /></td>
-            </tr>
-            <tr>
-                <td class="trow1"><strong>{{ lang.new_forum }}</strong></td>
-                <td class="trow1">{{ forumselect|raw }}</td>
-            </tr>
-        </table>
-        <br />
-        <table border="0" cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-            <tr>
-                <td class="thead" colspan="2"><strong>{{ lang.posts_to_split }}</strong></td>
-            </tr>
-            {% for post in posts %}
-                {% set row = alt_trow() %}
-                <tr>
-                    <td class="tcat" colspan="2"><span class="smalltext"><strong>{{ lang.posted_by }} {{ post.username }} - {{ post.postdate|raw }}</strong></span></td>
-                </tr>
-                <tr>
-                    <td class="{{ row }}" valign="top" align="center" width="1%"><input type="checkbox" class="checkbox" name="splitpost[{{ post.pid }}]" value="1" /></td>
-                    <td class="{{ row }}">{{ post.message }}</td>
-                </tr>
-            {% endfor %}
-        </table>
-        <br />
-        <div align="center"><input type="submit" class="button" name="submit" value="{{ lang.split_thread }}" /></div>
-        <input type="hidden" name="action" value="do_split" />
-        <input type="hidden" name="tid" value="{{ thread.tid }}" />
-    </form>
+    <div class="page-content">
+        <header class="page-header">
+            <h1 class="title title--page">{{ lang.split_thread }}</h1>
+        </header>
+        <form action="moderation.php" method="post">
+            <input type="hidden" name="my_post_key" value="{{ mybb.post_code }}" />
+            <section class="block block--form form">
+                <div class="section section--form">
+                    <h2 class="title title--section">{{ lang.new_thread_info }}</h2>
+                    <div class="section__container">
+                        <div class="row row--form field">
+                            <h3 class="field__name"><label for="new_subject">{{ lang.new_subject }}</label></h3>
+                            <input type="text" class="textbox" name="newsubject" id="new_subject" value="{{ lang.split_thread_subject }} {{ thread.subject }}" size="50" />
+                        </div>
+                        <div class="row row--form field">
+                            <h3 class="field__name">{{ lang.new_forum }}</h3>
+                            <div class="select-field">
+                                {{ include('partials/icon.twig', {icon: 'sort', class: 'select-field__icon'}, with_context = false) }}
+                                {{ forumselect|raw }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section section--form">
+                    <h2 class="title title--section">{{ lang.posts_to_split }}</h2>
+                    <div class="section__container">
+                        {% for post in posts %}
+                            <div class="row row--form field">
+                                <div class="option-field">
+                                    <input type="checkbox" class="checkbox" name="splitpost[{{ post.pid }}]" id="splitpost_{{ post.pid }}" value="1" />
+                                    <h4 class="option-field__name option-field__name--light"><label for="splitpost_{{ post.pid }}">{{ lang.posted_by }} {{ post.username }} - {{ post.postdate|raw }}</label></h4>
+                                    <div class="option-field__description">
+                                        {{ post.message|raw }}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="form__submit">
+                    <button type="submit" class="button button--medium">
+                        {{ include('partials/icon.twig', {icon: 'arrow-alt-circle-right', class: 'button__icon'}, with_context = false) }}
+                        <span class="button__text">{{ lang.split_thread }}</span>
+                    </button>
+                </div>
+            </section>
+            <input type="hidden" name="action" value="do_split" />
+            <input type="hidden" name="tid" value="{{ thread.tid }}" />
+        </form>
+    </div>
 {% endblock body %}

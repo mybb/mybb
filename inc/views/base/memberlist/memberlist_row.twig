@@ -1,43 +1,45 @@
-{% set row = alt_trow() %}
-<tr>
-    <td class="{{ row }}" align="center">
-        {% if user.avatar %}
-            <img src="{{ user.avatar_image }}" alt="" {{ user.avatar_width_height }} />
-        {% endif %}
-    </td>
-    <td class="{{ row }}">
-        {{ user.profilelink|raw }}<br />
-        <span class="smalltext">
-            {{ user.usertitle }}<br />
-            {% if user.groupimage %}
-                <img src="{{ user.groupimage }}" alt="{{ user.groupimage_title }}" title="{{ user.groupimage_title }}" />
-            <br />
-            {% endif %}
-            {% if user.starimage and user.stars %}
-                {% spaceless %}
-                    {% for star in range(1, user.stars) %}
-                        <img src="{{ user.starimage }}" border="0" alt="*" />
-                    {% endfor %}
-                {% endspaceless %}
-                <br />
-            {% endif %}
-        </span>
-    </td>
-    <td class="{{ row }}" align="center">
-        {{ user.regdate|raw }}
-    </td>
-    <td class="{{ row }}" align="center">
-        {{ user.lastvisit|raw }}
-    </td>
-    <td class="{{ row }}" align="center">
-        {{ user.postnum }}
-    </td>
-    <td class="{{ row }}" align="center">
-        {{ user.threadnum }}
-    </td>
-    {% if mybb.settings.usereferrals %}
-        <td class="{{ row }}" align="center">
-            {{ user.referrals }}
-        </td>
+<div class="user-list__user">
+    <a href="{{ get_profile_link(user.uid) }}" class="avatar-profile-link">
+        {{ render_avatar(url=user.avatar, alt=user.username_raw, class='avatar--large') }}
+    </a>
+    <h2 class="user-list__username">{{ user.profilelink|raw }}</h2>
+    <p class="user-list__user-title">{{ user.usertitle }}</p>
+    {# TO DO: USER GROUP IMAGES, STARS #}
+    {# {% if user.groupimage %}
+        <img src="{{ user.groupimage }}" alt="{{ user.groupimage_title }}" title="{{ user.groupimage_title }}" />
+    <br />
     {% endif %}
-</tr>
+    {% if user.starimage and user.stars %}
+        {% spaceless %}
+            {% for star in range(1, user.stars) %}
+                <img src="{{ user.starimage }}" border="0" alt="*" />
+            {% endfor %}
+        {% endspaceless %}
+        <br />
+    {% endif %} #}
+
+    <ul class="list list--stats list--user">
+        <li class="list__item">
+            <span class="list__field">{{ lang.posts }}</span>
+            <span class="list__value">{{ user.postnum }}</span>
+        </li>
+        <li class="list__item">
+            <span class="list__field">{{ lang.threads }}</span>
+            <span class="list__value">{{ user.threadnum }}</span>
+        </li>
+        <li class="list__item">
+            <span class="list__field">{{ lang.joined }}</span>
+            <span class="list__value">{{ user.regdate|raw }}</span>
+        </li>
+        <li class="list__item">
+            <span class="list__field">{{ lang.lastvisit }}</span>
+            <span class="list__value">{{ user.lastvisit|raw }}</span>
+        </li>
+        {% if mybb.settings.usereferrals %}
+            <li class="list__item">
+                <span class="list__field">{{ lang.referrals }}</span>
+                <span class="list__value">{{ user.referrals }}</span>
+            </li>
+        {% endif %}
+    </ul>
+</div>

@@ -8,15 +8,15 @@ use Psr\Container\ContainerInterface;
 /**
  * Get an instance of a type fom the IoC container.
  *
- * @param string $className The name of the type to resolve.
+ * @param string|null $className The name of the type to resolve.
  * If this is null or an empty string, the container itself will be returned.
  * @param array $parameters An optional array of parameters to pass whilst resolving an instance.
  *
- * @return ContainerInterface|mixed
+ * @return \MyBB\Application|mixed
  */
-function app($className = null, array $parameters = [])
+function app(?string $className = null, array $parameters = [])
 {
-    if (is_null($className) || empty($className)) {
+    if (empty($className)) {
         return Container::getInstance();
     }
 
@@ -41,4 +41,29 @@ function template(string $name, array $context = [])
     $twig = app(\Twig_Environment::class);
 
     return $twig->render($name, $context);
+}
+
+/**
+ * Register the given Twig extension with the Twig environment.
+ *
+ * @param string $className The full name of the extension class to register.
+ * @param array $parameters Any parameters required to construct the given extension class.
+ *
+ * @return \Twig_ExtensionInterface The extension instance.
+ */
+function registerTwigExtension(string $className, array $parameters = []): \Twig_ExtensionInterface
+{
+    /** @var \Twig_Environment $twig */
+    $twig = app(\Twig_Environment::class);
+
+    if (!$twig->hasExtension($className)) {
+        /** @var \Twig\Extension\ExtensionInterface $extension */
+        $extension = app($className, $parameters);
+
+        $twig->addExtension($extension);
+
+        return $extension;
+    }
+
+    return $twig->getExtension($className);
 }

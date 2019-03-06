@@ -1,0 +1,5 @@
+{% spaceless %}
+<span class="avatar{% if class %} {{ class }}{% endif %}">
+    <img src="{{ url }}" {% if alt %}alt="{{ alt }}"{% endif %} class="avatar__image" />
+</span>
+{% endspaceless %}

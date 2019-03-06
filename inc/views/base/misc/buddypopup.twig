@@ -1,79 +1,29 @@
 <div class="modal">
-    <div style="overflow-y: auto; max-height: 400px;">
-        <table cellspacing="{{ theme.borderwidth }}" cellpadding="{{ theme.tablespace }}" class="tborder">
-            <tr>
-                <td class="thead"{% if buddies.showlist %} colspan="2"{% endif %}>
-                    <div><strong>{{ lang.buddy_list }}</strong></div>
-                </td>
-            </tr>
+    <section class="block block--modal">
+        <h2 class="title title--modal">{{ lang.buddy_list }}</h2>
+        <div class="modal__content">
             {% if buddies.showlist %}
-                <tr>
-                    <td class="tcat" colspan="2"><strong>{{ lang.online }}</strong></td>
-                    {% for buddy in buddys.online %}
-                        {% set row = alt_trow() %}
-                        <tr>
-                            <td class="{{ row }}" width="1%">
-                                <div class="buddy_avatar float_left"><img src="{{ buddy.avatar.image }}" alt="" {{ buddy.avatar.width_height|raw }} style="margin-top: 3px;" /></div>
-                            </td>
-                            <td class="{{ row }}">
-                                {{ buddy.profile_link|raw }}
-                                <div class="buddy_action">
-                                    <span class="smalltext">
-                                        {% if buddy.lastactive %}
-                                            {{ trans('last_active', buddy.last_active) }}
-                                        {% else %}
-                                            {{ trans('last_active', lang.never) }}
-                                        {% endif %}
-                                        <br />
-                                        {% if buddy.show_pm %}
-                                            <a href="private.php?action=send&amp;uid={{ buddy.uid }}" target="_blank" onclick="window.opener.location.href=this.href; return false;">{{ lang.pm_buddy }}</a>
-                                        {% endif %}
-                                    </span>
-                                </div>
-                            </td>
-                        </tr>
-                    {% else %}
-                        <tr>
-                            <td class="trow1" colspan="2"><em>{{ lang.online_none }}</em></td>
-                        </tr>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td class="tcat" colspan="2"><strong>{{ lang.offline }}</strong></td>
-                    {% for buddy in buddys.offline %}
-                        {% set row = alt_trow() %}
-                        <tr>
-                            <td class="{{ row }}" width="1%">
-                                <div class="buddy_avatar float_left"><img src="{{ buddy.avatar.image }}" alt="" {{ buddy.avatar.width_height|raw }} style="margin-top: 3px;" /></div>
-                            </td>
-                            <td class="{{ row }}">
-                                {{ buddy.profile_link|raw }}
-                                <div class="buddy_action">
-                                    <span class="smalltext">
-                                        {% if buddy.lastactive %}
-                                            {{ trans('last_active', buddy.last_active) }}
-                                        {% else %}
-                                            {{ trans('last_active', lang.never) }}
-                                        {% endif %}
-                                        <br />
-                                        {% if buddy.show_pm %}
-                                            <a href="private.php?action=send&amp;uid={{ buddy.uid }}" target="_blank" onclick="window.opener.location.href=this.href; return false;">{{ lang.pm_buddy }}</a>
-                                        {% endif %}
-                                    </span>
-                                </div>
-                            </td>
-                        </tr>
-                    {% else %}
-                        <tr>
-                            <td class="trow1" colspan="2"><em>{{ lang.offline_none }}</em></td>
-                        </tr>
-                    {% endfor %}
-                </tr>
+                <div class="block__content">
+                    <h3 class="title title--minor">{{ lang.online }}</h3>
+                    <div class="user-list user-list--has-title user-list--single-column user-list--compact">
+                        {% for buddy in buddys.online %}
+                            {% include 'misc/buddypopup/user.twig' %}
+                        {% else %}
+                            <div class="alert alert--no-results">{{ lang.online_none }}</div>
+                        {% endfor %}
+                    </div>
+                    <h3 class="title title--minor">{{ lang.offline }}</h3>
+                    <div class="user-list user-list--has-title user-list--single-column user-list--compact">
+                        {% for buddy in buddys.offline %}
+                            {% include 'misc/buddypopup/user.twig' %}
+                        {% else %}
+                            <div class="alert alert--no-results">{{ lang.offline_none }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
             {% else %}
-                <tr>
-                    <td class="trow1"><em>{{ lang.no_buddies }}</em></td>
-                </tr>
+                <div class="alert alert--no-results">{{ lang.no_buddies }}</div>
             {% endif %}
-        </table>
-    </div>
+        </div>
+    </section>
 </div>
