@@ -2133,10 +2133,11 @@ if(!$mybb->input['action'])
 
 	// Do Multi Pages
 	$selective = "";
-	if($fid == 1){
+	if($fid == 1)
+	{
 		$selective = " AND status='0'";
 	}
-	
+
 	$query = $db->simple_select("privatemessages", "COUNT(*) AS total", "uid='".$mybb->user['uid']."' AND folder='$folder'$selective");
 	$pmscount = $db->fetch_field($query, "total");
 
