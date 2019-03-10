@@ -2062,7 +2062,13 @@ if(!$mybb->input['action'])
 	$private['orderarrow'][$sortby] = true;
 
 	// Do Multi Pages
-	$query = $db->simple_select("privatemessages", "COUNT(*) AS total", "uid='".$mybb->user['uid']."' AND folder='$folder'");
+	$selective = "";
+	if($fid == 1)
+	{
+		$selective = " AND status='0'";
+	}
+
+	$query = $db->simple_select("privatemessages", "COUNT(*) AS total", "uid='".$mybb->user['uid']."' AND folder='$folder'$selective");
 	$pmscount = $db->fetch_field($query, "total");
 
 	if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
