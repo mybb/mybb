@@ -624,8 +624,8 @@ if ($fpermissions['canviewthreads'] != 0) {
         $icon_cache[$thread['icon']]['path'] = str_replace('{theme}', $theme['imgdir'], $icon_cache[$thread['icon']]['path']);
 
         // If this is a moved thread - set the tid for participation marking and thread read marking to that of the moved thread
-        if (substr($thread['closed'], 0, 5) == "moved") {
-            $tid = substr($thread['closed'], 6);
+        if ($thread['moved'] != 0) {
+            $tid = $thread['moved'];
             if (!isset($tids[$tid])) {
                 $moved_threads[$tid] = $thread['tid'];
                 $tids[$thread['tid']] = $tid;
@@ -710,8 +710,6 @@ if (!empty($threadCache) && is_array($threadCache)) {
     foreach ($threadCache as $k => $thread) {
         $plugins->run_hooks('forumdisplay_thread');
 
-        $thread['moved'] = explode("|", $thread['closed']);
-
         if ($thread['visible'] == 0) {
             $thread['bgcolor'] = "trow_shaded";
         } elseif ($thread['visible'] == -1 && $modpermissions["canviewdeleted"]) {
@@ -743,7 +741,7 @@ if (!empty($threadCache) && is_array($threadCache)) {
         $thread['subject'] = $parser->parse_badwords($thread['subject']);
 
         if ($mybb->settings['allowthreadratings'] != 0 && $foruminfo['allowtratings'] != 0) {
-            if ($thread['moved'][0] == "moved" || ($fpermissions['canviewdeletionnotice'] != 0 && $thread['visible'] == -1)) {
+            if ($thread['moved'] != 0 || ($fpermissions['canviewdeletionnotice'] != 0 && $thread['visible'] == -1)) {
                 $thread['rating'] = 'moved';
             } else {
                 $thread['averagerating'] = (float)round($thread['averagerating'], 2);
@@ -777,8 +775,8 @@ if (!empty($threadCache) && is_array($threadCache)) {
             ++$inlinecount;
         }
 
-        if ($thread['moved'][0] == "moved") {
-            $thread['tid'] = $thread['moved'][1];
+        if ($thread['moved'] != 0) {
+            $thread['tid'] = $thread['moved'];
         }
 
         $thread['threadlink'] = get_thread_link($thread['tid']);
@@ -805,7 +803,7 @@ if (!empty($threadCache) && is_array($threadCache)) {
             $last_read = $forum_read;
         }
 
-        if ($thread['lastpost'] > $last_read && $thread['moved'][0] != "moved") {
+        if ($thread['lastpost'] > $last_read && $thread['moved'] == 0) {
             $thread['unreadpost'] = true;
             $thread['folder']['value'] .= "new";
             $thread['folder']['label'] .= $lang->icon_new;
@@ -826,7 +824,7 @@ if (!empty($threadCache) && is_array($threadCache)) {
             $thread['folder']['label'] .= $lang->icon_lock;
         }
 
-        if ($thread['moved'][0] == "moved") {
+        if ($thread['moved'] != 0) {
             $thread['folder']['value'] = "move";
         }
 

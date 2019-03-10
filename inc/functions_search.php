@@ -1297,7 +1297,7 @@ function perform_search_mysql($search)
 			$query = $db->query("
 				SELECT t.tid, t.firstpost
 				FROM ".TABLE_PREFIX."threads t
-				WHERE 1=1 {$thread_datecut} {$thread_replycut} {$thread_prefixcut} {$forumin} {$thread_usersql} {$permsql} {$visiblesql} AND t.closed NOT LIKE 'moved|%' {$subject_lookin}
+				WHERE 1=1 {$thread_datecut} {$thread_replycut} {$thread_prefixcut} {$forumin} {$thread_usersql} {$permsql} {$visiblesql} AND t.moved = '0' {$subject_lookin}
 				{$limitsql}
 			");
 			while($thread = $db->fetch_array($query))
@@ -1314,7 +1314,7 @@ function perform_search_mysql($search)
 			SELECT p.pid, p.tid
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-			WHERE 1=1 {$post_datecut} {$thread_replycut} {$thread_prefixcut} {$forumin} {$post_usersql} {$permsql} {$tidsql} {$visiblesql} {$post_visiblesql} AND t.closed NOT LIKE 'moved|%' {$message_lookin}
+			WHERE 1=1 {$post_datecut} {$thread_replycut} {$thread_prefixcut} {$forumin} {$post_usersql} {$permsql} {$tidsql} {$visiblesql} {$post_visiblesql} AND t.moved = '0' {$message_lookin}
 			{$limitsql}
 		");
 		while($post = $db->fetch_array($query))
@@ -1655,7 +1655,7 @@ function perform_search_mysql_ft($search)
 			$query = $db->query("
 				SELECT t.tid, t.firstpost
 				FROM ".TABLE_PREFIX."threads t
-				WHERE 1=1 {$thread_datecut} {$thread_replycut} {$thread_prefixcut} {$forumin} {$thread_usersql} {$permsql} {$visiblesql} AND t.closed NOT LIKE 'moved|%' {$subject_lookin}
+				WHERE 1=1 {$thread_datecut} {$thread_replycut} {$thread_prefixcut} {$forumin} {$thread_usersql} {$permsql} {$visiblesql} AND t.moved = '0' {$subject_lookin}
 				{$limitsql}
 			");
 			while($thread = $db->fetch_array($query))
@@ -1672,7 +1672,7 @@ function perform_search_mysql_ft($search)
 			SELECT p.pid, p.tid
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-			WHERE 1=1 {$post_datecut} {$thread_replycut} {$thread_prefixcut} {$forumin} {$post_usersql} {$permsql} {$tidsql} {$post_visiblesql} {$visiblesql} AND t.closed NOT LIKE 'moved|%' {$message_lookin}
+			WHERE 1=1 {$post_datecut} {$thread_replycut} {$thread_prefixcut} {$forumin} {$post_usersql} {$permsql} {$tidsql} {$post_visiblesql} {$visiblesql} AND t.moved = '0' {$message_lookin}
 			{$limitsql}
 		");
 		while($post = $db->fetch_array($query))

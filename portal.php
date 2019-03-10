@@ -311,7 +311,7 @@ if ($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_sh
         SELECT t.tid, t.fid, t.uid, t.lastpost, t.lastposteruid, t.lastposter, t.subject, t.replies, t.views, u.username
         FROM " . TABLE_PREFIX . "threads t
         LEFT JOIN " . TABLE_PREFIX . "users u ON (u.uid=t.uid)
-        WHERE 1=1 {$excludeforums}{$tunviewwhere} AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
+        WHERE 1=1 {$excludeforums}{$tunviewwhere} AND t.visible='1' AND t.moved='0'
         ORDER BY t.lastpost DESC
         LIMIT 0, ".$mybb->settings['portal_showdiscussionsnum']
     );
@@ -389,7 +389,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
         }
     }
 
-    $query = $db->simple_select("threads t", "COUNT(t.tid) AS threads", "t.visible='1'{$annfidswhere}{$tunviewwhere} AND t.closed NOT LIKE 'moved|%'", array('limit' => 1));
+    $query = $db->simple_select("threads t", "COUNT(t.tid) AS threads", "t.visible='1'{$annfidswhere}{$tunviewwhere} AND t.moved='0'", array('limit' => 1));
     $announcementcount = $db->fetch_field($query, "threads");
 
     $numannouncements = (int)$mybb->settings['portal_numannouncements'];
@@ -422,7 +422,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
         SELECT p.pid, p.message, p.tid, p.smilieoff, t.attachmentcount
         FROM " . TABLE_PREFIX . "posts p
         LEFT JOIN " . TABLE_PREFIX . "threads t ON (t.tid=p.tid)
-        WHERE t.visible='1'{$annfidswhere}{$tunviewwhere} AND t.closed NOT LIKE 'moved|%' AND t.firstpost=p.pid
+        WHERE t.visible='1'{$annfidswhere}{$tunviewwhere} AND t.moved='0' AND t.firstpost=p.pid
         ORDER BY t.dateline DESC
         LIMIT {$start}, {$numannouncements}"
     );
@@ -462,7 +462,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
             SELECT t.*, t.username AS threadusername, u.username, u.avatar, u.avatardimensions
             FROM " . TABLE_PREFIX . "threads t
             LEFT JOIN " . TABLE_PREFIX . "users u ON (u.uid = t.uid)
-            WHERE t.tid IN (0{$tids}){$annfidswhere}{$tunviewwhere} AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
+            WHERE t.tid IN (0{$tids}){$annfidswhere}{$tunviewwhere} AND t.visible='1' AND t.moved='0'
             ORDER BY t.dateline DESC
             LIMIT 0, {$numannouncements}"
         );

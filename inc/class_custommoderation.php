@@ -385,7 +385,7 @@ class CustomModeration extends Moderation
 			if(!empty($thread_options['addreply'])) // Add reply to thread
 			{
 				$tid_list = implode(',', $tids);
-				$query = $db->simple_select("threads", 'uid, fid, subject, tid, firstpost, closed', "tid IN ($tid_list) AND closed NOT LIKE 'moved|%'");
+				$query = $db->simple_select("threads", 'uid, fid, subject, tid, firstpost, closed', "tid IN ($tid_list) AND moved='0'");
 				require_once MYBB_ROOT."inc/datahandlers/post.php";
 
 				// Loop threads adding a reply to each one

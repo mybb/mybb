@@ -35,7 +35,7 @@ class Moderation
 		$openthread = array(
 			"closed" => 1,
 		);
-		$db->update_query("threads", $openthread, "tid IN ($tid_list) AND closed NOT LIKE 'moved|%'");
+		$db->update_query("threads", $openthread, "tid IN ($tid_list) AND moved='0'");
 
 		return true;
 	}
@@ -165,7 +165,7 @@ class Moderation
 			return false;
 		}
 
-		$query = $db->simple_select('threads', 'tid', "closed='moved|$tid'");
+		$query = $db->simple_select('threads', 'tid', "moved='{$tid}'");
 		while($redirect_tid = $db->fetch_field($query, 'tid'))
 		{
 			$this->delete_thread($redirect_tid);
@@ -238,7 +238,7 @@ class Moderation
 			}
 		}
 
-		if($forum['usethreadcounts'] != 0 && substr($thread['closed'], 0, 6) != 'moved|')
+		if($forum['usethreadcounts'] != 0 && $thread['moved'] == 0)
 		{
 			if(!isset($userposts[$thread['uid']]['num_threads']))
 			{
@@ -273,7 +273,7 @@ class Moderation
 
 		// Delete threads, redirects, subscriptions, polls, and poll votes
 		$db->delete_query("threads", "tid='$tid'");
-		$query = $db->simple_select('threads', 'tid', "closed='moved|$tid'");
+		$query = $db->simple_select('threads', 'tid', "moved='$tid'");
 		while($redirect_tid = $db->fetch_field($query, 'tid'))
 		{
 			$this->delete_thread($redirect_tid);
@@ -303,7 +303,7 @@ class Moderation
 			$updated_counters['unapprovedthreads'] = -1;
 		}
 
-		if(strpos($thread['closed'], 'moved|') !== false)
+		if($thread['moved'] == 0)
 		{
 			// Redirect
 			if($thread['visible'] == 1)
@@ -428,7 +428,7 @@ class Moderation
 				}
 			}
 
-			if($forum['usethreadcounts'] != 0 && substr($thread['closed'], 0, 6) != 'moved|')
+			if($forum['usethreadcounts'] != 0 && $thread['moved'] == 0)
 			{
 				++$user_counters[$thread['uid']]['num_threads'];
 			}
@@ -442,7 +442,7 @@ class Moderation
 			$comma = "";
 			foreach($tid_list as $tid)
 			{
-				$tid_moved_list .= "{$comma}'moved|{$tid}'";
+				$tid_moved_list .= "{$comma}{$tid}";
 				$comma = ",";
 			}
 			$tid_list = implode(',', $tid_list);
@@ -452,7 +452,7 @@ class Moderation
 			$db->update_query("threads", $approve, "tid IN ($tid_list)");
 			// Approve redirects, too
 			$redirect_tids = array();
-			$query = $db->simple_select('threads', 'tid', "closed IN ({$tid_moved_list})");
+			$query = $db->simple_select('threads', 'tid', "moved IN ({$tid_moved_list})");
 			while($redirect_tid = $db->fetch_field($query, 'tid'))
 			{
 				$redirect_tids[] = $redirect_tid;
@@ -528,7 +528,7 @@ class Moderation
 		$comma = "";
 		foreach($tids as $tid)
 		{
-			$tid_moved_list .= "{$comma}'moved|{$tid}'";
+			$tid_moved_list .= "{$comma}{$tid}";
 			$comma = ",";
 		}
 
@@ -587,7 +587,7 @@ class Moderation
 					}
 				}
 
-				if($thread['visible'] == 1 && $forum['usethreadcounts'] != 0 && substr($thread['closed'], 0, 6) != 'moved|')
+				if($thread['visible'] == 1 && $forum['usethreadcounts'] != 0 && $thread['moved'] == 0)
 				{
 					++$user_counters[$thread['uid']]['num_threads'];
 				}
@@ -602,7 +602,7 @@ class Moderation
 		$db->update_query("threads", $approve, "tid IN ($tid_list)");
 		// Unapprove redirects, too
 		$redirect_tids = array();
-		$query = $db->simple_select('threads', 'tid', "closed IN ({$tid_moved_list})");
+		$query = $db->simple_select('threads', 'tid', "moved IN ({$tid_moved_list})");
 		while($redirect_tid = $db->fetch_field($query, 'tid'))
 		{
 			$redirect_tids[] = $redirect_tid;
@@ -1051,7 +1051,7 @@ class Moderation
 				$arguments = array("tid" => $tid, "new_fid" => $new_fid);
 				$plugins->run_hooks("class_moderation_move_thread_redirect", $arguments);
 
-				$query = $db->simple_select('threads', 'tid', "closed='moved|$tid' AND fid='$new_fid'");
+				$query = $db->simple_select('threads', 'tid', "moved='$tid' AND fid='$new_fid'");
 				while($redirect_tid = $db->fetch_field($query, 'tid'))
 				{
 					$this->delete_thread($redirect_tid);
@@ -1095,7 +1095,8 @@ class Moderation
 					"lastposter" => $db->escape_string($thread['lastposter']),
 					"views" => 0,
 					"replies" => 0,
-					"closed" => "moved|$tid",
+					"closed" => 2,
+					"moved" => $tid,
 					"sticky" => $thread['sticky'],
 					"visible" => (int)$thread['visible'],
 					"notes" => ''
@@ -1107,7 +1108,7 @@ class Moderation
 				}
 
 				// If we're moving back to a forum where we left a redirect, delete the rediect
-				$query = $db->simple_select("threads", "tid", "closed LIKE 'moved|".(int)$tid."' AND fid='".(int)$new_fid."'");
+				$query = $db->simple_select("threads", "tid", "moved='".(int)$tid."' AND fid='".(int)$new_fid."'");
 				while($redirect_tid = $db->fetch_field($query, 'tid'))
 				{
 					$this->delete_thread($redirect_tid);
@@ -1286,7 +1287,7 @@ class Moderation
 				}
 
 				// If we're moving back to a forum where we left a redirect, delete the rediect
-				$query = $db->simple_select("threads", "tid", "closed LIKE 'moved|".(int)$tid."' AND fid='".(int)$new_fid."'");
+				$query = $db->simple_select("threads", "tid", "moved='".(int)$tid."' AND fid='".(int)$new_fid."'");
 				while($redirect_tid = $db->fetch_field($query, 'tid'))
 				{
 					$this->delete_thread($redirect_tid);
@@ -1473,9 +1474,9 @@ class Moderation
 		$db->update_query("posts", $sqlarray, "tid='{$mergetid}'");
 
 		$sqlarray = array(
-			"closed" => "moved|{$tid}",
+			"moved" => $tid,
 		);
-		$db->update_query("threads", $sqlarray, "closed='moved|{$mergetid}'");
+		$db->update_query("threads", $sqlarray, "moved='{$mergetid}'");
 		$sqlarray = array(
 			"tid" => $tid,
 		);
@@ -2327,7 +2328,7 @@ class Moderation
 			}
 
 			// Remove old redirects
-			$redirects_query = $db->simple_select('threads', 'tid', "closed='moved|{$thread['tid']}' AND fid='$moveto'");
+			$redirects_query = $db->simple_select('threads', 'tid', "moved='{$thread['tid']}' AND fid='$moveto'");
 			while($redirect_tid = $db->fetch_field($redirects_query, 'tid'))
 			{
 				$this->delete_thread($redirect_tid);
@@ -3542,7 +3543,7 @@ class Moderation
 				}
 			}
 
-			if($forum['usethreadcounts'] != 0 && substr($thread['closed'], 0, 6) != 'moved|')
+			if($forum['usethreadcounts'] != 0 && $thread['moved'] == 0)
 			{
 				++$user_counters[$thread['uid']]['num_threads'];
 			}
@@ -3556,7 +3557,7 @@ class Moderation
 			$comma = "";
 			foreach($tid_list as $tid)
 			{
-				$tid_moved_list .= "{$comma}'moved|{$tid}'";
+				$tid_moved_list .= "{$comma}{$tid}";
 				$comma = ",";
 			}
 			$tid_list = implode(',', $tid_list);
@@ -3566,7 +3567,7 @@ class Moderation
 			$db->update_query("threads", $update, "tid IN ($tid_list)");
 			// Restore redirects, too
 			$redirect_tids = array();
-			$query = $db->simple_select('threads', 'tid', "closed IN ({$tid_moved_list})");
+			$query = $db->simple_select('threads', 'tid', "moved IN ({$tid_moved_list})");
 			while($redirect_tid = $db->fetch_field($query, 'tid'))
 			{
 				$redirect_tids[] = $redirect_tid;
@@ -3642,7 +3643,7 @@ class Moderation
 		$comma = "";
 		foreach($tids as $tid)
 		{
-			$tid_moved_list .= "{$comma}'moved|{$tid}'";
+			$tid_moved_list .= "{$comma}{$tid}";
 			$comma = ",";
 		}
 
@@ -3705,7 +3706,7 @@ class Moderation
 					}
 				}
 
-				if($thread['visible'] == 1 && $forum['usethreadcounts'] != 0 && substr($thread['closed'], 0, 6) != 'moved|')
+				if($thread['visible'] == 1 && $forum['usethreadcounts'] != 0 && $thread['moved'] == 0)
 				{
 					++$user_counters[$thread['uid']]['num_threads'];
 				}
@@ -3719,7 +3720,7 @@ class Moderation
 		$db->update_query("threads", $update, "tid IN ($tid_list)");
 		// Soft delete redirects, too
 		$redirect_tids = array();
-		$query = $db->simple_select('threads', 'tid', "closed IN ({$tid_moved_list})");
+		$query = $db->simple_select('threads', 'tid', "moved IN ({$tid_moved_list})");
 
 		mark_reports($tids, "threads");
 		
