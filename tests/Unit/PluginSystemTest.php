@@ -4,7 +4,8 @@ declare(strict_types = 1);
 
 namespace MyBB\Tests\Unit;
 
-function testAddHookWithFunctionWithNoArgsHook() {
+function testAddHookWithFunctionWithNoArgsHook()
+{
     global $didRun;
 
     $didRun = true;
@@ -137,7 +138,7 @@ final class PluginSystemTest extends TestCase
         $this->assertEquals(5, $x);
     }
 
-    public function testAddHookWithClassmethodWithMultipleArgs()
+    public function testAddHookWithClassMethodWithMultipleArgs()
     {
         $hookName = 'plugin_system_test_test_addHook_class_method_multiple_args';
 
@@ -160,6 +161,97 @@ final class PluginSystemTest extends TestCase
         };
 
         $plugins->addHook($hookName, [$obj, 'test']);
+
+        $x = 4;
+        $y = 'hello';
+
+        $plugins->runHooks($hookName, $x, $y);
+
+        $this->assertTrue($didRun);
+        $this->assertEquals(5, $x);
+        $this->assertEquals('hello world', $y);
+    }
+
+    public function testAddHookWithStaticMethodWithNoArgs()
+    {
+        $hookName = 'plugin_system_test_test_addHook_static_method_no_args';
+
+        $plugins = new \MyBB\PluginSystem();
+
+        global $didRun;
+
+        $didRun = false;
+
+        $obj = new class {
+            public static function test()
+            {
+                global $didRun;
+
+                $didRun = true;
+            }
+        };
+
+        $plugins->addHook($hookName, [get_class($obj), 'test']);
+
+        $plugins->runHooks($hookName);
+
+        $this->assertTrue($didRun);
+    }
+
+    public function testAddHookWithStaticMethodWithSingleArg()
+    {
+        $hookName = 'plugin_system_test_test_addHook_static_method_single_arg';
+
+        $plugins = new \MyBB\PluginSystem();
+
+        global $didRun;
+
+        $didRun = false;
+
+        $obj = new class {
+            public static function test(int &$a)
+            {
+                global $didRun;
+
+                $a += 1;
+
+                $didRun  = true;
+            }
+        };
+
+        $x = 4;
+
+        $plugins->addHook($hookName, [get_class($obj), 'test']);
+
+        $plugins->runHooks($hookName, $x);
+
+        $this->assertTrue($didRun);
+        $this->assertEquals(5, $x);
+    }
+
+    public function testAddHookWithStaticMethodWithMultipleArgs()
+    {
+        $hookName = 'plugin_system_test_test_addHook_static_method_multiple_args';
+
+        $plugins = new \MyBB\PluginSystem();
+
+        global $didRun;
+
+        $didRun = false;
+
+        $obj = new class {
+            public static function test(int &$a, string &$b)
+            {
+                global $didRun;
+
+                $a += 1;
+                $b .= ' world';
+
+                $didRun  = true;
+            }
+        };
+
+        $plugins->addHook($hookName, [get_class($obj), 'test']);
 
         $x = 4;
         $y = 'hello';
