@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types = 1);
 
 namespace MyBB\Hashing;
@@ -12,7 +13,10 @@ class ServiceProvider extends \Illuminate\Hashing\HashServiceProvider
         });
 
         $this->app->singleton('hash.driver', function ($app) {
-            return $app['hash']->driver();
+            /** @var \MyBB\Hashing\HashManager $manager */
+            $manager = $app['hash'];
+
+            return $manager->driver();
         });
     }
 }

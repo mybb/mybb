@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types = 1);
 
 namespace MyBB\Tests\Unit;
@@ -24,19 +25,31 @@ class ParserTest extends TestCase
         $templatesMock->shouldReceive('get')
             ->withArgs(['mycode_size_int', 1, 0])
             ->andReturn(
-                str_replace("\\'", "'", addslashes('<span style="font-size: {$size}pt;" class="mycode_size">{$text}</span>'))
+                str_replace(
+                    "\\'",
+                    "'",
+                    addslashes('<span style="font-size: {$size}pt;" class="mycode_size">{$text}</span>')
+                )
             );
 
         $templatesMock->shouldReceive('get')
             ->withArgs(['mycode_url', 1, 0])
             ->andReturn(
-                str_replace("\\'", "'", addslashes('<a href="{$url}" target="_blank"{$rel} class="mycode_url">{$name}</a>'))
+                str_replace(
+                    "\\'",
+                    "'",
+                    addslashes('<a href="{$url}" target="_blank"{$rel} class="mycode_url">{$name}</a>')
+                )
             );
 
         $templatesMock->shouldReceive('get')
             ->withArgs(['mycode_img', 1, 0])
             ->andReturn(
-                str_replace("\\'", "'", addslashes('<img src="{$url}"{$width}{$height} alt="{$alt}"{$css_align} class="mycode_img" />'))
+                str_replace(
+                    "\\'",
+                    "'",
+                    addslashes('<img src="{$url}"{$width}{$height} alt="{$alt}"{$css_align} class="mycode_img" />')
+                )
             );
     }
 
@@ -178,7 +191,8 @@ test<br />
 
         foreach ($alignments as $alignment) {
             $tests = [
-                "[align={$alignment}]test[/align]" => "<div style=\"text-align: {$alignment};\" class=\"mycode_align\">test</div>",
+                "[align={$alignment}]test[/align]" =>
+                    "<div style=\"text-align: {$alignment};\" class=\"mycode_align\">test</div>",
                 "[align={$alignment}]
 test
 [/align]" => "<div style=\"text-align: {$alignment};\" class=\"mycode_align\">
@@ -246,7 +260,8 @@ test<br />
 
         foreach ($sizes as $size => $expected) {
             $tests = [
-                "[size={$size}]test[/size]" => "<span style=\"font-size: {$expected}pt;\" class=\"mycode_size\">test</span>",
+                "[size={$size}]test[/size]" =>
+                    "<span style=\"font-size: {$expected}pt;\" class=\"mycode_size\">test</span>",
                 "[size={$size}]
 test
 [/size]" => "<span style=\"font-size: {$expected}pt;\" class=\"mycode_size\"><br />
@@ -274,7 +289,8 @@ test<br />
 
         foreach ($colours as $colour) {
             $tests = [
-                "[color={$colour}]test[/color]" => "<span style=\"color: {$colour};\" class=\"mycode_color\">test</span>",
+                "[color={$colour}]test[/color]" =>
+                    "<span style=\"color: {$colour};\" class=\"mycode_color\">test</span>",
                 "[color={$colour}]
 test
 [/color]" => "<span style=\"color: {$colour};\" class=\"mycode_color\"><br />
@@ -302,7 +318,8 @@ test<br />
 
         foreach ($fonts as $font) {
             $tests = [
-                "[font={$font}]test[/font]" => "<span style=\"font-family: {$font};\" class=\"mycode_font\">test</span>",
+                "[font={$font}]test[/font]" =>
+                    "<span style=\"font-family: {$font};\" class=\"mycode_font\">test</span>",
                 "[font={$font}]
 test
 [/font]" => "<span style=\"font-family: {$font};\" class=\"mycode_font\"><br />
@@ -329,11 +346,16 @@ test<br />
 
         foreach ($images as $imageUrl => $imageName) {
             $tests = [
-                "[img]{$imageUrl}[/img]" => "<img src=\"{$imageUrl}\" alt=\"[Image: {$imageName}]\" class=\"mycode_img\" />",
-                "[img=50x50]{$imageUrl}[/img]" => "<img src=\"{$imageUrl}\" width=\"50\" height=\"50\" alt=\"[Image: {$imageName}]\" class=\"mycode_img\" />",
-                "[img align=left]{$imageUrl}[/img]" => "<img src=\"{$imageUrl}\" alt=\"[Image: {$imageName}]\" style=\"float: left;\" class=\"mycode_img\" /><br class=\"clear\" />",
-                "[img align=right]{$imageUrl}[/img]" => "<img src=\"{$imageUrl}\" alt=\"[Image: {$imageName}]\" style=\"float: right;\" class=\"mycode_img\" /><br class=\"clear\" />",
-                "[img=50x50 align=left]{$imageUrl}[/img]" => "<img src=\"{$imageUrl}\" width=\"50\" height=\"50\" alt=\"[Image: {$imageName}]\" style=\"float: left;\" class=\"mycode_img\" /><br class=\"clear\" />",
+                "[img]{$imageUrl}[/img]" =>
+                    "<img src=\"{$imageUrl}\" alt=\"[Image: {$imageName}]\" class=\"mycode_img\" />",
+                "[img=50x50]{$imageUrl}[/img]" =>
+                    "<img src=\"{$imageUrl}\" width=\"50\" height=\"50\" alt=\"[Image: {$imageName}]\" class=\"mycode_img\" />",
+                "[img align=left]{$imageUrl}[/img]" =>
+                    "<img src=\"{$imageUrl}\" alt=\"[Image: {$imageName}]\" style=\"float: left;\" class=\"mycode_img\" /><br class=\"clear\" />",
+                "[img align=right]{$imageUrl}[/img]" =>
+                    "<img src=\"{$imageUrl}\" alt=\"[Image: {$imageName}]\" style=\"float: right;\" class=\"mycode_img\" /><br class=\"clear\" />",
+                "[img=50x50 align=left]{$imageUrl}[/img]" =>
+                    "<img src=\"{$imageUrl}\" width=\"50\" height=\"50\" alt=\"[Image: {$imageName}]\" style=\"float: left;\" class=\"mycode_img\" /><br class=\"clear\" />",
             ];
 
             foreach ($tests as $input => $expected) {
@@ -356,11 +378,16 @@ test<br />
 
         foreach ($images as $imageUrl => $imageName) {
             $tests = [
-                "[img]{$imageUrl}[/img]" => "[Image: <a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" class=\"mycode_url\"><a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" class=\"mycode_url\">{$imageUrl}</a></a>]",
-                "[img=50x50]{$imageUrl}[/img]" => "[Image: <a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" class=\"mycode_url\"><a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" class=\"mycode_url\">{$imageUrl}</a></a>]",
-                "[img align=left]{$imageUrl}[/img]" => "[Image: <a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" class=\"mycode_url\"><a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" class=\"mycode_url\">{$imageUrl}</a></a>]",
-                "[img align=right]{$imageUrl}[/img]" => "[Image: <a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" class=\"mycode_url\"><a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" class=\"mycode_url\">{$imageUrl}</a></a>]",
-                "[img=50x50 align=left]{$imageUrl}[/img]" => "[Image: <a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" class=\"mycode_url\"><a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" class=\"mycode_url\">{$imageUrl}</a></a>]",
+                "[img]{$imageUrl}[/img]" =>
+                    "[Image: <a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" class=\"mycode_url\"><a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" class=\"mycode_url\">{$imageUrl}</a></a>]",
+                "[img=50x50]{$imageUrl}[/img]" =>
+                    "[Image: <a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" class=\"mycode_url\"><a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" class=\"mycode_url\">{$imageUrl}</a></a>]",
+                "[img align=left]{$imageUrl}[/img]" =>
+                    "[Image: <a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" class=\"mycode_url\"><a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" class=\"mycode_url\">{$imageUrl}</a></a>]",
+                "[img align=right]{$imageUrl}[/img]" =>
+                    "[Image: <a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" class=\"mycode_url\"><a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" class=\"mycode_url\">{$imageUrl}</a></a>]",
+                "[img=50x50 align=left]{$imageUrl}[/img]" =>
+                    "[Image: <a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" class=\"mycode_url\"><a href=\"{$imageUrl}\" target=\"_blank\" rel=\"noopener\" class=\"mycode_url\">{$imageUrl}</a></a>]",
             ];
 
             foreach ($tests as $input => $expected) {
