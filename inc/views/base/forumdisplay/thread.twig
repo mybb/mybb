@@ -1,10 +1,8 @@
-{% set moved = (thread.moved[0] == 'moved') %}
-
 {# TO DO: THREAD RATINGS #}
 {# {% include 'forumdisplay/thread_rating.twig' %} #}
 
 <div class="row row--thread thread inline_row
-    {% if thread.unreadpost and moved != true %} thread--unread{% endif %}
+    {% if thread.unreadpost and thread.moved = 0 %} thread--unread{% endif %}
     {% if thread.sticky %} thread--sticky{% endif %}
     {% if modpermissions.ismod %} thread--moderator{% endif %}
     {% if thread.visible == -1 and modpermissions.canviewdeleted %} thread--deleted{% endif %}
@@ -31,7 +29,7 @@
             {% endif %}
 
             {# Go to unread link #}
-            {% if thread.unreadpost and moved != true %}
+            {% if thread.unreadpost and thread.moved = 0 %}
                 <a href="{{ thread.newpostlink }}" class="thread__status">
                     {{ include('partials/icon.twig', {icon: 'circle', class: '', title: lang.goto_first_unread}, with_context = false) }}
                 </a>
@@ -66,12 +64,12 @@
                 {% endif %}
 
                 {# Moved #}
-                {% if moved %}
+                {% if thread.moved %}
                     {{ include('partials/icon.twig', {icon: 'arrow-right', class: 'thread__icon fa-fw', title: lang.moved_prefix}, with_context = false) }}
                 {% endif %}
 
                 {# Closed #}
-                {% if thread.closed and moved != true %}
+                {% if thread.closed %}
                     {{ include('partials/icon.twig', {icon: 'lock', class: 'thread__icon fa-fw', title: lang.closed}, with_context = false) }}
                 {% endif %}
 
@@ -93,7 +91,7 @@
         {% endif %}
         <p class="thread__author">{{ lang.by }} {{ thread.profilelink|raw }}</p>
     </div>
-    {% if moved %}
+    {% if thread.moved %}
         <div class="thread__column thread__column--replies">&nbsp;</div>
     {% else %}
         <div class="thread__column thread__column--replies">

@@ -242,7 +242,7 @@ elseif(!$mybb->input['action'])
 	$unapproved_threads = my_number_format($stats['numunapprovedthreads']);
 
 	// Get the number of new threads for today
-	$query = $db->simple_select("threads", "COUNT(*) AS newthreads", "dateline > '$timecut' AND visible='1' AND closed NOT LIKE 'moved|%'");
+	$query = $db->simple_select("threads", "COUNT(*) AS newthreads", "dateline > '$timecut' AND visible='1' AND moved='0'");
 	$newthreads = my_number_format($db->fetch_field($query, "newthreads"));
 
 	// Get the number of posts

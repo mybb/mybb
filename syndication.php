@@ -157,7 +157,7 @@ if(!empty($onlyusfids))
 }
 
 // Get the threads to syndicate.
-$query = $db->simple_select("threads", "subject, tid, dateline, firstpost", "visible='1' AND closed NOT LIKE 'moved|%' {$permsql} {$forumlist}", array('order_by' => 'dateline', 'order_dir' => 'DESC', 'limit' => $thread_limit));
+$query = $db->simple_select("threads", "subject, tid, dateline, firstpost", "visible='1' AND moved='0' {$permsql} {$forumlist}", array('order_by' => 'dateline', 'order_dir' => 'DESC', 'limit' => $thread_limit));
 // Loop through all the threads.
 while($thread = $db->fetch_array($query))
 {
