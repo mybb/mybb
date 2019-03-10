@@ -21,9 +21,11 @@ final class PluginSystemTest extends TestCase
 
         $didRun = false;
 
-        $plugins->addHook($hookName, function () use (&$didRun) {
+        $this->assertTrue($plugins->addHook($hookName, function () use (&$didRun, $hookName, $plugins) {
             $didRun = true;
-        });
+
+            $this->assertEquals($hookName, $plugins->getCurrentHook());
+        }));
 
         $plugins->runHooks($hookName);
 
@@ -38,13 +40,15 @@ final class PluginSystemTest extends TestCase
 
         $didRun = false;
 
-        $plugins->addHook($hookName, function (int &$a) use (&$didRun) {
+        $this->assertTrue($plugins->addHook($hookName, function (int &$a) use (&$didRun, $hookName, $plugins) {
             $this->assertEquals(4, $a);
 
             $a += 1;
 
             $didRun  = true;
-        });
+
+            $this->assertEquals($hookName, $plugins->getCurrentHook());
+        }));
 
         $x = 4;
 
@@ -62,14 +66,18 @@ final class PluginSystemTest extends TestCase
 
         $didRun = false;
 
-        $plugins->addHook($hookName, function (int &$a, string &$b) use (&$didRun) {
-            $this->assertEquals(4, $a);
+        $this->assertTrue(
+            $plugins->addHook($hookName, function (int &$a, string &$b) use (&$didRun, $hookName, $plugins) {
+                $this->assertEquals(4, $a);
 
-            $a += 1;
-            $b .= ' world';
+                $a += 1;
+                $b .= ' world';
 
-            $didRun  = true;
-        });
+                $didRun  = true;
+
+                $this->assertEquals($hookName, $plugins->getCurrentHook());
+            })
+        );
 
         $x = 4;
         $y = 'hello';
@@ -100,7 +108,7 @@ final class PluginSystemTest extends TestCase
             }
         };
 
-        $plugins->addHook($hookName, [$obj, 'test']);
+        $this->assertTrue($plugins->addHook($hookName, [$obj, 'test']));
 
         $plugins->runHooks($hookName);
 
@@ -130,7 +138,7 @@ final class PluginSystemTest extends TestCase
 
         $x = 4;
 
-        $plugins->addHook($hookName, [$obj, 'test']);
+        $this->assertTrue($plugins->addHook($hookName, [$obj, 'test']));
 
         $plugins->runHooks($hookName, $x);
 
@@ -160,7 +168,7 @@ final class PluginSystemTest extends TestCase
             }
         };
 
-        $plugins->addHook($hookName, [$obj, 'test']);
+        $this->assertTrue($plugins->addHook($hookName, [$obj, 'test']));
 
         $x = 4;
         $y = 'hello';
@@ -191,7 +199,7 @@ final class PluginSystemTest extends TestCase
             }
         };
 
-        $plugins->addHook($hookName, [get_class($obj), 'test']);
+        $this->assertTrue($plugins->addHook($hookName, [get_class($obj), 'test']));
 
         $plugins->runHooks($hookName);
 
@@ -221,7 +229,7 @@ final class PluginSystemTest extends TestCase
 
         $x = 4;
 
-        $plugins->addHook($hookName, [get_class($obj), 'test']);
+        $this->assertTrue($plugins->addHook($hookName, [get_class($obj), 'test']));
 
         $plugins->runHooks($hookName, $x);
 
@@ -251,7 +259,7 @@ final class PluginSystemTest extends TestCase
             }
         };
 
-        $plugins->addHook($hookName, [get_class($obj), 'test']);
+        $this->assertTrue($plugins->addHook($hookName, [get_class($obj), 'test']));
 
         $x = 4;
         $y = 'hello';
@@ -261,5 +269,65 @@ final class PluginSystemTest extends TestCase
         $this->assertTrue($didRun);
         $this->assertEquals(5, $x);
         $this->assertEquals('hello world', $y);
+    }
+
+    public function testAddHookWithDuplicateHook()
+    {
+        $hookName = 'plugin_system_test_test_addHook_duplicate_hook';
+
+        $plugins = new \MyBB\PluginSystem();
+
+        $didRun = false;
+
+        $func = function (int &$a, string &$b) use (&$didRun) {
+            $a += 1;
+            $b .= ' world';
+
+            $didRun  = true;
+        };
+
+        $this->assertTrue($plugins->addHook($hookName, $func));
+        $this->assertTrue($plugins->addHook($hookName, $func));
+
+        $x = 4;
+        $y = 'hello';
+
+        $plugins->runHooks($hookName, $x, $y);
+
+        $this->assertTrue($didRun);
+        $this->assertEquals(5, $x);
+        $this->assertEquals('hello world', $y);
+    }
+
+    public function testRemoveHook()
+    {
+        $hookName = 'plugin_system_test_test_removeHook';
+
+        $plugins = new \MyBB\PluginSystem();
+
+        $didRun = false;
+
+        $func = function (int &$a, string &$b) use (&$didRun, $hookName, $plugins) {
+            $a += 1;
+            $b .= ' world';
+
+            $didRun  = true;
+
+            $this->assertEquals($hookName, $plugins->getCurrentHook());
+        };
+
+        $this->assertTrue($plugins->addHook($hookName, $func));
+        $this->assertTrue($plugins->removeHook($hookName, $func));
+
+        $x = 4;
+        $y = 'hello';
+
+        $plugins->runHooks($hookName, $x, $y);
+
+        $this->assertFalse($didRun);
+        $this->assertEquals(4, $x);
+        $this->assertEquals('hello', $y);
+
+        $this->assertEmpty($plugins->getCurrentHook());
     }
 }

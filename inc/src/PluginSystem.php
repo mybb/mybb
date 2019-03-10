@@ -150,11 +150,7 @@ class PluginSystem
                             require_once $hook['file'];
                         }
 
-                        $returnArgs = call_user_func_array($hook['function'], $arguments);
-
-                        if ($returnArgs) {
-                            $arguments = $returnArgs;
-                        }
+                        call_user_func_array($hook['function'], $arguments);
                     }
                 }
             }
