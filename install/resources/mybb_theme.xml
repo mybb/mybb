@@ -4787,7 +4787,7 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
-		<template name="member_lostpw" version="1818"><![CDATA[<html>
+		<template name="member_lostpw" version="1821"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->lost_pw}</title>
 {$headerinclude}
@@ -4807,7 +4807,7 @@ if(use_xmlhttprequest == "1")
 {$captcha}
 </table>
 <br />
-<div align="center"><input type="submit" class="button" value="{$lang->request_user_pass}" /></div>
+<div align="center"><input name="submit" type="submit" class="button" value="{$lang->request_user_pass}" /></div>
 <input type="hidden" name="action" value="do_lostpw" />
 </form>
 {$footer}
