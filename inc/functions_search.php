@@ -272,6 +272,8 @@ function clean_keywords_ft($keywords)
 	// Separate braces for further processing
 	$keywords = preg_replace("#((\+|-|<|>|~)?\(|\))#s", " $1 ", $keywords);
 	$keywords = preg_replace("#\s+#s", " ", $keywords);
+	//Replaces less than 3 characters
+	$keywords = preg_replace('/(\b.{1,2}\s)/','',$keywords);
 
 	$words = array(array());
 
