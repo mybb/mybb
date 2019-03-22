@@ -91,15 +91,26 @@ var Post = {
 		$('#multiquote_unloaded').hide();
 		Cookie.unset('multiquote');
 	},
-	
+
+	removeAttachmentText: function(aid, $editor)
+	{
+		var content = $editor.getBody().html();
+		content = content.replace("[attachment="+aid+"]", "");
+
+		$editor.val(content, false);
+	},
+
 	removeAttachment: function(aid)
 	{
+		var $editor = $("#message").sceditor('instance');
+
 		MyBB.prompt(removeattach_confirm, {
 			buttons:[
 					{title: yes_confirm, value: true},
 					{title: no_confirm, value: false}
 			],
 			submit: function(e,v,m,f){
+
 				if(v == true)
 				{
 					document.input.attachmentaid.value = aid;
@@ -131,6 +142,7 @@ var Post = {
 							{
 								$('#attachment_'+aid).hide(500, function()
 								{
+									Post.removeAttachmentText(aid, $editor);
 									$(this).remove();
 								});
 							}
