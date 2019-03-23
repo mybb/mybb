@@ -244,7 +244,6 @@ if ($mybb->input['action'] == "profile") {
 
         $user['skype'] = htmlspecialchars_uni($user['skype']);
         $user['google'] = htmlspecialchars_uni($user['google']);
-        $user['aim'] = htmlspecialchars_uni($user['aim']);
         $user['yahoo'] = htmlspecialchars_uni($user['yahoo']);
 
         $returndate = [];
@@ -557,7 +556,7 @@ if ($mybb->input['action'] == 'do_password' && $mybb->request_method == 'post') 
             $errors = $userhandler->get_friendly_errors();
         } else {
             $userhandler->update_user();
-            my_setcookie('mybbuser', $mybb->user['uid'] . '_' . $userhandler->data['loginkey'], null, true);
+            my_setcookie('mybbuser', $mybb->user['uid'] . '_' . $userhandler->data['loginkey'], null, true, "lax");
 
             // Notify the user by email that their password has been changed
             $mail_message = $lang->sprintf($lang->email_changepassword, $mybb->user['username'], $mybb->user['email'],
@@ -2349,6 +2348,13 @@ if ($mybb->input['action'] == "usergroups") {
             error($lang->already_sent_join_request);
         }
         if ($mybb->get_input('do') == "joingroup" && $usergroup['type'] == 4) {
+            $reasonlength = my_strlen($mybb->get_input('reason'));
+
+            if($reasonlength > 250) // Reason field is varchar(250) in database
+            {
+                error($lang->sprintf($lang->joinreason_too_long, ($reasonlength - 250)));
+            }
+
             $now = TIME_NOW;
             $joinrequest = array(
                 "uid" => $mybb->user['uid'],
@@ -2578,13 +2584,13 @@ if ($mybb->input['action'] == "attachments") {
     $usage = $db->fetch_array($query);
     $totalusage = $usage['ausage'];
     $totalattachments = $usage['acount'];
-    $friendlyusage = get_friendly_size($totalusage);
+    $friendlyusage = get_friendly_size((int)$totalusage);
     if ($mybb->usergroup['attachquota']) {
-        $percent = round(($totalusage/($mybb->usergroup['attachquota']*1024))*100)."%";
+        $percent = round(($totalusage/($mybb->usergroup['attachquota']*1024))*100);
+        $friendlyusage .= $lang->sprintf($lang->attachments_usage_percent, $percent);
         $attachquota = get_friendly_size($mybb->usergroup['attachquota']*1024);
-        $usagenote = $lang->sprintf($lang->attachments_usage_quota, $friendlyusage, $attachquota, $percent, $totalattachments);
+        $usagenote = $lang->sprintf($lang->attachments_usage_quota, $friendlyusage, $attachquota, $totalattachments);
     } else {
-        $percent = $lang->unlimited;
         $attachquota = $lang->unlimited;
         $usagenote = $lang->sprintf($lang->attachments_usage, $friendlyusage, $totalattachments);
     }
@@ -3027,8 +3033,8 @@ if (!$mybb->input['action']) {
                 }
 
                 if ($thread['closed'] == 1) {
-                    $thread['folder'] .= "lock";
-                    $thread['folder_label'] .= $lang->icon_lock;
+                    $thread['folder'] .= "close";
+                    $thread['folder_label'] .= $lang->icon_close;
                 }
 
                 $thread['folder'] .= "folder";
