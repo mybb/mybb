@@ -5162,78 +5162,83 @@ function get_inactive_forums()
  */
 function login_attempt_check($uid = 0, $fatal = true)
 {
-global $mybb, $lang, $session, $db;
-	if($mybb->settings['failedlogincount'] == 0)
-	{
-		return 1;
-	}
-	// Note: Number of logins is defaulted to 1, because using 0 seems to clear cookie data. Not really a problem as long as we account for 1 being default.
-	// Use cookie if possible, otherwise use session
-	// Find better solution to prevent clearing cookies
-	$loginattempts = 0;
-	$failedlogin = 0;
-	if(!empty($mybb->cookies['loginattempts']))
-	{
-		$loginattempts = $mybb->cookies['loginattempts'];
-	}
-	if(!empty($mybb->cookies['failedlogin']))
-	{
-		$failedlogin = $mybb->cookies['failedlogin'];
-	}
-	// Work out if the user has had more than the allowed number of login attempts
-	if($loginattempts > $mybb->settings['failedlogincount'])
-	{
-		// If so, then we need to work out if they can try to login again
-		// Some maths to work out how long they have left and display it to them
-		$now = TIME_NOW;
-		if(empty($mybb->cookies['failedlogin']))
-		{
-			$failedtime = $now;
-		}
-		else
-		{
-			$failedtime = $mybb->cookies['failedlogin'];
-		}
-		$secondsleft = $mybb->settings['failedlogintime'] * 60 + $failedtime - $now;
-		$hoursleft = floor($secondsleft / 3600);
-		$minsleft = floor(($secondsleft / 60) % 60);
-		$secsleft = floor($secondsleft % 60);
-		// This value will be empty the first time the user doesn't login in, set it
-		if(empty($failedlogin))
-		{
-			my_setcookie('failedlogin', $now);
-			if($fatal)
-			{
-				error($lang->sprintf($lang->failed_login_wait, $hoursleft, $minsleft, $secsleft));
-			}
-			return false;
-		}
-		// Work out if the user has waited long enough before letting them login again
-		if($mybb->cookies['failedlogin'] < ($now - $mybb->settings['failedlogintime'] * 60))
-		{
-			my_setcookie('loginattempts', 1);
-			my_unsetcookie('failedlogin');
-			if($mybb->user['uid'] != 0)
-			{
-				$update_array = array(
-					'loginattempts' => 1
-				);
-				$db->update_query("users", $update_array, "uid = '{$mybb->user['uid']}'");
-			}
-			return 1;
-		}
-		// Not waited long enough
-		else if($mybb->cookies['failedlogin'] > ($now - $mybb->settings['failedlogintime'] * 60))
-		{
-			if($fatal)
-			{
-				error($lang->sprintf($lang->failed_login_wait, $hoursleft, $minsleft, $secsleft));
-			}
-			return false;
-		}
-	}
-	// User can attempt another login
-	return $loginattempts;
+    global $mybb, $lang, $db;
+    $attempts = array();
+    $uid = (int)$uid;
+    $now = TIME_NOW;
+    // Get this user's login attempts and eventual lockout, if a uid is provided
+    if($uid > 0)
+    {
+        $query = $db->simple_select("users", "loginattempts, loginlockoutexpiry", "uid='{$uid}'", 1);
+        $attempts = $db->fetch_array($query);
+        if($attempts['loginattempts'] <= 0)
+        {
+            return 0;
+        }
+    }
+    // This user has a cookie lockout, show waiting time
+    elseif($mybb->cookies['lockoutexpiry'] && $mybb->cookies['lockoutexpiry'] > $now)
+    {
+        if($fatal)
+        {
+            $secsleft = (int)($mybb->cookies['lockoutexpiry'] - $now);
+            $hoursleft = floor($secsleft / 3600);
+            $minsleft = floor(($secsleft / 60) % 60);
+            $secsleft = floor($secsleft % 60);
+            error($lang->sprintf($lang->failed_login_wait, $hoursleft, $minsleft, $secsleft));
+        }
+        return false;
+    }
+    if($mybb->settings['failedlogincount'] > 0 && $attempts['loginattempts'] >= $mybb->settings['failedlogincount'])
+    {
+        // Set the expiry dateline if not set yet
+        if($attempts['loginlockoutexpiry'] == 0)
+        {
+            $attempts['loginlockoutexpiry'] = $now + ((int)$mybb->settings['failedlogintime'] * 60);
+            // Add a cookie lockout. This is used to prevent access to the login page immediately.
+            // A deep lockout is issued if he tries to login into a locked out account
+            my_setcookie('lockoutexpiry', $attempts['loginlockoutexpiry']);
+            $db->update_query("users", array(
+                "loginlockoutexpiry" => $attempts['loginlockoutexpiry']
+            ), "uid='{$uid}'");
+        }
+        if(empty($mybb->cookies['lockoutexpiry']))
+        {
+            $failedtime = $attempts['loginlockoutexpiry'];
+        }
+        else
+        {
+            $failedtime = $mybb->cookies['lockoutexpiry'];
+        }
+        // Are we still locked out?
+        if($attempts['loginlockoutexpiry'] > $now)
+        {
+            if($fatal)
+            {
+                $secsleft = (int)($attempts['loginlockoutexpiry'] - $now);
+                $hoursleft = floor($secsleft / 3600);
+                $minsleft = floor(($secsleft / 60) % 60);
+                $secsleft = floor($secsleft % 60);
+                error($lang->sprintf($lang->failed_login_wait, $hoursleft, $minsleft, $secsleft));
+            }
+            return false;
+        }
+        // Unlock if enough time has passed
+        else {
+            if($uid > 0)
+            {
+                $db->update_query("users", array(
+                    "loginattempts" => 0,
+                    "loginlockoutexpiry" => 0
+                ), "uid='{$uid}'");
+            }
+            // Wipe the cookie, no matter if a guest or a member
+            my_unsetcookie('lockoutexpiry');
+            return 0;
+        }
+    }
+    // User can attempt another login
+    return $attempts['loginattempts'];
 }
 
 /**
