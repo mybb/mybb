@@ -978,24 +978,25 @@ EOF;
 
 	// Avatar
 	$avatar_dimensions = preg_split('/[|x]/', $user['avatardimensions']);
+	if($user['avatardimensions'])
+	{
+		require_once MYBB_ROOT."inc/functions_image.php";
+		list($width, $height) = preg_split('/[|x]/', $user['avatardimensions']);
+		$scaled_dimensions = scale_image($width, $height, 120, 120);
+	}
+	else
+	{
+		$scaled_dimensions = array(
+			"width" => 120,
+			"height" => 120
+		);
+	}
 	if($user['avatar'] && (my_strpos($user['avatar'], '://') === false || $mybb->settings['allowremoteavatars']))
 	{
-		if($user['avatardimensions'])
-		{
-			require_once MYBB_ROOT."inc/functions_image.php";
-			list($width, $height) = preg_split('/[|x]/', $user['avatardimensions']);
-			$scaled_dimensions = scale_image($width, $height, 120, 120);
-		}
-		else
-		{
-			$scaled_dimensions = array(
-				"width" => 120,
-				"height" => 120
-			);
-		}
 		if(!my_validate_url($user['avatar']))
 		{
-			$user['avatar'] = "../{$user['avatar']}\n";
+			$avatar = format_avatar($user['avatar'], $user['avatardimensions']);
+			$user['avatar'] = $avatar['image'];
 		}
 	}
 	else
@@ -1008,10 +1009,6 @@ EOF;
 		{
 			$user['avatar'] = "../".str_replace('{theme}', 'images', $mybb->settings['useravatar']);
 		}
-		$scaled_dimensions = array(
-			"width" => 120,
-			"height" => 120
-		);
 	}
 	$avatar_top = ceil((126-$scaled_dimensions['height'])/2);
 	if($user['lastactive'])
