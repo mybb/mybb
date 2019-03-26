@@ -1610,6 +1610,7 @@ if($mybb->input['action'] == "empty")
 		$foldercount = my_number_format($thing['pmsinfolder']);
 		eval("\$folderlist .= \"".$templates->get("private_empty_folder")."\";");
 	}
+
 	$plugins->run_hooks("private_empty_end");
 
 	eval("\$folders = \"".$templates->get("private_empty")."\";");
