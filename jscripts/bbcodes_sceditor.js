@@ -1,6 +1,6 @@
 // This was taken from the SCEditor plugin for MyBB
 
-$(function($) {
+$(function ($) {
 	'use strict';
 
 	var $document = $(document);
@@ -10,43 +10,59 @@ $(function($) {
 	 * Add custom MyBB CSS *
 	 ***********************/
 	$('<style type="text/css">' +
-		'.sceditor-dropdown { text-align: ' + ($('body').css('direction') === 'rtl' ? 'right' :'left') + '; }' +
-	'</style>').appendTo('body');
+		'.sceditor-dropdown { text-align: ' + ($('body').css('direction') === 'rtl' ? 'right' : 'left') + '; }' +
+		'</style>').appendTo('body');
 
 
 
 	/********************************************
 	 * Update editor to use align= as alignment *
 	 ********************************************/
-	$.sceditor.plugins.bbcode.bbcode
+	$.sceditor.formats.bbcode
 		.set('align', {
-			html: function(element, attrs, content) {
+			html: function (element, attrs, content) {
 				return '<div align="' + (attrs.defaultattr || 'left') + '">' + content + '</div>';
 			},
 			isInline: false
 		})
-		.set('center', { format: '[align=center]{0}[/align]' })
-		.set('left', { format: '[align=left]{0}[/align]' })
-		.set('right', { format: '[align=right]{0}[/align]' })
-		.set('justify', { format: '[align=justify]{0}[/align]' });
+		.set('center', {
+			format: '[align=center]{0}[/align]'
+		})
+		.set('left', {
+			format: '[align=left]{0}[/align]'
+		})
+		.set('right', {
+			format: '[align=right]{0}[/align]'
+		})
+		.set('justify', {
+			format: '[align=justify]{0}[/align]'
+		});
 
 	$.sceditor.command
-		.set('center', { txtExec: ['[align=center]', '[/align]'] })
-		.set('left', { txtExec: ['[align=left]', '[/align]'] })
-		.set('right', { txtExec: ['[align=right]', '[/align]'] })
-		.set('justify', { txtExec: ['[align=justify]', '[/align]'] });
+		.set('center', {
+			txtExec: ['[align=center]', '[/align]']
+		})
+		.set('left', {
+			txtExec: ['[align=left]', '[/align]']
+		})
+		.set('right', {
+			txtExec: ['[align=right]', '[/align]']
+		})
+		.set('justify', {
+			txtExec: ['[align=justify]', '[/align]']
+		});
 
 
 
 	/************************************************
 	 * Update font to support MyBB's BBCode dialect *
 	 ************************************************/
-	$.sceditor.plugins.bbcode.bbcode
+	$.sceditor.formats.bbcode
 		.set('list', {
-			html: function(element, attrs, content) {
+			html: function (element, attrs, content) {
 				var type = (attrs.defaultattr === '1' ? 'ol' : 'ul');
 
-				if(attrs.defaultattr === 'a')
+				if (attrs.defaultattr === 'a')
 					type = 'ol type="a"';
 
 				return '<' + type + '>' + content + '</' + type + '>';
@@ -54,78 +70,88 @@ $(function($) {
 
 			breakAfter: false
 		})
-		.set('ul', { format: '[list]{0}[/list]' })
+		.set('ul', {
+			format: '[list]{0}[/list]'
+		})
 		.set('ol', {
-			format: function($elm, content) {
+			format: function ($elm, content) {
 				var type = ($elm.attr('type') === 'a' ? 'a' : '1');
 
 				return '[list=' + type + ']' + content + '[/list]';
 			}
 		})
-		.set('li', { format: '[*]{0}', excludeClosing: true })
-		.set('*', { excludeClosing: true, isInline: true });
+		.set('li', {
+			format: '[*]{0}',
+			excludeClosing: true
+		})
+		.set('*', {
+			excludeClosing: true,
+			isInline: true
+		});
 
 	$.sceditor.command
-		.set('bulletlist', { txtExec: ['[list]\n[*]', '\n[/list]'] })
-		.set('orderedlist', { txtExec: ['[list=1]\n[*]', '\n[/list]'] });
+		.set('bulletlist', {
+			txtExec: ['[list]\n[*]', '\n[/list]']
+		})
+		.set('orderedlist', {
+			txtExec: ['[list=1]\n[*]', '\n[/list]']
+		});
 
 
 
 	/***********************************************************
 	 * Update size tag to use xx-small-xx-large instead of 1-7 *
 	 ***********************************************************/
-	$.sceditor.plugins.bbcode.bbcode.set('size', {
-		format: function($elm, content) {
-			var	fontSize,
+	$.sceditor.formats.bbcode.set('size', {
+		format: function ($elm, content) {
+			var fontSize,
 				sizes = ['xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large'],
 				size = $elm.attr('size');
 
-				if (!size) {
-					fontSize = $elm.css('fontSize');
-					// Most browsers return px value but IE returns 1-7
-					if(fontSize.indexOf('px') > -1) {
-						// convert size to an int
-						fontSize = fontSize.replace('px', '') - 0;
-						size     = 1;
+			if (!size) {
+				fontSize = $elm.css('fontSize');
+				// Most browsers return px value but IE returns 1-7
+				if (fontSize.indexOf('px') > -1) {
+					// convert size to an int
+					fontSize = fontSize.replace('px', '') - 0;
+					size = 1;
 
-						if(fontSize > 9)
-							size = 2;
-						if(fontSize > 12)
-							size = 3;
-						if(fontSize > 15)
-							size = 4;
-						if(fontSize > 17)
-							size = 5;
-						if(fontSize > 23)
-							size = 6;
-						if(fontSize > 31)
-							size = 7;
-					}
-					else {
-						size = (~~fontSize) + 1;						
-					}
-
-					if(size > 7)
+					if (fontSize > 9)
+						size = 2;
+					if (fontSize > 12)
+						size = 3;
+					if (fontSize > 15)
+						size = 4;
+					if (fontSize > 17)
+						size = 5;
+					if (fontSize > 23)
+						size = 6;
+					if (fontSize > 31)
 						size = 7;
-					if(size < 1)
-						size = 1;
+				} else {
+					size = (~~fontSize) + 1;
+				}
 
-					size = sizes[size-1];
-				}
-				else {
-					size = sizes[size-1];
-				}
+				if (size > 7)
+					size = 7;
+				if (size < 1)
+					size = 1;
+
+				size = sizes[size - 1];
+			} else {
+				size = sizes[size - 1];
+			}
 
 			return '[size=' + size + ']' + content + '[/size]';
 		},
-		html: function(token, attrs, content) {
+		html: function (token, attrs, content) {
 			var sizes = ['xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large'],
-			size = $.inArray(attrs.defaultattr, sizes)+1;
+				size = $.inArray(attrs.defaultattr, sizes) + 1;
 			if (!isNaN(attrs.defaultattr)) {
 				size = attrs.defaultattr;
-				if(size > 7)
+				if (size > 7)
 					size = 7;
-				if(size < 1)
+				if (size < 1)
 					size = 1;
 			}
 			if (size < 0) {
@@ -136,42 +162,42 @@ $(function($) {
 	});
 
 	$.sceditor.command.set('size', {
-		_dropDown: function(editor, caller, callback) {
-			var	content   = $('<div />'),
+		_dropDown: function (editor, caller, callback) {
+			var content = $('<div />'),
 				clickFunc = function (e) {
 					callback($(this).data('size'));
 					editor.closeDropDown(true);
 					e.preventDefault();
 				};
 
-			for (var i=1; i <= 7; i++)
+			for (var i = 1; i <= 7; i++)
 				content.append($('<a class="sceditor-fontsize-option" data-size="' + i + '" href="#"><font size="' + i + '">' + i + '</font></a>').on('click', clickFunc));
 
-			editor.createDropDown(caller, 'fontsize-picker', content);
+			editor.createDropDown(caller, 'fontsize-picker', content[0]);
 		},
 		exec: function (caller) {
-			var	editor = this;
+			var editor = this;
 
 			$.sceditor.command.get('size')._dropDown(
 				editor,
 				caller,
-				function(fontSize) {
+				function (fontSize) {
 					editor.execCommand('fontsize', fontSize);
 				}
 			);
 		},
-		txtExec: function(caller) {
-			var	editor = this,
+		txtExec: function (caller) {
+			var editor = this,
 				sizes = ['xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large'];
 
 			$.sceditor.command.get('size')._dropDown(
 				editor,
 				caller,
-				function(size) {
+				function (size) {
 					size = (~~size);
-					size = (size > 7) ? 7 : ( (size < 1) ? 1 : size );
+					size = (size > 7) ? 7 : ((size < 1) ? 1 : size);
 
-					editor.insertText('[size=' + sizes[size-1] + ']', '[/size]');
+					editor.insertText('[size=' + sizes[size - 1] + ']', '[/size]');
 				}
 			);
 		}
@@ -182,49 +208,48 @@ $(function($) {
 	/********************************************
 	 * Update quote to support pid and dateline *
 	 ********************************************/
-	$.sceditor.plugins.bbcode.bbcode.set('quote', {
-		format: function(element, content) {
-			var	author = '',
-				$elm  = $(element),
+	$.sceditor.formats.bbcode.set('quote', {
+		format: function (element, content) {
+			var author = '',
+				$elm = $(element),
 				$cite = $elm.children('cite').first();
-				$cite.html($cite.text());
+			$cite.html($cite.text());
 
-			if($cite.length === 1 || $elm.data('author'))
-			{
+			if ($cite.length === 1 || $elm.data('author')) {
 				author = $cite.text() || $elm.data('author');
 
 				$elm.data('author', author);
 				$cite.remove();
 
-				content	= this.elementToBbcode($(element));
+				content = this.elementToBbcode($(element));
 				author = '=' + author.replace(/(^\s+|\s+$)/g, '');
 
 				$elm.prepend($cite);
 			}
 
-			if($elm.data('pid'))
+			if ($elm.data('pid'))
 				author += " pid='" + $elm.data('pid') + "'";
 
-			if($elm.data('dateline'))
+			if ($elm.data('dateline'))
 				author += " dateline='" + $elm.data('dateline') + "'";
 
 			return '[quote' + author + ']' + content + '[/quote]';
 		},
-		html: function(token, attrs, content) {
+		html: function (token, attrs, content) {
 			var data = '';
 
-			if(attrs.pid)
+			if (attrs.pid)
 				data += ' data-pid="' + attrs.pid + '"';
 
-			if(attrs.dateline)
+			if (attrs.dateline)
 				data += ' data-dateline="' + attrs.dateline + '"';
 
-			if(typeof attrs.defaultattr !== "undefined")
+			if (typeof attrs.defaultattr !== "undefined")
 				content = '<cite>' + attrs.defaultattr.replace(/ /g, '&nbsp;') + '</cite>' + content;
 
 			return '<blockquote' + data + '>' + content + '</blockquote>';
 		},
-		quoteType: function(val, name) {
+		quoteType: function (val, name) {
 			return "'" + val.replace("'", "\\'") + "'";
 		},
 		breakStart: true,
@@ -236,32 +261,26 @@ $(function($) {
 	/************************************************************
 	 * Update font tag to allow limiting to only first in stack *
 	 ************************************************************/
-	$.sceditor.plugins.bbcode.bbcode.set('font', {
-		format: function(element, content) {
+	$.sceditor.formats.bbcode.set('font', {
+		format: function (element, content) {
 			var font;
 
-			if(element[0].nodeName.toLowerCase() !== 'font' || !(font = element.attr('face')))
+			if (element[0].nodeName.toLowerCase() !== 'font' || !(font = element.attr('face')))
 				font = element.css('font-family');
 
 
-			if(typeof font == 'string' && font != '' && font != 'defaultattr')
-			{
+			if (typeof font == 'string' && font != '' && font != 'defaultattr') {
 				return '[font=' + this.stripQuotes(font) + ']' + content + '[/font]';
-			}
-			else
-			{
+			} else {
 				return content;
 			}
 		},
-		html: function(token, attrs, content) {
-			if(typeof attrs.defaultattr == 'string' && attrs.defaultattr != '' && attrs.defaultattr != '{defaultattr}')
-			{
+		html: function (token, attrs, content) {
+			if (typeof attrs.defaultattr == 'string' && attrs.defaultattr != '' && attrs.defaultattr != '{defaultattr}') {
 				return '<font face="' +
 					attrs.defaultattr +
 					'">' + content + '</font>';
-			}
-			else
-			{
+			} else {
 				return content;
 			}
 		}
@@ -272,7 +291,7 @@ $(function($) {
 	/************************
 	 * Add MyBB PHP command *
 	 ************************/
-	$.sceditor.plugins.bbcode.bbcode.set('php', {
+	$.sceditor.formats.bbcode.set('php', {
 		allowsEmpty: true,
 		isInline: false,
 		allowedChildren: ['#', '#newline'],
@@ -286,18 +305,18 @@ $(function($) {
 
 			$content = $(
 				'<div>' +
-					'<label for="php">' + editor._('PHP') + ':</label> ' +
-					'<textarea type="text" id="php" />' +					
+				'<label for="php">' + editor._('PHP') + ':</label> ' +
+				'<textarea type="text" id="php" />' +
 				'</div>' +
 				'<div><input type="button" class="button" value="' + editor._('Insert') + '" /></div>'
 			);
 
-			setTimeout(function() {
-				$content.find('#php').focus();
-			},100);
+			setTimeout(function () {
+				$content.find('#php').trigger('focus');
+			}, 100);
 
 			$content.find('.button').on('click', function (e) {
-				var	val = $content.find('#php').val(),
+				var val = $content.find('#php').val(),
 					before = '[php]',
 					end = '[/php]';
 
@@ -311,7 +330,7 @@ $(function($) {
 				e.preventDefault();
 			});
 
-			editor.createDropDown(caller, 'insertphp', $content);
+			editor.createDropDown(caller, 'insertphp', $content[0]);
 		},
 		exec: function (caller) {
 			if ($.trim(this.getRangeHelper().selectedRange())) {
@@ -329,7 +348,7 @@ $(function($) {
 	/******************************
 	 * Update code to support PHP *
 	 ******************************/
-	$.sceditor.plugins.bbcode.bbcode.set('code', {
+	$.sceditor.formats.bbcode.set('code', {
 		allowsEmpty: true,
 		tags: {
 			code: null
@@ -351,18 +370,18 @@ $(function($) {
 
 			$content = $(
 				'<div>' +
-					'<label for="code">' + editor._('Code') + ':</label> ' +
-					'<textarea type="text" id="code" />' +					
+				'<label for="code">' + editor._('Code') + ':</label> ' +
+				'<textarea type="text" id="code" />' +
 				'</div>' +
 				'<div><input type="button" class="button" value="' + editor._('Insert') + '" /></div>'
 			);
 
-			setTimeout(function() {
-				$content.find('#code').focus();
-			},100);
+			setTimeout(function () {
+				$content.find('#code').trigger('focus');
+			}, 100);
 
 			$content.find('.button').on('click', function (e) {
-				var	val = $content.find('#code').val(),
+				var val = $content.find('#code').val(),
 					before = '[code]',
 					end = '[/code]';
 
@@ -376,7 +395,7 @@ $(function($) {
 				e.preventDefault();
 			});
 
-			editor.createDropDown(caller, 'insertcode', $content);
+			editor.createDropDown(caller, 'insertcode', $content[0]);
 		},
 		exec: function (caller) {
 			if ($.trim(this.getRangeHelper().selectedRange())) {
@@ -399,39 +418,38 @@ $(function($) {
 
 			$content = $(
 				'<div>' +
-					'<label for="email">' + editor._('E-mail:') + '</label> ' +
-					'<input type="text" id="email" />' +					
+				'<label for="email">' + editor._('E-mail:') + '</label> ' +
+				'<input type="text" id="email" />' +
 				'</div>' +
 				'<div>' +
-					'<label for="des">' + editor._('Description (optional):') + '</label> ' +
-					'<input type="text" id="des" />' +
+				'<label for="des">' + editor._('Description (optional):') + '</label> ' +
+				'<input type="text" id="des" />' +
 				'</div>' +
 				'<div><input type="button" class="button" value="' + editor._('Insert') + '" /></div>'
 			);
 
 			$content.find('.button').on('click', function (e) {
-				var	val = $content.find('#email').val(),
+				var val = $content.find('#email').val(),
 					description = $content.find('#des').val();
 
-				if(val) {
+				if (val) {
 					// needed for IE to reset the last range
-					editor.focus();
+					editor.trigger('focus');
 
-					if(!editor.getRangeHelper().selectedHtml() || description) {
-						if(!description)
+					if (!editor.getRangeHelper().selectedHtml() || description) {
+						if (!description)
 							description = val;
 
 						editor.wysiwygEditorInsertHtml('<a href="' + 'mailto:' + val + '">' + description + '</a>');
-					}
-					else
+					} else
 						editor.execCommand('createlink', 'mailto:' + val);
-					}
+				}
 
 				editor.closeDropDown(true);
 				e.preventDefault();
 			});
 
-			editor.createDropDown(caller, 'insertemail', $content);
+			editor.createDropDown(caller, 'insertemail', $content[0]);
 		},
 		exec: function (caller) {
 			$.sceditor.command.get('email')._dropDown(this, caller);
@@ -443,7 +461,7 @@ $(function($) {
 	/**************************
 	 * Add MyBB video command *
 	 **************************/
-	$.sceditor.plugins.bbcode.bbcode.set('video', {
+	$.sceditor.formats.bbcode.set('video', {
 		allowsEmpty: true,
 		allowedChildren: ['#', '#newline'],
 		tags: {
@@ -451,11 +469,11 @@ $(function($) {
 				'data-mybb-vt': null
 			}
 		},
-		format: function($element, content) {
+		format: function ($element, content) {
 			return '[video=' + $element.data('mybb-vt') + ']' + $element.data('mybb-vsrc') + '[/video]';
 		},
-		html: function(token, attrs, content) {
-			var	matches, url,
+		html: function (token, attrs, content) {
+			var matches, url,
 				html = {
 					dailymotion: '<iframe frameborder="0" width="480" height="270" src="{url}" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>',
 					facebook: '<iframe src="{url}" width="625" height="350" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>',
@@ -467,46 +485,43 @@ $(function($) {
 					twitch: '<iframe src="{url}" frameborder="0" scrolling="no" height="378" width="620" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>'
 				};
 
-			if(html[attrs.defaultattr])
-			{
-				switch(attrs.defaultattr)
-				{
+			if (html[attrs.defaultattr]) {
+				switch (attrs.defaultattr) {
 					case 'dailymotion':
 						matches = content.match(/(dailymotion\.com\/video\/|dai\.ly\/)([^\/]+)/);
-						url     = matches ? '//www.dailymotion.com/embed/video/' + matches[2] : false;
+						url = matches ? '//www.dailymotion.com/embed/video/' + matches[2] : false;
 						break;
 					case 'facebook':
 						matches = content.match(/facebook\.com\/(?:photo.php\?v=|video\/video.php\?v=|video\/embed\?video_id=|v\/?)(\d+)/);
-						url     = matches ? 'https://www.facebook.com/video/embed?video_id=' + matches[1] : false;
+						url = matches ? 'https://www.facebook.com/video/embed?video_id=' + matches[1] : false;
 						break;
 					case 'liveleak':
 						matches = content.match(/liveleak\.com\/(?:view\?[a-z]=)([^\/]+)/);
-						url     = matches ? 'http://www.liveleak.com/ll_embed?i=' + matches[1] : false;
+						url = matches ? 'http://www.liveleak.com/ll_embed?i=' + matches[1] : false;
 						break;
 					case 'metacafe':
 						matches = content.match(/metacafe\.com\/watch\/([^\/]+)/);
-						url     = matches ? 'http://www.metacafe.com/embed/' + matches[1] + '/' : false;
+						url = matches ? 'http://www.metacafe.com/embed/' + matches[1] + '/' : false;
 						break;
 					case 'mixer':
 						matches = content.match(/mixer\.com\/([^\/]+)/);
-						url     = matches ? '//mixer.com/embed/player/' + matches[1] + "?disableLowLatency=1" : false;
+						url = matches ? '//mixer.com/embed/player/' + matches[1] + "?disableLowLatency=1" : false;
 						break;
 					case 'vimeo':
 						matches = content.match(/vimeo.com\/(\d+)($|\/)/);
-						url     = matches ? '//player.vimeo.com/video/' + matches[1] : false;
+						url = matches ? '//player.vimeo.com/video/' + matches[1] : false;
 						break;
 					case 'youtube':
 						matches = content.match(/(?:v=|v\/|embed\/|youtu\.be\/)(.{11})/);
-						url     = matches ? '//www.youtube.com/embed/' + matches[1] : false;
+						url = matches ? '//www.youtube.com/embed/' + matches[1] : false;
 						break;
 					case 'twitch':
 						matches = content.match(/twitch\.tv\/(?:[\w+_-]+)\/v\/(\d+)/);
-						url     = matches ? '//player.twitch.tv/?video=v' + matches[1] : false;
+						url = matches ? '//player.twitch.tv/?video=v' + matches[1] : false;
 						break;
 				}
 
-				if(url)
-				{
+				if (url) {
 					return html[attrs.defaultattr]
 						.replace('{url}', url)
 						.replace('{src}', content)
@@ -525,27 +540,27 @@ $(function($) {
 			// Excludes MySpace TV and Yahoo Video as I couldn't actually find them. Maybe they are gone now?
 			$content = $(
 				'<div>' +
-					'<label for="videotype">' + editor._('Video Type:') + '</label> ' +
-					'<select id="videotype">' +
-						'<option value="dailymotion">' + editor._('Dailymotion') + '</option>' +
-						'<option value="facebook">' + editor._('Facebook') + '</option>' +
-						'<option value="liveleak">' + editor._('LiveLeak') + '</option>' +
-						'<option value="metacafe">' + editor._('MetaCafe') + '</option>' +
-						'<option value="mixer">' + editor._('Mixer') + '</option>' +
-						'<option value="vimeo">' + editor._('Vimeo') + '</option>' +
-						'<option value="youtube">' + editor._('Youtube') + '</option>' +
-						'<option value="twitch">' + editor._('Twitch') + '</option>' +
-					'</select>'+
+				'<label for="videotype">' + editor._('Video Type:') + '</label> ' +
+				'<select id="videotype">' +
+				'<option value="dailymotion">' + editor._('Dailymotion') + '</option>' +
+				'<option value="facebook">' + editor._('Facebook') + '</option>' +
+				'<option value="liveleak">' + editor._('LiveLeak') + '</option>' +
+				'<option value="metacafe">' + editor._('MetaCafe') + '</option>' +
+				'<option value="mixer">' + editor._('Mixer') + '</option>' +
+				'<option value="vimeo">' + editor._('Vimeo') + '</option>' +
+				'<option value="youtube">' + editor._('Youtube') + '</option>' +
+				'<option value="twitch">' + editor._('Twitch') + '</option>' +
+				'</select>' +
 				'</div>' +
 				'<div>' +
-					'<label for="link">' + editor._('Video URL:') + '</label> ' +
-					'<input type="text" id="videourl" value="http://" />' +
+				'<label for="link">' + editor._('Video URL:') + '</label> ' +
+				'<input type="text" id="videourl" value="http://" />' +
 				'</div>' +
 				'<div><input type="button" class="button" value="' + editor._('Insert') + '" /></div>'
 			);
 
 			$content.find('.button').on('click', function (e) {
-				videourl  = $content.find('#videourl').val();
+				videourl = $content.find('#videourl').val();
 				videotype = $content.find('#videotype').val();
 
 				if (videourl !== '' && videourl !== 'http://')
@@ -554,8 +569,8 @@ $(function($) {
 				editor.closeDropDown(true);
 				e.preventDefault();
 			});
-
-			editor.createDropDown(caller, 'insertvideo', $content);
+			
+			editor.createDropDown(caller, 'insertvideo', $content.get(0));
 		},
 		exec: function (caller) {
 			$.sceditor.command.get('video')._dropDown(this, caller);
@@ -572,45 +587,47 @@ $(function($) {
 	 * Remove last bits of table, superscript/subscript, youtube and ltr/rtl support *
 	 *************************************/
 	$.sceditor.command
-	.remove('table').remove('subscript').remove('superscript').remove('youtube').remove('ltr').remove('rtl');
-	
-	$.sceditor.plugins.bbcode.bbcode
-	.remove('table').remove('tr').remove('th').remove('td').remove('sub').remove('sup').remove('youtube').remove('ltr').remove('rtl');
+		.remove('table').remove('subscript').remove('superscript').remove('youtube').remove('ltr').remove('rtl');
+
+	$.sceditor.formats.bbcode
+		.remove('table').remove('tr').remove('th').remove('td').remove('sub').remove('sup').remove('youtube').remove('ltr').remove('rtl');
 
 
 
 	/********************************************
 	 * Remove code and quote if in partial mode *
 	 ********************************************/
-	if(partialmode) {
-		$.sceditor.plugins.bbcode.bbcode.remove('code').remove('php').remove('quote').remove('video').remove('img');
+	if (partialmode) {
+		$.sceditor.formats.bbcode.remove('code').remove('php').remove('quote').remove('video').remove('img');
 		$.sceditor.command
 			.set('image', {
-				exec:  function (caller) {
-					var	editor  = this,
+				exec: function (caller) {
+					var editor = this,
 						content = $(this._('<form><div><label for="link">{0}</label> <input type="text" id="image" value="http://" /></div>' +
 							'<div><label for="width">{1}</label> <input type="text" id="width" size="2" /></div>' +
 							'<div><label for="height">{2}</label> <input type="text" id="height" size="2" /></div></form>',
-								this._("URL:"),
-								this._("Width (optional):"),
-								this._("Height (optional):")
-							))
-						.submit(function () {return false;});
+							this._("URL:"),
+							this._("Width (optional):"),
+							this._("Height (optional):")
+						))
+						.submit(function () {
+							return false;
+						});
 
 					content.append($(this._('<div><input type="button" class="button" value="Insert" /></div>',
-							this._("Insert")
-						)).on('click', function (e) {
-						var	$form = $(this).parent('form'),
+						this._("Insert")
+					)).on('click', function (e) {
+						var $form = $(this).parent('form'),
 							val = $form.find('#image').val(),
 							width = $form.find('#width').val(),
 							height = $form.find('#height').val(),
 							attrs = '';
 
-						if(width && height) {
+						if (width && height) {
 							attrs = '=' + width + 'x' + height;
 						}
 
-						if(val && val !== 'http://') {
+						if (val && val !== 'http://') {
 							editor.wysiwygEditorInsertHtml('[img' + attrs + ']' + val + '[/img]');
 						}
 
@@ -618,11 +635,11 @@ $(function($) {
 						e.preventDefault();
 					}));
 
-					editor.createDropDown(caller, 'insertimage', content);
+					editor.createDropDown(caller, 'insertimage', content[0]);
 				}
 			})
 			.set('quote', {
-				exec: function() {
+				exec: function () {
 					this.insert('[quote]', '[/quote]');
 				}
 			});
@@ -633,13 +650,13 @@ $(function($) {
 	/****************
 	 * Fix url code *
 	 ****************/
-	$.sceditor.plugins.bbcode.bbcode.set('url', {
-			html: function(token, attrs, content) {
+	$.sceditor.formats.bbcode.set('url', {
+		html: function (token, attrs, content) {
 
-				if(!attrs.defaultattr)
-					attrs.defaultattr = content;
+			if (!attrs.defaultattr)
+				attrs.defaultattr = content;
 
-				return '<a href="' + $.sceditor.escapeUriScheme($.sceditor.escapeEntities(attrs.defaultattr)) + '">' + content + '</a>';
-			}
+			return '<a href="' + $.sceditor.escapeUriScheme($.sceditor.escapeEntities(attrs.defaultattr)) + '">' + content + '</a>';
+		}
 	});
 });
