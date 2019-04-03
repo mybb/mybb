@@ -33,7 +33,7 @@ var question = {
 			$("#question_id").val(json.sid);
 		}
 
-		$('#answer').removeClass('error valid').val('').removeAttr('aria-invalid').removeData('previousValue')
+		$('#answer').removeClass('error valid').val('').prop('aria-invalid', null).removeData('previousValue')
 					.next('label').remove();
 	}
 };

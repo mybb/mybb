@@ -211,8 +211,8 @@ var UserCP = {
 					$("#sentrequests").html(request.responseText);
 				}
 				
-		        type_submit.removeAttr("disabled");
-		        type_add_username.removeAttr("disabled");
+		        type_submit.prop("disabled", false);
+		        type_add_username.prop("disabled", false);
 		        type_submit.attr("value", old_value);
 		        type_add_username.val("");
 		        type_add_username.focus();

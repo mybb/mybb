@@ -561,7 +561,7 @@ var Thread = {
 								if(json.first == 1)
 								{
 									$("#quick_reply_form, .thread_tools, .new_reply_button, .inline_rating").show();
-									$("#moderator_options_selector option.option_mirage").removeAttr("disabled");
+									$("#moderator_options_selector option.option_mirage").prop("disabled", false);
 									$("#moderator_options_selector option[value='restorethread']").val("softdeletethread").text(lang.softdelete_thread);
 								}
 
