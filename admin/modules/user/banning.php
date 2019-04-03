@@ -511,7 +511,7 @@ if(!$mybb->input['action'])
 		},
 	});
 
-  	$(\'[for=username]\').click(function(){
+  	$(\'[for=username]\').on(\'click\', function(){
 		$("#username").select2(\'open\');
 		return false;
 	});
