@@ -2648,7 +2648,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 			},
 		});
 
-		$(\'[for=username]\').click(function(){
+		$(\'[for=username]\').on(\'click\', function(){
 			$("#username").select2(\'open\');
 			return false;
 		});

@@ -57,7 +57,7 @@ var MyBB = {
 				var element = $(this);
 				if(element.hasClass('forum_off') || element.hasClass('forum_offclose') || element.hasClass('forum_offlink') || element.hasClass('subforum_minioff') || element.hasClass('subforum_minioffclose') || element.hasClass('subforum_miniofflink') || (element.attr("title") && element.attr("title") == lang.no_new_posts)) return;
 
-				element.click(function()
+				element.on('click', function()
 				{
 					MyBB.markForumRead(this);
 				});
@@ -86,7 +86,7 @@ var MyBB = {
 			});
 		}
 
-		$("a.referralLink").click(MyBB.showReferrals);
+		$("a.referralLink").on('click', MyBB.showReferrals);
 
 		if($('.author_avatar').length)
 		{
@@ -122,7 +122,7 @@ var MyBB = {
 		var modal = $(html);
 		modal.modal($.extend(defaults, options));
 		var buttons = modal.find('.modal_buttons > .button');
-		buttons.click(function(e)
+		buttons.on('click', function(e)
 		{
 			e.preventDefault();
 			var index = $(this).index();
@@ -520,7 +520,7 @@ var MyBB = {
 		var idPieces, uid;
 
 		e.preventDefault();
-		
+
 		if(typeof this.id == "undefined")
 		{
 			return false;

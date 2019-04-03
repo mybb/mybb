@@ -11,7 +11,7 @@ var Rating = {
 				elements.each(function()
 				{
 					var element = $(this);
-					element.click(function()
+					element.on('click', function()
 					{
 						var parameterString = element.attr("href").replace(/.*\?(.*)/, "$1");
 						return Rating.add_rating(parameterString);

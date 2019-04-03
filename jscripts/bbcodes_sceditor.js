@@ -145,7 +145,7 @@ $(function($) {
 				};
 
 			for (var i=1; i <= 7; i++)
-				content.append($('<a class="sceditor-fontsize-option" data-size="' + i + '" href="#"><font size="' + i + '">' + i + '</font></a>').click(clickFunc));
+				content.append($('<a class="sceditor-fontsize-option" data-size="' + i + '" href="#"><font size="' + i + '">' + i + '</font></a>').on('click', clickFunc));
 
 			editor.createDropDown(caller, 'fontsize-picker', content);
 		},
@@ -296,7 +296,7 @@ $(function($) {
 				$content.find('#php').focus();
 			},100);
 
-			$content.find('.button').click(function (e) {
+			$content.find('.button').on('click', function (e) {
 				var	val = $content.find('#php').val(),
 					before = '[php]',
 					end = '[/php]';
@@ -361,7 +361,7 @@ $(function($) {
 				$content.find('#code').focus();
 			},100);
 
-			$content.find('.button').click(function (e) {
+			$content.find('.button').on('click', function (e) {
 				var	val = $content.find('#code').val(),
 					before = '[code]',
 					end = '[/code]';
@@ -409,7 +409,7 @@ $(function($) {
 				'<div><input type="button" class="button" value="' + editor._('Insert') + '" /></div>'
 			);
 
-			$content.find('.button').click(function (e) {
+			$content.find('.button').on('click', function (e) {
 				var	val = $content.find('#email').val(),
 					description = $content.find('#des').val();
 
@@ -544,7 +544,7 @@ $(function($) {
 				'<div><input type="button" class="button" value="' + editor._('Insert') + '" /></div>'
 			);
 
-			$content.find('.button').click(function (e) {
+			$content.find('.button').on('click', function (e) {
 				videourl  = $content.find('#videourl').val();
 				videotype = $content.find('#videotype').val();
 
@@ -599,7 +599,7 @@ $(function($) {
 
 					content.append($(this._('<div><input type="button" class="button" value="Insert" /></div>',
 							this._("Insert")
-						)).click(function (e) {
+						)).on('click', function (e) {
 						var	$form = $(this).parent('form'),
 							val = $form.find('#image').val(),
 							width = $form.find('#width').val(),
