@@ -121,7 +121,7 @@
                 var inlineType = "thread";
                 var inlineId = {{ thread.tid }};
 
-                $("#inlinemoderation_options_selector").change(function() {
+                $("#inlinemoderation_options_selector").on('change', function() {
                     $("#inlinemoderation_options").submit();
                 })
             // -->
@@ -131,7 +131,7 @@
 </div>
 <script type="text/javascript">
 <!--
-    $("#moderator_options_selector").change(function() {
+    $("#moderator_options_selector").on('change', function() {
         $("#moderator_options").submit();
     })
 //-->

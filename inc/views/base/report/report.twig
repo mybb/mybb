@@ -38,7 +38,7 @@
         $("#reason").hide();
     }
 
-    $("#report_reason").change(function() {
+    $("#report_reason").on('change', function() {
         if ($(this).find("option:selected").attr('data-extra') == 1) {
             $("#reason").show();
             return;

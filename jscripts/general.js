@@ -19,7 +19,7 @@ var MyBB = {
 			var checked = $(this).is(':checked');
 			var checkboxes = $(this).closest('form').find(':checkbox').not('[name="allbox"]');
 
-			checkboxes.change(function() {
+			checkboxes.on('change', function() {
 				if(checked && !$(this).prop('checked'))
 				{
 					checked = false;
@@ -35,7 +35,7 @@ var MyBB = {
 					checkboxes.each(function() {
 						if(checked != $(this).is(':checked'))
 						{
-							$(this).prop('checked', checked).change();
+							$(this).prop('checked', checked).trigger('change');
 						}
 					});
 				}

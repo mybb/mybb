@@ -26,7 +26,7 @@
             </button>
         </form>
         <script type="text/javascript">
-            $(".forumjump").change(function() {
+            $(".forumjump").on('change', function() {
                 var option = $(this).val();
 
                 if(option < 0)

@@ -4138,7 +4138,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 </tr>]]></template>
 		<template name="forumdisplay_usersbrowsing" version="1400"><![CDATA[<span class="smalltext">{$lang->users_browsing_forum} {$onlinemembers}{$onlinesep}{$invisonline}{$onlinesep2}{$guestsonline}</span><br />]]></template>
 		<template name="forumdisplay_usersbrowsing_user" version="1400"><![CDATA[{$comma}{$user['profilelink']}{$invisiblemark}]]></template>
-		<template name="forumjump_advanced" version="1804"><![CDATA[<form action="forumdisplay.php" method="get">
+		<template name="forumjump_advanced" version="1821"><![CDATA[<form action="forumdisplay.php" method="get">
 <span class="smalltext"><strong>{$lang->forumjump}</strong></span>
 <select name="{$name}" class="forumjump">
 <option value="-4">{$lang->forumjump_pms}</option>
@@ -4151,7 +4151,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 {$gobutton}
 </form>
 <script type="text/javascript">
-$(".forumjump").change(function() {
+$(".forumjump").on('change', function() {
 	var option = $(this).val();
 
 	if(option < 0)
@@ -5101,11 +5101,11 @@ if(use_xmlhttprequest == "1")
 		</table>
 	</div>
 </div>]]></template>
-		<template name="member_register" version="1813"><![CDATA[<html>
+		<template name="member_register" version="1821"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->registration}</title>
 {$headerinclude}
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/validate/jquery.validate.min.js?ver=1813"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/validate/jquery.validate.min.js?ver=1821"></script>
 </head>
 <body>
 {$header}
@@ -5398,14 +5398,14 @@ if(use_xmlhttprequest == "1")
 <tr>
 	<td colspan="2" style="display: none;" id="password_status">&nbsp;</td>
 </tr>]]></template>
-		<template name="member_register_question" version="1808"><![CDATA[<br />
+		<template name="member_register_question" version="1821"><![CDATA[<br />
 <fieldset class="trow2">
 <script type="text/javascript">
 <!--
 	lang.question_fetch_failure = "{$lang->question_fetch_failure}";
 // -->
 </script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/question.js?ver=1808"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/question.js?ver=1821"></script>
 <legend><strong>{$lang->security_question}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
 <tr>
@@ -5488,14 +5488,14 @@ if(use_xmlhttprequest == "1")
 }
 // -->
 </script>]]></template>
-		<template name="member_register_regimage" version="1808"><![CDATA[<br />
+		<template name="member_register_regimage" version="1821"><![CDATA[<br />
 <fieldset class="trow2">
 <script type="text/javascript">
 <!--
 	lang.captcha_fetch_failure = "{$lang->captcha_fetch_failure}";
 // -->
 </script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/captcha.js?ver=1808"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/captcha.js?ver=1821"></script>
 <legend><strong>{$lang->image_verification}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
 <tr>
@@ -9463,7 +9463,7 @@ if(use_xmlhttprequest == "1")
 <td class="trow1" style="white-space: nowrap" align="center">{$attach_update_options} {$attach_add_options}</td>
 </tr>]]></template>
 		<template name="post_attachments_update" version="1604"><![CDATA[<input type="submit" class="button" name="updateattachment" value="{$lang->update_attachment}" tabindex="12" />]]></template>
-		<template name="post_captcha" version="1813"><![CDATA[<tr id="captcha_trow">
+		<template name="post_captcha" version="1821"><![CDATA[<tr id="captcha_trow">
 <td class="trow1" valign="top" width="350"><strong>{$lang->image_verification}</strong>
 <br />
 <span class="smalltext">{$lang->verification_note}</span>
@@ -9474,7 +9474,7 @@ if(use_xmlhttprequest == "1")
 	lang.captcha_fetch_failure = "{$lang->captcha_fetch_failure}";
 // -->
 </script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/captcha.js?ver=1808"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/captcha.js?ver=1821"></script>
 <table style="width: 300px; padding: 4px;">
 	<tr>
 		<td style="vertical-align: middle;"><img src="{$mybb->settings['bburl']}/captcha.php?imagehash={$imagehash}" alt="{$lang->image_verification}" title="{$lang->image_verification}" id="captcha_img" /><br /><span style="color: red;" class="smalltext">{$lang->verification_subnote}</span>
@@ -10415,11 +10415,11 @@ if(use_xmlhttprequest == "1")
 		<template name="private_search_results_nomessages" version="1600"><![CDATA[<tr>
 <td colspan="7" class="trow1">{$lang->nomessages}</td>
 </tr>]]></template>
-		<template name="private_send" version="1820"><![CDATA[<html>
+		<template name="private_send" version="1821"><![CDATA[<html>
 <head>
 <title>{$lang->compose_pm}</title>
 {$headerinclude}
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/usercp.js?ver=1808"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/usercp.js?ver=1821"></script>
 </head>
 <body>
 {$header}
@@ -10686,7 +10686,7 @@ document.write('<br /><span class="smalltext"><a href="javascript:void(0)" oncli
 	</div>
 </div>]]></template>
 		<template name="modal_button" version="1820"><![CDATA[<input type="submit" class="button" value="__title__"/>&nbsp;]]></template>
-		<template name="report" version="1809"><![CDATA[<div class="modal">
+		<template name="report" version="1821"><![CDATA[<div class="modal">
   <div style="overflow-y: auto; max-height: 400px;" class="modal_{$id}">
   <form action="report.php" method="post" class="reportData_{$id}" onsubmit="return Report.submitReport({$id});">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
@@ -10712,7 +10712,7 @@ document.write('<br /><span class="smalltext"><a href="javascript:void(0)" oncli
 		$("#reason").hide();
 	}
 
-	$("#report_reason").change(function()
+	$("#report_reason").on('change', function()
 	{
 		if($(this).find("option:selected").attr('data-extra') == 1)
 		{
@@ -11374,7 +11374,7 @@ if(use_xmlhttprequest == "1")
 <td width="5%" class="{$bgcolor}"><div class="postbit_buttons">{$emailcode}</div></td>
 <td width="5%" class="{$bgcolor}"><div class="postbit_buttons">{$pmcode}</div></td>
 </tr>]]></template>
-		<template name="showthread" version="1820"><![CDATA[<html>
+		<template name="showthread" version="1821"><![CDATA[<html>
 <head>
 <title>{$thread['subject']}</title>
 {$headerinclude}
@@ -11401,7 +11401,7 @@ if(use_xmlhttprequest == "1")
 <!-- jeditable (jquery) -->
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/report.js?ver=1820"></script>
 <script src="{$mybb->asset_url}/jscripts/jeditable/jeditable.min.js"></script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/thread.js?ver=1820"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/thread.js?ver=1821"></script>
 </head>
 <body>
 	{$header}
@@ -11511,7 +11511,7 @@ if(use_xmlhttprequest == "1")
 	var inlineType = "thread";
 	var inlineId = {$tid};
 
-	$("#inlinemoderation_options_selector").change(function() {
+	$("#inlinemoderation_options_selector").on('change', function() {
 		$("#inlinemoderation_options").submit();
 	})
 // -->
@@ -11550,7 +11550,7 @@ if(use_xmlhttprequest == "1")
 <br />
 <script type="text/javascript">
 <!--
-	$("#moderator_options_selector").change(function() {
+	$("#moderator_options_selector").on('change', function() {
 		$("#moderator_options").submit();
 	})
 //-->
@@ -12236,11 +12236,11 @@ if(use_xmlhttprequest == "1")
 		{$lang->no_requests}
 	</td>
 </tr>]]></template>
-		<template name="usercp_editlists" version="1820"><![CDATA[<html>
+		<template name="usercp_editlists" version="1821"><![CDATA[<html>
 <head>
 	<title>{$mybb->settings['bbname']} - {$lang->edit_lists}</title>
 	{$headerinclude}
-	<script type="text/javascript" src="{$mybb->asset_url}/jscripts/usercp.js?ver=1820"></script>
+	<script type="text/javascript" src="{$mybb->asset_url}/jscripts/usercp.js?ver=1821"></script>
 	<script type="text/javascript">
 		lang.remove_buddy = '{$lang->confirm_remove_buddy}';
 		lang.remove_ignored = '{$lang->confirm_remove_ignored}';
