@@ -75,7 +75,7 @@ $(function ($) {
 		})
 		.set('ol', {
 			format: function ($elm, content) {
-				var type = ($elm.attr('type') === 'a' ? 'a' : '1');
+				var type = ($($elm).attr('type') === 'a' ? 'a' : '1');
 
 				return '[list=' + type + ']' + content + '[/list]';
 			}
@@ -106,10 +106,10 @@ $(function ($) {
 		format: function ($elm, content) {
 			var fontSize,
 				sizes = ['xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large'],
-				size = $elm.attr('size');
+				size = $($elm).attr('size');
 
 			if (!size) {
-				fontSize = $elm.css('fontSize');
+				fontSize = $($elm).css('fontSize');
 				// Most browsers return px value but IE returns 1-7
 				if (fontSize.indexOf('px') > -1) {
 					// convert size to an int
@@ -173,7 +173,7 @@ $(function ($) {
 			for (var i = 1; i <= 7; i++)
 				content.append($('<a class="sceditor-fontsize-option" data-size="' + i + '" href="#"><font size="' + i + '">' + i + '</font></a>').on('click', clickFunc));
 
-			editor.createDropDown(caller, 'fontsize-picker', content[0]);
+			editor.createDropDown(caller, 'fontsize-picker', content.get(0));
 		},
 		exec: function (caller) {
 			var editor = this;
@@ -264,10 +264,9 @@ $(function ($) {
 	$.sceditor.formats.bbcode.set('font', {
 		format: function (element, content) {
 			var font;
-
-			if (element[0].nodeName.toLowerCase() !== 'font' || !(font = element.attr('face')))
-				font = element.css('font-family');
-
+			if (element.nodeName.toLowerCase() !== 'font' || !(font = $(element).attr('face'))) {
+				font = $(element).css('font-family');
+			}
 
 			if (typeof font == 'string' && font != '' && font != 'defaultattr') {
 				return '[font=' + this.stripQuotes(font) + ']' + content + '[/font]';
@@ -305,14 +304,16 @@ $(function ($) {
 
 			$content = $(
 				'<div>' +
+				'<div>' +
 				'<label for="php">' + editor._('PHP') + ':</label> ' +
 				'<textarea type="text" id="php" />' +
 				'</div>' +
-				'<div><input type="button" class="button" value="' + editor._('Insert') + '" /></div>'
+				'<div><input type="button" class="button" value="' + editor._('Insert') + '" /></div>' +
+				'</div>'
 			);
 
 			setTimeout(function () {
-				$content.find('#php').trigger('focus');
+				$content.find('#php').focus();
 			}, 100);
 
 			$content.find('.button').on('click', function (e) {
@@ -330,7 +331,7 @@ $(function ($) {
 				e.preventDefault();
 			});
 
-			editor.createDropDown(caller, 'insertphp', $content[0]);
+			editor.createDropDown(caller, 'insertphp', $content.get(0));
 		},
 		exec: function (caller) {
 			if ($.trim(this.getRangeHelper().selectedRange())) {
@@ -356,7 +357,7 @@ $(function ($) {
 		isInline: false,
 		allowedChildren: ['#', '#newline'],
 		format: function (element, content) {
-			if ($(element[0]).hasClass('phpcodeblock')) {
+			if ($(element).hasClass('phpcodeblock')) {
 				return '[php]' + content + '[/php]';
 			}
 			return '[code]' + content + '[/code]';
@@ -370,10 +371,12 @@ $(function ($) {
 
 			$content = $(
 				'<div>' +
+				'<div>' +
 				'<label for="code">' + editor._('Code') + ':</label> ' +
 				'<textarea type="text" id="code" />' +
 				'</div>' +
-				'<div><input type="button" class="button" value="' + editor._('Insert') + '" /></div>'
+				'<div><input type="button" class="button" value="' + editor._('Insert') + '" /></div>' +
+				'</div>'
 			);
 
 			setTimeout(function () {
@@ -395,7 +398,7 @@ $(function ($) {
 				e.preventDefault();
 			});
 
-			editor.createDropDown(caller, 'insertcode', $content[0]);
+			editor.createDropDown(caller, 'insertcode', $content.get(0));
 		},
 		exec: function (caller) {
 			if ($.trim(this.getRangeHelper().selectedRange())) {
@@ -418,6 +421,7 @@ $(function ($) {
 
 			$content = $(
 				'<div>' +
+				'<div>' +
 				'<label for="email">' + editor._('E-mail:') + '</label> ' +
 				'<input type="text" id="email" />' +
 				'</div>' +
@@ -425,7 +429,8 @@ $(function ($) {
 				'<label for="des">' + editor._('Description (optional):') + '</label> ' +
 				'<input type="text" id="des" />' +
 				'</div>' +
-				'<div><input type="button" class="button" value="' + editor._('Insert') + '" /></div>'
+				'<div><input type="button" class="button" value="' + editor._('Insert') + '" /></div>' +
+				'</div>'
 			);
 
 			$content.find('.button').on('click', function (e) {
@@ -434,7 +439,7 @@ $(function ($) {
 
 				if (val) {
 					// needed for IE to reset the last range
-					editor.trigger('focus');
+					editor.focus();
 
 					if (!editor.getRangeHelper().selectedHtml() || description) {
 						if (!description)
@@ -449,7 +454,7 @@ $(function ($) {
 				e.preventDefault();
 			});
 
-			editor.createDropDown(caller, 'insertemail', $content[0]);
+			editor.createDropDown(caller, 'insertemail', $content.get(0));
 		},
 		exec: function (caller) {
 			$.sceditor.command.get('email')._dropDown(this, caller);
@@ -540,6 +545,7 @@ $(function ($) {
 			// Excludes MySpace TV and Yahoo Video as I couldn't actually find them. Maybe they are gone now?
 			$content = $(
 				'<div>' +
+				'<div>' +
 				'<label for="videotype">' + editor._('Video Type:') + '</label> ' +
 				'<select id="videotype">' +
 				'<option value="dailymotion">' + editor._('Dailymotion') + '</option>' +
@@ -556,7 +562,8 @@ $(function ($) {
 				'<label for="link">' + editor._('Video URL:') + '</label> ' +
 				'<input type="text" id="videourl" value="http://" />' +
 				'</div>' +
-				'<div><input type="button" class="button" value="' + editor._('Insert') + '" /></div>'
+				'<div><input type="button" class="button" value="' + editor._('Insert') + '" /></div>' +
+				'</div>'
 			);
 
 			$content.find('.button').on('click', function (e) {
@@ -569,7 +576,7 @@ $(function ($) {
 				editor.closeDropDown(true);
 				e.preventDefault();
 			});
-			
+
 			editor.createDropDown(caller, 'insertvideo', $content.get(0));
 		},
 		exec: function (caller) {
@@ -635,7 +642,7 @@ $(function ($) {
 						e.preventDefault();
 					}));
 
-					editor.createDropDown(caller, 'insertimage', content[0]);
+					editor.createDropDown(caller, 'insertimage', content.get(0));
 				}
 			})
 			.set('quote', {
