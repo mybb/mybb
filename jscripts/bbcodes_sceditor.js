@@ -1,62 +1,78 @@
-// This was taken from the SCEditor plugin for MyBB
-
 $(function ($) {
 	'use strict';
 
-	var $document = $(document);
+	var mybbCmd = {
+		align: ['left', 'center', 'right', 'justify'],
+		fsStr: ['xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large'],
+		fSize: [9, 12, 15, 17, 23, 31],
+		video: {
+			'Dailymotion': {
+				'match': /(dailymotion\.com\/video\/|dai\.ly\/)([^\/]+)/,
+				'url': '//www.dailymotion.com/embed/video/',
+				'html': '<iframe frameborder="0" width="480" height="270" src="{url}" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>'
+			},
+			'Facebook': {
+				'match': /facebook\.com\/(?:photo.php\?v=|video\/video.php\?v=|video\/embed\?video_id=|v\/?)(\d+)/,
+				'url': 'https://www.facebook.com/video/embed?video_id=',
+				'html': '<iframe src="{url}" width="625" height="350" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>'
+			},
+			'Liveleak': {
+				'match': /liveleak\.com\/(?:view\?[a-z]=)([^\/]+)/,
+				'url': 'http://www.liveleak.com/ll_embed?i=',
+				'html': '<iframe width="500" height="300" src="{url}" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>'
+			},
+			'MetaCafe': {
+				'match': /metacafe\.com\/watch\/([^\/]+)/,
+				'url': 'http://www.metacafe.com/embed/',
+				'html': '<iframe src="{url}" width="440" height="248" frameborder=0 data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>'
+			},
+			'Mixer': {
+				'match': /mixer\.com\/([^\/]+)/,
+				'url': '//mixer.com/embed/player/',
+				'html': '<iframe allowfullscreen="true" src="{url}" width="620" height="349" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>'
+			},
+			'Vemio': {
+				'match': /vimeo.com\/(\d+)($|\/)/,
+				'url': '//player.vimeo.com/video/',
+				'html': '<iframe src="{url}" width="500" height="281" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>'
+			},
+			'Youtube': {
+				'match': /(?:v=|v\/|embed\/|youtu\.be\/)(.{11})/,
+				'url': '//www.youtube.com/embed/',
+				'html': '<iframe width="560" height="315" src="{url}" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>'
+			},
+			'Twitch': {
+				'match': /twitch\.tv\/(?:[\w+_-]+)\/v\/(\d+)/,
+				'url': '//player.twitch.tv/?video=v',
+				'html': '<iframe src="{url}" frameborder="0" scrolling="no" height="378" width="620" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>'
+			}
+		}
+	};
 
-
-	/***********************
-	 * Add custom MyBB CSS *
-	 ***********************/
+	// Add custom MyBB CSS
 	$('<style type="text/css">' +
 		'.sceditor-dropdown { text-align: ' + ($('body').css('direction') === 'rtl' ? 'right' : 'left') + '; }' +
 		'</style>').appendTo('body');
 
-
-
-	/********************************************
-	 * Update editor to use align= as alignment *
-	 ********************************************/
+	// Update editor to use align= as alignment
 	$.sceditor.formats.bbcode
 		.set('align', {
 			html: function (element, attrs, content) {
 				return '<div align="' + (attrs.defaultattr || 'left') + '">' + content + '</div>';
 			},
 			isInline: false
-		})
-		.set('center', {
-			format: '[align=center]{0}[/align]'
-		})
-		.set('left', {
-			format: '[align=left]{0}[/align]'
-		})
-		.set('right', {
-			format: '[align=right]{0}[/align]'
-		})
-		.set('justify', {
-			format: '[align=justify]{0}[/align]'
 		});
-
-	$.sceditor.command
-		.set('center', {
-			txtExec: ['[align=center]', '[/align]']
-		})
-		.set('left', {
-			txtExec: ['[align=left]', '[/align]']
-		})
-		.set('right', {
-			txtExec: ['[align=right]', '[/align]']
-		})
-		.set('justify', {
-			txtExec: ['[align=justify]', '[/align]']
+	$.each(mybbCmd.align, function (i, val) {
+		$.sceditor.formats.bbcode.set(val, {
+			format: '[align=' + val + ']{0}[/align]'
 		});
+		$.sceditor.command
+			.set(val, {
+				txtExec: ['[align=' + val + ']', '[/align]']
+			});
+	});
 
-
-
-	/************************************************
-	 * Update font to support MyBB's BBCode dialect *
-	 ************************************************/
+	// Update font to support MyBB's BBCode dialect
 	$.sceditor.formats.bbcode
 		.set('list', {
 			html: function (element, attrs, content) {
@@ -97,15 +113,10 @@ $(function ($) {
 			txtExec: ['[list=1]\n[*]', '\n[/list]']
 		});
 
-
-
-	/***********************************************************
-	 * Update size tag to use xx-small-xx-large instead of 1-7 *
-	 ***********************************************************/
+	// Update size tag to use xx-small-xx-large instead of 1-7
 	$.sceditor.formats.bbcode.set('size', {
 		format: function ($elm, content) {
 			var fontSize,
-				sizes = ['xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large'],
 				size = $($elm).attr('size');
 
 			if (!size) {
@@ -113,40 +124,22 @@ $(function ($) {
 				// Most browsers return px value but IE returns 1-7
 				if (fontSize.indexOf('px') > -1) {
 					// convert size to an int
-					fontSize = fontSize.replace('px', '') - 0;
+					fontSize = parseInt(fontSize);
 					size = 1;
-
-					if (fontSize > 9)
-						size = 2;
-					if (fontSize > 12)
-						size = 3;
-					if (fontSize > 15)
-						size = 4;
-					if (fontSize > 17)
-						size = 5;
-					if (fontSize > 23)
-						size = 6;
-					if (fontSize > 31)
-						size = 7;
+					$.each(mybbCmd.fSize, function (i, val) {
+						if (fontSize > val) size = i + 2;
+					});
 				} else {
 					size = (~~fontSize) + 1;
 				}
-
-				if (size > 7)
-					size = 7;
-				if (size < 1)
-					size = 1;
-
-				size = sizes[size - 1];
+				size = (size >= 7) ? mybbCmd.fsStr[6] : ((size <= 1) ? mybbCmd.fsStr[0] : mybbCmd.fsStr[size - 1]);
 			} else {
-				size = sizes[size - 1];
+				size = mybbCmd.fsStr[size - 1];
 			}
-
 			return '[size=' + size + ']' + content + '[/size]';
 		},
 		html: function (token, attrs, content) {
-			var sizes = ['xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large'],
-				size = $.inArray(attrs.defaultattr, sizes) + 1;
+			var size = $.inArray(attrs.defaultattr, mybbCmd.fsStr) + 1;
 			if (!isNaN(attrs.defaultattr)) {
 				size = attrs.defaultattr;
 				if (size > 7)
@@ -187,8 +180,7 @@ $(function ($) {
 			);
 		},
 		txtExec: function (caller) {
-			var editor = this,
-				sizes = ['xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large'];
+			var editor = this;
 
 			$.sceditor.command.get('size')._dropDown(
 				editor,
@@ -196,18 +188,13 @@ $(function ($) {
 				function (size) {
 					size = (~~size);
 					size = (size > 7) ? 7 : ((size < 1) ? 1 : size);
-
-					editor.insertText('[size=' + sizes[size - 1] + ']', '[/size]');
+					editor.insertText('[size=' + mybbCmd.fsStr[size - 1] + ']', '[/size]');
 				}
 			);
 		}
 	});
 
-
-
-	/********************************************
-	 * Update quote to support pid and dateline *
-	 ********************************************/
+	// Update quote to support pid and dateline
 	$.sceditor.formats.bbcode.set('quote', {
 		format: function (element, content) {
 			var author = '',
@@ -256,17 +243,13 @@ $(function ($) {
 		breakEnd: true
 	});
 
-
-
-	/************************************************************
-	 * Update font tag to allow limiting to only first in stack *
-	 ************************************************************/
+	// Update font tag to allow limiting to only first in stack
 	$.sceditor.formats.bbcode.set('font', {
 		format: function (element, content) {
 			var font;
-			if (element.nodeName.toLowerCase() !== 'font' || !(font = $(element).attr('face'))) {
+			if (element.nodeName.toLowerCase() !== 'font' || !(font = $(element).attr('face')))
 				font = $(element).css('font-family');
-			}
+
 
 			if (typeof font == 'string' && font != '' && font != 'defaultattr') {
 				return '[font=' + this.stripQuotes(font) + ']' + content + '[/font]';
@@ -285,11 +268,7 @@ $(function ($) {
 		}
 	});
 
-
-
-	/************************
-	 * Add MyBB PHP command *
-	 ************************/
+	// Add MyBB PHP command
 	$.sceditor.formats.bbcode.set('php', {
 		allowsEmpty: true,
 		isInline: false,
@@ -344,11 +323,7 @@ $(function ($) {
 		tooltip: "PHP"
 	});
 
-
-
-	/******************************
-	 * Update code to support PHP *
-	 ******************************/
+	// Update code to support PHP
 	$.sceditor.formats.bbcode.set('code', {
 		allowsEmpty: true,
 		tags: {
@@ -410,11 +385,7 @@ $(function ($) {
 		txtExec: ['[code]', '[/code]'],
 	});
 
-
-
-	/***************************************
-	 * Update email to support description *
-	 ***************************************/
+	// Update email to support description
 	$.sceditor.command.set('email', {
 		_dropDown: function (editor, caller) {
 			var $content;
@@ -461,11 +432,7 @@ $(function ($) {
 		}
 	});
 
-
-
-	/**************************
-	 * Add MyBB video command *
-	 **************************/
+	// Add MyBB video command
 	$.sceditor.formats.bbcode.set('video', {
 		allowsEmpty: true,
 		allowedChildren: ['#', '#newline'],
@@ -475,88 +442,34 @@ $(function ($) {
 			}
 		},
 		format: function ($element, content) {
-			return '[video=' + $element.data('mybb-vt') + ']' + $element.data('mybb-vsrc') + '[/video]';
+			return '[video=' + $($element).data('mybb-vt') + ']' + $($element).data('mybb-vsrc') + '[/video]';
 		},
 		html: function (token, attrs, content) {
-			var matches, url,
-				html = {
-					dailymotion: '<iframe frameborder="0" width="480" height="270" src="{url}" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>',
-					facebook: '<iframe src="{url}" width="625" height="350" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>',
-					liveleak: '<iframe width="500" height="300" src="{url}" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>',
-					metacafe: '<iframe src="{url}" width="440" height="248" frameborder=0 data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>',
-					mixer: '<iframe allowfullscreen="true" src="{url}" width="620" height="349" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>',
-					vimeo: '<iframe src="{url}" width="500" height="281" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>',
-					youtube: '<iframe width="560" height="315" src="{url}" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>',
-					twitch: '<iframe src="{url}" frameborder="0" scrolling="no" height="378" width="620" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>'
-				};
-
-			if (html[attrs.defaultattr]) {
-				switch (attrs.defaultattr) {
-					case 'dailymotion':
-						matches = content.match(/(dailymotion\.com\/video\/|dai\.ly\/)([^\/]+)/);
-						url = matches ? '//www.dailymotion.com/embed/video/' + matches[2] : false;
-						break;
-					case 'facebook':
-						matches = content.match(/facebook\.com\/(?:photo.php\?v=|video\/video.php\?v=|video\/embed\?video_id=|v\/?)(\d+)/);
-						url = matches ? 'https://www.facebook.com/video/embed?video_id=' + matches[1] : false;
-						break;
-					case 'liveleak':
-						matches = content.match(/liveleak\.com\/(?:view\?[a-z]=)([^\/]+)/);
-						url = matches ? 'http://www.liveleak.com/ll_embed?i=' + matches[1] : false;
-						break;
-					case 'metacafe':
-						matches = content.match(/metacafe\.com\/watch\/([^\/]+)/);
-						url = matches ? 'http://www.metacafe.com/embed/' + matches[1] + '/' : false;
-						break;
-					case 'mixer':
-						matches = content.match(/mixer\.com\/([^\/]+)/);
-						url = matches ? '//mixer.com/embed/player/' + matches[1] + "?disableLowLatency=1" : false;
-						break;
-					case 'vimeo':
-						matches = content.match(/vimeo.com\/(\d+)($|\/)/);
-						url = matches ? '//player.vimeo.com/video/' + matches[1] : false;
-						break;
-					case 'youtube':
-						matches = content.match(/(?:v=|v\/|embed\/|youtu\.be\/)(.{11})/);
-						url = matches ? '//www.youtube.com/embed/' + matches[1] : false;
-						break;
-					case 'twitch':
-						matches = content.match(/twitch\.tv\/(?:[\w+_-]+)\/v\/(\d+)/);
-						url = matches ? '//player.twitch.tv/?video=v' + matches[1] : false;
-						break;
-				}
-
-				if (url) {
-					return html[attrs.defaultattr]
-						.replace('{url}', url)
-						.replace('{src}', content)
-						.replace('{type}', attrs.defaultattr);
-				}
+			var params = mybbCmd.video[Object.keys(mybbCmd.video).find(key => key.toLowerCase() === attrs.defaultattr)];
+			var matches, url;
+			if (params['html']) {
+				matches = content.match(params['match']);
+				url = matches ? params['url'] + matches[1] : false;
 			}
-
+			if (url) {
+				return params['html'].replace('{url}', url).replace('{src}', content).replace('{type}', attrs.defaultattr);
+			}
 			return $.sceditor.escapeEntities(token.val + content + (token.closing ? token.closing.val : ''));
 		}
 	});
 
 	$.sceditor.command.set('video', {
 		_dropDown: function (editor, caller) {
-			var $content, videourl, videotype;
+			var $content, videourl, videotype, videoOpts;
 
-			// Excludes MySpace TV and Yahoo Video as I couldn't actually find them. Maybe they are gone now?
+			$.each(mybbCmd.video, function (provider, data) {
+				videoOpts += '<option value="' + provider.toLowerCase() + '">' + editor._(provider) + '</option>';
+			});
 			$content = $(
 				'<div>' +
 				'<div>' +
 				'<label for="videotype">' + editor._('Video Type:') + '</label> ' +
-				'<select id="videotype">' +
-				'<option value="dailymotion">' + editor._('Dailymotion') + '</option>' +
-				'<option value="facebook">' + editor._('Facebook') + '</option>' +
-				'<option value="liveleak">' + editor._('LiveLeak') + '</option>' +
-				'<option value="metacafe">' + editor._('MetaCafe') + '</option>' +
-				'<option value="mixer">' + editor._('Mixer') + '</option>' +
-				'<option value="vimeo">' + editor._('Vimeo') + '</option>' +
-				'<option value="youtube">' + editor._('Youtube') + '</option>' +
-				'<option value="twitch">' + editor._('Twitch') + '</option>' +
-				'</select>' +
+				'<select id="videotype">' + videoOpts + '</select>' +
 				'</div>' +
 				'<div>' +
 				'<label for="link">' + editor._('Video URL:') + '</label> ' +
@@ -588,22 +501,14 @@ $(function ($) {
 		tooltip: 'Insert a video'
 	});
 
-
-
-	/*************************************
-	 * Remove last bits of table, superscript/subscript, youtube and ltr/rtl support *
-	 *************************************/
+	// Remove last bits of table, superscript/subscript, youtube and ltr/rtl support
 	$.sceditor.command
 		.remove('table').remove('subscript').remove('superscript').remove('youtube').remove('ltr').remove('rtl');
 
 	$.sceditor.formats.bbcode
 		.remove('table').remove('tr').remove('th').remove('td').remove('sub').remove('sup').remove('youtube').remove('ltr').remove('rtl');
 
-
-
-	/********************************************
-	 * Remove code and quote if in partial mode *
-	 ********************************************/
+	// Remove code and quote if in partial mode
 	if (partialmode) {
 		$.sceditor.formats.bbcode.remove('code').remove('php').remove('quote').remove('video').remove('img');
 		$.sceditor.command
@@ -652,11 +557,7 @@ $(function ($) {
 			});
 	}
 
-
-
-	/****************
-	 * Fix url code *
-	 ****************/
+	// Fix url code
 	$.sceditor.formats.bbcode.set('url', {
 		html: function (token, attrs, content) {
 

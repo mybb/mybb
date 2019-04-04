@@ -1047,6 +1047,7 @@ var partialmode = {$mybb->settings['partialmode']},
 opt_editor = {
 	plugins: "undo",
 	format: "bbcode",
+	bbcodeTrim: true,
 	style: "../jscripts/sceditor/styles/jquery.sceditor.mybb.css",
 	rtl: {$lang->settings['rtl']},
 	locale: "mybblang",
