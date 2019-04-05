@@ -122,7 +122,7 @@
                 var inlineId = {{ thread.tid }};
 
                 $("#inlinemoderation_options_selector").on('change', function() {
-                    $("#inlinemoderation_options").submit();
+                    $("#inlinemoderation_options").trigger('submit');
                 })
             // -->
             </script>
@@ -132,7 +132,7 @@
 <script type="text/javascript">
 <!--
     $("#moderator_options_selector").on('change', function() {
-        $("#moderator_options").submit();
+        $("#moderator_options").trigger('submit');
     })
 //-->
 </script>

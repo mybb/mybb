@@ -3772,7 +3772,7 @@ function build_users_view($view)
 	}
 	$built_view .= "<script type=\"text/javascript\">
 		var form = $(\"#search_form\");
-		form.submit(function() {
+		form.on('submit', function() {
 			var search = $('#search_keywords');
 			if(search.val() == '' || search.val() == '".addcslashes($lang->search_for_user, "'")."')
 			{

@@ -5524,7 +5524,7 @@ if(use_xmlhttprequest == "1")
 <script type="text/javascript">
 
 	var captchaOnSubmit = function(token) {
-		$("#registration_form").submit();
+		$("#registration_form").trigger('submit');
 	};
 
 	var captchaOnloadCallback = function() {
@@ -11512,7 +11512,7 @@ if(use_xmlhttprequest == "1")
 	var inlineId = {$tid};
 
 	$("#inlinemoderation_options_selector").on('change', function() {
-		$("#inlinemoderation_options").submit();
+		$("#inlinemoderation_options").trigger('submit');
 	})
 // -->
 </script><br />]]></template>
@@ -11551,7 +11551,7 @@ if(use_xmlhttprequest == "1")
 <script type="text/javascript">
 <!--
 	$("#moderator_options_selector").on('change', function() {
-		$("#moderator_options").submit();
+		$("#moderator_options").trigger('submit');
 	})
 //-->
 </script>]]></template>

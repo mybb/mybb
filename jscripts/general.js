@@ -46,7 +46,7 @@ var MyBB = {
 		var initialfocus = $(".initial_focus");
 		if(initialfocus.length)
 		{
-			initialfocus.focus();
+			initialfocus.trigger('focus');
 		}
 
 		if(typeof(use_xmlhttprequest) != "undefined" && use_xmlhttprequest == 1)
@@ -77,7 +77,7 @@ var MyBB = {
 				$("body").css("overflow", "hidden");
 				if(initialfocus.length > 0)
 				{
-					initialfocus.focus();
+					initialfocus.trigger('focus');
 				}
 			});
 
@@ -136,7 +136,7 @@ var MyBB = {
 		{
 			modal.on($.modal.OPEN, function()
 			{
-				buttons[0].focus();
+				buttons[0].trigger('focus');
 			});
 		}
 
@@ -200,7 +200,7 @@ var MyBB = {
 					);
 
 					$("body").append(form);
-					form.submit();
+					form.trigger('submit');
 				}
 			}
 		});
@@ -279,7 +279,7 @@ var MyBB = {
 					);
 
 					$("body").append(form);
-					form.submit();
+					form.trigger('submit');
 				}
 			}
 		});
@@ -392,7 +392,7 @@ var MyBB = {
 		{
 			return false;
 		}
-		form.submit();
+		form.trigger('submit');
 	},
 
 	changeTheme: function()
@@ -402,7 +402,7 @@ var MyBB = {
 		{
 			return false;
 		}
-		form.submit();
+		form.trigger('submit');
 	},
 
 	detectDSTChange: function(timezone_with_dst)
@@ -437,7 +437,7 @@ var MyBB = {
 						);
 
 						$("body").append(form);
-						form.submit();
+						form.trigger('submit');
 	                }
 	            }
 			});
