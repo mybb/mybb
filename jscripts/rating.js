@@ -83,7 +83,7 @@ var Rating = {
 
 	rating_added: function(request, element_id)
 	{
-		var json = $.parseJSON(request.responseText);
+		var json = JSON.parse(request.responseText);
 		if(json.hasOwnProperty("errors"))
 		{
 			$.each(json.errors, function(i, error)
