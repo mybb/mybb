@@ -36,7 +36,7 @@ var UserCP = {
 		if(request)
 		{
 			try {
-				var json = $.parseJSON(request.responseText);
+				var json = JSON.parse(request.responseText);
 				if(json.hasOwnProperty("errors"))
 				{
 					$.each(json.errors, function(i, message)

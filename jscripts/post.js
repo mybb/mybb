@@ -55,7 +55,7 @@ var Post = {
 
 	multiQuotedLoaded: function(request)
 	{
-		var json = $.parseJSON(request.responseText);
+		var json = JSON.parse(request.responseText);
 		if(typeof response == 'object')
 		{
 			if(json.hasOwnProperty("errors"))

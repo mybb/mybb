@@ -120,7 +120,7 @@ var Thread = {
 
 	multiQuotedLoaded: function(request)
 	{
-		var json = $.parseJSON(request.responseText);
+		var json = JSON.parse(request.responseText);
 		if(typeof json == 'object')
 		{
 			if(json.hasOwnProperty("errors"))
@@ -208,7 +208,7 @@ var Thread = {
 					id = $(this).attr('id');
 					pid = id.replace( /[^\d.]/g, '');
 
-					var json = $.parseJSON(values);
+					var json = JSON.parse(values);
 					if(typeof json == 'object')
 					{
 						if(json.hasOwnProperty("errors"))
@@ -355,7 +355,7 @@ var Thread = {
 	{
 		this.quick_replying = 0;
 
-		var json = $.parseJSON(request.responseText);
+		var json = JSON.parse(request.responseText);
 		if(typeof json == 'object')
 		{
 			if(json.hasOwnProperty("errors"))
@@ -467,7 +467,7 @@ var Thread = {
 						type: 'post',
 						complete: function (request, status)
 						{
-							var json = $.parseJSON(request.responseText);
+							var json = JSON.parse(request.responseText);
 							if(json.hasOwnProperty("errors"))
 							{
 								$.each(json.errors, function(i, message)
@@ -546,7 +546,7 @@ var Thread = {
 						type: 'post',
 						complete: function (request, status)
 						{
-							var json = $.parseJSON(request.responseText);
+							var json = JSON.parse(request.responseText);
 							if(json.hasOwnProperty("errors"))
 							{
 								$.each(json.errors, function(i, message)

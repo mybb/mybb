@@ -355,7 +355,7 @@ $(function ($) {
 			);
 
 			setTimeout(function () {
-				$content.find('#code').trigger('focus');
+				$content.find('#code').focus();
 			}, 100);
 
 			$content.find('.button').on('click', function (e) {
@@ -447,9 +447,10 @@ $(function ($) {
 		html: function (token, attrs, content) {
 			var params = mybbCmd.video[Object.keys(mybbCmd.video).find(key => key.toLowerCase() === attrs.defaultattr)];
 			var matches, url;
+			var n = (attrs.defaultattr == 'dailymotion') ? 2 : 1;
 			if (params['html']) {
 				matches = content.match(params['match']);
-				url = matches ? params['url'] + matches[1] : false;
+				url = matches ? params['url'] + matches[n] : false;
 			}
 			if (url) {
 				return params['html'].replace('{url}', url).replace('{src}', content).replace('{type}', attrs.defaultattr);
