@@ -497,7 +497,7 @@ if($mybb->input['action'] == "orphans")
 		echo "<script type=\"text/javascript\">$(function() {
 				window.setTimeout(
 					function() {
-						$(\"#redirect_form\").submit();
+						$(\"#redirect_form\").trigger('submit');
 					}, 100
 				);
 			});</script>";
@@ -620,7 +620,7 @@ if($mybb->input['action'] == "orphans")
 		echo "<script type=\"text/javascript\">$(function() {
 				window.setTimeout(
 					function() {
-						$(\"#redirect_form\").submit();
+						$(\"#redirect_form\").trigger('submit');
 					}, 100
 				);
 			});</script>";

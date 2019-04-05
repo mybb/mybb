@@ -143,7 +143,7 @@ if($mybb->input['action'] == "browse")
 	echo "<input type=\"submit\" class=\"search_button\" value=\"{$lang->search}\" />\n";
 	echo "<script type=\"text/javascript\">
 		var form = $(\"#search_form\");
-		form.submit(function()
+		form.on('submit', function()
 		{
 			var search = $(\"#search_keywords\");
 			if(search.val() == '' || search.val() == '{$lang->search_for_plugins}')
