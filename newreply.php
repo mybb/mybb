@@ -656,7 +656,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 				$data .= "<script type=\"text/javascript\">\n";
 				$data .= "var hash = document.getElementById('posthash'); if(hash) { hash.value = '{$new_posthash}'; }\n";
 				$data .= "if(typeof(inlineModeration) != 'undefined') {
-					$('#inlinemod_{$pid}').bind(\"click\", function(e) {
+					$('#inlinemod_{$pid}').on(\"click\", function(e) {
 						inlineModeration.checkItem();
 					});
 				}\n";

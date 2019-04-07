@@ -6,7 +6,7 @@ var SettingSearch = {
 	{
 		this.error_unknown = error_unknown;
 		
-		$('#settings_search').bind("submit", this.onSubmit);
+		$('#settings_search').on("submit", this.onSubmit);
 		$('#search_results').css('display', 'none');
 		
 		$('#search').focusin(function() {
