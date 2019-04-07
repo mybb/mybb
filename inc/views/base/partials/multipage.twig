@@ -51,7 +51,7 @@
             $('#' + go_page).popupMenu(false).click(function() {
                 var drop_go_page = $(this).prev('.drop_go_page');
                 if (drop_go_page.is(':visible')) {
-                    drop_go_page.find('.textbox').focus();
+                    drop_go_page.find('.textbox').trigger('focus');
                 }
             });
         </script>

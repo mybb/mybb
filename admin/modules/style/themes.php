@@ -248,13 +248,13 @@ if($mybb->input['action'] == "browse")
 			var search = $('#search_keywords');
 			if(search.val() == '' || search.val() == '{$lang->search_for_themes}')
 			{
-				search.focus();
+				search.trigger('focus');
 				return false;
 			}
 		});
 
 		var search = $('#search_keywords');
-		search.focus(function()
+		search.on('focus', function()
 		{
 			var search_focus = $(this);
 			if(search_focus.val() == '{$lang->search_for_themes}')
@@ -262,9 +262,7 @@ if($mybb->input['action'] == "browse")
 				search_focus.removeClass('search_default');
 				search_focus.val('');
 			}
-		});
-
-		search.blur(function()
+		}).on('blur', function()
 		{
 			var search_blur = $(this);
 			if(search_blur.val() == '')
@@ -1995,7 +1993,7 @@ if($mybb->input['action'] == "stylesheet_properties")
 
 	echo <<<EOF
 
-	<script type="text/javascript" src="./jscripts/theme_properties.js?ver=1820"></script>
+	<script type="text/javascript" src="./jscripts/theme_properties.js?ver=1821"></script>
 	<script type="text/javascript">
 	<!---
 	themeProperties.setup('{$count}');
@@ -2363,7 +2361,7 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 <script src="./jscripts/codemirror/mode/css/css.js?ver=1813"></script>
 <script src="./jscripts/codemirror/addon/dialog/dialog.js?ver=1813"></script>
 <script src="./jscripts/codemirror/addon/search/searchcursor.js?ver=1813"></script>
-<script src="./jscripts/codemirror/addon/search/search.js?ver=1813"></script>
+<script src="./jscripts/codemirror/addon/search/search.js?ver=1821"></script>
 ';
 	}
 
@@ -2639,7 +2637,7 @@ if($mybb->input['action'] == "add_stylesheet")
 <script src="./jscripts/codemirror/mode/css/css.js?ver=1813"></script>
 <script src="./jscripts/codemirror/addon/dialog/dialog.js?ver=1813"></script>
 <script src="./jscripts/codemirror/addon/search/searchcursor.js?ver=1813"></script>
-<script src="./jscripts/codemirror/addon/search/search.js?ver=1813"></script>
+<script src="./jscripts/codemirror/addon/search/search.js?ver=1821"></script>
 ';
 	}
 
@@ -2903,7 +2901,7 @@ if($mybb->input['action'] == "add_stylesheet")
 	}
 
 	echo '<script type="text/javascript" src="./jscripts/themes.js?ver=1808"></script>';
-	echo '<script type="text/javascript" src="./jscripts/theme_properties.js?ver=1820"></script>';
+	echo '<script type="text/javascript" src="./jscripts/theme_properties.js?ver=1821"></script>';
 	echo '<script type="text/javascript">
 $(function() {
 //<![CDATA[

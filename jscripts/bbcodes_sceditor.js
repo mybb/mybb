@@ -292,7 +292,7 @@ $(function ($) {
 			);
 
 			setTimeout(function () {
-				$content.find('#php').focus();
+				$content.find('#php').trigger('focus');
 			}, 100);
 
 			$content.find('.button').on('click', function (e) {
@@ -355,7 +355,7 @@ $(function ($) {
 			);
 
 			setTimeout(function () {
-				$content.find('#code').focus();
+				$content.find('#code').trigger('focus');
 			}, 100);
 
 			$content.find('.button').on('click', function (e) {
@@ -410,7 +410,7 @@ $(function ($) {
 
 				if (val) {
 					// needed for IE to reset the last range
-					editor.focus();
+					$(editor).trigger('focus');
 
 					if (!editor.getRangeHelper().selectedHtml() || description) {
 						if (!description)

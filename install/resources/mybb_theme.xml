@@ -3785,7 +3785,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 		<template name="forumbit_moderators_group" version="1800"><![CDATA[{$comma}{$moderator['title']}]]></template>
 		<template name="forumbit_moderators_user" version="1800"><![CDATA[{$comma}<a href="{$moderator['profilelink']}">{$moderator['username']}</a>]]></template>
 		<template name="forumbit_subforums" version="1808"><![CDATA[<br /><strong>{$lang->subforums}</strong> {$sub_forums}]]></template>
-		<template name="forumdisplay" version="1820"><![CDATA[<html>
+		<template name="forumdisplay" version="1821"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$foruminfo['name']} </title>
 {$headerinclude}
@@ -3800,7 +3800,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 </script>
 <!-- jeditable (jquery) -->
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/jeditable/jeditable.min.js"></script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_edit.js?ver=1820"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_edit.js?ver=1821"></script>
 </head>
 <body>
 {$header}
@@ -4190,7 +4190,7 @@ $(".forumjump").on('change', function() {
 		</table>
 	</div>
 </div>]]></template>
-		<template name="global_dst_detection" version="1808"><![CDATA[<script type="text/javascript">if(MyBB) { $([document, window]).bind("load", function() { MyBB.detectDSTChange('{$timezone}'); }); }</script>]]></template>
+		<template name="global_dst_detection" version="1821"><![CDATA[<script type="text/javascript">if(MyBB) { $([document, window]).on("load", function() { MyBB.detectDSTChange('{$timezone}'); }); }</script>]]></template>
 		<template name="global_no_permission_modal" version="1808"><![CDATA[<div class="modal">
 	<div style="overflow-y: auto; max-height: 400px;">
 		<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
@@ -8793,7 +8793,7 @@ if(use_xmlhttprequest == "1")
 	$('#' + go_page).popupMenu(false).on('click', function() {
 		var drop_go_page = $(this).prev('.drop_go_page');
 		if (drop_go_page.is(':visible')) {
-			drop_go_page.find('.textbox').focus();
+			drop_go_page.find('.textbox').trigger('focus');
 		}
 	});
 </script>]]></template>
@@ -9498,7 +9498,7 @@ if(use_xmlhttprequest == "1")
 </tr>]]></template>
 		<template name="post_captcha_hidden" version="1605"><![CDATA[<input type="hidden" name="{$hash}" value="{$field['hash']}" />
 <input type="hidden" name="{$string}" value="{$field['string']}" />]]></template>
-		<template name="post_captcha_recaptcha_invisible" version="1813"><![CDATA[<br />
+		<template name="post_captcha_recaptcha_invisible" version="1821"><![CDATA[<br />
 <script src="{$server}?onload=captchaOnloadCallback&render=explicit" async defer></script>
 <script type="text/javascript">
 
@@ -9510,9 +9510,9 @@ if(use_xmlhttprequest == "1")
 			document.createElement('form').submit.apply(captchaTarget.closest('form')[0]);
 		}
 		else {
-			captchaTarget.bind('click', function(e) {
+			captchaTarget.on('click', function(e) {
 				return Thread.quickReply(e);
-			}).trigger('click').unbind('click');
+			}).trigger('click').off('click');
 			grecaptcha.reset();
 		}
 

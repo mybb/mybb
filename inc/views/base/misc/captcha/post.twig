@@ -21,9 +21,9 @@
             if (!captchaTarget.is('#quick_reply_submit')) {
                 document.createElement('form').submit.apply(captchaTarget.closest('form')[0]);
             } else {
-                captchaTarget.bind('click', function(e) {
+                captchaTarget.on('click', function(e) {
                     return Thread.quickReply(e);
-                }).trigger('click').unbind('click');
+                }).trigger('click').off('click');
                 grecaptcha.reset();
             }
 

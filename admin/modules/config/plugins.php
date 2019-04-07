@@ -148,13 +148,13 @@ if($mybb->input['action'] == "browse")
 			var search = $(\"#search_keywords\");
 			if(search.val() == '' || search.val() == '{$lang->search_for_plugins}')
 			{
-				search.focus();
+				search.trigger('focus');
 				return false;
 			}
 		});
 
 		var search = $(\"#search_keywords\");
-		search.focus(function()
+		search.on('focus', function()
 		{
 			var searched_focus = $(this);
 			if(searched_focus.val() == '{$lang->search_for_plugins}')
@@ -162,9 +162,7 @@ if($mybb->input['action'] == "browse")
 				searched_focus.removeClass(\"search_default\");
 				searched_focus.val(\"\");
 			}
-		});
-
-		search.blur(function()
+		}).on('blur', function()
 		{
 			var searched_blur = $(this);
 			if(searched_blur.val() == \"\")

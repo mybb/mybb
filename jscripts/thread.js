@@ -151,7 +151,7 @@ var Thread = {
 		$('#quickreply_multiquote').hide();
 		$('#quoted_ids').val('all');
 
-		$('#message').focus();
+		$('#message').trigger('focus');
 	},
 
 	clearMultiQuoted: function()
@@ -311,7 +311,7 @@ var Thread = {
 		if($('#quick_reply_form').length && use_xmlhttprequest == 1)
 		{
 			// Bind closing event to our popup menu
-			$('#quick_reply_submit').bind('click', function(e) {
+			$('#quick_reply_submit').on('click', function(e) {
 				return Thread.quickReply(e);
 			});
 		}
