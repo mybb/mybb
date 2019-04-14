@@ -2617,7 +2617,7 @@ if($mybb->input['action'] == "do_editprofile")
 
 	// Set the data of the user in the datahandler.
 	$userhandler->set_data($updated_user);
-	$errors = '';
+	$errors = array();
 
 	// Validate the user and get any errors that might have occurred.
 	if(!$userhandler->validate_user())
