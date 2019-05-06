@@ -929,10 +929,10 @@ if($mybb->input['action'] == "edit")
 
 	$page->extra_header .= <<<EOF
 
-	<link rel="stylesheet" href="../jscripts/sceditor/editor_themes/mybb.css" type="text/css" media="all" />
+	<link rel="stylesheet" href="../jscripts/sceditor/themes/mybb.css" type="text/css" media="all" />
 	<script type="text/javascript" src="../jscripts/sceditor/jquery.sceditor.bbcode.min.js?ver=1805"></script>
-	<script type="text/javascript" src="../jscripts/bbcodes_sceditor.js?ver=1819"></script>
-	<script type="text/javascript" src="../jscripts/sceditor/editor_plugins/undo.js?ver=1805"></script>
+	<script type="text/javascript" src="../jscripts/bbcodes_sceditor.js?ver=1821"></script>
+	<script type="text/javascript" src="../jscripts/sceditor/plugins/undo.js?ver=1805"></script>
 EOF;
 	$page->output_header($lang->edit_user);
 
@@ -3742,17 +3742,17 @@ function build_users_view($view)
 	}
 	$built_view .= "<script type=\"text/javascript\">
 		var form = $(\"#search_form\");
-		form.submit(function() {
+		form.on('submit', function() {
 			var search = $('#search_keywords');
 			if(search.val() == '' || search.val() == '".addcslashes($lang->search_for_user, "'")."')
 			{
-				search.focus();
+				search.trigger('focus');
 				return false;
 			}
 		});
 
 		var search = $(\"#search_keywords\");
-		search.focus(function()
+		search.on('focus', function()
 		{
 			var searched_focus = $(this);
 			if(searched_focus.val() == '".addcslashes($lang->search_for_user, "'")."')
@@ -3760,9 +3760,7 @@ function build_users_view($view)
 				searched_focus.removeClass(\"search_default\");
 				searched_focus.val(\"\");
 			}
-		});
-
-		search.blur(function()
+		}).on('blur', function()
 		{
 			var searched_blur = $(this);
 			if(searched_blur.val() == \"\")
@@ -3804,7 +3802,7 @@ function build_users_view($view)
 	}
 
 	$built_view .= '
-<script type="text/javascript" src="'.$mybb->settings['bburl'].'/jscripts/inline_moderation.js?ver=1818"></script>
+<script type="text/javascript" src="'.$mybb->settings['bburl'].'/jscripts/inline_moderation.js?ver=1821"></script>
 <form action="index.php?module=user-users" method="post">
 <input type="hidden" name="my_post_key" value="'.$mybb->post_code.'" />
 <input type="hidden" name="action" value="inline_edit" />

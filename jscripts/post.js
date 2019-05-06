@@ -55,7 +55,7 @@ var Post = {
 
 	multiQuotedLoaded: function(request)
 	{
-		var json = $.parseJSON(request.responseText);
+		var json = JSON.parse(request.responseText);
 		if(typeof response == 'object')
 		{
 			if(json.hasOwnProperty("errors"))
@@ -110,7 +110,7 @@ var Post = {
 					if(use_xmlhttprequest != 1)
 					{
 						form.append('<input type="submit" id="rem_submit" class="hidden" />');
-						$('#rem_submit').click();
+						$('#rem_submit').trigger('click');
 						return  false;
 					}
 

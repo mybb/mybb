@@ -348,7 +348,7 @@
         if (event.which == 27 && current.options.escapeClose) current.close();
       });
       if (this.options.clickClose)
-        this.$blocker.click(function(e) {
+        this.$blocker.on('click',function(e) {
           if (e.target==this)
             $.modal.close();
         });
@@ -562,7 +562,7 @@
 		return this.each(function()
 		{
 			var popup = new PopupMenu(this, close_in_popupmenu);
-			$(this).click(popup.open);
+			$(this).on('click',popup.open);
 		});
 	}
 })(jQuery);

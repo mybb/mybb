@@ -120,7 +120,7 @@ var Thread = {
 
 	multiQuotedLoaded: function(request)
 	{
-		var json = $.parseJSON(request.responseText);
+		var json = JSON.parse(request.responseText);
 		if(typeof json == 'object')
 		{
 			if(json.hasOwnProperty("errors"))
@@ -151,7 +151,7 @@ var Thread = {
 		$('#quickreply_multiquote').hide();
 		$('#quoted_ids').val('all');
 
-		$('#message').focus();
+		$('#message').trigger('focus');
 	},
 
 	clearMultiQuoted: function()
@@ -208,7 +208,7 @@ var Thread = {
 					id = $(this).attr('id');
 					pid = id.replace( /[^\d.]/g, '');
 
-					var json = $.parseJSON(values);
+					var json = JSON.parse(values);
 					if(typeof json == 'object')
 					{
 						if(json.hasOwnProperty("errors"))
@@ -311,7 +311,7 @@ var Thread = {
 		if($('#quick_reply_form').length && use_xmlhttprequest == 1)
 		{
 			// Bind closing event to our popup menu
-			$('#quick_reply_submit').bind('click', function(e) {
+			$('#quick_reply_submit').on('click', function(e) {
 				return Thread.quickReply(e);
 			});
 		}
@@ -355,7 +355,7 @@ var Thread = {
 	{
 		this.quick_replying = 0;
 
-		var json = $.parseJSON(request.responseText);
+		var json = JSON.parse(request.responseText);
 		if(typeof json == 'object')
 		{
 			if(json.hasOwnProperty("errors"))
@@ -467,7 +467,7 @@ var Thread = {
 						type: 'post',
 						complete: function (request, status)
 						{
-							var json = $.parseJSON(request.responseText);
+							var json = JSON.parse(request.responseText);
 							if(json.hasOwnProperty("errors"))
 							{
 								$.each(json.errors, function(i, message)
@@ -546,7 +546,7 @@ var Thread = {
 						type: 'post',
 						complete: function (request, status)
 						{
-							var json = $.parseJSON(request.responseText);
+							var json = JSON.parse(request.responseText);
 							if(json.hasOwnProperty("errors"))
 							{
 								$.each(json.errors, function(i, message)
@@ -561,7 +561,7 @@ var Thread = {
 								if(json.first == 1)
 								{
 									$("#quick_reply_form, .thread_tools, .new_reply_button, .inline_rating").show();
-									$("#moderator_options_selector option.option_mirage").removeAttr("disabled");
+									$("#moderator_options_selector option.option_mirage").prop("disabled", false);
 									$("#moderator_options_selector option[value='restorethread']").val("softdeletethread").text(lang.softdelete_thread);
 								}
 

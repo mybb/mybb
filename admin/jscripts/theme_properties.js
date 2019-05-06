@@ -15,9 +15,9 @@ var themeProperties = (function() {
 	 */
 	function init() {
 		for (var i = 0; i < attachedCount; ++i) {
-			$("#delete_img_" + i).click(removeAttachmentBox);
+			$("#delete_img_" + i).on('click', removeAttachmentBox);
 		}
-		$("#new_specific_file").click(addAttachmentBox);
+		$("#new_specific_file").on('click', addAttachmentBox);
 	}
 
 	/**
@@ -52,7 +52,7 @@ var themeProperties = (function() {
 		checkAction('action_' + attachedCount);
 
 		if ($("#attached_form_" + attachedCount)) {
-			$("#delete_img_" + attachedCount).click(removeAttachmentBox);
+			$("#delete_img_" + attachedCount).on('click', removeAttachmentBox);
 		}
 		++attachedCount;
 	}
