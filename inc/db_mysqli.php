@@ -1360,13 +1360,15 @@ class DB_MySQLi implements DB_Base
 	 * @param string $table The table
 	 * @param string $column The column name
 	 * @param string $new_definition the new column definition
-	 * @return mysqli_result
+	 * @param boolean $new_not_null Whether to drop or set a column
+	 * @param boolean $new_default_value The new default value (if one is to be set)
+	 * @return bool Returns true if all queries are executed successfully or false if one of them failed
 	 */
-	function modify_column($table, $column, $new_definition)
+	function modify_column($table, $column, $new_definition, $new_not_null=false, $new_default_value=false)
 	{
 		$column = trim($column, '`');
 
-		return $this->write_query("ALTER TABLE {$this->table_prefix}{$table} MODIFY `{$column}` {$new_definition}");
+		return (bool) $this->write_query("ALTER TABLE {$this->table_prefix}{$table} MODIFY `{$column}` {$new_definition}");
 	}
 
 	/**
@@ -1376,14 +1378,16 @@ class DB_MySQLi implements DB_Base
 	 * @param string $old_column The old column name
 	 * @param string $new_column the new column name
 	 * @param string $new_definition the new column definition
-	 * @return mysqli_result
+	 * @param boolean $new_not_null Whether to drop or set a column
+	 * @param boolean $new_default_value The new default value (if one is to be set)
+	 * @return bool Returns true if all queries are executed successfully
 	 */
-	function rename_column($table, $old_column, $new_column, $new_definition)
+	function rename_column($table, $old_column, $new_column, $new_definition, $new_not_null=false, $new_default_value=false)
 	{
 		$old_column = trim($old_column, '`');
 		$new_column = trim($new_column, '`');
 
-		return $this->write_query("ALTER TABLE {$this->table_prefix}{$table} CHANGE `{$old_column}` `{$new_column}` {$new_definition}");
+		return (bool) $this->write_query("ALTER TABLE {$this->table_prefix}{$table} CHANGE `{$old_column}` `{$new_column}` {$new_definition}");
 	}
 
 	/**
