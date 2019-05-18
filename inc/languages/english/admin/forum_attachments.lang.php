@@ -72,11 +72,11 @@ $l['step2of2'] = "Step 2 of 2 - Database Scan";
 $l['step1of2_line1'] = "Please wait, the file system is currently being scanned for orphaned attachments.";
 $l['step2of2_line1'] = "Please wait, the database is currently being scanned for orphaned attachments.";
 $l['step_line2'] = "You'll automatically be redirected to the next step once this process is complete.";
-$l['scanning'] = 'Scanning..';
+$l['scanning'] = 'Scanning&hellip;';
 
 // = Attachments / Index
 $l['index_find_attachments'] = "Attachments - Find Attachments";
-$l['find_where'] = "Find attachments where...";
+$l['find_where'] = "Find attachments where&hellip;";
 $l['name_contains'] = "File name contains";
 $l['name_contains_desc'] = "To search by wild card enter *.[file extension]. Example: *.zip.";
 $l['type_contains'] = "File type contains";
@@ -110,4 +110,3 @@ $l['in'] = "in";
 $l['button_delete_orphans'] = "Delete Checked Orphans";
 $l['button_delete_attachments'] = "Delete Checked Attachments";
 $l['button_find_attachments'] = "Find Attachments";
-

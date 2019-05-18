@@ -217,5 +217,5 @@ $l['confirm_theme_forced'] = "Are you sure you want to force this theme on all u
 $l['theme_info_fetch_error'] = 'There was an error fetching the style info.';
 $l['theme_info_save_error'] = 'There was an error saving the style info.';
 
-$l['saving'] = 'Saving...';
+$l['saving'] = 'Saving&hellip;';
 

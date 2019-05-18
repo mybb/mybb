@@ -10,7 +10,7 @@ $l['nav_warning_log'] = "Warning Log";
 $l['nav_add_warning'] = "Warn User";
 $l['nav_view_warning'] = "Warning Details";
 
-$l['warning_for_post'] = ".. Post:";
+$l['warning_for_post'] = "&hellip; Post:";
 $l['already_expired'] = "Expired";
 $l['details_username'] = "Username";
 $l['warning_active'] = "Active";
