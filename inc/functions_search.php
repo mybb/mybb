@@ -283,7 +283,10 @@ function clean_keywords_ft($keywords)
 	$min_word_length -= 1;
 	
 	// Replaces less than 3 characters
-	$keywords = preg_replace("/(\b.{1,{$min_word_length}}\b)/",'',$keywords);
+	$keywords = preg_replace("/(\b.{1,{$min_word_length}})(\s)|(\b.{1,{$min_word_length}}$)/", '$2', $keywords);
+	// Collapse multiple spaces
+	$keywords = preg_replace('/(\s)+/', '$1', $keywords);
+	$keywords = trim($keywords);
 
 	$words = array(array());
 
