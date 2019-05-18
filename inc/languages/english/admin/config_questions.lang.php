@@ -11,6 +11,7 @@ $l['add_new_question'] = "Add New Question";
 $l['add_new_question_desc'] = "Add a question and its answers for the security questions to be used during registration.";
 $l['edit_question'] = "Edit Question";
 $l['edit_question_desc'] = "Here you edit a security question.";
+$l['preview_question'] = "Preview Question";
 
 $l['options'] = "Options";
 $l['shown'] = "Shown";
