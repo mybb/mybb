@@ -1506,8 +1506,17 @@ if($mybb->input['action'] == "empty")
 	{
 		$folderinfo = explode("**", $folders, 2);
 		$folder['fid'] = $folderinfo[0];
-		$folder['foldername'] = get_pm_folder_name($folder['fid'], $folderinfo[1]);
-		$query = $db->simple_select("privatemessages", "COUNT(*) AS pmsinfolder", " folder='{$folder['fid']}' AND uid='{$mybb->user['uid']}'");
+		if($folderinfo[0] == "1")
+		{
+			$folder['fid'] = "1";
+			$unread = " AND status='0'";
+		}
+		if($folderinfo[0] == "0")
+		{
+			$folder['fid'] = "1";
+		}
+        $folder['foldername'] = get_pm_folder_name($folderinfo[0], $folderinfo[1]);
+		$query = $db->simple_select("privatemessages", "COUNT(*) AS pmsinfolder", " folder='{$folder['fid']}'{$unread} AND uid='{$mybb->user['uid']}'");
 		$thing = $db->fetch_array($query);
 		$folder['foldercount'] = my_number_format($thing['pmsinfolder']);
 
