@@ -941,7 +941,7 @@ if($mybb->settings['awactialert'] == 1 && $mybb->usergroup['cancp'] == 1)
 $jsTemplates = array();
 foreach (array('modal', 'modal_button') as $template) {
 	eval('$jsTemplates["'.$template.'"] = "'.$templates->get($template, 1, 0).'";');
-	$jsTemplates[$template] = str_replace("\n", "\\\n", addslashes($jsTemplates[$template]));
+	$jsTemplates[$template] = str_replace(array("\n","\r"), array("\\\n", ""), addslashes($jsTemplates[$template]));
 }
 
 // Set up some of the default templates
