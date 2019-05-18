@@ -1219,8 +1219,22 @@ $(function() {
 				$registration['showquestion'] = true;
 				$question = $db->fetch_array($query);
 
+				//Set parser options for security question
+				$parser_options = array(
+					"allow_html" => 0,
+					"allow_mycode" => 1,
+					"allow_smilies" => 1,
+					"allow_imgcode" => 1,
+					"allow_videocode" => 1,
+					"filter_badwords" => 1,
+					"me_username" => 0,
+					"shorten_urls" => 0,
+					"highlight" => 0,
+				);
+
 				$registration['questionrefresh'] = false;
-				$registration['question'] = $question['question'];
+				//Parse question
+				$registration['question'] = $parser->parse_message($question['question'], $parser_options);
 
 				// Total questions
 				$q = $db->simple_select('questions', 'COUNT(qid) as num', 'active=1');

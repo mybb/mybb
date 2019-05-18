@@ -850,12 +850,27 @@ else if($mybb->input['action'] == "refresh_question" && $mybb->settings['securit
 	");
 
 	$plugins->run_hooks("xmlhttp_refresh_question");
+	
+	require_once MYBB_ROOT."inc/class_parser.php";
+	$parser = new postParser;
+	
+	$parser_options = array(
+		"allow_html" => 0,
+		"allow_mycode" => 1,
+		"allow_smilies" => 1,
+		"allow_imgcode" => 1,
+		"allow_videocode" => 1,
+		"filter_badwords" => 1,
+		"me_username" => 0,
+		"shorten_urls" => 0,
+		"highlight" => 0,
+	);	
 
 	if($db->num_rows($query) > 0)
 	{
 		$question = $db->fetch_array($query);
 
-		echo json_encode(array("question" => htmlspecialchars_uni($question['question']), 'sid' => htmlspecialchars_uni($question['sid'])));
+		echo json_encode(array("question" => $parser->parse_message($question['question'], $parser_options), 'sid' => htmlspecialchars_uni($question['sid'])));
 		exit;
 	}
 	else
