@@ -479,6 +479,8 @@ if(!$mybb->input['action'])
 			$mybb->input['page'] = 1;
 		}
 
+		$plugins->run_hooks("admin_tools_do_recount_rebuild");
+
 		if(isset($mybb->input['do_rebuildforumcounters']))
 		{
 			$plugins->run_hooks("admin_tools_recount_rebuild_forum_counters");
