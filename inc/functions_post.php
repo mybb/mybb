@@ -679,7 +679,8 @@ function build_postbit($post, $post_type=0)
 			eval("\$post['button_multiquote'] = \"".$templates->get("postbit_multiquote")."\";");
 		}
 
-		if($mybb->user['uid'] != "0")
+		$reportable = user_permissions($post['uid']);
+		if($mybb->user['uid'] != "0" && !empty($reportable['canbereported']))
 		{
 			eval("\$post['button_report'] = \"".$templates->get("postbit_report")."\";");
 		}
