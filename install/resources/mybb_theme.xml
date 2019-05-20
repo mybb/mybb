@@ -4309,7 +4309,7 @@ $(".forumjump").on('change', function() {
 		<template name="header_welcomeblock_guest_login_modal_lockout" version="1816"><![CDATA[<tr>
 	<td class="trow1" colspan="2">{$lang->failed_login_wait}</td>
 </tr>]]></template>
-		<template name="header_welcomeblock_member" version="1809"><![CDATA[<!-- Continuation of div(class="upper") as opened in the header template -->
+		<template name="header_welcomeblock_member" version="1821"><![CDATA[<!-- Continuation of div(class="upper") as opened in the header template -->
 	<span class="welcome">{$lang->welcome_back} <a href="{$mybb->settings['bburl']}/member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}" class="logout">{$lang->welcome_logout}</a></span>
 	</div>
 </div>
@@ -4321,7 +4321,7 @@ $(".forumjump").on('change', function() {
 			{$admincplink}
 		</ul>
 		<ul class="menu user_links">
-			<li><a href="javascript:void(0)" onclick="MyBB.popupWindow('{$mybb->settings['bburl']}/misc.php?action=buddypopup&modal=1', null, true); return false;">{$lang->welcome_open_buddy_list}</a></li>
+			{$buddylink}
 			{$searchlink}
 			{$pmslink}
 		</ul>
@@ -4330,6 +4330,7 @@ $(".forumjump").on('change', function() {
 </div>]]></template>
 		<template name="header_welcomeblock_member_admin" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/{$admin_dir}/index.php" class="admincp">{$lang->welcome_admin}</a></li>]]></template>
 		<template name="header_welcomeblock_member_moderator" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/modcp.php" class="modcp">{$lang->welcome_modcp}</a></li>]]></template>
+		<template name="header_welcomeblock_member_buddy" version="1821"><![CDATA[<li><a id="buddylink" href="javascript:void(0)" onclick="MyBB.popupWindow('{$mybb->settings['bburl']}/misc.php?action=buddypopup&modal=1', null, true); return false;">{$lang->welcome_open_buddy_list}</a></li>]]></template>
 		<template name="header_welcomeblock_member_pms" version="1809"><![CDATA[<li><a href="{$mybb->settings['bburl']}/private.php">{$lang->welcome_pms}</a> {$lang->welcome_pms_usage}</li>]]></template>
 		<template name="header_welcomeblock_member_search" version="1809"><![CDATA[<li><a href="{$mybb->settings['bburl']}/search.php?action=getnew">{$lang->welcome_newposts}</a></li>
 <li><a href="{$mybb->settings['bburl']}/search.php?action=getdaily">{$lang->welcome_todaysposts}</a></li>]]></template>

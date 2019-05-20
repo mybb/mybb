@@ -529,14 +529,19 @@ if($mybb->user['uid'] != 0)
 	// Format the welcome back message
 	$lang->welcome_back = $lang->sprintf($lang->welcome_back, build_profile_link(htmlspecialchars_uni($mybb->user['username']), $mybb->user['uid']), $lastvisit);
 
-	$searchlink = '';
+	$buddylink = $searchlink = $pmslink = '';
+
+    if(!empty($mybb->user['buddylist']))
+    {
+        eval('$buddylink = "' . $templates->get('header_welcomeblock_member_buddy') . '";');
+    }
+    
 	if($mybb->usergroup['cansearch'] == 1)
 	{
 		eval('$searchlink = "'.$templates->get('header_welcomeblock_member_search').'";');
 	}
 
 	// Tell the user their PM usage
-	$pmslink = '';
 	if($mybb->settings['enablepms'] != 0 && $mybb->usergroup['canusepms'] == 1)
 	{
 		$lang->welcome_pms_usage = $lang->sprintf($lang->welcome_pms_usage, my_number_format($mybb->user['pms_unread']), my_number_format($mybb->user['pms_total']));
