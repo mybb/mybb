@@ -1106,6 +1106,7 @@ else if($mybb->input['action'] == 'get_referrals')
 	} else {
 		foreach($referrals as $referral)
 		{
+			$bg_color = alt_trow();
 			// Format user name link
 			$username = htmlspecialchars_uni($referral['username']);
 			$username = format_name($username, $referral['usergroup'], $referral['displaygroup']);
@@ -1114,8 +1115,6 @@ else if($mybb->input['action'] == 'get_referrals')
 			$regdate = my_date('normal', $referral['regdate']);
 
 			eval("\$referral_rows .= \"".$templates->get('member_referral_row')."\";");
-
-			$bg_color = alt_trow();
 		}
 	}
 
