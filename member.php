@@ -462,7 +462,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 
 			error($lang->redirect_registered_passwordsent);
 		}
-		else if($mybb->settings['regtype'] == "admin")
+		else if(in_array($mybb->settings['regtype'], array("admin", "both")))
 		{
 			$groups = $cache->read("usergroups");
 			$admingroups = array();
@@ -544,125 +544,46 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 				}
 			}
 
-			$lang->redirect_registered_admin_activate = $lang->sprintf($lang->redirect_registered_admin_activate, $mybb->settings['bbname'], htmlspecialchars_uni($user_info['username']));
+			if($mybb->settings['regtype'] == "admin")
+			{
+				$lang_string = "redirect_registered_admin_activate";
+			}
+			else
+			{
+				$activationcode = random_str();
+				$activationarray = array(
+					"uid" => $user_info['uid'],
+					"dateline" => TIME_NOW,
+					"code" => $activationcode,
+					"type" => "b"
+				);
+				$db->insert_query("awaitingactivation", $activationarray);
+				$emailsubject = $lang->sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']);
+				switch($mybb->settings['username_method'])
+				{
+					case 0:
+						$emailmessage = $lang->sprintf($lang->email_activateaccount, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
+						break;
+					case 1:
+						$emailmessage = $lang->sprintf($lang->email_activateaccount1, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
+						break;
+					case 2:
+						$emailmessage = $lang->sprintf($lang->email_activateaccount2, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
+						break;
+					default:
+						$emailmessage = $lang->sprintf($lang->email_activateaccount, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
+						break;
+				}
+				my_mail($user_info['email'], $emailsubject, $emailmessage);
+
+				$lang_string = "redirect_registered_activation";
+			}
+				
+			$lang_string = $lang->sprintf($lang->{$lang_string}, $mybb->settings['bbname'], htmlspecialchars_uni($user_info['username']));
 
 			$plugins->run_hooks("member_do_register_end");
 
-			error($lang->redirect_registered_admin_activate);
-		}
-		else if($mybb->settings['regtype'] == "both")
-		{
-			$groups = $cache->read("usergroups");
-			$admingroups = array();
-			if(!empty($groups)) // Shouldn't be...
-			{
-				foreach($groups as $group)
-				{
-					if($group['cancp'] == 1)
-					{
-						$admingroups[] = (int)$group['gid'];
-					}
-				}
-			}
-
-			if(!empty($admingroups))
-			{
-				$sqlwhere = 'usergroup IN ('.implode(',', $admingroups).')';
-				foreach($admingroups as $admingroup)
-				{
-					switch($db->type)
-					{
-						case 'pgsql':
-						case 'sqlite':
-							$sqlwhere .= " OR ','||additionalgroups||',' LIKE '%,{$admingroup},%'";
-							break;
-						default:
-							$sqlwhere .= " OR CONCAT(',',additionalgroups,',') LIKE '%,{$admingroup},%'";
-							break;
-					}
-				}
-				$q = $db->simple_select('users', 'uid,username,email,language', $sqlwhere);
-				while($recipient = $db->fetch_array($q))
-				{
-					// First we check if the user's a super admin: if yes, we don't care about permissions
-					$is_super_admin = is_super_admin($recipient['uid']);
-					if(!$is_super_admin)
-					{
-						// Include admin functions
-						if(!file_exists(MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions.php"))
-						{
-							continue;
-						}
-
-						require_once MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions.php";
-
-						// Verify if we have permissions to access user-users
-						require_once MYBB_ROOT.$mybb->config['admin_dir']."/modules/user/module_meta.php";
-						if(function_exists("user_admin_permissions"))
-						{
-							// Get admin permissions
-							$adminperms = get_admin_permissions($recipient['uid']);
-
-							$permissions = user_admin_permissions();
-							if(array_key_exists('users', $permissions['permissions']) && $adminperms['user']['users'] != 1)
-							{
-								continue; // No permissions
-							}
-						}
-					}
-
-					// Load language
-					if($recipient['language'] != $lang->language && $lang->language_exists($recipient['language']))
-					{
-						$reset_lang = true;
-						$lang->set_language($recipient['language']);
-						$lang->load("member");
-					}
-
-					$subject = $lang->sprintf($lang->newregistration_subject, $mybb->settings['bbname']);
-					$message = $lang->sprintf($lang->newregistration_message, $recipient['username'], $mybb->settings['bbname'], $user['username']);
-					my_mail($recipient['email'], $subject, $message);
-				}
-
-				// Reset language
-				if(isset($reset_lang))
-				{
-					$lang->set_language($mybb->settings['bblanguage']);
-					$lang->load("member");
-				}
-			}
-
-			$activationcode = random_str();
-			$activationarray = array(
-				"uid" => $user_info['uid'],
-				"dateline" => TIME_NOW,
-				"code" => $activationcode,
-				"type" => "b"
-			);
-			$db->insert_query("awaitingactivation", $activationarray);
-			$emailsubject = $lang->sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']);
-			switch($mybb->settings['username_method'])
-			{
-				case 0:
-					$emailmessage = $lang->sprintf($lang->email_activateaccount, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
-					break;
-				case 1:
-					$emailmessage = $lang->sprintf($lang->email_activateaccount1, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
-					break;
-				case 2:
-					$emailmessage = $lang->sprintf($lang->email_activateaccount2, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
-					break;
-				default:
-					$emailmessage = $lang->sprintf($lang->email_activateaccount, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
-					break;
-			}
-			my_mail($user_info['email'], $emailsubject, $emailmessage);
-
-			$lang->redirect_registered_activation = $lang->sprintf($lang->redirect_registered_activation, $mybb->settings['bbname'], htmlspecialchars_uni($user_info['username']));
-
-			$plugins->run_hooks("member_do_register_end");
-
-			error($lang->redirect_registered_activation);
+			error($lang_string);
 		}
 		else
 		{
@@ -3346,4 +3267,9 @@ if($mybb->input['action'] == 'referrals')
 if(!$mybb->input['action'])
 {
 	header("Location: index.php");
+}
+
+function send_activation_mail($receipient)
+{
+	
 }
