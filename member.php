@@ -414,23 +414,8 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 				"type" => "r"
 			);
 			$db->insert_query("awaitingactivation", $activationarray);
-			$emailsubject = $lang->sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']);
-			switch($mybb->settings['username_method'])
-			{
-				case 0:
-					$emailmessage = $lang->sprintf($lang->email_activateaccount, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
-					break;
-				case 1:
-					$emailmessage = $lang->sprintf($lang->email_activateaccount1, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
-					break;
-				case 2:
-					$emailmessage = $lang->sprintf($lang->email_activateaccount2, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
-					break;
-				default:
-					$emailmessage = $lang->sprintf($lang->email_activateaccount, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
-					break;
-			}
-			my_mail($user_info['email'], $emailsubject, $emailmessage);
+
+			send_activation_mail($user_info, $activationcode);
 
 			$lang->redirect_registered_activation = $lang->sprintf($lang->redirect_registered_activation, $mybb->settings['bbname'], htmlspecialchars_uni($user_info['username']));
 
@@ -440,23 +425,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		}
 		else if($mybb->settings['regtype'] == "randompass")
 		{
-			$emailsubject = $lang->sprintf($lang->emailsubject_randompassword, $mybb->settings['bbname']);
-			switch($mybb->settings['username_method'])
-			{
-				case 0:
-					$emailmessage = $lang->sprintf($lang->email_randompassword, $user['username'], $mybb->settings['bbname'], $user_info['username'], $mybb->get_input('password'));
-					break;
-				case 1:
-					$emailmessage = $lang->sprintf($lang->email_randompassword1, $user['username'], $mybb->settings['bbname'], $user_info['username'], $mybb->get_input('password'));
-					break;
-				case 2:
-					$emailmessage = $lang->sprintf($lang->email_randompassword2, $user['username'], $mybb->settings['bbname'], $user_info['username'], $mybb->get_input('password'));
-					break;
-				default:
-					$emailmessage = $lang->sprintf($lang->email_randompassword, $user['username'], $mybb->settings['bbname'], $user_info['username'], $mybb->get_input('password'));
-					break;
-			}
-			my_mail($user_info['email'], $emailsubject, $emailmessage);
+			send_activation_mail($user_info, $mybb->get_input('password'), "randompassword");
 
 			$plugins->run_hooks("member_do_register_end");
 
@@ -558,23 +527,8 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 					"type" => "b"
 				);
 				$db->insert_query("awaitingactivation", $activationarray);
-				$emailsubject = $lang->sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']);
-				switch($mybb->settings['username_method'])
-				{
-					case 0:
-						$emailmessage = $lang->sprintf($lang->email_activateaccount, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
-						break;
-					case 1:
-						$emailmessage = $lang->sprintf($lang->email_activateaccount1, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
-						break;
-					case 2:
-						$emailmessage = $lang->sprintf($lang->email_activateaccount2, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
-						break;
-					default:
-						$emailmessage = $lang->sprintf($lang->email_activateaccount, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
-						break;
-				}
-				my_mail($user_info['email'], $emailsubject, $emailmessage);
+
+				send_activation_mail($user_info, $activationcode);
 
 				$lang_string = "redirect_registered_activation";
 			}
@@ -1465,35 +1419,16 @@ if($mybb->input['action'] == "do_resendactivation" && $mybb->request_method == "
 					if(!$user['code'])
 					{
 						$user['code'] = random_str();
-						$uid = $user['uid'];
 						$awaitingarray = array(
-							"uid" => $uid,
+							"uid" => $user['uid'],
 							"dateline" => TIME_NOW,
 							"code" => $user['code'],
 							"type" => $user['type']
 						);
 						$db->insert_query("awaitingactivation", $awaitingarray);
 					}
-					$username = $user['username'];
-					$email = $user['email'];
-					$activationcode = $user['code'];
-					$emailsubject = $lang->sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']);
-					switch($mybb->settings['username_method'])
-					{
-						case 0:
-							$emailmessage = $lang->sprintf($lang->email_activateaccount, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user['uid'], $activationcode);
-							break;
-						case 1:
-							$emailmessage = $lang->sprintf($lang->email_activateaccount1, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user['uid'], $activationcode);
-							break;
-						case 2:
-							$emailmessage = $lang->sprintf($lang->email_activateaccount2, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user['uid'], $activationcode);
-							break;
-						default:
-							$emailmessage = $lang->sprintf($lang->email_activateaccount, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user['uid'], $activationcode);
-							break;
-					}
-					my_mail($email, $emailsubject, $emailmessage);
+					
+					send_activation_mail($user, $user['code']);
 				}
 			}
 
@@ -1597,7 +1532,6 @@ if($mybb->input['action'] == "do_lostpw" && $mybb->request_method == "post")
 				$db->delete_query("awaitingactivation", "uid='{$user['uid']}' AND type='p'");
 				$user['activationcode'] = random_str(30);
 				$now = TIME_NOW;
-				$uid = $user['uid'];
 				$awaitingarray = array(
 					"uid" => $user['uid'],
 					"dateline" => TIME_NOW,
@@ -1605,26 +1539,8 @@ if($mybb->input['action'] == "do_lostpw" && $mybb->request_method == "post")
 					"type" => "p"
 				);
 				$db->insert_query("awaitingactivation", $awaitingarray);
-				$username = $user['username'];
-				$email = $user['email'];
-				$activationcode = $user['activationcode'];
-				$emailsubject = $lang->sprintf($lang->emailsubject_lostpw, $mybb->settings['bbname']);
-				switch($mybb->settings['username_method'])
-				{
-					case 0:
-						$emailmessage = $lang->sprintf($lang->email_lostpw, $username, $mybb->settings['bbname'], $mybb->settings['bburl'], $uid, $activationcode);
-						break;
-					case 1:
-						$emailmessage = $lang->sprintf($lang->email_lostpw1, $username, $mybb->settings['bbname'], $mybb->settings['bburl'], $uid, $activationcode);
-						break;
-					case 2:
-						$emailmessage = $lang->sprintf($lang->email_lostpw2, $username, $mybb->settings['bbname'], $mybb->settings['bburl'], $uid, $activationcode);
-						break;
-					default:
-						$emailmessage = $lang->sprintf($lang->email_lostpw, $username, $mybb->settings['bbname'], $mybb->settings['bburl'], $uid, $activationcode);
-						break;
-				}
-				my_mail($email, $emailsubject, $emailmessage);
+				
+				send_activation_mail($user, $user['activationcode'], "lostpw");
 			}
 
 			$plugins->run_hooks("member_do_lostpw_end");
@@ -3269,7 +3185,17 @@ if(!$mybb->input['action'])
 	header("Location: index.php");
 }
 
-function send_activation_mail($receipient)
+function send_activation_mail($user, $code, $type = "activateaccount")
 {
+	global $mybb, $lang;
 	
+	$emailsubject = $lang->sprintf($lang->{'emailsubject_' . $type}, $mybb->settings['bbname']);
+
+	if((int)$mybb->settings['username_method'])
+	{
+		$type = $type . $mybb->settings['username_method'];
+	}
+	
+	$emailmessage = $lang->sprintf($lang->{'email_' . $type}, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user['uid'], $code);
+	my_mail($user['email'], $emailsubject, $emailmessage);
 }
