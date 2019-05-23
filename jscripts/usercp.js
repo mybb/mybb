@@ -36,7 +36,7 @@ var UserCP = {
 		if(request)
 		{
 			try {
-				var json = $.parseJSON(request.responseText);
+				var json = JSON.parse(request.responseText);
 				if(json.hasOwnProperty("errors"))
 				{
 					$.each(json.errors, function(i, message)
@@ -211,11 +211,11 @@ var UserCP = {
 					$("#sentrequests").html(request.responseText);
 				}
 				
-		        type_submit.removeAttr("disabled");
-		        type_add_username.removeAttr("disabled");
+		        type_submit.prop("disabled", false);
+		        type_add_username.prop("disabled", false);
 		        type_submit.attr("value", old_value);
 		        type_add_username.val("");
-		        type_add_username.focus();
+		        type_add_username.trigger('focus');
 				type_add_username.select2('data', null);
 	        }
 		});

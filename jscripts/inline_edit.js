@@ -58,7 +58,7 @@ var inlineEditor = {
 			});
 
 			// Hold event
-			$(this).bind("mousedown", function(e)
+			$(this).on("mousedown", function(e)
 			{
 				// Take tid out of the id attribute
 				id = $(this).attr('id');
@@ -71,7 +71,7 @@ var inlineEditor = {
 				inlineEditor.timeouts[tid] = setTimeout(inlineEditor.jeditableTimeout, 700, tid);
 			});
 
-			$(this).bind('mouseup mouseleave', function()
+			$(this).on('mouseup mouseleave', function()
 			{
 				window.clearTimeout(inlineEditor.timeouts[tid]);
 			});

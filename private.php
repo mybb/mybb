@@ -1590,13 +1590,22 @@ if($mybb->input['action'] == "empty")
 	$plugins->run_hooks("private_empty_start");
 
 	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
-	$folderlist = '';
+	$folderlist = $unread = '';
 	foreach($foldersexploded as $key => $folders)
 	{
 		$folderinfo = explode("**", $folders, 2);
 		$fid = $folderinfo[0];
-		$foldername = get_pm_folder_name($fid, $folderinfo[1]);
-		$query = $db->simple_select("privatemessages", "COUNT(*) AS pmsinfolder", " folder='$fid' AND uid='".$mybb->user['uid']."'");
+		if($folderinfo[0] == "1")
+		{
+			$fid = "1";
+			$unread = " AND status='0'";
+		}
+		if($folderinfo[0] == "0")
+		{
+			$fid = "1";
+		}
+		$foldername = get_pm_folder_name($folderinfo[0], $folderinfo[1]);
+		$query = $db->simple_select("privatemessages", "COUNT(*) AS pmsinfolder", " folder='$fid'$unread AND uid='".$mybb->user['uid']."'");
 		$thing = $db->fetch_array($query);
 		$foldercount = my_number_format($thing['pmsinfolder']);
 		eval("\$folderlist .= \"".$templates->get("private_empty_folder")."\";");
@@ -2132,7 +2141,13 @@ if(!$mybb->input['action'])
 	eval("\$orderarrow['$sortby'] = \"".$templates->get("private_orderarrow")."\";");
 
 	// Do Multi Pages
-	$query = $db->simple_select("privatemessages", "COUNT(*) AS total", "uid='".$mybb->user['uid']."' AND folder='$folder'");
+	$selective = "";
+	if($fid == 1)
+	{
+		$selective = " AND status='0'";
+	}
+
+	$query = $db->simple_select("privatemessages", "COUNT(*) AS total", "uid='".$mybb->user['uid']."' AND folder='$folder'$selective");
 	$pmscount = $db->fetch_field($query, "total");
 
 	if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)

@@ -28,6 +28,11 @@ if($mybb->input['action'] == "activate" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("admin_user_awaiting_activation_activate");
 
+	if(!is_array($mybb->input['user']))
+	{
+		$mybb->input['user'] = array();
+	}
+
 	$mybb->input['user'] = array_map('intval', $mybb->input['user']);
 	$user_ids = implode(", ", $mybb->input['user']);
 

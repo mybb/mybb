@@ -438,7 +438,7 @@ if($mybb->input['action'] == "add")
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 
-	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1804"></script>
+	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1821"></script>
 	<script type="text/javascript">
 		$(function() {
 			new Peeker($("#type"), $("#row_extra"), /^(select|radio|checkbox|php)$/, false);
@@ -656,7 +656,7 @@ if($mybb->input['action'] == "edit")
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 
-	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1804"></script>
+	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1821"></script>
 	<script type="text/javascript">
 		$(function() {
 			new Peeker($("#type"), $("#row_extra"), /^(select|radio|checkbox|php)$/, false);
@@ -1744,7 +1744,7 @@ EOF;
 	echo '</div>';
 
 	echo '
-<script type="text/javascript" src="./jscripts/search.js?ver=1808"></script>
+<script type="text/javascript" src="./jscripts/search.js?ver=1821"></script>
 <script type="text/javascript">
 //<!--
 $(function(){
@@ -1812,7 +1812,7 @@ function print_setting_peekers()
 
 	$setting_peekers = implode("\n			", $peekers);
 
-	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1804"></script>
+	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1821"></script>
 	<script type="text/javascript">
 		$(function() {
 			' . $setting_peekers . '
