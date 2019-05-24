@@ -1039,6 +1039,7 @@ if($mybb->input['action'] == "read")
 	{
 		$time = TIME_NOW;
 		$updatearray = array(
+			'folder' => 0,
 			'status' => 1,
 			'readtime' => $time
 		);
@@ -2089,7 +2090,7 @@ if(!$mybb->input['action'])
 	}
 
 	$fid = (int)$mybb->input['fid'];
-	$folder = !$fid ? 1 : $fid;
+	$folder = $fid;
 	$foldername = $foldernames[$fid];
 
 	if($folder == 2 || $folder == 3)
@@ -2147,8 +2148,16 @@ if(!$mybb->input['action'])
 		$selective = " AND status='0'";
 	}
 
-	$query = $db->simple_select("privatemessages", "COUNT(*) AS total", "uid='".$mybb->user['uid']."' AND folder='$folder'$selective");
+	if($folder == 0)
+	{
+		$query = $db->simple_select("privatemessages", "COUNT(*) AS total", "uid='".$mybb->user['uid']."' AND folder IN ( '0', '1' )$selective");	
+	}
+	else
+	{
+		$query = $db->simple_select("privatemessages", "COUNT(*) AS total", "uid='".$mybb->user['uid']."' AND folder='$folder'$selective");
+	}
 	$pmscount = $db->fetch_field($query, "total");
+
 
 	if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
 	{
@@ -2259,6 +2268,15 @@ if(!$mybb->input['action'])
 	}
 	else
 	{
+		if($fid == 0)
+		{
+			$folder = "( '0', '1' )";
+		}
+		else
+		{
+			$folder = "('$folder')";
+		}
+		
 		if($fid == 1)
 		{
 			$selective = ' AND pm.status="0"';
@@ -2279,7 +2297,7 @@ if(!$mybb->input['action'])
 		FROM ".TABLE_PREFIX."privatemessages pm
 		LEFT JOIN ".TABLE_PREFIX."users fu ON (fu.uid=pm.fromid)
 		LEFT JOIN ".TABLE_PREFIX."users tu ON (tu.uid=pm.toid)
-		WHERE pm.folder='$folder' AND pm.uid='".$mybb->user['uid']."'{$selective}
+		WHERE pm.folder IN ".$folder." AND pm.uid='".$mybb->user['uid']."'{$selective}
 		ORDER BY {$pm}{$sortfield} {$sortordernow}
 		LIMIT $start, $perpage
 	");
