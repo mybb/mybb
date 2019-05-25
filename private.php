@@ -494,7 +494,12 @@ if($mybb->input['action'] == "results")
 			$senddate = $lang->not_sent;
 		}
 
-		$foldername = $foldernames[$message['folder']];
+		$fid = "0";
+		if((int)$message['folder'] > 1)
+		{
+			$fid = $message['folder'];
+		}
+		$foldername = $foldernames[$fid];
 
 		// What we do here is parse the post using our post parser, then strip the tags from it
 		$parser_options = array(
