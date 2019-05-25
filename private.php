@@ -90,7 +90,15 @@ foreach($foldersexploded as $key => $folders)
 
 	eval("\$folderjump_folder .= \"".$templates->get("private_jump_folders_folder")."\";");
 	eval("\$folderoplist_folder .= \"".$templates->get("private_jump_folders_folder")."\";");
-	eval("\$foldersearch_folder .= \"".$templates->get("private_jump_folders_folder")."\";");
+	// Manipulate search folder selection to omit "Unread"
+	if($folder_id != 1)
+	{
+		if($folder_id == 0)
+		{
+			$folder_id = 1;
+		}
+		eval("\$foldersearch_folder .= \"".$templates->get("private_jump_folders_folder")."\";");
+	}
 }
 
 $from_fid = $mybb->input['fid'];
