@@ -6499,30 +6499,30 @@ if(use_xmlhttprequest == "1")
 					{$announcements_global}
 				</table>
 				<br />]]></template>
-		<template name="modcp_announcements_month_end" version="1800"><![CDATA[<option value="01" {$endmonthsel['01']}>{$lang->january}</option>
-<option value="02" {$endmonthsel['02']}>{$lang->february}</option>
-<option value="03" {$endmonthsel['03']}>{$lang->march}</option>
-<option value="04" {$endmonthsel['04']}>{$lang->april}</option>
-<option value="05" {$endmonthsel['05']}>{$lang->may}</option>
-<option value="06" {$endmonthsel['06']}>{$lang->june}</option>
-<option value="07" {$endmonthsel['07']}>{$lang->july}</option>
-<option value="08" {$endmonthsel['08']}>{$lang->august}</option>
-<option value="09" {$endmonthsel['09']}>{$lang->september}</option>
-<option value="10" {$endmonthsel['10']}>{$lang->october}</option>
-<option value="11" {$endmonthsel['11']}>{$lang->november}</option>
-<option value="12" {$endmonthsel['12']}>{$lang->december}</option>]]></template>
-		<template name="modcp_announcements_month_start" version="1800"><![CDATA[<option value="01" {$startmonthsel['01']}>{$lang->january}</option>
-<option value="02" {$startmonthsel['02']}>{$lang->february}</option>
-<option value="03" {$startmonthsel['03']}>{$lang->march}</option>
-<option value="04" {$startmonthsel['04']}>{$lang->april}</option>
-<option value="05" {$startmonthsel['05']}>{$lang->may}</option>
-<option value="06" {$startmonthsel['06']}>{$lang->june}</option>
-<option value="07" {$startmonthsel['07']}>{$lang->july}</option>
-<option value="08" {$startmonthsel['08']}>{$lang->august}</option>
-<option value="09" {$startmonthsel['09']}>{$lang->september}</option>
-<option value="10" {$startmonthsel['10']}>{$lang->october}</option>
-<option value="11" {$startmonthsel['11']}>{$lang->november}</option>
-<option value="12" {$startmonthsel['12']}>{$lang->december}</option>]]></template>
+		<template name="modcp_announcements_month_end" version="1821"><![CDATA[<option value="01" {$endmonthsel['01']}>{$lang->month_1}</option>
+<option value="02" {$endmonthsel['02']}>{$lang->month_2}</option>
+<option value="03" {$endmonthsel['03']}>{$lang->month_3}</option>
+<option value="04" {$endmonthsel['04']}>{$lang->month_4}</option>
+<option value="05" {$endmonthsel['05']}>{$lang->month_5}</option>
+<option value="06" {$endmonthsel['06']}>{$lang->month_6}</option>
+<option value="07" {$endmonthsel['07']}>{$lang->month_7}</option>
+<option value="08" {$endmonthsel['08']}>{$lang->month_8}</option>
+<option value="09" {$endmonthsel['09']}>{$lang->month_9}</option>
+<option value="10" {$endmonthsel['10']}>{$lang->month_10}</option>
+<option value="11" {$endmonthsel['11']}>{$lang->month_11}</option>
+<option value="12" {$endmonthsel['12']}>{$lang->month_12}</option>]]></template>
+		<template name="modcp_announcements_month_start" version="1821"><![CDATA[<option value="01" {$startmonthsel['01']}>{$lang->month_1}</option>
+<option value="02" {$startmonthsel['02']}>{$lang->month_2}</option>
+<option value="03" {$startmonthsel['03']}>{$lang->month_3}</option>
+<option value="04" {$startmonthsel['04']}>{$lang->month_4}</option>
+<option value="05" {$startmonthsel['05']}>{$lang->month_5}</option>
+<option value="06" {$startmonthsel['06']}>{$lang->month_6}</option>
+<option value="07" {$startmonthsel['07']}>{$lang->month_7}</option>
+<option value="08" {$startmonthsel['08']}>{$lang->month_8}</option>
+<option value="09" {$startmonthsel['09']}>{$lang->month_9}</option>
+<option value="10" {$startmonthsel['10']}>{$lang->month_10}</option>
+<option value="11" {$startmonthsel['11']}>{$lang->month_11}</option>
+<option value="12" {$startmonthsel['12']}>{$lang->month_12}</option>]]></template>
 		<template name="modcp_announcements_allowhtml" version="1813"><![CDATA[						<tr>
 							<td class="trow1" valign="top" width="25%"><strong>{$lang->allow_html}</strong></td>
 							<td class="trow1" valign="top" width="75%"><label><input type="radio" name="allowhtml" value="1"{$html_sel['yes']} />&nbsp;{$lang->yes}</label> &nbsp;&nbsp;<label><input type="radio" name="allowhtml" value="0"{$html_sel['no']} />&nbsp;{$lang->no}</label></td>
@@ -8130,18 +8130,18 @@ if(use_xmlhttprequest == "1")
 		<template name="moderation_delayedmoderation_openclose" version="1813"><![CDATA[<dt><input type="radio" name="type" value="openclosethread" {$type_selected['openclosethread']} id="type_openclosethread" onclick="toggleType();" /> <label for="type_openclosethread"><strong>{$lang->open_close_thread}</strong></label></dt>]]></template>
 		<template name="moderation_delayedmoderation_softdeleterestore" version="1813"><![CDATA[<dt><input type="radio" name="type" value="softdeleterestorethread" {$type_selected['softdeleterestorethread']} id="type_softdeleterestorethread" onclick="toggleType();" /> <label for="type_softdeleterestorethread"><strong>{$lang->softdelete_restore_thread}</strong></label></dt>]]></template>
 		<template name="moderation_delayedmoderation_stick" version="1813"><![CDATA[<dt><input type="radio" name="type" value="stick" {$type_selected['stick']} id="type_stick_unstick_thread" onclick="toggleType();" /> <label for="type_stick_unstick_thread"><strong>{$lang->stick_unstick_thread}</strong></label></dt>]]></template>
-		<template name="moderation_delayedmoderation_date_month" version="1800"><![CDATA[<option value="01" {$datemonth['01']}>{$lang->january}</option>
-<option value="02" {$datemonth['02']}>{$lang->february}</option>
-<option value="03" {$datemonth['03']}>{$lang->march}</option>
-<option value="04" {$datemonth['04']}>{$lang->april}</option>
-<option value="05" {$datemonth['05']}>{$lang->may}</option>
-<option value="06" {$datemonth['06']}>{$lang->june}</option>
-<option value="07" {$datemonth['07']}>{$lang->july}</option>
-<option value="08" {$datemonth['08']}>{$lang->august}</option>
-<option value="09" {$datemonth['09']}>{$lang->september}</option>
-<option value="10" {$datemonth['10']}>{$lang->october}</option>
-<option value="11" {$datemonth['11']}>{$lang->november}</option>
-<option value="12" {$datemonth['12']}>{$lang->december}</option>]]></template>
+		<template name="moderation_delayedmoderation_date_month" version="1821"><![CDATA[<option value="01" {$datemonth['01']}>{$lang->month_1}</option>
+<option value="02" {$datemonth['02']}>{$lang->month_2}</option>
+<option value="03" {$datemonth['03']}>{$lang->month_3}</option>
+<option value="04" {$datemonth['04']}>{$lang->month_4}</option>
+<option value="05" {$datemonth['05']}>{$lang->month_5}</option>
+<option value="06" {$datemonth['06']}>{$lang->month_6}</option>
+<option value="07" {$datemonth['07']}>{$lang->month_7}</option>
+<option value="08" {$datemonth['08']}>{$lang->month_8}</option>
+<option value="09" {$datemonth['09']}>{$lang->month_9}</option>
+<option value="10" {$datemonth['10']}>{$lang->month_10}</option>
+<option value="11" {$datemonth['11']}>{$lang->month_11}</option>
+<option value="12" {$datemonth['12']}>{$lang->month_12}</option>]]></template>
 		<template name="moderation_delayedmoderation_date_day" version="1809"><![CDATA[<option value="{$day}"{$selected}>{$day}</option>]]></template>
 		<template name="moderation_delayedmoderation_custommodtool" version="1600"><![CDATA[<dt><input type="radio" name="type" value="modtool_{$tool['tid']}" {$checked} id="type_modtool_{$tool['tid']}" onclick="toggleType();" /> <label for="type_modtool_{$tool['tid']}"><strong>{$tool['name']}</strong> <small>({$lang->custom})</small></label></dt>]]></template>
 		<template name="moderation_delayedmoderation_merge" version="1816"><![CDATA[<dt><input type="radio" name="type" value="merge" {$type_selected['merge']} id="type_merge" onclick="toggleType();" /> <label for="type_merge"><strong>{$lang->merge_threads}</strong></label></dt>

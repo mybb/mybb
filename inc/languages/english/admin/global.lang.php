@@ -156,18 +156,18 @@ $l['php_code'] = "PHP Code:";
 $l['linkback'] = "Original Post";
 
 // The months of the year
-$l['january'] = "January";
-$l['february'] = "February";
-$l['march'] = "March";
-$l['april'] = "April";
-$l['may'] = "May";
-$l['june'] = "June";
-$l['july'] = "July";
-$l['august'] = "August";
-$l['september'] = "September";
-$l['october'] = "October";
-$l['november'] = "November";
-$l['december'] = "December";
+$l['month_1'] = "January";
+$l['month_2'] = "February";
+$l['month_3'] = "March";
+$l['month_4'] = "April";
+$l['month_5'] = "May";
+$l['month_6'] = "June";
+$l['month_7'] = "July";
+$l['month_8'] = "August";
+$l['month_9'] = "September";
+$l['month_10'] = "October";
+$l['month_11'] = "November";
+$l['month_12'] = "December";
 
 // Access Denied
 $l['access_denied'] = "Access Denied";

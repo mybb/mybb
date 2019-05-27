@@ -545,19 +545,6 @@ $l['email_note'] = "Enter your email address here.";
 $l['your_name'] = "Your Name:";
 $l['name_note'] = "Enter your name here.";
 
-$l['january'] = "January";
-$l['february'] = "February";
-$l['march'] = "March";
-$l['april'] = "April";
-$l['may'] = "May";
-$l['june'] = "June";
-$l['july'] = "July";
-$l['august'] = "August";
-$l['september'] = "September";
-$l['october'] = "October";
-$l['november'] = "November";
-$l['december'] = "December";
-
 $l['moderation_forum_attachments'] = "Please note that new attachments in this forum must be approved by a moderator before becoming visible.";
 $l['moderation_forum_posts'] = "Please note that new posts in this forum must be approved by a moderator before becoming visible.";
 $l['moderation_user_posts'] = "Please note that new posts you make must be approved by a moderator before becoming visible.";
