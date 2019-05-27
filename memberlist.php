@@ -495,7 +495,14 @@ else
 		}
 		else
 		{
-			$user['lastvisit'] = my_date('relative', $user['lastactive']);
+			if($user['lastvisit'])
+			{
+				$user['lastvisit'] = my_date('relative', $user['lastactive']);
+			}
+			else
+			{
+				$user['lastvisit'] = $lang->lastvisit_never;
+			}
 		}
 
 		$user['regdate'] = my_date('relative', $user['regdate']);
