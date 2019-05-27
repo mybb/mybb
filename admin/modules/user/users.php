@@ -3577,7 +3577,14 @@ function build_users_view($view)
 			$user['view']['additionalgroups'] = "<small>{$groups_list}</small>";
 			$user['view']['email'] = "<a href=\"mailto:".htmlspecialchars_uni($user['email'])."\">".htmlspecialchars_uni($user['email'])."</a>";
 			$user['view']['regdate'] = my_date('relative', $user['regdate']);
-			$user['view']['lastactive'] = my_date('relative', $user['lastactive']);
+			if($user['lastactive'])
+			{
+				$user['view']['lastactive'] = my_date('relative', $user['lastactive']);
+			}
+			else
+			{
+			$user['view']['lastactive'] = $lang->never;
+			}
 
 			// Build popup menu
 			$popup = new PopupMenu("user_{$user['uid']}", $lang->options);
