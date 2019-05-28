@@ -1379,13 +1379,40 @@ class DB_MySQL implements DB_Base
 	 * @param string $table The table
 	 * @param string $column The column name
 	 * @param string $new_definition the new column definition
-	 * @return resource
+	 * @param boolean|string $new_not_null Whether to "drop" or "set" the NOT NULL attribute (no change if false)
+	 * @param boolean|string $new_default_value The new default value, or false to drop the attribute
+	 * @return bool Returns true if all queries are executed successfully or false if one of them failed
 	 */
-	function modify_column($table, $column, $new_definition)
+	function modify_column($table, $column, $new_definition, $new_not_null=false, $new_default_value=false)
 	{
 		$column = trim($column, '`');
 
-		return $this->write_query("ALTER TABLE {$this->table_prefix}{$table} MODIFY `{$column}` {$new_definition}");
+		if($new_not_null !== false)
+		{
+			if(strtolower($new_not_null) == "set")
+			{
+				$not_null = "NOT NULL";
+			}
+			else
+			{
+				$not_null = "NULL";
+			}
+		}
+		else
+		{
+			$not_null = '';
+		}
+
+		if($new_default_value !== false)
+		{
+			$default = "DEFAULT ".$new_default_value;
+		}
+		else
+		{
+			$default = '';
+		}
+
+		return (bool)$this->write_query("ALTER TABLE {$this->table_prefix}{$table} MODIFY `{$column}` {$new_definition} {$not_null}");
 	}
 
 	/**
@@ -1395,14 +1422,41 @@ class DB_MySQL implements DB_Base
 	 * @param string $old_column The old column name
 	 * @param string $new_column the new column name
 	 * @param string $new_definition the new column definition
-	 * @return resource
+	 * @param boolean|string $new_not_null Whether to "drop" or "set" the NOT NULL attribute (no change if false)
+	 * @param boolean|string $new_default_value The new default value, or false to drop the attribute
+	 * @return bool Returns true if all queries are executed successfully
 	 */
-	function rename_column($table, $old_column, $new_column, $new_definition)
+	function rename_column($table, $old_column, $new_column, $new_definition, $new_not_null=false, $new_default_value=false)
 	{
 		$old_column = trim($old_column, '`');
 		$new_column = trim($new_column, '`');
 
-		return $this->write_query("ALTER TABLE {$this->table_prefix}{$table} CHANGE `{$old_column}` `{$new_column}` {$new_definition}");
+		if($new_not_null !== false)
+		{
+			if(strtolower($new_not_null) == "set")
+			{
+				$not_null = "NOT NULL";
+			}
+			else
+			{
+				$not_null = "NULL";
+			}
+		}
+		else
+		{
+			$not_null = '';
+		}
+
+		if($new_default_value !== false)
+		{
+			$default = "DEFAULT ".$new_default_value;
+		}
+		else
+		{
+			$default = '';
+		}
+
+		return (bool)$this->write_query("ALTER TABLE {$this->table_prefix}{$table} CHANGE `{$old_column}` `{$new_column}` {$new_definition} {$not_null} {$default}");
 	}
 
 	/**
