@@ -272,6 +272,21 @@ function clean_keywords_ft($keywords)
 	// Separate braces for further processing
 	$keywords = preg_replace("#((\+|-|<|>|~)?\(|\))#s", " $1 ", $keywords);
 	$keywords = preg_replace("#\s+#s", " ", $keywords);
+	
+	global $mybb;
+	
+	$min_word_length = (int) $mybb->settings['minsearchword'];
+	if($min_word_length <= 0)
+	{
+		$min_word_length = 3;
+	}
+	$min_word_length -= 1;
+	
+	// Replaces less than 3 characters
+	$keywords = preg_replace("/(\b.{1,{$min_word_length}})(\s)|(\b.{1,{$min_word_length}}$)/", '$2', $keywords);
+	// Collapse multiple spaces
+	$keywords = preg_replace('/(\s)+/', '$1', $keywords);
+	$keywords = trim($keywords);
 
 	$words = array(array());
 
