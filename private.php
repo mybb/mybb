@@ -2192,7 +2192,7 @@ if(!$mybb->input['action'])
 	{
 		if($fid == 1)
 		{
-			$selective = ' AND pm.status="0"';
+			$selective = " AND pm.status='0'";
 		}
 
 		if($sortfield == "username")
