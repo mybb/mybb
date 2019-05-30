@@ -1886,9 +1886,9 @@ class PostDataHandler extends DataHandler
 				$query = $db->simple_select("threads", "tid, closed", "closed='moved|".$this->tid."'");
 				if($db->num_rows($query) > 0)
 				{
+					$update_data['subject'] = $db->escape_string($post['subject']);
 					while($result = $db->fetch_array($query))
 					{
-						$update_data['subject'] = $db->escape_string($post['subject']);
 						$db->update_query("threads", $update_data, "tid='".(int)$result['tid']."'");
 					}
 				}
