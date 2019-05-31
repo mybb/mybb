@@ -87,6 +87,13 @@ foreach($foldersexploded as $key => $folder_name)
 	$folder['name'] = $folderinfo[1];
 
 	$folders[] = $folder;
+	if($folder['id'] != 1)
+	{
+		if($folder['id'] == 0)
+		{
+			$folder['id'] = 1;
+		}
+	}
 }
 
 $from_fid = $mybb->input['fid'];
@@ -471,7 +478,12 @@ if($mybb->input['action'] == "results")
 			$message['senddate'] = $lang->not_sent;
 		}
 
-		$message['foldername'] = $foldernames[$message['folder']];
+		$fid = "0";
+		if((int)$message['folder'] > 1)
+		{
+			$fid = $message['folder'];
+		}
+		$message['foldername'] = $foldernames[$fid];
 
 		// What we do here is parse the post using our post parser, then strip the tags from it
 		$parser_options = array(
