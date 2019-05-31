@@ -90,7 +90,15 @@ foreach($foldersexploded as $key => $folders)
 
 	eval("\$folderjump_folder .= \"".$templates->get("private_jump_folders_folder")."\";");
 	eval("\$folderoplist_folder .= \"".$templates->get("private_jump_folders_folder")."\";");
-	eval("\$foldersearch_folder .= \"".$templates->get("private_jump_folders_folder")."\";");
+	// Manipulate search folder selection to omit "Unread"
+	if($folder_id != 1)
+	{
+		if($folder_id == 0)
+		{
+			$folder_id = 1;
+		}
+		eval("\$foldersearch_folder .= \"".$templates->get("private_jump_folders_folder")."\";");
+	}
 }
 
 $from_fid = $mybb->input['fid'];
@@ -494,7 +502,12 @@ if($mybb->input['action'] == "results")
 			$senddate = $lang->not_sent;
 		}
 
-		$foldername = $foldernames[$message['folder']];
+		$fid = "0";
+		if((int)$message['folder'] > 1)
+		{
+			$fid = $message['folder'];
+		}
+		$foldername = $foldernames[$fid];
 
 		// What we do here is parse the post using our post parser, then strip the tags from it
 		$parser_options = array(
