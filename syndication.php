@@ -44,7 +44,7 @@ if($thread_limit > 50)
 }
 else if(!$thread_limit || $thread_limit < 0)
 {
-	$thread_limit = 20;
+	$thread_limit = 15;
 }
 
 // Syndicate a specific forum or all viewable?
@@ -190,7 +190,7 @@ if(!empty($firstposts))
 		}
 	}
 
-	$query = $db->simple_select("posts", "message, edittime, tid, fid, pid", $firstpostlist, array('order_by' => 'dateline', 'order_dir' => 'desc'));
+	$query = $db->simple_select("posts", "message, edittime, tid, uid, username, fid, pid", $firstpostlist, array('order_by' => 'dateline', 'order_dir' => 'desc'));
 	while($post = $db->fetch_array($query))
 	{
 		$parser_options = array(
@@ -227,9 +227,10 @@ if(!empty($firstposts))
 
 		$items[$post['tid']]['description'] = $parsed_message;
 		$items[$post['tid']]['updated'] = $post['edittime'];
+		$items[$post['tid']]['author'] = array("uid" => $post['uid'], "name" => $post['username']);
 		$feedgenerator->add_item($items[$post['tid']]);
 	}
 }
 
-// Then output the feed XML.
+// Then output the feed.
 $feedgenerator->output_feed();

@@ -44,6 +44,10 @@
                                 <input type="radio" class="radio segmented-control__input" name="version" id="version_atom1" value="atom1.0"{% if syndication.atom1check %} checked="checked"{% endif %} />
                                 <label for="version_atom1" class="segmented-control__button">{{ lang.syndication_version_atom1 }}</label>
                             </span>
+                            <span class="segmented-control__option">
+                                <input type="radio" class="radio segmented-control__input" name="version" id="version_json1" value="json"{% if syndication.json1check %} checked="checked"{% endif %} />
+                                <label for="version_json1" class="segmented-control__button">{{ lang.syndication_version_json1 }}</label>
+                            </span>
                         </span>
                     </div>
                     <div class="row row--form field">

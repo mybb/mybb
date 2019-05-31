@@ -782,124 +782,75 @@ elseif($mybb->input['action'] == "syndication")
 
 	$fid = $mybb->get_input('fid', MyBB::INPUT_INT);
 	$version = $mybb->get_input('version');
-	$new_limit = $mybb->get_input('limit', MyBB::INPUT_INT);
 	$forums = $mybb->get_input('forums', MyBB::INPUT_ARRAY);
-	$limit = 15;
-
-	if(!empty($new_limit) && $new_limit != $limit)
-	{
-		$limit = $new_limit;
-	}
-
-	$add = false;
+	$limit = $mybb->get_input('limit', MyBB::INPUT_INT);
+	$syndication['url'] = $mybb->settings['bburl']."/syndication.php";
+	$syndicate = $urlquery = array();
 
 	add_breadcrumb($lang->nav_syndication);
 	$unviewable = get_unviewable_forums();
 	$inactiveforums = get_inactive_forums();
-	$unexp1 = explode(',', $unviewable);
-	$unexp2 = explode(',', $inactiveforums);
-	$unexp = array_merge($unexp1, $unexp2);
+	$unexp = explode(',', $unviewable . ',' . $inactiveforums);
 
-	$syndication['url'] = '';
 	$syndication['feedurl'] = $syndication['allselected'] = false;
-	if(!empty($forums))
+	if(is_array($forums) && !in_array('all', $forums))
 	{
-		foreach($unexp as $fid)
-		{
-			$unview[$fid] = true;
-		}
-
-		$syndicate = '';
-		$comma = '';
-		$all = false;
 		foreach($forums as $fid)
 		{
-			if($fid == "all")
+			if(ctype_digit($fid) && !in_array($fid, $unexp))
 			{
-				$syndication['allselected'] = true;
-				$all = true;
-				break;
-			}
-			elseif(ctype_digit($fid))
-			{
-				if(!isset($unview[$fid]))
-				{
-					$syndicate .= $comma.$fid;
-					$comma = ",";
-					$flist[$fid] = true;
-				}
+				$syndicate[] = $fid;
+				$flist[$fid] = true;
 			}
 		}
 
-		$syndication['url'] = $mybb->settings['bburl']."/syndication.php";
-		if(!$all)
+		if(!empty($syndicate))
 		{
-			$syndication['url'] .= "?fid=$syndicate";
-			$add = true;
+			$urlquery[] = "fid=". implode(",", $syndicate);
 		}
-
-		// If the version is not RSS2.0, set the type to Atom1.0.
-		if($version != "rss2.0")
-		{
-			if(!$add)
-			{
-				$syndication['url'] .= "?";
-			}
-			else
-			{
-				$syndication['url'] .= "&";
-			}
-
-			$syndication['url'] .= "type=atom1.0";
-			$add = true;
-		}
-
-		if((int)$limit > 0)
-		{
-			if($limit > 50)
-			{
-				$limit = 50;
-			}
-
-			if(!$add)
-			{
-				$syndication['url'] .= "?";
-			}
-			else
-			{
-				$syndication['url'] .= "&";
-			}
-
-			if(is_numeric($limit))
-			{
-				$syndication['url'] .= "limit=$limit";
-			}
-		}
-
-		$syndication['feedurl'] = true;
 	}
 
-	unset($GLOBALS['forumcache']);
-
 	// If there is no version in the input, check the default (RSS2.0).
-	if($version == "atom1.0")
+	$json1check = $atom1check = $rss2check = "";
+	if($version == "json")
 	{
+        $syndication['json1check'] = true;
+		$syndication['atom1check'] = false;
+		$syndication['rss2check'] = false;
+	}
+	elseif($version == "atom1.0")
+	{
+        $syndication['json1check'] = false;
 		$syndication['atom1check'] = true;
 		$syndication['rss2check'] = false;
 	}
 	else
 	{
+        $syndication['json1check'] = false;
 		$syndication['atom1check'] = false;
 		$syndication['rss2check'] = true;
 	}
+	$urlquery[] = "type=".$version;
 
-	$forums = makesyndicateforums();
-	$syndication['limit'] = $limit;
+	// Evaluate, reset and set limit (Drive through settings?)
+	$limit = empty($limit) ? 15 : (($limit > 50) ? 50 : $limit);
+	$urlquery[] = "limit=" . $limit;
+
+	// Generate feed url
+	if(!empty($urlquery)){
+		$syndication['url'] .= "?" . implode('&', $urlquery);
+        $syndication['feedurl'] = true;
+	}
 
 	if($syndication['feedurl'] == false)
 	{
 		$syndication['allselected'] = true;
 	}
+
+	unset($GLOBALS['forumcache']);
+
+	$forums = makesyndicateforums();
+	$syndication['limit'] = $limit;
 
 	$plugins->run_hooks("misc_syndication_end");
 
@@ -983,6 +934,13 @@ function makesyndicateforums($pid = 0, $selitem = "", $addselect = true, $depth 
 						$newdepth = $depth."&nbsp;&nbsp;&nbsp;&nbsp;";
 						$forumtree = makesyndicateforums($forum['fid'], '', 0, $newdepth);
 						$forumlist = array_merge($forumlist, $forumtree);
+					}
+				}
+				else
+				{
+					if(isset($flist[$forum['fid']]))
+					{
+						unset($flist[$forum['fid']]);
 					}
 				}
 			}
