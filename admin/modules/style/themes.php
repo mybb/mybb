@@ -2980,6 +2980,12 @@ if($mybb->input['action'] == "force")
 
 		$db->update_query("users", $updated_users);
 
+		// The theme has to be accessible to all usergroups in order to force on all users
+		if($theme['allowedgroups'] !== "all")
+		{
+			$db->update_query("themes", array("allowedgroups" => "all"), "tid='{$theme['tid']}'");
+		}
+
 		// Log admin action
 		log_admin_action($theme['tid'], $theme['name']);
 
