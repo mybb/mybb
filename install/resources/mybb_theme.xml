@@ -6192,7 +6192,7 @@ if(use_xmlhttprequest == "1")
 <td class="{$class}">{$smilie['name']}</td>
 <td class="{$class}">{$smilie['find']}</td>
 </tr>]]></template>
-		<template name="misc_syndication" version="1820"><![CDATA[<html>
+		<template name="misc_syndication" version="1821"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->syndication}</title>
 {$headerinclude}

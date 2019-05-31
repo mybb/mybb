@@ -232,5 +232,5 @@ if(!empty($firstposts))
 	}
 }
 
-// Then output the feed XML.
+// Then output the feed.
 $feedgenerator->output_feed();
