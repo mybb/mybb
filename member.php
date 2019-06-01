@@ -2335,11 +2335,11 @@ if($mybb->input['action'] == "profile")
 	$findposts = $findthreads = '';
 	if($mybb->usergroup['cansearch'] == 1)
 	{
-		if((int)$memprofile['postnum'])
+		if(!empty($memprofile['postnum']))
 		{
 			eval("\$findposts = \"".$templates->get("member_profile_findposts")."\";");
 		}
-		if((int)$memprofile['threadnum'])
+		if(!empty($memprofile['threadnum']))
 		{
 			eval("\$findthreads = \"".$templates->get("member_profile_findthreads")."\";");
 		}
