@@ -531,10 +531,10 @@ if($mybb->user['uid'] != 0)
 
 	$buddylink = $searchlink = $pmslink = '';
 
-    if(!empty($mybb->user['buddylist']))
-    {
-        eval('$buddylink = "' . $templates->get('header_welcomeblock_member_buddy') . '";');
-    }
+	if(!empty($mybb->user['buddylist']))
+	{
+		eval('$buddylink = "' . $templates->get('header_welcomeblock_member_buddy') . '";');
+	}
     
 	if($mybb->usergroup['cansearch'] == 1)
 	{
