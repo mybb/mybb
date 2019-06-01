@@ -665,7 +665,8 @@ function build_postbit($post, $post_type=0)
 			$post['button_multiquote'] = true;
 		}
 
-		if($mybb->user['uid'] != '0')
+		$reportable = user_permissions($post['uid']);
+		if($mybb->user['uid'] != "0" && !empty($reportable['canbereported']))
 		{
 			$post['button_report'] = true;
 		}

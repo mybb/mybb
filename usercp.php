@@ -2399,6 +2399,8 @@ if($mybb->input['action'] == "do_editlists")
 			if($new_list == "")
 			{
 				echo "\$(\"#".$mybb->get_input('manage')."_count\").html(\"0\");\n";
+				echo "\$(\"#buddylink\").remove();\n";
+				
 				if($mybb->get_input('manage') == "ignored")
 				{
 					echo "\$(\"#ignore_list\").html(\"<li>{$lang->ignore_list_empty}</li>\");\n";

@@ -516,7 +516,6 @@ if($mybb->user['uid'] != 0)
 {
 	// Format the welcome back message
 	$lang->welcome_back = $lang->sprintf($lang->welcome_back, build_profile_link(htmlspecialchars_uni($mybb->user['username']), $mybb->user['uid']), $lastvisit);
-
 }
 
 // See if there are any pending join requests for group leaders

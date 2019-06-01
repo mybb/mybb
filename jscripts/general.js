@@ -136,7 +136,7 @@ var MyBB = {
 		{
 			modal.on($.modal.OPEN, function()
 			{
-				buttons[0].trigger('focus');
+				$(buttons[0]).trigger('focus');
 			});
 		}
 
