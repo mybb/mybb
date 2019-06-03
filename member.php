@@ -2594,12 +2594,12 @@ if($mybb->input['action'] == "profile")
 	
 				eval("\$online_status = \"".$templates->get("member_profile_online")."\";");
 			}
-			// User is offline
-			else
-			{
-				eval("\$online_status = \"".$templates->get("member_profile_offline")."\";");
-			}
 		}
+	}
+	
+	if(!isset($online_status))
+	{		
+		eval("\$online_status = \"".$templates->get("member_profile_offline")."\";");
 	}
 
 	// Reset the background colours to keep it inline
