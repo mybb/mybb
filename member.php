@@ -2415,19 +2415,6 @@ if($mybb->input['action'] == "profile")
 
 	$localtime = $lang->sprintf($lang->local_time_format, $memlocaldate, $memlocaltime);
 
-	if($memprofile['lastactive'])
-	{
-		$memlastvisitdate = my_date($mybb->settings['dateformat'], $memprofile['lastactive']);
-		$memlastvisitsep = $lang->comma;
-		$memlastvisittime = my_date($mybb->settings['timeformat'], $memprofile['lastactive']);
-	}
-	else
-	{
-		$memlastvisitdate = $lang->lastvisit_never;
-		$memlastvisitsep = '';
-		$memlastvisittime = '';
-	}
-
 	if($memprofile['birthday'])
 	{
 		$membday = explode("-", $memprofile['birthday']);
@@ -2575,55 +2562,44 @@ if($mybb->input['action'] == "profile")
 	$query = $db->simple_select("sessions", "location,nopermission", "uid='$uid' AND time>'{$timesearch}'", array('order_by' => 'time', 'order_dir' => 'DESC', 'limit' => 1));
 	$session = $db->fetch_array($query);
 
-	$online_status = '';
-	if($memprofile['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $memprofile['uid'] == $mybb->user['uid'])
+	$timeonline = $lang->none_registered;
+	$memlastvisitdate = $lang->lastvisit_never;
+	$last_seen = max(array($memprofile['lastactive'], $memprofile['lastvisit']));
+	if(!empty($last_seen))
 	{
-		// Lastvisit
-		if($memprofile['lastactive'])
+		// We have some stamp here
+		if($memprofile['invisible'] == 1 && $mybb->usergroup['canviewwolinvis'] != 1 && $memprofile['uid'] != $mybb->user['uid'])
 		{
-			$memlastvisitsep = $lang->comma;
-			$memlastvisitdate = my_date('relative', $memprofile['lastactive']);
+			$memlastvisitdate = $lang->lastvisit_hidden;
+			$online_status = $timeonline = $lang->timeonline_hidden;
 		}
-
-		// Time Online
-		$timeonline = $lang->none_registered;
-		if($memprofile['timeonline'] > 0)
-		{
-			$timeonline = nice_time($memprofile['timeonline']);
-		}
-
-		// Online?
-		if(!empty($session))
-		{
-			// Fetch their current location
-			$lang->load("online");
-			require_once MYBB_ROOT."inc/functions_online.php";
-			$activity = fetch_wol_activity($session['location'], $session['nopermission']);
-			$location = build_friendly_wol_location($activity);
-			$location_time = my_date($mybb->settings['timeformat'], $memprofile['lastactive']);
-
-			eval("\$online_status = \"".$templates->get("member_profile_online")."\";");
-		}
-		// User is offline
 		else
 		{
-			eval("\$online_status = \"".$templates->get("member_profile_offline")."\";");
+			$memlastvisitdate = my_date('relative', $last_seen);
+
+			if($memprofile['timeonline'] > 0)
+			{
+				$timeonline = nice_time($memprofile['timeonline']);
+			}
+
+			// Online?
+			if(!empty($session))
+			{
+				// Fetch their current location
+				$lang->load("online");
+				require_once MYBB_ROOT."inc/functions_online.php";
+				$activity = fetch_wol_activity($session['location'], $session['nopermission']);
+				$location = build_friendly_wol_location($activity);
+				$location_time = my_date($mybb->settings['timeformat'], $memprofile['lastactive']);
+	
+				eval("\$online_status = \"".$templates->get("member_profile_online")."\";");
+			}
+			// User is offline
+			else
+			{
+				eval("\$online_status = \"".$templates->get("member_profile_offline")."\";");
+			}
 		}
-	}
-
-	if($memprofile['invisible'] == 1 && $mybb->usergroup['canviewwolinvis'] != 1 && $memprofile['uid'] != $mybb->user['uid'])
-	{
-		$memlastvisitsep = '';
-		$memlastvisittime = '';
-		$memlastvisitdate = $lang->lastvisit_never;
-
-		if($memprofile['lastactive'])
-		{
-			// We have had at least some active time, hide it instead
-			$memlastvisitdate = $lang->lastvisit_hidden;
-		}
-
-		$timeonline = $lang->timeonline_hidden;
 	}
 
 	// Reset the background colours to keep it inline
