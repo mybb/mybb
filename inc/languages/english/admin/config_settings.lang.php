@@ -39,6 +39,7 @@ $l['group_selection_box'] = "Group Selection Box";
 $l['group_selection_single'] = "Single Group Selection Box";
 $l['adminlanguage'] = "Administration Language Selection Box";
 $l['cpstyle'] = "Control Panel Style Selection Box";
+$l['prefix_selection_box'] = "Prefix Selection Box";
 $l['php'] = "Evaluated PHP";
 $l['type'] = "Type";
 $l['extra'] = "Extra";
@@ -88,7 +89,7 @@ $l['error_cannot_edit_default'] = "Default settings and groups may not be edited
 $l['error_cannot_edit_php'] = "This is a special type of setting which cannot be edited.";
 $l['error_ajax_search'] = "There was a problem searching for settings:";
 $l['error_ajax_unknown'] = "An unknown error occurred while searching for settings.";
-$l['error_chmod_settings_file'] = "The settings file \"./inc/settings.php\" isn't writable. Please CHMOD to 777.<br />For more information on CHMODing, see the <a href=\"https://docs.mybb.com/1.8/administration/security/file-permissions\" target=\"_blank\" rel=\"noopener\">MyBB Docs</a>.";
+$l['error_chmod_settings_file'] = "The settings file \"./inc/settings.php\" isn't writable. Please CHMOD to 666.<br />For more information on CHMODing, see the <a href=\"https://docs.mybb.com/1.8/administration/security/file-permissions\" target=\"_blank\" rel=\"noopener\">MyBB Docs</a>.";
 
 $l['success_setting_added'] = "The setting has been created successfully.";
 $l['success_setting_updated'] = "The setting has been updated successfully.";
@@ -104,7 +105,7 @@ $l['success_setting_group_updated'] = "The setting group has been updated succes
 $l['success_setting_group_deleted'] = "The selected setting group has been deleted successfully.";
 $l['success_duplicate_settings_deleted'] = "All duplicate setting groups have been deleted successfully.";
 
-$l['searching'] = 'Searching...';
+$l['searching'] = 'Searching&hellip;';
 $l['search_error'] = 'There was an error fetching your search results:';
 $l['search_done'] = 'Done!';
 
