@@ -425,8 +425,7 @@ if($mybb->input['action'] == "add")
 		"checkbox" => $lang->checkbox,
 		"language" => $lang->language_selection_box,
 		"adminlanguage" => $lang->adminlanguage,
-		"cpstyle" => $lang->cpstyle,
-                "prefixselect" => $lang->prefix_selection_box
+		"cpstyle" => $lang->cpstyle
 		//"php" => $lang->php // Internal Use Only
 	);
 
@@ -439,9 +438,9 @@ if($mybb->input['action'] == "add")
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 
-	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1821"></script>
+	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1804"></script>
 	<script type="text/javascript">
-		$(function() {
+		$(document).ready(function() {
 			new Peeker($("#type"), $("#row_extra"), /^(select|radio|checkbox|php)$/, false);
 		});
 		// Add a star to the extra row since the "extra" is required if the box is shown
@@ -644,8 +643,7 @@ if($mybb->input['action'] == "edit")
 		"checkbox" => $lang->checkbox,
 		"language" => $lang->language_selection_box,
 		"adminlanguage" => $lang->adminlanguage,
-		"cpstyle" => $lang->cpstyle,
-                "prefixselect" => $lang->prefix_selection_box
+		"cpstyle" => $lang->cpstyle
 		//"php" => $lang->php // Internal Use Only
 	);
 
@@ -658,9 +656,9 @@ if($mybb->input['action'] == "edit")
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 
-	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1821"></script>
+	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1804"></script>
 	<script type="text/javascript">
-		$(function() {
+		$(document).ready(function() {
 			new Peeker($("#type"), $("#row_extra"), /^(select|radio|checkbox|php)$/, false);
 		});
 		// Add a star to the extra row since the "extra" is required if the box is shown
@@ -968,8 +966,8 @@ if($mybb->input['action'] == "change")
 
 		// Get settings which optionscode is a forum/group select, checkbox or numeric
 		// We cannot rely on user input to decide this
-		$checkbox_settings = $forum_group_select = $prefix_select = array();
-		$query = $db->simple_select('settings', 'name, optionscode', "optionscode IN('forumselect', 'groupselect', 'prefixselect') OR optionscode LIKE 'checkbox%' OR optionscode LIKE 'numeric%'");
+		$checkbox_settings = $forum_group_select = array();
+		$query = $db->simple_select('settings', 'name, optionscode', "optionscode IN('forumselect', 'groupselect') OR optionscode LIKE 'checkbox%' OR optionscode LIKE 'numeric%'");
 
 		while($multisetting = $db->fetch_array($query))
 		{
@@ -1484,54 +1482,6 @@ if($mybb->input['action'] == "change")
 				$selected_value = (int)$setting['value']; // No need to check if empty, int will give 0
 				$setting_code = $form->generate_group_select($element_name, $selected_value, array('id' => $element_id, 'main_option' => $lang->none));
 			}
-                        else if($type[0] == "prefixselect")
-                        {
-                                $selected_values = '';
-				if($setting['value'] != '' && $setting['value'] != -1)
-				{
-					$selected_values = explode(',', (string)$setting['value']);
-
-					foreach($selected_values as &$value)
-					{
-						$value = (int)$value;
-					}
-					unset($value);
-				}
-
-				$prefix_checked = array('all' => '', 'custom' => '', 'none' => '');
-				if($setting['value'] == -1)
-				{
-					$prefix_checked['all'] = 'checked="checked"';
-				}
-				elseif($setting['value'] != '')
-				{
-					$prefix_checked['custom'] = 'checked="checked"';
-				}
-				else
-				{
-					$prefix_checked['none'] = 'checked="checked"';
-				}
-
-				print_selection_javascript();
-
-				$setting_code = "
-				<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%\">
-					<dt><label style=\"display: block;\"><input type=\"radio\" name=\"{$element_name}\" value=\"all\" {$prefix_checked['all']} class=\"{$element_id}_forums_groups_check\" onclick=\"checkAction('{$element_id}');\" style=\"vertical-align: middle;\" /> <strong>{$lang->all_prefix}</strong></label></dt>
-					<dt><label style=\"display: block;\"><input type=\"radio\" name=\"{$element_name}\" value=\"custom\" {$prefix_checked['custom']} class=\"{$element_id}_forums_groups_check\" onclick=\"checkAction('{$element_id}');\" style=\"vertical-align: middle;\" /> <strong>{$lang->select_prefix}</strong></label></dt>
-					<dd style=\"margin-top: 4px;\" id=\"{$element_id}_forums_groups_custom\" class=\"{$element_id}_forums_groups\">
-						<table cellpadding=\"4\">
-							<tr>
-								<td valign=\"top\"><small>{$lang->prefix_colon}</small></td>
-								<td>".$form->generate_prefix_select('select['.$setting['name'].'][]', $selected_values, array('id' => $element_id, 'multiple' => true, 'size' => 5))."</td>
-							</tr>
-						</table>
-					</dd>
-					<dt><label style=\"display: block;\"><input type=\"radio\" name=\"{$element_name}\" value=\"none\" {$prefix_checked['none']} class=\"{$element_id}_forums_groups_check\" onclick=\"checkAction('{$element_id}');\" style=\"vertical-align: middle;\" /> <strong>{$lang->none}</strong></label></dt>
-				</dl>
-				<script type=\"text/javascript\">
-					checkAction('{$element_id}');
-				</script>";
-                        }
 			else
 			{
 				$typecount = count($type);
@@ -1794,10 +1744,10 @@ EOF;
 	echo '</div>';
 
 	echo '
-<script type="text/javascript" src="./jscripts/search.js?ver=1821"></script>
+<script type="text/javascript" src="./jscripts/search.js?ver=1808"></script>
 <script type="text/javascript">
 //<!--
-$(function(){
+$(document).ready(function(){
 	SettingSearch.init("'.$lang->settings_search.'","'.$lang->error_ajax_unknown.'");
 });
 //-->
@@ -1862,9 +1812,9 @@ function print_setting_peekers()
 
 	$setting_peekers = implode("\n			", $peekers);
 
-	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1821"></script>
+	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1804"></script>
 	<script type="text/javascript">
-		$(function() {
+		$(document).ready(function() {
 			' . $setting_peekers . '
 		});
 	</script>';
