@@ -208,7 +208,7 @@ $(function ($) {
 				$elm.data('author', author);
 				$cite.remove();
 
-				content = this.elementToBbcode($(element));
+				content = this.elementToBbcode(element);
 				author = '=' + author.replace(/(^\s+|\s+$)/g, '');
 
 				$elm.prepend($cite);
