@@ -2471,19 +2471,10 @@ delete=Delete]]></optionscode>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
-		<setting name="allowyahoofield">
-			<title>Allow Yahoo ID Field To Usergroups</title>
-			<description><![CDATA[Select the usergroups which should be allowed to use the Yahoo ID contact field.]]></description>
-			<disporder>2</disporder>
-			<optionscode><![CDATA[groupselect]]></optionscode>
-			<settingvalue><![CDATA[-1]]></settingvalue>
-			<isdefault>1</isdefault>
-			<helpkey></helpkey>
-		</setting>
 		<setting name="allowskypefield">
 			<title>Allow Skype ID Field To Usergroups</title>
 			<description><![CDATA[Select the usergroups which should be allowed to use the Skype ID contact field.]]></description>
-			<disporder>3</disporder>
+			<disporder>2</disporder>
 			<optionscode><![CDATA[groupselect]]></optionscode>
 			<settingvalue><![CDATA[-1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -2492,7 +2483,7 @@ delete=Delete]]></optionscode>
 		<setting name="allowgooglefield">
 			<title>Allow Google Hangouts ID Field To Usergroups</title>
 			<description><![CDATA[Select the usergroups which should be allowed to use the Google Hangouts ID contact field.]]></description>
-			<disporder>4</disporder>
+			<disporder>3</disporder>
 			<optionscode><![CDATA[groupselect]]></optionscode>
 			<settingvalue><![CDATA[-1]]></settingvalue>
 			<isdefault>1</isdefault>
