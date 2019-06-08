@@ -416,7 +416,7 @@ $(function ($) {
 						if (!description)
 							description = val;
 
-						editor.wysiwygEditorInsertHtml('<a href="' + 'mailto:' + val + '">' + description + '</a>');
+						editor.insert('[email=' + val + ']' + description + '[/email]');
 					} else
 						editor.execCommand('createlink', 'mailto:' + val);
 				}
