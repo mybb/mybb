@@ -2943,8 +2943,23 @@ if($mybb->input['action'] == "profile")
 
 		if(isset($memperms['canbereported']) && $memperms['canbereported'] == 1)
 		{
-			$add_remove_options = array('url' => "javascript:Report.reportUser({$memprofile['uid']});", 'class' => 'report_user_button', 'lang' => $lang->report_user);
-			eval("\$report_options = \"".$templates->get("member_profile_addremove")."\";"); // Report User
+			$reportable = true;
+			$query = $db->simple_select("reportedcontent", "reporters", "reportstatus != '1' AND id = '{$memprofile['uid']}' AND type = 'profile'");
+			if($db->num_rows($query))
+			{
+				$report = $db->fetch_array($query);
+				$report['reporters'] = my_unserialize($report['reporters']);
+				if(is_array($report['reporters']) && in_array($mybb->user['uid'], $report['reporters']))
+				{
+					$reportable = false;
+				}
+			}
+			if($reportable)
+			{
+				$add_remove_options = array('url' => "javascript:Report.reportUser({$memprofile['uid']});", 'class' => 'report_user_button', 'lang' => $lang->report_user);
+				eval("\$report_options = \"".$templates->get("member_profile_addremove")."\";"); // Report User
+
+			}
 		}
 	}
 

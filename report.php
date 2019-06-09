@@ -162,6 +162,7 @@ if(empty($error) && $verified == true && $mybb->input['action'] == "do_report" &
 
 		eval("\$report_thanks = \"".$templates->get("report_thanks")."\";");
 		echo $report_thanks;
+		echo "<script type='text/javascript'>$('.report_user_button').remove();</script>";
 		exit;
 	}
 	else
@@ -220,6 +221,7 @@ if(empty($error) && $verified == true && $mybb->input['action'] == "do_report" &
 
 			eval("\$report_thanks = \"".$templates->get("report_thanks")."\";");
 			echo $report_thanks;
+			echo "<script type='text/javascript'>$('.report_user_button').remove();</script>";
 			exit;
 		}
 	}
