@@ -678,6 +678,11 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		$reason = htmlspecialchars_uni($mybb->get_input('editreason'));
 	}
 
+	$previewmessage = $message;
+	$previewsubject = $subject;
+	$message = htmlspecialchars_uni($message);
+	$subject = htmlspecialchars_uni($subject);
+
 	if(!isset($post_errors))
 	{
 		$post_errors = '';
@@ -738,10 +743,6 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		}
 		else
 		{
-			$previewmessage = $message;
-			$previewsubject = $subject;
-			$message = htmlspecialchars_uni($message);
-			$subject = htmlspecialchars_uni($subject);
 
 			$postoptions = $mybb->get_input('postoptions', MyBB::INPUT_ARRAY);
 
@@ -804,9 +805,6 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	}
 	else if(!$post_errors)
 	{
-		$message = htmlspecialchars_uni($message);
-		$subject = htmlspecialchars_uni($subject);
-
 		$preview = '';
 
 		if($post['includesig'] != 0)

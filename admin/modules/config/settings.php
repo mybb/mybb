@@ -1039,6 +1039,23 @@ if($mybb->input['action'] == "change")
 			}
 		}
 
+		$fields = array(
+			'uploadspath',
+			'cdnpath',
+			'avataruploadpath',
+		);
+		
+		foreach($fields as $field)
+		{
+			if(
+				isset($mybb->input['upsetting'][$field]) &&
+				is_string($mybb->input['upsetting'][$field]) &&
+				strpos($mybb->input['upsetting'][$field], '://') !== false)
+			{
+				unset($mybb->input['upsetting'][$field]);
+			}
+		}
+
 		if(is_array($mybb->input['upsetting']))
 		{
 			foreach($mybb->input['upsetting'] as $name => $value)
