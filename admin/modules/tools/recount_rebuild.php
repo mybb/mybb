@@ -427,7 +427,7 @@ function check_proceed($current, $finish, $next_page, $per_page, $name, $name2, 
 			$(function() { 
 				var button = $(\"#proceed_button\"); 
 				if(button.length > 0) {
-					button.val(\"{$lang->automatically_redirecting}\");
+					button.html(\"{$lang->automatically_redirecting}\");
 					button.attr(\"disabled\", true);
 					button.css(\"color\", \"#aaa\");
 					button.css(\"borderColor\", \"#aaa\");
