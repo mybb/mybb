@@ -676,6 +676,11 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		$editpost['reason'] = $mybb->get_input('editreason');
 	}
 
+	$previewmessage = $message;
+	$previewsubject = $subject;
+	$message = htmlspecialchars_uni($message);
+	$subject = htmlspecialchars_uni($subject);
+
 	if(!isset($post_errors))
 	{
 		$post_errors = '';

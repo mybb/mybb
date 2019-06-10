@@ -1503,7 +1503,7 @@ class postParser
 		}
 
 		return template('parser/mycodes/video.twig', [
-			'id' => $id,
+			'id' => $this->encode_url($id),
 			'type' => $video,
 			'local' => $local
 		]);

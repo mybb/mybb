@@ -60,7 +60,7 @@ elseif ((int)my_substr($mybb->user['pmfolders'], 0, 1) != 0)
 if($update)
 {
 	$sql_array = array(
-		"pmfolders" => $mybb->user['pmfolders']
+		"pmfolders" => $db->escape_string($mybb->user['pmfolders']),
 	);
 	$db->update_query("users", $sql_array, "uid = ".$mybb->user['uid']);
 }
