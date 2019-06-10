@@ -426,7 +426,11 @@ function check_proceed($current, $finish, $next_page, $per_page, $name, $name2, 
 		echo "<script type=\"text/javascript\">
 			$(function() { 
 				var button = $(\"#proceed_button\"); 
-				if(button.length > 0) {
+				if (button.length > 0) {
+					// create a temporary div element to render the text within, unescaping HTML entities
+					var textElement = $('<div/>').html('{$lang->automatically_redirecting}');
+				
+					button.val(textElement.text());
 					button.html(\"{$lang->automatically_redirecting}\");
 					button.attr(\"disabled\", true);
 					button.css(\"color\", \"#aaa\");

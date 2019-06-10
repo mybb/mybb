@@ -1992,7 +1992,26 @@ if($mybb->input['action'] == "delete")
 			echo "<div class=\"confirm_action\">\n";
 			echo "<p>{$lang->confirm_proceed_deletion}</p>\n";
 			echo "<br />\n";
-			echo "<script type=\"text/javascript\">$(function() { var button = $(\"#proceed_button\"); if(button.length > 0) { button.html(\"{$lang->automatically_redirecting}\"); button.attr(\"disabled\", true); button.css(\"color\", \"#aaa\"); button.css(\"borderColor\", \"#aaa\"); document.forms[0].trigger('submit'); }})</script>";
+			echo "<script type=\"text/javascript\">
+				$(function() { 
+					var button = $(\"#proceed_button\"); 
+					if (button.length > 0) {
+						// create a temporary div element to render the text within, unescaping HTML entities
+						var textElement = $('<div/>').html('{$lang->automatically_redirecting}');
+					
+						button.val(textElement.text());
+						button.attr(\"disabled\", true);
+						button.css(\"color\", \"#aaa\");
+						button.css(\"borderColor\", \"#aaa\");
+						
+						var parent_form = button.closest('form');
+
+						if (parent_form.length > 0) {
+							parent_form.submit();
+						}
+					}
+				});
+			</script>";
 			echo "<p class=\"buttons\">\n";
 			echo $form->generate_submit_button($lang->proceed, array('class' => 'button_yes', 'id' => 'proceed_button'));
 			echo "</p>\n";
