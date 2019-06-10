@@ -2958,7 +2958,6 @@ if($mybb->input['action'] == "profile")
 			{
 				$add_remove_options = array('url' => "javascript:Report.reportUser({$memprofile['uid']});", 'class' => 'report_user_button', 'lang' => $lang->report_user);
 				eval("\$report_options = \"".$templates->get("member_profile_addremove")."\";"); // Report User
-
 			}
 		}
 	}
