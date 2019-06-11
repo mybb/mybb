@@ -206,6 +206,8 @@ function make_parent_list($fid, $navsep=",")
 	reset($pforumcache);
 	reset($pforumcache[$fid]);
 
+	$navigation = '';
+
 	foreach($pforumcache[$fid] as $key => $forum)
 	{
 		if($fid == $forum['fid'])
@@ -827,4 +829,45 @@ if(!function_exists('array_column'))
 
 		return $values;
 	}
+}
+
+/**
+ * Output the auto redirect block.
+ *
+ * @param \Form $form An existing form instance to wrap the redirect within.
+ * @param string $prompt The prompt to show.
+ */
+function output_auto_redirect($form, $prompt)
+{
+	global $lang;
+
+	echo <<<HTML
+<div class="confirm_action">
+	<p>{$prompt}</p>
+	<br />
+	<script type="text/javascript">
+		$(function() { 
+			var button = $("#proceed_button"); 
+			if (button.length > 0) {
+				// create a temporary div element to render the text within, un-escaping HTML entities
+				var textElement = $('<div/>').html('{$lang->automatically_redirecting}');
+			
+				button.val(textElement.text());
+				button.attr("disabled", true);
+				button.css("color", "#aaa");
+				button.css("borderColor", "#aaa");
+				
+				var parent_form = button.closest('form');
+
+				if (parent_form.length > 0) {
+					parent_form.submit();
+				}
+			}
+		});
+	</script>
+	<p class="buttons">
+		{$form->generate_submit_button($lang->proceed, array('class' => 'button_yes', 'id' => 'proceed_button'))}
+	</p>
+</div>
+HTML;
 }
