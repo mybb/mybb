@@ -431,7 +431,6 @@ function check_proceed($current, $finish, $next_page, $per_page, $name, $name2, 
 					var textElement = $('<div/>').html('{$lang->automatically_redirecting}');
 				
 					button.val(textElement.text());
-					button.html(\"{$lang->automatically_redirecting}\");
 					button.attr(\"disabled\", true);
 					button.css(\"color\", \"#aaa\");
 					button.css(\"borderColor\", \"#aaa\");
