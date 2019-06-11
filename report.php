@@ -74,6 +74,7 @@ if($report_type == 'post')
 		else
 		{
 			$verified = true;
+			$button = '#post_'.$id.' .postbit_report';
 		}
 
 		// Password protected forums ......... yhummmmy!
