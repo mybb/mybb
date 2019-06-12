@@ -1368,6 +1368,8 @@ if($mybb->input['action'] == "do_changename" && $mybb->request_method == "post")
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
 
+	$errors = array();
+
 	$plugins->run_hooks("usercp_do_changename_start");
 	if($mybb->usergroup['canchangename'] != 1)
 	{
@@ -1416,6 +1418,16 @@ if($mybb->input['action'] == "changename")
 	if($mybb->usergroup['canchangename'] != 1)
 	{
 		error_no_permission();
+	}
+
+	// Coming back to this page after one or more errors were experienced, show field the user previously entered (with the exception of the password)
+	if($errors)
+	{
+		$username = htmlspecialchars_uni($mybb->get_input('username'));
+	}
+	else
+	{
+		$username = '';
 	}
 
 	$plugins->run_hooks("usercp_changename_end");
