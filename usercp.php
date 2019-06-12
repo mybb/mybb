@@ -711,7 +711,9 @@ if($mybb->input['action'] == 'do_changename' && $mybb->request_method == 'post')
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
 
-	$plugins->run_hooks('usercp_do_changename_start');
+	$errors = array();
+
+	$plugins->run_hooks("usercp_do_changename_start");
 	if($mybb->usergroup['canchangename'] != 1)
 	{
 		error_no_permission();
@@ -761,10 +763,21 @@ if($mybb->input['action'] == 'changename')
 		error_no_permission();
 	}
 
-	$plugins->run_hooks('usercp_changename_end');
+	// Coming back to this page after one or more errors were experienced, show field the user previously entered (with the exception of the password)
+	if($errors)
+	{
+		$username = $mybb->get_input('username');
+	}
+	else
+	{
+		$username = '';
+	}
+
+	$plugins->run_hooks("usercp_changename_end");
 
 	output_page(\MyBB\template('usercp/changename.twig', [
 		'errors' => $errors,
+        'username' => $username,
 	]));
 }
 
@@ -2400,7 +2413,7 @@ if($mybb->input['action'] == "do_editlists")
 			{
 				echo "\$(\"#".$mybb->get_input('manage')."_count\").html(\"0\");\n";
 				echo "\$(\"#buddylink\").remove();\n";
-				
+
 				if($mybb->get_input('manage') == "ignored")
 				{
 					echo "\$(\"#ignore_list\").html(\"<li>{$lang->ignore_list_empty}</li>\");\n";

@@ -12116,7 +12116,7 @@ if(use_xmlhttprequest == "1")
 					<br /><span class="smalltext">{$lang->avatar_url_gravatar}</span>
 				</td>
 			</tr>]]></template>
-		<template name="usercp_changename" version="1400"><![CDATA[<html>
+		<template name="usercp_changename" version="1822"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->change_username}</title>
 {$headerinclude}
@@ -12146,7 +12146,7 @@ if(use_xmlhttprequest == "1")
 </tr>
 <tr>
 <td class="trow2" width="40%"><strong>{$lang->new_username}</strong></td>
-<td class="trow2" width="60%"><input type="text" class="textbox" name="username" size="25" maxlength="{$mybb->settings['maxnamelength']}" /></td>
+<td class="trow2" width="60%"><input type="text" class="textbox" name="username" size="25" maxlength="{$mybb->settings['maxnamelength']}" value="{$username}" /></td>
 </tr>
 </table>
 <br />
