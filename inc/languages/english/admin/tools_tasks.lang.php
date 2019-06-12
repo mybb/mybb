@@ -12,7 +12,7 @@ $l['edit_task'] = "Edit Task";
 $l['edit_task_desc'] = "Below you can edit the various settings for this scheduled task.";
 $l['task_logs'] = "Task Logs";
 $l['view_task_logs'] = "View Task Logs";
-$l['view_task_logs_desc'] = "When a task is run and logging is enabled, any results or errors will be listed below. Entries older than 30 days are automatically deleted.";
+$l['view_task_logs_desc'] = "When a task has ran and logging is enabled, any results or errors will be listed below. Entries older than 30 days are automatically deleted.";
 $l['scheduled_tasks'] = "Scheduled Tasks";
 $l['scheduled_tasks_desc'] = "Here you can manage tasks which are automatically run on your board. To run a task now click the icon to the right of the task.";
 
