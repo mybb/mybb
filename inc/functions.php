@@ -60,7 +60,8 @@ function output_page($contents)
                 'sql_queries' => $sql_queries,
                 'serverload' => $serverload,
                 'totaltime' => $totaltime,
-                'memory_usage' => get_friendly_size($memory_usage)
+                'memory_usage' => get_friendly_size($memory_usage),
+                'debuglink' => $debuglink,
             ]);
             $contents = str_replace("<debugstuff>", $debugstuff, $contents);
         }
