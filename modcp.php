@@ -2475,7 +2475,7 @@ if($mybb->input['action'] == "do_editprofile")
 			$errors[] = $lang->suspendmoderate_error;
 		}
 
-		if(is_array($errors))
+		if(is_array($errors) && !empty($errors))
 		{
 			$mybb->input['action'] = "editprofile";
 		}
