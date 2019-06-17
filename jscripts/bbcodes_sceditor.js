@@ -494,7 +494,7 @@ $(function ($) {
 				'</div>' +
 				'<div>' +
 				'<label for="link">' + editor._('Video URL:') + '</label> ' +
-				'<input type="text" id="videourl" value="http://" />' +
+				'<input type="text" id="videourl" placeholder="http://" />' +
 				'</div>' +
 				'<div><input type="button" class="button" value="' + editor._('Insert') + '" /></div>' +
 				'</div>'
@@ -536,7 +536,7 @@ $(function ($) {
 			.set('image', {
 				exec: function (caller) {
 					var editor = this,
-						content = $(this._('<form><div><label for="link">{0}</label> <input type="text" id="image" value="http://" /></div>' +
+						content = $(this._('<form><div><label for="link">{0}</label> <input type="text" id="image" placeholder="http://" /></div>' +
 							'<div><label for="width">{1}</label> <input type="text" id="width" size="2" /></div>' +
 							'<div><label for="height">{2}</label> <input type="text" id="height" size="2" /></div></form>',
 							this._("URL:"),
