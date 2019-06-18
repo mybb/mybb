@@ -2220,6 +2220,11 @@ function install_done()
 	require MYBB_ROOT.'inc/settings.php';
 	$mybb->settings = &$settings;
 
+	require MYBB_ROOT.'inc/src/bootstrap.php';
+	MyBB\app('config')->set(
+		array_dot($config)
+	);
+
 	ob_start();
 	$output->print_header($lang->finish_setup, 'finish');
 
@@ -2266,14 +2271,11 @@ function install_done()
 
 	echo $lang->done_step_admincreated;
 	$now = TIME_NOW;
-	$salt = random_str();
 	$loginkey = generate_loginkey();
-	$saltedpw = md5(md5($salt).md5($mybb->get_input('adminpass')));
+	$passwordFields = create_password($mybb->get_input('adminpass'));
 
-	$newuser = array(
+	$newuser = $passwordFields + array(
 		'username' => $db->escape_string($mybb->get_input('adminuser')),
-		'password' => $saltedpw,
-		'salt' => $salt,
 		'loginkey' => $loginkey,
 		'email' => $db->escape_string($mybb->get_input('adminemail')),
 		'usergroup' => $admin_gid, // assigned above
