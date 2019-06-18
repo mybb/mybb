@@ -251,7 +251,7 @@ if($mybb->input['type'] == "threads" || !$mybb->input['type'])
 			$table->construct_row();
 		}
 
-		$table->output($lang->threads_awaiting_moderation);
+		$table->output($lang->threads_awaiting_moderation, 1, "general tfixed");
 		echo $all_options;
 		echo $pagination;
 
@@ -397,7 +397,7 @@ if($mybb->input['type'] == "posts" || $mybb->input['type'] == "")
 			$table->construct_row();
 		}
 
-		$table->output($lang->posts_awaiting_moderation);
+		$table->output($lang->posts_awaiting_moderation, 1, "general tfixed");
 		echo $all_options;
 		echo $pagination;
 
