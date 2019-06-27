@@ -2,7 +2,7 @@
 {# {% include 'forumdisplay/thread_rating.twig' %} #}
 
 <div class="row row--thread thread inline_row
-    {% if thread.unreadpost and thread.moved = 0 %} thread--unread{% endif %}
+    {% if thread.unreadpost and thread.moved == 0 %} thread--unread{% endif %}
     {% if thread.sticky %} thread--sticky{% endif %}
     {% if modpermissions.ismod %} thread--moderator{% endif %}
     {% if thread.visible == -1 and modpermissions.canviewdeleted %} thread--deleted{% endif %}
@@ -29,7 +29,7 @@
             {% endif %}
 
             {# Go to unread link #}
-            {% if thread.unreadpost and thread.moved = 0 %}
+            {% if thread.unreadpost and thread.moved == 0 %}
                 <a href="{{ thread.newpostlink }}" class="thread__status">
                     {{ include('partials/icon.twig', {icon: 'circle', class: '', title: lang.goto_first_unread}, with_context = false) }}
                 </a>
