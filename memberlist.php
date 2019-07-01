@@ -128,6 +128,11 @@ else
 	}
 	$memberlist['order'][$mybb->input['order']] = true;
 
+	if($sort_field == 'u.lastactive' && $mybb->usergroup['canviewwolinvis'] == 0)
+	{
+		$sort_field = "u.invisible ASC, CASE WHEN u.invisible = 1 THEN u.regdate ELSE u.lastactive END";
+	}
+
 	// Incoming results per page?
 	$mybb->input['perpage'] = $mybb->get_input('perpage', MyBB::INPUT_INT);
 	if($mybb->input['perpage'] > 0 && $mybb->input['perpage'] <= 500)
