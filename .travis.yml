@@ -44,3 +44,12 @@ script:
   - inc/vendor/bin/phpunit
   - inc/vendor/bin/phpcs
   - composer validate --strict
+
+test:
+  script:
+  - composer phpstan | tee phpstan_log
+  artifacts:
+    when: always
+    expire_in: 1 month
+    paths:
+    - phpstan_log
