@@ -86,3 +86,16 @@
         "sort-packages": true
     }
 }
+
+{
+    "scripts": {
+        "phpstan": "phpstan analyse src/ -c inc/src/phpstan.neon --level=0 --no-progress -vvv"
+        "phpstan": "phpstan analyse src/ -c inc/src/phpstan.neon --level=1 --no-progress -vvv"
+        "phpstan": "phpstan analyse src/ -c inc/src/phpstan.neon --level=2 --no-progress -vvv"
+        "phpstan": "phpstan analyse src/ -c inc/src/phpstan.neon --level=3 --no-progress -vvv"
+        "phpstan": "phpstan analyse src/ -c inc/src/phpstan.neon --level=4 --no-progress -vvv"
+        "phpstan": "phpstan analyse src/ -c inc/src/phpstan.neon --level=5 --no-progress -vvv"
+        "phpstan": "phpstan analyse src/ -c inc/src/phpstan.neon --level=6 --no-progress -vvv"
+        "phpstan": "phpstan analyse src/ -c inc/src/phpstan.neon --level=7 --no-progress -vvv"
+    }
+}
