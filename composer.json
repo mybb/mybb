@@ -56,7 +56,7 @@
         "bin-dir": "inc/vendor/bin",
         "optimize-autoloader": true,
         "sort-packages": true
-    }
+    },
     {
     "scripts": {
         "phpstan": "phpstan analyse src/ -c inc/src/phpstan.neon --level=0 --no-progress -vvv",
