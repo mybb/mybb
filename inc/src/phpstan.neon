@@ -1,3 +1,5 @@
-includes:
-	- /inc/src
-	- /inc/tests
+parameters:
+    paths:
+        - 
+        - %rootDir%/../
+        - %rootDir%/../../tests
