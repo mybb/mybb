@@ -8437,7 +8437,7 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
-		<template name="moderation_inline_movethreads" version="1400"><![CDATA[<html>
+		<template name="moderation_inline_movethreads" version="1822"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->move_threads}</title>
 {$headerinclude}
