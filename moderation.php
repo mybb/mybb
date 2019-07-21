@@ -2180,6 +2180,8 @@ switch($mybb->input['action'])
 		verify_post_check($mybb->get_input('my_post_key'));
 
 		$moveto = $mybb->get_input('moveto', MyBB::INPUT_INT);
+		$method = $mybb->get_input('method');
+
 		$threadlist = explode("|", $mybb->get_input('threads'));
 		if(!is_moderator_by_tids($threadlist, 'canmanagethreads'))
 		{
@@ -2202,9 +2204,18 @@ switch($mybb->input['action'])
 			error($lang->error_invalidforum, $lang->error);
 		}
 
-		$moderation->move_threads($tids, $moveto);
+		$plugins->run_hooks('moderation_do_multimovethreads');
 
 		log_moderator_action($modlogdata, $lang->multi_moved_threads);
+		$expire = 0;
+		if($mybb->get_input('redirect_expire', MyBB::INPUT_INT) > 0)
+		{
+			$expire = TIME_NOW + ($mybb->get_input('redirect_expire', MyBB::INPUT_INT) * 86400);
+		}
+
+		foreach($tids as $tid) {
+			$moderation->move_thread($tid, $moveto, $method, $expire);
+		}
 
 		moderation_redirect(get_forum_link($moveto), $lang->redirect_inline_threadsmoved);
 		break;

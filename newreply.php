@@ -1276,6 +1276,8 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 				$parser_options['allow_videocode'] = 0;
 			}
 
+			$plugins->run_hooks("newreply_threadreview_post");
+
 			$post['message'] = $parser->parse_message($post['message'], $parser_options);
 
 			$posts[] = $post;

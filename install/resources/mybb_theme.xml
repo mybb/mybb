@@ -8437,7 +8437,7 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
-		<template name="moderation_inline_movethreads" version="1400"><![CDATA[<html>
+		<template name="moderation_inline_movethreads" version="1822"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->move_threads}</title>
 {$headerinclude}
@@ -8454,6 +8454,14 @@ if(use_xmlhttprequest == "1")
 <tr>
 <td class="trow1"><strong>{$lang->new_forum}</strong></td>
 <td class="trow2">{$forumselect}</td>
+</tr>
+<tr>
+<td class="trow1" valign="top"><strong>{$lang->method}</strong></td>
+<td class="trow2">
+<label><input type="radio" class="radio" name="method" value="move" />{$lang->method_move}</label><br />
+<label><input type="radio" class="radio" name="method" value="redirect" checked="checked" />{$lang->method_move_redirect}</label> <input type="text" class="textbox" name="redirect_expire" size="3" /> {$lang->redirect_expire_note}<br />
+<label><input type="radio" class="radio" name="method" value="copy" />{$lang->method_copy}</label><br />
+</td>
 </tr>
 </table>
 <br />
