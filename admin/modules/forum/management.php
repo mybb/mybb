@@ -2710,7 +2710,7 @@ function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
 
 				$form_container->output_cell("<div style=\"padding-left: ".(40*($depth-1))."px;\"><a href=\"index.php?module=forum-management&amp;fid={$forum['fid']}\"><strong>{$forum['name']}</strong></a>{$sub_forums}</div>");
 
-				$form_container->output_cell("<input type=\"text\" name=\"disporder[".$forum['fid']."]\" value=\"".$forum['disporder']."\" class=\"text_input align_center\" style=\"width: 80%; font-weight: bold;\" />", array("class" => "align_center"));
+				$form_container->output_cell($form->generate_numeric_field("disporder[{$forum['fid']}]", "{$forum['disporder']}", array('class' => 'align_center', 'style' => 'width:80%; font-weight:bold')), array("class" => "align_center"));
 
 				$popup = new PopupMenu("forum_{$forum['fid']}", $lang->options);
 				$popup->add_item($lang->edit_forum, "index.php?module=forum-management&amp;action=edit&amp;fid={$forum['fid']}");
@@ -2751,8 +2751,7 @@ function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
 
 				$form_container->output_cell("<div style=\"padding-left: ".(40*($depth-1))."px;\"><a href=\"index.php?module=forum-management&amp;fid={$forum['fid']}\">{$forum['name']}</a>{$forum['description']}{$sub_forums}</div>");
 
-				$form_container->output_cell("<input type=\"text\" name=\"disporder[".$forum['fid']."]\" value=\"".$forum['disporder']."\" class=\"text_input align_center\" style=\"width: 80%;\" />", array("class" => "align_center"));
-
+				$form_container->output_cell($form->generate_numeric_field("disporder[{$forum['fid']}]", "{$forum['disporder']}", array('class' => 'align_center', 'style' => 'width:80%')), array("class" => "align_center"));
 				$popup = new PopupMenu("forum_{$forum['fid']}", $lang->options);
 				$popup->add_item($lang->edit_forum, "index.php?module=forum-management&amp;action=edit&amp;fid={$forum['fid']}");
 				$popup->add_item($lang->subforums, "index.php?module=forum-management&amp;fid={$forum['fid']}");

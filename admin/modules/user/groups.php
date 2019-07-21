@@ -1514,7 +1514,7 @@ if(!$mybb->input['action'])
 
 		if($usergroup['showforumteam'] == 1)
 		{
-			$form_container->output_cell("<input type=\"text\" name=\"disporder[{$usergroup['gid']}]\" value=\"{$usergroup['disporder']}\" class=\"text_input align_center\" style=\"width: 80%;\" />", array("class" => "align_center"));
+			$form_container->output_cell($form->generate_numeric_field("disporder[{$usergroup['gid']}]", "{$usergroup['disporder']}", array('class' => 'align_center', 'style' => 'width:80%')), array("class" => "align_center"));
 		}
 		else
 		{
