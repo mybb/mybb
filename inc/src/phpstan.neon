@@ -1,1 +1,3 @@
-
+includes:
+	- /inc/src
+	- /inc/tests
