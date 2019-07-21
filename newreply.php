@@ -1284,6 +1284,8 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 				$altbg = "trow_shaded";
 			}
 
+			$plugins->run_hooks("newreply_threadreview_post");
+
 			$post['message'] = $parser->parse_message($post['message'], $parser_options);
 			get_post_attachments($post['pid'], $post);
 			$reviewmessage = $post['message'];
