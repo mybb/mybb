@@ -1,0 +1,4 @@
+parameters:
+    paths:
+        - inc/src/
+        - tests/
