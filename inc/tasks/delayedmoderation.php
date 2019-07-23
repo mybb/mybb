@@ -109,7 +109,7 @@ function task_delayedmoderation($task)
 					// $delayedmoderation['tids'] should be a single tid
 					if(count($tids) != 1)
 					{
-						continue;
+						continue 2;
 					}
 
 					// explode at # sign in a url (indicates a name reference) and reassign to the url
@@ -169,13 +169,13 @@ function task_delayedmoderation($task)
 
 					if(!$mergethread['tid'])
 					{
-						continue;
+						continue 2;
 					}
 
 					if($mergetid == $delayedmoderation['tids'])
 					{
 						// sanity check
-						continue;
+						continue 2;
 					}
 
 					if($input['subject'])
