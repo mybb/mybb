@@ -703,7 +703,7 @@ if(!$mybb->input['action'])
 		{
 			if(!is_array($mybb->input['forum']))
 			{
-				$mybb->input['forum'] = array($mybb->input['forum']);
+				$mybb->input['forum'] = array_unique(array_filter(explode("|", $mybb->input['forum'])));
 			}
 
 			$fid_in = array();
@@ -858,13 +858,17 @@ if(!$mybb->input['action'])
 			if($num_results > $mybb->input['perpage'])
 			{
 				$pagination_url = "index.php?module=forum-attachments&amp;results=1";
-				$pagination_vars = array('perpage', 'sortby', 'order', 'filename', 'mimetype', 'username', 'fid', 'downloads', 'downloads_dir', 'dateuploaded', 'dateuploaded_dir', 'filesize', 'filesize_dir');
+				$pagination_vars = array('perpage', 'sortby', 'order', 'filename', 'mimetype', 'username', 'downloads', 'downloads_dir', 'dateuploaded', 'dateuploaded_dir', 'filesize', 'filesize_dir');
 				foreach($pagination_vars as $var)
 				{
 					if($mybb->input[$var])
 					{
 						$pagination_url .= "&{$var}=".urlencode($mybb->input[$var]);
 					}
+				}
+				if($mybb->input['forum'])
+				{
+					$pagination_url .= "&forum=".implode("|", $mybb->input['forum']);
 				}
 				$pagination = draw_admin_pagination($mybb->input['page'], $mybb->input['perpage'], $num_results, $pagination_url);
 			}
