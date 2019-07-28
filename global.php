@@ -211,7 +211,7 @@ if(in_array($current_page, $valid))
 	// If we're accessing poll results, fetch the forum theme for it and if we're overriding it
 	elseif(isset($mybb->input['pid']) && THIS_SCRIPT == "polls.php")
 	{
-		$query = $db->simple_select('threads', 'fid', "poll = '{$mybb->input['pid']}'", array('limit' => 1));
+		$query = $db->query("SELECT t.fid FROM ".TABLE_PREFIX."polls p LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid) WHERE p.pid = '{$mybb->input['pid']}' LIMIT 1");
 		$fid = $db->fetch_field($query, 'fid');
 
 		if($fid)
