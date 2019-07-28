@@ -1660,59 +1660,64 @@ function get_moderator_permissions($fid, $uid=0, $parentslist="")
 	}
 
 	$mod_cache = $cache->read("moderators");
+        if(is_array($mod_cache) || is_object($mod_cache))
+        {
+	        foreach($mod_cache as $forumid => $forum)
+	        {
+		        if(!is_array($forum) || !in_array($forumid, $parentslist))
+		        {
+			        // No perms or we're not after this forum
+			        continue;
+		        }
 
-	foreach($mod_cache as $forumid => $forum)
-	{
-		if(!is_array($forum) || !in_array($forumid, $parentslist))
-		{
-			// No perms or we're not after this forum
-			continue;
-		}
+		        // User settings override usergroup settings
+		        if(is_array($forum['users'][$uid]))
+		        {
+			        $perm = $forum['users'][$uid];
+			        foreach($perm as $action => $value)
+			        {
+				        if(strpos($action, "can") === false)
+				        {
+					        continue;
+				        }
 
-		// User settings override usergroup settings
-		if(is_array($forum['users'][$uid]))
-		{
-			$perm = $forum['users'][$uid];
-			foreach($perm as $action => $value)
-			{
-				if(strpos($action, "can") === false)
-				{
-					continue;
-				}
+				        // Figure out the user permissions
+				        if($value == 0)
+				        {
+					        // The user doesn't have permission to set this action
+					        $perms[$action] = 0;
+				        }
+				        else
+				        {
+					        $perms[$action] = max($perm[$action], $perms[$action]);
+				        }
+			        }
+		        }
+		
+		        if(is_array($groups) || is_object($groups))
+		        {
+		        foreach($groups as $group)
+		        {
+		                if(!is_array($forum['usergroups'][$group]))
+			        {
+				        // There are no permissions set for this group
+				        continue;
+			        }
 
-				// Figure out the user permissions
-				if($value == 0)
-				{
-					// The user doesn't have permission to set this action
-					$perms[$action] = 0;
-				}
-				else
-				{
-					$perms[$action] = max($perm[$action], $perms[$action]);
-				}
-			}
-		}
+			        $perm = $forum['usergroups'][$group];
+			        foreach($perm as $action => $value)
+			        {
+				         if(strpos($action, "can") === false)
+				         {
+					        continue;
+				         }
 
-		foreach($groups as $group)
-		{
-			if(!is_array($forum['usergroups'][$group]))
-			{
-				// There are no permissions set for this group
-				continue;
-			}
-
-			$perm = $forum['usergroups'][$group];
-			foreach($perm as $action => $value)
-			{
-				if(strpos($action, "can") === false)
-				{
-					continue;
-				}
-
-				$perms[$action] = max($perm[$action], $perms[$action]);
-			}
-		}
-	}
+				        $perms[$action] = max($perm[$action], $perms[$action]);
+			        }
+		        }
+	        }
+        }	
+}
 
 	$modpermscache[$fid][$uid] = $perms;
 
@@ -1770,13 +1775,16 @@ function is_moderator($fid=0, $action="", $uid=0)
 					}
 
 					$groups = explode(',', $user_perms['all_usergroups']);
-
-					foreach($groups as $group)
+					
+					if(is_array($groups) || is_object($groups))
 					{
-						if(trim($group) != '' && isset($modusers['usergroups'][$group]) && (!$action || !empty($modusers['usergroups'][$group][$action])))
-						{
-							return true;
-						}
+					        foreach($groups as $group)
+					        {
+						        if(trim($group) != '' && isset($modusers['usergroups'][$group]) && (!$action || !empty($modusers['usergroups'][$group][$action])))
+						        {
+							        return true;
+						        }
+					        }
 					}
 				}
 			}
@@ -3324,10 +3332,12 @@ function build_mycode_inserter($bind="message", $smilies = true)
 					{
 						$smilie_cache = $cache->read("smilies");
 					}
-					foreach($smilie_cache as $smilie)
-					{
-						$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
-						$smiliecache[$smilie['sid']] = $smilie;
+					if(is_array($smilie_cache) || is_object($smilie_cache)) {
+						foreach($smilie_cache as $smilie)
+						{
+							$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
+							$smiliecache[$smilie['sid']] = $smilie;
+					        }
 					}
 				}
 
@@ -3507,7 +3517,7 @@ function build_clickable_smilies()
 		if(!$smiliecount)
 		{
 			$smilie_cache = $cache->read("smilies");
-			$smiliecount = count($smilie_cache);
+			$smiliecount = (is_array($smilie_cache)) || (is_object($smilie_cache)) && count($smilie_cache);
 		}
 
 		if(!$smiliecache)
@@ -3516,10 +3526,13 @@ function build_clickable_smilies()
 			{
 				$smilie_cache = $cache->read("smilies");
 			}
-			foreach($smilie_cache as $smilie)
+			if(is_array($smilie_cache) || is_object($smilie_cache))
 			{
-				$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
-				$smiliecache[$smilie['sid']] = $smilie;
+				foreach($smilie_cache as $smilie)
+			        {
+					$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
+					$smiliecache[$smilie['sid']] = $smilie;
+			        }
 			}
 		}
 
