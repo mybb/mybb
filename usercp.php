@@ -268,10 +268,6 @@ if($mybb->input['action'] == "profile")
 		$bday[1] = $mybb->get_input('bday2', MyBB::INPUT_INT);
 		$bday[2] = $mybb->get_input('bday3', MyBB::INPUT_INT);
 
-		$user['skype'] = htmlspecialchars_uni($user['skype']);
-		$user['google'] = htmlspecialchars_uni($user['google']);
-		$user['yahoo'] = htmlspecialchars_uni($user['yahoo']);
-
 		$returndate = [];
 		$returndate[0] = $mybb->get_input('awayday', MyBB::INPUT_INT);
 		$returndate[1] = $mybb->get_input('awaymonth', MyBB::INPUT_INT);
