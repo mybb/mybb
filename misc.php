@@ -848,10 +848,11 @@ elseif($mybb->input['action'] == "smilies")
 		output_page($smiliespage);
 	}
 }
+
 elseif($mybb->input['action'] == "imcenter")
 {
 	$mybb->input['imtype'] = $mybb->get_input('imtype');
-	if($mybb->input['imtype'] != "skype" && $mybb->input['imtype'] != "yahoo")
+	if($mybb->input['imtype'] != "skype")
 	{
 		$message = $lang->error_invalidimtype;
 		eval("\$error = \"".$templates->get("misc_imcenter_error", 1, 0)."\";");
@@ -888,24 +889,15 @@ elseif($mybb->input['action'] == "imcenter")
 	}
 
 	// Build IM navigation bar
-	$navigationbar = $navsep = $imtype = $imtype_lang = '';
+	$navigationbar = $imtype = $imtype_lang = '';
 	if(!empty($user['skype']) && is_member($mybb->settings['allowskypefield'], array('usergroup' => $user['usergroup'], 'additionalgroups' => $user['additionalgroups'])))
 	{
 		$imtype = "skype";
 		$imtype_lang = $lang->skype;
 		eval("\$navigationbar .= \"".$templates->get("misc_imcenter_nav")."\";");
-		$navsep = ' - ';
-	}
-	if(!empty($user['yahoo']) && is_member($mybb->settings['allowyahoofield'], array('usergroup' => $user['usergroup'], 'additionalgroups' => $user['additionalgroups'])))
-	{
-		$imtype = "yahoo";
-		$imtype_lang = $lang->yahoo_im;
-		eval("\$navigationbar .= \"".$templates->get("misc_imcenter_nav")."\";");
 	}
 
 	$user['skype'] = htmlspecialchars_uni($user['skype']);
-	$user['yahoo'] = htmlspecialchars_uni($user['yahoo']);
-
 	$user['username'] = htmlspecialchars_uni($user['username']);
 
 	$lang->chat_on_skype = $lang->sprintf($lang->chat_on_skype, $user['username']);
@@ -916,6 +908,7 @@ elseif($mybb->input['action'] == "imcenter")
 	echo $imcenter;
 	exit;
 }
+
 elseif($mybb->input['action'] == "syndication")
 {
 	$plugins->run_hooks("misc_syndication_start");

@@ -42,7 +42,6 @@ $l['username_exact'] = "exactly";
 $l['search_website'] = "Website URL";
 $l['search_skype'] = "Skype Address";
 $l['search_google'] = "Google Hangouts Address";
-$l['search_yahoo'] = "Yahoo! Messenger Screen Name";
 $l['search_icq'] = "ICQ Number";
 $l['search_options'] = "Search Options";
 $l['per_page'] = "Results Per Page";
