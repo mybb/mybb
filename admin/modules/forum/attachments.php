@@ -870,7 +870,7 @@ if(!$mybb->input['action'])
 				{
 					foreach($mybb->input['forum'] as $fid)
 					{
-						$pagination_url .= "&forum[]=".urlencode($fid);
+						$pagination_url .= "&forum[]=".(int)$fid;
 					}
 				}
 				$pagination = draw_admin_pagination($mybb->input['page'], $mybb->input['perpage'], $num_results, $pagination_url);
