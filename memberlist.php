@@ -40,7 +40,7 @@ if($mybb->get_input('action') == "search")
 	add_breadcrumb($lang->nav_memberlist_search);
 
 	$contact_fields = array();
-	foreach(array('skype', 'google', 'yahoo', 'icq') as $field)
+	foreach(array('skype', 'google', 'icq') as $field)
 	{
 		$contact_fields[$field] = '';
 		$settingkey = 'allow'.$field.'field';
@@ -237,7 +237,7 @@ else
 	}
 
 	// Search by contact field input
-	foreach(array('icq', 'google', 'skype', 'yahoo') as $cfield)
+	foreach(array('icq', 'google', 'skype') as $cfield)
 	{
 		$csetting = 'allow'.$cfield.'field';
 		$mybb->input[$cfield] = trim($mybb->get_input($cfield));

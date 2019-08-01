@@ -217,7 +217,7 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 		"away" => $away,
 		"profile_fields" => $mybb->get_input('profile_fields', MyBB::INPUT_ARRAY)
 	);
-	foreach(array('icq', 'yahoo', 'skype', 'google') as $cfield)
+	foreach(array('icq', 'skype', 'google') as $cfield)
 	{
 		$csetting = 'allow'.$cfield.'field';
 		if($mybb->settings[$csetting] == '')
@@ -366,14 +366,13 @@ if($mybb->input['action'] == "profile")
 	{
 		$user['skype'] = htmlspecialchars_uni($user['skype']);
 		$user['google'] = htmlspecialchars_uni($user['google']);
-		$user['yahoo'] = htmlspecialchars_uni($user['yahoo']);
 	}
 
 	$contact_fields = array();
 	$contactfields = '';
 	$cfieldsshow = false;
 
-	foreach(array('icq', 'yahoo', 'skype', 'google') as $cfield)
+	foreach(array('icq', 'skype', 'google') as $cfield)
 	{
 		$contact_fields[$cfield] = '';
 		$csetting = 'allow'.$cfield.'field';
