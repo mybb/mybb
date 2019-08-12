@@ -695,6 +695,7 @@ $tables[] = "CREATE TABLE mybb_sessions (
   nopermission smallint NOT NULL default '0',
   location1 int NOT NULL default '0',
   location2 int NOT NULL default '0',
+  isunique smallint NOT NULL DEFAULT '0',
   UNIQUE (sid)
 );";
 

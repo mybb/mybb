@@ -35,6 +35,20 @@ function upgrade49_dbchanges()
 
 	$db->delete_query("settings", "name='allowyahoofield'");
 
+	if (!$db->field_exists("isunique", "sessions"))
+	{
+		switch ($db->type)
+		{
+			case "pgsql":
+			case "sqlite":
+				$db->add_column("sessions", "isunique", "smallint NOT NULL default '0'");
+				break;
+			default:
+				$db->add_column("sessions", "isunique", "tinyint(1) NOT NULL default '0'");
+				break;
+		}
+	}
+
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("49_done");
 }

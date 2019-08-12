@@ -646,7 +646,8 @@ $tables[] = "CREATE TABLE mybb_sessions (
 	anonymous tinyint(1) NOT NULL default '0',
 	nopermission tinyint(1) NOT NULL default '0',
 	location1 int(10) NOT NULL default '0',
-	location2 int(10) NOT NULL default '0'
+	location2 int(10) NOT NULL default '0',
+    isunique tinyint(1) NOT NULL DEFAULT '0'
 );";
 
 $tables[] = "CREATE TABLE mybb_settinggroups (
