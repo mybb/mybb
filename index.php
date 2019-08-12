@@ -44,12 +44,12 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 	$timesearch = TIME_NOW - (int)$mybb->settings['wolcutoff'];
 	$comma = '';
 	$query = $db->query("
-        SELECT s.sid, s.ip, s.uid, s.time, s.location, s.location1, u.username, u.invisible, u.usergroup, u.displaygroup
-        FROM ".TABLE_PREFIX."sessions s
-        LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
-        WHERE s.time > '".$timesearch."'
-        ORDER BY {$order_by}, {$order_by2}
-    ");
+		SELECT s.sid, s.ip, s.uid, s.time, s.location, s.location1, u.username, u.invisible, u.usergroup, u.displaygroup
+		FROM ".TABLE_PREFIX."sessions s
+		LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
+		WHERE s.isunique = 1 AND s.time > '".$timesearch."'
+		ORDER BY {$order_by}, {$order_by2}
+	");
 
 	$forum_viewers = $doneusers = $donebots = array();
 	$membercount = $guestcount = $anoncount = $botcount = 0;

@@ -154,7 +154,7 @@ else
 	{
 		case "sqlite":
 			$sessions = array();
-			$query = $db->simple_select("sessions", "sid", "time > {$timesearch}");
+			$query = $db->simple_select("sessions", "sid", "isunique = 1 AND time > {$timesearch}");
 			while($sid = $db->fetch_field($query, "sid"))
 			{
 				$sessions[$sid] = 1;
@@ -164,7 +164,7 @@ else
 			break;
 		case "pgsql":
 		default:
-			$query = $db->simple_select("sessions", "COUNT(sid) as online", "time > {$timesearch}");
+			$query = $db->simple_select("sessions", "COUNT(sid) as online", "isunique = 1 AND time > {$timesearch}");
 			$online_count = $db->fetch_field($query, "online");
 			break;
 	}
@@ -202,7 +202,7 @@ else
 		SELECT DISTINCT s.sid, s.ip, s.uid, s.time, s.location, u.username, s.nopermission, u.invisible, u.usergroup, u.displaygroup
 		FROM ".TABLE_PREFIX."sessions s
 		LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
-		WHERE s.time>'$timesearch'
+		WHERE s.isunique = 1 AND s.time>'$timesearch'
 		ORDER BY $sql
 		LIMIT {$start}, {$perpage}
 	");
