@@ -862,8 +862,9 @@ if($mybb->input['action'] == "thread")
 			$where = " ORDER BY dateline LIMIT 0, 1";
 		}
 		$query = $db->query("
-			SELECT u.*, u.username AS userusername, p.*, f.*, eu.username AS editusername
+			SELECT u.*, u.username AS userusername, p.*, f.*, r.reporters, eu.username AS editusername
 			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."reportedcontent r ON (r.id=p.pid AND r.type='post' AND r.reportstatus != 1)
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
 			LEFT JOIN ".TABLE_PREFIX."users eu ON (eu.uid=p.edituid)
@@ -1107,8 +1108,9 @@ if($mybb->input['action'] == "thread")
 		// Get the actual posts from the database here.
 		$posts = '';
 		$query = $db->query("
-			SELECT u.*, u.username AS userusername, p.*, f.*, eu.username AS editusername
+			SELECT u.*, u.username AS userusername, p.*, f.*, r.reporters, eu.username AS editusername
 			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."reportedcontent r ON (r.id=p.pid AND r.type='post' AND r.reportstatus != 1)
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
 			LEFT JOIN ".TABLE_PREFIX."users eu ON (eu.uid=p.edituid)

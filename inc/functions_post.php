@@ -679,8 +679,18 @@ function build_postbit($post, $post_type=0)
 			eval("\$post['button_multiquote'] = \"".$templates->get("postbit_multiquote")."\";");
 		}
 
+		$skip_report = my_unserialize($post['reporters']);
+		if(is_array($skip_report))
+		{
+			$skip_report[] = 0;
+		}
+		else
+		{
+			$skip_report = array(0);
+		}
+
 		$reportable = user_permissions($post['uid']);
-		if($mybb->user['uid'] != "0" && !empty($reportable['canbereported']))
+		if(!in_array($mybb->user['uid'], $skip_report) && !empty($reportable['canbereported']))
 		{
 			eval("\$post['button_report'] = \"".$templates->get("postbit_report")."\";");
 		}
