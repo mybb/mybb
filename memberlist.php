@@ -488,19 +488,22 @@ else
 		$useravatar = format_avatar($user['avatar'], $user['avatardimensions'], my_strtolower($mybb->settings['memberlistmaxavatarsize']));
 		eval("\$user['avatar'] = \"".$templates->get("memberlist_user_avatar")."\";");
 
-		if($user['invisible'] == 1 && $mybb->usergroup['canviewwolinvis'] != 1 && $user['uid'] != $mybb->user['uid'])
+		$last_seen = max(array($user['lastactive'], $user['lastvisit']));
+		if(empty($last_seen))
 		{
 			$user['lastvisit'] = $lang->lastvisit_never;
-
-			if($user['lastvisit'])
-			{
-				// We have had at least some active time, hide it instead
-				$user['lastvisit'] = $lang->lastvisit_hidden;
-			}
 		}
 		else
 		{
-			$user['lastvisit'] = my_date('relative', $user['lastactive']);
+			// We have some stamp here
+			if($user['invisible'] == 1 && $mybb->usergroup['canviewwolinvis'] != 1 && $user['uid'] != $mybb->user['uid'])
+			{
+				$user['lastvisit'] = $lang->lastvisit_hidden;
+			}
+			else
+			{
+				$user['lastvisit'] = my_date('relative', $last_seen);
+			}
 		}
 
 		$user['regdate'] = my_date('relative', $user['regdate']);
