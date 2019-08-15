@@ -2432,8 +2432,7 @@ if($mybb->input['action'] == "do_editprofile")
 					$string = $option['action']."_error";
 					$errors[] = $lang->$string;
 				}
-
-				if(!is_array($errors))
+				else
 				{
 					$suspend_length = fetch_time_length((int)$mybb->input[$option['time']], $mybb->input[$option['period']]);
 
