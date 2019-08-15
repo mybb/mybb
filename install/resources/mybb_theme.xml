@@ -5045,22 +5045,18 @@ if(use_xmlhttprequest == "1")
 	<td class="{$bgcolor}"><strong>{$lang->homepage}</strong></td>
 	<td class="{$bgcolor}"><a href="{$memprofile['website']}" target="_blank" rel="noopener">{$memprofile['website']}</a></td>
 </tr>]]></template>
-		<template name="member_referral_row" version="1820"><![CDATA[	<tr class="{$bg_color}">
-		<td>{$username}</td>
-		<td style="text-align: right;">{$regdate}</td>
+		<template name="member_referral_row" version="1822"><![CDATA[	<tr>
+		<td class="{$bg_color}">{$username}</td>
+		<td class="{$bg_color}" style="text-align: right;">{$regdate}</td>
 	</tr>]]></template>
-		<template name="member_referrals" version="1820"><![CDATA[<html>
+		<template name="member_referrals" version="1822"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->nav_referrals}</title>
 {$headerinclude}
 </head>
 <body>
 	{$header}
-	<div class="float_left">
-		{$multipage}
-	</div>
-	<br style="clear: left;" />
-	<br />
+	{$multipage}
 	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 	<tr>
 	<td class="thead" colspan="5"><strong>{$lang->referrals}</strong></td>
@@ -5071,29 +5067,22 @@ if(use_xmlhttprequest == "1")
 	</tr>
 	{$referral_rows}
 	</table>
-	<br />
-	<div class="float_left">
-		{$multipage}
-	</div>
+	{$multipage}
 	{$footer}
 </body>
 </html>]]></template>
 		<template name="member_referrals_link" version="1820"><![CDATA[<a href="{$mybb->settings['bburl']}/member.php?action=referrals&amp;uid={$uid}" id="referrer_{$uid}" class="referralLink">{$referral_count}</a>]]></template>
-		<template name="member_referrals_popup" version="1820"><![CDATA[<div class="modal">
+		<template name="member_referrals_popup" version="1822"><![CDATA[<div class="modal">
 	<div style="overflow-y: auto; max-height: 400px;" class="referral_modal_{$uid}">
-		<table width="100%" border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 			<tr>
-				<td class="thead" colspan="5"><strong>{$lang->referrals}</strong></td>
+				<td class="thead" colspan="2"><strong>{$lang->referrals}</strong></td>
 			</tr>
 			<tr>
-				<table width="100%" border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-					<tr>
-						<td class="tcat"><span class="smalltext"><strong>{$lang->username}</strong></span></td>
-						<td style="text-align: right;" class="tcat"><span class="smalltext"><strong>{$lang->referral_date}</strong></span></td>
-					</tr>
-					{$referral_rows}
-				</table>
+				<td class="tcat" width="50%"><span class="smalltext"><strong>{$lang->username}</strong></span></td>
+				<td class="tcat" width="50%" style="text-align: right;"><span class="smalltext"><strong>{$lang->referral_date}</strong></span></td>
 			</tr>
+			{$referral_rows}
 		</table>
 	</div>
 </div>]]></template>
