@@ -2,7 +2,7 @@
     <h2 class="title title--section">{{ lang.attachments }}</h2>
     <div class="section__container">
         <div class="row row--form field">
-            <p class="field__description">{{ trans('attach_quota', composepost.friendlyusage, composepost.friendlyquota) }} <a href="usercp.php?action=attachments">{{ lang.view_attachments }}</a></p>
+            <p class="field__description">{{ lang.attach_quota }} {{ lang.attach_usage|raw }} <a href="usercp.php?action=attachments">{{ lang.view_attachments }}</a></p>
         </div>
         {% for attachment in attachments %}
             {% if attachment.visible %}

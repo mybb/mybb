@@ -16,7 +16,7 @@ $templatelist .= ",editpost_delete,forumdisplay_password_wrongpass,forumdisplay_
 $templatelist .= ",postbit_avatar,postbit_find,postbit_pm,postbit_rep_button,postbit_www,postbit_email,postbit_reputation,postbit_warn,postbit_warninglevel,postbit_author_user,posticons";
 $templatelist .= ",postbit_signature,postbit_classic,postbit,postbit_attachments_thumbnails_thumbnail,postbit_attachments_images_image,postbit_attachments_attachment,postbit_attachments_attachment_unapproved";
 $templatelist .= ",posticons_icon,post_prefixselect_prefix,post_prefixselect_single,newthread_postpoll,editpost_disablesmilies,post_attachments_attachment_mod_approve,post_attachments_attachment_unapproved";
-$templatelist .= ",postbit_warninglevel_formatted,postbit_reputation_formatted_link,editpost_signature,attachment_icon,post_attachments_attachment,post_attachments_add,post_attachments,editpost_postoptions";
+$templatelist .= ",postbit_warninglevel_formatted,postbit_reputation_formatted_link,editpost_signature,attachment_icon,post_attachments_attachment,post_attachments_add,post_attachments,editpost_postoptions,post_attachments_viewlink";
 $templatelist .= ",postbit_attachments_images,global_moderation_notice,post_attachments_new,postbit_attachments,postbit_online,postbit_away,postbit_offline,postbit_gotopost,postbit_userstar,postbit_icon";
 
 require_once "./global.php";
@@ -646,8 +646,20 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 
 		$editpost['friendlyusage'] = get_friendly_size($usage['ausage']);
 
+		$lang->attach_quota = $lang->sprintf($lang->attach_quota, $editpost['friendlyquota']);
+
 		$editpost['showattachoptions'] = false;
 		$editpost['showattachadd'] = false;
+
+		if($usage['ausage'] !== NULL)
+		{
+			$lang->attach_usage = $lang->sprintf($lang->attach_usage, $editpost['friendlyusage']);
+		}
+		else
+		{
+			$lang->attach_usage = "";
+		}
+
 		if($mybb->settings['maxattachments'] == 0 || ($mybb->settings['maxattachments'] != 0 && $attachcount < $mybb->settings['maxattachments']) && !$noshowattach)
 		{
 			$editpost['showattachoptions'] = true;
