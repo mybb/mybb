@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<theme name="MyBB Master Style" version="1821">
+<theme name="MyBB Master Style" version="1822">
 	<properties>
 		<templateset><![CDATA[1]]></templateset>
 		<imgdir><![CDATA[images]]></imgdir>
@@ -9412,13 +9412,13 @@ if(use_xmlhttprequest == "1")
 </table>
 <br />]]></template>
 		<template name="portal_whosonline_memberbit" version="1818"><![CDATA[<a href="{$mybb->settings['bburl']}/{$user['profilelink']}">{$user['username']}</a>{$invisiblemark}]]></template>
-		<template name="post_attachments" version="120"><![CDATA[<br />
+		<template name="post_attachments" version="1822"><![CDATA[<br />
 			<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 	<td class="thead" colspan="3"><strong>{$lang->attachments}</strong></td>
 </tr>
 <tr>
-	<td class="tcat smalltext" colspan="3">{$lang->attach_quota} <a href="usercp.php?action=attachments">{$lang->view_attachments}</a></td>
+	<td class="tcat smalltext" colspan="3">{$lang->attach_quota} {$lang->attach_usage} {$link_viewattachments}</a></td>
 </tr>
 {$newattach}
 {$attachments}
