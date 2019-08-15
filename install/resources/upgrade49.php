@@ -45,6 +45,7 @@ function upgrade49_dbchanges()
 				break;
 			default:
 				$db->add_column("sessions", "isunique", "tinyint(1) NOT NULL default '0'");
+				$db->write_query("ALTER TABLE ".TABLE_PREFIX."sessions ADD INDEX isunique (isunique)");
 				break;
 		}
 	}
