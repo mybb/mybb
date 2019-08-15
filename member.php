@@ -2298,6 +2298,8 @@ if($mybb->input['action'] == "profile")
 	$memprofile['memlocaldate'] = gmdate($mybb->settings['dateformat'], TIME_NOW + ($memprofile['timezone'] * 3600));
 	$memprofile['memlocaltime'] = gmdate($mybb->settings['timeformat'], TIME_NOW + ($memprofile['timezone'] * 3600));
 
+	$localtime = $lang->sprintf($lang->local_time_format, $memprofile['memlocaldate'], $memprofile['memlocaltime']);
+
 	if($memprofile['birthday'])
 	{
 		$membday = explode("-", $memprofile['birthday']);
@@ -2461,9 +2463,10 @@ if($mybb->input['action'] == "profile")
 	if($memprofile['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $memprofile['uid'] == $mybb->user['uid'])
 	{
 		// Last Visit
-		if($memprofile['lastactive'])
+        $memprofile['last_active'] = max(array($memprofile['lastactive'], $memprofile['lastvisit']));
+		if(!empty($memprofile['last_active']))
 		{
-			$memprofile['last_active'] = my_date('relative', $memprofile['lastactive']);
+			$memprofile['last_active'] = my_date('relative', $memprofile['last_active']);
 		}
 
 		// Time Online
@@ -2498,6 +2501,7 @@ if($mybb->input['action'] == "profile")
 		}
 
 		$memprofile['time_online'] = $lang->timeonline_hidden;
+
 	}
 
 	// Build Referral

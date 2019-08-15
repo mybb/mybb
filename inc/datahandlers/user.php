@@ -1081,6 +1081,12 @@ class UserDataHandler extends DataHandler
 				$user[$value] = '';
 			}
 		}
+		
+		// If user is being created from ACP, there is no last visit or last active
+		if(defined('IN_ADMINCP'))
+		{
+			$user['lastvisit'] = $user['lastactive'] = 0;
+		}
 
 		$this->user_insert_data = array(
 			"username" => $db->escape_string($user['username']),
