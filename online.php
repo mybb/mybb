@@ -84,7 +84,7 @@ if($mybb->get_input('action') == "today")
 		{
 			$username = format_name(htmlspecialchars_uni($online['username']), $online['usergroup'], $online['displaygroup']);
 			$online['profilelink'] = build_profile_link($username, $online['uid']);
-			$onlinetime = my_date($mybb->settings['timeformat'], $online['lastactive']);
+			$onlinetime = my_date('normal', $online['lastactive']);
 
 			eval("\$todayrows .= \"".$templates->get("online_today_row")."\";");
 		}
