@@ -791,13 +791,14 @@ if($mybb->input['action'] == "thread")
 		}
 
 		$query = $db->query("
-            SELECT u.*, u.username AS userusername, p.*, f.*, eu.username AS editusername
-            FROM ".TABLE_PREFIX."posts p
-            LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-            LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
-            LEFT JOIN ".TABLE_PREFIX."users eu ON (eu.uid=p.edituid)
-            WHERE p.tid='$tid' $visible $where
-        ");
+			SELECT u.*, u.username AS userusername, p.*, f.*, r.reporters, eu.username AS editusername
+			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."reportedcontent r ON (r.id=p.pid AND r.type='post' AND r.reportstatus != 1)
+			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
+			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
+			LEFT JOIN ".TABLE_PREFIX."users eu ON (eu.uid=p.edituid)
+			WHERE p.tid='$tid' $visible $where
+		");
 		$showpost = $db->fetch_array($query);
 
 		// Choose what pid to display.
@@ -1041,14 +1042,15 @@ if($mybb->input['action'] == "thread")
 		// Get the actual posts from the database here.
 		$posts = '';
 		$query = $db->query("
-            SELECT u.*, u.username AS userusername, p.*, f.*, eu.username AS editusername
-            FROM ".TABLE_PREFIX."posts p
-            LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-            LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
-            LEFT JOIN ".TABLE_PREFIX."users eu ON (eu.uid=p.edituid)
-            WHERE $pids
-            ORDER BY p.dateline
-        ");
+			SELECT u.*, u.username AS userusername, p.*, f.*, r.reporters, eu.username AS editusername
+			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."reportedcontent r ON (r.id=p.pid AND r.type='post' AND r.reportstatus != 1)
+			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
+			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
+			LEFT JOIN ".TABLE_PREFIX."users eu ON (eu.uid=p.edituid)
+			WHERE $pids
+			ORDER BY p.dateline
+		");
 		while($post = $db->fetch_array($query))
 		{
 			if($thread['firstpost'] == $post['pid'] && $thread['visible'] == 0)

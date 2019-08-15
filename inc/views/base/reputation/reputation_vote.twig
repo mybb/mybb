@@ -18,7 +18,7 @@
         <strong class="{{ reputation_vote.vote_type_class }}">{{ reputation_vote.vote_type }} ({{ reputation_vote.vote_reputation }}):</strong> {{ reputation_vote.comments|raw }}
     </div>
     <div class="reputation-rating__controls">
-        {% if mybb.user.uid %}
+        {% if report_link %}
             <a href="javascript:void(0)" onclick="Report.reportReputation({{ reputation_vote.rid }}); return false;" class="post-control post-control--report">
                 {{ include('partials/icon.twig', {icon: 'flag', class: 'post-control__icon'}, with_context = false) }}
                 <span class="post-control__text">{{ lang.report_vote }}</span>

@@ -767,7 +767,7 @@ if(!$mybb->input['action'])
     ");
 
 	// Gather a list of items that have post reputation
-	$reputation_cache = $post_cache = $post_reputation = array();
+	$reputation_cache = $post_cache = $post_reputation = $not_reportable = array();
 
 	while($reputation_vote = $db->fetch_array($query))
 	{
@@ -845,6 +845,21 @@ if(!$mybb->input['action'])
 	}
 
 	$reputation_votes = [];
+	if(!empty($reputation_cache) && $mybb->user['uid'] != 0)
+	{
+		$reputation_ids = implode(',', array_map('array_shift', $reputation_cache));
+		$query = $db->query("
+			SELECT id, reporters FROM ".TABLE_PREFIX."reportedcontent WHERE reportstatus != '1' AND id IN (".$reputation_ids.") AND type = 'reputation'
+		");
+		while($report = $db->fetch_array($query))
+		{
+			$reporters = my_unserialize($report['reporters']);
+			if(is_array($reporters) && in_array($mybb->user['uid'], $reporters))
+			{
+				$not_reportable[] =  $report['id'];
+			}
+		}
+	}
 
 	foreach($reputation_cache as $reputation_vote)
 	{
@@ -919,6 +934,12 @@ if(!$mybb->input['action'])
 			$reputation_vote['can_delete'] = true;
 		}
 
+		$report_link = false;
+		if($mybb->user['uid'] != 0 && !in_array($reputation_vote['rid'], $not_reportable))
+		{
+			$report_link = true;
+		}
+
 		// Parse smilies in the reputation vote
 		$reputation_parser = array(
 			"allow_html" => 0,
@@ -946,5 +967,6 @@ if(!$mybb->input['action'])
 		'multipage' => $multipage,
 		'reputation_votes' => $reputation_votes,
 		'select' => $select,
+		'report_link' => $report_link,
 	]));
 }

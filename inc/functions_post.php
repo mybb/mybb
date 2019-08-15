@@ -665,8 +665,18 @@ function build_postbit($post, $post_type=0)
 			$post['button_multiquote'] = true;
 		}
 
+		$skip_report = my_unserialize($post['reporters']);
+		if(is_array($skip_report))
+		{
+			$skip_report[] = 0;
+		}
+		else
+		{
+			$skip_report = array(0);
+		}
+
 		$reportable = user_permissions($post['uid']);
-		if($mybb->user['uid'] != "0" && !empty($reportable['canbereported']))
+		if(!in_array($mybb->user['uid'], $skip_report) && !empty($reportable['canbereported']))
 		{
 			$post['button_report'] = true;
 		}

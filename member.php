@@ -2773,6 +2773,17 @@ if($mybb->input['action'] == "profile")
 		if(isset($memperms['canbereported']) && $memperms['canbereported'] == 1)
 		{
 			$memprofile['showreport'] = true;
+			$reportable = true;
+			$query = $db->simple_select("reportedcontent", "reporters", "reportstatus != '1' AND id = '{$memprofile['uid']}' AND type = 'profile'");
+			if($db->num_rows($query))
+			{
+				$report = $db->fetch_array($query);
+				$report['reporters'] = my_unserialize($report['reporters']);
+				if(is_array($report['reporters']) && in_array($mybb->user['uid'], $report['reporters']))
+				{
+					$memprofile['showreport'] = false;
+				}
+			}
 		}
 	}
 
