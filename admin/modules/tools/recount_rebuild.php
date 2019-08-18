@@ -420,30 +420,7 @@ function check_proceed($current, $finish, $next_page, $per_page, $name, $name2, 
 		echo $form->generate_hidden_field("page", $next_page);
 		echo $form->generate_hidden_field($name, $per_page);
 		echo $form->generate_hidden_field($name2, $lang->go);
-		echo "<div class=\"confirm_action\">\n";
-		echo "<p>{$lang->confirm_proceed_rebuild}</p>\n";
-		echo "<br />\n";
-		echo "<script type=\"text/javascript\">
-			$(function() { 
-				var button = $(\"#proceed_button\"); 
-				if(button.length > 0) {
-					button.val(\"{$lang->automatically_redirecting}\");
-					button.attr(\"disabled\", true);
-					button.css(\"color\", \"#aaa\");
-					button.css(\"borderColor\", \"#aaa\");
-                    
-					var parent_form = button.closest('form');
-
-					if (parent_form.length > 0) {
-						parent_form.submit();
-					}
-				}
-			});
-		</script>";
-		echo "<p class=\"buttons\">\n";
-		echo $form->generate_submit_button($lang->proceed, array('class' => 'button_yes', 'id' => 'proceed_button'));
-		echo "</p>\n";
-		echo "</div>\n";
+		output_auto_redirect($form, $lang->confirm_proceed_rebuild);
 
 		$form->end();
 

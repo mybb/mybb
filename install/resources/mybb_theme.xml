@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<theme name="MyBB Master Style" version="1821">
+<theme name="MyBB Master Style" version="1822">
 	<properties>
 		<templateset><![CDATA[1]]></templateset>
 		<imgdir><![CDATA[images]]></imgdir>
@@ -4922,7 +4922,7 @@ if(use_xmlhttprequest == "1")
 </fieldset>
 <br />]]></template>
 		<template name="member_profile_banned_remaining" version="1808"><![CDATA[<span class="{$banned_class}">({$timeremaining} {$lang->ban_remaining})</span>]]></template>
-		<template name="member_profile_contact_details" version="1816"><![CDATA[<br />
+		<template name="member_profile_contact_details" version="1822"><![CDATA[<br />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder tfixed">
 	<colgroup>
 	<col style="width: 30%;" />
@@ -4934,7 +4934,6 @@ if(use_xmlhttprequest == "1")
 	{$sendemail}
 	{$sendpm}
 	{$contact_fields['icq']}
-	{$contact_fields['yahoo']}
 	{$contact_fields['skype']}
 	{$contact_fields['google']}
 </table>]]></template>
@@ -4949,10 +4948,6 @@ if(use_xmlhttprequest == "1")
 		<template name="member_profile_contact_fields_skype" version="1809"><![CDATA[<tr>
 	<td class="{$bgcolors['skype']}"><strong>{$lang->skype_id}</strong></td>
 	<td class="{$bgcolors['skype']}"><a href="javascript:void(0)" onclick="MyBB.popupWindow('/misc.php?action=imcenter&amp;imtype=skype&amp;uid={$uid}&amp;modal=1'); return false;">{$memprofile['skype']}</a></td>
-</tr>]]></template>
-		<template name="member_profile_contact_fields_yahoo" version="1809"><![CDATA[<tr>
-	<td class="{$bgcolors['yahoo']}"><strong>{$lang->yahoo_id}</strong></td>
-	<td class="{$bgcolors['yahoo']}"><a href="javascript:void(0)" onclick="MyBB.popupWindow('/misc.php?action=imcenter&amp;imtype=yahoo&amp;uid={$uid}&amp;modal=1'); return false;">{$memprofile['yahoo']}</a></td>
 </tr>]]></template>
 		<template name="member_profile_customfields" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder tfixed">
 <colgroup>
@@ -5050,22 +5045,18 @@ if(use_xmlhttprequest == "1")
 	<td class="{$bgcolor}"><strong>{$lang->homepage}</strong></td>
 	<td class="{$bgcolor}"><a href="{$memprofile['website']}" target="_blank" rel="noopener">{$memprofile['website']}</a></td>
 </tr>]]></template>
-		<template name="member_referral_row" version="1820"><![CDATA[	<tr class="{$bg_color}">
-		<td>{$username}</td>
-		<td style="text-align: right;">{$regdate}</td>
+		<template name="member_referral_row" version="1822"><![CDATA[	<tr>
+		<td class="{$bg_color}">{$username}</td>
+		<td class="{$bg_color}" style="text-align: right;">{$regdate}</td>
 	</tr>]]></template>
-		<template name="member_referrals" version="1820"><![CDATA[<html>
+		<template name="member_referrals" version="1822"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->nav_referrals}</title>
 {$headerinclude}
 </head>
 <body>
 	{$header}
-	<div class="float_left">
-		{$multipage}
-	</div>
-	<br style="clear: left;" />
-	<br />
+	{$multipage}
 	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 	<tr>
 	<td class="thead" colspan="5"><strong>{$lang->referrals}</strong></td>
@@ -5076,29 +5067,22 @@ if(use_xmlhttprequest == "1")
 	</tr>
 	{$referral_rows}
 	</table>
-	<br />
-	<div class="float_left">
-		{$multipage}
-	</div>
+	{$multipage}
 	{$footer}
 </body>
 </html>]]></template>
 		<template name="member_referrals_link" version="1820"><![CDATA[<a href="{$mybb->settings['bburl']}/member.php?action=referrals&amp;uid={$uid}" id="referrer_{$uid}" class="referralLink">{$referral_count}</a>]]></template>
-		<template name="member_referrals_popup" version="1820"><![CDATA[<div class="modal">
+		<template name="member_referrals_popup" version="1822"><![CDATA[<div class="modal">
 	<div style="overflow-y: auto; max-height: 400px;" class="referral_modal_{$uid}">
-		<table width="100%" border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 			<tr>
-				<td class="thead" colspan="5"><strong>{$lang->referrals}</strong></td>
+				<td class="thead" colspan="2"><strong>{$lang->referrals}</strong></td>
 			</tr>
 			<tr>
-				<table width="100%" border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-					<tr>
-						<td class="tcat"><span class="smalltext"><strong>{$lang->username}</strong></span></td>
-						<td style="text-align: right;" class="tcat"><span class="smalltext"><strong>{$lang->referral_date}</strong></span></td>
-					</tr>
-					{$referral_rows}
-				</table>
+				<td class="tcat" width="50%"><span class="smalltext"><strong>{$lang->username}</strong></span></td>
+				<td class="tcat" width="50%" style="text-align: right;"><span class="smalltext"><strong>{$lang->referral_date}</strong></span></td>
 			</tr>
+			{$referral_rows}
 		</table>
 	</div>
 </div>]]></template>
@@ -5781,7 +5765,7 @@ if(use_xmlhttprequest == "1")
 		<template name="memberlist_referrals" version="1800"><![CDATA[<td class="tcat" width="10%" align="center"><span class="smalltext"><a href="{$sorturl}&amp;sort=referrals&amp;order=descending"><strong>{$lang->referrals}</strong></a> {$orderarrow['referrals']}</span></td>]]></template>
 		<template name="memberlist_referrals_bit" version="1600"><![CDATA[<td class="{$alt_bg}" align="center">{$user['referrals']}</td>]]></template>
 		<template name="memberlist_referrals_option" version="1816"><![CDATA[<option value="referrals"{$sort_selected['referrals']}>{$lang->sort_by_referrals}</option>]]></template>
-		<template name="memberlist_search" version="1821"><![CDATA[<html>
+		<template name="memberlist_search" version="1822"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->search_member_list}</title>
 {$headerinclude}
@@ -5816,7 +5800,6 @@ if(use_xmlhttprequest == "1")
 </tr>
 {$contact_fields['skype']}
 {$contact_fields['google']}
-{$contact_fields['yahoo']}
 {$contact_fields['icq']}
 <tr>
 	<td class="tcat" colspan="2"><strong>{$lang->search_options}</strong></td>
@@ -6099,21 +6082,6 @@ if(use_xmlhttprequest == "1")
 </tr>
 <tr>
 <td class="trow1" align="center"><span class="smalltext"><a href="skype:{$user['skype']}?chat">{$lang->chat_on_skype}</a>  -  <a href="skype:{$user['skype']}?call">{$lang->call_on_skype}</a></span></td>
-</tr>
-</table>
-</div>
-</div>]]></template>
-		<template name="misc_imcenter_yahoo" version="1812"><![CDATA[<div class="modal">
-<div style="overflow-y: auto; max-height: 400px;">
-<table width="100%" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" border="0" align="center" class="tborder">
-<tr>
-<td class="thead" align="center"><strong>{$user['username']} - {$lang->yahoo_center}</strong></td>
-</tr>
-<tr>
-<td class="tcat" align="center"><span class="smalltext"><strong>{$navigationbar}</strong></span></td>
-</tr>
-<tr>
-<td class="trow1" align="center" colspan="2"><strong>{$user['yahoo']}</strong></td>
 </tr>
 </table>
 </div>
@@ -6782,7 +6750,7 @@ if(use_xmlhttprequest == "1")
 </tr>]]></template>
 		<template name="modcp_banuser_lift" version="1801"><![CDATA[<div class="float_right"><a href="modcp.php?action=liftban&amp;uid={$banned['uid']}&amp;my_post_key={$mybb->post_code}">{$lang->lift_ban}</a></div>]]></template>
 		<template name="modcp_banuser_liftlist" version="1800"><![CDATA[<option value="{$time}"{$selected}>{$title}{$thattime}</option>]]></template>
-		<template name="modcp_editprofile" version="1816"><![CDATA[<html>
+		<template name="modcp_editprofile" version="1822"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_profile}</title>
 {$headerinclude}
@@ -6920,12 +6888,6 @@ if(use_xmlhttprequest == "1")
 										</tr>
 										<tr>
 											<td><input type="text" class="textbox" name="google" size="25" value="{$user_google}" /></td>
-										</tr>
-										<tr>
-											<td><span class="smalltext">{$lang->yahoo_id}</span></td>
-										</tr>
-										<tr>
-											<td><input type="text" class="textbox" name="yahoo" size="25" value="{$user_yahoo}" /></td>
 										</tr>
 									</table>
 								</fieldset>
@@ -8437,7 +8399,7 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
-		<template name="moderation_inline_movethreads" version="1400"><![CDATA[<html>
+		<template name="moderation_inline_movethreads" version="1822"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->move_threads}</title>
 {$headerinclude}
@@ -8454,6 +8416,14 @@ if(use_xmlhttprequest == "1")
 <tr>
 <td class="trow1"><strong>{$lang->new_forum}</strong></td>
 <td class="trow2">{$forumselect}</td>
+</tr>
+<tr>
+<td class="trow1" valign="top"><strong>{$lang->method}</strong></td>
+<td class="trow2">
+<label><input type="radio" class="radio" name="method" value="move" />{$lang->method_move}</label><br />
+<label><input type="radio" class="radio" name="method" value="redirect" checked="checked" />{$lang->method_move_redirect}</label> <input type="text" class="textbox" name="redirect_expire" size="3" /> {$lang->redirect_expire_note}<br />
+<label><input type="radio" class="radio" name="method" value="copy" />{$lang->method_copy}</label><br />
+</td>
 </tr>
 </table>
 <br />
@@ -9431,13 +9401,13 @@ if(use_xmlhttprequest == "1")
 </table>
 <br />]]></template>
 		<template name="portal_whosonline_memberbit" version="1818"><![CDATA[<a href="{$mybb->settings['bburl']}/{$user['profilelink']}">{$user['username']}</a>{$invisiblemark}]]></template>
-		<template name="post_attachments" version="120"><![CDATA[<br />
+		<template name="post_attachments" version="1822"><![CDATA[<br />
 			<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 	<td class="thead" colspan="3"><strong>{$lang->attachments}</strong></td>
 </tr>
 <tr>
-	<td class="tcat smalltext" colspan="3">{$lang->attach_quota} <a href="usercp.php?action=attachments">{$lang->view_attachments}</a></td>
+	<td class="tcat smalltext" colspan="3">{$lang->attach_quota} {$lang->attach_usage} {$link_viewattachments}</a></td>
 </tr>
 {$newattach}
 {$attachments}
@@ -12116,7 +12086,7 @@ if(use_xmlhttprequest == "1")
 					<br /><span class="smalltext">{$lang->avatar_url_gravatar}</span>
 				</td>
 			</tr>]]></template>
-		<template name="usercp_changename" version="1400"><![CDATA[<html>
+		<template name="usercp_changename" version="1822"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->change_username}</title>
 {$headerinclude}
@@ -12146,7 +12116,7 @@ if(use_xmlhttprequest == "1")
 </tr>
 <tr>
 <td class="trow2" width="40%"><strong>{$lang->new_username}</strong></td>
-<td class="trow2" width="60%"><input type="text" class="textbox" name="username" size="25" maxlength="{$mybb->settings['maxnamelength']}" /></td>
+<td class="trow2" width="60%"><input type="text" class="textbox" name="username" size="25" maxlength="{$mybb->settings['maxnamelength']}" value="{$username}" /></td>
 </tr>
 </table>
 <br />
@@ -13214,12 +13184,11 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
-	<template name="usercp_profile_contact_fields" version="1816"><![CDATA[<br />
+	<template name="usercp_profile_contact_fields" version="1822"><![CDATA[<br />
 <fieldset class="trow2">
 <legend><strong>{$lang->additional_contact_details}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
 	{$contact_fields['icq']}
-	{$contact_fields['yahoo']}
 	{$contact_fields['skype']}
 	{$contact_fields['google']}
 </table>

@@ -31,7 +31,7 @@ $(function ($) {
 				'url': '//mixer.com/embed/player/',
 				'html': '<iframe allowfullscreen="true" src="{url}" width="620" height="349" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>'
 			},
-			'Vemio': {
+			'Vimeo': {
 				'match': /vimeo.com\/(\d+)($|\/)/,
 				'url': '//player.vimeo.com/video/',
 				'html': '<iframe src="{url}" width="500" height="281" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>'

@@ -10,11 +10,9 @@ $l['nav_smilies'] = "Smilie Listing";
 $l['nav_syndication'] = "Latest Thread Syndication (RSS)";
 
 $l['skype'] = "Skype";
-$l['yahoo_im'] = "Yahoo IM";
 $l['skype_center'] = "Skype Center";
 $l['chat_on_skype'] = "Chat with {1} on Skype";
 $l['call_on_skype'] = "Call {1} on Skype";
-$l['yahoo_center'] = "Yahoo! Center";
 
 $l['send_me_instant'] = "Send me an Instant Message";
 $l['add_me_buddy_list'] = "Add me to Your Buddy List";
