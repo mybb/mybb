@@ -607,7 +607,23 @@ class MyBB {
  */
 
 $grouppermignore = array("gid", "type", "title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
-$groupzerogreater = array("pmquota", "maxpmrecipients", "maxreputationsday", "attachquota", "maxemails", "maxposts", "edittimelimit", "maxreputationsperuser", "maxreputationsperthread", "emailfloodtime");
+$groupzerogreater = array(
+	'maxposts',
+	'attachquota',
+	'edittimelimit',
+	'maxreputationsperthread',
+	'maxreputationsperuser',
+	'maxreputationsday',
+	'maxwarningsday',
+	'pmquota',
+	'maxpmrecipients',
+	'maxemails',
+	'emailfloodtime',
+);
+$grouppermbyswitch = array(
+	'maxwarningsday' => 'canwarnusers',
+);
+
 $displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
 
 // These are fields in the usergroups table that are also forum permission specific.
