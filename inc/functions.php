@@ -1234,7 +1234,7 @@ function user_permissions($uid = null)
  */
 function usergroup_permissions($gid = 0)
 {
-	global $cache, $groupscache, $grouppermignore, $groupzerogreater, $grouppermbyswitch;
+	global $cache, $groupscache, $grouppermignore, $groupzerogreater, $groupzerolesser, $grouppermbyswitch;
 
 	if(!is_array($groupscache))
 	{
@@ -1333,6 +1333,66 @@ function usergroup_permissions($gid = 0)
 						$usergroup[$perm] = 0;
 						continue;
 					}
+				}
+
+				// Less is more for some numerical group permissions (i.e. post count required for using signature) so take that into account, too.
+				if(in_array($perm, $groupzerolesser))
+				{
+					// Ensure it's an integer.
+					$access = (int)$access;
+					// Check if this permission should be activatived by another switch permission in current group.
+					if(array_key_exists($perm, $grouppermbyswitch) && isset($groupscache[$gid][$grouppermbyswitch[$perm]]))
+					{
+						$permswitch = $grouppermbyswitch[$perm];
+						$grouppermswitch = $groupscache[$gid][$permswitch];
+						// Set this permission and its switch if not set yet.
+						if(!isset($usergroup[$perm]))
+						{
+							$usergroup[$perm] = $access;
+						}
+
+						// If current group's setting enables the permission, we might update the user's permission.
+						if($grouppermswitch == 1 || $grouppermswitch == "yes") // Keep yes/no for compatibility?
+						{
+							// Only update this permission if both its switch and current group switch are on.
+							if($permswitches_usergroup[$permswitch] == 1 || $permswitches_usergroup[$permswitch] == "yes") // Keep yes/no for compatibility?
+							{
+								if($access == 0 || $permbit === 0)
+								{
+									$usergroup[$perm] = 0;
+								}
+								else if($access < $permbit)
+								{
+									$usergroup[$perm] = $access;
+								}
+							}
+							// Override old useless value with value from current group.
+							else
+							{
+								$usergroup[$perm] = $access;
+							}
+						}
+						if($usergroup[$perm] < 0)
+						{
+							$usergroup[$perm] = 0;
+						}
+						continue;
+					}
+
+					// No switch controls this permission.
+					if($access == 0 || $permbit === 0)
+					{
+						$usergroup[$perm] = 0;
+					}
+					else if($access < $permbit)
+					{
+						$usergroup[$perm] = $access;
+					}
+					if($usergroup[$perm] < 0)
+					{
+						$usergroup[$perm] = 0;
+					}
+					continue;
 				}
 
 				if($access > $permbit || ($access == "yes" && $permbit == "no") || !$permbit) // Keep yes/no for compatibility?

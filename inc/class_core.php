@@ -618,10 +618,23 @@ $groupzerogreater = array(
 	'pmquota',
 	'maxpmrecipients',
 	'maxemails',
+);
+$groupzerolesser = array(
+	'canusesigxposts',
 	'emailfloodtime',
 );
 $grouppermbyswitch = array(
+	'attachquota' => 'canpostattachments',
+	'edittimelimit' => 'caneditposts',
+	'canusesigxposts' => 'canusesig',
+	'maxreputationsperthread' => 'cangivereputations',
+	'maxreputationsperuser' => 'cangivereputations',
+	'maxreputationsday' => 'cangivereputations',
 	'maxwarningsday' => 'canwarnusers',
+	'pmquota' => 'canusepms',
+	'maxpmrecipients' => 'canusepms',
+	'maxemails' => 'cansendemail',
+	'emailfloodtime' => 'cansendemail',
 );
 
 $displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
