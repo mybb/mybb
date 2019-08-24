@@ -1252,6 +1252,21 @@ function usergroup_permissions($gid = 0)
 	$usergroup = array();
 	$usergroup['all_usergroups'] = $gid;
 
+	// Get those switch permissions from the first valid group.
+	$permswitches_usergroup = array();
+	foreach($groups as $gid)
+	{
+		if(trim($gid) == "" || empty($groupscache[$gid]))
+		{
+			continue;
+		}
+		foreach(array_unique(array_values($grouppermbyswitch)) as $perm)
+		{
+			$permswitches_usergroup[$perm] = $groupscache[$gid][$perm];
+		}
+		break;
+	}
+
 	foreach($groups as $gid)
 	{
 		if(trim($gid) == "" || empty($groupscache[$gid]))
@@ -1275,15 +1290,16 @@ function usergroup_permissions($gid = 0)
 				// 0 represents unlimited for most numerical group permissions (i.e. private message limit) so take that into account.
 				if(in_array($perm, $groupzerogreater))
 				{
+					// Ensure it's an integer.
+					$access = (int)$access;
 					// Check if this permission should be activatived by another switch permission in current group.
 					if(array_key_exists($perm, $grouppermbyswitch) && isset($groupscache[$gid][$grouppermbyswitch[$perm]]))
 					{
 						$permswitch = $grouppermbyswitch[$perm];
 						$grouppermswitch = $groupscache[$gid][$permswitch];
 						// Set this permission and its switch if not set yet.
-						if(!isset($usergroup[$permswitch]) || !isset($usergroup[$perm]))
+						if(!isset($usergroup[$perm]))
 						{
-							$usergroup[$permswitch] = $grouppermswitch;
 							$usergroup[$perm] = $access;
 						}
 
@@ -1291,7 +1307,7 @@ function usergroup_permissions($gid = 0)
 						if($grouppermswitch == 1 || $grouppermswitch == "yes") // Keep yes/no for compatibility?
 						{
 							// Only update this permission if both its switch and current group switch are on.
-							if($usergroup[$permswitch] == 1 || $usergroup[$permswitch] == "yes") // Keep yes/no for compatibility?
+							if($permswitches_usergroup[$permswitch] == 1 || $permswitches_usergroup[$permswitch] == "yes") // Keep yes/no for compatibility?
 							{
 								if($access == 0 || $permbit === 0)
 								{
@@ -1310,7 +1326,7 @@ function usergroup_permissions($gid = 0)
 						}
 						continue;
 					}
-
+					
 					// No switch controls this permission.
 					if($access == 0 || $permbit === 0)
 					{
@@ -1324,6 +1340,11 @@ function usergroup_permissions($gid = 0)
 					$usergroup[$perm] = $access;
 				}
 			}
+		}
+
+		foreach($permswitches_usergroup as $perm => $value)
+		{
+			$permswitches_usergroup[$perm] = $usergroup[$perm];
 		}
 	}
 
