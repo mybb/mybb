@@ -1287,56 +1287,23 @@ function usergroup_permissions($gid = 0)
 					$permbit = "";
 				}
 
+				// 0 means current $perm is not a numerical permission.
+				$perm_is_numerical = 0;
+
 				// 0 represents unlimited for most numerical group permissions (i.e. private message limit) so take that into account.
 				if(in_array($perm, $groupzerogreater))
 				{
-					// Ensure it's an integer.
-					$access = (int)$access;
-					// Check if this permission should be activatived by another switch permission in current group.
-					if(array_key_exists($perm, $grouppermbyswitch) && isset($groupscache[$gid][$grouppermbyswitch[$perm]]))
-					{
-						$permswitch = $grouppermbyswitch[$perm];
-						$grouppermswitch = $groupscache[$gid][$permswitch];
-						// Set this permission and its switch if not set yet.
-						if(!isset($usergroup[$perm]))
-						{
-							$usergroup[$perm] = $access;
-						}
-
-						// If current group's setting enables the permission, we might update the user's permission.
-						if($grouppermswitch == 1 || $grouppermswitch == "yes") // Keep yes/no for compatibility?
-						{
-							// Only update this permission if both its switch and current group switch are on.
-							if($permswitches_usergroup[$permswitch] == 1 || $permswitches_usergroup[$permswitch] == "yes") // Keep yes/no for compatibility?
-							{
-								if($access == 0 || $permbit === 0)
-								{
-									$usergroup[$perm] = 0;
-								}
-								else if($access > $permbit)
-								{
-									$usergroup[$perm] = $access;
-								}
-							}
-							// Override old useless value with value from current group. 
-							else
-							{
-								$usergroup[$perm] = $access;
-							}
-						}
-						continue;
-					}
-					
-					// No switch controls this permission.
-					if($access == 0 || $permbit === 0)
-					{
-						$usergroup[$perm] = 0;
-						continue;
-					}
+					// 1 means a `0 or greater` permission.
+					$perm_is_numerical = 1;
+				}
+				// Less is more for some numerical group permissions (i.e. post count required for using signature) so take that into account, too.
+				else if(in_array($perm, $groupzerolesser))
+				{
+					// 2 means a `0 or lesser` permission.
+					$perm_is_numerical = 2;
 				}
 
-				// Less is more for some numerical group permissions (i.e. post count required for using signature) so take that into account, too.
-				if(in_array($perm, $groupzerolesser))
+				if($perm_is_numerical > 0)
 				{
 					// Ensure it's an integer.
 					$access = (int)$access;
@@ -1345,13 +1312,13 @@ function usergroup_permissions($gid = 0)
 					{
 						$permswitch = $grouppermbyswitch[$perm];
 						$grouppermswitch = $groupscache[$gid][$permswitch];
-						// Set this permission and its switch if not set yet.
+						// Set this permission if not set yet.
 						if(!isset($usergroup[$perm]))
 						{
 							$usergroup[$perm] = $access;
 						}
 
-						// If current group's setting enables the permission, we might update the user's permission.
+						// If current group's setting enables the permission, we may need to update the user's permission.
 						if($grouppermswitch == 1 || $grouppermswitch == "yes") // Keep yes/no for compatibility?
 						{
 							// Only update this permission if both its switch and current group switch are on.
@@ -1361,7 +1328,7 @@ function usergroup_permissions($gid = 0)
 								{
 									$usergroup[$perm] = 0;
 								}
-								else if($access < $permbit)
+								else if($perm_is_numerical == 1 && $access > $permbit || $perm_is_numerical == 2 && $access < $permbit)
 								{
 									$usergroup[$perm] = $access;
 								}
@@ -1372,7 +1339,7 @@ function usergroup_permissions($gid = 0)
 								$usergroup[$perm] = $access;
 							}
 						}
-						if($usergroup[$perm] < 0)
+						if($perm_is_numerical == 2 && $usergroup[$perm] < 0) // Maybe oversubtle, database uses Unsigned on them.
 						{
 							$usergroup[$perm] = 0;
 						}
@@ -1383,16 +1350,18 @@ function usergroup_permissions($gid = 0)
 					if($access == 0 || $permbit === 0)
 					{
 						$usergroup[$perm] = 0;
+						continue;
 					}
-					else if($access < $permbit)
+					// The bigger/lesser the value is, the more permission the user gets.
+					else if($perm_is_numerical == 1 && $access > $permbit || $perm_is_numerical == 2 && $access < $permbit)
 					{
 						$usergroup[$perm] = $access;
+						if($usergroup[$perm] < 0) // Maybe oversubtle, database uses Unsigned on them.
+						{
+							$usergroup[$perm] = 0;
+						}
+						continue;
 					}
-					if($usergroup[$perm] < 0)
-					{
-						$usergroup[$perm] = 0;
-					}
-					continue;
 				}
 
 				if($access > $permbit || ($access == "yes" && $permbit == "no") || !$permbit) // Keep yes/no for compatibility?
