@@ -623,10 +623,14 @@ $groupzerolesser = array(
 	'canusesigxposts',
 	'emailfloodtime',
 );
+$groupxgreater = array(
+	'reputationpower' => 0,
+);
 $grouppermbyswitch = array(
 	'attachquota' => 'canpostattachments',
 	'edittimelimit' => 'caneditposts',
 	'canusesigxposts' => 'canusesig',
+	'reputationpower' => 'cangivereputations',
 	'maxreputationsperthread' => 'cangivereputations',
 	'maxreputationsperuser' => 'cangivereputations',
 	'maxreputationsday' => 'cangivereputations',
