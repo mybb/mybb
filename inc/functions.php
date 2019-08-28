@@ -1254,17 +1254,33 @@ function usergroup_permissions($gid = 0)
 
 	// Get those switch permissions from the first valid group.
 	$permswitches_usergroup = array();
+	$grouppermswitches = array();
+	foreach(array_values($grouppermbyswitch) as $permvalue)
+	{
+		if(is_array($permvalue))
+		{
+			foreach($permvalue as $perm)
+			{
+				$grouppermswitches[] = $perm;
+			}
+		}
+		else
+		{
+			$grouppermswitches[] = $permvalue;
+		}
+	}
+	$grouppermswitches = array_unique($grouppermswitches);
 	foreach($groups as $gid)
 	{
 		if(trim($gid) == "" || empty($groupscache[$gid]))
 		{
 			continue;
 		}
-		foreach(array_unique(array_values($grouppermbyswitch)) as $perm)
+		foreach($grouppermswitches as $perm)
 		{
 			$permswitches_usergroup[$perm] = $groupscache[$gid][$perm];
 		}
-		break;
+		break;	// Only retieve the first available group's permissions as how following action does.
 	}
 
 	foreach($groups as $gid)
@@ -1319,12 +1335,34 @@ function usergroup_permissions($gid = 0)
 					// Ensure it's an integer.
 					$access = (int)$access;
 					// Check if this permission should be activatived by another switch permission in current group.
-					if(array_key_exists($perm, $grouppermbyswitch) && isset($groupscache[$gid][$grouppermbyswitch[$perm]]))
+					if(array_key_exists($perm, $grouppermbyswitch))
 					{
-						$update_current_perm = false;
+						if(!is_array($grouppermbyswitch[$perm]))
+						{
+							$grouppermbyswitch[$perm] = array($grouppermbyswitch[$perm]);
+						}
 
-						$permswitch = $grouppermbyswitch[$perm];
-						$grouppermswitch = $groupscache[$gid][$permswitch];
+						$update_current_perm = $group_current_perm_enabled = $group_perm_enabled = false;
+						foreach($grouppermbyswitch[$perm] as $permswitch)
+						{
+							if(!isset($groupscache[$gid][$permswitch]))
+							{
+								continue;
+							}
+							$permswitches_current = $groupscache[$gid][$permswitch];
+
+							// Determin if the permission is enabled by switches from current group.
+							if($permswitches_current == 1 || $permswitches_current == "yes") // Keep yes/no for compatibility?
+							{
+								$group_current_perm_enabled = true;
+							}
+							// Determin if the permission is enabled by switches from previously handled groups.
+							if($permswitches_usergroup[$permswitch] == 1 || $permswitches_usergroup[$permswitch] == "yes") // Keep yes/no for compatibility?
+							{
+								$group_perm_enabled = true;
+							}
+						}
+
 						// Set this permission if not set yet.
 						if(!isset($usergroup[$perm]))
 						{
@@ -1332,10 +1370,10 @@ function usergroup_permissions($gid = 0)
 						}
 
 						// If current group's setting enables the permission, we may need to update the user's permission.
-						if($grouppermswitch == 1 || $grouppermswitch == "yes") // Keep yes/no for compatibility?
+						if($group_current_perm_enabled)
 						{
 							// Only update this permission if both its switch and current group switch are on.
-							if($permswitches_usergroup[$permswitch] == 1 || $permswitches_usergroup[$permswitch] == "yes") // Keep yes/no for compatibility?
+							if($group_perm_enabled)
 							{
 								$update_current_perm = true;
 							}
