@@ -619,6 +619,7 @@ $groupxgreater = array(
 	'reputationpower' => 0,
 );
 $grouppermbyswitch = array(
+	'maxposts' => array('canpostthreads', 'canpostreplys'),
 	'attachquota' => 'canpostattachments',
 	'edittimelimit' => 'caneditposts',
 	'canusesigxposts' => 'canusesig',
