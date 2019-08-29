@@ -2662,6 +2662,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 
 /**
  * @param DefaultFormContainer $form_container
+ * @param DefaultForm $form
  * @param int $pid
  * @param int $depth
  */
