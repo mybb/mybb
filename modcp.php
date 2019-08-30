@@ -977,8 +977,12 @@ if($mybb->input['action'] == "modlogs")
 			$logitem['forum'] = get_forum_link($logitem['fid']);
 			eval("\$information .= \"".$templates->get("modcp_modlogs_result_forum")."\";");
 		}
-		if($logitem['psubject'])
+		if(!empty($logitem['pid']))
 		{
+			if(empty($logitem['psubject']))
+			{
+				$logitem['psubject'] = $lang->no_subject;
+			}
 			$logitem['psubject'] = htmlspecialchars_uni($parser->parse_badwords($logitem['psubject']));
 			$logitem['post'] = get_post_link($logitem['pid']);
 			eval("\$information .= \"".$templates->get("modcp_modlogs_result_post")."\";");
@@ -2313,6 +2317,10 @@ if($mybb->input['action'] == "modqueue")
 		{
 			$altbg = alt_trow();
 			$post['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($post['threadsubject']));
+			if(empty($post['subject']))
+			{
+				$post['subject'] = $lang->no_subject;
+			}
 			$post['subject'] = htmlspecialchars_uni($parser->parse_badwords($post['subject']));
 			$post['threadlink'] = get_thread_link($post['tid']);
 			$post['postlink'] = get_post_link($post['pid'], $post['tid']);
@@ -2452,6 +2460,10 @@ if($mybb->input['action'] == "modqueue")
 			$attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
 			$attachment['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($attachment['threadsubject']));
 			$attachment['filesize'] = get_friendly_size($attachment['filesize']);
+			if(empty($attachment['postsubject']))
+			{
+				$attachment['postsubject'] = "RE: ".$attachment['threadsubject'];
+			}
 
 			$link = get_post_link($attachment['pid'], $attachment['tid']) . "#pid{$attachment['pid']}";
 			$thread_link = get_thread_link($attachment['tid']);
