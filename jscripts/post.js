@@ -181,7 +181,7 @@ var Post = {
 
 		if (totalSize > php_max_upload_size && php_max_upload_size > 0)
 		{
-			var php_max_upload_size_pretty = Math.round(php_max_upload_size / 1e4) / 1e2;
+			var php_max_upload_size_pretty = php_max_upload_size;
 			alert(lang.attachment_too_big_upload.replace('{1}', php_max_upload_size_pretty));
 			file.value="";
 			return false;
