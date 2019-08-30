@@ -11,6 +11,7 @@ $l['nav_add_warning'] = "Warn User";
 $l['nav_view_warning'] = "Warning Details";
 
 $l['warning_for_post'] = "&hellip; Post:";
+$l['no_subject'] = "No subject";
 $l['already_expired'] = "Expired";
 $l['details_username'] = "Username";
 $l['warning_active'] = "Active";

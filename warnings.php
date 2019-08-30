@@ -217,6 +217,10 @@ if($mybb->input['action'] == "warn")
 			error_no_permission();
 		}
 
+		if(empty($post['subject']))
+		{
+			$post['subject'] = "[".$lang->no_subject."]";
+		}
 		$post['subject'] = $parser->parse_badwords($post['subject']);
 		$post['subject'] = htmlspecialchars_uni($post['subject']);
 		$post_link = get_post_link($post['pid']);
@@ -613,8 +617,12 @@ if($mybb->input['action'] == "view")
 	$user_link = build_profile_link($user['username'], $user['uid']);
 
 	$post_link = "";
-	if($warning['post_subject'])
+	if(!empty($warning['pid']))
 	{
+		if(empty($warning['post_subject']))
+		{
+			$warning['post_subject'] = "[".$lang->no_subject."]";
+		}
 		$warning['post_subject'] = $parser->parse_badwords($warning['post_subject']);
 		$warning['post_subject'] = htmlspecialchars_uni($warning['post_subject']);
 		$post_link = get_post_link($warning['pid'])."#pid{$warning['pid']}";
@@ -808,8 +816,12 @@ if(!$mybb->input['action'])
 		$last_expired = $warning['expired'];
 
 		$post_link = '';
-		if($warning['post_subject'])
+		if(!empty($warning['pid']))
 		{
+			if(empty($warning['post_subject']))
+			{
+				$warning['post_subject'] = "[".$lang->no_subject."]";
+			}
 			$warning['post_subject'] = $parser->parse_badwords($warning['post_subject']);
 			$warning['post_subject'] = htmlspecialchars_uni($warning['post_subject']);
 			$warning['post_link'] = get_post_link($warning['pid']);
