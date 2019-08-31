@@ -133,9 +133,9 @@ var Thread = {
 			}
 		}
 
-		if(typeof $('textarea').sceditor != 'undefined')
+		if(typeof MyBBEditor != 'undefined')
 		{
-			$('textarea').sceditor('instance').insert(json.message);
+			MyBBEditor.insert(json.message);
 		}
 		else
 		{
