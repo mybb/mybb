@@ -591,3 +591,6 @@ $l['sfs_error_email'] = 'email';
 $l['sfs_error_or'] = 'or';
 
 $l['boardclosed_reason'] = 'These forums are currently closed for maintenance. Please check back later';
+
+$l['post_reply_prefix'] = 'RE: ';
+$l['post_no_subject'] = '(No Subject)';

@@ -1609,7 +1609,7 @@ if($mybb->input['action'] == "thread")
  */
 function buildtree($replyto=0, $indent=0)
 {
-	global $tree, $mybb, $theme, $mybb, $pid, $tid, $templates, $parser, $lang;
+	global $tree, $mybb, $theme, $thread, $pid, $tid, $templates, $parser, $lang;
 
 	$indentsize = 13 * $indent;
 
@@ -1624,7 +1624,7 @@ function buildtree($replyto=0, $indent=0)
 
 			if(!$post['subject'])
 			{
-				$post['subject'] = "[".$lang->no_subject."]";
+				$post['subject'] = $lang->post_reply_prefix.$thread['subject'];
 			}
 
 			$post['username'] = htmlspecialchars_uni($post['username']);

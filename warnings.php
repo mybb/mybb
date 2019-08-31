@@ -219,7 +219,7 @@ if($mybb->input['action'] == "warn")
 
 		if(empty($post['subject']))
 		{
-			$post['subject'] = "[".$lang->no_subject."]";
+			$post['subject'] = $lang->post_no_subject;
 		}
 		$post['subject'] = $parser->parse_badwords($post['subject']);
 		$post['subject'] = htmlspecialchars_uni($post['subject']);
@@ -621,7 +621,7 @@ if($mybb->input['action'] == "view")
 	{
 		if(empty($warning['post_subject']))
 		{
-			$warning['post_subject'] = "[".$lang->no_subject."]";
+			$warning['post_subject'] = $lang->post_no_subject;
 		}
 		$warning['post_subject'] = $parser->parse_badwords($warning['post_subject']);
 		$warning['post_subject'] = htmlspecialchars_uni($warning['post_subject']);
@@ -820,7 +820,7 @@ if(!$mybb->input['action'])
 		{
 			if(empty($warning['post_subject']))
 			{
-				$warning['post_subject'] = "[".$lang->no_subject."]";
+				$warning['post_subject'] = $lang->post_no_subject;
 			}
 			$warning['post_subject'] = $parser->parse_badwords($warning['post_subject']);
 			$warning['post_subject'] = htmlspecialchars_uni($warning['post_subject']);

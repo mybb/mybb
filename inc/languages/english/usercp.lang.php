@@ -22,7 +22,6 @@ $l['nav_usergroups'] = "Group Memberships";
 $l['nav_attachments'] = "Attachment Manager";
 $l['nav_addsubscription'] = "Add Subscription";
 
-$l['post_no_subject'] = "No subject";
 $l['resend_activation'] = "Resend Activation Email";
 $l['away_notice_away'] = "You have been marked away since {1}";
 $l['away_notice'] = "This option will allow you to select whether you are away or not.";

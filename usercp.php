@@ -3319,7 +3319,7 @@ if($mybb->input['action'] == "drafts")
 
 			if(empty($draft['subject']))
 			{
-				$draft['subject'] = "[".$lang->post_no_subject."]";
+				$draft['subject'] = $lang->post_no_subject;
 			}
 			$draft['subject'] = htmlspecialchars_uni($draft['subject']);
 			$savedate = my_date('relative', $draft['dateline']);
@@ -3861,7 +3861,7 @@ if($mybb->input['action'] == "attachments")
 			$attachment['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($attachment['threadsubject']));
 			if(empty($attachment['subject']))
 			{
-				$attachment['subject'] = "RE: ".$attachment['threadsubject'];
+				$attachment['subject'] = $lang->post_reply_prefix.$attachment['threadsubject'];
 			}
 
 			$size = get_friendly_size($attachment['filesize']);
@@ -4069,7 +4069,7 @@ if(!$mybb->input['action'])
 				{
 					if(empty($warning['post_subject']))
 					{
-						$warning['post_subject'] = "[".$lang->post_no_subject."]";
+						$warning['post_subject'] = $lang->post_no_subject;
 					}
 					$warning['post_subject'] = $parser->parse_badwords($warning['post_subject']);
 					$warning['post_subject'] = htmlspecialchars_uni($warning['post_subject']);

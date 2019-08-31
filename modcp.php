@@ -981,7 +981,7 @@ if($mybb->input['action'] == "modlogs")
 		{
 			if(empty($logitem['psubject']))
 			{
-				$logitem['psubject'] = $lang->no_subject;
+				$logitem['psubject'] = $lang->post_no_subject;
 			}
 			$logitem['psubject'] = htmlspecialchars_uni($parser->parse_badwords($logitem['psubject']));
 			$logitem['post'] = get_post_link($logitem['pid']);
@@ -2319,7 +2319,7 @@ if($mybb->input['action'] == "modqueue")
 			$post['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($post['threadsubject']));
 			if(empty($post['subject']))
 			{
-				$post['subject'] = $lang->no_subject;
+				$post['subject'] = $lang->post_no_subject;
 			}
 			$post['subject'] = htmlspecialchars_uni($parser->parse_badwords($post['subject']));
 			$post['threadlink'] = get_thread_link($post['tid']);
@@ -2462,7 +2462,7 @@ if($mybb->input['action'] == "modqueue")
 			$attachment['filesize'] = get_friendly_size($attachment['filesize']);
 			if(empty($attachment['postsubject']))
 			{
-				$attachment['postsubject'] = "RE: ".$attachment['threadsubject'];
+				$attachment['postsubject'] = $lang->post_reply_prefix.$attachment['threadsubject'];
 			}
 
 			$link = get_post_link($attachment['pid'], $attachment['tid']) . "#pid{$attachment['pid']}";
@@ -3976,7 +3976,7 @@ if($mybb->input['action'] == "ipsearch")
 					$trow = alt_trow();
 					if(!$ipaddress['subject'])
 					{
-						$ipaddress['subject'] = "RE: {$ipaddress['threadsubject']}";
+						$ipaddress['subject'] = $lang->post_reply_prefix.$ipaddress['threadsubject'];
 					}
 
 					$ipaddress['postlink'] = get_post_link($ipaddress['pid'], $ipaddress['tid']);

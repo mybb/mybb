@@ -91,7 +91,6 @@ $l['ipresult_regip'] = "Registration IP:";
 $l['ipresult_lastip'] = "Last Known IP:";
 $l['ipresult_post'] = "Post:";
 $l['subject'] = "Subject";
-$l['no_subject'] = "No subject";
 $l['username'] = "Username";
 $l['ipaddress'] = "IP Address";
 $l['options'] = "Options:";
