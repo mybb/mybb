@@ -516,7 +516,7 @@ if($mybb->input['action'] == "edit")
 			// Internet Explorer
 			if(document.selection)
 			{
-				textarea.focus();
+				textarea.trigger('focus');
 				var selection = document.selection.createRange();
 				selection.text = value;
 			}
@@ -1327,7 +1327,7 @@ if($mybb->input['action'] == "send")
 			// Internet Explorer
 			if(document.selection)
 			{
-				textarea.focus();
+				textarea.trigger('focus');
 				var selection = document.selection.createRange();
 				selection.text = value;
 			}

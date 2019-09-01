@@ -206,7 +206,7 @@ if(in_array($current_page, $valid))
 	// If we're accessing poll results, fetch the forum theme for it and if we're overriding it
 	else if(isset($mybb->input['pid']) && THIS_SCRIPT == "polls.php")
 	{
-		$query = $db->simple_select('threads', 'fid', "poll = '{$mybb->input['pid']}'", array('limit' => 1));
+		$query = $db->query("SELECT t.fid FROM ".TABLE_PREFIX."polls p INNER JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid) WHERE p.pid = '{$mybb->input['pid']}' LIMIT 1");
 		$fid = $db->fetch_field($query, 'fid');
 
 		if($fid)
@@ -474,7 +474,7 @@ $templatelist .= ",global_boardclosed_warning,global_bannedwarning,error_inline,
 $templatelist .= ",video_dailymotion_embed,video_facebook_embed,video_liveleak_embed,video_metacafe_embed,video_myspacetv_embed,video_mixer_embed,video_vimeo_embed,video_yahoo_embed,video_youtube_embed,debug_summary";
 $templatelist .= ",smilieinsert_row,smilieinsert_row_empty,smilieinsert,smilieinsert_getmore,smilieinsert_smilie,global_board_offline_modal,footer_showteamlink,footer_themeselector,task_image,usercp_themeselector_option,php_warnings";
 $templatelist .= ",mycode_code,mycode_email,mycode_img,mycode_php,mycode_quote_post,mycode_size_int,mycode_url,global_no_permission_modal,global_boardclosed_reason,nav_dropdown,global_remote_avatar_notice,global_modqueue,global_modqueue_notice";
-$templatelist .= ",header_welcomeblock_member_pms,header_welcomeblock_member_search,header_welcomeblock_guest,header_welcomeblock_guest_login_modal,header_welcomeblock_guest_login_modal_lockout";
+$templatelist .= ",header_welcomeblock_member_buddy,header_welcomeblock_member_pms,header_welcomeblock_member_search,header_welcomeblock_guest,header_welcomeblock_guest_login_modal,header_welcomeblock_guest_login_modal_lockout";
 $templatelist .= ",header_menu_calendar,header_menu_memberlist,global_dst_detection,header_quicksearch,smilie,modal,modal_button";
 $templates->cache($db->escape_string($templatelist));
 
@@ -529,14 +529,19 @@ if($mybb->user['uid'] != 0)
 	// Format the welcome back message
 	$lang->welcome_back = $lang->sprintf($lang->welcome_back, build_profile_link(htmlspecialchars_uni($mybb->user['username']), $mybb->user['uid']), $lastvisit);
 
-	$searchlink = '';
+	$buddylink = $searchlink = $pmslink = '';
+
+	if(!empty($mybb->user['buddylist']))
+	{
+		eval('$buddylink = "' . $templates->get('header_welcomeblock_member_buddy') . '";');
+	}
+    
 	if($mybb->usergroup['cansearch'] == 1)
 	{
 		eval('$searchlink = "'.$templates->get('header_welcomeblock_member_search').'";');
 	}
 
 	// Tell the user their PM usage
-	$pmslink = '';
 	if($mybb->settings['enablepms'] != 0 && $mybb->usergroup['canusepms'] == 1)
 	{
 		$lang->welcome_pms_usage = $lang->sprintf($lang->welcome_pms_usage, my_number_format($mybb->user['pms_unread']), my_number_format($mybb->user['pms_total']));
@@ -941,7 +946,7 @@ if($mybb->settings['awactialert'] == 1 && $mybb->usergroup['cancp'] == 1)
 $jsTemplates = array();
 foreach (array('modal', 'modal_button') as $template) {
 	eval('$jsTemplates["'.$template.'"] = "'.$templates->get($template, 1, 0).'";');
-	$jsTemplates[$template] = str_replace("\n", "\\\n", addslashes($jsTemplates[$template]));
+	$jsTemplates[$template] = str_replace(array("\n","\r"), array("\\\n", ""), addslashes($jsTemplates[$template]));
 }
 
 // Set up some of the default templates

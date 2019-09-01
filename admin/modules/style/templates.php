@@ -264,7 +264,7 @@ if($mybb->input['action'] == "add_template")
 <link href="./jscripts/codemirror/addon/dialog/dialog-mybb.css?ver=1813" rel="stylesheet">
 <script src="./jscripts/codemirror/addon/dialog/dialog.js?ver=1813"></script>
 <script src="./jscripts/codemirror/addon/search/searchcursor.js?ver=1813"></script>
-<script src="./jscripts/codemirror/addon/search/search.js?ver=1813"></script>
+<script src="./jscripts/codemirror/addon/search/search.js?ver=1821"></script>
 <script src="./jscripts/codemirror/addon/fold/foldcode.js?ver=1813"></script>
 <script src="./jscripts/codemirror/addon/fold/xml-fold.js?ver=1813"></script>
 <script src="./jscripts/codemirror/addon/fold/foldgutter.js?ver=1813"></script>
@@ -641,7 +641,7 @@ if($mybb->input['action'] == "edit_template")
 <link href="./jscripts/codemirror/addon/dialog/dialog-mybb.css?ver=1813" rel="stylesheet">
 <script src="./jscripts/codemirror/addon/dialog/dialog.js?ver=1813"></script>
 <script src="./jscripts/codemirror/addon/search/searchcursor.js?ver=1813"></script>
-<script src="./jscripts/codemirror/addon/search/search.js?ver=1813"></script>
+<script src="./jscripts/codemirror/addon/search/search.js?ver=1821"></script>
 <script src="./jscripts/codemirror/addon/fold/foldcode.js?ver=1813"></script>
 <script src="./jscripts/codemirror/addon/fold/xml-fold.js?ver=1813"></script>
 <script src="./jscripts/codemirror/addon/fold/foldgutter.js?ver=1813"></script>
@@ -1189,7 +1189,7 @@ if($mybb->input['action'] == "search_replace")
 <link href="./jscripts/codemirror/addon/dialog/dialog-mybb.css?ver=1813" rel="stylesheet">
 <script src="./jscripts/codemirror/addon/dialog/dialog.js?ver=1813"></script>
 <script src="./jscripts/codemirror/addon/search/searchcursor.js?ver=1813"></script>
-<script src="./jscripts/codemirror/addon/search/search.js?ver=1813"></script>
+<script src="./jscripts/codemirror/addon/search/search.js?ver=1821"></script>
 <script src="./jscripts/codemirror/addon/fold/foldcode.js?ver=1813"></script>
 <script src="./jscripts/codemirror/addon/fold/xml-fold.js?ver=1813"></script>
 <script src="./jscripts/codemirror/addon/fold/foldgutter.js?ver=1813"></script>

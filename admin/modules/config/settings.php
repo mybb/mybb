@@ -438,7 +438,7 @@ if($mybb->input['action'] == "add")
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 
-	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1804"></script>
+	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1821"></script>
 	<script type="text/javascript">
 		$(function() {
 			new Peeker($("#type"), $("#row_extra"), /^(select|radio|checkbox|php)$/, false);
@@ -656,7 +656,7 @@ if($mybb->input['action'] == "edit")
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 
-	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1804"></script>
+	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1821"></script>
 	<script type="text/javascript">
 		$(function() {
 			new Peeker($("#type"), $("#row_extra"), /^(select|radio|checkbox|php)$/, false);
@@ -1036,6 +1036,23 @@ if($mybb->input['action'] == "change")
 			{
 				$mybb->input['upsetting']['allowmultipleemails'] = 0;
 				$lang->success_settings_updated .= $lang->success_settings_updated_allowmultipleemails;
+			}
+		}
+
+		$fields = array(
+			'uploadspath',
+			'cdnpath',
+			'avataruploadpath',
+		);
+		
+		foreach($fields as $field)
+		{
+			if(
+				isset($mybb->input['upsetting'][$field]) &&
+				is_string($mybb->input['upsetting'][$field]) &&
+				strpos($mybb->input['upsetting'][$field], '://') !== false)
+			{
+				unset($mybb->input['upsetting'][$field]);
 			}
 		}
 
@@ -1744,7 +1761,7 @@ EOF;
 	echo '</div>';
 
 	echo '
-<script type="text/javascript" src="./jscripts/search.js?ver=1808"></script>
+<script type="text/javascript" src="./jscripts/search.js?ver=1821"></script>
 <script type="text/javascript">
 //<!--
 $(function(){
@@ -1812,7 +1829,7 @@ function print_setting_peekers()
 
 	$setting_peekers = implode("\n			", $peekers);
 
-	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1804"></script>
+	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1821"></script>
 	<script type="text/javascript">
 		$(function() {
 			' . $setting_peekers . '

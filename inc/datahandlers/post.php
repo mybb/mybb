@@ -1879,6 +1879,20 @@ class PostDataHandler extends DataHandler
 
 				$db->update_query("threads", $this->thread_update_data, "tid='".(int)$post['tid']."'");
 			}
+
+			// Update any moved thread links to have corresponding new subject.
+			if(isset($post['subject']))
+			{
+				$query = $db->simple_select("threads", "tid, closed", "closed='moved|".$this->tid."'");
+				if($db->num_rows($query) > 0)
+				{
+					$update_data['subject'] = $db->escape_string($post['subject']);
+					while($result = $db->fetch_array($query))
+					{
+						$db->update_query("threads", $update_data, "tid='".(int)$result['tid']."'");
+					}
+				}
+			}
 		}
 
 		// Prepare array for post updating.

@@ -318,7 +318,7 @@ if($mybb->input['action'] == "add")
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 
-	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1804"></script>
+	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1821"></script>
 	<script type="text/javascript">
 		$(function() {
 				new Peeker($("#fieldtype"), $("#row_maxlength, #row_regex, #row_parser_options"), /text|textarea/, false);
@@ -634,7 +634,7 @@ if($mybb->input['action'] == "edit")
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 
-	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1804"></script>
+	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1821"></script>
 	<script type="text/javascript">
 		$(function() {
 				new Peeker($("#fieldtype"), $("#row_maxlength, #row_regex, #row_parser_options"), /text|textarea/);

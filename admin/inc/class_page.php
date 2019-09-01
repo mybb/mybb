@@ -106,10 +106,10 @@ class DefaultPage
 			echo "	<link rel=\"stylesheet\" href=\"styles/{$this->style}/{$this->active_module}.css\" type=\"text/css\" />\n";
 		}
 
-		echo "	<script type=\"text/javascript\" src=\"../jscripts/jquery.js?ver=1820\"></script>\n";
-		echo "	<script type=\"text/javascript\" src=\"../jscripts/jquery.plugins.min.js?ver=1813\"></script>\n";
-		echo "	<script type=\"text/javascript\" src=\"../jscripts/general.js?ver=1820\"></script>\n";
-		echo "	<script type=\"text/javascript\" src=\"./jscripts/admincp.js\"></script>\n";
+		echo "	<script type=\"text/javascript\" src=\"../jscripts/jquery.js?ver=1821\"></script>\n";
+		echo "	<script type=\"text/javascript\" src=\"../jscripts/jquery.plugins.min.js?ver=1821\"></script>\n";
+		echo "	<script type=\"text/javascript\" src=\"../jscripts/general.js?ver=1821\"></script>\n";
+		echo "	<script type=\"text/javascript\" src=\"./jscripts/admincp.js?ver=1821\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"./jscripts/tabs.js\"></script>\n";
 
 		echo "	<link rel=\"stylesheet\" href=\"jscripts/jqueryui/css/redmond/jquery-ui.min.css\" />\n";
@@ -391,9 +391,9 @@ lang.saved = \"{$lang->saved}\";
 <meta name="author" content="MyBB Group" />
 <meta name="copyright" content="Copyright {$copy_year} MyBB Group." />
 <link rel="stylesheet" href="./styles/{$cp_style}/login.css" type="text/css" />
-<script type="text/javascript" src="../jscripts/jquery.js?ver=1820"></script>
-<script type="text/javascript" src="../jscripts/general.js?ver=1820"></script>
-<script type="text/javascript" src="./jscripts/admincp.js"></script>
+<script type="text/javascript" src="../jscripts/jquery.js?ver=1821"></script>
+<script type="text/javascript" src="../jscripts/general.js?ver=1821"></script>
+<script type="text/javascript" src="./jscripts/admincp.js?ver=1821"></script>
 <script type="text/javascript">
 //<![CDATA[
 	loading_text = '{$lang->loading_text}';
@@ -523,9 +523,9 @@ EOF;
 <meta name="author" content="MyBB Group" />
 <meta name="copyright" content="Copyright {$copy_year} MyBB Group." />
 <link rel="stylesheet" href="./styles/{$cp_style}/login.css" type="text/css" />
-<script type="text/javascript" src="../jscripts/jquery.js?ver=1820"></script>
-<script type="text/javascript" src="../jscripts/general.js?ver=1820"></script>
-<script type="text/javascript" src="./jscripts/admincp.js"></script>
+<script type="text/javascript" src="../jscripts/jquery.js?ver=1821"></script>
+<script type="text/javascript" src="../jscripts/general.js?ver=1821"></script>
+<script type="text/javascript" src="./jscripts/admincp.js?ver=1821"></script>
 <script type="text/javascript">
 //<![CDATA[
 	loading_text = '{$lang->loading_text}';
@@ -1045,8 +1045,10 @@ EOF;
 <script type="text/javascript">
 var partialmode = {$mybb->settings['partialmode']},
 opt_editor = {
-	plugins: "bbcode,undo",
-	style: "../jscripts/sceditor/textarea_styles/jquery.sceditor.mybb.css",
+	plugins: "undo",
+	format: "bbcode",
+	bbcodeTrim: true,
+	style: "../jscripts/sceditor/styles/jquery.sceditor.mybb.css",
 	rtl: {$lang->settings['rtl']},
 	locale: "mybblang",
 	enablePasteFiltering: true,

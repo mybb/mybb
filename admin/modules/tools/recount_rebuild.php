@@ -30,10 +30,7 @@ function acp_rebuild_forum_counters()
 
 	$page = $mybb->get_input('page', MyBB::INPUT_INT);
 	$per_page = $mybb->get_input('forumcounters', MyBB::INPUT_INT);
-	if($per_page <= 0)
-	{
-		$per_page = 50;
-	}
+
 	$start = ($page-1) * $per_page;
 	$end = $start + $per_page;
 
@@ -60,10 +57,7 @@ function acp_rebuild_thread_counters()
 
 	$page = $mybb->get_input('page', MyBB::INPUT_INT);
 	$per_page = $mybb->get_input('threadcounters', MyBB::INPUT_INT);
-	if($per_page <= 0)
-	{
-		$per_page = 500;
-	}
+
 	$start = ($page-1) * $per_page;
 	$end = $start + $per_page;
 
@@ -88,10 +82,7 @@ function acp_rebuild_poll_counters()
 
 	$page = $mybb->get_input('page', MyBB::INPUT_INT);
 	$per_page = $mybb->get_input('pollcounters', MyBB::INPUT_INT);
-	if($per_page <= 0)
-	{
-		$per_page = 500;
-	}
+
 	$start = ($page-1) * $per_page;
 	$end = $start + $per_page;
 
@@ -116,10 +107,7 @@ function acp_recount_user_posts()
 
 	$page = $mybb->get_input('page', MyBB::INPUT_INT);
 	$per_page = $mybb->get_input('userposts', MyBB::INPUT_INT);
-	if($per_page <= 0)
-	{
-		$per_page = 500;
-	}
+
 	$start = ($page-1) * $per_page;
 	$end = $start + $per_page;
 
@@ -170,10 +158,7 @@ function acp_recount_user_threads()
 
 	$page = $mybb->get_input('page', MyBB::INPUT_INT);
 	$per_page = $mybb->get_input('userthreads', MyBB::INPUT_INT);
-	if($per_page <= 0)
-	{
-		$per_page = 500;
-	}
+
 	$start = ($page-1) * $per_page;
 	$end = $start + $per_page;
 
@@ -223,10 +208,7 @@ function acp_recount_reputation()
 
 	$page = $mybb->get_input('page', MyBB::INPUT_INT);
 	$per_page = $mybb->get_input('reputation', MyBB::INPUT_INT);
-	if($per_page <= 0)
-	{
-		$per_page = 500;
-	}
+
 	$start = ($page-1) * $per_page;
 	$end = $start + $per_page;
 
@@ -258,10 +240,7 @@ function acp_recount_warning()
 
 	$page = $mybb->get_input('page', MyBB::INPUT_INT);
 	$per_page = $mybb->get_input('warning', MyBB::INPUT_INT);
-	if($per_page <= 0)
-	{
-		$per_page = 500;
-	}
+
 	$start = ($page-1) * $per_page;
 	$end = $start + $per_page;
 
@@ -293,10 +272,7 @@ function acp_recount_private_messages()
 
 	$page = $mybb->get_input('page', MyBB::INPUT_INT);
 	$per_page = $mybb->get_input('privatemessages', MyBB::INPUT_INT);
-	if($per_page <= 0)
-	{
-		$per_page = 500;
-	}
+
 	$start = ($page-1) * $per_page;
 	$end = $start + $per_page;
 
@@ -354,10 +330,7 @@ function acp_recount_thread_ratings()
 
 	$page = $mybb->get_input('page', MyBB::INPUT_INT);
 	$per_page = $mybb->get_input('threadrating', MyBB::INPUT_INT);
-	if($per_page <= 0)
-	{
-		$per_page = 500;
-	}
+
 	$start = ($page-1) * $per_page;
 	$end = $start + $per_page;
 
@@ -389,10 +362,7 @@ function acp_rebuild_attachment_thumbnails()
 
 	$page = $mybb->get_input('page', MyBB::INPUT_INT);
 	$per_page = $mybb->get_input('attachmentthumbs', MyBB::INPUT_INT);
-	if($per_page <= 0)
-	{
-		$per_page = 20;
-	}
+
 	$start = ($page-1) * $per_page;
 	$end = $start + $per_page;
 
@@ -450,14 +420,7 @@ function check_proceed($current, $finish, $next_page, $per_page, $name, $name2, 
 		echo $form->generate_hidden_field("page", $next_page);
 		echo $form->generate_hidden_field($name, $per_page);
 		echo $form->generate_hidden_field($name2, $lang->go);
-		echo "<div class=\"confirm_action\">\n";
-		echo "<p>{$lang->confirm_proceed_rebuild}</p>\n";
-		echo "<br />\n";
-		echo "<script type=\"text/javascript\">$(function() { var button = $(\"#proceed_button\"); if(button.length > 0) { button.val(\"{$lang->automatically_redirecting}\"); button.attr(\"disabled\", true); button.css(\"color\", \"#aaa\"); button.css(\"borderColor\", \"#aaa\"); document.forms[0].submit(); }})</script>";
-		echo "<p class=\"buttons\">\n";
-		echo $form->generate_submit_button($lang->proceed, array('class' => 'button_yes', 'id' => 'proceed_button'));
-		echo "</p>\n";
-		echo "</div>\n";
+		output_auto_redirect($form, $lang->confirm_proceed_rebuild);
 
 		$form->end();
 
@@ -479,6 +442,8 @@ if(!$mybb->input['action'])
 			$mybb->input['page'] = 1;
 		}
 
+		$plugins->run_hooks("admin_tools_do_recount_rebuild");
+
 		if(isset($mybb->input['do_rebuildforumcounters']))
 		{
 			$plugins->run_hooks("admin_tools_recount_rebuild_forum_counters");
@@ -488,7 +453,9 @@ if(!$mybb->input['action'])
 				// Log admin action
 				log_admin_action("forum");
 			}
-			if(!$mybb->get_input('forumcounters', MyBB::INPUT_INT))
+
+			$per_page = $mybb->get_input('forumcounters', MyBB::INPUT_INT);
+			if(!$per_page || $per_page <= 0)
 			{
 				$mybb->input['forumcounters'] = 50;
 			}
@@ -504,7 +471,9 @@ if(!$mybb->input['action'])
 				// Log admin action
 				log_admin_action("thread");
 			}
-			if(!$mybb->get_input('threadcounters', MyBB::INPUT_INT))
+
+			$per_page = $mybb->get_input('threadcounters', MyBB::INPUT_INT);
+			if(!$per_page || $per_page <= 0)
 			{
 				$mybb->input['threadcounters'] = 500;
 			}
@@ -520,7 +489,9 @@ if(!$mybb->input['action'])
 				// Log admin action
 				log_admin_action("userposts");
 			}
-			if(!$mybb->get_input('userposts', MyBB::INPUT_INT))
+
+			$per_page = $mybb->get_input('userposts', MyBB::INPUT_INT);
+			if(!$per_page || $per_page <= 0)
 			{
 				$mybb->input['userposts'] = 500;
 			}
@@ -536,7 +507,9 @@ if(!$mybb->input['action'])
 				// Log admin action
 				log_admin_action("userthreads");
 			}
-			if(!$mybb->get_input('userthreads', MyBB::INPUT_INT))
+
+			$per_page = $mybb->get_input('userthreads', MyBB::INPUT_INT);
+			if(!$per_page || $per_page <= 0)
 			{
 				$mybb->input['userthreads'] = 500;
 			}
@@ -553,7 +526,8 @@ if(!$mybb->input['action'])
 				log_admin_action("attachmentthumbs");
 			}
 
-			if(!$mybb->get_input('attachmentthumbs', MyBB::INPUT_INT))
+			$per_page = $mybb->get_input('attachmentthumbs', MyBB::INPUT_INT);
+			if(!$per_page || $per_page <= 0)
 			{
 				$mybb->input['attachmentthumbs'] = 500;
 			}
@@ -570,7 +544,8 @@ if(!$mybb->input['action'])
 				log_admin_action("reputation");
 			}
 
-			if(!$mybb->get_input('reputation', MyBB::INPUT_INT))
+			$per_page = $mybb->get_input('reputation', MyBB::INPUT_INT);
+			if(!$per_page || $per_page <= 0)
 			{
 				$mybb->input['reputation'] = 500;
 			}
@@ -587,7 +562,8 @@ if(!$mybb->input['action'])
 				log_admin_action("warning");
 			}
 
-			if(!$mybb->get_input('warning', MyBB::INPUT_INT))
+			$per_page = $mybb->get_input('warning', MyBB::INPUT_INT);
+			if(!$per_page || $per_page <= 0)
 			{
 				$mybb->input['warning'] = 500;
 			}
@@ -604,7 +580,8 @@ if(!$mybb->input['action'])
 				log_admin_action("privatemessages");
 			}
 
-			if(!$mybb->get_input('privatemessages', MyBB::INPUT_INT))
+			$per_page = $mybb->get_input('privatemessages', MyBB::INPUT_INT);
+			if(!$per_page || $per_page <= 0)
 			{
 				$mybb->input['privatemessages'] = 500;
 			}
@@ -621,7 +598,8 @@ if(!$mybb->input['action'])
 				log_admin_action("referral");
 			}
 
-			if(!$mybb->get_input('referral', MyBB::INPUT_INT))
+			$per_page = $mybb->get_input('referral', MyBB::INPUT_INT);
+			if(!$per_page || $per_page <= 0)
 			{
 				$mybb->input['referral'] = 500;
 			}
@@ -638,7 +616,8 @@ if(!$mybb->input['action'])
 				log_admin_action("threadrating");
 			}
 
-			if(!$mybb->get_input('threadrating', MyBB::INPUT_INT))
+			$per_page = $mybb->get_input('threadrating', MyBB::INPUT_INT);
+			if(!$per_page || $per_page <= 0)
 			{
 				$mybb->input['threadrating'] = 500;
 			}
@@ -655,7 +634,8 @@ if(!$mybb->input['action'])
 				log_admin_action("poll");
 			}
 
-			if(!$mybb->get_input('pollcounters', MyBB::INPUT_INT))
+			$per_page = $mybb->get_input('pollcounters', MyBB::INPUT_INT);
+			if(!$per_page || $per_page <= 0)
 			{
 				$mybb->input['pollcounters'] = 500;
 			}

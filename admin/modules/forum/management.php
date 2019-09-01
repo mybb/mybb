@@ -1989,14 +1989,7 @@ if($mybb->input['action'] == "delete")
 
 			echo $form->generate_hidden_field("fid", $fid);
 			echo $form->generate_hidden_field("action", "delete");
-			echo "<div class=\"confirm_action\">\n";
-			echo "<p>{$lang->confirm_proceed_deletion}</p>\n";
-			echo "<br />\n";
-			echo "<script type=\"text/javascript\">$(function() { var button = $(\"#proceed_button\"); if(button.length > 0) { button.val(\"{$lang->automatically_redirecting}\"); button.attr(\"disabled\", true); button.css(\"color\", \"#aaa\"); button.css(\"borderColor\", \"#aaa\"); document.forms[0].submit(); }})</script>";
-			echo "<p class=\"buttons\">\n";
-			echo $form->generate_submit_button($lang->proceed, array('class' => 'button_yes', 'id' => 'proceed_button'));
-			echo "</p>\n";
-			echo "</div>\n";
+			output_auto_redirect($form, $lang->confirm_proceed_deletion);
 
 			$form->end();
 
@@ -2296,7 +2289,7 @@ if(!$mybb->input['action'])
 	$form_container->output_row_header($lang->order, array("class" => "align_center", 'width' => '5%'));
 	$form_container->output_row_header($lang->controls, array("class" => "align_center", 'style' => 'width: 200px'));
 
-	build_admincp_forums_list($form_container, $fid);
+	build_admincp_forums_list($form_container, $form, $fid);
 
 	$submit_options = array();
 
@@ -2648,7 +2641,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 			},
 		});
 
-		$(\'[for=username]\').click(function(){
+		$(\'[for=username]\').on(\'click\', function(){
 			$("#username").select2(\'open\');
 			return false;
 		});
@@ -2669,10 +2662,11 @@ document.write('".str_replace("/", "\/", $field_select)."');
 
 /**
  * @param DefaultFormContainer $form_container
+ * @param DefaultForm $form
  * @param int $pid
  * @param int $depth
  */
-function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
+function build_admincp_forums_list(&$form_container, &$form, $pid=0, $depth=1)
 {
 	global $mybb, $lang, $db, $sub_forums;
 	static $forums_by_parent;
@@ -2708,7 +2702,7 @@ function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
 				$sub_forums = '';
 				if(isset($forums_by_parent[$forum['fid']]) && $depth == 2)
 				{
-					build_admincp_forums_list($form_container, $forum['fid'], $depth+1);
+					build_admincp_forums_list($form_container, $form, $forum['fid'], $depth+1);
 				}
 				if($sub_forums)
 				{
@@ -2717,7 +2711,7 @@ function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
 
 				$form_container->output_cell("<div style=\"padding-left: ".(40*($depth-1))."px;\"><a href=\"index.php?module=forum-management&amp;fid={$forum['fid']}\"><strong>{$forum['name']}</strong></a>{$sub_forums}</div>");
 
-				$form_container->output_cell("<input type=\"text\" name=\"disporder[".$forum['fid']."]\" value=\"".$forum['disporder']."\" class=\"text_input align_center\" style=\"width: 80%; font-weight: bold;\" />", array("class" => "align_center"));
+				$form_container->output_cell($form->generate_numeric_field("disporder[{$forum['fid']}]", "{$forum['disporder']}", array('min' => 0, 'class' => 'align_center', 'style' => 'width:80%; font-weight:bold')), array("class" => "align_center"));
 
 				$popup = new PopupMenu("forum_{$forum['fid']}", $lang->options);
 				$popup->add_item($lang->edit_forum, "index.php?module=forum-management&amp;action=edit&amp;fid={$forum['fid']}");
@@ -2735,7 +2729,7 @@ function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
 				// Does this category have any sub forums?
 				if($forums_by_parent[$forum['fid']])
 				{
-					build_admincp_forums_list($form_container, $forum['fid'], $depth+1);
+					build_admincp_forums_list($form_container, $form, $forum['fid'], $depth+1);
 				}
 			}
 			elseif($forum['type'] == "f" && ($depth == 1 || $depth == 2))
@@ -2749,7 +2743,7 @@ function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
 				$sub_forums = '';
 				if(isset($forums_by_parent[$forum['fid']]) && $depth == 2)
 				{
-					build_admincp_forums_list($form_container, $forum['fid'], $depth+1);
+					build_admincp_forums_list($form_container, $form, $forum['fid'], $depth+1);
 				}
 				if($sub_forums)
 				{
@@ -2758,8 +2752,7 @@ function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
 
 				$form_container->output_cell("<div style=\"padding-left: ".(40*($depth-1))."px;\"><a href=\"index.php?module=forum-management&amp;fid={$forum['fid']}\">{$forum['name']}</a>{$forum['description']}{$sub_forums}</div>");
 
-				$form_container->output_cell("<input type=\"text\" name=\"disporder[".$forum['fid']."]\" value=\"".$forum['disporder']."\" class=\"text_input align_center\" style=\"width: 80%;\" />", array("class" => "align_center"));
-
+				$form_container->output_cell($form->generate_numeric_field("disporder[{$forum['fid']}]", "{$forum['disporder']}", array('min' => 0, 'class' => 'align_center', 'style' => 'width:80%')), array("class" => "align_center"));
 				$popup = new PopupMenu("forum_{$forum['fid']}", $lang->options);
 				$popup->add_item($lang->edit_forum, "index.php?module=forum-management&amp;action=edit&amp;fid={$forum['fid']}");
 				$popup->add_item($lang->subforums, "index.php?module=forum-management&amp;fid={$forum['fid']}");
@@ -2775,7 +2768,7 @@ function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
 
 				if(isset($forums_by_parent[$forum['fid']]) && $depth == 1)
 				{
-					build_admincp_forums_list($form_container, $forum['fid'], $depth+1);
+					build_admincp_forums_list($form_container, $form, $forum['fid'], $depth+1);
 				}
 			}
 			else if($depth == 3)

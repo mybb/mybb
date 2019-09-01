@@ -10,11 +10,9 @@ $l['nav_smilies'] = "Smilie Listing";
 $l['nav_syndication'] = "Latest Thread Syndication (RSS)";
 
 $l['skype'] = "Skype";
-$l['yahoo_im'] = "Yahoo IM";
 $l['skype_center'] = "Skype Center";
 $l['chat_on_skype'] = "Chat with {1} on Skype";
 $l['call_on_skype'] = "Call {1} on Skype";
-$l['yahoo_center'] = "Yahoo! Center";
 
 $l['send_me_instant'] = "Send me an Instant Message";
 $l['add_me_buddy_list'] = "Add me to Your Buddy List";
@@ -69,6 +67,7 @@ $l['syndication_forum'] = "Forum to Syndicate:";
 $l['syndication_forum_desc'] = "Please select a forum from the right. Use the CTRL key to select multiple forums.";
 $l['syndication_version'] = "Feed Version:";
 $l['syndication_version_desc'] = "Please select the version of the feeds you wish to generate.";
+$l['syndication_version_json1'] = "JSON Feed 1";
 $l['syndication_version_atom1'] = "Atom 1.0";
 $l['syndication_version_rss2'] = "RSS 2.00 (Default)";
 $l['syndication_generate'] = "Generate Syndication URL";

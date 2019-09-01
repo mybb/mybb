@@ -2587,7 +2587,6 @@ if($mybb->input['action'] == "do_editprofile")
 		"profile_fields_editable" => true,
 		"website" => $mybb->get_input('website'),
 		"icq" => $mybb->get_input('icq'),
-		"yahoo" => $mybb->get_input('yahoo'),
 		"skype" => $mybb->get_input('skype'),
 		"google" => $mybb->get_input('google'),
 		"signature" => $mybb->get_input('signature'),
@@ -2617,7 +2616,7 @@ if($mybb->input['action'] == "do_editprofile")
 
 	// Set the data of the user in the datahandler.
 	$userhandler->set_data($updated_user);
-	$errors = '';
+	$errors = array();
 
 	// Validate the user and get any errors that might have occurred.
 	if(!$userhandler->validate_user())
@@ -2689,8 +2688,7 @@ if($mybb->input['action'] == "do_editprofile")
 					$string = $option['action']."_error";
 					$errors[] = $lang->$string;
 				}
-
-				if(!is_array($errors))
+				else
 				{
 					$suspend_length = fetch_time_length((int)$mybb->input[$option['time']], $mybb->input[$option['period']]);
 
@@ -2732,7 +2730,7 @@ if($mybb->input['action'] == "do_editprofile")
 			$errors[] = $lang->suspendmoderate_error;
 		}
 
-		if(is_array($errors))
+		if(is_array($errors) && !empty($errors))
 		{
 			$mybb->input['action'] = "editprofile";
 		}
@@ -2822,7 +2820,7 @@ if($mybb->input['action'] == "editprofile")
 	}
 
 	// Sanitize all input
-	foreach(array('usertitle', 'website', 'icq', 'yahoo', 'skype', 'google', 'signature', 'birthday_day', 'birthday_month', 'birthday_year') as $field)
+	foreach(array('usertitle', 'website', 'icq', 'skype', 'google', 'signature', 'birthday_day', 'birthday_month', 'birthday_year') as $field)
 	{
 		$mybb->input[$field] = htmlspecialchars_uni($mybb->get_input($field));
 	}
@@ -3289,7 +3287,6 @@ if($mybb->input['action'] == "editprofile")
 	$user_icq = $mybb->input['icq'];
 	$user_skype = $mybb->input['skype'];
 	$user_google = $mybb->input['google'];
-	$user_yahoo = $mybb->input['yahoo'];
 
 	$plugins->run_hooks("modcp_editprofile_end");
 

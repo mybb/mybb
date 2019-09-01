@@ -6,7 +6,7 @@ var SettingSearch = {
 	{
 		this.error_unknown = error_unknown;
 		
-		$('#settings_search').bind("submit", this.onSubmit);
+		$('#settings_search').on("submit", this.onSubmit);
 		$('#search_results').css('display', 'none');
 		
 		$('#search').focusin(function() {
@@ -43,7 +43,7 @@ var SettingSearch = {
 				{
 					try
 					{
-						var json = $.parseJSON(request.responseText);
+						var json = JSON.parse(request.responseText);
 						if(typeof json == 'object')
 						{
 							if(json.hasOwnProperty("errors"))
@@ -63,7 +63,6 @@ var SettingSearch = {
 						$('#search_results').css('display', '');
 						$('#group_list').css('display', 'none');
 						$('#search_results').html(request.responseText);
-						loadPeekers();
 						$.jGrowl(lang.search_done, {theme:'jgrowl_success'});
 						return false;
 					}
