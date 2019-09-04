@@ -119,7 +119,7 @@ if($mybb->settings['showgroupleaders'])
 
 		while($leaded_group = $db->fetch_array($query))
 		{
-			$leaded_groups[$leaded_group['gid']] = str_replace("{username}",$leaded_group['title'], $leaded_group['namestyle']);
+			$leaded_groups[$leaded_group['gid']] = str_replace("{username}", $leaded_group['title'], $leaded_group['namestyle']);
 		}
 
 		// Create virtual usergroup container for leaders
@@ -127,10 +127,8 @@ if($mybb->settings['showgroupleaders'])
 		foreach($leaderlist as $uid => $leaded)
 		{
 			foreach($leaded as $gid){
-				$leadlist[] = $leaded_groups[$gid];
+				$usergroups[0]['user_list'][$uid]['grouplist'][] = $leaded_groups[$gid];
 			}
-			$usergroups[0]['user_list'][$uid]['leaded'] = implode(", ",$leadlist);
-			unset($leadlist);
 		}
 
 		$users_in = implode(",", array_keys(array_flip(explode(",", implode(",", array_keys($leaderlist)).",".$users_in))));
@@ -156,6 +154,12 @@ while ($user = $db->fetch_array($query)) {
 
     if ($user['displaygroup'] == '6' || $user['usergroup'] == '6') {
         $usergroups[6]['user_list'][$user['uid']] = $user;
+    }
+
+    // Group leaders.
+    if (isset($usergroups[0]['user_list']) && array_key_exists($user['uid'], $usergroups[0]['user_list'])) {
+        $user['grouplist'] = $usergroups[0]['user_list'][$user['uid']]['grouplist'];
+        $usergroups[0]['user_list'][$user['uid']] = $user;
     }
 
     // Are they also in another group which is being shown on the list?

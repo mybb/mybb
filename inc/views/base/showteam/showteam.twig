@@ -38,6 +38,15 @@
                                             {% endfor %}
                                         </span>
                                     </li>
+                                 {% elseif usergroup.gid == 0 %}
+                                    <li class="list__item">
+                                        <span class="list__field">{{ lang.mod_groups }}</span>
+                                        <span class="list__value commas">
+                                            {% for group in user.grouplist %}
+                                                <span>{{ group|raw }}</span>
+                                            {% endfor %}
+                                        </span>
+                                    </li>
                                 {% endif %}
                             </ul>
                             <div class="user-list__buttons">

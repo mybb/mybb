@@ -1031,6 +1031,7 @@ if ($mybb->input['action'] == 'forumsubscriptions') {
                 'profile_link' => $lastpost_profilelink,
                 'last_poster_avatar_url' => $forum['last_poster_avatar'],
                 'lastposter' => $lastposter,
+                'lastposteruid' => $forum['lastposteruid'],
             ];
         }
 
