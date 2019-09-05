@@ -910,6 +910,11 @@ if ($foruminfo['type'] != "c") {
     $prefixselect = build_forum_prefix_select($fid, $tprefix);
 }
 
+// User posting has been suspended?
+if (isset($mybb->user['suspendposting']) && $mybb->user['suspendposting']) {
+    $fpermissions['canpostthreads'] = 0;
+}
+
 $plugins->run_hooks('forumdisplay_end');
 
 $foruminfo['name'] = strip_tags($foruminfo['name']);

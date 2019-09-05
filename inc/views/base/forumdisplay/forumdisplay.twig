@@ -71,7 +71,7 @@
             </section>
         {% endif %}
 
-        {% if foruminfo.type == 'f' and foruminfo.open and fpermissions.canpostthreads and mybb.user.suspendposting is not empty %}
+        {% if foruminfo.type == 'f' and foruminfo.open and fpermissions.canpostthreads %}
             {% set newthread %}
                 <a href="newthread.php?fid={{ foruminfo.fid }}" class="button button--medium button--full-width">
                     {{ include('partials/icon.twig', {icon: 'pencil-alt', class: 'button__icon'}, with_context = false) }}
