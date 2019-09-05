@@ -10,7 +10,7 @@
             <li class="section-menu__item section-menu__item--messenger-compose{% if mybb.input.action == 'send' %} section-menu__item--active{% endif %}">
                 <a href="private.php?action=send" class="section-menu__link">
                     {{ include('partials/icon.twig', {icon: 'edit', class: 'section-menu__icon fa-fw'}, with_context = false) }}
-                    <span class="section-menu__text">{{ lang.ucp_nav_compose }}</span>
+                    <span class="section-menu__text">{{ lang.nav_send }}</span>
                 </a>
             </li>
         {% endif %}
@@ -37,14 +37,26 @@
             <li class="section-menu__item section-menu__item--messenger-tracking{% if mybb.input.action == 'tracking' %} section-menu__item--active{% endif %}">
                 <a href="private.php?action=tracking" class="section-menu__link">
                     {{ include('partials/icon.twig', {icon: 'bell', class: 'section-menu__icon fa-fw'}, with_context = false) }}
-                    <span class="section-menu__text">{{ lang.ucp_nav_tracking }}</span>
+                    <span class="section-menu__text">{{ lang.nav_tracking }}</span>
                 </a>
             </li>
         {% endif %}
         <li class="section-menu__item section-menu__item--messenger-edit-folders{% if mybb.input.action == 'folders' %} section-menu__item--active{% endif %}">
             <a href="private.php?action=folders" class="section-menu__link">
                 {{ include('partials/icon.twig', {icon: 'folder-open', class: 'section-menu__icon fa-fw'}, with_context = false) }}
-                <span class="section-menu__text">{{ lang.ucp_nav_edit_folders }}</span>
+                <span class="section-menu__text">{{ lang.nav_folders }}</span>
+            </a>
+        </li>
+        <li class="section-menu__item section-menu__item--messenger-empty-folders{% if mybb.input.action == 'empty' %} section-menu__item--active{% endif %}">
+            <a href="private.php?action=empty" class="section-menu__link">
+                {{ include('partials/icon.twig', {icon: 'folder-minus', class: 'section-menu__icon fa-fw'}, with_context = false) }}
+                <span class="section-menu__text">{{ lang.nav_empty }}</span>
+            </a>
+        </li>
+        <li class="section-menu__item section-menu__item--messenger-export-messenges{% if mybb.input.action == 'export' %} section-menu__item--active{% endif %}">
+            <a href="private.php?action=export" class="section-menu__link">
+                {{ include('partials/icon.twig', {icon: 'file-export', class: 'section-menu__icon fa-fw'}, with_context = false) }}
+                <span class="section-menu__text">{{ lang.nav_export }}</span>
             </a>
         </li>
     </ul>
