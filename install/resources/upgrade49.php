@@ -31,6 +31,9 @@ function upgrade49_dbchanges()
 
 	$db->delete_query("settings", "name='allowyahoofield'");
 
+	$db->update_query('profilefields', array(
+		'description' => "REPLACE(description, 'sex', 'gender')",
+	), 'fid = 3');
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("49_done");
 }
