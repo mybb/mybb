@@ -172,7 +172,7 @@ foreach ($parentlistexploded as $mfid) {
                     $moderator['profilelink'] = get_profile_link($moderator['id']);
                     $moderator['username'] = format_name(htmlspecialchars_uni($moderator['username']), $moderator['usergroup'], $moderator['displaygroup']);
 
-                    $moderator['users'][$moderator['id']] = $moderator;
+                    $moderators['users'][$moderator['id']] = $moderator;
                 }
             }
         }

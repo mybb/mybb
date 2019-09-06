@@ -39,11 +39,10 @@
             <p>{{ lang.moderated_by }}
                 <strong>
                     {% for moderator in moderators.users %}
-                        <a href="{{ moderator.profilelink }}">{{ moderator.username }}</a>{% if loop.last == false %}{{ lang.comma }} {% endif %}
+                        <a href="{{ moderator.profilelink }}">{{ moderator.username|raw }}</a>{% if loop.last == false or moderators.groups is not empty %}{{ lang.comma }} {% endif %}
                     {% endfor %}
-                    {% if moderators.groups %}{{ lang.comma }} {% endif %}
                     {% for moderator in moderators.groups %}
-                        {{ moderator.title }}{% if loop.last == false %}{{ lang.comma }} {% endif %}
+                        {{ moderator.title|raw }}{% if loop.last == false %}{{ lang.comma }} {% endif %}
                     {% endfor %}
                 </strong>
             </p>
