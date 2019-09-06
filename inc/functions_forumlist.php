@@ -375,7 +375,6 @@ SQL;
 									}
 
 									$moderator['profilelink'] = get_profile_link($moderator['id']);
-									$moderator['username'] = format_name(htmlspecialchars_uni($moderator['username']), $moderator['usergroup'], $moderator['displaygroup']);
 									$moderator['type'] = 'user';
 									$moderators[] = $moderator;
 									$done_moderators['users'][] = $moderator['id'];
