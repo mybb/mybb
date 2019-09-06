@@ -5784,7 +5784,7 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
             $body = substr($response, $header_size);
 
             if (in_array(curl_getinfo($ch, CURLINFO_HTTP_CODE), array(301, 302))) {
-                preg_match('/Location:(.*?)(?:\n|$)/', $header, $matches);
+                preg_match('/^Location:(.*?)(?:\n|$)/im', $header, $matches);
 
                 if ($matches) {
                     $data = fetch_remote_file(trim(array_pop($matches)), $post_data, --$max_redirects);
@@ -5882,7 +5882,7 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
         $body = $data[1];
 
         if ($max_redirects > 0 && (strstr($status_line, ' 301 ') || strstr($status_line, ' 302 '))) {
-            preg_match('/Location:(.*?)(?:\n|$)/', $header, $matches);
+            preg_match('/^Location:(.*?)(?:\n|$)/im', $header, $matches);
 
             if ($matches) {
                 $data = fetch_remote_file(trim(array_pop($matches)), $post_data, --$max_redirects);
