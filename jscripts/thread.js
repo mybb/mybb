@@ -13,10 +13,16 @@ var Thread = {
 			}
 
 			// Disable split tool if there is only one post
-			if($('.pagination').length + $('.post').length === 1){
+			if($(".pagination").length + $(".post").length === 1) {
 				$("#moderator_options_selector").find("option[value=split]").attr("disabled","disabled");
 			}
-
+			
+			if($("#moderator_options_selector").length !== 0) {
+				$("#moderator_options_selector").on('change', function() {
+					$("#moderator_options").trigger('submit');
+				});
+			}
+			
 			// Set spinner image
 			$('#quickreply_spinner img').attr('src', spinner_image);
 		});
