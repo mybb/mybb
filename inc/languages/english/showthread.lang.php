@@ -6,8 +6,10 @@
  */
 
 $l['delete_poll'] = "Delete Poll";
+$l['open_thread'] = "Open Thread";
 $l['close_thread'] = "Close Thread";
 $l['stick_thread'] = "Stick Thread";
+$l['unstick_thread'] = "Unstick Thread";
 
 $l['author'] = "Author";
 $l['message'] = "Message";
@@ -24,8 +26,6 @@ $l['add_poll_to_thread'] = "Add Poll to this thread";
 $l['moderation_options'] = "Moderation Options:";
 $l['delayed_moderation'] = "Delayed Moderation";
 $l['thread_notes'] = "Edit / View Thread Notes";
-$l['open_thread'] = "Open Thread";
-$l['close_thread'] = "Close Thread";
 $l['approve_thread'] = "Approve Thread";
 $l['unapprove_thread'] = "Unapprove Thread";
 $l['soft_delete_thread'] = "Soft Delete Thread";
@@ -33,8 +33,6 @@ $l['restore_thread'] = "Restore Thread";
 $l['delete_thread'] = "Delete Thread Permanently";
 $l['delete_posts'] = "Delete Selective Posts";
 $l['move_thread'] = "Move / Copy Thread";
-$l['stick_thread'] = "Stick Thread";
-$l['unstick_thread'] = "Unstick Thread";
 $l['split_thread'] = "Split Thread";
 $l['merge_threads'] = "Merge Threads";
 $l['remove_redirects'] = "Remove Redirects";

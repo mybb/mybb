@@ -2315,9 +2315,12 @@ switch($mybb->input['action'])
 			}
 		}
 
-		if(empty($posts))
-		{
-			error($lang->error_inline_nopostsselected, $lang->error);
+		if(count($posts) < 2) {
+			if(empty($posts))
+			{
+				error($lang->error_inline_nopostsselected, $lang->error);
+			}			
+			error($lang->error_nomergeposts, $lang->error);
 		}
 
 		if(!is_moderator_by_pids($posts, "canmanagethreads"))
@@ -2379,7 +2382,7 @@ switch($mybb->input['action'])
 		verify_post_check($mybb->get_input('my_post_key'));
 
 		$mergepost = $mybb->get_input('mergepost', MyBB::INPUT_ARRAY);
-		if(count($mergepost) <= 1)
+		if(count($mergepost) <= 2)
 		{
 			error($lang->error_nomergeposts, $lang->error);
 		}
