@@ -241,7 +241,7 @@
                                 <option value="{{ field }}"{% if mybb.input[field] %} selected{% endif %}>{{ attribute(lang, 'sort_by_' ~ field) }}</option>
                             {% endfor %}
                             {% if displayRating %}
-                                <option value="rating"{% if mybb.input.rating %} selected{% endif %}>{{ lang.sort_by_rating }}</option>
+                                {#<option value="rating"{% if mybb.input.rating %} selected{% endif %}>{{ lang.sort_by_rating }}</option>#}
                             {% endif %}
                         </select>
                     </div>

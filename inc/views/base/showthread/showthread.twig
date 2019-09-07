@@ -205,7 +205,7 @@
         </div>
 
         {% if mybb.settings.allowthreadratings and forum.allowtratings %}
-            <div style="margin-top: 6px; padding-right: 10px;" class="float_right">
+            {#<div style="margin-top: 6px; padding-right: 10px;" class="float_right">
                 <script type="text/javascript">
                 <!--
                     lang.ratings_update_error = "{{ lang.ratings_update_error }}";
@@ -223,7 +223,7 @@
                         <li><a class="five_stars" title="{{ lang.five_stars }}" href="./ratethread.php?tid={{ thread.tid }}&amp;rating=5&amp;my_post_key={{ mybb.post_code }}">5</a></li>
                     </ul>
                 </div>
-            </div>
+            </div> #}
         {% endif %}
 
         <section class="post-list" id="posts">
