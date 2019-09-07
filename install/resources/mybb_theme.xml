@@ -11504,7 +11504,7 @@ if(use_xmlhttprequest == "1")
 	{$inlinemodapprove}
 </optgroup>]]></template>
 		<template name="showthread_inlinemoderation_softdelete" version="1800"><![CDATA[<option value="multisoftdeleteposts">{$lang->inline_soft_delete_posts}</option>]]></template>
-		<template name="showthread_moderationoptions" version="1800"><![CDATA[{$inlinemod}
+		<template name="showthread_moderationoptions" version="1822"><![CDATA[{$inlinemod}
 <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;" id="moderator_options">
 	<input type="hidden" name="modtype" value="thread" />
 	<input type="hidden" name="tid" value="{$tid}" />
@@ -11512,6 +11512,7 @@ if(use_xmlhttprequest == "1")
 	<span class="smalltext">
 	<strong>{$lang->moderation_options}</strong></span>
 	<select name="action" id="moderator_options_selector">
+		<option value="" style="display: none;" selected="selected">{$lang->select_a_tool}</option>
 		<option value="delayedmoderation">{$lang->delayed_moderation}</option>
 		{$standardthreadtools}
 		{$customthreadtools}
@@ -11550,7 +11551,7 @@ if(use_xmlhttprequest == "1")
 {$approveunapprovethread}
 </optgroup>]]></template>
 		<template name="showthread_moderationoptions_stickunstick" version="1818"><![CDATA[<option class="option_mirage" value="stick">{$lang->stick_unstick_thread}</option>]]></template>
-		<template name="showthread_moderationoptions_threadnotes" version="1800"><![CDATA[<option value="threadnotes" selected="selected">{$lang->thread_notes}</option>]]></template>
+		<template name="showthread_moderationoptions_threadnotes" version="1822"><![CDATA[<option value="threadnotes">{$lang->thread_notes}</option>]]></template>
 		<template name="showthread_moderationoptions_unapprove" version="1818"><![CDATA[<option class="option_mirage" value="unapprovethread">{$lang->unapprove_thread}</option>]]></template>
 		<template name="showthread_newreply" version="1800"><![CDATA[<a href="newreply.php?tid={$tid}" class="button new_reply_button"><span>{$lang->new_reply}</span></a>&nbsp;]]></template>
 		<template name="showthread_newreply_closed" version="1800"><![CDATA[<a href="newreply.php?tid={$tid}" class="button closed_button"><span>{$lang->thread_closed}</span></a>&nbsp;]]></template>

@@ -24,6 +24,7 @@ $l['subscribe_thread'] = "Subscribe to this thread";
 $l['unsubscribe_thread'] = "Unsubscribe from this thread";
 $l['add_poll_to_thread'] = "Add Poll to this thread";
 $l['moderation_options'] = "Moderation Options:";
+$l['select_a_tool'] = "Select A Tool";
 $l['delayed_moderation'] = "Delayed Moderation";
 $l['thread_notes'] = "Edit / View Thread Notes";
 $l['approve_thread'] = "Approve Thread";
