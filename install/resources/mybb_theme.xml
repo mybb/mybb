@@ -11354,6 +11354,7 @@ if(use_xmlhttprequest == "1")
 	var quickdelete_confirm = "{$lang->quickdelete_confirm}";
 	var quickrestore_confirm = "{$lang->quickrestore_confirm}";
 	var allowEditReason = "{$mybb->settings['alloweditreason']}";
+	var thread_deleted = "{$thread_deleted}";
 	lang.save_changes = "{$lang->save_changes}";
 	lang.cancel_edit = "{$lang->cancel_edit}";
 	lang.quick_edit_update_error = "{$lang->quick_edit_update_error}";
@@ -11445,14 +11446,6 @@ if(use_xmlhttprequest == "1")
 			$("#thread_modes").popupMenu();
 		}
 	// -->
-	</script>
-	<script type="text/javascript">
-		var thread_deleted = "{$thread_deleted}";
-		if(thread_deleted == "1")
-		{
-			$("#quick_reply_form, .new_reply_button, .thread_tools, .inline_rating").hide();
-			$("#moderator_options_selector option.option_mirage").attr("disabled","disabled");
-		}
 	</script>
 </body>
 </html>]]></template>

@@ -6,6 +6,17 @@ var Thread = {
 			Thread.initQuickReply();
 			Thread.initMultiQuote();
 
+			if(thread_deleted == "1")
+			{
+				$("#quick_reply_form, .new_reply_button, .thread_tools, .inline_rating").hide();
+				$("#moderator_options_selector option.option_mirage").attr("disabled","disabled");
+			}
+
+			// Disable split tool if there is only one post
+			if($('.pagination').length + $('.post').length === 1){
+				$("#moderator_options_selector").find("option[value=split]").attr("disabled","disabled");
+			}
+
 			// Set spinner image
 			$('#quickreply_spinner img').attr('src', spinner_image);
 		});
