@@ -22,6 +22,15 @@ var Thread = {
 					$("#moderator_options").trigger('submit');
 				});
 			}
+
+			if($("#inlinemoderation_options_selector").length !== 0) {
+				$('#inlinemoderation_options>input[name="go"]').on('click', function(){
+					if($('input[name^="inlinemod_"]:checked').length === 0) {
+						$.jGrowl(lang.selected_nil, {theme:'jgrowl_error'});
+						return false;
+					}
+				});
+			}
 			
 			// Set spinner image
 			$('#quickreply_spinner img').attr('src', spinner_image);

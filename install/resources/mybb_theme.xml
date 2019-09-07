@@ -11455,7 +11455,7 @@ if(use_xmlhttprequest == "1")
 			<td class="tcat"><span class="smalltext"><strong>{$lang->message}</strong></span></td>
 		</tr>
 		]]></template>
-		<template name="showthread_inlinemoderation" version="1821"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1821"></script>
+		<template name="showthread_inlinemoderation" version="1822"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1821"></script>
 <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;" id="inlinemoderation_options">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="tid" value="{$tid}" />
@@ -11474,6 +11474,7 @@ if(use_xmlhttprequest == "1")
 	var all_text = "{$threadcount}";
 	var inlineType = "thread";
 	var inlineId = {$tid};
+	lang.selected_nil = "{$lang->inline_no_post_selected}";
 
 	$("#inlinemoderation_options_selector").on('change', function() {
 		$("#inlinemoderation_options").trigger('submit');
