@@ -2,10 +2,17 @@
 
 namespace MyBB\Twig\Extensions;
 
+use MyBB;
 use MyBB\Utilities\BreadcrumbManager;
+use MyLanguage;
+use pluginSystem;
+use Twig\Environment;
+use Twig\Extension\AbstractExtension;
 use Twig\Extension\GlobalsInterface;
+use Twig\TwigFilter;
+use Twig\TwigFunction;
 
-class CoreExtension extends \Twig_Extension implements GlobalsInterface
+class CoreExtension extends AbstractExtension implements GlobalsInterface
 {
     /**
      * @var \MyBB $mybb
@@ -28,9 +35,9 @@ class CoreExtension extends \Twig_Extension implements GlobalsInterface
     protected $breadcrumbManager;
 
     public function __construct(
-        \MyBB $mybb,
-        \MyLanguage $lang,
-        ?\pluginSystem $plugins,
+        MyBB $mybb,
+        MyLanguage $lang,
+        ?pluginSystem $plugins,
         BreadcrumbManager $breadcrumbManager
     ) {
         $this->mybb = $mybb;
@@ -54,19 +61,19 @@ class CoreExtension extends \Twig_Extension implements GlobalsInterface
     public function getFilters()
     {
         return [
-            new \Twig_Filter('my_date', [$this, 'date'], [
+            new TwigFilter('my_date', [$this, 'date'], [
                 'needs_environment' => true,
                 'is_safe' => ['html'],
             ]),
-            new \Twig_Filter('my_number_format', [$this, 'numberFormat']),
-            new \Twig_Filter('remove_page_one', [$this, 'removePageOne']),
+            new TwigFilter('my_number_format', [$this, 'numberFormat']),
+            new TwigFilter('remove_page_one', [$this, 'removePageOne']),
         ];
     }
 
     public function getFunctions()
     {
         return [
-            new \Twig_Function(
+            new TwigFunction(
                 'build_breadcrumb_navigation',
                 [$this, 'buildBreadcrumbNavigation'],
                 [
@@ -74,7 +81,7 @@ class CoreExtension extends \Twig_Extension implements GlobalsInterface
                     'is_safe' => ['html'],
                 ]
             ),
-            new \Twig_Function(
+            new TwigFunction(
                 'multi_page',
                 [$this, 'buildMultiPage'],
                 [
@@ -82,7 +89,7 @@ class CoreExtension extends \Twig_Extension implements GlobalsInterface
                     'is_safe' => ['html'],
                 ]
             ),
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'render_avatar',
                 [$this, 'renderAvatar'],
                 [
@@ -96,7 +103,7 @@ class CoreExtension extends \Twig_Extension implements GlobalsInterface
     /**
      * Format a timestamp to a readable value.
      *
-     * @param \Twig_Environment $environment Twig environment to use to render the timestamp template.
+     * @param \Twig\Environment $environment Twig environment to use to render the timestamp template.
      * @param \DateTime|int|string|null $timestamp The timestamp to format. If empty, the current date will be used.
      * @param string $format The format to use when formatting the timestamp. Defaults to 'relative'.
      * @param string $offset The offset to use when formatting the timestamp.
@@ -106,12 +113,12 @@ class CoreExtension extends \Twig_Extension implements GlobalsInterface
      *
      * @return string The formatted timestamp, using the `partials/time.twig` template to wrap the timestamp.
      *
-     * @throws \Twig_Error_Loader Thrown if the `partials/time.twig` template could not be loaded.
-     * @throws \Twig_Error_Runtime Thrown if an error occurs when rendering the `partials/time.twig` template.
-     * @throws \Twig_Error_Syntax Thrown if the `partials/time.twig` template contains invalid syntax.
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
      */
     public function date(
-        \Twig_Environment $environment,
+        Environment $environment,
         $timestamp,
         string $format = 'relative',
         string $offset = '',
@@ -365,11 +372,11 @@ class CoreExtension extends \Twig_Extension implements GlobalsInterface
      *
      * @return string The formatted breadcrumb navigation trail.
      *
-     * @throws \Twig_Error_Loader Thrown if the `partials/breadcrumb.twig` template could not be loaded.
-     * @throws \Twig_Error_Runtime Thrown if an error occurs when rendering the `partials/breadcrumb.twig` template.
-     * @throws \Twig_Error_Syntax Thrown if the `partials/breadcrumb.twig` template contains invalid syntax.
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
      */
-    public function buildBreadcrumbNavigation(\Twig_Environment $twig): string
+    public function buildBreadcrumbNavigation(Environment $twig): string
     {
         return $twig->render('partials/breadcrumb.twig', [
             'breadcrumbs' => $this->breadcrumbManager,
@@ -394,7 +401,7 @@ class CoreExtension extends \Twig_Extension implements GlobalsInterface
     /**
      * Generate a listing of pages for a resource.
      *
-     * @param \Twig_Environment $twig Twig environment to use to render the pagination template.
+     * @param \Twig\Environment $twig Twig environment to use to render the pagination template.
      * @param int $count The total number of items.
      * @param int $perPage The number of items to be shown per page.
      * @param int $page The current page number.
@@ -404,12 +411,12 @@ class CoreExtension extends \Twig_Extension implements GlobalsInterface
      *
      * @return string The generated pagination links.
      *
-     * @throws \Twig_Error_Loader Thrown if the `partials/multipage.twig` template could not be loaded.
-     * @throws \Twig_Error_Runtime Thrown if an error occurs when rendering the `partials/multipage.twig` template.
-     * @throws \Twig_Error_Syntax Thrown if the `partials/multipage.twig` template contains invalid syntax.
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
      */
     public function buildMultiPage(
-        \Twig_Environment $twig,
+        Environment $twig,
         int $count,
         int $perPage,
         int $page,
@@ -506,7 +513,7 @@ class CoreExtension extends \Twig_Extension implements GlobalsInterface
     }
 
     public function renderAvatar(
-        \Twig_Environment $twig,
+        Environment $twig,
         ?string $url = '',
         ?string $alt = '',
         ?string $class = ''

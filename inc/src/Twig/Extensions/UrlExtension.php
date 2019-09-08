@@ -2,19 +2,22 @@
 
 namespace MyBB\Twig\Extensions;
 
-class UrlExtension extends \Twig_Extension
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
+
+class UrlExtension extends AbstractExtension
 {
     public function getFunctions()
     {
         return [
-            new \Twig_SimpleFunction('get_profile_link', [$this, 'getProfileLink']),
-            new \Twig_SimpleFunction('get_announcement_link', [$this, 'getAnnouncementLink']),
-            new \Twig_SimpleFunction('get_forum_link', [$this, 'getForumLink']),
-            new \Twig_SimpleFunction('get_thread_link', [$this, 'getThreadLink']),
-            new \Twig_SimpleFunction('get_post_link', [$this, 'getPostLink']),
-            new \Twig_SimpleFunction('get_event_link', [$this, 'getEventLink']),
-            new \Twig_SimpleFunction('get_calendar_link', [$this, 'getCalendarLink']),
-            new \Twig_SimpleFunction('get_calendar_week_link', [$this, 'getCalendarWeekLink']),
+            new TwigFunction('get_profile_link', [$this, 'getProfileLink']),
+            new TwigFunction('get_announcement_link', [$this, 'getAnnouncementLink']),
+            new TwigFunction('get_forum_link', [$this, 'getForumLink']),
+            new TwigFunction('get_thread_link', [$this, 'getThreadLink']),
+            new TwigFunction('get_post_link', [$this, 'getPostLink']),
+            new TwigFunction('get_event_link', [$this, 'getEventLink']),
+            new TwigFunction('get_calendar_link', [$this, 'getCalendarLink']),
+            new TwigFunction('get_calendar_week_link', [$this, 'getCalendarWeekLink']),
         ];
     }
 

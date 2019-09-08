@@ -2,12 +2,16 @@
 
 namespace MyBB\Twig\Extensions;
 
+use MyLanguage;
+use Twig\Extension\AbstractExtension;
+use Twig\Extension\GlobalsInterface;
 use Twig\TwigFilter;
+use Twig\TwigFunction;
 
 /**
  * A Twig extension class to provide functionality related to translations.
  */
-class LangExtension extends \Twig_Extension implements \Twig_Extension_GlobalsInterface
+class LangExtension extends AbstractExtension implements GlobalsInterface
 {
     /**
      * @var \MyLanguage $lang
@@ -19,7 +23,7 @@ class LangExtension extends \Twig_Extension implements \Twig_Extension_GlobalsIn
      *
      * @param \MyLanguage $lang
      */
-    public function __construct(\MyLanguage $lang)
+    public function __construct(MyLanguage $lang)
     {
         $this->lang = $lang;
     }
@@ -27,7 +31,7 @@ class LangExtension extends \Twig_Extension implements \Twig_Extension_GlobalsIn
     public function getFunctions()
     {
         return [
-            new \Twig_SimpleFunction('trans', [$this, 'trans'], [
+            new TwigFunction('trans', [$this, 'trans'], [
                 'is_safe' => ['html']
             ]),
         ];
@@ -75,7 +79,7 @@ class LangExtension extends \Twig_Extension implements \Twig_Extension_GlobalsIn
      *
      * @param string
      *
-     * @return string Parsed langugae string
+     * @return string Parsed language string
      */
     public function lparseFilter(string $contents)
     {
