@@ -71,6 +71,8 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             return new FilesystemLoader($paths);
         });
 
+        $this->app->alias(LoaderInterface::class, \Twig_LoaderInterface::class);
+
         $this->app->bind('twig.options', function () {
             return [
                 'debug' => true, // TODO: In live environments this should be false
@@ -95,7 +97,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             return $env;
         });
 
-        $this->app->alias(\Twig_Environment::class, Environment::class);
+        $this->app->alias(Environment::class, \Twig_Environment::class);
     }
 
     public function provides()
