@@ -16,7 +16,7 @@ class HookManager
     /**
      * The current hook which we're in (if any)
      *
-     * @var string
+     * @var string|null
      */
     protected $currentHook;
 
@@ -26,7 +26,7 @@ class HookManager
     public function __construct()
     {
         $this->hooks = [];
-        $this->currentHook = '';
+        $this->currentHook = null;
     }
 
     /**
@@ -40,26 +40,9 @@ class HookManager
     /**
      * @return string
      */
-    public function getCurrentHook(): string
+    public function getCurrentHook(): ?string
     {
         return $this->currentHook;
-    }
-
-    /**
-     * Load all plugins.
-     */
-    public function load()
-    {
-        global $cache, $plugins;
-
-        $pluginList = $cache->read("plugins");
-        if (!empty($pluginList['active']) && is_array($pluginList['active'])) {
-            foreach ($pluginList['active'] as $plugin) {
-                if (!empty($plugin) && file_exists(MYBB_ROOT . "inc/plugins/{$plugin}.php")) {
-                    require_once MYBB_ROOT . "inc/plugins/{$plugin}.php";
-                }
-            }
-        }
     }
 
     /**
@@ -70,7 +53,7 @@ class HookManager
      * @param int $priority The priority this hook has.
      * @param string|null $file The optional file belonging to this hook.
      *
-     * @return boolean Whether the hook was added.
+     * @return boolean Whether the hook was added. If the hook was already registered, it won't be registered again.
      */
     public function addHook(string $hook, callable $function, int $priority = 10, ?string $file = ""): bool
     {
@@ -79,7 +62,7 @@ class HookManager
         // Check to see if we already have this hook running at this priority
         if (!empty($this->hooks[$hook][$priority][$methodRepresentation]) &&
             is_array($this->hooks[$hook][$priority][$methodRepresentation])) {
-            return true;
+            return false;
         }
 
         // Add the hook
@@ -120,7 +103,7 @@ class HookManager
         } else {
             $type = typeOf($function);
 
-            throw new \InvalidArgumentException("Invalid function type: {$type}");
+            throw new \InvalidArgumentException("Invalid callable type: {$type}");
         }
     }
 
@@ -155,7 +138,7 @@ class HookManager
                 }
             }
         } finally {
-            $this->currentHook = '';
+            $this->currentHook = null;
         }
     }
 
@@ -166,7 +149,7 @@ class HookManager
      * @param callable $function The function of the hook.
      * @param int $priority The priority of the hook.
      *
-     * @return bool Whether the hook was removed successfully.
+     * @return bool Whether the hook was previously registered.
      */
     public function removeHook(string $hook, callable $function, int $priority = 10): bool
     {
@@ -174,52 +157,10 @@ class HookManager
 
         if (isset($this->hooks[$hook][$priority][$methodRepresentation])) {
             unset($this->hooks[$hook][$priority][$methodRepresentation]);
-        }
 
-        return true;
-    }
-
-    /**
-     * Establishes if a particular plugin is compatible with this version of MyBB.
-     *
-     * @param string $plugin The name of the plugin.
-     *
-     * @return boolean TRUE if compatible, FALSE if incompatible.
-     */
-    public function isCompatible(string $plugin): bool
-    {
-        global $mybb;
-
-        // Ignore potentially missing plugins.
-        if (!file_exists(MYBB_ROOT . "inc/plugins/{$plugin}.php")) {
             return true;
         }
 
-        require_once MYBB_ROOT . "inc/plugins/{$plugin}.php";
-
-        $infoFunc = "{$plugin}_info";
-        if (!function_exists($infoFunc)) {
-            return false;
-        }
-
-        $pluginInfo = $infoFunc();
-
-        // No compatibility set or compatibility = * - assume compatible
-        if (!$pluginInfo['compatibility'] || $pluginInfo['compatibility'] == "*") {
-            return true;
-        }
-
-        $compatibility = explode(",", $pluginInfo['compatibility']);
-        foreach ($compatibility as $version) {
-            $version = trim($version);
-            $version = str_replace("*", ".+", preg_quote($version));
-            $version = str_replace("\.+", ".+", $version);
-            if (preg_match("#{$version}#i", $mybb->version_code)) {
-                return true;
-            }
-        }
-
-        // Nothing matches
         return false;
     }
 }

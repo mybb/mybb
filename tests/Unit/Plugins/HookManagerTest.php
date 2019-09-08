@@ -265,7 +265,7 @@ final class HookManagerTest extends TestCase
             $didRun  = true;
         };
         $this->assertTrue($plugins->addHook($hookName, $func));
-        $this->assertTrue($plugins->addHook($hookName, $func));
+        $this->assertFalse($plugins->addHook($hookName, $func));
         $x = 4;
         $y = 'hello';
         $plugins->runHooks($hookName, $x, $y);
