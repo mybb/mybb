@@ -12,10 +12,8 @@ var Thread = {
 				$("#moderator_options_selector option.option_mirage").attr("disabled","disabled");
 			}
 
-			// Disable split tool if there is only one post
-			if($(".pagination").length + $(".post").length === 1) {
-				$("#moderator_options_selector").find("option[value=split]").attr("disabled","disabled");
-			}
+			visible_replies = parseInt(visible_replies);
+			Thread.splitToolHandler();
 			
 			if($("#moderator_options_selector").length !== 0) {
 				$("#moderator_options_selector").on('change', function() {
@@ -436,6 +434,9 @@ var Thread = {
 
 			$('#posts').append(json.data);
 
+			++visible_replies;
+			Thread.splitToolHandler();
+			
 			if (typeof inlineModeration != "undefined") // Guests don't have this object defined
 				$("#inlinemod_" + pid).on('change', inlineModeration.checkItem);
 
@@ -513,8 +514,13 @@ var Thread = {
 										$("#quick_reply_form, .thread_tools, .new_reply_button, .inline_rating").hide();
 										$("#moderator_options_selector option.option_mirage").attr("disabled","disabled");
 										$("#moderator_options_selector option[value='softdeletethread']").val("restorethread").text(lang.restore_thread);
+										thread_deleted = "1";
 									}
-
+									else
+									{
+										--visible_replies;
+										Thread.splitToolHandler();
+									}
 									$.jGrowl(lang.quick_delete_success, {theme:'jgrowl_success'});
 								}
 								else if(json.data == 2)
@@ -522,8 +528,11 @@ var Thread = {
 									// Actually deleted
 									$('#post_'+pid).slideToggle("slow");
 
+									--visible_replies;
+									Thread.splitToolHandler();
 									$.jGrowl(lang.quick_delete_success, {theme:'jgrowl_success'});
-								} else if(json.data == 3)
+								}
+								else if(json.data == 3)
 								{
 									// deleted thread --> redirect
 
@@ -589,6 +598,12 @@ var Thread = {
 									$("#quick_reply_form, .thread_tools, .new_reply_button, .inline_rating").show();
 									$("#moderator_options_selector option.option_mirage").prop("disabled", false);
 									$("#moderator_options_selector option[value='restorethread']").val("softdeletethread").text(lang.softdelete_thread);
+									thread_deleted = "";
+								}
+								else
+								{
+									++visible_replies;
+									Thread.splitToolHandler();
 								}
 
 								$.jGrowl(lang.quick_restore_success, {theme:'jgrowl_success'});
@@ -609,6 +624,18 @@ var Thread = {
 	viewNotes: function(tid)
 	{
 		MyBB.popupWindow("/moderation.php?action=viewthreadnotes&tid="+tid+"&modal=1");
+	},
+
+	splitToolHandler: function()
+	{
+		if($(thread_deleted !== "1" && "#moderator_options_selector").length !== 0){
+			var splitTool = $("#moderator_options_selector").find("option[value=split]");
+			if(parseInt(visible_replies) > 0) {
+				splitTool.prop("disabled", false);
+			} else {
+				splitTool.attr("disabled","disabled");
+			}
+		}
 	}
 };
 

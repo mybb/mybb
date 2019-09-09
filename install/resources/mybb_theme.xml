@@ -11355,6 +11355,7 @@ if(use_xmlhttprequest == "1")
 	var quickrestore_confirm = "{$lang->quickrestore_confirm}";
 	var allowEditReason = "{$mybb->settings['alloweditreason']}";
 	var thread_deleted = "{$thread_deleted}";
+	var visible_replies = "{$visible_replies}";
 	lang.save_changes = "{$lang->save_changes}";
 	lang.cancel_edit = "{$lang->cancel_edit}";
 	lang.quick_edit_update_error = "{$lang->quick_edit_update_error}";
