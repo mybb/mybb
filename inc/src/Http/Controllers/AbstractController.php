@@ -8,16 +8,16 @@ use Illuminate\Routing\Controller;
 abstract class AbstractController extends Controller
 {
     /**
-     * @var \Twig_Environment $twig
+     * @var \Twig\Environment $twig
      */
     protected $twig;
 
     /**
      * Create a new instance of the controller.
      *
-     * @param \Twig_Environment $twig A Twig environment used to render views.
+     * @param \Twig\Environment $twig A Twig environment used to render views.
      */
-    public function __construct(\Twig_Environment $twig)
+    public function __construct(\Twig\Environment $twig)
     {
         $this->twig = $twig;
     }
@@ -28,9 +28,9 @@ abstract class AbstractController extends Controller
      * @param string $viewName The name of the view to send as a response.
      * @param array $context An array of variables to be passed to the view.
      *
-     * @throws \Twig_Error_Loader
-     * @throws \Twig_Error_Runtime
-     * @throws \Twig_Error_Syntax
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
      *
      * @return Response A response with a HTTP 200 status code with the rendered view as its content.
      */

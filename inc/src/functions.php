@@ -29,16 +29,16 @@ function app(?string $className = null, array $parameters = [])
  * @param string $name The name of the template to render.
  * @param array $context An array of variables to be accessible within the template.
  *
- * @throws \Twig_Error_Loader  When the template cannot be found
- * @throws \Twig_Error_Syntax  When an error occurred during compilation
- * @throws \Twig_Error_Runtime When an error occurred during rendering
+ * @throws \Twig\Error\LoaderError  When the template cannot be found
+ * @throws \Twig\Error\SyntaxError  When an error occurred during compilation
+ * @throws \Twig\Error\RuntimeError When an error occurred during rendering
  *
  * @return string The rendered HTML content of the template.
  */
 function template(string $name, array $context = [])
 {
-    /** @var \Twig_Environment $twig */
-    $twig = app(\Twig_Environment::class);
+    /** @var \Twig\Environment $twig */
+    $twig = app(\Twig\Environment::class);
 
     return $twig->render($name, $context);
 }
@@ -49,12 +49,12 @@ function template(string $name, array $context = [])
  * @param string $className The full name of the extension class to register.
  * @param array $parameters Any parameters required to construct the given extension class.
  *
- * @return \Twig_ExtensionInterface The extension instance.
+ * @return \Twig\Extension\ExtensionInterface The extension instance.
  */
-function registerTwigExtension(string $className, array $parameters = []): \Twig_ExtensionInterface
+function registerTwigExtension(string $className, array $parameters = []): \Twig\Extension\ExtensionInterface
 {
-    /** @var \Twig_Environment $twig */
-    $twig = app(\Twig_Environment::class);
+    /** @var \Twig\Environment $twig */
+    $twig = app(\Twig\Environment::class);
 
     if (!$twig->hasExtension($className)) {
         /** @var \Twig\Extension\ExtensionInterface $extension */

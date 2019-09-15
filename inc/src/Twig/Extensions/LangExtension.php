@@ -7,7 +7,7 @@ use Twig\TwigFilter;
 /**
  * A Twig extension class to provide functionality related to translations.
  */
-class LangExtension extends \Twig_Extension implements \Twig_Extension_GlobalsInterface
+class LangExtension extends \Twig\Extension\AbstractExtension implements \Twig\Extension\GlobalsInterface
 {
     /**
      * @var \MyLanguage $lang
@@ -27,7 +27,7 @@ class LangExtension extends \Twig_Extension implements \Twig_Extension_GlobalsIn
     public function getFunctions()
     {
         return [
-            new \Twig_SimpleFunction('trans', [$this, 'trans'], [
+            new \Twig\TwigFunction('trans', [$this, 'trans'], [
                 'is_safe' => ['html']
             ]),
         ];

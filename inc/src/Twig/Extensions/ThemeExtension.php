@@ -5,7 +5,7 @@ namespace MyBB\Twig\Extensions;
 /**
  * A Twig extension class to provide functionality related to themes and assets.
  */
-class ThemeExtension extends \Twig_Extension implements \Twig_Extension_GlobalsInterface
+class ThemeExtension extends \Twig\Extension\AbstractExtension implements \Twig\Extension\GlobalsInterface
 {
     /**
      * @var \MyBB $mybb
@@ -39,9 +39,9 @@ class ThemeExtension extends \Twig_Extension implements \Twig_Extension_GlobalsI
     public function getFunctions()
     {
         return [
-            new \Twig_SimpleFunction('asset_url', [$this, 'getAssetUrl']),
-            new \Twig_SimpleFunction('alt_trow', [$this, 'altTrow']),
-            new \Twig_SimpleFunction('get_stylesheets', [$this, 'getStylesheets']),
+            new \Twig\TwigFunction('asset_url', [$this, 'getAssetUrl']),
+            new \Twig\TwigFunction('alt_trow', [$this, 'altTrow']),
+            new \Twig\TwigFunction('get_stylesheets', [$this, 'getStylesheets']),
         ];
     }
 
