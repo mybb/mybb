@@ -21,14 +21,14 @@
         <span class="forum__count forum__count--threads">
             {{ forum.fthreads }}
             {% if forum.showunapproved and forum.unapprovedthreads > 0 %}
-                {% spaceless %}
+                {% apply spaceless %}
                     <span class="forum__unapproved-count forum__unapproved-count--threads" title="
                     {% if forum.unapprovedthreads == 1 %}
                         {{ trans('forum_unapproved_thread_count', 1) }}
                     {% else %}
                         {{ trans('forum_unapproved_threads_count', forum.unapprovedthreads) }} {# TODO: my_number_format #}
                     {% endif %}">{{ forum.unapprovedthreads }}</span>
-                {% endspaceless %}
+                {% endapply %}
             {% endif %}
         </span>
         <span class="forum__count-legend">
@@ -43,14 +43,14 @@
         <span class="forum__count forum__count--posts">
             {{ forum.fposts }}
             {% if forum.showunapproved and forum.unapprovedposts > 0 %}
-                {% spaceless %}
+                {% apply spaceless %}
                     <span class="forum__unapproved-count forum__unapproved-count--posts" title="
                     {% if forum.unapprovedposts == 1 %}
                         {{ trans('forum_unapproved_post_count', 1) }}
                     {% else %}
                         {{ trans('forum_unapproved_posts_count', forum.unapprovedposts) }} {# TODO: my_number_format #}
                     {% endif %}">{{ forum.unapprovedposts }}</span>
-                {% endspaceless %}
+                {% endapply %}
             {% endif %}
         </span>
         <span class="forum__count-legend">

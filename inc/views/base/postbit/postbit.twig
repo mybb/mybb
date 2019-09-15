@@ -124,11 +124,11 @@
 
         {#	{{ post.usertitle|raw }}<br />
         	{% if post.starimage and post.stars %}
-        		{% spaceless %}
+        		{% apply spaceless %}
         			{% for star in range(1, post.stars) %}
         				<img src="{{ post.starimage }}" border="0" alt="*" />
         			{% endfor %}
-        		{% endspaceless %}
+        		{% endapply %}
         		<br />
         	{% endif %}
         	{% if post.groupimage %}

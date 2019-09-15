@@ -368,7 +368,7 @@ class CoreExtension extends AbstractExtension implements GlobalsInterface
     /**
      * Build the breadcrumb navigation.
      *
-     * @param \Twig_Environment $twig Twig environment to use to render the breadcrumb template.
+     * @param \Twig\Environment $twig Twig environment to use to render the breadcrumb template.
      *
      * @return string The formatted breadcrumb navigation trail.
      *
@@ -512,6 +512,19 @@ class CoreExtension extends AbstractExtension implements GlobalsInterface
         ]);
     }
 
+    /**
+     * Render the given avatar using the avatar template.
+     *
+     * @param \Twig\Environment $twig Twig environment to use to render the pagination template.
+     * @param string|null $url The URL to the avatar to render, or null for a default avatar.
+     * @param string|null $alt The alternative text to use for the avatar.
+     * @param string|null $class An optional CSS class or list of CSS classes to apply to the avatar template.
+     *
+     * @return string
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     */
     public function renderAvatar(
         Environment $twig,
         ?string $url = '',

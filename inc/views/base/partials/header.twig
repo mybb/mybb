@@ -19,7 +19,7 @@
             <input type="checkbox" class="header__checkbox" id="show-mobile-menu">
             <nav class="main-menu">
                 <ul class="main-menu__links">
-                    {% spaceless %}
+                    {% apply spaceless %}
                     {% if mybb.settings.portal %}
                         <li class="main-menu__item">
                             <a href="{{ mybb.settings.bburl }}/portal.php" class="main-menu__link">
@@ -44,7 +44,7 @@
                             </a>
                         </li>
                     {% endif %}
-                    {% endspaceless %}
+                    {% endapply %}
                 </ul>
            </nav>
        </div>

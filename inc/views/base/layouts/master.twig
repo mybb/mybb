@@ -61,7 +61,7 @@
         var spinner_image = "{{ theme.imgdir }}/spinner.gif";
         var spinner = "<img src='" + spinner_image +"' alt='' />";
         var modal_zindex = 9999;
-        var modal_close = '{% spaceless %}{% include 'modals/close.twig' %}{% endspaceless %}';
+        var modal_close = '{% apply spaceless %}{% include 'modals/close.twig' %}{% endapply %}';
     // -->
     </script>
 

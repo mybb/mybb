@@ -107,7 +107,7 @@
     {{ multipage|raw }}
 
     {% if mybb.usergroup.pmquota %}
-        {% spaceless %}
+        {% apply spaceless %}
             <div class="messenger__space">
                 <div class="messenger-space">
                     <span class="messenger-space__used messenger-space__used--{{ private.spaceused_severity }}" style="width: {{ private.spaceused }}%;">
@@ -118,7 +118,7 @@
                     </span>
                 </div>
             </div>
-        {% endspaceless %}
+        {% endapply %}
     {% endif %}
 
     <div class="page-controls">

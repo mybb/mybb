@@ -8,11 +8,11 @@
             <span class="smalltext">
                 {{ event.usertitle }}<br />
                 {% if event.starimage and event.stars %}
-                    {% spaceless %}
+                    {% apply spaceless %}
                         {% for star in range(1, event.stars) %}
                             <img src="{{ event.starimage }}" border="0" alt="*" />
                         {% endfor %}
-                    {% endspaceless %}
+                    {% endapply %}
                     <br />
                 {% endif %}
             </span>#}

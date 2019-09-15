@@ -41,11 +41,11 @@
                     {{ lang.todays_birthdays }}
                 </h3>
                 <p class="board-statistics__body">
-                    {% spaceless %}
+                    {% apply spaceless %}
                         {% for user in birthdays %}
                             {{ user.profilelink|raw }}{% if user.age %} ({{ user.age }}) {% endif %}{% if loop.last != true %}{{ lang.comma }} {% endif %}
                         {% endfor %}
-                    {% endspaceless %}{% if hiddencount %} - {{ hiddencount }} {{ lang.birthdayhidden }}{% endif %}
+                    {% endapply %}{% if hiddencount %} - {{ hiddencount }} {{ lang.birthdayhidden }}{% endif %}
                 </p>
             </div>
         {% endif %}

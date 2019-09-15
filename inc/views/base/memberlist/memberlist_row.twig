@@ -10,11 +10,11 @@
     <br />
     {% endif %}
     {% if user.starimage and user.stars %}
-        {% spaceless %}
+        {% apply spaceless %}
             {% for star in range(1, user.stars) %}
                 <img src="{{ user.starimage }}" border="0" alt="*" />
             {% endfor %}
-        {% endspaceless %}
+        {% endapply %}
         <br />
     {% endif %} #}
 

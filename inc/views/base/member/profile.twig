@@ -20,11 +20,11 @@
                 <img src="{{ memprofile.groupimage }}" alt="{{ memprofile.user_title }}" title="{{ memprofile.user_title }}" /><br />
             {% endif %}
             {% if memprofile.starimage and memprofile.stars %}
-                {% spaceless %}
+                {% apply spaceless %}
                     {% for star in range(1, memprofile.stars) %}
                         <img src="{{ memprofile.starimage }}" border="0" alt="*" />
                     {% endfor %}
-                {% endspaceless %}
+                {% endapply %}
             {% endif %}
         </header>
         <div class="page-controls">

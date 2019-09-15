@@ -56,7 +56,7 @@
                     <!--
                         if(use_xmlhttprequest == "1")
                         {
-                            document.write('<button class="button button--inline" tabindex="10000" name="refresh" onclick="return captcha.refresh();">{% spaceless %}{{ include('partials/icon.twig', {icon: 'sync-alt', class: 'button__icon'}, with_context = false) }}{% endspaceless %}<span class="button__text">{{ lang.refresh }}</span></button>');
+                            document.write('<button class="button button--inline" tabindex="10000" name="refresh" onclick="return captcha.refresh();">{% apply spaceless %}{{ include('partials/icon.twig', {icon: 'sync-alt', class: 'button__icon'}, with_context = false) }}{% endapply %}<span class="button__text">{{ lang.refresh }}</span></button>');
                         }
                     // -->
                     </script>
