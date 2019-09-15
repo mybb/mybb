@@ -2,10 +2,16 @@
 
 namespace MyBB\Twig\Extensions;
 
+use DB_Base;
+use MyBB;
+use Twig\Extension\AbstractExtension;
+use Twig\Extension\GlobalsInterface;
+use Twig\TwigFunction;
+
 /**
  * A Twig extension class to provide functionality related to themes and assets.
  */
-class ThemeExtension extends \Twig_Extension implements \Twig_Extension_GlobalsInterface
+class ThemeExtension extends AbstractExtension implements GlobalsInterface
 {
     /**
      * @var \MyBB $mybb
@@ -28,7 +34,7 @@ class ThemeExtension extends \Twig_Extension implements \Twig_Extension_GlobalsI
      * @param \MyBB $mybb
      * @param \DB_Base $db
      */
-    public function __construct(\MyBB $mybb, \DB_Base $db)
+    public function __construct(MyBB $mybb, DB_Base $db)
     {
         $this->mybb = $mybb;
         $this->db = $db;
@@ -39,9 +45,9 @@ class ThemeExtension extends \Twig_Extension implements \Twig_Extension_GlobalsI
     public function getFunctions()
     {
         return [
-            new \Twig_SimpleFunction('asset_url', [$this, 'getAssetUrl']),
-            new \Twig_SimpleFunction('alt_trow', [$this, 'altTrow']),
-            new \Twig_SimpleFunction('get_stylesheets', [$this, 'getStylesheets']),
+            new TwigFunction('asset_url', [$this, 'getAssetUrl']),
+            new TwigFunction('alt_trow', [$this, 'altTrow']),
+            new TwigFunction('get_stylesheets', [$this, 'getStylesheets']),
         ];
     }
 

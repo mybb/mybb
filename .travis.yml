@@ -47,8 +47,7 @@ script:
 
 test:
   script:
-  - vendor/bin/phpunit
-  - vendor/bin/phpstan analyse -l max -c phpstan.neon src --no-interaction --no-progress | tee phpstan_log
+  - inc/vendor/bin/phpstan analyse -l max -c phpstan.neon --no-interaction --no-progress | tee phpstan_log
   artifacts:
     when: always
     expire_in: 1 month

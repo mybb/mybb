@@ -9,6 +9,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use MyBB\ServiceProvider as CoreServiceProvider;
+use Psr\Container\ContainerInterface;
 
 /**
  * Base application class that provides some useful methods and utilities.
@@ -143,9 +144,11 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
 
         $this->register(new CoreServiceProvider($this));
 
-        $this->registerDeferredProvider(new Twig\ServiceProvider($this));
+        $this->registerDeferredProvider(Twig\ServiceProvider::class);
 
-        $this->registerDeferredProvider(new Hashing\ServiceProvider($this));
+        $this->registerDeferredProvider(Hashing\ServiceProvider::class);
+
+        $this->registerDeferredProvider(Plugins\ServiceProvider::class);
     }
 
     /**
@@ -207,7 +210,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
      * @param  string  $basePath
      * @return $this
      */
-    public function setBasePath(?string $basePath)
+    public function setBasePath(string $basePath)
     {
         $this->basePath = rtrim($basePath, '\/');
 
@@ -645,7 +648,7 @@ class Application extends Container implements \Illuminate\Contracts\Foundation\
                 Application::class,
                 \Illuminate\Contracts\Container\Container::class,
                 \Illuminate\Contracts\Foundation\Application::class,
-                \Psr\Container\ContainerInterface::class
+                ContainerInterface::class
             ],
             'events' => [\Illuminate\Events\Dispatcher::class, \Illuminate\Contracts\Events\Dispatcher::class],
             'files' => [\Illuminate\Filesystem\Filesystem::class],

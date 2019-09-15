@@ -2,15 +2,23 @@
 
 namespace MyBB\Twig;
 
+use DB_Base;
 use Illuminate\Contracts\Container\Container;
+use MyBB;
 use MyBB\Twig\Extensions\CoreExtension;
 use MyBB\Twig\Extensions\LangExtension;
 use MyBB\Twig\Extensions\ThemeExtension;
 use MyBB\Twig\Extensions\UrlExtension;
 use MyBB\Utilities\BreadcrumbManager;
+use MyLanguage;
+use pluginSystem;
+use Twig\Environment;
+use Twig\Extension\DebugExtension;
+use Twig\Loader\FilesystemLoader;
+use Twig\Loader\LoaderInterface;
 
 /** @property \MyBB\Application $app */
-class ServiceProvider extends \MyBB\ServiceProvider
+class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
     protected $defer = true;
 
@@ -18,23 +26,23 @@ class ServiceProvider extends \MyBB\ServiceProvider
     {
         $this->app->bind(CoreExtension::class, function (Container $container) {
             return new CoreExtension(
-                $container->make(\MyBB::class),
-                $container->make(\MyLanguage::class),
-                $container->make(\pluginSystem::class),
+                $container->make(MyBB::class),
+                $container->make(MyLanguage::class),
+                $container->make(pluginSystem::class),
                 $container->make(BreadcrumbManager::class)
             );
         });
 
         $this->app->bind(ThemeExtension::class, function (Container $container) {
             return new ThemeExtension(
-                $container->make(\MyBB::class),
-                $container->make(\DB_Base::class)
+                $container->make(MyBB::class),
+                $container->make(DB_Base::class)
             ) ;
         });
 
         $this->app->bind(LangExtension::class, function (Container $container) {
             return new LangExtension(
-                $container->make(\MyLanguage::class)
+                $container->make(MyLanguage::class)
             );
         });
 
@@ -42,7 +50,7 @@ class ServiceProvider extends \MyBB\ServiceProvider
             return new UrlExtension();
         });
 
-        $this->app->bind(\Twig_LoaderInterface::class, function () {
+        $this->app->bind(LoaderInterface::class, function () {
             if (defined('IN_ADMINCP')) {
                 $paths = [
                     __DIR__ . '/../../views/admin/base',
@@ -60,8 +68,10 @@ class ServiceProvider extends \MyBB\ServiceProvider
 
             // TODO: These paths should come from the theme system once it is written
 
-            return new \Twig_Loader_Filesystem($paths);
+            return new FilesystemLoader($paths);
         });
+
+        $this->app->alias(LoaderInterface::class, \Twig_LoaderInterface::class);
 
         $this->app->bind('twig.options', function () {
             return [
@@ -70,9 +80,9 @@ class ServiceProvider extends \MyBB\ServiceProvider
             ];
         });
 
-        $this->app->bind(\Twig_Environment::class, function (Container $container) {
-            $env = new \Twig_Environment(
-                $container->make(\Twig_LoaderInterface::class),
+        $this->app->bind(Environment::class, function (Container $container) {
+            $env = new Environment(
+                $container->make(LoaderInterface::class),
                 $container->make('twig.options')
             );
 
@@ -82,10 +92,12 @@ class ServiceProvider extends \MyBB\ServiceProvider
             $env->addExtension($container->make(UrlExtension::class));
 
             // TODO: this shouldn't be registered in live environments
-            $env->addExtension(new \Twig_Extension_Debug());
+            $env->addExtension(new DebugExtension());
 
             return $env;
         });
+
+        $this->app->alias(Environment::class, \Twig_Environment::class);
     }
 
     public function provides()
@@ -95,7 +107,7 @@ class ServiceProvider extends \MyBB\ServiceProvider
             ThemeExtension::class,
             LangExtension::class,
             UrlExtension::class,
-            \Twig_LoaderInterface::class,
+            LoaderInterface::class,
         ];
     }
 }
