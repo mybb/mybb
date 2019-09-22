@@ -23,8 +23,6 @@ Learn more on the MyBB development page:
 
 If you need any help with sending your code contributions, the [GitHub Help site](https://help.github.com) is a good place to start.
 
----
-
 ## MyBB on GitHub
 
 ### Branches
