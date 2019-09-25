@@ -1490,6 +1490,8 @@ if($foruminfo['type'] != "c")
 
 	$prefixselect = build_forum_prefix_select($fid, $tprefix);
 
+	$plugins->run_hooks("forumdisplay_threadlist");
+
 	$lang->rss_discovery_forum = $lang->sprintf($lang->rss_discovery_forum, htmlspecialchars_uni(strip_tags($foruminfo['name'])));
 	eval("\$rssdiscovery = \"".$templates->get("forumdisplay_rssdiscovery")."\";");
 	eval("\$threadslist = \"".$templates->get("forumdisplay_threadlist")."\";");
