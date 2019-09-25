@@ -1113,6 +1113,8 @@ if($mybb->user['uid'])
 if($foruminfo['type'] != "c")
 {
 	$prefixselect = build_forum_prefix_select($fid, $tprefix);
+
+	$plugins->run_hooks("forumdisplay_threadlist");
 }
 
 $plugins->run_hooks('forumdisplay_end');
