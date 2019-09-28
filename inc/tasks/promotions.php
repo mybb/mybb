@@ -116,7 +116,7 @@ function task_promotions($task)
 				default:
 					$timeonline = $promotion['online']*60*60*24;
 			}
-			$sql_where .= "{$and}timeonline <= '".(TIME_NOW-$timeonline)."'";
+			$sql_where .= "{$and}timeonline > '".$timeonline."'";
 			$and = " AND ";
 		}
 
