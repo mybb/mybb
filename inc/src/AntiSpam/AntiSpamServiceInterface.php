@@ -18,5 +18,5 @@ interface AntiSpamServiceInterface
      *
      * @return \MyBB\AntiSpam\CheckResult The result of the check.
      */
-    function checkUser(string $username, string $emailAddress, string $ipAddress): CheckResult;
+    public function checkUser(string $username, string $emailAddress, string $ipAddress): CheckResult;
 }

@@ -32,7 +32,7 @@ class StopForumSpam implements AntiSpamServiceInterface
     /**
      * @inheritDoc
      */
-    function checkUser(string $username, string $emailAddress, string $ipAddress): CheckResult
+    public function checkUser(string $username, string $emailAddress, string $ipAddress): CheckResult
     {
         $data = [];
 
@@ -56,8 +56,7 @@ class StopForumSpam implements AntiSpamServiceInterface
                 FILTER_FLAG_NO_PRIV_RANGE |  FILTER_FLAG_NO_RES_RANGE
             );
 
-            if($isInternalIpAddress)
-            {
+            if ($isInternalIpAddress) {
                 $result->setResult(CheckResult::PASS);
 
                 return $result;
