@@ -11,7 +11,7 @@ use MyBB\Plugins\HookManager;
 
 class StopForumSpam implements AntiSpamServiceInterface
 {
-    private const URL = 'http://api.stopforumspam.org/api?confidence&json';
+    private const URL = 'https://api.stopforumspam.org/api?confidence&json';
 
     /**
      * @var \MyBB
@@ -32,7 +32,7 @@ class StopForumSpam implements AntiSpamServiceInterface
     /**
      * @inheritDoc
      */
-    function check(string $username, string $emailAddress, string $ipAddress): CheckResult
+    function checkUser(string $username, string $emailAddress, string $ipAddress): CheckResult
     {
         $data = [];
 

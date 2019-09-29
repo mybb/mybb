@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace MyBB\AntiSpam;
 
 /**
- * Interface to check a user against an anti-spam service.
+ * Interface to check content against an anti-spam service.
  */
 interface AntiSpamServiceInterface
 {
@@ -18,5 +18,5 @@ interface AntiSpamServiceInterface
      *
      * @return \MyBB\AntiSpam\CheckResult The result of the check.
      */
-    function check(string $username, string $emailAddress, string $ipAddress): CheckResult;
+    function checkUser(string $username, string $emailAddress, string $ipAddress): CheckResult;
 }

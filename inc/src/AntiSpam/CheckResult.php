@@ -9,12 +9,12 @@ use InvalidArgumentException;
 class CheckResult
 {
     /**
-     * The check passed, the service doesn't believe the user is a spammer.
+     * The check passed, the service doesn't believe the content is spam.
      */
     const PASS = 0;
 
     /**
-     * The check failed, the service believes the user is a spammer.
+     * The check failed, the service believes the content is spam.
      */
     const FAIL = 1;
 
