@@ -12,7 +12,7 @@ var Thread = {
 				$("#moderator_options_selector option.option_mirage").attr("disabled","disabled");
 			}
 
-			visible_replies = parseInt(visible_replies);
+			visible_replies = parseInt(visible_replies, 10);
 			Thread.splitToolHandler();
 			
 			if($("#moderator_options_selector").length !== 0) {
