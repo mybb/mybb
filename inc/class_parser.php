@@ -462,7 +462,7 @@ class postParser
 		$message = preg_replace_callback("#\[img=([1-9][0-9]*)x([1-9][0-9]*)\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is", array($this, 'mycode_parse_img' . $allow_imgcode . '_callback2'), $message);
 		$message = preg_replace_callback("#\[img align=(left|right)\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is", array($this, 'mycode_parse_img' . $allow_imgcode . '_callback3'), $message);
 		$message = preg_replace_callback("#\[img=([1-9][0-9]*)x([1-9][0-9]*) align=(left|right)\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is", array($this, 'mycode_parse_img' . $allow_imgcode . '_callback4'), $message);
-		$message = preg_replace_callback("#\[img\](\r\n?|\n?)data:image\/(.+)?(\r\n?|\n?)\[\/img\]#is", array($this, 'mycode_parse_img' . $allow_imgcode . '_callback5'), $message);
+		$message = preg_replace_callback("#\[img\](\r\n?|\n?)data:image\/([a-zA-Z]+);base64,(([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{4}))(\r\n?|\n?)\[\/img\]#is", array($this, 'mycode_parse_img' . $allow_imgcode . '_callback5'), $message);
 
 		// Convert videos when allow.
 		if(!empty($this->options['allow_videocode']))
@@ -1278,7 +1278,7 @@ class postParser
 	 */
 	function mycode_parse_img_callback5($matches)
 	{
-		return '<img src="data:image/' . $matches[2] . '">';
+		return '<img src="data:image/' . $matches[2] . ';base64,'. $matches[3] .'">';
 	}
 
 	/**
