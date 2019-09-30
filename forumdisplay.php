@@ -1467,8 +1467,6 @@ if($mybb->user['uid'])
 	eval("\$addremovesubscription = \"".$templates->get("forumdisplay_threadlist_subscription")."\";");
 }
 
-$inline_edit_js = $clearstoredpass = '';
-
 // Is this a real forum with threads?
 if($foruminfo['type'] != "c")
 {

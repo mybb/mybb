@@ -4014,7 +4014,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 	</td>]]></template>
 		<template name="forumdisplay_thread_rating_moved" version="1800"><![CDATA[<td class="{$bgcolor}" style="text-align: center;">-</td>]]></template>
 		<template name="forumdisplay_thread_unapproved_posts" version="1800"><![CDATA[ <span title="{$unapproved_posts_count}">({$thread['unapprovedposts']})</span>]]></template>
-		<template name="forumdisplay_threadlist" version="1820"><![CDATA[<div class="float_left">
+		<template name="forumdisplay_threadlist" version="1822"><![CDATA[<div class="float_left">
 	{$multipage}
 </div>
 <div class="float_right">
@@ -4106,8 +4106,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 	{$searchforum}
 	{$forumjump}
 </div>
-<br class="clear" />
-{$inline_edit_js}]]></template>
+<br class="clear" />]]></template>
 		<template name="forumdisplay_threadlist_clearpass" version="1606"><![CDATA[ | <a href="misc.php?action=clearpass&amp;fid={$fid}&amp;my_post_key={$mybb->post_code}">{$lang->clear_stored_password}</a>]]></template>
 		<template name="forumdisplay_threadlist_prefixes" version="1801"><![CDATA[<select name="prefix">
 <option value="-2"{$default_selected['any']}>{$lang->prefix_any}</option>
