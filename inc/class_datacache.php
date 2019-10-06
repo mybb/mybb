@@ -127,6 +127,7 @@ class datacache
 	function read($name, $hard=false)
 	{
 		global $db, $mybb;
+		static $availability = true;
 
 		// Already have this cache and we're not doing a hard refresh? Return cached copy
 		if(isset($this->cache[$name]) && $hard == false)
@@ -163,10 +164,12 @@ class datacache
 			// No data returned - cache gone bad?
 			if($data === false)
 			{
-				// Test the cache store's availability. Trigger a warning on failure.
-				if(!$this->test_availability())
+				// Test the cache store's availability. Trigger a warning or an error on failure.
+				// A warning will permit the forum continue to run.
+				if($availability && !$this->test_availability())
 				{
-					trigger_error("The cache store is either misconfigured or not working properly.", E_USER_WARNING);
+					$mybb->trigger_generic_error("cache_runtime_error");
+					$availability = false;
 				}
 
 				// Fetch from database
@@ -192,7 +195,7 @@ class datacache
 		// Else, using internal database cache
 		else
 		{
-			$query = $db->simple_select("datacache", "title,cache", "title='$name'");
+			$query = $db->simple_select("datacache", "title,cache", "title='{$name}'");
 			$cache_data = $db->fetch_array($query);
 
 			if(!$cache_data['title'])
@@ -456,7 +459,7 @@ class datacache
 	 */
 	function test_availability()
 	{
-		$content = md5((string) constant(TIME_NOW));
+		$content = md5((string) constant("TIME_NOW"));
 
 		if($this->handler instanceof CacheHandlerInterface)
 		{
@@ -540,14 +543,13 @@ class datacache
 
 		foreach($cache_to_check['core'] as $core_cache)
 		{
-			$this->read($core_cache);
-			if(!isset($this->cache[$core_cache]))
+			// If forced to read from database, the cache key should exist with value of false.
+			if($this->read($core_cache, true) === false)
 			{
 				$update = 'update_'.$core_cache;
-				echo "ReCaching: {$core_cache}<br />\n";
 				if(method_exists($this, $update))
 				{
-					call_user_func(array($this, $update));echo "Cache rebuild: {$core_cache}<br />\n";
+					call_user_func(array($this, $update));
 					continue;
 				}
 			}

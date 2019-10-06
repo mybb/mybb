@@ -577,6 +577,10 @@ class MyBB {
 				$message = "Xcache needs to be configured with PHP to use the Xcache cache support.";
 				$error_code = MYBB_CACHEHANDLER_LOAD_ERROR;
 				break;
+			case "cache_runtime_error":
+				$message = "The cache store is either misconfigured or not working properly.";
+				$error_code = E_USER_WARNING;	// TODO: or MYBB_CACHEHANDLER_LOAD_ERROR for triggering an error?
+				break;
 			default:
 				$message = "MyBB has experienced an internal error. Please contact the MyBB Group for support. <a href=\"https://mybb.com\">MyBB Website</a>";
 				$error_code = MYBB_GENERAL;
