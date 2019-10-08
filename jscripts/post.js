@@ -69,9 +69,9 @@ var Post = {
 		}
 
 		var id = 'message';
-		if(typeof $('textarea').sceditor != 'undefined')
+		if(typeof MyBBEditor != 'undefined')
 		{
-			$('textarea').sceditor('instance').insert(json.message);
+			MyBBEditor.insert(json.message);
 		}
 		else
 		{
@@ -131,13 +131,19 @@ var Post = {
 							{
 								$('#attachment_'+aid).hide(500, function()
 								{
-									var instance = $('#message').sceditor('instance');
+                                    var instance = MyBBEditor;
+
+                                    if(typeof MyBBEditor == 'undefined') {
+                                        instance = $('#message').sceditor('instance');
+                                    }
+
 									if(instance.sourceMode())
 									{
 										instance.setSourceEditorValue(instance.getSourceEditorValue(false).split('[attachment=' + aid + ']').join(''));
 									} else {
 										instance.setWysiwygEditorValue(instance.getWysiwygEditorValue(false).split('[attachment=' + aid + ']').join(''));
 									}
+
 									$(this).remove();
 								});
 							}
