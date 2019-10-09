@@ -131,7 +131,7 @@ var Post = {
 							{
 								$('#attachment_'+aid).hide(500, function()
 								{
-                                    var instance = MyBBEditor;
+									var instance = MyBBEditor;
 									if(typeof MyBBEditor === 'undefined') {
 										instance = $('#message').sceditor('instance');
 									}
