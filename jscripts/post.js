@@ -133,7 +133,7 @@ var Post = {
 								{
                                     var instance = MyBBEditor;
 
-                                    if(typeof MyBBEditor == 'undefined') {
+                                    if(typeof MyBBEditor === 'undefined') {
                                         instance = $('#message').sceditor('instance');
                                     }
 
