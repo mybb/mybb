@@ -15,7 +15,7 @@ $l['d1_document'] = "Some parts of this forum may require you to be logged in an
 // Help Document 2
 $l['d2_name'] = "Updating Profile";
 $l['d2_desc'] = "Changing your data currently on record.";
-$l['d2_document'] = "At some point during your stay, you may decide you need to update some information such as your instant messenger information, your password, or your email address. You may change any of this information from your user control panel. To access this control panel, simply click on the link in the upper right hand corner of most any page entitled \"User CP\". From there, simply choose the appropriate link under the \"Your Profile\" section and change or update any desired items, then proceed to click the submit button located at the bottom of the page for changes to take effect.";
+$l['d2_document'] = "At some point during your stay, you may decide you need to update some information such as your instant messenger information, your password, or your email address. You may change any of this information from your user control panel. To access this control panel, simply click on the link in the upper left hand corner of most any page entitled \"User CP\". From there, simply choose the appropriate link under the \"Your Profile\" section and change or update any desired items, then proceed to click the submit button located at the bottom of the page for changes to take effect.";
 
 // Help Document 3
 $l['d3_name'] = "Use of Cookies on MyBB";
