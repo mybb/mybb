@@ -33,6 +33,15 @@ function upgrade49_dbchanges()
 		$db->drop_column('users', 'yahoo');
 	}
 
+	if($db->type == 'pgsql')
+	{
+		$db->modify_column("users", "avatar", "text", "set");
+	}
+	else
+	{
+		$db->modify_column("users", "avatar", "text NOT NULL");
+	}
+	
 	$db->delete_query("settings", "name='allowyahoofield'");
 
 	if (!$db->field_exists("isunique", "sessions"))
