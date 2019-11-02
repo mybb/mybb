@@ -54,7 +54,7 @@ function template(string $name, array $context = [])
  */
 function registerTwigExtension(string $className, array $parameters = []): ExtensionInterface
 {
-    /** @var \Twig_Environment $twig */
+    /** @var \Twig\Environment $twig */
     $twig = app(Environment::class);
 
     if (!$twig->hasExtension($className)) {
