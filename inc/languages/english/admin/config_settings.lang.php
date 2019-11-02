@@ -39,6 +39,7 @@ $l['group_selection_box'] = "Group Selection Box";
 $l['group_selection_single'] = "Single Group Selection Box";
 $l['adminlanguage'] = "Administration Language Selection Box";
 $l['cpstyle'] = "Control Panel Style Selection Box";
+$l['prefix_selection_box'] = "Prefix Selection Box";
 $l['php'] = "Evaluated PHP";
 $l['type'] = "Type";
 $l['extra'] = "Extra";
