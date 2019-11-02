@@ -39,11 +39,10 @@
             <p>{{ lang.moderated_by }}
                 <strong>
                     {% for moderator in moderators.users %}
-                        <a href="{{ moderator.profilelink }}">{{ moderator.username }}</a>{% if loop.last == false %}{{ lang.comma }} {% endif %}
+                        <a href="{{ moderator.profilelink }}">{{ moderator.username|raw }}</a>{% if loop.last == false or moderators.groups is not empty %}{{ lang.comma }} {% endif %}
                     {% endfor %}
-                    {% if moderators.groups %}{{ lang.comma }} {% endif %}
                     {% for moderator in moderators.groups %}
-                        {{ moderator.title }}{% if loop.last == false %}{{ lang.comma }} {% endif %}
+                        {{ moderator.title|raw }}{% if loop.last == false %}{{ lang.comma }} {% endif %}
                     {% endfor %}
                 </strong>
             </p>
@@ -71,7 +70,7 @@
             </section>
         {% endif %}
 
-        {% if foruminfo.type == 'f' and foruminfo.open and fpermissions.canpostthreads and mybb.user.suspendposting is not empty %}
+        {% if foruminfo.type == 'f' and foruminfo.open and fpermissions.canpostthreads %}
             {% set newthread %}
                 <a href="newthread.php?fid={{ foruminfo.fid }}" class="button button--medium button--full-width">
                     {{ include('partials/icon.twig', {icon: 'pencil-alt', class: 'button__icon'}, with_context = false) }}
@@ -242,7 +241,7 @@
                                 <option value="{{ field }}"{% if mybb.input[field] %} selected{% endif %}>{{ attribute(lang, 'sort_by_' ~ field) }}</option>
                             {% endfor %}
                             {% if displayRating %}
-                                <option value="rating"{% if mybb.input.rating %} selected{% endif %}>{{ lang.sort_by_rating }}</option>
+                                {#<option value="rating"{% if mybb.input.rating %} selected{% endif %}>{{ lang.sort_by_rating }}</option>#}
                             {% endif %}
                         </select>
                     </div>

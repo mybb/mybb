@@ -172,7 +172,7 @@ foreach ($parentlistexploded as $mfid) {
                     $moderator['profilelink'] = get_profile_link($moderator['id']);
                     $moderator['username'] = format_name(htmlspecialchars_uni($moderator['username']), $moderator['usergroup'], $moderator['displaygroup']);
 
-                    $moderator['users'][$moderator['id']] = $moderator;
+                    $moderators['users'][$moderator['id']] = $moderator;
                 }
             }
         }
@@ -908,6 +908,11 @@ if ($mybb->user['uid']) {
 // Is this a real forum with threads?
 if ($foruminfo['type'] != "c") {
     $prefixselect = build_forum_prefix_select($fid, $tprefix);
+}
+
+// User posting has been suspended?
+if (isset($mybb->user['suspendposting']) && $mybb->user['suspendposting']) {
+    $fpermissions['canpostthreads'] = 0;
 }
 
 $plugins->run_hooks('forumdisplay_end');
