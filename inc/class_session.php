@@ -323,6 +323,7 @@ class session
 		// Set up some defaults
 		$time = TIME_NOW;
 		$mybb->user['usergroup'] = 1;
+		$mybb->user['additionalgroups'] = '';
 		$mybb->user['username'] = '';
 		$mybb->user['uid'] = 0;
 		$mybbgroups = 1;
