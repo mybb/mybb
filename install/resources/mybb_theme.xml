@@ -3942,7 +3942,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 </tr>
 </table>
 <br />]]></template>
-		<template name="forumdisplay_searchforum" version="120"><![CDATA[<form action="search.php" method="post">
+		<template name="forumdisplay_searchforum" version="1822"><![CDATA[<form action="search.php">
 	<span class="smalltext"><strong>{$lang->search_forum}</strong></span>
 	<input type="text" class="textbox" name="keywords" /> {$gobutton}
 	<input type="hidden" name="action" value="do_search" />
@@ -4255,7 +4255,7 @@ $(".forumjump").on('change', function() {
 		<template name="header_menu_memberlist" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/memberlist.php" class="memberlist">{$lang->toplinks_memberlist}</a></li>]]></template>
 		<template name="header_menu_portal" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/portal.php" class="portal">{$lang->toplinks_portal}</a></li>]]></template>
 		<template name="header_menu_search" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/search.php" class="search">{$lang->toplinks_search}</a></li>]]></template>
-		<template name="header_quicksearch" version="1804"><![CDATA[						<form action="{$mybb->settings['bburl']}/search.php" method="post">
+		<template name="header_quicksearch" version="1822"><![CDATA[						<form action="{$mybb->settings['bburl']}/search.php">
 						<fieldset id="search">
 							<input name="keywords" type="text" class="textbox" />
 							<input value="{$lang->search_button}" type="submit" class="button" />
@@ -9324,13 +9324,13 @@ if(use_xmlhttprequest == "1")
 </tr>
 </table>
 <br />]]></template>
-		<template name="portal_search" version="1811"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<template name="portal_search" version="1822"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead"><strong>{$lang->search_forums}</strong></td>
 </tr>
 <tr>
 <td class="trow1" align="center">
-<form method="post" action="{$mybb->settings['bburl']}/search.php">
+<form action="{$mybb->settings['bburl']}/search.php">
 <input type="hidden" name="action" value="do_search" />
 <input type="hidden" name="postthread" value="1" />
 <input type="hidden" name="forums" value="all" />
@@ -9494,7 +9494,7 @@ if(use_xmlhttprequest == "1")
 		captchaTarget = $('input[name="submit"], #quick_reply_submit').filter(function(){
 			return $(this).closest('#quick_login').length == 0
 		});
-		
+
 		captchaTarget.attr('data-size', 'invisible').unbind('click');
 
 		grecaptcha.render(captchaTarget.get(0), {
@@ -10942,14 +10942,14 @@ document.write('<br /><span class="smalltext"><a href="javascript:void(0)" oncli
 			<a href="javascript:void(0)" onclick="Report.reportReputation({$reputation_vote['rid']}); return false;" class="postbit_report"><span>{$lang->report_vote}</span></a>
 		</div>]]>
 		</template>
-		<template name="search" version="1820"><![CDATA[<html>
+		<template name="search" version="1822"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->search}</title>
 {$headerinclude}
 </head>
 <body>
 {$header}
-<form method="post" action="search.php">
+<form action="search.php">
 <input type="hidden" name="action" value="do_search" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
