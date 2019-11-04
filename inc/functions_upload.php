@@ -436,7 +436,7 @@ function upload_attachment($attachment, $update_attachment=false)
 	}
 
 	// check the length of the filename
-	if(my_strlen($attachment['name']) > 260)
+	if(my_strlen($attachment['name']) > 255)
 	{
 		$ret['error'] = $lang->sprintf($lang->error_attach_filename_length, htmlspecialchars_uni($attachment['name']), 260);
 		return $ret;
