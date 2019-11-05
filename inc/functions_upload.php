@@ -436,9 +436,10 @@ function upload_attachment($attachment, $update_attachment=false)
 	}
 
 	// check the length of the filename
-	if(my_strlen($attachment['name']) > 255)
+	$maxFileNameLength = 255;
+	if(my_strlen($attachment['name']) > $maxFileNameLength)
 	{
-		$ret['error'] = $lang->sprintf($lang->error_attach_filename_length, htmlspecialchars_uni($attachment['name']), 260);
+		$ret['error'] = $lang->sprintf($lang->error_attach_filename_length, htmlspecialchars_uni($attachment['name']), $maxFileNameLength);
 		return $ret;
 	}
 
