@@ -282,7 +282,7 @@
                     {% if fpermissions.cansearch and foruminfo.type == 'f' %}
                         <div class="forum-search page-tools__item">
                             <h2 class="title title--legend {% if not modpermissions.ismod %}visually-hidden{% endif %}">{{ lang.search_forum }}</h2>
-                            <form action="search.php" method="post">
+                            <form action="search.php">
                                 <input type="text" name="keywords" placeholder="{{ lang.enter_keywords }}" class="textbox textbox--large" />
                                 <input type="hidden" name="action" value="do_search" />
                                 <input type="hidden" name="forums" value="{{ foruminfo.fid }}" />

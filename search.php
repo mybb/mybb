@@ -1462,7 +1462,7 @@ elseif($mybb->input['action'] == "getdaily")
 	$db->insert_query("searchlog", $searcharray);
 	redirect("search.php?action=results&sid=".$sid, $lang->redirect_searchresults);
 }
-elseif($mybb->input['action'] == "do_search" && $mybb->request_method == "post")
+elseif($mybb->input['action'] == "do_search")
 {
 	$plugins->run_hooks("search_do_search_start");
 
