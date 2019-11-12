@@ -234,7 +234,6 @@ $l['wrote'] = "wrote:";
 $l['code'] = "Code:";
 $l['php_code'] = "PHP Code:";
 $l['posted_image'] = "[Image: {1}]";
-$l['posted_image_uri'] = "[Image: Raw base64 data]";
 $l['posted_video'] = "[Video: {1}]";
 $l['linkback'] = "Original Post";
 

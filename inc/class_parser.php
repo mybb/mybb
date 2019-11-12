@@ -438,18 +438,20 @@ class postParser
 		$message = $this->mycode_parse_quotes($message);
 
 		// Convert images when allowed.
-		$allow_imgcode = "";
-
-		if(empty($this->options['allow_imgcode']))
+		if(!empty($this->options['allow_imgcode']))
 		{
-			$allow_imgcode = "_disabled";
+			$message = preg_replace_callback("#\[img\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is", array($this, 'mycode_parse_img_callback1'), $message);
+			$message = preg_replace_callback("#\[img=([1-9][0-9]*)x([1-9][0-9]*)\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is", array($this, 'mycode_parse_img_callback2'), $message);
+			$message = preg_replace_callback("#\[img align=(left|right)\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is", array($this, 'mycode_parse_img_callback3'), $message);
+			$message = preg_replace_callback("#\[img=([1-9][0-9]*)x([1-9][0-9]*) align=(left|right)\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is", array($this, 'mycode_parse_img_callback4'), $message);
 		}
-
-		$message = preg_replace_callback("#\[img\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is", array($this, 'mycode_parse_img' . $allow_imgcode . '_callback1'), $message);
-		$message = preg_replace_callback("#\[img=([1-9][0-9]*)x([1-9][0-9]*)\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is", array($this, 'mycode_parse_img' . $allow_imgcode . '_callback2'), $message);
-		$message = preg_replace_callback("#\[img align=(left|right)\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is", array($this, 'mycode_parse_img' . $allow_imgcode . '_callback3'), $message);
-		$message = preg_replace_callback("#\[img=([1-9][0-9]*)x([1-9][0-9]*) align=(left|right)\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is", array($this, 'mycode_parse_img' . $allow_imgcode . '_callback4'), $message);
-		$message = preg_replace_callback("#\[img\](\r\n?|\n?)data:image\/(.+)?(\r\n?|\n?)\[\/img\]#is", array($this, 'mycode_parse_img' . $allow_imgcode . '_callback5'), $message);
+		else
+		{
+			$message = preg_replace_callback("#\[img\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is", array($this, 'mycode_parse_img_disabled_callback1'), $message);
+			$message = preg_replace_callback("#\[img=([1-9][0-9]*)x([1-9][0-9]*)\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is", array($this, 'mycode_parse_img_disabled_callback2'), $message);
+			$message = preg_replace_callback("#\[img align=(left|right)\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is", array($this, 'mycode_parse_img_disabled_callback3'), $message);
+			$message = preg_replace_callback("#\[img=([1-9][0-9]*)x([1-9][0-9]*) align=(left|right)\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is", array($this, 'mycode_parse_img_disabled_callback4'), $message);
+		}
 
 		$message = $this->mycode_auto_url($message);
 
@@ -1244,6 +1246,7 @@ class postParser
 	}
 
 	/**
+<<<<<<< HEAD
 	 * Parses IMG MyCode.
 	 * Image Data URI Support
 	 *
@@ -1257,6 +1260,8 @@ class postParser
 	}
 
 	/**
+=======
+>>>>>>> d2b5a6180 (Revert "Image paste from clipboard support (#3808)" (#3827))
 	 * Parses IMG MyCode disabled.
 	 *
 	 * @param string $url The URL to the image
@@ -1316,17 +1321,6 @@ class postParser
 	function mycode_parse_img_disabled_callback4($matches)
 	{
 		return $this->mycode_parse_img_disabled($matches[5]);
-	}
-
-	/**
-	 * Parses IMG MyCode disabled.
-	 *
-	 * @return string Raw image code notice.
-	 */
-	function mycode_parse_img_disabled_callback5()
-	{
-		global $lang;
-		return $lang->posted_image_uri;
 	}
 
 	/**
