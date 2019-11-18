@@ -119,13 +119,13 @@ else if($report_info['type'] == 'reputation')
 	}
 }
 
+$plugins->run_hooks("report_type");
+
 $permissions = user_permissions($checkid);
 if(empty($permissions['canbereported']))
 {
 	$error = $lang->sprintf($lang->error_invalid_report, $report_info['type']);
 }
-
-$plugins->run_hooks("report_type");
 
 // Check for an existing report
 $report_info['isduplicate'] = false;
