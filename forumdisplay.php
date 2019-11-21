@@ -421,13 +421,13 @@ else
 $visible_condition = "visible IN (".implode(',', array_unique($visible_states)).")";
 $visibleonly = "AND ".$visible_condition;
 
-// Allow viewing unapproved threads for logged in users
+// Allow viewing own unapproved threads for logged in users
 if($mybb->user['uid'] && $mybb->settings['showownunapproved'])
 {
-	$visible_condition .= " OR t.uid=".(int)$mybb->user['uid'];
+	$visible_condition .= " OR (t.visible=0 AND t.uid=".(int)$mybb->user['uid'].")";
 }
 
-$tvisibleonly = "AND (".$visible_condition.")";
+$tvisibleonly = "AND (t.".$visible_condition.")";
 
 if(is_moderator($fid, "caneditposts") || $fpermissions['caneditposts'] == 1)
 {
