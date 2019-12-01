@@ -280,15 +280,11 @@ if($foruminfo['rulestype'] != 0 && $foruminfo['rules'])
 $bgcolor = "trow1";
 
 // Set here to fetch only approved/deleted topics (and then below for a moderator we change this).
+$visible_states = array("1");
+
 if($fpermissions['canviewdeletionnotice'] != 0)
 {
-	$visibleonly = "AND visible IN (-1,1)";
-	$tvisibleonly = "AND t.visible IN (-1,1)";
-}
-else
-{
-	$visibleonly = "AND visible='1'";
-	$tvisibleonly = "AND t.visible='1'";
+	$visible_states[] = "-1";
 }
 
 // Determine this user's mod permissions
@@ -325,27 +321,28 @@ if($modpermissions['ismod'])
 	$inlinecount = 0;
 	$inlinecookie = "inlinemod_forum".$fid;
 
-	if($modpermissions['canviewdeleted'] || $modpermissions['canviewunapprove'])
+	if(is_moderator($fid, "canviewdeleted") == true)
 	{
-		if($modpermissions['canviewunapprove'] && !$modpermissions['canviewdeleted'])
-		{
-			$visibleonly = "AND visible IN (0,1)";
-			$tvisibleonly = "AND t.visible IN (0,1)";
-		}
-		elseif($modpermissions['canviewdeleted'] && !$modpermissions['canviewunapprove'])
-		{
-			$visibleonly = "AND visible IN (-1,1)";
-			$tvisibleonly = "AND t.visible IN (-1,1)";
-		}
-		else
-		{
-			$visibleonly = " AND visible IN (-1,0,1)";
-			$tvisibleonly = " AND t.visible IN (-1,0,1)";
-		}
+		$visible_states[] = "-1";
+	}
+	if(is_moderator($fid, "canviewunapprove") == true)
+	{
+		$visible_states[] = "0";
 	}
 }
 
-if($modpermissions['caneditposts'] || $fpermissions['caneditposts'] == 1)
+$visible_condition = "visible IN (".implode(',', array_unique($visible_states)).")";
+$visibleonly = "AND ".$visible_condition;
+
+// Allow viewing own unapproved threads for logged in users
+if($mybb->user['uid'] && $mybb->settings['showownunapproved'])
+{
+	$visible_condition .= " OR (t.visible=0 AND t.uid=".(int)$mybb->user['uid'].")";
+}
+
+$tvisibleonly = "AND (t.".$visible_condition.")";
+
+if(is_moderator($fid, "caneditposts") || $fpermissions['caneditposts'] == 1)
 {
 	$can_edit_titles = 1;
 }
@@ -518,7 +515,7 @@ if(isset($fpermissions['canonlyviewownthreads']) && $fpermissions['canonlyviewow
 if($fpermissions['canviewthreads'] != 0)
 {
 	// How many threads are there?
-	$query = $db->simple_select("threads", "COUNT(tid) AS threads", "fid = '$fid' $useronly $visibleonly $datecutsql $prefixsql");
+	$query = $db->simple_select("threads t", "COUNT(tid) AS threads", "fid = '$fid' $tuseronly $tvisibleonly $datecutsql2 $prefixsql2");
 	$threadcount = $db->fetch_field($query, "threads");
 }
 
@@ -722,12 +719,6 @@ $icon_cache = $cache->read("posticons");
 if($fpermissions['canviewthreads'] != 0)
 {
 	$plugins->run_hooks('forumdisplay_get_threads');
-
-	// Allow viewing unapproved threads for logged in users
-	if($mybb->user['uid'] && $mybb->settings['showownunapproved'])
-	{
-		$tvisibleonly .= " OR (t.fid='$fid' AND t.uid=".$mybb->user['uid'].")";
-	}
 
 	// Start Getting Threads
 	$query = $db->query("
