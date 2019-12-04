@@ -69,7 +69,7 @@ var Post = {
 		}
 
 		var id = 'message';
-		if(typeof MyBBEditor != 'undefined')
+		if(typeof MyBBEditor !== 'undefined' && MyBBEditor !== null)
 		{
 			MyBBEditor.insert(json.message);
 		}
