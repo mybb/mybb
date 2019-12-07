@@ -227,7 +227,7 @@ if($mybb->settings['browsingthisforum'] != 0)
 		SELECT s.ip, s.uid, u.username, u.avatar, s.time, u.invisible, u.usergroup, u.usergroup, u.displaygroup
 		FROM ".TABLE_PREFIX."sessions s
 		LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
-		WHERE s.isunique = 1 AND s.time > '$timecut' AND location1='$fid' AND nopermission != 1
+		WHERE s.time > '$timecut' AND location1='$fid' AND nopermission != 1
 		ORDER BY u.username ASC, s.time DESC
 	");
 

@@ -725,11 +725,9 @@ $tables[] = "CREATE TABLE mybb_sessions (
   nopermission tinyint(1) NOT NULL default '0',
   location1 int(10) unsigned NOT NULL default '0',
   location2 int(10) unsigned NOT NULL default '0',
-  isunique tinyint(1) NOT NULL default '0',
   PRIMARY KEY(sid),
   KEY location (location1, location2),
   KEY time (time),
-  KEY isunique (isunique),
   KEY uid (uid),
   KEY ip (ip)
 ) ENGINE=MyISAM;";

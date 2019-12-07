@@ -1338,7 +1338,7 @@ if($mybb->input['action'] == "thread")
 			SELECT s.ip, s.uid, s.time, u.username, u.invisible, u.usergroup, u.displaygroup
 			FROM ".TABLE_PREFIX."sessions s
 			LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
-			WHERE s.isunique = 1 AND s.time > '$timecut' AND location2='$tid' AND nopermission != 1
+			WHERE s.time > '$timecut' AND location2='$tid' AND nopermission != 1
 			ORDER BY u.username ASC, s.time DESC
 		");
 

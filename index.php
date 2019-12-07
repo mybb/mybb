@@ -47,7 +47,7 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 		SELECT s.sid, s.ip, s.uid, s.time, s.location, s.location1, u.username, u.invisible, u.usergroup, u.displaygroup
 		FROM ".TABLE_PREFIX."sessions s
 		LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
-		WHERE s.isunique = 1 AND s.time > '".$timesearch."'
+		WHERE s.time > '".$timesearch."'
 		ORDER BY {$order_by}, {$order_by2}
 	");
 

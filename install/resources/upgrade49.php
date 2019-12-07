@@ -35,21 +35,6 @@ function upgrade49_dbchanges()
 
 	$db->delete_query("settings", "name='allowyahoofield'");
 
-	if (!$db->field_exists("isunique", "sessions"))
-	{
-		switch ($db->type)
-		{
-			case "pgsql":
-			case "sqlite":
-				$db->add_column("sessions", "isunique", "smallint NOT NULL default '0'");
-				break;
-			default:
-				$db->add_column("sessions", "isunique", "tinyint(1) NOT NULL default '0'");
-				$db->write_query("ALTER TABLE ".TABLE_PREFIX."sessions ADD INDEX isunique (isunique)");
-				break;
-		}
-	}
-
 	$db->modify_column('attachments', 'filename', 'varchar(255)', true, "''");
 	$db->modify_column('attachments', 'attachname', 'varchar(255)', true, "''");
 

@@ -477,16 +477,8 @@ class session
 
 		$onlinedata['location1'] = (int)$speciallocs['1'];
 		$onlinedata['location2'] = (int)$speciallocs['2'];
-		$onlinedata['isunique'] = 1;
 		$onlinedata['nopermission'] = 0;
 		$sid = $db->escape_string($sid);
-
-		if ($uid == 0)
-		{
-			$db->update_query("sessions", array(
-				'isunique' => 0,
-			), "ip=".$db->escape_binary($this->packedip)." AND uid=0 AND sid!='{$sid}'");
-		}
 
 		$db->update_query("sessions", $onlinedata, "sid='{$sid}'");
 	}
@@ -512,13 +504,10 @@ class session
 		{
 			$db->delete_query("sessions", "sid='{$this->sid}'");
 		}
-		// Else set other sessions as not unique by ip.
+		// Else delete by ip.
 		else
 		{
-			$db->update_query("sessions", array(
-				'isunique' => 0,
-			), "ip=".$db->escape_binary($this->packedip));
-
+			$db->delete_query("sessions", "ip=".$db->escape_binary($this->packedip));
 			$onlinedata['uid'] = 0;
 		}
 
@@ -539,7 +528,6 @@ class session
 
 		$onlinedata['location1'] = (int)$speciallocs['1'];
 		$onlinedata['location2'] = (int)$speciallocs['2'];
-		$onlinedata['isunique'] = 1;
 		$onlinedata['nopermission'] = 0;
 		$db->replace_query("sessions", $onlinedata, "sid", false);
 		$this->sid = $onlinedata['sid'];
