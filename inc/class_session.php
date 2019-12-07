@@ -504,10 +504,8 @@ class session
 		{
 			$db->delete_query("sessions", "sid='{$this->sid}'");
 		}
-		// Else delete by ip.
 		else
 		{
-			$db->delete_query("sessions", "ip=".$db->escape_binary($this->packedip));
 			$onlinedata['uid'] = 0;
 		}
 
