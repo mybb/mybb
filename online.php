@@ -154,7 +154,9 @@ else
 	{
 		case "sqlite":
 			$sessions = array();
-			$query = $db->simple_select("sessions", "sid", "time > {$timesearch}");
+			$query = $db->simple_select("sessions", "MAX(sid)", "time > {$timesearch}", array(
+				'group_by' => 'uid, ip',
+			));
 			while($sid = $db->fetch_field($query, "sid"))
 			{
 				$sessions[$sid] = 1;
@@ -164,7 +166,9 @@ else
 			break;
 		case "pgsql":
 		default:
-			$query = $db->simple_select("sessions", "COUNT(sid) as online", "time > {$timesearch}");
+			$query = $db->simple_select("sessions", "COUNT(sid) as online", "time > {$timesearch}", array(
+				'group_by' => 'uid, ip',
+			));
 			$online_count = $db->fetch_field($query, "online");
 			break;
 	}
@@ -199,9 +203,15 @@ else
 
 	// Query for active sessions
 	$query = $db->query("
-		SELECT DISTINCT s.sid, s.ip, s.uid, s.time, s.location, u.username, s.nopermission, u.invisible, u.usergroup, u.displaygroup
-		FROM ".TABLE_PREFIX."sessions s
-		LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
+		SELECT
+			s.sid, s.ip, s.uid, s.time, s.location, u.username, s.nopermission, u.invisible, u.usergroup, u.displaygroup
+		FROM
+			".TABLE_PREFIX."sessions s
+			INNER JOIN (
+				SELECT uid, ip, MAX(time) AS time
+				FROM ".TABLE_PREFIX."sessions GROUP BY uid, ip
+			) s2 ON (s.ip=s2.ip AND s.uid=s2.uid AND s.time=s2.time)
+			LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
 		WHERE s.time>'$timesearch'
 		ORDER BY $sql
 		LIMIT {$start}, {$perpage}

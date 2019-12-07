@@ -225,8 +225,13 @@ if($mybb->settings['browsingthisforum'] != 0)
 
 	$query = $db->query("
 		SELECT s.ip, s.uid, u.username, u.avatar, s.time, u.invisible, u.usergroup, u.usergroup, u.displaygroup
-		FROM ".TABLE_PREFIX."sessions s
-		LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
+		FROM
+			".TABLE_PREFIX."sessions s
+			INNER JOIN (
+				SELECT uid, ip, MAX(time) AS time
+				FROM ".TABLE_PREFIX."sessions GROUP BY uid, ip
+			) s2 ON (s.ip=s2.ip AND s.uid=s2.uid AND s.time=s2.time)
+			LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
 		WHERE s.time > '$timecut' AND location1='$fid' AND nopermission != 1
 		ORDER BY u.username ASC, s.time DESC
 	");

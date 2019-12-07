@@ -226,9 +226,15 @@ if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] !
 	$onlinemembers = [];
 	$doneusers = $onlinemembers = $onlinebots = array();
 	$query = $db->query("
-		SELECT s.sid, s.ip, s.uid, s.time, s.location, u.username, u.invisible, u.usergroup, u.displaygroup
-		FROM ".TABLE_PREFIX."sessions s
-		LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
+		SELECT
+			s.sid, s.ip, s.uid, s.time, s.location, u.username, u.invisible, u.usergroup, u.displaygroup
+		FROM
+			".TABLE_PREFIX."sessions s
+			INNER JOIN (
+				SELECT uid, ip, MAX(time) AS time
+				FROM ".TABLE_PREFIX."sessions GROUP BY uid, ip
+			) s2 ON (s.ip=s2.ip AND s.uid=s2.uid AND s.time=s2.time)
+			LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
 		WHERE s.time>'$timesearch'
 		ORDER BY {$order_by}, {$order_by2}
 	");
