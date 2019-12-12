@@ -535,7 +535,11 @@ if($mybb->user['uid'] != 0 && is_array($groupleaders) && array_key_exists($mybb-
 		}
 
 		$user['gid'] = (int)$user['gid'];
-		$gids .= ",'{$user['gid']}'";
+
+		if(!empty($groupscache[$user['gid']]['type']) && $groupscache[$user['gid']]['type'] == 4)
+		{
+			$gids .= ",'{$user['gid']}'";
+		}
 	}
 
 	$query = $db->simple_select('joinrequests', 'COUNT(uid) as total', "gid IN ({$gids}) AND invite='0'");
