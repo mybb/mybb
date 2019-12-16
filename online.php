@@ -143,7 +143,7 @@ else
 		{
 			case "sqlite":
 			case "pgsql":
-				$sql = "s.time DESC";
+				$sql = "CASE WHEN s.uid > 0 THEN 1 ELSE 0 END DESC, s.time DESC";
 				break;
 			default:
 				$sql = "IF( s.uid >0, 1, 0 ) DESC, s.time DESC";
