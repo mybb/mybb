@@ -283,49 +283,41 @@ if($mybb->settings['browsingthisforum'] != 0)
 	$onlinemembers = '';
 	$doneusers = array();
 
+	$query = $db->simple_select("sessions", "COUNT(DISTINCT ip) AS guestcount", "uid = 0 AND time > $timecut AND location1 = $fid AND nopermission != 1");
+	$guestcount = $db->fetch_field($query, 'guestcount');
+
 	$query = $db->query("
 		SELECT
 			s.ip, s.uid, u.username, s.time, u.invisible, u.usergroup, u.usergroup, u.displaygroup
 		FROM
 			".TABLE_PREFIX."sessions s
-			INNER JOIN (
-				SELECT uid, ip, MAX(time) AS time
-				FROM ".TABLE_PREFIX."sessions GROUP BY uid, ip
-			) s2 ON (s.ip=s2.ip AND s.uid=s2.uid AND s.time=s2.time)
 			LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
-		WHERE s.time > '$timecut' AND location1='$fid' AND nopermission != 1
+		WHERE s.uid != 0 AND s.time > $timecut AND location1 = $fid AND nopermission != 1
 		ORDER BY u.username ASC, s.time DESC
 	");
 
 	while($user = $db->fetch_array($query))
 	{
-		if($user['uid'] == 0)
+		if(empty($doneusers[$user['uid']]) || $doneusers[$user['uid']] < $user['time'])
 		{
-			++$guestcount;
-		}
-		else
-		{
-			if(empty($doneusers[$user['uid']]) || $doneusers[$user['uid']] < $user['time'])
+			$doneusers[$user['uid']] = $user['time'];
+			++$membercount;
+			if($user['invisible'] == 1)
 			{
-				$doneusers[$user['uid']] = $user['time'];
-				++$membercount;
-				if($user['invisible'] == 1)
-				{
-					$invisiblemark = "*";
-					++$inviscount;
-				}
-				else
-				{
-					$invisiblemark = '';
-				}
+				$invisiblemark = "*";
+				++$inviscount;
+			}
+			else
+			{
+				$invisiblemark = '';
+			}
 
-				if($user['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])
-				{
-					$user['username'] = format_name(htmlspecialchars_uni($user['username']), $user['usergroup'], $user['displaygroup']);
-					$user['profilelink'] = build_profile_link($user['username'], $user['uid']);
-					eval("\$onlinemembers .= \"".$templates->get("forumdisplay_usersbrowsing_user", 1, 0)."\";");
-					$comma = $lang->comma;
-				}
+			if($user['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])
+			{
+				$user['username'] = format_name(htmlspecialchars_uni($user['username']), $user['usergroup'], $user['displaygroup']);
+				$user['profilelink'] = build_profile_link($user['username'], $user['uid']);
+				eval("\$onlinemembers .= \"".$templates->get("forumdisplay_usersbrowsing_user", 1, 0)."\";");
+				$comma = $lang->comma;
 			}
 		}
 	}
