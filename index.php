@@ -42,18 +42,44 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 	}
 
 	$timesearch = TIME_NOW - (int)$mybb->settings['wolcutoff'];
-	$comma = '';
+
+	$membercount = $guestcount = $anoncount = $botcount = 0;
+	$forum_viewers = $doneusers = $onlinemembers = $onlinebots = array();
+
+	if($mybb->settings['showforumviewing'] != 0)
+	{
+		$query = $db->query("
+			SELECT
+				location1, COUNT(DISTINCT ip) AS guestcount
+			FROM
+				".TABLE_PREFIX."sessions
+			WHERE uid = 0 AND time > $timesearch
+			GROUP BY location1
+		");
+
+		while($location = $db->fetch_array($query))
+		{
+			$guestcount += $location['guestcount'];
+
+			if($location['location1'])
+			{
+				$forum_viewers[$location['location1']] += $location['guestcount'];
+			}
+		}
+	}
+	else
+	{
+		$query = $db->simple_select("sessions", "COUNT(DISTINCT ip) AS guestcount", "uid = 0 AND time > $timesearch");
+		$guestcount = $db->fetch_field($query, "guestcount");
+	}
+
 	$query = $db->query("
 		SELECT
 			s.sid, s.ip, s.uid, s.time, s.location, s.location1, u.username, u.invisible, u.usergroup, u.displaygroup
 		FROM
 			".TABLE_PREFIX."sessions s
-			INNER JOIN (
-				SELECT uid, ip, MAX(time) AS time
-				FROM ".TABLE_PREFIX."sessions GROUP BY uid, ip
-			) s2 ON (s.ip=s2.ip AND s.uid=s2.uid AND s.time=s2.time)
 			LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
-		WHERE s.time > '".$timesearch."'
+		WHERE (s.uid != 0 OR SUBSTR(s.sid,4,1) = '=') AND s.time > $timesearch
 		ORDER BY {$order_by}, {$order_by2}
 	");
 
@@ -110,11 +136,6 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 			// The user is a search bot.
 			$donebots[$key] = format_name($spiders[$botkey]['name'], $spiders[$botkey]['usergroup']);
 			++$botcount;
-		}
-		else
-		{
-			// The user is a guest.
-			++$guestcount;
 		}
 
 		if($user['location1'])

@@ -225,17 +225,17 @@ if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] !
 	$guestcount = $membercount = $botcount = $anoncount = 0;
 	$onlinemembers = [];
 	$doneusers = $onlinemembers = $onlinebots = array();
+
+	$query = $db->simple_select("sessions", "COUNT(DISTINCT ip) AS guestcount", "uid = 0 AND time > $timesearch");
+	$guestcount = $db->fetch_field($query, "guestcount");
+
 	$query = $db->query("
 		SELECT
 			s.sid, s.ip, s.uid, s.time, s.location, u.username, u.invisible, u.usergroup, u.displaygroup
 		FROM
 			".TABLE_PREFIX."sessions s
-			INNER JOIN (
-				SELECT uid, ip, MAX(time) AS time
-				FROM ".TABLE_PREFIX."sessions GROUP BY uid, ip
-			) s2 ON (s.ip=s2.ip AND s.uid=s2.uid AND s.time=s2.time)
 			LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
-		WHERE s.time>'$timesearch'
+		WHERE (s.uid != 0 OR SUBSTR(s.sid,4,1) = '=') AND s.time > $timesearch
 		ORDER BY {$order_by}, {$order_by2}
 	");
 
@@ -294,10 +294,6 @@ if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] !
 
 			$onlinebots[$key] = format_name($spiders[$botkey]['name'], $spiders[$botkey]['usergroup']);
 			++$botcount;
-		}
-		else
-		{
-			++$guestcount;
 		}
 	}
 

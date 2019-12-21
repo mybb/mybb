@@ -1334,17 +1334,16 @@ if($mybb->input['action'] == "thread")
 		$onlinemembers = [];
 		$doneusers = array();
 
+		$query = $db->simple_select("sessions", "COUNT(DISTINCT ip) AS guestcount", "uid = 0 AND time > $timecut AND location2 = $tid AND nopermission != 1");
+		$guestcount = $db->fetch_field($query, 'guestcount');
+
 		$query = $db->query("
 			SELECT
 				s.ip, s.uid, s.time, u.username, u.invisible, u.usergroup, u.displaygroup
 			FROM
 				".TABLE_PREFIX."sessions s
-				INNER JOIN (
-					SELECT uid, ip, MAX(time) AS time
-					FROM ".TABLE_PREFIX."sessions GROUP BY uid, ip
-				) s2 ON (s.ip=s2.ip AND s.uid=s2.uid)
 				LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
-			WHERE s.time > '$timecut' AND location2='$tid' AND nopermission != 1
+			WHERE s.uid != 0 AND s.time > '$timecut' AND location2='$tid' AND nopermission != 1
 			ORDER BY u.username ASC, s.time DESC
 		");
 
