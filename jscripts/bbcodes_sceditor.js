@@ -107,10 +107,28 @@ $(function ($) {
 
 	$.sceditor.command
 		.set('bulletlist', {
-			txtExec: ['[list]\n[*]', '\n[/list]']
+			txtExec: function (caller, selected) {
+				var content = '';
+
+				$.each(selected.split(/\r?\n/), function () {
+					content += (content ? '\n' : '') +
+						'[*]' + this;
+				});
+
+				this.insertText('[list]\n' + content + '\n[/list]');
+			}
 		})
 		.set('orderedlist', {
-			txtExec: ['[list=1]\n[*]', '\n[/list]']
+			txtExec: function (caller, selected) {
+				var content = '';
+
+				$.each(selected.split(/\r?\n/), function () {
+					content += (content ? '\n' : '') +
+						'[*]' + this;
+				});
+
+				this.insertText('[list=1]\n' + content + '\n[/list]');
+			}
 		});
 
 	// Update size tag to use xx-small-xx-large instead of 1-7
