@@ -1041,12 +1041,21 @@ if($mybb->input['action'] == "change")
 			}
 		}
 
+		// reject dangerous/unsupported upload paths
 		$fields = array(
 			'uploadspath',
 			'cdnpath',
 			'avataruploadpath',
 		);
-		
+
+		$dynamic_include_directories = array(
+			MYBB_ROOT.'cache/',
+			MYBB_ROOT.'inc/plugins/',
+			MYBB_ROOT.'inc/languages/',
+			MYBB_ROOT.'inc/tasks/',
+		);
+		$dynamic_include_directories_realpath = array_map('realpath', $dynamic_include_directories);
+
 		foreach($fields as $field)
 		{
 			if(
@@ -1055,8 +1064,26 @@ if($mybb->input['action'] == "change")
 				strpos($mybb->input['upsetting'][$field], '://') !== false)
 			{
 				unset($mybb->input['upsetting'][$field]);
+				continue;
+			}
+
+			$realpath = realpath(MYBB_ROOT.$mybb->input['upsetting'][$field]);
+
+			if ($realpath === false) {
+				unset($mybb->input['upsetting'][$field]);
+				continue;
+			}
+
+			foreach ($dynamic_include_directories_realpath as $forbidden_realpath)
+			{
+				if ($realpath === $forbidden_realpath || strpos($realpath, $forbidden_realpath.DIRECTORY_SEPARATOR) === 0)
+				{
+					unset($mybb->input['upsetting'][$field]);
+					continue 2;
+				}
 			}
 		}
+
 
 		if(is_array($mybb->input['upsetting']))
 		{
