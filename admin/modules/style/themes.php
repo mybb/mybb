@@ -168,7 +168,7 @@ if($mybb->input['action'] == "browse")
 	// Convert to mods site version codes
 	$search_version = ($major_version_code/100).'x';
 
-	$contents = fetch_remote_file("https://community.mybb.com/xmlbrowse.php?type=themes&version={$search_version}{$keywords}{$url_page}", $post_data);
+	$contents = fetch_remote_file("https://community.mybb.com/xmlbrowse.php?api=2&type=themes&version={$search_version}{$keywords}{$url_page}", $post_data);
 
 	if(!$contents)
 	{
@@ -208,14 +208,12 @@ if($mybb->input['action'] == "browse")
 			$result['thumbnail']['value'] = htmlspecialchars_uni($result['thumbnail']['value']);
 			$result['name']['value'] = htmlspecialchars_uni($result['name']['value']);
 			$result['description']['value'] = htmlspecialchars_uni($result['description']['value']);
-			$result['author']['value'] = $post_parser->parse_message($result['author']['value'], array(
-					'allow_html' => true
-				)
-			);
+			$result['author']['url']['value'] = htmlspecialchars_uni($result['author']['url']['value']);
+			$result['author']['name']['value'] = htmlspecialchars_uni($result['author']['name']['value']);
 			$result['download_url']['value'] = htmlspecialchars_uni(html_entity_decode($result['download_url']['value']));
 
 			$table->construct_cell("<img src=\"https://community.mybb.com/{$result['thumbnail']['value']}\" alt=\"{$lang->theme_thumbnail}\" title=\"{$lang->theme_thumbnail}\"/>", array("class" => "align_center", "width" => 100));
-			$table->construct_cell("<strong>{$result['name']['value']}</strong><br /><small>{$result['description']['value']}</small><br /><i><small>{$lang->created_by} {$result['author']['value']}</small></i>");
+			$table->construct_cell("<strong>{$result['name']['value']}</strong><br /><small>{$result['description']['value']}</small><br /><i><small>{$lang->created_by} <a href=\"{$result['author']['url']['value']}\" target=\"_blank\" rel=\"noopener\">{$result['author']['name']['value']}</a></small></i>");
 			$table->construct_cell("<strong><a href=\"https://community.mybb.com/{$result['download_url']['value']}\" target=\"_blank\" rel=\"noopener\">{$lang->download}</a></strong>", array("class" => "align_center"));
 			$table->construct_row();
 		}

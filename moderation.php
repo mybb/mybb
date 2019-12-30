@@ -3285,7 +3285,7 @@ switch($mybb->input['action'])
 					clearinline($mybb->get_input('searchid', MyBB::INPUT_INT), 'search');
 					$lang->redirect_customtool_search = $lang->sprintf($lang->redirect_customtool_search, $tool['name']);
 					$return_url = htmlspecialchars_uni($mybb->get_input('url'));
-					redirect($return_url, $lang->redirect_customtool_search);
+					moderation_redirect($return_url, $lang->redirect_customtool_search);
 				}
 				else
 				{
@@ -3363,7 +3363,7 @@ switch($mybb->input['action'])
 					clearinline($mybb->get_input('searchid', MyBB::INPUT_INT), 'search');
 					$lang->redirect_customtool_search = $lang->sprintf($lang->redirect_customtool_search, $tool['name']);
 					$return_url = htmlspecialchars_uni($mybb->get_input('url'));
-					redirect($return_url, $lang->redirect_customtool_search);
+					moderation_redirect($return_url, $lang->redirect_customtool_search);
 				}
 				else
 				{
@@ -3612,7 +3612,18 @@ function moderation_redirect($url, $message = "", $title = "")
 	global $mybb;
 	if(!empty($mybb->input['url']))
 	{
-		redirect(htmlentities($mybb->input['url']), $message, $title);
+		$url = htmlentities($mybb->input['url']);
 	}
+
+	if(my_strpos($url, $mybb->settings['bburl'].'/') !== 0)
+	{
+		if(my_strpos($url, '/') === 0)
+		{
+			$url = my_substr($url, 1);
+		}
+		$url_segments = explode('/', $url);
+		$url = $mybb->settings['bburl'].'/'.end($url_segments);
+	}
+
 	redirect($url, $message, $title);
 }

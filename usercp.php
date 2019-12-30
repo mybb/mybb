@@ -57,6 +57,16 @@ usercp_menu();
 
 $server_http_referer = htmlentities($_SERVER['HTTP_REFERER']);
 
+if(my_strpos($server_http_referer, $mybb->settings['bburl'].'/') !== 0)
+{
+	if(my_strpos($server_http_referer, '/') === 0)
+	{
+		$server_http_referer = my_substr($server_http_referer, 1);
+	}
+	$url_segments = explode('/', $server_http_referer);
+	$server_http_referer = $mybb->settings['bburl'].'/'.end($url_segments);
+}
+
 $plugins->run_hooks("usercp_start");
 if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
 {
@@ -1304,7 +1314,19 @@ if($mybb->input['action'] == "do_addsubscription" && $mybb->get_input('type') !=
 
 	if($mybb->get_input('referrer'))
 	{
-		$url = htmlspecialchars_uni($mybb->get_input('referrer'));
+		$mybb->input['referrer'] = $mybb->get_input('referrer');
+
+		if(my_strpos($mybb->input['referrer'], $mybb->settings['bburl'].'/') !== 0)
+		{
+			if(my_strpos($mybb->input['referrer'], '/') === 0)
+			{
+				$mybb->input['referrer'] = my_substr($mybb->input['url'], 1);
+			}
+			$url_segments = explode('/', $mybb->input['referrer']);
+			$mybb->input['referrer'] = $mybb->settings['bburl'].'/'.end($url_segments);
+		}
+
+		$url = htmlspecialchars_uni($mybb->input['referrer']);
 	}
 	else
 	{

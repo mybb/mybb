@@ -105,29 +105,13 @@ if($mybb->input['action'] == "version_check")
 
 		foreach($feed_parser->items as $item)
 		{
-			$description = $item['description'];
-			$content = $item['content'];
-
-			$description = $post_parser->parse_message($description, array(
-					'allow_html' => true,
-				)
-			);
-
-			$content = $post_parser->parse_message($content, array(
-					'allow_html' => true,
-				)
-			);
-
-			$description = preg_replace('#<img(.*)/>#', '', $description);
-			$content = preg_replace('#<img(.*)/>#', '', $content);
-
 			if(!isset($updated_cache['news'][2]))
 			{
 				$updated_cache['news'][] = array(
-					'title' => htmlspecialchars_uni($item['title']),
-					'description' => $description,
-					'link' => htmlspecialchars_uni($item['link']),
-					'author' => htmlspecialchars_uni($item['author']),
+					'title' => $item['title'],
+					'description' => $item['description'],
+					'link' => $item['link'],
+					'author' => $item['author'],
 					'dateline' => $item['date_timestamp'],
 				);
 			}
@@ -135,12 +119,14 @@ if($mybb->input['action'] == "version_check")
 			$stamp = '';
 			if($item['date_timestamp'])
 			{
-				$stamp = my_date('relative', $item['date_timestamp']);
+				$stamp = my_date('relative', (int)$item['date_timestamp']);
 			}
 
 			$link = htmlspecialchars_uni($item['link']);
+			$title = htmlspecialchars_uni($item['title']);
+			$description = htmlspecialchars_uni(strip_tags($item['description']));
 
-			$table->construct_cell("<span style=\"font-size: 16px;\"><strong>".htmlspecialchars_uni($item['title'])."</strong></span><br /><br />{$content}<strong><span style=\"float: right;\">{$stamp}</span><br /><br /><a href=\"{$link}\" target=\"_blank\" rel=\"noopener\">&raquo; {$lang->read_more}</a></strong>");
+			$table->construct_cell("<span style=\"font-size: 16px;\"><strong>{$title}</strong></span><br /><br />{$description}<strong><span style=\"float: right;\">{$stamp}</span><br /><br /><a href=\"{$link}\" target=\"_blank\" rel=\"noopener\">&raquo; {$lang->read_more}</a></strong>");
 			$table->construct_row();
 		}
 	}
@@ -356,11 +342,15 @@ elseif(!$mybb->input['action'])
 	{
 		foreach($update_check['news'] as $news_item)
 		{
-			$posted = my_date('relative', $news_item['dateline']);
-			$table->construct_cell("<strong><a href=\"{$news_item['link']}\" target=\"_blank\" rel=\"noopener\">{$news_item['title']}</a></strong><br /><span class=\"smalltext\">{$posted}</span>");
+			$posted = my_date('relative', (int)$news_item['dateline']);
+			$link = htmlspecialchars_uni($news_item['link']);
+			$title = htmlspecialchars_uni($news_item['title']);
+			$description = htmlspecialchars_uni(strip_tags($news_item['description']));
+
+			$table->construct_cell("<strong><a href=\"{$link}\" target=\"_blank\" rel=\"noopener\">{$title}</a></strong><br /><span class=\"smalltext\">{$posted}</span>");
 			$table->construct_row();
 
-			$table->construct_cell($news_item['description']);
+			$table->construct_cell($description);
 			$table->construct_row();
 		}
 	}

@@ -1915,6 +1915,16 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 
 			$mybb->input['url'] = str_replace('&amp;', '&', $mybb->input['url']);
 
+			if(my_strpos($mybb->input['url'], $mybb->settings['bburl'].'/') !== 0)
+			{
+				if(my_strpos($mybb->input['url'], '/') === 0)
+				{
+					$mybb->input['url'] = my_substr($mybb->input['url'], 1);
+				}
+				$url_segments = explode('/', $mybb->input['url']);
+				$mybb->input['url'] = $mybb->settings['bburl'].'/'.end($url_segments);
+			}
+
 			// Redirect to the URL if it is not member.php
 			redirect($mybb->input['url'], $lang->redirect_loggedin);
 		}
