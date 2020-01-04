@@ -763,6 +763,13 @@ if($fpermissions['canviewthreads'] != 0)
 		}
 	}
 
+	$args = array(
+		'threadcache' => &$threadCache,
+		'tids' => &$tids
+	);
+
+	$plugins->run_hooks("forumdisplay_before_thread", $args);
+
 	if($mybb->settings['allowthreadratings'] != 0 && $foruminfo['allowtratings'] != 0 && $mybb->user['uid'] && !empty($threadCache) && $ratings == true)
 	{
 		// Check if we've rated threads on this page
