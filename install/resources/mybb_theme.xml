@@ -4284,14 +4284,15 @@ $(".forumjump").on('change', function() {
 				<script type="text/javascript">
 					$("#quick_login input[name='url']").val($(location).attr('href'));
 				</script>]]></template>
-		<template name="header_welcomeblock_guest_login_modal" version="1816"><![CDATA[<tr>
+		<template name="header_welcomeblock_guest_login_modal" version="1823"><![CDATA[<tr>
 	<td class="trow1" width="25%"><strong>{$login_username}</strong></td>
 	<td class="trow1"><input name="quick_username" id="quick_login_username" type="text" value="" class="textbox initial_focus" /></td>
 </tr>
 <tr>
 	<td class="trow2"><strong>{$lang->password}</strong></td>
 	<td class="trow2">
-		<input name="quick_password" id="quick_login_password" type="password" value="" class="textbox" /> <a href="{$mybb->settings['bburl']}/member.php?action=lostpw" class="lost_password">{$lang->lost_password}</a>
+		<input name="quick_password" id="quick_login_password" type="password" value="" class="textbox" /><br />
+		<a href="{$mybb->settings['bburl']}/member.php?action=lostpw" class="lost_password">{$lang->lost_password}</a>
 	</td>
 </tr>
 <tr>
