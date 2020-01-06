@@ -40,7 +40,7 @@ if($mybb->get_input('action') == "search")
 	add_breadcrumb($lang->nav_memberlist_search);
 
 	$contact_fields = array();
-	foreach(array('skype', 'google', 'yahoo', 'icq') as $field)
+	foreach(array('skype', 'google', 'icq') as $field)
 	{
 		$contact_fields[$field] = '';
 		$settingkey = 'allow'.$field.'field';
@@ -152,6 +152,11 @@ else
 	}
 	$order_check[$mybb->input['order']] = " checked=\"checked\"";
 
+	if($sort_field == 'u.lastactive' && $mybb->usergroup['canviewwolinvis'] == 0)
+	{
+		$sort_field = "u.invisible ASC, CASE WHEN u.invisible = 1 THEN u.regdate ELSE u.lastactive END";
+	}
+
 	// Incoming results per page?
 	$mybb->input['perpage'] = $mybb->get_input('perpage', MyBB::INPUT_INT);
 	if($mybb->input['perpage'] > 0 && $mybb->input['perpage'] <= 500)
@@ -232,7 +237,7 @@ else
 	}
 
 	// Search by contact field input
-	foreach(array('icq', 'google', 'skype', 'yahoo') as $cfield)
+	foreach(array('icq', 'google', 'skype') as $cfield)
 	{
 		$csetting = 'allow'.$cfield.'field';
 		$mybb->input[$cfield] = trim($mybb->get_input($cfield));
@@ -483,19 +488,22 @@ else
 		$useravatar = format_avatar($user['avatar'], $user['avatardimensions'], my_strtolower($mybb->settings['memberlistmaxavatarsize']));
 		eval("\$user['avatar'] = \"".$templates->get("memberlist_user_avatar")."\";");
 
-		if($user['invisible'] == 1 && $mybb->usergroup['canviewwolinvis'] != 1 && $user['uid'] != $mybb->user['uid'])
+		$last_seen = max(array($user['lastactive'], $user['lastvisit']));
+		if(empty($last_seen))
 		{
 			$user['lastvisit'] = $lang->lastvisit_never;
-
-			if($user['lastvisit'])
-			{
-				// We have had at least some active time, hide it instead
-				$user['lastvisit'] = $lang->lastvisit_hidden;
-			}
 		}
 		else
 		{
-			$user['lastvisit'] = my_date('relative', $user['lastactive']);
+			// We have some stamp here
+			if($user['invisible'] == 1 && $mybb->usergroup['canviewwolinvis'] != 1 && $user['uid'] != $mybb->user['uid'])
+			{
+				$user['lastvisit'] = $lang->lastvisit_hidden;
+			}
+			else
+			{
+				$user['lastvisit'] = my_date('relative', $last_seen);
+			}
 		}
 
 		$user['regdate'] = my_date('relative', $user['regdate']);

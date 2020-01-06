@@ -1167,7 +1167,7 @@ function build_wol_row($user)
 		$online_name = format_name($lang->guest, 1);
 	}
 
-	$online_time = my_date($mybb->settings['timeformat'], $user['time']);
+	$online_time = my_date('relative', $user['time']);
 
 	// Fetch the location name for this users activity
 	$location = build_friendly_wol_location($user['activity']);

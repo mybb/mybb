@@ -6561,6 +6561,8 @@ function rebuild_settings()
 	while($setting = $db->fetch_array($query))
 	{
 		$mybb->settings[$setting['name']] = $setting['value'];
+
+		$setting['name'] = addcslashes($setting['name'], "\\'");
 		$setting['value'] = addcslashes($setting['value'], '\\"$');
 		$settings .= "\$settings['{$setting['name']}'] = \"{$setting['value']}\";\n";
 	}
@@ -7112,7 +7114,7 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 
 			if(in_array(curl_getinfo($ch, CURLINFO_HTTP_CODE), array(301, 302)))
 			{
-				preg_match('/Location:(.*?)(?:\n|$)/', $header, $matches);
+				preg_match('/^Location:(.*?)(?:\n|$)/im', $header, $matches);
 
 				if($matches)
 				{
@@ -7237,7 +7239,7 @@ function fetch_remote_file($url, $post_data=array(), $max_redirects=20)
 
 		if($max_redirects > 0 && (strstr($status_line, ' 301 ') || strstr($status_line, ' 302 ')))
 		{
-			preg_match('/Location:(.*?)(?:\n|$)/', $header, $matches);
+			preg_match('/^Location:(.*?)(?:\n|$)/im', $header, $matches);
 
 			if($matches)
 			{
@@ -8738,6 +8740,18 @@ function copy_file_to_cdn($file_path = '', &$uploaded_path = null)
 
 	if(file_exists($file_path))
 	{
+
+		if(is_object($plugins))
+		{
+			$hook_args = array(
+				'file_path' => &$file_path,
+				'real_file_path' => &$real_file_path,
+				'file_name' => &$file_name,
+				'file_dir_path'	=> &$file_dir_path
+			);
+			$plugins->run_hooks('copy_file_to_cdn_start', $hook_args);
+		}
+
 		if($mybb->settings['usecdn'] && !empty($mybb->settings['cdnpath']))
 		{
 			$cdn_path = rtrim($mybb->settings['cdnpath'], '/\\');

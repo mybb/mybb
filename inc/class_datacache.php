@@ -163,7 +163,7 @@ class datacache
 				// Fetch from database
 				$query = $db->simple_select("datacache", "title,cache", "title='".$db->escape_string($name)."'");
 				$cache_data = $db->fetch_array($query);
-				$data = unserialize($cache_data['cache']);
+				$data = my_unserialize($cache_data['cache']);
 
 				// Update cache for handler
 				get_execution_time();
@@ -213,7 +213,7 @@ class datacache
 	 * Update cache contents.
 	 *
 	 * @param string $name The cache content identifier.
-	 * @param string $contents The cache content.
+	 * @param mixed $contents The cache content.
 	 */
 	function update($name, $contents)
 	{
@@ -222,7 +222,7 @@ class datacache
 		$this->cache[$name] = $contents;
 
 		// We ALWAYS keep a running copy in the db just incase we need it
-		$dbcontents = $db->escape_string(serialize($contents));
+		$dbcontents = $db->escape_string(my_serialize($contents));
 
 		$replace_array = array(
 			"title" => $db->escape_string($name),

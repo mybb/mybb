@@ -21,7 +21,7 @@ function remove_attachment($pid, $posthash, $aid)
 	global $db, $mybb, $plugins;
 	$aid = (int)$aid;
 	$posthash = $db->escape_string($posthash);
-	if($posthash != "")
+	if(!empty($posthash))
 	{
 		$query = $db->simple_select("attachments", "aid, attachname, thumbnail, visible", "aid='{$aid}' AND posthash='{$posthash}'");
 		$attachment = $db->fetch_array($query);
@@ -33,6 +33,12 @@ function remove_attachment($pid, $posthash, $aid)
 	}
 
 	$plugins->run_hooks("remove_attachment_do_delete", $attachment);
+
+	if($attachment === false)
+	{
+		// no attachment found with the given details
+		return;
+	}
 
 	$db->delete_query("attachments", "aid='{$attachment['aid']}'");
 
@@ -427,6 +433,14 @@ function upload_attachment($attachment, $update_attachment=false)
 	else
 	{
 		$attachtype = $attachtypes[$ext];
+	}
+
+	// check the length of the filename
+	$maxFileNameLength = 255;
+	if(my_strlen($attachment['name']) > $maxFileNameLength)
+	{
+		$ret['error'] = $lang->sprintf($lang->error_attach_filename_length, htmlspecialchars_uni($attachment['name']), $maxFileNameLength);
+		return $ret;
 	}
 
 	// Check the size

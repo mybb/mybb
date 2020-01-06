@@ -31,7 +31,7 @@ $(function ($) {
 				'url': '//mixer.com/embed/player/',
 				'html': '<iframe allowfullscreen="true" src="{url}" width="620" height="349" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>'
 			},
-			'Vemio': {
+			'Vimeo': {
 				'match': /vimeo.com\/(\d+)($|\/)/,
 				'url': '//player.vimeo.com/video/',
 				'html': '<iframe src="{url}" width="500" height="281" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>'
@@ -107,10 +107,28 @@ $(function ($) {
 
 	$.sceditor.command
 		.set('bulletlist', {
-			txtExec: ['[list]\n[*]', '\n[/list]']
+			txtExec: function (caller, selected) {
+				var content = '';
+
+				$.each(selected.split(/\r?\n/), function () {
+					content += (content ? '\n' : '') +
+						'[*]' + this;
+				});
+
+				this.insertText('[list]\n' + content + '\n[/list]');
+			}
 		})
 		.set('orderedlist', {
-			txtExec: ['[list=1]\n[*]', '\n[/list]']
+			txtExec: function (caller, selected) {
+				var content = '';
+
+				$.each(selected.split(/\r?\n/), function () {
+					content += (content ? '\n' : '') +
+						'[*]' + this;
+				});
+
+				this.insertText('[list=1]\n' + content + '\n[/list]');
+			}
 		});
 
 	// Update size tag to use xx-small-xx-large instead of 1-7
@@ -208,7 +226,7 @@ $(function ($) {
 				$elm.data('author', author);
 				$cite.remove();
 
-				content = this.elementToBbcode($(element));
+				content = this.elementToBbcode(element);
 				author = '=' + author.replace(/(^\s+|\s+$)/g, '');
 
 				$elm.prepend($cite);
@@ -416,7 +434,7 @@ $(function ($) {
 						if (!description)
 							description = val;
 
-						editor.wysiwygEditorInsertHtml('<a href="' + 'mailto:' + val + '">' + description + '</a>');
+						editor.insert('[email=' + val + ']' + description + '[/email]');
 					} else
 						editor.execCommand('createlink', 'mailto:' + val);
 				}

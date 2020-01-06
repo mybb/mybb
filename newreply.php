@@ -261,10 +261,10 @@ $quoted_ids = array();
 $hide_captcha = false;
 
 // Check the maximum posts per day for this user
-if($mybb->usergroup['maxposts'] > 0 && $mybb->usergroup['cancp'] != 1)
+if($mybb->usergroup['maxposts'] > 0)
 {
 	$daycut = TIME_NOW-60*60*24;
-	$query = $db->simple_select("posts", "COUNT(*) AS posts_today", "uid='{$mybb->user['uid']}' AND visible='1' AND dateline>{$daycut}");
+	$query = $db->simple_select("posts", "COUNT(*) AS posts_today", "uid='{$mybb->user['uid']}' AND visible !='-1' AND dateline>{$daycut}");
 	$post_count = $db->fetch_field($query, "posts_today");
 	if($post_count >= $mybb->usergroup['maxposts'])
 	{
@@ -1283,6 +1283,8 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			{
 				$altbg = "trow_shaded";
 			}
+
+			$plugins->run_hooks("newreply_threadreview_post");
 
 			$post['message'] = $parser->parse_message($post['message'], $parser_options);
 			get_post_attachments($post['pid'], $post);

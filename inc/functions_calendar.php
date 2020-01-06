@@ -130,7 +130,7 @@ function build_mini_calendar($calendar, $month, $year, &$events_cache)
 
 			$link_to_day = false;
 			// Any events on this specific day?
-			if(@count($events_cache["$day-$calendar_month-$calendar_year"]) > 0)
+			if(!empty($events_cache["$day-$calendar_month-$calendar_year"]))
 			{
 				$link_to_day = true;
 			}

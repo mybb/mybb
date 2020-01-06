@@ -862,8 +862,9 @@ if($mybb->input['action'] == "thread")
 			$where = " ORDER BY dateline LIMIT 0, 1";
 		}
 		$query = $db->query("
-			SELECT u.*, u.username AS userusername, p.*, f.*, eu.username AS editusername
+			SELECT u.*, u.username AS userusername, p.*, f.*, r.reporters, eu.username AS editusername
 			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."reportedcontent r ON (r.id=p.pid AND r.type='post' AND r.reportstatus != 1)
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
 			LEFT JOIN ".TABLE_PREFIX."users eu ON (eu.uid=p.edituid)
@@ -1107,8 +1108,9 @@ if($mybb->input['action'] == "thread")
 		// Get the actual posts from the database here.
 		$posts = '';
 		$query = $db->query("
-			SELECT u.*, u.username AS userusername, p.*, f.*, eu.username AS editusername
+			SELECT u.*, u.username AS userusername, p.*, f.*, r.reporters, eu.username AS editusername
 			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."reportedcontent r ON (r.id=p.pid AND r.type='post' AND r.reportstatus != 1)
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
 			LEFT JOIN ".TABLE_PREFIX."users eu ON (eu.uid=p.edituid)
@@ -1517,21 +1519,22 @@ if($mybb->input['action'] == "thread")
 		$onlinemembers = '';
 		$doneusers = array();
 
+		$query = $db->simple_select("sessions", "COUNT(DISTINCT ip) AS guestcount", "uid = 0 AND time > $timecut AND location2 = $tid AND nopermission != 1");
+		$guestcount = $db->fetch_field($query, 'guestcount');
+
 		$query = $db->query("
-			SELECT s.ip, s.uid, s.time, u.username, u.invisible, u.usergroup, u.displaygroup
-			FROM ".TABLE_PREFIX."sessions s
-			LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
-			WHERE s.time > '$timecut' AND location2='$tid' AND nopermission != 1
+			SELECT
+				s.ip, s.uid, s.time, u.username, u.invisible, u.usergroup, u.displaygroup
+			FROM
+				".TABLE_PREFIX."sessions s
+				LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
+			WHERE s.uid != 0 AND s.time > '$timecut' AND location2='$tid' AND nopermission != 1
 			ORDER BY u.username ASC, s.time DESC
 		");
 
 		while($user = $db->fetch_array($query))
 		{
-			if($user['uid'] == 0)
-			{
-				++$guestcount;
-			}
-			else if(empty($doneusers[$user['uid']]) || $doneusers[$user['uid']] < $user['time'])
+			if(empty($doneusers[$user['uid']]) || $doneusers[$user['uid']] < $user['time'])
 			{
 				++$membercount;
 				$doneusers[$user['uid']] = $user['time'];

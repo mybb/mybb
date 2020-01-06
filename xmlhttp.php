@@ -222,7 +222,7 @@ if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['canviewboardclosed']
 if($mybb->input['action'] == "get_users")
 {
 	$mybb->input['query'] = ltrim($mybb->get_input('query'));
-	$search_type = $mybb->get_input('search_type', MyBB::INPUT_INT); // 0: contains, 1: starts with, 2: ends with
+	$search_type = $mybb->get_input('search_type', MyBB::INPUT_INT); // 0: starts with, 1: ends with, 2: contains
 
 	// If the string is less than 2 characters, quit.
 	if(my_strlen($mybb->input['query']) < 2)
@@ -255,15 +255,15 @@ if($mybb->input['action'] == "get_users")
 	$likestring = $db->escape_string_like($mybb->input['query']);
 	if($search_type == 1)
 	{
-		$likestring .= '%';
+		$likestring = '%'.$likestring;
 	}
 	elseif($search_type == 2)
 	{
-		$likestring = '%'.$likestring;
+		$likestring = '%'.$likestring.'%';
 	}
 	else
 	{
-		$likestring = '%'.$likestring.'%';
+		$likestring .= '%';
 	}
 
 	$query = $db->simple_select("users", "uid, username", "username LIKE '{$likestring}'", $query_options);
@@ -850,12 +850,27 @@ else if($mybb->input['action'] == "refresh_question" && $mybb->settings['securit
 	");
 
 	$plugins->run_hooks("xmlhttp_refresh_question");
+	
+	require_once MYBB_ROOT."inc/class_parser.php";
+	$parser = new postParser;
+	
+	$parser_options = array(
+		"allow_html" => 0,
+		"allow_mycode" => 1,
+		"allow_smilies" => 1,
+		"allow_imgcode" => 1,
+		"allow_videocode" => 1,
+		"filter_badwords" => 1,
+		"me_username" => 0,
+		"shorten_urls" => 0,
+		"highlight" => 0,
+	);	
 
 	if($db->num_rows($query) > 0)
 	{
 		$question = $db->fetch_array($query);
 
-		echo json_encode(array("question" => htmlspecialchars_uni($question['question']), 'sid' => htmlspecialchars_uni($question['sid'])));
+		echo json_encode(array("question" => $parser->parse_message($question['question'], $parser_options), 'sid' => htmlspecialchars_uni($question['sid'])));
 		exit;
 	}
 	else
@@ -1091,6 +1106,7 @@ else if($mybb->input['action'] == 'get_referrals')
 	} else {
 		foreach($referrals as $referral)
 		{
+			$bg_color = alt_trow();
 			// Format user name link
 			$username = htmlspecialchars_uni($referral['username']);
 			$username = format_name($username, $referral['usergroup'], $referral['displaygroup']);
@@ -1099,8 +1115,6 @@ else if($mybb->input['action'] == 'get_referrals')
 			$regdate = my_date('normal', $referral['regdate']);
 
 			eval("\$referral_rows .= \"".$templates->get('member_referral_row')."\";");
-
-			$bg_color = alt_trow();
 		}
 	}
 

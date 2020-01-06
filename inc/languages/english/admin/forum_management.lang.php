@@ -276,4 +276,4 @@ $l['polls_field_canvotepolls'] = "Can vote in polls?";
 $l['misc_field_cansearch'] = "Can search forum?";
 
 $l['confirm_proceed_deletion'] = "Click \"Proceed\" to continue the deletion of the forum.";
-$l['automatically_redirecting'] = "Automatically Redirecting...";
+$l['automatically_redirecting'] = "Automatically Redirecting&hellip;";

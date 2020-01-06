@@ -18,15 +18,14 @@ $nosession['avatar'] = 1;
 $templatelist = "member_register,member_register_hiddencaptcha,member_register_coppa,member_register_agreement_coppa,member_register_agreement,member_register_customfield,member_register_requiredfields,member_profile_findthreads";
 $templatelist .= ",member_loggedin_notice,member_profile_away,member_register_regimage,member_register_regimage_recaptcha_invisible,member_register_regimage_nocaptcha,post_captcha_hidden,post_captcha,member_register_referrer";
 $templatelist .= ",member_profile_email,member_profile_offline,member_profile_reputation,member_profile_warn,member_profile_warninglevel,member_profile_customfields_field,member_profile_customfields,member_profile_adminoptions,member_profile";
-$templatelist .= ",member_profile_signature,member_profile_avatar,member_profile_groupimage,member_profile_referrals,member_profile_website,member_profile_reputation_vote,member_activate,member_lostpw,member_register_additionalfields";
+$templatelist .= ",member_profile_signature,member_profile_avatar,member_profile_groupimage,member_referrals_link,member_profile_referrals,member_profile_website,member_profile_reputation_vote,member_activate,member_lostpw,member_register_additionalfields";
 $templatelist .= ",member_profile_modoptions_manageuser,member_profile_modoptions_editprofile,member_profile_modoptions_banuser,member_profile_modoptions_viewnotes,member_profile_modoptions_editnotes,member_profile_modoptions_purgespammer";
 $templatelist .= ",usercp_profile_profilefields_select_option,usercp_profile_profilefields_multiselect,usercp_profile_profilefields_select,usercp_profile_profilefields_textarea,usercp_profile_profilefields_radio,member_viewnotes";
 $templatelist .= ",member_register_question,member_register_question_refresh,usercp_options_timezone,usercp_options_timezone_option,usercp_options_language_option,member_profile_customfields_field_multi_item,member_profile_customfields_field_multi";
-$templatelist .= ",member_profile_contact_fields_google,member_profile_contact_fields_icq,member_profile_contact_fields_skype,member_profile_contact_fields_yahoo,member_profile_pm,member_profile_contact_details";
+$templatelist .= ",member_profile_contact_fields_google,member_profile_contact_fields_icq,member_profile_contact_fields_skype,member_profile_pm,member_profile_contact_details,member_profile_modoptions_manageban";
 $templatelist .= ",member_profile_banned_remaining,member_profile_addremove,member_emailuser_guest,member_register_day,usercp_options_tppselect_option,postbit_warninglevel_formatted,member_profile_userstar,member_profile_findposts";
 $templatelist .= ",usercp_options_tppselect,usercp_options_pppselect,member_resetpassword,member_login,member_profile_online,usercp_options_pppselect_option,postbit_reputation_formatted,member_emailuser,usercp_profile_profilefields_text";
 $templatelist .= ",member_profile_modoptions_ipaddress,member_profile_modoptions,member_profile_banned,member_register_language,member_resendactivation,usercp_profile_profilefields_checkbox,member_register_password,member_coppa_form";
-$templatelist .= ",member_profile_modoptions_manageban";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -1220,8 +1219,22 @@ $(function() {
 			if($db->num_rows($query) > 0)
 			{
 				$question = $db->fetch_array($query);
+				
+				//Set parser options for security question
+				$parser_options = array(
+					"allow_html" => 0,
+					"allow_mycode" => 1,
+					"allow_smilies" => 1,
+					"allow_imgcode" => 1,
+					"allow_videocode" => 1,
+					"filter_badwords" => 1,
+					"me_username" => 0,
+					"shorten_urls" => 0,
+					"highlight" => 0,
+				);
 
-				$question['question'] = htmlspecialchars_uni($question['question']);
+				//Parse question
+				$question['question'] = $parser->parse_message($question['question'], $parser_options);
 				$question['sid'] = htmlspecialchars_uni($question['sid']);
 
 				$refresh = '';
@@ -1947,6 +1960,16 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 
 			$mybb->input['url'] = str_replace('&amp;', '&', $mybb->input['url']);
 
+			if(my_strpos($mybb->input['url'], $mybb->settings['bburl'].'/') !== 0)
+			{
+				if(my_strpos($mybb->input['url'], '/') === 0)
+				{
+					$mybb->input['url'] = my_substr($mybb->input['url'], 1);
+				}
+				$url_segments = explode('/', $mybb->input['url']);
+				$mybb->input['url'] = $mybb->settings['bburl'].'/'.end($url_segments);
+			}
+
 			// Redirect to the URL if it is not member.php
 			redirect($mybb->input['url'], $lang->redirect_loggedin);
 		}
@@ -2206,7 +2229,7 @@ if($mybb->input['action'] == "profile")
 
 	$contact_fields = array();
 	$any_contact_field = false;
-	foreach(array('icq', 'yahoo', 'skype', 'google') as $field)
+	foreach(array('icq', 'skype', 'google') as $field)
 	{
 		$contact_fields[$field] = '';
 		$settingkey = 'allow'.$field.'field';
@@ -2321,8 +2344,14 @@ if($mybb->input['action'] == "profile")
 	$findposts = $findthreads = '';
 	if($mybb->usergroup['cansearch'] == 1)
 	{
-		eval("\$findposts = \"".$templates->get("member_profile_findposts")."\";");
-		eval("\$findthreads = \"".$templates->get("member_profile_findthreads")."\";");
+		if(!empty($memprofile['postnum']))
+		{
+			eval("\$findposts = \"".$templates->get("member_profile_findposts")."\";");
+		}
+		if(!empty($memprofile['threadnum']))
+		{
+			eval("\$findthreads = \"".$templates->get("member_profile_findthreads")."\";");
+		}
 	}
 
 	$awaybit = '';
@@ -2394,19 +2423,6 @@ if($mybb->input['action'] == "profile")
 	$memlocaltime = gmdate($mybb->settings['timeformat'], TIME_NOW + ($memprofile['timezone'] * 3600));
 
 	$localtime = $lang->sprintf($lang->local_time_format, $memlocaldate, $memlocaltime);
-
-	if($memprofile['lastactive'])
-	{
-		$memlastvisitdate = my_date($mybb->settings['dateformat'], $memprofile['lastactive']);
-		$memlastvisitsep = $lang->comma;
-		$memlastvisittime = my_date($mybb->settings['timeformat'], $memprofile['lastactive']);
-	}
-	else
-	{
-		$memlastvisitdate = $lang->lastvisit_never;
-		$memlastvisitsep = '';
-		$memlastvisittime = '';
-	}
 
 	if($memprofile['birthday'])
 	{
@@ -2555,55 +2571,44 @@ if($mybb->input['action'] == "profile")
 	$query = $db->simple_select("sessions", "location,nopermission", "uid='$uid' AND time>'{$timesearch}'", array('order_by' => 'time', 'order_dir' => 'DESC', 'limit' => 1));
 	$session = $db->fetch_array($query);
 
-	$online_status = '';
-	if($memprofile['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $memprofile['uid'] == $mybb->user['uid'])
+	$timeonline = $lang->none_registered;
+	$memlastvisitdate = $lang->lastvisit_never;
+	$last_seen = max(array($memprofile['lastactive'], $memprofile['lastvisit']));
+	if(!empty($last_seen))
 	{
-		// Lastvisit
-		if($memprofile['lastactive'])
+		// We have some stamp here
+		if($memprofile['invisible'] == 1 && $mybb->usergroup['canviewwolinvis'] != 1 && $memprofile['uid'] != $mybb->user['uid'])
 		{
-			$memlastvisitsep = $lang->comma;
-			$memlastvisitdate = my_date('relative', $memprofile['lastactive']);
+			$memlastvisitdate = $lang->lastvisit_hidden;
+			$online_status = $timeonline = $lang->timeonline_hidden;
 		}
-
-		// Time Online
-		$timeonline = $lang->none_registered;
-		if($memprofile['timeonline'] > 0)
-		{
-			$timeonline = nice_time($memprofile['timeonline']);
-		}
-
-		// Online?
-		if(!empty($session))
-		{
-			// Fetch their current location
-			$lang->load("online");
-			require_once MYBB_ROOT."inc/functions_online.php";
-			$activity = fetch_wol_activity($session['location'], $session['nopermission']);
-			$location = build_friendly_wol_location($activity);
-			$location_time = my_date($mybb->settings['timeformat'], $memprofile['lastactive']);
-
-			eval("\$online_status = \"".$templates->get("member_profile_online")."\";");
-		}
-		// User is offline
 		else
 		{
-			eval("\$online_status = \"".$templates->get("member_profile_offline")."\";");
+			$memlastvisitdate = my_date('relative', $last_seen);
+
+			if($memprofile['timeonline'] > 0)
+			{
+				$timeonline = nice_time($memprofile['timeonline']);
+			}
+
+			// Online?
+			if(!empty($session))
+			{
+				// Fetch their current location
+				$lang->load("online");
+				require_once MYBB_ROOT."inc/functions_online.php";
+				$activity = fetch_wol_activity($session['location'], $session['nopermission']);
+				$location = build_friendly_wol_location($activity);
+				$location_time = my_date($mybb->settings['timeformat'], $last_seen);
+	
+				eval("\$online_status = \"".$templates->get("member_profile_online")."\";");
+			}
 		}
 	}
 
-	if($memprofile['invisible'] == 1 && $mybb->usergroup['canviewwolinvis'] != 1 && $memprofile['uid'] != $mybb->user['uid'])
-	{
-		$memlastvisitsep = '';
-		$memlastvisittime = '';
-		$memlastvisitdate = $lang->lastvisit_never;
-
-		if($memprofile['lastactive'])
-		{
-			// We have had at least some active time, hide it instead
-			$memlastvisitdate = $lang->lastvisit_hidden;
-		}
-
-		$timeonline = $lang->timeonline_hidden;
+	if(!isset($online_status))
+	{		
+		eval("\$online_status = \"".$templates->get("member_profile_offline")."\";");
 	}
 
 	// Reset the background colours to keep it inline
@@ -2923,8 +2928,22 @@ if($mybb->input['action'] == "profile")
 
 		if(isset($memperms['canbereported']) && $memperms['canbereported'] == 1)
 		{
-			$add_remove_options = array('url' => "javascript:Report.reportUser({$memprofile['uid']});", 'class' => 'report_user_button', 'lang' => $lang->report_user);
-			eval("\$report_options = \"".$templates->get("member_profile_addremove")."\";"); // Report User
+			$reportable = true;
+			$query = $db->simple_select("reportedcontent", "reporters", "reportstatus != '1' AND id = '{$memprofile['uid']}' AND type = 'profile'");
+			if($db->num_rows($query))
+			{
+				$report = $db->fetch_array($query);
+				$report['reporters'] = my_unserialize($report['reporters']);
+				if(is_array($report['reporters']) && in_array($mybb->user['uid'], $report['reporters']))
+				{
+					$reportable = false;
+				}
+			}
+			if($reportable)
+			{
+				$add_remove_options = array('url' => "javascript:Report.reportUser({$memprofile['uid']});", 'class' => 'report_user_button', 'lang' => $lang->report_user);
+				eval("\$report_options = \"".$templates->get("member_profile_addremove")."\";"); // Report User
+			}
 		}
 	}
 

@@ -1,44 +1,37 @@
-[![MyBB](https://raw.githubusercontent.com/mybb/mybb/feature/images/logo.png "MyBB")](https://mybb.com "MyBB")
+<img align="left" src="https://raw.githubusercontent.com/mybb/mybb-website-theme/master/assets/images/logomark-blue-400h.png" height="80">
 
-[![Backers on Open Collective](https://opencollective.com/mybb/backers/badge.svg)](#backers)
- [![Sponsors on Open Collective](https://opencollective.com/mybb/sponsors/badge.svg)](#sponsors)
+# MyBB
+MyBB is a **free and open source forum software** written in PHP with support for MySQL/PostgreSQL/SQLite, licensed under [GNU LGPL v3](https://mybb.com/about/license).
 
-## Free never tasted so good.
-MyBB is a free and open source, community-based forum software project. Learn more at [MyBB.com](https://mybb.com).
+[**Learn more at MyBB.com &rarr;**](https://mybb.com)
 
-### MyBB 1.8
+#### Documentation
+Go to [**docs.mybb.com**](https://docs.mybb.com/) to view articles on usage, administration, and troubleshooting of MyBB.
 
-The `feature` branch contains the source code for MyBB 1.8. It contains the latest bug fixes for the 1.8 series and, while you're free to use the code on your own forum to fix specific issues, support may not be provided on MyBB.com until an official release.
+#### Extend
+Open [**Extend MyBB**](https://community.mybb.com/mods.php) to download plugins, themes, translations and other resources to customize your MyBB board.
 
-### MyBB 1.x
+#### Support & Discussion
+Visit the [MyBB Community Forums](https://community.mybb.com) and join the [MyBB Discord server](https://mybb.com/get-involved/discord/) to get support and discuss MyBB. To learn more about support resources, go to [**mybb.com/support**](https://mybb.com/support/).
 
-The `develop/*` branches contain the source code of future branches of MyBB under development.
+#### Security
+View [SECURITY.md](https://github.com/mybb/mybb/blob/feature/.github/SECURITY.md) for information on secure usage, incident recovery, and vulnerability reporting. To learn more about security research at MyBB, go to [**mybb.com/security**](https://mybb.com/get-involved/security/).
 
-### Contribute
-
-Please see the [**CONTRIBUTING.md**](https://github.com/mybb/mybb/blob/feature/CONTRIBUTING.md) for information on how to contribute to MyBB.
-
-### Community and Support
-Visit the [MyBB Community Forums](https://community.mybb.com) or [Documentation](https://docs.mybb.com) for support.
+### Get Involved
+View [CONTRIBUTING.md](https://github.com/mybb/mybb/blob/feature/.github/CONTRIBUTING.md) for information on branches, best practices for working with the code repository. To learn more about contributing to the MyBB Project, go to [**mybb.com/get-involved**](https://mybb.com/get-involved/).
 
 ## Credits
+### [Contributors](https://github.com/mybb/mybb/graphs/contributors)
 
-### Contributors
-
-This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
 <a href="https://github.com/mybb/mybb/graphs/contributors"><img src="https://opencollective.com/mybb/contributors.svg?width=890&button=false" /></a>
 
+Some icons by [Yusuke Kamiyamane](http://p.yusukekamiyamane.com/).
 
-### Backers
-
-Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com/mybb#backer)]
+### [Backers](https://opencollective.com/mybb#backer)
 
 <a href="https://opencollective.com/mybb#backers" target="_blank"><img src="https://opencollective.com/mybb/backers.svg?width=890"></a>
 
-
 ### Sponsors
-
-Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [[Become a sponsor](https://opencollective.com/mybb#sponsor)]
 
 <a href="https://opencollective.com/mybb/sponsor/0/website" target="_blank"><img src="https://opencollective.com/mybb/sponsor/0/avatar.svg"></a>
 <a href="https://opencollective.com/mybb/sponsor/1/website" target="_blank"><img src="https://opencollective.com/mybb/sponsor/1/avatar.svg"></a>
@@ -50,11 +43,3 @@ Support this project by becoming a sponsor. Your logo will show up here with a l
 <a href="https://opencollective.com/mybb/sponsor/7/website" target="_blank"><img src="https://opencollective.com/mybb/sponsor/7/avatar.svg"></a>
 <a href="https://opencollective.com/mybb/sponsor/8/website" target="_blank"><img src="https://opencollective.com/mybb/sponsor/8/avatar.svg"></a>
 <a href="https://opencollective.com/mybb/sponsor/9/website" target="_blank"><img src="https://opencollective.com/mybb/sponsor/9/avatar.svg"></a>
-
-
-
-### License
-MyBB is licensed under the [GNU Lesser General Public License v3](https://mybb.com/about/license).
-
----
-Some icons by [Yusuke Kamiyamane](http://p.yusukekamiyamane.com/).

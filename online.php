@@ -84,7 +84,7 @@ if($mybb->get_input('action') == "today")
 		{
 			$username = format_name(htmlspecialchars_uni($online['username']), $online['usergroup'], $online['displaygroup']);
 			$online['profilelink'] = build_profile_link($username, $online['uid']);
-			$onlinetime = my_date($mybb->settings['timeformat'], $online['lastactive']);
+			$onlinetime = my_date('normal', $online['lastactive']);
 
 			eval("\$todayrows .= \"".$templates->get("online_today_row")."\";");
 		}
@@ -143,7 +143,7 @@ else
 		{
 			case "sqlite":
 			case "pgsql":
-				$sql = "s.time DESC";
+				$sql = "CASE WHEN s.uid > 0 THEN 1 ELSE 0 END DESC, s.time DESC";
 				break;
 			default:
 				$sql = "IF( s.uid >0, 1, 0 ) DESC, s.time DESC";
@@ -154,26 +154,17 @@ else
 
 	$timesearch = TIME_NOW - $mybb->settings['wolcutoffmins']*60;
 
-	// Exactly how many users are currently online?
-	switch($db->type)
-	{
-		case "sqlite":
-			$sessions = array();
-			$query = $db->simple_select("sessions", "sid", "time > {$timesearch}");
-			while($sid = $db->fetch_field($query, "sid"))
-			{
-				$sessions[$sid] = 1;
-			}
-			$online_count = count($sessions);
-			unset($sessions);
-			break;
-		case "pgsql":
-		default:
-			$query = $db->simple_select("sessions", "COUNT(sid) as online", "time > {$timesearch}");
-			$online_count = $db->fetch_field($query, "online");
-			break;
-	}
-	
+	$query = $db->query("
+		SELECT COUNT(*) AS online FROM (
+			SELECT 1
+			FROM " . TABLE_PREFIX . "sessions
+			WHERE time > $timesearch
+			GROUP BY uid, ip
+		) s
+	");
+
+	$online_count = $db->fetch_field($query, "online");
+
 	if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
 	{
 		$mybb->settings['threadsperpage'] = 20;
@@ -203,14 +194,56 @@ else
 	$multipage = multipage($online_count, $perpage, $page, "online.php".$refresh_string);
 
 	// Query for active sessions
-	$query = $db->query("
-		SELECT DISTINCT s.sid, s.ip, s.uid, s.time, s.location, u.username, s.nopermission, u.invisible, u.usergroup, u.displaygroup
-		FROM ".TABLE_PREFIX."sessions s
-		LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
-		WHERE s.time>'$timesearch'
-		ORDER BY $sql
-		LIMIT {$start}, {$perpage}
-	");
+	$dbversion = $db->get_version();
+	if(
+		(
+			$db->type == 'mysqli' && (
+				version_compare($dbversion, '10.2.0', '>=') || ( // MariaDB
+					version_compare($dbversion, '10', '<') &&
+					version_compare($dbversion, '8.0.2', '>=')
+				)
+			)
+		) ||
+		($db->type == 'pgsql' && version_compare($dbversion, '8.4.0', '>=')) ||
+		($db->type == 'sqlite' && version_compare($dbversion, '3.25.0', '>='))
+	)
+	{
+		$query = $db->query("
+			SELECT * FROM (
+				SELECT
+					s.sid, s.ip, s.uid, s.time, s.location, u.username, s.nopermission, u.invisible, u.usergroup, u.displaygroup,
+					row_number() OVER (PARTITION BY s.uid, s.ip ORDER BY time DESC) AS row_num
+				FROM
+					".TABLE_PREFIX."sessions s
+					LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid = u.uid)
+				WHERE s.time > $timesearch
+			) s
+			WHERE row_num = 1
+			ORDER BY $sql
+			LIMIT {$start}, {$perpage}
+		");
+	}
+	else
+	{
+		$query = $db->query("
+			SELECT
+				s.sid, s.ip, s.uid, s.time, s.location, u.username, s.nopermission, u.invisible, u.usergroup, u.displaygroup
+			FROM
+				".TABLE_PREFIX."sessions s
+				INNER JOIN (
+					SELECT
+						MIN(s2.sid) AS sid
+					FROM
+						".TABLE_PREFIX."sessions s2
+						LEFT JOIN ".TABLE_PREFIX."sessions s3 ON (s2.sid = s3.sid AND s2.time < s3.time)
+					WHERE s2.time > $timesearch AND s3.sid IS NULL
+					GROUP BY s2.uid, s2.ip
+				) s2 ON (s.sid = s2.sid)
+				LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid = u.uid)
+			ORDER BY $sql
+			LIMIT {$start}, {$perpage}
+		");
+	}
 
 	// Fetch spiders
 	$spiders = $cache->read("spiders");

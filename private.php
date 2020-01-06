@@ -60,7 +60,7 @@ elseif ((int)my_substr($mybb->user['pmfolders'], 0, 1) != 0)
 if($update)
 {
 	$sql_array = array(
-		 "pmfolders" => $mybb->user['pmfolders']
+		 "pmfolders" => $db->escape_string($mybb->user['pmfolders']),
 	);
 	$db->update_query("users", $sql_array, "uid = ".$mybb->user['uid']);
 }
@@ -90,7 +90,15 @@ foreach($foldersexploded as $key => $folders)
 
 	eval("\$folderjump_folder .= \"".$templates->get("private_jump_folders_folder")."\";");
 	eval("\$folderoplist_folder .= \"".$templates->get("private_jump_folders_folder")."\";");
-	eval("\$foldersearch_folder .= \"".$templates->get("private_jump_folders_folder")."\";");
+	// Manipulate search folder selection to omit "Unread"
+	if($folder_id != 1)
+	{
+		if($folder_id == 0)
+		{
+			$folder_id = 1;
+		}
+		eval("\$foldersearch_folder .= \"".$templates->get("private_jump_folders_folder")."\";");
+	}
 }
 
 $from_fid = $mybb->input['fid'];
@@ -494,7 +502,12 @@ if($mybb->input['action'] == "results")
 			$senddate = $lang->not_sent;
 		}
 
-		$foldername = $foldernames[$message['folder']];
+		$fid = "0";
+		if((int)$message['folder'] > 1)
+		{
+			$fid = $message['folder'];
+		}
+		$foldername = $foldernames[$fid];
 
 		// What we do here is parse the post using our post parser, then strip the tags from it
 		$parser_options = array(
@@ -1590,13 +1603,22 @@ if($mybb->input['action'] == "empty")
 	$plugins->run_hooks("private_empty_start");
 
 	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
-	$folderlist = '';
+	$folderlist = $unread = '';
 	foreach($foldersexploded as $key => $folders)
 	{
 		$folderinfo = explode("**", $folders, 2);
 		$fid = $folderinfo[0];
-		$foldername = get_pm_folder_name($fid, $folderinfo[1]);
-		$query = $db->simple_select("privatemessages", "COUNT(*) AS pmsinfolder", " folder='$fid' AND uid='".$mybb->user['uid']."'");
+		if($folderinfo[0] == "1")
+		{
+			$fid = "1";
+			$unread = " AND status='0'";
+		}
+		if($folderinfo[0] == "0")
+		{
+			$fid = "1";
+		}
+		$foldername = get_pm_folder_name($folderinfo[0], $folderinfo[1]);
+		$query = $db->simple_select("privatemessages", "COUNT(*) AS pmsinfolder", " folder='$fid'$unread AND uid='".$mybb->user['uid']."'");
 		$thing = $db->fetch_array($query);
 		$foldercount = my_number_format($thing['pmsinfolder']);
 		eval("\$folderlist .= \"".$templates->get("private_empty_folder")."\";");
@@ -2252,7 +2274,7 @@ if(!$mybb->input['action'])
 	{
 		if($fid == 1)
 		{
-			$selective = ' AND pm.status="0"';
+			$selective = " AND pm.status='0'";
 		}
 
 		if($sortfield == "username")
