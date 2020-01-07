@@ -3892,7 +3892,7 @@ if($mybb->input['action'] == "attachments")
 		++$processedattachments;
 	}
 
-	if ($processedattachments >= $perpage) {
+	if ($processedattachments >= $perpage || $page > 1) {
 		$query = $db->query("
 			SELECT SUM(a.filesize) AS ausage, COUNT(a.aid) AS acount
 			FROM ".TABLE_PREFIX."attachments a
