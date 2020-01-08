@@ -24,6 +24,10 @@ function upgrade49_dbchanges()
 {
 	global $output, $db;
 
+	$output->print_header("Updating Database");
+	echo "<p>Performing necessary upgrade queries...</p>";
+	flush();
+
 	if($db->field_exists('yahoo', 'users'))
 	{
 		$db->drop_column('users', 'yahoo');
@@ -34,6 +38,9 @@ function upgrade49_dbchanges()
 	$db->update_query('profilefields', array(
 		'description' => "REPLACE(description, 'sex', 'gender')",
 	), 'fid = 3');
+	$db->modify_column('attachments', 'filename', 'varchar(255)', true, "''");
+	$db->modify_column('attachments', 'attachname', 'varchar(255)', true, "''");
+
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("49_done");
 }

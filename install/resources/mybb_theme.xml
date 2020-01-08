@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<theme name="MyBB Master Style" version="1822">
+<theme name="MyBB Master Style" version="1823">
 	<properties>
 		<templateset><![CDATA[1]]></templateset>
 		<imgdir><![CDATA[images]]></imgdir>
@@ -3942,7 +3942,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 </tr>
 </table>
 <br />]]></template>
-		<template name="forumdisplay_searchforum" version="120"><![CDATA[<form action="search.php" method="post">
+		<template name="forumdisplay_searchforum" version="1822"><![CDATA[<form action="search.php">
 	<span class="smalltext"><strong>{$lang->search_forum}</strong></span>
 	<input type="text" class="textbox" name="keywords" /> {$gobutton}
 	<input type="hidden" name="action" value="do_search" />
@@ -4255,7 +4255,7 @@ $(".forumjump").on('change', function() {
 		<template name="header_menu_memberlist" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/memberlist.php" class="memberlist">{$lang->toplinks_memberlist}</a></li>]]></template>
 		<template name="header_menu_portal" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/portal.php" class="portal">{$lang->toplinks_portal}</a></li>]]></template>
 		<template name="header_menu_search" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/search.php" class="search">{$lang->toplinks_search}</a></li>]]></template>
-		<template name="header_quicksearch" version="1804"><![CDATA[						<form action="{$mybb->settings['bburl']}/search.php" method="post">
+		<template name="header_quicksearch" version="1822"><![CDATA[						<form action="{$mybb->settings['bburl']}/search.php">
 						<fieldset id="search">
 							<input name="keywords" type="text" class="textbox" />
 							<input value="{$lang->search_button}" type="submit" class="button" />
@@ -4284,14 +4284,15 @@ $(".forumjump").on('change', function() {
 				<script type="text/javascript">
 					$("#quick_login input[name='url']").val($(location).attr('href'));
 				</script>]]></template>
-		<template name="header_welcomeblock_guest_login_modal" version="1816"><![CDATA[<tr>
+		<template name="header_welcomeblock_guest_login_modal" version="1823"><![CDATA[<tr>
 	<td class="trow1" width="25%"><strong>{$login_username}</strong></td>
 	<td class="trow1"><input name="quick_username" id="quick_login_username" type="text" value="" class="textbox initial_focus" /></td>
 </tr>
 <tr>
 	<td class="trow2"><strong>{$lang->password}</strong></td>
 	<td class="trow2">
-		<input name="quick_password" id="quick_login_password" type="password" value="" class="textbox" /> <a href="{$mybb->settings['bburl']}/member.php?action=lostpw" class="lost_password">{$lang->lost_password}</a>
+		<input name="quick_password" id="quick_login_password" type="password" value="" class="textbox" /><br />
+		<a href="{$mybb->settings['bburl']}/member.php?action=lostpw" class="lost_password">{$lang->lost_password}</a>
 	</td>
 </tr>
 <tr>
@@ -9324,13 +9325,13 @@ if(use_xmlhttprequest == "1")
 </tr>
 </table>
 <br />]]></template>
-		<template name="portal_search" version="1811"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<template name="portal_search" version="1822"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead"><strong>{$lang->search_forums}</strong></td>
 </tr>
 <tr>
 <td class="trow1" align="center">
-<form method="post" action="{$mybb->settings['bburl']}/search.php">
+<form action="{$mybb->settings['bburl']}/search.php">
 <input type="hidden" name="action" value="do_search" />
 <input type="hidden" name="postthread" value="1" />
 <input type="hidden" name="forums" value="all" />
@@ -9401,13 +9402,13 @@ if(use_xmlhttprequest == "1")
 </table>
 <br />]]></template>
 		<template name="portal_whosonline_memberbit" version="1818"><![CDATA[<a href="{$mybb->settings['bburl']}/{$user['profilelink']}">{$user['username']}</a>{$invisiblemark}]]></template>
-		<template name="post_attachments" version="1822"><![CDATA[<br />
+		<template name="post_attachments" version="1823"><![CDATA[<br />
 			<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 	<td class="thead" colspan="3"><strong>{$lang->attachments}</strong></td>
 </tr>
 <tr>
-	<td class="tcat smalltext" colspan="3">{$lang->attach_quota} {$lang->attach_usage} {$link_viewattachments}</a></td>
+	<td class="tcat smalltext" colspan="3">{$lang->attach_quota} {$lang->attach_usage} {$link_viewattachments}</td>
 </tr>
 {$newattach}
 {$attachments}
@@ -9494,7 +9495,7 @@ if(use_xmlhttprequest == "1")
 		captchaTarget = $('input[name="submit"], #quick_reply_submit').filter(function(){
 			return $(this).closest('#quick_login').length == 0
 		});
-		
+
 		captchaTarget.attr('data-size', 'invisible').unbind('click');
 
 		grecaptcha.render(captchaTarget.get(0), {
@@ -10942,14 +10943,14 @@ document.write('<br /><span class="smalltext"><a href="javascript:void(0)" oncli
 			<a href="javascript:void(0)" onclick="Report.reportReputation({$reputation_vote['rid']}); return false;" class="postbit_report"><span>{$lang->report_vote}</span></a>
 		</div>]]>
 		</template>
-		<template name="search" version="1820"><![CDATA[<html>
+		<template name="search" version="1822"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->search}</title>
 {$headerinclude}
 </head>
 <body>
 {$header}
-<form method="post" action="search.php">
+<form action="search.php">
 <input type="hidden" name="action" value="do_search" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
@@ -13959,9 +13960,9 @@ if(use_xmlhttprequest == "1")
 <td class="trow1" width="20%"><strong>{$lang->username}</strong></td>
 <td class="trow1">{$mybb->user['username']} <span class="smalltext">[<strong><a href="member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}">{$lang->change_user}</a></strong>]</span></td>
 </tr>]]></template>
-		<template name="codebuttons" version="1821"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/sceditor/themes/{$theme['editortheme']}" type="text/css" media="all" />
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/sceditor/jquery.sceditor.bbcode.min.js?ver=1821"></script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/bbcodes_sceditor.js?ver=1821"></script>
+		<template name="codebuttons" version="1822"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/sceditor/themes/{$theme['editortheme']}" type="text/css" media="all" />
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/sceditor/jquery.sceditor.bbcode.min.js?ver=1822"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/bbcodes_sceditor.js?ver=1822"></script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/sceditor/plugins/undo.js?ver=1821"></script>
 <script type="text/javascript">
 var partialmode = {$mybb->settings['partialmode']},

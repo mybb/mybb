@@ -630,7 +630,7 @@ if($mybb->user['uid'] != 0 && is_array($groupleaders) && array_key_exists($mybb-
 
 		$user['gid'] = (int)$user['gid'];
 
-		if(!empty($groupscache[$user['gid']]['joinable']) && $groupscache[$user['gid']]['joinable'] == 1)
+		if(!empty($groupscache[$user['gid']]['type']) && $groupscache[$user['gid']]['type'] == 4)
 		{
 			$showjoinnotice = true;
 			$gids .= ",'{$user['gid']}'";
