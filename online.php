@@ -128,7 +128,7 @@ else
 	// Custom sorting options
 	if($mybb->get_input('sortby') == "username")
 	{
-		$sql = "s.username ASC, s.time DESC";
+		$sql = "u.username ASC, s.time DESC";
 		$refresh_string = "?sortby=username";
 	}
 	elseif($mybb->get_input('sortby') == "location")
@@ -208,6 +208,8 @@ else
 		($db->type == 'sqlite' && version_compare($dbversion, '3.25.0', '>='))
 	)
 	{
+		$sql = str_replace('u.username', 's.username', $sql);
+
 		$query = $db->query("
 			SELECT * FROM (
 				SELECT
