@@ -48,7 +48,7 @@ if($mybb->get_input('action') == "today")
 	{
 		$mybb->settings['threadsperpage'] = 20;
 	}
-	
+
 	// Add pagination
 	$perpage = $mybb->settings['threadsperpage'];
 
@@ -128,7 +128,7 @@ else
 	// Custom sorting options
 	if($mybb->get_input('sortby') == "username")
 	{
-		$sql = "u.username ASC, s.time DESC";
+		$sql = "s.username ASC, s.time DESC";
 		$refresh_string = "?sortby=username";
 	}
 	elseif($mybb->get_input('sortby') == "location")
