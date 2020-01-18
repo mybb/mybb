@@ -165,7 +165,7 @@ class errorHandler {
 		$accepted_error_types = array('both', 'error', 'warning', 'none');
 		if(!in_array($mybb->settings['errortypemedium'], $accepted_error_types))
 		{
-			$mybb->settings['errortypemedium'] = "both";
+			$mybb->settings['errortypemedium'] = "none";
 		}
 
 		if(defined("IN_TASK"))
