@@ -539,6 +539,28 @@ class errorHandler {
 			$charset = 'UTF-8';
 		}
 
+		if(isset($mybb->user) && is_array($mybb->usergroup) && $mybb->usergroup['cancp'] == 1)
+		{
+			// admins directed to contact MyBB
+			$contact = 'Please contact the <a href="https://mybb.com">MyBB Group</a> for technical support.';
+		}
+		else
+		{
+			// users directed to contact the site owner
+			$contact_us = 'site owner';
+			if(($mybb->settings['contactlink'] == "contact.php" && $mybb->settings['contact'] == 1 && ($mybb->settings['contact_guests'] != 1 && $mybb->user['uid'] == 0 || $mybb->user['uid'] > 0)) || $mybb->settings['contactlink'] != "contact.php")
+			{
+				if(!my_validate_url($mybb->settings['contactlink'], true, true) && my_substr($mybb->settings['contactlink'], 0, 7) != 'mailto:')
+				{
+					$mybb->settings['contactlink'] = $mybb->settings['bburl'].'/'.$mybb->settings['contactlink'];
+				}
+
+				$contact_us = '<a href="' . $mybb->settings['contactlink'] . '">' . $contact_us . '</a>';
+			}
+
+			$contact = 'Please contact the ' . $contact_us . ' for technical support.';
+		}
+
 		if(!headers_sent() && !defined("IN_INSTALL") && !defined("IN_UPGRADE"))
 		{
 			@header('HTTP/1.1 503 Service Temporarily Unavailable');
@@ -579,7 +601,7 @@ class errorHandler {
 
 			<div id="error">
 				{$error_message}
-				<p id="footer">Please contact the <a href="https://mybb.com">MyBB Group</a> for technical support.</p>
+				<p id="footer">{$contact}</p>
 			</div>
 		</div>
 	</div>
@@ -604,7 +626,7 @@ EOF;
 		<h2>{$title}</h2>
 		<div id="mybb_error_error">
 		{$error_message}
-			<p id="mybb_error_footer">Please contact the <a href="https://mybb.com">MyBB Group</a> for technical support.</p>
+			<p id="mybb_error_footer">{$contact}</p>
 		</div>
 	</div>
 EOF;
