@@ -203,6 +203,8 @@ else
 		($db->type == 'sqlite' && version_compare($dbversion, '3.25.0', '>='))
 	)
 	{
+		$sql = str_replace('u.username', 's.username', $sql);
+
 		$query = $db->query("
 			SELECT * FROM (
 				SELECT
