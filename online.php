@@ -48,7 +48,7 @@ if($mybb->get_input('action') == "today")
 	{
 		$mybb->settings['threadsperpage'] = 20;
 	}
-	
+
 	// Add pagination
 	$perpage = $mybb->settings['threadsperpage'];
 
@@ -208,6 +208,8 @@ else
 		($db->type == 'sqlite' && version_compare($dbversion, '3.25.0', '>='))
 	)
 	{
+		$sql = str_replace('u.username', 's.username', $sql);
+
 		$query = $db->query("
 			SELECT * FROM (
 				SELECT
