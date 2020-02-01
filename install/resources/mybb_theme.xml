@@ -5684,7 +5684,7 @@ if(use_xmlhttprequest == "1")
 </tr>
 <tr>
 	<td class="trow1" width="33%" style="vertical-align: top;">
-		{$lang->search_exactly}<br />
+		{$lang->exactly}<br />
 		<input type="text" class="textbox" name="username" id="username" style="width: 99%; margin-top: 4px;" value="{$search_username}" />
 	</td>
 	<td class="trow1" width="33%" style="vertical-align: top;">
