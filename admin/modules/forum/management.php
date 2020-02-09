@@ -2286,7 +2286,7 @@ if(!$mybb->input['action'])
 		$form_container = new FormContainer($lang->manage_forums);
 	}
 	$form_container->output_row_header($lang->forum);
-	$form_container->output_row_header($lang->order, array("class" => "align_center", 'width' => '5%'));
+	$form_container->output_row_header($lang->order, array("class" => "align_center", 'width' => '6%'));
 	$form_container->output_row_header($lang->controls, array("class" => "align_center", 'style' => 'width: 200px'));
 
 	build_admincp_forums_list($form_container, $form, $fid);
