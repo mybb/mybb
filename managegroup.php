@@ -239,9 +239,10 @@ elseif($mybb->input['action'] == "do_manageusers" && $mybb->request_method == "p
 
 	$plugins->run_hooks("managegroup_do_manageusers_start");
 
-	if(is_array($mybb->get_input('removeuser', MyBB::INPUT_ARRAY)))
+	$users = $mybb->get_input('removeuser', MyBB::INPUT_ARRAY);
+	if(is_array($users) && count($users))
 	{
-		foreach($mybb->get_input('removeuser', MyBB::INPUT_ARRAY) as $uid)
+		foreach($users as $uid)
 		{
 			leave_usergroup($uid, $gid);
 		}
