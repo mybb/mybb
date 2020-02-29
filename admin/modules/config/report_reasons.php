@@ -364,7 +364,7 @@ if(!$mybb->input['action'])
 
 	if($form_container->num_rows() == 0)
 	{
-		$form_container->construct_cell($lang->no_report_reasons, array('colspan' => 5));
+		$form_container->output_cell($lang->no_report_reasons, array('colspan' => 5));
 		$form_container->construct_row();
 	}
 
