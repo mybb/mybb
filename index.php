@@ -184,7 +184,7 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 	}
 
 	// Build the who's online bit on the index page.
-	$onlinecount = $membercount + $guestcount + $botcount;
+	$onlinecount = $membercount + $guestcount;	// $botcount is already included in $guestcount.
 
 	if($onlinecount != 1)
 	{
