@@ -78,7 +78,7 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 
 			if($location['location1'])
 			{
-				$forum_viewers[$location['location1']] += $location['guestcount'];
+				$forum_viewers[$location['location1']] = isset($forum_viewers[$location['location1']]) ? $forum_viewers[$location['location1']] + $location['guestcount'] : $location['guestcount'];
 			}
 		}
 	}
@@ -101,7 +101,7 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 	// Fetch spiders
 	$spiders = $cache->read('spiders');
 
-	// Loop through all users.
+	// Loop through all users and spiders/bots.
 	while($user = $db->fetch_array($query))
 	{
 		// Create a key to test if this user is a search bot.
@@ -136,6 +136,11 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 					$user['profilelink'] = build_profile_link($user['username'], $user['uid']);
 					eval('$onlinemembers[] = "'.$templates->get('index_whosonline_memberbit', 1, 0).'";');
 				}
+				// Locations will only be counted for registered users. Bots are already counted as guests before.
+				if($mybb->settings['showforumviewing'] != 0 && $user['location1'])
+				{
+					$forum_viewers[$user['location1']] = isset($forum_viewers[$user['location1']]) ? $forum_viewers[$user['location1']] + 1 : 1;
+				}
 				// This user has been handled.
 				$doneusers[$user['uid']] = $user['time'];
 			}
@@ -154,11 +159,6 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 			// The user is a search bot.
 			$onlinebots[$key] = format_name($spiders[$botkey]['name'], $spiders[$botkey]['usergroup']);
 			++$botcount;
-		}
-
-		if($user['location1'])
-		{
-			++$forum_viewers[$user['location1']];
 		}
 	}
 
