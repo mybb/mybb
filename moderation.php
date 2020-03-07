@@ -3153,7 +3153,6 @@ switch($mybb->input['action'])
 				// Clear the profile
 				$userhandler->clear_profile($uid, $mybb->settings['purgespammerbangroup']);
 
-				$cache->update_banned();
 				$cache->update_bannedips();
 				$cache->update_awaitingactivation();
 

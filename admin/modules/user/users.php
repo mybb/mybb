@@ -2564,7 +2564,6 @@ if($mybb->input['action'] == "inline_edit")
 					$db->delete_query("banned", "uid = '".$ban['uid']."'");
 				}
 
-				$cache->update_banned();
 				$cache->update_moderators();
 
 				$mybb->input['action'] = "inline_lift";
@@ -2658,7 +2657,6 @@ if($mybb->input['action'] == "inline_edit")
 					$db->delete_query("forumsubscriptions", "uid = '{$user['uid']}'");
 					$db->delete_query("threadsubscriptions", "uid = '{$user['uid']}'");
 
-					$cache->update_banned();
 					++$banned_count;
 				}
 				$mybb->input['action'] = "inline_banned";

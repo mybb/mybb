@@ -1339,7 +1339,6 @@ if($mybb->input['action'] == "delete")
 		$cache->update_moderators();
 		$cache->update_usergroups();
 		$cache->update_forumpermissions();
-		$cache->update_banned();
 
 		// Log admin action
 		log_admin_action($usergroup['gid'], $usergroup['title']);
