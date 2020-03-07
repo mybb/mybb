@@ -5612,7 +5612,7 @@ if(use_xmlhttprequest == "1")
 </table>
 </div>
 </div>]]></template>
-		<template name="memberlist" version="1821"><![CDATA[<html>
+		<template name="memberlist" version="1823"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->member_list}</title>
 {$headerinclude}
@@ -5684,7 +5684,7 @@ if(use_xmlhttprequest == "1")
 </tr>
 <tr>
 	<td class="trow1" width="33%" style="vertical-align: top;">
-		{$lang->contains}<br />
+		{$lang->exactly}<br />
 		<input type="text" class="textbox" name="username" id="username" style="width: 99%; margin-top: 4px;" value="{$search_username}" />
 	</td>
 	<td class="trow1" width="33%" style="vertical-align: top;">
