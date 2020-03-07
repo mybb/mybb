@@ -588,7 +588,6 @@ function buildcaches()
 	$cache->update_tasks();
 	$cache->update_spiders();
 	$cache->update_bannedips();
-	$cache->update_banned();
 	$cache->update_birthdays();
 	$cache->update_most_replied_threads();
 	$cache->update_most_viewed_threads();
