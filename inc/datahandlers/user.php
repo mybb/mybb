@@ -1591,7 +1591,6 @@ class UserDataHandler extends DataHandler
 		$plugins->run_hooks("datahandler_user_delete_end", $this);
 
 		// Update  cache
-		$cache->update_banned();
 		$cache->update_moderators();
 		$cache->update_forumsdisplay();
 		$cache->update_reportedcontent();
