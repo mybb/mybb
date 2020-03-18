@@ -15,7 +15,7 @@ $templatelist = 'announcement,postbit_groupimage,postbit_reputation,postbit_avat
 $templatelist .= ',forumdisplay_password_wrongpass,forumdisplay_password,postbit_author_guest,postbit_userstar,announcement_quickdelete,postbit,postbit_classic,postbit_www,announcement_edit';
 
 require_once './global.php';
-require_once MYBB_ROOT . 'inc/functions_post.php';
+require_once MYBB_ROOT.'inc/functions_post.php';
 
 // Load global language phrases
 $lang->load('announcements');
@@ -28,16 +28,19 @@ $announcement = $db->fetch_array($query);
 
 $plugins->run_hooks('announcements_start');
 
-if (!$announcement) {
+if(!$announcement)
+{
 	error($lang->error_invalidannouncement);
 }
 
 // Get forum info
 $fid = $announcement['fid'];
-if ($fid > 0) {
+if($fid > 0)
+{
 	$forum = get_forum($fid);
 
-	if (!$forum) {
+	if(!$forum)
+	{
 		error($lang->error_invalidforum);
 	}
 
@@ -47,8 +50,9 @@ if ($fid > 0) {
 	// Permissions
 	$forumpermissions = forum_permissions($forum['fid']);
 
-	if ($forumpermissions['canview'] == 0 ||
-		$forumpermissions['canviewthreads'] == 0) {
+	if($forumpermissions['canview'] == 0 ||
+		$forumpermissions['canviewthreads'] == 0)
+	{
 		error_no_permission();
 	}
 
@@ -70,7 +74,8 @@ $query = $db->query("
 
 $announcementarray = $db->fetch_array($query);
 
-if (!$announcementarray) {
+if(!$announcementarray)
+{
 	error($lang->error_invalidannouncement);
 }
 
@@ -86,7 +91,8 @@ $data_key = array(
 	'usereputationsystem' => 'usereputationsystem'
 );
 
-foreach ($data_key as $field => $key) {
+foreach($data_key as $field => $key)
+{
 	$announcementarray[$key] = $groupscache[$announcementarray['usergroup']][$field];
 }
 
@@ -96,18 +102,22 @@ $announcement = build_postbit($announcementarray, 3);
 $announcementarray['subject'] = $parser->parse_badwords($announcementarray['subject']);
 $lang->forum_announcement = $lang->sprintf($lang->forum_announcement, $announcementarray['subject']);
 
-if ($announcementarray['startdate'] > $mybb->user['lastvisit']) {
+if($announcementarray['startdate'] > $mybb->user['lastvisit'])
+{
 	$setcookie = true;
-	if (isset($mybb->cookies['mybb']['announcements']) &&
-		is_scalar($mybb->cookies['mybb']['announcements'])) {
+	if(isset($mybb->cookies['mybb']['announcements']) &&
+		is_scalar($mybb->cookies['mybb']['announcements']))
+	{
 		$cookie = my_unserialize(stripslashes($mybb->cookies['mybb']['announcements']));
 
-		if (isset($cookie[$announcementarray['aid']])) {
+		if(isset($cookie[$announcementarray['aid']]))
+		{
 			$setcookie = false;
 		}
 	}
 
-	if ($setcookie) {
+	if($setcookie)
+	{
 		my_set_array_cookie('announcements', $announcementarray['aid'], $announcementarray['startdate'], -1);
 	}
 }

@@ -284,7 +284,8 @@ class DB_MySQL implements DB_Base
 		if($success && $this->db_encoding)
 		{
 			// A little magic to support PHP 5.2.0, 5.2.1 and 5.2.2
-			if(version_compare(PHP_VERSION, '5.2.3', '>=')) {
+			if(version_compare(PHP_VERSION, '5.2.3', '>='))
+			{
 				@mysql_set_charset($this->db_encoding, $this->read_link);
 			}
 			else
@@ -294,7 +295,8 @@ class DB_MySQL implements DB_Base
 
 			if($write_success && count($this->connections) > 1)
 			{
-				if(version_compare(PHP_VERSION, '5.2.3', '>=')) {
+				if(version_compare(PHP_VERSION, '5.2.3', '>='))
+				{
 					@mysql_set_charset($this->db_encoding, $this->write_link);
 				}
 				else
@@ -334,8 +336,8 @@ class DB_MySQL implements DB_Base
 
 		if($this->error_number() && !$hide_errors)
 		{
-			 $this->error($string);
-			 exit;
+			$this->error($string);
+			exit;
 		}
 
 		if($write_query)
@@ -747,6 +749,7 @@ class DB_MySQL implements DB_Base
 			$shutdown_queries[] = $query;
 		}
 	}
+
 	/**
 	 * Performs a simple select query.
 	 *
@@ -814,7 +817,7 @@ class DB_MySQL implements DB_Base
 				{
 					$value = $this->escape_binary($value);
 				}
-				
+
 				$array[$field] = $value;
 			}
 			else
@@ -864,7 +867,7 @@ class DB_MySQL implements DB_Base
 					{
 						$value = $this->escape_binary($value);
 					}
-				
+
 					$values[$field] = $value;
 				}
 				else
@@ -919,7 +922,7 @@ class DB_MySQL implements DB_Base
 				{
 					$value = $this->escape_binary($value);
 				}
-				
+
 				$query .= $comma."`".$field."`={$value}";
 			}
 			else
@@ -1325,7 +1328,7 @@ class DB_MySQL implements DB_Base
 				{
 					$value = $this->escape_binary($value);
 				}
-				
+
 				$values .= $comma."`".$column."`=".$value;
 			}
 			else
@@ -1338,7 +1341,7 @@ class DB_MySQL implements DB_Base
 
 		if(empty($replacements))
 		{
-			 return false;
+			return false;
 		}
 
 		return $this->write_query("REPLACE INTO {$this->table_prefix}{$table} SET {$values}");
@@ -1484,7 +1487,7 @@ class DB_MySQL implements DB_Base
 	/**
 	 * Fetch a database collation for a particular database character set
 	 *
-	 * @param string  $charset The database character set
+	 * @param string $charset The database character set
 	 * @return string|bool The matching database collation, false if unsupported
 	 */
 	function fetch_charset_collation($charset)

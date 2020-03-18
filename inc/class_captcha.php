@@ -51,7 +51,7 @@ class captcha
 	 *
 	 * @var string
 	 */
-	 public $captcha_template = '';
+	public $captcha_template = '';
 
 	/**
 	 * CAPTCHA Server URL
@@ -82,7 +82,7 @@ class captcha
 	public $errors = array();
 
 	/**
-	 * @param bool   $build
+	 * @param bool $build
 	 * @param string $template
 	 */
 	function __construct($build = false, $template = "")
@@ -151,20 +151,20 @@ class captcha
 		);
 
 		$db->insert_query("captcha", $insert_array);
-        $this->html = \MyBB\template('misc/captcha/' . $this->captcha_template . '.twig', [
-            'randomstr' => $randomstr,
-            'imagehash' => $imagehash
-        ]);
+		$this->html = \MyBB\template('misc/captcha/'.$this->captcha_template.'.twig', [
+			'randomstr' => $randomstr,
+			'imagehash' => $imagehash
+		]);
 	}
 
 	function build_recaptcha()
 	{
 		global $mybb;
 
-        $this->html = \MyBB\template('misc/captcha/' . $this->captcha_template . '.twig', [
-            'server' => $this->server,
-            'type' => $this->type
-        ]);
+		$this->html = \MyBB\template('misc/captcha/'.$this->captcha_template.'.twig', [
+			'server' => $this->server,
+			'type' => $this->type
+		]);
 	}
 
 	/**
@@ -193,8 +193,8 @@ class captcha
 		}
 
 		$this->html = \MyBB\template('misc/captcha/hidden.twig', [
-            'fields' => $fields
-        ]);
+			'fields' => $fields
+		]);
 	}
 
 	/**

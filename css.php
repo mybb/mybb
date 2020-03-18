@@ -13,7 +13,7 @@ define("NO_ONLINE", 1);
 define('THIS_SCRIPT', 'css.php');
 
 require_once "./inc/init.php";
-require_once MYBB_ROOT . $config['admin_dir'] . '/inc/functions_themes.php';
+require_once MYBB_ROOT.$config['admin_dir'].'/inc/functions_themes.php';
 
 $stylesheet = $mybb->get_input('stylesheet', MyBB::INPUT_INT);
 

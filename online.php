@@ -34,7 +34,7 @@ if($mybb->get_input('action') == "today")
 
 	$plugins->run_hooks("online_today_start");
 
-	$threshold = TIME_NOW-(60*60*24);
+	$threshold = TIME_NOW - (60 * 60 * 24);
 	$query = $db->simple_select("users", "COUNT(uid) AS users", "lastactive > '{$threshold}'");
 	$todaycount = $db->fetch_field($query, "users");
 
@@ -45,14 +45,14 @@ if($mybb->get_input('action') == "today")
 	{
 		$mybb->settings['threadsperpage'] = 20;
 	}
-	
+
 	// Add pagination
 	$perpage = $mybb->settings['threadsperpage'];
 
 	if($mybb->get_input('page', MyBB::INPUT_INT) > 0)
 	{
 		$page = $mybb->get_input('page', MyBB::INPUT_INT);
-		$start = ($page-1) * $perpage;
+		$start = ($page - 1) * $perpage;
 		$pages = ceil($todaycount / $perpage);
 		if($page > $pages)
 		{
@@ -73,12 +73,12 @@ if($mybb->get_input('action') == "today")
 	{
 		if($online['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $online['uid'] == $mybb->user['uid'])
 		{
-            $username = format_name(htmlspecialchars_uni($online['username']), $online['usergroup'], $online['displaygroup']);
-            $online_today_users[] = [
-                'profilelink' => build_profile_link($username, $online['uid']),
-                'onlinetime' => my_date($mybb->settings['timeformat'], $online['lastactive']),
-                'invisible' => $online['invisible'],
-            ];
+			$username = format_name(htmlspecialchars_uni($online['username']), $online['usergroup'], $online['displaygroup']);
+			$online_today_users[] = [
+				'profilelink' => build_profile_link($username, $online['uid']),
+				'onlinetime' => my_date($mybb->settings['timeformat'], $online['lastactive']),
+				'invisible' => $online['invisible'],
+			];
 		}
 	}
 
@@ -110,11 +110,11 @@ if($mybb->get_input('action') == "today")
 
 	$plugins->run_hooks("online_today_end");
 
-    output_page(\MyBB\template('online/today.twig', [
-        'online_today' => $onlinetoday,
-        'online_today_users' => $online_today_users,
-        'multipage' => $multipage,
-    ]));
+	output_page(\MyBB\template('online/today.twig', [
+		'online_today' => $onlinetoday,
+		'online_today_users' => $online_today_users,
+		'multipage' => $multipage,
+	]));
 }
 else
 {
@@ -147,7 +147,7 @@ else
 		$refresh_string = '';
 	}
 
-	$timesearch = TIME_NOW - $mybb->settings['wolcutoffmins']*60;
+	$timesearch = TIME_NOW - $mybb->settings['wolcutoffmins'] * 60;
 
 	// Exactly how many users are currently online?
 	switch($db->type)
@@ -168,7 +168,7 @@ else
 			$online_count = $db->fetch_field($query, "online");
 			break;
 	}
-	
+
 	if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
 	{
 		$mybb->settings['threadsperpage'] = 20;
@@ -180,7 +180,7 @@ else
 	if($mybb->get_input('page', MyBB::INPUT_INT) > 0)
 	{
 		$page = $mybb->get_input('page', MyBB::INPUT_INT);
-		$start = ($page-1) * $perpage;
+		$start = ($page - 1) * $perpage;
 		$pages = ceil($online_count / $perpage);
 		if($page > $pages)
 		{
@@ -249,9 +249,10 @@ else
 		foreach($users as $user)
 		{
 			$row = build_wol_row($user);
-			if ($row) {
-			    $online_rows[] = $row;
-            }
+			if($row)
+			{
+				$online_rows[] = $row;
+			}
 		}
 	}
 	if(isset($guests) && is_array($guests))
@@ -259,10 +260,11 @@ else
 		reset($guests);
 		foreach($guests as $user)
 		{
-            $row = build_wol_row($user);
-            if ($row) {
-                $online_rows[] = $row;
-            }
+			$row = build_wol_row($user);
+			if($row)
+			{
+				$online_rows[] = $row;
+			}
 		}
 	}
 
@@ -273,9 +275,9 @@ else
 
 	$plugins->run_hooks("online_end");
 
-    output_page(\MyBB\template('online/online.twig', [
-        'refresh_string' => $refresh_string,
-        'online_users' => $online_rows,
-        'multipage' => $multipage,
-    ]));
+	output_page(\MyBB\template('online/online.twig', [
+		'refresh_string' => $refresh_string,
+		'online_users' => $online_rows,
+		'multipage' => $multipage,
+	]));
 }

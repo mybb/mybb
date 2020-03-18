@@ -206,8 +206,8 @@ function build_server_stats($is_install=1, $prev_version='', $current_version=''
 	// Dropped fetching host details since v.1.8.16 as http://www.whoishostingthis.com API seems to be down and this info is not required by MyBB.
 	$info['hosturl'] = $info['hostname'] = "unknown/local";
 	if($_SERVER['HTTP_HOST'] == 'localhost')
-	{	
-		$info['hosturl'] = $info['hostname'] = "localhost";	
+	{
+		$info['hosturl'] = $info['hostname'] = "localhost";
 	}
 
 	if(isset($_SERVER['HTTP_USER_AGENT']))
@@ -250,11 +250,11 @@ function build_server_stats($is_install=1, $prev_version='', $current_version=''
 }
 
 /**
-* parser_php_info
-* Function to get and parse the list of PHP info into a usuable array
-*
-* @return Array An array of all the extensions installed in PHP
-*/
+ * parser_php_info
+ * Function to get and parse the list of PHP info into a usuable array
+ *
+ * @return Array An array of all the extensions installed in PHP
+ */
 function parse_php_info()
 {
 	ob_start();

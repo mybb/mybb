@@ -36,7 +36,7 @@ class dbpdoEngine {
 	 * @param string $password The database user's password. (depends on DSN)
 	 * @param array $driver_options The databases driver options (optional)
 	 */
-	function __construct($dsn, $username="", $password="", $driver_options=array())
+	function __construct($dsn, $username = "", $password = "", $driver_options = array())
 	{
 		try
 		{
@@ -44,7 +44,7 @@ class dbpdoEngine {
 		}
 		catch(PDOException $exception)
 		{
-    		die('Connection failed: '.$exception->getMessage());
+			die('Connection failed: '.$exception->getMessage());
 		}
 
 		$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

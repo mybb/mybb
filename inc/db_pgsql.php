@@ -981,7 +981,7 @@ class DB_PgSQL implements DB_Base
 
 		$version = pg_version($this->current_link);
 
-  		$this->version = $version['server'];
+		$this->version = $version['server'];
 
 		return $this->version;
 	}

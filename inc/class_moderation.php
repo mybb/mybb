@@ -1113,7 +1113,7 @@ class Moderation
 				{
 					$this->delete_thread($redirect_tid);
 				}
- 				break;
+				break;
 			case "copy":// copy thread
 
 				$threadarray = array(
@@ -1504,7 +1504,7 @@ class Moderation
 
 		// Update any subscriptions for the merged thread
 		if(!empty($subscriptions[$mergetid]))
- 		{
+		{
 			$update_users = array();
 			foreach($subscriptions[$mergetid] as $user)
 			{
@@ -1524,7 +1524,7 @@ class Moderation
 				$update_users = implode(",", $update_users);
 				$db->update_query("threadsubscriptions", $update_array, "tid = '{$mergetid}' AND uid IN ({$update_users})");
 			}
- 		}
+		}
 
 		// Remove source thread subscriptions
 		$db->delete_query("threadsubscriptions", "tid = '{$mergetid}'");
@@ -3723,7 +3723,7 @@ class Moderation
 		$query = $db->simple_select('threads', 'tid', "moved IN ({$tid_moved_list})");
 
 		mark_reports($tids, "threads");
-		
+
 		while($redirect_tid = $db->fetch_field($query, 'tid'))
 		{
 			$redirect_tids[] = $redirect_tid;

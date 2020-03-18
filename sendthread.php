@@ -86,7 +86,7 @@ if($mybb->usergroup['maxemails'] > 0)
 		$user_check = "ipaddress=".$db->escape_binary($session->packedip);
 	}
 
-	$query = $db->simple_select("maillogs", "COUNT(*) AS sent_count", "{$user_check} AND dateline >= '".(TIME_NOW - (60*60*24))."'");
+	$query = $db->simple_select("maillogs", "COUNT(*) AS sent_count", "{$user_check} AND dateline >= '".(TIME_NOW - (60 * 60 * 24))."'");
 	$sent_count = $db->fetch_field($query, "sent_count");
 	if($sent_count >= $mybb->usergroup['maxemails'])
 	{
@@ -107,7 +107,7 @@ if($mybb->usergroup['emailfloodtime'] > 0)
 		$user_check = "ipaddress=".$db->escape_binary($session->packedip);
 	}
 
-	$timecut = TIME_NOW-$mybb->usergroup['emailfloodtime']*60;
+	$timecut = TIME_NOW - $mybb->usergroup['emailfloodtime'] * 60;
 
 	$query = $db->simple_select("maillogs", "mid, dateline", "{$user_check} AND dateline > '{$timecut}'", array('order_by' => "dateline", 'order_dir' => "DESC"));
 	$last_email = $db->fetch_array($query);
@@ -115,7 +115,7 @@ if($mybb->usergroup['emailfloodtime'] > 0)
 	// Users last email was within the flood time, show the error
 	if($last_email['mid'])
 	{
-		$remaining_time = ($mybb->usergroup['emailfloodtime']*60)-(TIME_NOW-$last_email['dateline']);
+		$remaining_time = ($mybb->usergroup['emailfloodtime'] * 60) - (TIME_NOW - $last_email['dateline']);
 
 		if($remaining_time == 1)
 		{
@@ -131,7 +131,7 @@ if($mybb->usergroup['emailfloodtime'] > 0)
 		}
 		else
 		{
-			$remaining_time_minutes = ceil($remaining_time/60);
+			$remaining_time_minutes = ceil($remaining_time / 60);
 			$lang->error_emailflooding = $lang->sprintf($lang->error_emailflooding_minutes, $mybb->usergroup['emailfloodtime'], $remaining_time_minutes);
 		}
 
@@ -241,44 +241,52 @@ if($mybb->input['action'] == "do_sendtofriend" && $mybb->request_method == "post
 	}
 }
 
-if (!$mybb->input['action']) {
-    $plugins->run_hooks("sendthread_start");
+if(!$mybb->input['action'])
+{
+	$plugins->run_hooks("sendthread_start");
 
-    // Do we have some errors?
-    if (count($errors) >= 1) {
-        $errors = inline_error($errors);
-        $form['email'] = $mybb->input['email'];
-        $form['fromname'] = $mybb->input['fromname'];
-        $form['fromemail'] = $mybb->input['fromemail'];
-        $form['subject'] = $mybb->input['subject'];
-        $form['message'] = $mybb->input['message'];
-    } else {
-        $errors = '';
-        $form['email'] = '';
-        $form['fromname'] = '';
-        $form['fromemail'] = '';
-        $form['subject'] = $lang->sprintf($lang->emailsubject_sendtofriend, $mybb->settings['bbname']);
-        $form['message'] = '';
-    }
+	// Do we have some errors?
+	if(count($errors) >= 1)
+	{
+		$errors = inline_error($errors);
+		$form['email'] = $mybb->input['email'];
+		$form['fromname'] = $mybb->input['fromname'];
+		$form['fromemail'] = $mybb->input['fromemail'];
+		$form['subject'] = $mybb->input['subject'];
+		$form['message'] = $mybb->input['message'];
+	}
+	else
+	{
+		$errors = '';
+		$form['email'] = '';
+		$form['fromname'] = '';
+		$form['fromemail'] = '';
+		$form['subject'] = $lang->sprintf($lang->emailsubject_sendtofriend, $mybb->settings['bbname']);
+		$form['message'] = '';
+	}
 
-    // Generate CAPTCHA?
-    if ($mybb->settings['captchaimage'] && $mybb->user['uid'] == 0) {
-        require_once MYBB_ROOT.'inc/class_captcha.php';
-        $post_captcha = new captcha(true, "post");
+	// Generate CAPTCHA?
+	if($mybb->settings['captchaimage'] && $mybb->user['uid'] == 0)
+	{
+		require_once MYBB_ROOT.'inc/class_captcha.php';
+		$post_captcha = new captcha(true, "post");
 
-        if ($post_captcha->html) {
-            $captcha = $post_captcha->html;
-        }
-    } else {
-        $captcha = '';
-    }
+		if($post_captcha->html)
+		{
+			$captcha = $post_captcha->html;
+		}
+	}
+	else
+	{
+		$captcha = '';
+	}
 
-    $plugins->run_hooks("sendthread_end");
+	$plugins->run_hooks("sendthread_end");
 
-    output_page(\MyBB\template('sendthread/sendthread.twig', [
-        'thread' => $thread,
-        'captcha' => $captcha,
-        'errors' => $errors,
-        'form' => $form,
-    ]));
+	output_page(\MyBB\template('sendthread/sendthread.twig', [
+		'thread' => $thread,
+		'captcha' => $captcha,
+		'errors' => $errors,
+		'form' => $form,
+	]));
 }

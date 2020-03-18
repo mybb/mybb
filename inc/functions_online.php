@@ -435,7 +435,7 @@ function fetch_wol_activity($location, $nopermission=false)
 			}
 			$user_activity['activity'] = "sendthread";
 			$user_activity['tid'] = $parameters['tid'];
-		break;
+			break;
 		case "showteam":
 			$user_activity['activity'] = "showteam";
 			break;
@@ -731,7 +731,7 @@ function build_friendly_wol_location($user_activity)
 		case "announcements":
 			if(!empty($announcements[$user_activity['ann']]))
 			{
-				$location_name =  $lang->sprintf($lang->viewing_announcements, get_announcement_link($user_activity['ann']), $announcements[$user_activity['ann']]);
+				$location_name = $lang->sprintf($lang->viewing_announcements, get_announcement_link($user_activity['ann']), $announcements[$user_activity['ann']]);
 			}
 			else
 			{
@@ -1182,7 +1182,9 @@ function build_wol_row($user)
 	if($user['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])
 	{
 		return $user;
-	} else {
-	    return false;
-    }
+	}
+	else
+	{
+		return false;
+	}
 }

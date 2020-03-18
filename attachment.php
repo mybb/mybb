@@ -108,7 +108,7 @@ if(!isset($mybb->input['thumbnail'])) // Only increment the download count if th
 	}
 
 	$attachupdate = array(
-		"downloads" => $attachment['downloads']+1,
+		"downloads" => $attachment['downloads'] + 1,
 	);
 	$db->update_query("attachments", $attachupdate, "aid='{$attachment['aid']}'");
 }
@@ -207,7 +207,7 @@ else
 	}
 
 	header("Content-length: {$attachment['filesize']}");
-	header("Content-range: bytes=0-".($attachment['filesize']-1)."/".$attachment['filesize']);
+	header("Content-range: bytes=0-".($attachment['filesize'] - 1)."/".$attachment['filesize']);
 	$handle = fopen($mybb->settings['uploadspath']."/".$attachment['attachname'], 'rb');
 	while(!feof($handle))
 	{

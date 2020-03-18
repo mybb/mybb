@@ -39,7 +39,7 @@ if($mybb->get_input('action') == "search")
 	$plugins->run_hooks("memberlist_search");
 	add_breadcrumb($lang->nav_memberlist_search);
 
-    output_page(\MyBB\template('memberlist/search.twig'));
+	output_page(\MyBB\template('memberlist/search.twig'));
 }
 else
 {
@@ -240,13 +240,13 @@ else
 	if($page && $page > 0)
 	{
 		$start = ($page - 1) * $per_page;
-        $pages = ceil($num_users / $per_page);
+		$pages = ceil($num_users / $per_page);
 
-        if($page > $pages)
-        {
-            $start = 0;
-            $page = 1;
-        }
+		if($page > $pages)
+		{
+			$start = 0;
+			$page = 1;
+		}
 	}
 	else
 	{
@@ -254,144 +254,164 @@ else
 		$page = 1;
 	}
 
-    $memberlist['orderarrow'][$mybb->input['sort']] = true;
+	$memberlist['orderarrow'][$mybb->input['sort']] = true;
 
-    // Referral?
-    if ($mybb->settings['usereferrals'] == 1) {
-        $memberlist['colspan'] = 7;
-    }
+	// Referral?
+	if($mybb->settings['usereferrals'] == 1)
+	{
+		$memberlist['colspan'] = 7;
+	}
 
-    $search_url = htmlspecialchars_uni("memberlist.php?sort={$mybb->input['sort']}&order={$mybb->input['order']}&perpage={$mybb->input['perpage']}{$memberlist['search_url']}");
-    $multipage = multipage($num_users, $per_page, $page, $search_url);
+	$search_url = htmlspecialchars_uni("memberlist.php?sort={$mybb->input['sort']}&order={$mybb->input['order']}&perpage={$mybb->input['perpage']}{$memberlist['search_url']}");
+	$multipage = multipage($num_users, $per_page, $page, $search_url);
 
-    // Cache a few things
-    $usertitles = $cache->read('usertitles');
-    $usertitles_cache = array();
-    foreach ($usertitles as $usertitle) {
-        $usertitles_cache[$usertitle['posts']] = $usertitle;
-    }
+	// Cache a few things
+	$usertitles = $cache->read('usertitles');
+	$usertitles_cache = array();
+	foreach($usertitles as $usertitle)
+	{
+		$usertitles_cache[$usertitle['posts']] = $usertitle;
+	}
 
-    $users = [];
+	$users = [];
 
-    $query = $db->query("
+	$query = $db->query("
         SELECT u.*, f.*
-        FROM " . TABLE_PREFIX . "users u
-        LEFT JOIN " . TABLE_PREFIX . "userfields f ON (f.ufid=u.uid)
+        FROM ".TABLE_PREFIX."users u
+        LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
         WHERE {$search_query}
         ORDER BY {$sort_field} {$sort_order}
         LIMIT {$start}, {$per_page}
     ");
-    while($user = $db->fetch_array($query)) {
-        $user = $plugins->run_hooks("memberlist_user", $user);
+	while($user = $db->fetch_array($query))
+	{
+		$user = $plugins->run_hooks("memberlist_user", $user);
 
-        $user['username_raw'] = $user['username'];
-        $user['username'] = format_name(htmlspecialchars_uni($user['username']), $user['usergroup'], $user['displaygroup']);
+		$user['username_raw'] = $user['username'];
+		$user['username'] = format_name(htmlspecialchars_uni($user['username']), $user['usergroup'], $user['displaygroup']);
 
-        $user['profilelink'] = build_profile_link($user['username'], $user['uid']);
+		$user['profilelink'] = build_profile_link($user['username'], $user['uid']);
 
-        // Get the display usergroup
-        if($user['usergroup'])
-        {
-            $usergroup = usergroup_permissions($user['usergroup']);
-        }
-        else
-        {
-            $usergroup = usergroup_permissions(1);
-        }
+		// Get the display usergroup
+		if($user['usergroup'])
+		{
+			$usergroup = usergroup_permissions($user['usergroup']);
+		}
+		else
+		{
+			$usergroup = usergroup_permissions(1);
+		}
 
-        $displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
-        if(!$user['displaygroup'])
-        {
-            $user['displaygroup'] = $user['usergroup'];
-        }
+		$displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
+		if(!$user['displaygroup'])
+		{
+			$user['displaygroup'] = $user['usergroup'];
+		}
 
-        $display_group = usergroup_displaygroup($user['displaygroup']);
+		$display_group = usergroup_displaygroup($user['displaygroup']);
 
-        if(is_array($display_group))
-        {
-            $usergroup = array_merge($usergroup, $display_group);
-        }
+		if(is_array($display_group))
+		{
+			$usergroup = array_merge($usergroup, $display_group);
+		}
 
-        $user['groupimage'] = false;
-        // Work out the usergroup/title stuff
-        if (!empty($usergroup['image'])) {
-            if (!empty($mybb->user['language'])) {
-                $language = $mybb->user['language'];
-            } else {
-                $language = $mybb->settings['bblanguage'];
-            }
+		$user['groupimage'] = false;
+		// Work out the usergroup/title stuff
+		if(!empty($usergroup['image']))
+		{
+			if(!empty($mybb->user['language']))
+			{
+				$language = $mybb->user['language'];
+			}
+			else
+			{
+				$language = $mybb->settings['bblanguage'];
+			}
 
-            $usergroup['image'] = str_replace("{lang}", $language, $usergroup['image']);
-            $usergroup['image'] = str_replace("{theme}", $theme['imgdir'], $usergroup['image']);
+			$usergroup['image'] = str_replace("{lang}", $language, $usergroup['image']);
+			$usergroup['image'] = str_replace("{theme}", $theme['imgdir'], $usergroup['image']);
 
-            $user['groupimage'] = $usergroup['image'];
-        }
+			$user['groupimage'] = $usergroup['image'];
+		}
 
-        $user['groupimage_title'] = $usergroup['title'];
+		$user['groupimage_title'] = $usergroup['title'];
 
-        $has_custom_title = 0;
-        if (trim($user['usertitle']) != "") {
-            $has_custom_title = 1;
-        }
+		$has_custom_title = 0;
+		if(trim($user['usertitle']) != "")
+		{
+			$has_custom_title = 1;
+		}
 
-        if ($usergroup['usertitle'] != "" && !$has_custom_title) {
-            $user['usertitle'] = $usergroup['usertitle'];
-        }
-        elseif (is_array($usertitles_cache) && !$usergroup['usertitle']) {
-            foreach ($usertitles_cache as $posts => $titleinfo) {
-                if ($user['postnum'] >= $posts) {
-                    if (!$has_custom_title) {
-                        $user['usertitle'] = $titleinfo['title'];
-                    }
-                    $user['stars'] = $titleinfo['stars'];
-                    $user['starimage'] = $titleinfo['starimage'];
-                    break;
-                }
-            }
-        }
+		if($usergroup['usertitle'] != "" && !$has_custom_title)
+		{
+			$user['usertitle'] = $usergroup['usertitle'];
+		}
+		elseif(is_array($usertitles_cache) && !$usergroup['usertitle'])
+		{
+			foreach($usertitles_cache as $posts => $titleinfo)
+			{
+				if($user['postnum'] >= $posts)
+				{
+					if(!$has_custom_title)
+					{
+						$user['usertitle'] = $titleinfo['title'];
+					}
+					$user['stars'] = $titleinfo['stars'];
+					$user['starimage'] = $titleinfo['starimage'];
+					break;
+				}
+			}
+		}
 
-        if (!empty($usergroup['stars'])) {
-            $user['stars'] = $usergroup['stars'];
-        }
+		if(!empty($usergroup['stars']))
+		{
+			$user['stars'] = $usergroup['stars'];
+		}
 
-        if (empty($user['starimage'])) {
-            $user['starimage'] = $usergroup['starimage'];
-        }
+		if(empty($user['starimage']))
+		{
+			$user['starimage'] = $usergroup['starimage'];
+		}
 
-        $user['userstars'] = '';
-        if (!empty($user['starimage'])) {
-            // Only display stars if we have an image to use...
-            $user['starimage'] = str_replace("{theme}", $theme['imgdir'], $user['starimage']);
-        }
+		$user['userstars'] = '';
+		if(!empty($user['starimage']))
+		{
+			// Only display stars if we have an image to use...
+			$user['starimage'] = str_replace("{theme}", $theme['imgdir'], $user['starimage']);
+		}
 
-        // Show avatar
-        $useravatar = format_avatar($user['avatar'], $user['avatardimensions'], my_strtolower($mybb->settings['memberlistmaxavatarsize']));
-        $user['avatar_image'] = $useravatar['image'];
-        $user['avatar_width_height'] = $useravatar['width_height'];
+		// Show avatar
+		$useravatar = format_avatar($user['avatar'], $user['avatardimensions'], my_strtolower($mybb->settings['memberlistmaxavatarsize']));
+		$user['avatar_image'] = $useravatar['image'];
+		$user['avatar_width_height'] = $useravatar['width_height'];
 
-        if ($user['invisible'] == 1 && $mybb->usergroup['canviewwolinvis'] != 1 && $user['uid'] != $mybb->user['uid']) {
-            $user['lastvisit'] = $lang->lastvisit_never;
+		if($user['invisible'] == 1 && $mybb->usergroup['canviewwolinvis'] != 1 && $user['uid'] != $mybb->user['uid'])
+		{
+			$user['lastvisit'] = $lang->lastvisit_never;
 
-            if ($user['lastvisit']) {
-                // We have had at least some active time, hide it instead
-                $user['lastvisit'] = $lang->lastvisit_hidden;
-            }
-        } else {
-            $user['lastvisit'] = my_date('relative', $user['lastactive']);
-        }
+			if($user['lastvisit'])
+			{
+				// We have had at least some active time, hide it instead
+				$user['lastvisit'] = $lang->lastvisit_hidden;
+			}
+		}
+		else
+		{
+			$user['lastvisit'] = my_date('relative', $user['lastactive']);
+		}
 
-        $user['regdate'] = my_date('relative', $user['regdate']);
-        $user['postnum'] = my_number_format($user['postnum']);
-        $user['threadnum'] = my_number_format($user['threadnum']);
+		$user['regdate'] = my_date('relative', $user['regdate']);
+		$user['postnum'] = my_number_format($user['postnum']);
+		$user['threadnum'] = my_number_format($user['threadnum']);
 
-        $users[] = $user;
-    }
+		$users[] = $user;
+	}
 
-    $plugins->run_hooks("memberlist_end");
+	$plugins->run_hooks("memberlist_end");
 
-    output_page(\MyBB\template('memberlist/memberlist.twig', [
-        'memberlist' => $memberlist,
-        'multipage' => $multipage,
-        'users' => $users,
-    ]));
+	output_page(\MyBB\template('memberlist/memberlist.twig', [
+		'memberlist' => $memberlist,
+		'multipage' => $multipage,
+		'users' => $users,
+	]));
 }
