@@ -110,7 +110,7 @@ if(isset($forum))
 	check_forum_password($forum['fid']);
 }
 
-$log_multithreads_actions = array("do_multideletethreads", "multiclosethreads", "multiopenthreads", "multiapprovethreads", "multiunapprovethreads", "multirestorethreads", "multisoftdeletethreads","multistickthreads", "multiunstickthreads", "do_multimovethreads");
+$log_multithreads_actions = array("do_multideletethreads", "multiclosethreads", "multiopenthreads", "multiapprovethreads", "multiunapprovethreads", "multirestorethreads", "multisoftdeletethreads", "multistickthreads", "multiunstickthreads", "do_multimovethreads");
 if(in_array($mybb->input['action'], $log_multithreads_actions))
 {
 	if(!empty($mybb->input['searchid']))
@@ -167,106 +167,130 @@ switch($mybb->input['action'])
 	case "delayedmoderation":
 		// Verify incoming POST request
 		verify_post_check($mybb->get_input('my_post_key'));
-		
-        $localized_time_offset = $mybb->user['timezone']*3600 + $mybb->user['dst']*3600;
 
-        if (!$mybb->get_input('date_day', MyBB::INPUT_INT)) {
-            $mybb->input['date_day'] = gmdate('d', TIME_NOW + $localized_time_offset);
-        }
+		$localized_time_offset = $mybb->user['timezone'] * 3600 + $mybb->user['dst'] * 3600;
 
-        if (!$mybb->get_input('date_month', MyBB::INPUT_INT)) {
-            $mybb->input['date_month'] = gmdate('m', TIME_NOW + $localized_time_offset);
-        }
+		if(!$mybb->get_input('date_day', MyBB::INPUT_INT))
+		{
+			$mybb->input['date_day'] = gmdate('d', TIME_NOW + $localized_time_offset);
+		}
 
-        // Assume in-line moderation if TID is not set
-        if (!empty($mybb->input['tid'])) {
-            $mybb->input['tids'] = $tid;
-        } else {
-            if ($mybb->get_input('inlinetype') == 'search') {
-                $tids = getids($mybb->get_input('searchid'), 'search');
-            } else {
-                $fid = $mybb->get_input('fid', MyBB::INPUT_INT);
-                $tids = getids($fid, "forum");
-            }
+		if(!$mybb->get_input('date_month', MyBB::INPUT_INT))
+		{
+			$mybb->input['date_month'] = gmdate('m', TIME_NOW + $localized_time_offset);
+		}
 
-            if (count($tids) < 1) {
-                error($lang->error_inline_nothreadsselected);
-            }
+		// Assume in-line moderation if TID is not set
+		if(!empty($mybb->input['tid']))
+		{
+			$mybb->input['tids'] = $tid;
+		}
+		else
+		{
+			if($mybb->get_input('inlinetype') == 'search')
+			{
+				$tids = getids($mybb->get_input('searchid'), 'search');
+			}
+			else
+			{
+				$fid = $mybb->get_input('fid', MyBB::INPUT_INT);
+				$tids = getids($fid, "forum");
+			}
 
-            $mybb->input['tids'] = $tids;
-        }
+			if(count($tids) < 1)
+			{
+				error($lang->error_inline_nothreadsselected);
+			}
 
-        add_breadcrumb($lang->delayed_moderation);
+			$mybb->input['tids'] = $tids;
+		}
 
-        if (!is_moderator($fid, "canmanagethreads")) {
-            error_no_permission();
-        }
+		add_breadcrumb($lang->delayed_moderation);
 
-        $errors = array();
-        $customtools = [];
+		if(!is_moderator($fid, "canmanagethreads"))
+		{
+			error_no_permission();
+		}
 
-        $allowed_types = array('move', 'merge', 'removeredirects', 'removesubscriptions');
+		$errors = array();
+		$customtools = [];
 
-        if (is_moderator($fid, "canopenclosethreads")) {
-            $allowed_types[] = "openclosethread";
-        }
+		$allowed_types = array('move', 'merge', 'removeredirects', 'removesubscriptions');
 
-        if (is_moderator($fid, "cansoftdeletethreads") || is_moderator($fid, "canrestorethreads")) {
-            $allowed_types[] = "softdeleterestorethread";
-        }
+		if(is_moderator($fid, "canopenclosethreads"))
+		{
+			$allowed_types[] = "openclosethread";
+		}
 
-        if (is_moderator($fid, "candeletethreads")) {
-            $allowed_types[] = "deletethread";
-        }
+		if(is_moderator($fid, "cansoftdeletethreads") || is_moderator($fid, "canrestorethreads"))
+		{
+			$allowed_types[] = "softdeleterestorethread";
+		}
 
-        if (is_moderator($fid, "canstickunstickthreads")) {
-            $allowed_types[] = "stick";
-        }
+		if(is_moderator($fid, "candeletethreads"))
+		{
+			$allowed_types[] = "deletethread";
+		}
 
-        if (is_moderator($fid, "canapproveunapprovethreads")) {
-            $allowed_types[] = "approveunapprovethread";
-        }
+		if(is_moderator($fid, "canstickunstickthreads"))
+		{
+			$allowed_types[] = "stick";
+		}
 
-        $mybb->input['type'] = $mybb->get_input('type');
+		if(is_moderator($fid, "canapproveunapprovethreads"))
+		{
+			$allowed_types[] = "approveunapprovethread";
+		}
 
-        if (is_moderator($fid, "canusecustomtools")) {
-            switch ($db->type) {
-                case "pgsql":
-                case "sqlite":
-                    $query = $db->simple_select("modtools", 'tid, name, groups', "(','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%' OR forums='') AND type = 't'");
-                    break;
-                default:
-                    $query = $db->simple_select("modtools", 'tid, name, groups', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='') AND type = 't'");
-            }
-            while ($tool = $db->fetch_array($query)) {
-                if (is_member($tool['groups'])) {
-                    $allowed_types[] = "modtool_".$tool['tid'];
+		$mybb->input['type'] = $mybb->get_input('type');
 
-                    $tool['selected'] = false;
-                    if ($mybb->input['type'] == "modtool_".$tool['tid']) {
-                        $tool['selected'] = true;
-                    }
+		if(is_moderator($fid, "canusecustomtools"))
+		{
+			switch($db->type)
+			{
+				case "pgsql":
+				case "sqlite":
+					$query = $db->simple_select("modtools", 'tid, name, groups', "(','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%' OR forums='') AND type = 't'");
+					break;
+				default:
+					$query = $db->simple_select("modtools", 'tid, name, groups', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='') AND type = 't'");
+			}
+			while($tool = $db->fetch_array($query))
+			{
+				if(is_member($tool['groups']))
+				{
+					$allowed_types[] = "modtool_".$tool['tid'];
 
-                    $customtools[] = $tool;
-                }
-            }
-        }
+					$tool['selected'] = false;
+					if($mybb->input['type'] == "modtool_".$tool['tid'])
+					{
+						$tool['selected'] = true;
+					}
 
-        $mybb->input['delayedmoderation'] = $mybb->get_input('delayedmoderation', MyBB::INPUT_ARRAY);
+					$customtools[] = $tool;
+				}
+			}
+		}
 
-        if ($mybb->input['action'] == "do_delayedmoderation" && $mybb->request_method == "post") {
-            if (!in_array($mybb->input['type'], $allowed_types)) {
-                $mybb->input['type'] = '';
-                $errors[] = $lang->error_delayedmoderation_unsupported_type;
-            }
+		$mybb->input['delayedmoderation'] = $mybb->get_input('delayedmoderation', MyBB::INPUT_ARRAY);
 
-            if ($mybb->input['type'] == 'move' && (!isset($mybb->input['delayedmoderation']['method']) || !in_array($mybb->input['delayedmoderation']['method'], array('move', 'redirect', 'copy')))) {
-                $mybb->input['delayedmoderation']['method'] = '';
-                $errors[] = $lang->error_delayedmoderation_unsupported_method;
-            }
+		if($mybb->input['action'] == "do_delayedmoderation" && $mybb->request_method == "post")
+		{
+			if(!in_array($mybb->input['type'], $allowed_types))
+			{
+				$mybb->input['type'] = '';
+				$errors[] = $lang->error_delayedmoderation_unsupported_type;
+			}
 
-            if ($mybb->input['type'] == 'move') {
-                $newfid = (int)$mybb->input['delayedmoderation']['new_forum'];
+			if($mybb->input['type'] == 'move' && (!isset($mybb->input['delayedmoderation']['method']) || !in_array($mybb->input['delayedmoderation']['method'], array('move', 'redirect', 'copy'))))
+			{
+				$mybb->input['delayedmoderation']['method'] = '';
+				$errors[] = $lang->error_delayedmoderation_unsupported_method;
+			}
+
+			if($mybb->input['type'] == 'move')
+			{
+				$newfid = (int)$mybb->input['delayedmoderation']['new_forum'];
 
 				// Make sure moderator has permission to move to the new forum
 				$newperms = forum_permissions($newfid);
@@ -276,167 +300,201 @@ switch($mybb->input['action'])
 				}
 
 				$newforum = get_forum($newfid);
- 				if(!$newforum || $newforum['type'] != "f" || $newforum['type'] == "f" && $newforum['linkto'] != '')
- 				{
- 					$errors[] = $lang->error_invalidforum;
- 				}
+				if(!$newforum || $newforum['type'] != "f" || $newforum['type'] == "f" && $newforum['linkto'] != '')
+				{
+					$errors[] = $lang->error_invalidforum;
+				}
 
 				$method = $mybb->input['delayedmoderation']['method'];
 				if($method != "copy" && $fid == $newfid)
 				{
 					$errors[] = $lang->error_movetosameforum;
 				}
-            }
+			}
 
-            if ($mybb->input['date_day'] > 31 || $mybb->input['date_day'] < 1) {
-                $errors[] = $lang->error_delayedmoderation_invalid_date_day;
-            }
+			if($mybb->input['date_day'] > 31 || $mybb->input['date_day'] < 1)
+			{
+				$errors[] = $lang->error_delayedmoderation_invalid_date_day;
+			}
 
-            if ($mybb->input['date_month'] > 12 || $mybb->input['date_month'] < 1) {
-                $errors[] = $lang->error_delayedmoderation_invalid_date_month;
-            }
+			if($mybb->input['date_month'] > 12 || $mybb->input['date_month'] < 1)
+			{
+				$errors[] = $lang->error_delayedmoderation_invalid_date_month;
+			}
 
-            if ($mybb->input['date_year'] < gmdate('Y', TIME_NOW + $localized_time_offset)) {
-                $errors[] = $lang->error_delayedmoderation_invalid_date_year;
-            }
+			if($mybb->input['date_year'] < gmdate('Y', TIME_NOW + $localized_time_offset))
+			{
+				$errors[] = $lang->error_delayedmoderation_invalid_date_year;
+			}
 
-            $date_time = explode(' ', $mybb->get_input('date_time'));
-            $date_time = explode(':', (string)$date_time[0]);
+			$date_time = explode(' ', $mybb->get_input('date_time'));
+			$date_time = explode(':', (string)$date_time[0]);
 
-            if (stristr($mybb->input['date_time'], 'pm')) {
-                $date_time[0] = 12+$date_time[0];
-                if ($date_time[0] >= 24) {
-                    $date_time[0] = '00';
-                }
-            }
+			if(stristr($mybb->input['date_time'], 'pm'))
+			{
+				$date_time[0] = 12 + $date_time[0];
+				if($date_time[0] >= 24)
+				{
+					$date_time[0] = '00';
+				}
+			}
 
-            $rundate = gmmktime((int)$date_time[0], (int)$date_time[1], date('s', TIME_NOW), $mybb->get_input('date_month', MyBB::INPUT_INT), $mybb->get_input('date_day', MyBB::INPUT_INT), $mybb->get_input('date_year', MyBB::INPUT_INT)) - $localized_time_offset;
+			$rundate = gmmktime((int)$date_time[0], (int)$date_time[1], date('s', TIME_NOW), $mybb->get_input('date_month', MyBB::INPUT_INT), $mybb->get_input('date_day', MyBB::INPUT_INT), $mybb->get_input('date_year', MyBB::INPUT_INT)) - $localized_time_offset;
 
-            if (!$errors) {
-                if (is_array($mybb->input['tids'])) {
-                    $mybb->input['tids'] = implode(',', $mybb->input['tids']);
-                }
+			if(!$errors)
+			{
+				if(is_array($mybb->input['tids']))
+				{
+					$mybb->input['tids'] = implode(',', $mybb->input['tids']);
+				}
 
-                $did = $db->insert_query("delayedmoderation", array(
-                    'type' => $db->escape_string($mybb->input['type']),
-                    'delaydateline' => (int)$rundate,
-                    'uid' => $mybb->user['uid'],
-                    'tids' => $db->escape_string($mybb->input['tids']),
-                    'fid' => $fid,
-                    'dateline' => TIME_NOW,
-                    'inputs' => $db->escape_string(my_serialize($mybb->input['delayedmoderation']))
-                ));
+				$did = $db->insert_query("delayedmoderation", array(
+					'type' => $db->escape_string($mybb->input['type']),
+					'delaydateline' => (int)$rundate,
+					'uid' => $mybb->user['uid'],
+					'tids' => $db->escape_string($mybb->input['tids']),
+					'fid' => $fid,
+					'dateline' => TIME_NOW,
+					'inputs' => $db->escape_string(my_serialize($mybb->input['delayedmoderation']))
+				));
 
-                $plugins->run_hooks('moderation_do_delayedmoderation');
+				$plugins->run_hooks('moderation_do_delayedmoderation');
 
-                $rundate_format = my_date('relative', $rundate, '', 2);
-                $lang->redirect_delayed_moderation_thread = $lang->sprintf($lang->redirect_delayed_moderation_thread, $rundate_format);
+				$rundate_format = my_date('relative', $rundate, '', 2);
+				$lang->redirect_delayed_moderation_thread = $lang->sprintf($lang->redirect_delayed_moderation_thread, $rundate_format);
 
-                if (!empty($mybb->input['tid'])) {
-                    moderation_redirect(get_thread_link($thread['tid']), $lang->redirect_delayed_moderation_thread);
-                } else {
-                    if ($mybb->get_input('inlinetype') == 'search') {
-                        moderation_redirect(get_forum_link($fid), $lang->sprintf($lang->redirect_delayed_moderation_search, $rundate_format));
-                    } else {
-                        moderation_redirect(get_forum_link($fid), $lang->sprintf($lang->redirect_delayed_moderation_forum, $rundate_format));
-                    }
-                }
-            } else {
-                foreach ($allowed_types as $type) {
-                    $delayed['type_selected'][$type] = false;
-                }
+				if(!empty($mybb->input['tid']))
+				{
+					moderation_redirect(get_thread_link($thread['tid']), $lang->redirect_delayed_moderation_thread);
+				}
+				else
+				{
+					if($mybb->get_input('inlinetype') == 'search')
+					{
+						moderation_redirect(get_forum_link($fid), $lang->sprintf($lang->redirect_delayed_moderation_search, $rundate_format));
+					}
+					else
+					{
+						moderation_redirect(get_forum_link($fid), $lang->sprintf($lang->redirect_delayed_moderation_forum, $rundate_format));
+					}
+				}
+			}
+			else
+			{
+				foreach($allowed_types as $type)
+				{
+					$delayed['type_selected'][$type] = false;
+				}
 
-                $delayed['type_selected'][$mybb->get_input('type')] = true;
-                if (isset($mybb->input['delayedmoderation']['method'])) {
-                    $delayed['method_selected'][$mybb->input['delayedmoderation']['method']] = true;
-                }
+				$delayed['type_selected'][$mybb->get_input('type')] = true;
+				if(isset($mybb->input['delayedmoderation']['method']))
+				{
+					$delayed['method_selected'][$mybb->input['delayedmoderation']['method']] = true;
+				}
 
-                foreach (array('redirect_expire', 'new_forum', 'subject', 'threadurl') as $value) {
-                    if (!isset($delayed['delayedmoderation'][$value])) {
-                        $delayed['delayedmoderation'][$value] = '';
-                    }
-                }
+				foreach(array('redirect_expire', 'new_forum', 'subject', 'threadurl') as $value)
+				{
+					if(!isset($delayed['delayedmoderation'][$value]))
+					{
+						$delayed['delayedmoderation'][$value] = '';
+					}
+				}
 
-                $delayed['delayedmoderation']['redirect_expire'] = (int)$mybb->input['delayedmoderation']['redirect_expire'];
-                $delayed['delayedmoderation']['new_forum'] = (int)$mybb->input['delayedmoderation']['new_forum'];
-                $delayed['delayedmoderation']['subject'] = $mybb->input['delayedmoderation']['subject'];
-                $delayed['delayedmoderation']['threadurl'] = $mybb->input['delayedmoderation']['threadurl'];
+				$delayed['delayedmoderation']['redirect_expire'] = (int)$mybb->input['delayedmoderation']['redirect_expire'];
+				$delayed['delayedmoderation']['new_forum'] = (int)$mybb->input['delayedmoderation']['new_forum'];
+				$delayed['delayedmoderation']['subject'] = $mybb->input['delayedmoderation']['subject'];
+				$delayed['delayedmoderation']['threadurl'] = $mybb->input['delayedmoderation']['threadurl'];
 
-                $forumselect = build_forum_jump("", $mybb->input['delayedmoderation']['new_forum'], 1, '', 0, true, '', "delayedmoderation[new_forum]");
-            }
-        } else {
-            foreach ($allowed_types as $type) {
-                $delayed['type_selected'][$type] = false;
-            }
+				$forumselect = build_forum_jump("", $mybb->input['delayedmoderation']['new_forum'], 1, '', 0, true, '', "delayedmoderation[new_forum]");
+			}
+		}
+		else
+		{
+			foreach($allowed_types as $type)
+			{
+				$delayed['type_selected'][$type] = false;
+			}
 
-            $delayed['type_selected']['openclosethread'] = true;
-            $delayed['method_selected']['move'] = true;
+			$delayed['type_selected']['openclosethread'] = true;
+			$delayed['method_selected']['move'] = true;
 
-            $delayed['delayedmoderation']['redirect_expire'] = '';
-            $delayed['delayedmoderation']['subject'] = $thread['subject'];
-            $delayed['delayedmoderation']['threadurl'] = '';
+			$delayed['delayedmoderation']['redirect_expire'] = '';
+			$delayed['delayedmoderation']['subject'] = $thread['subject'];
+			$delayed['delayedmoderation']['threadurl'] = '';
 
-            $forumselect = build_forum_jump("", $fid, 1, '', 0, true, '', "delayedmoderation[new_forum]");
-        }
+			$forumselect = build_forum_jump("", $fid, 1, '', 0, true, '', "delayedmoderation[new_forum]");
+		}
 
-        if (isset($errors) && count($errors) > 0) {
-            $display_errors = inline_error($errors);
-        } else {
-            $display_errors = '';
-        }
+		if(isset($errors) && count($errors) > 0)
+		{
+			$display_errors = inline_error($errors);
+		}
+		else
+		{
+			$display_errors = '';
+		}
 
-        $forum_cache = $cache->read("forums");
+		$forum_cache = $cache->read("forums");
 
-        $actions = array(
-            'openclosethread' => $lang->open_close_thread,
-            'softdeleterestorethread' => $lang->softdelete_restore_thread,
-            'deletethread' => $lang->delete_thread,
-            'move' => $lang->move_copy_thread,
-            'stick' => $lang->stick_unstick_thread,
-            'merge' => $lang->merge_threads,
-            'removeredirects' => $lang->remove_redirects,
-            'removesubscriptions' => $lang->remove_subscriptions,
-            'approveunapprovethread' => $lang->approve_unapprove_thread
-        );
+		$actions = array(
+			'openclosethread' => $lang->open_close_thread,
+			'softdeleterestorethread' => $lang->softdelete_restore_thread,
+			'deletethread' => $lang->delete_thread,
+			'move' => $lang->move_copy_thread,
+			'stick' => $lang->stick_unstick_thread,
+			'merge' => $lang->merge_threads,
+			'removeredirects' => $lang->remove_redirects,
+			'removesubscriptions' => $lang->remove_subscriptions,
+			'approveunapprovethread' => $lang->approve_unapprove_thread
+		);
 
-        switch ($db->type) {
-            case "pgsql":
-            case "sqlite":
-                $query = $db->simple_select("modtools", 'tid, name', "(','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%' OR forums='') AND type = 't'");
-                break;
-            default:
-                $query = $db->simple_select("modtools", 'tid, name', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='') AND type = 't'");
-        }
-        while ($tool = $db->fetch_array($query)) {
-            $actions['modtool_'.$tool['tid']] = $tool['name'];
-        }
+		switch($db->type)
+		{
+			case "pgsql":
+			case "sqlite":
+				$query = $db->simple_select("modtools", 'tid, name', "(','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%' OR forums='') AND type = 't'");
+				break;
+			default:
+				$query = $db->simple_select("modtools", 'tid, name', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='') AND type = 't'");
+		}
+		while($tool = $db->fetch_array($query))
+		{
+			$actions['modtool_'.$tool['tid']] = $tool['name'];
+		}
 
-        $delayedmods = [];
-        if ($tid == 0) {
-            // Inline thread moderation is used
-            if ($mybb->get_input('inlinetype') == 'search') {
-                $tids = getids($mybb->get_input('searchid'), 'search');
-            } else {
-                $tids = getids($fid, "forum");
-            }
+		$delayedmods = [];
+		if($tid == 0)
+		{
+			// Inline thread moderation is used
+			if($mybb->get_input('inlinetype') == 'search')
+			{
+				$tids = getids($mybb->get_input('searchid'), 'search');
+			}
+			else
+			{
+				$tids = getids($fid, "forum");
+			}
 
-            $where_array = array();
-            switch ($db->type) {
-                case "pgsql":
-                case "sqlite":
-                    foreach ($tids as $like) {
-                        $where_array[] = "','||d.tids||',' LIKE '%,".$db->escape_string($like).",%'";
-                    }
-                    $where_statement = implode(" OR ", $where_array);
-                    break;
-                default:
-                    foreach ($tids as $like) {
-                        $where_array[] = "CONCAT(',',d.tids,',') LIKE  '%,".$db->escape_string($like).",%'";
-                    }
-                    $where_statement = implode(" OR ", $where_array);
-            }
+			$where_array = array();
+			switch($db->type)
+			{
+				case "pgsql":
+				case "sqlite":
+					foreach($tids as $like)
+					{
+						$where_array[] = "','||d.tids||',' LIKE '%,".$db->escape_string($like).",%'";
+					}
+					$where_statement = implode(" OR ", $where_array);
+					break;
+				default:
+					foreach($tids as $like)
+					{
+						$where_array[] = "CONCAT(',',d.tids,',') LIKE  '%,".$db->escape_string($like).",%'";
+					}
+					$where_statement = implode(" OR ", $where_array);
+			}
 
-            $query = $db->query("
+			$query = $db->query("
                 SELECT d.*, u.username, f.name AS fname
                 FROM ".TABLE_PREFIX."delayedmoderation d
                 LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=d.uid)
@@ -445,11 +503,14 @@ switch($mybb->input['action'])
                 ORDER BY d.dateline DESC
                 LIMIT  0, 20
             ");
-        } else {
-            switch ($db->type) {
-                case "pgsql":
-                case "sqlite":
-                    $query = $db->query("
+		}
+		else
+		{
+			switch($db->type)
+			{
+				case "pgsql":
+				case "sqlite":
+					$query = $db->query("
                         SELECT d.*, u.username, f.name AS fname
                         FROM ".TABLE_PREFIX."delayedmoderation d
                         LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=d.uid)
@@ -458,9 +519,9 @@ switch($mybb->input['action'])
                         ORDER BY d.dateline DESC
                         LIMIT  0, 20
                     ");
-                    break;
-                default:
-                    $query = $db->query("
+					break;
+				default:
+					$query = $db->query("
                         SELECT d.*, u.username, f.name AS fname
                         FROM ".TABLE_PREFIX."delayedmoderation d
                         LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=d.uid)
@@ -469,158 +530,188 @@ switch($mybb->input['action'])
                         ORDER BY d.dateline DESC
                         LIMIT  0, 20
                     ");
-            }
-        }
-        while ($delayedmod = $db->fetch_array($query)) {
-            $delayedmod['dateline'] = my_date("jS M Y, {$mybb->settings['timeformat']}", $delayedmod['delaydateline']);
-            $delayedmod['username'] = htmlspecialchars_uni($delayedmod['username']);
-            $delayedmod['profilelink'] = build_profile_link($delayedmod['username'], $delayedmod['uid']);
-            $delayedmod['action'] = $actions[$delayedmod['type']];
+			}
+		}
+		while($delayedmod = $db->fetch_array($query))
+		{
+			$delayedmod['dateline'] = my_date("jS M Y, {$mybb->settings['timeformat']}", $delayedmod['delaydateline']);
+			$delayedmod['username'] = htmlspecialchars_uni($delayedmod['username']);
+			$delayedmod['profilelink'] = build_profile_link($delayedmod['username'], $delayedmod['uid']);
+			$delayedmod['action'] = $actions[$delayedmod['type']];
 
-            $delayedmod['thread_single'] = false;
-            $delayedmod['thread_multiple'] = false;
-            $delayedmod['forum'] = false;
-            $delayedmod['new_forum'] = false;
-            $delayedmod['redirect'] = false;
-            $delayedmod['merge'] = false;
+			$delayedmod['thread_single'] = false;
+			$delayedmod['thread_multiple'] = false;
+			$delayedmod['forum'] = false;
+			$delayedmod['new_forum'] = false;
+			$delayedmod['redirect'] = false;
+			$delayedmod['merge'] = false;
 
-            if (strpos($delayedmod['tids'], ',') === false) {
-                $delayedmod['thread_single'] = true;
-                $delayed_thread = get_thread($delayedmod['tids']);
-                $delayedmod['threadlink'] = get_thread_link($delayed_thread['tid']);
-                $delayedmod['threadsubject'] = $parser->parse_badwords($delayed_thread['subject']);
-            } else {
-                $delayedmod['thread_multiple'] = true;
-            }
+			if(strpos($delayedmod['tids'], ',') === false)
+			{
+				$delayedmod['thread_single'] = true;
+				$delayed_thread = get_thread($delayedmod['tids']);
+				$delayedmod['threadlink'] = get_thread_link($delayed_thread['tid']);
+				$delayedmod['threadsubject'] = $parser->parse_badwords($delayed_thread['subject']);
+			}
+			else
+			{
+				$delayedmod['thread_multiple'] = true;
+			}
 
-            if ($delayedmod['fname']) {
-                $delayedmod['forum'] = true;
-                $delayedmod['link'] = get_forum_link($delayedmod['fid']);
-            }
+			if($delayedmod['fname'])
+			{
+				$delayedmod['forum'] = true;
+				$delayedmod['link'] = get_forum_link($delayedmod['fid']);
+			}
 
-            $delayedmod['inputs'] = my_unserialize($delayedmod['inputs']);
+			$delayedmod['inputs'] = my_unserialize($delayedmod['inputs']);
 
-            if ($delayedmod['type'] == 'move') {
-                $delayedmod['new_forum'] = true;
-                $delayedmod['new_link'] = get_forum_link($delayedmod['inputs']['new_forum']);
-                $delayedmod['new_name'] = $forum_cache[$delayedmod['inputs']['new_forum']]['name'];
+			if($delayedmod['type'] == 'move')
+			{
+				$delayedmod['new_forum'] = true;
+				$delayedmod['new_link'] = get_forum_link($delayedmod['inputs']['new_forum']);
+				$delayedmod['new_name'] = $forum_cache[$delayedmod['inputs']['new_forum']]['name'];
 
-                if ($delayedmod['inputs']['method'] == "redirect") {
-                    $delayedmod['redirect'] = true;
-                    if ((int)$delayedmod['inputs']['redirect_expire'] == 0) {
-                        $delayedmod['redirect_expire'] = $lang->redirect_forever;
-                    } else {
-                        $delayedmod['redirect_expire'] = (int)$delayedmod['inputs']['redirect_expire']." {$lang->days}";
-                    }
-                }
-            }
+				if($delayedmod['inputs']['method'] == "redirect")
+				{
+					$delayedmod['redirect'] = true;
+					if((int)$delayedmod['inputs']['redirect_expire'] == 0)
+					{
+						$delayedmod['redirect_expire'] = $lang->redirect_forever;
+					}
+					else
+					{
+						$delayedmod['redirect_expire'] = (int)$delayedmod['inputs']['redirect_expire']." {$lang->days}";
+					}
+				}
+			}
 
-            if ($delayedmod['type'] == 'merge') {
-                $delayedmod['merge'] = true;
-                $delayedmod['subject'] = $delayedmod['inputs']['subject'];
-                $delayedmod['threadurl'] = $delayedmod['inputs']['threadurl'];
-            }
+			if($delayedmod['type'] == 'merge')
+			{
+				$delayedmod['merge'] = true;
+				$delayedmod['subject'] = $delayedmod['inputs']['subject'];
+				$delayedmod['threadurl'] = $delayedmod['inputs']['threadurl'];
+			}
 
-            $delayedmods[] = $delayedmod;
-        }
+			$delayedmods[] = $delayedmod;
+		}
 
-        $delayed['url'] = '';
-        $delayed['singlethread'] = false;
-        if ($mybb->get_input('tid', MyBB::INPUT_INT)) {
-            $delayed['singlethread'] = true;
-            $delayed['threadlink'] = get_thread_link($tid);
-            $delayed['threadsubject'] = $thread['subject'];
-        } else {
-            if ($mybb->get_input('inlinetype') == 'search') {
-                $tids = getids($mybb->get_input('searchid'), 'search');
-                $delayed['url'] = $mybb->get_input('url');
-            } else {
-                $tids = getids($fid, "forum");
-            }
+		$delayed['url'] = '';
+		$delayed['singlethread'] = false;
+		if($mybb->get_input('tid', MyBB::INPUT_INT))
+		{
+			$delayed['singlethread'] = true;
+			$delayed['threadlink'] = get_thread_link($tid);
+			$delayed['threadsubject'] = $thread['subject'];
+		}
+		else
+		{
+			if($mybb->get_input('inlinetype') == 'search')
+			{
+				$tids = getids($mybb->get_input('searchid'), 'search');
+				$delayed['url'] = $mybb->get_input('url');
+			}
+			else
+			{
+				$tids = getids($fid, "forum");
+			}
 
-            if (count($tids) < 1) {
-                error($lang->error_inline_nothreadsselected, $lang->error);
-            }
+			if(count($tids) < 1)
+			{
+				error($lang->error_inline_nothreadsselected, $lang->error);
+			}
 
-            $delayed['threadcount'] = count($tids);
-        }
+			$delayed['threadcount'] = count($tids);
+		}
 
-        $delayed['delayedmoderation']['redirect_expire'] = (int)$mybb->input['delayedmoderation']['redirect_expire'];
+		$delayed['delayedmoderation']['redirect_expire'] = (int)$mybb->input['delayedmoderation']['redirect_expire'];
 
-        // Generate form elements for date form
-        $days = [];
-        for ($day_count = 1; $day_count <= 31; ++$day_count)
-        {
-            $day['day'] = $day_count;
-            if ($mybb->get_input('date_day', MyBB::INPUT_INT) == $day_count) {
-                $day['selected'] = true;
-            } else {
-                $day['selected'] = '';
-            }
+		// Generate form elements for date form
+		$days = [];
+		for($day_count = 1; $day_count <= 31; ++$day_count)
+		{
+			$day['day'] = $day_count;
+			if($mybb->get_input('date_day', MyBB::INPUT_INT) == $day_count)
+			{
+				$day['selected'] = true;
+			}
+			else
+			{
+				$day['selected'] = '';
+			}
 
-            $days[] = $day;
-        }
+			$days[] = $day;
+		}
 
-        $months = [];
-        for ($month_count = 1; $month_count <= 12; ++$month_count) {
-            $month['month'] = $month_count;
+		$months = [];
+		for($month_count = 1; $month_count <= 12; ++$month_count)
+		{
+			$month['month'] = $month_count;
 
-            $lang_string = 'month_'.$month_count;
-            $month['name'] = $lang->{$lang_string};
+			$lang_string = 'month_'.$month_count;
+			$month['name'] = $lang->{$lang_string};
 
-            if ($mybb->get_input('date_month', MyBB::INPUT_INT) == $month_count) {
-                $month['selected'] = true;
-            } else {
-                $month['selected'] = '';
-            }
+			if($mybb->get_input('date_month', MyBB::INPUT_INT) == $month_count)
+			{
+				$month['selected'] = true;
+			}
+			else
+			{
+				$month['selected'] = '';
+			}
 
-            $months[] = $month;
-        }
+			$months[] = $month;
+		}
 
-        $delayed['dateyear'] = gmdate('Y', TIME_NOW  + $localized_time_offset);
-        $delayed['datetime'] = gmdate($mybb->settings['timeformat'], TIME_NOW + $localized_time_offset);
+		$delayed['dateyear'] = gmdate('Y', TIME_NOW + $localized_time_offset);
+		$delayed['datetime'] = gmdate($mybb->settings['timeformat'], TIME_NOW + $localized_time_offset);
 
-        $delayed['openclose'] = false;
-        if (is_moderator($fid, "canopenclosethreads")) {
-            $delayed['openclose'] = true;
-        }
+		$delayed['openclose'] = false;
+		if(is_moderator($fid, "canopenclosethreads"))
+		{
+			$delayed['openclose'] = true;
+		}
 
-        $delayed['softdeleterestore'] = false;
-        if (is_moderator($fid, "cansoftdeletethreads") || is_moderator($fid, "canrestorethreads")) {
-            $delayed['softdeleterestore'] = true;
-        }
+		$delayed['softdeleterestore'] = false;
+		if(is_moderator($fid, "cansoftdeletethreads") || is_moderator($fid, "canrestorethreads"))
+		{
+			$delayed['softdeleterestore'] = true;
+		}
 
-        $delayed['delete'] = false;
-        if (is_moderator($fid, "candeletethreads")) {
-            $delayed['delete'] = true;
-        }
+		$delayed['delete'] = false;
+		if(is_moderator($fid, "candeletethreads"))
+		{
+			$delayed['delete'] = true;
+		}
 
-        $delayed['stickunstick'] = false;
-        if (is_moderator($fid, "canstickunstickthreads")) {
-            $delayed['stickunstick'] = true;
-        }
+		$delayed['stickunstick'] = false;
+		if(is_moderator($fid, "canstickunstickthreads"))
+		{
+			$delayed['stickunstick'] = true;
+		}
 
-        $delayed['approveunapprove'] = false;
-        if (is_moderator($fid, "canapproveunapprovethreads")) {
-            $delayed['approveunapprove'] = true;
-        } 
+		$delayed['approveunapprove'] = false;
+		if(is_moderator($fid, "canapproveunapprovethreads"))
+		{
+			$delayed['approveunapprove'] = true;
+		}
 
-        $delayed['tid'] = $tid;
-        $delayed['fid'] = $fid;
+		$delayed['tid'] = $tid;
+		$delayed['fid'] = $fid;
 
-        $plugins->run_hooks("moderation_delayedmoderation");
+		$plugins->run_hooks("moderation_delayedmoderation");
 
-        output_page(\MyBB\template('moderation/delayedmoderation.twig', [
-            'loginbox' => $loginbox,
-            'display_errors' => $display_errors,
-            'customtools' => $customtools,
-            'delayedmods' => $delayedmods,
-            'delayed' => $delayed,
-            'forumselect' => $forumselect,
-            'days' => $days,
-            'months' => $months,
-        ]));
-        break;
+		output_page(\MyBB\template('moderation/delayedmoderation.twig', [
+			'loginbox' => $loginbox,
+			'display_errors' => $display_errors,
+			'customtools' => $customtools,
+			'delayedmods' => $delayedmods,
+			'delayed' => $delayed,
+			'forumselect' => $forumselect,
+			'days' => $days,
+			'months' => $months,
+		]));
+		break;
 	// Open or close a thread
 	case "openclosethread":
 		// Verify incoming POST request
@@ -705,21 +796,23 @@ switch($mybb->input['action'])
 	// Delete thread confirmation page
 	case "deletethread":
 
-        add_breadcrumb($lang->nav_deletethread);
+		add_breadcrumb($lang->nav_deletethread);
 
-        if (!is_moderator($fid, "candeletethreads")) {
-            if ($permissions['candeletethreads'] != 1 || $mybb->user['uid'] != $thread['uid']) {
-                error_no_permission();
-            }
-        }
+		if(!is_moderator($fid, "candeletethreads"))
+		{
+			if($permissions['candeletethreads'] != 1 || $mybb->user['uid'] != $thread['uid'])
+			{
+				error_no_permission();
+			}
+		}
 
-        $plugins->run_hooks("moderation_deletethread");
+		$plugins->run_hooks("moderation_deletethread");
 
-        output_page(\MyBB\template('moderation/deletethread.twig', [
-            'loginbox' => $loginbox,
-            'thread' => $thread,
-        ]));
-        break;
+		output_page(\MyBB\template('moderation/deletethread.twig', [
+			'loginbox' => $loginbox,
+			'thread' => $thread,
+		]));
+		break;
 
 	// Delete the actual thread here
 	case "do_deletethread":
@@ -753,27 +846,30 @@ switch($mybb->input['action'])
 	// Delete the poll from a thread confirmation page
 	case "deletepoll":
 
-        add_breadcrumb($lang->nav_deletepoll);
+		add_breadcrumb($lang->nav_deletepoll);
 
-        if (!is_moderator($fid, "canmanagepolls")) {
-            if ($permissions['candeletethreads'] != 1 || $mybb->user['uid'] != $thread['uid']) {
-                error_no_permission();
-            }
-        }
+		if(!is_moderator($fid, "canmanagepolls"))
+		{
+			if($permissions['candeletethreads'] != 1 || $mybb->user['uid'] != $thread['uid'])
+			{
+				error_no_permission();
+			}
+		}
 
-        $plugins->run_hooks("moderation_deletepoll");
+		$plugins->run_hooks("moderation_deletepoll");
 
-        $query = $db->simple_select("polls", "pid", "tid='$tid'");
-        $poll = $db->fetch_array($query);
-        if (!$poll) {
-            error($lang->error_invalidpoll);
-        }
+		$query = $db->simple_select("polls", "pid", "tid='$tid'");
+		$poll = $db->fetch_array($query);
+		if(!$poll)
+		{
+			error($lang->error_invalidpoll);
+		}
 
-        output_page(\MyBB\template('moderation/deletepoll.twig', [
-            'loginbox' => $loginbox,
-            'thread' => $thread,
-        ]));
-        break;
+		output_page(\MyBB\template('moderation/deletepoll.twig', [
+			'loginbox' => $loginbox,
+			'thread' => $thread,
+		]));
+		break;
 
 	// Delete the actual poll here!
 	case "do_deletepoll":
@@ -900,21 +996,22 @@ switch($mybb->input['action'])
 	// Move a thread
 	case "move":
 
-        add_breadcrumb($lang->nav_move);
-        if (!is_moderator($fid, "canmanagethreads")) {
-            error_no_permission();
-        }
+		add_breadcrumb($lang->nav_move);
+		if(!is_moderator($fid, "canmanagethreads"))
+		{
+			error_no_permission();
+		}
 
-        $plugins->run_hooks("moderation_move");
+		$plugins->run_hooks("moderation_move");
 
-        $forumselect = build_forum_jump("", '', 1, '', 0, true, '', "moveto");
+		$forumselect = build_forum_jump("", '', 1, '', 0, true, '', "moveto");
 
-        output_page(\MyBB\template('moderation/move.twig', [
-            'loginbox' => $loginbox,
-            'thread' => $thread,
-            'forumselect' => $forumselect,
-        ]));
-        break;
+		output_page(\MyBB\template('moderation/move.twig', [
+			'loginbox' => $loginbox,
+			'thread' => $thread,
+			'forumselect' => $forumselect,
+		]));
+		break;
 
 	// Let's get this thing moving!
 	case "do_move":
@@ -980,34 +1077,38 @@ switch($mybb->input['action'])
 	// Viewing thread notes
 	case "viewthreadnotes":
 
-        if (!is_moderator($fid)) {
-            error_no_permission();
-        }
+		if(!is_moderator($fid))
+		{
+			error_no_permission();
+		}
 
-        // Make sure we are looking at a real thread here.
-        if (!$thread) {
-            error($lang->error_nomember);
-        }
+		// Make sure we are looking at a real thread here.
+		if(!$thread)
+		{
+			error($lang->error_nomember);
+		}
 
-        $plugins->run_hooks('moderation_viewthreadnotes');
+		$plugins->run_hooks('moderation_viewthreadnotes');
 
-        output_page(\MyBB\template('moderation/viewthreadnotes.twig', [
-            'thread' => $thread,
-        ]));
-        break;
+		output_page(\MyBB\template('moderation/viewthreadnotes.twig', [
+			'thread' => $thread,
+		]));
+		break;
 
 	// Thread notes editor
 	case "threadnotes":
 
-        add_breadcrumb($lang->nav_threadnotes);
-        if (!is_moderator($fid, "canmanagethreads")) {
-            error_no_permission();
-        }
+		add_breadcrumb($lang->nav_threadnotes);
+		if(!is_moderator($fid, "canmanagethreads"))
+		{
+			error_no_permission();
+		}
 
-        $thread['notes'] = $parser->parse_badwords($thread['notes']);
+		$thread['notes'] = $parser->parse_badwords($thread['notes']);
 
-        if (is_moderator($fid, "canviewmodlog")) {
-            $query = $db->query("
+		if(is_moderator($fid, "canviewmodlog"))
+		{
+			$query = $db->query("
                 SELECT l.*, u.username, t.subject AS tsubject, f.name AS fname, p.subject AS psubject
                 FROM ".TABLE_PREFIX."moderatorlog l
                 LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid)
@@ -1018,65 +1119,72 @@ switch($mybb->input['action'])
                 ORDER BY l.dateline DESC
                 LIMIT  0, 20
             ");
-            $modactions = [];
-            while ($modaction = $db->fetch_array($query)) {
-                $modaction['thread'] = false;
-                $modaction['forum'] = false;
-                $modaction['post'] = false;
+			$modactions = [];
+			while($modaction = $db->fetch_array($query))
+			{
+				$modaction['thread'] = false;
+				$modaction['forum'] = false;
+				$modaction['post'] = false;
 
-                $modaction['dateline'] = my_date("jS M Y, G:i", $modaction['dateline']);
-                $modaction['profilelink'] = build_profile_link($modaction['username'], $modaction['uid']);
+				$modaction['dateline'] = my_date("jS M Y, G:i", $modaction['dateline']);
+				$modaction['profilelink'] = build_profile_link($modaction['username'], $modaction['uid']);
 
-                if ($modaction['tsubject']) {
-                    $modaction['thread'] = true;
-                    $modaction['tsubject'] = $parser->parse_badwords($modaction['tsubject']);
-                    $modaction['threadlink'] = get_thread_link($modaction['tid']);
-                }
+				if($modaction['tsubject'])
+				{
+					$modaction['thread'] = true;
+					$modaction['tsubject'] = $parser->parse_badwords($modaction['tsubject']);
+					$modaction['threadlink'] = get_thread_link($modaction['tid']);
+				}
 
-                if ($modaction['fname']) {
-                    $modaction['forum'] = true;
-                    $modaction['forumlink'] = get_forum_link($modaction['fid']);
-                }
+				if($modaction['fname'])
+				{
+					$modaction['forum'] = true;
+					$modaction['forumlink'] = get_forum_link($modaction['fid']);
+				}
 
-                if ($modaction['psubject']) {
-                    $modaction['post'] = true;
-                    $modaction['psubject'] = $parser->parse_badwords($modaction['psubject']);
-                    $modaction['postlink'] = get_post_link($modaction['pid']);
-                }
+				if($modaction['psubject'])
+				{
+					$modaction['post'] = true;
+					$modaction['psubject'] = $parser->parse_badwords($modaction['psubject']);
+					$modaction['postlink'] = get_post_link($modaction['pid']);
+				}
 
-                $modactions[] = $modaction;
-            }
-        }
+				$modactions[] = $modaction;
+			}
+		}
 
-        $actions = array(
-            'openclosethread' => $lang->open_close_thread,
-            'deletethread' => $lang->delete_thread,
-            'move' => $lang->move_copy_thread,
-            'stick' => $lang->stick_unstick_thread,
-            'merge' => $lang->merge_threads,
-            'removeredirects' => $lang->remove_redirects,
-            'removesubscriptions' => $lang->remove_subscriptions,
-            'approveunapprovethread' => $lang->approve_unapprove_thread
-        );
+		$actions = array(
+			'openclosethread' => $lang->open_close_thread,
+			'deletethread' => $lang->delete_thread,
+			'move' => $lang->move_copy_thread,
+			'stick' => $lang->stick_unstick_thread,
+			'merge' => $lang->merge_threads,
+			'removeredirects' => $lang->remove_redirects,
+			'removesubscriptions' => $lang->remove_subscriptions,
+			'approveunapprovethread' => $lang->approve_unapprove_thread
+		);
 
-        switch ($db->type) {
-            case "pgsql":
-            case "sqlite":
-                $query = $db->simple_select("modtools", 'tid, name', "(','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%' OR forums='') AND type = 't'");
-                break;
-            default:
-                $query = $db->simple_select("modtools", 'tid, name', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='') AND type = 't'");
-        }
-        while ($tool = $db->fetch_array($query)) {
-            $actions['modtool_'.$tool['tid']] = $tool['name'];
-        }
+		switch($db->type)
+		{
+			case "pgsql":
+			case "sqlite":
+				$query = $db->simple_select("modtools", 'tid, name', "(','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%' OR forums='') AND type = 't'");
+				break;
+			default:
+				$query = $db->simple_select("modtools", 'tid, name', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='') AND type = 't'");
+		}
+		while($tool = $db->fetch_array($query))
+		{
+			$actions['modtool_'.$tool['tid']] = $tool['name'];
+		}
 
-        $forum_cache = $cache->read("forums");
+		$forum_cache = $cache->read("forums");
 
-        switch ($db->type) {
-            case "pgsql":
-            case "sqlite":
-                $query = $db->query("
+		switch($db->type)
+		{
+			case "pgsql":
+			case "sqlite":
+				$query = $db->query("
                     SELECT d.*, u.username, f.name AS fname
                     FROM ".TABLE_PREFIX."delayedmoderation d
                     LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=d.uid)
@@ -1085,9 +1193,9 @@ switch($mybb->input['action'])
                     ORDER BY d.dateline DESC
                     LIMIT  0, 20
                 ");
-                break;
-            default:
-                $query = $db->query("
+				break;
+			default:
+				$query = $db->query("
                     SELECT d.*, u.username, f.name AS fname
                     FROM ".TABLE_PREFIX."delayedmoderation d
                     LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=d.uid)
@@ -1096,69 +1204,80 @@ switch($mybb->input['action'])
                     ORDER BY d.dateline DESC
                     LIMIT  0, 20
                 ");
-        }
-        $delayedmods = [];
-        while ($delayedmod = $db->fetch_array($query)) {
-            $delayedmod['dateline'] = my_date("jS M Y, G:i", $delayedmod['delaydateline']);
-            $delayedmod['username'] = htmlspecialchars_uni($delayedmod['username']);
-            $delayedmod['profilelink'] = build_profile_link($delayedmod['username'], $delayedmod['uid']);
-            $delayedmod['action'] = $actions[$delayedmod['type']];
+		}
+		$delayedmods = [];
+		while($delayedmod = $db->fetch_array($query))
+		{
+			$delayedmod['dateline'] = my_date("jS M Y, G:i", $delayedmod['delaydateline']);
+			$delayedmod['username'] = htmlspecialchars_uni($delayedmod['username']);
+			$delayedmod['profilelink'] = build_profile_link($delayedmod['username'], $delayedmod['uid']);
+			$delayedmod['action'] = $actions[$delayedmod['type']];
 
-            $delayedmod['thread_single'] = false;
-            $delayedmod['thread_multiple'] = false;
-            $delayedmod['forum'] = false;
-            $delayedmod['new_forum'] = false;
-            $delayedmod['redirect'] = false;
-            $delayedmod['merge'] = false;
+			$delayedmod['thread_single'] = false;
+			$delayedmod['thread_multiple'] = false;
+			$delayedmod['forum'] = false;
+			$delayedmod['new_forum'] = false;
+			$delayedmod['redirect'] = false;
+			$delayedmod['merge'] = false;
 
-            if (strpos($delayedmod['tids'], ',') === false) {
-                $delayedmod['thread_single'] = true;
-                $delayedmod['threadlink'] = get_thread_link($delayedmod['tids']);
-                $delayedmod['threadsubject'] = $thread['subject'];
-            } else {
-                $delayedmod['thread_multiple'] = true;
-            }
+			if(strpos($delayedmod['tids'], ',') === false)
+			{
+				$delayedmod['thread_single'] = true;
+				$delayedmod['threadlink'] = get_thread_link($delayedmod['tids']);
+				$delayedmod['threadsubject'] = $thread['subject'];
+			}
+			else
+			{
+				$delayedmod['thread_multiple'] = true;
+			}
 
-            if ($delayedmod['fname']) {
-                $delayedmod['forum'] = true;
-                $delayedmod['link'] = get_forum_link($delayedmod['fid']);
-            }
+			if($delayedmod['fname'])
+			{
+				$delayedmod['forum'] = true;
+				$delayedmod['link'] = get_forum_link($delayedmod['fid']);
+			}
 
-            $delayedmod['inputs'] = my_unserialize($delayedmod['inputs']);
+			$delayedmod['inputs'] = my_unserialize($delayedmod['inputs']);
 
-            if ($delayedmod['type'] == 'move') {
-                $delayedmod['new_forum'] = true;
-                $delayedmod['new_link'] = get_forum_link($delayedmod['inputs']['new_forum']);
-                $delayedmod['new_name'] = $forum_cache[$delayedmod['inputs']['new_forum']]['name'];
+			if($delayedmod['type'] == 'move')
+			{
+				$delayedmod['new_forum'] = true;
+				$delayedmod['new_link'] = get_forum_link($delayedmod['inputs']['new_forum']);
+				$delayedmod['new_name'] = $forum_cache[$delayedmod['inputs']['new_forum']]['name'];
 
-                if ($delayedmod['inputs']['method'] == "redirect") {
-                    $delayedmod['redirect'] = true;
-                    if ((int)$delayedmod['inputs']['redirect_expire'] == 0) {
-                        $delayedmod['redirect_expire'] = $lang->redirect_forever;
-                    } else {
-                        $delayedmod['redirect_expire'] = (int)$delayedmod['inputs']['redirect_expire']." {$lang->days}";
-                    }
-                }
-            }
+				if($delayedmod['inputs']['method'] == "redirect")
+				{
+					$delayedmod['redirect'] = true;
+					if((int)$delayedmod['inputs']['redirect_expire'] == 0)
+					{
+						$delayedmod['redirect_expire'] = $lang->redirect_forever;
+					}
+					else
+					{
+						$delayedmod['redirect_expire'] = (int)$delayedmod['inputs']['redirect_expire']." {$lang->days}";
+					}
+				}
+			}
 
-            if ($delayedmod['type'] == 'merge') {
-                $delayedmod['merge'] = true;
-                $delayedmod['subject'] = $delayedmod['inputs']['subject'];
-                $delayedmod['threadurl'] = $delayedmod['inputs']['threadurl'];
-            }
+			if($delayedmod['type'] == 'merge')
+			{
+				$delayedmod['merge'] = true;
+				$delayedmod['subject'] = $delayedmod['inputs']['subject'];
+				$delayedmod['threadurl'] = $delayedmod['inputs']['threadurl'];
+			}
 
-            $delayedmods[] = $delayedmod;
-        }
+			$delayedmods[] = $delayedmod;
+		}
 
-        $plugins->run_hooks("moderation_threadnotes");
+		$plugins->run_hooks("moderation_threadnotes");
 
-        output_page(\MyBB\template('moderation/threadnotes.twig', [
-            'loginbox' => $loginbox,
-            'thread' => $thread,
-            'modactions' => $modactions,
-            'delayedmods' => $delayedmods,
-        ]));
-        break;
+		output_page(\MyBB\template('moderation/threadnotes.twig', [
+			'loginbox' => $loginbox,
+			'thread' => $thread,
+			'modactions' => $modactions,
+			'delayedmods' => $delayedmods,
+		]));
+		break;
 
 	// Update the thread notes!
 	case "do_threadnotes":
@@ -1183,86 +1302,98 @@ switch($mybb->input['action'])
 
 	// Let's look up the ip address of a post
 	case "getip":
-        add_breadcrumb($lang->nav_getip);
-        if (!is_moderator($fid, "canviewips")) {
-            error_no_permission();
-        }
+		add_breadcrumb($lang->nav_getip);
+		if(!is_moderator($fid, "canviewips"))
+		{
+			error_no_permission();
+		}
 
-        $post['ipaddress'] = my_inet_ntop($db->unescape_binary($post['ipaddress']));
-        $post['hostname'] = @gethostbyaddr($post['ipaddress']);
-        if (!$post['hostname'] || $post['hostname'] == $post['ipaddress']) {
-            $post['hostname'] = $lang->resolve_fail;
-        }
+		$post['ipaddress'] = my_inet_ntop($db->unescape_binary($post['ipaddress']));
+		$post['hostname'] = @gethostbyaddr($post['ipaddress']);
+		if(!$post['hostname'] || $post['hostname'] == $post['ipaddress'])
+		{
+			$post['hostname'] = $lang->resolve_fail;
+		}
 
-        $post['user_name'] = build_profile_link($post['username'], $post['uid']);
+		$post['user_name'] = build_profile_link($post['username'], $post['uid']);
 
-        $plugins->run_hooks('moderation_getip');
+		$plugins->run_hooks('moderation_getip');
 
-        if ($modal) {
-            output_page(\MyBB\template('moderation/getip_modal.twig', [
-                'post' => $post,
-            ]));
-            exit;
-        } else {
-            output_page(\MyBB\template('moderation/getip.twig', [
-                'post' => $post,
-            ]));
-            break;
-        }
+		if($modal)
+		{
+			output_page(\MyBB\template('moderation/getip_modal.twig', [
+				'post' => $post,
+			]));
+			exit;
+		}
+		else
+		{
+			output_page(\MyBB\template('moderation/getip.twig', [
+				'post' => $post,
+			]));
+			break;
+		}
 
 	// Let's look up the ip address of a PM
 	case "getpmip":
-        if ($pmid <= 0) {
-            error($lang->error_invalidpm);
-        }
+		if($pmid <= 0)
+		{
+			error($lang->error_invalidpm);
+		}
 
-        add_breadcrumb($lang->nav_pms, "private.php");
-        $pm['subject'] = htmlspecialchars_uni($parser->parse_badwords($pm['subject']));
-        add_breadcrumb($pm['subject'], "private.php?action=read&amp;pmid={$pmid}");
-        add_breadcrumb($lang->nav_getpmip);
+		add_breadcrumb($lang->nav_pms, "private.php");
+		$pm['subject'] = htmlspecialchars_uni($parser->parse_badwords($pm['subject']));
+		add_breadcrumb($pm['subject'], "private.php?action=read&amp;pmid={$pmid}");
+		add_breadcrumb($lang->nav_getpmip);
 
-        if (!$mybb->usergroup['issupermod']) {
-            error_no_permission();
-        }
+		if(!$mybb->usergroup['issupermod'])
+		{
+			error_no_permission();
+		}
 
-        $pm['ipaddress'] = my_inet_ntop($db->unescape_binary($pm['ipaddress']));
-        $pm['hostname'] = @gethostbyaddr($pm['ipaddress']);
-        if (!$pm['hostname'] || $pm['hostname'] == $pm['ipaddress']) {
-            $pm['hostname'] = $lang->resolve_fail;
-        }
+		$pm['ipaddress'] = my_inet_ntop($db->unescape_binary($pm['ipaddress']));
+		$pm['hostname'] = @gethostbyaddr($pm['ipaddress']);
+		if(!$pm['hostname'] || $pm['hostname'] == $pm['ipaddress'])
+		{
+			$pm['hostname'] = $lang->resolve_fail;
+		}
 
-        $name = $db->fetch_field($db->simple_select('users', 'username', "uid = {$pm['fromid']}"), 'username');
-        $pm['user_name'] = build_profile_link($name, $pm['fromid']);
+		$name = $db->fetch_field($db->simple_select('users', 'username', "uid = {$pm['fromid']}"), 'username');
+		$pm['user_name'] = build_profile_link($name, $pm['fromid']);
 
-        $plugins->run_hooks('moderation_getpmip');
+		$plugins->run_hooks('moderation_getpmip');
 
-        if ($modal) {
-            output_page(\MyBB\template('moderation/getpmip_modal.twig', [
-                'pm' => $pm,
-            ]));
-            exit;
-        } else {
-            output_page(\MyBB\template('moderation/getpmip.twig', [
-                'pm' => $pm,
-            ]));
-            break;
-        }
+		if($modal)
+		{
+			output_page(\MyBB\template('moderation/getpmip_modal.twig', [
+				'pm' => $pm,
+			]));
+			exit;
+		}
+		else
+		{
+			output_page(\MyBB\template('moderation/getpmip.twig', [
+				'pm' => $pm,
+			]));
+			break;
+		}
 
 	// Merge threads
 	case "merge":
 
-        add_breadcrumb($lang->nav_merge);
-        if (!is_moderator($fid, "canmanagethreads")) {
-            error_no_permission();
-        }
+		add_breadcrumb($lang->nav_merge);
+		if(!is_moderator($fid, "canmanagethreads"))
+		{
+			error_no_permission();
+		}
 
-        $plugins->run_hooks("moderation_merge");
+		$plugins->run_hooks("moderation_merge");
 
-        output_page(\MyBB\template('moderation/merge.twig', [
-            'loginbox' => $loginbox,
-            'thread' => $thread,
-        ]));
-        break;
+		output_page(\MyBB\template('moderation/merge.twig', [
+			'loginbox' => $loginbox,
+			'thread' => $thread,
+		]));
+		break;
 
 	// Let's get those threads together baby! (Merge threads)
 	case "do_merge":
@@ -1364,56 +1495,60 @@ switch($mybb->input['action'])
 	// Divorce the posts in this thread (Split!)
 	case "split":
 
-        add_breadcrumb($lang->nav_split);
-        if (!is_moderator($fid, "canmanagethreads")) {
-            error_no_permission();
-        }
+		add_breadcrumb($lang->nav_split);
+		if(!is_moderator($fid, "canmanagethreads"))
+		{
+			error_no_permission();
+		}
 
-        $query = $db->query("
+		$query = $db->query("
             SELECT p.*, u.*
             FROM ".TABLE_PREFIX."posts p
             LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid)
             WHERE tid='$tid'
             ORDER BY dateline ASC
         ");
-        $numposts = $db->num_rows($query);
-        if ($numposts <= 1) {
-            error($lang->error_cantsplitonepost);
-        }
+		$numposts = $db->num_rows($query);
+		if($numposts <= 1)
+		{
+			error($lang->error_cantsplitonepost);
+		}
 
-        $posts = [];
-        while ($post = $db->fetch_array($query)) {
-            $post['postdate'] = my_date('relative', $post['dateline']);
+		$posts = [];
+		while($post = $db->fetch_array($query))
+		{
+			$post['postdate'] = my_date('relative', $post['dateline']);
 
-            $parser_options = array(
-                "allow_html" => $forum['allowhtml'],
-                "allow_mycode" => $forum['allowmycode'],
-                "allow_smilies" => $forum['allowsmilies'],
-                "allow_imgcode" => $forum['allowimgcode'],
-                "allow_videocode" => $forum['allowvideocode'],
-                "filter_badwords" => 1
-            );
+			$parser_options = array(
+				"allow_html" => $forum['allowhtml'],
+				"allow_mycode" => $forum['allowmycode'],
+				"allow_smilies" => $forum['allowsmilies'],
+				"allow_imgcode" => $forum['allowimgcode'],
+				"allow_videocode" => $forum['allowvideocode'],
+				"filter_badwords" => 1
+			);
 
-            if ($post['smilieoff'] == 1) {
-                $parser_options['allow_smilies'] = 0;
-            }
+			if($post['smilieoff'] == 1)
+			{
+				$parser_options['allow_smilies'] = 0;
+			}
 
-            $post['message'] = $parser->parse_message($post['message'], $parser_options);
-            $posts[] = $post;
-        }
+			$post['message'] = $parser->parse_message($post['message'], $parser_options);
+			$posts[] = $post;
+		}
 
-        clearinline($tid, 'thread');
-        $forumselect = build_forum_jump("", $fid, 1, '', 0, true, '', "moveto");
+		clearinline($tid, 'thread');
+		$forumselect = build_forum_jump("", $fid, 1, '', 0, true, '', "moveto");
 
-        $plugins->run_hooks("moderation_split");
+		$plugins->run_hooks("moderation_split");
 
-        output_page(\MyBB\template('moderation/split.twig', [
-            'loginbox' => $loginbox,
-            'thread' => $thread,
-            'forumselect' => $forumselect,
-            'posts' => $posts,
-        ]));
-        break;
+		output_page(\MyBB\template('moderation/split.twig', [
+			'loginbox' => $loginbox,
+			'thread' => $thread,
+			'forumselect' => $forumselect,
+			'posts' => $posts,
+		]));
+		break;
 
 	// Let's break them up buddy! (Do the split)
 	case "do_split":
@@ -1484,8 +1619,8 @@ switch($mybb->input['action'])
 	// Delete Thread Subscriptions
 	case "removesubscriptions":
 
-        // Verify incoming POST request
-        verify_post_check($mybb->get_input('my_post_key'));
+		// Verify incoming POST request
+		verify_post_check($mybb->get_input('my_post_key'));
 
 		if(!is_moderator($fid, "canmanagethreads"))
 		{
@@ -1504,41 +1639,50 @@ switch($mybb->input['action'])
 	// Delete Threads - Inline moderation
 	case "multideletethreads":
 
-        add_breadcrumb($lang->nav_multi_deletethreads);
+		add_breadcrumb($lang->nav_multi_deletethreads);
 
-        if (!empty($mybb->input['searchid'])) {
-            // From search page
-            $threads = getids($mybb->get_input('searchid'), 'search');
-            if (!is_moderator_by_tids($threads, 'candeletethreads')) {
-                error_no_permission();
-            }
-        } else {
-            $threads = getids($fid, 'forum');
-            if (!is_moderator($fid, 'candeletethreads')) {
-                error_no_permission();
-            }
-        }
+		if(!empty($mybb->input['searchid']))
+		{
+			// From search page
+			$threads = getids($mybb->get_input('searchid'), 'search');
+			if(!is_moderator_by_tids($threads, 'candeletethreads'))
+			{
+				error_no_permission();
+			}
+		}
+		else
+		{
+			$threads = getids($fid, 'forum');
+			if(!is_moderator($fid, 'candeletethreads'))
+			{
+				error_no_permission();
+			}
+		}
 
-        if (count($threads) < 1) {
-            error($lang->error_inline_nothreadsselected);
-        }
+		if(count($threads) < 1)
+		{
+			error($lang->error_inline_nothreadsselected);
+		}
 
-        $inlineids = implode("|", $threads);
-        if ($mybb->get_input('inlinetype') == 'search') {
-            clearinline($mybb->get_input('searchid', MyBB::INPUT_INT), 'search');
-        } else {
-            clearinline($fid, 'forum');
-        }
+		$inlineids = implode("|", $threads);
+		if($mybb->get_input('inlinetype') == 'search')
+		{
+			clearinline($mybb->get_input('searchid', MyBB::INPUT_INT), 'search');
+		}
+		else
+		{
+			clearinline($fid, 'forum');
+		}
 
-        $return_url = $mybb->get_input('url');
+		$return_url = $mybb->get_input('url');
 
-        output_page(\MyBB\template('moderation/inline_deletethreads.twig', [
-            'loginbox' => $loginbox,
-            'forum' => $forum,
-            'inlineids' => $inlineids,
-            'return_url' => $return_url,
-        ]));
-        break;
+		output_page(\MyBB\template('moderation/inline_deletethreads.twig', [
+			'loginbox' => $loginbox,
+			'forum' => $forum,
+			'inlineids' => $inlineids,
+			'return_url' => $return_url,
+		]));
+		break;
 
 	// Actually delete the threads - Inline moderation
 	case "do_multideletethreads":
@@ -1914,43 +2058,52 @@ switch($mybb->input['action'])
 	// Move threads - Inline moderation
 	case "multimovethreads":
 
-        add_breadcrumb($lang->nav_multi_movethreads);
+		add_breadcrumb($lang->nav_multi_movethreads);
 
-        if (!empty($mybb->input['searchid'])) {
-            // From search page
-            $threads = getids($mybb->get_input('searchid'), 'search');
-            if (!is_moderator_by_tids($threads, 'canmanagethreads')) {
-                error_no_permission();
-            }
-        } else {
-            $threads = getids($fid, 'forum');
-            if (!is_moderator($fid, 'canmanagethreads')) {
-                error_no_permission();
-            }
-        }
+		if(!empty($mybb->input['searchid']))
+		{
+			// From search page
+			$threads = getids($mybb->get_input('searchid'), 'search');
+			if(!is_moderator_by_tids($threads, 'canmanagethreads'))
+			{
+				error_no_permission();
+			}
+		}
+		else
+		{
+			$threads = getids($fid, 'forum');
+			if(!is_moderator($fid, 'canmanagethreads'))
+			{
+				error_no_permission();
+			}
+		}
 
-        if (count($threads) < 1) {
-            error($lang->error_inline_nothreadsselected);
-        }
+		if(count($threads) < 1)
+		{
+			error($lang->error_inline_nothreadsselected);
+		}
 
-        $inlineids = implode("|", $threads);
-        if ($mybb->get_input('inlinetype') == 'search') {
-            clearinline($mybb->get_input('searchid', MyBB::INPUT_INT), 'search');
-        } else {
-            clearinline($fid, 'forum');
-        }
+		$inlineids = implode("|", $threads);
+		if($mybb->get_input('inlinetype') == 'search')
+		{
+			clearinline($mybb->get_input('searchid', MyBB::INPUT_INT), 'search');
+		}
+		else
+		{
+			clearinline($fid, 'forum');
+		}
 
-        $forumselect = build_forum_jump("", '', 1, '', 0, true, '', "moveto");
-        $return_url = $mybb->get_input('url');
+		$forumselect = build_forum_jump("", '', 1, '', 0, true, '', "moveto");
+		$return_url = $mybb->get_input('url');
 
-        output_page(\MyBB\template('moderation/inline_movethreads.twig', [
-            'loginbox' => $loginbox,
-            'forum' => $forum,
-            'forumselect' => $forumselect,
-            'inlineids' => $inlineids,
-            'return_url' => $return_url,
-        ]));
-        break;
+		output_page(\MyBB\template('moderation/inline_movethreads.twig', [
+			'loginbox' => $loginbox,
+			'forum' => $forum,
+			'forumselect' => $forumselect,
+			'inlineids' => $inlineids,
+			'return_url' => $return_url,
+		]));
+		break;
 
 	// Actually move the threads in Inline moderation
 	case "do_multimovethreads":
@@ -1991,38 +2144,46 @@ switch($mybb->input['action'])
 	// Delete posts - Inline moderation
 	case "multideleteposts":
 
-        add_breadcrumb($lang->nav_multi_deleteposts);
+		add_breadcrumb($lang->nav_multi_deleteposts);
 
-        if ($mybb->get_input('inlinetype') == 'search') {
-            $posts = getids($mybb->get_input('searchid'), 'search');
-        } else {
-            $posts = getids($tid, 'thread');
-        }
+		if($mybb->get_input('inlinetype') == 'search')
+		{
+			$posts = getids($mybb->get_input('searchid'), 'search');
+		}
+		else
+		{
+			$posts = getids($tid, 'thread');
+		}
 
-        if (count($posts) < 1) {
-            error($lang->error_inline_nopostsselected);
-        }
+		if(count($posts) < 1)
+		{
+			error($lang->error_inline_nopostsselected);
+		}
 
-        if (!is_moderator_by_pids($posts, "candeleteposts")) {
-            error_no_permission();
-        }
+		if(!is_moderator_by_pids($posts, "candeleteposts"))
+		{
+			error_no_permission();
+		}
 
-        $inlineids = implode("|", $posts);
-        if ($mybb->get_input('inlinetype') == 'search') {
-            clearinline($mybb->get_input('searchid', MyBB::INPUT_INT), 'search');
-        } else {
-            clearinline($tid, 'thread');
-        }
+		$inlineids = implode("|", $posts);
+		if($mybb->get_input('inlinetype') == 'search')
+		{
+			clearinline($mybb->get_input('searchid', MyBB::INPUT_INT), 'search');
+		}
+		else
+		{
+			clearinline($tid, 'thread');
+		}
 
-        $return_url = $mybb->get_input('url');
+		$return_url = $mybb->get_input('url');
 
-        output_page(\MyBB\template('moderation/inline_deleteposts.twig', [
-            'loginbox' => $loginbox,
-            'thread' => $thread,
-            'inlineids' => $inlineids,
-            'return_url' => $return_url,
-        ]));
-        break;
+		output_page(\MyBB\template('moderation/inline_deleteposts.twig', [
+			'loginbox' => $loginbox,
+			'thread' => $thread,
+			'inlineids' => $inlineids,
+			'return_url' => $return_url,
+		]));
+		break;
 
 	// Actually delete the posts in inline moderation
 	case "do_multideleteposts":
@@ -2093,84 +2254,98 @@ switch($mybb->input['action'])
 	// Merge posts - Inline moderation
 	case "multimergeposts":
 
-        add_breadcrumb($lang->nav_multi_mergeposts);
+		add_breadcrumb($lang->nav_multi_mergeposts);
 
-        if ($mybb->get_input('inlinetype') == 'search') {
-            $posts = getids($mybb->get_input('searchid'), 'search');
-        } else {
-            $posts = getids($tid, 'thread');
-        }
+		if($mybb->get_input('inlinetype') == 'search')
+		{
+			$posts = getids($mybb->get_input('searchid'), 'search');
+		}
+		else
+		{
+			$posts = getids($tid, 'thread');
+		}
 
-        // Add the selected posts from other threads
-        foreach ($mybb->cookies as $key => $value) {
-            if (strpos($key, "inlinemod_thread") !== false && $key != "inlinemod_thread$tid") {
-                $inlinepostlist = explode("|", $mybb->cookies[$key]);
-                foreach ($inlinepostlist as $p) {
-                    $p = (int)$p;
+		// Add the selected posts from other threads
+		foreach($mybb->cookies as $key => $value)
+		{
+			if(strpos($key, "inlinemod_thread") !== false && $key != "inlinemod_thread$tid")
+			{
+				$inlinepostlist = explode("|", $mybb->cookies[$key]);
+				foreach($inlinepostlist as $p)
+				{
+					$p = (int)$p;
 
-                    if (!empty($p)) {
-                        $posts[] = (int)$p;
-                    }
-                }
+					if(!empty($p))
+					{
+						$posts[] = (int)$p;
+					}
+				}
 
-                // Remove the cookie once its data is retrieved
-                my_unsetcookie($key);
-            }
-        }
+				// Remove the cookie once its data is retrieved
+				my_unsetcookie($key);
+			}
+		}
 
-        if (empty($posts)) {
-            error($lang->error_inline_nopostsselected);
-        }
+		if(empty($posts))
+		{
+			error($lang->error_inline_nopostsselected);
+		}
 
-        if (!is_moderator_by_pids($posts, "canmanagethreads")) {
-            error_no_permission();
-        }
+		if(!is_moderator_by_pids($posts, "canmanagethreads"))
+		{
+			error_no_permission();
+		}
 
-        $postlist = [];
-        $query = $db->query("
+		$postlist = [];
+		$query = $db->query("
             SELECT p.*, u.*
             FROM ".TABLE_PREFIX."posts p
             LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid)
             WHERE pid IN (".implode($posts, ",").")
             ORDER BY dateline ASC
         ");
-        while ($post = $db->fetch_array($query)) {
-            $post['postdate'] = my_date('relative', $post['dateline']);
+		while($post = $db->fetch_array($query))
+		{
+			$post['postdate'] = my_date('relative', $post['dateline']);
 
-            $parser_options = array(
-                "allow_html" => $forum['allowhtml'],
-                "allow_mycode" => $forum['allowmycode'],
-                "allow_smilies" => $forum['allowsmilies'],
-                "allow_imgcode" => $forum['allowimgcode'],
-                "allow_videocode" => $forum['allowvideocode'],
-                "filter_badwords" => 1
-            );
+			$parser_options = array(
+				"allow_html" => $forum['allowhtml'],
+				"allow_mycode" => $forum['allowmycode'],
+				"allow_smilies" => $forum['allowsmilies'],
+				"allow_imgcode" => $forum['allowimgcode'],
+				"allow_videocode" => $forum['allowvideocode'],
+				"filter_badwords" => 1
+			);
 
-            if ($post['smilieoff'] == 1) {
-                $parser_options['allow_smilies'] = 0;
-            }
+			if($post['smilieoff'] == 1)
+			{
+				$parser_options['allow_smilies'] = 0;
+			}
 
-            $post['message'] = $parser->parse_message($post['message'], $parser_options);
-            $postlist[] = $post;
-        }
+			$post['message'] = $parser->parse_message($post['message'], $parser_options);
+			$postlist[] = $post;
+		}
 
-        $inlineids = implode("|", $posts);
-        if ($mybb->get_input('inlinetype') == 'search') {
-            clearinline($mybb->get_input('searchid', MyBB::INPUT_INT), 'search');
-        } else {
-            clearinline($tid, 'thread');
-        }
+		$inlineids = implode("|", $posts);
+		if($mybb->get_input('inlinetype') == 'search')
+		{
+			clearinline($mybb->get_input('searchid', MyBB::INPUT_INT), 'search');
+		}
+		else
+		{
+			clearinline($tid, 'thread');
+		}
 
-        $return_url = $mybb->get_input('url');
+		$return_url = $mybb->get_input('url');
 
-        output_page(\MyBB\template('moderation/inline_mergeposts.twig', [
-            'loginbox' => $loginbox,
-            'thread' => $thread,
-            'postlist' => $postlist,
-            'inlineids' => $inlineids,
-            'return_url' => $return_url,
-        ]));
-        break;
+		output_page(\MyBB\template('moderation/inline_mergeposts.twig', [
+			'loginbox' => $loginbox,
+			'thread' => $thread,
+			'postlist' => $postlist,
+			'inlineids' => $inlineids,
+			'return_url' => $return_url,
+		]));
+		break;
 
 	// Actually merge the posts - Inline moderation
 	case "do_multimergeposts":
@@ -2204,83 +2379,96 @@ switch($mybb->input['action'])
 	// Split posts - Inline moderation
 	case "multisplitposts":
 
-        add_breadcrumb($lang->nav_multi_splitposts);
+		add_breadcrumb($lang->nav_multi_splitposts);
 
-        if ($mybb->get_input('inlinetype') == 'search') {
-            $posts = getids($mybb->get_input('searchid'), 'search');
-        } else {
-            $posts = getids($tid, 'thread');
-        }
+		if($mybb->get_input('inlinetype') == 'search')
+		{
+			$posts = getids($mybb->get_input('searchid'), 'search');
+		}
+		else
+		{
+			$posts = getids($tid, 'thread');
+		}
 
-        if (count($posts) < 1) {
-            error($lang->error_inline_nopostsselected);
-        }
+		if(count($posts) < 1)
+		{
+			error($lang->error_inline_nopostsselected);
+		}
 
-        if (!is_moderator_by_pids($posts, "canmanagethreads")) {
-            error_no_permission();
-        }
+		if(!is_moderator_by_pids($posts, "canmanagethreads"))
+		{
+			error_no_permission();
+		}
 
-        $posts = array_map('intval', $posts);
-        $pidin = implode(',', $posts);
+		$posts = array_map('intval', $posts);
+		$pidin = implode(',', $posts);
 
-        // Make sure that we are not splitting a thread with one post
-        // Select number of posts in each thread that the splitted post is in
-        $query = $db->query("
+		// Make sure that we are not splitting a thread with one post
+		// Select number of posts in each thread that the splitted post is in
+		$query = $db->query("
             SELECT DISTINCT p.tid, COUNT(q.pid) as count
             FROM ".TABLE_PREFIX."posts p
             LEFT JOIN ".TABLE_PREFIX."posts q ON (p.tid=q.tid)
             WHERE p.pid IN ($pidin)
             GROUP BY p.tid, p.pid
         ");
-        $threads = $pcheck = array();
-        while ($tcheck = $db->fetch_array($query)) {
-            if ((int)$tcheck['count'] <= 1) {
-                error($lang->error_cantsplitonepost);
-            }
+		$threads = $pcheck = array();
+		while($tcheck = $db->fetch_array($query))
+		{
+			if((int)$tcheck['count'] <= 1)
+			{
+				error($lang->error_cantsplitonepost);
+			}
 
-            $threads[] = $pcheck[] = $tcheck['tid']; // Save tids for below
-        }
+			$threads[] = $pcheck[] = $tcheck['tid']; // Save tids for below
+		}
 
-        // Make sure that we are not splitting all posts in the thread
-        // The query does not return a row when the count is 0, so find if some threads are missing (i.e. 0 posts after removal)
-        $query = $db->query("
+		// Make sure that we are not splitting all posts in the thread
+		// The query does not return a row when the count is 0, so find if some threads are missing (i.e. 0 posts after removal)
+		$query = $db->query("
             SELECT DISTINCT p.tid, COUNT(q.pid) as count
             FROM ".TABLE_PREFIX."posts p
             LEFT JOIN ".TABLE_PREFIX."posts q ON (p.tid=q.tid)
             WHERE p.pid IN ($pidin) AND q.pid NOT IN ($pidin)
             GROUP BY p.tid, p.pid
         ");
-        $pcheck2 = array();
-        while ($tcheck = $db->fetch_array($query)) {
-            if ($tcheck['count'] > 0) {
-                $pcheck2[] = $tcheck['tid'];
-            }
-        }
+		$pcheck2 = array();
+		while($tcheck = $db->fetch_array($query))
+		{
+			if($tcheck['count'] > 0)
+			{
+				$pcheck2[] = $tcheck['tid'];
+			}
+		}
 
-        if (count($pcheck2) != count($pcheck)){
-            // One or more threads do not have posts after splitting
-            error($lang->error_cantsplitall);
-        }
+		if(count($pcheck2) != count($pcheck))
+		{
+			// One or more threads do not have posts after splitting
+			error($lang->error_cantsplitall);
+		}
 
-        $inlineids = implode("|", $posts);
-        if ($mybb->get_input('inlinetype') == 'search') {
-            clearinline($mybb->get_input('searchid', MyBB::INPUT_INT), 'search');
-        } else {
-            clearinline($tid, 'thread');
-        }
+		$inlineids = implode("|", $posts);
+		if($mybb->get_input('inlinetype') == 'search')
+		{
+			clearinline($mybb->get_input('searchid', MyBB::INPUT_INT), 'search');
+		}
+		else
+		{
+			clearinline($tid, 'thread');
+		}
 
-        $forumselect = build_forum_jump("", $fid, 1, '', 0, true, '', "moveto");
+		$forumselect = build_forum_jump("", $fid, 1, '', 0, true, '', "moveto");
 
-        $return_url = $mybb->get_input('url');
+		$return_url = $mybb->get_input('url');
 
-        output_page(\MyBB\template('moderation/inline_splitposts.twig', [
-            'loginbox' => $loginbox,
-            'thread' => $thread,
-            'forumselect' => $forumselect,
-            'inlineids' => $inlineids,
-            'return_url' => $return_url,
-        ]));
-        break;
+		output_page(\MyBB\template('moderation/inline_splitposts.twig', [
+			'loginbox' => $loginbox,
+			'thread' => $thread,
+			'forumselect' => $forumselect,
+			'inlineids' => $inlineids,
+			'return_url' => $return_url,
+		]));
+		break;
 
 	// Actually split the posts - Inline moderation
 	case "do_multisplitposts":
@@ -2389,78 +2577,91 @@ switch($mybb->input['action'])
 	// Move posts - Inline moderation
 	case "multimoveposts":
 
-        add_breadcrumb($lang->nav_multi_moveposts);
+		add_breadcrumb($lang->nav_multi_moveposts);
 
-        if ($mybb->get_input('inlinetype') == 'search') {
-            $posts = getids($mybb->get_input('searchid'), 'search');
-        } else {
-            $posts = getids($tid, 'thread');
-        }
+		if($mybb->get_input('inlinetype') == 'search')
+		{
+			$posts = getids($mybb->get_input('searchid'), 'search');
+		}
+		else
+		{
+			$posts = getids($tid, 'thread');
+		}
 
-        if (count($posts) < 1) {
-            error($lang->error_inline_nopostsselected);
-        }
+		if(count($posts) < 1)
+		{
+			error($lang->error_inline_nopostsselected);
+		}
 
-        if (!is_moderator_by_pids($posts, "canmanagethreads")) {
-            error_no_permission();
-        }
+		if(!is_moderator_by_pids($posts, "canmanagethreads"))
+		{
+			error_no_permission();
+		}
 
-        $posts = array_map('intval', $posts);
-        $pidin = implode(',', $posts);
+		$posts = array_map('intval', $posts);
+		$pidin = implode(',', $posts);
 
-        // Make sure that we are not moving posts in a thread with one post
-        // Select number of posts in each thread that the moved post is in
-        $query = $db->query("
+		// Make sure that we are not moving posts in a thread with one post
+		// Select number of posts in each thread that the moved post is in
+		$query = $db->query("
             SELECT DISTINCT p.tid, COUNT(q.pid) as count
             FROM ".TABLE_PREFIX."posts p
             LEFT JOIN ".TABLE_PREFIX."posts q ON (p.tid=q.tid)
             WHERE p.pid IN ($pidin)
             GROUP BY p.tid, p.pid
         ");
-        $threads = $pcheck = array();
-        while ($tcheck = $db->fetch_array($query)) {
-            if ((int)$tcheck['count'] <= 1) {
-                error($lang->error_cantsplitonepost);
-            }
+		$threads = $pcheck = array();
+		while($tcheck = $db->fetch_array($query))
+		{
+			if((int)$tcheck['count'] <= 1)
+			{
+				error($lang->error_cantsplitonepost);
+			}
 
-            $threads[] = $pcheck[] = $tcheck['tid']; // Save tids for below
-        }
+			$threads[] = $pcheck[] = $tcheck['tid']; // Save tids for below
+		}
 
-        // Make sure that we are not moving all posts in the thread
-        // The query does not return a row when the count is 0, so find if some threads are missing (i.e. 0 posts after removal)
-        $query = $db->query("
+		// Make sure that we are not moving all posts in the thread
+		// The query does not return a row when the count is 0, so find if some threads are missing (i.e. 0 posts after removal)
+		$query = $db->query("
             SELECT DISTINCT p.tid, COUNT(q.pid) as count
             FROM ".TABLE_PREFIX."posts p
             LEFT JOIN ".TABLE_PREFIX."posts q ON (p.tid=q.tid)
             WHERE p.pid IN ($pidin) AND q.pid NOT IN ($pidin)
             GROUP BY p.tid, p.pid
         ");
-        $pcheck2 = array();
-        while ($tcheck = $db->fetch_array($query)) {
-            if ($tcheck['count'] > 0) {
-                $pcheck2[] = $tcheck['tid'];
-            }
-        }
+		$pcheck2 = array();
+		while($tcheck = $db->fetch_array($query))
+		{
+			if($tcheck['count'] > 0)
+			{
+				$pcheck2[] = $tcheck['tid'];
+			}
+		}
 
-        if (count($pcheck2) != count($pcheck)) {
-            // One or more threads do not have posts after splitting
-            error($lang->error_cantmoveall);
-        }
+		if(count($pcheck2) != count($pcheck))
+		{
+			// One or more threads do not have posts after splitting
+			error($lang->error_cantmoveall);
+		}
 
-        $inlineids = implode("|", $posts);
-        if ($mybb->get_input('inlinetype') == 'search') {
-            clearinline($mybb->get_input('searchid', MyBB::INPUT_INT), 'search');
-        } else {
-            clearinline($tid, 'thread');
-        }
+		$inlineids = implode("|", $posts);
+		if($mybb->get_input('inlinetype') == 'search')
+		{
+			clearinline($mybb->get_input('searchid', MyBB::INPUT_INT), 'search');
+		}
+		else
+		{
+			clearinline($tid, 'thread');
+		}
 
-        output_page(\MyBB\template('moderation/inline_moveposts.twig', [
-            'loginbox' => $loginbox,
-            'thread' => $thread,
-            'inlineids' => $inlineids,
-            'return_url' => $return_url,
-        ]));
-        break;
+		output_page(\MyBB\template('moderation/inline_moveposts.twig', [
+			'loginbox' => $loginbox,
+			'thread' => $thread,
+			'inlineids' => $inlineids,
+			'return_url' => $return_url,
+		]));
+		break;
 
 	// Actually split the posts - Inline moderation
 	case "do_multimoveposts":
@@ -2827,7 +3028,7 @@ switch($mybb->input['action'])
 				// First delete everything
 				$userhandler->delete_content($uid);
 				$userhandler->delete_posts($uid);
-				
+
 				// Next ban him (or update the banned reason, shouldn't happen)
 				$query = $db->simple_select("banned", "uid", "uid = '{$uid}'");
 				if($db->num_rows($query) > 0)
@@ -2888,7 +3089,7 @@ switch($mybb->input['action'])
 			// Submit the user to stop forum spam
 			if(!empty($mybb->settings['purgespammerapikey']))
 			{
-				$sfs = @fetch_remote_file("http://stopforumspam.com/add.php?username=" . urlencode($user['username']) . "&ip_addr=" . urlencode(my_inet_ntop($db->unescape_binary($user['lastip']))) . "&email=" . urlencode($user['email']) . "&api_key=" . urlencode($mybb->settings['purgespammerapikey']));
+				$sfs = @fetch_remote_file("http://stopforumspam.com/add.php?username=".urlencode($user['username'])."&ip_addr=".urlencode(my_inet_ntop($db->unescape_binary($user['lastip'])))."&email=".urlencode($user['email'])."&api_key=".urlencode($mybb->settings['purgespammerapikey']));
 			}
 
 			log_moderator_action(array('uid' => $uid, 'username' => $user['username']), $lang->purgespammer_modlog);
@@ -2904,20 +3105,23 @@ switch($mybb->input['action'])
 		}
 		else if($mybb->input['action'] == "purgespammer")
 		{
-            $plugins->run_hooks("moderation_purgespammer_show");
+			$plugins->run_hooks("moderation_purgespammer_show");
 
-            add_breadcrumb($lang->purgespammer);
-            $lang->purgespammer_purge = $lang->sprintf($lang->purgespammer_purge, htmlspecialchars_uni($user['username']));
+			add_breadcrumb($lang->purgespammer);
+			$lang->purgespammer_purge = $lang->sprintf($lang->purgespammer_purge, htmlspecialchars_uni($user['username']));
 
-            if ($mybb->settings['purgespammerbandelete'] == "ban") {
-                $lang->purgespammer_purge_desc = $lang->sprintf($lang->purgespammer_purge_desc, $lang->purgespammer_ban);
-            } else {
-                $lang->purgespammer_purge_desc = $lang->sprintf($lang->purgespammer_purge_desc, $lang->purgespammer_delete);
-            }
+			if($mybb->settings['purgespammerbandelete'] == "ban")
+			{
+				$lang->purgespammer_purge_desc = $lang->sprintf($lang->purgespammer_purge_desc, $lang->purgespammer_ban);
+			}
+			else
+			{
+				$lang->purgespammer_purge_desc = $lang->sprintf($lang->purgespammer_purge_desc, $lang->purgespammer_delete);
+			}
 
-            output_page(\MyBB\template('moderation/purgespammer.twig', [
-                'user' => $user,
-            ]));
+			output_page(\MyBB\template('moderation/purgespammer.twig', [
+				'user' => $user,
+			]));
 		}
 		break;
 	default:
@@ -2936,30 +3140,31 @@ switch($mybb->input['action'])
 				error_no_permission();
 			}
 
-            if (!empty($options['confirmation']) && empty($mybb->input['confirm'])) {
-                add_breadcrumb($lang->confirm_execute_tool);
+			if(!empty($options['confirmation']) && empty($mybb->input['confirm']))
+			{
+				add_breadcrumb($lang->confirm_execute_tool);
 
-                $lang->confirm_execute_tool_desc = $lang->sprintf($lang->confirm_execute_tool_desc, htmlspecialchars_uni($tool['name']));
+				$lang->confirm_execute_tool_desc = $lang->sprintf($lang->confirm_execute_tool_desc, htmlspecialchars_uni($tool['name']));
 
-                $confirm['action'] = $tool;
-                $confirm['modtype'] = $mybb->get_input('modtype');
-                $confirm['tid'] = $thread['tid'];
-                $confirm['pid'] = $post['pid'];
-                $confirm['fid'] = $forum['fid'];
-                $confirm['inlinetype'] = $mybb->get_input('inlinetype');
-                $confirm['searchid'] = $mybb->get_input('searchid');
-                $confirm['url'] = $mybb->get_input('url');
-                $confirm['subject'] = $thread['subject'];
+				$confirm['action'] = $tool;
+				$confirm['modtype'] = $mybb->get_input('modtype');
+				$confirm['tid'] = $thread['tid'];
+				$confirm['pid'] = $post['pid'];
+				$confirm['fid'] = $forum['fid'];
+				$confirm['inlinetype'] = $mybb->get_input('inlinetype');
+				$confirm['searchid'] = $mybb->get_input('searchid');
+				$confirm['url'] = $mybb->get_input('url');
+				$confirm['subject'] = $thread['subject'];
 
-                $plugins->run_hooks('moderation_confirmation');
+				$plugins->run_hooks('moderation_confirmation');
 
-                output_page(\MyBB\template('moderation/confirmation.twig', [
-                    'loginbox' => $loginbox,
-                    'user' => $user,
-                    'confirm' => $confirm,
-                ]));
-                exit;
-            }
+				output_page(\MyBB\template('moderation/confirmation.twig', [
+					'loginbox' => $loginbox,
+					'user' => $user,
+					'confirm' => $confirm,
+				]));
+				exit;
+			}
 
 			$tool['name'] = htmlspecialchars_uni($tool['name']);
 
@@ -2989,7 +3194,7 @@ switch($mybb->input['action'])
 				}
 
 				$custommod->execute($mybb->get_input('action', MyBB::INPUT_INT), $tids);
- 				$lang->custom_tool = $lang->sprintf($lang->custom_tool, $tool['name']);
+				$lang->custom_tool = $lang->sprintf($lang->custom_tool, $tool['name']);
 				log_moderator_action($modlogdata, $lang->custom_tool);
 				if($mybb->get_input('inlinetype') == 'search')
 				{
@@ -3020,7 +3225,7 @@ switch($mybb->input['action'])
 				}
 
 				$ret = $custommod->execute($mybb->get_input('action', MyBB::INPUT_INT), $tid);
- 				$lang->custom_tool = $lang->sprintf($lang->custom_tool, $tool['name']);
+				$lang->custom_tool = $lang->sprintf($lang->custom_tool, $tool['name']);
 				log_moderator_action($modlogdata, $lang->custom_tool);
 				if($ret == 'forum')
 				{
@@ -3060,14 +3265,14 @@ switch($mybb->input['action'])
 					'order_by' => 'dateline',
 					'order_dir' => 'asc'
 				);
-				$query = $db->simple_select("posts", "DISTINCT tid, dateline", "pid IN (".implode(',',$pids).")", $options);
+				$query = $db->simple_select("posts", "DISTINCT tid, dateline", "pid IN (".implode(',', $pids).")", $options);
 				while($row = $db->fetch_array($query))
 				{
 					$tids[] = $row['tid'];
 				}
 
 				$ret = $custommod->execute($mybb->get_input('action', MyBB::INPUT_INT), $tids, $pids);
- 				$lang->custom_tool = $lang->sprintf($lang->custom_tool, $tool['name']);
+				$lang->custom_tool = $lang->sprintf($lang->custom_tool, $tool['name']);
 				log_moderator_action($modlogdata, $lang->custom_tool);
 				if($mybb->get_input('inlinetype') == 'search')
 				{
@@ -3220,8 +3425,8 @@ function clearinline($id, $type)
  */
 function extendinline($id, $type)
 {
-	my_setcookie("inlinemod_{$type}{$id}", '', TIME_NOW+3600);
-	my_setcookie("inlinemod_{$type}{$id}_removed", '', TIME_NOW+3600);
+	my_setcookie("inlinemod_{$type}{$id}", '', TIME_NOW + 3600);
+	my_setcookie("inlinemod_{$type}{$id}_removed", '', TIME_NOW + 3600);
 }
 
 /**
@@ -3234,7 +3439,7 @@ function extendinline($id, $type)
  * @param string $permission Permission to check
  * @return bool True if moderator of all; false otherwise
  */
-function is_moderator_by_pids($posts, $permission='')
+function is_moderator_by_pids($posts, $permission = '')
 {
 	global $db, $mybb;
 
@@ -3278,7 +3483,7 @@ function is_moderator_by_pids($posts, $permission='')
  * @param string $permission Permission to check
  * @return bool True if moderator of all; false otherwise
  */
-function is_moderator_by_tids($threads, $permission='')
+function is_moderator_by_tids($threads, $permission = '')
 {
 	global $db, $mybb;
 
@@ -3318,7 +3523,7 @@ function is_moderator_by_tids($threads, $permission='')
  * @param string $message Message
  * @param string $title Title
  */
-function moderation_redirect($url, $message="", $title="")
+function moderation_redirect($url, $message = "", $title = "")
 {
 	global $mybb;
 	if(!empty($mybb->input['url']))

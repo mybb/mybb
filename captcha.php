@@ -49,7 +49,7 @@ $ttf_fonts = array();
 if(function_exists("imagefttext"))
 {
 	// Get a list of the files in the 'catpcha_fonts' directory
-	$ttfdir  = @opendir(MYBB_ROOT."inc/captcha_fonts");
+	$ttfdir = @opendir(MYBB_ROOT."inc/captcha_fonts");
 	if($ttfdir !== false)
 	{
 		while(($file = readdir($ttfdir)) !== false)
@@ -117,7 +117,7 @@ draw_string($im, $imagestring);
 
 // Draw a nice border around the image
 $border_color = imagecolorallocate($im, 0, 0, 0);
-imagerectangle($im, 0, 0, $img_width-1, $img_height-1, $border_color);
+imagerectangle($im, 0, 0, $img_width - 1, $img_height - 1, $border_color);
 
 // Output the image
 header("Content-type: image/png");
@@ -154,13 +154,13 @@ function draw_circles(&$im)
 {
 	global $img_width, $img_height;
 
-	$circles = $img_width*$img_height / 100;
+	$circles = $img_width * $img_height / 100;
 	for($i = 0; $i <= $circles; ++$i)
 	{
 		$color = imagecolorallocate($im, rand(180, 255), rand(180, 255), rand(180, 255));
 		$pos_x = rand(1, $img_width);
 		$pos_y = rand(1, $img_height);
-		$circ_width = ceil(rand(1, $img_width)/2);
+		$circ_width = ceil(rand(1, $img_width) / 2);
 		$circ_height = rand(1, $img_height);
 		imagearc($im, $pos_x, $pos_y, $circ_width, $circ_height, 0, rand(200, 360), $color);
 	}
@@ -175,7 +175,7 @@ function draw_dots(&$im)
 {
 	global $img_width, $img_height;
 
-	$dot_count = $img_width*$img_height/5;
+	$dot_count = $img_width * $img_height / 5;
 	for($i = 0; $i <= $dot_count; ++$i)
 	{
 		$color = imagecolorallocate($im, rand(200, 255), rand(200, 255), rand(200, 255));
@@ -253,12 +253,12 @@ function draw_string(&$im, $string)
 			// Calculate character offsets
 			//$pos_x = $pos_x + $string_width + ($string_width/4);
 			$pos_x = $spacing / 4 + $i * $spacing;
-			$pos_y = ceil(($img_height-$string_height/2));
+			$pos_y = ceil(($img_height - $string_height / 2));
 
 			// Draw a shadow
 			$shadow_x = rand(-3, 3) + $pos_x;
 			$shadow_y = rand(-3, 3) + $pos_y;
-			$shadow_color = imagecolorallocate($im, $r+20, $g+20, $b+20);
+			$shadow_color = imagecolorallocate($im, $r + 20, $g + 20, $b + 20);
 			imagefttext($im, $font_size, $rotation, $shadow_x, $shadow_y, $shadow_color, $font, $string[$i], array());
 
 			// Write the character to the image
@@ -272,7 +272,7 @@ function draw_string(&$im, $string)
 
 			// Calculate character offsets
 			$pos_x = $spacing / 4 + $i * $spacing;
-			$pos_y = $img_height / 2 - $string_height -10 + rand(-3, 3);
+			$pos_y = $img_height / 2 - $string_height - 10 + rand(-3, 3);
 
 			// Create a temporary image for this character
 			if(gd_version() >= 2)
@@ -296,8 +296,8 @@ function draw_string(&$im, $string)
 			// Draw a shadow
 			$shadow_x = rand(-1, 1);
 			$shadow_y = rand(-1, 1);
-			$shadow_color = imagecolorallocate($temp_im, $r+50, $g+50, $b+50);
-			imagestring($temp_im, 5, 1+$shadow_x, 1+$shadow_y, $string[$i], $shadow_color);
+			$shadow_color = imagecolorallocate($temp_im, $r + 50, $g + 50, $b + 50);
+			imagestring($temp_im, 5, 1 + $shadow_x, 1 + $shadow_y, $string[$i], $shadow_color);
 
 			imagestring($temp_im, 5, 1, 1, $string[$i], $color);
 

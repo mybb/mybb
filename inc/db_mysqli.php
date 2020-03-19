@@ -813,7 +813,7 @@ class DB_MySQLi implements DB_Base
 				{
 					$value = $this->escape_binary($value);
 				}
-				
+
 				$array[$field] = $value;
 			}
 			else
@@ -862,7 +862,7 @@ class DB_MySQLi implements DB_Base
 					{
 						$value = $this->escape_binary($value);
 					}
-				
+
 					$values[$field] = $value;
 				}
 				else
@@ -917,7 +917,7 @@ class DB_MySQLi implements DB_Base
 				{
 					$value = $this->escape_binary($value);
 				}
-				
+
 				$query .= $comma."`".$field."`={$value}";
 			}
 			else
@@ -1306,7 +1306,7 @@ class DB_MySQLi implements DB_Base
 				{
 					$value = $this->escape_binary($value);
 				}
-				
+
 				$values .= $comma."`".$column."`=".$value;
 			}
 			else
@@ -1319,7 +1319,7 @@ class DB_MySQLi implements DB_Base
 
 		if(empty($replacements))
 		{
-			 return false;
+			return false;
 		}
 
 		return $this->write_query("REPLACE INTO {$this->table_prefix}{$table} SET {$values}");

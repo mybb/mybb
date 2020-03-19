@@ -266,19 +266,19 @@ class session
 				$mybbgroups .= ','.$mybb->user['additionalgroups'];
 			}
 		}
-		else if(!empty($mybb->user['bandate']) && (empty($mybb->user['banlifted'])  || !empty($mybb->user['banlifted']) && $mybb->user['banlifted'] > $time))
-        {
-            $mybbgroups = $mybb->user['usergroup'];
-        }
-        else
-        {
+		else if(!empty($mybb->user['bandate']) && (empty($mybb->user['banlifted']) || !empty($mybb->user['banlifted']) && $mybb->user['banlifted'] > $time))
+		{
+			$mybbgroups = $mybb->user['usergroup'];
+		}
+		else
+		{
 			// Gather a full permission set for this user and the groups they are in.
 			$mybbgroups = $mybb->user['usergroup'];
 			if($mybb->user['additionalgroups'])
 			{
 				$mybbgroups .= ','.$mybb->user['additionalgroups'];
 			}
-        }
+		}
 
 		$mybb->usergroup = usergroup_permissions($mybbgroups);
 		if(!$mybb->user['displaygroup'])
@@ -470,10 +470,10 @@ class session
 			$onlinedata['uid'] = 0;
 		}
 		$onlinedata['time'] = TIME_NOW;
-		
+
 		$onlinedata['location'] = $db->escape_string(substr(get_current_location(), 0, 150));
 		$onlinedata['useragent'] = $db->escape_string(my_substr($this->useragent, 0, 200));
-		
+
 		$onlinedata['location1'] = (int)$speciallocs['1'];
 		$onlinedata['location2'] = (int)$speciallocs['2'];
 		$onlinedata['nopermission'] = 0;
@@ -521,10 +521,10 @@ class session
 		}
 		$onlinedata['time'] = TIME_NOW;
 		$onlinedata['ip'] = $db->escape_binary($this->packedip);
-		
+
 		$onlinedata['location'] = $db->escape_string(substr(get_current_location(), 0, 150));
 		$onlinedata['useragent'] = $db->escape_string(my_substr($this->useragent, 0, 200));
-		
+
 		$onlinedata['location1'] = (int)$speciallocs['1'];
 		$onlinedata['location2'] = (int)$speciallocs['2'];
 		$onlinedata['nopermission'] = 0;

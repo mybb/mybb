@@ -276,9 +276,9 @@ function user_password_needs_rehash($user)
 
 	// prevent downgrading to old md5-based algorithm
 	return $defaultHashDriverName != 'mybb' && (
-		$user['password_algorithm'] != $defaultHashDriverName ||
-		$hashDriver->needsRehash($user['password'])
-	);
+			$user['password_algorithm'] != $defaultHashDriverName ||
+			$hashDriver->needsRehash($user['password'])
+		);
 }
 
 /**
@@ -826,7 +826,7 @@ function generate_question($old_qid=0)
 	{
 		$order_by = 'RAND()';
 	}
-	
+
 	if($old_qid)
 	{
 		$excl_old = ' AND qid != '.(int)$old_qid;
@@ -870,14 +870,14 @@ function generate_question($old_qid=0)
  */
 function purgespammer_show($post_count, $usergroup, $uid)
 {
-		global $mybb, $cache;
+	global $mybb, $cache;
 
-		// only show this if the current user has permission to use it and the user has less than the post limit for using this tool
-		$bangroup = $mybb->settings['purgespammerbangroup'];
-		$usergroups = $cache->read('usergroups');
+	// only show this if the current user has permission to use it and the user has less than the post limit for using this tool
+	$bangroup = $mybb->settings['purgespammerbangroup'];
+	$usergroups = $cache->read('usergroups');
 
-		return ($mybb->user['uid'] != $uid && is_member($mybb->settings['purgespammergroups']) && !is_super_admin($uid)
-			&& !$usergroups[$usergroup]['cancp'] && !$usergroups[$usergroup]['canmodcp'] && !$usergroups[$usergroup]['issupermod']
-			&& (str_replace($mybb->settings['thousandssep'], '', $post_count) <= $mybb->settings['purgespammerpostlimit'] || $mybb->settings['purgespammerpostlimit'] == 0)
-			&& !is_member($bangroup, $uid) && !$usergroups[$usergroup]['isbannedgroup']);
+	return ($mybb->user['uid'] != $uid && is_member($mybb->settings['purgespammergroups']) && !is_super_admin($uid)
+		&& !$usergroups[$usergroup]['cancp'] && !$usergroups[$usergroup]['canmodcp'] && !$usergroups[$usergroup]['issupermod']
+		&& (str_replace($mybb->settings['thousandssep'], '', $post_count) <= $mybb->settings['purgespammerpostlimit'] || $mybb->settings['purgespammerpostlimit'] == 0)
+		&& !is_member($bangroup, $uid) && !$usergroups[$usergroup]['isbannedgroup']);
 }

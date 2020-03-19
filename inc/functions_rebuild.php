@@ -63,11 +63,11 @@ function rebuild_thread_counters($tid)
 {
 	global $db;
 
- 	$thread = get_thread($tid);
+	$thread = get_thread($tid);
 	$count = array();
 
- 	$query = $db->simple_select("posts", "COUNT(pid) AS replies", "tid='{$tid}' AND pid!='{$thread['firstpost']}' AND visible='1'");
- 	$count['replies'] = $db->fetch_field($query, "replies");
+	$query = $db->simple_select("posts", "COUNT(pid) AS replies", "tid='{$tid}' AND pid!='{$thread['firstpost']}' AND visible='1'");
+	$count['replies'] = $db->fetch_field($query, "replies");
 
 	// Unapproved posts
 	$query = $db->simple_select("posts", "COUNT(pid) AS unapprovedposts", "tid='{$tid}' AND pid != '{$thread['firstpost']}' AND visible='0'");

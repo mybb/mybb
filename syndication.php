@@ -111,7 +111,7 @@ while($forum = $db->fetch_array($query))
 
 if($mybb->get_input('portal') && $mybb->settings['portal'] != 0)
 {
-		$title .= $comma.$lang->portal;
+	$title .= $comma.$lang->portal;
 }
 
 // If syndicating all forums then cut the title back to "All Forums"

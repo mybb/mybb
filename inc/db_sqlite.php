@@ -34,7 +34,7 @@ class DB_SQLite implements DB_Base
 	/**
 	 * PDOStatement objects of performed queries.
 	 *
-	 * @var array 
+	 * @var array
 	 */
 	public $query_objects = array();
 
@@ -199,8 +199,8 @@ class DB_SQLite implements DB_Base
 				}
 			}
 		}
-	  	else
-	  	{
+		else
+		{
 			try
 			{
 				$query = $this->db->query($string);
@@ -684,7 +684,7 @@ class DB_SQLite implements DB_Base
 				{
 					$value = $this->escape_binary($value);
 				}
-				
+
 				$array[$field] = $value;
 			}
 			else
@@ -734,7 +734,7 @@ class DB_SQLite implements DB_Base
 					{
 						$value = $this->escape_binary($value);
 					}
-				
+
 					$values[$field] = $value;
 				}
 				else
@@ -790,7 +790,7 @@ class DB_SQLite implements DB_Base
 				{
 					$value = $this->escape_binary($value);
 				}
-				
+
 				$query .= $comma.$field."=".$value;
 			}
 			else
@@ -1132,7 +1132,7 @@ class DB_SQLite implements DB_Base
 				{
 					$value = $this->escape_binary($value);
 				}
-				
+
 				$values .= $comma.$value;
 			}
 			else
@@ -1145,7 +1145,7 @@ class DB_SQLite implements DB_Base
 
 		if(empty($columns) || empty($values))
 		{
-			 return false;
+			return false;
 		}
 
 		if($default_field == "")

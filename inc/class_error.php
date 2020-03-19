@@ -261,8 +261,8 @@ class errorHandler {
 		}
 
 		return \MyBB\template('misc/php_warnings.twig', [
-            'warnings' => $this->warnings
-        ]);
+			'warnings' => $this->warnings
+		]);
 	}
 
 	/**

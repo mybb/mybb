@@ -31,30 +31,36 @@ $lang->load("editpost");
 $plugins->run_hooks("editpost_start");
 
 // No permission for guests
-if (!$mybb->user['uid']) {
-    error_no_permission();
+if(!$mybb->user['uid'])
+{
+	error_no_permission();
 }
 
 // Get post info
 $pid = $mybb->get_input('pid', MyBB::INPUT_INT);
 
 // if we already have the post information...
-if (isset($style) && $style['pid'] == $pid && $style['type'] != 'f') {
-    $post = &$style;
-} else {
-    $post = get_post($pid);
+if(isset($style) && $style['pid'] == $pid && $style['type'] != 'f')
+{
+	$post = &$style;
+}
+else
+{
+	$post = get_post($pid);
 }
 
-if (!$post) {
-    error($lang->error_invalidpost);
+if(!$post)
+{
+	error($lang->error_invalidpost);
 }
 
 // Get thread info
 $tid = $post['tid'];
 $thread = get_thread($tid);
 
-if (!$thread) {
-    error($lang->error_invalidthread);
+if(!$thread)
+{
+	error($lang->error_invalidthread);
 }
 
 $thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
@@ -63,23 +69,29 @@ $thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subje
 $fid = $post['fid'];
 $forum = get_forum($fid);
 
-if ($thread['visible'] == 0 && !is_moderator($fid, "canviewunapprove") || $thread['visible'] == -1 && !is_moderator($fid, "canviewdeleted") || ($thread['visible'] < -1 && $thread['uid'] != $mybb->user['uid'])) {
-    error($lang->error_invalidthread);
+if($thread['visible'] == 0 && !is_moderator($fid, "canviewunapprove") || $thread['visible'] == -1 && !is_moderator($fid,
+		"canviewdeleted") || ($thread['visible'] < -1 && $thread['uid'] != $mybb->user['uid']))
+{
+	error($lang->error_invalidthread);
 }
-if (!$forum || $forum['type'] != "f") {
-    error($lang->error_closedinvalidforum);
+if(!$forum || $forum['type'] != "f")
+{
+	error($lang->error_closedinvalidforum);
 }
-if (($forum['open'] == 0 && !is_moderator($fid, "caneditposts")) || $mybb->user['suspendposting'] == 1) {
-    error_no_permission();
+if(($forum['open'] == 0 && !is_moderator($fid, "caneditposts")) || $mybb->user['suspendposting'] == 1)
+{
+	error_no_permission();
 }
 
 // Add prefix to breadcrumb
 $breadcrumbprefix = '';
-if ($thread['prefix']) {
-    $threadprefixes = build_prefixes();
-    if (!empty($threadprefixes[$thread['prefix']])) {
-        $breadcrumbprefix = $threadprefixes[$thread['prefix']]['displaystyle'].'&nbsp;';
-    }
+if($thread['prefix'])
+{
+	$threadprefixes = build_prefixes();
+	if(!empty($threadprefixes[$thread['prefix']]))
+	{
+		$breadcrumbprefix = $threadprefixes[$thread['prefix']]['displaystyle'].'&nbsp;';
+	}
 }
 
 // Make navigation
@@ -89,680 +101,872 @@ add_breadcrumb($lang->nav_editpost);
 
 $forumpermissions = forum_permissions($fid);
 
-if ($mybb->settings['bbcodeinserter'] != 0 && $forum['allowmycode'] != 0 && $mybb->user['showcodebuttons'] != 0) {
-    $codebuttons = build_mycode_inserter("message", $mybb->settings['smilieinserter']);
+if($mybb->settings['bbcodeinserter'] != 0 && $forum['allowmycode'] != 0 && $mybb->user['showcodebuttons'] != 0)
+{
+	$codebuttons = build_mycode_inserter("message", $mybb->settings['smilieinserter']);
 }
-if ($mybb->settings['smilieinserter'] != 0) {
-    $smilieinserter = build_clickable_smilies();
+if($mybb->settings['smilieinserter'] != 0)
+{
+	$smilieinserter = build_clickable_smilies();
 }
 
 $mybb->input['action'] = $mybb->get_input('action');
-if (!$mybb->input['action'] || isset($mybb->input['previewpost'])) {
-    $mybb->input['action'] = "editpost";
+if(!$mybb->input['action'] || isset($mybb->input['previewpost']))
+{
+	$mybb->input['action'] = "editpost";
 }
 
-if ($mybb->input['action'] == "deletepost" && $mybb->request_method == "post") {
-    if (!is_moderator($fid, "candeleteposts") && !is_moderator($fid, "cansoftdeleteposts") && $pid != $thread['firstpost'] || !is_moderator($fid, "candeletethreads") && !is_moderator($fid, "cansoftdeletethreads") && $pid == $thread['firstpost']) {
-        if ($thread['closed'] == 1) {
-            error($lang->redirect_threadclosed);
-        }
-        if ($forumpermissions['candeleteposts'] == 0 && $pid != $thread['firstpost'] || $forumpermissions['candeletethreads'] == 0 && $pid == $thread['firstpost']) {
-            error_no_permission();
-        }
-        if ($mybb->user['uid'] != $post['uid']) {
-            error_no_permission();
-        }
-        // User can't delete unapproved post
-        if ($post['visible'] == 0) {
-            error_no_permission();
-        }
-    }
-    if ($post['visible'] == -1 && $mybb->settings['soft_delete'] == 1) {
-        error($lang->error_already_deleted);
-    }
-} elseif ($mybb->input['action'] == "restorepost" && $mybb->request_method == "post") {
-    if (!is_moderator($fid, "canrestoreposts") && $pid != $thread['firstpost'] || !is_moderator($fid, "canrestorethreads") && $pid == $thread['firstpost'] || $post['visible'] != -1) {
-        error_no_permission();
-    }
-} else {
-    if (!is_moderator($fid, "caneditposts")) {
-        if ($thread['closed'] == 1) {
-            error($lang->redirect_threadclosed);
-        }
-        if ($forumpermissions['caneditposts'] == 0) {
-            error_no_permission();
-        }
-        if ($mybb->user['uid'] != $post['uid']) {
-            error_no_permission();
-        }
-        // Edit time limit
-        $time = TIME_NOW;
-        if ($mybb->usergroup['edittimelimit'] != 0 && $post['dateline'] < ($time-($mybb->usergroup['edittimelimit']*60))) {
-            $lang->edit_time_limit = $lang->sprintf($lang->edit_time_limit, $mybb->usergroup['edittimelimit']);
-            error($lang->edit_time_limit);
-        }
-        // User can't edit unapproved post
-        if ($post['visible'] == 0 || $post['visible'] == -1) {
-            error_no_permission();
-        }
-    }
+if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
+{
+	if(!is_moderator($fid, "candeleteposts") && !is_moderator($fid,
+			"cansoftdeleteposts") && $pid != $thread['firstpost'] || !is_moderator($fid,
+			"candeletethreads") && !is_moderator($fid, "cansoftdeletethreads") && $pid == $thread['firstpost'])
+	{
+		if($thread['closed'] == 1)
+		{
+			error($lang->redirect_threadclosed);
+		}
+		if($forumpermissions['candeleteposts'] == 0 && $pid != $thread['firstpost'] || $forumpermissions['candeletethreads'] == 0 && $pid == $thread['firstpost'])
+		{
+			error_no_permission();
+		}
+		if($mybb->user['uid'] != $post['uid'])
+		{
+			error_no_permission();
+		}
+		// User can't delete unapproved post
+		if($post['visible'] == 0)
+		{
+			error_no_permission();
+		}
+	}
+	if($post['visible'] == -1 && $mybb->settings['soft_delete'] == 1)
+	{
+		error($lang->error_already_deleted);
+	}
+}
+elseif($mybb->input['action'] == "restorepost" && $mybb->request_method == "post")
+{
+	if(!is_moderator($fid, "canrestoreposts") && $pid != $thread['firstpost'] || !is_moderator($fid,
+			"canrestorethreads") && $pid == $thread['firstpost'] || $post['visible'] != -1)
+	{
+		error_no_permission();
+	}
+}
+else
+{
+	if(!is_moderator($fid, "caneditposts"))
+	{
+		if($thread['closed'] == 1)
+		{
+			error($lang->redirect_threadclosed);
+		}
+		if($forumpermissions['caneditposts'] == 0)
+		{
+			error_no_permission();
+		}
+		if($mybb->user['uid'] != $post['uid'])
+		{
+			error_no_permission();
+		}
+		// Edit time limit
+		$time = TIME_NOW;
+		if($mybb->usergroup['edittimelimit'] != 0 && $post['dateline'] < ($time - ($mybb->usergroup['edittimelimit'] * 60)))
+		{
+			$lang->edit_time_limit = $lang->sprintf($lang->edit_time_limit, $mybb->usergroup['edittimelimit']);
+			error($lang->edit_time_limit);
+		}
+		// User can't edit unapproved post
+		if($post['visible'] == 0 || $post['visible'] == -1)
+		{
+			error_no_permission();
+		}
+	}
 }
 
 // Check if this forum is password protected and we have a valid password
 check_forum_password($forum['fid']);
 
-if ((empty($_POST) && empty($_FILES)) && $mybb->get_input('processed', MyBB::INPUT_INT) == '1') {
-    error($lang->error_cannot_upload_php_post);
-}
-
-if ($mybb->settings['enableattachments'] == 1 && !$mybb->get_input('attachmentaid', MyBB::INPUT_INT) && ($mybb->get_input('newattachment') || $mybb->get_input('updateattachment') || ($mybb->input['action'] == "do_editpost" && isset($mybb->input['submit']) && $_FILES['attachment']))) {
-    // Verify incoming POST request
-    verify_post_check($mybb->get_input('my_post_key'));
-
-    // If there's an attachment, check it and upload it
-    if ($forumpermissions['canpostattachments'] != 0) {
-        // If attachment exists..
-        if (!empty($_FILES['attachment']['name']) && !empty($_FILES['attachment']['type'])) {
-            if ($_FILES['attachment']['size'] > 0) {
-                $query = $db->simple_select("attachments", "aid", "filename='".$db->escape_string($_FILES['attachment']['name'])."' AND pid='{$pid}'");
-                $updateattach = $db->fetch_field($query, "aid");
-
-                $update_attachment = false;
-                if ($updateattach > 0 && $mybb->get_input('updateattachment')) {
-                    $update_attachment = true;
-                }
-                $attachedfile = upload_attachment($_FILES['attachment'], $update_attachment);
-            } else {
-                $post_errors = $lang->error_uploadempty;
-                $post_errors = inline_error($post_errors);
-                $mybb->input['action'] = "editpost";
-            }
-        }
-    }
-
-    if (!empty($attachedfile['error'])) {
-        $post_errors = $attachedfile['error'];
-        $post_errors = inline_error($post_errors);
-        $mybb->input['action'] = "editpost";
-    }
-
-    if (!isset($mybb->input['submit'])) {
-        $mybb->input['action'] = "editpost";
-    }
-}
-
-if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid', MyBB::INPUT_INT) && isset($mybb->input['attachmentact']) && $mybb->input['action'] == "do_editpost" && $mybb->request_method == "post") // Lets remove/approve/unapprove the attachment
+if((empty($_POST) && empty($_FILES)) && $mybb->get_input('processed', MyBB::INPUT_INT) == '1')
 {
-    // Verify incoming POST request
-    verify_post_check($mybb->get_input('my_post_key'));
-
-    $mybb->input['attachmentaid'] = $mybb->get_input('attachmentaid', MyBB::INPUT_INT);
-    if ($mybb->input['attachmentact'] == "remove") {
-        remove_attachment($pid, "", $mybb->input['attachmentaid']);
-    } elseif ($mybb->get_input('attachmentact') == "approve" && is_moderator($fid, 'canapproveunapproveattachs')) {
-        $update_sql = array("visible" => 1);
-        $db->update_query("attachments", $update_sql, "aid='{$mybb->input['attachmentaid']}'");
-        update_thread_counters($post['tid'], array('attachmentcount' => "+1"));
-    } elseif ($mybb->get_input('attachmentact') == "unapprove" && is_moderator($fid, 'canapproveunapproveattachs')) {
-        $update_sql = array("visible" => 0);
-        $db->update_query("attachments", $update_sql, "aid='{$mybb->input['attachmentaid']}'");
-        update_thread_counters($post['tid'], array('attachmentcount' => "-1"));
-    }
-    if (!isset($mybb->input['submit'])) {
-        $mybb->input['action'] = "editpost";
-    }
+	error($lang->error_cannot_upload_php_post);
 }
 
-if ($mybb->input['action'] == "deletepost" && $mybb->request_method == "post") {
-    // Verify incoming POST request
-    verify_post_check($mybb->get_input('my_post_key'));
+if($mybb->settings['enableattachments'] == 1 && !$mybb->get_input('attachmentaid',
+		MyBB::INPUT_INT) && ($mybb->get_input('newattachment') || $mybb->get_input('updateattachment') || ($mybb->input['action'] == "do_editpost" && isset($mybb->input['submit']) && $_FILES['attachment'])))
+{
+	// Verify incoming POST request
+	verify_post_check($mybb->get_input('my_post_key'));
 
-    $plugins->run_hooks("editpost_deletepost");
+	// If there's an attachment, check it and upload it
+	if($forumpermissions['canpostattachments'] != 0)
+	{
+		// If attachment exists..
+		if(!empty($_FILES['attachment']['name']) && !empty($_FILES['attachment']['type']))
+		{
+			if($_FILES['attachment']['size'] > 0)
+			{
+				$query = $db->simple_select("attachments", "aid",
+					"filename='".$db->escape_string($_FILES['attachment']['name'])."' AND pid='{$pid}'");
+				$updateattach = $db->fetch_field($query, "aid");
 
-    if ($mybb->get_input('delete', MyBB::INPUT_INT) == 1) {
-        $query = $db->simple_select("posts", "pid", "tid='{$tid}'", array("limit" => 1, "order_by" => "dateline", "order_dir" => "asc"));
-        $firstcheck = $db->fetch_array($query);
-        if ($firstcheck['pid'] == $pid) {
-            $firstpost = 1;
-        } else {
-            $firstpost = 0;
-        }
+				$update_attachment = false;
+				if($updateattach > 0 && $mybb->get_input('updateattachment'))
+				{
+					$update_attachment = true;
+				}
+				$attachedfile = upload_attachment($_FILES['attachment'], $update_attachment);
+			}
+			else
+			{
+				$post_errors = $lang->error_uploadempty;
+				$post_errors = inline_error($post_errors);
+				$mybb->input['action'] = "editpost";
+			}
+		}
+	}
 
-        $modlogdata['fid'] = $fid;
-        $modlogdata['tid'] = $tid;
-        if ($firstpost) {
-            if ($forumpermissions['candeletethreads'] == 1 || is_moderator($fid, "candeletethreads") || is_moderator($fid, "cansoftdeletethreads")) {
-                require_once MYBB_ROOT."inc/class_moderation.php";
-                $moderation = new Moderation;
+	if(!empty($attachedfile['error']))
+	{
+		$post_errors = $attachedfile['error'];
+		$post_errors = inline_error($post_errors);
+		$mybb->input['action'] = "editpost";
+	}
 
-                if ($mybb->settings['soft_delete'] == 1 || is_moderator($fid, "cansoftdeletethreads")) {
-                    $modlogdata['pid'] = $pid;
-
-                    $moderation->soft_delete_threads(array($tid));
-                    log_moderator_action($modlogdata, $lang->thread_soft_deleted);
-                } else {
-                    $moderation->delete_thread($tid);
-                    mark_reports($tid, "thread");
-                    log_moderator_action($modlogdata, $lang->thread_deleted);
-                }
-
-                if ($mybb->input['ajax'] == 1) {
-                    header("Content-type: application/json; charset={$lang->settings['charset']}");
-                    if (is_moderator($fid, "canviewdeleted")) {
-                        echo json_encode(array("data" => '1'));
-                    } else {
-                        echo json_encode(array("data" => '3', "url" => get_forum_link($fid)));
-                    }
-                } else {
-                    redirect(get_forum_link($fid), $lang->redirect_threaddeleted);
-                }
-            } else {
-                error_no_permission();
-            }
-        } else {
-            if ($forumpermissions['candeleteposts'] == 1 || is_moderator($fid, "candeleteposts") || is_moderator($fid, "cansoftdeleteposts")) {
-                // Select the first post before this
-                require_once MYBB_ROOT."inc/class_moderation.php";
-                $moderation = new Moderation;
-
-                if ($mybb->settings['soft_delete'] == 1 || is_moderator($fid, "cansoftdeleteposts")) {
-                    $modlogdata['pid'] = $pid;
-
-                    $moderation->soft_delete_posts(array($pid));
-                    log_moderator_action($modlogdata, $lang->post_soft_deleted);
-                } else {
-                    $moderation->delete_post($pid);
-                    mark_reports($pid, "post");
-                    log_moderator_action($modlogdata, $lang->post_deleted);
-                }
-
-                $query = $db->simple_select("posts", "pid", "tid='{$tid}' AND dateline <= '{$post['dateline']}'", array("limit" => 1, "order_by" => "dateline", "order_dir" => "desc"));
-                $next_post = $db->fetch_array($query);
-                if ($next_post['pid']) {
-                    $redirect = get_post_link($next_post['pid'], $tid)."#pid{$next_post['pid']}";
-                } else {
-                    $redirect = get_thread_link($tid);
-                }
-
-                if ($mybb->input['ajax'] == 1) {
-                    header("Content-type: application/json; charset={$lang->settings['charset']}");
-                    if (is_moderator($fid, "canviewdeleted")) {
-                        echo json_encode(array("data" => '1'));
-                    } else {
-                        echo json_encode(array("data" => '2'));
-                    }
-                } else {
-                    redirect($redirect, $lang->redirect_postdeleted);
-                }
-            } else {
-                error_no_permission();
-            }
-        }
-    } else {
-        error($lang->redirect_nodelete);
-    }
+	if(!isset($mybb->input['submit']))
+	{
+		$mybb->input['action'] = "editpost";
+	}
 }
 
-if ($mybb->input['action'] == "restorepost" && $mybb->request_method == "post") {
-    // Verify incoming POST request
-    verify_post_check($mybb->get_input('my_post_key'));
+if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid',
+		MyBB::INPUT_INT) && isset($mybb->input['attachmentact']) && $mybb->input['action'] == "do_editpost" && $mybb->request_method == "post") // Lets remove/approve/unapprove the attachment
+{
+	// Verify incoming POST request
+	verify_post_check($mybb->get_input('my_post_key'));
 
-    $plugins->run_hooks("editpost_restorepost");
-
-    if ($mybb->get_input('restore', MyBB::INPUT_INT) == 1) {
-        $query = $db->simple_select("posts", "pid", "tid='{$tid}'", array("limit" => 1, "order_by" => "dateline", "order_dir" => "asc"));
-        $firstcheck = $db->fetch_array($query);
-        if ($firstcheck['pid'] == $pid) {
-            $firstpost = 1;
-        } else {
-            $firstpost = 0;
-        }
-
-        $modlogdata['fid'] = $fid;
-        $modlogdata['tid'] = $tid;
-        $modlogdata['pid'] = $pid;
-        if ($firstpost) {
-            if (is_moderator($fid, "canrestorethreads")) {
-                require_once MYBB_ROOT."inc/class_moderation.php";
-                $moderation = new Moderation;
-                $moderation->restore_threads(array($tid));
-                log_moderator_action($modlogdata, $lang->thread_restored);
-                if ($mybb->input['ajax'] == 1) {
-                    header("Content-type: application/json; charset={$lang->settings['charset']}");
-                    echo json_encode(array("data" => '1'));
-                } else {
-                    redirect(get_forum_link($fid), $lang->redirect_threadrestored);
-                }
-            } else {
-                error_no_permission();
-            }
-        } else {
-            if (is_moderator($fid, "canrestoreposts")) {
-                // Select the first post before this
-                require_once MYBB_ROOT."inc/class_moderation.php";
-                $moderation = new Moderation;
-                $moderation->restore_posts(array($pid));
-                log_moderator_action($modlogdata, $lang->post_restored);
-                $redirect = get_post_link($pid, $tid)."#pid{$pid}";
-
-                if ($mybb->input['ajax'] == 1) {
-                    header("Content-type: application/json; charset={$lang->settings['charset']}");
-                    echo json_encode(array("data" => '1'));
-                } else {
-                    redirect($redirect, $lang->redirect_postrestored);
-                }
-            } else {
-                error_no_permission();
-            }
-        }
-    } else {
-        error($lang->redirect_norestore);
-    }
+	$mybb->input['attachmentaid'] = $mybb->get_input('attachmentaid', MyBB::INPUT_INT);
+	if($mybb->input['attachmentact'] == "remove")
+	{
+		remove_attachment($pid, "", $mybb->input['attachmentaid']);
+	}
+	elseif($mybb->get_input('attachmentact') == "approve" && is_moderator($fid, 'canapproveunapproveattachs'))
+	{
+		$update_sql = array("visible" => 1);
+		$db->update_query("attachments", $update_sql, "aid='{$mybb->input['attachmentaid']}'");
+		update_thread_counters($post['tid'], array('attachmentcount' => "+1"));
+	}
+	elseif($mybb->get_input('attachmentact') == "unapprove" && is_moderator($fid, 'canapproveunapproveattachs'))
+	{
+		$update_sql = array("visible" => 0);
+		$db->update_query("attachments", $update_sql, "aid='{$mybb->input['attachmentaid']}'");
+		update_thread_counters($post['tid'], array('attachmentcount' => "-1"));
+	}
+	if(!isset($mybb->input['submit']))
+	{
+		$mybb->input['action'] = "editpost";
+	}
 }
 
-if ($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post") {
-    // Verify incoming POST request
-    verify_post_check($mybb->get_input('my_post_key'));
+if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
+{
+	// Verify incoming POST request
+	verify_post_check($mybb->get_input('my_post_key'));
 
-    $plugins->run_hooks("editpost_do_editpost_start");
+	$plugins->run_hooks("editpost_deletepost");
 
-    // Set up posthandler.
-    require_once MYBB_ROOT."inc/datahandlers/post.php";
-    $posthandler = new PostDataHandler("update");
-    $posthandler->action = "post";
+	if($mybb->get_input('delete', MyBB::INPUT_INT) == 1)
+	{
+		$query = $db->simple_select("posts", "pid", "tid='{$tid}'",
+			array("limit" => 1, "order_by" => "dateline", "order_dir" => "asc"));
+		$firstcheck = $db->fetch_array($query);
+		if($firstcheck['pid'] == $pid)
+		{
+			$firstpost = 1;
+		}
+		else
+		{
+			$firstpost = 0;
+		}
 
-    // Set the post data that came from the input to the $post array.
-    $post = array(
-        "pid" => $mybb->input['pid'],
-        "prefix" => $mybb->get_input('threadprefix', MyBB::INPUT_INT),
-        "subject" => $mybb->get_input('subject'),
-        "icon" => $mybb->get_input('icon', MyBB::INPUT_INT),
-        "uid" => $post['uid'],
-        "username" => $post['username'],
-        "edit_uid" => $mybb->user['uid'],
-        "message" => $mybb->get_input('message'),
-        "editreason" => $mybb->get_input('editreason'),
-    );
+		$modlogdata['fid'] = $fid;
+		$modlogdata['tid'] = $tid;
+		if($firstpost)
+		{
+			if($forumpermissions['candeletethreads'] == 1 || is_moderator($fid,
+					"candeletethreads") || is_moderator($fid, "cansoftdeletethreads"))
+			{
+				require_once MYBB_ROOT."inc/class_moderation.php";
+				$moderation = new Moderation;
 
-    $postoptions = $mybb->get_input('postoptions', MyBB::INPUT_ARRAY);
-    if (!isset($postoptions['signature'])) {
-        $postoptions['signature'] = 0;
-    }
-    if (!isset($postoptions['subscriptionmethod'])) {
-        $postoptions['subscriptionmethod'] = 0;
-    }
-    if (!isset($postoptions['disablesmilies'])) {
-        $postoptions['disablesmilies'] = 0;
-    }
+				if($mybb->settings['soft_delete'] == 1 || is_moderator($fid, "cansoftdeletethreads"))
+				{
+					$modlogdata['pid'] = $pid;
 
-    // Set up the post options from the input.
-    $post['options'] = array(
-        "signature" => $postoptions['signature'],
-        "subscriptionmethod" => $postoptions['subscriptionmethod'],
-        "disablesmilies" => $postoptions['disablesmilies']
-    );
+					$moderation->soft_delete_threads(array($tid));
+					log_moderator_action($modlogdata, $lang->thread_soft_deleted);
+				}
+				else
+				{
+					$moderation->delete_thread($tid);
+					mark_reports($tid, "thread");
+					log_moderator_action($modlogdata, $lang->thread_deleted);
+				}
 
-    $posthandler->set_data($post);
+				if($mybb->input['ajax'] == 1)
+				{
+					header("Content-type: application/json; charset={$lang->settings['charset']}");
+					if(is_moderator($fid, "canviewdeleted"))
+					{
+						echo json_encode(array("data" => '1'));
+					}
+					else
+					{
+						echo json_encode(array("data" => '3', "url" => get_forum_link($fid)));
+					}
+				}
+				else
+				{
+					redirect(get_forum_link($fid), $lang->redirect_threaddeleted);
+				}
+			}
+			else
+			{
+				error_no_permission();
+			}
+		}
+		else
+		{
+			if($forumpermissions['candeleteposts'] == 1 || is_moderator($fid, "candeleteposts") || is_moderator($fid,
+					"cansoftdeleteposts"))
+			{
+				// Select the first post before this
+				require_once MYBB_ROOT."inc/class_moderation.php";
+				$moderation = new Moderation;
 
-    // Now let the post handler do all the hard work.
-    if (!$posthandler->validate_post()) {
-        $post_errors = $posthandler->get_friendly_errors();
-        $post_errors = inline_error($post_errors);
-        $mybb->input['action'] = "editpost";
-    }
-    // No errors were found, we can call the update method.
-    else {
-        $postinfo = $posthandler->update_post();
-        $visible = $postinfo['visible'];
-        $first_post = $postinfo['first_post'];
+				if($mybb->settings['soft_delete'] == 1 || is_moderator($fid, "cansoftdeleteposts"))
+				{
+					$modlogdata['pid'] = $pid;
 
-        // Help keep our attachments table clean.
-        $db->delete_query("attachments", "filename='' OR filesize<1");
+					$moderation->soft_delete_posts(array($pid));
+					log_moderator_action($modlogdata, $lang->post_soft_deleted);
+				}
+				else
+				{
+					$moderation->delete_post($pid);
+					mark_reports($pid, "post");
+					log_moderator_action($modlogdata, $lang->post_deleted);
+				}
 
-        // Did the user choose to post a poll? Redirect them to the poll posting page.
-        if ($mybb->get_input('postpoll', MyBB::INPUT_INT) && $forumpermissions['canpostpolls']) {
-            $url = "polls.php?action=newpoll&tid=$tid&polloptions=".$mybb->get_input('numpolloptions', MyBB::INPUT_INT);
-            $lang->redirect_postedited = $lang->redirect_postedited_poll;
-        } elseif ($visible == 0 && $first_post && !is_moderator($fid, "canviewunapprove", $mybb->user['uid'])) {
-            // Moderated post
-            $lang->redirect_postedited .= $lang->redirect_thread_moderation;
-            $url = get_forum_link($fid);
-        } elseif ($visible == 0 && !is_moderator($fid, "canviewunapprove", $mybb->user['uid'])) {
-            $lang->redirect_postedited .= $lang->redirect_post_moderation;
-            $url = get_thread_link($tid);
-        }
-        // Otherwise, send them back to their post
-        else {
-            $lang->redirect_postedited .= $lang->redirect_postedited_redirect;
-            $url = get_post_link($pid, $tid)."#pid{$pid}";
-        }
-        $plugins->run_hooks("editpost_do_editpost_end");
+				$query = $db->simple_select("posts", "pid", "tid='{$tid}' AND dateline <= '{$post['dateline']}'",
+					array("limit" => 1, "order_by" => "dateline", "order_dir" => "desc"));
+				$next_post = $db->fetch_array($query);
+				if($next_post['pid'])
+				{
+					$redirect = get_post_link($next_post['pid'], $tid)."#pid{$next_post['pid']}";
+				}
+				else
+				{
+					$redirect = get_thread_link($tid);
+				}
 
-        redirect($url, $lang->redirect_postedited);
-    }
+				if($mybb->input['ajax'] == 1)
+				{
+					header("Content-type: application/json; charset={$lang->settings['charset']}");
+					if(is_moderator($fid, "canviewdeleted"))
+					{
+						echo json_encode(array("data" => '1'));
+					}
+					else
+					{
+						echo json_encode(array("data" => '2'));
+					}
+				}
+				else
+				{
+					redirect($redirect, $lang->redirect_postdeleted);
+				}
+			}
+			else
+			{
+				error_no_permission();
+			}
+		}
+	}
+	else
+	{
+		error($lang->redirect_nodelete);
+	}
 }
 
-if (!$mybb->input['action'] || $mybb->input['action'] == "editpost") {
-    $plugins->run_hooks("editpost_action_start");
+if($mybb->input['action'] == "restorepost" && $mybb->request_method == "post")
+{
+	// Verify incoming POST request
+	verify_post_check($mybb->get_input('my_post_key'));
 
-    if (!isset($mybb->input['previewpost'])) {
-        $icon = $post['icon'];
-    }
+	$plugins->run_hooks("editpost_restorepost");
 
-    if ($forum['allowpicons'] != 0) {
-        $posticons = get_post_icons();
-    }
+	if($mybb->get_input('restore', MyBB::INPUT_INT) == 1)
+	{
+		$query = $db->simple_select("posts", "pid", "tid='{$tid}'",
+			array("limit" => 1, "order_by" => "dateline", "order_dir" => "asc"));
+		$firstcheck = $db->fetch_array($query);
+		if($firstcheck['pid'] == $pid)
+		{
+			$firstpost = 1;
+		}
+		else
+		{
+			$firstpost = 0;
+		}
 
-    $loginbox = \MyBB\template('misc/changeuserbox.twig');
+		$modlogdata['fid'] = $fid;
+		$modlogdata['tid'] = $tid;
+		$modlogdata['pid'] = $pid;
+		if($firstpost)
+		{
+			if(is_moderator($fid, "canrestorethreads"))
+			{
+				require_once MYBB_ROOT."inc/class_moderation.php";
+				$moderation = new Moderation;
+				$moderation->restore_threads(array($tid));
+				log_moderator_action($modlogdata, $lang->thread_restored);
+				if($mybb->input['ajax'] == 1)
+				{
+					header("Content-type: application/json; charset={$lang->settings['charset']}");
+					echo json_encode(array("data" => '1'));
+				}
+				else
+				{
+					redirect(get_forum_link($fid), $lang->redirect_threadrestored);
+				}
+			}
+			else
+			{
+				error_no_permission();
+			}
+		}
+		else
+		{
+			if(is_moderator($fid, "canrestoreposts"))
+			{
+				// Select the first post before this
+				require_once MYBB_ROOT."inc/class_moderation.php";
+				$moderation = new Moderation;
+				$moderation->restore_posts(array($pid));
+				log_moderator_action($modlogdata, $lang->post_restored);
+				$redirect = get_post_link($pid, $tid)."#pid{$pid}";
 
-    $editpost['showdelete'] = false;
-    // Can we delete posts?
-    if ($post['visible'] != -1 && (is_moderator($fid, "candeleteposts") || $forumpermissions['candeleteposts'] == 1 && $mybb->user['uid'] == $post['uid'])) {
-        $editpost['showdelete'] = true;
-    }
+				if($mybb->input['ajax'] == 1)
+				{
+					header("Content-type: application/json; charset={$lang->settings['charset']}");
+					echo json_encode(array("data" => '1'));
+				}
+				else
+				{
+					redirect($redirect, $lang->redirect_postrestored);
+				}
+			}
+			else
+			{
+				error_no_permission();
+			}
+		}
+	}
+	else
+	{
+		error($lang->redirect_norestore);
+	}
+}
 
-    // Get a listing of the current attachments, if there are any
-    $editpost['showattachments'] = false;
-    if ($mybb->settings['enableattachments'] != 0 && $forumpermissions['canpostattachments'] != 0) {
-        $editpost['showattachments'] = true;
-        $attachcount = 0;
+if($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post")
+{
+	// Verify incoming POST request
+	verify_post_check($mybb->get_input('my_post_key'));
 
-        $attachments = [];
-        $query = $db->simple_select("attachments", "*", "pid='{$pid}'");
-        while ($attachment = $db->fetch_array($query)) {
-            $attachment['size'] = get_friendly_size($attachment['filesize']);
-            $attachment['icon'] = get_attachment_icon(get_extension($attachment['filename']));
-            $attachment['filename'] = $attachment['filename'];
+	$plugins->run_hooks("editpost_do_editpost_start");
 
-            $attachment['showinsert'] = false;
-            if ($mybb->settings['bbcodeinserter'] != 0 && $forum['allowmycode'] != 0 && $mybb->user['showcodebuttons'] != 0) {
-                $attachment['showinsert'] = true;
-            }
+	// Set up posthandler.
+	require_once MYBB_ROOT."inc/datahandlers/post.php";
+	$posthandler = new PostDataHandler("update");
+	$posthandler->action = "post";
 
-            // Moderating options
-            $attachment['showmodapproval'] = false;
-            if (is_moderator($fid, "canapproveunapproveattachs")) {
-                $attachment['showmodapproval'] = true;
-            }
+	// Set the post data that came from the input to the $post array.
+	$post = array(
+		"pid" => $mybb->input['pid'],
+		"prefix" => $mybb->get_input('threadprefix', MyBB::INPUT_INT),
+		"subject" => $mybb->get_input('subject'),
+		"icon" => $mybb->get_input('icon', MyBB::INPUT_INT),
+		"uid" => $post['uid'],
+		"username" => $post['username'],
+		"edit_uid" => $mybb->user['uid'],
+		"message" => $mybb->get_input('message'),
+		"editreason" => $mybb->get_input('editreason'),
+	);
 
-            $attachcount++;
-            $attachments[] = $attachment;
-        }
+	$postoptions = $mybb->get_input('postoptions', MyBB::INPUT_ARRAY);
+	if(!isset($postoptions['signature']))
+	{
+		$postoptions['signature'] = 0;
+	}
+	if(!isset($postoptions['subscriptionmethod']))
+	{
+		$postoptions['subscriptionmethod'] = 0;
+	}
+	if(!isset($postoptions['disablesmilies']))
+	{
+		$postoptions['disablesmilies'] = 0;
+	}
 
-        $query = $db->simple_select("attachments", "SUM(filesize) AS ausage", "uid='".$mybb->user['uid']."'");
-        $usage = $db->fetch_array($query);
-        if ($usage['ausage'] > ($mybb->usergroup['attachquota']*1024) && $mybb->usergroup['attachquota'] != 0) {
-            $noshowattach = 1;
-        } else {
-            $noshowattach = 0;
-        }
+	// Set up the post options from the input.
+	$post['options'] = array(
+		"signature" => $postoptions['signature'],
+		"subscriptionmethod" => $postoptions['subscriptionmethod'],
+		"disablesmilies" => $postoptions['disablesmilies']
+	);
 
-        if ($mybb->usergroup['attachquota'] == 0) {
-            $editpost['friendlyquota'] = $lang->unlimited;
-        } else {
-            $editpost['friendlyquota'] = get_friendly_size($mybb->usergroup['attachquota']*1024);
-        }
+	$posthandler->set_data($post);
 
-        $editpost['friendlyusage'] = get_friendly_size($usage['ausage']);
+	// Now let the post handler do all the hard work.
+	if(!$posthandler->validate_post())
+	{
+		$post_errors = $posthandler->get_friendly_errors();
+		$post_errors = inline_error($post_errors);
+		$mybb->input['action'] = "editpost";
+	}
+	// No errors were found, we can call the update method.
+	else
+	{
+		$postinfo = $posthandler->update_post();
+		$visible = $postinfo['visible'];
+		$first_post = $postinfo['first_post'];
 
-        $editpost['showattachoptions'] = false;
-        $editpost['showattachadd'] = false;
-        if ($mybb->settings['maxattachments'] == 0 || ($mybb->settings['maxattachments'] != 0 && $attachcount < $mybb->settings['maxattachments']) && !$noshowattach) {
-            $editpost['showattachoptions'] = true;
-            $editpost['showattachadd'] = true;
-        }
+		// Help keep our attachments table clean.
+		$db->delete_query("attachments", "filename='' OR filesize<1");
 
-        $editpost['showattachupdate'] = false;
-        if (($mybb->usergroup['caneditattachments'] || $forumpermissions['caneditattachments']) && $attachcount > 0) {
-            $editpost['showattachoptions'] = true;
-            $editpost['showattachupdate'] = true;
-        }
-    }
+		// Did the user choose to post a poll? Redirect them to the poll posting page.
+		if($mybb->get_input('postpoll', MyBB::INPUT_INT) && $forumpermissions['canpostpolls'])
+		{
+			$url = "polls.php?action=newpoll&tid=$tid&polloptions=".$mybb->get_input('numpolloptions', MyBB::INPUT_INT);
+			$lang->redirect_postedited = $lang->redirect_postedited_poll;
+		}
+		elseif($visible == 0 && $first_post && !is_moderator($fid, "canviewunapprove", $mybb->user['uid']))
+		{
+			// Moderated post
+			$lang->redirect_postedited .= $lang->redirect_thread_moderation;
+			$url = get_forum_link($fid);
+		}
+		elseif($visible == 0 && !is_moderator($fid, "canviewunapprove", $mybb->user['uid']))
+		{
+			$lang->redirect_postedited .= $lang->redirect_post_moderation;
+			$url = get_thread_link($tid);
+		}
+		// Otherwise, send them back to their post
+		else
+		{
+			$lang->redirect_postedited .= $lang->redirect_postedited_redirect;
+			$url = get_post_link($pid, $tid)."#pid{$pid}";
+		}
+		$plugins->run_hooks("editpost_do_editpost_end");
 
-    if (!$mybb->get_input('attachmentaid', MyBB::INPUT_INT) && !$mybb->get_input('newattachment') && !$mybb->get_input('updateattachment') && !isset($mybb->input['previewpost'])) {
-        $editpost['message'] = $post['message'];
-        $editpost['subject'] = $post['subject'];
-        $editpost['reason'] = $post['editreason'];
-    } else {
-        $editpost['message'] = $mybb->get_input('message');
-        $editpost['subject'] = $mybb->get_input('subject');
-        $editpost['reason'] = $mybb->get_input('editreason');
-    }
+		redirect($url, $lang->redirect_postedited);
+	}
+}
 
-    if (!isset($post_errors)) {
-        $post_errors = '';
-    }
+if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
+{
+	$plugins->run_hooks("editpost_action_start");
 
-    $editpost['postoptions'] = array('signature' => false, 'disablesmilies' => false);
-    $editpost['subscriptionmethod'] = array('dont' => false, 'none' => false, 'email' => false, 'pm' => false);
+	if(!isset($mybb->input['previewpost']))
+	{
+		$icon = $post['icon'];
+	}
 
-    if (!empty($mybb->input['previewpost']) || $post_errors) {
-        // Set up posthandler.
-        require_once MYBB_ROOT."inc/datahandlers/post.php";
-        $posthandler = new PostDataHandler("update");
-        $posthandler->action = "post";
+	if($forum['allowpicons'] != 0)
+	{
+		$posticons = get_post_icons();
+	}
 
-        // Set the post data that came from the input to the $post array.
-        $post = array(
-            "pid" => $mybb->input['pid'],
-            "prefix" => $mybb->get_input('threadprefix', MyBB::INPUT_INT),
-            "subject" => $mybb->get_input('subject'),
-            "icon" => $mybb->get_input('icon', MyBB::INPUT_INT),
-            "uid" => $post['uid'],
-            "username" => $post['username'],
-            "edit_uid" => $mybb->user['uid'],
-            "message" => $mybb->get_input('message'),
-        );
+	$loginbox = \MyBB\template('misc/changeuserbox.twig');
 
-        $postoptions = $mybb->get_input('postoptions', MyBB::INPUT_ARRAY);
-        if (!isset($postoptions['signature'])) {
-            $postoptions['signature'] = 0;
-        }
+	$editpost['showdelete'] = false;
+	// Can we delete posts?
+	if($post['visible'] != -1 && (is_moderator($fid,
+				"candeleteposts") || $forumpermissions['candeleteposts'] == 1 && $mybb->user['uid'] == $post['uid']))
+	{
+		$editpost['showdelete'] = true;
+	}
 
-        if (!isset($postoptions['emailnotify'])) {
-            $postoptions['emailnotify'] = 0;
-        }
+	// Get a listing of the current attachments, if there are any
+	$editpost['showattachments'] = false;
+	if($mybb->settings['enableattachments'] != 0 && $forumpermissions['canpostattachments'] != 0)
+	{
+		$editpost['showattachments'] = true;
+		$attachcount = 0;
 
-        if (!isset($postoptions['disablesmilies'])) {
-            $postoptions['disablesmilies'] = 0;
-        }
+		$attachments = [];
+		$query = $db->simple_select("attachments", "*", "pid='{$pid}'");
+		while($attachment = $db->fetch_array($query))
+		{
+			$attachment['size'] = get_friendly_size($attachment['filesize']);
+			$attachment['icon'] = get_attachment_icon(get_extension($attachment['filename']));
+			$attachment['filename'] = $attachment['filename'];
 
-        // Set up the post options from the input.
-        $post['options'] = array(
-            "signature" => $postoptions['signature'],
-            "emailnotify" => $postoptions['emailnotify'],
-            "disablesmilies" => $postoptions['disablesmilies']
-        );
+			$attachment['showinsert'] = false;
+			if($mybb->settings['bbcodeinserter'] != 0 && $forum['allowmycode'] != 0 && $mybb->user['showcodebuttons'] != 0)
+			{
+				$attachment['showinsert'] = true;
+			}
 
-        $posthandler->set_data($post);
+			// Moderating options
+			$attachment['showmodapproval'] = false;
+			if(is_moderator($fid, "canapproveunapproveattachs"))
+			{
+				$attachment['showmodapproval'] = true;
+			}
 
-        // Now let the post handler do all the hard work.
-        if (!$posthandler->validate_post()) {
-            $post_errors = $posthandler->get_friendly_errors();
-            $post_errors = inline_error($post_errors);
-            $mybb->input['action'] = "editpost";
-            $mybb->input['previewpost'] = 0;
-        } else {
-            $previewmessage = $editpost['message'];
-            $previewsubject = $editpost['subject'];
+			$attachcount++;
+			$attachments[] = $attachment;
+		}
 
-            $postoptions = $mybb->get_input('postoptions', MyBB::INPUT_ARRAY);
+		$query = $db->simple_select("attachments", "SUM(filesize) AS ausage", "uid='".$mybb->user['uid']."'");
+		$usage = $db->fetch_array($query);
+		if($usage['ausage'] > ($mybb->usergroup['attachquota'] * 1024) && $mybb->usergroup['attachquota'] != 0)
+		{
+			$noshowattach = 1;
+		}
+		else
+		{
+			$noshowattach = 0;
+		}
 
-            if (isset($postoptions['signature']) && $postoptions['signature'] == 1) {
-                $editpost['postoptions']['signature'] = true;
-            }
+		if($mybb->usergroup['attachquota'] == 0)
+		{
+			$editpost['friendlyquota'] = $lang->unlimited;
+		}
+		else
+		{
+			$editpost['friendlyquota'] = get_friendly_size($mybb->usergroup['attachquota'] * 1024);
+		}
 
-            if (isset($postoptions['disablesmilies']) && $postoptions['disablesmilies'] == 1) {
-                $editpost['postoptions']['disablesmilies'] = true;
-            }
+		$editpost['friendlyusage'] = get_friendly_size($usage['ausage']);
 
-            if (isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "none") {
-                $editpost['subscriptionmethod']['none'] = true;
-            } elseif(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "email") {
-                $editpost['subscriptionmethod']['email'] = true;
-            } elseif(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "pm") {
-                $editpost['subscriptionmethod']['pm'] = true;
-            } else {
-                $editpost['subscriptionmethod']['dont'] = true;
-            }
-        }
-    }
+		$editpost['showattachoptions'] = false;
+		$editpost['showattachadd'] = false;
+		if($mybb->settings['maxattachments'] == 0 || ($mybb->settings['maxattachments'] != 0 && $attachcount < $mybb->settings['maxattachments']) && !$noshowattach)
+		{
+			$editpost['showattachoptions'] = true;
+			$editpost['showattachadd'] = true;
+		}
 
-    $editpost['preview'] = false;
-    if (!empty($mybb->input['previewpost'])) {
-        $editpost['preview'] = true;
-        if (!$post['uid']) {
-            $query = $db->simple_select('posts', 'username, dateline', "pid='{$pid}'");
-            $postinfo = $db->fetch_array($query);
-        } else {
-            // Figure out the poster's other information.
-            $query = $db->query("
+		$editpost['showattachupdate'] = false;
+		if(($mybb->usergroup['caneditattachments'] || $forumpermissions['caneditattachments']) && $attachcount > 0)
+		{
+			$editpost['showattachoptions'] = true;
+			$editpost['showattachupdate'] = true;
+		}
+	}
+
+	if(!$mybb->get_input('attachmentaid',
+			MyBB::INPUT_INT) && !$mybb->get_input('newattachment') && !$mybb->get_input('updateattachment') && !isset($mybb->input['previewpost']))
+	{
+		$editpost['message'] = $post['message'];
+		$editpost['subject'] = $post['subject'];
+		$editpost['reason'] = $post['editreason'];
+	}
+	else
+	{
+		$editpost['message'] = $mybb->get_input('message');
+		$editpost['subject'] = $mybb->get_input('subject');
+		$editpost['reason'] = $mybb->get_input('editreason');
+	}
+
+	if(!isset($post_errors))
+	{
+		$post_errors = '';
+	}
+
+	$editpost['postoptions'] = array('signature' => false, 'disablesmilies' => false);
+	$editpost['subscriptionmethod'] = array('dont' => false, 'none' => false, 'email' => false, 'pm' => false);
+
+	if(!empty($mybb->input['previewpost']) || $post_errors)
+	{
+		// Set up posthandler.
+		require_once MYBB_ROOT."inc/datahandlers/post.php";
+		$posthandler = new PostDataHandler("update");
+		$posthandler->action = "post";
+
+		// Set the post data that came from the input to the $post array.
+		$post = array(
+			"pid" => $mybb->input['pid'],
+			"prefix" => $mybb->get_input('threadprefix', MyBB::INPUT_INT),
+			"subject" => $mybb->get_input('subject'),
+			"icon" => $mybb->get_input('icon', MyBB::INPUT_INT),
+			"uid" => $post['uid'],
+			"username" => $post['username'],
+			"edit_uid" => $mybb->user['uid'],
+			"message" => $mybb->get_input('message'),
+		);
+
+		$postoptions = $mybb->get_input('postoptions', MyBB::INPUT_ARRAY);
+		if(!isset($postoptions['signature']))
+		{
+			$postoptions['signature'] = 0;
+		}
+
+		if(!isset($postoptions['emailnotify']))
+		{
+			$postoptions['emailnotify'] = 0;
+		}
+
+		if(!isset($postoptions['disablesmilies']))
+		{
+			$postoptions['disablesmilies'] = 0;
+		}
+
+		// Set up the post options from the input.
+		$post['options'] = array(
+			"signature" => $postoptions['signature'],
+			"emailnotify" => $postoptions['emailnotify'],
+			"disablesmilies" => $postoptions['disablesmilies']
+		);
+
+		$posthandler->set_data($post);
+
+		// Now let the post handler do all the hard work.
+		if(!$posthandler->validate_post())
+		{
+			$post_errors = $posthandler->get_friendly_errors();
+			$post_errors = inline_error($post_errors);
+			$mybb->input['action'] = "editpost";
+			$mybb->input['previewpost'] = 0;
+		}
+		else
+		{
+			$previewmessage = $editpost['message'];
+			$previewsubject = $editpost['subject'];
+
+			$postoptions = $mybb->get_input('postoptions', MyBB::INPUT_ARRAY);
+
+			if(isset($postoptions['signature']) && $postoptions['signature'] == 1)
+			{
+				$editpost['postoptions']['signature'] = true;
+			}
+
+			if(isset($postoptions['disablesmilies']) && $postoptions['disablesmilies'] == 1)
+			{
+				$editpost['postoptions']['disablesmilies'] = true;
+			}
+
+			if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "none")
+			{
+				$editpost['subscriptionmethod']['none'] = true;
+			}
+			elseif(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "email")
+			{
+				$editpost['subscriptionmethod']['email'] = true;
+			}
+			elseif(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "pm")
+			{
+				$editpost['subscriptionmethod']['pm'] = true;
+			}
+			else
+			{
+				$editpost['subscriptionmethod']['dont'] = true;
+			}
+		}
+	}
+
+	$editpost['preview'] = false;
+	if(!empty($mybb->input['previewpost']))
+	{
+		$editpost['preview'] = true;
+		if(!$post['uid'])
+		{
+			$query = $db->simple_select('posts', 'username, dateline', "pid='{$pid}'");
+			$postinfo = $db->fetch_array($query);
+		}
+		else
+		{
+			// Figure out the poster's other information.
+			$query = $db->query("
                 SELECT u.*, f.*, p.dateline
-                FROM " . TABLE_PREFIX . "users u
-                LEFT JOIN " . TABLE_PREFIX . "userfields f ON (f.ufid=u.uid)
-                LEFT JOIN " . TABLE_PREFIX . "posts p ON (p.uid=u.uid)
+                FROM ".TABLE_PREFIX."users u
+                LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
+                LEFT JOIN ".TABLE_PREFIX."posts p ON (p.uid=u.uid)
                 WHERE u.uid='{$post['uid']}' AND p.pid='{$pid}'
                 LIMIT 1
             ");
-            $postinfo = $db->fetch_array($query);
-            $postinfo['userusername'] = $postinfo['username'];
-        }
+			$postinfo = $db->fetch_array($query);
+			$postinfo['userusername'] = $postinfo['username'];
+		}
 
-        $query = $db->simple_select("attachments", "*", "pid='{$pid}'");
-        while ($attachment = $db->fetch_array($query)) {
-            $attachcache[0][$attachment['aid']] = $attachment;
-        }
+		$query = $db->simple_select("attachments", "*", "pid='{$pid}'");
+		while($attachment = $db->fetch_array($query))
+		{
+			$attachcache[0][$attachment['aid']] = $attachment;
+		}
 
-        if (!isset($postoptions['disablesmilies'])) {
-            $postoptions['disablesmilies'] = 0;
-        }
+		if(!isset($postoptions['disablesmilies']))
+		{
+			$postoptions['disablesmilies'] = 0;
+		}
 
-        // Set the values of the post info array.
-        $postinfo['message'] = $previewmessage;
-        $postinfo['subject'] = $previewsubject;
-        $postinfo['icon'] = $icon;
-        $postinfo['smilieoff'] = $postoptions['disablesmilies'];
+		// Set the values of the post info array.
+		$postinfo['message'] = $previewmessage;
+		$postinfo['subject'] = $previewsubject;
+		$postinfo['icon'] = $icon;
+		$postinfo['smilieoff'] = $postoptions['disablesmilies'];
 
-        $postbit = build_postbit($postinfo, 1);
-    } elseif(!$post_errors)
-    {
-        $preview = '';
+		$postbit = build_postbit($postinfo, 1);
+	}
+	elseif(!$post_errors)
+	{
+		$preview = '';
 
-        if ($post['includesig'] != 0) {
-            $editpost['postoptions']['signature'] = true;
-        }
+		if($post['includesig'] != 0)
+		{
+			$editpost['postoptions']['signature'] = true;
+		}
 
-        if ($post['smilieoff'] == 1) {
-            $editpost['postoptions']['disablesmilies'] = true;
-        }
+		if($post['smilieoff'] == 1)
+		{
+			$editpost['postoptions']['disablesmilies'] = true;
+		}
 
-        $query = $db->simple_select("threadsubscriptions", "notification", "tid='{$tid}' AND uid='{$mybb->user['uid']}'");
-        if ($db->num_rows($query) > 0) {
-            $notification = $db->fetch_field($query, 'notification');
+		$query = $db->simple_select("threadsubscriptions", "notification",
+			"tid='{$tid}' AND uid='{$mybb->user['uid']}'");
+		if($db->num_rows($query) > 0)
+		{
+			$notification = $db->fetch_field($query, 'notification');
 
-            if($notification ==  0) {
-                $editpost['subscriptionmethod']['none'] = true;
-            } elseif($notification == 1) {
-                $editpost['subscriptionmethod']['email'] = true;
-            } elseif($notification == 2) {
-                $editpost['subscriptionmethod']['pm'] = true;
-            } else {
-                $editpost['subscriptionmethod']['dont'] = true;
-            }
-        }
-    }
+			if($notification == 0)
+			{
+				$editpost['subscriptionmethod']['none'] = true;
+			}
+			elseif($notification == 1)
+			{
+				$editpost['subscriptionmethod']['email'] = true;
+			}
+			elseif($notification == 2)
+			{
+				$editpost['subscriptionmethod']['pm'] = true;
+			}
+			else
+			{
+				$editpost['subscriptionmethod']['dont'] = true;
+			}
+		}
+	}
 
-    // Generate thread prefix selector if this is the first post of the thread
-    if ($thread['firstpost'] == $pid) {
-        if (!$mybb->get_input('threadprefix', MyBB::INPUT_INT)) {
-            $mybb->input['threadprefix'] = $thread['prefix'];
-        }
+	// Generate thread prefix selector if this is the first post of the thread
+	if($thread['firstpost'] == $pid)
+	{
+		if(!$mybb->get_input('threadprefix', MyBB::INPUT_INT))
+		{
+			$mybb->input['threadprefix'] = $thread['prefix'];
+		}
 
-        $prefixes = build_prefix_select($forum['fid'], $mybb->get_input('threadprefix', MyBB::INPUT_INT), 0, $thread['prefix']);
-    }
+		$prefixes = build_prefix_select($forum['fid'], $mybb->get_input('threadprefix', MyBB::INPUT_INT), 0,
+			$thread['prefix']);
+	}
 
-    $query = $db->simple_select("posts", "*", "tid='{$tid}'", array("limit" => 1, "order_by" => "dateline", "order_dir" => "asc"));
-    $firstcheck = $db->fetch_array($query);
+	$query = $db->simple_select("posts", "*", "tid='{$tid}'",
+		array("limit" => 1, "order_by" => "dateline", "order_dir" => "asc"));
+	$firstcheck = $db->fetch_array($query);
 
-    $time = TIME_NOW;
-    $editpost['showpollbox'] = false;
-    if ($firstcheck['pid'] == $pid && $forumpermissions['canpostpolls'] != 0 && $thread['poll'] < 1 && (is_moderator($fid, "canmanagepolls") || $thread['dateline'] > ($time-($mybb->settings['polltimelimit']*60*60)) || $mybb->settings['polltimelimit'] == 0)) {
-        $editpost['showpollbox'] = true;
+	$time = TIME_NOW;
+	$editpost['showpollbox'] = false;
+	if($firstcheck['pid'] == $pid && $forumpermissions['canpostpolls'] != 0 && $thread['poll'] < 1 && (is_moderator($fid,
+				"canmanagepolls") || $thread['dateline'] > ($time - ($mybb->settings['polltimelimit'] * 60 * 60)) || $mybb->settings['polltimelimit'] == 0))
+	{
+		$editpost['showpollbox'] = true;
 
-        $editpost['numpolloptions'] = $mybb->get_input('numpolloptions', MyBB::INPUT_INT);
+		$editpost['numpolloptions'] = $mybb->get_input('numpolloptions', MyBB::INPUT_INT);
 
-        if ($editpost['numpolloptions'] < 1) {
-            $editpost['numpolloptions'] = 2;
-        }
-        
-        if ($mybb->get_input('postpoll', MyBB::INPUT_INT) == 1) {
-            $editpost['postpollchecked'] = true;
-        }
-    }
+		if($editpost['numpolloptions'] < 1)
+		{
+			$editpost['numpolloptions'] = 2;
+		}
 
-    $editpost['showpostoptions'] = false;
+		if($mybb->get_input('postpoll', MyBB::INPUT_INT) == 1)
+		{
+			$editpost['postpollchecked'] = true;
+		}
+	}
 
-    // Hide signature option if no permission
-    $editpost['showsignature'] = false;
-    if ($mybb->usergroup['canusesig'] == 1 && !$mybb->user['suspendsignature']) {
-        $editpost['showpostoptions'] = true;
-        $editpost['showsignature'] = true;
-    }
+	$editpost['showpostoptions'] = false;
 
-    // Can we disable smilies or are they disabled already?
-    $editpost['showdisablesmilies'] = false;
-    if ($forum['allowsmilies'] != 0) {
-        $editpost['showpostoptions'] = true;
-        $editpost['showdisablesmilies'] = true;
-    }
+	// Hide signature option if no permission
+	$editpost['showsignature'] = false;
+	if($mybb->usergroup['canusesig'] == 1 && !$mybb->user['suspendsignature'])
+	{
+		$editpost['showpostoptions'] = true;
+		$editpost['showsignature'] = true;
+	}
 
-    $editpost['showmodnotice'] = false;
-    if (!is_moderator($forum['fid'], "canapproveunapproveattachs")) {
-        if ($forumpermissions['modattachments'] == 1  && $forumpermissions['canpostattachments'] != 0) {
-            $editpost['showmodnotice'] = true;
-            $editpost['moderation_text'] = $lang->moderation_forum_attachments;
-        }
-    }
+	// Can we disable smilies or are they disabled already?
+	$editpost['showdisablesmilies'] = false;
+	if($forum['allowsmilies'] != 0)
+	{
+		$editpost['showpostoptions'] = true;
+		$editpost['showdisablesmilies'] = true;
+	}
 
-    if (!is_moderator($forum['fid'], "canapproveunapproveposts")) {
-        if ($forumpermissions['mod_edit_posts'] == 1) {
-            $editpost['showmodnotice'] = true;
-            $editpost['moderation_text'] = $lang->moderation_forum_edits;
-        }
-    }
+	$editpost['showmodnotice'] = false;
+	if(!is_moderator($forum['fid'], "canapproveunapproveattachs"))
+	{
+		if($forumpermissions['modattachments'] == 1 && $forumpermissions['canpostattachments'] != 0)
+		{
+			$editpost['showmodnotice'] = true;
+			$editpost['moderation_text'] = $lang->moderation_forum_attachments;
+		}
+	}
 
-    $plugins->run_hooks("editpost_end");
+	if(!is_moderator($forum['fid'], "canapproveunapproveposts"))
+	{
+		if($forumpermissions['mod_edit_posts'] == 1)
+		{
+			$editpost['showmodnotice'] = true;
+			$editpost['moderation_text'] = $lang->moderation_forum_edits;
+		}
+	}
 
-    $forum['name'] = strip_tags($forum['name']);
+	$plugins->run_hooks("editpost_end");
 
-    $editpost['pid'] = $pid;
+	$forum['name'] = strip_tags($forum['name']);
 
-    $editpost['showprefixes'] = false;
-    if (is_array($prefixes)) {
-        $editpost['showprefixes'] = true;
-    }
+	$editpost['pid'] = $pid;
 
-    $editpost['showposticons'] = false;
-    if (is_array($posticons)) {
-        $editpost['showposticons'] = true;
-    }
+	$editpost['showprefixes'] = false;
+	if(is_array($prefixes))
+	{
+		$editpost['showprefixes'] = true;
+	}
 
-    $editpost['emptyiconcheck'] = false;
-    if (empty($mybb->input['icon'])) {
-        $editpost['emptyiconcheck'] = true;
-    }
+	$editpost['showposticons'] = false;
+	if(is_array($posticons))
+	{
+		$editpost['showposticons'] = true;
+	}
 
-    output_page(\MyBB\template('editpost/editpost.twig', [
-        'editpost' => $editpost,
-        'post_errors' => $post_errors,
-        'loginbox' => $loginbox,
-        'forum' => $forum,
-        'post' => $post,
-        'smilieinserter' => $smilieinserter,
-        'codebuttons' => $codebuttons,
-        'postbit' => $postbit,
-        'attachments' => $attachments,
-        'prefixes' => $prefixes,
-        'posticons' => $posticons,
-    ]));
+	$editpost['emptyiconcheck'] = false;
+	if(empty($mybb->input['icon']))
+	{
+		$editpost['emptyiconcheck'] = true;
+	}
+
+	output_page(\MyBB\template('editpost/editpost.twig', [
+		'editpost' => $editpost,
+		'post_errors' => $post_errors,
+		'loginbox' => $loginbox,
+		'forum' => $forum,
+		'post' => $post,
+		'smilieinserter' => $smilieinserter,
+		'codebuttons' => $codebuttons,
+		'postbit' => $postbit,
+		'attachments' => $attachments,
+		'prefixes' => $prefixes,
+		'posticons' => $posticons,
+	]));
 }

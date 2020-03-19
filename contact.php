@@ -50,7 +50,7 @@ if($mybb->usergroup['maxemails'] > 0)
 		$user_check = "ipaddress=".$db->escape_binary($session->packedip);
 	}
 
-	$query = $db->simple_select("maillogs", "COUNT(mid) AS sent_count", "{$user_check} AND dateline >= ".(TIME_NOW - (60*60*24)));
+	$query = $db->simple_select("maillogs", "COUNT(mid) AS sent_count", "{$user_check} AND dateline >= ".(TIME_NOW - (60 * 60 * 24)));
 	$sent_count = $db->fetch_field($query, "sent_count");
 	if($sent_count >= $mybb->usergroup['maxemails'])
 	{
@@ -71,7 +71,7 @@ if($mybb->usergroup['emailfloodtime'] > 0)
 		$user_check = "ipaddress=".$db->escape_binary($session->packedip);
 	}
 
-	$timecut = TIME_NOW-$mybb->usergroup['emailfloodtime']*60;
+	$timecut = TIME_NOW - $mybb->usergroup['emailfloodtime'] * 60;
 
 	$query = $db->simple_select("maillogs", "mid, dateline", "{$user_check} AND dateline > '{$timecut}'", array('order_by' => "dateline", 'order_dir' => "DESC"));
 	$last_email = $db->fetch_array($query);
@@ -79,7 +79,7 @@ if($mybb->usergroup['emailfloodtime'] > 0)
 	// Users last email was within the flood time, show the error
 	if($last_email['mid'])
 	{
-		$remaining_time = ($mybb->usergroup['emailfloodtime']*60)-(TIME_NOW-$last_email['dateline']);
+		$remaining_time = ($mybb->usergroup['emailfloodtime'] * 60) - (TIME_NOW - $last_email['dateline']);
 
 		if($remaining_time == 1)
 		{
@@ -95,7 +95,7 @@ if($mybb->usergroup['emailfloodtime'] > 0)
 		}
 		else
 		{
-			$remaining_time_minutes = ceil($remaining_time/60);
+			$remaining_time_minutes = ceil($remaining_time / 60);
 			$lang->error_emailflooding = $lang->sprintf($lang->error_emailflooding_minutes, $mybb->usergroup['emailfloodtime'], $remaining_time_minutes);
 		}
 
@@ -172,7 +172,7 @@ if($mybb->request_method == "post")
 
 	if(!$mybb->user['uid'] && $mybb->settings['stopforumspam_on_contact'])
 	{
-		require_once MYBB_ROOT . '/inc/class_stopforumspamchecker.php';
+		require_once MYBB_ROOT.'/inc/class_stopforumspamchecker.php';
 
 		$stop_forum_spam_checker = new StopForumSpamChecker(
 			$plugins,
@@ -183,7 +183,8 @@ if($mybb->request_method == "post")
 			$mybb->settings['stopforumspam_log_blocks']
 		);
 
-		try {
+		try
+		{
 			if($stop_forum_spam_checker->is_user_a_spammer('', $mybb->input['email'], get_ip()))
 			{
 				$errors[] = $lang->sprintf($lang->error_stop_forum_spam_spammer,
@@ -192,7 +193,7 @@ if($mybb->request_method == "post")
 						'stopforumspam_check_ips')));
 			}
 		}
-		catch (Exception $e)
+		catch(Exception $e)
 		{
 			if($mybb->settings['stopforumspam_block_on_error'])
 			{
@@ -290,6 +291,6 @@ else
 $plugins->run_hooks('contact_end');
 
 output_page(\MyBB\template('contact/contact.twig', [
-    'errors' => $errors,
-    'captcha' => $captcha,
+	'errors' => $errors,
+	'captcha' => $captcha,
 ]));

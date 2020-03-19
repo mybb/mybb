@@ -67,7 +67,7 @@ function build_forumbits($pid=0, $depth=1)
 			$showlockicon = 0;
 			if(isset($permissions['canviewthreads']) && $permissions['canviewthreads'] != 1)
 			{
-			    $hideinfo = true;
+				$hideinfo = true;
 			}
 
 			if(isset($permissions['canonlyviewownthreads']) && $permissions['canonlyviewownthreads'] == 1)
@@ -152,14 +152,14 @@ SQL;
 
 			if($forum['password'] != '' && $mybb->cookies['forumpass'][$forum['fid']] !== md5($mybb->user['uid'].$forum['password']))
 			{
-			    $hideinfo = true;
-			    $showlockicon = 1;
+				$hideinfo = true;
+				$showlockicon = 1;
 			}
 
 			// Fetch subforums of this forum
 			if(isset($fcache[$forum['fid']]))
 			{
-				$forum_info = build_forumbits($forum['fid'], $depth+1);
+				$forum_info = build_forumbits($forum['fid'], $depth + 1);
 
 				// Increment forum counters with counters from child forums
 				$forum['threads'] += $forum_info['counters']['threads'];
@@ -236,9 +236,10 @@ SQL;
 			// Get the lightbulb status indicator for this forum based on the lastpost
 			$lightbulb = get_forum_lightbulb($forum, $forum['last_post'], $showlockicon);
 
-            if ($hideinfo != true && is_moderator($forum['fid'], "canviewunapprove")) {
-                $forum['showunapproved'] = true;
-            }
+			if($hideinfo != true && is_moderator($forum['fid'], "canviewunapprove"))
+			{
+				$forum['showunapproved'] = true;
+			}
 
 			// Sanitize name and description of forum.
 			$forum['name'] = preg_replace("#&(?!\#[0-9]+;)#si", "&amp;", $forum['name']); // Fix & but allow unicode
@@ -250,8 +251,8 @@ SQL;
 			if($depth == 2 && $sub_forums)
 			{
 				$subforums = \MyBB\template('forumbit/subforums.twig', [
-                    'sub_forums' => $sub_forums
-                ]);
+					'sub_forums' => $sub_forums
+				]);
 			}
 			// A depth of three indicates a comma separated list of forums within a forum
 			else if($depth == 3)
@@ -260,11 +261,11 @@ SQL;
 				{
 					// Fetch the template and append it to the list
 					$forum_list .= \MyBB\template('forumbit/depth3.twig', [
-                        'lightbulb' => $lightbulb,
-                        'forum' => $forum,
-                        'comma' => $comma
-                    ]);
-                    $comma = $lang->comma;
+						'lightbulb' => $lightbulb,
+						'forum' => $forum,
+						'comma' => $comma
+					]);
+					$comma = $lang->comma;
 				}
 
 				// Have we reached our max visible subforums? put a nice message and break out of the loop
@@ -283,7 +284,7 @@ SQL;
 			}
 
 			// Set template type basing on the category/forum type
-            $forumcat = ($forum['type'] == 'c') ? 'cat' : 'forum';
+			$forumcat = ($forum['type'] == 'c') ? 'cat' : 'forum';
 
 			if($forum['linkto'] == '')
 			{
@@ -306,15 +307,15 @@ SQL;
 						$forum['last_post']['subject'] = my_substr($forum['last_post']['subject'], 0, 25)."...";
 					}
 
-                    // Last poster avatar
-                    $forum['last_post']['last_poster_avatar_url'] = $forum['avatar'];
+					// Last poster avatar
+					$forum['last_post']['last_poster_avatar_url'] = $forum['avatar'];
 
 					// Call lastpost template
 					if($depth != 1)
 					{
-                        $lastpost = \MyBB\template('forumbit/depth_' . $depth . '/last_post.twig', [
-                            'forum' => $forum
-                        ]);
+						$lastpost = \MyBB\template('forumbit/depth_'.$depth.'/last_post.twig', [
+							'forum' => $forum
+						]);
 					}
 				}
 			}
@@ -344,7 +345,7 @@ SQL;
 					"users" => [],
 					"groups" => []
 				];
-                $moderators = [];
+				$moderators = [];
 				// Fetch list of moderators from this forum and its parents
 				$parentlistexploded = explode(',', $forum['parentlist']);
 				foreach($parentlistexploded as $mfid)
@@ -392,16 +393,16 @@ SQL;
 			}
 
 			// Add the forum to the list
-            $forum_list .= \MyBB\template('forumbit/depth_' . $depth . '/' . $forumcat . '.twig', [
-                'forum' => $forum,
-                'collapsed' => $collapsed,
-                'modlist' => $modlist,
-                'sub_forums' => $sub_forums,
-                'lightbulb' => $lightbulb,
-                'lastpost' => $lastpost,
-                'moderators' => $moderators,
-                'unapproved' => $unapproved
-            ]);
+			$forum_list .= \MyBB\template('forumbit/depth_'.$depth.'/'.$forumcat.'.twig', [
+				'forum' => $forum,
+				'collapsed' => $collapsed,
+				'modlist' => $modlist,
+				'sub_forums' => $sub_forums,
+				'lightbulb' => $lightbulb,
+				'lastpost' => $lastpost,
+				'moderators' => $moderators,
+				'unapproved' => $unapproved
+			]);
 		}
 	}
 
@@ -480,10 +481,10 @@ function get_forum_lightbulb($forum, $lastpost, $locked=0)
 
 		//if(!$forum_read)
 		//{
-			//$forum_read = $mybb->user['lastvisit'];
+		//$forum_read = $mybb->user['lastvisit'];
 		//}
 
- 	    // If the lastpost is greater than the last visit and is greater than the forum read date, we have a new post
+		// If the lastpost is greater than the last visit and is greater than the forum read date, we have a new post
 		if($lastpost['lastpost'] > $forum_read && $lastpost['lastpost'] != 0)
 		{
 			$unread_forums++;

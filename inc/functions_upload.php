@@ -38,11 +38,11 @@ function remove_attachment($pid, $posthash, $aid)
 
 	if(defined('IN_ADMINCP'))
 	{
-	    $uploadpath = '../'.$mybb->settings['uploadspath'];
+		$uploadpath = '../'.$mybb->settings['uploadspath'];
 	}
 	else
 	{
-	    $uploadpath = $mybb->settings['uploadspath'];
+		$uploadpath = $mybb->settings['uploadspath'];
 	}
 
 	// Check if this attachment is referenced in any other posts. If it isn't, then we are safe to delete the actual file.
@@ -95,11 +95,11 @@ function remove_attachments($pid, $posthash="")
 
 	if(defined('IN_ADMINCP'))
 	{
-	    $uploadpath = '../'.$mybb->settings['uploadspath'];
+		$uploadpath = '../'.$mybb->settings['uploadspath'];
 	}
 	else
 	{
-	    $uploadpath = $mybb->settings['uploadspath'];
+		$uploadpath = $mybb->settings['uploadspath'];
 	}
 
 	$num_attachments = 0;
@@ -204,12 +204,12 @@ function upload_avatar($avatar=array(), $uid=0)
 	}
 
 	// Check we have a valid extension
-    	$ext = get_extension(my_strtolower($avatar['name']));
-    	if(!preg_match("#^(gif|jpg|jpeg|jpe|bmp|png)$#i", $ext))
-    	{
-        	$ret['error'] = $lang->error_avatartype;
-        	return $ret;
-    	}
+	$ext = get_extension(my_strtolower($avatar['name']));
+	if(!preg_match("#^(gif|jpg|jpeg|jpe|bmp|png)$#i", $ext))
+	{
+		$ret['error'] = $lang->error_avatartype;
+		return $ret;
+	}
 
 	if(defined('IN_ADMINCP'))
 	{
@@ -305,7 +305,7 @@ function upload_avatar($avatar=array(), $uid=0)
 	switch($avatar['type'])
 	{
 		case "image/gif":
-			$img_type =  1;
+			$img_type = 1;
 			break;
 		case "image/jpeg":
 		case "image/x-jpg":
@@ -405,8 +405,8 @@ function upload_attachment($attachment, $update_attachment=false)
 		return $ret;
 	}
 
-    $attachtypes = (array)$cache->read('attachtypes');
-    $attachment = $plugins->run_hooks("upload_attachment_start", $attachment);
+	$attachtypes = (array)$cache->read('attachtypes');
+	$attachment = $plugins->run_hooks("upload_attachment_start", $attachment);
 
 	$allowed_mime_types = array();
 	foreach($attachtypes as $ext => $attachtype)
@@ -417,11 +417,11 @@ function upload_attachment($attachment, $update_attachment=false)
 		}
 	}
 
-    $ext = get_extension($attachment['name']);
-    // Check if we have a valid extension
-    if(!isset($attachtypes[$ext]))
-    {
-    	$ret['error'] = $lang->error_attachtype;
+	$ext = get_extension($attachment['name']);
+	// Check if we have a valid extension
+	if(!isset($attachtypes[$ext]))
+	{
+		$ret['error'] = $lang->error_attachtype;
 		return $ret;
 	}
 	else
@@ -430,7 +430,7 @@ function upload_attachment($attachment, $update_attachment=false)
 	}
 
 	// Check the size
-	if($attachment['size'] > $attachtype['maxsize']*1024 && $attachtype['maxsize'] != "")
+	if($attachment['size'] > $attachtype['maxsize'] * 1024 && $attachtype['maxsize'] != "")
 	{
 		$ret['error'] = $lang->sprintf($lang->error_attachsize, $attachtype['maxsize']);
 		return $ret;
@@ -696,7 +696,7 @@ function delete_uploaded_file($path = '')
 
 	$cdn_base_path = rtrim($mybb->settings['cdnpath'], '/');
 	$path = ltrim($path, '/');
-	$cdn_path = realpath($cdn_base_path . '/' . $path);
+	$cdn_path = realpath($cdn_base_path.'/'.$path);
 
 	if($mybb->settings['usecdn'] && !empty($cdn_base_path))
 	{
@@ -730,7 +730,7 @@ function delete_upload_directory($path = '')
 
 	$cdn_base_path = rtrim($mybb->settings['cdnpath'], '/');
 	$path = ltrim($path, '/');
-	$cdn_path = rtrim(realpath($cdn_base_path . '/' . $path), '/');
+	$cdn_path = rtrim(realpath($cdn_base_path.'/'.$path), '/');
 
 	if($mybb->settings['usecdn'] && !empty($cdn_base_path))
 	{

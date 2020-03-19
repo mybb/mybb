@@ -25,19 +25,22 @@ $plugins->run_hooks('printthread_start');
 
 $thread = get_thread($mybb->get_input('tid', MyBB::INPUT_INT));
 
-if (!$thread) {
-    error($lang->error_invalidthread);
+if(!$thread)
+{
+	error($lang->error_invalidthread);
 }
 
 $plugins->run_hooks('printthread_start');
 
 $thread['threadprefix'] = $thread['displaystyle'] = '';
-if ($thread['prefix']) {
-    $threadprefix = build_prefixes($thread['prefix']);
-    if (!empty($threadprefix)) {
-        $thread['threadprefix'] = $threadprefix['prefix'];
-        $thread['displaystyle'] = $threadprefix['displaystyle'];
-    }
+if($thread['prefix'])
+{
+	$threadprefix = build_prefixes($thread['prefix']);
+	if(!empty($threadprefix))
+	{
+		$thread['threadprefix'] = $threadprefix['prefix'];
+		$thread['displaystyle'] = $threadprefix['displaystyle'];
+	}
 }
 
 $thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
@@ -49,14 +52,16 @@ $tid = $thread['tid'];
 $ismod = is_moderator($fid);
 
 // Make sure we are looking at a real thread here.
-if (($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true)) {
-    error($lang->error_invalidthread);
+if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
+{
+	error($lang->error_invalidthread);
 }
 
 // Get forum info
 $forum = get_forum($fid);
-if (!$forum) {
-    error($lang->error_invalidforum);
+if(!$forum)
+{
+	error($lang->error_invalidforum);
 }
 
 $breadcrumb = makeprintablenav();
@@ -64,16 +69,19 @@ $breadcrumb = makeprintablenav();
 $parentsexp = explode(",", $forum['parentlist']);
 $numparents = count($parentsexp);
 $tdepth = "-";
-for ($i = 0; $i < $numparents; ++$i) {
-    $tdepth .= "-";
+for($i = 0; $i < $numparents; ++$i)
+{
+	$tdepth .= "-";
 }
 $forumpermissions = forum_permissions($forum['fid']);
 
-if ($forum['type'] != "f") {
-    error($lang->error_invalidforum);
+if($forum['type'] != "f")
+{
+	error($lang->error_invalidforum);
 }
-if ($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || (isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid'])) {
-    error_no_permission();
+if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || (isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']))
+{
+	error_no_permission();
 }
 
 // Check if this forum is password protected and we have a valid password
@@ -82,53 +90,62 @@ check_forum_password($forum['fid']);
 $page = $mybb->get_input('page', MyBB::INPUT_INT);
 
 // Paginate this thread
-if (!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1) {
-    $mybb->settings['postsperpage'] = 20;
+if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
+{
+	$mybb->settings['postsperpage'] = 20;
 }
 $perpage = $mybb->settings['postsperpage'];
-$postcount = (int)$thread['replies']+1;
-$pages = ceil($postcount/$perpage);
+$postcount = (int)$thread['replies'] + 1;
+$pages = ceil($postcount / $perpage);
 
-if ($page > $pages) {
-    $page = 1;
+if($page > $pages)
+{
+	$page = 1;
 }
-if ($page > 0) {
-    $start = ($page-1) * $perpage;
-} else {
-    $start = 0;
-    $page = 1;
+if($page > 0)
+{
+	$start = ($page - 1) * $perpage;
+}
+else
+{
+	$start = 0;
+	$page = 1;
 }
 
 $multipage = '';
-if ($postcount > $perpage) {
-    $pages = $postcount / $perpage;
-    $pages = ceil($pages);
+if($postcount > $perpage)
+{
+	$pages = $postcount / $perpage;
+	$pages = ceil($pages);
 
-    $multipage = \MyBB\template('printthread/multipage.twig', [
-        'pages' => $pages,
-        'currentPage' => $page,
-        'url' => "printthread.php?tid={$tid}"
-    ]);
+	$multipage = \MyBB\template('printthread/multipage.twig', [
+		'pages' => $pages,
+		'currentPage' => $page,
+		'url' => "printthread.php?tid={$tid}"
+	]);
 }
 
 $thread['threadlink'] = get_thread_link($tid);
 
 $postrows = '';
-if (is_moderator($forum['fid'], "canviewunapprove")) {
-    $visible = "AND (p.visible='0' OR p.visible='1')";
-} else {
-    $visible = "AND p.visible='1'";
+if(is_moderator($forum['fid'], "canviewunapprove"))
+{
+	$visible = "AND (p.visible='0' OR p.visible='1')";
+}
+else
+{
+	$visible = "AND p.visible='1'";
 }
 
 $parser_options = array(
-    "allow_html" => $forum['allowhtml'],
-    "allow_mycode" => $forum['allowmycode'],
-    "allow_smilies" => $forum['allowsmilies'],
-    "allow_imgcode" => $forum['allowimgcode'],
-    "allow_videocode" => $forum['allowvideocode'],
-    "me_username" => $postrow['username'],
-    "shorten_urls" => 0,
-    "filter_badwords" => 1
+	"allow_html" => $forum['allowhtml'],
+	"allow_mycode" => $forum['allowmycode'],
+	"allow_smilies" => $forum['allowsmilies'],
+	"allow_imgcode" => $forum['allowimgcode'],
+	"allow_videocode" => $forum['allowvideocode'],
+	"me_username" => $postrow['username'],
+	"shorten_urls" => 0,
+	"filter_badwords" => 1
 );
 
 $posts = [];
@@ -141,44 +158,49 @@ $query = $db->query("
     ORDER BY p.dateline
     LIMIT {$start}, {$perpage}
 ");
-while ($postrow = $db->fetch_array($query)) {
-    $parser_options['me_username'] = $postrow['username'];
+while($postrow = $db->fetch_array($query))
+{
+	$parser_options['me_username'] = $postrow['username'];
 
-    if ($postrow['smilieoff'] == 1) {
-        $parser_options['allow_smilies'] = 0;
-    }
+	if($postrow['smilieoff'] == 1)
+	{
+		$parser_options['allow_smilies'] = 0;
+	}
 
-    if ($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0) {
-        $parser_options['allow_imgcode'] = 0;
-    }
+	if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
+	{
+		$parser_options['allow_imgcode'] = 0;
+	}
 
-    if ($mybb->user['showvideos'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0) {
-        $parser_options['allow_videocode'] = 0;
-    }
+	if($mybb->user['showvideos'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
+	{
+		$parser_options['allow_videocode'] = 0;
+	}
 
-    if ($postrow['userusername']) {
-        $postrow['username'] = $postrow['userusername'];
-    }
-    $postrow['username'] = htmlspecialchars_uni($postrow['username']);
-    $postrow['subject'] = htmlspecialchars_uni($parser->parse_badwords($postrow['subject']));
-    $postrow['date'] = my_date($mybb->settings['dateformat'], $postrow['dateline'], null, 0);
-    $postrow['profilelink'] = build_profile_link($postrow['username'], $postrow['uid']);
+	if($postrow['userusername'])
+	{
+		$postrow['username'] = $postrow['userusername'];
+	}
+	$postrow['username'] = htmlspecialchars_uni($postrow['username']);
+	$postrow['subject'] = htmlspecialchars_uni($parser->parse_badwords($postrow['subject']));
+	$postrow['date'] = my_date($mybb->settings['dateformat'], $postrow['dateline'], null, 0);
+	$postrow['profilelink'] = build_profile_link($postrow['username'], $postrow['uid']);
 
-    $postrow['message'] = $parser->parse_message($postrow['message'], $parser_options);
+	$postrow['message'] = $parser->parse_message($postrow['message'], $parser_options);
 
-    $plugins->run_hooks('printthread_post');
+	$plugins->run_hooks('printthread_post');
 
-    $posts[] = $postrow;
+	$posts[] = $postrow;
 }
 
 $plugins->run_hooks('printthread_end');
 
 output_page(\MyBB\template('printthread/printthread.twig', [
-    'posts' => $posts,
-    'thread' => $thread,
-    'tdepth' => $tdepth,
-    'breadcrumb' => $breadcrumb,
-    'multipage' => $multipage
+	'posts' => $posts,
+	'thread' => $thread,
+	'tdepth' => $tdepth,
+	'breadcrumb' => $breadcrumb,
+	'multipage' => $multipage
 ]));
 
 /**
@@ -187,30 +209,35 @@ output_page(\MyBB\template('printthread/printthread.twig', [
  *
  * @return string
  */
-function makeprintablenav($pid=0, $depth="--")
+function makeprintablenav($pid = 0, $depth = "--")
 {
-    global $mybb, $db, $pforumcache, $fid, $forum, $lang, $templates;
-    if (!is_array($pforumcache)) {
-        $parlist = build_parent_list($fid, "fid", "OR", $forum['parentlist']);
-        $query = $db->simple_select("forums", "name, fid, pid", "$parlist", array('order_by' => 'pid, disporder'));
-        while ($forumnav = $db->fetch_array($query)) {
-            $pforumcache[$forumnav['pid']][$forumnav['fid']] = $forumnav;
-        }
-        unset($forumnav);
-    }
-    $forums = '';
-    if (is_array($pforumcache[$pid])) {
-        foreach ($pforumcache[$pid] as $key => $forumnav) {
-            $forumnav['link'] = get_forum_link($forumnav['fid']);
-            $forums .= \MyBB\template('printthread/nav.twig', [
-                'depth' => $depth,
-                'forum' => $forumnav
-            ]);
-            if (!empty($pforumcache[$forumnav['fid']])) {
-                $newdepth = $depth."-";
-                $forums .= makeprintablenav($forumnav['fid'], $newdepth);
-            }
-        }
-    }
-    return $forums;
+	global $mybb, $db, $pforumcache, $fid, $forum, $lang, $templates;
+	if(!is_array($pforumcache))
+	{
+		$parlist = build_parent_list($fid, "fid", "OR", $forum['parentlist']);
+		$query = $db->simple_select("forums", "name, fid, pid", "$parlist", array('order_by' => 'pid, disporder'));
+		while($forumnav = $db->fetch_array($query))
+		{
+			$pforumcache[$forumnav['pid']][$forumnav['fid']] = $forumnav;
+		}
+		unset($forumnav);
+	}
+	$forums = '';
+	if(is_array($pforumcache[$pid]))
+	{
+		foreach($pforumcache[$pid] as $key => $forumnav)
+		{
+			$forumnav['link'] = get_forum_link($forumnav['fid']);
+			$forums .= \MyBB\template('printthread/nav.twig', [
+				'depth' => $depth,
+				'forum' => $forumnav
+			]);
+			if(!empty($pforumcache[$forumnav['fid']]))
+			{
+				$newdepth = $depth."-";
+				$forums .= makeprintablenav($forumnav['fid'], $newdepth);
+			}
+		}
+	}
+	return $forums;
 }

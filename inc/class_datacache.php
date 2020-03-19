@@ -256,8 +256,8 @@ class datacache
 	 * @param string $name Cache name or title
 	 * @param boolean $greedy To delete a cache starting with name_
 	 */
-	 function delete($name, $greedy = false)
-	 {
+	function delete($name, $greedy = false)
+	{
 		global $db, $mybb, $cache;
 
 		// Prepare for database query.
@@ -401,7 +401,7 @@ class datacache
 	 * @param string $name The name of the cache
 	 * @return integer the size of the cache
 	 */
-	function size_of($name='')
+	function size_of($name = '')
 	{
 		global $db;
 
@@ -606,7 +606,7 @@ class datacache
 	 * @param array $permissions An optional permissions array.
 	 * @param int $pid An optional permission id.
 	 */
-	private function build_forum_permissions($permissions=array(), $pid=0)
+	private function build_forum_permissions($permissions = array(), $pid = 0)
 	{
 		$usergroups = array_keys($this->read("usergroups", true));
 		if($this->forum_permissions_forum_cache[$pid])
@@ -795,8 +795,8 @@ class datacache
 		$awaitingusers = (int)$db->fetch_field($query, 'awaitingusers');
 
 		$data = array(
-			'users'	=> $awaitingusers,
-			'time'	=> TIME_NOW
+			'users' => $awaitingusers,
+			'time' => TIME_NOW
 		);
 
 		$this->update('awaitingactivation', $data);
@@ -809,7 +809,7 @@ class datacache
 	 * @param array $moderators An optional moderators array (moderators of the parent forum for example).
 	 * @param int $pid An optional parent ID.
 	 */
-	private function build_moderators($moderators=array(), $pid=0)
+	private function build_moderators($moderators = array(), $pid = 0)
 	{
 		if(isset($this->moderators_forum_cache[$pid]))
 		{
@@ -938,7 +938,7 @@ class datacache
 	 * @param int $last_run
 	 * @param int $lock_time
 	 */
-	function update_mailqueue($last_run=0, $lock_time=0)
+	function update_mailqueue($last_run = 0, $lock_time = 0)
 	{
 		global $db;
 
@@ -1003,7 +1003,7 @@ class datacache
 
 		if(!$task_cache['nextrun'])
 		{
-			$task_cache['nextrun'] = TIME_NOW+3600;
+			$task_cache['nextrun'] = TIME_NOW + 3600;
 		}
 
 		$this->update("tasks", $task_cache);
@@ -1113,8 +1113,8 @@ class datacache
 		// Get today, yesterday, and tomorrow's time (for different timezones)
 		$bdaytime = TIME_NOW;
 		$bdaydate = my_date("j-n", $bdaytime, '', 0);
-		$bdaydatetomorrow = my_date("j-n", ($bdaytime+86400), '', 0);
-		$bdaydateyesterday = my_date("j-n", ($bdaytime-86400), '', 0);
+		$bdaydatetomorrow = my_date("j-n", ($bdaytime + 86400), '', 0);
+		$bdaydateyesterday = my_date("j-n", ($bdaytime - 86400), '', 0);
 
 		$query = $db->simple_select("users", "uid, username, usergroup, displaygroup, birthday, birthdayprivacy", "birthday LIKE '$bdaydate-%' OR birthday LIKE '$bdaydateyesterday-%' OR birthday LIKE '$bdaydatetomorrow-%'");
 		while($bday = $db->fetch_array($query))

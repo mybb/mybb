@@ -41,7 +41,7 @@ if(!is_array($groupscache))
 
 // Send no cache headers
 header("Expires: Sat, 1 Jan 2000 01:00:00 GMT");
-header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+header("Last-Modified: ".gmdate("D, d M Y H:i:s")." GMT");
 header("Cache-Control: no-cache, must-revalidate");
 header("Pragma: no-cache");
 
@@ -151,7 +151,7 @@ else
 
 	if($mybb->settings['usecdn'] && !empty($mybb->settings['cdnpath']))
 	{
-		$img_directory = rtrim($mybb->settings['cdnpath'], '/') . '/' . ltrim($theme['imgdir'], '/');
+		$img_directory = rtrim($mybb->settings['cdnpath'], '/').'/'.ltrim($theme['imgdir'], '/');
 	}
 
 	if(!@is_dir($img_directory))
@@ -346,7 +346,7 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 			xmlhttp_error($lang->no_permission_edit_subject);
 		}
 		// If we're past the edit time limit - don't allow editing.
-		else if($mybb->usergroup['edittimelimit'] != 0 && $post['dateline'] < (TIME_NOW-($mybb->usergroup['edittimelimit']*60)))
+		else if($mybb->usergroup['edittimelimit'] != 0 && $post['dateline'] < (TIME_NOW - ($mybb->usergroup['edittimelimit'] * 60)))
 		{
 			$lang->edit_time_limit = $lang->sprintf($lang->edit_time_limit, $mybb->usergroup['edittimelimit']);
 			xmlhttp_error($lang->edit_time_limit);
@@ -478,7 +478,7 @@ else if($mybb->input['action'] == "edit_post")
 			xmlhttp_error($lang->no_permission_edit_post);
 		}
 		// If we're past the edit time limit - don't allow editing.
-		else if($mybb->usergroup['edittimelimit'] != 0 && $post['dateline'] < (TIME_NOW-($mybb->usergroup['edittimelimit']*60)))
+		else if($mybb->usergroup['edittimelimit'] != 0 && $post['dateline'] < (TIME_NOW - ($mybb->usergroup['edittimelimit'] * 60)))
 		{
 			$lang->edit_time_limit = $lang->sprintf($lang->edit_time_limit, $mybb->usergroup['edittimelimit']);
 			xmlhttp_error($lang->edit_time_limit);
@@ -1052,8 +1052,8 @@ else if($mybb->input['action'] == "get_buddyselect")
 		$plugins->run_hooks("xmlhttp_get_buddyselect_end");
 
 		echo \MyBB\template('xmlhttp/buddyselect.twig', [
-            'buddies' => $buddies
-        ]);
+			'buddies' => $buddies
+		]);
 	}
 	else
 	{
