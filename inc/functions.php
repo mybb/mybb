@@ -1593,19 +1593,18 @@ function check_forum_password($fid, $pid=0, $return=false)
 				continue;
 			}
 
-			if($forum_cache[$parent_id]['password'] != "")
+			if($forum_cache[$parent_id]['password'] !== "")
 			{
 				check_forum_password($parent_id, $fid);
 			}
 		}
 	}
 
-	if(!empty($forum_cache[$fid]['password']))
+	if($forum_cache[$fid]['password'] !== '')
 	{
-		$password = $forum_cache[$fid]['password'];
 		if(isset($mybb->input['pwverify']) && $pid == 0)
 		{
-			if($password === $mybb->get_input('pwverify'))
+			if(my_hash_equals($forum_cache[$fid]['password'], $mybb->get_input('pwverify')))
 			{
 				my_setcookie("forumpass[$fid]", md5($mybb->user['uid'].$mybb->get_input('pwverify')), null, true);
 				$showform = false;
@@ -1618,7 +1617,7 @@ function check_forum_password($fid, $pid=0, $return=false)
 		}
 		else
 		{
-			if(!$mybb->cookies['forumpass'][$fid] || ($mybb->cookies['forumpass'][$fid] && md5($mybb->user['uid'].$password) !== $mybb->cookies['forumpass'][$fid]))
+			if(!forum_password_validated($forum_cache[$fid]))
 			{
 				$showform = true;
 			}
@@ -4309,7 +4308,7 @@ function get_unviewable_forums($only_readable_threads=false)
 		$permissioncache = forum_permissions();
 	}
 
-	$password_forums = $unviewable = array();
+	$unviewable = array();
 	foreach($forum_cache as $fid => $forum)
 	{
 		if($permissioncache[$forum['fid']])
@@ -4323,14 +4322,10 @@ function get_unviewable_forums($only_readable_threads=false)
 
 		$pwverified = 1;
 
-		if($forum['password'] != "")
-		{
-			if($mybb->cookies['forumpass'][$forum['fid']] !== md5($mybb->user['uid'].$forum['password']))
-			{
-				$pwverified = 0;
-			}
 
-			$password_forums[$forum['fid']] = $forum['password'];
+		if(!forum_password_validated($forum, true))
+		{
+			$pwverified = 0;
 		}
 		else
 		{
@@ -4338,9 +4333,10 @@ function get_unviewable_forums($only_readable_threads=false)
 			$parents = explode(",", $forum['parentlist']);
 			foreach($parents as $parent)
 			{
-				if(isset($password_forums[$parent]) && $mybb->cookies['forumpass'][$parent] !== md5($mybb->user['uid'].$password_forums[$parent]))
+				if(!forum_password_validated($forum_cache[$parent], true))
 				{
 					$pwverified = 0;
+					break;
 				}
 			}
 		}
