@@ -1512,6 +1512,50 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 }
 
 /**
+ * Check whether password for given forum was validated for the current user
+ *
+ * @param array $forum The forum data
+ * @param bool $ignore_empty Whether to true if configured forum password is an empty string
+ * @param bool $check_parents Whether to check parent forums using `parentlist`
+ * @return bool
+ */
+function forum_password_validated($forum, $ignore_empty=false, $check_parents=false)
+{
+	global $mybb, $forum_cache;
+
+	if($check_parents && isset($forum['parentlist']))
+	{
+		if(!is_array($forum_cache))
+		{
+			$forum_cache = cache_forums();
+			if(!$forum_cache)
+			{
+				return false;
+			}
+		}
+
+		$parents = explode(',', $forum['parentlist']);
+		rsort($parents);
+
+		foreach($parents as $parent_id)
+		{
+			if($parent_id != $forum['fid'] && !forum_password_validated($forum_cache[$parent_id], true))
+			{
+				return false;
+			}
+		}
+	}
+
+	return ($ignore_empty && $forum['password'] === '') || (
+		isset($mybb->cookies['forumpass'][$forum['fid']]) &&
+		my_hash_equals(
+			md5($mybb->user['uid'].$forum['password']),
+			$mybb->cookies['forumpass'][$forum['fid']]
+		)
+	);
+}
+
+/**
  * Check the password given on a certain forum for validity
  *
  * @param int $fid The forum ID
