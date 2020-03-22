@@ -6861,6 +6861,7 @@ function fetch_remote_file($url, $post_data = array(), $max_redirects = 20)
 					'ssl' => array(
 						'verify_peer' => false,
 						'verify_peer_name' => false,
+						'peer_name' => $url_components['host'],
 					),
 				));
 			}
