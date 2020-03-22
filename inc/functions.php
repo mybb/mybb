@@ -1515,7 +1515,7 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
  * Check whether password for given forum was validated for the current user
  *
  * @param array $forum The forum data
- * @param bool $ignore_empty Whether to true if configured forum password is an empty string
+ * @param bool $ignore_empty Whether to treat forum password configured as an empty string as validated
  * @param bool $check_parents Whether to check parent forums using `parentlist`
  * @return bool
  */
