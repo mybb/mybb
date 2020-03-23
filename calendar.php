@@ -937,7 +937,7 @@ if($mybb->input['action'] == "editevent")
 	{
 		$event_errors = '';
 		$mybb->input['calendar'] = $event['cid'];
-		$name = htmlspecialchars_uni($event['name']);
+		$name = $event['name'];
 		$description = htmlspecialchars_uni($event['description']);
 		if($event['private'] == 1)
 		{
