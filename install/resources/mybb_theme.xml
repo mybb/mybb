@@ -7963,7 +7963,7 @@ if(use_xmlhttprequest == "1")
 		<template name="moderation_delayedmodaction_notes_redirect" version="1808"><![CDATA[<strong>{$lang->leave_redirect_for}</strong> {$redirect_expire_bit}<br />]]></template>
 		<template name="moderation_delayedmodaction_notes_thread_multiple" version="1808"><![CDATA[<strong>{$lang->thread}</strong> {$lang->multiple_threads}<br />]]></template>
 		<template name="moderation_delayedmodaction_notes_thread_single" version="1808"><![CDATA[<strong>{$lang->thread}</strong> <a href="{$delayed_thread['link']}">{$delayed_thread['subject']}</a><br />]]></template>
-		<template name="moderation_delayedmoderation" version="1813"><![CDATA[<html>
+		<template name="moderation_delayedmoderation" version="1823"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->delayed_moderation}</title>
 {$headerinclude}
@@ -7978,7 +7978,7 @@ if(use_xmlhttprequest == "1")
 </tr>
 <tr>
 <td class="tcat" align="center"><strong>{$lang->mod_username}</strong></td>
-<td class="tcat" align="center"><strong>{$lang->days_to_perform_action}</strong></td>
+<td class="tcat" align="center"><strong>{$lang->time_to_perform_action}</strong></td>
 <td class="tcat" align="center"><strong>{$lang->mod_actions}</strong></td>
 <td class="tcat" align="center"><strong>{$lang->mod_information}</strong></td>
 <td class="tcat" align="center"><strong>{$lang->actions}</strong></td>
@@ -8653,7 +8653,7 @@ if(use_xmlhttprequest == "1")
 <td class="{$altbg}" valign="top" align="center" width="1%"><input type="checkbox" class="checkbox" name="splitpost[{$post['pid']}]" value="1" /></td>
 <td class="{$altbg}">{$message}</td>
 </tr>]]></template>
-		<template name="moderation_threadnotes" version="1600"><![CDATA[<html>
+		<template name="moderation_threadnotes" version="1823"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->thread_notes_editor}</title>
 {$headerinclude}
@@ -8698,7 +8698,7 @@ if(use_xmlhttprequest == "1")
 </tr>
 <tr>
 <td class="tcat" align="center"><strong>{$lang->mod_username}</strong></td>
-<td class="tcat" align="center"><strong>{$lang->days_to_perform_action}</strong></td>
+<td class="tcat" align="center"><strong>{$lang->time_to_perform_action}</strong></td>
 <td class="tcat" align="center"><strong>{$lang->mod_actions}</strong></td>
 <td class="tcat" align="center"><strong>{$lang->mod_information}</strong></td>
 </tr>
