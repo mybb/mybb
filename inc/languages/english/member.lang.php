@@ -18,6 +18,7 @@ $l['nav_profile'] = "Profile of {1}";
 $l['referrals'] = 'Referrals';
 $l['referral_date'] = 'Referral Date:';
 $l['referrals_no_user_specified'] = 'No user specified.';
+$l['referrals_invalid_user'] = 'Invalid user specified.';
 $l['member_no_referrals'] = 'No referrals for this user.';
 
 $l['tpp_option'] = "Show {1} threads per page";

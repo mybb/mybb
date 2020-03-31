@@ -3132,6 +3132,10 @@ if($mybb->input['action'] == 'referrals')
 	}
 
 	$user = get_user($uid);
+	if(!$user['$uid'])
+	{
+		error($lang->referrals_invalid_user);
+	}
 
 	$lang->nav_referrals = $lang->sprintf($lang->nav_referrals, $user['username']);
 	add_breadcrumb($lang->nav_referrals);
