@@ -142,7 +142,7 @@ if($mybb->input['action'] == "copy")
 		if(!$errors)
 		{
 			// Copy permissions
-			if(is_array($mybb->input['copygroups']) && count($mybb->input['copygroups'] > 0))
+			if(is_array($mybb->input['copygroups']) && count($mybb->input['copygroups']) > 0)
 			{
 				foreach($mybb->input['copygroups'] as $gid)
 				{
