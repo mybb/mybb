@@ -5546,7 +5546,7 @@ if(use_xmlhttprequest == "1")
 </table>
 </fieldset>]]></template>
 		<template name="member_register_stylebit" version="120"><![CDATA[<option value="{$style['sid']}">{$style['name']}</option>]]></template>
-		<template name="member_resendactivation" version="1820"><![CDATA[<html>
+		<template name="member_resendactivation" version="1823"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->resend_activation}</title>
 {$headerinclude}
@@ -5566,7 +5566,7 @@ if(use_xmlhttprequest == "1")
 {$captcha}
 </table>
 <br />
-<div align="center"><input type="submit" class="button" value="{$lang->request_activation}" /></div>
+<div align="center"><input type="submit" class="button" name="submit" value="{$lang->request_activation}" /></div>
 <input type="hidden" name="action" value="do_resendactivation" />
 </form>
 {$footer}
