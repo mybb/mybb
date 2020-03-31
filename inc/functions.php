@@ -5028,6 +5028,11 @@ function leave_usergroup($uid, $leavegroup)
 
 	$user = get_user($uid);
 
+	if($user['usergroup'] == $leavegroup)
+	{
+		return false;
+	}
+
 	$groupslist = $comma = '';
 	$usergroups = $user['additionalgroups'].",";
 	$donegroup = array();
