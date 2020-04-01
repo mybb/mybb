@@ -2212,6 +2212,8 @@ class Moderation
 	 * @param array $tids Thread IDs
 	 * @param int $moveto Destination forum
 	 * @return boolean
+	 *
+	 * @deprecated Iterate over move_thread instead
 	 */
 	function move_threads($tids, $moveto)
 	{

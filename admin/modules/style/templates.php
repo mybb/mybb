@@ -264,7 +264,7 @@ if($mybb->input['action'] == "add_template")
 <link href="./jscripts/codemirror/addon/dialog/dialog-mybb.css?ver=1813" rel="stylesheet">
 <script src="./jscripts/codemirror/addon/dialog/dialog.js?ver=1813"></script>
 <script src="./jscripts/codemirror/addon/search/searchcursor.js?ver=1813"></script>
-<script src="./jscripts/codemirror/addon/search/search.js?ver=1813"></script>
+<script src="./jscripts/codemirror/addon/search/search.js?ver=1821"></script>
 <script src="./jscripts/codemirror/addon/fold/foldcode.js?ver=1813"></script>
 <script src="./jscripts/codemirror/addon/fold/xml-fold.js?ver=1813"></script>
 <script src="./jscripts/codemirror/addon/fold/foldgutter.js?ver=1813"></script>
@@ -641,7 +641,7 @@ if($mybb->input['action'] == "edit_template")
 <link href="./jscripts/codemirror/addon/dialog/dialog-mybb.css?ver=1813" rel="stylesheet">
 <script src="./jscripts/codemirror/addon/dialog/dialog.js?ver=1813"></script>
 <script src="./jscripts/codemirror/addon/search/searchcursor.js?ver=1813"></script>
-<script src="./jscripts/codemirror/addon/search/search.js?ver=1813"></script>
+<script src="./jscripts/codemirror/addon/search/search.js?ver=1821"></script>
 <script src="./jscripts/codemirror/addon/fold/foldcode.js?ver=1813"></script>
 <script src="./jscripts/codemirror/addon/fold/xml-fold.js?ver=1813"></script>
 <script src="./jscripts/codemirror/addon/fold/foldgutter.js?ver=1813"></script>
@@ -1189,7 +1189,7 @@ if($mybb->input['action'] == "search_replace")
 <link href="./jscripts/codemirror/addon/dialog/dialog-mybb.css?ver=1813" rel="stylesheet">
 <script src="./jscripts/codemirror/addon/dialog/dialog.js?ver=1813"></script>
 <script src="./jscripts/codemirror/addon/search/searchcursor.js?ver=1813"></script>
-<script src="./jscripts/codemirror/addon/search/search.js?ver=1813"></script>
+<script src="./jscripts/codemirror/addon/search/search.js?ver=1821"></script>
 <script src="./jscripts/codemirror/addon/fold/foldcode.js?ver=1813"></script>
 <script src="./jscripts/codemirror/addon/fold/xml-fold.js?ver=1813"></script>
 <script src="./jscripts/codemirror/addon/fold/foldgutter.js?ver=1813"></script>
@@ -1900,7 +1900,7 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 						$template['pretty_title'] = "<span style=\"color: blue;\">{$template['title']}</span>";
 					}
 
-					$table->construct_cell("<span style=\"padding: 20px;\"><a href=\"index.php?module=style-templates&amp;action=edit_template&amp;title=".urlencode($template['title'])."&amp;sid={$sid}{$expand_str}\" >{$template['pretty_title']}</a></span>");
+					$table->construct_cell("<span style=\"padding-left: 20px;\"><a href=\"index.php?module=style-templates&amp;action=edit_template&amp;title=".urlencode($template['title'])."&amp;sid={$sid}{$expand_str}\" >{$template['pretty_title']}</a></span>");
 					$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 
 					$table->construct_row();

@@ -2282,7 +2282,6 @@ function install_done()
 		'lastvisit' => $now,
 		'website' => '',
 		'icq' => '',
-		'yahoo' => '',
 		'skype' =>'',
 		'google' =>'',
 		'birthday' => '',
@@ -2401,7 +2400,6 @@ function install_done()
 	$cache->update_posticons();
 	$cache->update_spiders();
 	$cache->update_bannedips();
-	$cache->update_banned();
 	$cache->update_bannedemails();
 	$cache->update_birthdays();
 	$cache->update_groupleaders();
@@ -2514,7 +2512,8 @@ function write_settings()
 	$query = $db->simple_select('settings', '*', '', array('order_by' => 'title'));
 	while($setting = $db->fetch_array($query))
 	{
-		$setting['value'] = str_replace("\"", "\\\"", $setting['value']);
+		$setting['name'] = addcslashes($setting['name'], "\\'");
+		$setting['value'] = addcslashes($setting['value'], '\\"$');
 		$settings .= "\$settings['{$setting['name']}'] = \"{$setting['value']}\";\n";
 	}
 	if(!empty($settings))

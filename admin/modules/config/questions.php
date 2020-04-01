@@ -36,22 +36,25 @@ if($mybb->input['action'] == "add")
 
 		if(!$errors)
 		{
-			$answer = preg_replace("#(\r\n|\r|\n)#s", "\n", trim($mybb->input['answer']));
+			if(!isset($mybb->input['preview']))
+			{
+				$answer = preg_replace("#(\r\n|\r|\n)#s", "\n", trim($mybb->input['answer']));
 
-			$new_question = array(
-				"question" => $db->escape_string($mybb->input['question']),
-				"answer" => $db->escape_string($answer),
-				"active" => $mybb->get_input('active', MyBB::INPUT_INT)
-			);
-			$qid = $db->insert_query("questions", $new_question);
+				$new_question = array(
+					"question" => $db->escape_string($mybb->input['question']),
+					"answer" => $db->escape_string($answer),
+					"active" => $mybb->get_input('active', MyBB::INPUT_INT)
+				);
+				$qid = $db->insert_query("questions", $new_question);
 
-			$plugins->run_hooks("admin_config_questions_add_commit");
+				$plugins->run_hooks("admin_config_questions_add_commit");
 
-			// Log admin action
-			log_admin_action($qid, $mybb->input['question']);
+				// Log admin action
+				log_admin_action($qid, $mybb->input['question']);
 
-			flash_message($lang->success_question_created, 'success');
-			admin_redirect("index.php?module=config-questions");
+				flash_message($lang->success_question_created, 'success');
+				admin_redirect("index.php?module=config-questions");
+			}
 		}
 	}
 
@@ -70,6 +73,30 @@ if($mybb->input['action'] == "add")
 	);
 
 	$page->output_nav_tabs($sub_tabs, 'add_new_question');
+	
+	if(isset($mybb->input['preview']) && !$errors)
+	{
+		$table = new Table();
+
+		require_once MYBB_ROOT."inc/class_parser.php";
+		$parser = new postParser;
+
+		$parser_options = array(
+			"allow_html" => 0,
+			"allow_mycode" => 1,
+			"allow_smilies" => 1,
+			"allow_imgcode" => 1,
+			"allow_videocode" => 1,
+			"filter_badwords" => 1,
+			"me_username" => 0,
+			"shorten_urls" => 0,
+			"highlight" => 0,
+		);	
+
+		$table->construct_cell($parser->parse_message($mybb->input['question'], $parser_options));
+		$table->construct_row();
+		$table->output($lang->preview_question);
+	}
 
 	$form = new Form("index.php?module=config-questions&amp;action=add", "post", "add");
 
@@ -89,6 +116,7 @@ if($mybb->input['action'] == "add")
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_question);
+	$buttons[] = $form->generate_submit_button($lang->preview_question, array('name' => 'preview'));
 
 	$form->output_submit_wrapper($buttons);
 	$form->end();
@@ -123,29 +151,32 @@ if($mybb->input['action'] == "edit")
 
 		if(!$errors)
 		{
-			$answer = preg_replace("#(\r\n|\r|\n)#s", "\n", trim($mybb->input['answer']));
+			if(!isset($mybb->input['preview']))
+			{
+				$answer = preg_replace("#(\r\n|\r|\n)#s", "\n", trim($mybb->input['answer']));
 
-			$updated_question = array(
-				"question" => $db->escape_string($mybb->input['question']),
-				"answer" => $db->escape_string($answer),
-				"active" => $mybb->get_input('active', MyBB::INPUT_INT)
-			);
+				$updated_question = array(
+					"question" => $db->escape_string($mybb->input['question']),
+					"answer" => $db->escape_string($answer),
+					"active" => $mybb->get_input('active', MyBB::INPUT_INT)
+				);
 
-			$plugins->run_hooks("admin_config_questions_edit_commit");
+				$plugins->run_hooks("admin_config_questions_edit_commit");
 
-			$db->update_query("questions", $updated_question, "qid='{$question['qid']}'");
+				$db->update_query("questions", $updated_question, "qid='{$question['qid']}'");
 
-			// Log admin action
-			log_admin_action($question['qid'], $mybb->input['question']);
+				// Log admin action
+				log_admin_action($question['qid'], $mybb->input['question']);
 
-			flash_message($lang->success_question_updated, 'success');
-			admin_redirect("index.php?module=config-questions");
+				flash_message($lang->success_question_updated, 'success');
+				admin_redirect("index.php?module=config-questions");
+			}
 		}
 	}
 
 	$page->add_breadcrumb_item($lang->edit_question);
 	$page->output_header($lang->security_questions." - ".$lang->edit_question);
-
+	
 	$sub_tabs['edit_question'] = array(
 		'title' => $lang->edit_question,
 		'link' => "index.php?module=config-questions&amp;action=edit&amp;qid={$question['qid']}",
@@ -153,18 +184,51 @@ if($mybb->input['action'] == "edit")
 	);
 
 	$page->output_nav_tabs($sub_tabs, 'edit_question');
-
+	
 	$form = new Form("index.php?module=config-questions&amp;action=edit&amp;qid={$question['qid']}", "post", "add");
 
+	$show_preview = false;
+	if(isset($mybb->input['preview_list']))
+	{
+		$show_preview = true;
+	}
+	
 	if($errors)
 	{
 		$page->output_inline_error($errors);
 	}
 	else
 	{
-		$mybb->input = $question;
+		if(!isset($mybb->input['preview']))
+		{
+			$mybb->input = $question;
+		}
 	}
+	
+	if((isset($mybb->input['preview']) || $show_preview === true) && !$errors)
+	{
+		$table = new Table();
 
+		require_once MYBB_ROOT."inc/class_parser.php";
+		$parser = new postParser;
+
+		$parser_options = array(
+			"allow_html" => 0,
+			"allow_mycode" => 1,
+			"allow_smilies" => 1,
+			"allow_imgcode" => 1,
+			"allow_videocode" => 1,
+			"filter_badwords" => 1,
+			"me_username" => 0,
+			"shorten_urls" => 0,
+			"highlight" => 0,
+		);	
+
+		$table->construct_cell($parser->parse_message($mybb->input['question'], $parser_options));
+		$table->construct_row();
+		$table->output($lang->preview_question);
+	}
+	
 	$form_container = new FormContainer($lang->edit_question);
 	$form_container->output_row($lang->question." <em>*</em>", $lang->question_desc, $form->generate_text_area('question', $mybb->input['question'], array('id' => 'question')), 'question');
 	$form_container->output_row($lang->answers." <em>*</em>", $lang->answers_desc, $form->generate_text_area('answer', $mybb->input['answer'], array('id' => 'answer')), 'answer');
@@ -172,12 +236,14 @@ if($mybb->input['action'] == "edit")
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_question);
+	$buttons[] = $form->generate_submit_button($lang->preview_question, array('name' => 'preview'));
 
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 
 	$page->output_footer();
 }
+
 
 if($mybb->input['action'] == "delete")
 {
@@ -324,6 +390,7 @@ if(!$mybb->input['action'])
 		$table->construct_cell($questions['incorrect'], array("class" => "align_center"));
 		$popup = new PopupMenu("questions_{$questions['qid']}", $lang->options);
 		$popup->add_item($lang->edit_question, "index.php?module=config-questions&amp;action=edit&amp;qid={$questions['qid']}");
+		$popup->add_item($lang->preview_question, "index.php?module=config-questions&amp;action=edit&amp;qid={$questions['qid']}&amp;preview_list");
 		if($questions['active'] == 1)
 		{
 			$popup->add_item($lang->disable_question, "index.php?module=config-questions&amp;action=disable&amp;qid={$questions['qid']}&amp;my_post_key={$mybb->post_code}");

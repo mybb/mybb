@@ -58,6 +58,16 @@ usercp_menu();
 
 $server_http_referer = htmlentities($_SERVER['HTTP_REFERER']);
 
+if(my_strpos($server_http_referer, $mybb->settings['bburl'].'/') !== 0)
+{
+	if(my_strpos($server_http_referer, '/') === 0)
+	{
+		$server_http_referer = my_substr($server_http_referer, 1);
+	}
+	$url_segments = explode('/', $server_http_referer);
+	$server_http_referer = $mybb->settings['bburl'].'/'.end($url_segments);
+}
+
 $plugins->run_hooks("usercp_start");
 if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
 {
@@ -217,7 +227,7 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 		"away" => $away,
 		"profile_fields" => $mybb->get_input('profile_fields', MyBB::INPUT_ARRAY)
 	);
-	foreach(array('icq', 'yahoo', 'skype', 'google') as $cfield)
+	foreach(array('icq', 'skype', 'google') as $cfield)
 	{
 		$csetting = 'allow'.$cfield.'field';
 		if($mybb->settings[$csetting] == '')
@@ -366,14 +376,13 @@ if($mybb->input['action'] == "profile")
 	{
 		$user['skype'] = htmlspecialchars_uni($user['skype']);
 		$user['google'] = htmlspecialchars_uni($user['google']);
-		$user['yahoo'] = htmlspecialchars_uni($user['yahoo']);
 	}
 
 	$contact_fields = array();
 	$contactfields = '';
 	$cfieldsshow = false;
 
-	foreach(array('icq', 'yahoo', 'skype', 'google') as $cfield)
+	foreach(array('icq', 'skype', 'google') as $cfield)
 	{
 		$contact_fields[$cfield] = '';
 		$csetting = 'allow'.$cfield.'field';
@@ -1368,6 +1377,8 @@ if($mybb->input['action'] == "do_changename" && $mybb->request_method == "post")
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
 
+	$errors = array();
+
 	$plugins->run_hooks("usercp_do_changename_start");
 	if($mybb->usergroup['canchangename'] != 1)
 	{
@@ -1416,6 +1427,16 @@ if($mybb->input['action'] == "changename")
 	if($mybb->usergroup['canchangename'] != 1)
 	{
 		error_no_permission();
+	}
+
+	// Coming back to this page after one or more errors were experienced, show field the user previously entered (with the exception of the password)
+	if($errors)
+	{
+		$username = htmlspecialchars_uni($mybb->get_input('username'));
+	}
+	else
+	{
+		$username = '';
 	}
 
 	$plugins->run_hooks("usercp_changename_end");
@@ -1944,7 +1965,19 @@ if($mybb->input['action'] == "do_addsubscription" && $mybb->get_input('type') !=
 
 	if($mybb->get_input('referrer'))
 	{
-		$url = htmlspecialchars_uni($mybb->get_input('referrer'));
+		$mybb->input['referrer'] = $mybb->get_input('referrer');
+
+		if(my_strpos($mybb->input['referrer'], $mybb->settings['bburl'].'/') !== 0)
+		{
+			if(my_strpos($mybb->input['referrer'], '/') === 0)
+			{
+				$mybb->input['referrer'] = my_substr($mybb->input['url'], 1);
+			}
+			$url_segments = explode('/', $mybb->input['referrer']);
+			$mybb->input['referrer'] = $mybb->settings['bburl'].'/'.end($url_segments);
+		}
+
+		$url = htmlspecialchars_uni($mybb->input['referrer']);
 	}
 	else
 	{
@@ -3069,6 +3102,8 @@ if($mybb->input['action'] == "do_editlists")
 			if($new_list == "")
 			{
 				echo "\$(\"#".$mybb->get_input('manage')."_count\").html(\"0\");\n";
+				echo "\$(\"#buddylink\").remove();\n";
+				
 				if($mybb->get_input('manage') == "ignored")
 				{
 					echo "\$(\"#ignore_list\").html(\"<li>{$lang->ignore_list_empty}</li>\");\n";

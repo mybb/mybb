@@ -206,7 +206,7 @@ if(in_array($current_page, $valid))
 	// If we're accessing poll results, fetch the forum theme for it and if we're overriding it
 	else if(isset($mybb->input['pid']) && THIS_SCRIPT == "polls.php")
 	{
-		$query = $db->simple_select('threads', 'fid', "poll = '{$mybb->input['pid']}'", array('limit' => 1));
+		$query = $db->query("SELECT t.fid FROM ".TABLE_PREFIX."polls p INNER JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid) WHERE p.pid = '{$mybb->input['pid']}' LIMIT 1");
 		$fid = $db->fetch_field($query, 'fid');
 
 		if($fid)
@@ -350,7 +350,7 @@ foreach($stylesheet_scripts as $stylesheet_script)
 					$id = (int) my_substr($query_string, 11);
 					$query = $db->simple_select("themestylesheets", "name", "sid={$id}");
 					$real_name = $db->fetch_field($query, "name");
-					$theme_stylesheets[$real_name] = "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$stylesheet_url}\" />\n";
+					$theme_stylesheets[$real_name] = $id;
 				}
 				else
 				{
@@ -364,15 +364,33 @@ foreach($stylesheet_scripts as $stylesheet_script)
 }
 unset($actions);
 
+$css_php_script_stylesheets = array();
+
 if(!empty($theme_stylesheets) && is_array($theme['disporder']))
 {
 	foreach($theme['disporder'] as $style_name => $order)
 	{
 		if(!empty($theme_stylesheets[$style_name]))
 		{
-			$stylesheets .= $theme_stylesheets[$style_name];
+			if(is_int($theme_stylesheets[$style_name]))
+			{
+				$css_php_script_stylesheets[] = $theme_stylesheets[$style_name];
+			}
+			else
+			{
+				$stylesheets .= $theme_stylesheets[$style_name];
+			}
 		}
 	}
+}
+
+if(!empty($css_php_script_stylesheets))
+{
+	$sheet = $mybb->settings['bburl'] . '/css.php?' . http_build_query(array(
+		'stylesheet' => $css_php_script_stylesheets
+		));
+
+	$stylesheets .= "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$sheet}\" />\n";
 }
 
 // Are we linking to a remote theme server?
@@ -454,10 +472,10 @@ $templatelist .= "headerinclude,header,footer,gobutton,htmldoctype,header_welcom
 $templatelist .= ",global_pending_joinrequests,global_awaiting_activation,nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active,footer_languageselect,footer_themeselect,global_unreadreports,footer_contactus";
 $templatelist .= ",global_boardclosed_warning,global_bannedwarning,error_inline,error_inline_item,error_nopermission_loggedin,error_nopermission,global_pm_alert,header_menu_search,header_menu_portal,redirect,footer_languageselect_option";
 $templatelist .= ",video_dailymotion_embed,video_facebook_embed,video_liveleak_embed,video_metacafe_embed,video_myspacetv_embed,video_mixer_embed,video_vimeo_embed,video_yahoo_embed,video_youtube_embed,debug_summary";
-$templatelist .= ",smilieinsert_row,smilieinsert_row_empty,smilieinsert,smilieinsert_getmore,smilieinsert_smilie,global_board_offline_modal,footer_themeselector,task_image,usercp_themeselector_option,php_warnings";
-$templatelist .= ",mycode_code,mycode_email,mycode_img,mycode_php,mycode_quote_post,mycode_size_int,mycode_url,global_no_permission_modal,global_boardclosed_reason,nav_dropdown,global_remote_avatar_notice";
-$templatelist .= ",header_welcomeblock_member_pms,header_welcomeblock_member_search,header_welcomeblock_guest,header_welcomeblock_guest_login_modal,header_welcomeblock_guest_login_modal_lockout";
-$templatelist .= ",header_menu_calendar,header_menu_memberlist,global_dst_detection,header_quicksearch,smilie";
+$templatelist .= ",smilieinsert_row,smilieinsert_row_empty,smilieinsert,smilieinsert_getmore,smilieinsert_smilie,global_board_offline_modal,footer_showteamlink,footer_themeselector,task_image,usercp_themeselector_option,php_warnings";
+$templatelist .= ",mycode_code,mycode_email,mycode_img,mycode_php,mycode_quote_post,mycode_size_int,mycode_url,global_no_permission_modal,global_boardclosed_reason,nav_dropdown,global_remote_avatar_notice,global_modqueue,global_modqueue_notice";
+$templatelist .= ",header_welcomeblock_member_buddy,header_welcomeblock_member_pms,header_welcomeblock_member_search,header_welcomeblock_guest,header_welcomeblock_guest_login_modal,header_welcomeblock_guest_login_modal_lockout";
+$templatelist .= ",header_menu_calendar,header_menu_memberlist,global_dst_detection,header_quicksearch,smilie,modal,modal_button";
 $templates->cache($db->escape_string($templatelist));
 
 // Set the current date and time now
@@ -511,14 +529,19 @@ if($mybb->user['uid'] != 0)
 	// Format the welcome back message
 	$lang->welcome_back = $lang->sprintf($lang->welcome_back, build_profile_link(htmlspecialchars_uni($mybb->user['username']), $mybb->user['uid']), $lastvisit);
 
-	$searchlink = '';
+	$buddylink = $searchlink = $pmslink = '';
+
+	if(!empty($mybb->user['buddylist']))
+	{
+		eval('$buddylink = "' . $templates->get('header_welcomeblock_member_buddy') . '";');
+	}
+    
 	if($mybb->usergroup['cansearch'] == 1)
 	{
 		eval('$searchlink = "'.$templates->get('header_welcomeblock_member_search').'";');
 	}
 
 	// Tell the user their PM usage
-	$pmslink = '';
 	if($mybb->settings['enablepms'] != 0 && $mybb->usergroup['canusepms'] == 1)
 	{
 		$lang->welcome_pms_usage = $lang->sprintf($lang->welcome_pms_usage, my_number_format($mybb->user['pms_unread']), my_number_format($mybb->user['pms_total']));
@@ -607,7 +630,7 @@ if($mybb->user['uid'] != 0 && is_array($groupleaders) && array_key_exists($mybb-
 
 		$user['gid'] = (int)$user['gid'];
 
-		if(!empty($groupscache[$user['gid']]['joinable']) && $groupscache[$user['gid']]['joinable'] == 1)
+		if(!empty($groupscache[$user['gid']]['type']) && $groupscache[$user['gid']]['type'] == 4)
 		{
 			$showjoinnotice = true;
 			$gids .= ",'{$user['gid']}'";
@@ -636,7 +659,9 @@ if($mybb->user['uid'] != 0 && is_array($groupleaders) && array_key_exists($mybb-
 	}
 }
 
-$unreadreports = '';
+$modnotice = '';
+$moderation_queue = array();
+
 // This user is a moderator, super moderator or administrator
 if($mybb->settings['reportmethod'] == "db" && ($mybb->usergroup['cancp'] == 1 || ($mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanagereportedcontent'] == 1)))
 {
@@ -713,11 +738,64 @@ if($mybb->settings['reportmethod'] == "db" && ($mybb->usergroup['cancp'] == 1 ||
 				{
 					$lang->unread_reports = $lang->sprintf($lang->unread_reports, my_number_format($unread));
 				}
-
-				eval('$unreadreports = "'.$templates->get('global_unreadreports').'";');
+				
+				eval('$moderation_queue[] = "'.$templates->get('global_unreadreports', 1, 0).'";');
 			}
 		}
 	}
+}
+
+// Get awaiting moderation queue stats
+if($can_access_moderationqueue || ($mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanagemodqueue'] == 1))
+{
+	$unapproved_posts = $unapproved_threads = 0;
+	$query = $db->simple_select("posts", "replyto", "visible = 0");
+	while($unapproved = $db->fetch_array($query))
+	{
+		if($unapproved["replyto"] == 0){
+			$unapproved_threads++;
+		} else {
+			$unapproved_posts++;
+		}
+	}
+
+	$query = $db->simple_select("attachments", "COUNT(aid) AS unapprovedattachments", "visible=0");
+	$unapproved_attachments = $db->fetch_field($query, "unapprovedattachments");
+
+	$modqueue_types = array('threads', 'posts', 'attachments');
+
+	foreach($modqueue_types as $modqueue_type)
+	{
+		if(!empty(${'unapproved_'.$modqueue_type}))
+		{
+			if(${'unapproved_'.$modqueue_type} == 1)
+			{
+				$modqueue_message = $lang->{'unapproved_'.substr($modqueue_type, 0, -1)};
+			}
+			else
+			{
+				$modqueue_message = $lang->sprintf($lang->{'unapproved_'.$modqueue_type}, my_number_format(${'unapproved_'.$modqueue_type}));
+			}
+
+			eval('$moderation_queue[] = "'.$templates->get('global_modqueue', 1, 0).'";');
+		}
+	}
+}
+
+if(!empty($moderation_queue))
+{
+	$moderation_queue_last = array_pop($moderation_queue);
+	if(empty($moderation_queue))
+	{
+		$moderation_queue = $moderation_queue_last;
+	}
+	else
+	{
+		$moderation_queue = implode($lang->comma, $moderation_queue).' '.$lang->and.' '.$moderation_queue_last;
+	}
+	$moderation_queue = $lang->sprintf($lang->mod_notice, $moderation_queue);
+
+	eval('$modnotice = "'.$templates->get('global_modqueue_notice').'";');
 }
 
 // Got a character set?
@@ -731,30 +809,30 @@ if(isset($lang->settings['charset']) && $lang->settings['charset'])
 $bannedwarning = '';
 if($mybb->usergroup['isbannedgroup'] == 1)
 {
-	// Fetch details on their ban
-	$query = $db->simple_select('banned', '*', "uid = '{$mybb->user['uid']}'", array('limit' => 1));
-	$ban = $db->fetch_array($query);
-
-	if($ban['uid'])
+	// Format their ban lift date and reason appropriately
+	if(!empty($mybb->user['banned']))
 	{
-		// Format their ban lift date and reason appropriately
-		$banlift = $lang->banned_lifted_never;
-		$reason = htmlspecialchars_uni($ban['reason']);
-
-		if($ban['lifted'] > 0)
+		if(!empty($mybb->user['banlifted']))
 		{
-			$banlift = my_date('normal', $ban['lifted']);
+			$banlift = my_date('normal', $mybb->user['banlifted']);
+		}
+		else
+		{
+			$banlift = $lang->banned_lifted_never;
 		}
 	}
-
-	if(empty($reason))
-	{
-		$reason = $lang->unknown;
-	}
-
-	if(empty($banlift))
+	else
 	{
 		$banlift = $lang->unknown;
+	}
+
+	if(!empty($mybb->user['banreason']))
+	{
+		$reason = htmlspecialchars_uni($mybb->user['banreason']);
+	}
+	else
+	{
+		$reason = $lang->unknown;
 	}
 
 	// Display a nice warning to the user
@@ -865,6 +943,12 @@ if($mybb->settings['awactialert'] == 1 && $mybb->usergroup['cancp'] == 1)
 	}
 }
 
+$jsTemplates = array();
+foreach (array('modal', 'modal_button') as $template) {
+	eval('$jsTemplates["'.$template.'"] = "'.$templates->get($template, 1, 0).'";');
+	$jsTemplates[$template] = str_replace(array("\n","\r"), array("\\\n", ""), addslashes($jsTemplates[$template]));
+}
+
 // Set up some of the default templates
 eval('$headerinclude = "'.$templates->get('headerinclude').'";');
 eval('$gobutton = "'.$templates->get('gobutton').'";');
@@ -941,6 +1025,12 @@ if($mybb->settings['showthemeselect'] != 0)
 		$theme_redirect_url = get_current_location(true, 'theme');
 		eval('$theme_select = "'.$templates->get('footer_themeselect').'";');
 	}
+}
+
+$showteamlink = '';
+if($mybb->settings['enableshowteam'] != 0)
+{
+	eval('$showteamlink = "'.$templates->get('footer_showteamlink').'";');
 }
 
 // If we use the contact form, show 'Contact Us' link when appropriate

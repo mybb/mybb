@@ -512,7 +512,6 @@ if($mybb->input['action'] == "edit")
 			"profile_fields_editable" => true,
 			"website" => $mybb->input['website'],
 			"icq" => $mybb->input['icq'],
-			"yahoo" => $mybb->input['yahoo'],
 			"skype" => $mybb->input['skype'],
 			"google" => $mybb->input['google'],
 			"birthday" => array(
@@ -929,10 +928,10 @@ if($mybb->input['action'] == "edit")
 
 	$page->extra_header .= <<<EOF
 
-	<link rel="stylesheet" href="../jscripts/sceditor/editor_themes/mybb.css" type="text/css" media="all" />
-	<script type="text/javascript" src="../jscripts/sceditor/jquery.sceditor.bbcode.min.js?ver=1805"></script>
-	<script type="text/javascript" src="../jscripts/bbcodes_sceditor.js?ver=1819"></script>
-	<script type="text/javascript" src="../jscripts/sceditor/editor_plugins/undo.js?ver=1805"></script>
+	<link rel="stylesheet" href="../jscripts/sceditor/themes/mybb.css" type="text/css" media="all" />
+	<script type="text/javascript" src="../jscripts/sceditor/jquery.sceditor.bbcode.min.js?ver=1822"></script>
+	<script type="text/javascript" src="../jscripts/bbcodes_sceditor.js?ver=1822"></script>
+	<script type="text/javascript" src="../jscripts/sceditor/plugins/undo.js?ver=1805"></script>
 EOF;
 	$page->output_header($lang->edit_user);
 
@@ -978,24 +977,25 @@ EOF;
 
 	// Avatar
 	$avatar_dimensions = preg_split('/[|x]/', $user['avatardimensions']);
+	if($user['avatardimensions'])
+	{
+		require_once MYBB_ROOT."inc/functions_image.php";
+		list($width, $height) = preg_split('/[|x]/', $user['avatardimensions']);
+		$scaled_dimensions = scale_image($width, $height, 120, 120);
+	}
+	else
+	{
+		$scaled_dimensions = array(
+			"width" => 120,
+			"height" => 120
+		);
+	}
 	if($user['avatar'] && (my_strpos($user['avatar'], '://') === false || $mybb->settings['allowremoteavatars']))
 	{
-		if($user['avatardimensions'])
-		{
-			require_once MYBB_ROOT."inc/functions_image.php";
-			list($width, $height) = preg_split('/[|x]/', $user['avatardimensions']);
-			$scaled_dimensions = scale_image($width, $height, 120, 120);
-		}
-		else
-		{
-			$scaled_dimensions = array(
-				"width" => 120,
-				"height" => 120
-			);
-		}
 		if(!my_validate_url($user['avatar']))
 		{
-			$user['avatar'] = "../{$user['avatar']}\n";
+			$avatar = format_avatar($user['avatar'], $user['avatardimensions']);
+			$user['avatar'] = $avatar['image'];
 		}
 	}
 	else
@@ -1008,15 +1008,12 @@ EOF;
 		{
 			$user['avatar'] = "../".str_replace('{theme}', 'images', $mybb->settings['useravatar']);
 		}
-		$scaled_dimensions = array(
-			"width" => 120,
-			"height" => 120
-		);
 	}
 	$avatar_top = ceil((126-$scaled_dimensions['height'])/2);
-	if($user['lastactive'])
+	$last_seen = max(array($user['lastactive'], $user['lastvisit']));
+	if(!empty($last_seen))
 	{
-		$last_active = my_date('relative', $user['lastactive']);
+		$last_active = my_date('relative', $last_seen);
 	}
 	else
 	{
@@ -1162,7 +1159,6 @@ EOF;
 	$form_container->output_row($lang->custom_user_title, $lang->custom_user_title_desc, $form->generate_text_box('usertitle', $mybb->input['usertitle'], array('id' => 'usertitle')), 'usertitle');
 	$form_container->output_row($lang->website, "", $form->generate_text_box('website', $mybb->input['website'], array('id' => 'website')), 'website');
 	$form_container->output_row($lang->icq_number, "", $form->generate_numeric_field('icq', $mybb->input['icq'], array('id' => 'icq', 'min' => 0)), 'icq');
-	$form_container->output_row($lang->yahoo_messanger_handle, "", $form->generate_text_box('yahoo', $mybb->input['yahoo'], array('id' => 'yahoo')), 'yahoo');
 	$form_container->output_row($lang->skype_handle, "", $form->generate_text_box('skype', $mybb->input['skype'], array('id' => 'skype')), 'skype');
 	$form_container->output_row($lang->google_handle, "", $form->generate_text_box('google', $mybb->input['google'], array('id' => 'google')), 'google');
 
@@ -1941,16 +1937,13 @@ if($mybb->input['action'] == "merge")
 
 	if($mybb->request_method == "post")
 	{
-		$source_user = get_user_by_username($mybb->input['source_username'], array('fields' => '*'));
-		if(!$source_user['uid'])
+		foreach(array('source', 'destination') as $target)
 		{
-			$errors[] = $lang->error_invalid_user_source;
-		}
-
-		$destination_user = get_user_by_username($mybb->input['destination_username'], array('fields' => '*'));
-		if(!$destination_user['uid'])
-		{
-			$errors[] = $lang->error_invalid_user_destination;
+			${$target.'_user'} = get_user_by_username($mybb->input[$target.'_username'], array('fields' => '*'));
+			if(!${$target.'_user'}['uid'])
+			{
+				$errors[] = $lang->{'error_invalid_user_'.$target};
+			}
 		}
 
 		// If we're not a super admin and we're merging a source super admin or a destination super admin then dissallow this action
@@ -1960,7 +1953,7 @@ if($mybb->input['action'] == "merge")
 			admin_redirect("index.php?module=user-users");
 		}
 
-		if($source_user['uid'] == $destination_user['uid'])
+		if($source_user['uid'] == $destination_user['uid'] && !empty($source_user['uid']))
 		{
 			$errors[] = $lang->error_cannot_merge_same_account;
 		}
@@ -2001,6 +1994,10 @@ if($mybb->input['action'] == "merge")
 
 			// Banning
 			$db->update_query("banned", array('admin' => $destination_user['uid']), "admin = '{$source_user['uid']}'");
+
+			// Carry over referrals
+			$db->update_query("users", array("referrer" => ((int)$source_user['referrer'] + (int)$destination_user['referrer'])), "uid='{$destination_user['uid']}'");
+			$db->update_query("users", array("referrals" => ((int)$source_user['referrals'] + (int)$destination_user['referrals'])), "uid='{$destination_user['uid']}'");
 
 			// Merging Reputation
 			// First, let's change all the details over to our new user...
@@ -2535,7 +2532,6 @@ if($mybb->input['action'] == "inline_edit")
 					$db->delete_query("banned", "uid = '".$ban['uid']."'");
 				}
 
-				$cache->update_banned();
 				$cache->update_moderators();
 
 				$mybb->input['action'] = "inline_lift";
@@ -2629,7 +2625,6 @@ if($mybb->input['action'] == "inline_edit")
 					$db->delete_query("forumsubscriptions", "uid = '{$user['uid']}'");
 					$db->delete_query("threadsubscriptions", "uid = '{$user['uid']}'");
 
-					$cache->update_banned();
 					++$banned_count;
 				}
 				$mybb->input['action'] = "inline_banned";
@@ -3259,7 +3254,7 @@ function build_users_view($view)
 	// Build the search SQL for users
 
 	// List of valid LIKE search fields
-	$user_like_fields = array("username", "email", "website", "icq", "yahoo", "skype", "google", "signature", "usertitle");
+	$user_like_fields = array("username", "email", "website", "icq", "skype", "google", "signature", "usertitle");
 	foreach($user_like_fields as $search_field)
 	{
 		if(!empty($view['conditions'][$search_field]) && !$view['conditions'][$search_field.'_blank'])
@@ -3579,7 +3574,15 @@ function build_users_view($view)
 			$user['view']['additionalgroups'] = "<small>{$groups_list}</small>";
 			$user['view']['email'] = "<a href=\"mailto:".htmlspecialchars_uni($user['email'])."\">".htmlspecialchars_uni($user['email'])."</a>";
 			$user['view']['regdate'] = my_date('relative', $user['regdate']);
-			$user['view']['lastactive'] = my_date('relative', $user['lastactive']);
+			$last_seen = max(array($user['lastactive'], $user['lastvisit']));
+			if(!empty($last_seen))
+			{
+				$user['view']['lastactive'] = my_date('relative', $last_seen);
+			}
+			else
+			{
+				$user['view']['lastactive'] = $lang->never;
+			}
 
 			// Build popup menu
 			$popup = new PopupMenu("user_{$user['uid']}", $lang->options);
@@ -3741,17 +3744,17 @@ function build_users_view($view)
 	}
 	$built_view .= "<script type=\"text/javascript\">
 		var form = $(\"#search_form\");
-		form.submit(function() {
+		form.on('submit', function() {
 			var search = $('#search_keywords');
 			if(search.val() == '' || search.val() == '".addcslashes($lang->search_for_user, "'")."')
 			{
-				search.focus();
+				search.trigger('focus');
 				return false;
 			}
 		});
 
 		var search = $(\"#search_keywords\");
-		search.focus(function()
+		search.on('focus', function()
 		{
 			var searched_focus = $(this);
 			if(searched_focus.val() == '".addcslashes($lang->search_for_user, "'")."')
@@ -3759,9 +3762,7 @@ function build_users_view($view)
 				searched_focus.removeClass(\"search_default\");
 				searched_focus.val(\"\");
 			}
-		});
-
-		search.blur(function()
+		}).on('blur', function()
 		{
 			var searched_blur = $(this);
 			if(searched_blur.val() == \"\")
@@ -3803,7 +3804,7 @@ function build_users_view($view)
 	}
 
 	$built_view .= '
-<script type="text/javascript" src="'.$mybb->settings['bburl'].'/jscripts/inline_moderation.js?ver=1818"></script>
+<script type="text/javascript" src="'.$mybb->settings['bburl'].'/jscripts/inline_moderation.js?ver=1821"></script>
 <form action="index.php?module=user-users" method="post">
 <input type="hidden" name="my_post_key" value="'.$mybb->post_code.'" />
 <input type="hidden" name="action" value="inline_edit" />
@@ -4158,7 +4159,6 @@ function user_search_conditions($input=array(), &$form)
 
 	$form_container->output_row($lang->website_contains, "", $form->generate_text_box('conditions[website]', $input['conditions']['website'], array('id' => 'website'))." {$lang->or} ".$form->generate_check_box('conditions[website_blank]', 1, $lang->is_not_blank, array('id' => 'website_blank', 'checked' => $input['conditions']['website_blank'])), 'website');
 	$form_container->output_row($lang->icq_number_contains, "", $form->generate_text_box('conditions[icq]', $input['conditions']['icq'], array('id' => 'icq'))." {$lang->or} ".$form->generate_check_box('conditions[icq_blank]', 1, $lang->is_not_blank, array('id' => 'icq_blank', 'checked' => $input['conditions']['icq_blank'])), 'icq');
-	$form_container->output_row($lang->yahoo_contains, "", $form->generate_text_box('conditions[yahoo]', $input['conditions']['yahoo'], array('id' => 'yahoo'))." {$lang->or} ".$form->generate_check_box('conditions[yahoo_blank]', 1, $lang->is_not_blank, array('id' => 'yahoo_blank', 'checked' => $input['conditions']['yahoo_blank'])), 'yahoo');
 	$form_container->output_row($lang->skype_contains, "", $form->generate_text_box('conditions[skype]', $input['conditions']['skype'], array('id' => 'skype'))." {$lang->or} ".$form->generate_check_box('conditions[skype_blank]', 1, $lang->is_not_blank, array('id' => 'skype_blank', 'checked' => $input['conditions']['skype_blank'])), 'skype');
 	$form_container->output_row($lang->google_contains, "", $form->generate_text_box('conditions[google]', $input['conditions']['google'], array('id' => 'google'))." {$lang->or} ".$form->generate_check_box('conditions[google_blank]', 1, $lang->is_not_blank, array('id' => 'google_blank', 'checked' => $input['conditions']['google_blank'])), 'google');
 	$form_container->output_row($lang->signature_contains, "", $form->generate_text_box('conditions[signature]', $input['conditions']['signature'], array('id' => 'signature'))." {$lang->or} ".$form->generate_check_box('conditions[signature_blank]', 1, $lang->is_not_blank, array('id' => 'signature_blank', 'checked' => $input['conditions']['signature_blank'])), 'signature');

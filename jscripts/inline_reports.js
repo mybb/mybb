@@ -17,7 +17,7 @@ var inlineReports = {
 			var element = $(this);
 			if((element.attr('name') != 'allbox') && (element.attr('type') == 'checkbox') && (element.attr('id')) && (element.attr('id').split('_')[0] == 'reports'))
 			{
-				$(element).click(inlineReports.checkItem);
+				$(element).on('click', inlineReports.checkItem);
 			}
 
 			if(element.attr('id'))

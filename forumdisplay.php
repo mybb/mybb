@@ -19,7 +19,7 @@ $templatelist .= ",forumdisplay_usersbrowsing_user,forumdisplay_usersbrowsing,fo
 $templatelist .= ",forumdisplay_announcements_announcement,forumdisplay_announcements,forumdisplay_threads_sep,forumbit_depth3_statusicon,forumbit_depth3,forumdisplay_sticky_sep,forumdisplay_thread_attachment_count,forumdisplay_rssdiscovery,forumbit_moderators_group";
 $templatelist .= ",forumdisplay_inlinemoderation_openclose,forumdisplay_inlinemoderation_stickunstick,forumdisplay_inlinemoderation_softdelete,forumdisplay_inlinemoderation_restore,forumdisplay_inlinemoderation_delete,forumdisplay_inlinemoderation_manage,forumdisplay_nopermission";
 $templatelist .= ",forumbit_depth2_forum_unapproved_posts,forumbit_depth2_forum_unapproved_threads,forumbit_moderators_user,forumdisplay_inlinemoderation_standard,forumdisplay_threadlist_prefixes_prefix,forumdisplay_threadlist_prefixes,forumdisplay_thread_icon,forumdisplay_rules";
-$templatelist .= ",forumdisplay_thread_deleted,forumdisplay_announcements_announcement_modbit,forumbit_depth2_forum_viewers,forumdisplay_threadlist_sortrating,forumdisplay_inlinemoderation_custom,forumdisplay_announcement_rating,forumdisplay_inlinemoderation_approveunapprove";
+$templatelist .= ",forumdisplay_thread_deleted,forumdisplay_announcements_announcement_modbit,forumbit_depth2_forum_viewers,forumdisplay_threadlist_sortrating,forumdisplay_inlinemoderation_custom,forumdisplay_announcement_rating,forumdisplay_inlinemoderation_approveunapprove,forumdisplay_threadlist_subscription";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -283,43 +283,41 @@ if($mybb->settings['browsingthisforum'] != 0)
 	$onlinemembers = '';
 	$doneusers = array();
 
+	$query = $db->simple_select("sessions", "COUNT(DISTINCT ip) AS guestcount", "uid = 0 AND time > $timecut AND location1 = $fid AND nopermission != 1");
+	$guestcount = $db->fetch_field($query, 'guestcount');
+
 	$query = $db->query("
-		SELECT s.ip, s.uid, u.username, s.time, u.invisible, u.usergroup, u.usergroup, u.displaygroup
-		FROM ".TABLE_PREFIX."sessions s
-		LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
-		WHERE s.time > '$timecut' AND location1='$fid' AND nopermission != 1
+		SELECT
+			s.ip, s.uid, u.username, s.time, u.invisible, u.usergroup, u.usergroup, u.displaygroup
+		FROM
+			".TABLE_PREFIX."sessions s
+			LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
+		WHERE s.uid != 0 AND s.time > $timecut AND location1 = $fid AND nopermission != 1
 		ORDER BY u.username ASC, s.time DESC
 	");
 
 	while($user = $db->fetch_array($query))
 	{
-		if($user['uid'] == 0)
+		if(empty($doneusers[$user['uid']]) || $doneusers[$user['uid']] < $user['time'])
 		{
-			++$guestcount;
-		}
-		else
-		{
-			if(empty($doneusers[$user['uid']]) || $doneusers[$user['uid']] < $user['time'])
+			$doneusers[$user['uid']] = $user['time'];
+			++$membercount;
+			if($user['invisible'] == 1)
 			{
-				$doneusers[$user['uid']] = $user['time'];
-				++$membercount;
-				if($user['invisible'] == 1)
-				{
-					$invisiblemark = "*";
-					++$inviscount;
-				}
-				else
-				{
-					$invisiblemark = '';
-				}
+				$invisiblemark = "*";
+				++$inviscount;
+			}
+			else
+			{
+				$invisiblemark = '';
+			}
 
-				if($user['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])
-				{
-					$user['username'] = format_name(htmlspecialchars_uni($user['username']), $user['usergroup'], $user['displaygroup']);
-					$user['profilelink'] = build_profile_link($user['username'], $user['uid']);
-					eval("\$onlinemembers .= \"".$templates->get("forumdisplay_usersbrowsing_user", 1, 0)."\";");
-					$comma = $lang->comma;
-				}
+			if($user['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])
+			{
+				$user['username'] = format_name(htmlspecialchars_uni($user['username']), $user['usergroup'], $user['displaygroup']);
+				$user['profilelink'] = build_profile_link($user['username'], $user['uid']);
+				eval("\$onlinemembers .= \"".$templates->get("forumdisplay_usersbrowsing_user", 1, 0)."\";");
+				$comma = $lang->comma;
 			}
 		}
 	}
@@ -387,15 +385,11 @@ if($foruminfo['rulestype'] != 0 && $foruminfo['rules'])
 $bgcolor = "trow1";
 
 // Set here to fetch only approved/deleted topics (and then below for a moderator we change this).
+$visible_states = array("1");
+
 if($fpermissions['canviewdeletionnotice'] != 0)
 {
-	$visibleonly = "AND visible IN (-1,1)";
-	$tvisibleonly = "AND t.visible IN (-1,1)";
-}
-else
-{
-	$visibleonly = "AND visible='1'";
-	$tvisibleonly = "AND t.visible='1'";
+	$visible_states[] = "-1";
 }
 
 // Check if the active user is a moderator and get the inline moderation tools.
@@ -407,23 +401,13 @@ if(is_moderator($fid))
 	$inlinemod = '';
 	$inlinecookie = "inlinemod_forum".$fid;
 
-	if(is_moderator($fid, "canviewdeleted") == true || is_moderator($fid, "canviewunapprove") == true)
+	if(is_moderator($fid, "canviewdeleted") == true)
 	{
-		if(is_moderator($fid, "canviewunapprove") == true && is_moderator($fid, "canviewdeleted") == false)
-		{
-			$visibleonly = "AND visible IN (0,1)";
-			$tvisibleonly = "AND t.visible IN (0,1)";
-		}
-		elseif(is_moderator($fid, "canviewdeleted") == true && is_moderator($fid, "canviewunapprove") == false)
-		{
-			$visibleonly = "AND visible IN (-1,1)";
-			$tvisibleonly = "AND t.visible IN (-1,1)";
-		}
-		else
-		{
-			$visibleonly = " AND visible IN (-1,0,1)";
-			$tvisibleonly = " AND t.visible IN (-1,0,1)";
-		}
+		$visible_states[] = "-1";
+	}
+	if(is_moderator($fid, "canviewunapprove") == true)
+	{
+		$visible_states[] = "0";
 	}
 }
 else
@@ -431,6 +415,17 @@ else
 	$inlinemod = $inlinemodcol = '';
 	$ismod = false;
 }
+
+$visible_condition = "visible IN (".implode(',', array_unique($visible_states)).")";
+$visibleonly = "AND ".$visible_condition;
+
+// Allow viewing own unapproved threads for logged in users
+if($mybb->user['uid'] && $mybb->settings['showownunapproved'])
+{
+	$visible_condition .= " OR (t.visible=0 AND t.uid=".(int)$mybb->user['uid'].")";
+}
+
+$tvisibleonly = "AND (t.".$visible_condition.")";
 
 if(is_moderator($fid, "caneditposts") || $fpermissions['caneditposts'] == 1)
 {
@@ -612,7 +607,7 @@ if(isset($fpermissions['canonlyviewownthreads']) && $fpermissions['canonlyviewow
 if($fpermissions['canviewthreads'] != 0)
 {
 	// How many threads are there?
-	$query = $db->simple_select("threads", "COUNT(tid) AS threads", "fid = '$fid' $useronly $visibleonly $datecutsql $prefixsql");
+	$query = $db->simple_select("threads t", "COUNT(tid) AS threads", "fid = '$fid' $tuseronly $tvisibleonly $datecutsql2 $prefixsql2");
 	$threadcount = $db->fetch_field($query, "threads");
 }
 
@@ -886,6 +881,13 @@ if($fpermissions['canviewthreads'] != 0)
 			}
 		}
 	}
+
+	$args = array(
+		'threadcache' => &$threadcache,
+		'tids' => &$tids
+	);
+
+	$plugins->run_hooks("forumdisplay_before_thread", $args);
 
 	if($mybb->settings['allowthreadratings'] != 0 && $foruminfo['allowtratings'] != 0 && $mybb->user['uid'] && !empty($threadcache) && $ratings == true)
 	{
@@ -1446,6 +1448,7 @@ if($unread_threads !== false && $unread_threads == 0 && empty($unread_forums))
 // Subscription status
 $add_remove_subscription = 'add';
 $add_remove_subscription_text = $lang->subscribe_forum;
+$addremovesubscription = '';
 
 if($mybb->user['uid'])
 {
@@ -1456,6 +1459,8 @@ if($mybb->user['uid'])
 		$add_remove_subscription = 'remove';
 		$add_remove_subscription_text = $lang->unsubscribe_forum;
 	}
+
+	eval("\$addremovesubscription = \"".$templates->get("forumdisplay_threadlist_subscription")."\";");
 }
 
 $inline_edit_js = $clearstoredpass = '';
@@ -1480,6 +1485,8 @@ if($foruminfo['type'] != "c")
 	}
 
 	$prefixselect = build_forum_prefix_select($fid, $tprefix);
+
+	$plugins->run_hooks("forumdisplay_threadlist");
 
 	$lang->rss_discovery_forum = $lang->sprintf($lang->rss_discovery_forum, htmlspecialchars_uni(strip_tags($foruminfo['name'])));
 	eval("\$rssdiscovery = \"".$templates->get("forumdisplay_rssdiscovery")."\";");

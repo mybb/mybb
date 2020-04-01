@@ -168,7 +168,7 @@ if($mybb->input['action'] == "browse")
 	// Convert to mods site version codes
 	$search_version = ($major_version_code/100).'x';
 
-	$contents = fetch_remote_file("https://community.mybb.com/xmlbrowse.php?type=themes&version={$search_version}{$keywords}{$url_page}", $post_data);
+	$contents = fetch_remote_file("https://community.mybb.com/xmlbrowse.php?api=2&type=themes&version={$search_version}{$keywords}{$url_page}", $post_data);
 
 	if(!$contents)
 	{
@@ -208,14 +208,12 @@ if($mybb->input['action'] == "browse")
 			$result['thumbnail']['value'] = htmlspecialchars_uni($result['thumbnail']['value']);
 			$result['name']['value'] = htmlspecialchars_uni($result['name']['value']);
 			$result['description']['value'] = htmlspecialchars_uni($result['description']['value']);
-			$result['author']['value'] = $post_parser->parse_message($result['author']['value'], array(
-					'allow_html' => true
-				)
-			);
+			$result['author']['url']['value'] = htmlspecialchars_uni($result['author']['url']['value']);
+			$result['author']['name']['value'] = htmlspecialchars_uni($result['author']['name']['value']);
 			$result['download_url']['value'] = htmlspecialchars_uni(html_entity_decode($result['download_url']['value']));
 
 			$table->construct_cell("<img src=\"https://community.mybb.com/{$result['thumbnail']['value']}\" alt=\"{$lang->theme_thumbnail}\" title=\"{$lang->theme_thumbnail}\"/>", array("class" => "align_center", "width" => 100));
-			$table->construct_cell("<strong>{$result['name']['value']}</strong><br /><small>{$result['description']['value']}</small><br /><i><small>{$lang->created_by} {$result['author']['value']}</small></i>");
+			$table->construct_cell("<strong>{$result['name']['value']}</strong><br /><small>{$result['description']['value']}</small><br /><i><small>{$lang->created_by} <a href=\"{$result['author']['url']['value']}\" target=\"_blank\" rel=\"noopener\">{$result['author']['name']['value']}</a></small></i>");
 			$table->construct_cell("<strong><a href=\"https://community.mybb.com/{$result['download_url']['value']}\" target=\"_blank\" rel=\"noopener\">{$lang->download}</a></strong>", array("class" => "align_center"));
 			$table->construct_row();
 		}
@@ -243,18 +241,18 @@ if($mybb->input['action'] == "browse")
 	echo "<input type=\"submit\" class=\"search_button\" value=\"{$lang->search}\" />\n";
 	echo "<script type=\"text/javascript\">
 		var form = $(\"#search_form\");
-		form.submit(function()
+		form.on('submit', function()
 		{
 			var search = $('#search_keywords');
 			if(search.val() == '' || search.val() == '{$lang->search_for_themes}')
 			{
-				search.focus();
+				search.trigger('focus');
 				return false;
 			}
 		});
 
 		var search = $('#search_keywords');
-		search.focus(function()
+		search.on('focus', function()
 		{
 			var search_focus = $(this);
 			if(search_focus.val() == '{$lang->search_for_themes}')
@@ -262,9 +260,7 @@ if($mybb->input['action'] == "browse")
 				search_focus.removeClass('search_default');
 				search_focus.val('');
 			}
-		});
-
-		search.blur(function()
+		}).on('blur', function()
 		{
 			var search_blur = $(this);
 			if(search_blur.val() == '')
@@ -1181,7 +1177,7 @@ if($mybb->input['action'] == "edit")
 		{
 			$errors[] = $lang->error_invalid_templateset;
 		}
-		if(!$properties['editortheme'] || !file_exists(MYBB_ROOT."jscripts/sceditor/editor_themes/".$properties['editortheme']) || is_dir(MYBB_ROOT."jscripts/sceditor/editor_themes/".$properties['editortheme']))
+		if(!$properties['editortheme'] || !file_exists(MYBB_ROOT."jscripts/sceditor/themes/".$properties['editortheme']) || is_dir(MYBB_ROOT."jscripts/sceditor/themes/".$properties['editortheme']))
 		{
 			$errors[] = $lang->error_invalid_editortheme;
 		}
@@ -1457,8 +1453,12 @@ if($mybb->input['action'] == "edit")
 				// It's a file:
 				++$count;
 
+				$name = htmlspecialchars_uni($name);
+
 				if($actions[0] != "global")
 				{
+					$actions = array_map('htmlspecialchars_uni', $actions);
+
 					$name = "{$name} ({$lang->actions}: ".implode(',', $actions).")";
 				}
 
@@ -1565,7 +1565,7 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->template_set." <em>*</em>", $lang->template_set_desc, $form->generate_select_box('templateset', $options, $properties['templateset'], array('id' => 'templateset')), 'templateset');
 
 	$options = array();
-	$editor_theme_root = MYBB_ROOT."jscripts/sceditor/editor_themes/";
+	$editor_theme_root = MYBB_ROOT."jscripts/sceditor/themes/";
 	if($dh = @opendir($editor_theme_root))
 	{
 		while($dir = readdir($dh))
@@ -1680,7 +1680,10 @@ if($mybb->input['action'] == "stylesheet_properties")
 		if(get_extension($mybb->input['name']) != "css")
 		{
 			// Does not end with '.css'
-			$errors[] = $lang->sprintf($lang->error_missing_stylesheet_extension, $mybb->input['name']);
+			$errors[] = $lang->sprintf(
+				$lang->error_missing_stylesheet_extension,
+				htmlspecialchars_uni($mybb->input['name'])
+			);
 		}
 
 		if(!$errors)
@@ -1988,7 +1991,7 @@ if($mybb->input['action'] == "stylesheet_properties")
 
 	echo <<<EOF
 
-	<script type="text/javascript" src="./jscripts/theme_properties.js"></script>
+	<script type="text/javascript" src="./jscripts/theme_properties.js?ver=1821"></script>
 	<script type="text/javascript">
 	<!---
 	themeProperties.setup('{$count}');
@@ -2253,7 +2256,7 @@ if($mybb->input['action'] == "edit_stylesheet" && (!isset($mybb->input['mode']) 
 	echo '<script type="text/javascript" src="./jscripts/themes.js?ver=1808"></script>';
 	echo '<script type="text/javascript">
 
-$(document).ready(function() {
+$(function() {
 //<![CDATA[
 	ThemeSelector.init("./index.php?module=style-themes&action=xmlhttp_stylesheet", "./index.php?module=style-themes&action=edit_stylesheet", $("#selector"), $("#stylesheet"), "'.htmlspecialchars_uni($mybb->input['file']).'", $("#selector_form"), "'.$mybb->input['tid'].'");
 	lang.saving = "'.$lang->saving.'";
@@ -2356,7 +2359,7 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 <script src="./jscripts/codemirror/mode/css/css.js?ver=1813"></script>
 <script src="./jscripts/codemirror/addon/dialog/dialog.js?ver=1813"></script>
 <script src="./jscripts/codemirror/addon/search/searchcursor.js?ver=1813"></script>
-<script src="./jscripts/codemirror/addon/search/search.js?ver=1813"></script>
+<script src="./jscripts/codemirror/addon/search/search.js?ver=1821"></script>
 ';
 	}
 
@@ -2632,7 +2635,7 @@ if($mybb->input['action'] == "add_stylesheet")
 <script src="./jscripts/codemirror/mode/css/css.js?ver=1813"></script>
 <script src="./jscripts/codemirror/addon/dialog/dialog.js?ver=1813"></script>
 <script src="./jscripts/codemirror/addon/search/searchcursor.js?ver=1813"></script>
-<script src="./jscripts/codemirror/addon/search/search.js?ver=1813"></script>
+<script src="./jscripts/codemirror/addon/search/search.js?ver=1821"></script>
 ';
 	}
 
@@ -2896,7 +2899,7 @@ if($mybb->input['action'] == "add_stylesheet")
 	}
 
 	echo '<script type="text/javascript" src="./jscripts/themes.js?ver=1808"></script>';
-	echo '<script type="text/javascript" src="./jscripts/theme_properties.js"></script>';
+	echo '<script type="text/javascript" src="./jscripts/theme_properties.js?ver=1821"></script>';
 	echo '<script type="text/javascript">
 $(function() {
 //<![CDATA[
@@ -2974,6 +2977,12 @@ if($mybb->input['action'] == "force")
 		$plugins->run_hooks("admin_style_themes_force_commit");
 
 		$db->update_query("users", $updated_users);
+
+		// The theme has to be accessible to all usergroups in order to force on all users
+		if($theme['allowedgroups'] !== "all")
+		{
+			$db->update_query("themes", array("allowedgroups" => "all"), "tid='{$theme['tid']}'");
+		}
 
 		// Log admin action
 		log_admin_action($theme['tid'], $theme['name']);

@@ -13,7 +13,7 @@ define('THIS_SCRIPT', 'showthread.php');
 
 $templatelist = "showthread,postbit,postbit_author_user,postbit_author_guest,showthread_newthread,showthread_newreply,showthread_newreply_closed,postbit_avatar,postbit_find,postbit_pm,postbit_www,postbit_email,postbit_edit,postbit_quote,postbit_report";
 $templatelist .= ",multipage,multipage_breadcrumb,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,showthread_inlinemoderation_softdelete,showthread_poll_editpoll";
-$templatelist .= ",postbit_editedby,showthread_similarthreads,showthread_similarthreads_bit,postbit_iplogged_show,postbit_iplogged_hiden,postbit_profilefield,showthread_quickreply,showthread_add_poll,showthread_send_thread,showthread_inlinemoderation_restore";
+$templatelist .= ",postbit_editedby,showthread_similarthreads,showthread_similarthreads_bit,postbit_iplogged_show,postbit_iplogged_hiden,postbit_profilefield,showthread_quickreply,showthread_printthread,showthread_add_poll,showthread_send_thread,showthread_inlinemoderation_restore";
 $templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit,postbit_attachments,postbit_attachments_attachment,postbit_attachments_thumbnails,postbit_attachments_images_image,postbit_attachments_images,showthread_quickreply_options_stick,postbit_status";
 $templatelist .= ",postbit_inlinecheck,showthread_inlinemoderation,postbit_attachments_thumbnails_thumbnail,postbit_ignored,postbit_multiquote,showthread_moderationoptions_custom_tool,showthread_moderationoptions_custom,showthread_inlinemoderation_custom_tool";
 $templatelist .= ",showthread_usersbrowsing,showthread_usersbrowsing_user,showthread_poll_option,showthread_poll,showthread_quickreply_options_signature,showthread_threaded_bitactive,showthread_threaded_bit,postbit_attachments_attachment_unapproved";
@@ -145,7 +145,11 @@ else
 // Make sure we are looking at a real thread here.
 if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] == 0 && !is_moderator($fid, "canviewunapprove")) || ($thread['visible'] == -1 && !is_moderator($fid, "canviewdeleted")))
 {
-	error($lang->error_invalidthread);
+	// Allow viewing own unapproved thread
+	if (!($mybb->user['uid'] && $mybb->settings['showownunapproved'] && $thread['visible'] == 0 && ($thread['uid'] == $mybb->user['uid'])))
+	{
+		error($lang->error_invalidthread);
+	}
 }
 
 // Does the user have permission to view this thread?
@@ -858,8 +862,9 @@ if($mybb->input['action'] == "thread")
 			$where = " ORDER BY dateline LIMIT 0, 1";
 		}
 		$query = $db->query("
-			SELECT u.*, u.username AS userusername, p.*, f.*, eu.username AS editusername
+			SELECT u.*, u.username AS userusername, p.*, f.*, r.reporters, eu.username AS editusername
 			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."reportedcontent r ON (r.id=p.pid AND r.type='post' AND r.reportstatus != 1)
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
 			LEFT JOIN ".TABLE_PREFIX."users eu ON (eu.uid=p.edituid)
@@ -942,7 +947,7 @@ if($mybb->input['action'] == "thread")
 			$post = get_post($mybb->input['pid']);
 			if(empty($post) || ($post['visible'] == 0 && !is_moderator($post['fid'], 'canviewunapprove')) || ($post['visible'] == -1 && !is_moderator($post['fid'], 'canviewdeleted') && $forumpermissions['canviewdeletionnotice'] == 0))
 			{
-				$footer .= '<script type="text/javascript">$(document).ready(function() { $.jGrowl(\''.$lang->error_invalidpost.'\', {theme: \'jgrowl_error\'}); });</script>';
+				$footer .= '<script type="text/javascript">$(function() { $.jGrowl(\''.$lang->error_invalidpost.'\', {theme: \'jgrowl_error\'}); });</script>';
 			}
 			else
 			{
@@ -1055,6 +1060,12 @@ if($mybb->input['action'] == "thread")
         }
 
         $multipage = multipage($postcount, $perpage, $page, str_replace("{tid}", $tid, THREAD_URL_PAGED.$highlight.$threadmode));
+		
+		// Allow originator to see own unapproved posts
+		if($mybb->user['uid'] && $mybb->settings['showownunapproved'])
+		{
+			$visible .= " OR (p.tid='$tid' AND p.visible='0' AND p.uid=".$mybb->user['uid'].")";
+		}
 
 		// Lets get the pids of the posts on this page.
 		$pids = "";
@@ -1097,8 +1108,9 @@ if($mybb->input['action'] == "thread")
 		// Get the actual posts from the database here.
 		$posts = '';
 		$query = $db->query("
-			SELECT u.*, u.username AS userusername, p.*, f.*, eu.username AS editusername
+			SELECT u.*, u.username AS userusername, p.*, f.*, r.reporters, eu.username AS editusername
 			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."reportedcontent r ON (r.id=p.pid AND r.type='post' AND r.reportstatus != 1)
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
 			LEFT JOIN ".TABLE_PREFIX."users eu ON (eu.uid=p.edituid)
@@ -1507,21 +1519,22 @@ if($mybb->input['action'] == "thread")
 		$onlinemembers = '';
 		$doneusers = array();
 
+		$query = $db->simple_select("sessions", "COUNT(DISTINCT ip) AS guestcount", "uid = 0 AND time > $timecut AND location2 = $tid AND nopermission != 1");
+		$guestcount = $db->fetch_field($query, 'guestcount');
+
 		$query = $db->query("
-			SELECT s.ip, s.uid, s.time, u.username, u.invisible, u.usergroup, u.displaygroup
-			FROM ".TABLE_PREFIX."sessions s
-			LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
-			WHERE s.time > '$timecut' AND location2='$tid' AND nopermission != 1
+			SELECT
+				s.ip, s.uid, s.time, u.username, u.invisible, u.usergroup, u.displaygroup
+			FROM
+				".TABLE_PREFIX."sessions s
+				LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
+			WHERE s.uid != 0 AND s.time > '$timecut' AND location2='$tid' AND nopermission != 1
 			ORDER BY u.username ASC, s.time DESC
 		");
 
 		while($user = $db->fetch_array($query))
 		{
-			if($user['uid'] == 0)
-			{
-				++$guestcount;
-			}
-			else if(empty($doneusers[$user['uid']]) || $doneusers[$user['uid']] < $user['time'])
+			if(empty($doneusers[$user['uid']]) || $doneusers[$user['uid']] < $user['time'])
 			{
 				++$membercount;
 				$doneusers[$user['uid']] = $user['time'];

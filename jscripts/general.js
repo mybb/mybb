@@ -19,7 +19,7 @@ var MyBB = {
 			var checked = $(this).is(':checked');
 			var checkboxes = $(this).closest('form').find(':checkbox').not('[name="allbox"]');
 
-			checkboxes.change(function() {
+			checkboxes.on('change', function() {
 				if(checked && !$(this).prop('checked'))
 				{
 					checked = false;
@@ -35,7 +35,7 @@ var MyBB = {
 					checkboxes.each(function() {
 						if(checked != $(this).is(':checked'))
 						{
-							$(this).prop('checked', checked).change();
+							$(this).prop('checked', checked).trigger('change');
 						}
 					});
 				}
@@ -46,7 +46,7 @@ var MyBB = {
 		var initialfocus = $(".initial_focus");
 		if(initialfocus.length)
 		{
-			initialfocus.focus();
+			initialfocus.trigger('focus');
 		}
 
 		if(typeof(use_xmlhttprequest) != "undefined" && use_xmlhttprequest == 1)
@@ -57,7 +57,7 @@ var MyBB = {
 				var element = $(this);
 				if(element.hasClass('forum_off') || element.hasClass('forum_offclose') || element.hasClass('forum_offlink') || element.hasClass('subforum_minioff') || element.hasClass('subforum_minioffclose') || element.hasClass('subforum_miniofflink') || (element.attr("title") && element.attr("title") == lang.no_new_posts)) return;
 
-				element.click(function()
+				element.on('click', function()
 				{
 					MyBB.markForumRead(this);
 				});
@@ -77,7 +77,7 @@ var MyBB = {
 				$("body").css("overflow", "hidden");
 				if(initialfocus.length > 0)
 				{
-					initialfocus.focus();
+					initialfocus.trigger('focus');
 				}
 			});
 
@@ -86,7 +86,14 @@ var MyBB = {
 			});
 		}
 
-		$("a.referralLink").click(MyBB.showReferrals);
+		$("a.referralLink").on('click', MyBB.showReferrals);
+
+		if($('.author_avatar').length)
+		{
+			$(".author_avatar img").on('error', function () {
+				$(this).unbind("error").closest('.author_avatar').remove();
+			});
+		}
 	},
 
 	popupWindow: function(url, options, root)
@@ -101,9 +108,44 @@ var MyBB = {
 		});
 	},
 
+	prompt: function(message, options)
+	{
+		var defaults = { fadeDuration: 250, zIndex: (typeof modal_zindex !== 'undefined' ? modal_zindex : 9999) };
+		var buttonsText = '';
+
+		for (var i in options.buttons)
+		{
+			buttonsText += templates.modal_button.replace('__title__', options.buttons[i].title);
+		}
+
+		var html = templates.modal.replace('__buttons__', buttonsText).replace('__message__', message);
+		var modal = $(html);
+		modal.modal($.extend(defaults, options));
+		var buttons = modal.find('.modal_buttons > .button');
+		buttons.on('click', function(e)
+		{
+			e.preventDefault();
+			var index = $(this).index();
+			if (options.submit(e, options.buttons[index].value) == false)
+				return;
+
+			$.modal.close();
+		});
+
+		if (buttons[0])
+		{
+			modal.on($.modal.OPEN, function()
+			{
+				$(buttons[0]).trigger('focus');
+			});
+		}
+
+		return modal;
+	},
+
 	deleteEvent: function(eid)
 	{
-		$.prompt(deleteevent_confirm, {
+		MyBB.prompt(deleteevent_confirm, {
 			buttons:[
 					{title: yes_confirm, value: true},
 					{title: no_confirm, value: false}
@@ -158,7 +200,7 @@ var MyBB = {
 					);
 
 					$("body").append(form);
-					form.submit();
+					form.trigger('submit');
 				}
 			}
 		});
@@ -191,7 +233,7 @@ var MyBB = {
 
 	deleteReputation: function(uid, rid)
 	{
-		$.prompt(delete_reputation_confirm, {
+		MyBB.prompt(delete_reputation_confirm, {
 			buttons:[
 					{title: yes_confirm, value: true},
 					{title: no_confirm, value: false}
@@ -237,7 +279,7 @@ var MyBB = {
 					);
 
 					$("body").append(form);
-					form.submit();
+					form.trigger('submit');
 				}
 			}
 		});
@@ -350,7 +392,7 @@ var MyBB = {
 		{
 			return false;
 		}
-		form.submit();
+		form.trigger('submit');
 	},
 
 	changeTheme: function()
@@ -360,7 +402,7 @@ var MyBB = {
 		{
 			return false;
 		}
-		form.submit();
+		form.trigger('submit');
 	},
 
 	detectDSTChange: function(timezone_with_dst)
@@ -395,7 +437,7 @@ var MyBB = {
 						);
 
 						$("body").append(form);
-						form.submit();
+						form.trigger('submit');
 	                }
 	            }
 			});
@@ -457,7 +499,7 @@ var MyBB = {
 
 	deleteAnnouncement: function(data)
 	{
-		$.prompt(announcement_quickdelete_confirm, {
+		MyBB.prompt(announcement_quickdelete_confirm, {
 			buttons:[
 					{title: yes_confirm, value: true},
 					{title: no_confirm, value: false}
@@ -612,7 +654,7 @@ var expandables = {
 					return;
 				}
 
-				expander.click(function()
+				expander.on('click', function()
 				{
 					controls = expander.attr("id").replace("_img", "");
 					expandables.expandCollapse(this, controls);

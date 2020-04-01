@@ -1,7 +1,7 @@
 var Post = {
 	init: function()
 	{
-		$(document).ready(function()
+		$(function()
 		{
 			Post.initAttachments();
 		});
@@ -55,7 +55,7 @@ var Post = {
 
 	multiQuotedLoaded: function(request)
 	{
-		var json = $.parseJSON(request.responseText);
+		var json = JSON.parse(request.responseText);
 		if(typeof response == 'object')
 		{
 			if(json.hasOwnProperty("errors"))
@@ -69,9 +69,9 @@ var Post = {
 		}
 
 		var id = 'message';
-		if(typeof $('textarea').sceditor != 'undefined')
+		if(typeof MyBBEditor !== 'undefined' && MyBBEditor !== null)
 		{
-			$('textarea').sceditor('instance').insert(json.message);
+			MyBBEditor.insert(json.message);
 		}
 		else
 		{
@@ -94,7 +94,7 @@ var Post = {
 	
 	removeAttachment: function(aid)
 	{
-		$.prompt(removeattach_confirm, {
+		MyBB.prompt(removeattach_confirm, {
 			buttons:[
 					{title: yes_confirm, value: true},
 					{title: no_confirm, value: false}
@@ -105,8 +105,49 @@ var Post = {
 					document.input.attachmentaid.value = aid;
 					document.input.attachmentact.value = "remove";
 					
-					$("input[name=rem]").parents('form').append('<input type="submit" id="rem_submit" class="hidden" />');
-					$('#rem_submit').click();
+					var form = $('input[name=rem]').parents('form');
+
+					if(use_xmlhttprequest != 1)
+					{
+						form.append('<input type="submit" id="rem_submit" class="hidden" />');
+						$('#rem_submit').trigger('click');
+						return  false;
+					}
+
+					$.ajax({
+						type: 'POST',
+						url: form.attr('action') + '&ajax=1',
+						data: form.serialize(),
+						success: function(data) {
+							if(data.hasOwnProperty("errors"))
+							{
+								$.each(data.errors, function(i, message)
+								{
+									$.jGrowl(lang.post_fetch_error + ' ' + message, {theme:'jgrowl_error'});
+								});
+								return false;
+							}
+							else if (data.success)
+							{
+								$('#attachment_'+aid).hide(500, function()
+								{
+									var instance = MyBBEditor;
+									if(typeof MyBBEditor === 'undefined') {
+										instance = $('#message').sceditor('instance');
+									}
+
+									if(instance.sourceMode())
+									{
+										instance.setSourceEditorValue(instance.getSourceEditorValue(false).split('[attachment=' + aid + ']').join(''));
+									} else {
+										instance.setWysiwygEditorValue(instance.getWysiwygEditorValue(false).split('[attachment=' + aid + ']').join(''));
+									}
+
+									$(this).remove();
+								});
+							}
+						}
+					});
 				}
 			}
 		});

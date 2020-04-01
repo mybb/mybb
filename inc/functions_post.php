@@ -340,7 +340,7 @@ function build_postbit($post, $post_type=0)
 			eval("\$post['button_find'] = \"".$templates->get("postbit_find")."\";");
 		}
 
-		if($mybb->settings['enablepms'] == 1 && (($post['receivepms'] != 0 && $usergroup['canusepms'] != 0 && $mybb->usergroup['cansendpms'] == 1 && my_strpos(",".$post['ignorelist'].",", ",".$mybb->user['uid'].",") === false) || $mybb->usergroup['canoverridepm'] == 1))
+		if($mybb->settings['enablepms'] == 1 && $post['uid'] != $mybb->user['uid'] && (($post['receivepms'] != 0 && $usergroup['canusepms'] != 0 && $mybb->usergroup['cansendpms'] == 1 && my_strpos(",".$post['ignorelist'].",", ",".$mybb->user['uid'].",") === false) || $mybb->usergroup['canoverridepm'] == 1))
 		{
 			eval("\$post['button_pm'] = \"".$templates->get("postbit_pm")."\";");
 		}
@@ -366,7 +366,7 @@ function build_postbit($post, $post_type=0)
 			$post['button_www'] = "";
 		}
 
-		if($post['hideemail'] != 1 && $mybb->usergroup['cansendemail'] == 1)
+		if($post['hideemail'] != 1 && $post['uid'] != $mybb->user['uid'] && $mybb->usergroup['cansendemail'] == 1)
 		{
 			eval("\$post['button_email'] = \"".$templates->get("postbit_email")."\";");
 		}
@@ -679,7 +679,18 @@ function build_postbit($post, $post_type=0)
 			eval("\$post['button_multiquote'] = \"".$templates->get("postbit_multiquote")."\";");
 		}
 
-		if($mybb->user['uid'] != "0")
+		$skip_report = my_unserialize($post['reporters']);
+		if(is_array($skip_report))
+		{
+			$skip_report[] = 0;
+		}
+		else
+		{
+			$skip_report = array(0);
+		}
+
+		$reportable = user_permissions($post['uid']);
+		if(!in_array($mybb->user['uid'], $skip_report) && !empty($reportable['canbereported']))
 		{
 			eval("\$post['button_report'] = \"".$templates->get("postbit_report")."\";");
 		}
@@ -859,6 +870,14 @@ function build_postbit($post, $post_type=0)
 			{
 				$deleted_message = $lang->sprintf($lang->postbit_deleted_post_user, $post['username']);
 				eval("\$deleted_bit = \"".$templates->get("postbit_deleted")."\";");
+				$post_visibility = "display: none;";
+			}
+
+			// Is the user (not moderator) logged in and have unapproved posts?
+			if($mybb->user['uid'] && $post['visible'] == 0 && $post['uid'] == $mybb->user['uid'] && !is_moderator($fid, "canviewunapprove"))
+			{
+				$ignored_message = $lang->sprintf($lang->postbit_post_under_moderation, $post['username']);
+				eval("\$ignore_bit = \"".$templates->get("postbit_ignored")."\";");
 				$post_visibility = "display: none;";
 			}
 

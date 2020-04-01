@@ -88,11 +88,17 @@ $forumpermissions = forum_permissions($fid);
 // See if everything is valid up to here.
 if(isset($post) && (($post['visible'] == 0 && !is_moderator($fid, "canviewunapprove")) || ($post['visible'] < 0 && $post['uid'] != $mybb->user['uid'])))
 {
-	error($lang->error_invalidpost);
+	if($post['visible'] == 0 && !($mybb->settings['showownunapproved'] && $post['uid'] == $mybb->user['uid']))
+	{
+		error($lang->error_invalidpost);
+	}
 }
 if(($thread['visible'] == 0 && !is_moderator($fid, "canviewunapprove")) || $thread['visible'] < 0)
 {
-	error($lang->error_invalidthread);
+	if($thread['visible'] == 0 && !($mybb->settings['showownunapproved'] && $thread['uid'] == $mybb->user['uid']))
+	{
+		error($lang->error_invalidthread);
+	}
 }
 if($forum['open'] == 0 || $forum['type'] != "f")
 {
@@ -241,6 +247,13 @@ if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid'
 		eval("\$editdraftpid = \"".$templates->get("newreply_draftinput")."\";");
 		$mybb->input['action'] = "newreply";
 	}
+
+	if($mybb->get_input('ajax', MyBB::INPUT_INT) == 1)
+	{
+		header("Content-type: application/json; charset={$lang->settings['charset']}");
+		echo json_encode(array("success" => true));
+		exit();
+	}
 }
 
 $reply_errors = '';
@@ -248,10 +261,10 @@ $quoted_ids = array();
 $hide_captcha = false;
 
 // Check the maximum posts per day for this user
-if($mybb->usergroup['maxposts'] > 0 && $mybb->usergroup['cancp'] != 1)
+if($mybb->usergroup['maxposts'] > 0)
 {
 	$daycut = TIME_NOW-60*60*24;
-	$query = $db->simple_select("posts", "COUNT(*) AS posts_today", "uid='{$mybb->user['uid']}' AND visible='1' AND dateline>{$daycut}");
+	$query = $db->simple_select("posts", "COUNT(*) AS posts_today", "uid='{$mybb->user['uid']}' AND visible !='-1' AND dateline>{$daycut}");
 	$post_count = $db->fetch_field($query, "posts_today");
 	if($post_count >= $mybb->usergroup['maxposts'])
 	{
@@ -643,7 +656,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 				$data .= "<script type=\"text/javascript\">\n";
 				$data .= "var hash = document.getElementById('posthash'); if(hash) { hash.value = '{$new_posthash}'; }\n";
 				$data .= "if(typeof(inlineModeration) != 'undefined') {
-					$('#inlinemod_{$pid}').bind(\"click\", function(e) {
+					$('#inlinemod_{$pid}').on(\"click\", function(e) {
 						inlineModeration.checkItem();
 					});
 				}\n";
@@ -1186,7 +1199,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			$mybb->settings['postsperpage'] = 20;
 		}
 
-		if(is_moderator($fid, "canviewunapprove"))
+		if(is_moderator($fid, "canviewunapprove") || $mybb->settings['showownunapproved'])
 		{
 			$visibility = "(visible='1' OR visible='0')";
 		}
@@ -1270,6 +1283,8 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			{
 				$altbg = "trow_shaded";
 			}
+
+			$plugins->run_hooks("newreply_threadreview_post");
 
 			$post['message'] = $parser->parse_message($post['message'], $parser_options);
 			get_post_attachments($post['pid'], $post);

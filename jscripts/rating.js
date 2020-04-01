@@ -11,7 +11,7 @@ var Rating = {
 				elements.each(function()
 				{
 					var element = $(this);
-					element.click(function()
+					element.on('click', function()
 					{
 						var parameterString = element.attr("href").replace(/.*\?(.*)/, "$1");
 						return Rating.add_rating(parameterString);
@@ -83,7 +83,7 @@ var Rating = {
 
 	rating_added: function(request, element_id)
 	{
-		var json = $.parseJSON(request.responseText);
+		var json = JSON.parse(request.responseText);
 		if(json.hasOwnProperty("errors"))
 		{
 			$.each(json.errors, function(i, error)

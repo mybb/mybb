@@ -439,9 +439,9 @@ if($mybb->input['action'] == "add")
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 
-	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1804"></script>
+	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1821"></script>
 	<script type="text/javascript">
-		$(document).ready(function() {
+		$(function() {
 			new Peeker($("#type"), $("#row_extra"), /^(select|radio|checkbox|php)$/, false);
 		});
 		// Add a star to the extra row since the "extra" is required if the box is shown
@@ -658,9 +658,9 @@ if($mybb->input['action'] == "edit")
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 
-	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1804"></script>
+	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1821"></script>
 	<script type="text/javascript">
-		$(document).ready(function() {
+		$(function() {
 			new Peeker($("#type"), $("#row_extra"), /^(select|radio|checkbox|php)$/, false);
 		});
 		// Add a star to the extra row since the "extra" is required if the box is shown
@@ -1040,6 +1040,50 @@ if($mybb->input['action'] == "change")
 				$lang->success_settings_updated .= $lang->success_settings_updated_allowmultipleemails;
 			}
 		}
+
+		// reject dangerous/unsupported upload paths
+		$fields = array(
+			'uploadspath',
+			'cdnpath',
+			'avataruploadpath',
+		);
+
+		$dynamic_include_directories = array(
+			MYBB_ROOT.'cache/',
+			MYBB_ROOT.'inc/plugins/',
+			MYBB_ROOT.'inc/languages/',
+			MYBB_ROOT.'inc/tasks/',
+		);
+		$dynamic_include_directories_realpath = array_map('realpath', $dynamic_include_directories);
+
+		foreach($fields as $field)
+		{
+			if(
+				isset($mybb->input['upsetting'][$field]) &&
+				is_string($mybb->input['upsetting'][$field]) &&
+				strpos($mybb->input['upsetting'][$field], '://') !== false)
+			{
+				unset($mybb->input['upsetting'][$field]);
+				continue;
+			}
+
+			$realpath = realpath(MYBB_ROOT.$mybb->input['upsetting'][$field]);
+
+			if ($realpath === false) {
+				unset($mybb->input['upsetting'][$field]);
+				continue;
+			}
+
+			foreach ($dynamic_include_directories_realpath as $forbidden_realpath)
+			{
+				if ($realpath === $forbidden_realpath || strpos($realpath, $forbidden_realpath.DIRECTORY_SEPARATOR) === 0)
+				{
+					unset($mybb->input['upsetting'][$field]);
+					continue 2;
+				}
+			}
+		}
+
 
 		if(is_array($mybb->input['upsetting']))
 		{
@@ -1790,10 +1834,10 @@ EOF;
 	echo '</div>';
 
 	echo '
-<script type="text/javascript" src="./jscripts/search.js?ver=1808"></script>
+<script type="text/javascript" src="./jscripts/search.js?ver=1821"></script>
 <script type="text/javascript">
 //<!--
-$(document).ready(function(){
+$(function(){
 	SettingSearch.init("'.$lang->settings_search.'","'.$lang->error_ajax_unknown.'");
 });
 //-->
@@ -1858,9 +1902,9 @@ function print_setting_peekers()
 
 	$setting_peekers = implode("\n			", $peekers);
 
-	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1804"></script>
+	echo '<script type="text/javascript" src="./jscripts/peeker.js?ver=1821"></script>
 	<script type="text/javascript">
-		$(document).ready(function() {
+		$(function() {
 			' . $setting_peekers . '
 		});
 	</script>';

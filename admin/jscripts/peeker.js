@@ -38,8 +38,7 @@ var Peeker = (function() {
 			// attach event handlers to the inputs in the node list
 			this.controller.each(function(i, el) {
 				el = $(el);
-				el.on('change', fn);
-				el.click(fn);
+				el.on('click change', fn);
 			});
 		} else {
 			this.controller.on('change', fn);

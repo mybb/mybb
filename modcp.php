@@ -2587,7 +2587,6 @@ if($mybb->input['action'] == "do_editprofile")
 		"profile_fields_editable" => true,
 		"website" => $mybb->get_input('website'),
 		"icq" => $mybb->get_input('icq'),
-		"yahoo" => $mybb->get_input('yahoo'),
 		"skype" => $mybb->get_input('skype'),
 		"google" => $mybb->get_input('google'),
 		"signature" => $mybb->get_input('signature'),
@@ -2617,7 +2616,7 @@ if($mybb->input['action'] == "do_editprofile")
 
 	// Set the data of the user in the datahandler.
 	$userhandler->set_data($updated_user);
-	$errors = '';
+	$errors = array();
 
 	// Validate the user and get any errors that might have occurred.
 	if(!$userhandler->validate_user())
@@ -2689,8 +2688,7 @@ if($mybb->input['action'] == "do_editprofile")
 					$string = $option['action']."_error";
 					$errors[] = $lang->$string;
 				}
-
-				if(!is_array($errors))
+				else
 				{
 					$suspend_length = fetch_time_length((int)$mybb->input[$option['time']], $mybb->input[$option['period']]);
 
@@ -2732,7 +2730,7 @@ if($mybb->input['action'] == "do_editprofile")
 			$errors[] = $lang->suspendmoderate_error;
 		}
 
-		if(is_array($errors))
+		if(is_array($errors) && !empty($errors))
 		{
 			$mybb->input['action'] = "editprofile";
 		}
@@ -2822,7 +2820,7 @@ if($mybb->input['action'] == "editprofile")
 	}
 
 	// Sanitize all input
-	foreach(array('usertitle', 'website', 'icq', 'yahoo', 'skype', 'google', 'signature', 'birthday_day', 'birthday_month', 'birthday_year') as $field)
+	foreach(array('usertitle', 'website', 'icq', 'skype', 'google', 'signature', 'birthday_day', 'birthday_month', 'birthday_year') as $field)
 	{
 		$mybb->input[$field] = htmlspecialchars_uni($mybb->get_input($field));
 	}
@@ -3289,7 +3287,6 @@ if($mybb->input['action'] == "editprofile")
 	$user_icq = $mybb->input['icq'];
 	$user_skype = $mybb->input['skype'];
 	$user_google = $mybb->input['google'];
-	$user_yahoo = $mybb->input['yahoo'];
 
 	$plugins->run_hooks("modcp_editprofile_end");
 
@@ -3437,7 +3434,7 @@ if($mybb->input['action'] == "finduser")
 
 	$plugins->run_hooks("modcp_finduser_end");
 
-	$username = $mybb->get_input('username');
+	$username = htmlspecialchars_uni($mybb->get_input('username'));
 	eval("\$finduser = \"".$templates->get("modcp_finduser")."\";");
 	output_page($finduser);
 }
@@ -3578,7 +3575,7 @@ if($mybb->input['action'] == "warninglogs")
 		$per_page = (int)$mybb->input['filter']['per_page'];
 	}
 	$start = ($page-1) * $per_page;
-	$pages = ceil($total_warning / $per_page);
+	$pages = ceil($total_warnings / $per_page);
 	if($page > $pages)
 	{
 		$start = 0;
@@ -4251,7 +4248,6 @@ if($mybb->input['action'] == "liftban")
 	$db->update_query("users", $updated_group, "uid='{$ban['uid']}'");
 	$db->delete_query("banned", "uid='{$ban['uid']}'");
 
-	$cache->update_banned();
 	$cache->update_moderators();
 	log_moderator_action(array("uid" => $ban['uid'], "username" => $username), $lang->lifted_ban);
 
@@ -4407,8 +4403,6 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 			'additionalgroups' => '',
 		);
 		$db->update_query('users', $update_array, "uid = {$user['uid']}");
-
-		$cache->update_banned();
 
 		// Log edit or add ban
 		if($existing_ban)

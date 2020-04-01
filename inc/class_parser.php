@@ -368,8 +368,8 @@ class postParser
 
 		if($mybb->settings['allowfontmycode'] == 1)
 		{
-			$nestable_mycode['font']['regex'] = "#\[font=([a-z0-9 ,\-_'\"]+)\](.*?)\[/font\]#si";
-			$nestable_mycode['font']['replacement'] = "<span style=\"font-family: $1;\" class=\"mycode_font\">$2</span>";
+			$nestable_mycode['font']['regex'] = "#\[font=(\"?)([a-z0-9 ,\-_']+)\\1\](.*?)\[/font\]#si";
+			$nestable_mycode['font']['replacement'] = "<span style=\"font-family: $2;\" class=\"mycode_font\">$3</span>";
 
 			++$nestable_count;
 		}
@@ -679,9 +679,9 @@ class postParser
 			return;
 		}
 
-		// Neutralize multiple adjacent wildcards and generate pattern
-		$ptrn = array('/\*\++/', '/\++\*/', '/\*+/');
-		$rplc = array('*', '*', '[^\s\n]*');
+		// Neutralize escape character, regex operators, multiple adjacent wildcards and generate pattern
+		$ptrn = array('/\\\\/', '/([\[\^\$\.\|\?\(\)\{\}]{1})/', '/\*\++/', '/\++\*/', '/\*+/');
+		$rplc = array('\\\\\\\\','\\\\${1}', '*', '*', '[^\s\n]*');
 		$bad_word = preg_replace($ptrn, $rplc, $bad_word);
 		
 		// Count + and generate pattern
@@ -1133,9 +1133,7 @@ class postParser
 
 		// Fix some entities in URLs
 		$url = $this->encode_url($url);
-
-
-		$name = preg_replace("#&amp;\#([0-9]+);#si", "&#$1;", $name); // Fix & but allow unicode
+		$name = $this->parse_badwords(preg_replace("#&amp;\#([0-9]+);#si", "&#$1;", $name)); // Fix & but allow unicode, filter bad words
 
 		eval("\$mycode_url = \"".$templates->get("mycode_url", 1, 0)."\";");
 		return $mycode_url;
@@ -1538,7 +1536,7 @@ class postParser
 			return "[video={$video}]{$url}[/video]";
 		}
 
-		$id = htmlspecialchars_uni($id);
+		$id = $this->encode_url($id);
 
 		eval("\$video_code = \"".$templates->get("video_{$video}_embed", 1, 0)."\";");
 		return $video_code;
@@ -1596,8 +1594,8 @@ class postParser
 
 		// Links should end with slashes, numbers, characters and braces but not with dots, commas or question marks
 		// Don't create links within existing links (handled up-front in the callback function).
-		$message = preg_replace_callback("#<a\\s[^>]*>.*?</a>|([\s\(\)\[\>])(http|https|ftp|news|irc|ircs|irc6){1}://([^\/\"\s\<\[\.]+\.([^\/\"\s\<\[\.]+\.)*[\w]+(:[0-9]+)?(/([^\"\s<\[]|\[\])*)?([\w\/\)]))#ius", array($this, 'mycode_auto_url_callback'), $message);
-		$message = preg_replace_callback("#<a\\s[^>]*>.*?</a>|([\s\(\)\[\>])(www|ftp)\.(([^\/\"\s\<\[\.]+\.)*[\w]+(:[0-9]+)?(/([^\"\s<\[]|\[\])*)?([\w\/\)]))#ius", array($this, 'mycode_auto_url_callback'), $message);
+		$message = preg_replace_callback("#<a\\s[^>]*>.*?</a>|([\s\(\)\[\>])(http|https|ftp|news|irc|ircs|irc6){1}(://)([^\/\"\s\<\[\.]+\.([^\/\"\s\<\[\.]+\.)*[\w]+(:[0-9]+)?(/([^\"\s<\[]|\[\])*)?([\w\/\)]))#ius", array($this, 'mycode_auto_url_callback'), $message);
+		$message = preg_replace_callback("#<a\\s[^>]*>.*?</a>|([\s\(\)\[\>])(www|ftp)(\.)(([^\/\"\s\<\[\.]+\.)*[\w]+(:[0-9]+)?(/([^\"\s<\[]|\[\])*)?([\w\/\)]))#ius", array($this, 'mycode_auto_url_callback'), $message);
 		$message = my_substr($message, 1);
 
 		return $message;
@@ -1620,11 +1618,11 @@ class postParser
 
 		$external = '';
 		// Allow links like http://en.wikipedia.org/wiki/PHP_(disambiguation) but detect mismatching braces
-		while(my_substr($matches[3], -1) == ')')
+		while(my_substr($matches[4], -1) == ')')
 		{
-			if(substr_count($matches[3], ')') > substr_count($matches[3], '('))
+			if(substr_count($matches[4], ')') > substr_count($matches[4], '('))
 			{
-				$matches[3] = my_substr($matches[3], 0, -1);
+				$matches[4] = my_substr($matches[4], 0, -1);
 				$external = ')'.$external;
 			}
 			else
@@ -1633,22 +1631,15 @@ class postParser
 			}
 
 			// Example: ([...] http://en.wikipedia.org/Example_(disambiguation).)
-			$last_char = my_substr($matches[3], -1);
+			$last_char = my_substr($matches[4], -1);
 			while($last_char == '.' || $last_char == ',' || $last_char == '?' || $last_char == '!')
 			{
-				$matches[3] = my_substr($matches[3], 0, -1);
+				$matches[4] = my_substr($matches[4], 0, -1);
 				$external = $last_char.$external;
-				$last_char = my_substr($matches[3], -1);
+				$last_char = my_substr($matches[4], -1);
 			}
 		}
-		if(in_array(strtolower($matches[2]), array('www', 'ftp')))
-		{
-			$url = "{$matches[2]}.{$matches[3]}";
-		}
-		else
-		{
-			$url = "{$matches[2]}://{$matches[3]}";
-		}
+		$url = "{$matches[2]}{$matches[3]}{$matches[4]}";
 
 		return $matches[1].$this->mycode_parse_url($url, $url).$external;
 	}

@@ -127,35 +127,28 @@ if(!$mybb->input['action'])
 	$languages = array_merge(array('' => $lang->use_default), $lang->get_languages(1));
 	$language_code = $form->generate_select_box("cplanguage", $languages, $admin_options['cplanguage']);
 
-	$table = new Table;
-	$table->construct_header($lang->global_preferences);
-
-	$table->construct_cell("<strong>{$lang->acp_theme}</strong><br /><small>{$lang->select_acp_theme}</small><br /><br />{$setting_code}");
-	$table->construct_row();
-
-	$table->construct_cell("<strong>{$lang->acp_language}</strong><br /><small>{$lang->select_acp_language}</small><br /><br />{$language_code}");
-	$table->construct_row();
-
-	$table->construct_cell("<strong>{$lang->codemirror}</strong><br /><small>{$lang->use_codemirror_desc}</small><br /><br />".$form->generate_on_off_radio('codepress', $admin_options['codepress']));
-	$table->construct_row();
-
+	$form_container = new FormContainer($lang->preferences);
+	$form_container->output_row_header($lang->global_preferences);	
+	$form_container->output_row($lang->acp_theme, $lang->select_acp_theme, $setting_code);
+	$form_container->output_row($lang->acp_language, $lang->select_acp_language, $language_code);
+	$form_container->output_row($lang->codemirror, $lang->use_codemirror_desc, $form->generate_on_off_radio('codepress', $admin_options['codepress']));
+	
 	// If 2FA is enabled we need to display a link to the recovery codes page
 	if(!empty($admin_options['authsecret']))
 	{
 		$lang->use_2fa_desc .= "<br />".$lang->recovery_codes_desc." ".$lang->recovery_codes_warning;
-	}
-
-	$table->construct_cell("<strong>{$lang->my2fa}</strong><br /><small>{$lang->use_2fa_desc}</small><br /><br />".$form->generate_on_off_radio('2fa', (int)!empty($admin_options['authsecret'])));
-	$table->construct_row();
-
+	}	
+	$form_container->output_row($lang->my2fa, $lang->use_2fa_desc, $form->generate_on_off_radio('2fa', (int)!empty($admin_options['authsecret'])));
+	
 	if(!empty($admin_options['authsecret']))
 	{
 		$qr = $auth->getQRCodeGoogleUrl($mybb->user['username']."@".str_replace(" ", "", $mybb->settings['bbname']), $admin_options['authsecret']);
-		$table->construct_cell("<strong>{$lang->my2fa_qr}</strong><br /><img src=\"{$qr}\"");
-		$table->construct_row();
-	}
+		$form_container->output_row($lang->my2fa_qr . "<br /><img src=\"{$qr}\"");
+	}	
+				
+	$form_container->end();
 
-	$table->output($lang->preferences);
+	$table = new Table;
 
 	$table->construct_header($lang->notes_not_shared);
 
