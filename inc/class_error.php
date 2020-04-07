@@ -331,18 +331,11 @@ class errorHandler {
 		// Do not log something that might be executable
 		$message = str_replace('<?', '< ?', $message);
 
-		if(function_exists('debug_backtrace'))
-		{
-			ob_start();
-			debug_print_backtrace();
-			$trace = ob_get_contents();
-			ob_end_clean();
+		$back_trace = $this->generate_backtrace(false, 2);
 
-			$back_trace = "\t<back_trace>{$trace}</back_trace>\n";
-		}
-		else
+		if($back_trace)
 		{
-			$back_trace = '';
+			$back_trace = "\t<back_trace>{$back_trace}</back_trace>\n";
 		}
 
 		$error_data = "<error>\n";
@@ -617,35 +610,55 @@ EOF;
 	 *
 	 * @return string The generated backtrace
 	 */
-	function generate_backtrace()
+	function generate_backtrace($html=true, $strip=1)
 	{
 		$backtrace = '';
 		if(function_exists("debug_backtrace"))
 		{
-			$trace = debug_backtrace();
-			$backtrace = "<table style=\"width: 100%; margin: 10px 0; border: 1px solid #aaa; border-collapse: collapse; border-bottom: 0;\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\n";
-			$backtrace .= "<thead><tr>\n";
-			$backtrace .= "<th style=\"border-bottom: 1px solid #aaa; background: #ccc; padding: 4px; text-align: left; font-size: 11px;\">File</th>\n";
-			$backtrace .= "<th style=\"border-bottom: 1px solid #aaa; background: #ccc; padding: 4px; text-align: left; font-size: 11px;\">Line</th>\n";
-			$backtrace .= "<th style=\"border-bottom: 1px solid #aaa; background: #ccc; padding: 4px; text-align: left; font-size: 11px;\">Function</th>\n";
-			$backtrace .= "</tr></thead>\n<tbody>\n";
+			$trace = debug_backtrace(1<<1 /* DEBUG_BACKTRACE_IGNORE_ARGS */);
 
-			// Strip off this function from trace
-			array_shift($trace);
+			if($html)
+			{
+				$backtrace = "<table style=\"width: 100%; margin: 10px 0; border: 1px solid #aaa; border-collapse: collapse; border-bottom: 0;\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\n";
+				$backtrace .= "<thead><tr>\n";
+				$backtrace .= "<th style=\"border-bottom: 1px solid #aaa; background: #ccc; padding: 4px; text-align: left; font-size: 11px;\">File</th>\n";
+				$backtrace .= "<th style=\"border-bottom: 1px solid #aaa; background: #ccc; padding: 4px; text-align: left; font-size: 11px;\">Line</th>\n";
+				$backtrace .= "<th style=\"border-bottom: 1px solid #aaa; background: #ccc; padding: 4px; text-align: left; font-size: 11px;\">Function</th>\n";
+				$backtrace .= "</tr></thead>\n<tbody>\n";
+			}
+
+			// Strip off calls from trace
+			$trace = array_slice($trace, $strip);
+
+			$i = 0;
 
 			foreach($trace as $call)
 			{
 				if(empty($call['file'])) $call['file'] = "[PHP]";
-				if(empty($call['line'])) $call['line'] = "&nbsp;";
+				if(empty($call['line'])) $call['line'] = " ";
 				if(!empty($call['class'])) $call['function'] = $call['class'].$call['type'].$call['function'];
 				$call['file'] = str_replace(MYBB_ROOT, "/", $call['file']);
-				$backtrace .= "<tr>\n";
-				$backtrace .= "<td style=\"font-size: 11px; padding: 4px; border-bottom: 1px solid #ccc;\">{$call['file']}</td>\n";
-				$backtrace .= "<td style=\"font-size: 11px; padding: 4px; border-bottom: 1px solid #ccc;\">{$call['line']}</td>\n";
-				$backtrace .= "<td style=\"font-size: 11px; padding: 4px; border-bottom: 1px solid #ccc;\">{$call['function']}</td>\n";
-				$backtrace .= "</tr>\n";
+
+				if($html)
+				{
+					$backtrace .= "<tr>\n";
+					$backtrace .= "<td style=\"font-size: 11px; padding: 4px; border-bottom: 1px solid #ccc;\">{$call['file']}</td>\n";
+					$backtrace .= "<td style=\"font-size: 11px; padding: 4px; border-bottom: 1px solid #ccc;\">{$call['line']}</td>\n";
+					$backtrace .= "<td style=\"font-size: 11px; padding: 4px; border-bottom: 1px solid #ccc;\">{$call['function']}</td>\n";
+					$backtrace .= "</tr>\n";
+				}
+				else
+				{
+					$backtrace .= "#{$i}  {$call['function']}() called at [{$call['file']}:{$call['line']}]\n";
+				}
+
+				$i++;
 			}
-			$backtrace .= "</tbody></table>\n";
+
+			if($html)
+			{
+				$backtrace .= "</tbody></table>\n";
+			}
 		}
 		return $backtrace;
 	}
