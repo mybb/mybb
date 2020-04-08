@@ -192,7 +192,7 @@ if((empty($_POST) && empty($_FILES)) && $mybb->get_input('processed', MyBB::INPU
 }
 
 $attacherror = '';
-if($mybb->settings['enableattachments'] == 1 && !$mybb->get_input('attachmentaid', MyBB::INPUT_INT) && ($mybb->get_input('newattachment') || $mybb->get_input('updateattachment') || ($mybb->input['action'] == "do_editpost" && isset($mybb->input['submit']) && $_FILES['attachment'])))
+if($mybb->settings['enableattachments'] == 1 && ($mybb->get_input('newattachment') || $mybb->get_input('updateattachment') || ($mybb->input['action'] == "do_editpost" && isset($mybb->input['submitbutton']) && $_FILES['attachments'])))
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
@@ -220,16 +220,20 @@ if($mybb->settings['enableattachments'] == 1 && !$mybb->get_input('attachmentaid
 	}
 
 	// If we were dealing with an attachment but didn't click 'Update Post', force the post edit page again.
-	if(!isset($mybb->input['submit']))
+	if(!isset($mybb->input['submitbutton']))
 	{
 		$mybb->input['action'] = "editpost";
 	}
 }
 
+detect_attachmentact();
+
 if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid', MyBB::INPUT_INT) && isset($mybb->input['attachmentact']) && $mybb->input['action'] == "do_editpost" && $mybb->request_method == "post") // Lets remove/approve/unapprove the attachment
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
+
+	$redo_mod_queue_header = false;
 
 	$mybb->input['attachmentaid'] = $mybb->get_input('attachmentaid', MyBB::INPUT_INT);
 	if($mybb->input['attachmentact'] == "remove")
@@ -241,12 +245,14 @@ if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid'
 		$update_sql = array("visible" => 1);
 		$db->update_query("attachments", $update_sql, "aid='{$mybb->input['attachmentaid']}'");
 		update_thread_counters($post['tid'], array('attachmentcount' => "+1"));
+		$redo_mod_queue_header = true;
 	}
 	elseif($mybb->get_input('attachmentact') == "unapprove" && is_moderator($fid, 'canapproveunapproveattachs'))
 	{
 		$update_sql = array("visible" => 0);
 		$db->update_query("attachments", $update_sql, "aid='{$mybb->input['attachmentaid']}'");
 		update_thread_counters($post['tid'], array('attachmentcount' => "-1"));
+		$redo_mod_queue_header = true;
 	}
 
 	if($mybb->get_input('ajax', MyBB::INPUT_INT) == 1)
@@ -255,8 +261,78 @@ if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid'
 		echo json_encode(array("success" => true));
 		exit();
 	}
+	elseif($redo_mod_queue_header)
+	{
+		// By (un)approving an attachment, we have made changes that need to be reflected in
+		// that part of the header which alerts moderators to various items that need their
+		// attention, but the header has already been generated (in global.php), so we need
+		// to regenerate it.
+		//
+		// Note: this code duplicates a lot of the original code on which it is based in
+		// global.php. We might want to abstract it into one or more functions so that it is
+		// no longer duplicated.
 
-	if(!isset($mybb->input['submit']))
+		$moderation_queue = array();
+		$modnotice = '';
+
+		if($can_access_moderationqueue || ($mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanagemodqueue'] == 1))
+		{
+			// 0 or more reported items currently exist
+			if($reported['unread'] > 0 && $unread > 0)
+			{
+				if($unread == 1)
+				{
+					$lang->unread_reports = $lang->unread_report;
+				}
+				else
+				{
+					$lang->unread_reports = $lang->sprintf($lang->unread_reports, my_number_format($unread));
+				}
+
+				eval('$moderation_queue[] = "'.$templates->get('global_unreadreports', 1, 0).'";');
+			}
+
+			$query = $db->simple_select("attachments", "COUNT(aid) AS unapprovedattachments", "visible=0");
+			$unapproved_attachments = $db->fetch_field($query, "unapprovedattachments");
+
+			$modqueue_types = array('threads', 'posts', 'attachments');
+
+			foreach($modqueue_types as $modqueue_type)
+			{
+				if(!empty(${'unapproved_'.$modqueue_type}))
+				{
+					if(${'unapproved_'.$modqueue_type} == 1)
+					{
+						$modqueue_message = $lang->{'unapproved_'.substr($modqueue_type, 0, -1)};
+					}
+					else
+					{
+						$modqueue_message = $lang->sprintf($lang->{'unapproved_'.$modqueue_type}, my_number_format(${'unapproved_'.$modqueue_type}));
+					}
+
+					eval('$moderation_queue[] = "'.$templates->get('global_modqueue', 1, 0).'";');
+				}
+			}
+			if(!empty($moderation_queue))
+			{
+				$moderation_queue_last = array_pop($moderation_queue);
+				if(empty($moderation_queue))
+				{
+					$moderation_queue = $moderation_queue_last;
+				}
+				else
+				{
+					$moderation_queue = implode($lang->comma, $moderation_queue).' '.$lang->and.' '.$moderation_queue_last;
+				}
+				$moderation_queue = $lang->sprintf($lang->mod_notice, $moderation_queue);
+
+				eval('$modnotice = "'.$templates->get('global_modqueue_notice').'";');
+			}
+			eval('$header = "'.$templates->get('header').'";');
+		}
+	}
+
+	if(!isset($mybb->input['submitbutton']))
 	{
 		$mybb->input['action'] = "editpost";
 	}

@@ -105,7 +105,7 @@ var Post = {
 					document.input.attachmentaid.value = aid;
 					document.input.attachmentact.value = "remove";
 					
-					var form = $('input[name=rem]').parents('form');
+					var form = $('input[name^=\'rem_\']').parents('form');
 
 					if(use_xmlhttprequest != 1)
 					{
