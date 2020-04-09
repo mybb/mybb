@@ -106,6 +106,13 @@ var Post = {
 					document.input.attachmentact.value = "remove";
 					
 					var form = $('input[name^=\'rem_\']').parents('form');
+					/* Support themes which have not yet altered the "name" attribute of the
+					 * submit <input> button in the template 'post_attachments_attachment_remove'
+					 * which was changed in core version 1.8.23.
+					 */
+					if (!form[0]) {
+						form = $('input[name=rem]').parents('form');
+					}
 
 					if(use_xmlhttprequest != 1)
 					{

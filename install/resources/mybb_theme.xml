@@ -9424,7 +9424,7 @@ if(use_xmlhttprequest == "1")
 		<template name="post_attachments_attachment_mod_unapprove" version="1823"><![CDATA[<input type="submit" class="button" name="unapproveattach_{$attachment['aid']}" value="{$lang->unapprove_attachment}" onclick="return Post.attachmentAction({$attachment['aid']},'unapprove');" />]]></template>
 		<template name="post_attachments_attachment_postinsert" version="1809"><![CDATA[<input type="button" class="button" name="insert" value="{$lang->insert_attachment_post}" onclick="$('#message').sceditor('instance').insertText('[attachment={$attachment['aid']}]'); return false;" />]]></template>
 		<template name="post_attachments_attachment_remove" version="1823"><![CDATA[<input type="submit" class="button" name="rem_{$attachment['aid']}" value="{$lang->remove_attachment}" onclick="return Post.removeAttachment({$attachment['aid']});" />]]></template>
-		<template name="post_attachments_attachment_unapproved" version="120"><![CDATA[<tr>
+		<template name="post_attachments_attachment_unapproved" version="1823"><![CDATA[<tr id="attachment_{$attachment['aid']}">
 <td class="trow_shaded" width="1" align="center">{$attachment['icon']}</td>
 <td class="trow_shaded" style="white-space: nowrap"><em><a href="attachment.php?aid={$attachment['aid']}" target="_blank">{$attachment['filename']}</a> ({$attachment['size']})</em></td>
 <td class="trow_shaded" style="white-space: nowrap; text-align: center;">{$attach_mod_options} <input type="submit" class="button" name="rem" value="{$lang->remove_attachment}" onclick="return Post.removeAttachment({$attachment['aid']});" /> {$postinsert}</td>
