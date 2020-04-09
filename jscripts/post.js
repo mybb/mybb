@@ -146,6 +146,8 @@ var Post = {
 									$(this).remove();
 								});
 							}
+							document.input.attachmentaid.value = '';
+							document.input.attachmentact.value = '';
 						}
 					});
 				}
