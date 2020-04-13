@@ -338,6 +338,10 @@ foreach($stylesheet_scripts as $stylesheet_script)
 				else
 				{
 					$stylesheet_url = $mybb->get_asset_url($page_stylesheet);
+					if (file_exists(MYBB_ROOT.$page_stylesheet))
+					{
+						$stylesheet_url .= "?t=".filemtime(MYBB_ROOT.$page_stylesheet);
+					}
 				}
 
 				if($mybb->settings['minifycss'])
