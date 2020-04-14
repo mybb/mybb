@@ -233,8 +233,6 @@ if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid'
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
 
-	$redo_mod_queue_header = false;
-
 	$mybb->input['attachmentaid'] = $mybb->get_input('attachmentaid', MyBB::INPUT_INT);
 	if($mybb->input['attachmentact'] == "remove")
 	{
@@ -245,14 +243,12 @@ if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid'
 		$update_sql = array("visible" => 1);
 		$db->update_query("attachments", $update_sql, "aid='{$mybb->input['attachmentaid']}'");
 		update_thread_counters($post['tid'], array('attachmentcount' => "+1"));
-		$redo_mod_queue_header = true;
 	}
 	elseif($mybb->get_input('attachmentact') == "unapprove" && is_moderator($fid, 'canapproveunapproveattachs'))
 	{
 		$update_sql = array("visible" => 0);
 		$db->update_query("attachments", $update_sql, "aid='{$mybb->input['attachmentaid']}'");
 		update_thread_counters($post['tid'], array('attachmentcount' => "-1"));
-		$redo_mod_queue_header = true;
 	}
 
 	if($mybb->get_input('ajax', MyBB::INPUT_INT) == 1)
@@ -261,16 +257,22 @@ if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid'
 		echo json_encode(array("success" => true));
 		exit();
 	}
-	elseif($redo_mod_queue_header)
+	else
 	{
-		// By (un)approving an attachment, we have made changes that need to be reflected in
-		// that part of the header which alerts moderators to various items that need their
-		// attention, but the header has already been generated (in global.php), so we need
-		// to regenerate it.
+		// By (un)approving an attachment or removing a (potentially) unapproved attachment,
+		// we have (potentially) made changes that need to be reflected in that part of the
+		// header which alerts moderators to various items that need their attention, but
+		// the header has already been generated (in global.php), so we need to regenerate
+		// it.
 		//
-		// Note: this code duplicates a lot of the original code on which it is based in
+		// Note 1: this code duplicates a lot of the original code on which it is based in
 		// global.php. We might want to abstract it into one or more functions so that it is
 		// no longer duplicated.
+		//
+		// Note 2: as @yuliu points out[1], we might be overwriting here changes to the
+		// header made by one or more plugins in such hooks as `global_end`.
+		//
+		// [1] https://github.com/mybb/mybb/pull/3926#issuecomment-611656525
 
 		$moderation_queue = array();
 		$modnotice = '';
