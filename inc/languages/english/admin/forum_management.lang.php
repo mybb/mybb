@@ -31,6 +31,7 @@ $l['order'] = "Order";
 
 $l['subforums'] = "Sub Forums";
 $l['moderators'] = "Moderators";
+$l['forum_thread_prefixes'] = "Thread Prefixes";
 $l['permissions'] = "Permissions";
 $l['delete_forum'] = "Delete Forum";
 
