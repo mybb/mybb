@@ -510,14 +510,65 @@ if(!$mybb->input['action'])
 
 	$table = new Table;
 	$table->construct_header($lang->prefix);
+	$table->construct_header($lang->forums);
 	$table->construct_header($lang->controls, array('class' => 'align_center', 'colspan' => 2));
 
 	$prefixes = build_prefixes();
+
+	foreach($prefixes as &$prefix)
+	{
+		$prefix['forum_fids'] = explode(',', $prefix['forums']);
+	}
+	unset($prefix);
+
+	$forums = cache_forums();
+
+	$fid = $mybb->get_input('fid', MyBB::INPUT_INT);
+
+	if($fid && isset($forums[$fid]))
+	{
+		$title = $lang->sprintf($lang->thread_prefixes_in, $forums[$fid]['name']);
+
+		foreach($prefixes as $key => $prefix)
+		{
+			if($prefix['forums'] !== '-1' && !in_array($fid, $prefix['forum_fids']))
+			{
+				unset($prefixes[$key]);
+			}
+		}
+	}
+	else
+	{
+		$title = $lang->thread_prefixes;
+	}
+
+	$prefix = usort($prefixes, 'thread_prefix_sort');
+
 	if(!empty($prefixes))
 	{
 		foreach($prefixes as $prefix)
 		{
+			if($prefix['forums'] === '-1')
+			{
+				$forum_names = $lang->all_forums;
+			}
+			else
+			{
+				$forum_names = array();
+
+				foreach($prefix['forum_fids'] as $fid)
+				{
+					if(isset($forums[$fid]))
+					{
+						$forum_names[] = '<a href="index.php?module=config-thread_prefixes&amp;fid='.(int)$fid.'">'.$forums[$fid]['name'].'</a>';
+					}
+				}
+				
+				$forum_names = implode($lang->comma, $forum_names);
+			}
+
 			$table->construct_cell("<a href=\"index.php?module=config-thread_prefixes&amp;action=edit_prefix&amp;pid={$prefix['pid']}\"><strong>".htmlspecialchars_uni($prefix['prefix'])."</strong></a>");
+			$table->construct_cell($forum_names);
 			$table->construct_cell("<a href=\"index.php?module=config-thread_prefixes&amp;action=edit_prefix&amp;pid={$prefix['pid']}\">{$lang->edit}</a>", array('width' => 100, 'class' => "align_center"));
 			$table->construct_cell("<a href=\"index.php?module=config-thread_prefixes&amp;action=delete_prefix&amp;pid={$prefix['pid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_thread_prefix_deletion}')\">{$lang->delete}</a>", array('width' => 100, 'class' => 'align_center'));
 			$table->construct_row();
@@ -530,7 +581,33 @@ if(!$mybb->input['action'])
 		$table->construct_row();
 	}
 
-	$table->output($lang->thread_prefixes);
+	$table->output($title);
 
 	$page->output_footer();
+}
+
+function thread_prefix_sort($a, $b)
+{
+
+	if($a['forums'] === '-1' && $b['forums'] !== '-1')
+	{
+		return -1;
+	}
+
+	if($a['forums'] !== '-1' && $b['forums'] === '-1')
+	{
+		return 1;
+	}
+
+	if(count($a['forum_fids']) !== count($b['forum_fids'])) {
+		return count($b['forum_fids']) - count($a['forum_fids']);
+	}
+	elseif(count($a['forum_fids']) === 1)
+	{
+		$forums = cache_forums();
+
+		return strnatcmp($forums[$a['forum_fids'][0]]['name'], $forums[$b['forum_fids'][0]]['name']);
+	}
+
+	return 0;
 }
