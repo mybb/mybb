@@ -515,37 +515,44 @@ if(!$mybb->input['action'])
 
 	$prefixes = build_prefixes();
 
-	foreach($prefixes as &$prefix)
-	{
-		$prefix['forum_fids'] = explode(',', $prefix['forums']);
-	}
-	unset($prefix);
-
-	$forums = cache_forums();
-
-	$fid = $mybb->get_input('fid', MyBB::INPUT_INT);
-
-	if($fid && isset($forums[$fid]))
-	{
-		$title = $lang->sprintf($lang->thread_prefixes_in, $forums[$fid]['name']);
-
-		foreach($prefixes as $key => $prefix)
-		{
-			if($prefix['forums'] !== '-1' && !in_array($fid, $prefix['forum_fids']))
-			{
-				unset($prefixes[$key]);
-			}
-		}
-	}
-	else
-	{
-		$title = $lang->thread_prefixes;
-	}
-
-	$prefix = usort($prefixes, 'thread_prefix_sort');
-
 	if(!empty($prefixes))
 	{
+		foreach($prefixes as &$prefix)
+		{
+			$prefix['forum_fids'] = explode(',', $prefix['forums']);
+		}
+		unset($prefix);
+
+		$fid = $mybb->get_input('fid', MyBB::INPUT_INT);
+
+		if($fid)
+		{
+			$forum = get_forum($fid, 1);
+
+			if(!empty($forum))
+			{
+				$title = $lang->sprintf($lang->thread_prefixes_in, $forum['name']);
+
+				foreach($prefixes as $key => $prefix)
+				{
+					if($prefix['forums'] !== '-1' && !in_array($fid, $prefix['forum_fids']))
+					{
+						unset($prefixes[$key]);
+					}
+				}
+			}
+			else
+			{
+				$title = $lang->thread_prefixes;
+			}
+		}
+		else
+		{
+			$title = $lang->thread_prefixes;
+		}
+
+		usort($prefixes, 'thread_prefix_sort');
+
 		foreach($prefixes as $prefix)
 		{
 			if($prefix['forums'] === '-1')
@@ -558,9 +565,11 @@ if(!$mybb->input['action'])
 
 				foreach($prefix['forum_fids'] as $fid)
 				{
-					if(isset($forums[$fid]))
+					$forum = get_forum($fid, 1);
+
+					if(!empty($forum))
 					{
-						$forum_names[] = '<a href="index.php?module=config-thread_prefixes&amp;fid='.(int)$fid.'">'.$forums[$fid]['name'].'</a>';
+						$forum_names[] = '<a href="index.php?module=config-thread_prefixes&amp;fid='.(int)$fid.'">'.$forum['name'].'</a>';
 					}
 				}
 				
@@ -588,26 +597,36 @@ if(!$mybb->input['action'])
 
 function thread_prefix_sort($a, $b)
 {
-
+	// all forums
 	if($a['forums'] === '-1' && $b['forums'] !== '-1')
 	{
 		return -1;
 	}
-
 	if($a['forums'] !== '-1' && $b['forums'] === '-1')
 	{
 		return 1;
 	}
 
-	if(count($a['forum_fids']) !== count($b['forum_fids'])) {
+	// multiple forums
+	if(count($a['forum_fids']) > 1 xor count($b['forum_fids']) > 1)
+	{
 		return count($b['forum_fids']) - count($a['forum_fids']);
 	}
-	elseif(count($a['forum_fids']) === 1)
+	// natural sort order: forum name
+	elseif(
+		count($a['forum_fids']) === 1 && count($b['forum_fids']) === 1 &&
+		$a['forum_fids'][0] !== $b['forum_fids'][0]
+	)
 	{
-		$forums = cache_forums();
+		$forum_a = get_forum($a['forum_fids'][0], 1);
+		$forum_b = get_forum($b['forum_fids'][0], 1);
 
-		return strnatcmp($forums[$a['forum_fids'][0]]['name'], $forums[$b['forum_fids'][0]]['name']);
+		if($forum_a !== false && $forum_b !== false)
+		{
+			return strnatcmp($forum_a['name'], $forum_b['name']);
+		}
 	}
 
-	return 0;
+	// natural sort order: prefix
+	return strnatcmp($a['prefix'], $b['prefix']);
 }
