@@ -262,23 +262,19 @@ if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid'
 		// By (un)approving an attachment or removing a (potentially) unapproved attachment,
 		// we have (potentially) made changes that need to be reflected in that part of the
 		// header which alerts moderators to various items that need their attention, but
-		// the header has already been generated (in global.php), so we need to regenerate
-		// it.
+		// the header has already been generated (in global.php), so we need to modify it.
 		//
 		// Note 1: this code duplicates a lot of the original code on which it is based in
 		// global.php. We might want to abstract it into one or more functions so that it is
 		// no longer duplicated.
-		//
-		// Note 2: as @yuliu points out[1], we might be overwriting here changes to the
-		// header made by one or more plugins in such hooks as `global_end`.
-		//
-		// [1] https://github.com/mybb/mybb/pull/3926#issuecomment-611656525
 
 		$moderation_queue = array();
 		$modnotice = '';
 
 		if($can_access_moderationqueue || ($mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanagemodqueue'] == 1))
 		{
+			$header_org = $header;
+
 			// 0 or more reported items currently exist
 			if($reported['unread'] > 0 && $unread > 0)
 			{
@@ -329,8 +325,16 @@ if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid'
 				$moderation_queue = $lang->sprintf($lang->mod_notice, $moderation_queue);
 
 				eval('$modnotice = "'.$templates->get('global_modqueue_notice').'";');
+				$header = preg_replace('(<div\\sid="moderation_queue".*</div>)', $modnotice, $header);
 			}
-			eval('$header = "'.$templates->get('header').'";');
+			else
+			{
+				$header = preg_replace('(<div\\sid="moderation_queue".*</div>)', '', $header);
+			}
+			if (!$header)
+			{
+				$header = $header_org;
+			}
 		}
 	}
 
