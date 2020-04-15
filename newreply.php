@@ -203,7 +203,7 @@ if((empty($_POST) && empty($_FILES)) && $mybb->get_input('processed', MyBB::INPU
 
 $errors = array();
 $maximageserror = $attacherror = '';
-if($mybb->settings['enableattachments'] == 1 && ($mybb->get_input('newattachment') || $mybb->get_input('updateattachment') || ($mybb->input['action'] == "do_newreply" && $mybb->get_input('submit') && $_FILES['attachments'])))
+if($mybb->settings['enableattachments'] == 1 && ($mybb->get_input('newattachment') || $mybb->get_input('updateattachment') || ((($mybb->input['action'] == "do_newreply" && $mybb->get_input('submit')) || ($mybb->input['action'] == "newreply" && isset($mybb->input['previewpost'])) || isset($mybb->input['savedraft'])) && $_FILES['attachments'])))
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
@@ -226,8 +226,8 @@ if($mybb->settings['enableattachments'] == 1 && ($mybb->get_input('newattachment
 		$errors = $ret['errors'];
 	}
 
-	// If we were dealing with an attachment but didn't click 'Post Reply', force the new reply page again.
-	if(!$mybb->get_input('submit'))
+	// If we were dealing with an attachment but didn't click 'Post Reply' or 'Save as Draft', force the new reply page again.
+	if(!$mybb->get_input('submit') && !$mybb->get_input('savedraft'))
 	{
 		eval("\$editdraftpid = \"".$templates->get("newreply_draftinput")."\";");
 		$mybb->input['action'] = "newreply";
