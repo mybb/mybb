@@ -135,7 +135,8 @@ class captcha
 			{
 				$this->build_recaptcha();
 			}
-		}else if(in_array($this->type, array(6, 7)) && $mybb->settings['captchapublickey'] && $mybb->settings['captchaprivatekey'])
+		}
+		elseif(in_array($this->type, array(6, 7)) && $mybb->settings['captchapublickey'] && $mybb->settings['captchaprivatekey'])
 		{
 			// We want to use hCAPTCHA or hCAPTCHA invisible, set the server options
 			$this->server = "//www.hCaptcha.com/1/api.js";
