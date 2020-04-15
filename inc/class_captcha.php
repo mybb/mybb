@@ -39,8 +39,10 @@ class captcha
 	 * Type of CAPTCHA.
 	 *
 	 * 1 = Default CAPTCHA
-	 * 2 = reCAPTCHA
 	 * 4 = NoCATPCHA reCAPTCHA
+	 * 5 = reCAPTCHA invisible
+	 * 6 = hCaptcha
+	 * 7 = hCaptcha invisible
 	 *
 	 * @var int
 	 */
@@ -112,6 +114,14 @@ class captcha
 			{
 				$this->captcha_template .= "_recaptcha_invisible";
 			}
+			elseif($this->type == 6)
+			{
+				$this->captcha_template .= "_hcaptcha";
+			}
+			elseif($this->type == 7)
+			{
+				$this->captcha_template .= "_hcaptcha_invisible";
+			}
 		}
 
 		// Work on which CAPTCHA we've got installed
@@ -124,6 +134,16 @@ class captcha
 			if($build == true)
 			{
 				$this->build_recaptcha();
+			}
+		}else if(in_array($this->type, array(6, 7)) && $mybb->settings['captchapublickey'] && $mybb->settings['captchaprivatekey'])
+		{
+			// We want to use hCAPTCHA or hCAPTCHA invisible, set the server options
+			$this->server = "//www.hCaptcha.com/1/api.js";
+			$this->verify_server = "https://hcaptcha.com/siteverify";
+
+			if($build == true)
+			{
+				$this->build_hcaptcha();
 			}
 		}
 		elseif($this->type == 1)
@@ -174,6 +194,19 @@ class captcha
 
 		eval("\$this->html = \"".$templates->get($this->captcha_template, 1, 0)."\";");
 		//eval("\$this->html = \"".$templates->get("member_register_regimage_recaptcha")."\";");
+	}
+
+	function build_hcaptcha()
+	{
+		global $lang, $mybb, $templates;
+
+		// This will build a hCAPTCHA
+		$server = $this->server;
+		$public_key = $mybb->settings['captchapublickey'];
+		$captcha_theme = $mybb->settings['captchatheme'];
+		$captcha_size = $mybb->settings['captchasize'];
+		
+		eval("\$this->html = \"".$templates->get($this->captcha_template, 1, 0)."\";");
 	}
 
 	/**
@@ -273,7 +306,38 @@ class captcha
 				}
 			}
 		}
+		elseif(in_array($this->type, array(6, 7)))
+		{
+			$response = $mybb->input['h-captcha-response'];
+			if(!$response || strlen($response) == 0)
+			{
+				$this->set_error($lang->invalid_hcaptcha);
+			}
+			else
+			{
+				// We have an hCaptcha or hCaptcha invisible to handle
+				// Contact hCaptcha and see if our hCaptcha was successful
+				$response = fetch_remote_file($this->verify_server, array(
+					'secret' => $mybb->settings['captchaprivatekey'],
+					'remoteip' => $session->ipaddress,
+					'response' => $response
+				));
 
+				if($response == false)
+				{
+					$this->set_error($lang->invalid_hcaptcha_transmit);
+				}
+				else
+				{
+					$answer = json_decode($response, true);
+					if($answer['success'] != 'true')
+					{
+						// We got it wrong! Oh no...
+						$this->set_error($lang->invalid_hcaptcha);
+					}
+				}
+			}
+		}
 		$plugins->run_hooks('captcha_validate_end', $this);
 
 		if(count($this->errors) > 0)

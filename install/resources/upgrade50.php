@@ -32,6 +32,9 @@ function upgrade50_dbchanges()
 
 	$db->update_query('settings', array('value' => 1), "name='nocacheheaders'");
 
+	// Add hCaptcha support
+	$db->update_query("settings", array('optionscode' => 'select\r\n0=No CAPTCHA\r\n1=MyBB Default CAPTCHA\r\n4=NoCAPTCHA reCAPTCHA\r\n5=reCAPTCHA invisible\r\n6=hCaptcha\r\n7=hCaptcha invisible'), "name='captchaimage'");
+	
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("50_done");
 }
