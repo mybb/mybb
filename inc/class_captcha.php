@@ -139,7 +139,7 @@ class captcha
 		elseif(in_array($this->type, array(6, 7)) && $mybb->settings['captchapublickey'] && $mybb->settings['captchaprivatekey'])
 		{
 			// We want to use hCAPTCHA or hCAPTCHA invisible, set the server options
-			$this->server = "//www.hCaptcha.com/1/api.js";
+			$this->server = "//www.hcaptcha.com/1/api.js";
 			$this->verify_server = "https://hcaptcha.com/siteverify";
 
 			if($build == true)
