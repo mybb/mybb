@@ -799,8 +799,7 @@ if(!empty($moderation_queue))
 	$moderation_queue = $lang->sprintf($lang->mod_notice, $moderation_queue);
 
 	eval('$modnotice = "'.$templates->get('global_modqueue_notice').'";');
-} else	eval('$modnotice = "'.$templates->get('global_modqueue_notice_placeholder').'";');
-
+}
 
 // Got a character set?
 $charset = 'UTF-8';
