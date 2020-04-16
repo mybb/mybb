@@ -541,14 +541,6 @@ if(!$mybb->input['action'])
 					}
 				}
 			}
-			else
-			{
-				$title = $lang->thread_prefixes;
-			}
-		}
-		else
-		{
-			$title = $lang->thread_prefixes;
 		}
 
 		usort($prefixes, 'thread_prefix_sort');
@@ -588,6 +580,12 @@ if(!$mybb->input['action'])
 	{
 		$table->construct_cell($lang->no_thread_prefixes, array('colspan' => 3));
 		$table->construct_row();
+	}
+
+
+	if(!isset($title))
+	{
+		$title = $lang->thread_prefixes;
 	}
 
 	$table->output($title);
