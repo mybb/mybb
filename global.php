@@ -745,8 +745,11 @@ if($mybb->settings['reportmethod'] == "db" && ($mybb->usergroup['cancp'] == 1 ||
 	}
 }
 
-// Get awaiting moderation queue stats
-if($can_access_moderationqueue || ($mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanagemodqueue'] == 1))
+// Get awaiting moderation queue stats, except if the page is editpost.php,
+// because that page can make changes - (un)approving attachments, or deleting
+// unapproved attachments - that would invalidate anything generated here.
+// Just leave this queue notification blank for editpost.php.
+if(!(defined('THIS_SCRIPT') && THIS_SCRIPT == 'editpost.php') && ($can_access_moderationqueue || ($mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanagemodqueue'] == 1)))
 {
 	$unapproved_posts = $unapproved_threads = 0;
 	$query = $db->simple_select("posts", "replyto", "visible = 0");
