@@ -449,7 +449,8 @@ $l['human_verification'] = "Human Verification";
 $l['verification_note'] = "Please enter the text contained within the image into the text box below it. This process is used to prevent automated spam bots.";
 $l['verification_note_nocaptcha'] = $l['verification_note_hcaptcha'] = "Please tick the checkbox that you see below. This process is used to prevent automated spam bots.";
 $l['verification_subnote'] = "(case insensitive)";
-$l['invalid_nocaptcha_transmit'] = $l['invalid_hcaptcha_transmit'] = "An error occurred with the human verification. Please try again.";
+$l['invalid_nocaptcha_transmit'] = "An error occurred with the human verification by reCAPTCHA. Please try again.";
+$l['invalid_hcaptcha_transmit'] = "An error occurred with the human verification by hCaptcha. Please try again.";
 $l['captcha_fetch_failure'] = 'There was an error fetching the new captcha.';
 $l['question_fetch_failure'] = 'There was an error fetching the new question.';
 
