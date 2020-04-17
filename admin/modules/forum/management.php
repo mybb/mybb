@@ -94,6 +94,10 @@ if($mybb->input['action'] == "copy")
 
 			if(!$errors)
 			{
+				if($mybb->input['pid'] < 0)
+				{
+					$mybb->input['pid'] = 0;
+				}
 				$new_forum = $from_forum;
 				unset($new_forum['fid'], $new_forum['threads'], $new_forum['posts'], $new_forum['lastpost'], $new_forum['lastposter'], $new_forum['lastposteruid'], $new_forum['lastposttid'], $new_forum['lastpostsubject'], $new_forum['unapprovedthreads'], $new_forum['unapprovedposts']);
 				$new_forum['name'] = $db->escape_string($mybb->input['title']);
