@@ -283,11 +283,7 @@ function clean_keywords_ft($keywords)
 	$min_word_length -= 1;
 
 	$word_length_regex = '';
-	if($min_word_length <= 1)
-	{
-		$word_length_regex = '{1}';
-	}
-	else
+	if($min_word_length > 1)
 	{
 		$word_length_regex = "{1,{$min_word_length}}";
 	}
