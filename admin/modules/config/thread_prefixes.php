@@ -568,7 +568,7 @@ if(!$mybb->input['action'])
 				$forum_names = implode($lang->comma, $forum_names);
 			}
 
-			$table->construct_cell("<a href=\"index.php?module=config-thread_prefixes&amp;action=edit_prefix&amp;pid={$prefix['pid']}\"><strong>".htmlspecialchars_uni($prefix['prefix'])."</strong></a>");
+			$table->construct_cell("<a href=\"index.php?module=config-thread_prefixes&amp;action=edit_prefix&amp;pid={$prefix['pid']}\" style=\"color: inherit;\" title=\"".htmlspecialchars_uni($prefix['prefix'])."\">".$prefix['displaystyle']."</a>");
 			$table->construct_cell($forum_names);
 			$table->construct_cell("<a href=\"index.php?module=config-thread_prefixes&amp;action=edit_prefix&amp;pid={$prefix['pid']}\">{$lang->edit}</a>", array('width' => 100, 'class' => "align_center"));
 			$table->construct_cell("<a href=\"index.php?module=config-thread_prefixes&amp;action=delete_prefix&amp;pid={$prefix['pid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_thread_prefix_deletion}')\">{$lang->delete}</a>", array('width' => 100, 'class' => 'align_center'));
