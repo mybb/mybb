@@ -254,7 +254,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 				$mybb->input['fields'] = explode(",", $mybb->input['fields_js']);
 			}
 
-			if(!is_array($mybb->input['fields']) || (is_array($mybb->input['fields']) && count($mybb->input['fields']) <= 0))
+			if(!is_array($mybb->input['fields']) || count($mybb->input['fields']) <= 0)
 			{
 				$errors[] = $lang->error_no_view_fields;
 			}
