@@ -53,12 +53,16 @@ class session
 		if(isset($mybb->cookies['sid']) && !defined('IN_UPGRADE'))
 		{
 			$sid = $db->escape_string($mybb->cookies['sid']);
-			// Load the session
-			$query = $db->simple_select("sessions", "*", "sid='{$sid}' AND ip=".$db->escape_binary($this->packedip));
-			$session = $db->fetch_array($query);
-			if($session['sid'])
+
+			// Load the session if not using a bot sid
+			if(substr($sid, 3, 1) !== '=')
 			{
-				$this->sid = $session['sid'];
+				$query = $db->simple_select("sessions", "*", "sid='{$sid}'");
+				$session = $db->fetch_array($query);
+				if($session['sid'])
+				{
+					$this->sid = $session['sid'];
+				}
 			}
 		}
 
