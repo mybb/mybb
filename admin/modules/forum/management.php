@@ -2722,6 +2722,7 @@ function build_admincp_forums_list(&$form_container, &$form, $pid=0, $depth=1)
 				$popup->add_item($lang->subforums, "index.php?module=forum-management&amp;fid={$forum['fid']}");
 				$popup->add_item($lang->moderators, "index.php?module=forum-management&amp;fid={$forum['fid']}#tab_moderators");
 				$popup->add_item($lang->permissions, "index.php?module=forum-management&amp;fid={$forum['fid']}#tab_permissions");
+				$popup->add_item($lang->forum_thread_prefixes, "index.php?module=config-thread_prefixes&amp;fid={$forum['fid']}");
 				$popup->add_item($lang->add_child_forum, "index.php?module=forum-management&amp;action=add&amp;pid={$forum['fid']}");
 				$popup->add_item($lang->copy_forum, "index.php?module=forum-management&amp;action=copy&amp;fid={$forum['fid']}");
 				$popup->add_item($lang->delete_forum, "index.php?module=forum-management&amp;action=delete&amp;fid={$forum['fid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_forum_deletion}')");
@@ -2762,6 +2763,7 @@ function build_admincp_forums_list(&$form_container, &$form, $pid=0, $depth=1)
 				$popup->add_item($lang->subforums, "index.php?module=forum-management&amp;fid={$forum['fid']}");
 				$popup->add_item($lang->moderators, "index.php?module=forum-management&amp;fid={$forum['fid']}#tab_moderators");
 				$popup->add_item($lang->permissions, "index.php?module=forum-management&amp;fid={$forum['fid']}#tab_permissions");
+				$popup->add_item($lang->forum_thread_prefixes, "index.php?module=config-thread_prefixes&amp;fid={$forum['fid']}");
 				$popup->add_item($lang->add_child_forum, "index.php?module=forum-management&amp;action=add&amp;pid={$forum['fid']}");
 				$popup->add_item($lang->copy_forum, "index.php?module=forum-management&amp;action=copy&amp;fid={$forum['fid']}");
 				$popup->add_item($lang->delete_forum, "index.php?module=forum-management&amp;action=delete&amp;fid={$forum['fid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_forum_deletion}')");

@@ -6,6 +6,7 @@
  */
 
 $l['thread_prefixes'] = "Thread Prefixes";
+$l['thread_prefixes_in'] = "Thread Prefixes in \"{1}\"";
 $l['thread_prefixes_desc'] = "Thread prefixes allow you to define prefixes that users can assign to their threads. Threads can then be filtered by prefix within a forum.";
 
 $l['add_new_thread_prefix'] = "Add New Thread Prefix";
@@ -20,13 +21,14 @@ $l['prefix_options'] = "Prefix Options";
 $l['save_thread_prefix'] = "Save Thread Prefix";
 
 $l['prefix'] = "Prefix";
+$l['forums'] = "Available in Forums";
 $l['prefix_desc'] = "Plain text version of the prefix to be displayed in selection menus.";
 $l['display_style'] = "Display Style";
 $l['display_style_desc'] = "This is how the prefix will appear next to thread subjects. You may enter HTML markup here or simply use the same as the plain text version above.";
 $l['available_in_forums'] = "Available in forums";
 $l['available_to_groups'] = "Available to groups";
 
-$l['no_thread_prefixes'] = "There are no thread prefixes setup on your forum.";
+$l['no_thread_prefixes'] = "There are no thread prefixes setup.";
 
 $l['confirm_thread_prefix_deletion'] = "Are you sure you want to delete this thread prefix? Note: You should remember to update any custom moderator tools which use this prefix after deletion.";
 
