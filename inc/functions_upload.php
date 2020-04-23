@@ -722,7 +722,6 @@ function add_attachments($pid, $forumpermissions, $attachwhere, $action=false)
 		{
 			foreach($fields as $field)
 			{
-				$attach1[$field] = $_FILES['attachments'][$field][$key];
 				$attachments[$i][$field] = $_FILES['attachments'][$field][$i];
 			}
 

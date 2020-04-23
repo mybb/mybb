@@ -1631,7 +1631,6 @@ function upgrade30_dbchanges_optimize4()
 		"threads" => array("dateline", "lastpost"),
 		"threadsread" => array("dateline"),
 		"threadsubscriptions" => array("dateline"),
-		"threadsread" => array("dateline"),
 		"usergroups" => array("reputationpower", "maxreputationsday", "maxreputationsperuser", "maxreputationsperthread", "attachquota"),
 		"users" => array("regdate", "lastactive", "lastvisit", "lastpost", "timeonline", "moderationtime", "suspensiontime", "suspendsigtime"),
 		"warningtypes" => array("expirationtime"),
@@ -2200,7 +2199,7 @@ function upgrade30_updatetheme()
 					$sid = $db->insert_query("themestylesheets", $new_stylesheet);
 					$css_url = "css.php?stylesheet={$sid}";
 
-					$cached = cache_stylesheet($tid, $stylesheet['attributes']['name'], $stylesheet['value']);
+					$cached = cache_stylesheet(1, $stylesheet['attributes']['name'], $stylesheet['value']);
 
 					if($cached)
 					{

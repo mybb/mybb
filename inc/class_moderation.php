@@ -1750,7 +1750,6 @@ class Moderation
 			"replies" => "+{$mergethread['replies']}",
 			"attachmentcount" => "+{$mergethread['attachmentcount']}",
 			"unapprovedposts" => "+{$mergethread['unapprovedposts']}",
-			"deletedposts" => "+{$mergethread['unapprovedposts']}",
 			"deletedposts" => "+{$mergethread['deletedposts']}"
 		);
 		update_thread_counters($tid, $updated_stats);
