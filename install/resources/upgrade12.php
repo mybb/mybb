@@ -1865,6 +1865,8 @@ function upgrade12_redothemes()
 		$db->drop_table("themestylesheets");
 	}
 
+	$collation = $db->build_create_table_collation();
+
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."themestylesheets(
 		sid int unsigned NOT NULL auto_increment,
 		name varchar(30) NOT NULL default '',

@@ -378,10 +378,10 @@ lang.saved = \"{$lang->saved}\";
 
 		// If the language string for "Username" is too cramped then use this to define how much larger you want the gap to be (in px)
 		if(isset($lang->login_field_width))
-        {
-        	$login_label_width = " style=\"width: ".((int)$lang->login_field_width+100)."px;\"";
+		{
+			$login_label_width = " style=\"width: ".((int)$lang->login_field_width+100)."px;\"";
 			$login_container_width = " style=\"width: ".(410+((int)$lang->login_field_width))."px;\"";
-        }
+		}
 
 		$login_page .= <<<EOF
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -515,6 +515,8 @@ EOF;
 	{
 		global $lang, $cp_style, $mybb;
 
+		$copy_year = COPY_YEAR;
+
 		$mybb2fa_page = <<<EOF
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
@@ -625,6 +627,15 @@ EOF;
 		global $lang, $mybb, $cp_style;
 
 		$copy_year = COPY_YEAR;
+
+		$login_label_width = "";
+
+		// If the language string for "Username" is too cramped then use this to define how much larger you want the gap to be (in px)
+		if(isset($lang->login_field_width))
+		{
+			$login_label_width = " style=\"width: ".((int)$lang->login_field_width+100)."px;\"";
+		}
+
 		switch($mybb->settings['username_method'])
 		{
 			case 0:

@@ -3976,7 +3976,7 @@ function build_user_view_table($user, $view, &$table)
  */
 function output_custom_profile_fields($fields, $values, &$form_container, &$form, $search=false)
 {
-	global $lang;
+	global $lang, $mybb;
 
 	if(!is_array($fields))
 	{
