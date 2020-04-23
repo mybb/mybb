@@ -2315,7 +2315,8 @@ switch($mybb->input['action'])
 			}
 		}
 
-		if(count($posts) < 2) {
+		if(count($posts) < 2)
+		{
 			if(empty($posts))
 			{
 				error($lang->error_inline_nopostsselected, $lang->error);

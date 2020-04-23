@@ -1410,9 +1410,12 @@ if($mybb->input['action'] == "thread")
 
 		if(is_moderator($forum['fid'], "canopenclosethreads"))
 		{
-			if($thread['closed']) {
+			if($thread['closed'])
+			{
 				$lang->open_close_thread = $lang->open_thread;
-			} else {
+			}
+			else
+			{
 				$lang->open_close_thread = $lang->close_thread;
 			}
 			eval("\$openclosethread = \"".$templates->get("showthread_moderationoptions_openclose")."\";");
@@ -1420,9 +1423,12 @@ if($mybb->input['action'] == "thread")
 
 		if(is_moderator($forum['fid'], "canstickunstickthreads"))
 		{
-			if($thread['sticky']) {
+			if($thread['sticky'])
+			{
 				$lang->stick_unstick_thread = $lang->unstick_thread;
-			} else {
+			}
+			else
+			{
 				$lang->stick_unstick_thread = $lang->stick_thread;
 			}
 			eval("\$stickunstickthread = \"".$templates->get("showthread_moderationoptions_stickunstick")."\";");

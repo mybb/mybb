@@ -4017,7 +4017,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 	</td>]]></template>
 		<template name="forumdisplay_thread_rating_moved" version="1800"><![CDATA[<td class="{$bgcolor}" style="text-align: center;">-</td>]]></template>
 		<template name="forumdisplay_thread_unapproved_posts" version="1800"><![CDATA[ <span title="{$unapproved_posts_count}">({$thread['unapprovedposts']})</span>]]></template>
-		<template name="forumdisplay_threadlist" version="1822"><![CDATA[<div class="float_left">
+		<template name="forumdisplay_threadlist" version="1823"><![CDATA[<div class="float_left">
 	{$multipage}
 </div>
 <div class="float_right">
