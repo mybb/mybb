@@ -11344,7 +11344,7 @@ if(use_xmlhttprequest == "1")
 <td width="5%" class="{$bgcolor}"><div class="postbit_buttons">{$emailcode}</div></td>
 <td width="5%" class="{$bgcolor}"><div class="postbit_buttons">{$pmcode}</div></td>
 </tr>]]></template>
-		<template name="showthread" version="1822"><![CDATA[<html>
+		<template name="showthread" version="1823"><![CDATA[<html>
 <head>
 <title>{$thread['subject']}</title>
 {$headerinclude}
@@ -11455,7 +11455,7 @@ if(use_xmlhttprequest == "1")
 			<td class="tcat"><span class="smalltext"><strong>{$lang->message}</strong></span></td>
 		</tr>
 		]]></template>
-		<template name="showthread_inlinemoderation" version="1822"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1821"></script>
+		<template name="showthread_inlinemoderation" version="1823"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1821"></script>
 <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;" id="inlinemoderation_options">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="tid" value="{$tid}" />
@@ -11498,7 +11498,7 @@ if(use_xmlhttprequest == "1")
 	{$inlinemodapprove}
 </optgroup>]]></template>
 		<template name="showthread_inlinemoderation_softdelete" version="1800"><![CDATA[<option value="multisoftdeleteposts">{$lang->inline_soft_delete_posts}</option>]]></template>
-		<template name="showthread_moderationoptions" version="1822"><![CDATA[{$inlinemod}
+		<template name="showthread_moderationoptions" version="1823"><![CDATA[{$inlinemod}
 <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;" id="moderator_options">
 	<input type="hidden" name="modtype" value="thread" />
 	<input type="hidden" name="tid" value="{$tid}" />
@@ -11538,7 +11538,7 @@ if(use_xmlhttprequest == "1")
 {$approveunapprovethread}
 </optgroup>]]></template>
 		<template name="showthread_moderationoptions_stickunstick" version="1818"><![CDATA[<option class="option_mirage" value="stick">{$lang->stick_unstick_thread}</option>]]></template>
-		<template name="showthread_moderationoptions_threadnotes" version="1822"><![CDATA[<option value="threadnotes">{$lang->thread_notes}</option>]]></template>
+		<template name="showthread_moderationoptions_threadnotes" version="1823"><![CDATA[<option value="threadnotes">{$lang->thread_notes}</option>]]></template>
 		<template name="showthread_moderationoptions_unapprove" version="1818"><![CDATA[<option class="option_mirage" value="unapprovethread">{$lang->unapprove_thread}</option>]]></template>
 		<template name="showthread_newreply" version="1800"><![CDATA[<a href="newreply.php?tid={$tid}" class="button new_reply_button"><span>{$lang->new_reply}</span></a>&nbsp;]]></template>
 		<template name="showthread_newreply_closed" version="1800"><![CDATA[<a href="newreply.php?tid={$tid}" class="button closed_button"><span>{$lang->thread_closed}</span></a>&nbsp;]]></template>
