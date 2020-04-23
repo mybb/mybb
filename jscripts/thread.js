@@ -19,12 +19,10 @@ var Thread = {
 				$("#moderator_options_selector").on('change', function() {
 					$("#moderator_options").trigger('submit');
 				});
-			}
 
-			if($("#inlinemoderation_options_selector").length !== 0) {
-				$('#inlinemoderation_options>input[name="go"]').on('click', function(){
-					if($('input[name^="inlinemod_"]:checked').length === 0) {
-						$.jGrowl(lang.selected_nil, {theme:'jgrowl_error'});
+				$("#moderator_options").on('submit', function(){
+					if($("#moderator_options_selector").val() == "") {
+						$.jGrowl(lang.select_tool, {theme:'jgrowl_error'});
 						return false;
 					}
 				});

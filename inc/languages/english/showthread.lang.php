@@ -84,6 +84,7 @@ $l['inline_move_posts'] = "Move Posts";
 $l['inline_approve_posts'] = "Approve Posts";
 $l['inline_unapprove_posts'] = "Unapprove Posts";
 $l['inline_post_moderation'] = "Inline Post Moderation:";
+$l['inline_no_tool_selected'] = "Please select a tool to perform moderation action.";
 $l['inline_no_post_selected'] = "You need to select one or more posts to perform the moderation action on.";
 $l['inline_go'] = "Go";
 $l['clear'] = "Clear";
