@@ -2092,8 +2092,6 @@ if($mybb->input['action'] == "viewnotes")
 
 if($mybb->input['action'] == "profile")
 {
-	$plugins->run_hooks("member_profile_start");
-
 	if($mybb->usergroup['canviewprofiles'] == 0)
 	{
 		error_no_permission();
@@ -2119,6 +2117,8 @@ if($mybb->input['action'] == "profile")
 	}
 
 	$uid = $memprofile['uid'];
+
+	$plugins->run_hooks("member_profile_start");
 
 	$me_username = $memprofile['username'];
 	$memprofile['username'] = htmlspecialchars_uni($memprofile['username']);
