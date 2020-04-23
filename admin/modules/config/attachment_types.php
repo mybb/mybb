@@ -642,7 +642,7 @@ if($mybb->input['action'] == 'toggle_status')
 	if($attachment_type['enabled'] == 1)
 	{
 		$update_array['enabled'] = 0;
-		$phrase = $lang->success_activated_attachment_type;
+		$phrase = $lang->success_deactivated_attachment_type;
 	}
 
 	$plugins->run_hooks('admin_config_attachment_types_toggle_status_commit');
