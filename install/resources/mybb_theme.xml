@@ -3831,13 +3831,14 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 {$modann}
 </tr>]]></template>
 		<template name="forumdisplay_announcements_announcement_modbit" version="1800"><![CDATA[<td align="center" class="{$bgcolor} forumdisplay_announcement">-</td>]]></template>
-		<template name="forumdisplay_inlinemoderation" version="1821"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1821"></script>
-		<form action="moderation.php" method="post">
+		<template name="forumdisplay_inlinemoderation" version="1823"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1823"></script>
+		<form id="inlinemoderation_options" action="moderation.php" method="post">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="fid" value="{$fid}" />
 <input type="hidden" name="modtype" value="inlinethread" />
 <span class="smalltext"><strong>{$lang->inline_thread_moderation}</strong></span>
-<select name="action">
+<select name="action" id="inlinemoderation_options_selector">
+	<option value="" style="display: none;" selected="selected">{$lang->select_a_tool}</option>
 	<option value="delayedmoderation">{$lang->delayed_moderation}</option>
 	{$standardthreadtools}
 	{$customthreadtools}
@@ -3851,6 +3852,8 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 	var all_text = "{$threadcount}";
 	var inlineType = "forum";
 	var inlineId = {$fid};
+	lang.select_tool = "{$lang->inline_no_tool_selected}";
+	lang.selected_nil = "{$lang->inline_no_post_selected}";
 // -->
 </script>
 <br />]]></template>
