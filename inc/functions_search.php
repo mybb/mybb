@@ -58,20 +58,7 @@ function make_searchable_forums($pid=0, $selitem=0, $addselect=1, $depth='')
 						$optionselected = '';
 						$selecteddone = "0";
 					}
-
-					if($forum['password'] != '')
-					{
-						if($mybb->cookies['forumpass'][$forum['fid']] === md5($mybb->user['uid'].$forum['password']))
-						{
-							$pwverified = 1;
-						}
-						else
-						{
-							$pwverified = 0;
-						}
-					}
-
-					if(empty($forum['password']) || $pwverified == 1)
+					if(forum_password_validated($forum, true))
 					{
 						$forum['depth'] = $depth;
 						$forumtree[] = $forum;
@@ -128,15 +115,6 @@ function get_unsearchable_forums($pid=0, $first=1)
 			$perms = $mybb->usergroup;
 		}
 
-		$pwverified = 1;
-		if($forum['password'] != '')
-		{
-			if(!isset($mybb->cookies['forumpass'][$forum['fid']]) || !my_hash_equals($mybb->cookies['forumpass'][$forum['fid']], md5($mybb->user['uid'].$forum['password'])))
-			{
-				$pwverified = 0;
-			}
-		}
-
 		$parents = explode(",", $forum['parentlist']);
 		if(is_array($parents))
 		{
@@ -149,7 +127,7 @@ function get_unsearchable_forums($pid=0, $first=1)
 			}
 		}
 
-		if($perms['canview'] != 1 || $perms['cansearch'] != 1 || $pwverified == 0 || $forum['active'] == 0)
+		if($perms['canview'] != 1 || $perms['cansearch'] != 1 || !forum_password_validated($forum, true) || $forum['active'] == 0)
 		{
 			if($unsearchableforums)
 			{
@@ -208,20 +186,10 @@ function get_password_protected_forums($fids=array())
 	$pass_fids = array();
 	foreach($fids as $fid)
 	{
-		if(empty($forum_cache[$fid]['password']))
-		{
-			continue;
-		}
-
-		if(md5($mybb->user['uid'].$forum_cache[$fid]['password']) !== $mybb->cookies['forumpass'][$fid])
+		if(!forum_password_validated($forum_cache[$fid], true))
 		{
 			$pass_fids[] = $fid;
-			$child_list = get_child_list($fid);
-		}
-
-		if(is_array($child_list))
-		{
-			$pass_fids = array_merge($pass_fids, $child_list);
+			$pass_fids = array_merge($pass_fids, get_child_list($fid));
 		}
 	}
 	return array_unique($pass_fids);
@@ -278,16 +246,16 @@ function clean_keywords_ft($keywords)
 	// Separate braces for further processing
 	$keywords = preg_replace("#((\+|-|<|>|~)?\(|\))#s", " $1 ", $keywords);
 	$keywords = preg_replace("#\s+#s", " ", $keywords);
-	
+
 	global $mybb;
-	
+
 	$min_word_length = (int) $mybb->settings['minsearchword'];
 	if($min_word_length <= 0)
 	{
 		$min_word_length = 3;
 	}
 	$min_word_length -= 1;
-	
+
 	// Replaces less than 3 characters
 	$keywords = preg_replace("/(\b.{1,{$min_word_length}})(\s)|(\b.{1,{$min_word_length}}$)/", '$2', $keywords);
 	// Collapse multiple spaces
@@ -1410,7 +1378,7 @@ function perform_search_mysql_ft($search)
 	global $mybb, $db, $lang;
 
 	$keywords = clean_keywords_ft($search['keywords']);
-	
+
 	// Attempt to determine minimum word length from MySQL for fulltext searches
 	$query = $db->query("SHOW VARIABLES LIKE 'ft_min_word_len';");
 	$min_length = $db->fetch_field($query, 'Value');

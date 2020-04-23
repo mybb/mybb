@@ -150,13 +150,10 @@ SQL;
 				);
 			}
 
-			if($forum['password'])
+			if(!forum_password_validated($forum, true))
 			{
-				if(!isset($mybb->cookies['forumpass'][$forum['fid']]) || !my_hash_equals($mybb->cookies['forumpass'][$forum['fid']], md5($mybb->user['uid'].$forum['password'])))
-				{
-					$hideinfo = true;
-					$showlockicon = 1;
-				}
+				$hideinfo = true;
+				$showlockicon = 1;
 			}
 
 			// Fetch subforums of this forum
