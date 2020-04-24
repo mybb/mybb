@@ -311,6 +311,7 @@ $l['forumjump_home'] = "Forum Home";
 $l['redirect'] = "You will now be redirected";
 $l['unknown_error'] = "An unknown error has occurred.";
 $l['post_fetch_error'] = 'There was an error fetching the posts.';
+$l['ratings_update_error'] = 'There was an error updating the rating.';
 
 $l['smilieinsert'] = "Smilies";
 $l['smilieinsert_getmore'] = "get more";
