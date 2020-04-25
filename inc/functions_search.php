@@ -242,18 +242,24 @@ function clean_keywords_ft($keywords)
 	// Separate braces for further processing
 	$keywords = preg_replace("#((\+|-|<|>|~)?\(|\))#s", " $1 ", $keywords);
 	$keywords = preg_replace("#\s+#s", " ", $keywords);
-	
+
 	global $mybb;
-	
+
 	$min_word_length = (int) $mybb->settings['minsearchword'];
 	if($min_word_length <= 0)
 	{
 		$min_word_length = 3;
 	}
 	$min_word_length -= 1;
-	
+
+	$word_length_regex = '';
+	if($min_word_length > 1)
+	{
+		$word_length_regex = "{1,{$min_word_length}}";
+	}
+
 	// Replaces less than 3 characters
-	$keywords = preg_replace("/(\b.{1,{$min_word_length}})(\s)|(\b.{1,{$min_word_length}}$)/", '$2', $keywords);
+	$keywords = preg_replace("/(\b.{$word_length_regex})(\s)|(\b.{$word_length_regex}$)/u", '$2', $keywords);
 	// Collapse multiple spaces
 	$keywords = preg_replace('/(\s)+/', '$1', $keywords);
 	$keywords = trim($keywords);
@@ -1374,7 +1380,7 @@ function perform_search_mysql_ft($search)
 	global $mybb, $db, $lang;
 
 	$keywords = clean_keywords_ft($search['keywords']);
-	
+
 	// Attempt to determine minimum word length from MySQL for fulltext searches
 	$query = $db->query("SHOW VARIABLES LIKE 'ft_min_word_len';");
 	$min_length = $db->fetch_field($query, 'Value');
