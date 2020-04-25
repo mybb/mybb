@@ -514,11 +514,6 @@ var Thread = {
 										$("#moderator_options_selector option[value='softdeletethread']").val("restorethread").text(lang.restore_thread);
 										thread_deleted = "1";
 									}
-									else
-									{
-										--visible_replies;
-										Thread.splitToolHandler();
-									}
 									$.jGrowl(lang.quick_delete_success, {theme:'jgrowl_success'});
 								}
 								else if(json.data == 2)
@@ -598,11 +593,6 @@ var Thread = {
 									$("#moderator_options_selector option[value='restorethread']").val("softdeletethread").text(lang.softdelete_thread);
 									thread_deleted = "";
 								}
-								else
-								{
-									++visible_replies;
-									Thread.splitToolHandler();
-								}
 
 								$.jGrowl(lang.quick_restore_success, {theme:'jgrowl_success'});
 							}
@@ -628,7 +618,7 @@ var Thread = {
 	{
 		if($(thread_deleted !== "1" && "#moderator_options_selector").length !== 0){
 			var splitTool = $("#moderator_options_selector").find("option[value=split]");
-			if(parseInt(visible_replies) > 0) {
+			if(visible_replies > 0) {
 				splitTool.prop("disabled", false);
 			} else {
 				splitTool.attr("disabled","disabled");

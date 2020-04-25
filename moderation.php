@@ -2383,7 +2383,7 @@ switch($mybb->input['action'])
 		verify_post_check($mybb->get_input('my_post_key'));
 
 		$mergepost = $mybb->get_input('mergepost', MyBB::INPUT_ARRAY);
-		if(count($mergepost) <= 2)
+		if(count($mergepost) < 2)
 		{
 			error($lang->error_nomergeposts, $lang->error);
 		}

@@ -1610,8 +1610,6 @@ if($mybb->input['action'] == "thread")
 		$thread_deleted = 1;
 	}
 
-	$visible_replies = $thread['replies'] - $thread['deletedposts'];
-
 	$plugins->run_hooks("showthread_end");
 
 	eval("\$showthread = \"".$templates->get("showthread")."\";");
