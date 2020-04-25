@@ -1138,7 +1138,7 @@ if($mybb->input['action'] == "change")
 			{
 				$db->create_fulltext_index("posts", "message");
 			}
-			if(!$db->is_fulltext("posts") && $db->supports_fulltext("threads"))
+			if(!$db->is_fulltext("threads") && $db->supports_fulltext("threads"))
 			{
 				$db->create_fulltext_index("threads", "subject");
 			}
