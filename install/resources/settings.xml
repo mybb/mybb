@@ -977,7 +977,7 @@ min=0]]></optionscode>
 		</setting>
 		<setting name="coppa">
 			<title>COPPA Compliance</title>
-			<description><![CDATA[If you wish to enable <a href="http://www.coppa.org/comply.htm">COPPA</a> support on your forums, please select the registration allowance below.]]></description>
+			<description><![CDATA[If you wish to enable <a href="https://www.ftc.gov/enforcement/rules/rulemaking-regulatory-reform-proceedings/childrens-online-privacy-protection-rule">COPPA</a> support on your forums, please select the registration allowance below.]]></description>
 			<disporder>18</disporder>
 			<optionscode><![CDATA[select
 enabled=Enabled
